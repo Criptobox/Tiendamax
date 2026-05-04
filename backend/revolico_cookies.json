@@ -1,0 +1,132 @@
+[
+  {
+    "name": "st-refresh-token",
+    "value": "+uotrUU9tvu8wtXkiBL4qgCiKOcp34lgT7doZwTlqZZuAacIItmgas4sFBVPOU2znAlb1q3KE3+MPfxxuoA8/ygZccjrXlvGoJlbEQhMIDBYUZVCOflSOhpX22Np8MLu2olPIxt74plOA1asPj7UTHW7rZn1p3hmef4RBPkeiyRE7DPkj6oxRbyXxGFpXvmiWKoG0HoSYZFpbzJHuTTtJPUQvTcpLRgfh1YRiX5SnZkch7QPkRQHCAGE1FQhFWCwbtyrRw==.e105bba092d6d2a17c07bc9840e568810271aeaa9d9385b52ae196a8ba6066bb.V2",
+    "domain": "www.revolico.com",
+    "path": "/",
+    "expires": 1781071431,
+    "httpOnly": false,
+    "secure": false,
+    "sameSite": "Lax"
+  },
+  {
+    "name": "_ga_R0XPX8TDQC",
+    "value": "GS2.1.s1777917783$o1$g1$t1777920429$j60$l0$h0",
+    "domain": ".revolico.com",
+    "path": "/",
+    "expires": 1812480429,
+    "httpOnly": false,
+    "secure": false,
+    "sameSite": "Lax"
+  },
+  {
+    "name": "rl_user_id",
+    "value": "RS_ENC_v3_IjE2NDE1MCI%3D",
+    "domain": ".revolico.com",
+    "path": "/",
+    "expires": 1809456020,
+    "httpOnly": false,
+    "secure": false,
+    "sameSite": "Lax"
+  },
+  {
+    "name": "rl_page_init_referring_domain",
+    "value": "RS_ENC_v3_Ind3dy5nb29nbGUuY29tIg%3D%3D",
+    "domain": ".revolico.com",
+    "path": "/",
+    "expires": 1809456020,
+    "httpOnly": false,
+    "secure": false,
+    "sameSite": "Lax"
+  },
+  {
+    "name": "rl_anonymous_id",
+    "value": "RS_ENC_v3_IjY2YTkzNGJjLTMwMGItNDQyZS1hNWM1LTFmYzQxNWI3NjVjMiI%3D",
+    "domain": ".revolico.com",
+    "path": "/",
+    "expires": 1809456020,
+    "httpOnly": false,
+    "secure": false,
+    "sameSite": "Lax"
+  },
+  {
+    "name": "st-last-access-token-update",
+    "value": "1777917831992",
+    "domain": "www.revolico.com",
+    "path": "/",
+    "expires": 1812477831,
+    "httpOnly": false,
+    "secure": false,
+    "sameSite": "Lax"
+  },
+  {
+    "name": "rl_trait",
+    "value": "RS_ENC_v3_eyJuYW1lIjoiSlVMSU8iLCJlbWFpbCI6Imp1bGlvMTk5MnJpdmVyb0BnbWFpbC5jb20iLCJwaG9uZSI6Iis1MzU0MzIwMTcwIiwiYXZhdGFyIjpudWxsLCJwcml2YWN5IjoiUFVCTElDIiwiZmF2b3JpdGVDb3VudCI6MCwiYWRWaWV3Q291bnQiOjAsImFkRmF2b3JpdGVDb3VudCI6MCwiYXV0aFByb3ZpZGVyIjoiRU1BSUxQQVNTV09SRCIsImVtYWlsVmVyaWZpZWQiOnRydWUsImZha2VFbWFpbCI6ZmFsc2UsInByb3ZpbmNlIjoiTGEgSGFiYW5hIiwibXVuaWNpcGFsaXR5IjoiUGxhemEiLCJmaXJzdFBob25lTnVtYmVyIjoiKzUzNTQzMjAxNzAiLCJmaXJzdFBob25lVHlwZSI6IkNFTExQSE9ORSIsImZpcnN0UGhvbmVJc1doYXRzYXBwIjp0cnVlLCJzZWNvbmRQaG9uZU51bWJlciI6bnVsbCwic2Vjb25kUGhvbmVUeXBlIjpudWxsLCJzZWNvbmRQaG9uZUlzV2hhdHNhcHAiOmZhbHNlfQ%3D%3D",
+    "domain": ".revolico.com",
+    "path": "/",
+    "expires": 1809456020,
+    "httpOnly": false,
+    "secure": false,
+    "sameSite": "Lax"
+  },
+  {
+    "name": "st-access-token",
+    "value": "eyJraWQiOiJkLTE3Nzc2MTMxMzcwNDIiLCJ0eXAiOiJKV1QiLCJ2ZXJzaW9uIjoiNSIsImFsZyI6IlJTMjU2In0.eyJpYXQiOjE3Nzc5MTc4MzEsImV4cCI6MTc3ODAwNDIzMSwic3ViIjoidXNlci0xNjQxNTAtZW1haWxwYXNzd29yZCIsInRJZCI6InB1YmxpYyIsInJzdWIiOiJ1c2VyLTE2NDE1MC1lbWFpbHBhc3N3b3JkIiwic2Vzc2lvbkhhbmRsZSI6IjljMTQxZDMwLTViZmMtNDAzYi05YTJjLWMwM2YyYjYzNjlkZSIsInJlZnJlc2hUb2tlbkhhc2gxIjoiNjUxOGI5ZmJiYTQ3NGQ0MDYzMWJlM2ZlMDJiMjIyZDhhYjU1NDJjMTlkNzE2YTg1ZWIxOWM2ZDhjYjM2MmJhMCIsInBhcmVudFJlZnJlc2hUb2tlbkhhc2gxIjpudWxsLCJhbnRpQ3NyZlRva2VuIjpudWxsLCJpc3MiOiJodHRwczovL2dyYXBocWwtYXBpLnJldm9saWNvLmFwcC9hdXRoIiwic3QtZXYiOnsidiI6dHJ1ZSwidCI6MTc3NzkxNzgzMDg0MX0sInVzZXJfaWQiOjE2NDE1MCwidXNlcl9uYW1lIjoiSlVMSU8iLCJ1c2VyX2VtYWlsIjoianVsaW8xOTkycml2ZXJvQGdtYWlsLmNvbSIsInVzZXIucGhvdG8iOm51bGx9.GxjIdrXDMXSpL7Xz1iujWSweyJ8_YEWzxZvQXChcGBQ0yiIUj2-CAEW4w7JEQu4Swgc14Cy-hMDmIuS8kWWix41zxm_8keQmgm89oo_EaJVGzhPRWr_9GP3dMzPI2qw1F1a2i7SFRsBKBifBdOIL50H1xc7c8Fy6jxbtEbYxUEXEZK64fh0vUUVak0U3AKWN_yufK-ywz1gmhZhJuFM6MsEZz-llSjIRBQpFvZJvxARXzuKmXnQxP_pnwrjvhMoCZI6Ppl1JshGqNgBPeVN1eQuqCNGvV2X5HI3-2CpFFpp5pl9sL1KN3gk4ob0ie4FsMztpfnQ01WIboZpVI61YIQ",
+    "domain": "www.revolico.com",
+    "path": "/",
+    "expires": 1781071431,
+    "httpOnly": false,
+    "secure": false,
+    "sameSite": "Lax"
+  },
+  {
+    "name": "_ga",
+    "value": "GA1.1.2038245790.1777917784",
+    "domain": ".revolico.com",
+    "path": "/",
+    "expires": 1812480020,
+    "httpOnly": false,
+    "secure": false,
+    "sameSite": "Lax"
+  },
+  {
+    "name": "gbuuid",
+    "value": "6f860292-cfb5-4d48-9365-3cd32ede46c4",
+    "domain": "www.revolico.com",
+    "path": "/",
+    "expires": 1812477774,
+    "httpOnly": false,
+    "secure": false,
+    "sameSite": "Lax"
+  },
+  {
+    "name": "rl_page_init_referrer",
+    "value": "RS_ENC_v3_Imh0dHBzOi8vd3d3Lmdvb2dsZS5jb20vIg%3D%3D",
+    "domain": ".revolico.com",
+    "path": "/",
+    "expires": 1809456020,
+    "httpOnly": false,
+    "secure": false,
+    "sameSite": "Lax"
+  },
+  {
+    "name": "rl_session",
+    "value": "RS_ENC_v3_eyJhdXRvVHJhY2siOnRydWUsInRpbWVvdXQiOjE4MDAwMDAsImV4cGlyZXNBdCI6MTc3NzkyMjIyOTY1NCwiaWQiOjE3Nzc5MTc3ODE5MTgsInNlc3Npb25TdGFydCI6ZmFsc2V9",
+    "domain": ".revolico.com",
+    "path": "/",
+    "expires": 1809456429,
+    "httpOnly": false,
+    "secure": false,
+    "sameSite": "Lax"
+  },
+  {
+    "name": "sFrontToken",
+    "value": "eyJhdGUiOjE3NzgwMDQyMzEwMDAsInVpZCI6InVzZXItMTY0MTUwLWVtYWlscGFzc3dvcmQiLCJ1cCI6eyJhbnRpQ3NyZlRva2VuIjpudWxsLCJleHAiOjE3NzgwMDQyMzEsImlhdCI6MTc3NzkxNzgzMSwiaXNzIjoiaHR0cHM6Ly9ncmFwaHFsLWFwaS5yZXZvbGljby5hcHAvYXV0aCIsInBhcmVudFJlZnJlc2hUb2tlbkhhc2gxIjpudWxsLCJyZWZyZXNoVG9rZW5IYXNoMSI6IjY1MThiOWZiYmE0NzRkNDA2MzFiZTNmZTAyYjIyMmQ4YWI1NTQyYzE5ZDcxNmE4NWViMTljNmQ4Y2IzNjJiYTAiLCJyc3ViIjoidXNlci0xNjQxNTAtZW1haWxwYXNzd29yZCIsInNlc3Npb25IYW5kbGUiOiI5YzE0MWQzMC01YmZjLTQwM2ItOWEyYy1jMDNmMmI2MzY5ZGUiLCJzdC1ldiI6eyJ0IjoxNzc3OTE3ODMwODQxLCJ2Ijp0cnVlfSwic3ViIjoidXNlci0xNjQxNTAtZW1haWxwYXNzd29yZCIsInRJZCI6InB1YmxpYyIsInVzZXIucGhvdG8iOm51bGwsInVzZXJfZW1haWwiOiJqdWxpbzE5OTJyaXZlcm9AZ21haWwuY29tIiwidXNlcl9pZCI6MTY0MTUwLCJ1c2VyX25hbWUiOiJKVUxJTyJ9fQ==",
+    "domain": "www.revolico.com",
+    "path": "/",
+    "expires": 1812477831,
+    "httpOnly": false,
+    "secure": false,
+    "sameSite": "Lax"
+  }
+]

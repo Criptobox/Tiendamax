@@ -17,6 +17,14 @@ echo "📦 Verificando dependencias..."
 pip3 install flask flask-cors apscheduler pytz playwright -q 2>/dev/null
 python3 -m playwright install chromium -q 2>/dev/null
 
+# Verificar si existen las cookies de Revolico
+if [ -f "$BACKEND_DIR/revolico_cookies.json" ]; then
+    COOKIE_COUNT=$(python3 -c "import json; data=json.load(open('$BACKEND_DIR/revolico_cookies.json')); print(len(data))" 2>/dev/null || echo "0")
+    echo "🍪 Cookies de Revolico: $COOKIE_COUNT cookies cargadas"
+else
+    echo "⚠️  No se encontraron cookies de Revolico. El bot usará login con credenciales."
+fi
+
 # Detener procesos anteriores
 echo "🔄 Deteniendo procesos anteriores..."
 pkill -f "python3 app.py" 2>/dev/null || true
@@ -67,6 +75,12 @@ echo ""
 echo "📅 Publicaciones automáticas en Revolico:"
 echo "   ⏰ 8:00 AM (hora Cuba)"
 echo "   ⏰ 5:00 PM (hora Cuba)"
+echo ""
+echo "🍪 Para actualizar las cookies de Revolico:"
+echo "   1. Abre el panel de administración en la tienda"
+echo "   2. Ve a la pestaña 'Publicar'"
+echo "   3. Haz clic en 'Actualizar Cookies de Revolico'"
+echo "   4. Pega el JSON exportado desde Cookie-Editor"
 echo ""
 echo "📋 Logs:"
 echo "   Backend: $BACKEND_DIR/backend.log"

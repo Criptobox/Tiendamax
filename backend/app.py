@@ -16,15 +16,16 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.cron import CronTrigger
 import pytz
 
-# Importar el agente de Revolico
-from revolico_agent import RevolicoAgent
+# Importar el agente social
+from revolico_agent import SocialAgent as SocialAgent
 
 # Configuración de logging
+os.makedirs(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data'), exist_ok=True)
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     handlers=[
-        logging.FileHandler('/home/ubuntu/tiendamax/backend/publicaciones.log'),
+        logging.FileHandler(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'publicaciones.log')),
         logging.StreamHandler()
     ]
 )
@@ -40,12 +41,18 @@ CUBA_TZ = pytz.timezone('America/Havana')
 REVOLICO_EMAIL = "julio1992rivero@gmail.com"
 REVOLICO_PASSWORD = "Qwe18*92"
 
+# Directorio base del backend (relativo al script)
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DATA_DIR = os.path.join(BASE_DIR, 'data')
+
 # Archivo de productos (compartido con el frontend)
-PRODUCTS_FILE = '/home/ubuntu/tiendamax/backend/products.json'
-LOG_FILE = '/home/ubuntu/tiendamax/backend/publicaciones.log'
+PRODUCTS_FILE = os.path.join(DATA_DIR, 'products.json')
+LOG_FILE = os.path.join(BASE_DIR, 'publicaciones.log')
+REGISTRO_FILE = os.path.join(DATA_DIR, 'registro_publicaciones.json')
+COOKIES_FILE = os.path.join(BASE_DIR, 'revolico_cookies.json')
 
 # Inicializar agente
-revolico_agent = RevolicoAgent(REVOLICO_EMAIL, REVOLICO_PASSWORD)
+social_agent = SocialAgent(REVOLICO_EMAIL, REVOLICO_PASSWORD)
 
 # Scheduler para publicaciones automáticas
 scheduler = BackgroundScheduler(timezone=CUBA_TZ)
@@ -82,7 +89,7 @@ def publicacion_automatica():
     resultados = []
     for producto in productos:
         try:
-            resultado = revolico_agent.publicar_producto(producto)
+            resultado = social_agent.publicar_producto(producto)
             resultados.append({
                 'producto': producto.get('nombre', 'Sin nombre'),
                 'exito': resultado['success'],
@@ -111,15 +118,14 @@ def publicacion_automatica():
         'resultados': resultados
     }
     
-    registro_file = '/home/ubuntu/tiendamax/backend/registro_publicaciones.json'
     registros = []
-    if os.path.exists(registro_file):
-        with open(registro_file, 'r') as f:
+    if os.path.exists(REGISTRO_FILE):
+        with open(REGISTRO_FILE, 'r') as f:
             registros = json.load(f)
     registros.append(registro)
-    # Mantener solo los últimos 100 registros
     registros = registros[-100:]
-    with open(registro_file, 'w') as f:
+    os.makedirs(os.path.dirname(REGISTRO_FILE), exist_ok=True)
+    with open(REGISTRO_FILE, 'w') as f:
         json.dump(registros, f, ensure_ascii=False, indent=2)
 
 
@@ -161,7 +167,24 @@ def publicar_revolico():
     logger.info(f"Publicando en Revolico: {producto.get('nombre', 'Sin nombre')}")
     
     try:
-        resultado = revolico_agent.publicar_producto(producto)
+        resultado = social_agent.publicar_producto(producto)
+        return jsonify(resultado)
+    except Exception as e:
+        logger.error(f"Error: {str(e)}")
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
+@app.route('/api/publicar-facebook', methods=['POST'])
+def publicar_facebook():
+    """Publicar un producto en Facebook"""
+    producto = request.json
+    if not producto:
+        return jsonify({'success': False, 'error': 'No se recibió producto'}), 400
+    
+    logger.info(f"Publicando en Facebook: {producto.get('nombre', 'Sin nombre')}")
+    
+    try:
+        resultado = social_agent.publicar_facebook(producto)
         return jsonify(resultado)
     except Exception as e:
         logger.error(f"Error: {str(e)}")
@@ -207,7 +230,7 @@ def publicar_ahora():
     resultados = []
     for producto in productos:
         try:
-            resultado = revolico_agent.publicar_producto(producto)
+            resultado = social_agent.publicar_producto(producto)
             resultados.append({
                 'producto': producto.get('nombre', 'Sin nombre'),
                 'exito': resultado['success'],
@@ -234,11 +257,31 @@ def publicar_ahora():
 @app.route('/api/historial', methods=['GET'])
 def historial():
     """Obtener historial de publicaciones"""
-    registro_file = '/home/ubuntu/tiendamax/backend/registro_publicaciones.json'
-    if os.path.exists(registro_file):
-        with open(registro_file, 'r') as f:
+    if os.path.exists(REGISTRO_FILE):
+        with open(REGISTRO_FILE, 'r') as f:
             return jsonify(json.load(f))
     return jsonify([])
+
+
+@app.route('/api/importar-cookies', methods=['POST'])
+def importar_cookies():
+    """Importar cookies exportadas desde Cookie-Editor"""
+    data = request.json
+    if not data or not isinstance(data, list):
+        return jsonify({'success': False, 'error': 'Se esperaba un array de cookies'}), 400
+    try:
+        from revolico_agent import convertir_cookies_cookie_editor, guardar_cookies
+        # Detectar si necesita conversión
+        if data and 'expirationDate' in data[0]:
+            cookies_convertidas = convertir_cookies_cookie_editor(data)
+        else:
+            cookies_convertidas = data
+        guardar_cookies(cookies_convertidas)
+        logger.info(f"✅ {len(cookies_convertidas)} cookies importadas desde Cookie-Editor")
+        return jsonify({'success': True, 'mensaje': f'{len(cookies_convertidas)} cookies importadas correctamente'})
+    except Exception as e:
+        logger.error(f"Error importando cookies: {e}")
+        return jsonify({'success': False, 'error': str(e)}), 500
 
 
 @app.route('/api/logs', methods=['GET'])
@@ -285,7 +328,7 @@ def iniciar_scheduler():
 
 
 if __name__ == '__main__':
-    os.makedirs('/home/ubuntu/tiendamax/backend', exist_ok=True)
+    os.makedirs(DATA_DIR, exist_ok=True)
     iniciar_scheduler()
     logger.info("🚀 Backend TiendaMax iniciado en puerto 5002")
     app.run(host='0.0.0.0', port=5002, debug=False)
