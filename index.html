@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="description" content="TiendaMax - Productos exclusivos a precios increibles">
+    <meta name="keywords" content="tienda, ventas, productos, compras online, Cuba">
+    <meta name="author" content="TiendaMax">
+    <meta name="robots" content="index, follow">
+    <meta name="theme-color" content="#FF6B35">
+    <title>TiendaMax - Productos Exclusivos</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .backend-status { font-size: 12px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; margin-bottom: 16px; border: 1px solid #dee2e6; }
+        .horarios-info { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 12px; padding: 20px; margin: 16px 0; }
+        .horarios-info h4 { margin: 0 0 12px; font-size: 16px; }
+        .horario-item { display: flex; align-items: center; gap: 10px; margin: 8px 0; font-size: 15px; font-weight: 600; }
+        .btn-publicar-grande { background: linear-gradient(135deg, #FF6B35 0%, #f7931e 100%); color: white; border: none; padding: 14px 28px; border-radius: 10px; font-size: 16px; font-weight: 700; cursor: pointer; width: 100%; margin: 12px 0; transition: transform 0.2s, box-shadow 0.2s; }
+        .btn-publicar-grande:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(255,107,53,0.4); }
+        .btn-publicar-grande:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
+        .resultado-publicacion { margin-top: 12px; }
+        .tab-historial { margin-top: 16px; }
+        @keyframes slideIn { from { opacity:0; transform:translateX(100px); } to { opacity:1; transform:translateX(0); } }
+    </style>
+</head>
+<body>
+    <a href="https://wa.me/5354320170?text=Hola,%20me%20interesa%20conocer%20mas%20sobre%20tus%20productos" class="whatsapp-btn" title="Contactar por WhatsApp" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.67-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.076 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421-7.403h-.004a9.87 9.87 0 00-4.255.949c-1.238.503-2.37 1.236-3.356 2.241C3.060 10.378 2.275 11.950 2.275 13.657c0 1.814.505 3.583 1.487 5.127l.956 1.665-1.707 5.612 5.849-1.566 1.626.961c1.361.805 2.846 1.23 4.377 1.23 5.516 0 10-4.484 10-10s-4.484-10-10-10z"/></svg>
+    </a>
+    <div class="control-buttons">
+        <button class="theme-toggle" onclick="toggleDarkMode()" title="Cambiar tema">🌙</button>
+        <button class="admin-toggle" onclick="abrirLoginAdmin()" title="Panel de Administracion">⚙️</button>
+    </div>
+    <div id="loginModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header"><h2>Panel de Administracion</h2><button class="close-btn" onclick="cerrarLoginModal()">✕</button></div>
+            <form id="loginForm" onsubmit="verificarPassword(event)">
+                <div class="form-group"><label for="adminPassword">Contrasena:</label><input type="password" id="adminPassword" required placeholder="Ingresa tu contrasena"></div>
+                <button type="submit" class="btn btn-primary">Acceder</button>
+            </form>
+        </div>
+    </div>
+    <div id="adminPanel" class="admin-panel hidden">
+        <div class="admin-panel-content">
+            <div class="admin-header"><h2>⚙️ Panel de Administracion</h2><button class="close-btn" onclick="cerrarAdminPanel()">✕</button></div>
+            <div class="admin-tabs">
+                <button class="tab-btn active" onclick="switchTab('add-product')">➕ Agregar</button>
+                <button class="tab-btn" onclick="switchTab('publicar-ahora')">🚀 Publicar</button>
+                <button class="tab-btn" onclick="switchTab('manage-products')">📦 Productos</button>
+                <button class="tab-btn" onclick="switchTab('manage-categories')">🏷️ Categorias</button>
+            </div>
+            <div id="add-product" class="admin-tab active">
+                <form id="productForm" onsubmit="agregarProductoForm(event)">
+                    <div class="form-group"><label>Nombre del Producto:</label><input type="text" id="productName" required placeholder="Ej: Zapatos de cuero talla 42"></div>
+                    <div class="form-group"><label>Descripcion:</label><textarea id="productDescription" required placeholder="Describe los detalles" rows="4"></textarea></div>
+                    <div class="form-group"><label>Categoria:</label><select id="productCategory" required><option value="General">General</option></select></div>
+                    <div class="form-group"><label>Foto del Producto:</label><input type="file" id="productImage" accept="image/*" required><small>JPG, PNG o GIF (max. 5MB)</small></div>
+                    <div class="form-row">
+                        <div class="form-group"><label>Precio Original (USD):</label><input type="number" id="productPriceOriginal" required placeholder="100" step="0.01" min="0"></div>
+                        <div class="form-group"><label>Precio Actual (USD):</label><input type="number" id="productPriceActual" required placeholder="70" step="0.01" min="0"></div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group"><label>Descuento (%):</label><input type="number" id="productDiscount" required placeholder="30" min="0" max="100"></div>
+                        <div class="form-group"><label>Stock Disponible:</label><input type="number" id="productStock" required placeholder="5" min="1"></div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">✅ Agregar Producto</button>
+                </form>
+            </div>
+            <div id="publicar-ahora" class="admin-tab">
+                <div id="backendStatus" class="backend-status">🔄 Verificando estado del backend...</div>
+                <div class="horarios-info">
+                    <h4>📅 Publicacion Automatica Programada</h4>
+                    <div class="horario-item">⏰ <strong>8:00 AM</strong> — Publicacion matutina (hora Cuba)</div>
+                    <div class="horario-item">⏰ <strong>5:00 PM</strong> — Publicacion vespertina (hora Cuba)</div>
+                    <p style="margin:10px 0 0;font-size:12px;opacity:0.9">El servidor publica automaticamente todos los productos en Revolico a estos horarios.</p>
+                </div>
+                <button id="btnPublicarAhora" class="btn-publicar-grande" onclick="publicarAhora()">🚀 Publicar Ahora en Revolico</button>
+                <div id="resultadoPublicacion" class="resultado-publicacion"></div>
+                <div class="tab-historial">
+                    <h4 style="margin-bottom:12px">📋 Ultimas Publicaciones</h4>
+                    <div id="historialPublicaciones"><p style="color:#666;font-size:13px">Cargando historial...</p></div>
+                </div>
+            </div>
+            <div id="manage-products" class="admin-tab">
+                <div id="productsList" class="products-list"><p class="no-products">No hay productos aun</p></div>
+            </div>
+            <div id="manage-categories" class="admin-tab">
+                <div class="categories-section">
+                    <h3>Gestionar Categorias</h3>
+                    <button class="btn btn-primary" onclick="agregarCategoria()" style="margin-bottom:20px">➕ Agregar Categoria</button>
+                    <div id="categoriesList" class="categories-list"><p class="no-products">No hay categorias</p></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <header class="header">
+        <div class="container header-content">
+            <div class="logo"><h1>🛍️ TiendaMax</h1></div>
+            <nav class="nav">
+                <a href="#productos">Productos</a>
+                <a href="#beneficios">Beneficios</a>
+                <a href="#testimonios">Testimonios</a>
+                <a href="#contacto">Contacto</a>
+            </nav>
+        </div>
+    </header>
+    <section class="hero">
+        <div class="hero-content">
+            <p class="subtitle">⏰ Oferta limitada — Solo por tiempo limitado</p>
+            <p class="description">Calidad premium, precios accesibles. Miles de clientes satisfechos confian en nosotros.</p>
+            <div class="cta-buttons">
+                <button class="btn btn-primary" onclick="scrollToProductos()">🛒 Comprar Ahora</button>
+                <button class="btn btn-secondary" onclick="contactarWhatsApp()">💬 Consultar por WhatsApp</button>
+            </div>
+        </div>
+        <div class="hero-image"><div class="image-placeholder"><span>✨ Tus Productos Aqui ✨</span></div></div>
+    </section>
+    <section id="productos" class="productos">
+        <div class="container">
+            <h2>🎁 Productos Destacados</h2>
+            <p class="section-subtitle">Descubre nuestras mejores ofertas</p>
+            <div class="categoria-filtro" id="categoriaFiltro"><button class="categoria-btn active" onclick="filtrarPorCategoria('Todas')">Todas</button></div>
+            <div class="productos-grid" id="productosGrid"></div>
+            <div id="productoVacio" class="producto-vacio"><p>No hay productos disponibles aun.</p></div>
+        </div>
+    </section>
+    <section id="beneficios" class="beneficios">
+        <div class="container">
+            <h2>¿Por Que Elegir Nuestros Productos?</h2>
+            <div class="beneficios-grid">
+                <div class="beneficio-card"><div class="icon">🏆</div><h3>Calidad Garantizada</h3><p>Productos seleccionados cuidadosamente para tu satisfaccion</p></div>
+                <div class="beneficio-card"><div class="icon">💰</div><h3>Mejores Precios</h3><p>Competencia directa con ofertas exclusivas para ti</p></div>
+                <div class="beneficio-card"><div class="icon">🚚</div><h3>Envio Rapido</h3><p>Recibe tu compra en el menor tiempo posible</p></div>
+                <div class="beneficio-card"><div class="icon">🛡️</div><h3>Compra Segura</h3><p>Proteccion total en todas tus transacciones</p></div>
+                <div class="beneficio-card"><div class="icon">📞</div><h3>Soporte 24/7</h3><p>Estamos aqui para ayudarte en cualquier momento</p></div>
+                <div class="beneficio-card"><div class="icon">⭐</div><h3>Clientes Felices</h3><p>Miles de resenas positivas de clientes satisfechos</p></div>
+            </div>
+        </div>
+    </section>
+    <section id="testimonios" class="testimonios">
+        <div class="container">
+            <h2>Lo Que Dicen Nuestros Clientes</h2>
+            <div class="testimonios-grid">
+                <div class="testimonio-card"><div class="stars">⭐⭐⭐⭐⭐</div><p>"Los mejores precios que encontre. Volvere a comprar seguro."</p><p class="autor">— Juan Lopez</p></div>
+            </div>
+        </div>
+    </section>
+    <section class="cta-final" id="contacto">
+        <div class="container">
+            <p>Las mejores ofertas estan disponibles ahora. Contactanos hoy mismo.</p>
+            <button class="btn btn-large" onclick="contactarWhatsApp()">💬 Contactar por WhatsApp Ahora</button>
+        </div>
+    </section>
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 TiendaMax. Todos los derechos reservados.</p>
+            <p>Contacto: <a href="https://wa.me/5354320170" target="_blank" rel="noopener">WhatsApp: +53 54320170</a></p>
+        </div>
+    </footer>
+    <div id="editModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header"><h2>Editar Producto</h2><button class="close-btn" onclick="cerrarEditModal()">✕</button></div>
+            <form id="editForm" onsubmit="guardarProductoEditado(event)">
+                <input type="hidden" id="editProductId">
+                <div class="form-group"><label>Nombre:</label><input type="text" id="editProductName" required></div>
+                <div class="form-group"><label>Descripcion:</label><textarea id="editProductDescription" required rows="4"></textarea></div>
+                <div class="form-group"><label>Categoria:</label><select id="editProductCategory" required><option value="General">General</option></select></div>
+                <div class="form-group"><label>Foto (opcional):</label><input type="file" id="editProductImage" accept="image/*"><small>Deja en blanco para mantener la imagen actual</small><div id="currentImagePreview" style="margin-top:10px"></div></div>
+                <div class="form-row">
+                    <div class="form-group"><label>Precio Original (USD):</label><input type="number" id="editProductPriceOriginal" required step="0.01"></div>
+                    <div class="form-group"><label>Precio Actual (USD):</label><input type="number" id="editProductPriceActual" required step="0.01"></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>Descuento (%):</label><input type="number" id="editProductDiscount" required min="0" max="100"></div>
+                    <div class="form-group"><label>Stock:</label><input type="number" id="editProductStock" required min="1"></div>
+                </div>
+                <button type="submit" class="btn btn-primary">💾 Guardar Cambios</button>
+            </form>
+        </div>
+    </div>
+    <script src="js/script.js"></script>
+    <script src="js/revolico_integration.js"></script>
+</body>
+</html>
