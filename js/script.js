@@ -4,7 +4,7 @@
 // El backend corre en el puerto 5002. Intentamos conectar localmente primero.
 // Forzamos la conexión a la IP local para evitar bloqueos de DNS/localhost en Windows
 const BACKEND_URL = 'http://127.0.0.1:5002/api';
-const PASSWORD_ADMIN = 'admin123';
+const PASSWORD_ADMIN = 'Cripx';
 
 let productos = JSON.parse(localStorage.getItem('productos')) || [];
 let categorias = JSON.parse(localStorage.getItem('categorias')) || ['General'];
