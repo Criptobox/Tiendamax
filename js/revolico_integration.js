@@ -4,7 +4,7 @@
  * Incluye soporte para importar cookies desde Cookie-Editor
  */
 
-const BACKEND_URL_REVOLICO = 'https://5002-i6bdiswc6y2g1sau59ksd-1967fdb6.us2.manus.computer/api';
+const BACKEND_URL_REVOLICO = 'https://5002-ide62062a0mv3bdyhwyp2-c5bbfe5e.us2.manus.computer/api';
 
 // ===== IMPORTAR COOKIES DESDE COOKIE-EDITOR =====
 

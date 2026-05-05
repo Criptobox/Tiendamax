@@ -1,7 +1,7 @@
 'use strict';
 
 // ===== CONFIGURACIÓN GLOBAL =====
-const BACKEND_URL = 'https://5002-i6bdiswc6y2g1sau59ksd-1967fdb6.us2.manus.computer/api';
+const BACKEND_URL = 'https://5002-ide62062a0mv3bdyhwyp2-c5bbfe5e.us2.manus.computer/api';
 const PASSWORD_ADMIN = 'admin123';
 
 let productos = JSON.parse(localStorage.getItem('productos')) || [];

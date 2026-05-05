@@ -155,7 +155,7 @@ class SocialAgent:
         self._session_active = False
 
     def publicar_facebook(self, producto: dict) -> dict:
-        """Publica un producto en grupos de Facebook Marketplace"""
+        """Publica un producto en Facebook Marketplace usando cookies"""
         imagen_tmp = None
         try:
             if not self._iniciar_navegador():
@@ -166,15 +166,15 @@ class SocialAgent:
             descripcion = self._generar_descripcion(producto)
             precio = str(producto.get('precioActual', 0))
 
-            # Navegar a Facebook Marketplace
-            logger.info(f"Publicando en Facebook: {nombre}")
+            # Ir a Marketplace
+            logger.info(f"Accediendo a Facebook Marketplace...")
             self.page.goto('https://www.facebook.com/marketplace/create/item', timeout=60000)
-            time.sleep(5)
+            time.sleep(7)
 
-            # Verificar si pide login
-            if "login" in self.page.url or self.page.query_selector('input[name="email"]'):
-                logger.warning("Facebook requiere login. Por favor actualiza las cookies.")
-                return {'success': False, 'error': 'Facebook requiere login. Actualiza las cookies desde el panel admin.'}
+            # Verificación robusta de sesión
+            if "login" in self.page.url or self.page.query_selector('input[name="email"], input[placeholder*="Correo"], input[placeholder*="Email"]'):
+                logger.warning("❌ Sesión de Facebook expirada.")
+                return {'success': False, 'error': 'La sesión de Facebook expiró. Por favor, exporta nuevas cookies desde Facebook y súbelas al panel admin.'}
 
             # Llenar el formulario de Marketplace
             # Nota: Los selectores de Facebook cambian mucho, usamos roles y texto

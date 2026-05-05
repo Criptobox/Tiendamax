@@ -1,0 +1,21 @@
+2026-05-04 20:00:19,630 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-05-04 20:00:19,631 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-05-04 20:00:19,632 - apscheduler.scheduler - INFO - Added job "Publicación de la mañana (8:00 AM)" to job store "default"
+2026-05-04 20:00:19,632 - apscheduler.scheduler - INFO - Added job "Publicación de la tarde (5:00 PM)" to job store "default"
+2026-05-04 20:00:19,632 - apscheduler.scheduler - INFO - Scheduler started
+2026-05-04 20:00:19,633 - __main__ - INFO - ✅ Scheduler iniciado - Publicaciones programadas a las 8:00 AM y 5:00 PM (hora Cuba)
+2026-05-04 20:00:19,633 - __main__ - INFO - 🚀 Backend TiendaMax iniciado en puerto 5002
+2026-05-04 20:00:19,637 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5002
+ * Running on http://169.254.0.21:5002
+2026-05-04 20:00:19,637 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-05-04 20:00:51,193 - werkzeug - INFO - 127.0.0.1 - - [04/May/2026 20:00:51] "GET /api/status HTTP/1.1" 200 -
+2026-05-04 20:01:23,525 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-05-04 20:01:23,525 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-05-04 20:01:23,525 - apscheduler.scheduler - INFO - Added job "Publicación de la mañana (8:00 AM)" to job store "default"
+2026-05-04 20:01:23,526 - apscheduler.scheduler - INFO - Added job "Publicación de la tarde (5:00 PM)" to job store "default"
+2026-05-04 20:01:23,526 - apscheduler.scheduler - INFO - Scheduler started
+2026-05-04 20:01:23,526 - __main__ - INFO - ✅ Scheduler iniciado - Publicaciones programadas a las 8:00 AM y 5:00 PM (hora Cuba)
+2026-05-04 20:01:23,526 - __main__ - INFO - 🚀 Backend TiendaMax iniciado en puerto 5002
+2026-05-04 20:01:29,952 - werkzeug - INFO - 127.0.0.1 - - [04/May/2026 20:01:29] "GET /api/status HTTP/1.1" 200 -
