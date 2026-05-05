@@ -177,50 +177,111 @@ class SocialAgent:
                 return {'success': False, 'error': 'La sesión de Facebook expiró. Por favor, exporta nuevas cookies desde Facebook y súbelas al panel admin.'}
 
             # Llenar el formulario de Marketplace
-            # Nota: Los selectores de Facebook cambian mucho, usamos roles y texto
+            # Facebook usa una estructura muy dinámica. Buscamos por múltiples criterios.
             try:
-                # Subir imagen
+                # 1. Subir imagen (es lo primero que suele pedir)
+                logger.info("Subiendo imagen...")
                 if imagen_tmp:
+                    # Buscamos cualquier input de archivo
                     file_input = self.page.query_selector('input[type="file"]')
                     if file_input:
                         file_input.set_input_files(imagen_tmp)
-                        time.sleep(3)
+                        time.sleep(4)
 
-                # Título
-                self.page.fill('label:has-text("Título") input, label:has-text("Title") input', nombre)
+                # 2. Título (Buscamos por etiquetas comunes en ES y EN)
+                logger.info("Llenando título...")
+                titulo_selectors = [
+                    'label:has-text("Título") input', 'label:has-text("Title") input',
+                    'input[aria-label="Título"]', 'input[aria-label="Title"]',
+                    'input[placeholder*="Título"]', 'input[placeholder*="Title"]'
+                ]
+                titulo_llenado = False
+                for sel in titulo_selectors:
+                    try:
+                        if self.page.query_selector(sel):
+                            self.page.fill(sel, nombre)
+                            titulo_llenado = True
+                            break
+                    except: continue
                 
-                # Precio
-                self.page.fill('label:has-text("Precio") input, label:has-text("Price") input', precio)
+                if not titulo_llenado:
+                    # Intento desesperado: el primer input de texto después de las fotos
+                    self.page.keyboard.press("Tab")
+                    self.page.keyboard.type(nombre)
 
-                # Categoría (abrir y seleccionar la primera o buscar una)
-                self.page.click('label:has-text("Categoría"), label:has-text("Category")')
-                time.sleep(2)
-                self.page.click('div[role="dialog"] div[role="listitem"]:first-child')
-                time.sleep(1)
+                # 3. Precio
+                logger.info("Llenando precio...")
+                precio_selectors = [
+                    'label:has-text("Precio") input', 'label:has-text("Price") input',
+                    'input[aria-label="Precio"]', 'input[aria-label="Price"]'
+                ]
+                for sel in precio_selectors:
+                    try:
+                        if self.page.query_selector(sel):
+                            self.page.fill(sel, precio)
+                            break
+                    except: continue
 
-                # Estado (Nuevo)
-                self.page.click('label:has-text("Estado"), label:has-text("Condition")')
-                time.sleep(1)
-                self.page.click('span:has-text("Nuevo"), span:has-text("New")')
+                # 4. Categoría (Suele ser un dropdown)
+                logger.info("Seleccionando categoría...")
+                cat_selectors = ['label:has-text("Categoría")', 'label:has-text("Category")', 'div[aria-label*="Categoría"]']
+                for sel in cat_selectors:
+                    try:
+                        if self.page.query_selector(sel):
+                            self.page.click(sel)
+                            time.sleep(2)
+                            # Seleccionar la primera opción disponible
+                            self.page.click('div[role="listbox"] div[role="option"]:first-child, div[role="dialog"] div[role="listitem"]:first-child')
+                            break
+                    except: continue
 
-                # Descripción
-                self.page.fill('label:has-text("Descripción") textarea, label:has-text("Description") textarea', descripcion)
+                # 5. Estado (Nuevo)
+                logger.info("Seleccionando estado...")
+                estado_selectors = ['label:has-text("Estado")', 'label:has-text("Condition")']
+                for sel in estado_selectors:
+                    try:
+                        if self.page.query_selector(sel):
+                            self.page.click(sel)
+                            time.sleep(1.5)
+                            # Buscar "Nuevo" o "New"
+                            self.page.click('span:has-text("Nuevo"), span:has-text("New")')
+                            break
+                    except: continue
 
-                # Siguiente
-                self.page.click('aria-label="Siguiente", aria-label="Next"')
-                time.sleep(2)
+                # 6. Descripción
+                logger.info("Llenando descripción...")
+                desc_selectors = [
+                    'label:has-text("Descripción") textarea', 'label:has-text("Description") textarea',
+                    'textarea[aria-label="Descripción"]', 'textarea[aria-label="Description"]'
+                ]
+                for sel in desc_selectors:
+                    try:
+                        if self.page.query_selector(sel):
+                            self.page.fill(sel, descripcion)
+                            break
+                    except: continue
 
-                # Publicar
-                self.page.click('aria-label="Publicar", aria-label="Publish"')
-                time.sleep(5)
-
-                return {'success': True, 'mensaje': f'"{nombre}" publicado en Facebook Marketplace'}
+                # 7. Siguiente y Publicar
+                logger.info("Finalizando publicación...")
+                # Botón Siguiente
+                btn_sig = self.page.query_selector('div[aria-label="Siguiente"], div[aria-label="Next"], span:has-text("Siguiente"), span:has-text("Next")')
+                if btn_sig:
+                    btn_sig.click()
+                    time.sleep(3)
+                
+                # Botón Publicar
+                btn_pub = self.page.query_selector('div[aria-label="Publicar"], div[aria-label="Publish"], span:has-text("Publicar"), span:has-text("Publish")')
+                if btn_pub:
+                    btn_pub.click()
+                    time.sleep(6)
+                    return {'success': True, 'mensaje': f'"{nombre}" enviado a Facebook Marketplace'}
+                else:
+                    return {'success': False, 'error': 'No se encontró el botón final de Publicar'}
 
             except Exception as e:
-                logger.error(f"Error llenando formulario de Facebook: {e}")
-                # Tomar captura de pantalla para debug si falla
-                self.page.screenshot(path="error_facebook.png")
-                return {'success': False, 'error': f'Error en formulario Facebook: {str(e)}'}
+                logger.error(f"Error detallado en Facebook: {e}")
+                self.page.screenshot(path="error_fb_detallado.png")
+                return {'success': False, 'error': f'Fallo en el formulario: {str(e)}'}
 
         except Exception as e:
             return {'success': False, 'error': str(e)}

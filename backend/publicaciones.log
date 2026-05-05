@@ -19,3 +19,76 @@
 2026-05-04 20:01:23,526 - __main__ - INFO - ✅ Scheduler iniciado - Publicaciones programadas a las 8:00 AM y 5:00 PM (hora Cuba)
 2026-05-04 20:01:23,526 - __main__ - INFO - 🚀 Backend TiendaMax iniciado en puerto 5002
 2026-05-04 20:01:29,952 - werkzeug - INFO - 127.0.0.1 - - [04/May/2026 20:01:29] "GET /api/status HTTP/1.1" 200 -
+2026-05-04 20:31:56,214 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:31:56] "OPTIONS /api/importar-cookies HTTP/1.1" 200 -
+2026-05-04 20:32:08,519 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:32:08] "OPTIONS /api/importar-cookies HTTP/1.1" 200 -
+2026-05-04 20:32:08,865 - revolico_agent - INFO - ✅ 8 cookies guardadas
+2026-05-04 20:32:08,865 - __main__ - INFO - ✅ 8 cookies importadas desde Cookie-Editor
+2026-05-04 20:32:08,866 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:32:08] "POST /api/importar-cookies HTTP/1.1" 200 -
+2026-05-04 20:32:30,291 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:32:30] "GET /api/status HTTP/1.1" 200 -
+2026-05-04 20:32:37,761 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:32:37] "OPTIONS /api/publicar-revolico HTTP/1.1" 200 -
+2026-05-04 20:32:40,786 - __main__ - INFO - Publicando en Revolico: Cargador inteligente 20A
+2026-05-04 20:32:45,863 - revolico_agent - INFO - ✅ 8 cookies cargadas (formato Playwright)
+2026-05-04 20:32:45,889 - revolico_agent - INFO - ✅ 8 cookies cargadas en el navegador
+2026-05-04 20:32:45,931 - revolico_agent - INFO - ✅ Navegador iniciado correctamente
+2026-05-04 20:32:46,210 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:32:46] "GET /api/status HTTP/1.1" 200 -
+2026-05-04 20:32:59,749 - revolico_agent - INFO - ✅ Sesión activa en Revolico (verificado por: a:has-text("Favoritos"))
+2026-05-04 20:32:59,750 - revolico_agent - INFO - Publicando: Cargador inteligente 20A
+2026-05-04 20:33:15,228 - revolico_agent - ERROR - No se encontró el campo título: Page.wait_for_selector: Timeout 10000ms exceeded.
+Call log:
+  - waiting for locator("#title") to be visible
+
+2026-05-04 20:33:15,233 - revolico_agent - INFO - ✅ 22 cookies guardadas
+2026-05-04 20:33:15,273 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:33:15] "POST /api/publicar-revolico HTTP/1.1" 200 -
+2026-05-04 20:33:16,204 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:33:16] "GET /api/status HTTP/1.1" 200 -
+2026-05-04 20:33:22,550 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:33:22] "OPTIONS /api/publicar-revolico HTTP/1.1" 200 -
+2026-05-04 20:33:23,115 - __main__ - INFO - Publicando en Revolico: INVERSOR
+2026-05-04 20:33:23,647 - revolico_agent - INFO - ✅ 22 cookies cargadas (formato Playwright)
+2026-05-04 20:33:23,652 - revolico_agent - INFO - ✅ 22 cookies cargadas en el navegador
+2026-05-04 20:33:23,702 - revolico_agent - INFO - ✅ Navegador iniciado correctamente
+2026-05-04 20:33:32,057 - revolico_agent - WARNING - ⚠️ No se detectó sesión activa
+2026-05-04 20:33:32,057 - revolico_agent - INFO - Sesión no activa, intentando login...
+2026-05-04 20:33:32,057 - revolico_agent - INFO - Iniciando login en Revolico...
+2026-05-04 20:33:46,191 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:33:46] "GET /api/status HTTP/1.1" 200 -
+2026-05-04 20:33:50,158 - revolico_agent - ERROR - Error durante login: Page.wait_for_selector: Timeout 15000ms exceeded.
+Call log:
+  - waiting for locator("input[type=\"email\"]") to be visible
+
+2026-05-04 20:33:50,162 - revolico_agent - INFO - ✅ 22 cookies guardadas
+2026-05-04 20:33:50,205 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:33:50] "POST /api/publicar-revolico HTTP/1.1" 200 -
+2026-05-04 20:34:05,140 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:34:05] "GET /api/historial HTTP/1.1" 200 -
+2026-05-04 20:34:16,422 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:34:16] "GET /api/status HTTP/1.1" 200 -
+2026-05-04 20:34:26,846 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:34:26] "OPTIONS /api/importar-cookies HTTP/1.1" 200 -
+2026-05-04 20:34:27,052 - revolico_agent - INFO - ✅ 13 cookies guardadas
+2026-05-04 20:34:27,053 - __main__ - INFO - ✅ 13 cookies importadas desde Cookie-Editor
+2026-05-04 20:34:27,053 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:34:27] "POST /api/importar-cookies HTTP/1.1" 200 -
+2026-05-04 20:34:33,906 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:34:33] "OPTIONS /api/publicar-revolico HTTP/1.1" 200 -
+2026-05-04 20:34:34,909 - __main__ - INFO - Publicando en Revolico: Cargador inteligente 20A
+2026-05-04 20:34:35,434 - revolico_agent - INFO - ✅ 13 cookies cargadas (formato Playwright)
+2026-05-04 20:34:35,442 - revolico_agent - INFO - ✅ 13 cookies cargadas en el navegador
+2026-05-04 20:34:35,494 - revolico_agent - INFO - ✅ Navegador iniciado correctamente
+2026-05-04 20:34:46,217 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:34:46] "GET /api/status HTTP/1.1" 200 -
+2026-05-04 20:34:50,711 - revolico_agent - INFO - ✅ Sesión activa en Revolico (verificado por: a:has-text("Cuenta"))
+2026-05-04 20:34:50,712 - revolico_agent - INFO - Publicando: Cargador inteligente 20A
+2026-05-04 20:35:06,958 - revolico_agent - ERROR - No se encontró el campo título: Page.wait_for_selector: Timeout 10000ms exceeded.
+Call log:
+  - waiting for locator("#title") to be visible
+
+2026-05-04 20:35:06,962 - revolico_agent - INFO - ✅ 20 cookies guardadas
+2026-05-04 20:35:07,004 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:35:07] "POST /api/publicar-revolico HTTP/1.1" 200 -
+2026-05-04 20:35:15,913 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:35:15] "OPTIONS /api/publicar-revolico HTTP/1.1" 200 -
+2026-05-04 20:35:16,178 - __main__ - INFO - Publicando en Revolico: INVERSOR
+2026-05-04 20:35:16,182 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:35:16] "GET /api/status HTTP/1.1" 200 -
+2026-05-04 20:35:16,740 - revolico_agent - INFO - ✅ 20 cookies cargadas (formato Playwright)
+2026-05-04 20:35:16,748 - revolico_agent - INFO - ✅ 20 cookies cargadas en el navegador
+2026-05-04 20:35:16,801 - revolico_agent - INFO - ✅ Navegador iniciado correctamente
+2026-05-04 20:35:26,529 - revolico_agent - INFO - ✅ Sesión activa (token encontrado en cookies)
+2026-05-04 20:35:26,530 - revolico_agent - INFO - Publicando: INVERSOR
+2026-05-04 20:35:39,677 - revolico_agent - ERROR - No se encontró el campo título: Page.wait_for_selector: Timeout 10000ms exceeded.
+Call log:
+  - waiting for locator("#title") to be visible
+
+2026-05-04 20:35:39,681 - revolico_agent - INFO - ✅ 20 cookies guardadas
+2026-05-04 20:35:39,723 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:35:39] "POST /api/publicar-revolico HTTP/1.1" 200 -
+2026-05-04 20:35:46,239 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:35:46] "GET /api/status HTTP/1.1" 200 -
+2026-05-04 20:36:16,186 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:36:16] "GET /api/status HTTP/1.1" 200 -
+2026-05-04 20:36:46,187 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:36:46] "GET /api/status HTTP/1.1" 200 -
