@@ -1,7 +1,10 @@
 'use strict';
 
 // ===== CONFIGURACIÓN GLOBAL =====
-const BACKEND_URL = 'https://5002-ide62062a0mv3bdyhwyp2-c5bbfe5e.us2.manus.computer/api';
+// El backend corre en el puerto 5002. Intentamos conectar localmente primero.
+const BACKEND_URL = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') 
+    ? 'http://localhost:5002/api' 
+    : 'https://5002-ide62062a0mv3bdyhwyp2-c5bbfe5e.us2.manus.computer/api';
 const PASSWORD_ADMIN = 'admin123';
 
 let productos = JSON.parse(localStorage.getItem('productos')) || [];
@@ -56,11 +59,13 @@ async function cargarDatosDesdeGitHub() {
         actualizarSelectCategorias();
         actualizarBotonesCategorias();
         actualizarListaCategorias();
+        verificarOfertasYMostrarBanner();
         console.log('✅ Datos sincronizados con GitHub');
     } catch (e) {
         console.log('ℹ️ Iniciando con datos locales');
         renderizarCategoriasHome();
         renderizarMasVendidos();
+        verificarOfertasYMostrarBanner();
     }
 }
 
@@ -326,6 +331,7 @@ function agregarProductoForm(event) {
         renderizarMasVendidos();
         renderizarProductos();
         actualizarListaProductos();
+        verificarOfertasYMostrarBanner();
     };
     reader.readAsDataURL(file);
 }
@@ -636,16 +642,17 @@ function eliminarCategoria(index) {
 // ===== GESTIÓN DE PRODUCTOS (EDITAR/ELIMINAR) =====
 
 function eliminarProducto(id) {
-    if (confirm('¿Estás seguro de eliminar este producto?')) {
-        productos = productos.filter(p => p.id !== id);
-        guardarProductos();
-        sincronizarConBackend();
-        renderizarCategoriasHome();
-        renderizarMasVendidos();
-        renderizarProductos();
-        actualizarListaProductos();
-        mostrarNotificacion('🗑️ Producto eliminado');
-    }
+    if (!confirm('¿Estás seguro de eliminar este producto?')) return;
+    productos = productos.filter(p => p.id !== id);
+    guardarProductos();
+    sincronizarConBackend();
+    renderizarCategoriasHome();
+    renderizarMasVendidos();
+    renderizarProductos();
+    actualizarListaProductos();
+    verificarOfertasYMostrarBanner();
+    mostrarNotificacion('🗑️ Producto eliminado', 'info');
+}
 }
 
 function abrirEditModal(id) {
@@ -828,26 +835,24 @@ async function subirArchivoAGitHub(user, repo, token, path, data) {
 
 // ===== LÓGICA DE PERSUASIÓN Y VENTAS =====
 
-function iniciarContadorUrgencia() {
-    let tiempo = 3600 * 3 + 45 * 60 + 12; // 3h 45m 12s
-    const el = document.getElementById('countdown');
-    if (!el) return;
-    
-    setInterval(() => {
-        tiempo--;
-        if (tiempo <= 0) tiempo = 3600 * 4;
-        const h = Math.floor(tiempo / 3600);
-        const m = Math.floor((tiempo % 3600) / 60);
-        const s = tiempo % 60;
-        el.textContent = `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
-    }, 1000);
+function verificarOfertasYMostrarBanner() {
+    const banner = document.getElementById('urgenciaBanner');
+    if (!banner) return;
+
+    // Verificar si hay algún producto con descuento real (precioActual < precioOriginal)
+    const hayOfertas = productos.some(p => p.precioOriginal > p.precioActual);
+
+    if (hayOfertas) {
+        banner.style.display = 'block';
+    } else {
+        banner.style.display = 'none';
+    }
 }
 
 // ===== INICIALIZACIÓN =====
 
 document.addEventListener('DOMContentLoaded', () => {
     cargarDatosDesdeGitHub();
-    iniciarContadorUrgencia();
 
     const productForm = document.getElementById('productForm');
     if (productForm) productForm.addEventListener('submit', agregarProductoForm);

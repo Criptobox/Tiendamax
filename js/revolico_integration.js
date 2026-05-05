@@ -4,7 +4,9 @@
  * Incluye soporte para importar cookies desde Cookie-Editor
  */
 
-const BACKEND_URL_REVOLICO = 'https://5002-ide62062a0mv3bdyhwyp2-c5bbfe5e.us2.manus.computer/api';
+const BACKEND_URL_REVOLICO = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') 
+    ? 'http://localhost:5002/api' 
+    : 'https://5002-ide62062a0mv3bdyhwyp2-c5bbfe5e.us2.manus.computer/api';
 
 // ===== IMPORTAR COOKIES DESDE COOKIE-EDITOR =====
 
@@ -104,14 +106,25 @@ async function importarCookiesDesdeTexto() {
         } else {
             if (resultDiv) resultDiv.innerHTML = `<span style="color: #E74C3C;">❌ Error: ${data.error}</span>`;
         }
-    } catch (e) {
+        } catch (e) {
         // Si el backend no está disponible, guardar localmente
         try {
             localStorage.setItem('revolico_cookies_pendientes', JSON.stringify(cookies));
-            if (resultDiv) resultDiv.innerHTML = `<span style="color: #f7931e;">⚠️ Backend no disponible. Cookies guardadas localmente (${cookies.length} cookies). Se enviarán cuando el backend esté activo.</span>`;
-            mostrarNotificacion(`⚠️ Cookies guardadas localmente (${cookies.length})`, 'info');
+            if (resultDiv) {
+                resultDiv.innerHTML = `
+                    <div style="background:#fff3cd; color:#856404; padding:12px; border-radius:8px; border:1px solid #ffeeba; margin-top:10px; font-size:13px; text-align:left;">
+                        <strong>⚠️ Backend no detectado</strong><br>
+                        El programa del bot no está respondiendo en el puerto 5002.<br><br>
+                        <strong>Cómo arreglarlo:</strong><br>
+                        1. Abre tu terminal y escribe: <code>bash iniciar.sh</code><br>
+                        2. Si estás en VS Code, asegúrate de que el puerto 5002 esté abierto.<br>
+                        3. Tus cookies se guardaron en el navegador por ahora.
+                    </div>
+                `;
+            }
+            mostrarNotificacion(`⚠️ Backend no detectado. Cookies guardadas en navegador.`, 'info');
         } catch (err) {
-            if (resultDiv) resultDiv.innerHTML = '<span style="color: #E74C3C;">❌ Error de conexión con el backend.</span>';
+            if (resultDiv) resultDiv.innerHTML = '<span style="color: #E74C3C;">❌ Error de conexión total.</span>';
         }
     }
 }
