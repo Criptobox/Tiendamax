@@ -66,9 +66,7 @@ El sistema publica automáticamente a:
 - **8:00 AM** (hora Cuba)
 - **5:00 PM** (hora Cuba)
 
-**Credenciales de Revolico:**
-- Email: `julio1992rivero@gmail.com`
-- Contraseña: `Qwe18*92`
+**Importante:** Asegúrate de importar tus cookies de Revolico desde el panel de administración para que la publicación automática funcione correctamente.
 
 ---
 

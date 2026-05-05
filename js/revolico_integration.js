@@ -193,3 +193,80 @@ document.addEventListener('DOMContentLoaded', () => {
     // Intentar enviar cookies pendientes al cargar
     setTimeout(enviarCookiesPendientes, 5000);
 });
+
+// ===== ASISTENTE DE PUBLICACIÓN EN FACEBOOK =====
+
+async function publicarEnFacebook(productoId) {
+    const producto = productos.find(p => p.id === productoId);
+    if (!producto) {
+        mostrarNotificacion('❌ Producto no encontrado', 'error');
+        return;
+    }
+
+    // Crear el texto del anuncio
+    const textoAnuncio = `Vendo: ${producto.nombre}\n\nPrecio: ${producto.precioActual} USD\n\nDescripción: ${producto.descripcion}\n\n📦 Stock disponible\n📍 Contacto: 5354320170`;
+
+    // Intentar copiar al portapapeles
+    try {
+        const tempInput = document.createElement("textarea");
+        tempInput.value = textoAnuncio;
+        document.body.appendChild(tempInput);
+        tempInput.select();
+        document.execCommand("copy");
+        document.body.removeChild(tempInput);
+        
+        mostrarNotificacion('📋 ¡Texto copiado! Ahora pégalo en Facebook', 'success');
+    } catch (err) {
+        console.error('Error al copiar:', err);
+    }
+
+    // Abrir Facebook Marketplace en una nueva pestaña
+    setTimeout(() => {
+        window.open('https://www.facebook.com/marketplace/create/item', '_blank');
+    }, 1000);
+}
+
+// ===== SELECTOR DE PRODUCTO PARA FACEBOOK =====
+
+function mostrarSelectorAsistenteFacebook() {
+    if (productos.length === 0) {
+        mostrarNotificacion('❌ No hay productos para publicar', 'error');
+        return;
+    }
+
+    let modal = document.getElementById('fbSelectorModal');
+    if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'fbSelectorModal';
+        modal.className = 'modal';
+        document.body.appendChild(modal);
+    }
+
+    let itemsHtml = productos.map(p => `
+        <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px; border-bottom: 1px solid #eee;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <img src="${p.imagen}" style="width: 40px; height: 40px; border-radius: 4px; object-fit: cover;">
+                <span style="font-weight: bold; font-size: 14px;">${p.nombre}</span>
+            </div>
+            <button onclick="publicarEnFacebook(${p.id}); cerrarFbSelector();" style="background: #3B5998; color: white; border: none; padding: 5px 12px; border-radius: 4px; cursor: pointer;">Copiar y Abrir</button>
+        </div>
+    `).join('');
+
+    modal.innerHTML = `
+        <div class="modal-content" style="max-width: 500px;">
+            <div class="modal-header">
+                <h2>📱 Selecciona producto para Facebook</h2>
+                <button class="close-btn" onclick="cerrarFbSelector()">✕</button>
+            </div>
+            <div style="padding: 20px; max-height: 400px; overflow-y: auto;">
+                <p style="font-size: 13px; color: #666; margin-bottom: 15px;">Elige un producto. Se copiará el texto y se abrirá Marketplace para que solo tengas que <strong>pegar (Ctrl+V)</strong>.</p>
+                ${itemsHtml}
+            </div>
+        </div>
+    `;
+    modal.classList.remove('hidden');
+}
+
+function cerrarFbSelector() {
+    document.getElementById('fbSelectorModal').classList.add('hidden');
+}

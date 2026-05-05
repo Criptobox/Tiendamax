@@ -214,7 +214,7 @@ function renderizarMasVendidos() {
             <div class="stock-bar">
                 <div class="stock-bar-fill" style="width: ${Math.max(15, (producto.stock / 20) * 100)}%"></div>
             </div>
-            <p style="font-size: 11px; color: #888; margin-top: 5px;">🔥 ${Math.floor(Math.random() * 15) + 5} personas están viendo este producto ahora</p>
+            
             <button class="btn btn-small btn-primary" onclick="contactarProducto('${producto.nombre}')">🛒 Comprar</button>
         `;
         grid.appendChild(card);
@@ -401,7 +401,7 @@ function renderizarProductos() {
             <div class="stock-bar">
                 <div class="stock-bar-fill" style="width: ${Math.max(15, (producto.stock / 20) * 100)}%"></div>
             </div>
-            <p style="font-size: 11px; color: #888; margin-top: 5px;">🔥 ${Math.floor(Math.random() * 15) + 5} personas están viendo este producto ahora</p>
+            
             <button class="btn btn-small btn-primary" onclick="contactarProducto('${producto.nombre}')">🛒 Comprar</button>
         `;
         productosGrid.appendChild(card);
@@ -835,8 +835,8 @@ function verificarOfertasYMostrarBanner() {
     const banner = document.getElementById('urgenciaBanner');
     if (!banner) return;
 
-    // Verificar si hay algún producto con descuento real (precioActual < precioOriginal)
-    const hayOfertas = productos.some(p => p.precioOriginal > p.precioActual);
+    // Solo mostrar si hay productos con descuento real (precioActual < precioOriginal)
+    const hayOfertas = productos.some(p => parseFloat(p.precioOriginal) > parseFloat(p.precioActual));
 
     if (hayOfertas) {
         banner.style.display = 'block';

@@ -1,8 +1,12 @@
 @echo off
-title Bot TiendaMax - Activo
-echo ==========================================
-echo   🚀 INICIANDO BOT DE TIENDAMAX (WINDOWS)
-echo ==========================================
+TITLE Servidor TiendaMax - Modo Ligero
+color 0B
+
+echo ======================================================
+echo    SERVIDOR TIENDAMAX (MODO LIGERO)
+echo ======================================================
+echo.
+echo Iniciando el motor del bot...
 echo.
 
 :: Intentar encontrar Python
@@ -10,19 +14,14 @@ set "PY_CMD=python"
 python --version >nul 2>&1
 if %errorlevel% neq 0 (
     set "PY_CMD=py"
-    py --version >nul 2>&1
-    if %errorlevel% neq 0 (
-        set "PY_CMD=%USERPROFILE%\AppData\Local\Microsoft\WindowsApps\python.exe"
-    )
 )
-
-echo ⚙️  Iniciando Backend en puerto 5002...
-echo ⚠️  NO CIERRES ESTA VENTANA mientras uses el bot.
-echo.
 
 cd backend
 %PY_CMD% app.py
 
-echo.
-echo ❌ El bot se ha detenido. Revisa los mensajes de arriba.
-pause
+if %errorlevel% neq 0 (
+    echo.
+    echo [!] ERROR: El servidor se detuvo.
+    echo Asegurate de haber corrido 'instalar_librerias.bat' primero.
+    pause
+)
