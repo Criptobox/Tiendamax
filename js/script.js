@@ -506,7 +506,7 @@ async function publicarEnFacebook(id) {
 async function publicarAhora() {
     const btn = document.getElementById('btnPublicarAhora');
     if (btn) { btn.disabled = true; btn.textContent = '⏳ Publicando...'; }
-    mostrarNotificacion('🚀 Iniciando publicación masiva...', 'info');
+    mostrarNotificacion('🚀 Iniciando publicación automática en Revolico...', 'info');
     try {
         const response = await fetch(`${BACKEND_URL}/publicar-ahora`, {
             method: 'POST',
@@ -523,7 +523,7 @@ async function publicarAhora() {
     } catch (e) {
         mostrarNotificacion('❌ Error de conexión con el backend', 'error');
     } finally {
-        if (btn) { btn.disabled = false; btn.textContent = '🚀 Publicar Ahora en Revolico'; }
+        if (btn) { btn.disabled = false; btn.textContent = '🚀 Publicar Ahora en Revolico (Automático)'; }
     }
 }
 
