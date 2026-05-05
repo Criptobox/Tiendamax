@@ -46,10 +46,10 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_DIR = os.path.join(BASE_DIR, 'data')
 
 # Archivo de productos (compartido con el frontend)
-PRODUCTS_FILE = os.path.join(DATA_DIR, 'products.json')
-LOG_FILE = os.path.join(BASE_DIR, 'publicaciones.log')
-REGISTRO_FILE = os.path.join(DATA_DIR, 'registro_publicaciones.json')
-COOKIES_FILE = os.path.join(BASE_DIR, 'revolico_cookies.json')
+PRODUCTS_FILE = os.path.normpath(os.path.join(DATA_DIR, 'products.json'))
+LOG_FILE = os.path.normpath(os.path.join(BASE_DIR, 'publicaciones.log'))
+REGISTRO_FILE = os.path.normpath(os.path.join(DATA_DIR, 'registro_publicaciones.json'))
+COOKIES_FILE = os.path.normpath(os.path.join(BASE_DIR, 'revolico_cookies.json'))
 
 # Inicializar agente
 social_agent = SocialAgent(REVOLICO_EMAIL, REVOLICO_PASSWORD)
