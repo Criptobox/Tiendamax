@@ -109,9 +109,7 @@ function toggleDarkMode() {
     if (btn) btn.textContent = isDark ? '☀️' : '🌙';
 }
 
-if (localStorage.getItem('darkMode') === 'true') {
-    document.body.classList.add('dark-mode');
-}
+
 
 // ===== NAVEGACIÓN ENTRE VISTAS =====
 
@@ -850,21 +848,51 @@ function verificarOfertasYMostrarBanner() {
 
 // ===== INICIALIZACIÓN =====
 
-document.addEventListener('DOMContentLoaded', () => {
+// Inicialización segura del DOM
+function inicializarTienda() {
+    console.log("🚀 Inicializando TiendaMax...");
+    
+    // Cargar datos
     cargarDatosDesdeGitHub();
 
+    // Event Listeners
     const productForm = document.getElementById('productForm');
-    if (productForm) productForm.addEventListener('submit', agregarProductoForm);
+    if (productForm) {
+        productForm.onsubmit = null; // Limpiar anteriores
+        productForm.addEventListener('submit', agregarProductoForm);
+    }
 
     const editForm = document.getElementById('editForm');
-    if (editForm) editForm.addEventListener('submit', guardarProductoEditado);
+    if (editForm) {
+        editForm.onsubmit = null;
+        editForm.addEventListener('submit', guardarProductoEditado);
+    }
 
     const loginForm = document.getElementById('loginForm');
-    if (loginForm) loginForm.addEventListener('submit', verificarPassword);
+    if (loginForm) {
+        loginForm.onsubmit = null;
+        loginForm.addEventListener('submit', verificarPassword);
+    }
 
+    // Verificar backend periódicamente
     setInterval(() => {
-        if (!document.getElementById('adminPanel').classList.contains('hidden')) {
+        const panel = document.getElementById('adminPanel');
+        if (panel && !panel.classList.contains('hidden')) {
             verificarEstadoBackend();
         }
     }, 30000);
-});
+
+    // Restaurar modo oscuro si estaba activo
+    if (localStorage.getItem('darkMode') === 'true') {
+        document.body.classList.add('dark-mode');
+        const btn = document.querySelector('.theme-toggle');
+        if (btn) btn.textContent = '☀️';
+    }
+}
+
+// Asegurar que la inicialización ocurra incluso si el evento DOMContentLoaded ya pasó
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', inicializarTienda);
+} else {
+    inicializarTienda();
+}
