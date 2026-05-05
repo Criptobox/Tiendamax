@@ -51,6 +51,7 @@ PRODUCTS_FILE = os.path.normpath(os.path.join(DATA_DIR, 'products.json'))
 LOG_FILE = os.path.normpath(os.path.join(BASE_DIR, 'publicaciones.log'))
 REGISTRO_FILE = os.path.normpath(os.path.join(DATA_DIR, 'registro_publicaciones.json'))
 COOKIES_FILE = os.path.normpath(os.path.join(BASE_DIR, 'revolico_cookies.json'))
+FACEBOOK_COOKIES_FILE = os.path.normpath(os.path.join(BASE_DIR, 'facebook_cookies.json'))
 
 # Inicializar agente
 social_agent = SocialAgent(REVOLICO_EMAIL, REVOLICO_PASSWORD)
@@ -264,24 +265,27 @@ def historial():
     return jsonify([])
 
 
-@app.route('/api/importar-cookies', methods=['POST'])
-def importar_cookies():
-    """Importar cookies exportadas desde Cookie-Editor"""
+@app.route('/api/importar-cookies-revolico', methods=['POST'])
+def importar_cookies_revolico():
     data = request.json
-    if not data or not isinstance(data, list):
-        return jsonify({'success': False, 'error': 'Se esperaba un array de cookies'}), 400
     try:
         from revolico_agent import convertir_cookies_cookie_editor, guardar_cookies
-        # Detectar si necesita conversión
-        if data and 'expirationDate' in data[0]:
-            cookies_convertidas = convertir_cookies_cookie_editor(data)
-        else:
-            cookies_convertidas = data
-        guardar_cookies(cookies_convertidas)
-        logger.info(f"✅ {len(cookies_convertidas)} cookies importadas desde Cookie-Editor")
-        return jsonify({'success': True, 'mensaje': f'{len(cookies_convertidas)} cookies importadas correctamente'})
+        cookies = convertir_cookies_cookie_editor(data) if data and 'expirationDate' in data[0] else data
+        guardar_cookies(cookies)
+        return jsonify({'success': True, 'mensaje': 'Cookies de Revolico guardadas'})
     except Exception as e:
-        logger.error(f"Error importando cookies: {e}")
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+@app.route('/api/importar-cookies-facebook', methods=['POST'])
+def importar_cookies_facebook():
+    data = request.json
+    try:
+        from revolico_agent import convertir_cookies_cookie_editor
+        cookies = convertir_cookies_cookie_editor(data) if data and 'expirationDate' in data[0] else data
+        with open(FACEBOOK_COOKIES_FILE, 'w') as f:
+            json.dump(cookies, f, indent=2)
+        return jsonify({'success': True, 'mensaje': 'Cookies de Facebook guardadas'})
+    except Exception as e:
         return jsonify({'success': False, 'error': str(e)}), 500
 
 

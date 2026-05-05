@@ -1,5 +1,5 @@
 @echo off
-title Reparador de Errores TiendaMax
+title Reparador Definitivo TiendaMax
 echo ==========================================
 echo   🛠️ REPARANDO ERROR DE LIBRERIAS (DLL)
 echo ==========================================
@@ -18,18 +18,22 @@ if %errorlevel% neq 0 (
 
 echo 🔍 Usando: %PY_CMD%
 echo.
-echo 📦 Reinstalando componentes criticos...
+echo 📦 Paso 1: Limpiando instalaciones previas...
 %PY_CMD% -m pip uninstall greenlet playwright -y
-%PY_CMD% -m pip install --upgrade pip
-%PY_CMD% -m pip install greenlet==3.0.1 playwright==1.40.0
 
 echo.
-echo 🌐 Reconfigurando navegador...
+echo 📦 Paso 2: Instalando versiones compatibles...
+:: Forzamos la instalación de greenlet sin usar la cache para evitar archivos corruptos
+%PY_CMD% -m pip install --upgrade pip
+%PY_CMD% -m pip install --no-cache-dir greenlet==3.0.3 playwright==1.42.0
+
+echo.
+echo 🌐 Paso 3: Reconfigurando navegador...
 %PY_CMD% -m playwright install chromium
 
 echo.
 echo ==========================================
 echo ✅ REPARACION COMPLETADA
-echo 👉 Intenta abrir de nuevo "iniciar_windows.bat"
+echo 👉 Ahora intenta abrir "iniciar_windows.bat"
 echo ==========================================
 pause

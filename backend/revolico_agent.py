@@ -27,6 +27,15 @@ logger = logging.getLogger(__name__)
 # 2. Cookies guardadas automáticamente por el agente en sesiones anteriores
 COOKIES_FILE = os.path.join(os.path.dirname(__file__), 'revolico_cookies.json')
 COOKIES_BACKUP = os.path.join(os.path.dirname(__file__), 'revolico_cookies_backup.json')
+FACEBOOK_COOKIES = os.path.join(os.path.dirname(__file__), 'facebook_cookies.json')
+
+def cargar_cookies_facebook():
+    if os.path.exists(FACEBOOK_COOKIES):
+        try:
+            with open(FACEBOOK_COOKIES, 'r') as f:
+                return json.load(f)
+        except: return []
+    return []
 
 # ===== MAPEO DE CATEGORÍAS =====
 # Categorías de la tienda → categorías de Revolico
@@ -161,9 +170,12 @@ class SocialAgent:
 
     def publicar_facebook(self, producto: dict) -> dict:
         """Publica un producto en Facebook Marketplace usando cookies"""
+        if not PLAYWRIGHT_AVAILABLE:
+            return {'success': False, 'error': 'El bot no puede iniciar porque falta una libreria de Windows (DLL). Ejecuta reparar_error.bat'}
+            
         imagen_tmp = None
         try:
-            if not self._iniciar_navegador():
+            if not self._iniciar_navegador(plataforma='facebook'):
                 return {'success': False, 'error': 'No se pudo iniciar el navegador'}
 
             imagen_tmp = self._preparar_imagen(producto)
@@ -295,8 +307,8 @@ class SocialAgent:
                 os.unlink(imagen_tmp)
             self._cerrar_navegador()
 
-    def _iniciar_navegador(self):
-        """Inicia el navegador Playwright con las cookies guardadas"""
+    def _iniciar_navegador(self, plataforma='revolico'):
+        """Inicia el navegador Playwright con las cookies de la plataforma correspondiente"""
         try:
             self.playwright = sync_playwright().start()
             self.browser = self.playwright.chromium.launch(
@@ -319,17 +331,18 @@ class SocialAgent:
                 locale='es-CU',
             )
 
-            # Cargar cookies si existen
-            cookies = cargar_cookies()
+            # Cargar cookies según plataforma
+            cookies = cargar_cookies_facebook() if plataforma == 'facebook' else cargar_cookies()
+            
             if cookies:
                 try:
                     self.context.add_cookies(cookies)
-                    logger.info(f"✅ {len(cookies)} cookies cargadas en el navegador")
+                    logger.info(f"✅ {len(cookies)} cookies de {plataforma} cargadas")
                 except Exception as e:
                     logger.warning(f"Error al cargar algunas cookies: {e}")
 
             self.page = self.context.new_page()
-            logger.info("✅ Navegador iniciado correctamente")
+            logger.info(f"✅ Navegador iniciado para {plataforma}")
             return True
 
         except Exception as e:
@@ -544,7 +557,7 @@ class SocialAgent:
         imagen_tmp = None
 
         try:
-            if not self._iniciar_navegador():
+            if not self._iniciar_navegador(plataforma='revolico'):
                 return {'success': False, 'error': 'No se pudo iniciar el navegador'}
 
             # Verificar sesión; si no está activa, hacer login
