@@ -270,3 +270,78 @@ function mostrarSelectorAsistenteFacebook() {
 function cerrarFbSelector() {
     document.getElementById('fbSelectorModal').classList.add('hidden');
 }
+
+// ===== ASISTENTE DE PUBLICACIÓN EN REVOLICO (INFALIBLE) =====
+
+async function publicarEnRevolicoAsistido(productoId) {
+    const producto = productos.find(p => p.id === productoId);
+    if (!producto) {
+        mostrarNotificacion('❌ Producto no encontrado', 'error');
+        return;
+    }
+
+    // Crear el texto del anuncio para Revolico
+    const textoAnuncio = `${producto.nombre}\n\n${producto.descripcion}\n\nPrecio: ${producto.precioActual} USD\nContacto: 5354320170`;
+
+    // Intentar copiar al portapapeles
+    try {
+        const tempInput = document.createElement("textarea");
+        tempInput.value = textoAnuncio;
+        document.body.appendChild(tempInput);
+        tempInput.select();
+        document.execCommand("copy");
+        document.body.removeChild(tempInput);
+        
+        mostrarNotificacion('📋 ¡Datos de Revolico copiados! Pégalos ahora', 'success');
+    } catch (err) {
+        console.error('Error al copiar:', err);
+    }
+
+    // Abrir Revolico en una nueva pestaña
+    setTimeout(() => {
+        window.open('https://www.revolico.com/item/publish', '_blank');
+    }, 1000);
+}
+
+function mostrarSelectorAsistenteRevolico() {
+    if (productos.length === 0) {
+        mostrarNotificacion('❌ No hay productos para publicar', 'error');
+        return;
+    }
+
+    let modal = document.getElementById('revSelectorModal');
+    if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'revSelectorModal';
+        modal.className = 'modal';
+        document.body.appendChild(modal);
+    }
+
+    let itemsHtml = productos.map(p => `
+        <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px; border-bottom: 1px solid #eee;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <img src="${p.imagen}" style="width: 40px; height: 40px; border-radius: 4px; object-fit: cover;">
+                <span style="font-weight: bold; font-size: 14px;">${p.nombre}</span>
+            </div>
+            <button onclick="publicarEnRevolicoAsistido(${p.id}); cerrarRevSelector();" style="background: #FF6B35; color: white; border: none; padding: 5px 12px; border-radius: 4px; cursor: pointer;">Copiar y Abrir</button>
+        </div>
+    `).join('');
+
+    modal.innerHTML = `
+        <div class="modal-content" style="max-width: 500px;">
+            <div class="modal-header">
+                <h2>🛍️ Selecciona producto para Revolico</h2>
+                <button class="close-btn" onclick="cerrarRevSelector()">✕</button>
+            </div>
+            <div style="padding: 20px; max-height: 400px; overflow-y: auto;">
+                <p style="font-size: 13px; color: #666; margin-bottom: 15px;">Se copiará el texto y se abrirá Revolico para que solo tengas que <strong>pegar (Ctrl+V)</strong>.</p>
+                ${itemsHtml}
+            </div>
+        </div>
+    `;
+    modal.classList.remove('hidden');
+}
+
+function cerrarRevSelector() {
+    document.getElementById('revSelectorModal').classList.add('hidden');
+}
