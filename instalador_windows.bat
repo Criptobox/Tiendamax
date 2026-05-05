@@ -5,25 +5,43 @@ echo   🚀 INSTALADOR DE TIENDAMAX PARA WINDOWS
 echo ==========================================
 echo.
 
-:: Verificar si Python está instalado
+:: Intentar encontrar Python
+set "PY_CMD=python"
 python --version >nul 2>&1
 if %errorlevel% neq 0 (
-    echo ❌ ERROR: Python no esta instalado en tu computadora.
-    echo 👉 Por favor, ve a https://www.python.org y descarga e instala Python.
-    echo ⚠️  ASEGURATE de marcar la casilla "Add Python to PATH" durante la instalacion.
-    pause
-    exit
+    set "PY_CMD=py"
+    py --version >nul 2>&1
+    if %errorlevel% neq 0 (
+        set "PY_CMD=%USERPROFILE%\AppData\Local\Microsoft\WindowsApps\python.exe"
+        "%USERPROFILE%\AppData\Local\Microsoft\WindowsApps\python.exe" --version >nul 2>&1
+        if %errorlevel% neq 0 (
+            echo ❌ ERROR: No se encuentra Python.
+            echo.
+            echo 👉 PASO A SEGUIR:
+            echo 1. Abre la "Microsoft Store" en tu Windows.
+            echo 2. Busca "Python 3.11" e instalalo.
+            echo 3. Una vez instalado, vuelve a abrir este archivo.
+            echo.
+            pause
+            exit
+        )
+    )
 )
 
-echo 📦 Instalando librerias necesarias...
-python -m pip install --upgrade pip
-python -m pip install flask flask-cors apscheduler playwright requests pytz
+echo ✅ Python detectado: %PY_CMD%
+echo.
+echo 📦 Instalando librerias necesarias (esto puede tardar)...
+%PY_CMD% -m pip install --upgrade pip
+%PY_CMD% -m pip install flask flask-cors apscheduler playwright requests pytz
 
 echo 🌐 Configurando navegador para el bot...
-python -m playwright install chromium
+%PY_CMD% -m playwright install chromium
 
 echo.
+echo ==========================================
 echo ✅ CONFIGURACION COMPLETADA CON EXITO
-echo 👉 Ahora puedes cerrar esta ventana y ejecutar "iniciar_windows.bat"
+echo 👉 Ya puedes cerrar esta ventana.
+echo 👉 Ahora abre el archivo "iniciar_windows.bat"
+echo ==========================================
 echo.
 pause
