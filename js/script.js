@@ -653,7 +653,6 @@ function eliminarProducto(id) {
     verificarOfertasYMostrarBanner();
     mostrarNotificacion('🗑️ Producto eliminado', 'info');
 }
-}
 
 function abrirEditModal(id) {
     const p = productos.find(prod => prod.id === id);

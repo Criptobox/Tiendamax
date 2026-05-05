@@ -142,3 +142,27 @@ Call log:
 2026-05-04 20:45:34,645 - revolico_agent - INFO - ✅ 20 cookies cargadas en el navegador
 2026-05-04 20:45:34,692 - revolico_agent - INFO - ✅ Navegador iniciado correctamente
 2026-05-04 20:45:34,693 - revolico_agent - INFO - Publicando en Facebook: Cargador inteligente 20A
+2026-05-04 20:45:42,842 - revolico_agent - WARNING - Facebook requiere login. Por favor actualiza las cookies.
+2026-05-04 20:45:42,850 - revolico_agent - INFO - ✅ 23 cookies guardadas
+2026-05-04 20:45:42,894 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:45:42] "POST /api/publicar-facebook HTTP/1.1" 200 -
+2026-05-04 20:46:02,433 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:46:02] "GET /api/status HTTP/1.1" 200 -
+2026-05-04 20:46:10,883 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:46:10] "GET /api/historial HTTP/1.1" 200 -
+2026-05-04 20:46:17,955 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:46:17] "OPTIONS /api/importar-cookies HTTP/1.1" 200 -
+2026-05-04 20:46:18,126 - revolico_agent - INFO - ✅ 8 cookies guardadas
+2026-05-04 20:46:18,126 - __main__ - INFO - ✅ 8 cookies importadas desde Cookie-Editor
+2026-05-04 20:46:18,126 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:46:18] "POST /api/importar-cookies HTTP/1.1" 200 -
+2026-05-04 20:46:26,534 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:46:26] "OPTIONS /api/publicar-facebook HTTP/1.1" 200 -
+2026-05-04 20:46:27,130 - __main__ - INFO - Publicando en Facebook: Cargador inteligente 20A
+2026-05-04 20:46:27,674 - revolico_agent - INFO - ✅ 8 cookies cargadas (formato Playwright)
+2026-05-04 20:46:27,678 - revolico_agent - INFO - ✅ 8 cookies cargadas en el navegador
+2026-05-04 20:46:27,731 - revolico_agent - INFO - ✅ Navegador iniciado correctamente
+2026-05-04 20:46:27,732 - revolico_agent - INFO - Publicando en Facebook: Cargador inteligente 20A
+2026-05-04 20:46:31,552 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:46:31] "GET /api/status HTTP/1.1" 200 -
+2026-05-04 20:47:01,562 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:47:01] "GET /api/status HTTP/1.1" 200 -
+2026-05-04 20:47:06,305 - revolico_agent - ERROR - Error llenando formulario de Facebook: Page.fill: Timeout 30000ms exceeded.
+Call log:
+  - waiting for locator("label:has-text(\"Título\") input, label:has-text(\"Title\") input")
+
+2026-05-04 20:47:06,378 - revolico_agent - INFO - ✅ 8 cookies guardadas
+2026-05-04 20:47:06,433 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:47:06] "POST /api/publicar-facebook HTTP/1.1" 200 -
+2026-05-04 20:47:31,650 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:47:31] "GET /api/status HTTP/1.1" 200 -
