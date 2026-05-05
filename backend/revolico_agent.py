@@ -531,13 +531,7 @@ class SocialAgent:
 
     def publicar_producto(self, producto: dict) -> dict:
         """
-        Publica un producto en Revolico.
-        
-        Args:
-            producto: Diccionario con datos del producto
-            
-        Returns:
-            dict con 'success', 'mensaje' y opcionalmente 'url'
+        Publica un producto en Revolico con selectores robustos.
         """
         imagen_tmp = None
 
@@ -552,52 +546,99 @@ class SocialAgent:
                     return {'success': False, 'error': 'No se pudo iniciar sesión en Revolico. Verifica las cookies o credenciales.'}
 
             imagen_tmp = self._preparar_imagen(producto)
+            nombre = producto.get('nombre', 'Producto disponible')[:120]
+            precio = str(producto.get('precioActual', producto.get('precio', 0)))
+            descripcion = self._generar_descripcion(producto)
 
             # Navegar al formulario de publicación
-            nombre = producto.get('nombre', 'Producto disponible')[:120]
-            logger.info(f"Publicando: {nombre}")
-            self.page.goto('https://www.revolico.com/item/publish', timeout=30000)
-            time.sleep(3)
+            logger.info(f"Navegando al formulario de Revolico para: {nombre}")
+            self.page.goto('https://www.revolico.com/item/publish', timeout=60000, wait_until="networkidle")
+            time.sleep(6)
 
-            # Verificar que estamos en la página correcta
-            if 'publish' not in self.page.url and 'item' not in self.page.url:
-                # Intentar navegar directamente
-                self.page.goto('https://www.revolico.com/item/publish', timeout=30000)
-                time.sleep(3)
-                if 'publish' not in self.page.url:
-                    return {'success': False, 'error': f'No se pudo acceder al formulario. URL actual: {self.page.url}'}
-
-            # Subir imagen
-            if imagen_tmp and os.path.exists(imagen_tmp):
-                try:
+            # Llenar el formulario con selectores universales
+            try:
+                # 1. Imagen
+                if imagen_tmp and os.path.exists(imagen_tmp):
+                    logger.info("Subiendo imagen...")
                     file_input = self.page.query_selector('input[type="file"]')
                     if file_input:
                         file_input.set_input_files(imagen_tmp)
-                        time.sleep(2)
-                        logger.info("✅ Imagen subida")
-                except Exception as e:
-                    logger.warning(f"No se pudo subir imagen: {e}")
+                        time.sleep(4)
 
-            # Llenar título
-            try:
-                self.page.wait_for_selector('#title', timeout=10000)
-                self.page.fill('#title', nombre)
-                time.sleep(0.5)
+                # 2. Título (Probamos múltiples selectores)
+                logger.info("Llenando título...")
+                # Selectores ordenados por prioridad: ID directo, placeholder ES, placeholder EN, aria-label, etc.
+                titulo_selectors = [
+                    '#title', 'input[name="title"]', 'input[placeholder*="título"]', 
+                    'input[placeholder*="Título"]', 'textarea[placeholder*="título"]', 
+                    'input[aria-label*="título"]', 'input[aria-label*="Título"]'
+                ]
+                titulo_ok = False
+                for sel in titulo_selectors:
+                    try:
+                        if self.page.query_selector(sel):
+                            self.page.fill(sel, nombre)
+                            titulo_ok = True
+                            logger.info(f"✅ Título llenado con selector: {sel}")
+                            break
+                    except: continue
+                
+                if not titulo_ok:
+                    # Intento desesperado: buscar el primer input de texto
+                    inputs = self.page.query_selector_all('input[type="text"]')
+                    if inputs:
+                        inputs[0].fill(nombre)
+                        titulo_ok = True
+                        logger.info("✅ Título llenado en el primer input de texto")
+
+                if not titulo_ok:
+                    return {'success': False, 'error': 'No se encontró el formulario de publicación (campo título)'}
+
+                # 3. Precio
+                logger.info("Llenando precio...")
+                precio_selectors = ['#price', 'input[name="price"]', 'input[placeholder*="precio"]', 'input[placeholder*="Precio"]', 'input[type="number"]']
+                for sel in precio_selectors:
+                    try:
+                        if self.page.query_selector(sel):
+                            self.page.fill(sel, precio)
+                            logger.info(f"✅ Precio llenado con selector: {sel}")
+                            break
+                    except: continue
+
+                # 4. Descripción
+                logger.info("Llenando descripción...")
+                desc_selectors = ['#description', 'textarea[name="description"]', 'textarea[placeholder*="descripción"]', 'textarea[placeholder*="Descripción"]', 'div[contenteditable="true"]']
+                for sel in desc_selectors:
+                    try:
+                        if self.page.query_selector(sel):
+                            self.page.fill(sel, descripcion)
+                            logger.info(f"✅ Descripción llenada con selector: {sel}")
+                            break
+                    except: continue
+
+                # 5. Botón Publicar
+                logger.info("Buscando botón de publicar...")
+                btn_selectors = [
+                    'button[type="submit"]', 'button:has-text("Publicar")', 
+                    'button:has-text("Insertar")', 'div[role="button"]:has-text("Publicar")',
+                    'span:has-text("Publicar")', 'span:has-text("Insertar")'
+                ]
+                for sel in btn_selectors:
+                    try:
+                        btn = self.page.query_selector(sel)
+                        if btn and btn.is_visible():
+                            btn.click()
+                            logger.info(f"✅ Click en botón publicar: {sel}")
+                            time.sleep(7)
+                            return {'success': True, 'mensaje': f'"{nombre}" publicado con éxito en Revolico'}
+                    except: continue
+
+                return {'success': False, 'error': 'No se encontró el botón de Publicar final.'}
+
             except Exception as e:
-                logger.error(f"No se encontró el campo título: {e}")
-                return {'success': False, 'error': 'No se encontró el formulario de publicación'}
-
-            # Llenar precio
-            precio = str(producto.get('precioActual', producto.get('precio', 0)))
-            try:
-                self.page.fill('#price', precio)
-                time.sleep(0.5)
-            except Exception as e:
-                logger.warning(f"Error llenando precio: {e}")
-
-            # Seleccionar moneda USD
-            try:
-                moneda_select = self.page.query_selector('select')
+                logger.error(f"Error llenando formulario Revolico: {e}")
+                self.page.screenshot(path="error_revolico_debug.png")
+                return {'success': False, 'error': f'Fallo al llenar Revolico: {str(e)}'}
                 if moneda_select:
                     moneda_select.select_option('USD')
             except Exception:

@@ -92,3 +92,53 @@ Call log:
 2026-05-04 20:35:46,239 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:35:46] "GET /api/status HTTP/1.1" 200 -
 2026-05-04 20:36:16,186 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:36:16] "GET /api/status HTTP/1.1" 200 -
 2026-05-04 20:36:46,187 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:36:46] "GET /api/status HTTP/1.1" 200 -
+2026-05-04 20:37:16,210 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:37:16] "GET /api/status HTTP/1.1" 200 -
+2026-05-04 20:37:46,202 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:37:46] "GET /api/status HTTP/1.1" 200 -
+2026-05-04 20:38:16,442 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:38:16] "GET /api/status HTTP/1.1" 200 -
+2026-05-04 20:38:46,436 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:38:46] "GET /api/status HTTP/1.1" 200 -
+2026-05-04 20:39:47,426 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:39:47] "GET /api/status HTTP/1.1" 200 -
+2026-05-04 20:40:27,558 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:40:27] "GET /api/status HTTP/1.1" 200 -
+2026-05-04 20:40:36,281 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:40:36] "OPTIONS /api/publicar-revolico HTTP/1.1" 200 -
+2026-05-04 20:40:37,125 - __main__ - INFO - Publicando en Revolico: Cargador inteligente 20A
+2026-05-04 20:40:37,762 - revolico_agent - INFO - ✅ 20 cookies cargadas (formato Playwright)
+2026-05-04 20:40:37,769 - revolico_agent - INFO - ✅ 20 cookies cargadas en el navegador
+2026-05-04 20:40:37,820 - revolico_agent - INFO - ✅ Navegador iniciado correctamente
+2026-05-04 20:40:40,513 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:40:40] "GET /api/status HTTP/1.1" 200 -
+2026-05-04 20:40:48,420 - revolico_agent - INFO - ✅ Sesión activa (token encontrado en cookies)
+2026-05-04 20:40:48,421 - revolico_agent - INFO - Publicando: Cargador inteligente 20A
+2026-05-04 20:41:01,556 - revolico_agent - ERROR - No se encontró el campo título: Page.wait_for_selector: Timeout 10000ms exceeded.
+Call log:
+  - waiting for locator("#title") to be visible
+
+2026-05-04 20:41:01,560 - revolico_agent - INFO - ✅ 20 cookies guardadas
+2026-05-04 20:41:01,601 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:41:01] "POST /api/publicar-revolico HTTP/1.1" 200 -
+2026-05-04 20:41:11,639 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:41:11] "GET /api/status HTTP/1.1" 200 -
+2026-05-04 20:41:45,074 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:41:45] "GET /api/status HTTP/1.1" 200 -
+2026-05-04 20:41:47,484 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:41:47] "GET /api/historial HTTP/1.1" 200 -
+2026-05-04 20:41:51,242 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:41:51] "OPTIONS /api/publicar-revolico HTTP/1.1" 200 -
+2026-05-04 20:41:52,022 - __main__ - INFO - Publicando en Revolico: Cargador inteligente 20A
+2026-05-04 20:41:52,605 - revolico_agent - INFO - ✅ 20 cookies cargadas (formato Playwright)
+2026-05-04 20:41:52,610 - revolico_agent - INFO - ✅ 20 cookies cargadas en el navegador
+2026-05-04 20:41:52,661 - revolico_agent - INFO - ✅ Navegador iniciado correctamente
+2026-05-04 20:42:01,534 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:42:01] "GET /api/status HTTP/1.1" 200 -
+2026-05-04 20:42:02,874 - revolico_agent - INFO - ✅ Sesión activa (token encontrado en cookies)
+2026-05-04 20:42:02,875 - revolico_agent - INFO - Publicando: Cargador inteligente 20A
+2026-05-04 20:42:16,024 - revolico_agent - ERROR - No se encontró el campo título: Page.wait_for_selector: Timeout 10000ms exceeded.
+Call log:
+  - waiting for locator("#title") to be visible
+
+2026-05-04 20:42:16,029 - revolico_agent - INFO - ✅ 20 cookies guardadas
+2026-05-04 20:42:16,085 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:42:16] "POST /api/publicar-revolico HTTP/1.1" 200 -
+2026-05-04 20:42:31,572 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:42:31] "GET /api/status HTTP/1.1" 200 -
+2026-05-04 20:43:01,565 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:43:01] "GET /api/status HTTP/1.1" 200 -
+2026-05-04 20:43:31,545 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:43:31] "GET /api/status HTTP/1.1" 200 -
+2026-05-04 20:44:02,413 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:44:02] "GET /api/status HTTP/1.1" 200 -
+2026-05-04 20:44:32,441 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:44:32] "GET /api/status HTTP/1.1" 200 -
+2026-05-04 20:45:02,445 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:45:02] "GET /api/status HTTP/1.1" 200 -
+2026-05-04 20:45:31,563 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:45:31] "GET /api/status HTTP/1.1" 200 -
+2026-05-04 20:45:33,478 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:45:33] "OPTIONS /api/publicar-facebook HTTP/1.1" 200 -
+2026-05-04 20:45:34,096 - __main__ - INFO - Publicando en Facebook: Cargador inteligente 20A
+2026-05-04 20:45:34,638 - revolico_agent - INFO - ✅ 20 cookies cargadas (formato Playwright)
+2026-05-04 20:45:34,645 - revolico_agent - INFO - ✅ 20 cookies cargadas en el navegador
+2026-05-04 20:45:34,692 - revolico_agent - INFO - ✅ Navegador iniciado correctamente
+2026-05-04 20:45:34,693 - revolico_agent - INFO - Publicando en Facebook: Cargador inteligente 20A
