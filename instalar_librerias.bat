@@ -1,12 +1,12 @@
 @echo off
-TITLE Instalador TiendaMax (Modo Ligero)
+TITLE Instalador TiendaMax (Modo Hibrido)
 color 0A
 
 echo ======================================================
-echo    INSTALADOR DE LIBRERIAS (MODO LIGERO)
+echo    INSTALADOR DE LIBRERIAS (MODO HIBRIDO)
 echo ======================================================
 echo.
-echo Este instalador es ultra-compatible y NO usa Playwright.
+echo Este instalador configura Selenium para automatizacion real.
 echo.
 
 :: 1. Verificar Python
@@ -17,11 +17,11 @@ if %errorlevel% neq 0 (
     exit
 )
 
-:: 2. Instalar dependencias minimas
-echo [+] Instalando Flask, CORS y Requests...
-python -m pip install flask flask-cors requests
+:: 2. Instalar dependencias
+echo [+] Instalando Flask, Selenium y Drivers...
+python -m pip install flask flask-cors requests selenium webdriver-manager
 if %errorlevel% neq 0 (
-    pip install flask flask-cors requests
+    pip install flask flask-cors requests selenium webdriver-manager
 )
 
 echo.

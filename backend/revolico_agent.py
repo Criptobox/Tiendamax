@@ -1,115 +1,90 @@
 import os
-import json
 import time
 import logging
-import requests
-from datetime import datetime
+import json
+
+try:
+    from selenium import webdriver
+    from selenium.webdriver.chrome.service import Service
+    from selenium.webdriver.chrome.options import Options
+    from selenium.webdriver.common.by import By
+    from selenium.webdriver.support.ui import WebDriverWait
+    from selenium.webdriver.support import expected_conditions as EC
+    from webdriver_manager.chrome import ChromeDriverManager
+except ImportError:
+    pass
 
 logger = logging.getLogger(__name__)
 
-# ===== RUTAS DE COOKIES =====
-COOKIES_FILE = os.path.join(os.path.dirname(__file__), 'revolico_cookies.json')
-FACEBOOK_COOKIES = os.path.join(os.path.dirname(__file__), 'facebook_cookies.json')
-
-def cargar_cookies(file_path):
-    if os.path.exists(file_path):
-        try:
-            with open(file_path, 'r') as f:
-                return json.load(f)
-        except: return []
-    return []
-
-def convertir_cookies_cookie_editor(cookies_json):
-    """Convierte cookies de formato Cookie-Editor a formato requests"""
-    cookies_dict = {}
-    for c in cookies_json:
-        cookies_dict[c['name']] = c['value']
-    return cookies_dict
-
 class SocialAgent:
     def __init__(self, email, password):
-        self.email = email
-        self.password = password
-        self.session = requests.Session()
-        # Headers ultra-realistas para evitar el Error 405 y bloqueos
-        self.session.headers.update({
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-            'Accept': 'application/json, text/plain, */*',
-            'Accept-Language': 'es-ES,es;q=0.9,en;q=0.8',
-            'Content-Type': 'application/json',
-            'Origin': 'https://www.revolico.com',
-            'Referer': 'https://www.revolico.com/item/publish',
-            'X-Requested-With': 'XMLHttpRequest',
-            'Sec-Fetch-Dest': 'empty',
-            'Sec-Fetch-Mode': 'cors',
-            'Sec-Fetch-Site': 'same-origin'
-        })
+        self.driver = None
+
+    def iniciar_navegador(self):
+        """Inicia el navegador Chrome para que el usuario haga login"""
+        try:
+            chrome_options = Options()
+            # chrome_options.add_argument("--start-maximized")
+            # chrome_options.add_argument("--user-data-dir=selenium_user_data") # Guardar sesion
+            
+            service = Service(ChromeDriverManager().install())
+            self.driver = webdriver.Chrome(service=service, options=chrome_options)
+            self.driver.get("https://www.revolico.com/auth")
+            return True
+        except Exception as e:
+            logger.error(f"Error iniciando Selenium: {e}")
+            return False
 
     def publicar_producto(self, producto):
-        """Publicacion AUTOMATICA en Revolico corrigiendo el Error 405"""
+        """Publicacion automatica una vez que el usuario ya esta logueado"""
+        if not self.driver:
+            if not self.iniciar_navegador():
+                return {'success': False, 'error': 'No se pudo abrir el navegador. Revisa Chrome.'}
+        
         try:
-            cookies_raw = cargar_cookies(COOKIES_FILE)
-            if not cookies_raw:
-                return {'success': False, 'error': 'No hay cookies de Revolico. Importalas en el Admin.'}
+            # 1. Ir a la pagina de publicar
+            self.driver.get("https://www.revolico.com/item/publish")
+            time.sleep(3)
             
-            cookies = convertir_cookies_cookie_editor(cookies_raw)
-            
-            # Estructura de datos exacta para Revolico (Basado en inspeccion de red)
-            # El error 405 suele ser por un endpoint incorrecto o falta de '/' final
-            payload = {
-                "title": producto.get('nombre'),
-                "description": f"{producto.get('descripcion')}\n\nPrecio: ${producto.get('precioActual')} USD\nContacto: 5354320170",
-                "price": float(producto.get('precioActual')),
-                "currency": "USD",
-                "category": 24, # Categoria Venta/Varios
-                "is_negotiable": False
-            }
+            # Verificar si pide login (si no estamos en la pagina de publicar)
+            if "auth" in self.driver.current_url:
+                return {'success': False, 'error': 'Por favor, inicia sesion en la ventana de Chrome primero.'}
 
-            logger.info(f"Enviando publicacion automatica a Revolico: {producto.get('nombre')}")
+            # 2. Rellenar el formulario (Basado en selectores de Revolico)
+            wait = WebDriverWait(self.driver, 10)
             
-            # Intentamos con el endpoint REST estandar con barra final (importante para evitar 405)
-            response = self.session.post(
-                "https://www.revolico.com/api/items/", 
-                json=payload, 
-                cookies=cookies,
-                timeout=25
-            )
-
-            if response.status_code in [200, 201]:
-                return {'success': True, 'mensaje': '¡Publicado automaticamente en Revolico!'}
+            # Titulo
+            titulo_input = wait.until(EC.presence_of_element_located((By.NAME, "title")))
+            titulo_input.clear()
+            titulo_input.send_keys(producto.get('nombre'))
             
-            # Si el 405 persiste, intentamos la ruta de GraphQL como respaldo
-            elif response.status_code == 405:
-                logger.warning("Error 405 en API REST, intentando via GraphQL...")
-                graphql_query = {
-                    "operationName": "CreateItem",
-                    "variables": {
-                        "input": {
-                            "title": producto.get('nombre'),
-                            "description": payload['description'],
-                            "price": payload['price'],
-                            "currency": "USD",
-                            "category": "24"
-                        }
-                    },
-                    "query": "mutation CreateItem($input: CreateItemInput!) { createItem(input: $input) { id title } }"
-                }
-                resp_gql = self.session.post(
-                    "https://www.revolico.com/api/graphql/", 
-                    json=graphql_query, 
-                    cookies=cookies,
-                    timeout=25
-                )
-                if resp_gql.status_code == 200:
-                    return {'success': True, 'mensaje': '¡Publicado automaticamente via GraphQL!'}
-                
-            return {'success': False, 'error': f'Revolico rechazo la peticion (Error {response.status_code})'}
+            # Precio
+            precio_input = self.driver.find_element(By.NAME, "price")
+            precio_input.clear()
+            precio_input.send_keys(str(producto.get('precioActual')))
+            
+            # Descripcion
+            desc_input = self.driver.find_element(By.NAME, "description")
+            desc_input.clear()
+            desc_input.send_keys(f"{producto.get('descripcion')}\n\nContacto: 5354320170")
+            
+            # Nota: Aqui se podrian añadir mas campos (categoria, fotos)
+            # Por ahora, dejamos que el usuario vea el progreso
+            
+            logger.info(f"Formulario completado para: {producto.get('nombre')}")
+            time.sleep(2)
+            
+            # 3. Click en Publicar (Opcional: podemos dejar que el usuario lo revise)
+            # publicar_btn = self.driver.find_element(By.XPATH, "//button[contains(text(), 'Publicar')]")
+            # publicar_btn.click()
+            
+            return {'success': True, 'mensaje': f'Formulario de {producto.get("nombre")} completado. ¡Dale a publicar!'}
 
         except Exception as e:
-            logger.error(f"Error en Revolico Agent: {e}")
-            return {'success': False, 'error': str(e)}
+            logger.error(f"Error publicando con Selenium: {e}")
+            return {'success': False, 'error': f'Error en el navegador: {str(e)}'}
 
-    def publicar_facebook(self, producto):
-        """Publicacion en Facebook (Modo Ligero)"""
-        # Facebook sigue siendo asistido por seguridad, pero Revolico sera automatico
-        return {'success': True, 'mensaje': 'Asistente de Facebook listo.'}
+    def cerrar(self):
+        if self.driver:
+            self.driver.quit()
+            self.driver = None

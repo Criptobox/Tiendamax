@@ -895,3 +895,24 @@ if (document.readyState === 'loading') {
 } else {
     inicializarTienda();
 }
+
+// ===== AUTOMATIZACIÓN HÍBRIDA (SELENIUM) =====
+
+async function abrirNavegadorParaLogin() {
+    const btn = document.getElementById('btnAbrirNavegador');
+    if (btn) { btn.disabled = true; btn.textContent = '⏳ Abriendo...'; }
+    mostrarNotificacion('🌐 Abriendo ventana de Chrome. Por favor, inicia sesión en Revolico.', 'info');
+    try {
+        const response = await fetch(`${BACKEND_URL}/abrir-navegador`);
+        const data = await response.json();
+        if (data.success) {
+            mostrarNotificacion('✅ Navegador abierto. Inicia sesión y luego dale a "Publicar Todo".');
+        } else {
+            mostrarNotificacion('❌ No se pudo abrir el navegador. ¿Instalaste Chrome?', 'error');
+        }
+    } catch (e) {
+        mostrarNotificacion('❌ Error de conexión con el backend', 'error');
+    } finally {
+        if (btn) { btn.disabled = false; btn.textContent = '🔓 1. Abrir Navegador y Loguearme'; }
+    }
+}

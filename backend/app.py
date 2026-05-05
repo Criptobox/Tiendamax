@@ -59,6 +59,11 @@ def importar_cookies_facebook():
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)}), 500
 
+@app.route('/api/abrir-navegador', methods=['GET'])
+def abrir_navegador():
+    res = social_agent.iniciar_navegador()
+    return jsonify({'success': res, 'mensaje': 'Navegador abierto. Inicia sesión en Revolico.' if res else 'Error al abrir navegador'})
+
 @app.route('/api/publicar-revolico', methods=['POST'])
 def publicar_revolico():
     producto = request.json
