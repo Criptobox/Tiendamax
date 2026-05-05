@@ -843,44 +843,11 @@ function iniciarContadorUrgencia() {
     }, 1000);
 }
 
-const NOMBRES_FICTICIOS = ['Ricardo M.', 'Yanet S.', 'Carlos T.', 'Beatriz L.', 'Orestes P.', 'Marta G.', 'Julio R.', 'Elena V.', 'Luis K.', 'Ana B.'];
-const CIUDADES_CUBA = ['La Habana', 'Santiago de Cuba', 'Holguín', 'Camagüey', 'Santa Clara', 'Matanzas', 'Artemisa', 'Cienfuegos', 'Pinar del Río', 'Las Tunas'];
-
-function mostrarNotificacionVenta() {
-    const notif = document.getElementById('saleNotification');
-    if (!notif) return;
-
-    setInterval(() => {
-        // Solo mostrar si hay productos reales
-        if (productos.length === 0) return;
-
-        const comprador = NOMBRES_FICTICIOS[Math.floor(Math.random() * NOMBRES_FICTICIOS.length)];
-        const ciudad = CIUDADES_CUBA[Math.floor(Math.random() * CIUDADES_CUBA.length)];
-        const productoAzar = productos[Math.floor(Math.random() * productos.length)];
-        
-        const img = notif.querySelector('img');
-        const text = notif.querySelector('.text');
-        
-        // Usar la imagen real del producto si existe, si no una de avatar
-        img.src = productoAzar.imagen || `https://i.pravatar.cc/100?u=${Math.random()}`;
-        
-        text.innerHTML = `
-            <span class="name">${comprador}</span> de ${ciudad}<br>
-            acaba de comprar <strong>${productoAzar.nombre}</strong><br>
-            <span class="time">hace unos segundos</span>
-        `;
-        
-        notif.classList.remove('hidden');
-        setTimeout(() => notif.classList.add('hidden'), 6000);
-    }, 30000); // Cada 30 segundos
-}
-
 // ===== INICIALIZACIÓN =====
 
 document.addEventListener('DOMContentLoaded', () => {
     cargarDatosDesdeGitHub();
     iniciarContadorUrgencia();
-    mostrarNotificacionVenta();
 
     const productForm = document.getElementById('productForm');
     if (productForm) productForm.addEventListener('submit', agregarProductoForm);
