@@ -843,29 +843,36 @@ function iniciarContadorUrgencia() {
     }, 1000);
 }
 
-const COMPRADORES_FICTICIOS = [
-    { n: 'Ricardo M.', c: 'La Habana', p: 'Zapatos de Cuero' },
-    { n: 'Yanet S.', c: 'Santiago de Cuba', p: 'Power Bank 20000mAh' },
-    { n: 'Carlos T.', c: 'Holguín', p: 'Router WIFI 6' },
-    { n: 'Beatriz L.', c: 'Matanzas', p: 'Juego de Sábanas' },
-    { n: 'Orestes P.', c: 'Pinar del Río', p: 'Ventilador Recargable' }
-];
+const NOMBRES_FICTICIOS = ['Ricardo M.', 'Yanet S.', 'Carlos T.', 'Beatriz L.', 'Orestes P.', 'Marta G.', 'Julio R.', 'Elena V.', 'Luis K.', 'Ana B.'];
+const CIUDADES_CUBA = ['La Habana', 'Santiago de Cuba', 'Holguín', 'Camagüey', 'Santa Clara', 'Matanzas', 'Artemisa', 'Cienfuegos', 'Pinar del Río', 'Las Tunas'];
 
 function mostrarNotificacionVenta() {
     const notif = document.getElementById('saleNotification');
     if (!notif) return;
 
     setInterval(() => {
-        const random = COMPRADORES_FICTICIOS[Math.floor(Math.random() * COMPRADORES_FICTICIOS.length)];
+        // Solo mostrar si hay productos reales
+        if (productos.length === 0) return;
+
+        const comprador = NOMBRES_FICTICIOS[Math.floor(Math.random() * NOMBRES_FICTICIOS.length)];
+        const ciudad = CIUDADES_CUBA[Math.floor(Math.random() * CIUDADES_CUBA.length)];
+        const productoAzar = productos[Math.floor(Math.random() * productos.length)];
+        
         const img = notif.querySelector('img');
         const text = notif.querySelector('.text');
         
-        img.src = `https://i.pravatar.cc/100?u=${Math.random()}`;
-        text.innerHTML = `<span class="name">${random.n}</span> acaba de comprar<br><strong>${random.p}</strong><br><span class="time">hace unos segundos en ${random.c}</span>`;
+        // Usar la imagen real del producto si existe, si no una de avatar
+        img.src = productoAzar.imagen || `https://i.pravatar.cc/100?u=${Math.random()}`;
+        
+        text.innerHTML = `
+            <span class="name">${comprador}</span> de ${ciudad}<br>
+            acaba de comprar <strong>${productoAzar.nombre}</strong><br>
+            <span class="time">hace unos segundos</span>
+        `;
         
         notif.classList.remove('hidden');
-        setTimeout(() => notif.classList.add('hidden'), 5000);
-    }, 25000);
+        setTimeout(() => notif.classList.add('hidden'), 6000);
+    }, 30000); // Cada 30 segundos
 }
 
 // ===== INICIALIZACIÓN =====
