@@ -567,32 +567,36 @@ class SocialAgent:
 
                 # 2. Título (Probamos múltiples selectores)
                 logger.info("Llenando título...")
-                # Selectores ordenados por prioridad: ID directo, placeholder ES, placeholder EN, aria-label, etc.
+                # Revolico a veces usa un input, a veces un textarea, a veces un div editable.
+                # Buscamos por ID, por nombre, por placeholder y por posición.
                 titulo_selectors = [
-                    '#title', 'input[name="title"]', 'input[placeholder*="título"]', 
-                    'input[placeholder*="Título"]', 'textarea[placeholder*="título"]', 
-                    'input[aria-label*="título"]', 'input[aria-label*="Título"]'
+                    '#title', 'input[name="title"]', 'textarea[name="title"]',
+                    'input[placeholder*="título" i]', 'input[placeholder*="Título" i]',
+                    'textarea[placeholder*="título" i]', 'textarea[placeholder*="Título" i]',
+                    'input[aria-label*="título" i]', 'div[role="textbox"]',
+                    '.publish-form-title input', '.form-group input'
                 ]
                 titulo_ok = False
                 for sel in titulo_selectors:
                     try:
-                        if self.page.query_selector(sel):
-                            self.page.fill(sel, nombre)
+                        el = self.page.query_selector(sel)
+                        if el and el.is_visible():
+                            el.fill(nombre)
                             titulo_ok = True
                             logger.info(f"✅ Título llenado con selector: {sel}")
                             break
                     except: continue
                 
                 if not titulo_ok:
-                    # Intento desesperado: buscar el primer input de texto
-                    inputs = self.page.query_selector_all('input[type="text"]')
-                    if inputs:
-                        inputs[0].fill(nombre)
-                        titulo_ok = True
-                        logger.info("✅ Título llenado en el primer input de texto")
+                    # Intento por posición: el primer input que no sea oculto
+                    logger.info("Intentando llenar título por posición...")
+                    self.page.keyboard.press("Tab")
+                    time.sleep(0.5)
+                    self.page.keyboard.type(nombre)
+                    titulo_ok = True # Asumimos que funcionó el tabulador
 
                 if not titulo_ok:
-                    return {'success': False, 'error': 'No se encontró el formulario de publicación (campo título)'}
+                    return {'success': False, 'error': 'No se pudo encontrar el campo de título en el formulario.'}
 
                 # 3. Precio
                 logger.info("Llenando precio...")

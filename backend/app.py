@@ -328,7 +328,28 @@ def iniciar_scheduler():
 
 
 if __name__ == '__main__':
+    print("\n" + "="*40)
+    print("🚀 INICIANDO BACKEND TIENDAMAX")
+    print("="*40)
+    
     os.makedirs(DATA_DIR, exist_ok=True)
+    
+    # Verificación de dependencias críticas
+    try:
+        import playwright
+        print("✅ Playwright: Detectado")
+    except ImportError:
+        print("❌ ERROR: Playwright no instalado. Ejecuta 'bash setup.sh'")
+        
+    try:
+        import flask_cors
+        print("✅ Flask-CORS: Detectado")
+    except ImportError:
+        print("❌ ERROR: Flask-CORS no instalado. Ejecuta 'bash setup.sh'")
+
     iniciar_scheduler()
-    logger.info("🚀 Backend TiendaMax iniciado en puerto 5002")
+    print("✅ Publicación automática: Programada (8AM y 5PM Cuba)")
+    print("📡 Servidor: Escuchando en puerto 5002")
+    print("="*40 + "\n")
+    
     app.run(host='0.0.0.0', port=5002, debug=False)

@@ -14,8 +14,9 @@ mkdir -p "$BACKEND_DIR/data"
 
 # Instalar dependencias si no están instaladas
 echo "📦 Verificando dependencias..."
-pip3 install flask flask-cors apscheduler pytz playwright -q 2>/dev/null
-python3 -m playwright install chromium -q 2>/dev/null
+pip3 install flask flask-cors apscheduler pytz playwright -q
+python3 -m playwright install chromium -q
+sudo python3 -m playwright install-deps -q 2>/dev/null || true
 
 # Verificar si existen las cookies de Revolico
 if [ -f "$BACKEND_DIR/revolico_cookies.json" ]; then
