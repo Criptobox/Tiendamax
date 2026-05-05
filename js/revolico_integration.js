@@ -4,9 +4,8 @@
  * Incluye soporte para importar cookies desde Cookie-Editor
  */
 
-const BACKEND_URL_REVOLICO = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') 
-    ? 'http://localhost:5002/api' 
-    : 'https://5002-ide62062a0mv3bdyhwyp2-c5bbfe5e.us2.manus.computer/api';
+// Usamos 127.0.0.1 para evitar bloqueos de seguridad y problemas de DNS en Windows
+const BACKEND_URL_REVOLICO = 'http://127.0.0.1:5002/api';
 
 // ===== IMPORTAR COOKIES DESDE COOKIE-EDITOR =====
 

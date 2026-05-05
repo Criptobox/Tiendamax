@@ -32,7 +32,8 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
-CORS(app)
+# Configuración CORS ultra-permisiva para Windows
+CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
 
 # Zona horaria de Cuba
 CUBA_TZ = pytz.timezone('America/Havana')

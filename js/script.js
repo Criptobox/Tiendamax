@@ -2,9 +2,8 @@
 
 // ===== CONFIGURACIÓN GLOBAL =====
 // El backend corre en el puerto 5002. Intentamos conectar localmente primero.
-const BACKEND_URL = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') 
-    ? 'http://localhost:5002/api' 
-    : 'https://5002-ide62062a0mv3bdyhwyp2-c5bbfe5e.us2.manus.computer/api';
+// Forzamos la conexión a la IP local para evitar bloqueos de DNS/localhost en Windows
+const BACKEND_URL = 'http://127.0.0.1:5002/api';
 const PASSWORD_ADMIN = 'admin123';
 
 let productos = JSON.parse(localStorage.getItem('productos')) || [];

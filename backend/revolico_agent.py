@@ -12,7 +12,12 @@ import base64
 import tempfile
 import re
 from datetime import datetime
-from playwright.sync_api import sync_playwright, TimeoutError as PlaywrightTimeout
+try:
+    from playwright.sync_api import sync_playwright, TimeoutError as PlaywrightTimeout
+    PLAYWRIGHT_AVAILABLE = True
+except Exception as e:
+    print(f"⚠️ ADVERTENCIA: No se pudo cargar Playwright: {e}")
+    PLAYWRIGHT_AVAILABLE = False
 
 logger = logging.getLogger(__name__)
 
@@ -533,6 +538,9 @@ class SocialAgent:
         """
         Publica un producto en Revolico con selectores robustos.
         """
+        if not PLAYWRIGHT_AVAILABLE:
+            return {'success': False, 'error': 'El bot no puede iniciar porque falta una libreria de Windows (DLL). Ejecuta reparar_error.bat'}
+            
         imagen_tmp = None
 
         try:
