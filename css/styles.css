@@ -207,12 +207,12 @@ body.dark-mode .theme-toggle {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: none; /* Cambiado de flex a none por defecto */
+    background-color: rgba(0, 0, 0, 0.7);
+    display: none;
     align-items: center;
     justify-content: center;
     z-index: 2000;
-    animation: fadeIn 0.3s ease;
+    backdrop-filter: blur(5px);
 }
 
 .admin-panel.visible {
@@ -235,12 +235,13 @@ body.dark-mode .theme-toggle {
 .admin-panel-content {
     background: white;
     border-radius: var(--border-radius);
-    width: 90%;
-    max-width: 600px;
+    width: 95%;
+    max-width: 800px;
     max-height: 90vh;
     overflow-y: auto;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-    transition: var(--transition);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
 }
 
 .admin-header {
@@ -276,19 +277,31 @@ body.dark-mode .theme-toggle {
     display: flex;
     border-bottom: 2px solid var(--light-bg);
     background-color: var(--light-bg);
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.admin-tabs::-webkit-scrollbar {
+    display: none;
 }
 
 .tab-btn {
     flex: 1;
-    padding: 15px;
+    min-width: 120px;
+    padding: 15px 10px;
     background: none;
     border: none;
     cursor: pointer;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: bold;
-    color: #999;
+    color: #666;
     transition: var(--transition);
     border-bottom: 3px solid transparent;
+    white-space: nowrap;
 }
 
 .tab-btn.active {
@@ -1216,36 +1229,28 @@ body.dark-mode .categoria-btn.active {
 @media (max-width: 768px) {
     /* Mejoras Panel Admin en Móvil */
     .admin-panel-content, .modal-content {
-        width: 95%;
-        max-height: 95vh;
+        width: 98%;
+        max-height: 98vh;
         border-radius: 15px;
-        margin: 10px;
+        margin: 5px;
     }
 
     .admin-header {
-        padding: 15px;
+        padding: 12px 15px;
     }
 
     .admin-header h2 {
-        font-size: 18px;
-    }
-
-    .admin-tabs {
-        overflow-x: auto;
-        white-space: nowrap;
-        display: flex;
-        -webkit-overflow-scrolling: touch;
-        padding-bottom: 5px;
+        font-size: 16px;
     }
 
     .tab-btn {
-        flex: 0 0 auto;
-        padding: 12px 15px;
-        font-size: 13px;
+        padding: 12px 10px;
+        font-size: 12px;
+        min-width: 100px;
     }
 
     .admin-tab {
-        padding: 15px;
+        padding: 15px 10px;
     }
 
     .hero {
