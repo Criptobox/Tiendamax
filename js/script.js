@@ -1060,7 +1060,7 @@ function inicializarTienda() {
         editForm.addEventListener('submit', guardarProductoEditado);
     }
 
-    const loginForm = document.getElementById('loginForm');
+    const loginForm = document.querySelector('#loginModal form');
     if (loginForm) {
         loginForm.onsubmit = null;
         loginForm.addEventListener('submit', verificarPassword);

@@ -170,7 +170,9 @@ function agregarSubcategoriaAlProducto() {
     if (document.getElementById('productSubcategory')) return;
 
     // Insertar después del select de categoría
-    const categoryGroup = productForm.querySelector('label:has(+ select#productCategory)').parentElement;
+    const categorySelect = document.getElementById('productCategory');
+    if (!categorySelect) return;
+    const categoryGroup = categorySelect.parentElement;
     const subcatGroup = document.createElement('div');
     subcatGroup.className = 'form-group';
     subcatGroup.innerHTML = `
@@ -190,7 +192,9 @@ function agregarSubcategoriaAlEditModal() {
     if (document.getElementById('editProductSubcategory')) return;
 
     // Insertar después del select de categoría
-    const categoryGroup = editForm.querySelector('label:has(+ select#editProductCategory)').parentElement;
+    const categorySelect = document.getElementById('editProductCategory');
+    if (!categorySelect) return;
+    const categoryGroup = categorySelect.parentElement;
     const subcatGroup = document.createElement('div');
     subcatGroup.className = 'form-group';
     subcatGroup.innerHTML = `
