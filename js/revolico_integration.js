@@ -5,7 +5,9 @@
  */
 
 // Usamos 127.0.0.1 para evitar bloqueos de seguridad y problemas de DNS en Windows
-const BACKEND_URL_REVOLICO = 'http://127.0.0.1:5002/api';
+const BACKEND_URL_REVOLICO = window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost' 
+    ? 'http://127.0.0.1:5002/api' 
+    : '/api';
 
 // ===== IMPORTAR COOKIES DESDE COOKIE-EDITOR =====
 

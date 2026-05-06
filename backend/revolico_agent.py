@@ -1,18 +1,12 @@
 import os
 import time
 import logging
-import json
-
-try:
-    from selenium import webdriver
-    from selenium.webdriver.chrome.service import Service
-    from selenium.webdriver.chrome.options import Options
-    from selenium.webdriver.common.by import By
-    from selenium.webdriver.support.ui import WebDriverWait
-    from selenium.webdriver.support import expected_conditions as EC
-    from webdriver_manager.chrome import ChromeDriverManager
-except ImportError:
-    pass
+import requests
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.common.by import By
 
 logger = logging.getLogger(__name__)
 
@@ -20,71 +14,72 @@ class SocialAgent:
     def __init__(self, email, password):
         self.driver = None
 
-    def iniciar_navegador(self):
-        """Inicia el navegador Chrome para que el usuario haga login"""
+    def conectar_a_chrome_real(self):
+        print("\n[ℹ️] Conectando con Chrome Gemelo (Puerto 9222)...")
+        chrome_options = Options()
+        chrome_options.add_experimental_option("debuggerAddress", "127.0.0.1:9222")
         try:
-            chrome_options = Options()
-            # chrome_options.add_argument("--start-maximized")
-            # chrome_options.add_argument("--user-data-dir=selenium_user_data") # Guardar sesion
-            
-            service = Service(ChromeDriverManager().install())
-            self.driver = webdriver.Chrome(service=service, options=chrome_options)
-            self.driver.get("https://www.revolico.com/auth")
+            self.driver = webdriver.Chrome(options=chrome_options)
+            print("[✅] ¡BOT CONECTADO!")
             return True
-        except Exception as e:
-            logger.error(f"Error iniciando Selenium: {e}")
+        except Exception:
+            print("[❌] Error: Asegurate de abrir 'abrir_chrome_especial.bat'.")
             return False
 
+    def iniciar_navegador(self):
+        return self.conectar_a_chrome_real()
+
     def publicar_producto(self, producto):
-        """Publicacion automatica una vez que el usuario ya esta logueado"""
         if not self.driver:
-            if not self.iniciar_navegador():
-                return {'success': False, 'error': 'No se pudo abrir el navegador. Revisa Chrome.'}
+            if not self.conectar_a_chrome_real(): return {'success': False, 'error': 'Chrome no conectado.'}
         
         try:
-            # 1. Ir a la pagina de publicar
-            self.driver.get("https://www.revolico.com/item/publish")
-            time.sleep(3)
+            print(f"\n[🚀] Publicando: {producto.get('nombre')}")
+            self.driver.execute_script("window.open('https://www.revolico.com/item/publish', '_blank');")
+            self.driver.switch_to.window(self.driver.window_handles[-1])
+            time.sleep(6)
             
-            # Verificar si pide login (si no estamos en la pagina de publicar)
-            if "auth" in self.driver.current_url:
-                return {'success': False, 'error': 'Por favor, inicia sesion en la ventana de Chrome primero.'}
+            actions = ActionChains(self.driver)
+            
+            # 1. Titulo
+            print("   - Escribiendo Titulo...")
+            actions.send_keys(Keys.TAB).send_keys(producto.get('nombre')).perform()
+            
+            # 2. Precio
+            print("   - Escribiendo Precio...")
+            actions = ActionChains(self.driver)
+            actions.send_keys(Keys.TAB).send_keys(str(producto.get('precioActual'))).perform()
+            
+            # 3. Descripcion
+            print("   - Escribiendo Descripcion...")
+            actions = ActionChains(self.driver)
+            actions.send_keys(Keys.TAB).send_keys(Keys.TAB).send_keys(f"{producto.get('descripcion')}\n\nContacto: 5354320170").perform()
+            
+            # 4. SUBIR IMAGEN (NUEVO)
+            print("   - Intentando subir imagen...")
+            try:
+                # Intentamos encontrar el input de tipo file para la imagen
+                # Nota: En Revolico suele ser un input invisible que se activa al clickear
+                img_path = producto.get('imagen')
+                if img_path and os.path.exists(img_path):
+                    file_input = self.driver.find_element(By.CSS_SELECTOR, "input[type='file']")
+                    file_input.send_keys(os.path.abspath(img_path))
+                    print("   [✅] Imagen cargada.")
+                else:
+                    # Si es una URL externa, Selenium no puede subirla directamente,
+                    # el usuario tendria que haberla descargado antes.
+                    print("   [⚠️] Imagen no encontrada localmente o es una URL.")
+            except Exception as e:
+                print(f"   [⚠️] No se pudo subir la imagen automaticamente: {e}")
 
-            # 2. Rellenar el formulario (Basado en selectores de Revolico)
-            wait = WebDriverWait(self.driver, 10)
+            print(f"[✅] {producto.get('nombre')} listo.")
             
-            # Titulo
-            titulo_input = wait.until(EC.presence_of_element_located((By.NAME, "title")))
-            titulo_input.clear()
-            titulo_input.send_keys(producto.get('nombre'))
+            # PAUSA DE SEGURIDAD (2 MINUTOS)
+            print("\n[⏳] ESPERANDO 120 SEGUNDOS para la siguiente publicacion (Seguridad Antivbot)...")
+            for i in range(120, 0, -10):
+                print(f"      Faltan {i} segundos...")
+                time.sleep(10)
             
-            # Precio
-            precio_input = self.driver.find_element(By.NAME, "price")
-            precio_input.clear()
-            precio_input.send_keys(str(producto.get('precioActual')))
-            
-            # Descripcion
-            desc_input = self.driver.find_element(By.NAME, "description")
-            desc_input.clear()
-            desc_input.send_keys(f"{producto.get('descripcion')}\n\nContacto: 5354320170")
-            
-            # Nota: Aqui se podrian añadir mas campos (categoria, fotos)
-            # Por ahora, dejamos que el usuario vea el progreso
-            
-            logger.info(f"Formulario completado para: {producto.get('nombre')}")
-            time.sleep(2)
-            
-            # 3. Click en Publicar (Opcional: podemos dejar que el usuario lo revise)
-            # publicar_btn = self.driver.find_element(By.XPATH, "//button[contains(text(), 'Publicar')]")
-            # publicar_btn.click()
-            
-            return {'success': True, 'mensaje': f'Formulario de {producto.get("nombre")} completado. ¡Dale a publicar!'}
-
+            return {'success': True, 'mensaje': f'Producto {producto.get("nombre")} publicado.'}
         except Exception as e:
-            logger.error(f"Error publicando con Selenium: {e}")
-            return {'success': False, 'error': f'Error en el navegador: {str(e)}'}
-
-    def cerrar(self):
-        if self.driver:
-            self.driver.quit()
-            self.driver = None
+            return {'success': False, 'error': str(e)}

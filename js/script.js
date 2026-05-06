@@ -3,7 +3,11 @@
 // ===== CONFIGURACIÓN GLOBAL =====
 // El backend corre en el puerto 5002. Intentamos conectar localmente primero.
 // Forzamos la conexión a la IP local para evitar bloqueos de DNS/localhost en Windows
-const BACKEND_URL = 'http://127.0.0.1:5002/api';
+// En hosting compartido como Namecheap, el backend suele estar en un subdominio o una ruta específica.
+// Cambiamos a una ruta relativa o permitimos que se configure fácilmente.
+const BACKEND_URL = window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost' 
+    ? 'http://127.0.0.1:5002/api' 
+    : '/api';
 const PASSWORD_ADMIN = 'Cripx';
 
 let productos = JSON.parse(localStorage.getItem('productos')) || [];
@@ -195,7 +199,7 @@ function renderizarMasVendidos() {
     productosAMostrar.forEach(producto => {
         const card = document.createElement('div');
         card.className = 'producto-card';
-        card.style.position = 'relative';
+        card.onclick = () => abrirDetalleProducto(producto.id);
         card.innerHTML = `
             <div class="badge-vendido">🔥 Más Vendido</div>
             <div class="producto-image">
@@ -203,7 +207,7 @@ function renderizarMasVendidos() {
                 ${producto.descuento > 0 ? `<div class="badge">-${producto.descuento}%</div>` : ''}
             </div>
             <h3>${producto.nombre}</h3>
-            <p class="producto-description">${producto.descripcion.substring(0, 100)}${producto.descripcion.length > 100 ? '...' : ''}</p>
+            <p class="producto-description">${producto.descripcion}</p>
             <p class="precio">
                 ${producto.precioOriginal !== producto.precioActual ? `<span class="precio-original">$${producto.precioOriginal.toFixed(2)}</span>` : ''}
                 <span class="precio-actual">$${producto.precioActual.toFixed(2)} USD</span>
@@ -215,7 +219,7 @@ function renderizarMasVendidos() {
                 <div class="stock-bar-fill" style="width: ${Math.max(15, (producto.stock / 20) * 100)}%"></div>
             </div>
             
-            <button class="btn btn-small btn-primary" onclick="contactarProducto('${producto.nombre}')">🛒 Comprar</button>
+            <button class="btn btn-small btn-primary" onclick="event.stopPropagation(); contactarProducto('${producto.nombre}')">🛒 Comprar</button>
         `;
         grid.appendChild(card);
     });
@@ -224,12 +228,16 @@ function renderizarMasVendidos() {
 // ===== AUTENTICACIÓN =====
 
 function abrirLoginAdmin() {
-    document.getElementById('loginModal').classList.remove('hidden');
+    const modal = document.getElementById('loginModal');
+    modal.classList.remove('hidden');
+    modal.style.setProperty('display', 'flex', 'important');
     setTimeout(() => document.getElementById('adminPassword').focus(), 100);
 }
 
 function cerrarLoginModal() {
-    document.getElementById('loginModal').classList.add('hidden');
+    const modal = document.getElementById('loginModal');
+    modal.classList.add('hidden');
+    modal.style.setProperty('display', 'none', 'important');
     document.getElementById('adminPassword').value = '';
 }
 
@@ -248,7 +256,10 @@ function verificarPassword(event) {
 
 function abrirAdminPanel() {
     if (!usuarioAutenticado) { abrirLoginAdmin(); return; }
-    document.getElementById('adminPanel').classList.remove('hidden');
+    const panel = document.getElementById('adminPanel');
+    panel.classList.remove('hidden');
+    panel.classList.add('visible');
+    panel.style.setProperty('display', 'flex', 'important');
     actualizarListaProductos();
     actualizarSelectCategorias();
     actualizarListaCategorias();
@@ -256,7 +267,10 @@ function abrirAdminPanel() {
 }
 
 function cerrarAdminPanel() {
-    document.getElementById('adminPanel').classList.add('hidden');
+    const panel = document.getElementById('adminPanel');
+    panel.classList.add('hidden');
+    panel.classList.remove('visible');
+    panel.style.setProperty('display', 'none', 'important');
 }
 
 function switchTab(tabName) {
@@ -382,7 +396,7 @@ function renderizarProductos() {
     productosFiltrados.forEach(producto => {
         const card = document.createElement('div');
         card.className = 'producto-card';
-        card.style.position = 'relative';
+        card.onclick = () => abrirDetalleProducto(producto.id);
         card.innerHTML = `
             ${producto.masVendido ? '<div class="badge-vendido">🔥 Más Vendido</div>' : ''}
             <div class="producto-image">
@@ -395,17 +409,58 @@ function renderizarProductos() {
                 ${producto.precioOriginal !== producto.precioActual ? `<span class="precio-original">$${producto.precioOriginal.toFixed(2)}</span>` : ''}
                 <span class="precio-actual">$${producto.precioActual.toFixed(2)} USD</span>
             </p>
-            <div class="stock-count">
-                <span>📦 Solo quedan ${producto.stock} unidades</span>
-            </div>
-            <div class="stock-bar">
-                <div class="stock-bar-fill" style="width: ${Math.max(15, (producto.stock / 20) * 100)}%"></div>
-            </div>
-            
-            <button class="btn btn-small btn-primary" onclick="contactarProducto('${producto.nombre}')">🛒 Comprar</button>
+            <div class="stock">📦 Stock: ${producto.stock} unidades</div>
+            <button class="btn btn-small btn-primary" onclick="event.stopPropagation(); contactarProducto('${producto.nombre}')">🛒 Comprar</button>
         `;
         productosGrid.appendChild(card);
     });
+}
+
+// ===== DETALLE DE PRODUCTO =====
+
+function abrirDetalleProducto(id) {
+    const p = productos.find(prod => prod.id === id);
+    if (!p) return;
+
+    document.getElementById('detailProductName').textContent = p.nombre;
+    document.getElementById('detailProductImage').src = p.imagen;
+    document.getElementById('detailProductImage').alt = p.nombre;
+    document.getElementById('detailProductCategory').textContent = obtenerIconoCategoria(p.categoria) + ' ' + p.categoria;
+    document.getElementById('detailProductDescription').textContent = p.descripcion;
+    
+    const badge = document.getElementById('detailProductBadge');
+    if (p.descuento > 0) {
+        badge.style.display = 'inline-block';
+        badge.textContent = `-${p.descuento}%`;
+    } else {
+        badge.style.display = 'none';
+    }
+
+    const priceOriginal = document.getElementById('detailPriceOriginal');
+    if (p.precioOriginal !== p.precioActual) {
+        priceOriginal.style.display = 'inline';
+        priceOriginal.textContent = `$${p.precioOriginal.toFixed(2)}`;
+    } else {
+        priceOriginal.style.display = 'none';
+    }
+
+    document.getElementById('detailPriceActual').textContent = `$${p.precioActual.toFixed(2)} USD`;
+    document.getElementById('detailProductStock').innerHTML = `<span>📦 Solo quedan ${p.stock} unidades</span>`;
+    document.getElementById('detailStockBarFill').style.width = `${Math.max(15, (p.stock / 20) * 100)}%`;
+    
+    document.getElementById('detailBuyBtn').onclick = () => contactarProducto(p.nombre);
+
+    const modal = document.getElementById('productDetailModal');
+    modal.classList.remove('hidden');
+    modal.style.setProperty('display', 'flex', 'important');
+    document.body.style.overflow = 'hidden'; // Bloquear scroll
+}
+
+function cerrarDetalleModal() {
+    const modal = document.getElementById('productDetailModal');
+    modal.classList.add('hidden');
+    modal.style.setProperty('display', 'none', 'important');
+    document.body.style.overflow = 'auto'; // Restaurar scroll
 }
 
 function contactarProducto(nombre) {
@@ -672,11 +727,15 @@ function abrirEditModal(id) {
         preview.innerHTML = `<img src="${p.imagen}" style="max-width:100px;max-height:80px;border-radius:8px;">`;
     }
 
-    document.getElementById('editModal').classList.remove('hidden');
+    const modal = document.getElementById('editModal');
+    modal.classList.remove('hidden');
+    modal.style.setProperty('display', 'flex', 'important');
 }
 
 function cerrarEditModal() {
-    document.getElementById('editModal').classList.add('hidden');
+    const modal = document.getElementById('editModal');
+    modal.classList.add('hidden');
+    modal.style.setProperty('display', 'none', 'important');
 }
 
 function guardarProductoEditado(event) {

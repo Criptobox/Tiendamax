@@ -246,9 +246,14 @@
 
 
 
-    <!-- Botón WhatsApp flotante -->
+    <!-- Botón WhatsApp flotante (Chat Directo) -->
     <a href="https://wa.me/5354320170?text=Hola,%20me%20interesa%20conocer%20mas%20sobre%20tus%20productos" class="whatsapp-btn" title="Contactar por WhatsApp" target="_blank" rel="noopener">
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.67-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.076 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421-7.403h-.004a9.87 9.87 0 00-4.255.949c-1.238.503-2.37 1.236-3.356 2.241C3.060 10.378 2.275 11.950 2.275 13.657c0 1.814.505 3.583 1.487 5.127l.956 1.665-1.707 5.612 5.849-1.566 1.626.961c1.361.805 2.846 1.23 4.377 1.23 5.516 0 10-4.484 10-10s-4.484-10-10-10z"/></svg>
+    </a>
+
+    <!-- Botón Grupo de WhatsApp -->
+    <a href="https://chat.whatsapp.com/TU_CODIGO_DE_GRUPO" class="whatsapp-group-btn" title="Unirse al Grupo de WhatsApp" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>
     </a>
 
     <!-- Botones de control -->
@@ -258,7 +263,7 @@
     </div>
 
     <!-- Modal Login Admin -->
-    <div id="loginModal" class="modal hidden">
+    <div id="loginModal" class="modal hidden" style="display: none !important;">
         <div class="modal-content">
             <div class="modal-header"><h2>Panel de Administracion</h2><button class="close-btn" onclick="cerrarLoginModal()">✕</button></div>
             <form id="loginForm" onsubmit="verificarPassword(event)">
@@ -269,7 +274,7 @@
     </div>
 
     <!-- Panel de Administración -->
-    <div id="adminPanel" class="admin-panel hidden">
+    <div id="adminPanel" class="admin-panel hidden" style="display: none !important;">
         <div class="admin-panel-content">
             <div class="admin-header"><h2>⚙️ Panel de Administracion</h2><button class="close-btn" onclick="cerrarAdminPanel()">✕</button></div>
             <div class="admin-tabs">
@@ -482,7 +487,7 @@
     </footer>
 
     <!-- Modal Editar Producto -->
-    <div id="editModal" class="modal hidden">
+    <div id="editModal" class="modal hidden" style="display: none !important;">
         <div class="modal-content">
             <div class="modal-header"><h2>Editar Producto</h2><button class="close-btn" onclick="cerrarEditModal()">✕</button></div>
             <form id="editForm" onsubmit="guardarProductoEditado(event)">
@@ -508,6 +513,40 @@
                 </div>
                 <button type="submit" class="btn btn-primary">💾 Guardar Cambios</button>
             </form>
+        </div>
+    </div>
+
+    <!-- Modal Detalle de Producto -->
+    <div id="productDetailModal" class="modal hidden" style="display: none !important;">
+        <div class="modal-content" style="max-width: 800px;">
+            <div class="modal-header">
+                <h2 id="detailProductName">Detalle del Producto</h2>
+                <button class="close-btn" onclick="cerrarDetalleModal()">×</button>
+            </div>
+            <div style="padding: 25px;">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px;">
+                    <div id="detailProductImageContainer">
+                        <img id="detailProductImage" src="" alt="" style="width: 100%; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                    </div>
+                    <div>
+                        <div id="detailProductBadge" class="badge" style="position: static; display: inline-block; margin-bottom: 15px;">-0%</div>
+                        <p id="detailProductCategory" style="color: var(--primary-color); font-weight: bold; margin-bottom: 10px;"></p>
+                        <div id="detailProductPrice" style="margin-bottom: 20px;">
+                            <span id="detailPriceOriginal" style="text-decoration: line-through; color: #999; margin-right: 10px; font-size: 18px;"></span>
+                            <span id="detailPriceActual" style="font-size: 32px; font-weight: 800; color: var(--primary-color);"></span>
+                        </div>
+                        <div id="detailProductStock" class="stock-count" style="margin-bottom: 20px;"></div>
+                        <div class="stock-bar" style="margin-bottom: 25px;">
+                            <div id="detailStockBarFill" class="stock-bar-fill"></div>
+                        </div>
+                        <button id="detailBuyBtn" class="btn btn-primary btn-large" style="width: 100%;">🛒 Comprar por WhatsApp</button>
+                    </div>
+                </div>
+                <div style="margin-top: 30px; border-top: 1px solid #eee; padding-top: 20px;">
+                    <h3 style="margin-bottom: 15px;">Descripción</h3>
+                    <div id="detailProductDescription" style="white-space: pre-wrap; line-height: 1.8; color: #444;"></div>
+                </div>
+            </div>
         </div>
     </div>
 
