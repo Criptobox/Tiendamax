@@ -373,7 +373,7 @@
     <div id="loginModal" class="modal hidden" style="display: none !important;">
         <div class="modal-content">
             <div class="modal-header"><h2>Acceso de Administrador</h2><button class="close-btn" onclick="cerrarLoginModal()">✕</button></div>
-            <form onsubmit="autenticarAdmin(event)">
+            <form onsubmit="verificarPassword(event)">
                 <div class="form-group">
                     <label>Contraseña:</label>
                     <input type="password" id="adminPassword" required autofocus>
