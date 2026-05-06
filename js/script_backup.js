@@ -1,6 +1,10 @@
 'use strict';
 
 // ===== CONFIGURACIÓN GLOBAL =====
+// El backend corre en el puerto 5002. Intentamos conectar localmente primero.
+// Forzamos la conexión a la IP local para evitar bloqueos de DNS/localhost en Windows
+// En hosting compartido como Namecheap, el backend suele estar en un subdominio o una ruta específica.
+// Cambiamos a una ruta relativa o permitimos que se configure fácilmente.
 const BACKEND_URL = window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost' 
     ? 'http://127.0.0.1:5002/api' 
     : '/api';
@@ -11,7 +15,7 @@ let categorias = JSON.parse(localStorage.getItem('categorias')) || ['General'];
 let usuarioAutenticado = false;
 let categoriaSeleccionada = 'Todas';
 
-// Iconos para cada categoría
+// Iconos para cada categoría (se asignan automáticamente por nombre)
 const ICONOS_CATEGORIAS = {
     'General':    '🛍️',
     'WIFI':       '📡',
@@ -33,47 +37,7 @@ function obtenerIconoCategoria(nombre) {
     return ICONOS_CATEGORIAS[nombre] || '📦';
 }
 
-// ===== VALIDACIÓN DE CAMPOS =====
-
-function validarProducto(producto) {
-    const errores = [];
-    
-    if (!producto.nombre || producto.nombre.trim().length === 0) {
-        errores.push('El nombre del producto es requerido');
-    }
-    if (!producto.descripcion || producto.descripcion.trim().length === 0) {
-        errores.push('La descripción es requerida');
-    }
-    if (!producto.imagen) {
-        errores.push('La imagen es requerida');
-    }
-    if (!producto.precioOriginal || producto.precioOriginal <= 0) {
-        errores.push('El precio original debe ser mayor a 0');
-    }
-    if (!producto.precioActual || producto.precioActual <= 0) {
-        errores.push('El precio actual debe ser mayor a 0');
-    }
-    if (producto.precioActual > producto.precioOriginal) {
-        errores.push('El precio actual no puede ser mayor que el precio original');
-    }
-    if (!producto.stock || producto.stock <= 0) {
-        errores.push('El stock debe ser mayor a 0');
-    }
-    if (!producto.categoria) {
-        errores.push('La categoría es requerida');
-    }
-    
-    // Calcular descuento automáticamente si no es correcto
-    const descuentoCalculado = Math.round(((producto.precioOriginal - producto.precioActual) / producto.precioOriginal) * 100);
-    if (producto.descuento !== descuentoCalculado) {
-        producto.descuento = descuentoCalculado;
-    }
-    
-    return errores;
-}
-
 // ===== CARGA DE DATOS DESDE GITHUB =====
-
 async function cargarDatosDesdeGitHub() {
     try {
         const resProd = await fetch('productos.json?v=' + Date.now());
@@ -148,25 +112,7 @@ function toggleDarkMode() {
     if (btn) btn.textContent = isDark ? '☀️' : '🌙';
 }
 
-function mostrarNotificacion(mensaje, tipo = 'success') {
-    const notif = document.createElement('div');
-    notif.className = `notificacion notif-${tipo}`;
-    notif.textContent = mensaje;
-    notif.style.cssText = `
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        background: ${tipo === 'error' ? '#e74c3c' : tipo === 'info' ? '#3498db' : '#27ae60'};
-        color: white;
-        padding: 15px 20px;
-        border-radius: 8px;
-        z-index: 10000;
-        animation: slideIn 0.3s ease;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    `;
-    document.body.appendChild(notif);
-    setTimeout(() => notif.remove(), 4000);
-}
+
 
 // ===== NAVEGACIÓN ENTRE VISTAS =====
 
@@ -202,6 +148,7 @@ function renderizarCategoriasHome() {
 
     grid.innerHTML = '';
 
+    // Botón "Todos los productos"
     const cardTodas = document.createElement('div');
     cardTodas.className = 'categoria-card';
     const totalProductos = productos.length;
@@ -213,6 +160,7 @@ function renderizarCategoriasHome() {
     cardTodas.onclick = () => mostrarVistaCategoria('Todas');
     grid.appendChild(cardTodas);
 
+    // Una tarjeta por cada categoría
     categorias.forEach(cat => {
         const count = productos.filter(p => p.categoria === cat).length;
         const card = document.createElement('div');
@@ -234,7 +182,10 @@ function renderizarMasVendidos() {
     const vacio = document.getElementById('masVendidosVacio');
     if (!grid) return;
 
+    // Filtrar productos marcados como más vendidos
     const masVendidos = productos.filter(p => p.masVendido === true || p.masVendido === 'true');
+
+    // Si no hay marcados, mostrar los primeros 3 productos como fallback
     const productosAMostrar = masVendidos.length > 0 ? masVendidos : productos.slice(0, 3);
 
     grid.innerHTML = '';
@@ -329,8 +280,34 @@ function switchTab(tabName) {
     if (targetTab) targetTab.classList.add('active');
     const buttons = document.querySelectorAll('.tab-btn');
     buttons.forEach(btn => {
-        if (btn.getAttribute('data-tab') === tabName) btn.classList.add('active');
+        if (btn.getAttribute('onclick') && btn.getAttribute('onclick').includes(tabName)) {
+            btn.classList.add('active');
+        }
     });
+    if (tabName === 'publicar-ahora') cargarEstadoPublicacion();
+    if (tabName === 'configuracion') cargarConfiguracionGitHub();
+}
+
+// ===== NOTIFICACIONES =====
+
+function mostrarNotificacion(mensaje, tipo = 'success') {
+    const notif = document.createElement('div');
+    notif.className = `notificacion notificacion-${tipo}`;
+    notif.textContent = mensaje;
+    notif.style.cssText = `
+        position: fixed; top: 20px; right: 20px; z-index: 99999;
+        padding: 14px 20px; border-radius: 10px; font-weight: 600;
+        font-size: 14px; max-width: 350px; box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        animation: slideIn 0.3s ease;
+        background: ${tipo === 'success' ? '#27AE60' : tipo === 'error' ? '#E74C3C' : '#3498DB'};
+        color: white;
+    `;
+    document.body.appendChild(notif);
+    setTimeout(() => {
+        notif.style.opacity = '0';
+        notif.style.transition = 'opacity 0.3s';
+        setTimeout(() => notif.remove(), 300);
+    }, 4000);
 }
 
 // ===== PRODUCTOS =====
@@ -356,17 +333,9 @@ function agregarProductoForm(event) {
             categoria: document.getElementById('productCategory').value,
             masVendido: masVendidoVal ? masVendidoVal.value === 'true' : false
         };
-
-        // Validar producto
-        const errores = validarProducto(producto);
-        if (errores.length > 0) {
-            mostrarNotificacion('❌ ' + errores[0], 'error');
-            return;
-        }
-
         productos.push(producto);
         guardarProductos();
-        sincronizarConGitHub();
+        sincronizarConBackend();
         document.getElementById('productForm').reset();
         mostrarNotificacion('✅ ¡Producto agregado exitosamente!');
         renderizarCategoriasHome();
@@ -407,22 +376,22 @@ async function sincronizarConBackend() {
     }
 }
 
-// ===== RENDERIZAR PRODUCTOS =====
-
 function renderizarProductos() {
     const productosGrid = document.getElementById('productosGrid');
+    const productoVacio = document.getElementById('productoVacio');
     if (!productosGrid) return;
-
-    const productosFiltrados = categoriaSeleccionada === 'Todas' 
-        ? productos 
-        : productos.filter(p => p.categoria === categoriaSeleccionada);
 
     productosGrid.innerHTML = '';
 
+    const productosFiltrados = categoriaSeleccionada === 'Todas'
+        ? productos
+        : productos.filter(p => p.categoria === categoriaSeleccionada);
+
     if (productosFiltrados.length === 0) {
-        productosGrid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #999; padding: 40px;">No hay productos en esta categoría</p>';
+        if (productoVacio) productoVacio.style.display = 'block';
         return;
     }
+    if (productoVacio) productoVacio.style.display = 'none';
 
     productosFiltrados.forEach(producto => {
         const card = document.createElement('div');
@@ -484,14 +453,14 @@ function abrirDetalleProducto(id) {
     const modal = document.getElementById('productDetailModal');
     modal.classList.remove('hidden');
     modal.style.setProperty('display', 'flex', 'important');
-    document.body.style.overflow = 'hidden';
+    document.body.style.overflow = 'hidden'; // Bloquear scroll
 }
 
 function cerrarDetalleModal() {
     const modal = document.getElementById('productDetailModal');
     modal.classList.add('hidden');
     modal.style.setProperty('display', 'none', 'important');
-    document.body.style.overflow = 'auto';
+    document.body.style.overflow = 'auto'; // Restaurar scroll
 }
 
 function contactarProducto(nombre) {
@@ -526,64 +495,12 @@ function actualizarListaProductos() {
             <div class="product-item-actions" style="clear:both;padding-top:8px;">
                 <button class="btn-small-icon btn-edit" onclick="abrirEditModal(${producto.id})">✏️ Editar</button>
                 <button class="btn-small-icon btn-delete" onclick="eliminarProducto(${producto.id})">🗑️ Eliminar</button>
-                <button class="btn-small-icon btn-revolico" style="background:#ff9800" onclick="copiarParaRevolico(${producto.id})">📋 Revolico</button>
-                <button class="btn-small-icon btn-revolico" style="background:#4267B2" onclick="copiarParaFacebook(${producto.id})">📋 Facebook</button>
+                <button class="btn-small-icon btn-revolico" style="background:#ff9800" onclick="prepararPublicacionManual(${producto.id})">📋 Copiar y Abrir</button>
                 <button class="btn-small-icon btn-revolico" onclick="publicarEnRevolico(${producto.id})">🤖 Rev</button>
                 <button class="btn-small-icon btn-revolico" style="background:#4267B2" onclick="publicarEnFacebook(${producto.id})">🤖 FB</button>
             </div>
         `;
         productsList.appendChild(item);
-    });
-}
-
-// ===== FUNCIÓN DE COPIAR PARA FACEBOOK Y REVOLICO =====
-
-function copiarParaRevolico(id) {
-    const producto = productos.find(p => p.id === id);
-    if (!producto) return;
-
-    const texto = `
-${producto.nombre}
-
-${producto.descripcion}
-
-💰 Precio: $${producto.precioActual} USD
-${producto.stock > 0 ? `📦 Stock: ${producto.stock} unidades disponibles` : '❌ Agotado'}
-
-📞 Contacto: +53 54320170
-    `.trim();
-
-    navigator.clipboard.writeText(texto).then(() => {
-        mostrarNotificacion('✅ ¡Datos copiados! Ahora pega en Revolico.');
-        setTimeout(() => { window.open('https://www.revolico.com/item/publish', '_blank'); }, 500);
-    }).catch(() => { 
-        window.open('https://www.revolico.com/item/publish', '_blank');
-    });
-}
-
-function copiarParaFacebook(id) {
-    const producto = productos.find(p => p.id === id);
-    if (!producto) return;
-
-    const texto = `
-🛍️ ${producto.nombre}
-
-${producto.descripcion}
-
-💰 Precio: $${producto.precioActual} USD
-${producto.precioOriginal > producto.precioActual ? `💳 Antes: $${producto.precioOriginal} USD (-${producto.descuento}%)` : ''}
-${producto.stock > 0 ? `📦 Disponible: ${producto.stock} unidades` : '❌ Agotado'}
-
-📞 Interesado? Contáctame por WhatsApp: +53 54320170
-
-#TiendaMax #Productos #Oferta #Cuba
-    `.trim();
-
-    navigator.clipboard.writeText(texto).then(() => {
-        mostrarNotificacion('✅ ¡Datos copiados! Ahora pega en Facebook Marketplace.');
-        setTimeout(() => { window.open('https://www.facebook.com/marketplace', '_blank'); }, 500);
-    }).catch(() => { 
-        window.open('https://www.facebook.com/marketplace', '_blank');
     });
 }
 
@@ -701,6 +618,7 @@ function filtrarPorCategoria(cat) {
     categoriaSeleccionada = cat;
     actualizarBotonesCategorias();
     renderizarProductos();
+    // Actualizar título
     const titulo = document.getElementById('tituloCategoriaActual');
     if (titulo) {
         const icono = obtenerIconoCategoria(cat);
@@ -831,7 +749,7 @@ function guardarProductoEditado(event) {
     const file = fileInput ? fileInput.files[0] : null;
 
     const actualizarProducto = (nuevaImagen) => {
-        const productoActualizado = {
+        productos[index] = {
             ...productos[index],
             nombre: document.getElementById('editProductName').value.trim(),
             descripcion: document.getElementById('editProductDescription').value.trim(),
@@ -843,17 +761,8 @@ function guardarProductoEditado(event) {
             masVendido: masVendidoSel ? masVendidoSel.value === 'true' : productos[index].masVendido,
             imagen: nuevaImagen || productos[index].imagen
         };
-
-        // Validar producto
-        const errores = validarProducto(productoActualizado);
-        if (errores.length > 0) {
-            mostrarNotificacion('❌ ' + errores[0], 'error');
-            return;
-        }
-
-        productos[index] = productoActualizado;
         guardarProductos();
-        sincronizarConGitHub();
+        sincronizarConBackend();
         cerrarEditModal();
         renderizarCategoriasHome();
         renderizarMasVendidos();
@@ -959,22 +868,6 @@ async function sincronizarTodoConGitHub() {
     }
 }
 
-async function sincronizarConGitHub() {
-    const user = localStorage.getItem('githubUser');
-    const repo = localStorage.getItem('githubRepo');
-    const token = localStorage.getItem('githubToken');
-    if (!user || !repo || !token) {
-        console.log('ℹ️ GitHub no configurado. Saltando sincronización automática.');
-        return;
-    }
-    try {
-        await subirArchivoAGitHub(user, repo, token, 'productos.json', productos);
-        console.log('✅ Productos sincronizados con GitHub automáticamente');
-    } catch (e) {
-        console.warn('⚠️ Error al sincronizar automáticamente:', e.message);
-    }
-}
-
 async function subirArchivoAGitHub(user, repo, token, path, data) {
     const url = `https://api.github.com/repos/${user}/${repo}/contents/${path}`;
     const content = btoa(unescape(encodeURIComponent(JSON.stringify(data, null, 2))));
@@ -1001,6 +894,7 @@ function verificarOfertasYMostrarBanner() {
     const banner = document.getElementById('urgenciaBanner');
     if (!banner) return;
 
+    // Solo mostrar si hay productos con descuento real (precioActual < precioOriginal)
     const hayOfertas = productos.some(p => parseFloat(p.precioOriginal) > parseFloat(p.precioActual));
 
     if (hayOfertas) {
@@ -1012,14 +906,17 @@ function verificarOfertasYMostrarBanner() {
 
 // ===== INICIALIZACIÓN =====
 
+// Inicialización segura del DOM
 function inicializarTienda() {
     console.log("🚀 Inicializando TiendaMax...");
     
+    // Cargar datos
     cargarDatosDesdeGitHub();
 
+    // Event Listeners
     const productForm = document.getElementById('productForm');
     if (productForm) {
-        productForm.onsubmit = null;
+        productForm.onsubmit = null; // Limpiar anteriores
         productForm.addEventListener('submit', agregarProductoForm);
     }
 
@@ -1035,6 +932,7 @@ function inicializarTienda() {
         loginForm.addEventListener('submit', verificarPassword);
     }
 
+    // Verificar backend periódicamente
     setInterval(() => {
         const panel = document.getElementById('adminPanel');
         if (panel && !panel.classList.contains('hidden')) {
@@ -1042,6 +940,7 @@ function inicializarTienda() {
         }
     }, 30000);
 
+    // Restaurar modo oscuro si estaba activo
     if (localStorage.getItem('darkMode') === 'true') {
         document.body.classList.add('dark-mode');
         const btn = document.querySelector('.theme-toggle');
@@ -1049,6 +948,7 @@ function inicializarTienda() {
     }
 }
 
+// Asegurar que la inicialización ocurra incluso si el evento DOMContentLoaded ya pasó
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', inicializarTienda);
 } else {

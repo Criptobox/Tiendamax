@@ -77,6 +77,115 @@
             border-radius: 3px;
         }
 
+        /* ===== NUEVOS ESTILOS PSICOLÓGICOS ===== */
+        .badge-usado {
+            background: linear-gradient(135deg, #9b59b6, #8e44ad);
+            color: white;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 4px 12px;
+            border-radius: 20px;
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            z-index: 2;
+            border: 2px solid rgba(255,255,255,0.3);
+        }
+
+        .badge-confianza {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: rgba(39, 174, 96, 0.1);
+            color: #27ae60;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .contador-personas {
+            background: rgba(230, 126, 34, 0.1);
+            color: #e67e22;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .indicador-popularidad {
+            color: #f39c12;
+            font-size: 12px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .microcopy-urgencia {
+            color: #e74c3c;
+            font-size: 12px;
+            font-weight: 700;
+            margin-top: 8px;
+            animation: blink 1.5s infinite;
+        }
+
+        @keyframes blink {
+            0%, 49%, 100% { opacity: 1; }
+            50%, 99% { opacity: 0.7; }
+        }
+
+        .btn-cta-mejorado {
+            background: linear-gradient(135deg, #FF6B35 0%, #f7931e 100%);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-cta-mejorado:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 107, 53, 0.5);
+        }
+
+        .btn-cta-mejorado::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn-cta-mejorado:hover::before {
+            left: 100%;
+        }
+
+        .garantia-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
 
         /* ===== ESTILOS PANEL ADMIN ===== */
         .backend-status { font-size: 12px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; margin-bottom: 16px; border: 1px solid #dee2e6; }
@@ -244,8 +353,6 @@
         🔥 ¡OFERTAS RELÁMPAGO DISPONIBLES! <span class="flash-deal">APROVECHA AHORA</span>
     </div>
 
-
-
     <!-- Botón WhatsApp flotante (Chat Directo) -->
     <a href="https://wa.me/5354320170?text=Hola,%20me%20interesa%20conocer%20mas%20sobre%20tus%20productos" class="whatsapp-btn" title="Contactar por WhatsApp" target="_blank" rel="noopener">
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.67-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.076 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421-7.403h-.004a9.87 9.87 0 00-4.255.949c-1.238.503-2.37 1.236-3.356 2.241C3.060 10.378 2.275 11.950 2.275 13.657c0 1.814.505 3.583 1.487 5.127l.956 1.665-1.707 5.612 5.849-1.566 1.626.961c1.361.805 2.846 1.23 4.377 1.23 5.516 0 10-4.484 10-10s-4.484-10-10-10z"/></svg>
@@ -259,44 +366,58 @@
     <!-- Botones de control -->
     <div class="control-buttons">
         <button class="theme-toggle" onclick="toggleDarkMode()" title="Cambiar tema">🌙</button>
-        <button class="admin-toggle" onclick="abrirLoginAdmin()" title="Panel de Administracion">⚙️</button>
+        <button class="admin-toggle" onclick="abrirLoginAdmin()" title="Panel de administración">⚙️</button>
     </div>
 
-    <!-- Modal Login Admin -->
+    <!-- Modal Login -->
     <div id="loginModal" class="modal hidden" style="display: none !important;">
         <div class="modal-content">
-            <div class="modal-header"><h2>Panel de Administracion</h2><button class="close-btn" onclick="cerrarLoginModal()">✕</button></div>
-            <form id="loginForm" onsubmit="verificarPassword(event)">
-                <div class="form-group"><label for="adminPassword">Contrasena:</label><input type="password" id="adminPassword" required placeholder="Ingresa tu contrasena"></div>
-                <button type="submit" class="btn btn-primary">Acceder</button>
+            <div class="modal-header"><h2>Acceso de Administrador</h2><button class="close-btn" onclick="cerrarLoginModal()">✕</button></div>
+            <form onsubmit="autenticarAdmin(event)">
+                <div class="form-group">
+                    <label>Contraseña:</label>
+                    <input type="password" id="adminPassword" required autofocus>
+                </div>
+                <button type="submit" class="btn btn-primary">🔓 Acceder</button>
             </form>
         </div>
     </div>
 
-    <!-- Panel de Administración -->
+    <!-- Panel Admin -->
     <div id="adminPanel" class="admin-panel hidden" style="display: none !important;">
-        <div class="admin-panel-content">
-            <div class="admin-header"><h2>⚙️ Panel de Administracion</h2><button class="close-btn" onclick="cerrarAdminPanel()">✕</button></div>
-            <div class="admin-tabs">
-                <button class="tab-btn active" onclick="switchTab('add-product')">➕ Agregar</button>
-                <button class="tab-btn" onclick="switchTab('publicar-ahora')">🚀 Publicar</button>
-                <button class="tab-btn" onclick="switchTab('manage-products')">📦 Productos</button>
-                <button class="tab-btn" onclick="switchTab('manage-categories')">🏷️ Categorias</button>
-                <button class="tab-btn" onclick="switchTab('manage-subcategories')">📁 Subcategorías</button>
-                <button class="tab-btn" onclick="switchTab('configuracion')">⚙️ Configuración</button>
-            </div>
+        <div class="admin-header">
+            <h1>⚙️ Panel de Administración</h1>
+            <button class="close-btn" onclick="cerrarAdminPanel()">✕</button>
+        </div>
+        <div class="admin-tabs">
+            <button class="tab-btn active" onclick="cambiarTab('add-products')">➕ Agregar Producto</button>
+            <button class="tab-btn" onclick="cambiarTab('publicar-ahora')">🚀 Publicar</button>
+            <button class="tab-btn" onclick="cambiarTab('manage-products')">📋 Gestionar</button>
+            <button class="tab-btn" onclick="cambiarTab('manage-categories')">🏷️ Categorías</button>
+            <button class="tab-btn" onclick="cambiarTab('manage-subcategories')">📂 Subcategorías</button>
+            <button class="tab-btn" onclick="cambiarTab('configuracion')">⚙️ Configuración</button>
+        </div>
+        <div class="admin-content">
             <!-- Agregar Producto -->
-            <div id="add-product" class="admin-tab active">
-                <form id="productForm" onsubmit="agregarProductoForm(event)">
-                    <div class="form-group"><label>Nombre del Producto:</label><input type="text" id="productName" required placeholder="Ej: Zapatos de cuero talla 42"></div>
-                    <div class="form-group"><label>Descripcion:</label><textarea id="productDescription" required placeholder="Describe los detalles" rows="4"></textarea></div>
-                    <div class="form-group"><label>Categoria:</label><select id="productCategory" required><option value="General">General</option></select></div>
+            <div id="add-products" class="admin-tab">
+                <form id="productForm" onsubmit="agregarProducto(event)">
+                    <div class="form-group"><label>Nombre del Producto:</label><input type="text" id="productName" required></div>
+                    <div class="form-group"><label>Descripción:</label><textarea id="productDescription" required rows="4"></textarea></div>
+                    <div class="form-group"><label>Categoría:</label><select id="productCategory" required><option value="General">General</option></select></div>
                     <div class="form-group">
                         <label>¿Mostrar en "Más Vendidos"?</label>
                         <select id="productMasVendido">
                             <option value="false">No</option>
                             <option value="true">Sí — Destacar en la página principal</option>
                         </select>
+                    </div>
+                    <!-- NUEVO: Campo de Producto Usado -->
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="productUsado" value="true">
+                            ✨ Este es un producto usado/refurbished
+                        </label>
+                        <small>Marca esta opción si el producto es de segunda mano o ha sido restaurado</small>
                     </div>
                     <div class="form-group"><label>Foto del Producto:</label><input type="file" id="productImage" accept="image/*" required><small>JPG, PNG o GIF (max. 5MB)</small></div>
                     <div class="form-row">
@@ -306,6 +427,17 @@
                     <div class="form-row">
                         <div class="form-group"><label>Descuento (%):</label><input type="number" id="productDiscount" required placeholder="30" min="0" max="100"></div>
                         <div class="form-group"><label>Stock Disponible:</label><input type="number" id="productStock" required placeholder="5" min="1"></div>
+                    </div>
+                    <!-- NUEVO: Campos de Confianza -->
+                    <div class="form-group">
+                        <label>Garantía (opcional):</label>
+                        <input type="text" id="productGarantia" placeholder="Ej: 6 meses de garantía" maxlength="50">
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="productDevolución" value="true">
+                            ✓ Devolución segura / Garantía de satisfacción
+                        </label>
                     </div>
                     <button type="submit" class="btn btn-primary">✅ Agregar Producto</button>
                 </form>
@@ -497,7 +629,6 @@
         </section>
     </div>
 
-    <!-- Footer -->
     <footer class="footer">
         <div class="container">
             <p>&copy; 2025 TiendaMax. Todos los derechos reservados.</p>
@@ -521,6 +652,13 @@
                         <option value="true">Sí — Destacar en la página principal</option>
                     </select>
                 </div>
+                <!-- NUEVO: Campo de Producto Usado en edición -->
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="editProductUsado" value="true">
+                        ✨ Este es un producto usado/refurbished
+                    </label>
+                </div>
                 <div class="form-group"><label>Foto (opcional):</label><input type="file" id="editProductImage" accept="image/*"><small>Deja en blanco para mantener la imagen actual</small><div id="currentImagePreview" style="margin-top:10px"></div></div>
                 <div class="form-row">
                     <div class="form-group"><label>Precio Original (USD):</label><input type="number" id="editProductPriceOriginal" required step="0.01"></div>
@@ -529,6 +667,17 @@
                 <div class="form-row">
                     <div class="form-group"><label>Descuento (%):</label><input type="number" id="editProductDiscount" required min="0" max="100"></div>
                     <div class="form-group"><label>Stock:</label><input type="number" id="editProductStock" required min="1"></div>
+                </div>
+                <!-- NUEVO: Campos de Confianza en edición -->
+                <div class="form-group">
+                    <label>Garantía (opcional):</label>
+                    <input type="text" id="editProductGarantia" placeholder="Ej: 6 meses de garantía" maxlength="50">
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="editProductDevolución" value="true">
+                        ✓ Devolución segura / Garantía de satisfacción
+                    </label>
                 </div>
                 <button type="submit" class="btn btn-primary">💾 Guardar Cambios</button>
             </form>
@@ -548,6 +697,8 @@
                         <img id="detailProductImage" src="" alt="" style="width: 100%; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
                     </div>
                     <div>
+                        <!-- NUEVO: Badges de confianza y estado -->
+                        <div id="detailProductBadges" style="margin-bottom: 15px;"></div>
                         <div id="detailProductBadge" class="badge" style="position: static; display: inline-block; margin-bottom: 15px;">-0%</div>
                         <p id="detailProductCategory" style="color: var(--primary-color); font-weight: bold; margin-bottom: 10px;"></p>
                         <div id="detailProductPrice" style="margin-bottom: 20px;">
@@ -558,7 +709,9 @@
                         <div class="stock-bar" style="margin-bottom: 25px;">
                             <div id="detailStockBarFill" class="stock-bar-fill"></div>
                         </div>
-                        <button id="detailBuyBtn" class="btn btn-primary btn-large" style="width: 100%;">🛒 Comprar por WhatsApp</button>
+                        <!-- NUEVO: Contador de personas -->
+                        <div id="detailPersonasViendo" class="contador-personas" style="display:none;"></div>
+                        <button id="detailBuyBtn" class="btn-cta-mejorado" style="width: 100%;">🛒 Comprar por WhatsApp</button>
                     </div>
                 </div>
                 <div style="margin-top: 30px; border-top: 1px solid #eee; padding-top: 20px;">
@@ -569,7 +722,7 @@
         </div>
     </div>
 
-    <script src="js/script.js"></script>
+    <script src="js/script_mejorado.js"></script>
     <script src="js/subcategorias.js"></script>
     <script src="js/revolico_integration.js"></script>
 </body>
