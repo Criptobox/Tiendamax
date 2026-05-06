@@ -5,7 +5,7 @@ const BACKEND_URL = window.location.hostname === '127.0.0.1' || window.location.
     ? 'http://127.0.0.1:5002/api' 
     : '/api';
 // Contraseña hasheada (SHA-256 de 'Cripx') para que no sea visible en texto plano
-const PASSWORD_ADMIN_HASH = '90035f586903f0259868846c2459740b957630712759861619894101e405187e';
+const PASSWORD_ADMIN_HASH = 'a338781ef2610e22bde9dae45f2d8aaa6a8a8c4584158f18cd91089b9192bc62';
 
 let productos = JSON.parse(localStorage.getItem('productos')) || [];
 let categorias = JSON.parse(localStorage.getItem('categorias')) || ['General'];
