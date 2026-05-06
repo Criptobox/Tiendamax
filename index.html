@@ -385,11 +385,12 @@
 
     <!-- Panel Admin -->
     <div id="adminPanel" class="admin-panel hidden" style="display: none !important;">
-        <div class="admin-header">
-            <h1>⚙️ Panel de Administración</h1>
-            <button class="close-btn" onclick="cerrarAdminPanel()">✕</button>
-        </div>
-        <div class="admin-tabs">
+        <div class="admin-panel-content">
+            <div class="admin-header">
+                <h2>⚙️ Panel de Administración</h2>
+                <button class="close-btn" onclick="cerrarAdminPanel()">✕</button>
+            </div>
+            <div class="admin-tabs">
             <button class="tab-btn active" onclick="switchTab('add-products')" data-tab="add-products">➕ Agregar Producto</button>
             <button class="tab-btn" onclick="switchTab('publicar-ahora')" data-tab="publicar-ahora">🚀 Publicar</button>
             <button class="tab-btn" onclick="switchTab('manage-products')" data-tab="manage-products">📋 Gestionar</button>
