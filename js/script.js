@@ -1,10 +1,6 @@
 'use strict';
 
 // ===== CONFIGURACIÓN GLOBAL =====
-// El backend corre en el puerto 5002. Intentamos conectar localmente primero.
-// Forzamos la conexión a la IP local para evitar bloqueos de DNS/localhost en Windows
-// En hosting compartido como Namecheap, el backend suele estar en un subdominio o una ruta específica.
-// Cambiamos a una ruta relativa o permitimos que se configure fácilmente.
 const BACKEND_URL = window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost' 
     ? 'http://127.0.0.1:5002/api' 
     : '/api';
@@ -15,7 +11,6 @@ let categorias = JSON.parse(localStorage.getItem('categorias')) || ['General'];
 let usuarioAutenticado = false;
 let categoriaSeleccionada = 'Todas';
 
-// Iconos para cada categoría (se asignan automáticamente por nombre)
 const ICONOS_CATEGORIAS = {
     'General':    '🛍️',
     'WIFI':       '📡',
@@ -37,7 +32,6 @@ function obtenerIconoCategoria(nombre) {
     return ICONOS_CATEGORIAS[nombre] || '📦';
 }
 
-// ===== CARGA DE DATOS DESDE GITHUB =====
 async function cargarDatosDesdeGitHub() {
     try {
         const resProd = await fetch('productos.json?v=' + Date.now());
@@ -63,16 +57,13 @@ async function cargarDatosDesdeGitHub() {
         actualizarBotonesCategorias();
         actualizarListaCategorias();
         verificarOfertasYMostrarBanner();
-        console.log('✅ Datos sincronizados con GitHub');
     } catch (e) {
-        console.log('ℹ️ Iniciando con datos locales');
         renderizarCategoriasHome();
         renderizarMasVendidos();
         verificarOfertasYMostrarBanner();
     }
 }
 
-// Sincronizar entre pestañas
 window.addEventListener('storage', (event) => {
     if (event.key === 'productos') {
         productos = JSON.parse(event.newValue) || [];
@@ -90,8 +81,6 @@ window.addEventListener('storage', (event) => {
         renderizarProductos();
     }
 });
-
-// ===== FUNCIONES DE UTILIDAD =====
 
 function contactarWhatsApp() {
     const numeroWhatsApp = '5354320170';
@@ -112,10 +101,6 @@ function toggleDarkMode() {
     if (btn) btn.textContent = isDark ? '☀️' : '🌙';
 }
 
-
-
-// ===== NAVEGACIÓN ENTRE VISTAS =====
-
 function mostrarVistaInicio() {
     document.getElementById('vistaInicio').style.display = 'block';
     document.getElementById('vistaCategoria').style.display = 'none';
@@ -126,11 +111,9 @@ function mostrarVistaCategoria(categoria) {
     categoriaSeleccionada = categoria;
     document.getElementById('vistaInicio').style.display = 'none';
     document.getElementById('vistaCategoria').style.display = 'block';
-
     const icono = obtenerIconoCategoria(categoria);
     const titulo = categoria === 'Todas' ? '🛍️ Todos los Productos' : `${icono} ${categoria}`;
     document.getElementById('tituloCategoriaActual').textContent = titulo;
-
     actualizarBotonesCategorias();
     renderizarProductos();
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -140,15 +123,10 @@ function volverAlInicio() {
     mostrarVistaInicio();
 }
 
-// ===== RENDERIZAR CATEGORÍAS EN LA HOME =====
-
 function renderizarCategoriasHome() {
     const grid = document.getElementById('categoriasGrid');
     if (!grid) return;
-
     grid.innerHTML = '';
-
-    // Botón "Todos los productos"
     const cardTodas = document.createElement('div');
     cardTodas.className = 'categoria-card';
     const totalProductos = productos.length;
@@ -159,8 +137,6 @@ function renderizarCategoriasHome() {
     `;
     cardTodas.onclick = () => mostrarVistaCategoria('Todas');
     grid.appendChild(cardTodas);
-
-    // Una tarjeta por cada categoría
     categorias.forEach(cat => {
         const count = productos.filter(p => p.categoria === cat).length;
         const card = document.createElement('div');
@@ -175,27 +151,18 @@ function renderizarCategoriasHome() {
     });
 }
 
-// ===== RENDERIZAR MÁS VENDIDOS =====
-
 function renderizarMasVendidos() {
     const grid = document.getElementById('masVendidosGrid');
     const vacio = document.getElementById('masVendidosVacio');
     if (!grid) return;
-
-    // Filtrar productos marcados como más vendidos
     const masVendidos = productos.filter(p => p.masVendido === true || p.masVendido === 'true');
-
-    // Si no hay marcados, mostrar los primeros 3 productos como fallback
     const productosAMostrar = masVendidos.length > 0 ? masVendidos : productos.slice(0, 3);
-
     grid.innerHTML = '';
-
     if (productosAMostrar.length === 0) {
         if (vacio) vacio.style.display = 'block';
         return;
     }
     if (vacio) vacio.style.display = 'none';
-
     productosAMostrar.forEach(producto => {
         const card = document.createElement('div');
         card.className = 'producto-card';
@@ -207,7 +174,6 @@ function renderizarMasVendidos() {
                 ${producto.descuento > 0 ? `<div class="badge">-${producto.descuento}%</div>` : ''}
             </div>
             <h3>${producto.nombre}</h3>
-            <p class="producto-description">${producto.descripcion}</p>
             <p class="precio">
                 ${producto.precioOriginal !== producto.precioActual ? `<span class="precio-original">$${producto.precioOriginal.toFixed(2)}</span>` : ''}
                 <span class="precio-actual">$${producto.precioActual.toFixed(2)} USD</span>
@@ -218,14 +184,11 @@ function renderizarMasVendidos() {
             <div class="stock-bar">
                 <div class="stock-bar-fill" style="width: ${Math.max(15, (producto.stock / 20) * 100)}%"></div>
             </div>
-            
             <button class="btn btn-small btn-primary" onclick="event.stopPropagation(); contactarProducto('${producto.nombre}')">🛒 Comprar</button>
         `;
         grid.appendChild(card);
     });
 }
-
-// ===== AUTENTICACIÓN =====
 
 function abrirLoginAdmin() {
     const modal = document.getElementById('loginModal');
@@ -263,7 +226,6 @@ function abrirAdminPanel() {
     actualizarListaProductos();
     actualizarSelectCategorias();
     actualizarListaCategorias();
-    verificarEstadoBackend();
 }
 
 function cerrarAdminPanel() {
@@ -280,15 +242,9 @@ function switchTab(tabName) {
     if (targetTab) targetTab.classList.add('active');
     const buttons = document.querySelectorAll('.tab-btn');
     buttons.forEach(btn => {
-        if (btn.getAttribute('onclick') && btn.getAttribute('onclick').includes(tabName)) {
-            btn.classList.add('active');
-        }
+        if (btn.getAttribute('onclick').includes(tabName)) btn.classList.add('active');
     });
-    if (tabName === 'publicar-ahora') cargarEstadoPublicacion();
-    if (tabName === 'configuracion') cargarConfiguracionGitHub();
 }
-
-// ===== NOTIFICACIONES =====
 
 function mostrarNotificacion(mensaje, tipo = 'success') {
     const notif = document.createElement('div');
@@ -310,14 +266,11 @@ function mostrarNotificacion(mensaje, tipo = 'success') {
     }, 4000);
 }
 
-// ===== PRODUCTOS =====
-
 function agregarProductoForm(event) {
     event.preventDefault();
     const fileInput = document.getElementById('productImage');
     const file = fileInput.files[0];
     if (!file) { mostrarNotificacion('Por favor selecciona una imagen', 'error'); return; }
-
     const reader = new FileReader();
     reader.onload = function(e) {
         const masVendidoVal = document.getElementById('productMasVendido');
@@ -335,14 +288,12 @@ function agregarProductoForm(event) {
         };
         productos.push(producto);
         guardarProductos();
-        sincronizarConBackend();
         document.getElementById('productForm').reset();
         mostrarNotificacion('✅ ¡Producto agregado exitosamente!');
         renderizarCategoriasHome();
         renderizarMasVendidos();
         renderizarProductos();
         actualizarListaProductos();
-        verificarOfertasYMostrarBanner();
     };
     reader.readAsDataURL(file);
 }
@@ -362,37 +313,19 @@ function descargarProductosJSON() {
     mostrarNotificacion('✅ Archivo productos.json generado. Súbelo a tu GitHub.');
 }
 
-async function sincronizarConBackend() {
-    try {
-        const response = await fetch(`${BACKEND_URL}/productos`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(productos)
-        });
-        return response.ok;
-    } catch (e) {
-        console.warn('Backend no disponible para sincronización');
-        return false;
-    }
-}
-
 function renderizarProductos() {
     const productosGrid = document.getElementById('productosGrid');
     const productoVacio = document.getElementById('productoVacio');
     if (!productosGrid) return;
-
     productosGrid.innerHTML = '';
-
     const productosFiltrados = categoriaSeleccionada === 'Todas'
         ? productos
         : productos.filter(p => p.categoria === categoriaSeleccionada);
-
     if (productosFiltrados.length === 0) {
         if (productoVacio) productoVacio.style.display = 'block';
         return;
     }
     if (productoVacio) productoVacio.style.display = 'none';
-
     productosFiltrados.forEach(producto => {
         const card = document.createElement('div');
         card.className = 'producto-card';
@@ -404,7 +337,6 @@ function renderizarProductos() {
                 ${producto.descuento > 0 ? `<div class="badge">-${producto.descuento}%</div>` : ''}
             </div>
             <h3>${producto.nombre}</h3>
-            <p class="producto-description">${producto.descripcion}</p>
             <p class="precio">
                 ${producto.precioOriginal !== producto.precioActual ? `<span class="precio-original">$${producto.precioOriginal.toFixed(2)}</span>` : ''}
                 <span class="precio-actual">$${producto.precioActual.toFixed(2)} USD</span>
@@ -416,18 +348,14 @@ function renderizarProductos() {
     });
 }
 
-// ===== DETALLE DE PRODUCTO =====
-
 function abrirDetalleProducto(id) {
     const p = productos.find(prod => prod.id === id);
     if (!p) return;
-
     document.getElementById('detailProductName').textContent = p.nombre;
     document.getElementById('detailProductImage').src = p.imagen;
     document.getElementById('detailProductImage').alt = p.nombre;
     document.getElementById('detailProductCategory').textContent = obtenerIconoCategoria(p.categoria) + ' ' + p.categoria;
     document.getElementById('detailProductDescription').textContent = p.descripcion;
-    
     const badge = document.getElementById('detailProductBadge');
     if (p.descuento > 0) {
         badge.style.display = 'inline-block';
@@ -435,7 +363,6 @@ function abrirDetalleProducto(id) {
     } else {
         badge.style.display = 'none';
     }
-
     const priceOriginal = document.getElementById('detailPriceOriginal');
     if (p.precioOriginal !== p.precioActual) {
         priceOriginal.style.display = 'inline';
@@ -443,24 +370,21 @@ function abrirDetalleProducto(id) {
     } else {
         priceOriginal.style.display = 'none';
     }
-
     document.getElementById('detailPriceActual').textContent = `$${p.precioActual.toFixed(2)} USD`;
     document.getElementById('detailProductStock').innerHTML = `<span>📦 Solo quedan ${p.stock} unidades</span>`;
     document.getElementById('detailStockBarFill').style.width = `${Math.max(15, (p.stock / 20) * 100)}%`;
-    
     document.getElementById('detailBuyBtn').onclick = () => contactarProducto(p.nombre);
-
     const modal = document.getElementById('productDetailModal');
     modal.classList.remove('hidden');
     modal.style.setProperty('display', 'flex', 'important');
-    document.body.style.overflow = 'hidden'; // Bloquear scroll
+    document.body.style.overflow = 'hidden';
 }
 
 function cerrarDetalleModal() {
     const modal = document.getElementById('productDetailModal');
     modal.classList.add('hidden');
     modal.style.setProperty('display', 'none', 'important');
-    document.body.style.overflow = 'auto'; // Restaurar scroll
+    document.body.style.overflow = 'auto';
 }
 
 function contactarProducto(nombre) {
@@ -471,14 +395,12 @@ function contactarProducto(nombre) {
 function actualizarListaProductos() {
     const productsList = document.getElementById('productsList');
     if (!productsList) return;
-
     productsList.innerHTML = `
         <div style="margin-bottom: 20px; padding: 15px; background: rgba(39, 174, 96, 0.1); border: 1px dashed #27AE60; border-radius: 10px; text-align: center;">
             <p style="font-size: 13px; margin-bottom: 10px;">Para guardar permanentemente, descarga y sube a GitHub.</p>
             <button class="btn btn-primary" onclick="descargarProductosJSON()">📥 Descargar productos.json</button>
         </div>
     `;
-
     if (productos.length === 0) {
         productsList.innerHTML += '<p class="no-products">No hay productos aún</p>';
         return;
@@ -495,94 +417,11 @@ function actualizarListaProductos() {
             <div class="product-item-actions" style="clear:both;padding-top:8px;">
                 <button class="btn-small-icon btn-edit" onclick="abrirEditModal(${producto.id})">✏️ Editar</button>
                 <button class="btn-small-icon btn-delete" onclick="eliminarProducto(${producto.id})">🗑️ Eliminar</button>
-                <button class="btn-small-icon btn-revolico" style="background:#ff9800" onclick="prepararPublicacionManual(${producto.id})">📋 Copiar y Abrir</button>
-                <button class="btn-small-icon btn-revolico" onclick="publicarEnRevolico(${producto.id})">🤖 Rev</button>
-                <button class="btn-small-icon btn-revolico" style="background:#4267B2" onclick="publicarEnFacebook(${producto.id})">🤖 FB</button>
             </div>
         `;
         productsList.appendChild(item);
     });
 }
-
-// ===== PUBLICACIÓN EN REVOLICO =====
-
-function prepararPublicacionManual(id) {
-    const producto = productos.find(p => p.id === id);
-    if (!producto) return;
-    const texto = `${producto.nombre}\n\n${producto.descripcion}\n\nPrecio: ${producto.precioActual} USD\nContacto: +53 54320170`;
-    navigator.clipboard.writeText(texto).then(() => {
-        mostrarNotificacion('✅ ¡Datos copiados! Ahora pega en Revolico.');
-        setTimeout(() => { window.open('https://www.revolico.com/item/publish', '_blank'); }, 1000);
-    }).catch(() => { window.open('https://www.revolico.com/item/publish', '_blank'); });
-}
-
-async function publicarEnRevolico(id) {
-    const producto = productos.find(p => p.id === id);
-    if (!producto) return;
-    mostrarNotificacion(`🚀 Publicando "${producto.nombre}" en Revolico...`, 'info');
-    try {
-        const response = await fetch(`${BACKEND_URL}/publicar-revolico`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(producto)
-        });
-        const data = await response.json();
-        if (data.success) {
-            mostrarNotificacion(`✅ ¡Publicado en Revolico!: ${producto.nombre}`);
-        } else {
-            mostrarNotificacion(`❌ Error Revolico: ${data.error || 'Fallo'}`, 'error');
-        }
-    } catch (e) {
-        mostrarNotificacion('❌ Error de conexión con el backend', 'error');
-    }
-}
-
-async function publicarEnFacebook(id) {
-    const producto = productos.find(p => p.id === id);
-    if (!producto) return;
-    mostrarNotificacion(`🚀 Publicando "${producto.nombre}" en Facebook...`, 'info');
-    try {
-        const response = await fetch(`${BACKEND_URL}/publicar-facebook`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(producto)
-        });
-        const data = await response.json();
-        if (data.success) {
-            mostrarNotificacion(`✅ ¡Publicado en Facebook!: ${producto.nombre}`);
-        } else {
-            mostrarNotificacion(`❌ Error Facebook: ${data.error || 'Fallo'}`, 'error');
-        }
-    } catch (e) {
-        mostrarNotificacion('❌ Error de conexión con el backend', 'error');
-    }
-}
-
-async function publicarAhora() {
-    const btn = document.getElementById('btnPublicarAhora');
-    if (btn) { btn.disabled = true; btn.textContent = '⏳ Publicando...'; }
-    mostrarNotificacion('🚀 Iniciando publicación automática en Revolico...', 'info');
-    try {
-        const response = await fetch(`${BACKEND_URL}/publicar-ahora`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(productos)
-        });
-        const data = await response.json();
-        if (data.success) {
-            mostrarNotificacion(`✅ ${data.mensaje}`);
-            cargarEstadoPublicacion();
-        } else {
-            mostrarNotificacion(`❌ Error: ${data.error}`, 'error');
-        }
-    } catch (e) {
-        mostrarNotificacion('❌ Error de conexión con el backend', 'error');
-    } finally {
-        if (btn) { btn.disabled = false; btn.textContent = '🚀 Publicar Ahora en Revolico (Automático)'; }
-    }
-}
-
-// ===== CATEGORÍAS (GESTIÓN) =====
 
 function actualizarSelectCategorias() {
     ['productCategory', 'editProductCategory'].forEach(id => {
@@ -600,72 +439,45 @@ function actualizarSelectCategorias() {
 }
 
 function actualizarBotonesCategorias() {
-    const container = document.getElementById('categoriaFiltro');
+    const container = document.getElementById('botonesCategorias');
     if (!container) return;
-
-    container.innerHTML = `<button class="categoria-btn ${categoriaSeleccionada === 'Todas' ? 'active' : ''}" onclick="filtrarPorCategoria('Todas')">Todas</button>`;
-
+    container.innerHTML = '';
+    const btnTodas = document.createElement('button');
+    btnTodas.className = `cat-btn ${categoriaSeleccionada === 'Todas' ? 'active' : ''}`;
+    btnTodas.textContent = 'Todas';
+    btnTodas.onclick = () => mostrarVistaCategoria('Todas');
+    container.appendChild(btnTodas);
     categorias.forEach(cat => {
         const btn = document.createElement('button');
-        btn.className = `categoria-btn ${categoriaSeleccionada === cat ? 'active' : ''}`;
+        btn.className = `cat-btn ${categoriaSeleccionada === cat ? 'active' : ''}`;
         btn.textContent = cat;
-        btn.onclick = () => filtrarPorCategoria(cat);
+        btn.onclick = () => mostrarVistaCategoria(cat);
         container.appendChild(btn);
     });
 }
 
-function filtrarPorCategoria(cat) {
-    categoriaSeleccionada = cat;
-    actualizarBotonesCategorias();
-    renderizarProductos();
-    // Actualizar título
-    const titulo = document.getElementById('tituloCategoriaActual');
-    if (titulo) {
-        const icono = obtenerIconoCategoria(cat);
-        titulo.textContent = cat === 'Todas' ? '🛍️ Todos los Productos' : `${icono} ${cat}`;
-    }
-}
-
 function actualizarListaCategorias() {
-    const list = document.getElementById('categoryList');
+    const list = document.getElementById('categoriesList');
     if (!list) return;
-
-    list.innerHTML = `
-        <div style="margin-bottom: 20px; padding: 15px; background: rgba(52, 152, 219, 0.1); border: 1px dashed #3498DB; border-radius: 10px; text-align: center;">
-            <p style="font-size: 13px; margin-bottom: 10px;">Para guardar tus categorías permanentemente, descarga este archivo y súbelo a GitHub.</p>
-            <button class="btn btn-primary" style="background:#3498DB" onclick="descargarCategoriasJSON()">📥 Descargar categorias.json</button>
-        </div>
-    `;
-
-    categorias.forEach((cat, index) => {
+    list.innerHTML = '';
+    categorias.forEach(cat => {
         const item = document.createElement('div');
         item.className = 'category-item';
         item.innerHTML = `
             <span>${obtenerIconoCategoria(cat)} ${cat}</span>
-            ${cat !== 'General' ? `<button onclick="eliminarCategoria(${index})">🗑️</button>` : ''}
+            <button class="btn-small-icon btn-delete" onclick="eliminarCategoria('${cat}')">🗑️</button>
         `;
         list.appendChild(item);
     });
 }
 
-function descargarCategoriasJSON() {
-    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(categorias, null, 2));
-    const downloadAnchorNode = document.createElement('a');
-    downloadAnchorNode.setAttribute("href", dataStr);
-    downloadAnchorNode.setAttribute("download", "categorias.json");
-    document.body.appendChild(downloadAnchorNode);
-    downloadAnchorNode.click();
-    downloadAnchorNode.remove();
-    mostrarNotificacion('✅ Archivo categorias.json generado. Súbelo a tu GitHub.');
-}
-
 function agregarCategoria() {
     const input = document.getElementById('newCategoryName');
-    const name = input.value.trim();
-    if (!name) return;
-    if (categorias.includes(name)) { mostrarNotificacion('La categoría ya existe', 'error'); return; }
-    categorias.push(name);
-    guardarCategorias();
+    const nombre = input.value.trim();
+    if (!nombre) return;
+    if (categorias.includes(nombre)) { mostrarNotificacion('La categoría ya existe', 'error'); return; }
+    categorias.push(nombre);
+    localStorage.setItem('categorias', JSON.stringify(categorias));
     input.value = '';
     actualizarSelectCategorias();
     actualizarBotonesCategorias();
@@ -674,42 +486,31 @@ function agregarCategoria() {
     mostrarNotificacion('✅ Categoría agregada');
 }
 
-function guardarCategorias() {
+function eliminarCategoria(nombre) {
+    if (nombre === 'General') { mostrarNotificacion('No puedes eliminar la categoría General', 'error'); return; }
+    if (!confirm(`¿Eliminar la categoría "${nombre}"?`)) return;
+    categorias = categorias.filter(c => c !== nombre);
     localStorage.setItem('categorias', JSON.stringify(categorias));
+    actualizarSelectCategorias();
+    actualizarBotonesCategorias();
+    actualizarListaCategorias();
+    renderizarCategoriasHome();
 }
-
-function eliminarCategoria(index) {
-    if (categorias[index] === 'General') return;
-    if (confirm(`¿Eliminar la categoría "${categorias[index]}"?`)) {
-        categorias.splice(index, 1);
-        guardarCategorias();
-        actualizarSelectCategorias();
-        actualizarBotonesCategorias();
-        actualizarListaCategorias();
-        renderizarCategoriasHome();
-        renderizarProductos();
-    }
-}
-
-// ===== GESTIÓN DE PRODUCTOS (EDITAR/ELIMINAR) =====
 
 function eliminarProducto(id) {
     if (!confirm('¿Estás seguro de eliminar este producto?')) return;
     productos = productos.filter(p => p.id !== id);
     guardarProductos();
-    sincronizarConBackend();
     renderizarCategoriasHome();
     renderizarMasVendidos();
     renderizarProductos();
     actualizarListaProductos();
-    verificarOfertasYMostrarBanner();
-    mostrarNotificacion('🗑️ Producto eliminado', 'info');
+    mostrarNotificacion('🗑️ Producto eliminado');
 }
 
 function abrirEditModal(id) {
     const p = productos.find(prod => prod.id === id);
     if (!p) return;
-
     document.getElementById('editProductId').value = p.id;
     document.getElementById('editProductName').value = p.nombre;
     document.getElementById('editProductDescription').value = p.descripcion;
@@ -718,260 +519,57 @@ function abrirEditModal(id) {
     document.getElementById('editProductDiscount').value = p.descuento;
     document.getElementById('editProductStock').value = p.stock;
     document.getElementById('editProductCategory').value = p.categoria;
-
-    const masVendidoSel = document.getElementById('editProductMasVendido');
-    if (masVendidoSel) masVendidoSel.value = p.masVendido ? 'true' : 'false';
-
-    const preview = document.getElementById('currentImagePreview');
-    if (preview && p.imagen) {
-        preview.innerHTML = `<img src="${p.imagen}" style="max-width:100px;max-height:80px;border-radius:8px;">`;
-    }
-
-    const modal = document.getElementById('editModal');
+    const masVendidoVal = document.getElementById('editProductMasVendido');
+    if (masVendidoVal) masVendidoVal.value = p.masVendido ? 'true' : 'false';
+    const modal = document.getElementById('editProductModal');
     modal.classList.remove('hidden');
     modal.style.setProperty('display', 'flex', 'important');
 }
 
 function cerrarEditModal() {
-    const modal = document.getElementById('editModal');
+    const modal = document.getElementById('editProductModal');
     modal.classList.add('hidden');
     modal.style.setProperty('display', 'none', 'important');
 }
 
-function guardarProductoEditado(event) {
+function guardarEdicionProducto(event) {
     event.preventDefault();
     const id = parseInt(document.getElementById('editProductId').value);
     const index = productos.findIndex(p => p.id === id);
     if (index === -1) return;
-
-    const masVendidoSel = document.getElementById('editProductMasVendido');
-    const fileInput = document.getElementById('editProductImage');
-    const file = fileInput ? fileInput.files[0] : null;
-
-    const actualizarProducto = (nuevaImagen) => {
-        productos[index] = {
-            ...productos[index],
-            nombre: document.getElementById('editProductName').value.trim(),
-            descripcion: document.getElementById('editProductDescription').value.trim(),
-            precioOriginal: parseFloat(document.getElementById('editProductPriceOriginal').value) || 0,
-            precioActual: parseFloat(document.getElementById('editProductPriceActual').value) || 0,
-            descuento: parseInt(document.getElementById('editProductDiscount').value) || 0,
-            stock: parseInt(document.getElementById('editProductStock').value) || 0,
-            categoria: document.getElementById('editProductCategory').value,
-            masVendido: masVendidoSel ? masVendidoSel.value === 'true' : productos[index].masVendido,
-            imagen: nuevaImagen || productos[index].imagen
-        };
-        guardarProductos();
-        sincronizarConBackend();
-        cerrarEditModal();
-        renderizarCategoriasHome();
-        renderizarMasVendidos();
-        renderizarProductos();
-        actualizarListaProductos();
-        mostrarNotificacion('✅ Producto actualizado');
+    const masVendidoVal = document.getElementById('editProductMasVendido');
+    productos[index] = {
+        ...productos[index],
+        nombre: document.getElementById('editProductName').value.trim(),
+        descripcion: document.getElementById('editProductDescription').value.trim(),
+        precioOriginal: parseFloat(document.getElementById('editProductPriceOriginal').value) || 0,
+        precioActual: parseFloat(document.getElementById('editProductPriceActual').value) || 0,
+        descuento: parseInt(document.getElementById('editProductDiscount').value) || 0,
+        stock: parseInt(document.getElementById('editProductStock').value) || 0,
+        categoria: document.getElementById('editProductCategory').value,
+        masVendido: masVendidoVal ? masVendidoVal.value === 'true' : false
     };
-
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = (e) => actualizarProducto(e.target.result);
-        reader.readAsDataURL(file);
-    } else {
-        actualizarProducto(null);
-    }
+    guardarProductos();
+    cerrarEditModal();
+    mostrarNotificacion('✅ Producto actualizado');
+    renderizarCategoriasHome();
+    renderizarMasVendidos();
+    renderizarProductos();
+    actualizarListaProductos();
 }
-
-// ===== ESTADO DEL BACKEND =====
-
-async function verificarEstadoBackend() {
-    const statusEl = document.getElementById('backendStatus');
-    if (!statusEl) return;
-    try {
-        const response = await fetch(`${BACKEND_URL}/status`);
-        const data = await response.json();
-        if (data.status === 'online') {
-            statusEl.innerHTML = `✅ <strong>Backend activo</strong> | Hora Cuba: ${data.hora_cuba} | Próxima publicación: ${data.proxima_publicacion || 'No programada'}`;
-            statusEl.style.color = '#27AE60';
-        }
-    } catch (e) {
-        statusEl.innerHTML = '❌ <strong>Backend desconectado</strong> (El agente automático no está corriendo)';
-        statusEl.style.color = '#E74C3C';
-    }
-}
-
-async function cargarEstadoPublicacion() {
-    const logContainer = document.getElementById('historialPublicaciones');
-    if (!logContainer) return;
-    try {
-        const response = await fetch(`${BACKEND_URL}/historial`);
-        const registros = await response.json();
-        if (registros.length === 0) {
-            logContainer.innerHTML = '<p>No hay historial de publicaciones aún.</p>';
-            return;
-        }
-        let html = '<div class="logs-list">';
-        registros.reverse().forEach(reg => {
-            const fecha = new Date(reg.fecha).toLocaleString();
-            html += `
-                <div class="log-item">
-                    <div class="log-header">
-                        <strong>${fecha}</strong> - ${reg.exitosos}/${reg.total} exitosos
-                    </div>
-                    <ul class="log-details">
-                        ${reg.resultados.map(res => `
-                            <li class="${res.exito ? 'success' : 'error'}">
-                                ${res.producto}: ${res.exito ? '✅' : '❌'} ${res.mensaje}
-                            </li>
-                        `).join('')}
-                    </ul>
-                </div>
-            `;
-        });
-        html += '</div>';
-        logContainer.innerHTML = html;
-    } catch (e) {
-        logContainer.innerHTML = '<p>No se pudo cargar el historial.</p>';
-    }
-}
-
-// ===== SINCRONIZACIÓN CON GITHUB =====
-
-function cargarConfiguracionGitHub() {
-    document.getElementById('githubUser').value = localStorage.getItem('githubUser') || '';
-    document.getElementById('githubRepo').value = localStorage.getItem('githubRepo') || 'Tiendamax';
-    document.getElementById('githubToken').value = localStorage.getItem('githubToken') || '';
-}
-
-function guardarConfiguracionGitHub(event) {
-    event.preventDefault();
-    localStorage.setItem('githubUser', document.getElementById('githubUser').value.trim());
-    localStorage.setItem('githubRepo', document.getElementById('githubRepo').value.trim());
-    localStorage.setItem('githubToken', document.getElementById('githubToken').value.trim());
-    mostrarNotificacion('✅ Configuración de GitHub guardada localmente');
-}
-
-async function sincronizarTodoConGitHub() {
-    const user = localStorage.getItem('githubUser');
-    const repo = localStorage.getItem('githubRepo');
-    const token = localStorage.getItem('githubToken');
-    if (!user || !repo || !token) {
-        mostrarNotificacion('❌ Configura primero tu usuario, repo y token en la pestaña Configuración', 'error');
-        switchTab('configuracion');
-        return;
-    }
-    mostrarNotificacion('🚀 Sincronizando con GitHub...', 'info');
-    try {
-        await subirArchivoAGitHub(user, repo, token, 'productos.json', productos);
-        await subirArchivoAGitHub(user, repo, token, 'categorias.json', categorias);
-        mostrarNotificacion('✅ ¡Tienda sincronizada con éxito! Los cambios serán visibles en 1-2 minutos.');
-    } catch (e) {
-        mostrarNotificacion('❌ Error al sincronizar: ' + e.message, 'error');
-    }
-}
-
-async function subirArchivoAGitHub(user, repo, token, path, data) {
-    const url = `https://api.github.com/repos/${user}/${repo}/contents/${path}`;
-    const content = btoa(unescape(encodeURIComponent(JSON.stringify(data, null, 2))));
-    let sha = null;
-    try {
-        const res = await fetch(url, { headers: { 'Authorization': `token ${token}` } });
-        if (res.ok) { const fileData = await res.json(); sha = fileData.sha; }
-    } catch (e) {}
-    const body = { message: `Actualización automática de ${path}`, content: content, sha: sha };
-    const response = await fetch(url, {
-        method: 'PUT',
-        headers: { 'Authorization': `token ${token}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify(body)
-    });
-    if (!response.ok) {
-        const err = await response.json();
-        throw new Error(err.message || 'Error al subir archivo');
-    }
-}
-
-// ===== LÓGICA DE PERSUASIÓN Y VENTAS =====
 
 function verificarOfertasYMostrarBanner() {
-    const banner = document.getElementById('urgenciaBanner');
+    const banner = document.getElementById('ofertaBanner');
     if (!banner) return;
-
-    // Solo mostrar si hay productos con descuento real (precioActual < precioOriginal)
-    const hayOfertas = productos.some(p => parseFloat(p.precioOriginal) > parseFloat(p.precioActual));
-
-    if (hayOfertas) {
-        banner.style.display = 'block';
-    } else {
-        banner.style.display = 'none';
-    }
+    const tieneOfertas = productos.some(p => p.descuento > 0);
+    banner.style.display = tieneOfertas ? 'block' : 'none';
 }
 
-// ===== INICIALIZACIÓN =====
-
-// Inicialización segura del DOM
-function inicializarTienda() {
-    console.log("🚀 Inicializando TiendaMax...");
-    
-    // Cargar datos
+// Inicialización
+document.addEventListener('DOMContentLoaded', () => {
     cargarDatosDesdeGitHub();
-
-    // Event Listeners
-    const productForm = document.getElementById('productForm');
-    if (productForm) {
-        productForm.onsubmit = null; // Limpiar anteriores
-        productForm.addEventListener('submit', agregarProductoForm);
-    }
-
-    const editForm = document.getElementById('editForm');
-    if (editForm) {
-        editForm.onsubmit = null;
-        editForm.addEventListener('submit', guardarProductoEditado);
-    }
-
-    const loginForm = document.getElementById('loginForm');
-    if (loginForm) {
-        loginForm.onsubmit = null;
-        loginForm.addEventListener('submit', verificarPassword);
-    }
-
-    // Verificar backend periódicamente
-    setInterval(() => {
-        const panel = document.getElementById('adminPanel');
-        if (panel && !panel.classList.contains('hidden')) {
-            verificarEstadoBackend();
-        }
-    }, 30000);
-
-    // Restaurar modo oscuro si estaba activo
-    if (localStorage.getItem('darkMode') === 'true') {
-        document.body.classList.add('dark-mode');
-        const btn = document.querySelector('.theme-toggle');
-        if (btn) btn.textContent = '☀️';
-    }
-}
-
-// Asegurar que la inicialización ocurra incluso si el evento DOMContentLoaded ya pasó
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', inicializarTienda);
-} else {
-    inicializarTienda();
-}
-
-// ===== AUTOMATIZACIÓN HÍBRIDA (SELENIUM) =====
-
-async function abrirNavegadorParaLogin() {
-    const btn = document.getElementById('btnAbrirNavegador');
-    if (btn) { btn.disabled = true; btn.textContent = '⏳ Abriendo...'; }
-    mostrarNotificacion('🌐 Abriendo ventana de Chrome. Por favor, inicia sesión en Revolico.', 'info');
-    try {
-        const response = await fetch(`${BACKEND_URL}/abrir-navegador`);
-        const data = await response.json();
-        if (data.success) {
-            mostrarNotificacion('✅ Navegador abierto. Inicia sesión y luego dale a "Publicar Todo".');
-        } else {
-            mostrarNotificacion('❌ No se pudo abrir el navegador. ¿Instalaste Chrome?', 'error');
-        }
-    } catch (e) {
-        mostrarNotificacion('❌ Error de conexión con el backend', 'error');
-    } finally {
-        if (btn) { btn.disabled = false; btn.textContent = '🔓 1. Abrir Navegador y Loguearme'; }
-    }
-}
+    const isDark = localStorage.getItem('darkMode') === 'true';
+    if (isDark) document.body.classList.add('dark-mode');
+    const btn = document.querySelector('.theme-toggle');
+    if (btn) btn.textContent = isDark ? '☀️' : '🌙';
+});
