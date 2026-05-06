@@ -294,10 +294,19 @@ function cerrarLoginModal() {
 
 async function verificarPassword(event) {
     event.preventDefault();
-    const passwordInput = document.getElementById('adminPassword').value;
+    const passwordInput = document.getElementById('adminPassword').value.trim();
     const inputHash = await hashPassword(passwordInput);
     
-    if (inputHash === PASSWORD_ADMIN_HASH) {
+    // El hash 'a338...' es de 'Cripx'
+    // El hash '9003...' es el que tenía el usuario originalmente
+    const hashesValidos = [
+        'a338781ef2610e22bde9dae45f2d8aaa6a8a8c4584158f18cd91089b9192bc62',
+        '90035f586903f0259868846c2459740b957630712759861619894101e405187e'
+    ];
+    
+    console.log('Intento de login con hash:', inputHash);
+    
+    if (hashesValidos.includes(inputHash)) {
         usuarioAutenticado = true;
         cerrarLoginModal();
         abrirAdminPanel();
