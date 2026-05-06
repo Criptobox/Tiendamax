@@ -1,0 +1,212 @@
+2026-05-04 20:00:19,630 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-05-04 20:00:19,631 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-05-04 20:00:19,632 - apscheduler.scheduler - INFO - Added job "Publicación de la mañana (8:00 AM)" to job store "default"
+2026-05-04 20:00:19,632 - apscheduler.scheduler - INFO - Added job "Publicación de la tarde (5:00 PM)" to job store "default"
+2026-05-04 20:00:19,632 - apscheduler.scheduler - INFO - Scheduler started
+2026-05-04 20:00:19,633 - __main__ - INFO - ✅ Scheduler iniciado - Publicaciones programadas a las 8:00 AM y 5:00 PM (hora Cuba)
+2026-05-04 20:00:19,633 - __main__ - INFO - 🚀 Backend TiendaMax iniciado en puerto 5002
+2026-05-04 20:00:19,637 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5002
+ * Running on http://169.254.0.21:5002
+2026-05-04 20:00:19,637 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-05-04 20:00:51,193 - werkzeug - INFO - 127.0.0.1 - - [04/May/2026 20:00:51] "GET /api/status HTTP/1.1" 200 -
+2026-05-04 20:01:23,525 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-05-04 20:01:23,525 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-05-04 20:01:23,525 - apscheduler.scheduler - INFO - Added job "Publicación de la mañana (8:00 AM)" to job store "default"
+2026-05-04 20:01:23,526 - apscheduler.scheduler - INFO - Added job "Publicación de la tarde (5:00 PM)" to job store "default"
+2026-05-04 20:01:23,526 - apscheduler.scheduler - INFO - Scheduler started
+2026-05-04 20:01:23,526 - __main__ - INFO - ✅ Scheduler iniciado - Publicaciones programadas a las 8:00 AM y 5:00 PM (hora Cuba)
+2026-05-04 20:01:23,526 - __main__ - INFO - 🚀 Backend TiendaMax iniciado en puerto 5002
+2026-05-04 20:01:29,952 - werkzeug - INFO - 127.0.0.1 - - [04/May/2026 20:01:29] "GET /api/status HTTP/1.1" 200 -
+2026-05-04 20:31:56,214 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:31:56] "OPTIONS /api/importar-cookies HTTP/1.1" 200 -
+2026-05-04 20:32:08,519 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:32:08] "OPTIONS /api/importar-cookies HTTP/1.1" 200 -
+2026-05-04 20:32:08,865 - revolico_agent - INFO - ✅ 8 cookies guardadas
+2026-05-04 20:32:08,865 - __main__ - INFO - ✅ 8 cookies importadas desde Cookie-Editor
+2026-05-04 20:32:08,866 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:32:08] "POST /api/importar-cookies HTTP/1.1" 200 -
+2026-05-04 20:32:30,291 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:32:30] "GET /api/status HTTP/1.1" 200 -
+2026-05-04 20:32:37,761 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:32:37] "OPTIONS /api/publicar-revolico HTTP/1.1" 200 -
+2026-05-04 20:32:40,786 - __main__ - INFO - Publicando en Revolico: Cargador inteligente 20A
+2026-05-04 20:32:45,863 - revolico_agent - INFO - ✅ 8 cookies cargadas (formato Playwright)
+2026-05-04 20:32:45,889 - revolico_agent - INFO - ✅ 8 cookies cargadas en el navegador
+2026-05-04 20:32:45,931 - revolico_agent - INFO - ✅ Navegador iniciado correctamente
+2026-05-04 20:32:46,210 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:32:46] "GET /api/status HTTP/1.1" 200 -
+2026-05-04 20:32:59,749 - revolico_agent - INFO - ✅ Sesión activa en Revolico (verificado por: a:has-text("Favoritos"))
+2026-05-04 20:32:59,750 - revolico_agent - INFO - Publicando: Cargador inteligente 20A
+2026-05-04 20:33:15,228 - revolico_agent - ERROR - No se encontró el campo título: Page.wait_for_selector: Timeout 10000ms exceeded.
+Call log:
+  - waiting for locator("#title") to be visible
+
+2026-05-04 20:33:15,233 - revolico_agent - INFO - ✅ 22 cookies guardadas
+2026-05-04 20:33:15,273 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:33:15] "POST /api/publicar-revolico HTTP/1.1" 200 -
+2026-05-04 20:33:16,204 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:33:16] "GET /api/status HTTP/1.1" 200 -
+2026-05-04 20:33:22,550 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:33:22] "OPTIONS /api/publicar-revolico HTTP/1.1" 200 -
+2026-05-04 20:33:23,115 - __main__ - INFO - Publicando en Revolico: INVERSOR
+2026-05-04 20:33:23,647 - revolico_agent - INFO - ✅ 22 cookies cargadas (formato Playwright)
+2026-05-04 20:33:23,652 - revolico_agent - INFO - ✅ 22 cookies cargadas en el navegador
+2026-05-04 20:33:23,702 - revolico_agent - INFO - ✅ Navegador iniciado correctamente
+2026-05-04 20:33:32,057 - revolico_agent - WARNING - ⚠️ No se detectó sesión activa
+2026-05-04 20:33:32,057 - revolico_agent - INFO - Sesión no activa, intentando login...
+2026-05-04 20:33:32,057 - revolico_agent - INFO - Iniciando login en Revolico...
+2026-05-04 20:33:46,191 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:33:46] "GET /api/status HTTP/1.1" 200 -
+2026-05-04 20:33:50,158 - revolico_agent - ERROR - Error durante login: Page.wait_for_selector: Timeout 15000ms exceeded.
+Call log:
+  - waiting for locator("input[type=\"email\"]") to be visible
+
+2026-05-04 20:33:50,162 - revolico_agent - INFO - ✅ 22 cookies guardadas
+2026-05-04 20:33:50,205 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:33:50] "POST /api/publicar-revolico HTTP/1.1" 200 -
+2026-05-04 20:34:05,140 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:34:05] "GET /api/historial HTTP/1.1" 200 -
+2026-05-04 20:34:16,422 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:34:16] "GET /api/status HTTP/1.1" 200 -
+2026-05-04 20:34:26,846 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:34:26] "OPTIONS /api/importar-cookies HTTP/1.1" 200 -
+2026-05-04 20:34:27,052 - revolico_agent - INFO - ✅ 13 cookies guardadas
+2026-05-04 20:34:27,053 - __main__ - INFO - ✅ 13 cookies importadas desde Cookie-Editor
+2026-05-04 20:34:27,053 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:34:27] "POST /api/importar-cookies HTTP/1.1" 200 -
+2026-05-04 20:34:33,906 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:34:33] "OPTIONS /api/publicar-revolico HTTP/1.1" 200 -
+2026-05-04 20:34:34,909 - __main__ - INFO - Publicando en Revolico: Cargador inteligente 20A
+2026-05-04 20:34:35,434 - revolico_agent - INFO - ✅ 13 cookies cargadas (formato Playwright)
+2026-05-04 20:34:35,442 - revolico_agent - INFO - ✅ 13 cookies cargadas en el navegador
+2026-05-04 20:34:35,494 - revolico_agent - INFO - ✅ Navegador iniciado correctamente
+2026-05-04 20:34:46,217 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:34:46] "GET /api/status HTTP/1.1" 200 -
+2026-05-04 20:34:50,711 - revolico_agent - INFO - ✅ Sesión activa en Revolico (verificado por: a:has-text("Cuenta"))
+2026-05-04 20:34:50,712 - revolico_agent - INFO - Publicando: Cargador inteligente 20A
+2026-05-04 20:35:06,958 - revolico_agent - ERROR - No se encontró el campo título: Page.wait_for_selector: Timeout 10000ms exceeded.
+Call log:
+  - waiting for locator("#title") to be visible
+
+2026-05-04 20:35:06,962 - revolico_agent - INFO - ✅ 20 cookies guardadas
+2026-05-04 20:35:07,004 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:35:07] "POST /api/publicar-revolico HTTP/1.1" 200 -
+2026-05-04 20:35:15,913 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:35:15] "OPTIONS /api/publicar-revolico HTTP/1.1" 200 -
+2026-05-04 20:35:16,178 - __main__ - INFO - Publicando en Revolico: INVERSOR
+2026-05-04 20:35:16,182 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:35:16] "GET /api/status HTTP/1.1" 200 -
+2026-05-04 20:35:16,740 - revolico_agent - INFO - ✅ 20 cookies cargadas (formato Playwright)
+2026-05-04 20:35:16,748 - revolico_agent - INFO - ✅ 20 cookies cargadas en el navegador
+2026-05-04 20:35:16,801 - revolico_agent - INFO - ✅ Navegador iniciado correctamente
+2026-05-04 20:35:26,529 - revolico_agent - INFO - ✅ Sesión activa (token encontrado en cookies)
+2026-05-04 20:35:26,530 - revolico_agent - INFO - Publicando: INVERSOR
+2026-05-04 20:35:39,677 - revolico_agent - ERROR - No se encontró el campo título: Page.wait_for_selector: Timeout 10000ms exceeded.
+Call log:
+  - waiting for locator("#title") to be visible
+
+2026-05-04 20:35:39,681 - revolico_agent - INFO - ✅ 20 cookies guardadas
+2026-05-04 20:35:39,723 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:35:39] "POST /api/publicar-revolico HTTP/1.1" 200 -
+2026-05-04 20:35:46,239 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:35:46] "GET /api/status HTTP/1.1" 200 -
+2026-05-04 20:36:16,186 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:36:16] "GET /api/status HTTP/1.1" 200 -
+2026-05-04 20:36:46,187 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:36:46] "GET /api/status HTTP/1.1" 200 -
+2026-05-04 20:37:16,210 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:37:16] "GET /api/status HTTP/1.1" 200 -
+2026-05-04 20:37:46,202 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:37:46] "GET /api/status HTTP/1.1" 200 -
+2026-05-04 20:38:16,442 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:38:16] "GET /api/status HTTP/1.1" 200 -
+2026-05-04 20:38:46,436 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:38:46] "GET /api/status HTTP/1.1" 200 -
+2026-05-04 20:39:47,426 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:39:47] "GET /api/status HTTP/1.1" 200 -
+2026-05-04 20:40:27,558 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:40:27] "GET /api/status HTTP/1.1" 200 -
+2026-05-04 20:40:36,281 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:40:36] "OPTIONS /api/publicar-revolico HTTP/1.1" 200 -
+2026-05-04 20:40:37,125 - __main__ - INFO - Publicando en Revolico: Cargador inteligente 20A
+2026-05-04 20:40:37,762 - revolico_agent - INFO - ✅ 20 cookies cargadas (formato Playwright)
+2026-05-04 20:40:37,769 - revolico_agent - INFO - ✅ 20 cookies cargadas en el navegador
+2026-05-04 20:40:37,820 - revolico_agent - INFO - ✅ Navegador iniciado correctamente
+2026-05-04 20:40:40,513 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:40:40] "GET /api/status HTTP/1.1" 200 -
+2026-05-04 20:40:48,420 - revolico_agent - INFO - ✅ Sesión activa (token encontrado en cookies)
+2026-05-04 20:40:48,421 - revolico_agent - INFO - Publicando: Cargador inteligente 20A
+2026-05-04 20:41:01,556 - revolico_agent - ERROR - No se encontró el campo título: Page.wait_for_selector: Timeout 10000ms exceeded.
+Call log:
+  - waiting for locator("#title") to be visible
+
+2026-05-04 20:41:01,560 - revolico_agent - INFO - ✅ 20 cookies guardadas
+2026-05-04 20:41:01,601 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:41:01] "POST /api/publicar-revolico HTTP/1.1" 200 -
+2026-05-04 20:41:11,639 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:41:11] "GET /api/status HTTP/1.1" 200 -
+2026-05-04 20:41:45,074 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:41:45] "GET /api/status HTTP/1.1" 200 -
+2026-05-04 20:41:47,484 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:41:47] "GET /api/historial HTTP/1.1" 200 -
+2026-05-04 20:41:51,242 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:41:51] "OPTIONS /api/publicar-revolico HTTP/1.1" 200 -
+2026-05-04 20:41:52,022 - __main__ - INFO - Publicando en Revolico: Cargador inteligente 20A
+2026-05-04 20:41:52,605 - revolico_agent - INFO - ✅ 20 cookies cargadas (formato Playwright)
+2026-05-04 20:41:52,610 - revolico_agent - INFO - ✅ 20 cookies cargadas en el navegador
+2026-05-04 20:41:52,661 - revolico_agent - INFO - ✅ Navegador iniciado correctamente
+2026-05-04 20:42:01,534 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:42:01] "GET /api/status HTTP/1.1" 200 -
+2026-05-04 20:42:02,874 - revolico_agent - INFO - ✅ Sesión activa (token encontrado en cookies)
+2026-05-04 20:42:02,875 - revolico_agent - INFO - Publicando: Cargador inteligente 20A
+2026-05-04 20:42:16,024 - revolico_agent - ERROR - No se encontró el campo título: Page.wait_for_selector: Timeout 10000ms exceeded.
+Call log:
+  - waiting for locator("#title") to be visible
+
+2026-05-04 20:42:16,029 - revolico_agent - INFO - ✅ 20 cookies guardadas
+2026-05-04 20:42:16,085 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:42:16] "POST /api/publicar-revolico HTTP/1.1" 200 -
+2026-05-04 20:42:31,572 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:42:31] "GET /api/status HTTP/1.1" 200 -
+2026-05-04 20:43:01,565 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:43:01] "GET /api/status HTTP/1.1" 200 -
+2026-05-04 20:43:31,545 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:43:31] "GET /api/status HTTP/1.1" 200 -
+2026-05-04 20:44:02,413 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:44:02] "GET /api/status HTTP/1.1" 200 -
+2026-05-04 20:44:32,441 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:44:32] "GET /api/status HTTP/1.1" 200 -
+2026-05-04 20:45:02,445 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:45:02] "GET /api/status HTTP/1.1" 200 -
+2026-05-04 20:45:31,563 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:45:31] "GET /api/status HTTP/1.1" 200 -
+2026-05-04 20:45:33,478 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:45:33] "OPTIONS /api/publicar-facebook HTTP/1.1" 200 -
+2026-05-04 20:45:34,096 - __main__ - INFO - Publicando en Facebook: Cargador inteligente 20A
+2026-05-04 20:45:34,638 - revolico_agent - INFO - ✅ 20 cookies cargadas (formato Playwright)
+2026-05-04 20:45:34,645 - revolico_agent - INFO - ✅ 20 cookies cargadas en el navegador
+2026-05-04 20:45:34,692 - revolico_agent - INFO - ✅ Navegador iniciado correctamente
+2026-05-04 20:45:34,693 - revolico_agent - INFO - Publicando en Facebook: Cargador inteligente 20A
+2026-05-04 20:45:42,842 - revolico_agent - WARNING - Facebook requiere login. Por favor actualiza las cookies.
+2026-05-04 20:45:42,850 - revolico_agent - INFO - ✅ 23 cookies guardadas
+2026-05-04 20:45:42,894 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:45:42] "POST /api/publicar-facebook HTTP/1.1" 200 -
+2026-05-04 20:46:02,433 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:46:02] "GET /api/status HTTP/1.1" 200 -
+2026-05-04 20:46:10,883 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:46:10] "GET /api/historial HTTP/1.1" 200 -
+2026-05-04 20:46:17,955 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:46:17] "OPTIONS /api/importar-cookies HTTP/1.1" 200 -
+2026-05-04 20:46:18,126 - revolico_agent - INFO - ✅ 8 cookies guardadas
+2026-05-04 20:46:18,126 - __main__ - INFO - ✅ 8 cookies importadas desde Cookie-Editor
+2026-05-04 20:46:18,126 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:46:18] "POST /api/importar-cookies HTTP/1.1" 200 -
+2026-05-04 20:46:26,534 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:46:26] "OPTIONS /api/publicar-facebook HTTP/1.1" 200 -
+2026-05-04 20:46:27,130 - __main__ - INFO - Publicando en Facebook: Cargador inteligente 20A
+2026-05-04 20:46:27,674 - revolico_agent - INFO - ✅ 8 cookies cargadas (formato Playwright)
+2026-05-04 20:46:27,678 - revolico_agent - INFO - ✅ 8 cookies cargadas en el navegador
+2026-05-04 20:46:27,731 - revolico_agent - INFO - ✅ Navegador iniciado correctamente
+2026-05-04 20:46:27,732 - revolico_agent - INFO - Publicando en Facebook: Cargador inteligente 20A
+2026-05-04 20:46:31,552 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:46:31] "GET /api/status HTTP/1.1" 200 -
+2026-05-04 20:47:01,562 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:47:01] "GET /api/status HTTP/1.1" 200 -
+2026-05-04 20:47:06,305 - revolico_agent - ERROR - Error llenando formulario de Facebook: Page.fill: Timeout 30000ms exceeded.
+Call log:
+  - waiting for locator("label:has-text(\"Título\") input, label:has-text(\"Title\") input")
+
+2026-05-04 20:47:06,378 - revolico_agent - INFO - ✅ 8 cookies guardadas
+2026-05-04 20:47:06,433 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:47:06] "POST /api/publicar-facebook HTTP/1.1" 200 -
+2026-05-04 20:47:31,650 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 20:47:31] "GET /api/status HTTP/1.1" 200 -
+2026-05-04 21:02:28,456 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 21:02:28] "GET /api/status HTTP/1.1" 200 -
+2026-05-04 21:02:30,247 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 21:02:30] "GET /api/historial HTTP/1.1" 200 -
+2026-05-04 21:02:33,947 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 21:02:33] "OPTIONS /api/publicar-revolico HTTP/1.1" 200 -
+2026-05-04 21:02:34,747 - __main__ - INFO - Publicando en Revolico: Cargador inteligente 20A
+2026-05-04 21:02:35,341 - revolico_agent - INFO - ✅ 8 cookies cargadas (formato Playwright)
+2026-05-04 21:02:35,351 - revolico_agent - INFO - ✅ 8 cookies cargadas en el navegador
+2026-05-04 21:02:35,405 - revolico_agent - INFO - ✅ Navegador iniciado correctamente
+2026-05-04 21:02:47,827 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 21:02:47] "GET /api/status HTTP/1.1" 200 -
+2026-05-04 21:02:49,501 - revolico_agent - INFO - ✅ Sesión activa en Revolico (verificado por: a:has-text("Favoritos"))
+2026-05-04 21:02:49,502 - revolico_agent - INFO - Publicando: Cargador inteligente 20A
+2026-05-04 21:03:06,139 - revolico_agent - ERROR - No se encontró el campo título: Page.wait_for_selector: Timeout 10000ms exceeded.
+Call log:
+  - waiting for locator("#title") to be visible
+
+2026-05-04 21:03:06,143 - revolico_agent - INFO - ✅ 16 cookies guardadas
+2026-05-04 21:03:06,187 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 21:03:06] "POST /api/publicar-revolico HTTP/1.1" 200 -
+2026-05-04 21:03:15,325 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 21:03:15] "OPTIONS /api/publicar-facebook HTTP/1.1" 200 -
+2026-05-04 21:03:16,910 - __main__ - INFO - Publicando en Facebook: Cargador inteligente 20A
+2026-05-04 21:03:17,489 - revolico_agent - INFO - ✅ 16 cookies cargadas (formato Playwright)
+2026-05-04 21:03:17,497 - revolico_agent - INFO - ✅ 16 cookies cargadas en el navegador
+2026-05-04 21:03:17,545 - revolico_agent - INFO - ✅ Navegador iniciado correctamente
+2026-05-04 21:03:17,546 - revolico_agent - INFO - Publicando en Facebook: Cargador inteligente 20A
+2026-05-04 21:03:17,846 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 21:03:17] "GET /api/status HTTP/1.1" 200 -
+2026-05-04 21:03:47,846 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 21:03:47] "GET /api/status HTTP/1.1" 200 -
+2026-05-04 21:04:07,054 - revolico_agent - ERROR - Error llenando formulario de Facebook: Page.click: Timeout 30000ms exceeded.
+Call log:
+  - waiting for locator("div[role=\"dialog\"] div[role=\"listitem\"]:first-child")
+    - locator resolved to <div role="listitem" class="x1rdy4ex">…</div>
+  - attempting click action
+    2 × waiting for element to be visible, enabled and stable
+      - element is not visible
+    - retrying click action
+    - waiting 20ms
+    2 × waiting for element to be visible, enabled and stable
+      - element is not visible
+    - retrying click action
+      - waiting 100ms
+    58 × waiting for element to be visible, enabled and stable
+       - element is not visible
+     - retrying click action
+       - waiting 500ms
+
+2026-05-04 21:04:07,260 - revolico_agent - INFO - ✅ 16 cookies guardadas
+2026-05-04 21:04:07,317 - werkzeug - INFO - 10.109.254.1 - - [04/May/2026 21:04:07] "POST /api/publicar-facebook HTTP/1.1" 200 -
