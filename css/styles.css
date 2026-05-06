@@ -1214,6 +1214,40 @@ body.dark-mode .categoria-btn.active {
 
 /* ===== RESPONSIVE ===== */
 @media (max-width: 768px) {
+    /* Mejoras Panel Admin en Móvil */
+    .admin-panel-content, .modal-content {
+        width: 95%;
+        max-height: 95vh;
+        border-radius: 15px;
+        margin: 10px;
+    }
+
+    .admin-header {
+        padding: 15px;
+    }
+
+    .admin-header h2 {
+        font-size: 18px;
+    }
+
+    .admin-tabs {
+        overflow-x: auto;
+        white-space: nowrap;
+        display: flex;
+        -webkit-overflow-scrolling: touch;
+        padding-bottom: 5px;
+    }
+
+    .tab-btn {
+        flex: 0 0 auto;
+        padding: 12px 15px;
+        font-size: 13px;
+    }
+
+    .admin-tab {
+        padding: 15px;
+    }
+
     .hero {
         grid-template-columns: 1fr;
         padding: 40px 0;
