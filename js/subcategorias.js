@@ -224,7 +224,7 @@ async function sincronizarSubcategoriasConGitHub() {
 
 async function cargarSubcategoriasDesdeGitHub() {
     try {
-        const res = await fetch('subcategorias.json?v=' + Date.now());
+        const res = await fetch('subcategorias.json', { cache: 'no-store' });
         if (res.ok) {
             const data = await res.json();
             if (data) {

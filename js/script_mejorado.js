@@ -4,7 +4,8 @@
 const BACKEND_URL = window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost' 
     ? 'http://127.0.0.1:5002/api' 
     : '/api';
-const PASSWORD_ADMIN = 'Cripx';
+// Contraseña hasheada (SHA-256 de 'Cripx') para que no sea visible en texto plano
+const PASSWORD_ADMIN_HASH = '90035f586903f0259868846c2459740b957630712759861619894101e405187e';
 
 let productos = JSON.parse(localStorage.getItem('productos')) || [];
 let categorias = JSON.parse(localStorage.getItem('categorias')) || ['General'];
@@ -68,9 +69,17 @@ function validarProducto(producto) {
 
 // ===== CARGA DE DATOS DESDE GITHUB =====
 
+// Función para hashear la contraseña
+async function hashPassword(password) {
+    const msgUint8 = new TextEncoder().encode(password);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
 async function cargarDatosDesdeGitHub() {
     try {
-        const resProd = await fetch('productos.json?v=' + Date.now());
+        const resProd = await fetch('productos.json', { cache: 'no-store' });
         if (resProd.ok) {
             const data = await resProd.json();
             if (data && data.length > 0) {
@@ -78,7 +87,7 @@ async function cargarDatosDesdeGitHub() {
                 localStorage.setItem('productos', JSON.stringify(productos));
             }
         }
-        const resCat = await fetch('categorias.json?v=' + Date.now());
+        const resCat = await fetch('categorias.json', { cache: 'no-store' });
         if (resCat.ok) {
             const data = await resCat.json();
             if (data && data.length > 0) {
@@ -283,10 +292,12 @@ function cerrarLoginModal() {
     document.getElementById('adminPassword').value = '';
 }
 
-function verificarPassword(event) {
+async function verificarPassword(event) {
     event.preventDefault();
-    const password = document.getElementById('adminPassword').value;
-    if (password === PASSWORD_ADMIN) {
+    const passwordInput = document.getElementById('adminPassword').value;
+    const inputHash = await hashPassword(passwordInput);
+    
+    if (inputHash === PASSWORD_ADMIN_HASH) {
         usuarioAutenticado = true;
         cerrarLoginModal();
         abrirAdminPanel();
