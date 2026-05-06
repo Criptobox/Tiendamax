@@ -70,6 +70,22 @@ function eliminarSubcategoria(categoria, subcategoria) {
     }
 }
 
+function actualizarSelectCategoriasPadre() {
+    const select = document.getElementById('subcategoryParentCategory');
+    if (!select) return;
+    const val = select.value;
+    select.innerHTML = '<option value="">-- Selecciona una categoría --</option>';
+    if (typeof categorias !== 'undefined') {
+        categorias.forEach(cat => {
+            const opt = document.createElement('option');
+            opt.value = cat;
+            opt.textContent = cat;
+            select.appendChild(opt);
+        });
+    }
+    if (val) select.value = val;
+}
+
 function actualizarListaSubcategorias() {
     const list = document.getElementById('subcategoryList');
     if (!list) return;
@@ -252,6 +268,7 @@ if (document.readyState === 'loading') {
             inicializarSubcategorias();
             agregarSubcategoriaAlProducto();
             agregarSubcategoriaAlEditModal();
+            actualizarSelectCategoriasPadre();
         }, 100);
     });
 } else {
@@ -259,6 +276,7 @@ if (document.readyState === 'loading') {
     inicializarSubcategorias();
     agregarSubcategoriaAlProducto();
     agregarSubcategoriaAlEditModal();
+    actualizarSelectCategoriasPadre();
 }
 
 // Sincronizar cambios de categoría

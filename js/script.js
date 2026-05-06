@@ -58,10 +58,12 @@ function validarProducto(producto) {
         errores.push('La categoría es requerida');
     }
     
-    // Calcular descuento automáticamente si no es correcto
-    const descuentoCalculado = Math.round(((producto.precioOriginal - producto.precioActual) / producto.precioOriginal) * 100);
-    if (producto.descuento !== descuentoCalculado) {
+    // Solo calcular descuento si hay precio original definido
+    if (producto.precioOriginal && producto.precioOriginal > 0 && producto.precioOriginal > producto.precioActual) {
+        const descuentoCalculado = Math.round(((producto.precioOriginal - producto.precioActual) / producto.precioOriginal) * 100);
         producto.descuento = descuentoCalculado;
+    } else if (!producto.descuento) {
+        producto.descuento = 0;
     }
     
     return errores;
@@ -281,14 +283,14 @@ function renderizarMasVendidos() {
 function abrirLoginAdmin() {
     const modal = document.getElementById('loginModal');
     modal.classList.remove('hidden');
-    modal.style.setProperty('display', 'flex', 'important');
+    modal.style.removeProperty('display');
     setTimeout(() => document.getElementById('adminPassword').focus(), 100);
 }
 
 function cerrarLoginModal() {
     const modal = document.getElementById('loginModal');
     modal.classList.add('hidden');
-    modal.style.setProperty('display', 'none', 'important');
+    modal.style.removeProperty('display');
     document.getElementById('adminPassword').value = '';
 }
 
@@ -321,7 +323,7 @@ function abrirAdminPanel() {
     const panel = document.getElementById('adminPanel');
     panel.classList.remove('hidden');
     panel.classList.add('visible');
-    panel.style.setProperty('display', 'flex', 'important');
+    panel.style.removeProperty('display');
     actualizarListaProductos();
     actualizarSelectCategorias();
     actualizarListaCategorias();
@@ -332,7 +334,7 @@ function cerrarAdminPanel() {
     const panel = document.getElementById('adminPanel');
     panel.classList.add('hidden');
     panel.classList.remove('visible');
-    panel.style.setProperty('display', 'none', 'important');
+    panel.style.removeProperty('display');
 }
 
 function switchTab(tabName) {
@@ -370,7 +372,7 @@ function agregarProductoForm(event) {
             // Nuevos campos psicológicos y de estado
             usado: document.getElementById('productUsado').checked,
             garantia: document.getElementById('productGarantia').value.trim(),
-            devolucion: document.getElementById('productDevolución').checked
+            devolucion: document.getElementById('productDevolucion') ? document.getElementById('productDevolucion').checked : false
         };
 
         // Validar producto
@@ -501,14 +503,14 @@ function abrirDetalleProducto(id) {
 
     const modal = document.getElementById('productDetailModal');
     modal.classList.remove('hidden');
-    modal.style.setProperty('display', 'flex', 'important');
+    modal.style.removeProperty('display');
     document.body.style.overflow = 'hidden';
 }
 
 function cerrarDetalleModal() {
     const modal = document.getElementById('productDetailModal');
     modal.classList.add('hidden');
-    modal.style.setProperty('display', 'none', 'important');
+    modal.style.removeProperty('display');
     document.body.style.overflow = 'auto';
 }
 
@@ -833,13 +835,13 @@ function abrirEditModal(id) {
 
     const modal = document.getElementById('editModal');
     modal.classList.remove('hidden');
-    modal.style.setProperty('display', 'flex', 'important');
+    modal.style.removeProperty('display');
 }
 
 function cerrarEditModal() {
     const modal = document.getElementById('editModal');
     modal.classList.add('hidden');
-    modal.style.setProperty('display', 'none', 'important');
+    modal.style.removeProperty('display');
 }
 
 function guardarProductoEditado(event) {
