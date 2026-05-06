@@ -12,26 +12,45 @@ let categorias = JSON.parse(localStorage.getItem('categorias')) || ['General'];
 let usuarioAutenticado = false;
 let categoriaSeleccionada = 'Todas';
 
-// Iconos para cada categoría
-const ICONOS_CATEGORIAS = {
-    'General':    '🛍️',
-    'WIFI':       '📡',
-    'ENERGIA':    '⚡',
-    'CELULARES':  '📱',
-    'UTILES':     '🔧',
-    'Ropa':       '👗',
-    'Electrónica':'💻',
-    'Hogar':      '🏠',
-    'Alimentos':  '🍎',
-    'Belleza':    '💄',
-    'Deportes':   '⚽',
-    'Juguetes':   '🧸',
-    'Libros':     '📚',
-    'Automóviles':'🚗',
+// Iconos para cada categoría (Mapeo automático por palabras clave)
+const ICONOS_MAPA = {
+    'wifi': '📡', 'internet': '📡', 'red': '📡', 'router': '📡',
+    'energia': '⚡', 'bateria': '⚡', 'luz': '⚡', 'corriente': '⚡', 'inversor': '⚡',
+    'celular': '📱', 'telefono': '📱', 'movil': '📱', 'iphone': '📱', 'android': '📱',
+    'utiles': '🔧', 'herramienta': '🔧', 'reparacion': '🔧', 'ferreteria': '🔧',
+    'ropa': '👗', 'vestir': '👗', 'moda': '👗', 'calzado': '👗', 'zapatos': '👗',
+    'electronica': '💻', 'computadora': '💻', 'laptop': '💻', 'tecnologia': '💻',
+    'hogar': '🏠', 'casa': '🏠', 'mueble': '🏠', 'cocina': '🏠',
+    'alimento': '🍎', 'comida': '🍎', 'fruta': '🍎', 'dulce': '🍎',
+    'belleza': '💄', 'maquillaje': '💄', 'perfume': '💄', 'cuidado': '💄',
+    'deporte': '⚽', 'gym': '⚽', 'ejercicio': '⚽', 'fitness': '⚽',
+    'juguete': '🧸', 'niño': '🧸', 'bebe': '🧸', 'diversion': '🧸',
+    'libro': '📚', 'estudio': '📚', 'papeleria': '📚', 'escuela': '📚',
+    'auto': '🚗', 'carro': '🚗', 'moto': '🚗', 'vehiculo': '🚗', 'repuesto': '🚗',
+    'reloj': '⌚', 'joya': '💎', 'accesorio': '💍',
+    'mascota': '🐾', 'perro': '🐾', 'gato': '🐾',
+    'musica': '🎵', 'audio': '🔊', 'sonido': '🔊',
+    'viaje': '✈️', 'maleta': '🧳',
+    'general': '🛍️'
 };
 
+// Cargar iconos personalizados desde localStorage
+let iconosPersonalizados = JSON.parse(localStorage.getItem('iconosPersonalizados')) || {};
+
 function obtenerIconoCategoria(nombre) {
-    return ICONOS_CATEGORIAS[nombre] || '📦';
+    if (!nombre) return '🛍️';
+    
+    // 1. Prioridad: Icono personalizado guardado por el usuario
+    if (iconosPersonalizados[nombre]) return iconosPersonalizados[nombre];
+    
+    // 2. Mapeo automático por palabras clave
+    const nombreMinus = nombre.toLowerCase();
+    for (const [clave, icono] of Object.entries(ICONOS_MAPA)) {
+        if (nombreMinus.includes(clave)) return icono;
+    }
+    
+    // 3. Por defecto: Icono de "Todos" (🛍️) si no se encuentra nada
+    return '🛍️';
 }
 
 // ===== VALIDACIÓN DE CAMPOS =====
@@ -763,12 +782,25 @@ function descargarCategoriasJSON() {
 
 function agregarCategoria() {
     const input = document.getElementById('newCategoryName');
+    const iconInput = document.getElementById('newCategoryIcon');
     const name = input.value.trim();
+    const icon = iconInput.value.trim();
+    
     if (!name) return;
     if (categorias.includes(name)) { mostrarNotificacion('La categoría ya existe', 'error'); return; }
+    
     categorias.push(name);
+    
+    // Si el usuario puso un icono, guardarlo como personalizado
+    if (icon) {
+        iconosPersonalizados[name] = icon;
+        localStorage.setItem('iconosPersonalizados', JSON.stringify(iconosPersonalizados));
+    }
+    
     guardarCategorias();
     input.value = '';
+    iconInput.value = '';
+    
     actualizarSelectCategorias();
     actualizarBotonesCategorias();
     actualizarListaCategorias();
@@ -781,8 +813,15 @@ function guardarCategorias() {
 }
 
 function eliminarCategoria(index) {
-    if (categorias[index] === 'General') return;
-    if (confirm(`¿Eliminar la categoría "${categorias[index]}"?`)) {
+    const nombre = categorias[index];
+    if (nombre === 'General') return;
+    if (confirm(`¿Eliminar la categoría "${nombre}"?`)) {
+        // Eliminar icono personalizado si existe
+        if (iconosPersonalizados[nombre]) {
+            delete iconosPersonalizados[nombre];
+            localStorage.setItem('iconosPersonalizados', JSON.stringify(iconosPersonalizados));
+        }
+        
         categorias.splice(index, 1);
         guardarCategorias();
         actualizarSelectCategorias();
