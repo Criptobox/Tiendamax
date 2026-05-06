@@ -421,11 +421,10 @@
                     </div>
                     <div class="form-group"><label>Foto del Producto:</label><input type="file" id="productImage" accept="image/*" required><small>JPG, PNG o GIF (max. 5MB)</small></div>
                     <div class="form-row">
-                        <div class="form-group"><label>Precio Original (USD):</label><input type="number" id="productPriceOriginal" required placeholder="100" step="0.01" min="0"></div>
-                        <div class="form-group"><label>Precio Actual (USD):</label><input type="number" id="productPriceActual" required placeholder="70" step="0.01" min="0"></div>
+                        <div class="form-group"><label>Precio (USD):</label><input type="number" id="productPriceActual" required placeholder="70" step="0.01" min="0"></div>
+                        <div class="form-group"><label>Descuento % (Opcional):</label><input type="number" id="productDiscount" placeholder="30" min="0" max="100"></div>
                     </div>
                     <div class="form-row">
-                        <div class="form-group"><label>Descuento (%):</label><input type="number" id="productDiscount" required placeholder="30" min="0" max="100"></div>
                         <div class="form-group"><label>Stock Disponible:</label><input type="number" id="productStock" required placeholder="5" min="1"></div>
                     </div>
                     <!-- NUEVO: Campos de Confianza -->
@@ -660,14 +659,13 @@
                     </label>
                 </div>
                 <div class="form-group"><label>Foto (opcional):</label><input type="file" id="editProductImage" accept="image/*"><small>Deja en blanco para mantener la imagen actual</small><div id="currentImagePreview" style="margin-top:10px"></div></div>
-                <div class="form-row">
-                    <div class="form-group"><label>Precio Original (USD):</label><input type="number" id="editProductPriceOriginal" required step="0.01"></div>
-                    <div class="form-group"><label>Precio Actual (USD):</label><input type="number" id="editProductPriceActual" required step="0.01"></div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group"><label>Descuento (%):</label><input type="number" id="editProductDiscount" required min="0" max="100"></div>
-                    <div class="form-group"><label>Stock:</label><input type="number" id="editProductStock" required min="1"></div>
-                </div>
+<div class="form-row">
+                        <div class="form-group"><label>Precio (USD):</label><input type="number" id="editProductPriceActual" required step="0.01" min="0"></div>
+                        <div class="form-group"><label>Descuento % (Opcional):</label><input type="number" id="editProductDiscount" min="0" max="100"></div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group"><label>Stock Disponible:</label><input type="number" id="editProductStock" required min="1"></div>
+                    </div>
                 <!-- NUEVO: Campos de Confianza en edición -->
                 <div class="form-group">
                     <label>Garantía (opcional):</label>

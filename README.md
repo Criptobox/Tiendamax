@@ -33,7 +33,7 @@ tiendamax/
 3. Desde el panel puedes:
    - **Agregar productos** con imagen, precio y descripción.
    - **Publicar en Revolico** de forma automática o manual.
-   - **Usar el Asistente de Facebook** para Marketplace.
+   - **Usar el Asistente de Facebook** para Grupos.
    - **Gestionar categorías** y sincronizar con GitHub.
 
 ---

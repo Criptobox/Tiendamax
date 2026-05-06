@@ -2,7 +2,7 @@
 
 ## ¿Qué es la función de Copiar?
 
-La función de copiar permite generar automáticamente el texto formateado de cada producto para publicar manualmente en Facebook Marketplace y Revolico. Esto es útil cuando:
+La función de copiar permite generar automáticamente el texto formateado de cada producto para publicar manualmente en Grupos de Facebook y Revolico. Esto es útil cuando:
 
 - Prefieres revisar el contenido antes de publicar
 - Quieres hacer cambios personalizados al texto
@@ -19,7 +19,7 @@ La función de copiar permite generar automáticamente el texto formateado de ca
 4. Busca el producto que deseas publicar
 5. Verás dos botones nuevos:
    - **📋 Revolico**: Copia el texto formateado para Revolico
-   - **📋 Facebook**: Copia el texto formateado para Facebook Marketplace
+   - **📋 Facebook**: Copia el texto formateado para Grupos de Facebook
 
 ### 2. Qué Incluye Cada Formato
 
@@ -40,36 +40,36 @@ Descripción completa
 - Incluye precio y stock
 - Contacto de WhatsApp
 
-#### Formato Facebook
+#### Formato Facebook (Grupos)
 ```
 🛍️ Nombre del Producto
 
 Descripción completa
 
 💰 Precio: $XX.XX USD
-💳 Antes: $XX.XX USD (-X%)
+🔥 ¡OFERTA! (-X%)
 📦 Disponible: X unidades
 
 📞 Interesado? Contáctame por WhatsApp: +53 54320170
 
-#TiendaMax #Productos #Oferta #Cuba
+#TiendaMax #VentasCuba #GruposFacebook #Oferta
 ```
 
 **Características:**
 - Emojis atractivos para Facebook
-- Muestra el precio original si hay descuento
-- Incluye hashtags relevantes
+- Muestra la oferta si hay descuento aplicado
+- Incluye hashtags optimizados para grupos
 - Llamada a la acción clara
 
-## Paso a Paso: Publicar en Facebook
+## Paso a Paso: Publicar en Facebook (Grupos)
 
 1. Haz clic en **📋 Facebook** en el producto
-2. Verás una notificación: "✅ ¡Datos copiados! Ahora pega en Facebook Marketplace."
-3. Se abrirá automáticamente Facebook Marketplace
-4. En la sección de "Crear un anuncio":
-   - Pega el contenido en la descripción
-   - Sube la imagen (la tienda no la copia automáticamente)
-   - Ajusta el precio si es necesario
+2. Verás una notificación: "✅ ¡Texto copiado para GRUPOS! Ahora pega en tus grupos de Facebook."
+3. Se abrirá automáticamente la sección de grupos de Facebook
+4. Entra a tu grupo favorito:
+   - Crea una publicación nueva
+   - Pega el contenido copiado
+   - Sube la imagen del producto
    - Publica
 
 ## Paso a Paso: Publicar en Revolico
@@ -90,26 +90,16 @@ Cuando agregas o editas un producto, el sistema valida automáticamente:
 ✅ **Nombre**: No puede estar vacío  
 ✅ **Descripción**: Debe tener contenido  
 ✅ **Imagen**: Es obligatoria  
-✅ **Precio Original**: Debe ser mayor a 0  
-✅ **Precio Actual**: Debe ser mayor a 0  
-✅ **Precio Actual vs Original**: El actual no puede ser mayor que el original  
+✅ **Precio**: Debe ser mayor a 0  
 ✅ **Stock**: Debe ser mayor a 0  
+✅ **Descuento**: Es opcional  
 ✅ **Categoría**: Debe estar seleccionada  
 
 Si hay un error, verás un mensaje rojo indicando qué campo corregir.
 
-## Descuento Automático
+## Descuento Opcional
 
-El descuento se calcula automáticamente basado en:
-
-```
-Descuento (%) = ((Precio Original - Precio Actual) / Precio Original) × 100
-```
-
-**Ejemplo:**
-- Precio Original: $100 USD
-- Precio Actual: $70 USD
-- Descuento: 30%
+Ahora puedes ingresar el porcentaje de descuento manualmente si lo deseas. Si lo dejas vacío, el producto se mostrará con su precio normal. Si ingresas un valor, se destacará como una oferta en la tienda y en los textos compartidos.
 
 ## Sincronización con GitHub
 
@@ -142,8 +132,8 @@ Para configurar GitHub:
 ### "La imagen es requerida"
 **Solución**: Selecciona una imagen en formato JPG, PNG o GIF
 
-### "El precio actual no puede ser mayor que el precio original"
-**Solución**: Verifica que el precio actual sea menor o igual al precio original
+### "El precio debe ser mayor a 0"
+**Solución**: Asegúrate de ingresar un precio válido para el producto
 
 ### "El stock debe ser mayor a 0"
 **Solución**: Ingresa un número positivo en el campo de stock

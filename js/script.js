@@ -47,14 +47,8 @@ function validarProducto(producto) {
     if (!producto.imagen) {
         errores.push('La imagen es requerida');
     }
-    if (!producto.precioOriginal || producto.precioOriginal <= 0) {
-        errores.push('El precio original debe ser mayor a 0');
-    }
     if (!producto.precioActual || producto.precioActual <= 0) {
-        errores.push('El precio actual debe ser mayor a 0');
-    }
-    if (producto.precioActual > producto.precioOriginal) {
-        errores.push('El precio actual no puede ser mayor que el precio original');
+        errores.push('El precio debe ser mayor a 0');
     }
     if (!producto.stock || producto.stock <= 0) {
         errores.push('El stock debe ser mayor a 0');
@@ -249,18 +243,17 @@ function renderizarMasVendidos() {
         const card = document.createElement('div');
         card.className = 'producto-card';
         card.onclick = () => abrirDetalleProducto(producto.id);
-        card.innerHTML = `
-            <div class="badge-vendido">🔥 Más Vendido</div>
-            <div class="producto-image">
-                <img src="${producto.imagen}" alt="${producto.nombre}" loading="lazy">
-                ${producto.descuento > 0 ? `<div class="badge">-${producto.descuento}%</div>` : ''}
-            </div>
-            <h3>${producto.nombre}</h3>
-            <p class="producto-description">${producto.descripcion}</p>
-            <p class="precio">
-                ${producto.precioOriginal !== producto.precioActual ? `<span class="precio-original">$${producto.precioOriginal.toFixed(2)}</span>` : ''}
-                <span class="precio-actual">$${producto.precioActual.toFixed(2)} USD</span>
-            </p>
+            card.innerHTML = `
+	            <div class="badge-vendido">🔥 Más Vendido</div>
+	            <div class="producto-image">
+	                <img src="${producto.imagen}" alt="${producto.nombre}" loading="lazy">
+	                ${producto.descuento > 0 ? `<div class="badge">-${producto.descuento}%</div>` : ''}
+	            </div>
+	            <h3>${producto.nombre}</h3>
+	            <p class="producto-description">${producto.descripcion}</p>
+	            <p class="precio">
+	                <span class="precio-actual">$${producto.precioActual.toFixed(2)} USD</span>
+	            </p>
             <div class="stock-count">
                 <span>📦 Solo quedan ${producto.stock} unidades</span>
             </div>
@@ -349,7 +342,6 @@ function agregarProductoForm(event) {
             nombre: document.getElementById('productName').value.trim(),
             descripcion: document.getElementById('productDescription').value.trim(),
             imagen: e.target.result,
-            precioOriginal: parseFloat(document.getElementById('productPriceOriginal').value) || 0,
             precioActual: parseFloat(document.getElementById('productPriceActual').value) || 0,
             descuento: parseInt(document.getElementById('productDiscount').value) || 0,
             stock: parseInt(document.getElementById('productStock').value) || 0,
@@ -436,10 +428,9 @@ function renderizarProductos() {
             </div>
             <h3>${producto.nombre}</h3>
             <p class="producto-description">${producto.descripcion}</p>
-            <p class="precio">
-                ${producto.precioOriginal !== producto.precioActual ? `<span class="precio-original">$${producto.precioOriginal.toFixed(2)}</span>` : ''}
-                <span class="precio-actual">$${producto.precioActual.toFixed(2)} USD</span>
-            </p>
+	            <p class="precio">
+	                <span class="precio-actual">$${producto.precioActual.toFixed(2)} USD</span>
+	            </p>
             <div class="stock">📦 Stock: ${producto.stock} unidades</div>
             <button class="btn btn-small btn-primary" onclick="event.stopPropagation(); contactarProducto('${producto.nombre}')">🛒 Comprar</button>
         `;
@@ -468,11 +459,14 @@ function abrirDetalleProducto(id) {
     }
 
     const priceOriginal = document.getElementById('detailPriceOriginal');
-    if (p.precioOriginal !== p.precioActual) {
-        priceOriginal.style.display = 'inline';
-        priceOriginal.textContent = `$${p.precioOriginal.toFixed(2)}`;
+    if (priceOriginal) priceOriginal.style.display = 'none';
+
+    const discountBadge = document.getElementById('detailProductBadge');
+    if (p.descuento > 0) {
+        discountBadge.style.display = 'inline-block';
+        discountBadge.textContent = `-${p.descuento}%`;
     } else {
-        priceOriginal.style.display = 'none';
+        discountBadge.style.display = 'none';
     }
 
     document.getElementById('detailPriceActual').textContent = `$${p.precioActual.toFixed(2)} USD`;
@@ -521,7 +515,7 @@ function actualizarListaProductos() {
             <div class="product-item-info">
                 <img src="${producto.imagen}" alt="${producto.nombre}" style="width:60px;height:60px;object-fit:cover;border-radius:8px;float:left;margin-right:12px;">
                 <h4>${producto.nombre} ${producto.masVendido ? '🔥' : ''}</h4>
-                <p><strong>Categoría:</strong> ${producto.categoria} | <strong>Precio:</strong> $${producto.precioActual.toFixed(2)} USD</p>
+                <p><strong>Categoría:</strong> ${producto.categoria} | <strong>Precio:</strong> $${producto.precioActual.toFixed(2)} USD ${producto.descuento > 0 ? `(-${producto.descuento}%)` : ''}</p>
             </div>
             <div class="product-item-actions" style="clear:both;padding-top:8px;">
                 <button class="btn-small-icon btn-edit" onclick="abrirEditModal(${producto.id})">✏️ Editar</button>
@@ -571,19 +565,19 @@ function copiarParaFacebook(id) {
 ${producto.descripcion}
 
 💰 Precio: $${producto.precioActual} USD
-${producto.precioOriginal > producto.precioActual ? `💳 Antes: $${producto.precioOriginal} USD (-${producto.descuento}%)` : ''}
+${producto.descuento > 0 ? `🔥 ¡OFERTA! (-${producto.descuento}%)` : ''}
 ${producto.stock > 0 ? `📦 Disponible: ${producto.stock} unidades` : '❌ Agotado'}
 
 📞 Interesado? Contáctame por WhatsApp: +53 54320170
 
-#TiendaMax #Productos #Oferta #Cuba
+#TiendaMax #VentasCuba #GruposFacebook #Oferta
     `.trim();
 
     navigator.clipboard.writeText(texto).then(() => {
-        mostrarNotificacion('✅ ¡Datos copiados! Ahora pega en Facebook Marketplace.');
-        setTimeout(() => { window.open('https://www.facebook.com/marketplace', '_blank'); }, 500);
+        mostrarNotificacion('✅ ¡Texto copiado para GRUPOS! Ahora pega en tus grupos de Facebook.');
+        setTimeout(() => { window.open('https://www.facebook.com/groups/feed/', '_blank'); }, 500);
     }).catch(() => { 
-        window.open('https://www.facebook.com/marketplace', '_blank');
+        window.open('https://www.facebook.com/groups/feed/', '_blank');
     });
 }
 
@@ -795,9 +789,8 @@ function abrirEditModal(id) {
     document.getElementById('editProductId').value = p.id;
     document.getElementById('editProductName').value = p.nombre;
     document.getElementById('editProductDescription').value = p.descripcion;
-    document.getElementById('editProductPriceOriginal').value = p.precioOriginal;
     document.getElementById('editProductPriceActual').value = p.precioActual;
-    document.getElementById('editProductDiscount').value = p.descuento;
+    document.getElementById('editProductDiscount').value = p.descuento || '';
     document.getElementById('editProductStock').value = p.stock;
     document.getElementById('editProductCategory').value = p.categoria;
 
@@ -835,7 +828,6 @@ function guardarProductoEditado(event) {
             ...productos[index],
             nombre: document.getElementById('editProductName').value.trim(),
             descripcion: document.getElementById('editProductDescription').value.trim(),
-            precioOriginal: parseFloat(document.getElementById('editProductPriceOriginal').value) || 0,
             precioActual: parseFloat(document.getElementById('editProductPriceActual').value) || 0,
             descuento: parseInt(document.getElementById('editProductDiscount').value) || 0,
             stock: parseInt(document.getElementById('editProductStock').value) || 0,
@@ -949,11 +941,16 @@ async function sincronizarTodoConGitHub() {
         switchTab('configuracion');
         return;
     }
-    mostrarNotificacion('🚀 Sincronizando con GitHub...', 'info');
+    mostrarNotificacion('🚀 Sincronizando todo con GitHub...', 'info');
     try {
+        // Sincronizar productos
         await subirArchivoAGitHub(user, repo, token, 'productos.json', productos);
+        // Sincronizar categorías
         await subirArchivoAGitHub(user, repo, token, 'categorias.json', categorias);
-        mostrarNotificacion('✅ ¡Tienda sincronizada con éxito! Los cambios serán visibles en 1-2 minutos.');
+        // Sincronizar subcategorías
+        const subcats = JSON.parse(localStorage.getItem('subcategorias')) || {};
+        await subirArchivoAGitHub(user, repo, token, 'subcategorias.json', subcats);
+        mostrarNotificacion('✅ ¡Tienda, categorías y subcategorías sincronizadas! Los cambios serán visibles en 1-2 minutos.');
     } catch (e) {
         mostrarNotificacion('❌ Error al sincronizar: ' + e.message, 'error');
     }
