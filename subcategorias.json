@@ -3,5 +3,12 @@
   "WIFI": [],
   "ENERGIA": [],
   "CELULARES": [],
-  "UTILES": []
+  "UTILES": [],
+  "CARROS": [
+    "LUBRICANTES",
+    "FILTROS",
+    "REFRIGERANTES",
+    "ADITIVOS",
+    "PIEZAS Y OTROS"
+  ]
 }
