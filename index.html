@@ -3,71 +3,123 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TiendaMax - Productos Exclusivos</title>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="description" content="TiendaMax - Productos exclusivos de alta calidad">
+    <meta name="theme-color" content="#FF6B35">
+    <title>TiendaMax | Premium Store</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
+
+    <div id="urgenciaBanner" class="urgencia-banner" style="display: none;">
+        <div class="container">
+            <span>🔥 ¡OFERTAS RELÁMPAGO DISPONIBLES!</span>
+            <span class="flash-deal">APROVECHA AHORA</span>
+        </div>
+    </div>
+
     <header class="header">
         <div class="container header-content">
-            <div class="logo"><h1 onclick="volverAlInicio()">🛍️ TiendaMax</h1></div>
+            <div class="logo">
+                <h1 onclick="volverAlInicio()">🛍️ <span>TiendaMax</span></h1>
+            </div>
             <nav class="nav">
-                <a href="javascript:void(0)" onclick="volverAlInicio()">Inicio</a>
+                <a href="#" onclick="volverAlInicio(); return false;">Inicio</a>
                 <a href="#categorias-home">Categorías</a>
-                <button class="theme-toggle" onclick="toggleDarkMode()">🌙</button>
-                <button class="admin-btn" onclick="abrirLoginAdmin()">⚙️</button>
+                <button class="theme-toggle-btn" onclick="toggleDarkMode()" aria-label="Cambiar modo">🌙</button>
             </nav>
         </div>
     </header>
 
-    <main class="container">
+    <main>
         <div id="vistaInicio">
             <section class="hero">
-                <div class="hero-content">
-                    <span class="badge-promo">🔥 OFERTA LIMITADA</span>
-                    <h2>Calidad Premium en <span class="text-orange">TiendaMax</span></h2>
-                    <p>Productos seleccionados con garantía y envío rápido a toda Cuba.</p>
-                    <div class="cta-group">
-                        <button class="btn btn-primary" onclick="scrollToProductos()">🛒 Ver Productos</button>
-                        <button class="btn btn-outline" onclick="contactarWhatsApp()">💬 WhatsApp</button>
+                <div class="container hero-grid">
+                    <div class="hero-text">
+                        <span class="badge-new">Novedades 2024</span>
+                        <h2>Calidad Premium en cada detalle con <span class="accent">TiendaMax</span></h2>
+                        <p>Descubre nuestra selección exclusiva de productos con garantía total y envíos rápidos a toda Cuba.</p>
+                        <div class="hero-btns">
+                            <a href="#mas-vendidos" class="btn-main">Explorar Tienda</a>
+                            <button onclick="contactarWhatsApp()" class="btn-sec">Soporte VIP</button>
+                        </div>
+                    </div>
+                    <div class="hero-visual">
+                        <div class="glass-card-hero">
+                            <div class="floating-icon">✨</div>
+                            <p>Los mejores precios del mercado</p>
+                        </div>
                     </div>
                 </div>
-                <div class="hero-image">
-                    <div class="glass-card">✨ Tus Productos Aquí</div>
+            </section>
+
+            <section id="categorias-home" class="section-padding">
+                <div class="container">
+                    <div class="section-header">
+                        <h2>Explorar Categorías</h2>
+                        <div class="divider"></div>
+                    </div>
+                    <div class="categorias-grid" id="categoriasGrid">
+                        </div>
                 </div>
             </section>
 
-            <section id="categorias-home">
-                <h2 class="section-title">🏷️ Categorías</h2>
-                <div class="categorias-grid" id="categoriasGrid"></div>
-            </section>
-
-            <section id="mas-vendidos">
-                <h2 class="section-title">🔥 Más Vendidos</h2>
-                <div class="productos-grid" id="masVendidosGrid"></div>
-                <div id="masVendidosVacio" class="vacio-msg" style="display:none;">Aún no hay destacados.</div>
+            <section id="mas-vendidos" class="section-padding bg-soft">
+                <div class="container">
+                    <div class="section-header">
+                        <h2>Más Vendidos</h2>
+                        <p>Los favoritos de nuestra comunidad</p>
+                    </div>
+                    <div class="productos-grid" id="masVendidosGrid">
+                        </div>
+                    <div id="masVendidosVacio" class="vacio-msg" style="display: none;">
+                        <p>Estamos actualizando nuestro stock...</p>
+                    </div>
+                </div>
             </section>
         </div>
 
-        <div id="vistaCategoria" style="display:none;">
-            <div class="categoria-header">
-                <button class="btn-volver" onclick="volverAlInicio()">← Volver</button>
-                <h2 id="tituloCategoriaActual">Productos</h2>
+        <div id="vistaCategoria" class="container section-padding" style="display:none;">
+            <div class="categoria-nav">
+                <button class="btn-back" onclick="volverAlInicio()">← Volver al inicio</button>
+                <h2 id="tituloCategoriaActual">Categoría</h2>
             </div>
-            <div class="filtros-sub" id="categoriaFiltro"></div>
-            <div class="productos-grid" id="productosGrid"></div>
+            <div class="filtros-container" id="categoriaFiltro">
+                </div>
+            <div class="productos-grid" id="productosGrid">
+                </div>
         </div>
     </main>
 
-    <div id="productDetailModal" class="modal hidden" onclick="cerrarDetalleModal(event)">
-        <div class="modal-content" onclick="event.stopPropagation()">
-            <span class="close" onclick="cerrarDetalleModal()">×</span>
-            <div class="modal-grid">
-                <img id="detailProductImage" src="" alt="">
-                <div class="modal-info">
-                    <h2 id="detailProductName"></h2>
+    <div class="control-buttons">
+        <button class="btn-float admin-toggle" onclick="abrirLoginAdmin()" title="Administración">⚙️</button>
+        <button class="btn-float whatsapp-float" onclick="window.open('https://wa.me/tu-numero')" title="Contáctanos">
+            <svg viewBox="0 0 24 24" width="24" height="24"><path fill="currentColor" d="M12.031 6.172c-2.203 0-4.007 1.797-4.007 3.992 0 1.633.985 3.039 2.391 3.656l-1.094 3.109 3.125-1.078c.508.141 1.039.219 1.586.219 2.203 0 4.008-1.797 4.008-3.992 0-2.195-1.805-3.992-4.008-3.992z"/></svg>
+        </button>
+    </div>
+
+    <div id="productDetailModal" class="modal-premium hidden">
+        <div class="modal-overlay" onclick="cerrarDetalleModal()"></div>
+        <div class="modal-body">
+            <button class="modal-close" onclick="cerrarDetalleModal()">×</button>
+            <div class="modal-content-layout">
+                <div class="modal-image">
+                    <img id="detailProductImage" src="" alt="Producto">
+                </div>
+                <div class="modal-details">
+                    <h2 id="detailProductName">Nombre del Producto</h2>
+                    <div class="price-tag">
+                        <span id="detailPriceOriginal" class="old-price"></span>
+                        <span id="detailPriceActual" class="new-price"></span>
+                    </div>
+                    <div id="detailProductStock" class="stock-info"></div>
                     <p id="detailProductDescription"></p>
-                    <div class="price" id="detailPriceActual"></div>
-                    <button id="detailBuyBtn" class="btn btn-primary">Comprar por WhatsApp</button>
+                    <button id="detailBuyBtn" class="btn-buy-now">🛒 Ordenar por WhatsApp</button>
                 </div>
             </div>
         </div>
