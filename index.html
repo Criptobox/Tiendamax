@@ -3,77 +3,461 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TiendaMax | Premium Store</title>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="description" content="TiendaMax - Productos exclusivos a precios increibles">
+    <meta name="keywords" content="tienda, ventas, productos, compras online, Cuba">
+    <meta name="author" content="TiendaMax">
+    <meta name="robots" content="index, follow">
+    <meta name="theme-color" content="#FF6B35">
+    <title>TiendaMax - Productos Exclusivos</title>
     <link rel="stylesheet" href="css/styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div id="urgenciaBanner" class="urgencia-banner" style="display: none;"></div>
 
+    <!-- Banner de Urgencia (Se muestra dinámicamente si hay ofertas) -->
+    <div id="urgenciaBanner" class="urgencia-banner" style="display: none;">
+        🔥 ¡OFERTAS RELÁMPAGO DISPONIBLES! <span class="flash-deal">APROVECHA AHORA</span>
+    </div>
+
+    <!-- Header -->
     <header class="header">
         <div class="container header-content">
-            <div class="logo"><h1 onclick="volverAlInicio()">🛍️ TiendaMax</h1></div>
+            <div class="logo"><h1 style="cursor:pointer" onclick="volverAlInicio()">🛍️ TiendaMax</h1></div>
             <nav class="nav">
                 <a href="#" onclick="volverAlInicio(); return false;">Inicio</a>
-                <button class="theme-toggle" onclick="toggleDarkMode()">🌙</button>
+                <a href="#categorias-home" onclick="volverAlInicio(); return false;">Categorías</a>
+                <a href="#beneficios">Beneficios</a>
+                <a href="#testimonios">Testimonios</a>
+                <a href="#contacto">Contacto</a>
             </nav>
         </div>
     </header>
 
-    <main class="container">
-        <div id="vistaInicio">
-            <section class="hero-premium">
-                <div class="hero-content">
-                    <span class="badge">Lo más exclusivo</span>
-                    <h2>Calidad Premium <br>en cada detalle.</h2>
-                    <p>Envíos rápidos y garantía total en todos nuestros productos.</p>
+    <!-- ===== VISTA INICIO ===== -->
+    <div id="vistaInicio">
+
+        <!-- Hero -->
+        <section class="hero">
+            <div class="hero-content">
+                <p class="subtitle">⏰ Oferta limitada — Solo por tiempo limitado</p>
+                <p class="description">Calidad premium, precios accesibles. Miles de clientes satisfechos confian en nosotros.</p>
+                <div class="cta-buttons">
+                    <button class="btn btn-primary" onclick="scrollToProductos()">🛒 Ver Categorías</button>
+                    <button class="btn btn-secondary" onclick="contactarWhatsApp()">💬 Consultar por WhatsApp</button>
                 </div>
-            </section>
-
-            <h2 class="section-title">Categorías</h2>
-            <div id="categoriasGrid" class="categorias-grid"></div>
-
-            <h2 class="section-title">Más Vendidos</h2>
-            <div id="masVendidosGrid" class="productos-grid"></div>
-            <div id="masVendidosVacio" style="display:none; text-align:center; padding:40px; opacity:0.5;">No hay productos destacados.</div>
-        </div>
-
-        <div id="vistaCategoria" style="display:none; padding-top: 20px;">
-            <div class="categoria-header">
-                <button onclick="volverAlInicio()" class="btn-back">← Volver</button>
-                <h2 id="tituloCategoriaActual"></h2>
             </div>
-            <div id="categoriaFiltro" class="filtros-sub"></div>
-            <div id="productosGrid" class="productos-grid"></div>
-        </div>
-    </main>
+            <div class="hero-image">
+                <div class="image-placeholder"><span>✨ Tus Productos Aqui ✨</span></div>
+            </div>
+        </section>
 
+        <!-- Sección Categorías -->
+        <section id="categorias-home" class="categorias-home">
+            <div class="container">
+                <h2 class="section-title">🏷️ Explora por Categoría</h2>
+                <p class="section-subtitle">Selecciona una categoría para ver todos sus productos</p>
+                <div class="categorias-grid" id="categoriasGrid">
+                    <!-- Se genera dinámicamente -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Sección Más Vendidos -->
+        <section id="mas-vendidos" class="mas-vendidos">
+            <div class="container">
+                <div class="section-header">
+                    <h2>🔥 Más Vendidos</h2>
+                    <p>Los productos favoritos de nuestros clientes</p>
+                </div>
+                <div class="productos-grid" id="masVendidosGrid"></div>
+                <div id="masVendidosVacio" style="text-align:center;padding:30px;color:#999;display:none;">
+                    <p>Aún no hay productos destacados. Márcalos desde el panel de administración.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Beneficios -->
+        <section id="beneficios" class="beneficios">
+            <div class="container">
+                <h2>¿Por Que Elegir Nuestros Productos?</h2>
+                <div class="beneficios-grid">
+                    <div class="beneficio-card"><div class="icon">🏆</div><h3>Calidad Garantizada</h3><p>Productos seleccionados cuidadosamente para tu satisfaccion</p></div>
+                    <div class="beneficio-card"><div class="icon">💰</div><h3>Mejores Precios</h3><p>Competencia directa con ofertas exclusivas para ti</p></div>
+                    <div class="beneficio-card"><div class="icon">🚚</div><h3>Envio Rapido</h3><p>Recibe tu compra en el menor tiempo posible</p></div>
+                    <div class="beneficio-card"><div class="icon">🛡️</div><h3>Compra Segura</h3><p>Proteccion total en todas tus transacciones</p></div>
+                    <div class="beneficio-card"><div class="icon">📞</div><h3>Soporte 24/7</h3><p>Estamos aqui para ayudarte en cualquier momento</p></div>
+                    <div class="beneficio-card"><div class="icon">⭐</div><h3>Clientes Felices</h3><p>Miles de resenas positivas de clientes satisfechos</p></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Testimonios -->
+        <section id="testimonios" class="testimonios">
+            <div class="container">
+                <h2>Lo Que Dicen Nuestros Clientes</h2>
+                <div class="testimonios-grid">
+                    <div class="testimonio-card"><div class="stars">⭐⭐⭐⭐⭐</div><p>"Los mejores precios que encontre. Volvere a comprar seguro."</p><p class="autor">— Juan Lopez</p></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Final -->
+        <section class="cta-final" id="contacto">
+            <div class="container">
+                <p>Las mejores ofertas estan disponibles ahora. Contactanos hoy mismo.</p>
+                <button class="btn btn-large" onclick="contactarWhatsApp()">💬 Contactar por WhatsApp Ahora</button>
+            </div>
+        </section>
+
+    </div>
+    <!-- FIN VISTA INICIO -->
+
+    <!-- ===== VISTA CATEGORÍA (se muestra al seleccionar una categoría) ===== -->
+    <div id="vistaCategoria">
+        <section class="productos-categoria">
+            <div class="container">
+                <div class="categoria-header">
+                    <h2 id="tituloCategoriaActual">Productos</h2>
+                    <button class="btn-volver" onclick="volverAlInicio()">← Volver al inicio</button>
+                </div>
+                <div class="categoria-filtro" id="categoriaFiltro">
+                    <button class="categoria-btn active" onclick="filtrarPorCategoria('Todas')">Todas</button>
+                </div>
+                <div class="productos-grid" id="productosGrid"></div>
+                <div id="productoVacio" class="producto-vacio" style="display:none;"><p>No hay productos en esta categoría aún.</p></div>
+            </div>
+        </section>
+    </div>
+    <!-- FIN VISTA CATEGORÍA -->
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 TiendaMax. Todos los derechos reservados.</p>
+            <p>Contacto: <a href="https://wa.me/5354320170" target="_blank" rel="noopener">WhatsApp: +53 54320170</a></p>
+        </div>
+    </footer>
+
+    <!-- Botón WhatsApp flotante -->
+    <a href="https://wa.me/5354320170?text=Hola,%20me%20interesa%20conocer%20mas%20sobre%20tus%20productos" class="whatsapp-btn" title="Contactar por WhatsApp" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.67-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.076 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421-7.403h-.004a9.87 9.87 0 00-4.255.949c-1.238.503-2.37 1.236-3.356 2.241C3.060 10.378 2.275 11.950 2.275 13.657c0 1.814.505 3.583 1.487 5.127l.956 1.665-1.707 5.612 5.849-1.566 1.626.961c1.361.805 2.846 1.23 4.377 1.23 5.516 0 10-4.484 10-10s-4.484-10-10-10z"/></svg>
+    </a>
+
+    <!-- Botón Grupo de WhatsApp -->
+    <a href="https://chat.whatsapp.com/TU_CODIGO_DE_GRUPO" class="whatsapp-group-btn" title="Unirse al Grupo de WhatsApp" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>
+    </a>
+
+    <!-- Botones de control -->
     <div class="control-buttons">
-        <button class="admin-toggle" onclick="abrirLoginAdmin()">⚙️</button>
+        <button class="theme-toggle" onclick="toggleDarkMode()" title="Cambiar tema">🌙</button>
+        <button class="admin-toggle" onclick="abrirLoginAdmin()" title="Panel de administración">⚙️</button>
     </div>
 
-    <div id="productDetailModal" class="modal hidden">
-        <div class="modal-overlay" onclick="cerrarDetalleModal()"></div>
+    <!-- ===== MODAL LOGIN ===== -->
+    <div id="loginModal" class="modal hidden">
         <div class="modal-content">
-            <button class="close-modal" onclick="cerrarDetalleModal()">×</button>
-            <div class="modal-body-grid">
-                <div class="modal-img-container">
-                    <img id="detailProductImage" src="" alt="">
+            <div class="modal-header">
+                <h2>Acceso de Administrador</h2>
+                <button class="close-btn" onclick="cerrarLoginModal()">✕</button>
+            </div>
+            <form onsubmit="verificarPassword(event)">
+                <div class="form-group">
+                    <label>Contraseña:</label>
+                    <input type="password" id="adminPassword" required autofocus>
                 </div>
-                <div class="modal-info">
-                    <h2 id="detailProductName"></h2>
-                    <div class="price-box">
-                        <span id="detailPriceOriginal" class="price-old"></span>
-                        <span id="detailPriceActual" class="price-new"></span>
+                <button type="submit" class="btn btn-primary">🔓 Acceder</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ===== PANEL ADMIN ===== -->
+    <div id="adminPanel" class="admin-panel hidden">
+        <div class="admin-panel-content">
+            <div class="admin-header">
+                <h2>⚙️ Panel de Administración</h2>
+                <button class="close-btn" onclick="cerrarAdminPanel()">✕</button>
+            </div>
+            <div class="admin-tabs">
+                <button class="tab-btn active" onclick="switchTab('add-products')" data-tab="add-products">➕ Agregar</button>
+                <button class="tab-btn" onclick="switchTab('publicar-ahora')" data-tab="publicar-ahora">🚀 Publicar</button>
+                <button class="tab-btn" onclick="switchTab('manage-products')" data-tab="manage-products">📋 Gestionar</button>
+                <button class="tab-btn" onclick="switchTab('manage-categories')" data-tab="manage-categories">🏷️ Categorías</button>
+                <button class="tab-btn" onclick="switchTab('manage-subcategories')" data-tab="manage-subcategories">📂 Subcategorías</button>
+                <button class="tab-btn" onclick="switchTab('configuracion')" data-tab="configuracion">⚙️ Config</button>
+            </div>
+            <div class="admin-content">
+
+                <!-- Tab: Agregar Producto -->
+                <div id="add-products" class="admin-tab active">
+                    <form id="productForm">
+                        <div class="form-group">
+                            <label>Nombre del Producto:</label>
+                            <input type="text" id="productName" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Descripción:</label>
+                            <textarea id="productDescription" required rows="4"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Categoría:</label>
+                            <select id="productCategory" required>
+                                <option value="General">General</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>¿Mostrar en "Más Vendidos"?</label>
+                            <select id="productMasVendido">
+                                <option value="false">No</option>
+                                <option value="true">Sí — Destacar en la página principal</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="productUsado">
+                                ✨ Este es un producto usado/refurbished
+                            </label>
+                            <small>Marca esta opción si el producto es de segunda mano o ha sido restaurado</small>
+                        </div>
+                        <div class="form-group">
+                            <label>Foto del Producto:</label>
+                            <input type="file" id="productImage" accept="image/*" required>
+                            <small>JPG, PNG o GIF (max. 5MB)</small>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Precio (USD):</label>
+                                <input type="number" id="productPriceActual" required placeholder="70" step="0.01" min="0">
+                            </div>
+                            <div class="form-group">
+                                <label>Descuento % (Opcional):</label>
+                                <input type="number" id="productDiscount" placeholder="30" min="0" max="100">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Stock Disponible:</label>
+                                <input type="number" id="productStock" required placeholder="5" min="1">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Garantía (opcional):</label>
+                            <input type="text" id="productGarantia" placeholder="Ej: 6 meses de garantía" maxlength="50">
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="productDevolucion">
+                                ✓ Devolución segura / Garantía de satisfacción
+                            </label>
+                        </div>
+                        <button type="submit" class="btn btn-primary">✅ Agregar Producto</button>
+                    </form>
+                </div>
+
+                <!-- Tab: Publicar -->
+                <div id="publicar-ahora" class="admin-tab">
+                    <div id="backendStatus" class="backend-status">🔄 Verificando estado del backend...</div>
+                    <div class="horarios-info">
+                        <h4>📅 Publicacion Automatica Programada</h4>
+                        <div class="horario-item">⏰ <strong>8:00 AM</strong> — Publicacion matutina (hora Cuba)</div>
+                        <div class="horario-item">⏰ <strong>5:00 PM</strong> — Publicacion vespertina (hora Cuba)</div>
+                        <p style="margin:10px 0 0;font-size:12px;opacity:0.9">El servidor publica automaticamente todos los productos en Revolico a estos horarios.</p>
                     </div>
-                    <div id="detailProductStock" class="stock-tag"></div>
-                    <p id="detailProductDescription"></p>
-                    <button id="detailBuyBtn" class="btn-whatsapp">🛒 Comprar por WhatsApp</button>
+                    <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px;">
+                        <button id="btnAbrirNavegador" class="btn-publicar-grande" onclick="abrirNavegadorParaLogin()" style="background: #27AE60; margin-bottom:0">🔓 1. Abrir Navegador y Loguearme</button>
+                        <button id="btnPublicarAhora" class="btn-publicar-grande" onclick="publicarAhora()" style="margin-bottom:0">🚀 2. Publicar Todo Automáticamente</button>
+                        <button id="btnAsistenteFacebook" class="btn-publicar-grande" onclick="mostrarSelectorAsistenteFacebook()" style="background: #3B5998; margin-bottom:0">📱 Asistente Facebook (Marketplace)</button>
+                    </div>
+                    <div id="resultadoPublicacion" class="resultado-publicacion"></div>
+                    <div class="tab-historial">
+                        <h4 style="margin-bottom:12px">📋 Ultimas Publicaciones</h4>
+                        <div id="historialPublicaciones"><p style="color:#666;font-size:13px">Cargando historial...</p></div>
+                    </div>
+                </div>
+
+                <!-- Tab: Gestionar Productos -->
+                <div id="manage-products" class="admin-tab">
+                    <div id="productsList" class="products-list">
+                        <p class="no-products">No hay productos aun</p>
+                    </div>
+                </div>
+
+                <!-- Tab: Gestionar Categorías -->
+                <div id="manage-categories" class="admin-tab">
+                    <div class="categories-section">
+                        <h3>Gestionar Categorias</h3>
+                        <div class="form-group" style="display: flex; gap: 10px; margin-bottom: 10px;">
+                        <input type="text" id="newCategoryName" placeholder="Nombre de la categoría" style="flex: 2;">
+                        <input type="text" id="newCategoryIcon" placeholder="Icono (Ej: 📦)" style="flex: 1; text-align: center;">
+                        <button class="btn btn-primary" onclick="agregarCategoria()" style="flex: 1;">+ Agregar</button>
+                    </div>
+                    <p style="font-size: 12px; color: #666; margin-bottom: 20px;">💡 Si dejas el icono vacío, se asignará uno automáticamente según el nombre.</p>
+                        <div id="categoryList" class="category-list"></div>
+                    </div>
+                </div>
+
+                <!-- Tab: Gestionar Subcategorías -->
+                <div id="manage-subcategories" class="admin-tab">
+                    <div class="subcategories-section">
+                        <h3>Gestionar Subcategorías</h3>
+                        <p style="font-size: 13px; margin-bottom: 15px; color: #666;">Las subcategorías ayudan a organizar mejor tus productos dentro de cada categoría.</p>
+                        <div class="form-group">
+                            <label>Categoría:</label>
+                            <select id="subcategoryParentCategory">
+                                <option value="">-- Selecciona una categoría --</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="display: flex; gap: 10px; margin-bottom: 20px;">
+                            <input type="text" id="newSubcategoryName" placeholder="Nombre de la subcategoría" style="flex: 1;">
+                            <button class="btn btn-primary" onclick="agregarSubcategoria()">+ Agregar</button>
+                        </div>
+                        <div id="subcategoryList" class="subcategory-list"></div>
+                    </div>
+                </div>
+
+                <!-- Tab: Configuración GitHub -->
+                <div id="configuracion" class="admin-tab">
+                    <h3>Configuración de Sincronización</h3>
+                    <p style="font-size: 14px; margin-bottom: 20px; color: var(--text-color);">Configura tu cuenta de GitHub para que los cambios se guarden automáticamente para todos tus clientes.</p>
+                    <form id="githubConfigForm" onsubmit="guardarConfiguracionGitHub(event)">
+                        <div class="form-group">
+                            <label>Usuario de GitHub:</label>
+                            <input type="text" id="githubUser" placeholder="Ej: Criptobox" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Repositorio:</label>
+                            <input type="text" id="githubRepo" placeholder="Ej: Tiendamax" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Token de Acceso (Classic):</label>
+                            <input type="password" id="githubToken" placeholder="ghp_xxxxxxxxxxxx" required>
+                            <p style="font-size: 11px; margin-top: 5px; opacity: 0.7;">Consigue tu token en GitHub Settings -> Developer Settings -> Tokens (classic). Debe tener permiso 'repo'.</p>
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="width: 100%;">💾 Guardar Configuración</button>
+                    </form>
+                    <div style="margin-top: 30px; padding: 20px; border: 2px solid #FF6B35; border-radius: 12px; text-align: center; background: rgba(255, 107, 53, 0.05);">
+                        <h4 style="margin-bottom: 10px;">🚀 Sincronización Global</h4>
+                        <p style="font-size: 13px; margin-bottom: 15px;">Usa este botón cada vez que agregues productos o categorías para que sean visibles para todos.</p>
+                        <button class="btn btn-primary" onclick="sincronizarTodoConGitHub()" style="padding: 15px 30px; font-size: 16px; background: #FF6B35;">🔄 ACTUALIZAR TIENDA AHORA</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- FIN PANEL ADMIN -->
+
+    <!-- ===== MODAL EDITAR PRODUCTO ===== -->
+    <div id="editModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Editar Producto</h2>
+                <button class="close-btn" onclick="cerrarEditModal()">✕</button>
+            </div>
+            <form id="editForm">
+                <input type="hidden" id="editProductId">
+                <div class="form-group">
+                    <label>Nombre:</label>
+                    <input type="text" id="editProductName" required>
+                </div>
+                <div class="form-group">
+                    <label>Descripcion:</label>
+                    <textarea id="editProductDescription" required rows="4"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Categoria:</label>
+                    <select id="editProductCategory" required>
+                        <option value="General">General</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>¿Mostrar en "Más Vendidos"?</label>
+                    <select id="editProductMasVendido">
+                        <option value="false">No</option>
+                        <option value="true">Sí — Destacar en la página principal</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="editProductUsado">
+                        ✨ Este es un producto usado/refurbished
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label>Foto (opcional):</label>
+                    <input type="file" id="editProductImage" accept="image/*">
+                    <small>Deja en blanco para mantener la imagen actual</small>
+                    <div id="currentImagePreview" style="margin-top:10px"></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Precio (USD):</label>
+                        <input type="number" id="editProductPriceActual" required step="0.01" min="0">
+                    </div>
+                    <div class="form-group">
+                        <label>Descuento % (Opcional):</label>
+                        <input type="number" id="editProductDiscount" min="0" max="100">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Stock Disponible:</label>
+                        <input type="number" id="editProductStock" required min="1">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Garantía (opcional):</label>
+                    <input type="text" id="editProductGarantia" placeholder="Ej: 6 meses de garantía" maxlength="50">
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="editProductDevolucion">
+                        ✓ Devolución segura / Garantía de satisfacción
+                    </label>
+                </div>
+                <button type="submit" class="btn btn-primary">💾 Guardar Cambios</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ===== MODAL DETALLE DE PRODUCTO ===== -->
+    <div id="productDetailModal" class="modal hidden">
+        <div class="modal-content" style="max-width: 800px;">
+            <div class="modal-header">
+                <h2 id="detailProductName">Detalle del Producto</h2>
+                <button class="close-btn" onclick="cerrarDetalleModal()">×</button>
+            </div>
+            <div style="padding: 25px;">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px;">
+                    <div id="detailProductImageContainer">
+                        <img id="detailProductImage" src="" alt="" style="width: 100%; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                    </div>
+                    <div>
+                        <div id="detailProductBadges" style="margin-bottom: 15px;"></div>
+                        <div id="detailProductBadge" class="badge" style="position: static; display: inline-block; margin-bottom: 15px;">-0%</div>
+                        <p id="detailProductCategory" style="color: var(--primary-color); font-weight: bold; margin-bottom: 10px;"></p>
+                        <div id="detailProductPrice" style="margin-bottom: 20px;">
+                            <span id="detailPriceOriginal" style="text-decoration: line-through; color: #999; margin-right: 10px; font-size: 18px;"></span>
+                            <span id="detailPriceActual" style="font-size: 32px; font-weight: 800; color: var(--primary-color);"></span>
+                        </div>
+                        <div id="detailProductStock" class="stock-count" style="margin-bottom: 20px;"></div>
+                        <div class="stock-bar" style="margin: 0 0 25px 0; width: 100%;">
+                            <div id="detailStockBarFill" class="stock-bar-fill"></div>
+                        </div>
+                        <div id="detailPersonasViendo" class="contador-personas" style="display:none;"></div>
+                        <button id="detailBuyBtn" class="btn-cta-mejorado" style="width: 100%;">🛒 Comprar por WhatsApp</button>
+                    </div>
+                </div>
+                <div style="margin-top: 30px; border-top: 1px solid #eee; padding-top: 20px;">
+                    <h3 style="margin-bottom: 15px;">Descripción</h3>
+                    <div id="detailProductDescription" style="white-space: pre-wrap; line-height: 1.8; color: #444;"></div>
                 </div>
             </div>
         </div>
     </div>
 
     <script src="js/script.js"></script>
+    <script src="js/subcategorias.js"></script>
+    <script src="js/revolico_integration.js"></script>
 </body>
 </html>

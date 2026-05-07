@@ -31,51 +31,8 @@ function guardarSubcategorias() {
     localStorage.setItem('subcategorias', JSON.stringify(subcategorias));
 }
 
-function agregarSubcategoria() {
-    const categoriaSelect = document.getElementById('subcategoryParentCategory');
-    const subcatInput = document.getElementById('newSubcategoryName');
-    
-    const categoria = categoriaSelect.value;
-    const subcategoria = subcatInput.value.trim();
-
-    if (!categoria) {
-        mostrarNotificacion('Selecciona una categoría', 'error');
-        return;
-    }
-    if (!subcategoria) {
-        mostrarNotificacion('Ingresa el nombre de la subcategoría', 'error');
-        return;
-    }
-
-    if (!subcategorias[categoria]) {
-        subcategorias[categoria] = [];
-    }
-
-    if (subcategorias[categoria].includes(subcategoria)) {
-        mostrarNotificacion('Esta subcategoría ya existe', 'error');
-        return;
-    }
-
-    subcategorias[categoria].push(subcategoria);
-    guardarSubcategorias();
-    subcatInput.value = '';
-    actualizarListaSubcategorias();
-    actualizarSelectSubcategorias();
-    mostrarNotificacion('✅ Subcategoría agregada');
-}
-
-function eliminarSubcategoria(categoria, subcategoria) {
-    if (confirm(`¿Eliminar la subcategoría "${subcategoria}"?`)) {
-        if (subcategorias[categoria]) {
-            subcategorias[categoria] = subcategorias[categoria].filter(s => s !== subcategoria);
-            guardarSubcategorias();
-            actualizarListaSubcategorias();
-            actualizarSelectSubcategorias();
-            mostrarNotificacion('🗑️ Subcategoría eliminada', 'info');
-        }
-    }
-}
-
+function agregarSubcategoria() {n    const categoriaSelect = document.getElementById('subcategoryParentCategory');n    const subcatInput = document.getElementById('newSubcategoryName');n    n    const categoria = categoriaSelect.value;n    const subcategoria = subcatInput.value.trim();nn    if (!categoria) {n        mostrarNotificacion('Selecciona una categoría', 'error');n        return;n    }n    if (!subcategoria) {n        mostrarNotificacion('Ingresa el nombre de la subcategoría', 'error');n        return;n    }nn    if (!subcategorias[categoria]) {n        subcategorias[categoria] = [];n    }nn    if (subcategorias[categoria].includes(subcategoria)) {n        mostrarNotificacion('Esta subcategoría ya existe', 'error');n        return;n    }nn    subcategorias[categoria].push(subcategoria);n    guardarSubcategorias();n    subcatInput.value = '';n    actualizarListaSubcategorias();n    actualizarSelectSubcategorias();n    mostrarNotificacion('✅ Subcategoría agregada');n}
+function eliminarSubcategoria(categoria, subcategoria) {n    if (confirm(`¿Eliminar la subcategoría \"${subcategoria}\"?`)) {n        if (subcategorias[categoria]) {n            subcategorias[categoria] = subcategorias[categoria].filter(s => s !== subcategoria);n            guardarSubcategorias();n            actualizarListaSubcategorias();n            actualizarSelectSubcategorias();n            mostrarNotificacion('🗑️ Subcategoría eliminada', 'info');n        }n    }n}
 function actualizarSelectCategoriasPadre() {
     const select = document.getElementById('subcategoryParentCategory');
     if (!select) return;
@@ -104,41 +61,39 @@ function actualizarListaSubcategorias() {
     `;
 
     let hasSubcategories = false;
-    if (typeof categorias !== 'undefined') {
-        categorias.forEach(cat => {
-            if (subcategorias[cat] && subcategorias[cat].length > 0) {
-                hasSubcategories = true;
-                const catDiv = document.createElement('div');
-                catDiv.style.marginBottom = '20px';
-                catDiv.innerHTML = `<h4 style="margin-bottom: 10px; color: #9B59B6;">📁 ${cat}</h4>`;
-                
-                const subList = document.createElement('div');
-                subList.style.paddingLeft = '20px';
-                
-                subcategorias[cat].forEach(subcat => {
-                    const item = document.createElement('div');
-                    item.className = 'subcategory-item';
-                    item.style.cssText = `
-                        padding: 8px 12px;
-                        background: #f5f5f5;
-                        border-radius: 6px;
-                        margin-bottom: 8px;
-                        display: flex;
-                        justify-content: space-between;
-                        align-items: center;
-                    `;
-                    item.innerHTML = `
-                        <span>📌 ${subcat}</span>
-                        <button onclick="eliminarSubcategoria('${cat}', '${subcat}')" style="background: #e74c3c; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer;">🗑️</button>
-                    `;
-                    subList.appendChild(item);
-                });
-                
-                catDiv.appendChild(subList);
-                list.appendChild(catDiv);
-            }
-        });
-    }
+    categorias.forEach(cat => {
+        if (subcategorias[cat] && subcategorias[cat].length > 0) {
+            hasSubcategories = true;
+            const catDiv = document.createElement('div');
+            catDiv.style.marginBottom = '20px';
+            catDiv.innerHTML = `<h4 style="margin-bottom: 10px; color: #9B59B6;">📁 ${cat}</h4>`;
+            
+            const subList = document.createElement('div');
+            subList.style.paddingLeft = '20px';
+            
+            subcategorias[cat].forEach(subcat => {
+                const item = document.createElement('div');
+                item.className = 'subcategory-item';
+                item.style.cssText = `
+                    padding: 8px 12px;
+                    background: #f5f5f5;
+                    border-radius: 6px;
+                    margin-bottom: 8px;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                `;
+                item.innerHTML = `
+                    <span>📌 ${subcat}</span>
+                    <button onclick="eliminarSubcategoria('${cat}', '${subcat}')" style="background: #e74c3c; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer;">🗑️</button>
+                `;
+                subList.appendChild(item);
+            });
+            
+            catDiv.appendChild(subList);
+            list.appendChild(catDiv);
+        }
+    });
 
     if (!hasSubcategories) {
         list.innerHTML += '<p style="color: #999; text-align: center; padding: 20px;">No hay subcategorías aún. ¡Crea una para empezar!</p>';
@@ -268,42 +223,7 @@ async function cargarSubcategoriasDesdeGitHub() {
 
 // ===== INICIALIZACIÓN =====
 
-// Ejecutar cuando el DOM esté listo
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => {
-        setTimeout(() => {
-            cargarSubcategoriasDesdeGitHub();
-            inicializarSubcategorias();
-            agregarSubcategoriaAlProducto();
-            agregarSubcategoriaAlEditModal();
-            actualizarSelectCategoriasPadre();
-            // Escuchar cambios en la categoría del formulario para actualizar subcategorías
-            const productCat = document.getElementById('productCategory');
-            if (productCat) {
-                productCat.addEventListener('change', actualizarSelectSubcategorias);
-            }
-            const editCat = document.getElementById('editProductCategory');
-            if (editCat) {
-                editCat.addEventListener('change', actualizarSelectSubcategorias);
-            }
-        }, 100);
-    });
-} else {
-    cargarSubcategoriasDesdeGitHub();
-    inicializarSubcategorias();
-    agregarSubcategoriaAlProducto();
-    agregarSubcategoriaAlEditModal();
-    actualizarSelectCategoriasPadre();
-    // Escuchar cambios en la categoría del formulario para actualizar subcategorías
-    const productCat = document.getElementById('productCategory');
-    if (productCat) {
-        productCat.addEventListener('change', actualizarSelectSubcategorias);
-    }
-    const editCat = document.getElementById('editProductCategory');
-    if (editCat) {
-        editCat.addEventListener('change', actualizarSelectSubcategorias);
-    }
-}
+// Ejecutar cuando el DOM esté listonif (document.readyState === 'loading') {n    document.addEventListener('DOMContentLoaded', () => {n        setTimeout(() => {n            cargarSubcategoriasDesdeGitHub();n            inicializarSubcategorias();n            agregarSubcategoriaAlProducto();n            agregarSubcategoriaAlEditModal();n            actualizarSelectCategoriasPadre();n            // Escuchar cambios en la categoría del formulario para actualizar subcategoríasn            const productCat = document.getElementById('productCategory');n            if (productCat) {n                productCat.addEventListener('change', actualizarSelectSubcategorias);n            }n            const editCat = document.getElementById('editProductCategory');n            if (editCat) {n                editCat.addEventListener('change', actualizarSelectSubcategorias);n            }n        }, 100);n    });n} else {n    cargarSubcategoriasDesdeGitHub();n    inicializarSubcategorias();n    agregarSubcategoriaAlProducto();n    agregarSubcategoriaAlEditModal();n    actualizarSelectCategoriasPadre();n    // Escuchar cambios en la categoría del formulario para actualizar subcategoríasn    const productCat = document.getElementById('productCategory');n    if (productCat) {n        productCat.addEventListener('change', actualizarSelectSubcategorias);n    }n    const editCat = document.getElementById('editProductCategory');n    if (editCat) {n        editCat.addEventListener('change', actualizarSelectSubcategorias);n    }n}
 
 // Sincronizar cambios de categoría
 window.addEventListener('storage', (event) => {
