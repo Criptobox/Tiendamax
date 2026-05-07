@@ -1,62 +1,119 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
-
+/* ===== ESTILO PREMIUM ===== */
 :root {
     --primary: #FF6B35;
-    --bg: #f8f9fa;
-    --card: #ffffff;
-    --text: #1a1a1a;
-    --shadow: 0 10px 25px rgba(0,0,0,0.05);
+    --primary-gradient: linear-gradient(135deg, #FF6B35 0%, #FF8C42 100%);
+    --bg-light: #F0F2F5;
+    --card-light: #FFFFFF;
+    --text-main: #1A1A1A;
+    --shadow-soft: 0 10px 30px rgba(0,0,0,0.08);
+    --radius: 20px;
 }
 
-[data-theme="dark"] {
-    --bg: #0f172a;
-    --card: #1e293b;
-    --text: #f8fafc;
+body.dark-mode {
+    --bg-light: #0F172A;
+    --card-light: #1E293B;
+    --text-main: #F8FAFC;
+    --shadow-soft: 0 10px 30px rgba(0,0,0,0.3);
 }
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); transition: 0.3s; }
+* { box-sizing: border-box; margin: 0; padding: 0; transition: background-color 0.3s, color 0.3s; }
 
-.container { max-width: 1100px; margin: 0 auto; padding: 0 20px; width: 100%; }
-
-/* Layout de Rejilla */
-.productos-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-    gap: 20px;
-    padding: 20px 0;
+body { 
+    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif; 
+    background-color: var(--bg-light); 
+    color: var(--text-main);
 }
 
-/* Header Fijo */
-.header { background: var(--card); padding: 15px 0; position: sticky; top: 0; z-index: 100; box-shadow: var(--shadow); }
+.container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+
+/* Header Glassmorphism */
+.header {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    padding: 15px 0;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+
+body.dark-mode .header {
+    background: rgba(15, 23, 42, 0.8);
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
 .header-content { display: flex; justify-content: space-between; align-items: center; }
 
-/* Hero Section */
-.hero { display: flex; align-items: center; gap: 40px; padding: 60px 0; min-height: 400px; }
-.hero-content { flex: 1; }
-.hero-image { flex: 1; display: flex; justify-content: center; }
-.hero h2 { font-size: 3rem; margin-bottom: 20px; }
+/* Tarjetas de Producto Premium */
+.productos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 25px;
+    padding: 30px 0;
+}
 
-/* Tarjetas */
 .producto-card {
-    background: var(--card);
-    border-radius: 16px;
-    padding: 15px;
-    box-shadow: var(--shadow);
-    transition: 0.3s;
+    background: var(--card-light);
+    border-radius: var(--radius);
+    padding: 12px;
+    box-shadow: var(--shadow-soft);
+    border: 1px solid rgba(255,255,255,0.1);
+    position: relative;
+    overflow: hidden;
 }
-.producto-card:hover { transform: translateY(-5px); }
-.producto-img { width: 100%; height: 200px; object-fit: cover; border-radius: 12px; }
 
-/* Modales */
-.modal {
-    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0,0,0,0.7); display: none; align-items: center; justify-content: center; z-index: 1000;
+.producto-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.12);
 }
-.modal.show { display: flex; }
-.modal-content { background: var(--card); padding: 30px; border-radius: 20px; max-width: 800px; width: 90%; position: relative; }
 
-@media (max-width: 768px) {
-    .hero { flex-direction: column; text-align: center; }
-    .productos-grid { grid-template-columns: repeat(2, 1fr); }
+.producto-img {
+    width: 100%;
+    height: 240px;
+    object-fit: cover;
+    border-radius: 15px;
+}
+
+/* Badge de Descuento */
+.badge-descuento {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: var(--primary-gradient);
+    color: white;
+    padding: 5px 12px;
+    border-radius: 50px;
+    font-weight: 800;
+    font-size: 0.8rem;
+}
+
+/* Botones Flotantes */
+.control-buttons {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    z-index: 1001;
+}
+
+.admin-toggle, .theme-toggle {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: none;
+    background: var(--primary-gradient);
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    box-shadow: 0 10px 20px rgba(255, 107, 53, 0.3);
+}
+
+/* Panel Admin Adaptado */
+.admin-panel {
+    background: var(--card-light);
+    border-radius: 30px 30px 0 0;
+    box-shadow: 0 -10px 50px rgba(0,0,0,0.2);
 }
