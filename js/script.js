@@ -452,6 +452,7 @@ function agregarProductoForm(event) {
             descuento: parseInt(document.getElementById('productDiscount').value) || 0,
             stock: parseInt(document.getElementById('productStock').value) || 0,
             categoria: document.getElementById('productCategory').value,
+            subcategoria: (document.getElementById('productSubcategory') && document.getElementById('productSubcategory').value) ? document.getElementById('productSubcategory').value : '',
             masVendido: masVendidoVal ? masVendidoVal.value === 'true' : false,
             // Nuevos campos psicológicos y de estado
             usado: document.getElementById('productUsado').checked,
@@ -929,6 +930,15 @@ function abrirEditModal(id) {
     document.getElementById('editProductDiscount').value = p.descuento || '';
     document.getElementById('editProductStock').value = p.stock;
     document.getElementById('editProductCategory').value = p.categoria;
+
+    // Cargar subcategorías del producto al editar
+    if (typeof actualizarSelectSubcategorias === 'function') {
+        actualizarSelectSubcategorias();
+        setTimeout(() => {
+            const editSubcat = document.getElementById('editProductSubcategory');
+            if (editSubcat && p.subcategoria) editSubcat.value = p.subcategoria;
+        }, 50);
+    }
     
     // Nuevos campos en edición
     if (document.getElementById('editProductUsado')) document.getElementById('editProductUsado').checked = p.usado || false;
@@ -973,6 +983,7 @@ function guardarProductoEditado(event) {
             descuento: parseInt(document.getElementById('editProductDiscount').value) || 0,
             stock: parseInt(document.getElementById('editProductStock').value) || 0,
             categoria: document.getElementById('editProductCategory').value,
+            subcategoria: (document.getElementById('editProductSubcategory') && document.getElementById('editProductSubcategory').value) ? document.getElementById('editProductSubcategory').value : (productos[index].subcategoria || ''),
             masVendido: masVendidoSel ? masVendidoSel.value === 'true' : productos[index].masVendido,
             imagen: nuevaImagen || productos[index].imagen,
             // Nuevos campos psicológicos y de estado
