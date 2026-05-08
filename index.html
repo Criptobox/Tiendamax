@@ -106,6 +106,40 @@ body {
 }
 
 /* ===== HEADER ===== */
+
+/* ===== BOTÓN AJUSTES EN NAVBAR ===== */
+.nav-admin-btn {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background: transparent;
+    border: none;
+    color: rgba(255,255,255,0.4);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    padding: 4px 2px;
+    transition: color 0.2s ease;
+    font-family: inherit;
+    line-height: 1;
+}
+
+.nav-admin-btn:hover {
+    color: rgba(255,255,255,0.75);
+}
+
+.nav-admin-label {
+    font-size: 12px;
+}
+
+@media (max-width: 768px) {
+    .nav-admin-label { display: none; }
+    .nav-admin-btn { padding: 4px; }
+}
+/* ===== FIN BOTÓN AJUSTES ===== */
+
 .header {
     background: var(--obsidian);
     color: white;
@@ -2104,6 +2138,10 @@ body.admin-mode .hero-image-admin-hint {
                 <a href="#beneficios">Beneficios</a>
                 <a href="#testimonios">Testimonios</a>
                 <a href="#contacto">Contacto</a>
+                <button class="nav-admin-btn" onclick="abrirLoginAdmin()" title="Panel de administración">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="17" height="17"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                    <span class="nav-admin-label">Ajustes</span>
+                </button>
             </nav>
         </div>
     </header>
@@ -2309,7 +2347,7 @@ body.admin-mode .hero-image-admin-hint {
     <!-- Botones de control -->
     <div class="control-buttons">
         <button class="theme-toggle" onclick="toggleDarkMode()" title="Cambiar tema">🌙</button>
-        <button class="admin-toggle" onclick="abrirLoginAdmin()" title="Panel de administración">⚙️</button>
+        <!-- Admin toggle movido al navbar -->
     </div>
 
     <!-- ===== MODAL LOGIN ===== -->
