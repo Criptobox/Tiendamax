@@ -1538,3 +1538,49 @@ actualizarListaProductos = function() {
         actualizarCountdownProductSelect();
     }
 };
+
+// ===== FIX: Subcategories showing only General =====
+// Override renderizarSubcategoriaTabs to also load from GitHub subcategorias.json
+const _origRenderSubcatTabs = typeof renderizarSubcategoriaTabs === 'function' ? renderizarSubcategoriaTabs : null;
+
+async function cargarSubcategoriasDesdeGitHub() {
+    try {
+        const res = await fetch('subcategorias.json', { cache: 'no-store' });
+        if (res.ok) {
+            const data = await res.json();
+            if (data && typeof data === 'object') {
+                // Merge with local - github takes priority
+                if (typeof subcategorias !== 'undefined') {
+                    Object.assign(subcategorias, data);
+                    localStorage.setItem('subcategorias', JSON.stringify(subcategorias));
+                }
+            }
+        }
+    } catch(e) {
+        console.log('Subcategorias: usando datos locales');
+    }
+}
+
+// Patch cargarDatosDesdeGitHub to also load subcategorias
+const _origCargarDatos = cargarDatosDesdeGitHub;
+cargarDatosDesdeGitHub = async function() {
+    await _origCargarDatos();
+    await cargarSubcategoriasDesdeGitHub();
+    // Re-render subcategoria tabs if a category is currently selected
+    if (typeof categoriaSeleccionada !== 'undefined' && categoriaSeleccionada && categoriaSeleccionada !== 'Todas') {
+        if (typeof renderizarSubcategoriaTabs === 'function') renderizarSubcategoriaTabs();
+    }
+};
+
+// FIX: When showing category view, make sure subcategorias are loaded first
+const _origMostrarVistaCat = mostrarVistaCategoria;
+mostrarVistaCategoria = function(categoria) {
+    // Reload subcategorias from localStorage fresh each time
+    if (typeof subcategorias !== 'undefined') {
+        try {
+            const fresh = JSON.parse(localStorage.getItem('subcategorias'));
+            if (fresh) Object.assign(subcategorias, fresh);
+        } catch(e) {}
+    }
+    _origMostrarVistaCat(categoria);
+};
