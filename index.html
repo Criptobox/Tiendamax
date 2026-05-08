@@ -343,6 +343,161 @@ body {
 }
 
 /* ===== CATEGORÍAS HOME ===== */
+
+/* ===== BANNERS LATERALES CATEGORÍAS ===== */
+.categorias-home-inner {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 16px;
+    box-sizing: border-box;
+}
+
+.categorias-home-inner .container {
+    flex: 1;
+    min-width: 0;
+}
+
+.banner-lateral {
+    flex-shrink: 0;
+    width: 130px;
+    min-height: 320px;
+    border-radius: 22px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 20px 12px;
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    text-decoration: none;
+    position: relative;
+    overflow: hidden;
+}
+
+.banner-lateral:hover {
+    transform: scale(1.04) translateY(-3px);
+    text-decoration: none;
+}
+
+.banner-lateral-grupo {
+    background: linear-gradient(170deg, #e05c00 0%, #ff8c00 45%, #25D366 100%);
+    box-shadow: 0 8px 30px rgba(224, 92, 0, 0.35);
+    animation: pulseOrange 3s ease-in-out infinite;
+}
+
+.banner-lateral-ayuda {
+    background: linear-gradient(170deg, #25D366 0%, #128C7E 45%, #e05c00 100%);
+    box-shadow: 0 8px 30px rgba(37, 211, 102, 0.3);
+    animation: pulseGreen 3.4s ease-in-out infinite;
+}
+
+@keyframes pulseOrange {
+    0%, 100% { box-shadow: 0 8px 30px rgba(224,92,0,0.35); }
+    50% { box-shadow: 0 8px 42px rgba(224,92,0,0.6); }
+}
+
+@keyframes pulseGreen {
+    0%, 100% { box-shadow: 0 8px 30px rgba(37,211,102,0.3); }
+    50% { box-shadow: 0 8px 42px rgba(37,211,102,0.55); }
+}
+
+.banner-lateral-shine {
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+        135deg,
+        transparent,
+        transparent 10px,
+        rgba(255,255,255,0.05) 10px,
+        rgba(255,255,255,0.05) 11px
+    );
+    pointer-events: none;
+}
+
+.banner-lateral-icon {
+    width: 58px;
+    height: 58px;
+    background: rgba(255,255,255,0.22);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    border: 1.5px solid rgba(255,255,255,0.35);
+    position: relative;
+    z-index: 1;
+}
+
+.banner-lateral-title {
+    font-size: 14px;
+    font-weight: 800;
+    color: #fff;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    line-height: 1.3;
+    position: relative;
+    z-index: 1;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.2);
+}
+
+.banner-lateral-sub {
+    font-size: 11px;
+    color: rgba(255,255,255,0.88);
+    line-height: 1.45;
+    position: relative;
+    z-index: 1;
+}
+
+.banner-lateral-btn {
+    background: rgba(255,255,255,0.22);
+    border: 1.5px solid rgba(255,255,255,0.5);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 6px 14px;
+    border-radius: 25px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    position: relative;
+    z-index: 1;
+    margin-top: 4px;
+    transition: background 0.2s;
+}
+
+.banner-lateral:hover .banner-lateral-btn {
+    background: rgba(255,255,255,0.38);
+}
+
+/* Responsive: ocultar banners en pantallas pequeñas */
+@media (max-width: 900px) {
+    .categorias-home-inner {
+        flex-direction: column;
+        gap: 20px;
+    }
+    .banner-lateral {
+        width: 100%;
+        min-height: auto;
+        flex-direction: row;
+        justify-content: flex-start;
+        gap: 16px;
+        padding: 16px 20px;
+        border-radius: 16px;
+    }
+    .banner-lateral-title { font-size: 15px; text-align: left; }
+    .banner-lateral-sub { text-align: left; font-size: 12px; }
+}
+
+@media (max-width: 600px) {
+    .banner-lateral { display: none; }
+}
+/* ===== FIN BANNERS LATERALES ===== */
+
 .categorias-home {
     padding: 90px 0 70px;
     background: var(--cream);
@@ -1987,19 +2142,39 @@ body.admin-mode .hero-image-admin-hint {
 
         <!-- Sección Categorías -->
         <section id="categorias-home" class="categorias-home">
-            <div class="container">
-                <p class="section-eyebrow">Navega por sección</p>
-                <h2 class="section-title">Explora por Categoría</h2>
-                <p class="section-subtitle">Selecciona una categoría para descubrir todos sus productos</p>
-                <div class="categorias-grid" id="categoriasGrid">
-                    <!-- Skeleton loaders while data loads -->
-                    <div class="skeleton-card"><div class="skeleton-icon"></div><div class="skeleton-text"></div><div class="skeleton-text-sm"></div></div>
-                    <div class="skeleton-card"><div class="skeleton-icon"></div><div class="skeleton-text"></div><div class="skeleton-text-sm"></div></div>
-                    <div class="skeleton-card"><div class="skeleton-icon"></div><div class="skeleton-text"></div><div class="skeleton-text-sm"></div></div>
-                    <div class="skeleton-card"><div class="skeleton-icon"></div><div class="skeleton-text"></div><div class="skeleton-text-sm"></div></div>
-                    <div class="skeleton-card"><div class="skeleton-icon"></div><div class="skeleton-text"></div><div class="skeleton-text-sm"></div></div>
-                    <div class="skeleton-card"><div class="skeleton-icon"></div><div class="skeleton-text"></div><div class="skeleton-text-sm"></div></div>
+            <div class="categorias-home-inner">
+                <!-- Banner lateral izquierdo: Grupo WhatsApp -->
+                <a href="https://chat.whatsapp.com/BnTdAU0Q3p25BOMTYuEpBN" class="banner-lateral banner-lateral-grupo" target="_blank" rel="noopener" title="Unirse al Grupo de WhatsApp">
+                    <div class="banner-lateral-shine"></div>
+                    <div class="banner-lateral-icon">💬</div>
+                    <div class="banner-lateral-title">Grupo<br>WhatsApp</div>
+                    <div class="banner-lateral-sub">Únete y recibe ofertas exclusivas al instante</div>
+                    <div class="banner-lateral-btn">Unirme →</div>
+                </a>
+
+                <div class="container">
+                    <p class="section-eyebrow">Navega por sección</p>
+                    <h2 class="section-title">Explora por Categoría</h2>
+                    <p class="section-subtitle">Selecciona una categoría para descubrir todos sus productos</p>
+                    <div class="categorias-grid" id="categoriasGrid">
+                        <!-- Skeleton loaders while data loads -->
+                        <div class="skeleton-card"><div class="skeleton-icon"></div><div class="skeleton-text"></div><div class="skeleton-text-sm"></div></div>
+                        <div class="skeleton-card"><div class="skeleton-icon"></div><div class="skeleton-text"></div><div class="skeleton-text-sm"></div></div>
+                        <div class="skeleton-card"><div class="skeleton-icon"></div><div class="skeleton-text"></div><div class="skeleton-text-sm"></div></div>
+                        <div class="skeleton-card"><div class="skeleton-icon"></div><div class="skeleton-text"></div><div class="skeleton-text-sm"></div></div>
+                        <div class="skeleton-card"><div class="skeleton-icon"></div><div class="skeleton-text"></div><div class="skeleton-text-sm"></div></div>
+                        <div class="skeleton-card"><div class="skeleton-icon"></div><div class="skeleton-text"></div><div class="skeleton-text-sm"></div></div>
+                    </div>
                 </div>
+
+                <!-- Banner lateral derecho: Ayuda -->
+                <a href="https://wa.me/5354320170?text=Hola,%20necesito%20ayuda%20con%20un%20producto" class="banner-lateral banner-lateral-ayuda" target="_blank" rel="noopener" title="Contactar soporte">
+                    <div class="banner-lateral-shine"></div>
+                    <div class="banner-lateral-icon">🎧</div>
+                    <div class="banner-lateral-title">¿Necesitas<br>Ayuda?</div>
+                    <div class="banner-lateral-sub">Atención personalizada por WhatsApp</div>
+                    <div class="banner-lateral-btn">Contactar →</div>
+                </a>
             </div>
         </section>
 
@@ -2128,17 +2303,7 @@ body.admin-mode .hero-image-admin-hint {
         </div>
     </footer>
 
-    <!-- Botón WhatsApp flotante -->
-    <a href="https://wa.me/5354320170?text=Hola,%20me%20interesa%20conocer%20mas%20sobre%20tus%20productos" class="whatsapp-btn" title="Contactar por WhatsApp" target="_blank" rel="noopener">
-        <span class="float-btn-label">Ayuda</span>
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.67-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.076 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421-7.403h-.004a9.87 9.87 0 00-4.255.949c-1.238.503-2.37 1.236-3.356 2.241C3.060 10.378 2.275 11.950 2.275 13.657c0 1.814.505 3.583 1.487 5.127l.956 1.665-1.707 5.612 5.849-1.566 1.626.961c1.361.805 2.846 1.23 4.377 1.23 5.516 0 10-4.484 10-10s-4.484-10-10-10z"/></svg>
-    </a>
-
-    <!-- Botón Grupo de WhatsApp -->
-    <a href="https://chat.whatsapp.com/BnTdAU0Q3p25BOMTYuEpBN" class="whatsapp-group-btn" title="Unirse al Grupo de WhatsApp" target="_blank" rel="noopener">
-        <span class="float-btn-label float-btn-label-left">Grupo</span>
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>
-    </a>
+    <!-- Botones flotantes removidos: reemplazados por banners laterales en sección categorías -->
 
     <!-- Botones de control -->
     <div class="control-buttons">
