@@ -11,6 +11,7 @@ let productos = JSON.parse(localStorage.getItem('productos')) || [];
 let categorias = JSON.parse(localStorage.getItem('categorias')) || ['General'];
 let usuarioAutenticado = false;
 let categoriaSeleccionada = 'Todas';
+let subcategoriaSeleccionada = 'Todas';
 
 // Iconos para cada categoría (Mapeo automático por palabras clave)
 const ICONOS_MAPA = {
@@ -202,6 +203,7 @@ function mostrarVistaInicio() {
 
 function mostrarVistaCategoria(categoria) {
     categoriaSeleccionada = categoria;
+    subcategoriaSeleccionada = 'Todas';
     document.getElementById('vistaInicio').style.display = 'none';
     document.getElementById('vistaCategoria').style.display = 'block';
 
@@ -210,8 +212,71 @@ function mostrarVistaCategoria(categoria) {
     document.getElementById('tituloCategoriaActual').textContent = titulo;
 
     actualizarBotonesCategorias();
+    renderizarSubcategoriaTabs();
     renderizarProductos();
     window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function renderizarSubcategoriaTabs() {
+    const tabsContainer = document.getElementById('subcategoriaTabs');
+    const filtroContainer = document.getElementById('categoriaFiltro');
+    if (!tabsContainer) return;
+
+    // Si es "Todas", mostrar el filtro de categorías y ocultar tabs
+    if (categoriaSeleccionada === 'Todas') {
+        tabsContainer.style.display = 'none';
+        if (filtroContainer) filtroContainer.style.display = 'flex';
+        return;
+    }
+
+    // Ocultar filtro de todas las categorías
+    if (filtroContainer) filtroContainer.style.display = 'none';
+
+    // Obtener subcategorías de la categoría actual
+    const subcats = (typeof subcategorias !== 'undefined' && subcategorias[categoriaSeleccionada]) 
+        ? subcategorias[categoriaSeleccionada] 
+        : [];
+
+    if (subcats.length === 0) {
+        tabsContainer.style.display = 'none';
+        return;
+    }
+
+    tabsContainer.style.display = 'flex';
+    tabsContainer.innerHTML = '';
+
+    // Tab "Todas" para esta categoría
+    const tabTodas = document.createElement('button');
+    tabTodas.className = `subcategoria-tab ${subcategoriaSeleccionada === 'Todas' ? 'active' : ''}`;
+    tabTodas.innerHTML = `<span class="tab-icon">🔎</span><span class="tab-label">Todos</span>`;
+    tabTodas.onclick = () => seleccionarSubcategoria('Todas');
+    tabsContainer.appendChild(tabTodas);
+
+    subcats.forEach(subcat => {
+        const tab = document.createElement('button');
+        tab.className = `subcategoria-tab ${subcategoriaSeleccionada === subcat ? 'active' : ''}`;
+        tab.innerHTML = `<span class="tab-label">${subcat}</span>`;
+        tab.onclick = () => seleccionarSubcategoria(subcat);
+        tabsContainer.appendChild(tab);
+    });
+
+    // Actualizar stats
+    actualizarCategoriaStats();
+}
+
+function seleccionarSubcategoria(subcat) {
+    subcategoriaSeleccionada = subcat;
+    renderizarSubcategoriaTabs();
+    renderizarProductos();
+}
+
+function actualizarCategoriaStats() {
+    const statsEl = document.getElementById('categoriaStats');
+    if (!statsEl) return;
+    const total = categoriaSeleccionada === 'Todas' 
+        ? productos.length 
+        : productos.filter(p => p.categoria === categoriaSeleccionada).length;
+    statsEl.textContent = `${total} producto${total !== 1 ? 's' : ''}`;
 }
 
 function volverAlInicio() {
@@ -450,14 +515,19 @@ function renderizarProductos() {
     const productosGrid = document.getElementById('productosGrid');
     if (!productosGrid) return;
 
-    const productosFiltrados = categoriaSeleccionada === 'Todas' 
+    let productosFiltrados = categoriaSeleccionada === 'Todas' 
         ? productos 
         : productos.filter(p => p.categoria === categoriaSeleccionada);
+
+    // Filtrar por subcategoría si hay una seleccionada (y no es 'Todas')
+    if (categoriaSeleccionada !== 'Todas' && subcategoriaSeleccionada && subcategoriaSeleccionada !== 'Todas') {
+        productosFiltrados = productosFiltrados.filter(p => p.subcategoria === subcategoriaSeleccionada);
+    }
 
     productosGrid.innerHTML = '';
 
     if (productosFiltrados.length === 0) {
-        productosGrid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #999; padding: 40px;">No hay productos en esta categoría</p>';
+        productosGrid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #999; padding: 60px 20px; font-size:15px;">No hay productos en esta subcategoría aún.</p>';
         return;
     }
 
@@ -477,6 +547,7 @@ function renderizarProductos() {
 	                <span class="precio-actual">$${producto.precioActual.toFixed(2)} USD</span>
 	            </p>
             <div class="stock">📦 Stock: ${producto.stock} unidades</div>
+            ${typeof renderCountdownHtml === 'function' ? renderCountdownHtml(producto.id) : ''}
             <button class="btn btn-small btn-primary" onclick="event.stopPropagation(); contactarProducto('${producto.nombre}')">🛒 Comprar</button>
         `;
         productosGrid.appendChild(card);
@@ -1147,3 +1218,323 @@ async function abrirNavegadorParaLogin() {
         if (btn) { btn.disabled = false; btn.textContent = '🔓 1. Abrir Navegador y Loguearme'; }
     }
 }
+
+// ===== HERO IMAGE ADMIN =====
+
+const HERO_IMG_DEFAULT = 'https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=800&q=85&auto=format&fit=crop';
+
+function cargarImagenHeroGuardada() {
+    const saved = localStorage.getItem('heroImage');
+    const img = document.getElementById('heroHumanImg');
+    if (img && saved) {
+        img.src = saved;
+    }
+    // Update preview in admin
+    const preview = document.getElementById('heroPreviewImg');
+    if (preview) {
+        preview.src = saved || HERO_IMG_DEFAULT;
+    }
+}
+
+function previewHeroImage(input) {
+    const file = input.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        const preview = document.getElementById('heroPreviewImg');
+        if (preview) preview.src = e.target.result;
+        document.getElementById('heroImageUrl').value = '';
+    };
+    reader.readAsDataURL(file);
+}
+
+function previewHeroUrl(url) {
+    if (!url) return;
+    const preview = document.getElementById('heroPreviewImg');
+    if (preview) preview.src = url;
+    document.getElementById('heroImageUpload').value = '';
+}
+
+function guardarImagenHero() {
+    const fileInput = document.getElementById('heroImageUpload');
+    const urlInput = document.getElementById('heroImageUrl');
+    const file = fileInput && fileInput.files[0];
+    
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            localStorage.setItem('heroImage', e.target.result);
+            const img = document.getElementById('heroHumanImg');
+            if (img) img.src = e.target.result;
+            mostrarNotificacion('✅ Imagen del hero actualizada');
+        };
+        reader.readAsDataURL(file);
+    } else if (urlInput && urlInput.value.trim()) {
+        const url = urlInput.value.trim();
+        localStorage.setItem('heroImage', url);
+        const img = document.getElementById('heroHumanImg');
+        if (img) img.src = url;
+        mostrarNotificacion('✅ Imagen del hero actualizada');
+    } else {
+        mostrarNotificacion('⚠️ Selecciona una imagen o pega una URL', 'error');
+    }
+}
+
+function restaurarImagenHeroDefault() {
+    localStorage.removeItem('heroImage');
+    const img = document.getElementById('heroHumanImg');
+    if (img) img.src = HERO_IMG_DEFAULT;
+    const preview = document.getElementById('heroPreviewImg');
+    if (preview) preview.src = HERO_IMG_DEFAULT;
+    mostrarNotificacion('↩ Imagen restaurada al default');
+}
+
+function abrirCambiarImagenHero() {
+    abrirAdminPanel();
+    setTimeout(() => switchTab('apariencia'), 200);
+}
+
+// ===== COUNTDOWN TIMER =====
+
+let countdownIntervals = {};
+
+function guardarCountdown() {
+    const productId = document.getElementById('countdownProductSelect').value;
+    const horas = parseInt(document.getElementById('countdownHoras').value) || 0;
+    const minutos = parseInt(document.getElementById('countdownMinutos').value) || 0;
+    const texto = document.getElementById('countdownTexto').value.trim() || '¡Oferta especial!';
+
+    if (!productId) {
+        mostrarNotificacion('⚠️ Selecciona un producto', 'error');
+        return;
+    }
+
+    const duracionMs = (horas * 3600 + minutos * 60) * 1000;
+    if (duracionMs <= 0) {
+        mostrarNotificacion('⚠️ Ingresa una duración válida', 'error');
+        return;
+    }
+
+    const endTime = Date.now() + duracionMs;
+    const countdown = { productId, endTime, texto };
+    localStorage.setItem('activeCountdown', JSON.stringify(countdown));
+
+    const producto = productos.find(p => p.id == productId);
+    const nombre = producto ? producto.nombre : 'Producto';
+
+    const status = document.getElementById('countdownStatus');
+    if (status) status.innerHTML = `✅ Countdown activo para: <strong>${nombre}</strong>`;
+
+    // Re-render to show timer
+    renderizarMasVendidos();
+    renderizarProductos();
+    iniciarCountdownsActivos();
+
+    mostrarNotificacion(`⏱️ Countdown activado para "${nombre}"`);
+}
+
+function desactivarCountdown() {
+    localStorage.removeItem('activeCountdown');
+    Object.values(countdownIntervals).forEach(clearInterval);
+    countdownIntervals = {};
+    renderizarMasVendidos();
+    renderizarProductos();
+    const status = document.getElementById('countdownStatus');
+    if (status) status.innerHTML = 'Countdown desactivado.';
+    mostrarNotificacion('🗑️ Countdown desactivado');
+}
+
+function getActiveCountdown() {
+    try {
+        const saved = localStorage.getItem('activeCountdown');
+        if (!saved) return null;
+        const cd = JSON.parse(saved);
+        if (cd.endTime <= Date.now()) {
+            localStorage.removeItem('activeCountdown');
+            return null;
+        }
+        return cd;
+    } catch { return null; }
+}
+
+function renderCountdownHtml(productId) {
+    const cd = getActiveCountdown();
+    if (!cd || String(cd.productId) !== String(productId)) return '';
+    
+    return `<div class="producto-countdown" id="countdown_${productId}">
+        <span class="countdown-label">🔥 ${cd.texto}</span>
+        <div class="countdown-time">
+            <span class="countdown-block" id="cd_h_${productId}">--</span>
+            <span class="countdown-sep">:</span>
+            <span class="countdown-block" id="cd_m_${productId}">--</span>
+            <span class="countdown-sep">:</span>
+            <span class="countdown-block" id="cd_s_${productId}">--</span>
+        </div>
+    </div>`;
+}
+
+function iniciarCountdownsActivos() {
+    Object.values(countdownIntervals).forEach(clearInterval);
+    countdownIntervals = {};
+
+    const cd = getActiveCountdown();
+    if (!cd) return;
+
+    const pid = cd.productId;
+    const tickerFn = () => {
+        const remaining = Math.max(0, cd.endTime - Date.now());
+        const h = Math.floor(remaining / 3600000);
+        const m = Math.floor((remaining % 3600000) / 60000);
+        const s = Math.floor((remaining % 60000) / 1000);
+        const pad = n => String(n).padStart(2, '0');
+
+        ['masVendidosGrid', 'productosGrid'].forEach(gridId => {
+            const hEl = document.getElementById(`cd_h_${pid}`);
+            const mEl = document.getElementById(`cd_m_${pid}`);
+            const sEl = document.getElementById(`cd_s_${pid}`);
+            if (hEl) hEl.textContent = pad(h);
+            if (mEl) mEl.textContent = pad(m);
+            if (sEl) sEl.textContent = pad(s);
+        });
+
+        if (remaining <= 0) {
+            clearInterval(countdownIntervals[pid]);
+            localStorage.removeItem('activeCountdown');
+        }
+    };
+    tickerFn();
+    countdownIntervals[pid] = setInterval(tickerFn, 1000);
+}
+
+function actualizarCountdownProductSelect() {
+    const sel = document.getElementById('countdownProductSelect');
+    if (!sel) return;
+    const current = sel.value;
+    sel.innerHTML = '<option value="">-- Ninguno (desactivar timer) --</option>';
+    productos.forEach(p => {
+        const opt = document.createElement('option');
+        opt.value = p.id;
+        opt.textContent = p.nombre;
+        sel.appendChild(opt);
+    });
+    // Preselect active countdown product
+    const cd = getActiveCountdown();
+    if (cd) sel.value = cd.productId;
+    else if (current) sel.value = current;
+
+    // Update status
+    const status = document.getElementById('countdownStatus');
+    if (status && cd) {
+        const producto = productos.find(p => p.id == cd.productId);
+        if (producto) status.innerHTML = `✅ Countdown activo para: <strong>${producto.nombre}</strong>`;
+    }
+}
+
+// ===== PATCH renderizarMasVendidos to include countdown =====
+// Override to inject countdown HTML
+const _origRenderMasVendidos = renderizarMasVendidos;
+renderizarMasVendidos = function() {
+    _origRenderMasVendidos();
+    const cd = getActiveCountdown();
+    if (!cd) return;
+    const grid = document.getElementById('masVendidosGrid');
+    if (!grid) return;
+    grid.querySelectorAll('.producto-card').forEach(card => {
+        card.onclick && card.onclick.toString();
+        // find matching product id from onclick
+        const onclickAttr = card.getAttribute('onclick') || '';
+        const match = onclickAttr.match(/abrirDetalleProducto\((\d+)\)/);
+        if (!match) return;
+        const pid = match[1];
+        if (String(cd.productId) === String(pid)) {
+            // Insert countdown before the buy button
+            const btn = card.querySelector('.btn-small');
+            if (btn && !card.querySelector('.producto-countdown')) {
+                const cdDiv = document.createElement('div');
+                cdDiv.innerHTML = renderCountdownHtml(pid);
+                card.insertBefore(cdDiv.firstChild, btn);
+                iniciarCountdownsActivos();
+            }
+        }
+    });
+};
+
+// ===== PATCH abrirAdminPanel to init apariencia tab =====
+const _origAbrirAdminPanel = abrirAdminPanel;
+abrirAdminPanel = function() {
+    _origAbrirAdminPanel();
+    cargarImagenHeroGuardada();
+    actualizarCountdownProductSelect();
+    document.body.classList.add('admin-mode');
+};
+
+const _origCerrarAdminPanel = cerrarAdminPanel;
+cerrarAdminPanel = function() {
+    _origCerrarAdminPanel();
+    document.body.classList.remove('admin-mode');
+};
+
+// ===== PATCH inicializarTienda to load saved hero image and start countdowns =====
+const _origInicializarTienda = inicializarTienda;
+inicializarTienda = function() {
+    _origInicializarTienda();
+    cargarImagenHeroGuardada();
+    iniciarCountdownsActivos();
+};
+
+
+// ===== FAST CATEGORIES - render from localStorage immediately =====
+// Patch renderizarCategoriasHome for performance 
+// (already called from cargarDatosDesdeGitHub, but we want instant local render too)
+function renderizarCategoriasHomeInstant() {
+    // Load from localStorage immediately (no network wait)
+    const localProds = JSON.parse(localStorage.getItem('productos')) || [];
+    const localCats = JSON.parse(localStorage.getItem('categorias')) || ['General'];
+    if (localProds.length === 0 && localCats.length <= 1) return; // Let skeleton show
+    
+    const grid = document.getElementById('categoriasGrid');
+    if (!grid) return;
+    
+    // Only replace skeletons if we actually have local data
+    grid.innerHTML = '';
+    const cardTodas = document.createElement('div');
+    cardTodas.className = 'categoria-card';
+    cardTodas.innerHTML = `<span class="cat-icon">🛍️</span><span class="cat-name">Todos</span><span class="cat-count">${localProds.length} producto${localProds.length !== 1 ? 's' : ''}</span>`;
+    cardTodas.onclick = () => mostrarVistaCategoria('Todas');
+    grid.appendChild(cardTodas);
+
+    localCats.forEach(cat => {
+        const count = localProds.filter(p => p.categoria === cat).length;
+        const card = document.createElement('div');
+        card.className = 'categoria-card';
+        card.innerHTML = `<span class="cat-icon">${obtenerIconoCategoria(cat)}</span><span class="cat-name">${cat}</span><span class="cat-count">${count} producto${count !== 1 ? 's' : ''}</span>`;
+        card.onclick = () => mostrarVistaCategoria(cat);
+        grid.appendChild(card);
+    });
+}
+
+// Run instant render immediately on script parse
+if (document.readyState !== 'loading') {
+    renderizarCategoriasHomeInstant();
+} else {
+    document.addEventListener('DOMContentLoaded', renderizarCategoriasHomeInstant);
+}
+
+
+// ===== PATCH renderizarProductos to start countdowns after render =====
+const _origRenderProductos = renderizarProductos;
+renderizarProductos = function() {
+    _origRenderProductos();
+    if (typeof iniciarCountdownsActivos === 'function') {
+        setTimeout(iniciarCountdownsActivos, 50);
+    }
+};
+
+// ===== PATCH actualizarListaProductos to also update countdown select =====
+const _origActualizarListaProductos = actualizarListaProductos;
+actualizarListaProductos = function() {
+    _origActualizarListaProductos();
+    if (typeof actualizarCountdownProductSelect === 'function') {
+        actualizarCountdownProductSelect();
+    }
+};
