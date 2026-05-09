@@ -230,6 +230,139 @@ body {
     color: var(--gold);
 }
 
+/* ===== HAMBURGER MENU MÓVIL ===== */
+.hamburger-btn {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    flex-direction: column;
+    gap: 5px;
+    z-index: 200;
+}
+.hamburger-btn span {
+    display: block;
+    width: 24px;
+    height: 2px;
+    background: var(--white);
+    border-radius: 2px;
+    transition: all 0.3s ease;
+}
+.hamburger-btn.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.hamburger-btn.open span:nth-child(2) { opacity: 0; }
+.hamburger-btn.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+.mobile-menu-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.95);
+    z-index: 150;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    padding: 80px 30px 40px;
+}
+.mobile-menu-overlay.open { display: flex; }
+.mobile-menu-overlay a, .mobile-menu-overlay button.nav-mobile-link {
+    color: rgba(255,255,255,0.85);
+    text-decoration: none;
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 18px 0;
+    width: 100%;
+    text-align: center;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    transition: color 0.2s;
+    background: none;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    cursor: pointer;
+    font-family: var(--font-display);
+}
+.mobile-menu-overlay a:last-child { border-bottom: none; }
+.mobile-menu-overlay a:hover, .mobile-menu-overlay button.nav-mobile-link:hover { color: var(--gold); }
+.mobile-menu-logo {
+    position: absolute;
+    top: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 22px;
+    font-weight: 900;
+    color: white;
+    font-family: var(--font-display);
+    white-space: nowrap;
+}
+.mobile-menu-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 32px;
+    cursor: pointer;
+    line-height: 1;
+    padding: 4px 10px;
+}
+
+/* Botones móvil al pie del menú */
+.mobile-menu-actions {
+    margin-top: 30px;
+    display: flex;
+    gap: 12px;
+    width: 100%;
+}
+.mobile-menu-actions a {
+    border: none !important;
+    flex: 1;
+    border-radius: 14px !important;
+    padding: 14px 10px !important;
+    font-size: 13px !important;
+    letter-spacing: 0.5px !important;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+.mobile-action-grupo { background: #25D366 !important; color: white !important; }
+.mobile-action-ayuda { background: var(--primary-color, #e8692a) !important; color: white !important; }
+
+/* ===== BANNERS LATERALES EN MÓVIL (al final de página) ===== */
+.mobile-bottom-banners {
+    display: none;
+    flex-direction: row;
+    gap: 12px;
+    padding: 20px 16px;
+    background: var(--obsidian);
+    border-top: 1px solid rgba(201,169,110,0.2);
+}
+.mobile-bottom-banners a {
+    flex: 1;
+    border-radius: 16px;
+    padding: 16px 12px;
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    text-align: center;
+    color: white;
+    font-size: 13px;
+    font-weight: 700;
+    transition: transform 0.2s;
+}
+.mobile-bottom-banners a:active { transform: scale(0.97); }
+.mobile-bottom-banners .mbb-grupo { background: linear-gradient(135deg, #1a8a3a, #25D366); }
+.mobile-bottom-banners .mbb-ayuda { background: linear-gradient(135deg, #c0420c, #e8692a); }
+.mobile-bottom-banners .mbb-icon { font-size: 24px; }
+.mobile-bottom-banners .mbb-label { font-size: 12px; opacity: 0.9; }
+
 /* ===== HERO ===== */
 .hero {
     display: grid;
@@ -2159,6 +2292,19 @@ body.admin-mode .hero-image-admin-hint {
     .prueba-social-inner { gap: 16px; }
 }
 
+
+/* ===== RESPONSIVE HAMBURGER & MOBILE BANNERS ===== */
+@media (max-width: 768px) {
+    .hamburger-btn { display: flex !important; }
+    .nav { display: none !important; }
+    .mobile-bottom-banners { display: flex !important; }
+    .header-content { height: 60px; }
+}
+@media (min-width: 769px) {
+    .mobile-menu-overlay { display: none !important; }
+    .hamburger-btn { display: none !important; }
+    .mobile-bottom-banners { display: none !important; }
+}
 </style>
 </head>
 <body>
@@ -2169,9 +2315,29 @@ body.admin-mode .hero-image-admin-hint {
     </div>
 
     <!-- Header -->
+    <!-- Menú móvil overlay -->
+    <div class="mobile-menu-overlay" id="mobileMenuOverlay">
+        <div class="mobile-menu-logo">🛍️ TiendaMax</div>
+        <button class="mobile-menu-close" onclick="cerrarMenuMovil()">×</button>
+        <a href="#" onclick="volverAlInicio(); cerrarMenuMovil(); return false;">Inicio</a>
+        <a href="#categorias-home" onclick="volverAlInicio(); cerrarMenuMovil(); return false;">Categorías</a>
+        <a href="#beneficios" onclick="cerrarMenuMovil()">Beneficios</a>
+        <a href="#testimonios" onclick="cerrarMenuMovil()">Testimonios</a>
+        <a href="#contacto" onclick="cerrarMenuMovil()">Contacto</a>
+        <button class="nav-mobile-link" onclick="abrirLoginAdmin(); cerrarMenuMovil();">⚙️ Ajustes</button>
+        <div class="mobile-menu-actions">
+            <a href="https://chat.whatsapp.com/BnTdAU0Q3p25BOMTYuEpBN" class="mobile-action-grupo" target="_blank" rel="noopener">💬 Grupo WhatsApp</a>
+            <a href="https://wa.me/5354320170?text=Hola,%20necesito%20ayuda%20con%20un%20producto" class="mobile-action-ayuda" target="_blank" rel="noopener">🎧 Ayuda</a>
+        </div>
+    </div>
+
     <header class="header">
         <div class="container header-content">
             <div class="logo"><h1 style="cursor:pointer" onclick="volverAlInicio()">🛍️ TiendaMax</h1></div>
+            <!-- Botón hamburguesa (solo móvil) -->
+            <button class="hamburger-btn" id="hamburgerBtn" onclick="abrirMenuMovil()" aria-label="Abrir menú">
+                <span></span><span></span><span></span>
+            </button>
             <nav class="nav">
                 <a href="#" onclick="volverAlInicio(); return false;">Inicio</a>
                 <a href="#categorias-home" onclick="volverAlInicio(); return false;">Categorías</a>
@@ -2373,6 +2539,20 @@ body.admin-mode .hero-image-admin-hint {
         </section>
     </div>
     <!-- FIN VISTA CATEGORÍA -->
+
+    <!-- Banners móviles (solo visible en móvil, reemplaza a los laterales ocultos) -->
+    <div class="mobile-bottom-banners" id="mobileBottomBanners">
+        <a href="https://chat.whatsapp.com/BnTdAU0Q3p25BOMTYuEpBN" class="mbb-grupo" target="_blank" rel="noopener">
+            <span class="mbb-icon">💬</span>
+            <strong>Grupo WhatsApp</strong>
+            <span class="mbb-label">Ofertas exclusivas</span>
+        </a>
+        <a href="https://wa.me/5354320170?text=Hola,%20necesito%20ayuda%20con%20un%20producto" class="mbb-ayuda" target="_blank" rel="noopener">
+            <span class="mbb-icon">🎧</span>
+            <strong>¿Necesitas Ayuda?</strong>
+            <span class="mbb-label">Atención por WhatsApp</span>
+        </a>
+    </div>
 
     <!-- Footer -->
     <footer class="footer">
@@ -2785,5 +2965,23 @@ body.admin-mode .hero-image-admin-hint {
     <script src="js/script.js"></script>
     <script src="js/subcategorias.js"></script>
     <script src="js/revolico_integration.js"></script>
+    <script>
+    function abrirMenuMovil() {
+        document.getElementById('mobileMenuOverlay').classList.add('open');
+        document.getElementById('hamburgerBtn').classList.add('open');
+        document.body.style.overflow = 'hidden';
+    }
+    function cerrarMenuMovil() {
+        document.getElementById('mobileMenuOverlay').classList.remove('open');
+        document.getElementById('hamburgerBtn').classList.remove('open');
+        document.body.style.overflow = '';
+    }
+    document.addEventListener('DOMContentLoaded', function() {
+        var overlay = document.getElementById('mobileMenuOverlay');
+        if(overlay) overlay.addEventListener('click', function(e){
+            if(e.target === this) cerrarMenuMovil();
+        });
+    });
+    </script>
 </body>
 </html>
