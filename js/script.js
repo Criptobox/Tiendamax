@@ -54,6 +54,127 @@ function obtenerIconoCategoria(nombre) {
     return '🛍️';
 }
 
+// ===== BÚSQUEDA HERO =====
+
+let _heroSearchTimeout = null;
+let _heroSearchActivo  = '';
+let _heroPrecioMin     = 0;
+let _heroPrecioMax     = Infinity;
+
+function buscarDesdeHero(query, ir = false) {
+    const q      = (query || '').trim().toLowerCase();
+    const sugBox = document.getElementById('heroSearchSuggestions');
+    clearTimeout(_heroSearchTimeout);
+
+    _heroPrecioMin = parseFloat(document.getElementById('heroSliderMin')?.value || 0);
+    const maxVal   = parseFloat(document.getElementById('heroSliderMax')?.value || 999999);
+    _heroPrecioMax = maxVal >= 999999 ? Infinity : maxVal;
+
+    if (!q && _heroPrecioMin === 0 && _heroPrecioMax === Infinity) {
+        if (sugBox) { sugBox.innerHTML = ''; sugBox.classList.remove('visible'); }
+        return;
+    }
+
+    if (ir) {
+        if (sugBox) { sugBox.innerHTML = ''; sugBox.classList.remove('visible'); }
+        _heroSearchActivo = q;
+        categoriaSeleccionada    = 'Todas';
+        subcategoriaSeleccionada = 'Todas';
+        mostrarVistaCategoria('Todas');
+        return;
+    }
+
+    _heroSearchTimeout = setTimeout(() => {
+        if (!sugBox) return;
+        const resultados = productos.filter(p => {
+            const matchQ     = !q || p.nombre.toLowerCase().includes(q) || (p.descripcion||'').toLowerCase().includes(q) || (p.categoria||'').toLowerCase().includes(q);
+            const matchPrice = p.precioActual >= _heroPrecioMin && p.precioActual <= _heroPrecioMax;
+            return matchQ && matchPrice;
+        }).slice(0, 6);
+
+        if (resultados.length === 0) {
+            sugBox.innerHTML = '<div class="hero-suggestion-empty">😕 Sin resultados</div>';
+        } else {
+            sugBox.innerHTML = resultados.map(p => {
+                const nombre = q ? resaltarTexto(p.nombre, q) : p.nombre;
+                return '<div class="hero-suggestion-item" onclick="abrirDesdeHero(' + p.id + ')">' +
+                    '<img class="hero-suggestion-img" src="' + p.imagen + '" alt="' + p.nombre + '" onerror="this.style.display=\'none\'">' +
+                    '<span class="hero-suggestion-name">' + nombre + '</span>' +
+                    '<span class="hero-suggestion-price">$' + p.precioActual.toFixed(2) + '</span>' +
+                    '</div>';
+            }).join('');
+        }
+        sugBox.classList.add('visible');
+    }, 200);
+}
+
+function actualizarSliderPrecio() {
+    const sliderMin = document.getElementById('heroSliderMin');
+    const sliderMax = document.getElementById('heroSliderMax');
+    if (!sliderMin || !sliderMax) return;
+    let min = parseFloat(sliderMin.value);
+    let max = parseFloat(sliderMax.value);
+    if (min > max) { sliderMin.value = max; min = max; }
+    const labelMin = document.getElementById('heroPrecioMinLabel');
+    const labelMax = document.getElementById('heroPrecioMaxLabel');
+    if (labelMin) labelMin.textContent = '$' + Math.round(min);
+    if (labelMax) labelMax.textContent = max >= 999999 ? 'Cualquier precio' : '$' + Math.round(max);
+    _heroPrecioMin = min;
+    _heroPrecioMax = max >= 999999 ? Infinity : max;
+    buscarDesdeHero(document.getElementById('heroSearchInput')?.value || '');
+}
+
+function inicializarSliderPrecios() {
+    if (!productos || productos.length === 0) return;
+    const precios  = productos.map(p => p.precioActual).filter(Boolean);
+    const minReal  = Math.floor(Math.min(...precios));
+    const maxReal  = Math.ceil(Math.max(...precios));
+    const sliderMin = document.getElementById('heroSliderMin');
+    const sliderMax = document.getElementById('heroSliderMax');
+    if (sliderMin) { sliderMin.min = minReal; sliderMin.max = maxReal; sliderMin.value = minReal; }
+    if (sliderMax) { sliderMax.min = minReal; sliderMax.max = maxReal; sliderMax.value = maxReal; }
+    actualizarSliderPrecio();
+}
+
+function togglePrecioFilter() {
+    const panel = document.getElementById('heroPricePanel');
+    if (!panel) return;
+    const open = panel.style.display !== 'none';
+    panel.style.display = open ? 'none' : 'block';
+    document.getElementById('heroPriceToggle').textContent = open
+        ? '💲 Filtrar por precio ▾'
+        : '💲 Filtrar por precio ▴';
+    if (!open) inicializarSliderPrecios();
+}
+
+function aplicarFiltroPrecio() {
+    actualizarSliderPrecio();
+    _heroSearchActivo = (document.getElementById('heroSearchInput')?.value || '').trim().toLowerCase();
+    categoriaSeleccionada    = 'Todas';
+    subcategoriaSeleccionada = 'Todas';
+    mostrarVistaCategoria('Todas');
+}
+
+function resaltarTexto(texto, query) {
+    try {
+        const re = new RegExp('(' + query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi');
+        return texto.replace(re, '<mark style="background:rgba(232,87,42,0.18);color:inherit;border-radius:3px;padding:0 2px;">$1</mark>');
+    } catch(e) { return texto; }
+}
+
+function abrirDesdeHero(id) {
+    const sugBox = document.getElementById('heroSearchSuggestions');
+    if (sugBox) { sugBox.innerHTML = ''; sugBox.classList.remove('visible'); }
+    abrirDetalleProducto(id);
+}
+
+document.addEventListener('click', (e) => {
+    if (!e.target.closest('.hero-search-bar') && !e.target.closest('.hero-search-suggestions') && !e.target.closest('.hero-price-filter')) {
+        const sugBox = document.getElementById('heroSearchSuggestions');
+        if (sugBox) sugBox.classList.remove('visible');
+    }
+});
+
 // ===== VALIDACIÓN DE CAMPOS =====
 
 function validarProducto(producto) {
@@ -169,6 +290,7 @@ async function cargarDatosDesdeGitHub() {
         actualizarBotonesCategorias();
         actualizarListaCategorias();
         verificarOfertasYMostrarBanner();
+        inicializarSliderPrecios();
         console.log('✅ Datos sincronizados con GitHub');
     } catch (e) {
         console.log('ℹ️ Iniciando con datos locales');
@@ -249,6 +371,9 @@ function mostrarVistaInicio() {
 function mostrarVistaCategoria(categoria) {
     categoriaSeleccionada = categoria;
     subcategoriaSeleccionada = 'Todas';
+    _heroSearchActivo = ''; // Limpiar búsqueda hero al cambiar categoría
+    const heroInput = document.getElementById('heroSearchInput');
+    if (heroInput) heroInput.value = '';
     document.getElementById('vistaInicio').style.display = 'none';
     document.getElementById('vistaCategoria').style.display = 'block';
 
@@ -485,16 +610,15 @@ function agregarProductoForm(event) {
     const file = fileInput.files[0];
     if (!file) { mostrarNotificacion('Por favor selecciona una imagen', 'error'); return; }
 
-    // Mostrar indicador de compresión
-    mostrarNotificacion('⏳ Comprimiendo imagen...', 'info');
+    mostrarNotificacion('⏳ Subiendo imagen...', 'info');
 
-    comprimirImagen(file).then(imagenComprimida => {
+    subirImagenAGitHub(file).then(urlImagen => {
         const masVendidoVal = document.getElementById('productMasVendido');
         const producto = {
             id: Date.now(),
             nombre: document.getElementById('productName').value.trim(),
             descripcion: document.getElementById('productDescription').value.trim(),
-            imagen: imagenComprimida,
+            imagen: urlImagen,
             precioActual: parseFloat(document.getElementById('productPriceActual').value) || 0,
             descuento: parseInt(document.getElementById('productDiscount').value) || 0,
             stock: parseInt(document.getElementById('productStock').value) || 0,
@@ -506,12 +630,8 @@ function agregarProductoForm(event) {
             devolucion: document.getElementById('productDevolucion') ? document.getElementById('productDevolucion').checked : false
         };
 
-        // Validar producto
         const errores = validarProducto(producto);
-        if (errores.length > 0) {
-            mostrarNotificacion('❌ ' + errores[0], 'error');
-            return;
-        }
+        if (errores.length > 0) { mostrarNotificacion('❌ ' + errores[0], 'error'); return; }
 
         productos.push(producto);
         guardarProductos();
@@ -524,8 +644,48 @@ function agregarProductoForm(event) {
         renderizarProductos();
         actualizarListaProductos();
         verificarOfertasYMostrarBanner();
+    }).catch(err => {
+        mostrarNotificacion('❌ Error subiendo imagen: ' + err.message, 'error');
     });
 }
+
+// Sube una imagen como archivo .jpg a GitHub y devuelve la URL raw
+async function subirImagenAGitHub(fileOrBase64) {
+    const user  = localStorage.getItem('githubUser');
+    const repo  = localStorage.getItem('githubRepo');
+    const token = localStorage.getItem('githubToken');
+
+    // Si no hay config de GitHub, usar base64 como fallback
+    if (!user || !repo || !token) {
+        return comprimirImagen(fileOrBase64);
+    }
+
+    // Comprimir primero
+    const base64full = await comprimirImagen(fileOrBase64);
+    const base64data = base64full.split(',')[1]; // quitar "data:image/jpeg;base64,"
+
+    // Nombre único para el archivo
+    const filename  = `img_${Date.now()}.jpg`;
+    const path      = `imagenes/${filename}`;
+    const apiUrl    = `https://api.github.com/repos/${user}/${repo}/contents/${path}`;
+    const headers   = { 'Authorization': `token ${token}`, 'Content-Type': 'application/json' };
+
+    const res = await fetch(apiUrl, {
+        method: 'PUT',
+        headers,
+        body: JSON.stringify({ message: `Imagen de producto: ${filename}`, content: base64data })
+    });
+
+    if (!res.ok) {
+        // Fallback a base64 si falla la subida
+        console.warn('No se pudo subir imagen a GitHub, usando base64');
+        return base64full;
+    }
+
+    // Devolver URL raw pública
+    return `https://raw.githubusercontent.com/${user}/${repo}/main/${path}`;
+}
+
 
 function guardarProductos() {
     localStorage.setItem('productos', JSON.stringify(productos));
@@ -612,6 +772,16 @@ function renderizarProductos() {
     // Filtrar por subcategoría si hay una seleccionada (y no es 'Todas')
     if (categoriaSeleccionada !== 'Todas' && subcategoriaSeleccionada && subcategoriaSeleccionada !== 'Todas') {
         productosFiltrados = productosFiltrados.filter(p => p.subcategoria === subcategoriaSeleccionada);
+    }
+
+    // Filtrar por búsqueda hero y/o precio si están activos
+    if (_heroSearchActivo || _heroPrecioMin > 0 || _heroPrecioMax < Infinity) {
+        const q = _heroSearchActivo;
+        productosFiltrados = productosFiltrados.filter(p => {
+            const matchQ     = !q || p.nombre.toLowerCase().includes(q) || (p.descripcion||'').toLowerCase().includes(q) || (p.categoria||'').toLowerCase().includes(q);
+            const matchPrice = p.precioActual >= _heroPrecioMin && p.precioActual <= _heroPrecioMax;
+            return matchQ && matchPrice;
+        });
     }
 
     productosGrid.innerHTML = '';
@@ -1070,8 +1240,8 @@ function guardarProductoEditado(event) {
     };
 
     if (file) {
-        mostrarNotificacion('⏳ Comprimiendo imagen...', 'info');
-        comprimirImagen(file).then(imagenComprimida => actualizarProducto(imagenComprimida));
+        mostrarNotificacion('⏳ Subiendo imagen...', 'info');
+        subirImagenAGitHub(file).then(urlImagen => actualizarProducto(urlImagen));
     } else {
         actualizarProducto(null);
     }
