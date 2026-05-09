@@ -634,42 +634,7 @@ function contactarProducto(nombre) {
     window.open(`https://wa.me/5354320170?text=${msg}`, '_blank');
 }
 
-function actualizarListaProductos() {
-    const productsList = document.getElementById('productsList');
-    if (!productsList) return;
-
-    productsList.innerHTML = `
-        <div style="margin-bottom: 20px; padding: 15px; background: rgba(39, 174, 96, 0.1); border: 1px dashed #27AE60; border-radius: 10px; text-align: center;">
-            <p style="font-size: 13px; margin-bottom: 10px;">Para guardar permanentemente, descarga y sube a GitHub.</p>
-            <button class="btn btn-primary" onclick="descargarProductosJSON()">📥 Descargar productos.json</button>
-        </div>
-    `;
-
-    if (productos.length === 0) {
-        productsList.innerHTML += '<p class="no-products">No hay productos aún</p>';
-        return;
-    }
-    productos.forEach(producto => {
-        const item = document.createElement('div');
-        item.className = 'product-item';
-        item.innerHTML = `
-            <div class="product-item-info">
-                <img src="${producto.imagen}" alt="${producto.nombre}" style="width:60px;height:60px;object-fit:cover;border-radius:8px;float:left;margin-right:12px;">
-                <h4>${producto.nombre} ${producto.masVendido ? '🔥' : ''}</h4>
-                <p><strong>Categoría:</strong> ${producto.categoria} | <strong>Precio:</strong> $${producto.precioActual.toFixed(2)} USD ${producto.descuento > 0 ? `(-${producto.descuento}%)` : ''}</p>
-            </div>
-            <div class="product-item-actions" style="clear:both;padding-top:8px;">
-                <button class="btn-small-icon btn-edit" onclick="abrirEditModal(${producto.id})">✏️ Editar</button>
-                <button class="btn-small-icon btn-delete" onclick="eliminarProducto(${producto.id})">🗑️ Eliminar</button>
-                <button class="btn-small-icon btn-revolico" style="background:#ff9800" onclick="copiarParaRevolico(${producto.id})">📋 Revolico</button>
-                <button class="btn-small-icon btn-revolico" style="background:#4267B2" onclick="copiarParaFacebook(${producto.id})">📋 Facebook</button>
-                <button class="btn-small-icon btn-revolico" onclick="publicarEnRevolico(${producto.id})">🤖 Rev</button>
-                <button class="btn-small-icon btn-revolico" style="background:#4267B2" onclick="publicarEnFacebook(${producto.id})">🤖 FB</button>
-            </div>
-        `;
-        productsList.appendChild(item);
-    });
-}
+// actualizarListaProductos está definida más abajo (versión mejorada con filtros por categoría)
 
 // ===== FUNCIÓN DE COPIAR PARA FACEBOOK Y REVOLICO =====
 
@@ -1135,15 +1100,15 @@ async function sincronizarTodoConGitHub() {
     ];
 
     let ok = 0, errors = [];
-    // Subir en paralelo para ser más rápido
-    await Promise.all(archivos.map(async ({ path, data }) => {
+    // Subir secuencialmente para evitar conflictos de SHA en GitHub
+    for (const { path, data } of archivos) {
         try {
             await subirArchivoAGitHub(user, repo, token, path, data);
             ok++;
         } catch (e) {
             errors.push(`${path}: ${e.message}`);
         }
-    }));
+    }
 
     if (btn) { btn.disabled = false; btn.textContent = '🔄 ACTUALIZAR TIENDA AHORA'; }
 
@@ -1173,20 +1138,50 @@ async function sincronizarConGitHub() {
 async function subirArchivoAGitHub(user, repo, token, path, data) {
     const url = `https://api.github.com/repos/${user}/${repo}/contents/${path}`;
     const content = btoa(unescape(encodeURIComponent(JSON.stringify(data, null, 2))));
-    let sha = null;
-    try {
-        const res = await fetch(url, { headers: { 'Authorization': `token ${token}` } });
-        if (res.ok) { const fileData = await res.json(); sha = fileData.sha; }
-    } catch (e) {}
-    const body = { message: `Actualización automática de ${path}`, content: content, sha: sha };
-    const response = await fetch(url, {
+
+    // Función interna para obtener el SHA actual del archivo
+    async function obtenerSHA() {
+        try {
+            const res = await fetch(url, {
+                headers: { 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github.v3+json' }
+            });
+            if (res.ok) {
+                const fileData = await res.json();
+                return fileData.sha || null;
+            }
+            if (res.status === 404) return null; // Archivo nuevo, no necesita SHA
+            return null;
+        } catch (e) {
+            return null;
+        }
+    }
+
+    // Primer intento: obtener SHA y subir
+    let sha = await obtenerSHA();
+    const body = { message: `Actualización automática de ${path}`, content: content };
+    if (sha) body.sha = sha;
+
+    let response = await fetch(url, {
         method: 'PUT',
         headers: { 'Authorization': `token ${token}`, 'Content-Type': 'application/json' },
         body: JSON.stringify(body)
     });
+
+    // Si GitHub devuelve 409/422 por conflicto de SHA, reintentar con SHA fresco
+    if (!response.ok && (response.status === 409 || response.status === 422)) {
+        sha = await obtenerSHA();
+        const bodyRetry = { message: `Actualización automática de ${path}`, content: content };
+        if (sha) bodyRetry.sha = sha;
+        response = await fetch(url, {
+            method: 'PUT',
+            headers: { 'Authorization': `token ${token}`, 'Content-Type': 'application/json' },
+            body: JSON.stringify(bodyRetry)
+        });
+    }
+
     if (!response.ok) {
         const err = await response.json();
-        throw new Error(err.message || 'Error al subir archivo');
+        throw new Error(err.message || `Error ${response.status} al subir ${path}`);
     }
 }
 
@@ -1720,10 +1715,7 @@ function actualizarListaProductos() {
 
 // ── Grupos de Facebook con selección de productos ────
 
-function cargarGruposFB() {
-    const grupos = JSON.parse(localStorage.getItem('gruposFB') || '[]');
-    renderizarGruposFB(grupos);
-}
+// cargarGruposFB está definida más abajo (versión completa con renderizarRevolicoConfig)
 
 function renderizarGruposFB(grupos) {
     const cont = document.getElementById('listaGruposFB');
