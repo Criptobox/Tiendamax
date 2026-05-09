@@ -54,6 +54,232 @@ function obtenerIconoCategoria(nombre) {
     return '🛍️';
 }
 
+
+// ═══════════════════════════════════════════════════════
+//  BÚSQUEDA HERO + FILTRO DE PRECIO
+// ═══════════════════════════════════════════════════════
+let _heroSearchActivo = '';
+let _heroPrecioMin    = 0;
+let _heroPrecioMax    = Infinity;
+let _heroSearchTimer  = null;
+
+function abrirPanelBusqueda() {
+    const panel = document.getElementById('heroSearchPanel');
+    const bar   = document.getElementById('heroSearchBar');
+    if (!panel) return;
+    panel.classList.add('visible');
+    if (bar) bar.classList.add('panel-open');
+    inicializarSliderPrecios();
+}
+
+function cerrarPanelBusqueda() {
+    const panel = document.getElementById('heroSearchPanel');
+    const bar   = document.getElementById('heroSearchBar');
+    if (panel) panel.classList.remove('visible');
+    if (bar)   bar.classList.remove('panel-open');
+}
+
+function inicializarSliderPrecios() {
+    if (!productos || productos.length === 0) return;
+    const precios  = productos.map(p => p.precioActual).filter(v => v > 0);
+    if (!precios.length) return;
+    const minReal  = Math.floor(Math.min(...precios));
+    const maxReal  = Math.ceil(Math.max(...precios));
+    const sMin = document.getElementById('heroSliderMin');
+    const sMax = document.getElementById('heroSliderMax');
+    if (!sMin || !sMax) return;
+    // Solo inicializar si aún están en defaults
+    if (parseFloat(sMin.min) !== minReal) {
+        sMin.min = sMax.min = minReal;
+        sMin.max = sMax.max = maxReal;
+        sMin.value = minReal;
+        sMax.value = maxReal;
+        _heroPrecioMin = minReal;
+        _heroPrecioMax = maxReal;
+    }
+    actualizarSliderPrecio();
+}
+
+function actualizarSliderPrecio() {
+    const sMin = document.getElementById('heroSliderMin');
+    const sMax = document.getElementById('heroSliderMax');
+    if (!sMin || !sMax) return;
+    let min = parseFloat(sMin.value);
+    let max = parseFloat(sMax.value);
+    // Evitar cruce
+    if (min > max) { sMin.value = max; min = max; }
+    _heroPrecioMin = min;
+    _heroPrecioMax = max;
+    const label = document.getElementById('heroPrecioRango');
+    const allMin = parseFloat(sMin.min), allMax = parseFloat(sMax.max);
+    if (label) {
+        if (min === allMin && max === allMax) {
+            label.textContent = 'Todos los precios';
+        } else {
+            label.textContent = `$${Math.round(min)} – $${Math.round(max)}`;
+        }
+    }
+    buscarDesdeHero(document.getElementById('heroSearchInput')?.value || '');
+}
+
+function buscarDesdeHero(query) {
+    clearTimeout(_heroSearchTimer);
+    const q      = (query || '').trim().toLowerCase();
+    const sugBox = document.getElementById('heroSearchSuggestions');
+    const sMin   = document.getElementById('heroSliderMin');
+    const sMax   = document.getElementById('heroSliderMax');
+    const minVal = sMin ? parseFloat(sMin.value) : 0;
+    const maxVal = sMax ? parseFloat(sMax.value) : Infinity;
+    const allMin = sMin ? parseFloat(sMin.min) : 0;
+    const allMax = sMax ? parseFloat(sMax.max) : Infinity;
+    const precioFiltrado = minVal > allMin || maxVal < allMax;
+
+    if (!q && !precioFiltrado) {
+        if (sugBox) { sugBox.innerHTML = ''; }
+        return;
+    }
+
+    _heroSearchTimer = setTimeout(() => {
+        if (!sugBox) return;
+        const resultados = productos.filter(p => {
+            const matchQ = !q || p.nombre.toLowerCase().includes(q) ||
+                (p.descripcion||'').toLowerCase().includes(q) ||
+                (p.categoria||'').toLowerCase().includes(q);
+            const matchP = p.precioActual >= minVal && p.precioActual <= maxVal;
+            return matchQ && matchP;
+        }).slice(0, 6);
+
+        if (resultados.length === 0) {
+            sugBox.innerHTML = '<div class="hero-sug-empty">😕 Sin resultados</div>';
+        } else {
+            sugBox.innerHTML = resultados.map(p => {
+                const nombre = q ? resaltarTexto(p.nombre, q) : p.nombre;
+                return '<div class="hero-sug-item" onclick="seleccionarSugerencia(' + p.id + ')">' +
+                    '<img class="hero-sug-img" src="' + p.imagen + '" onerror="this.style.display=\'none\'">' +
+                    '<span class="hero-sug-name">' + nombre + '</span>' +
+                    '<span class="hero-sug-price">$' + p.precioActual.toFixed(2) + '</span>' +
+                    '</div>';
+            }).join('');
+        }
+    }, 220);
+}
+
+function aplicarBusquedaHero() {
+    const q   = (document.getElementById('heroSearchInput')?.value || '').trim().toLowerCase();
+    const sMin = document.getElementById('heroSliderMin');
+    const sMax = document.getElementById('heroSliderMax');
+    _heroSearchActivo = q;
+    _heroPrecioMin    = sMin ? parseFloat(sMin.value) : 0;
+    _heroPrecioMax    = sMax ? parseFloat(sMax.value) : Infinity;
+    cerrarPanelBusqueda();
+    mostrarVistaCategoria('Todas');
+}
+
+function seleccionarSugerencia(id) {
+    cerrarPanelBusqueda();
+    abrirDetalleProducto(id);
+}
+
+function resaltarTexto(texto, query) {
+    try {
+        const re = new RegExp('(' + query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi');
+        return texto.replace(re, '<mark style="background:rgba(201,169,110,0.25);color:inherit;border-radius:3px;padding:0 2px;">$1</mark>');
+    } catch(e) { return texto; }
+}
+
+// Cerrar panel al tocar fuera
+document.addEventListener('click', (e) => {
+    if (!e.target.closest('.hero-search-wrap')) cerrarPanelBusqueda();
+});
+
+// ═══════════════════════════════════════════════════════
+//  SUBIDA DE IMÁGENES A GITHUB (archivos .jpg reales)
+// ═══════════════════════════════════════════════════════
+async function subirImagenAGitHub(fileOrBase64) {
+    const user  = localStorage.getItem('githubUser');
+    const repo  = localStorage.getItem('githubRepo');
+    const token = localStorage.getItem('githubToken');
+
+    const base64full = await comprimirImagen(fileOrBase64);
+
+    if (!user || !repo || !token) return base64full; // fallback sin config
+
+    try {
+        const base64data = base64full.split(',')[1];
+        const filename   = 'img_' + Date.now() + '.jpg';
+        const path       = 'imagenes/' + filename;
+        const apiUrl     = 'https://api.github.com/repos/' + user + '/' + repo + '/contents/' + path;
+        const headers    = { 'Authorization': 'token ' + token, 'Content-Type': 'application/json' };
+        const res = await fetch(apiUrl, {
+            method: 'PUT', headers,
+            body: JSON.stringify({ message: 'Imagen: ' + filename, content: base64data })
+        });
+        if (res.ok) return 'https://raw.githubusercontent.com/' + user + '/' + repo + '/main/' + path;
+    } catch(e) { /* fallback */ }
+    return base64full;
+}
+
+// ═══════════════════════════════════════════════════════
+//  ANALYTICS
+// ═══════════════════════════════════════════════════════
+function renderizarAnalytics() {
+    const el = document.getElementById('analyticsContent');
+    if (!el) return;
+
+    const totalProductos  = productos.length;
+    const totalStock      = productos.reduce((s, p) => s + (p.stock || 0), 0);
+    const sinStock        = productos.filter(p => p.stock === 0).length;
+    const masVendidos     = productos.filter(p => p.masVendido).length;
+    const conDescuento    = productos.filter(p => p.descuento > 0).length;
+    const precioPromedio  = totalProductos ? (productos.reduce((s,p) => s + p.precioActual, 0) / totalProductos).toFixed(2) : 0;
+    const precioMax       = totalProductos ? Math.max(...productos.map(p => p.precioActual)) : 0;
+    const precioMin       = totalProductos ? Math.min(...productos.map(p => p.precioActual)) : 0;
+    const catConteo       = {};
+    productos.forEach(p => { catConteo[p.categoria] = (catConteo[p.categoria]||0)+1; });
+    const topCats = Object.entries(catConteo).sort((a,b) => b[1]-a[1]).slice(0,5);
+
+    // Calcular tamaño estimado del JSON (base64 vs URL)
+    const pesoBase64 = productos.filter(p => p.imagen?.startsWith('data:')).reduce((s,p) => s + p.imagen.length, 0);
+    const pesoKB     = Math.round(pesoBase64 / 1024);
+
+    el.innerHTML = `
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:24px;">
+            ${stat('📦', 'Productos', totalProductos)}
+            ${stat('🏷️', 'Categorías', Object.keys(catConteo).length)}
+            ${stat('📊', 'Stock total', totalStock)}
+            ${stat('⚠️', 'Sin stock', sinStock, sinStock > 0 ? '#e74c3c' : null)}
+            ${stat('🔥', 'Más vendidos', masVendidos)}
+            ${stat('🏷️', 'Con descuento', conDescuento)}
+            ${stat('💰', 'Precio prom.', '$'+precioPromedio)}
+            ${stat('📈', 'Precio max.', '$'+precioMax)}
+        </div>
+        <div style="background:${pesoKB > 500 ? 'rgba(231,76,60,0.08)' : 'rgba(39,174,96,0.08)'};border:1px solid ${pesoKB > 500 ? '#e74c3c' : '#27ae60'};border-radius:12px;padding:14px 16px;margin-bottom:20px;">
+            <strong>${pesoKB > 500 ? '⚠️ Imágenes pesadas' : '✅ Imágenes optimizadas'}</strong><br>
+            <span style="font-size:13px;color:#666;">${pesoKB > 500 ? pesoKB+'KB en base64 — ejecuta <em>migrar_imagenes.html</em> para reducirlo a &lt;50KB' : 'Las imágenes están guardadas como URLs. ¡Perfecto!'}</span>
+        </div>
+        <h4 style="margin-bottom:12px;">Top categorías por productos</h4>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+            ${topCats.map(([cat, n]) => `
+                <div style="display:flex;align-items:center;gap:10px;">
+                    <span style="min-width:120px;font-size:13px;">${cat}</span>
+                    <div style="flex:1;background:#f0ebe4;border-radius:99px;height:8px;overflow:hidden;">
+                        <div style="width:${Math.round(n/totalProductos*100)}%;background:var(--primary-color,#c9a96e);height:100%;border-radius:99px;"></div>
+                    </div>
+                    <span style="font-size:12px;color:#999;min-width:24px;">${n}</span>
+                </div>
+            `).join('')}
+        </div>
+    `;
+}
+
+function stat(icon, label, value, color) {
+    return '<div style="background:var(--bg-secondary,#f9f6f1);border-radius:12px;padding:14px;text-align:center;">' +
+        '<div style="font-size:22px;">' + icon + '</div>' +
+        '<div style="font-size:' + (typeof value === 'number' ? '22px' : '18px') + ';font-weight:800;color:' + (color||'var(--primary-color,#c9a96e)') + ';">' + value + '</div>' +
+        '<div style="font-size:11px;color:#999;text-transform:uppercase;letter-spacing:0.5px;">' + label + '</div>' +
+        '</div>';
+}
+
 // ===== VALIDACIÓN DE CAMPOS =====
 
 function validarProducto(producto) {
@@ -169,6 +395,7 @@ async function cargarDatosDesdeGitHub() {
         actualizarBotonesCategorias();
         actualizarListaCategorias();
         verificarOfertasYMostrarBanner();
+        inicializarSliderPrecios();
         console.log('✅ Datos sincronizados con GitHub');
     } catch (e) {
         console.log('ℹ️ Iniciando con datos locales');
@@ -249,6 +476,12 @@ function mostrarVistaInicio() {
 function mostrarVistaCategoria(categoria) {
     categoriaSeleccionada = categoria;
     subcategoriaSeleccionada = 'Todas';
+    // Clear hero search state when navigating by category (not from search)
+    const heroInput = document.getElementById('heroSearchInput');
+    if (heroInput && !_heroSearchActivo) {
+        _heroPrecioMin = 0;
+        _heroPrecioMax = Infinity;
+    }
     document.getElementById('vistaInicio').style.display = 'none';
     document.getElementById('vistaCategoria').style.display = 'block';
 
@@ -467,14 +700,23 @@ function cerrarAdminPanel() {
 }
 
 function switchTab(tabName) {
-    document.querySelectorAll('.admin-tab').forEach(tab => tab.classList.remove('active'));
+    // Remove active from all tabs (class only — never use inline style on admin-tabs)
+    document.querySelectorAll('.admin-tab').forEach(tab => {
+        tab.classList.remove('active');
+        tab.style.removeProperty('display'); // Fix: clear any rogue inline display
+    });
     document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+
     const targetTab = document.getElementById(tabName);
     if (targetTab) targetTab.classList.add('active');
-    const buttons = document.querySelectorAll('.tab-btn');
-    buttons.forEach(btn => {
+    document.querySelectorAll('.tab-btn').forEach(btn => {
         if (btn.getAttribute('data-tab') === tabName) btn.classList.add('active');
     });
+
+    // Tab-specific hooks (all in one place, no double-wrapping)
+    if (tabName === 'publicar-ahora') setTimeout(cargarGruposFB, 100);
+    if (tabName === 'manage-products') setTimeout(actualizarListaProductos, 100);
+    if (tabName === 'analytics') setTimeout(renderizarAnalytics, 100);
 }
 
 // ===== PRODUCTOS =====
@@ -486,9 +728,9 @@ function agregarProductoForm(event) {
     if (!file) { mostrarNotificacion('Por favor selecciona una imagen', 'error'); return; }
 
     // Mostrar indicador de compresión
-    mostrarNotificacion('⏳ Comprimiendo imagen...', 'info');
+    mostrarNotificacion('⏳ Subiendo imagen...', 'info');
 
-    comprimirImagen(file).then(imagenComprimida => {
+    subirImagenAGitHub(file).then(imagenComprimida => {
         const masVendidoVal = document.getElementById('productMasVendido');
         const producto = {
             id: Date.now(),
@@ -614,6 +856,18 @@ function renderizarProductos() {
         productosFiltrados = productosFiltrados.filter(p => p.subcategoria === subcategoriaSeleccionada);
     }
 
+    // Filtro de búsqueda hero y precio
+    if (_heroSearchActivo || _heroPrecioMin > 0 || _heroPrecioMax < Infinity) {
+        const q = _heroSearchActivo;
+        productosFiltrados = productosFiltrados.filter(p => {
+            const matchQ = !q || p.nombre.toLowerCase().includes(q) ||
+                (p.descripcion||'').toLowerCase().includes(q) ||
+                (p.categoria||'').toLowerCase().includes(q);
+            const matchP = p.precioActual >= _heroPrecioMin && p.precioActual <= _heroPrecioMax;
+            return matchQ && matchP;
+        });
+    }
+
     productosGrid.innerHTML = '';
 
     if (productosFiltrados.length === 0) {
@@ -646,41 +900,112 @@ function renderizarProductos() {
 
 // ===== DETALLE DE PRODUCTO =====
 
+// Producto actualmente abierto en el modal
+let _detalleProductoActual = null;
+
 function abrirDetalleProducto(id) {
     const p = productos.find(prod => prod.id === id);
     if (!p) return;
+    _detalleProductoActual = p;
 
+    // Nombre
     document.getElementById('detailProductName').textContent = p.nombre;
-    document.getElementById('detailProductImage').src = p.imagen;
-    document.getElementById('detailProductImage').alt = p.nombre;
-    document.getElementById('detailProductCategory').textContent = obtenerIconoCategoria(p.categoria) + ' ' + p.categoria;
-    document.getElementById('detailProductDescription').textContent = p.descripcion;
-    
+
+    // Imagen (reset zoom)
+    const img = document.getElementById('detailProductImage');
+    img.src = p.imagen;
+    img.alt = p.nombre;
+    img.classList.remove('zoomed');
+
+    // Categoría y subcategoría
+    document.getElementById('detailProductCategory').textContent =
+        obtenerIconoCategoria(p.categoria) + ' ' + p.categoria;
+    const subEl = document.getElementById('detailSubcategoria');
+    if (p.subcategoria && p.subcategoria !== 'Todas') {
+        subEl.textContent = '↳ ' + p.subcategoria;
+        subEl.style.display = 'block';
+    } else {
+        subEl.style.display = 'none';
+    }
+
+    // Descuento badge
     const badge = document.getElementById('detailProductBadge');
-    if (p.descuento > 0) {
-        badge.style.display = 'inline-block';
-        badge.textContent = `-${p.descuento}%`;
-    } else {
-        badge.style.display = 'none';
-    }
+    badge.style.display = p.descuento > 0 ? 'inline-block' : 'none';
+    if (p.descuento > 0) badge.textContent = `-${p.descuento}%`;
 
-    const priceOriginal = document.getElementById('detailPriceOriginal');
-    if (priceOriginal) priceOriginal.style.display = 'none';
+    // Más vendido badge
+    const hotBadge = document.getElementById('detailMasVendidoBadge');
+    hotBadge.style.display = (p.masVendido === true || p.masVendido === 'true') ? 'block' : 'none';
 
-    const discountBadge = document.getElementById('detailProductBadge');
-    if (p.descuento > 0) {
-        discountBadge.style.display = 'inline-block';
-        discountBadge.textContent = `-${p.descuento}%`;
-    } else {
-        discountBadge.style.display = 'none';
-    }
-
+    // Precio
+    const precioOriginal = p.descuento > 0
+        ? (p.precioActual / (1 - p.descuento / 100))
+        : null;
+    const elOld = document.getElementById('detailPriceOriginal');
+    elOld.textContent = precioOriginal ? `$${precioOriginal.toFixed(2)} USD` : '';
+    elOld.style.display = precioOriginal ? 'inline' : 'none';
     document.getElementById('detailPriceActual').textContent = `$${p.precioActual.toFixed(2)} USD`;
-    document.getElementById('detailProductStock').innerHTML = `<span>📦 Solo quedan ${p.stock} unidades</span>`;
-    document.getElementById('detailStockBarFill').style.width = `${Math.max(15, (p.stock / 20) * 100)}%`;
-    
-    document.getElementById('detailBuyBtn').onclick = () => contactarProducto(p.nombre);
 
+    // Ahorro
+    const ahorroEl = document.getElementById('detailAhorroBadge');
+    if (precioOriginal && p.descuento > 0) {
+        const ahorro = (precioOriginal - p.precioActual).toFixed(2);
+        ahorroEl.textContent = `Ahorras $${ahorro}`;
+        ahorroEl.style.display = 'inline';
+    } else {
+        ahorroEl.style.display = 'none';
+    }
+
+    // Stock
+    const stockEl = document.getElementById('detailProductStock');
+    if (p.stock === 0) {
+        stockEl.innerHTML = '<span style="color:#e74c3c;font-weight:700;">❌ Sin stock</span>';
+    } else if (p.stock <= 3) {
+        stockEl.innerHTML = `<span style="color:#e67e22;font-weight:700;">⚠️ ¡Últimas ${p.stock} unidades!</span>`;
+    } else {
+        stockEl.innerHTML = `<span>📦 ${p.stock} unidades disponibles</span>`;
+    }
+    document.getElementById('detailStockBarFill').style.width =
+        `${Math.min(100, Math.max(8, (p.stock / 20) * 100))}%`;
+
+    // Badges extra: garantia, devolución, usado
+    const extBadges = document.getElementById('detailExtraBadges');
+    let badges = '';
+    if (p.garantia) badges += `<span class="detail-badge-tag dtag-garantia">🛡️ Garantía: ${p.garantia}</span>`;
+    if (p.devolucion) badges += `<span class="detail-badge-tag dtag-devolucion">↩️ Devolución aceptada</span>`;
+    if (p.usado) badges += `<span class="detail-badge-tag dtag-usado">♻️ Producto usado</span>`;
+    extBadges.innerHTML = badges;
+
+    // Descripción
+    document.getElementById('detailProductDescription').textContent = p.descripcion;
+
+    // Botón comprar
+    const buyBtn = document.getElementById('detailBuyBtn');
+    buyBtn.disabled = p.stock === 0;
+    buyBtn.textContent = p.stock === 0 ? '❌ Sin stock' : '🛒 Comprar por WhatsApp';
+    buyBtn.onclick = () => contactarProducto(p.nombre);
+
+    // Productos relacionados (misma categoría, excluir actual)
+    const relacionados = productos
+        .filter(x => x.id !== p.id && x.categoria === p.categoria)
+        .slice(0, 4);
+    const relSection = document.getElementById('detailRelacionados');
+    const relGrid    = document.getElementById('detailRelacionadosGrid');
+    if (relacionados.length > 0) {
+        relGrid.innerHTML = relacionados.map(r => `
+            <div class="rel-card" onclick="abrirDetalleProducto(${r.id})">
+                <img src="${r.imagen}" alt="${r.nombre}" loading="lazy"
+                     onerror="this.style.display='none'">
+                <div class="rel-card-name">${r.nombre}</div>
+                <div class="rel-card-price">$${r.precioActual.toFixed(2)}</div>
+            </div>
+        `).join('');
+        relSection.style.display = 'block';
+    } else {
+        relSection.style.display = 'none';
+    }
+
+    // Abrir modal
     const modal = document.getElementById('productDetailModal');
     modal.classList.remove('hidden');
     modal.style.removeProperty('display');
@@ -691,7 +1016,31 @@ function cerrarDetalleModal() {
     const modal = document.getElementById('productDetailModal');
     modal.classList.add('hidden');
     modal.style.removeProperty('display');
-    document.body.style.overflow = 'auto';
+    document.body.style.overflow = '';
+    _detalleProductoActual = null;
+}
+
+function toggleZoomImagen(img) {
+    img.classList.toggle('zoomed');
+}
+
+function compartirProducto() {
+    const p = _detalleProductoActual;
+    if (!p) return;
+    const texto = `🛍️ ${p.nombre} — $${p.precioActual.toFixed(2)} USD
+📦 Stock disponible
+👉 tiendamax.org`;
+    if (navigator.share) {
+        navigator.share({ title: p.nombre, text: texto, url: 'https://tiendamax.org' }).catch(() => {});
+    } else {
+        navigator.clipboard.writeText(texto).then(() => mostrarNotificacion('📤 Texto copiado para compartir'));
+    }
+}
+
+function copiarLinkProducto() {
+    navigator.clipboard.writeText('https://tiendamax.org').then(() =>
+        mostrarNotificacion('🔗 Enlace copiado')
+    ).catch(() => mostrarNotificacion('❌ No se pudo copiar', 'error'));
 }
 
 function contactarProducto(nombre) {
@@ -1070,8 +1419,8 @@ function guardarProductoEditado(event) {
     };
 
     if (file) {
-        mostrarNotificacion('⏳ Comprimiendo imagen...', 'info');
-        comprimirImagen(file).then(imagenComprimida => actualizarProducto(imagenComprimida));
+        mostrarNotificacion('⏳ Subiendo imagen...', 'info');
+        subirImagenAGitHub(file).then(imagenComprimida => actualizarProducto(imagenComprimida));
     } else {
         actualizarProducto(null);
     }
@@ -1972,17 +2321,7 @@ function abrirChromeEspecial() {
     mostrarNotificacion('ℹ️ Ejecuta abrir_chrome_especial.bat en tu laptop para iniciar el bot.', 'info');
 }
 
-// Inicializar grupos FB cuando se abre la pestaña Publicar
-const _origSwitchTab = switchTab;
-switchTab = function(tab) {
-    _origSwitchTab(tab);
-    if (tab === 'publicar-ahora') {
-        setTimeout(cargarGruposFB, 100);
-    }
-    if (tab === 'manage-products') {
-        setTimeout(actualizarListaProductos, 100);
-    }
-};
+// switchTab hooks are now inside the switchTab function directly
 
 
 // ═══════════════════════════════════════════════════════
