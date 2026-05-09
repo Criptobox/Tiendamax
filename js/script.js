@@ -973,7 +973,6 @@ function eliminarProducto(id) {
     sincronizarConBackend();
     renderizarCategoriasHome();
     renderizarMasVendidos();
-    setTimeout(inicializarFiltroPrecios, 300); // Inicializar filtro de precio
     renderizarProductos();
     actualizarListaProductos();
     verificarOfertasYMostrarBanner();
@@ -1780,6 +1779,8 @@ cargarDatosDesdeGitHub = async function() {
     if (typeof categoriaSeleccionada !== 'undefined' && categoriaSeleccionada && categoriaSeleccionada !== 'Todas') {
         if (typeof renderizarSubcategoriaTabs === 'function') renderizarSubcategoriaTabs();
     }
+    // Inicializar filtro de precio ahora que los productos están cargados desde GitHub
+    setTimeout(inicializarFiltroPrecios, 100);
 };
 
 // FIX: When showing category view, make sure subcategorias are loaded first
@@ -1985,6 +1986,9 @@ switchTab = function(tab) {
     if (tab === 'manage-products') {
         setTimeout(actualizarListaProductos, 100);
     }
+    if (tab === 'analytics-panel') {
+        setTimeout(cargarAnalytics, 100);
+    }
 };
 
 
@@ -2082,7 +2086,11 @@ let precioMaxGlobal = 9999;
 let filtroPrecioActivo = false;
 
 function inicializarFiltroPrecios() {
-    if (!productos || productos.length === 0) return;
+    if (!productos || productos.length === 0) {
+        // Retry after 500ms if products not yet loaded
+        setTimeout(inicializarFiltroPrecios, 500);
+        return;
+    }
     const precios = productos.map(p => parseFloat(p.precioActual) || 0).filter(p => p > 0);
     if (precios.length === 0) return;
     const minReal = Math.floor(Math.min(...precios));
@@ -2373,11 +2381,4 @@ function cargarAnalytics() {
     }
 }
 
-// Auto-cargar analytics al abrir el tab
-const _origSwitchTab = typeof switchTab !== 'undefined' ? switchTab : null;
-if (_origSwitchTab) {
-    window.switchTab = function(tab) {
-        _origSwitchTab(tab);
-        if (tab === 'analytics-panel') cargarAnalytics();
-    };
-}
+// Auto-cargar analytics al abrir el tab — integrado en el wrapper existente (línea ~1980)
