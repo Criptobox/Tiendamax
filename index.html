@@ -773,13 +773,25 @@ body {
 }
 
 .categoria-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 20px 50px rgba(0,0,0,0.12);
-    border-color: transparent;
+    transform: translateY(-6px);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.15),
+                0 0 0 1.5px rgba(232,105,42,0.55),
+                0 0 18px rgba(232,105,42,0.25),
+                0 0 40px rgba(232,105,42,0.12);
+    border-color: rgba(232,105,42,0.5);
 }
 
 .categoria-card:hover::after {
     transform: scaleX(1);
+}
+
+/* Glow extra en dark mode */
+body.dark-mode .categoria-card:hover {
+    box-shadow: 0 20px 50px rgba(0,0,0,0.35),
+                0 0 0 1.5px rgba(232,105,42,0.7),
+                0 0 20px rgba(232,105,42,0.35),
+                0 0 50px rgba(232,105,42,0.18);
+    border-color: rgba(232,105,42,0.65);
 }
 
 .categoria-card .cat-icon {
@@ -1065,9 +1077,10 @@ body {
     font-family: var(--font-display);
     font-size: 36px;
     font-weight: 800;
-    color: var(--text-primary);
+    color: var(--obsidian);
     margin-bottom: 50px;
     letter-spacing: -0.5px;
+    text-shadow: none;
 }
 
 .beneficios-grid {
@@ -1975,6 +1988,10 @@ body.dark-mode .categoria-card {
 body.dark-mode .categoria-card .cat-name { color: rgba(255,255,255,0.85); }
 
 body.dark-mode .beneficios { background: var(--charcoal); }
+body.dark-mode .beneficios h2 {
+    color: #ffffff;
+    text-shadow: 0 0 40px rgba(255,255,255,0.15);
+}
 body.dark-mode .beneficio-card { background: var(--carbon); }
 body.dark-mode .beneficio-card h3 { color: rgba(255,255,255,0.85); }
 body.dark-mode .beneficio-card p { color: rgba(255,255,255,0.4); }
@@ -2295,10 +2312,48 @@ body.admin-mode .hero-image-admin-hint {
 
 /* ===== RESPONSIVE HAMBURGER & MOBILE BANNERS ===== */
 @media (max-width: 768px) {
+    /* Hamburger visible, nav oculto */
     .hamburger-btn { display: flex !important; }
     .nav { display: none !important; }
+
+    /* Banners inferiores visibles */
     .mobile-bottom-banners { display: flex !important; }
-    .header-content { height: 60px; }
+
+    /* Header compacto una sola fila */
+    .header-content {
+        height: 60px !important;
+        flex-direction: row !important;
+        padding: 0 16px !important;
+        gap: 0 !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+    }
+
+    /* Hero ocupa todo el ancho */
+    .hero {
+        grid-template-columns: 1fr !important;
+        width: 100% !important;
+        min-height: auto !important;
+    }
+    .hero-content {
+        padding: 30px 20px 24px !important;
+        order: 2;
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
+    .hero-image {
+        height: 200px !important;
+        order: 1;
+        width: 100% !important;
+    }
+    .hero-content h2 { font-size: 28px !important; line-height: 1.2 !important; }
+    .hero .subtitle { font-size: 11px !important; }
+
+    /* Contenedor ocupa todo el ancho */
+    .container { width: 100% !important; max-width: 100% !important; padding: 0 16px !important; box-sizing: border-box !important; }
+
+    /* Logo tamaño correcto */
+    .logo h1 { font-size: 20px !important; }
 }
 @media (min-width: 769px) {
     .mobile-menu-overlay { display: none !important; }
@@ -2540,17 +2595,21 @@ body.admin-mode .hero-image-admin-hint {
     </div>
     <!-- FIN VISTA CATEGORÍA -->
 
-    <!-- Banners móviles (solo visible en móvil, reemplaza a los laterales ocultos) -->
+    <!-- Banners móviles (solo visible en móvil, mismo estilo que los laterales de escritorio) -->
     <div class="mobile-bottom-banners" id="mobileBottomBanners">
         <a href="https://chat.whatsapp.com/BnTdAU0Q3p25BOMTYuEpBN" class="mbb-grupo" target="_blank" rel="noopener">
-            <span class="mbb-icon">💬</span>
-            <strong>Grupo WhatsApp</strong>
-            <span class="mbb-label">Ofertas exclusivas</span>
+            <div class="mbb-shine"></div>
+            <div class="mbb-icon-wrap">💬</div>
+            <div class="mbb-title">Grupo<br>WhatsApp</div>
+            <div class="mbb-sub">Únete y recibe ofertas exclusivas al instante</div>
+            <div class="mbb-btn">Unirme →</div>
         </a>
         <a href="https://wa.me/5354320170?text=Hola,%20necesito%20ayuda%20con%20un%20producto" class="mbb-ayuda" target="_blank" rel="noopener">
-            <span class="mbb-icon">🎧</span>
-            <strong>¿Necesitas Ayuda?</strong>
-            <span class="mbb-label">Atención por WhatsApp</span>
+            <div class="mbb-shine"></div>
+            <div class="mbb-icon-wrap">🎧</div>
+            <div class="mbb-title">¿Necesitas<br>Ayuda?</div>
+            <div class="mbb-sub">Atención personalizada por WhatsApp</div>
+            <div class="mbb-btn">Contactar →</div>
         </a>
     </div>
 
