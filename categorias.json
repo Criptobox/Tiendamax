@@ -1,10 +1,15 @@
-[
-  "WIFI",
-  "ENERGIA",
-  "CELULARES",
-  "UTILES",
-  "CARROS",
-  "ROPA",
-  "ELECTRODOMÉSTICOS",
-  "LENCERIA"
-]
+{
+  "nombres": [
+    "WIFI",
+    "ENERGIA",
+    "CELULARES",
+    "UTILES",
+    "CARROS",
+    "ROPA",
+    "ELECTRODOMÉSTICOS",
+    "LENCERIA"
+  ],
+  "iconos": {
+    "LENCERIA": "👙"
+  }
+}
