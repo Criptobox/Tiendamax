@@ -1,14 +1,13 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+User-agent: *
+Allow: /
+Disallow: /backend/
+Disallow: /*.bat$
+Disallow: /*.sh$
+Disallow: /*.json$ 
 
-  <!-- Página principal -->
-  <url>
-    <loc>https://tiendamax.org/</loc>
-    <lastmod>2026-05-09</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>1.0</priority>
-    <xhtml:link rel="alternate" hreflang="es" href="https://tiendamax.org/"/>
-  </url>
+# Permitir archivos JSON del sitio (productos, categorías)
+Allow: /productos.json
+Allow: /categorias.json
+Allow: /subcategorias.json
 
-</urlset>
+Sitemap: https://tiendamax.org/sitemap.xml
