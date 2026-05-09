@@ -129,9 +129,19 @@ async function cargarDatosDesdeGitHub() {
         }
 
         const dataCat = await fetchJSON('categorias.json');
-        if (dataCat && dataCat.length > 0) {
-            categorias = dataCat;
-            localStorage.setItem('categorias', JSON.stringify(categorias));
+        if (dataCat) {
+            // Soporte para formato nuevo {nombres, iconos} y formato viejo (array)
+            if (Array.isArray(dataCat) && dataCat.length > 0) {
+                categorias = dataCat;
+                localStorage.setItem('categorias', JSON.stringify(categorias));
+            } else if (dataCat.nombres && dataCat.nombres.length > 0) {
+                categorias = dataCat.nombres;
+                localStorage.setItem('categorias', JSON.stringify(categorias));
+                if (dataCat.iconos && Object.keys(dataCat.iconos).length > 0) {
+                    Object.assign(iconosPersonalizados, dataCat.iconos);
+                    localStorage.setItem('iconosPersonalizados', JSON.stringify(iconosPersonalizados));
+                }
+            }
         }
 
         // Cargar config de grupos Facebook
@@ -926,6 +936,7 @@ function agregarCategoria() {
 
 function guardarCategorias() {
     localStorage.setItem('categorias', JSON.stringify(categorias));
+    localStorage.setItem('iconosPersonalizados', JSON.stringify(iconosPersonalizados));
 }
 
 function eliminarCategoria(index) {
@@ -1181,7 +1192,7 @@ async function sincronizarTodoConGitHub() {
     // (GitHub necesita el archivo completo, pero lo construimos eficientemente)
     const archivos = [
         { path: 'productos.json',              data: productos },
-        { path: 'categorias.json',             data: categorias },
+        { path: 'categorias.json',             data: { nombres: categorias, iconos: iconosPersonalizados } },
         { path: 'subcategorias.json',          data: JSON.parse(localStorage.getItem('subcategorias') || '{}') },
         { path: 'grupos_facebook_config.json', data: { grupos: JSON.parse(localStorage.getItem('gruposFB') || '[]'), exportado: new Date().toISOString() } },
         { path: 'revolico_config.json',        data: JSON.parse(localStorage.getItem('revolicoConfig') || '{}') },
