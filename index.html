@@ -2,17 +2,6 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <!-- SEO -->
-    <meta name="description" content="TiendaMax — Productos de calidad con envío rápido. WiFi, energía, celulares, electrodomésticos y más.">
-    <meta name="keywords" content="tienda online cuba, wifi cuba, inversores cuba, celulares cuba, tiendamax">
-    <meta name="robots" content="index, follow">
-    <meta property="og:title" content="TiendaMax — Calidad premium">
-    <meta property="og:description" content="Productos de calidad con envío rápido. WiFi, energía solar, celulares y más.">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://tiendamax.org">
-    <meta name="theme-color" content="#c9a96e">
-    <link rel="canonical" href="https://tiendamax.org">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="description" content="TiendaMax — Compra cargadores, inversores, routers WiFi y tecnología en Cuba. Envíos rápidos, precios increíbles y garantía en todos los productos.">
@@ -2142,9 +2131,7 @@ body.dark-mode .categoria-stats { background: rgba(255,255,255,0.08); border-col
 
     .admin-header { padding: 18px 20px; }
     .admin-header h2 { font-size: 16px; }
-    .admin-tabs { overflow-x: auto; overflow-y: hidden; flex-wrap: nowrap; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
-    .admin-tabs::-webkit-scrollbar { display: none; }
-    .tab-btn { padding: 10px 10px; font-size: 11px; min-width: 80px; flex-shrink: 0; white-space: nowrap; }
+    .tab-btn { padding: 12px 8px; font-size: 11px; min-width: 90px; }
     .admin-tab { padding: 20px 16px; }
 
     .whatsapp-btn, .whatsapp-group-btn { width: 46px; height: 46px; bottom: 20px; }
@@ -2453,7 +2440,6 @@ body.admin-mode .hero-image-admin-hint {
         </section>
         <div class="hero-divider"></div>
 
-
         <!-- Sección Categorías -->
         <section id="categorias-home" class="categorias-home">
             <div class="categorias-home-inner">
@@ -2467,40 +2453,6 @@ body.admin-mode .hero-image-admin-hint {
                 </a>
 
                 <div class="container">
-                    <!-- ══ BARRA DE BÚSQUEDA ══ -->
-                    <div style="max-width:680px;margin:0 auto 32px;">
-                        <div class="hero-search-bar" id="heroSearchBar" style="border-radius:50px;padding:10px 10px 10px 22px;">
-                            <span class="hero-search-icon">🔍</span>
-                            <input
-                                type="text"
-                                id="heroSearchInput"
-                                class="hero-search-input"
-                                placeholder="Buscar productos..."
-                                oninput="buscarDesdeHero(this.value)"
-                                onkeydown="if(event.key==='Enter') aplicarBusquedaHero()"
-                                onfocus="abrirPanelBusqueda()"
-                                autocomplete="off"
-                            >
-                            <button class="hero-search-btn" onclick="togglePanelBusqueda()">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="6" y1="12" x2="18" y2="12"/><line x1="9" y1="18" x2="15" y2="18"/></svg>
-                                Precio
-                            </button>
-                        </div>
-                        <div class="hero-search-panel" id="heroSearchPanel">
-                            <div class="hero-price-section">
-                                <div class="hero-price-labels">
-                                    <span class="hero-price-title">💲 Rango de precio</span>
-                                    <span id="heroPrecioRango" class="hero-price-rango">Todos los precios</span>
-                                </div>
-                                <div class="hero-price-sliders">
-                                    <input type="range" id="heroSliderMin" min="0" max="9999" value="0" oninput="actualizarSliderPrecio()">
-                                    <input type="range" id="heroSliderMax" min="0" max="9999" value="9999" oninput="actualizarSliderPrecio()">
-                                </div>
-                            </div>
-                            <div id="heroSearchSuggestions" class="hero-suggestions"></div>
-                        </div>
-                    </div>
-
                     <p class="section-eyebrow">Navega por sección</p>
                     <h2 class="section-title">Explora por Categoría</h2>
                     <p class="section-subtitle">Selecciona una categoría para descubrir todos sus productos</p>
@@ -2527,15 +2479,6 @@ body.admin-mode .hero-image-admin-hint {
         </section>
 
         <!-- Sección Más Vendidos -->
-        <!-- 👁 VISTO RECIENTEMENTE -->
-        <section class="recientes-section" id="recientesSection" style="display:none;">
-            <div class="container">
-                <p class="section-eyebrow">Tu historial</p>
-                <h2 class="section-title" style="font-size:26px;margin-bottom:20px;">👁 Visto Recientemente</h2>
-                <div class="recientes-scroll" id="recientesGrid"></div>
-            </div>
-        </section>
-
         <section id="mas-vendidos" class="mas-vendidos">
             <div class="container">
                 <div class="section-header">
@@ -2671,32 +2614,6 @@ body.admin-mode .hero-image-admin-hint {
     </div>
 
     <!-- Footer -->
-    <!-- 🛒 CARRITO FLOTANTE -->
-    <button class="carrito-fab" id="carritoFab" onclick="abrirCarrito()">
-        🛒 <span id="carritoFabTxt">Carrito</span>
-        <span class="carrito-badge" id="carritoBadge">0</span>
-    </button>
-
-    <div class="carrito-overlay" id="carritoOverlay" onclick="if(event.target===this)cerrarCarrito()">
-        <div class="carrito-modal">
-            <div class="carrito-header">
-                <span>🛒 Mi Carrito</span>
-                <button class="carrito-close" onclick="cerrarCarrito()">✕</button>
-            </div>
-            <div class="carrito-items" id="carritoItemsEl"></div>
-            <div class="carrito-footer">
-                <div class="carrito-total-row">
-                    <span>Total:</span>
-                    <span id="carritoTotalEl">$0</span>
-                </div>
-                <button class="btn-pedir-carrito" onclick="pedirCarritoWhatsApp()">
-                    💬 Pedir todo por WhatsApp
-                </button>
-                <button class="btn-vaciar-carrito" onclick="vaciarCarrito()">Vaciar carrito</button>
-            </div>
-        </div>
-    </div>
-
     <footer class="footer">
         <div class="container">
             <p>&copy; 2025 TiendaMax. Todos los derechos reservados.</p>
@@ -2744,7 +2661,6 @@ body.admin-mode .hero-image-admin-hint {
                 <button class="tab-btn" onclick="switchTab('manage-subcategories')" data-tab="manage-subcategories">📂 Subcategorías</button>
                 <button class="tab-btn" onclick="switchTab('configuracion')" data-tab="configuracion">⚙️ Config</button>
                 <button class="tab-btn" onclick="switchTab('apariencia')" data-tab="apariencia">🎨 Apariencia</button>
-                <button class="tab-btn" onclick="switchTab('analytics')" data-tab="analytics">📊 Analytics</button>
             </div>
             <div class="admin-content">
 
@@ -2933,13 +2849,6 @@ body.admin-mode .hero-image-admin-hint {
             </div>
 
                 <!-- Tab: Apariencia / Imagen Hero -->
-                <div id="analytics" class="admin-tab">
-                    <h3 style="margin-bottom:20px;">📊 Analytics de la Tienda</h3>
-                    <div id="analyticsContent">
-                        <p style="color:#999;text-align:center;padding:40px 0;">Cargando estadísticas...</p>
-                    </div>
-                </div>
-
                 <div id="apariencia" class="admin-tab">
                     <h3 style="margin-bottom:18px;">🎨 Personalización Visual</h3>
                     
@@ -3077,75 +2986,37 @@ body.admin-mode .hero-image-admin-hint {
     </div>
 
     <!-- ===== MODAL DETALLE DE PRODUCTO ===== -->
-    <div id="productDetailModal" class="modal hidden" onclick="if(event.target===this)cerrarDetalleModal()">
-        <div class="modal-content detail-modal-content">
+    <div id="productDetailModal" class="modal hidden">
+        <div class="modal-content" style="max-width: 800px;">
             <div class="modal-header">
                 <h2 id="detailProductName">Detalle del Producto</h2>
                 <button class="close-btn" onclick="cerrarDetalleModal()">×</button>
             </div>
-            <div class="detail-body">
-
-                <!-- Imagen + Info principal -->
-                <div class="detail-grid">
-                    <div class="detail-image-wrap">
-                        <img id="detailProductImage" src="" alt="" class="detail-img"
-                             onclick="toggleZoomImagen(this)">
-                        <div class="detail-zoom-hint">🔍 Toca para ampliar</div>
-                        <div id="detailProductBadge" class="badge detail-badge">-0%</div>
-                        <div id="detailMasVendidoBadge" class="badge-vendido detail-badge-hot" style="display:none;">🔥 Más Vendido</div>
+            <div style="padding: 25px;">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px;">
+                    <div id="detailProductImageContainer">
+                        <img id="detailProductImage" src="" alt="" style="width: 100%; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
                     </div>
-
-                    <div class="detail-info">
-                        <p id="detailProductCategory" class="detail-category"></p>
-                        <p id="detailSubcategoria" class="detail-subcategory" style="display:none;"></p>
-
-                        <!-- Precio -->
-                        <div class="detail-price-wrap">
-                            <span id="detailPriceOriginal" class="detail-price-old"></span>
-                            <span id="detailPriceActual" class="detail-price-main"></span>
-                            <span id="detailAhorroBadge" class="detail-ahorro" style="display:none;"></span>
+                    <div>
+                        <div id="detailProductBadges" style="margin-bottom: 15px;"></div>
+                        <div id="detailProductBadge" class="badge" style="position: static; display: inline-block; margin-bottom: 15px;">-0%</div>
+                        <p id="detailProductCategory" style="color: var(--primary-color); font-weight: bold; margin-bottom: 10px;"></p>
+                        <div id="detailProductPrice" style="margin-bottom: 20px;">
+                            <span id="detailPriceOriginal" style="text-decoration: line-through; color: #999; margin-right: 10px; font-size: 18px;"></span>
+                            <span id="detailPriceActual" style="font-size: 32px; font-weight: 800; color: var(--primary-color);"></span>
                         </div>
-
-                        <!-- Stock -->
-                        <div id="detailProductStock" class="detail-stock"></div>
-                        <div class="stock-bar" style="margin: 6px 0 16px;width:100%;">
+                        <div id="detailProductStock" class="stock-count" style="margin-bottom: 20px;"></div>
+                        <div class="stock-bar" style="margin: 0 0 25px 0; width: 100%;">
                             <div id="detailStockBarFill" class="stock-bar-fill"></div>
                         </div>
-
-                        <!-- Badges extra: garantia, devolucion, usado -->
-                        <div id="detailExtraBadges" class="detail-extra-badges"></div>
-
-                        <!-- Personas viendo -->
                         <div id="detailPersonasViendo" class="contador-personas" style="display:none;"></div>
-
-                        <!-- Botón comprar -->
-                        <button id="detailBuyBtn" class="btn-cta-mejorado detail-buy-btn">
-                            🛒 Comprar por WhatsApp
-                        </button>
-                        <button class="btn btn-secondary" style="width:100%;margin-top:10px;padding:12px;" onclick="agregarAlCarritoDesdeDetalle()">
-                            🛒+ Agregar al carrito
-                        </button>
-
-                        <!-- Compartir -->
-                        <div class="detail-share">
-                            <button class="detail-share-btn" onclick="compartirProducto()">📤 Compartir</button>
-                            <button class="detail-share-btn" onclick="copiarLinkProducto()">🔗 Copiar enlace</button>
-                        </div>
+                        <button id="detailBuyBtn" class="btn-cta-mejorado" style="width: 100%;">🛒 Comprar por WhatsApp</button>
                     </div>
                 </div>
-
-                <!-- Descripción -->
-                <div class="detail-description-section">
-                    <h3>📋 Descripción</h3>
-                    <div id="detailProductDescription" class="detail-description-text"></div>
+                <div style="margin-top: 30px; border-top: 1px solid #eee; padding-top: 20px;">
+                    <h3 style="margin-bottom: 15px;">Descripción</h3>
+                    <div id="detailProductDescription" style="white-space: pre-wrap; line-height: 1.8;" class="detail-description-text"></div>
                 </div>
-
-                <!-- Productos relacionados -->
-                <div id="detailRelacionados" class="detail-relacionados" style="display:none;">
-                    <h3>✨ También te puede interesar</h3>
-                    <div id="detailRelacionadosGrid" class="detail-relacionados-grid"></div>
-                </div>
-
             </div>
         </div>
     </div>
@@ -3170,14 +3041,6 @@ body.admin-mode .hero-image-admin-hint {
             if(e.target === this) cerrarMenuMovil();
         });
     });
-    </script>
-
-    <script>
-    if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-            navigator.serviceWorker.register('/sw.js').catch(() => {});
-        });
-    }
     </script>
 </body>
 </html>
