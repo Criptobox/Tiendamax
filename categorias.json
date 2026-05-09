@@ -7,9 +7,11 @@
     "CARROS",
     "ROPA",
     "ELECTRODOMÉSTICOS",
-    "LENCERIA"
+    "LENCERIA",
+    "SEGURIDAD"
   ],
   "iconos": {
-    "LENCERIA": "👙"
+    "LENCERIA": "👙",
+    "SEGURIDAD": "🔒"
   }
 }
