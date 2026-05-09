@@ -634,11 +634,11 @@ function renderizarMasVendidos() {
                 <div class="stock-bar-fill" style="width: ${Math.max(15, (producto.stock / 20) * 100)}%"></div>
             </div>
             
-            <div style="display:flex;gap:8px;margin-top:8px;">
+            <div style="display:flex;gap:6px;margin-top:8px;">
                 <button class="btn btn-small btn-primary" style="flex:1;" onclick="event.stopPropagation(); contactarProducto('${producto.nombre}')">💬 Comprar</button>
-                <button class="btn btn-small" style="background:#1a1a1a;color:#fff;border:none;border-radius:8px;padding:7px 12px;cursor:pointer;font-size:13px;" onclick="event.stopPropagation(); agregarAlCarrito('${producto.id}')">🛒+</button>
+                <button style="background:#1a1a1a;color:#fff;border:none;border-radius:8px;padding:7px 11px;cursor:pointer;font-size:13px;flex-shrink:0;" onclick="event.stopPropagation(); agregarAlCarrito('${producto.id}')">🛒+</button>
             </div>
-            <div id="resenas_${producto.id}" style="margin-top:8px;">${renderResenas(producto.id)}</div>
+            <div onclick="event.stopPropagation()">${renderResenaWidget(producto.id)}</div>
         `;
         grid.appendChild(card);
     });
@@ -896,11 +896,11 @@ function renderizarProductos() {
 	            </p>
             <div class="stock">📦 Stock: ${producto.stock} unidades</div>
             ${typeof renderCountdownHtml === 'function' ? renderCountdownHtml(producto.id) : ''}
-            <div style="display:flex;gap:8px;margin-top:8px;">
+            <div style="display:flex;gap:6px;margin-top:8px;">
                 <button class="btn btn-small btn-primary" style="flex:1;" onclick="event.stopPropagation(); contactarProducto('${producto.nombre}')">💬 Comprar</button>
-                <button class="btn btn-small" style="background:#1a1a1a;color:#fff;border:none;border-radius:8px;padding:7px 12px;cursor:pointer;font-size:13px;" onclick="event.stopPropagation(); agregarAlCarrito('${producto.id}')">🛒+</button>
+                <button style="background:#1a1a1a;color:#fff;border:none;border-radius:8px;padding:7px 11px;cursor:pointer;font-size:13px;flex-shrink:0;" onclick="event.stopPropagation(); agregarAlCarrito('${producto.id}')">🛒+</button>
             </div>
-            <div id="resenas_${producto.id}" style="margin-top:8px;">${renderResenas(producto.id)}</div>
+            <div onclick="event.stopPropagation()">${renderResenaWidget(producto.id)}</div>
         `;
         productosGrid.appendChild(card);
     });
@@ -915,7 +915,7 @@ function abrirDetalleProducto(id) {
     const p = productos.find(prod => prod.id === id);
     if (!p) return;
     _detalleProductoActual = p;
-    registrarVisto(id); // Registrar en visto recientemente
+    registrarVisto(id);
 
     // Nombre
     document.getElementById('detailProductName').textContent = p.nombre;
@@ -1548,12 +1548,18 @@ async function sincronizarTodoConGitHub() {
     // Construir el array de productos a subir
     // Si hay delta y productos.json ya existe en GitHub, solo marcar para subir completo
     // (GitHub necesita el archivo completo, pero lo construimos eficientemente)
+    const subcatData  = JSON.parse(localStorage.getItem('subcategorias') || 'null') || {};
+    const gruposData  = JSON.parse(localStorage.getItem('gruposFB') || 'null') || [];
+    const revData     = JSON.parse(localStorage.getItem('revolicoConfig') || 'null') || {
+        enabled: false, username: '', password: '',
+        auto_publish: false, interval_hours: 24, max_products: 10, categories: []
+    };
     const archivos = [
         { path: 'productos.json',              data: productos },
         { path: 'categorias.json',             data: { nombres: categorias, iconos: iconosPersonalizados } },
-        { path: 'subcategorias.json',          data: JSON.parse(localStorage.getItem('subcategorias') || '{}') },
-        { path: 'grupos_facebook_config.json', data: { grupos: JSON.parse(localStorage.getItem('gruposFB') || '[]'), exportado: new Date().toISOString() } },
-        { path: 'revolico_config.json',        data: JSON.parse(localStorage.getItem('revolicoConfig') || '{}') },
+        { path: 'subcategorias.json',          data: subcatData },
+        { path: 'grupos_facebook_config.json', data: { grupos: gruposData, exportado: new Date().toISOString() } },
+        { path: 'revolico_config.json',        data: revData },
     ];
 
     // Siempre subir todos los archivos para garantizar consistencia
@@ -2423,85 +2429,105 @@ function togglePanelBusqueda() {
     const panel = document.getElementById('heroSearchPanel');
     if (!panel) return;
     panel.classList.toggle('visible');
-    panel.classList.toggle('cat-search-panel');
+    const bar = document.getElementById('heroSearchBar');
+    if (bar) bar.classList.toggle('panel-open');
 }
 
 
-// ══════════════════════════════════════════════
+// ══════════════════════════════════════════════════════
 // 🛒 MINI-CARRITO
-// ══════════════════════════════════════════════
-let carrito = JSON.parse(localStorage.getItem('carrito') || '[]');
+// ══════════════════════════════════════════════════════
+let carrito = JSON.parse(localStorage.getItem('carritoTM') || '[]');
 
-function guardarCarrito() {
-    localStorage.setItem('carrito', JSON.stringify(carrito));
-    actualizarCarritoUI();
+function _guardarCarrito() {
+    localStorage.setItem('carritoTM', JSON.stringify(carrito));
+    _actualizarCarritoUI();
 }
 
 function agregarAlCarrito(id) {
-    const p = productos.find(x => x.id === id);
+    const p = productos.find(x => String(x.id) === String(id));
     if (!p) return;
-    const existing = carrito.find(x => x.id === id);
-    if (existing) {
-        existing.qty = (existing.qty || 1) + 1;
+    const ex = carrito.find(x => String(x.id) === String(id));
+    if (ex) {
+        ex.qty = (ex.qty || 1) + 1;
     } else {
-        carrito.push({ id: p.id, nombre: p.nombre, precio: p.precioActual || p.precio, imagen: p.imagen || p.imagenes?.[0] || '', qty: 1 });
+        carrito.push({
+            id: String(p.id),
+            nombre: p.nombre,
+            precio: parseFloat(p.precioActual || p.precio || 0),
+            imagen: p.imagen || (p.imagenes && p.imagenes[0]) || '',
+            qty: 1
+        });
     }
-    guardarCarrito();
+    _guardarCarrito();
     mostrarNotificacion('✅ Agregado al carrito', 'success');
 }
 
-function cambiarCantidad(id, delta) {
-    const item = carrito.find(x => x.id === id);
-    if (!item) return;
-    item.qty = Math.max(0, (item.qty || 1) + delta);
-    if (item.qty === 0) carrito = carrito.filter(x => x.id !== id);
-    guardarCarrito();
+function agregarAlCarritoDesdeDetalle() {
+    if (typeof _detalleProductoActual !== 'undefined' && _detalleProductoActual) {
+        agregarAlCarrito(_detalleProductoActual.id);
+    }
 }
 
-function actualizarCarritoUI() {
-    const fab = document.getElementById('carritoFab');
-    const badge = document.getElementById('carritoFabCount');
-    const total = carrito.reduce((s, x) => s + (parseFloat(x.precio) || 0) * (x.qty || 1), 0);
+function cambiarCantidadCarrito(id, delta) {
+    const item = carrito.find(x => String(x.id) === String(id));
+    if (!item) return;
+    item.qty = Math.max(0, (item.qty || 1) + delta);
+    if (item.qty === 0) carrito = carrito.filter(x => String(x.id) !== String(id));
+    _guardarCarrito();
+}
+
+function vaciarCarrito() {
+    if (!confirm('¿Vaciar el carrito?')) return;
+    carrito = [];
+    _guardarCarrito();
+}
+
+function _actualizarCarritoUI() {
+    const fab   = document.getElementById('carritoFab');
+    const badge = document.getElementById('carritoBadge');
+    const total = carrito.reduce((s, x) => s + (x.precio || 0) * (x.qty || 1), 0);
     const count = carrito.reduce((s, x) => s + (x.qty || 1), 0);
 
-    if (fab) fab.style.display = count > 0 ? 'flex' : 'none';
-    if (badge) badge.textContent = count;
+    if (fab)   fab.style.display = count > 0 ? 'flex' : 'none';
+    if (badge) badge.textContent  = count;
 
-    const totalEl = document.getElementById('carritoTotal');
+    const totalEl = document.getElementById('carritoTotalEl');
     if (totalEl) totalEl.textContent = '$' + total.toLocaleString();
 
-    const itemsEl = document.getElementById('carritoItems');
+    const itemsEl = document.getElementById('carritoItemsEl');
     if (!itemsEl) return;
+
     if (carrito.length === 0) {
         itemsEl.innerHTML = '<div class="carrito-empty">Tu carrito está vacío 🛒</div>';
         return;
     }
     itemsEl.innerHTML = carrito.map(item => `
         <div class="carrito-item">
-            <img src="${item.imagen || ''}" onerror="this.src=''" alt="${item.nombre}">
+            <img src="${item.imagen}" alt="${item.nombre}" onerror="this.style.display='none'">
             <div class="carrito-item-info">
                 <div class="carrito-item-name">${item.nombre}</div>
-                <div class="carrito-item-price">$${parseFloat(item.precio).toLocaleString()}</div>
+                <div class="carrito-item-price">$${(item.precio || 0).toLocaleString()}</div>
             </div>
-            <div class="carrito-item-qty">
-                <button class="qty-btn" onclick="cambiarCantidad('${item.id}', -1)">−</button>
-                <span>${item.qty || 1}</span>
-                <button class="qty-btn" onclick="cambiarCantidad('${item.id}', 1)">+</button>
+            <div class="carrito-qty">
+                <button class="qty-btn" onclick="cambiarCantidadCarrito('${item.id}', -1)">−</button>
+                <span class="qty-num">${item.qty || 1}</span>
+                <button class="qty-btn" onclick="cambiarCantidadCarrito('${item.id}', 1)">+</button>
             </div>
         </div>
     `).join('');
 }
 
 function abrirCarrito() {
+    _actualizarCarritoUI();
     document.getElementById('carritoOverlay').classList.add('open');
-    actualizarCarritoUI();
 }
 
 function cerrarCarrito() {
     document.getElementById('carritoOverlay').classList.remove('open');
 }
 
-function enviarCarritoWhatsApp() {
+function pedirCarritoWhatsApp() {
     if (carrito.length === 0) return;
     const tel = '5354320170';
     let msg = '🛒 *Pedido TiendaMax*
@@ -2509,9 +2535,9 @@ function enviarCarritoWhatsApp() {
 ';
     let total = 0;
     carrito.forEach(item => {
-        const subtotal = parseFloat(item.precio) * (item.qty || 1);
-        total += subtotal;
-        msg += `• ${item.nombre} x${item.qty} — $${subtotal.toLocaleString()}
+        const sub = (item.precio || 0) * (item.qty || 1);
+        total += sub;
+        msg += `• ${item.nombre} ×${item.qty || 1} — $${sub.toLocaleString()}
 `;
     });
     msg += `
@@ -2521,106 +2547,120 @@ function enviarCarritoWhatsApp() {
     window.open(`https://wa.me/${tel}?text=${encodeURIComponent(msg)}`, '_blank');
 }
 
-// ══════════════════════════════════════════════
+// ══════════════════════════════════════════════════════
 // ⭐ RESEÑAS POR PRODUCTO
-// ══════════════════════════════════════════════
-function cargarResenas(productoId) {
-    return JSON.parse(localStorage.getItem('resenas_' + productoId) || '[]');
+// ══════════════════════════════════════════════════════
+let _estrellasPendientes = {};
+
+function _getResenas(pid) {
+    return JSON.parse(localStorage.getItem('res_' + pid) || '[]');
 }
 
-function guardarResena(productoId, estrellas, texto) {
-    const resenas = cargarResenas(productoId);
-    resenas.unshift({ estrellas, texto, fecha: new Date().toLocaleDateString() });
-    localStorage.setItem('resenas_' + productoId, JSON.stringify(resenas.slice(0, 20)));
+function _saveResena(pid, stars, txt) {
+    const lista = _getResenas(pid);
+    lista.unshift({ stars, txt, fecha: new Date().toLocaleDateString() });
+    localStorage.setItem('res_' + pid, JSON.stringify(lista.slice(0, 30)));
 }
 
-function renderResenas(productoId) {
-    const resenas = cargarResenas(productoId);
-    const avg = resenas.length ? (resenas.reduce((s, r) => s + r.estrellas, 0) / resenas.length).toFixed(1) : 0;
-    const stars = '⭐'.repeat(Math.round(avg));
-    return `
-        <div class="resenas-section" id="resenas_${productoId}">
-            <div class="resenas-stars-row">
-                ${[1,2,3,4,5].map(n => `<button class="resena-star-btn" onclick="iniciarResena('${productoId}', ${n})" title="${n} estrella${n>1?'s':''}">${'★'}</button>`).join('')}
-                ${avg > 0 ? `<span class="resenas-avg">${avg}</span><span class="resenas-count">(${resenas.length})</span>` : '<span class="resenas-count">Sé el primero en opinar</span>'}
+function _avgStars(pid) {
+    const r = _getResenas(pid);
+    if (!r.length) return 0;
+    return (r.reduce((s, x) => s + x.stars, 0) / r.length).toFixed(1);
+}
+
+function renderResenaWidget(pid) {
+    const lista  = _getResenas(pid);
+    const avg    = _avgStars(pid);
+    const filled = Math.round(avg);
+    const starsHTML = [1,2,3,4,5].map(n =>
+        `<span class="star-input${n <= filled ? ' active' : ''}" onclick="seleccionarEstrella('${pid}',${n})">★</span>`
+    ).join('');
+    const listaHTML = lista.slice(0,3).map(r => `
+        <div class="resena-item">
+            <div class="resena-item-meta">
+                <span>${'★'.repeat(r.stars)}</span>
+                <span>${r.fecha}</span>
             </div>
-            <div class="resenas-form" id="resenaForm_${productoId}">
-                <textarea id="resenaTxt_${productoId}" rows="2" placeholder="Escribe tu opinión..."></textarea>
-                <div class="resenas-form-actions">
-                    <button class="btn-enviar-resena" onclick="enviarResena('${productoId}')">Publicar</button>
-                    <button class="btn-cancelar-resena" onclick="cerrarResenaForm('${productoId}')">Cancelar</button>
+            <div>${r.txt}</div>
+        </div>`).join('');
+    return `
+        <div class="resenas-wrap" id="resWrap_${pid}">
+            <div class="resenas-header">
+                <div class="resenas-stars">${starsHTML}</div>
+                ${avg > 0 ? `<span class="resenas-avg">${avg} ★</span><span class="resenas-count">(${lista.length} opinión${lista.length !== 1 ? 'es' : ''})</span>` : '<span class="resenas-count" style="font-size:11px;">Sé el primero en opinar</span>'}
+            </div>
+            <div class="resena-form" id="resForm_${pid}">
+                <textarea class="resena-textarea" id="resTxt_${pid}" rows="2" placeholder="Escribe tu opinión..."></textarea>
+                <div class="resena-form-btns">
+                    <button class="btn-publicar-resena" onclick="publicarResena('${pid}')">Publicar</button>
+                    <button class="btn-cancelar-resena" onclick="cerrarResenaForm('${pid}')">Cancelar</button>
                 </div>
             </div>
-            ${resenas.length > 0 ? `
-            <div class="resenas-lista">${resenas.slice(0,3).map(r => `
-                <div class="resena-item">
-                    <div class="resena-item-header">
-                        <span>${'⭐'.repeat(r.estrellas)}</span>
-                        <span>${r.fecha}</span>
-                    </div>
-                    <div>${r.texto}</div>
-                </div>`).join('')}
-            </div>` : ''}
+            ${listaHTML ? `<div class="resenas-lista">${listaHTML}</div>` : ''}
         </div>`;
 }
 
-let resenaEstrellasTemp = {};
-function iniciarResena(productoId, estrellas) {
-    resenaEstrellasTemp[productoId] = estrellas;
-    const form = document.getElementById('resenaForm_' + productoId);
+function seleccionarEstrella(pid, n) {
+    _estrellasPendientes[pid] = n;
+    // Iluminar
+    const wrap = document.getElementById('resWrap_' + pid);
+    if (wrap) {
+        wrap.querySelectorAll('.star-input').forEach((s, i) => {
+            s.classList.toggle('active', i < n);
+        });
+    }
+    // Abrir form
+    const form = document.getElementById('resForm_' + pid);
     if (form) form.classList.add('open');
-    // Mostrar estrellas seleccionadas
-    const btns = document.querySelectorAll(`#resenas_${productoId} .resena-star-btn`);
-    btns.forEach((btn, i) => { btn.style.color = i < estrellas ? '#f5a623' : '#ccc'; });
 }
 
-function cerrarResenaForm(productoId) {
-    const form = document.getElementById('resenaForm_' + productoId);
+function cerrarResenaForm(pid) {
+    const form = document.getElementById('resForm_' + pid);
     if (form) form.classList.remove('open');
 }
 
-function enviarResena(productoId) {
-    const txt = document.getElementById('resenaTxt_' + productoId)?.value?.trim();
-    const estrellas = resenaEstrellasTemp[productoId] || 5;
-    if (!txt) { mostrarNotificacion('Escribe una opinión', 'error'); return; }
-    guardarResena(productoId, estrellas, txt);
+function publicarResena(pid) {
+    const txt   = (document.getElementById('resTxt_' + pid)?.value || '').trim();
+    const stars = _estrellasPendientes[pid] || 5;
+    if (!txt) { mostrarNotificacion('Escribe una opinión primero', 'error'); return; }
+    _saveResena(pid, stars, txt);
     mostrarNotificacion('✅ ¡Gracias por tu opinión!');
-    // Refrescar la card
-    const seccion = document.getElementById('resenas_' + productoId);
-    if (seccion) seccion.outerHTML = renderResenas(productoId);
+    // Refrescar widget
+    const wrap = document.getElementById('resWrap_' + pid);
+    if (wrap) wrap.outerHTML = renderResenaWidget(pid);
 }
 
-// ══════════════════════════════════════════════
+// ══════════════════════════════════════════════════════
 // 👁 VISTO RECIENTEMENTE
-// ══════════════════════════════════════════════
-function registrarVisto(productoId) {
-    let vistos = JSON.parse(localStorage.getItem('vistos_recientes') || '[]');
-    vistos = [productoId, ...vistos.filter(id => id !== productoId)].slice(0, 10);
-    localStorage.setItem('vistos_recientes', JSON.stringify(vistos));
-    renderRecientes();
+// ══════════════════════════════════════════════════════
+function registrarVisto(pid) {
+    let v = JSON.parse(localStorage.getItem('vistosTM') || '[]');
+    v = [String(pid), ...v.filter(x => x !== String(pid))].slice(0, 12);
+    localStorage.setItem('vistosTM', JSON.stringify(v));
+    _renderRecientes();
 }
 
-function renderRecientes() {
-    const vistos = JSON.parse(localStorage.getItem('vistos_recientes') || '[]');
-    const section = document.getElementById('recientesSection');
+function _renderRecientes() {
+    const sec  = document.getElementById('recientesSection');
     const grid = document.getElementById('recientesGrid');
-    if (!section || !grid) return;
-    const items = vistos.map(id => productos.find(p => p.id === id)).filter(Boolean);
-    if (items.length === 0) { section.style.display = 'none'; return; }
-    section.style.display = 'block';
+    if (!sec || !grid) return;
+    const ids   = JSON.parse(localStorage.getItem('vistosTM') || '[]');
+    const items = ids.map(id => productos.find(p => String(p.id) === id)).filter(Boolean);
+    if (items.length === 0) { sec.style.display = 'none'; return; }
+    sec.style.display = 'block';
     grid.innerHTML = items.map(p => `
-        <div class="reciente-card" onclick="verProducto('${p.id}')">
-            <img src="${p.imagen || p.imagenes?.[0] || ''}" alt="${p.nombre}" onerror="this.style.display='none'">
-            <div class="reciente-card-name">${p.nombre}</div>
-            <div class="reciente-card-price">$${parseFloat(p.precioActual || p.precio || 0).toLocaleString()}</div>
+        <div class="reciente-card" onclick="abrirDetalleProducto(${p.id})">
+            <img src="${p.imagen || ''}" alt="${p.nombre}" onerror="this.style.display='none'">
+            <div class="reciente-name">${p.nombre}</div>
+            <div class="reciente-price">$${parseFloat(p.precioActual || p.precio || 0).toLocaleString()}</div>
         </div>
     `).join('');
 }
 
-// ══════════════════════════════════════════════
-// INIT extras al cargar
-// ══════════════════════════════════════════════
+// ══════════════════════════════════════════════════════
+// INIT EXTRAS
+// ══════════════════════════════════════════════════════
 document.addEventListener('DOMContentLoaded', () => {
-    actualizarCarritoUI();
-    renderRecientes();
+    _actualizarCarritoUI();
+    _renderRecientes();
 });

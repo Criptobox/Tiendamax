@@ -2454,8 +2454,6 @@ body.admin-mode .hero-image-admin-hint {
         <div class="hero-divider"></div>
 
 
-
-
         <!-- Sección Categorías -->
         <section id="categorias-home" class="categorias-home">
             <div class="categorias-home-inner">
@@ -2469,30 +2467,29 @@ body.admin-mode .hero-image-admin-hint {
                 </a>
 
                 <div class="container">
-                    <!-- Buscador integrado -->
-                    <div class="cat-search-wrap">
-                        <div class="cat-search-bar" id="catSearchBar">
-                            <svg class="cat-search-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                    <!-- ══ BARRA DE BÚSQUEDA ══ -->
+                    <div style="max-width:680px;margin:0 auto 32px;">
+                        <div class="hero-search-bar" id="heroSearchBar" style="border-radius:50px;padding:10px 10px 10px 22px;">
+                            <span class="hero-search-icon">🔍</span>
                             <input
                                 type="text"
                                 id="heroSearchInput"
-                                class="cat-search-input"
+                                class="hero-search-input"
                                 placeholder="Buscar productos..."
                                 oninput="buscarDesdeHero(this.value)"
                                 onkeydown="if(event.key==='Enter') aplicarBusquedaHero()"
                                 onfocus="abrirPanelBusqueda()"
                                 autocomplete="off"
                             >
-                            <button class="cat-precio-btn" onclick="togglePanelBusqueda()">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="6" y1="12" x2="18" y2="12"/><line x1="9" y1="18" x2="15" y2="18"/></svg>
+                            <button class="hero-search-btn" onclick="togglePanelBusqueda()">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="6" y1="12" x2="18" y2="12"/><line x1="9" y1="18" x2="15" y2="18"/></svg>
                                 Precio
                             </button>
                         </div>
-                        <!-- Panel de precio -->
-                        <div class="cat-search-panel" id="heroSearchPanel">
+                        <div class="hero-search-panel" id="heroSearchPanel">
                             <div class="hero-price-section">
                                 <div class="hero-price-labels">
-                                    <span class="hero-price-title">Rango de precio</span>
+                                    <span class="hero-price-title">💲 Rango de precio</span>
                                     <span id="heroPrecioRango" class="hero-price-rango">Todos los precios</span>
                                 </div>
                                 <div class="hero-price-sliders">
@@ -2503,6 +2500,7 @@ body.admin-mode .hero-image-admin-hint {
                             <div id="heroSearchSuggestions" class="hero-suggestions"></div>
                         </div>
                     </div>
+
                     <p class="section-eyebrow">Navega por sección</p>
                     <h2 class="section-title">Explora por Categoría</h2>
                     <p class="section-subtitle">Selecciona una categoría para descubrir todos sus productos</p>
@@ -2534,7 +2532,7 @@ body.admin-mode .hero-image-admin-hint {
             <div class="container">
                 <p class="section-eyebrow">Tu historial</p>
                 <h2 class="section-title" style="font-size:26px;margin-bottom:20px;">👁 Visto Recientemente</h2>
-                <div class="recientes-grid" id="recientesGrid"></div>
+                <div class="recientes-scroll" id="recientesGrid"></div>
             </div>
         </section>
 
@@ -2672,32 +2670,33 @@ body.admin-mode .hero-image-admin-hint {
         </a>
     </div>
 
-    <!-- 🛒 MINI-CARRITO FLOTANTE -->
-    <button class="carrito-fab" id="carritoFab" onclick="abrirCarrito()" style="display:none;">
-        🛒 <span id="carritoFabTexto">Carrito</span>
-        <span class="carrito-fab-badge" id="carritoFabCount">0</span>
+    <!-- Footer -->
+    <!-- 🛒 CARRITO FLOTANTE -->
+    <button class="carrito-fab" id="carritoFab" onclick="abrirCarrito()">
+        🛒 <span id="carritoFabTxt">Carrito</span>
+        <span class="carrito-badge" id="carritoBadge">0</span>
     </button>
 
-    <div class="carrito-overlay" id="carritoOverlay" onclick="if(event.target===this) cerrarCarrito()">
+    <div class="carrito-overlay" id="carritoOverlay" onclick="if(event.target===this)cerrarCarrito()">
         <div class="carrito-modal">
             <div class="carrito-header">
                 <span>🛒 Mi Carrito</span>
-                <button class="carrito-close" onclick="cerrarCarrito()">×</button>
+                <button class="carrito-close" onclick="cerrarCarrito()">✕</button>
             </div>
-            <div class="carrito-items" id="carritoItems">
-                <div class="carrito-empty">Tu carrito está vacío</div>
+            <div class="carrito-items" id="carritoItemsEl"></div>
+            <div class="carrito-footer">
+                <div class="carrito-total-row">
+                    <span>Total:</span>
+                    <span id="carritoTotalEl">$0</span>
+                </div>
+                <button class="btn-pedir-carrito" onclick="pedirCarritoWhatsApp()">
+                    💬 Pedir todo por WhatsApp
+                </button>
+                <button class="btn-vaciar-carrito" onclick="vaciarCarrito()">Vaciar carrito</button>
             </div>
-            <div class="carrito-total">
-                <span>Total:</span>
-                <span id="carritoTotal">$0</span>
-            </div>
-            <button class="btn-enviar-carrito" onclick="enviarCarritoWhatsApp()">
-                💬 Pedir por WhatsApp
-            </button>
         </div>
     </div>
 
-    <!-- Footer -->
     <footer class="footer">
         <div class="container">
             <p>&copy; 2025 TiendaMax. Todos los derechos reservados.</p>
@@ -3122,6 +3121,9 @@ body.admin-mode .hero-image-admin-hint {
                         <!-- Botón comprar -->
                         <button id="detailBuyBtn" class="btn-cta-mejorado detail-buy-btn">
                             🛒 Comprar por WhatsApp
+                        </button>
+                        <button class="btn btn-secondary" style="width:100%;margin-top:10px;padding:12px;" onclick="agregarAlCarritoDesdeDetalle()">
+                            🛒+ Agregar al carrito
                         </button>
 
                         <!-- Compartir -->
