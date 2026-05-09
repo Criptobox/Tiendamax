@@ -2453,42 +2453,7 @@ body.admin-mode .hero-image-admin-hint {
         </section>
         <div class="hero-divider"></div>
 
-        <!-- ══ BARRA DE BÚSQUEDA ══ -->
-        <div class="hero-search-wrap">
-            <div class="hero-search-inner">
-                <div class="hero-search-bar" id="heroSearchBar">
-                    <span class="hero-search-icon">🔍</span>
-                    <input
-                        type="text"
-                        id="heroSearchInput"
-                        class="hero-search-input"
-                        placeholder="Buscar productos..."
-                        oninput="buscarDesdeHero(this.value)"
-                        onkeydown="if(event.key==='Enter') aplicarBusquedaHero()"
-                        onfocus="abrirPanelBusqueda()"
-                        autocomplete="off"
-                    >
-                    <button class="hero-search-btn" onclick="aplicarBusquedaHero()">Buscar</button>
-                </div>
 
-                <!-- Panel expandido (oculto por defecto) -->
-                <div class="hero-search-panel" id="heroSearchPanel">
-                    <!-- Filtro de precio -->
-                    <div class="hero-price-section">
-                        <div class="hero-price-labels">
-                            <span class="hero-price-title">💲 Rango de precio</span>
-                            <span id="heroPrecioRango" class="hero-price-rango">Todos los precios</span>
-                        </div>
-                        <div class="hero-price-sliders">
-                            <input type="range" id="heroSliderMin" min="0" max="9999" value="0" oninput="actualizarSliderPrecio()">
-                            <input type="range" id="heroSliderMax" min="0" max="9999" value="9999" oninput="actualizarSliderPrecio()">
-                        </div>
-                    </div>
-                    <!-- Sugerencias -->
-                    <div id="heroSearchSuggestions" class="hero-suggestions"></div>
-                </div>
-            </div>
-        </div>
 
 
         <!-- Sección Categorías -->
@@ -2504,6 +2469,40 @@ body.admin-mode .hero-image-admin-hint {
                 </a>
 
                 <div class="container">
+                    <!-- Buscador integrado -->
+                    <div class="cat-search-wrap">
+                        <div class="cat-search-bar" id="catSearchBar">
+                            <svg class="cat-search-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                            <input
+                                type="text"
+                                id="heroSearchInput"
+                                class="cat-search-input"
+                                placeholder="Buscar productos..."
+                                oninput="buscarDesdeHero(this.value)"
+                                onkeydown="if(event.key==='Enter') aplicarBusquedaHero()"
+                                onfocus="abrirPanelBusqueda()"
+                                autocomplete="off"
+                            >
+                            <button class="cat-precio-btn" onclick="togglePanelBusqueda()">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="6" y1="12" x2="18" y2="12"/><line x1="9" y1="18" x2="15" y2="18"/></svg>
+                                Precio
+                            </button>
+                        </div>
+                        <!-- Panel de precio -->
+                        <div class="cat-search-panel" id="heroSearchPanel">
+                            <div class="hero-price-section">
+                                <div class="hero-price-labels">
+                                    <span class="hero-price-title">Rango de precio</span>
+                                    <span id="heroPrecioRango" class="hero-price-rango">Todos los precios</span>
+                                </div>
+                                <div class="hero-price-sliders">
+                                    <input type="range" id="heroSliderMin" min="0" max="9999" value="0" oninput="actualizarSliderPrecio()">
+                                    <input type="range" id="heroSliderMax" min="0" max="9999" value="9999" oninput="actualizarSliderPrecio()">
+                                </div>
+                            </div>
+                            <div id="heroSearchSuggestions" class="hero-suggestions"></div>
+                        </div>
+                    </div>
                     <p class="section-eyebrow">Navega por sección</p>
                     <h2 class="section-title">Explora por Categoría</h2>
                     <p class="section-subtitle">Selecciona una categoría para descubrir todos sus productos</p>
@@ -2530,6 +2529,15 @@ body.admin-mode .hero-image-admin-hint {
         </section>
 
         <!-- Sección Más Vendidos -->
+        <!-- 👁 VISTO RECIENTEMENTE -->
+        <section class="recientes-section" id="recientesSection" style="display:none;">
+            <div class="container">
+                <p class="section-eyebrow">Tu historial</p>
+                <h2 class="section-title" style="font-size:26px;margin-bottom:20px;">👁 Visto Recientemente</h2>
+                <div class="recientes-grid" id="recientesGrid"></div>
+            </div>
+        </section>
+
         <section id="mas-vendidos" class="mas-vendidos">
             <div class="container">
                 <div class="section-header">
@@ -2662,6 +2670,31 @@ body.admin-mode .hero-image-admin-hint {
             <div class="mbb-sub">Atención personalizada por WhatsApp</div>
             <div class="mbb-btn">Contactar →</div>
         </a>
+    </div>
+
+    <!-- 🛒 MINI-CARRITO FLOTANTE -->
+    <button class="carrito-fab" id="carritoFab" onclick="abrirCarrito()" style="display:none;">
+        🛒 <span id="carritoFabTexto">Carrito</span>
+        <span class="carrito-fab-badge" id="carritoFabCount">0</span>
+    </button>
+
+    <div class="carrito-overlay" id="carritoOverlay" onclick="if(event.target===this) cerrarCarrito()">
+        <div class="carrito-modal">
+            <div class="carrito-header">
+                <span>🛒 Mi Carrito</span>
+                <button class="carrito-close" onclick="cerrarCarrito()">×</button>
+            </div>
+            <div class="carrito-items" id="carritoItems">
+                <div class="carrito-empty">Tu carrito está vacío</div>
+            </div>
+            <div class="carrito-total">
+                <span>Total:</span>
+                <span id="carritoTotal">$0</span>
+            </div>
+            <button class="btn-enviar-carrito" onclick="enviarCarritoWhatsApp()">
+                💬 Pedir por WhatsApp
+            </button>
+        </div>
     </div>
 
     <!-- Footer -->

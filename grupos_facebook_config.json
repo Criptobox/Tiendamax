@@ -1,4 +1,6 @@
 {
-  "grupos": [],
-  "exportado": "2026-05-09T14:37:52.555Z"
+  "enabled": false,
+  "groups": [],
+  "auto_publish": false,
+  "interval_hours": 12
 }
