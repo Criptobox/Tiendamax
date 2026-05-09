@@ -1,0 +1,13 @@
+User-agent: *
+Allow: /
+Disallow: /backend/
+Disallow: /*.bat$
+Disallow: /*.sh$
+Disallow: /*.json$ 
+
+# Permitir archivos JSON del sitio (productos, categorías)
+Allow: /productos.json
+Allow: /categorias.json
+Allow: /subcategorias.json
+
+Sitemap: https://tiendamax.org/sitemap.xml

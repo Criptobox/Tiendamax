@@ -12,6 +12,7 @@
     <meta name="geo.region" content="CU">
     <meta name="geo.placename" content="Cuba">
     <link rel="canonical" href="https://tiendamax.org/">
+    <link rel="sitemap" type="application/xml" href="/sitemap.xml">
 
     <!-- Open Graph (Facebook, WhatsApp) -->
     <meta property="og:type" content="website">
@@ -2360,6 +2361,227 @@ body.admin-mode .hero-image-admin-hint {
     .hamburger-btn { display: none !important; }
     .mobile-bottom-banners { display: none !important; }
 }
+
+/* ===== BARRA DE BÚSQUEDA CON FILTRO DE PRECIO ===== */
+.search-price-bar {
+    position: relative;
+    max-width: 580px;
+    margin: 0 auto 40px;
+    z-index: 10;
+}
+.search-input-wrap {
+    display: flex;
+    align-items: center;
+    background: var(--white);
+    border: 1.5px solid rgba(201,169,110,0.3);
+    border-radius: 50px;
+    padding: 0 8px 0 18px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.07);
+    transition: box-shadow 0.25s, border-color 0.25s;
+    gap: 6px;
+}
+.search-input-wrap:focus-within {
+    border-color: var(--gold);
+    box-shadow: 0 4px 24px rgba(201,169,110,0.18);
+}
+.search-icon { font-size: 15px; color: var(--text-muted); flex-shrink: 0; }
+.search-input-global {
+    flex: 1;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-family: var(--font-body);
+    font-size: 15px;
+    color: var(--text-primary);
+    padding: 14px 6px 14px 0;
+}
+.search-input-global::placeholder { color: var(--text-light); }
+.filter-toggle-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--obsidian);
+    color: var(--white);
+    border: none;
+    border-radius: 40px;
+    padding: 9px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+    position: relative;
+    flex-shrink: 0;
+}
+.filter-toggle-btn:hover { background: var(--graphite); }
+.filter-toggle-btn svg { flex-shrink: 0; }
+.filter-active-dot {
+    width: 7px; height: 7px;
+    background: var(--coral);
+    border-radius: 50%;
+    position: absolute;
+    top: 6px; right: 6px;
+}
+.price-filter-panel {
+    background: var(--white);
+    border: 1.5px solid rgba(201,169,110,0.25);
+    border-radius: 18px;
+    padding: 20px 22px 16px;
+    margin-top: 10px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+    animation: slideDown 0.2s ease;
+}
+@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-8px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+.price-slider-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 14px;
+}
+.price-slider-labels strong { color: var(--text-primary); }
+.price-range-track {
+    position: relative;
+    height: 4px;
+    background: #e8e4de;
+    border-radius: 4px;
+    margin: 0 0 16px;
+}
+.price-range-fill {
+    position: absolute;
+    height: 100%;
+    background: var(--gold);
+    border-radius: 4px;
+    pointer-events: none;
+}
+.range-slider {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    -webkit-appearance: none;
+    pointer-events: none;
+    outline: none;
+}
+.range-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 20px; height: 20px;
+    background: var(--obsidian);
+    border: 3px solid var(--gold);
+    border-radius: 50%;
+    cursor: pointer;
+    pointer-events: all;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    transition: transform 0.15s;
+}
+.range-slider::-webkit-slider-thumb:active { transform: scale(1.2); }
+.range-slider::-moz-range-thumb {
+    width: 20px; height: 20px;
+    background: var(--obsidian);
+    border: 3px solid var(--gold);
+    border-radius: 50%;
+    cursor: pointer;
+    pointer-events: all;
+}
+.price-reset-btn {
+    background: none;
+    border: 1.5px solid #e8e4de;
+    color: var(--text-muted);
+    border-radius: 30px;
+    padding: 7px 18px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: block;
+    margin: 0 auto;
+}
+.price-reset-btn:hover { border-color: var(--gold); color: var(--text-primary); }
+.search-results-drop {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0; right: 0;
+    background: var(--white);
+    border: 1.5px solid rgba(201,169,110,0.2);
+    border-radius: 16px;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+    max-height: 320px;
+    overflow-y: auto;
+    z-index: 200;
+}
+.search-result-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    cursor: pointer;
+    transition: background 0.15s;
+    border-bottom: 1px solid rgba(0,0,0,0.04);
+}
+.search-result-item:last-child { border-bottom: none; }
+.search-result-item:hover { background: var(--mist); }
+.search-result-img {
+    width: 44px; height: 44px;
+    object-fit: cover;
+    border-radius: 10px;
+    flex-shrink: 0;
+}
+.search-result-name { font-size: 14px; font-weight: 600; color: var(--text-primary); }
+.search-result-price { font-size: 13px; color: var(--gold); font-weight: 700; margin-top: 2px; }
+.search-no-results { text-align: center; padding: 20px; color: var(--text-muted); font-size: 14px; }
+@media (max-width: 600px) {
+    .search-price-bar { margin-bottom: 28px; }
+    .filter-toggle-label { display: none; }
+    .filter-toggle-btn { padding: 9px 12px; }
+    .price-slider-labels { font-size: 12px; }
+}
+
+/* ===== BOTÓN VOLVER ARRIBA ===== */
+#btnScrollTop {
+    position: fixed;
+    bottom: 28px;
+    right: 24px;
+    width: 46px; height: 46px;
+    background: var(--obsidian);
+    color: var(--white);
+    border: 2px solid var(--gold);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    opacity: 0; pointer-events: none;
+    transform: translateY(12px);
+    transition: opacity 0.3s, transform 0.3s;
+    z-index: 999;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.25);
+}
+#btnScrollTop.visible { opacity: 1; pointer-events: auto; transform: translateY(0); }
+#btnScrollTop:hover { background: var(--graphite); transform: translateY(-2px); }
+@media (max-width: 600px) {
+    #btnScrollTop { bottom: 90px; right: 16px; width: 42px; height: 42px; }
+}
+
+/* ===== VIEWERS BADGE EN CARDS ===== */
+.viewers-badge { min-height: 22px; margin: 4px 0 8px; }
+.viewers-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11.5px;
+    font-weight: 600;
+    color: var(--coral);
+    background: rgba(255,107,53,0.09);
+    border-radius: 30px;
+    padding: 3px 10px;
+    letter-spacing: 0.01em;
+    animation: pulseViewers 3s ease-in-out infinite;
+}
+@keyframes pulseViewers {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
 </style>
 </head>
 <body>
@@ -2453,6 +2675,42 @@ body.admin-mode .hero-image-admin-hint {
                 </a>
 
                 <div class="container">
+                    <!-- ===== BARRA DE BÚSQUEDA CON FILTRO DE PRECIO ===== -->
+                    <div class="search-price-bar" id="searchPriceBar">
+                        <div class="search-input-wrap">
+                            <span class="search-icon">🔍</span>
+                            <input
+                                type="text"
+                                id="globalSearch"
+                                class="search-input-global"
+                                placeholder="Buscar productos..."
+                                autocomplete="off"
+                                oninput="aplicarBusquedaGlobal()"
+                            >
+                            <button class="filter-toggle-btn" id="filterToggleBtn" onclick="toggleFiltroPrecios()" aria-label="Filtrar por precio">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/></svg>
+                                <span class="filter-toggle-label">Precio</span>
+                                <span class="filter-active-dot" id="filterActiveDot" style="display:none"></span>
+                            </button>
+                        </div>
+                        <!-- Panel de rango de precio — se despliega al tocar el botón -->
+                        <div class="price-filter-panel" id="priceFilterPanel" style="display:none;">
+                            <div class="price-slider-labels">
+                                <span>Mínimo: <strong id="labelPrecioMin">$0</strong></span>
+                                <span>Máximo: <strong id="labelPrecioMax">$999</strong></span>
+                            </div>
+                            <div class="price-range-track">
+                                <div class="price-range-fill" id="priceRangeFill"></div>
+                                <input type="range" id="rangeMin" class="range-slider range-min" min="0" max="999" value="0" step="1" oninput="actualizarRangoPrecios()">
+                                <input type="range" id="rangeMax" class="range-slider range-max" min="0" max="999" value="999" step="1" oninput="actualizarRangoPrecios()">
+                            </div>
+                            <button class="price-reset-btn" onclick="resetFiltroPrecios()">Limpiar filtro</button>
+                        </div>
+                        <!-- Resultados de búsqueda global (desplegable) -->
+                        <div class="search-results-drop" id="searchResultsDrop" style="display:none;"></div>
+                    </div>
+                    <!-- ===== FIN BARRA DE BÚSQUEDA ===== -->
+
                     <p class="section-eyebrow">Navega por sección</p>
                     <h2 class="section-title">Explora por Categoría</h2>
                     <p class="section-subtitle">Selecciona una categoría para descubrir todos sus productos</p>
@@ -2661,6 +2919,7 @@ body.admin-mode .hero-image-admin-hint {
                 <button class="tab-btn" onclick="switchTab('manage-subcategories')" data-tab="manage-subcategories">📂 Subcategorías</button>
                 <button class="tab-btn" onclick="switchTab('configuracion')" data-tab="configuracion">⚙️ Config</button>
                 <button class="tab-btn" onclick="switchTab('apariencia')" data-tab="apariencia">🎨 Apariencia</button>
+                <button class="tab-btn" onclick="switchTab('analytics-panel')" data-tab="analytics-panel">📊 Analytics</button>
             </div>
             <div class="admin-content">
 
@@ -2910,7 +3169,34 @@ body.admin-mode .hero-image-admin-hint {
             </div>
         </div>
     </div>
-    <!-- FIN PANEL ADMIN -->
+    
+                <!-- ===== PANEL ANALYTICS ===== -->
+                <div id="analytics-panel" class="admin-tab" style="display:none;">
+                    <h3 style="margin-bottom:18px;font-size:18px;">📊 Analytics de la tienda</h3>
+                    <p style="font-size:13px;color:var(--text-muted);margin-bottom:20px;">
+                        Estadísticas locales basadas en visitas desde este navegador. Sin cookies, sin terceros.
+                    </p>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px;">
+                        <div style="background:var(--mist);border-radius:14px;padding:18px;">
+                            <p style="font-size:12px;color:var(--text-muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em;">Total eventos</p>
+                            <p id="analyticsTotal" style="font-size:28px;font-weight:800;">—</p>
+                        </div>
+                        <div style="background:var(--mist);border-radius:14px;padding:18px;">
+                            <p style="font-size:12px;color:var(--text-muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em;">Productos vistos</p>
+                            <p id="analyticsProductosVistos" style="font-size:28px;font-weight:800;">—</p>
+                        </div>
+                    </div>
+                    <h4 style="margin-bottom:12px;font-size:15px;">🔥 Productos más vistos</h4>
+                    <div id="analyticsTopProductos" style="margin-bottom:24px;"></div>
+                    <h4 style="margin-bottom:12px;font-size:15px;">📂 Categorías más visitadas</h4>
+                    <div id="analyticsTopCats" style="margin-bottom:20px;"></div>
+                    <div style="display:flex;gap:10px;flex-wrap:wrap;">
+                        <button onclick="cargarAnalytics()" class="btn btn-primary" style="font-size:13px;padding:10px 20px;">🔄 Actualizar</button>
+                        <button onclick="if(confirm('¿Borrar todos los datos de analytics?')){localStorage.removeItem('tmx_events');cargarAnalytics();}" style="font-size:13px;padding:10px 20px;background:var(--danger);color:white;border:none;border-radius:10px;cursor:pointer;">🗑️ Limpiar datos</button>
+                    </div>
+                </div>
+
+            <!-- FIN PANEL ADMIN -->
 
     <!-- ===== MODAL EDITAR PRODUCTO ===== -->
     <div id="editModal" class="modal hidden">
@@ -3041,6 +3327,17 @@ body.admin-mode .hero-image-admin-hint {
             if(e.target === this) cerrarMenuMovil();
         });
     });
+    </script>
+
+    <script>
+    // ===== SERVICE WORKER =====
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('/sw.js')
+                .then(reg => console.log('[SW] Registrado:', reg.scope))
+                .catch(err => console.warn('[SW] Error:', err));
+        });
+    }
     </script>
 </body>
 </html>

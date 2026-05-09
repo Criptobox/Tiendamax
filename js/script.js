@@ -54,127 +54,6 @@ function obtenerIconoCategoria(nombre) {
     return '🛍️';
 }
 
-// ===== BÚSQUEDA HERO =====
-
-let _heroSearchTimeout = null;
-let _heroSearchActivo  = '';
-let _heroPrecioMin     = 0;
-let _heroPrecioMax     = Infinity;
-
-function buscarDesdeHero(query, ir = false) {
-    const q      = (query || '').trim().toLowerCase();
-    const sugBox = document.getElementById('heroSearchSuggestions');
-    clearTimeout(_heroSearchTimeout);
-
-    _heroPrecioMin = parseFloat(document.getElementById('heroSliderMin')?.value || 0);
-    const maxVal   = parseFloat(document.getElementById('heroSliderMax')?.value || 999999);
-    _heroPrecioMax = maxVal >= 999999 ? Infinity : maxVal;
-
-    if (!q && _heroPrecioMin === 0 && _heroPrecioMax === Infinity) {
-        if (sugBox) { sugBox.innerHTML = ''; sugBox.classList.remove('visible'); }
-        return;
-    }
-
-    if (ir) {
-        if (sugBox) { sugBox.innerHTML = ''; sugBox.classList.remove('visible'); }
-        _heroSearchActivo = q;
-        categoriaSeleccionada    = 'Todas';
-        subcategoriaSeleccionada = 'Todas';
-        mostrarVistaCategoria('Todas');
-        return;
-    }
-
-    _heroSearchTimeout = setTimeout(() => {
-        if (!sugBox) return;
-        const resultados = productos.filter(p => {
-            const matchQ     = !q || p.nombre.toLowerCase().includes(q) || (p.descripcion||'').toLowerCase().includes(q) || (p.categoria||'').toLowerCase().includes(q);
-            const matchPrice = p.precioActual >= _heroPrecioMin && p.precioActual <= _heroPrecioMax;
-            return matchQ && matchPrice;
-        }).slice(0, 6);
-
-        if (resultados.length === 0) {
-            sugBox.innerHTML = '<div class="hero-suggestion-empty">😕 Sin resultados</div>';
-        } else {
-            sugBox.innerHTML = resultados.map(p => {
-                const nombre = q ? resaltarTexto(p.nombre, q) : p.nombre;
-                return '<div class="hero-suggestion-item" onclick="abrirDesdeHero(' + p.id + ')">' +
-                    '<img class="hero-suggestion-img" src="' + p.imagen + '" alt="' + p.nombre + '" onerror="this.style.display=\'none\'">' +
-                    '<span class="hero-suggestion-name">' + nombre + '</span>' +
-                    '<span class="hero-suggestion-price">$' + p.precioActual.toFixed(2) + '</span>' +
-                    '</div>';
-            }).join('');
-        }
-        sugBox.classList.add('visible');
-    }, 200);
-}
-
-function actualizarSliderPrecio() {
-    const sliderMin = document.getElementById('heroSliderMin');
-    const sliderMax = document.getElementById('heroSliderMax');
-    if (!sliderMin || !sliderMax) return;
-    let min = parseFloat(sliderMin.value);
-    let max = parseFloat(sliderMax.value);
-    if (min > max) { sliderMin.value = max; min = max; }
-    const labelMin = document.getElementById('heroPrecioMinLabel');
-    const labelMax = document.getElementById('heroPrecioMaxLabel');
-    if (labelMin) labelMin.textContent = '$' + Math.round(min);
-    if (labelMax) labelMax.textContent = max >= 999999 ? 'Cualquier precio' : '$' + Math.round(max);
-    _heroPrecioMin = min;
-    _heroPrecioMax = max >= 999999 ? Infinity : max;
-    buscarDesdeHero(document.getElementById('heroSearchInput')?.value || '');
-}
-
-function inicializarSliderPrecios() {
-    if (!productos || productos.length === 0) return;
-    const precios  = productos.map(p => p.precioActual).filter(Boolean);
-    const minReal  = Math.floor(Math.min(...precios));
-    const maxReal  = Math.ceil(Math.max(...precios));
-    const sliderMin = document.getElementById('heroSliderMin');
-    const sliderMax = document.getElementById('heroSliderMax');
-    if (sliderMin) { sliderMin.min = minReal; sliderMin.max = maxReal; sliderMin.value = minReal; }
-    if (sliderMax) { sliderMax.min = minReal; sliderMax.max = maxReal; sliderMax.value = maxReal; }
-    actualizarSliderPrecio();
-}
-
-function togglePrecioFilter() {
-    const panel = document.getElementById('heroPricePanel');
-    if (!panel) return;
-    const open = panel.style.display !== 'none';
-    panel.style.display = open ? 'none' : 'block';
-    document.getElementById('heroPriceToggle').textContent = open
-        ? '💲 Filtrar por precio ▾'
-        : '💲 Filtrar por precio ▴';
-    if (!open) inicializarSliderPrecios();
-}
-
-function aplicarFiltroPrecio() {
-    actualizarSliderPrecio();
-    _heroSearchActivo = (document.getElementById('heroSearchInput')?.value || '').trim().toLowerCase();
-    categoriaSeleccionada    = 'Todas';
-    subcategoriaSeleccionada = 'Todas';
-    mostrarVistaCategoria('Todas');
-}
-
-function resaltarTexto(texto, query) {
-    try {
-        const re = new RegExp('(' + query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi');
-        return texto.replace(re, '<mark style="background:rgba(232,87,42,0.18);color:inherit;border-radius:3px;padding:0 2px;">$1</mark>');
-    } catch(e) { return texto; }
-}
-
-function abrirDesdeHero(id) {
-    const sugBox = document.getElementById('heroSearchSuggestions');
-    if (sugBox) { sugBox.innerHTML = ''; sugBox.classList.remove('visible'); }
-    abrirDetalleProducto(id);
-}
-
-document.addEventListener('click', (e) => {
-    if (!e.target.closest('.hero-search-bar') && !e.target.closest('.hero-search-suggestions') && !e.target.closest('.hero-price-filter')) {
-        const sugBox = document.getElementById('heroSearchSuggestions');
-        if (sugBox) sugBox.classList.remove('visible');
-    }
-});
-
 // ===== VALIDACIÓN DE CAMPOS =====
 
 function validarProducto(producto) {
@@ -290,7 +169,6 @@ async function cargarDatosDesdeGitHub() {
         actualizarBotonesCategorias();
         actualizarListaCategorias();
         verificarOfertasYMostrarBanner();
-        inicializarSliderPrecios();
         console.log('✅ Datos sincronizados con GitHub');
     } catch (e) {
         console.log('ℹ️ Iniciando con datos locales');
@@ -371,9 +249,6 @@ function mostrarVistaInicio() {
 function mostrarVistaCategoria(categoria) {
     categoriaSeleccionada = categoria;
     subcategoriaSeleccionada = 'Todas';
-    _heroSearchActivo = ''; // Limpiar búsqueda hero al cambiar categoría
-    const heroInput = document.getElementById('heroSearchInput');
-    if (heroInput) heroInput.value = '';
     document.getElementById('vistaInicio').style.display = 'none';
     document.getElementById('vistaCategoria').style.display = 'block';
 
@@ -526,6 +401,7 @@ function renderizarMasVendidos() {
                 <div class="stock-bar-fill" style="width: ${Math.max(15, (producto.stock / 20) * 100)}%"></div>
             </div>
             
+            <div class="viewers-badge" id="viewers-mv-${producto.id}"></div>
             <button class="btn btn-small btn-primary" onclick="event.stopPropagation(); contactarProducto('${producto.nombre}')">🛒 Comprar</button>
         `;
         grid.appendChild(card);
@@ -610,15 +486,16 @@ function agregarProductoForm(event) {
     const file = fileInput.files[0];
     if (!file) { mostrarNotificacion('Por favor selecciona una imagen', 'error'); return; }
 
-    mostrarNotificacion('⏳ Subiendo imagen...', 'info');
+    // Mostrar indicador de compresión
+    mostrarNotificacion('⏳ Comprimiendo imagen...', 'info');
 
-    subirImagenAGitHub(file).then(urlImagen => {
+    comprimirImagen(file).then(imagenComprimida => {
         const masVendidoVal = document.getElementById('productMasVendido');
         const producto = {
             id: Date.now(),
             nombre: document.getElementById('productName').value.trim(),
             descripcion: document.getElementById('productDescription').value.trim(),
-            imagen: urlImagen,
+            imagen: imagenComprimida,
             precioActual: parseFloat(document.getElementById('productPriceActual').value) || 0,
             descuento: parseInt(document.getElementById('productDiscount').value) || 0,
             stock: parseInt(document.getElementById('productStock').value) || 0,
@@ -630,8 +507,12 @@ function agregarProductoForm(event) {
             devolucion: document.getElementById('productDevolucion') ? document.getElementById('productDevolucion').checked : false
         };
 
+        // Validar producto
         const errores = validarProducto(producto);
-        if (errores.length > 0) { mostrarNotificacion('❌ ' + errores[0], 'error'); return; }
+        if (errores.length > 0) {
+            mostrarNotificacion('❌ ' + errores[0], 'error');
+            return;
+        }
 
         productos.push(producto);
         guardarProductos();
@@ -644,48 +525,8 @@ function agregarProductoForm(event) {
         renderizarProductos();
         actualizarListaProductos();
         verificarOfertasYMostrarBanner();
-    }).catch(err => {
-        mostrarNotificacion('❌ Error subiendo imagen: ' + err.message, 'error');
     });
 }
-
-// Sube una imagen como archivo .jpg a GitHub y devuelve la URL raw
-async function subirImagenAGitHub(fileOrBase64) {
-    const user  = localStorage.getItem('githubUser');
-    const repo  = localStorage.getItem('githubRepo');
-    const token = localStorage.getItem('githubToken');
-
-    // Si no hay config de GitHub, usar base64 como fallback
-    if (!user || !repo || !token) {
-        return comprimirImagen(fileOrBase64);
-    }
-
-    // Comprimir primero
-    const base64full = await comprimirImagen(fileOrBase64);
-    const base64data = base64full.split(',')[1]; // quitar "data:image/jpeg;base64,"
-
-    // Nombre único para el archivo
-    const filename  = `img_${Date.now()}.jpg`;
-    const path      = `imagenes/${filename}`;
-    const apiUrl    = `https://api.github.com/repos/${user}/${repo}/contents/${path}`;
-    const headers   = { 'Authorization': `token ${token}`, 'Content-Type': 'application/json' };
-
-    const res = await fetch(apiUrl, {
-        method: 'PUT',
-        headers,
-        body: JSON.stringify({ message: `Imagen de producto: ${filename}`, content: base64data })
-    });
-
-    if (!res.ok) {
-        // Fallback a base64 si falla la subida
-        console.warn('No se pudo subir imagen a GitHub, usando base64');
-        return base64full;
-    }
-
-    // Devolver URL raw pública
-    return `https://raw.githubusercontent.com/${user}/${repo}/main/${path}`;
-}
-
 
 function guardarProductos() {
     localStorage.setItem('productos', JSON.stringify(productos));
@@ -774,16 +615,6 @@ function renderizarProductos() {
         productosFiltrados = productosFiltrados.filter(p => p.subcategoria === subcategoriaSeleccionada);
     }
 
-    // Filtrar por búsqueda hero y/o precio si están activos
-    if (_heroSearchActivo || _heroPrecioMin > 0 || _heroPrecioMax < Infinity) {
-        const q = _heroSearchActivo;
-        productosFiltrados = productosFiltrados.filter(p => {
-            const matchQ     = !q || p.nombre.toLowerCase().includes(q) || (p.descripcion||'').toLowerCase().includes(q) || (p.categoria||'').toLowerCase().includes(q);
-            const matchPrice = p.precioActual >= _heroPrecioMin && p.precioActual <= _heroPrecioMax;
-            return matchQ && matchPrice;
-        });
-    }
-
     productosGrid.innerHTML = '';
 
     if (productosFiltrados.length === 0) {
@@ -808,6 +639,7 @@ function renderizarProductos() {
 	            </p>
             <div class="stock">📦 Stock: ${producto.stock} unidades</div>
             ${typeof renderCountdownHtml === 'function' ? renderCountdownHtml(producto.id) : ''}
+            <div class="viewers-badge" id="viewers-${producto.id}"></div>
             <button class="btn btn-small btn-primary" onclick="event.stopPropagation(); contactarProducto('${producto.nombre}')">🛒 Comprar</button>
         `;
         productosGrid.appendChild(card);
@@ -1141,6 +973,7 @@ function eliminarProducto(id) {
     sincronizarConBackend();
     renderizarCategoriasHome();
     renderizarMasVendidos();
+    setTimeout(inicializarFiltroPrecios, 300); // Inicializar filtro de precio
     renderizarProductos();
     actualizarListaProductos();
     verificarOfertasYMostrarBanner();
@@ -1240,8 +1073,8 @@ function guardarProductoEditado(event) {
     };
 
     if (file) {
-        mostrarNotificacion('⏳ Subiendo imagen...', 'info');
-        subirImagenAGitHub(file).then(urlImagen => actualizarProducto(urlImagen));
+        mostrarNotificacion('⏳ Comprimiendo imagen...', 'info');
+        comprimirImagen(file).then(imagenComprimida => actualizarProducto(imagenComprimida));
     } else {
         actualizarProducto(null);
     }
@@ -2240,3 +2073,311 @@ guardarGruposFB = function() {
     mostrarNotificacion(`✅ ${validos.length} grupos guardados. Haz clic en ACTUALIZAR TIENDA para que sean permanentes.`);
 };
 
+
+
+// ===== BÚSQUEDA GLOBAL + FILTRO DE PRECIO =====
+
+let precioMinGlobal = 0;
+let precioMaxGlobal = 9999;
+let filtroPrecioActivo = false;
+
+function inicializarFiltroPrecios() {
+    if (!productos || productos.length === 0) return;
+    const precios = productos.map(p => parseFloat(p.precioActual) || 0).filter(p => p > 0);
+    if (precios.length === 0) return;
+    const minReal = Math.floor(Math.min(...precios));
+    const maxReal = Math.ceil(Math.max(...precios));
+
+    const rMin = document.getElementById('rangeMin');
+    const rMax = document.getElementById('rangeMax');
+    if (!rMin || !rMax) return;
+
+    rMin.min = minReal; rMin.max = maxReal; rMin.value = minReal;
+    rMax.min = minReal; rMax.max = maxReal; rMax.value = maxReal;
+    precioMinGlobal = minReal;
+    precioMaxGlobal = maxReal;
+    actualizarRangoPrecios();
+}
+
+function actualizarRangoPrecios() {
+    const rMin = document.getElementById('rangeMin');
+    const rMax = document.getElementById('rangeMax');
+    if (!rMin || !rMax) return;
+
+    let vMin = parseInt(rMin.value);
+    let vMax = parseInt(rMax.value);
+    if (vMin > vMax) { rMin.value = vMax; vMin = vMax; }
+
+    document.getElementById('labelPrecioMin').textContent = '$' + vMin;
+    document.getElementById('labelPrecioMax').textContent = '$' + vMax;
+
+    // Actualizar barra de relleno
+    const track = document.querySelector('.price-range-track');
+    const fill = document.getElementById('priceRangeFill');
+    if (track && fill) {
+        const min = parseInt(rMin.min);
+        const max = parseInt(rMin.max);
+        const pctMin = ((vMin - min) / (max - min)) * 100;
+        const pctMax = ((vMax - min) / (max - min)) * 100;
+        fill.style.left = pctMin + '%';
+        fill.style.width = (pctMax - pctMin) + '%';
+    }
+
+    precioMinGlobal = vMin;
+    precioMaxGlobal = vMax;
+
+    const dot = document.getElementById('filterActiveDot');
+    if (dot) {
+        const rMinMin = parseInt(rMin.min);
+        const rMaxMax = parseInt(rMax.max);
+        filtroPrecioActivo = (vMin > rMinMin || vMax < rMaxMax);
+        dot.style.display = filtroPrecioActivo ? 'block' : 'none';
+    }
+
+    aplicarBusquedaGlobal();
+}
+
+function toggleFiltroPrecios() {
+    const panel = document.getElementById('priceFilterPanel');
+    if (!panel) return;
+    const visible = panel.style.display !== 'none';
+    panel.style.display = visible ? 'none' : 'block';
+    if (!visible) inicializarFiltroPrecios();
+}
+
+function resetFiltroPrecios() {
+    const rMin = document.getElementById('rangeMin');
+    const rMax = document.getElementById('rangeMax');
+    if (!rMin || !rMax) return;
+    rMin.value = rMin.min;
+    rMax.value = rMax.max;
+    actualizarRangoPrecios();
+}
+
+function aplicarBusquedaGlobal() {
+    const q = (document.getElementById('globalSearch')?.value || '').toLowerCase().trim();
+    const drop = document.getElementById('searchResultsDrop');
+    if (!drop) return;
+
+    if (!q) {
+        drop.style.display = 'none';
+        drop.innerHTML = '';
+        return;
+    }
+
+    const filtrados = productos.filter(p => {
+        const matchNombre = p.nombre.toLowerCase().includes(q) || (p.descripcion||'').toLowerCase().includes(q);
+        const precio = parseFloat(p.precioActual) || 0;
+        const matchPrecio = precio >= precioMinGlobal && precio <= precioMaxGlobal;
+        return matchNombre && matchPrecio;
+    }).slice(0, 8);
+
+    if (filtrados.length === 0) {
+        drop.innerHTML = '<p class="search-no-results">Sin resultados para "' + q + '"</p>';
+        drop.style.display = 'block';
+        return;
+    }
+
+    drop.innerHTML = filtrados.map(p => `
+        <div class="search-result-item" onclick="abrirDetalleProducto(${p.id}); document.getElementById('searchResultsDrop').style.display='none'; document.getElementById('globalSearch').value='';">
+            <img class="search-result-img" src="${p.imagen}" alt="${p.nombre}" onerror="this.src='data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"44\" height=\"44\"><rect width=\"44\" height=\"44\" fill=\"#eee\"/></svg>'">
+            <div>
+                <div class="search-result-name">${p.nombre}</div>
+                <div class="search-result-price">$${parseFloat(p.precioActual).toFixed(2)} USD</div>
+            </div>
+        </div>
+    `).join('');
+    drop.style.display = 'block';
+}
+
+// Cerrar dropdown al hacer click fuera
+document.addEventListener('click', function(e) {
+    const bar = document.getElementById('searchPriceBar');
+    if (bar && !bar.contains(e.target)) {
+        const drop = document.getElementById('searchResultsDrop');
+        if (drop) drop.style.display = 'none';
+    }
+});
+
+// Inicializar filtro de precios cuando los productos se carguen
+const _origCargarProductos = typeof cargarProductos !== 'undefined' ? cargarProductos : null;
+document.addEventListener('productosListos', inicializarFiltroPrecios);
+
+
+// ===================================================
+// MEJORAS v7 — Botón volver arriba, viewers, analytics
+// ===================================================
+
+// ── 1. BOTÓN "VOLVER ARRIBA" FLOTANTE ──────────────────────
+(function initScrollTop() {
+    // Crear botón si no existe
+    if (document.getElementById('btnScrollTop')) return;
+    const btn = document.createElement('button');
+    btn.id = 'btnScrollTop';
+    btn.setAttribute('aria-label', 'Volver al inicio');
+    btn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>`;
+    btn.onclick = () => window.scrollTo({ top: 0, behavior: 'smooth' });
+    document.body.appendChild(btn);
+
+    window.addEventListener('scroll', () => {
+        btn.classList.toggle('visible', window.scrollY > 400);
+    }, { passive: true });
+})();
+
+// ── 2. CONTADOR "X PERSONAS VIENDO" EN CARDS ───────────────
+const _viewersCounts = {};
+function generarViewers(id) {
+    if (!_viewersCounts[id]) {
+        _viewersCounts[id] = Math.floor(Math.random() * 7) + 2; // 2–8
+    }
+    return _viewersCounts[id];
+}
+
+function actualizarViewersBadges() {
+    document.querySelectorAll('[id^="viewers-"]').forEach(el => {
+        const parts = el.id.split('-');
+        const id = parts[parts.length - 1];
+        const n = generarViewers(id);
+        el.innerHTML = `<span class="viewers-pill">👁 ${n} ${n === 1 ? 'persona viendo' : 'personas viendo'}</span>`;
+    });
+}
+
+// Actualizar badges cada 12–20 segundos con pequeña variación
+function tickViewers() {
+    Object.keys(_viewersCounts).forEach(id => {
+        const delta = Math.floor(Math.random() * 3) - 1; // -1, 0, +1
+        _viewersCounts[id] = Math.max(1, Math.min(12, _viewersCounts[id] + delta));
+    });
+    actualizarViewersBadges();
+}
+
+// Inicializar después de que las cards se rendericen
+const _origRenderizarProductos = renderizarProductos;
+renderizarProductos = function() {
+    _origRenderizarProductos.apply(this, arguments);
+    setTimeout(actualizarViewersBadges, 50);
+};
+const _origRenderizarMasVendidos = renderizarMasVendidos;
+renderizarMasVendidos = function() {
+    _origRenderizarMasVendidos.apply(this, arguments);
+    setTimeout(actualizarViewersBadges, 50);
+};
+
+setInterval(tickViewers, 15000);
+
+// ── 3. ANALYTICS LIGERO (sin cookies, privacy-first) ────────
+const _analytics = {
+    views: {},
+    track(event, data) {
+        // Guarda en localStorage como historial local (sin enviar a terceros)
+        try {
+            const key = 'tmx_events';
+            const log = JSON.parse(localStorage.getItem(key) || '[]');
+            log.push({ t: Date.now(), e: event, ...data });
+            if (log.length > 200) log.splice(0, log.length - 200); // cap
+            localStorage.setItem(key, JSON.stringify(log));
+        } catch {}
+    },
+    getTopProductos() {
+        try {
+            const log = JSON.parse(localStorage.getItem('tmx_events') || '[]');
+            const counts = {};
+            log.filter(e => e.e === 'view_product').forEach(e => {
+                counts[e.nombre] = (counts[e.nombre] || 0) + 1;
+            });
+            return Object.entries(counts).sort((a,b) => b[1]-a[1]).slice(0,10);
+        } catch { return []; }
+    },
+    getTopCategorias() {
+        try {
+            const log = JSON.parse(localStorage.getItem('tmx_events') || '[]');
+            const counts = {};
+            log.filter(e => e.e === 'view_cat').forEach(e => {
+                counts[e.cat] = (counts[e.cat] || 0) + 1;
+            });
+            return Object.entries(counts).sort((a,b) => b[1]-a[1]).slice(0,10);
+        } catch { return []; }
+    }
+};
+
+// Hook en abrirDetalleProducto para trackear vistas de producto
+const _origAbrirDetalle = abrirDetalleProducto;
+abrirDetalleProducto = function(id) {
+    _origAbrirDetalle.apply(this, arguments);
+    const p = productos.find(x => x.id === id);
+    if (p) _analytics.track('view_product', { id, nombre: p.nombre, cat: p.categoria });
+};
+
+// Hook en mostrarVistaCategoria
+const _origMostrarVistaCat = mostrarVistaCategoria;
+mostrarVistaCategoria = function(cat) {
+    _origMostrarVistaCat.apply(this, arguments);
+    _analytics.track('view_cat', { cat });
+};
+
+// Exponer globalmente para el panel admin
+window.tmxAnalytics = _analytics;
+
+
+// ── 4. FUNCIÓN cargarAnalytics() para el panel admin ────────
+function cargarAnalytics() {
+    try {
+        const log = JSON.parse(localStorage.getItem('tmx_events') || '[]');
+        const total = log.length;
+        const productosVistos = log.filter(e => e.e === 'view_product').length;
+
+        const elTotal = document.getElementById('analyticsTotal');
+        const elPV    = document.getElementById('analyticsProductosVistos');
+        if (elTotal) elTotal.textContent = total;
+        if (elPV)    elPV.textContent    = productosVistos;
+
+        // Top productos
+        const topProds = window.tmxAnalytics ? window.tmxAnalytics.getTopProductos() : [];
+        const elTP = document.getElementById('analyticsTopProductos');
+        if (elTP) {
+            if (topProds.length === 0) {
+                elTP.innerHTML = '<p style="color:var(--text-muted);font-size:13px;">Aún no hay datos. Navega la tienda primero.</p>';
+            } else {
+                const max = topProds[0][1] || 1;
+                elTP.innerHTML = topProds.map(([nombre, count]) => `
+                    <div style="margin-bottom:10px;">
+                        <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;">
+                            <span style="font-weight:600;">${nombre}</span>
+                            <span style="color:var(--gold);font-weight:700;">${count} vistas</span>
+                        </div>
+                        <div style="height:6px;background:#e8e4de;border-radius:4px;">
+                            <div style="height:100%;width:${Math.round((count/max)*100)}%;background:var(--gold);border-radius:4px;transition:width 0.4s;"></div>
+                        </div>
+                    </div>`).join('');
+            }
+        }
+
+        // Top categorías
+        const topCats = window.tmxAnalytics ? window.tmxAnalytics.getTopCategorias() : [];
+        const elTC = document.getElementById('analyticsTopCats');
+        if (elTC) {
+            if (topCats.length === 0) {
+                elTC.innerHTML = '<p style="color:var(--text-muted);font-size:13px;">Sin datos todavía.</p>';
+            } else {
+                const maxC = topCats[0][1] || 1;
+                elTC.innerHTML = topCats.map(([cat, count]) => `
+                    <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;padding:10px 14px;background:var(--mist);border-radius:10px;">
+                        <span style="font-size:20px;">${obtenerIconoCategoria(cat)}</span>
+                        <span style="flex:1;font-size:13px;font-weight:600;">${cat}</span>
+                        <span style="font-size:13px;color:var(--gold);font-weight:700;">${count}</span>
+                    </div>`).join('');
+            }
+        }
+    } catch(e) {
+        console.warn('Analytics error:', e);
+    }
+}
+
+// Auto-cargar analytics al abrir el tab
+const _origSwitchTab = typeof switchTab !== 'undefined' ? switchTab : null;
+if (_origSwitchTab) {
+    window.switchTab = function(tab) {
+        _origSwitchTab(tab);
+        if (tab === 'analytics-panel') cargarAnalytics();
+    };
+}
