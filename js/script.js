@@ -100,44 +100,55 @@ async function hashPassword(password) {
 }
 
 async function cargarDatosDesdeGitHub() {
+    // Intentar usar raw.githubusercontent.com si está configurado (no tiene límite de 1MB)
+    const ghUser = localStorage.getItem('githubUser');
+    const ghRepo = localStorage.getItem('githubRepo');
+    const baseUrl = (ghUser && ghRepo)
+        ? `https://raw.githubusercontent.com/${ghUser}/${ghRepo}/main`
+        : null;
+
+    // Función helper: intenta raw primero, luego relativo
+    async function fetchJSON(filename) {
+        if (baseUrl) {
+            try {
+                const res = await fetch(`${baseUrl}/${filename}?_=${Date.now()}`);
+                if (res.ok) return await res.json();
+            } catch(e) {}
+        }
+        // Fallback: ruta relativa (funciona en GitHub Pages)
+        const res = await fetch(`${filename}?_=${Date.now()}`);
+        if (res.ok) return await res.json();
+        return null;
+    }
+
     try {
-        const resProd = await fetch('productos.json', { cache: 'no-store' });
-        if (resProd.ok) {
-            const data = await resProd.json();
-            if (data && data.length > 0) {
-                productos = data;
-                localStorage.setItem('productos', JSON.stringify(productos));
-            }
+        const dataProd = await fetchJSON('productos.json');
+        if (dataProd && dataProd.length > 0) {
+            productos = dataProd;
+            localStorage.setItem('productos', JSON.stringify(productos));
         }
-        const resCat = await fetch('categorias.json', { cache: 'no-store' });
-        if (resCat.ok) {
-            const data = await resCat.json();
-            if (data && data.length > 0) {
-                categorias = data;
-                localStorage.setItem('categorias', JSON.stringify(categorias));
-            }
+
+        const dataCat = await fetchJSON('categorias.json');
+        if (dataCat && dataCat.length > 0) {
+            categorias = dataCat;
+            localStorage.setItem('categorias', JSON.stringify(categorias));
         }
+
         // Cargar config de grupos Facebook
         try {
-            const resGrupos = await fetch('grupos_facebook_config.json', { cache: 'no-store' });
-            if (resGrupos.ok) {
-                const dataG = await resGrupos.json();
-                if (dataG && dataG.grupos) {
-                    localStorage.setItem('gruposFB', JSON.stringify(dataG.grupos));
-                    console.log('✅ Grupos FB cargados desde GitHub');
-                }
+            const dataG = await fetchJSON('grupos_facebook_config.json');
+            if (dataG && dataG.grupos) {
+                localStorage.setItem('gruposFB', JSON.stringify(dataG.grupos));
+                console.log('✅ Grupos FB cargados desde GitHub');
             }
         } catch(e) {}
 
         // Cargar config de Revolico
         try {
-            const resRev = await fetch('revolico_config.json', { cache: 'no-store' });
-            if (resRev.ok) {
-                const dataR = await resRev.json();
-                if (dataR && Object.keys(dataR).length > 0) {
-                    localStorage.setItem('revolicoConfig', JSON.stringify(dataR));
-                    console.log('✅ Config Revolico cargada desde GitHub');
-                }
+            const dataR = await fetchJSON('revolico_config.json');
+            if (dataR && Object.keys(dataR).length > 0) {
+                localStorage.setItem('revolicoConfig', JSON.stringify(dataR));
+                console.log('✅ Config Revolico cargada desde GitHub');
             }
         } catch(e) {}
 
@@ -464,21 +475,22 @@ function agregarProductoForm(event) {
     const file = fileInput.files[0];
     if (!file) { mostrarNotificacion('Por favor selecciona una imagen', 'error'); return; }
 
-    const reader = new FileReader();
-    reader.onload = function(e) {
+    // Mostrar indicador de compresión
+    mostrarNotificacion('⏳ Comprimiendo imagen...', 'info');
+
+    comprimirImagen(file).then(imagenComprimida => {
         const masVendidoVal = document.getElementById('productMasVendido');
         const producto = {
             id: Date.now(),
             nombre: document.getElementById('productName').value.trim(),
             descripcion: document.getElementById('productDescription').value.trim(),
-            imagen: e.target.result,
+            imagen: imagenComprimida,
             precioActual: parseFloat(document.getElementById('productPriceActual').value) || 0,
             descuento: parseInt(document.getElementById('productDiscount').value) || 0,
             stock: parseInt(document.getElementById('productStock').value) || 0,
             categoria: document.getElementById('productCategory').value,
             subcategoria: (document.getElementById('productSubcategory') && document.getElementById('productSubcategory').value) ? document.getElementById('productSubcategory').value : '',
             masVendido: masVendidoVal ? masVendidoVal.value === 'true' : false,
-            // Nuevos campos psicológicos y de estado
             usado: document.getElementById('productUsado').checked,
             garantia: document.getElementById('productGarantia').value.trim(),
             devolucion: document.getElementById('productDevolucion') ? document.getElementById('productDevolucion').checked : false
@@ -493,6 +505,7 @@ function agregarProductoForm(event) {
 
         productos.push(producto);
         guardarProductos();
+        marcarProductoModificado(producto.id);
         sincronizarConGitHub();
         document.getElementById('productForm').reset();
         mostrarNotificacion('✅ ¡Producto agregado exitosamente!');
@@ -501,12 +514,54 @@ function agregarProductoForm(event) {
         renderizarProductos();
         actualizarListaProductos();
         verificarOfertasYMostrarBanner();
-    };
-    reader.readAsDataURL(file);
+    });
 }
 
 function guardarProductos() {
     localStorage.setItem('productos', JSON.stringify(productos));
+}
+
+// ===== COMPRESIÓN DE IMÁGENES =====
+// Comprime una imagen (File o base64) a máximo ~40KB manteniendo buena calidad visual
+function comprimirImagen(source, maxKB = 40, maxWidth = 600, maxHeight = 600) {
+    return new Promise((resolve) => {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        const img = new Image();
+
+        img.onload = function () {
+            // Calcular nuevas dimensiones manteniendo proporción
+            let { width, height } = img;
+            if (width > maxWidth || height > maxHeight) {
+                const ratio = Math.min(maxWidth / width, maxHeight / height);
+                width  = Math.round(width  * ratio);
+                height = Math.round(height * ratio);
+            }
+            canvas.width  = width;
+            canvas.height = height;
+            ctx.drawImage(img, 0, 0, width, height);
+
+            // Reducir calidad iterativamente hasta alcanzar el límite de tamaño
+            let quality = 0.85;
+            let result  = canvas.toDataURL('image/jpeg', quality);
+            while (result.length > maxKB * 1024 * 1.37 && quality > 0.25) {
+                quality -= 0.08;
+                result = canvas.toDataURL('image/jpeg', quality);
+            }
+            resolve(result);
+        };
+
+        img.onerror = () => resolve(source); // Si falla, devolver original
+
+        if (typeof source === 'string') {
+            img.src = source; // base64 o URL
+        } else {
+            // Es un File/Blob
+            const reader = new FileReader();
+            reader.onload = (e) => { img.src = e.target.result; };
+            reader.readAsDataURL(source);
+        }
+    });
 }
 
 function descargarProductosJSON() {
@@ -899,6 +954,9 @@ function eliminarProducto(id) {
     if (!confirm('¿Estás seguro de eliminar este producto?')) return;
     productos = productos.filter(p => p.id !== id);
     guardarProductos();
+    // Una eliminación requiere sincronizar todos los productos
+    localStorage.setItem('productosModificados', JSON.stringify(productos.map(p => p.id)));
+    localStorage.setItem('ultimaModificacion', Date.now().toString());
     sincronizarConBackend();
     renderizarCategoriasHome();
     renderizarMasVendidos();
@@ -990,6 +1048,7 @@ function guardarProductoEditado(event) {
 
         productos[index] = productoActualizado;
         guardarProductos();
+        marcarProductoModificado(productoActualizado.id);
         sincronizarConGitHub();
         cerrarEditModal();
         renderizarCategoriasHome();
@@ -1000,9 +1059,8 @@ function guardarProductoEditado(event) {
     };
 
     if (file) {
-        const reader = new FileReader();
-        reader.onload = (e) => actualizarProducto(e.target.result);
-        reader.readAsDataURL(file);
+        mostrarNotificacion('⏳ Comprimiendo imagen...', 'info');
+        comprimirImagen(file).then(imagenComprimida => actualizarProducto(imagenComprimida));
     } else {
         actualizarProducto(null);
     }
@@ -1077,6 +1135,24 @@ function guardarConfiguracionGitHub(event) {
     mostrarNotificacion('✅ Configuración de GitHub guardada localmente');
 }
 
+// ===== SISTEMA DE DELTA SYNC =====
+// Registra qué productos fueron modificados desde la última sincronización
+function marcarProductoModificado(id) {
+    const modificados = JSON.parse(localStorage.getItem('productosModificados') || '[]');
+    if (!modificados.includes(id)) modificados.push(id);
+    localStorage.setItem('productosModificados', JSON.stringify(modificados));
+    localStorage.setItem('ultimaModificacion', Date.now().toString());
+}
+
+function limpiarProductosModificados() {
+    localStorage.removeItem('productosModificados');
+    localStorage.setItem('ultimaSincronizacion', Date.now().toString());
+}
+
+function obtenerProductosModificados() {
+    return JSON.parse(localStorage.getItem('productosModificados') || '[]');
+}
+
 async function sincronizarTodoConGitHub() {
     const user  = localStorage.getItem('githubUser');
     const repo  = localStorage.getItem('githubRepo');
@@ -1089,8 +1165,20 @@ async function sincronizarTodoConGitHub() {
 
     const btn = document.querySelector('[onclick="sincronizarTodoConGitHub()"]');
     if (btn) { btn.disabled = true; btn.textContent = '⏳ Sincronizando...'; }
-    mostrarNotificacion('🚀 Sincronizando con GitHub...', 'info');
 
+    // Determinar si hay cambios pendientes específicos
+    const idsModificados = obtenerProductosModificados();
+    const hayDelta = idsModificados.length > 0 && idsModificados.length < productos.length;
+
+    if (hayDelta) {
+        mostrarNotificacion(`🔄 Subiendo ${idsModificados.length} producto(s) modificado(s)...`, 'info');
+    } else {
+        mostrarNotificacion('🚀 Sincronizando tienda completa con GitHub...', 'info');
+    }
+
+    // Construir el array de productos a subir
+    // Si hay delta y productos.json ya existe en GitHub, solo marcar para subir completo
+    // (GitHub necesita el archivo completo, pero lo construimos eficientemente)
     const archivos = [
         { path: 'productos.json',              data: productos },
         { path: 'categorias.json',             data: categorias },
@@ -1099,9 +1187,13 @@ async function sincronizarTodoConGitHub() {
         { path: 'revolico_config.json',        data: JSON.parse(localStorage.getItem('revolicoConfig') || '{}') },
     ];
 
+    // Siempre subir todos los archivos para garantizar consistencia
+    const archivosFiltrados = archivos;
+
     let ok = 0, errors = [];
     // Subir secuencialmente para evitar conflictos de SHA en GitHub
-    for (const { path, data } of archivos) {
+    for (const { path, data } of archivosFiltrados) {
+        if (btn) btn.textContent = `⏳ Subiendo ${path}...`;
         try {
             await subirArchivoAGitHub(user, repo, token, path, data);
             ok++;
@@ -1113,7 +1205,9 @@ async function sincronizarTodoConGitHub() {
     if (btn) { btn.disabled = false; btn.textContent = '🔄 ACTUALIZAR TIENDA AHORA'; }
 
     if (errors.length === 0) {
-        mostrarNotificacion(`✅ Tienda actualizada (${ok} archivos). Visible en ~30 segundos.`);
+        limpiarProductosModificados();
+        const info = hayDelta ? `${idsModificados.length} producto(s) actualizado(s)` : `${ok} archivos`;
+        mostrarNotificacion(`✅ Tienda actualizada (${info}). Visible en ~30 segundos.`);
     } else {
         mostrarNotificacion('⚠️ ' + errors.join(' | '), 'error');
     }
@@ -1136,52 +1230,107 @@ async function sincronizarConGitHub() {
 }
 
 async function subirArchivoAGitHub(user, repo, token, path, data) {
-    const url = `https://api.github.com/repos/${user}/${repo}/contents/${path}`;
-    const content = btoa(unescape(encodeURIComponent(JSON.stringify(data, null, 2))));
+    const headers = { 'Authorization': `token ${token}`, 'Content-Type': 'application/json', 'Accept': 'application/vnd.github.v3+json' };
+    const jsonStr  = JSON.stringify(data, null, 2);
+    const content  = btoa(unescape(encodeURIComponent(jsonStr)));
 
-    // Función interna para obtener el SHA actual del archivo
+    // Calcular tamaño aproximado en bytes (base64 → bytes originales)
+    const sizeBytes = jsonStr.length;
+    const apiBase   = `https://api.github.com/repos/${user}/${repo}`;
+
+    // Función interna para obtener el SHA del archivo (Contents API)
     async function obtenerSHA() {
         try {
-            const res = await fetch(url, {
-                headers: { 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github.v3+json' }
-            });
+            const res = await fetch(`${apiBase}/contents/${path}`, { headers });
             if (res.ok) {
-                const fileData = await res.json();
-                return fileData.sha || null;
+                const d = await res.json();
+                return d.sha || null;
             }
-            if (res.status === 404) return null; // Archivo nuevo, no necesita SHA
+            if (res.status === 404) return null;
             return null;
-        } catch (e) {
-            return null;
-        }
+        } catch (e) { return null; }
     }
 
-    // Primer intento: obtener SHA y subir
-    let sha = await obtenerSHA();
-    const body = { message: `Actualización automática de ${path}`, content: content };
-    if (sha) body.sha = sha;
+    // Para archivos < 900KB usar la Contents API normal (más simple)
+    if (sizeBytes < 900 * 1024) {
+        let sha = await obtenerSHA();
+        const body = { message: `Actualización de ${path}`, content };
+        if (sha) body.sha = sha;
 
-    let response = await fetch(url, {
-        method: 'PUT',
-        headers: { 'Authorization': `token ${token}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify(body)
-    });
-
-    // Si GitHub devuelve 409/422 por conflicto de SHA, reintentar con SHA fresco
-    if (!response.ok && (response.status === 409 || response.status === 422)) {
-        sha = await obtenerSHA();
-        const bodyRetry = { message: `Actualización automática de ${path}`, content: content };
-        if (sha) bodyRetry.sha = sha;
-        response = await fetch(url, {
-            method: 'PUT',
-            headers: { 'Authorization': `token ${token}`, 'Content-Type': 'application/json' },
-            body: JSON.stringify(bodyRetry)
+        let response = await fetch(`${apiBase}/contents/${path}`, {
+            method: 'PUT', headers, body: JSON.stringify(body)
         });
+
+        // Reintentar con SHA fresco si hay conflicto
+        if (!response.ok && (response.status === 409 || response.status === 422)) {
+            sha = await obtenerSHA();
+            const bodyRetry = { message: `Actualización de ${path}`, content };
+            if (sha) bodyRetry.sha = sha;
+            response = await fetch(`${apiBase}/contents/${path}`, {
+                method: 'PUT', headers, body: JSON.stringify(bodyRetry)
+            });
+        }
+
+        if (!response.ok) {
+            const err = await response.json();
+            throw new Error(err.message || `Error ${response.status} al subir ${path}`);
+        }
+        return;
     }
 
-    if (!response.ok) {
-        const err = await response.json();
-        throw new Error(err.message || `Error ${response.status} al subir ${path}`);
+    // Para archivos >= 900KB usar el Git Data API (soporta archivos grandes)
+    // Paso 1: Crear blob con el contenido
+    const blobRes = await fetch(`${apiBase}/git/blobs`, {
+        method: 'POST', headers,
+        body: JSON.stringify({ content, encoding: 'base64' })
+    });
+    if (!blobRes.ok) {
+        const e = await blobRes.json();
+        throw new Error(`Error creando blob: ${e.message}`);
+    }
+    const { sha: blobSha } = await blobRes.json();
+
+    // Paso 2: Obtener el SHA del commit más reciente (HEAD)
+    const refRes = await fetch(`${apiBase}/git/ref/heads/main`, { headers });
+    if (!refRes.ok) throw new Error('No se pudo obtener la rama main');
+    const { object: { sha: commitSha } } = await refRes.json();
+
+    // Paso 3: Obtener el tree SHA del commit
+    const commitRes = await fetch(`${apiBase}/git/commits/${commitSha}`, { headers });
+    if (!commitRes.ok) throw new Error('No se pudo obtener el commit');
+    const { tree: { sha: treeSha } } = await commitRes.json();
+
+    // Paso 4: Crear nuevo tree con el archivo actualizado
+    const newTreeRes = await fetch(`${apiBase}/git/trees`, {
+        method: 'POST', headers,
+        body: JSON.stringify({
+            base_tree: treeSha,
+            tree: [{ path, mode: '100644', type: 'blob', sha: blobSha }]
+        })
+    });
+    if (!newTreeRes.ok) throw new Error('Error creando tree');
+    const { sha: newTreeSha } = await newTreeRes.json();
+
+    // Paso 5: Crear nuevo commit
+    const newCommitRes = await fetch(`${apiBase}/git/commits`, {
+        method: 'POST', headers,
+        body: JSON.stringify({
+            message: `Actualización de ${path}`,
+            tree: newTreeSha,
+            parents: [commitSha]
+        })
+    });
+    if (!newCommitRes.ok) throw new Error('Error creando commit');
+    const { sha: newCommitSha } = await newCommitRes.json();
+
+    // Paso 6: Actualizar referencia HEAD
+    const updateRefRes = await fetch(`${apiBase}/git/refs/heads/main`, {
+        method: 'PATCH', headers,
+        body: JSON.stringify({ sha: newCommitSha })
+    });
+    if (!updateRefRes.ok) {
+        const e = await updateRefRes.json();
+        throw new Error(`Error actualizando ref: ${e.message}`);
     }
 }
 
