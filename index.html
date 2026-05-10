@@ -2817,10 +2817,41 @@ body.dark-mode .carrito-footer{background:#1e1e1e;border-color:#2a2a2a}
     </div>
 
     <!-- Footer -->
-    <footer class="footer">
+    <footer class="footer-premium">
         <div class="container">
-            <p>&copy; 2025 TiendaMax. Todos los derechos reservados.</p>
-            <p>Contacto: <a href="https://wa.me/5354320170" target="_blank" rel="noopener">WhatsApp: +53 54320170</a></p>
+            <!-- Desktop: 3 columnas -->
+            <div class="footer-premium-grid">
+                <div class="footer-brand">
+                    <div class="footer-gold-line"></div>
+                    <h3>Tienda<em>Max</em></h3>
+                    <p>Tecnología y electrónica premium con envío rápido. Calidad garantizada en cada producto.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Tienda</h4>
+                    <a href="#" onclick="mostrarVistaInicio(); return false;">Inicio</a>
+                    <a href="#" onclick="mostrarVistaCategoria('Todas'); return false;">Productos</a>
+                    <a href="#" onclick="abrirCarrito(); return false;">Mi carrito</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Contacto</h4>
+                    <a href="https://wa.me/5354320170" target="_blank">WhatsApp</a>
+                    <a href="https://chat.whatsapp.com/BnTdAU0Q3p25BOMTYuEpBN" target="_blank">Grupo ofertas</a>
+                </div>
+            </div>
+            <!-- Móvil: franja compacta -->
+            <div class="footer-mobile-brand">
+                <h3>Tienda<em>Max</em></h3>
+                <p>Tecnología premium · Envío rápido · Garantía</p>
+            </div>
+            <div class="footer-mobile-links">
+                <a href="#" onclick="mostrarVistaInicio(); return false;">Inicio</a>
+                <a href="#" onclick="mostrarVistaCategoria('Todas'); return false;">Productos</a>
+                <a href="https://wa.me/5354320170" target="_blank">WhatsApp</a>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2026 TiendaMax · Todos los derechos reservados</p>
+                <p style="color:rgba(255,255,255,0.15);font-size:11px;">tiendamax.org</p>
+            </div>
         </div>
     </footer>
 
