@@ -1675,109 +1675,7 @@ body.dark-mode .tab-btn.active { color: rgba(255,255,255,0.9); background: var(-
 body.dark-mode .form-group input,
 body.dark-mode .form-group textarea,
 body.dark-mode .form-group select {
-/* ══════════════════════════════════════════
-   DARK MODE — ADMIN PANEL COMPLETO
-══════════════════════════════════════════ */
-
-/* Texto general del admin */
-body.dark-mode .admin-tab h3,
-body.dark-mode .admin-tab h4,
-body.dark-mode .admin-tab p,
-body.dark-mode .admin-tab label,
-body.dark-mode .admin-tab span:not(.tab-btn span) {
-    color: rgba(255,255,255,0.80);
-}
-
-/* Tarjetas con fondo claro dentro del admin */
-body.dark-mode .category-item,
-body.dark-mode .product-item,
-body.dark-mode .backend-status,
-body.dark-mode .subcategory-item {
-    background: var(--graphite) !important;
-    border-color: rgba(201,169,110,0.15);
-    color: rgba(255,255,255,0.80);
-}
-
-body.dark-mode .category-item-name,
-body.dark-mode .product-item-info h4 { color: rgba(255,255,255,0.88); }
-body.dark-mode .product-item-info p  { color: rgba(255,255,255,0.45); }
-body.dark-mode .backend-status       { color: rgba(255,255,255,0.45); }
-
-/* Secciones con fondo crema (Apariencia, Config, Grupos FB, Oferta Día) */
-body.dark-mode [style*="background:var(--cream)"],
-body.dark-mode [style*="background: var(--cream)"],
-body.dark-mode [style*="background:#f9f6f1"],
-body.dark-mode [style*="background: #f9f6f1"],
-body.dark-mode [style*="background:var(--white)"],
-body.dark-mode [style*="background: var(--white)"],
-body.dark-mode [style*="background:#fff"],
-body.dark-mode [style*="background: #fff"],
-body.dark-mode [style*="background:white"],
-body.dark-mode [style*="background: white"] {
-    background: var(--carbon) !important;
-    color: rgba(255,255,255,0.80);
-}
-
-/* Textos grises dentro de esos contenedores */
-body.dark-mode .admin-tab [style*="color:#666"],
-body.dark-mode .admin-tab [style*="color: #666"],
-body.dark-mode .admin-tab [style*="color:#999"],
-body.dark-mode .admin-tab [style*="color: #999"],
-body.dark-mode .admin-tab [style*="color:var(--text-muted)"],
-body.dark-mode .admin-tab [style*="color: var(--text-muted)"] {
-    color: rgba(255,255,255,0.45) !important;
-}
-
-/* Barras de progreso analytics */
-body.dark-mode .admin-tab [style*="background:#f0ebe4"],
-body.dark-mode .admin-tab [style*="background: #f0ebe4"] {
-    background: rgba(255,255,255,0.08) !important;
-}
-
-/* Analytics stat cards (generadas por JS) */
-body.dark-mode #analyticsContent [style*="background:var(--bg-secondary"],
-body.dark-mode #analyticsContent [style*="background: var(--bg-secondary"],
-body.dark-mode #analyticsContent > div > div {
-    background: var(--graphite) !important;
-}
-body.dark-mode #analyticsContent [style*="color:#999"],
-body.dark-mode #analyticsContent [style*="color: #999"] {
-    color: rgba(255,255,255,0.40) !important;
-}
-
-/* Dropdowns select del admin */
-body.dark-mode .admin-tab select {
-    background: var(--graphite) !important;
-    color: rgba(255,255,255,0.85) !important;
-    border-color: rgba(255,255,255,0.1) !important;
-}
-body.dark-mode .admin-tab select option {
-    background: var(--carbon);
-    color: rgba(255,255,255,0.85);
-}
-
-/* Input file */
-body.dark-mode .admin-tab input[type="file"] {
-    color: rgba(255,255,255,0.6);
-}
-
-/* Bordes dentro del admin */
-body.dark-mode .admin-tab [style*="border:1px solid rgba(0,0,0"],
-body.dark-mode .admin-tab [style*="border: 1px solid rgba(0,0,0"] {
-    border-color: rgba(255,255,255,0.08) !important;
-}
-
-/* Títulos de secciones */
-body.dark-mode .categories-section h3,
-body.dark-mode .subcategories-section h3 {
-    color: rgba(255,255,255,0.9);
-}
-
-/* no-products texto */
-body.dark-mode .no-products { color: rgba(255,255,255,0.35); }
-
-
-    background: var(--graphite);
+/* DARK MODE ADMIN - REPLACED */
     color: rgba(255,255,255,0.85);
     border-color: rgba(255,255,255,0.08);
 }
@@ -3368,3 +3266,137 @@ body.dark-mode .skeleton-line {
     font-variant-numeric: tabular-nums;
 }
 
+
+/* ══════════════════════════════════════════════════
+   DARK MODE — ADMIN PANEL COMPLETO (v2 limpio)
+══════════════════════════════════════════════════ */
+
+/* Panel base */
+body.dark-mode .admin-panel-content { background: var(--carbon) !important; }
+body.dark-mode .admin-header { background: #090909 !important; border-color: rgba(255,255,255,0.06) !important; }
+body.dark-mode .admin-tabs { background: var(--charcoal) !important; border-color: rgba(255,255,255,0.06) !important; }
+
+/* Textos generales del admin */
+body.dark-mode .admin-tab h3,
+body.dark-mode .admin-tab h4,
+body.dark-mode .admin-tab p,
+body.dark-mode .admin-tab label { color: rgba(255,255,255,0.80) !important; }
+
+/* Tarjetas de items */
+body.dark-mode .category-item,
+body.dark-mode .product-item,
+body.dark-mode .subcategory-item,
+body.dark-mode .backend-status {
+    background: var(--graphite) !important;
+    border-color: rgba(201,169,110,0.12) !important;
+    color: rgba(255,255,255,0.80) !important;
+}
+body.dark-mode .category-item-name,
+body.dark-mode .product-item-info h4 { color: rgba(255,255,255,0.88) !important; }
+body.dark-mode .product-item-info p  { color: rgba(255,255,255,0.45) !important; }
+
+/* PANELS con background inline — Oferta Día, Config, Apariencia, Grupos FB */
+body.dark-mode .admin-tab > div[style*="background"],
+body.dark-mode .admin-tab > div > div[style*="background:var(--white"],
+body.dark-mode .admin-tab > div > div[style*="background: var(--white"],
+body.dark-mode .admin-tab > div > div[style*="background:white"],
+body.dark-mode .admin-tab > div > div[style*="background: white"],
+body.dark-mode .admin-tab > div > div[style*="background:#fff"],
+body.dark-mode .admin-tab > div > div[style*="background: #fff"],
+body.dark-mode .admin-tab > div > div[style*="background:var(--cream"],
+body.dark-mode .admin-tab > div > div[style*="background: var(--cream"],
+body.dark-mode .admin-tab > div > div[style*="background:#f9f6"] {
+    background: var(--carbon) !important;
+    color: rgba(255,255,255,0.80) !important;
+    border-color: rgba(255,255,255,0.06) !important;
+}
+
+/* Contenedores con relleno blanco de primer nivel dentro de tabs */
+body.dark-mode .admin-tab [style*="background:var(--bg-secondary"],
+body.dark-mode .admin-tab [style*="background: var(--bg-secondary"],
+body.dark-mode .admin-tab [style*="background: #f9f6f1"],
+body.dark-mode .admin-tab [style*="background:#f9f6f1"],
+body.dark-mode .admin-tab [style*="background: rgba(255,255,255,0.9"],
+body.dark-mode .admin-tab [style*="background: rgba(255,255,255,1"],
+body.dark-mode .admin-tab [style*="background:rgba(255,255,255"] {
+    background: var(--graphite) !important;
+    color: rgba(255,255,255,0.80) !important;
+}
+
+/* Textos grises dentro del admin */
+body.dark-mode .admin-tab [style*="color:#666"],
+body.dark-mode .admin-tab [style*="color: #666"],
+body.dark-mode .admin-tab [style*="color:#999"],
+body.dark-mode .admin-tab [style*="color: #999"],
+body.dark-mode .admin-tab [style*="color:#888"],
+body.dark-mode .admin-tab [style*="color: #888"],
+body.dark-mode .admin-tab [style*="color:var(--text-muted"],
+body.dark-mode .admin-tab [style*="color: var(--text-muted"] {
+    color: rgba(255,255,255,0.45) !important;
+}
+
+/* Barras de progreso analytics */
+body.dark-mode .admin-tab [style*="background:#f0ebe4"],
+body.dark-mode .admin-tab [style*="background: #f0ebe4"],
+body.dark-mode .admin-tab [style*="background: #eee"],
+body.dark-mode .admin-tab [style*="background:#eee"] {
+    background: rgba(255,255,255,0.08) !important;
+}
+
+/* Analytics stat cards */
+body.dark-mode #analyticsContent > div > div {
+    background: var(--graphite) !important;
+    border-color: rgba(255,255,255,0.06) !important;
+}
+body.dark-mode #analyticsContent [style*="color:#999"],
+body.dark-mode #analyticsContent [style*="color: #999"] {
+    color: rgba(255,255,255,0.40) !important;
+}
+
+/* Modo Agotado — caja roja con border */
+body.dark-mode .admin-tab [style*="border:1px solid #e74c3c"],
+body.dark-mode .admin-tab [style*="border: 1px solid #e74c3c"] {
+    background: rgba(231,76,60,0.08) !important;
+}
+/* Sub-caja blanca dentro de Modo Agotado */
+body.dark-mode .admin-tab [style*="background:rgba(248,220,220"],
+body.dark-mode .admin-tab [style*="background: rgba(248,220,220"] {
+    background: rgba(231,76,60,0.12) !important;
+}
+
+/* Select / dropdowns */
+body.dark-mode .admin-tab select,
+body.dark-mode .admin-tab select:focus {
+    background: var(--graphite) !important;
+    color: rgba(255,255,255,0.85) !important;
+    border-color: rgba(255,255,255,0.12) !important;
+}
+body.dark-mode .admin-tab select option {
+    background: var(--carbon);
+    color: rgba(255,255,255,0.85);
+}
+
+/* Input file & text inputs */
+body.dark-mode .admin-tab input[type="file"] { color: rgba(255,255,255,0.6); }
+body.dark-mode .admin-tab input[type="text"],
+body.dark-mode .admin-tab input[type="url"],
+body.dark-mode .admin-tab input[type="number"],
+body.dark-mode .admin-tab textarea {
+    background: var(--graphite) !important;
+    color: rgba(255,255,255,0.85) !important;
+    border-color: rgba(255,255,255,0.12) !important;
+}
+
+/* Titulos h3/h4 */
+body.dark-mode .categories-section h3,
+body.dark-mode .subcategories-section h3,
+body.dark-mode #analyticsContent h4 { color: rgba(255,255,255,0.90) !important; }
+
+/* Texto vacío */
+body.dark-mode .no-products { color: rgba(255,255,255,0.35) !important; }
+
+/* Oferta Día — preview badge */
+body.dark-mode .admin-tab [style*="background:#111"],
+body.dark-mode .admin-tab [style*="background: #111"] {
+    background: #111 !important;
+}
