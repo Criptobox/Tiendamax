@@ -3692,3 +3692,46 @@ body.dark-mode .mobile-menu-overlay { background: #0a0a0a; }
     transition: opacity 0.2s;
 }
 body.admin-active .hero-image-admin-hint { display: block; }
+
+/* ══════════════════════════════════════════
+   FIX: Revolico items + botón Comprar
+══════════════════════════════════════════ */
+
+body.dark-mode #listaRevolicoConfig > div,
+body.dark-mode #listaRevolicoConfig > div[style] {
+    background: var(--graphite) !important;
+    border-color: rgba(255,255,255,0.08) !important;
+    color: rgba(255,255,255,0.85) !important;
+}
+body.dark-mode #listaRevolicoConfig img {
+    border-radius: 8px;
+    opacity: 0.9;
+}
+body.dark-mode #listaRevolicoConfig select {
+    background: var(--carbon) !important;
+    color: rgba(255,255,255,0.85) !important;
+    border-color: rgba(255,255,255,0.12) !important;
+}
+
+.producto-card .btn.btn-small.btn-primary {
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-height: 38px;
+    padding: 8px 10px;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+    .producto-card .btn.btn-small.btn-primary {
+        font-size: 12px;
+        padding: 8px 6px;
+        min-height: 36px;
+    }
+}
