@@ -2,6 +2,17 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <!-- SEO -->
+    <meta name="description" content="TiendaMax — Productos de calidad con envío rápido. WiFi, energía, celulares, electrodomésticos y más.">
+    <meta name="keywords" content="tienda online cuba, wifi cuba, inversores cuba, celulares cuba, tiendamax">
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="TiendaMax — Calidad premium">
+    <meta property="og:description" content="Productos de calidad con envío rápido. WiFi, energía solar, celulares y más.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://tiendamax.org">
+    <meta name="theme-color" content="#c9a96e">
+    <link rel="canonical" href="https://tiendamax.org">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="description" content="TiendaMax — Compra cargadores, inversores, routers WiFi y tecnología en Cuba. Envíos rápidos, precios increíbles y garantía en todos los productos.">
@@ -2131,7 +2142,9 @@ body.dark-mode .categoria-stats { background: rgba(255,255,255,0.08); border-col
 
     .admin-header { padding: 18px 20px; }
     .admin-header h2 { font-size: 16px; }
-    .tab-btn { padding: 12px 8px; font-size: 11px; min-width: 90px; }
+    .admin-tabs { overflow-x: auto; overflow-y: hidden; flex-wrap: nowrap; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+    .admin-tabs::-webkit-scrollbar { display: none; }
+    .tab-btn { padding: 10px 10px; font-size: 11px; min-width: 80px; flex-shrink: 0; white-space: nowrap; }
     .admin-tab { padding: 20px 16px; }
 
     .whatsapp-btn, .whatsapp-group-btn { width: 46px; height: 46px; bottom: 20px; }
@@ -2360,6 +2373,145 @@ body.admin-mode .hero-image-admin-hint {
     .hamburger-btn { display: none !important; }
     .mobile-bottom-banners { display: none !important; }
 }
+
+/* ══ BARRA DE BÚSQUEDA ══ */
+.hsb-wrap{display:flex;flex-direction:column;align-items:center;padding:0 16px 36px;background:var(--cream,#faf8f5);position:relative;z-index:10}
+.hsb-pill{display:flex;align-items:center;width:100%;max-width:620px;background:#fff;border-radius:999px;padding:10px 10px 10px 20px;gap:10px;box-shadow:0 2px 12px rgba(0,0,0,0.09),0 1px 3px rgba(0,0,0,0.05);cursor:text;transition:box-shadow .2s,border-radius .2s;border:none}
+.hsb-pill:focus-within,.hsb-pill.open{box-shadow:0 4px 24px rgba(0,0,0,0.13);border-radius:22px 22px 0 0}
+.hsb-icon{flex-shrink:0;display:block}
+.hsb-input{flex:1;border:none;outline:none;font-size:15px;color:#333;background:transparent;font-family:inherit;min-width:0;caret-color:#4a90d9}
+.hsb-input::placeholder{color:#bbb;font-size:14px}
+.hsb-precio-pill{display:flex;align-items:center;gap:5px;background:#111;color:#fff;border:none;border-radius:999px;padding:9px 17px;font-size:13px;font-weight:700;cursor:pointer;flex-shrink:0;white-space:nowrap;transition:background .18s;letter-spacing:.2px;line-height:1}
+.hsb-precio-pill:hover{background:#2a2a2a}
+.hsb-panel{display:none;width:100%;max-width:620px;background:#fff;border-radius:0 0 20px 20px;box-shadow:0 12px 32px rgba(0,0,0,0.12);padding:16px 20px 14px;border-top:1px solid #f0ece6}
+.hsb-panel.visible{display:block}
+.hsb-price-section{margin-bottom:12px}
+.hsb-price-labels{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.hsb-price-title{font-size:13px;font-weight:700;color:#555}
+.hsb-price-range{font-size:12px;font-weight:700;color:var(--gold,#c9a96e);background:rgba(201,169,110,.12);padding:3px 10px;border-radius:20px}
+.hsb-sliders{display:flex;flex-direction:column;gap:8px}
+.hsb-sliders input[type=range]{width:100%;accent-color:var(--gold,#c9a96e);cursor:pointer;height:4px}
+.hsb-suggestions{border-top:1px solid #f5f0ea;margin-bottom:2px}
+.hsb-sug-item{display:flex;align-items:center;gap:12px;padding:9px 4px;border-bottom:1px solid #f8f4ef;cursor:pointer;border-radius:8px;transition:background .12s}
+.hsb-sug-item:last-child{border-bottom:none}
+.hsb-sug-item:hover{background:#fdf6ec}
+.hsb-sug-img{width:40px;height:40px;object-fit:cover;border-radius:8px;flex-shrink:0;border:1px solid #ede8e0}
+.hsb-sug-name{flex:1;font-size:13px;font-weight:600;color:#222;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hsb-sug-price{font-size:13px;font-weight:800;color:var(--gold,#c9a96e);flex-shrink:0}
+.hsb-sug-empty{text-align:center;padding:14px;color:#aaa;font-size:13px}
+.hsb-apply-btn{width:100%;margin-top:12px;background:#111;color:#fff;border:none;border-radius:12px;padding:12px;font-size:14px;font-weight:700;cursor:pointer;transition:background .2s}
+.hsb-apply-btn:hover{background:#2a2a2a}
+body.dark-mode .hsb-wrap{background:#161616}
+body.dark-mode .hsb-pill{background:#1e1e1e;box-shadow:0 2px 12px rgba(0,0,0,.4)}
+body.dark-mode .hsb-input{color:#eee}
+body.dark-mode .hsb-panel{background:#1e1e1e;border-color:#2a2a2a}
+body.dark-mode .hsb-sug-item:hover{background:#2a2a2a}
+body.dark-mode .hsb-sug-name{color:#eee}
+body.dark-mode .hsb-precio-pill{background:#2a2a2a}
+@media(max-width:480px){.hsb-wrap{padding:0 12px 24px}.hsb-pill{padding:8px 8px 8px 15px}.hsb-input{font-size:14px}.hsb-precio-pill{padding:8px 13px;font-size:12px}.hsb-panel{padding:14px 14px 12px}}
+
+
+/* ══ CARRITO ══ */
+.header-right{display:flex;align-items:center;gap:8px}
+.cart-icon-btn{position:relative;width:44px;height:44px;background:transparent;border:1.5px solid rgba(255,255,255,.15);border-radius:50%;color:white;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0}
+.cart-icon-btn:hover{background:rgba(255,255,255,.08);border-color:var(--gold,#c9a96e)}
+.cart-count{position:absolute;top:-4px;right:-4px;background:var(--coral,#FF6B35);color:white;font-size:10px;font-weight:800;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid var(--obsidian,#0D0D0D)}
+.carrito-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:3000;display:flex;justify-content:flex-end;backdrop-filter:blur(4px)}
+.carrito-overlay.hidden{display:none}
+.carrito-drawer{width:100%;max-width:400px;height:100%;background:var(--cream,#faf8f5);display:flex;flex-direction:column;box-shadow:-8px 0 40px rgba(0,0,0,.2);animation:slideInRight .3s cubic-bezier(.34,1.1,.64,1)}
+@keyframes slideInRight{from{transform:translateX(100%)}to{transform:translateX(0)}}
+.carrito-header{display:flex;justify-content:space-between;align-items:center;padding:20px 24px;background:var(--obsidian,#0D0D0D);color:white;flex-shrink:0}
+.carrito-header h3{font-size:18px;font-weight:700}
+.carrito-body{flex:1;overflow-y:auto;padding:16px;-webkit-overflow-scrolling:touch}
+.carrito-vacio{text-align:center;padding:60px 20px;color:#999}
+.carrito-item{display:flex;align-items:center;gap:12px;padding:12px;background:white;border-radius:14px;margin-bottom:10px;box-shadow:0 2px 8px rgba(0,0,0,.06);position:relative}
+.carrito-item-img{width:64px;height:64px;object-fit:cover;border-radius:10px;flex-shrink:0;background:#f0ebe4}
+.carrito-item-info{flex:1;min-width:0}
+.carrito-item-name{font-size:13px;font-weight:700;color:#222;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:4px}
+.carrito-item-price{font-size:15px;font-weight:800;color:var(--gold,#c9a96e)}
+.carrito-item-controls{display:flex;align-items:center;gap:8px;margin-top:6px}
+.carrito-qty-btn{width:26px;height:26px;border-radius:50%;border:1.5px solid #ddd;background:white;font-size:16px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#333;transition:all .15s;flex-shrink:0}
+.carrito-qty-btn:hover{border-color:var(--gold,#c9a96e);color:var(--gold,#c9a96e)}
+.carrito-qty-num{font-size:14px;font-weight:700;min-width:20px;text-align:center}
+.carrito-item-del{position:absolute;top:8px;right:8px;width:22px;height:22px;background:#f5f0ea;border:none;border-radius:50%;cursor:pointer;font-size:11px;color:#999;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.carrito-item-del:hover{background:#fee2e2;color:#ef4444}
+.carrito-footer{padding:16px 20px;border-top:1px solid #ede8e0;flex-shrink:0;background:white}
+.carrito-total{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;font-size:15px;font-weight:600;color:#555}
+.carrito-total-val{font-size:22px;font-weight:900;color:var(--gold,#c9a96e)}
+.carrito-btn-comprar{width:100%;margin-bottom:8px}
+.carrito-btn-limpiar{width:100%;background:none;border:1.5px solid #e0ddd8;border-radius:12px;padding:10px;font-size:13px;color:#999;cursor:pointer;transition:all .2s}
+.carrito-btn-limpiar:hover{border-color:#ef4444;color:#ef4444}
+.btn-carrito{background:var(--obsidian,#0D0D0D);color:var(--gold,#c9a96e);border:1.5px solid rgba(201,169,110,.3);border-radius:10px;padding:8px 12px;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;white-space:nowrap}
+.btn-carrito:hover{background:var(--gold,#c9a96e);color:var(--obsidian,#0D0D0D)}
+.btn-carrito.en-carrito{background:rgba(34,197,94,.1);color:#16a34a;border-color:rgba(34,197,94,.3)}
+body.dark-mode .carrito-drawer{background:#161616}
+body.dark-mode .carrito-item{background:#1e1e1e}
+body.dark-mode .carrito-item-name{color:#eee}
+body.dark-mode .carrito-footer{background:#1e1e1e;border-color:#2a2a2a}
+@media(max-width:480px){.carrito-drawer{max-width:100%}}
+/* ══ MODAL DETALLE ══ */
+.detail-modal-content{max-width:820px;width:95%;max-height:93vh;overflow-y:auto;border-radius:20px}
+.detail-body{padding:24px}
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-bottom:28px}
+.detail-image-wrap{position:relative;border-radius:16px;overflow:hidden;background:#f9f6f1;cursor:zoom-in;aspect-ratio:1}
+.detail-img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .3s ease}
+.detail-img.zoomed{transform:scale(1.6);cursor:zoom-out}
+.detail-zoom-hint{position:absolute;bottom:10px;right:10px;background:rgba(0,0,0,.5);color:#fff;font-size:11px;padding:4px 10px;border-radius:20px;pointer-events:none;opacity:.8}
+.detail-badge{position:absolute!important;top:12px;left:12px}
+.detail-badge-hot{position:absolute!important;top:12px;right:12px;font-size:11px;padding:4px 10px}
+.detail-category{font-size:13px;font-weight:700;color:var(--gold,#c9a96e);margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px}
+.detail-subcategory{font-size:12px;color:#999;margin-bottom:14px}
+.detail-price-wrap{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.detail-price-main{font-size:34px;font-weight:900;color:var(--gold,#c9a96e);line-height:1}
+.detail-price-old{font-size:18px;text-decoration:line-through;color:#aaa}
+.detail-ahorro{background:rgba(39,174,96,.1);color:#27ae60;font-size:12px;font-weight:700;padding:3px 10px;border-radius:20px;border:1px solid rgba(39,174,96,.2)}
+.detail-stock{font-size:14px;color:#666;margin-bottom:4px}
+.detail-extra-badges{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
+.detail-badge-tag{display:inline-flex;align-items:center;gap:4px;padding:5px 12px;border-radius:20px;font-size:12px;font-weight:600}
+.dtag-garantia{background:rgba(52,152,219,.1);color:#2980b9;border:1px solid rgba(52,152,219,.2)}
+.dtag-devolucion{background:rgba(39,174,96,.1);color:#27ae60;border:1px solid rgba(39,174,96,.2)}
+.dtag-usado{background:rgba(155,89,182,.1);color:#8e44ad;border:1px solid rgba(155,89,182,.2)}
+.detail-buy-btn{width:100%;margin-bottom:10px}
+.detail-share{display:flex;gap:8px}
+.detail-share-btn{flex:1;background:transparent;border:1.5px solid #e0ddd8;border-radius:12px;padding:9px 12px;font-size:13px;font-weight:600;color:#555;cursor:pointer;transition:all .2s}
+.detail-share-btn:hover{border-color:var(--gold,#c9a96e);color:var(--gold,#c9a96e)}
+.detail-description-section{border-top:1px solid #f0ebe4;padding-top:22px;margin-bottom:24px}
+.detail-description-section h3{margin-bottom:12px;font-size:16px}
+.detail-description-text{white-space:pre-wrap;line-height:1.85;color:#555;font-size:14px}
+.detail-relacionados{border-top:1px solid #f0ebe4;padding-top:22px}
+.detail-relacionados h3{margin-bottom:14px;font-size:16px}
+.detail-relacionados-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:12px}
+.rel-card{cursor:pointer;border-radius:12px;overflow:hidden;border:1px solid #f0ebe4;transition:transform .2s,box-shadow .2s;background:#fff}
+.rel-card:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(0,0,0,.1)}
+.rel-card img{width:100%;aspect-ratio:1;object-fit:cover;display:block}
+.rel-card-name{font-size:11px;font-weight:600;padding:6px 8px 2px;color:#333;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rel-card-price{font-size:12px;font-weight:700;color:var(--gold,#c9a96e);padding:0 8px 8px}
+@media(max-width:600px){.detail-modal-content{max-height:100vh;border-radius:20px 20px 0 0;align-self:flex-end}.detail-grid{grid-template-columns:1fr;gap:16px}.detail-image-wrap{aspect-ratio:4/3}.detail-price-main{font-size:28px}.detail-body{padding:16px}.detail-zoom-hint{display:none}}
+/* ══ RESEÑAS ══ */
+.detail-resenas-section{border-top:1px solid #f0ebe4;padding-top:22px;margin-bottom:22px}
+.detail-resenas-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.detail-resenas-header h3{font-size:16px}
+.detail-resena-add-btn{background:transparent;border:1.5px solid var(--gold,#c9a96e);color:var(--gold,#c9a96e);border-radius:20px;padding:6px 14px;font-size:12px;font-weight:700;cursor:pointer;transition:all .2s}
+.detail-resena-add-btn:hover{background:var(--gold,#c9a96e);color:white}
+.form-resena{background:#f9f6f1;border-radius:14px;padding:16px;margin-bottom:16px}
+.estrellas-input{display:flex;gap:6px;margin-bottom:12px}
+.estrella-btn{font-size:28px;color:#ddd;cursor:pointer;transition:color .15s,transform .15s;line-height:1}
+.estrella-btn.activa{color:#f59e0b}
+.estrella-btn:hover{transform:scale(1.2)}
+.resena-input,.resena-textarea{width:100%;padding:10px 14px;border:1.5px solid #e5e0d8;border-radius:10px;font-size:14px;margin-bottom:10px;background:white;font-family:inherit;outline:none;transition:border-color .2s;box-sizing:border-box}
+.resena-input:focus,.resena-textarea:focus{border-color:var(--gold,#c9a96e)}
+.resena-textarea{resize:none}
+.lista-resenas{display:flex;flex-direction:column;gap:12px}
+.resena-item{background:#f9f6f1;border-radius:12px;padding:12px 16px}
+.resena-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.resena-autor{font-size:13px;font-weight:700;color:#333}
+.resena-estrellas{color:#f59e0b;font-size:13px}
+.resena-fecha{font-size:11px;color:#bbb}
+.resena-texto{font-size:13px;color:#555;line-height:1.6}
+.resenas-vacio{color:#bbb;font-size:13px;text-align:center;padding:16px 0}
+/* ══ VISTO RECIENTEMENTE ══ */
+.recientes-section{background:white;padding:0}
+
 </style>
 </head>
 <body>
@@ -2389,10 +2541,16 @@ body.admin-mode .hero-image-admin-hint {
     <header class="header">
         <div class="container header-content">
             <div class="logo"><h1 style="cursor:pointer" onclick="volverAlInicio()">🛍️ TiendaMax</h1></div>
-            <!-- Botón hamburguesa (solo móvil) -->
-            <button class="hamburger-btn" id="hamburgerBtn" onclick="abrirMenuMovil()" aria-label="Abrir menú">
-                <span></span><span></span><span></span>
-            </button>
+            <!-- Carrito + Hamburguesa -->
+            <div class="header-right">
+                <button class="cart-icon-btn" onclick="abrirCarrito()" aria-label="Carrito" title="Ver carrito">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="22" height="22"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+                    <span class="cart-count" id="cartCount" style="display:none;">0</span>
+                </button>
+                <button class="hamburger-btn" id="hamburgerBtn" onclick="abrirMenuMovil()" aria-label="Abrir menú">
+                    <span></span><span></span><span></span>
+                </button>
+            </div>
             <nav class="nav">
                 <a href="#" onclick="volverAlInicio(); return false;">Inicio</a>
                 <a href="#categorias-home" onclick="volverAlInicio(); return false;">Categorías</a>
@@ -2439,6 +2597,66 @@ body.admin-mode .hero-image-admin-hint {
             </div>
         </section>
         <div class="hero-divider"></div>
+
+        <!-- ══ BARRA DE BÚSQUEDA ══ -->
+
+        <!-- ===== VISTO RECIENTEMENTE ===== -->
+        <section id="seccionRecientes" class="recientes-section" style="display:none;">
+            <div class="container">
+                <div class="mas-vendidos" style="padding:40px 0 20px;">
+                    <div class="mas-vendidos-header" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+                        <div>
+                            <p class="section-eyebrow">Tu historial</p>
+                            <h2 class="section-title" style="text-align:left;font-size:24px;margin-bottom:0;">🕐 Visto recientemente</h2>
+                        </div>
+                        <button onclick="limpiarRecientes()" style="font-size:12px;color:#999;background:none;border:none;cursor:pointer;text-decoration:underline;">Limpiar</button>
+                    </div>
+                    <div class="productos-grid" id="recientesGrid" style="grid-template-columns:repeat(auto-fill,minmax(150px,1fr));"></div>
+                </div>
+            </div>
+        </section>
+
+        <div class="hsb-wrap">
+            <div class="hsb-pill" id="heroSearchBar" onclick="abrirPanelBusqueda()">
+                <svg class="hsb-icon" viewBox="0 0 24 24" fill="none" stroke="#4a90d9" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="20" height="20">
+                    <circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="22" y2="22"/>
+                </svg>
+                <input
+                    type="text"
+                    id="heroSearchInput"
+                    class="hsb-input"
+                    placeholder="Buscar productos..."
+                    oninput="buscarDesdeHero(this.value)"
+                    onkeydown="if(event.key==='Enter') aplicarBusquedaHero()"
+                    onfocus="abrirPanelBusqueda()"
+                    autocomplete="off"
+                    onclick="event.stopPropagation()"
+                >
+                <button class="hsb-precio-pill" onclick="event.stopPropagation(); abrirPanelBusqueda()" title="Filtrar por precio">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                        <line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/>
+                    </svg>
+                    Precio
+                </button>
+            </div>
+
+            <!-- Panel expandido -->
+            <div class="hsb-panel" id="heroSearchPanel">
+                <div class="hsb-price-section">
+                    <div class="hsb-price-labels">
+                        <span class="hsb-price-title">💲 Rango de precio</span>
+                        <span id="heroPrecioRango" class="hsb-price-range">Todos los precios</span>
+                    </div>
+                    <div class="hsb-sliders">
+                        <input type="range" id="heroSliderMin" min="0" max="9999" value="0" oninput="actualizarSliderPrecio()">
+                        <input type="range" id="heroSliderMax" min="0" max="9999" value="9999" oninput="actualizarSliderPrecio()">
+                    </div>
+                </div>
+                <div id="heroSearchSuggestions" class="hsb-suggestions"></div>
+                <button class="hsb-apply-btn" onclick="aplicarBusquedaHero()">Buscar →</button>
+            </div>
+        </div>
+
 
         <!-- Sección Categorías -->
         <section id="categorias-home" class="categorias-home">
@@ -2629,6 +2847,35 @@ body.admin-mode .hero-image-admin-hint {
         <!-- Admin toggle movido al navbar -->
     </div>
 
+
+    <!-- ===== CARRITO ===== -->
+    <div id="carritoDrawer" class="carrito-overlay hidden" onclick="if(event.target===this)cerrarCarrito()">
+        <div class="carrito-drawer">
+            <div class="carrito-header">
+                <h3>🛒 Tu Carrito</h3>
+                <button class="close-btn" onclick="cerrarCarrito()">×</button>
+            </div>
+            <div class="carrito-body" id="carritoBody">
+                <div class="carrito-vacio" id="carritoVacio">
+                    <div style="font-size:48px;margin-bottom:12px;">🛍️</div>
+                    <p>Tu carrito está vacío</p>
+                    <button class="btn btn-primary" style="margin-top:16px;" onclick="cerrarCarrito()">Ver productos</button>
+                </div>
+                <div id="carritoItems"></div>
+            </div>
+            <div class="carrito-footer" id="carritoFooter" style="display:none;">
+                <div class="carrito-total">
+                    <span>Total</span>
+                    <span id="carritoTotal" class="carrito-total-val">$0.00 USD</span>
+                </div>
+                <button class="btn-cta-mejorado carrito-btn-comprar" onclick="comprarCarrito()">
+                    💬 Pedir por WhatsApp
+                </button>
+                <button class="carrito-btn-limpiar" onclick="limpiarCarrito()">🗑️ Vaciar carrito</button>
+            </div>
+        </div>
+    </div>
+
     <!-- ===== MODAL LOGIN ===== -->
     <div id="loginModal" class="modal hidden">
         <div class="modal-content">
@@ -2661,6 +2908,7 @@ body.admin-mode .hero-image-admin-hint {
                 <button class="tab-btn" onclick="switchTab('manage-subcategories')" data-tab="manage-subcategories">📂 Subcategorías</button>
                 <button class="tab-btn" onclick="switchTab('configuracion')" data-tab="configuracion">⚙️ Config</button>
                 <button class="tab-btn" onclick="switchTab('apariencia')" data-tab="apariencia">🎨 Apariencia</button>
+                <button class="tab-btn" onclick="switchTab('analytics')" data-tab="analytics">📊 Analytics</button>
             </div>
             <div class="admin-content">
 
@@ -2849,6 +3097,13 @@ body.admin-mode .hero-image-admin-hint {
             </div>
 
                 <!-- Tab: Apariencia / Imagen Hero -->
+                <div id="analytics" class="admin-tab">
+                    <h3 style="margin-bottom:20px;">📊 Analytics de la Tienda</h3>
+                    <div id="analyticsContent">
+                        <p style="color:#999;text-align:center;padding:40px 0;">Cargando estadísticas...</p>
+                    </div>
+                </div>
+
                 <div id="apariencia" class="admin-tab">
                     <h3 style="margin-bottom:18px;">🎨 Personalización Visual</h3>
                     
@@ -2986,37 +3241,93 @@ body.admin-mode .hero-image-admin-hint {
     </div>
 
     <!-- ===== MODAL DETALLE DE PRODUCTO ===== -->
-    <div id="productDetailModal" class="modal hidden">
-        <div class="modal-content" style="max-width: 800px;">
+    <div id="productDetailModal" class="modal hidden" onclick="if(event.target===this)cerrarDetalleModal()">
+        <div class="modal-content detail-modal-content">
             <div class="modal-header">
                 <h2 id="detailProductName">Detalle del Producto</h2>
                 <button class="close-btn" onclick="cerrarDetalleModal()">×</button>
             </div>
-            <div style="padding: 25px;">
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px;">
-                    <div id="detailProductImageContainer">
-                        <img id="detailProductImage" src="" alt="" style="width: 100%; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+            <div class="detail-body">
+
+                <!-- Imagen + Info principal -->
+                <div class="detail-grid">
+                    <div class="detail-image-wrap">
+                        <img id="detailProductImage" src="" alt="" class="detail-img"
+                             onclick="toggleZoomImagen(this)">
+                        <div class="detail-zoom-hint">🔍 Toca para ampliar</div>
+                        <div id="detailProductBadge" class="badge detail-badge">-0%</div>
+                        <div id="detailMasVendidoBadge" class="badge-vendido detail-badge-hot" style="display:none;">🔥 Más Vendido</div>
                     </div>
-                    <div>
-                        <div id="detailProductBadges" style="margin-bottom: 15px;"></div>
-                        <div id="detailProductBadge" class="badge" style="position: static; display: inline-block; margin-bottom: 15px;">-0%</div>
-                        <p id="detailProductCategory" style="color: var(--primary-color); font-weight: bold; margin-bottom: 10px;"></p>
-                        <div id="detailProductPrice" style="margin-bottom: 20px;">
-                            <span id="detailPriceOriginal" style="text-decoration: line-through; color: #999; margin-right: 10px; font-size: 18px;"></span>
-                            <span id="detailPriceActual" style="font-size: 32px; font-weight: 800; color: var(--primary-color);"></span>
+
+                    <div class="detail-info">
+                        <p id="detailProductCategory" class="detail-category"></p>
+                        <p id="detailSubcategoria" class="detail-subcategory" style="display:none;"></p>
+
+                        <!-- Precio -->
+                        <div class="detail-price-wrap">
+                            <span id="detailPriceOriginal" class="detail-price-old"></span>
+                            <span id="detailPriceActual" class="detail-price-main"></span>
+                            <span id="detailAhorroBadge" class="detail-ahorro" style="display:none;"></span>
                         </div>
-                        <div id="detailProductStock" class="stock-count" style="margin-bottom: 20px;"></div>
-                        <div class="stock-bar" style="margin: 0 0 25px 0; width: 100%;">
+
+                        <!-- Stock -->
+                        <div id="detailProductStock" class="detail-stock"></div>
+                        <div class="stock-bar" style="margin: 6px 0 16px;width:100%;">
                             <div id="detailStockBarFill" class="stock-bar-fill"></div>
                         </div>
+
+                        <!-- Badges extra: garantia, devolucion, usado -->
+                        <div id="detailExtraBadges" class="detail-extra-badges"></div>
+
+                        <!-- Personas viendo -->
                         <div id="detailPersonasViendo" class="contador-personas" style="display:none;"></div>
-                        <button id="detailBuyBtn" class="btn-cta-mejorado" style="width: 100%;">🛒 Comprar por WhatsApp</button>
+
+                        <!-- Botón comprar -->
+                        <button id="detailBuyBtn" class="btn-cta-mejorado detail-buy-btn">
+                            🛒 Comprar por WhatsApp
+                        </button>
+
+                        <!-- Compartir -->
+                        <div class="detail-share">
+                            <button class="detail-share-btn" onclick="compartirProducto()">📤 Compartir</button>
+                            <button class="detail-share-btn" onclick="copiarLinkProducto()">🔗 Copiar enlace</button>
+                        </div>
                     </div>
                 </div>
-                <div style="margin-top: 30px; border-top: 1px solid #eee; padding-top: 20px;">
-                    <h3 style="margin-bottom: 15px;">Descripción</h3>
-                    <div id="detailProductDescription" style="white-space: pre-wrap; line-height: 1.8;" class="detail-description-text"></div>
+
+                <!-- Descripción -->
+                <div class="detail-description-section">
+                    <h3>📋 Descripción</h3>
+                    <div id="detailProductDescription" class="detail-description-text"></div>
                 </div>
+
+                <!-- Reseñas -->
+                <div class="detail-resenas-section">
+                    <div class="detail-resenas-header">
+                        <h3>⭐ Reseñas</h3>
+                        <button class="detail-resena-add-btn" onclick="mostrarFormResena()" id="btnAgregarResena">+ Agregar reseña</button>
+                    </div>
+                    <div id="formResena" class="form-resena" style="display:none;">
+                        <div class="estrellas-input" id="estrellasInput">
+                            <span class="estrella-btn" onclick="setEstrellas(1)">★</span>
+                            <span class="estrella-btn" onclick="setEstrellas(2)">★</span>
+                            <span class="estrella-btn" onclick="setEstrellas(3)">★</span>
+                            <span class="estrella-btn" onclick="setEstrellas(4)">★</span>
+                            <span class="estrella-btn" onclick="setEstrellas(5)">★</span>
+                        </div>
+                        <input type="text" id="resenaAutor" placeholder="Tu nombre" class="resena-input" maxlength="30">
+                        <textarea id="resenaTexto" placeholder="Cuenta tu experiencia con este producto..." class="resena-textarea" maxlength="300" rows="3"></textarea>
+                        <button class="btn btn-primary" onclick="guardarResena()" style="width:100%;">Publicar reseña</button>
+                    </div>
+                    <div id="listaResenas" class="lista-resenas"></div>
+                </div>
+
+                <!-- Productos relacionados -->
+                <div id="detailRelacionados" class="detail-relacionados" style="display:none;">
+                    <h3>✨ También te puede interesar</h3>
+                    <div id="detailRelacionadosGrid" class="detail-relacionados-grid"></div>
+                </div>
+
             </div>
         </div>
     </div>
@@ -3041,6 +3352,14 @@ body.admin-mode .hero-image-admin-hint {
             if(e.target === this) cerrarMenuMovil();
         });
     });
+    </script>
+
+    <script>
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('/sw.js').catch(() => {});
+        });
+    }
     </script>
 </body>
 </html>
