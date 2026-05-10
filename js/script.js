@@ -134,7 +134,7 @@ function comprarCarrito() {
         lineas.join('\n') +
         '\n\n\uD83D\uDCB0 Total: $' + total.toFixed(2) + ' USD\n\n\u00BFEst\u00E1 disponible?'
     );
-    window.open('https://wa.me/5354320170?text=' + msg, '_blank');
+    window.open('https://wa.me/' + getNumeroWhatsApp() + '?text=' + msg, '_blank');
 }
 
 // Actualiza el estado visual de los botones "Agregar al carrito" en los cards
@@ -371,12 +371,13 @@ function obtenerIconoCategoria(nombre) {
 
 
 // ═══════════════════════════════════════════════════════
-//  BÚSQUEDA HERO + FILTRO DE PRECIO
+//  BÚSQUEDA HERO — con IA (Claude API)
 // ═══════════════════════════════════════════════════════
 let _heroSearchActivo = '';
 let _heroPrecioMin    = 0;
 let _heroPrecioMax    = Infinity;
 let _heroSearchTimer  = null;
+let _aiSearchTimer    = null;
 
 function abrirPanelBusqueda() {
     const panel = document.getElementById('heroSearchPanel');
@@ -384,8 +385,6 @@ function abrirPanelBusqueda() {
     if (!panel) return;
     panel.classList.add('visible');
     if (bar) bar.classList.add('open');
-    inicializarSliderPrecios();
-    // Focus input
     setTimeout(() => document.getElementById('heroSearchInput')?.focus(), 50);
 }
 
@@ -396,98 +395,103 @@ function cerrarPanelBusqueda() {
     if (bar)   bar.classList.remove('open');
 }
 
-function inicializarSliderPrecios() {
-    if (!productos || productos.length === 0) return;
-    const precios  = productos.map(p => p.precioActual).filter(v => v > 0);
-    if (!precios.length) return;
-    const minReal  = Math.floor(Math.min(...precios));
-    const maxReal  = Math.ceil(Math.max(...precios));
-    const sMin = document.getElementById('heroSliderMin');
-    const sMax = document.getElementById('heroSliderMax');
-    if (!sMin || !sMax) return;
-    // Solo inicializar si aún están en defaults
-    if (parseFloat(sMin.min) !== minReal) {
-        sMin.min = sMax.min = minReal;
-        sMin.max = sMax.max = maxReal;
-        sMin.value = minReal;
-        sMax.value = maxReal;
-        _heroPrecioMin = minReal;
-        _heroPrecioMax = maxReal;
-    }
-    actualizarSliderPrecio();
+// Stubs de compatibilidad
+function inicializarSliderPrecios() {}
+function actualizarSliderPrecio() {}
+
+// Búsqueda local rápida
+function busquedaLocal(q) {
+    if (!q) return productos.slice(0, 6);
+    const ql = q.toLowerCase();
+    return productos.filter(p =>
+        p.nombre.toLowerCase().includes(ql) ||
+        (p.descripcion||'').toLowerCase().includes(ql) ||
+        (p.categoria||'').toLowerCase().includes(ql) ||
+        (p.subcategoria||'').toLowerCase().includes(ql)
+    ).slice(0, 6);
 }
 
-function actualizarSliderPrecio() {
-    const sMin = document.getElementById('heroSliderMin');
-    const sMax = document.getElementById('heroSliderMax');
-    if (!sMin || !sMax) return;
-    let min = parseFloat(sMin.value);
-    let max = parseFloat(sMax.value);
-    // Evitar cruce
-    if (min > max) { sMin.value = max; min = max; }
-    _heroPrecioMin = min;
-    _heroPrecioMax = max;
-    const label = document.getElementById('heroPrecioRango');
-    const allMin = parseFloat(sMin.min), allMax = parseFloat(sMax.max);
-    if (label) {
-        if (min === allMin && max === allMax) {
-            label.textContent = 'Todos los precios';
-        } else {
-            label.textContent = `$${Math.round(min)} – $${Math.round(max)}`;
-        }
-    }
-    buscarDesdeHero(document.getElementById('heroSearchInput')?.value || '');
+// Búsqueda con IA
+async function busquedaConIA(q) {
+    if (!q || q.length < 3 || productos.length === 0) return null;
+    try {
+        const catalogo = productos.map(p =>
+            'ID:' + p.id + ' | "' + p.nombre + '" | ' + p.categoria + ' | $' + p.precioActual + ' | Desc: ' + (p.descripcion||'').substring(0,80)
+        ).join('\n');
+        const response = await fetch('https://api.anthropic.com/v1/messages', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                model: 'claude-sonnet-4-20250514',
+                max_tokens: 200,
+                system: 'Eres un asistente de búsqueda de tienda. Dado un catálogo de productos y una consulta del usuario, devuelve SOLO un JSON array con los IDs de los productos más relevantes (máximo 5), ordenados por relevancia. Ejemplo: [123456, 789012]. Si no hay resultados devuelve []. NO agregues texto adicional.',
+                messages: [{ role: 'user', content: 'Catálogo:\n' + catalogo + '\n\nConsulta del usuario: "' + q + '"\n\nResponde solo con el JSON array de IDs.' }]
+            })
+        });
+        if (!response.ok) return null;
+        const data = await response.json();
+        const text = data.content?.map(c => c.text || '').join('') || '';
+        const clean = text.replace(/```json|```/g, '').trim();
+        const ids = JSON.parse(clean);
+        if (!Array.isArray(ids)) return null;
+        return ids.map(id => productos.find(p => String(p.id) === String(id))).filter(Boolean);
+    } catch(e) { return null; }
 }
 
-function buscarDesdeHero(query) {
-    clearTimeout(_heroSearchTimer);
-    const q      = (query || '').trim().toLowerCase();
+function renderSugerencias(resultados, q) {
     const sugBox = document.getElementById('heroSearchSuggestions');
-    const sMin   = document.getElementById('heroSliderMin');
-    const sMax   = document.getElementById('heroSliderMax');
-    const minVal = sMin ? parseFloat(sMin.value) : 0;
-    const maxVal = sMax ? parseFloat(sMax.value) : Infinity;
-    const allMin = sMin ? parseFloat(sMin.min) : 0;
-    const allMax = sMax ? parseFloat(sMax.max) : Infinity;
-    const precioFiltrado = minVal > allMin || maxVal < allMax;
-
-    if (!q && !precioFiltrado) {
-        if (sugBox) { sugBox.innerHTML = ''; }
+    if (!sugBox) return;
+    if (!resultados || resultados.length === 0) {
+        sugBox.innerHTML = '<div class="hsb-sug-empty">😕 Sin resultados para "' + q + '"</div>';
         return;
     }
+    sugBox.innerHTML = resultados.map(p => {
+        const nombre = q ? resaltarTexto(p.nombre, q) : p.nombre;
+        const agotadoBadge = p.stock === 0 ? '<span style="color:#e74c3c;font-size:10px;font-weight:700;margin-left:4px;">AGOTADO</span>' : '';
+        return '<div class="hsb-sug-item" onclick="seleccionarSugerencia(' + p.id + ')">' +
+            '<img class="hsb-sug-img" src="' + p.imagen + '" onerror="this.style.display=\'none\'">' +
+            '<span class="hsb-sug-name">' + nombre + agotadoBadge + '</span>' +
+            '<span class="hsb-sug-price">$' + p.precioActual.toFixed(2) + '</span>' +
+            '</div>';
+    }).join('');
+}
 
-    _heroSearchTimer = setTimeout(() => {
-        if (!sugBox) return;
-        const resultados = productos.filter(p => {
-            const matchQ = !q || p.nombre.toLowerCase().includes(q) ||
-                (p.descripcion||'').toLowerCase().includes(q) ||
-                (p.categoria||'').toLowerCase().includes(q);
-            const matchP = p.precioActual >= minVal && p.precioActual <= maxVal;
-            return matchQ && matchP;
-        }).slice(0, 6);
-
-        if (resultados.length === 0) {
-            sugBox.innerHTML = '<div class="hsb-sug-empty">😕 Sin resultados</div>';
-        } else {
-            sugBox.innerHTML = resultados.map(p => {
-                const nombre = q ? resaltarTexto(p.nombre, q) : p.nombre;
-                return '<div class="hero-sug-item" onclick="seleccionarSugerencia(' + p.id + ')">' +
-                    +'<img class="hsb-sug-img" src="' + p.imagen + '" onerror="this.style.display=\'none\'">' +
-                    '<span class="hsb-sug-name">' + nombre + '</span>' +
-                    '<span class="hsb-sug-price">$' + p.precioActual.toFixed(2) + '</span>' +
-                    '</div>';
-            }).join('');
+async function buscarDesdeHero(query) {
+    clearTimeout(_heroSearchTimer);
+    clearTimeout(_aiSearchTimer);
+    const q = (query || '').trim();
+    const sugBox = document.getElementById('heroSearchSuggestions');
+    const aiLabel = document.getElementById('hsb-ai-label');
+    if (!q) {
+        if (sugBox) sugBox.innerHTML = '';
+        if (aiLabel) aiLabel.style.display = 'none';
+        return;
+    }
+    _heroSearchTimer = setTimeout(async () => {
+        const locales = busquedaLocal(q);
+        renderSugerencias(locales, q);
+        if (q.length >= 3) {
+            if (aiLabel) aiLabel.style.display = 'block';
+            if (locales.length < 2 && sugBox) {
+                sugBox.innerHTML = '<div class="hsb-ai-loading">🤖 Buscando con IA</div>';
+            }
+            _aiSearchTimer = setTimeout(async () => {
+                const iaResultados = await busquedaConIA(q);
+                if (iaResultados && iaResultados.length > 0) {
+                    renderSugerencias(iaResultados, q);
+                } else {
+                    renderSugerencias(locales.length > 0 ? locales : [], q);
+                }
+            }, 600);
         }
-    }, 220);
+    }, 150);
 }
 
 function aplicarBusquedaHero() {
-    const q   = (document.getElementById('heroSearchInput')?.value || '').trim().toLowerCase();
-    const sMin = document.getElementById('heroSliderMin');
-    const sMax = document.getElementById('heroSliderMax');
+    const q = (document.getElementById('heroSearchInput')?.value || '').trim().toLowerCase();
     _heroSearchActivo = q;
-    _heroPrecioMin    = sMin ? parseFloat(sMin.value) : 0;
-    _heroPrecioMax    = sMax ? parseFloat(sMax.value) : Infinity;
+    _heroPrecioMin = 0;
+    _heroPrecioMax = Infinity;
     cerrarPanelBusqueda();
     mostrarVistaCategoria('Todas');
 }
@@ -506,7 +510,7 @@ function resaltarTexto(texto, query) {
 
 // Cerrar panel al tocar fuera
 document.addEventListener('click', (e) => {
-    if (!e.target.closest('.hero-search-wrap')) cerrarPanelBusqueda();
+    if (!e.target.closest('.hsb-wrap')) cerrarPanelBusqueda();
 });
 
 // ═══════════════════════════════════════════════════════
@@ -743,8 +747,27 @@ window.addEventListener('storage', (event) => {
 
 // ===== FUNCIONES DE UTILIDAD =====
 
+function getNumeroWhatsApp() {
+    return localStorage.getItem('whatsappNumero') || '5354320170';
+}
+
+function guardarNumeroWhatsApp() {
+    const input = document.getElementById('adminWhatsappNum');
+    if (!input) return;
+    const num = input.value.trim().replace(/\D/g, '');
+    if (!num || num.length < 6) { mostrarNotificacion('⚠️ Número inválido', 'error'); return; }
+    localStorage.setItem('whatsappNumero', num);
+    mostrarNotificacion('✅ Número de WhatsApp guardado: +' + num);
+}
+
+function cargarNumeroWhatsApp() {
+    const saved = localStorage.getItem('whatsappNumero');
+    const input = document.getElementById('adminWhatsappNum');
+    if (input && saved) input.value = saved;
+}
+
 function contactarWhatsApp() {
-    const numeroWhatsApp = '5354320170';
+    const numeroWhatsApp = getNumeroWhatsApp();
     const mensaje = encodeURIComponent('Hola, me interesa conocer más sobre tus productos. ¿Puedes ayudarme?');
     window.open(`https://wa.me/${numeroWhatsApp}?text=${mensaje}`, '_blank');
 }
@@ -1401,7 +1424,7 @@ function copiarLinkProducto() {
 
 function contactarProducto(nombre) {
     const msg = encodeURIComponent(`Hola, me interesa el producto: ${nombre}. ¿Está disponible?`);
-    window.open(`https://wa.me/5354320170?text=${msg}`, '_blank');
+    window.open(`https://wa.me/${getNumeroWhatsApp()}?text=${msg}`, '_blank');
 }
 
 // actualizarListaProductos está definida más abajo (versión mejorada con filtros por categoría)
@@ -2763,5 +2786,187 @@ guardarGruposFB = function() {
     const grupos = JSON.parse(localStorage.getItem('gruposFB') || '[]');
     const validos = grupos.filter(g => g.url && g.url.includes('facebook.com'));
     mostrarNotificacion(`✅ ${validos.length} grupos guardados. Haz clic en ACTUALIZAR TIENDA para que sean permanentes.`);
+};
+
+
+
+// ═══════════════════════════════════════════════════════
+//  OFERTA DEL DÍA
+// ═══════════════════════════════════════════════════════
+function poblarSelectOfertaDia() {
+    ['ofertaDiaSelect','ofertaDiaSelect2'].forEach(selId => {
+        const sel = document.getElementById(selId);
+        if (!sel) return;
+        const current = sel.value;
+        sel.innerHTML = '<option value="">— Sin oferta del día activa —</option>';
+        productos.forEach(p => {
+            const opt = document.createElement('option');
+            opt.value = p.id;
+            opt.textContent = p.nombre + ' — $' + p.precioActual.toFixed(2);
+            sel.appendChild(opt);
+        });
+        const saved = localStorage.getItem('ofertaDiaId');
+        if (saved) sel.value = saved;
+        else if (current) sel.value = current;
+    });
+    actualizarStatusOfertaDia();
+}
+
+function actualizarStatusOfertaDia() {
+    const savedId = localStorage.getItem('ofertaDiaId');
+    const texto = localStorage.getItem('ofertaDiaTexto') || '🔥 OFERTA DEL DÍA';
+    ['ofertaDiaStatus','ofertaDiaStatus2'].forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        if (savedId) {
+            const p = productos.find(x => String(x.id) === String(savedId));
+            el.innerHTML = p ? '✅ Activa: <strong>' + p.nombre + '</strong> — Badge: "' + texto + '"' : '⚠️ Producto no encontrado';
+        } else {
+            el.textContent = 'Sin oferta activa.';
+        }
+    });
+}
+
+function guardarOfertaDia() {
+    const sel = document.getElementById('ofertaDiaSelect');
+    const textoEl = document.getElementById('ofertaDiaTexto');
+    _guardarOfertaDiaDesde(sel, textoEl);
+}
+function guardarOfertaDia2() {
+    const sel = document.getElementById('ofertaDiaSelect2');
+    const textoEl = document.getElementById('ofertaDiaTexto2');
+    _guardarOfertaDiaDesde(sel, textoEl);
+}
+function _guardarOfertaDiaDesde(sel, textoEl) {
+    if (!sel || !sel.value) { mostrarNotificacion('⚠️ Selecciona un producto', 'error'); return; }
+    const texto = textoEl ? (textoEl.value.trim() || '🔥 OFERTA DEL DÍA') : '🔥 OFERTA DEL DÍA';
+    localStorage.setItem('ofertaDiaId', sel.value);
+    localStorage.setItem('ofertaDiaTexto', texto);
+    actualizarStatusOfertaDia();
+    renderizarProductos();
+    renderizarMasVendidos();
+    mostrarNotificacion('🏷️ Oferta del Día activada');
+}
+function desactivarOfertaDia() {
+    localStorage.removeItem('ofertaDiaId');
+    localStorage.removeItem('ofertaDiaTexto');
+    poblarSelectOfertaDia();
+    renderizarProductos();
+    renderizarMasVendidos();
+    mostrarNotificacion('❌ Oferta del Día desactivada');
+}
+function getOfertaDiaId() {
+    return localStorage.getItem('ofertaDiaId') || null;
+}
+function getOfertaDiaTexto() {
+    return localStorage.getItem('ofertaDiaTexto') || '🔥 OFERTA DEL DÍA';
+}
+
+// Renderizar lista de productos agotados en el panel
+function renderizarListaAgotados() {
+    const el = document.getElementById('productosAgotadosList');
+    if (!el) return;
+    const agotados = productos.filter(p => p.stock === 0);
+    if (agotados.length === 0) {
+        el.innerHTML = '<p style="font-size:13px;color:#27ae60;text-align:center;">✅ No hay productos agotados actualmente.</p>';
+        return;
+    }
+    el.innerHTML = agotados.map(p =>
+        '<div style="display:flex;align-items:center;gap:10px;padding:10px;background:white;border-radius:10px;border:1px solid rgba(231,76,60,0.3);">' +
+            '<img src="' + p.imagen + '" style="width:40px;height:40px;border-radius:8px;object-fit:cover;" onerror="this.style.display=\'none\'">' +
+            '<div style="flex:1;"><div style="font-size:13px;font-weight:700;">' + p.nombre + '</div>' +
+            '<div style="font-size:11px;color:#e74c3c;font-weight:700;">📦 AGOTADO</div></div>' +
+            '<button class="btn btn-primary" onclick="abrirEditModal(' + p.id + ')" style="font-size:11px;padding:6px 10px;">✏️ Editar</button>' +
+        '</div>'
+    ).join('');
+}
+
+// ── Patch switchTab to hook oferta-dia tab ──
+const _origSwitchTabFinal = switchTab;
+switchTab = function(tabName) {
+    _origSwitchTabFinal(tabName);
+    if (tabName === 'oferta-dia') {
+        setTimeout(() => {
+            poblarSelectOfertaDia();
+            renderizarListaAgotados();
+        }, 100);
+    }
+    if (tabName === 'configuracion') {
+        setTimeout(cargarNumeroWhatsApp, 100);
+    }
+};
+
+// ── Patch abrirAdminPanel to load WhatsApp number ──
+const _origAbrirAdminFinal = abrirAdminPanel;
+abrirAdminPanel = function() {
+    _origAbrirAdminFinal();
+    cargarNumeroWhatsApp();
+    poblarSelectOfertaDia();
+};
+
+// ── Patch renderizarProductos to show agotado/oferta badges ──
+const _origRenderProductosFinal = renderizarProductos;
+renderizarProductos = function() {
+    const productosGrid = document.getElementById('productosGrid');
+    if (!productosGrid) { _origRenderProductosFinal(); return; }
+
+    let productosFiltrados = categoriaSeleccionada === 'Todas'
+        ? productos
+        : productos.filter(p => p.categoria === categoriaSeleccionada);
+
+    if (categoriaSeleccionada !== 'Todas' && subcategoriaSeleccionada && subcategoriaSeleccionada !== 'Todas') {
+        productosFiltrados = productosFiltrados.filter(p => p.subcategoria === subcategoriaSeleccionada);
+    }
+    if (_heroSearchActivo || _heroPrecioMin > 0 || _heroPrecioMax < Infinity) {
+        const q = _heroSearchActivo;
+        productosFiltrados = productosFiltrados.filter(p => {
+            const matchQ = !q || p.nombre.toLowerCase().includes(q) ||
+                (p.descripcion||'').toLowerCase().includes(q) ||
+                (p.categoria||'').toLowerCase().includes(q);
+            return matchQ;
+        });
+    }
+
+    // Ordenar: oferta del día primero
+    const ofertaId = getOfertaDiaId();
+    if (ofertaId) {
+        productosFiltrados = productosFiltrados.sort((a, b) => {
+            if (String(a.id) === String(ofertaId)) return -1;
+            if (String(b.id) === String(ofertaId)) return 1;
+            return 0;
+        });
+    }
+
+    productosGrid.innerHTML = '';
+    if (productosFiltrados.length === 0) {
+        productosGrid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #999; padding: 60px 20px; font-size:15px;">No hay productos en esta subcategoría aún.</p>';
+        return;
+    }
+
+    productosFiltrados.forEach(producto => {
+        const esAgotado = producto.stock === 0;
+        const esOfertaDia = String(producto.id) === String(ofertaId);
+        const card = document.createElement('div');
+        card.className = 'producto-card' + (esAgotado ? ' card-agotado' : '');
+        card.onclick = () => abrirDetalleProducto(producto.id);
+        card.style.position = 'relative';
+        card.innerHTML =
+            (esOfertaDia ? '<div class="badge-oferta-dia">' + getOfertaDiaTexto() + '</div>' :
+             esAgotado ? '<div class="badge-agotado">AGOTADO</div>' :
+             producto.masVendido ? '<div class="badge-vendido">🔥 Más Vendido</div>' : '') +
+            '<div class="producto-image">' +
+                '<img src="' + producto.imagen + '" alt="' + producto.nombre + '" loading="lazy">' +
+                (producto.descuento > 0 ? '<div class="badge">-' + producto.descuento + '%</div>' : '') +
+            '</div>' +
+            '<h3>' + producto.nombre + '</h3>' +
+            '<p class="producto-description">' + producto.descripcion + '</p>' +
+            '<p class="precio"><span class="precio-actual">$' + producto.precioActual.toFixed(2) + ' USD</span></p>' +
+            (esAgotado
+                ? '<div class="stock" style="color:#e74c3c;font-weight:700;">❌ Agotado</div><button class="btn btn-small btn-primary" disabled style="opacity:0.5;cursor:not-allowed;">No disponible</button>'
+                : '<div class="stock">📦 Stock: ' + producto.stock + ' unidades</div>' +
+                  (typeof renderCountdownHtml === 'function' ? renderCountdownHtml(producto.id) : '') +
+                  '<button class="btn btn-small btn-primary" onclick="event.stopPropagation(); contactarProducto(\'' + producto.nombre + '\')">🛒 Comprar</button>');
+        productosGrid.appendChild(card);
+    });
 };
 
