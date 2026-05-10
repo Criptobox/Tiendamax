@@ -1935,29 +1935,45 @@ body.dark-mode .categoria-stats { background: rgba(255,255,255,0.08); border-col
     background: #f9f6f1;
     cursor: zoom-in;
     aspect-ratio: 1;
-    /* Borde luminoso coral→dorado */
-    border: 2px solid transparent;
-    background-clip: padding-box;
-    box-shadow:
-        0 0 0 2px rgba(255,107,53,0.55),
-        0 0 18px rgba(255,107,53,0.18),
-        0 0 40px rgba(201,169,110,0.12);
-    animation: detailBorderGlow 3s ease-in-out infinite alternate;
 }
 
-@keyframes detailBorderGlow {
-    0% {
-        box-shadow:
-            0 0 0 2px rgba(255,107,53,0.55),
-            0 0 18px rgba(255,107,53,0.20),
-            0 0 40px rgba(201,169,110,0.10);
-    }
-    100% {
-        box-shadow:
-            0 0 0 2px rgba(201,169,110,0.65),
-            0 0 22px rgba(201,169,110,0.25),
-            0 0 50px rgba(255,107,53,0.12);
-    }
+/* Borde luminoso coral→dorado en la parte inferior — igual que categorías */
+.detail-image-wrap::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--coral), var(--gold), var(--coral));
+    background-size: 200% auto;
+    animation: detailLineMove 2.5s linear infinite;
+    z-index: 5;
+    border-radius: 0 0 16px 16px;
+}
+
+/* Borde izquierdo que sube — efecto L invertida */
+.detail-image-wrap::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 4px;
+    height: 60%;
+    background: linear-gradient(to top, var(--coral), transparent);
+    animation: detailSideGlow 2.5s ease-in-out infinite alternate;
+    z-index: 5;
+    border-radius: 0 0 0 16px;
+}
+
+@keyframes detailLineMove {
+    0%   { background-position: 0% center; }
+    100% { background-position: 200% center; }
+}
+
+@keyframes detailSideGlow {
+    0%   { opacity: 0.6; height: 40%; }
+    100% { opacity: 1;   height: 65%; }
 }
 .detail-img {
     width: 100%;
