@@ -2430,7 +2430,6 @@ body.dark-mode .recientes-section { background: var(--carbon); }
     box-shadow:
         0 4px 20px rgba(0,0,0,0.12),
         0 1px 4px rgba(0,0,0,0.06);
-    border-radius: 24px 24px 0 0;
 }
 
 .hsb-icon { flex-shrink: 0; display: block; }
@@ -2471,51 +2470,29 @@ body.dark-mode .recientes-section { background: var(--carbon); }
 /* Panel desplegable */
 .hsb-panel {
     display: none;
-    width: 100%;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
     max-width: 620px;
+    margin: 0 auto;
     background: #fff;
     border-radius: 0 0 20px 20px;
     box-shadow:
-        0 12px 32px rgba(0,0,0,0.12),
+        0 12px 32px rgba(0,0,0,0.15),
         0 2px 8px rgba(0,0,0,0.06);
-    padding: 16px 20px 14px;
+    padding: 14px 20px 14px;
     border-top: 1px solid #f0ece6;
+    z-index: 200;
 }
 .hsb-panel.visible { display: block; }
-
-/* Precio sliders */
-.hsb-price-section { margin-bottom: 14px; }
-.hsb-price-labels {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 10px;
-}
-.hsb-price-title { font-size: 13px; font-weight: 700; color: #555; }
-.hsb-price-range {
-    font-size: 12px;
-    font-weight: 700;
-    color: var(--gold, #c9a96e);
-    background: rgba(201,169,110,0.1);
-    padding: 3px 10px;
-    border-radius: 20px;
-}
-.hsb-sliders {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-.hsb-sliders input[type="range"] {
-    width: 100%;
-    accent-color: var(--gold, #c9a96e);
-    cursor: pointer;
-    height: 4px;
-}
 
 /* Sugerencias */
 .hsb-suggestions {
     border-top: 1px solid #f5f0ea;
     margin-bottom: 2px;
+    max-height: 320px;
+    overflow-y: auto;
 }
 .hsb-sug-item {
     display: flex;
@@ -2561,7 +2538,7 @@ body.dark-mode .recientes-section { background: var(--carbon); }
 /* Botón buscar dentro del panel */
 .hsb-apply-btn {
     width: 100%;
-    margin-top: 12px;
+    margin-top: 10px;
     background: var(--obsidian, #111);
     color: #fff;
     border: none;
@@ -2574,21 +2551,94 @@ body.dark-mode .recientes-section { background: var(--carbon); }
 }
 .hsb-apply-btn:hover { background: #2a2a2a; }
 
+/* Búsqueda inteligente loading indicator */
+.hsb-ai-loading {
+    text-align: center;
+    padding: 12px;
+    color: #9b59b6;
+    font-size: 13px;
+    font-weight: 600;
+}
+.hsb-ai-loading::after {
+    content: '';
+    display: inline-block;
+    width: 10px;
+    animation: dots 1.2s steps(4,end) infinite;
+}
+@keyframes dots { 0%,20%{content:'.'} 40%{content:'..'} 60%,80%{content:'...'} 100%{content:''} }
+
+/* Botón "Buscar" en la píldora */
+.hsb-buscar-pill {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background: #111;
+    color: #fff;
+    border: none;
+    border-radius: 999px;
+    padding: 8px 16px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    flex-shrink: 0;
+    white-space: nowrap;
+    transition: background 0.18s;
+    letter-spacing: 0.1px;
+}
+.hsb-buscar-pill:hover { background: #2a2a2a; }
+
+/* Badges agotado y oferta-dia en cards */
+.badge-agotado {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: #e74c3c;
+    color: white;
+    font-size: 10px;
+    font-weight: 800;
+    padding: 3px 8px;
+    border-radius: 20px;
+    letter-spacing: 0.5px;
+    z-index: 2;
+}
+.badge-oferta-dia {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: linear-gradient(135deg, #ff5722, #ff9800);
+    color: white;
+    font-size: 10px;
+    font-weight: 800;
+    padding: 4px 10px;
+    border-radius: 20px;
+    letter-spacing: 0.5px;
+    z-index: 2;
+    box-shadow: 0 2px 8px rgba(255,87,34,0.4);
+    animation: pulseOferta 2s ease-in-out infinite;
+}
+@keyframes pulseOferta {
+    0%,100% { transform: scale(1); }
+    50% { transform: scale(1.06); }
+}
+.card-agotado { opacity: 0.75; filter: grayscale(0.3); }
+
 /* Dark mode */
 body.dark-mode .hsb-wrap   { background: #161616; }
 body.dark-mode .hsb-pill   { background: #1e1e1e; box-shadow: 0 2px 12px rgba(0,0,0,0.3); }
 body.dark-mode .hsb-input  { color: #eee; }
+
+/* Dark mode for search */
 body.dark-mode .hsb-panel  { background: #1e1e1e; border-color: #2a2a2a; }
 body.dark-mode .hsb-sug-item:hover { background: #2a2a2a; }
 body.dark-mode .hsb-sug-name { color: #eee; }
 body.dark-mode .hsb-suggestions { border-color: #2a2a2a; }
-body.dark-mode .hsb-precio-pill { background: #333; }
+body.dark-mode .hsb-buscar-pill { background: #333; }
 
 /* Mobile */
 @media (max-width: 480px) {
     .hsb-wrap { padding: 0 12px 28px; }
     .hsb-pill { padding: 8px 8px 8px 16px; }
     .hsb-input { font-size: 14px; }
-    .hsb-precio-pill { padding: 7px 13px; font-size: 12px; }
+    .hsb-buscar-pill { padding: 7px 13px; font-size: 12px; }
     .hsb-panel { padding: 14px 16px 12px; }
 }
