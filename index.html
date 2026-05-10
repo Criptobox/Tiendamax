@@ -2601,7 +2601,7 @@ body.dark-mode .carrito-footer{background:#1e1e1e;border-color:#2a2a2a}
         <!-- ══ BARRA DE BÚSQUEDA ══ -->
 
         <!-- ===== VISTO RECIENTEMENTE ===== -->
-        <section id="seccionRecientes" class="recientes-section" style="display:none;">
+        <section id="seccionRecientes" class="recientes-section" style="display:none !important;">
             <div class="container">
                 <div class="mas-vendidos" style="padding:40px 0 20px;">
                     <div class="mas-vendidos-header" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
@@ -2618,7 +2618,7 @@ body.dark-mode .carrito-footer{background:#1e1e1e;border-color:#2a2a2a}
 
         <div class="hsb-wrap">
             <div class="hsb-pill" id="heroSearchBar" onclick="abrirPanelBusqueda()">
-                <svg class="hsb-icon" viewBox="0 0 24 24" fill="none" stroke="#4a90d9" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="20" height="20">
+                <svg class="hsb-icon" viewBox="0 0 24 24" fill="none" stroke="#f5a623" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="20" height="20">
                     <circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="22" y2="22"/>
                 </svg>
                 <input
@@ -2632,12 +2632,6 @@ body.dark-mode .carrito-footer{background:#1e1e1e;border-color:#2a2a2a}
                     autocomplete="off"
                     onclick="event.stopPropagation()"
                 >
-                <button class="hsb-buscar-pill" onclick="event.stopPropagation(); aplicarBusquedaHero()" title="Buscar">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
-                        <circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="22" y2="22"/>
-                    </svg>
-                    Buscar
-                </button>
             </div>
 
             <!-- Panel expandido -->
