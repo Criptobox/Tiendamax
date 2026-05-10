@@ -2632,26 +2632,17 @@ body.dark-mode .carrito-footer{background:#1e1e1e;border-color:#2a2a2a}
                     autocomplete="off"
                     onclick="event.stopPropagation()"
                 >
-                <button class="hsb-precio-pill" onclick="event.stopPropagation(); abrirPanelBusqueda()" title="Filtrar por precio">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
-                        <line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/>
+                <button class="hsb-buscar-pill" onclick="event.stopPropagation(); aplicarBusquedaHero()" title="Buscar">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                        <circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="22" y2="22"/>
                     </svg>
-                    Precio
+                    Buscar
                 </button>
             </div>
 
             <!-- Panel expandido -->
             <div class="hsb-panel" id="heroSearchPanel">
-                <div class="hsb-price-section">
-                    <div class="hsb-price-labels">
-                        <span class="hsb-price-title">💲 Rango de precio</span>
-                        <span id="heroPrecioRango" class="hsb-price-range">Todos los precios</span>
-                    </div>
-                    <div class="hsb-sliders">
-                        <input type="range" id="heroSliderMin" min="0" max="9999" value="0" oninput="actualizarSliderPrecio()">
-                        <input type="range" id="heroSliderMax" min="0" max="9999" value="9999" oninput="actualizarSliderPrecio()">
-                    </div>
-                </div>
+                <div id="hsb-ai-label" style="display:none;font-size:11px;color:#9b59b6;font-weight:600;margin-bottom:8px;letter-spacing:0.3px;">🤖 Búsqueda inteligente activa</div>
                 <div id="heroSearchSuggestions" class="hsb-suggestions"></div>
                 <button class="hsb-apply-btn" onclick="aplicarBusquedaHero()">Buscar →</button>
             </div>
@@ -2907,6 +2898,7 @@ body.dark-mode .carrito-footer{background:#1e1e1e;border-color:#2a2a2a}
                 <button class="tab-btn" onclick="switchTab('manage-categories')" data-tab="manage-categories">🏷️ Categorías</button>
                 <button class="tab-btn" onclick="switchTab('manage-subcategories')" data-tab="manage-subcategories">📂 Subcategorías</button>
                 <button class="tab-btn" onclick="switchTab('configuracion')" data-tab="configuracion">⚙️ Config</button>
+                <button class="tab-btn" onclick="switchTab('oferta-dia')" data-tab="oferta-dia">🏷️ Oferta Día</button>
                 <button class="tab-btn" onclick="switchTab('apariencia')" data-tab="apariencia">🎨 Apariencia</button>
                 <button class="tab-btn" onclick="switchTab('analytics')" data-tab="analytics">📊 Analytics</button>
             </div>
@@ -2961,7 +2953,7 @@ body.dark-mode .carrito-footer{background:#1e1e1e;border-color:#2a2a2a}
                         <div class="form-row">
                             <div class="form-group">
                                 <label>Stock Disponible:</label>
-                                <input type="number" id="productStock" required placeholder="5" min="1">
+                                <input type="number" id="productStock" required placeholder="0" min="0">
                             </div>
                         </div>
                         <div class="form-group">
@@ -3070,6 +3062,41 @@ body.dark-mode .carrito-footer{background:#1e1e1e;border-color:#2a2a2a}
                 <!-- Tab: Configuración GitHub -->
                 <div id="configuracion" class="admin-tab">
                     <h3>Configuración de Sincronización</h3>
+
+                    <!-- NÚMERO WHATSAPP -->
+                    <div style="background:rgba(37,211,102,0.08);border:1.5px solid #25d366;border-radius:14px;padding:18px 20px;margin-bottom:24px;">
+                        <h4 style="margin:0 0 6px;display:flex;align-items:center;gap:8px;"><span style="font-size:20px;">💬</span> Número de WhatsApp</h4>
+                        <p style="font-size:13px;color:var(--text-muted);margin-bottom:14px;">Este número recibe todos los pedidos. Sin código +53, solo dígitos.</p>
+                        <div class="form-group">
+                            <label>Número (solo dígitos, sin espacios):</label>
+                            <input type="tel" id="adminWhatsappNum" placeholder="Ej: 5354320170" maxlength="20"
+                                style="font-size:16px;font-weight:700;letter-spacing:1px;">
+                            <p style="font-size:11px;margin-top:5px;opacity:0.7;">Incluye el código de país. Cuba: 53 + número (ej: 5354320170)</p>
+                        </div>
+                        <button class="btn btn-primary" onclick="guardarNumeroWhatsApp()" style="background:#25d366;width:100%;">💾 Guardar número</button>
+                    </div>
+
+                    <!-- OFERTA DEL DÍA -->
+                    <div style="background:rgba(255,87,34,0.07);border:1.5px solid #ff5722;border-radius:14px;padding:18px 20px;margin-bottom:24px;">
+                        <h4 style="margin:0 0 6px;display:flex;align-items:center;gap:8px;"><span style="font-size:20px;">🏷️</span> Oferta del Día</h4>
+                        <p style="font-size:13px;color:var(--text-muted);margin-bottom:14px;">Destaca un producto como "Oferta del Día" con badge especial y posición privilegiada en la tienda.</p>
+                        <div class="form-group">
+                            <label>Producto Oferta del Día:</label>
+                            <select id="ofertaDiaSelect" style="width:100%;padding:10px;border-radius:10px;border:1.5px solid var(--border-color);font-size:14px;">
+                                <option value="">— Sin oferta del día activa —</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Texto del badge (opcional):</label>
+                            <input type="text" id="ofertaDiaTexto" placeholder="🔥 OFERTA DEL DÍA" maxlength="30">
+                        </div>
+                        <div id="ofertaDiaStatus" style="font-size:13px;color:#ff5722;margin-bottom:10px;min-height:20px;"></div>
+                        <div style="display:flex;gap:10px;">
+                            <button class="btn btn-primary" onclick="guardarOfertaDia()" style="background:#ff5722;flex:1;">✅ Activar Oferta del Día</button>
+                            <button class="btn btn-secondary" onclick="desactivarOfertaDia()" style="flex:1;">❌ Desactivar</button>
+                        </div>
+                    </div>
+
                     <p style="font-size: 14px; margin-bottom: 20px; color: var(--text-color);">Configura tu cuenta de GitHub para que los cambios se guarden automáticamente para todos tus clientes.</p>
                     <form id="githubConfigForm" onsubmit="guardarConfiguracionGitHub(event)">
                         <div class="form-group">
@@ -3091,6 +3118,42 @@ body.dark-mode .carrito-footer{background:#1e1e1e;border-color:#2a2a2a}
                         <h4 style="margin-bottom: 10px;">🚀 Sincronización Global</h4>
                         <p style="font-size: 13px; margin-bottom: 15px;">Usa este botón cada vez que agregues productos o categorías para que sean visibles para todos.</p>
                         <button class="btn btn-primary" onclick="sincronizarTodoConGitHub()" style="padding: 15px 30px; font-size: 16px; background: #FF6B35;">🔄 ACTUALIZAR TIENDA AHORA</button>
+                    </div>
+                </div>
+
+                <!-- Tab: Oferta del Día (standalone) -->
+                <div id="oferta-dia" class="admin-tab">
+                    <h3 style="margin-bottom:6px;">🏷️ Oferta del Día</h3>
+                    <p style="font-size:13px;color:var(--text-muted);margin-bottom:20px;">Selecciona un producto para destacarlo con badge especial "Oferta del Día". Aparecerá primero en la tienda y con un diseño llamativo.</p>
+
+                    <div style="background:var(--cream);border-radius:14px;padding:20px;margin-bottom:20px;">
+                        <div class="form-group">
+                            <label>Producto para Oferta del Día:</label>
+                            <select id="ofertaDiaSelect2" style="width:100%;padding:12px;border-radius:10px;border:1.5px solid var(--border-color);font-size:14px;"></select>
+                        </div>
+                        <div class="form-group">
+                            <label>Texto del badge:</label>
+                            <input type="text" id="ofertaDiaTexto2" placeholder="🔥 OFERTA DEL DÍA" maxlength="30">
+                        </div>
+                        <div id="ofertaDiaStatus2" style="font-size:13px;color:#ff5722;margin-bottom:12px;min-height:20px;font-weight:600;"></div>
+                        <div style="display:flex;gap:10px;">
+                            <button class="btn btn-primary" onclick="guardarOfertaDia2()" style="background:#ff5722;flex:1;padding:14px;">✅ Activar</button>
+                            <button class="btn btn-secondary" onclick="desactivarOfertaDia()" style="flex:1;padding:14px;">❌ Desactivar</button>
+                        </div>
+                    </div>
+
+                    <!-- Modo agotado -->
+                    <div style="background:rgba(231,76,60,0.07);border:1.5px solid #e74c3c;border-radius:14px;padding:20px;">
+                        <h4 style="margin:0 0 8px;display:flex;align-items:center;gap:8px;"><span style="font-size:20px;">📦</span> Modo Producto Agotado</h4>
+                        <p style="font-size:13px;color:var(--text-muted);margin-bottom:14px;">Los productos con stock = 0 se mostrarán automáticamente con el badge "AGOTADO" y el botón de compra desactivado. Para marcar un producto como agotado, edítalo y pon el stock en 0.</p>
+                        <div style="display:flex;align-items:center;gap:12px;padding:14px;background:white;border-radius:10px;border:1px solid rgba(231,76,60,0.2);">
+                            <div style="width:50px;height:50px;background:#f8d7da;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;">📦</div>
+                            <div>
+                                <div style="font-size:13px;font-weight:700;color:#e74c3c;">Stock = 0 → Badge AGOTADO</div>
+                                <div style="font-size:12px;color:#666;margin-top:2px;">El producto se muestra pero no se puede comprar</div>
+                            </div>
+                        </div>
+                        <div id="productosAgotadosList" style="margin-top:14px;display:flex;flex-direction:column;gap:8px;"></div>
                     </div>
                 </div>
 
@@ -3222,7 +3285,7 @@ body.dark-mode .carrito-footer{background:#1e1e1e;border-color:#2a2a2a}
                 <div class="form-row">
                     <div class="form-group">
                         <label>Stock Disponible:</label>
-                        <input type="number" id="editProductStock" required min="1">
+                        <input type="number" id="editProductStock" required min="0">
                     </div>
                 </div>
                 <div class="form-group">
