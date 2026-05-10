@@ -251,6 +251,8 @@ function limpiarRecientes() {
 }
 
 function renderizarRecientes() {
+    // Sección "Visto recientemente" oculta
+    const _sec = document.getElementById("seccionRecientes"); if (_sec) _sec.style.display = "none"; return;
     const recientes = JSON.parse(localStorage.getItem('recientes') || '[]');
     const sec  = document.getElementById('seccionRecientes');
     const grid = document.getElementById('recientesGrid');
@@ -2969,4 +2971,197 @@ renderizarProductos = function() {
         productosGrid.appendChild(card);
     });
 };
+
+
+/* ============================================================
+   TIENDAMAX — PREMIUM UPGRADE PACK JS
+   Cursor · Progress bar · Toast glass · Placeholder animado
+   Separadores · Footer premium
+   ============================================================ */
+
+// ===== CURSOR DORADO (solo desktop pointer:fine) =====
+(function initCursor() {
+    if (!window.matchMedia('(pointer: fine)').matches) return;
+    const cur = document.createElement('div');
+    cur.id = 'tm-cursor';
+    document.body.appendChild(cur);
+
+    let mx = -100, my = -100;
+    document.addEventListener('mousemove', e => {
+        mx = e.clientX; my = e.clientY;
+        cur.style.left = mx + 'px';
+        cur.style.top  = my + 'px';
+    }, { passive: true });
+
+    document.addEventListener('mouseenter', () => cur.style.opacity = '1');
+    document.addEventListener('mouseleave', () => cur.style.opacity = '0');
+
+    const hoverEls = 'a,button,[onclick],[role="button"],.producto-card,.categoria-card';
+    document.addEventListener('mouseover', e => {
+        if (e.target.closest(hoverEls)) cur.classList.add('hover');
+    });
+    document.addEventListener('mouseout', e => {
+        if (e.target.closest(hoverEls)) cur.classList.remove('hover');
+    });
+    document.addEventListener('mousedown', () => cur.classList.add('click'));
+    document.addEventListener('mouseup',   () => cur.classList.remove('click'));
+})();
+
+// ===== BARRA DE PROGRESO DORADA =====
+(function initProgress() {
+    const bar = document.createElement('div');
+    bar.id = 'tm-progress';
+    document.body.appendChild(bar);
+
+    function update() {
+        const scrollTop = window.scrollY || document.documentElement.scrollTop;
+        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        const pct = docHeight > 0 ? Math.min(100, (scrollTop / docHeight) * 100) : 0;
+        bar.style.width = pct + '%';
+        bar.style.opacity = pct > 1 ? '1' : '0';
+    }
+    window.addEventListener('scroll', update, { passive: true });
+    update();
+})();
+
+// ===== TOAST GLASSMORPHISM — reemplaza mostrarNotificacion =====
+(function overrideToast() {
+    let toastEl = null;
+    let hideTimer = null;
+
+    function getToast() {
+        if (!toastEl) {
+            toastEl = document.createElement('div');
+            toastEl.className = 'tm-toast';
+            document.body.appendChild(toastEl);
+        }
+        return toastEl;
+    }
+
+    window.mostrarNotificacion = function(mensaje, tipo = 'success') {
+        const t = getToast();
+        clearTimeout(hideTimer);
+
+        // Ícono
+        const icon = tipo === 'error' ? '✕' : tipo === 'info' ? 'i' : '✓';
+        t.className = 'tm-toast' + (tipo === 'error' ? ' error' : '');
+        t.innerHTML = `<span class="tm-toast-icon">${icon}</span><span>${mensaje}</span>`;
+
+        // Forzar reflow para reiniciar animación
+        t.classList.remove('show', 'hide');
+        void t.offsetWidth;
+        t.classList.add('show');
+
+        hideTimer = setTimeout(() => {
+            t.classList.add('hide');
+            setTimeout(() => { if (t) t.classList.remove('show', 'hide'); }, 350);
+        }, 3500);
+    };
+})();
+
+// ===== PLACEHOLDER ANIMADO EN BÚSQUEDA =====
+(function initPlaceholder() {
+    const frases = [
+        'Buscar productos...',
+        'WiFi, inversores...',
+        'Celulares, cargadores...',
+        'Tecnología premium...',
+        'Energía solar...'
+    ];
+    let idx = 0;
+
+    function rotar() {
+        const input = document.getElementById('heroSearchInput');
+        if (!input || document.activeElement === input || input.value) return;
+        idx = (idx + 1) % frases.length;
+        // Fade out → cambiar → fade in via style
+        input.style.transition = 'opacity 0.4s';
+        input.style.opacity = '0';
+        setTimeout(() => {
+            input.placeholder = frases[idx];
+            input.style.opacity = '1';
+        }, 400);
+    }
+
+    // Esperar a que el DOM esté listo
+    function startRotation() {
+        const input = document.getElementById('heroSearchInput');
+        if (!input) { setTimeout(startRotation, 500); return; }
+        setInterval(rotar, 3200);
+    }
+    setTimeout(startRotation, 2000);
+})();
+
+// ===== SEPARADORES DORADOS ENTRE SECCIONES =====
+(function insertDividers() {
+    function tryInsert() {
+        // Insertar antes de secciones clave en vistaInicio
+        const targets = [
+            document.getElementById('categorias-home'),
+            document.querySelector('.mas-vendidos'),
+            document.querySelector('.beneficios'),
+            document.querySelector('.footer-premium') || document.querySelector('.footer'),
+        ];
+        targets.forEach(el => {
+            if (!el) return;
+            // No duplicar
+            const prev = el.previousElementSibling;
+            if (prev && prev.classList.contains('tm-divider')) return;
+            const div = document.createElement('hr');
+            div.className = 'tm-divider';
+            el.parentNode.insertBefore(div, el);
+        });
+    }
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', tryInsert);
+    } else {
+        tryInsert();
+    }
+})();
+
+// ===== FOOTER PREMIUM (reemplaza footer existente) =====
+(function upgradeFooter() {
+    function tryUpgrade() {
+        const oldFooter = document.querySelector('.footer');
+        if (!oldFooter) return;
+        // Evitar duplicar
+        if (document.querySelector('.footer-premium')) return;
+
+        const fp = document.createElement('footer');
+        fp.className = 'footer-premium';
+        fp.innerHTML = `
+        <div class="container">
+            <div class="footer-premium-grid">
+                <div class="footer-brand">
+                    <div class="footer-gold-line"></div>
+                    <h3>Tienda<em>Max</em></h3>
+                    <p>Tecnología y electrónica premium con envío rápido. Calidad garantizada en cada producto.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Tienda</h4>
+                    <a href="#" onclick="mostrarVistaInicio(); return false;">Inicio</a>
+                    <a href="#" onclick="mostrarVistaCategoria('Todas'); return false;">Productos</a>
+                    <a href="#" onclick="abrirCarrito(); return false;">Mi carrito</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Contacto</h4>
+                    <a href="https://wa.me/5354320170" target="_blank">WhatsApp</a>
+                    <a href="https://chat.whatsapp.com/BnTdAU0Q3p25BOMTYuEpBN" target="_blank">Grupo ofertas</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© ${new Date().getFullYear()} TiendaMax · Todos los derechos reservados</p>
+                <p style="color:rgba(255,255,255,0.15);font-size:11px;">tiendamax.org</p>
+            </div>
+        </div>`;
+
+        oldFooter.replaceWith(fp);
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', tryUpgrade);
+    } else {
+        tryUpgrade();
+    }
+})();
 
