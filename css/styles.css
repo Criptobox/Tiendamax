@@ -1894,6 +1894,28 @@ body.dark-mode .categoria-stats { background: rgba(255,255,255,0.08); border-col
     max-height: 93vh;
     overflow-y: auto;
     border-radius: 20px;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Línea coral→dorado en la parte superior del modal */
+.detail-modal-content::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--coral), var(--gold), var(--coral));
+    background-size: 200% auto;
+    animation: detailTopLine 4s linear infinite;
+    z-index: 10;
+    border-radius: 20px 20px 0 0;
+}
+
+@keyframes detailTopLine {
+    0%   { background-position: 0% center; }
+    100% { background-position: 200% center; }
 }
 
 .detail-body { padding: 24px; }
@@ -1913,6 +1935,29 @@ body.dark-mode .categoria-stats { background: rgba(255,255,255,0.08); border-col
     background: #f9f6f1;
     cursor: zoom-in;
     aspect-ratio: 1;
+    /* Borde luminoso coral→dorado */
+    border: 2px solid transparent;
+    background-clip: padding-box;
+    box-shadow:
+        0 0 0 2px rgba(255,107,53,0.55),
+        0 0 18px rgba(255,107,53,0.18),
+        0 0 40px rgba(201,169,110,0.12);
+    animation: detailBorderGlow 3s ease-in-out infinite alternate;
+}
+
+@keyframes detailBorderGlow {
+    0% {
+        box-shadow:
+            0 0 0 2px rgba(255,107,53,0.55),
+            0 0 18px rgba(255,107,53,0.20),
+            0 0 40px rgba(201,169,110,0.10);
+    }
+    100% {
+        box-shadow:
+            0 0 0 2px rgba(201,169,110,0.65),
+            0 0 22px rgba(201,169,110,0.25),
+            0 0 50px rgba(255,107,53,0.12);
+    }
 }
 .detail-img {
     width: 100%;
@@ -2086,6 +2131,7 @@ body.dark-mode .categoria-stats { background: rgba(255,255,255,0.08); border-col
 /* Dark mode detail */
 body.dark-mode .detail-modal-content { background: var(--carbon); }
 body.dark-mode .detail-image-wrap { background: #1e1e1e; }
+/* glow igual en dark mode, ya está heredado */
 body.dark-mode .detail-description-text { color: rgba(255,255,255,0.78); }
 body.dark-mode .detail-share-btn { border-color: #333; color: #aaa; }
 body.dark-mode .detail-stock { color: #aaa; }
