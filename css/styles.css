@@ -60,7 +60,7 @@ body {
 
 /* ===== URGENCIA BANNER ===== */
 .urgencia-banner {
-    background: linear-gradient(90deg, var(--obsidian), var(--coral-deep), var(--obsidian));
+    background: linear-gradient(90deg, var(--obsidian), #7a5c2e, var(--obsidian));
     background-size: 200% auto;
     animation: shimmerBanner 4s linear infinite;
     color: white;
@@ -1074,30 +1074,32 @@ body {
 /* ===== BOTONES DE CONTROL ===== */
 .control-buttons {
     position: fixed;
-    bottom: 100px;
-    right: 28px;
+    bottom: 110px;
+    right: 22px;
     display: flex;
     flex-direction: column;
     gap: 12px;
-    z-index: 999;
+    z-index: 998;
 }
 
 .theme-toggle {
-    width: 52px;
-    height: 52px;
-    background: var(--charcoal);
+    width: 46px;
+    height: 46px;
+    background: #111111;
     color: white;
-    border: 1px solid rgba(255,255,255,0.1);
+    border: 1px solid rgba(201,169,110,0.25);
     border-radius: 50%;
-    font-size: 22px;
+    font-size: 19px;
     cursor: pointer;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.4), 0 0 0 1px rgba(201,169,110,0.08);
     transition: var(--transition);
 }
 
 .theme-toggle:hover {
-    background: var(--graphite);
+    background: #1a1a1a;
+    border-color: rgba(201,169,110,0.55);
     transform: scale(1.08);
+    box-shadow: 0 6px 24px rgba(0,0,0,0.5), 0 0 12px rgba(201,169,110,0.15);
 }
 
 .admin-toggle {
@@ -1575,7 +1577,8 @@ body.dark-mode .categorias-home .section-subtitle { color: rgba(255,255,255,0.4)
 
 body.dark-mode .categoria-card {
     background: var(--graphite);
-    border-color: rgba(255,255,255,0.06);
+    border-color: rgba(201,169,110,0.10);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.25);
 }
 
 body.dark-mode .categoria-card .cat-name { color: rgba(255,255,255,0.85); }
@@ -2842,12 +2845,24 @@ body.dark-mode .producto-image {
     }
 }
 
-/* ===== 10. FOOTER MEJORADO ===== */
+/* ===== 10. FOOTER PREMIUM — siempre oscuro ===== */
+
+/* Ocultar el footer viejo si quedara */
+.footer { display: none !important; }
+
 .footer-premium {
-    background: #060606;
-    border-top: 1px solid rgba(201,169,110,0.12);
+    background: #060606 !important;
+    border-top: 1px solid rgba(201,169,110,0.15);
     padding: 56px 0 28px;
+    color: rgba(255,255,255,0.4);
+    /* Siempre oscuro, sin importar modo claro/oscuro */
 }
+
+/* Móvil: ocultar grid complejo por defecto */
+.footer-mobile-brand,
+.footer-mobile-links { display: none; }
+
+/* Desktop grid */
 .footer-premium-grid {
     display: grid;
     grid-template-columns: 1.5fr 1fr 1fr;
@@ -2858,7 +2873,7 @@ body.dark-mode .producto-image {
     font-family: var(--font-display);
     font-size: 22px;
     font-weight: 900;
-    color: var(--white);
+    color: #ffffff;
     margin-bottom: 10px;
 }
 .footer-brand h3 em {
@@ -2889,7 +2904,7 @@ body.dark-mode .producto-image {
 }
 .footer-col a:hover { color: var(--gold-light); }
 .footer-bottom {
-    border-top: 1px solid rgba(255,255,255,0.05);
+    border-top: 1px solid rgba(255,255,255,0.06);
     padding-top: 24px;
     display: flex;
     justify-content: space-between;
@@ -2908,65 +2923,61 @@ body.dark-mode .producto-image {
     margin-bottom: 20px;
 }
 
+/* Móvil: franja compacta */
 @media (max-width: 768px) {
     .footer-premium {
-        padding: 28px 0 20px;
+        padding: 24px 0 20px;
     }
-    /* En móvil: ocultar grid de columnas, mostrar solo franja compacta */
     .footer-premium-grid {
         display: none;
     }
-    .footer-bottom {
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-        gap: 10px;
-        padding-top: 0;
-        border-top: none;
-    }
     .footer-mobile-brand {
-        display: flex !important;
+        display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 6px;
-        padding-bottom: 16px;
+        gap: 4px;
+        padding-bottom: 14px;
         border-bottom: 1px solid rgba(201,169,110,0.12);
-        margin-bottom: 14px;
+        margin-bottom: 12px;
         width: 100%;
     }
     .footer-mobile-brand h3 {
         font-family: var(--font-display);
-        font-size: 18px;
+        font-size: 17px;
         font-weight: 900;
-        color: var(--white);
+        color: #ffffff;
     }
     .footer-mobile-brand h3 em {
         color: var(--gold);
         font-style: normal;
     }
     .footer-mobile-brand p {
-        font-size: 12px;
-        color: rgba(255,255,255,0.35);
+        font-size: 11px;
+        color: rgba(255,255,255,0.3);
         text-align: center;
     }
     .footer-mobile-links {
-        display: flex !important;
-        gap: 20px;
+        display: flex;
+        gap: 18px;
         justify-content: center;
         flex-wrap: wrap;
-        margin-bottom: 16px;
+        margin-bottom: 14px;
     }
     .footer-mobile-links a {
         color: rgba(255,255,255,0.45);
         text-decoration: none;
-        font-size: 13px;
+        font-size: 12px;
         transition: color 0.2s;
     }
     .footer-mobile-links a:hover { color: var(--gold-light); }
-}
-@media (min-width: 769px) {
-    .footer-mobile-brand,
-    .footer-mobile-links { display: none !important; }
+    .footer-bottom {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 4px;
+        padding-top: 0;
+        border-top: none;
+    }
 }
 
 /* ===== DARK MODE AJUSTES ===== */
