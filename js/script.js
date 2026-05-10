@@ -596,11 +596,23 @@ function renderizarAnalytics() {
 }
 
 function stat(icon, label, value, color) {
-    return '<div style="background:var(--bg-secondary,#f9f6f1);border-radius:12px;padding:14px;text-align:center;">' +
+    const uid = 'ts' + Math.random().toString(36).slice(2,7);
+    const html = '<div style="background:var(--bg-secondary,#f9f6f1);border-radius:12px;padding:14px;text-align:center;">' +
         '<div style="font-size:22px;">' + icon + '</div>' +
-        '<div style="font-size:' + (typeof value === 'number' ? '22px' : '18px') + ';font-weight:800;color:' + (color||'var(--primary-color,#c9a96e)') + ';">' + value + '</div>' +
+        '<div id="' + uid + '" class="tm-counter" style="font-size:' + (typeof value === 'number' ? '22px' : '18px') + ';font-weight:800;color:' + (color||'var(--primary-color,#c9a96e)') + ';">' + value + '</div>' +
         '<div style="font-size:11px;color:#999;text-transform:uppercase;letter-spacing:0.5px;">' + label + '</div>' +
         '</div>';
+    // Animar contador después del render
+    setTimeout(() => {
+        const el = document.getElementById(uid);
+        if (!el) return;
+        if (typeof value === 'number') {
+            animarContador(el, value, 800 + Math.random() * 500);
+        } else if (typeof value === 'string' && value.startsWith('$')) {
+            animarContador(el, parseFloat(value.replace('$','')), 1000, '$');
+        }
+    }, 60);
+    return html;
 }
 
 // ===== VALIDACIÓN DE CAMPOS =====
@@ -976,7 +988,7 @@ function renderizarMasVendidos() {
                 <div class="stock-bar-fill" style="width: ${Math.max(15, (producto.stock / 20) * 100)}%"></div>
             </div>
             
-            <button class="btn btn-small btn-primary" onclick="event.stopPropagation(); contactarProducto('${producto.nombre}')">🛒 Comprar</button>
+            <button class="btn btn-small btn-primary" onclick="event.stopPropagation(); tmComprar(event, ${producto.id}, '${producto.nombre}')">🛒 Comprar</button>
         `;
         grid.appendChild(card);
     });
@@ -1234,7 +1246,7 @@ function renderizarProductos() {
 	            </p>
             <div class="stock">📦 Stock: ${producto.stock} unidades</div>
             ${typeof renderCountdownHtml === 'function' ? renderCountdownHtml(producto.id) : ''}
-            <button class="btn btn-small btn-primary" onclick="event.stopPropagation(); contactarProducto('${producto.nombre}')">🛒 Comprar</button>
+            <button class="btn btn-small btn-primary" onclick="event.stopPropagation(); tmComprar(event, ${producto.id}, '${producto.nombre}')">🛒 Comprar</button>
         `;
         productosGrid.appendChild(card);
     });
@@ -1379,7 +1391,7 @@ function abrirDetalleProducto(id) {
                 cerrarDetalleModal();
                 abrirCarrito();
             } else {
-                agregarAlCarrito(p.id);
+                agregarAlCarrito(p.id, null, cartRowEl);
                 cartRowEl.textContent = '✓ En el carrito — Ver carrito';
                 cartRowEl.className = 'btn-carrito en-carrito';
             }
@@ -3149,26 +3161,22 @@ function flyToCart(originEl) {
     requestAnimationFrame(step);
 }
 
-// Override agregarAlCarrito para inyectar la animación
+// ── FLY-TO-CART: función global que llama botones de comprar ──
+function tmComprar(event, id, nombre) {
+    const btn = (event && (event.currentTarget || event.target)) || null;
+    // Lanzar partícula desde el botón
+    if (btn) requestAnimationFrame(() => flyToCart(btn));
+    // Agregar al carrito internamente
+    agregarAlCarrito(id);
+    // Abrir WhatsApp
+    if (typeof contactarProducto === 'function') contactarProducto(nombre);
+}
+
+// Patch agregarAlCarrito para fly desde modal
 const _origAgregarAlCarrito = agregarAlCarrito;
-agregarAlCarrito = function(id, event) {
-    // Buscar elemento origen: botón que disparó el evento, o card del producto
-    let originEl = null;
-    if (event && event.currentTarget) {
-        originEl = event.currentTarget;
-    } else {
-        // Buscar la card activa o el botón más cercano
-        originEl = document.querySelector(`.producto-card[data-id="${id}"] .btn`) ||
-                   document.querySelector('.detail-modal-content .btn-cta-mejorado') ||
-                   document.querySelector('.detail-modal-content');
-    }
-
+agregarAlCarrito = function(id, _unused, originEl) {
     _origAgregarAlCarrito(id);
-
-    // Lanzar partícula si encontramos el origen
-    if (originEl) {
-        requestAnimationFrame(() => flyToCart(originEl));
-    }
+    if (originEl) requestAnimationFrame(() => flyToCart(originEl));
 };
 
 // ── 2. SKELETON LOADING en grids de productos ──
