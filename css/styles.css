@@ -1675,6 +1675,108 @@ body.dark-mode .tab-btn.active { color: rgba(255,255,255,0.9); background: var(-
 body.dark-mode .form-group input,
 body.dark-mode .form-group textarea,
 body.dark-mode .form-group select {
+/* ══════════════════════════════════════════
+   DARK MODE — ADMIN PANEL COMPLETO
+══════════════════════════════════════════ */
+
+/* Texto general del admin */
+body.dark-mode .admin-tab h3,
+body.dark-mode .admin-tab h4,
+body.dark-mode .admin-tab p,
+body.dark-mode .admin-tab label,
+body.dark-mode .admin-tab span:not(.tab-btn span) {
+    color: rgba(255,255,255,0.80);
+}
+
+/* Tarjetas con fondo claro dentro del admin */
+body.dark-mode .category-item,
+body.dark-mode .product-item,
+body.dark-mode .backend-status,
+body.dark-mode .subcategory-item {
+    background: var(--graphite) !important;
+    border-color: rgba(201,169,110,0.15);
+    color: rgba(255,255,255,0.80);
+}
+
+body.dark-mode .category-item-name,
+body.dark-mode .product-item-info h4 { color: rgba(255,255,255,0.88); }
+body.dark-mode .product-item-info p  { color: rgba(255,255,255,0.45); }
+body.dark-mode .backend-status       { color: rgba(255,255,255,0.45); }
+
+/* Secciones con fondo crema (Apariencia, Config, Grupos FB, Oferta Día) */
+body.dark-mode [style*="background:var(--cream)"],
+body.dark-mode [style*="background: var(--cream)"],
+body.dark-mode [style*="background:#f9f6f1"],
+body.dark-mode [style*="background: #f9f6f1"],
+body.dark-mode [style*="background:var(--white)"],
+body.dark-mode [style*="background: var(--white)"],
+body.dark-mode [style*="background:#fff"],
+body.dark-mode [style*="background: #fff"],
+body.dark-mode [style*="background:white"],
+body.dark-mode [style*="background: white"] {
+    background: var(--carbon) !important;
+    color: rgba(255,255,255,0.80);
+}
+
+/* Textos grises dentro de esos contenedores */
+body.dark-mode .admin-tab [style*="color:#666"],
+body.dark-mode .admin-tab [style*="color: #666"],
+body.dark-mode .admin-tab [style*="color:#999"],
+body.dark-mode .admin-tab [style*="color: #999"],
+body.dark-mode .admin-tab [style*="color:var(--text-muted)"],
+body.dark-mode .admin-tab [style*="color: var(--text-muted)"] {
+    color: rgba(255,255,255,0.45) !important;
+}
+
+/* Barras de progreso analytics */
+body.dark-mode .admin-tab [style*="background:#f0ebe4"],
+body.dark-mode .admin-tab [style*="background: #f0ebe4"] {
+    background: rgba(255,255,255,0.08) !important;
+}
+
+/* Analytics stat cards (generadas por JS) */
+body.dark-mode #analyticsContent [style*="background:var(--bg-secondary"],
+body.dark-mode #analyticsContent [style*="background: var(--bg-secondary"],
+body.dark-mode #analyticsContent > div > div {
+    background: var(--graphite) !important;
+}
+body.dark-mode #analyticsContent [style*="color:#999"],
+body.dark-mode #analyticsContent [style*="color: #999"] {
+    color: rgba(255,255,255,0.40) !important;
+}
+
+/* Dropdowns select del admin */
+body.dark-mode .admin-tab select {
+    background: var(--graphite) !important;
+    color: rgba(255,255,255,0.85) !important;
+    border-color: rgba(255,255,255,0.1) !important;
+}
+body.dark-mode .admin-tab select option {
+    background: var(--carbon);
+    color: rgba(255,255,255,0.85);
+}
+
+/* Input file */
+body.dark-mode .admin-tab input[type="file"] {
+    color: rgba(255,255,255,0.6);
+}
+
+/* Bordes dentro del admin */
+body.dark-mode .admin-tab [style*="border:1px solid rgba(0,0,0"],
+body.dark-mode .admin-tab [style*="border: 1px solid rgba(0,0,0"] {
+    border-color: rgba(255,255,255,0.08) !important;
+}
+
+/* Títulos de secciones */
+body.dark-mode .categories-section h3,
+body.dark-mode .subcategories-section h3 {
+    color: rgba(255,255,255,0.9);
+}
+
+/* no-products texto */
+body.dark-mode .no-products { color: rgba(255,255,255,0.35); }
+
+
     background: var(--graphite);
     color: rgba(255,255,255,0.85);
     border-color: rgba(255,255,255,0.08);
@@ -3098,3 +3200,171 @@ body.dark-mode .beneficios h2 { color: rgba(255,255,255,0.9); }
 body.dark-mode .beneficio-card h3 { color: rgba(255,255,255,0.88); }
 body.dark-mode .testimonio-card p { color: rgba(255,255,255,0.65); }
 body.dark-mode .cta-final { background: #080808; }
+
+/* ════════════════════════════════════════════════════
+   PREMIUM UPGRADE PACK 2
+   WhatsApp glass · Badge shimmer · Hero frame ·
+   Skeleton loading · Fly-to-cart · Counter anim
+═════════════════════════════════════════════════════ */
+
+/* ── 1. WHATSAPP BUTTON GLASS PREMIUM ── */
+.whatsapp-btn {
+    background: rgba(18, 18, 18, 0.88) !important;
+    backdrop-filter: blur(14px) !important;
+    -webkit-backdrop-filter: blur(14px) !important;
+    border: 1.5px solid rgba(37,211,102,0.45) !important;
+    box-shadow:
+        0 4px 24px rgba(0,0,0,0.35),
+        0 0 0 1px rgba(37,211,102,0.08),
+        inset 0 1px 0 rgba(255,255,255,0.06) !important;
+    transition: all 0.35s cubic-bezier(0.4,0,0.2,1) !important;
+}
+.whatsapp-btn svg { color: #25D366; stroke: #25D366; }
+.whatsapp-btn:hover {
+    border-color: rgba(37,211,102,0.8) !important;
+    box-shadow:
+        0 8px 32px rgba(0,0,0,0.4),
+        0 0 20px rgba(37,211,102,0.25),
+        inset 0 1px 0 rgba(255,255,255,0.08) !important;
+    transform: scale(1.1) translateY(-2px) !important;
+}
+
+.whatsapp-group-btn {
+    background: rgba(18, 18, 18, 0.88) !important;
+    backdrop-filter: blur(14px) !important;
+    -webkit-backdrop-filter: blur(14px) !important;
+    border: 1.5px solid rgba(18,140,126,0.45) !important;
+    box-shadow:
+        0 4px 24px rgba(0,0,0,0.35),
+        inset 0 1px 0 rgba(255,255,255,0.06) !important;
+    transition: all 0.35s cubic-bezier(0.4,0,0.2,1) !important;
+}
+.whatsapp-group-btn svg { color: #128C7E; stroke: #128C7E; }
+.whatsapp-group-btn:hover {
+    border-color: rgba(18,140,126,0.8) !important;
+    box-shadow:
+        0 8px 32px rgba(0,0,0,0.4),
+        0 0 20px rgba(18,140,126,0.25) !important;
+    transform: scale(1.1) translateY(-2px) !important;
+}
+
+/* ── 2. BADGE MÁS VENDIDO — SHIMMER DORADO ── */
+.badge-vendido {
+    background: linear-gradient(
+        105deg,
+        var(--coral) 0%,
+        var(--gold)  40%,
+        #fff8dc     50%,
+        var(--gold)  60%,
+        var(--coral) 100%
+    ) !important;
+    background-size: 250% auto !important;
+    animation: badgeShimmer 2.8s linear infinite !important;
+    color: white !important;
+    box-shadow: 0 2px 12px rgba(201,169,110,0.4);
+}
+@keyframes badgeShimmer {
+    0%   { background-position: 200% center; }
+    100% { background-position: -50% center; }
+}
+
+/* ── 3. HERO IMAGE — MARCO DORADO ANIMADO ── */
+.hero-image {
+    position: relative;
+}
+.hero-image::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    border: 2px solid transparent;
+    background: linear-gradient(
+        135deg,
+        rgba(201,169,110,0.6),
+        transparent 40%,
+        transparent 60%,
+        rgba(201,169,110,0.4)
+    ) border-box;
+    -webkit-mask:
+        linear-gradient(#fff 0 0) padding-box,
+        linear-gradient(#fff 0 0);
+    -webkit-mask-composite: destination-out;
+    mask-composite: exclude;
+    animation: heroFrameGlow 4s ease-in-out infinite alternate;
+    pointer-events: none;
+    z-index: 2;
+}
+@keyframes heroFrameGlow {
+    0%   { opacity: 0.4; }
+    100% { opacity: 1; }
+}
+
+/* ── 4. SKELETON LOADING CARDS ── */
+.skeleton-card {
+    background: var(--white);
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: var(--shadow-card);
+    border: 1px solid rgba(0,0,0,0.05);
+}
+.skeleton-img {
+    width: 100%;
+    height: 180px;
+    background: linear-gradient(90deg, #f0ebe4 25%, #e8e2da 50%, #f0ebe4 75%);
+    background-size: 200% auto;
+    animation: skeletonPulse 1.5s ease-in-out infinite;
+}
+.skeleton-line {
+    height: 12px;
+    border-radius: 8px;
+    margin: 10px 16px 6px;
+    background: linear-gradient(90deg, #f0ebe4 25%, #e8e2da 50%, #f0ebe4 75%);
+    background-size: 200% auto;
+    animation: skeletonPulse 1.5s ease-in-out infinite;
+}
+.skeleton-line.short { width: 55%; height: 10px; }
+.skeleton-line.price { width: 40%; height: 14px; margin-top: 12px; background: linear-gradient(90deg, rgba(201,169,110,0.2) 25%, rgba(201,169,110,0.35) 50%, rgba(201,169,110,0.2) 75%); background-size: 200% auto; animation: skeletonPulse 1.5s ease-in-out infinite; }
+@keyframes skeletonPulse {
+    0%   { background-position: 200% center; }
+    100% { background-position: -200% center; }
+}
+body.dark-mode .skeleton-card { background: var(--graphite); border-color: rgba(255,255,255,0.04); }
+body.dark-mode .skeleton-img,
+body.dark-mode .skeleton-line {
+    background: linear-gradient(90deg, #2a2a2a 25%, #333 50%, #2a2a2a 75%);
+    background-size: 200% auto;
+    animation: skeletonPulse 1.5s ease-in-out infinite;
+}
+
+/* ── 5. FLY-TO-CART PARTÍCULA ── */
+.fly-particle {
+    position: fixed;
+    width: 14px;
+    height: 14px;
+    background: var(--gold);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 99999;
+    box-shadow: 0 0 10px rgba(201,169,110,0.8);
+    transition: none;
+    will-change: transform, opacity;
+}
+
+/* ── 6. CART ICON BOUNCE AL RECIBIR ── */
+@keyframes cartBounce {
+    0%   { transform: scale(1); }
+    30%  { transform: scale(1.35); }
+    60%  { transform: scale(0.9); }
+    80%  { transform: scale(1.12); }
+    100% { transform: scale(1); }
+}
+.cart-icon-btn.bounce {
+    animation: cartBounce 0.55s cubic-bezier(0.36,0.07,0.19,0.97);
+}
+
+/* ── 7. CONTADOR ANIMADO ANALYTICS ── */
+.tm-counter {
+    display: inline-block;
+    font-variant-numeric: tabular-nums;
+}
+
