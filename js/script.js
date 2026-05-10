@@ -3094,3 +3094,147 @@ renderizarProductos = function() {
 
 
 
+
+/* ════════════════════════════════════════════════════
+   PREMIUM UPGRADE PACK 2 — JS
+   Fly-to-cart · Skeleton loading · Analytics counter
+═════════════════════════════════════════════════════ */
+
+// ── 1. FLY-TO-CART: partícula que vuela al ícono del carrito ──
+function flyToCart(originEl) {
+    const cartBtn = document.querySelector('.cart-icon-btn');
+    if (!cartBtn || !originEl) return;
+
+    const from = originEl.getBoundingClientRect();
+    const to   = cartBtn.getBoundingClientRect();
+
+    const particle = document.createElement('div');
+    particle.className = 'fly-particle';
+    particle.style.cssText = `
+        left: ${from.left + from.width / 2 - 7}px;
+        top:  ${from.top  + from.height/ 2 - 7}px;
+        opacity: 1;
+    `;
+    document.body.appendChild(particle);
+
+    // Calcular delta
+    const dx = (to.left + to.width / 2 - 7)  - (from.left + from.width  / 2 - 7);
+    const dy = (to.top  + to.height/ 2 - 7)  - (from.top  + from.height / 2 - 7);
+
+    // Arc animation usando requestAnimationFrame
+    const duration = 650;
+    const start = performance.now();
+
+    function step(now) {
+        const t = Math.min((now - start) / duration, 1);
+        // Ease in-out cubic
+        const e = t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t+2,3)/2;
+        // Arc: parábola en Y
+        const arc = -Math.sin(Math.PI * t) * 90;
+
+        particle.style.transform = `translate(${dx * e}px, ${dy * e + arc}px) scale(${1 - t * 0.4})`;
+        particle.style.opacity   = t > 0.7 ? (1 - (t - 0.7) / 0.3) : '1';
+
+        if (t < 1) {
+            requestAnimationFrame(step);
+        } else {
+            particle.remove();
+            // Bounce del carrito
+            cartBtn.classList.remove('bounce');
+            void cartBtn.offsetWidth; // reflow
+            cartBtn.classList.add('bounce');
+            setTimeout(() => cartBtn.classList.remove('bounce'), 560);
+        }
+    }
+    requestAnimationFrame(step);
+}
+
+// Override agregarAlCarrito para inyectar la animación
+const _origAgregarAlCarrito = agregarAlCarrito;
+agregarAlCarrito = function(id, event) {
+    // Buscar elemento origen: botón que disparó el evento, o card del producto
+    let originEl = null;
+    if (event && event.currentTarget) {
+        originEl = event.currentTarget;
+    } else {
+        // Buscar la card activa o el botón más cercano
+        originEl = document.querySelector(`.producto-card[data-id="${id}"] .btn`) ||
+                   document.querySelector('.detail-modal-content .btn-cta-mejorado') ||
+                   document.querySelector('.detail-modal-content');
+    }
+
+    _origAgregarAlCarrito(id);
+
+    // Lanzar partícula si encontramos el origen
+    if (originEl) {
+        requestAnimationFrame(() => flyToCart(originEl));
+    }
+};
+
+// ── 2. SKELETON LOADING en grids de productos ──
+function mostrarSkeletons(containerId, cantidad = 6) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+
+    const skeletonHTML = Array(cantidad).fill(0).map(() => `
+        <div class="skeleton-card">
+            <div class="skeleton-img"></div>
+            <div class="skeleton-line"></div>
+            <div class="skeleton-line short"></div>
+            <div class="skeleton-line price"></div>
+            <div style="margin:12px 16px 16px;height:36px;border-radius:10px;background:linear-gradient(90deg,#f0ebe4 25%,#e8e2da 50%,#f0ebe4 75%);background-size:200% auto;animation:skeletonPulse 1.5s ease-in-out infinite;"></div>
+        </div>
+    `).join('');
+
+    container.innerHTML = skeletonHTML;
+}
+
+// ── 3. ANALYTICS COUNTER ANIMADO ──
+function animarContador(el, target, duration = 1200, prefix = '', suffix = '') {
+    const isFloat = String(target).includes('.');
+    const decimals = isFloat ? 2 : 0;
+    const numTarget = parseFloat(target) || 0;
+    const start = performance.now();
+
+    function step(now) {
+        const t = Math.min((now - start) / duration, 1);
+        // Ease out expo
+        const e = t === 1 ? 1 : 1 - Math.pow(2, -10 * t);
+        const current = numTarget * e;
+        el.textContent = prefix + current.toFixed(decimals) + suffix;
+        if (t < 1) requestAnimationFrame(step);
+        else el.textContent = prefix + numTarget.toFixed(decimals) + suffix;
+    }
+    requestAnimationFrame(step);
+}
+
+// Patch stat() para usar contadores animados
+const _origStat = stat;
+stat = function(icon, label, value, color) {
+    const isNumeric = typeof value === 'number' || (typeof value === 'string' && value.startsWith('$'));
+    const id = 'tm-stat-' + Math.random().toString(36).slice(2,7);
+    const display = typeof value === 'number' ? value : value;
+
+    const html = '<div style="background:var(--bg-secondary,#f9f6f1);border-radius:12px;padding:14px;text-align:center;">' +
+        '<div style="font-size:22px;">' + icon + '</div>' +
+        '<div id="' + id + '" class="tm-counter" style="font-size:' + (typeof value === 'number' ? '22px' : '18px') + ';font-weight:800;color:' + (color || 'var(--primary-color,#c9a96e)') + ';">' + value + '</div>' +
+        '<div style="font-size:11px;color:#999;text-transform:uppercase;letter-spacing:0.5px;">' + label + '</div>' +
+        '</div>';
+
+    // Animar después del render
+    if (isNumeric) {
+        setTimeout(() => {
+            const el = document.getElementById(id);
+            if (!el) return;
+            if (typeof value === 'number') {
+                animarContador(el, value, 900 + Math.random() * 400);
+            } else if (typeof value === 'string' && value.startsWith('$')) {
+                const num = parseFloat(value.replace('$',''));
+                animarContador(el, num, 1000, '$');
+            }
+        }, 80);
+    }
+
+    return html;
+};
+
