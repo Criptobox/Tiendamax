@@ -1,315 +1,1009 @@
-// ===== GESTIÓN DE SUBCATEGORÍAS =====
-// Este módulo extiende la funcionalidad de categorías con soporte para subcategorías
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgcng9IjIwIiBmaWxsPSIjMEQwRDBEIi8+PHRleHQgeT0iNzIiIHg9IjUwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjYyIiBmb250LWZhbWlseT0iR2VvcmdpYSxzZXJpZiIgZm9udC13ZWlnaHQ9IjkwMCIgZmlsbD0iI0M5QTk2RSI+TTwvdGV4dD48L3N2Zz4=">
+    <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgcng9IjIwIiBmaWxsPSIjMEQwRDBEIi8+PHRleHQgeT0iNzIiIHg9IjUwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjYyIiBmb250LWZhbWlseT0iR2VvcmdpYSxzZXJpZiIgZm9udC13ZWlnaHQ9IjkwMCIgZmlsbD0iI0M5QTk2RSI+TTwvdGV4dD48L3N2Zz4=">
 
-let subcategorias = JSON.parse(localStorage.getItem('subcategorias')) || {};
 
-/**
- * Estructura de subcategorias:
- * {
- *   "Electrónica": ["Celulares", "Laptops", "Tablets"],
- *   "Ropa": ["Hombres", "Mujeres", "Niños"]
- * }
- */
+    <!-- SEO -->
+    <meta name="description" content="TiendaMax — Productos de calidad con envío rápido. WiFi, energía, celulares, electrodomésticos y más.">
+    <meta name="keywords" content="tienda online cuba, wifi cuba, inversores cuba, celulares cuba, tiendamax">
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="TiendaMax — Calidad premium">
+    <meta property="og:description" content="Productos de calidad con envío rápido. WiFi, energía solar, celulares y más.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://tiendamax.org">
+    <meta name="theme-color" content="#c9a96e">
+    <link rel="canonical" href="https://tiendamax.org">
 
-// ===== FUNCIONES DE SUBCATEGORÍAS =====
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="description" content="TiendaMax — Compra cargadores, inversores, routers WiFi y tecnología en Cuba. Envíos rápidos, precios increíbles y garantía en todos los productos.">
+    <meta name="keywords" content="TiendaMax, tienda Cuba, tecnología Cuba, cargadores Cuba, inversores energía Cuba, routers WiFi Cuba, comprar online Cuba, electrónica Cuba, tiendamax.org">
+    <meta name="author" content="TiendaMax">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+    <meta name="theme-color" content="#FF6B35">
+    <meta name="geo.region" content="CU">
+    <meta name="geo.placename" content="Cuba">
+    <link rel="canonical" href="https://tiendamax.org/">
 
-function inicializarSubcategorias() {
-    // Asegurar que todas las categorías tengan un array de subcategorías
-    if (typeof categorias !== 'undefined') {
-        categorias.forEach(cat => {
-            if (!subcategorias[cat]) {
-                subcategorias[cat] = [];
-            }
-        });
+    <!-- Open Graph (Facebook, WhatsApp) -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://tiendamax.org/">
+    <meta property="og:title" content="TiendaMax — Tecnología y Electrónica en Cuba">
+    <meta property="og:description" content="Cargadores, inversores, routers WiFi y más. Los mejores precios en tecnología para Cuba.">
+    <meta property="og:image" content="https://tiendamax.org/og-image.jpg">
+    <meta property="og:locale" content="es_CU">
+    <meta property="og:site_name" content="TiendaMax">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="TiendaMax — Tecnología en Cuba">
+    <meta name="twitter:description" content="Cargadores, inversores, routers WiFi y más. Los mejores precios en Cuba.">
+    <meta name="twitter:image" content="https://tiendamax.org/og-image.jpg">
+
+    <title>TiendaMax — Tecnología y Electrónica en Cuba | tiendamax.org</title>
+
+    <!-- Schema.org para Google -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Store",
+      "name": "TiendaMax",
+      "url": "https://tiendamax.org",
+      "description": "Tienda online de tecnología y electrónica en Cuba. Cargadores, inversores, routers WiFi y más.",
+      "image": "https://tiendamax.org/og-image.jpg",
+      "telephone": "+5354320170",
+      "address": {
+        "@type": "PostalAddress",
+        "addressCountry": "CU"
+      },
+      "sameAs": ["https://tiendamax.org"],
+      "priceRange": "$",
+      "currenciesAccepted": "USD",
+      "paymentAccepted": "Cash, Transfer"
     }
-    guardarSubcategorias();
-    actualizarListaSubcategorias();
-    actualizarSelectSubcategorias();
-}
-
-function guardarSubcategorias() {
-    localStorage.setItem('subcategorias', JSON.stringify(subcategorias));
-}
-
-function agregarSubcategoria() {
-    const categoriaSelect = document.getElementById('subcategoryParentCategory');
-    const subcatInput = document.getElementById('newSubcategoryName');
+    </script>
     
-    const categoria = categoriaSelect.value;
-    const subcategoria = subcatInput.value.trim();
+    <link rel="stylesheet" href="css/styles.css">
 
-    if (!categoria) {
-        mostrarNotificacion('Selecciona una categoría', 'error');
-        return;
-    }
-    if (!subcategoria) {
-        mostrarNotificacion('Ingresa el nombre de la subcategoría', 'error');
-        return;
-    }
+</head>
+<body>
 
-    if (!subcategorias[categoria]) {
-        subcategorias[categoria] = [];
-    }
+    <!-- Banner de Urgencia (Se muestra dinámicamente si hay ofertas) -->
+    <div id="urgenciaBanner" class="urgencia-banner" style="display: none;">
+        🔥 ¡OFERTAS RELÁMPAGO DISPONIBLES! <span class="flash-deal">APROVECHA AHORA</span>
+    </div>
 
-    if (subcategorias[categoria].includes(subcategoria)) {
-        mostrarNotificacion('Esta subcategoría ya existe', 'error');
-        return;
-    }
-
-    subcategorias[categoria].push(subcategoria);
-    guardarSubcategorias();
-    subcatInput.value = '';
-    actualizarListaSubcategorias();
-    actualizarSelectSubcategorias();
-    mostrarNotificacion('✅ Subcategoría agregada');
-}
-
-function eliminarSubcategoria(categoria, subcategoria) {
-    if (confirm(`¿Eliminar la subcategoría "${subcategoria}"?`)) {
-        if (subcategorias[categoria]) {
-            subcategorias[categoria] = subcategorias[categoria].filter(s => s !== subcategoria);
-            guardarSubcategorias();
-            actualizarListaSubcategorias();
-            actualizarSelectSubcategorias();
-            mostrarNotificacion('🗑️ Subcategoría eliminada', 'info');
-        }
-    }
-}
-
-function actualizarSelectCategoriasPadre() {
-    const select = document.getElementById('subcategoryParentCategory');
-    if (!select) return;
-    const val = select.value;
-    select.innerHTML = '<option value="">-- Selecciona una categoría --</option>';
-    if (typeof categorias !== 'undefined') {
-        categorias.forEach(cat => {
-            const opt = document.createElement('option');
-            opt.value = cat;
-            opt.textContent = cat;
-            select.appendChild(opt);
-        });
-    }
-    if (val) select.value = val;
-}
-
-function actualizarListaSubcategorias() {
-    const list = document.getElementById('subcategoryList');
-    if (!list) return;
-
-    list.innerHTML = `
-        <div style="margin-bottom: 20px; padding: 15px; background: rgba(155, 89, 182, 0.1); border: 1px dashed #9B59B6; border-radius: 10px; text-align: center;">
-            <p style="font-size: 13px; margin-bottom: 10px;">Organiza tus productos con subcategorías para una mejor experiencia de compra.</p>
-            <button class="btn btn-primary" style="background:#9B59B6" onclick="descargarSubcategoriasJSON()">📥 Descargar subcategorias.json</button>
+    <!-- Header -->
+    <!-- Menú móvil overlay -->
+    <div class="mobile-menu-overlay" id="mobileMenuOverlay">
+        <div class="mobile-menu-logo">🛍️ TiendaMax</div>
+        <button class="mobile-menu-close" onclick="cerrarMenuMovil()">×</button>
+        <a href="#" onclick="volverAlInicio(); cerrarMenuMovil(); return false;">Inicio</a>
+        <a href="#categorias-home" onclick="volverAlInicio(); cerrarMenuMovil(); return false;">Categorías</a>
+        <a href="#beneficios" onclick="cerrarMenuMovil()">Beneficios</a>
+        <a href="#testimonios" onclick="cerrarMenuMovil()">Testimonios</a>
+        <a href="#contacto" onclick="cerrarMenuMovil()">Contacto</a>
+        <button class="nav-mobile-link" onclick="abrirLoginAdmin(); cerrarMenuMovil();">⚙️ Ajustes</button>
+        <div class="mobile-menu-actions">
+            <a href="https://chat.whatsapp.com/BnTdAU0Q3p25BOMTYuEpBN" class="mobile-action-grupo" target="_blank" rel="noopener">💬 Grupo WhatsApp</a>
+            <a href="https://wa.me/5354320170?text=Hola,%20necesito%20ayuda%20con%20un%20producto" class="mobile-action-ayuda" target="_blank" rel="noopener">🎧 Ayuda</a>
         </div>
-    `;
+    </div>
 
-    let hasSubcategories = false;
-    if (typeof categorias !== 'undefined') {
-        categorias.forEach(cat => {
-            if (subcategorias[cat] && subcategorias[cat].length > 0) {
-                hasSubcategories = true;
-                const catDiv = document.createElement('div');
-                catDiv.style.marginBottom = '20px';
-                catDiv.innerHTML = `<h4 style="margin-bottom: 10px; color: #9B59B6;">📁 ${cat}</h4>`;
-                
-                const subList = document.createElement('div');
-                subList.style.paddingLeft = '20px';
-                
-                subcategorias[cat].forEach(subcat => {
-                    const item = document.createElement('div');
-                    item.className = 'subcategory-item';
-                    item.style.cssText = `
-                        padding: 8px 12px;
-                        background: #f5f5f5;
-                        border-radius: 6px;
-                        margin-bottom: 8px;
-                        display: flex;
-                        justify-content: space-between;
-                        align-items: center;
-                    `;
-                    item.innerHTML = `
-                        <span>📌 ${subcat}</span>
-                        <button onclick="eliminarSubcategoria('${cat}', '${subcat}')" style="background: #e74c3c; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer;">🗑️</button>
-                    `;
-                    subList.appendChild(item);
-                });
-                
-                catDiv.appendChild(subList);
-                list.appendChild(catDiv);
-            }
+    <header class="header">
+        <div class="container header-content">
+            <div class="logo"><h1 style="cursor:pointer" onclick="volverAlInicio()">🛍️ TiendaMax</h1></div>
+            <!-- Carrito + Hamburguesa -->
+            <div class="header-right">
+                <button class="cart-icon-btn" onclick="abrirCarrito()" aria-label="Carrito" title="Ver carrito">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="22" height="22"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+                    <span class="cart-count" id="cartCount" style="display:none;">0</span>
+                </button>
+                <button class="hamburger-btn" id="hamburgerBtn" onclick="abrirMenuMovil()" aria-label="Abrir menú">
+                    <span></span><span></span><span></span>
+                </button>
+            </div>
+            <nav class="nav">
+                <a href="#" onclick="volverAlInicio(); return false;">Inicio</a>
+                <a href="#categorias-home" onclick="volverAlInicio(); return false;">Categorías</a>
+                <a href="#beneficios">Beneficios</a>
+                <a href="#testimonios">Testimonios</a>
+                <a href="#contacto">Contacto</a>
+                <button class="nav-admin-btn" onclick="abrirLoginAdmin()" title="Panel de administración">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="17" height="17"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                    <span class="nav-admin-label">Ajustes</span>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- ===== VISTA INICIO ===== -->
+    <div id="vistaInicio">
+
+        <!-- Hero -->
+        <section class="hero">
+            <div class="container" style="display:contents;">
+            <div class="hero-content">
+                <p class="subtitle">Oferta limitada — Solo por tiempo limitado</p>
+                <h2>Productos<br><span>que inspiran,</span><br>precios que sorprenden.</h2>
+                <p class="description">Calidad premium, atención personal. Miles de clientes satisfechos confían en nosotros cada día.</p>
+                <div class="cta-buttons">
+                    <button class="btn btn-primary" onclick="scrollToProductos()">Ver Categorías →</button>
+                    <button class="btn btn-secondary" onclick="contactarWhatsApp()">💬 WhatsApp</button>
+                </div>
+            </div>
+            <div class="hero-image" id="heroImageContainer" style="position:relative;">
+                <span class="hero-image-admin-hint" onclick="abrirCambiarImagenHero()" title="Cambiar foto del hero">📷 Cambiar foto</span>
+                <img 
+                    id="heroHumanImg"
+                    src="https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=800&q=85&auto=format&fit=crop"
+                    alt="Persona disfrutando tecnología de calidad"
+                    style="width:100%;height:100%;object-fit:cover;display:block;"
+                    onerror="this.style.display='none'; document.getElementById('heroFallback').style.display='flex';"
+                >
+                <div id="heroFallback" class="image-placeholder" style="display:none;">✦ TiendaMax ✦</div>
+                <div style="position:absolute;bottom:20px;left:20px;background:rgba(0,0,0,0.6);backdrop-filter:blur(10px);color:white;padding:10px 16px;border-radius:12px;font-size:12px;font-weight:600;border:1px solid rgba(201,169,110,0.3);">
+                    ⚡ Inversores · 📡 WiFi · 📱 Tecnología
+                </div>
+            </div>
+            </div>
+        </section>
+        <div class="hero-divider"></div>
+
+        <!-- ══ BARRA DE BÚSQUEDA ══ -->
+
+        <!-- ===== VISTO RECIENTEMENTE ===== -->
+        <section id="seccionRecientes" class="recientes-section" style="display:none !important;">
+            <div class="container">
+                <div class="mas-vendidos" style="padding:40px 0 20px;">
+                    <div class="mas-vendidos-header" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+                        <div>
+                            <p class="section-eyebrow">Tu historial</p>
+                            <h2 class="section-title" style="text-align:left;font-size:24px;margin-bottom:0;">🕐 Visto recientemente</h2>
+                        </div>
+                        <button onclick="limpiarRecientes()" style="font-size:12px;color:#999;background:none;border:none;cursor:pointer;text-decoration:underline;">Limpiar</button>
+                    </div>
+                    <div class="productos-grid" id="recientesGrid" style="grid-template-columns:repeat(auto-fill,minmax(150px,1fr));"></div>
+                </div>
+            </div>
+        </section>
+
+        <div class="hsb-wrap">
+            <div class="hsb-pill" id="heroSearchBar" onclick="abrirPanelBusqueda()">
+                <svg class="hsb-icon" viewBox="0 0 24 24" fill="none" stroke="#f5a623" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="20" height="20">
+                    <circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="22" y2="22"/>
+                </svg>
+                <input
+                    type="text"
+                    id="heroSearchInput"
+                    class="hsb-input"
+                    placeholder="Buscar productos..."
+                    oninput="buscarDesdeHero(this.value)"
+                    onkeydown="if(event.key==='Enter') aplicarBusquedaHero()"
+                    onfocus="abrirPanelBusqueda()"
+                    autocomplete="off"
+                    onclick="event.stopPropagation()"
+                >
+            </div>
+
+            <!-- Panel expandido -->
+            <div class="hsb-panel" id="heroSearchPanel">
+                <div id="hsb-ai-label" style="display:none;font-size:11px;color:#9b59b6;font-weight:600;margin-bottom:8px;letter-spacing:0.3px;">🤖 Búsqueda inteligente activa</div>
+                <div id="heroSearchSuggestions" class="hsb-suggestions"></div>
+                <button class="hsb-apply-btn" onclick="aplicarBusquedaHero()">Buscar →</button>
+            </div>
+        </div>
+
+
+        <!-- Sección Categorías -->
+        <section id="categorias-home" class="categorias-home">
+            <div class="categorias-home-inner">
+                <!-- Banner lateral izquierdo: Grupo WhatsApp -->
+                <a href="https://chat.whatsapp.com/BnTdAU0Q3p25BOMTYuEpBN" class="banner-lateral banner-lateral-grupo" target="_blank" rel="noopener" title="Unirse al Grupo de WhatsApp">
+                    <div class="banner-lateral-shine"></div>
+                    <div class="banner-lateral-icon">💬</div>
+                    <div class="banner-lateral-title">Grupo<br>WhatsApp</div>
+                    <div class="banner-lateral-sub">Únete y recibe ofertas exclusivas al instante</div>
+                    <div class="banner-lateral-btn">Unirme →</div>
+                </a>
+
+                <div class="container">
+                    <p class="section-eyebrow">Navega por sección</p>
+                    <h2 class="section-title">Explora por Categoría</h2>
+                    <p class="section-subtitle">Selecciona una categoría para descubrir todos sus productos</p>
+                    <div class="categorias-grid" id="categoriasGrid">
+                        <!-- Skeleton loaders while data loads -->
+                        <div class="skeleton-card"><div class="skeleton-icon"></div><div class="skeleton-text"></div><div class="skeleton-text-sm"></div></div>
+                        <div class="skeleton-card"><div class="skeleton-icon"></div><div class="skeleton-text"></div><div class="skeleton-text-sm"></div></div>
+                        <div class="skeleton-card"><div class="skeleton-icon"></div><div class="skeleton-text"></div><div class="skeleton-text-sm"></div></div>
+                        <div class="skeleton-card"><div class="skeleton-icon"></div><div class="skeleton-text"></div><div class="skeleton-text-sm"></div></div>
+                        <div class="skeleton-card"><div class="skeleton-icon"></div><div class="skeleton-text"></div><div class="skeleton-text-sm"></div></div>
+                        <div class="skeleton-card"><div class="skeleton-icon"></div><div class="skeleton-text"></div><div class="skeleton-text-sm"></div></div>
+                    </div>
+                </div>
+
+                <!-- Banner lateral derecho: Ayuda -->
+                <a href="https://wa.me/5354320170?text=Hola,%20necesito%20ayuda%20con%20un%20producto" class="banner-lateral banner-lateral-ayuda" target="_blank" rel="noopener" title="Contactar soporte">
+                    <div class="banner-lateral-shine"></div>
+                    <div class="banner-lateral-icon">🎧</div>
+                    <div class="banner-lateral-title">¿Necesitas<br>Ayuda?</div>
+                    <div class="banner-lateral-sub">Atención personalizada por WhatsApp</div>
+                    <div class="banner-lateral-btn">Contactar →</div>
+                </a>
+            </div>
+        </section>
+
+        <!-- Sección Más Vendidos -->
+        <section id="mas-vendidos" class="mas-vendidos">
+            <div class="container">
+                <div class="section-header">
+                    <h2>🔥 Más Vendidos</h2>
+                    <p>Los favoritos de nuestra comunidad</p>
+                </div>
+                <div class="productos-grid" id="masVendidosGrid"></div>
+                <div id="masVendidosVacio" style="text-align:center;padding:30px;color:#999;display:none;">
+                    <p>Aún no hay productos destacados. Márcalos desde el panel de administración.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Prueba Social Mini (después de Más Vendidos) -->
+        <section class="prueba-social-strip">
+            <div class="container">
+                <div class="prueba-social-inner">
+                    <div class="prueba-stat">
+                        <span class="prueba-num">500+</span>
+                        <span class="prueba-label">Clientes satisfechos</span>
+                    </div>
+                    <div class="prueba-sep">|</div>
+                    <div class="prueba-stat">
+                        <span class="prueba-num">⭐ 4.9</span>
+                        <span class="prueba-label">Valoración promedio</span>
+                    </div>
+                    <div class="prueba-sep">|</div>
+                    <div class="prueba-stat">
+                        <span class="prueba-num">🔒 100%</span>
+                        <span class="prueba-label">Compra segura</span>
+                    </div>
+                    <div class="prueba-sep">|</div>
+                    <div class="prueba-mini-reviews">
+                        <span class="mini-review-item">"Excelente calidad" — Pedro M.</span>
+                        <span class="mini-review-item">"Envío rápido" — Ana R.</span>
+                        <span class="mini-review-item">"Precios increíbles" — Luis T.</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Beneficios -->
+        <section id="beneficios" class="beneficios">
+            <div class="container">
+                <h2>¿Por Qué Elegir Nuestros Productos?</h2>
+                <div class="beneficios-grid">
+                    <div class="beneficio-card"><div class="icon">🏆</div><h3>Calidad Garantizada</h3><p>Productos seleccionados cuidadosamente para tu satisfaccion</p></div>
+                    <div class="beneficio-card"><div class="icon">💰</div><h3>Mejores Precios</h3><p>Competencia directa con ofertas exclusivas para ti</p></div>
+                    <div class="beneficio-card"><div class="icon">🚚</div><h3>Envio Rapido</h3><p>Recibe tu compra en el menor tiempo posible</p></div>
+                    <div class="beneficio-card"><div class="icon">🛡️</div><h3>Compra Segura</h3><p>Proteccion total en todas tus transacciones</p></div>
+                    <div class="beneficio-card"><div class="icon">📞</div><h3>Soporte 24/7</h3><p>Estamos aqui para ayudarte en cualquier momento</p></div>
+                    <div class="beneficio-card"><div class="icon">⭐</div><h3>Clientes Felices</h3><p>Miles de resenas positivas de clientes satisfechos</p></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Testimonios -->
+        <section id="testimonios" class="testimonios">
+            <div class="container">
+                <h2>Lo Que Dicen Nuestros Clientes</h2>
+                <div class="testimonios-grid">
+                    <div class="testimonio-card">
+                        <div class="stars">⭐⭐⭐⭐⭐</div>
+                        <p>"Los mejores precios que encontre en toda Cuba. El inversor llegó perfecto y funciona increíble. ¡Volvere a comprar seguro!"</p>
+                        <p class="autor">— Juan López, La Habana</p>
+                    </div>
+                    <div class="testimonio-card">
+                        <div class="stars">⭐⭐⭐⭐⭐</div>
+                        <p>"El router WiFi que compré transformó mi casa. Señal en todos los cuartos por primera vez. El servicio fue rapidísimo y muy profesional."</p>
+                        <p class="autor">— María García, Santiago de Cuba</p>
+                    </div>
+                    <div class="testimonio-card">
+                        <div class="stars">⭐⭐⭐⭐⭐</div>
+                        <p>"Compré tres productos y todos llegaron en perfectas condiciones. El precio es justo y la atención por WhatsApp fue excelente. 100% recomendado."</p>
+                        <p class="autor">— Carlos Rodríguez, Holguín</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Final -->
+        <section class="cta-final" id="contacto">
+            <div class="container">
+                <h2>Las mejores ofertas,<br>a un mensaje de distancia.</h2>
+                <p>Contáctanos hoy y recibe atención personalizada.</p>
+                <button class="btn btn-large" onclick="contactarWhatsApp()">💬 Contactar por WhatsApp</button>
+            </div>
+        </section>
+
+    </div>
+    <!-- FIN VISTA INICIO -->
+
+    <!-- ===== VISTA CATEGORÍA (se muestra al seleccionar una categoría) ===== -->
+    <div id="vistaCategoria">
+        <section class="productos-categoria">
+            <div class="container">
+                <div class="categoria-header">
+                    <div class="categoria-header-left">
+                        <button class="btn-volver" onclick="volverAlInicio()">← Volver</button>
+                        <h2 id="tituloCategoriaActual">Productos</h2>
+                    </div>
+                    <div id="categoriaStats" class="categoria-stats"></div>
+                </div>
+                <!-- Pestañas de subcategorías (solo aparece si hay subcategorías) -->
+                <div id="subcategoriaTabs" class="subcategoria-tabs" style="display:none;"></div>
+                <!-- Filtro de categorías (vista global "Todas") -->
+                <div class="categoria-filtro" id="categoriaFiltro" style="display:none;">
+                    <button class="categoria-btn active" onclick="filtrarPorCategoria('Todas')">Todas</button>
+                </div>
+                <div class="productos-grid" id="productosGrid"></div>
+                <div id="productoVacio" class="producto-vacio" style="display:none;"><p>No hay productos en esta categoría aún.</p></div>
+            </div>
+        </section>
+    </div>
+    <!-- FIN VISTA CATEGORÍA -->
+
+    <!-- Banners móviles (solo visible en móvil, mismo estilo que los laterales de escritorio) -->
+    <div class="mobile-bottom-banners" id="mobileBottomBanners">
+        <a href="https://chat.whatsapp.com/BnTdAU0Q3p25BOMTYuEpBN" class="mbb-grupo" target="_blank" rel="noopener">
+            <div class="mbb-shine"></div>
+            <div class="mbb-icon-wrap">💬</div>
+            <div class="mbb-title">Grupo<br>WhatsApp</div>
+            <div class="mbb-sub">Únete y recibe ofertas exclusivas al instante</div>
+            <div class="mbb-btn">Unirme →</div>
+        </a>
+        <a href="https://wa.me/5354320170?text=Hola,%20necesito%20ayuda%20con%20un%20producto" class="mbb-ayuda" target="_blank" rel="noopener">
+            <div class="mbb-shine"></div>
+            <div class="mbb-icon-wrap">🎧</div>
+            <div class="mbb-title">¿Necesitas<br>Ayuda?</div>
+            <div class="mbb-sub">Atención personalizada por WhatsApp</div>
+            <div class="mbb-btn">Contactar →</div>
+        </a>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer-premium">
+        <div class="container">
+            <!-- Desktop: 3 columnas -->
+            <div class="footer-premium-grid">
+                <div class="footer-brand">
+                    <div class="footer-gold-line"></div>
+                    <h3>Tienda<em>Max</em></h3>
+                    <p>Tecnología y electrónica premium con envío rápido. Calidad garantizada en cada producto.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Tienda</h4>
+                    <a href="#" onclick="mostrarVistaInicio(); return false;">Inicio</a>
+                    <a href="#" onclick="mostrarVistaCategoria('Todas'); return false;">Productos</a>
+                    <a href="#" onclick="abrirCarrito(); return false;">Mi carrito</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Contacto</h4>
+                    <a href="https://wa.me/5354320170" target="_blank">WhatsApp</a>
+                    <a href="https://chat.whatsapp.com/BnTdAU0Q3p25BOMTYuEpBN" target="_blank">Grupo ofertas</a>
+                </div>
+            </div>
+            <!-- Móvil: franja compacta -->
+            <div class="footer-mobile-brand">
+                <h3>Tienda<em>Max</em></h3>
+                <p>Tecnología premium · Envío rápido · Garantía</p>
+            </div>
+            <div class="footer-mobile-links">
+                <a href="#" onclick="mostrarVistaInicio(); return false;">Inicio</a>
+                <a href="#" onclick="mostrarVistaCategoria('Todas'); return false;">Productos</a>
+                <a href="https://wa.me/5354320170" target="_blank">WhatsApp</a>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2026 TiendaMax · Todos los derechos reservados</p>
+                <p style="color:rgba(255,255,255,0.15);font-size:11px;">tiendamax.org</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Botones flotantes removidos: reemplazados por banners laterales en sección categorías -->
+
+    <!-- Botones de control -->
+    <div class="control-buttons">
+        <button class="theme-toggle" onclick="toggleDarkMode()" title="Cambiar tema">🌙</button>
+        <!-- Admin toggle movido al navbar -->
+    </div>
+
+
+    <!-- ===== CARRITO ===== -->
+    <div id="carritoDrawer" class="carrito-overlay hidden" onclick="if(event.target===this)cerrarCarrito()">
+        <div class="carrito-drawer">
+            <div class="carrito-header">
+                <h3>🛒 Tu Carrito</h3>
+                <button class="close-btn" onclick="cerrarCarrito()">×</button>
+            </div>
+            <div class="carrito-body" id="carritoBody">
+                <div class="carrito-vacio" id="carritoVacio">
+                    <div style="font-size:48px;margin-bottom:12px;">🛍️</div>
+                    <p>Tu carrito está vacío</p>
+                    <button class="btn btn-primary" style="margin-top:16px;" onclick="cerrarCarrito()">Ver productos</button>
+                </div>
+                <div id="carritoItems"></div>
+            </div>
+            <div class="carrito-footer" id="carritoFooter" style="display:none;">
+                <div class="carrito-total">
+                    <span>Total</span>
+                    <span id="carritoTotal" class="carrito-total-val">$0.00 USD</span>
+                </div>
+                <button class="btn-cta-mejorado carrito-btn-comprar" onclick="comprarCarrito()">
+                    💬 Pedir por WhatsApp
+                </button>
+                <button class="carrito-btn-limpiar" onclick="limpiarCarrito()">🗑️ Vaciar carrito</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== MODAL LOGIN ===== -->
+    <div id="loginModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Acceso de Administrador</h2>
+                <button class="close-btn" onclick="cerrarLoginModal()">✕</button>
+            </div>
+            <form onsubmit="verificarPassword(event)">
+                <div class="form-group">
+                    <label>Contraseña:</label>
+                    <input type="password" id="adminPassword" required autofocus>
+                </div>
+                <button type="submit" class="btn btn-primary">🔓 Acceder</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ===== PANEL ADMIN ===== -->
+    <div id="adminPanel" class="admin-panel hidden">
+        <div class="admin-panel-content">
+            <div class="admin-header">
+                <h2>⚙️ Panel de Administración</h2>
+                <button class="close-btn" onclick="cerrarAdminPanel()">✕</button>
+            </div>
+            <div class="admin-tabs">
+                <button class="tab-btn active" onclick="switchTab('add-products')" data-tab="add-products">➕ Agregar</button>
+                <button class="tab-btn" onclick="switchTab('publicar-ahora')" data-tab="publicar-ahora">🚀 Publicar</button>
+                <button class="tab-btn" onclick="switchTab('manage-products')" data-tab="manage-products">📋 Gestionar</button>
+                <button class="tab-btn" onclick="switchTab('manage-categories')" data-tab="manage-categories">🏷️ Categorías</button>
+                <button class="tab-btn" onclick="switchTab('manage-subcategories')" data-tab="manage-subcategories">📂 Subcategorías</button>
+                <button class="tab-btn" onclick="switchTab('configuracion')" data-tab="configuracion">⚙️ Config</button>
+                <button class="tab-btn" onclick="switchTab('oferta-dia')" data-tab="oferta-dia">🏷️ Oferta Día</button>
+                <button class="tab-btn" onclick="switchTab('apariencia')" data-tab="apariencia">🎨 Apariencia</button>
+                <button class="tab-btn" onclick="switchTab('analytics')" data-tab="analytics">📊 Analytics</button>
+            </div>
+            <div class="admin-content">
+
+                <!-- Tab: Agregar Producto -->
+                <div id="add-products" class="admin-tab active">
+                    <form id="productForm">
+                        <div class="form-group">
+                            <label>Nombre del Producto:</label>
+                            <input type="text" id="productName" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Descripción:</label>
+                            <textarea id="productDescription" required rows="4"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Categoría:</label>
+                            <select id="productCategory" required>
+                                <option value="General">General</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>¿Mostrar en "Más Vendidos"?</label>
+                            <select id="productMasVendido">
+                                <option value="false">No</option>
+                                <option value="true">Sí — Destacar en la página principal</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="productUsado">
+                                ✨ Este es un producto usado/refurbished
+                            </label>
+                            <small>Marca esta opción si el producto es de segunda mano o ha sido restaurado</small>
+                        </div>
+                        <div class="form-group">
+                            <label>Foto del Producto:</label>
+                            <input type="file" id="productImage" accept="image/*" required>
+                            <small>JPG, PNG o GIF (max. 5MB)</small>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Precio (USD):</label>
+                                <input type="number" id="productPriceActual" required placeholder="70" step="0.01" min="0">
+                            </div>
+                            <div class="form-group">
+                                <label>Descuento % (Opcional):</label>
+                                <input type="number" id="productDiscount" placeholder="30" min="0" max="100">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Stock Disponible:</label>
+                                <input type="number" id="productStock" required placeholder="0" min="0">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Garantía (opcional):</label>
+                            <input type="text" id="productGarantia" placeholder="Ej: 6 meses de garantía" maxlength="50">
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="productDevolucion">
+                                ✓ Devolución segura / Garantía de satisfacción
+                            </label>
+                        </div>
+                        <button type="submit" class="btn btn-primary">✅ Agregar Producto</button>
+                    </form>
+                </div>
+
+                <!-- Tab: Publicar -->
+                <div id="publicar-ahora" class="admin-tab">
+                    <div id="backendStatus" class="backend-status">🔄 Verificando estado del bot...</div>
+
+                    <div class="horarios-info" style="margin-bottom:16px;">
+                        <h4>📅 Publicación Automática</h4>
+                        <div class="horario-item">⏰ <strong>8:00 AM</strong> — Facebook Grupos (matutino)</div>
+                        <div class="horario-item">⏰ <strong>9:00 AM</strong> — Revolico (diario)</div>
+                        <div class="horario-item">⏰ <strong>5:00 PM</strong> — Facebook Grupos (vespertino)</div>
+                        <p style="margin:8px 0 0;font-size:12px;opacity:0.9">El bot publica automáticamente a estos horarios cuando está activo.</p>
+                    </div>
+
+                    <!-- Pasos rápidos -->
+                    <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:20px;">
+                        <button class="btn-publicar-grande" onclick="abrirChromeEspecial()" style="background:#27AE60;margin-bottom:0">🖥️ 1. Abrir Chrome Especial</button>
+                        <button id="btnPublicarAhora" class="btn-publicar-grande" onclick="publicarAhora()" style="margin-bottom:0">🚀 2. Publicar Todo en Revolico</button>
+                    </div>
+
+                    <!-- Configurador de Grupos de Facebook -->
+                    <div style="background:var(--cream);border-radius:14px;padding:18px;margin-bottom:20px;border:1.5px solid var(--border-color);">
+                        <h4 style="margin-bottom:4px;">📘 Grupos de Facebook</h4>
+                        <p style="font-size:12px;color:var(--text-muted);margin-bottom:14px;">Configura qué productos publicar en cada grupo.</p>
+                        <div id="listaGruposFB" style="display:flex;flex-direction:column;gap:10px;"></div>
+                        <button class="btn btn-primary" onclick="agregarGrupoFB()" style="margin-top:12px;width:100%;">+ Agregar Grupo</button>
+                        <button class="btn" onclick="guardarGruposFB()" style="margin-top:8px;width:100%;background:#27AE60;color:white;">💾 Guardar Grupos</button>
+                    </div>
+
+                    <!-- Configurador de Revolico por categorías -->
+                    <div style="background:var(--cream);border-radius:14px;padding:18px;margin-bottom:20px;border:1.5px solid var(--border-color);">
+                        <h4 style="margin-bottom:4px;">🔵 Revolico — Categorías por Producto</h4>
+                        <p style="font-size:12px;color:var(--text-muted);margin-bottom:14px;">Elige en qué categoría de Revolico se publica cada producto. Se guarda automáticamente con tu tienda.</p>
+                        <div id="listaRevolicoConfig" style="display:flex;flex-direction:column;gap:10px;"></div>
+                        <button class="btn" onclick="guardarRevolicoConfig()" style="margin-top:12px;width:100%;background:#0084FF;color:white;">💾 Guardar Config Revolico</button>
+                    </div>
+
+                    <div id="resultadoPublicacion" class="resultado-publicacion"></div>
+                    <div class="tab-historial">
+                        <h4 style="margin-bottom:12px">📋 Últimas Publicaciones</h4>
+                        <div id="historialPublicaciones"><p style="color:#666;font-size:13px">Sin historial aún.</p></div>
+                    </div>
+                </div>
+
+                <!-- Tab: Gestionar Productos -->
+                <!-- Tab: Gestionar Productos (por categorías) -->
+                <div id="manage-products" class="admin-tab">
+                    <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;">
+                        <input type="text" id="searchProductos" placeholder="🔍 Buscar producto..." oninput="actualizarListaProductos()" style="flex:1;min-width:180px;padding:10px 14px;border-radius:10px;border:1.5px solid var(--border-color);font-size:14px;background:var(--cream);">
+                        <select id="filtroCategoria" onchange="actualizarListaProductos()" style="padding:10px 14px;border-radius:10px;border:1.5px solid var(--border-color);font-size:14px;background:var(--cream);">
+                            <option value="">Todas las categorías</option>
+                        </select>
+                    </div>
+                    <div id="productsList" class="products-list">
+                        <p class="no-products">No hay productos aún</p>
+                    </div>
+                </div>
+
+                <!-- Tab: Gestionar Categorías -->
+                <div id="manage-categories" class="admin-tab">
+                    <div class="categories-section">
+                        <h3>Gestionar Categorias</h3>
+                        <div class="form-group" style="display: flex; gap: 10px; margin-bottom: 10px;">
+                        <input type="text" id="newCategoryName" placeholder="Nombre de la categoría" style="flex: 2;">
+                        <input type="text" id="newCategoryIcon" placeholder="Icono (Ej: 📦)" style="flex: 1; text-align: center;">
+                        <button class="btn btn-primary" onclick="agregarCategoria()" style="flex: 1;">+ Agregar</button>
+                    </div>
+                    <p style="font-size: 12px; color: #666; margin-bottom: 20px;">💡 Si dejas el icono vacío, se asignará uno automáticamente según el nombre.</p>
+                        <div id="categoryList" class="category-list"></div>
+                    </div>
+                </div>
+
+                <!-- Tab: Gestionar Subcategorías -->
+                <div id="manage-subcategories" class="admin-tab">
+                    <div class="subcategories-section">
+                        <h3>Gestionar Subcategorías</h3>
+                        <p style="font-size: 13px; margin-bottom: 15px; color: #666;">Las subcategorías ayudan a organizar mejor tus productos dentro de cada categoría.</p>
+                        <div class="form-group">
+                            <label>Categoría:</label>
+                            <select id="subcategoryParentCategory">
+                                <option value="">-- Selecciona una categoría --</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="display: flex; gap: 10px; margin-bottom: 20px;">
+                            <input type="text" id="newSubcategoryName" placeholder="Nombre de la subcategoría" style="flex: 1;">
+                            <button class="btn btn-primary" onclick="agregarSubcategoria()">+ Agregar</button>
+                        </div>
+                        <div id="subcategoryList" class="subcategory-list"></div>
+                    </div>
+                </div>
+
+                <!-- Tab: Configuración GitHub -->
+                <div id="configuracion" class="admin-tab">
+                    <h3>Configuración de Sincronización</h3>
+
+                    <!-- NÚMERO WHATSAPP -->
+                    <div style="background:rgba(37,211,102,0.08);border:1.5px solid #25d366;border-radius:14px;padding:18px 20px;margin-bottom:24px;">
+                        <h4 style="margin:0 0 6px;display:flex;align-items:center;gap:8px;"><span style="font-size:20px;">💬</span> Número de WhatsApp</h4>
+                        <p style="font-size:13px;color:var(--text-muted);margin-bottom:14px;">Este número recibe todos los pedidos. Sin código +53, solo dígitos.</p>
+                        <div class="form-group">
+                            <label>Número (solo dígitos, sin espacios):</label>
+                            <input type="tel" id="adminWhatsappNum" placeholder="Ej: 5354320170" maxlength="20"
+                                style="font-size:16px;font-weight:700;letter-spacing:1px;">
+                            <p style="font-size:11px;margin-top:5px;opacity:0.7;">Incluye el código de país. Cuba: 53 + número (ej: 5354320170)</p>
+                        </div>
+                        <button class="btn btn-primary" onclick="guardarNumeroWhatsApp()" style="background:#25d366;width:100%;">💾 Guardar número</button>
+                    </div>
+
+                    <!-- OFERTA DEL DÍA -->
+                    <div style="background:rgba(255,87,34,0.07);border:1.5px solid #ff5722;border-radius:14px;padding:18px 20px;margin-bottom:24px;">
+                        <h4 style="margin:0 0 6px;display:flex;align-items:center;gap:8px;"><span style="font-size:20px;">🏷️</span> Oferta del Día</h4>
+                        <p style="font-size:13px;color:var(--text-muted);margin-bottom:14px;">Destaca un producto como "Oferta del Día" con badge especial y posición privilegiada en la tienda.</p>
+                        <div class="form-group">
+                            <label>Producto Oferta del Día:</label>
+                            <select id="ofertaDiaSelect" style="width:100%;padding:10px;border-radius:10px;border:1.5px solid var(--border-color);font-size:14px;">
+                                <option value="">— Sin oferta del día activa —</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Texto del badge (opcional):</label>
+                            <input type="text" id="ofertaDiaTexto" placeholder="🔥 OFERTA DEL DÍA" maxlength="30">
+                        </div>
+                        <div id="ofertaDiaStatus" style="font-size:13px;color:#ff5722;margin-bottom:10px;min-height:20px;"></div>
+                        <div style="display:flex;gap:10px;">
+                            <button class="btn btn-primary" onclick="guardarOfertaDia()" style="background:#ff5722;flex:1;">✅ Activar Oferta del Día</button>
+                            <button class="btn btn-secondary" onclick="desactivarOfertaDia()" style="flex:1;">❌ Desactivar</button>
+                        </div>
+                    </div>
+
+                    <p style="font-size: 14px; margin-bottom: 20px; color: var(--text-color);">Configura tu cuenta de GitHub para que los cambios se guarden automáticamente para todos tus clientes.</p>
+                    <form id="githubConfigForm" onsubmit="guardarConfiguracionGitHub(event)">
+                        <div class="form-group">
+                            <label>Usuario de GitHub:</label>
+                            <input type="text" id="githubUser" placeholder="Ej: Criptobox" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Repositorio:</label>
+                            <input type="text" id="githubRepo" placeholder="Ej: Tiendamax" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Token de Acceso (Classic):</label>
+                            <input type="password" id="githubToken" placeholder="ghp_xxxxxxxxxxxx" required>
+                            <p style="font-size: 11px; margin-top: 5px; opacity: 0.7;">Consigue tu token en GitHub Settings -> Developer Settings -> Tokens (classic). Debe tener permiso 'repo'.</p>
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="width: 100%;">💾 Guardar Configuración</button>
+                    </form>
+                    <div style="margin-top: 30px; padding: 20px; border: 2px solid #FF6B35; border-radius: 12px; text-align: center; background: rgba(255, 107, 53, 0.05);">
+                        <h4 style="margin-bottom: 10px;">🚀 Sincronización Global</h4>
+                        <p style="font-size: 13px; margin-bottom: 15px;">Usa este botón cada vez que agregues productos o categorías para que sean visibles para todos.</p>
+                        <button class="btn btn-primary" onclick="sincronizarTodoConGitHub()" style="padding: 15px 30px; font-size: 16px; background: #FF6B35;">🔄 ACTUALIZAR TIENDA AHORA</button>
+                    </div>
+                </div>
+
+                <!-- Tab: Oferta del Día (standalone) -->
+                <div id="oferta-dia" class="admin-tab">
+                    <h3 style="margin-bottom:6px;">🏷️ Oferta del Día</h3>
+                    <p style="font-size:13px;color:var(--text-muted);margin-bottom:20px;">Selecciona un producto para destacarlo con badge especial "Oferta del Día". Aparecerá primero en la tienda y con un diseño llamativo.</p>
+
+                    <div style="background:var(--cream);border-radius:14px;padding:20px;margin-bottom:20px;">
+                        <div class="form-group">
+                            <label>Producto para Oferta del Día:</label>
+                            <select id="ofertaDiaSelect2" style="width:100%;padding:12px;border-radius:10px;border:1.5px solid var(--border-color);font-size:14px;"></select>
+                        </div>
+                        <div class="form-group">
+                            <label>Texto del badge:</label>
+                            <input type="text" id="ofertaDiaTexto2" placeholder="🔥 OFERTA DEL DÍA" maxlength="30">
+                        </div>
+                        <div id="ofertaDiaStatus2" style="font-size:13px;color:#ff5722;margin-bottom:12px;min-height:20px;font-weight:600;"></div>
+                        <div style="display:flex;gap:10px;">
+                            <button class="btn btn-primary" onclick="guardarOfertaDia2()" style="background:#ff5722;flex:1;padding:14px;">✅ Activar</button>
+                            <button class="btn btn-secondary" onclick="desactivarOfertaDia()" style="flex:1;padding:14px;">❌ Desactivar</button>
+                        </div>
+                    </div>
+
+                    <!-- Modo agotado -->
+                    <div style="background:rgba(231,76,60,0.07);border:1.5px solid #e74c3c;border-radius:14px;padding:20px;">
+                        <h4 style="margin:0 0 8px;display:flex;align-items:center;gap:8px;"><span style="font-size:20px;">📦</span> Modo Producto Agotado</h4>
+                        <p style="font-size:13px;color:var(--text-muted);margin-bottom:14px;">Los productos con stock = 0 se mostrarán automáticamente con el badge "AGOTADO" y el botón de compra desactivado. Para marcar un producto como agotado, edítalo y pon el stock en 0.</p>
+                        <div style="display:flex;align-items:center;gap:12px;padding:14px;background:white;border-radius:10px;border:1px solid rgba(231,76,60,0.2);">
+                            <div style="width:50px;height:50px;background:#f8d7da;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;">📦</div>
+                            <div>
+                                <div style="font-size:13px;font-weight:700;color:#e74c3c;">Stock = 0 → Badge AGOTADO</div>
+                                <div style="font-size:12px;color:#666;margin-top:2px;">El producto se muestra pero no se puede comprar</div>
+                            </div>
+                        </div>
+                        <div id="productosAgotadosList" style="margin-top:14px;display:flex;flex-direction:column;gap:8px;"></div>
+                    </div>
+                </div>
+
+            </div>
+
+                <!-- Tab: Apariencia / Imagen Hero -->
+                <div id="analytics" class="admin-tab">
+                    <h3 style="margin-bottom:20px;">📊 Analytics de la Tienda</h3>
+                    <div id="analyticsContent">
+                        <p style="color:#999;text-align:center;padding:40px 0;">Cargando estadísticas...</p>
+                    </div>
+                </div>
+
+                <div id="apariencia" class="admin-tab">
+                    <h3 style="margin-bottom:18px;">🎨 Personalización Visual</h3>
+                    
+                    <!-- IMAGEN HERO -->
+                    <div style="background:var(--cream);padding:20px;border-radius:14px;margin-bottom:24px;">
+                        <h4 style="margin-bottom:6px;">📷 Imagen Principal (Hero)</h4>
+                        <p style="font-size:13px;color:var(--text-muted);margin-bottom:16px;">Esta imagen aparece a la derecha del título principal en la página de inicio.</p>
+                        
+                        <div id="heroImagePreview" style="width:100%;height:160px;border-radius:12px;overflow:hidden;background:#eee;margin-bottom:14px;position:relative;">
+                            <img id="heroPreviewImg" src="" style="width:100%;height:100%;object-fit:cover;" alt="Preview">
+                            <div id="heroPreviewPlaceholder" style="display:none;width:100%;height:100%;background:var(--graphite);display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.4);font-size:14px;">Sin imagen cargada</div>
+                        </div>
+                        
+                        <div class="form-group" style="margin-bottom:12px;">
+                            <label>Subir imagen desde tu dispositivo:</label>
+                            <input type="file" id="heroImageUpload" accept="image/*" onchange="previewHeroImage(this)">
+                            <small>JPG, PNG, WEBP — recomendado: foto de persona usando un producto</small>
+                        </div>
+                        <div class="form-group" style="margin-bottom:16px;">
+                            <label>O pega una URL de imagen:</label>
+                            <input type="text" id="heroImageUrl" placeholder="https://ejemplo.com/foto.jpg" oninput="previewHeroUrl(this.value)">
+                        </div>
+                        <button class="btn btn-primary" onclick="guardarImagenHero()" style="width:100%;">💾 Aplicar imagen al Hero</button>
+                        <button class="btn btn-secondary" onclick="restaurarImagenHeroDefault()" style="width:100%;margin-top:8px;background:transparent;border:1px solid rgba(0,0,0,0.15);color:var(--text-muted);">↩ Restaurar imagen por defecto</button>
+                    </div>
+
+                    <!-- COUNTDOWN TIMER -->
+                    <div style="background:var(--cream);padding:20px;border-radius:14px;">
+                        <h4 style="margin-bottom:6px;">⏱️ Cronómetro de Oferta (FOMO)</h4>
+                        <p style="font-size:13px;color:var(--text-muted);margin-bottom:16px;">Añade un contador regresivo a un producto para crear urgencia. Aparece visible en la tarjeta del producto.</p>
+                        
+                        <div class="form-group">
+                            <label>Seleccionar Producto:</label>
+                            <select id="countdownProductSelect">
+                                <option value="">-- Ninguno (desactivar timer) --</option>
+                            </select>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Horas:</label>
+                                <input type="number" id="countdownHoras" placeholder="2" min="0" max="72" value="2">
+                            </div>
+                            <div class="form-group">
+                                <label>Minutos:</label>
+                                <input type="number" id="countdownMinutos" placeholder="30" min="0" max="59" value="30">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Texto de la oferta:</label>
+                            <input type="text" id="countdownTexto" placeholder="¡Oferta especial!" value="¡Oferta especial!">
+                        </div>
+                        <button class="btn btn-primary" onclick="guardarCountdown()" style="width:100%;background:var(--coral);">⏱️ Activar Countdown</button>
+                        <button class="btn" onclick="desactivarCountdown()" style="width:100%;margin-top:8px;background:transparent;border:1px solid #e74c3c;color:#e74c3c;">🗑️ Desactivar Countdown</button>
+                        
+                        <div id="countdownStatus" style="margin-top:12px;font-size:13px;color:var(--text-muted);"></div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- FIN PANEL ADMIN -->
+
+    <!-- ===== MODAL EDITAR PRODUCTO ===== -->
+    <div id="editModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Editar Producto</h2>
+                <button class="close-btn" onclick="cerrarEditModal()">✕</button>
+            </div>
+            <form id="editForm">
+                <input type="hidden" id="editProductId">
+                <div class="form-group">
+                    <label>Nombre:</label>
+                    <input type="text" id="editProductName" required>
+                </div>
+                <div class="form-group">
+                    <label>Descripcion:</label>
+                    <textarea id="editProductDescription" required rows="4"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Categoria:</label>
+                    <select id="editProductCategory" required>
+                        <option value="General">General</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>¿Mostrar en "Más Vendidos"?</label>
+                    <select id="editProductMasVendido">
+                        <option value="false">No</option>
+                        <option value="true">Sí — Destacar en la página principal</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="editProductUsado">
+                        ✨ Este es un producto usado/refurbished
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label>Foto (opcional):</label>
+                    <input type="file" id="editProductImage" accept="image/*">
+                    <small>Deja en blanco para mantener la imagen actual</small>
+                    <div id="currentImagePreview" style="margin-top:10px"></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Precio (USD):</label>
+                        <input type="number" id="editProductPriceActual" required step="0.01" min="0">
+                    </div>
+                    <div class="form-group">
+                        <label>Descuento % (Opcional):</label>
+                        <input type="number" id="editProductDiscount" min="0" max="100">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Stock Disponible:</label>
+                        <input type="number" id="editProductStock" required min="0">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Garantía (opcional):</label>
+                    <input type="text" id="editProductGarantia" placeholder="Ej: 6 meses de garantía" maxlength="50">
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="editProductDevolucion">
+                        ✓ Devolución segura / Garantía de satisfacción
+                    </label>
+                </div>
+                <button type="submit" class="btn btn-primary">💾 Guardar Cambios</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ===== MODAL DETALLE DE PRODUCTO ===== -->
+    <div id="productDetailModal" class="modal hidden" onclick="if(event.target===this)cerrarDetalleModal()">
+        <div class="modal-content detail-modal-content">
+            <div class="modal-header">
+                <h2 id="detailProductName">Detalle del Producto</h2>
+                <button class="close-btn" onclick="cerrarDetalleModal()">×</button>
+            </div>
+            <div class="detail-body">
+
+                <!-- Imagen + Info principal -->
+                <div class="detail-grid">
+                    <div class="detail-image-wrap">
+                        <img id="detailProductImage" src="" alt="" class="detail-img"
+                             onclick="toggleZoomImagen(this)">
+                        <div class="detail-zoom-hint">🔍 Toca para ampliar</div>
+                        <div id="detailProductBadge" class="badge detail-badge">-0%</div>
+                        <div id="detailMasVendidoBadge" class="badge-vendido detail-badge-hot" style="display:none;">🔥 Más Vendido</div>
+                    </div>
+
+                    <div class="detail-info">
+                        <p id="detailProductCategory" class="detail-category"></p>
+                        <p id="detailSubcategoria" class="detail-subcategory" style="display:none;"></p>
+
+                        <!-- Precio -->
+                        <div class="detail-price-wrap">
+                            <span id="detailPriceOriginal" class="detail-price-old"></span>
+                            <span id="detailPriceActual" class="detail-price-main"></span>
+                            <span id="detailAhorroBadge" class="detail-ahorro" style="display:none;"></span>
+                        </div>
+
+                        <!-- Stock -->
+                        <div id="detailProductStock" class="detail-stock"></div>
+                        <div class="stock-bar" style="margin: 6px 0 16px;width:100%;">
+                            <div id="detailStockBarFill" class="stock-bar-fill"></div>
+                        </div>
+
+                        <!-- Badges extra: garantia, devolucion, usado -->
+                        <div id="detailExtraBadges" class="detail-extra-badges"></div>
+
+                        <!-- Personas viendo -->
+                        <div id="detailPersonasViendo" class="contador-personas" style="display:none;"></div>
+
+                        <!-- Botón comprar -->
+                        <button id="detailBuyBtn" class="btn-cta-mejorado detail-buy-btn">
+                            🛒 Comprar por WhatsApp
+                        </button>
+
+                        <!-- Compartir -->
+                        <div class="detail-share">
+                            <button class="detail-share-btn" onclick="compartirProducto()">📤 Compartir</button>
+                            <button class="detail-share-btn" onclick="copiarLinkProducto()">🔗 Copiar enlace</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Descripción -->
+                <div class="detail-description-section">
+                    <h3>📋 Descripción</h3>
+                    <div id="detailProductDescription" class="detail-description-text"></div>
+                </div>
+
+                <!-- Reseñas -->
+                <div class="detail-resenas-section">
+                    <div class="detail-resenas-header">
+                        <h3>⭐ Reseñas</h3>
+                        <button class="detail-resena-add-btn" onclick="mostrarFormResena()" id="btnAgregarResena">+ Agregar reseña</button>
+                    </div>
+                    <div id="formResena" class="form-resena" style="display:none;">
+                        <div class="estrellas-input" id="estrellasInput">
+                            <span class="estrella-btn" onclick="setEstrellas(1)">★</span>
+                            <span class="estrella-btn" onclick="setEstrellas(2)">★</span>
+                            <span class="estrella-btn" onclick="setEstrellas(3)">★</span>
+                            <span class="estrella-btn" onclick="setEstrellas(4)">★</span>
+                            <span class="estrella-btn" onclick="setEstrellas(5)">★</span>
+                        </div>
+                        <input type="text" id="resenaAutor" placeholder="Tu nombre" class="resena-input" maxlength="30">
+                        <textarea id="resenaTexto" placeholder="Cuenta tu experiencia con este producto..." class="resena-textarea" maxlength="300" rows="3"></textarea>
+                        <button class="btn btn-primary" onclick="guardarResena()" style="width:100%;">Publicar reseña</button>
+                    </div>
+                    <div id="listaResenas" class="lista-resenas"></div>
+                </div>
+
+                <!-- Productos relacionados -->
+                <div id="detailRelacionados" class="detail-relacionados" style="display:none;">
+                    <h3>✨ También te puede interesar</h3>
+                    <div id="detailRelacionadosGrid" class="detail-relacionados-grid"></div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script src="js/script.js"></script>
+    <script src="js/subcategorias.js"></script>
+    <script src="js/revolico_integration.js"></script>
+    <script>
+    function abrirMenuMovil() {
+        document.getElementById('mobileMenuOverlay').classList.add('open');
+        document.getElementById('hamburgerBtn').classList.add('open');
+        document.body.style.overflow = 'hidden';
+    }
+    function cerrarMenuMovil() {
+        document.getElementById('mobileMenuOverlay').classList.remove('open');
+        document.getElementById('hamburgerBtn').classList.remove('open');
+        document.body.style.overflow = '';
+    }
+    document.addEventListener('DOMContentLoaded', function() {
+        var overlay = document.getElementById('mobileMenuOverlay');
+        if(overlay) overlay.addEventListener('click', function(e){
+            if(e.target === this) cerrarMenuMovil();
+        });
+    });
+    </script>
+
+    <script>
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('/sw.js').catch(() => {});
         });
     }
-
-    if (!hasSubcategories) {
-        list.innerHTML += '<p style="color: #999; text-align: center; padding: 20px;">No hay subcategorías aún. ¡Crea una para empezar!</p>';
-    }
-}
-
-function actualizarSelectSubcategorias() {
-    ['productSubcategory', 'editProductSubcategory'].forEach(id => {
-        const select = document.getElementById(id);
-        if (!select) return;
-        
-        const val = select.value;
-        const catSelect = id === 'productSubcategory' 
-            ? document.getElementById('productCategory')
-            : document.getElementById('editProductCategory');
-        
-        if (!catSelect) return;
-        
-        const categoria = catSelect.value;
-        select.innerHTML = '<option value="">-- Sin subcategoría --</option>';
-        
-        if (subcategorias[categoria]) {
-            subcategorias[categoria].forEach(subcat => {
-                const opt = document.createElement('option');
-                opt.value = subcat;
-                opt.textContent = subcat;
-                select.appendChild(opt);
-            });
-        }
-        
-        select.value = val || '';
-    });
-}
-
-function descargarSubcategoriasJSON() {
-    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(subcategorias, null, 2));
-    const downloadAnchorNode = document.createElement('a');
-    downloadAnchorNode.setAttribute("href", dataStr);
-    downloadAnchorNode.setAttribute("download", "subcategorias.json");
-    document.body.appendChild(downloadAnchorNode);
-    downloadAnchorNode.click();
-    downloadAnchorNode.remove();
-    mostrarNotificacion('✅ Archivo subcategorias.json generado. Súbelo a tu GitHub.');
-}
-
-// ===== INTEGRACIÓN CON PRODUCTOS =====
-
-function agregarSubcategoriaAlProducto() {
-    const productForm = document.getElementById('productForm');
-    if (!productForm) return;
-
-    // Buscar si ya existe el select de subcategoría
-    if (document.getElementById('productSubcategory')) return;
-
-    // Insertar después del select de categoría
-    const categorySelect = document.getElementById('productCategory');
-    if (!categorySelect) return;
-    const categoryGroup = categorySelect.parentElement;
-    const subcatGroup = document.createElement('div');
-    subcatGroup.className = 'form-group';
-    subcatGroup.innerHTML = `
-        <label>Subcategoría (opcional):</label>
-        <select id="productSubcategory" onchange="actualizarSelectSubcategorias()">
-            <option value="">-- Sin subcategoría --</option>
-        </select>
-    `;
-    categoryGroup.insertAdjacentElement('afterend', subcatGroup);
-}
-
-function agregarSubcategoriaAlEditModal() {
-    const editForm = document.getElementById('editForm');
-    if (!editForm) return;
-
-    // Buscar si ya existe el select de subcategoría
-    if (document.getElementById('editProductSubcategory')) return;
-
-    // Insertar después del select de categoría
-    const categorySelect = document.getElementById('editProductCategory');
-    if (!categorySelect) return;
-    const categoryGroup = categorySelect.parentElement;
-    const subcatGroup = document.createElement('div');
-    subcatGroup.className = 'form-group';
-    subcatGroup.innerHTML = `
-        <label>Subcategoría (opcional):</label>
-        <select id="editProductSubcategory">
-            <option value="">-- Sin subcategoría --</option>
-        </select>
-    `;
-    categoryGroup.insertAdjacentElement('afterend', subcatGroup);
-}
-
-// ===== SINCRONIZACIÓN DE SUBCATEGORÍAS CON GITHUB =====
-
-async function sincronizarSubcategoriasConGitHub() {
-    const user = localStorage.getItem('githubUser');
-    const repo = localStorage.getItem('githubRepo');
-    const token = localStorage.getItem('githubToken');
-    if (!user || !repo || !token) {
-        console.log('ℹ️ GitHub no configurado. Saltando sincronización de subcategorías.');
-        return;
-    }
-    try {
-        await subirArchivoAGitHub(user, repo, token, 'subcategorias.json', subcategorias);
-        console.log('✅ Subcategorías sincronizadas con GitHub automáticamente');
-    } catch (e) {
-        console.warn('⚠️ Error al sincronizar subcategorías:', e.message);
-    }
-}
-
-// ===== CARGAR SUBCATEGORÍAS DESDE GITHUB =====
-
-async function cargarSubcategoriasDesdeGitHub() {
-    try {
-        const res = await fetch('subcategorias.json', { cache: 'no-store' });
-        if (res.ok) {
-            const data = await res.json();
-            if (data) {
-                subcategorias = data;
-                localStorage.setItem('subcategorias', JSON.stringify(subcategorias));
-                console.log('✅ Subcategorías cargadas desde GitHub');
-            }
-        }
-    } catch (e) {
-        console.log('ℹ️ Subcategorías no disponibles en GitHub');
-    }
-}
-
-// ===== INICIALIZACIÓN =====
-
-// Ejecutar cuando el DOM esté listo
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => {
-        setTimeout(() => {
-            cargarSubcategoriasDesdeGitHub();
-            inicializarSubcategorias();
-            agregarSubcategoriaAlProducto();
-            agregarSubcategoriaAlEditModal();
-            actualizarSelectCategoriasPadre();
-            // Escuchar cambios en la categoría del formulario para actualizar subcategorías
-            const productCat = document.getElementById('productCategory');
-            if (productCat) {
-                productCat.addEventListener('change', actualizarSelectSubcategorias);
-            }
-            const editCat = document.getElementById('editProductCategory');
-            if (editCat) {
-                editCat.addEventListener('change', actualizarSelectSubcategorias);
-            }
-        }, 100);
-    });
-} else {
-    cargarSubcategoriasDesdeGitHub();
-    inicializarSubcategorias();
-    agregarSubcategoriaAlProducto();
-    agregarSubcategoriaAlEditModal();
-    actualizarSelectCategoriasPadre();
-    // Escuchar cambios en la categoría del formulario para actualizar subcategorías
-    const productCat = document.getElementById('productCategory');
-    if (productCat) {
-        productCat.addEventListener('change', actualizarSelectSubcategorias);
-    }
-    const editCat = document.getElementById('editProductCategory');
-    if (editCat) {
-        editCat.addEventListener('change', actualizarSelectSubcategorias);
-    }
-}
-
-// Sincronizar cambios de categoría
-window.addEventListener('storage', (event) => {
-    if (event.key === 'subcategorias') {
-        subcategorias = JSON.parse(event.newValue) || {};
-        actualizarListaSubcategorias();
-        actualizarSelectSubcategorias();
-    }
-});
+    </script>
+</body>
+</html>
