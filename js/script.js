@@ -2979,7 +2979,7 @@ renderizarProductos = function() {
                 ? '<div class="stock" style="color:#e74c3c;font-weight:700;">❌ Agotado</div><button class="btn btn-small btn-primary" disabled style="opacity:0.5;cursor:not-allowed;">No disponible</button>'
                 : '<div class="stock">📦 Stock: ' + producto.stock + ' unidades</div>' +
                   (typeof renderCountdownHtml === 'function' ? renderCountdownHtml(producto.id) : '') +
-                  '<button class="btn btn-small btn-primary" onclick="event.stopPropagation(); contactarProducto(\'' + producto.nombre + '\')">🛒 Comprar</button>');
+                  '<button class="btn btn-small btn-primary" onclick="event.stopPropagation(); tmComprar(event, ' + producto.id + ', \'' + producto.nombre + '\')">🛒 Comprar</button>');
         productosGrid.appendChild(card);
     });
 };
