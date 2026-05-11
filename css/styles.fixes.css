@@ -384,42 +384,52 @@ html body .detail-modal-content {
 
 
 /* =====================================================================
-   FIX L · BOTÓN "AJUSTES" DEL NAV — ALINEACIÓN
+   FIX L · NAV — ALINEACIÓN EN ESCRITORIO + OCULTAR EN MÓVIL
    ---------------------------------------------------------------------
-   El .nav usa display:flex con gap pero sin align-items:center.
-   Como los <a> son texto plano y .nav-admin-btn tiene padding+borde,
-   quedaba a una altura distinta (alineado por baseline tipográfica).
+   Solo aplicar en escritorio (>768px). En móvil el nav debe estar
+   completamente oculto: solo se muestra el botón hamburguesa, que
+   abre el menú mobile-menu-overlay.
    ===================================================================== */
-html body .header .nav {
-    display: flex !important;
-    align-items: center !important;     /* ← clave: centra todo verticalmente */
-    gap: 28px !important;
+@media (min-width: 769px) {
+    html body .header .nav {
+        display: flex !important;
+        align-items: center !important;
+        gap: 28px !important;
+    }
+    html body .header .nav a {
+        display: inline-flex !important;
+        align-items: center !important;
+        height: 36px !important;
+        line-height: 1 !important;
+    }
+    html body .header .nav-admin-btn {
+        height: 36px !important;
+        padding: 0 12px !important;
+        gap: 6px !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        line-height: 1 !important;
+        font-size: 12px !important;
+        box-sizing: border-box !important;
+    }
+    html body .header .nav-admin-btn svg {
+        flex-shrink: 0 !important;
+        display: block !important;
+    }
+    html body .header .nav-admin-label {
+        display: inline-block !important;
+        line-height: 1 !important;
+    }
 }
 
-html body .header .nav a {
-    display: inline-flex !important;
-    align-items: center !important;
-    height: 36px !important;            /* misma altura visual que el botón */
-    line-height: 1 !important;
-}
-
-html body .header .nav-admin-btn {
-    height: 36px !important;             /* altura uniforme */
-    padding: 0 12px !important;
-    gap: 6px !important;
-    display: inline-flex !important;
-    align-items: center !important;
-    line-height: 1 !important;
-    font-size: 12px !important;
-    box-sizing: border-box !important;
-}
-html body .header .nav-admin-btn svg {
-    flex-shrink: 0 !important;
-    display: block !important;
-}
-html body .header .nav-admin-label {
-    display: inline-block !important;
-    line-height: 1 !important;
+/* En móvil: ocultar nav definitivamente, solo se ve la hamburguesa */
+@media (max-width: 768px) {
+    html body .header .nav {
+        display: none !important;
+    }
+    html body .header .hamburger-btn {
+        display: flex !important;
+    }
 }
 
 
@@ -435,29 +445,29 @@ html body #detailProductImage:focus-visible {
 
 
 /* =====================================================================
-   FIX N · QUITAR BORDE DEL BOTÓN "AJUSTES"
-   ---------------------------------------------------------------------
-   Para que se vea igual que el resto de enlaces del nav (sin caja).
+   FIX N · QUITAR BORDE DEL BOTÓN "AJUSTES" (solo escritorio)
    ===================================================================== */
-html body .header .nav-admin-btn {
-    border: none !important;
-    background: transparent !important;
-    padding: 0 !important;
-    color: rgba(255,255,255,0.7) !important;
-    font-size: 13px !important;
-    font-weight: 500 !important;
-    letter-spacing: 0.5px !important;
-    text-transform: uppercase !important;
-}
-html body .header .nav-admin-btn:hover {
-    color: var(--gold) !important;
-    background: transparent !important;
-    border: none !important;
-}
-html body .header .nav-admin-label {
-    text-transform: uppercase !important;
-    letter-spacing: 0.5px !important;
-    font-size: 13px !important;
+@media (min-width: 769px) {
+    html body .header .nav-admin-btn {
+        border: none !important;
+        background: transparent !important;
+        padding: 0 !important;
+        color: rgba(255,255,255,0.7) !important;
+        font-size: 13px !important;
+        font-weight: 500 !important;
+        letter-spacing: 0.5px !important;
+        text-transform: uppercase !important;
+    }
+    html body .header .nav-admin-btn:hover {
+        color: var(--gold) !important;
+        background: transparent !important;
+        border: none !important;
+    }
+    html body .header .nav-admin-label {
+        text-transform: uppercase !important;
+        letter-spacing: 0.5px !important;
+        font-size: 13px !important;
+    }
 }
 
 
@@ -480,4 +490,30 @@ html body .hsb-panel {
 }
 html body .hsb-suggestions:empty {
     display: none !important;
+}
+
+
+/* =====================================================================
+   FIX P · BOTÓN MODO OSCURO (theme-toggle) — VISIBLE EN AMBOS MODOS
+   ---------------------------------------------------------------------
+   En modo oscuro el botón se confunde con el fondo (es negro sobre
+   fondo oscuro). Le damos contraste claro en dark-mode.
+   ===================================================================== */
+html body.dark-mode .theme-toggle {
+    background: #f5e6c4 !important;
+    color: #0d0d0d !important;
+    border: 1px solid rgba(201,169,110,0.5) !important;
+    box-shadow: 0 4px 20px rgba(245,230,196,0.25), 0 0 0 1px rgba(255,255,255,0.1) !important;
+}
+html body.dark-mode .theme-toggle:hover {
+    background: #fff3d6 !important;
+    border-color: var(--gold) !important;
+    box-shadow: 0 6px 26px rgba(245,230,196,0.4) !important;
+}
+
+/* Mismo cuidado para el admin-toggle por consistencia */
+html body.dark-mode .admin-toggle {
+    background: #1a1a1a !important;
+    color: #f5e6c4 !important;
+    border: 1px solid rgba(201,169,110,0.4) !important;
 }

@@ -766,6 +766,7 @@ window.addEventListener('storage', (event) => {
         actualizarListaCategorias();
         renderizarCategoriasHome();
         renderizarProductos();
+        if (typeof actualizarSelectCategoriasPadre === 'function') actualizarSelectCategoriasPadre();
     }
 });
 
@@ -1699,6 +1700,7 @@ function agregarCategoria() {
     actualizarBotonesCategorias();
     actualizarListaCategorias();
     renderizarCategoriasHome();
+    if (typeof actualizarSelectCategoriasPadre === 'function') actualizarSelectCategoriasPadre();
     mostrarNotificacion('✅ Categoría agregada');
 }
 
@@ -1724,6 +1726,7 @@ function eliminarCategoria(index) {
         actualizarListaCategorias();
         renderizarCategoriasHome();
         renderizarProductos();
+        if (typeof actualizarSelectCategoriasPadre === 'function') actualizarSelectCategoriasPadre();
     }
 }
 
@@ -2926,6 +2929,10 @@ function renderizarListaAgotados() {
 // ── Patch switchTab to hook oferta-dia tab ──
 const _origSwitchTabFinal = switchTab;
 switchTab = function(tabName) {
+    // Refrescar select de categorías al entrar al tab de subcategorías
+    if (tabName === 'manage-subcategories' && typeof actualizarSelectCategoriasPadre === 'function') {
+        setTimeout(actualizarSelectCategoriasPadre, 50);
+    }
     _origSwitchTabFinal(tabName);
     if (tabName === 'oferta-dia') {
         setTimeout(() => {
