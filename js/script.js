@@ -662,12 +662,30 @@ function validarProducto(producto) {
 
 // ===== CARGA DE DATOS DESDE GITHUB =====
 
-// Función para hashear la contraseña
+// Función para hashear la contraseña — PBKDF2 con salt (resistente a fuerza bruta)
+const ADMIN_SALT = '96cdfd4e2b00860977557fa36a4aac62'; // único de tu instalación; cambiar invalida hashes
 async function hashPassword(password) {
-    const msgUint8 = new TextEncoder().encode(password);
-    const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);
-    const hashArray = Array.from(new Uint8Array(hashBuffer));
-    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    const enc = new TextEncoder();
+    const keyMaterial = await crypto.subtle.importKey(
+        'raw',
+        enc.encode(password),
+        { name: 'PBKDF2' },
+        false,
+        ['deriveBits']
+    );
+    const bits = await crypto.subtle.deriveBits(
+        {
+            name: 'PBKDF2',
+            salt: enc.encode(ADMIN_SALT),
+            iterations: 200000,           // 200k iteraciones → ralentiza fuerza bruta
+            hash: 'SHA-256'
+        },
+        keyMaterial,
+        256
+    );
+    return Array.from(new Uint8Array(bits))
+        .map(b => b.toString(16).padStart(2, '0'))
+        .join('');
 }
 
 async function cargarDatosDesdeGitHub() {
