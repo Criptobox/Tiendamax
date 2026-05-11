@@ -4024,64 +4024,222 @@ body.dark-mode #listaRevolicoConfig select {
     }
 }
 
+
 /* ══════════════════════════════════════════════════════
-   MASTER FIX — Fuente única de verdad para todos los
-   botones flotantes, banners laterales y móviles.
-   Este bloque va AL FINAL y no se debe sobreescribir.
+   MASTER FIX — Fuente ÚNICA y FINAL de verdad.
+   Nada después de este bloque debe existir.
+   Replica exactamente el diseño de las fotos de referencia:
+   banners con degradado limpio, icono en círculo, texto blanco.
 ══════════════════════════════════════════════════════ */
 
-/* ── Botones flotantes WhatsApp ── */
-a.whatsapp-btn,
-.whatsapp-btn {
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   1. BOTONES FLOTANTES WHATSAPP
+   Verde sólido con sombra verde, icono blanco
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+a.whatsapp-btn, .whatsapp-btn {
     background: #25D366 !important;
     border: none !important;
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
-    box-shadow: 0 4px 20px rgba(37,211,102,0.45), 0 2px 8px rgba(0,0,0,0.18) !important;
+    box-shadow: 0 4px 20px rgba(37,211,102,0.5) !important;
 }
-a.whatsapp-btn svg,
-.whatsapp-btn svg { color: white !important; stroke: white !important; fill: none !important; }
-a.whatsapp-btn:hover,
-.whatsapp-btn:hover {
+a.whatsapp-btn svg, .whatsapp-btn svg {
+    color: white !important;
+    stroke: white !important;
+    fill: none !important;
+}
+a.whatsapp-btn:hover, .whatsapp-btn:hover {
     background: #1da856 !important;
-    transform: scale(1.12) translateY(-2px) !important;
-    box-shadow: 0 8px 30px rgba(37,211,102,0.55) !important;
+    transform: scale(1.1) translateY(-2px) !important;
+    box-shadow: 0 8px 28px rgba(37,211,102,0.6) !important;
 }
-
-a.whatsapp-group-btn,
-.whatsapp-group-btn {
+a.whatsapp-group-btn, .whatsapp-group-btn {
     background: #128C7E !important;
     border: none !important;
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
-    box-shadow: 0 4px 20px rgba(18,140,126,0.4), 0 2px 8px rgba(0,0,0,0.18) !important;
+    box-shadow: 0 4px 20px rgba(18,140,126,0.45) !important;
 }
-a.whatsapp-group-btn svg,
-.whatsapp-group-btn svg { color: white !important; stroke: white !important; fill: none !important; }
-a.whatsapp-group-btn:hover,
-.whatsapp-group-btn:hover {
+a.whatsapp-group-btn svg, .whatsapp-group-btn svg {
+    color: white !important;
+    stroke: white !important;
+    fill: none !important;
+}
+a.whatsapp-group-btn:hover, .whatsapp-group-btn:hover {
     background: #0f7268 !important;
-    transform: scale(1.12) translateY(-2px) !important;
-    box-shadow: 0 8px 30px rgba(18,140,126,0.5) !important;
+    transform: scale(1.1) translateY(-2px) !important;
+    box-shadow: 0 8px 28px rgba(18,140,126,0.55) !important;
 }
 
-/* ── Banner lateral desktop (Grupo = verde | Ayuda = coral) ── */
-.banner-lateral-grupo { background: linear-gradient(160deg, #1db954, #128C3E) !important; }
-.banner-lateral-ayuda { background: linear-gradient(160deg, #ff6b35, #c94400) !important; }
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   2. BANNERS LATERALES DESKTOP
+   Replicando exactamente fotos 2 y 3:
+   - Fondo degradado sólido verde / naranja
+   - Icono centrado en círculo semitransparente
+   - Título blanco bold
+   - Subtítulo blanco 80%
+   - Botón pill oscuro "Unirme →" / "Contactar →"
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.banner-lateral {
+    width: 115px !important;
+    min-width: 115px !important;
+    padding: 22px 12px !important;
+    border-radius: 22px !important;
+    align-self: stretch !important;
+    gap: 10px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-decoration: none !important;
+    position: relative !important;
+    overflow: hidden !important;
+    text-align: center !important;
+    flex-shrink: 0 !important;
+    transition: transform 0.25s ease, box-shadow 0.25s ease !important;
+}
+.banner-lateral:hover {
+    transform: translateY(-3px) !important;
+    box-shadow: 0 12px 32px rgba(0,0,0,0.35) !important;
+}
+/* Degradado limpio — Grupo = verde, Ayuda = naranja/coral */
+.banner-lateral-grupo {
+    background: linear-gradient(160deg, #1a9e4a 0%, #25d366 100%) !important;
+    box-shadow: 0 6px 24px rgba(37,211,102,0.35) !important;
+}
+.banner-lateral-ayuda {
+    background: linear-gradient(160deg, #c94400 0%, #ff6b35 100%) !important;
+    box-shadow: 0 6px 24px rgba(255,107,53,0.35) !important;
+}
+/* Brillo sutil en la esquina superior */
+.banner-lateral-shine {
+    position: absolute !important;
+    inset: 0 !important;
+    background: linear-gradient(135deg, rgba(255,255,255,0.18) 0%, transparent 55%) !important;
+    pointer-events: none !important;
+}
+/* Icono en círculo semitransparente como en las fotos */
+.banner-lateral-icon {
+    font-size: 26px !important;
+    width: 52px !important;
+    height: 52px !important;
+    background: rgba(255,255,255,0.18) !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    margin: 0 auto !important;
+    backdrop-filter: blur(4px) !important;
+}
+.banner-lateral-title {
+    font-size: 12px !important;
+    font-weight: 800 !important;
+    color: white !important;
+    line-height: 1.25 !important;
+    letter-spacing: 0.3px !important;
+    text-transform: uppercase !important;
+}
+.banner-lateral-sub {
+    font-size: 9.5px !important;
+    color: rgba(255,255,255,0.82) !important;
+    line-height: 1.4 !important;
+    display: none !important;
+}
+/* Botón pill oscuro exactamente como en las fotos */
+.banner-lateral-btn {
+    font-size: 10.5px !important;
+    font-weight: 700 !important;
+    color: white !important;
+    background: rgba(0,0,0,0.28) !important;
+    padding: 6px 12px !important;
+    border-radius: 30px !important;
+    margin-top: 4px !important;
+    letter-spacing: 0.2px !important;
+    border: 1px solid rgba(255,255,255,0.15) !important;
+    transition: background 0.2s !important;
+}
+.banner-lateral:hover .banner-lateral-btn {
+    background: rgba(0,0,0,0.42) !important;
+}
+@media (min-width: 1100px) {
+    .banner-lateral { width: 125px !important; }
+    .banner-lateral-sub { display: block !important; }
+}
 
-/* ── Mobile bottom banners (Grupo = verde | Ayuda = coral) ── */
-.mbb-grupo { background: linear-gradient(135deg, #1db954, #128C3E) !important; }
-.mbb-ayuda { background: linear-gradient(135deg, #ff6b35, #c94400) !important; }
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   3. MOBILE BOTTOM BANNERS (mbb)
+   Mismo look que los laterales pero horizontal
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.mbb-grupo {
+    background: linear-gradient(135deg, #1a9e4a 0%, #25d366 100%) !important;
+    box-shadow: 0 6px 20px rgba(37,211,102,0.35) !important;
+    border-radius: 18px !important;
+}
+.mbb-ayuda {
+    background: linear-gradient(135deg, #c94400 0%, #ff6b35 100%) !important;
+    box-shadow: 0 6px 20px rgba(255,107,53,0.35) !important;
+    border-radius: 18px !important;
+}
+/* Icono en círculo también en mobile */
+.mbb-icon-wrap {
+    font-size: 22px !important;
+    width: 44px !important;
+    height: 44px !important;
+    background: rgba(255,255,255,0.18) !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    margin: 0 auto !important;
+}
+.mbb-title {
+    font-size: 12px !important;
+    font-weight: 800 !important;
+    color: white !important;
+    letter-spacing: 0.3px !important;
+    text-transform: uppercase !important;
+    line-height: 1.2 !important;
+}
+.mbb-sub { display: none !important; }
+.mbb-btn {
+    font-size: 10.5px !important;
+    font-weight: 700 !important;
+    color: white !important;
+    background: rgba(0,0,0,0.28) !important;
+    padding: 5px 12px !important;
+    border-radius: 30px !important;
+    margin-top: 5px !important;
+    border: 1px solid rgba(255,255,255,0.15) !important;
+}
+.mbb-shine {
+    position: absolute !important;
+    inset: 0 !important;
+    background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 55%) !important;
+    pointer-events: none !important;
+    border-radius: inherit !important;
+}
 
-/* ── Mobile menu inline buttons ── */
-.mobile-action-grupo { background: #25D366 !important; color: white !important; }
-.mobile-action-ayuda { background: var(--coral, #ff6b35) !important; color: white !important; }
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   4. MOBILE MENU INLINE BUTTONS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.mobile-action-grupo {
+    background: linear-gradient(135deg, #1a9e4a, #25d366) !important;
+    color: white !important;
+}
+.mobile-action-ayuda {
+    background: linear-gradient(135deg, #c94400, #ff6b35) !important;
+    color: white !important;
+}
 
-/* ── Descripción de producto: sin recorte en móvil ── */
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   5. DESCRIPCIÓN DE PRODUCTO EN MÓVIL
+   Sin clamp, sin overflow oculto — texto completo visible
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 @media (max-width: 768px) {
     .producto-description {
         display: block !important;
         -webkit-line-clamp: unset !important;
+        -webkit-box-orient: unset !important;
         overflow: visible !important;
         max-height: none !important;
         font-size: 12px !important;
@@ -4090,13 +4248,11 @@ a.whatsapp-group-btn:hover,
         margin-bottom: 10px !important;
         color: var(--text-muted) !important;
     }
-    /* La card crece con el contenido; no corta el texto */
     .producto-card {
         overflow: visible !important;
     }
-    /* Mantener la imagen con overflow oculto para no salirse */
     .producto-image {
         overflow: hidden !important;
-        border-radius: 14px 14px 0 0;
+        border-radius: 14px 14px 0 0 !important;
     }
 }
