@@ -1812,6 +1812,17 @@ body.dark-mode .categoria-stats { background: rgba(255,255,255,0.08); border-col
     .producto-card .precio-actual { font-size: 16px; }
     .producto-image { height: 140px; }
 
+    /* Descripción completa en móvil — sin clamp ni overflow oculto */
+    .producto-description {
+        display: block !important;
+        -webkit-line-clamp: unset !important;
+        -webkit-box-orient: unset !important;
+        overflow: visible !important;
+        font-size: 12px;
+        padding: 0 12px;
+        margin-bottom: 10px;
+    }
+
     /* Categorías: scroll horizontal en móvil */
     .categorias-grid {
         display: flex !important;
@@ -3105,44 +3116,42 @@ body.dark-mode .cta-final { background: #080808; }
    Skeleton loading · Fly-to-cart · Counter anim
 ═════════════════════════════════════════════════════ */
 
-/* ── 1. WHATSAPP BUTTON GLASS PREMIUM ── */
+/* ── 1. WHATSAPP BUTTON — manteniendo color verde de marca ── */
 .whatsapp-btn {
-    background: rgba(18, 18, 18, 0.88) !important;
-    backdrop-filter: blur(14px) !important;
-    -webkit-backdrop-filter: blur(14px) !important;
-    border: 1.5px solid rgba(37,211,102,0.45) !important;
+    background: #25D366 !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    border: none !important;
     box-shadow:
-        0 4px 24px rgba(0,0,0,0.35),
-        0 0 0 1px rgba(37,211,102,0.08),
-        inset 0 1px 0 rgba(255,255,255,0.06) !important;
+        0 4px 20px rgba(37,211,102,0.5),
+        0 2px 8px rgba(0,0,0,0.2) !important;
     transition: all 0.35s cubic-bezier(0.4,0,0.2,1) !important;
 }
-.whatsapp-btn svg { color: #25D366; stroke: #25D366; }
+.whatsapp-btn svg { color: white !important; stroke: white !important; }
 .whatsapp-btn:hover {
-    border-color: rgba(37,211,102,0.8) !important;
+    background: #20ba5a !important;
     box-shadow:
-        0 8px 32px rgba(0,0,0,0.4),
-        0 0 20px rgba(37,211,102,0.25),
-        inset 0 1px 0 rgba(255,255,255,0.08) !important;
+        0 8px 32px rgba(37,211,102,0.6),
+        0 4px 12px rgba(0,0,0,0.25) !important;
     transform: scale(1.1) translateY(-2px) !important;
 }
 
 .whatsapp-group-btn {
-    background: rgba(18, 18, 18, 0.88) !important;
-    backdrop-filter: blur(14px) !important;
-    -webkit-backdrop-filter: blur(14px) !important;
-    border: 1.5px solid rgba(18,140,126,0.45) !important;
+    background: #128C7E !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    border: none !important;
     box-shadow:
-        0 4px 24px rgba(0,0,0,0.35),
-        inset 0 1px 0 rgba(255,255,255,0.06) !important;
+        0 4px 20px rgba(18,140,126,0.45),
+        0 2px 8px rgba(0,0,0,0.2) !important;
     transition: all 0.35s cubic-bezier(0.4,0,0.2,1) !important;
 }
-.whatsapp-group-btn svg { color: #128C7E; stroke: #128C7E; }
+.whatsapp-group-btn svg { color: white !important; stroke: white !important; }
 .whatsapp-group-btn:hover {
-    border-color: rgba(18,140,126,0.8) !important;
+    background: #0f7268 !important;
     box-shadow:
-        0 8px 32px rgba(0,0,0,0.4),
-        0 0 20px rgba(18,140,126,0.25) !important;
+        0 8px 32px rgba(18,140,126,0.55),
+        0 4px 12px rgba(0,0,0,0.25) !important;
     transform: scale(1.1) translateY(-2px) !important;
 }
 
@@ -3840,17 +3849,18 @@ body.dark-mode #listaRevolicoConfig select {
 }
 
 /* ══════════════════════════════════════════
-   FIX: Colores banners — degradado foto 2
+   Colores banners — CORRECTO
+   Grupo = verde WhatsApp | Ayuda = coral/naranja
 ══════════════════════════════════════════ */
 
 .banner-lateral-grupo,
 .mbb-grupo {
-    background: linear-gradient(135deg, #f5a623, #e8501e) !important;
+    background: linear-gradient(135deg, #1db954, #128C3E) !important;
 }
 
 .banner-lateral-ayuda,
 .mbb-ayuda {
-    background: linear-gradient(135deg, #25d366, #128C3E) !important;
+    background: linear-gradient(135deg, #ff6b35, #c94400) !important;
 }
 
 /* ══════════════════════════════════════════════════════
@@ -4011,5 +4021,82 @@ body.dark-mode #listaRevolicoConfig select {
         background: rgba(0,0,0,0.2) !important;
         margin-top: 6px !important;
         letter-spacing: 0.3px !important;
+    }
+}
+
+/* ══════════════════════════════════════════════════════
+   MASTER FIX — Fuente única de verdad para todos los
+   botones flotantes, banners laterales y móviles.
+   Este bloque va AL FINAL y no se debe sobreescribir.
+══════════════════════════════════════════════════════ */
+
+/* ── Botones flotantes WhatsApp ── */
+a.whatsapp-btn,
+.whatsapp-btn {
+    background: #25D366 !important;
+    border: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    box-shadow: 0 4px 20px rgba(37,211,102,0.45), 0 2px 8px rgba(0,0,0,0.18) !important;
+}
+a.whatsapp-btn svg,
+.whatsapp-btn svg { color: white !important; stroke: white !important; fill: none !important; }
+a.whatsapp-btn:hover,
+.whatsapp-btn:hover {
+    background: #1da856 !important;
+    transform: scale(1.12) translateY(-2px) !important;
+    box-shadow: 0 8px 30px rgba(37,211,102,0.55) !important;
+}
+
+a.whatsapp-group-btn,
+.whatsapp-group-btn {
+    background: #128C7E !important;
+    border: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    box-shadow: 0 4px 20px rgba(18,140,126,0.4), 0 2px 8px rgba(0,0,0,0.18) !important;
+}
+a.whatsapp-group-btn svg,
+.whatsapp-group-btn svg { color: white !important; stroke: white !important; fill: none !important; }
+a.whatsapp-group-btn:hover,
+.whatsapp-group-btn:hover {
+    background: #0f7268 !important;
+    transform: scale(1.12) translateY(-2px) !important;
+    box-shadow: 0 8px 30px rgba(18,140,126,0.5) !important;
+}
+
+/* ── Banner lateral desktop (Grupo = verde | Ayuda = coral) ── */
+.banner-lateral-grupo { background: linear-gradient(160deg, #1db954, #128C3E) !important; }
+.banner-lateral-ayuda { background: linear-gradient(160deg, #ff6b35, #c94400) !important; }
+
+/* ── Mobile bottom banners (Grupo = verde | Ayuda = coral) ── */
+.mbb-grupo { background: linear-gradient(135deg, #1db954, #128C3E) !important; }
+.mbb-ayuda { background: linear-gradient(135deg, #ff6b35, #c94400) !important; }
+
+/* ── Mobile menu inline buttons ── */
+.mobile-action-grupo { background: #25D366 !important; color: white !important; }
+.mobile-action-ayuda { background: var(--coral, #ff6b35) !important; color: white !important; }
+
+/* ── Descripción de producto: sin recorte en móvil ── */
+@media (max-width: 768px) {
+    .producto-description {
+        display: block !important;
+        -webkit-line-clamp: unset !important;
+        overflow: visible !important;
+        max-height: none !important;
+        font-size: 12px !important;
+        line-height: 1.5 !important;
+        padding: 0 12px !important;
+        margin-bottom: 10px !important;
+        color: var(--text-muted) !important;
+    }
+    /* La card crece con el contenido; no corta el texto */
+    .producto-card {
+        overflow: visible !important;
+    }
+    /* Mantener la imagen con overflow oculto para no salirse */
+    .producto-image {
+        overflow: hidden !important;
+        border-radius: 14px 14px 0 0;
     }
 }
