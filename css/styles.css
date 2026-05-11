@@ -3735,3 +3735,106 @@ body.dark-mode #listaRevolicoConfig select {
         min-height: 36px;
     }
 }
+
+/* ══════════════════════════════════════════
+   FIX v2: Botón Comprar + colores banners
+══════════════════════════════════════════ */
+
+/* Botón comprar — sin recorte, ancho completo */
+.producto-card .btn {
+    margin: auto 12px 16px !important;
+    width: calc(100% - 24px) !important;
+    box-sizing: border-box !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 5px !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    min-height: 40px !important;
+    padding: 10px 8px !important;
+    font-size: 13px !important;
+}
+
+@media (max-width: 768px) {
+    .producto-card .btn {
+        margin: auto 8px 12px !important;
+        width: calc(100% - 16px) !important;
+        font-size: 12px !important;
+        min-height: 38px !important;
+        padding: 8px 6px !important;
+    }
+}
+
+/* Banners: Grupo = verde WhatsApp, Ayuda = naranja coral */
+.banner-lateral-grupo {
+    background: linear-gradient(160deg, #1a9e4a, #25d366) !important;
+}
+.banner-lateral-ayuda {
+    background: linear-gradient(160deg, #e8501e, #ff6b35) !important;
+}
+.mbb-grupo {
+    background: linear-gradient(135deg, #1a9e4a, #25d366) !important;
+}
+.mbb-ayuda {
+    background: linear-gradient(135deg, #e8501e, #ff6b35) !important;
+}
+
+/* ══════════════════════════════════════════
+   FIX: Banners laterales — tamaño y diseño
+══════════════════════════════════════════ */
+
+.banner-lateral {
+    width: 110px !important;
+    min-width: 110px !important;
+    padding: 16px 10px !important;
+    border-radius: 16px !important;
+    align-self: center !important;
+    gap: 6px !important;
+}
+
+.banner-lateral-grupo {
+    background: linear-gradient(160deg, #128C3E, #25d366) !important;
+}
+
+.banner-lateral-ayuda {
+    background: linear-gradient(160deg, #c94400, #ff6b35) !important;
+}
+
+.banner-lateral-icon { font-size: 22px !important; }
+
+.banner-lateral-title {
+    font-size: 12px !important;
+    font-weight: 800 !important;
+}
+
+.banner-lateral-sub {
+    font-size: 9px !important;
+    display: none;
+}
+
+.banner-lateral-btn {
+    font-size: 10px !important;
+    padding: 4px 8px !important;
+    margin-top: 2px !important;
+}
+
+@media (min-width: 1100px) {
+    .banner-lateral { width: 120px !important; }
+    .banner-lateral-sub { display: block !important; }
+}
+
+@media (max-width: 768px) {
+    .mobile-bottom-banners {
+        padding: 0 16px 20px !important;
+    }
+    .mbb-grupo {
+        background: linear-gradient(135deg, #128C3E, #25d366) !important;
+    }
+    .mbb-ayuda {
+        background: linear-gradient(135deg, #c94400, #ff6b35) !important;
+    }
+    .mbb-icon-wrap { font-size: 22px !important; }
+    .mbb-title { font-size: 12px !important; }
+    .mbb-sub { display: none !important; }
+}
