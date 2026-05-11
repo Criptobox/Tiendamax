@@ -275,3 +275,109 @@ html body #productDetailModal [class*="description"] {
     outline: 2px solid var(--gold);
     outline-offset: 2px;
 }
+
+
+/* =====================================================================
+   FIX J · MODAL DE DETALLE — SCROLL ROTO EN MÓVIL
+   ---------------------------------------------------------------------
+   En styles.css el .detail-modal-content tiene  overflow-y:auto
+   inmediatamente seguido de  overflow:hidden  (línea 1909). El segundo
+   gana y bloquea el scroll vertical, dejando todo el contenido
+   inferior inaccesible (descripción, stock, botón comprar).
+   También la altura era 100vh en móvil → no quedaba espacio interno.
+   ===================================================================== */
+html body #productDetailModal .detail-modal-content,
+html body .detail-modal-content {
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;   /* scroll suave iOS */
+    overscroll-behavior: contain !important;         /* no arrastra la página de fondo */
+}
+
+@media (max-width: 768px) {
+    /* El modal ocupa la pantalla pero deja un margen y un alto manejable */
+    html body #productDetailModal {
+        align-items: flex-end !important;            /* sheet desde abajo */
+        padding: 0 !important;
+    }
+    html body #productDetailModal .detail-modal-content {
+        width: 100% !important;
+        max-width: 100% !important;
+        max-height: 90vh !important;                 /* deja ver fondo arriba */
+        height: 90vh !important;
+        border-radius: 20px 20px 0 0 !important;
+        margin: 0 !important;
+        align-self: flex-end !important;
+        display: flex !important;
+        flex-direction: column !important;
+    }
+    /* La cabecera fija arriba */
+    html body #productDetailModal .modal-header {
+        flex-shrink: 0 !important;
+        position: sticky !important;
+        top: 0 !important;
+        z-index: 5 !important;
+    }
+    /* El cuerpo es la zona scrolleable */
+    html body #productDetailModal .detail-body {
+        flex: 1 1 auto !important;
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+        padding: 16px !important;
+        padding-bottom: 80px !important;             /* espacio para el último botón */
+    }
+    /* Imagen no demasiado grande para que no tape el resto */
+    html body #productDetailModal .detail-image-wrap {
+        max-height: 280px !important;
+    }
+}
+
+
+/* =====================================================================
+   FIX K · MÁS VENDIDOS EN MÓVIL — 1 COLUMNA FULL-WIDTH
+   ---------------------------------------------------------------------
+   Antes: en móvil iba a 2 columnas (FIX C). Como hay 3 productos
+   destacados, quedaba un hueco vacío en la segunda fila.
+   Solución pedida: en la sección "Más Vendidos" cada producto a
+   ANCHO COMPLETO en móvil (sigue 2 columnas en el resto de listados).
+   ===================================================================== */
+@media (max-width: 768px) {
+    html body #masVendidosGrid.productos-grid,
+    html body #mas-vendidos .productos-grid {
+        grid-template-columns: 1fr !important;
+        gap: 16px !important;
+    }
+
+    /* En "Más Vendidos" sí mostramos descripción (cabe porque es full-width)
+       pero limitada a 3 líneas para no romper el scroll de la home */
+    html body #masVendidosGrid .producto-card .producto-description,
+    html body #mas-vendidos .producto-card .producto-description {
+        display: -webkit-box !important;
+        -webkit-line-clamp: 3 !important;
+        -webkit-box-orient: vertical !important;
+        overflow: hidden !important;
+        font-size: 13px !important;
+        padding: 0 14px !important;
+        margin: 6px 0 10px !important;
+        color: var(--text-muted) !important;
+    }
+
+    /* Imagen un poco más alta (formato horizontal en card grande) */
+    html body #masVendidosGrid .producto-image,
+    html body #mas-vendidos .producto-image {
+        height: 220px !important;
+    }
+
+    /* Título con 2 líneas máximo */
+    html body #masVendidosGrid .producto-card h3,
+    html body #mas-vendidos .producto-card h3 {
+        font-size: 16px !important;
+        padding: 12px 14px 0 !important;
+        min-height: auto !important;
+    }
+
+    html body #masVendidosGrid .producto-card .precio-actual,
+    html body #mas-vendidos .producto-card .precio-actual {
+        font-size: 20px !important;
+    }
+}
