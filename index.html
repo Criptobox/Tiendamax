@@ -34,7 +34,7 @@
     <meta property="og:url" content="https://tiendamax.org/">
     <meta property="og:title" content="TiendaMax — Tecnología y Electrónica en Cuba">
     <meta property="og:description" content="Cargadores, inversores, routers WiFi y más. Los mejores precios en tecnología para Cuba.">
-    <meta property="og:image" content="https://tiendamax.org/og-image.jpg">
+    <meta property="og:image" content="https://tiendamax.org/og-image.png">
     <meta property="og:locale" content="es_CU">
     <meta property="og:site_name" content="TiendaMax">
 
@@ -42,7 +42,7 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="TiendaMax — Tecnología en Cuba">
     <meta name="twitter:description" content="Cargadores, inversores, routers WiFi y más. Los mejores precios en Cuba.">
-    <meta name="twitter:image" content="https://tiendamax.org/og-image.jpg">
+    <meta name="twitter:image" content="https://tiendamax.org/og-image.png">
 
     <title>TiendaMax — Tecnología y Electrónica en Cuba | tiendamax.org</title>
 
@@ -54,7 +54,7 @@
       "name": "TiendaMax",
       "url": "https://tiendamax.org",
       "description": "Tienda online de tecnología y electrónica en Cuba. Cargadores, inversores, routers WiFi y más.",
-      "image": "https://tiendamax.org/og-image.jpg",
+      "image": "https://tiendamax.org/og-image.png",
       "telephone": "+5354320170",
       "address": {
         "@type": "PostalAddress",
@@ -68,6 +68,7 @@
     </script>
     
     <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/animations.css">
 
 </head>
 <body>
@@ -80,7 +81,7 @@
     <!-- Header -->
     <!-- Menú móvil overlay -->
     <div class="mobile-menu-overlay" id="mobileMenuOverlay">
-        <div class="mobile-menu-logo">🛍️ TiendaMax</div>
+        <div class="mobile-menu-logo"><span class="logo-badge">M</span> Tienda<em>Max</em></div>
         <button class="mobile-menu-close" onclick="cerrarMenuMovil()">×</button>
         <a href="#" onclick="volverAlInicio(); cerrarMenuMovil(); return false;">Inicio</a>
         <a href="#categorias-home" onclick="volverAlInicio(); cerrarMenuMovil(); return false;">Categorías</a>
@@ -96,7 +97,7 @@
 
     <header class="header">
         <div class="container header-content">
-            <div class="logo"><h1 style="cursor:pointer" onclick="volverAlInicio()">🛍️ TiendaMax</h1></div>
+            <div class="logo"><h1 class="logo-premium" onclick="volverAlInicio()"><span class="logo-badge">M</span>Tienda<em>Max</em></h1></div>
             <!-- Carrito + Hamburguesa -->
             <div class="header-right">
                 <button class="cart-icon-btn" onclick="abrirCarrito()" aria-label="Carrito" title="Ver carrito">
@@ -284,12 +285,12 @@
             <div class="container">
                 <h2>¿Por Qué Elegir Nuestros Productos?</h2>
                 <div class="beneficios-grid">
-                    <div class="beneficio-card"><div class="icon">🏆</div><h3>Calidad Garantizada</h3><p>Productos seleccionados cuidadosamente para tu satisfaccion</p></div>
+                    <div class="beneficio-card"><div class="icon">🏆</div><h3>Calidad Garantizada</h3><p>Productos seleccionados cuidadosamente para tu satisfacción</p></div>
                     <div class="beneficio-card"><div class="icon">💰</div><h3>Mejores Precios</h3><p>Competencia directa con ofertas exclusivas para ti</p></div>
-                    <div class="beneficio-card"><div class="icon">🚚</div><h3>Envio Rapido</h3><p>Recibe tu compra en el menor tiempo posible</p></div>
+                    <div class="beneficio-card"><div class="icon">🚚</div><h3>Envío Rápido</h3><p>Recibe tu compra en el menor tiempo posible</p></div>
                     <div class="beneficio-card"><div class="icon">🛡️</div><h3>Compra Segura</h3><p>Proteccion total en todas tus transacciones</p></div>
-                    <div class="beneficio-card"><div class="icon">📞</div><h3>Soporte 24/7</h3><p>Estamos aqui para ayudarte en cualquier momento</p></div>
-                    <div class="beneficio-card"><div class="icon">⭐</div><h3>Clientes Felices</h3><p>Miles de resenas positivas de clientes satisfechos</p></div>
+                    <div class="beneficio-card"><div class="icon">📞</div><h3>Soporte 24/7</h3><p>Estamos aquí para ayudarte en cualquier momento</p></div>
+                    <div class="beneficio-card"><div class="icon">⭐</div><h3>Clientes Felices</h3><p>Miles de reseñas positivas de clientes satisfechos</p></div>
                 </div>
             </div>
         </section>
@@ -976,6 +977,50 @@
         </div>
     </div>
 
+
+    <script>
+    /* ── Fade-in secciones: TiendaMax Premium ── */
+    (function() {
+        var selectors = [
+            '.beneficio-card',
+            '.testimonio-card',
+            '.categorias-home .section-eyebrow',
+            '.categorias-home .section-title',
+            '.categorias-home .section-subtitle',
+            '.prueba-stat',
+            '.cta-final h2',
+            '.cta-final p',
+            '.hero-content .subtitle',
+            '.hero-content h2',
+            '.hero-content .description'
+        ];
+        var elements = document.querySelectorAll(selectors.join(','));
+
+        if (!('IntersectionObserver' in window)) {
+            elements.forEach(function(el) { el.classList.add('tm-visible'); });
+            return;
+        }
+
+        var observer = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('tm-visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1, rootMargin: '0px 0px -30px 0px' });
+
+        /* Agrupar por contenedor padre para stagger natural */
+        elements.forEach(function(el, i) {
+            el.classList.add('tm-fade');
+            /* índice local dentro del padre (máx 8) */
+            var siblings = el.parentNode ? el.parentNode.querySelectorAll('.tm-fade') : [];
+            var idx = Array.prototype.indexOf.call(siblings, el);
+            el.style.setProperty('--tm-delay', Math.min(idx, 7) * 0.09 + 's');
+            observer.observe(el);
+        });
+    })();
+    </script>
     <script src="js/script.js"></script>
     <script src="js/subcategorias.js"></script>
     <script src="js/revolico_integration.js"></script>
