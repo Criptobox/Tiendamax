@@ -12,5 +12,9 @@
     "PIEZAS Y OTROS"
   ],
   "ROPA": [],
-  "LENCERIA": []
+  "LENCERIA": [],
+  "HOGAR": [
+    "ELECTRODOMÉSTICOS",
+    "DECORACION"
+  ]
 }
