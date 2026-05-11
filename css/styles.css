@@ -3838,3 +3838,17 @@ body.dark-mode #listaRevolicoConfig select {
     .mbb-title { font-size: 12px !important; }
     .mbb-sub { display: none !important; }
 }
+
+/* ══════════════════════════════════════════
+   FIX: Colores banners — degradado foto 2
+══════════════════════════════════════════ */
+
+.banner-lateral-grupo,
+.mbb-grupo {
+    background: linear-gradient(135deg, #f5a623, #e8501e) !important;
+}
+
+.banner-lateral-ayuda,
+.mbb-ayuda {
+    background: linear-gradient(135deg, #25d366, #128C3E) !important;
+}
