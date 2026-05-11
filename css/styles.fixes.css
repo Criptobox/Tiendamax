@@ -381,3 +381,103 @@ html body .detail-modal-content {
         font-size: 20px !important;
     }
 }
+
+
+/* =====================================================================
+   FIX L · BOTÓN "AJUSTES" DEL NAV — ALINEACIÓN
+   ---------------------------------------------------------------------
+   El .nav usa display:flex con gap pero sin align-items:center.
+   Como los <a> son texto plano y .nav-admin-btn tiene padding+borde,
+   quedaba a una altura distinta (alineado por baseline tipográfica).
+   ===================================================================== */
+html body .header .nav {
+    display: flex !important;
+    align-items: center !important;     /* ← clave: centra todo verticalmente */
+    gap: 28px !important;
+}
+
+html body .header .nav a {
+    display: inline-flex !important;
+    align-items: center !important;
+    height: 36px !important;            /* misma altura visual que el botón */
+    line-height: 1 !important;
+}
+
+html body .header .nav-admin-btn {
+    height: 36px !important;             /* altura uniforme */
+    padding: 0 12px !important;
+    gap: 6px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    line-height: 1 !important;
+    font-size: 12px !important;
+    box-sizing: border-box !important;
+}
+html body .header .nav-admin-btn svg {
+    flex-shrink: 0 !important;
+    display: block !important;
+}
+html body .header .nav-admin-label {
+    display: inline-block !important;
+    line-height: 1 !important;
+}
+
+
+/* =====================================================================
+   FIX M · IMAGEN DEL DETALLE — alt accesible cuando ya tiene producto
+   (el alt="" del HTML es válido al inicio porque la imagen está vacía;
+   JS debería actualizarlo. Por si acaso, garantizamos contraste/foco.)
+   ===================================================================== */
+html body #detailProductImage:focus-visible {
+    outline: 3px solid var(--gold);
+    outline-offset: 2px;
+}
+
+
+/* =====================================================================
+   FIX N · QUITAR BORDE DEL BOTÓN "AJUSTES"
+   ---------------------------------------------------------------------
+   Para que se vea igual que el resto de enlaces del nav (sin caja).
+   ===================================================================== */
+html body .header .nav-admin-btn {
+    border: none !important;
+    background: transparent !important;
+    padding: 0 !important;
+    color: rgba(255,255,255,0.7) !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    letter-spacing: 0.5px !important;
+    text-transform: uppercase !important;
+}
+html body .header .nav-admin-btn:hover {
+    color: var(--gold) !important;
+    background: transparent !important;
+    border: none !important;
+}
+html body .header .nav-admin-label {
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+    font-size: 13px !important;
+}
+
+
+/* =====================================================================
+   FIX O · OCULTAR EL BOTÓN "Buscar →" REDUNDANTE EN EL PANEL DE BÚSQUEDA
+   ---------------------------------------------------------------------
+   El input ya ejecuta la búsqueda con la tecla Enter (onkeydown) y al
+   escribir muestra sugerencias en tiempo real. El botón "Buscar →"
+   sólo añade ruido visual.
+   ===================================================================== */
+html body #heroSearchPanel .hsb-apply-btn,
+html body .hsb-panel .hsb-apply-btn {
+    display: none !important;
+}
+
+/* Si no hay sugerencias y se quita el botón, el panel quedaba con
+   un padding raro: lo ajustamos para que se vea limpio. */
+html body .hsb-panel {
+    padding-bottom: 8px !important;
+}
+html body .hsb-suggestions:empty {
+    display: none !important;
+}
