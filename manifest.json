@@ -1,0 +1,21 @@
+{
+    "name": "TiendaMax",
+    "short_name": "TiendaMax",
+    "description": "Tecnología y electrónica en Cuba. Precios increíbles.",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#0D0D0D",
+    "theme_color": "#C9A96E",
+    "orientation": "portrait-primary",
+    "icons": [
+        {
+            "src": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgcng9IjIwIiBmaWxsPSIjMEQwRDBEIi8+PHRleHQgeT0iNzIiIHg9IjUwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjYyIiBmb250LWZhbWlseT0iR2VvcmdpYSxzZXJpZiIgZm9udC13ZWlnaHQ9IjkwMCIgZmlsbD0iI0M5QTk2RSI+TTwvdGV4dD48L3N2Zz4=",
+            "sizes": "192x192",
+            "type": "image/svg+xml",
+            "purpose": "any maskable"
+        }
+    ],
+    "categories": ["shopping", "business"],
+    "lang": "es",
+    "dir": "ltr"
+}
