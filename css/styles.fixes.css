@@ -1,53 +1,231 @@
 /* ==========================================================
-   styles.fixes.css  —  Parche de correcciones visuales
-   Cargar SIEMPRE después de styles.css y animations.css
+   styles.fixes.css  —  v2 (correcciones reales)
+   Cargar SIEMPRE después de styles.css y animations.css.
+
+   Este archivo SOBREESCRIBE varias capas de "FIX" del styles.css
+   original que se contradicen entre sí (~10 redefiniciones de
+   .banner-lateral con !important). Para ganar la cascada usamos
+   selectores con mayor especificidad: html body .clase
    ========================================================== */
 
-/* ── 1. HERO en escritorio: el padding-left era 0 y el texto
-        quedaba pegado al borde de la pantalla en monitores grandes ── */
+
+/* =====================================================================
+   FIX A · BANNERS LATERALES (Grupo WhatsApp / Ayuda) DUPLICADOS EN MÓVIL
+   ---------------------------------------------------------------------
+   El styles.css los oculta en móvil con  .banner-lateral{display:none}
+   pero MÁS ABAJO una regla del “MASTER FIX” los vuelve a poner
+   display:flex sin media-query, así que en móvil aparecían dos veces:
+   los laterales (que deberían ser solo de PC) + los inferiores (mbb-*).
+   Aquí se fuerzan a estar ocultos en móvil con MÁXIMA prioridad.
+   ===================================================================== */
+@media (max-width: 768px) {
+    html body .banner-lateral,
+    html body a.banner-lateral,
+    html body .banner-lateral-grupo,
+    html body .banner-lateral-ayuda {
+        display: none !important;
+        visibility: hidden !important;
+        width: 0 !important;
+        height: 0 !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        overflow: hidden !important;
+    }
+
+    /* Para que el grid central de categorías ocupe todo el ancho */
+    html body .categorias-home-inner {
+        display: block !important;
+        padding: 0 !important;
+    }
+}
+
+
+/* =====================================================================
+   FIX B · BANNERS LATERALES EN ESCRITORIO — REDISEÑO LIMPIO
+   ---------------------------------------------------------------------
+   Antes eran "grandes y feos": el styles.css tenía 10 capas de !important
+   peleando entre sí. Aquí dejamos UN diseño definitivo.
+   ===================================================================== */
+@media (min-width: 769px) {
+    html body .banner-lateral {
+        width: 96px !important;
+        min-width: 96px !important;
+        max-width: 96px !important;
+        padding: 18px 8px !important;
+        border-radius: 18px !important;
+        gap: 8px !important;
+        align-self: center !important;
+        max-height: 220px !important;
+        box-shadow: 0 6px 20px rgba(0,0,0,0.18) !important;
+        transition: transform .25s ease, box-shadow .25s ease !important;
+    }
+    html body .banner-lateral:hover {
+        transform: translateY(-3px) !important;
+        box-shadow: 0 10px 28px rgba(0,0,0,0.28) !important;
+    }
+    html body .banner-lateral-grupo {
+        background: linear-gradient(160deg, #1a9e4a 0%, #25d366 100%) !important;
+    }
+    html body .banner-lateral-ayuda {
+        background: linear-gradient(160deg, #c94400 0%, #ff6b35 100%) !important;
+    }
+    html body .banner-lateral .banner-lateral-icon {
+        font-size: 22px !important;
+        width: 42px !important;
+        height: 42px !important;
+        background: rgba(255,255,255,0.20) !important;
+        border-radius: 50% !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+    html body .banner-lateral .banner-lateral-title {
+        font-size: 11px !important;
+        font-weight: 800 !important;
+        line-height: 1.25 !important;
+        letter-spacing: 0.2px !important;
+        text-transform: none !important;
+        color: #fff !important;
+    }
+    html body .banner-lateral .banner-lateral-sub {
+        display: none !important; /* en compacto, sin subtítulo */
+    }
+    html body .banner-lateral .banner-lateral-btn {
+        font-size: 10px !important;
+        font-weight: 700 !important;
+        padding: 4px 10px !important;
+        border-radius: 30px !important;
+        background: rgba(0,0,0,0.28) !important;
+        border: 1px solid rgba(255,255,255,0.18) !important;
+    }
+    /* En pantallas grandes algo más anchos para mostrar el subtítulo */
+    @media (min-width: 1200px) {
+        html body .banner-lateral {
+            width: 120px !important;
+            min-width: 120px !important;
+            max-width: 120px !important;
+            max-height: 240px !important;
+        }
+        html body .banner-lateral .banner-lateral-sub {
+            display: block !important;
+            font-size: 9.5px !important;
+            color: rgba(255,255,255,0.85) !important;
+            line-height: 1.35 !important;
+        }
+    }
+}
+
+
+/* =====================================================================
+   FIX C · DESCRIPCIÓN DEL PRODUCTO EN MÓVIL
+   ---------------------------------------------------------------------
+   El styles.css tenía DOS bloques (líneas 1816 y 4239) forzando
+   display:block + line-clamp:unset en .producto-description, lo que
+   hacía aparecer toda la descripción en cada tarjeta y ocupaba media
+   pantalla, dificultando el scroll.
+   La descripción debe mostrarse SOLO en el modal de detalle al pulsar
+   la tarjeta.
+   ===================================================================== */
+@media (max-width: 768px) {
+    /* Ocultar descripción en las tarjetas del listado */
+    html body .productos-grid .producto-card .producto-description,
+    html body #masVendidosGrid .producto-card .producto-description,
+    html body #recientesGrid .producto-card .producto-description {
+        display: none !important;
+    }
+
+    /* Asegurar tarjeta compacta (2 columnas, alto consistente) */
+    html body .productos-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 12px !important;
+    }
+    html body .producto-card {
+        overflow: hidden !important;
+        border-radius: 14px !important;
+        display: flex !important;
+        flex-direction: column !important;
+    }
+    html body .producto-card h3 {
+        font-size: 13px !important;
+        line-height: 1.25 !important;
+        padding: 8px 10px 0 !important;
+        margin: 0 !important;
+        display: -webkit-box !important;
+        -webkit-line-clamp: 2 !important;
+        -webkit-box-orient: vertical !important;
+        overflow: hidden !important;
+        min-height: 34px !important;
+    }
+    html body .producto-card .precio-actual {
+        font-size: 16px !important;
+    }
+    html body .producto-image {
+        height: 140px !important;
+        overflow: hidden !important;
+    }
+    /* Pista visual: la tarjeta es clicable */
+    html body .producto-card { cursor: pointer !important; }
+}
+
+/* En el MODAL de detalle de producto SÍ se muestra la descripción completa */
+html body #productDetailModal .producto-description,
+html body #productDetailModal [class*="description"] {
+    display: block !important;
+    -webkit-line-clamp: unset !important;
+    -webkit-box-orient: unset !important;
+    overflow: visible !important;
+    max-height: none !important;
+}
+
+
+/* =====================================================================
+   FIX D · HERO en escritorio — padding-left correcto (ya estaba en v1)
+   ===================================================================== */
 @media (min-width: 769px) {
     .hero {
         padding-left: clamp(24px, 6vw, 80px);
         padding-right: clamp(24px, 4vw, 60px);
     }
-    .hero-content {
-        padding: 80px 40px 80px 0;   /* antes: 80px 60px 80px 0 */
-    }
+    .hero-content { padding: 80px 40px 80px 0; }
+    .hero-image   { min-height: 480px; }
+    #heroHumanImg { width: 100%; height: 100%; object-fit: cover; }
 }
 
-/* ── 2. RESPONSIVE del hero unificado.
-        El styles.css original tiene DOS bloques @media (max-width:768px)
-        contradictorios para el hero. Aquí dejamos un único set definitivo. ── */
+
+/* =====================================================================
+   FIX E · HERO en móvil — UN solo bloque definitivo
+   ===================================================================== */
 @media (max-width: 768px) {
     .hero {
-        grid-template-columns: 1fr;
-        min-height: auto;
-        padding: 0;
+        grid-template-columns: 1fr !important;
+        min-height: auto !important;
+        padding: 0 !important;
     }
     .hero-content {
-        padding: 36px 20px 28px;
-        order: 2;
+        padding: 36px 20px 28px !important;
+        order: 2 !important;
     }
     .hero-image {
-        height: 220px;
-        order: 1;
-        border-radius: 0;
+        height: 220px !important;
+        order: 1 !important;
+        border-radius: 0 !important;
     }
     .hero-content h2 {
-        font-size: clamp(26px, 7vw, 36px);
-        line-height: 1.15;
+        font-size: clamp(26px, 7vw, 36px) !important;
+        line-height: 1.15 !important;
     }
-    .hero .subtitle { font-size: 11px; }
-    .hero .description { font-size: 14px; max-width: 100%; }
+    .hero .description { font-size: 14px !important; max-width: 100% !important; }
 }
 
 @media (max-width: 380px) {
-    .hero-content h2 { font-size: 24px; }
-    .cta-buttons .btn { font-size: 13px; padding: 12px; }
+    .hero-content h2 { font-size: 24px !important; }
+    .cta-buttons .btn { font-size: 13px !important; padding: 12px !important; }
 }
 
-/* ── 3. Logo ya no es <h1>: aseguramos que el cursor y el estilo
-        sigan funcionando al ser <div role="button"> ── */
+
+/* =====================================================================
+   FIX F · Logo (ya no es <h1>): mismo aspecto + foco accesible
+   ===================================================================== */
 .logo .logo-premium {
     font-family: var(--font-display);
     font-size: 24px;
@@ -66,32 +244,19 @@
     border-radius: 6px;
 }
 
-/* ── 4. Imagen del hero: en escritorio asegurar que llene el alto
-        del grid (a veces se quedaba con el alto natural de la imagen) ── */
-@media (min-width: 769px) {
-    .hero-image { min-height: 480px; }
-    #heroHumanImg { width: 100%; height: 100%; object-fit: cover; }
-}
 
-/* ── 5. El “container” del hero usaba display:contents (lo eliminamos
-        del HTML). Por seguridad, evitamos que quede ancho infinito si
-        algún widget hijo se sale del grid. ── */
-.hero > .hero-content,
-.hero > .hero-image { min-width: 0; }
-
-/* ── 6. Header: en pantallas medianas (tablet) el nav se montaba sobre
-        el logo cuando aún no se mostraba el menú hamburguesa. ── */
+/* =====================================================================
+   FIX G · Header en tablet (entre 769-980px) — nav comprimido
+   ===================================================================== */
 @media (min-width: 769px) and (max-width: 980px) {
     .nav { gap: 18px; }
     .nav a { font-size: 12px; letter-spacing: 0.3px; }
 }
 
-/* ── 7. Banner de urgencia: si por JS se muestra, que no haga
-        que el header sticky se mueva sin transición. ── */
-.urgencia-banner { will-change: transform; }
 
-/* ── 8. Skeletons del grid de categorías: que no parpadeen para siempre
-        si la carga es muy rápida (limitamos animación a 3s). ── */
+/* =====================================================================
+   FIX H · Skeleton loaders no parpadean infinito
+   ===================================================================== */
 .skeleton-card,
 .skeleton-icon,
 .skeleton-text,
@@ -99,7 +264,10 @@
     animation-iteration-count: 6 !important;
 }
 
-/* ── 9. Mejoras de accesibilidad: foco visible en botones críticos ── */
+
+/* =====================================================================
+   FIX I · Foco visible (accesibilidad) en botones
+   ===================================================================== */
 .cart-icon-btn:focus-visible,
 .hamburger-btn:focus-visible,
 .nav-admin-btn:focus-visible,
@@ -107,15 +275,3 @@
     outline: 2px solid var(--gold);
     outline-offset: 2px;
 }
-
-/* ── 10. NOTAS PARA REFACTOR FUTURO ──
-   - styles.css tiene 334 declaraciones !important. Al refactorizar,
-     prioriza eliminarlas en este orden:
-       1. Las que están dentro de @media (mover especificidad).
-       2. Las de utilidades duplicadas.
-       3. Las de hover/active de botones.
-   - Las definiciones de .hero-image en styles.css aparecen 2 veces
-     (líneas 290 y 3179). Unificar en un solo bloque.
-   - Hay 75 onclick="..." inline en index.html. Migrar a event delegation
-     en script.js usando data-action="<nombre>".
-============================================================ */
