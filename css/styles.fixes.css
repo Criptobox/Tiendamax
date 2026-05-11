@@ -1,0 +1,121 @@
+/* ==========================================================
+   styles.fixes.css  —  Parche de correcciones visuales
+   Cargar SIEMPRE después de styles.css y animations.css
+   ========================================================== */
+
+/* ── 1. HERO en escritorio: el padding-left era 0 y el texto
+        quedaba pegado al borde de la pantalla en monitores grandes ── */
+@media (min-width: 769px) {
+    .hero {
+        padding-left: clamp(24px, 6vw, 80px);
+        padding-right: clamp(24px, 4vw, 60px);
+    }
+    .hero-content {
+        padding: 80px 40px 80px 0;   /* antes: 80px 60px 80px 0 */
+    }
+}
+
+/* ── 2. RESPONSIVE del hero unificado.
+        El styles.css original tiene DOS bloques @media (max-width:768px)
+        contradictorios para el hero. Aquí dejamos un único set definitivo. ── */
+@media (max-width: 768px) {
+    .hero {
+        grid-template-columns: 1fr;
+        min-height: auto;
+        padding: 0;
+    }
+    .hero-content {
+        padding: 36px 20px 28px;
+        order: 2;
+    }
+    .hero-image {
+        height: 220px;
+        order: 1;
+        border-radius: 0;
+    }
+    .hero-content h2 {
+        font-size: clamp(26px, 7vw, 36px);
+        line-height: 1.15;
+    }
+    .hero .subtitle { font-size: 11px; }
+    .hero .description { font-size: 14px; max-width: 100%; }
+}
+
+@media (max-width: 380px) {
+    .hero-content h2 { font-size: 24px; }
+    .cta-buttons .btn { font-size: 13px; padding: 12px; }
+}
+
+/* ── 3. Logo ya no es <h1>: aseguramos que el cursor y el estilo
+        sigan funcionando al ser <div role="button"> ── */
+.logo .logo-premium {
+    font-family: var(--font-display);
+    font-size: 24px;
+    font-weight: 900;
+    color: var(--white);
+    letter-spacing: -0.5px;
+    cursor: pointer;
+    user-select: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+.logo .logo-premium:focus-visible {
+    outline: 2px solid var(--gold);
+    outline-offset: 4px;
+    border-radius: 6px;
+}
+
+/* ── 4. Imagen del hero: en escritorio asegurar que llene el alto
+        del grid (a veces se quedaba con el alto natural de la imagen) ── */
+@media (min-width: 769px) {
+    .hero-image { min-height: 480px; }
+    #heroHumanImg { width: 100%; height: 100%; object-fit: cover; }
+}
+
+/* ── 5. El “container” del hero usaba display:contents (lo eliminamos
+        del HTML). Por seguridad, evitamos que quede ancho infinito si
+        algún widget hijo se sale del grid. ── */
+.hero > .hero-content,
+.hero > .hero-image { min-width: 0; }
+
+/* ── 6. Header: en pantallas medianas (tablet) el nav se montaba sobre
+        el logo cuando aún no se mostraba el menú hamburguesa. ── */
+@media (min-width: 769px) and (max-width: 980px) {
+    .nav { gap: 18px; }
+    .nav a { font-size: 12px; letter-spacing: 0.3px; }
+}
+
+/* ── 7. Banner de urgencia: si por JS se muestra, que no haga
+        que el header sticky se mueva sin transición. ── */
+.urgencia-banner { will-change: transform; }
+
+/* ── 8. Skeletons del grid de categorías: que no parpadeen para siempre
+        si la carga es muy rápida (limitamos animación a 3s). ── */
+.skeleton-card,
+.skeleton-icon,
+.skeleton-text,
+.skeleton-text-sm {
+    animation-iteration-count: 6 !important;
+}
+
+/* ── 9. Mejoras de accesibilidad: foco visible en botones críticos ── */
+.cart-icon-btn:focus-visible,
+.hamburger-btn:focus-visible,
+.nav-admin-btn:focus-visible,
+.btn:focus-visible {
+    outline: 2px solid var(--gold);
+    outline-offset: 2px;
+}
+
+/* ── 10. NOTAS PARA REFACTOR FUTURO ──
+   - styles.css tiene 334 declaraciones !important. Al refactorizar,
+     prioriza eliminarlas en este orden:
+       1. Las que están dentro de @media (mover especificidad).
+       2. Las de utilidades duplicadas.
+       3. Las de hover/active de botones.
+   - Las definiciones de .hero-image en styles.css aparecen 2 veces
+     (líneas 290 y 3179). Unificar en un solo bloque.
+   - Hay 75 onclick="..." inline en index.html. Migrar a event delegation
+     en script.js usando data-action="<nombre>".
+============================================================ */
