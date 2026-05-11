@@ -8,19 +8,8 @@
     <link rel="manifest" href="/manifest.json">
 
 
-    <!-- SEO -->
-    <meta name="description" content="TiendaMax — Productos de calidad con envío rápido. WiFi, energía, celulares, electrodomésticos y más.">
-    <meta name="keywords" content="tienda online cuba, wifi cuba, inversores cuba, celulares cuba, tiendamax">
-    <meta name="robots" content="index, follow">
-    <meta property="og:title" content="TiendaMax — Calidad premium">
-    <meta property="og:description" content="Productos de calidad con envío rápido. WiFi, energía solar, celulares y más.">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://tiendamax.org">
-    <meta name="theme-color" content="#c9a96e">
-    <link rel="canonical" href="https://tiendamax.org">
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="description" content="TiendaMax — Compra cargadores, inversores, routers WiFi y tecnología en Cuba. Envíos rápidos, precios increíbles y garantía en todos los productos.">
     <meta name="keywords" content="TiendaMax, tienda Cuba, tecnología Cuba, cargadores Cuba, inversores energía Cuba, routers WiFi Cuba, comprar online Cuba, electrónica Cuba, tiendamax.org">
     <meta name="author" content="TiendaMax">
@@ -70,6 +59,7 @@
     
     <link rel="stylesheet" href="css/styles.css?v=9">
     <link rel="stylesheet" href="css/animations.css?v=9">
+    <link rel="stylesheet" href="css/styles.fixes.css?v=1">
 
 </head>
 <body>
@@ -83,13 +73,13 @@
     <!-- Menú móvil overlay -->
     <div class="mobile-menu-overlay" id="mobileMenuOverlay">
         <div class="mobile-menu-logo"><span class="logo-badge">M</span> Tienda<em>Max</em></div>
-        <button class="mobile-menu-close" onclick="cerrarMenuMovil()">×</button>
-        <a href="#" onclick="volverAlInicio(); cerrarMenuMovil(); return false;">Inicio</a>
-        <a href="#categorias-home" onclick="volverAlInicio(); cerrarMenuMovil(); return false;">Categorías</a>
-        <a href="#beneficios" onclick="cerrarMenuMovil()">Beneficios</a>
-        <a href="#testimonios" onclick="cerrarMenuMovil()">Testimonios</a>
-        <a href="#contacto" onclick="cerrarMenuMovil()">Contacto</a>
-        <button class="nav-mobile-link" onclick="abrirLoginAdmin(); cerrarMenuMovil();">⚙️ Ajustes</button>
+        <button data-action="cerrarMenuMovil" aria-label="Cerrar menú" type="button" class="mobile-menu-close">×</button>
+        <a href="#" data-action="volverAlInicio,cerrarMenuMovil">Inicio</a>
+        <a href="#categorias-home" data-action="volverAlInicio,cerrarMenuMovil">Categorías</a>
+        <a data-action="cerrarMenuMovil" href="#beneficios">Beneficios</a>
+        <a data-action="cerrarMenuMovil" href="#testimonios">Testimonios</a>
+        <a data-action="cerrarMenuMovil" href="#contacto">Contacto</a>
+        <button type="button" class="nav-mobile-link" data-action="abrirLoginAdmin,cerrarMenuMovil">⚙️ Ajustes</button>
         <div class="mobile-menu-actions">
             <a href="https://chat.whatsapp.com/BnTdAU0Q3p25BOMTYuEpBN" class="mobile-action-grupo" target="_blank" rel="noopener">💬 Grupo WhatsApp</a>
             <a href="https://wa.me/5354320170?text=Hola,%20necesito%20ayuda%20con%20un%20producto" class="mobile-action-ayuda" target="_blank" rel="noopener">🎧 Ayuda</a>
@@ -98,24 +88,24 @@
 
     <header class="header">
         <div class="container header-content">
-            <div class="logo"><h1 class="logo-premium" onclick="volverAlInicio()"><span class="logo-badge">M</span>Tienda<em>Max</em></h1></div>
+            <div class="logo"><div data-action="volverAlInicio" class="logo-premium" role="button" tabindex="0"><span class="logo-badge">M</span>Tienda<em>Max</em></div></div>
             <!-- Carrito + Hamburguesa -->
             <div class="header-right">
-                <button class="cart-icon-btn" onclick="abrirCarrito()" aria-label="Carrito" title="Ver carrito">
+                <button data-action="abrirCarrito" type="button" class="cart-icon-btn" aria-label="Carrito" title="Ver carrito">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="22" height="22"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
                     <span class="cart-count" id="cartCount" style="display:none;">0</span>
                 </button>
-                <button class="hamburger-btn" id="hamburgerBtn" onclick="abrirMenuMovil()" aria-label="Abrir menú">
+                <button data-action="abrirMenuMovil" type="button" class="hamburger-btn" id="hamburgerBtn" aria-label="Abrir menú">
                     <span></span><span></span><span></span>
                 </button>
             </div>
             <nav class="nav">
-                <a href="#" onclick="volverAlInicio(); return false;">Inicio</a>
-                <a href="#categorias-home" onclick="volverAlInicio(); return false;">Categorías</a>
+                <a href="#" data-action="volverAlInicio">Inicio</a>
+                <a href="#categorias-home" data-action="volverAlInicio">Categorías</a>
                 <a href="#beneficios">Beneficios</a>
                 <a href="#testimonios">Testimonios</a>
                 <a href="#contacto">Contacto</a>
-                <button class="nav-admin-btn" onclick="abrirLoginAdmin()" title="Panel de administración">
+                <button data-action="abrirLoginAdmin" aria-label="Abrir panel de administración" type="button" class="nav-admin-btn" title="Panel de administración">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="17" height="17"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
                     <span class="nav-admin-label">Ajustes</span>
                 </button>
@@ -128,21 +118,23 @@
 
         <!-- Hero -->
         <section class="hero">
-            <div class="container" style="display:contents;">
             <div class="hero-content">
                 <p class="subtitle">Oferta limitada — Solo por tiempo limitado</p>
                 <h2>Productos<br><span>que inspiran,</span><br>precios que sorprenden.</h2>
                 <p class="description">Calidad premium, atención personal. Miles de clientes satisfechos confían en nosotros cada día.</p>
                 <div class="cta-buttons">
-                    <button class="btn btn-primary" onclick="scrollToProductos()">Ver Categorías →</button>
-                    <button class="btn btn-secondary" onclick="contactarWhatsApp()">💬 WhatsApp</button>
+                    <button data-action="scrollToProductos" type="button" class="btn btn-primary">Ver Categorías →</button>
+                    <button data-action="contactarWhatsApp" type="button" class="btn btn-secondary">💬 WhatsApp</button>
                 </div>
             </div>
             <div class="hero-image" id="heroImageContainer" style="position:relative;">
-                <span class="hero-image-admin-hint" onclick="abrirCambiarImagenHero()" title="Cambiar foto del hero">📷 Cambiar foto</span>
+                <span data-action="abrirCambiarImagenHero" class="hero-image-admin-hint" title="Cambiar foto del hero">📷 Cambiar foto</span>
                 <img 
                     id="heroHumanImg"
-                    src="https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=400&q=75&auto=format&fit=crop"
+                    src="https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=900&q=80&auto=format&fit=crop"
+                    srcset="https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=600&q=80&auto=format&fit=crop 600w, https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=900&q=80&auto=format&fit=crop 900w, https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=1200&q=80&auto=format&fit=crop 1200w"
+                    sizes="(max-width:768px) 100vw, 50vw"
+                    loading="eager" fetchpriority="high"
                     alt="Persona disfrutando tecnología de calidad"
                     style="width:100%;height:100%;object-fit:cover;display:block;"
                     onerror="this.style.display='none'; document.getElementById('heroFallback').style.display='flex';"
@@ -151,7 +143,6 @@
                 <div style="position:absolute;bottom:20px;left:20px;background:rgba(0,0,0,0.6);backdrop-filter:blur(10px);color:white;padding:10px 16px;border-radius:12px;font-size:12px;font-weight:600;border:1px solid rgba(201,169,110,0.3);">
                     ⚡ Inversores · 📡 WiFi · 📱 Tecnología
                 </div>
-            </div>
             </div>
         </section>
         <div class="hero-divider"></div>
@@ -167,7 +158,7 @@
                             <p class="section-eyebrow">Tu historial</p>
                             <h2 class="section-title" style="text-align:left;font-size:24px;margin-bottom:0;">🕐 Visto recientemente</h2>
                         </div>
-                        <button onclick="limpiarRecientes()" style="font-size:12px;color:#999;background:none;border:none;cursor:pointer;text-decoration:underline;">Limpiar</button>
+                        <button data-action="limpiarRecientes" aria-label="Limpiar historial reciente" type="button" style="font-size:12px;color:#999;background:none;border:none;cursor:pointer;text-decoration:underline;">Limpiar</button>
                     </div>
                     <div class="productos-grid" id="recientesGrid" style="grid-template-columns:repeat(auto-fill,minmax(150px,1fr));"></div>
                 </div>
@@ -175,7 +166,7 @@
         </section>
 
         <div class="hsb-wrap">
-            <div class="hsb-pill" id="heroSearchBar" onclick="abrirPanelBusqueda()">
+            <div data-action="abrirPanelBusqueda" class="hsb-pill" id="heroSearchBar">
                 <svg class="hsb-icon" viewBox="0 0 24 24" fill="none" stroke="#f5a623" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="20" height="20">
                     <circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="22" y2="22"/>
                 </svg>
@@ -188,7 +179,7 @@
                     onkeydown="if(event.key==='Enter') aplicarBusquedaHero()"
                     onfocus="abrirPanelBusqueda()"
                     autocomplete="off"
-                    onclick="event.stopPropagation()"
+                    data-stop-propagation="true"
                 >
             </div>
 
@@ -196,7 +187,7 @@
             <div class="hsb-panel" id="heroSearchPanel">
                 <div id="hsb-ai-label" style="display:none;font-size:11px;color:#9b59b6;font-weight:600;margin-bottom:8px;letter-spacing:0.3px;">🤖 Búsqueda inteligente activa</div>
                 <div id="heroSearchSuggestions" class="hsb-suggestions"></div>
-                <button class="hsb-apply-btn" onclick="aplicarBusquedaHero()">Buscar →</button>
+                <button data-action="aplicarBusquedaHero" aria-label="Aplicar búsqueda" type="button" class="hsb-apply-btn">Buscar →</button>
             </div>
         </div>
 
@@ -325,7 +316,7 @@
             <div class="container">
                 <h2>Las mejores ofertas,<br>a un mensaje de distancia.</h2>
                 <p>Contáctanos hoy y recibe atención personalizada.</p>
-                <button class="btn btn-large" onclick="contactarWhatsApp()">💬 Contactar por WhatsApp</button>
+                <button data-action="contactarWhatsApp" type="button" class="btn btn-large">💬 Contactar por WhatsApp</button>
             </div>
         </section>
 
@@ -338,7 +329,7 @@
             <div class="container">
                 <div class="categoria-header">
                     <div class="categoria-header-left">
-                        <button class="btn-volver" onclick="volverAlInicio()">← Volver</button>
+                        <button data-action="volverAlInicio" type="button" class="btn-volver">← Volver</button>
                         <h2 id="tituloCategoriaActual">Productos</h2>
                     </div>
                     <div id="categoriaStats" class="categoria-stats"></div>
@@ -347,7 +338,7 @@
                 <div id="subcategoriaTabs" class="subcategoria-tabs" style="display:none;"></div>
                 <!-- Filtro de categorías (vista global "Todas") -->
                 <div class="categoria-filtro" id="categoriaFiltro" style="display:none;">
-                    <button class="categoria-btn active" onclick="filtrarPorCategoria('Todas')">Todas</button>
+                    <button data-action="filtrarPorCategoria" data-arg="Todas" type="button" class="categoria-btn active">Todas</button>
                 </div>
                 <div class="productos-grid" id="productosGrid"></div>
                 <div id="productoVacio" class="producto-vacio" style="display:none;"><p>No hay productos en esta categoría aún.</p></div>
@@ -386,9 +377,9 @@
                 </div>
                 <div class="footer-col">
                     <h4>Tienda</h4>
-                    <a href="#" onclick="mostrarVistaInicio(); return false;">Inicio</a>
-                    <a href="#" onclick="mostrarVistaCategoria('Todas'); return false;">Productos</a>
-                    <a href="#" onclick="abrirCarrito(); return false;">Mi carrito</a>
+                    <a href="#" data-action="mostrarVistaInicio">Inicio</a>
+                    <a href="#" data-action="mostrarVistaCategoria" data-arg="Todas">Productos</a>
+                    <a href="#" data-action="abrirCarrito">Mi carrito</a>
                 </div>
                 <div class="footer-col">
                     <h4>Contacto</h4>
@@ -402,8 +393,8 @@
                 <p>Tecnología premium · Envío rápido · Garantía</p>
             </div>
             <div class="footer-mobile-links">
-                <a href="#" onclick="mostrarVistaInicio(); return false;">Inicio</a>
-                <a href="#" onclick="mostrarVistaCategoria('Todas'); return false;">Productos</a>
+                <a href="#" data-action="mostrarVistaInicio">Inicio</a>
+                <a href="#" data-action="mostrarVistaCategoria" data-arg="Todas">Productos</a>
                 <a href="https://wa.me/5354320170" target="_blank">WhatsApp</a>
             </div>
             <div class="footer-bottom">
@@ -417,23 +408,23 @@
 
     <!-- Botones de control -->
     <div class="control-buttons">
-        <button class="theme-toggle" onclick="toggleDarkMode()" title="Cambiar tema">🌙</button>
+        <button data-action="toggleDarkMode" aria-label="Cambiar modo claro/oscuro" type="button" class="theme-toggle" title="Cambiar tema">🌙</button>
         <!-- Admin toggle movido al navbar -->
     </div>
 
 
     <!-- ===== CARRITO ===== -->
-    <div id="carritoDrawer" class="carrito-overlay hidden" onclick="if(event.target===this)cerrarCarrito()">
+    <div id="carritoDrawer" class="carrito-overlay hidden" data-backdrop-close="cerrarCarrito">
         <div class="carrito-drawer">
             <div class="carrito-header">
                 <h3>🛒 Tu Carrito</h3>
-                <button class="close-btn" onclick="cerrarCarrito()">×</button>
+                <button data-action="cerrarCarrito" aria-label="Cerrar carrito" type="button" class="close-btn">×</button>
             </div>
             <div class="carrito-body" id="carritoBody">
                 <div class="carrito-vacio" id="carritoVacio">
                     <div style="font-size:48px;margin-bottom:12px;">🛍️</div>
                     <p>Tu carrito está vacío</p>
-                    <button class="btn btn-primary" style="margin-top:16px;" onclick="cerrarCarrito()">Ver productos</button>
+                    <button data-action="cerrarCarrito" aria-label="Cerrar carrito" type="button" class="btn btn-primary" style="margin-top:16px;">Ver productos</button>
                 </div>
                 <div id="carritoItems"></div>
             </div>
@@ -442,10 +433,10 @@
                     <span>Total</span>
                     <span id="carritoTotal" class="carrito-total-val">$0.00 USD</span>
                 </div>
-                <button class="btn-cta-mejorado carrito-btn-comprar" onclick="comprarCarrito()">
+                <button data-action="comprarCarrito" type="button" class="btn-cta-mejorado carrito-btn-comprar">
                     💬 Pedir por WhatsApp
                 </button>
-                <button class="carrito-btn-limpiar" onclick="limpiarCarrito()">🗑️ Vaciar carrito</button>
+                <button data-action="limpiarCarrito" aria-label="Vaciar carrito" type="button" class="carrito-btn-limpiar">🗑️ Vaciar carrito</button>
             </div>
         </div>
     </div>
@@ -455,7 +446,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h2>Acceso de Administrador</h2>
-                <button class="close-btn" onclick="cerrarLoginModal()">✕</button>
+                <button data-action="cerrarLoginModal" aria-label="Cerrar modal de acceso" type="button" class="close-btn">✕</button>
             </div>
             <form onsubmit="verificarPassword(event)">
                 <div class="form-group">
@@ -472,18 +463,18 @@
         <div class="admin-panel-content">
             <div class="admin-header">
                 <h2>⚙️ Panel de Administración</h2>
-                <button class="close-btn" onclick="cerrarAdminPanel()">✕</button>
+                <button data-action="cerrarAdminPanel" aria-label="Cerrar panel de administración" type="button" class="close-btn">✕</button>
             </div>
             <div class="admin-tabs">
-                <button class="tab-btn active" onclick="switchTab('add-products')" data-tab="add-products">➕ Agregar</button>
-                <button class="tab-btn" onclick="switchTab('publicar-ahora')" data-tab="publicar-ahora">🚀 Publicar</button>
-                <button class="tab-btn" onclick="switchTab('manage-products')" data-tab="manage-products">📋 Gestionar</button>
-                <button class="tab-btn" onclick="switchTab('manage-categories')" data-tab="manage-categories">🏷️ Categorías</button>
-                <button class="tab-btn" onclick="switchTab('manage-subcategories')" data-tab="manage-subcategories">📂 Subcategorías</button>
-                <button class="tab-btn" onclick="switchTab('configuracion')" data-tab="configuracion">⚙️ Config</button>
-                <button class="tab-btn" onclick="switchTab('oferta-dia')" data-tab="oferta-dia">🏷️ Oferta Día</button>
-                <button class="tab-btn" onclick="switchTab('apariencia')" data-tab="apariencia">🎨 Apariencia</button>
-                <button class="tab-btn" onclick="switchTab('analytics')" data-tab="analytics">📊 Analytics</button>
+                <button data-action="switchTab" data-arg="add-products" type="button" class="tab-btn active" data-tab="add-products">➕ Agregar</button>
+                <button data-action="switchTab" data-arg="publicar-ahora" type="button" class="tab-btn" data-tab="publicar-ahora">🚀 Publicar</button>
+                <button data-action="switchTab" data-arg="manage-products" type="button" class="tab-btn" data-tab="manage-products">📋 Gestionar</button>
+                <button data-action="switchTab" data-arg="manage-categories" type="button" class="tab-btn" data-tab="manage-categories">🏷️ Categorías</button>
+                <button data-action="switchTab" data-arg="manage-subcategories" type="button" class="tab-btn" data-tab="manage-subcategories">📂 Subcategorías</button>
+                <button data-action="switchTab" data-arg="configuracion" type="button" class="tab-btn" data-tab="configuracion">⚙️ Config</button>
+                <button data-action="switchTab" data-arg="oferta-dia" type="button" class="tab-btn" data-tab="oferta-dia">🏷️ Oferta Día</button>
+                <button data-action="switchTab" data-arg="apariencia" type="button" class="tab-btn" data-tab="apariencia">🎨 Apariencia</button>
+                <button data-action="switchTab" data-arg="analytics" type="button" class="tab-btn" data-tab="analytics">📊 Analytics</button>
             </div>
             <div class="admin-content">
 
@@ -567,8 +558,8 @@
 
                     <!-- Pasos rápidos -->
                     <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:20px;">
-                        <button class="btn-publicar-grande" onclick="abrirChromeEspecial()" style="background:#27AE60;margin-bottom:0">🖥️ 1. Abrir Chrome Especial</button>
-                        <button id="btnPublicarAhora" class="btn-publicar-grande" onclick="publicarAhora()" style="margin-bottom:0">🚀 2. Publicar Todo en Revolico</button>
+                        <button data-action="abrirChromeEspecial" type="button" class="btn-publicar-grande" style="background:#27AE60;margin-bottom:0">🖥️ 1. Abrir Chrome Especial</button>
+                        <button data-action="publicarAhora" type="button" id="btnPublicarAhora" class="btn-publicar-grande" style="margin-bottom:0">🚀 2. Publicar Todo en Revolico</button>
                     </div>
 
                     <!-- Configurador de Grupos de Facebook -->
@@ -576,8 +567,8 @@
                         <h4 style="margin-bottom:4px;">📘 Grupos de Facebook</h4>
                         <p style="font-size:12px;color:var(--text-muted);margin-bottom:14px;">Configura qué productos publicar en cada grupo.</p>
                         <div id="listaGruposFB" style="display:flex;flex-direction:column;gap:10px;"></div>
-                        <button class="btn btn-primary" onclick="agregarGrupoFB()" style="margin-top:12px;width:100%;">+ Agregar Grupo</button>
-                        <button class="btn" onclick="guardarGruposFB()" style="margin-top:8px;width:100%;background:#27AE60;color:white;">💾 Guardar Grupos</button>
+                        <button data-action="agregarGrupoFB" type="button" class="btn btn-primary" style="margin-top:12px;width:100%;">+ Agregar Grupo</button>
+                        <button data-action="guardarGruposFB" type="button" class="btn" style="margin-top:8px;width:100%;background:#27AE60;color:white;">💾 Guardar Grupos</button>
                     </div>
 
                     <!-- Configurador de Revolico por categorías -->
@@ -585,7 +576,7 @@
                         <h4 style="margin-bottom:4px;">🔵 Revolico — Categorías por Producto</h4>
                         <p style="font-size:12px;color:var(--text-muted);margin-bottom:14px;">Elige en qué categoría de Revolico se publica cada producto. Se guarda automáticamente con tu tienda.</p>
                         <div id="listaRevolicoConfig" style="display:flex;flex-direction:column;gap:10px;"></div>
-                        <button class="btn" onclick="guardarRevolicoConfig()" style="margin-top:12px;width:100%;background:#0084FF;color:white;">💾 Guardar Config Revolico</button>
+                        <button data-action="guardarRevolicoConfig" type="button" class="btn" style="margin-top:12px;width:100%;background:#0084FF;color:white;">💾 Guardar Config Revolico</button>
                     </div>
 
                     <div id="resultadoPublicacion" class="resultado-publicacion"></div>
@@ -616,7 +607,7 @@
                         <div class="form-group" style="display: flex; gap: 10px; margin-bottom: 10px;">
                         <input type="text" id="newCategoryName" placeholder="Nombre de la categoría" style="flex: 2;">
                         <input type="text" id="newCategoryIcon" placeholder="Icono (Ej: 📦)" style="flex: 1; text-align: center;">
-                        <button class="btn btn-primary" onclick="agregarCategoria()" style="flex: 1;">+ Agregar</button>
+                        <button data-action="agregarCategoria" type="button" class="btn btn-primary" style="flex: 1;">+ Agregar</button>
                     </div>
                     <p style="font-size: 12px; color: #666; margin-bottom: 20px;">💡 Si dejas el icono vacío, se asignará uno automáticamente según el nombre.</p>
                         <div id="categoryList" class="category-list"></div>
@@ -636,7 +627,7 @@
                         </div>
                         <div class="form-group" style="display: flex; gap: 10px; margin-bottom: 20px;">
                             <input type="text" id="newSubcategoryName" placeholder="Nombre de la subcategoría" style="flex: 1;">
-                            <button class="btn btn-primary" onclick="agregarSubcategoria()">+ Agregar</button>
+                            <button data-action="agregarSubcategoria" type="button" class="btn btn-primary">+ Agregar</button>
                         </div>
                         <div id="subcategoryList" class="subcategory-list"></div>
                     </div>
@@ -656,7 +647,7 @@
                                 style="font-size:16px;font-weight:700;letter-spacing:1px;">
                             <p style="font-size:11px;margin-top:5px;opacity:0.7;">Incluye el código de país. Cuba: 53 + número (ej: 5354320170)</p>
                         </div>
-                        <button class="btn btn-primary" onclick="guardarNumeroWhatsApp()" style="background:#25d366;width:100%;">💾 Guardar número</button>
+                        <button data-action="guardarNumeroWhatsApp" type="button" class="btn btn-primary" style="background:#25d366;width:100%;">💾 Guardar número</button>
                     </div>
 
                     <!-- OFERTA DEL DÍA -->
@@ -675,8 +666,8 @@
                         </div>
                         <div id="ofertaDiaStatus" style="font-size:13px;color:#ff5722;margin-bottom:10px;min-height:20px;"></div>
                         <div style="display:flex;gap:10px;">
-                            <button class="btn btn-primary" onclick="guardarOfertaDia()" style="background:#ff5722;flex:1;">✅ Activar Oferta del Día</button>
-                            <button class="btn btn-secondary" onclick="desactivarOfertaDia()" style="flex:1;">❌ Desactivar</button>
+                            <button data-action="guardarOfertaDia" type="button" class="btn btn-primary" style="background:#ff5722;flex:1;">✅ Activar Oferta del Día</button>
+                            <button data-action="desactivarOfertaDia" aria-label="Desactivar oferta del día" type="button" class="btn btn-secondary" style="flex:1;">❌ Desactivar</button>
                         </div>
                     </div>
 
@@ -700,7 +691,7 @@
                     <div style="margin-top: 30px; padding: 20px; border: 2px solid #FF6B35; border-radius: 12px; text-align: center; background: rgba(255, 107, 53, 0.05);">
                         <h4 style="margin-bottom: 10px;">🚀 Sincronización Global</h4>
                         <p style="font-size: 13px; margin-bottom: 15px;">Usa este botón cada vez que agregues productos o categorías para que sean visibles para todos.</p>
-                        <button class="btn btn-primary" onclick="sincronizarTodoConGitHub()" style="padding: 15px 30px; font-size: 16px; background: #FF6B35;">🔄 ACTUALIZAR TIENDA AHORA</button>
+                        <button data-action="sincronizarTodoConGitHub" type="button" class="btn btn-primary" style="padding: 15px 30px; font-size: 16px; background: #FF6B35;">🔄 ACTUALIZAR TIENDA AHORA</button>
                     </div>
                 </div>
 
@@ -720,8 +711,8 @@
                         </div>
                         <div id="ofertaDiaStatus2" style="font-size:13px;color:#ff5722;margin-bottom:12px;min-height:20px;font-weight:600;"></div>
                         <div style="display:flex;gap:10px;">
-                            <button class="btn btn-primary" onclick="guardarOfertaDia2()" style="background:#ff5722;flex:1;padding:14px;">✅ Activar</button>
-                            <button class="btn btn-secondary" onclick="desactivarOfertaDia()" style="flex:1;padding:14px;">❌ Desactivar</button>
+                            <button data-action="guardarOfertaDia2" type="button" class="btn btn-primary" style="background:#ff5722;flex:1;padding:14px;">✅ Activar</button>
+                            <button data-action="desactivarOfertaDia" aria-label="Desactivar oferta del día" type="button" class="btn btn-secondary" style="flex:1;padding:14px;">❌ Desactivar</button>
                         </div>
                     </div>
 
@@ -740,7 +731,6 @@
                     </div>
                 </div>
 
-            </div>
 
                 <!-- Tab: Apariencia / Imagen Hero -->
                 <div id="analytics" class="admin-tab">
@@ -772,8 +762,8 @@
                             <label>O pega una URL de imagen:</label>
                             <input type="text" id="heroImageUrl" placeholder="https://ejemplo.com/foto.jpg" oninput="previewHeroUrl(this.value)">
                         </div>
-                        <button class="btn btn-primary" onclick="guardarImagenHero()" style="width:100%;">💾 Aplicar imagen al Hero</button>
-                        <button class="btn btn-secondary" onclick="restaurarImagenHeroDefault()" style="width:100%;margin-top:8px;background:transparent;border:1px solid rgba(0,0,0,0.15);color:var(--text-muted);">↩ Restaurar imagen por defecto</button>
+                        <button data-action="guardarImagenHero" type="button" class="btn btn-primary" style="width:100%;">💾 Aplicar imagen al Hero</button>
+                        <button data-action="restaurarImagenHeroDefault" type="button" class="btn btn-secondary" style="width:100%;margin-top:8px;background:transparent;border:1px solid rgba(0,0,0,0.15);color:var(--text-muted);">↩ Restaurar imagen por defecto</button>
                     </div>
 
                     <!-- COUNTDOWN TIMER -->
@@ -801,8 +791,8 @@
                             <label>Texto de la oferta:</label>
                             <input type="text" id="countdownTexto" placeholder="¡Oferta especial!" value="¡Oferta especial!">
                         </div>
-                        <button class="btn btn-primary" onclick="guardarCountdown()" style="width:100%;background:var(--coral);">⏱️ Activar Countdown</button>
-                        <button class="btn" onclick="desactivarCountdown()" style="width:100%;margin-top:8px;background:transparent;border:1px solid #e74c3c;color:#e74c3c;">🗑️ Desactivar Countdown</button>
+                        <button data-action="guardarCountdown" type="button" class="btn btn-primary" style="width:100%;background:var(--coral);">⏱️ Activar Countdown</button>
+                        <button data-action="desactivarCountdown" aria-label="Desactivar cronómetro" type="button" class="btn" style="width:100%;margin-top:8px;background:transparent;border:1px solid #e74c3c;color:#e74c3c;">🗑️ Desactivar Countdown</button>
                         
                         <div id="countdownStatus" style="margin-top:12px;font-size:13px;color:var(--text-muted);"></div>
                     </div>
@@ -818,7 +808,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h2>Editar Producto</h2>
-                <button class="close-btn" onclick="cerrarEditModal()">✕</button>
+                <button data-action="cerrarEditModal" aria-label="Cerrar modal de edición" type="button" class="close-btn">✕</button>
             </div>
             <form id="editForm">
                 <input type="hidden" id="editProductId">
@@ -887,11 +877,11 @@
     </div>
 
     <!-- ===== MODAL DETALLE DE PRODUCTO ===== -->
-    <div id="productDetailModal" class="modal hidden" onclick="if(event.target===this)cerrarDetalleModal()">
+    <div id="productDetailModal" class="modal hidden" data-backdrop-close="cerrarDetalleModal">
         <div class="modal-content detail-modal-content">
             <div class="modal-header">
                 <h2 id="detailProductName">Detalle del Producto</h2>
-                <button class="close-btn" onclick="cerrarDetalleModal()">×</button>
+                <button data-action="cerrarDetalleModal" aria-label="Cerrar detalle del producto" type="button" class="close-btn">×</button>
             </div>
             <div class="detail-body">
 
@@ -899,7 +889,7 @@
                 <div class="detail-grid">
                     <div class="detail-image-wrap">
                         <img id="detailProductImage" src="" alt="" class="detail-img"
-                             onclick="toggleZoomImagen(this)">
+                             data-action="toggleZoomImagen" data-pass-element="true">
                         <div class="detail-zoom-hint">🔍 Toca para ampliar</div>
                         <div id="detailProductBadge" class="badge detail-badge">-0%</div>
                         <div id="detailMasVendidoBadge" class="badge-vendido detail-badge-hot" style="display:none;">🔥 Más Vendido</div>
@@ -929,14 +919,14 @@
                         <div id="detailPersonasViendo" class="contador-personas" style="display:none;"></div>
 
                         <!-- Botón comprar -->
-                        <button id="detailBuyBtn" class="btn-cta-mejorado detail-buy-btn">
+                        <button type="button" id="detailBuyBtn" class="btn-cta-mejorado detail-buy-btn">
                             🛒 Comprar por WhatsApp
                         </button>
 
                         <!-- Compartir -->
                         <div class="detail-share">
-                            <button class="detail-share-btn" onclick="compartirProducto()">📤 Compartir</button>
-                            <button class="detail-share-btn" onclick="copiarLinkProducto()">🔗 Copiar enlace</button>
+                            <button data-action="compartirProducto" aria-label="Compartir producto" type="button" class="detail-share-btn">📤 Compartir</button>
+                            <button data-action="copiarLinkProducto" aria-label="Copiar enlace del producto" type="button" class="detail-share-btn">🔗 Copiar enlace</button>
                         </div>
                     </div>
                 </div>
@@ -951,19 +941,19 @@
                 <div class="detail-resenas-section">
                     <div class="detail-resenas-header">
                         <h3>⭐ Reseñas</h3>
-                        <button class="detail-resena-add-btn" onclick="mostrarFormResena()" id="btnAgregarResena">+ Agregar reseña</button>
+                        <button data-action="mostrarFormResena" aria-label="Dejar una reseña" type="button" class="detail-resena-add-btn" id="btnAgregarResena">+ Agregar reseña</button>
                     </div>
                     <div id="formResena" class="form-resena" style="display:none;">
                         <div class="estrellas-input" id="estrellasInput">
-                            <span class="estrella-btn" onclick="setEstrellas(1)">★</span>
-                            <span class="estrella-btn" onclick="setEstrellas(2)">★</span>
-                            <span class="estrella-btn" onclick="setEstrellas(3)">★</span>
-                            <span class="estrella-btn" onclick="setEstrellas(4)">★</span>
-                            <span class="estrella-btn" onclick="setEstrellas(5)">★</span>
+                            <span data-action="setEstrellas" data-arg="1" class="estrella-btn">★</span>
+                            <span data-action="setEstrellas" data-arg="2" class="estrella-btn">★</span>
+                            <span data-action="setEstrellas" data-arg="3" class="estrella-btn">★</span>
+                            <span data-action="setEstrellas" data-arg="4" class="estrella-btn">★</span>
+                            <span data-action="setEstrellas" data-arg="5" class="estrella-btn">★</span>
                         </div>
                         <input type="text" id="resenaAutor" placeholder="Tu nombre" class="resena-input" maxlength="30">
                         <textarea id="resenaTexto" placeholder="Cuenta tu experiencia con este producto..." class="resena-textarea" maxlength="300" rows="3"></textarea>
-                        <button class="btn btn-primary" onclick="guardarResena()" style="width:100%;">Publicar reseña</button>
+                        <button data-action="guardarResena" type="button" class="btn btn-primary" style="width:100%;">Publicar reseña</button>
                     </div>
                     <div id="listaResenas" class="lista-resenas"></div>
                 </div>
@@ -1025,6 +1015,7 @@
     <script src="js/script.js?v=9"></script>
     <script src="js/subcategorias.js?v=9"></script>
     <script src="js/revolico_integration.js?v=9"></script>
+    <script src="js/event-delegation.js?v=1" defer></script>
     <script>
     function abrirMenuMovil() {
         document.getElementById('mobileMenuOverlay').classList.add('open');
