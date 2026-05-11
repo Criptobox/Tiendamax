@@ -1,11 +1,22 @@
 
 // ═══════════════════════════════════════════════════════
-//  🛒 CARRITO DE COMPRAS
+//  🛒 CARRITO DE COMPRAS — con persistencia 24h
 // ═══════════════════════════════════════════════════════
-let carrito = JSON.parse(localStorage.getItem('carrito') || '[]');
+
+function _cargarCarrito() {
+    try {
+        const raw = localStorage.getItem('carrito_v2');
+        if (!raw) return [];
+        const { items, expires } = JSON.parse(raw);
+        if (Date.now() > expires) { localStorage.removeItem('carrito_v2'); return []; }
+        return items || [];
+    } catch { return []; }
+}
+let carrito = _cargarCarrito();
 
 function guardarCarrito() {
-    localStorage.setItem('carrito', JSON.stringify(carrito));
+    const payload = { items: carrito, expires: Date.now() + 24 * 60 * 60 * 1000 };
+    localStorage.setItem('carrito_v2', JSON.stringify(payload));
     actualizarContadorCarrito();
 }
 
@@ -321,7 +332,6 @@ function verificarProductosNuevos() {
 const BACKEND_URL = window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost' 
     ? 'http://127.0.0.1:5002/api' 
     : '/api';
-// Contraseña hasheada (SHA-256 de 'Cripx') para que no sea visible en texto plano
 const PASSWORD_ADMIN_HASH = 'a338781ef2610e22bde9dae45f2d8aaa6a8a8c4584158f18cd91089b9192bc62';
 
 let productos = JSON.parse(localStorage.getItem('productos')) || [];
@@ -946,6 +956,9 @@ function renderizarCategoriasHome() {
         card.onclick = () => mostrarVistaCategoria(cat);
         grid.appendChild(card);
     });
+    // Dispara animaciones CSS DESPUÉS de que el DOM está poblado
+    grid.classList.remove('tm-rendered');
+    requestAnimationFrame(() => grid.classList.add('tm-rendered'));
 }
 
 // ===== RENDERIZAR MÁS VENDIDOS =====
@@ -1012,24 +1025,37 @@ function cerrarLoginModal() {
 
 async function verificarPassword(event) {
     event.preventDefault();
+
+    // ── Rate limiting: 3 intentos → bloqueo 5 minutos ──
+    const rl = JSON.parse(localStorage.getItem('admin_rl') || '{"count":0,"until":0}');
+    if (Date.now() < rl.until) {
+        const mins = Math.ceil((rl.until - Date.now()) / 60000);
+        mostrarNotificacion(`🔒 Demasiados intentos. Espera ${mins} min.`, 'error');
+        return;
+    }
+
     const passwordInput = document.getElementById('adminPassword').value.trim();
     const inputHash = await hashPassword(passwordInput);
     
-    // El hash 'a338...' es de 'Cripx'
-    // El hash '9003...' es el que tenía el usuario originalmente
     const hashesValidos = [
         'a338781ef2610e22bde9dae45f2d8aaa6a8a8c4584158f18cd91089b9192bc62',
         '90035f586903f0259868846c2459740b957630712759861619894101e405187e'
     ];
     
-    console.log('Intento de login con hash:', inputHash);
-    
     if (hashesValidos.includes(inputHash)) {
+        localStorage.removeItem('admin_rl');
         usuarioAutenticado = true;
         cerrarLoginModal();
         abrirAdminPanel();
     } else {
-        mostrarNotificacion('❌ Contraseña incorrecta', 'error');
+        // Registrar intento fallido
+        const newCount = (rl.count || 0) + 1;
+        const lockout = newCount >= 3 ? Date.now() + 5 * 60 * 1000 : rl.until;
+        localStorage.setItem('admin_rl', JSON.stringify({ count: newCount, until: lockout }));
+        const msg = newCount >= 3
+            ? '🔒 3 intentos fallidos. Bloqueado 5 min.'
+            : `❌ Contraseña incorrecta (intento ${newCount}/3)`;
+        mostrarNotificacion(msg, 'error');
         document.getElementById('adminPassword').value = '';
     }
 }
@@ -2170,7 +2196,7 @@ async function abrirNavegadorParaLogin() {
 
 // ===== HERO IMAGE ADMIN =====
 
-const HERO_IMG_DEFAULT = 'https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=800&q=85&auto=format&fit=crop';
+const HERO_IMG_DEFAULT = 'https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=400&q=75&auto=format&fit=crop';
 
 function cargarImagenHeroGuardada() {
     const saved = localStorage.getItem('heroImage');
@@ -2460,6 +2486,8 @@ function renderizarCategoriasHomeInstant() {
         card.onclick = () => mostrarVistaCategoria(cat);
         grid.appendChild(card);
     });
+    // Dispara animaciones CSS DESPUÉS de que el DOM está poblado
+    requestAnimationFrame(() => grid.classList.add('tm-rendered'));
 }
 
 // Run instant render immediately on script parse
