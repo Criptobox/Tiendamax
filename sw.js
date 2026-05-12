@@ -14,7 +14,9 @@ const STATIC_ASSETS = [
     '/js/subcategorias.js',
     '/js/revolico_integration.js',
     '/og-image.svg',
-    '/manifest.json'
+    '/manifest.json',
+    '/icons/icon-192.png',
+    '/icons/icon-512.png'
 ];
 
 // ── Instalar: cachear todos los archivos del shell ──
