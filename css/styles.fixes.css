@@ -681,3 +681,23 @@ body.dark-mode .admin-tab textarea,
 body.dark-mode .admin-tab select {
     color: rgba(255,255,255,0.85) !important;
 }
+
+
+/* =====================================================================
+   FIX: CURSOR VISIBLE SOBRE FONDOS OSCUROS
+   El mix-blend-mode:multiply hacía que el cursor desapareciera sobre
+   fondos negros/oscuros. Se elimina y se añade borde blanco para
+   contraste en cualquier fondo.
+   ===================================================================== */
+@media (pointer: fine) {
+    #tm-cursor {
+        mix-blend-mode: normal !important;
+        background: var(--gold, #C9A96E) !important;
+        box-shadow: 0 0 0 2px rgba(255,255,255,0.6), 0 0 14px rgba(201,169,110,0.7) !important;
+    }
+    #tm-cursor.hover {
+        mix-blend-mode: normal !important;
+        background: rgba(201,169,110,0.2) !important;
+        box-shadow: 0 0 0 2.5px #C9A96E, 0 0 0 4px rgba(255,255,255,0.3), 0 0 20px rgba(201,169,110,0.4) !important;
+    }
+}
