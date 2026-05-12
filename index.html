@@ -505,6 +505,7 @@
                 <button data-action="switchTab" data-arg="oferta-dia" type="button" class="tab-btn" data-tab="oferta-dia">🏷️ Oferta Día</button>
                 <button data-action="switchTab" data-arg="apariencia" type="button" class="tab-btn" data-tab="apariencia">🎨 Apariencia</button>
                 <button data-action="switchTab" data-arg="analytics" type="button" class="tab-btn" data-tab="analytics">📊 Analytics</button>
+                <button data-action="switchTab" data-arg="stock-rapido" type="button" class="tab-btn" data-tab="stock-rapido">📦 Stock</button>
             </div>
             <div class="admin-content">
 
@@ -768,6 +769,21 @@
                     <div id="analyticsContent">
                         <p style="color:#999;text-align:center;padding:40px 0;">Cargando estadísticas...</p>
                     </div>
+                </div>
+
+                <div id="stock-rapido" class="admin-tab">
+                    <h3 style="margin-bottom:6px;">📦 Gestión Rápida de Stock</h3>
+                    <p style="font-size:13px;color:var(--text-muted);margin-bottom:16px;">Ajusta el stock de cada producto sin tener que abrir el editor completo.</p>
+
+                    <!-- Barra de búsqueda + resumen -->
+                    <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;">
+                        <input type="text" id="stockBusqueda" placeholder="🔍 Buscar producto..." oninput="renderizarStockRapido()" style="flex:1;min-width:160px;padding:10px 14px;border-radius:10px;border:1.5px solid var(--border-color);font-size:14px;background:var(--cream);">
+                        <select id="stockFiltroCat" onchange="renderizarStockRapido()" style="padding:10px 14px;border-radius:10px;border:1.5px solid var(--border-color);font-size:14px;background:var(--cream);">
+                            <option value="">Todas las categorías</option>
+                        </select>
+                    </div>
+                    <div id="stockRapidoResumen" style="margin-bottom:14px;"></div>
+                    <div id="stockRapidoLista"></div>
                 </div>
 
                 <div id="apariencia" class="admin-tab">

@@ -1126,6 +1126,7 @@ function switchTab(tabName) {
     if (tabName === 'publicar-ahora') setTimeout(cargarGruposFB, 100);
     if (tabName === 'manage-products') setTimeout(actualizarListaProductos, 100);
     if (tabName === 'analytics') setTimeout(renderizarAnalytics, 100);
+    if (tabName === 'stock-rapido') setTimeout(renderizarStockRapido, 100);
 }
 
 // ===== PRODUCTOS =====
@@ -3364,3 +3365,119 @@ stat = function(icon, label, value, color) {
     return html;
 };
 
+
+// ===== STOCK RÁPIDO =====
+
+function renderizarStockRapido() {
+    const lista      = document.getElementById('stockRapidoLista');
+    const resumen    = document.getElementById('stockRapidoResumen');
+    const selectCat  = document.getElementById('stockFiltroCat');
+    if (!lista) return;
+
+    // Poblar select de categorías
+    const cats = [...new Set(productos.map(p => p.categoria).filter(Boolean))].sort();
+    const catActual = selectCat ? selectCat.value : '';
+    if (selectCat) {
+        selectCat.innerHTML = '<option value="">Todas las categorías</option>' +
+            cats.map(c => `<option value="${c}" ${c === catActual ? 'selected' : ''}>${c}</option>`).join('');
+    }
+
+    const busqueda  = (document.getElementById('stockBusqueda')?.value || '').toLowerCase().trim();
+    const filtroCat = selectCat?.value || '';
+
+    let filtrados = productos.filter(p => {
+        const matchNombre = !busqueda || (p.nombre||'').toLowerCase().includes(busqueda);
+        const matchCat    = !filtroCat || p.categoria === filtroCat;
+        return matchNombre && matchCat;
+    });
+
+    // Resumen
+    if (resumen) {
+        const totalStock = filtrados.reduce((s, p) => s + (p.stock || 0), 0);
+        const sinStock   = filtrados.filter(p => !p.stock || p.stock === 0).length;
+        resumen.innerHTML = `
+            <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:4px;">
+                <span style="padding:8px 14px;background:rgba(39,174,96,0.12);border:1px dashed #27AE60;border-radius:10px;font-size:13px;">
+                    📦 <strong>${filtrados.length}</strong> productos · Stock total: <strong>${totalStock}</strong>
+                </span>
+                ${sinStock > 0 ? `<span style="padding:8px 14px;background:rgba(231,76,60,0.1);border:1px dashed #e74c3c;border-radius:10px;font-size:13px;color:#e74c3c;">⚠️ <strong>${sinStock}</strong> agotado${sinStock>1?'s':''}</span>` : ''}
+            </div>`;
+    }
+
+    if (filtrados.length === 0) {
+        lista.innerHTML = '<p style="text-align:center;color:#999;padding:40px 0;">No se encontraron productos</p>';
+        return;
+    }
+
+    // Agrupar por categoría
+    const porCategoria = {};
+    filtrados.forEach(p => {
+        const cat = p.categoria || 'General';
+        if (!porCategoria[cat]) porCategoria[cat] = [];
+        porCategoria[cat].push(p);
+    });
+
+    let html = '';
+    Object.entries(porCategoria).forEach(([cat, prods]) => {
+        const icono = obtenerIconoCategoria(cat);
+        const agotados = prods.filter(p => !p.stock || p.stock === 0).length;
+        html += `
+        <details class="stock-cat-acordeon" open style="margin-bottom:16px;border-radius:14px;overflow:hidden;border:1.5px solid var(--border-color);">
+            <summary style="cursor:pointer;display:flex;align-items:center;gap:10px;padding:12px 16px;background:var(--primary);color:white;font-weight:700;font-size:15px;list-style:none;user-select:none;">
+                <span>${icono} ${cat}</span>
+                <span style="margin-left:auto;font-size:12px;font-weight:400;opacity:.85;">${prods.length} producto${prods.length>1?'s':''}${agotados>0?' · ⚠️ '+agotados+' agotado'+(agotados>1?'s':''):''}</span>
+                <span style="font-size:11px;opacity:.7;">▼</span>
+            </summary>
+            <div style="display:flex;flex-direction:column;gap:0;background:var(--bg);">`;
+
+        prods.forEach((p, idx) => {
+            const agotado = !p.stock || p.stock === 0;
+            const stockColor = agotado ? '#e74c3c' : p.stock <= 3 ? '#e67e22' : '#27AE60';
+            html += `
+                <div style="display:flex;align-items:center;gap:12px;padding:12px 16px;${idx < prods.length-1 ? 'border-bottom:1px solid var(--border-color);' : ''}background:${agotado ? 'rgba(231,76,60,0.04)' : 'transparent'};">
+                    <img src="${p.imagen}" alt="${p.nombre}" style="width:48px;height:48px;object-fit:cover;border-radius:8px;flex-shrink:0;">
+                    <div style="flex:1;min-width:0;">
+                        <div style="font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${p.nombre}${agotado ? ' <span style="font-size:10px;color:#e74c3c;font-weight:700;vertical-align:middle;">AGOTADO</span>' : ''}</div>
+                        <div style="font-size:12px;color:var(--text-muted);">$${p.precioActual.toFixed(2)} USD</div>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:6px;flex-shrink:0;">
+                        <button onclick="ajustarStockRapido(${p.id}, -1)" style="width:32px;height:32px;border-radius:8px;border:none;background:#e74c3c;color:white;font-size:18px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;">−</button>
+                        <input type="number" min="0" value="${p.stock || 0}"
+                            onchange="setStockRapido(${p.id}, this.value)"
+                            style="width:54px;height:32px;text-align:center;font-size:15px;font-weight:700;color:${stockColor};border:1.5px solid ${stockColor};border-radius:8px;background:white;-moz-appearance:textfield;">
+                        <button onclick="ajustarStockRapido(${p.id}, +1)" style="width:32px;height:32px;border-radius:8px;border:none;background:#27AE60;color:white;font-size:18px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;">+</button>
+                    </div>
+                </div>`;
+        });
+
+        html += `</div></details>`;
+    });
+
+    lista.innerHTML = html;
+}
+
+function ajustarStockRapido(id, delta) {
+    const p = productos.find(x => x.id === id);
+    if (!p) return;
+    p.stock = Math.max(0, (p.stock || 0) + delta);
+    guardarProductos();
+    marcarProductoModificado(id);
+    sincronizarConGitHub();
+    renderizarStockRapido();
+    renderizarProductos();
+    mostrarNotificacion(`📦 Stock de "${p.nombre}": ${p.stock}`, 'success');
+}
+
+function setStockRapido(id, valor) {
+    const p = productos.find(x => x.id === id);
+    if (!p) return;
+    const nuevo = Math.max(0, parseInt(valor) || 0);
+    if (nuevo === p.stock) return;
+    p.stock = nuevo;
+    guardarProductos();
+    marcarProductoModificado(id);
+    sincronizarConGitHub();
+    renderizarStockRapido();
+    renderizarProductos();
+    mostrarNotificacion(`📦 Stock de "${p.nombre}": ${p.stock}`, 'success');
+}
