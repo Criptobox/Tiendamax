@@ -9,12 +9,14 @@
     "LENCERIA",
     "SEGURIDAD",
     "HOGAR",
-    "JUEGOS"
+    "JUEGOS",
+    "MOTOS"
   ],
   "iconos": {
     "LENCERIA": "👙",
     "SEGURIDAD": "🔒",
     "HOGAR": "🏠",
-    "JUEGOS": "🎮"
+    "JUEGOS": "🎮",
+    "MOTOS": "🛵"
   }
 }
