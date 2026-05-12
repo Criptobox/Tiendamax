@@ -2260,6 +2260,18 @@ if (document.readyState === 'loading') {
     inicializarTienda();
 }
 
+// Atajo PWA: si la URL tiene ?admin=1 abrir el panel admin automáticamente
+(function() {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('admin') === '1') {
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                if (typeof abrirAdminPanel === 'function') abrirAdminPanel();
+            }, 800);
+        });
+    }
+})();
+
 // ===== AUTOMATIZACIÓN HÍBRIDA (SELENIUM) =====
 
 async function abrirNavegadorParaLogin() {
