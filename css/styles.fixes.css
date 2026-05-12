@@ -701,3 +701,43 @@ body.dark-mode .admin-tab select {
         box-shadow: 0 0 0 2.5px #C9A96E, 0 0 0 4px rgba(255,255,255,0.3), 0 0 20px rgba(201,169,110,0.4) !important;
     }
 }
+
+
+/* =====================================================================
+   FIX: BOTÓN PEDIR — versión pequeña para tarjetas de productos
+   ===================================================================== */
+.btn-pedir-card {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    width: 100%;
+    padding: 10px 16px;
+    background: #FF6B35;
+    color: white;
+    border: none;
+    border-radius: 50px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(255,107,53,0.35);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    margin-top: 8px;
+}
+.btn-pedir-card:hover {
+    background: #e85d28;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(255,107,53,0.45);
+}
+.btn-pedir-card:active { transform: translateY(0); }
+
+.btn-pedir-wa-icon-sm {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    background: #25D366;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
