@@ -517,3 +517,172 @@ html body.dark-mode .admin-toggle {
     color: #f5e6c4 !important;
     border: 1px solid rgba(201,169,110,0.4) !important;
 }
+
+
+/* =========================================================
+   FIX TiendaMax: contraste del panel admin + compartir
+   ========================================================= */
+#adminPanel,
+#adminPanel .admin-tab,
+#adminPanel .product-item,
+#adminPanel .product-item-info,
+#adminPanel .product-item h4,
+#adminPanel .product-item p,
+#adminPanel label,
+#adminPanel small {
+    color: #111 !important;
+}
+
+#adminPanel input,
+#adminPanel textarea,
+#adminPanel select {
+    background: #fff !important;
+    color: #111 !important;
+    border: 1px solid #d1d5db !important;
+    -webkit-text-fill-color: #111 !important;
+}
+
+#adminPanel input::placeholder,
+#adminPanel textarea::placeholder {
+    color: #6b7280 !important;
+    -webkit-text-fill-color: #6b7280 !important;
+}
+
+body.dark-mode #adminPanel .admin-tab,
+body.dark-mode #adminPanel .product-item,
+body.dark-mode #adminPanel input,
+body.dark-mode #adminPanel textarea,
+body.dark-mode #adminPanel select {
+    background: #fff !important;
+    color: #111 !important;
+    -webkit-text-fill-color: #111 !important;
+}
+
+.share-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.58);
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 18px;
+}
+
+.share-modal {
+    background: #fff;
+    color: #111;
+    border-radius: 18px;
+    padding: 22px;
+    width: min(420px, 100%);
+    box-shadow: 0 20px 60px rgba(0,0,0,.35);
+    position: relative;
+}
+
+.share-modal h3 {
+    margin: 0 34px 8px 0;
+    color: #111;
+}
+
+.share-product-name {
+    margin: 0 0 14px;
+    color: #4b5563;
+    font-size: 14px;
+}
+
+.share-close {
+    position: absolute;
+    right: 12px;
+    top: 8px;
+    border: 0;
+    background: transparent;
+    font-size: 30px;
+    cursor: pointer;
+    color: #111;
+    line-height: 1;
+}
+
+.share-panel {
+    display: grid;
+    gap: 10px;
+    margin-top: 14px;
+}
+
+.share-panel a,
+.share-panel button {
+    display: block;
+    text-align: center;
+    padding: 13px 14px;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+    background: #f8fafc;
+    color: #111;
+    text-decoration: none;
+    font-weight: 800;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 15px;
+}
+
+.share-panel a:hover,
+.share-panel button:hover {
+    background: #111;
+    color: #fff;
+}
+
+body.dark-mode .share-modal {
+    background: #181818;
+    color: #fff;
+}
+body.dark-mode .share-modal h3,
+body.dark-mode .share-close {
+    color: #fff;
+}
+body.dark-mode .share-product-name {
+    color: rgba(255,255,255,.72);
+}
+
+
+/* Botones de pedido con logo estilo WhatsApp */
+.btn .wa-icon,
+.btn-cta-mejorado .wa-icon,
+.detail-buy-btn .wa-icon,
+.carrito-btn-comprar .wa-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 19px;
+    height: 19px;
+    min-width: 19px;
+    border-radius: 50%;
+    background: #25D366;
+    margin-right: 7px;
+    vertical-align: -4px;
+    position: relative;
+    box-shadow: 0 1px 3px rgba(0,0,0,.18);
+}
+
+.btn .wa-icon::before,
+.btn-cta-mejorado .wa-icon::before,
+.detail-buy-btn .wa-icon::before,
+.carrito-btn-comprar .wa-icon::before {
+    content: "☎";
+    color: #fff;
+    font-size: 12px;
+    font-weight: 900;
+    line-height: 1;
+    transform: rotate(-18deg);
+    margin-top: 1px;
+}
+
+.btn:has(.wa-icon),
+.btn-cta-mejorado:has(.wa-icon),
+.detail-buy-btn:has(.wa-icon),
+.carrito-btn-comprar:has(.wa-icon) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    font-weight: 900;
+    letter-spacing: .3px;
+}
