@@ -3366,42 +3366,55 @@ stat = function(icon, label, value, color) {
 };
 
 
+
 // ===== STOCK RÁPIDO =====
 
 function renderizarStockRapido() {
-    const lista      = document.getElementById('stockRapidoLista');
-    const resumen    = document.getElementById('stockRapidoResumen');
-    const selectCat  = document.getElementById('stockFiltroCat');
+    const lista     = document.getElementById('stockRapidoLista');
+    const resumen   = document.getElementById('stockRapidoResumen');
+    const selectCat = document.getElementById('stockFiltroCat');
     if (!lista) return;
 
-    // Poblar select de categorías
-    const cats = [...new Set(productos.map(p => p.categoria).filter(Boolean))].sort();
-    const catActual = selectCat ? selectCat.value : '';
-    if (selectCat) {
-        selectCat.innerHTML = '<option value="">Todas las categorías</option>' +
-            cats.map(c => `<option value="${c}" ${c === catActual ? 'selected' : ''}>${c}</option>`).join('');
+    // Leer productos frescos (evita problemas de timing al abrir la pestaña)
+    const prods = (typeof productos !== 'undefined' && productos.length > 0)
+        ? productos
+        : JSON.parse(localStorage.getItem('productos') || '[]');
+
+    if (prods.length === 0) {
+        lista.innerHTML = '<p style="text-align:center;color:#999;padding:40px 0;">No hay productos cargados. Ve a otra pestana y vuelve.</p>';
+        return;
     }
 
-    const busqueda  = (document.getElementById('stockBusqueda')?.value || '').toLowerCase().trim();
-    const filtroCat = selectCat?.value || '';
+    // Poblar select categorias
+    const cats = [...new Set(prods.map(p => p.categoria).filter(Boolean))].sort();
+    const catActual = selectCat ? selectCat.value : '';
+    if (selectCat) {
+        selectCat.innerHTML = '<option value="">Todas las categorias</option>' +
+            cats.map(c => '<option value="' + c + '"' + (c === catActual ? ' selected' : '') + '>' + c + '</option>').join('');
+    }
 
-    let filtrados = productos.filter(p => {
-        const matchNombre = !busqueda || (p.nombre||'').toLowerCase().includes(busqueda);
-        const matchCat    = !filtroCat || p.categoria === filtroCat;
+    const busqueda  = (document.getElementById('stockBusqueda') ? document.getElementById('stockBusqueda').value : '').toLowerCase().trim();
+    const filtroCat = selectCat ? selectCat.value : '';
+
+    var filtrados = prods.filter(function(p) {
+        var matchNombre = !busqueda || (p.nombre||'').toLowerCase().includes(busqueda);
+        var matchCat    = !filtroCat || p.categoria === filtroCat;
         return matchNombre && matchCat;
     });
 
     // Resumen
     if (resumen) {
-        const totalStock = filtrados.reduce((s, p) => s + (p.stock || 0), 0);
-        const sinStock   = filtrados.filter(p => !p.stock || p.stock === 0).length;
-        resumen.innerHTML = `
-            <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:4px;">
-                <span style="padding:8px 14px;background:rgba(39,174,96,0.12);border:1px dashed #27AE60;border-radius:10px;font-size:13px;">
-                    📦 <strong>${filtrados.length}</strong> productos · Stock total: <strong>${totalStock}</strong>
-                </span>
-                ${sinStock > 0 ? `<span style="padding:8px 14px;background:rgba(231,76,60,0.1);border:1px dashed #e74c3c;border-radius:10px;font-size:13px;color:#e74c3c;">⚠️ <strong>${sinStock}</strong> agotado${sinStock>1?'s':''}</span>` : ''}
-            </div>`;
+        var totalStock = filtrados.reduce(function(s, p) { return s + (p.stock || 0); }, 0);
+        var sinStock   = filtrados.filter(function(p) { return !p.stock || p.stock === 0; }).length;
+        resumen.innerHTML =
+            '<div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:8px;">' +
+                '<span style="padding:8px 14px;background:rgba(39,174,96,0.12);border:1px dashed #27AE60;border-radius:10px;font-size:13px;">' +
+                    '&#x1F4E6; <strong>' + filtrados.length + '</strong> productos &middot; Stock total: <strong>' + totalStock + '</strong>' +
+                '</span>' +
+                (sinStock > 0
+                    ? '<span style="padding:8px 14px;background:rgba(231,76,60,0.1);border:1px dashed #e74c3c;border-radius:10px;font-size:13px;color:#e74c3c;">&#x26A0;&#xFE0F; <strong>' + sinStock + '</strong> agotado' + (sinStock>1?'s':'') + '</span>'
+                    : '') +
+            '</div>';
     }
 
     if (filtrados.length === 0) {
@@ -3409,55 +3422,59 @@ function renderizarStockRapido() {
         return;
     }
 
-    // Agrupar por categoría
-    const porCategoria = {};
-    filtrados.forEach(p => {
-        const cat = p.categoria || 'General';
-        if (!porCategoria[cat]) porCategoria[cat] = [];
-        porCategoria[cat].push(p);
+    // Ordenar: disponibles primero, luego por categoria y nombre
+    filtrados.sort(function(a, b) {
+        var aA = (!a.stock || a.stock === 0) ? 1 : 0;
+        var bA = (!b.stock || b.stock === 0) ? 1 : 0;
+        if (aA !== bA) return aA - bA;
+        if ((a.categoria||'') < (b.categoria||'')) return -1;
+        if ((a.categoria||'') > (b.categoria||'')) return 1;
+        return (a.nombre||'').localeCompare(b.nombre||'');
     });
 
-    let html = '';
-    Object.entries(porCategoria).forEach(([cat, prods]) => {
-        const icono = obtenerIconoCategoria(cat);
-        const agotados = prods.filter(p => !p.stock || p.stock === 0).length;
-        html += `
-        <details class="stock-cat-acordeon" open style="margin-bottom:16px;border-radius:14px;overflow:hidden;border:1.5px solid var(--border-color);">
-            <summary style="cursor:pointer;display:flex;align-items:center;gap:10px;padding:12px 16px;background:var(--primary);color:white;font-weight:700;font-size:15px;list-style:none;user-select:none;">
-                <span>${icono} ${cat}</span>
-                <span style="margin-left:auto;font-size:12px;font-weight:400;opacity:.85;">${prods.length} producto${prods.length>1?'s':''}${agotados>0?' · ⚠️ '+agotados+' agotado'+(agotados>1?'s':''):''}</span>
-                <span style="font-size:11px;opacity:.7;">▼</span>
-            </summary>
-            <div style="display:flex;flex-direction:column;gap:0;background:var(--bg);">`;
+    var lastCat = null;
+    var html = '<div style="display:flex;flex-direction:column;border:1.5px solid var(--border-color);border-radius:14px;overflow:hidden;">';
 
-        prods.forEach((p, idx) => {
-            const agotado = !p.stock || p.stock === 0;
-            const stockColor = agotado ? '#e74c3c' : p.stock <= 3 ? '#e67e22' : '#27AE60';
-            html += `
-                <div style="display:flex;align-items:center;gap:12px;padding:12px 16px;${idx < prods.length-1 ? 'border-bottom:1px solid var(--border-color);' : ''}background:${agotado ? 'rgba(231,76,60,0.04)' : 'transparent'};">
-                    <img src="${p.imagen}" alt="${p.nombre}" style="width:48px;height:48px;object-fit:cover;border-radius:8px;flex-shrink:0;">
-                    <div style="flex:1;min-width:0;">
-                        <div style="font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${p.nombre}${agotado ? ' <span style="font-size:10px;color:#e74c3c;font-weight:700;vertical-align:middle;">AGOTADO</span>' : ''}</div>
-                        <div style="font-size:12px;color:var(--text-muted);">$${p.precioActual.toFixed(2)} USD</div>
-                    </div>
-                    <div style="display:flex;align-items:center;gap:6px;flex-shrink:0;">
-                        <button onclick="ajustarStockRapido(${p.id}, -1)" style="width:32px;height:32px;border-radius:8px;border:none;background:#e74c3c;color:white;font-size:18px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;">−</button>
-                        <input type="number" min="0" value="${p.stock || 0}"
-                            onchange="setStockRapido(${p.id}, this.value)"
-                            style="width:54px;height:32px;text-align:center;font-size:15px;font-weight:700;color:${stockColor};border:1.5px solid ${stockColor};border-radius:8px;background:white;-moz-appearance:textfield;">
-                        <button onclick="ajustarStockRapido(${p.id}, +1)" style="width:32px;height:32px;border-radius:8px;border:none;background:#27AE60;color:white;font-size:18px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;">+</button>
-                    </div>
-                </div>`;
-        });
+    filtrados.forEach(function(p, idx) {
+        var agotado    = !p.stock || p.stock === 0;
+        var stockColor = agotado ? '#e74c3c' : (p.stock <= 3 ? '#e67e22' : '#27AE60');
+        var cat        = p.categoria || 'General';
 
-        html += `</div></details>`;
+        if (cat !== lastCat) {
+            lastCat = cat;
+            var icono = (typeof obtenerIconoCategoria === 'function') ? obtenerIconoCategoria(cat) : '';
+            html += '<div style="padding:8px 16px;background:var(--primary);color:white;font-size:13px;font-weight:700;letter-spacing:.4px;">' +
+                        icono + ' ' + cat +
+                    '</div>';
+        }
+
+        var borde = idx < filtrados.length - 1 ? 'border-bottom:1px solid var(--border-color);' : '';
+        var bgRow  = agotado ? 'rgba(231,76,60,0.05)' : (idx%2===0 ? 'transparent' : 'rgba(0,0,0,0.015)');
+
+        html +=
+            '<div style="display:flex;align-items:center;gap:12px;padding:11px 14px;' + borde + 'background:' + bgRow + ';">' +
+                '<img src="' + p.imagen + '" alt="' + p.nombre + '" style="width:50px;height:50px;object-fit:cover;border-radius:9px;flex-shrink:0;border:1px solid var(--border-color);">' +
+                '<div style="flex:1;min-width:0;">' +
+                    '<div style="font-size:13px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' +
+                        p.nombre +
+                        (agotado ? ' <span style="font-size:10px;background:#e74c3c;color:white;padding:1px 5px;border-radius:4px;margin-left:4px;vertical-align:middle;">AGOTADO</span>' : '') +
+                    '</div>' +
+                    '<div style="font-size:12px;color:var(--text-muted);margin-top:2px;">$' + p.precioActual.toFixed(2) + ' USD</div>' +
+                '</div>' +
+                '<div style="display:flex;align-items:center;gap:6px;flex-shrink:0;">' +
+                    '<button onclick="ajustarStockRapido(' + p.id + ',-1)" style="width:38px;height:38px;border-radius:9px;border:none;background:#e74c3c;color:white;font-size:24px;font-weight:700;cursor:pointer;line-height:1;display:flex;align-items:center;justify-content:center;">&#8722;</button>' +
+                    '<input type="number" min="0" value="' + (p.stock||0) + '" onchange="setStockRapido(' + p.id + ',this.value)" style="width:54px;height:38px;text-align:center;font-size:16px;font-weight:700;color:' + stockColor + ';border:2px solid ' + stockColor + ';border-radius:9px;background:white;-moz-appearance:textfield;outline:none;">' +
+                    '<button onclick="ajustarStockRapido(' + p.id + ',1)" style="width:38px;height:38px;border-radius:9px;border:none;background:#27AE60;color:white;font-size:24px;font-weight:700;cursor:pointer;line-height:1;display:flex;align-items:center;justify-content:center;">&#43;</button>' +
+                '</div>' +
+            '</div>';
     });
 
+    html += '</div>';
     lista.innerHTML = html;
 }
 
 function ajustarStockRapido(id, delta) {
-    const p = productos.find(x => x.id === id);
+    var p = productos.find(function(x) { return x.id === id; });
     if (!p) return;
     p.stock = Math.max(0, (p.stock || 0) + delta);
     guardarProductos();
@@ -3465,13 +3482,13 @@ function ajustarStockRapido(id, delta) {
     sincronizarConGitHub();
     renderizarStockRapido();
     renderizarProductos();
-    mostrarNotificacion(`📦 Stock de "${p.nombre}": ${p.stock}`, 'success');
+    mostrarNotificacion('&#x1F4E6; ' + p.nombre + ': ' + p.stock + ' en stock', 'success');
 }
 
 function setStockRapido(id, valor) {
-    const p = productos.find(x => x.id === id);
+    var p = productos.find(function(x) { return x.id === id; });
     if (!p) return;
-    const nuevo = Math.max(0, parseInt(valor) || 0);
+    var nuevo = Math.max(0, parseInt(valor) || 0);
     if (nuevo === p.stock) return;
     p.stock = nuevo;
     guardarProductos();
@@ -3479,5 +3496,5 @@ function setStockRapido(id, valor) {
     sincronizarConGitHub();
     renderizarStockRapido();
     renderizarProductos();
-    mostrarNotificacion(`📦 Stock de "${p.nombre}": ${p.stock}`, 'success');
+    mostrarNotificacion('&#x1F4E6; ' + p.nombre + ': ' + p.stock + ' en stock', 'success');
 }
