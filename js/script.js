@@ -199,15 +199,34 @@ function guardarResena() {
     if (_estrellasSeleccionadas === 0) { mostrarNotificacion('⚠️ Selecciona una valoración', 'error'); return; }
     if (!texto) { mostrarNotificacion('⚠️ Escribe tu reseña', 'error'); return; }
 
-    const key = 'resenas_' + _detalleProductoActual.id;
-    const resenas = JSON.parse(localStorage.getItem(key) || '[]');
-    resenas.unshift({
+    const nuevaResena = {
         autor,
         texto,
         estrellas: _estrellasSeleccionadas,
         fecha: new Date().toLocaleDateString('es-ES', { day:'numeric', month:'short', year:'numeric' })
-    });
-    localStorage.setItem(key, JSON.stringify(resenas.slice(0, 20))); // max 20 reseñas
+    };
+
+    // Guardar en clave propia del producto (persistencia local)
+    const key = 'resenas_' + _detalleProductoActual.id;
+    const resenas = JSON.parse(localStorage.getItem(key) || '[]');
+    resenas.unshift(nuevaResena);
+    const resenasSlice = resenas.slice(0, 20);
+    localStorage.setItem(key, JSON.stringify(resenasSlice));
+
+    // También guardar dentro del array de productos en localStorage para que
+    // se incluyan en el productos.json descargable y sean persistentes
+    try {
+        const prodIndex = productos.findIndex(p => p.id === _detalleProductoActual.id);
+        if (prodIndex !== -1) {
+            if (!productos[prodIndex].resenas) productos[prodIndex].resenas = [];
+            productos[prodIndex].resenas.unshift(nuevaResena);
+            productos[prodIndex].resenas = productos[prodIndex].resenas.slice(0, 20);
+            localStorage.setItem('productos', JSON.stringify(productos));
+            // Sincronizar también con el producto actual en memoria
+            _detalleProductoActual.resenas = productos[prodIndex].resenas;
+        }
+    } catch(e) { /* no crítico */ }
+
     mostrarFormResena(); // cerrar form
     renderizarResenas(_detalleProductoActual.id);
     mostrarNotificacion('✅ ¡Reseña publicada!');
@@ -216,8 +235,17 @@ function guardarResena() {
 function renderizarResenas(productoId) {
     const el = document.getElementById('listaResenas');
     if (!el) return;
-    const key    = 'resenas_' + productoId;
-    const resenas = JSON.parse(localStorage.getItem(key) || '[]');
+
+    // Buscar reseñas: primero en el producto en memoria, luego en localStorage
+    let resenas = [];
+    const prodEnMemoria = productos.find(p => p.id === productoId);
+    if (prodEnMemoria && Array.isArray(prodEnMemoria.resenas) && prodEnMemoria.resenas.length > 0) {
+        resenas = prodEnMemoria.resenas;
+    } else {
+        const key = 'resenas_' + productoId;
+        resenas = JSON.parse(localStorage.getItem(key) || '[]');
+    }
+
     if (resenas.length === 0) {
         el.innerHTML = '<p class="resenas-vacio">Sé el primero en dejar una reseña 🌟</p>';
         return;
@@ -1002,7 +1030,7 @@ function renderizarMasVendidos() {
                 <div class="stock-bar-fill" style="width: ${Math.max(15, (producto.stock / 20) * 100)}%"></div>
             </div>
             
-            <button class="btn btn-small btn-primary" onclick="event.stopPropagation(); tmComprar(event, ${producto.id}, '${producto.nombre}')"><span class="wa-icon" aria-hidden="true"></span> PEDIR</button>
+            <button class="btn btn-small btn-primary" onclick="event.stopPropagation(); tmComprar(event, ${producto.id}, '${producto.nombre}')">🛒 Comprar</button>
         `;
         grid.appendChild(card);
     });
@@ -1273,7 +1301,7 @@ function renderizarProductos() {
 	            </p>
             <div class="stock">📦 Stock: ${producto.stock} unidades</div>
             ${typeof renderCountdownHtml === 'function' ? renderCountdownHtml(producto.id) : ''}
-            <button class="btn btn-small btn-primary" onclick="event.stopPropagation(); tmComprar(event, ${producto.id}, '${producto.nombre}')"><span class="wa-icon" aria-hidden="true"></span> PEDIR</button>
+            <button class="btn btn-small btn-primary" onclick="event.stopPropagation(); tmComprar(event, ${producto.id}, '${producto.nombre}')">🛒 Comprar</button>
         `;
         productosGrid.appendChild(card);
     });
@@ -1363,7 +1391,7 @@ function abrirDetalleProducto(id) {
     // Botón comprar
     const buyBtn = document.getElementById('detailBuyBtn');
     buyBtn.disabled = p.stock === 0;
-    buyBtn.innerHTML = p.stock === 0 ? '❌ Sin stock' : '<span class="wa-icon" aria-hidden="true"></span> PEDIR';
+    buyBtn.textContent = p.stock === 0 ? '❌ Sin stock' : '🛒 Comprar por WhatsApp';
     buyBtn.onclick = () => contactarProducto(p.nombre);
 
     // Productos relacionados (misma categoría, excluir actual)
@@ -1444,88 +1472,68 @@ function toggleZoomImagen(img) {
     img.classList.toggle('zoomed');
 }
 
-function obtenerUrlProducto(p) {
-    if (!p || !p.id) return 'https://tiendamax.org/';
-    return 'https://tiendamax.org/?producto=' + encodeURIComponent(p.id);
+function abrirPanelCompartir() {
+    const panel = document.getElementById('panelCompartirRedes');
+    if (!panel) return;
+    const visible = panel.style.display !== 'none';
+    panel.style.display = visible ? 'none' : 'block';
+}
+
+function _getShareData() {
+    const p = _detalleProductoActual;
+    if (!p) return null;
+    return {
+        nombre: p.nombre,
+        precio: p.precioActual.toFixed(2),
+        texto: `🛍️ *${p.nombre}* — $${p.precioActual.toFixed(2)} USD\n📦 Stock disponible\n👉 tiendamax.org`,
+        url: 'https://tiendamax.org'
+    };
+}
+
+function compartirWhatsApp() {
+    const d = _getShareData(); if (!d) return;
+    const msg = encodeURIComponent(d.texto);
+    window.open(`https://wa.me/?text=${msg}`, '_blank');
+}
+
+function compartirFacebook() {
+    const d = _getShareData(); if (!d) return;
+    const url = encodeURIComponent(d.url);
+    window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}&quote=${encodeURIComponent(d.texto)}`, '_blank');
+}
+
+function compartirTelegram() {
+    const d = _getShareData(); if (!d) return;
+    const msg = encodeURIComponent(d.texto + '\n' + d.url);
+    window.open(`https://t.me/share/url?url=${encodeURIComponent(d.url)}&text=${encodeURIComponent(d.texto)}`, '_blank');
+}
+
+function compartirTwitter() {
+    const d = _getShareData(); if (!d) return;
+    const msg = encodeURIComponent(`${d.nombre} — $${d.precio} USD en @TiendaMax 🛍️ ${d.url}`);
+    window.open(`https://twitter.com/intent/tweet?text=${msg}`, '_blank');
+}
+
+function compartirNativo() {
+    const p = _detalleProductoActual;
+    if (!p) return;
+    const texto = `🛍️ ${p.nombre} — $${p.precioActual.toFixed(2)} USD\n📦 Stock disponible\n👉 tiendamax.org`;
+    if (navigator.share) {
+        navigator.share({ title: p.nombre, text: texto, url: 'https://tiendamax.org' }).catch(() => {});
+    } else {
+        navigator.clipboard.writeText(texto).then(() => mostrarNotificacion('📤 Texto copiado para compartir'));
+    }
 }
 
 function compartirProducto() {
-    const p = _detalleProductoActual;
-    if (!p) return;
-
-    const url = obtenerUrlProducto(p);
-    const texto = `🛍️ ${p.nombre}
-💰 $${p.precioActual.toFixed(2)} USD
-📦 Disponible en TiendaMax
-${url}`;
-
-    // En celulares abre el menú nativo: WhatsApp, Facebook, Telegram, etc.
-    if (navigator.share) {
-        navigator.share({ title: p.nombre, text: texto, url }).catch(() => {});
-        return;
-    }
-
-    // En computadoras mostramos opciones claras de redes sociales.
-    mostrarPanelCompartir(p, url, texto);
-}
-
-function mostrarPanelCompartir(p, url, texto) {
-    document.querySelector('.share-backdrop')?.remove();
-
-    const backdrop = document.createElement('div');
-    backdrop.className = 'share-backdrop';
-    backdrop.innerHTML = `
-        <div class="share-modal" role="dialog" aria-modal="true" aria-label="Compartir producto">
-            <button type="button" class="share-close" aria-label="Cerrar">×</button>
-            <h3>Compartir producto</h3>
-            <p class="share-product-name">${p.nombre}</p>
-            <div class="share-panel">
-                <a target="_blank" rel="noopener" href="https://wa.me/?text=${encodeURIComponent(texto)}">💬 WhatsApp</a>
-                <a target="_blank" rel="noopener" href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}">📘 Facebook</a>
-                <a target="_blank" rel="noopener" href="https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(p.nombre)}">✈️ Telegram</a>
-                <button type="button" class="share-copy-btn">🔗 Copiar enlace</button>
-            </div>
-        </div>`;
-
-    backdrop.addEventListener('click', (e) => {
-        if (e.target === backdrop || e.target.classList.contains('share-close')) backdrop.remove();
-    });
-    backdrop.querySelector('.share-copy-btn').addEventListener('click', () => {
-        navigator.clipboard.writeText(url).then(() => mostrarNotificacion('🔗 Enlace copiado'));
-        backdrop.remove();
-    });
-
-    document.body.appendChild(backdrop);
+    abrirPanelCompartir();
 }
 
 function copiarLinkProducto() {
-    const p = _detalleProductoActual;
-    const url = p ? obtenerUrlProducto(p) : 'https://tiendamax.org/';
-    navigator.clipboard.writeText(url).then(() =>
+    navigator.clipboard.writeText('https://tiendamax.org').then(() =>
         mostrarNotificacion('🔗 Enlace copiado')
     ).catch(() => mostrarNotificacion('❌ No se pudo copiar', 'error'));
 }
-
-// Abre automáticamente el producto cuando alguien entra por un enlace compartido:
-// https://tiendamax.org/?producto=123
-function abrirProductoDesdeUrlCompartida(intentos = 0) {
-    const id = Number(new URLSearchParams(window.location.search).get('producto'));
-    if (!id) return;
-
-    if (typeof abrirDetalleProducto === 'function' && Array.isArray(window.productos || productos)) {
-        const lista = window.productos || productos;
-        if (lista && lista.some(p => Number(p.id) === id)) {
-            abrirDetalleProducto(id);
-            return;
-        }
-    }
-
-    if (intentos < 20) {
-        setTimeout(() => abrirProductoDesdeUrlCompartida(intentos + 1), 300);
-    }
-}
-
-window.addEventListener('DOMContentLoaded', () => abrirProductoDesdeUrlCompartida());
 
 function contactarProducto(nombre) {
     const msg = encodeURIComponent(`Hola, me interesa el producto: ${nombre}. ¿Está disponible?`);
@@ -3078,7 +3086,7 @@ renderizarProductos = function() {
                 ? '<div class="stock" style="color:#e74c3c;font-weight:700;">❌ Agotado</div><button class="btn btn-small btn-primary" disabled style="opacity:0.5;cursor:not-allowed;">No disponible</button>'
                 : '<div class="stock">📦 Stock: ' + producto.stock + ' unidades</div>' +
                   (typeof renderCountdownHtml === 'function' ? renderCountdownHtml(producto.id) : '') +
-                  '<button class="btn btn-small btn-primary" onclick="event.stopPropagation(); tmComprar(event, ' + producto.id + ', \'' + producto.nombre + '\')"><span class="wa-icon" aria-hidden="true"></span> PEDIR</button>');
+                  '<button class="btn btn-small btn-primary" onclick="event.stopPropagation(); tmComprar(event, ' + producto.id + ', \'' + producto.nombre + '\')">🛒 Comprar</button>');
         productosGrid.appendChild(card);
     });
 };
