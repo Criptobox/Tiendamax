@@ -37,8 +37,7 @@
             "name": "Panel Admin",
             "short_name": "Admin",
             "description": "Abrir panel de administración",
-            "url": "/?admin=1",
-            "icons": [{ "src": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgcng9IjIwIiBmaWxsPSIjMEQwRDBEIi8+PHRleHQgeT0iNzIiIHg9IjUwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjYyIiBmb250LWZhbWlseT0iR2VvcmdpYSxzZXJpZiIgZm9udC13ZWlnaHQ9IjkwMCIgZmlsbD0iI0M5QTk2RSI+TTwvdGV4dD48L3N2Zz4=", "sizes": "96x96" }]
+            "url": "/?admin=1"
         }
     ]
 }
