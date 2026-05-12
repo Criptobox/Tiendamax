@@ -751,5 +751,50 @@
     "usado": false,
     "garantia": "",
     "devolucion": false
+  },
+  {
+    "id": 1778601482845,
+    "nombre": "MANNOL 4-Takt Motorbike 10W-40 7812  1L",
+    "descripcion": "Specifications\nSAE 10W-40\nAPI SP\nJASO MA/MA2",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1778601479670.jpg",
+    "precioActual": 10,
+    "descuento": 0,
+    "stock": 52,
+    "categoria": "MOTOS",
+    "subcategoria": "LUBRICANTES",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false
+  },
+  {
+    "id": 1778601740203,
+    "nombre": "20W50 S-4T ACEITE DE MOTOR MINERAL FF6208 1L",
+    "descripcion": "SAE 20W–50\n\nAPI SN\n\nJASO MAS/MAS2",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1778601683067.jpg",
+    "precioActual": 10,
+    "descuento": 0,
+    "stock": 23,
+    "categoria": "MOTOS",
+    "subcategoria": "LUBRICANTES",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false
+  },
+  {
+    "id": 1778602314518,
+    "nombre": "FANFARO 2T 1L",
+    "descripcion": "ESPECIFICACIONES TÉCNICAS:\n-Categoría: Aceite para\nMotores de 2 Tiempos\n-Viscosidad: SAE 20W(SAE 2T)\n-Clasificación de\nRendimiento: APITC\n-Especificaciones: JASO FB,\n- Aplicaciones Recomen-\ndadas: Cortacéspedesr\nART.\nMotosierras, Cortabordes,\nCiclomotores.",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1778602312238.jpg",
+    "precioActual": 8,
+    "descuento": 0,
+    "stock": 43,
+    "categoria": "MOTOS",
+    "subcategoria": "LUBRICANTES",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false
   }
 ]
