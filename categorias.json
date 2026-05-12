@@ -8,11 +8,13 @@
     "ROPA",
     "LENCERIA",
     "SEGURIDAD",
-    "HOGAR"
+    "HOGAR",
+    "JUEGOS"
   ],
   "iconos": {
     "LENCERIA": "👙",
     "SEGURIDAD": "🔒",
-    "HOGAR": "🏠"
+    "HOGAR": "🏠",
+    "JUEGOS": "🎮"
   }
 }
