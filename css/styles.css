@@ -3769,32 +3769,59 @@ body.dark-mode #listaRevolicoConfig select {
 }
 
 /* ══════════════════════════════════════════
-   FIX v2: Botón Comprar + colores banners
+   FIX v2: Botón Pedir — estilo premium compacto
 ══════════════════════════════════════════ */
 
-/* Botón comprar — sin recorte, ancho completo */
 .producto-card .btn {
-    margin: auto 12px 16px !important;
-    width: calc(100% - 24px) !important;
-    box-sizing: border-box !important;
+    /* Tamaño compacto — no ocupa todo el ancho */
+    margin: auto auto 20px !important;
+    width: auto !important;
+    min-width: 140px !important;
+    max-width: 72% !important;
+    align-self: center !important;
+
+    /* Forma pill elegante */
+    border-radius: 50px !important;
+    padding: 10px 24px !important;
+    min-height: 38px !important;
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.4px !important;
+
+    /* Layout interno */
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    gap: 5px !important;
+    gap: 6px !important;
     white-space: nowrap !important;
-    overflow: hidden !important;
-    min-height: 40px !important;
-    padding: 10px 8px !important;
-    font-size: 13px !important;
+    box-sizing: border-box !important;
+
+    /* Sombra que da profundidad al botón */
+    box-shadow: 0 4px 12px rgba(201,169,110,0.35),
+                0 1px 3px rgba(0,0,0,0.15) !important;
+    transition: transform 0.2s ease,
+                box-shadow 0.2s ease !important;
+}
+
+.producto-card .btn:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 20px rgba(201,169,110,0.45),
+                0 2px 6px rgba(0,0,0,0.18) !important;
+}
+
+.producto-card .btn:active {
+    transform: translateY(0px) !important;
+    box-shadow: 0 2px 6px rgba(201,169,110,0.3) !important;
 }
 
 @media (max-width: 768px) {
     .producto-card .btn {
-        margin: auto 8px 12px !important;
-        width: calc(100% - 16px) !important;
+        min-width: 120px !important;
+        max-width: 78% !important;
+        padding: 9px 20px !important;
         font-size: 12px !important;
-        min-height: 38px !important;
-        padding: 8px 6px !important;
+        min-height: 36px !important;
+        margin-bottom: 16px !important;
     }
 }
 
