@@ -420,8 +420,9 @@ def publicar_revolico(producto):
 def publicar_facebook(producto):
     from selenium.webdriver.common.by import By
 
-    if not FACEBOOK_GRUPOS:
-        warn("No hay grupos de Facebook configurados en FACEBOOK_GRUPOS.")
+    grupos_list = [g["url"] for g in cargar_grupos_fb()]
+    if not grupos_list:
+        warn("No hay grupos de Facebook configurados.")
         return 0
 
     driver = obtener_driver()
@@ -433,10 +434,10 @@ def publicar_facebook(producto):
     img_ruta = imagen_a_archivo(producto)
     publicados = 0
 
-    info(f"Facebook → {nombre} en {len(FACEBOOK_GRUPOS)} grupos")
+    info(f"Facebook → {nombre} en {len(grupos_list)} grupos")
 
-    for i, grupo_url in enumerate(FACEBOOK_GRUPOS, 1):
-        info(f"Grupo {i}/{len(FACEBOOK_GRUPOS)}: {grupo_url}")
+    for i, grupo_url in enumerate(grupos_list, 1):
+        info(f"Grupo {i}/{len(grupos_list)}: {grupo_url}")
         try:
             driver.get(grupo_url)
             pausa(5, 2)
@@ -501,7 +502,7 @@ def publicar_facebook(producto):
                 warn(f"No encontré botón Publicar en grupo {i}")
 
             # Pausa entre grupos (excepto el último)
-            if i < len(FACEBOOK_GRUPOS):
+            if i < len(grupos_list):
                 info(f"Esperando {PAUSA_ENTRE_GRUPOS_FACEBOOK}s antes del siguiente grupo...")
                 pausa(PAUSA_ENTRE_GRUPOS_FACEBOOK, 8)
 
@@ -571,8 +572,7 @@ def publicar_en_grupo_facebook(producto, url_grupo):
             warn("No encontré área de texto")
             return False
 
-        for linea in texto.split("
-"):
+        for linea in texto.split("\n"):
             area.send_keys(linea)
             area.send_keys(Keys.SHIFT + Keys.ENTER)
             time.sleep(0.08)
@@ -696,7 +696,7 @@ def ver_productos():
 
 def menu():
     productos = obtener_productos()
-    grupos_ok = len(FACEBOOK_GRUPOS)
+    grupos_ok = len(cargar_grupos_fb())
 
     print(f"""
 {B}╔══════════════════════════════════════════════╗
@@ -720,9 +720,9 @@ def menu():
 
 if __name__ == "__main__":
     # Avisos de configuración pendiente
-    if not FACEBOOK_GRUPOS:
+    if not cargar_grupos_fb():
         warn("Aún no configuraste grupos de Facebook.")
-        warn("Edita FACEBOOK_GRUPOS en este archivo y agrega los URLs de tus grupos.\n")
+        warn("Edita FACEBOOK_GRUPOS_MANUAL en este archivo o exporta el JSON desde el panel admin.\n")
 
     while True:
         menu()
