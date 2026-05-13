@@ -8,7 +8,12 @@
     "precioActual": 80,
     "descuento": 0,
     "stock": 1,
-    "categoria": "ENERGIA"
+    "categoria": "ENERGIA",
+    "subcategoria": "",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false
   },
   {
     "id": 1777924118004,
@@ -19,7 +24,12 @@
     "precioActual": 170,
     "descuento": 0,
     "stock": 2,
-    "categoria": "ENERGIA"
+    "categoria": "ENERGIA",
+    "subcategoria": "",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false
   },
   {
     "id": 1777924173211,
@@ -30,7 +40,12 @@
     "precioActual": 130,
     "descuento": 0,
     "stock": 7,
-    "categoria": "WIFI"
+    "categoria": "WIFI",
+    "subcategoria": "",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false
   },
   {
     "id": 1777924248270,
@@ -41,7 +56,12 @@
     "precioActual": 80,
     "descuento": 0,
     "stock": 4,
-    "categoria": "WIFI"
+    "categoria": "WIFI",
+    "subcategoria": "",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false
   },
   {
     "id": 1777924315386,
@@ -71,7 +91,8 @@
     "masVendido": false,
     "usado": false,
     "garantia": "",
-    "devolucion": false
+    "devolucion": false,
+    "subcategoria": ""
   },
   {
     "id": 1778102507659,
@@ -85,7 +106,8 @@
     "masVendido": false,
     "usado": false,
     "garantia": "",
-    "devolucion": false
+    "devolucion": false,
+    "subcategoria": ""
   },
   {
     "id": 1778102582909,
@@ -114,7 +136,8 @@
     "masVendido": false,
     "usado": false,
     "garantia": "",
-    "devolucion": false
+    "devolucion": false,
+    "subcategoria": ""
   },
   {
     "id": 1778103856933,
@@ -128,7 +151,8 @@
     "masVendido": false,
     "usado": false,
     "garantia": "",
-    "devolucion": false
+    "devolucion": false,
+    "subcategoria": ""
   },
   {
     "id": 1778104115783,
@@ -157,7 +181,8 @@
     "masVendido": false,
     "usado": false,
     "garantia": "",
-    "devolucion": false
+    "devolucion": false,
+    "subcategoria": ""
   },
   {
     "id": 1778104287395,
@@ -171,7 +196,8 @@
     "masVendido": false,
     "usado": false,
     "garantia": "",
-    "devolucion": false
+    "devolucion": false,
+    "subcategoria": ""
   },
   {
     "id": 1778104423316,
@@ -185,7 +211,8 @@
     "masVendido": false,
     "usado": false,
     "garantia": "",
-    "devolucion": false
+    "devolucion": false,
+    "subcategoria": ""
   },
   {
     "id": 1778104512761,
@@ -199,7 +226,8 @@
     "masVendido": false,
     "usado": false,
     "garantia": "",
-    "devolucion": false
+    "devolucion": false,
+    "subcategoria": ""
   },
   {
     "id": 1778104599386,
@@ -213,7 +241,8 @@
     "masVendido": false,
     "usado": false,
     "garantia": "",
-    "devolucion": false
+    "devolucion": false,
+    "subcategoria": ""
   },
   {
     "id": 1778104662477,
@@ -227,7 +256,8 @@
     "masVendido": false,
     "usado": false,
     "garantia": "",
-    "devolucion": false
+    "devolucion": false,
+    "subcategoria": ""
   },
   {
     "id": 1778104735789,
@@ -241,7 +271,8 @@
     "masVendido": false,
     "usado": false,
     "garantia": "",
-    "devolucion": false
+    "devolucion": false,
+    "subcategoria": ""
   },
   {
     "id": 1778104850733,
@@ -255,7 +286,8 @@
     "masVendido": false,
     "usado": false,
     "garantia": "",
-    "devolucion": false
+    "devolucion": false,
+    "subcategoria": ""
   },
   {
     "id": 1778104924836,
@@ -367,7 +399,7 @@
     "nombre": "MANNOL Safari 20W-50 7404  5L",
     "descripcion": "Aceite de motor universal semisintético, con una mezcla de componentes sintéticos y una base mineral de alta pureza, para motores modernos de gasolina y diésel altamente acelerados con y sin turbocompresor utilizados en condiciones de funcionamiento difíciles y motores con un kilometraje muy alto utilizado en diversas operaciones. condiciones. Diseñado para la máxima protección de los motores modernos de gasolina y diésel de una amplia flota de automóviles (automóviles de pasajeros, SUV ligeros, minibuses y camiones ligeros) de fabricantes rusos, asiáticos, americanos, europeos, etc.\n\nSAE 20W-50\n\nApproval\n\nRecommendation\n\nAPI SN/CH-4",
     "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1778213940333.jpg",
-    "precioActual": 30,
+    "precioActual": 25,
     "descuento": 17,
     "stock": 53,
     "categoria": "CARROS",
@@ -807,6 +839,21 @@
     "stock": 9,
     "categoria": "MOTOS",
     "subcategoria": "PARTES Y PIEZAS",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false
+  },
+  {
+    "id": 1778636088295,
+    "nombre": "Kit de 4 cámaras Zosi ( con su disco duro )",
+    "descripcion": "Kit de 4 cámaras Zosi NUEVO EN CAJA‼️\n\n• DVR 8 Canales.\n• 5MP Lite DVR.\n• Soporta cámara analógica, HD-TVI, CVI y AHD.\n• Tecnología de compresión H.265+.\n• Salida de vídeo: HDMI / VGA / CVBS.\n• Detección de movimiento avanzada y personalizable.\n• Grabación continua o configurable a la detección de movimiento.\n• Reciclado automático de grabación.\n• Resistente al agua.\n• Para interior o exterior.\n\n🏠 Visualización local: No necesita red, simplemente conecte el sistema a un monitor a través del puerto HDMI/VGA y disfrute de varias vistas en una pantalla.\n💻 Visualización remota: Conecte Internet al DVR. Descargue la aplicación ZOSI Smart en su smartphone (iOS o Android), o descargue el cliente AVSS PC en PC.\n\n🚨VIENEN CON TODOS SUS ACCESORIOS (con el disco duro incluido)",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1778636080144.jpg",
+    "precioActual": 280,
+    "descuento": 0,
+    "stock": 2,
+    "categoria": "SEGURIDAD",
+    "subcategoria": "",
     "masVendido": false,
     "usado": false,
     "garantia": "",
