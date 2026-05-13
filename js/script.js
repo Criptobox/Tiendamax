@@ -1127,6 +1127,17 @@ function switchTab(tabName) {
     if (tabName === 'manage-products') setTimeout(actualizarListaProductos, 100);
     if (tabName === 'analytics') setTimeout(renderizarAnalytics, 100);
     if (tabName === 'stock-rapido') setTimeout(renderizarStockRapido, 100);
+    if (tabName === 'manage-categories') {
+        setTimeout(function() {
+            if (typeof actualizarListaCategorias === 'function') actualizarListaCategorias();
+        }, 100);
+    }
+    if (tabName === 'manage-subcategories') {
+        setTimeout(function() {
+            if (typeof actualizarSelectCategoriasPadre === 'function') actualizarSelectCategoriasPadre();
+            if (typeof actualizarListaSubcategorias === 'function') actualizarListaSubcategorias();
+        }, 100);
+    }
 }
 
 // ===== PRODUCTOS =====
@@ -3025,10 +3036,6 @@ function renderizarListaAgotados() {
 // ── Patch switchTab to hook oferta-dia tab ──
 const _origSwitchTabFinal = switchTab;
 switchTab = function(tabName) {
-    // Refrescar select de categorías al entrar al tab de subcategorías
-    if (tabName === 'manage-subcategories' && typeof actualizarSelectCategoriasPadre === 'function') {
-        setTimeout(actualizarSelectCategoriasPadre, 50);
-    }
     _origSwitchTabFinal(tabName);
     if (tabName === 'oferta-dia') {
         setTimeout(() => {
