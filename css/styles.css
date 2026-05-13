@@ -469,6 +469,25 @@ body {
     font-weight: 300;
 }
 
+#masVendidosGrid {
+    max-width: 960px;
+    margin-left: auto;
+    margin-right: auto;
+    grid-template-columns: repeat(3, 1fr);
+    justify-content: center;
+    justify-items: center;
+}
+
+.mas-vendidos .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.mas-vendidos .container #masVendidosGrid {
+    width: 100%;
+}
+
 .badge-vendido {
     background: linear-gradient(135deg, var(--coral), var(--gold));
     color: white;
