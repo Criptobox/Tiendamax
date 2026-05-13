@@ -31,7 +31,6 @@
     ],
     "categories": ["shopping", "business"],
     "lang": "es",
-    "dir": "ltr",
     "shortcuts": [
         {
             "name": "Panel Admin",
