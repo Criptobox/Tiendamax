@@ -741,3 +741,76 @@ body.dark-mode .admin-tab select {
     border-radius: 50%;
     flex-shrink: 0;
 }
+
+/* ═══════════════════════════════════════════════════
+   OPTIMIZACIONES MÓVIL + PC — v12
+   ═══════════════════════════════════════════════════ */
+
+/* Tipografía fluida */
+:root {
+    --fs-xs:   clamp(11px, 2.5vw, 13px);
+    --fs-sm:   clamp(13px, 2.8vw, 15px);
+    --fs-base: clamp(14px, 3vw,   16px);
+    --fs-lg:   clamp(16px, 3.5vw, 20px);
+    --fs-xl:   clamp(22px, 5vw,   36px);
+    --fs-hero: clamp(28px, 6vw,   52px);
+}
+
+/* Container con safe-area para notch */
+.container {
+    padding-left:  max(16px, env(safe-area-inset-left,  16px));
+    padding-right: max(16px, env(safe-area-inset-right, 16px));
+}
+
+/* Grid 2 col en móvil pequeño */
+@media (max-width: 480px) {
+    .productos-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 10px !important;
+        padding: 0 4px;
+    }
+    .producto-card h3            { font-size: 12px !important; }
+    .producto-card .precio-actual{ font-size: 15px !important; }
+    .producto-image              { height: 130px !important; }
+    .producto-card               { border-radius: 12px !important; }
+    .producto-card .descripcion  { display: none !important; }
+    .producto-card .producto-info{ padding: 10px !important; }
+}
+
+/* 4 columnas en PC ancho */
+@media (min-width: 1400px) {
+    .productos-grid { grid-template-columns: repeat(4, 1fr) !important; }
+    .container      { max-width: 1320px; }
+}
+
+/* Hero padding en PC grande */
+@media (min-width: 1200px) {
+    .hero-content { padding-left: 60px !important; }
+}
+@media (min-width: 1600px) {
+    .hero-content { padding-left: 80px !important; }
+}
+
+/* Header sticky en móvil */
+@media (max-width: 768px) {
+    .header { position: sticky; top: 0; z-index: 1000; }
+    .header-content { padding: 12px 16px !important; min-height: 58px; }
+}
+
+/* Botones táctiles mínimo 44px */
+@media (max-width: 768px) {
+    .btn, button { min-height: 44px; }
+    .producto-card .btn { min-height: 40px !important; }
+}
+
+/* Evitar zoom en inputs iOS */
+@media (max-width: 768px) {
+    input, select, textarea { font-size: 16px !important; }
+}
+
+/* Scroll suave */
+html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+}
