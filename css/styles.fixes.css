@@ -742,84 +742,56 @@ body.dark-mode .admin-tab select {
     flex-shrink: 0;
 }
 
-/* ═══════════════════════════════════════════════════
-   OPTIMIZACIONES MÓVIL + PC — v12
-   ═══════════════════════════════════════════════════ */
 
-/* Tipografía fluida */
-:root {
-    --fs-xs:   clamp(11px, 2.5vw, 13px);
-    --fs-sm:   clamp(13px, 2.8vw, 15px);
-    --fs-base: clamp(14px, 3vw,   16px);
-    --fs-lg:   clamp(16px, 3.5vw, 20px);
-    --fs-xl:   clamp(22px, 5vw,   36px);
-    --fs-hero: clamp(28px, 6vw,   52px);
+/* =====================================================================
+   FIX: BOTÓN PEDIR — alineación uniforme en tarjetas móvil
+   El botón siempre al fondo de la tarjeta, igual en todas
+   ===================================================================== */
+.producto-card {
+    display: flex !important;
+    flex-direction: column !important;
 }
 
-/* Container con safe-area para notch */
-.container {
-    padding-left:  max(16px, env(safe-area-inset-left,  16px));
-    padding-right: max(16px, env(safe-area-inset-right, 16px));
+/* El área de descripción crece para empujar el botón al fondo */
+.producto-card .producto-description {
+    flex-grow: 1 !important;
 }
 
-/* Grid 2 col en móvil pequeño */
-@media (max-width: 480px) {
-    .productos-grid {
-        grid-template-columns: repeat(2, 1fr) !important;
-        gap: 10px !important;
-        padding: 0 4px;
+/* Botón siempre al fondo, mismo tamaño en todas las tarjetas */
+.btn-pedir-card {
+    margin: auto 14px 14px !important;
+    width: calc(100% - 28px) !important;
+    box-sizing: border-box !important;
+    align-self: stretch !important;
+    flex-shrink: 0 !important;
+}
+
+/* Móvil: altura de imagen fija para que no varíe */
+@media (max-width: 600px) {
+    .producto-image {
+        height: 170px !important;
     }
-    .producto-card h3            { font-size: 12px !important; }
-    .producto-card .precio-actual{ font-size: 15px !important; }
-    .producto-image              { height: 130px !important; }
-    .producto-card               { border-radius: 12px !important; }
-    .producto-card .descripcion  { display: none !important; }
-    .producto-card .producto-info{ padding: 10px !important; }
-}
-
-/* 4 columnas en PC ancho (excepto Más Vendidos) */
-@media (min-width: 1400px) {
-    .productos-grid:not(#masVendidosGrid) { grid-template-columns: repeat(4, 1fr) !important; }
-    .container      { max-width: 1320px; }
-}
-
-/* Más Vendidos: siempre 3 columnas centradas */
-#masVendidosGrid {
-    grid-template-columns: repeat(3, minmax(200px, 320px)) !important;
-    max-width: 1020px !important;
-    margin-left: auto !important;
-    margin-right: auto !important;
-    justify-content: center !important;
-}
-
-/* Hero padding en PC grande */
-@media (min-width: 1200px) {
-    .hero-content { padding-left: 60px !important; }
-}
-@media (min-width: 1600px) {
-    .hero-content { padding-left: 80px !important; }
-}
-
-/* Header sticky en móvil */
-@media (max-width: 768px) {
-    .header { position: sticky; top: 0; z-index: 1000; }
-    .header-content { padding: 12px 16px !important; min-height: 58px; }
-}
-
-/* Botones táctiles mínimo 44px */
-@media (max-width: 768px) {
-    .btn, button { min-height: 44px; }
-    .producto-card .btn { min-height: 40px !important; }
-}
-
-/* Evitar zoom en inputs iOS */
-@media (max-width: 768px) {
-    input, select, textarea { font-size: 16px !important; }
-}
-
-/* Scroll suave */
-html {
-    scroll-behavior: smooth;
-    -webkit-text-size-adjust: 100%;
-    text-size-adjust: 100%;
+    .producto-card h3 {
+        padding: 12px 14px 6px !important;
+        font-size: 14px !important;
+        min-height: 42px !important;
+    }
+    .producto-card .producto-description {
+        padding: 0 14px !important;
+        -webkit-line-clamp: 2 !important;
+        min-height: 40px !important;
+    }
+    .precio {
+        padding: 0 14px !important;
+    }
+    .stock, .stock-count {
+        padding: 0 14px !important;
+        margin-bottom: 8px !important;
+    }
+    .btn-pedir-card {
+        margin: auto 10px 12px !important;
+        width: calc(100% - 20px) !important;
+        padding: 11px 10px !important;
+        font-size: 15px !important;
+    }
 }
