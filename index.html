@@ -515,6 +515,7 @@
                 <button data-action="switchTab" data-arg="apariencia" type="button" class="tab-btn" data-tab="apariencia">🎨 Apariencia</button>
                 <button data-action="switchTab" data-arg="analytics" type="button" class="tab-btn" data-tab="analytics">📊 Analytics</button>
                 <button data-action="switchTab" data-arg="stock-rapido" type="button" class="tab-btn" data-tab="stock-rapido">📦 Stock</button>
+                <button data-action="switchTab" data-arg="ventas" type="button" class="tab-btn" data-tab="ventas">💰 Ventas</button>
             </div>
             <div class="admin-content">
 
@@ -568,6 +569,12 @@
                             <div class="form-group">
                                 <label>Stock Disponible:</label>
                                 <input type="number" id="productStock" required placeholder="0" min="0">
+                            </div>
+                            <div class="form-group" style="background:rgba(39,174,96,0.07);border:1.5px dashed #27AE60;border-radius:10px;padding:12px 14px;">
+                                <label style="color:#27AE60;font-weight:700;">💰 Mi Comisión (USD) — solo visible para admin:</label>
+                                <input type="number" id="productComision" placeholder="0.00" min="0" step="0.01"
+                                    style="font-weight:700;color:#27AE60;border-color:#27AE60;">
+                                <p style="font-size:11px;color:#27AE60;margin-top:4px;opacity:.8;">Este valor nunca se muestra a los clientes.</p>
                             </div>
                         </div>
                         <div class="form-group">
@@ -795,6 +802,45 @@
                     <div id="stockRapidoLista"></div>
                 </div>
 
+                <div id="ventas" class="admin-tab">
+                    <h3 style="margin-bottom:6px;">💰 Ventas y Comisiones</h3>
+                    <p style="font-size:13px;color:var(--text-muted);margin-bottom:16px;">Registra cada venta confirmada y lleva el control de tus comisiones.</p>
+
+                    <!-- Confirmar venta -->
+                    <div style="background:rgba(39,174,96,0.07);border:1.5px solid #27AE60;border-radius:14px;padding:16px 18px;margin-bottom:20px;">
+                        <h4 style="margin:0 0 12px;color:#27AE60;">✅ Confirmar Venta</h4>
+                        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px;">
+                            <select id="ventaProductoSelect" style="flex:2;min-width:160px;padding:10px;border-radius:10px;border:1.5px solid #27AE60;font-size:14px;background:var(--cream);">
+                                <option value="">— Selecciona un producto —</option>
+                            </select>
+                            <input type="number" id="ventaCantidad" value="1" min="1"
+                                style="width:70px;padding:10px;border-radius:10px;border:1.5px solid #27AE60;font-size:14px;text-align:center;font-weight:700;">
+                        </div>
+                        <div id="ventaResumenPreview" style="font-size:13px;color:var(--text-muted);margin-bottom:12px;min-height:18px;"></div>
+                        <button onclick="confirmarVenta()" style="width:100%;padding:12px;border-radius:12px;border:none;background:#27AE60;color:white;font-size:15px;font-weight:700;cursor:pointer;">
+                            ✅ Confirmar Venta
+                        </button>
+                    </div>
+
+                    <!-- Resumen total -->
+                    <div id="ventasResumenTotal" style="margin-bottom:16px;"></div>
+
+                    <!-- Filtro periodo -->
+                    <div style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;align-items:center;">
+                        <select id="ventasFiltro" onchange="renderizarHistorialVentas()" style="padding:9px 14px;border-radius:10px;border:1.5px solid var(--border-color);font-size:13px;background:var(--cream);">
+                            <option value="todo">Todo el historial</option>
+                            <option value="hoy">Hoy</option>
+                            <option value="semana">Esta semana</option>
+                            <option value="mes">Este mes</option>
+                        </select>
+                        <button onclick="exportarVentasJSON()" style="padding:9px 16px;border-radius:10px;border:1.5px solid var(--border-color);background:var(--cream);font-size:13px;cursor:pointer;">📥 Exportar</button>
+                        <button onclick="limpiarHistorialVentas()" style="padding:9px 16px;border-radius:10px;border:none;background:#e74c3c;color:white;font-size:13px;cursor:pointer;">🗑️ Limpiar</button>
+                    </div>
+
+                    <!-- Historial -->
+                    <div id="ventasHistorialLista"></div>
+                </div>
+
                 <div id="apariencia" class="admin-tab">
                     <h3 style="margin-bottom:18px;">🎨 Personalización Visual</h3>
                     
@@ -915,6 +961,12 @@
                         <label>Stock Disponible:</label>
                         <input type="number" id="editProductStock" required min="0">
                     </div>
+                </div>
+                <div class="form-group" style="background:rgba(39,174,96,0.07);border:1.5px dashed #27AE60;border-radius:10px;padding:12px 14px;">
+                    <label style="color:#27AE60;font-weight:700;">💰 Mi Comisión (USD) — solo visible para admin:</label>
+                    <input type="number" id="editProductComision" placeholder="0.00" min="0" step="0.01"
+                        style="font-weight:700;color:#27AE60;border-color:#27AE60;">
+                    <p style="font-size:11px;color:#27AE60;margin-top:4px;opacity:.8;">Este valor nunca se muestra a los clientes.</p>
                 </div>
                 <div class="form-group">
                     <label>Garantía (opcional):</label>
