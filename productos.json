@@ -796,5 +796,20 @@
     "usado": false,
     "garantia": "",
     "devolucion": false
+  },
+  {
+    "id": 1778634719053,
+    "nombre": "CAPA PARA MOTO",
+    "descripcion": "Talla XL ideal para estos tiempos de lluvia 😏",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1778634712732.jpg",
+    "precioActual": 12,
+    "descuento": 0,
+    "stock": 9,
+    "categoria": "MOTOS",
+    "subcategoria": "PARTES Y PIEZAS",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false
   }
 ]
