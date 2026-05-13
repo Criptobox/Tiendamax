@@ -482,10 +482,12 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
+    max-width: 1000px;
 }
 
 .mas-vendidos .container #masVendidosGrid {
     width: 100%;
+    grid-template-columns: repeat(3, 1fr);
 }
 
 .badge-vendido {
