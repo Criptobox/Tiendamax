@@ -777,10 +777,19 @@ body.dark-mode .admin-tab select {
     .producto-card .producto-info{ padding: 10px !important; }
 }
 
-/* 4 columnas en PC ancho */
+/* 4 columnas en PC ancho (excepto Más Vendidos) */
 @media (min-width: 1400px) {
-    .productos-grid { grid-template-columns: repeat(4, 1fr) !important; }
+    .productos-grid:not(#masVendidosGrid) { grid-template-columns: repeat(4, 1fr) !important; }
     .container      { max-width: 1320px; }
+}
+
+/* Más Vendidos: siempre 3 columnas centradas */
+#masVendidosGrid {
+    grid-template-columns: repeat(3, minmax(200px, 320px)) !important;
+    max-width: 1020px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    justify-content: center !important;
 }
 
 /* Hero padding en PC grande */
