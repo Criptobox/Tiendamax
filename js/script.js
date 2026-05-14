@@ -2039,8 +2039,35 @@ async function sincronizarTodoConGitHub() {
         return;
     }
 
-    const btn = document.querySelector('[onclick="sincronizarTodoConGitHub()"]');
+    const btn = document.querySelector('[data-action="sincronizarTodoConGitHub"]');
     if (btn) { btn.disabled = true; btn.textContent = '⏳ Sincronizando...'; }
+
+    // --- Barra de progreso ---
+    let barraContenedor = document.getElementById('syncProgressContenedor');
+    if (!barraContenedor) {
+        barraContenedor = document.createElement('div');
+        barraContenedor.id = 'syncProgressContenedor';
+        barraContenedor.style.cssText = 'margin-top:14px;';
+        barraContenedor.innerHTML = `
+            <div style="background:#2a2a2a;border-radius:8px;overflow:hidden;height:14px;margin-bottom:6px;">
+                <div id="syncProgressBarra" style="height:100%;width:0%;background:linear-gradient(90deg,#FF6B35,#ff9a6c);transition:width 0.4s ease;border-radius:8px;"></div>
+            </div>
+            <p id="syncProgressTexto" style="font-size:12px;color:#aaa;text-align:center;margin:0;"></p>
+        `;
+        if (btn) btn.parentNode.insertBefore(barraContenedor, btn.nextSibling);
+    }
+    barraContenedor.style.display = 'block';
+    const barra   = document.getElementById('syncProgressBarra');
+    const textoEl = document.getElementById('syncProgressTexto');
+    if (barra)   barra.style.width = '0%';
+    if (textoEl) textoEl.textContent = 'Preparando...';
+
+    function actualizarBarra(paso, total, mensaje) {
+        const pct = Math.round((paso / total) * 100);
+        if (barra)   barra.style.width = pct + '%';
+        if (textoEl) textoEl.textContent = mensaje;
+    }
+    // -------------------------
 
     // Determinar si hay cambios pendientes específicos
     const idsModificados = obtenerProductosModificados();
@@ -2068,9 +2095,12 @@ async function sincronizarTodoConGitHub() {
     const archivosFiltrados = archivos;
 
     let ok = 0, errors = [];
+    const total = archivosFiltrados.length;
     // Subir secuencialmente para evitar conflictos de SHA en GitHub
-    for (const { path, data } of archivosFiltrados) {
-        if (btn) btn.textContent = `⏳ Subiendo ${path}...`;
+    for (let i = 0; i < archivosFiltrados.length; i++) {
+        const { path, data } = archivosFiltrados[i];
+        actualizarBarra(i, total, `Subiendo ${path}… (${i + 1}/${total})`);
+        if (btn) btn.textContent = `⏳ ${i + 1}/${total} archivos...`;
         try {
             await subirArchivoAGitHub(user, repo, token, path, data);
             ok++;
@@ -2078,8 +2108,14 @@ async function sincronizarTodoConGitHub() {
             errors.push(`${path}: ${e.message}`);
         }
     }
+    actualizarBarra(total, total, errors.length === 0 ? '✅ ¡Todo subido correctamente!' : '⚠️ Completado con errores');
 
     if (btn) { btn.disabled = false; btn.textContent = '🔄 ACTUALIZAR TIENDA AHORA'; }
+
+    // Ocultar barra después de 4 segundos
+    setTimeout(() => {
+        if (barraContenedor) barraContenedor.style.display = 'none';
+    }, 4000);
 
     if (errors.length === 0) {
         limpiarProductosModificados();
@@ -2200,10 +2236,10 @@ async function subirArchivoAGitHub(user, repo, token, path, data) {
     if (!newCommitRes.ok) throw new Error('Error creando commit');
     const { sha: newCommitSha } = await newCommitRes.json();
 
-    // Paso 6: Actualizar referencia HEAD
+    // Paso 6: Actualizar referencia HEAD (force:true evita el error "not a fast-forward")
     const updateRefRes = await fetch(`${apiBase}/git/refs/heads/main`, {
         method: 'PATCH', headers,
-        body: JSON.stringify({ sha: newCommitSha })
+        body: JSON.stringify({ sha: newCommitSha, force: true })
     });
     if (!updateRefRes.ok) {
         const e = await updateRefRes.json();
@@ -2267,8 +2303,16 @@ function inicializarTienda() {
 
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', inicializarTienda);
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('[data-action="sincronizarTodoConGitHub"]').forEach(el => {
+            el.addEventListener('click', sincronizarTodoConGitHub);
+        });
+    });
 } else {
     inicializarTienda();
+    document.querySelectorAll('[data-action="sincronizarTodoConGitHub"]').forEach(el => {
+        el.addEventListener('click', sincronizarTodoConGitHub);
+    });
 }
 
 // ===== AUTOMATIZACIÓN HÍBRIDA (SELENIUM) =====
