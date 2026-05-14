@@ -984,3 +984,102 @@ html body .hero-banner-slide img {
         max-height: 480px !important;
     }
 }
+
+
+/* =====================================================================
+   MEJORAS PREMIUM — hace la tienda más elegante y profesional
+   ===================================================================== */
+
+/* Skeleton loader para imágenes mientras cargan */
+.producto-image img {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: skeleton-shimmer 1.5s infinite;
+}
+@keyframes skeleton-shimmer {
+    0%   { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+.producto-image img[src] {
+    animation: none;
+    background: none;
+}
+
+/* Precio con estilo más elegante */
+.precio-actual {
+    background: linear-gradient(135deg, #FF6B35, #e85d28);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 900 !important;
+}
+
+/* Sombra más profunda en las tarjetas al hacer hover */
+.producto-card:hover {
+    transform: translateY(-6px) !important;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.15) !important;
+}
+
+/* Badge de stock con color según cantidad */
+.stock-badge-ok   { color: #27ae60; font-weight: 700; }
+.stock-badge-low  { color: #f39c12; font-weight: 700; }
+.stock-badge-out  { color: #e74c3c; font-weight: 700; }
+
+/* Botón Pedir con animación de pulso */
+.btn-pedir-whatsapp {
+    animation: pedir-pulse 2.5s infinite;
+}
+@keyframes pedir-pulse {
+    0%, 100% { box-shadow: 0 6px 28px rgba(255,107,53,0.45); }
+    50%       { box-shadow: 0 6px 36px rgba(255,107,53,0.7), 0 0 0 8px rgba(255,107,53,0.08); }
+}
+
+/* Encabezado de secciones más elegante */
+.section-title {
+    position: relative;
+    display: inline-block;
+}
+.section-title::after {
+    content: '';
+    position: absolute;
+    bottom: -6px;
+    left: 0;
+    width: 40px;
+    height: 3px;
+    background: linear-gradient(90deg, #FF6B35, transparent);
+    border-radius: 2px;
+}
+
+/* Imagen de producto con zoom más suave */
+.producto-image img {
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+.producto-card:hover .producto-image img {
+    transform: scale(1.08) !important;
+}
+
+/* Precio tachado más elegante */
+.precio-original {
+    text-decoration: line-through;
+    opacity: 0.5;
+    font-size: 0.85em;
+}
+
+/* Badge de descuento más llamativo */
+.discount-badge {
+    background: linear-gradient(135deg, #e74c3c, #c0392b) !important;
+    box-shadow: 0 2px 8px rgba(231,76,60,0.4) !important;
+    font-weight: 800 !important;
+}
+
+/* Scroll suave en toda la página */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Fuente más nítida */
+body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+}
