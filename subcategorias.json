@@ -1,27 +1,13 @@
 {
-  "General": [],
   "WIFI": [],
   "ENERGIA": [],
   "CELULARES": [],
   "UTILES": [],
-  "CARROS": [
-    "LUBRICANTES",
-    "FILTROS",
-    "REFRIGERANTES",
-    "ADITIVOS",
-    "PIEZAS Y OTROS"
-  ],
-  "ROPA": [
-    "HOMBRE",
-    "MUJER"
-  ],
+  "CARROS": [],
+  "ROPA": [],
   "LENCERIA": [],
-  "HOGAR": [
-    "ELECTRODOMÉSTICOS",
-    "DECORACION"
-  ],
-  "MOTOS": [
-    "LUBRICANTES",
-    "PARTES Y PIEZAS"
-  ]
+  "SEGURIDAD": [],
+  "HOGAR": [],
+  "JUEGOS": [],
+  "MOTOS": []
 }
