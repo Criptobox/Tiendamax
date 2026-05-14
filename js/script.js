@@ -1145,6 +1145,7 @@ function switchTab(tabName) {
     // Tab-specific hooks (all in one place, no double-wrapping)
     if (tabName === 'publicar-ahora') setTimeout(cargarGruposFB, 100);
     if (tabName === 'manage-products') setTimeout(actualizarListaProductos, 100);
+    if (tabName === 'ventas') setTimeout(renderizarVentas, 100);
     if (tabName === 'analytics') setTimeout(renderizarAnalytics, 100);
 }
 
@@ -1169,6 +1170,7 @@ function agregarProductoForm(event) {
             precioActual: parseFloat(document.getElementById('productPriceActual').value) || 0,
             descuento: parseInt(document.getElementById('productDiscount').value) || 0,
             stock: parseInt(document.getElementById('productStock').value) || 0,
+            comision: parseFloat(document.getElementById('productComision')?.value) || 0,
             categoria: document.getElementById('productCategory').value,
             subcategoria: (document.getElementById('productSubcategory') && document.getElementById('productSubcategory').value) ? document.getElementById('productSubcategory').value : '',
             masVendido: masVendidoVal ? masVendidoVal.value === 'true' : false,
@@ -1876,6 +1878,7 @@ function abrirEditModal(id) {
     if (document.getElementById('editProductUsado')) document.getElementById('editProductUsado').checked = p.usado || false;
     if (document.getElementById('editProductGarantia')) document.getElementById('editProductGarantia').value = p.garantia || '';
     if (document.getElementById('editProductDevolucion')) document.getElementById('editProductDevolucion').checked = p.devolucion || false;
+    if (document.getElementById('editProductComision')) document.getElementById('editProductComision').value = p.comision || '';
 
     const masVendidoSel = document.getElementById('editProductMasVendido');
     if (masVendidoSel) masVendidoSel.value = p.masVendido ? 'true' : 'false';
@@ -1921,7 +1924,8 @@ function guardarProductoEditado(event) {
             // Nuevos campos psicológicos y de estado
             usado: document.getElementById('editProductUsado') ? document.getElementById('editProductUsado').checked : productos[index].usado,
             garantia: document.getElementById('editProductGarantia') ? document.getElementById('editProductGarantia').value.trim() : productos[index].garantia,
-            devolucion: document.getElementById('editProductDevolucion') ? document.getElementById('editProductDevolucion').checked : productos[index].devolucion
+            devolucion: document.getElementById('editProductDevolucion') ? document.getElementById('editProductDevolucion').checked : productos[index].devolucion,
+            comision: document.getElementById('editProductComision') ? parseFloat(document.getElementById('editProductComision').value) || 0 : productos[index].comision || 0
         };
 
         // Validar producto
@@ -2775,10 +2779,13 @@ function actualizarListaProductos() {
                     <p style="margin:0;font-size:12px;color:var(--text-muted);">
                         <strong>$${producto.precioActual.toFixed(2)}</strong> USD
                         ${producto.descuento > 0 ? `<span style="color:#e74c3c;margin-left:6px;">-${producto.descuento}%</span>` : ''}
-                        ${producto.stock ? `· Stock: ${producto.stock}` : ''}
+                        · Stock: <strong>${producto.stock || 0}</strong>
+                        ${producto.comision > 0 ? `· 💰 Comisión: <strong style="color:#27ae60;">$${producto.comision.toFixed(2)}</strong>` : ''}
                     </p>
                 </div>
                 <div class="product-item-actions" style="clear:both;padding-top:8px;display:flex;flex-wrap:wrap;gap:6px;">
+                    <button class="btn-small-icon" style="background:#27ae60;color:white;" onclick="ajustarStock(${producto.id}, 1)">+1 Stock</button>
+                    <button class="btn-small-icon" style="background:#e74c3c;color:white;" onclick="ajustarStock(${producto.id}, -1)">-1 Stock</button>
                     <button class="btn-small-icon btn-edit" onclick="abrirEditModal(${producto.id})">✏️ Editar</button>
                     <button class="btn-small-icon btn-delete" onclick="eliminarProducto(${producto.id})">🗑️ Eliminar</button>
                     <button class="btn-small-icon btn-revolico" style="background:#ff9800" onclick="copiarParaRevolico(${producto.id})">📋 Revolico</button>
@@ -2792,6 +2799,139 @@ function actualizarListaProductos() {
     });
 
     productsList.innerHTML = html;
+}
+
+// ── Ajustar stock desde gestionar ──────────────────
+function ajustarStock(id, cantidad) {
+    const p = productos.find(p => p.id === id);
+    if (!p) return;
+    const antes = p.stock;
+    p.stock = Math.max(0, (p.stock || 0) + cantidad);
+    guardarProductos();
+    marcarProductoModificado(id);
+    actualizarListaProductos();
+    mostrarNotificacion(`📦 ${p.nombre}: ${antes} → ${p.stock} unidades`);
+    if (p.stock === 0) mostrarNotificacion(`🔴 ¡${p.nombre} agotado!`, 'error');
+    else if (p.stock <= 2) mostrarNotificacion(`⚠️ ${p.nombre}: solo ${p.stock} unidad(es)`, 'warning');
+}
+
+// ── VENTAS — registro de ventas ─────────────────────
+function cargarVentas() {
+    return JSON.parse(localStorage.getItem('registroVentas') || '[]');
+}
+
+function guardarVenta(venta) {
+    const ventas = cargarVentas();
+    ventas.unshift(venta);
+    localStorage.setItem('registroVentas', JSON.stringify(ventas.slice(0, 500)));
+}
+
+function registrarVenta(productoId, cantidad) {
+    const p = productos.find(p => p.id === productoId);
+    if (!p) return;
+    const venta = {
+        id: Date.now(),
+        fecha: new Date().toLocaleDateString('es-ES', {day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit'}),
+        producto: p.nombre,
+        productoId: p.id,
+        cantidad: cantidad || 1,
+        precio: p.precioActual,
+        comision: p.comision || 0,
+        total: p.precioActual * (cantidad || 1),
+        ganancia: (p.comision || 0) * (cantidad || 1)
+    };
+    guardarVenta(venta);
+    ajustarStock(productoId, -(cantidad || 1));
+    renderizarVentas();
+    mostrarNotificacion(`✅ Venta registrada: ${p.nombre}`);
+}
+
+function renderizarVentas() {
+    const cont = document.getElementById('ventasContenido');
+    if (!cont) return;
+    const ventas = cargarVentas();
+
+    const totalVentas   = ventas.reduce((s, v) => s + v.total, 0);
+    const totalGanancia = ventas.reduce((s, v) => s + (v.ganancia || 0), 0);
+    const totalUnidades = ventas.reduce((s, v) => s + (v.cantidad || 1), 0);
+
+    let html = `
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px;">
+        <div style="background:linear-gradient(135deg,#27ae60,#2ecc71);color:white;padding:16px;border-radius:12px;text-align:center;">
+            <div style="font-size:22px;font-weight:900;">$${totalVentas.toFixed(2)}</div>
+            <div style="font-size:11px;opacity:0.9;">Total vendido</div>
+        </div>
+        <div style="background:linear-gradient(135deg,#f39c12,#f1c40f);color:white;padding:16px;border-radius:12px;text-align:center;">
+            <div style="font-size:22px;font-weight:900;">$${totalGanancia.toFixed(2)}</div>
+            <div style="font-size:11px;opacity:0.9;">Mi ganancia</div>
+        </div>
+        <div style="background:linear-gradient(135deg,#3498db,#2980b9);color:white;padding:16px;border-radius:12px;text-align:center;">
+            <div style="font-size:22px;font-weight:900;">${totalUnidades}</div>
+            <div style="font-size:11px;opacity:0.9;">Unidades vendidas</div>
+        </div>
+    </div>
+
+    <div style="margin-bottom:16px;">
+        <h4 style="margin-bottom:10px;">📦 Registrar venta manual</h4>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+            <select id="ventaProductoSelect" style="padding:10px;border-radius:8px;border:1px solid #ddd;font-size:14px;">
+                <option value="">— Selecciona producto —</option>
+                ${productos.map(p => `<option value="${p.id}">${p.nombre} · $${p.precioActual} · Stock: ${p.stock}${p.comision ? ` · Comisión: $${p.comision}` : ''}</option>`).join('')}
+            </select>
+            <div style="display:flex;gap:8px;">
+                <input type="number" id="ventaCantidad" value="1" min="1" placeholder="Cantidad" style="flex:1;padding:10px;border-radius:8px;border:1px solid #ddd;font-size:14px;">
+                <button onclick="registrarVentaDesdeForm()" type="button" class="btn btn-primary" style="flex:2;">✅ Registrar venta</button>
+            </div>
+        </div>
+    </div>
+
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+        <h4>📋 Historial de ventas</h4>
+        <button onclick="borrarHistorialVentas()" type="button" style="background:#e74c3c;color:white;border:none;border-radius:8px;padding:6px 12px;font-size:12px;cursor:pointer;">🗑️ Limpiar</button>
+    </div>`;
+
+    if (ventas.length === 0) {
+        html += '<p style="color:#aaa;text-align:center;padding:20px;">No hay ventas registradas aún.</p>';
+    } else {
+        html += '<div style="display:flex;flex-direction:column;gap:8px;">';
+        ventas.slice(0, 50).forEach(v => {
+            html += `<div style="background:rgba(39,174,96,0.06);border:1px solid rgba(39,174,96,0.2);border-radius:10px;padding:12px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;">
+                <div style="flex:1;min-width:0;">
+                    <div style="font-weight:700;font-size:13px;">${v.producto}</div>
+                    <div style="font-size:11px;color:#888;">${v.fecha} · ${v.cantidad} unidad(es)</div>
+                </div>
+                <div style="text-align:right;flex-shrink:0;">
+                    <div style="font-size:14px;font-weight:700;color:#27ae60;">$${v.total.toFixed(2)}</div>
+                    ${v.ganancia > 0 ? `<div style="font-size:11px;color:#f39c12;">Ganancia: $${v.ganancia.toFixed(2)}</div>` : ''}
+                </div>
+                <button onclick="eliminarVenta(${v.id})" type="button" style="background:#e74c3c;color:white;border:none;border-radius:6px;padding:4px 8px;font-size:11px;cursor:pointer;flex-shrink:0;">✕</button>
+            </div>`;
+        });
+        html += '</div>';
+    }
+
+    cont.innerHTML = html;
+}
+
+function registrarVentaDesdeForm() {
+    const sel = document.getElementById('ventaProductoSelect');
+    const cant = parseInt(document.getElementById('ventaCantidad')?.value) || 1;
+    const id = parseInt(sel?.value);
+    if (!id) { mostrarNotificacion('⚠️ Selecciona un producto', 'error'); return; }
+    registrarVenta(id, cant);
+}
+
+function eliminarVenta(id) {
+    const ventas = cargarVentas().filter(v => v.id !== id);
+    localStorage.setItem('registroVentas', JSON.stringify(ventas));
+    renderizarVentas();
+}
+
+function borrarHistorialVentas() {
+    if (!confirm('¿Borrar todo el historial de ventas?')) return;
+    localStorage.removeItem('registroVentas');
+    renderizarVentas();
+    mostrarNotificacion('🗑️ Historial borrado');
 }
 
 // ── Grupos de Facebook con selección de productos ────
