@@ -743,6 +743,17 @@ async function cargarDatosDesdeGitHub() {
             }
         }
 
+        // Cargar banners desde GitHub
+        try {
+            const dataBanners = await fetchJSON('banners.json');
+            if (dataBanners && Array.isArray(dataBanners) && dataBanners.length > 0) {
+                localStorage.setItem('heroBanners', JSON.stringify(dataBanners));
+                // Forzar re-render del slider con los banners del servidor
+                if (typeof window.recargarBanners === 'function') window.recargarBanners(dataBanners);
+                console.log('✅ Banners cargados desde GitHub');
+            }
+        } catch(e) {}
+
         // Cargar config de grupos Facebook
         try {
             const dataG = await fetchJSON('grupos_facebook_config.json');
@@ -1126,24 +1137,6 @@ function switchTab(tabName) {
     if (tabName === 'publicar-ahora') setTimeout(cargarGruposFB, 100);
     if (tabName === 'manage-products') setTimeout(actualizarListaProductos, 100);
     if (tabName === 'analytics') setTimeout(renderizarAnalytics, 100);
-    if (tabName === 'stock-rapido') setTimeout(renderizarStockRapido, 100);
-    if (tabName === 'manage-categories') {
-        setTimeout(function() {
-            if (typeof actualizarListaCategorias === 'function') actualizarListaCategorias();
-        }, 100);
-    }
-    if (tabName === 'manage-subcategories') {
-        setTimeout(function() {
-            if (typeof actualizarSelectCategoriasPadre === 'function') actualizarSelectCategoriasPadre();
-            if (typeof actualizarListaSubcategorias === 'function') actualizarListaSubcategorias();
-        }, 100);
-    }
-    if (tabName === 'ventas') {
-        setTimeout(function() {
-            poblarSelectVentas();
-            renderizarHistorialVentas();
-        }, 100);
-    }
 }
 
 // ===== PRODUCTOS =====
@@ -1874,12 +1867,6 @@ function abrirEditModal(id) {
     if (document.getElementById('editProductUsado')) document.getElementById('editProductUsado').checked = p.usado || false;
     if (document.getElementById('editProductGarantia')) document.getElementById('editProductGarantia').value = p.garantia || '';
     if (document.getElementById('editProductDevolucion')) document.getElementById('editProductDevolucion').checked = p.devolucion || false;
-    // Cargar comisión guardada
-    var editComisionInput = document.getElementById('editProductComision');
-    if (editComisionInput) {
-        var comisionGuardada = obtenerComision(p.id);
-        editComisionInput.value = comisionGuardada > 0 ? comisionGuardada : '';
-    }
 
     const masVendidoSel = document.getElementById('editProductMasVendido');
     if (masVendidoSel) masVendidoSel.value = p.masVendido ? 'true' : 'false';
@@ -1922,15 +1909,11 @@ function guardarProductoEditado(event) {
             subcategoria: (document.getElementById('editProductSubcategory') && document.getElementById('editProductSubcategory').value) ? document.getElementById('editProductSubcategory').value : (productos[index].subcategoria || ''),
             masVendido: masVendidoSel ? masVendidoSel.value === 'true' : productos[index].masVendido,
             imagen: nuevaImagen || productos[index].imagen,
+            // Nuevos campos psicológicos y de estado
             usado: document.getElementById('editProductUsado') ? document.getElementById('editProductUsado').checked : productos[index].usado,
             garantia: document.getElementById('editProductGarantia') ? document.getElementById('editProductGarantia').value.trim() : productos[index].garantia,
             devolucion: document.getElementById('editProductDevolucion') ? document.getElementById('editProductDevolucion').checked : productos[index].devolucion
         };
-        // Guardar comisión separada (no va en el JSON público de productos)
-        var editComision = document.getElementById('editProductComision');
-        if (editComision && editComision.value !== '') {
-            guardarComision(productoActualizado.id, parseFloat(editComision.value) || 0);
-        }
 
         // Validar producto
         const errores = validarProducto(productoActualizado);
@@ -2078,6 +2061,7 @@ async function sincronizarTodoConGitHub() {
         { path: 'subcategorias.json',          data: JSON.parse(localStorage.getItem('subcategorias') || '{}') },
         { path: 'grupos_facebook_config.json', data: { grupos: JSON.parse(localStorage.getItem('gruposFB') || '[]'), exportado: new Date().toISOString() } },
         { path: 'revolico_config.json',        data: JSON.parse(localStorage.getItem('revolicoConfig') || '{}') },
+        { path: 'banners.json',                data: JSON.parse(localStorage.getItem('heroBanners') || '[]') },
     ];
 
     // Siempre subir todos los archivos para garantizar consistencia
@@ -2286,18 +2270,6 @@ if (document.readyState === 'loading') {
 } else {
     inicializarTienda();
 }
-
-// Atajo PWA: si la URL tiene ?admin=1 abrir el panel admin automáticamente
-(function() {
-    const params = new URLSearchParams(window.location.search);
-    if (params.get('admin') === '1') {
-        window.addEventListener('load', function() {
-            setTimeout(function() {
-                if (typeof abrirAdminPanel === 'function') abrirAdminPanel();
-            }, 800);
-        });
-    }
-})();
 
 // ===== AUTOMATIZACIÓN HÍBRIDA (SELENIUM) =====
 
@@ -3052,6 +3024,10 @@ function renderizarListaAgotados() {
 // ── Patch switchTab to hook oferta-dia tab ──
 const _origSwitchTabFinal = switchTab;
 switchTab = function(tabName) {
+    // Refrescar select de categorías al entrar al tab de subcategorías
+    if (tabName === 'manage-subcategories' && typeof actualizarSelectCategoriasPadre === 'function') {
+        setTimeout(actualizarSelectCategoriasPadre, 50);
+    }
     _origSwitchTabFinal(tabName);
     if (tabName === 'oferta-dia') {
         setTimeout(() => {
@@ -3399,374 +3375,4 @@ stat = function(icon, label, value, color) {
 
     return html;
 };
-
-
-
-// ===== STOCK RÁPIDO =====
-
-function renderizarStockRapido() {
-    const lista     = document.getElementById('stockRapidoLista');
-    const resumen   = document.getElementById('stockRapidoResumen');
-    const selectCat = document.getElementById('stockFiltroCat');
-    if (!lista) return;
-
-    // Leer productos frescos (evita problemas de timing al abrir la pestaña)
-    const prods = (typeof productos !== 'undefined' && productos.length > 0)
-        ? productos
-        : JSON.parse(localStorage.getItem('productos') || '[]');
-
-    if (prods.length === 0) {
-        lista.innerHTML = '<p style="text-align:center;color:#999;padding:40px 0;">No hay productos cargados. Ve a otra pestana y vuelve.</p>';
-        return;
-    }
-
-    // Poblar select categorias
-    const cats = [...new Set(prods.map(p => p.categoria).filter(Boolean))].sort();
-    const catActual = selectCat ? selectCat.value : '';
-    if (selectCat) {
-        selectCat.innerHTML = '<option value="">Todas las categorias</option>' +
-            cats.map(c => '<option value="' + c + '"' + (c === catActual ? ' selected' : '') + '>' + c + '</option>').join('');
-    }
-
-    const busqueda  = (document.getElementById('stockBusqueda') ? document.getElementById('stockBusqueda').value : '').toLowerCase().trim();
-    const filtroCat = selectCat ? selectCat.value : '';
-
-    var filtrados = prods.filter(function(p) {
-        var matchNombre = !busqueda || (p.nombre||'').toLowerCase().includes(busqueda);
-        var matchCat    = !filtroCat || p.categoria === filtroCat;
-        return matchNombre && matchCat;
-    });
-
-    // Resumen
-    if (resumen) {
-        var totalStock = filtrados.reduce(function(s, p) { return s + (p.stock || 0); }, 0);
-        var sinStock   = filtrados.filter(function(p) { return !p.stock || p.stock === 0; }).length;
-        resumen.innerHTML =
-            '<div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:8px;">' +
-                '<span style="padding:8px 14px;background:rgba(39,174,96,0.12);border:1px dashed #27AE60;border-radius:10px;font-size:13px;">' +
-                    '&#x1F4E6; <strong>' + filtrados.length + '</strong> productos &middot; Stock total: <strong>' + totalStock + '</strong>' +
-                '</span>' +
-                (sinStock > 0
-                    ? '<span style="padding:8px 14px;background:rgba(231,76,60,0.1);border:1px dashed #e74c3c;border-radius:10px;font-size:13px;color:#e74c3c;">&#x26A0;&#xFE0F; <strong>' + sinStock + '</strong> agotado' + (sinStock>1?'s':'') + '</span>'
-                    : '') +
-            '</div>';
-    }
-
-    if (filtrados.length === 0) {
-        lista.innerHTML = '<p style="text-align:center;color:#999;padding:40px 0;">No se encontraron productos</p>';
-        return;
-    }
-
-    // Ordenar: disponibles primero, luego por categoria y nombre
-    filtrados.sort(function(a, b) {
-        var aA = (!a.stock || a.stock === 0) ? 1 : 0;
-        var bA = (!b.stock || b.stock === 0) ? 1 : 0;
-        if (aA !== bA) return aA - bA;
-        if ((a.categoria||'') < (b.categoria||'')) return -1;
-        if ((a.categoria||'') > (b.categoria||'')) return 1;
-        return (a.nombre||'').localeCompare(b.nombre||'');
-    });
-
-    var lastCat = null;
-    var html = '<div style="display:flex;flex-direction:column;border:1.5px solid var(--border-color);border-radius:14px;overflow:hidden;">';
-
-    filtrados.forEach(function(p, idx) {
-        var agotado    = !p.stock || p.stock === 0;
-        var stockColor = agotado ? '#e74c3c' : (p.stock <= 3 ? '#e67e22' : '#27AE60');
-        var cat        = p.categoria || 'General';
-
-        if (cat !== lastCat) {
-            lastCat = cat;
-            var icono = (typeof obtenerIconoCategoria === 'function') ? obtenerIconoCategoria(cat) : '';
-            html += '<div style="padding:8px 16px;background:var(--primary);color:white;font-size:13px;font-weight:700;letter-spacing:.4px;">' +
-                        icono + ' ' + cat +
-                    '</div>';
-        }
-
-        var borde = idx < filtrados.length - 1 ? 'border-bottom:1px solid var(--border-color);' : '';
-        var bgRow  = agotado ? 'rgba(231,76,60,0.05)' : (idx%2===0 ? 'transparent' : 'rgba(0,0,0,0.015)');
-
-        html +=
-            '<div style="display:flex;align-items:center;gap:12px;padding:11px 14px;' + borde + 'background:' + bgRow + ';">' +
-                '<img src="' + p.imagen + '" alt="' + p.nombre + '" style="width:50px;height:50px;object-fit:cover;border-radius:9px;flex-shrink:0;border:1px solid var(--border-color);">' +
-                '<div style="flex:1;min-width:0;">' +
-                    '<div style="font-size:13px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' +
-                        p.nombre +
-                        (agotado ? ' <span style="font-size:10px;background:#e74c3c;color:white;padding:1px 5px;border-radius:4px;margin-left:4px;vertical-align:middle;">AGOTADO</span>' : '') +
-                    '</div>' +
-                    '<div style="font-size:12px;color:var(--text-muted);margin-top:2px;">$' + p.precioActual.toFixed(2) + ' USD</div>' +
-                '</div>' +
-                '<div style="display:flex;align-items:center;gap:6px;flex-shrink:0;">' +
-                    '<button onclick="ajustarStockRapido(' + p.id + ',-1)" style="width:38px;height:38px;border-radius:9px;border:none;background:#e74c3c;color:white;font-size:24px;font-weight:700;cursor:pointer;line-height:1;display:flex;align-items:center;justify-content:center;">&#8722;</button>' +
-                    '<input type="number" min="0" value="' + (p.stock||0) + '" onchange="setStockRapido(' + p.id + ',this.value)" style="width:54px;height:38px;text-align:center;font-size:16px;font-weight:700;color:' + stockColor + ';border:2px solid ' + stockColor + ';border-radius:9px;background:white;-moz-appearance:textfield;outline:none;">' +
-                    '<button onclick="ajustarStockRapido(' + p.id + ',1)" style="width:38px;height:38px;border-radius:9px;border:none;background:#27AE60;color:white;font-size:24px;font-weight:700;cursor:pointer;line-height:1;display:flex;align-items:center;justify-content:center;">&#43;</button>' +
-                '</div>' +
-            '</div>';
-    });
-
-    html += '</div>';
-    lista.innerHTML = html;
-}
-
-function ajustarStockRapido(id, delta) {
-    var p = productos.find(function(x) { return x.id === id; });
-    if (!p) return;
-    p.stock = Math.max(0, (p.stock || 0) + delta);
-    guardarProductos();
-    marcarProductoModificado(id);
-    sincronizarConGitHub();
-    renderizarStockRapido();
-    renderizarProductos();
-    mostrarNotificacion('&#x1F4E6; ' + p.nombre + ': ' + p.stock + ' en stock', 'success');
-}
-
-function setStockRapido(id, valor) {
-    var p = productos.find(function(x) { return x.id === id; });
-    if (!p) return;
-    var nuevo = Math.max(0, parseInt(valor) || 0);
-    if (nuevo === p.stock) return;
-    p.stock = nuevo;
-    guardarProductos();
-    marcarProductoModificado(id);
-    sincronizarConGitHub();
-    renderizarStockRapido();
-    renderizarProductos();
-    mostrarNotificacion('&#x1F4E6; ' + p.nombre + ': ' + p.stock + ' en stock', 'success');
-}
-
-// ===== COMISIONES Y VENTAS =====
-
-function obtenerComisiones() {
-    return JSON.parse(localStorage.getItem('_comisiones') || '{}');
-}
-
-function guardarComision(id, valor) {
-    var comisiones = obtenerComisiones();
-    comisiones[id] = parseFloat(valor) || 0;
-    localStorage.setItem('_comisiones', JSON.stringify(comisiones));
-}
-
-function obtenerComision(id) {
-    var comisiones = obtenerComisiones();
-    return comisiones[id] || 0;
-}
-
-function obtenerHistorial() {
-    return JSON.parse(localStorage.getItem('_historialVentas') || '[]');
-}
-
-function guardarHistorial(historial) {
-    localStorage.setItem('_historialVentas', JSON.stringify(historial));
-}
-
-// ── Guardar comisión al guardar producto (formulario agregar) ──
-document.addEventListener('DOMContentLoaded', function() {
-    var formAgregar = document.getElementById('addProductForm');
-    if (formAgregar) {
-        formAgregar.addEventListener('submit', function() {
-            setTimeout(function() {
-                var comisionInput = document.getElementById('productComision');
-                if (!comisionInput || !comisionInput.value) return;
-                var comision = parseFloat(comisionInput.value) || 0;
-                if (!comision) return;
-                var ultimo = productos[productos.length - 1];
-                if (!ultimo) return;
-                guardarComision(ultimo.id, comision);
-                comisionInput.value = '';
-            }, 600);
-        });
-    }
-});
-
-// ── Guardar comisión al editar producto ──
-var _origGuardarEdicion = typeof guardarEdicionProducto === 'function' ? guardarEdicionProducto : null;
-if (_origGuardarEdicion) {
-    guardarEdicionProducto = function(event) {
-        var id = parseInt(document.getElementById('editProductId') ? document.getElementById('editProductId').value : 0);
-        var comisionInput = document.getElementById('editProductComision');
-        if (comisionInput && comisionInput.value !== '') {
-            guardarComision(id, parseFloat(comisionInput.value) || 0);
-        }
-        _origGuardarEdicion(event);
-    };
-}
-
-// ── Poblar select de ventas ──
-function poblarSelectVentas() {
-    var select = document.getElementById('ventaProductoSelect');
-    if (!select) return;
-    var val = select.value;
-    select.innerHTML = '<option value="">— Selecciona un producto —</option>';
-    (productos || []).forEach(function(p) {
-        var opt = document.createElement('option');
-        opt.value = p.id;
-        var comision = obtenerComision(p.id);
-        opt.textContent = p.nombre + ' (Stock: ' + (p.stock || 0) + ')' + (comision > 0 ? ' | Com: $' + comision.toFixed(2) : '');
-        opt.disabled = !p.stock || p.stock <= 0;
-        select.appendChild(opt);
-    });
-    if (val) select.value = val;
-
-    // Preview al cambiar selección
-    select.onchange = actualizarPreviewVenta;
-    var cantInput = document.getElementById('ventaCantidad');
-    if (cantInput) cantInput.oninput = actualizarPreviewVenta;
-}
-
-function actualizarPreviewVenta() {
-    var select = document.getElementById('ventaProductoSelect');
-    var cantInput = document.getElementById('ventaCantidad');
-    var preview = document.getElementById('ventaResumenPreview');
-    if (!select || !cantInput || !preview) return;
-    var id = parseInt(select.value);
-    var cant = parseInt(cantInput.value) || 1;
-    var p = (productos || []).find(function(x) { return x.id === id; });
-    if (!p) { preview.innerHTML = ''; return; }
-    var comision = obtenerComision(p.id);
-    var totalVenta = p.precioActual * cant;
-    var totalComision = comision * cant;
-    preview.innerHTML =
-        '<strong>' + p.nombre + '</strong> x' + cant +
-        ' &nbsp;·&nbsp; Venta: <strong>$' + totalVenta.toFixed(2) + '</strong>' +
-        (totalComision > 0 ? ' &nbsp;·&nbsp; Tu comisión: <strong style="color:#27AE60;">$' + totalComision.toFixed(2) + '</strong>' : '');
-}
-
-// ── Confirmar venta: resta stock + registra historial ──
-function confirmarVenta() {
-    var select = document.getElementById('ventaProductoSelect');
-    var cantInput = document.getElementById('ventaCantidad');
-    if (!select || !select.value) { mostrarNotificacion('Selecciona un producto', 'error'); return; }
-    var id = parseInt(select.value);
-    var cant = parseInt(cantInput.value) || 1;
-    var p = productos.find(function(x) { return x.id === id; });
-    if (!p) { mostrarNotificacion('Producto no encontrado', 'error'); return; }
-    if ((p.stock || 0) < cant) { mostrarNotificacion('Stock insuficiente (' + (p.stock||0) + ' disponibles)', 'error'); return; }
-
-    // Rebajar stock
-    p.stock = Math.max(0, (p.stock || 0) - cant);
-    guardarProductos();
-    marcarProductoModificado(id);
-    sincronizarConGitHub();
-    renderizarProductos();
-    if (typeof renderizarStockRapido === 'function') renderizarStockRapido();
-
-    // Registrar en historial
-    var comision = obtenerComision(p.id);
-    var historial = obtenerHistorial();
-    historial.unshift({
-        fecha: new Date().toISOString(),
-        productoId: p.id,
-        nombre: p.nombre,
-        cantidad: cant,
-        precio: p.precioActual,
-        totalVenta: p.precioActual * cant,
-        comision: comision,
-        totalComision: comision * cant
-    });
-    guardarHistorial(historial);
-
-    mostrarNotificacion('✅ Venta confirmada · Stock actualizado · Comisión: $' + (comision * cant).toFixed(2), 'success');
-    poblarSelectVentas();
-    renderizarHistorialVentas();
-    actualizarPreviewVenta();
-}
-
-// ── Renderizar historial de ventas ──
-function renderizarHistorialVentas() {
-    var lista = document.getElementById('ventasHistorialLista');
-    var resumen = document.getElementById('ventasResumenTotal');
-    if (!lista) return;
-
-    var historial = obtenerHistorial();
-    var filtro = document.getElementById('ventasFiltro') ? document.getElementById('ventasFiltro').value : 'todo';
-
-    var ahora = new Date();
-    var filtrados = historial.filter(function(v) {
-        var fecha = new Date(v.fecha);
-        if (filtro === 'hoy') {
-            return fecha.toDateString() === ahora.toDateString();
-        } else if (filtro === 'semana') {
-            var lunes = new Date(ahora);
-            lunes.setDate(ahora.getDate() - ahora.getDay() + 1);
-            lunes.setHours(0,0,0,0);
-            return fecha >= lunes;
-        } else if (filtro === 'mes') {
-            return fecha.getMonth() === ahora.getMonth() && fecha.getFullYear() === ahora.getFullYear();
-        }
-        return true;
-    });
-
-    // Resumen total
-    var totalVentas = filtrados.reduce(function(s, v) { return s + v.totalVenta; }, 0);
-    var totalComision = filtrados.reduce(function(s, v) { return s + v.totalComision; }, 0);
-    var totalUnidades = filtrados.reduce(function(s, v) { return s + v.cantidad; }, 0);
-
-    if (resumen) {
-        resumen.innerHTML =
-            '<div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:4px;">' +
-                '<div style="flex:1;min-width:120px;padding:12px 16px;background:rgba(52,152,219,0.1);border:1px solid #3498DB;border-radius:12px;text-align:center;">' +
-                    '<div style="font-size:11px;color:#3498DB;font-weight:700;text-transform:uppercase;letter-spacing:.5px;">Unidades</div>' +
-                    '<div style="font-size:22px;font-weight:800;color:#3498DB;">' + totalUnidades + '</div>' +
-                '</div>' +
-                '<div style="flex:1;min-width:120px;padding:12px 16px;background:rgba(39,174,96,0.1);border:1px solid #27AE60;border-radius:12px;text-align:center;">' +
-                    '<div style="font-size:11px;color:#27AE60;font-weight:700;text-transform:uppercase;letter-spacing:.5px;">Total Ventas</div>' +
-                    '<div style="font-size:22px;font-weight:800;color:#27AE60;">$' + totalVentas.toFixed(2) + '</div>' +
-                '</div>' +
-                '<div style="flex:1;min-width:120px;padding:12px 16px;background:rgba(201,169,110,0.12);border:1px solid #C9A96E;border-radius:12px;text-align:center;">' +
-                    '<div style="font-size:11px;color:#C9A96E;font-weight:700;text-transform:uppercase;letter-spacing:.5px;">Mis Comisiones</div>' +
-                    '<div style="font-size:22px;font-weight:800;color:#C9A96E;">$' + totalComision.toFixed(2) + '</div>' +
-                '</div>' +
-            '</div>';
-    }
-
-    if (filtrados.length === 0) {
-        lista.innerHTML = '<p style="text-align:center;color:#999;padding:30px 0;">No hay ventas registradas en este período.</p>';
-        return;
-    }
-
-    var html = '<div style="display:flex;flex-direction:column;gap:0;border:1.5px solid var(--border-color);border-radius:14px;overflow:hidden;">';
-    filtrados.forEach(function(v, idx) {
-        var fecha = new Date(v.fecha);
-        var fechaStr = fecha.toLocaleDateString('es', {day:'2-digit', month:'short', year:'numeric'}) +
-                       ' ' + fecha.toLocaleTimeString('es', {hour:'2-digit', minute:'2-digit'});
-        var borde = idx < filtrados.length - 1 ? 'border-bottom:1px solid var(--border-color);' : '';
-        html +=
-            '<div style="display:flex;align-items:center;gap:12px;padding:12px 14px;' + borde + 'background:' + (idx%2===0?'transparent':'rgba(0,0,0,0.015)') + ';">' +
-                '<div style="flex:1;min-width:0;">' +
-                    '<div style="font-size:13px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + v.nombre + '</div>' +
-                    '<div style="font-size:11px;color:var(--text-muted);margin-top:2px;">' + fechaStr + ' &nbsp;·&nbsp; x' + v.cantidad + '</div>' +
-                '</div>' +
-                '<div style="text-align:right;flex-shrink:0;">' +
-                    '<div style="font-size:13px;font-weight:700;">$' + v.totalVenta.toFixed(2) + '</div>' +
-                    (v.totalComision > 0
-                        ? '<div style="font-size:12px;color:#27AE60;font-weight:700;">+$' + v.totalComision.toFixed(2) + '</div>'
-                        : '<div style="font-size:11px;color:#999;">sin comisión</div>') +
-                '</div>' +
-            '</div>';
-    });
-    html += '</div>';
-    lista.innerHTML = html;
-}
-
-// ── Exportar historial ──
-function exportarVentasJSON() {
-    var historial = obtenerHistorial();
-    if (!historial.length) { mostrarNotificacion('No hay ventas para exportar', 'error'); return; }
-    var dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(historial, null, 2));
-    var a = document.createElement('a');
-    a.setAttribute('href', dataStr);
-    a.setAttribute('download', 'ventas_' + new Date().toISOString().slice(0,10) + '.json');
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    mostrarNotificacion('📥 Historial exportado', 'success');
-}
-
-// ── Limpiar historial ──
-function limpiarHistorialVentas() {
-    if (!confirm('¿Borrar todo el historial de ventas? Esta acción no se puede deshacer.')) return;
-    localStorage.removeItem('_historialVentas');
-    renderizarHistorialVentas();
-    mostrarNotificacion('🗑️ Historial eliminado', 'success');
-}
 
