@@ -20,27 +20,18 @@
     <meta name="referrer"                          content="strict-origin-when-cross-origin">
     <meta http-equiv="Permissions-Policy"          content="camera=(), microphone=(), geolocation=(), payment=()">
     <!-- Favicon -->
-    <link rel="icon" type="image/png" href="/icons/icon-192.png">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgcng9IjIwIiBmaWxsPSIjMEQwRDBEIi8+PHRleHQgeT0iNzIiIHg9IjUwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjYyIiBmb250LWZhbWlseT0iR2VvcmdpYSxzZXJpZiIgZm9udC13ZWlnaHQ9IjkwMCIgZmlsbD0iI0M5QTk2RSI+TTwvdGV4dD48L3N2Zz4=">
+    <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgcng9IjIwIiBmaWxsPSIjMEQwRDBEIi8+PHRleHQgeT0iNzIiIHg9IjUwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjYyIiBmb250LWZhbWlseT0iR2VvcmdpYSxzZXJpZiIgZm9udC13ZWlnaHQ9IjkwMCIgZmlsbD0iI0M5QTk2RSI+TTwvdGV4dD48L3N2Zz4=">
     <link rel="manifest" href="/manifest.json">
 
 
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-
-    <!-- PWA iOS (Safari no usa el manifest, necesita estas etiquetas propias) -->
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="TiendaMax">
-    <link rel="apple-touch-icon" sizes="180x180" href="/icons/icon-192.png">
-
-    <!-- PWA Android / Chrome -->
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="application-name" content="TiendaMax">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="TiendaMax — Donde encuentras lo que necesitas. Productos de calidad con envíos rápidos, precios increíbles y atención personalizada por WhatsApp.">
     <meta name="keywords" content="TiendaMax, tienda Cuba, comprar online Cuba, productos Cuba, ofertas Cuba, electrónica Cuba, hogar Cuba, tiendamax.org">
     <meta name="author" content="TiendaMax">
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
-    <meta name="theme-color" content="#C9A96E">
+    <meta name="theme-color" content="#FF6B35">
     <meta name="geo.region" content="CU">
     <meta name="geo.placename" content="Cuba">
     <link rel="canonical" href="https://tiendamax.org/">
@@ -60,7 +51,7 @@
     <meta name="twitter:description" content="Calidad premium, precios increíbles y atención personalizada. ¡Pide por WhatsApp!">
     <meta name="twitter:image" content="https://tiendamax.org/og-image.png">
 
-    <title>TiendaMax | Donde encuentras lo que necesitas</title>
+    <title>TiendaMax — Donde encuentras lo que necesitas | tiendamax.org</title>
 
     <!-- Schema.org para Google -->
     <script type="application/ld+json">
@@ -83,9 +74,9 @@
     }
     </script>
     
-    <link rel="stylesheet" href="css/styles.css?v=12">
-    <link rel="stylesheet" href="css/animations.css?v=12">
-    <link rel="stylesheet" href="css/styles.fixes.css?v=12">
+    <link rel="stylesheet" href="css/styles.css?v=9">
+    <link rel="stylesheet" href="css/animations.css?v=9">
+    <link rel="stylesheet" href="css/styles.fixes.css?v=10">
 
 </head>
 <body>
@@ -154,20 +145,17 @@
                 </div>
             </div>
             <div class="hero-image" id="heroImageContainer" style="position:relative;">
-                <span data-action="abrirCambiarImagenHero" class="hero-image-admin-hint" title="Cambiar foto del hero">📷 Cambiar foto</span>
-                <img 
-                    id="heroHumanImg"
-                    src="https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=900&q=80&auto=format&fit=crop"
-                    srcset="https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=600&q=80&auto=format&fit=crop 600w, https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=900&q=80&auto=format&fit=crop 900w, https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=1200&q=80&auto=format&fit=crop 1200w"
-                    sizes="(max-width:768px) 100vw, 50vw"
-                    loading="eager" fetchpriority="high"
-                    alt="Persona disfrutando tecnología de calidad"
-                    style="width:100%;height:100%;object-fit:cover;display:block;"
-                    onerror="this.style.display='none'; document.getElementById('heroFallback').style.display='flex';"
-                >
+                <!-- Banner Slider -->
+                <div id="heroBannerSlider" class="hero-banner-slider">
+                    <div class="hero-banner-track" id="heroBannerTrack"></div>
+                    <button class="hero-banner-prev" onclick="moverBanner(-1)" type="button">&#8249;</button>
+                    <button class="hero-banner-next" onclick="moverBanner(1)" type="button">&#8250;</button>
+                    <div class="hero-banner-dots" id="heroBannerDots"></div>
+                </div>
                 <div id="heroFallback" class="image-placeholder" style="display:none;">✦ TiendaMax ✦</div>
-                <div style="position:absolute;bottom:20px;left:20px;background:rgba(0,0,0,0.6);backdrop-filter:blur(10px);color:white;padding:10px 16px;border-radius:12px;font-size:12px;font-weight:600;border:1px solid rgba(201,169,110,0.3);">
-                    ⚡ Inversores · 📡 WiFi · 📱 Tecnología
+                <!-- Tagline editable -->
+                <div id="heroTaglineBadge" style="position:absolute;bottom:20px;left:20px;background:rgba(0,0,0,0.6);backdrop-filter:blur(10px);color:white;padding:10px 16px;border-radius:12px;font-size:12px;font-weight:600;border:1px solid rgba(201,169,110,0.3);">
+                    <span id="heroTaglineText">⚡ Inversores · 📡 WiFi · 📱 Tecnología</span>
                 </div>
             </div>
         </section>
@@ -514,8 +502,6 @@
                 <button data-action="switchTab" data-arg="oferta-dia" type="button" class="tab-btn" data-tab="oferta-dia">🏷️ Oferta Día</button>
                 <button data-action="switchTab" data-arg="apariencia" type="button" class="tab-btn" data-tab="apariencia">🎨 Apariencia</button>
                 <button data-action="switchTab" data-arg="analytics" type="button" class="tab-btn" data-tab="analytics">📊 Analytics</button>
-                <button data-action="switchTab" data-arg="stock-rapido" type="button" class="tab-btn" data-tab="stock-rapido">📦 Stock</button>
-                <button data-action="switchTab" data-arg="ventas" type="button" class="tab-btn" data-tab="ventas">💰 Ventas</button>
             </div>
             <div class="admin-content">
 
@@ -569,12 +555,6 @@
                             <div class="form-group">
                                 <label>Stock Disponible:</label>
                                 <input type="number" id="productStock" required placeholder="0" min="0">
-                            </div>
-                            <div class="form-group" style="background:rgba(39,174,96,0.07);border:1.5px dashed #27AE60;border-radius:10px;padding:12px 14px;">
-                                <label style="color:#27AE60;font-weight:700;">💰 Mi Comisión (USD) — solo visible para admin:</label>
-                                <input type="number" id="productComision" placeholder="0.00" min="0" step="0.01"
-                                    style="font-weight:700;color:#27AE60;border-color:#27AE60;">
-                                <p style="font-size:11px;color:#27AE60;margin-top:4px;opacity:.8;">Este valor nunca se muestra a los clientes.</p>
                             </div>
                         </div>
                         <div class="form-group">
@@ -672,8 +652,8 @@
                                 <option value="">-- Selecciona una categoría --</option>
                             </select>
                         </div>
-                        <div class="form-group" style="display: flex; gap: 10px; margin-bottom: 20px;">
-                            <input type="text" id="newSubcategoryName" placeholder="Nombre de la subcategoría" style="flex: 1;">
+                        <div class="form-group subcategory-add-row">
+                            <input type="text" id="newSubcategoryName" placeholder="Nombre de la subcategoría">
                             <button data-action="agregarSubcategoria" type="button" class="btn btn-primary">+ Agregar</button>
                         </div>
                         <div id="subcategoryList" class="subcategory-list"></div>
@@ -787,61 +767,29 @@
                     </div>
                 </div>
 
-                <div id="stock-rapido" class="admin-tab">
-                    <h3 style="margin-bottom:6px;">📦 Gestión Rápida de Stock</h3>
-                    <p style="font-size:13px;color:var(--text-muted);margin-bottom:16px;">Ajusta el stock de cada producto sin tener que abrir el editor completo.</p>
-
-                    <!-- Barra de búsqueda + resumen -->
-                    <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;">
-                        <input type="text" id="stockBusqueda" placeholder="🔍 Buscar producto..." oninput="renderizarStockRapido()" style="flex:1;min-width:160px;padding:10px 14px;border-radius:10px;border:1.5px solid var(--border-color);font-size:14px;background:var(--cream);">
-                        <select id="stockFiltroCat" onchange="renderizarStockRapido()" style="padding:10px 14px;border-radius:10px;border:1.5px solid var(--border-color);font-size:14px;background:var(--cream);">
-                            <option value="">Todas las categorías</option>
-                        </select>
-                    </div>
-                    <div id="stockRapidoResumen" style="margin-bottom:14px;"></div>
-                    <div id="stockRapidoLista"></div>
-                </div>
-
-                <div id="ventas" class="admin-tab">
-                    <h3 style="margin-bottom:6px;">💰 Ventas y Comisiones</h3>
-                    <p style="font-size:13px;color:var(--text-muted);margin-bottom:16px;">Registra cada venta confirmada y lleva el control de tus comisiones.</p>
-
-                    <!-- Confirmar venta -->
-                    <div style="background:rgba(39,174,96,0.07);border:1.5px solid #27AE60;border-radius:14px;padding:16px 18px;margin-bottom:20px;">
-                        <h4 style="margin:0 0 12px;color:#27AE60;">✅ Confirmar Venta</h4>
-                        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px;">
-                            <select id="ventaProductoSelect" style="flex:2;min-width:160px;padding:10px;border-radius:10px;border:1.5px solid #27AE60;font-size:14px;background:var(--cream);">
-                                <option value="">— Selecciona un producto —</option>
-                            </select>
-                            <input type="number" id="ventaCantidad" value="1" min="1"
-                                style="width:70px;padding:10px;border-radius:10px;border:1.5px solid #27AE60;font-size:14px;text-align:center;font-weight:700;">
-                        </div>
-                        <div id="ventaResumenPreview" style="font-size:13px;color:var(--text-muted);margin-bottom:12px;min-height:18px;"></div>
-                        <button onclick="confirmarVenta()" style="width:100%;padding:12px;border-radius:12px;border:none;background:#27AE60;color:white;font-size:15px;font-weight:700;cursor:pointer;">
-                            ✅ Confirmar Venta
-                        </button>
-                    </div>
-
-                    <!-- Resumen total -->
-                    <div id="ventasResumenTotal" style="margin-bottom:16px;"></div>
-
-                    <!-- Filtro periodo -->
-                    <div style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;align-items:center;">
-                        <select id="ventasFiltro" onchange="renderizarHistorialVentas()" style="padding:9px 14px;border-radius:10px;border:1.5px solid var(--border-color);font-size:13px;background:var(--cream);">
-                            <option value="todo">Todo el historial</option>
-                            <option value="hoy">Hoy</option>
-                            <option value="semana">Esta semana</option>
-                            <option value="mes">Este mes</option>
-                        </select>
-                        <button onclick="exportarVentasJSON()" style="padding:9px 16px;border-radius:10px;border:1.5px solid var(--border-color);background:var(--cream);font-size:13px;cursor:pointer;">📥 Exportar</button>
-                        <button onclick="limpiarHistorialVentas()" style="padding:9px 16px;border-radius:10px;border:none;background:#e74c3c;color:white;font-size:13px;cursor:pointer;">🗑️ Limpiar</button>
-                    </div>
-
-                    <!-- Historial -->
-                    <div id="ventasHistorialLista"></div>
-                </div>
-
                 <div id="apariencia" class="admin-tab">
+                    <h3>🎨 Apariencia</h3>
+
+                    <!-- BANNERS HERO -->
+                    <div class="form-group" style="margin-top:20px;">
+                        <label><b>🖼️ Banners promocionales</b></label>
+                        <p style="font-size:12px;color:#888;margin-bottom:10px;">Agrega banners que irán pasando en el slider. Al tocarlos llevan al link que pongas.</p>
+                        <div id="bannerList" style="display:flex;flex-direction:column;gap:8px;margin-bottom:10px;"></div>
+                        <div style="display:flex;flex-direction:column;gap:8px;">
+                            <input type="url" id="nuevoBannerUrl" placeholder="https://... URL de la imagen">
+                            <input type="url" id="nuevoBannerLink" placeholder="https://... Link al tocar (WhatsApp, grupo, etc.) — opcional">
+                            <button type="button" onclick="agregarBanner()" class="btn btn-primary">+ Agregar banner</button>
+                        </div>
+                        <p style="font-size:11px;color:#aaa;margin-top:6px;">💡 Sube imágenes gratis en <b>imgbb.com</b> y pega el link aquí.</p>
+                    </div>
+
+                    <!-- TAGLINE EDITABLE -->
+                    <div class="form-group" style="margin-top:24px;">
+                        <label><b>✏️ Texto del banner principal</b></label>
+                        <p style="font-size:12px;color:#888;margin-bottom:8px;">El texto que aparece sobre la imagen principal.</p>
+                        <input type="text" id="heroTaglineInput" placeholder="⚡ Inversores · 📡 WiFi · 📱 Tecnología" style="width:100%;">
+                        <button type="button" onclick="guardarTagline()" class="btn btn-primary" style="margin-top:8px;width:100%;">💾 Guardar texto</button>
+                    </div>
                     <h3 style="margin-bottom:18px;">🎨 Personalización Visual</h3>
                     
                     <!-- IMAGEN HERO -->
@@ -961,12 +909,6 @@
                         <label>Stock Disponible:</label>
                         <input type="number" id="editProductStock" required min="0">
                     </div>
-                </div>
-                <div class="form-group" style="background:rgba(39,174,96,0.07);border:1.5px dashed #27AE60;border-radius:10px;padding:12px 14px;">
-                    <label style="color:#27AE60;font-weight:700;">💰 Mi Comisión (USD) — solo visible para admin:</label>
-                    <input type="number" id="editProductComision" placeholder="0.00" min="0" step="0.01"
-                        style="font-weight:700;color:#27AE60;border-color:#27AE60;">
-                    <p style="font-size:11px;color:#27AE60;margin-top:4px;opacity:.8;">Este valor nunca se muestra a los clientes.</p>
                 </div>
                 <div class="form-group">
                     <label>Garantía (opcional):</label>
@@ -1200,5 +1142,144 @@
         });
     }
     </script>
+<!-- ===== BANNER SLIDER + TAGLINE ===== -->
+<script>
+(function() {
+    // Default banners
+    var DEFAULT_BANNERS = [
+        "https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=900&q=80&auto=format&fit=crop",
+        "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=900&q=80&auto=format&fit=crop",
+        "https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=900&q=80&auto=format&fit=crop"
+    ];
+
+    var banners = JSON.parse(localStorage.getItem('heroBanners') || 'null') || DEFAULT_BANNERS;
+    var current = 0;
+    var timer = null;
+
+    function renderSlider() {
+        var track = document.getElementById('heroBannerTrack');
+        var dots  = document.getElementById('heroBannerDots');
+        if (!track || !dots) return;
+        track.innerHTML = banners.map(function(b) {
+            var url = typeof b === 'string' ? b : b.url;
+            var link = typeof b === 'string' ? '' : (b.link || '');
+            var inner = '<img src="' + url + '" alt="Banner TiendaMax" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block;" onerror="this.parentElement.style.display=\'none\'">';
+            if (link) {
+                return '<div class="hero-banner-slide"><a href="' + link + '" target="_blank" rel="noopener" style="display:block;width:100%;height:100%;">' + inner + '</a></div>';
+            }
+            return '<div class="hero-banner-slide">' + inner + '</div>';
+        }).join('');
+        dots.innerHTML = banners.map(function(_, i) {
+            return '<div class="hero-banner-dot' + (i===0?' active':'') + '" onclick="irBanner(' + i + ')"></div>';
+        }).join('');
+        irBanner(0);
+        startAutoPlay();
+    }
+
+    window.irBanner = function(idx) {
+        current = (idx + banners.length) % banners.length;
+        var track = document.getElementById('heroBannerTrack');
+        if (track) track.style.transform = 'translateX(-' + (current * 100) + '%)';
+        document.querySelectorAll('.hero-banner-dot').forEach(function(d, i) {
+            d.classList.toggle('active', i === current);
+        });
+    };
+
+    window.moverBanner = function(dir) {
+        irBanner(current + dir);
+        resetAutoPlay();
+    };
+
+    function startAutoPlay() {
+        clearInterval(timer);
+        if (banners.length > 1) {
+            timer = setInterval(function() { irBanner(current + 1); }, 4000);
+        }
+    }
+
+    function resetAutoPlay() {
+        clearInterval(timer);
+        startAutoPlay();
+    }
+
+    // Tagline
+    function cargarTagline() {
+        var t = localStorage.getItem('heroTagline');
+        if (t) {
+            var el = document.getElementById('heroTaglineText');
+            if (el) el.textContent = t;
+        }
+    }
+
+    window.guardarTagline = function() {
+        var val = document.getElementById('heroTaglineInput').value.trim();
+        if (!val) return;
+        localStorage.setItem('heroTagline', val);
+        var el = document.getElementById('heroTaglineText');
+        if (el) el.textContent = val;
+        if (typeof mostrarNotificacion === 'function') mostrarNotificacion('✅ Texto guardado');
+    };
+
+    // Admin banner list
+    window.agregarBanner = function() {
+        var url  = document.getElementById('nuevoBannerUrl').value.trim();
+        var link = document.getElementById('nuevoBannerLink').value.trim();
+        if (!url) return;
+        banners.push({ url: url, link: link });
+        localStorage.setItem('heroBanners', JSON.stringify(banners));
+        document.getElementById('nuevoBannerUrl').value = '';
+        document.getElementById('nuevoBannerLink').value = '';
+        renderSlider();
+        renderAdminBannerList();
+        if (typeof mostrarNotificacion === 'function') mostrarNotificacion('✅ Banner agregado');
+    };
+
+    window.eliminarBanner = function(idx) {
+        banners.splice(idx, 1);
+        localStorage.setItem('heroBanners', JSON.stringify(banners));
+        renderSlider();
+        renderAdminBannerList();
+    };
+
+    function renderAdminBannerList() {
+        var list = document.getElementById('bannerList');
+        if (!list) return;
+        if (banners.length === 0) {
+            list.innerHTML = '<p style="font-size:12px;color:#aaa;">No hay banners. Agrega uno abajo.</p>';
+            return;
+        }
+        list.innerHTML = banners.map(function(b, i) {
+            var url  = typeof b === 'string' ? b : b.url;
+            var link = typeof b === 'string' ? '' : (b.link || '');
+            return '<div style="display:flex;align-items:center;gap:8px;background:rgba(0,0,0,0.05);padding:8px;border-radius:8px;">' +
+                '<img src="' + url + '" style="width:60px;height:40px;object-fit:cover;border-radius:6px;flex-shrink:0;">' +
+                '<div style="flex:1;min-width:0;">' +
+                    '<div style="font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + url + '</div>' +
+                    (link ? '<div style="font-size:10px;color:#25D366;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">🔗 ' + link + '</div>' : '<div style="font-size:10px;color:#aaa;">Sin link</div>') +
+                '</div>' +
+                '<button onclick="eliminarBanner(' + i + ')" type="button" style="background:#e74c3c;color:white;border:none;border-radius:6px;padding:4px 8px;cursor:pointer;font-size:12px;flex-shrink:0;">🗑️</button>' +
+                '</div>';
+        }).join('');
+
+        var taglineInput = document.getElementById('heroTaglineInput');
+        if (taglineInput) {
+            var saved = localStorage.getItem('heroTagline');
+            if (saved) taglineInput.value = saved;
+        }
+    }
+
+    // Init on DOM ready
+    document.addEventListener('DOMContentLoaded', function() {
+        renderSlider();
+        cargarTagline();
+        // Render admin list when apariencia tab opens
+        document.addEventListener('click', function(e) {
+            if (e.target && e.target.dataset && e.target.dataset.tab === 'apariencia') {
+                setTimeout(renderAdminBannerList, 100);
+            }
+        });
+    });
+})();
+</script>
 </body>
 </html>
