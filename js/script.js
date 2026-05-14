@@ -723,7 +723,11 @@ async function cargarDatosDesdeGitHub() {
     try {
         const dataProd = await fetchJSON('productos.json');
         if (dataProd && dataProd.length > 0) {
-            // Normalizar URLs: raw.githubusercontent.com → tiendamax.org
+            // Preservar campos locales (comision, resenas) que no están en GitHub
+            const productosLocales = JSON.parse(localStorage.getItem('productos') || '[]');
+            const mapaLocal = {};
+            productosLocales.forEach(p => { mapaLocal[p.id] = p; });
+
             productos = dataProd.map(p => {
                 const fix = url => url && url.includes('raw.githubusercontent.com')
                     ? url.replace(/https:\/\/raw\.githubusercontent\.com\/[^/]+\/[^/]+\/main\//,'https://tiendamax.org/')
@@ -731,6 +735,13 @@ async function cargarDatosDesdeGitHub() {
                 if (p.imagen) p.imagen = fix(p.imagen);
                 if (p.imagenSecundaria) p.imagenSecundaria = fix(p.imagenSecundaria);
                 if (Array.isArray(p.imagenes)) p.imagenes = p.imagenes.map(fix);
+
+                // Preservar campos locales si existen
+                const local = mapaLocal[p.id];
+                if (local) {
+                    if (local.comision > 0 && !p.comision) p.comision = local.comision;
+                    if (local.resenas && !p.resenas) p.resenas = local.resenas;
+                }
                 return p;
             });
             localStorage.setItem('productos', JSON.stringify(productos));
@@ -1206,14 +1217,13 @@ function guardarProductos() {
 
 // ===== COMPRESIÓN DE IMÁGENES =====
 // Comprime una imagen (File o base64) a máximo ~40KB manteniendo buena calidad visual
-function comprimirImagen(source, maxKB = 40, maxWidth = 600, maxHeight = 600) {
+function comprimirImagen(source, maxKB = 25, maxWidth = 480, maxHeight = 480) {
     return new Promise((resolve) => {
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d');
         const img = new Image();
 
         img.onload = function () {
-            // Calcular nuevas dimensiones manteniendo proporción
             let { width, height } = img;
             if (width > maxWidth || height > maxHeight) {
                 const ratio = Math.min(maxWidth / width, maxHeight / height);
@@ -1224,22 +1234,20 @@ function comprimirImagen(source, maxKB = 40, maxWidth = 600, maxHeight = 600) {
             canvas.height = height;
             ctx.drawImage(img, 0, 0, width, height);
 
-            // Reducir calidad iterativamente hasta alcanzar el límite de tamaño
-            let quality = 0.85;
+            let quality = 0.82;
             let result  = canvas.toDataURL('image/jpeg', quality);
-            while (result.length > maxKB * 1024 * 1.37 && quality > 0.25) {
-                quality -= 0.08;
+            while (result.length > maxKB * 1024 * 1.37 && quality > 0.2) {
+                quality -= 0.06;
                 result = canvas.toDataURL('image/jpeg', quality);
             }
             resolve(result);
         };
 
-        img.onerror = () => resolve(source); // Si falla, devolver original
+        img.onerror = () => resolve(source);
 
         if (typeof source === 'string') {
-            img.src = source; // base64 o URL
+            img.src = source;
         } else {
-            // Es un File/Blob
             const reader = new FileReader();
             reader.onload = (e) => { img.src = e.target.result; };
             reader.readAsDataURL(source);
