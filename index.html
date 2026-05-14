@@ -1189,7 +1189,10 @@
         "https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=900&q=80&auto=format&fit=crop"
     ];
 
-    var banners = JSON.parse(localStorage.getItem('heroBanners') || 'null') || DEFAULT_BANNERS;
+    // Usar localStorage si existe, si no esperar a GitHub (no mostrar defaults)
+    var bannersGuardados = JSON.parse(localStorage.getItem('heroBanners') || 'null');
+    var banners = bannersGuardados || [];
+    var sliderListo = !!bannersGuardados; // Solo renderizar si hay banners guardados
     var current = 0;
     var timer = null;
 
@@ -1377,9 +1380,15 @@
         }
     }
 
-    // Permite recargar banners desde el servidor sin recargar página
+    // Permite recargar banners desde GitHub
     window.recargarBanners = function(nuevos) {
-        banners = nuevos;
+        if (nuevos && nuevos.length > 0) {
+            banners = nuevos;
+            localStorage.setItem('heroBanners', JSON.stringify(banners));
+        } else if (banners.length === 0) {
+            // Solo usar defaults si no hay nada ni en GitHub ni en local
+            banners = DEFAULT_BANNERS;
+        }
         renderSlider();
         renderAdminBannerList();
     };
@@ -1397,14 +1406,21 @@
 
     // Init on DOM ready
     document.addEventListener('DOMContentLoaded', function() {
-        renderSlider();
+        // Solo renderizar si ya hay banners en localStorage (evita flash de defaults)
+        if (sliderListo) renderSlider();
         cargarTagline();
-        // Render admin list when apariencia tab opens
         document.addEventListener('click', function(e) {
             if (e.target && e.target.dataset && e.target.dataset.tab === 'apariencia') {
                 setTimeout(renderAdminBannerList, 100);
             }
         });
+        // Timeout de seguridad: si GitHub no respondió en 5s usar defaults
+        setTimeout(function() {
+            if (banners.length === 0) {
+                banners = DEFAULT_BANNERS;
+                renderSlider();
+            }
+        }, 5000);
     });
 })();
 </script>
