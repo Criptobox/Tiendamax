@@ -773,14 +773,17 @@
                     <!-- BANNERS HERO -->
                     <div class="form-group" style="margin-top:20px;">
                         <label><b>🖼️ Banners promocionales</b></label>
-                        <p style="font-size:12px;color:#888;margin-bottom:10px;">Agrega banners que irán pasando en el slider. Al tocarlos llevan al link que pongas.</p>
-                        <div id="bannerList" style="display:flex;flex-direction:column;gap:8px;margin-bottom:10px;"></div>
+                        <p style="font-size:12px;color:#888;margin-bottom:10px;">Agrega banners que van pasando solos. Al tocarlos llevan al link que pongas.</p>
+                        <div id="bannerList" style="display:flex;flex-direction:column;gap:8px;margin-bottom:12px;"></div>
                         <div style="display:flex;flex-direction:column;gap:8px;">
-                            <input type="url" id="nuevoBannerUrl" placeholder="https://... URL de la imagen">
-                            <input type="url" id="nuevoBannerLink" placeholder="https://... Link al tocar (WhatsApp, grupo, etc.) — opcional">
+                            <label style="font-size:12px;font-weight:600;">📷 Imagen del banner:</label>
+                            <input type="file" id="nuevoBannerFile" accept="image/*" style="width:100%;">
+                            <p style="font-size:11px;color:#aaa;margin:0;">O pega una URL directamente:</p>
+                            <input type="url" id="nuevoBannerUrl" placeholder="https://... URL de la imagen (opcional)">
+                            <label style="font-size:12px;font-weight:600;">🔗 Link al tocar (opcional):</label>
+                            <input type="url" id="nuevoBannerLink" placeholder="https://wa.me/grupo o cualquier link">
                             <button type="button" onclick="agregarBanner()" class="btn btn-primary">+ Agregar banner</button>
                         </div>
-                        <p style="font-size:11px;color:#aaa;margin-top:6px;">💡 Sube imágenes gratis en <b>imgbb.com</b> y pega el link aquí.</p>
                     </div>
 
                     <!-- TAGLINE EDITABLE -->
@@ -1160,14 +1163,13 @@
         var track = document.getElementById('heroBannerTrack');
         var dots  = document.getElementById('heroBannerDots');
         if (!track || !dots) return;
-        track.innerHTML = banners.map(function(b) {
-            var url = typeof b === 'string' ? b : b.url;
+        track.innerHTML = banners.map(function(b, i) {
+            var url  = typeof b === 'string' ? b : b.url;
             var link = typeof b === 'string' ? '' : (b.link || '');
-            var inner = '<img src="' + url + '" alt="Banner TiendaMax" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block;" onerror="this.parentElement.style.display=\'none\'">';
-            if (link) {
-                return '<div class="hero-banner-slide"><a href="' + link + '" target="_blank" rel="noopener" style="display:block;width:100%;height:100%;">' + inner + '</a></div>';
-            }
-            return '<div class="hero-banner-slide">' + inner + '</div>';
+            var img  = '<img src="' + url + '" alt="Banner TiendaMax" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block;" onerror="this.parentElement.style.background=\'#1a1a1a\'">';
+            var style = link ? 'cursor:pointer;' : '';
+            var onclick = link ? ' onclick="window.open(\'' + link.replace(/'/g,"\\'") + '\',\'_blank\')"' : '';
+            return '<div class="hero-banner-slide" style="' + style + '"' + onclick + '>' + img + '</div>';
         }).join('');
         dots.innerHTML = banners.map(function(_, i) {
             return '<div class="hero-banner-dot' + (i===0?' active':'') + '" onclick="irBanner(' + i + ')"></div>';
@@ -1222,16 +1224,34 @@
 
     // Admin banner list
     window.agregarBanner = function() {
-        var url  = document.getElementById('nuevoBannerUrl').value.trim();
-        var link = document.getElementById('nuevoBannerLink').value.trim();
-        if (!url) return;
-        banners.push({ url: url, link: link });
-        localStorage.setItem('heroBanners', JSON.stringify(banners));
-        document.getElementById('nuevoBannerUrl').value = '';
-        document.getElementById('nuevoBannerLink').value = '';
-        renderSlider();
-        renderAdminBannerList();
-        if (typeof mostrarNotificacion === 'function') mostrarNotificacion('✅ Banner agregado');
+        var fileInput = document.getElementById('nuevoBannerFile');
+        var urlInput  = document.getElementById('nuevoBannerUrl');
+        var link      = document.getElementById('nuevoBannerLink').value.trim();
+
+        if (fileInput.files && fileInput.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                banners.push({ url: e.target.result, link: link });
+                localStorage.setItem('heroBanners', JSON.stringify(banners));
+                fileInput.value = '';
+                urlInput.value = '';
+                document.getElementById('nuevoBannerLink').value = '';
+                renderSlider();
+                renderAdminBannerList();
+                if (typeof mostrarNotificacion === 'function') mostrarNotificacion('✅ Banner agregado');
+            };
+            reader.readAsDataURL(fileInput.files[0]);
+        } else {
+            var url = urlInput.value.trim();
+            if (!url) { if (typeof mostrarNotificacion === 'function') mostrarNotificacion('⚠️ Selecciona una imagen o pega una URL', 'error'); return; }
+            banners.push({ url: url, link: link });
+            localStorage.setItem('heroBanners', JSON.stringify(banners));
+            urlInput.value = '';
+            document.getElementById('nuevoBannerLink').value = '';
+            renderSlider();
+            renderAdminBannerList();
+            if (typeof mostrarNotificacion === 'function') mostrarNotificacion('✅ Banner agregado');
+        }
     };
 
     window.eliminarBanner = function(idx) {
