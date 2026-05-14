@@ -11,7 +11,10 @@
     "ADITIVOS",
     "PIEZAS Y OTROS"
   ],
-  "ROPA": [],
+  "ROPA": [
+    "HOMBRE",
+    "MUJER"
+  ],
   "LENCERIA": [],
   "HOGAR": [
     "ELECTRODOMÉSTICOS",
