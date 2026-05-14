@@ -511,6 +511,7 @@
                 <button data-action="switchTab" data-arg="add-products" type="button" class="tab-btn active" data-tab="add-products">➕ Agregar</button>
                 <button data-action="switchTab" data-arg="publicar-ahora" type="button" class="tab-btn" data-tab="publicar-ahora">🚀 Publicar</button>
                 <button data-action="switchTab" data-arg="manage-products" type="button" class="tab-btn" data-tab="manage-products">📋 Gestionar</button>
+                <button data-action="switchTab" data-arg="ventas" type="button" class="tab-btn" data-tab="ventas">💰 Ventas</button>
                 <button data-action="switchTab" data-arg="manage-categories" type="button" class="tab-btn" data-tab="manage-categories">🏷️ Categorías</button>
                 <button data-action="switchTab" data-arg="manage-subcategories" type="button" class="tab-btn" data-tab="manage-subcategories">📂 Subcategorías</button>
                 <button data-action="switchTab" data-arg="configuracion" type="button" class="tab-btn" data-tab="configuracion">⚙️ Config</button>
@@ -571,6 +572,11 @@
                                 <label>Stock Disponible:</label>
                                 <input type="number" id="productStock" required placeholder="0" min="0">
                             </div>
+                            <div class="form-group">
+                                <label>💰 Mi comisión (USD):</label>
+                                <input type="number" id="productComision" placeholder="0.00" step="0.01" min="0">
+                                <small>Lo que ganas tú por cada venta</small>
+                            </div>
                         </div>
                         <div class="form-group">
                             <label>Garantía (opcional):</label>
@@ -584,6 +590,13 @@
                         </div>
                         <button type="submit" class="btn btn-primary">✅ Agregar Producto</button>
                     </form>
+                </div>
+
+                <!-- Tab: Ventas -->
+                <div id="ventas" class="admin-tab">
+                    <h3>💰 Control de Ventas</h3>
+                    <p style="font-size:13px;color:#888;margin-bottom:16px;">Registra ventas manualmente y lleva el control de tus ganancias.</p>
+                    <div id="ventasContenido"></div>
                 </div>
 
                 <!-- Tab: Publicar -->
@@ -927,6 +940,11 @@
                     <div class="form-group">
                         <label>Stock Disponible:</label>
                         <input type="number" id="editProductStock" required min="0">
+                    </div>
+                    <div class="form-group">
+                        <label>💰 Mi comisión (USD):</label>
+                        <input type="number" id="editProductComision" step="0.01" min="0" placeholder="0.00">
+                        <small>Lo que ganas tú por cada venta</small>
                     </div>
                 </div>
                 <div class="form-group">
