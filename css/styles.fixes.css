@@ -905,23 +905,13 @@ body.dark-mode .admin-tab select {
    ========================================================= */
 html body #heroBannerSlider,
 html body .hero-banner-slide {
-    background: transparent !important;
+    background: radial-gradient(circle at center, #242424 0%, #0d0d0d 75%) !important;
 }
 
 html body .hero-banner-slide img {
-    /* Usamos contain para que no se recorte el banner de publicidad */
     object-fit: contain !important;
     object-position: center center !important;
-    background: transparent !important;
-    width: 100% !important;
-    height: 100% !important;
-}
-
-/* En PC el contenedor de la derecha (.hero-image) no debe forzar espacios vacíos exagerados */
-@media (min-width: 769px) {
-    html body .hero {
-        align-items: center !important; /* Centra el contenido verticalmente para evitar estiramientos feos */
-    }
+    background: radial-gradient(circle at center, #242424 0%, #0d0d0d 75%) !important;
 }
 
 html body #heroTaglineBadge {
@@ -931,7 +921,7 @@ html body #heroTaglineBadge {
     z-index: 6 !important;
 }
 
-html body .hero-tagline-wrapper {
+html body #heroTaglineText {
     display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
@@ -972,5 +962,25 @@ html body .tagline-wa-icon svg {
         padding: 9px 13px !important;
         font-size: 12px !important;
         max-width: calc(100% - 20px) !important;
+    }
+}
+
+html body #heroBannerSlider,
+html body .hero-banner-slide {
+    background: transparent !important;
+}
+
+html body .hero-banner-slide img {
+    object-fit: contain !important;
+    object-position: center center !important;
+    background: radial-gradient(circle at center, #242424 0%, #0d0d0d 75%) !important;
+    width: 100% !important;
+    height: 100% !important;
+}
+
+/* En caso de que el hero image se estire, limitamos su max-height para que no sea inmenso en PC */
+@media (min-width: 769px) {
+    html body .hero-image {
+        max-height: 480px !important;
     }
 }
