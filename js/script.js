@@ -723,7 +723,16 @@ async function cargarDatosDesdeGitHub() {
     try {
         const dataProd = await fetchJSON('productos.json');
         if (dataProd && dataProd.length > 0) {
-            productos = dataProd;
+            // Normalizar URLs: raw.githubusercontent.com → tiendamax.org
+            productos = dataProd.map(p => {
+                const fix = url => url && url.includes('raw.githubusercontent.com')
+                    ? url.replace(/https:\/\/raw\.githubusercontent\.com\/[^/]+\/[^/]+\/main\//,'https://tiendamax.org/')
+                    : url;
+                if (p.imagen) p.imagen = fix(p.imagen);
+                if (p.imagenSecundaria) p.imagenSecundaria = fix(p.imagenSecundaria);
+                if (Array.isArray(p.imagenes)) p.imagenes = p.imagenes.map(fix);
+                return p;
+            });
             localStorage.setItem('productos', JSON.stringify(productos));
         }
 
