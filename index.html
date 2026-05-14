@@ -783,6 +783,7 @@
                             <label style="font-size:12px;font-weight:600;">🔗 Link al tocar (opcional):</label>
                             <input type="url" id="nuevoBannerLink" placeholder="https://wa.me/grupo o cualquier link">
                             <button type="button" onclick="agregarBanner()" class="btn btn-primary">+ Agregar banner</button>
+                            <button type="button" onclick="exportarBannersJSON()" class="btn" style="background:#8e44ad;color:white;">📥 Descargar banners.json → subir a GitHub</button>
                         </div>
                     </div>
 
@@ -1340,6 +1341,24 @@
             if (saved) taglineInput.value = saved;
         }
     }
+
+    // Permite recargar banners desde el servidor sin recargar página
+    window.recargarBanners = function(nuevos) {
+        banners = nuevos;
+        renderSlider();
+        renderAdminBannerList();
+    };
+
+    window.exportarBannersJSON = function() {
+        var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(banners, null, 2));
+        var a = document.createElement('a');
+        a.setAttribute('href', dataStr);
+        a.setAttribute('download', 'banners.json');
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        if (typeof mostrarNotificacion === 'function') mostrarNotificacion('✅ banners.json descargado. Súbelo a GitHub.');
+    };
 
     // Init on DOM ready
     document.addEventListener('DOMContentLoaded', function() {
