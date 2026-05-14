@@ -155,9 +155,9 @@
                 <div id="heroFallback" class="image-placeholder" style="display:none;">✦ TiendaMax ✦</div>
                 <!-- Tagline editable -->
                 <div id="heroTaglineBadge" style="position:absolute;bottom:20px;left:50%;transform:translateX(-50%);background:rgba(10,10,10,0.75);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);color:white;padding:11px 20px;border-radius:50px;font-size:13px;font-weight:700;border:1px solid rgba(255,255,255,0.12);box-shadow:0 4px 20px rgba(0,0,0,0.4);white-space:nowrap;letter-spacing:0.2px;display:flex;align-items:center;gap:8px;">
-                    <span id="heroTaglineText" style="display:flex;align-items:center;gap:6px;">
+                    <span class="hero-tagline-wrapper" style="display:flex;align-items:center;gap:6px;">
                         <span style="animation:taglinePulse 1.5s ease-in-out infinite;display:inline-block;">&#x1F447;</span>
-                        Toca la imagen · Entra al grupo
+                        <span id="heroTaglineText">Toca la imagen · Entra al grupo</span>
                         <span class="tagline-wa-icon" aria-hidden="true">
                             <svg viewBox="0 0 24 24" width="13" height="13" fill="white" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
@@ -816,7 +816,7 @@
                         <p style="font-size:13px;color:var(--text-muted);margin-bottom:16px;">Esta imagen aparece a la derecha del título principal en la página de inicio.</p>
                         
                         <div id="heroImagePreview" style="width:100%;height:160px;border-radius:12px;overflow:hidden;background:#eee;margin-bottom:14px;position:relative;">
-                            <img id="heroPreviewImg" src="" style="width:100%;height:100%;object-fit:cover;" alt="Preview">
+                            <img id="heroPreviewImg" src="" style="width:100%;height:100%;object-fit:contain;" alt="Preview">
                             <div id="heroPreviewPlaceholder" style="display:none;width:100%;height:100%;background:var(--graphite);display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.4);font-size:14px;">Sin imagen cargada</div>
                         </div>
                         
@@ -1181,7 +1181,7 @@
         track.innerHTML = banners.map(function(b, i) {
             var url  = typeof b === 'string' ? b : b.url;
             var link = typeof b === 'string' ? '' : (b.link || '');
-            var img  = '<img src="' + url + '" alt="Banner TiendaMax" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block;pointer-events:none;" onerror="this.parentElement.style.background=\'#1a1a1a\'">';
+            var img  = '<img src="' + url + '" alt="Banner TiendaMax" loading="lazy" style="width:100%;height:100%;object-fit:contain;display:block;pointer-events:none;" onerror="this.parentElement.style.background=\'#1a1a1a\'">';
             var dataLink = link ? ' data-banner-link="' + link + '"' : '';
             var style = link ? 'cursor:pointer;' : '';
             return '<div class="hero-banner-slide" style="' + style + '"' + dataLink + '>' + img + '</div>';
@@ -1332,7 +1332,7 @@
             var link = typeof b === 'string' ? '' : (b.link || '');
             return '<div id="banner-item-' + i + '" style="display:flex;flex-direction:column;gap:6px;background:rgba(0,0,0,0.05);padding:10px;border-radius:8px;">' +
                 '<div style="display:flex;align-items:center;gap:8px;">' +
-                    '<img src="' + (url.length > 200 ? url.substring(0,50)+'...' : url) + '" style="width:60px;height:40px;object-fit:cover;border-radius:6px;flex-shrink:0;">' +
+                    '<img src="' + (url.length > 200 ? url.substring(0,50)+'...' : url) + '" style="width:60px;height:40px;object-fit:contain;border-radius:6px;flex-shrink:0;">' +
                     '<div style="flex:1;min-width:0;">' +
                         '<div style="font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#555;">Banner ' + (i+1) + '</div>' +
                         (link ? '<div style="font-size:10px;color:#25D366;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">🔗 ' + link + '</div>' : '<div style="font-size:10px;color:#aaa;">Sin link</div>') +
@@ -1389,5 +1389,6 @@
     });
 })();
 </script>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"1954b47c125f43f8b4338b3c4f804e4f","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
 </body>
 </html>
