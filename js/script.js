@@ -721,6 +721,15 @@ async function cargarDatosDesdeGitHub() {
     }
 
     try {
+        // Cargar banners PRIMERO para que el slider muestre los correctos de una vez
+        try {
+            const dataBanners = await fetchJSON('banners.json');
+            if (dataBanners && Array.isArray(dataBanners) && dataBanners.length > 0) {
+                localStorage.setItem('heroBanners', JSON.stringify(dataBanners));
+                if (typeof window.recargarBanners === 'function') window.recargarBanners(dataBanners);
+            }
+        } catch(e) {}
+
         const dataProd = await fetchJSON('productos.json');
         if (dataProd && dataProd.length > 0) {
             // Preservar campos locales (comision, resenas) que no están en GitHub
@@ -739,8 +748,8 @@ async function cargarDatosDesdeGitHub() {
                 // Preservar campos locales si existen
                 const local = mapaLocal[p.id];
                 if (local) {
-                    if (local.comision > 0 && !p.comision) p.comision = local.comision;
-                    if (local.resenas && !p.resenas) p.resenas = local.resenas;
+                    if (local.comision !== undefined) p.comision = local.comision;
+                    if (local.resenas && local.resenas.length > 0) p.resenas = local.resenas;
                 }
                 return p;
             });
@@ -762,17 +771,6 @@ async function cargarDatosDesdeGitHub() {
                 }
             }
         }
-
-        // Cargar banners desde GitHub
-        try {
-            const dataBanners = await fetchJSON('banners.json');
-            if (dataBanners && Array.isArray(dataBanners) && dataBanners.length > 0) {
-                localStorage.setItem('heroBanners', JSON.stringify(dataBanners));
-                // Forzar re-render del slider con los banners del servidor
-                if (typeof window.recargarBanners === 'function') window.recargarBanners(dataBanners);
-                console.log('✅ Banners cargados desde GitHub');
-            }
-        } catch(e) {}
 
         // Cargar config de grupos Facebook
         try {
@@ -2100,9 +2098,6 @@ async function sincronizarTodoConGitHub() {
         mostrarNotificacion('🚀 Sincronizando tienda completa con GitHub...', 'info');
     }
 
-    // Construir el array de productos a subir
-    // Si hay delta y productos.json ya existe en GitHub, solo marcar para subir completo
-    // (GitHub necesita el archivo completo, pero lo construimos eficientemente)
     const archivos = [
         { path: 'productos.json',              data: productos },
         { path: 'categorias.json',             data: { nombres: categorias, iconos: iconosPersonalizados } },
@@ -2112,8 +2107,11 @@ async function sincronizarTodoConGitHub() {
         { path: 'banners.json',                data: JSON.parse(localStorage.getItem('heroBanners') || '[]') },
     ];
 
-    // Siempre subir todos los archivos para garantizar consistencia
-    const archivosFiltrados = archivos;
+    // Si hay productos modificados específicos, solo subir productos.json
+    // Si no hay delta (actualización completa), subir todos los archivos
+    const archivosFiltrados = hayDelta
+        ? [{ path: 'productos.json', data: productos }]
+        : archivos;
 
     let ok = 0, errors = [];
     const total = archivosFiltrados.length;
