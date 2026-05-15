@@ -1010,6 +1010,25 @@ function renderizarCategoriasHome() {
     const grid = document.getElementById('categoriasGrid');
     if (!grid) return;
 
+    // Evitar parpadeo: si ya hay tarjetas renderizadas con los mismos datos, solo actualizar counts
+    const existingCards = grid.querySelectorAll('.categoria-card');
+    const totalProductos = productos.length;
+    const expectedCount = categorias.length + 1; // +1 por "Todos"
+
+    if (existingCards.length === expectedCount && existingCards.length > 0) {
+        // Solo actualizar los contadores sin reconstruir el DOM
+        const allCards = Array.from(existingCards);
+        // Primer card = "Todos"
+        const countTodas = allCards[0].querySelector('.cat-count');
+        if (countTodas) countTodas.textContent = `${totalProductos} producto${totalProductos !== 1 ? 's' : ''}`;
+        categorias.forEach((cat, i) => {
+            const count = productos.filter(p => p.categoria === cat).length;
+            const countEl = allCards[i + 1] && allCards[i + 1].querySelector('.cat-count');
+            if (countEl) countEl.textContent = `${count} producto${count !== 1 ? 's' : ''}`;
+        });
+        return;
+    }
+
     grid.innerHTML = '';
 
     const cardTodas = document.createElement('div');
@@ -3320,8 +3339,11 @@ function renderizarListaAgotados() {
 const _origSwitchTabFinal = switchTab;
 switchTab = function(tabName) {
     // Refrescar select de categorías al entrar al tab de subcategorías
-    if (tabName === 'manage-subcategories' && typeof actualizarSelectCategoriasPadre === 'function') {
-        setTimeout(actualizarSelectCategoriasPadre, 50);
+    if (tabName === 'manage-subcategories') {
+        setTimeout(() => {
+            if (typeof actualizarSelectCategoriasPadre === 'function') actualizarSelectCategoriasPadre();
+            if (typeof actualizarListaSubcategorias === 'function') actualizarListaSubcategorias();
+        }, 50);
     }
     _origSwitchTabFinal(tabName);
     if (tabName === 'oferta-dia') {
@@ -3694,9 +3716,10 @@ function filtrarVentaPorCategoria(cat) {
     _ventaCatActiva = cat;
     document.querySelectorAll('.chip-cat').forEach(btn => {
         const activo = btn.dataset.cat === cat;
-        btn.style.background  = activo ? '#3498db' : 'white';
-        btn.style.color       = activo ? 'white'   : '#555';
-        btn.style.borderColor = activo ? '#3498db' : '#ddd';
+        btn.classList.toggle('chip-cat-activo', activo);
+        btn.style.background  = activo ? '#3498db' : '';
+        btn.style.color       = activo ? 'white'   : '';
+        btn.style.borderColor = activo ? '#3498db' : '';
     });
     filtrarProductosVenta();
 }
@@ -3710,8 +3733,9 @@ function seleccionarProductoVenta(id) {
 
     document.querySelectorAll('.venta-prod-item').forEach(item => {
         const activo = parseInt(item.dataset.id) === id;
+        item.classList.toggle('seleccionado', activo);
         item.style.borderColor = activo ? '#27ae60' : 'transparent';
-        item.style.background  = activo ? 'rgba(39,174,96,0.08)' : 'white';
+        item.style.background  = activo ? 'rgba(39,174,96,0.08)' : '';
     });
 
     const card = document.getElementById('ventaProductoSeleccionado');
@@ -3733,8 +3757,9 @@ function deseleccionarProductoVenta() {
     const sel = document.getElementById('ventaProductoSelect');
     if (sel) sel.value = '';
     document.querySelectorAll('.venta-prod-item').forEach(item => {
+        item.classList.remove('seleccionado');
         item.style.borderColor = 'transparent';
-        item.style.background  = 'white';
+        item.style.background  = '';
     });
     const card = document.getElementById('ventaProductoSeleccionado');
     if (card) card.style.display = 'none';
