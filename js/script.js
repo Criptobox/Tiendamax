@@ -2913,10 +2913,63 @@ function renderizarVentas() {
     <div style="margin-bottom:16px;">
         <h4 style="margin-bottom:10px;">📦 Registrar venta manual</h4>
         <div style="display:flex;flex-direction:column;gap:8px;">
-            <select id="ventaProductoSelect" style="padding:10px;border-radius:8px;border:1px solid #ddd;font-size:14px;">
+
+            <!-- Buscador -->
+            <div style="position:relative;">
+                <input type="text" id="ventaBuscador" placeholder="🔍 Buscar producto..." oninput="filtrarProductosVenta()"
+                    style="width:100%;padding:10px 14px;border-radius:8px;border:1px solid #ddd;font-size:14px;box-sizing:border-box;">
+                <button onclick="limpiarBuscadorVenta()" type="button" id="ventaBuscadorClear"
+                    style="display:none;position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;font-size:16px;cursor:pointer;color:#aaa;">✕</button>
+            </div>
+
+            <!-- Filtro por categorías (chips) -->
+            <div id="ventaCategoriaChips" style="display:flex;flex-wrap:wrap;gap:6px;">
+                <button onclick="filtrarVentaPorCategoria('')" type="button" data-cat=""
+                    class="chip-cat chip-cat-activo"
+                    style="padding:5px 12px;border-radius:20px;border:1px solid #3498db;background:#3498db;color:white;font-size:12px;cursor:pointer;transition:all .2s;">
+                    Todas
+                </button>
+                ${[...new Set(productos.map(p => p.categoria).filter(Boolean))].map(cat =>
+                    `<button onclick="filtrarVentaPorCategoria('${cat.replace(/'/g,"&#39;")}')" type="button" data-cat="${cat}"
+                        class="chip-cat"
+                        style="padding:5px 12px;border-radius:20px;border:1px solid #ddd;background:white;color:#555;font-size:12px;cursor:pointer;transition:all .2s;">
+                        ${cat}
+                    </button>`
+                ).join('')}
+            </div>
+
+            <!-- Select oculto para mantener compatibilidad con registrarVentaDesdeForm -->
+            <select id="ventaProductoSelect" style="display:none;">
                 <option value="">— Selecciona producto —</option>
-                ${productos.map(p => `<option value="${p.id}">${p.nombre} · $${p.precioActual} · Stock: ${p.stock}${p.comision ? ` · Comisión: $${p.comision}` : ''}</option>`).join('')}
+                ${productos.map(p => `<option value="${p.id}">${p.nombre}</option>`).join('')}
             </select>
+
+            <!-- Lista de productos filtrados -->
+            <div id="ventaProductosLista" style="max-height:220px;overflow-y:auto;display:flex;flex-direction:column;gap:6px;border:1px solid #eee;border-radius:8px;padding:6px;background:#fafafa;">
+                ${productos.filter(p => p.stock > 0).map(p => `
+                <div class="venta-prod-item" data-id="${p.id}" data-nombre="${p.nombre.toLowerCase()}" data-cat="${p.categoria||''}"
+                    onclick="seleccionarProductoVenta(${p.id})"
+                    style="display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;cursor:pointer;border:1px solid transparent;transition:all .15s;background:white;">
+                    ${p.imagen ? `<img src="${p.imagen}" style="width:38px;height:38px;object-fit:cover;border-radius:6px;flex-shrink:0;" onerror="this.style.display='none'">` : '<div style="width:38px;height:38px;border-radius:6px;background:#eee;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:18px;">📦</div>'}
+                    <div style="flex:1;min-width:0;">
+                        <div style="font-weight:600;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${p.nombre}</div>
+                        <div style="font-size:11px;color:#888;">${p.categoria||''} · Stock: ${p.stock}${p.comision ? ` · 💰$${p.comision}` : ''}</div>
+                    </div>
+                    <div style="font-weight:700;color:#27ae60;font-size:13px;flex-shrink:0;">$${p.precioActual}</div>
+                </div>`).join('')}
+                ${productos.filter(p => p.stock > 0).length === 0 ? '<p style="text-align:center;color:#aaa;padding:16px;font-size:13px;">Sin productos con stock</p>' : ''}
+            </div>
+
+            <!-- Tarjeta del producto seleccionado -->
+            <div id="ventaProductoSeleccionado" style="display:none;background:linear-gradient(135deg,rgba(39,174,96,0.08),rgba(39,174,96,0.03));border:1.5px solid rgba(39,174,96,0.35);border-radius:10px;padding:12px;display:flex;align-items:center;gap:10px;">
+                <img id="ventaSelImg" src="" style="width:48px;height:48px;object-fit:cover;border-radius:8px;flex-shrink:0;" onerror="this.style.display='none'">
+                <div style="flex:1;min-width:0;">
+                    <div id="ventaSelNombre" style="font-weight:700;font-size:14px;"></div>
+                    <div id="ventaSelInfo" style="font-size:12px;color:#555;margin-top:2px;"></div>
+                </div>
+                <button onclick="deseleccionarProductoVenta()" type="button" style="background:none;border:none;font-size:18px;cursor:pointer;color:#aaa;flex-shrink:0;">✕</button>
+            </div>
+
             <div style="display:flex;gap:8px;">
                 <input type="number" id="ventaCantidad" value="1" min="1" placeholder="Cantidad" style="flex:1;padding:10px;border-radius:8px;border:1px solid #ddd;font-size:14px;">
                 <button onclick="registrarVentaDesdeForm()" type="button" class="btn btn-primary" style="flex:2;">✅ Registrar venta</button>
@@ -2956,8 +3009,14 @@ function registrarVentaDesdeForm() {
     const sel = document.getElementById('ventaProductoSelect');
     const cant = parseInt(document.getElementById('ventaCantidad')?.value) || 1;
     const id = parseInt(sel?.value);
-    if (!id) { mostrarNotificacion('⚠️ Selecciona un producto', 'error'); return; }
+    if (!id) { mostrarNotificacion('⚠️ Selecciona un producto primero', 'error'); return; }
     registrarVenta(id, cant);
+    // Limpiar buscador y selección tras registrar
+    deseleccionarProductoVenta();
+    const b = document.getElementById('ventaBuscador');
+    if (b) { b.value = ''; filtrarProductosVenta(); }
+    const cantEl = document.getElementById('ventaCantidad');
+    if (cantEl) cantEl.value = '1';
 }
 
 function eliminarVenta(id) {
@@ -3608,3 +3667,424 @@ stat = function(icon, label, value, color) {
     return html;
 };
 
+
+// ── Buscador y filtro de categorías en Ventas ────────────────────
+let _ventaCatActiva = '';
+
+function filtrarProductosVenta() {
+    const q = (document.getElementById('ventaBuscador')?.value || '').toLowerCase().trim();
+    const clearBtn = document.getElementById('ventaBuscadorClear');
+    if (clearBtn) clearBtn.style.display = q ? 'block' : 'none';
+
+    const items = document.querySelectorAll('.venta-prod-item');
+    items.forEach(item => {
+        const nombre = item.dataset.nombre || '';
+        const cat    = item.dataset.cat    || '';
+        const coincideBusqueda = !q || nombre.includes(q);
+        const coincideCat      = !_ventaCatActiva || cat === _ventaCatActiva;
+        item.style.display = (coincideBusqueda && coincideCat) ? '' : 'none';
+    });
+}
+
+function filtrarVentaPorCategoria(cat) {
+    _ventaCatActiva = cat;
+    document.querySelectorAll('.chip-cat').forEach(btn => {
+        const activo = btn.dataset.cat === cat;
+        btn.style.background  = activo ? '#3498db' : 'white';
+        btn.style.color       = activo ? 'white'   : '#555';
+        btn.style.borderColor = activo ? '#3498db' : '#ddd';
+    });
+    filtrarProductosVenta();
+}
+
+function seleccionarProductoVenta(id) {
+    const p = productos.find(x => x.id === id);
+    if (!p) return;
+
+    const sel = document.getElementById('ventaProductoSelect');
+    if (sel) sel.value = id;
+
+    document.querySelectorAll('.venta-prod-item').forEach(item => {
+        const activo = parseInt(item.dataset.id) === id;
+        item.style.borderColor = activo ? '#27ae60' : 'transparent';
+        item.style.background  = activo ? 'rgba(39,174,96,0.08)' : 'white';
+    });
+
+    const card = document.getElementById('ventaProductoSeleccionado');
+    if (card) {
+        card.style.display = 'flex';
+        const img = document.getElementById('ventaSelImg');
+        if (img) { img.src = p.imagen || ''; img.style.display = p.imagen ? '' : 'none'; }
+        const nom = document.getElementById('ventaSelNombre');
+        if (nom) nom.textContent = p.nombre;
+        const inf = document.getElementById('ventaSelInfo');
+        if (inf) inf.innerHTML = `$${p.precioActual} · Stock: ${p.stock}${p.comision ? ` · 💰 Comisión: $${p.comision}` : ''}`;
+    }
+
+    const cantEl = document.getElementById('ventaCantidad');
+    if (cantEl) { cantEl.focus(); cantEl.select(); }
+}
+
+function deseleccionarProductoVenta() {
+    const sel = document.getElementById('ventaProductoSelect');
+    if (sel) sel.value = '';
+    document.querySelectorAll('.venta-prod-item').forEach(item => {
+        item.style.borderColor = 'transparent';
+        item.style.background  = 'white';
+    });
+    const card = document.getElementById('ventaProductoSeleccionado');
+    if (card) card.style.display = 'none';
+}
+
+function limpiarBuscadorVenta() {
+    const b = document.getElementById('ventaBuscador');
+    if (b) { b.value = ''; b.focus(); }
+    filtrarProductosVenta();
+}
+
+// ══════════════════════════════════════════════════════════════════
+//  TIENDAMAX — PREMIUM PACK v2
+//  1. Vistas por producto (público + panel admin)
+//  2. Dashboard de ventas con gráfica
+//  3. Badges "Últimas X unidades" en tarjetas de cliente
+//  4. Alerta de stock bajo en tab Gestionar
+//  5. Animaciones fade-in al scroll
+//  6. Quick View (vista rápida sin abrir detalle)
+//  7. Exportar ventas a CSV
+// ══════════════════════════════════════════════════════════════════
+
+// ── 1. VISTAS POR PRODUCTO ─────────────────────────────────────────
+function _cargarVistas() {
+    return JSON.parse(localStorage.getItem('vistasProd') || '{}');
+}
+function _guardarVistas(v) {
+    localStorage.setItem('vistasProd', JSON.stringify(v));
+}
+function registrarVistaProd(id) {
+    const v = _cargarVistas();
+    v[id] = (v[id] || 0) + 1;
+    _guardarVistas(v);
+    return v[id];
+}
+function obtenerVistasProd(id) {
+    return _cargarVistas()[id] || 0;
+}
+function obtenerTopProductosPorVistas(n = 5) {
+    const v = _cargarVistas();
+    return Object.entries(v)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, n)
+        .map(([id, vistas]) => ({
+            producto: productos.find(p => String(p.id) === String(id)),
+            vistas
+        }))
+        .filter(x => x.producto);
+}
+
+// Parchar abrirDetalleProducto para registrar vista y mostrarla
+const _origAbrirDetalle = abrirDetalleProducto;
+abrirDetalleProducto = function(id) {
+    _origAbrirDetalle(id);
+    const total = registrarVistaProd(id);
+    // Mostrar contador de vistas en el modal de detalle
+    let vistaEl = document.getElementById('detailVistasBadge');
+    if (!vistaEl) {
+        vistaEl = document.createElement('span');
+        vistaEl.id = 'detailVistasBadge';
+        vistaEl.style.cssText = 'display:inline-flex;align-items:center;gap:4px;font-size:12px;color:#888;margin-left:10px;';
+        const catEl = document.getElementById('detailProductCategory');
+        if (catEl && catEl.parentNode) catEl.parentNode.appendChild(vistaEl);
+    }
+    vistaEl.innerHTML = `👁️ ${total.toLocaleString()} vista${total !== 1 ? 's' : ''}`;
+};
+
+// ── 2. DASHBOARD DE VENTAS CON GRÁFICA ────────────────────────────
+function renderizarDashboardVentas(contenedor) {
+    const ventas = cargarVentas();
+    if (ventas.length === 0) return '';
+
+    // Agrupar por día (últimos 14 días)
+    const hoy = new Date();
+    const dias = [];
+    for (let i = 13; i >= 0; i--) {
+        const d = new Date(hoy);
+        d.setDate(hoy.getDate() - i);
+        dias.push({
+            label: d.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit' }),
+            ts: d.toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric' }),
+            total: 0,
+            ganancia: 0,
+            unidades: 0
+        });
+    }
+
+    ventas.forEach(v => {
+        const dia = dias.find(d => v.fecha && v.fecha.startsWith(d.ts.split(',')[0]));
+        // Match flexible por label de fecha
+        const fechaCorta = v.fecha ? v.fecha.slice(0, 6) : '';
+        const target = dias.find(d => d.label === fechaCorta) || dias[dias.length - 1];
+        target.total    += v.total || 0;
+        target.ganancia += v.ganancia || 0;
+        target.unidades += v.cantidad || 1;
+    });
+
+    const maxTotal = Math.max(...dias.map(d => d.total), 1);
+
+    // Top 5 productos más vendidos
+    const topProd = {};
+    ventas.forEach(v => {
+        if (!topProd[v.producto]) topProd[v.producto] = { unidades: 0, ganancia: 0 };
+        topProd[v.producto].unidades += v.cantidad || 1;
+        topProd[v.producto].ganancia += v.ganancia || 0;
+    });
+    const topList = Object.entries(topProd)
+        .sort((a, b) => b[1].unidades - a[1].unidades)
+        .slice(0, 5);
+
+    // Top por vistas
+    const topVistas = obtenerTopProductosPorVistas(5);
+
+    const totalVentas   = ventas.reduce((s, v) => s + v.total, 0);
+    const totalGanancia = ventas.reduce((s, v) => s + (v.ganancia || 0), 0);
+    const totalUnidades = ventas.reduce((s, v) => s + (v.cantidad || 1), 0);
+
+    return `
+    <div style="margin-bottom:20px;">
+        <h4 style="margin-bottom:12px;font-size:15px;display:flex;align-items:center;gap:8px;">
+            📊 Dashboard de ventas
+            <button onclick="exportarVentasCSV()" type="button"
+                style="margin-left:auto;font-size:11px;padding:5px 12px;border-radius:8px;border:1px solid #27ae60;background:transparent;color:#27ae60;cursor:pointer;font-weight:600;">
+                ⬇️ Exportar CSV
+            </button>
+        </h4>
+
+        <!-- Totales generales -->
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px;">
+            <div style="background:linear-gradient(135deg,#27ae60,#2ecc71);color:white;padding:12px;border-radius:10px;text-align:center;">
+                <div style="font-size:18px;font-weight:900;">$${totalVentas.toFixed(0)}</div>
+                <div style="font-size:10px;opacity:0.85;">Total vendido</div>
+            </div>
+            <div style="background:linear-gradient(135deg,#f39c12,#f1c40f);color:white;padding:12px;border-radius:10px;text-align:center;">
+                <div style="font-size:18px;font-weight:900;">$${totalGanancia.toFixed(0)}</div>
+                <div style="font-size:10px;opacity:0.85;">Mi ganancia</div>
+            </div>
+            <div style="background:linear-gradient(135deg,#3498db,#2980b9);color:white;padding:12px;border-radius:10px;text-align:center;">
+                <div style="font-size:18px;font-weight:900;">${totalUnidades}</div>
+                <div style="font-size:10px;opacity:0.85;">Unidades</div>
+            </div>
+        </div>
+
+        <!-- Gráfica de barras últimos 14 días -->
+        <div style="background:#f9f9f9;border:1px solid #eee;border-radius:12px;padding:14px;margin-bottom:16px;">
+            <div style="font-size:12px;font-weight:600;color:#555;margin-bottom:10px;">Ventas por día (últimos 14 días)</div>
+            <div style="display:flex;align-items:flex-end;gap:3px;height:70px;">
+                ${dias.map(d => {
+                    const h = Math.max(4, Math.round((d.total / maxTotal) * 70));
+                    return `<div title="$${d.total.toFixed(2)}\n${d.label}"
+                        style="flex:1;background:${d.total > 0 ? 'linear-gradient(180deg,#27ae60,#2ecc71)' : '#e8e8e8'};
+                        height:${h}px;border-radius:4px 4px 0 0;cursor:default;transition:opacity .2s;"
+                        onmouseover="this.style.opacity='.7'" onmouseout="this.style.opacity='1'"></div>`;
+                }).join('')}
+            </div>
+            <div style="display:flex;justify-content:space-between;margin-top:4px;">
+                <span style="font-size:9px;color:#aaa;">${dias[0].label}</span>
+                <span style="font-size:9px;color:#aaa;">hoy</span>
+            </div>
+        </div>
+
+        <!-- Top 5 productos por ventas -->
+        ${topList.length > 0 ? `
+        <div style="margin-bottom:14px;">
+            <div style="font-size:12px;font-weight:600;color:#555;margin-bottom:8px;">🏆 Más vendidos</div>
+            ${topList.map(([nombre, d], i) => `
+            <div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid #f0f0f0;">
+                <span style="font-size:13px;font-weight:800;color:#ccc;min-width:18px;">${i+1}</span>
+                <span style="flex:1;font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${nombre}</span>
+                <span style="font-size:11px;color:#888;">${d.unidades} uds</span>
+                ${d.ganancia > 0 ? `<span style="font-size:11px;color:#f39c12;font-weight:700;">+$${d.ganancia.toFixed(0)}</span>` : ''}
+            </div>`).join('')}
+        </div>` : ''}
+
+        <!-- Top productos por vistas -->
+        ${topVistas.length > 0 ? `
+        <div>
+            <div style="font-size:12px;font-weight:600;color:#555;margin-bottom:8px;">👁️ Más vistos</div>
+            ${topVistas.map(({ producto: p, vistas }, i) => `
+            <div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid #f0f0f0;">
+                <span style="font-size:13px;font-weight:800;color:#ccc;min-width:18px;">${i+1}</span>
+                ${p.imagen ? `<img src="${p.imagen}" style="width:28px;height:28px;object-fit:cover;border-radius:5px;flex-shrink:0;" onerror="this.style.display='none'">` : ''}
+                <span style="flex:1;font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${p.nombre}</span>
+                <span style="font-size:11px;color:#3498db;font-weight:600;">👁️ ${vistas.toLocaleString()}</span>
+            </div>`).join('')}
+        </div>` : ''}
+    </div>`;
+}
+
+// Parchar renderizarVentas para inyectar el dashboard arriba
+const _origRenderVentas = renderizarVentas;
+renderizarVentas = function() {
+    _origRenderVentas();
+    const cont = document.getElementById('ventasContenido');
+    if (!cont) return;
+    const dashboard = renderizarDashboardVentas();
+    if (dashboard) {
+        const wrapper = document.createElement('div');
+        wrapper.innerHTML = dashboard;
+        cont.insertBefore(wrapper, cont.firstChild);
+    }
+};
+
+// ── 3. BADGES "ÚLTIMAS X UNIDADES" EN TARJETAS ────────────────────
+// Parchar el renderizarProductos final para añadir badge de stock urgente
+const _origRenderProdPremium = renderizarProductos;
+renderizarProductos = function() {
+    _origRenderProdPremium();
+    // Añadir badge de urgencia de stock a las tarjetas ya renderizadas
+    const productosGrid = document.getElementById('productosGrid');
+    if (!productosGrid) return;
+
+    const vistas = _cargarVistas();
+
+    productosGrid.querySelectorAll('.producto-card').forEach(card => {
+        const onclick = card.getAttribute('onclick') || '';
+        const match = onclick.match(/abrirDetalleProducto\((\d+)\)/);
+        if (!match) return;
+        const id = parseInt(match[1]);
+        const p = productos.find(x => x.id === id);
+        if (!p) return;
+
+        // Badge "Últimas X" — solo si stock > 0 y <= 3
+        if (p.stock > 0 && p.stock <= 3 && !card.querySelector('.badge-stock-urgente')) {
+            const badge = document.createElement('div');
+            badge.className = 'badge-stock-urgente';
+            badge.textContent = `⚡ Últimas ${p.stock}`;
+            badge.style.cssText = `
+                position:absolute;top:8px;left:8px;
+                background:linear-gradient(135deg,#e74c3c,#c0392b);
+                color:white;font-size:10px;font-weight:800;
+                padding:3px 8px;border-radius:20px;
+                box-shadow:0 2px 6px rgba(231,76,60,.4);
+                z-index:3;letter-spacing:0.3px;`;
+            card.style.position = 'relative';
+            card.appendChild(badge);
+        }
+
+        // Badge de vistas (público) — se muestra en tarjeta si tiene >= 10 vistas
+        const v = vistas[id] || 0;
+        if (v >= 10 && !card.querySelector('.badge-vistas-pub')) {
+            const vBadge = document.createElement('div');
+            vBadge.className = 'badge-vistas-pub';
+            vBadge.innerHTML = `👁️ ${v >= 1000 ? (v/1000).toFixed(1)+'k' : v}`;
+            vBadge.style.cssText = `
+                position:absolute;bottom:54px;right:8px;
+                background:rgba(0,0,0,0.55);backdrop-filter:blur(4px);
+                color:white;font-size:10px;font-weight:700;
+                padding:2px 7px;border-radius:20px;z-index:3;`;
+            card.appendChild(vBadge);
+        }
+    });
+};
+
+// ── 4. ALERTA DE STOCK BAJO EN TAB GESTIONAR ──────────────────────
+function actualizarBadgeStockBajo() {
+    const btn = document.querySelector('.tab-btn[data-tab="manage-products"]');
+    if (!btn) return;
+    const bajos = productos.filter(p => p.stock > 0 && p.stock <= 3).length;
+    const agotados = productos.filter(p => p.stock === 0).length;
+    const total = bajos + agotados;
+
+    // Limpiar badge anterior
+    const prev = btn.querySelector('.stock-alert-badge');
+    if (prev) prev.remove();
+
+    if (total > 0) {
+        const badge = document.createElement('span');
+        badge.className = 'stock-alert-badge';
+        badge.textContent = total;
+        badge.style.cssText = `
+            display:inline-flex;align-items:center;justify-content:center;
+            background:#e74c3c;color:white;border-radius:50%;
+            font-size:10px;font-weight:800;min-width:16px;height:16px;
+            padding:0 3px;margin-left:4px;vertical-align:middle;`;
+        btn.appendChild(badge);
+    }
+}
+
+// Hook: actualizar badge cada vez que cambia el stock
+const _origGuardarProd = guardarProductos;
+guardarProductos = function() {
+    _origGuardarProd();
+    setTimeout(actualizarBadgeStockBajo, 50);
+};
+
+// ── 5. ANIMACIONES FADE-IN AL SCROLL ──────────────────────────────
+function initScrollAnimations() {
+    if (typeof IntersectionObserver === 'undefined') return;
+    const style = document.createElement('style');
+    style.textContent = `
+        .producto-card { opacity: 0; transform: translateY(18px); transition: opacity .45s ease, transform .45s ease; }
+        .producto-card.visible { opacity: 1; transform: translateY(0); }
+        .categoria-card { opacity: 0; transform: translateY(14px); transition: opacity .4s ease, transform .4s ease; }
+        .categoria-card.visible { opacity: 1; transform: translateY(0); }
+    `;
+    document.head.appendChild(style);
+
+    const obs = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+            if (e.isIntersecting) {
+                e.target.classList.add('visible');
+                obs.unobserve(e.target);
+            }
+        });
+    }, { threshold: 0.08 });
+
+    function observarTarjetas() {
+        document.querySelectorAll('.producto-card:not(.visible), .categoria-card:not(.visible)')
+            .forEach(c => obs.observe(c));
+    }
+
+    // Observar tarjetas actuales y futuras
+    observarTarjetas();
+    const mutObs = new MutationObserver(observarTarjetas);
+    const grid = document.getElementById('productosGrid') || document.body;
+    mutObs.observe(grid, { childList: true, subtree: true });
+}
+
+// ── 6. EXPORTAR VENTAS A CSV ───────────────────────────────────────
+function exportarVentasCSV() {
+    const ventas = cargarVentas();
+    if (ventas.length === 0) { mostrarNotificacion('No hay ventas para exportar', 'error'); return; }
+    const header = ['Fecha', 'Producto', 'Cantidad', 'Precio unitario', 'Total', 'Comisión', 'Ganancia'];
+    const rows = ventas.map(v => [
+        `"${v.fecha || ''}"`,
+        `"${(v.producto || '').replace(/"/g, '""')}"`,
+        v.cantidad || 1,
+        (v.precio || 0).toFixed(2),
+        (v.total || 0).toFixed(2),
+        (v.comision || 0).toFixed(2),
+        (v.ganancia || 0).toFixed(2)
+    ]);
+    const csv = [header, ...rows].map(r => r.join(',')).join('\n');
+    const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `ventas_tiendamax_${new Date().toISOString().slice(0,10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+    mostrarNotificacion('✅ CSV exportado correctamente');
+}
+
+// ── INICIALIZACIÓN ─────────────────────────────────────────────────
+(function initPremiumPack() {
+    // Esperar a que el DOM y productos estén listos
+    const ready = () => {
+        initScrollAnimations();
+        actualizarBadgeStockBajo();
+    };
+    if (document.readyState === 'complete') {
+        setTimeout(ready, 800);
+    } else {
+        window.addEventListener('load', () => setTimeout(ready, 800));
+    }
+})();
