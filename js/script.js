@@ -753,13 +753,19 @@ async function cargarDatosDesdeGitHub() {
                 if (p.imagenSecundaria) p.imagenSecundaria = fix(p.imagenSecundaria);
                 if (Array.isArray(p.imagenes)) p.imagenes = p.imagenes.map(fix);
 
-                // Aplicar comisiones desde archivo separado (nunca se sobreescriben)
+                // Aplicar comisiones: primero desde almacén separado (comisiones.json/localStorage),
+                // luego desde el producto local, para que siempre prevalezca el valor más reciente
                 const comisionesGuardadas = JSON.parse(localStorage.getItem('comisiones') || '{}');
                 const local = mapaLocal[p.id];
-                if (local && local.comision !== undefined) {
-                    p.comision = local.comision;
-                } else if (comisionesGuardadas[p.id] !== undefined) {
+                if (comisionesGuardadas[p.id] !== undefined) {
+                    // El almacén separado es la fuente de verdad para comisiones
                     p.comision = comisionesGuardadas[p.id];
+                } else if (local && local.comision !== undefined) {
+                    p.comision = local.comision;
+                    // Migrar al almacén separado para que persista
+                    const com = JSON.parse(localStorage.getItem('comisiones') || '{}');
+                    com[p.id] = local.comision;
+                    localStorage.setItem('comisiones', JSON.stringify(com));
                 }
                 if (local && local.resenas && local.resenas.length > 0) p.resenas = local.resenas;
                 return p;
@@ -1209,12 +1215,10 @@ function agregarProductoForm(event) {
         productos.push(producto);
         guardarProductos();
 
-        // Guardar comisión en almacén separado
-        if (producto.comision > 0) {
-            const comisiones = JSON.parse(localStorage.getItem('comisiones') || '{}');
-            comisiones[producto.id] = producto.comision;
-            localStorage.setItem('comisiones', JSON.stringify(comisiones));
-        }
+        // Guardar comisión en almacén separado (siempre, aunque sea 0)
+        const comisiones = JSON.parse(localStorage.getItem('comisiones') || '{}');
+        comisiones[producto.id] = producto.comision || 0;
+        localStorage.setItem('comisiones', JSON.stringify(comisiones));
 
         marcarProductoModificado(producto.id);
         sincronizarConGitHub();
@@ -2833,7 +2837,8 @@ function actualizarListaProductos() {
 }
 
 // ── Ajustar stock desde gestionar ──────────────────
-function ajustarStock(id, cantidad) {
+// desdeVenta=true cuando lo llama registrarVenta (omite notificación de stock para no duplicar)
+function ajustarStock(id, cantidad, desdeVenta = false) {
     const p = productos.find(p => p.id === id);
     if (!p) return;
     const antes = p.stock;
@@ -2841,9 +2846,12 @@ function ajustarStock(id, cantidad) {
     guardarProductos();
     marcarProductoModificado(id);
     actualizarListaProductos();
-    mostrarNotificacion(`📦 ${p.nombre}: ${antes} → ${p.stock} unidades`);
-    if (p.stock === 0) mostrarNotificacion(`🔴 ¡${p.nombre} agotado!`, 'error');
-    else if (p.stock <= 2) mostrarNotificacion(`⚠️ ${p.nombre}: solo ${p.stock} unidad(es)`, 'warning');
+    // Solo mostrar notificación de stock cuando se ajusta desde Gestionar (no desde una venta)
+    if (!desdeVenta) {
+        mostrarNotificacion(`📦 ${p.nombre}: ${antes} → ${p.stock} unidades`);
+        if (p.stock === 0) mostrarNotificacion(`🔴 ¡${p.nombre} agotado!`, 'error');
+        else if (p.stock <= 2) mostrarNotificacion(`⚠️ ${p.nombre}: solo ${p.stock} unidad(es)`, 'warning');
+    }
 }
 
 // ── VENTAS — registro de ventas ─────────────────────
@@ -2872,7 +2880,7 @@ function registrarVenta(productoId, cantidad) {
         ganancia: (p.comision || 0) * (cantidad || 1)
     };
     guardarVenta(venta);
-    ajustarStock(productoId, -(cantidad || 1));
+    ajustarStock(productoId, -(cantidad || 1), true); // true = viene de una venta confirmada
     renderizarVentas();
     mostrarNotificacion(`✅ Venta registrada: ${p.nombre}`);
 }
