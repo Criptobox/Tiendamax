@@ -2132,7 +2132,7 @@ async function sincronizarTodoConGitHub() {
         { path: 'subcategorias.json',          data: JSON.parse(localStorage.getItem('subcategorias') || '{}') },
         { path: 'grupos_facebook_config.json', data: { grupos: JSON.parse(localStorage.getItem('gruposFB') || '[]'), exportado: new Date().toISOString() } },
         { path: 'revolico_config.json',        data: JSON.parse(localStorage.getItem('revolicoConfig') || '{}') },
-        { path: 'banners.json',                data: JSON.parse(localStorage.getItem('heroBanners') || '[]') },
+        { path: 'banners.json',                data: await prepararBannersParaGitHub() },
         { path: 'comisiones.json',             data: JSON.parse(localStorage.getItem('comisiones') || '{}') },
     ];
 
@@ -4088,3 +4088,47 @@ function exportarVentasCSV() {
         window.addEventListener('load', () => setTimeout(ready, 800));
     }
 })();
+
+// ── Preparar banners para GitHub: re-comprimir base64 pesados ─────
+async function prepararBannersParaGitHub() {
+    const banners = JSON.parse(localStorage.getItem('heroBanners') || '[]');
+    const MAX_KB = 150; // máximo por banner antes de re-comprimir
+
+    const preparados = await Promise.all(banners.map(async function(b) {
+        const url = typeof b === 'string' ? b : b.url;
+        const link = typeof b === 'string' ? '' : (b.link || '');
+
+        // Solo re-comprimir base64 que pesen más del límite
+        if (url && url.startsWith('data:') && url.length * 0.75 / 1024 > MAX_KB) {
+            return new Promise(function(resolve) {
+                const img = new Image();
+                img.onload = function() {
+                    const MAX_W = 900;
+                    const ratio = Math.min(1, MAX_W / img.width);
+                    const w = Math.round(img.width  * ratio);
+                    const h = Math.round(img.height * ratio);
+                    const canvas = document.createElement('canvas');
+                    canvas.width  = w;
+                    canvas.height = h;
+                    canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+
+                    let quality    = 0.78;
+                    let comprimida = canvas.toDataURL('image/jpeg', quality);
+                    while (comprimida.length * 0.75 / 1024 > MAX_KB && quality > 0.18) {
+                        quality   -= 0.07;
+                        comprimida = canvas.toDataURL('image/jpeg', quality);
+                    }
+                    // Actualizar localStorage con la versión comprimida
+                    resolve({ url: comprimida, link: link });
+                };
+                img.onerror = function() { resolve(b); };
+                img.src = url;
+            });
+        }
+        return b; // URL externa o base64 ya ligera → sin cambios
+    }));
+
+    // Actualizar localStorage con banners ya comprimidos
+    localStorage.setItem('heroBanners', JSON.stringify(preparados));
+    return preparados;
+}
