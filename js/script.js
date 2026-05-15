@@ -3320,8 +3320,11 @@ function renderizarListaAgotados() {
 const _origSwitchTabFinal = switchTab;
 switchTab = function(tabName) {
     // Refrescar select de categorías al entrar al tab de subcategorías
-    if (tabName === 'manage-subcategories' && typeof actualizarSelectCategoriasPadre === 'function') {
-        setTimeout(actualizarSelectCategoriasPadre, 50);
+    if (tabName === 'manage-subcategories') {
+        setTimeout(() => {
+            if (typeof actualizarSelectCategoriasPadre === 'function') actualizarSelectCategoriasPadre();
+            if (typeof actualizarListaSubcategorias === 'function') actualizarListaSubcategorias();
+        }, 50);
     }
     _origSwitchTabFinal(tabName);
     if (tabName === 'oferta-dia') {
