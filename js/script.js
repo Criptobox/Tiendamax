@@ -723,11 +723,12 @@ async function cargarDatosDesdeGitHub() {
     try {
         // ── PASO 1: Cargar archivos pequeños y configuración primero (rápido) ──
         // categorias.json es solo ~300 bytes → aparece instantáneamente
-        const [dataCat, dataComisiones, dataG, dataR] = await Promise.all([
+        const [dataCat, dataComisiones, dataG, dataR, dataVentas] = await Promise.all([
             fetchJSON('categorias.json').catch(() => null),
             fetchJSON('comisiones.json').catch(() => null),
             fetchJSON('grupos_facebook_config.json').catch(() => null),
             fetchJSON('revolico_config.json').catch(() => null),
+            fetchJSON('ventas_historial.json').catch(() => null),
         ]);
 
         // Aplicar categorías de inmediato para que el grid aparezca rápido
@@ -760,6 +761,18 @@ async function cargarDatosDesdeGitHub() {
         if (dataR && Object.keys(dataR).length > 0) {
             localStorage.setItem('revolicoConfig', JSON.stringify(dataR));
             console.log('✅ Config Revolico cargada desde GitHub');
+        }
+
+        // Aplicar historial de ventas (merge: GitHub + locales nuevas, sin duplicados)
+        if (dataVentas && Array.isArray(dataVentas) && dataVentas.length > 0) {
+            const ventasLocales = JSON.parse(localStorage.getItem('registroVentas') || '[]');
+            const idsGitHub = new Set(dataVentas.map(v => v.id));
+            const ventasNuevasLocales = ventasLocales.filter(v => !idsGitHub.has(v.id));
+            const merged = [...ventasNuevasLocales, ...dataVentas]
+                .sort((a, b) => b.id - a.id)
+                .slice(0, 500);
+            localStorage.setItem('registroVentas', JSON.stringify(merged));
+            console.log('✅ Historial de ventas sincronizado desde GitHub');
         }
 
         // Renderizar categorías YA (con datos frescos, sin esperar archivos pesados)
@@ -1036,8 +1049,10 @@ function renderizarCategoriasHome() {
         grid.appendChild(card);
     });
     // Dispara animaciones CSS DESPUÉS de que el DOM está poblado
-    grid.classList.remove('tm-rendered');
-    requestAnimationFrame(() => grid.classList.add('tm-rendered'));
+    // Si ya tiene tm-rendered (del render instantáneo), no la quitar para evitar parpadeo
+    if (!grid.classList.contains('tm-rendered')) {
+        requestAnimationFrame(() => grid.classList.add('tm-rendered'));
+    }
 }
 
 // ===== RENDERIZAR MÁS VENDIDOS =====
@@ -2138,6 +2153,7 @@ async function sincronizarTodoConGitHub() {
         { path: 'revolico_config.json',        data: JSON.parse(localStorage.getItem('revolicoConfig') || '{}') },
         { path: 'banners.json',                data: JSON.parse(localStorage.getItem('heroBanners') || '[]') },
         { path: 'comisiones.json',             data: JSON.parse(localStorage.getItem('comisiones') || '{}') },
+        { path: 'ventas_historial.json',       data: JSON.parse(localStorage.getItem('registroVentas') || '[]') },
     ];
 
     // Si hay productos modificados: subir solo productos.json + comisiones.json
@@ -2887,6 +2903,15 @@ function registrarVenta(productoId, cantidad) {
     ajustarStock(productoId, -(cantidad || 1), true); // true = viene de una venta confirmada
     renderizarVentas();
     mostrarNotificacion(`✅ Venta registrada: ${p.nombre}`);
+    // Sincronizar historial con GitHub en segundo plano
+    const _ghUser  = localStorage.getItem('githubUser');
+    const _ghRepo  = localStorage.getItem('githubRepo');
+    const _ghToken = localStorage.getItem('githubToken');
+    if (_ghUser && _ghRepo && _ghToken) {
+        const _ventas = JSON.parse(localStorage.getItem('registroVentas') || '[]');
+        subirArchivoAGitHub(_ghUser, _ghRepo, _ghToken, 'ventas_historial.json', _ventas)
+            .catch(e => console.warn('⚠️ No se pudo sincronizar historial de ventas:', e.message));
+    }
 }
 
 function renderizarVentas() {
@@ -3933,9 +3958,11 @@ renderizarVentas = function() {
     _origRenderVentas();
     const cont = document.getElementById('ventasContenido');
     if (!cont) return;
+    if (cont.querySelector('.tm-dashboard-ventas')) return;
     const dashboard = renderizarDashboardVentas();
     if (dashboard) {
         const wrapper = document.createElement('div');
+        wrapper.className = 'tm-dashboard-ventas';
         wrapper.innerHTML = dashboard;
         cont.insertBefore(wrapper, cont.firstChild);
     }
