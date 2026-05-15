@@ -1083,3 +1083,41 @@ body {
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
 }
+
+/* ── Bug 5: Centrado de texto en categorías home ── */
+.categorias-home-inner .container {
+    text-align: center;
+}
+
+/* ── Bug 1: Dark mode – picker visual de ventas ── */
+/* Fondo de la lista de productos */
+body.dark-mode #ventaProductosLista {
+    background: #1a1a1a !important;
+    border-color: rgba(255,255,255,0.08) !important;
+}
+/* Cada fila de producto (tiene background:white inline) */
+body.dark-mode .venta-prod-item {
+    background: #2a2a2a !important;
+    color: rgba(255,255,255,0.85) !important;
+}
+body.dark-mode .venta-prod-item:hover {
+    background: #333 !important;
+}
+/* Chips de categoría inactivos (background:white inline) */
+body.dark-mode .chip-cat:not(.chip-cat-activo) {
+    background: #2a2a2a !important;
+    color: rgba(255,255,255,0.7) !important;
+    border-color: rgba(255,255,255,0.12) !important;
+}
+/* Grupos Facebook (background:white inline) */
+body.dark-mode [id^="grupoFB_"] {
+    background: #1e1e1e !important;
+}
+/* Lista Revolico productos (background:white inline) */
+body.dark-mode #revolicoProdList > div {
+    background: #1e1e1e !important;
+}
+/* Lista agotados (background:white inline) */
+body.dark-mode #listaAgotados > div {
+    background: #1e1e1e !important;
+}
