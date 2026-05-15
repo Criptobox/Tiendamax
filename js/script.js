@@ -730,6 +730,14 @@ async function cargarDatosDesdeGitHub() {
             }
         } catch(e) {}
 
+        // Cargar comisiones desde archivo separado
+        try {
+            const dataComisiones = await fetchJSON('comisiones.json');
+            if (dataComisiones && typeof dataComisiones === 'object') {
+                localStorage.setItem('comisiones', JSON.stringify(dataComisiones));
+            }
+        } catch(e) {}
+
         const dataProd = await fetchJSON('productos.json');
         if (dataProd && dataProd.length > 0) {
             // Preservar campos locales (comision, resenas) que no están en GitHub
@@ -745,12 +753,15 @@ async function cargarDatosDesdeGitHub() {
                 if (p.imagenSecundaria) p.imagenSecundaria = fix(p.imagenSecundaria);
                 if (Array.isArray(p.imagenes)) p.imagenes = p.imagenes.map(fix);
 
-                // Preservar campos locales si existen
+                // Aplicar comisiones desde archivo separado (nunca se sobreescriben)
+                const comisionesGuardadas = JSON.parse(localStorage.getItem('comisiones') || '{}');
                 const local = mapaLocal[p.id];
-                if (local) {
-                    if (local.comision !== undefined) p.comision = local.comision;
-                    if (local.resenas && local.resenas.length > 0) p.resenas = local.resenas;
+                if (local && local.comision !== undefined) {
+                    p.comision = local.comision;
+                } else if (comisionesGuardadas[p.id] !== undefined) {
+                    p.comision = comisionesGuardadas[p.id];
                 }
+                if (local && local.resenas && local.resenas.length > 0) p.resenas = local.resenas;
                 return p;
             });
             localStorage.setItem('productos', JSON.stringify(productos));
@@ -1197,6 +1208,14 @@ function agregarProductoForm(event) {
 
         productos.push(producto);
         guardarProductos();
+
+        // Guardar comisión en almacén separado
+        if (producto.comision > 0) {
+            const comisiones = JSON.parse(localStorage.getItem('comisiones') || '{}');
+            comisiones[producto.id] = producto.comision;
+            localStorage.setItem('comisiones', JSON.stringify(comisiones));
+        }
+
         marcarProductoModificado(producto.id);
         sincronizarConGitHub();
         document.getElementById('productForm').reset();
@@ -1943,6 +1962,12 @@ function guardarProductoEditado(event) {
 
         productos[index] = productoActualizado;
         guardarProductos();
+
+        // Guardar comisión en almacén separado para que persista
+        const comisiones = JSON.parse(localStorage.getItem('comisiones') || '{}');
+        comisiones[productoActualizado.id] = productoActualizado.comision || 0;
+        localStorage.setItem('comisiones', JSON.stringify(comisiones));
+
         marcarProductoModificado(productoActualizado.id);
         sincronizarConGitHub();
         cerrarEditModal();
@@ -2088,7 +2113,6 @@ async function sincronizarTodoConGitHub() {
     }
     // -------------------------
 
-    // Determinar si hay cambios pendientes específicos
     const idsModificados = obtenerProductosModificados();
     const hayDelta = idsModificados.length > 0 && idsModificados.length < productos.length;
 
@@ -2105,12 +2129,13 @@ async function sincronizarTodoConGitHub() {
         { path: 'grupos_facebook_config.json', data: { grupos: JSON.parse(localStorage.getItem('gruposFB') || '[]'), exportado: new Date().toISOString() } },
         { path: 'revolico_config.json',        data: JSON.parse(localStorage.getItem('revolicoConfig') || '{}') },
         { path: 'banners.json',                data: JSON.parse(localStorage.getItem('heroBanners') || '[]') },
+        { path: 'comisiones.json',             data: JSON.parse(localStorage.getItem('comisiones') || '{}') },
     ];
 
-    // Si hay productos modificados específicos, solo subir productos.json
-    // Si no hay delta (actualización completa), subir todos los archivos
+    // Si hay productos modificados: subir solo productos.json + comisiones.json
+    // Si no hay delta: subir todo
     const archivosFiltrados = hayDelta
-        ? [{ path: 'productos.json', data: productos }]
+        ? archivos.filter(a => a.path === 'productos.json' || a.path === 'comisiones.json')
         : archivos;
 
     let ok = 0, errors = [];
