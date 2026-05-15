@@ -802,6 +802,10 @@
                     <div class="form-group" style="margin-top:20px;">
                         <label><b>🖼️ Banners promocionales</b></label>
                         <p style="font-size:12px;color:#888;margin-bottom:10px;">Agrega banners que van pasando solos. Al tocarlos llevan al link que pongas.</p>
+                        <div style="background:rgba(52,152,219,0.1);border:1px solid rgba(52,152,219,0.3);border-radius:8px;padding:10px;margin-bottom:10px;font-size:11px;color:#2980b9;line-height:1.5;">
+                            💡 <strong>Para que los banners se guarden permanentemente:</strong> usa una URL de imagen (de WhatsApp, Imgur, etc.), luego toca <em>"Descargar banners.json"</em> y súbelo a GitHub.<br>
+                            Si subes una imagen desde tu teléfono, se guarda solo en este dispositivo.
+                        </div>
                         <div id="bannerList" style="display:flex;flex-direction:column;gap:8px;margin-bottom:12px;"></div>
                         <div style="display:flex;flex-direction:column;gap:8px;">
                             <label style="font-size:12px;font-weight:600;">📷 Imagen del banner:</label>
@@ -1182,12 +1186,8 @@
 <!-- ===== BANNER SLIDER + TAGLINE ===== -->
 <script>
 (function() {
-    // Default banners
-    var DEFAULT_BANNERS = [
-        "https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=900&q=80&auto=format&fit=crop",
-        "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=900&q=80&auto=format&fit=crop",
-        "https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=900&q=80&auto=format&fit=crop"
-    ];
+    // Sin banners por defecto — evita que aparezcan imágenes ajenas mientras carga GitHub
+    var DEFAULT_BANNERS = [];
 
     // Usar localStorage si existe, si no esperar a GitHub (no mostrar defaults)
     var bannersGuardados = JSON.parse(localStorage.getItem('heroBanners') || 'null');
@@ -1270,22 +1270,61 @@
     };
 
     // Admin banner list
+    // Comprime una imagen base64 usando canvas — máx 900px ancho, calidad 0.72
+    // Devuelve una Promise que resuelve con el base64 comprimido
+    function comprimirImagenBanner(base64Original) {
+        return new Promise(function(resolve) {
+            var img = new Image();
+            img.onload = function() {
+                var MAX_W  = 900;
+                var MAX_KB = 150; // target para banners (más grande que productos = mejor calidad visual)
+                var ratio  = Math.min(1, MAX_W / img.width);
+                var w = Math.round(img.width  * ratio);
+                var h = Math.round(img.height * ratio);
+                var canvas = document.createElement('canvas');
+                canvas.width  = w;
+                canvas.height = h;
+                var ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, w, h);
+
+                var quality   = 0.80;
+                var comprimida = canvas.toDataURL('image/jpeg', quality);
+                // Reducir calidad iterativamente hasta alcanzar el target
+                while (comprimida.length * 0.75 / 1024 > MAX_KB && quality > 0.18) {
+                    quality   -= 0.07;
+                    comprimida = canvas.toDataURL('image/jpeg', quality);
+                }
+
+                var kbOrig = Math.round(base64Original.length * 0.75 / 1024);
+                var kbComp = Math.round(comprimida.length     * 0.75 / 1024);
+                console.log('Banner: ' + kbOrig + 'KB → ' + kbComp + 'KB (q=' + quality.toFixed(2) + ')');
+                resolve({ data: comprimida, kbOrig: kbOrig, kbComp: kbComp });
+            };
+            img.onerror = function() { resolve({ data: base64Original, kbOrig: 0, kbComp: 0 }); };
+            img.src = base64Original;
+        });
+    }
+
     window.agregarBanner = function() {
         var fileInput = document.getElementById('nuevoBannerFile');
         var urlInput  = document.getElementById('nuevoBannerUrl');
         var link      = document.getElementById('nuevoBannerLink').value.trim();
 
         if (fileInput.files && fileInput.files[0]) {
+            if (typeof mostrarNotificacion === 'function') mostrarNotificacion('⏳ Comprimiendo imagen...', 'info');
             var reader = new FileReader();
             reader.onload = function(e) {
-                banners.push({ url: e.target.result, link: link });
-                localStorage.setItem('heroBanners', JSON.stringify(banners));
-                fileInput.value = '';
-                urlInput.value = '';
-                document.getElementById('nuevoBannerLink').value = '';
-                renderSlider();
-                renderAdminBannerList();
-                if (typeof mostrarNotificacion === 'function') mostrarNotificacion('✅ Banner agregado');
+                comprimirImagenBanner(e.target.result).then(function(res) {
+                    banners.push({ url: res.data, link: link });
+                    localStorage.setItem('heroBanners', JSON.stringify(banners));
+                    fileInput.value = '';
+                    urlInput.value = '';
+                    document.getElementById('nuevoBannerLink').value = '';
+                    renderSlider();
+                    renderAdminBannerList();
+                    var msg = '✅ Banner agregado (' + res.kbOrig + 'KB → ' + res.kbComp + 'KB)';
+                    if (typeof mostrarNotificacion === 'function') mostrarNotificacion(msg);
+                });
             };
             reader.readAsDataURL(fileInput.files[0]);
         } else {
@@ -1327,8 +1366,14 @@
         }
 
         if (fileInput && fileInput.files && fileInput.files[0]) {
+            if (typeof mostrarNotificacion === 'function') mostrarNotificacion('⏳ Comprimiendo imagen...', 'info');
             var reader = new FileReader();
-            reader.onload = function(e) { aplicar(e.target.result); };
+            reader.onload = function(e) {
+                comprimirImagenBanner(e.target.result).then(function(res) {
+                    aplicar(res.data);
+                    if (typeof mostrarNotificacion === 'function') mostrarNotificacion('✅ Banner actualizado (' + res.kbOrig + 'KB → ' + res.kbComp + 'KB)');
+                });
+            };
             reader.readAsDataURL(fileInput.files[0]);
         } else {
             aplicar(null);
@@ -1394,6 +1439,22 @@
     };
 
     window.exportarBannersJSON = function() {
+        if (banners.length === 0) {
+            if (typeof mostrarNotificacion === 'function') mostrarNotificacion('⚠️ No hay banners para guardar', 'error');
+            return;
+        }
+        // Ahora que todas las imágenes se comprimen, se pueden subir todas a GitHub
+        // Solo advertir si alguna sigue siendo muy pesada (> 400KB)
+        var pesadas = banners.filter(function(b) {
+            var url = typeof b === 'string' ? b : b.url;
+            return url && url.startsWith('data:') && url.length * 0.75 / 1024 > 400;
+        });
+        if (pesadas.length > 0) {
+            if (typeof mostrarNotificacion === 'function') {
+                mostrarNotificacion('⚠️ ' + pesadas.length + ' banner(s) siguen pesando mucho. Intenta volver a subirlos.', 'error');
+            }
+            return;
+        }
         var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(banners, null, 2));
         var a = document.createElement('a');
         a.setAttribute('href', dataStr);
@@ -1401,26 +1462,38 @@
         document.body.appendChild(a);
         a.click();
         a.remove();
-        if (typeof mostrarNotificacion === 'function') mostrarNotificacion('✅ banners.json descargado. Súbelo a GitHub.');
+        if (typeof mostrarNotificacion === 'function') mostrarNotificacion('✅ banners.json descargado. Súbelo a GitHub para que aparezcan en todos los dispositivos.');
+    };
     };
 
     // Init on DOM ready
     document.addEventListener('DOMContentLoaded', function() {
-        // Solo renderizar si ya hay banners en localStorage (evita flash de defaults)
-        if (sliderListo) renderSlider();
+        if (sliderListo) {
+            renderSlider();
+        } else {
+            // Mostrar skeleton mientras cargan los banners de GitHub
+            var track = document.getElementById('heroBannerTrack');
+            if (track) {
+                track.innerHTML = '<div class="hero-banner-slide" style="background:linear-gradient(90deg,#1a1a1a 25%,#2a2a2a 50%,#1a1a1a 75%);background-size:200% 100%;animation:bannerSkeleton 1.4s infinite;"></div>';
+                var sk = document.createElement('style');
+                sk.textContent = '@keyframes bannerSkeleton{0%{background-position:200% 0}100%{background-position:-200% 0}}';
+                document.head.appendChild(sk);
+            }
+        }
         cargarTagline();
         document.addEventListener('click', function(e) {
             if (e.target && e.target.dataset && e.target.dataset.tab === 'apariencia') {
                 setTimeout(renderAdminBannerList, 100);
             }
         });
-        // Timeout de seguridad: si GitHub no respondió en 5s usar defaults
+        // Timeout de seguridad: si GitHub no respondió en 6s y aún no hay banners,
+        // NO mostrar imágenes ajenas — simplemente ocultar el slider
         setTimeout(function() {
             if (banners.length === 0) {
-                banners = DEFAULT_BANNERS;
-                renderSlider();
+                var slider = document.getElementById('heroBannerSlider');
+                if (slider) slider.style.display = 'none';
             }
-        }, 5000);
+        }, 6000);
     });
 })();
 </script>
