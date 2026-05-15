@@ -721,61 +721,17 @@ async function cargarDatosDesdeGitHub() {
     }
 
     try {
-        // Cargar banners PRIMERO para que el slider muestre los correctos de una vez
-        try {
-            const dataBanners = await fetchJSON('banners.json');
-            if (dataBanners && Array.isArray(dataBanners) && dataBanners.length > 0) {
-                localStorage.setItem('heroBanners', JSON.stringify(dataBanners));
-                if (typeof window.recargarBanners === 'function') window.recargarBanners(dataBanners);
-            }
-        } catch(e) {}
+        // ── PASO 1: Cargar archivos pequeños y configuración primero (rápido) ──
+        // categorias.json es solo ~300 bytes → aparece instantáneamente
+        const [dataCat, dataComisiones, dataG, dataR] = await Promise.all([
+            fetchJSON('categorias.json').catch(() => null),
+            fetchJSON('comisiones.json').catch(() => null),
+            fetchJSON('grupos_facebook_config.json').catch(() => null),
+            fetchJSON('revolico_config.json').catch(() => null),
+        ]);
 
-        // Cargar comisiones desde archivo separado
-        try {
-            const dataComisiones = await fetchJSON('comisiones.json');
-            if (dataComisiones && typeof dataComisiones === 'object') {
-                localStorage.setItem('comisiones', JSON.stringify(dataComisiones));
-            }
-        } catch(e) {}
-
-        const dataProd = await fetchJSON('productos.json');
-        if (dataProd && dataProd.length > 0) {
-            // Preservar campos locales (comision, resenas) que no están en GitHub
-            const productosLocales = JSON.parse(localStorage.getItem('productos') || '[]');
-            const mapaLocal = {};
-            productosLocales.forEach(p => { mapaLocal[p.id] = p; });
-
-            productos = dataProd.map(p => {
-                const fix = url => url && url.includes('raw.githubusercontent.com')
-                    ? url.replace(/https:\/\/raw\.githubusercontent\.com\/[^/]+\/[^/]+\/main\//,'https://tiendamax.org/')
-                    : url;
-                if (p.imagen) p.imagen = fix(p.imagen);
-                if (p.imagenSecundaria) p.imagenSecundaria = fix(p.imagenSecundaria);
-                if (Array.isArray(p.imagenes)) p.imagenes = p.imagenes.map(fix);
-
-                // Aplicar comisiones: primero desde almacén separado (comisiones.json/localStorage),
-                // luego desde el producto local, para que siempre prevalezca el valor más reciente
-                const comisionesGuardadas = JSON.parse(localStorage.getItem('comisiones') || '{}');
-                const local = mapaLocal[p.id];
-                if (comisionesGuardadas[p.id] !== undefined) {
-                    // El almacén separado es la fuente de verdad para comisiones
-                    p.comision = comisionesGuardadas[p.id];
-                } else if (local && local.comision !== undefined) {
-                    p.comision = local.comision;
-                    // Migrar al almacén separado para que persista
-                    const com = JSON.parse(localStorage.getItem('comisiones') || '{}');
-                    com[p.id] = local.comision;
-                    localStorage.setItem('comisiones', JSON.stringify(com));
-                }
-                if (local && local.resenas && local.resenas.length > 0) p.resenas = local.resenas;
-                return p;
-            });
-            localStorage.setItem('productos', JSON.stringify(productos));
-        }
-
-        const dataCat = await fetchJSON('categorias.json');
+        // Aplicar categorías de inmediato para que el grid aparezca rápido
         if (dataCat) {
-            // Soporte para formato nuevo {nombres, iconos} y formato viejo (array)
             if (Array.isArray(dataCat) && dataCat.length > 0) {
                 categorias = dataCat;
                 localStorage.setItem('categorias', JSON.stringify(categorias));
@@ -789,24 +745,72 @@ async function cargarDatosDesdeGitHub() {
             }
         }
 
-        // Cargar config de grupos Facebook
-        try {
-            const dataG = await fetchJSON('grupos_facebook_config.json');
-            if (dataG && dataG.grupos) {
-                localStorage.setItem('gruposFB', JSON.stringify(dataG.grupos));
-                console.log('✅ Grupos FB cargados desde GitHub');
-            }
-        } catch(e) {}
+        // Aplicar comisiones
+        if (dataComisiones && typeof dataComisiones === 'object') {
+            localStorage.setItem('comisiones', JSON.stringify(dataComisiones));
+        }
 
-        // Cargar config de Revolico
-        try {
-            const dataR = await fetchJSON('revolico_config.json');
-            if (dataR && Object.keys(dataR).length > 0) {
-                localStorage.setItem('revolicoConfig', JSON.stringify(dataR));
-                console.log('✅ Config Revolico cargada desde GitHub');
-            }
-        } catch(e) {}
+        // Aplicar config grupos FB
+        if (dataG && dataG.grupos) {
+            localStorage.setItem('gruposFB', JSON.stringify(dataG.grupos));
+            console.log('✅ Grupos FB cargados desde GitHub');
+        }
 
+        // Aplicar config Revolico
+        if (dataR && Object.keys(dataR).length > 0) {
+            localStorage.setItem('revolicoConfig', JSON.stringify(dataR));
+            console.log('✅ Config Revolico cargada desde GitHub');
+        }
+
+        // Renderizar categorías YA (con datos frescos, sin esperar archivos pesados)
+        renderizarCategoriasHome();
+        actualizarSelectCategorias();
+        actualizarBotonesCategorias();
+        actualizarListaCategorias();
+
+        // ── PASO 2: Cargar archivos pesados en paralelo (banners + productos) ──
+        const [dataBanners, dataProd] = await Promise.all([
+            fetchJSON('banners.json').catch(() => null),
+            fetchJSON('productos.json').catch(() => null),
+        ]);
+
+        // Aplicar banners
+        if (dataBanners && Array.isArray(dataBanners) && dataBanners.length > 0) {
+            localStorage.setItem('heroBanners', JSON.stringify(dataBanners));
+            if (typeof window.recargarBanners === 'function') window.recargarBanners(dataBanners);
+        }
+
+        // Aplicar productos
+        if (dataProd && dataProd.length > 0) {
+            const productosLocales = JSON.parse(localStorage.getItem('productos') || '[]');
+            const mapaLocal = {};
+            productosLocales.forEach(p => { mapaLocal[p.id] = p; });
+
+            productos = dataProd.map(p => {
+                const fix = url => url && url.includes('raw.githubusercontent.com')
+                    ? url.replace(/https:\/\/raw\.githubusercontent\.com\/[^/]+\/[^/]+\/main\//,'https://tiendamax.org/')
+                    : url;
+                if (p.imagen) p.imagen = fix(p.imagen);
+                if (p.imagenSecundaria) p.imagenSecundaria = fix(p.imagenSecundaria);
+                if (Array.isArray(p.imagenes)) p.imagenes = p.imagenes.map(fix);
+
+                const comisionesGuardadas = JSON.parse(localStorage.getItem('comisiones') || '{}');
+                const local = mapaLocal[p.id];
+                if (comisionesGuardadas[p.id] !== undefined) {
+                    p.comision = comisionesGuardadas[p.id];
+                } else if (local && local.comision !== undefined) {
+                    p.comision = local.comision;
+                    const com = JSON.parse(localStorage.getItem('comisiones') || '{}');
+                    com[p.id] = local.comision;
+                    localStorage.setItem('comisiones', JSON.stringify(com));
+                }
+                if (local && local.resenas && local.resenas.length > 0) p.resenas = local.resenas;
+                return p;
+            });
+            localStorage.setItem('productos', JSON.stringify(productos));
+        }
+
+        // Re-renderizar todo ahora que los productos están listos
         renderizarCategoriasHome();
         renderizarMasVendidos();
         actualizarListaProductos();
@@ -2132,7 +2136,7 @@ async function sincronizarTodoConGitHub() {
         { path: 'subcategorias.json',          data: JSON.parse(localStorage.getItem('subcategorias') || '{}') },
         { path: 'grupos_facebook_config.json', data: { grupos: JSON.parse(localStorage.getItem('gruposFB') || '[]'), exportado: new Date().toISOString() } },
         { path: 'revolico_config.json',        data: JSON.parse(localStorage.getItem('revolicoConfig') || '{}') },
-        { path: 'banners.json',                data: await prepararBannersParaGitHub() },
+        { path: 'banners.json',                data: JSON.parse(localStorage.getItem('heroBanners') || '[]') },
         { path: 'comisiones.json',             data: JSON.parse(localStorage.getItem('comisiones') || '{}') },
     ];
 
@@ -2654,13 +2658,13 @@ inicializarTienda = function() {
 function renderizarCategoriasHomeInstant() {
     // Load from localStorage immediately (no network wait)
     const localProds = JSON.parse(localStorage.getItem('productos')) || [];
-    const localCats = JSON.parse(localStorage.getItem('categorias')) || ['General'];
-    if (localProds.length === 0 && localCats.length <= 1) return; // Let skeleton show
+    const localCats = JSON.parse(localStorage.getItem('categorias')) || [];
+    // Solo omitir si no hay absolutamente nada (primer uso sin datos en caché)
+    if (localCats.length === 0) return;
     
     const grid = document.getElementById('categoriasGrid');
     if (!grid) return;
     
-    // Only replace skeletons if we actually have local data
     grid.innerHTML = '';
     const cardTodas = document.createElement('div');
     cardTodas.className = 'categoria-card';
@@ -4088,47 +4092,3 @@ function exportarVentasCSV() {
         window.addEventListener('load', () => setTimeout(ready, 800));
     }
 })();
-
-// ── Preparar banners para GitHub: re-comprimir base64 pesados ─────
-async function prepararBannersParaGitHub() {
-    const banners = JSON.parse(localStorage.getItem('heroBanners') || '[]');
-    const MAX_KB = 150; // máximo por banner antes de re-comprimir
-
-    const preparados = await Promise.all(banners.map(async function(b) {
-        const url = typeof b === 'string' ? b : b.url;
-        const link = typeof b === 'string' ? '' : (b.link || '');
-
-        // Solo re-comprimir base64 que pesen más del límite
-        if (url && url.startsWith('data:') && url.length * 0.75 / 1024 > MAX_KB) {
-            return new Promise(function(resolve) {
-                const img = new Image();
-                img.onload = function() {
-                    const MAX_W = 900;
-                    const ratio = Math.min(1, MAX_W / img.width);
-                    const w = Math.round(img.width  * ratio);
-                    const h = Math.round(img.height * ratio);
-                    const canvas = document.createElement('canvas');
-                    canvas.width  = w;
-                    canvas.height = h;
-                    canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-
-                    let quality    = 0.78;
-                    let comprimida = canvas.toDataURL('image/jpeg', quality);
-                    while (comprimida.length * 0.75 / 1024 > MAX_KB && quality > 0.18) {
-                        quality   -= 0.07;
-                        comprimida = canvas.toDataURL('image/jpeg', quality);
-                    }
-                    // Actualizar localStorage con la versión comprimida
-                    resolve({ url: comprimida, link: link });
-                };
-                img.onerror = function() { resolve(b); };
-                img.src = url;
-            });
-        }
-        return b; // URL externa o base64 ya ligera → sin cambios
-    }));
-
-    // Actualizar localStorage con banners ya comprimidos
-    localStorage.setItem('heroBanners', JSON.stringify(preparados));
-    return preparados;
-}
