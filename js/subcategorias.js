@@ -62,6 +62,7 @@ function agregarSubcategoria() {
     actualizarListaSubcategorias();
     actualizarSelectSubcategorias();
     mostrarNotificacion('✅ Subcategoría agregada');
+    sincronizarSubcategoriasConGitHub();
 }
 
 function eliminarSubcategoria(categoria, subcategoria) {
@@ -72,6 +73,7 @@ function eliminarSubcategoria(categoria, subcategoria) {
             actualizarListaSubcategorias();
             actualizarSelectSubcategorias();
             mostrarNotificacion('🗑️ Subcategoría eliminada', 'info');
+            sincronizarSubcategoriasConGitHub();
         }
     }
 }
@@ -99,7 +101,7 @@ function actualizarListaSubcategorias() {
     list.innerHTML = `
         <div style="margin-bottom: 20px; padding: 15px; background: rgba(155, 89, 182, 0.1); border: 1px dashed #9B59B6; border-radius: 10px; text-align: center;">
             <p style="font-size: 13px; margin-bottom: 10px;">Organiza tus productos con subcategorías para una mejor experiencia de compra.</p>
-            <button class="btn btn-primary" style="background:#9B59B6" onclick="descargarSubcategoriasJSON()">📥 Descargar subcategorias.json</button>
+            <button class="btn btn-primary" style="background:#9B59B6" onclick="sincronizarSubcategoriasConGitHub()">☁️ Guardar subcategorías en GitHub</button>
         </div>
     `;
 
@@ -237,13 +239,16 @@ async function sincronizarSubcategoriasConGitHub() {
     const repo = localStorage.getItem('githubRepo');
     const token = localStorage.getItem('githubToken');
     if (!user || !repo || !token) {
-        console.log('ℹ️ GitHub no configurado. Saltando sincronización de subcategorías.');
+        mostrarNotificacion('⚠️ Configura GitHub en la pestaña Configuración primero', 'error');
         return;
     }
     try {
+        mostrarNotificacion('⏳ Guardando subcategorías en GitHub...', 'info');
         await subirArchivoAGitHub(user, repo, token, 'subcategorias.json', subcategorias);
+        mostrarNotificacion('✅ Subcategorías guardadas en GitHub');
         console.log('✅ Subcategorías sincronizadas con GitHub automáticamente');
     } catch (e) {
+        mostrarNotificacion('❌ Error al guardar subcategorías: ' + e.message, 'error');
         console.warn('⚠️ Error al sincronizar subcategorías:', e.message);
     }
 }
