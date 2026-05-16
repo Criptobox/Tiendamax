@@ -1047,5 +1047,21 @@
     "usado": false,
     "garantia": "",
     "devolucion": false
+  },
+  {
+    "id": 1778907260915,
+    "nombre": "CALENTADOR ELÉCTRICO",
+    "descripcion": "♨️💦 CALENTADOR ELÉCTRICO – Agua caliente al instante 💦♨️\nConfort y seguridad para tu hogar con control digital de temperatura y flujo constante.\n\nIncluye todo lo necesario para instalar y usar de inmediato:\n- 🚿 Ducha de teléfono con soporte\n- ⚡ Breker con su caja protectora\n- 📟 Panel digital con indicador de litros/minuto y nivel de potencia\n- Otros accesorios.\n\nIdeal para baño y cocina. Compacto, eficiente y listo con todos sus accesorios para instalar.",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1778907258376.jpg",
+    "precioActual": 125,
+    "descuento": 0,
+    "stock": 4,
+    "comision": 5,
+    "categoria": "HOGAR",
+    "subcategoria": "ELECTRODOMÉSTICOS",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false
   }
 ]
