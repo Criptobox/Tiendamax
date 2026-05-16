@@ -8,7 +8,9 @@
     "LUBRICANTES",
     "PARTES Y PIEZAS"
   ],
-  "ROPA": [],
+  "ROPA": [
+    "HOMBRE"
+  ],
   "LENCERIA": [],
   "SEGURIDAD": [],
   "HOGAR": [],
