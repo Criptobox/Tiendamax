@@ -1015,5 +1015,21 @@
     "usado": false,
     "garantia": "",
     "devolucion": false
+  },
+  {
+    "id": 1778906905279,
+    "nombre": "Espejos Retrovisores Deportivos Alerón Tipo Stealth | Acabado Fibra de Carbón Premium",
+    "descripcion": "Lleva la estética de tu moto al nivel de las pistas de carreras con los espejos retrovisores tipo Alerón (Stealth) en acabado de Fibra de Carbón. Este accesorio es la definición perfecta de lujo y aerodinámica: un componente diseñado para transformar radicalmente el aspecto visual de tu moto, dándole una línea agresiva, moderna y puramente deportiva sin perder la funcionalidad en carretera.",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1778906902845.jpg",
+    "precioActual": 25,
+    "descuento": 0,
+    "stock": 6,
+    "comision": 0,
+    "categoria": "MOTOS",
+    "subcategoria": "PARTES Y PIEZAS",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false
   }
 ]
