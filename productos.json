@@ -1031,5 +1031,21 @@
     "usado": false,
     "garantia": "",
     "devolucion": false
+  },
+  {
+    "id": 1778907072353,
+    "nombre": "Espejos Alerón Deportivos Stealth Poligonales | Diseño Aerodinámico Premium",
+    "descripcion": "Dale a tu moto una presencia imponente en la carretera con los espejos retrovisores tipo Alerón de diseño Poligonal. Esta evolución del clásico espejo Stealth rompe los esquemas tradicionales con líneas angulares más marcadas y un reverso esculpido con relieves aerodinámicos. Es el accesorio de gama alta definitivo para quienes buscan un aspecto robusto, futurista y de pura competición.",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1778907067761.jpg",
+    "precioActual": 25,
+    "descuento": 0,
+    "stock": 6,
+    "comision": 1.8,
+    "categoria": "MOTOS",
+    "subcategoria": "PARTES Y PIEZAS",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false
   }
 ]
