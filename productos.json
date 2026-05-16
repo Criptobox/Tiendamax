@@ -1024,7 +1024,7 @@
     "precioActual": 25,
     "descuento": 0,
     "stock": 6,
-    "comision": 0,
+    "comision": 1.8,
     "categoria": "MOTOS",
     "subcategoria": "PARTES Y PIEZAS",
     "masVendido": false,
