@@ -983,5 +983,21 @@
     "usado": false,
     "garantia": "",
     "devolucion": false
+  },
+  {
+    "id": 1778906455757,
+    "nombre": "Cargador de Batería de Litio BIEN 72V 5A (Salida 84V) | Conector US PIN",
+    "descripcion": "Mantén tu moto eléctrica siempre lista para rodar con la máxima seguridad que te ofrece el cargador de baterías de litio de la marca BIEN. Este equipo está diseñado específicamente para sistemas de 72V, entregando un voltaje de corte preciso de 84.0V para asegurar que tus celdas de litio se carguen al 100% de su capacidad de manera óptima, cuidando y prolongando la vida útil de tu inversión.",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1778906453441.jpg",
+    "precioActual": 40,
+    "descuento": 0,
+    "stock": 3,
+    "comision": 2.8,
+    "categoria": "MOTOS",
+    "subcategoria": "PARTES Y PIEZAS",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false
   }
 ]
