@@ -2175,10 +2175,10 @@ async function sincronizarTodoConGitHub() {
         { path: 'ventas_historial.json',       data: JSON.parse(localStorage.getItem('registroVentas') || '[]') },
     ];
 
-    // Si hay productos modificados: subir solo productos.json + comisiones.json
+    // Si hay productos modificados: subir solo productos.json + comisiones.json + ventas_historial.json
     // Si no hay delta: subir todo
     const archivosFiltrados = hayDelta
-        ? archivos.filter(a => a.path === 'productos.json' || a.path === 'comisiones.json')
+        ? archivos.filter(a => a.path === 'productos.json' || a.path === 'comisiones.json' || a.path === 'ventas_historial.json')
         : archivos;
 
     let ok = 0, errors = [];
