@@ -3,7 +3,9 @@
   "ENERGIA": [],
   "CELULARES": [],
   "UTILES": [],
-  "CARROS": [],
+  "CARROS": [
+    "FILTROS"
+  ],
   "ROPA": [],
   "LENCERIA": [],
   "SEGURIDAD": [],
