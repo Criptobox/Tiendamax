@@ -14,7 +14,9 @@
   ],
   "LENCERIA": [],
   "SEGURIDAD": [],
-  "HOGAR": [],
+  "HOGAR": [
+    "DECORACION"
+  ],
   "JUEGOS": [],
   "MOTOS": [
     "LUBRICANTES",
