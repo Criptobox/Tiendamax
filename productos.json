@@ -999,5 +999,21 @@
     "usado": false,
     "garantia": "",
     "devolucion": false
+  },
+  {
+    "id": 1778906733513,
+    "nombre": "Espejos Retrovisores Deportivos SHENAO Stealth Winglet",
+    "descripcion": "Transforma radicalmente la estética de tu moto con los espejos retrovisores premium SHENAO de diseño aerodinámico Stealth. Diseñados para los motociclistas que exigen un balance perfecto entre estilo agresivo y funcionalidad, estos espejos se inspiran en la tecnología de alta competencia para ofrecer un accesorio 2 en 1: un alerón aerodinámico de perfil bajo cuando están cerrados y un sistema de visión trasera claro al desplegarlos.",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1778906731600.jpg",
+    "precioActual": 20,
+    "descuento": 0,
+    "stock": 5,
+    "comision": 1.8,
+    "categoria": "MOTOS",
+    "subcategoria": "PARTES Y PIEZAS",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false
   }
 ]
