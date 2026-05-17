@@ -95,6 +95,54 @@ function cerrarCarrito() {
     document.body.style.overflow = '';
 }
 
+
+function renderizarSugerenciasCarrito() {
+    const sugBox = document.getElementById('carritoSugerencias');
+    const sugGrid = document.getElementById('carritoSugerenciasGrid');
+    if (!sugBox || !sugGrid) return;
+
+    if (carrito.length === 0) {
+        sugBox.style.display = 'none';
+        return;
+    }
+
+    const categoriasEnCarrito = carrito.map(item => {
+        const prod = productos.find(p => p.id === item.id);
+        return prod ? prod.categoria : null;
+    }).filter(Boolean);
+
+    if (categoriasEnCarrito.length === 0) {
+        sugBox.style.display = 'none';
+        return;
+    }
+
+    const sugeridos = productos.filter(p => 
+        categoriasEnCarrito.includes(p.categoria) &&
+        !carrito.some(item => item.id === p.id) &&
+        p.stock > 0
+    );
+
+    sugeridos.sort(() => 0.5 - Math.random());
+    const topSugeridos = sugeridos.slice(0, 2);
+
+    if (topSugeridos.length === 0) {
+        sugBox.style.display = 'none';
+        return;
+    }
+
+    sugBox.style.display = 'block';
+    sugGrid.innerHTML = topSugeridos.map(p => `
+        <div style="display:flex; align-items:center; gap:10px; background:var(--cream); padding:8px; border-radius:8px; border: 1px solid #eee;">
+            <img src="${p.imagen}" style="width:45px; height:45px; object-fit:contain; border-radius:4px; background:#fff;">
+            <div style="flex:1; min-width:0;">
+                <p style="font-size:12px; font-weight:600; line-height:1.2; margin-bottom:2px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">${p.nombre}</p>
+                <p style="font-size:12px; color:var(--primary); font-weight:700;">${p.precioActual.toFixed(2)} USD</p>
+            </div>
+            <button onclick="agregarAlCarrito(${p.id}); renderizarCarrito();" class="btn btn-primary" style="font-size:11px; padding:6px 12px; min-width:auto;">+ Añadir</button>
+        </div>
+    `).join('');
+}
+
 function renderizarCarrito() {
     const itemsEl  = document.getElementById('carritoItems');
     const vacioEl  = document.getElementById('carritoVacio');
@@ -131,7 +179,8 @@ function renderizarCarrito() {
             '</div>' +
             '<button class="carrito-item-del" onclick="quitarDelCarrito(' + item.id + ')" title="Eliminar">✕</button>' +
             '</div>';
-    }).join('');
+        renderizarSugerenciasCarrito();
+}).join('');
 }
 
 function comprarCarrito() {
@@ -799,6 +848,7 @@ async function cargarDatosDesdeGitHub() {
             const mapaLocal = {};
             productosLocales.forEach(p => { mapaLocal[p.id] = p; });
 
+            verificarNovedadesTienda(dataProd);
             productos = dataProd.map(p => {
                 const fix = url => url && url.includes('raw.githubusercontent.com')
                     ? url.replace(/https:\/\/raw\.githubusercontent\.com\/[^/]+\/[^/]+\/main\//,'https://tiendamax.org/')
@@ -2175,10 +2225,10 @@ async function sincronizarTodoConGitHub() {
         { path: 'ventas_historial.json',       data: JSON.parse(localStorage.getItem('registroVentas') || '[]') },
     ];
 
-    // Si hay productos modificados: subir solo productos.json + comisiones.json + ventas_historial.json
+    // Si hay productos modificados: subir solo productos.json + comisiones.json
     // Si no hay delta: subir todo
     const archivosFiltrados = hayDelta
-        ? archivos.filter(a => a.path === 'productos.json' || a.path === 'comisiones.json' || a.path === 'ventas_historial.json')
+        ? archivos.filter(a => a.path === 'productos.json' || a.path === 'comisiones.json')
         : archivos;
 
     let ok = 0, errors = [];
