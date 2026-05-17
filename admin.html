@@ -644,26 +644,6 @@
                         <button data-action="guardarNumeroWhatsApp" type="button" class="btn btn-primary" style="background:#25d366;width:100%;">💾 Guardar número</button>
                     </div>
 
-                    <!-- OFERTA DEL DÍA -->
-                    <div style="background:rgba(255,87,34,0.07);border:1.5px solid #ff5722;border-radius:14px;padding:18px 20px;margin-bottom:24px;">
-                        <h4 style="margin:0 0 6px;display:flex;align-items:center;gap:8px;"><span style="font-size:20px;">🏷️</span> Oferta del Día</h4>
-                        <p style="font-size:13px;color:var(--text-muted);margin-bottom:14px;">Destaca un producto como "Oferta del Día" con badge especial y posición privilegiada en la tienda.</p>
-                        <div class="form-group">
-                            <label>Producto Oferta del Día:</label>
-                            <select id="ofertaDiaSelect" style="width:100%;padding:10px;border-radius:10px;border:1.5px solid var(--border-color);font-size:14px;">
-                                <option value="">— Sin oferta del día activa —</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Texto del badge (opcional):</label>
-                            <input type="text" id="ofertaDiaTexto" placeholder="🔥 OFERTA DEL DÍA" maxlength="30">
-                        </div>
-                        <div id="ofertaDiaStatus" style="font-size:13px;color:#ff5722;margin-bottom:10px;min-height:20px;"></div>
-                        <div style="display:flex;gap:10px;">
-                            <button data-action="guardarOfertaDia" type="button" class="btn btn-primary" style="background:#ff5722;flex:1;">✅ Activar Oferta del Día</button>
-                            <button data-action="desactivarOfertaDia" aria-label="Desactivar oferta del día" type="button" class="btn btn-secondary" style="flex:1;">❌ Desactivar</button>
-                        </div>
-                    </div>
 
                     <p style="font-size: 14px; margin-bottom: 20px; color: var(--text-color);">Configura tu cuenta de GitHub para que los cambios se guarden automáticamente para todos tus clientes.</p>
                     <form id="githubConfigForm" onsubmit="guardarConfiguracionGitHub(event)">
