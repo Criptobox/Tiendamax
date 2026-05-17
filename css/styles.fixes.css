@@ -1395,3 +1395,71 @@ body.dark-mode #listaAgotados > div {
     cursor: pointer;
     font-family: var(--font-body, sans-serif);
 }
+
+/* ============================================================
+   CORAZÓN EN HEADER
+   ============================================================ */
+.heart-icon-btn {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255,255,255,0.07);
+    color: rgba(255,255,255,0.85);
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s, transform 0.15s;
+}
+.heart-icon-btn:active {
+    transform: scale(0.9);
+}
+.heart-icon-btn.has-likes {
+    color: #e74c3c;
+}
+.heart-icon-btn svg {
+    transition: fill 0.25s, color 0.25s;
+}
+
+/* Badge rojo del corazón */
+.heart-count {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    background: #e74c3c;
+    color: #fff;
+    font-size: 9px;
+    font-weight: 700;
+    min-width: 15px;
+    height: 15px;
+    border-radius: 99px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 3px;
+    line-height: 1;
+}
+
+/* Animación pop del botón corazón en la card */
+@keyframes heart-pop {
+    0%   { transform: scale(1); }
+    40%  { transform: scale(1.45); }
+    70%  { transform: scale(0.88); }
+    100% { transform: scale(1); }
+}
+.btn-megusta.heart-pop {
+    animation: heart-pop 0.38s ease forwards;
+}
+
+/* Pulso en el header al aterrizar el corazón */
+@keyframes heart-land {
+    0%   { transform: scale(1); }
+    35%  { transform: scale(1.4); }
+    65%  { transform: scale(0.9); }
+    100% { transform: scale(1); }
+}
+.heart-icon-btn.heart-land {
+    animation: heart-land 0.35s ease forwards;
+}
