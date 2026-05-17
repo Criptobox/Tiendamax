@@ -1,90 +1,105 @@
-// ============================================================
-//  TiendaMax — sw.js actualizado
-//  REEMPLAZA tu sw.js actual con este archivo completo
-// ============================================================
+// ═══════════════════════════════════════════════════════
+//  TiendaMax — Service Worker v2
+//  - Cache-first para shell estático
+//  - Network-first para datos (JSON, APIs)
+//  - Auto-actualización sin quedarse con versión vieja
+// ═══════════════════════════════════════════════════════
 
-const CACHE_NAME = 'tiendamax-v4';
-const URLS_TO_CACHE = [
-  '/',
-  '/index.html',
-  '/css/styles.css',
-  '/js/script.js',
-  '/js/push-notifications.js',
-  '/manifest.json',
-  '/productos.json',
-  '/categorias.json',
-  '/icons/icon-192.png',
-  '/icons/icon-512.png'
+const CACHE_NAME = 'tiendamax-v2';
+const STATIC_ASSETS = [
+    '/index.html',
+    '/css/styles.css',
+    '/css/animations.css',
+    '/js/script.js',
+    '/js/subcategorias.js',
+    '/js/revolico_integration.js',
+    '/og-image.svg',
+    '/manifest.json',
+    '/icons/icon-192.png',
+    '/icons/icon-512.png'
 ];
 
-self.addEventListener('install', event => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => {
-      return cache.addAll(URLS_TO_CACHE).catch(() => {});
-    })
-  );
-  self.skipWaiting();
+// ── Instalar: cachear todos los archivos del shell ──
+self.addEventListener('install', e => {
+    e.waitUntil(
+        caches.open(CACHE_NAME)
+            .then(cache => cache.addAll(STATIC_ASSETS))
+            .then(() => self.skipWaiting()) // Activar de inmediato sin esperar
+    );
 });
 
-self.addEventListener('activate', event => {
-  event.waitUntil(
-    caches.keys().then(keys =>
-      Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k)))
-    )
-  );
-  self.clients.claim();
+// ── Activar: borrar caches viejas y tomar control de todos los clientes ──
+self.addEventListener('activate', e => {
+    e.waitUntil(
+        caches.keys()
+            .then(keys => Promise.all(
+                keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k))
+            ))
+            .then(() => self.clients.claim()) // Controlar pestañas abiertas de inmediato
+    );
 });
 
-self.addEventListener('fetch', event => {
-  event.respondWith(
-    caches.match(event.request).then(cached => cached || fetch(event.request))
-  );
+// ── Notificar a todos los clientes cuando hay una actualización lista ──
+self.addEventListener('message', e => {
+    if (e.data === 'SKIP_WAITING') self.skipWaiting();
 });
 
-// ── Push recibido desde servidor (modo backend) ───────────────
-self.addEventListener('push', event => {
-  let datos = {
-    titulo: '📢 TiendaMax',
-    cuerpo: 'Tienes una nueva notificación',
-    url: '/',
-    icono: '/icons/icon-192.png'
-  };
-  if (event.data) {
-    try { datos = { ...datos, ...event.data.json() }; }
-    catch { datos.cuerpo = event.data.text(); }
-  }
-  event.waitUntil(
-    self.registration.showNotification(datos.titulo, {
-      body: datos.cuerpo,
-      icon: datos.icono,
-      badge: datos.icono,
-      data: { url: datos.url },
-      vibrate: [200, 100, 200],
-      actions: [
-        { action: 'ver', title: '👀 Ver oferta' },
-        { action: 'cerrar', title: 'Cerrar' }
-      ]
-    })
-  );
-});
+// ── Estrategia de fetch ──
+self.addEventListener('fetch', e => {
+    const url = new URL(e.request.url);
 
-// ── Clic en la notificación ───────────────────────────────────
-self.addEventListener('notificationclick', event => {
-  event.notification.close();
-  if (event.action === 'cerrar') return;
+    // Nunca interceptar estas peticiones externas
+    const externos = [
+        'anthropic.com', 'github.com', 'raw.githubusercontent.com',
+        'whatsapp.com', 'wa.me', 'unsplash.com', 'fonts.googleapis.com',
+        'fonts.gstatic.com', 'api.revolico', 'cloudflare'
+    ];
+    if (externos.some(d => url.hostname.includes(d))) return;
 
-  const urlDestino = (event.notification.data && event.notification.data.url) || '/';
+    // Solo GET
+    if (e.request.method !== 'GET') return;
 
-  event.waitUntil(
-    clients.matchAll({ type: 'window', includeUncontrolled: true }).then(lista => {
-      for (const client of lista) {
-        if ('focus' in client) {
-          client.focus();
-          if ('navigate' in client) client.navigate(urlDestino);
-          return;
-        }
-      }
-      if (clients.openWindow) return clients.openWindow(urlDestino);
-    })
-  );
+    const path = url.pathname;
+
+    // JSON de datos → siempre red (ya tienen cache-buster ?_=timestamp)
+    if (path.endsWith('.json')) {
+        e.respondWith(
+            fetch(e.request)
+                .catch(() => caches.match(e.request)) // offline: servir último JSON conocido
+        );
+        return;
+    }
+
+    // Shell estático → Cache-first, actualiza en background
+    if (STATIC_ASSETS.some(a => path.endsWith(a.split('/').pop()))) {
+        e.respondWith(
+            caches.open(CACHE_NAME).then(cache =>
+                cache.match(e.request).then(cached => {
+                    const networkFetch = fetch(e.request).then(res => {
+                        if (res.ok) cache.put(e.request, res.clone());
+                        return res;
+                    }).catch(() => cached);
+                    // Devolver cache inmediato, actualizar en background
+                    return cached || networkFetch;
+                })
+            )
+        );
+        return;
+    }
+
+    // Todo lo demás → Network-first con fallback a cache y luego a index.html
+    e.respondWith(
+        fetch(e.request)
+            .then(res => {
+                if (res.ok) {
+                    const clone = res.clone();
+                    caches.open(CACHE_NAME).then(c => c.put(e.request, clone));
+                }
+                return res;
+            })
+            .catch(() =>
+                caches.match(e.request)
+                    .then(cached => cached || caches.match('/index.html'))
+            )
+    );
 });
