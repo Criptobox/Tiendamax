@@ -32,6 +32,46 @@ function actualizarContadorCarrito() {
     }
 }
 
+
+// ══════════════════════════════════════════════════════════════
+//  ME GUSTA / WISHLIST
+// ══════════════════════════════════════════════════════════════
+let wishlist = JSON.parse(localStorage.getItem('wishlist_v1') || '[]');
+
+function guardarWishlist() {
+    localStorage.setItem('wishlist_v1', JSON.stringify(wishlist));
+}
+
+function toggleMeGusta(id, e) {
+    if (e) { e.stopPropagation(); e.preventDefault(); }
+    const idx = wishlist.indexOf(id);
+    if (idx === -1) {
+        wishlist.push(id);
+        mostrarNotificacion('❤️ Guardado en tus Me Gusta');
+    } else {
+        wishlist.splice(idx, 1);
+        mostrarNotificacion('🤍 Eliminado de Me Gusta');
+    }
+    guardarWishlist();
+    // Actualizar todos los botones de esta card
+    document.querySelectorAll('[data-like-id="' + id + '"]').forEach(btn => {
+        btn.classList.toggle('liked', wishlist.includes(id));
+        btn.setAttribute('aria-label', wishlist.includes(id) ? 'Quitar me gusta' : 'Me gusta');
+    });
+}
+
+function getMeGustaHTML(id) {
+    const liked = wishlist.includes(id);
+    return '<button class="btn-megusta' + (liked ? ' liked' : '') + '" ' +
+        'data-like-id="' + id + '" ' +
+        'aria-label="' + (liked ? 'Quitar me gusta' : 'Me gusta') + '" ' +
+        'onclick="toggleMeGusta(' + id + ', event)" type="button">' +
+        '<svg viewBox="0 0 24 24" width="16" height="16" fill="' + (liked ? 'currentColor' : 'none') + '" stroke="currentColor" stroke-width="2">' +
+        '<path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>' +
+        '</svg>' +
+        '</button>';
+}
+
 function agregarAlCarrito(id) {
     const p = productos.find(x => x.id === id);
     if (!p || p.stock === 0) return;
@@ -135,6 +175,8 @@ function renderizarCarrito() {
 
     // Mostrar productos similares debajo de los items
     renderizarSimilaresCarrito();
+    // Siempre sincronizar el badge del header
+    actualizarContadorCarrito();
 }
 
 function renderizarSimilaresCarrito() {
@@ -3488,6 +3530,7 @@ renderizarProductos = function() {
              esAgotado ? '<div class="badge-agotado">AGOTADO</div>' :
              producto.masVendido ? '<div class="badge-vendido">🔥 Más Vendido</div>' : '') +
             '<div class="producto-image">' +
+                getMeGustaHTML(producto.id) +
                 '<img src="' + producto.imagen + '" alt="' + producto.nombre + '" loading="lazy">' +
                 (producto.descuento > 0 ? '<div class="badge">-' + producto.descuento + '%</div>' : '') +
             '</div>' +
@@ -4249,3 +4292,94 @@ function exportarVentasCSV() {
     };
 })();
 
+
+// ══════════════════════════════════════════════════════════════
+//  NOTIFICACIÓN DE CARRITO ABANDONADO
+//  Lógica: si hay productos en el carrito y el usuario lleva
+//  más de 2 horas sin interactuar, se envía una notificación push.
+//  Se usa el SW existente — no requiere backend.
+// ══════════════════════════════════════════════════════════════
+(function initCarritoAbandonado() {
+    const DELAY_MS  = 2 * 60 * 60 * 1000; // 2 horas
+    const KEY_TIMER = 'carrito_notif_timer';
+    const KEY_SENT  = 'carrito_notif_sent';
+    let   _timer    = null;
+
+    function cancelarTimer() {
+        if (_timer) { clearTimeout(_timer); _timer = null; }
+        localStorage.removeItem(KEY_TIMER);
+    }
+
+    function programarNotificacion() {
+        cancelarTimer();
+        // Solo si hay carrito con productos
+        if (!carrito || carrito.length === 0) return;
+        // Solo si tiene permiso de notificaciones
+        if (typeof Notification === 'undefined' || Notification.permission !== 'granted') return;
+
+        const disparoEn = Date.now() + DELAY_MS;
+        localStorage.setItem(KEY_TIMER, disparoEn);
+        localStorage.removeItem(KEY_SENT);
+
+        _timer = setTimeout(async () => {
+            // Verificar que aún hay carrito y no se envió ya
+            const carritoActual = JSON.parse(localStorage.getItem('carrito_v2') || '{"items":[]}').items || [];
+            if (carritoActual.length === 0) return;
+            if (localStorage.getItem(KEY_SENT)) return;
+
+            const total = carritoActual.reduce((s, i) => s + i.precio * i.cantidad, 0);
+            const nombres = carritoActual.slice(0, 2).map(i => i.nombre.substring(0, 20)).join(', ');
+            const cuerpo  = carritoActual.length === 1
+                ? '¡Tienes ' + carritoActual[0].nombre.substring(0, 30) + ' esperándote! ($' + total.toFixed(0) + ' USD)'
+                : '¡Tienes ' + carritoActual.length + ' productos en tu carrito! ' + nombres + '... ($' + total.toFixed(0) + ' USD)';
+
+            try {
+                const reg = await navigator.serviceWorker.ready;
+                await reg.showNotification('🛒 ¿Olvidaste algo?', {
+                    body: cuerpo,
+                    icon: '/icons/icon-192.png',
+                    badge: '/icons/icon-192.png',
+                    data: { url: '/?carrito=1' },
+                    vibrate: [200, 100, 200],
+                    tag: 'carrito-abandonado',
+                    renotify: false,
+                    actions: [
+                        { action: 'ver', title: '🛒 Ver carrito' },
+                        { action: 'cerrar', title: 'Más tarde' }
+                    ]
+                });
+                localStorage.setItem(KEY_SENT, '1');
+            } catch(err) {
+                console.log('Notificación carrito:', err);
+            }
+        }, DELAY_MS);
+    }
+
+    // Reprogramar cada vez que cambie el carrito
+    const _guardarOriginal = guardarCarrito;
+    window.guardarCarrito = function() {
+        _guardarOriginal();
+        programarNotificacion();
+    };
+
+    // Al cargar la página: verificar si hay un timer pendiente del pasado
+    window.addEventListener('load', () => {
+        const disparoGuardado = parseInt(localStorage.getItem(KEY_TIMER) || '0');
+        if (disparoGuardado && Date.now() < disparoGuardado && carrito && carrito.length > 0) {
+            const restante = disparoGuardado - Date.now();
+            _timer = setTimeout(() => programarNotificacion(), restante);
+        } else {
+            programarNotificacion();
+        }
+    });
+
+    // Al abrir el carrito: cancelar el timer (el usuario está activo)
+    const _abrirOriginal = abrirCarrito;
+    window.abrirCarrito = function() {
+        cancelarTimer();
+        localStorage.removeItem(KEY_SENT);
+        _abrirOriginal();
+        // Reprogramar cuando cierre
+        setTimeout(programarNotificacion, 500);
+    };
+})();
