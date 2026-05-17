@@ -867,6 +867,7 @@ async function cargarDatosDesdeGitHub() {
         }
 
         // Renderizar categorías YA (con datos frescos, sin esperar archivos pesados)
+        renderizarCategoriasHomeInstant(); // actualiza el grid visual inmediatamente
         renderizarCategoriasHome();
         actualizarSelectCategorias();
         actualizarBotonesCategorias();
@@ -2815,12 +2816,39 @@ function renderizarCategoriasHomeInstant() {
     requestAnimationFrame(() => grid.classList.add('tm-rendered'));
 }
 
-// Run instant render immediately on script parse
-if (document.readyState !== 'loading') {
+// ── Inicialización robusta de categorías ──
+// Intenta renderizar inmediatamente, y si el grid aún no existe
+// (porque el DOM no está listo), reintenta en DOMContentLoaded.
+// Además programa un retry a los 800ms por si los datos llegaron tarde.
+function _initCategorias() {
+    const grid = document.getElementById('categoriasGrid');
+    if (!grid) return; // DOM no listo aún
     renderizarCategoriasHomeInstant();
-} else {
-    document.addEventListener('DOMContentLoaded', renderizarCategoriasHomeInstant);
 }
+
+if (document.readyState !== 'loading') {
+    _initCategorias();
+} else {
+    document.addEventListener('DOMContentLoaded', _initCategorias);
+}
+
+// Retry robusto: si después de 800ms el grid sigue vacío, volver a intentar
+// Esto cubre el caso PWA donde el SW demora en responder
+document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(() => {
+        const grid = document.getElementById('categoriasGrid');
+        if (grid && grid.children.length === 0) {
+            renderizarCategoriasHomeInstant();
+        }
+    }, 800);
+    // Segundo retry a los 2s por si la red es muy lenta
+    setTimeout(() => {
+        const grid = document.getElementById('categoriasGrid');
+        if (grid && grid.children.length === 0) {
+            renderizarCategoriasHomeInstant();
+        }
+    }, 2000);
+});
 
 
 // ===== PATCH renderizarProductos to start countdowns after render =====
