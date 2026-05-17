@@ -225,6 +225,8 @@ function renderizarSimilaresCarrito() {
 
 function comprarCarrito() {
     if (carrito.length === 0) return;
+    // Guardar en historial del cliente antes de abrir WhatsApp
+    guardarPedidoCliente(carrito.slice());
     const lineas = carrito.map(i =>
         '• ' + i.nombre + ' x' + i.cantidad + ' — $' + (i.precio * i.cantidad).toFixed(2) + ' USD'
     );
@@ -3544,7 +3546,7 @@ renderizarProductos = function() {
             '<p class="precio"><span class="precio-actual">$' + producto.precioActual.toFixed(2) + ' USD</span></p>' +
             (esAgotado
                 ? '<div class="stock" style="color:#e74c3c;font-weight:700;">❌ Agotado</div><button class="btn btn-small btn-primary" disabled style="opacity:0.5;cursor:not-allowed;">No disponible</button>'
-                : '<div class="stock">📦 Stock: ' + producto.stock + ' unidades</div>' +
+                : (producto.stock <= 3 && producto.stock > 0 ? '<div class="stock stock-urgente">⚠️ ¡Solo quedan ' + producto.stock + '!</div>' : '<div class="stock">📦 Stock: ' + producto.stock + ' unidades</div>') +
                   (typeof renderCountdownHtml === 'function' ? renderCountdownHtml(producto.id) : '') +
                   '<button class="btn-pedir-card" onclick="event.stopPropagation(); tmComprar(event, ' + producto.id + ', \'' + producto.nombre + '\')" type="button"><span class="btn-pedir-wa-icon-sm"><svg viewBox="0 0 24 24" width="14" height="14" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg></span> Pedir</button>');
         productosGrid.appendChild(card);
@@ -4297,6 +4299,176 @@ function exportarVentasCSV() {
     };
 })();
 
+
+
+// ══════════════════════════════════════════════════════════════
+//  VISTA: MIS ME GUSTA
+// ══════════════════════════════════════════════════════════════
+function mostrarVistaMeGusta() {
+    // Ocultar otras vistas
+    document.getElementById('vistaInicio').style.display = 'none';
+    document.getElementById('vistaCategoria').style.display = 'none';
+
+    let vistaEl = document.getElementById('vistaMeGusta');
+    if (!vistaEl) {
+        vistaEl = document.createElement('div');
+        vistaEl.id = 'vistaMeGusta';
+        document.querySelector('main') && document.querySelector('main').appendChild(vistaEl)
+            || document.body.appendChild(vistaEl);
+    }
+    vistaEl.style.display = 'block';
+    vistaEl.innerHTML = '';
+
+    const liked = wishlist;
+    const prods = liked.map(id => productos.find(p => p.id === id)).filter(Boolean);
+
+    const ofertaId = getOfertaDiaId();
+
+    vistaEl.innerHTML = `
+    <section class="productos-categoria">
+      <div class="container">
+        <div class="categoria-header">
+          <div class="categoria-header-left">
+            <button onclick="cerrarVistaMeGusta()" type="button" class="btn-volver">← Volver</button>
+            <h2>❤️ Mis Me Gusta</h2>
+          </div>
+          <div class="categoria-stats" style="font-size:13px;color:#aaa;">${prods.length} producto${prods.length !== 1 ? 's' : ''} guardado${prods.length !== 1 ? 's' : ''}</div>
+        </div>
+        ${prods.length === 0 ? `
+          <div style="text-align:center;padding:60px 20px;">
+            <div style="font-size:52px;margin-bottom:16px;">🤍</div>
+            <p style="font-size:15px;color:#aaa;margin-bottom:20px;">Aún no tienes productos guardados.<br>Toca el ❤️ en cualquier producto para guardarlo aquí.</p>
+            <button onclick="cerrarVistaMeGusta();mostrarVistaCategoria('Todas')" class="btn btn-primary">Ver productos</button>
+          </div>
+        ` : `<div class="productos-grid" id="meGustaGrid"></div>`}
+      </div>
+    </section>`;
+
+    if (prods.length > 0) {
+        const grid = document.getElementById('meGustaGrid');
+        prods.forEach(producto => {
+            const esAgotado  = producto.stock === 0;
+            const esOfertaDia = String(producto.id) === String(ofertaId);
+            const card = document.createElement('div');
+            card.className = 'producto-card' + (esAgotado ? ' card-agotado' : '');
+            card.onclick = () => abrirDetalleProducto(producto.id);
+            card.style.position = 'relative';
+            card.innerHTML =
+                (esOfertaDia ? '<div class="badge-oferta-dia">' + getOfertaDiaTexto() + '</div>' :
+                 esAgotado ? '<div class="badge-agotado">AGOTADO</div>' :
+                 producto.masVendido ? '<div class="badge-vendido">🔥 Más Vendido</div>' : '') +
+                '<div class="producto-image">' +
+                    getMeGustaHTML(producto.id) +
+                    '<img src="' + producto.imagen + '" alt="' + producto.nombre + '" loading="lazy">' +
+                    (producto.descuento > 0 ? '<div class="badge">-' + producto.descuento + '%</div>' : '') +
+                '</div>' +
+                '<h3>' + producto.nombre + '</h3>' +
+                '<p class="producto-description">' + producto.descripcion + '</p>' +
+                '<p class="precio"><span class="precio-actual">$' + producto.precioActual.toFixed(2) + ' USD</span></p>' +
+                (esAgotado
+                    ? '<div class="stock" style="color:#e74c3c;font-weight:700;">❌ Agotado</div>'
+                    : (producto.stock <= 3 ? '<div class="stock stock-urgente">⚠️ ¡Solo quedan ' + producto.stock + '!</div>'
+                                           : '<div class="stock">📦 Stock: ' + producto.stock + ' unidades</div>') +
+                      '<button class="btn-pedir-card" onclick="event.stopPropagation();tmComprar(event,' + producto.id + ',\'' + producto.nombre.replace(/'/g, '') + '\')" type="button">🛒 Pedir</button>');
+            grid.appendChild(card);
+        });
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function cerrarVistaMeGusta() {
+    const v = document.getElementById('vistaMeGusta');
+    if (v) v.style.display = 'none';
+    mostrarVistaInicio();
+}
+
+// ══════════════════════════════════════════════════════════════
+//  VISTA: MIS PEDIDOS (historial del cliente)
+// ══════════════════════════════════════════════════════════════
+function guardarPedidoCliente(itemsCarrito) {
+    const pedidos = JSON.parse(localStorage.getItem('pedidos_cliente_v1') || '[]');
+    const total   = itemsCarrito.reduce((s, i) => s + i.precio * i.cantidad, 0);
+    pedidos.unshift({
+        id:     Date.now(),
+        fecha:  new Date().toLocaleDateString('es-ES', { day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' }),
+        items:  itemsCarrito.map(i => ({ id: i.id, nombre: i.nombre, cantidad: i.cantidad, precio: i.precio })),
+        total:  total
+    });
+    localStorage.setItem('pedidos_cliente_v1', JSON.stringify(pedidos.slice(0, 50)));
+}
+
+function mostrarVistaPedidos() {
+    document.getElementById('vistaInicio').style.display   = 'none';
+    document.getElementById('vistaCategoria').style.display = 'none';
+
+    let vistaEl = document.getElementById('vistaPedidos');
+    if (!vistaEl) {
+        vistaEl = document.createElement('div');
+        vistaEl.id = 'vistaPedidos';
+        document.querySelector('main') && document.querySelector('main').appendChild(vistaEl)
+            || document.body.appendChild(vistaEl);
+    }
+    vistaEl.style.display = 'block';
+
+    const pedidos = JSON.parse(localStorage.getItem('pedidos_cliente_v1') || '[]');
+
+    vistaEl.innerHTML = `
+    <section class="productos-categoria">
+      <div class="container">
+        <div class="categoria-header">
+          <div class="categoria-header-left">
+            <button onclick="cerrarVistaPedidos()" type="button" class="btn-volver">← Volver</button>
+            <h2>📋 Mis Pedidos</h2>
+          </div>
+          <div class="categoria-stats" style="font-size:13px;color:#aaa;">${pedidos.length} pedido${pedidos.length !== 1 ? 's' : ''}</div>
+        </div>
+        ${pedidos.length === 0 ? `
+          <div style="text-align:center;padding:60px 20px;">
+            <div style="font-size:52px;margin-bottom:16px;">📭</div>
+            <p style="font-size:15px;color:#aaa;margin-bottom:20px;">Aún no tienes pedidos.<br>Cuando hagas un pedido por WhatsApp aparecerá aquí.</p>
+            <button onclick="cerrarVistaPedidos();mostrarVistaCategoria('Todas')" class="btn btn-primary">Ver productos</button>
+          </div>
+        ` : pedidos.map(p => `
+          <div class="pedido-card">
+            <div class="pedido-card-header">
+              <span class="pedido-fecha">📅 ${p.fecha}</span>
+              <span class="pedido-total">$${p.total.toFixed(2)} USD</span>
+            </div>
+            <div class="pedido-items">
+              ${p.items.map(i => `
+                <div class="pedido-item">
+                  <span class="pedido-item-nombre">${i.nombre}</span>
+                  <span class="pedido-item-qty">×${i.cantidad}</span>
+                  <span class="pedido-item-precio">$${(i.precio * i.cantidad).toFixed(2)}</span>
+                </div>
+              `).join('')}
+            </div>
+            <button class="pedido-btn-repetir" onclick="repetirPedido(${p.id})">🔄 Pedir de nuevo</button>
+          </div>
+        `).join('')}
+      </div>
+    </section>`;
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function cerrarVistaPedidos() {
+    const v = document.getElementById('vistaPedidos');
+    if (v) v.style.display = 'none';
+    mostrarVistaInicio();
+}
+
+function repetirPedido(pedidoId) {
+    const pedidos = JSON.parse(localStorage.getItem('pedidos_cliente_v1') || '[]');
+    const pedido  = pedidos.find(p => p.id === pedidoId);
+    if (!pedido) return;
+    pedido.items.forEach(item => {
+        const p = productos.find(x => x.id === item.id);
+        if (p && p.stock > 0) agregarAlCarrito(item.id);
+    });
+    cerrarVistaPedidos();
+    setTimeout(abrirCarrito, 300);
+}
 
 // ══════════════════════════════════════════════════════════════
 //  NOTIFICACIÓN DE CARRITO ABANDONADO
