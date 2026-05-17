@@ -1289,3 +1289,109 @@ body.dark-mode #listaAgotados > div {
 .producto-image {
     position: relative;
 }
+
+/* ============================================================
+   STOCK URGENTE — badge rojo cuando quedan ≤3 unidades
+   ============================================================ */
+.stock-urgente {
+    color: #e74c3c !important;
+    font-weight: 700 !important;
+    font-size: 12px;
+    animation: pulso-stock 1.8s ease-in-out infinite;
+}
+@keyframes pulso-stock {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.65; }
+}
+
+/* ============================================================
+   TARJETAS DE PEDIDO — Mis Pedidos
+   ============================================================ */
+.pedido-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(201,169,110,0.16);
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 14px;
+    transition: border-color 0.2s;
+}
+.pedido-card:hover {
+    border-color: rgba(201,169,110,0.35);
+}
+.pedido-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+.pedido-fecha {
+    font-size: 12px;
+    color: var(--text-light, #aaa);
+}
+.pedido-total {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--gold, #C9A96E);
+    font-family: var(--font-display, serif);
+}
+.pedido-items {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 14px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.pedido-item {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    gap: 10px;
+    align-items: center;
+    font-size: 13px;
+}
+.pedido-item-nombre {
+    color: #fff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.pedido-item-qty {
+    color: var(--text-light, #aaa);
+    font-size: 12px;
+}
+.pedido-item-precio {
+    color: var(--gold, #C9A96E);
+    font-weight: 600;
+    white-space: nowrap;
+}
+.pedido-btn-repetir {
+    width: 100%;
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid rgba(201,169,110,0.3);
+    background: rgba(201,169,110,0.08);
+    color: var(--gold, #C9A96E);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s;
+}
+.pedido-btn-repetir:hover,
+.pedido-btn-repetir:active {
+    background: rgba(201,169,110,0.2);
+    border-color: rgba(201,169,110,0.6);
+}
+
+/* Menú móvil — nuevos links */
+.nav-mobile-link {
+    display: block;
+    width: 100%;
+    text-align: left;
+    background: none;
+    border: none;
+    padding: 12px 20px;
+    font-size: 16px;
+    color: inherit;
+    cursor: pointer;
+    font-family: var(--font-body, sans-serif);
+}
