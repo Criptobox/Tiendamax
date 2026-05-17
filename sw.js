@@ -1,11 +1,12 @@
 // ═══════════════════════════════════════════════════════
-//  TiendaMax — Service Worker v2
+//  TiendaMax — Service Worker v3
 //  - Cache-first para shell estático
 //  - Network-first para datos (JSON, APIs)
 //  - Auto-actualización sin quedarse con versión vieja
+//  - Soporte de Notificaciones Push
 // ═══════════════════════════════════════════════════════
 
-const CACHE_NAME = 'tiendamax-v2';
+const CACHE_NAME = 'tiendamax-v3';
 const STATIC_ASSETS = [
     '/index.html',
     '/css/styles.css',
@@ -13,6 +14,7 @@ const STATIC_ASSETS = [
     '/js/script.js',
     '/js/subcategorias.js',
     '/js/revolico_integration.js',
+    '/js/push-notifications.js',
     '/og-image.svg',
     '/manifest.json',
     '/icons/icon-192.png',
@@ -24,22 +26,22 @@ self.addEventListener('install', e => {
     e.waitUntil(
         caches.open(CACHE_NAME)
             .then(cache => cache.addAll(STATIC_ASSETS))
-            .then(() => self.skipWaiting()) // Activar de inmediato sin esperar
+            .then(() => self.skipWaiting())
     );
 });
 
-// ── Activar: borrar caches viejas y tomar control de todos los clientes ──
+// ── Activar: borrar caches viejas y tomar control ──
 self.addEventListener('activate', e => {
     e.waitUntil(
         caches.keys()
             .then(keys => Promise.all(
                 keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k))
             ))
-            .then(() => self.clients.claim()) // Controlar pestañas abiertas de inmediato
+            .then(() => self.clients.claim())
     );
 });
 
-// ── Notificar a todos los clientes cuando hay una actualización lista ──
+// ── Mensajes ──
 self.addEventListener('message', e => {
     if (e.data === 'SKIP_WAITING') self.skipWaiting();
 });
@@ -48,7 +50,6 @@ self.addEventListener('message', e => {
 self.addEventListener('fetch', e => {
     const url = new URL(e.request.url);
 
-    // Nunca interceptar estas peticiones externas
     const externos = [
         'anthropic.com', 'github.com', 'raw.githubusercontent.com',
         'whatsapp.com', 'wa.me', 'unsplash.com', 'fonts.googleapis.com',
@@ -56,16 +57,15 @@ self.addEventListener('fetch', e => {
     ];
     if (externos.some(d => url.hostname.includes(d))) return;
 
-    // Solo GET
     if (e.request.method !== 'GET') return;
 
     const path = url.pathname;
 
-    // JSON de datos → siempre red (ya tienen cache-buster ?_=timestamp)
+    // JSON de datos → siempre red
     if (path.endsWith('.json')) {
         e.respondWith(
             fetch(e.request)
-                .catch(() => caches.match(e.request)) // offline: servir último JSON conocido
+                .catch(() => caches.match(e.request))
         );
         return;
     }
@@ -79,7 +79,6 @@ self.addEventListener('fetch', e => {
                         if (res.ok) cache.put(e.request, res.clone());
                         return res;
                     }).catch(() => cached);
-                    // Devolver cache inmediato, actualizar en background
                     return cached || networkFetch;
                 })
             )
@@ -87,7 +86,7 @@ self.addEventListener('fetch', e => {
         return;
     }
 
-    // Todo lo demás → Network-first con fallback a cache y luego a index.html
+    // Todo lo demás → Network-first con fallback
     e.respondWith(
         fetch(e.request)
             .then(res => {
@@ -101,5 +100,55 @@ self.addEventListener('fetch', e => {
                 caches.match(e.request)
                     .then(cached => cached || caches.match('/index.html'))
             )
+    );
+});
+
+// ═══════════════════════════════════════════════════════
+//  PUSH NOTIFICATIONS
+// ═══════════════════════════════════════════════════════
+
+self.addEventListener('push', e => {
+    let datos = {
+        titulo: '📢 TiendaMax',
+        cuerpo: 'Tienes una nueva notificación',
+        url: '/',
+        icono: '/icons/icon-192.png'
+    };
+    if (e.data) {
+        try { datos = { ...datos, ...e.data.json() }; }
+        catch { datos.cuerpo = e.data.text(); }
+    }
+    e.waitUntil(
+        self.registration.showNotification(datos.titulo, {
+            body: datos.cuerpo,
+            icon: datos.icono,
+            badge: datos.icono,
+            data: { url: datos.url },
+            vibrate: [200, 100, 200],
+            actions: [
+                { action: 'ver', title: '👀 Ver oferta' },
+                { action: 'cerrar', title: 'Cerrar' }
+            ]
+        })
+    );
+});
+
+self.addEventListener('notificationclick', e => {
+    e.notification.close();
+    if (e.action === 'cerrar') return;
+
+    const urlDestino = (e.notification.data && e.notification.data.url) || '/';
+
+    e.waitUntil(
+        clients.matchAll({ type: 'window', includeUncontrolled: true }).then(lista => {
+            for (const client of lista) {
+                if ('focus' in client) {
+                    client.focus();
+                    if ('navigate' in client) client.navigate(urlDestino);
+                    return;
+                }
+            }
+            if (clients.openWindow) return clients.openWindow(urlDestino);
+        })
     );
 });
