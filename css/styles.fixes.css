@@ -1121,3 +1121,35 @@ body.dark-mode #revolicoProdList > div {
 body.dark-mode #listaAgotados > div {
     background: #1e1e1e !important;
 }
+
+/* ============================================================
+   FIX PWA: Safe Area — header tapado por barra de estado móvil
+   ============================================================ */
+@supports (padding-top: env(safe-area-inset-top)) {
+  @media all and (display-mode: standalone) {
+    /* Empuja el header debajo de la barra de estado (notch, Dynamic Island, etc.) */
+    .header {
+      padding-top: env(safe-area-inset-top) !important;
+    }
+
+    /* El header-content mantiene su altura interna intacta */
+    .header-content {
+      height: 70px;
+    }
+
+    /* El menú móvil overlay también debe respetar el área segura */
+    .mobile-menu-overlay {
+      padding-top: calc(env(safe-area-inset-top) + 20px) !important;
+    }
+
+    /* El carrito drawer respeta el área superior */
+    .carrito-drawer {
+      padding-top: env(safe-area-inset-top) !important;
+    }
+
+    /* Área inferior (botón home de iPhone) */
+    .carrito-footer {
+      padding-bottom: env(safe-area-inset-bottom, 16px) !important;
+    }
+  }
+}
