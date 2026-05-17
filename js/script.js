@@ -45,19 +45,98 @@ function guardarWishlist() {
 function toggleMeGusta(id, e) {
     if (e) { e.stopPropagation(); e.preventDefault(); }
     const idx = wishlist.indexOf(id);
-    if (idx === -1) {
+    const agregando = idx === -1;
+    if (agregando) {
         wishlist.push(id);
-        mostrarNotificacion('❤️ Guardado en tus Me Gusta');
     } else {
         wishlist.splice(idx, 1);
         mostrarNotificacion('🤍 Eliminado de Me Gusta');
     }
     guardarWishlist();
+    actualizarBadgeCorazon();
+
     // Actualizar todos los botones de esta card
     document.querySelectorAll('[data-like-id="' + id + '"]').forEach(btn => {
         btn.classList.toggle('liked', wishlist.includes(id));
         btn.setAttribute('aria-label', wishlist.includes(id) ? 'Quitar me gusta' : 'Me gusta');
+        // Animación del corazón en el botón
+        btn.classList.remove('heart-pop');
+        void btn.offsetWidth;
+        btn.classList.add('heart-pop');
     });
+
+    // Animación fly-to-heart solo al agregar
+    if (agregando && e) {
+        flyToHeart(e);
+    }
+}
+
+function actualizarBadgeCorazon() {
+    const el = document.getElementById('heartCount');
+    const btn = document.getElementById('heartHeaderBtn');
+    const icon = document.getElementById('heartHeaderIcon');
+    if (!el) return;
+    const total = wishlist.length;
+    if (total === 0) {
+        el.style.display = 'none';
+        if (icon) { icon.setAttribute('fill', 'none'); icon.style.color = ''; }
+    } else {
+        el.style.display = 'flex';
+        el.textContent = total > 99 ? '99+' : total;
+        if (icon) { icon.setAttribute('fill', 'currentColor'); icon.style.color = '#e74c3c'; }
+    }
+    if (btn) btn.classList.toggle('has-likes', total > 0);
+}
+
+function flyToHeart(e) {
+    const heartBtn = document.getElementById('heartHeaderBtn');
+    if (!heartBtn) return;
+
+    // Posición origen (donde se tocó)
+    const srcX = e.clientX || (e.touches && e.touches[0] ? e.touches[0].clientX : window.innerWidth / 2);
+    const srcY = e.clientY || (e.touches && e.touches[0] ? e.touches[0].clientY : 100);
+
+    // Posición destino (el corazón del header)
+    const destRect = heartBtn.getBoundingClientRect();
+    const destX = destRect.left + destRect.width / 2;
+    const destY = destRect.top + destRect.height / 2;
+
+    // Crear partícula voladora
+    const fly = document.createElement('div');
+    fly.innerHTML = '❤️';
+    fly.style.cssText = [
+        'position:fixed',
+        'left:' + srcX + 'px',
+        'top:' + srcY + 'px',
+        'font-size:22px',
+        'pointer-events:none',
+        'z-index:99999',
+        'transform:translate(-50%,-50%) scale(1)',
+        'transition:left 0.55s cubic-bezier(.4,0,.2,1),top 0.55s cubic-bezier(.4,0,.2,1),transform 0.55s,opacity 0.55s',
+        'opacity:1',
+        'will-change:transform,left,top'
+    ].join(';');
+    document.body.appendChild(fly);
+
+    // Forzar reflow y luego animar hacia el corazón del header
+    requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+            fly.style.left  = destX + 'px';
+            fly.style.top   = destY + 'px';
+            fly.style.transform = 'translate(-50%,-50%) scale(0.3)';
+            fly.style.opacity = '0';
+        });
+    });
+
+    // Pulso en el header al aterrizar
+    setTimeout(() => {
+        fly.remove();
+        if (heartBtn) {
+            heartBtn.classList.remove('heart-land');
+            void heartBtn.offsetWidth;
+            heartBtn.classList.add('heart-land');
+        }
+    }, 560);
 }
 
 function getMeGustaHTML(id) {
@@ -2448,8 +2527,9 @@ function verificarOfertasYMostrarBanner() {
 
 function inicializarTienda() {
     console.log("🚀 Inicializando TiendaMax...");
-    // Restaurar badge del carrito inmediatamente al cargar
+    // Restaurar badges inmediatamente al cargar
     actualizarContadorCarrito();
+    actualizarBadgeCorazon();
     
     cargarDatosDesdeGitHub();
 
