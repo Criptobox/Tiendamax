@@ -4141,3 +4141,63 @@ function exportarVentasCSV() {
         window.addEventListener('load', () => setTimeout(ready, 800));
     }
 })();
+
+// ── REGISTRO DEL SERVICE WORKER + NOTIFICACIONES PUSH ──────────────
+(function initPush() {
+    if (!('serviceWorker' in navigator)) return;
+
+    navigator.serviceWorker.register('/sw.js')
+        .then(reg => console.log('[SW] Registrado:', reg.scope))
+        .catch(err => console.warn('[SW] Error:', err));
+
+    setTimeout(() => {
+        if (!('Notification' in window)) return;
+        if (Notification.permission !== 'default') return;
+        if (localStorage.getItem('tm_push_ok')) return;
+        const pospuesto = parseInt(localStorage.getItem('tm_push_pospuesto') || '0');
+        if (Date.now() < pospuesto) return;
+
+        const b = document.createElement('div');
+        b.innerHTML = `<div id="tm-push-banner" style="position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#1a1a1a;border:1.5px solid #C9A96E;border-radius:14px;padding:14px 18px;display:flex;align-items:center;gap:12px;max-width:320px;width:90%;z-index:99999;box-shadow:0 8px 32px rgba(0,0,0,0.5);font-family:sans-serif;"><span style="font-size:26px;flex-shrink:0">🔔</span><div style="flex:1;min-width:0"><div style="font-weight:700;font-size:14px;color:#C9A96E;margin-bottom:2px">¡Activa las alertas!</div><div style="font-size:12px;color:#aaa;line-height:1.3">Recibe ofertas relámpago y productos nuevos</div></div><div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0"><button id="tm-push-si" style="background:#C9A96E;color:#000;border:none;border-radius:8px;padding:7px 12px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap">Activar</button><button id="tm-push-no" style="background:none;border:none;color:#666;font-size:11px;cursor:pointer;text-align:center">Ahora no</button></div></div>`;
+        document.body.appendChild(b);
+
+        document.getElementById('tm-push-si').onclick = async () => {
+            b.remove();
+            const perm = await Notification.requestPermission();
+            if (perm === 'granted') {
+                localStorage.setItem('tm_push_ok', '1');
+                const reg = await navigator.serviceWorker.ready;
+                reg.showNotification('✅ TiendaMax activado', {
+                    body: 'Te avisaremos de ofertas y productos nuevos.',
+                    icon: '/icons/icon-192.png',
+                    badge: '/icons/icon-192.png',
+                    vibrate: [200, 100, 200]
+                });
+            }
+        };
+
+        document.getElementById('tm-push-no').onclick = () => {
+            b.remove();
+            localStorage.setItem('tm_push_pospuesto', Date.now() + 2 * 24 * 60 * 60 * 1000);
+        };
+    }, 5000);
+
+    window.TiendaMaxPush = {
+        async enviar(titulo, cuerpo, url) {
+            if (Notification.permission !== 'granted') return;
+            const reg = await navigator.serviceWorker.ready;
+            reg.showNotification(titulo, {
+                body: cuerpo,
+                icon: '/icons/icon-192.png',
+                badge: '/icons/icon-192.png',
+                data: { url: url || '/' },
+                vibrate: [200, 100, 200],
+                actions: [{ action: 'ver', title: '👀 Ver oferta' }, { action: 'cerrar', title: 'Cerrar' }]
+            });
+        },
+        nuevoProducto(nombre, precio) { this.enviar('🆕 Nuevo en TiendaMax', nombre + ' — $' + precio + ' USD'); },
+        rebaja(nombre, antes, ahora)  { this.enviar('🏷️ ¡Rebaja!', nombre + ': $' + antes + ' → $' + ahora + ' USD'); },
+        relampago(nombre, precio, min) { this.enviar('⚡ ¡Oferta relámpago! ' + (min||60) + ' min', nombre + ' — $' + precio + ' USD'); },
+        ofertaDia(nombre, precio)      { this.enviar('☀️ Oferta del día', nombre + ' — Solo hoy: $' + precio + ' USD'); }
+    };
+})();
