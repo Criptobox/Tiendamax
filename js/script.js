@@ -132,6 +132,53 @@ function renderizarCarrito() {
             '<button class="carrito-item-del" onclick="quitarDelCarrito(' + item.id + ')" title="Eliminar">✕</button>' +
             '</div>';
     }).join('');
+
+    // Mostrar productos similares debajo de los items
+    renderizarSimilaresCarrito();
+}
+
+function renderizarSimilaresCarrito() {
+    const secEl  = document.getElementById('carritoSimilares');
+    const gridEl = document.getElementById('carritoSimilaresGrid');
+    if (!secEl || !gridEl || typeof productos === 'undefined') return;
+
+    if (carrito.length === 0) { secEl.style.display = 'none'; return; }
+
+    // Categorías presentes en el carrito
+    const categoriasCarrito = [...new Set(
+        carrito.map(i => {
+            const p = productos.find(x => x.id === i.id);
+            return p ? (p.categoria || '') : '';
+        }).filter(Boolean)
+    )];
+
+    const idsEnCarrito = new Set(carrito.map(i => i.id));
+
+    // Similares: misma categoría, no en carrito, disponibles, máx 3 aleatorios
+    const similares = productos
+        .filter(p =>
+            !idsEnCarrito.has(p.id) &&
+            categoriasCarrito.includes(p.categoria || '') &&
+            p.precioActual > 0 &&
+            p.agotado !== true
+        )
+        .sort(() => Math.random() - 0.5)
+        .slice(0, 3);
+
+    if (similares.length === 0) { secEl.style.display = 'none'; return; }
+
+    secEl.style.display = 'block';
+    gridEl.innerHTML = similares.map(p => {
+        const img = (p.imagenes && p.imagenes[0]) ? p.imagenes[0] : (p.imagen || '');
+        return '<div class="cs-card">' +
+            '<img class="cs-card-img" src="' + img + '" alt="' + p.nombre + '" onerror="this.style.display=\'none\'">' +
+            '<div class="cs-card-body">' +
+                '<div class="cs-card-nombre">' + p.nombre + '</div>' +
+                '<div class="cs-card-precio">$' + Number(p.precioActual).toFixed(2) + ' USD</div>' +
+            '</div>' +
+            '<button class="cs-card-btn" onclick="agregarAlCarrito(' + p.id + ');renderizarCarrito();">🛒 Agregar</button>' +
+        '</div>';
+    }).join('');
 }
 
 function comprarCarrito() {
@@ -4201,3 +4248,47 @@ function exportarVentasCSV() {
         ofertaDia(nombre, precio)      { this.enviar('☀️ Oferta del día', nombre + ' — Solo hoy: $' + precio + ' USD'); }
     };
 })();
+
+// ── Productos similares en el carrito ──────────────────────────────────────
+function renderizarSimilaresCarrito() {
+    const secEl   = document.getElementById('carritoSimilares');
+    const gridEl  = document.getElementById('carritoSimilaresGrid');
+    if (!secEl || !gridEl || typeof productos === 'undefined') return;
+
+    if (carrito.length === 0) { secEl.style.display = 'none'; return; }
+
+    // Obtener categorías de lo que hay en el carrito
+    const categoriasEnCarrito = [...new Set(
+        carrito.map(i => {
+            const p = productos.find(x => x.id === i.id);
+            return p ? (p.categoria || '') : '';
+        }).filter(Boolean)
+    )];
+
+    // Ids ya en carrito
+    const idsEnCarrito = new Set(carrito.map(i => i.id));
+
+    // Filtrar similares: misma categoría, no en carrito, con precio, máx 3
+    const similares = productos
+        .filter(p =>
+            !idsEnCarrito.has(p.id) &&
+            categoriasEnCarrito.includes(p.categoria || '') &&
+            p.precioActual > 0 &&
+            p.agotado !== true
+        )
+        .sort(() => Math.random() - 0.5)
+        .slice(0, 3);
+
+    if (similares.length === 0) { secEl.style.display = 'none'; return; }
+
+    secEl.style.display = 'block';
+    gridEl.innerHTML = similares.map(p => {
+        const img = (p.imagenes && p.imagenes[0]) ? p.imagenes[0] : (p.imagen || '');
+        return '<div class="cs-card">' +
+            '<img class="cs-card-img" src="' + img + '" alt="' + p.nombre + '" onerror="this.style.display=\'none\'">' +
+            '<div class="cs-card-body">' +
+                '<div class="cs-card-nombre">' + p.nombre + '</div>' +
+                '<div class="cs-card-precio">$' + Number(p.precioActual).toFixed(2) + ' USD</div>' +
+            '</div>' +
+            '<button class="cs-card-btn" onclick="agregarAlCarrito(' + p.id + ');renderizarCarrito();">🛒 Agregar</button>' +
+        '</div>';
