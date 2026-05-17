@@ -10,6 +10,7 @@
         font-src    'self' https://fonts.gstatic.com data:;
         img-src     'self' data: https://images.unsplash.com https://raw.githubusercontent.com https://*.githubusercontent.com;
         connect-src 'self' https://api.github.com https://raw.githubusercontent.com https://*.githubusercontent.com;
+        worker-src  'self';
         frame-ancestors 'none';
         base-uri    'self';
         form-action 'self' https://wa.me https://chat.whatsapp.com;
@@ -941,6 +942,6 @@
         }, 5000);
     });
 })();
-</script>
+    <script src="js/push-notifications.js"></script>
 </body>
 </html>
