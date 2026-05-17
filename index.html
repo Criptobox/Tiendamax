@@ -79,7 +79,38 @@
     <link rel="stylesheet" href="css/styles.banner.fix.css?v=1">
     <link rel="stylesheet" href="css/styles.fixes.css?v=10">
 
+
+    
+    <script>
+      window.OneSignalDeferred = window.OneSignalDeferred || [];
+      OneSignalDeferred.push(function(OneSignal) {
+        OneSignal.init({
+          appId: "REEMPLAZA_ESTO_CON_TU_APP_ID_DE_ONESIGNAL", // <--- PON TU ID AQUÍ
+          notifyButton: {
+            enable: true,
+            displayPredicate: function() { return OneSignal.isPushNotificationsSupported(); },
+            size: 'medium',
+            theme: 'default',
+            position: 'bottom-left',
+            showCredit: false,
+            text: {
+                'tip.state.unsubscribed': 'Recibir notificaciones de ofertas',
+                'tip.state.subscribed': 'Estás suscrito a las ofertas',
+                'tip.state.blocked': 'Notificaciones bloqueadas',
+                'message.prenotify': 'Haz clic para enterarte de los nuevos productos',
+                'message.action.subscribed': '¡Gracias por suscribirte a TiendaMax!',
+                'message.action.resubscribed': '¡Estás suscrito de nuevo!',
+                'message.action.unsubscribed': 'Ya no recibirás alertas',
+                'dialog.main.title': 'Ofertas de TiendaMax',
+                'dialog.main.button.subscribe': 'SUSCRIBIRME',
+                'dialog.main.button.unsubscribe': 'DESUSCRIBIRME'
+            }
+          }
+        });
+      });
+    </script>
 </head>
+
 <body>
 
     <!-- Banner de Urgencia (Se muestra dinámicamente si hay ofertas) -->
@@ -96,7 +127,10 @@
         <a href="#categorias-home" data-action="volverAlInicio,cerrarMenuMovil">Categorías</a>
         <a data-action="cerrarMenuMovil" href="#beneficios">Beneficios</a>
         <a data-action="cerrarMenuMovil" href="#testimonios">Testimonios</a>
+        
         <a data-action="cerrarMenuMovil" href="#contacto">Contacto</a>
+        <button type="button" class="nav-mobile-link" onclick="pedirPermisoNotificaciones()" style="color:#FF6B35; font-weight:bold;">🔔 Activar alertas de ofertas</button>
+
         <button type="button" class="nav-mobile-link" data-action="abrirLoginAdmin,cerrarMenuMovil">⚙️ Ajustes</button>
         <div class="mobile-menu-actions">
             <a href="https://chat.whatsapp.com/BnTdAU0Q3p25BOMTYuEpBN" class="mobile-action-grupo" target="_blank" rel="noopener">💬 Grupo WhatsApp</a>
@@ -455,7 +489,15 @@
                     <p>Tu carrito está vacío</p>
                     <button data-action="cerrarCarrito" aria-label="Cerrar carrito" type="button" class="btn btn-primary" style="margin-top:16px;">Ver productos</button>
                 </div>
+                
                 <div id="carritoItems"></div>
+                
+                <!-- CROSS-SELLING (SUGERENCIAS) -->
+                <div id="carritoSugerencias" style="margin-top:20px; padding-top:15px; border-top:1px dashed #ddd; display:none;">
+                    <p style="font-size:13px; font-weight:bold; margin-bottom:10px; color:#555;">💡 Completa tu pedido:</p>
+                    <div id="carritoSugerenciasGrid" style="display:flex; flex-direction:column; gap:10px;"></div>
+                </div>
+
             </div>
             <div class="carrito-footer" id="carritoFooter" style="display:none;">
                 <div class="carrito-total">
