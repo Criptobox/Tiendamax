@@ -4427,8 +4427,14 @@ function mostrarVistaMeGusta() {
     vistaEl.style.display = 'block';
     vistaEl.innerHTML = '';
 
-    const liked = wishlist;
-    const prods = liked.map(id => productos.find(p => p.id === id)).filter(Boolean);
+    // Usar productos global si está cargado, si no leer de localStorage como fallback
+    const _catalogoFull = (typeof productos !== 'undefined' && productos.length > 0)
+        ? productos
+        : JSON.parse(localStorage.getItem('productos') || '[]');
+
+    const prods = wishlist
+        .map(id => _catalogoFull.find(p => String(p.id) === String(id)))
+        .filter(Boolean);
 
     const ofertaId = getOfertaDiaId();
 
