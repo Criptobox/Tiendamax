@@ -884,6 +884,7 @@ async function cargarDatosDesdeGitHub() {
 
         // Aplicar productos
         if (dataProd && dataProd.length > 0) {
+            // Guardar en localStorage ANTES de renderizar para que Instant tenga datos frescos
             const productosLocales = JSON.parse(localStorage.getItem('productos') || '[]');
             const mapaLocal = {};
             productosLocales.forEach(p => { mapaLocal[p.id] = p; });
@@ -910,6 +911,8 @@ async function cargarDatosDesdeGitHub() {
                 return p;
             });
             localStorage.setItem('productos', JSON.stringify(productos));
+            // Refrescar categorías con conteos reales ahora que productos está listo
+            renderizarCategoriasHomeInstant();
         }
 
         // Re-renderizar todo ahora que los productos están listos
@@ -2442,6 +2445,8 @@ function verificarOfertasYMostrarBanner() {
 
 function inicializarTienda() {
     console.log("🚀 Inicializando TiendaMax...");
+    // Restaurar badge del carrito inmediatamente al cargar
+    actualizarContadorCarrito();
     
     cargarDatosDesdeGitHub();
 
