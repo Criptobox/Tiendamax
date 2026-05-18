@@ -428,49 +428,6 @@
     </div>
     <!-- FIN VISTA MIS PEDIDOS -->
 
-    <!-- ===== VISTA ME GUSTA ===== -->
-    <div id="vistaMeGusta" style="display:none;">
-        <section class="productos-categoria">
-            <div class="container">
-                <div class="categoria-header">
-                    <div class="categoria-header-left">
-                        <button onclick="cerrarVistaMeGusta()" type="button" class="btn-volver">← Volver</button>
-                        <h2>❤️ Mis Me Gusta</h2>
-                    </div>
-                    <div id="meGustaStats" class="categoria-stats"></div>
-                </div>
-                <div class="productos-grid" id="meGustaGrid"></div>
-                <div id="meGustaVacio" style="display:none;text-align:center;padding:60px 20px;">
-                    <div style="font-size:52px;margin-bottom:16px;">🤍</div>
-                    <p style="font-size:15px;color:#aaa;margin-bottom:20px;">Aún no tienes productos guardados.<br>Toca el ❤️ en cualquier producto para guardarlo aquí.</p>
-                    <button onclick="cerrarVistaMeGusta();mostrarVistaCategoria('Todas')" class="btn btn-primary">Ver productos</button>
-                </div>
-            </div>
-        </section>
-    </div>
-    <!-- FIN VISTA ME GUSTA -->
-
-    <!-- ===== VISTA MIS PEDIDOS ===== -->
-    <div id="vistaPedidos" style="display:none;">
-        <section class="productos-categoria">
-            <div class="container">
-                <div class="categoria-header">
-                    <div class="categoria-header-left">
-                        <button onclick="cerrarVistaPedidos()" type="button" class="btn-volver">← Volver</button>
-                        <h2>📋 Mis Pedidos</h2>
-                    </div>
-                    <div id="pedidosStats" class="categoria-stats"></div>
-                </div>
-                <div id="pedidosLista"></div>
-                <div id="pedidosVacio" style="display:none;text-align:center;padding:60px 20px;">
-                    <div style="font-size:52px;margin-bottom:16px;">📭</div>
-                    <p style="font-size:15px;color:#aaa;margin-bottom:20px;">Aún no tienes pedidos.<br>Cuando hagas un pedido por WhatsApp aparecerá aquí.</p>
-                    <button onclick="cerrarVistaPedidos();mostrarVistaCategoria('Todas')" class="btn btn-primary">Ver productos</button>
-                </div>
-            </div>
-        </section>
-    </div>
-    <!-- FIN VISTA MIS PEDIDOS -->
 
     <!-- Banners móviles (solo visible en móvil, mismo estilo que los laterales de escritorio) -->
     <div class="mobile-bottom-banners" id="mobileBottomBanners">
