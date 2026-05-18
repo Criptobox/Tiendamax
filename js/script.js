@@ -4592,43 +4592,44 @@ function repetirPedido(pedidoId) {
 function _procesarDeepLink() {
     const hash = window.location.hash;
     if (!hash.startsWith('#producto-')) return;
-
     const id = parseInt(hash.replace('#producto-', ''), 10);
     if (!id) return;
 
-    // Intentar abrir el producto
-    const intento = () => {
-        const p = productos.find(x => x.id === id);
-        if (p) {
-            abrirDetalleProducto(id);
-            return true;
+    const abrir = () => {
+        // Buscar en array global primero
+        if (typeof productos !== 'undefined' && productos.length > 0) {
+            const p = productos.find(x => x.id === id || String(x.id) === String(id));
+            if (p) { abrirDetalleProducto(p.id); return true; }
         }
-        // Si productos está vacío, leer de localStorage
+        // Fallback: localStorage
         const local = JSON.parse(localStorage.getItem('productos') || '[]');
         const pLocal = local.find(x => x.id === id || String(x.id) === String(id));
         if (pLocal) {
-            // Esperar a que los datos globales estén listos
-            return false;
+            // Inyectar en el array global si está vacío y abrir
+            if (typeof productos !== 'undefined' && productos.length === 0) {
+                productos.push(...local);
+            }
+            abrirDetalleProducto(pLocal.id);
+            return true;
         }
         return false;
     };
 
-    // Intentar inmediatamente, y con retries hasta 4s
-    if (!intento()) {
-        const delays = [500, 1200, 2500, 4000];
-        delays.forEach(d => setTimeout(() => {
-            if (!_detalleProductoActual) intento();
-        }, d));
+    // Reintentar con polling cada 300ms hasta 8s
+    if (!abrir()) {
+        let intentos = 0;
+        const intervalo = setInterval(() => {
+            intentos++;
+            if (abrir() || intentos >= 26) clearInterval(intervalo);
+        }, 300);
     }
 }
 
-// Procesar al cargar y al cambiar hash (por si navegan con el botón atrás)
 window.addEventListener('hashchange', _procesarDeepLink);
 document.addEventListener('DOMContentLoaded', () => {
     if (window.location.hash.startsWith('#producto-')) {
-        // Pequeño delay para asegurar que el DOM y productos estén listos
-        setTimeout(_procesarDeepLink, 600);
-        setTimeout(_procesarDeepLink, 1800);
+        // Intentar inmediatamente con localStorage, y seguir reintentando
+        setTimeout(_procesarDeepLink, 100);
     }
 });
 
