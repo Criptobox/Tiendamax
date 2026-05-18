@@ -1222,7 +1222,7 @@ function renderizarCategoriasHome() {
         card.innerHTML = `
             <span class="cat-icon">${obtenerIconoCategoria(cat)}</span>
             <span class="cat-name">${cat}</span>
-            <span class="cat-count">${count} producto${count !== 1 ? 's' : ''}</span>
+            <span class="cat-count">${count === 0 ? '🕐 Próximamente' : count + ' producto' + (count !== 1 ? 's' : '')}</span>
         `;
         card.onclick = () => mostrarVistaCategoria(cat);
         grid.appendChild(card);
