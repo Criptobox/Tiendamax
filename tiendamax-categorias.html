@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TiendaMax · Categorías</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #F5F0E8;
+    --cream-dark: #EDE6D6;
+    --gold: #C9A84C;
+    --gold-light: #E2C47A;
+    --gold-pale: #F0DFA0;
+    --obsidian: #141210;
+    --charcoal: #1E1B16;
+    --charcoal-mid: #2A2620;
+    --charcoal-light: #3A352C;
+    --text-dark: #1A1714;
+    --text-muted: #7A7060;
+    --white: #FFFFFF;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--cream);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: var(--obsidian);
+    padding: 18px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    border-bottom: 1px solid var(--charcoal-light);
+  }
+
+  .logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    color: var(--gold);
+    letter-spacing: 0.04em;
+  }
+
+  .logo span {
+    color: var(--white);
+    font-weight: 400;
+    font-size: 13px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-left: 10px;
+    opacity: 0.5;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .header-icons {
+    display: flex;
+    gap: 18px;
+    align-items: center;
+  }
+
+  .header-icons svg {
+    width: 20px;
+    height: 20px;
+    color: rgba(255,255,255,0.6);
+    cursor: pointer;
+    transition: color 0.2s;
+  }
+
+  .header-icons svg:hover { color: var(--gold); }
+
+  /* ── HERO SECTION ── */
+  .hero {
+    background: var(--obsidian);
+    padding: 40px 24px 56px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 240px; height: 240px;
+    background: radial-gradient(circle, rgba(201,168,76,0.18) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: -40px; left: -40px;
+    width: 180px; height: 180px;
+    background: radial-gradient(circle, rgba(201,168,76,0.10) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+
+  .hero-label::before,
+  .hero-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--gold), transparent);
+    opacity: 0.5;
+  }
+
+  .hero-label span {
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    color: var(--gold);
+    text-transform: uppercase;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  .hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--white);
+    line-height: 1.15;
+    margin-bottom: 10px;
+    text-align: center;
+  }
+
+  .hero-title em {
+    font-style: normal;
+    color: var(--gold);
+  }
+
+  .hero-subtitle {
+    font-size: 14px;
+    color: rgba(255,255,255,0.45);
+    text-align: center;
+    line-height: 1.6;
+    font-weight: 300;
+    max-width: 280px;
+    margin: 0 auto;
+  }
+
+  /* ── WAVE DIVIDER ── */
+  .wave-divider {
+    background: var(--obsidian);
+    line-height: 0;
+  }
+
+  .wave-divider svg {
+    display: block;
+    width: 100%;
+  }
+
+  /* ── GRID SECTION ── */
+  .grid-section {
+    background: var(--cream);
+    padding: 28px 16px 40px;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+
+  /* ── CATEGORY CARD ── */
+  .card {
+    background: var(--charcoal);
+    border-radius: 16px;
+    padding: 20px 10px 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    border: 1px solid rgba(255,255,255,0.05);
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s cubic-bezier(.34,1.56,.64,1), box-shadow 0.25s;
+    animation: fadeUp 0.5s ease both;
+  }
+
+  .card:nth-child(1)  { animation-delay: 0.00s; }
+  .card:nth-child(2)  { animation-delay: 0.03s; }
+  .card:nth-child(3)  { animation-delay: 0.06s; }
+  .card:nth-child(4)  { animation-delay: 0.09s; }
+  .card:nth-child(5)  { animation-delay: 0.12s; }
+  .card:nth-child(6)  { animation-delay: 0.15s; }
+  .card:nth-child(7)  { animation-delay: 0.18s; }
+  .card:nth-child(8)  { animation-delay: 0.21s; }
+  .card:nth-child(9)  { animation-delay: 0.24s; }
+  .card:nth-child(10) { animation-delay: 0.27s; }
+  .card:nth-child(11) { animation-delay: 0.30s; }
+  .card:nth-child(12) { animation-delay: 0.33s; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(201,168,76,0.08) 0%, transparent 60%);
+    opacity: 0;
+    transition: opacity 0.3s;
+    border-radius: inherit;
+  }
+
+  .card:active {
+    transform: scale(0.95);
+  }
+
+  .card:hover::before,
+  .card.active::before {
+    opacity: 1;
+  }
+
+  /* Active state */
+  .card.active {
+    background: var(--charcoal-mid);
+    border-color: rgba(201,168,76,0.35);
+    box-shadow: 0 0 0 1px rgba(201,168,76,0.25), 0 8px 24px rgba(0,0,0,0.35);
+  }
+
+  .card.active .card-name {
+    color: var(--gold-light);
+  }
+
+  /* Gold accent line on active */
+  .card.active::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 20%; right: 20%;
+    height: 2px;
+    background: linear-gradient(to right, transparent, var(--gold), transparent);
+    border-radius: 0 0 2px 2px;
+  }
+
+  .card-emoji {
+    font-size: 32px;
+    line-height: 1;
+    filter:
+      drop-shadow(1px 1px 0px rgba(0,0,0,0.9))
+      drop-shadow(2px 2px 0px rgba(0,0,0,0.65))
+      drop-shadow(3px 3px 0px rgba(0,0,0,0.4))
+      drop-shadow(4px 4px 0px rgba(0,0,0,0.2))
+      drop-shadow(-1px -1px 0px rgba(255,255,255,0.12))
+      drop-shadow(0px -1px 1px rgba(255,255,255,0.08));
+    transition: transform 0.3s cubic-bezier(.34,1.56,.64,1), filter 0.3s;
+  }
+
+  .card.light .card-emoji {
+    filter:
+      drop-shadow(1px 1px 0px rgba(0,0,0,0.22))
+      drop-shadow(2px 2px 0px rgba(0,0,0,0.16))
+      drop-shadow(3px 3px 0px rgba(0,0,0,0.1))
+      drop-shadow(4px 4px 0px rgba(0,0,0,0.05))
+      drop-shadow(-1px -2px 0px rgba(255,255,255,1))
+      drop-shadow(0px -1px 2px rgba(255,255,255,0.85));
+  }
+
+  .card:hover .card-emoji,
+  .card.active .card-emoji {
+    transform: scale(1.12) translateY(-2px);
+  }
+
+  .card-name {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.88);
+    text-align: center;
+    transition: color 0.2s;
+  }
+
+  .card-count {
+    font-size: 11px;
+    font-weight: 400;
+    color: var(--gold);
+    opacity: 0.85;
+    letter-spacing: 0.02em;
+  }
+
+  .card-count.coming-soon {
+    color: rgba(255,255,255,0.3);
+    font-style: italic;
+    font-size: 10px;
+  }
+
+  /* ── CARD LIGHT VARIANT (TODOS) ── */
+  .card.light {
+    background: var(--cream-dark);
+    border-color: rgba(201,168,76,0.3);
+  }
+
+  .card.light .card-name {
+    color: var(--text-dark);
+  }
+
+  .card.light .card-count {
+    color: var(--gold);
+  }
+
+  .card.light.active {
+    background: var(--white);
+    border-color: var(--gold);
+    box-shadow: 0 4px 20px rgba(201,168,76,0.2);
+  }
+
+  /* ── BOTTOM BAR ── */
+  .bottom-bar {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: var(--obsidian);
+    border-top: 1px solid rgba(255,255,255,0.06);
+    display: flex;
+    justify-content: space-around;
+    padding: 12px 0 20px;
+    z-index: 100;
+  }
+
+  .tab {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+    opacity: 0.45;
+    transition: opacity 0.2s;
+  }
+
+  .tab.active { opacity: 1; }
+  .tab.active svg { color: var(--gold); }
+
+  .tab svg {
+    width: 22px; height: 22px;
+    color: rgba(255,255,255,0.7);
+  }
+
+  .tab-label {
+    font-size: 9px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.5);
+    font-weight: 500;
+  }
+
+  .tab.active .tab-label {
+    color: var(--gold);
+  }
+
+  /* spacer for fixed bottom bar */
+  .spacer { height: 80px; }
+
+  /* ── CART BADGE ── */
+  .cart-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+  .cart-badge {
+    position: absolute;
+    top: -6px; right: -7px;
+    background: var(--gold);
+    color: var(--obsidian);
+    font-size: 9px;
+    font-weight: 700;
+    min-width: 16px;
+    height: 16px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 4px;
+    line-height: 1;
+    border: 1.5px solid var(--obsidian);
+    animation: badgePop 0.4s cubic-bezier(.34,1.56,.64,1) 0.3s both;
+  }
+  @keyframes badgePop {
+    from { transform: scale(0); opacity: 0; }
+    to   { transform: scale(1); opacity: 1; }
+  }
+
+  /* ── SKELETON ── */
+  .skeleton-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+  .skeleton-card {
+    background: var(--charcoal);
+    border-radius: 16px;
+    padding: 20px 10px 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    border: 1px solid rgba(255,255,255,0.04);
+  }
+  .sk {
+    background: linear-gradient(90deg, #2a2620 25%, #3a3228 50%, #2a2620 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.4s infinite;
+    border-radius: 6px;
+  }
+  .sk-emoji { width: 36px; height: 36px; border-radius: 50%; }
+  .sk-name  { width: 60%; height: 10px; margin-top: 2px; }
+  .sk-count { width: 45%; height: 9px; opacity: 0.6; }
+  @keyframes shimmer {
+    0%   { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+
+  /* ── PAGE TRANSITION OVERLAY ── */
+  .page-overlay {
+    position: fixed;
+    inset: 0;
+    background: var(--obsidian);
+    z-index: 999;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    pointer-events: none;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease;
+  }
+  .page-overlay.show {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: all;
+    transition: none; /* instant on */
+  }
+  .page-overlay.hide {
+    opacity: 0;
+    visibility: visible;
+    pointer-events: none;
+    transition: opacity 0.3s ease; /* fade out only */
+  }
+  .overlay-emoji {
+    font-size: 52px;
+    filter: drop-shadow(0 4px 14px rgba(201,168,76,0.35));
+    animation: overlayFloat 1.4s ease-in-out infinite alternate;
+  }
+  @keyframes overlayFloat {
+    from { transform: translateY(0px); }
+    to   { transform: translateY(-7px); }
+  }
+  .overlay-label {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    color: var(--white);
+    letter-spacing: 0.02em;
+  }
+  .overlay-label em { color: var(--gold); font-style: normal; }
+  .overlay-bar {
+    width: 120px; height: 2px;
+    background: var(--charcoal-light);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-top: 4px;
+  }
+  .overlay-progress {
+    height: 100%;
+    background: linear-gradient(to right, var(--gold), var(--gold-light));
+    border-radius: 2px;
+    width: 0%;
+    transition: width 0.5s ease-out;
+  }
+
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="logo">TiendaMax<span>Store</span></div>
+  <div class="header-icons">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <div class="cart-wrap">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+      <span class="cart-badge" id="cartBadge">3</span>
+    </div>
+  </div>
+</header>
+
+<!-- HERO (DARK) -->
+<section class="hero">
+  <div class="hero-label">
+    <span>Navega por sección</span>
+  </div>
+  <h1 class="hero-title">Explora por<br><em>Categoría</em></h1>
+  <p class="hero-subtitle">Selecciona una categoría para descubrir todos sus productos</p>
+</section>
+
+<!-- WAVE TRANSITION -->
+<div class="wave-divider">
+  <svg viewBox="0 0 390 32" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" height="32">
+    <path d="M0,0 C80,32 160,0 195,16 C230,32 310,0 390,16 L390,0 Z" fill="#141210"/>
+  </svg>
+</div>
+
+<!-- PAGE TRANSITION OVERLAY -->
+<div class="page-overlay" id="pageOverlay">
+  <div class="overlay-emoji" id="overlayEmoji">🛍️</div>
+  <div class="overlay-label">Cargando <em id="overlayName">Todos</em></div>
+  <div class="overlay-bar"><div class="overlay-progress" id="overlayProgress"></div></div>
+</div>
+
+<!-- GRID (LIGHT BG) -->
+<section class="grid-section">
+
+  <!-- SKELETON (shown first) -->
+  <div class="skeleton-grid" id="skeletonGrid">
+    <!-- 12 skeleton cards -->
+    <div class="skeleton-card"><div class="sk sk-emoji"></div><div class="sk sk-name"></div><div class="sk sk-count"></div></div>
+    <div class="skeleton-card"><div class="sk sk-emoji"></div><div class="sk sk-name"></div><div class="sk sk-count"></div></div>
+    <div class="skeleton-card"><div class="sk sk-emoji"></div><div class="sk sk-name"></div><div class="sk sk-count"></div></div>
+    <div class="skeleton-card"><div class="sk sk-emoji"></div><div class="sk sk-name"></div><div class="sk sk-count"></div></div>
+    <div class="skeleton-card"><div class="sk sk-emoji"></div><div class="sk sk-name"></div><div class="sk sk-count"></div></div>
+    <div class="skeleton-card"><div class="sk sk-emoji"></div><div class="sk sk-name"></div><div class="sk sk-count"></div></div>
+    <div class="skeleton-card"><div class="sk sk-emoji"></div><div class="sk sk-name"></div><div class="sk sk-count"></div></div>
+    <div class="skeleton-card"><div class="sk sk-emoji"></div><div class="sk sk-name"></div><div class="sk sk-count"></div></div>
+    <div class="skeleton-card"><div class="sk sk-emoji"></div><div class="sk sk-name"></div><div class="sk sk-count"></div></div>
+    <div class="skeleton-card"><div class="sk sk-emoji"></div><div class="sk sk-name"></div><div class="sk sk-count"></div></div>
+    <div class="skeleton-card"><div class="sk sk-emoji"></div><div class="sk sk-name"></div><div class="sk sk-count"></div></div>
+    <div class="skeleton-card"><div class="sk sk-emoji"></div><div class="sk sk-name"></div><div class="sk sk-count"></div></div>
+  </div>
+
+  <!-- REAL GRID (hidden until loaded) -->
+  <div class="grid" id="categoryGrid" style="display:none;">
+
+    <div class="card light active" data-id="todos" data-emoji="🛍️" data-name="Todos">
+      <div class="card-emoji">🛍️</div>
+      <div class="card-name">Todos</div>
+      <div class="card-count">67 productos</div>
+    </div>
+
+    <div class="card" data-id="wifi" data-emoji="📡" data-name="WiFi">
+      <div class="card-emoji">📡</div>
+      <div class="card-name">WiFi</div>
+      <div class="card-count">10 productos</div>
+    </div>
+
+    <div class="card" data-id="energia" data-emoji="⚡" data-name="Energía">
+      <div class="card-emoji">⚡</div>
+      <div class="card-name">Energía</div>
+      <div class="card-count">12 productos</div>
+    </div>
+
+    <div class="card" data-id="celulares" data-emoji="📱" data-name="Celulares">
+      <div class="card-emoji">📱</div>
+      <div class="card-name">Celulares</div>
+      <div class="card-count">3 productos</div>
+    </div>
+
+    <div class="card" data-id="utiles" data-emoji="🔧" data-name="Útiles">
+      <div class="card-emoji">🔧</div>
+      <div class="card-name">Útiles</div>
+      <div class="card-count">8 productos</div>
+    </div>
+
+    <div class="card" data-id="carros" data-emoji="🚗" data-name="Carros">
+      <div class="card-emoji">🚗</div>
+      <div class="card-name">Carros</div>
+      <div class="card-count">15 productos</div>
+    </div>
+
+    <div class="card" data-id="ropa" data-emoji="👗" data-name="Ropa">
+      <div class="card-emoji">👗</div>
+      <div class="card-name">Ropa</div>
+      <div class="card-count">1 producto</div>
+    </div>
+
+    <div class="card" data-id="lenceria" data-emoji="👙" data-name="Lencería">
+      <div class="card-emoji">👙</div>
+      <div class="card-name">Lencería</div>
+      <div class="card-count coming-soon">Próximamente</div>
+    </div>
+
+    <div class="card" data-id="seguridad" data-emoji="🔒" data-name="Seguridad">
+      <div class="card-emoji">🔒</div>
+      <div class="card-name">Seguridad</div>
+      <div class="card-count">7 productos</div>
+    </div>
+
+    <div class="card" data-id="hogar" data-emoji="🏠" data-name="Hogar">
+      <div class="card-emoji">🏠</div>
+      <div class="card-name">Hogar</div>
+      <div class="card-count">5 productos</div>
+    </div>
+
+    <div class="card" data-id="juegos" data-emoji="🎮" data-name="Juegos">
+      <div class="card-emoji">🎮</div>
+      <div class="card-name">Juegos</div>
+      <div class="card-count">4 productos</div>
+    </div>
+
+    <div class="card" data-id="motos" data-emoji="🛵" data-name="Motos">
+      <div class="card-emoji">🛵</div>
+      <div class="card-name">Motos</div>
+      <div class="card-count">6 productos</div>
+    </div>
+
+  </div>
+</section>
+
+<div class="spacer"></div>
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-bar">
+  <div class="tab active">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+    <span class="tab-label">Categorías</span>
+  </div>
+  <div class="tab">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    <span class="tab-label">Inicio</span>
+  </div>
+  <div class="tab">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+    <span class="tab-label">Carrito</span>
+  </div>
+  <div class="tab">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    <span class="tab-label">Perfil</span>
+  </div>
+</nav>
+
+<script>
+  const skeleton  = document.getElementById('skeletonGrid');
+  const realGrid  = document.getElementById('categoryGrid');
+  const overlay   = document.getElementById('pageOverlay');
+  const oEmoji    = document.getElementById('overlayEmoji');
+  const oName     = document.getElementById('overlayName');
+  const oProgress = document.getElementById('overlayProgress');
+
+  // ── Skeleton → real grid after 800ms ──
+  setTimeout(() => {
+    skeleton.style.display = 'none';
+    realGrid.style.display = 'grid';
+  }, 800);
+
+  // ── Card selection + page transition ──
+  realGrid.addEventListener('click', e => {
+    const card = e.target.closest('.card');
+    if (!card) return;
+
+    // Update active state
+    document.querySelectorAll('.card').forEach(c => c.classList.remove('active'));
+    card.classList.add('active');
+
+    // Show transition overlay
+    const emoji = card.dataset.emoji;
+    const name  = card.dataset.name;
+    oEmoji.textContent   = emoji;
+    oName.textContent    = name;
+    oProgress.style.width = '0%';
+
+    overlay.classList.remove('hide');
+    overlay.classList.add('show');
+    // Trigger progress bar
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => { oProgress.style.width = '100%'; });
+    });
+
+    // Fade out after animation completes
+    setTimeout(() => {
+      overlay.classList.remove('show');
+      overlay.classList.add('hide');
+      setTimeout(() => overlay.classList.remove('hide'), 300);
+    }, 700);
+  });
+</script>
+</body>
+</html>
