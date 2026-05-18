@@ -36,7 +36,7 @@ function actualizarContadorCarrito() {
 // ══════════════════════════════════════════════════════════════
 //  ME GUSTA / WISHLIST
 // ══════════════════════════════════════════════════════════════
-let wishlist = JSON.parse(localStorage.getItem('wishlist_v1') || '[]');
+let wishlist = JSON.parse(localStorage.getItem('wishlist_v1') || '[]').map(String);
 
 function guardarWishlist() {
     localStorage.setItem('wishlist_v1', JSON.stringify(wishlist));
@@ -44,6 +44,7 @@ function guardarWishlist() {
 
 function toggleMeGusta(id, e) {
     if (e) { e.stopPropagation(); e.preventDefault(); }
+    id = String(id);
     const idx = wishlist.indexOf(id);
     const agregando = idx === -1;
     if (agregando) {
@@ -140,6 +141,7 @@ function flyToHeart(e) {
 }
 
 function getMeGustaHTML(id) {
+    id = String(id);
     const liked = wishlist.includes(id);
     return '<button class="btn-megusta' + (liked ? ' liked' : '') + '" ' +
         'data-like-id="' + id + '" ' +
@@ -4413,77 +4415,65 @@ function exportarVentasCSV() {
 //  VISTA: MIS ME GUSTA
 // ══════════════════════════════════════════════════════════════
 function mostrarVistaMeGusta() {
-    // Ocultar otras vistas
-    document.getElementById('vistaInicio').style.display = 'none';
+    document.getElementById('vistaInicio').style.display    = 'none';
     document.getElementById('vistaCategoria').style.display = 'none';
+    const vPed = document.getElementById('vistaPedidos');
+    if (vPed) vPed.style.display = 'none';
 
-    let vistaEl = document.getElementById('vistaMeGusta');
-    if (!vistaEl) {
-        vistaEl = document.createElement('div');
-        vistaEl.id = 'vistaMeGusta';
-        document.querySelector('main') && document.querySelector('main').appendChild(vistaEl)
-            || document.body.appendChild(vistaEl);
-    }
+    const vistaEl = document.getElementById('vistaMeGusta');
+    if (!vistaEl) return;
     vistaEl.style.display = 'block';
-    vistaEl.innerHTML = '';
 
-    // Usar productos global si está cargado, si no leer de localStorage como fallback
-    const _catalogoFull = (typeof productos !== 'undefined' && productos.length > 0)
+    // Catálogo: global si ya cargó, si no localStorage
+    const cat = (typeof productos !== 'undefined' && productos.length > 0)
         ? productos
         : JSON.parse(localStorage.getItem('productos') || '[]');
 
     const prods = wishlist
-        .map(id => _catalogoFull.find(p => String(p.id) === String(id)))
+        .map(id => cat.find(p => String(p.id) === String(id)))
         .filter(Boolean);
 
-    const ofertaId = getOfertaDiaId();
+    const statsEl  = document.getElementById('meGustaStats');
+    const grid     = document.getElementById('meGustaGrid');
+    const vacioEl  = document.getElementById('meGustaVacio');
+    if (!grid) return;
 
-    vistaEl.innerHTML = `
-    <section class="productos-categoria">
-      <div class="container">
-        <div class="categoria-header">
-          <div class="categoria-header-left">
-            <button onclick="cerrarVistaMeGusta()" type="button" class="btn-volver">← Volver</button>
-            <h2>❤️ Mis Me Gusta</h2>
-          </div>
-          <div class="categoria-stats" style="font-size:13px;color:#aaa;">${prods.length} producto${prods.length !== 1 ? 's' : ''} guardado${prods.length !== 1 ? 's' : ''}</div>
-        </div>
-        ${prods.length === 0 ? `
-          <div style="text-align:center;padding:60px 20px;">
-            <div style="font-size:52px;margin-bottom:16px;">🤍</div>
-            <p style="font-size:15px;color:#aaa;margin-bottom:20px;">Aún no tienes productos guardados.<br>Toca el ❤️ en cualquier producto para guardarlo aquí.</p>
-            <button onclick="cerrarVistaMeGusta();mostrarVistaCategoria('Todas')" class="btn btn-primary">Ver productos</button>
-          </div>
-        ` : `<div class="productos-grid" id="meGustaGrid"></div>`}
-      </div>
-    </section>`;
+    if (statsEl) statsEl.textContent = prods.length + ' producto' + (prods.length !== 1 ? 's' : '') + ' guardado' + (prods.length !== 1 ? 's' : '');
 
-    if (prods.length > 0) {
-        const grid = document.getElementById('meGustaGrid');
+    if (prods.length === 0) {
+        grid.style.display  = 'none';
+        if (vacioEl) vacioEl.style.display = 'block';
+    } else {
+        if (vacioEl) vacioEl.style.display = 'none';
+        grid.style.display = '';
+        grid.innerHTML = '';
+        const ofertaId = getOfertaDiaId();
         prods.forEach(producto => {
-            const esAgotado  = producto.stock === 0;
+            const esAgotado   = producto.stock === 0;
             const esOfertaDia = String(producto.id) === String(ofertaId);
             const card = document.createElement('div');
             card.className = 'producto-card' + (esAgotado ? ' card-agotado' : '');
             card.onclick = () => abrirDetalleProducto(producto.id);
             card.style.position = 'relative';
+            const stockHTML = esAgotado
+                ? '<div class="stock" style="color:#e74c3c;font-weight:700;">❌ Agotado</div>'
+                : (producto.stock <= 3
+                    ? '<div class="stock stock-urgente">⚠️ ¡Solo quedan ' + producto.stock + '!</div>'
+                    : '<div class="stock">📦 Stock: ' + producto.stock + ' unidades</div>') +
+                  '<button class="btn-pedir-card" onclick="event.stopPropagation();tmComprar(event,' + producto.id + ',\'' + producto.nombre.replace(/'/g, '') + '\')">🛒 Pedir</button>';
             card.innerHTML =
                 (esOfertaDia ? '<div class="badge-oferta-dia">' + getOfertaDiaTexto() + '</div>' :
-                 esAgotado ? '<div class="badge-agotado">AGOTADO</div>' :
+                 esAgotado   ? '<div class="badge-agotado">AGOTADO</div>' :
                  producto.masVendido ? '<div class="badge-vendido">🔥 Más Vendido</div>' : '') +
                 '<div class="producto-image">' +
                     getMeGustaHTML(producto.id) +
-                    '<img src="' + producto.imagen + '" alt="' + producto.nombre + '" loading="lazy">' +
+                    '<img src="' + (producto.imagen || '') + '" alt="' + producto.nombre + '" loading="lazy">' +
                     (producto.descuento > 0 ? '<div class="badge">-' + producto.descuento + '%</div>' : '') +
                 '</div>' +
                 '<h3>' + producto.nombre + '</h3>' +
-                '<p class="producto-description">' + producto.descripcion + '</p>' +
-                '<p class="precio"><span class="precio-actual">$' + producto.precioActual.toFixed(2) + ' USD</span></p>' +
-                (esAgotado
-                    ? '<div class="stock" style="color:#e74c3c;font-weight:700;">❌ Agotado</div>'
-                    : (producto.stock <= 3 ? '<div class="stock stock-urgente">⚠️ ¡Solo quedan ' + producto.stock + '!</div>'
-                                           : '<div class="stock">📦 Stock: ' + producto.stock + ' unidades</div>') +
-                      '<button class="btn-pedir-card" onclick="event.stopPropagation();tmComprar(event,' + producto.id + ',\'' + producto.nombre.replace(/'/g, '') + '\')" type="button">🛒 Pedir</button>');
+                '<p class="producto-description">' + (producto.descripcion || '') + '</p>' +
+                '<p class="precio"><span class="precio-actual">$' + Number(producto.precioActual).toFixed(2) + ' USD</span></p>' +
+                stockHTML;
             grid.appendChild(card);
         });
     }
@@ -4512,37 +4502,28 @@ function guardarPedidoCliente(itemsCarrito) {
 }
 
 function mostrarVistaPedidos() {
-    document.getElementById('vistaInicio').style.display   = 'none';
+    document.getElementById('vistaInicio').style.display    = 'none';
     document.getElementById('vistaCategoria').style.display = 'none';
+    const vMG = document.getElementById('vistaMeGusta');
+    if (vMG) vMG.style.display = 'none';
 
-    let vistaEl = document.getElementById('vistaPedidos');
-    if (!vistaEl) {
-        vistaEl = document.createElement('div');
-        vistaEl.id = 'vistaPedidos';
-        document.querySelector('main') && document.querySelector('main').appendChild(vistaEl)
-            || document.body.appendChild(vistaEl);
-    }
+    const vistaEl = document.getElementById('vistaPedidos');
+    if (!vistaEl) return;
     vistaEl.style.display = 'block';
 
-    const pedidos = JSON.parse(localStorage.getItem('pedidos_cliente_v1') || '[]');
+    const pedidos   = JSON.parse(localStorage.getItem('pedidos_cliente_v1') || '[]');
+    const statsEl   = document.getElementById('pedidosStats');
+    const listaEl   = document.getElementById('pedidosLista');
+    const vacioEl   = document.getElementById('pedidosVacio');
 
-    vistaEl.innerHTML = `
-    <section class="productos-categoria">
-      <div class="container">
-        <div class="categoria-header">
-          <div class="categoria-header-left">
-            <button onclick="cerrarVistaPedidos()" type="button" class="btn-volver">← Volver</button>
-            <h2>📋 Mis Pedidos</h2>
-          </div>
-          <div class="categoria-stats" style="font-size:13px;color:#aaa;">${pedidos.length} pedido${pedidos.length !== 1 ? 's' : ''}</div>
-        </div>
-        ${pedidos.length === 0 ? `
-          <div style="text-align:center;padding:60px 20px;">
-            <div style="font-size:52px;margin-bottom:16px;">📭</div>
-            <p style="font-size:15px;color:#aaa;margin-bottom:20px;">Aún no tienes pedidos.<br>Cuando hagas un pedido por WhatsApp aparecerá aquí.</p>
-            <button onclick="cerrarVistaPedidos();mostrarVistaCategoria('Todas')" class="btn btn-primary">Ver productos</button>
-          </div>
-        ` : pedidos.map(p => `
+    if (statsEl) statsEl.textContent = pedidos.length + ' pedido' + (pedidos.length !== 1 ? 's' : '');
+
+    if (pedidos.length === 0) {
+        if (listaEl) listaEl.innerHTML = '';
+        if (vacioEl) vacioEl.style.display = 'block';
+    } else {
+        if (vacioEl) vacioEl.style.display = 'none';
+        if (listaEl) listaEl.innerHTML = pedidos.map(p => `
           <div class="pedido-card">
             <div class="pedido-card-header">
               <span class="pedido-fecha">📅 ${p.fecha}</span>
@@ -4559,10 +4540,8 @@ function mostrarVistaPedidos() {
             </div>
             <button class="pedido-btn-repetir" onclick="repetirPedido(${p.id})">🔄 Pedir de nuevo</button>
           </div>
-        `).join('')}
-      </div>
-    </section>`;
-
+        `).join('');
+    }
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
