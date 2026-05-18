@@ -1581,6 +1581,8 @@ function abrirDetalleProducto(id) {
     const p = productos.find(prod => prod.id === id);
     if (!p) return;
     _detalleProductoActual = p;
+    // Deep link: actualizar URL sin recargar
+    history.replaceState(null, '', '#producto-' + id);
 
     // Nombre
     document.getElementById('detailProductName').textContent = p.nombre;
@@ -1742,6 +1744,8 @@ function cerrarDetalleModal() {
     modal.style.removeProperty('display');
     document.body.style.overflow = '';
     _detalleProductoActual = null;
+    // Limpiar el hash de la URL
+    history.replaceState(null, '', window.location.pathname + window.location.search);
 }
 
 function toggleZoomImagen(img) {
@@ -1758,11 +1762,12 @@ function abrirPanelCompartir() {
 function _getShareData() {
     const p = _detalleProductoActual;
     if (!p) return null;
+    const url = 'https://tiendamax.org/#producto-' + p.id;
     return {
         nombre: p.nombre,
         precio: p.precioActual.toFixed(2),
-        texto: `🛍️ *${p.nombre}* — $${p.precioActual.toFixed(2)} USD\n📦 Stock disponible\n👉 tiendamax.org`,
-        url: 'https://tiendamax.org'
+        texto: '🛍️ *' + p.nombre + '* — $' + p.precioActual.toFixed(2) + ' USD\n📦 Stock disponible\n👉 ' + url,
+        url: url
     };
 }
 
@@ -1794,10 +1799,11 @@ function compartirNativo() {
     const p = _detalleProductoActual;
     if (!p) return;
     const texto = `🛍️ ${p.nombre} — $${p.precioActual.toFixed(2)} USD\n📦 Stock disponible\n👉 tiendamax.org`;
+    const urlProducto = 'https://tiendamax.org/#producto-' + p.id;
     if (navigator.share) {
-        navigator.share({ title: p.nombre, text: texto, url: 'https://tiendamax.org' }).catch(() => {});
+        navigator.share({ title: p.nombre, text: texto, url: urlProducto }).catch(() => {});
     } else {
-        navigator.clipboard.writeText(texto).then(() => mostrarNotificacion('📤 Texto copiado para compartir'));
+        navigator.clipboard.writeText(texto + '\n' + urlProducto).then(() => mostrarNotificacion('📤 Texto copiado para compartir'));
     }
 }
 
@@ -1806,9 +1812,24 @@ function compartirProducto() {
 }
 
 function copiarLinkProducto() {
-    navigator.clipboard.writeText('https://tiendamax.org').then(() =>
-        mostrarNotificacion('🔗 Enlace copiado')
-    ).catch(() => mostrarNotificacion('❌ No se pudo copiar', 'error'));
+    const p = _detalleProductoActual;
+    const url = p
+        ? 'https://tiendamax.org/#producto-' + p.id
+        : 'https://tiendamax.org';
+    navigator.clipboard.writeText(url).then(() =>
+        mostrarNotificacion('🔗 Enlace copiado — ¡listo para compartir!')
+    ).catch(() => {
+        // Fallback para dispositivos sin clipboard API
+        const ta = document.createElement('textarea');
+        ta.value = url;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        mostrarNotificacion('🔗 Enlace copiado');
+    });
 }
 
 function contactarProducto(nombre) {
@@ -4562,6 +4583,54 @@ function repetirPedido(pedidoId) {
     cerrarVistaPedidos();
     setTimeout(abrirCarrito, 300);
 }
+
+
+// ══════════════════════════════════════════════════════════════
+//  DEEP LINKS — Abrir producto directo desde URL compartida
+//  Ejemplo: tiendamax.org/#producto-1777923552923
+// ══════════════════════════════════════════════════════════════
+function _procesarDeepLink() {
+    const hash = window.location.hash;
+    if (!hash.startsWith('#producto-')) return;
+
+    const id = parseInt(hash.replace('#producto-', ''), 10);
+    if (!id) return;
+
+    // Intentar abrir el producto
+    const intento = () => {
+        const p = productos.find(x => x.id === id);
+        if (p) {
+            abrirDetalleProducto(id);
+            return true;
+        }
+        // Si productos está vacío, leer de localStorage
+        const local = JSON.parse(localStorage.getItem('productos') || '[]');
+        const pLocal = local.find(x => x.id === id || String(x.id) === String(id));
+        if (pLocal) {
+            // Esperar a que los datos globales estén listos
+            return false;
+        }
+        return false;
+    };
+
+    // Intentar inmediatamente, y con retries hasta 4s
+    if (!intento()) {
+        const delays = [500, 1200, 2500, 4000];
+        delays.forEach(d => setTimeout(() => {
+            if (!_detalleProductoActual) intento();
+        }, d));
+    }
+}
+
+// Procesar al cargar y al cambiar hash (por si navegan con el botón atrás)
+window.addEventListener('hashchange', _procesarDeepLink);
+document.addEventListener('DOMContentLoaded', () => {
+    if (window.location.hash.startsWith('#producto-')) {
+        // Pequeño delay para asegurar que el DOM y productos estén listos
+        setTimeout(_procesarDeepLink, 600);
+        setTimeout(_procesarDeepLink, 1800);
+    }
+});
 
 // ══════════════════════════════════════════════════════════════
 //  NOTIFICACIÓN DE CARRITO ABANDONADO
