@@ -4468,8 +4468,9 @@ function mostrarVistaMeGusta() {
     }
 
     const prods = wishlist
-        .map(id => cat.find(p => String(p.id) === String(id)))
-        .filter(Boolean);
+        .map(id => cat.find(p => String(p.id) === String(id)) || cat.find(p => String(p.id).includes(String(id)) || String(id).includes(String(p.id))))
+        .filter(Boolean)
+        .filter((p, i, arr) => arr.findIndex(x => String(x.id) === String(p.id)) === i);
 
     if (statsEl) statsEl.textContent = prods.length + ' producto' + (prods.length !== 1 ? 's' : '') + ' guardado' + (prods.length !== 1 ? 's' : '');
 
