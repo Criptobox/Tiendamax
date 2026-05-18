@@ -4472,6 +4472,14 @@ function mostrarVistaMeGusta() {
         .filter(Boolean)
         .filter((p, i, arr) => arr.findIndex(x => String(x.id) === String(p.id)) === i);
 
+    // Diagnóstico visible en pantalla
+    const diagEl = document.getElementById('meGustaDiag');
+    if (diagEl) {
+        const wids = wishlist.join(', ') || '(vacía)';
+        const cids = cat.slice(0,5).map(p=>p.id).join(', ') || '(vacío)';
+        diagEl.innerHTML = '🔍 Wishlist IDs: <b>' + wids + '</b><br>📦 Catálogo IDs (primeros 5): <b>' + cids + '</b><br>✅ Encontrados: <b>' + prods.length + '</b>';
+    }
+
     if (statsEl) statsEl.textContent = prods.length + ' producto' + (prods.length !== 1 ? 's' : '') + ' guardado' + (prods.length !== 1 ? 's' : '');
 
     if (prods.length === 0) {
