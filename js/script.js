@@ -4453,32 +4453,26 @@ function mostrarVistaMeGusta() {
     const vacioEl  = document.getElementById('meGustaVacio');
     if (!grid) return;
 
-    // Catálogo: global si ya cargó, si no localStorage
-    let cat = (typeof productos !== 'undefined' && productos.length > 0)
+    // Usar siempre el array global productos (más confiable que localStorage)
+    const cat = (typeof productos !== 'undefined' && productos.length > 0)
         ? productos
         : JSON.parse(localStorage.getItem('productos') || '[]');
 
-    // Si el catálogo aún no está listo pero hay items en wishlist, intentar de nuevo en 800ms
+    // Si aún no hay catálogo, esperar hasta 5 segundos
     if (cat.length === 0 && wishlist.length > 0) {
-        if (statsEl) statsEl.textContent = 'Cargando productos...';
+        if (statsEl) statsEl.textContent = 'Cargando...';
         grid.style.display = 'none';
         if (vacioEl) vacioEl.style.display = 'none';
-        setTimeout(() => mostrarVistaMeGusta(), 800);
+        mostrarVistaMeGusta._t = (mostrarVistaMeGusta._t || 0) + 1;
+        if (mostrarVistaMeGusta._t < 7) setTimeout(mostrarVistaMeGusta, 700);
+        else mostrarVistaMeGusta._t = 0;
         return;
     }
+    mostrarVistaMeGusta._t = 0;
 
     const prods = wishlist
-        .map(id => cat.find(p => String(p.id) === String(id)) || cat.find(p => String(p.id).includes(String(id)) || String(id).includes(String(p.id))))
-        .filter(Boolean)
-        .filter((p, i, arr) => arr.findIndex(x => String(x.id) === String(p.id)) === i);
-
-    // Diagnóstico visible en pantalla
-    const diagEl = document.getElementById('meGustaDiag');
-    if (diagEl) {
-        const wids = wishlist.join(', ') || '(vacía)';
-        const cids = cat.slice(0,5).map(p=>p.id).join(', ') || '(vacío)';
-        diagEl.innerHTML = '🔍 Wishlist IDs: <b>' + wids + '</b><br>📦 Catálogo IDs (primeros 5): <b>' + cids + '</b><br>✅ Encontrados: <b>' + prods.length + '</b>';
-    }
+        .map(wid => cat.find(p => String(p.id) === String(wid)))
+        .filter(Boolean);
 
     if (statsEl) statsEl.textContent = prods.length + ' producto' + (prods.length !== 1 ? 's' : '') + ' guardado' + (prods.length !== 1 ? 's' : '');
 
