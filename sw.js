@@ -6,7 +6,7 @@
 //  - Soporte de Notificaciones Push
 // ═══════════════════════════════════════════════════════
 
-const CACHE_NAME = 'tiendamax-v5';
+const CACHE_NAME = 'tiendamax-v6';
 const STATIC_ASSETS = [
     '/index.html',
     '/css/styles.css',
@@ -70,7 +70,23 @@ self.addEventListener('fetch', e => {
         return;
     }
 
-    // Shell estático → Cache-first, actualiza en background
+    // JS y CSS críticos → Network-first (siempre la versión más nueva)
+    if (path.endsWith('.js') || path.endsWith('.css')) {
+        e.respondWith(
+            fetch(e.request)
+                .then(res => {
+                    if (res.ok) {
+                        const clone = res.clone();
+                        caches.open(CACHE_NAME).then(c => c.put(e.request, clone));
+                    }
+                    return res;
+                })
+                .catch(() => caches.match(e.request))
+        );
+        return;
+    }
+
+    // Resto del shell estático → Cache-first, actualiza en background
     if (STATIC_ASSETS.some(a => path.endsWith(a.split('/').pop()))) {
         e.respondWith(
             caches.open(CACHE_NAME).then(cache =>
