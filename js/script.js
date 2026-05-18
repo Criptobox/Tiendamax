@@ -1008,6 +1008,9 @@ async function cargarDatosDesdeGitHub() {
         actualizarListaCategorias();
         verificarOfertasYMostrarBanner();
         inicializarSliderPrecios();
+        // Refrescar Me Gusta si está visible
+        const vMG = document.getElementById('vistaMeGusta');
+        if (vMG && vMG.style.display !== 'none') mostrarVistaMeGusta();
         console.log('✅ Datos sincronizados con GitHub');
     } catch (e) {
         console.log('ℹ️ Iniciando con datos locales');
@@ -2911,7 +2914,7 @@ function renderizarCategoriasHomeInstant() {
         const count = localProds.filter(p => p.categoria === cat).length;
         const card = document.createElement('div');
         card.className = 'categoria-card';
-        card.innerHTML = `<span class="cat-icon">${obtenerIconoCategoria(cat)}</span><span class="cat-name">${cat}</span><span class="cat-count">${count} producto${count !== 1 ? 's' : ''}</span>`;
+        card.innerHTML = `<span class="cat-icon">${obtenerIconoCategoria(cat)}</span><span class="cat-name">${cat}</span><span class="cat-count">${count === 0 ? '🕐 Próximamente' : count + ' producto' + (count !== 1 ? 's' : '')}</span>`;
         card.onclick = () => mostrarVistaCategoria(cat);
         grid.appendChild(card);
     });
@@ -4445,19 +4448,28 @@ function mostrarVistaMeGusta() {
     if (!vistaEl) return;
     vistaEl.style.display = 'block';
 
-    // Catálogo: global si ya cargó, si no localStorage
-    const cat = (typeof productos !== 'undefined' && productos.length > 0)
-        ? productos
-        : JSON.parse(localStorage.getItem('productos') || '[]');
-
-    const prods = wishlist
-        .map(id => cat.find(p => String(p.id) === String(id)))
-        .filter(Boolean);
-
     const statsEl  = document.getElementById('meGustaStats');
     const grid     = document.getElementById('meGustaGrid');
     const vacioEl  = document.getElementById('meGustaVacio');
     if (!grid) return;
+
+    // Catálogo: global si ya cargó, si no localStorage
+    let cat = (typeof productos !== 'undefined' && productos.length > 0)
+        ? productos
+        : JSON.parse(localStorage.getItem('productos') || '[]');
+
+    // Si el catálogo aún no está listo pero hay items en wishlist, intentar de nuevo en 800ms
+    if (cat.length === 0 && wishlist.length > 0) {
+        if (statsEl) statsEl.textContent = 'Cargando productos...';
+        grid.style.display = 'none';
+        if (vacioEl) vacioEl.style.display = 'none';
+        setTimeout(() => mostrarVistaMeGusta(), 800);
+        return;
+    }
+
+    const prods = wishlist
+        .map(id => cat.find(p => String(p.id) === String(id)))
+        .filter(Boolean);
 
     if (statsEl) statsEl.textContent = prods.length + ' producto' + (prods.length !== 1 ? 's' : '') + ' guardado' + (prods.length !== 1 ? 's' : '');
 
