@@ -4439,6 +4439,30 @@ function exportarVentasCSV() {
 //  VISTA: MIS ME GUSTA
 // ══════════════════════════════════════════════════════════════
 function mostrarVistaMeGusta() {
+    // Inyectar estilos para que las cards sean siempre visibles
+    if (!document.getElementById('meGustaStyles')) {
+        const st = document.createElement('style');
+        st.id = 'meGustaStyles';
+        st.textContent = `
+            #meGustaGrid .producto-card {
+                background: var(--card-bg, #fff) !important;
+                border: 1px solid rgba(128,128,128,0.2) !important;
+                border-bottom: 3px solid #e74c3c !important;
+                opacity: 1 !important;
+                visibility: visible !important;
+                display: flex !important;
+                flex-direction: column !important;
+            }
+            body.dark-mode #meGustaGrid .producto-card {
+                background: #1e1e1e !important;
+                color: #fff !important;
+            }
+            body.dark-mode #meGustaGrid .producto-card h3 { color: rgba(255,255,255,0.9) !important; }
+            body.dark-mode #meGustaGrid .producto-card .precio-actual { color: #e74c3c !important; }
+            body.dark-mode #meGustaGrid .producto-card .producto-description { color: rgba(255,255,255,0.6) !important; }
+        `;
+        document.head.appendChild(st);
+    }
     document.getElementById('vistaInicio').style.display    = 'none';
     document.getElementById('vistaCategoria').style.display = 'none';
     const vPed = document.getElementById('vistaPedidos');
