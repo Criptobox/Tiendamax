@@ -4458,19 +4458,28 @@ function mostrarVistaMeGusta() {
         ? productos
         : JSON.parse(localStorage.getItem('productos') || '[]');
 
-    // Si el catálogo aún no está listo pero hay items en wishlist, intentar de nuevo en 800ms
+    // Si el catálogo aún no está listo, reintentar hasta 5 veces
     if (cat.length === 0 && wishlist.length > 0) {
         if (statsEl) statsEl.textContent = 'Cargando productos...';
         grid.style.display = 'none';
         if (vacioEl) vacioEl.style.display = 'none';
-        setTimeout(() => mostrarVistaMeGusta(), 800);
+        mostrarVistaMeGusta._intentos = (mostrarVistaMeGusta._intentos || 0) + 1;
+        if (mostrarVistaMeGusta._intentos <= 5) setTimeout(() => mostrarVistaMeGusta(), 800);
+        else mostrarVistaMeGusta._intentos = 0;
         return;
+    }
+    mostrarVistaMeGusta._intentos = 0;
+
+    // DEBUG temporal: mostrar IDs para diagnóstico
+    if (wishlist.length > 0 && cat.length > 0) {
+        const wids = wishlist.join(', ');
+        const cids = cat.slice(0,3).map(p=>p.id).join(', ');
+        console.log('WISHLIST IDs:', wids, '| CATALOGO primeros IDs:', cids);
     }
 
     const prods = wishlist
-        .map(id => cat.find(p => String(p.id) === String(id)) || cat.find(p => String(p.id).includes(String(id)) || String(id).includes(String(p.id))))
-        .filter(Boolean)
-        .filter((p, i, arr) => arr.findIndex(x => String(x.id) === String(p.id)) === i);
+        .map(wid => cat.find(p => String(p.id) === String(wid)))
+        .filter(Boolean);
 
     if (statsEl) statsEl.textContent = prods.length + ' producto' + (prods.length !== 1 ? 's' : '') + ' guardado' + (prods.length !== 1 ? 's' : '');
 
