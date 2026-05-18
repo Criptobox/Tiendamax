@@ -1468,30 +1468,32 @@ body.dark-mode #listaAgotados > div {
    VISTA ME GUSTA — Cards con tema oscuro
    (el fondo blanco de .producto-card no se ve sobre fondo negro)
    ============================================================ */
-#vistaMeGusta .producto-card {
-    background: var(--white, #ffffff) !important;
-    border: 1px solid rgba(0,0,0,0.08) !important;
-    border-bottom: 3px solid var(--coral, #e74c3c) !important;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.08) !important;
+#vistaMeGusta .productos-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
 }
-#vistaMeGusta .producto-card:hover {
-    border-color: var(--coral, #e74c3c) !important;
-    box-shadow: 0 8px 30px rgba(0,0,0,0.12) !important;
+#vistaMeGusta .producto-card {
+    background: #1e1e1e !important;
+    border: 1px solid rgba(255,255,255,0.08) !important;
+    border-bottom: 3px solid #e74c3c !important;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.4) !important;
+    color: #fff !important;
 }
 #vistaMeGusta .producto-card h3 {
-    color: var(--text-primary, #1a1a1a) !important;
+    color: rgba(255,255,255,0.9) !important;
 }
 #vistaMeGusta .producto-card .producto-description {
-    color: var(--text-secondary, #666) !important;
+    color: rgba(255,255,255,0.55) !important;
 }
 #vistaMeGusta .producto-card .precio-actual {
-    color: var(--coral, #e74c3c) !important;
+    color: #e74c3c !important;
 }
 #vistaMeGusta .producto-card .precio-original {
-    color: var(--text-muted, #aaa) !important;
+    color: rgba(255,255,255,0.35) !important;
 }
 #vistaMeGusta .producto-card .stock {
-    color: var(--text-secondary, #666) !important;
+    color: rgba(255,255,255,0.5) !important;
     font-size: 12px;
 }
 #vistaMeGusta .producto-card .stock-urgente {
