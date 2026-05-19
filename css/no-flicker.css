@@ -1,0 +1,20 @@
+/* ═══════════════════════════════════════════════════════
+   FIX PARPADEO CATEGORÍAS — TiendaMax
+   
+   PROBLEMA: initScrollAnimations() inyecta CSS que pone
+   opacity:0 en .categoria-card. Luego renderizarCategoriasHome
+   se llama 8+ veces, cada vez destruye las cards con innerHTML=''
+   y las crea nuevas que arrancan en opacity:0.
+   
+   SOLUCIÓN: Forzar opacity:1 con !important para que nada
+   pueda ocultar las categorías.
+   ═══════════════════════════════════════════════════════ */
+
+/* Forzar categorías siempre visibles — anula el opacity:0 inyectado por JS */
+.categoria-card {
+    opacity: 1 !important;
+    transform: none !important;
+}
+
+/* Las animaciones de hover del CSS original siguen funcionando normal
+   porque usan transiciones en propiedades diferentes (box-shadow, border, etc.) */
