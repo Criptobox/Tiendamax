@@ -2467,19 +2467,6 @@ async function subirArchivoAGitHub(user, repo, token, path, data) {
         } catch (e) { return null; }
     }
 
-    // Validar token y acceso al repo antes de intentar subir
-    async function validarAcceso() {
-        try {
-            const res = await fetch(`${apiBase}`, { headers });
-            if (res.status === 401) throw new Error('Token inválido o expirado. Ve a Config y actualiza tu Token de Acceso.');
-            if (res.status === 404) throw new Error(`Repositorio "${user}/${repo}" no encontrado. Verifica el usuario y nombre del repo en Config.`);
-            if (!res.ok) throw new Error(`Error de acceso al repositorio (${res.status})`);
-        } catch (e) {
-            if (e.message.includes('Token') || e.message.includes('Repositorio') || e.message.includes('acceso')) throw e;
-            throw new Error('Sin conexión a GitHub. Verifica tu internet.');
-        }
-    }
-
     // Para archivos < 900KB usar la Contents API normal (más simple)
     if (sizeBytes < 900 * 1024) {
         let sha = await obtenerSHA();
@@ -2505,11 +2492,18 @@ async function subirArchivoAGitHub(user, repo, token, path, data) {
             if (response.status === 401) {
                 throw new Error('Token inválido o expirado. Ve a Config y actualiza tu Token de Acceso.');
             }
-            if (response.status === 404) {
-                throw new Error(`Repositorio "${user}/${repo}" no encontrado. Verifica el usuario y nombre del repo.`);
-            }
             if (response.status === 403) {
                 throw new Error('Token sin permisos. Asegúrate de que tenga el permiso "repo" completo.');
+            }
+            // Para 404 en el PUT: verificar si es el repo o el archivo
+            if (response.status === 404) {
+                // Comprobar si el repo existe realmente
+                const checkRepo = await fetch(`${apiBase}`, { headers });
+                if (!checkRepo.ok) {
+                    throw new Error(`Repositorio "${user}/${repo}" no encontrado. Verifica usuario y nombre del repo en Config.`);
+                }
+                // El repo existe pero el archivo no se pudo crear: problema de permisos del token
+                throw new Error('Token sin permisos de escritura. Asegúrate de que tenga el permiso "repo" completo (no solo "public_repo").');
             }
             let errMsg = `Error ${response.status} al subir ${path}`;
             try { const err = await response.json(); errMsg = err.message || errMsg; } catch(e) {}
