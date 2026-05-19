@@ -2409,7 +2409,11 @@ async function sincronizarTodoConGitHub() {
         const info = hayDelta ? `${idsModificados.length} producto(s) actualizado(s)` : `${ok} archivos`;
         mostrarNotificacion(`✅ Tienda actualizada (${info}). Visible en ~30 segundos.`);
     } else {
-        mostrarNotificacion('⚠️ ' + errors.join(' | '), 'error');
+        // Mostrar solo el primer error con mensaje claro (suelen tener la misma causa)
+        const primerError = errors[0];
+        const causa = primerError.includes(': ') ? primerError.split(': ').slice(1).join(': ').trim() : primerError;
+        mostrarNotificacion(`❌ ${causa}`, 'error');
+        console.error('Errores de sincronización:', errors);
     }
 }
 
@@ -2438,6 +2442,18 @@ async function subirArchivoAGitHub(user, repo, token, path, data) {
     const sizeBytes = jsonStr.length;
     const apiBase   = `https://api.github.com/repos/${user}/${repo}`;
 
+    // Detectar la rama principal (main o master) automáticamente
+    async function obtenerRamaPrincipal() {
+        try {
+            const res = await fetch(`${apiBase}`, { headers });
+            if (res.ok) {
+                const d = await res.json();
+                return d.default_branch || 'main';
+            }
+        } catch (e) {}
+        return 'main';
+    }
+
     // Función interna para obtener el SHA del archivo (Contents API)
     async function obtenerSHA() {
         try {
@@ -2449,6 +2465,19 @@ async function subirArchivoAGitHub(user, repo, token, path, data) {
             if (res.status === 404) return null;
             return null;
         } catch (e) { return null; }
+    }
+
+    // Validar token y acceso al repo antes de intentar subir
+    async function validarAcceso() {
+        try {
+            const res = await fetch(`${apiBase}`, { headers });
+            if (res.status === 401) throw new Error('Token inválido o expirado. Ve a Config y actualiza tu Token de Acceso.');
+            if (res.status === 404) throw new Error(`Repositorio "${user}/${repo}" no encontrado. Verifica el usuario y nombre del repo en Config.`);
+            if (!res.ok) throw new Error(`Error de acceso al repositorio (${res.status})`);
+        } catch (e) {
+            if (e.message.includes('Token') || e.message.includes('Repositorio') || e.message.includes('acceso')) throw e;
+            throw new Error('Sin conexión a GitHub. Verifica tu internet.');
+        }
     }
 
     // Para archivos < 900KB usar la Contents API normal (más simple)
@@ -2472,13 +2501,26 @@ async function subirArchivoAGitHub(user, repo, token, path, data) {
         }
 
         if (!response.ok) {
-            const err = await response.json();
-            throw new Error(err.message || `Error ${response.status} al subir ${path}`);
+            // Dar mensajes de error claros según el código HTTP
+            if (response.status === 401) {
+                throw new Error('Token inválido o expirado. Ve a Config y actualiza tu Token de Acceso.');
+            }
+            if (response.status === 404) {
+                throw new Error(`Repositorio "${user}/${repo}" no encontrado. Verifica el usuario y nombre del repo.`);
+            }
+            if (response.status === 403) {
+                throw new Error('Token sin permisos. Asegúrate de que tenga el permiso "repo" completo.');
+            }
+            let errMsg = `Error ${response.status} al subir ${path}`;
+            try { const err = await response.json(); errMsg = err.message || errMsg; } catch(e) {}
+            throw new Error(errMsg);
         }
         return;
     }
 
     // Para archivos >= 900KB usar el Git Data API (soporta archivos grandes)
+    const rama = await obtenerRamaPrincipal();
+
     // Paso 1: Crear blob con el contenido
     const blobRes = await fetch(`${apiBase}/git/blobs`, {
         method: 'POST', headers,
@@ -2491,8 +2533,8 @@ async function subirArchivoAGitHub(user, repo, token, path, data) {
     const { sha: blobSha } = await blobRes.json();
 
     // Paso 2: Obtener el SHA del commit más reciente (HEAD)
-    const refRes = await fetch(`${apiBase}/git/ref/heads/main`, { headers });
-    if (!refRes.ok) throw new Error('No se pudo obtener la rama main');
+    const refRes = await fetch(`${apiBase}/git/ref/heads/${rama}`, { headers });
+    if (!refRes.ok) throw new Error(`No se pudo obtener la rama "${rama}"`);
     const { object: { sha: commitSha } } = await refRes.json();
 
     // Paso 3: Obtener el tree SHA del commit
@@ -2524,7 +2566,7 @@ async function subirArchivoAGitHub(user, repo, token, path, data) {
     const { sha: newCommitSha } = await newCommitRes.json();
 
     // Paso 6: Actualizar referencia HEAD (force:true evita el error "not a fast-forward")
-    const updateRefRes = await fetch(`${apiBase}/git/refs/heads/main`, {
+    const updateRefRes = await fetch(`${apiBase}/git/refs/heads/${rama}`, {
         method: 'PATCH', headers,
         body: JSON.stringify({ sha: newCommitSha, force: true })
     });
