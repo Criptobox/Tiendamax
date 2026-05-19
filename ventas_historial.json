@@ -1,5 +1,16 @@
 [
   {
+    "id": 1779227634620,
+    "fecha": "19 may 2026, 17:53",
+    "producto": "BATERIA MUST tipo LiFePO4",
+    "productoId": 1778104115783,
+    "cantidad": 2,
+    "precio": 280,
+    "comision": 10,
+    "total": 560,
+    "ganancia": 20
+  },
+  {
     "id": 1779129831746,
     "fecha": "18 may 2026, 14:43",
     "producto": "Cargador inteligente 20A",
