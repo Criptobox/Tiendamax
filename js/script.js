@@ -1675,7 +1675,7 @@ function abrirDetalleProducto(id) {
             <span class="btn-pedir-wa-text">Pedir</span>
         `;
     }
-    buyBtn.onclick = () => contactarProducto(p.nombre, p.precio);
+    buyBtn.onclick = () => contactarProducto(p.nombre, p.precioActual);
 
     // Productos relacionados (misma categoría, excluir actual)
     const relacionados = productos
@@ -3915,7 +3915,7 @@ function tmComprar(event, id, nombre) {
     agregarAlCarrito(id);
     // Abrir WhatsApp
     const prod = productos.find(p => p.id === id);
-    const precio = prod ? prod.precio : null;
+    const precio = prod ? prod.precioActual : null;
     if (typeof contactarProducto === 'function') contactarProducto(nombre, precio);
 }
 
