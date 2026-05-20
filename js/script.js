@@ -309,13 +309,15 @@ function comprarCarrito() {
     // Guardar en historial del cliente antes de abrir WhatsApp
     guardarPedidoCliente(carrito.slice());
     const lineas = carrito.map(i =>
-        '• ' + i.nombre + ' x' + i.cantidad + ' — $' + (i.precio * i.cantidad).toFixed(2) + ' USD'
+        '\uD83D\uDCE6 ' + i.nombre + ' x' + i.cantidad + ' \u2014 $' + (i.precio * i.cantidad).toFixed(2) + ' USD'
     );
     const total = carrito.reduce((s, i) => s + i.precio * i.cantidad, 0);
+    const plural = carrito.length > 1 ? 'productos' : 'producto';
+    const disponible = carrito.length > 1 ? '\u00BFEst\u00E1n disponibles?' : '\u00BFEst\u00E1 disponible?';
     const msg = encodeURIComponent(
-        'Hola! Me gustar\u00eda hacer este pedido:\n\n' +
+        '\uD83D\uDC4B Hola, vi unos ' + plural + ' en TiendaMax\n\n' +
         lineas.join('\n') +
-        '\n\n\uD83D\uDCB0 Total: $' + total.toFixed(2) + ' USD\n\n\u00BFEst\u00E1 disponible?'
+        '\n\n\uD83D\uDCB0 Total: $' + total.toFixed(2) + ' USD\n\n' + disponible
     );
     window.open('https://wa.me/' + getNumeroWhatsApp() + '?text=' + msg, '_blank');
 }
@@ -1673,7 +1675,7 @@ function abrirDetalleProducto(id) {
             <span class="btn-pedir-wa-text">Pedir</span>
         `;
     }
-    buyBtn.onclick = () => contactarProducto(p.nombre);
+    buyBtn.onclick = () => contactarProducto(p.nombre, p.precio);
 
     // Productos relacionados (misma categoría, excluir actual)
     const relacionados = productos
@@ -1835,8 +1837,12 @@ function copiarLinkProducto() {
     });
 }
 
-function contactarProducto(nombre) {
-    const msg = encodeURIComponent(`Hola, me interesa el producto: ${nombre}. ¿Está disponible?`);
+function contactarProducto(nombre, precio) {
+    const precioUSD = precio ? `$${parseFloat(precio).toFixed(2)} USD` : null;
+    const precioTexto = precioUSD ? `\n💰 Precio: ${precioUSD}` : '';
+    const msg = encodeURIComponent(
+        `👋 Hola, vi un producto en TiendaMax\n\n📦 ${nombre}${precioTexto}\n\n¿Está disponible?`
+    );
     window.open(`https://wa.me/${getNumeroWhatsApp()}?text=${msg}`, '_blank');
 }
 
@@ -3908,7 +3914,9 @@ function tmComprar(event, id, nombre) {
     // Agregar al carrito internamente
     agregarAlCarrito(id);
     // Abrir WhatsApp
-    if (typeof contactarProducto === 'function') contactarProducto(nombre);
+    const prod = productos.find(p => p.id === id);
+    const precio = prod ? prod.precio : null;
+    if (typeof contactarProducto === 'function') contactarProducto(nombre, precio);
 }
 
 // Patch agregarAlCarrito para fly desde modal
