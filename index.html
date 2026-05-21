@@ -147,7 +147,7 @@
         <section class="hero">
             <div class="hero-content">
                 <p class="subtitle">Oferta limitada — Solo por tiempo limitado</p>
-                <h2>Todo lo que necesitas<br><span>a un mensaje</span><br>de distancia.</h2>
+                <h1>Todo lo que necesitas<br><span>a un mensaje</span><br>de distancia.</h1>
                 <p class="description">Envío rápido. Pide hoy y recibe antes de que se agoten las unidades.</p>
                 <div class="cta-buttons">
                     <button data-action="scrollToProductos" type="button" class="btn btn-primary">Ver Categorías →</button>
@@ -986,5 +986,21 @@
     });
 })();
 </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9fe01f2b4ab6cf39',t:'MTc3OTE2MjQ2MQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9fe01f2b4ab6cf39',t:'MTc3OTE2MjQ2MQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
+<script>
+// ── WhatsApp dinámico — lee el número guardado en admin ──
+(function actualizarEnlacesWhatsApp() {
+  const num = localStorage.getItem('whatsappNumero') || '5354320170';
+  document.querySelectorAll('a[href*="wa.me/"]').forEach(a => {
+    a.href = a.href.replace(/wa\.me\/\d+/, 'wa.me/' + num);
+  });
+})();
+document.addEventListener('DOMContentLoaded', () => {
+  const num = localStorage.getItem('whatsappNumero') || '5354320170';
+  document.querySelectorAll('a[href*="wa.me/"]').forEach(a => {
+    a.href = a.href.replace(/wa\.me\/\d+/, 'wa.me/' + num);
+  });
+});
+</script>
+</body>
 </html>

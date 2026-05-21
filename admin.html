@@ -113,7 +113,7 @@
         <section class="hero">
             <div class="hero-content">
                 <p class="subtitle">Oferta limitada — Solo por tiempo limitado</p>
-                <h2>Productos<br><span>que inspiran,</span><br>precios que sorprenden.</h2>
+                <h1>Productos<br><span>que inspiran,</span><br>precios que sorprenden.</h1>
                 <p class="description">Calidad premium, atención personal. Miles de clientes satisfechos confían en nosotros cada día.</p>
                 <div class="cta-buttons">
                     <button data-action="scrollToProductos" type="button" class="btn btn-primary">Ver Categorías →</button>
@@ -1020,7 +1020,7 @@
             '.cta-final h2',
             '.cta-final p',
             '.hero-content .subtitle',
-            '.hero-content h2',
+            '.hero-content h1, .hero-content h2',
             '.hero-content .description'
         ];
         var elements = document.querySelectorAll(selectors.join(','));
@@ -1370,6 +1370,22 @@ document.addEventListener('DOMContentLoaded', () => {
     if (typeof abrirAdminPanel === 'function') {
         abrirAdminPanel();
     }
+});
+</script>
+
+<script>
+// ── WhatsApp dinámico — lee el número guardado en admin ──
+(function actualizarEnlacesWhatsApp() {
+  const num = localStorage.getItem('whatsappNumero') || '5354320170';
+  document.querySelectorAll('a[href*="wa.me/"]').forEach(a => {
+    a.href = a.href.replace(/wa\.me\/\d+/, 'wa.me/' + num);
+  });
+})();
+document.addEventListener('DOMContentLoaded', () => {
+  const num = localStorage.getItem('whatsappNumero') || '5354320170';
+  document.querySelectorAll('a[href*="wa.me/"]').forEach(a => {
+    a.href = a.href.replace(/wa\.me\/\d+/, 'wa.me/' + num);
+  });
 });
 </script>
 </body>
