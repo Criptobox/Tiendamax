@@ -4346,3 +4346,9 @@ a.whatsapp-group-btn:hover, .whatsapp-group-btn:hover {
         border-radius: 14px 14px 0 0 !important;
     }
 }
+
+/* ── FIX: Banners laterales visibles en desktop ── */
+@media (min-width: 769px) {
+    .banner-lateral { display: flex !important; }
+    .categorias-home-inner { display: flex !important; }
+}
