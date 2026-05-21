@@ -2627,15 +2627,17 @@ function verificarOfertasYMostrarBanner() {
 
     banner.onclick = () => {
         if (!targetId) return;
-        const tarjeta = document.querySelector(`[onclick*="abrirDetalleProducto(${targetId})"]`);
+        // Convertir a número para que coincida con prod.id (que es numérico)
+        const idNum = Number(targetId);
+        const tarjeta = document.querySelector(`[onclick*="abrirDetalleProducto(${idNum})"]`);
         if (tarjeta) {
             tarjeta.scrollIntoView({ behavior: 'smooth', block: 'center' });
             tarjeta.style.transition = 'box-shadow 0.3s';
             tarjeta.style.boxShadow  = '0 0 0 3px #ff6b35, 0 8px 32px rgba(255,107,53,0.5)';
             setTimeout(() => { tarjeta.style.boxShadow = ''; }, 2000);
-        } else {
-            abrirDetalleProducto(targetId);
         }
+        // Abrir el detalle siempre (con ID numérico)
+        abrirDetalleProducto(idNum);
     };
 }
 
