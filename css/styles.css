@@ -1247,23 +1247,27 @@ body {
 .modal-content form { padding: 28px; }
 
 .close-btn {
-    background: rgba(255,255,255,0.08);
-    border: none;
+    background: rgba(201,169,110,0.18);
+    border: 1.5px solid rgba(201,169,110,0.5);
     font-size: 20px;
     cursor: pointer;
-    color: rgba(255,255,255,0.7);
-    width: 36px;
-    height: 36px;
+    color: #c9a96e;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     transition: var(--transition);
+    box-shadow: 0 0 10px rgba(201,169,110,0.2);
 }
 
 .close-btn:hover {
-    background: rgba(255,255,255,0.15);
+    background: rgba(201,169,110,0.35);
+    border-color: #c9a96e;
+    color: #fff;
     transform: rotate(90deg);
+    box-shadow: 0 0 16px rgba(201,169,110,0.45);
 }
 
 /* ===== PANEL ADMIN ===== */
