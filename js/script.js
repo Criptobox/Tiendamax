@@ -2593,49 +2593,50 @@ function verificarOfertasYMostrarBanner() {
     const banner = document.getElementById('urgenciaBanner');
     if (!banner) return;
 
-    const productosOferta = productos.filter(p =>
-        (p.descuento > 0) ||
-        (parseFloat(p.precioOriginal) > parseFloat(p.precioActual))
-    );
-    const hayCountdown = !!localStorage.getItem('activeCountdown');
+    // Prioridad 1: Oferta del Día configurada en el admin
+    const ofertaDiaId   = localStorage.getItem('ofertaDiaId');
+    const ofertaDiaTexto = localStorage.getItem('ofertaDiaTexto') || '🔥 OFERTA DEL DÍA';
 
-    if (productosOferta.length > 0 || hayCountdown) {
-        // Actualizar texto con cantidad de ofertas
-        const cantidad = productosOferta.length;
-        const textoOfertas = cantidad === 1
-            ? `🔥 ¡1 PRODUCTO EN OFERTA! <span class="flash-deal">VER AHORA →</span>`
-            : `🔥 ¡${cantidad} PRODUCTOS EN OFERTA! <span class="flash-deal">VER AHORA →</span>`;
-        banner.innerHTML = textoOfertas;
-        banner.style.display = 'block';
-        banner.style.cursor = 'pointer';
+    // Prioridad 2: Countdown activo
+    const cdData = localStorage.getItem('activeCountdown');
+    const cdObj  = cdData ? (() => { try { return JSON.parse(cdData); } catch(e) { return null; } })() : null;
+    const cdValido = cdObj && cdObj.endTime && cdObj.endTime > Date.now();
 
-        // Al tocar el banner, ir al primer producto en oferta
-        banner.onclick = () => {
-            const primerOferta = productosOferta[0];
-            if (!primerOferta) return;
+    // Determinar qué mostrar
+    let targetId  = null;
+    let textoBanner = '';
 
-            // Si hay un countdown activo, usar ese producto
-            const cdData = localStorage.getItem('activeCountdown');
-            const cdProductoId = cdData ? JSON.parse(cdData).productId : null;
-            const targetId = cdProductoId || primerOferta.id;
-
-            // Buscar la tarjeta del producto en el DOM
-            const tarjeta = document.querySelector(`[onclick*="abrirDetalleProducto(${targetId})"]`);
-            if (tarjeta) {
-                tarjeta.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                // Parpadeo para destacar la tarjeta
-                tarjeta.style.transition = 'box-shadow 0.3s';
-                tarjeta.style.boxShadow = '0 0 0 3px #ff6b35, 0 8px 32px rgba(255,107,53,0.5)';
-                setTimeout(() => { tarjeta.style.boxShadow = ''; }, 2000);
-            } else {
-                // Si no está visible, abrir el detalle directo
-                abrirDetalleProducto(targetId);
-            }
-        };
+    if (ofertaDiaId) {
+        // Oferta del Día tiene prioridad máxima
+        targetId    = ofertaDiaId;
+        textoBanner = `${ofertaDiaTexto} <span class="flash-deal">VER AHORA →</span>`;
+    } else if (cdValido) {
+        // Countdown activo como segunda opción
+        targetId    = cdObj.productId;
+        textoBanner = `🔥 ${cdObj.texto || '¡Oferta especial!'} <span class="flash-deal">VER AHORA →</span>`;
     } else {
+        // Sin configuración: ocultar banner
         banner.style.display = 'none';
         banner.onclick = null;
+        return;
     }
+
+    banner.innerHTML = textoBanner;
+    banner.style.display = 'block';
+    banner.style.cursor  = 'pointer';
+
+    banner.onclick = () => {
+        if (!targetId) return;
+        const tarjeta = document.querySelector(`[onclick*="abrirDetalleProducto(${targetId})"]`);
+        if (tarjeta) {
+            tarjeta.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            tarjeta.style.transition = 'box-shadow 0.3s';
+            tarjeta.style.boxShadow  = '0 0 0 3px #ff6b35, 0 8px 32px rgba(255,107,53,0.5)';
+            setTimeout(() => { tarjeta.style.boxShadow = ''; }, 2000);
+        } else {
+            abrirDetalleProducto(targetId);
+        }
+    };
 }
 
 // ===== INICIALIZACIÓN =====
