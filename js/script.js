@@ -2593,18 +2593,48 @@ function verificarOfertasYMostrarBanner() {
     const banner = document.getElementById('urgenciaBanner');
     if (!banner) return;
 
-    // Mostrar si hay: descuento %, precio original mayor, o countdown activo
-    const hayOfertas = productos.some(p =>
+    const productosOferta = productos.filter(p =>
         (p.descuento > 0) ||
-        (parseFloat(p.precioOriginal) > parseFloat(p.precioActual)) ||
-        (p.ofertaDia === true)
+        (parseFloat(p.precioOriginal) > parseFloat(p.precioActual))
     );
     const hayCountdown = !!localStorage.getItem('activeCountdown');
 
-    if (hayOfertas || hayCountdown) {
+    if (productosOferta.length > 0 || hayCountdown) {
+        // Actualizar texto con cantidad de ofertas
+        const cantidad = productosOferta.length;
+        const textoOfertas = cantidad === 1
+            ? `🔥 ¡1 PRODUCTO EN OFERTA! <span class="flash-deal">VER AHORA →</span>`
+            : `🔥 ¡${cantidad} PRODUCTOS EN OFERTA! <span class="flash-deal">VER AHORA →</span>`;
+        banner.innerHTML = textoOfertas;
         banner.style.display = 'block';
+        banner.style.cursor = 'pointer';
+
+        // Al tocar el banner, ir al primer producto en oferta
+        banner.onclick = () => {
+            const primerOferta = productosOferta[0];
+            if (!primerOferta) return;
+
+            // Si hay un countdown activo, usar ese producto
+            const cdData = localStorage.getItem('activeCountdown');
+            const cdProductoId = cdData ? JSON.parse(cdData).productId : null;
+            const targetId = cdProductoId || primerOferta.id;
+
+            // Buscar la tarjeta del producto en el DOM
+            const tarjeta = document.querySelector(`[onclick*="abrirDetalleProducto(${targetId})"]`);
+            if (tarjeta) {
+                tarjeta.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                // Parpadeo para destacar la tarjeta
+                tarjeta.style.transition = 'box-shadow 0.3s';
+                tarjeta.style.boxShadow = '0 0 0 3px #ff6b35, 0 8px 32px rgba(255,107,53,0.5)';
+                setTimeout(() => { tarjeta.style.boxShadow = ''; }, 2000);
+            } else {
+                // Si no está visible, abrir el detalle directo
+                abrirDetalleProducto(targetId);
+            }
+        };
     } else {
         banner.style.display = 'none';
+        banner.onclick = null;
     }
 }
 
