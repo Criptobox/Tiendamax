@@ -483,7 +483,11 @@ function renderizarRecientes() {
                 '<img src="' + p.imagen + '" alt="' + p.nombre + '" loading="lazy">' +
             '</div>' +
             '<h3 style="font-size:13px;padding:10px 12px 4px;">' + p.nombre + '</h3>' +
-            '<p class="precio" style="padding:0 12px 10px;"><span class="precio-actual">$' + p.precioActual.toFixed(2) + '</span></p>' +
+            '<p class="precio" style="padding:0 12px 10px;">' +
+                (p.descuento > 0 ? '<span class="precio-tachado">$' + (p.precioActual / (1 - p.descuento / 100)).toFixed(2) + '</span> ' : '') +
+                '<span class="precio-actual">$' + p.precioActual.toFixed(2) + '</span>' +
+                (p.descuento > 0 ? ' <span class="precio-ahorro">-' + p.descuento + '%</span>' : '') +
+            '</p>' +
         '</div>'
     ).join('');
 }
@@ -1266,7 +1270,7 @@ function renderizarMasVendidos() {
 	            <h3>${producto.nombre}</h3>
 	            <p class="producto-description">${producto.descripcion}</p>
 	            <p class="precio">
-	                <span class="precio-actual">$${producto.precioActual.toFixed(2)} USD</span>
+	                ${producto.descuento > 0 ? '<span class="precio-tachado">$' + (producto.precioActual / (1 - producto.descuento / 100)).toFixed(2) + ' USD</span> ' : ''}<span class="precio-actual">$${producto.precioActual.toFixed(2)} USD</span>${producto.descuento > 0 ? ' <span class="precio-ahorro">-' + producto.descuento + '%</span>' : ''}
 	            </p>
             <div class="stock-count">
                 <span>📦 Solo quedan ${producto.stock} unidades</span>
@@ -2466,9 +2470,10 @@ async function subirArchivoAGitHub(user, repo, token, path, data) {
     }
 
     // Función interna para obtener el SHA del archivo (Contents API)
+    // Cache-buster para evitar que GitHub devuelva SHA desactualizado
     async function obtenerSHA() {
         try {
-            const res = await fetch(`${apiBase}/contents/${path}`, { headers });
+            const res = await fetch(`${apiBase}/contents/${path}?_=${Date.now()}`, { headers });
             if (res.ok) {
                 const d = await res.json();
                 return d.sha || null;
@@ -2488,8 +2493,9 @@ async function subirArchivoAGitHub(user, repo, token, path, data) {
             method: 'PUT', headers, body: JSON.stringify(body)
         });
 
-        // Reintentar con SHA fresco si hay conflicto
-        if (!response.ok && (response.status === 409 || response.status === 422)) {
+        // Reintentar con SHA fresco si hay conflicto (hasta 3 intentos)
+        for (let intento = 0; intento < 3 && !response.ok && (response.status === 409 || response.status === 422); intento++) {
+            await new Promise(r => setTimeout(r, 800)); // esperar antes de reintentar
             sha = await obtenerSHA();
             const bodyRetry = { message: `Actualización de ${path}`, content };
             if (sha) bodyRetry.sha = sha;
@@ -2587,9 +2593,15 @@ function verificarOfertasYMostrarBanner() {
     const banner = document.getElementById('urgenciaBanner');
     if (!banner) return;
 
-    const hayOfertas = productos.some(p => parseFloat(p.precioOriginal) > parseFloat(p.precioActual));
+    // Mostrar si hay: descuento %, precio original mayor, o countdown activo
+    const hayOfertas = productos.some(p =>
+        (p.descuento > 0) ||
+        (parseFloat(p.precioOriginal) > parseFloat(p.precioActual)) ||
+        (p.ofertaDia === true)
+    );
+    const hayCountdown = !!localStorage.getItem('activeCountdown');
 
-    if (hayOfertas) {
+    if (hayOfertas || hayCountdown) {
         banner.style.display = 'block';
     } else {
         banner.style.display = 'none';
@@ -3768,7 +3780,11 @@ renderizarProductos = function() {
             '</div>' +
             '<h3>' + producto.nombre + '</h3>' +
             '<p class="producto-description">' + producto.descripcion + '</p>' +
-            '<p class="precio"><span class="precio-actual">$' + producto.precioActual.toFixed(2) + ' USD</span></p>' +
+            '<p class="precio">' +
+                (producto.descuento > 0 ? '<span class="precio-tachado">$' + (producto.precioActual / (1 - producto.descuento / 100)).toFixed(2) + ' USD</span> ' : '') +
+                '<span class="precio-actual">$' + producto.precioActual.toFixed(2) + ' USD</span>' +
+                (producto.descuento > 0 ? ' <span class="precio-ahorro">-' + producto.descuento + '%</span>' : '') +
+            '</p>' +
             (esAgotado
                 ? '<div class="stock" style="color:#e74c3c;font-weight:700;">❌ Agotado</div><button class="btn btn-small btn-primary" disabled style="opacity:0.5;cursor:not-allowed;">No disponible</button>'
                 : (producto.stock <= 3 && producto.stock > 0 ? '<div class="stock stock-urgente">⚠️ ¡Solo quedan ' + producto.stock + '!</div>' : '<div class="stock">📦 Stock: ' + producto.stock + ' unidades</div>') +
@@ -4524,7 +4540,11 @@ function mostrarVistaMeGusta() {
                 '</div>' +
                 '<h3>' + producto.nombre + '</h3>' +
                 '<p class="producto-description">' + (producto.descripcion || '') + '</p>' +
-                '<p class="precio"><span class="precio-actual">$' + Number(producto.precioActual).toFixed(2) + ' USD</span></p>' +
+                '<p class="precio">' +
+                (producto.descuento > 0 ? '<span class="precio-tachado">$' + (Number(producto.precioActual) / (1 - producto.descuento / 100)).toFixed(2) + ' USD</span> ' : '') +
+                '<span class="precio-actual">$' + Number(producto.precioActual).toFixed(2) + ' USD</span>' +
+                (producto.descuento > 0 ? ' <span class="precio-ahorro">-' + producto.descuento + '%</span>' : '') +
+            '</p>' +
                 stockHTML;
             grid.appendChild(card);
         });
@@ -4944,7 +4964,11 @@ function mostrarVistaMeGusta() {
                 '</div>' +
                 '<h3>' + producto.nombre + '</h3>' +
                 '<p class="producto-description">' + (producto.descripcion || '') + '</p>' +
-                '<p class="precio"><span class="precio-actual">$' + Number(producto.precioActual).toFixed(2) + ' USD</span></p>' +
+                '<p class="precio">' +
+                (producto.descuento > 0 ? '<span class="precio-tachado">$' + (Number(producto.precioActual) / (1 - producto.descuento / 100)).toFixed(2) + ' USD</span> ' : '') +
+                '<span class="precio-actual">$' + Number(producto.precioActual).toFixed(2) + ' USD</span>' +
+                (producto.descuento > 0 ? ' <span class="precio-ahorro">-' + producto.descuento + '%</span>' : '') +
+            '</p>' +
                 stockHTML;
             grid.appendChild(card);
         });
