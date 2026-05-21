@@ -1529,3 +1529,79 @@ body.dark-mode #listaAgotados > div {
 body.dark-mode .producto-countdown {
     background: linear-gradient(135deg, #0d0d0d, #1a0d00);
 }
+
+/* ═══════════════════════════════════════════════════
+   BANNERS LATERALES — fix posición y tamaño escritorio
+   ═══════════════════════════════════════════════════ */
+
+/* Desktop (>768px): banners al lado del grid de categorías */
+@media (min-width: 769px) {
+    .categorias-home-inner {
+        display: flex !important;
+        align-items: center !important;
+        gap: 20px;
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 0 24px;
+    }
+    .banner-lateral {
+        display: flex !important;
+        width: 120px !important;
+        min-width: 120px !important;
+        max-width: 120px !important;
+        align-self: stretch !important;
+        min-height: 260px;
+        position: relative !important;
+        top: auto !important;
+        left: auto !important;
+        right: auto !important;
+    }
+    .banner-lateral-sub { display: block !important; }
+}
+
+/* Pantallas intermedias (768-1024px): banners más estrechos */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .banner-lateral {
+        width: 90px !important;
+        min-width: 90px !important;
+        max-width: 90px !important;
+        padding: 14px 8px !important;
+    }
+    .banner-lateral-title { font-size: 11px !important; }
+    .banner-lateral-sub { display: none !important; }
+    .banner-lateral-icon { font-size: 20px !important; }
+}
+
+/* Móvil (<768px): ocultar siempre los banners laterales */
+@media (max-width: 768px) {
+    .banner-lateral { display: none !important; }
+    .categorias-home-inner { display: block !important; }
+}
+
+/* ═══════════════════════════════════════════════════
+   PRECIO TACHADO + AHORRO en tarjetas de producto
+   ═══════════════════════════════════════════════════ */
+.precio-tachado {
+    text-decoration: line-through;
+    color: #999;
+    font-size: 11px;
+    font-weight: 400;
+    margin-right: 2px;
+}
+.precio-ahorro {
+    display: inline-block;
+    background: #e74c3c;
+    color: white;
+    font-size: 10px;
+    font-weight: 800;
+    padding: 2px 6px;
+    border-radius: 20px;
+    margin-left: 4px;
+    vertical-align: middle;
+}
+/* Precio actual más destacado cuando hay descuento */
+.precio:has(.precio-tachado) .precio-actual {
+    color: #e74c3c;
+    font-weight: 800;
+}
+body.dark-mode .precio-tachado { color: #666; }
