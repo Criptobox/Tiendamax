@@ -3617,9 +3617,13 @@ body.dark-mode .admin-tab [style*="background: #111"] {
     .hamburger-btn { display: flex !important; }
 }
 
-/* ── Mobile bottom banners (below categories on mobile) ── */
+/* ── Bottom banners (visible en móvil y desktop) ── */
 .mobile-bottom-banners {
-    display: none;
+    display: flex;
+    gap: 16px;
+    padding: 0 20px 32px;
+    max-width: 600px;
+    margin: 0 auto;
 }
 
 @media (max-width: 768px) {
