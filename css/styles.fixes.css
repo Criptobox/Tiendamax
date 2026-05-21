@@ -1605,3 +1605,71 @@ body.dark-mode .producto-countdown {
     font-weight: 800;
 }
 body.dark-mode .precio-tachado { color: #666; }
+
+/* ═══════════════════════════════════════════════════
+   BANNER LATERAL — fix definitivo con máxima especificidad
+   ═══════════════════════════════════════════════════ */
+
+/* MÓVIL: ocultar siempre */
+@media screen and (max-width: 768px) {
+    .categorias-home .banner-lateral,
+    .categorias-home-inner > .banner-lateral {
+        display: none !important;
+    }
+    .categorias-home .categorias-home-inner {
+        display: block !important;
+    }
+}
+
+/* ESCRITORIO: mostrar correctamente */
+@media screen and (min-width: 769px) {
+    .categorias-home .categorias-home-inner {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: stretch !important;
+        gap: 20px !important;
+        max-width: 1280px !important;
+        margin: 0 auto !important;
+        padding: 0 24px !important;
+    }
+    .categorias-home .categorias-home-inner > .banner-lateral {
+        display: flex !important;
+        flex-direction: column !important;
+        width: 110px !important;
+        min-width: 110px !important;
+        max-width: 110px !important;
+        flex-shrink: 0 !important;
+        align-self: stretch !important;
+        border-radius: 16px !important;
+        padding: 20px 10px !important;
+        text-decoration: none !important;
+        position: static !important;
+    }
+    .categorias-home .categorias-home-inner > .banner-lateral-grupo {
+        background: linear-gradient(160deg, #128C3E, #25d366) !important;
+    }
+    .categorias-home .categorias-home-inner > .banner-lateral-ayuda {
+        background: linear-gradient(160deg, #c94400, #ff6b35) !important;
+    }
+    /* En pantallas medias hacer más compactos */
+    @media screen and (max-width: 1024px) {
+        .categorias-home .categorias-home-inner > .banner-lateral {
+            width: 80px !important;
+            min-width: 80px !important;
+            max-width: 80px !important;
+            padding: 16px 8px !important;
+        }
+        .categorias-home .categorias-home-inner > .banner-lateral .banner-lateral-sub {
+            display: none !important;
+        }
+    }
+}
+
+/* Banner de oferta clickeable */
+.urgencia-banner {
+    cursor: pointer;
+    transition: filter 0.2s;
+    user-select: none;
+}
+.urgencia-banner:hover { filter: brightness(1.15); }
+.urgencia-banner:active { filter: brightness(0.9); }
