@@ -309,15 +309,13 @@ function comprarCarrito() {
     // Guardar en historial del cliente antes de abrir WhatsApp
     guardarPedidoCliente(carrito.slice());
     const lineas = carrito.map(i =>
-        '\uD83D\uDCE6 ' + i.nombre + ' x' + i.cantidad + ' \u2014 $' + (i.precio * i.cantidad).toFixed(2) + ' USD'
+        '• ' + i.nombre + ' x' + i.cantidad + ' — $' + (i.precio * i.cantidad).toFixed(2) + ' USD'
     );
     const total = carrito.reduce((s, i) => s + i.precio * i.cantidad, 0);
-    const plural = carrito.length > 1 ? 'productos' : 'producto';
-    const disponible = carrito.length > 1 ? '\u00BFEst\u00E1n disponibles?' : '\u00BFEst\u00E1 disponible?';
     const msg = encodeURIComponent(
-        '\uD83D\uDC4B Hola, vi unos ' + plural + ' en TiendaMax\n\n' +
+        'Hola! Me gustar\u00eda hacer este pedido:\n\n' +
         lineas.join('\n') +
-        '\n\n\uD83D\uDCB0 Total: $' + total.toFixed(2) + ' USD\n\n' + disponible
+        '\n\n\uD83D\uDCB0 Total: $' + total.toFixed(2) + ' USD\n\n\u00BFEst\u00E1 disponible?'
     );
     window.open('https://wa.me/' + getNumeroWhatsApp() + '?text=' + msg, '_blank');
 }
@@ -1453,10 +1451,16 @@ function comprimirImagen(source, maxKB = 25, maxWidth = 480, maxHeight = 480) {
             ctx.drawImage(img, 0, 0, width, height);
 
             let quality = 0.82;
-            let result  = canvas.toDataURL('image/webp', quality);
+            // Intentar WebP primero (mejor compresión)
+            let result = canvas.toDataURL('image/webp', quality);
+            // Si el navegador no soporta WebP, devuelve PNG — detectarlo
+            const supportsWebP = result.startsWith('data:image/webp');
+            const fmt = supportsWebP ? 'image/webp' : 'image/jpeg';
+            if (!supportsWebP) result = canvas.toDataURL(fmt, quality);
+            // Reducir calidad hasta entrar en maxKB
             while (result.length > maxKB * 1024 * 1.37 && quality > 0.2) {
                 quality -= 0.06;
-                result = canvas.toDataURL('image/jpeg', quality);
+                result = canvas.toDataURL(fmt, quality);
             }
             resolve(result);
         };
@@ -1675,7 +1679,7 @@ function abrirDetalleProducto(id) {
             <span class="btn-pedir-wa-text">Pedir</span>
         `;
     }
-    buyBtn.onclick = () => contactarProducto(p.nombre, p.precioActual);
+    buyBtn.onclick = () => contactarProducto(p.nombre);
 
     // Productos relacionados (misma categoría, excluir actual)
     const relacionados = productos
@@ -1837,12 +1841,8 @@ function copiarLinkProducto() {
     });
 }
 
-function contactarProducto(nombre, precio) {
-    const precioUSD = precio ? `$${parseFloat(precio).toFixed(2)} USD` : null;
-    const precioTexto = precioUSD ? `\n💰 Precio: ${precioUSD}` : '';
-    const msg = encodeURIComponent(
-        `👋 Hola, vi un producto en TiendaMax\n\n📦 ${nombre}${precioTexto}\n\n¿Está disponible?`
-    );
+function contactarProducto(nombre) {
+    const msg = encodeURIComponent(`Hola, me interesa el producto: ${nombre}. ¿Está disponible?`);
     window.open(`https://wa.me/${getNumeroWhatsApp()}?text=${msg}`, '_blank');
 }
 
@@ -3176,6 +3176,24 @@ function guardarVenta(venta) {
     localStorage.setItem('registroVentas', JSON.stringify(ventas.slice(0, 500)));
 }
 
+function exportarVentasCSV() {
+    const ventas = cargarVentas();
+    if (!ventas.length) { mostrarNotificacion('No hay ventas que exportar', 'info'); return; }
+    const header = 'Fecha,Producto,Cantidad,Precio,Comisión,Total,Ganancia';
+    const rows = ventas.map(v =>
+        `"${v.fecha}","${v.producto}",${v.cantidad},${v.precio},${v.comision || 0},${v.total},${v.ganancia || 0}`
+    );
+    const csv = [header, ...rows].join('\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `ventas_tiendamax_${new Date().toISOString().slice(0,10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+    mostrarNotificacion('✅ Historial exportado como CSV', 'success');
+}
+
 function registrarVenta(productoId, cantidad) {
     const p = productos.find(p => p.id === productoId);
     if (!p) return;
@@ -3205,14 +3223,26 @@ function registrarVenta(productoId, cantidad) {
     }
 }
 
-function renderizarVentas() {
+// Página actual del historial de ventas
+let _ventasPagina = 0;
+const _VENTAS_POR_PAGINA = 20;
+
+function renderizarVentas(pagina) {
     const cont = document.getElementById('ventasContenido');
     if (!cont) return;
     const ventas = cargarVentas();
+    if (typeof pagina === 'number') _ventasPagina = pagina;
+    // Asegurar que la página sea válida
+    const totalPaginas = Math.max(1, Math.ceil(ventas.length / _VENTAS_POR_PAGINA));
+    if (_ventasPagina >= totalPaginas) _ventasPagina = totalPaginas - 1;
+    if (_ventasPagina < 0) _ventasPagina = 0;
 
     const totalVentas   = ventas.reduce((s, v) => s + v.total, 0);
     const totalGanancia = ventas.reduce((s, v) => s + (v.ganancia || 0), 0);
     const totalUnidades = ventas.reduce((s, v) => s + (v.cantidad || 1), 0);
+    // Paginación
+    const totalPaginas2 = Math.max(1, Math.ceil(ventas.length / _VENTAS_POR_PAGINA));
+    const ventasPagina  = ventas.slice(_ventasPagina * _VENTAS_POR_PAGINA, (_ventasPagina + 1) * _VENTAS_POR_PAGINA);
 
     let html = `
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px;">
@@ -3299,14 +3329,17 @@ function renderizarVentas() {
 
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
         <h4>📋 Historial de ventas</h4>
-        <button onclick="borrarHistorialVentas()" type="button" style="background:#e74c3c;color:white;border:none;border-radius:8px;padding:6px 12px;font-size:12px;cursor:pointer;">🗑️ Limpiar</button>
+        <div style="display:flex;gap:8px;">
+          <button onclick="exportarVentasCSV()" type="button" style="background:#27ae60;color:white;border:none;border-radius:8px;padding:6px 12px;font-size:12px;cursor:pointer;">📥 Exportar CSV</button>
+          <button onclick="borrarHistorialVentas()" type="button" style="background:#e74c3c;color:white;border:none;border-radius:8px;padding:6px 12px;font-size:12px;cursor:pointer;">🗑️ Limpiar</button>
+        </div>
     </div>`;
 
     if (ventas.length === 0) {
         html += '<p style="color:#aaa;text-align:center;padding:20px;">No hay ventas registradas aún.</p>';
     } else {
         html += '<div style="display:flex;flex-direction:column;gap:8px;">';
-        ventas.slice(0, 50).forEach(v => {
+        ventasPagina.forEach(v => {
             html += `<div style="background:rgba(39,174,96,0.06);border:1px solid rgba(39,174,96,0.2);border-radius:10px;padding:12px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;">
                 <div style="flex:1;min-width:0;">
                     <div style="font-weight:700;font-size:13px;">${v.producto}</div>
@@ -3322,7 +3355,18 @@ function renderizarVentas() {
         html += '</div>';
     }
 
-    cont.innerHTML = html;
+    // Controles de paginación
+    let paginacion = '';
+    if (totalPaginas2 > 1) {
+        paginacion = `<div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-top:16px;flex-wrap:wrap;">
+          <button onclick="renderizarVentas(0)" type="button" ${_ventasPagina===0?'disabled':''} style="padding:6px 12px;border-radius:8px;border:1px solid #ddd;background:${_ventasPagina===0?'#eee':'white'};cursor:pointer;">«</button>
+          <button onclick="renderizarVentas(${_ventasPagina}-1)" type="button" ${_ventasPagina===0?'disabled':''} style="padding:6px 14px;border-radius:8px;border:1px solid #ddd;background:${_ventasPagina===0?'#eee':'white'};cursor:pointer;">‹</button>
+          <span style="font-size:13px;opacity:.7;">Página ${_ventasPagina+1} de ${totalPaginas2} · ${ventas.length} ventas en total</span>
+          <button onclick="renderizarVentas(${_ventasPagina}+1)" type="button" ${_ventasPagina>=totalPaginas2-1?'disabled':''} style="padding:6px 14px;border-radius:8px;border:1px solid #ddd;background:${_ventasPagina>=totalPaginas2-1?'#eee':'white'};cursor:pointer;">›</button>
+          <button onclick="renderizarVentas(${totalPaginas2}-1)" type="button" ${_ventasPagina>=totalPaginas2-1?'disabled':''} style="padding:6px 12px;border-radius:8px;border:1px solid #ddd;background:${_ventasPagina>=totalPaginas2-1?'#eee':'white'};cursor:pointer;">»</button>
+        </div>`;
+    }
+    cont.innerHTML = html + paginacion;
 }
 
 function registrarVentaDesdeForm() {
@@ -3914,9 +3958,7 @@ function tmComprar(event, id, nombre) {
     // Agregar al carrito internamente
     agregarAlCarrito(id);
     // Abrir WhatsApp
-    const prod = productos.find(p => p.id === id);
-    const precio = prod ? prod.precioActual : null;
-    if (typeof contactarProducto === 'function') contactarProducto(nombre, precio);
+    if (typeof contactarProducto === 'function') contactarProducto(nombre);
 }
 
 // Patch agregarAlCarrito para fly desde modal
@@ -4173,6 +4215,9 @@ function renderizarDashboardVentas(contenedor) {
     const totalVentas   = ventas.reduce((s, v) => s + v.total, 0);
     const totalGanancia = ventas.reduce((s, v) => s + (v.ganancia || 0), 0);
     const totalUnidades = ventas.reduce((s, v) => s + (v.cantidad || 1), 0);
+    // Paginación
+    const totalPaginas2 = Math.max(1, Math.ceil(ventas.length / _VENTAS_POR_PAGINA));
+    const ventasPagina  = ventas.slice(_ventasPagina * _VENTAS_POR_PAGINA, (_ventasPagina + 1) * _VENTAS_POR_PAGINA);
 
     return `
     <div style="margin-bottom:20px;">
@@ -4379,42 +4424,330 @@ function initScrollAnimations() {
 }
 
 // ── 6. EXPORTAR VENTAS A CSV ───────────────────────────────────────
-function exportarVentasCSV() {
-    const ventas = cargarVentas();
-    if (ventas.length === 0) { mostrarNotificacion('No hay ventas para exportar', 'error'); return; }
-    const header = ['Fecha', 'Producto', 'Cantidad', 'Precio unitario', 'Total', 'Comisión', 'Ganancia'];
-    const rows = ventas.map(v => [
-        `"${v.fecha || ''}"`,
-        `"${(v.producto || '').replace(/"/g, '""')}"`,
-        v.cantidad || 1,
-        (v.precio || 0).toFixed(2),
-        (v.total || 0).toFixed(2),
-        (v.comision || 0).toFixed(2),
-        (v.ganancia || 0).toFixed(2)
-    ]);
-    const csv = [header, ...rows].map(r => r.join(',')).join('\n');
-    const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `ventas_tiendamax_${new Date().toISOString().slice(0,10)}.csv`;
-    a.click();
-    URL.revokeObjectURL(url);
-    mostrarNotificacion('✅ CSV exportado correctamente');
+
+function mostrarVistaMeGusta() {
+    // Inyectar estilos para que las cards sean siempre visibles
+    if (!document.getElementById('meGustaStyles')) {
+        const st = document.createElement('style');
+        st.id = 'meGustaStyles';
+        st.textContent = `
+            #meGustaGrid .producto-card {
+                background: var(--card-bg, #fff) !important;
+                border: 1px solid rgba(128,128,128,0.2) !important;
+                border-bottom: 3px solid #e74c3c !important;
+                opacity: 1 !important;
+                visibility: visible !important;
+                display: flex !important;
+                flex-direction: column !important;
+            }
+            body.dark-mode #meGustaGrid .producto-card {
+                background: #1e1e1e !important;
+                color: #fff !important;
+            }
+            body.dark-mode #meGustaGrid .producto-card h3 { color: rgba(255,255,255,0.9) !important; }
+            body.dark-mode #meGustaGrid .producto-card .precio-actual { color: #e74c3c !important; }
+            body.dark-mode #meGustaGrid .producto-card .producto-description { color: rgba(255,255,255,0.6) !important; }
+        `;
+        document.head.appendChild(st);
+    }
+    document.getElementById('vistaInicio').style.display    = 'none';
+    document.getElementById('vistaCategoria').style.display = 'none';
+    const vPed = document.getElementById('vistaPedidos');
+    if (vPed) vPed.style.display = 'none';
+
+    const vistaEl = document.getElementById('vistaMeGusta');
+    if (!vistaEl) return;
+    vistaEl.style.display = 'block';
+
+    const statsEl  = document.getElementById('meGustaStats');
+    const grid     = document.getElementById('meGustaGrid');
+    const vacioEl  = document.getElementById('meGustaVacio');
+    if (!grid) return;
+
+    // Usar siempre el array global productos (más confiable que localStorage)
+    const cat = (typeof productos !== 'undefined' && productos.length > 0)
+        ? productos
+        : JSON.parse(localStorage.getItem('productos') || '[]');
+
+    // Si aún no hay catálogo, esperar hasta 5 segundos
+    if (cat.length === 0 && wishlist.length > 0) {
+        if (statsEl) statsEl.textContent = 'Cargando...';
+        grid.style.display = 'none';
+        if (vacioEl) vacioEl.style.display = 'none';
+        mostrarVistaMeGusta._t = (mostrarVistaMeGusta._t || 0) + 1;
+        if (mostrarVistaMeGusta._t < 7) setTimeout(mostrarVistaMeGusta, 700);
+        else mostrarVistaMeGusta._t = 0;
+        return;
+    }
+    mostrarVistaMeGusta._t = 0;
+
+    const prods = wishlist
+        .map(wid => cat.find(p => String(p.id) === String(wid)))
+        .filter(Boolean);
+
+    if (statsEl) statsEl.textContent = prods.length + ' producto' + (prods.length !== 1 ? 's' : '') + ' guardado' + (prods.length !== 1 ? 's' : '');
+
+    if (prods.length === 0) {
+        grid.style.display  = 'none';
+        if (vacioEl) vacioEl.style.display = 'block';
+    } else {
+        if (vacioEl) vacioEl.style.display = 'none';
+        grid.style.display = '';
+        grid.innerHTML = '';
+        const ofertaId = getOfertaDiaId();
+        prods.forEach(producto => {
+            const esAgotado   = producto.stock === 0;
+            const esOfertaDia = String(producto.id) === String(ofertaId);
+            const card = document.createElement('div');
+            card.className = 'producto-card' + (esAgotado ? ' card-agotado' : '');
+            card.onclick = () => abrirDetalleProducto(producto.id);
+            card.style.position = 'relative';
+            const stockHTML = esAgotado
+                ? '<div class="stock" style="color:#e74c3c;font-weight:700;">❌ Agotado</div>'
+                : (producto.stock <= 3
+                    ? '<div class="stock stock-urgente">⚠️ ¡Solo quedan ' + producto.stock + '!</div>'
+                    : '<div class="stock">📦 Stock: ' + producto.stock + ' unidades</div>') +
+                  '<button class="btn-pedir-card" onclick="event.stopPropagation();tmComprar(event,' + producto.id + ',\'' + producto.nombre.replace(/'/g, '') + '\')">🛒 Pedir</button>';
+            card.innerHTML =
+                (esOfertaDia ? '<div class="badge-oferta-dia">' + getOfertaDiaTexto() + '</div>' :
+                 esAgotado   ? '<div class="badge-agotado">AGOTADO</div>' :
+                 producto.masVendido ? '<div class="badge-vendido">🔥 Más Vendido</div>' : '') +
+                '<div class="producto-image">' +
+                    getMeGustaHTML(producto.id) +
+                    '<img src="' + (producto.imagen || '') + '" alt="' + producto.nombre + '" loading="lazy">' +
+                    (producto.descuento > 0 ? '<div class="badge">-' + producto.descuento + '%</div>' : '') +
+                '</div>' +
+                '<h3>' + producto.nombre + '</h3>' +
+                '<p class="producto-description">' + (producto.descripcion || '') + '</p>' +
+                '<p class="precio"><span class="precio-actual">$' + Number(producto.precioActual).toFixed(2) + ' USD</span></p>' +
+                stockHTML;
+            grid.appendChild(card);
+        });
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// ── INICIALIZACIÓN ─────────────────────────────────────────────────
-(function initPremiumPack() {
-    // Esperar a que el DOM y productos estén listos
-    const ready = () => {
-        initScrollAnimations();
-        actualizarBadgeStockBajo();
-    };
-    if (document.readyState === 'complete') {
-        setTimeout(ready, 800);
+function cerrarVistaMeGusta() {
+    const v = document.getElementById('vistaMeGusta');
+    if (v) v.style.display = 'none';
+    mostrarVistaInicio();
+}
+
+// ══════════════════════════════════════════════════════════════
+//  VISTA: MIS PEDIDOS (historial del cliente)
+// ══════════════════════════════════════════════════════════════
+function guardarPedidoCliente(itemsCarrito) {
+    const pedidos = JSON.parse(localStorage.getItem('pedidos_cliente_v1') || '[]');
+    const total   = itemsCarrito.reduce((s, i) => s + i.precio * i.cantidad, 0);
+    pedidos.unshift({
+        id:     Date.now(),
+        fecha:  new Date().toLocaleDateString('es-ES', { day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' }),
+        items:  itemsCarrito.map(i => ({ id: i.id, nombre: i.nombre, cantidad: i.cantidad, precio: i.precio })),
+        total:  total
+    });
+    localStorage.setItem('pedidos_cliente_v1', JSON.stringify(pedidos.slice(0, 50)));
+}
+
+function mostrarVistaPedidos() {
+    document.getElementById('vistaInicio').style.display    = 'none';
+    document.getElementById('vistaCategoria').style.display = 'none';
+    const vMG = document.getElementById('vistaMeGusta');
+    if (vMG) vMG.style.display = 'none';
+
+    const vistaEl = document.getElementById('vistaPedidos');
+    if (!vistaEl) return;
+    vistaEl.style.display = 'block';
+
+    const pedidos   = JSON.parse(localStorage.getItem('pedidos_cliente_v1') || '[]');
+    const statsEl   = document.getElementById('pedidosStats');
+    const listaEl   = document.getElementById('pedidosLista');
+    const vacioEl   = document.getElementById('pedidosVacio');
+
+    if (statsEl) statsEl.textContent = pedidos.length + ' pedido' + (pedidos.length !== 1 ? 's' : '');
+
+    if (pedidos.length === 0) {
+        if (listaEl) listaEl.innerHTML = '';
+        if (vacioEl) vacioEl.style.display = 'block';
     } else {
-        window.addEventListener('load', () => setTimeout(ready, 800));
+        if (vacioEl) vacioEl.style.display = 'none';
+        if (listaEl) listaEl.innerHTML = pedidos.map(p => `
+          <div class="pedido-card">
+            <div class="pedido-card-header">
+              <span class="pedido-fecha">📅 ${p.fecha}</span>
+              <span class="pedido-total">$${p.total.toFixed(2)} USD</span>
+            </div>
+            <div class="pedido-items">
+              ${p.items.map(i => `
+                <div class="pedido-item">
+                  <span class="pedido-item-nombre">${i.nombre}</span>
+                  <span class="pedido-item-qty">×${i.cantidad}</span>
+                  <span class="pedido-item-precio">$${(i.precio * i.cantidad).toFixed(2)}</span>
+                </div>
+              `).join('')}
+            </div>
+            <button class="pedido-btn-repetir" onclick="repetirPedido(${p.id})">🔄 Pedir de nuevo</button>
+          </div>
+        `).join('');
     }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function cerrarVistaPedidos() {
+    const v = document.getElementById('vistaPedidos');
+    if (v) v.style.display = 'none';
+    mostrarVistaInicio();
+}
+
+function repetirPedido(pedidoId) {
+    const pedidos = JSON.parse(localStorage.getItem('pedidos_cliente_v1') || '[]');
+    const pedido  = pedidos.find(p => p.id === pedidoId);
+    if (!pedido) return;
+    pedido.items.forEach(item => {
+        const p = productos.find(x => x.id === item.id);
+        if (p && p.stock > 0) agregarAlCarrito(item.id);
+    });
+    cerrarVistaPedidos();
+    setTimeout(abrirCarrito, 300);
+}
+
+
+// ══════════════════════════════════════════════════════════════
+//  DEEP LINKS — Abrir producto directo desde URL compartida
+//  Ejemplo: tiendamax.org/#producto-1777923552923
+// ══════════════════════════════════════════════════════════════
+function _procesarDeepLink() {
+    const hash = window.location.hash;
+    if (!hash.startsWith('#producto-')) return;
+    const id = parseInt(hash.replace('#producto-', ''), 10);
+    if (!id) return;
+
+    const abrir = () => {
+        // Buscar en array global primero
+        if (typeof productos !== 'undefined' && productos.length > 0) {
+            const p = productos.find(x => x.id === id || String(x.id) === String(id));
+            if (p) { abrirDetalleProducto(p.id); return true; }
+        }
+        // Fallback: localStorage
+        const local = JSON.parse(localStorage.getItem('productos') || '[]');
+        const pLocal = local.find(x => x.id === id || String(x.id) === String(id));
+        if (pLocal) {
+            // Inyectar en el array global si está vacío y abrir
+            if (typeof productos !== 'undefined' && productos.length === 0) {
+                productos.push(...local);
+            }
+            abrirDetalleProducto(pLocal.id);
+            return true;
+        }
+        return false;
+    };
+
+    // Reintentar con polling cada 300ms hasta 8s
+    if (!abrir()) {
+        let intentos = 0;
+        const intervalo = setInterval(() => {
+            intentos++;
+            if (abrir() || intentos >= 26) clearInterval(intervalo);
+        }, 300);
+    }
+}
+
+window.addEventListener('hashchange', _procesarDeepLink);
+document.addEventListener('DOMContentLoaded', () => {
+    if (window.location.hash.startsWith('#producto-')) {
+        // Intentar inmediatamente con localStorage, y seguir reintentando
+        setTimeout(_procesarDeepLink, 100);
+    }
+});
+
+// ══════════════════════════════════════════════════════════════
+//  NOTIFICACIÓN DE CARRITO ABANDONADO
+//  Lógica: si hay productos en el carrito y el usuario lleva
+//  más de 2 horas sin interactuar, se envía una notificación push.
+//  Se usa el SW existente — no requiere backend.
+// ══════════════════════════════════════════════════════════════
+(function initCarritoAbandonado() {
+    const DELAY_MS  = 2 * 60 * 60 * 1000; // 2 horas
+    const KEY_TIMER = 'carrito_notif_timer';
+    const KEY_SENT  = 'carrito_notif_sent';
+    let   _timer    = null;
+
+    function cancelarTimer() {
+        if (_timer) { clearTimeout(_timer); _timer = null; }
+        localStorage.removeItem(KEY_TIMER);
+    }
+
+    function programarNotificacion() {
+        cancelarTimer();
+        // Solo si hay carrito con productos
+        if (!carrito || carrito.length === 0) return;
+        // Solo si tiene permiso de notificaciones
+        if (typeof Notification === 'undefined' || Notification.permission !== 'granted') return;
+
+        const disparoEn = Date.now() + DELAY_MS;
+        localStorage.setItem(KEY_TIMER, disparoEn);
+        localStorage.removeItem(KEY_SENT);
+
+        _timer = setTimeout(async () => {
+            // Verificar que aún hay carrito y no se envió ya
+            const carritoActual = JSON.parse(localStorage.getItem('carrito_v2') || '{"items":[]}').items || [];
+            if (carritoActual.length === 0) return;
+            if (localStorage.getItem(KEY_SENT)) return;
+
+            const total = carritoActual.reduce((s, i) => s + i.precio * i.cantidad, 0);
+            const nombres = carritoActual.slice(0, 2).map(i => i.nombre.substring(0, 20)).join(', ');
+            const cuerpo  = carritoActual.length === 1
+                ? '¡Tienes ' + carritoActual[0].nombre.substring(0, 30) + ' esperándote! ($' + total.toFixed(0) + ' USD)'
+                : '¡Tienes ' + carritoActual.length + ' productos en tu carrito! ' + nombres + '... ($' + total.toFixed(0) + ' USD)';
+
+            try {
+                const reg = await navigator.serviceWorker.ready;
+                await reg.showNotification('🛒 ¿Olvidaste algo?', {
+                    body: cuerpo,
+                    icon: '/icons/icon-192.png',
+                    badge: '/icons/icon-192.png',
+                    data: { url: '/?carrito=1' },
+                    vibrate: [200, 100, 200],
+                    tag: 'carrito-abandonado',
+                    renotify: false,
+                    actions: [
+                        { action: 'ver', title: '🛒 Ver carrito' },
+                        { action: 'cerrar', title: 'Más tarde' }
+                    ]
+                });
+                localStorage.setItem(KEY_SENT, '1');
+            } catch(err) {
+                console.log('Notificación carrito:', err);
+            }
+        }, DELAY_MS);
+    }
+
+    // Reprogramar cada vez que cambie el carrito
+    const _guardarOriginal = guardarCarrito;
+    window.guardarCarrito = function() {
+        _guardarOriginal();
+        programarNotificacion();
+    };
+
+    // Al cargar la página: verificar si hay un timer pendiente del pasado
+    window.addEventListener('load', () => {
+        const disparoGuardado = parseInt(localStorage.getItem(KEY_TIMER) || '0');
+        if (disparoGuardado && Date.now() < disparoGuardado && carrito && carrito.length > 0) {
+            const restante = disparoGuardado - Date.now();
+            _timer = setTimeout(() => programarNotificacion(), restante);
+        } else {
+            programarNotificacion();
+        }
+    });
+
+    // Al abrir el carrito: cancelar el timer (el usuario está activo)
+    const _abrirOriginal = abrirCarrito;
+    window.abrirCarrito = function() {
+        cancelarTimer();
+        localStorage.removeItem(KEY_SENT);
+        _abrirOriginal();
+        // Reprogramar cuando cierre
+        setTimeout(programarNotificacion, 500);
+    };
 })();
 
 // ── REGISTRO DEL SERVICE WORKER + NOTIFICACIONES PUSH ──────────────
