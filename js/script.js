@@ -1011,6 +1011,7 @@ async function cargarDatosDesdeGitHub() {
         // Refrescar Me Gusta si está visible
         const vMG = document.getElementById('vistaMeGusta');
         if (vMG && vMG.style.display !== 'none') mostrarVistaMeGusta();
+        verificarProductosNuevos();
         console.log('✅ Datos sincronizados con GitHub');
     } catch (e) {
         console.log('ℹ️ Iniciando con datos locales');
@@ -1419,6 +1420,10 @@ function agregarProductoForm(event) {
         sincronizarConGitHub();
         document.getElementById('productForm').reset();
         mostrarNotificacion('✅ ¡Producto agregado exitosamente!');
+        // Enviar notificación push a clientes suscritos
+        if (window.TiendaMaxPush) {
+            window.TiendaMaxPush.nuevoProducto(producto.nombre, producto.precioActual);
+        }
         renderizarCategoriasHome();
         renderizarMasVendidos();
         renderizarProductos();
@@ -4760,20 +4765,46 @@ document.addEventListener('DOMContentLoaded', () => {
 
     setTimeout(() => {
         if (!('Notification' in window)) return;
-        if (Notification.permission !== 'default') return;
-        if (localStorage.getItem('tm_push_ok')) return;
+
+        // Si ya tiene permiso concedido, no molestar
+        if (Notification.permission === 'granted') return;
+
+        // Si el usuario cerró el banner hace menos de 6 horas, esperar
         const pospuesto = parseInt(localStorage.getItem('tm_push_pospuesto') || '0');
         if (Date.now() < pospuesto) return;
 
+        // Eliminar banner anterior si existe
+        const anterior = document.getElementById('tm-push-banner-wrap');
+        if (anterior) anterior.remove();
+
+        // Mensaje según el estado del permiso
+        const estaDenegado = Notification.permission === 'denied';
+        const titulo  = estaDenegado ? '🔔 Notificaciones bloqueadas' : '🔔 ¡Activa las alertas!';
+        const cuerpo  = estaDenegado
+            ? 'Ve a ajustes del navegador y actívalas para recibir ofertas'
+            : 'Recibe ofertas relámpago y productos nuevos al instante';
+        const btnTexto = estaDenegado ? 'Cómo activarlas' : 'Activar';
+
         const b = document.createElement('div');
-        b.innerHTML = `<div id="tm-push-banner" style="position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#1a1a1a;border:1.5px solid #C9A96E;border-radius:14px;padding:14px 18px;display:flex;align-items:center;gap:12px;max-width:320px;width:90%;z-index:99999;box-shadow:0 8px 32px rgba(0,0,0,0.5);font-family:sans-serif;"><span style="font-size:26px;flex-shrink:0">🔔</span><div style="flex:1;min-width:0"><div style="font-weight:700;font-size:14px;color:#C9A96E;margin-bottom:2px">¡Activa las alertas!</div><div style="font-size:12px;color:#aaa;line-height:1.3">Recibe ofertas relámpago y productos nuevos</div></div><div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0"><button id="tm-push-si" style="background:#C9A96E;color:#000;border:none;border-radius:8px;padding:7px 12px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap">Activar</button><button id="tm-push-no" style="background:none;border:none;color:#666;font-size:11px;cursor:pointer;text-align:center">Ahora no</button></div></div>`;
+        b.id = 'tm-push-banner-wrap';
+        b.innerHTML = `<div id="tm-push-banner" style="position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#1a1a1a;border:1.5px solid #C9A96E;border-radius:14px;padding:14px 18px;display:flex;align-items:center;gap:12px;max-width:320px;width:90%;z-index:99999;box-shadow:0 8px 32px rgba(0,0,0,0.5);font-family:sans-serif;animation:slideUpBanner .35s ease"><span style="font-size:26px;flex-shrink:0">🔔</span><div style="flex:1;min-width:0"><div style="font-weight:700;font-size:14px;color:#C9A96E;margin-bottom:2px">${titulo}</div><div style="font-size:12px;color:#aaa;line-height:1.3">${cuerpo}</div></div><div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0"><button id="tm-push-si" style="background:#C9A96E;color:#000;border:none;border-radius:8px;padding:7px 12px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap">${btnTexto}</button><button id="tm-push-no" style="background:none;border:none;color:#666;font-size:11px;cursor:pointer;text-align:center">Ahora no</button></div></div>`;
+        if (!document.getElementById('slideUpBannerStyle')) {
+            const s = document.createElement('style');
+            s.id = 'slideUpBannerStyle';
+            s.textContent = '@keyframes slideUpBanner{from{opacity:0;transform:translateX(-50%) translateY(20px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}';
+            document.head.appendChild(s);
+        }
         document.body.appendChild(b);
 
         document.getElementById('tm-push-si').onclick = async () => {
             b.remove();
+            if (estaDenegado) {
+                // Mostrar guía para Android
+                alert('Para activar las notificaciones:\n\n1. Toca los 3 puntos del navegador\n2. Ajustes → Configuración del sitio\n3. Notificaciones → Permitir');
+                return;
+            }
             const perm = await Notification.requestPermission();
             if (perm === 'granted') {
-                localStorage.setItem('tm_push_ok', '1');
                 const reg = await navigator.serviceWorker.ready;
                 reg.showNotification('✅ TiendaMax activado', {
                     body: 'Te avisaremos de ofertas y productos nuevos.',
@@ -4781,14 +4812,18 @@ document.addEventListener('DOMContentLoaded', () => {
                     badge: '/icons/icon-192.png',
                     vibrate: [200, 100, 200]
                 });
+            } else if (perm === 'denied') {
+                // Si lo denegó ahora, volver a preguntar en 6 horas
+                localStorage.setItem('tm_push_pospuesto', Date.now() + 6 * 60 * 60 * 1000);
             }
         };
 
         document.getElementById('tm-push-no').onclick = () => {
             b.remove();
-            localStorage.setItem('tm_push_pospuesto', Date.now() + 2 * 24 * 60 * 60 * 1000);
+            // Volver a mostrar en 6 horas (no 2 días)
+            localStorage.setItem('tm_push_pospuesto', Date.now() + 6 * 60 * 60 * 1000);
         };
-    }, 5000);
+    }, 4000);
 
     window.TiendaMaxPush = {
         async enviar(titulo, cuerpo, url) {
