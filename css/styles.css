@@ -3688,6 +3688,11 @@ body.dark-mode .admin-tab [style*="background: #111"] {
     .categorias-home-inner { display: block !important; }
 }
 
+@media (min-width: 769px) {
+    .banner-lateral { display: flex !important; }
+    .categorias-home-inner { display: flex !important; }
+}
+
 /* ── Banner laterales (desktop only) ── */
 .banner-lateral {
     display: flex;
@@ -4353,10 +4358,4 @@ a.whatsapp-group-btn:hover, .whatsapp-group-btn:hover {
         overflow: hidden !important;
         border-radius: 14px 14px 0 0 !important;
     }
-}
-
-/* ── FIX: Banners laterales visibles en desktop ── */
-@media (min-width: 769px) {
-    .banner-lateral { display: flex !important; }
-    .categorias-home-inner { display: flex !important; }
 }
