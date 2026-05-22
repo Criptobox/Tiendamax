@@ -4077,12 +4077,22 @@ function flyToCart(originEl) {
 // ── FLY-TO-CART: función global que llama botones de comprar ──
 function tmComprar(event, id, nombre) {
     const btn = (event && (event.currentTarget || event.target)) || null;
-    // Lanzar partícula desde el botón
     if (btn) requestAnimationFrame(() => flyToCart(btn));
-    // Agregar al carrito internamente
     agregarAlCarrito(id);
-    // Abrir WhatsApp
-    if (typeof contactarProducto === 'function') contactarProducto(nombre);
+    // Buscar producto para tener el precio en el mensaje
+    const _prod = productos.find(p => p.id === id || p.id === Number(id));
+    if (_prod) {
+        const precio = parseFloat(_prod.precioActual).toFixed(2);
+        const msg = encodeURIComponent(
+            `¡Hola! Me gustaría hacer este pedido:\n\n` +
+            `• ${_prod.nombre} x1 — $${precio} USD\n\n` +
+            `💰 Total: $${precio} USD\n\n` +
+            `¿Está disponible?`
+        );
+        window.open(`https://wa.me/${getNumeroWhatsApp()}?text=${msg}`, '_blank');
+    } else if (typeof contactarProducto === 'function') {
+        contactarProducto(nombre);
+    }
 }
 
 // Patch agregarAlCarrito para fly desde modal
