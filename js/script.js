@@ -485,7 +485,7 @@ function renderizarRecientes() {
             '<h3 style="font-size:13px;padding:10px 12px 4px;">' + p.nombre + '</h3>' +
             '<p class="precio" style="padding:0 12px 10px;">' +
                 (p.descuento > 0 ? '<span class="precio-tachado">$' + (p.precioActual / (1 - p.descuento / 100)).toFixed(2) + '</span> ' : '') +
-                '<span class="precio-actual">$' + p.precioActual.toFixed(2) + '</span>' +
+                '<span class="precio-actual" data-usd="' + p.precioActual + '">' + (typeof formatPrecio==='function'?formatPrecio(p.precioActual):'$'+p.precioActual.toFixed(2)+' USD') + '</span>' +
                 (p.descuento > 0 ? ' <span class="precio-ahorro">-' + p.descuento + '%</span>' : '') +
             '</p>' +
         '</div>'
@@ -1566,7 +1566,7 @@ function renderizarProductos(isLoadMore = false) {
             <h3>${producto.nombre}</h3>
             <p class="producto-description">${producto.descripcion}</p>
 	            <p class="precio">
-	                <span class="precio-actual">${producto.precioActual.toFixed(2)} USD</span>
+	                <span class="precio-actual" data-usd="${producto.precioActual}">${typeof formatPrecio === 'function' ? formatPrecio(producto.precioActual) : '$'+producto.precioActual.toFixed(2)+' USD'}</span>
 	            </p>
             <div class="stock">📦 Stock: ${producto.stock} unidades</div>
             ${typeof renderCountdownHtml === 'function' ? renderCountdownHtml(producto.id) : ''}
@@ -1576,12 +1576,17 @@ function renderizarProductos(isLoadMore = false) {
     });
 
     if (productosFiltrados.length > productosVisibleCount) {
-        const loadMoreBtn = document.createElement('button');
-        loadMoreBtn.className = 'btn btn-secondary';
-        loadMoreBtn.style.gridColumn = '1 / -1';
-        loadMoreBtn.style.marginTop = '20px';
-        loadMoreBtn.textContent = 'Cargar más productos...';
-        loadMoreBtn.onclick = () => {
+        const loadMoreBtn = document.createElement('div');
+        loadMoreBtn.style.cssText = 'grid-column:1/-1;display:flex;flex-direction:column;align-items:center;gap:10px;margin-top:28px;padding:0 16px';
+        const restantes = productosFiltrados.length - productosVisibleCount;
+        loadMoreBtn.innerHTML = `
+            <p style="color:rgba(255,255,255,0.35);font-size:12px;letter-spacing:.5px;text-transform:uppercase">
+                Mostrando ${Math.min(productosVisibleCount, productosFiltrados.length)} de ${productosFiltrados.length} productos
+            </p>
+            <button class="btn-seguir-viendo">
+                👁️ Seguir viendo <span style="background:rgba(255,255,255,0.12);padding:2px 8px;border-radius:20px;font-size:11px;margin-left:4px">${restantes} más</span>
+            </button>`;
+        loadMoreBtn.querySelector('.btn-seguir-viendo').onclick = () => {
             productosVisibleCount += 20;
             renderizarProductos(true);
         };
@@ -1721,15 +1726,16 @@ function abrirDetalleProducto(id) {
     // Historial de vistas
     registrarVisto(p.id);
 
-    // Contador "personas viendo"
+    // Personas viendo (contador simulado con base en vistas reales)
     (function() {
         const vDiv = document.getElementById('detailPersonasViendo');
         if (!vDiv) return;
         const vistas = obtenerVistasProd(p.id) || 0;
+        // Simular personas activas: entre 2 y 12, influenciado por vistas
         const base = Math.min(12, 2 + Math.floor(vistas / 3));
         const personas = base + Math.floor(Math.random() * 4);
         vDiv.style.display = 'flex';
-        vDiv.innerHTML = `<span>👁️ ${personas} personas están viendo esto ahora</span>`;
+        vDiv.innerHTML = '<span>👁️ ' + personas + ' personas están viendo esto ahora</span>';
     })();
 
     // Botón carrito en modal
@@ -1865,13 +1871,15 @@ function contactarProducto(nombre) {
     const p = _detalleProductoActual;
     let msg;
     if (p) {
-        const enlace = `https://tiendamax.org/p/producto-${p.id}.html`;
-        const precio = `$${parseFloat(p.precioActual).toFixed(2)} USD`;
+        const precio = parseFloat(p.precioActual).toFixed(2);
         msg = encodeURIComponent(
-            `Hola, me interesa este producto:\n\n*${p.nombre}*\n💰 Precio: ${precio}\n🔗 ${enlace}\n\n¿Está disponible?`
+            `¡Hola! Me gustaría hacer este pedido:\n\n` +
+            `• ${p.nombre} x1 — $${precio} USD\n\n` +
+            `💰 Total: $${precio} USD\n\n` +
+            `¿Está disponible?`
         );
     } else {
-        msg = encodeURIComponent(`Hola, me interesa el producto: ${nombre}. ¿Está disponible?`);
+        msg = encodeURIComponent(`¡Hola! Me gustaría hacer este pedido:\n\n• ${nombre} x1\n\n¿Está disponible?`);
     }
     window.open(`https://wa.me/${getNumeroWhatsApp()}?text=${msg}`, '_blank');
 }
@@ -2613,12 +2621,19 @@ async function subirArchivoAGitHub(user, repo, token, path, data) {
 function verificarOfertasYMostrarBanner() {
     const banner = document.getElementById('urgenciaBanner');
     if (!banner) return;
+
+    // Prioridad 1: Oferta del Día configurada en el admin
     const ofertaDiaId    = localStorage.getItem('ofertaDiaId');
     const ofertaDiaTexto = localStorage.getItem('ofertaDiaTexto') || '🔥 OFERTA DEL DÍA';
+
+    // Prioridad 2: Countdown activo
     const cdData = localStorage.getItem('activeCountdown');
     const cdObj  = cdData ? (() => { try { return JSON.parse(cdData); } catch(e) { return null; } })() : null;
     const cdValido = cdObj && cdObj.endTime && cdObj.endTime > Date.now();
-    let targetId = null, textoBanner = '';
+
+    let targetId    = null;
+    let textoBanner = '';
+
     if (ofertaDiaId) {
         targetId    = ofertaDiaId;
         textoBanner = `${ofertaDiaTexto} <span class="flash-deal">VER AHORA →</span>`;
@@ -2630,9 +2645,11 @@ function verificarOfertasYMostrarBanner() {
         banner.onclick = null;
         return;
     }
+
     banner.innerHTML = textoBanner;
     banner.style.display = 'block';
     banner.style.cursor  = 'pointer';
+
     banner.onclick = () => {
         if (!targetId) return;
         const idNum = Number(targetId);
@@ -3691,20 +3708,52 @@ function guardarOfertaDia2() {
 function _guardarOfertaDiaDesde(sel, textoEl) {
     if (!sel || !sel.value) { mostrarNotificacion('⚠️ Selecciona un producto', 'error'); return; }
     const texto = textoEl ? (textoEl.value.trim() || '🔥 OFERTA DEL DÍA') : '🔥 OFERTA DEL DÍA';
-    localStorage.setItem('ofertaDiaId', sel.value);
-    localStorage.setItem('ofertaDiaTexto', texto);
+    const _ofId  = sel.value;
+    const _ofTxt = texto;
+    localStorage.setItem('ofertaDiaId', _ofId);
+    localStorage.setItem('ofertaDiaTexto', _ofTxt);
+    verificarOfertasYMostrarBanner();
     actualizarStatusOfertaDia();
     renderizarProductos();
     renderizarMasVendidos();
     mostrarNotificacion('🏷️ Oferta del Día activada');
+    // Subir a GitHub para que TODOS los clientes la vean
+    (async () => {
+        const _u = localStorage.getItem('githubUser');
+        const _r = localStorage.getItem('githubRepo');
+        const _t = localStorage.getItem('githubToken');
+        if (!_u || !_r || !_t) return;
+        try {
+            const existing = await fetch(`https://raw.githubusercontent.com/${_u}/${_r}/main/config.json?_=${Date.now()}`).then(r=>r.ok?r.json():{}).catch(()=>({}));
+            existing.ofertaDiaId = _ofId;
+            existing.ofertaDiaTexto = _ofTxt;
+            existing.ofertaDiaActualizado = new Date().toISOString();
+            await subirArchivoAGitHub(_u, _r, _t, 'config.json', existing);
+            mostrarNotificacion('☁️ Oferta subida a GitHub — todos la verán', 'success');
+        } catch(e) { console.warn('GitHub sync oferta:', e); }
+    })();
 }
 function desactivarOfertaDia() {
     localStorage.removeItem('ofertaDiaId');
     localStorage.removeItem('ofertaDiaTexto');
+    verificarOfertasYMostrarBanner();
     poblarSelectOfertaDia();
     renderizarProductos();
     renderizarMasVendidos();
     mostrarNotificacion('❌ Oferta del Día desactivada');
+    // Borrar en GitHub
+    (async () => {
+        const _u = localStorage.getItem('githubUser');
+        const _r = localStorage.getItem('githubRepo');
+        const _t = localStorage.getItem('githubToken');
+        if (!_u || !_r || !_t) return;
+        try {
+            const existing = await fetch(`https://raw.githubusercontent.com/${_u}/${_r}/main/config.json?_=${Date.now()}`).then(r=>r.ok?r.json():{}).catch(()=>({}));
+            delete existing.ofertaDiaId;
+            delete existing.ofertaDiaTexto;
+            await subirArchivoAGitHub(_u, _r, _t, 'config.json', existing);
+        } catch(e) {}
+    })();
 }
 function getOfertaDiaId() {
     return localStorage.getItem('ofertaDiaId') || null;
@@ -5237,3 +5286,242 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(programarNotificacion, 500);
     };
 })();
+
+// ═══════════════════════════════════════════════════════
+//  #6 TOGGLE VISTA GRID / LISTA (PÍLDORAS)
+// ═══════════════════════════════════════════════════════
+let _vistaActual = localStorage.getItem('vistaProductos') || 'grid';
+
+function setVistaProductos(vista) {
+    _vistaActual = vista;
+    localStorage.setItem('vistaProductos', vista);
+    const grid = document.getElementById('productosGrid');
+    if (!grid) return;
+    if (vista === 'lista') {
+        grid.classList.add('vista-lista');
+        // Inyectar badge de descuento en píldora si no existe
+        grid.querySelectorAll('.producto-card').forEach(card => {
+            if (!card.querySelector('.pill-descuento')) {
+                const badgeEl = card.querySelector('.badge');
+                if (badgeEl) {
+                    const pill = document.createElement('span');
+                    pill.className = 'pill-descuento';
+                    pill.textContent = badgeEl.textContent;
+                    const btn = card.querySelector('.btn-pedir-card');
+                    if (btn) card.insertBefore(pill, btn);
+                }
+            }
+        });
+    } else {
+        grid.classList.remove('vista-lista');
+    }
+    // Actualizar botones toggle
+    const btnG = document.getElementById('btnVistaGrid');
+    const btnL = document.getElementById('btnVistaLista');
+    if (btnG) btnG.classList.toggle('active', vista === 'grid');
+    if (btnL) btnL.classList.toggle('active', vista === 'lista');
+}
+
+// Aplicar vista guardada cada vez que se renderizan productos
+const _origActualizarLista = typeof actualizarListaProductos === 'function' ? actualizarListaProductos : null;
+document.addEventListener('DOMContentLoaded', () => {
+    // Restaurar vista guardada al cargar
+    const btnG = document.getElementById('btnVistaGrid');
+    const btnL = document.getElementById('btnVistaLista');
+    if (_vistaActual === 'lista') {
+        if (btnG) btnG.classList.remove('active');
+        if (btnL) btnL.classList.add('active');
+    }
+});
+
+// Parchar renderizarProductos para aplicar vista lista tras render
+const __origRenderProd = renderizarProductos;
+renderizarProductos = function() {
+    __origRenderProd.apply(this, arguments);
+    if (_vistaActual === 'lista') setTimeout(() => setVistaProductos('lista'), 0);
+};
+
+// ═══════════════════════════════════════════════════════
+//  #4 BADGE "NUEVO" — Productos de los últimos 7 días
+// ═══════════════════════════════════════════════════════
+function esProductoNuevo(producto) {
+    if (!producto.fechaAgregado) return false;
+    const dias7 = 7 * 24 * 60 * 60 * 1000;
+    return (Date.now() - new Date(producto.fechaAgregado).getTime()) < dias7;
+}
+
+// Parchar renderizarProductos para inyectar badge NUEVO
+const __origRenderProd2 = renderizarProductos;
+renderizarProductos = function() {
+    __origRenderProd2.apply(this, arguments);
+    const grid = document.getElementById('productosGrid');
+    if (!grid) return;
+    grid.querySelectorAll('.producto-card').forEach((card, i) => {
+        if (card.querySelector('.badge-nuevo')) return;
+        const p = (productosAMostrarCache || [])[i];
+        if (p && esProductoNuevo(p)) {
+            const badge = document.createElement('div');
+            badge.className = 'badge-nuevo';
+            badge.textContent = 'NUEVO';
+            const imgWrap = card.querySelector('.producto-image');
+            if (imgWrap) imgWrap.appendChild(badge);
+        }
+    });
+};
+let productosAMostrarCache = [];
+const __origRenderProd3 = renderizarProductos;
+renderizarProductos = function(lista) {
+    if (Array.isArray(lista)) productosAMostrarCache = lista;
+    __origRenderProd3.apply(this, arguments);
+};
+
+// ═══════════════════════════════════════════════════════
+//  #1 CONVERTIDOR USD → MN
+//  Tasa se carga desde config.json en GitHub (sube a todos)
+//  + 10 MN de margen sobre la tasa base configurada
+// ═══════════════════════════════════════════════════════
+let _monedaActual = localStorage.getItem('monedaActual') || 'USD';
+
+function getTasaMN() {
+    const base = parseFloat(localStorage.getItem('tasaMN') || '0');
+    return base > 0 ? base + 10 : 0;
+}
+
+// Guardar tasa en GitHub para que todos la vean
+async function guardarTasaEnGitHub(tasaBase) {
+    const user  = localStorage.getItem('githubUser');
+    const repo  = localStorage.getItem('githubRepo');
+    const token = localStorage.getItem('githubToken');
+    if (!user || !repo || !token) return false;
+    try {
+        const config = { tasaMN: tasaBase, actualizado: new Date().toISOString() };
+        await subirArchivoAGitHub(user, repo, token, 'config.json', config);
+        return true;
+    } catch(e) { return false; }
+}
+
+// Cargar tasa desde GitHub al iniciar
+async function cargarTasaDesdeGitHub() {
+    const user = localStorage.getItem('githubUser');
+    const repo = localStorage.getItem('githubRepo');
+    if (!user || !repo) return;
+    try {
+        const url = `https://raw.githubusercontent.com/${user}/${repo}/main/config.json?_=${Date.now()}`;
+        const res = await fetch(url);
+        if (res.ok) {
+            const cfg = await res.json();
+            // Cargar tasa MN
+            if (cfg.tasaMN && parseFloat(cfg.tasaMN) > 0) {
+                localStorage.setItem('tasaMN', String(cfg.tasaMN));
+                if (_monedaActual === 'MN') actualizarPreciosMostrados();
+                console.log(`✅ Tasa MN cargada desde GitHub: ${cfg.tasaMN} MN/USD`);
+            }
+            // Cargar oferta del día
+            if (cfg.ofertaDiaId) {
+                localStorage.setItem('ofertaDiaId', String(cfg.ofertaDiaId));
+                if (cfg.ofertaDiaTexto) localStorage.setItem('ofertaDiaTexto', cfg.ofertaDiaTexto);
+                verificarOfertasYMostrarBanner();
+            }
+        }
+    } catch(e) {}
+}
+
+function setCurrency(moneda) {
+    _monedaActual = moneda;
+    localStorage.setItem('monedaActual', moneda);
+    // Actualizar botones
+    document.getElementById('curUSD')?.classList.toggle('active', moneda === 'USD');
+    document.getElementById('curMN')?.classList.toggle('active', moneda === 'MN');
+    // Actualizar etiqueta de tasa
+    const tasa = getTasaMN();
+    const label = document.getElementById('tasaLabel');
+    if (label) {
+        label.textContent = tasa > 0
+            ? (moneda === 'MN' ? `Tasa: 1 USD = ${tasa} MN` : '')
+            : (moneda === 'MN' ? '⚠️ Configura la tasa en Ajustes' : '');
+    }
+    // Actualizar todos los precios visibles
+    actualizarPreciosMostrados();
+}
+
+function formatPrecio(usd) {
+    if (_monedaActual === 'MN') {
+        const tasa = getTasaMN();
+        if (tasa > 0) return `$${Math.round(usd * tasa).toLocaleString()} MN`;
+    }
+    return `$${parseFloat(usd).toFixed(2)} USD`;
+}
+
+function actualizarPreciosMostrados() {
+    // Precios en tarjetas de productos
+    document.querySelectorAll('[data-precio-usd]').forEach(el => {
+        const usd = parseFloat(el.getAttribute('data-precio-usd'));
+        el.textContent = formatPrecio(usd);
+    });
+    // Re-renderizar si es necesario
+    const grid = document.getElementById('productosGrid');
+    if (grid && grid.children.length > 0) {
+        grid.querySelectorAll('.precio-actual').forEach(el => {
+            const usd = parseFloat(el.getAttribute('data-usd') || el.textContent.replace(/[^0-9.]/g, ''));
+            if (!isNaN(usd) && usd > 0) {
+                if (!el.getAttribute('data-usd')) el.setAttribute('data-usd', usd);
+                el.textContent = formatPrecio(usd);
+            }
+        });
+    }
+}
+
+// Inicializar barra de moneda al cargar
+document.addEventListener('DOMContentLoaded', () => {
+    const tasa = getTasaMN();
+    const label = document.getElementById('tasaLabel');
+    if (label && _monedaActual === 'MN' && tasa > 0) {
+        label.textContent = `Tasa: 1 USD = ${tasa} MN`;
+    }
+    if (_monedaActual === 'MN') {
+        document.getElementById('curUSD')?.classList.remove('active');
+        document.getElementById('curMN')?.classList.add('active');
+    }
+});
+
+// Exponer formatPrecio globalmente para uso en renderizado
+window.tmFormatPrecio = formatPrecio;
+window.tmMonedaActual = () => _monedaActual;
+
+// Cargar tasa actualizada desde GitHub al iniciar
+cargarTasaDesdeGitHub();
+
+// Guardar tasa desde panel admin → localStorage + GitHub
+async function guardarTasaMNAdmin() {
+    const input = document.getElementById('adminTasaMN');
+    const status = document.getElementById('tasaMNStatus');
+    if (!input) return;
+    const val = parseFloat(input.value);
+    if (!val || val < 1) {
+        if (status) status.textContent = '⚠️ Ingresa un valor válido';
+        return;
+    }
+    localStorage.setItem('tasaMN', String(val));
+    if (status) status.textContent = '💾 Guardado localmente...';
+    // Subir a GitHub para que todos lo vean
+    const ok = await guardarTasaEnGitHub(val);
+    if (status) {
+        status.textContent = ok
+            ? `✅ Tasa ${val} MN/USD subida a GitHub. Clientes verán ${val + 10} MN/USD.`
+            : '✅ Guardado local. Configura GitHub para sincronizar con todos.';
+        status.style.color = ok ? '#2ECC71' : '#C9A96E';
+    }
+    // Actualizar precios en pantalla
+    if (_monedaActual === 'MN') actualizarPreciosMostrados();
+}
+
+// Cargar valor actual de tasa al abrir admin
+const _origAbrirAdminTasa = abrirAdminPanel;
+abrirAdminPanel = function() {
+    _origAbrirAdminTasa.apply(this, arguments);
+    const input = document.getElementById('adminTasaMN');
+    if (input) {
+        const saved = localStorage.getItem('tasaMN');
+        if (saved) input.value = saved;
+    }
+};
