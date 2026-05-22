@@ -1394,7 +1394,8 @@ function agregarProductoForm(event) {
             descripcion: document.getElementById('productDescription').value.trim(),
             imagen: imagenComprimida,
             precioActual: parseFloat(document.getElementById('productPriceActual').value) || 0,
-            descuento: parseInt(document.getElementById('productDiscount').value) || 0,
+            precioOriginal: parseFloat(document.getElementById('productPrecioOriginal')?.value) || 0,
+            descuento: 0,
             stock: parseInt(document.getElementById('productStock').value) || 0,
             comision: parseFloat(document.getElementById('productComision')?.value) || 0,
             categoria: document.getElementById('productCategory').value,
@@ -2184,7 +2185,8 @@ function abrirEditModal(id) {
     document.getElementById('editProductName').value = p.nombre;
     document.getElementById('editProductDescription').value = p.descripcion;
     document.getElementById('editProductPriceActual').value = p.precioActual;
-    document.getElementById('editProductDiscount').value = p.descuento || '';
+    const _epOrig = document.getElementById('editProductPrecioOriginal');
+    if (_epOrig) _epOrig.value = p.precioOriginal > 0 ? p.precioOriginal : '';
     document.getElementById('editProductStock').value = p.stock;
     document.getElementById('editProductCategory').value = p.categoria;
 
@@ -2238,7 +2240,8 @@ function guardarProductoEditado(event) {
             nombre: document.getElementById('editProductName').value.trim(),
             descripcion: document.getElementById('editProductDescription').value.trim(),
             precioActual: parseFloat(document.getElementById('editProductPriceActual').value) || 0,
-            descuento: parseInt(document.getElementById('editProductDiscount').value) || 0,
+            precioOriginal: parseFloat(document.getElementById('editProductPrecioOriginal')?.value) || 0,
+            descuento: 0,
             stock: parseInt(document.getElementById('editProductStock').value) || 0,
             categoria: document.getElementById('editProductCategory').value,
             subcategoria: (document.getElementById('editProductSubcategory') && document.getElementById('editProductSubcategory').value) ? document.getElementById('editProductSubcategory').value : (productos[index].subcategoria || ''),
