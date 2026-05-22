@@ -484,9 +484,9 @@ function renderizarRecientes() {
             '</div>' +
             '<h3 style="font-size:13px;padding:10px 12px 4px;">' + p.nombre + '</h3>' +
             '<p class="precio" style="padding:0 12px 10px;">' +
-                (p.descuento > 0 ? '<span class="precio-tachado">$' + (p.precioActual / (1 - p.descuento / 100)).toFixed(2) + '</span> ' : '') +
+                (p.precioOriginal > 0 && p.precioOriginal > p.precioActual ? '<span class="precio-tachado">$' + parseFloat(p.precioOriginal).toFixed(2) + '</span> ' : '') +
                 '<span class="precio-actual" data-usd="' + p.precioActual + '">' + (typeof formatPrecio==='function'?formatPrecio(p.precioActual):'$'+p.precioActual.toFixed(2)+' USD') + '</span>' +
-                (p.descuento > 0 ? ' <span class="precio-ahorro">-' + p.descuento + '%</span>' : '') +
+                (p.precioOriginal > 0 && p.precioOriginal > p.precioActual ? ' <span class="precio-ahorro">-$' + (p.precioOriginal - p.precioActual).toFixed(0) + '</span>' : '') +
             '</p>' +
         '</div>'
     ).join('');
@@ -1265,12 +1265,12 @@ function renderizarMasVendidos() {
 	            <div class="badge-vendido">🔥 Más Vendido</div>
 	            <div class="producto-image">
 	                <img src="${producto.imagen}" alt="${producto.nombre}" loading="lazy">
-	                ${producto.descuento > 0 ? `<div class="badge">-${producto.descuento}%</div>` : ''}
+	                ${(producto.precioOriginal > 0 && producto.precioOriginal > producto.precioActual) ? `<div class="badge">-$${(producto.precioOriginal - producto.precioActual).toFixed(0)}</div>` : ''}
 	            </div>
 	            <h3>${producto.nombre}</h3>
 	            <p class="producto-description">${producto.descripcion}</p>
 	            <p class="precio">
-	                ${producto.descuento > 0 ? '<span class="precio-tachado">$' + (producto.precioActual / (1 - producto.descuento / 100)).toFixed(2) + ' USD</span> ' : ''}<span class="precio-actual">$${producto.precioActual.toFixed(2)} USD</span>${producto.descuento > 0 ? ' <span class="precio-ahorro">-' + producto.descuento + '%</span>' : ''}
+	                ${(producto.precioOriginal > 0 && producto.precioOriginal > producto.precioActual) ? '<span class="precio-tachado">$' + parseFloat(producto.precioOriginal).toFixed(2) + ' USD</span> ' : ''}<span class="precio-actual" data-usd="${producto.precioActual}">${typeof formatPrecio==='function'?formatPrecio(producto.precioActual):'$'+producto.precioActual.toFixed(2)+' USD'}</span>${(producto.precioOriginal > 0 && producto.precioOriginal > producto.precioActual) ? ' <span class="precio-ahorro">-$' + (producto.precioOriginal - producto.precioActual).toFixed(0) + '</span>' : ''}
 	            </p>
             <div class="stock-count">
                 <span>📦 Solo quedan ${producto.stock} unidades</span>
@@ -1561,7 +1561,7 @@ function renderizarProductos(isLoadMore = false) {
             ${producto.masVendido ? '<div class="badge-vendido">🔥 Más Vendido</div>' : ''}
             <div class="producto-image">
                 <img src="${producto.imagen}" alt="${producto.nombre}" loading="lazy">
-                ${producto.descuento > 0 ? `<div class="badge">-${producto.descuento}%</div>` : ''}
+                ${(producto.precioOriginal > 0 && producto.precioOriginal > producto.precioActual) ? `<div class="badge">-$${(producto.precioOriginal - producto.precioActual).toFixed(0)}</div>` : ''}
             </div>
             <h3>${producto.nombre}</h3>
             <p class="producto-description">${producto.descripcion}</p>
@@ -1629,8 +1629,9 @@ function abrirDetalleProducto(id) {
 
     // Descuento badge
     const badge = document.getElementById('detailProductBadge');
-    badge.style.display = p.descuento > 0 ? 'inline-block' : 'none';
-    if (p.descuento > 0) badge.textContent = `-${p.descuento}%`;
+    const _hasPrecioOrig = p.precioOriginal > 0 && parseFloat(p.precioOriginal) > parseFloat(p.precioActual);
+    badge.style.display = _hasPrecioOrig ? 'inline-block' : 'none';
+    if (_hasPrecioOrig) badge.textContent = `-$${(parseFloat(p.precioOriginal) - parseFloat(p.precioActual)).toFixed(0)}`;
 
     // Más vendido badge
     const hotBadge = document.getElementById('detailMasVendidoBadge');
@@ -1643,7 +1644,18 @@ function abrirDetalleProducto(id) {
     const elOld = document.getElementById('detailPriceOriginal');
     elOld.textContent = precioOriginal ? `$${precioOriginal.toFixed(2)} USD` : '';
     elOld.style.display = precioOriginal ? 'inline' : 'none';
-    document.getElementById('detailPriceActual').textContent = `$${p.precioActual.toFixed(2)} USD`;
+    // Precio en modal con tachado real
+const _detailPrecioEl = document.getElementById('detailPriceActual');
+const _detailPrecioOldEl = document.getElementById('detailPriceOriginal');
+if (_detailPrecioEl) _detailPrecioEl.textContent = typeof formatPrecio === 'function' ? formatPrecio(p.precioActual) : `$${p.precioActual.toFixed(2)} USD`;
+if (_detailPrecioOldEl) {
+    if (p.precioOriginal > 0 && parseFloat(p.precioOriginal) > parseFloat(p.precioActual)) {
+        _detailPrecioOldEl.textContent = `$${parseFloat(p.precioOriginal).toFixed(2)} USD`;
+        _detailPrecioOldEl.style.display = 'inline';
+    } else {
+        _detailPrecioOldEl.style.display = 'none';
+    }
+}
 
     // Ahorro
     const ahorroEl = document.getElementById('detailAhorroBadge');
@@ -3864,14 +3876,14 @@ renderizarProductos = function() {
             '<div class="producto-image">' +
                 getMeGustaHTML(producto.id) +
                 '<img src="' + producto.imagen + '" alt="' + producto.nombre + '" loading="lazy">' +
-                (producto.descuento > 0 ? '<div class="badge">-' + producto.descuento + '%</div>' : '') +
+                (producto.precioOriginal > 0 && producto.precioOriginal > producto.precioActual ? '<div class="badge">-$' + (producto.precioOriginal - producto.precioActual).toFixed(0) + '</div>' : '') +
             '</div>' +
             '<h3>' + producto.nombre + '</h3>' +
             '<p class="producto-description">' + producto.descripcion + '</p>' +
             '<p class="precio">' +
-                (producto.descuento > 0 ? '<span class="precio-tachado">$' + (producto.precioActual / (1 - producto.descuento / 100)).toFixed(2) + ' USD</span> ' : '') +
+                (producto.precioOriginal > 0 && producto.precioOriginal > producto.precioActual ? '<span class="precio-tachado">$' + parseFloat(producto.precioOriginal).toFixed(2) + ' USD</span> ' : '') +
                 '<span class="precio-actual">$' + producto.precioActual.toFixed(2) + ' USD</span>' +
-                (producto.descuento > 0 ? ' <span class="precio-ahorro">-' + producto.descuento + '%</span>' : '') +
+                (producto.precioOriginal > 0 && producto.precioOriginal > producto.precioActual ? ' <span class="precio-ahorro">-$' + (parseFloat(producto.precioOriginal) - parseFloat(producto.precioActual)).toFixed(0) + '</span>' : '') +
             '</p>' +
             (esAgotado
                 ? '<div class="stock" style="color:#e74c3c;font-weight:700;">❌ Agotado</div><button class="btn btn-small btn-primary" disabled style="opacity:0.5;cursor:not-allowed;">No disponible</button>'
@@ -4624,14 +4636,14 @@ function mostrarVistaMeGusta() {
                 '<div class="producto-image">' +
                     getMeGustaHTML(producto.id) +
                     '<img src="' + (producto.imagen || '') + '" alt="' + producto.nombre + '" loading="lazy">' +
-                    (producto.descuento > 0 ? '<div class="badge">-' + producto.descuento + '%</div>' : '') +
+                    (producto.precioOriginal > 0 && producto.precioOriginal > producto.precioActual ? '<div class="badge">-$' + (producto.precioOriginal - producto.precioActual).toFixed(0) + '</div>' : '') +
                 '</div>' +
                 '<h3>' + producto.nombre + '</h3>' +
                 '<p class="producto-description">' + (producto.descripcion || '') + '</p>' +
                 '<p class="precio">' +
                 (producto.descuento > 0 ? '<span class="precio-tachado">$' + (Number(producto.precioActual) / (1 - producto.descuento / 100)).toFixed(2) + ' USD</span> ' : '') +
                 '<span class="precio-actual">$' + Number(producto.precioActual).toFixed(2) + ' USD</span>' +
-                (producto.descuento > 0 ? ' <span class="precio-ahorro">-' + producto.descuento + '%</span>' : '') +
+                (producto.precioOriginal > 0 && producto.precioOriginal > producto.precioActual ? ' <span class="precio-ahorro">-$' + (parseFloat(producto.precioOriginal) - parseFloat(producto.precioActual)).toFixed(0) + '</span>' : '') +
             '</p>' +
                 stockHTML;
             grid.appendChild(card);
@@ -5048,14 +5060,14 @@ function mostrarVistaMeGusta() {
                 '<div class="producto-image">' +
                     getMeGustaHTML(producto.id) +
                     '<img src="' + (producto.imagen || '') + '" alt="' + producto.nombre + '" loading="lazy">' +
-                    (producto.descuento > 0 ? '<div class="badge">-' + producto.descuento + '%</div>' : '') +
+                    (producto.precioOriginal > 0 && producto.precioOriginal > producto.precioActual ? '<div class="badge">-$' + (producto.precioOriginal - producto.precioActual).toFixed(0) + '</div>' : '') +
                 '</div>' +
                 '<h3>' + producto.nombre + '</h3>' +
                 '<p class="producto-description">' + (producto.descripcion || '') + '</p>' +
                 '<p class="precio">' +
                 (producto.descuento > 0 ? '<span class="precio-tachado">$' + (Number(producto.precioActual) / (1 - producto.descuento / 100)).toFixed(2) + ' USD</span> ' : '') +
                 '<span class="precio-actual">$' + Number(producto.precioActual).toFixed(2) + ' USD</span>' +
-                (producto.descuento > 0 ? ' <span class="precio-ahorro">-' + producto.descuento + '%</span>' : '') +
+                (producto.precioOriginal > 0 && producto.precioOriginal > producto.precioActual ? ' <span class="precio-ahorro">-$' + (parseFloat(producto.precioOriginal) - parseFloat(producto.precioActual)).toFixed(0) + '</span>' : '') +
             '</p>' +
                 stockHTML;
             grid.appendChild(card);
