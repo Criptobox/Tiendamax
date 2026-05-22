@@ -360,6 +360,17 @@
                 <div class="categoria-filtro" id="categoriaFiltro" style="display:none;">
                     <button data-action="filtrarPorCategoria" data-arg="Todas" type="button" class="categoria-btn active">Todas</button>
                 </div>
+                <!-- Toggle Grid / Lista -->
+                <div class="vista-toggle" id="vistaToggle">
+                    <button class="vista-btn active" id="btnVistaGrid" onclick="setVistaProductos('grid')" title="Vista cuadrícula" type="button">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><rect x="0" y="0" width="7" height="7" rx="1.5"/><rect x="9" y="0" width="7" height="7" rx="1.5"/><rect x="0" y="9" width="7" height="7" rx="1.5"/><rect x="9" y="9" width="7" height="7" rx="1.5"/></svg>
+                        Grid
+                    </button>
+                    <button class="vista-btn" id="btnVistaLista" onclick="setVistaProductos('lista')" title="Vista lista" type="button">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><rect x="0" y="1" width="16" height="2.5" rx="1.25"/><rect x="0" y="6.75" width="16" height="2.5" rx="1.25"/><rect x="0" y="12.5" width="16" height="2.5" rx="1.25"/></svg>
+                        Lista
+                    </button>
+                </div>
                 <div class="productos-grid" id="productosGrid"></div>
                 <div id="productoVacio" class="producto-vacio" style="display:none;"><p>No hay productos en esta categoría aún.</p></div>
             </div>
