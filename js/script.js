@@ -1721,6 +1721,17 @@ function abrirDetalleProducto(id) {
     // Historial de vistas
     registrarVisto(p.id);
 
+    // Contador "personas viendo"
+    (function() {
+        const vDiv = document.getElementById('detailPersonasViendo');
+        if (!vDiv) return;
+        const vistas = obtenerVistasProd(p.id) || 0;
+        const base = Math.min(12, 2 + Math.floor(vistas / 3));
+        const personas = base + Math.floor(Math.random() * 4);
+        vDiv.style.display = 'flex';
+        vDiv.innerHTML = `<span>👁️ ${personas} personas están viendo esto ahora</span>`;
+    })();
+
     // Botón carrito en modal
     const detailBuyRow = document.getElementById('detailBuyBtn');
     if (detailBuyRow) {
@@ -1851,7 +1862,17 @@ function copiarLinkProducto() {
 }
 
 function contactarProducto(nombre) {
-    const msg = encodeURIComponent(`Hola, me interesa el producto: ${nombre}. ¿Está disponible?`);
+    const p = _detalleProductoActual;
+    let msg;
+    if (p) {
+        const enlace = `https://tiendamax.org/p/producto-${p.id}.html`;
+        const precio = `$${parseFloat(p.precioActual).toFixed(2)} USD`;
+        msg = encodeURIComponent(
+            `Hola, me interesa este producto:\n\n*${p.nombre}*\n💰 Precio: ${precio}\n🔗 ${enlace}\n\n¿Está disponible?`
+        );
+    } else {
+        msg = encodeURIComponent(`Hola, me interesa el producto: ${nombre}. ¿Está disponible?`);
+    }
     window.open(`https://wa.me/${getNumeroWhatsApp()}?text=${msg}`, '_blank');
 }
 
@@ -2592,42 +2613,28 @@ async function subirArchivoAGitHub(user, repo, token, path, data) {
 function verificarOfertasYMostrarBanner() {
     const banner = document.getElementById('urgenciaBanner');
     if (!banner) return;
-
-    // Prioridad 1: Oferta del Día configurada en el admin
-    const ofertaDiaId   = localStorage.getItem('ofertaDiaId');
+    const ofertaDiaId    = localStorage.getItem('ofertaDiaId');
     const ofertaDiaTexto = localStorage.getItem('ofertaDiaTexto') || '🔥 OFERTA DEL DÍA';
-
-    // Prioridad 2: Countdown activo
     const cdData = localStorage.getItem('activeCountdown');
     const cdObj  = cdData ? (() => { try { return JSON.parse(cdData); } catch(e) { return null; } })() : null;
     const cdValido = cdObj && cdObj.endTime && cdObj.endTime > Date.now();
-
-    // Determinar qué mostrar
-    let targetId  = null;
-    let textoBanner = '';
-
+    let targetId = null, textoBanner = '';
     if (ofertaDiaId) {
-        // Oferta del Día tiene prioridad máxima
         targetId    = ofertaDiaId;
         textoBanner = `${ofertaDiaTexto} <span class="flash-deal">VER AHORA →</span>`;
     } else if (cdValido) {
-        // Countdown activo como segunda opción
         targetId    = cdObj.productId;
         textoBanner = `🔥 ${cdObj.texto || '¡Oferta especial!'} <span class="flash-deal">VER AHORA →</span>`;
     } else {
-        // Sin configuración: ocultar banner
         banner.style.display = 'none';
         banner.onclick = null;
         return;
     }
-
     banner.innerHTML = textoBanner;
     banner.style.display = 'block';
     banner.style.cursor  = 'pointer';
-
     banner.onclick = () => {
         if (!targetId) return;
-        // Convertir a número para que coincida con prod.id (que es numérico)
         const idNum = Number(targetId);
         const tarjeta = document.querySelector(`[onclick*="abrirDetalleProducto(${idNum})"]`);
         if (tarjeta) {
@@ -2636,7 +2643,6 @@ function verificarOfertasYMostrarBanner() {
             tarjeta.style.boxShadow  = '0 0 0 3px #ff6b35, 0 8px 32px rgba(255,107,53,0.5)';
             setTimeout(() => { tarjeta.style.boxShadow = ''; }, 2000);
         }
-        // Abrir el detalle siempre (con ID numérico)
         abrirDetalleProducto(idNum);
     };
 }
