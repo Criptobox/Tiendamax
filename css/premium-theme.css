@@ -38,6 +38,9 @@ html body {
     100% { transform: translateX(0); }
 }
 html body .urgencia-banner {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
     background: transparent !important;
     border-bottom: none !important;
     animation: none !important;
