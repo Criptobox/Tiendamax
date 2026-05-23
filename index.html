@@ -149,7 +149,7 @@
             <button type="button" class="cur-btn active" id="curUSD" onclick="setCurrency('USD')">💵 USD</button>
             <button type="button" class="cur-btn" id="curMN" onclick="setCurrency('MN')">-- MN</button>
         </div>
-        <span class="tasa-info" id="tasaLabel" style="display:none;"></span>
+        <span class="tasa-info" id="tasaLabel" style="display:none !important;visibility:hidden;"></span>
     </div>
 
     <!-- Actualizar tasa desde localStorage antes de que DOMContentLoaded -->
@@ -210,10 +210,10 @@
     .currency-bar .cur-btn {
         border-radius: 8px !important;
         padding: 4px 16px !important;
-        font-size: 12px !important;
+        font-size: 13px !important;
         font-weight: 800 !important;
         letter-spacing: .4px !important;
-        color: rgba(255,255,255,.3) !important;
+        color: rgba(255,255,255,.75) !important;
         transition: all .2s !important;
         border: none !important;
         background: transparent !important;
