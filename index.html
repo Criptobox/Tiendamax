@@ -129,8 +129,7 @@
                 </button>
                 <!-- TASA USD — visible en móvil y escritorio -->
                 <div id="tasaNavPill" class="tasa-nav-pill" style="display:none;">
-                    <span class="tasa-flag">🇨🇺</span>
-                    <span id="tasaNavVal" class="tasa-nav-val">-- CUP</span>
+                    <span id="tasaNavVal" class="tasa-nav-val">-- MN</span>
                 </div>
                 <button data-action="abrirMenuMovil" type="button" class="hamburger-btn" id="hamburgerBtn" aria-label="Abrir menú">
                     <span></span><span></span><span></span>
@@ -677,48 +676,38 @@
     <script>
     (function() {
         function initOfertaPill() {
-            var banner  = document.getElementById('ofertaPillBanner');
-            var pill    = document.getElementById('ofertaPill');
-            var header  = document.querySelector('.header');
+            var banner = document.getElementById('ofertaPillBanner');
+            var pill   = document.getElementById('ofertaPill');
+            var header = document.querySelector('.header');
             if (!banner || !pill) return;
 
-            function mostrar(texto, ofertaId) {
-                pill.innerHTML = '🔥🔥 <em>' + texto + '</em> 🔥🔥 <span class="oferta-pill-badge">VER AHORA →</span>';
+            function mostrar(ofertaId) {
+                pill.innerHTML = '🔥🔥 <em>OFERTA RELÁMPAGO</em> 🔥🔥 <span class="oferta-pill-badge">VER AHORA →</span>';
                 banner.classList.remove('hidden');
-                if (header) { header.style.top = '44px'; header.classList.remove('no-banner'); }
+                if (header) header.classList.add('with-banner');
                 pill.onclick = function() {
-                    if (ofertaId && typeof abrirDetalleProducto === 'function') {
+                    if (ofertaId && typeof abrirDetalleProducto === 'function')
                         abrirDetalleProducto(Number(ofertaId));
-                    }
                 };
             }
 
             function ocultar() {
                 banner.classList.add('hidden');
-                if (header) { header.style.top = '0px'; header.classList.add('no-banner'); }
+                if (header) header.classList.remove('with-banner');
             }
 
             function check() {
-                var ofertaId   = localStorage.getItem('ofertaDiaId');
-                var ofertaTxt  = localStorage.getItem('ofertaDiaTexto') || 'OFERTA RELÁMPAGO';
-                // Limpiar emojis/texto extra del texto guardado para que quede limpio
-                var textoLimpio = ofertaTxt.replace(/[🔥💥⚡🏷️☀️]/gu, '').trim().toUpperCase() || 'OFERTA RELÁMPAGO';
-                if (ofertaId) {
-                    mostrar(textoLimpio, ofertaId);
-                } else {
-                    ocultar();
-                }
+                var id = localStorage.getItem('ofertaDiaId');
+                id ? mostrar(id) : ocultar();
             }
 
             check();
-            // Re-verificar cuando cambia localStorage (el admin activa/desactiva la oferta)
             window.addEventListener('storage', check);
-            // También re-verificar periódicamente por si se activa desde el mismo tab
             setInterval(check, 3000);
         }
 
         document.addEventListener('DOMContentLoaded', initOfertaPill);
-        setTimeout(initOfertaPill, 800);
+        setTimeout(initOfertaPill, 500);
     })();
     </script>
     <script>
@@ -730,7 +719,7 @@
             var val  = document.getElementById('tasaNavVal');
             if (pill) {
                 if (tasa > 0) {
-                    if (val) val.textContent = tasa + ' CUP';
+                    if (val) val.textContent = tasa + ' MN';
                     pill.style.display = 'flex';
                 } else {
                     pill.style.display = 'none';
