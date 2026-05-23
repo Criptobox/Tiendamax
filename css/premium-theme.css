@@ -55,7 +55,7 @@ html body #ofertaPill {
     cursor: pointer !important;
     box-shadow: 0 2px 16px rgba(255,106,0,.25) !important;
     position: absolute !important;
-    animation: ofertaPillBounce 5s ease-in-out infinite !important;
+    animation: ofertaPillBounce 10s ease-in-out infinite !important;
 }
 html body #ofertaPill em { color: #ff9d63 !important; font-style: normal !important; font-weight: 900 !important; }
 html body .oferta-pill-badge { background: linear-gradient(135deg,#ff6a00,#ff3d00) !important; color: #fff !important; border-radius: 999px !important; padding: 2px 9px !important; font-size: .68rem !important; font-weight: 900 !important; letter-spacing: .3px !important; }
@@ -90,24 +90,45 @@ html body .nav a:hover { color: #fff !important; }
 html body .cart-icon-btn { background: rgba(255,255,255,.05) !important; border: 1px solid var(--line) !important; border-radius: 12px !important; color: var(--text) !important; }
 html body .cart-count { background: var(--orange) !important; color: #fff !important; }
 
-/* ── TASA NAV PILL — solo desktop ── */
-html body .tasa-nav-pill { display: none !important; }
-@media (min-width: 769px) {
+/* ── TASA NAV PILL — visible en móvil y desktop ── */
+html body .tasa-nav-pill {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    /* Mismo tamaño que carrito y corazón */
+    height: 42px !important;
+    min-width: 42px !important;
+    padding: 0 10px !important;
+    background: linear-gradient(135deg,rgba(255,106,0,.18),rgba(255,61,0,.10)) !important;
+    border: 1.5px solid rgba(255,106,0,.5) !important;
+    border-radius: 12px !important; /* igual que cart-icon-btn */
+    cursor: default !important;
+    flex-shrink: 0 !important;
+    box-shadow: 0 2px 12px rgba(255,106,0,.2) !important;
+}
+html body .tasa-nav-val {
+    font-size: .72rem !important;
+    font-weight: 900 !important;
+    white-space: nowrap !important;
+    line-height: 1 !important;
+    letter-spacing: .3px !important;
+}
+/* Número — naranja */
+html body .tasa-nav-val .tasa-num { color: #ff9d63 !important; }
+/* "MN" — blanco */
+html body .tasa-nav-val .tasa-unit { color: #ffffff !important; font-weight: 700 !important; margin-left: 2px !important; }
+/* Móvil: más compacto, solo el número */
+@media (max-width: 768px) {
     html body .tasa-nav-pill {
-        display: inline-flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        gap: 4px !important;
-        background: linear-gradient(135deg,rgba(255,106,0,.18),rgba(255,61,0,.10)) !important;
-        border: 1.5px solid rgba(255,106,0,.45) !important;
+        height: 38px !important;
+        min-width: 38px !important;
+        padding: 0 8px !important;
         border-radius: 10px !important;
-        padding: 5px 12px !important;
-        cursor: default !important;
-        flex-shrink: 0 !important;
-        box-shadow: 0 2px 12px rgba(255,106,0,.2) !important;
+    }
+    html body .tasa-nav-val {
+        font-size: .68rem !important;
     }
 }
-html body .tasa-nav-val { font-size: .76rem !important; font-weight: 900 !important; color: #ff9d63 !important; white-space: nowrap !important; line-height: 1 !important; }
 html body #tasaBurbuja { display:none!important; visibility:hidden!important; }
 
 /* ── HERO ── */
