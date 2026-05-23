@@ -5566,26 +5566,19 @@ function actualizarBurbujaTasa() {
         }
         document.body.appendChild(burbuja);
     }
-    if (tasa > 0) {
-        burbuja.innerHTML = `💱 1 USD = <strong>${tasa} MN</strong>`;
-        burbuja.style.display = 'flex';
-    } else {
-        burbuja.style.display = 'none';
-    }
+    // Burbuja flotante oculta — la tasa se muestra en la barra del header
+    burbuja.style.display = 'none';
 
     // Actualizar barra de moneda del navbar
     const curMNBtn = document.getElementById('curMN');
     const tasaLabel = document.getElementById('tasaLabel');
+    // Solo actualizar el botón del toggle; el tasaLabel está oculto
     if (tasa > 0) {
         if (curMNBtn) curMNBtn.textContent = tasa + ' MN';
-        if (tasaLabel) {
-            tasaLabel.textContent = '1 USD = ' + tasa + ' MN';
-            tasaLabel.style.display = '';
-        }
     } else {
         if (curMNBtn) curMNBtn.textContent = '-- MN';
-        if (tasaLabel) tasaLabel.style.display = 'none';
     }
+    if (tasaLabel) tasaLabel.style.display = 'none';
 }
 
 // Inicializar barra de moneda al cargar
