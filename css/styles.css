@@ -60,35 +60,44 @@ body {
 
 /* ===== URGENCIA BANNER ===== */
 .urgencia-banner {
-    background: linear-gradient(90deg, var(--obsidian), #7a5c2e, var(--obsidian));
-    background-size: 200% auto;
-    animation: shimmerBanner 4s linear infinite;
-    color: white;
-    text-align: center;
-    padding: 10px;
-    font-size: 12px;
-    font-weight: 600;
-    letter-spacing: 2px;
-    text-transform: uppercase;
+    background: transparent;
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     position: sticky;
     top: 0;
     z-index: 1002;
 }
 
 @keyframes shimmerBanner {
-    0% { background-position: 0% center; }
+    0%   { background-position: 0% center; }
     100% { background-position: 200% center; }
 }
 
+/* La "píldora" que va de lado a lado */
 .flash-deal {
-    display: inline-block;
-    background: var(--gold);
-    color: var(--obsidian);
-    padding: 2px 10px;
-    border-radius: 4px;
-    margin-left: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    max-width: 600px;
+    background: linear-gradient(90deg, #ff6a00, #ff3d00, #ff6a00);
+    background-size: 200% auto;
+    animation: shimmerBanner 3s linear infinite;
+    color: #fff;
     font-weight: 800;
-    font-size: 11px;
+    font-size: 13px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 10px 28px;
+    border-radius: 999px;
+    box-shadow: 0 4px 20px rgba(255,106,0,.45);
+    cursor: pointer;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 /* ===== HEADER ===== */
