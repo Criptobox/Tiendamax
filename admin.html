@@ -1555,7 +1555,9 @@ document.addEventListener('DOMContentLoaded', () => {
             r.classList.remove('acc-overlay');
             accordion.classList.remove('has-overlay');
             r.querySelector('.acc-trigger').setAttribute('aria-expanded', 'false');
-            r.querySelector('.acc-body').style.maxHeight = '0';
+            var closingBody = r.querySelector('.acc-body');
+            closingBody.style.maxHeight = '0';
+            closingBody.style.overflow = 'hidden';
         });
         var tabId = row.getAttribute('data-tab-target');
         var body  = row.querySelector('.acc-body');
@@ -1564,8 +1566,20 @@ document.addEventListener('DOMContentLoaded', () => {
         row.classList.add('acc-overlay');
         accordion.classList.add('has-overlay');
         row.querySelector('.acc-trigger').setAttribute('aria-expanded', 'true');
-        body.style.maxHeight = body.scrollHeight + 'px';
+        // Usamos 'none→block' trick + requestAnimationFrame para que el browser calcule
+        // el scrollHeight DESPUÉS del mount (evita que quede truncado)
+        body.style.maxHeight = 'none';
+        body.style.overflow = 'visible';
         if (typeof switchTab === 'function') switchTab(tabId);
+        // Forzar reflow y aplicar maxHeight real tras renderizado
+        requestAnimationFrame(function () {
+            var fullH = body.scrollHeight;
+            body.style.maxHeight = fullH > 0 ? fullH + 'px' : '9999px';
+            // Recalcular un frame después por si el contenido tiene imágenes/listas
+            setTimeout(function () {
+                body.style.maxHeight = body.scrollHeight > 0 ? (body.scrollHeight + 'px') : '9999px';
+            }, 150);
+        });
         // Move to top and lock in place
         setTimeout(function () {
             row.scrollIntoView({ behavior: 'smooth', block: 'start' });
