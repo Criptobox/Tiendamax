@@ -3360,21 +3360,6 @@ function renderizarVentas(pagina) {
     const ventasPagina  = ventas.slice(_ventasPagina * _VENTAS_POR_PAGINA, (_ventasPagina + 1) * _VENTAS_POR_PAGINA);
 
     let html = `
-    <div class="admin-stats-grid">
-        <div class="admin-stat-card green">
-            <div class="admin-stat-value">$${totalVentas.toFixed(2)}</div>
-            <div class="admin-stat-label">Total vendido</div>
-        </div>
-        <div class="admin-stat-card gold">
-            <div class="admin-stat-value">$${totalGanancia.toFixed(2)}</div>
-            <div class="admin-stat-label">Mi ganancia</div>
-        </div>
-        <div class="admin-stat-card blue">
-            <div class="admin-stat-value">${totalUnidades}</div>
-            <div class="admin-stat-label">Unidades vendidas</div>
-        </div>
-    </div>
-
     <div style="margin-bottom:16px;">
         <h4 class="admin-section-title">📦 Registrar venta manual</h4>
         <div style="display:flex;flex-direction:column;gap:8px;">
