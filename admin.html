@@ -81,6 +81,49 @@
     <link rel="stylesheet" href="css/admin.premium.css?v=1">
 
     <link rel="stylesheet" href="css/admin-clean.css?v=1">
+
+    <!-- ── Corrección móvil: scroll en acordeón admin ── -->
+    <style>
+    @media (max-width: 768px) {
+        /* El panel completo no desborda el viewport */
+        #adminPanel.visible .admin-panel-content {
+            display: flex !important;
+            flex-direction: column !important;
+            height: 100dvh !important;
+            height: 100vh !important;
+            max-height: 100dvh !important;
+            max-height: 100vh !important;
+            overflow: hidden !important;
+        }
+
+        /* El acordeón es el área desplazable */
+        #adminPanel.visible .admin-accordion {
+            flex: 1 1 auto !important;
+            overflow-y: auto !important;
+            overflow-x: hidden !important;
+            -webkit-overflow-scrolling: touch !important;
+            overscroll-behavior: contain !important;
+        }
+
+        /* acc-body abierto: scroll interno */
+        .acc-row.acc-open .acc-body,
+        .acc-row.acc-overlay .acc-body {
+            overflow-y: auto !important;
+            overflow-x: hidden !important;
+            -webkit-overflow-scrolling: touch !important;
+            overscroll-behavior: contain !important;
+            min-height: 80px !important;
+        }
+
+        /* Inputs full-width sin desborde */
+        .acc-body input,
+        .acc-body textarea,
+        .acc-body select {
+            max-width: 100% !important;
+            box-sizing: border-box !important;
+        }
+    }
+    </style>
 </head>
 <body>
 
@@ -1566,21 +1609,25 @@ document.addEventListener('DOMContentLoaded', () => {
         row.classList.add('acc-overlay');
         accordion.classList.add('has-overlay');
         row.querySelector('.acc-trigger').setAttribute('aria-expanded', 'true');
-        // Usamos 'none→block' trick + requestAnimationFrame para que el browser calcule
-        // el scrollHeight DESPUÉS del mount (evita que quede truncado)
+        // Permitir que el browser calcule el scrollHeight tras el mount
         body.style.maxHeight = 'none';
-        body.style.overflow = 'visible';
+        body.style.overflow  = 'hidden';
         if (typeof switchTab === 'function') switchTab(tabId);
-        // Forzar reflow y aplicar maxHeight real tras renderizado
+        // Aplicar altura relativa al viewport para que el body sea desplazable en móvil
         requestAnimationFrame(function () {
-            var fullH = body.scrollHeight;
-            body.style.maxHeight = fullH > 0 ? fullH + 'px' : '9999px';
-            // Recalcular un frame después por si el contenido tiene imágenes/listas
-            setTimeout(function () {
-                body.style.maxHeight = body.scrollHeight > 0 ? (body.scrollHeight + 'px') : '9999px';
-            }, 150);
+            var headerEl  = document.querySelector('.admin-header');
+            var triggerEl = row.querySelector('.acc-trigger');
+            var headerH   = headerEl  ? headerEl.offsetHeight  : 70;
+            var triggerH  = triggerEl ? triggerEl.offsetHeight : 60;
+            // dvh con fallback a vh para iOS < 15
+            var vh = window.innerHeight || document.documentElement.clientHeight;
+            var available = vh - headerH - triggerH - 48; // 48 px de margen
+            body.style.maxHeight              = Math.max(available, 200) + 'px';
+            body.style.overflowY              = 'auto';
+            body.style.overflowX              = 'hidden';
+            body.style.webkitOverflowScrolling = 'touch';
         });
-        // Move to top and lock in place
+        // Scroll suave al inicio del row
         setTimeout(function () {
             row.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }, 50);
