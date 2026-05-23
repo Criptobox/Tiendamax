@@ -1,19 +1,19 @@
 {
   "nombres": [
     "WIFI",
-    "ENERGÍA",
+    "ENERGIA",
     "CELULARES",
-    "ÚTILES",
+    "UTILES",
     "CARROS",
     "ROPA",
-    "LENCERÍA",
+    "LENCERIA",
     "SEGURIDAD",
     "HOGAR",
     "JUEGOS",
     "MOTOS"
   ],
   "iconos": {
-    "LENCERÍA": "👙",
+    "LENCERIA": "👙",
     "SEGURIDAD": "🔒",
     "HOGAR": "🏠",
     "JUEGOS": "🎮",
