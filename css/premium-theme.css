@@ -25,10 +25,28 @@ html body {
 
 /* ── TOPBAR ── */
 /* urgencia-banner: píldora naranja animada, sin override */
+@keyframes bannerSlide {
+    0%   { transform: translateX(0); }
+    25%  { transform: translateX(120px); }
+    75%  { transform: translateX(-120px); }
+    100% { transform: translateX(0); }
+}
+@keyframes bannerSlideMovil {
+    0%   { transform: translateX(0); }
+    25%  { transform: translateX(30px); }
+    75%  { transform: translateX(-30px); }
+    100% { transform: translateX(0); }
+}
 html body .urgencia-banner {
     background: transparent !important;
     border-bottom: none !important;
     animation: none !important;
+    overflow: visible !important;
+}
+@media (max-width: 768px) {
+    html body .flash-deal {
+        animation: pillPulse 2.5s ease-in-out infinite, bannerSlideMovil 3s ease-in-out infinite !important;
+    }
 }
 html body .flash-deal {
     /* Fondo estático — la animación va en ::before para evitar conflicto con !important */
