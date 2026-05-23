@@ -86,9 +86,9 @@ body {
 }
 
 @keyframes bannerSlide {
-    0%   { transform: translateX(-18px); }
-    50%  { transform: translateX(18px); }
-    100% { transform: translateX(-18px); }
+    0%   { transform: translateX(-120px); }
+    50%  { transform: translateX(120px); }
+    100% { transform: translateX(-120px); }
 }
 
 .flash-deal {
@@ -4521,4 +4521,16 @@ a.whatsapp-group-btn:hover, .whatsapp-group-btn:hover {
     background: rgba(201,169,110,0.1);
     border-color: #C9A96E;
     box-shadow: 0 0 20px rgba(201,169,110,0.2);
+}
+
+/* Banner slide — ajuste por tamaño de pantalla */
+@media (max-width: 768px) {
+    .flash-deal {
+        animation: pillPulse 2.5s ease-in-out infinite, bannerSlideMovil 3s ease-in-out infinite !important;
+    }
+}
+@keyframes bannerSlideMovil {
+    0%   { transform: translateX(-30px); }
+    50%  { transform: translateX(30px); }
+    100% { transform: translateX(-30px); }
 }
