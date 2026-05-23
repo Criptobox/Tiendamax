@@ -1,5 +1,5 @@
 /* ================================================================
-   TIENDAMAX — PREMIUM DARK OVERRIDE v2.6
+   TIENDAMAX — PREMIUM DARK OVERRIDE v2.7
    Migra toda la paleta a fondo oscuro + acento naranja/rojo
    Se carga DESPUÉS de todos los demás CSS para tener prioridad
    ================================================================ */
@@ -65,27 +65,24 @@ footer, .main-footer {
 }
 
 /* ================================================================
-   4. TARJETAS DE CATEGORÍAS (GRID INICIAL)
+   4. TARJETAS DE CATEGORÍAS (CRISTAL CRISTALINO SIN RECUADRO OSCURO)
    ================================================================ */
 .categoria-card {
-  background: linear-gradient(145deg, var(--panel) 0%, rgba(18,18,26,0.6) 100%) !important;
-  border: 1px solid var(--line) !important;
-  border-radius: var(--radius-new) !important;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.2) !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 
 .categoria-card:hover {
-  transform: translateY(-5px) !important;
-  border-color: rgba(255, 106, 0, 0.4) !important;
-  box-shadow: 0 15px 35px rgba(255, 106, 0, 0.12) !important;
+  transform: translateY(-4px) !important;
 }
 
 .categoria-card h3 {
   color: #fff !important;
   font-family: 'Inter', sans-serif !important;
-  font-weight: 700 !important;
-  letter-spacing: 0.5px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.3px !important;
 }
 
 /* ================================================================
@@ -241,12 +238,12 @@ input:focus, select:focus, textarea:focus {
    27. DARK MODE REGLAS RETROCOMPATIBLES
    ================================================================ */
 body.dark-mode .categoria-card {
-  background: linear-gradient(160deg, rgba(255,255,255,.04) 0%, rgba(255,255,255,.012) 100%) !important;
-  border-color: var(--line) !important;
+  background: transparent !important;
+  border: none !important;
 }
 
 /* ================================================================
-   28. MEJORAS DE UX MÓVIL PÚBLICO (Alineaciones e Icono Sol)
+   28. MEJORAS DE UX MÓVIL PÚBLICO
    ================================================================ */
 .producto-card .stock-disponible, 
 .producto-card [id*="stock"] {
@@ -275,8 +272,6 @@ body.dark-mode .categoria-card {
 /* ================================================================
    29. APARTADO DE ADMINISTRACIÓN PREMIUM & ADAPTACIÓN MÓVIL
    ================================================================ */
-
-/* Forzar fondo oscuro absoluto en el ecosistema completo del Admin */
 body:has(#adminTabs),
 body:has(.admin-box),
 .admin-body,
@@ -285,12 +280,10 @@ body:has(.admin-box),
   color: var(--text-light) !important;
 }
 
-/* Contenedores de Bootstrap inyectados en la administración */
 .container, .container-fluid, main {
   background-color: var(--bg) !important;
 }
 
-/* Cajas de control de administración (Subir productos, Tasas, Sincronización) */
 .admin-box, .panel-box, .card, .dashboard-stat, div[style*="background"] {
   background: var(--panel) !important;
   border: 1px solid var(--line) !important;
@@ -301,7 +294,6 @@ body:has(.admin-box),
   color: var(--text-light) !important;
 }
 
-/* Encabezados y títulos de las herramientas */
 .admin-box h2, .panel-box h2, h2, h3, .card-title {
   color: #ffffff !important;
   font-family: 'Inter', sans-serif !important;
@@ -312,7 +304,6 @@ body:has(.admin-box),
   margin-bottom: 20px !important;
 }
 
-/* Form-control e Inputs de edición del Admin */
 .admin-box input, .admin-box select, .admin-box textarea,
 .form-control, .form-select, input[type="text"], input[type="number"], input[type="password"] {
   background-color: var(--panel-2) !important;
@@ -331,7 +322,6 @@ body:has(.admin-box),
   outline: none !important;
 }
 
-/* Manejo seguro del desborde de tablas de inventario en pantallas pequeñas */
 .table-responsive, [style*="overflow-y:auto"] {
   overflow-x: auto !important;
   background: var(--panel) !important;
@@ -341,7 +331,6 @@ body:has(.admin-box),
   -webkit-overflow-scrolling: touch;
 }
 
-/* Estructura limpia de las Tablas */
 .table, table {
   width: 100% !important;
   color: var(--text-light) !important;
@@ -368,7 +357,6 @@ body:has(.admin-box),
   background-color: rgba(255, 106, 0, 0.04) !important;
 }
 
-/* Badges de Tasa de cambio y Sincronización con GitHub */
 #tasaMNStatus, .status-sync, [id*="Status"], .status-badge {
   background: rgba(255, 106, 0, 0.1) !important;
   color: #ffb07a !important;
@@ -380,7 +368,6 @@ body:has(.admin-box),
   border: 1px solid rgba(255, 106, 0, 0.15) !important;
 }
 
-/* ── REGLAS DE ADAPTACIÓN PARA MÓVILES (ADMIN MÓVIL) ── */
 @media (max-width: 768px) {
   .container, .container-fluid, main {
     padding: 12px 6px !important;
@@ -391,7 +378,6 @@ body:has(.admin-box),
     border-radius: var(--radius-sm) !important;
   }
 
-  /* Transformar filas horizontales en columnas limpias de ancho completo */
   .row, .form-row {
     display: flex !important;
     flex-direction: column !important;
@@ -407,7 +393,6 @@ body:has(.admin-box),
     padding-right: 0 !important;
   }
 
-  /* Botones de acción en fila (Editar, Eliminar) ocupando todo el ancho */
   .btn-group, .action-buttons, div:has(> button[onclick*="Editar"]) {
     display: flex !important;
     flex-direction: column !important;
@@ -423,7 +408,6 @@ body:has(.admin-box),
     border-radius: 10px !important;
   }
 
-  /* Pestañas superiores deslizables de manera lateral e infinita */
   .nav-tabs, .admin-tabs-nav {
     display: flex !important;
     overflow-x: auto !important;
