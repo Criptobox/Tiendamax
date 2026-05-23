@@ -81,55 +81,6 @@
     <link rel="stylesheet" href="css/admin.premium.css?v=1">
 
     <link rel="stylesheet" href="css/admin-clean.css?v=1">
-
-    <!-- ══ OVERRIDE ADMIN MÓVIL — después de todos los CSS externos ══ -->
-    <style id="adminMobileOverride">
-    @media screen and (max-width:768px){
-        #adminPanel{position:fixed!important;inset:0!important;overflow:hidden!important;z-index:99999!important}
-        .admin-panel-content{
-            width:100%!important;height:100%!important;max-height:100%!important;
-            overflow-y:scroll!important;overflow-x:hidden!important;
-            -webkit-overflow-scrolling:touch!important;
-            overscroll-behavior-y:contain!important;
-            display:block!important;padding-bottom:80px!important;
-            box-sizing:border-box!important;-webkit-box-sizing:border-box!important
-        }
-        html body .acc-row,
-        html body .acc-row.acc-open,
-        html body .acc-row.acc-overlay,
-        html body #adminAccordion .acc-row{
-            position:static!important;top:auto!important;left:auto!important;
-            right:auto!important;bottom:auto!important;
-            width:100%!important;max-height:none!important;
-            overflow:visible!important;z-index:auto!important;
-            -webkit-transform:none!important;transform:none!important;
-            -webkit-box-shadow:none!important;box-shadow:none!important
-        }
-        html body .admin-accordion,
-        html body .admin-accordion.has-overlay{
-            position:static!important;overflow:visible!important;max-height:none!important
-        }
-        html body .acc-body{
-            overflow:hidden!important;max-height:0!important;
-            padding:0!important;transition:none!important;-webkit-transition:none!important
-        }
-        html body .acc-row.acc-open .acc-body{
-            overflow-y:auto!important;overflow-x:hidden!important;
-            max-height:none!important;padding-bottom:16px!important;
-            -webkit-overflow-scrolling:touch!important
-        }
-        .admin-tabs-desktop{display:none!important}
-        .admin-content{display:none!important}
-        html body .acc-row::after,html body .acc-row::before,
-        html body .acc-row.acc-overlay::after,html body .acc-row.acc-overlay::before,
-        html body .acc-body::after,html body .acc-body::before{
-            display:none!important;content:none!important
-        }
-        .acc-body input,.acc-body textarea,.acc-body select,.acc-body button{
-            max-width:100%!important;box-sizing:border-box!important;-webkit-box-sizing:border-box!important
-        }
-    }
-    </style>
 </head>
 <body>
 
@@ -157,6 +108,15 @@
 
     
 
+
+    <!-- ── BARRA DE MONEDA (USD / MN) ── -->
+    <div class="currency-bar" id="currencyBar" style="display:none;">
+        <div class="currency-toggle">
+            <button type="button" class="cur-btn active" id="curUSD" onclick="setCurrency('USD')">USD</button>
+            <button type="button" class="cur-btn" id="curMN" onclick="setCurrency('MN')">MN</button>
+        </div>
+        <span class="tasa-info" id="tasaLabel"></span>
+    </div>
     <!-- ===== VISTA INICIO ===== -->
     <div id="vistaInicio">
 
@@ -1570,28 +1530,89 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 
 <!-- ══════════════════════════════════════════════════════
-     ACORDEÓN MÓVIL — reescrito, sin overlay, cross-browser
+     ACORDEÓN MÓVIL — reescrito, cross-browser
+     Abre el acc-body SIN overlay, con scroll interno.
      ══════════════════════════════════════════════════════ -->
+
+<!-- Polyfill Element.closest para Android < 4.4 / UC Browser -->
 <script>
-/* Polyfill Element.closest para UC Browser / Android antiguo */
-if(window.Element&&!Element.prototype.closest){
-    Element.prototype.closest=function(s){
-        var el=this;
-        while(el&&el.nodeType===1){
-            if((el.matches||el.msMatchesSelector||el.webkitMatchesSelector).call(el,s))return el;
-            el=el.parentElement;
+if (window.Element && !Element.prototype.closest) {
+    Element.prototype.closest = function(s) {
+        var el = this;
+        while (el && el.nodeType === 1) {
+            if ((el.matches||el.msMatchesSelector||el.webkitMatchesSelector).call(el,s)) return el;
+            el = el.parentElement;
         }
         return null;
     };
 }
 </script>
+
+<!-- Override CSS: anula admin.premium.css que aplica overflow:hidden al overlay -->
+<style>
+@media screen and (max-width:768px){
+    /* Panel ocupa pantalla, su contenido scrollea */
+    #adminPanel,#adminPanel.visible{
+        position:fixed!important;inset:0!important;
+        overflow:hidden!important;z-index:99999!important
+    }
+    .admin-panel-content{
+        width:100%!important;height:100%!important;
+        overflow-y:scroll!important;overflow-x:hidden!important;
+        -webkit-overflow-scrolling:touch!important;
+        overscroll-behavior-y:contain!important;
+        display:block!important;padding-bottom:80px!important;
+        box-sizing:border-box!important
+    }
+    /* ANULAR completamente el overlay posicionado de admin.premium.css */
+    html body #adminAccordion .acc-row,
+    html body #adminAccordion .acc-row.acc-open,
+    html body #adminAccordion .acc-row.acc-overlay{
+        position:static!important;top:auto!important;left:auto!important;
+        right:auto!important;bottom:auto!important;
+        width:100%!important;max-height:none!important;
+        overflow:visible!important;z-index:auto!important;
+        -webkit-transform:none!important;transform:none!important;
+        -webkit-box-shadow:none!important;box-shadow:none!important
+    }
+    html body .admin-accordion,
+    html body .admin-accordion.has-overlay{
+        position:static!important;overflow:visible!important;max-height:none!important
+    }
+    /* acc-body: colapsado por defecto */
+    html body .acc-body{
+        max-height:0!important;overflow:hidden!important;
+        padding:0!important;-webkit-transition:none!important;transition:none!important
+    }
+    /* acc-body abierto: sin límite de altura, scroll interno */
+    html body .acc-row.acc-open .acc-body{
+        max-height:none!important;
+        overflow-y:auto!important;overflow-x:hidden!important;
+        padding-bottom:16px!important;
+        -webkit-overflow-scrolling:touch!important;
+        overscroll-behavior-y:contain!important
+    }
+    /* Ocultar tabs y contenedor desktop */
+    .admin-tabs-desktop{display:none!important}
+    .admin-content{display:none!important}
+    /* Inputs full-width */
+    .acc-body input,.acc-body textarea,.acc-body select,.acc-body button{
+        max-width:100%!important;-webkit-box-sizing:border-box!important;box-sizing:border-box!important
+    }
+    /* Eliminar botón "Cerrar" inyectado por admin.premium.css */
+    html body .acc-row::after,html body .acc-row::before,
+    html body .acc-row.acc-overlay::after,html body .acc-row.acc-overlay::before{
+        display:none!important;content:none!important
+    }
+}
+</style>
+
 <script>
 (function(){
     'use strict';
     var BP = 769;
     function mob(){ return window.innerWidth < BP; }
 
-    /* ── Mover tab al acc-body ── */
     function mount(tabId, body){
         var tab = document.getElementById(tabId);
         if(!tab || body.dataset.mounted===tabId) return;
@@ -1599,7 +1620,6 @@ if(window.Element&&!Element.prototype.closest){
         body.dataset.mounted = tabId;
     }
 
-    /* ── Devolver tabs al admin-content (desktop) ── */
     function unmountAll(){
         var ac = document.querySelector('.admin-content');
         if(!ac) return;
@@ -1609,139 +1629,100 @@ if(window.Element&&!Element.prototype.closest){
         });
     }
 
-    /* ── Cerrar row ── */
     function closeRow(r){
         r.classList.remove('acc-open','acc-overlay');
-        var trig = r.querySelector('.acc-trigger');
-        if(trig) trig.setAttribute('aria-expanded','false');
+        var t = r.querySelector('.acc-trigger');
+        if(t) t.setAttribute('aria-expanded','false');
         var b = r.querySelector('.acc-body');
-        if(b){
-            /* inline style con !important: gana sobre CUALQUIER CSS externo */
-            b.setAttribute('style','max-height:0!important;overflow:hidden!important;padding:0!important;');
-        }
-        /* Quitar clase has-overlay del acordeón */
-        var acc = document.getElementById('adminAccordion');
+        if(b){ b.setAttribute('style','max-height:0!important;overflow:hidden!important;padding:0!important;'); }
+        var acc=document.getElementById('adminAccordion');
         if(acc) acc.classList.remove('has-overlay');
     }
 
-    /* ── Eliminar botones "Cerrar" inyectados por admin.premium.css/JS ── */
-    function purgeCloseButtons(container){
-        var btns = container.querySelectorAll('button, a');
-        btns.forEach(function(b){
-            var txt = (b.textContent||'').trim().toLowerCase();
-            if(txt==='× cerrar'||txt==='cerrar'||txt==='x cerrar'||txt==='✕ cerrar'){
-                b.parentNode && b.parentNode.removeChild(b);
+    function removeCerrarBtns(body){
+        body.querySelectorAll('button,a').forEach(function(b){
+            var t=(b.textContent||'').trim().toLowerCase().replace(/\s+/g,' ');
+            if(t==='× cerrar'||t==='cerrar'||t==='x cerrar'||t==='✕ cerrar'||t==='×cerrar'){
+                b.parentNode&&b.parentNode.removeChild(b);
             }
         });
     }
 
-    /* ── Abrir row ── */
     function openRow(row){
-        var accordion = document.getElementById('adminAccordion');
-        if(!accordion) return;
+        var acc=document.getElementById('adminAccordion');
+        if(!acc) return;
+        acc.querySelectorAll('.acc-row.acc-open').forEach(closeRow);
 
-        /* Cerrar todos primero */
-        accordion.querySelectorAll('.acc-row.acc-open').forEach(closeRow);
-
-        var tabId = row.getAttribute('data-tab-target');
-        var body  = row.querySelector('.acc-body');
+        var tabId=row.getAttribute('data-tab-target');
+        var body=row.querySelector('.acc-body');
         if(!body) return;
 
-        mount(tabId, body);
+        mount(tabId,body);
         row.classList.add('acc-open');
-        /* NO añadir acc-overlay (lo añade el CSS original, lo anulamos inline) */
-
-        /* Forzar row a posición estática inline — gana sobre admin.premium.css */
-        row.setAttribute('style',
-            'position:static!important;max-height:none!important;overflow:visible!important;'+
-            'transform:none!important;-webkit-transform:none!important;'+
-            'box-shadow:none!important;border-radius:inherit!important;z-index:auto!important;'
-        );
-
-        var trig = row.querySelector('.acc-trigger');
-        if(trig) trig.setAttribute('aria-expanded','true');
-
+        var t=row.querySelector('.acc-trigger');
+        if(t) t.setAttribute('aria-expanded','true');
         if(typeof switchTab==='function') switchTab(tabId);
 
-        /* Eliminar botones Cerrar inyectados */
-        purgeCloseButtons(body);
-
-        /* Expandir body completamente — max-height:none + overflow:auto */
+        /* Aplicar estilos via setAttribute — gana sobre cualquier !important externo */
+        row.setAttribute('style',
+            'position:static!important;max-height:none!important;overflow:visible!important;'+
+            '-webkit-transform:none!important;transform:none!important;'+
+            'box-shadow:none!important;z-index:auto!important;');
         body.setAttribute('style',
-            'overflow-y:auto!important;overflow-x:hidden!important;'+
-            'max-height:none!important;padding-bottom:16px!important;'+
-            '-webkit-overflow-scrolling:touch!important;'+
-            'overscroll-behavior-y:contain!important;'
-        );
+            'max-height:none!important;overflow-y:auto!important;overflow-x:hidden!important;'+
+            'padding-bottom:16px!important;-webkit-overflow-scrolling:touch!important;');
 
-        /* Volver a purgar si admin.premium.css inyecta botón después de mount */
+        removeCerrarBtns(body);
         setTimeout(function(){
-            purgeCloseButtons(body);
-            /* Re-aplicar estilos por si el CSS los sobreescribió */
+            removeCerrarBtns(body);
             body.setAttribute('style',
-                'overflow-y:auto!important;overflow-x:hidden!important;'+
-                'max-height:none!important;padding-bottom:16px!important;'+
-                '-webkit-overflow-scrolling:touch!important;'+
-                'overscroll-behavior-y:contain!important;'
-            );
-            row.setAttribute('style',
-                'position:static!important;max-height:none!important;overflow:visible!important;'+
-                'transform:none!important;-webkit-transform:none!important;'+
-                'box-shadow:none!important;z-index:auto!important;'
-            );
-        }, 80);
-
-        /* Scroll al inicio del row */
-        setTimeout(function(){
-            var pc = document.querySelector('.admin-panel-content');
+                'max-height:none!important;overflow-y:auto!important;overflow-x:hidden!important;'+
+                'padding-bottom:16px!important;-webkit-overflow-scrolling:touch!important;');
+            /* Scroll al row dentro del panel-content */
+            var pc=document.querySelector('.admin-panel-content');
             if(!pc) return;
-            var top = 0;
-            var el = row;
-            while(el && el!==pc){ top += el.offsetTop||0; el = el.offsetParent; }
-            try{ pc.scrollTo({top:top-8,behavior:'smooth'}); }
-            catch(e){ pc.scrollTop = top-8; }
-        }, 100);
+            var top=0,el=row;
+            while(el&&el!==pc){top+=(el.offsetTop||0);el=el.offsetParent;}
+            try{pc.scrollTo({top:Math.max(0,top-8),behavior:'smooth'});}
+            catch(e){pc.scrollTop=Math.max(0,top-8);}
+        },60);
     }
 
-    /* ── Sincronizar con tab activo ── */
     function sync(){
-        var a = document.querySelector('.admin-tab.active');
+        var a=document.querySelector('.admin-tab.active');
         if(!a) return;
-        var r = document.querySelector('.acc-row[data-tab-target="'+a.id+'"]');
-        if(r && !r.classList.contains('acc-open')) openRow(r);
+        var r=document.querySelector('.acc-row[data-tab-target="'+a.id+'"]');
+        if(r&&!r.classList.contains('acc-open')) openRow(r);
     }
 
-    /* ── Init ── */
     document.addEventListener('DOMContentLoaded',function(){
-        var accordion = document.getElementById('adminAccordion');
-        if(!accordion) return;
+        var acc=document.getElementById('adminAccordion');
+        if(!acc) return;
 
-        accordion.addEventListener('click',function(e){
-            var trig = e.target.closest ? e.target.closest('.acc-trigger') : null;
+        acc.addEventListener('click',function(e){
+            var trig=e.target.closest?e.target.closest('.acc-trigger'):null;
             if(!trig) return;
-            var row = trig.closest ? trig.closest('.acc-row') : null;
+            var row=trig.closest?trig.closest('.acc-row'):null;
             if(!row) return;
-            if(row.classList.contains('acc-open')){ closeRow(row); }
-            else{ openRow(row); }
+            if(row.classList.contains('acc-open')) closeRow(row);
+            else openRow(row);
         });
 
-        /* Observar apertura del panel */
-        var panel = document.getElementById('adminPanel');
-        if(panel && window.MutationObserver){
+        var panel=document.getElementById('adminPanel');
+        if(panel&&window.MutationObserver){
             new MutationObserver(function(ms){
                 for(var i=0;i<ms.length;i++){
-                    if(ms[i].target.classList.contains('visible') && mob()){
-                        setTimeout(sync,120); break;
+                    if(ms[i].target.classList.contains('visible')&&mob()){
+                        setTimeout(sync,120);break;
                     }
                 }
             }).observe(panel,{attributes:true,attributeFilter:['class']});
         }
 
-        /* Resize */
         var rt;
         window.addEventListener('resize',function(){
             clearTimeout(rt);
-            rt=setTimeout(function(){ mob()?sync():unmountAll(); },200);
+            rt=setTimeout(function(){mob()?sync():unmountAll();},200);
         });
     });
 })();
