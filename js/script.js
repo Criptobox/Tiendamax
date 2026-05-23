@@ -2782,12 +2782,6 @@ if (document.readyState === 'loading') {
 
 // ===== AUTOMATIZACIÓN HÍBRIDA (SELENIUM) =====
 
-    } catch (e) {
-        mostrarNotificacion('❌ Error de conexión con el backend', 'error');
-    } finally {
-        if (btn) { btn.disabled = false; btn.textContent = '🔓 1. Abrir Navegador y Loguearme'; }
-    }
-}
 
 // ===== HERO IMAGE ADMIN =====
 
@@ -5008,6 +5002,7 @@ document.addEventListener('DOMContentLoaded', () => {
         ofertaDia(nombre, precio)      { this.enviar('☀️ Oferta del día', nombre + ' — Solo hoy: $' + precio + ' USD'); }
     };
 })();
+
 // ═══════════════════════════════════════════════════════
 //  #6 TOGGLE VISTA GRID / LISTA (PÍLDORAS)
 // ═══════════════════════════════════════════════════════
