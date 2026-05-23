@@ -1673,3 +1673,14 @@ body.dark-mode .precio-tachado { color: #666; }
 }
 .urgencia-banner:hover { filter: brightness(1.15); }
 .urgencia-banner:active { filter: brightness(0.9); }
+
+
+/* =====================================================================
+   NO-FLICKER — Integrado desde no-flicker.css
+   Fuerza visibilidad en cards (evita parpadeo por initScrollAnimations)
+   ===================================================================== */
+.categoria-card,
+.producto-card {
+    opacity: 1 !important;
+    transform: none !important;
+}
