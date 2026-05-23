@@ -468,7 +468,92 @@ html body .currency-bar { background: var(--panel) !important; border-bottom-col
 html body .cur-btn.active { color: var(--orange) !important; }
 html body .btn-seguir-viendo { border-color: rgba(255,106,0,.3) !important; color: var(--orange) !important; }
 
-/* Contador de productos en categorías — naranja */
+/* ── TASA NAV PILL ── */
+html body .tasa-nav-pill {
+    display: flex !important;
+    align-items: center !important;
+    gap: 5px !important;
+    background: rgba(255,106,0,.12) !important;
+    border: 1px solid rgba(255,106,0,.28) !important;
+    border-radius: 10px !important;
+    padding: 5px 10px !important;
+    cursor: default !important;
+    flex-shrink: 0 !important;
+}
+html body .tasa-flag { font-size: .95rem; }
+html body .tasa-nav-val {
+    font-size: .78rem !important;
+    font-weight: 900 !important;
+    color: #ff9d63 !important;
+    white-space: nowrap !important;
+}
+/* Ocultar la burbuja flotante vieja */
+html body #tasaBurbuja { display: none !important; }
+
+/* ── ADMIN PANEL — fix completo tabs y scroll ── */
+
+/* El contenedor principal es flex column con altura fija */
+html body .admin-panel-content {
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
+    max-height: 92vh !important;
+}
+
+/* La barra de tabs es fija arriba — no scrollea */
+html body .admin-tabs {
+    flex-shrink: 0 !important;
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 20 !important;
+    overflow-x: auto !important;
+    scrollbar-width: none !important;
+}
+html body .admin-tabs::-webkit-scrollbar { display: none !important; }
+
+/* CADA TAB activo ocupa todo el espacio restante y hace scroll interno */
+html body .admin-tab {
+    display: none !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    -webkit-overflow-scrolling: touch !important;
+    flex: 1 1 auto !important;
+    padding: 20px 18px 80px !important; /* padding-bottom grande para que el último campo no quede tapado */
+}
+html body .admin-tab.active {
+    display: block !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    -webkit-overflow-scrolling: touch !important;
+    flex: 1 1 auto !important;
+}
+
+/* Móvil full screen */
+@media (max-width: 768px) {
+    html body .admin-panel-content {
+        max-height: 100vh !important;
+        height: 100vh !important;
+        border-radius: 0 !important;
+    }
+    html body .admin-tab {
+        padding: 16px 14px 100px !important;
+    }
+}
+
+/* Inputs, selects y textareas nunca quedan tapados */
+html body .admin-tab input,
+html body .admin-tab textarea,
+html body .admin-tab select {
+    position: relative !important;
+    z-index: 5 !important;
+}
+
+/* Cuando un input recibe foco, hacer scroll automático para verlo completo */
+html body .admin-tab input:focus,
+html body .admin-tab textarea:focus,
+html body .admin-tab select:focus {
+    scroll-margin-top: 80px !important;
+}
 html body .categoria-card .cat-count {
     color: #ff9d63 !important;
     font-weight: 600 !important;
