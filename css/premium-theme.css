@@ -1,0 +1,491 @@
+/* ============================================================
+   TIENDAMAX — PREMIUM THEME v2
+   Basado en el Preview Mejorado
+   Subir como: css/premium-theme.css
+   ============================================================ */
+
+:root {
+    --orange:  #ff6a00;
+    --orange2: #ff3d00;
+    --green:   #25d366;
+    --bg:      #0e0e12;
+    --panel:   #16161f;
+    --panel2:  #1c1c28;
+    --line:    rgba(255,255,255,.07);
+    --text:    #f2f2f5;
+    --muted:   #9898a8;
+}
+
+/* ── BASE ── */
+html body {
+    background: var(--bg) !important;
+    color: var(--text) !important;
+    font-family: 'Inter', 'DM Sans', system-ui, sans-serif !important;
+}
+
+/* ── TOPBAR ── */
+html body .urgencia-banner {
+    background: linear-gradient(90deg, rgba(255,106,0,.15), rgba(255,61,0,.08)) !important;
+    border-bottom: 1px solid rgba(255,106,0,.2) !important;
+    color: #ffd4b0 !important;
+    font-weight: 700 !important;
+    animation: none !important;
+}
+html body .flash-deal {
+    background: rgba(255,106,0,.18) !important;
+    border: 1px solid rgba(255,106,0,.3) !important;
+    color: #ff9d63 !important;
+    border-radius: 999px !important;
+    padding: 4px 12px !important;
+    font-size: .78rem !important;
+}
+
+/* ── HEADER / NAV ── */
+html body .header {
+    background: rgba(14,14,18,.82) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    border-bottom: 1px solid var(--line) !important;
+    box-shadow: none !important;
+}
+html body .logo-badge {
+    background: linear-gradient(135deg, var(--orange), var(--orange2)) !important;
+    border-radius: 12px !important;
+    box-shadow: 0 8px 22px rgba(255,106,0,.3) !important;
+    color: #fff !important;
+    font-weight: 900 !important;
+}
+html body .logo-premium em,
+html body .logo h1 em,
+html body .logo h1 span {
+    color: #ff8a3d !important;
+    background: none !important;
+    -webkit-text-fill-color: #ff8a3d !important;
+    animation: none !important;
+}
+html body .nav a { color: var(--muted) !important; font-size: .85rem !important; font-weight: 600 !important; }
+html body .nav a:hover { color: #fff !important; }
+html body .cart-icon-btn {
+    background: rgba(255,255,255,.05) !important;
+    border: 1px solid var(--line) !important;
+    border-radius: 12px !important;
+    color: var(--text) !important;
+}
+html body .cart-count {
+    background: var(--orange) !important;
+    color: #fff !important;
+}
+
+/* ── HERO ── */
+html body .hero {
+    background: radial-gradient(ellipse 60% 50% at 0% 50%, rgba(255,106,0,.07), transparent) !important;
+}
+html body .hero .subtitle { color: var(--muted) !important; }
+html body .hero .subtitle span { color: var(--orange) !important; }
+html body .hero-content h1 span,
+html body .hero-content h2 span { color: var(--text) !important; -webkit-text-fill-color: var(--text) !important; }
+html body .hero .description { color: var(--muted) !important; }
+html body .hero-divider {
+    background: linear-gradient(90deg, transparent, rgba(255,106,0,.4), transparent) !important;
+    height: 1px !important;
+}
+
+/* Botones hero */
+html body .btn-primary, html body .btn.btn-primary {
+    background: linear-gradient(135deg, var(--orange), var(--orange2)) !important;
+    border: none !important;
+    color: #fff !important;
+    border-radius: 12px !important;
+    box-shadow: 0 8px 22px rgba(255,106,0,.3) !important;
+}
+html body .btn-primary:hover, html body .btn.btn-primary:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 12px 28px rgba(255,106,0,.35) !important;
+}
+html body .btn-secondary, html body .btn.btn-secondary {
+    background: var(--green) !important;
+    color: #fff !important;
+    border: none !important;
+    border-radius: 12px !important;
+}
+html body .btn-secondary:hover { opacity: .88 !important; transform: none !important; }
+
+/* ── BÚSQUEDA ── */
+html body .hsb-wrap { background: var(--bg) !important; }
+html body .hsb-pill {
+    background: var(--panel) !important;
+    border: 1px solid var(--line) !important;
+    border-radius: 999px !important;
+    box-shadow: none !important;
+}
+html body .hsb-pill:focus-within { border-color: rgba(255,106,0,.4) !important; box-shadow: 0 0 0 3px rgba(255,106,0,.08) !important; }
+html body .hsb-input { color: var(--text) !important; background: transparent !important; }
+html body .hsb-input::placeholder { color: var(--muted) !important; }
+html body .hsb-panel { background: var(--panel2) !important; border-color: var(--line) !important; }
+html body .hsb-sug-item:hover { background: rgba(255,106,0,.08) !important; }
+html body .hsb-sug-name { color: var(--text) !important; }
+html body .hsb-sug-price { color: #ff9d63 !important; }
+html body .hsb-apply-btn, html body .hsb-buscar-pill { background: var(--orange) !important; color: #fff !important; }
+
+/* ── SECCIÓN CATEGORÍAS ── */
+html body .categorias-home { background: var(--bg) !important; }
+html body .section-eyebrow, html body .categorias-home .section-eyebrow {
+    color: var(--orange) !important;
+    letter-spacing: .14em !important;
+}
+html body .categorias-home .section-title { color: var(--text) !important; }
+html body .categorias-home .section-subtitle { color: var(--muted) !important; }
+
+/* ── TARJETAS DE CATEGORÍA — glassmorphism con icono flotante ── */
+html body .categoria-card {
+    background: rgba(22,22,31,.75) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+    border: 1px solid var(--line) !important;
+    border-radius: 20px !important;
+    transition: all .25s !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+html body .categoria-card::after {
+    content: "" !important;
+    position: absolute !important;
+    inset: 0 !important;
+    border-radius: 20px !important;
+    background: radial-gradient(circle at 50% 0%, rgba(255,106,0,.15), transparent 65%) !important;
+    opacity: 0 !important;
+    transition: .3s !important;
+    pointer-events: none !important;
+}
+html body .categoria-card:hover {
+    border-color: rgba(255,106,0,.35) !important;
+    transform: translateY(-3px) !important;
+    box-shadow: 0 12px 32px rgba(255,106,0,.12) !important;
+}
+html body .categoria-card:hover::after { opacity: 1 !important; }
+
+/* Icono con relieve glassmorphism */
+html body .categoria-card .cat-icon {
+    width: 56px !important;
+    height: 56px !important;
+    border-radius: 18px !important;
+    background: rgba(255,255,255,.05) !important;
+    border: 1px solid rgba(255,255,255,.09) !important;
+    box-shadow: 0 4px 16px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.08) !important;
+    display: grid !important;
+    place-items: center !important;
+    margin: 0 auto 12px !important;
+    transition: .25s !important;
+    font-size: 1.6rem !important;
+}
+html body .categoria-card:hover .cat-icon {
+    box-shadow: 0 8px 24px rgba(255,106,0,.25), inset 0 1px 0 rgba(255,255,255,.1) !important;
+    background: rgba(255,106,0,.08) !important;
+}
+html body .categoria-card .cat-name { color: var(--text) !important; font-weight: 700 !important; }
+html body .categoria-card .cat-count { color: var(--muted) !important; }
+
+/* ── TARJETAS DE PRODUCTO — glassmorphism premium ── */
+html body .producto-card {
+    background: rgba(22,22,31,.8) !important;
+    backdrop-filter: blur(14px) !important;
+    -webkit-backdrop-filter: blur(14px) !important;
+    border: 1px solid var(--line) !important;
+    border-radius: 20px !important;
+    border-bottom: 1px solid var(--line) !important;
+    box-shadow: none !important;
+    transition: all .28s !important;
+}
+html body .producto-card:hover {
+    border-color: rgba(255,106,0,.3) !important;
+    transform: translateY(-4px) !important;
+    box-shadow: 0 16px 40px rgba(0,0,0,.4), 0 0 0 1px rgba(255,106,0,.1) !important;
+}
+html body .producto-card::after { display: none !important; }
+
+/* Thumbnail con gradiente oscuro premium */
+html body .producto-image {
+    background:
+        radial-gradient(circle at 25% 30%, rgba(255,106,0,.22), transparent 40%),
+        radial-gradient(circle at 75% 70%, rgba(239,68,68,.1), transparent 35%),
+        linear-gradient(180deg, #1c1f2a 0%, #11131b 55%, #291408 100%) !important;
+    border-bottom: 1px solid var(--line) !important;
+}
+html body .producto-image img {
+    mix-blend-mode: luminosity !important;
+    opacity: .85 !important;
+    transition: .3s !important;
+}
+html body .producto-card:hover .producto-image img {
+    opacity: 1 !important;
+    mix-blend-mode: normal !important;
+}
+
+html body .producto-card h3 { color: var(--text) !important; font-weight: 800 !important; }
+html body .producto-description { color: var(--muted) !important; }
+
+/* Precio */
+html body .precio-actual {
+    color: #ff9d63 !important;
+    background: none !important;
+    -webkit-background-clip: unset !important;
+    -webkit-text-fill-color: #ff9d63 !important;
+    background-clip: unset !important;
+    font-weight: 900 !important;
+}
+html body .precio-original { color: var(--muted) !important; }
+html body .stock { color: rgba(255,106,0,.85) !important; }
+
+/* Badge glassmorphism */
+html body .badge {
+    background: rgba(255,106,0,.18) !important;
+    border: 1px solid rgba(255,106,0,.3) !important;
+    color: #ffc7a4 !important;
+    border-radius: 999px !important;
+    backdrop-filter: blur(8px) !important;
+}
+html body .badge-vendido {
+    background: rgba(255,106,0,.18) !important;
+    border: 1px solid rgba(255,106,0,.3) !important;
+    color: #ffc7a4 !important;
+    backdrop-filter: blur(8px) !important;
+    animation: none !important;
+}
+html body .badge-agotado {
+    background: rgba(239,68,68,.15) !important;
+    color: #fca5a5 !important;
+    border: 1px solid rgba(239,68,68,.3) !important;
+}
+html body .badge-oferta-dia {
+    background: linear-gradient(135deg, var(--orange), var(--orange2)) !important;
+}
+
+/* ── BOTONES DE PRODUCTO ── */
+html body .btn-pedir-card {
+    background: linear-gradient(135deg, var(--orange), var(--orange2)) !important;
+    border-radius: 12px !important;
+    box-shadow: none !important;
+}
+html body .btn-pedir-card:hover { transform: translateY(-2px) !important; box-shadow: 0 12px 28px rgba(255,106,0,.35) !important; }
+html body .btn-pedir-whatsapp {
+    background: linear-gradient(135deg, var(--orange), var(--orange2)) !important;
+    border-radius: 12px !important;
+    animation: none !important;
+    box-shadow: 0 8px 22px rgba(255,106,0,.3) !important;
+}
+html body .btn-cta-mejorado {
+    background: linear-gradient(135deg, var(--orange), var(--orange2)) !important;
+    border-radius: 12px !important;
+}
+html body .btn-publicar-grande {
+    background: linear-gradient(135deg, var(--orange), var(--orange2)) !important;
+}
+
+/* ── MÁS VENDIDOS ── */
+html body .mas-vendidos { background: var(--panel) !important; border-top: 1px solid var(--line) !important; }
+html body .mas-vendidos .section-header h2 { color: var(--text) !important; }
+html body .mas-vendidos .section-header p { color: var(--muted) !important; }
+html body .mas-vendidos .producto-card { background: rgba(28,28,40,.85) !important; }
+
+/* ── PRUEBA SOCIAL ── */
+html body .prueba-social-strip { background: var(--bg) !important; border-top: 1px solid var(--line) !important; border-bottom: 1px solid var(--line) !important; }
+html body .prueba-num { color: var(--orange) !important; }
+html body .prueba-label { color: var(--muted) !important; }
+html body .prueba-sep { color: var(--line) !important; }
+
+/* ── BANNER CTA (entre categorías y productos) ── */
+html body .cta-banner, html body .cta-inline {
+    background: linear-gradient(135deg, rgba(255,106,0,.22), rgba(255,61,0,.14)) !important;
+    border: 1px solid rgba(255,106,0,.25) !important;
+    border-radius: 20px !important;
+}
+
+/* ── BENEFICIOS ── */
+html body .beneficios { background: var(--bg) !important; }
+html body .beneficios h2 { color: var(--text) !important; }
+html body .beneficio-card {
+    background: rgba(22,22,31,.75) !important;
+    border: 1px solid var(--line) !important;
+    backdrop-filter: blur(12px) !important;
+}
+html body .beneficio-card::before { background: linear-gradient(90deg, var(--orange), #ff9d63) !important; }
+html body .beneficio-card:hover { border-color: rgba(255,106,0,.35) !important; box-shadow: 0 12px 32px rgba(255,106,0,.1) !important; }
+html body .beneficio-card h3 { color: var(--text) !important; }
+html body .beneficio-card p { color: var(--muted) !important; }
+
+/* ── TESTIMONIOS ── */
+html body .testimonios { background: var(--panel) !important; border-top: 1px solid var(--line) !important; }
+html body .testimonios h2 { color: var(--text) !important; }
+html body .testimonio-card { background: rgba(255,255,255,.03) !important; border: 1px solid var(--line) !important; }
+html body .testimonio-card:hover { border-color: rgba(255,106,0,.25) !important; }
+html body .testimonio-card .autor { color: var(--orange) !important; }
+html body .testimonio-card p { color: rgba(255,255,255,.65) !important; }
+
+/* ── CTA FINAL ── */
+html body .cta-final { background: radial-gradient(ellipse 70% 80% at 50% 50%, rgba(255,106,0,.1), transparent 70%), var(--bg) !important; border-top: 1px solid var(--line) !important; }
+html body .cta-final h2 { color: var(--text) !important; }
+html body .cta-final p { color: var(--muted) !important; }
+html body .cta-final .btn-large { background: linear-gradient(135deg, var(--orange), var(--orange2)) !important; color: #fff !important; box-shadow: 0 8px 28px rgba(255,106,0,.3) !important; border-radius: 12px !important; }
+
+/* ── VISTA CATEGORÍA ── */
+html body .productos-categoria { background: var(--bg) !important; }
+html body .categoria-header h2 { color: var(--text) !important; }
+html body .btn-volver { background: transparent !important; border-color: var(--line) !important; color: var(--muted) !important; }
+html body .btn-volver:hover { background: rgba(255,106,0,.1) !important; border-color: rgba(255,106,0,.4) !important; color: var(--orange) !important; }
+html body .categoria-stats { background: rgba(255,106,0,.08) !important; border-color: rgba(255,106,0,.2) !important; color: var(--orange) !important; }
+html body .categoria-btn, html body .subcategoria-tab { background: transparent !important; border-color: var(--line) !important; color: var(--muted) !important; border-radius: 999px !important; }
+html body .categoria-btn:hover, html body .subcategoria-tab:hover { border-color: rgba(255,106,0,.4) !important; color: var(--orange) !important; }
+html body .categoria-btn.active, html body .subcategoria-tab.active { background: linear-gradient(135deg, var(--orange), var(--orange2)) !important; border-color: var(--orange) !important; color: #fff !important; box-shadow: 0 4px 16px rgba(255,106,0,.3) !important; }
+html body .section-title::after { background: linear-gradient(90deg, var(--orange), transparent) !important; }
+
+/* ── BOTÓN FLOTANTE WHATSAPP — glass premium ── */
+html body .whatsapp-btn {
+    background: rgba(20,28,22,.85) !important;
+    backdrop-filter: blur(16px) !important;
+    -webkit-backdrop-filter: blur(16px) !important;
+    border: 1px solid rgba(37,211,102,.25) !important;
+    border-radius: 20px !important;
+    width: auto !important;
+    height: auto !important;
+    padding: 11px 16px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    box-shadow: 0 8px 32px rgba(0,0,0,.45), 0 0 0 1px rgba(37,211,102,.1) !important;
+    animation: none !important;
+}
+html body .whatsapp-btn:hover {
+    transform: translateY(-3px) !important;
+    box-shadow: 0 14px 40px rgba(37,211,102,.2), 0 0 0 1px rgba(37,211,102,.2) !important;
+    border-color: rgba(37,211,102,.4) !important;
+}
+html body .whatsapp-btn svg {
+    width: 22px !important; height: 22px !important;
+    background: var(--green) !important;
+    border-radius: 10px !important;
+    padding: 4px !important;
+    box-shadow: 0 4px 14px rgba(37,211,102,.35) !important;
+    color: white !important;
+    stroke: white !important;
+}
+html body .whatsapp-group-btn {
+    background: rgba(20,28,22,.85) !important;
+    backdrop-filter: blur(16px) !important;
+    border: 1px solid rgba(37,211,102,.2) !important;
+    border-radius: 20px !important;
+    width: auto !important; height: auto !important;
+    padding: 11px 16px !important;
+    animation: none !important;
+}
+
+/* ── CARRITO ── */
+html body .carrito-drawer { background: var(--panel) !important; }
+html body .carrito-header { background: var(--bg) !important; border-bottom: 1px solid var(--line) !important; }
+html body .carrito-header h3 { color: var(--text) !important; }
+html body .carrito-item { background: var(--panel2) !important; border: 1px solid var(--line) !important; box-shadow: none !important; }
+html body .carrito-item-name { color: var(--text) !important; }
+html body .carrito-item-price { color: #ff9d63 !important; }
+html body .carrito-qty-btn { background: var(--panel) !important; border-color: var(--line) !important; color: var(--text) !important; }
+html body .carrito-qty-btn:hover { border-color: rgba(255,106,0,.4) !important; color: var(--orange) !important; }
+html body .carrito-footer { background: var(--panel2) !important; border-top: 1px solid var(--line) !important; }
+html body .carrito-total-val { color: #ff9d63 !important; }
+html body .cs-card { background: rgba(255,255,255,.03) !important; border-color: rgba(255,106,0,.15) !important; }
+html body .cs-card-precio { color: #ff9d63 !important; }
+html body .cs-card-btn { border-color: rgba(255,106,0,.3) !important; background: rgba(255,106,0,.08) !important; color: #ff9d63 !important; }
+html body .carrito-similares-titulo { color: var(--orange) !important; }
+
+/* ── MODALES ── */
+html body .detail-modal-content, html body .modal-content { background: var(--panel) !important; border: 1px solid var(--line) !important; }
+html body .modal-header { background: var(--bg) !important; border-bottom: 1px solid var(--line) !important; }
+html body .modal-header h2 { color: var(--text) !important; }
+html body .detail-modal-content::before { background: linear-gradient(90deg, var(--orange), #ff9d63, var(--orange)) !important; background-size: 200% auto !important; }
+html body .detail-category { color: var(--orange) !important; }
+html body .detail-price-main, html body #detailPriceActual { color: #ff9d63 !important; -webkit-text-fill-color: #ff9d63 !important; }
+html body .detail-image-wrap::after { background: linear-gradient(90deg, var(--orange), #ff9d63) !important; }
+html body .detail-image-wrap::before { background: linear-gradient(to top, var(--orange), transparent) !important; }
+
+/* ── ADMIN ── */
+html body .admin-panel-content { background: var(--panel) !important; border-color: var(--line) !important; }
+html body .admin-header { background: var(--bg) !important; border-bottom: 1px solid var(--line) !important; }
+html body .admin-tabs { background: var(--panel2) !important; border-bottom: 1px solid var(--line) !important; }
+html body .tab-btn { color: var(--muted) !important; }
+html body .tab-btn.active { color: var(--orange) !important; border-bottom-color: var(--orange) !important; background: rgba(255,106,0,.06) !important; }
+html body .form-group input, html body .form-group textarea, html body .form-group select,
+html body .admin-tab input, html body .admin-tab textarea, html body .admin-tab select {
+    background: var(--panel2) !important; border-color: var(--line) !important; color: var(--text) !important;
+}
+html body .form-group input:focus, html body .form-group textarea:focus, html body .form-group select:focus {
+    border-color: rgba(255,106,0,.5) !important; box-shadow: 0 0 0 3px rgba(255,106,0,.08) !important; outline: none !important;
+}
+html body .form-group label { color: var(--muted) !important; }
+html body .category-item, html body .product-item, html body .subcategory-item { background: var(--panel2) !important; border-left-color: var(--orange) !important; color: var(--text) !important; }
+html body .category-item-name, html body .product-item-info h4 { color: var(--text) !important; }
+html body .product-item-info p { color: var(--muted) !important; }
+
+/* ── CLOSE BTN ── */
+html body .close-btn { background: rgba(255,106,0,.12) !important; border: 1.5px solid rgba(255,106,0,.4) !important; color: var(--orange) !important; }
+html body .close-btn:hover { background: rgba(255,106,0,.25) !important; color: #fff !important; }
+
+/* ── FOOTER ── */
+html body .footer-premium { background: #0a0a0e !important; border-top: 1px solid var(--line) !important; }
+html body .footer-brand h3 { color: var(--text) !important; }
+html body .footer-brand h3 em { color: #ff8a3d !important; }
+html body .footer-gold-line { background: linear-gradient(to right, var(--orange), transparent) !important; }
+html body .footer-col h4 { color: var(--orange) !important; }
+html body .footer-col a { color: var(--muted) !important; }
+html body .footer-col a:hover { color: #ff9d63 !important; }
+html body .footer-bottom p { color: #555 !important; }
+
+/* ── VARIOS ── */
+html body .stock-bar { background: rgba(255,255,255,.06) !important; }
+html body .stock-bar-fill { background: linear-gradient(90deg, var(--orange), var(--orange2)) !important; }
+html body .stock { color: rgba(255,106,0,.85) !important; }
+html body .countdown-block { background: var(--orange) !important; }
+html body .produto-countdown { border-color: var(--orange) !important; }
+html body .pedido-card { background: rgba(255,255,255,.03) !important; border-color: rgba(255,106,0,.15) !important; }
+html body .pedido-total { color: #ff9d63 !important; }
+html body .pedido-btn-repetir { border-color: rgba(255,106,0,.3) !important; background: rgba(255,106,0,.08) !important; color: #ff9d63 !important; }
+html body .tm-toast { background: rgba(14,14,18,.9) !important; border-color: rgba(255,106,0,.25) !important; }
+html body .tm-toast .tm-toast-icon { background: var(--orange) !important; }
+html body #tm-progress { background: linear-gradient(to right, var(--orange), #ff9d63) !important; }
+html body .theme-toggle { background: var(--panel) !important; color: var(--orange) !important; border: 1px solid rgba(255,106,0,.25) !important; }
+html body .cur-btn.active { color: var(--orange) !important; }
+html body .detail-resena-add-btn { border-color: var(--orange) !important; color: var(--orange) !important; }
+html body .detail-resena-add-btn:hover { background: var(--orange) !important; color: #fff !important; }
+html body .rel-card { background: var(--panel2) !important; border-color: var(--line) !important; }
+html body .rel-card-name { color: var(--text) !important; }
+html body .rel-card-price { color: #ff9d63 !important; }
+html body .form-resena { background: var(--panel2) !important; border: 1px solid var(--line) !important; }
+html body .resena-input, html body .resena-textarea { background: var(--panel) !important; border-color: var(--line) !important; color: var(--text) !important; }
+html body .resena-input:focus, html body .resena-textarea:focus { border-color: rgba(255,106,0,.5) !important; }
+html body .resena-item { background: var(--panel2) !important; }
+html body .resena-autor { color: var(--text) !important; }
+html body .resena-texto { color: var(--muted) !important; }
+html body .mobile-menu-overlay { background: rgba(10,10,14,.98) !important; }
+html body .mobile-menu-overlay a, html body .mobile-menu-overlay button.nav-mobile-link { border-bottom-color: var(--line) !important; color: var(--muted) !important; }
+html body .mobile-menu-overlay a:hover, html body .mobile-menu-overlay button.nav-mobile-link:hover { color: var(--orange) !important; }
+html body .currency-bar { background: var(--panel) !important; border-bottom-color: rgba(255,106,0,.15) !important; }
+html body .cur-btn.active { color: var(--orange) !important; }
+html body .btn-seguir-viendo { border-color: rgba(255,106,0,.3) !important; color: var(--orange) !important; }
+
+/* Contador de productos en categorías — naranja */
+html body .categoria-card .cat-count {
+    color: #ff9d63 !important;
+    font-weight: 600 !important;
+}
+
+/* Stock colors */
+html body .stock-count,
+html body .stock { color: #4ade80 !important; font-weight: 700 !important; }
+html body .stock-count.low { color: #fbbf24 !important; }
+html body .microcopy-urgencia { color: #fbbf24 !important; }
+html body .card-agotado .stock,
+html body .stock.agotado { color: #f87171 !important; }
+
+/* Barra de stock naranja */
+html body .stock-bar { background: rgba(255,255,255,.06) !important; }
+html body .stock-bar-fill { background: linear-gradient(90deg, var(--orange), var(--orange2)) !important; }
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: rgba(255,106,0,.3); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--orange); }
