@@ -487,20 +487,29 @@ html body .tasa-nav-val {
     color: #ff9d63 !important;
     white-space: nowrap !important;
 }
-/* Ocultar la burbuja flotante vieja */
-html body #tasaBurbuja { display: none !important; }
+/* Burbuja flotante — ELIMINADA definitivamente */
+html body #tasaBurbuja,
+body #tasaBurbuja,
+#tasaBurbuja {
+    display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+    opacity: 0 !important;
+    width: 0 !important;
+    height: 0 !important;
+    overflow: hidden !important;
+}
 
-/* ── ADMIN PANEL — fix completo tabs y scroll ── */
-
-/* El contenedor principal es flex column con altura fija */
+/* ── ADMIN PANEL — acordeón con fondo sólido y scroll correcto ── */
 html body .admin-panel-content {
     display: flex !important;
     flex-direction: column !important;
     overflow: hidden !important;
     max-height: 92vh !important;
+    background: var(--bg-surface, #1A1A1A) !important;
 }
 
-/* La barra de tabs es fija arriba — no scrollea */
+/* Barra de tabs fija arriba */
 html body .admin-tabs {
     flex-shrink: 0 !important;
     position: sticky !important;
@@ -508,27 +517,55 @@ html body .admin-tabs {
     z-index: 20 !important;
     overflow-x: auto !important;
     scrollbar-width: none !important;
+    background: var(--bg-card, #161616) !important;
 }
 html body .admin-tabs::-webkit-scrollbar { display: none !important; }
 
-/* CADA TAB activo ocupa todo el espacio restante y hace scroll interno */
+/* Cada tab oculto por defecto */
 html body .admin-tab {
     display: none !important;
     overflow-y: auto !important;
     overflow-x: hidden !important;
     -webkit-overflow-scrolling: touch !important;
-    flex: 1 1 auto !important;
-    padding: 20px 18px 80px !important; /* padding-bottom grande para que el último campo no quede tapado */
+    padding: 20px 18px 100px !important;
+    background: var(--bg-surface, #1A1A1A) !important;
+    /* Fondo sólido para que no se vea lo de detrás */
+    position: relative !important;
+    z-index: 1 !important;
 }
+
+/* Tab activo — visible y con scroll propio */
 html body .admin-tab.active {
     display: block !important;
     overflow-y: auto !important;
     overflow-x: hidden !important;
     -webkit-overflow-scrolling: touch !important;
     flex: 1 1 auto !important;
+    background: var(--bg-surface, #1A1A1A) !important;
+    position: relative !important;
+    z-index: 1 !important;
 }
 
-/* Móvil full screen */
+/* Formularios y campos nunca tapados */
+html body .admin-tab .form-group,
+html body .admin-tab input,
+html body .admin-tab textarea,
+html body .admin-tab select {
+    position: relative !important;
+    z-index: 5 !important;
+    scroll-margin-top: 80px !important;
+}
+
+/* Acordeón / secciones expandibles con fondo sólido */
+html body .admin-tab > div,
+html body .admin-tab > section,
+html body .admin-tab > form {
+    background: var(--bg-surface, #1A1A1A) !important;
+    position: relative !important;
+    z-index: 2 !important;
+}
+
+/* Móvil — pantalla completa */
 @media (max-width: 768px) {
     html body .admin-panel-content {
         max-height: 100vh !important;
@@ -536,23 +573,8 @@ html body .admin-tab.active {
         border-radius: 0 !important;
     }
     html body .admin-tab {
-        padding: 16px 14px 100px !important;
+        padding: 16px 14px 120px !important;
     }
-}
-
-/* Inputs, selects y textareas nunca quedan tapados */
-html body .admin-tab input,
-html body .admin-tab textarea,
-html body .admin-tab select {
-    position: relative !important;
-    z-index: 5 !important;
-}
-
-/* Cuando un input recibe foco, hacer scroll automático para verlo completo */
-html body .admin-tab input:focus,
-html body .admin-tab textarea:focus,
-html body .admin-tab select:focus {
-    scroll-margin-top: 80px !important;
 }
 html body .categoria-card .cat-count {
     color: #ff9d63 !important;
