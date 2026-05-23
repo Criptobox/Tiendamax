@@ -81,49 +81,6 @@
     <link rel="stylesheet" href="css/admin.premium.css?v=1">
 
     <link rel="stylesheet" href="css/admin-clean.css?v=1">
-
-    <!-- ── Corrección móvil: scroll en acordeón admin ── -->
-    <style>
-    @media (max-width: 768px) {
-        /* El panel completo no desborda el viewport */
-        #adminPanel.visible .admin-panel-content {
-            display: flex !important;
-            flex-direction: column !important;
-            height: 100dvh !important;
-            height: 100vh !important;
-            max-height: 100dvh !important;
-            max-height: 100vh !important;
-            overflow: hidden !important;
-        }
-
-        /* El acordeón es el área desplazable */
-        #adminPanel.visible .admin-accordion {
-            flex: 1 1 auto !important;
-            overflow-y: auto !important;
-            overflow-x: hidden !important;
-            -webkit-overflow-scrolling: touch !important;
-            overscroll-behavior: contain !important;
-        }
-
-        /* acc-body abierto: scroll interno */
-        .acc-row.acc-open .acc-body,
-        .acc-row.acc-overlay .acc-body {
-            overflow-y: auto !important;
-            overflow-x: hidden !important;
-            -webkit-overflow-scrolling: touch !important;
-            overscroll-behavior: contain !important;
-            min-height: 80px !important;
-        }
-
-        /* Inputs full-width sin desborde */
-        .acc-body input,
-        .acc-body textarea,
-        .acc-body select {
-            max-width: 100% !important;
-            box-sizing: border-box !important;
-        }
-    }
-    </style>
 </head>
 <body>
 
@@ -1550,135 +1507,419 @@ document.addEventListener('DOMContentLoaded', () => {
 <script>
 // ── WhatsApp dinámico — lee el número guardado en admin ──
 (function actualizarEnlacesWhatsApp() {
-  const num = localStorage.getItem('whatsappNumero') || '5354320170';
-  document.querySelectorAll('a[href*="wa.me/"]').forEach(a => {
+  var num = (window._ls || localStorage).getItem('whatsappNumero') || '5354320170';
+  document.querySelectorAll('a[href*="wa.me/"]').forEach(function(a) {
     a.href = a.href.replace(/wa\.me\/\d+/, 'wa.me/' + num);
   });
 })();
-document.addEventListener('DOMContentLoaded', () => {
-  const num = localStorage.getItem('whatsappNumero') || '5354320170';
-  document.querySelectorAll('a[href*="wa.me/"]').forEach(a => {
+document.addEventListener('DOMContentLoaded', function() {
+  var num = (window._ls || localStorage).getItem('whatsappNumero') || '5354320170';
+  document.querySelectorAll('a[href*="wa.me/"]').forEach(function(a) {
     a.href = a.href.replace(/wa\.me\/\d+/, 'wa.me/' + num);
   });
 });
 </script>
 
-<!-- ═══════════════════════════════════════════
-     ACORDEÓN PREMIUM — lógica móvil
-     Solo actúa cuando el acordeón está visible
-     ═══════════════════════════════════════════ -->
+<script>
+/* ── Tasa USD + Oferta del Día: sincronización cross-browser ──
+   Algunos navegadores (Safari privado, WebView antiguo, UC Browser)
+   bloquean localStorage. window._ls ya maneja eso como fallback.
+   Este script rellena los elementos de la UI si script.js no los pobló. ── */
+(function parcheTasaYOferta() {
+    var ls = window._ls || localStorage;
+
+    function intentarActualizar() {
+        /* ── TASA ── */
+        var tasa = ls.getItem('tasaCambio');
+        if (tasa) {
+            /* Buscar el elemento del navbar que muestra la tasa (múltiples selectores) */
+            var tasaEl = document.getElementById('navTasaDisplay')
+                      || document.getElementById('tasaDisplay')
+                      || document.querySelector('[data-tasa]')
+                      || document.querySelector('.nav-tasa-btn')
+                      || document.querySelector('.tasa-badge');
+            if (tasaEl && tasaEl.textContent.indexOf('--') !== -1) {
+                tasaEl.textContent = tasa + ' MN';
+            }
+            /* Input del admin por si no se pobló */
+            var inp = document.getElementById('adminTasaMN');
+            if (inp && !inp.value) inp.value = tasa;
+        }
+
+        /* ── OFERTA DEL DÍA ── */
+        var oferta = ls.getItem('ofertaDia') || ls.getItem('ofertaDiaActiva');
+        if (oferta && oferta !== 'null') {
+            var banner = document.getElementById('urgenciaBanner');
+            if (banner && banner.style.display === 'none') {
+                /* Solo mostrar si script.js no lo hizo */
+                try {
+                    var data = JSON.parse(oferta);
+                    if (data && data.activa) {
+                        banner.style.display = '';
+                    }
+                } catch(e) {
+                    /* oferta puede ser solo un ID de producto, no JSON */
+                    banner.style.display = '';
+                }
+            }
+        }
+    }
+
+    /* Intentar inmediatamente y luego tras carga completa */
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', function() {
+            intentarActualizar();
+            setTimeout(intentarActualizar, 800); /* tras script.js */
+        });
+    } else {
+        intentarActualizar();
+        setTimeout(intentarActualizar, 800);
+    }
+})();
+</script>
+
+<!-- ═══════════════════════════════════════════════════
+     ACORDEÓN MÓVIL — reescrito sin dependencia de overlay
+     Compatible: Chrome, Firefox, Safari iOS, Samsung, UC
+     ═══════════════════════════════════════════════════ -->
+
+<!-- Polyfill Element.closest para navegadores viejos (UC Browser, Android 4.x) -->
+<script>
+if (typeof Element !== 'undefined' && !Element.prototype.closest) {
+    Element.prototype.closest = function (sel) {
+        var el = this;
+        while (el && el.nodeType === 1) {
+            if (el.matches ? el.matches(sel) : el.msMatchesSelector(sel)) return el;
+            el = el.parentElement || el.parentNode;
+        }
+        return null;
+    };
+}
+if (typeof Element !== 'undefined' && !Element.prototype.matches) {
+    Element.prototype.matches =
+        Element.prototype.msMatchesSelector ||
+        Element.prototype.webkitMatchesSelector;
+}
+</script>
+
+<!-- localStorage seguro (no lanza en Safari privado ni WebView antiguos) -->
+<script>
+window._ls = (function () {
+    try {
+        localStorage.setItem('__t', '1');
+        localStorage.removeItem('__t');
+        return localStorage;
+    } catch (e) {
+        var store = {};
+        return {
+            getItem: function (k) { return store[k] !== undefined ? store[k] : null; },
+            setItem: function (k, v) { store[k] = String(v); },
+            removeItem: function (k) { delete store[k]; }
+        };
+    }
+})();
+</script>
+
+<style>
+/* ═══════════════════════════════════════════════════════════
+   OVERRIDE TOTAL del overlay en móvil
+   Anula admin.premium.css sin importar qué defina
+   ═══════════════════════════════════════════════════════════ */
+@media screen and (max-width: 768px) {
+
+    /* 1. Panel principal: ocupa toda la pantalla y hace scroll */
+    #adminPanel,
+    #adminPanel.visible {
+        position: fixed !important;
+        top: 0 !important; left: 0 !important;
+        right: 0 !important; bottom: 0 !important;
+        width: 100% !important; height: 100% !important;
+        z-index: 99999 !important;
+        overflow: hidden !important;
+        -webkit-transform: none !important;
+        transform: none !important;
+    }
+    .admin-panel-content {
+        width: 100% !important;
+        height: 100% !important;
+        max-height: 100% !important;
+        overflow-y: scroll !important;   /* scroll, no auto — más confiable en iOS */
+        overflow-x: hidden !important;
+        -webkit-overflow-scrolling: touch !important;
+        overscroll-behavior-y: contain !important;
+        -webkit-box-sizing: border-box !important;
+        box-sizing: border-box !important;
+        display: block !important;       /* no flex — evita bugs de altura en Safari */
+        padding-bottom: 60px !important; /* espacio al final para no quedar cortado */
+    }
+
+    /* 2. ANULAR completamente el overlay del acc-row */
+    .acc-row,
+    .acc-row.acc-open,
+    .acc-row.acc-overlay {
+        position: static !important;
+        top: auto !important; left: auto !important;
+        right: auto !important; bottom: auto !important;
+        width: 100% !important;
+        max-height: none !important;
+        overflow: visible !important;
+        z-index: auto !important;
+        -webkit-transform: none !important;
+        transform: none !important;
+        -webkit-box-shadow: none !important;
+        box-shadow: none !important;
+        border-radius: 0 !important;
+        margin: 0 !important;
+        background: transparent !important;
+    }
+
+    /* 3. Anular has-overlay en el contenedor */
+    .admin-accordion,
+    .admin-accordion.has-overlay {
+        position: static !important;
+        overflow: visible !important;
+        -webkit-transform: none !important;
+        transform: none !important;
+        max-height: none !important;
+        pointer-events: auto !important;
+    }
+
+    /* 4. El cuerpo del acordeón: inicialmente colapsado, animación vía max-height */
+    .acc-body {
+        overflow: hidden !important;
+        max-height: 0 !important;
+        -webkit-transition: max-height 0.28s ease !important;
+        transition: max-height 0.28s ease !important;
+        padding: 0 !important;
+        -webkit-box-sizing: border-box !important;
+        box-sizing: border-box !important;
+    }
+    .acc-row.acc-open .acc-body {
+        /* max-height lo inyecta JS según contenido real */
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+        -webkit-overflow-scrolling: touch !important;
+        padding: 0 0 12px 0 !important;
+    }
+
+    /* 5. Inputs/selects full-width */
+    .acc-body input,
+    .acc-body textarea,
+    .acc-body select,
+    .acc-body button {
+        max-width: 100% !important;
+        -webkit-box-sizing: border-box !important;
+        box-sizing: border-box !important;
+    }
+
+    /* 6. Eliminar pseudo-elementos "× Cerrar" que agrega admin.premium.css */
+    .acc-row::before, .acc-row::after,
+    .acc-row.acc-overlay::before, .acc-row.acc-overlay::after,
+    .acc-body::before, .acc-body::after,
+    .admin-accordion::before, .admin-accordion::after,
+    .admin-accordion.has-overlay::before, .admin-accordion.has-overlay::after {
+        display: none !important;
+        content: none !important;
+    }
+
+    /* 7. Tabs de escritorio: ocultos en móvil */
+    .admin-tabs-desktop { display: none !important; }
+
+    /* 8. admin-content (contenedor de tabs): invisible en móvil,
+          el contenido lo mueve el JS al acc-body */
+    .admin-content { display: none !important; }
+}
+
+/* ─── Compatibilidad cross-browser general ─── */
+
+/* backdrop-filter con prefijo webkit */
+.modal-content,
+.admin-panel-content,
+.carrito-drawer {
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+}
+
+/* gap en flexbox: Safari < 14 no lo soporta, usar margin como fallback */
+@supports not (gap: 0px) {
+    .admin-row-flex > * + * { margin-left: 10px; }
+    .form-row > * + *        { margin-left: 10px; }
+    .cta-buttons > * + *     { margin-left: 10px; }
+}
+
+/* position: sticky — fallback a relative para navegadores viejos */
+@supports not (position: sticky) {
+    .admin-header { position: relative; }
+}
+</style>
+
 <script>
 (function () {
     'use strict';
     var BREAKPOINT = 769;
     function isMobile() { return window.innerWidth < BREAKPOINT; }
 
-    function mountTabInAccBody(tabId, accBody) {
+    /* ── Mover tab al acc-body ── */
+    function mountTab(tabId, accBody) {
         var tab = document.getElementById(tabId);
         if (!tab || accBody.dataset.mounted === tabId) return;
         accBody.appendChild(tab);
         accBody.dataset.mounted = tabId;
     }
 
-    function unmountAllFromAcc() {
+    /* ── Devolver todos los tabs al admin-content (desktop) ── */
+    function unmountAll() {
         var adminContent = document.querySelector('.admin-content');
         if (!adminContent) return;
-        document.querySelectorAll('.acc-body').forEach(function (body) {
-            if (body.firstChild) adminContent.appendChild(body.firstChild);
-            delete body.dataset.mounted;
+        document.querySelectorAll('.acc-body').forEach(function (b) {
+            if (b.firstChild) adminContent.appendChild(b.firstChild);
+            delete b.dataset.mounted;
         });
     }
 
-    function openAccordionRow(row) {
+    /* ── Cerrar un row ── */
+    function closeRow(r) {
+        r.classList.remove('acc-open');
+        /* Mantener compatibilidad: quitar también acc-overlay si lo hubiera */
+        r.classList.remove('acc-overlay');
+        var trig = r.querySelector('.acc-trigger');
+        if (trig) trig.setAttribute('aria-expanded', 'false');
+        var b = r.querySelector('.acc-body');
+        if (b) {
+            b.style.maxHeight = '0';
+            b.style.overflow  = 'hidden';
+        }
+    }
+
+    /* ── Abrir un row ── */
+    function openRow(row) {
         var accordion = document.getElementById('adminAccordion');
         if (!accordion) return;
-        // Close all first, remove overlay classes
-        accordion.querySelectorAll('.acc-row.acc-open').forEach(function (r) {
-            r.classList.remove('acc-open');
-            r.classList.remove('acc-overlay');
-            accordion.classList.remove('has-overlay');
-            r.querySelector('.acc-trigger').setAttribute('aria-expanded', 'false');
-            var closingBody = r.querySelector('.acc-body');
-            closingBody.style.maxHeight = '0';
-            closingBody.style.overflow = 'hidden';
-        });
+
+        /* Cerrar todos los demás */
+        var rows = accordion.querySelectorAll('.acc-row.acc-open');
+        for (var i = 0; i < rows.length; i++) { closeRow(rows[i]); }
+
+        /* Sin overlay — expandir en el lugar */
         var tabId = row.getAttribute('data-tab-target');
         var body  = row.querySelector('.acc-body');
-        mountTabInAccBody(tabId, body);
+        if (!body) return;
+
+        mountTab(tabId, body);
         row.classList.add('acc-open');
-        row.classList.add('acc-overlay');
-        accordion.classList.add('has-overlay');
-        row.querySelector('.acc-trigger').setAttribute('aria-expanded', 'true');
-        // Permitir que el browser calcule el scrollHeight tras el mount
-        body.style.maxHeight = 'none';
+        /* NO añadimos acc-overlay — el CSS lo anuló pero por si acaso */
+        var trig = row.querySelector('.acc-trigger');
+        if (trig) trig.setAttribute('aria-expanded', 'true');
+
+        /* Notificar a script.js si existe switchTab */
+        if (typeof switchTab === 'function') { switchTab(tabId); }
+
+        /* Expandir: medir scrollHeight con un truco de visibilidad */
         body.style.overflow  = 'hidden';
-        if (typeof switchTab === 'function') switchTab(tabId);
-        // Aplicar altura relativa al viewport para que el body sea desplazable en móvil
-        requestAnimationFrame(function () {
-            var headerEl  = document.querySelector('.admin-header');
-            var triggerEl = row.querySelector('.acc-trigger');
-            var headerH   = headerEl  ? headerEl.offsetHeight  : 70;
-            var triggerH  = triggerEl ? triggerEl.offsetHeight : 60;
-            // dvh con fallback a vh para iOS < 15
-            var vh = window.innerHeight || document.documentElement.clientHeight;
-            var available = vh - headerH - triggerH - 48; // 48 px de margen
-            body.style.maxHeight              = Math.max(available, 200) + 'px';
-            body.style.overflowY              = 'auto';
-            body.style.overflowX              = 'hidden';
-            body.style.webkitOverflowScrolling = 'touch';
+        body.style.maxHeight = '0';
+        /* Forzar reflow para que la transición CSS arranque */
+        void body.offsetHeight;
+
+        /* Calcular altura real tras mount */
+        (window.requestAnimationFrame || function(cb){ setTimeout(cb, 16); })(function () {
+            /* Medimos sin mostrar: posición absoluta fuera del flujo */
+            body.style.position   = 'absolute';
+            body.style.visibility = 'hidden';
+            body.style.maxHeight  = 'none';
+            var realH = body.scrollHeight;
+            body.style.position   = '';
+            body.style.visibility = '';
+            body.style.maxHeight  = '0';
+            void body.offsetHeight; /* reflow */
+
+            /* Usar realH + 40px de colchón; mínimo 200px */
+            var targetH = Math.max(realH + 40, 200);
+            body.style.maxHeight = targetH + 'px';
+            body.style.overflow  = 'hidden'; /* transición CSS activa */
+
+            /* Tras animación, permitir scroll interno */
+            setTimeout(function () {
+                if (row.classList.contains('acc-open')) {
+                    body.style.overflow            = 'auto';
+                    body.style.overflowX           = 'hidden';
+                    body.style.webkitOverflowScrolling = 'touch';
+                }
+            }, 300); /* igual al duration de la transición CSS */
+
+            /* Scroll suave al inicio del row */
+            setTimeout(function () {
+                var panelContent = document.querySelector('.admin-panel-content');
+                if (panelContent) {
+                    var rowTop = row.offsetTop || 0;
+                    try {
+                        panelContent.scrollTo({ top: rowTop - 8, behavior: 'smooth' });
+                    } catch(e) {
+                        panelContent.scrollTop = rowTop - 8;
+                    }
+                }
+            }, 80);
         });
-        // Scroll suave al inicio del row
-        setTimeout(function () {
-            row.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }, 50);
     }
 
-    function syncAccordionWithActiveTab() {
-        var activeTab = document.querySelector('.admin-tab.active');
-        if (!activeTab) return;
-        var row = document.querySelector('.acc-row[data-tab-target="' + activeTab.id + '"]');
-        if (row && !row.classList.contains('acc-open')) openAccordionRow(row);
+    /* ── Sincronizar acordeón con el tab activo ── */
+    function syncWithActiveTab() {
+        var active = document.querySelector('.admin-tab.active');
+        if (!active) return;
+        var row = document.querySelector('.acc-row[data-tab-target="' + active.id + '"]');
+        if (row && !row.classList.contains('acc-open')) openRow(row);
     }
 
-    function handleResize() {
-        if (!isMobile()) unmountAllFromAcc();
-        else syncAccordionWithActiveTab();
+    /* ── Resize ── */
+    function onResize() {
+        if (!isMobile()) unmountAll();
+        else syncWithActiveTab();
     }
 
+    /* ── Init ── */
     document.addEventListener('DOMContentLoaded', function () {
         var accordion = document.getElementById('adminAccordion');
         if (!accordion) return;
 
+        /* Delegación de click en los triggers */
         accordion.addEventListener('click', function (e) {
-            var trigger = e.target.closest('.acc-trigger');
+            var trigger = e.target.closest ? e.target.closest('.acc-trigger')
+                        : (function(el){
+                            while(el){ if(el.classList && el.classList.contains('acc-trigger')) return el; el=el.parentElement; }
+                            return null;
+                          })(e.target);
             if (!trigger) return;
-            var row = trigger.closest('.acc-row');
+            var row = trigger.closest ? trigger.closest('.acc-row')
+                    : (function(el){
+                        while(el){ if(el.classList && el.classList.contains('acc-row')) return el; el=el.parentElement; }
+                        return null;
+                      })(trigger);
             if (!row) return;
+
             if (row.classList.contains('acc-open')) {
-                row.classList.remove('acc-open');
-                row.classList.remove('acc-overlay');
-                accordion.classList.remove('has-overlay');
-                trigger.setAttribute('aria-expanded', 'false');
-                row.querySelector('.acc-body').style.maxHeight = '0';
+                closeRow(row);
             } else {
-                openAccordionRow(row);
+                openRow(row);
             }
         });
 
+        /* Observar cuando el panel se hace visible */
         var adminPanel = document.getElementById('adminPanel');
-        if (adminPanel) {
-            new MutationObserver(function (mutations) {
-                mutations.forEach(function (m) {
-                    if (m.target.classList.contains('visible') && isMobile())
-                        setTimeout(syncAccordionWithActiveTab, 80);
-                });
+        if (adminPanel && window.MutationObserver) {
+            new MutationObserver(function (muts) {
+                for (var i = 0; i < muts.length; i++) {
+                    if (muts[i].target.classList.contains('visible') && isMobile()) {
+                        setTimeout(syncWithActiveTab, 100);
+                        break;
+                    }
+                }
             }).observe(adminPanel, { attributes: true, attributeFilter: ['class'] });
         }
 
+        /* Resize con debounce */
         var resizeTimer;
         window.addEventListener('resize', function () {
             clearTimeout(resizeTimer);
-            resizeTimer = setTimeout(handleResize, 150);
+            resizeTimer = setTimeout(onResize, 200);
         });
     });
 })();
