@@ -2696,7 +2696,7 @@ function verificarOfertasYMostrarBanner() {
 
     if (ofertaDiaId) {
         targetId    = ofertaDiaId;
-        textoBanner = `${ofertaDiaTexto} <span class="flash-deal">VER AHORA →</span>`;
+        textoBanner = `<span class="flash-deal">${ofertaDiaTexto} · VER AHORA →</span>`;
     } else if (cdValido) {
         targetId    = cdObj.productId;
         textoBanner = `🔥 ${cdObj.texto || '¡Oferta especial!'} <span class="flash-deal">VER AHORA →</span>`;
