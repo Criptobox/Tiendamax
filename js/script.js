@@ -2423,6 +2423,17 @@ async function sincronizarTodoConGitHub() {
         mostrarNotificacion('🚀 Sincronizando tienda completa con GitHub...', 'info');
     }
 
+    // Construir config.json con tasa + oferta del día para que todos los clientes la vean
+    const _configSync = {
+        tasaMN:              parseFloat(localStorage.getItem('tasaMN') || '0') || undefined,
+        ofertaDiaId:         localStorage.getItem('ofertaDiaId') || undefined,
+        ofertaDiaTexto:      localStorage.getItem('ofertaDiaTexto') || undefined,
+        ofertaDiaActualizado: localStorage.getItem('ofertaDiaId') ? new Date().toISOString() : undefined,
+        actualizado:         new Date().toISOString(),
+    };
+    // Limpiar claves undefined
+    Object.keys(_configSync).forEach(k => _configSync[k] === undefined && delete _configSync[k]);
+
     const archivos = [
         { path: 'productos.json',              data: productos },
         { path: 'categorias.json',             data: { nombres: categorias, iconos: iconosPersonalizados } },
@@ -2432,12 +2443,13 @@ async function sincronizarTodoConGitHub() {
         { path: 'banners.json',                data: JSON.parse(localStorage.getItem('heroBanners') || '[]') },
         { path: 'comisiones.json',             data: JSON.parse(localStorage.getItem('comisiones') || '{}') },
         { path: 'ventas_historial.json',       data: JSON.parse(localStorage.getItem('registroVentas') || '[]') },
+        { path: 'config.json',                 data: _configSync },
     ];
 
-    // Si hay productos modificados: subir solo productos.json + comisiones.json + ventas_historial.json
+    // Si hay productos modificados: subir solo productos.json + comisiones.json + ventas_historial.json + config.json
     // Si no hay delta: subir todo
     const archivosFiltrados = hayDelta
-        ? archivos.filter(a => a.path === 'productos.json' || a.path === 'comisiones.json' || a.path === 'ventas_historial.json')
+        ? archivos.filter(a => a.path === 'productos.json' || a.path === 'comisiones.json' || a.path === 'ventas_historial.json' || a.path === 'config.json')
         : archivos;
 
     let ok = 0, errors = [];
@@ -5437,6 +5449,7 @@ async function cargarTasaDesdeGitHub() {
             if (cfg.tasaMN && parseFloat(cfg.tasaMN) > 0) {
                 localStorage.setItem('tasaMN', String(cfg.tasaMN));
                 if (_monedaActual === 'MN') actualizarPreciosMostrados();
+                if (typeof actualizarBurbujaTasa === 'function') actualizarBurbujaTasa();
                 console.log(`✅ Tasa MN cargada desde GitHub: ${cfg.tasaMN} MN/USD`);
             }
             // Cargar oferta del día
@@ -5494,6 +5507,59 @@ function actualizarPreciosMostrados() {
     }
 }
 
+// ── BURBUJA TASA DEL DÍA ──────────────────────────────────────────
+// Muestra una burbuja flotante visible para TODOS con la tasa actual
+function actualizarBurbujaTasa() {
+    const tasa = getTasaMN();
+    let burbuja = document.getElementById('tasaBurbuja');
+    if (!burbuja) {
+        burbuja = document.createElement('div');
+        burbuja.id = 'tasaBurbuja';
+        burbuja.style.cssText = [
+            'position:fixed',
+            'bottom:80px',
+            'right:16px',
+            'z-index:9990',
+            'background:linear-gradient(135deg,#C9A96E,#E8C88A)',
+            'color:#0D0D0D',
+            'font-weight:800',
+            'font-size:12px',
+            'padding:7px 13px',
+            'border-radius:999px',
+            'box-shadow:0 3px 14px rgba(0,0,0,0.35)',
+            'cursor:default',
+            'user-select:none',
+            'display:flex',
+            'align-items:center',
+            'gap:5px',
+            'transition:opacity 0.3s,transform 0.3s',
+            'animation:tasaBurbujaIn 0.4s cubic-bezier(.34,1.56,.64,1) both',
+        ].join(';');
+        burbuja.title = 'Tasa de cambio del día (incluye margen)';
+        // Inyectar keyframe solo una vez
+        if (!document.getElementById('tasaBurbujaStyle')) {
+            const s = document.createElement('style');
+            s.id = 'tasaBurbujaStyle';
+            s.textContent = `
+                @keyframes tasaBurbujaIn {
+                    from { opacity:0; transform:scale(0.6) translateY(12px); }
+                    to   { opacity:1; transform:scale(1) translateY(0); }
+                }
+                #tasaBurbuja:hover { transform:scale(1.06); }
+                @media(max-width:480px){ #tasaBurbuja { bottom:70px; right:10px; font-size:11px; padding:6px 11px; } }
+            `;
+            document.head.appendChild(s);
+        }
+        document.body.appendChild(burbuja);
+    }
+    if (tasa > 0) {
+        burbuja.innerHTML = `💱 1 USD = <strong>${tasa} MN</strong>`;
+        burbuja.style.display = 'flex';
+    } else {
+        burbuja.style.display = 'none';
+    }
+}
+
 // Inicializar barra de moneda al cargar
 document.addEventListener('DOMContentLoaded', () => {
     const tasa = getTasaMN();
@@ -5505,6 +5571,8 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('curUSD')?.classList.remove('active');
         document.getElementById('curMN')?.classList.add('active');
     }
+    // Mostrar burbuja si ya hay tasa guardada localmente
+    actualizarBurbujaTasa();
 });
 
 // Exponer formatPrecio globalmente para uso en renderizado
@@ -5534,8 +5602,9 @@ async function guardarTasaMNAdmin() {
             : '✅ Guardado local. Configura GitHub para sincronizar con todos.';
         status.style.color = ok ? '#2ECC71' : '#C9A96E';
     }
-    // Actualizar precios en pantalla
+    // Actualizar precios en pantalla y burbuja de tasa
     if (_monedaActual === 'MN') actualizarPreciosMostrados();
+    if (typeof actualizarBurbujaTasa === 'function') actualizarBurbujaTasa();
 }
 
 // Cargar valor actual de tasa al abrir admin
