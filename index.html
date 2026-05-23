@@ -87,9 +87,12 @@
 </head>
 <body>
 
-    <!-- Banner de Urgencia (Se muestra dinámicamente si hay ofertas) -->
-    <div id="urgenciaBanner" class="urgencia-banner" style="display: none;">
-        🔥 ¡OFERTAS RELÁMPAGO DISPONIBLES! <span class="flash-deal">APROVECHA AHORA</span>
+    <!-- ═══ BANNER OFERTA PÍLDORA (reemplaza urgencia-banner) ═══ -->
+    <div id="ofertaPillBanner" class="hidden">
+        <div id="ofertaPill">
+            🔥🔥 <em>OFERTA RELÁMPAGO</em> 🔥🔥
+            <span class="oferta-pill-badge">VER AHORA →</span>
+        </div>
     </div>
 
     <!-- Header -->
@@ -669,32 +672,90 @@
         });
     })();
     </script>
-    <!-- TASA NAV: actualiza el pill del header -->
+    <script src="js/script.js?v=12"></script>
+    <!-- ═══ CONTROL PÍLDORA OFERTA ═══ -->
     <script>
     (function() {
-        var _orig = window.actualizarBurbujaTasa;
+        function initOfertaPill() {
+            var banner  = document.getElementById('ofertaPillBanner');
+            var pill    = document.getElementById('ofertaPill');
+            var header  = document.querySelector('.header');
+            if (!banner || !pill) return;
+
+            function mostrar(texto, ofertaId) {
+                pill.innerHTML = '🔥🔥 <em>' + texto + '</em> 🔥🔥 <span class="oferta-pill-badge">VER AHORA →</span>';
+                banner.classList.remove('hidden');
+                if (header) { header.style.top = '44px'; header.classList.remove('no-banner'); }
+                pill.onclick = function() {
+                    if (ofertaId && typeof abrirDetalleProducto === 'function') {
+                        abrirDetalleProducto(Number(ofertaId));
+                    }
+                };
+            }
+
+            function ocultar() {
+                banner.classList.add('hidden');
+                if (header) { header.style.top = '0px'; header.classList.add('no-banner'); }
+            }
+
+            function check() {
+                var ofertaId   = localStorage.getItem('ofertaDiaId');
+                var ofertaTxt  = localStorage.getItem('ofertaDiaTexto') || 'OFERTA RELÁMPAGO';
+                // Limpiar emojis/texto extra del texto guardado para que quede limpio
+                var textoLimpio = ofertaTxt.replace(/[🔥💥⚡🏷️☀️]/gu, '').trim().toUpperCase() || 'OFERTA RELÁMPAGO';
+                if (ofertaId) {
+                    mostrar(textoLimpio, ofertaId);
+                } else {
+                    ocultar();
+                }
+            }
+
+            check();
+            // Re-verificar cuando cambia localStorage (el admin activa/desactiva la oferta)
+            window.addEventListener('storage', check);
+            // También re-verificar periódicamente por si se activa desde el mismo tab
+            setInterval(check, 3000);
+        }
+
+        document.addEventListener('DOMContentLoaded', initOfertaPill);
+        setTimeout(initOfertaPill, 800);
+    })();
+    </script>
+    <script>
+    (function() {
         function syncTasaNav() {
             var base = parseFloat(localStorage.getItem('tasaMN') || '0');
             var tasa = base > 0 ? base + 10 : 0;
             var pill = document.getElementById('tasaNavPill');
             var val  = document.getElementById('tasaNavVal');
-            if (!pill) return;
-            if (tasa > 0) {
-                if (val) val.textContent = tasa + ' CUP';
-                pill.style.display = 'flex';
-            } else {
-                pill.style.display = 'none';
+            if (pill) {
+                if (tasa > 0) {
+                    if (val) val.textContent = tasa + ' CUP';
+                    pill.style.display = 'flex';
+                } else {
+                    pill.style.display = 'none';
+                }
             }
-            // Ocultar la burbuja flotante (ya está en el nav)
-            var burbuja = document.getElementById('tasaBurbuja');
-            if (burbuja) burbuja.style.display = 'none';
+            // Ocultar siempre la burbuja flotante
+            var b = document.getElementById('tasaBurbuja');
+            if (b) b.style.cssText = 'display:none!important;visibility:hidden!important;';
         }
-        window.actualizarBurbujaTasa = function() { syncTasaNav(); };
+        // Sobreescribir la función original
+        window.actualizarBurbujaTasa = syncTasaNav;
+        // Ejecutar en múltiples momentos para garantizar que funcione
+        syncTasaNav();
         document.addEventListener('DOMContentLoaded', syncTasaNav);
+        window.addEventListener('load', syncTasaNav);
+        setTimeout(syncTasaNav, 500);
         setTimeout(syncTasaNav, 1500);
+        setTimeout(syncTasaNav, 3000);
+        // Observer para cuando el DOM cambie (por si script.js crea #tasaBurbuja tarde)
+        var obs = new MutationObserver(function() { syncTasaNav(); });
+        document.addEventListener('DOMContentLoaded', function() {
+            obs.observe(document.body, { childList: true, subtree: false });
+        });
     })();
     </script>
-    <script src="js/script.js?v=12"></script>
     <script src="js/share-patch.js?v=1"></script>
     <script src="js/subcategorias.js?v=9"></script>
     <script src="js/revolico_integration.js?v=9"></script>
