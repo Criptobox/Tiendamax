@@ -86,9 +86,10 @@ body {
 }
 
 @keyframes bannerSlide {
-    0%   { transform: translateX(-120px); }
-    50%  { transform: translateX(120px); }
-    100% { transform: translateX(-120px); }
+    0%   { transform: translateX(0); }
+    25%  { transform: translateX(120px); }
+    75%  { transform: translateX(-120px); }
+    100% { transform: translateX(0); }
 }
 
 .flash-deal {
@@ -4530,7 +4531,8 @@ a.whatsapp-group-btn:hover, .whatsapp-group-btn:hover {
     }
 }
 @keyframes bannerSlideMovil {
-    0%   { transform: translateX(-30px); }
-    50%  { transform: translateX(30px); }
-    100% { transform: translateX(-30px); }
+    0%   { transform: translateX(0); }
+    25%  { transform: translateX(30px); }
+    75%  { transform: translateX(-30px); }
+    100% { transform: translateX(0); }
 }
