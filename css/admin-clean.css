@@ -1024,3 +1024,124 @@ body.dark-mode .admin-qty-input {
     border-color: #333;
     color: #eee;
 }
+
+
+/* ════════════════════════════════════════════════════════════
+   DARK MODE UNIVERSAL — Admin panel
+   Aplica dentro del #adminPanel y del #loginModal
+   sin depender de body.dark-mode (que puede no estar activo)
+   ════════════════════════════════════════════════════════════ */
+
+/* ── Login modal ── */
+#loginModal .modal-content {
+    background: #141414 !important;
+    color: rgba(255,255,255,0.9) !important;
+}
+#loginModal .modal-content .form-group input,
+#loginModal .modal-content .form-group textarea,
+#loginModal .modal-content .form-group select {
+    background: #1e1e1e !important;
+    color: rgba(255,255,255,0.88) !important;
+    border-color: rgba(255,255,255,0.1) !important;
+}
+#loginModal .modal-content .form-group label {
+    color: rgba(255,255,255,0.6) !important;
+}
+#loginModal .modal-content form {
+    background: #141414 !important;
+}
+
+/* ── Admin panel: todos los inputs / selects / textareas ── */
+#adminPanel .form-group input,
+#adminPanel .form-group textarea,
+#adminPanel .form-group select,
+#adminPanel input[type="text"],
+#adminPanel input[type="number"],
+#adminPanel input[type="url"],
+#adminPanel input[type="email"],
+#adminPanel input[type="password"],
+#adminPanel input[type="file"],
+#adminPanel textarea,
+#adminPanel select {
+    background: #1e1e1e !important;
+    color: rgba(255,255,255,0.88) !important;
+    border-color: rgba(255,255,255,0.1) !important;
+}
+#adminPanel .form-group input::placeholder,
+#adminPanel .form-group textarea::placeholder {
+    color: rgba(255,255,255,0.25) !important;
+}
+
+/* ── Tarjetas de producto (fondo blanco → oscuro) ── */
+#adminPanel .admin-product-item,
+#adminPanel .product-item,
+#adminPanel .admin-product-list-item {
+    background: #1e1e1e !important;
+    border-color: rgba(255,255,255,0.08) !important;
+    color: rgba(255,255,255,0.85) !important;
+}
+#adminPanel .admin-product-item:hover,
+#adminPanel .admin-product-list-item:hover {
+    background: #252525 !important;
+}
+
+/* ── Chips y badges ── */
+#adminPanel .admin-chip {
+    background: #1e1e1e !important;
+    border-color: rgba(255,255,255,0.12) !important;
+    color: rgba(255,255,255,0.7) !important;
+}
+#adminPanel .admin-chip.active {
+    background: #2563eb !important;
+    color: #fff !important;
+}
+
+/* ── Listas de productos / paginación ── */
+#adminPanel .admin-product-list {
+    background: #141414 !important;
+    border-color: rgba(255,255,255,0.07) !important;
+}
+#adminPanel .admin-pagination button {
+    background: #1e1e1e !important;
+    border-color: rgba(255,255,255,0.1) !important;
+    color: rgba(255,255,255,0.7) !important;
+}
+#adminPanel .admin-pagination button:disabled {
+    background: #141414 !important;
+    color: rgba(255,255,255,0.25) !important;
+}
+
+/* ── Tablas ── */
+#adminPanel table,
+#adminPanel th,
+#adminPanel td {
+    background: #141414 !important;
+    border-color: rgba(255,255,255,0.07) !important;
+    color: rgba(255,255,255,0.8) !important;
+}
+#adminPanel tr:nth-child(even) td {
+    background: #1a1a1a !important;
+}
+
+/* ── Cajas de configuración ── */
+#adminPanel .admin-config-box {
+    background: #141414 !important;
+    border-color: rgba(255,255,255,0.08) !important;
+}
+#adminPanel .admin-hint,
+#adminPanel .admin-note,
+#adminPanel .admin-label {
+    color: rgba(255,255,255,0.45) !important;
+}
+
+/* ── Fondo de tarjetas similares en carrito ── */
+#adminPanel .cs-card,
+#adminPanel .pedido-card {
+    background: #1e1e1e !important;
+    border-color: rgba(255,255,255,0.08) !important;
+}
+
+/* ── Scrollbars del panel ── */
+#adminPanel ::-webkit-scrollbar { width: 4px; }
+#adminPanel ::-webkit-scrollbar-track { background: #0f0f0f; }
+#adminPanel ::-webkit-scrollbar-thumb { background: rgba(201,169,110,0.3); border-radius: 4px; }
