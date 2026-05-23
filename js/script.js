@@ -402,6 +402,39 @@ function guardarResena() {
     mostrarFormResena(); // cerrar form
     renderizarResenas(_detalleProductoActual.id);
     mostrarNotificacion('✅ ¡Reseña publicada!');
+
+    // Intentar subir la reseña a GitHub para que todos la vean
+    // (funciona si el dispositivo tiene credenciales de admin guardadas)
+    (async function subirResena() {
+        const user  = localStorage.getItem('githubUser');
+        const repo  = localStorage.getItem('githubRepo');
+        const token = localStorage.getItem('githubToken');
+        if (!user || !repo || !token) return; // sin credenciales: solo queda local
+        try {
+            // Leer productos.json actualizado desde GitHub para no sobrescribir cambios recientes
+            const url = 'https://raw.githubusercontent.com/' + user + '/' + repo + '/main/productos.json?_=' + Date.now();
+            const res = await fetch(url);
+            let prods = res.ok ? await res.json() : productos;
+            // Fusionar la reseña recién guardada
+            const idx = prods.findIndex(function(p){ return p.id === _detalleProductoActual.id; });
+            if (idx !== -1) {
+                if (!prods[idx].resenas) prods[idx].resenas = [];
+                // Evitar duplicados por fecha+autor
+                const yaExiste = prods[idx].resenas.some(function(r){
+                    return r.autor === nuevaResena.autor && r.fecha === nuevaResena.fecha;
+                });
+                if (!yaExiste) {
+                    prods[idx].resenas.unshift(nuevaResena);
+                    prods[idx].resenas = prods[idx].resenas.slice(0, 20);
+                }
+                await subirArchivoAGitHub(user, repo, token, 'productos.json', prods);
+                mostrarNotificacion('☁️ Reseña subida — visible para todos', 'success');
+                // Actualizar memoria local con el array de GitHub (tiene todas las reseñas)
+                productos = prods;
+                localStorage.setItem('productos', JSON.stringify(productos));
+            }
+        } catch(e) { /* sin internet o sin token: la reseña queda guardada localmente */ }
+    })();
 }
 
 function renderizarResenas(productoId) {
