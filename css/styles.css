@@ -75,47 +75,56 @@ body {
     100% { background-position: 200% center; }
 }
 
-/* ── Píldora naranja metálica animada ── */
-@keyframes metalShine {
-    0%   { background-position: 200% center; }
-    100% { background-position: -200% center; }
+/* ── Píldora naranja metálica con brillo animado ── */
+@keyframes shineSlide {
+    0%   { transform: translateX(-180%); }
+    100% { transform: translateX(180%); }
 }
 @keyframes pillPulse {
-    0%,100% { box-shadow: 0 3px 18px rgba(255,106,0,.45), 0 0 0 0 rgba(255,106,0,.0); }
-    50%      { box-shadow: 0 4px 24px rgba(255,106,0,.65), 0 0 0 4px rgba(255,106,0,.12); }
+    0%,100% { box-shadow: 0 3px 18px rgba(255,106,0,.4); }
+    50%      { box-shadow: 0 4px 28px rgba(255,106,0,.75), 0 0 0 4px rgba(255,106,0,.12); }
 }
 
 .flash-deal {
+    position: relative;
+    overflow: hidden;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 8px;
     width: calc(100% - 32px);
     max-width: 580px;
-    /* Gradiente metálico: naranja oscuro → brillo dorado → naranja → oscuro */
-    background: linear-gradient(
-        105deg,
-        #b84200 0%,
-        #ff6a00 20%,
-        #ffb347 38%,
-        #ff8c00 50%,
-        #ffb347 62%,
-        #ff6a00 80%,
-        #b84200 100%
-    );
-    background-size: 300% auto;
-    animation: metalShine 3.5s ease-in-out infinite, pillPulse 3.5s ease-in-out infinite;
+    background: linear-gradient(105deg, #b84200 0%, #ff6a00 35%, #ff8c00 50%, #ff6a00 65%, #b84200 100%);
     color: #fff;
     font-weight: 900;
     font-size: 12px;
     letter-spacing: 2px;
     text-transform: uppercase;
-    text-shadow: 0 1px 3px rgba(0,0,0,.35);
+    text-shadow: 0 1px 3px rgba(0,0,0,.4);
     padding: 9px 24px;
     border-radius: 999px;
-    border: 1px solid rgba(255,200,100,.3);
+    border: 1px solid rgba(255,200,100,.25);
     cursor: pointer;
     white-space: nowrap;
+    animation: pillPulse 2.5s ease-in-out infinite;
+}
+
+/* Brillo que viaja de izquierda a derecha */
+.flash-deal::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(255,220,150,.35) 50%,
+        transparent 100%
+    );
+    animation: shineSlide 2.2s ease-in-out infinite;
+    pointer-events: none;
+    border-radius: inherit;
 }
 
 /* ===== HEADER ===== */
