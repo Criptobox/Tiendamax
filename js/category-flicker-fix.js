@@ -37,131 +37,89 @@
   /**
    * Función helper para obtener ícono de categoría
    */
-  function _icono(cat) {
-    if (typeof obtenerIconoCategoria === 'function') return obtenerIconoCategoria(cat);
-    // Fallback por si no existe
-    var defaultIcons = {
-      'WIFI': '📡', 'ENERGIA': '⚡', 'CELULARES': '📱', 'UTILES': '🔧',
-      'CARROS': '🚗', 'ROPA': '👗', 'LENCERIA': '👙', 'SEGURIDAD': '🔒',
-      'HOGAR': '🏠', 'JUEGOS': '🎮', 'MOTOS': '🛵'
-    };
-    if (typeof iconosPersonalizados !== 'undefined' && iconosPersonalizados[cat]) {
-      return iconosPersonalizados[cat];
+  function _getIcon(catName) {
+    if (typeof o_categorias_iconos !== 'undefined' && o_categorias_iconos[catName]) {
+      return o_categorias_iconos[catName];
     }
-    return defaultIcons[cat] || '📦';
+    return '📦'; // Default
   }
 
   /**
-   * Renderiza las categorías SIN parpadeo.
-   * Solo actualiza las cards que cambiaron.
+   * Renderizado inteligente sin parpadeos (Shadow DOM / Diffing conceptual)
    */
   function renderizarCategoriasSinFlicker() {
     var grid = document.getElementById('categoriasGrid');
     if (!grid) return;
 
-    var cats = (typeof categorias !== 'undefined') ? categorias : [];
-    var prods = (typeof productos !== 'undefined') ? productos : [];
+    // Obtener datos globales (asumiendo que script.js los expone)
+    var prods = window.productos || [];
+    var cats = window.categorias || [];
 
-    var key = _renderKey(prods, cats);
+    if (cats.length === 0) return;
 
-    // Si nada cambió, no hacer nada
-    if (key === _lastRenderKey && grid.children.length > 0) return;
-    _lastRenderKey = key;
+    // Verificar si el contenido real cambió desde la última vez
+    var currentKey = _renderKey(prods, cats);
+    if (_lastRenderKey === currentKey && grid.children.length > 0) {
+      // Los datos son idénticos, no destruimos nada para evitar flicker
+      return;
+    }
+    _lastRenderKey = currentKey;
 
-    var totalProductos = prods.length;
+    // Clonar el contenedor actual para armar el nuevo diseño en memoria (Offline)
+    var fragment = document.createDocumentFragment();
 
-    // Construir la lista de datos esperados
-    var items = [{ icon: '🛍️', name: 'Todos', count: totalProductos, special: true }];
+    // 1. Añadir botón "TODOS" siempre al inicio
+    var totalProds = prods.length;
+    var todosCard = document.createElement('div');
+    todosCard.className = 'categoria-card visible'; // Forzar visible de inmediato
+    todosCard.setAttribute('data-action', 'filtrarCategoria');
+    todosCard.setAttribute('data-arg', 'Todas');
+    todosCard.innerHTML = `
+      <div class="categoria-icono">🛍️</div>
+      <div class="categoria-info">
+        <h3>TODOS</h3>
+        <p><span style="color: var(--orange, #ff6a00); font-weight: 500; font-size: 0.9em; opacity: 0.95;">${totalProds} ${totalProds === 1 ? 'producto' : 'productos'}</span></p>
+      </div>
+    `;
+    fragment.appendChild(todosCard);
+
+    // 2. Añadir las categorías dinámicas del JSON
     cats.forEach(function(cat) {
       var count = prods.filter(function(p) { return p.categoria === cat; }).length;
-      items.push({ icon: _icono(cat), name: cat, count: count, special: false });
+      var icon = _getIcon(cat);
+
+      var card = document.createElement('div');
+      card.className = 'categoria-card visible'; // Forzar visible de inmediato
+      card.setAttribute('data-action', 'filtrarCategoria');
+      card.setAttribute('data-arg', cat);
+
+      // Fix render color naranja premium en la cantidad de productos
+      var countText = '<span style="color: var(--orange, #ff6a00); font-weight: 500; font-size: 0.9em; opacity: 0.95;">' + count + ' ' + (count === 1 ? 'producto' : 'productos') + '</span>';
+      
+      // Manejo sutil para la sección próximamente
+      if (cat.toUpperCase() === 'LENCERÍA' || cat.toUpperCase() === 'LENCERIA') {
+         countText = '<span style="font-size:0.85em; opacity:0.7;"><i class="far fa-clock"></i> Próximamente</span>';
+      }
+
+      card.innerHTML = `
+        <div class="categoria-icono">${icon}</div>
+        <div class="categoria-info">
+          <h3>${cat.toUpperCase()}</h3>
+          <p>${countText}</p>
+        </div>
+      `;
+      fragment.appendChild(card);
     });
 
-    // Si el grid ya tiene el número correcto de cards, actualizarlas in-place
-    if (grid.children.length === items.length) {
-      var changed = false;
-      for (var i = 0; i < items.length; i++) {
-        var card = grid.children[i];
-        var item = items[i];
-
-        var iconEl = card.querySelector('.cat-icon');
-        var nameEl = card.querySelector('.cat-name');
-        var countEl = card.querySelector('.cat-count');
-
-        if (iconEl && iconEl.textContent.trim() !== item.icon) {
-          iconEl.textContent = item.icon;
-          changed = true;
-        }
-        if (nameEl && nameEl.textContent.trim() !== item.name) {
-          nameEl.textContent = item.name;
-          changed = true;
-        }
-        var countText = item.count === 0
-          ? 'Próximamente'
-          : item.count + ' producto' + (item.count !== 1 ? 's' : '');
-        if (countEl) {
-          var currentText = countEl.textContent.trim();
-          if (currentText !== countText && currentText !== '🕐 ' + countText) {
-            countEl.textContent = countText;
-            if (item.count === 0) {
-              countEl.classList.add('proximamente');
-            } else {
-              countEl.classList.remove('proximamente');
-            }
-            changed = true;
-          }
-        }
-
-        // Clase especial para "Todos"
-        if (item.special) {
-          card.classList.add('todos-card');
-        }
-      }
-      // Si nada cambió realmente, salir sin tocar el DOM
-      if (!changed) return;
-    } else {
-      // Número de cards cambió, reconstruir (pero SIN innerHTML = '')
-      // Crear cards nuevas
-      var fragment = document.createDocumentFragment();
-      items.forEach(function(item) {
-        var card = document.createElement('div');
-        card.className = 'categoria-card' + (item.special ? ' todos-card' : '');
-        card.innerHTML = '<span class="cat-icon">' + item.icon + '</span>'
-          + '<span class="cat-name">' + item.name + '</span>'
-          + '<span class="cat-count' + (item.count === 0 ? ' proximamente' : '') + '">'
-          + (item.count === 0 ? 'Próximamente' : item.count + ' producto' + (item.count !== 1 ? 's' : ''))
-          + '</span>';
-        card.onclick = function() {
-          if (typeof mostrarVistaCategoria === 'function') {
-            mostrarVistaCategoria(item.name === 'Todos' ? 'Todas' : item.name);
-          }
-        };
-        fragment.appendChild(card);
-      });
-
-      // Limpiar y agregar de una vez (un solo reflow)
-      while (grid.firstChild) grid.removeChild(grid.firstChild);
-      grid.appendChild(fragment);
-
-      // Marcar como visibles inmediatamente (sin esperar observer)
-      requestAnimationFrame(function() {
-        var cards = grid.querySelectorAll('.categoria-card');
-        for (var i = 0; i < cards.length; i++) {
-          cards[i].classList.add('visible');
-        }
-      });
-    }
-
-    // Disparar animaciones CSS
-    if (!grid.classList.contains('tm-rendered')) {
-      requestAnimationFrame(function() { grid.classList.add('tm-rendered'); });
-    }
+    // 3. Reemplazo atómico en el DOM (minimiza drásticamente el parpadeo blanco)
+    grid.innerHTML = '';
+    grid.appendChild(fragment);
   }
 
-  // ── Reemplazar funciones globales ──
+  // Sobrescribir las funciones globales antiguas para redirigirlas al Fix
   window.renderizarCategoriasHome = renderizarCategoriasSinFlicker;
   window.renderizarCategoriasHomeInstant = renderizarCategoriasSinFlicker;
-  window._initCategorias = renderizarCategoriasSinFlicker;
+  window.initCategorias = renderizarCategoriasSinFlicker;
 
   // ── Ejecutar inmediatamente ──
   if (document.readyState !== 'loading') {
@@ -171,11 +129,9 @@
   }
 
   // ── Fix: evitar que initScrollAnimations ponga opacity:0 en categorías ──
-  // Interceptar para que las categoría-card siempre empiecen visibles
   var _origInitScroll = (typeof initScrollAnimations === 'function') ? initScrollAnimations : null;
 
   window.initScrollAnimations = function() {
-    // Ejecutar original si existe
     if (_origInitScroll) _origInitScroll();
 
     // Forzar visibilidad inmediata en categorías
@@ -201,5 +157,5 @@
     }
   };
 
-  console.log('✅ Fix parpadeo categorías activado');
+  console.log('✅ Fix parpadeo categorías premium inyectado perfectamente.');
 })();
