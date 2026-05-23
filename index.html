@@ -95,6 +95,20 @@
     <!-- Script inline: muestra el banner de oferta sin esperar a script.js -->
     <script>
     (function(){
+        function animarBanner(pill) {
+            var distancia = window.innerWidth >= 768 ? 160 : 28;
+            var inicio = Date.now();
+            var duracion = 3000;
+            function paso() {
+                var t = ((Date.now() - inicio) % duracion) / duracion;
+                var angulo = t * 2 * Math.PI;
+                var x = Math.sin(angulo) * distancia;
+                pill.style.transform = 'translateX(' + x + 'px)';
+                requestAnimationFrame(paso);
+            }
+            requestAnimationFrame(paso);
+        }
+
         function mostrarBannerOferta(id, texto) {
             var banner = document.getElementById('urgenciaBanner');
             if (!banner) return;
@@ -102,8 +116,15 @@
             banner.innerHTML = '<span class="flash-deal">' + t + ' · VER AHORA →</span>';
             banner.style.display = 'block';
             banner.style.cursor  = 'pointer';
+            banner.style.overflow = 'visible';
+            banner.style.justifyContent = 'center';
+            banner.style.display = 'flex';
+            var pill = banner.querySelector('.flash-deal');
+            if (pill) {
+                pill.style.cssText += ';animation: pillPulse 2.5s ease-in-out infinite !important;transform-origin: center center !important;';
+                animarBanner(pill);
+            }
             banner.onclick = function() {
-                // script.js ya habrá cargado para cuando el usuario haga click
                 if (typeof abrirDetalleProducto === 'function') {
                     abrirDetalleProducto(Number(id));
                 }
