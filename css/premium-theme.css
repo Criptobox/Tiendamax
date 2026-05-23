@@ -33,7 +33,7 @@ html body .urgencia-banner {
 html body .flash-deal {
     /* Fondo estático — la animación va en ::before para evitar conflicto con !important */
     background: linear-gradient(105deg, #b84200 0%, #ff6a00 35%, #ff8c00 50%, #ff6a00 65%, #b84200 100%) !important;
-    animation: pillPulse 2.5s ease-in-out infinite !important;
+    animation: pillPulse 2.5s ease-in-out infinite, bannerSlide 3s ease-in-out infinite !important;
     color: #fff !important;
     border: 1px solid rgba(255,200,100,.25) !important;
     border-radius: 999px !important;
