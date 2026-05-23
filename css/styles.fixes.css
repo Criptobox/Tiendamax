@@ -1714,3 +1714,27 @@ html body .hero-banner-slide img {
         border-radius: 16px !important;
     }
 }
+
+
+/* =====================================================================
+   FIX 2: ESQUINAS CUADRADAS DEL CONTENEDOR DEL HERO
+   ---------------------------------------------------------------------
+   .hero-image tiene fondo oscuro (gradiente charcoal→graphite) y un
+   marco dorado (::after con border-radius:inherit), pero NO tenía
+   border-radius, así que las esquinas superiores se veían cuadradas
+   detrás del banner. Aquí se redondea el contenedor para que tanto el
+   fondo como el marco dorado queden redondeados.
+   ===================================================================== */
+html body .hero-image,
+html body #heroImageContainer {
+    border-radius: 18px !important;
+    overflow: hidden !important;
+}
+
+@media (max-width: 768px) {
+    html body .hero-image,
+    html body #heroImageContainer {
+        border-radius: 16px !important;
+        overflow: hidden !important;
+    }
+}
