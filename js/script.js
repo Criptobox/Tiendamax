@@ -5429,7 +5429,7 @@ async function guardarTasaEnGitHub(tasaBase) {
     const token = localStorage.getItem('githubToken');
     if (!user || !repo || !token) return false;
     try {
-        // ⚠️ Leer config existente antes de escribir para no borrar ofertaDiaId ni otros campos
+        // Leer config existente antes de escribir para no borrar ofertaDiaId ni otros campos
         const existing = await fetch(
             `https://raw.githubusercontent.com/${user}/${repo}/main/config.json?_=${Date.now()}`
         ).then(r => r.ok ? r.json() : {}).catch(() => ({}));
@@ -5461,8 +5461,10 @@ async function cargarTasaDesdeGitHub() {
             if (cfg.ofertaDiaId) {
                 localStorage.setItem('ofertaDiaId', String(cfg.ofertaDiaId));
                 if (cfg.ofertaDiaTexto) localStorage.setItem('ofertaDiaTexto', cfg.ofertaDiaTexto);
-                verificarOfertasYMostrarBanner();
             }
+            // Siempre verificar el banner (aunque GitHub no tenga ofertaDiaId,
+            // puede haberlo en localStorage de sesiones anteriores)
+            verificarOfertasYMostrarBanner();
         }
     } catch(e) {}
 }
@@ -5564,36 +5566,16 @@ function actualizarBurbujaTasa() {
         burbuja.style.display = 'none';
     }
 
-    // ── Actualizar también el botón de moneda del navbar (creado por event-delegation.js) ──
-    // Busca por ID, por texto o por atributo para máxima compatibilidad
-    _actualizarNavbarTasa(tasa);
-}
-
-function _actualizarNavbarTasa(tasa) {
-    if (!tasa || tasa <= 0) return;
-    const texto = tasa + ' MN';
-
-    // 1. Por IDs conocidos
-    ['curMN', 'navTasaBtn', 'monedaBtn', 'tasaNavLabel', 'navMoneda'].forEach(function(id) {
-        const el = document.getElementById(id);
-        if (el && (el.textContent.includes('--') || el.textContent.trim() === '')) {
-            el.textContent = texto;
+    // Actualizar también la barra de moneda del navbar
+    const curBar = document.getElementById('currencyBar');
+    const curMNBtn = document.getElementById('curMN');
+    const tasaLabel = document.getElementById('tasaLabel');
+    if (curBar && tasa > 0) {
+        curBar.style.display = 'flex';
+        if (curMNBtn) curMNBtn.textContent = tasa + ' MN';
+        if (tasaLabel && _monedaActual === 'MN') {
+            tasaLabel.textContent = 'Tasa: 1 USD = ' + tasa + ' MN';
         }
-    });
-
-    // 2. Por data-attr (event-delegation.js suele usar data-action)
-    document.querySelectorAll('[data-tasa],[data-moneda-display]').forEach(function(el) {
-        el.textContent = texto;
-    });
-
-    // 3. Buscar cualquier botón del header que tenga "--" y "MN"
-    const headerArea = document.querySelector('header, .navbar, .site-header, .main-header, [class*="header"]');
-    if (headerArea) {
-        headerArea.querySelectorAll('button, span, div').forEach(function(el) {
-            if (el.children.length === 0 && el.textContent.includes('--') && el.textContent.includes('MN')) {
-                el.textContent = texto;
-            }
-        });
     }
 }
 
@@ -5618,15 +5600,6 @@ window.tmMonedaActual = () => _monedaActual;
 
 // Cargar tasa actualizada desde GitHub al iniciar
 cargarTasaDesdeGitHub();
-
-// Reintentar actualizar el navbar una vez que event-delegation.js (deferred) haya corrido
-window.addEventListener('load', function() {
-    // 'load' dispara DESPUÉS de que los scripts deferred terminan
-    var tasa = getTasaMN();
-    actualizarBurbujaTasa();
-    _actualizarNavbarTasa(tasa);
-    verificarOfertasYMostrarBanner();
-});
 
 // Guardar tasa desde panel admin → localStorage + GitHub
 async function guardarTasaMNAdmin() {
