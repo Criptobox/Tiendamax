@@ -1,8 +1,8 @@
 {
   "WIFI": [],
-  "ENERGIA": [],
+  "ENERGÍA": [],
   "CELULARES": [],
-  "UTILES": [],
+  "ÚTILES": [],
   "CARROS": [
     "FILTROS",
     "LUBRICANTES",
@@ -12,7 +12,7 @@
     "HOMBRE",
     "MUJER"
   ],
-  "LENCERIA": [],
+  "LENCERÍA": [],
   "SEGURIDAD": [],
   "HOGAR": [
     "DECORACION",
