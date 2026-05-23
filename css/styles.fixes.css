@@ -1684,3 +1684,33 @@ body.dark-mode .precio-tachado { color: #666; }
     opacity: 1 !important;
     transform: none !important;
 }
+
+
+/* =====================================================================
+   FIX: BORDES REDONDEADOS DEL BANNER DEL HERO (slider patrocinado)
+   ---------------------------------------------------------------------
+   En móvil styles.banner.fix.css forzaba border-radius:0, dejando el
+   banner cuadrado. Aquí se redondean el contenedor, cada slide y la
+   imagen para que combine con el diseño premium del resto de tarjetas.
+   ===================================================================== */
+html body #heroBannerSlider,
+html body .hero-banner-slider {
+    border-radius: 18px !important;
+    overflow: hidden !important;
+}
+html body .hero-banner-slide,
+html body .hero-banner-slide img {
+    border-radius: 18px !important;
+}
+
+@media (max-width: 768px) {
+    html body #heroBannerSlider,
+    html body .hero-banner-slider {
+        border-radius: 16px !important;
+        overflow: hidden !important;
+    }
+    html body .hero-banner-slide,
+    html body .hero-banner-slide img {
+        border-radius: 16px !important;
+    }
+}
