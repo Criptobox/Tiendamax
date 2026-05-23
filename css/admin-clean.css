@@ -389,56 +389,42 @@ body.dark-mode .admin-product-item {
         filter: blur(1px);
     }
 
-    /* La fila activa se sobrepone con fondo sólido */
+    /* La fila activa — se expande en su lugar, sin sticky ni overlay */
     .acc-row.acc-overlay {
-        position: sticky;
-        top: 0;
-        z-index: 50;
+        position: static;           /* sin sticky — evita conflictos de scroll */
+        overflow: visible;          /* anula el overflow:hidden de admin.premium.css */
+        z-index: auto;
         background: #0f0f0f;
         border-color: rgba(201,169,110,0.5);
-        box-shadow: 0 12px 40px rgba(0,0,0,0.6);
+        box-shadow: 0 4px 20px rgba(0,0,0,0.4);
         border-radius: 16px;
         margin-bottom: 14px;
-        transform: scale(1.01);
-        transition: box-shadow 0.3s ease, transform 0.3s ease;
+        transform: none;
     }
 
-    /* Header de la píldora activa — siempre visible arriba */
+    /* Trigger sin sticky — scroll del acordeón lleva al trigger naturalmente */
     .acc-row.acc-overlay .acc-trigger {
-        position: sticky;
-        top: 0;
-        z-index: 51;
+        position: relative;
+        z-index: auto;
         background: #0f0f0f;
         border-bottom: 1px solid rgba(201,169,110,0.25);
     }
 
-    /* Body expandible con scroll propio si es muy largo */
+    /* Body: sin max-height, sin overflow propio — el acordeón hace el scroll */
     .acc-row.acc-overlay .acc-body {
         position: relative;
-        z-index: 49;
-        max-height: 78vh !important;
-        overflow-y: auto;
-        -webkit-overflow-scrolling: touch;
+        z-index: auto;
+        max-height: none !important;  /* sin límite: el contenido se muestra completo */
+        overflow: visible !important;  /* el scroll lo maneja .admin-accordion */
         background: #111;
         border-radius: 0 0 14px 14px;
-        padding-bottom: 20px;
+        padding-bottom: 24px;
     }
 
-    /* Botón flotante para cerrar la píldora (aparece solo en overlay) */
+    /* Eliminar el botón "✕ Cerrar" del pseudo-elemento */
     .acc-row.acc-overlay::after {
-        content: '✕ Cerrar';
-        display: block;
-        position: sticky;
-        bottom: 0;
-        text-align: center;
-        padding: 12px;
-        font-size: 13px;
-        font-weight: 700;
-        color: rgba(255,255,255,0.6);
-        background: linear-gradient(to top, #111 60%, transparent);
-        cursor: pointer;
-        z-index: 52;
-        pointer-events: none; /* se cierra tocando el trigger otra vez */
+        display: none;
+        content: none;
     }
 }
 
