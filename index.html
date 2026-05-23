@@ -99,7 +99,7 @@
             var banner = document.getElementById('urgenciaBanner');
             if (!banner) return;
             var t = texto || '🔥 OFERTA DEL DÍA';
-            banner.innerHTML = t + ' <span class="flash-deal">VER AHORA →</span>';
+            banner.innerHTML = '<span class="flash-deal">' + t + ' · VER AHORA →</span>';
             banner.style.display = 'block';
             banner.style.cursor  = 'pointer';
             banner.onclick = function() {
