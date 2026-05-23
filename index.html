@@ -124,6 +124,11 @@
                     <svg id="heartHeaderIcon" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
                     <span class="heart-count" id="heartCount" style="display:none;">0</span>
                 </button>
+                <!-- TASA USD — visible en móvil y escritorio -->
+                <div id="tasaNavPill" class="tasa-nav-pill" style="display:none;">
+                    <span class="tasa-flag">🇨🇺</span>
+                    <span id="tasaNavVal" class="tasa-nav-val">-- CUP</span>
+                </div>
                 <button data-action="abrirMenuMovil" type="button" class="hamburger-btn" id="hamburgerBtn" aria-label="Abrir menú">
                     <span></span><span></span><span></span>
                 </button>
@@ -662,6 +667,31 @@
             el.style.setProperty('--tm-delay', Math.min(idx, 7) * 0.09 + 's');
             observer.observe(el);
         });
+    })();
+    </script>
+    <!-- TASA NAV: actualiza el pill del header -->
+    <script>
+    (function() {
+        var _orig = window.actualizarBurbujaTasa;
+        function syncTasaNav() {
+            var base = parseFloat(localStorage.getItem('tasaMN') || '0');
+            var tasa = base > 0 ? base + 10 : 0;
+            var pill = document.getElementById('tasaNavPill');
+            var val  = document.getElementById('tasaNavVal');
+            if (!pill) return;
+            if (tasa > 0) {
+                if (val) val.textContent = tasa + ' CUP';
+                pill.style.display = 'flex';
+            } else {
+                pill.style.display = 'none';
+            }
+            // Ocultar la burbuja flotante (ya está en el nav)
+            var burbuja = document.getElementById('tasaBurbuja');
+            if (burbuja) burbuja.style.display = 'none';
+        }
+        window.actualizarBurbujaTasa = function() { syncTasaNav(); };
+        document.addEventListener('DOMContentLoaded', syncTasaNav);
+        setTimeout(syncTasaNav, 1500);
     })();
     </script>
     <script src="js/script.js?v=12"></script>
