@@ -1,0 +1,1020 @@
+/* ================================================================
+   TIENDAMAX — PREMIUM DARK OVERRIDE v2.0
+   Migra toda la paleta a fondo oscuro + acento naranja/rojo
+   Se carga DESPUÉS de todos los demás CSS para tener prioridad
+   ================================================================ */
+
+/* ── Google Fonts: añadimos Inter (body moderno) ── */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+/* ================================================================
+   1. VARIABLES GLOBALES — reemplaza la paleta oro/coral por naranja/rojo
+   ================================================================ */
+:root {
+  /* Nuevas variables del sistema premium oscuro */
+  --bg:          #0b0b0f;
+  --panel:       #12121a;
+  --panel-2:     #171722;
+  --line:        rgba(255,255,255,.08);
+  --orange:      #ff6a00;
+  --orange-2:    #ff3d00;
+  --text-light:  #f5f5f7;
+  --muted-new:   #a7a7b4;
+  --shadow-new:  0 20px 50px rgba(0,0,0,.38);
+  --radius-new:  22px;
+  --radius-sm:   16px;
+
+  /* Mapea las variables antiguas al nuevo sistema */
+  --gold:         #ff8a3d;
+  --gold-light:   #ffb07a;
+  --coral:        #ff6a00;
+  --coral-deep:   #ff3d00;
+  --obsidian:     #08080b;
+  --charcoal:     #0b0b0f;
+  --carbon:       #12121a;
+  --graphite:     #171722;
+  --cream:        #0b0b0f;
+  --text-primary: #f5f5f7;
+  --text-muted:   #a7a7b4;
+  --white:        #f5f5f7;
+  --success:      #25d366;
+  --danger:       #ff6a00;
+  --shadow-card:  0 4px 24px rgba(0,0,0,.35), 0 0 0 1px rgba(255,255,255,.05);
+  --shadow-hover: 0 24px 52px rgba(0,0,0,.52), 0 0 0 1px rgba(255,106,0,.14);
+  --shadow-gold:  0 10px 32px rgba(255,106,0,.28);
+  --font-body:    'Inter', 'DM Sans', system-ui, sans-serif;
+}
+
+/* ================================================================
+   2. BODY — fondo oscuro cinematográfico con resplandores naranja
+   ================================================================ */
+body {
+  background:
+    radial-gradient(circle at 90% 0%,   rgba(255,106,0,.18), transparent 28%),
+    radial-gradient(circle at 0%  18%,  rgba(239,68,68,.12), transparent 25%),
+    radial-gradient(circle at 50% 80%,  rgba(255,61,0,.06),  transparent 35%),
+    linear-gradient(180deg, #08080b 0%, #0b0b0f 30%, #0f1017 100%) !important;
+  color: var(--text-light) !important;
+  font-family: var(--font-body) !important;
+}
+
+/* ================================================================
+   3. URGENCIA BANNER — reemplaza el shimmer dorado por naranja
+   ================================================================ */
+.urgencia-banner {
+  background: linear-gradient(90deg,
+    rgba(255,106,0,.22) 0%,
+    rgba(255,61,0,.14)  50%,
+    rgba(255,106,0,.22) 100%) !important;
+  background-size: 200% auto !important;
+  border-bottom: 1px solid rgba(255,106,0,.28) !important;
+  animation: shimmerBanner 4s linear infinite !important;
+  backdrop-filter: blur(10px);
+}
+.flash-deal {
+  background: linear-gradient(135deg, var(--orange), var(--orange-2)) !important;
+  color: #fff !important;
+  box-shadow: 0 4px 14px rgba(255,106,0,.3) !important;
+  border-radius: 999px !important;
+}
+
+/* ================================================================
+   4. HEADER / NAVBAR
+   ================================================================ */
+.header {
+  background: rgba(8,8,11,.78) !important;
+  backdrop-filter: blur(20px) saturate(1.4) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(1.4) !important;
+  border-bottom: 1px solid var(--line) !important;
+}
+
+/* Logo badge */
+.logo-badge {
+  background: linear-gradient(135deg, var(--orange), var(--orange-2)) !important;
+  box-shadow: 0 8px 28px rgba(255,106,0,.32) !important;
+  color: #fff !important;
+}
+
+/* Logo text */
+.logo-premium em,
+.logo h1 em,
+.logo h1 span {
+  color: #ff8a3d !important;
+  text-shadow: 0 0 18px rgba(255,106,0,.35) !important;
+  font-style: normal !important;
+}
+
+/* Nav links */
+.nav a {
+  color: var(--muted-new) !important;
+}
+.nav a:hover {
+  color: #fff !important;
+}
+
+/* Cart & heart icons */
+.cart-icon-btn,
+.heart-icon-btn {
+  background: rgba(255,255,255,.04) !important;
+  border: 1px solid var(--line) !important;
+  border-radius: 12px !important;
+  transition: .2s ease !important;
+}
+.cart-icon-btn:hover,
+.heart-icon-btn:hover {
+  background: rgba(255,255,255,.09) !important;
+  border-color: rgba(255,255,255,.14) !important;
+}
+
+/* Cart badge */
+.cart-count {
+  background: linear-gradient(135deg, var(--orange), var(--orange-2)) !important;
+  box-shadow: 0 2px 10px rgba(255,106,0,.4) !important;
+}
+
+/* Hamburger */
+.hamburger-btn span {
+  background: var(--text-light) !important;
+}
+
+/* Mobile menu overlay */
+.mobile-menu-overlay {
+  background: rgba(8,8,11,.96) !important;
+  backdrop-filter: blur(24px) !important;
+  border-right: 1px solid var(--line) !important;
+}
+.mobile-menu-overlay a,
+.mobile-menu-overlay button.nav-mobile-link {
+  color: var(--muted-new) !important;
+  border-bottom: 1px solid var(--line) !important;
+}
+.mobile-menu-overlay a:hover,
+.mobile-menu-overlay button.nav-mobile-link:hover {
+  color: #fff !important;
+  background: rgba(255,106,0,.08) !important;
+}
+.mobile-action-grupo {
+  background: rgba(37,211,102,.12) !important;
+  border: 1px solid rgba(37,211,102,.25) !important;
+  color: #7eeaa0 !important;
+  border-radius: var(--radius-sm) !important;
+}
+.mobile-action-ayuda {
+  background: linear-gradient(135deg, rgba(255,106,0,.18), rgba(255,61,0,.1)) !important;
+  border: 1px solid rgba(255,106,0,.28) !important;
+  color: #ffb07a !important;
+  border-radius: var(--radius-sm) !important;
+}
+
+/* ================================================================
+   5. HERO SECTION
+   ================================================================ */
+.hero {
+  background:
+    radial-gradient(circle at 30% 40%, rgba(255,106,0,.14), transparent 35%),
+    radial-gradient(circle at 80% 20%, rgba(239,68,68,.1),  transparent 28%),
+    linear-gradient(135deg, #0d0d11 0%, #080808 100%) !important;
+  min-height: 520px !important;
+}
+.hero::before {
+  background: radial-gradient(circle, rgba(255,106,0,.1) 0%, transparent 70%) !important;
+}
+.hero::after {
+  background: radial-gradient(circle, rgba(255,61,0,.08) 0%, transparent 70%) !important;
+}
+
+.hero-content {
+  background: linear-gradient(180deg, rgba(255,255,255,.025), rgba(255,255,255,.01)) !important;
+  border-right: 1px solid var(--line) !important;
+}
+
+/* Eyebrow / subtitle */
+.hero .subtitle,
+.hero .subtitle::before {
+  color: #ffc9a5 !important;
+}
+.hero .subtitle {
+  background: rgba(255,106,0,.1) !important;
+  border: 1px solid rgba(255,106,0,.22) !important;
+  border-radius: 999px !important;
+  padding: 8px 16px !important;
+  display: inline-flex !important;
+}
+
+/* Hero H1 */
+.hero-content h1,
+.hero-content h2 {
+  color: var(--text-light) !important;
+}
+.hero-content h1 span,
+.hero-content h2 span {
+  color: #ff8a3d !important;
+  text-shadow: 0 0 22px rgba(255,106,0,.38), 0 0 50px rgba(255,61,0,.2) !important;
+}
+
+.hero .description {
+  color: rgba(245,245,247,.75) !important;
+}
+
+/* Tagline badge at bottom of hero image */
+#heroTaglineBadge {
+  background: rgba(8,8,12,.78) !important;
+  border: 1px solid rgba(255,255,255,.12) !important;
+  backdrop-filter: blur(16px) !important;
+  border-radius: 999px !important;
+}
+
+/* ================================================================
+   6. BOTONES GLOBALES — naranja/rojo premium
+   ================================================================ */
+.btn-primary,
+button.btn-primary,
+a.btn-primary {
+  background: linear-gradient(135deg, var(--orange), var(--orange-2)) !important;
+  color: #fff !important;
+  box-shadow: 0 12px 30px rgba(255,106,0,.3) !important;
+  border-radius: var(--radius-sm) !important;
+  border: none !important;
+}
+.btn-primary:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 18px 38px rgba(255,106,0,.38) !important;
+}
+
+.btn-secondary,
+button.btn-secondary,
+a.btn-secondary {
+  background: rgba(255,255,255,.04) !important;
+  color: #fff !important;
+  border: 1px solid var(--line) !important;
+  border-radius: var(--radius-sm) !important;
+}
+.btn-secondary:hover {
+  background: rgba(255,255,255,.09) !important;
+}
+
+.btn-large,
+button.btn-large {
+  background: linear-gradient(135deg, var(--orange), var(--orange-2)) !important;
+  color: #fff !important;
+  box-shadow: 0 14px 36px rgba(255,106,0,.32) !important;
+  border-radius: var(--radius-sm) !important;
+  border: none !important;
+}
+.btn-large:hover {
+  transform: translateY(-3px) !important;
+  box-shadow: 0 20px 44px rgba(255,106,0,.42) !important;
+}
+
+/* ================================================================
+   7. BARRA DE BÚSQUEDA
+   ================================================================ */
+.hsb-wrap {
+  background: transparent !important;
+}
+.hsb-pill {
+  background: rgba(255,255,255,.04) !important;
+  border: 1px solid var(--line) !important;
+  border-radius: 999px !important;
+  backdrop-filter: blur(12px) !important;
+  box-shadow: 0 8px 32px rgba(0,0,0,.3) !important;
+}
+.hsb-pill:hover,
+.hsb-pill:focus-within {
+  border-color: rgba(255,106,0,.3) !important;
+  box-shadow: 0 8px 32px rgba(0,0,0,.4), 0 0 0 1px rgba(255,106,0,.1) !important;
+}
+.hsb-input {
+  background: transparent !important;
+  color: var(--text-light) !important;
+}
+.hsb-input::placeholder {
+  color: var(--muted-new) !important;
+}
+.hsb-panel {
+  background: rgba(18,18,26,.95) !important;
+  border: 1px solid var(--line) !important;
+  border-radius: var(--radius-new) !important;
+  backdrop-filter: blur(20px) !important;
+  box-shadow: 0 20px 50px rgba(0,0,0,.5) !important;
+}
+.hsb-apply-btn {
+  background: linear-gradient(135deg, var(--orange), var(--orange-2)) !important;
+  color: #fff !important;
+  border-radius: 999px !important;
+  border: none !important;
+}
+
+/* ================================================================
+   8. CATEGORÍAS — iconos flotantes con resplandor naranja/rojo
+   ================================================================ */
+.categorias-home {
+  background: transparent !important;
+}
+.categorias-home-inner {
+  background: transparent !important;
+}
+
+/* Eyebrows */
+.section-eyebrow {
+  color: var(--muted-new) !important;
+  font-size: .72rem !important;
+  letter-spacing: .1em !important;
+  text-transform: uppercase !important;
+  font-weight: 800 !important;
+}
+.section-title {
+  color: var(--text-light) !important;
+  font-family: var(--font-body) !important;
+}
+.section-subtitle {
+  color: var(--muted-new) !important;
+}
+
+/* Categoria card — glassmorphism + float */
+.categoria-card {
+  background: linear-gradient(160deg, rgba(255,255,255,.04) 0%, rgba(255,255,255,.012) 100%) !important;
+  border: 1px solid var(--line) !important;
+  border-radius: 22px !important;
+  box-shadow: 0 8px 32px rgba(0,0,0,.3) !important;
+  transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease !important;
+  position: relative;
+  overflow: hidden;
+}
+/* Inner top glow — siempre sutil */
+.categoria-card::before {
+  content: '' !important;
+  position: absolute !important;
+  inset: 0 !important;
+  border-radius: 22px !important;
+  background: radial-gradient(circle at 50% 0%, rgba(255,106,0,.07), transparent 60%) !important;
+  opacity: 0;
+  transition: opacity .22s ease !important;
+  pointer-events: none !important;
+  z-index: 0 !important;
+}
+/* top shimmer line */
+.categoria-card::after {
+  content: '' !important;
+  position: absolute !important;
+  inset: 0 !important;
+  border-radius: 22px !important;
+  background: radial-gradient(ellipse at 50% 0%, rgba(255,106,0,.18) 0%, transparent 70%) !important;
+  opacity: 0 !important;
+  transition: opacity .25s ease !important;
+  pointer-events: none !important;
+}
+
+.categoria-card:hover {
+  transform: translateY(-5px) !important;
+  border-color: rgba(255,106,0,.38) !important;
+  box-shadow:
+    0 20px 48px rgba(0,0,0,.42),
+    0 0 0 1px rgba(255,106,0,.12),
+    inset 0 0 28px rgba(255,106,0,.04) !important;
+}
+.categoria-card:hover::after {
+  opacity: 1 !important;
+}
+.categoria-card:hover::before {
+  opacity: 1 !important;
+}
+
+/* Active category highlight */
+.categoria-card.active,
+.categoria-card[data-activa="true"] {
+  border-color: rgba(255,106,0,.45) !important;
+  background: linear-gradient(160deg, rgba(255,106,0,.09) 0%, rgba(255,61,0,.04) 100%) !important;
+}
+
+/* Icon with deep shadow + orange glow */
+.categoria-card .cat-icon {
+  position: relative;
+  z-index: 1;
+  filter:
+    drop-shadow(1px 1px 0 rgba(0,0,0,.95))
+    drop-shadow(3px 3px 4px rgba(0,0,0,.7))
+    drop-shadow(0 0 10px rgba(255,106,0,.22)) !important;
+  transition: transform .22s ease, filter .22s ease !important;
+}
+.categoria-card:hover .cat-icon {
+  transform: scale(1.14) translateY(-3px) !important;
+  filter:
+    drop-shadow(1px 1px 0 rgba(0,0,0,.95))
+    drop-shadow(3px 3px 6px rgba(0,0,0,.7))
+    drop-shadow(0 0 22px rgba(255,106,0,.85))
+    drop-shadow(0 0 8px rgba(255,180,0,.5)) !important;
+}
+
+.categoria-card .cat-name {
+  color: var(--text-light) !important;
+  font-weight: 800 !important;
+  position: relative;
+  z-index: 1;
+}
+.categoria-card:hover .cat-name,
+.categoria-card.active .cat-name {
+  color: #ffb07a !important;
+}
+
+.categoria-card .cat-count {
+  color: var(--muted-new) !important;
+  position: relative;
+  z-index: 1;
+}
+.categoria-card .cat-count.proximamente {
+  color: #a3e635 !important;
+  font-style: normal !important;
+}
+.categoria-card .cat-count.proximamente::before {
+  content: '●';
+  color: #a3e635;
+  margin-right: 4px;
+  font-size: .6rem;
+  animation: dotPulse 1.8s ease-in-out infinite;
+}
+@keyframes dotPulse {
+  0%,100%{opacity:1} 50%{opacity:.3}
+}
+
+/* Skeleton loaders */
+.skeleton-card {
+  background: rgba(255,255,255,.04) !important;
+  border: 1px solid var(--line) !important;
+  border-radius: 22px !important;
+}
+.skeleton-icon,
+.skeleton-text,
+.skeleton-text-sm {
+  background: linear-gradient(90deg, rgba(255,255,255,.05) 25%, rgba(255,255,255,.1) 50%, rgba(255,255,255,.05) 75%) !important;
+  background-size: 200% 100% !important;
+  animation: shimmer 1.4s infinite !important;
+  border-radius: 8px !important;
+}
+@keyframes shimmer {
+  0%  { background-position:  200% center }
+  100%{ background-position: -200% center }
+}
+
+/* Filter pills in category view */
+.categoria-btn,
+.subcategoria-tab {
+  background: rgba(255,255,255,.05) !important;
+  border: 1px solid var(--line) !important;
+  color: var(--muted-new) !important;
+  border-radius: 999px !important;
+  transition: .2s ease !important;
+}
+.categoria-btn:hover,
+.subcategoria-tab:hover {
+  background: rgba(255,255,255,.09) !important;
+  color: #fff !important;
+}
+.categoria-btn.active,
+.subcategoria-tab.active,
+.categoria-btn[data-activa="true"] {
+  background: linear-gradient(135deg, rgba(255,106,0,.22), rgba(255,61,0,.14)) !important;
+  border-color: rgba(255,106,0,.42) !important;
+  color: #ffb07a !important;
+  box-shadow: 0 4px 16px rgba(255,106,0,.14) !important;
+}
+
+/* ================================================================
+   9. PRODUCTOS — Glassmorphism cards
+   ================================================================ */
+.producto-card {
+  background: linear-gradient(180deg, rgba(255,255,255,.04) 0%, rgba(255,255,255,.015) 100%) !important;
+  border: 1px solid var(--line) !important;
+  border-bottom: 1px solid var(--line) !important;
+  border-radius: 22px !important;
+  box-shadow: 0 8px 32px rgba(0,0,0,.32) !important;
+  color: var(--text-light) !important;
+  transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease !important;
+}
+.producto-card:hover {
+  transform: translateY(-5px) scale(1.005) !important;
+  border-color: rgba(255,106,0,.28) !important;
+  border-bottom-color: rgba(255,106,0,.28) !important;
+  box-shadow:
+    0 24px 52px rgba(0,0,0,.44),
+    0 0 0 1px rgba(255,106,0,.1),
+    inset 0 1px 0 rgba(255,255,255,.06) !important;
+}
+
+/* Borde inferior luminoso al hover — reemplaza el coral→dorado */
+.producto-card::after {
+  background: linear-gradient(90deg, var(--orange), var(--orange-2)) !important;
+  height: 2px !important;
+}
+
+/* Imagen del producto */
+.producto-image {
+  background:
+    radial-gradient(circle at 28% 28%, rgba(255,106,0,.38), transparent 24%),
+    radial-gradient(circle at 72% 72%, rgba(255,61,0,.2),  transparent 26%),
+    linear-gradient(145deg, #1c1f2a 0%, #11131b 55%, #221008 100%) !important;
+  position: relative;
+  overflow: hidden;
+}
+/* Glass shimmer */
+.producto-image::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,.055) 0%, transparent 45%, rgba(255,255,255,.02) 100%);
+  pointer-events: none;
+  z-index: 1;
+}
+/* Bottom fade */
+.producto-image::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 65px;
+  background: linear-gradient(to bottom, transparent, rgba(8,8,12,.75));
+  pointer-events: none;
+  z-index: 2;
+}
+.producto-image img {
+  transition: transform .35s ease !important;
+  mix-blend-mode: normal !important;
+}
+.producto-card:hover .producto-image img {
+  transform: scale(1.05) !important;
+}
+
+/* Product title */
+.producto-card h3 {
+  color: var(--text-light) !important;
+}
+
+/* Description */
+.producto-card .producto-description,
+.producto-description {
+  color: var(--muted-new) !important;
+}
+
+/* Price */
+.precio-actual {
+  color: #ff9d63 !important;
+  text-shadow: 0 0 16px rgba(255,106,0,.24) !important;
+  font-family: var(--font-body) !important;
+}
+.precio-original,
+.precio-tachado {
+  color: rgba(255,255,255,.3) !important;
+}
+
+/* Stock indicators */
+.stock {
+  color: rgba(255,150,80,.85) !important;
+}
+.stock-badge-ok   { color: #a3e635 !important; }
+.stock-badge-low  { color: #f59e0b !important; }
+.stock-badge-out  { color: #f87171 !important; }
+
+.stock-bar {
+  background: rgba(255,255,255,.07) !important;
+}
+.stock-bar-fill {
+  background: linear-gradient(90deg, var(--orange), var(--orange-2)) !important;
+}
+
+/* ================================================================
+   10. BADGES — con backdrop blur y bordes finos
+   ================================================================ */
+.badge,
+.badge-vendido {
+  background: linear-gradient(135deg, rgba(255,106,0,.24), rgba(255,61,0,.16)) !important;
+  border: 1px solid rgba(255,106,0,.4) !important;
+  color: #ffc7a4 !important;
+  backdrop-filter: blur(8px) !important;
+  box-shadow: 0 4px 14px rgba(255,106,0,.2) !important;
+  border-radius: 999px !important;
+}
+.badge-agotado,
+.badge-agotado-tag {
+  background: rgba(239,68,68,.18) !important;
+  border: 1px solid rgba(239,68,68,.32) !important;
+  color: #fca5a5 !important;
+  backdrop-filter: blur(8px) !important;
+  border-radius: 999px !important;
+}
+.badge-oferta-dia {
+  background: linear-gradient(135deg, rgba(255,106,0,.28), rgba(245,158,11,.2)) !important;
+  border: 1px solid rgba(255,140,0,.38) !important;
+  color: #ffd080 !important;
+  border-radius: 999px !important;
+}
+.badge-nuevo,
+.badge-confianza {
+  background: rgba(59,130,246,.18) !important;
+  border: 1px solid rgba(59,130,246,.3) !important;
+  color: #93c5fd !important;
+  border-radius: 999px !important;
+}
+.badge-usado {
+  background: rgba(139,92,246,.18) !important;
+  border: 1px solid rgba(139,92,246,.3) !important;
+  color: #c4b5fd !important;
+  border-radius: 999px !important;
+}
+
+/* ================================================================
+   11. BOTONES PEDIR — naranja premium
+   ================================================================ */
+.btn-pedir-card,
+button.btn-pedir-card {
+  background: linear-gradient(135deg, var(--orange), var(--orange-2)) !important;
+  color: #fff !important;
+  border: none !important;
+  border-radius: var(--radius-sm) !important;
+  box-shadow: 0 10px 26px rgba(255,106,0,.28) !important;
+  font-family: var(--font-body) !important;
+  font-weight: 800 !important;
+  transition: transform .2s ease, box-shadow .2s ease !important;
+}
+.btn-pedir-card:hover {
+  background: linear-gradient(135deg, #ff7a14, #ff4a12) !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 14px 32px rgba(255,106,0,.38) !important;
+}
+
+.btn-pedir-whatsapp,
+button.btn-pedir-whatsapp {
+  background: linear-gradient(135deg, var(--orange), var(--orange-2)) !important;
+  border: none !important;
+  border-radius: var(--radius-sm) !important;
+  box-shadow: 0 12px 32px rgba(255,106,0,.3) !important;
+  font-family: var(--font-body) !important;
+  font-weight: 800 !important;
+}
+.btn-pedir-whatsapp:hover {
+  background: linear-gradient(135deg, #ff7a14, #ff4a12) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 18px 40px rgba(255,106,0,.42) !important;
+}
+
+/* No disponible / agotado button */
+button[disabled],
+.btn-no-disponible {
+  background: rgba(255,255,255,.06) !important;
+  border: 1px solid var(--line) !important;
+  color: var(--muted-new) !important;
+  border-radius: var(--radius-sm) !important;
+  cursor: not-allowed !important;
+  box-shadow: none !important;
+}
+
+/* ================================================================
+   12. MÁS VENDIDOS SECTION
+   ================================================================ */
+.mas-vendidos {
+  background: transparent !important;
+  padding: 60px 0 !important;
+}
+.mas-vendidos::before {
+  background: radial-gradient(circle, rgba(255,106,0,.06) 0%, transparent 70%) !important;
+}
+.mas-vendidos .section-header h2 {
+  color: var(--text-light) !important;
+  font-family: var(--font-body) !important;
+}
+.mas-vendidos .section-header p {
+  color: var(--muted-new) !important;
+}
+/* Dark product cards in "más vendidos" */
+.mas-vendidos .producto-card {
+  background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02)) !important;
+  border: 1px solid var(--line) !important;
+}
+.mas-vendidos .producto-card h3 {
+  color: var(--text-light) !important;
+}
+.mas-vendidos .producto-card .precio-actual {
+  color: #ff9d63 !important;
+}
+
+/* ================================================================
+   13. PRUEBA SOCIAL STRIP
+   ================================================================ */
+.prueba-social-strip {
+  background: linear-gradient(180deg, rgba(255,255,255,.025), rgba(255,255,255,.01)) !important;
+  border-top: 1px solid var(--line) !important;
+  border-bottom: 1px solid var(--line) !important;
+}
+.prueba-social-inner {
+  color: var(--text-light) !important;
+}
+.prueba-num {
+  color: #ff9d63 !important;
+  text-shadow: 0 0 18px rgba(255,106,0,.3) !important;
+  font-weight: 900 !important;
+}
+.prueba-label {
+  color: var(--muted-new) !important;
+}
+.prueba-sep {
+  color: var(--line) !important;
+}
+.mini-review-item {
+  color: var(--muted-new) !important;
+}
+
+/* ================================================================
+   14. BENEFICIOS — dark glassmorphism
+   ================================================================ */
+.beneficios {
+  background: transparent !important;
+  padding: 70px 0 !important;
+}
+.beneficios h2 {
+  color: var(--text-light) !important;
+  font-family: var(--font-body) !important;
+}
+.beneficio-card {
+  background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.015)) !important;
+  border: 1px solid var(--line) !important;
+  border-radius: var(--radius-new) !important;
+  box-shadow: 0 8px 28px rgba(0,0,0,.3) !important;
+  transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease !important;
+}
+.beneficio-card::before {
+  background: linear-gradient(90deg, var(--orange), var(--orange-2)) !important;
+  height: 2px !important;
+}
+.beneficio-card:hover {
+  background: linear-gradient(180deg, rgba(255,106,0,.07), rgba(255,61,0,.03)) !important;
+  border-color: rgba(255,106,0,.28) !important;
+  box-shadow: 0 18px 44px rgba(0,0,0,.38), 0 0 0 1px rgba(255,106,0,.08) !important;
+  transform: translateY(-5px) !important;
+}
+.beneficio-card .icon {
+  filter: drop-shadow(0 0 12px rgba(255,106,0,.35)) !important;
+}
+.beneficio-card h3 {
+  color: var(--text-light) !important;
+}
+.beneficio-card p {
+  color: var(--muted-new) !important;
+}
+
+/* ================================================================
+   15. TESTIMONIOS — refuerza el look oscuro
+   ================================================================ */
+.testimonios {
+  background: transparent !important;
+  border-top: 1px solid var(--line) !important;
+}
+.testimonios h2 {
+  color: var(--text-light) !important;
+  font-family: var(--font-body) !important;
+}
+.testimonios::before {
+  color: rgba(255,106,0,.04) !important;
+}
+.testimonio-card {
+  background: rgba(255,255,255,.03) !important;
+  border: 1px solid var(--line) !important;
+  border-radius: var(--radius-new) !important;
+}
+.testimonio-card:hover {
+  background: rgba(255,255,255,.055) !important;
+  border-color: rgba(255,106,0,.2) !important;
+  transform: translateY(-4px) !important;
+}
+.testimonio-card p {
+  color: rgba(245,245,247,.72) !important;
+}
+.testimonio-card .autor {
+  color: #ff9d63 !important;
+}
+
+/* ================================================================
+   16. CTA FINAL — degradado oscuro con resplandor naranja
+   ================================================================ */
+.cta-final {
+  background:
+    radial-gradient(circle at 50% 50%, rgba(255,106,0,.1), transparent 55%),
+    linear-gradient(180deg, #0f1017 0%, #08080b 100%) !important;
+  border-top: 1px solid var(--line) !important;
+}
+.cta-final::before {
+  background: radial-gradient(circle, rgba(255,106,0,.1) 0%, transparent 65%) !important;
+}
+.cta-final h2 {
+  color: var(--text-light) !important;
+  font-family: var(--font-body) !important;
+}
+.cta-final p {
+  color: var(--muted-new) !important;
+}
+.cta-final .btn-large {
+  background: linear-gradient(135deg, var(--orange), var(--orange-2)) !important;
+  color: #fff !important;
+  box-shadow: 0 14px 36px rgba(255,106,0,.32) !important;
+}
+.cta-final .btn-large:hover {
+  transform: translateY(-3px) !important;
+  box-shadow: 0 22px 48px rgba(255,106,0,.42) !important;
+}
+
+/* ================================================================
+   17. VISTA CATEGORÍA / PRODUCTOS — fondo oscuro
+   ================================================================ */
+.productos-categoria {
+  background: transparent !important;
+  min-height: 80vh !important;
+}
+.categoria-header h2,
+.categoria-header-left h2 {
+  color: var(--text-light) !important;
+  font-family: var(--font-body) !important;
+}
+.btn-volver {
+  background: rgba(255,255,255,.05) !important;
+  border: 1px solid var(--line) !important;
+  color: var(--muted-new) !important;
+  border-radius: var(--radius-sm) !important;
+  transition: .2s ease !important;
+}
+.btn-volver:hover {
+  background: rgba(255,255,255,.09) !important;
+  color: #fff !important;
+}
+.categoria-stats {
+  background: rgba(255,255,255,.04) !important;
+  border: 1px solid var(--line) !important;
+  border-radius: 999px !important;
+  color: var(--muted-new) !important;
+}
+
+/* ================================================================
+   18. VISTA CARRITO — oscuro premium
+   ================================================================ */
+.carrito-panel,
+.modal-carrito,
+#carritoPanel {
+  background: rgba(8,8,12,.95) !important;
+  backdrop-filter: blur(24px) !important;
+  border-left: 1px solid var(--line) !important;
+}
+.carrito-item {
+  background: rgba(255,255,255,.03) !important;
+  border: 1px solid var(--line) !important;
+  border-radius: var(--radius-sm) !important;
+}
+.carrito-total-box {
+  background: rgba(255,106,0,.08) !important;
+  border: 1px solid rgba(255,106,0,.2) !important;
+  border-radius: var(--radius-sm) !important;
+}
+
+/* ================================================================
+   19. FOOTER — profundamente oscuro
+   ================================================================ */
+.footer {
+  background: #06060a !important;
+  border-top: 1px solid var(--line) !important;
+  color: var(--muted-new) !important;
+}
+.footer a {
+  color: #ff9d63 !important;
+}
+.footer a:hover {
+  color: #ffb07a !important;
+}
+
+/* ================================================================
+   20. BOTÓN FLOTANTE WHATSAPP — glassmorphism premium
+   ================================================================ */
+.wa-float-btn,
+.btn-wa-flotante,
+[class*="wa-float"],
+.whatsapp-float,
+#waFloatBtn {
+  background: rgba(14,22,14,.82) !important;
+  backdrop-filter: blur(18px) saturate(1.5) !important;
+  -webkit-backdrop-filter: blur(18px) saturate(1.5) !important;
+  border: 1px solid rgba(37,211,102,.3) !important;
+  border-radius: var(--radius-sm) !important;
+  box-shadow: 0 16px 44px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.06) !important;
+  transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease !important;
+}
+[class*="wa-float"]:hover,
+.whatsapp-float:hover,
+#waFloatBtn:hover {
+  transform: translateY(-3px) !important;
+  border-color: rgba(37,211,102,.5) !important;
+  box-shadow: 0 22px 52px rgba(0,0,0,.56), 0 0 28px rgba(37,211,102,.18) !important;
+}
+
+/* ================================================================
+   21. DETALLE DE PRODUCTO — dark mode
+   ================================================================ */
+.producto-detalle,
+.vista-detalle,
+#vistaDetalle {
+  background: transparent !important;
+}
+.detalle-card,
+.producto-detalle-card {
+  background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.015)) !important;
+  border: 1px solid var(--line) !important;
+  border-radius: var(--radius-new) !important;
+}
+.detalle-precio,
+.precio-detalle .precio-actual {
+  color: #ff9d63 !important;
+  text-shadow: 0 0 20px rgba(255,106,0,.28) !important;
+}
+
+/* ================================================================
+   22. VISTO RECIENTEMENTE / SECCIONES INTERNAS
+   ================================================================ */
+.recientes-section,
+.prueba-social-strip {
+  background: transparent !important;
+}
+
+/* Inputs y formularios */
+input, textarea, select {
+  background: rgba(255,255,255,.05) !important;
+  border: 1px solid var(--line) !important;
+  color: var(--text-light) !important;
+  border-radius: var(--radius-sm) !important;
+}
+input:focus, textarea:focus, select:focus {
+  border-color: rgba(255,106,0,.4) !important;
+  outline: none !important;
+  box-shadow: 0 0 0 2px rgba(255,106,0,.1) !important;
+}
+input::placeholder, textarea::placeholder {
+  color: var(--muted-new) !important;
+}
+
+/* ================================================================
+   23. PANEL COMPARTIR — dark
+   ================================================================ */
+.panel-compartir-redes {
+  background: rgba(18,18,26,.95) !important;
+  border: 1px solid var(--line) !important;
+  border-radius: var(--radius-sm) !important;
+  backdrop-filter: blur(16px) !important;
+}
+.panel-compartir-titulo {
+  color: var(--muted-new) !important;
+}
+
+/* ================================================================
+   24. SCROLLBAR PREMIUM
+   ================================================================ */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(255,255,255,.03);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255,106,0,.3);
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255,106,0,.5);
+}
+
+/* ================================================================
+   25. URGENCIA BANNER (stock urgente inline en productos)
+   ================================================================ */
+.stock-urgente {
+  background: rgba(255,106,0,.1) !important;
+  border: 1px solid rgba(255,106,0,.22) !important;
+  color: #ffb07a !important;
+  border-radius: 999px !important;
+  padding: 4px 10px !important;
+}
+
+/* ================================================================
+   26. SELECTION HIGHLIGHT
+   ================================================================ */
+::selection {
+  background: rgba(255,106,0,.28);
+  color: #fff;
+}
+
+/* ================================================================
+   27. DARK MODE BODY — asegura que el modo oscuro ya existente
+       no interfiera con el nuevo sistema de colores
+   ================================================================ */
+body.dark-mode .categoria-card {
+  background: linear-gradient(160deg, rgba(255,255,255,.04) 0%, rgba(255,255,255,.012) 100%) !important;
+  border-color: var(--line) !important;
+}
+body.dark-mode .beneficio-card,
+body.dark-mode .testimonio-card {
+  background: rgba(255,255,255,.03) !important;
+}
+body.dark-mode .producto-card {
+  background: linear-gradient(180deg, rgba(255,255,255,.04) 0%, rgba(255,255,255,.015) 100%) !important;
+}
