@@ -78,6 +78,7 @@
     <link rel="stylesheet" href="css/animations.css?v=9">
     <link rel="stylesheet" href="css/styles.banner.fix.css?v=1">
     <link rel="stylesheet" href="css/styles.fixes.css?v=10">
+    <link rel="stylesheet" href="css/admin.premium.css?v=1">
 
 </head>
 <body>
@@ -446,7 +447,8 @@
                 <h2>⚙️ Panel de Administración</h2>
                 <button data-action="cerrarAdminPanel" aria-label="Cerrar panel de administración" type="button" class="close-btn">✕</button>
             </div>
-            <div class="admin-tabs">
+            <!-- TABS: visibles solo en desktop -->
+            <div class="admin-tabs admin-tabs-desktop">
                 <button data-action="switchTab" data-arg="add-products" type="button" class="tab-btn active" data-tab="add-products">➕ Agregar</button>
                 <button data-action="switchTab" data-arg="publicar-ahora" type="button" class="tab-btn" data-tab="publicar-ahora">🚀 Publicar</button>
                 <button data-action="switchTab" data-arg="manage-products" type="button" class="tab-btn" data-tab="manage-products">📋 Gestionar</button>
@@ -457,6 +459,120 @@
                 <button data-action="switchTab" data-arg="oferta-dia" type="button" class="tab-btn" data-tab="oferta-dia">🏷️ Oferta Día</button>
                 <button data-action="switchTab" data-arg="apariencia" type="button" class="tab-btn" data-tab="apariencia">🎨 Apariencia</button>
                 <button data-action="switchTab" data-arg="analytics" type="button" class="tab-btn" data-tab="analytics">📊 Analytics</button>
+            </div>
+
+            <!-- ACORDEÓN PREMIUM: visible solo en móvil -->
+            <div class="admin-accordion" id="adminAccordion">
+                <div class="acc-row" data-tab-target="add-products">
+                    <button class="acc-trigger" type="button" aria-expanded="false">
+                        <span class="acc-icon-wrap"><span class="acc-icon">➕</span></span>
+                        <span class="acc-text">
+                            <span class="acc-label">Agregar producto</span>
+                            <span class="acc-sub">Nombre · precio · foto · stock</span>
+                        </span>
+                        <span class="acc-chevron" aria-hidden="true"></span>
+                    </button>
+                    <div class="acc-body" role="region"></div>
+                </div>
+                <div class="acc-row" data-tab-target="publicar-ahora">
+                    <button class="acc-trigger" type="button" aria-expanded="false">
+                        <span class="acc-icon-wrap"><span class="acc-icon">🚀</span></span>
+                        <span class="acc-text">
+                            <span class="acc-label">Publicar</span>
+                            <span class="acc-sub">Revolico · Facebook Grupos</span>
+                        </span>
+                        <span class="acc-chevron" aria-hidden="true"></span>
+                    </button>
+                    <div class="acc-body" role="region"></div>
+                </div>
+                <div class="acc-row" data-tab-target="manage-products">
+                    <button class="acc-trigger" type="button" aria-expanded="false">
+                        <span class="acc-icon-wrap"><span class="acc-icon">📋</span></span>
+                        <span class="acc-text">
+                            <span class="acc-label">Gestionar productos</span>
+                            <span class="acc-sub">Editar · eliminar · destacar</span>
+                        </span>
+                        <span class="acc-chevron" aria-hidden="true"></span>
+                    </button>
+                    <div class="acc-body" role="region"></div>
+                </div>
+                <div class="acc-row" data-tab-target="ventas">
+                    <button class="acc-trigger" type="button" aria-expanded="false">
+                        <span class="acc-icon-wrap"><span class="acc-icon">💰</span></span>
+                        <span class="acc-text">
+                            <span class="acc-label">Ventas</span>
+                            <span class="acc-sub">Control de ganancias</span>
+                        </span>
+                        <span class="acc-chevron" aria-hidden="true"></span>
+                    </button>
+                    <div class="acc-body" role="region"></div>
+                </div>
+                <div class="acc-row" data-tab-target="manage-categories">
+                    <button class="acc-trigger" type="button" aria-expanded="false">
+                        <span class="acc-icon-wrap"><span class="acc-icon">🏷️</span></span>
+                        <span class="acc-text">
+                            <span class="acc-label">Categorías</span>
+                            <span class="acc-sub">Organiza tu catálogo</span>
+                        </span>
+                        <span class="acc-chevron" aria-hidden="true"></span>
+                    </button>
+                    <div class="acc-body" role="region"></div>
+                </div>
+                <div class="acc-row" data-tab-target="manage-subcategories">
+                    <button class="acc-trigger" type="button" aria-expanded="false">
+                        <span class="acc-icon-wrap"><span class="acc-icon">📂</span></span>
+                        <span class="acc-text">
+                            <span class="acc-label">Subcategorías</span>
+                            <span class="acc-sub">Organización interna</span>
+                        </span>
+                        <span class="acc-chevron" aria-hidden="true"></span>
+                    </button>
+                    <div class="acc-body" role="region"></div>
+                </div>
+                <div class="acc-row" data-tab-target="configuracion">
+                    <button class="acc-trigger" type="button" aria-expanded="false">
+                        <span class="acc-icon-wrap"><span class="acc-icon">⚙️</span></span>
+                        <span class="acc-text">
+                            <span class="acc-label">Configuración</span>
+                            <span class="acc-sub">GitHub · WhatsApp · Tasa</span>
+                        </span>
+                        <span class="acc-chevron" aria-hidden="true"></span>
+                    </button>
+                    <div class="acc-body" role="region"></div>
+                </div>
+                <div class="acc-row" data-tab-target="oferta-dia">
+                    <button class="acc-trigger" type="button" aria-expanded="false">
+                        <span class="acc-icon-wrap"><span class="acc-icon">🏷️</span></span>
+                        <span class="acc-text">
+                            <span class="acc-label">Oferta del Día</span>
+                            <span class="acc-sub">Badge especial · FOMO</span>
+                        </span>
+                        <span class="acc-chevron" aria-hidden="true"></span>
+                    </button>
+                    <div class="acc-body" role="region"></div>
+                </div>
+                <div class="acc-row" data-tab-target="apariencia">
+                    <button class="acc-trigger" type="button" aria-expanded="false">
+                        <span class="acc-icon-wrap"><span class="acc-icon">🎨</span></span>
+                        <span class="acc-text">
+                            <span class="acc-label">Apariencia</span>
+                            <span class="acc-sub">Banners · Hero · Colores</span>
+                        </span>
+                        <span class="acc-chevron" aria-hidden="true"></span>
+                    </button>
+                    <div class="acc-body" role="region"></div>
+                </div>
+                <div class="acc-row" data-tab-target="analytics">
+                    <button class="acc-trigger" type="button" aria-expanded="false">
+                        <span class="acc-icon-wrap"><span class="acc-icon">📊</span></span>
+                        <span class="acc-text">
+                            <span class="acc-label">Analytics</span>
+                            <span class="acc-sub">Estadísticas de la tienda</span>
+                        </span>
+                        <span class="acc-chevron" aria-hidden="true"></span>
+                    </button>
+                    <div class="acc-body" role="region"></div>
+                </div>
             </div>
             <div class="admin-content">
 
@@ -1404,3 +1520,96 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 </body>
 </html>
+
+<!-- ═══════════════════════════════════════════
+     ACORDEÓN PREMIUM — lógica móvil
+     Solo actúa cuando el acordeón está visible
+     ═══════════════════════════════════════════ -->
+<script>
+(function () {
+    'use strict';
+    var BREAKPOINT = 769;
+    function isMobile() { return window.innerWidth < BREAKPOINT; }
+
+    function mountTabInAccBody(tabId, accBody) {
+        var tab = document.getElementById(tabId);
+        if (!tab || accBody.dataset.mounted === tabId) return;
+        accBody.appendChild(tab);
+        accBody.dataset.mounted = tabId;
+    }
+
+    function unmountAllFromAcc() {
+        var adminContent = document.querySelector('.admin-content');
+        if (!adminContent) return;
+        document.querySelectorAll('.acc-body').forEach(function (body) {
+            if (body.firstChild) adminContent.appendChild(body.firstChild);
+            delete body.dataset.mounted;
+        });
+    }
+
+    function openAccordionRow(row) {
+        var accordion = document.getElementById('adminAccordion');
+        if (!accordion) return;
+        accordion.querySelectorAll('.acc-row.acc-open').forEach(function (r) {
+            r.classList.remove('acc-open');
+            r.querySelector('.acc-trigger').setAttribute('aria-expanded', 'false');
+            r.querySelector('.acc-body').style.maxHeight = '0';
+        });
+        var tabId = row.getAttribute('data-tab-target');
+        var body  = row.querySelector('.acc-body');
+        mountTabInAccBody(tabId, body);
+        row.classList.add('acc-open');
+        row.querySelector('.acc-trigger').setAttribute('aria-expanded', 'true');
+        body.style.maxHeight = body.scrollHeight + 'px';
+        if (typeof switchTab === 'function') switchTab(tabId);
+        setTimeout(function () { row.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 120);
+    }
+
+    function syncAccordionWithActiveTab() {
+        var activeTab = document.querySelector('.admin-tab.active');
+        if (!activeTab) return;
+        var row = document.querySelector('.acc-row[data-tab-target="' + activeTab.id + '"]');
+        if (row && !row.classList.contains('acc-open')) openAccordionRow(row);
+    }
+
+    function handleResize() {
+        if (!isMobile()) unmountAllFromAcc();
+        else syncAccordionWithActiveTab();
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        var accordion = document.getElementById('adminAccordion');
+        if (!accordion) return;
+
+        accordion.addEventListener('click', function (e) {
+            var trigger = e.target.closest('.acc-trigger');
+            if (!trigger) return;
+            var row = trigger.closest('.acc-row');
+            if (!row) return;
+            if (row.classList.contains('acc-open')) {
+                row.classList.remove('acc-open');
+                trigger.setAttribute('aria-expanded', 'false');
+                row.querySelector('.acc-body').style.maxHeight = '0';
+            } else {
+                openAccordionRow(row);
+            }
+        });
+
+        var adminPanel = document.getElementById('adminPanel');
+        if (adminPanel) {
+            new MutationObserver(function (mutations) {
+                mutations.forEach(function (m) {
+                    if (m.target.classList.contains('visible') && isMobile())
+                        setTimeout(syncAccordionWithActiveTab, 80);
+                });
+            }).observe(adminPanel, { attributes: true, attributeFilter: ['class'] });
+        }
+
+        var resizeTimer;
+        window.addEventListener('resize', function () {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(handleResize, 150);
+        });
+    });
+})();
+</script>
