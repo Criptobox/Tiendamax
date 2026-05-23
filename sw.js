@@ -1,22 +1,31 @@
 // ═══════════════════════════════════════════════════════
-// TiendaMax — Service Worker v4
+// TiendaMax — Service Worker v5
 // - Cache-first para shell estático
 // - Network-first para datos (JSON, APIs)
 // - Auto-actualización sin quedarse con versión vieja
 // - Soporte de Notificaciones Push
 // ═══════════════════════════════════════════════════════
 
-const CACHE_NAME = 'tiendamax-v7';
+const CACHE_NAME = 'tiendamax-v8';
 const STATIC_ASSETS = [
   '/index.html',
+  // CSS público (index.html)
   '/css/styles.css',
   '/css/animations.css',
   '/css/styles.banner.fix.css',
   '/css/styles.fixes.css',
+  '/css/no-flicker.css',
+  '/css/premium-theme.css',
+  // CSS admin (admin.html)
+  '/css/admin.css',
+  // JS
   '/js/script.js',
+  '/js/share-patch.js',
   '/js/subcategorias.js',
   '/js/revolico_integration.js',
-  // '/js/push-notifications.js',  // ← ELIMINADO: archivo no existe en el repo
+  '/js/biometric-auth.js',
+  '/js/event-delegation.js',
+  // Assets
   '/og-image.svg',
   '/manifest.json',
   '/icons/icon-192.png',
