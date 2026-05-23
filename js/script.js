@@ -5444,12 +5444,19 @@ async function guardarTasaEnGitHub(tasaBase) {
 async function cargarTasaDesdeGitHub() {
     const user = localStorage.getItem('githubUser');
     const repo = localStorage.getItem('githubRepo');
-    if (!user || !repo) return;
     try {
-        const url = `https://raw.githubusercontent.com/${user}/${repo}/main/config.json?_=${Date.now()}`;
-        const res = await fetch(url);
-        if (res.ok) {
-            const cfg = await res.json();
+        // Intentar ruta de GitHub raw primero; si no hay credenciales, ruta relativa (GitHub Pages)
+        let cfg = null;
+        if (user && repo) {
+            const res = await fetch(`https://raw.githubusercontent.com/${user}/${repo}/main/config.json?_=${Date.now()}`);
+            if (res.ok) cfg = await res.json();
+        }
+        if (!cfg) {
+            // Fallback: ruta relativa — siempre funciona en GitHub Pages
+            const res = await fetch(`config.json?_=${Date.now()}`);
+            if (res.ok) cfg = await res.json();
+        }
+        if (cfg) {
             // Cargar tasa MN
             if (cfg.tasaMN && parseFloat(cfg.tasaMN) > 0) {
                 localStorage.setItem('tasaMN', String(cfg.tasaMN));
@@ -5566,16 +5573,18 @@ function actualizarBurbujaTasa() {
         burbuja.style.display = 'none';
     }
 
-    // Actualizar también la barra de moneda del navbar
-    const curBar = document.getElementById('currencyBar');
+    // Actualizar barra de moneda del navbar
     const curMNBtn = document.getElementById('curMN');
     const tasaLabel = document.getElementById('tasaLabel');
-    if (curBar && tasa > 0) {
-        curBar.style.display = 'flex';
+    if (tasa > 0) {
         if (curMNBtn) curMNBtn.textContent = tasa + ' MN';
-        if (tasaLabel && _monedaActual === 'MN') {
-            tasaLabel.textContent = 'Tasa: 1 USD = ' + tasa + ' MN';
+        if (tasaLabel) {
+            tasaLabel.textContent = '1 USD = ' + tasa + ' MN';
+            tasaLabel.style.display = '';
         }
+    } else {
+        if (curMNBtn) curMNBtn.textContent = '-- MN';
+        if (tasaLabel) tasaLabel.style.display = 'none';
     }
 }
 
@@ -5590,8 +5599,9 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('curUSD')?.classList.remove('active');
         document.getElementById('curMN')?.classList.add('active');
     }
-    // Mostrar burbuja si ya hay tasa guardada localmente
+    // Mostrar burbuja y banner si ya hay datos en localStorage
     actualizarBurbujaTasa();
+    verificarOfertasYMostrarBanner();
 });
 
 // Exponer formatPrecio globalmente para uso en renderizado
