@@ -6,7 +6,7 @@
 // - Soporte de Notificaciones Push
 // ═══════════════════════════════════════════════════════
 
-const CACHE_NAME = 'tiendamax-v8';
+const CACHE_NAME = 'tiendamax-v9';
 const STATIC_ASSETS = [
   '/index.html',
   // CSS público (index.html)
@@ -14,7 +14,6 @@ const STATIC_ASSETS = [
   '/css/animations.css',
   '/css/styles.banner.fix.css',
   '/css/styles.fixes.css',
-  '/css/no-flicker.css',
   '/css/premium-theme.css',
   // CSS admin (admin.html)
   '/css/admin.css',
