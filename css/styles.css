@@ -85,6 +85,12 @@ body {
     50%      { box-shadow: 0 4px 28px rgba(255,106,0,.75), 0 0 0 4px rgba(255,106,0,.12); }
 }
 
+@keyframes bannerSlide {
+    0%   { transform: translateX(-18px); }
+    50%  { transform: translateX(18px); }
+    100% { transform: translateX(-18px); }
+}
+
 .flash-deal {
     position: relative;
     overflow: hidden;
@@ -106,7 +112,7 @@ body {
     border: 1px solid rgba(255,200,100,.25);
     cursor: pointer;
     white-space: nowrap;
-    animation: pillPulse 2.5s ease-in-out infinite;
+    animation: pillPulse 2.5s ease-in-out infinite, bannerSlide 3s ease-in-out infinite;
 }
 
 /* Brillo que viaja de izquierda a derecha */
