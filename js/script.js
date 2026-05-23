@@ -780,7 +780,7 @@ function renderizarAnalytics() {
     const pesoKB     = Math.round(pesoBase64 / 1024);
 
     el.innerHTML = `
-        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:24px;">
+        <div class="admin-analytics-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:24px;">
             ${stat('📦', 'Productos', totalProductos)}
             ${stat('🏷️', 'Categorías', Object.keys(catConteo).length)}
             ${stat('📊', 'Stock total', totalStock)}
@@ -790,19 +790,19 @@ function renderizarAnalytics() {
             ${stat('💰', 'Precio prom.', '$'+precioPromedio)}
             ${stat('📈', 'Precio max.', '$'+precioMax)}
         </div>
-        <div style="background:${pesoKB > 500 ? 'rgba(231,76,60,0.08)' : 'rgba(39,174,96,0.08)'};border:1px solid ${pesoKB > 500 ? '#e74c3c' : '#27ae60'};border-radius:12px;padding:14px 16px;margin-bottom:20px;">
+        <div class="admin-alert-box ${pesoKB > 500 ? 'red' : 'green'}">
             <strong>${pesoKB > 500 ? '⚠️ Imágenes pesadas' : '✅ Imágenes optimizadas'}</strong><br>
-            <span style="font-size:13px;color:#666;">${pesoKB > 500 ? pesoKB+'KB en base64 — ejecuta <em>migrar_imagenes.html</em> para reducirlo a &lt;50KB' : 'Las imágenes están guardadas como URLs. ¡Perfecto!'}</span>
+            <span>${pesoKB > 500 ? pesoKB+'KB en base64 — ejecuta <em>migrar_imagenes.html</em> para reducirlo a &lt;50KB' : 'Las imágenes están guardadas como URLs. ¡Perfecto!'}</span>
         </div>
-        <h4 style="margin-bottom:12px;">Top categorías por productos</h4>
+        <h4 class="admin-section-title">Top categorías por productos</h4>
         <div style="display:flex;flex-direction:column;gap:8px;">
             ${topCats.map(([cat, n]) => `
-                <div style="display:flex;align-items:center;gap:10px;">
-                    <span style="min-width:120px;font-size:13px;">${cat}</span>
-                    <div style="flex:1;background:#f0ebe4;border-radius:99px;height:8px;overflow:hidden;">
-                        <div style="width:${Math.round(n/totalProductos*100)}%;background:var(--primary-color,#c9a96e);height:100%;border-radius:99px;"></div>
+                <div class="admin-cat-rank">
+                    <span class="name">${cat}</span>
+                    <div class="bar-wrap">
+                        <div class="bar-fill" style="width:${Math.round(n/totalProductos*100)}%;"></div>
                     </div>
-                    <span style="font-size:12px;color:#999;min-width:24px;">${n}</span>
+                    <span class="count">${n}</span>
                 </div>
             `).join('')}
         </div>
@@ -811,12 +811,12 @@ function renderizarAnalytics() {
 
 function stat(icon, label, value, color) {
     const uid = 'ts' + Math.random().toString(36).slice(2,7);
-    const html = '<div style="background:var(--bg-secondary,#f9f6f1);border-radius:12px;padding:14px;text-align:center;">' +
-        '<div style="font-size:22px;">' + icon + '</div>' +
-        '<div id="' + uid + '" class="tm-counter" style="font-size:' + (typeof value === 'number' ? '22px' : '18px') + ';font-weight:800;color:' + (color||'var(--primary-color,#c9a96e)') + ';">' + value + '</div>' +
-        '<div style="font-size:11px;color:#999;text-transform:uppercase;letter-spacing:0.5px;">' + label + '</div>' +
+    const sizeCls = typeof value === 'number' ? 'admin-stat-value' : 'admin-stat-value';
+    const html = '<div class="admin-analytics-stat">' +
+        '<div class="icon">' + icon + '</div>' +
+        '<div id="' + uid + '" class="tm-counter ' + sizeCls + '" style="color:' + (color||'var(--primary-color,#c9a96e)') + ';">' + value + '</div>' +
+        '<div class="label">' + label + '</div>' +
         '</div>';
-    // Animar contador después del render
     setTimeout(() => {
         const el = document.getElementById(uid);
         if (!el) return;
@@ -3333,109 +3333,108 @@ function renderizarVentas(pagina) {
     const ventasPagina  = ventas.slice(_ventasPagina * _VENTAS_POR_PAGINA, (_ventasPagina + 1) * _VENTAS_POR_PAGINA);
 
     let html = `
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px;">
-        <div style="background:linear-gradient(135deg,#27ae60,#2ecc71);color:white;padding:16px;border-radius:12px;text-align:center;">
-            <div style="font-size:22px;font-weight:900;">$${totalVentas.toFixed(2)}</div>
-            <div style="font-size:11px;opacity:0.9;">Total vendido</div>
+    <div class="admin-stats-grid">
+        <div class="admin-stat-card green">
+            <div class="admin-stat-value">$${totalVentas.toFixed(2)}</div>
+            <div class="admin-stat-label">Total vendido</div>
         </div>
-        <div style="background:linear-gradient(135deg,#f39c12,#f1c40f);color:white;padding:16px;border-radius:12px;text-align:center;">
-            <div style="font-size:22px;font-weight:900;">$${totalGanancia.toFixed(2)}</div>
-            <div style="font-size:11px;opacity:0.9;">Mi ganancia</div>
+        <div class="admin-stat-card gold">
+            <div class="admin-stat-value">$${totalGanancia.toFixed(2)}</div>
+            <div class="admin-stat-label">Mi ganancia</div>
         </div>
-        <div style="background:linear-gradient(135deg,#3498db,#2980b9);color:white;padding:16px;border-radius:12px;text-align:center;">
-            <div style="font-size:22px;font-weight:900;">${totalUnidades}</div>
-            <div style="font-size:11px;opacity:0.9;">Unidades vendidas</div>
+        <div class="admin-stat-card blue">
+            <div class="admin-stat-value">${totalUnidades}</div>
+            <div class="admin-stat-label">Unidades vendidas</div>
         </div>
     </div>
 
     <div style="margin-bottom:16px;">
-        <h4 style="margin-bottom:10px;">📦 Registrar venta manual</h4>
+        <h4 class="admin-section-title">📦 Registrar venta manual</h4>
         <div style="display:flex;flex-direction:column;gap:8px;">
 
             <!-- Buscador -->
-            <div style="position:relative;">
+            <div class="admin-search-box">
                 <input type="text" id="ventaBuscador" placeholder="🔍 Buscar producto..." oninput="filtrarProductosVenta()"
-                    style="width:100%;padding:10px 14px;border-radius:8px;border:1px solid #ddd;font-size:14px;box-sizing:border-box;">
+                    class="admin-search-input">
                 <button onclick="limpiarBuscadorVenta()" type="button" id="ventaBuscadorClear"
-                    style="display:none;position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;font-size:16px;cursor:pointer;color:#aaa;">✕</button>
+                    class="admin-search-clear">✕</button>
             </div>
 
             <!-- Filtro por categorías (chips) -->
-            <div id="ventaCategoriaChips" style="display:flex;flex-wrap:wrap;gap:6px;">
+            <div id="ventaCategoriaChips" class="admin-chips">
                 <button onclick="filtrarVentaPorCategoria('')" type="button" data-cat=""
-                    class="chip-cat chip-cat-activo"
-                    style="padding:5px 12px;border-radius:20px;border:1px solid #3498db;background:#3498db;color:white;font-size:12px;cursor:pointer;transition:all .2s;">
+                    class="chip-cat chip-cat-activo admin-chip active"
+                    style="">
                     Todas
                 </button>
                 ${[...new Set(productos.map(p => p.categoria).filter(Boolean))].map(cat =>
                     `<button onclick="filtrarVentaPorCategoria('${cat.replace(/'/g,"&#39;")}')" type="button" data-cat="${cat}"
-                        class="chip-cat"
-                        style="padding:5px 12px;border-radius:20px;border:1px solid #ddd;background:white;color:#555;font-size:12px;cursor:pointer;transition:all .2s;">
+                        class="chip-cat admin-chip"
+                        style="">
                         ${cat}
                     </button>`
                 ).join('')}
             </div>
 
             <!-- Select oculto para mantener compatibilidad con registrarVentaDesdeForm -->
-            <select id="ventaProductoSelect" style="display:none;">
+            <select id="ventaProductoSelect" class="admin-hidden">
                 <option value="">— Selecciona producto —</option>
                 ${productos.map(p => `<option value="${p.id}">${p.nombre}</option>`).join('')}
             </select>
 
             <!-- Lista de productos filtrados -->
-            <div id="ventaProductosLista" style="max-height:220px;overflow-y:auto;display:flex;flex-direction:column;gap:6px;border:1px solid #eee;border-radius:8px;padding:6px;background:#fafafa;">
+            <div id="ventaProductosLista" class="admin-product-list">
                 ${productos.filter(p => p.stock > 0).map(p => `
-                <div class="venta-prod-item" data-id="${p.id}" data-nombre="${p.nombre.toLowerCase()}" data-cat="${p.categoria||''}"
-                    onclick="seleccionarProductoVenta(${p.id})"
-                    style="display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;cursor:pointer;border:1px solid transparent;transition:all .15s;background:white;">
-                    ${p.imagen ? `<img src="${p.imagen}" style="width:38px;height:38px;object-fit:cover;border-radius:6px;flex-shrink:0;" onerror="this.style.display='none'">` : '<div style="width:38px;height:38px;border-radius:6px;background:#eee;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:18px;">📦</div>'}
-                    <div style="flex:1;min-width:0;">
-                        <div style="font-weight:600;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${p.nombre}</div>
-                        <div style="font-size:11px;color:#888;">${p.categoria||''} · Stock: ${p.stock}${p.comision ? ` · 💰$${p.comision}` : ''}</div>
+                <div class="venta-prod-item admin-product-list-item" data-id="${p.id}" data-nombre="${p.nombre.toLowerCase()}" data-cat="${p.categoria||''}"
+                    onclick="seleccionarProductoVenta(${p.id})">
+                    ${p.imagen ? `<img src="${p.imagen}" class="thumb" onerror="this.style.display='none'">` : '<div class="thumb-placeholder">📦</div>'}
+                    <div class="info">
+                        <div class="name">${p.nombre}</div>
+                        <div class="meta">${p.categoria||''} · Stock: ${p.stock}${p.comision ? ` · 💰$${p.comision}` : ''}</div>
                     </div>
-                    <div style="font-weight:700;color:#27ae60;font-size:13px;flex-shrink:0;">$${p.precioActual}</div>
+                    <div class="price">$${p.precioActual}</div>
                 </div>`).join('')}
-                ${productos.filter(p => p.stock > 0).length === 0 ? '<p style="text-align:center;color:#aaa;padding:16px;font-size:13px;">Sin productos con stock</p>' : ''}
+                ${productos.filter(p => p.stock > 0).length === 0 ? '<p class="admin-empty">Sin productos con stock</p>' : ''}
             </div>
 
             <!-- Tarjeta del producto seleccionado -->
-            <div id="ventaProductoSeleccionado" style="display:none;background:linear-gradient(135deg,rgba(39,174,96,0.08),rgba(39,174,96,0.03));border:1.5px solid rgba(39,174,96,0.35);border-radius:10px;padding:12px;display:flex;align-items:center;gap:10px;">
-                <img id="ventaSelImg" src="" style="width:48px;height:48px;object-fit:cover;border-radius:8px;flex-shrink:0;" onerror="this.style.display='none'">
-                <div style="flex:1;min-width:0;">
-                    <div id="ventaSelNombre" style="font-weight:700;font-size:14px;"></div>
-                    <div id="ventaSelInfo" style="font-size:12px;color:#555;margin-top:2px;"></div>
+            <div id="ventaProductoSeleccionado" class="admin-selected-card">
+                <img id="ventaSelImg" src="" onerror="this.style.display='none'">
+                <div class="info">
+                    <div id="ventaSelNombre" class="name"></div>
+                    <div id="ventaSelInfo" class="meta"></div>
                 </div>
                 <button onclick="deseleccionarProductoVenta()" type="button" style="background:none;border:none;font-size:18px;cursor:pointer;color:#aaa;flex-shrink:0;">✕</button>
             </div>
 
-            <div style="display:flex;gap:8px;">
-                <input type="number" id="ventaCantidad" value="1" min="1" placeholder="Cantidad" style="flex:1;padding:10px;border-radius:8px;border:1px solid #ddd;font-size:14px;">
-                <button onclick="registrarVentaDesdeForm()" type="button" class="btn btn-primary" style="flex:2;">✅ Registrar venta</button>
+            <div class="admin-input-row">
+                <input type="number" id="ventaCantidad" value="1" min="1" placeholder="Cantidad" class="admin-qty-input">
+                <button onclick="registrarVentaDesdeForm()" type="button" class="btn btn-primary">✅ Registrar venta</button>
             </div>
         </div>
     </div>
 
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+    <div class="admin-dash-header">
         <h4>📋 Historial de ventas</h4>
-        <div style="display:flex;gap:8px;">
-          <button onclick="exportarVentasCSV()" type="button" style="background:#27ae60;color:white;border:none;border-radius:8px;padding:6px 12px;font-size:12px;cursor:pointer;">📥 Exportar CSV</button>
-          <button onclick="borrarHistorialVentas()" type="button" style="background:#e74c3c;color:white;border:none;border-radius:8px;padding:6px 12px;font-size:12px;cursor:pointer;">🗑️ Limpiar</button>
+        <div class="admin-dash-actions">
+          <button onclick="exportarVentasCSV()" type="button" class="admin-btn-sm outline">📥 Exportar CSV</button>
+          <button onclick="borrarHistorialVentas()" type="button" class="admin-btn-sm red">🗑️ Limpiar</button>
         </div>
     </div>`;
 
     if (ventas.length === 0) {
-        html += '<p style="color:#aaa;text-align:center;padding:20px;">No hay ventas registradas aún.</p>';
+        html += '<p class="admin-empty">No hay ventas registradas aún.</p>';
     } else {
         html += '<div style="display:flex;flex-direction:column;gap:8px;">';
         ventasPagina.forEach(v => {
-            html += `<div style="background:rgba(39,174,96,0.06);border:1px solid rgba(39,174,96,0.2);border-radius:10px;padding:12px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;">
-                <div style="flex:1;min-width:0;">
-                    <div style="font-weight:700;font-size:13px;">${v.producto}</div>
-                    <div style="font-size:11px;color:#888;">${v.fecha} · ${v.cantidad} unidad(es)</div>
+            html += `<div class="admin-history-item">
+                <div class="info">
+                    <div class="title">${v.producto}</div>
+                    <div class="meta">${v.fecha} · ${v.cantidad} unidad(es)</div>
                 </div>
                 <div style="text-align:right;flex-shrink:0;">
-                    <div style="font-size:14px;font-weight:700;color:#27ae60;">$${v.total.toFixed(2)}</div>
-                    ${v.ganancia > 0 ? `<div style="font-size:11px;color:#f39c12;">Ganancia: $${v.ganancia.toFixed(2)}</div>` : ''}
+                    <div class="total">$${v.total.toFixed(2)}</div>
+                    ${v.ganancia > 0 ? `<div class="gain">Ganancia: $${v.ganancia.toFixed(2)}</div>` : ''}
                 </div>
                 <button onclick="eliminarVenta(${v.id})" type="button" style="background:#e74c3c;color:white;border:none;border-radius:6px;padding:4px 8px;font-size:11px;cursor:pointer;flex-shrink:0;">✕</button>
             </div>`;
@@ -3446,12 +3445,12 @@ function renderizarVentas(pagina) {
     // Controles de paginación
     let paginacion = '';
     if (totalPaginas2 > 1) {
-        paginacion = `<div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-top:16px;flex-wrap:wrap;">
-          <button onclick="renderizarVentas(0)" type="button" ${_ventasPagina===0?'disabled':''} style="padding:6px 12px;border-radius:8px;border:1px solid #ddd;background:${_ventasPagina===0?'#eee':'white'};cursor:pointer;">«</button>
-          <button onclick="renderizarVentas(${_ventasPagina}-1)" type="button" ${_ventasPagina===0?'disabled':''} style="padding:6px 14px;border-radius:8px;border:1px solid #ddd;background:${_ventasPagina===0?'#eee':'white'};cursor:pointer;">‹</button>
-          <span style="font-size:13px;opacity:.7;">Página ${_ventasPagina+1} de ${totalPaginas2} · ${ventas.length} ventas en total</span>
-          <button onclick="renderizarVentas(${_ventasPagina}+1)" type="button" ${_ventasPagina>=totalPaginas2-1?'disabled':''} style="padding:6px 14px;border-radius:8px;border:1px solid #ddd;background:${_ventasPagina>=totalPaginas2-1?'#eee':'white'};cursor:pointer;">›</button>
-          <button onclick="renderizarVentas(${totalPaginas2}-1)" type="button" ${_ventasPagina>=totalPaginas2-1?'disabled':''} style="padding:6px 12px;border-radius:8px;border:1px solid #ddd;background:${_ventasPagina>=totalPaginas2-1?'#eee':'white'};cursor:pointer;">»</button>
+        paginacion = `<div class="admin-pagination">
+          <button onclick="renderizarVentas(0)" type="button" ${_ventasPagina===0?'disabled':''} >«</button>
+          <button onclick="renderizarVentas(${_ventasPagina}-1)" type="button" ${_ventasPagina===0?'disabled':''} >‹</button>
+          <span>Página ${_ventasPagina+1} de ${totalPaginas2} · ${ventas.length} ventas en total</span>
+          <button onclick="renderizarVentas(${_ventasPagina}+1)" type="button" ${_ventasPagina>=totalPaginas2-1?'disabled':''} >›</button>
+          <button onclick="renderizarVentas(${totalPaginas2}-1)" type="button" ${_ventasPagina>=totalPaginas2-1?'disabled':''} >»</button>
         </div>`;
     }
     cont.innerHTML = html + paginacion;
@@ -4355,71 +4354,70 @@ function renderizarDashboardVentas(contenedor) {
 
     return `
     <div style="margin-bottom:20px;">
-        <h4 style="margin-bottom:12px;font-size:15px;display:flex;align-items:center;gap:8px;">
+        <h4 class="admin-dash-header">
             📊 Dashboard de ventas
-            <button onclick="exportarVentasCSV()" type="button"
-                style="margin-left:auto;font-size:11px;padding:5px 12px;border-radius:8px;border:1px solid #27ae60;background:transparent;color:#27ae60;cursor:pointer;font-weight:600;">
+            <button onclick="exportarVentasCSV()" type="button" class="admin-btn-sm outline">
                 ⬇️ Exportar CSV
             </button>
         </h4>
 
         <!-- Totales generales -->
-        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px;">
-            <div style="background:linear-gradient(135deg,#27ae60,#2ecc71);color:white;padding:12px;border-radius:10px;text-align:center;">
-                <div style="font-size:18px;font-weight:900;">$${totalVentas.toFixed(0)}</div>
-                <div style="font-size:10px;opacity:0.85;">Total vendido</div>
+        <div class="admin-stats-grid" style="margin-bottom:16px;">
+            <div class="admin-stat-card green">
+                <div class="admin-stat-value">$${totalVentas.toFixed(0)}</div>
+                <div class="admin-stat-label">Total vendido</div>
             </div>
-            <div style="background:linear-gradient(135deg,#f39c12,#f1c40f);color:white;padding:12px;border-radius:10px;text-align:center;">
-                <div style="font-size:18px;font-weight:900;">$${totalGanancia.toFixed(0)}</div>
-                <div style="font-size:10px;opacity:0.85;">Mi ganancia</div>
+            <div class="admin-stat-card gold">
+                <div class="admin-stat-value">$${totalGanancia.toFixed(0)}</div>
+                <div class="admin-stat-label">Mi ganancia</div>
             </div>
-            <div style="background:linear-gradient(135deg,#3498db,#2980b9);color:white;padding:12px;border-radius:10px;text-align:center;">
-                <div style="font-size:18px;font-weight:900;">${totalUnidades}</div>
-                <div style="font-size:10px;opacity:0.85;">Unidades</div>
+            <div class="admin-stat-card blue">
+                <div class="admin-stat-value">${totalUnidades}</div>
+                <div class="admin-stat-label">Unidades</div>
             </div>
         </div>
 
         <!-- Gráfica de barras últimos 14 días -->
-        <div style="background:#f9f9f9;border:1px solid #eee;border-radius:12px;padding:14px;margin-bottom:16px;">
-            <div style="font-size:12px;font-weight:600;color:#555;margin-bottom:10px;">Ventas por día (últimos 14 días)</div>
-            <div style="display:flex;align-items:flex-end;gap:3px;height:70px;">
+        <div class="admin-chart-box">
+            <div class="admin-chart-title">Ventas por día (últimos 14 días)</div>
+            <div class="admin-chart-bars">
                 ${dias.map(d => {
                     const h = Math.max(4, Math.round((d.total / maxTotal) * 70));
                     return `<div title="$${d.total.toFixed(2)}\n${d.label}"
-                        style="flex:1;background:${d.total > 0 ? 'linear-gradient(180deg,#27ae60,#2ecc71)' : '#e8e8e8'};
-                        height:${h}px;border-radius:4px 4px 0 0;cursor:default;transition:opacity .2s;"
+                        class="admin-chart-bar ${d.total > 0 ? 'filled' : 'empty'}"
+                        style="height:${h}px;"
                         onmouseover="this.style.opacity='.7'" onmouseout="this.style.opacity='1'"></div>`;
                 }).join('')}
             </div>
-            <div style="display:flex;justify-content:space-between;margin-top:4px;">
-                <span style="font-size:9px;color:#aaa;">${dias[0].label}</span>
-                <span style="font-size:9px;color:#aaa;">hoy</span>
+            <div class="admin-chart-footer">
+                <span>${dias[0].label}</span>
+                <span>hoy</span>
             </div>
         </div>
 
         <!-- Top 5 productos por ventas -->
         ${topList.length > 0 ? `
         <div style="margin-bottom:14px;">
-            <div style="font-size:12px;font-weight:600;color:#555;margin-bottom:8px;">🏆 Más vendidos</div>
+            <div class="admin-chart-title">🏆 Más vendidos</div>
             ${topList.map(([nombre, d], i) => `
-            <div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid #f0f0f0;">
-                <span style="font-size:13px;font-weight:800;color:#ccc;min-width:18px;">${i+1}</span>
-                <span style="flex:1;font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${nombre}</span>
-                <span style="font-size:11px;color:#888;">${d.unidades} uds</span>
-                ${d.ganancia > 0 ? `<span style="font-size:11px;color:#f39c12;font-weight:700;">+$${d.ganancia.toFixed(0)}</span>` : ''}
+            <div class="admin-top-item">
+                <span class="admin-top-rank">${i+1}</span>
+                <span class="admin-top-name">${nombre}</span>
+                <span class="admin-top-meta">${d.unidades} uds</span>
+                ${d.ganancia > 0 ? `<span class="admin-top-value gold">+$${d.ganancia.toFixed(0)}</span>` : ''}
             </div>`).join('')}
         </div>` : ''}
 
         <!-- Top productos por vistas -->
         ${topVistas.length > 0 ? `
         <div>
-            <div style="font-size:12px;font-weight:600;color:#555;margin-bottom:8px;">👁️ Más vistos</div>
+            <div class="admin-chart-title">👁️ Más vistos</div>
             ${topVistas.map(({ producto: p, vistas }, i) => `
-            <div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid #f0f0f0;">
-                <span style="font-size:13px;font-weight:800;color:#ccc;min-width:18px;">${i+1}</span>
-                ${p.imagen ? `<img src="${p.imagen}" style="width:28px;height:28px;object-fit:cover;border-radius:5px;flex-shrink:0;" onerror="this.style.display='none'">` : ''}
-                <span style="flex:1;font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${p.nombre}</span>
-                <span style="font-size:11px;color:#3498db;font-weight:600;">👁️ ${vistas.toLocaleString()}</span>
+            <div class="admin-top-item">
+                <span class="admin-top-rank">${i+1}</span>
+                ${p.imagen ? `<img src="${p.imagen}" class="admin-top-thumb" onerror="this.style.display='none'">` : ''}
+                <span class="admin-top-name">${p.nombre}</span>
+                <span class="admin-top-value blue">👁️ ${vistas.toLocaleString()}</span>
             </div>`).join('')}
         </div>` : ''}
     </div>`;

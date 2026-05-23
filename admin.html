@@ -80,6 +80,7 @@
     <link rel="stylesheet" href="css/styles.fixes.css?v=10">
     <link rel="stylesheet" href="css/admin.premium.css?v=1">
 
+    <link rel="stylesheet" href="css/admin-clean.css?v=1">
 </head>
 <body>
 
@@ -667,13 +668,13 @@
                     </div>
 
                     <!-- Pasos rápidos -->
-                    <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:20px;">
+                    <div class="admin-stack">
                         <button data-action="abrirChromeEspecial" type="button" class="btn-publicar-grande" style="background:#27AE60;margin-bottom:0">🖥️ 1. Abrir Chrome Especial</button>
                         <button data-action="publicarAhora" type="button" id="btnPublicarAhora" class="btn-publicar-grande" style="margin-bottom:0">🚀 2. Publicar Todo en Revolico</button>
                     </div>
 
                     <!-- Configurador de Grupos de Facebook -->
-                    <div style="background:var(--cream);border-radius:14px;padding:18px;margin-bottom:20px;border:1.5px solid var(--border-color);">
+                    <div class="admin-config-box oferta">
                         <h4 style="margin-bottom:4px;">📘 Grupos de Facebook</h4>
                         <p style="font-size:12px;color:var(--text-muted);margin-bottom:14px;">Configura qué productos publicar en cada grupo.</p>
                         <div id="listaGruposFB" style="display:flex;flex-direction:column;gap:10px;"></div>
@@ -682,7 +683,7 @@
                     </div>
 
                     <!-- Configurador de Revolico por categorías -->
-                    <div style="background:var(--cream);border-radius:14px;padding:18px;margin-bottom:20px;border:1.5px solid var(--border-color);">
+                    <div class="admin-config-box oferta">
                         <h4 style="margin-bottom:4px;">🔵 Revolico — Categorías por Producto</h4>
                         <p style="font-size:12px;color:var(--text-muted);margin-bottom:14px;">Elige en qué categoría de Revolico se publica cada producto. Se guarda automáticamente con tu tienda.</p>
                         <div id="listaRevolicoConfig" style="display:flex;flex-direction:column;gap:10px;"></div>
@@ -699,7 +700,7 @@
                 <!-- Tab: Gestionar Productos -->
                 <!-- Tab: Gestionar Productos (por categorías) -->
                 <div id="manage-products" class="admin-tab">
-                    <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;">
+                    <div class="admin-row-flex">
                         <input type="text" id="searchProductos" placeholder="🔍 Buscar producto..." oninput="actualizarListaProductos()" style="flex:1;min-width:180px;padding:10px 14px;border-radius:10px;border:1.5px solid var(--border-color);font-size:14px;background:var(--cream);">
                         <select id="filtroCategoria" onchange="actualizarListaProductos()" style="padding:10px 14px;border-radius:10px;border:1.5px solid var(--border-color);font-size:14px;background:var(--cream);">
                             <option value="">Todas las categorías</option>
@@ -748,28 +749,28 @@
                     <h3>Configuración de Sincronización</h3>
 
                     <!-- NÚMERO WHATSAPP -->
-                    <div style="background:rgba(37,211,102,0.08);border:1.5px solid #25d366;border-radius:14px;padding:18px 20px;margin-bottom:24px;">
-                        <h4 style="margin:0 0 6px;display:flex;align-items:center;gap:8px;"><span style="font-size:20px;">💬</span> Número de WhatsApp</h4>
-                        <p style="font-size:13px;color:var(--text-muted);margin-bottom:14px;">Este número recibe todos los pedidos. Sin código +53, solo dígitos.</p>
+                    <div class="admin-config-box whatsapp">
+                        <h4 class="admin-h4-flex"><span style="font-size:20px;">💬</span> Número de WhatsApp</h4>
+                        <p class="admin-hint">Este número recibe todos los pedidos. Sin código +53, solo dígitos.</p>
                         <div class="form-group">
                             <label>Número (solo dígitos, sin espacios):</label>
                             <input type="tel" id="adminWhatsappNum" placeholder="Ej: 5354320170" maxlength="20"
                                 style="font-size:16px;font-weight:700;letter-spacing:1px;">
-                            <p style="font-size:11px;margin-top:5px;opacity:0.7;">Incluye el código de país. Cuba: 53 + número (ej: 5354320170)</p>
+                            <p class="admin-note">Incluye el código de país. Cuba: 53 + número (ej: 5354320170)</p>
                         </div>
                         <button data-action="guardarNumeroWhatsApp" type="button" class="btn btn-primary" style="background:#25d366;width:100%;">💾 Guardar número</button>
                     </div>
 
 
                     <!-- Tasa de cambio USD → MN -->
-                    <div style="background:rgba(201,169,110,0.08);border:1.5px solid rgba(201,169,110,0.4);border-radius:14px;padding:18px 20px;margin-bottom:24px;">
-                        <h4 style="margin:0 0 6px;display:flex;align-items:center;gap:8px;"><span style="font-size:20px;">💱</span> Tasa de cambio USD → MN</h4>
-                        <p style="font-size:13px;color:var(--text-muted);margin-bottom:14px;">Pon la tasa del día (sin el +10 de margen, eso se suma automático). Al guardar sube a GitHub y todos los clientes la ven al instante.</p>
+                    <div class="admin-config-box tasa">
+                        <h4 class="admin-h4-flex"><span style="font-size:20px;">💱</span> Tasa de cambio USD → MN</h4>
+                        <p class="admin-hint">Pon la tasa del día (sin el +10 de margen, eso se suma automático). Al guardar sube a GitHub y todos los clientes la ven al instante.</p>
                         <div class="form-group">
                             <label>Tasa base hoy (MN por 1 USD):</label>
                             <input type="number" id="adminTasaMN" placeholder="Ej: 340" min="1" max="9999" step="1"
                                 style="font-size:20px;font-weight:700;letter-spacing:1px;width:100%;">
-                            <p style="font-size:11px;margin-top:5px;opacity:0.7;">El cliente verá esta tasa +10 MN de margen. Ej: si pones 340, el cliente ve 350 MN por USD.</p>
+                            <p class="admin-note">El cliente verá esta tasa +10 MN de margen. Ej: si pones 340, el cliente ve 350 MN por USD.</p>
                         </div>
                         <button onclick="guardarTasaMNAdmin()" type="button" class="btn btn-primary" style="background:linear-gradient(135deg,#C9A96E,#E8C88A);color:#0D0D0D;width:100%;font-weight:800;">💾 Guardar tasa y subir a GitHub</button>
                         <p id="tasaMNStatus" style="font-size:12px;margin-top:8px;text-align:center;color:rgba(255,255,255,0.4);"></p>
@@ -821,9 +822,9 @@
                     </div>
 
                     <!-- Modo agotado -->
-                    <div style="background:rgba(231,76,60,0.07);border:1.5px solid #e74c3c;border-radius:14px;padding:20px;">
+                    <div class="admin-config-box agotado">
                         <h4 style="margin:0 0 8px;display:flex;align-items:center;gap:8px;"><span style="font-size:20px;">📦</span> Modo Producto Agotado</h4>
-                        <p style="font-size:13px;color:var(--text-muted);margin-bottom:14px;">Los productos con stock = 0 se mostrarán automáticamente con el badge "AGOTADO" y el botón de compra desactivado. Para marcar un producto como agotado, edítalo y pon el stock en 0.</p>
+                        <p class="admin-hint">Los productos con stock = 0 se mostrarán automáticamente con el badge "AGOTADO" y el botón de compra desactivado. Para marcar un producto como agotado, edítalo y pon el stock en 0.</p>
                         <div style="display:flex;align-items:center;gap:12px;padding:14px;background:white;border-radius:10px;border:1px solid rgba(231,76,60,0.2);">
                             <div style="width:50px;height:50px;background:#f8d7da;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;">📦</div>
                             <div>
@@ -853,11 +854,11 @@
                         <p style="font-size:12px;color:#888;margin-bottom:10px;">Agrega banners que van pasando solos. Al tocarlos llevan al link que pongas.</p>
                         <div id="bannerList" style="display:flex;flex-direction:column;gap:8px;margin-bottom:12px;"></div>
                         <div style="display:flex;flex-direction:column;gap:8px;">
-                            <label style="font-size:12px;font-weight:600;">📷 Imagen del banner:</label>
+                            <label class="admin-label-sm">📷 Imagen del banner:</label>
                             <input type="file" id="nuevoBannerFile" accept="image/*" style="width:100%;">
                             <p style="font-size:11px;color:#aaa;margin:0;">O pega una URL directamente:</p>
                             <input type="url" id="nuevoBannerUrl" placeholder="https://... URL de la imagen (opcional)">
-                            <label style="font-size:12px;font-weight:600;">🔗 Link al tocar (opcional):</label>
+                            <label class="admin-label-sm">🔗 Link al tocar (opcional):</label>
                             <input type="url" id="nuevoBannerLink" placeholder="https://wa.me/grupo o cualquier link">
                             <button type="button" onclick="agregarBanner()" class="btn btn-primary">+ Agregar banner</button>
                             <button type="button" onclick="exportarBannersJSON()" class="btn" style="background:#8e44ad;color:white;">📥 Descargar banners.json → subir a GitHub</button>
@@ -876,9 +877,9 @@
                     <!-- IMAGEN HERO -->
                     <div style="background:var(--cream);padding:20px;border-radius:14px;margin-bottom:24px;">
                         <h4 style="margin-bottom:6px;">📷 Imagen Principal (Hero)</h4>
-                        <p style="font-size:13px;color:var(--text-muted);margin-bottom:16px;">Esta imagen aparece a la derecha del título principal en la página de inicio.</p>
+                        <p class="admin-hint-lg">Esta imagen aparece a la derecha del título principal en la página de inicio.</p>
                         
-                        <div id="heroImagePreview" style="width:100%;height:160px;border-radius:12px;overflow:hidden;background:#eee;margin-bottom:14px;position:relative;">
+                        <div id="heroImagePreview" class="admin-preview-box">
                             <img id="heroPreviewImg" src="" style="width:100%;height:100%;object-fit:contain;" alt="Preview">
                             <div id="heroPreviewPlaceholder" style="display:none;width:100%;height:100%;background:var(--graphite);display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.4);font-size:14px;">Sin imagen cargada</div>
                         </div>
@@ -899,7 +900,7 @@
                     <!-- COUNTDOWN TIMER -->
                     <div style="background:var(--cream);padding:20px;border-radius:14px;">
                         <h4 style="margin-bottom:6px;">⏱️ Cronómetro de Oferta (FOMO)</h4>
-                        <p style="font-size:13px;color:var(--text-muted);margin-bottom:16px;">Añade un contador regresivo a un producto para crear urgencia. Aparece visible en la tarjeta del producto.</p>
+                        <p class="admin-hint-lg">Añade un contador regresivo a un producto para crear urgencia. Aparece visible en la tarjeta del producto.</p>
                         
                         <div class="form-group">
                             <label>Seleccionar Producto:</label>
@@ -1518,8 +1519,6 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 </script>
-</body>
-</html>
 
 <!-- ═══════════════════════════════════════════
      ACORDEÓN PREMIUM — lógica móvil
@@ -1550,8 +1549,11 @@ document.addEventListener('DOMContentLoaded', () => {
     function openAccordionRow(row) {
         var accordion = document.getElementById('adminAccordion');
         if (!accordion) return;
+        // Close all first, remove overlay classes
         accordion.querySelectorAll('.acc-row.acc-open').forEach(function (r) {
             r.classList.remove('acc-open');
+            r.classList.remove('acc-overlay');
+            accordion.classList.remove('has-overlay');
             r.querySelector('.acc-trigger').setAttribute('aria-expanded', 'false');
             r.querySelector('.acc-body').style.maxHeight = '0';
         });
@@ -1559,10 +1561,15 @@ document.addEventListener('DOMContentLoaded', () => {
         var body  = row.querySelector('.acc-body');
         mountTabInAccBody(tabId, body);
         row.classList.add('acc-open');
+        row.classList.add('acc-overlay');
+        accordion.classList.add('has-overlay');
         row.querySelector('.acc-trigger').setAttribute('aria-expanded', 'true');
         body.style.maxHeight = body.scrollHeight + 'px';
         if (typeof switchTab === 'function') switchTab(tabId);
-        setTimeout(function () { row.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 120);
+        // Move to top and lock in place
+        setTimeout(function () {
+            row.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 50);
     }
 
     function syncAccordionWithActiveTab() {
@@ -1588,6 +1595,8 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!row) return;
             if (row.classList.contains('acc-open')) {
                 row.classList.remove('acc-open');
+                row.classList.remove('acc-overlay');
+                accordion.classList.remove('has-overlay');
                 trigger.setAttribute('aria-expanded', 'false');
                 row.querySelector('.acc-body').style.maxHeight = '0';
             } else {
@@ -1613,3 +1622,5 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 })();
 </script>
+</body>
+</html>
