@@ -87,10 +87,50 @@
 </head>
 <body>
 
-    <!-- Banner de Urgencia (Se muestra dinámicamente si hay ofertas) -->
-    <div id="urgenciaBanner" class="urgencia-banner" style="display: none;">
+    <!-- Banner de Urgencia -->
+    <div id="urgenciaBanner" class="urgencia-banner" style="display:none;">
         🔥 ¡OFERTAS RELÁMPAGO DISPONIBLES! <span class="flash-deal">APROVECHA AHORA</span>
     </div>
+
+    <!-- Script inline: muestra el banner de oferta sin esperar a script.js -->
+    <script>
+    (function(){
+        function mostrarBannerOferta(id, texto) {
+            var banner = document.getElementById('urgenciaBanner');
+            if (!banner) return;
+            var t = texto || '🔥 OFERTA DEL DÍA';
+            banner.innerHTML = t + ' <span class="flash-deal">VER AHORA →</span>';
+            banner.style.display = 'block';
+            banner.style.cursor  = 'pointer';
+            banner.onclick = function() {
+                // script.js ya habrá cargado para cuando el usuario haga click
+                if (typeof abrirDetalleProducto === 'function') {
+                    abrirDetalleProducto(Number(id));
+                }
+            };
+        }
+
+        // 1. Intentar desde localStorage (carga instantánea en sesiones siguientes)
+        try {
+            var sid = localStorage.getItem('ofertaDiaId');
+            var stx = localStorage.getItem('ofertaDiaTexto');
+            if (sid) mostrarBannerOferta(sid, stx);
+        } catch(e) {}
+
+        // 2. Leer config.json para actualizar (funciona incluso en sesión nueva)
+        fetch('config.json?_=' + Date.now())
+            .then(function(r){ return r.ok ? r.json() : null; })
+            .then(function(cfg){
+                if (!cfg || !cfg.ofertaDiaId) return;
+                try {
+                    localStorage.setItem('ofertaDiaId', String(cfg.ofertaDiaId));
+                    if (cfg.ofertaDiaTexto) localStorage.setItem('ofertaDiaTexto', cfg.ofertaDiaTexto);
+                } catch(e) {}
+                mostrarBannerOferta(cfg.ofertaDiaId, cfg.ofertaDiaTexto);
+            })
+            .catch(function(){});
+    })();
+    </script>
 
     <!-- Header -->
     <!-- Menú móvil overlay -->
