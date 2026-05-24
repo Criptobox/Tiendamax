@@ -1,10 +1,9 @@
 PAQUETE LISTO PARA SUBIR
 
 Último ajuste aplicado:
-- pulido final del header
-- mejor tamaño del logo, íconos y menú
-- barra de oferta más fina y elegante
-- sw.js actualizado a v16 para refresco de caché
+- móvil: header en una sola línea
+- móvil: la barra de tasa queda en forma de píldora sin cambiar de lugar
+- sw.js actualizado a v17 para refresco de caché
 
 Si la app estaba instalada:
 1. Cierra la app
