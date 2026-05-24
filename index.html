@@ -81,7 +81,7 @@
     <link rel="stylesheet" href="css/styles.banner.fix.css?v=1">
     <link rel="stylesheet" href="css/styles.fixes.css?v=12">
     <!-- ===== TEMA PREMIUM (NUEVO) — debe ir al final ===== -->
-    <link rel="stylesheet" href="css/premium-theme.css?v=3">
+    <link rel="stylesheet" href="css/premium-theme.css?v=4">
 
 </head>
 <body>
@@ -111,6 +111,12 @@
         function mostrarBannerOferta(id, texto) {
             var banner = document.getElementById('urgenciaBanner');
             if (!banner) return;
+            var inicio = document.getElementById('vistaInicio');
+            if (inicio && getComputedStyle(inicio).display === 'none') {
+                banner.style.display = 'none';
+                banner.onclick = null;
+                return;
+            }
             var t = texto || '🔥 OFERTA DEL DÍA';
             banner.innerHTML = '<span class="flash-deal">' + t + ' · VER AHORA →</span>';
             banner.style.display = 'block';
@@ -443,8 +449,8 @@
                         <span class="prueba-num">🔒 100%</span>
                         <span class="prueba-label">Compra segura</span>
                     </div>
-                    <div class="prueba-sep">|</div>
-                    <div class="prueba-mini-reviews">
+                    <div class="prueba-sep prueba-reviews-sep">|</div>
+                    <div class="prueba-mini-reviews" aria-hidden="true">
                         <span class="mini-review-item">"Excelente calidad" — Pedro M.</span>
                         <span class="mini-review-item">"Envío rápido" — Ana R.</span>
                         <span class="mini-review-item">"Precios increíbles" — Luis T.</span>
@@ -823,7 +829,7 @@
         });
     })();
     </script>
-    <script src="js/script.js?v=13"></script>
+    <script src="js/script.js?v=14"></script>
     <script src="js/share-patch.js?v=1"></script>
     <script src="js/subcategorias.js?v=9"></script>
     <script src="js/revolico_integration.js?v=9"></script>
