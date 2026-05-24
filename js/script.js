@@ -1146,6 +1146,14 @@ function mostrarNotificacion(mensaje, tipo = 'success') {
 
 // ===== NAVEGACIÓN ENTRE VISTAS =====
 
+function tmVistaInicioActiva() {
+    const inicio = document.getElementById('vistaInicio');
+    const detalle = document.getElementById('productDetailModal');
+    const inicioVisible = !inicio || getComputedStyle(inicio).display !== 'none';
+    const detalleAbierto = detalle && !detalle.classList.contains('hidden') && getComputedStyle(detalle).display !== 'none';
+    return inicioVisible && !detalleAbierto;
+}
+
 function actualizarVisibilidadBannerOferta(esHome) {
     const banner = document.getElementById('urgenciaBanner');
     if (!banner) return;
@@ -1678,6 +1686,7 @@ let _detalleProductoActual = null;
 function abrirDetalleProducto(id) {
     const p = productos.find(prod => prod.id === id);
     if (!p) return;
+    if (typeof actualizarVisibilidadBannerOferta === 'function') actualizarVisibilidadBannerOferta(false);
     _detalleProductoActual = p;
     // Deep link: actualizar URL sin recargar
     history.replaceState(null, '', '#producto-' + id);
@@ -1866,6 +1875,9 @@ function cerrarDetalleModal() {
     modal.style.removeProperty('display');
     document.body.style.overflow = '';
     _detalleProductoActual = null;
+    if (typeof actualizarVisibilidadBannerOferta === 'function') {
+        actualizarVisibilidadBannerOferta(typeof tmVistaInicioActiva === 'function' ? tmVistaInicioActiva() : true);
+    }
     // Limpiar el hash de la URL
     history.replaceState(null, '', window.location.pathname + window.location.search);
 }
@@ -2642,6 +2654,15 @@ async function subirArchivoAGitHub(user, repo, token, path, data) {
 function verificarOfertasYMostrarBanner() {
     const banner = document.getElementById('urgenciaBanner');
     if (!banner) return;
+
+    // El banner superior solo debe verse en el inicio.
+    // En categorías/listados/detalle ya existen etiquetas dentro de las tarjetas.
+    if (typeof tmVistaInicioActiva === 'function' && !tmVistaInicioActiva()) {
+        banner.style.display = 'none';
+        banner.onclick = null;
+        if (typeof actualizarOffsetsUI === 'function') setTimeout(actualizarOffsetsUI, 0);
+        return;
+    }
 
     // Prioridad 1: Oferta del Día configurada en el admin
     const ofertaDiaId    = localStorage.getItem('ofertaDiaId');
