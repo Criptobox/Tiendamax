@@ -1,0 +1,129 @@
+/* ══════════════════════════════════════════════════
+   TiendaMax — animations.css
+   Fade-in sections · Logo premium · Categoría stagger
+══════════════════════════════════════════════════ */
+
+/* ── Keyframes ── */
+@keyframes tmFadeInUp {
+    from { opacity: 0; transform: translateY(22px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes tmFadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+@keyframes badgePulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(201,169,110,0.5); }
+    50%       { box-shadow: 0 0 0 6px rgba(201,169,110,0); }
+}
+
+/* ── Clase base (IntersectionObserver la aplica) ── */
+.tm-fade {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s cubic-bezier(0.4,0,0.2,1),
+                transform 0.6s cubic-bezier(0.4,0,0.2,1);
+    transition-delay: var(--tm-delay, 0s);
+}
+
+.tm-fade.tm-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* ── Categorías: stagger CSS — solo dispara DESPUÉS de que JS renderice
+      (JS debe añadir clase .tm-rendered al .categorias-grid) ── */
+.categorias-grid.tm-rendered .categoria-card {
+    animation: tmFadeInUp 0.45s cubic-bezier(0.4,0,0.2,1) backwards;
+}
+.categorias-grid.tm-rendered .categoria-card:nth-child(1)  { animation-delay: 0.03s; }
+.categorias-grid.tm-rendered .categoria-card:nth-child(2)  { animation-delay: 0.08s; }
+.categorias-grid.tm-rendered .categoria-card:nth-child(3)  { animation-delay: 0.13s; }
+.categorias-grid.tm-rendered .categoria-card:nth-child(4)  { animation-delay: 0.18s; }
+.categorias-grid.tm-rendered .categoria-card:nth-child(5)  { animation-delay: 0.23s; }
+.categorias-grid.tm-rendered .categoria-card:nth-child(6)  { animation-delay: 0.28s; }
+.categorias-grid.tm-rendered .categoria-card:nth-child(7)  { animation-delay: 0.33s; }
+.categorias-grid.tm-rendered .categoria-card:nth-child(8)  { animation-delay: 0.38s; }
+.categorias-grid.tm-rendered .categoria-card:nth-child(n+9){ animation-delay: 0.42s; }
+
+/* ── Skeleton cards ── */
+@keyframes skeletonPulse {
+    0%   { background-position: 200% center; }
+    100% { background-position: -200% center; }
+}
+
+/* ═══════════════════════════════════════════════
+   LOGO PREMIUM — Badge "M" dorado
+═══════════════════════════════════════════════ */
+
+.logo-premium {
+    display: flex !important;
+    align-items: center !important;
+    gap: 9px !important;
+    cursor: pointer !important;
+    line-height: 1 !important;
+}
+
+/* Badge cuadrado con la M */
+.logo-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    background: var(--gold, #C9A96E);
+    color: var(--obsidian, #0D0D0D);
+    border-radius: 8px;
+    font-family: var(--font-display, 'Playfair Display', Georgia, serif);
+    font-size: 17px;
+    font-weight: 900;
+    flex-shrink: 0;
+    letter-spacing: -0.5px;
+    animation: badgePulse 3s ease-in-out infinite;
+    transition: transform 0.3s ease;
+}
+
+.logo-premium:hover .logo-badge {
+    transform: scale(1.12) rotate(-4deg);
+}
+
+/* "Max" en dorado (usa <em>) */
+.logo-premium em {
+    color: var(--gold, #C9A96E) !important;
+    font-style: normal !important;
+}
+
+/* Menú móvil — logo igual pero más compacto */
+.mobile-menu-logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.mobile-menu-logo .logo-badge {
+    width: 26px;
+    height: 26px;
+    font-size: 14px;
+    border-radius: 7px;
+}
+
+.mobile-menu-logo em {
+    color: var(--gold, #C9A96E);
+    font-style: normal;
+}
+
+/* ── Reducir animación si el usuario lo prefiere ── */
+@media (prefers-reduced-motion: reduce) {
+    .tm-fade,
+    .categorias-grid .categoria-card {
+        animation: none !important;
+        transition: none !important;
+        opacity: 1 !important;
+        transform: none !important;
+    }
+    .logo-badge {
+        animation: none !important;
+    }
+}
