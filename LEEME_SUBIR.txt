@@ -1,24 +1,13 @@
 PAQUETE LISTO PARA SUBIR
 
-Contenido:
-- Archivos públicos necesarios para la tienda y el panel admin.
-- Incluye catálogo, imágenes, páginas /p/, service worker y configuración.
-
 Sube TODO el contenido de esta carpeta a la raíz de tu hosting o repo publicado.
 
-Incluye:
-- index.html
-- admin.html
-- css/
-- js/
-- imagenes/
-- p/
-- icons/
-- archivos .json de configuración
-- sw.js, manifest.json, sitemap.xml, robots.txt, CNAME
+Hotfixes incluidos:
+- apartado de historial reciente eliminado
+- modo oscuro corregido en Categorías/Subcategorías del admin
+- offsets corregidos para PWA / app instalada
+- barra de oferta superior estabilizada
+- botón de modo oscuro y banner de notificaciones estabilizados
 
-No incluye:
-- documentos de auditoría
-- readmes internos
-- scripts de mantenimiento
-- previews locales
+No subas esta carpeta como subcarpeta.
+Debes subir lo que está DENTRO de ella a la raíz del sitio.

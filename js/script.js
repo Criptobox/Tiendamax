@@ -490,37 +490,11 @@ function registrarVisto(id) {
 
 function limpiarRecientes() {
     localStorage.removeItem('recientes');
-    const sec = document.getElementById('seccionRecientes');
-    if (sec) sec.style.display = 'none';
 }
 
 function renderizarRecientes() {
-    const recientes = JSON.parse(localStorage.getItem('recientes') || '[]');
-    const sec  = document.getElementById('seccionRecientes');
-    const grid = document.getElementById('recientesGrid');
-    if (!sec || !grid || recientes.length === 0) {
-        if (sec) sec.style.display = 'none';
-        return;
-    }
-    const items = recientes
-        .map(id => productos.find(p => p.id === id))
-        .filter(Boolean);
-    if (items.length === 0) { sec.style.display = 'none'; return; }
-
-    sec.style.display = 'block';
-    grid.innerHTML = items.map(p =>
-        '<div class="producto-card" onclick="abrirDetalleProducto(' + p.id + ')" style="cursor:pointer;">' +
-            '<div class="producto-image">' +
-                '<img src="' + p.imagen + '" alt="' + p.nombre + '" loading="lazy">' +
-            '</div>' +
-            '<h3 style="font-size:13px;padding:10px 12px 4px;">' + p.nombre + '</h3>' +
-            '<p class="precio" style="padding:0 12px 10px;">' +
-                (p.precioOriginal > 0 && p.precioOriginal > p.precioActual ? '<span class="precio-tachado">$' + parseFloat(p.precioOriginal).toFixed(2) + '</span> ' : '') +
-                '<span class="precio-actual" data-usd="' + p.precioActual + '">' + (typeof formatPrecio==='function'?formatPrecio(p.precioActual):'$'+p.precioActual.toFixed(2)+' USD') + '</span>' +
-                (p.precioOriginal > 0 && p.precioOriginal > p.precioActual ? ' <span class="precio-ahorro">-$' + (p.precioOriginal - p.precioActual).toFixed(0) + '</span>' : '') +
-            '</p>' +
-        '</div>'
-    ).join('');
+    const sec = document.getElementById('seccionRecientes');
+    if (sec) sec.style.display = 'none';
 }
 
 // ═══════════════════════════════════════════════════════
@@ -1097,6 +1071,20 @@ window.addEventListener('storage', (event) => {
 });
 
 // ===== FUNCIONES DE UTILIDAD =====
+
+function actualizarOffsetsUI() {
+    try {
+        const root = document.documentElement;
+        const urg = document.getElementById('urgenciaBanner');
+        const header = document.querySelector('.header');
+        const urgVisible = urg && getComputedStyle(urg).display !== 'none';
+        const urgH = urgVisible ? Math.ceil(urg.getBoundingClientRect().height) : 0;
+        const headerH = header ? Math.ceil(header.getBoundingClientRect().height) : 70;
+        root.style.setProperty('--tm-urgencia-h', urgH + 'px');
+        root.style.setProperty('--tm-header-h', headerH + 'px');
+    } catch (e) {}
+}
+
 
 function getNumeroWhatsApp() {
     return localStorage.getItem('whatsappNumero') || '5354320170';
@@ -2662,12 +2650,14 @@ function verificarOfertasYMostrarBanner() {
     } else {
         banner.style.display = 'none';
         banner.onclick = null;
+        setTimeout(actualizarOffsetsUI, 0);
         return;
     }
 
     banner.innerHTML = textoBanner;
     banner.style.display = 'block';
     banner.style.cursor  = 'pointer';
+    setTimeout(actualizarOffsetsUI, 0);
 
     banner.onclick = () => {
         if (!targetId) return;
@@ -2725,7 +2715,13 @@ function inicializarTienda() {
     }
 
     iniciarCountdownsActivos();
+    actualizarOffsetsUI();
+    setTimeout(actualizarOffsetsUI, 200);
+    setTimeout(actualizarOffsetsUI, 1200);
+    window.addEventListener('resize', actualizarOffsetsUI);
+    if (window.visualViewport) window.visualViewport.addEventListener('resize', actualizarOffsetsUI);
 }
+
 
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', inicializarTienda);
@@ -4665,7 +4661,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const b = document.createElement('div');
         b.id = 'tm-push-banner-wrap';
-        b.innerHTML = `<div id="tm-push-banner" style="position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#1a1a1a;border:1.5px solid #C9A96E;border-radius:14px;padding:14px 18px;display:flex;align-items:center;gap:12px;max-width:320px;width:90%;z-index:99999;box-shadow:0 8px 32px rgba(0,0,0,0.5);font-family:sans-serif;animation:slideUpBanner .35s ease"><span style="font-size:26px;flex-shrink:0">🔔</span><div style="flex:1;min-width:0"><div style="font-weight:700;font-size:14px;color:#C9A96E;margin-bottom:2px">${titulo}</div><div style="font-size:12px;color:#aaa;line-height:1.3">${cuerpo}</div></div><div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0"><button id="tm-push-si" style="background:#C9A96E;color:#000;border:none;border-radius:8px;padding:7px 12px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap">${btnTexto}</button><button id="tm-push-no" style="background:none;border:none;color:#666;font-size:11px;cursor:pointer;text-align:center">Ahora no</button></div></div>`;
+        b.innerHTML = `<div id="tm-push-banner" style="background:#1a1a1a;border:1.5px solid #C9A96E;border-radius:14px;padding:14px 18px;display:flex;align-items:center;gap:12px;box-shadow:0 8px 32px rgba(0,0,0,0.5);font-family:sans-serif;animation:slideUpBanner .35s ease"><span style="font-size:26px;flex-shrink:0">🔔</span><div style="flex:1;min-width:0"><div style="font-weight:700;font-size:14px;color:#C9A96E;margin-bottom:2px">${titulo}</div><div style="font-size:12px;color:#aaa;line-height:1.3">${cuerpo}</div></div><div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0"><button id="tm-push-si" style="background:#C9A96E;color:#000;border:none;border-radius:8px;padding:7px 12px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap">${btnTexto}</button><button id="tm-push-no" style="background:none;border:none;color:#666;font-size:11px;cursor:pointer;text-align:center">Ahora no</button></div></div>`;
         if (!document.getElementById('slideUpBannerStyle')) {
             const s = document.createElement('style');
             s.id = 'slideUpBannerStyle';
@@ -5140,34 +5136,8 @@ async function guardarTasaMNAdmin() {
     };
 
     renderizarRecientes = function () {
-        const recientes = JSON.parse(localStorage.getItem('recientes') || '[]');
-        const sec  = document.getElementById('seccionRecientes');
-        const grid = document.getElementById('recientesGrid');
-        if (!sec || !grid || recientes.length === 0) {
-            if (sec) sec.style.display = 'none';
-            return;
-        }
-        const items = recientes
-            .map(id => productos.find(p => String(p.id) === String(id)))
-            .filter(Boolean)
-            .slice(0, 8);
-        if (items.length === 0) {
-            sec.style.display = 'none';
-            return;
-        }
-        sec.style.display = 'block';
-        grid.innerHTML = items.map(p =>
-            '<div class="producto-card" data-product-id="' + p.id + '" onclick="abrirDetalleProducto(' + p.id + ')" style="cursor:pointer;">' +
-                '<div class="producto-image">' +
-                    '<img src="' + p.imagen + '" alt="' + p.nombre + '" loading="lazy">' +
-                '</div>' +
-                '<h3 style="font-size:13px;padding:10px 12px 4px;">' + p.nombre + '</h3>' +
-                '<p class="precio" style="padding:0 12px 10px;">' +
-                    (p.precioOriginal > 0 && p.precioOriginal > p.precioActual ? '<span class="precio-tachado">$' + parseFloat(p.precioOriginal).toFixed(2) + '</span> ' : '') +
-                    '<span class="precio-actual" data-usd="' + p.precioActual + '">' + (typeof formatPrecio==='function' ? formatPrecio(p.precioActual) : '$' + Number(p.precioActual).toFixed(2) + ' USD') + '</span>' +
-                '</p>' +
-            '</div>'
-        ).join('');
+        const sec = document.getElementById('seccionRecientes');
+        if (sec) sec.style.display = 'none';
     };
 
     document.addEventListener('DOMContentLoaded', function () {

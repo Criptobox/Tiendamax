@@ -922,3 +922,94 @@ html body .theme-toggle {
         transition: none !important;
     }
 }
+
+
+/* ============================================================
+   HOTFIX 2026-05-24 — PWA / sticky offsets / floating UI
+   ============================================================ */
+:root {
+    --tm-safe-top: env(safe-area-inset-top, 0px);
+    --tm-safe-bottom: env(safe-area-inset-bottom, 0px);
+    --tm-urgencia-h: 0px;
+    --tm-header-h: 70px;
+}
+
+@keyframes bannerSlideSoft {
+    0%,100% { transform: translateX(0); }
+    50%     { transform: translateX(22px); }
+}
+@keyframes bannerSlideSoftMobile {
+    0%,100% { transform: translateX(0); }
+    50%     { transform: translateX(10px); }
+}
+
+html body .urgencia-banner {
+    top: var(--tm-safe-top, 0px) !important;
+    z-index: 1100 !important;
+    padding-top: 8px !important;
+    padding-bottom: 8px !important;
+    overflow: hidden !important;
+}
+
+html body .flash-deal {
+    max-width: min(92vw, 420px) !important;
+    animation: pillPulse 2.5s ease-in-out infinite, bannerSlideSoft 4s ease-in-out infinite !important;
+}
+@media (max-width: 768px) {
+    html body .flash-deal {
+        max-width: min(90vw, 360px) !important;
+        animation: pillPulse 2.5s ease-in-out infinite, bannerSlideSoftMobile 4s ease-in-out infinite !important;
+    }
+}
+
+html body .header {
+    top: calc(var(--tm-safe-top, 0px) + var(--tm-urgencia-h, 0px)) !important;
+    z-index: 1090 !important;
+}
+
+html body .currency-bar {
+    top: calc(var(--tm-safe-top, 0px) + var(--tm-urgencia-h, 0px) + var(--tm-header-h, 70px)) !important;
+    z-index: 1080 !important;
+}
+
+html body .control-buttons {
+    position: fixed !important;
+    right: 16px !important;
+    bottom: calc(var(--tm-safe-bottom, 0px) + 16px) !important;
+    z-index: 1095 !important;
+    gap: 10px !important;
+}
+
+html body .theme-toggle {
+    position: relative !important;
+    right: auto !important;
+    bottom: auto !important;
+}
+
+#tm-push-banner-wrap {
+    position: fixed !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    bottom: calc(var(--tm-safe-bottom, 0px) + 82px) !important;
+    z-index: 1096 !important;
+    width: min(92vw, 360px) !important;
+    max-width: 360px !important;
+}
+
+#tm-push-banner {
+    position: static !important;
+    transform: none !important;
+    width: 100% !important;
+}
+
+@media (display-mode: standalone) {
+    html body .urgencia-banner {
+        padding-top: 10px !important;
+    }
+    html body .control-buttons {
+        bottom: calc(var(--tm-safe-bottom, 0px) + 20px) !important;
+    }
+    #tm-push-banner-wrap {
+        bottom: calc(var(--tm-safe-bottom, 0px) + 92px) !important;
+    }
+}

@@ -1598,3 +1598,74 @@ body.dark-mode .admin-qty-input {
 #adminPanel ::-webkit-scrollbar { width: 4px; }
 #adminPanel ::-webkit-scrollbar-track { background: #0f0f0f; }
 #adminPanel ::-webkit-scrollbar-thumb { background: rgba(201,169,110,0.3); border-radius: 4px; }
+
+
+/* ============================================================
+   HOTFIX 2026-05-24 — Categorías/Subcategorías en admin oscuro
+   ============================================================ */
+#adminPanel #categoryList,
+#adminPanel #subcategoryList {
+    color: rgba(255,255,255,0.88) !important;
+}
+
+#adminPanel #categoryList > .category-item,
+#adminPanel #subcategoryList .subcategory-item {
+    background: #1e1e1e !important;
+    border: 1px solid rgba(255,255,255,0.08) !important;
+    color: rgba(255,255,255,0.88) !important;
+    box-shadow: none !important;
+}
+
+#adminPanel #categoryList > .category-item {
+    border-left: 3px solid #C9A96E !important;
+    border-radius: 12px !important;
+}
+
+#adminPanel #subcategoryList .subcategory-item {
+    border-left: 3px solid #9B59B6 !important;
+    border-radius: 10px !important;
+}
+
+#adminPanel #categoryList > .category-item span,
+#adminPanel #subcategoryList .subcategory-item span,
+#adminPanel #subcategoryList h4 {
+    color: rgba(255,255,255,0.9) !important;
+}
+
+#adminPanel #categoryList > div[style*="background"],
+#adminPanel #subcategoryList > div[style*="background"],
+#adminPanel #subcategoryList > div[style*="margin-bottom"] {
+    color: rgba(255,255,255,0.85) !important;
+}
+
+#adminPanel #categoryList > div[style*="background"],
+#adminPanel #subcategoryList > div[style*="background"] {
+    background: rgba(255,255,255,0.04) !important;
+    border-color: rgba(255,255,255,0.1) !important;
+}
+
+#adminPanel #categoryList button,
+#adminPanel #subcategoryList button {
+    border: none !important;
+    border-radius: 8px !important;
+    color: #fff !important;
+}
+
+#adminPanel #categoryList > .category-item button {
+    background: #e74c3c !important;
+    padding: 6px 10px !important;
+    font-size: 12px !important;
+    cursor: pointer !important;
+}
+
+#adminPanel #subcategoryList .subcategory-item button {
+    background: #e74c3c !important;
+    padding: 4px 8px !important;
+    font-size: 11px !important;
+    cursor: pointer !important;
+}
+
+#adminPanel #categoryList p,
+#adminPanel #subcategoryList p {
+    color: rgba(255,255,255,0.58) !important;
+}
