@@ -1,0 +1,24 @@
+PAQUETE LISTO PARA SUBIR
+
+Contenido:
+- Archivos públicos necesarios para la tienda y el panel admin.
+- Incluye catálogo, imágenes, páginas /p/, service worker y configuración.
+
+Sube TODO el contenido de esta carpeta a la raíz de tu hosting o repo publicado.
+
+Incluye:
+- index.html
+- admin.html
+- css/
+- js/
+- imagenes/
+- p/
+- icons/
+- archivos .json de configuración
+- sw.js, manifest.json, sitemap.xml, robots.txt, CNAME
+
+No incluye:
+- documentos de auditoría
+- readmes internos
+- scripts de mantenimiento
+- previews locales
