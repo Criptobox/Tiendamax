@@ -1292,3 +1292,117 @@ html body .currency-bar {
         font-size: 11px !important;
     }
 }
+
+/* ============================================================
+   HOTFIX 2026-05-24F — Tasa premium también en escritorio
+   En móvil ya se veía como píldora; en desktop ahora mantiene el
+   mismo lenguaje visual centrado, sin ocupar todo el ancho.
+   ============================================================ */
+@media (min-width: 769px) {
+    html body .currency-bar {
+        width: fit-content !important;
+        max-width: min(760px, calc(100vw - 48px)) !important;
+        min-width: min(520px, calc(100vw - 48px)) !important;
+        margin: 10px auto 12px !important;
+        padding: 10px 18px !important;
+        border-radius: 999px !important;
+        justify-content: center !important;
+        gap: 16px !important;
+        background: linear-gradient(135deg, rgba(18,18,26,.96), rgba(28,28,40,.96)) !important;
+        border: 1px solid rgba(255,106,0,.22) !important;
+        box-shadow: 0 10px 28px rgba(0,0,0,.28), 0 0 0 1px rgba(255,255,255,.025) inset !important;
+    }
+
+    html body .currency-bar .currency-toggle {
+        border-radius: 999px !important;
+        padding: 4px !important;
+        border-color: rgba(255,106,0,.24) !important;
+    }
+
+    html body .currency-bar .cur-btn {
+        min-width: 126px !important;
+        padding: 7px 22px !important;
+        border-radius: 999px !important;
+        font-size: 13px !important;
+        text-align: center !important;
+    }
+
+    html body .tasa-info-prefix {
+        font-size: 13px !important;
+        line-height: 1 !important;
+    }
+}
+
+/* ============================================================
+   HOTFIX 2026-05-24G — Títulos/categorías centrados
+   - Vista de categoría: el nombre queda al centro.
+   - Modal de producto: la categoría y subcategoría se leen centradas.
+   ============================================================ */
+html body #vistaCategoria .categoria-header {
+    display: grid !important;
+    grid-template-columns: minmax(96px, 1fr) auto minmax(96px, 1fr) !important;
+    align-items: center !important;
+    gap: 14px !important;
+}
+
+html body #vistaCategoria .categoria-header-left {
+    display: contents !important;
+}
+
+html body #vistaCategoria .btn-volver {
+    grid-column: 1 !important;
+    justify-self: start !important;
+}
+
+html body #vistaCategoria #tituloCategoriaActual {
+    grid-column: 2 !important;
+    justify-self: center !important;
+    text-align: center !important;
+    margin: 0 !important;
+    line-height: 1.12 !important;
+}
+
+html body #vistaCategoria #categoriaStats {
+    grid-column: 3 !important;
+    justify-self: end !important;
+}
+
+html body #productDetailModal .detail-category,
+html body #productDetailModal .detail-subcategory {
+    text-align: center !important;
+    width: 100% !important;
+}
+
+html body #productDetailModal .detail-category {
+    display: block !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+}
+
+@media (max-width: 640px) {
+    html body #vistaCategoria .categoria-header {
+        grid-template-columns: 1fr !important;
+        justify-items: center !important;
+        gap: 10px !important;
+        margin-bottom: 26px !important;
+    }
+
+    html body #vistaCategoria .btn-volver,
+    html body #vistaCategoria #tituloCategoriaActual,
+    html body #vistaCategoria #categoriaStats {
+        grid-column: 1 !important;
+    }
+
+    html body #vistaCategoria .btn-volver {
+        justify-self: start !important;
+    }
+
+    html body #vistaCategoria #tituloCategoriaActual {
+        width: 100% !important;
+        font-size: clamp(24px, 7vw, 34px) !important;
+    }
+
+    html body #vistaCategoria #categoriaStats {
+        justify-self: center !important;
+    }
+}

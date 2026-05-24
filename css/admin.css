@@ -1669,3 +1669,134 @@ body.dark-mode .admin-qty-input {
 #adminPanel #subcategoryList p {
     color: rgba(255,255,255,0.58) !important;
 }
+
+/* ============================================================
+   HOTFIX 2026-05-24 — Editar producto en modo oscuro
+   El modal de edición vive fuera de #adminPanel, por eso no recibía
+   los estilos oscuros universales del panel.
+   ============================================================ */
+#editModal {
+    background: rgba(0,0,0,0.78) !important;
+}
+
+#editModal .modal-content {
+    background: #141414 !important;
+    color: rgba(255,255,255,0.90) !important;
+    border: 1px solid rgba(255,255,255,0.08) !important;
+    box-shadow: 0 28px 80px rgba(0,0,0,0.58) !important;
+}
+
+#editModal .modal-content form {
+    background: #141414 !important;
+}
+
+#editModal .modal-header {
+    background: linear-gradient(135deg, #101010 0%, #090909 100%) !important;
+    border-bottom: 1px solid rgba(255,255,255,0.08) !important;
+}
+
+#editModal .modal-header h2 {
+    color: rgba(255,255,255,0.94) !important;
+}
+
+#editModal .form-group label,
+#editModal .form-group small {
+    color: rgba(255,255,255,0.58) !important;
+}
+
+#editModal .form-group input,
+#editModal .form-group textarea,
+#editModal .form-group select {
+    background: #1f1f1f !important;
+    color: rgba(255,255,255,0.90) !important;
+    border-color: rgba(255,255,255,0.12) !important;
+    caret-color: #E8C88A !important;
+}
+
+#editModal .form-group input::placeholder,
+#editModal .form-group textarea::placeholder {
+    color: rgba(255,255,255,0.28) !important;
+}
+
+#editModal .form-group input:focus,
+#editModal .form-group textarea:focus,
+#editModal .form-group select:focus {
+    border-color: rgba(232,200,138,0.56) !important;
+    box-shadow: 0 0 0 3px rgba(201,169,110,0.10) !important;
+    outline: none !important;
+}
+
+#editModal input[type="file"] {
+    background: #1f1f1f !important;
+    color: rgba(255,255,255,0.70) !important;
+}
+
+#editModal input[type="file"]::file-selector-button,
+#editModal input[type="file"]::-webkit-file-upload-button {
+    background: linear-gradient(135deg, #2a2a2a, #222) !important;
+    color: rgba(255,255,255,0.88) !important;
+    border: 1px solid rgba(255,255,255,0.14) !important;
+    border-radius: 10px !important;
+    padding: 8px 12px !important;
+    margin-right: 12px !important;
+    font-weight: 700 !important;
+}
+
+#editModal input[type="checkbox"] {
+    width: auto !important;
+    accent-color: #E8C88A !important;
+}
+
+#editModal select option {
+    background: #1f1f1f !important;
+    color: rgba(255,255,255,0.90) !important;
+}
+
+#editModal #currentImagePreview img {
+    border-radius: 12px !important;
+    border: 1px solid rgba(255,255,255,0.10) !important;
+    background: #0f0f0f !important;
+}
+
+#editModal .btn-primary {
+    background: linear-gradient(135deg, #ff6a00, #ff3d00) !important;
+    color: #fff !important;
+    border: none !important;
+    box-shadow: 0 10px 26px rgba(255,106,0,0.24) !important;
+}
+
+#editModal .btn-secondary {
+    background: transparent !important;
+    color: rgba(255,255,255,0.72) !important;
+    border: 1px solid rgba(255,255,255,0.16) !important;
+}
+
+@media (max-width: 768px) {
+    #editModal {
+        align-items: flex-end !important;
+    }
+
+    #editModal .modal-content {
+        width: 100% !important;
+        max-width: 100% !important;
+        max-height: 94dvh !important;
+        border-radius: 22px 22px 0 0 !important;
+    }
+
+    #editModal .modal-content form {
+        padding: 22px 18px calc(26px + env(safe-area-inset-bottom, 0px)) !important;
+    }
+
+    #editModal .form-row {
+        grid-template-columns: 1fr !important;
+        gap: 0 !important;
+    }
+
+    #editModal .form-group input,
+    #editModal .form-group textarea,
+    #editModal .form-group select {
+        min-height: 50px !important;
+        font-size: 16px !important;
+        border-radius: 14px !important;
+    }
+}
