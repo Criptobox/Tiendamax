@@ -204,26 +204,16 @@
     <!-- ── BARRA DE MONEDA (USD / MN) ── -->
     <!-- Se muestra inmediatamente; JS actualiza el valor de MN -->
     <div class="currency-bar" id="currencyBar">
-        <div class="currency-card-top">
-            <div class="currency-card-heading">
-                <span class="currency-heading-icon">💱</span>
-                <span class="tasa-info-prefix">Paga en:</span>
-            </div>
-            <div class="currency-toggle">
-                <button type="button" class="cur-btn active" id="curUSD" onclick="setCurrency('USD')">💵 USD</button>
-                <button type="button" class="cur-btn" id="curMN" onclick="setCurrency('MN')">568 MN</button>
-            </div>
+        <div class="currency-inline-label">
+            <span class="currency-heading-icon">💱</span>
+            <span class="tasa-info-prefix">Paga en:</span>
         </div>
-        <div class="currency-card-bottom">
-            <div class="currency-rate-wrap">
-                <span class="currency-trend" aria-hidden="true">📈</span>
-                <span class="tasa-info" id="tasaLabel">1 USD = 568 MN</span>
-            </div>
-            <div class="currency-status">
-                <span class="currency-status-dot" aria-hidden="true"></span>
-                <span id="currencyStatusText">Actualizada hoy</span>
-            </div>
+        <div class="currency-toggle">
+            <button type="button" class="cur-btn active" id="curUSD" onclick="setCurrency('USD')">💵 USD</button>
+            <button type="button" class="cur-btn" id="curMN" onclick="setCurrency('MN')">568 MN</button>
         </div>
+        <span class="tasa-info" id="tasaLabel" aria-hidden="true">1 USD = 568 MN</span>
+        <span class="currency-status-text" id="currencyStatusText" aria-hidden="true">Actualizada hoy</span>
     </div>
 
     <!-- Actualizar tasa desde localStorage antes de que DOMContentLoaded -->
@@ -258,190 +248,116 @@
     <style>
     /* ── Barra de moneda premium ── */
     .currency-bar {
-        background: linear-gradient(135deg,rgba(18,18,26,.97),rgba(28,28,40,.97)) !important;
-        border: 1px solid rgba(201,169,110,.42) !important;
-        padding: 16px 18px 14px !important;
+        background: linear-gradient(135deg,rgba(18,18,26,.96),rgba(28,28,40,.96)) !important;
+        border: 1px solid rgba(201,169,110,.36) !important;
+        border-radius: 999px !important;
+        padding: 8px 12px !important;
         display: flex !important;
-        flex-direction: column !important;
-        align-items: stretch !important;
+        align-items: center !important;
         justify-content: center !important;
-        gap: 12px !important;
+        gap: 10px !important;
         position: sticky !important;
         top: calc(var(--tm-safe-top, 0px) + var(--tm-urgencia-h, 0px) + var(--tm-header-h, 70px)) !important;
         z-index: 1002 !important;
-        box-shadow: 0 10px 26px rgba(0,0,0,.30) !important;
-        width: min(920px, calc(100% - 28px)) !important;
-        max-width: calc(100% - 28px) !important;
-        margin: 12px auto 14px !important;
-        border-radius: 26px !important;
-        overflow: hidden !important;
+        box-shadow: 0 8px 20px rgba(0,0,0,.24), 0 0 0 1px rgba(201,169,110,.08) !important;
+        width: fit-content !important;
+        max-width: calc(100% - 18px) !important;
+        margin: 10px auto 12px !important;
     }
-    .currency-card-top,
-    .currency-card-bottom {
+    .currency-inline-label {
         display:flex !important;
         align-items:center !important;
-        justify-content:space-between !important;
-        gap:12px !important;
-        width:100% !important;
-    }
-    .currency-card-heading {
-        display:flex !important;
-        align-items:center !important;
-        gap:10px !important;
-        min-width: 170px !important;
+        gap:8px !important;
+        padding-left: 4px !important;
+        flex-shrink: 0 !important;
     }
     .currency-heading-icon {
-        font-size: 22px !important;
-        filter: drop-shadow(0 2px 8px rgba(0,0,0,.25));
+        font-size: 18px !important;
+        line-height: 1 !important;
+        filter: drop-shadow(0 2px 6px rgba(0,0,0,.22));
     }
     .tasa-info-prefix {
-        font-size: 15px !important;
-        color: rgba(255,255,255,.88) !important;
+        font-size: 13px !important;
+        color: rgba(255,255,255,.86) !important;
         font-weight: 900 !important;
         letter-spacing: .01em !important;
         white-space: nowrap !important;
     }
     .currency-bar .currency-toggle {
         background: rgba(0,0,0,.34) !important;
-        border: 1px solid rgba(201,169,110,.20) !important;
-        border-radius: 20px !important;
-        padding: 7px !important;
-        display: grid !important;
-        grid-template-columns: 1fr 1fr !important;
-        gap: 10px !important;
-        flex: 1 1 auto !important;
-        min-width: 280px !important;
+        border: 1px solid rgba(201,169,110,.16) !important;
+        border-radius: 999px !important;
+        padding: 4px !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 6px !important;
     }
     .currency-bar .cur-btn {
-        border-radius: 18px !important;
-        padding: 14px 18px !important;
-        min-height: 78px !important;
-        font-size: 17px !important;
+        border-radius: 999px !important;
+        padding: 8px 14px !important;
+        min-width: 108px !important;
+        min-height: 42px !important;
+        font-size: 14px !important;
         font-weight: 900 !important;
-        letter-spacing: .02em !important;
+        letter-spacing: .01em !important;
         color: rgba(255,255,255,.78) !important;
         transition: all .2s !important;
         border: none !important;
         background: transparent !important;
         cursor: pointer !important;
         white-space: nowrap !important;
-        text-align:center !important;
-        box-shadow:none !important;
+        text-align: center !important;
+        box-shadow: none !important;
     }
     .currency-bar .cur-btn.active {
         background: linear-gradient(135deg,#ff6a00,#ff3d00) !important;
         color: #fff !important;
-        box-shadow: 0 10px 22px rgba(255,106,0,.22) !important;
+        box-shadow: 0 8px 16px rgba(255,106,0,.22) !important;
     }
-    .currency-rate-wrap {
-        display:flex !important;
-        align-items:center !important;
-        gap:10px !important;
-        min-width:0 !important;
+    .currency-bar .tasa-info,
+    .currency-status-text {
+        display: none !important;
     }
-    .currency-trend {
-        font-size: 24px !important;
-        line-height: 1 !important;
-        opacity: .95 !important;
-    }
-    .currency-bar .tasa-info {
-        font-size: 14px !important;
-        font-weight: 900 !important;
-        color: #f7f0e8 !important;
-        background: transparent !important;
-        border: none !important;
-        border-radius: 0 !important;
-        padding: 0 !important;
-        white-space: nowrap !important;
-    }
-    .currency-status {
-        display:flex !important;
-        align-items:center !important;
-        gap:10px !important;
-        color:#7ae28f !important;
-        font-size: 14px !important;
-        font-weight: 800 !important;
-        white-space: nowrap !important;
-    }
-    .currency-status-dot {
-        width: 12px !important;
-        height: 12px !important;
-        border-radius: 999px !important;
-        background: #6de085 !important;
-        box-shadow: 0 0 0 4px rgba(109,224,133,.12), 0 0 18px rgba(109,224,133,.28) !important;
-        flex-shrink: 0 !important;
-    }
-
     @media (max-width: 768px) {
-        .currency-bar {
-            width: calc(100% - 20px) !important;
-            max-width: calc(100% - 20px) !important;
-            padding: 14px 14px 12px !important;
-            margin: 10px auto 12px !important;
-            border-radius: 24px !important;
-            gap: 10px !important;
-        }
-        .currency-card-top,
-        .currency-card-bottom {
-            flex-direction: row !important;
-            align-items: center !important;
-            flex-wrap: wrap !important;
-        }
-        .currency-card-heading {
-            min-width: 0 !important;
-            flex: 1 1 100% !important;
-            justify-content: flex-start !important;
-        }
-        .tasa-info-prefix {
-            font-size: 13px !important;
-        }
-        .currency-heading-icon {
-            font-size: 20px !important;
-        }
-        .currency-bar .currency-toggle {
-            width: 100% !important;
-            min-width: 0 !important;
-            gap: 8px !important;
-            padding: 6px !important;
-            border-radius: 18px !important;
-        }
-        .currency-bar .cur-btn {
-            min-height: 64px !important;
-            padding: 10px 10px !important;
-            font-size: 14px !important;
-            border-radius: 16px !important;
-        }
-        .currency-rate-wrap {
-            gap: 8px !important;
-            flex: 1 1 auto !important;
-        }
-        .currency-trend {
-            font-size: 20px !important;
-        }
-        .currency-bar .tasa-info {
-            font-size: 13px !important;
-        }
-        .currency-status {
-            font-size: 13px !important;
-            margin-left: auto !important;
-        }
-    }
-
-    @media (max-width: 420px) {
         .currency-bar {
             width: calc(100% - 18px) !important;
             max-width: calc(100% - 18px) !important;
-            padding: 12px 12px 10px !important;
-            border-radius: 22px !important;
+            padding: 8px 10px !important;
+            gap: 8px !important;
+        }
+        .currency-inline-label {
+            min-width: 0 !important;
+            gap: 6px !important;
+        }
+        .currency-heading-icon {
+            font-size: 16px !important;
+        }
+        .tasa-info-prefix {
+            font-size: 12px !important;
+        }
+        .currency-bar .currency-toggle {
+            gap: 4px !important;
+            padding: 4px !important;
         }
         .currency-bar .cur-btn {
-            min-height: 58px !important;
+            min-width: 90px !important;
+            min-height: 40px !important;
+            padding: 8px 10px !important;
             font-size: 13px !important;
-            padding: 10px 8px !important;
         }
-        .currency-status,
-        .currency-bar .tasa-info {
+    }
+    @media (max-width: 420px) {
+        .currency-bar {
+            gap: 6px !important;
+            padding: 7px 9px !important;
+        }
+        .tasa-info-prefix {
+            font-size: 11px !important;
+        }
+        .currency-bar .cur-btn {
+            min-width: 82px !important;
             font-size: 12px !important;
+            padding: 8px 8px !important;
         }
     }
     </style>

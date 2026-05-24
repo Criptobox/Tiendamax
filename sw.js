@@ -6,7 +6,7 @@
 // - Soporte de Notificaciones Push
 // ═══════════════════════════════════════════════════════
 
-const CACHE_NAME = 'tiendamax-v19';
+const CACHE_NAME = 'tiendamax-v21';
 const STATIC_ASSETS = [
   '/index.html',
   // CSS público (index.html)
