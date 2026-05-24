@@ -1013,3 +1013,19 @@ html body .theme-toggle {
         bottom: calc(var(--tm-safe-bottom, 0px) + 92px) !important;
     }
 }
+
+
+/* ============================================================
+   HOTFIX 2026-05-24B — Barra de moneda tipo dock
+   ============================================================ */
+html body .header {
+    padding-bottom: 4px !important;
+}
+html body .currency-bar {
+    align-self: center !important;
+}
+@media (min-width: 769px) {
+    html body .currency-bar {
+        min-width: 420px !important;
+    }
+}

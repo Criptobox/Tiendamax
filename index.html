@@ -20,7 +20,7 @@
     <meta name="referrer"                          content="strict-origin-when-cross-origin">
     <meta http-equiv="Permissions-Policy"          content="camera=(), microphone=(), geolocation=(), payment=()">
     <!-- Favicon -->
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgcng9IjIwIiBmaWxsPSIjMEQwRDBEIi8+PHRleHQgeT0iNzIiIHg9IjUwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjYyIiBmb250LWZhbWlseT0iR2VvcmdpYSxzZXJpZiIgZm9udC13ZWlnaHQ9IjkwMCIgZmlsbD0iI0M5QTk2RSI+TTwvdGV4dD48L3N2Zz4=">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <link rel="apple-touch-icon" href="/icons/icon-192.png">
     <link rel="manifest" href="/manifest.json">
 
@@ -33,7 +33,7 @@
     <meta name="keywords" content="TiendaMax, tienda Cuba, comprar online Cuba, productos Cuba, ofertas Cuba, electrónica Cuba, hogar Cuba, tiendamax.org">
     <meta name="author" content="TiendaMax">
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
-    <meta name="theme-color" content="#C9A96E">
+    <meta name="theme-color" content="#0D0D0D">
     <meta name="geo.region" content="CU">
     <meta name="geo.placename" content="Cuba">
     <link rel="canonical" href="https://tiendamax.org/">
@@ -239,18 +239,22 @@
     <style>
     /* ── Barra de moneda premium ── */
     .currency-bar {
-        background: linear-gradient(90deg,rgba(18,18,26,.98),rgba(28,28,40,.98)) !important;
-        border-bottom: 1px solid rgba(255,106,0,.22) !important;
-        padding: 7px 16px !important;
+        background: linear-gradient(135deg,rgba(18,18,26,.96),rgba(28,28,40,.96)) !important;
+        border: 1px solid rgba(255,106,0,.22) !important;
+        padding: 8px 16px !important;
         display: flex !important;
         align-items: center !important;
         justify-content: center !important;
         gap: 12px !important;
-        position: sticky !important;
-        top: calc(var(--tm-safe-top, 0px) + var(--tm-urgencia-h, 0px) + var(--tm-header-h, 70px)) !important;
-        z-index: 1002 !important;
-        box-shadow: 0 2px 14px rgba(0,0,0,.4) !important;
+        position: relative !important;
+        top: auto !important;
+        z-index: auto !important;
+        box-shadow: 0 10px 26px rgba(0,0,0,.30) !important;
         flex-wrap: nowrap !important;
+        width: fit-content !important;
+        max-width: calc(100% - 24px) !important;
+        margin: 10px auto 12px !important;
+        border-radius: 18px !important;
     }
     .tasa-info-prefix {
         font-size: 12px;
@@ -294,6 +298,26 @@
         border-radius: 20px !important;
         padding: 2px 10px !important;
         white-space: nowrap !important;
+    }
+
+    @media (max-width: 768px) {
+        .currency-bar {
+            width: calc(100% - 20px) !important;
+            max-width: calc(100% - 20px) !important;
+            justify-content: space-between !important;
+            padding: 8px 12px !important;
+            gap: 8px !important;
+            margin: 8px auto 10px !important;
+            border-radius: 16px !important;
+        }
+        .tasa-info-prefix {
+            font-size: 11px;
+            flex-shrink: 0;
+        }
+        .currency-bar .cur-btn {
+            padding: 5px 12px !important;
+            font-size: 12px !important;
+        }
     }
     </style>
 </header>
