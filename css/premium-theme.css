@@ -1417,3 +1417,16 @@ html body .prueba-mini-reviews,
 html body .prueba-reviews-sep {
     display: none !important;
 }
+
+
+/* ============================================================
+   HOTFIX 2026-05-24I — Banner oferta solo en inicio
+   Si se navega a categorías, favoritos, pedidos o detalle, JS añade
+   esta clase al body y el banner queda oculto aunque algún script
+   temprano intente mostrarlo de nuevo.
+   ============================================================ */
+html body.tm-no-oferta-banner #urgenciaBanner {
+    display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+}
