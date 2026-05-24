@@ -1,12 +1,12 @@
 // ═══════════════════════════════════════════════════════
-// TiendaMax — Service Worker v8
+// TiendaMax — Service Worker v9
 // - Cache-first para shell estático
 // - Network-first para datos (JSON, APIs)
 // - Auto-actualización sin quedarse con versión vieja
 // - Soporte de Notificaciones Push
 // ═══════════════════════════════════════════════════════
 
-const CACHE_NAME = 'tiendamax-v20';
+const CACHE_NAME = 'tiendamax-v21';
 const STATIC_ASSETS = [
   '/index.html',
   // CSS público (index.html)
