@@ -1146,21 +1146,29 @@ function mostrarNotificacion(mensaje, tipo = 'success') {
 
 // ===== NAVEGACIÓN ENTRE VISTAS =====
 
+function tmElementoVisible(id) {
+    const el = document.getElementById(id);
+    return !!(el && getComputedStyle(el).display !== 'none');
+}
+
 function tmVistaInicioActiva() {
+    const bodyBloqueaBanner = document.body && document.body.classList.contains('tm-no-oferta-banner');
     const inicio = document.getElementById('vistaInicio');
-    const detalle = document.getElementById('productDetailModal');
     const inicioVisible = !inicio || getComputedStyle(inicio).display !== 'none';
-    const detalleAbierto = detalle && !detalle.classList.contains('hidden') && getComputedStyle(detalle).display !== 'none';
-    return inicioVisible && !detalleAbierto;
+    const detalleAbierto = tmElementoVisible('productDetailModal') && !document.getElementById('productDetailModal').classList.contains('hidden');
+    const otraVistaVisible = tmElementoVisible('vistaCategoria') || tmElementoVisible('vistaMeGusta') || tmElementoVisible('vistaPedidos');
+    return inicioVisible && !detalleAbierto && !otraVistaVisible && !bodyBloqueaBanner;
 }
 
 function actualizarVisibilidadBannerOferta(esHome) {
     const banner = document.getElementById('urgenciaBanner');
+    if (document.body) document.body.classList.toggle('tm-no-oferta-banner', !esHome);
     if (!banner) return;
     if (esHome) {
+        if (document.body) document.body.classList.remove('tm-no-oferta-banner');
         verificarOfertasYMostrarBanner();
     } else {
-        banner.style.display = 'none';
+        banner.style.setProperty('display', 'none', 'important');
         banner.onclick = null;
         if (typeof actualizarOffsetsUI === 'function') setTimeout(actualizarOffsetsUI, 0);
     }
@@ -2658,7 +2666,7 @@ function verificarOfertasYMostrarBanner() {
     // El banner superior solo debe verse en el inicio.
     // En categorías/listados/detalle ya existen etiquetas dentro de las tarjetas.
     if (typeof tmVistaInicioActiva === 'function' && !tmVistaInicioActiva()) {
-        banner.style.display = 'none';
+        banner.style.setProperty('display', 'none', 'important');
         banner.onclick = null;
         if (typeof actualizarOffsetsUI === 'function') setTimeout(actualizarOffsetsUI, 0);
         return;
