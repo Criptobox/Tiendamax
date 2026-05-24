@@ -1406,3 +1406,14 @@ html body #productDetailModal .detail-category {
         justify-self: center !important;
     }
 }
+
+
+/* ============================================================
+   HOTFIX 2026-05-24H — Ocultar frases pequeñas en barra social
+   En escritorio se veía texto de mini testimonios al lado de las
+   valoraciones. Dejamos solo los 3 indicadores limpios.
+   ============================================================ */
+html body .prueba-mini-reviews,
+html body .prueba-reviews-sep {
+    display: none !important;
+}
