@@ -239,22 +239,22 @@
     <style>
     /* ── Barra de moneda premium ── */
     .currency-bar {
-        background: linear-gradient(135deg,rgba(18,18,26,.96),rgba(28,28,40,.96)) !important;
-        border: 1px solid rgba(255,106,0,.22) !important;
-        padding: 8px 16px !important;
+        background: linear-gradient(90deg,rgba(18,18,26,.98),rgba(28,28,40,.98)) !important;
+        border-bottom: 1px solid rgba(255,106,0,.22) !important;
+        padding: 7px 16px !important;
         display: flex !important;
         align-items: center !important;
         justify-content: center !important;
         gap: 12px !important;
-        position: relative !important;
-        top: auto !important;
-        z-index: auto !important;
-        box-shadow: 0 10px 26px rgba(0,0,0,.30) !important;
+        position: sticky !important;
+        top: calc(var(--tm-safe-top, 0px) + var(--tm-urgencia-h, 0px) + var(--tm-header-h, 70px)) !important;
+        z-index: 1002 !important;
+        box-shadow: 0 2px 14px rgba(0,0,0,.4) !important;
         flex-wrap: nowrap !important;
-        width: fit-content !important;
-        max-width: calc(100% - 24px) !important;
-        margin: 10px auto 12px !important;
-        border-radius: 18px !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        border-radius: 0 !important;
     }
     .tasa-info-prefix {
         font-size: 12px;
@@ -302,17 +302,12 @@
 
     @media (max-width: 768px) {
         .currency-bar {
-            width: calc(100% - 20px) !important;
-            max-width: calc(100% - 20px) !important;
-            justify-content: space-between !important;
-            padding: 8px 12px !important;
+            justify-content: center !important;
+            padding: 7px 10px !important;
             gap: 8px !important;
-            margin: 8px auto 10px !important;
-            border-radius: 16px !important;
         }
         .tasa-info-prefix {
             font-size: 11px;
-            flex-shrink: 0;
         }
         .currency-bar .cur-btn {
             padding: 5px 12px !important;

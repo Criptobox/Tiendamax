@@ -1146,9 +1146,22 @@ function mostrarNotificacion(mensaje, tipo = 'success') {
 
 // ===== NAVEGACIÓN ENTRE VISTAS =====
 
+function actualizarVisibilidadBannerOferta(esHome) {
+    const banner = document.getElementById('urgenciaBanner');
+    if (!banner) return;
+    if (esHome) {
+        verificarOfertasYMostrarBanner();
+    } else {
+        banner.style.display = 'none';
+        banner.onclick = null;
+        if (typeof actualizarOffsetsUI === 'function') setTimeout(actualizarOffsetsUI, 0);
+    }
+}
+
 function mostrarVistaInicio() {
     document.getElementById('vistaInicio').style.display = 'block';
     document.getElementById('vistaCategoria').style.display = 'none';
+    actualizarVisibilidadBannerOferta(true);
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
@@ -1163,6 +1176,7 @@ function mostrarVistaCategoria(categoria) {
     }
     document.getElementById('vistaInicio').style.display = 'none';
     document.getElementById('vistaCategoria').style.display = 'block';
+    actualizarVisibilidadBannerOferta(false);
 
     const icono = obtenerIconoCategoria(categoria);
     const titulo = categoria === 'Todas' ? '🛍️ Todos los Productos' : `${icono} ${categoria}`;
@@ -2716,6 +2730,7 @@ function inicializarTienda() {
 
     iniciarCountdownsActivos();
     actualizarOffsetsUI();
+    actualizarVisibilidadBannerOferta(true);
     setTimeout(actualizarOffsetsUI, 200);
     setTimeout(actualizarOffsetsUI, 1200);
     window.addEventListener('resize', actualizarOffsetsUI);
@@ -4333,6 +4348,7 @@ function mostrarVistaMeGusta() {
     const vistaEl = document.getElementById('vistaMeGusta');
     if (!vistaEl) return;
     vistaEl.style.display = 'block';
+    actualizarVisibilidadBannerOferta(false);
 
     const statsEl  = document.getElementById('meGustaStats');
     const grid     = document.getElementById('meGustaGrid');
@@ -4436,6 +4452,7 @@ function mostrarVistaPedidos() {
     const vistaEl = document.getElementById('vistaPedidos');
     if (!vistaEl) return;
     vistaEl.style.display = 'block';
+    actualizarVisibilidadBannerOferta(false);
 
     const pedidos   = JSON.parse(localStorage.getItem('pedidos_cliente_v1') || '[]');
     const statsEl   = document.getElementById('pedidosStats');
