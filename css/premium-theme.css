@@ -1256,7 +1256,7 @@ html body .currency-bar {
         justify-content: center !important;
         gap: 10px !important;
         background: linear-gradient(135deg,rgba(18,18,26,.96),rgba(28,28,40,.96)) !important;
-        border: 1px solid rgba(255,106,0,.20) !important;
+        border: 1px solid rgba(201,169,110,.42) !important;
         box-shadow: 0 8px 20px rgba(0,0,0,.24) !important;
     }
 
@@ -1299,7 +1299,7 @@ html body .currency-bar {
    ============================================================ */
 html body .currency-bar {
     background: linear-gradient(135deg,rgba(18,18,26,.97),rgba(28,28,40,.97)) !important;
-    border: 1px solid rgba(255,106,0,.20) !important;
+    border: 1px solid rgba(201,169,110,.42) !important;
     border-radius: 26px !important;
     width: min(920px, calc(100% - 28px)) !important;
     max-width: calc(100% - 28px) !important;
@@ -1310,7 +1310,7 @@ html body .currency-bar {
     align-items: stretch !important;
     justify-content: center !important;
     gap: 12px !important;
-    box-shadow: 0 10px 26px rgba(0,0,0,.30) !important;
+    box-shadow: 0 10px 26px rgba(0,0,0,.30), 0 0 0 1px rgba(201,169,110,.08) !important;
 }
 html body .currency-card-top,
 html body .currency-card-bottom {
@@ -1336,7 +1336,7 @@ html body .tasa-info-prefix {
 }
 html body .currency-bar .currency-toggle {
     background: rgba(0,0,0,.34) !important;
-    border: 1px solid rgba(255,106,0,.14) !important;
+    border: 1px solid rgba(201,169,110,.20) !important;
     border-radius: 20px !important;
     padding: 7px !important;
     display: grid !important;
