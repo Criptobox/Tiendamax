@@ -4817,15 +4817,13 @@ function setCurrency(moneda) {
     // Actualizar botones
     document.getElementById('curUSD')?.classList.toggle('active', moneda === 'USD');
     document.getElementById('curMN')?.classList.toggle('active', moneda === 'MN');
-    // Actualizar etiqueta de tasa / estado
+    // Actualizar etiqueta de tasa
     const tasa = getTasaMN();
     const label = document.getElementById('tasaLabel');
-    const status = document.getElementById('currencyStatusText');
     if (label) {
-        label.textContent = tasa > 0 ? ('1 USD = ' + tasa + ' MN') : 'Configura la tasa';
-    }
-    if (status) {
-        status.textContent = tasa > 0 ? 'Actualizada hoy' : 'Sin tasa';
+        label.textContent = tasa > 0
+            ? (moneda === 'MN' ? `Tasa: 1 USD = ${tasa} MN` : '')
+            : (moneda === 'MN' ? '⚠️ Configura la tasa en Ajustes' : '');
     }
     // Actualizar todos los precios visibles
     actualizarPreciosMostrados();
@@ -4887,6 +4885,7 @@ function actualizarBurbujaTasa() {
             'animation:tasaBurbujaIn 0.4s cubic-bezier(.34,1.56,.64,1) both',
         ].join(';');
         burbuja.title = 'Tasa de cambio del día (incluye margen)';
+        // Inyectar keyframe solo una vez
         if (!document.getElementById('tasaBurbujaStyle')) {
             const s = document.createElement('style');
             s.id = 'tasaBurbujaStyle';
@@ -4902,29 +4901,28 @@ function actualizarBurbujaTasa() {
         }
         document.body.appendChild(burbuja);
     }
+    // Burbuja flotante oculta — la tasa se muestra en la barra del header
     burbuja.style.display = 'none';
 
+    // Actualizar barra de moneda del navbar
     const curMNBtn = document.getElementById('curMN');
     const tasaLabel = document.getElementById('tasaLabel');
-    const status = document.getElementById('currencyStatusText');
+    // Solo actualizar el botón del toggle; el tasaLabel está oculto
     if (tasa > 0) {
         if (curMNBtn) curMNBtn.textContent = tasa + ' MN';
-        if (tasaLabel) tasaLabel.textContent = '1 USD = ' + tasa + ' MN';
-        if (status) status.textContent = 'Actualizada hoy';
     } else {
         if (curMNBtn) curMNBtn.textContent = '-- MN';
-        if (tasaLabel) tasaLabel.textContent = 'Configura la tasa';
-        if (status) status.textContent = 'Sin tasa';
     }
+    if (tasaLabel) tasaLabel.style.display = 'none';
 }
 
 // Inicializar barra de moneda al cargar
 document.addEventListener('DOMContentLoaded', () => {
     const tasa = getTasaMN();
     const label = document.getElementById('tasaLabel');
-    const status = document.getElementById('currencyStatusText');
-    if (label) label.textContent = tasa > 0 ? `1 USD = ${tasa} MN` : 'Configura la tasa';
-    if (status) status.textContent = tasa > 0 ? 'Actualizada hoy' : 'Sin tasa';
+    if (label && _monedaActual === 'MN' && tasa > 0) {
+        label.textContent = `Tasa: 1 USD = ${tasa} MN`;
+    }
     if (_monedaActual === 'MN') {
         document.getElementById('curUSD')?.classList.remove('active');
         document.getElementById('curMN')?.classList.add('active');

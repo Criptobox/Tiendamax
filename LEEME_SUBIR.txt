@@ -1,10 +1,9 @@
 PAQUETE LISTO PARA SUBIR
 
-Nuevo cambio implementado:
-- tarjeta de moneda responsive inspirada en el preview
-- versión compacta en desktop
-- versión ampliada en móvil
-- sw.js actualizado a v18 para refresco de caché
+Último ajuste aplicado:
+- móvil: header en una sola línea
+- móvil: la barra de tasa queda en forma de píldora sin cambiar de lugar
+- sw.js actualizado a v17 para refresco de caché
 
 Si la app estaba instalada:
 1. Cierra la app

@@ -186,7 +186,7 @@ html body .categoria-card {
     backdrop-filter: blur(12px) !important;
     -webkit-backdrop-filter: blur(12px) !important;
     border: 1px solid var(--line) !important;
-    border-radius: 999px !important;
+    border-radius: 20px !important;
     transition: all .25s !important;
     position: relative !important;
     overflow: hidden !important;
@@ -195,7 +195,7 @@ html body .categoria-card::after {
     content: "" !important;
     position: absolute !important;
     inset: 0 !important;
-    border-radius: 999px !important;
+    border-radius: 20px !important;
     background: radial-gradient(circle at 50% 0%, rgba(255,106,0,.15), transparent 65%) !important;
     opacity: 0 !important;
     transition: .3s !important;
@@ -212,7 +212,7 @@ html body .categoria-card:hover::after { opacity: 1 !important; }
 html body .categoria-card .cat-icon {
     width: 56px !important;
     height: 56px !important;
-    border-radius: 999px !important;
+    border-radius: 18px !important;
     background: rgba(255,255,255,.05) !important;
     border: 1px solid rgba(255,255,255,.09) !important;
     box-shadow: 0 4px 16px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.08) !important;
@@ -235,7 +235,7 @@ html body .producto-card {
     backdrop-filter: blur(14px) !important;
     -webkit-backdrop-filter: blur(14px) !important;
     border: 1px solid var(--line) !important;
-    border-radius: 999px !important;
+    border-radius: 20px !important;
     border-bottom: 1px solid var(--line) !important;
     box-shadow: none !important;
     transition: all .28s !important;
@@ -341,7 +341,7 @@ html body .prueba-sep { color: var(--line) !important; }
 html body .cta-banner, html body .cta-inline {
     background: linear-gradient(135deg, rgba(255,106,0,.22), rgba(255,61,0,.14)) !important;
     border: 1px solid rgba(255,106,0,.25) !important;
-    border-radius: 999px !important;
+    border-radius: 20px !important;
 }
 
 /* ── BENEFICIOS ── */
@@ -388,7 +388,7 @@ html body .whatsapp-btn {
     backdrop-filter: blur(16px) !important;
     -webkit-backdrop-filter: blur(16px) !important;
     border: 1px solid rgba(37,211,102,.25) !important;
-    border-radius: 999px !important;
+    border-radius: 20px !important;
     width: auto !important;
     height: auto !important;
     padding: 11px 16px !important;
@@ -416,7 +416,7 @@ html body .whatsapp-group-btn {
     background: rgba(20,28,22,.85) !important;
     backdrop-filter: blur(16px) !important;
     border: 1px solid rgba(37,211,102,.2) !important;
-    border-radius: 999px !important;
+    border-radius: 20px !important;
     width: auto !important; height: auto !important;
     padding: 11px 16px !important;
     animation: none !important;
@@ -609,7 +609,7 @@ html body .mas-vendidos {
 }
 
 html body .producto-card {
-    border-radius: 999px !important;
+    border-radius: 18px !important;
     overflow: hidden !important;
 }
 
@@ -718,7 +718,7 @@ html body .mini-review-item {
 
 html body .beneficio-card,
 html body .testimonio-card {
-    border-radius: 999px !important;
+    border-radius: 18px !important;
 }
 
 html body .beneficio-card h3,
@@ -749,7 +749,7 @@ html body .pedido-card,
 html body .rel-card,
 html body .cs-card,
 html body .resena-item {
-    border-radius: 999px !important;
+    border-radius: 16px !important;
 }
 
 html body .carrito-total-val,
@@ -855,7 +855,7 @@ html body .theme-toggle {
     }
 
     html body .categoria-card {
-        border-radius: 999px !important;
+        border-radius: 16px !important;
         padding: 18px 12px !important;
     }
 
@@ -892,7 +892,7 @@ html body .theme-toggle {
     html body .whatsapp-btn,
     html body .whatsapp-group-btn {
         padding: 10px 13px !important;
-        border-radius: 999px !important;
+        border-radius: 16px !important;
     }
 
     html body .theme-toggle {
@@ -1229,7 +1229,7 @@ html body .currency-bar {
     html body .logo-badge {
         width: 30px !important;
         height: 30px !important;
-        font-size: 15px !important;
+        font-size: 17px !important;
         border-radius: 10px !important;
     }
 
@@ -1256,7 +1256,7 @@ html body .currency-bar {
         justify-content: center !important;
         gap: 10px !important;
         background: linear-gradient(135deg,rgba(18,18,26,.96),rgba(28,28,40,.96)) !important;
-        border: 1px solid rgba(201,169,110,.42) !important;
+        border: 1px solid rgba(255,106,0,.20) !important;
         box-shadow: 0 8px 20px rgba(0,0,0,.24) !important;
     }
 
@@ -1280,7 +1280,7 @@ html body .currency-bar {
 
 @media (max-width: 420px) {
     html body .logo .logo-premium {
-        font-size: 15px !important;
+        font-size: 17px !important;
     }
     html body .currency-bar {
         padding: 7px 12px !important;
@@ -1290,260 +1290,5 @@ html body .currency-bar {
         min-width: 94px !important;
         padding: 5px 12px !important;
         font-size: 11px !important;
-    }
-}
-
-
-/* ============================================================
-   HOTFIX 2026-05-24F — Tarjeta de moneda responsive
-   ============================================================ */
-html body .currency-bar {
-    background: linear-gradient(135deg,rgba(18,18,26,.97),rgba(28,28,40,.97)) !important;
-    border: 1px solid rgba(201,169,110,.42) !important;
-    border-radius: 999px !important;
-    width: min(920px, calc(100% - 28px)) !important;
-    max-width: calc(100% - 28px) !important;
-    margin: 10px auto 12px !important;
-    padding: 12px 16px 11px !important;
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: stretch !important;
-    justify-content: center !important;
-    gap: 12px !important;
-    box-shadow: 0 10px 26px rgba(0,0,0,.30), 0 0 0 1px rgba(201,169,110,.08) !important;
-}
-html body .currency-card-top,
-html body .currency-card-bottom {
-    display:flex !important;
-    align-items:center !important;
-    justify-content:space-between !important;
-    gap:12px !important;
-    width:100% !important;
-}
-html body .currency-card-heading {
-    display:flex !important;
-    align-items:center !important;
-    gap:10px !important;
-    min-width:170px !important;
-}
-html body .currency-heading-icon {
-    font-size:22px !important;
-}
-html body .tasa-info-prefix {
-    font-size:15px !important;
-    color: rgba(255,255,255,.88) !important;
-    font-weight: 900 !important;
-}
-html body .currency-bar .currency-toggle {
-    background: rgba(0,0,0,.34) !important;
-    border: 1px solid rgba(201,169,110,.20) !important;
-    border-radius: 999px !important;
-    padding: 5px !important;
-    display: grid !important;
-    grid-template-columns: 1fr 1fr !important;
-    gap: 10px !important;
-    flex: 1 1 auto !important;
-    min-width: 280px !important;
-}
-html body .currency-bar .cur-btn {
-    min-height: 56px !important;
-    border-radius: 999px !important;
-    padding: 10px 18px !important;
-    font-size: 15px !important;
-    font-weight: 900 !important;
-    text-align: center !important;
-}
-html body .currency-rate-wrap {
-    display:flex !important;
-    align-items:center !important;
-    gap:10px !important;
-}
-html body .currency-trend {
-    font-size:24px !important;
-}
-html body .currency-bar .tasa-info {
-    font-size:14px !important;
-    font-weight:900 !important;
-    color:#f7f0e8 !important;
-    background: transparent !important;
-    border: none !important;
-    padding: 0 !important;
-}
-html body .currency-status {
-    display:flex !important;
-    align-items:center !important;
-    gap:10px !important;
-    color:#7ae28f !important;
-    font-size:14px !important;
-    font-weight:800 !important;
-}
-html body .currency-status-dot {
-    width: 12px !important;
-    height: 12px !important;
-    border-radius: 999px !important;
-    background: #6de085 !important;
-    box-shadow: 0 0 0 4px rgba(109,224,133,.12), 0 0 18px rgba(109,224,133,.28) !important;
-}
-@media (max-width: 768px) {
-    html body .currency-bar {
-        width: calc(100% - 20px) !important;
-        max-width: calc(100% - 20px) !important;
-        padding: 10px 12px 10px !important;
-        border-radius: 999px !important;
-        gap: 10px !important;
-    }
-    html body .currency-card-top,
-    html body .currency-card-bottom {
-        flex-wrap: wrap !important;
-    }
-    html body .currency-card-heading {
-        flex: 1 1 100% !important;
-        min-width: 0 !important;
-    }
-    html body .tasa-info-prefix {
-        font-size: 13px !important;
-    }
-    html body .currency-heading-icon {
-        font-size: 20px !important;
-    }
-    html body .currency-bar .currency-toggle {
-        width: 100% !important;
-        min-width: 0 !important;
-        gap: 8px !important;
-        padding: 6px !important;
-        border-radius: 999px !important;
-    }
-    html body .currency-bar .cur-btn {
-        min-height: 52px !important;
-        padding: 8px 12px !important;
-        font-size: 14px !important;
-        border-radius: 999px !important;
-    }
-    html body .currency-trend {
-        font-size: 20px !important;
-    }
-    html body .currency-bar .tasa-info,
-    html body .currency-status {
-        font-size: 13px !important;
-    }
-    html body .currency-status {
-        margin-left: auto !important;
-    }
-}
-@media (max-width: 420px) {
-    html body .currency-bar {
-        width: calc(100% - 18px) !important;
-        max-width: calc(100% - 18px) !important;
-        padding: 12px 12px 10px !important;
-        border-radius: 999px !important;
-    }
-    html body .currency-bar .cur-btn {
-        min-height: 48px !important;
-        font-size: 13px !important;
-        padding: 10px 8px !important;
-    }
-    html body .currency-bar .tasa-info,
-    html body .currency-status {
-        font-size: 12px !important;
-    }
-}
-
-
-/* ============================================================
-   HOTFIX 2026-05-24G — Barra de moneda simple tipo píldora
-   ============================================================ */
-html body .currency-bar {
-    background: linear-gradient(135deg,rgba(18,18,26,.96),rgba(28,28,40,.96)) !important;
-    border: 1px solid rgba(201,169,110,.36) !important;
-    border-radius: 999px !important;
-    padding: 8px 12px !important;
-    display: flex !important;
-    flex-direction: row !important;
-    align-items: center !important;
-    justify-content: center !important;
-    gap: 10px !important;
-    width: fit-content !important;
-    max-width: calc(100% - 18px) !important;
-    margin: 10px auto 12px !important;
-    box-shadow: 0 8px 20px rgba(0,0,0,.24), 0 0 0 1px rgba(201,169,110,.08) !important;
-}
-html body .currency-card-top,
-html body .currency-card-bottom,
-html body .currency-rate-wrap,
-html body .currency-status,
-html body .currency-status-dot,
-html body .currency-trend {
-    display: none !important;
-}
-html body .currency-inline-label {
-    display:flex !important;
-    align-items:center !important;
-    gap:8px !important;
-    flex-shrink:0 !important;
-}
-html body .currency-heading-icon {
-    font-size:18px !important;
-}
-html body .tasa-info-prefix {
-    font-size:13px !important;
-    font-weight:900 !important;
-    color:rgba(255,255,255,.86) !important;
-}
-html body .currency-bar .currency-toggle {
-    background: rgba(0,0,0,.34) !important;
-    border: 1px solid rgba(201,169,110,.16) !important;
-    border-radius: 999px !important;
-    padding: 4px !important;
-    display:flex !important;
-    gap:6px !important;
-    min-width: 0 !important;
-}
-html body .currency-bar .cur-btn {
-    min-height: 42px !important;
-    min-width: 108px !important;
-    padding: 8px 14px !important;
-    border-radius: 999px !important;
-    font-size: 14px !important;
-    font-weight: 900 !important;
-}
-html body .currency-bar .tasa-info,
-html body .currency-status-text {
-    display:none !important;
-}
-@media (max-width: 768px) {
-    html body .currency-bar {
-        width: calc(100% - 18px) !important;
-        max-width: calc(100% - 18px) !important;
-        gap: 8px !important;
-        padding: 8px 10px !important;
-    }
-    html body .currency-heading-icon {
-        font-size:16px !important;
-    }
-    html body .tasa-info-prefix {
-        font-size:12px !important;
-    }
-    html body .currency-bar .currency-toggle {
-        gap:4px !important;
-    }
-    html body .currency-bar .cur-btn {
-        min-width: 90px !important;
-        min-height: 40px !important;
-        padding: 8px 10px !important;
-        font-size: 13px !important;
-    }
-}
-@media (max-width: 420px) {
-    html body .currency-bar {
-        gap: 6px !important;
-        padding: 7px 9px !important;
-    }
-    html body .tasa-info-prefix {
-        font-size:11px !important;
-    }
-    html body .currency-bar .cur-btn {
-        min-width: 82px !important;
-        font-size: 12px !important;
-        padding: 8px 8px !important;
     }
 }
