@@ -3825,46 +3825,11 @@ renderizarProductos = function() {
     const productosGrid = document.getElementById('productosGrid');
     if (!productosGrid) { _origRenderProductosFinal(); return; }
 
-    // DEBUG: panel visible en pantalla para diagnosticar (móviles sin consola)
-    function _tmDebugPanel(msg) {
-        var box = document.getElementById('tmDebugBox');
-        if (!box) {
-            box = document.createElement('div');
-            box.id = 'tmDebugBox';
-            box.style.cssText = 'position:fixed;top:10px;left:10px;right:10px;max-height:50vh;overflow:auto;background:rgba(0,0,0,0.95);color:#0f0;font-family:monospace;font-size:11px;padding:10px;border:2px solid #0f0;border-radius:6px;z-index:99999;white-space:pre-wrap;word-break:break-word;';
-            var close = document.createElement('button');
-            close.textContent = 'X';
-            close.style.cssText = 'position:absolute;top:4px;right:8px;background:#f00;color:#fff;border:none;width:24px;height:24px;border-radius:50%;font-weight:bold;cursor:pointer;';
-            close.onclick = function() { box.remove(); };
-            box.appendChild(close);
-            document.body.appendChild(box);
-        }
-        var line = document.createElement('div');
-        line.textContent = new Date().toTimeString().substring(0,8) + ' ' + msg;
-        box.appendChild(line);
-        if (box.children.length > 30) box.children[1].remove();
-    }
-    window._tmDebugPanel = _tmDebugPanel;
-
-    _tmDebugPanel('=== RENDER ===');
-    _tmDebugPanel('cat: ' + categoriaSeleccionada);
-    _tmDebugPanel('sub: ' + subcategoriaSeleccionada);
-    _tmDebugPanel('productos: ' + (Array.isArray(productos) ? productos.length : 'NO-ARRAY'));
-    _tmDebugPanel('busqueda: ' + (_heroSearchActivo || '(vacia)'));
-    _tmDebugPanel('precioMin: ' + _heroPrecioMin + ' precioMax: ' + _heroPrecioMax);
-    if (Array.isArray(productos) && productos.length > 0) {
-        _tmDebugPanel('cat 1er prod: "' + productos[0].categoria + '"');
-        var catsUnicas = [];
-        productos.forEach(function(p) { if (catsUnicas.indexOf(p.categoria) === -1) catsUnicas.push(p.categoria); });
-        _tmDebugPanel('cats unicas: ' + catsUnicas.join(','));
-    }
+    // Log de diagnóstico (solo en consola, no panel visual)
     console.log('[TM RENDER]', {
         catSel: categoriaSeleccionada,
         subSel: subcategoriaSeleccionada,
         productos_total: Array.isArray(productos) ? productos.length : 'NO-ARRAY',
-        heroBusqueda: _heroSearchActivo || '(vacía)',
-        precioMin: _heroPrecioMin,
-        precioMax: _heroPrecioMax,
     });
 
     // RESILIENCIA: si productos está vacío, intentar cargar de localStorage
@@ -3883,12 +3848,10 @@ renderizarProductos = function() {
         : productos.filter(p => p.categoria === categoriaSeleccionada);
 
     console.log('[TM RENDER] Tras filtro categoría:', productosFiltrados.length);
-    _tmDebugPanel('tras filtro cat: ' + productosFiltrados.length);
 
     if (categoriaSeleccionada !== 'Todas' && subcategoriaSeleccionada && subcategoriaSeleccionada !== 'Todas') {
         productosFiltrados = productosFiltrados.filter(p => p.subcategoria === subcategoriaSeleccionada);
         console.log('[TM RENDER] Tras filtro subcategoría:', productosFiltrados.length);
-        _tmDebugPanel('tras filtro sub: ' + productosFiltrados.length);
     }
     if (_heroSearchActivo || _heroPrecioMin > 0 || _heroPrecioMax < Infinity) {
         const q = _heroSearchActivo;
@@ -3899,10 +3862,8 @@ renderizarProductos = function() {
             return matchQ;
         });
         console.log('[TM RENDER] Tras filtro búsqueda:', productosFiltrados.length);
-        _tmDebugPanel('tras filtro busq: ' + productosFiltrados.length);
     }
     console.log('[TM RENDER] FINAL productosFiltrados:', productosFiltrados.length);
-    _tmDebugPanel('>>> FINAL: ' + productosFiltrados.length + ' cards a renderizar');
 
     // Ordenar: oferta del día primero
     const ofertaId = getOfertaDiaId();
@@ -5763,78 +5724,3 @@ window.addEventListener('popstate', function() {
 });
 
 
-// ═══════════════════════════════════════════════════════════
-//  🛟 CARGADOR DE EMERGENCIA — siempre asegura que productos esté lleno
-//  Ignora el flujo complejo y simplemente: pide productos.json, lo asigna,
-//  y re-renderiza. Si productos ya estaba lleno, no hace nada.
-// ═══════════════════════════════════════════════════════════
-(function emergencyLoader() {
-    'use strict';
-
-    function panel(msg) {
-        try {
-            var box = document.getElementById('tmDebugBox');
-            if (!box) {
-                box = document.createElement('div');
-                box.id = 'tmDebugBox';
-                box.style.cssText = 'position:fixed;top:10px;left:10px;right:10px;max-height:60vh;overflow:auto;background:rgba(0,0,0,0.95);color:#0f0;font-family:monospace;font-size:11px;padding:10px;border:2px solid #0f0;border-radius:6px;z-index:99999;white-space:pre-wrap;word-break:break-word;';
-                var close = document.createElement('button');
-                close.textContent = 'X';
-                close.style.cssText = 'position:absolute;top:4px;right:8px;background:#f00;color:#fff;border:none;width:24px;height:24px;border-radius:50%;font-weight:bold;cursor:pointer;';
-                close.onclick = function() { box.remove(); };
-                box.appendChild(close);
-                document.body.appendChild(box);
-            }
-            var line = document.createElement('div');
-            line.textContent = new Date().toTimeString().substring(0,8) + ' [EMERGENCY] ' + msg;
-            box.appendChild(line);
-        } catch(e) {}
-    }
-
-    async function intentarCargar(intento) {
-        try {
-            panel('intento #' + intento + ' cargando productos.json...');
-            var res = await fetch('productos.json?_=' + Date.now());
-            if (!res.ok) {
-                panel('❌ fetch falló: HTTP ' + res.status);
-                return;
-            }
-            var data = await res.json();
-            panel('✅ fetch OK, ' + data.length + ' productos del JSON');
-
-            if (typeof window.productos === 'undefined') {
-                window.productos = [];
-                panel('⚠️ productos era undefined, creando array');
-            }
-
-            // Forzar asignación
-            if (!Array.isArray(window.productos) || window.productos.length === 0) {
-                window.productos = data;
-                try { localStorage.setItem('productos', JSON.stringify(data)); } catch(e) {}
-                panel('✅ productos asignados a window: ' + window.productos.length);
-
-                // Forzar re-render de todo
-                if (typeof renderizarCategoriasHome === 'function') {
-                    renderizarCategoriasHome();
-                    panel('✅ renderizarCategoriasHome OK');
-                }
-                if (typeof renderizarMasVendidos === 'function') {
-                    renderizarMasVendidos();
-                }
-                if (typeof renderizarProductos === 'function') {
-                    renderizarProductos();
-                    panel('✅ renderizarProductos OK');
-                }
-            } else {
-                panel('ℹ️ productos ya tenía ' + window.productos.length + ' items, no hago nada');
-            }
-        } catch(e) {
-            panel('❌ Error: ' + e.message);
-        }
-    }
-
-    // Esperar 3 segundos a que el flujo normal cargue
-    setTimeout(function() { intentarCargar(1); }, 3000);
-    // Reintentar a los 6s por si el primer intento aún no había completado
-    setTimeout(function() { intentarCargar(2); }, 6000);
-})();
