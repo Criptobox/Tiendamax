@@ -5112,7 +5112,11 @@ async function guardarConfigFirebaseAdmin() {
     const serverKey = serverInput.value.trim();
     
     if (!rawJson) {
-        if (status) status.textContent = '⚠️ El JSON de configuración es requerido.';
+        if (status) status.textContent = '⚠️ El JSON de configuración de Firebase es requerido.';
+        return;
+    }
+    if (!vapidKey) {
+        if (status) status.textContent = '⚠️ La Clave VAPID de Web Push es requerida.';
         return;
     }
     
@@ -5128,13 +5132,15 @@ async function guardarConfigFirebaseAdmin() {
     }
     
     // Fallback robusto con Regex si falló o si tiene URLs con enlaces Markdown de chats
+    let fallbackUsed = false;
     if (!parsedConfig || typeof parsedConfig !== 'object' || !parsedConfig.projectId) {
+        fallbackUsed = true;
         parsedConfig = {};
         const lines = rawJson.split('\n');
         for (const line of lines) {
             const cleanLine = line.replace(/\xa0/g, ' ').trim();
-            // Buscar patron clave: "valor" o clave: 'valor'
-            const match = cleanLine.match(/(\w+)\s*:\s*["']([^"']+)["']/);
+            // Buscar patron clave: "valor" o clave: 'valor' o clave: valor (sin comillas para números)
+            const match = cleanLine.match(/(\w+)\s*:\s*["']?([^"',\s\}]+)["']?/);
             if (match) {
                 const key = match[1];
                 let val = match[2];
@@ -5149,7 +5155,9 @@ async function guardarConfigFirebaseAdmin() {
     }
     
     if (!parsedConfig || typeof parsedConfig !== 'object' || !parsedConfig.projectId) {
-        if (status) status.textContent = '❌ JSON inválido o falta el campo "projectId".';
+        if (status) {
+            status.textContent = '❌ Error: Configuración inválida o falta el campo "projectId". Contenido parseado: ' + JSON.stringify(parsedConfig);
+        }
         return;
     }
     
