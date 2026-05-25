@@ -863,7 +863,7 @@
         });
     })();
     </script>
-    <script src="js/script.js?v=23" defer></script>
+    <script src="js/script.js?v=25" defer></script>
     <script src="js/subcategorias.js?v=10" defer></script>
     <script src="js/share-patch.js?v=2" defer></script>
     <script src="js/revolico_integration.js?v=10" defer></script>
@@ -915,6 +915,17 @@
                     refreshing = true;
                     console.log('[SW] Versión nueva activada, recargando...');
                     window.location.reload();
+                });
+
+                // Escuchar mensajes del SW (ej: actualización forzosa)
+                navigator.serviceWorker.addEventListener('message', (event) => {
+                    if (event.data && event.data.type === 'SW_UPDATED') {
+                        console.log('[SW] Recibido SW_UPDATED:', event.data.version);
+                        if (!refreshing) {
+                            refreshing = true;
+                            window.location.reload();
+                        }
+                    }
                 });
             }).catch(() => {});
         });

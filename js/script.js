@@ -2931,7 +2931,10 @@ if (document.readyState === 'loading') {
 
 // ===== COUNTDOWN TIMER =====
 
-let countdownIntervals = {};
+// IMPORTANTE: usar var (no let) porque iniciarCountdownsActivos() puede
+// ser invocada antes de llegar a esta línea (TDZ bug en versión anterior).
+// var tiene hoisting y se inicializa a undefined al inicio del script.
+var countdownIntervals = countdownIntervals || {};
 
 function guardarCountdown() {
     const productId = document.getElementById('countdownProductSelect').value;

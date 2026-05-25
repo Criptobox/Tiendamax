@@ -6,7 +6,7 @@
 // - Manejo de pushsubscriptionchange para no perder tokens
 // ═══════════════════════════════════════════════════════
 
-const CACHE_NAME = 'tiendamax-v29';
+const CACHE_NAME = 'tiendamax-v31';
 const STATIC_ASSETS = [
   '/index.html',
   // CSS público (index.html)
@@ -44,11 +44,22 @@ self.addEventListener('install', e => {
 // ── Activar: borrar caches viejas y tomar control ──
 self.addEventListener('activate', e => {
   e.waitUntil(
-    caches.keys()
-      .then(keys => Promise.all(
+    (async () => {
+      // Borrar TODAS las caches anteriores
+      const keys = await caches.keys();
+      await Promise.all(
         keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k))
-      ))
-      .then(() => self.clients.claim())
+      );
+
+      // Tomar control de todas las pestañas abiertas
+      await self.clients.claim();
+
+      // Forzar reload de las páginas abiertas para que carguen la versión nueva
+      const allClients = await self.clients.matchAll({ type: 'window' });
+      for (const client of allClients) {
+        client.postMessage({ type: 'SW_UPDATED', version: CACHE_NAME });
+      }
+    })()
   );
 });
 
