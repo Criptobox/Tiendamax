@@ -1,0 +1,38 @@
+name: Enviar Notificaciones Push Firebase
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'config.json'
+      - 'productos.json'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  send-notifications:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2 # Necesario para poder comparar HEAD~1 con HEAD
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Instalar dependencias
+        run: |
+          python -m pip install --upgrade pip
+          pip install firebase-admin
+
+      - name: Ejecutar script de notificaciones
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: python scripts/send_notifications.py
