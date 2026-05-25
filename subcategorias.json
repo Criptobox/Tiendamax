@@ -1,0 +1,28 @@
+{
+  "WIFI": [],
+  "ENERGIA": [],
+  "CELULARES": [],
+  "UTILES": [],
+  "CARROS": [
+    "FILTROS",
+    "LUBRICANTES",
+    "PARTES Y PIEZAS",
+    "REFRIGERANTES",
+    "PIEZAS Y OTROS"
+  ],
+  "ROPA": [
+    "HOMBRE",
+    "MUJER"
+  ],
+  "LENCERIA": [],
+  "SEGURIDAD": [],
+  "HOGAR": [
+    "DECORACION",
+    "ELECTRODOMÉSTICOS"
+  ],
+  "JUEGOS": [],
+  "MOTOS": [
+    "LUBRICANTES",
+    "PARTES Y PIEZAS"
+  ]
+}

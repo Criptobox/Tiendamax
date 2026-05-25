@@ -1,0 +1,20 @@
+{
+  "tasaMN": 560.0,
+  "ofertaDiaId": "1778104115783",
+  "ofertaDiaTexto": "🔥🔥OFERTA🔥🔥",
+  "ofertaDiaActualizado": "2026-05-25T00:42:57.224Z",
+  "firebaseConfig": {
+    "apiKey": "AIzaSyBKgBv-6BRBji3hKBPdtMRrxLtVH7SW9Zk",
+    "authDomain": "tiendamax-eca0f.firebaseapp.com",
+    "databaseURL": "https://tiendamax-eca0f-default-rtdb.firebaseio.com",
+    "projectId": "tiendamax-eca0f",
+    "storageBucket": "tiendamax-eca0f.firebasestorage.app",
+    "messagingSenderId": "152643654410",
+    "appId": "1:152643654410:web:9a09d009907d337bb6a0f3",
+    "measurementId": "G-94XFLKKEP6",
+    "vapidKey": "BOzdOj-PPXUd5sIgREro1duS6tKfDUiJDamGkHXp1eqy2unP770tygukTryDkZVDPNccV-Qt5Hi8_52BF6peYic"
+  },
+  "actualizado": "2026-05-25T15:34:22.418166+00:00",
+  "tasaFuente": "elTOQUE",
+  "tasaActualizada": "2026-05-25T11:25:43.000Z"
+}
