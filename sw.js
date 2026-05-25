@@ -141,8 +141,46 @@ self.addEventListener('push', e => {
     icono: '/icons/icon-192.png'
   };
   if (e.data) {
-    try { datos = { ...datos, ...e.data.json() }; }
-    catch { datos.cuerpo = e.data.text(); }
+    try {
+      const jsonPayload = e.data.json();
+      console.log('[SW] Push recibido:', jsonPayload);
+      
+      // Soporte para estructura de FCM v1 (con campos nested)
+      if (jsonPayload.notification) {
+        datos.titulo = jsonPayload.notification.title || datos.titulo;
+        datos.cuerpo = jsonPayload.notification.body || datos.cuerpo;
+        if (jsonPayload.notification.icon) {
+          datos.icono = jsonPayload.notification.icon;
+        } else if (jsonPayload.notification.image) {
+          datos.icono = jsonPayload.notification.image;
+        }
+      }
+      
+      if (jsonPayload.data) {
+        datos.url = jsonPayload.data.url || jsonPayload.data.click_action || datos.url;
+        datos.titulo = jsonPayload.data.title || jsonPayload.data.titulo || datos.titulo;
+        datos.cuerpo = jsonPayload.data.body || jsonPayload.data.cuerpo || datos.cuerpo;
+        if (jsonPayload.data.icon) {
+          datos.icono = jsonPayload.data.icon;
+        }
+      }
+      
+      // Soporte para campos directos (Planos)
+      if (jsonPayload.title || jsonPayload.titulo) {
+        datos.titulo = jsonPayload.title || jsonPayload.titulo;
+      }
+      if (jsonPayload.body || jsonPayload.cuerpo) {
+        datos.cuerpo = jsonPayload.body || jsonPayload.cuerpo;
+      }
+      if (jsonPayload.url) {
+        datos.url = jsonPayload.url;
+      }
+      if (jsonPayload.icon || jsonPayload.icono) {
+        datos.icono = jsonPayload.icon || jsonPayload.icono;
+      }
+    } catch (err) {
+      datos.cuerpo = e.data.text();
+    }
   }
   e.waitUntil(
     self.registration.showNotification(datos.titulo, {

@@ -412,6 +412,57 @@
                         </div>
                         <button type="submit" class="btn btn-primary" style="width: 100%;">💾 Guardar Configuración</button>
                     </form>
+
+                    <!-- Notificaciones Push (Firebase) -->
+                    <div class="admin-config-box firebase" style="margin-top: 25px; border: 2px solid #C9A96E; border-radius: 12px; padding: 20px; background: rgba(201, 169, 110, 0.05);">
+                        <h4 class="admin-h4-flex" style="color:#C9A96E; margin-bottom: 12px;"><span style="font-size:20px;">🔔</span> Notificaciones Push (Firebase)</h4>
+                        <p class="admin-hint" style="color:#aaa; font-size:12px; margin-bottom:15px; line-height:1.4;">Configure Firebase Cloud Messaging para enviar notificaciones automáticas instantáneas al agregar nuevos productos, lanzar ofertas o cambiar la tasa de cambio.</p>
+                        
+                        <div class="form-group" style="margin-bottom: 15px;">
+                            <label style="display:block; margin-bottom:5px; font-weight:bold; color:#fff;">Firebase Web Config (JSON o Código de Inicialización):</label>
+                            <textarea id="firebaseConfigJson" placeholder="Pega aquí el objeto firebaseConfig completo que te da la consola de Firebase...
+Ej:
+{
+  apiKey: 'AIzaSy...',
+  authDomain: '...',
+  projectId: '...',
+  ...
+}" rows="7" style="font-family: monospace; font-size: 13px; width: 100%; border: 1px solid var(--border-color); border-radius: 8px; background: #222; color: #fff; padding: 10px; box-sizing: border-box; resize: vertical;"></textarea>
+                            <p class="admin-note" style="font-size:11px; margin-top:5px; opacity:0.7;">Consigue esto en la Consola de Firebase -> Configuración del proyecto -> Tus Apps (Web App).</p>
+                        </div>
+
+                        <div class="form-group" style="margin-bottom: 15px;">
+                            <label style="display:block; margin-bottom:5px; font-weight:bold; color:#fff;">Clave VAPID de Web Push (Key Pair):</label>
+                            <input type="text" id="firebaseVapidKey" placeholder="Pega tu clave VAPID (Key Pair) de Firebase" style="width: 100%; box-sizing: border-box; background:#222; color:#fff; border:1px solid var(--border-color); border-radius:8px; padding:8px;">
+                            <p class="admin-note" style="font-size:11px; margin-top:5px; opacity:0.7;">Consíguela en Firebase Console -> Configuración del proyecto -> Cloud Messaging -> Web configuration -> Web Push certificates.</p>
+                        </div>
+
+                        <div class="form-group" style="margin-bottom: 15px;">
+                            <label style="display:block; margin-bottom:5px; font-weight:bold; color:#fff;">Clave de Servidor FCM Legacy (Opcional):</label>
+                            <input type="text" id="firebaseServerKey" placeholder="Pega tu clave de servidor (Server Key) para envío directo" style="width: 100%; box-sizing: border-box; background:#222; color:#fff; border:1px solid var(--border-color); border-radius:8px; padding:8px;">
+                            <p class="admin-note" style="font-size:11px; margin-top:5px; opacity:0.7;">Requerido para enviar notificaciones de prueba o manuales directamente desde este panel de control.</p>
+                        </div>
+
+                        <button onclick="guardarConfigFirebaseAdmin()" type="button" class="btn btn-primary" style="background:linear-gradient(135deg,#C9A96E,#E8C88A); color:#0D0D0D; width:100%; font-weight:800; border:none; border-radius:8px; padding:12px; cursor:pointer; font-size:14px;">💾 Guardar Configuración de Firebase</button>
+                        <p id="firebaseConfigStatus" style="font-size:12px; margin-top:8px; text-align:center; color:#C9A96E; font-weight:bold;"></p>
+
+                        <!-- Sub-sección Envío Manual -->
+                        <div class="fcm-manual-send" style="margin-top: 20px; border-top: 1px dashed rgba(255,255,255,0.15); padding-top: 15px;">
+                            <h5 style="margin-bottom: 10px; color: #fff; font-size: 14px; display:flex; align-items:center; gap:6px;">📣 Enviar Notificación Manual</h5>
+                            
+                            <div class="form-group" style="margin-bottom: 10px;">
+                                <input type="text" id="manualPushTitle" placeholder="Título (ej: ¡Oferta Flash de Fin de Semana!)" style="font-size: 13px; width: 100%; box-sizing: border-box; background:#181818; color:#fff; border:1px solid #333; border-radius:6px; padding:6px 10px;">
+                            </div>
+                            <div class="form-group" style="margin-bottom: 10px;">
+                                <input type="text" id="manualPushBody" placeholder="Mensaje (ej: 20% de descuento en todos los calzados)" style="font-size: 13px; width: 100%; box-sizing: border-box; background:#181818; color:#fff; border:1px solid #333; border-radius:6px; padding:6px 10px;">
+                            </div>
+                            <div class="form-group" style="margin-bottom: 10px;">
+                                <input type="text" id="manualPushUrl" placeholder="Ruta/Enlace al hacer click (ej: /p/producto-1778104115783.html)" style="font-size: 13px; width: 100%; box-sizing: border-box; background:#181818; color:#fff; border:1px solid #333; border-radius:6px; padding:6px 10px;">
+                            </div>
+                            <button onclick="enviarPushManualAdmin()" type="button" class="btn btn-secondary" style="background: #2a2a2a; color: #fff; border: 1px solid rgba(255,255,255,0.2); width: 100%; font-size: 13px; padding: 10px; cursor: pointer; border-radius:6px; font-weight:bold;">📣 Enviar Notificación Ahora</button>
+                            <p id="manualPushStatus" style="font-size:11px; margin-top:6px; text-align:center; color:rgba(255,255,255,0.5);"></p>
+                        </div>
+                    </div>
                     <div style="margin-top: 30px; padding: 20px; border: 2px solid #FF6B35; border-radius: 12px; text-align: center; background: rgba(255, 107, 53, 0.05);">
                         <h4 style="margin-bottom: 10px;">🚀 Sincronización Global</h4>
                         <p style="font-size: 13px; margin-bottom: 15px;">Usa este botón cada vez que agregues productos o categorías para que sean visibles para todos.</p>
