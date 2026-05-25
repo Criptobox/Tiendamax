@@ -247,7 +247,8 @@
             <button type="button" class="cur-btn active" id="curUSD" onclick="setCurrency('USD')">💵 USD</button>
             <button type="button" class="cur-btn" id="curMN" onclick="setCurrency('MN')">-- MN</button>
         </div>
-        <span class="tasa-info" id="tasaLabel" style="display:none;"></span>
+        <!-- Tasa-info ocultada: era duplicado del botón "X MN" que ya muestra la tasa -->
+        <span class="tasa-info" id="tasaLabel" style="display:none !important;"></span>
     </div>
 
     <!-- Actualizar tasa desde localStorage antes de que DOMContentLoaded -->
@@ -261,11 +262,8 @@
             var bar = document.getElementById('currencyBar');
             if (tasa > 0) {
                 if (btn) btn.textContent = tasa + ' MN';
-                if (lbl) {
-                    lbl.textContent = '1 USD = ' + tasa + ' MN';
-                    lbl.style.display = 'inline-block';
-                    lbl.style.visibility = 'visible';
-                }
+                // No mostramos la pastilla duplicada: el botón ya muestra la tasa
+                if (lbl) { lbl.textContent = ''; lbl.style.display = 'none'; }
             }
             // Aplicar moneda guardada
             var mon = localStorage.getItem('monedaActual') || 'USD';
@@ -865,7 +863,7 @@
         });
     })();
     </script>
-    <script src="js/script.js?v=19" defer></script>
+    <script src="js/script.js?v=20" defer></script>
     <script src="js/subcategorias.js?v=10" defer></script>
     <script src="js/share-patch.js?v=2" defer></script>
     <script src="js/revolico_integration.js?v=10" defer></script>
@@ -891,10 +889,34 @@
     </script>
 
     <script>
+    // Service Worker con auto-actualización y reload cuando hay versión nueva
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-            navigator.serviceWorker.register('/sw.js')
-                .catch(() => {});
+            navigator.serviceWorker.register('/sw.js').then(reg => {
+                // Si hay un SW esperando, decirle que tome el control YA
+                if (reg.waiting) reg.waiting.postMessage('SKIP_WAITING');
+
+                // Detectar nueva versión
+                reg.addEventListener('updatefound', () => {
+                    const nw = reg.installing;
+                    if (!nw) return;
+                    nw.addEventListener('statechange', () => {
+                        if (nw.state === 'installed' && navigator.serviceWorker.controller) {
+                            // Hay una versión nueva instalada y otro SW activo: actualizar
+                            nw.postMessage('SKIP_WAITING');
+                        }
+                    });
+                });
+
+                // Cuando el nuevo SW toma control, recargar la página
+                let refreshing = false;
+                navigator.serviceWorker.addEventListener('controllerchange', () => {
+                    if (refreshing) return;
+                    refreshing = true;
+                    console.log('[SW] Versión nueva activada, recargando...');
+                    window.location.reload();
+                });
+            }).catch(() => {});
         });
     }
     </script>

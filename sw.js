@@ -1,12 +1,12 @@
 // ═══════════════════════════════════════════════════════
-// TiendaMax — Service Worker v22
+// TiendaMax — Service Worker v26
 // - Cache-first para shell estático
 // - Network-first para JSON de datos
 // - Soporte de Notificaciones Push (FCM)
 // - Manejo de pushsubscriptionchange para no perder tokens
 // ═══════════════════════════════════════════════════════
 
-const CACHE_NAME = 'tiendamax-v25';
+const CACHE_NAME = 'tiendamax-v26';
 const STATIC_ASSETS = [
   '/index.html',
   // CSS público (index.html)

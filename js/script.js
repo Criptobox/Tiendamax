@@ -5008,12 +5008,9 @@ function setCurrency(moneda) {
     document.getElementById('curMN')?.classList.toggle('active', moneda === 'MN');
     // Actualizar etiqueta de tasa
     const tasa = getTasaMN();
+    // tasaLabel está deshabilitado: la tasa se muestra en el botón del toggle
     const label = document.getElementById('tasaLabel');
-    if (label) {
-        label.textContent = tasa > 0
-            ? (moneda === 'MN' ? `Tasa: 1 USD = ${tasa} MN` : '')
-            : (moneda === 'MN' ? '⚠️ Configura la tasa en Ajustes' : '');
-    }
+    if (label) { label.textContent = ''; label.style.display = 'none'; }
     // Actualizar todos los precios visibles
     actualizarPreciosMostrados();
 }
@@ -5107,11 +5104,10 @@ function actualizarBurbujaTasa() {
 
 // Inicializar barra de moneda al cargar
 document.addEventListener('DOMContentLoaded', () => {
-    const tasa = getTasaMN();
+    // tasaLabel está deshabilitado: la tasa se muestra en el botón del toggle
     const label = document.getElementById('tasaLabel');
-    if (label && _monedaActual === 'MN' && tasa > 0) {
-        label.textContent = `Tasa: 1 USD = ${tasa} MN`;
-    }
+    if (label) { label.textContent = ''; label.style.display = 'none'; }
+
     if (_monedaActual === 'MN') {
         document.getElementById('curUSD')?.classList.remove('active');
         document.getElementById('curMN')?.classList.add('active');
