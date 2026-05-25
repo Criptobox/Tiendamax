@@ -3817,12 +3817,36 @@ renderizarProductos = function() {
     const productosGrid = document.getElementById('productosGrid');
     if (!productosGrid) { _origRenderProductosFinal(); return; }
 
+    // DEBUG: log para diagnosticar bug de productos vacíos
+    console.log('[TM RENDER]', {
+        catSel: categoriaSeleccionada,
+        subSel: subcategoriaSeleccionada,
+        productos_total: Array.isArray(productos) ? productos.length : 'NO-ARRAY',
+        heroBusqueda: _heroSearchActivo || '(vacía)',
+        precioMin: _heroPrecioMin,
+        precioMax: _heroPrecioMax,
+    });
+
+    // RESILIENCIA: si productos está vacío, intentar cargar de localStorage
+    if (!Array.isArray(productos) || productos.length === 0) {
+        try {
+            const cached = JSON.parse(localStorage.getItem('productos') || '[]');
+            if (Array.isArray(cached) && cached.length > 0) {
+                productos = cached;
+                console.log('[TM RENDER] Productos recuperados de localStorage:', productos.length);
+            }
+        } catch(e) {}
+    }
+
     let productosFiltrados = categoriaSeleccionada === 'Todas'
         ? productos
         : productos.filter(p => p.categoria === categoriaSeleccionada);
 
+    console.log('[TM RENDER] Tras filtro categoría:', productosFiltrados.length);
+
     if (categoriaSeleccionada !== 'Todas' && subcategoriaSeleccionada && subcategoriaSeleccionada !== 'Todas') {
         productosFiltrados = productosFiltrados.filter(p => p.subcategoria === subcategoriaSeleccionada);
+        console.log('[TM RENDER] Tras filtro subcategoría:', productosFiltrados.length);
     }
     if (_heroSearchActivo || _heroPrecioMin > 0 || _heroPrecioMax < Infinity) {
         const q = _heroSearchActivo;
@@ -3832,7 +3856,9 @@ renderizarProductos = function() {
                 (p.categoria||'').toLowerCase().includes(q);
             return matchQ;
         });
+        console.log('[TM RENDER] Tras filtro búsqueda:', productosFiltrados.length);
     }
+    console.log('[TM RENDER] FINAL productosFiltrados:', productosFiltrados.length);
 
     // Ordenar: oferta del día primero
     const ofertaId = getOfertaDiaId();
