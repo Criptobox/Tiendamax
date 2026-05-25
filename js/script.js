@@ -3817,7 +3817,39 @@ renderizarProductos = function() {
     const productosGrid = document.getElementById('productosGrid');
     if (!productosGrid) { _origRenderProductosFinal(); return; }
 
-    // DEBUG: log para diagnosticar bug de productos vacíos
+    // DEBUG: panel visible en pantalla para diagnosticar (móviles sin consola)
+    function _tmDebugPanel(msg) {
+        var box = document.getElementById('tmDebugBox');
+        if (!box) {
+            box = document.createElement('div');
+            box.id = 'tmDebugBox';
+            box.style.cssText = 'position:fixed;top:10px;left:10px;right:10px;max-height:50vh;overflow:auto;background:rgba(0,0,0,0.95);color:#0f0;font-family:monospace;font-size:11px;padding:10px;border:2px solid #0f0;border-radius:6px;z-index:99999;white-space:pre-wrap;word-break:break-word;';
+            var close = document.createElement('button');
+            close.textContent = 'X';
+            close.style.cssText = 'position:absolute;top:4px;right:8px;background:#f00;color:#fff;border:none;width:24px;height:24px;border-radius:50%;font-weight:bold;cursor:pointer;';
+            close.onclick = function() { box.remove(); };
+            box.appendChild(close);
+            document.body.appendChild(box);
+        }
+        var line = document.createElement('div');
+        line.textContent = new Date().toTimeString().substring(0,8) + ' ' + msg;
+        box.appendChild(line);
+        if (box.children.length > 30) box.children[1].remove();
+    }
+    window._tmDebugPanel = _tmDebugPanel;
+
+    _tmDebugPanel('=== RENDER ===');
+    _tmDebugPanel('cat: ' + categoriaSeleccionada);
+    _tmDebugPanel('sub: ' + subcategoriaSeleccionada);
+    _tmDebugPanel('productos: ' + (Array.isArray(productos) ? productos.length : 'NO-ARRAY'));
+    _tmDebugPanel('busqueda: ' + (_heroSearchActivo || '(vacia)'));
+    _tmDebugPanel('precioMin: ' + _heroPrecioMin + ' precioMax: ' + _heroPrecioMax);
+    if (Array.isArray(productos) && productos.length > 0) {
+        _tmDebugPanel('cat 1er prod: "' + productos[0].categoria + '"');
+        var catsUnicas = [];
+        productos.forEach(function(p) { if (catsUnicas.indexOf(p.categoria) === -1) catsUnicas.push(p.categoria); });
+        _tmDebugPanel('cats unicas: ' + catsUnicas.join(','));
+    }
     console.log('[TM RENDER]', {
         catSel: categoriaSeleccionada,
         subSel: subcategoriaSeleccionada,
@@ -3843,10 +3875,12 @@ renderizarProductos = function() {
         : productos.filter(p => p.categoria === categoriaSeleccionada);
 
     console.log('[TM RENDER] Tras filtro categoría:', productosFiltrados.length);
+    _tmDebugPanel('tras filtro cat: ' + productosFiltrados.length);
 
     if (categoriaSeleccionada !== 'Todas' && subcategoriaSeleccionada && subcategoriaSeleccionada !== 'Todas') {
         productosFiltrados = productosFiltrados.filter(p => p.subcategoria === subcategoriaSeleccionada);
         console.log('[TM RENDER] Tras filtro subcategoría:', productosFiltrados.length);
+        _tmDebugPanel('tras filtro sub: ' + productosFiltrados.length);
     }
     if (_heroSearchActivo || _heroPrecioMin > 0 || _heroPrecioMax < Infinity) {
         const q = _heroSearchActivo;
@@ -3857,8 +3891,10 @@ renderizarProductos = function() {
             return matchQ;
         });
         console.log('[TM RENDER] Tras filtro búsqueda:', productosFiltrados.length);
+        _tmDebugPanel('tras filtro busq: ' + productosFiltrados.length);
     }
     console.log('[TM RENDER] FINAL productosFiltrados:', productosFiltrados.length);
+    _tmDebugPanel('>>> FINAL: ' + productosFiltrados.length + ' cards a renderizar');
 
     // Ordenar: oferta del día primero
     const ofertaId = getOfertaDiaId();
