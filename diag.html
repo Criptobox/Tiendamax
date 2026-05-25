@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Diagnóstico TiendaMax</title>
+<style>
+  body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:#0D0D0D;color:#fff;padding:15px;margin:0}
+  h1{color:#C9A96E;font-size:20px;margin-top:0}
+  #log{background:#000;border:2px solid #0f0;border-radius:8px;padding:12px;font-family:monospace;font-size:12px;color:#0f0;white-space:pre-wrap;word-break:break-all;min-height:300px;line-height:1.5}
+  .ok{color:#0f0}
+  .err{color:#f55;font-weight:bold}
+  .warn{color:#fa0}
+  .info{color:#8cf}
+  button{background:#C9A96E;color:#000;border:none;padding:10px 20px;border-radius:8px;font-weight:bold;margin:10px 5px;font-size:14px;cursor:pointer}
+</style>
+</head>
+<body>
+<h1>🔬 Diagnóstico TiendaMax</h1>
+<button onclick="diagnostico()">▶️ Ejecutar diagnóstico</button>
+<button onclick="copiarLog()">📋 Copiar resultados</button>
+<div id="log">Pulsa "Ejecutar diagnóstico"...</div>
+
+<script>
+const log = document.getElementById('log');
+function l(msg, cls = '') {
+  const span = document.createElement('div');
+  if (cls) span.className = cls;
+  span.textContent = msg;
+  log.appendChild(span);
+}
+function copiarLog() {
+  const txt = log.innerText;
+  navigator.clipboard.writeText(txt).then(() => alert('Copiado al portapapeles'));
+}
+
+async function diagnostico() {
+  log.innerHTML = '';
+  l('=== DIAGNÓSTICO FORENSE ===', 'info');
+  l('Hora: ' + new Date().toLocaleString());
+  l('UserAgent: ' + navigator.userAgent.substring(0, 80));
+  l('');
+
+  // 1. ¿Hay Service Worker?
+  l('1. Service Workers:', 'info');
+  try {
+    if ('serviceWorker' in navigator) {
+      const regs = await navigator.serviceWorker.getRegistrations();
+      l('   Registrados: ' + regs.length);
+      for (const r of regs) {
+        l('   - ' + r.scope);
+        if (r.active) l('     active: ' + r.active.scriptURL);
+        if (r.waiting) l('     waiting: ' + r.waiting.scriptURL, 'warn');
+        if (r.installing) l('     installing: ' + r.installing.scriptURL);
+      }
+    } else l('   No soportado');
+  } catch(e) { l('   ERROR: ' + e.message, 'err'); }
+
+  // 2. Caches
+  l('');
+  l('2. Caches:', 'info');
+  try {
+    if ('caches' in window) {
+      const keys = await caches.keys();
+      l('   Total: ' + keys.length);
+      for (const k of keys) {
+        const c = await caches.open(k);
+        const ks = await c.keys();
+        l('   - ' + k + ': ' + ks.length + ' archivos');
+      }
+    } else l('   No soportado');
+  } catch(e) { l('   ERROR: ' + e.message, 'err'); }
+
+  // 3. localStorage
+  l('');
+  l('3. localStorage:', 'info');
+  try {
+    const lsKeys = Object.keys(localStorage);
+    l('   Total entradas: ' + lsKeys.length);
+    const prodLS = JSON.parse(localStorage.getItem('productos') || '[]');
+    l('   productos: ' + prodLS.length + ' items');
+    const catLS = JSON.parse(localStorage.getItem('categorias') || '[]');
+    l('   categorias: ' + (Array.isArray(catLS) ? catLS.length : 'no-array'));
+  } catch(e) { l('   ERROR: ' + e.message, 'err'); }
+
+  // 4. Fetch directo productos.json
+  l('');
+  l('4. Fetch productos.json:', 'info');
+  try {
+    const t0 = Date.now();
+    const res = await fetch('productos.json?diag=' + Date.now(), { cache: 'no-store' });
+    const ms = Date.now() - t0;
+    l('   Status: ' + res.status + ' (' + ms + 'ms)');
+    l('   Content-Type: ' + res.headers.get('content-type'));
+    const data = await res.json();
+    l('   Productos recibidos: ' + (Array.isArray(data) ? data.length : 'NO-ARRAY'), Array.isArray(data) && data.length > 0 ? 'ok' : 'err');
+    if (Array.isArray(data) && data.length > 0) {
+      l('   1er producto: ' + data[0].nombre + ' (cat: ' + data[0].categoria + ')');
+    }
+  } catch(e) { l('   ❌ ERROR fetch: ' + e.message, 'err'); }
+
+  // 5. Fetch script.js
+  l('');
+  l('5. Verificar script.js servido:', 'info');
+  try {
+    const res = await fetch('js/script.js?diag=' + Date.now(), { cache: 'no-store' });
+    const txt = await res.text();
+    l('   Tamaño: ' + txt.length + ' bytes (' + txt.split('\n').length + ' líneas)');
+    l('   ¿Tiene _tmDebugPanel?: ' + (txt.match(/_tmDebugPanel/g) || []).length + ' veces', 'ok');
+    l('   ¿Tiene emergencyLoader?: ' + (txt.includes('emergencyLoader') ? 'SÍ' : 'NO'));
+    l('   ¿Tiene escapeHtml?: ' + (txt.match(/escapeHtml/g) || []).length + ' veces');
+  } catch(e) { l('   ERROR: ' + e.message, 'err'); }
+
+  // 6. Cargar el script.js EN VIVO y ver si se ejecuta
+  l('');
+  l('6. Intentar cargar el script EN VIVO:', 'info');
+  window._diagErrors = [];
+  window.addEventListener('error', e => {
+    window._diagErrors.push('ERR: ' + e.message + ' @ ' + (e.filename || '?').substring(0, 80) + ':' + e.lineno);
+  });
+  const s = document.createElement('script');
+  s.src = 'js/script.js?diag2=' + Date.now();
+  s.onload = () => l('   ✅ script.js cargado y ejecutado', 'ok');
+  s.onerror = (e) => l('   ❌ Error al cargar script.js', 'err');
+  document.body.appendChild(s);
+
+  // Esperar 5s y ver qué pasó
+  await new Promise(r => setTimeout(r, 5000));
+
+  l('');
+  l('7. Tras esperar 5s:', 'info');
+  l('   typeof productos = ' + typeof productos);
+  l('   typeof renderizarProductos = ' + typeof renderizarProductos);
+  l('   typeof escapeHtml = ' + typeof escapeHtml);
+  l('   typeof _tmDebugPanel = ' + typeof window._tmDebugPanel);
+
+  if (window._diagErrors.length > 0) {
+    l('');
+    l('❌ ERRORES JS CAPTURADOS:', 'err');
+    window._diagErrors.forEach(e => l('   ' + e, 'err'));
+  } else {
+    l('');
+    l('✅ Sin errores JS', 'ok');
+  }
+
+  l('');
+  l('=== FIN DIAGNÓSTICO ===', 'info');
+  l('Pulsa "Copiar resultados" y mándame el texto.');
+}
+</script>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"1954b47c125f43f8b4338b3c4f804e4f","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a01847be8bd6647d',t:'MTc3OTc1MTMyNg=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
