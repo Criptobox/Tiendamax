@@ -6,6 +6,7 @@
   "firebaseConfig": {
     "apiKey": "AIzaSyBKgBv-6BRBji3hKBPdtMRrxLtVH7SW9Zk",
     "authDomain": "tiendamax-eca0f.firebaseapp.com",
+    "databaseURL": "https://tiendamax-eca0f-default-rtdb.firebaseio.com",
     "projectId": "tiendamax-eca0f",
     "storageBucket": "tiendamax-eca0f.firebasestorage.app",
     "messagingSenderId": "152643654410",
@@ -13,5 +14,5 @@
     "measurementId": "G-94XFLKKEP6",
     "vapidKey": "BOzdOj-PPXUd5sIgREro1duS6tKfDUiJDamGkHXp1eqy2unP770tygukTryDkZVDPNccV-Qt5Hi8_52BF6peYic"
   },
-  "actualizado": "2026-05-25T01:35:35.569Z"
+  "actualizado": "2026-05-25T02:49:36.606Z"
 }
