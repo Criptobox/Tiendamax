@@ -1,9 +1,0 @@
-{
-  "enabled": false,
-  "username": "",
-  "password": "",
-  "auto_publish": false,
-  "interval_hours": 24,
-  "max_products": 10,
-  "categories": []
-}
