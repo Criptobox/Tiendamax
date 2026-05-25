@@ -5118,14 +5118,34 @@ async function guardarConfigFirebaseAdmin() {
     
     let parsedConfig = null;
     try {
-        let text = rawJson;
+        let text = rawJson.replace(/\xa0/g, ' ').trim();
         // Limpiar declaraciones si copiaron el código entero
         text = text.replace(/^(const|let|var)\s+\w+\s*=\s*/, '');
         text = text.replace(/;$/, '');
         parsedConfig = (new Function(`return (${text})`))();
     } catch (e) {
-        if (status) status.textContent = '❌ Error al parsear el código. Asegúrate de que sea un JSON u objeto JS válido.';
-        return;
+        console.warn('[FCM] Falló el parseo con Function, intentando fallback...', e);
+    }
+    
+    // Fallback robusto con Regex si falló o si tiene URLs con enlaces Markdown de chats
+    if (!parsedConfig || typeof parsedConfig !== 'object' || !parsedConfig.projectId) {
+        parsedConfig = {};
+        const lines = rawJson.split('\n');
+        for (const line of lines) {
+            const cleanLine = line.replace(/\xa0/g, ' ').trim();
+            // Buscar patron clave: "valor" o clave: 'valor'
+            const match = cleanLine.match(/(\w+)\s*:\s*["']([^"']+)["']/);
+            if (match) {
+                const key = match[1];
+                let val = match[2];
+                // Limpiar enlaces de chat tipo [texto](url)
+                if (val.includes('[') && val.includes(']')) {
+                    const cleanMatch = val.match(/\[([^\]]+)\]/);
+                    if (cleanMatch) val = cleanMatch[1];
+                }
+                parsedConfig[key] = val;
+            }
+        }
     }
     
     if (!parsedConfig || typeof parsedConfig !== 'object' || !parsedConfig.projectId) {
