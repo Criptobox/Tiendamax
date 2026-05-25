@@ -4696,79 +4696,101 @@ document.addEventListener('DOMContentLoaded', () => {
 (function initPush() {
     if (!('serviceWorker' in navigator)) return;
 
+    // Registro del Service Worker
     navigator.serviceWorker.register('/sw.js')
         .then(reg => console.log('[SW] Registrado:', reg.scope))
         .catch(err => console.warn('[SW] Error:', err));
 
+    // Esperar 6 segundos para no interrumpir la carga inicial
     setTimeout(() => {
         if (!('Notification' in window)) return;
 
-        // Si ya tiene permiso concedido, no molestar
+        // Si ya tiene permiso o bloqueó hace poco, no mostrar nada
         if (Notification.permission === 'granted') return;
-
-        // Si el usuario cerró el banner hace menos de 6 horas, esperar
         const pospuesto = parseInt(localStorage.getItem('tm_push_pospuesto') || '0');
         if (Date.now() < pospuesto) return;
 
-        // Eliminar banner anterior si existe
+        // Limpiar banners antiguos
         const anterior = document.getElementById('tm-push-banner-wrap');
         if (anterior) anterior.remove();
 
-        // Mensaje según el estado del permiso
         const estaDenegado = Notification.permission === 'denied';
-        const titulo  = estaDenegado ? '🔔 Notificaciones bloqueadas' : '🔔 ¡Activa las alertas!';
-        const cuerpo  = estaDenegado
-            ? 'Ve a ajustes del navegador y actívalas para recibir ofertas'
-            : 'Recibe ofertas relámpago y productos nuevos al instante';
-        const btnTexto = estaDenegado ? 'Cómo activarlas' : 'Activar';
+        const titulo = estaDenegado ? '🔔 Notificaciones bloqueadas' : '🔔 ¡Activa las alertas!';
+        const cuerpo = estaDenegado
+            ? 'Debes habilitarlas en los ajustes de Chrome para recibir ofertas.'
+            : 'Entérate antes que nadie de las ofertas relámpago y nuevos productos.';
+        const btnTexto = estaDenegado ? 'Ver cómo' : 'Activar ahora';
 
+        // Crear el banner con posición fija corregida
         const b = document.createElement('div');
         b.id = 'tm-push-banner-wrap';
-        b.innerHTML = `<div id="tm-push-banner" style="background:#1a1a1a;border:1.5px solid #C9A96E;border-radius:14px;padding:14px 18px;display:flex;align-items:center;gap:12px;box-shadow:0 8px 32px rgba(0,0,0,0.5);font-family:sans-serif;animation:slideUpBanner .35s ease"><span style="font-size:26px;flex-shrink:0">🔔</span><div style="flex:1;min-width:0"><div style="font-weight:700;font-size:14px;color:#C9A96E;margin-bottom:2px">${titulo}</div><div style="font-size:12px;color:#aaa;line-height:1.3">${cuerpo}</div></div><div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0"><button id="tm-push-si" style="background:#C9A96E;color:#000;border:none;border-radius:8px;padding:7px 12px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap">${btnTexto}</button><button id="tm-push-no" style="background:none;border:none;color:#666;font-size:11px;cursor:pointer;text-align:center">Ahora no</button></div></div>`;
+        b.style.cssText = "position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:999999;width:92%;max-width:400px;pointer-events:auto;";
+        
+        b.innerHTML = `
+            <div id="tm-push-banner" style="background:#1a1a1a;border:1.5px solid #C9A96E;border-radius:14px;padding:14px 18px;display:flex;align-items:center;gap:12px;box-shadow:0 10px 40px rgba(0,0,0,0.8);font-family:sans-serif;animation:slideUpBanner .4s cubic-bezier(0.175, 0.885, 0.32, 1.275)">
+                <span style="font-size:26px;flex-shrink:0">🔔</span>
+                <div style="flex:1;min-width:0">
+                    <div style="font-weight:700;font-size:14px;color:#C9A96E;margin-bottom:2px">${titulo}</div>
+                    <div style="font-size:12px;color:#aaa;line-height:1.3">${cuerpo}</div>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0">
+                    <button id="tm-push-si" style="background:#C9A96E;color:#000;border:none;border-radius:8px;padding:8px 14px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap">${btnTexto}</button>
+                    <button id="tm-push-no" style="background:none;border:none;color:#666;font-size:11px;cursor:pointer;text-align:center;padding:4px">Luego</button>
+                </div>
+            </div>`;
+
         if (!document.getElementById('slideUpBannerStyle')) {
             const s = document.createElement('style');
             s.id = 'slideUpBannerStyle';
-            s.textContent = '@keyframes slideUpBanner{from{opacity:0;transform:translateX(-50%) translateY(20px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}';
+            s.textContent = '@keyframes slideUpBanner{from{opacity:0;transform:translateX(-50%) translateY(40px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}';
             document.head.appendChild(s);
         }
+
         document.body.appendChild(b);
 
+        // Lógica del botón SI
         document.getElementById('tm-push-si').onclick = async () => {
-            b.remove();
             if (estaDenegado) {
-                // Mostrar guía para Android
-                alert('Para activar las notificaciones:\n\n1. Toca los 3 puntos del navegador\n2. Ajustes → Configuración del sitio\n3. Notificaciones → Permitir');
+                b.remove();
+                alert('PASOS PARA ACTIVAR:\\n\\n1. Toca los 3 puntos (⋮) arriba a la derecha.\\n2. Ve a Ajustes → Configuración del sitio.\\n3. Entra en Notificaciones y permite tiendamax.org');
                 return;
             }
-            const perm = await Notification.requestPermission();
-            if (perm === 'granted') {
-                const reg = await navigator.serviceWorker.ready;
-                reg.showNotification('✅ TiendaMax activado', {
-                    body: 'Te avisaremos de ofertas y productos nuevos.',
-                    icon: '/icons/icon-192.png',
-                    badge: '/icons/icon-192.png',
-                    vibrate: [200, 100, 200]
-                });
-                // Si Firebase está configurado, registrar token FCM
-                const fbConfigRaw = localStorage.getItem('firebaseConfig');
-                if (fbConfigRaw) {
-                    try {
-                        const fbConfig = JSON.parse(fbConfigRaw);
-                        inicializarFirebaseFCMClient(fbConfig);
-                    } catch(e) {}
+
+            // --- SOLUCIÓN AL ERROR DE LA CAPTURA ---
+            const confirmacion = confirm("IMPORTANTE: Antes de pulsar 'Permitir', asegúrate de CERRAR burbujas de Messenger u otras apps flotantes para evitar errores de Android.\\n\\n¿Quieres continuar?");
+            
+            if (!confirmacion) return;
+
+            b.remove();
+            try {
+                const perm = await Notification.requestPermission();
+                if (perm === 'granted') {
+                    const reg = await navigator.serviceWorker.ready;
+                    reg.showNotification('✅ TiendaMax activado', {
+                        body: 'Te avisaremos de ofertas y productos nuevos.',
+                        icon: '/icons/icon-192.png',
+                        badge: '/icons/icon-192.png'
+                    });
+                    
+                    const fbConfigRaw = localStorage.getItem('firebaseConfig');
+                    if (fbConfigRaw) {
+                        try {
+                            inicializarFirebaseFCMClient(JSON.parse(fbConfigRaw));
+                        } catch(e) {}
+                    }
+                } else {
+                    localStorage.setItem('tm_push_pospuesto', Date.now() + 12 * 60 * 60 * 1000);
                 }
-            } else if (perm === 'denied') {
-                // Si lo denegó ahora, volver a preguntar en 6 horas
-                localStorage.setItem('tm_push_pospuesto', Date.now() + 6 * 60 * 60 * 1000);
+            } catch (err) {
+                console.error("Error al solicitar permiso:", err);
             }
         };
 
         document.getElementById('tm-push-no').onclick = () => {
             b.remove();
-            // Volver a mostrar en 6 horas (no 2 días)
-            localStorage.setItem('tm_push_pospuesto', Date.now() + 6 * 60 * 60 * 1000);
+            localStorage.setItem('tm_push_pospuesto', Date.now() + 24 * 60 * 60 * 1000);
         };
-    }, 4000);
+    }, 6000);
 
     window.TiendaMaxPush = {
         async enviar(titulo, cuerpo, url) {
@@ -4779,8 +4801,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 icon: '/icons/icon-192.png',
                 badge: '/icons/icon-192.png',
                 data: { url: url || '/' },
-                vibrate: [200, 100, 200],
-                actions: [{ action: 'ver', title: '👀 Ver oferta' }, { action: 'cerrar', title: 'Cerrar' }]
+                vibrate: [200, 100, 200]
             });
         },
         nuevoProducto(nombre, precio) { this.enviar('🆕 Nuevo en TiendaMax', nombre + ' — $' + precio + ' USD'); },
@@ -4789,8 +4810,6 @@ document.addEventListener('DOMContentLoaded', () => {
         ofertaDia(nombre, precio)      { this.enviar('☀️ Oferta del día', nombre + ' — Solo hoy: $' + precio + ' USD'); }
     };
 })();
-
-// ═══════════════════════════════════════════════════════
 //  #4 BADGE "NUEVO" — Productos de los últimos 7 días
 // ═══════════════════════════════════════════════════════
 function esProductoNuevo(producto) {
