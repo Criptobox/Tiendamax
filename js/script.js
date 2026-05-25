@@ -4696,101 +4696,89 @@ document.addEventListener('DOMContentLoaded', () => {
 (function initPush() {
     if (!('serviceWorker' in navigator)) return;
 
-    // Registro del Service Worker
     navigator.serviceWorker.register('/sw.js')
-        .then(reg => console.log('[SW] Registrado:', reg.scope))
+        .then(reg => {
+            console.log('[SW] Registrado:', reg.scope);
+            if (Notification.permission === 'granted') {
+                const fbConfigRaw = localStorage.getItem('firebaseConfig');
+                if (fbConfigRaw) {
+                    try { inicializarFirebaseFCMClient(JSON.parse(fbConfigRaw)); } catch(e) {}
+                }
+            }
+        })
         .catch(err => console.warn('[SW] Error:', err));
 
-    // Esperar 6 segundos para no interrumpir la carga inicial
     setTimeout(() => {
         if (!('Notification' in window)) return;
-
-        // Si ya tiene permiso o bloqueó hace poco, no mostrar nada
         if (Notification.permission === 'granted') return;
+
         const pospuesto = parseInt(localStorage.getItem('tm_push_pospuesto') || '0');
         if (Date.now() < pospuesto) return;
 
-        // Limpiar banners antiguos
         const anterior = document.getElementById('tm-push-banner-wrap');
         if (anterior) anterior.remove();
 
         const estaDenegado = Notification.permission === 'denied';
-        const titulo = estaDenegado ? '🔔 Notificaciones bloqueadas' : '🔔 ¡Activa las alertas!';
-        const cuerpo = estaDenegado
-            ? 'Debes habilitarlas en los ajustes de Chrome para recibir ofertas.'
-            : 'Entérate antes que nadie de las ofertas relámpago y nuevos productos.';
-        const btnTexto = estaDenegado ? 'Ver cómo' : 'Activar ahora';
-
-        // Crear el banner con posición fija corregida
+        const titulo = estaDenegado ? '🔔 Alertas desactivadas' : '🔔 ¡Activa las alertas!';
+        const cuerpo = estaDenegado 
+            ? 'Habilita las notificaciones en ajustes para recibir ofertas.' 
+            : 'Entérate de ofertas relámpago y nuevos productos al instante.';
+        
         const b = document.createElement('div');
         b.id = 'tm-push-banner-wrap';
         b.style.cssText = "position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:999999;width:92%;max-width:400px;pointer-events:auto;";
-        
         b.innerHTML = `
-            <div id="tm-push-banner" style="background:#1a1a1a;border:1.5px solid #C9A96E;border-radius:14px;padding:14px 18px;display:flex;align-items:center;gap:12px;box-shadow:0 10px 40px rgba(0,0,0,0.8);font-family:sans-serif;animation:slideUpBanner .4s cubic-bezier(0.175, 0.885, 0.32, 1.275)">
-                <span style="font-size:26px;flex-shrink:0">🔔</span>
-                <div style="flex:1;min-width:0">
-                    <div style="font-weight:700;font-size:14px;color:#C9A96E;margin-bottom:2px">${titulo}</div>
+            <div id="tm-push-banner" style="background:#1a1a1a;border:1.5px solid #C9A96E;border-radius:14px;padding:14px 18px;display:flex;align-items:center;gap:12px;box-shadow:0 10px 40px rgba(0,0,0,0.8);font-family:sans-serif;animation:slideUpBanner .4s ease">
+                <span style="font-size:26px;">🔔</span>
+                <div style="flex:1">
+                    <div style="font-weight:700;font-size:14px;color:#C9A96E">${titulo}</div>
                     <div style="font-size:12px;color:#aaa;line-height:1.3">${cuerpo}</div>
                 </div>
-                <div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0">
-                    <button id="tm-push-si" style="background:#C9A96E;color:#000;border:none;border-radius:8px;padding:8px 14px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap">${btnTexto}</button>
-                    <button id="tm-push-no" style="background:none;border:none;color:#666;font-size:11px;cursor:pointer;text-align:center;padding:4px">Luego</button>
+                <div style="display:flex;flex-direction:column;gap:6px;">
+                    <button id="tm-push-si" style="background:#C9A96E;color:#000;border:none;border-radius:8px;padding:8px 14px;font-size:12px;font-weight:700;cursor:pointer">${estaDenegado ? 'Ver guía' : 'Activar'}</button>
+                    <button id="tm-push-no" style="background:none;border:none;color:#666;font-size:11px;cursor:pointer">Luego</button>
                 </div>
             </div>`;
 
         if (!document.getElementById('slideUpBannerStyle')) {
             const s = document.createElement('style');
             s.id = 'slideUpBannerStyle';
-            s.textContent = '@keyframes slideUpBanner{from{opacity:0;transform:translateX(-50%) translateY(40px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}';
+            s.textContent = '@keyframes slideUpBanner{from{opacity:0;transform:translateX(-50%) translateY(30px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}';
             document.head.appendChild(s);
         }
-
         document.body.appendChild(b);
 
-        // Lógica del botón SI
         document.getElementById('tm-push-si').onclick = async () => {
             if (estaDenegado) {
+                alert('PASOS:
+1. Toca los 3 puntos del navegador
+2. Ajustes -> Configuración del sitio
+3. Notificaciones -> Permitir');
                 b.remove();
-                alert('PASOS PARA ACTIVAR:\\n\\n1. Toca los 3 puntos (⋮) arriba a la derecha.\\n2. Ve a Ajustes → Configuración del sitio.\\n3. Entra en Notificaciones y permite tiendamax.org');
                 return;
             }
+            // Confirmación para evitar error de superposición (Messenger, etc)
+            const ok = confirm("IMPORTANTE: Para que Android no bloquee el permiso, cierra cualquier burbuja de chat (Messenger) o app flotante ahora.
 
-            // --- SOLUCIÓN AL ERROR DE LA CAPTURA ---
-            const confirmacion = confirm("IMPORTANTE: Antes de pulsar 'Permitir', asegúrate de CERRAR burbujas de Messenger u otras apps flotantes para evitar errores de Android.\\n\\n¿Quieres continuar?");
+¿Listo para continuar?");
+            if (!ok) return;
             
-            if (!confirmacion) return;
-
             b.remove();
-            try {
-                const perm = await Notification.requestPermission();
-                if (perm === 'granted') {
-                    const reg = await navigator.serviceWorker.ready;
-                    reg.showNotification('✅ TiendaMax activado', {
-                        body: 'Te avisaremos de ofertas y productos nuevos.',
-                        icon: '/icons/icon-192.png',
-                        badge: '/icons/icon-192.png'
-                    });
-                    
-                    const fbConfigRaw = localStorage.getItem('firebaseConfig');
-                    if (fbConfigRaw) {
-                        try {
-                            inicializarFirebaseFCMClient(JSON.parse(fbConfigRaw));
-                        } catch(e) {}
-                    }
-                } else {
-                    localStorage.setItem('tm_push_pospuesto', Date.now() + 12 * 60 * 60 * 1000);
+            const perm = await Notification.requestPermission();
+            if (perm === 'granted') {
+                const fbConfigRaw = localStorage.getItem('firebaseConfig');
+                if (fbConfigRaw) {
+                    try { inicializarFirebaseFCMClient(JSON.parse(fbConfigRaw)); } catch(e) {}
                 }
-            } catch (err) {
-                console.error("Error al solicitar permiso:", err);
+            } else {
+                localStorage.setItem('tm_push_pospuesto', Date.now() + 12 * 60 * 60 * 1000);
             }
         };
-
         document.getElementById('tm-push-no').onclick = () => {
             b.remove();
             localStorage.setItem('tm_push_pospuesto', Date.now() + 24 * 60 * 60 * 1000);
         };
-    }, 6000);
+    }, 5000);
 
     window.TiendaMaxPush = {
         async enviar(titulo, cuerpo, url) {
@@ -4804,10 +4792,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 vibrate: [200, 100, 200]
             });
         },
-        nuevoProducto(nombre, precio) { this.enviar('🆕 Nuevo en TiendaMax', nombre + ' — $' + precio + ' USD'); },
-        rebaja(nombre, antes, ahora)  { this.enviar('🏷️ ¡Rebaja!', nombre + ': $' + antes + ' → $' + ahora + ' USD'); },
-        relampago(nombre, precio, min) { this.enviar('⚡ ¡Oferta relámpago! ' + (min||60) + ' min', nombre + ' — $' + precio + ' USD'); },
-        ofertaDia(nombre, precio)      { this.enviar('☀️ Oferta del día', nombre + ' — Solo hoy: $' + precio + ' USD'); }
+        nuevoProducto(nombre, precio) { this.enviar('🆕 Nuevo: ' + nombre, 'Precio: $' + precio + ' USD'); },
+        rebaja(nombre, antes, ahora)  { this.enviar('🏷️ Rebaja en ' + nombre, '$' + antes + ' -> $' + ahora); }
     };
 })();
 //  #4 BADGE "NUEVO" — Productos de los últimos 7 días
@@ -5021,6 +5007,37 @@ window.tmFormatPrecio = formatPrecio;
 
 
 // ═══════════════════════════════════════════════════════
+async function enviarNotificacionManual() {
+    const titulo = document.getElementById('manualPushTitle')?.value || '📢 TiendaMax';
+    const cuerpo = document.getElementById('manualPushBody')?.value || '';
+    const url = document.getElementById('manualPushUrl')?.value || '/';
+    const fbConfigRaw = localStorage.getItem('firebaseConfig');
+    const serverKey = localStorage.getItem('fcmServerKey');
+
+    if (!fbConfigRaw || !serverKey) return alert('Configura Firebase y la Server Key primero.');
+    const fbConfig = JSON.parse(fbConfigRaw);
+    const rtdbUrl = fbConfig.databaseURL || `https://${fbConfig.projectId}-default-rtdb.firebaseio.com`;
+
+    try {
+        const resTokens = await fetch(`${rtdbUrl}/tokens.json`);
+        const tokensData = await resTokens.json();
+        if (!tokensData) return alert('No hay suscriptores aún.');
+
+        const tokens = Object.values(tokensData).map(t => t.token);
+        const response = await fetch('https://fcm.googleapis.com/fcm/send', {
+            method: 'POST',
+            headers: { 'Authorization': 'key=' + serverKey, 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                registration_ids: tokens,
+                notification: { title: titulo, body: cuerpo, icon: '/icons/icon-192.png' },
+                data: { url: url }
+            })
+        });
+        if (response.ok) alert('✅ Enviada a ' + tokens.length + ' dispositivos.');
+        else alert('❌ Error al enviar.');
+    } catch (e) { alert('❌ Error: ' + e.message); }
+}
+
 //  🔔 INTEGRACIÓN CON FIREBASE CLOUD MESSAGING (FCM)
 // ═══════════════════════════════════════════════════════
 
@@ -5085,10 +5102,32 @@ function ejecutarInitFCM(config) {
 async function solicitarYRegistrarTokenFCM(messaging, config) {
     try {
         const vapidKey = config.vapidKey || localStorage.getItem('firebaseVapidKey');
-        if (!vapidKey) {
-            console.warn('[FCM] No se especificó la clave VAPID. No se puede obtener token.');
-            return;
+        if (!vapidKey) return console.error('[FCM] Falta clave VAPID');
+
+        const token = await messaging.getToken({ vapidKey: vapidKey });
+        if (token) {
+            console.log('[FCM] Token:', token);
+            localStorage.setItem('fcmToken', token);
+
+            // Guardar en Realtime Database
+            const rtdbUrl = config.databaseURL || `https://${config.projectId}-default-rtdb.firebaseio.com`;
+            const tokenId = btoa(token).substring(0, 60).replace(/[/+]/g, '_');
+            
+            await fetch(`${rtdbUrl}/tokens/${tokenId}.json`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    token: token,
+                    timestamp: Date.now(),
+                    userAgent: navigator.userAgent
+                })
+            });
+            console.log('[FCM] ✅ Token registrado en Firebase');
         }
+    } catch (err) {
+        console.error('[FCM] Error registro:', err);
+    }
+}
         
         const token = await messaging.getToken({ vapidKey: vapidKey });
         if (token) {
