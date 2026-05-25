@@ -5198,17 +5198,13 @@ async function guardarConfigFirebaseAdmin() {
         }
         existing.actualizado = new Date().toISOString();
         
-        const subido = await subirArchivoAGitHub(user, repo, token, 'config.json', existing);
-        if (subido) {
-            if (status) status.textContent = '✅ ¡Guardado y sincronizado con GitHub con éxito!';
-            mostrarNotificacion('✅ Configuración de Firebase guardada y sincronizada.', 'success');
-            inicializarFirebaseFCMClient(parsedConfig);
-        } else {
-            if (status) status.textContent = '❌ Error al subir a GitHub. Comprueba tus credenciales.';
-        }
+        await subirArchivoAGitHub(user, repo, token, 'config.json', existing);
+        if (status) status.textContent = '✅ ¡Guardado y sincronizado con GitHub con éxito!';
+        mostrarNotificacion('✅ Configuración de Firebase guardada y sincronizada.', 'success');
+        inicializarFirebaseFCMClient(parsedConfig);
     } catch (e) {
         console.error(e);
-        if (status) status.textContent = '❌ Error de red al sincronizar con GitHub.';
+        if (status) status.textContent = '❌ Error: ' + e.message;
     }
 }
 
