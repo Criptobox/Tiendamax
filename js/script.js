@@ -1,3 +1,6 @@
+// ===== VARIABLES GLOBALES INICIALIZADAS TEMPRANO (evitar TDZ) =====
+var countdownIntervals = {};
+
 // ===== HELPER DE SANITIZACIÓN HTML (anti-XSS) =====
 function escapeHtml(s) {
     if (s === null || s === undefined) return '';
@@ -2930,11 +2933,11 @@ if (document.readyState === 'loading') {
 
 
 // ===== COUNTDOWN TIMER =====
-
-// IMPORTANTE: usar var (no let) porque iniciarCountdownsActivos() puede
-// ser invocada antes de llegar a esta línea (TDZ bug en versión anterior).
-// var tiene hoisting y se inicializa a undefined al inicio del script.
-var countdownIntervals = countdownIntervals || {};
+// countdownIntervals ya está declarada arriba (al inicio del archivo)
+// para evitar problemas de TDZ. Solo aseguramos que sea objeto.
+if (typeof countdownIntervals !== 'object' || countdownIntervals === null) {
+    countdownIntervals = {};
+}
 
 function guardarCountdown() {
     const productId = document.getElementById('countdownProductSelect').value;
@@ -2973,6 +2976,7 @@ function guardarCountdown() {
 
 function desactivarCountdown() {
     localStorage.removeItem('activeCountdown');
+    if (!countdownIntervals || typeof countdownIntervals !== 'object') countdownIntervals = {};
     Object.values(countdownIntervals).forEach(clearInterval);
     countdownIntervals = {};
     renderizarMasVendidos();
@@ -3012,6 +3016,7 @@ function renderCountdownHtml(productId) {
 }
 
 function iniciarCountdownsActivos() {
+    if (!countdownIntervals || typeof countdownIntervals !== 'object') countdownIntervals = {};
     Object.values(countdownIntervals).forEach(clearInterval);
     countdownIntervals = {};
 
