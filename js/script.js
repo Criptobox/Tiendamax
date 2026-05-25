@@ -5753,3 +5753,80 @@ window.addEventListener('popstate', function() {
         }
     }
 });
+
+
+// ═══════════════════════════════════════════════════════════
+//  🛟 CARGADOR DE EMERGENCIA — siempre asegura que productos esté lleno
+//  Ignora el flujo complejo y simplemente: pide productos.json, lo asigna,
+//  y re-renderiza. Si productos ya estaba lleno, no hace nada.
+// ═══════════════════════════════════════════════════════════
+(function emergencyLoader() {
+    'use strict';
+
+    function panel(msg) {
+        try {
+            var box = document.getElementById('tmDebugBox');
+            if (!box) {
+                box = document.createElement('div');
+                box.id = 'tmDebugBox';
+                box.style.cssText = 'position:fixed;top:10px;left:10px;right:10px;max-height:60vh;overflow:auto;background:rgba(0,0,0,0.95);color:#0f0;font-family:monospace;font-size:11px;padding:10px;border:2px solid #0f0;border-radius:6px;z-index:99999;white-space:pre-wrap;word-break:break-word;';
+                var close = document.createElement('button');
+                close.textContent = 'X';
+                close.style.cssText = 'position:absolute;top:4px;right:8px;background:#f00;color:#fff;border:none;width:24px;height:24px;border-radius:50%;font-weight:bold;cursor:pointer;';
+                close.onclick = function() { box.remove(); };
+                box.appendChild(close);
+                document.body.appendChild(box);
+            }
+            var line = document.createElement('div');
+            line.textContent = new Date().toTimeString().substring(0,8) + ' [EMERGENCY] ' + msg;
+            box.appendChild(line);
+        } catch(e) {}
+    }
+
+    async function intentarCargar(intento) {
+        try {
+            panel('intento #' + intento + ' cargando productos.json...');
+            var res = await fetch('productos.json?_=' + Date.now());
+            if (!res.ok) {
+                panel('❌ fetch falló: HTTP ' + res.status);
+                return;
+            }
+            var data = await res.json();
+            panel('✅ fetch OK, ' + data.length + ' productos del JSON');
+
+            if (typeof window.productos === 'undefined') {
+                window.productos = [];
+                panel('⚠️ productos era undefined, creando array');
+            }
+
+            // Forzar asignación
+            if (!Array.isArray(window.productos) || window.productos.length === 0) {
+                window.productos = data;
+                try { localStorage.setItem('productos', JSON.stringify(data)); } catch(e) {}
+                panel('✅ productos asignados a window: ' + window.productos.length);
+
+                // Forzar re-render de todo
+                if (typeof renderizarCategoriasHome === 'function') {
+                    renderizarCategoriasHome();
+                    panel('✅ renderizarCategoriasHome OK');
+                }
+                if (typeof renderizarMasVendidos === 'function') {
+                    renderizarMasVendidos();
+                }
+                if (typeof renderizarProductos === 'function') {
+                    renderizarProductos();
+                    panel('✅ renderizarProductos OK');
+                }
+            } else {
+                panel('ℹ️ productos ya tenía ' + window.productos.length + ' items, no hago nada');
+            }
+        } catch(e) {
+            panel('❌ Error: ' + e.message);
+        }
+    }
+
+    // Esperar 3 segundos a que el flujo normal cargue
+    setTimeout(function() { intentarCargar(1); }, 3000);
+    // Reintentar a los 6s por si el primer intento aún no había completado
+    setTimeout(function() { intentarCargar(2); }, 6000);
+})();
