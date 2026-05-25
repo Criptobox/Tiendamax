@@ -1470,6 +1470,7 @@ function switchTab(tabName) {
     }
     if (tabName === 'configuracion') {
         setTimeout(cargarNumeroWhatsApp, 100);
+        setTimeout(cargarConfiguracionGitHub, 100);
     }
 }
 
@@ -2360,6 +2361,20 @@ function cargarConfiguracionGitHub() {
     document.getElementById('githubUser').value = localStorage.getItem('githubUser') || '';
     document.getElementById('githubRepo').value = localStorage.getItem('githubRepo') || 'Tiendamax';
     document.getElementById('githubToken').value = localStorage.getItem('githubToken') || '';
+    
+    // Cargar config de Firebase
+    const fbConfig = localStorage.getItem('firebaseConfig');
+    if (fbConfig) {
+        try {
+            document.getElementById('firebaseConfigJson').value = JSON.stringify(JSON.parse(fbConfig), null, 2);
+        } catch(e) {
+            document.getElementById('firebaseConfigJson').value = fbConfig;
+        }
+    } else {
+        document.getElementById('firebaseConfigJson').value = '';
+    }
+    document.getElementById('firebaseVapidKey').value = localStorage.getItem('firebaseVapidKey') || '';
+    document.getElementById('firebaseServerKey').value = localStorage.getItem('fcmServerKey') || '';
 }
 
 function guardarConfiguracionGitHub(event) {
@@ -2443,6 +2458,8 @@ async function sincronizarTodoConGitHub() {
         ofertaDiaId:         localStorage.getItem('ofertaDiaId') || undefined,
         ofertaDiaTexto:      localStorage.getItem('ofertaDiaTexto') || undefined,
         ofertaDiaActualizado: localStorage.getItem('ofertaDiaId') ? new Date().toISOString() : undefined,
+        firebaseConfig:      localStorage.getItem('firebaseConfig') ? JSON.parse(localStorage.getItem('firebaseConfig')) : undefined,
+        fcmServerKey:        localStorage.getItem('fcmServerKey') || undefined,
         actualizado:         new Date().toISOString(),
     };
     // Limpiar claves undefined
@@ -4732,6 +4749,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     badge: '/icons/icon-192.png',
                     vibrate: [200, 100, 200]
                 });
+                // Si Firebase está configurado, registrar token FCM
+                const fbConfigRaw = localStorage.getItem('firebaseConfig');
+                if (fbConfigRaw) {
+                    try {
+                        const fbConfig = JSON.parse(fbConfigRaw);
+                        inicializarFirebaseFCMClient(fbConfig);
+                    } catch(e) {}
+                }
             } else if (perm === 'denied') {
                 // Si lo denegó ahora, volver a preguntar en 6 horas
                 localStorage.setItem('tm_push_pospuesto', Date.now() + 6 * 60 * 60 * 1000);
@@ -4832,6 +4857,17 @@ async function cargarTasaDesdeGitHub() {
             if (cfg.ofertaDiaId) {
                 localStorage.setItem('ofertaDiaId', String(cfg.ofertaDiaId));
                 if (cfg.ofertaDiaTexto) localStorage.setItem('ofertaDiaTexto', cfg.ofertaDiaTexto);
+            }
+            // Cargar configuración de Firebase y arrancar FCM
+            if (cfg.firebaseConfig) {
+                localStorage.setItem('firebaseConfig', JSON.stringify(cfg.firebaseConfig));
+                if (cfg.fcmServerKey) {
+                    localStorage.setItem('fcmServerKey', cfg.fcmServerKey);
+                }
+                if (cfg.firebaseConfig.vapidKey) {
+                    localStorage.setItem('firebaseVapidKey', cfg.firebaseConfig.vapidKey);
+                }
+                inicializarFirebaseFCMClient(cfg.firebaseConfig);
             }
             // Siempre verificar el banner (aunque GitHub no tenga ofertaDiaId,
             // puede haberlo en localStorage de sesiones anteriores)
@@ -4963,6 +4999,279 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Exponer formatPrecio globalmente para uso en renderizado
 window.tmFormatPrecio = formatPrecio;
+
+
+// ═══════════════════════════════════════════════════════
+//  🔔 INTEGRACIÓN CON FIREBASE CLOUD MESSAGING (FCM)
+// ═══════════════════════════════════════════════════════
+
+async function inicializarFirebaseFCMClient(config) {
+    if (!config || !config.projectId) return;
+    
+    // Evitar doble inicialización si las librerías ya se cargaron y Firebase existe
+    if (window.firebase && firebase.apps.length) {
+        ejecutarInitFCM(config);
+        return;
+    }
+
+    console.log('[FCM] Cargando SDK de Firebase...');
+    
+    // Cargar SDK dinámicamente de forma ordenada (App -> Messaging)
+    const scriptApp = document.createElement('script');
+    scriptApp.src = 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js';
+    scriptApp.onload = () => {
+        const scriptMsg = document.createElement('script');
+        scriptMsg.src = 'https://www.gstatic.com/firebasejs/10.8.0/firebase-messaging-compat.js';
+        scriptMsg.onload = () => {
+            if (!firebase.apps.length) {
+                firebase.initializeApp(config);
+            }
+            if (firebase.messaging.isSupported()) {
+                ejecutarInitFCM(config);
+            } else {
+                console.warn('[FCM] Este navegador no soporta Firebase Cloud Messaging.');
+            }
+        };
+        document.head.appendChild(scriptMsg);
+    };
+    document.head.appendChild(scriptApp);
+}
+
+function ejecutarInitFCM(config) {
+    try {
+        const messaging = firebase.messaging();
+        navigator.serviceWorker.ready.then(reg => {
+            messaging.useServiceWorker(reg);
+            
+            // Si ya tenemos permisos, registrar el token de inmediato
+            if (Notification.permission === 'granted') {
+                solicitarYRegistrarTokenFCM(messaging, config);
+            }
+        });
+        
+        // Manejar mensajes en primer plano (Foreground)
+        messaging.onMessage((payload) => {
+            console.log('[FCM] Mensaje recibido en primer plano:', payload);
+            const title = payload.notification?.title || payload.data?.title || '📢 TiendaMax';
+            const body = payload.notification?.body || payload.data?.body || '';
+            const url = payload.data?.url || '/';
+            
+            mostrarNotificacion(title + ': ' + body, 'info');
+        });
+    } catch(err) {
+        console.error('[FCM] Error inicializando FCM:', err);
+    }
+}
+
+async function solicitarYRegistrarTokenFCM(messaging, config) {
+    try {
+        const vapidKey = config.vapidKey || localStorage.getItem('firebaseVapidKey');
+        if (!vapidKey) {
+            console.warn('[FCM] No se especificó la clave VAPID. No se puede obtener token.');
+            return;
+        }
+        
+        const token = await messaging.getToken({ vapidKey: vapidKey });
+        if (token) {
+            console.log('[FCM] Token obtenido:', token);
+            // Guardar en localStorage
+            localStorage.setItem('fcmToken', token);
+            
+            // Registrar token en Firebase Realtime Database
+            const tokenId = btoa(token).replace(/=/g, '').replace(/\+/g, '-').replace(/\//g, '_');
+            const rtdbUrl = config.databaseURL || `https://${config.projectId}-default-rtdb.firebaseio.com`;
+            
+            await fetch(`${rtdbUrl}/tokens/${tokenId}.json`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    token: token,
+                    timestamp: Date.now(),
+                    userAgent: navigator.userAgent
+                })
+            });
+            console.log('[FCM] Token registrado con éxito en la base de datos de Firebase.');
+        } else {
+            console.warn('[FCM] No se pudo obtener el token de Firebase.');
+        }
+    } catch (err) {
+        console.error('[FCM] Error al registrar token FCM:', err);
+    }
+}
+
+async function guardarConfigFirebaseAdmin() {
+    const jsonInput = document.getElementById('firebaseConfigJson');
+    const vapidInput = document.getElementById('firebaseVapidKey');
+    const serverInput = document.getElementById('firebaseServerKey');
+    const status = document.getElementById('firebaseConfigStatus');
+    
+    if (!jsonInput || !vapidInput) return;
+    
+    const rawJson = jsonInput.value.trim();
+    const vapidKey = vapidInput.value.trim();
+    const serverKey = serverInput.value.trim();
+    
+    if (!rawJson) {
+        if (status) status.textContent = '⚠️ El JSON de configuración es requerido.';
+        return;
+    }
+    
+    let parsedConfig = null;
+    try {
+        let text = rawJson;
+        // Limpiar declaraciones si copiaron el código entero
+        text = text.replace(/^(const|let|var)\s+\w+\s*=\s*/, '');
+        text = text.replace(/;$/, '');
+        parsedConfig = (new Function(`return (${text})`))();
+    } catch (e) {
+        if (status) status.textContent = '❌ Error al parsear el código. Asegúrate de que sea un JSON u objeto JS válido.';
+        return;
+    }
+    
+    if (!parsedConfig || typeof parsedConfig !== 'object' || !parsedConfig.projectId) {
+        if (status) status.textContent = '❌ JSON inválido o falta el campo "projectId".';
+        return;
+    }
+    
+    // Guardar vapidKey dentro del objeto de configuración para consistencia
+    parsedConfig.vapidKey = vapidKey;
+    
+    localStorage.setItem('firebaseConfig', JSON.stringify(parsedConfig));
+    localStorage.setItem('firebaseVapidKey', vapidKey);
+    if (serverKey) {
+        localStorage.setItem('fcmServerKey', serverKey);
+    } else {
+        localStorage.removeItem('fcmServerKey');
+    }
+    
+    if (status) status.textContent = '⏳ Guardando y subiendo a GitHub...';
+    
+    const user = localStorage.getItem('githubUser');
+    const repo = localStorage.getItem('githubRepo');
+    const token = localStorage.getItem('githubToken');
+    
+    if (!user || !repo || !token) {
+        if (status) status.textContent = '⚠️ Guardado localmente en navegador. Para sincronizar globalmente con GitHub, configura tus credenciales arriba.';
+        // Inicializar de una vez localmente para probar
+        inicializarFirebaseFCMClient(parsedConfig);
+        return;
+    }
+    
+    try {
+        const existing = await fetch(
+            `https://raw.githubusercontent.com/${user}/${repo}/main/config.json?_=${Date.now()}`
+        ).then(r => r.ok ? r.json() : {}).catch(() => ({}));
+        
+        existing.firebaseConfig = parsedConfig;
+        if (serverKey) {
+            existing.fcmServerKey = serverKey;
+        } else {
+            delete existing.fcmServerKey;
+        }
+        existing.actualizado = new Date().toISOString();
+        
+        const subido = await subirArchivoAGitHub(user, repo, token, 'config.json', existing);
+        if (subido) {
+            if (status) status.textContent = '✅ ¡Guardado y sincronizado con GitHub con éxito!';
+            mostrarNotificacion('✅ Configuración de Firebase guardada y sincronizada.', 'success');
+            inicializarFirebaseFCMClient(parsedConfig);
+        } else {
+            if (status) status.textContent = '❌ Error al subir a GitHub. Comprueba tus credenciales.';
+        }
+    } catch (e) {
+        console.error(e);
+        if (status) status.textContent = '❌ Error de red al sincronizar con GitHub.';
+    }
+}
+
+async function enviarPushManualAdmin() {
+    const title = document.getElementById('manualPushTitle').value.trim();
+    const body = document.getElementById('manualPushBody').value.trim();
+    const url = document.getElementById('manualPushUrl').value.trim();
+    const status = document.getElementById('manualPushStatus');
+    
+    if (!title || !body) {
+        if (status) status.textContent = '⚠️ Título y cuerpo son requeridos.';
+        return;
+    }
+    
+    const serverKey = localStorage.getItem('fcmServerKey');
+    const fbConfigRaw = localStorage.getItem('firebaseConfig');
+    if (!serverKey || !fbConfigRaw) {
+        if (status) status.textContent = '⚠️ Configura Firebase y guarda la Clave de Servidor primero.';
+        return;
+    }
+    
+    const fbConfig = JSON.parse(fbConfigRaw);
+    const rtdbUrl = fbConfig.databaseURL || `https://${fbConfig.projectId}-default-rtdb.firebaseio.com`;
+    
+    if (status) status.textContent = '⏳ Buscando suscriptores en Firebase...';
+    
+    try {
+        const res = await fetch(`${rtdbUrl}/tokens.json`);
+        if (!res.ok) {
+            if (status) status.textContent = '❌ No se pudo conectar a Realtime Database.';
+            return;
+        }
+        
+        const tokensData = await res.json();
+        if (!tokensData) {
+            if (status) status.textContent = '⚠️ No hay ningún suscriptor registrado todavía.';
+            return;
+        }
+        
+        const tokens = Object.values(tokensData).map(t => t.token).filter(Boolean);
+        if (tokens.length === 0) {
+            if (status) status.textContent = '⚠️ No se encontraron tokens válidos.';
+            return;
+        }
+        
+        if (status) status.textContent = `⏳ Enviando a ${tokens.length} suscriptores...`;
+        
+        const response = await fetch('https://fcm.googleapis.com/fcm/send', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `key=${serverKey}`
+            },
+            body: JSON.stringify({
+                registration_ids: tokens,
+                notification: {
+                    title: title,
+                    body: body,
+                    icon: '/icons/icon-192.png',
+                    click_action: window.location.origin + (url || '/')
+                },
+                data: {
+                    url: url || '/'
+                }
+            })
+        });
+        
+        if (response.ok) {
+            const resData = await response.json();
+            if (status) status.textContent = `✅ Enviado. Éxitos: ${resData.success || 0}, Fallos: ${resData.failure || 0}`;
+            
+            // Limpiar tokens obsoletos
+            if (resData.results) {
+                const keysToDelete = Object.keys(tokensData);
+                for (let i = 0; i < resData.results.length; i++) {
+                    const result = resData.results[i];
+                    if (result.error === 'NotRegistered' || result.error === 'InvalidRegistration') {
+                        const tokenKey = keysToDelete[i];
+                        fetch(`${rtdbUrl}/tokens/${tokenKey}.json`, { method: 'DELETE' }).catch(() => null);
+                    }
+                }
+            }
+        } else {
+            if (status) status.textContent = `❌ Error en el envío FCM: ${response.status} ${response.statusText}`;
+        }
+    } catch (e) {
+        console.error(e);
+        if (status) status.textContent = '❌ Error de conexión o credenciales inválidas.';
+    }
+}
+
 window.tmMonedaActual = () => _monedaActual;
 
 // Cargar tasa actualizada desde GitHub al iniciar
