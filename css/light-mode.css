@@ -40,12 +40,65 @@ html body.light-mode .nav a:hover {
     color: #1A1A1A !important;
 }
 
-/* Logo: mantener oro / coral */
+/* ═══ LOGO EN MODO CLARO ═══
+   Problema previo: el premium-theme aplica color blanco al texto del logo y
+   styles.css aplica un gradiente shimmer con -webkit-text-fill-color: transparent
+   que dejaba "Tienda" invisible sobre fondos claros.
+
+   Solución: forzamos color sólido y eliminamos el clip de fondo para "Tienda".
+   "Max" mantiene el coral, el badge "M" mantiene su píldora naranja.
+*/
+html body.light-mode .logo,
+html body.light-mode .logo-premium,
+html body.light-mode .logo h1,
+html body.light-mode .logo > div,
+html body.light-mode .logo .logo-premium {
+    color: #1A1A1A !important;
+    -webkit-text-fill-color: #1A1A1A !important;
+    background: none !important;
+    -webkit-background-clip: border-box !important;
+    background-clip: border-box !important;
+}
+
+/* "Max" en coral / "Tienda" hereda el color negro de arriba */
 html body.light-mode .logo-premium em,
-html body.light-mode .logo h1 em,
-html body.light-mode .logo h1 span {
+html body.light-mode .logo h1 em {
     color: #E8501E !important;
     -webkit-text-fill-color: #E8501E !important;
+    background: none !important;
+    -webkit-background-clip: border-box !important;
+    background-clip: border-box !important;
+    animation: none !important;
+}
+/* span dentro del h1 (NO el badge) */
+html body.light-mode .logo h1 span:not(.logo-badge) {
+    color: #E8501E !important;
+    -webkit-text-fill-color: #E8501E !important;
+    background: none !important;
+    -webkit-background-clip: border-box !important;
+    background-clip: border-box !important;
+    animation: none !important;
+}
+/* El badge "M" mantiene su píldora naranja con texto blanco */
+html body.light-mode .logo-badge {
+    color: #FFFFFF !important;
+    -webkit-text-fill-color: #FFFFFF !important;
+    background: linear-gradient(135deg, #FF6B35, #E8501E) !important;
+}
+/* Logo del menú móvil */
+html body.light-mode .mobile-menu-logo {
+    color: #1A1A1A !important;
+    -webkit-text-fill-color: #1A1A1A !important;
+    background: none !important;
+    -webkit-background-clip: border-box !important;
+    background-clip: border-box !important;
+}
+html body.light-mode .mobile-menu-logo em {
+    color: #E8501E !important;
+    -webkit-text-fill-color: #E8501E !important;
+    background: none !important;
+    -webkit-background-clip: border-box !important;
+    background-clip: border-box !important;
 }
 
 /* Botones del header (carrito, corazón, hamburguesa) */
@@ -460,4 +513,26 @@ html body.light-mode .footer,
 html body.light-mode footer {
     background: #1A1A1A !important;
     color: #FFFFFF !important;
+}
+
+
+/* ============================================================
+   FALLBACK PARA MODO OSCURO (default, sin clase .light-mode)
+   Garantiza que el logo "Tienda" se vea siempre, sin depender
+   de herencia que puede romperse por reglas con !important.
+   ============================================================ */
+html body:not(.light-mode) .logo,
+html body:not(.light-mode) .logo-premium,
+html body:not(.light-mode) .logo h1 {
+    color: #f2f2f5 !important;
+    -webkit-text-fill-color: #f2f2f5 !important;
+}
+html body:not(.light-mode) .mobile-menu-logo {
+    color: #f2f2f5 !important;
+    -webkit-text-fill-color: #f2f2f5 !important;
+}
+/* El badge "M" siempre con texto blanco sobre el coral */
+html body .logo-badge {
+    color: #FFFFFF !important;
+    -webkit-text-fill-color: #FFFFFF !important;
 }

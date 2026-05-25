@@ -2862,38 +2862,24 @@ body.dark-mode .hsb-buscar-pill { background: #333; }
    Placeholder animado · Fondo imagen producto
    ============================================================ */
 
-/* ===== 1. CURSOR PERSONALIZADO DORADO ===== */
+/* ===== 1. CURSOR ESTÁNDAR DEL SISTEMA =====
+   El cursor dorado custom fue eliminado porque ocultaba el cursor del
+   sistema cuando algo fallaba al cargar, y era invisible en zonas con
+   fondo oscuro por el mix-blend-mode. Ahora se usa el cursor nativo,
+   que siempre se ve en cualquier modo (claro/oscuro) y en inputs.
+*/
 @media (pointer: fine) {
-    html, body { cursor: none !important; }
-    a, button, [onclick], [role="button"], input, select, label, .producto-card {
-        cursor: none !important;
+    html, body { cursor: auto; }
+    a, button, [onclick], [role="button"], .producto-card, .categoria-card {
+        cursor: pointer;
     }
-    #tm-cursor {
-        position: fixed;
-        width: 10px;
-        height: 10px;
-        background: var(--gold);
-        border-radius: 50%;
-        pointer-events: none;
-        z-index: 999999;
-        transform: translate(-50%, -50%);
-        transition: width 0.2s ease, height 0.2s ease, background 0.2s ease, opacity 0.2s ease;
-        will-change: transform;
-        mix-blend-mode: multiply;
-        box-shadow: 0 0 12px rgba(201,169,110,0.7), 0 0 24px rgba(201,169,110,0.3);
+    input[type="text"], input[type="search"], input[type="email"],
+    input[type="password"], input[type="number"], input[type="url"],
+    input[type="tel"], textarea {
+        cursor: text;
     }
-    #tm-cursor.hover {
-        width: 28px;
-        height: 28px;
-        background: rgba(201,169,110,0.25);
-        box-shadow: 0 0 0 2px var(--gold), 0 0 20px rgba(201,169,110,0.4);
-        mix-blend-mode: normal;
-    }
-    #tm-cursor.click {
-        width: 6px;
-        height: 6px;
-        background: var(--gold-light);
-    }
+    /* Ocultar restos del cursor custom si quedan en el DOM */
+    #tm-cursor { display: none !important; }
 }
 
 /* ===== 2. LOGO SHIMMER ===== */

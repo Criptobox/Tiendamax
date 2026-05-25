@@ -1070,12 +1070,27 @@ async function cargarDatosDesdeGitHub() {
         const vMG = document.getElementById('vistaMeGusta');
         if (vMG && vMG.style.display !== 'none') mostrarVistaMeGusta();
         verificarProductosNuevos();
-        console.log('✅ Datos sincronizados con GitHub');
+
+        // CRÍTICO: si el usuario YA navegó a una categoría mientras se cargaba,
+        // re-renderizar la vista de productos con los datos frescos.
+        const vCat = document.getElementById('vistaCategoria');
+        if (vCat && vCat.style.display === 'block') {
+            console.log('[TM] Re-renderizando vista categoría con datos frescos');
+            renderizarProductos();
+        }
+
+        console.log('✅ Datos sincronizados con GitHub (productos:', productos.length + ')');
     } catch (e) {
-        console.log('ℹ️ Iniciando con datos locales');
+        console.warn('⚠️ Error en cargarDatosDesdeGitHub:', e && e.message);
+        console.log('ℹ️ Iniciando con datos locales (productos:', (productos || []).length + ')');
         renderizarCategoriasHome();
         renderizarMasVendidos();
         verificarOfertasYMostrarBanner();
+        // También re-render si estamos en vista categoría
+        const vCat = document.getElementById('vistaCategoria');
+        if (vCat && vCat.style.display === 'block' && typeof renderizarProductos === 'function') {
+            renderizarProductos();
+        }
     }
 }
 
@@ -1257,11 +1272,28 @@ function mostrarVistaInicio() {
 function mostrarVistaCategoria(categoria) {
     categoriaSeleccionada = categoria;
     subcategoriaSeleccionada = 'Todas';
-    // Clear hero search state when navigating by category (not from search)
-    const heroInput = document.getElementById('heroSearchInput');
-    if (heroInput && !_heroSearchActivo) {
+
+    // RESILIENCIA: si el array de productos en memoria está vacío
+    // pero hay datos en localStorage (caso PWA con cache), recargarlos.
+    if ((!Array.isArray(productos) || productos.length === 0)) {
+        try {
+            const cached = JSON.parse(localStorage.getItem('productos') || '[]');
+            if (Array.isArray(cached) && cached.length > 0) {
+                productos = cached;
+                console.log('[TM] Productos recuperados de localStorage:', productos.length);
+            }
+        } catch(e) {}
+    }
+
+    // Si navegamos a una categoría específica (no "Todas"), limpiar filtros
+    // de búsqueda previos para que aparezcan todos los productos de la categoría.
+    // Si vamos a "Todas", mantener los filtros (puede venir de aplicarBusquedaHero).
+    if (categoria !== 'Todas') {
+        _heroSearchActivo = '';
         _heroPrecioMin = 0;
         _heroPrecioMax = Infinity;
+        const heroInput = document.getElementById('heroSearchInput');
+        if (heroInput) heroInput.value = '';
     }
     document.getElementById('vistaInicio').style.display = 'none';
     document.getElementById('vistaCategoria').style.display = 'block';
@@ -1716,7 +1748,18 @@ function renderizarProductos(isLoadMore = false) {
     productosGrid.innerHTML = '';
 
     if (productosFiltrados.length === 0) {
-        productosGrid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #999; padding: 60px 20px; font-size:15px;">No hay productos en esta subcategoría aún.</p>';
+        // Mensaje contextual según la situación real
+        let mensaje;
+        if (!Array.isArray(productos) || productos.length === 0) {
+            mensaje = '⏳ Cargando productos... Si esto persiste, recarga la página.';
+        } else if (subcategoriaSeleccionada && subcategoriaSeleccionada !== 'Todas') {
+            mensaje = 'No hay productos en esta subcategoría aún.';
+        } else if (_heroSearchActivo) {
+            mensaje = 'No hay productos que coincidan con tu búsqueda.';
+        } else {
+            mensaje = 'No hay productos en esta categoría aún.';
+        }
+        productosGrid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #999; padding: 60px 20px; font-size:15px;">' + escapeHtml(mensaje) + '</p>';
         return;
     }
 
@@ -3803,7 +3846,18 @@ renderizarProductos = function() {
 
     productosGrid.innerHTML = '';
     if (productosFiltrados.length === 0) {
-        productosGrid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #999; padding: 60px 20px; font-size:15px;">No hay productos en esta subcategoría aún.</p>';
+        // Mensaje contextual según la situación real
+        let mensaje;
+        if (!Array.isArray(productos) || productos.length === 0) {
+            mensaje = '⏳ Cargando productos... Si esto persiste, recarga la página.';
+        } else if (subcategoriaSeleccionada && subcategoriaSeleccionada !== 'Todas') {
+            mensaje = 'No hay productos en esta subcategoría aún.';
+        } else if (_heroSearchActivo) {
+            mensaje = 'No hay productos que coincidan con tu búsqueda.';
+        } else {
+            mensaje = 'No hay productos en esta categoría aún.';
+        }
+        productosGrid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #999; padding: 60px 20px; font-size:15px;">' + escapeHtml(mensaje) + '</p>';
         return;
     }
 
@@ -3846,32 +3900,14 @@ renderizarProductos = function() {
    Separadores · Footer premium
    ============================================================ */
 
-// ===== CURSOR DORADO (solo desktop pointer:fine) =====
-(function initCursor() {
-    if (!window.matchMedia('(pointer: fine)').matches) return;
-    const cur = document.createElement('div');
-    cur.id = 'tm-cursor';
-    document.body.appendChild(cur);
-
-    let mx = -100, my = -100;
-    document.addEventListener('mousemove', e => {
-        mx = e.clientX; my = e.clientY;
-        cur.style.left = mx + 'px';
-        cur.style.top  = my + 'px';
-    }, { passive: true });
-
-    document.addEventListener('mouseenter', () => cur.style.opacity = '1');
-    document.addEventListener('mouseleave', () => cur.style.opacity = '0');
-
-    const hoverEls = 'a,button,[onclick],[role="button"],.producto-card,.categoria-card';
-    document.addEventListener('mouseover', e => {
-        if (e.target.closest(hoverEls)) cur.classList.add('hover');
-    });
-    document.addEventListener('mouseout', e => {
-        if (e.target.closest(hoverEls)) cur.classList.remove('hover');
-    });
-    document.addEventListener('mousedown', () => cur.classList.add('click'));
-    document.addEventListener('mouseup',   () => cur.classList.remove('click'));
+// ===== CURSOR DORADO ELIMINADO =====
+// El cursor custom dorado fue eliminado: ocultaba el cursor del sistema
+// cuando algo fallaba y no se veía bien en todos los modos. Ahora se usa
+// el cursor nativo del navegador, que siempre funciona.
+(function removeOldCursor() {
+    // Limpiar el elemento si quedó de una versión anterior cacheada
+    const old = document.getElementById('tm-cursor');
+    if (old) old.remove();
 })();
 
 // ===== BARRA DE PROGRESO DORADA =====
