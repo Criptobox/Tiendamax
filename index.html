@@ -122,8 +122,97 @@
     <!-- ===== TEMA PREMIUM (NUEVO) — debe ir al final ===== -->
     <link rel="stylesheet" href="css/premium-theme.css?v=6">
     <!-- ===== MODO CLARO (overrides cuando body.light-mode) — debe ir DESPUÉS del premium ===== -->
-    <link rel="stylesheet" href="css/light-mode.css?v=4">
+    <link rel="stylesheet" href="css/light-mode.css?v=5">
 
+
+    <!-- Estilos para "Vistos Recientemente" -->
+    <style>
+    .recientes-section {
+        padding: 40px 0;
+        background: rgba(255, 255, 255, 0.02);
+    }
+    .recientes-section .section-header {
+        text-align: center;
+        margin-bottom: 24px;
+    }
+    .recientes-section .section-header h2 {
+        font-size: 22px;
+        color: #fff;
+        margin-bottom: 6px;
+        font-weight: 700;
+    }
+    .recientes-section .section-header p {
+        color: rgba(255, 255, 255, 0.55);
+        font-size: 13px;
+    }
+    .recientes-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        gap: 14px;
+    }
+    @media (max-width: 600px) {
+        .recientes-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+    }
+    .rec-card {
+        background: rgba(22, 22, 31, 0.85);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 14px;
+        padding: 0;
+        cursor: pointer;
+        transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+        overflow: hidden;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+    }
+    .rec-card:hover {
+        transform: translateY(-3px);
+        border-color: rgba(255, 106, 0, 0.4);
+        box-shadow: 0 10px 28px rgba(255, 106, 0, 0.18);
+    }
+    .rec-card img {
+        width: 100%;
+        aspect-ratio: 1 / 1;
+        object-fit: contain;
+        background: linear-gradient(180deg, #1c1f2a 0%, #11131b 100%);
+        display: block;
+    }
+    .rec-card-info {
+        padding: 10px 12px 12px;
+    }
+    .rec-card-nombre {
+        font-size: 13px;
+        color: rgba(255, 255, 255, 0.9);
+        font-weight: 600;
+        line-height: 1.3;
+        margin-bottom: 4px;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+    .rec-card-precio {
+        font-size: 14px;
+        font-weight: 800;
+        color: #ff9d63;
+    }
+    .rec-card-agotado {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        background: rgba(231, 76, 60, 0.9);
+        color: #fff;
+        font-size: 10px;
+        font-weight: 700;
+        padding: 3px 8px;
+        border-radius: 10px;
+        z-index: 2;
+        letter-spacing: 0.3px;
+    }
+    </style>
 </head>
 <body>
 
@@ -481,6 +570,17 @@
             </div>
         </section>
 
+        <!-- Vistos Recientemente (solo aparece si el cliente ha visto algún producto) -->
+        <section id="seccionRecientes" class="recientes-section" style="display:none;">
+            <div class="container">
+                <div class="section-header">
+                    <h2>👀 Vistos recientemente</h2>
+                    <p>Productos que viste hace poco</p>
+                </div>
+                <div id="recientesGrid" class="recientes-grid"></div>
+            </div>
+        </section>
+
         <!-- Prueba Social Mini (después de Más Vendidos) -->
         <section class="prueba-social-strip">
             <div class="container">
@@ -833,6 +933,12 @@
                     <div id="detailRelacionadosGrid" class="detail-relacionados-grid"></div>
                 </div>
 
+                <!-- Vistos recientemente (también en detalle, excluye el actual) -->
+                <div id="detailVistosSection" class="detail-relacionados" style="display:none;">
+                    <h3>👀 También viste</h3>
+                    <div id="detailVistosGrid" class="recientes-grid"></div>
+                </div>
+
             </div>
         </div>
     </div>
@@ -879,7 +985,7 @@
         });
     })();
     </script>
-    <script src="js/script.js?v=35" defer></script>
+    <script src="js/script.js?v=37" defer></script>
     <script src="js/subcategorias.js?v=11" defer></script>
     <script src="js/share-patch.js?v=2" defer></script>
     <script src="js/revolico_integration.js?v=10" defer></script>
