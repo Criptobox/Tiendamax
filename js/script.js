@@ -1643,9 +1643,11 @@ function agregarProductoForm(event) {
         sincronizarConGitHub();
         document.getElementById('productForm').reset();
         mostrarNotificacion('✅ ¡Producto agregado exitosamente!');
-        // Enviar notificación push a clientes suscritos
+        // Notificación local LOCAL (solo para el propio admin que está agregando).
+        // Las notificaciones a los CLIENTES se envían por el workflow de GitHub Actions
+        // (scripts/send_notifications.py) que agrupa los cambios automáticamente.
         if (window.TiendaMaxPush) {
-            window.TiendaMaxPush.nuevoProducto(producto.nombre, producto.precioActual);
+            window.TiendaMaxPush.nuevoProducto(producto.nombre, producto.precioActual, producto.id, producto.imagen);
         }
         renderizarCategoriasHome();
         renderizarMasVendidos();
@@ -4914,15 +4916,32 @@ document.addEventListener('DOMContentLoaded', () => {
 (function initPush() {
     if (!('serviceWorker' in navigator)) return;
 
-    setTimeout(() => {
+    // ═══════════════════════════════════════════════════════
+    //  PRE-PROMPT INTELIGENTE para notificaciones
+    //  Se muestra SOLO en momentos de alta intención:
+    //    • Tras 30s de navegación activa (no al cargar)
+    //    • Tras marcar 2 ❤️ Me Gusta
+    //    • Tras hacer scroll a la 2ª pantalla
+    //    • Tras abrir 3 detalles de productos
+    //
+    //  NO se muestra si:
+    //    • Ya tiene permiso granted
+    //    • Está denied (no se puede repreguntar el nativo)
+    //    • El usuario dijo "Ahora no" hace menos de X días
+    // ═══════════════════════════════════════════════════════
+    let _bannerYaMostrado = false;
+    function _mostrarBannerPushAhora() {
+        if (_bannerYaMostrado) return;
         if (!('Notification' in window)) return;
 
         // Si ya tiene permiso concedido, no molestar
         if (Notification.permission === 'granted') return;
 
-        // Si el usuario cerró el banner hace menos de 6 horas, esperar
+        // Si el usuario cerró el banner antes, esperar el tiempo configurado
         const pospuesto = parseInt(localStorage.getItem('tm_push_pospuesto') || '0');
         if (Date.now() < pospuesto) return;
+
+        _bannerYaMostrado = true;
 
         // Eliminar banner anterior si existe
         const anterior = document.getElementById('tm-push-banner-wrap');
@@ -4930,11 +4949,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Mensaje según el estado del permiso
         const estaDenegado = Notification.permission === 'denied';
-        const titulo  = estaDenegado ? '🔔 Notificaciones bloqueadas' : '🔔 ¡Activa las alertas!';
+        const titulo  = estaDenegado ? '🔔 Notificaciones bloqueadas' : '🔔 ¿Quieres avisos de ofertas?';
         const cuerpo  = estaDenegado
-            ? 'Ve a ajustes del navegador y actívalas para recibir ofertas'
-            : 'Recibe ofertas relámpago y productos nuevos al instante';
-        const btnTexto = estaDenegado ? 'Cómo activarlas' : 'Activar';
+            ? 'Para reactivarlas: tres puntos del navegador → Ajustes → Notificaciones → Permitir'
+            : 'Te avisamos cuando bajen los precios o lleguen productos nuevos. Sin spam.';
+        const btnTexto = estaDenegado ? 'Cómo activarlas' : '🔔 Avísame';
 
         const b = document.createElement('div');
         b.id = 'tm-push-banner-wrap';
@@ -4979,28 +4998,110 @@ document.addEventListener('DOMContentLoaded', () => {
 
         document.getElementById('tm-push-no').onclick = () => {
             b.remove();
-            // Volver a mostrar en 6 horas (no 2 días)
-            localStorage.setItem('tm_push_pospuesto', Date.now() + 6 * 60 * 60 * 1000);
+            // Pospuesto: cuántas veces lo ha rechazado
+            const rechazos = parseInt(localStorage.getItem('tm_push_rechazos') || '0') + 1;
+            localStorage.setItem('tm_push_rechazos', String(rechazos));
+            // Cada rechazo añade más tiempo de espera: 1 día, 3 días, 7 días, 14 días, 30 días
+            const dias = [1, 3, 7, 14, 30][Math.min(rechazos - 1, 4)];
+            const ms = dias * 24 * 60 * 60 * 1000;
+            localStorage.setItem('tm_push_pospuesto', String(Date.now() + ms));
+            console.log('[push] Rechazo #' + rechazos + ' — re-preguntará en ' + dias + ' días');
         };
-    }, 4000);
+    }
+
+    // Disparadores de momento correcto
+    function _maybeMostrarPushBanner(razon) {
+        if (_bannerYaMostrado) return;
+        if (!('Notification' in window) || Notification.permission === 'granted') return;
+        console.log('[push] Trigger:', razon);
+        _mostrarBannerPushAhora();
+    }
+
+    // Trigger 1: después de 45 segundos de navegación
+    setTimeout(() => _maybeMostrarPushBanner('45s navegando'), 45000);
+
+    // Trigger 2: tras hacer scroll a la 2ª pantalla
+    let _scrolled = false;
+    window.addEventListener('scroll', function onScroll() {
+        if (_scrolled) return;
+        if (window.scrollY > window.innerHeight * 1.5) {
+            _scrolled = true;
+            window.removeEventListener('scroll', onScroll);
+            setTimeout(() => _maybeMostrarPushBanner('scroll 2ª pantalla'), 1500);
+        }
+    }, { passive: true });
+
+    // Trigger 3: al marcar 2 Me Gusta
+    let _likesContados = parseInt(localStorage.getItem('tm_likes_session') || '0');
+    document.addEventListener('click', function(e) {
+        const btn = e.target.closest('[data-like-id]');
+        if (!btn) return;
+        _likesContados++;
+        localStorage.setItem('tm_likes_session', String(_likesContados));
+        if (_likesContados >= 2) {
+            setTimeout(() => _maybeMostrarPushBanner('2 me gusta'), 2000);
+        }
+    });
+
+    // Trigger 4: tras abrir 3 detalles de productos
+    let _detallesAbiertos = parseInt(localStorage.getItem('tm_detalles_session') || '0');
+    const _origAbrirDetalle = window.abrirDetalleProducto;
+    if (typeof _origAbrirDetalle === 'function') {
+        window.abrirDetalleProducto = function() {
+            _origAbrirDetalle.apply(this, arguments);
+            _detallesAbiertos++;
+            localStorage.setItem('tm_detalles_session', String(_detallesAbiertos));
+            if (_detallesAbiertos >= 3) {
+                setTimeout(() => _maybeMostrarPushBanner('3 detalles abiertos'), 1500);
+            }
+        };
+    }
 
     window.TiendaMaxPush = {
-        async enviar(titulo, cuerpo, url) {
+        async enviar(titulo, cuerpo, url, imagen) {
             if (Notification.permission !== 'granted') return;
             const reg = await navigator.serviceWorker.ready;
-            reg.showNotification(titulo, {
+            const opciones = {
                 body: cuerpo,
                 icon: '/icons/icon-192.png',
                 badge: '/icons/icon-192.png',
                 data: { url: url || '/' },
                 vibrate: [200, 100, 200],
-                actions: [{ action: 'ver', title: '👀 Ver oferta' }, { action: 'cerrar', title: 'Cerrar' }]
-            });
+                actions: [
+                    { action: 'ver', title: '👀 Ver' },
+                    { action: 'cerrar', title: 'Cerrar' }
+                ],
+                // tag agrupa notificaciones del mismo tipo (solo se muestra la última)
+                tag: 'tm-' + (titulo.substring(0, 20)),
+                renotify: true,
+            };
+            if (imagen) opciones.image = imagen;
+            reg.showNotification(titulo, opciones);
         },
-        nuevoProducto(nombre, precio) { this.enviar('🆕 Nuevo en TiendaMax', nombre + ' — $' + precio + ' USD'); },
-        rebaja(nombre, antes, ahora)  { this.enviar('🏷️ ¡Rebaja!', nombre + ': $' + antes + ' → $' + ahora + ' USD'); },
-        relampago(nombre, precio, min) { this.enviar('⚡ ¡Oferta relámpago! ' + (min||60) + ' min', nombre + ' — $' + precio + ' USD'); },
-        ofertaDia(nombre, precio)      { this.enviar('☀️ Oferta del día', nombre + ' — Solo hoy: $' + precio + ' USD'); }
+        nuevoProducto(nombre, precio, id, imagen) {
+            const url = id ? '/p/producto-' + id + '.html' : '/';
+            this.enviar('🆕 Nuevo en TiendaMax', nombre + ' desde $' + precio + ' USD', url, imagen);
+        },
+        rebaja(nombre, antes, ahora, id, imagen) {
+            const url = id ? '/p/producto-' + id + '.html' : '/';
+            const pct = antes > 0 ? Math.round((antes - ahora) / antes * 100) : 0;
+            const titulo = pct > 0 ? '🏷️ ¡Rebaja -' + pct + '%!' : '🏷️ Bajada de precio';
+            this.enviar(titulo, nombre + ': $' + antes + ' → $' + ahora + ' USD', url, imagen);
+        },
+        relampago(nombre, precio, min) {
+            this.enviar('⚡ ¡Oferta relámpago ' + (min||60) + ' min!', nombre + ' — $' + precio + ' USD');
+        },
+        ofertaDia(nombre, precio, id, imagen) {
+            const url = id ? '/p/producto-' + id + '.html' : '/';
+            this.enviar('☀️ Oferta del día', nombre + ' — Solo hoy: $' + precio + ' USD', url, imagen);
+        },
+        // Métodos para mostrar AGRUPADOS (ej: tras agregar 5 productos)
+        nuevosAgrupados(cantidad) {
+            this.enviar('🆕 ' + cantidad + ' productos nuevos', 'Ven a ver las novedades 🛍️', '/');
+        },
+        rebajasAgrupadas(cantidad) {
+            this.enviar('🏷️ ' + cantidad + ' productos en oferta', '¡Aprovecha antes de que se acaben!', '/');
+        }
     };
 })();
 
@@ -5250,14 +5351,19 @@ async function inicializarFirebaseFCMClient(config) {
 function ejecutarInitFCM(config) {
     try {
         const messaging = firebase.messaging();
-        navigator.serviceWorker.ready.then(reg => {
-            messaging.useServiceWorker(reg);
-            
-            // Si ya tenemos permisos, registrar el token de inmediato
-            if (Notification.permission === 'granted') {
-                solicitarYRegistrarTokenFCM(messaging, config);
-            }
-        });
+        // FIX: registrar el SW dedicado de Firebase (firebase-messaging-sw.js)
+        // El SW de TiendaMax (sw.js) NO sirve para FCM — debe ser uno propio.
+        navigator.serviceWorker.register('/firebase-messaging-sw.js', { scope: '/firebase-cloud-messaging-push-scope' })
+            .then(fcmReg => {
+                console.log('[FCM] Service Worker dedicado registrado:', fcmReg.scope);
+                messaging.useServiceWorker(fcmReg);
+                if (Notification.permission === 'granted') {
+                    solicitarYRegistrarTokenFCM(messaging, config, fcmReg);
+                }
+            })
+            .catch(err => {
+                console.error('[FCM] Error registrando firebase-messaging-sw.js:', err);
+            });
         
         // Manejar mensajes en primer plano (Foreground)
         messaging.onMessage((payload) => {
@@ -5273,7 +5379,7 @@ function ejecutarInitFCM(config) {
     }
 }
 
-async function solicitarYRegistrarTokenFCM(messaging, config) {
+async function solicitarYRegistrarTokenFCM(messaging, config, fcmReg) {
     try {
         const vapidKey = config.vapidKey || localStorage.getItem('firebaseVapidKey');
         if (!vapidKey) {
@@ -5281,7 +5387,10 @@ async function solicitarYRegistrarTokenFCM(messaging, config) {
             return;
         }
         
-        const token = await messaging.getToken({ vapidKey: vapidKey });
+        // FIX: pasar el serviceWorkerRegistration explícitamente a getToken
+        const opts = { vapidKey: vapidKey };
+        if (fcmReg) opts.serviceWorkerRegistration = fcmReg;
+        const token = await messaging.getToken(opts);
         if (token) {
             console.log('[FCM] Token obtenido:', token);
             // Guardar en localStorage
