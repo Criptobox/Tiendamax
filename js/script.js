@@ -5957,4 +5957,392 @@ window.addEventListener('popstate', function() {
     }
 });
 
+// ═══════════════════════════════════════════════════════════
+//  🔔 PANEL DE CONTROL DE NOTIFICACIONES (modal con ON/OFF)
+//
+//  Funciones expuestas globalmente:
+//    - abrirModalNotificaciones()
+//    - cerrarModalNotificaciones()
+//    - toggleNotificacionesTM()
+//
+//  Estado:
+//    - 'granted'   → permiso concedido, hay token, ACTIVO
+//    - 'denied'    → bloqueado por usuario (no se puede repedir)
+//    - 'default'   → nunca decidió
+//    - 'no-token'  → permiso OK pero sin token registrado
+// ═══════════════════════════════════════════════════════════
 
+(function tmPanelNotificaciones() {
+    'use strict';
+
+    let _estadoActual = 'desconocido';
+
+    // Detecta el estado actual de notificaciones
+    function detectarEstadoNotif() {
+        if (!('Notification' in window)) return 'no-soporta';
+        if (Notification.permission === 'denied') return 'bloqueado';
+        if (Notification.permission === 'default') return 'sin-decidir';
+        // permission === 'granted'
+        const tokenLocal = localStorage.getItem('fcmToken');
+        if (!tokenLocal) return 'sin-token';
+        return 'activo';
+    }
+
+    // Actualiza el ícono del header según el estado
+    function actualizarIconoHeader() {
+        const btn = document.getElementById('notifHeaderBtn');
+        const icon = document.getElementById('notifHeaderIcon');
+        if (!btn) return;
+
+        const estado = detectarEstadoNotif();
+        _estadoActual = estado;
+
+        btn.classList.remove('activo', 'desactivado', 'bloqueado');
+
+        // SVG del ícono según estado
+        if (estado === 'activo') {
+            btn.classList.add('activo');
+            btn.title = 'Notificaciones activas (toca para gestionar)';
+            // Campana rellena con onda
+            if (icon) icon.innerHTML = '<path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/><circle cx="18" cy="6" r="3" fill="#25d366" stroke="#0e0e12" stroke-width="1.5"/>';
+        } else if (estado === 'bloqueado') {
+            btn.classList.add('bloqueado');
+            btn.title = 'Notificaciones bloqueadas (toca para ver cómo activarlas)';
+            // Campana tachada
+            if (icon) icon.innerHTML = '<path d="M13.73 21a2 2 0 0 1-3.46 0"/><path d="M18.63 13A17.89 17.89 0 0 1 18 8"/><path d="M6.26 6.26A5.86 5.86 0 0 0 6 8c0 7-3 9-3 9h14"/><path d="M18 8a6 6 0 0 0-9.33-5"/><line x1="1" y1="1" x2="23" y2="23"/>';
+        } else {
+            btn.classList.add('desactivado');
+            btn.title = 'Activar notificaciones';
+            if (icon) icon.innerHTML = '<path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>';
+        }
+    }
+
+    // Abre el modal y actualiza el estado mostrado
+    window.abrirModalNotificaciones = function() {
+        const overlay = document.getElementById('notifModalOverlay');
+        if (!overlay) return;
+        overlay.classList.add('activo');
+        document.body.style.overflow = 'hidden';
+        actualizarModalNotif();
+    };
+
+    window.cerrarModalNotificaciones = function() {
+        const overlay = document.getElementById('notifModalOverlay');
+        if (!overlay) return;
+        overlay.classList.remove('activo');
+        document.body.style.overflow = '';
+    };
+
+    // Refresca el contenido del modal según estado
+    function actualizarModalNotif() {
+        const estado = detectarEstadoNotif();
+        _estadoActual = estado;
+
+        const box      = document.getElementById('notifEstadoBox');
+        const icono    = document.getElementById('notifEstadoIcono');
+        const texto    = document.getElementById('notifEstadoTexto');
+        const subtexto = document.getElementById('notifEstadoSubtexto');
+        const boton    = document.getElementById('notifBotonAccion');
+        const infoBlock = document.getElementById('notifModalInfoBloqueado');
+
+        if (!box || !boton) return;
+
+        box.classList.remove('desactivado', 'bloqueado');
+        infoBlock.style.display = 'none';
+
+        if (estado === 'no-soporta') {
+            icono.textContent = '⚠️';
+            texto.textContent = 'No soportado';
+            subtexto.textContent = 'Tu navegador no soporta notificaciones push.';
+            boton.textContent = 'Cerrar';
+            boton.onclick = cerrarModalNotificaciones;
+            boton.classList.add('desactivar');
+            box.classList.add('bloqueado');
+            return;
+        }
+
+        if (estado === 'bloqueado') {
+            box.classList.add('bloqueado');
+            icono.textContent = '🚫';
+            texto.textContent = 'Bloqueadas en el navegador';
+            subtexto.textContent = 'Tienes que reactivarlas desde ajustes del navegador.';
+            boton.textContent = 'Entendido';
+            boton.onclick = cerrarModalNotificaciones;
+            boton.classList.add('desactivar');
+            infoBlock.style.display = 'block';
+            return;
+        }
+
+        if (estado === 'activo') {
+            icono.textContent = '🔔';
+            texto.textContent = 'Notificaciones ACTIVAS';
+            subtexto.textContent = 'Recibirás ofertas, productos nuevos y cambios de tasa';
+            boton.textContent = '🔕 Desactivar notificaciones';
+            boton.classList.add('desactivar');
+            boton.onclick = toggleNotificacionesTM;
+            return;
+        }
+
+        // sin-decidir o sin-token
+        box.classList.add('desactivado');
+        icono.textContent = '🔕';
+        texto.textContent = 'Notificaciones APAGADAS';
+        subtexto.textContent = 'Te estás perdiendo las ofertas relámpago 🔥';
+        boton.textContent = '🔔 Activar notificaciones';
+        boton.classList.remove('desactivar');
+        boton.onclick = toggleNotificacionesTM;
+    }
+
+    // Toggle: activa o desactiva según estado actual
+    window.toggleNotificacionesTM = async function() {
+        const boton = document.getElementById('notifBotonAccion');
+        const estado = detectarEstadoNotif();
+
+        if (estado === 'no-soporta' || estado === 'bloqueado') {
+            cerrarModalNotificaciones();
+            return;
+        }
+
+        if (estado === 'activo') {
+            // ─── DESACTIVAR ───
+            boton.disabled = true;
+            boton.textContent = '⏳ Desactivando...';
+            try {
+                await desuscribirFCM();
+                if (typeof mostrarNotificacion === 'function') {
+                    mostrarNotificacion('🔕 Notificaciones desactivadas', 'info');
+                }
+            } catch (e) {
+                console.error('[notif] Error desuscribiendo:', e);
+                if (typeof mostrarNotificacion === 'function') {
+                    mostrarNotificacion('⚠️ Error al desactivar: ' + e.message, 'error');
+                }
+            }
+            boton.disabled = false;
+            actualizarModalNotif();
+            actualizarIconoHeader();
+            return;
+        }
+
+        // ─── ACTIVAR ───
+        boton.disabled = true;
+        boton.textContent = '⏳ Activando...';
+
+        try {
+            // Pedir permiso del navegador si aún no está concedido
+            if (Notification.permission !== 'granted') {
+                const perm = await Notification.requestPermission();
+                if (perm === 'denied') {
+                    if (typeof mostrarNotificacion === 'function') {
+                        mostrarNotificacion('🚫 Bloqueado. Ve a ajustes del navegador.', 'error');
+                    }
+                    actualizarModalNotif();
+                    actualizarIconoHeader();
+                    boton.disabled = false;
+                    return;
+                }
+                if (perm !== 'granted') {
+                    boton.disabled = false;
+                    actualizarModalNotif();
+                    return;
+                }
+            }
+
+            // Inicializar FCM y registrar token
+            if (typeof tmRegistrarTokenFCMSiPermitido === 'function') {
+                await tmRegistrarTokenFCMSiPermitido();
+            } else if (typeof inicializarFirebaseFCMClient === 'function') {
+                let fbConfig = null;
+                try {
+                    const raw = localStorage.getItem('firebaseConfig');
+                    if (raw) fbConfig = JSON.parse(raw);
+                } catch(e) {}
+                if (!fbConfig || !fbConfig.projectId) {
+                    const r = await fetch('config.json?_=' + Date.now());
+                    if (r.ok) {
+                        const cfg = await r.json();
+                        fbConfig = cfg.firebaseConfig;
+                        if (fbConfig) localStorage.setItem('firebaseConfig', JSON.stringify(fbConfig));
+                    }
+                }
+                if (fbConfig && fbConfig.projectId) {
+                    await inicializarFirebaseFCMClient(fbConfig);
+                }
+            }
+
+            // Esperar un poquito a que el token se guarde
+            await new Promise(r => setTimeout(r, 1500));
+
+            const nuevoEstado = detectarEstadoNotif();
+            if (nuevoEstado === 'activo') {
+                if (typeof mostrarNotificacion === 'function') {
+                    mostrarNotificacion('🔔 ¡Notificaciones activadas!', 'success');
+                }
+                // Mostrar push de bienvenida local
+                try {
+                    const reg = await navigator.serviceWorker.ready;
+                    reg.showNotification('✅ TiendaMax activado', {
+                        body: 'Te avisaremos de ofertas y productos nuevos.',
+                        icon: '/icons/icon-192.png',
+                        badge: '/icons/icon-192.png',
+                        vibrate: [200, 100, 200],
+                        tag: 'tm-bienvenida'
+                    });
+                } catch(e) {}
+            } else {
+                if (typeof mostrarNotificacion === 'function') {
+                    mostrarNotificacion('⚠️ No se pudo completar. Reintenta.', 'error');
+                }
+            }
+        } catch(e) {
+            console.error('[notif] Error activando:', e);
+            if (typeof mostrarNotificacion === 'function') {
+                mostrarNotificacion('❌ Error: ' + e.message, 'error');
+            }
+        }
+
+        boton.disabled = false;
+        actualizarModalNotif();
+        actualizarIconoHeader();
+    };
+
+    // Desuscribir: borra token de Firebase RTDB + revoca FCM
+    async function desuscribirFCM() {
+        const tokenLocal = localStorage.getItem('fcmToken');
+
+        // 1. Borrar de Firebase Realtime Database
+        if (tokenLocal) {
+            try {
+                let fbConfig = null;
+                const raw = localStorage.getItem('firebaseConfig');
+                if (raw) fbConfig = JSON.parse(raw);
+                if (!fbConfig) {
+                    const r = await fetch('config.json?_=' + Date.now());
+                    if (r.ok) fbConfig = (await r.json()).firebaseConfig;
+                }
+                if (fbConfig && fbConfig.databaseURL) {
+                    const tokenId = btoa(tokenLocal).replace(/=/g,'').replace(/\+/g,'-').replace(/\//g,'_').substring(0,200);
+                    const url = fbConfig.databaseURL + '/tokens/' + tokenId + '.json';
+                    await fetch(url, { method: 'DELETE' });
+                    console.log('[notif] Token borrado de Firebase RTDB');
+                }
+            } catch(e) {
+                console.warn('[notif] Error borrando token de RTDB:', e);
+            }
+        }
+
+        // 2. Borrar de localStorage
+        localStorage.removeItem('fcmToken');
+
+        // 3. Revocar token FCM (le dice a Firebase que no envíe más)
+        try {
+            if (window.firebase && firebase.messaging) {
+                const messaging = firebase.messaging();
+                await messaging.deleteToken();
+                console.log('[notif] Token FCM revocado');
+            }
+        } catch(e) {
+            console.warn('[notif] Error revocando token FCM:', e);
+        }
+
+        // 4. Limpiar el flag del banner para que no aparezca otra vez al instante
+        localStorage.setItem('tm_push_pospuesto', String(Date.now() + 30 * 24 * 60 * 60 * 1000));
+    }
+
+    // Cerrar modal con ESC
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            const overlay = document.getElementById('notifModalOverlay');
+            if (overlay && overlay.classList.contains('activo')) {
+                cerrarModalNotificaciones();
+            }
+        }
+    });
+
+    // Actualizar ícono al cargar y cada vez que cambie el estado
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', actualizarIconoHeader);
+    } else {
+        actualizarIconoHeader();
+    }
+    // Refrescar el ícono cada 5 segundos por si cambió el permiso en otra pestaña
+    setInterval(actualizarIconoHeader, 5000);
+
+    // Exponer para depuración
+    window._tmNotif = {
+        actualizarIconoHeader,
+        actualizarModalNotif,
+        detectarEstadoNotif,
+        desuscribirFCM
+    };
+})();
+
+// ═══════════════════════════════════════════════════════════
+//  ⬆️ BOTÓN "SUBIR ARRIBA" flotante
+//  Aparece tras hacer scroll hacia abajo. Al pulsar, sube suave.
+// ═══════════════════════════════════════════════════════════
+(function tmBotonSubirArriba() {
+    'use strict';
+
+    function crearBoton() {
+        if (document.getElementById('tm-subir-arriba')) return;
+        const btn = document.createElement('button');
+        btn.id = 'tm-subir-arriba';
+        btn.setAttribute('aria-label', 'Subir al inicio de la página');
+        btn.title = 'Subir arriba';
+        btn.innerHTML = '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>';
+        btn.style.cssText = [
+            'position:fixed',
+            'bottom:20px',
+            'right:16px',
+            'width:48px',
+            'height:48px',
+            'border-radius:50%',
+            'background:linear-gradient(135deg,#ff6a00,#ff3d00)',
+            'color:#fff',
+            'border:none',
+            'box-shadow:0 6px 20px rgba(255,106,0,.45)',
+            'cursor:pointer',
+            'opacity:0',
+            'visibility:hidden',
+            'transform:translateY(20px) scale(.85)',
+            'transition:opacity .3s,transform .3s,visibility .3s',
+            'z-index:9998',
+            'display:flex',
+            'align-items:center',
+            'justify-content:center'
+        ].join(';');
+        btn.onclick = () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+        document.body.appendChild(btn);
+        return btn;
+    }
+
+    function mostrarOcultar() {
+        const btn = document.getElementById('tm-subir-arriba') || crearBoton();
+        if (!btn) return;
+        const debeMostrar = window.scrollY > window.innerHeight * 1.2;
+        if (debeMostrar) {
+            btn.style.opacity = '1';
+            btn.style.visibility = 'visible';
+            btn.style.transform = 'translateY(0) scale(1)';
+        } else {
+            btn.style.opacity = '0';
+            btn.style.visibility = 'hidden';
+            btn.style.transform = 'translateY(20px) scale(.85)';
+        }
+    }
+
+    function init() {
+        crearBoton();
+        window.addEventListener('scroll', mostrarOcultar, { passive: true });
+        mostrarOcultar();
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
+})();
