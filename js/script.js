@@ -1678,6 +1678,7 @@ function switchTab(tabName) {
         }, 100);
     }
     if (tabName === 'configuracion') {
+        setTimeout(renderizarLogsSeguridad, 100);
         setTimeout(cargarNumeroWhatsApp, 100);
         setTimeout(cargarConfiguracionGitHub, 100);
     }
@@ -2062,7 +2063,7 @@ if (_detailPrecioOldEl) {
     setEstrellas(0);
 
     // Historial de vistas
-    registrarVisto(p.id);
+    registrarVisto(p.id); registrarVistaProd(p.id);
 
     // Personas viendo (contador simulado con base en vistas reales)
     (function() {
@@ -6163,6 +6164,9 @@ window.addEventListener('popstate', function() {
 
         if (estado === 'activo') {
             icono.textContent = '🔔';
+        if (typeof _heroPrecioMin !== "undefined" && typeof _heroPrecioMax !== "undefined") {
+            lista = lista.filter(p => p.precioActual >= _heroPrecioMin && p.precioActual <= _heroPrecioMax);
+        }
             texto.textContent = 'Notificaciones ACTIVAS';
             subtexto.textContent = 'Recibirás ofertas, productos nuevos y cambios de tasa';
             boton.textContent = '🔕 Desactivar notificaciones';
