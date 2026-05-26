@@ -1,15 +1,9 @@
 {
   "nuevos_pendientes": [],
-  "rebajas_pendientes": [
-    {
-      "id": 1778104115783,
-      "nombre": "BATERIA MUST tipo LiFePO4",
-      "antes": 280.0,
-      "ahora": 270.0,
-      "imagen": "https://tiendamax.org/imagenes/img_1778104115783.jpg"
-    }
-  ],
+  "rebajas_pendientes": [],
   "tasa_pendiente": null,
-  "ultimo_push": {},
+  "ultimo_push": {
+    "rebajas": "2026-05-26T13:46:10.352313+00:00"
+  },
   "ultimo_lote_productos_fecha": ""
 }
