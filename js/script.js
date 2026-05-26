@@ -4982,14 +4982,37 @@ document.addEventListener('DOMContentLoaded', () => {
                     badge: '/icons/icon-192.png',
                     vibrate: [200, 100, 200]
                 });
-                // Si Firebase está configurado, registrar token FCM
-                const fbConfigRaw = localStorage.getItem('firebaseConfig');
-                if (fbConfigRaw) {
+                // FIX: registrar token FCM tras conceder permiso.
+                // Cargar config de localStorage o de config.json si no está local.
+                (async () => {
                     try {
-                        const fbConfig = JSON.parse(fbConfigRaw);
-                        inicializarFirebaseFCMClient(fbConfig);
-                    } catch(e) {}
-                }
+                        let fbConfig = null;
+                        const raw = localStorage.getItem('firebaseConfig');
+                        if (raw) {
+                            try { fbConfig = JSON.parse(raw); } catch(e) {}
+                        }
+                        if (!fbConfig || !fbConfig.projectId) {
+                            console.log('[FCM] firebaseConfig no en localStorage, cargando de config.json...');
+                            const r = await fetch('config.json?_=' + Date.now());
+                            if (r.ok) {
+                                const cfg = await r.json();
+                                fbConfig = cfg.firebaseConfig;
+                                if (fbConfig) {
+                                    localStorage.setItem('firebaseConfig', JSON.stringify(fbConfig));
+                                    if (fbConfig.vapidKey) localStorage.setItem('firebaseVapidKey', fbConfig.vapidKey);
+                                }
+                            }
+                        }
+                        if (fbConfig && fbConfig.projectId) {
+                            console.log('[FCM] Iniciando FCM tras permitir notificación...');
+                            inicializarFirebaseFCMClient(fbConfig);
+                        } else {
+                            console.error('[FCM] No se pudo cargar firebaseConfig');
+                        }
+                    } catch(e) {
+                        console.error('[FCM] Error iniciando FCM:', e);
+                    }
+                })();
             } else if (perm === 'denied') {
                 // Si lo denegó ahora, volver a preguntar en 6 horas
                 localStorage.setItem('tm_push_pospuesto', Date.now() + 6 * 60 * 60 * 1000);
@@ -5356,9 +5379,14 @@ function ejecutarInitFCM(config) {
         navigator.serviceWorker.register('/firebase-messaging-sw.js', { scope: '/firebase-cloud-messaging-push-scope' })
             .then(fcmReg => {
                 console.log('[FCM] Service Worker dedicado registrado:', fcmReg.scope);
-                messaging.useServiceWorker(fcmReg);
+                try { messaging.useServiceWorker(fcmReg); } catch(e) { console.warn('[FCM] useServiceWorker:', e); }
                 if (Notification.permission === 'granted') {
+                    console.log('[FCM] Permiso ya concedido, registrando token...');
                     solicitarYRegistrarTokenFCM(messaging, config, fcmReg);
+                } else if (Notification.permission === 'default') {
+                    console.log('[FCM] Permiso pendiente, esperando permiso del usuario...');
+                    // Guardar referencias para reintento posterior cuando el usuario permita
+                    window._tmFcmPending = { messaging: messaging, config: config, fcmReg: fcmReg };
                 }
             })
             .catch(err => {
@@ -5378,6 +5406,42 @@ function ejecutarInitFCM(config) {
         console.error('[FCM] Error inicializando FCM:', err);
     }
 }
+
+// FIX: función reutilizable para registrar token FCM tras permiso concedido.
+// Llamada desde el handler del botón "Avísame" del banner.
+async function tmRegistrarTokenFCMSiPermitido() {
+    if (Notification.permission !== 'granted') return;
+    // Si ya hay FCM iniciado (pending desde init), usar esa referencia
+    if (window._tmFcmPending && window._tmFcmPending.messaging) {
+        const p = window._tmFcmPending;
+        await solicitarYRegistrarTokenFCM(p.messaging, p.config, p.fcmReg);
+        return;
+    }
+    // Si no, inicializar todo desde cero
+    let fbConfig = null;
+    try {
+        const raw = localStorage.getItem('firebaseConfig');
+        if (raw) fbConfig = JSON.parse(raw);
+    } catch(e) {}
+    if (!fbConfig || !fbConfig.projectId) {
+        try {
+            const r = await fetch('config.json?_=' + Date.now());
+            if (r.ok) {
+                const cfg = await r.json();
+                fbConfig = cfg.firebaseConfig;
+                if (fbConfig) localStorage.setItem('firebaseConfig', JSON.stringify(fbConfig));
+            }
+        } catch(e) {
+            console.error('[FCM] Error cargando config:', e);
+        }
+    }
+    if (fbConfig && fbConfig.projectId) {
+        if (typeof inicializarFirebaseFCMClient === 'function') {
+            await inicializarFirebaseFCMClient(fbConfig);
+        }
+    }
+}
+window.tmRegistrarTokenFCMSiPermitido = tmRegistrarTokenFCMSiPermitido;
 
 async function solicitarYRegistrarTokenFCM(messaging, config, fcmReg) {
     try {
