@@ -19,14 +19,13 @@ concurrency:
 jobs:
   send-notifications:
     runs-on: ubuntu-latest
-    # Saltar si el commit es del bot (ej: regenerar artefactos, vaciar cola)
     if: "!contains(github.event.head_commit.message, '[skip ci]')"
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          fetch-depth: 2  # Necesario para comparar HEAD~1 con HEAD
+          fetch-depth: 2
 
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -43,14 +42,39 @@ jobs:
           FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
         run: python scripts/send_notifications.py
 
-      - name: Commit cola actualizada (si cambió)
+      - name: Commit cola actualizada (con reintento por race condition)
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add .push_queue.json 2>/dev/null || true
           if git diff --cached --quiet; then
-            echo "Sin cambios en la cola"
+            echo "✅ Sin cambios en la cola"
             exit 0
           fi
           git commit -m "chore: actualizar cola de notificaciones [skip ci]"
-          git push
+
+          # Reintentar hasta 5 veces ante race conditions (otro commit llegó al remoto)
+          for i in 1 2 3 4 5; do
+            echo "Intento $i de push..."
+            if git push; then
+              echo "✅ Push exitoso en intento $i"
+              exit 0
+            fi
+            echo "⚠️  Push rechazado. Haciendo pull --rebase y reintentando..."
+            git pull --rebase origin main || {
+              echo "❌ Conflicto al hacer pull --rebase"
+              git rebase --abort 2>/dev/null || true
+              # Re-stagear y re-commitear sobre la nueva HEAD
+              git checkout origin/main -- . 2>/dev/null || true
+              python scripts/send_notifications.py 2>/dev/null || true
+              git add .push_queue.json 2>/dev/null || true
+              if git diff --cached --quiet; then
+                echo "Sin cambios tras reset"
+                exit 0
+              fi
+              git commit -m "chore: actualizar cola de notificaciones [skip ci]"
+            }
+            sleep 2
+          done
+          echo "❌ Push falló tras 5 intentos"
+          exit 1
