@@ -6,7 +6,7 @@
 // - Manejo de pushsubscriptionchange para no perder tokens
 // ═══════════════════════════════════════════════════════
 
-const CACHE_NAME = 'tiendamax-v33';
+const CACHE_NAME = 'tiendamax-v34';
 const STATIC_ASSETS = [
   '/index.html',
   // CSS público (index.html)
@@ -21,6 +21,7 @@ const STATIC_ASSETS = [
   // JS
   '/js/script.js',
   '/js/share-patch.js',
+  '/js/banners.js',
   '/js/subcategorias.js',
   '/js/revolico_integration.js',
   '/js/biometric-auth.js',
