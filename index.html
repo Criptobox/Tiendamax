@@ -231,6 +231,13 @@
                     <svg id="heartHeaderIcon" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
                     <span class="heart-count" id="heartCount" style="display:none;">0</span>
                 </button>
+                <button onclick="abrirModalNotificaciones()" type="button" class="notif-icon-btn" id="notifHeaderBtn" aria-label="Notificaciones" title="Notificaciones">
+                    <svg id="notifHeaderIcon" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                        <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+                    </svg>
+                    <span class="notif-dot" id="notifHeaderDot"></span>
+                </button>
                 <button data-action="abrirMenuMovil" type="button" class="hamburger-btn" id="hamburgerBtn" aria-label="Abrir menú">
                     <span></span><span></span><span></span>
                 </button>
@@ -872,7 +879,7 @@
         });
     })();
     </script>
-    <script src="js/script.js?v=33" defer></script>
+    <script src="js/script.js?v=35" defer></script>
     <script src="js/subcategorias.js?v=11" defer></script>
     <script src="js/share-patch.js?v=2" defer></script>
     <script src="js/revolico_integration.js?v=10" defer></script>
@@ -957,5 +964,273 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 </script>
+
+<!-- ═══════════════════════════════════════════════════════════
+     MODAL DE NOTIFICACIONES (controla ON/OFF FCM)
+     ═══════════════════════════════════════════════════════════ -->
+<div id="notifModalOverlay" class="notif-modal-overlay" onclick="if(event.target===this)cerrarModalNotificaciones()">
+    <div class="notif-modal">
+        <button class="notif-modal-close" onclick="cerrarModalNotificaciones()" aria-label="Cerrar">&times;</button>
+        <div class="notif-modal-header">
+            <div class="notif-modal-icon">🔔</div>
+            <h2>Notificaciones</h2>
+            <p>Te avisamos cuando bajan los precios o llegan productos nuevos.</p>
+        </div>
+
+        <div class="notif-modal-estado" id="notifEstadoBox">
+            <div class="notif-estado-icono" id="notifEstadoIcono">🔔</div>
+            <div class="notif-estado-texto" id="notifEstadoTexto">Cargando…</div>
+            <div class="notif-estado-subtexto" id="notifEstadoSubtexto">Verificando estado…</div>
+        </div>
+
+        <button id="notifBotonAccion" class="notif-modal-boton" onclick="toggleNotificacionesTM()">
+            Cargando…
+        </button>
+
+        <div class="notif-modal-info" id="notifModalInfoBloqueado" style="display:none">
+            <strong>⚠️ Notificaciones bloqueadas</strong>
+            <p>Para reactivarlas:</p>
+            <ol>
+                <li>Toca los <b>3 puntos</b> arriba a la derecha de Chrome</li>
+                <li>Ve a <b>Configuración del sitio</b></li>
+                <li>Busca <b>Notificaciones</b> → <b>Permitir</b></li>
+                <li>Recarga la página</li>
+            </ol>
+        </div>
+
+        <div class="notif-modal-footer">
+            <small>Tu privacidad es importante. No compartimos tu información.</small>
+        </div>
+    </div>
+</div>
+
+<style>
+/* ═════ Botón notif del header ═════ */
+.notif-icon-btn {
+    width: 46px;
+    height: 46px;
+    background: rgba(255,255,255,.05);
+    border: 1px solid rgba(255,255,255,.1);
+    border-radius: 12px;
+    color: #fff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    transition: all .2s;
+    padding: 0;
+}
+.notif-icon-btn:hover {
+    background: rgba(255,106,0,.15);
+    border-color: rgba(255,106,0,.3);
+}
+.notif-icon-btn.activo {
+    color: #ffa84a;
+}
+.notif-icon-btn.desactivado {
+    color: #888;
+}
+.notif-icon-btn.bloqueado {
+    color: #e74c3c;
+}
+.notif-dot {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: #555;
+    border: 1.5px solid #0e0e12;
+    transition: background .2s;
+}
+.notif-icon-btn.activo .notif-dot {
+    background: #25d366;
+    box-shadow: 0 0 6px rgba(37,211,102,.6);
+}
+.notif-icon-btn.bloqueado .notif-dot {
+    background: #e74c3c;
+}
+
+/* En modo claro */
+html body.light-mode .notif-icon-btn {
+    background: rgba(0,0,0,.04) !important;
+    border-color: rgba(0,0,0,.08) !important;
+    color: #1a1a1a !important;
+}
+html body.light-mode .notif-icon-btn.activo {
+    color: #E8501E !important;
+}
+html body.light-mode .notif-dot {
+    border-color: #FAF8F5 !important;
+}
+
+/* ═════ Overlay del modal ═════ */
+.notif-modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,.7);
+    z-index: 100000;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+.notif-modal-overlay.activo {
+    display: flex;
+    animation: notifFadeIn .2s ease;
+}
+@keyframes notifFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+.notif-modal {
+    background: #1a1a1f;
+    border: 1px solid rgba(255,106,0,.3);
+    border-radius: 20px;
+    padding: 28px 24px 22px;
+    max-width: 420px;
+    width: 100%;
+    color: #fff;
+    position: relative;
+    box-shadow: 0 20px 60px rgba(0,0,0,.5);
+    animation: notifSlideUp .3s ease;
+}
+@keyframes notifSlideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.notif-modal-close {
+    position: absolute;
+    top: 12px; right: 14px;
+    background: transparent;
+    border: none;
+    color: #aaa;
+    font-size: 28px;
+    cursor: pointer;
+    line-height: 1;
+    padding: 4px 10px;
+    border-radius: 6px;
+}
+.notif-modal-close:hover {
+    background: rgba(255,255,255,.08);
+    color: #fff;
+}
+.notif-modal-header {
+    text-align: center;
+    margin-bottom: 18px;
+}
+.notif-modal-icon {
+    font-size: 42px;
+    margin-bottom: 8px;
+}
+.notif-modal-header h2 {
+    font-size: 20px;
+    color: #ff8a3d;
+    margin: 0 0 6px;
+    font-weight: 700;
+}
+.notif-modal-header p {
+    font-size: 13px;
+    color: #ccc;
+    margin: 0;
+    line-height: 1.5;
+}
+.notif-modal-estado {
+    background: rgba(37,211,102,.1);
+    border: 1px solid rgba(37,211,102,.3);
+    border-radius: 12px;
+    padding: 16px;
+    text-align: center;
+    margin-bottom: 14px;
+    transition: all .2s;
+}
+.notif-modal-estado.desactivado {
+    background: rgba(150,150,150,.1);
+    border-color: rgba(150,150,150,.3);
+}
+.notif-modal-estado.bloqueado {
+    background: rgba(231,76,60,.1);
+    border-color: rgba(231,76,60,.3);
+}
+.notif-estado-icono {
+    font-size: 36px;
+    margin-bottom: 4px;
+}
+.notif-estado-texto {
+    font-size: 15px;
+    color: #fff;
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+.notif-estado-subtexto {
+    font-size: 12px;
+    color: #aaa;
+    line-height: 1.4;
+}
+.notif-modal-boton {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, #ff6a00, #ff3d00);
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all .2s;
+    box-shadow: 0 6px 18px rgba(255,106,0,.3);
+}
+.notif-modal-boton:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 22px rgba(255,106,0,.4);
+}
+.notif-modal-boton:disabled {
+    opacity: .6;
+    cursor: not-allowed;
+    transform: none;
+}
+.notif-modal-boton.desactivar {
+    background: linear-gradient(135deg, #555, #333);
+    box-shadow: 0 6px 18px rgba(0,0,0,.3);
+}
+.notif-modal-info {
+    background: rgba(231,76,60,.08);
+    border: 1px solid rgba(231,76,60,.25);
+    border-radius: 10px;
+    padding: 12px;
+    margin-top: 14px;
+    font-size: 12px;
+    color: #ddd;
+}
+.notif-modal-info strong { color: #ff8a3d; display: block; margin-bottom: 6px; }
+.notif-modal-info p { margin: 6px 0; }
+.notif-modal-info ol { padding-left: 18px; margin: 6px 0; line-height: 1.6; }
+.notif-modal-footer {
+    text-align: center;
+    margin-top: 14px;
+    color: #777;
+    font-size: 11px;
+}
+
+/* Modo claro modal */
+html body.light-mode .notif-modal {
+    background: #fff !important;
+    color: #1a1a1a !important;
+    border-color: rgba(232,80,30,.3) !important;
+}
+html body.light-mode .notif-modal-header h2 { color: #E8501E !important; }
+html body.light-mode .notif-modal-header p { color: #555 !important; }
+html body.light-mode .notif-modal-close { color: #555 !important; }
+html body.light-mode .notif-estado-texto { color: #1a1a1a !important; }
+html body.light-mode .notif-estado-subtexto { color: #555 !important; }
+html body.light-mode .notif-modal-info { color: #333 !important; }
+html body.light-mode .notif-modal-footer { color: #888 !important; }
+</style>
+
 </body>
 </html>
