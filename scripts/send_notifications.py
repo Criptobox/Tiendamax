@@ -273,32 +273,23 @@ def enviar_push_fcm(messaging, ref, tokens, keys, title, body, link, imagen=None
         batch_tokens = tokens[i:i + 500]
         batch_keys   = keys[i:i + 500]
 
-        notification = messaging.Notification(
-            title=title,
-            body=body,
-            image=imagen or ICONO_PUSH,
-        )
-
-        webpush_notif = messaging.WebpushNotification(
-            icon=ICONO_PUSH,
-            badge=ICONO_PUSH,
-            image=imagen,
-            vibrate=[200, 100, 200],
-            require_interaction=False,
-            tag=tag,
-            renotify=bool(tag),
-        )
-
+        # FIX: enviar como data-only message (sin "notification") para que
+        # SIEMPRE pase por nuestro firebase-messaging-sw.js, que renderiza
+        # la imagen del producto correctamente. Si usamos "notification",
+        # Chrome a veces usa la plantilla por defecto de FCM (sin imagen).
         message = messaging.MulticastMessage(
-            notification=notification,
             data={
                 "url": full_link,
                 "title": title,
                 "body": body,
+                "image": imagen or "",
+                "icon": ICONO_PUSH,
+                "tag": tag or "tiendamax",
             },
             tokens=batch_tokens,
             webpush=messaging.WebpushConfig(
-                notification=webpush_notif,
+                # Headers obligan a entrega inmediata
+                headers={"Urgency": "high", "TTL": "86400"},
                 fcm_options=messaging.WebpushFCMOptions(link=full_link),
             ),
         )
