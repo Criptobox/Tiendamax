@@ -255,7 +255,9 @@ async function sincronizarSubcategoriasConGitHub() {
 
 // ===== CARGAR SUBCATEGORÍAS DESDE GITHUB =====
 
-async function cargarSubcategoriasDesdeGitHub() {
+// FIX BUG #16: renombrada para evitar conflicto con la de script.js (que hace merge).
+// Esta versión SOLO se usa internamente desde este módulo si script.js no la ha redefinido.
+async function _subcatModuloCargarDesdeGitHub() {
     try {
         const res = await fetch('subcategorias.json', { cache: 'no-store' });
         if (res.ok) {
@@ -263,12 +265,16 @@ async function cargarSubcategoriasDesdeGitHub() {
             if (data) {
                 subcategorias = data;
                 localStorage.setItem('subcategorias', JSON.stringify(subcategorias));
-                console.log('✅ Subcategorías cargadas desde GitHub');
+                console.log('✅ Subcategorías cargadas desde GitHub (módulo)');
             }
         }
     } catch (e) {
         console.log('ℹ️ Subcategorías no disponibles en GitHub');
     }
+}
+// Solo registrar como cargarSubcategoriasDesdeGitHub si script.js no la definió
+if (typeof window.cargarSubcategoriasDesdeGitHub !== 'function') {
+    window.cargarSubcategoriasDesdeGitHub = _subcatModuloCargarDesdeGitHub;
 }
 
 // ===== INICIALIZACIÓN =====
@@ -277,7 +283,7 @@ async function cargarSubcategoriasDesdeGitHub() {
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => {
-            cargarSubcategoriasDesdeGitHub();
+            (window.cargarSubcategoriasDesdeGitHub || _subcatModuloCargarDesdeGitHub)();
             inicializarSubcategorias();
             agregarSubcategoriaAlProducto();
             agregarSubcategoriaAlEditModal();
@@ -294,7 +300,7 @@ if (document.readyState === 'loading') {
         }, 100);
     });
 } else {
-    cargarSubcategoriasDesdeGitHub();
+    (window.cargarSubcategoriasDesdeGitHub || _subcatModuloCargarDesdeGitHub)();
     inicializarSubcategorias();
     agregarSubcategoriaAlProducto();
     agregarSubcategoriaAlEditModal();

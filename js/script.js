@@ -1,3 +1,4 @@
+'use strict';
 // ===== VARIABLES GLOBALES INICIALIZADAS TEMPRANO (evitar TDZ) =====
 var countdownIntervals = {};
 
@@ -68,6 +69,7 @@ function toggleMeGusta(id, e) {
     const agregando = idx === -1;
     if (agregando) {
         wishlist.push(id);
+        mostrarNotificacion('❤️ Agregado a Me Gusta');
     } else {
         wishlist.splice(idx, 1);
         mostrarNotificacion('🤍 Eliminado de Me Gusta');
@@ -113,8 +115,10 @@ function flyToHeart(e) {
     if (!heartBtn) return;
 
     // Posición origen (donde se tocó)
-    const srcX = e.clientX || (e.touches && e.touches[0] ? e.touches[0].clientX : window.innerWidth / 2);
-    const srcY = e.clientY || (e.touches && e.touches[0] ? e.touches[0].clientY : 100);
+    // FIX: en touchend, e.touches está vacío, usar changedTouches
+    var touch = (e.touches && e.touches[0]) || (e.changedTouches && e.changedTouches[0]);
+    const srcX = e.clientX || (touch ? touch.clientX : window.innerWidth / 2);
+    const srcY = e.clientY || (touch ? touch.clientY : 100);
 
     // Posición destino (el corazón del header)
     const destRect = heartBtn.getBoundingClientRect();
@@ -349,8 +353,9 @@ function comprarCarrito() {
 // Actualiza el estado visual de los botones "Agregar al carrito" en los cards
 function actualizarBotonesCarrito() {
     document.querySelectorAll('[data-cart-id]').forEach(btn => {
-        const id = parseInt(btn.getAttribute('data-cart-id'));
-        const enCarrito = carrito.some(x => x.id === id);
+        const id = btn.getAttribute('data-cart-id');
+        // FIX: comparar como strings para evitar bugs si los IDs cambian de tipo
+        const enCarrito = carrito.some(x => String(x.id) === String(id));
         if (enCarrito) {
             btn.classList.add('en-carrito');
             btn.textContent = '✓ En carrito';
@@ -437,7 +442,8 @@ function guardarResena() {
         const token = localStorage.getItem('githubToken');
         if (!user || !repo || !token) {
             // Sin credenciales de admin: la reseña solo queda en este dispositivo
-            mostrarNotificacion('💾 Reseña guardada en este dispositivo (será publicada cuando el administrador la apruebe)', 'info');
+            // FIX: mensaje honesto - sin admin no hay sync con GitHub
+            mostrarNotificacion('💾 Reseña guardada en este dispositivo. Solo tú la verás aquí.', 'info');
             return;
         }
         try {
@@ -566,7 +572,6 @@ function verificarProductosNuevos() {
     }
 }
 
-'use strict';
 
 // ===== CONFIGURACIÓN GLOBAL =====
 const PASSWORD_ADMIN_HASH = 'a338781ef2610e22bde9dae45f2d8aaa6a8a8c4584158f18cd91089b9192bc62';
@@ -903,8 +908,10 @@ function validarProducto(producto) {
     if (!producto.precioActual || producto.precioActual <= 0) {
         errores.push('El precio debe ser mayor a 0');
     }
-    if (!producto.stock || producto.stock <= 0) {
-        errores.push('El stock debe ser mayor a 0');
+    // FIX: permitir stock = 0 (producto agotado al crearlo). Solo rechazar negativos o no-números.
+    if (producto.stock === undefined || producto.stock === null ||
+        isNaN(Number(producto.stock)) || Number(producto.stock) < 0) {
+        errores.push('El stock no puede ser negativo');
     }
     if (!producto.categoria) {
         errores.push('La categoría es requerida');
@@ -1865,9 +1872,10 @@ function abrirDetalleProducto(id) {
     const precioOriginal = p.descuento > 0
         ? (p.precioActual / (1 - p.descuento / 100))
         : null;
-    const elOld = document.getElementById('detailPriceOriginal');
-    elOld.textContent = precioOriginal ? `$${precioOriginal.toFixed(2)} USD` : '';
-    elOld.style.display = precioOriginal ? 'inline' : 'none';
+    // NOTA: el bloque que actualiza #detailPriceOriginal está abajo (después de
+    // este comentario) y siempre gana. El cálculo de precioOriginal se mantiene
+    // por si descuento > 0 (para badge "Ahorras $X"). El antiguo bloque que
+    // escribía aquí en #detailPriceOriginal se eliminó (era código muerto).
     // Precio en modal con tachado real
 const _detailPrecioEl = document.getElementById('detailPriceActual');
 const _detailPrecioOldEl = document.getElementById('detailPriceOriginal');
@@ -2012,6 +2020,10 @@ if (_detailPrecioOldEl) {
 }
 
 function cerrarDetalleModal() {
+    // FIX: cerrar panel de compartir si estaba abierto
+    var _pcr = document.getElementById('panelCompartirRedes');
+    if (_pcr) _pcr.style.display = 'none';
+
     const modal = document.getElementById('productDetailModal');
     modal.classList.add('hidden');
     modal.style.removeProperty('display');
@@ -2061,7 +2073,7 @@ function compartirFacebook() {
 
 function compartirTelegram() {
     const d = _getShareData(); if (!d) return;
-    const msg = encodeURIComponent(d.texto + '\n' + d.url);
+    // FIX: eliminada variable msg que no se usaba
     window.open(`https://t.me/share/url?url=${encodeURIComponent(d.url)}&text=${encodeURIComponent(d.texto)}`, '_blank', 'noopener,noreferrer');
 }
 
@@ -3214,6 +3226,7 @@ function actualizarListaProductos() {
         const valorActual = selectFiltro.value;
         selectFiltro.innerHTML = '<option value="">Todas las categorías</option>' +
             cats.map(c => `<option value="${c}" ${c === valorActual ? 'selected' : ''}>${c}</option>`).join('');
+        selectFiltro.value = valorActual; // FIX: restaurar el filtro
     }
 
     let filtrados = productos.filter(p => {
@@ -3696,6 +3709,10 @@ guardarGruposFB = function() {
     const grupos = JSON.parse(localStorage.getItem('gruposFB') || '[]');
     const validos = grupos.filter(g => g.url && g.url.includes('facebook.com'));
     mostrarNotificacion(`✅ ${validos.length} grupos guardados. Haz clic en ACTUALIZAR TIENDA para que sean permanentes.`);
+    // FIX BUG #4: llamar al original para que descargue el JSON
+    if (typeof _origGuardarGrupos === 'function') {
+        try { _origGuardarGrupos(); } catch(e) { console.warn('Error en _origGuardarGrupos:', e); }
+    }
 };
 
 
@@ -3809,12 +3826,13 @@ function renderizarListaAgotados() {
         el.innerHTML = '<p style="font-size:13px;color:#27ae60;text-align:center;">✅ No hay productos agotados actualmente.</p>';
         return;
     }
+    // FIX BUG #8: sanitización anti-XSS
     el.innerHTML = agotados.map(p =>
         '<div style="display:flex;align-items:center;gap:10px;padding:10px;background:white;border-radius:10px;border:1px solid rgba(231,76,60,0.3);">' +
-            '<img src="' + p.imagen + '" style="width:40px;height:40px;border-radius:8px;object-fit:cover;" onerror="this.style.display=\'none\'">' +
-            '<div style="flex:1;"><div style="font-size:13px;font-weight:700;">' + p.nombre + '</div>' +
+            '<img src="' + escapeAttr(p.imagen) + '" style="width:40px;height:40px;border-radius:8px;object-fit:cover;" onerror="this.style.display=\'none\'">' +
+            '<div style="flex:1;"><div style="font-size:13px;font-weight:700;">' + escapeHtml(p.nombre) + '</div>' +
             '<div style="font-size:11px;color:#e74c3c;font-weight:700;">📦 AGOTADO</div></div>' +
-            '<button class="btn btn-primary" onclick="abrirEditModal(' + p.id + ')" style="font-size:11px;padding:6px 10px;">✏️ Editar</button>' +
+            '<button class="btn btn-primary" onclick="abrirEditModal(' + safeNum(p.id) + ')" style="font-size:11px;padding:6px 10px;">✏️ Editar</button>' +
         '</div>'
     ).join('');
 }
@@ -4340,8 +4358,26 @@ function renderizarDashboardVentas(contenedor) {
 
     ventas.forEach(v => {
         const dia = dias.find(d => v.fecha && v.fecha.startsWith(d.ts.split(',')[0]));
-        // Match flexible por label de fecha
-        const fechaCorta = v.fecha ? v.fecha.slice(0, 6) : '';
+        // FIX BUG #15: la fecha guardada tiene formato "25 may. 2026, 10:30"
+        // pero d.label es "25/05". Hay que extraer dd/mm correctamente.
+        let fechaCorta = '';
+        if (v.fecha) {
+            // Intentar match con formato Date estándar primero
+            const d_parsed = new Date(v.fecha);
+            if (!isNaN(d_parsed.getTime())) {
+                const dd = String(d_parsed.getDate()).padStart(2, '0');
+                const mm = String(d_parsed.getMonth() + 1).padStart(2, '0');
+                fechaCorta = dd + '/' + mm;
+            } else if (v.id) {
+                // Fallback: usar v.id (timestamp) si fecha no se puede parsear
+                const d_id = new Date(v.id);
+                if (!isNaN(d_id.getTime())) {
+                    const dd = String(d_id.getDate()).padStart(2, '0');
+                    const mm = String(d_id.getMonth() + 1).padStart(2, '0');
+                    fechaCorta = dd + '/' + mm;
+                }
+            }
+        }
         const target = dias.find(d => d.label === fechaCorta) || dias[dias.length - 1];
         target.total    += v.total || 0;
         target.ganancia += v.ganancia || 0;
@@ -4493,7 +4529,10 @@ guardarProductos = function() {
 // ── 5. ANIMACIONES FADE-IN AL SCROLL ──────────────────────────────
 function initScrollAnimations() {
     if (typeof IntersectionObserver === 'undefined') return;
+    // FIX: evitar duplicación de <style> con cada render
+    if (document.getElementById('tm-scroll-anim-style')) return;
     const style = document.createElement('style');
+    style.id = 'tm-scroll-anim-style';
     style.textContent = `
         .producto-card { opacity: 0; transform: translateY(18px); transition: opacity .45s ease, transform .45s ease; }
         .producto-card.visible { opacity: 1; transform: translateY(0); }
@@ -4576,8 +4615,14 @@ function mostrarVistaMeGusta() {
         grid.style.display = 'none';
         if (vacioEl) vacioEl.style.display = 'none';
         mostrarVistaMeGusta._t = (mostrarVistaMeGusta._t || 0) + 1;
-        if (mostrarVistaMeGusta._t < 7) setTimeout(mostrarVistaMeGusta, 700);
-        else mostrarVistaMeGusta._t = 0;
+        if (mostrarVistaMeGusta._t < 7) {
+            setTimeout(mostrarVistaMeGusta, 700);
+        } else {
+            // FIX BUG #25: dar feedback al usuario si no se pudo cargar
+            mostrarVistaMeGusta._t = 0;
+            if (statsEl) statsEl.textContent = 'No se pudo cargar el catálogo. Recarga la página.';
+            console.warn('[mostrarVistaMeGusta] No se pudo cargar tras 7 intentos.');
+        }
         return;
     }
     mostrarVistaMeGusta._t = 0;
@@ -5728,11 +5773,13 @@ async function guardarTasaMNAdmin() {
 window.addEventListener('popstate', function() {
     const modal = document.getElementById('productDetailModal');
     if (modal && !modal.classList.contains('hidden')) {
-        if (typeof cerrarDetalleProducto === 'function') {
-            cerrarDetalleProducto();
+        // FIX: el nombre correcto es cerrarDetalleModal, no cerrarDetalleProducto
+        if (typeof cerrarDetalleModal === 'function') {
+            cerrarDetalleModal();
         } else {
             modal.classList.add('hidden');
             document.body.style.overflow = '';
+            if (typeof _detalleProductoActual !== 'undefined') _detalleProductoActual = null;
         }
     }
 });
