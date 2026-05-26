@@ -6,7 +6,7 @@
 // - Manejo de pushsubscriptionchange para no perder tokens
 // ═══════════════════════════════════════════════════════
 
-const CACHE_NAME = 'tiendamax-v38';
+const CACHE_NAME = 'tiendamax-v39';
 const STATIC_ASSETS = [
   '/index.html',
   // CSS público (index.html)
