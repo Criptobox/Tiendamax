@@ -1,12 +1,17 @@
-name: Notificaciones Push (al cambiar productos o tasa)
+name: Notificaciones programadas (lote diario + cola)
+
+# Estrategia personalizada:
+#  • 09:00 Cuba (13:00 UTC) → revisa cola de noche/tasa
+#  • 13:00 Cuba (17:00 UTC) → envía el LOTE DIARIO de productos nuevos
+#  • 18:00 Cuba (22:00 UTC) → revisa por si quedan ofertas pendientes
+#  • 21:00 Cuba (01:00 UTC) → última pasada antes del silencio nocturno
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - 'config.json'
-      - 'productos.json'
+  schedule:
+    - cron: '0 13 * * *'   # 09:00 Cuba — primera revisión del día
+    - cron: '0 17 * * *'   # 13:00 Cuba — LOTE DIARIO DE PRODUCTOS NUEVOS
+    - cron: '0 22 * * *'   # 18:00 Cuba — revisión tarde
+    - cron: '0 1 * * *'    # 21:00 Cuba — última del día
   workflow_dispatch:
 
 permissions:
@@ -17,16 +22,13 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  send-notifications:
+  flush:
     runs-on: ubuntu-latest
-    # Saltar si el commit es del bot (ej: regenerar artefactos, vaciar cola)
-    if: "!contains(github.event.head_commit.message, '[skip ci]')"
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          fetch-depth: 2  # Necesario para comparar HEAD~1 con HEAD
+          fetch-depth: 2
 
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -38,12 +40,12 @@ jobs:
           python -m pip install --upgrade pip
           pip install firebase-admin
 
-      - name: Detectar cambios y enviar (o encolar)
+      - name: Procesar cola y enviar
         env:
           FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
         run: python scripts/send_notifications.py
 
-      - name: Commit cola actualizada (si cambió)
+      - name: Commit cola actualizada
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
