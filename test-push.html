@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Test Firebase Push — TiendaMax</title>
+<style>
+  body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:#0D0D0D;color:#fff;padding:15px;margin:0;line-height:1.5}
+  h1{color:#C9A96E;font-size:18px}
+  button{background:#C9A96E;color:#000;border:none;padding:14px 24px;border-radius:8px;font-weight:bold;font-size:15px;margin:10px 0;width:100%;cursor:pointer}
+  button:disabled{opacity:0.5}
+  #log{background:#000;border:2px solid #0f0;border-radius:8px;padding:12px;font-family:monospace;font-size:11px;color:#0f0;white-space:pre-wrap;word-break:break-all;min-height:300px;margin-top:15px}
+  .ok{color:#0f0}
+  .err{color:#f55;font-weight:bold}
+  .warn{color:#fa0}
+  .info{color:#8cf}
+  .step{color:#fff;font-weight:bold;margin-top:8px;border-bottom:1px solid #333;padding-bottom:4px}
+</style>
+</head>
+<body>
+<h1>🔬 Test Firebase Push paso a paso</h1>
+<p>Esta página prueba el flujo completo de FCM. Pulsa el botón y mira los logs.</p>
+<button onclick="testFlow()">▶️ Ejecutar test completo</button>
+<button onclick="copiarLog()">📋 Copiar logs</button>
+<button onclick="document.getElementById('log').innerHTML=''">🧹 Limpiar</button>
+
+<div id="log">Pulsa "Ejecutar test completo"...</div>
+
+<script>
+const logEl = document.getElementById('log');
+function l(msg, cls='') {
+  const span = document.createElement('div');
+  if (cls === 'step') {
+    span.style.cssText = 'color:#fff;font-weight:bold;margin-top:10px;border-bottom:1px solid #333;padding-bottom:3px';
+  } else if (cls === 'ok') {
+    span.style.color = '#0f0';
+  } else if (cls === 'err') {
+    span.style.cssText = 'color:#f55;font-weight:bold';
+  } else if (cls === 'warn') {
+    span.style.color = '#fa0';
+  } else if (cls === 'info') {
+    span.style.color = '#8cf';
+  }
+  span.textContent = msg;
+  logEl.appendChild(span);
+  window.scrollTo(0, document.body.scrollHeight);
+}
+function copiarLog() {
+  navigator.clipboard.writeText(logEl.innerText).then(()=>alert('Copiado'));
+}
+
+async function testFlow() {
+  logEl.innerHTML = '';
+  l('=== TEST FIREBASE PUSH ===', 'step');
+  l('Hora: ' + new Date().toLocaleString());
+  l('UserAgent: ' + navigator.userAgent.substring(0, 70));
+
+  // ── 1. Permission ──
+  l('\n📍 Paso 1: Estado del permiso', 'step');
+  if (!('Notification' in window)) {
+    l('❌ Este navegador NO soporta Notifications', 'err');
+    return;
+  }
+  l('Estado actual: ' + Notification.permission);
+
+  if (Notification.permission === 'denied') {
+    l('❌ BLOQUEADO. Tienes que ir a Configuración del sitio y permitir.', 'err');
+    return;
+  }
+  if (Notification.permission !== 'granted') {
+    l('⏳ Pidiendo permiso...', 'info');
+    const p = await Notification.requestPermission();
+    l('Resultado: ' + p, p === 'granted' ? 'ok' : 'err');
+    if (p !== 'granted') return;
+  } else {
+    l('✅ Ya estaba concedido', 'ok');
+  }
+
+  // ── 2. SW de Firebase ──
+  l('\n📍 Paso 2: Registrar firebase-messaging-sw.js', 'step');
+  let fcmReg;
+  try {
+    fcmReg = await navigator.serviceWorker.register('/firebase-messaging-sw.js', {
+      scope: '/firebase-cloud-messaging-push-scope'
+    });
+    l('✅ Service Worker registrado', 'ok');
+    l('   Scope: ' + fcmReg.scope);
+    l('   Estado: ' + (fcmReg.active ? 'active' : fcmReg.installing ? 'installing' : 'waiting'));
+  } catch (e) {
+    l('❌ Error registrando SW: ' + e.message, 'err');
+    return;
+  }
+
+  // Esperar activación
+  if (fcmReg.installing) {
+    l('⏳ Esperando que se active...', 'info');
+    await new Promise(r => {
+      fcmReg.installing.addEventListener('statechange', e => {
+        if (e.target.state === 'activated') r();
+      });
+      setTimeout(r, 5000);
+    });
+  }
+  await navigator.serviceWorker.ready;
+  l('✅ SW activo y listo', 'ok');
+
+  // ── 3. Config Firebase ──
+  l('\n📍 Paso 3: Cargar config.json', 'step');
+  let config;
+  try {
+    const res = await fetch('config.json?_=' + Date.now());
+    const cfg = await res.json();
+    config = cfg.firebaseConfig;
+    l('✅ Config cargado', 'ok');
+    l('   projectId: ' + config.projectId);
+    l('   databaseURL: ' + (config.databaseURL || 'FALTA ❌'));
+    l('   vapidKey: ' + (config.vapidKey ? config.vapidKey.substring(0, 30) + '...' : 'FALTA ❌'));
+  } catch (e) {
+    l('❌ Error cargando config: ' + e.message, 'err');
+    return;
+  }
+
+  if (!config.vapidKey) {
+    l('❌ No hay vapidKey en config.json. Imposible obtener token.', 'err');
+    return;
+  }
+  if (!config.databaseURL) {
+    l('❌ No hay databaseURL en config.json.', 'err');
+    return;
+  }
+
+  // ── 4. Cargar SDK Firebase ──
+  l('\n📍 Paso 4: Cargar SDK Firebase', 'step');
+  if (!window.firebase) {
+    await new Promise((res, rej) => {
+      const s1 = document.createElement('script');
+      s1.src = 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js';
+      s1.onload = () => {
+        const s2 = document.createElement('script');
+        s2.src = 'https://www.gstatic.com/firebasejs/10.8.0/firebase-messaging-compat.js';
+        s2.onload = res;
+        s2.onerror = () => rej('Error cargando firebase-messaging');
+        document.head.appendChild(s2);
+      };
+      s1.onerror = () => rej('Error cargando firebase-app');
+      document.head.appendChild(s1);
+    }).catch(e => l('❌ ' + e, 'err'));
+  }
+  if (!window.firebase) { l('❌ Firebase no cargó', 'err'); return; }
+  l('✅ Firebase SDK cargado', 'ok');
+
+  // ── 5. Initialize Firebase App ──
+  l('\n📍 Paso 5: Inicializar Firebase', 'step');
+  try {
+    if (firebase.apps.length === 0) {
+      firebase.initializeApp(config);
+    }
+    l('✅ Firebase initialized', 'ok');
+  } catch (e) {
+    l('❌ Error initialize: ' + e.message, 'err');
+    return;
+  }
+
+  // ── 6. Messaging supported? ──
+  l('\n📍 Paso 6: ¿Messaging soportado?', 'step');
+  if (!firebase.messaging.isSupported()) {
+    l('❌ Este navegador NO soporta FCM', 'err');
+    return;
+  }
+  l('✅ Messaging soportado', 'ok');
+
+  // ── 7. Get token ──
+  l('\n📍 Paso 7: ⚡ Obtener token FCM (el paso CRÍTICO)', 'step');
+  const messaging = firebase.messaging();
+  let token;
+  try {
+    token = await messaging.getToken({
+      vapidKey: config.vapidKey,
+      serviceWorkerRegistration: fcmReg
+    });
+    if (!token) {
+      l('❌ getToken devolvió null/vacío. Permission revocado?', 'err');
+      return;
+    }
+    l('✅ ¡TOKEN OBTENIDO! 🎉', 'ok');
+    l('Token: ' + token.substring(0, 60) + '...');
+    l('Largo: ' + token.length + ' caracteres');
+  } catch (e) {
+    l('❌ Error en getToken: ' + e.message, 'err');
+    l('   Code: ' + (e.code || '(sin code)'), 'err');
+    l('   Name: ' + e.name, 'err');
+    if (e.message.includes('messaging/permission-blocked')) {
+      l('💡 Permiso bloqueado. Configuración del sitio → Permitir.', 'warn');
+    } else if (e.message.includes('messaging/token-subscribe-failed')) {
+      l('💡 Posibles causas:', 'warn');
+      l('   • La clave VAPID no coincide con el proyecto', 'warn');
+      l('   • Cloud Messaging API V1 no habilitado', 'warn');
+      l('   • Sender ID incorrecto', 'warn');
+    } else if (e.message.includes('messaging/failed-service-worker-registration')) {
+      l('💡 firebase-messaging-sw.js falló al cargar', 'warn');
+    }
+    return;
+  }
+
+  // ── 8. Guardar en RTDB ──
+  l('\n📍 Paso 8: Guardar token en RTDB', 'step');
+  const tokenId = btoa(token).replace(/=/g, '').replace(/\+/g, '-').replace(/\//g, '_').substring(0, 200);
+  l('TokenID: ' + tokenId.substring(0, 40) + '...');
+
+  try {
+    const putUrl = config.databaseURL + '/tokens/' + tokenId + '.json';
+    l('PUT a: ' + putUrl.substring(0, 80) + '...');
+    const res = await fetch(putUrl, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        token: token,
+        timestamp: Date.now(),
+        userAgent: navigator.userAgent.substring(0, 200)
+      })
+    });
+    l('Status: ' + res.status, res.ok ? 'ok' : 'err');
+    const responseText = await res.text();
+    l('Respuesta: ' + responseText.substring(0, 200));
+    if (res.ok) {
+      l('\n✅✅✅ ¡TOKEN GUARDADO EN FIREBASE! ✅✅✅', 'ok');
+      l('Ve a Firebase Console → Realtime Database', 'ok');
+      l('Debería aparecer bajo /tokens/ con ID: ' + tokenId.substring(0, 30) + '...', 'ok');
+    } else {
+      l('❌ Falló la escritura. Revisa las reglas de Firebase RTDB.', 'err');
+    }
+  } catch (e) {
+    l('❌ Error en fetch PUT: ' + e.message, 'err');
+  }
+
+  l('\n=== FIN ===', 'step');
+}
+</script>
+</body>
+</html>
