@@ -1,3 +1,9 @@
+// ════════════════════════════════════════════════════════════════
+//  TiendaMax — Firebase Messaging Service Worker v2
+//  Maneja las notificaciones push cuando la pestaña está
+//  cerrada o en background. Renderiza imagen del producto.
+// ════════════════════════════════════════════════════════════════
+
 importScripts('https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js');
 importScripts('https://www.gstatic.com/firebasejs/10.8.0/firebase-messaging-compat.js');
 
@@ -13,46 +19,103 @@ firebase.initializeApp({
 
 const messaging = firebase.messaging();
 
-messaging.onBackgroundMessage((payload) => {
-  console.log('[firebase-messaging-sw] Mensaje recibido:', payload);
-  const notif    = payload.notification || {};
-  const data     = payload.data || {};
-  const titulo   = notif.title || data.title || '📢 TiendaMax';
-  const cuerpo   = notif.body  || data.body  || 'Tienes una nueva notificación';
-  const url      = data.url    || notif.click_action || '/';
-  const imagen   = notif.image || data.image;
-  const icono    = notif.icon  || '/icons/icon-192.png';
+// Función auxiliar para construir y mostrar notificación
+function mostrarNotificacionTM(payload) {
+  console.log('[firebase-messaging-sw v2] Payload recibido:', payload);
 
-  self.registration.showNotification(titulo, {
-    body:   cuerpo,
-    icon:   icono,
-    badge:  '/icons/icon-192.png',
-    image:  imagen,
-    data:   { url: url },
+  const notif = payload.notification || {};
+  const data  = payload.data || {};
+
+  const titulo = notif.title  || data.title  || '📢 TiendaMax';
+  const cuerpo = notif.body   || data.body   || 'Tienes una nueva notificación';
+  const url    = data.url     || notif.click_action || '/';
+  // Imagen del producto (importante para pushes de rebajas/productos nuevos)
+  let imagen   = notif.image  || data.image || null;
+  // Limpiar si viene vacío
+  if (imagen && (imagen === '' || imagen === 'null' || imagen === 'undefined')) {
+    imagen = null;
+  }
+  const icono  = notif.icon   || data.icon  || '/icons/icon-192.png';
+  const tag    = data.tag     || 'tiendamax';
+
+  const opciones = {
+    body:    cuerpo,
+    icon:    icono,
+    badge:   '/icons/icon-192.png',
+    data:    { url: url, fechaRecibida: Date.now() },
     vibrate: [200, 100, 200],
-    tag:     data.tag || 'tiendamax',
+    tag:     tag,
     renotify: true,
+    requireInteraction: false,
     actions: [
-      { action: 'ver',    title: '👀 Ver' },
+      { action: 'ver',    title: '👀 Ver oferta' },
       { action: 'cerrar', title: 'Cerrar' }
     ]
-  });
+  };
+
+  // Añadir imagen solo si existe (la imagen grande del push)
+  if (imagen) {
+    opciones.image = imagen;
+  }
+
+  return self.registration.showNotification(titulo, opciones);
+}
+
+// 1. Mensajes recibidos en BACKGROUND (app cerrada o en otra pestaña)
+messaging.onBackgroundMessage((payload) => {
+  return mostrarNotificacionTM(payload);
 });
 
+// 2. Listener directo de 'push' como fallback
+//    (algunos navegadores no llaman a onBackgroundMessage para data-only messages)
+self.addEventListener('push', (event) => {
+  if (!event.data) return;
+  let payload = {};
+  try {
+    payload = event.data.json();
+  } catch (e) {
+    try {
+      payload = { data: { body: event.data.text() } };
+    } catch (e2) {
+      console.warn('[SW push] no pude parsear payload', e2);
+      return;
+    }
+  }
+  // Si la lib de firebase ya manejó esto, no duplicar
+  // (firebase llama onBackgroundMessage para mensajes con "notification";
+  //  para data-only message, también, pero por si acaso usamos waitUntil)
+  if (payload.notification) {
+    // Firebase ya manejará vía onBackgroundMessage
+    return;
+  }
+  event.waitUntil(mostrarNotificacionTM(payload));
+});
+
+// 3. Click en la notificación → navegar al producto
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();
   if (event.action === 'cerrar') return;
+
   const urlDestino = (event.notification.data && event.notification.data.url) || '/';
+
   event.waitUntil(
     clients.matchAll({ type: 'window', includeUncontrolled: true }).then(lista => {
+      // Si ya hay una ventana abierta de TiendaMax, enfocarla y navegar
       for (const client of lista) {
         if (client.url.includes('tiendamax.org') && 'focus' in client) {
           client.focus();
-          if ('navigate' in client) client.navigate(urlDestino);
+          if ('navigate' in client) {
+            return client.navigate(urlDestino).catch(() => clients.openWindow(urlDestino));
+          }
           return;
         }
       }
-      if (clients.openWindow) return clients.openWindow(urlDestino);
+      // Si no hay ninguna abierta, abrir nueva
+      if (clients.openWindow) {
+        return clients.openWindow(urlDestino);
+      }
     })
   );
 });
+
+console.log('[firebase-messaging-sw v2] Cargado correctamente');
