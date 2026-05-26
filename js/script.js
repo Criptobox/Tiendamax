@@ -514,24 +514,113 @@ function renderizarResenas(productoId) {
 }
 
 // ═══════════════════════════════════════════════════════
-//  🕐 VISTO RECIENTEMENTE
+//  🕐 VISTOS RECIENTEMENTE (v2 - con timestamps y caducidad)
+//
+//  Guarda hasta 12 productos vistos por el cliente, con
+//  timestamp para caducar tras 30 días. Solo se guardan
+//  visualizaciones REALES (productos que el cliente abrió).
 // ═══════════════════════════════════════════════════════
+const _TM_VISTOS_MAX = 12;
+const _TM_VISTOS_DIAS_CADUCIDAD = 30;
+
+function _cargarVistos() {
+    try {
+        const raw = localStorage.getItem('recientes_v2');
+        if (!raw) return [];
+        const arr = JSON.parse(raw);
+        if (!Array.isArray(arr)) return [];
+        // Filtrar caducados
+        const limite = Date.now() - _TM_VISTOS_DIAS_CADUCIDAD * 24 * 60 * 60 * 1000;
+        return arr.filter(x => x && x.t && x.t > limite);
+    } catch(e) { return []; }
+}
+
+function _guardarVistos(arr) {
+    try {
+        localStorage.setItem('recientes_v2', JSON.stringify(arr));
+    } catch(e) {
+        // Si la cuota está llena, intentar reducir a la mitad
+        try {
+            localStorage.setItem('recientes_v2', JSON.stringify(arr.slice(0, 6)));
+        } catch(e2) {}
+    }
+}
+
 function registrarVisto(id) {
-    let recientes = JSON.parse(localStorage.getItem('recientes') || '[]');
-    recientes = recientes.filter(x => x !== id);
-    recientes.unshift(id);
-    recientes = recientes.slice(0, 8); // max 8
-    localStorage.setItem('recientes', JSON.stringify(recientes));
-    renderizarRecientes();
+    if (!id) return;
+    let vistos = _cargarVistos();
+    // Quitar si ya existe (para subirlo al top)
+    vistos = vistos.filter(x => String(x.id) !== String(id));
+    // Añadir al principio con timestamp
+    vistos.unshift({ id: String(id), t: Date.now() });
+    // Limitar a 12
+    vistos = vistos.slice(0, _TM_VISTOS_MAX);
+    _guardarVistos(vistos);
+    // Re-renderizar las secciones si están visibles
+    setTimeout(renderizarRecientes, 100);
 }
 
 function limpiarRecientes() {
-    localStorage.removeItem('recientes');
+    try { localStorage.removeItem('recientes_v2'); } catch(e) {}
+    try { localStorage.removeItem('recientes'); } catch(e) {}  // limpiar versión vieja
+    renderizarRecientes();
 }
 
+// Renderiza los productos vistos en la sección "seccionRecientes" (home)
+// y en "detailVistosGrid" (modal de detalle). Si no hay productos, oculta las secciones.
 function renderizarRecientes() {
-    const sec = document.getElementById('seccionRecientes');
-    if (sec) sec.style.display = 'none';
+    if (!Array.isArray(productos) || productos.length === 0) return;
+
+    const vistos = _cargarVistos();
+    const productoActualId = (typeof _detalleProductoActual !== 'undefined' && _detalleProductoActual)
+        ? String(_detalleProductoActual.id) : null;
+
+    // Resolver IDs → objetos producto. Excluir el producto que está abierto ahora.
+    const items = vistos
+        .map(v => productos.find(p => String(p.id) === String(v.id)))
+        .filter(Boolean)
+        .filter(p => String(p.id) !== productoActualId)
+        .slice(0, 6);
+
+    // ─── Sección en HOME ───
+    const secHome = document.getElementById('seccionRecientes');
+    const gridHome = document.getElementById('recientesGrid');
+    if (secHome && gridHome) {
+        if (items.length === 0) {
+            secHome.style.display = 'none';
+        } else {
+            secHome.style.display = '';
+            gridHome.innerHTML = items.map(_renderCardRecientes).join('');
+        }
+    }
+
+    // ─── Sección en DETALLE de producto ───
+    const secDet = document.getElementById('detailVistosSection');
+    const gridDet = document.getElementById('detailVistosGrid');
+    if (secDet && gridDet) {
+        if (items.length === 0) {
+            secDet.style.display = 'none';
+        } else {
+            secDet.style.display = 'block';
+            gridDet.innerHTML = items.map(_renderCardRecientes).join('');
+        }
+    }
+}
+
+function _renderCardRecientes(p) {
+    const id = safeNum(p.id);
+    const nombre = escapeHtml(p.nombre);
+    const img = escapeAttr(p.imagen || '');
+    const precio = Number(p.precioActual || 0).toFixed(2);
+    const agotado = p.stock === 0;
+    return '<div class="rec-card" onclick="abrirDetalleProducto(' + id + ')">'
+        + (agotado ? '<span class="rec-card-agotado">Agotado</span>' : '')
+        + '<img src="' + img + '" alt="' + nombre + '" loading="lazy" onerror="this.style.display=\'none\'">'
+        + '<div class="rec-card-info">'
+        +     '<div class="rec-card-nombre">' + nombre + '</div>'
+        +     '<div class="rec-card-precio">$' + precio + '</div>'
+        + '</div>'
+        + '</div>';
 }
 
 // ═══════════════════════════════════════════════════════
@@ -1070,6 +1159,7 @@ async function cargarDatosDesdeGitHub() {
         // Re-renderizar todo ahora que los productos están listos
         renderizarCategoriasHome();
         renderizarMasVendidos();
+        renderizarRecientes();  // 👀 Vistos recientemente
         actualizarListaProductos();
         actualizarSelectCategorias();
         actualizarBotonesCategorias();
@@ -5909,10 +5999,8 @@ async function guardarTasaMNAdmin() {
         }
     };
 
-    renderizarRecientes = function () {
-        const sec = document.getElementById('seccionRecientes');
-        if (sec) sec.style.display = 'none';
-    };
+    // (FIX) Override eliminado: ahora renderizarRecientes funciona de verdad
+    // y muestra los productos vistos en home y en detalle.
 
     document.addEventListener('DOMContentLoaded', function () {
         setTimeout(function () {
@@ -6294,7 +6382,7 @@ window.addEventListener('popstate', function() {
         btn.style.cssText = [
             'position:fixed',
             'bottom:20px',
-            'right:16px',
+            'left:16px',
             'width:48px',
             'height:48px',
             'border-radius:50%',
