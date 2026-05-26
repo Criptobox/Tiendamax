@@ -754,3 +754,27 @@ html body.light-mode .whatsapp-group-btn {
     background: #25d366 !important;
     color: white !important;
 }
+
+/* ════════════════════════════════════════════════════════════
+   👀 VISTOS RECIENTEMENTE (modo claro)
+   ════════════════════════════════════════════════════════════ */
+html body.light-mode .recientes-section {
+    background: #FAF8F5 !important;
+}
+html body.light-mode .recientes-section h2 {
+    color: #1A1A1A !important;
+}
+html body.light-mode .recientes-section .section-header p {
+    color: #6B6B7A !important;
+}
+html body.light-mode .rec-card {
+    background: #FFFFFF !important;
+    border: 1px solid rgba(0, 0, 0, 0.08) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04) !important;
+}
+html body.light-mode .rec-card-nombre {
+    color: #1A1A1A !important;
+}
+html body.light-mode .rec-card-precio {
+    color: #E8501E !important;
+}
