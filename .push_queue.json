@@ -1,7 +1,10 @@
 {
   "nuevos_pendientes": [],
   "rebajas_pendientes": [],
-  "tasa_pendiente": null,
+  "tasa_pendiente": [
+    560.0,
+    565.0
+  ],
   "ultimo_push": {
     "rebajas": "2026-05-26T13:46:10.352313+00:00",
     "tasa": "2026-05-27T21:07:23.014301+00:00"
