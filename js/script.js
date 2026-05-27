@@ -1625,18 +1625,18 @@ async function verificarPassword(event) {
     const passwordInput = document.getElementById('adminPassword').value.trim();
     if (!passwordInput) { mostrarNotificacion('❌ Escribe la contraseña', 'error'); return; }
 
-    // 1. Intentar auth global desde GitHub config.json
+    // 1. Intentar auth global desde GitHub .admin-auth.json
     const ghUser = localStorage.getItem('githubUser');
     const ghRepo = localStorage.getItem('githubRepo');
     let ghHash = null, ghSalt = null;
     if (ghUser && ghRepo) {
         try {
-            const cfgRes = await fetch(`https://raw.githubusercontent.com/${ghUser}/${ghRepo}/main/config.json?_=${Date.now()}`);
+            const cfgRes = await fetch(`https://raw.githubusercontent.com/${ghUser}/${ghRepo}/main/.admin-auth.json?_=${Date.now()}`);
             if (cfgRes.ok) {
                 const cfg = await cfgRes.json();
-                if (cfg.adminAuth && cfg.adminAuth.hash && cfg.adminAuth.salt) {
-                    ghHash = cfg.adminAuth.hash;
-                    ghSalt = cfg.adminAuth.salt;
+                if (cfg.hash && cfg.salt) {
+                    ghHash = cfg.hash;
+                    ghSalt = cfg.salt;
                 }
             }
         } catch(e) {}
@@ -1668,31 +1668,29 @@ async function verificarPassword(event) {
         }
     }
 
-    // 3. Migración: aceptar hashes SHA-256 hardcodeados legacy
-    const inputSha = await _hashSha256(passwordInput);
-    if (_OLD_HASHES.includes(inputSha)) {
-        const ns = _generarSal();
-        const nh = await hashPassword(passwordInput, ns);
-        try { localStorage.setItem(AUTH_SALT_KEY, ns); } catch(e) {}
-        try { localStorage.setItem(AUTH_HASH_KEY, nh); } catch(e) {}
-        // Subir a GitHub si hay credenciales
-        if (ghUser && ghRepo) {
-            const ghToken = localStorage.getItem('githubToken');
-            if (ghToken) {
-                try {
-                    const r = await fetch(`https://raw.githubusercontent.com/${ghUser}/${ghRepo}/main/config.json?_=${Date.now()}`);
-                    const cfg = r.ok ? await r.json() : {};
-                    cfg.adminAuth = { hash: nh, salt: ns, iterations: AUTH_ITERATIONS };
-                    await subirArchivoAGitHub(ghUser, ghRepo, ghToken, 'config.json', cfg);
-                } catch(e) {}
+    // 3. Migración: solo si NO hay otro auth configurado
+    if (!ghHash && !lsHash) {
+        const inputSha = await _hashSha256(passwordInput);
+        if (_OLD_HASHES.includes(inputSha)) {
+            const ns = _generarSal();
+            const nh = await hashPassword(passwordInput, ns);
+            try { localStorage.setItem(AUTH_SALT_KEY, ns); } catch(e) {}
+            try { localStorage.setItem(AUTH_HASH_KEY, nh); } catch(e) {}
+            if (ghUser && ghRepo) {
+                const ghToken = localStorage.getItem('githubToken');
+                if (ghToken) {
+                    try {
+                        await subirArchivoAGitHub(ghUser, ghRepo, ghToken, '.admin-auth.json', { hash: nh, salt: ns, iterations: AUTH_ITERATIONS });
+                    } catch(e) {}
+                }
             }
+            localStorage.removeItem('admin_rl');
+            usuarioAutenticado = true;
+            cerrarLoginModal();
+            abrirAdminPanel();
+            mostrarNotificacion('✅ Contraseña migrada al nuevo sistema. Cámbiala desde Configuración.', 'success');
+            return;
         }
-        localStorage.removeItem('admin_rl');
-        usuarioAutenticado = true;
-        cerrarLoginModal();
-        abrirAdminPanel();
-        mostrarNotificacion('✅ Contraseña migrada al nuevo sistema. Cámbiala desde Configuración.', 'success');
-        return;
     }
 
     // 4. Todo falló
@@ -1719,12 +1717,12 @@ async function cambiarPasswordAdmin(ci, ni, coi) {
     let ch = null, cs = null;
     if (ghUser && ghRepo) {
         try {
-            const r = await fetch(`https://raw.githubusercontent.com/${ghUser}/${ghRepo}/main/config.json?_=${Date.now()}`);
+            const r = await fetch(`https://raw.githubusercontent.com/${ghUser}/${ghRepo}/main/.admin-auth.json?_=${Date.now()}`);
             if (r.ok) {
                 const cfg = await r.json();
-                if (cfg.adminAuth && cfg.adminAuth.hash && cfg.adminAuth.salt) {
-                    ch = cfg.adminAuth.hash;
-                    cs = cfg.adminAuth.salt;
+                if (cfg.hash && cfg.salt) {
+                    ch = cfg.hash;
+                    cs = cfg.salt;
                 }
             }
         } catch(e) {}
@@ -1748,15 +1746,12 @@ async function cambiarPasswordAdmin(ci, ni, coi) {
     try { localStorage.setItem(AUTH_SALT_KEY, ns); } catch(e) {}
     try { localStorage.setItem(AUTH_HASH_KEY, nh); } catch(e) {}
 
-    // Subir a GitHub
+    // Subir a GitHub (.admin-auth.json separado para no disparar notificaciones FCM)
     if (ghUser && ghRepo) {
         const ghToken = localStorage.getItem('githubToken');
         if (ghToken) {
             try {
-                const r = await fetch(`https://raw.githubusercontent.com/${ghUser}/${ghRepo}/main/config.json?_=${Date.now()}`);
-                const cfg = r.ok ? await r.json() : {};
-                cfg.adminAuth = { hash: nh, salt: ns, iterations: AUTH_ITERATIONS };
-                await subirArchivoAGitHub(ghUser, ghRepo, ghToken, 'config.json', cfg);
+                await subirArchivoAGitHub(ghUser, ghRepo, ghToken, '.admin-auth.json', { hash: nh, salt: ns, iterations: AUTH_ITERATIONS });
             } catch(e) {
                 mostrarNotificacion('⚠️ Guardado local pero no se pudo subir a GitHub.', 'error');
             }
