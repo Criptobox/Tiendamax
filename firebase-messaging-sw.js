@@ -1,8 +1,8 @@
-// ════════════════════════════════════════════════════════════════
-//  TiendaMax — Firebase Messaging Service Worker v2
-//  Maneja las notificaciones push cuando la pestaña está
+﻿// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+//  TiendaMax â€” Firebase Messaging Service Worker v3
+//  Maneja las notificaciones push cuando la pestaÃ±a estÃ¡
 //  cerrada o en background. Renderiza imagen del producto.
-// ════════════════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
 importScripts('https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js');
 importScripts('https://www.gstatic.com/firebasejs/10.8.0/firebase-messaging-compat.js');
@@ -19,19 +19,19 @@ firebase.initializeApp({
 
 const messaging = firebase.messaging();
 
-// Función auxiliar para construir y mostrar notificación
+// FunciÃ³n auxiliar para construir y mostrar notificaciÃ³n
 function mostrarNotificacionTM(payload) {
-  console.log('[firebase-messaging-sw v2] Payload recibido:', payload);
+  console.log('[firebase-messaging-sw v3] Payload recibido:', payload);
 
   const notif = payload.notification || {};
   const data  = payload.data || {};
 
-  const titulo = notif.title  || data.title  || '📢 TiendaMax';
-  const cuerpo = notif.body   || data.body   || 'Tienes una nueva notificación';
+  const titulo = notif.title  || data.title  || 'ðŸ“¢ TiendaMax';
+  const cuerpo = notif.body   || data.body   || 'Tienes una nueva notificaciÃ³n';
   const url    = data.url     || notif.click_action || '/';
   // Imagen del producto (importante para pushes de rebajas/productos nuevos)
   let imagen   = notif.image  || data.image || null;
-  // Limpiar si viene vacío
+  // Limpiar si viene vacÃ­o
   if (imagen && (imagen === '' || imagen === 'null' || imagen === 'undefined')) {
     imagen = null;
   }
@@ -48,12 +48,12 @@ function mostrarNotificacionTM(payload) {
     renotify: true,
     requireInteraction: false,
     actions: [
-      { action: 'ver',    title: '👀 Ver oferta' },
+      { action: 'ver',    title: 'ðŸ‘€ Ver oferta' },
       { action: 'cerrar', title: 'Cerrar' }
     ]
   };
 
-  // Añadir imagen solo si existe (la imagen grande del push)
+  // AÃ±adir imagen solo si existe (la imagen grande del push)
   if (imagen) {
     opciones.image = imagen;
   }
@@ -61,7 +61,7 @@ function mostrarNotificacionTM(payload) {
   return self.registration.showNotification(titulo, opciones);
 }
 
-// 1. Mensajes recibidos en BACKGROUND (app cerrada o en otra pestaña)
+// 1. Mensajes recibidos en BACKGROUND (app cerrada o en otra pestaÃ±a)
 messaging.onBackgroundMessage((payload) => {
   return mostrarNotificacionTM(payload);
 });
@@ -81,17 +81,17 @@ self.addEventListener('push', (event) => {
       return;
     }
   }
-  // Si la lib de firebase ya manejó esto, no duplicar
+  // Si la lib de firebase ya manejÃ³ esto, no duplicar
   // (firebase llama onBackgroundMessage para mensajes con "notification";
-  //  para data-only message, también, pero por si acaso usamos waitUntil)
+  //  para data-only message, tambiÃ©n, pero por si acaso usamos waitUntil)
   if (payload.notification) {
-    // Firebase ya manejará vía onBackgroundMessage
+    // Firebase ya manejarÃ¡ vÃ­a onBackgroundMessage
     return;
   }
   event.waitUntil(mostrarNotificacionTM(payload));
 });
 
-// 3. Click en la notificación → navegar al producto
+// 3. Click en la notificaciÃ³n â†’ navegar al producto
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();
   if (event.action === 'cerrar') return;
@@ -118,4 +118,5 @@ self.addEventListener('notificationclick', (event) => {
   );
 });
 
-console.log('[firebase-messaging-sw v2] Cargado correctamente');
+console.log('[firebase-messaging-sw v3] Cargado correctamente');
+

@@ -2,7 +2,7 @@
 // ===== VARIABLES GLOBALES INICIALIZADAS TEMPRANO (evitar TDZ) =====
 var countdownIntervals = {};
 
-// ===== HELPER DE SANITIZACIÓN HTML (anti-XSS) =====
+// ===== HELPER DE SANITIZACIÃ“N HTML (anti-XSS) =====
 function escapeHtml(s) {
     if (s === null || s === undefined) return '';
     return String(s)
@@ -19,9 +19,9 @@ function safeNum(n, def = 0) {
 }
 
 
-// ═══════════════════════════════════════════════════════
-//  🛒 CARRITO DE COMPRAS — con persistencia 24h
-// ═══════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+//  ðŸ›’ CARRITO DE COMPRAS â€” con persistencia 24h
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
 function _cargarCarrito() {
     try {
@@ -53,9 +53,9 @@ function actualizarContadorCarrito() {
 }
 
 
-// ══════════════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 //  ME GUSTA / WISHLIST
-// ══════════════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 let wishlist = JSON.parse(localStorage.getItem('wishlist_v1') || '[]').map(String);
 
 function guardarWishlist() {
@@ -69,10 +69,10 @@ function toggleMeGusta(id, e) {
     const agregando = idx === -1;
     if (agregando) {
         wishlist.push(id);
-        mostrarNotificacion('❤️ Agregado a Me Gusta');
+        mostrarNotificacion('â¤ï¸ Agregado a Me Gusta');
     } else {
         wishlist.splice(idx, 1);
-        mostrarNotificacion('🤍 Eliminado de Me Gusta');
+        mostrarNotificacion('ðŸ¤ Eliminado de Me Gusta');
     }
     guardarWishlist();
     actualizarBadgeCorazon();
@@ -81,13 +81,13 @@ function toggleMeGusta(id, e) {
     document.querySelectorAll('[data-like-id="' + id + '"]').forEach(btn => {
         btn.classList.toggle('liked', wishlist.includes(id));
         btn.setAttribute('aria-label', wishlist.includes(id) ? 'Quitar me gusta' : 'Me gusta');
-        // Animación del corazón en el botón
+        // AnimaciÃ³n del corazÃ³n en el botÃ³n
         btn.classList.remove('heart-pop');
         void btn.offsetWidth;
         btn.classList.add('heart-pop');
     });
 
-    // Animación fly-to-heart solo al agregar
+    // AnimaciÃ³n fly-to-heart solo al agregar
     if (agregando && e) {
         flyToHeart(e);
     }
@@ -114,20 +114,20 @@ function flyToHeart(e) {
     const heartBtn = document.getElementById('heartHeaderBtn');
     if (!heartBtn) return;
 
-    // Posición origen (donde se tocó)
-    // FIX: en touchend, e.touches está vacío, usar changedTouches
+    // PosiciÃ³n origen (donde se tocÃ³)
+    // FIX: en touchend, e.touches estÃ¡ vacÃ­o, usar changedTouches
     var touch = (e.touches && e.touches[0]) || (e.changedTouches && e.changedTouches[0]);
     const srcX = e.clientX || (touch ? touch.clientX : window.innerWidth / 2);
     const srcY = e.clientY || (touch ? touch.clientY : 100);
 
-    // Posición destino (el corazón del header)
+    // PosiciÃ³n destino (el corazÃ³n del header)
     const destRect = heartBtn.getBoundingClientRect();
     const destX = destRect.left + destRect.width / 2;
     const destY = destRect.top + destRect.height / 2;
 
-    // Crear partícula voladora
+    // Crear partÃ­cula voladora
     const fly = document.createElement('div');
-    fly.innerHTML = '❤️';
+    fly.innerHTML = 'â¤ï¸';
     fly.style.cssText = [
         'position:fixed',
         'left:' + srcX + 'px',
@@ -142,7 +142,7 @@ function flyToHeart(e) {
     ].join(';');
     document.body.appendChild(fly);
 
-    // Forzar reflow y luego animar hacia el corazón del header
+    // Forzar reflow y luego animar hacia el corazÃ³n del header
     requestAnimationFrame(() => {
         requestAnimationFrame(() => {
             fly.style.left  = destX + 'px';
@@ -185,7 +185,7 @@ function agregarAlCarrito(id) {
         if (existing.cantidad < p.stock) {
             existing.cantidad++;
         } else {
-            mostrarNotificacion('⚠️ No hay más unidades disponibles', 'error');
+            mostrarNotificacion('âš ï¸ No hay mÃ¡s unidades disponibles', 'error');
             return;
         }
     } else {
@@ -198,7 +198,7 @@ function agregarAlCarrito(id) {
         });
     }
     guardarCarrito();
-    mostrarNotificacion('✅ ' + p.nombre.substring(0,25) + ' agregado al carrito');
+    mostrarNotificacion('âœ… ' + p.nombre.substring(0,25) + ' agregado al carrito');
     renderizarCarrito();
     actualizarBotonesCarrito();
 }
@@ -272,13 +272,13 @@ function renderizarCarrito() {
                 '<div class="carrito-item-name">' + nombre + '</div>' +
                 '<div class="carrito-item-price">$' + subtotal + ' USD</div>' +
                 '<div class="carrito-item-controls">' +
-                    '<button class="carrito-qty-btn" onclick="cambiarCantidad(' + idSafe + ',-1)">−</button>' +
+                    '<button class="carrito-qty-btn" onclick="cambiarCantidad(' + idSafe + ',-1)">âˆ’</button>' +
                     '<span class="carrito-qty-num">' + safeNum(item.cantidad, 1) + '</span>' +
                     '<button class="carrito-qty-btn" onclick="cambiarCantidad(' + idSafe + ',1)">+</button>' +
                     '<span style="font-size:11px;color:#aaa;margin-left:4px;">$' + item.precio.toFixed(2) + ' c/u</span>' +
                 '</div>' +
             '</div>' +
-            '<button class="carrito-item-del" onclick="quitarDelCarrito(' + idSafe + ')" title="Eliminar">✕</button>' +
+            '<button class="carrito-item-del" onclick="quitarDelCarrito(' + idSafe + ')" title="Eliminar">âœ•</button>' +
             '</div>';
     }).join('');
 
@@ -295,7 +295,7 @@ function renderizarSimilaresCarrito() {
 
     if (carrito.length === 0) { secEl.style.display = 'none'; return; }
 
-    // Categorías presentes en el carrito
+    // CategorÃ­as presentes en el carrito
     const categoriasCarrito = [...new Set(
         carrito.map(i => {
             const p = productos.find(x => x.id === i.id);
@@ -305,7 +305,7 @@ function renderizarSimilaresCarrito() {
 
     const idsEnCarrito = new Set(carrito.map(i => i.id));
 
-    // Similares: misma categoría, no en carrito, disponibles, máx 3 aleatorios
+    // Similares: misma categorÃ­a, no en carrito, disponibles, mÃ¡x 3 aleatorios
     const similares = productos
         .filter(p =>
             !idsEnCarrito.has(p.id) &&
@@ -329,7 +329,7 @@ function renderizarSimilaresCarrito() {
                 '<div class="cs-card-nombre">' + nombre + '</div>' +
                 '<div class="cs-card-precio">$' + Number(p.precioActual).toFixed(2) + ' USD</div>' +
             '</div>' +
-            '<button class="cs-card-btn" onclick="agregarAlCarrito(' + idSafe + ');renderizarCarrito();">🛒 Agregar</button>' +
+            '<button class="cs-card-btn" onclick="agregarAlCarrito(' + idSafe + ');renderizarCarrito();">ðŸ›’ Agregar</button>' +
         '</div>';
     }).join('');
 }
@@ -339,7 +339,7 @@ function comprarCarrito() {
     // Guardar en historial del cliente antes de abrir WhatsApp
     guardarPedidoCliente(carrito.slice());
     const lineas = carrito.map(i =>
-        '• ' + i.nombre + ' x' + i.cantidad + ' — $' + (i.precio * i.cantidad).toFixed(2) + ' USD'
+        'â€¢ ' + i.nombre + ' x' + i.cantidad + ' â€” $' + (i.precio * i.cantidad).toFixed(2) + ' USD'
     );
     const total = carrito.reduce((s, i) => s + i.precio * i.cantidad, 0);
     const msg = encodeURIComponent(
@@ -358,17 +358,17 @@ function actualizarBotonesCarrito() {
         const enCarrito = carrito.some(x => String(x.id) === String(id));
         if (enCarrito) {
             btn.classList.add('en-carrito');
-            btn.textContent = '✓ En carrito';
+            btn.textContent = 'âœ“ En carrito';
         } else {
             btn.classList.remove('en-carrito');
-            btn.textContent = '🛒 Agregar';
+            btn.textContent = 'ðŸ›’ Agregar';
         }
     });
 }
 
-// ═══════════════════════════════════════════════════════
-//  ⭐ RESEÑAS
-// ═══════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+//  â­ RESEÃ‘AS
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 let _estrellasSeleccionadas = 0;
 let _productoResena = null;
 
@@ -378,7 +378,7 @@ function mostrarFormResena() {
     if (!form) return;
     const visible = form.style.display !== 'none';
     form.style.display = visible ? 'none' : 'block';
-    if (btn) btn.textContent = visible ? '+ Agregar reseña' : '✕ Cancelar';
+    if (btn) btn.textContent = visible ? '+ Agregar reseÃ±a' : 'âœ• Cancelar';
     _estrellasSeleccionadas = 0;
     setEstrellas(0);
     const autorEl = document.getElementById('resenaAutor');
@@ -398,9 +398,9 @@ function guardarResena() {
     if (!_detalleProductoActual) return;
     const autor = (document.getElementById('resenaAutor')?.value || '').trim();
     const texto = (document.getElementById('resenaTexto')?.value || '').trim();
-    if (!autor) { mostrarNotificacion('⚠️ Escribe tu nombre', 'error'); return; }
-    if (_estrellasSeleccionadas === 0) { mostrarNotificacion('⚠️ Selecciona una valoración', 'error'); return; }
-    if (!texto) { mostrarNotificacion('⚠️ Escribe tu reseña', 'error'); return; }
+    if (!autor) { mostrarNotificacion('âš ï¸ Escribe tu nombre', 'error'); return; }
+    if (_estrellasSeleccionadas === 0) { mostrarNotificacion('âš ï¸ Selecciona una valoraciÃ³n', 'error'); return; }
+    if (!texto) { mostrarNotificacion('âš ï¸ Escribe tu reseÃ±a', 'error'); return; }
 
     const nuevaResena = {
         autor,
@@ -416,7 +416,7 @@ function guardarResena() {
     const resenasSlice = resenas.slice(0, 20);
     localStorage.setItem(key, JSON.stringify(resenasSlice));
 
-    // También guardar dentro del array de productos en localStorage para que
+    // TambiÃ©n guardar dentro del array de productos en localStorage para que
     // se incluyan en el productos.json descargable y sean persistentes
     try {
         const prodIndex = productos.findIndex(p => p.id === _detalleProductoActual.id);
@@ -425,25 +425,25 @@ function guardarResena() {
             productos[prodIndex].resenas.unshift(nuevaResena);
             productos[prodIndex].resenas = productos[prodIndex].resenas.slice(0, 20);
             localStorage.setItem('productos', JSON.stringify(productos));
-            // Sincronizar también con el producto actual en memoria
+            // Sincronizar tambiÃ©n con el producto actual en memoria
             _detalleProductoActual.resenas = productos[prodIndex].resenas;
         }
-    } catch(e) { /* no crítico */ }
+    } catch(e) { /* no crÃ­tico */ }
 
     mostrarFormResena(); // cerrar form
     renderizarResenas(_detalleProductoActual.id);
-    mostrarNotificacion('✅ ¡Reseña publicada!');
+    mostrarNotificacion('âœ… Â¡ReseÃ±a publicada!');
 
-    // Intentar subir la reseña a GitHub para que todos la vean
+    // Intentar subir la reseÃ±a a GitHub para que todos la vean
     // (funciona si el dispositivo tiene credenciales de admin guardadas)
     (async function subirResena() {
         const user  = localStorage.getItem('githubUser');
         const repo  = localStorage.getItem('githubRepo');
         const token = localStorage.getItem('githubToken');
         if (!user || !repo || !token) {
-            // Sin credenciales de admin: la reseña solo queda en este dispositivo
+            // Sin credenciales de admin: la reseÃ±a solo queda en este dispositivo
             // FIX: mensaje honesto - sin admin no hay sync con GitHub
-            mostrarNotificacion('💾 Reseña guardada en este dispositivo. Solo tú la verás aquí.', 'info');
+            mostrarNotificacion('ðŸ’¾ ReseÃ±a guardada en este dispositivo. Solo tÃº la verÃ¡s aquÃ­.', 'info');
             return;
         }
         try {
@@ -451,7 +451,7 @@ function guardarResena() {
             const url = 'https://raw.githubusercontent.com/' + user + '/' + repo + '/main/productos.json?_=' + Date.now();
             const res = await fetch(url);
             let prods = res.ok ? await res.json() : productos;
-            // Fusionar la reseña recién guardada
+            // Fusionar la reseÃ±a reciÃ©n guardada
             const idx = prods.findIndex(function(p){ return p.id === _detalleProductoActual.id; });
             if (idx !== -1) {
                 if (!prods[idx].resenas) prods[idx].resenas = [];
@@ -464,12 +464,12 @@ function guardarResena() {
                     prods[idx].resenas = prods[idx].resenas.slice(0, 20);
                 }
                 await subirArchivoAGitHub(user, repo, token, 'productos.json', prods);
-                mostrarNotificacion('☁️ Reseña subida — visible para todos', 'success');
-                // Actualizar memoria local con el array de GitHub (tiene todas las reseñas)
+                mostrarNotificacion('â˜ï¸ ReseÃ±a subida â€” visible para todos', 'success');
+                // Actualizar memoria local con el array de GitHub (tiene todas las reseÃ±as)
                 productos = prods;
                 localStorage.setItem('productos', JSON.stringify(productos));
             }
-        } catch(e) { /* sin internet o sin token: la reseña queda guardada localmente */ }
+        } catch(e) { /* sin internet o sin token: la reseÃ±a queda guardada localmente */ }
     })();
 }
 
@@ -477,7 +477,7 @@ function renderizarResenas(productoId) {
     const el = document.getElementById('listaResenas');
     if (!el) return;
 
-    // Buscar reseñas: primero en el producto en memoria, luego en localStorage
+    // Buscar reseÃ±as: primero en el producto en memoria, luego en localStorage
     let resenas = [];
     const prodEnMemoria = productos.find(p => p.id === productoId);
     if (prodEnMemoria && Array.isArray(prodEnMemoria.resenas) && prodEnMemoria.resenas.length > 0) {
@@ -488,15 +488,15 @@ function renderizarResenas(productoId) {
     }
 
     if (resenas.length === 0) {
-        el.innerHTML = '<p class="resenas-vacio">Sé el primero en dejar una reseña 🌟</p>';
+        el.innerHTML = '<p class="resenas-vacio">SÃ© el primero en dejar una reseÃ±a ðŸŒŸ</p>';
         return;
     }
     const promedio = (resenas.reduce((s, r) => s + r.estrellas, 0) / resenas.length).toFixed(1);
     el.innerHTML =
         '<div style="text-align:center;margin-bottom:14px;">' +
             '<span style="font-size:28px;font-weight:900;color:#f59e0b;">' + promedio + '</span>' +
-            '<span style="color:#f59e0b;font-size:18px;margin-left:6px;">' + '★'.repeat(Math.round(parseFloat(promedio))) + '</span>' +
-            '<div style="font-size:12px;color:#aaa;">' + resenas.length + ' reseña' + (resenas.length !== 1 ? 's' : '') + '</div>' +
+            '<span style="color:#f59e0b;font-size:18px;margin-left:6px;">' + 'â˜…'.repeat(Math.round(parseFloat(promedio))) + '</span>' +
+            '<div style="font-size:12px;color:#aaa;">' + resenas.length + ' reseÃ±a' + (resenas.length !== 1 ? 's' : '') + '</div>' +
         '</div>' +
         resenas.map(r => {
             const e = Math.max(0, Math.min(5, parseInt(r.estrellas, 10) || 0));
@@ -504,7 +504,7 @@ function renderizarResenas(productoId) {
                 '<div class="resena-top">' +
                     '<span class="resena-autor">' + escapeHtml(r.autor) + '</span>' +
                     '<div style="display:flex;align-items:center;gap:6px;">' +
-                        '<span class="resena-estrellas">' + '★'.repeat(e) + '☆'.repeat(5 - e) + '</span>' +
+                        '<span class="resena-estrellas">' + 'â˜…'.repeat(e) + 'â˜†'.repeat(5 - e) + '</span>' +
                         '<span class="resena-fecha">' + escapeHtml(r.fecha) + '</span>' +
                     '</div>' +
                 '</div>' +
@@ -513,13 +513,13 @@ function renderizarResenas(productoId) {
         }).join('');
 }
 
-// ═══════════════════════════════════════════════════════
-//  🕐 VISTOS RECIENTEMENTE (v2 - con timestamps y caducidad)
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+//  ðŸ• VISTOS RECIENTEMENTE (v2 - con timestamps y caducidad)
 //
 //  Guarda hasta 12 productos vistos por el cliente, con
-//  timestamp para caducar tras 30 días. Solo se guardan
-//  visualizaciones REALES (productos que el cliente abrió).
-// ═══════════════════════════════════════════════════════
+//  timestamp para caducar tras 30 dÃ­as. Solo se guardan
+//  visualizaciones REALES (productos que el cliente abriÃ³).
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 const _TM_VISTOS_MAX = 12;
 const _TM_VISTOS_DIAS_CADUCIDAD = 30;
 
@@ -539,7 +539,7 @@ function _guardarVistos(arr) {
     try {
         localStorage.setItem('recientes_v2', JSON.stringify(arr));
     } catch(e) {
-        // Si la cuota está llena, intentar reducir a la mitad
+        // Si la cuota estÃ¡ llena, intentar reducir a la mitad
         try {
             localStorage.setItem('recientes_v2', JSON.stringify(arr.slice(0, 6)));
         } catch(e2) {}
@@ -551,22 +551,22 @@ function registrarVisto(id) {
     let vistos = _cargarVistos();
     // Quitar si ya existe (para subirlo al top)
     vistos = vistos.filter(x => String(x.id) !== String(id));
-    // Añadir al principio con timestamp
+    // AÃ±adir al principio con timestamp
     vistos.unshift({ id: String(id), t: Date.now() });
     // Limitar a 12
     vistos = vistos.slice(0, _TM_VISTOS_MAX);
     _guardarVistos(vistos);
-    // Re-renderizar las secciones si están visibles
+    // Re-renderizar las secciones si estÃ¡n visibles
     setTimeout(renderizarRecientes, 100);
 }
 
 function limpiarRecientes() {
     try { localStorage.removeItem('recientes_v2'); } catch(e) {}
-    try { localStorage.removeItem('recientes'); } catch(e) {}  // limpiar versión vieja
+    try { localStorage.removeItem('recientes'); } catch(e) {}  // limpiar versiÃ³n vieja
     renderizarRecientes();
 }
 
-// Renderiza los productos vistos en la sección "seccionRecientes" (home)
+// Renderiza los productos vistos en la secciÃ³n "seccionRecientes" (home)
 // y en "detailVistosGrid" (modal de detalle). Si no hay productos, oculta las secciones.
 function renderizarRecientes() {
     if (!Array.isArray(productos) || productos.length === 0) return;
@@ -575,14 +575,14 @@ function renderizarRecientes() {
     const productoActualId = (typeof _detalleProductoActual !== 'undefined' && _detalleProductoActual)
         ? String(_detalleProductoActual.id) : null;
 
-    // Resolver IDs → objetos producto. Excluir el producto que está abierto ahora.
+    // Resolver IDs â†’ objetos producto. Excluir el producto que estÃ¡ abierto ahora.
     const items = vistos
         .map(v => productos.find(p => String(p.id) === String(v.id)))
         .filter(Boolean)
         .filter(p => String(p.id) !== productoActualId)
         .slice(0, 6);
 
-    // ─── Sección en HOME ───
+    // â”€â”€â”€ SecciÃ³n en HOME â”€â”€â”€
     const secHome = document.getElementById('seccionRecientes');
     const gridHome = document.getElementById('recientesGrid');
     if (secHome && gridHome) {
@@ -594,7 +594,7 @@ function renderizarRecientes() {
         }
     }
 
-    // ─── Sección en DETALLE de producto ───
+    // â”€â”€â”€ SecciÃ³n en DETALLE de producto â”€â”€â”€
     const secDet = document.getElementById('detailVistosSection');
     const gridDet = document.getElementById('detailVistosGrid');
     if (secDet && gridDet) {
@@ -623,9 +623,9 @@ function _renderCardRecientes(p) {
         + '</div>';
 }
 
-// ═══════════════════════════════════════════════════════
-//  🔔 NOTIFICACIONES PUSH
-// ═══════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+//  ðŸ”” NOTIFICACIONES PUSH
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 async function solicitarNotificaciones() {
     if (!('Notification' in window)) return false;
     if (Notification.permission === 'granted') return true;
@@ -646,7 +646,7 @@ function mostrarNotificacionPush(titulo, cuerpo, icono) {
     } catch(e) {}
 }
 
-// Verificar si hay productos nuevos desde la última visita
+// Verificar si hay productos nuevos desde la Ãºltima visita
 function verificarProductosNuevos() {
     const ultimaVisita = parseInt(localStorage.getItem('ultimaVisita') || '0');
     const ahora = Date.now();
@@ -655,15 +655,34 @@ function verificarProductosNuevos() {
     const nuevos = productos.filter(p => p.id > ultimaVisita).length;
     if (nuevos > 0 && Notification.permission === 'granted') {
         mostrarNotificacionPush(
-            '🛍️ TiendaMax',
-            nuevos === 1 ? '¡Hay 1 producto nuevo!' : `¡Hay ${nuevos} productos nuevos!`
+            'ðŸ›ï¸ TiendaMax',
+            nuevos === 1 ? 'Â¡Hay 1 producto nuevo!' : `Â¡Hay ${nuevos} productos nuevos!`
         );
     }
 }
 
 
-// ===== CONFIGURACIÓN GLOBAL =====
-const PASSWORD_ADMIN_HASH = 'a338781ef2610e22bde9dae45f2d8aaa6a8a8c4584158f18cd91089b9192bc62';
+// ===== CONFIGURACION GLOBAL =====
+// Constantes para autenticacion PBKDF2
+const AUTH_SALT_KEY = 'tm_auth_salt_v3';
+const AUTH_HASH_KEY = 'tm_auth_hash_v3';
+const AUTH_ITERATIONS = 310000;
+
+function _generarSal() {
+    const arr = new Uint8Array(16);
+    crypto.getRandomValues(arr);
+    return Array.from(arr).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+function _getSalt() {
+    let salt = localStorage.getItem(AUTH_SALT_KEY);
+    if (!salt) {
+        salt = _generarSal();
+        try { localStorage.setItem(AUTH_SALT_KEY, salt); } catch(e) {}
+    }
+    return salt;
+}
+
 
 let productos = JSON.parse(localStorage.getItem('productos')) || [];
 let categorias = JSON.parse(localStorage.getItem('categorias')) || ['General'];
@@ -671,51 +690,51 @@ let usuarioAutenticado = false;
 let categoriaSeleccionada = 'Todas';
 let subcategoriaSeleccionada = 'Todas';
 
-// Iconos para cada categoría (Mapeo automático por palabras clave)
+// Iconos para cada categorÃ­a (Mapeo automÃ¡tico por palabras clave)
 const ICONOS_MAPA = {
-    'wifi': '📡', 'internet': '📡', 'red': '📡', 'router': '📡',
-    'energia': '⚡', 'bateria': '⚡', 'luz': '⚡', 'corriente': '⚡', 'inversor': '⚡',
-    'celular': '📱', 'telefono': '📱', 'movil': '📱', 'iphone': '📱', 'android': '📱',
-    'utiles': '🔧', 'herramienta': '🔧', 'reparacion': '🔧', 'ferreteria': '🔧',
-    'ropa': '👗', 'vestir': '👗', 'moda': '👗', 'calzado': '👗', 'zapatos': '👗',
-    'electronica': '💻', 'computadora': '💻', 'laptop': '💻', 'tecnologia': '💻',
-    'hogar': '🏠', 'casa': '🏠', 'mueble': '🏠', 'cocina': '🏠',
-    'alimento': '🍎', 'comida': '🍎', 'fruta': '🍎', 'dulce': '🍎',
-    'belleza': '💄', 'maquillaje': '💄', 'perfume': '💄', 'cuidado': '💄',
-    'deporte': '⚽', 'gym': '⚽', 'ejercicio': '⚽', 'fitness': '⚽',
-    'juguete': '🧸', 'niño': '🧸', 'bebe': '🧸', 'diversion': '🧸',
-    'libro': '📚', 'estudio': '📚', 'papeleria': '📚', 'escuela': '📚',
-    'auto': '🚗', 'carro': '🚗', 'moto': '🚗', 'vehiculo': '🚗', 'repuesto': '🚗',
-    'reloj': '⌚', 'joya': '💎', 'accesorio': '💍',
-    'mascota': '🐾', 'perro': '🐾', 'gato': '🐾',
-    'musica': '🎵', 'audio': '🔊', 'sonido': '🔊',
-    'viaje': '✈️', 'maleta': '🧳',
-    'general': '🛍️'
+    'wifi': 'ðŸ“¡', 'internet': 'ðŸ“¡', 'red': 'ðŸ“¡', 'router': 'ðŸ“¡',
+    'energia': 'âš¡', 'bateria': 'âš¡', 'luz': 'âš¡', 'corriente': 'âš¡', 'inversor': 'âš¡',
+    'celular': 'ðŸ“±', 'telefono': 'ðŸ“±', 'movil': 'ðŸ“±', 'iphone': 'ðŸ“±', 'android': 'ðŸ“±',
+    'utiles': 'ðŸ”§', 'herramienta': 'ðŸ”§', 'reparacion': 'ðŸ”§', 'ferreteria': 'ðŸ”§',
+    'ropa': 'ðŸ‘—', 'vestir': 'ðŸ‘—', 'moda': 'ðŸ‘—', 'calzado': 'ðŸ‘—', 'zapatos': 'ðŸ‘—',
+    'electronica': 'ðŸ’»', 'computadora': 'ðŸ’»', 'laptop': 'ðŸ’»', 'tecnologia': 'ðŸ’»',
+    'hogar': 'ðŸ ', 'casa': 'ðŸ ', 'mueble': 'ðŸ ', 'cocina': 'ðŸ ',
+    'alimento': 'ðŸŽ', 'comida': 'ðŸŽ', 'fruta': 'ðŸŽ', 'dulce': 'ðŸŽ',
+    'belleza': 'ðŸ’„', 'maquillaje': 'ðŸ’„', 'perfume': 'ðŸ’„', 'cuidado': 'ðŸ’„',
+    'deporte': 'âš½', 'gym': 'âš½', 'ejercicio': 'âš½', 'fitness': 'âš½',
+    'juguete': 'ðŸ§¸', 'niÃ±o': 'ðŸ§¸', 'bebe': 'ðŸ§¸', 'diversion': 'ðŸ§¸',
+    'libro': 'ðŸ“š', 'estudio': 'ðŸ“š', 'papeleria': 'ðŸ“š', 'escuela': 'ðŸ“š',
+    'auto': 'ðŸš—', 'carro': 'ðŸš—', 'moto': 'ðŸš—', 'vehiculo': 'ðŸš—', 'repuesto': 'ðŸš—',
+    'reloj': 'âŒš', 'joya': 'ðŸ’Ž', 'accesorio': 'ðŸ’',
+    'mascota': 'ðŸ¾', 'perro': 'ðŸ¾', 'gato': 'ðŸ¾',
+    'musica': 'ðŸŽµ', 'audio': 'ðŸ”Š', 'sonido': 'ðŸ”Š',
+    'viaje': 'âœˆï¸', 'maleta': 'ðŸ§³',
+    'general': 'ðŸ›ï¸'
 };
 
 // Cargar iconos personalizados desde localStorage
 let iconosPersonalizados = JSON.parse(localStorage.getItem('iconosPersonalizados')) || {};
 
 function obtenerIconoCategoria(nombre) {
-    if (!nombre) return '🛍️';
+    if (!nombre) return 'ðŸ›ï¸';
     
     // 1. Prioridad: Icono personalizado guardado por el usuario
     if (iconosPersonalizados[nombre]) return iconosPersonalizados[nombre];
     
-    // 2. Mapeo automático por palabras clave
+    // 2. Mapeo automÃ¡tico por palabras clave
     const nombreMinus = nombre.toLowerCase();
     for (const [clave, icono] of Object.entries(ICONOS_MAPA)) {
         if (nombreMinus.includes(clave)) return icono;
     }
     
-    // 3. Por defecto: Icono de "Todos" (🛍️) si no se encuentra nada
-    return '🛍️';
+    // 3. Por defecto: Icono de "Todos" (ðŸ›ï¸) si no se encuentra nada
+    return 'ðŸ›ï¸';
 }
 
 
-// ═══════════════════════════════════════════════════════
-//  BÚSQUEDA HERO — con IA (Claude API)
-// ═══════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+//  BÃšSQUEDA HERO â€” con IA (Claude API)
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 let _heroSearchActivo = '';
 let _heroPrecioMin    = 0;
 let _heroPrecioMax    = Infinity;
@@ -742,7 +761,7 @@ function cerrarPanelBusqueda() {
 function inicializarSliderPrecios() {}
 function actualizarSliderPrecio() {}
 
-// Búsqueda local rápida
+// BÃºsqueda local rÃ¡pida
 function busquedaLocal(q) {
     if (!q) return productos.slice(0, 6);
     const ql = q.toLowerCase();
@@ -754,14 +773,14 @@ function busquedaLocal(q) {
     ).slice(0, 6);
 }
 
-// Búsqueda inteligente local (sin depender de APIs externas)
+// BÃºsqueda inteligente local (sin depender de APIs externas)
 async function busquedaConIA(q) {
     if (!q || q.length < 3 || productos.length === 0) return null;
 
     const normalizar = (txt) => String(txt || '')
         .toLowerCase()
         .normalize('NFD')
-        .replace(/[̀-ͯ]/g, '')
+        .replace(/[Ì€-Í¯]/g, '')
         .replace(/[^a-z0-9\s]/g, ' ');
 
     const alias = {
@@ -808,7 +827,7 @@ function renderSugerencias(resultados, q) {
     const sugBox = document.getElementById('heroSearchSuggestions');
     if (!sugBox) return;
     if (!resultados || resultados.length === 0) {
-        sugBox.innerHTML = '<div class="hsb-sug-empty">😕 Sin resultados para "' + escapeHtml(q) + '"</div>';
+        sugBox.innerHTML = '<div class="hsb-sug-empty">ðŸ˜• Sin resultados para "' + escapeHtml(q) + '"</div>';
         return;
     }
     sugBox.innerHTML = resultados.map(p => {
@@ -840,7 +859,7 @@ async function buscarDesdeHero(query) {
         if (q.length >= 3) {
             if (aiLabel) aiLabel.style.display = 'block';
             if (locales.length < 2 && sugBox) {
-                sugBox.innerHTML = '<div class="hsb-ai-loading">🤖 Buscando con IA</div>';
+                sugBox.innerHTML = '<div class="hsb-ai-loading">ðŸ¤– Buscando con IA</div>';
             }
             _aiSearchTimer = setTimeout(async () => {
                 const iaResultados = await busquedaConIA(q);
@@ -880,9 +899,9 @@ document.addEventListener('click', (e) => {
     if (!e.target.closest('.hsb-wrap')) cerrarPanelBusqueda();
 });
 
-// ═══════════════════════════════════════════════════════
-//  SUBIDA DE IMÁGENES A GITHUB (archivos .jpg reales)
-// ═══════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+//  SUBIDA DE IMÃGENES A GITHUB (archivos .jpg reales)
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 async function subirImagenAGitHub(fileOrBase64) {
     const user  = localStorage.getItem('githubUser');
     const repo  = localStorage.getItem('githubRepo');
@@ -907,9 +926,9 @@ async function subirImagenAGitHub(fileOrBase64) {
     return base64full;
 }
 
-// ═══════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 //  ANALYTICS
-// ═══════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 function renderizarAnalytics() {
     const el = document.getElementById('analyticsContent');
     if (!el) return;
@@ -926,26 +945,26 @@ function renderizarAnalytics() {
     productos.forEach(p => { catConteo[p.categoria] = (catConteo[p.categoria]||0)+1; });
     const topCats = Object.entries(catConteo).sort((a,b) => b[1]-a[1]).slice(0,5);
 
-    // Calcular tamaño estimado del JSON (base64 vs URL)
+    // Calcular tamaÃ±o estimado del JSON (base64 vs URL)
     const pesoBase64 = productos.filter(p => p.imagen?.startsWith('data:')).reduce((s,p) => s + p.imagen.length, 0);
     const pesoKB     = Math.round(pesoBase64 / 1024);
 
     el.innerHTML = `
         <div class="admin-analytics-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:24px;">
-            ${stat('📦', 'Productos', totalProductos)}
-            ${stat('🏷️', 'Categorías', Object.keys(catConteo).length)}
-            ${stat('📊', 'Stock total', totalStock)}
-            ${stat('⚠️', 'Sin stock', sinStock, sinStock > 0 ? '#e74c3c' : null)}
-            ${stat('🔥', 'Más vendidos', masVendidos)}
-            ${stat('🏷️', 'Con descuento', conDescuento)}
-            ${stat('💰', 'Precio prom.', '$'+precioPromedio)}
-            ${stat('📈', 'Precio max.', '$'+precioMax)}
+            ${stat('ðŸ“¦', 'Productos', totalProductos)}
+            ${stat('ðŸ·ï¸', 'CategorÃ­as', Object.keys(catConteo).length)}
+            ${stat('ðŸ“Š', 'Stock total', totalStock)}
+            ${stat('âš ï¸', 'Sin stock', sinStock, sinStock > 0 ? '#e74c3c' : null)}
+            ${stat('ðŸ”¥', 'MÃ¡s vendidos', masVendidos)}
+            ${stat('ðŸ·ï¸', 'Con descuento', conDescuento)}
+            ${stat('ðŸ’°', 'Precio prom.', '$'+precioPromedio)}
+            ${stat('ðŸ“ˆ', 'Precio max.', '$'+precioMax)}
         </div>
         <div class="admin-alert-box ${pesoKB > 500 ? 'red' : 'green'}">
-            <strong>${pesoKB > 500 ? '⚠️ Imágenes pesadas' : '✅ Imágenes optimizadas'}</strong><br>
-            <span>${pesoKB > 500 ? pesoKB+'KB en base64 — ejecuta <em>migrar_imagenes.html</em> para reducirlo a &lt;50KB' : 'Las imágenes están guardadas como URLs. ¡Perfecto!'}</span>
+            <strong>${pesoKB > 500 ? 'âš ï¸ ImÃ¡genes pesadas' : 'âœ… ImÃ¡genes optimizadas'}</strong><br>
+            <span>${pesoKB > 500 ? pesoKB+'KB en base64 â€” ejecuta <em>migrar_imagenes.html</em> para reducirlo a &lt;50KB' : 'Las imÃ¡genes estÃ¡n guardadas como URLs. Â¡Perfecto!'}</span>
         </div>
-        <h4 class="admin-section-title">Top categorías por productos</h4>
+        <h4 class="admin-section-title">Top categorÃ­as por productos</h4>
         <div style="display:flex;flex-direction:column;gap:8px;">
             ${topCats.map(([cat, n]) => `
                 <div class="admin-cat-rank">
@@ -980,7 +999,7 @@ function stat(icon, label, value, color) {
     return html;
 }
 
-// ===== VALIDACIÓN DE CAMPOS =====
+// ===== VALIDACIÃ“N DE CAMPOS =====
 
 function validarProducto(producto) {
     const errores = [];
@@ -989,7 +1008,7 @@ function validarProducto(producto) {
         errores.push('El nombre del producto es requerido');
     }
     if (!producto.descripcion || producto.descripcion.trim().length === 0) {
-        errores.push('La descripción es requerida');
+        errores.push('La descripciÃ³n es requerida');
     }
     if (!producto.imagen) {
         errores.push('La imagen es requerida');
@@ -997,13 +1016,13 @@ function validarProducto(producto) {
     if (!producto.precioActual || producto.precioActual <= 0) {
         errores.push('El precio debe ser mayor a 0');
     }
-    // FIX: permitir stock = 0 (producto agotado al crearlo). Solo rechazar negativos o no-números.
+    // FIX: permitir stock = 0 (producto agotado al crearlo). Solo rechazar negativos o no-nÃºmeros.
     if (producto.stock === undefined || producto.stock === null ||
         isNaN(Number(producto.stock)) || Number(producto.stock) < 0) {
         errores.push('El stock no puede ser negativo');
     }
     if (!producto.categoria) {
-        errores.push('La categoría es requerida');
+        errores.push('La categorÃ­a es requerida');
     }
     
     // Solo calcular descuento si hay precio original definido
@@ -1019,23 +1038,24 @@ function validarProducto(producto) {
 
 // ===== CARGA DE DATOS DESDE GITHUB =====
 
-// Función para hashear la contraseña
+// FunciÃ³n para hashear la contraseÃ±a
 async function hashPassword(password) {
-    const msgUint8 = new TextEncoder().encode(password);
-    const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);
-    const hashArray = Array.from(new Uint8Array(hashBuffer));
-    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    const salt = _getSalt();
+    const enc = new TextEncoder();
+    const keyMaterial = await crypto.subtle.importKey('raw', enc.encode(password), 'PBKDF2', false, ['deriveBits']);
+    const bits = await crypto.subtle.deriveBits({ name: 'PBKDF2', salt: enc.encode(salt), iterations: AUTH_ITERATIONS, hash: 'SHA-256' }, keyMaterial, 256);
+    return Array.from(new Uint8Array(bits)).map(b => b.toString(16).padStart(2, '0')).join('');
 }
 
 async function cargarDatosDesdeGitHub() {
-    // Intentar usar raw.githubusercontent.com si está configurado (no tiene límite de 1MB)
+    // Intentar usar raw.githubusercontent.com si estÃ¡ configurado (no tiene lÃ­mite de 1MB)
     const ghUser = localStorage.getItem('githubUser');
     const ghRepo = localStorage.getItem('githubRepo');
     const baseUrl = (ghUser && ghRepo)
         ? `https://raw.githubusercontent.com/${ghUser}/${ghRepo}/main`
         : null;
 
-    // Función helper: intenta raw primero, luego relativo
+    // FunciÃ³n helper: intenta raw primero, luego relativo
     async function fetchJSON(filename) {
         if (baseUrl) {
             try {
@@ -1050,8 +1070,8 @@ async function cargarDatosDesdeGitHub() {
     }
 
     try {
-        // ── PASO 1: Cargar archivos pequeños y configuración primero (rápido) ──
-        // categorias.json es solo ~300 bytes → aparece instantáneamente
+        // â”€â”€ PASO 1: Cargar archivos pequeÃ±os y configuraciÃ³n primero (rÃ¡pido) â”€â”€
+        // categorias.json es solo ~300 bytes â†’ aparece instantÃ¡neamente
         const [dataCat, dataComisiones, dataG, dataR, dataVentas] = await Promise.all([
             fetchJSON('categorias.json').catch(() => null),
             fetchJSON('comisiones.json').catch(() => null),
@@ -1060,7 +1080,7 @@ async function cargarDatosDesdeGitHub() {
             fetchJSON('ventas_historial.json').catch(() => null),
         ]);
 
-        // Aplicar categorías de inmediato para que el grid aparezca rápido
+        // Aplicar categorÃ­as de inmediato para que el grid aparezca rÃ¡pido
         if (dataCat) {
             if (Array.isArray(dataCat) && dataCat.length > 0) {
                 categorias = dataCat;
@@ -1083,13 +1103,13 @@ async function cargarDatosDesdeGitHub() {
         // Aplicar config grupos FB
         if (dataG && dataG.grupos) {
             localStorage.setItem('gruposFB', JSON.stringify(dataG.grupos));
-            console.log('✅ Grupos FB cargados desde GitHub');
+            console.log('âœ… Grupos FB cargados desde GitHub');
         }
 
         // Aplicar config Revolico
         if (dataR && Object.keys(dataR).length > 0) {
             localStorage.setItem('revolicoConfig', JSON.stringify(dataR));
-            console.log('✅ Config Revolico cargada desde GitHub');
+            console.log('âœ… Config Revolico cargada desde GitHub');
         }
 
         // Aplicar historial de ventas (merge: GitHub + locales nuevas, sin duplicados)
@@ -1101,17 +1121,17 @@ async function cargarDatosDesdeGitHub() {
                 .sort((a, b) => b.id - a.id)
                 .slice(0, 500);
             localStorage.setItem('registroVentas', JSON.stringify(merged));
-            console.log('✅ Historial de ventas sincronizado desde GitHub');
+            console.log('âœ… Historial de ventas sincronizado desde GitHub');
         }
 
-        // Renderizar categorías YA (con datos frescos, sin esperar archivos pesados)
+        // Renderizar categorÃ­as YA (con datos frescos, sin esperar archivos pesados)
         renderizarCategoriasHomeInstant(); // actualiza el grid visual inmediatamente
         renderizarCategoriasHome();
         actualizarSelectCategorias();
         actualizarBotonesCategorias();
         actualizarListaCategorias();
 
-        // ── PASO 2: Cargar archivos pesados en paralelo (banners + productos) ──
+        // â”€â”€ PASO 2: Cargar archivos pesados en paralelo (banners + productos) â”€â”€
         const [dataBanners, dataProd] = await Promise.all([
             fetchJSON('banners.json').catch(() => null),
             fetchJSON('productos.json').catch(() => null),
@@ -1152,41 +1172,41 @@ async function cargarDatosDesdeGitHub() {
                 return p;
             });
             localStorage.setItem('productos', JSON.stringify(productos));
-            // Refrescar categorías con conteos reales ahora que productos está listo
+            // Refrescar categorÃ­as con conteos reales ahora que productos estÃ¡ listo
             renderizarCategoriasHomeInstant();
         }
 
-        // Re-renderizar todo ahora que los productos están listos
+        // Re-renderizar todo ahora que los productos estÃ¡n listos
         renderizarCategoriasHome();
         renderizarMasVendidos();
-        renderizarRecientes();  // 👀 Vistos recientemente
+        renderizarRecientes();  // ðŸ‘€ Vistos recientemente
         actualizarListaProductos();
         actualizarSelectCategorias();
         actualizarBotonesCategorias();
         actualizarListaCategorias();
         verificarOfertasYMostrarBanner();
         inicializarSliderPrecios();
-        // Refrescar Me Gusta si está visible
+        // Refrescar Me Gusta si estÃ¡ visible
         const vMG = document.getElementById('vistaMeGusta');
         if (vMG && vMG.style.display !== 'none') mostrarVistaMeGusta();
         verificarProductosNuevos();
 
-        // CRÍTICO: si el usuario YA navegó a una categoría mientras se cargaba,
+        // CRÃTICO: si el usuario YA navegÃ³ a una categorÃ­a mientras se cargaba,
         // re-renderizar la vista de productos con los datos frescos.
         const vCat = document.getElementById('vistaCategoria');
         if (vCat && vCat.style.display === 'block') {
-            console.log('[TM] Re-renderizando vista categoría con datos frescos');
+            console.log('[TM] Re-renderizando vista categorÃ­a con datos frescos');
             renderizarProductos();
         }
 
-        console.log('✅ Datos sincronizados con GitHub (productos:', productos.length + ')');
+        console.log('âœ… Datos sincronizados con GitHub (productos:', productos.length + ')');
     } catch (e) {
-        console.warn('⚠️ Error en cargarDatosDesdeGitHub:', e && e.message);
-        console.log('ℹ️ Iniciando con datos locales (productos:', (productos || []).length + ')');
+        console.warn('âš ï¸ Error en cargarDatosDesdeGitHub:', e && e.message);
+        console.log('â„¹ï¸ Iniciando con datos locales (productos:', (productos || []).length + ')');
         renderizarCategoriasHome();
         renderizarMasVendidos();
         verificarOfertasYMostrarBanner();
-        // También re-render si estamos en vista categoría
+        // TambiÃ©n re-render si estamos en vista categorÃ­a
         const vCat = document.getElementById('vistaCategoria');
         if (vCat && vCat.style.display === 'block' && typeof renderizarProductos === 'function') {
             renderizarProductos();
@@ -1194,7 +1214,7 @@ async function cargarDatosDesdeGitHub() {
     }
 }
 
-// Sincronizar entre pestañas
+// Sincronizar entre pestaÃ±as
 window.addEventListener('storage', (event) => {
     if (event.key === 'productos') {
         productos = JSON.parse(event.newValue) || [];
@@ -1238,9 +1258,9 @@ function guardarNumeroWhatsApp() {
     const input = document.getElementById('adminWhatsappNum');
     if (!input) return;
     const num = input.value.trim().replace(/\D/g, '');
-    if (!num || num.length < 6) { mostrarNotificacion('⚠️ Número inválido', 'error'); return; }
+    if (!num || num.length < 6) { mostrarNotificacion('âš ï¸ NÃºmero invÃ¡lido', 'error'); return; }
     localStorage.setItem('whatsappNumero', num);
-    mostrarNotificacion('✅ Número de WhatsApp guardado: +' + num);
+    mostrarNotificacion('âœ… NÃºmero de WhatsApp guardado: +' + num);
 }
 
 function cargarNumeroWhatsApp() {
@@ -1251,7 +1271,7 @@ function cargarNumeroWhatsApp() {
 
 function contactarWhatsApp() {
     const numeroWhatsApp = getNumeroWhatsApp();
-    const mensaje = encodeURIComponent('Hola, me interesa conocer más sobre tus productos. ¿Puedes ayudarme?');
+    const mensaje = encodeURIComponent('Hola, me interesa conocer mÃ¡s sobre tus productos. Â¿Puedes ayudarme?');
     window.open(`https://wa.me/${numeroWhatsApp}?text=${mensaje}`, '_blank', 'noopener,noreferrer');
 }
 
@@ -1260,22 +1280,22 @@ function scrollToProductos() {
     if (el) el.scrollIntoView({ behavior: 'smooth' });
 }
 
-// ═══════════════════════════════════════════════════════
-//  🌗 MODO CLARO / OSCURO
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+//  ðŸŒ— MODO CLARO / OSCURO
 //  El sitio es OSCURO por defecto (tema premium).
-//  El usuario puede alternar a CLARO con el botón ☀️/🌙.
+//  El usuario puede alternar a CLARO con el botÃ³n â˜€ï¸/ðŸŒ™.
 //  Se guarda en localStorage como 'tm_theme' = 'light' | 'dark'
-// ═══════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 function aplicarTema(tema) {
     // tema: 'light' o 'dark' (cualquier otra cosa = dark)
     const claro = (tema === 'light');
     document.body.classList.toggle('light-mode', claro);
     // Limpiar la clase preliminar que pusimos en <html> para evitar parpadeo
     document.documentElement.classList.remove('tm-pre-light');
-    // Actualizar TODOS los botones de tema (puede haber más de uno)
+    // Actualizar TODOS los botones de tema (puede haber mÃ¡s de uno)
     document.querySelectorAll('.theme-toggle').forEach(btn => {
-        // En claro mostramos 🌙 (acción = ir a oscuro). En oscuro mostramos ☀️.
-        btn.textContent = claro ? '🌙' : '☀️';
+        // En claro mostramos ðŸŒ™ (acciÃ³n = ir a oscuro). En oscuro mostramos â˜€ï¸.
+        btn.textContent = claro ? 'ðŸŒ™' : 'â˜€ï¸';
         btn.setAttribute('aria-label', claro ? 'Activar modo oscuro' : 'Activar modo claro');
         btn.setAttribute('title',      claro ? 'Activar modo oscuro' : 'Activar modo claro');
     });
@@ -1293,7 +1313,7 @@ function toggleDarkMode() {
 function _initTema() {
     let pref = null;
     try { pref = localStorage.getItem('tm_theme'); } catch(e) {}
-    // Migración suave desde la versión anterior (darkMode booleano)
+    // MigraciÃ³n suave desde la versiÃ³n anterior (darkMode booleano)
     if (pref === null) {
         try {
             const legacy = localStorage.getItem('darkMode');
@@ -1332,7 +1352,7 @@ function mostrarNotificacion(mensaje, tipo = 'success') {
     setTimeout(() => notif.remove(), 4000);
 }
 
-// ===== NAVEGACIÓN ENTRE VISTAS =====
+// ===== NAVEGACIÃ“N ENTRE VISTAS =====
 
 function tmElementoVisible(id) {
     const el = document.getElementById(id);
@@ -1373,7 +1393,7 @@ function mostrarVistaCategoria(categoria) {
     categoriaSeleccionada = categoria;
     subcategoriaSeleccionada = 'Todas';
 
-    // RESILIENCIA: si el array de productos en memoria está vacío
+    // RESILIENCIA: si el array de productos en memoria estÃ¡ vacÃ­o
     // pero hay datos en localStorage (caso PWA con cache), recargarlos.
     if ((!Array.isArray(productos) || productos.length === 0)) {
         try {
@@ -1385,8 +1405,8 @@ function mostrarVistaCategoria(categoria) {
         } catch(e) {}
     }
 
-    // Si navegamos a una categoría específica (no "Todas"), limpiar filtros
-    // de búsqueda previos para que aparezcan todos los productos de la categoría.
+    // Si navegamos a una categorÃ­a especÃ­fica (no "Todas"), limpiar filtros
+    // de bÃºsqueda previos para que aparezcan todos los productos de la categorÃ­a.
     // Si vamos a "Todas", mantener los filtros (puede venir de aplicarBusquedaHero).
     if (categoria !== 'Todas') {
         _heroSearchActivo = '';
@@ -1400,7 +1420,7 @@ function mostrarVistaCategoria(categoria) {
     actualizarVisibilidadBannerOferta(false);
 
     const icono = obtenerIconoCategoria(categoria);
-    const titulo = categoria === 'Todas' ? '🛍️ Todos los Productos' : `${icono} ${categoria}`;
+    const titulo = categoria === 'Todas' ? 'ðŸ›ï¸ Todos los Productos' : `${icono} ${categoria}`;
     document.getElementById('tituloCategoriaActual').textContent = titulo;
 
     actualizarBotonesCategorias();
@@ -1414,17 +1434,17 @@ function renderizarSubcategoriaTabs() {
     const filtroContainer = document.getElementById('categoriaFiltro');
     if (!tabsContainer) return;
 
-    // Si es "Todas", mostrar el filtro de categorías y ocultar tabs
+    // Si es "Todas", mostrar el filtro de categorÃ­as y ocultar tabs
     if (categoriaSeleccionada === 'Todas') {
         tabsContainer.style.display = 'none';
         if (filtroContainer) filtroContainer.style.display = 'flex';
         return;
     }
 
-    // Ocultar filtro de todas las categorías
+    // Ocultar filtro de todas las categorÃ­as
     if (filtroContainer) filtroContainer.style.display = 'none';
 
-    // Obtener subcategorías de la categoría actual
+    // Obtener subcategorÃ­as de la categorÃ­a actual
     const subcats = (typeof subcategorias !== 'undefined' && subcategorias[categoriaSeleccionada]) 
         ? subcategorias[categoriaSeleccionada] 
         : [];
@@ -1437,10 +1457,10 @@ function renderizarSubcategoriaTabs() {
     tabsContainer.style.display = 'flex';
     tabsContainer.innerHTML = '';
 
-    // Tab "Todas" para esta categoría
+    // Tab "Todas" para esta categorÃ­a
     const tabTodas = document.createElement('button');
     tabTodas.className = `subcategoria-tab ${subcategoriaSeleccionada === 'Todas' ? 'active' : ''}`;
-    tabTodas.innerHTML = `<span class="tab-icon">🔎</span><span class="tab-label">Todos</span>`;
+    tabTodas.innerHTML = `<span class="tab-icon">ðŸ”Ž</span><span class="tab-label">Todos</span>`;
     tabTodas.onclick = () => seleccionarSubcategoria('Todas');
     tabsContainer.appendChild(tabTodas);
 
@@ -1475,7 +1495,7 @@ function volverAlInicio() {
     mostrarVistaInicio();
 }
 
-// ===== RENDERIZAR CATEGORÍAS EN LA HOME =====
+// ===== RENDERIZAR CATEGORÃAS EN LA HOME =====
 
 function renderizarCategoriasHome() {
     const grid = document.getElementById('categoriasGrid');
@@ -1487,7 +1507,7 @@ function renderizarCategoriasHome() {
     cardTodas.className = 'categoria-card';
     const totalProductos = productos.length;
     cardTodas.innerHTML = `
-        <span class="cat-icon">🛍️</span>
+        <span class="cat-icon">ðŸ›ï¸</span>
         <span class="cat-name">Todos</span>
         <span class="cat-count">${safeNum(totalProductos)} producto${totalProductos !== 1 ? 's' : ''}</span>
     `;
@@ -1501,19 +1521,19 @@ function renderizarCategoriasHome() {
         card.innerHTML = `
             <span class="cat-icon">${escapeHtml(obtenerIconoCategoria(cat))}</span>
             <span class="cat-name">${escapeHtml(cat)}</span>
-            <span class="cat-count">${count === 0 ? '🕐 Próximamente' : safeNum(count) + ' producto' + (count !== 1 ? 's' : '')}</span>
+            <span class="cat-count">${count === 0 ? 'ðŸ• PrÃ³ximamente' : safeNum(count) + ' producto' + (count !== 1 ? 's' : '')}</span>
         `;
         card.onclick = () => mostrarVistaCategoria(cat);
         grid.appendChild(card);
     });
-    // Dispara animaciones CSS DESPUÉS de que el DOM está poblado
-    // Si ya tiene tm-rendered (del render instantáneo), no la quitar para evitar parpadeo
+    // Dispara animaciones CSS DESPUÃ‰S de que el DOM estÃ¡ poblado
+    // Si ya tiene tm-rendered (del render instantÃ¡neo), no la quitar para evitar parpadeo
     if (!grid.classList.contains('tm-rendered')) {
         requestAnimationFrame(() => grid.classList.add('tm-rendered'));
     }
 }
 
-// ===== RENDERIZAR MÁS VENDIDOS =====
+// ===== RENDERIZAR MÃS VENDIDOS =====
 
 function renderizarMasVendidos() {
     const grid = document.getElementById('masVendidosGrid');
@@ -1540,7 +1560,7 @@ function renderizarMasVendidos() {
             const _img    = escapeAttr(producto.imagen);
             const _id     = safeNum(producto.id);
             card.innerHTML = `
-	            <div class="badge-vendido">🔥 Más Vendido</div>
+	            <div class="badge-vendido">ðŸ”¥ MÃ¡s Vendido</div>
 	            <div class="producto-image">
 	                <img src="${_img}" alt="${_nombre}" loading="lazy">
 	                ${(producto.precioOriginal > 0 && producto.precioOriginal > producto.precioActual) ? `<div class="badge">-$${(producto.precioOriginal - producto.precioActual).toFixed(0)}</div>` : ''}
@@ -1551,7 +1571,7 @@ function renderizarMasVendidos() {
 	                ${(producto.precioOriginal > 0 && producto.precioOriginal > producto.precioActual) ? '<span class="precio-tachado">$' + parseFloat(producto.precioOriginal).toFixed(2) + ' USD</span> ' : ''}<span class="precio-actual" data-usd="${safeNum(producto.precioActual)}">${typeof formatPrecio==='function'?formatPrecio(producto.precioActual):'$'+producto.precioActual.toFixed(2)+' USD'}</span>${(producto.precioOriginal > 0 && producto.precioOriginal > producto.precioActual) ? ' <span class="precio-ahorro">-$' + (producto.precioOriginal - producto.precioActual).toFixed(0) + '</span>' : ''}
 	            </p>
             <div class="stock-count">
-                <span>📦 Solo quedan ${safeNum(producto.stock)} unidades</span>
+                <span>ðŸ“¦ Solo quedan ${safeNum(producto.stock)} unidades</span>
             </div>
             <div class="stock-bar">
                 <div class="stock-bar-fill" style="width: ${Math.max(15, (safeNum(producto.stock) / 20) * 100)}%"></div>
@@ -1563,7 +1583,7 @@ function renderizarMasVendidos() {
     });
 }
 
-// ===== AUTENTICACIÓN =====
+// ===== AUTENTICACIÃ“N =====
 
 function abrirLoginAdmin() {
     window.location.href = 'admin.html';
@@ -1577,13 +1597,61 @@ function cerrarLoginModal() {
 }
 
 async function verificarPassword(event) {
+
+async function cambiarPasswordAdmin(event) {
+    if (event) event.preventDefault();
+    var ci = document.getElementById('adminPasswordActual');
+    var ni = document.getElementById('adminPasswordNueva');
+    var coi = document.getElementById('adminPasswordConfirmar');
+    if (!ci || !ni || !coi) { mostrarNotificacion('Error en el formulario', 'error'); return; }
+    var current = ci.value.trim(); var nueva = ni.value.trim(); var confirmar = coi.value.trim();
+    if ((await hashPassword(current)) !== localStorage.getItem(AUTH_HASH_KEY)) {
+        mostrarNotificacion('Contrasena actual incorrecta', 'error'); ci.value = ''; return;
+    }
+    if (nueva.length < 6) { mostrarNotificacion('Minimo 6 caracteres', 'error'); return; }
+    if (nueva !== confirmar) { mostrarNotificacion('Las contrasenas no coinciden', 'error'); ni.value = ''; coi.value = ''; return; }
+    localStorage.removeItem(AUTH_SALT_KEY);
+    localStorage.setItem(AUTH_HASH_KEY, await hashPassword(nueva));
+    ci.value = ''; ni.value = ''; coi.value = '';
+    mostrarNotificacion('Contrasena cambiada exitosamente', 'success');
+}
+    event.preventDefault();
+    const rl = JSON.parse(localStorage.getItem('admin_rl') || JSON.stringify({count:0,until:0}));
+    if (Date.now() < rl.until) {
+        const mins = Math.ceil((rl.until - Date.now()) / 60000);
+        mostrarNotificacion('Demasiados intentos. Espera ' + mins + ' min.', 'error');
+        return;
+    }
+    const passwordInput = document.getElementById('adminPassword').value.trim();
+    if (!passwordInput) { mostrarNotificacion('Escribe la contrasena', 'error'); return; }
+    const storedHash = localStorage.getItem(AUTH_HASH_KEY);
+    if (!storedHash) {
+        const hash = await hashPassword(passwordInput);
+        localStorage.setItem(AUTH_HASH_KEY, hash);
+        localStorage.removeItem('admin_rl');
+        usuarioAutenticado = true; cerrarLoginModal(); abrirAdminPanel();
+        mostrarNotificacion('Contrasena configurada correctamente', 'success');
+        return;
+    }
+    const inputHash = await hashPassword(passwordInput);
+    if (inputHash === storedHash) {
+        localStorage.removeItem('admin_rl'); usuarioAutenticado = true; cerrarLoginModal(); abrirAdminPanel();
+    } else {
+        const newCount = (rl.count || 0) + 1;
+        const lockout = newCount >= 3 ? Date.now() + 5 * 60 * 1000 : rl.until;
+        localStorage.setItem('admin_rl', JSON.stringify({ count: newCount, until: lockout }));
+        const msg = newCount >= 3 ? '3 intentos fallidos. Bloqueado 5 min.' : 'Contrasena incorrecta (intento ' + newCount + '/3)';
+        mostrarNotificacion(msg, 'error');
+        document.getElementById('adminPassword').value = '';
+    }
+}
     event.preventDefault();
 
-    // ── Rate limiting: 3 intentos → bloqueo 5 minutos ──
+    // â”€â”€ Rate limiting: 3 intentos â†’ bloqueo 5 minutos â”€â”€
     const rl = JSON.parse(localStorage.getItem('admin_rl') || '{"count":0,"until":0}');
     if (Date.now() < rl.until) {
         const mins = Math.ceil((rl.until - Date.now()) / 60000);
-        mostrarNotificacion(`🔒 Demasiados intentos. Espera ${mins} min.`, 'error');
+        mostrarNotificacion(`ðŸ”’ Demasiados intentos. Espera ${mins} min.`, 'error');
         return;
     }
 
@@ -1606,8 +1674,8 @@ async function verificarPassword(event) {
         const lockout = newCount >= 3 ? Date.now() + 5 * 60 * 1000 : rl.until;
         localStorage.setItem('admin_rl', JSON.stringify({ count: newCount, until: lockout }));
         const msg = newCount >= 3
-            ? '🔒 3 intentos fallidos. Bloqueado 5 min.'
-            : `❌ Contraseña incorrecta (intento ${newCount}/3)`;
+            ? 'ðŸ”’ 3 intentos fallidos. Bloqueado 5 min.'
+            : `âŒ ContraseÃ±a incorrecta (intento ${newCount}/3)`;
         mostrarNotificacion(msg, 'error');
         document.getElementById('adminPassword').value = '';
     }
@@ -1647,7 +1715,7 @@ function cerrarAdminPanel() {
 }
 
 function switchTab(tabName) {
-    // Remove active from all tabs (class only — never use inline style on admin-tabs)
+    // Remove active from all tabs (class only â€” never use inline style on admin-tabs)
     document.querySelectorAll('.admin-tab').forEach(tab => {
         tab.classList.remove('active');
         tab.style.removeProperty('display'); // Fix: clear any rogue inline display
@@ -1691,8 +1759,8 @@ function agregarProductoForm(event) {
     const file = fileInput.files[0];
     if (!file) { mostrarNotificacion('Por favor selecciona una imagen', 'error'); return; }
 
-    // Mostrar indicador de compresión
-    mostrarNotificacion('⏳ Subiendo imagen...', 'info');
+    // Mostrar indicador de compresiÃ³n
+    mostrarNotificacion('â³ Subiendo imagen...', 'info');
 
     subirImagenAGitHub(file).then(imagenComprimida => {
         const masVendidoVal = document.getElementById('productMasVendido');
@@ -1717,14 +1785,14 @@ function agregarProductoForm(event) {
         // Validar producto
         const errores = validarProducto(producto);
         if (errores.length > 0) {
-            mostrarNotificacion('❌ ' + errores[0], 'error');
+            mostrarNotificacion('âŒ ' + errores[0], 'error');
             return;
         }
 
         productos.push(producto);
         guardarProductos();
 
-        // Guardar comisión en almacén separado (siempre, aunque sea 0)
+        // Guardar comisiÃ³n en almacÃ©n separado (siempre, aunque sea 0)
         const comisiones = JSON.parse(localStorage.getItem('comisiones') || '{}');
         comisiones[producto.id] = producto.comision || 0;
         localStorage.setItem('comisiones', JSON.stringify(comisiones));
@@ -1732,10 +1800,10 @@ function agregarProductoForm(event) {
         marcarProductoModificado(producto.id);
         sincronizarConGitHub();
         document.getElementById('productForm').reset();
-        mostrarNotificacion('✅ ¡Producto agregado exitosamente!');
-        // Notificación local LOCAL (solo para el propio admin que está agregando).
-        // Las notificaciones a los CLIENTES se envían por el workflow de GitHub Actions
-        // (scripts/send_notifications.py) que agrupa los cambios automáticamente.
+        mostrarNotificacion('âœ… Â¡Producto agregado exitosamente!');
+        // NotificaciÃ³n local LOCAL (solo para el propio admin que estÃ¡ agregando).
+        // Las notificaciones a los CLIENTES se envÃ­an por el workflow de GitHub Actions
+        // (scripts/send_notifications.py) que agrupa los cambios automÃ¡ticamente.
         if (window.TiendaMaxPush) {
             window.TiendaMaxPush.nuevoProducto(producto.nombre, producto.precioActual, producto.id, producto.imagen);
         }
@@ -1751,8 +1819,8 @@ function guardarProductos() {
     localStorage.setItem('productos', JSON.stringify(productos));
 }
 
-// ===== COMPRESIÓN DE IMÁGENES =====
-// Comprime una imagen (File o base64) a máximo ~40KB manteniendo buena calidad visual
+// ===== COMPRESIÃ“N DE IMÃGENES =====
+// Comprime una imagen (File o base64) a mÃ¡ximo ~40KB manteniendo buena calidad visual
 function comprimirImagen(source, maxKB = 25, maxWidth = 480, maxHeight = 480) {
     return new Promise((resolve) => {
         const canvas = document.createElement('canvas');
@@ -1771,9 +1839,9 @@ function comprimirImagen(source, maxKB = 25, maxWidth = 480, maxHeight = 480) {
             ctx.drawImage(img, 0, 0, width, height);
 
             let quality = 0.82;
-            // Intentar WebP primero (mejor compresión)
+            // Intentar WebP primero (mejor compresiÃ³n)
             let result = canvas.toDataURL('image/webp', quality);
-            // Si el navegador no soporta WebP, devuelve PNG — detectarlo
+            // Si el navegador no soporta WebP, devuelve PNG â€” detectarlo
             const supportsWebP = result.startsWith('data:image/webp');
             const fmt = supportsWebP ? 'image/webp' : 'image/jpeg';
             if (!supportsWebP) result = canvas.toDataURL(fmt, quality);
@@ -1805,12 +1873,12 @@ function descargarProductosJSON() {
     document.body.appendChild(downloadAnchorNode);
     downloadAnchorNode.click();
     downloadAnchorNode.remove();
-    mostrarNotificacion('✅ Archivo productos.json generado. Súbelo a tu GitHub.');
+    mostrarNotificacion('âœ… Archivo productos.json generado. SÃºbelo a tu GitHub.');
 }
 
 async function sincronizarConBackend() {
-    // Backend eliminado en esta versión del repo.
-    // Dejamos esta función como no-op para evitar errores y mantener compatibilidad.
+    // Backend eliminado en esta versiÃ³n del repo.
+    // Dejamos esta funciÃ³n como no-op para evitar errores y mantener compatibilidad.
     return false;
 }
 
@@ -1830,12 +1898,12 @@ function renderizarProductos(isLoadMore = false) {
         ? productos 
         : productos.filter(p => p.categoria === categoriaSeleccionada);
 
-    // Filtrar por subcategoría si hay una seleccionada (y no es 'Todas')
+    // Filtrar por subcategorÃ­a si hay una seleccionada (y no es 'Todas')
     if (categoriaSeleccionada !== 'Todas' && subcategoriaSeleccionada && subcategoriaSeleccionada !== 'Todas') {
         productosFiltrados = productosFiltrados.filter(p => p.subcategoria === subcategoriaSeleccionada);
     }
 
-    // Filtro de búsqueda hero y precio
+    // Filtro de bÃºsqueda hero y precio
     if (_heroSearchActivo || _heroPrecioMin > 0 || _heroPrecioMax < Infinity) {
         const q = _heroSearchActivo;
         productosFiltrados = productosFiltrados.filter(p => {
@@ -1850,16 +1918,16 @@ function renderizarProductos(isLoadMore = false) {
     productosGrid.innerHTML = '';
 
     if (productosFiltrados.length === 0) {
-        // Mensaje contextual según la situación real
+        // Mensaje contextual segÃºn la situaciÃ³n real
         let mensaje;
         if (!Array.isArray(productos) || productos.length === 0) {
-            mensaje = '⏳ Cargando productos... Si esto persiste, recarga la página.';
+            mensaje = 'â³ Cargando productos... Si esto persiste, recarga la pÃ¡gina.';
         } else if (subcategoriaSeleccionada && subcategoriaSeleccionada !== 'Todas') {
-            mensaje = 'No hay productos en esta subcategoría aún.';
+            mensaje = 'No hay productos en esta subcategorÃ­a aÃºn.';
         } else if (_heroSearchActivo) {
-            mensaje = 'No hay productos que coincidan con tu búsqueda.';
+            mensaje = 'No hay productos que coincidan con tu bÃºsqueda.';
         } else {
-            mensaje = 'No hay productos en esta categoría aún.';
+            mensaje = 'No hay productos en esta categorÃ­a aÃºn.';
         }
         productosGrid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #999; padding: 60px 20px; font-size:15px;">' + escapeHtml(mensaje) + '</p>';
         return;
@@ -1877,7 +1945,7 @@ function renderizarProductos(isLoadMore = false) {
         const _id     = safeNum(producto.id);
         const _stock  = safeNum(producto.stock);
         card.innerHTML = `
-            ${producto.masVendido ? '<div class="badge-vendido">🔥 Más Vendido</div>' : ''}
+            ${producto.masVendido ? '<div class="badge-vendido">ðŸ”¥ MÃ¡s Vendido</div>' : ''}
             <div class="producto-image">
                 <img src="${_img}" alt="${_nombre}" loading="lazy">
                 ${(producto.precioOriginal > 0 && producto.precioOriginal > producto.precioActual) ? `<div class="badge">-$${(producto.precioOriginal - producto.precioActual).toFixed(0)}</div>` : ''}
@@ -1887,9 +1955,9 @@ function renderizarProductos(isLoadMore = false) {
 	            <p class="precio">
 	                <span class="precio-actual" data-usd="${safeNum(producto.precioActual)}">${typeof formatPrecio === 'function' ? formatPrecio(producto.precioActual) : '$'+producto.precioActual.toFixed(2)+' USD'}</span>
 	            </p>
-            <div class="stock">📦 Stock: ${_stock} unidades</div>
+            <div class="stock">ðŸ“¦ Stock: ${_stock} unidades</div>
             ${typeof renderCountdownHtml === 'function' ? renderCountdownHtml(_id) : ''}
-            <button data-action="agregarAlCarrito" data-arg="${_id}" class="btn btn-primary btn-add-cart">🛒 Añadir</button>
+            <button data-action="agregarAlCarrito" data-arg="${_id}" class="btn btn-primary btn-add-cart">ðŸ›’ AÃ±adir</button>
         `;
         productosGrid.appendChild(card);
     });
@@ -1903,7 +1971,7 @@ function renderizarProductos(isLoadMore = false) {
                 Mostrando ${Math.min(productosVisibleCount, productosFiltrados.length)} de ${productosFiltrados.length} productos
             </p>
             <button class="btn-seguir-viendo">
-                👁️ Seguir viendo <span style="background:rgba(255,255,255,0.12);padding:2px 8px;border-radius:20px;font-size:11px;margin-left:4px">${restantes} más</span>
+                ðŸ‘ï¸ Seguir viendo <span style="background:rgba(255,255,255,0.12);padding:2px 8px;border-radius:20px;font-size:11px;margin-left:4px">${restantes} mÃ¡s</span>
             </button>`;
         loadMoreBtn.querySelector('.btn-seguir-viendo').onclick = () => {
             productosVisibleCount += 20;
@@ -1925,7 +1993,7 @@ function abrirDetalleProducto(id) {
     if (typeof actualizarVisibilidadBannerOferta === 'function') actualizarVisibilidadBannerOferta(false);
     _detalleProductoActual = p;
     // Deep link: actualizar URL sin recargar
-    // pushState para que el botón "Atrás" cierre el modal en lugar de salir del sitio
+    // pushState para que el botÃ³n "AtrÃ¡s" cierre el modal en lugar de salir del sitio
     if (location.hash !== '#producto-' + id) {
         history.pushState({ modalProducto: id }, '', '#producto-' + id);
     }
@@ -1939,12 +2007,12 @@ function abrirDetalleProducto(id) {
     img.alt = p.nombre;
     img.classList.remove('zoomed');
 
-    // Categoría y subcategoría
+    // CategorÃ­a y subcategorÃ­a
     document.getElementById('detailProductCategory').textContent =
         obtenerIconoCategoria(p.categoria) + ' ' + p.categoria;
     const subEl = document.getElementById('detailSubcategoria');
     if (p.subcategoria && p.subcategoria !== 'Todas') {
-        subEl.textContent = '↳ ' + p.subcategoria;
+        subEl.textContent = 'â†³ ' + p.subcategoria;
         subEl.style.display = 'block';
     } else {
         subEl.style.display = 'none';
@@ -1956,7 +2024,7 @@ function abrirDetalleProducto(id) {
     badge.style.display = _hasPrecioOrig ? 'inline-block' : 'none';
     if (_hasPrecioOrig) badge.textContent = `-$${(parseFloat(p.precioOriginal) - parseFloat(p.precioActual)).toFixed(0)}`;
 
-    // Más vendido badge
+    // MÃ¡s vendido badge
     const hotBadge = document.getElementById('detailMasVendidoBadge');
     hotBadge.style.display = (p.masVendido === true || p.masVendido === 'true') ? 'block' : 'none';
 
@@ -1964,10 +2032,10 @@ function abrirDetalleProducto(id) {
     const precioOriginal = p.descuento > 0
         ? (p.precioActual / (1 - p.descuento / 100))
         : null;
-    // NOTA: el bloque que actualiza #detailPriceOriginal está abajo (después de
-    // este comentario) y siempre gana. El cálculo de precioOriginal se mantiene
+    // NOTA: el bloque que actualiza #detailPriceOriginal estÃ¡ abajo (despuÃ©s de
+    // este comentario) y siempre gana. El cÃ¡lculo de precioOriginal se mantiene
     // por si descuento > 0 (para badge "Ahorras $X"). El antiguo bloque que
-    // escribía aquí en #detailPriceOriginal se eliminó (era código muerto).
+    // escribÃ­a aquÃ­ en #detailPriceOriginal se eliminÃ³ (era cÃ³digo muerto).
     // Precio en modal con tachado real
 const _detailPrecioEl = document.getElementById('detailPriceActual');
 const _detailPrecioOldEl = document.getElementById('detailPriceOriginal');
@@ -1995,32 +2063,32 @@ if (_detailPrecioOldEl) {
     const stockEl = document.getElementById('detailProductStock');
     const _stockN = safeNum(p.stock);
     if (_stockN === 0) {
-        stockEl.innerHTML = '<span style="color:#e74c3c;font-weight:700;">❌ Sin stock</span>';
+        stockEl.innerHTML = '<span style="color:#e74c3c;font-weight:700;">âŒ Sin stock</span>';
     } else if (_stockN <= 3) {
-        stockEl.innerHTML = `<span style="color:#e67e22;font-weight:700;">⚠️ ¡Últimas ${_stockN} unidades!</span>`;
+        stockEl.innerHTML = `<span style="color:#e67e22;font-weight:700;">âš ï¸ Â¡Ãšltimas ${_stockN} unidades!</span>`;
     } else {
-        stockEl.innerHTML = `<span>📦 ${_stockN} unidades disponibles</span>`;
+        stockEl.innerHTML = `<span>ðŸ“¦ ${_stockN} unidades disponibles</span>`;
     }
     document.getElementById('detailStockBarFill').style.width =
         `${Math.min(100, Math.max(8, (p.stock / 20) * 100))}%`;
 
-    // Badges extra: garantia, devolución, usado
+    // Badges extra: garantia, devoluciÃ³n, usado
     const extBadges = document.getElementById('detailExtraBadges');
     let badges = '';
-    if (p.garantia) badges += `<span class="detail-badge-tag dtag-garantia">🛡️ Garantía: ${escapeHtml(p.garantia)}</span>`;
-    if (p.devolucion) badges += `<span class="detail-badge-tag dtag-devolucion">↩️ Devolución aceptada</span>`;
-    if (p.usado) badges += `<span class="detail-badge-tag dtag-usado">♻️ Producto usado</span>`;
+    if (p.garantia) badges += `<span class="detail-badge-tag dtag-garantia">ðŸ›¡ï¸ GarantÃ­a: ${escapeHtml(p.garantia)}</span>`;
+    if (p.devolucion) badges += `<span class="detail-badge-tag dtag-devolucion">â†©ï¸ DevoluciÃ³n aceptada</span>`;
+    if (p.usado) badges += `<span class="detail-badge-tag dtag-usado">â™»ï¸ Producto usado</span>`;
     extBadges.innerHTML = badges;
 
-    // Descripción
-    // Descripción: usar textContent preserva saltos de línea con CSS white-space
+    // DescripciÃ³n
+    // DescripciÃ³n: usar textContent preserva saltos de lÃ­nea con CSS white-space
     document.getElementById('detailProductDescription').textContent = p.descripcion || '';
 
-    // Botón comprar (estilo WhatsApp "Pedir")
+    // BotÃ³n comprar (estilo WhatsApp "Pedir")
     const buyBtn = document.getElementById('detailBuyBtn');
     buyBtn.disabled = p.stock === 0;
     if (p.stock === 0) {
-        buyBtn.innerHTML = '❌ Sin stock';
+        buyBtn.innerHTML = 'âŒ Sin stock';
     } else {
         buyBtn.innerHTML = `
             <span class="btn-pedir-wa-icon">
@@ -2033,7 +2101,7 @@ if (_detailPrecioOldEl) {
     }
     buyBtn.onclick = () => contactarProducto(p.nombre);
 
-    // Productos relacionados (misma categoría, excluir actual)
+    // Productos relacionados (misma categorÃ­a, excluir actual)
     const relacionados = productos
         .filter(x => x.id !== p.id && x.categoria === p.categoria)
         .slice(0, 4);
@@ -2053,11 +2121,11 @@ if (_detailPrecioOldEl) {
         relSection.style.display = 'none';
     }
 
-    // Reseñas
+    // ReseÃ±as
     renderizarResenas(p.id);
     document.getElementById('formResena').style.display = 'none';
     const btnResena = document.getElementById('btnAgregarResena');
-    if (btnResena) btnResena.textContent = '+ Agregar reseña';
+    if (btnResena) btnResena.textContent = '+ Agregar reseÃ±a';
     _estrellasSeleccionadas = 0;
     setEstrellas(0);
 
@@ -2073,13 +2141,13 @@ if (_detailPrecioOldEl) {
         const base = Math.min(12, 2 + Math.floor(vistas / 3));
         const personas = base + Math.floor(Math.random() * 4);
         vDiv.style.display = 'flex';
-        vDiv.innerHTML = '<span>👁️ ' + personas + ' personas están viendo esto ahora</span>';
+        vDiv.innerHTML = '<span>ðŸ‘ï¸ ' + personas + ' personas estÃ¡n viendo esto ahora</span>';
     })();
 
-    // Botón carrito en modal
+    // BotÃ³n carrito en modal
     const detailBuyRow = document.getElementById('detailBuyBtn');
     if (detailBuyRow) {
-        // Agregar botón carrito junto al de comprar si no existe
+        // Agregar botÃ³n carrito junto al de comprar si no existe
         let cartRowEl = document.getElementById('detailCartBtn');
         if (!cartRowEl) {
             cartRowEl = document.createElement('button');
@@ -2089,7 +2157,7 @@ if (_detailPrecioOldEl) {
             detailBuyRow.parentNode.insertBefore(cartRowEl, detailBuyRow.nextSibling);
         }
         const enCarro = carrito.some(x => x.id === p.id);
-        cartRowEl.textContent  = enCarro ? '✓ En el carrito — Ver carrito' : '🛒 Agregar al carrito';
+        cartRowEl.textContent  = enCarro ? 'âœ“ En el carrito â€” Ver carrito' : 'ðŸ›’ Agregar al carrito';
         cartRowEl.className    = 'btn-carrito' + (enCarro ? ' en-carrito' : '');
         cartRowEl.style.cssText = 'width:100%;margin-bottom:10px;padding:12px;font-size:14px;';
         cartRowEl.onclick = () => {
@@ -2098,7 +2166,7 @@ if (_detailPrecioOldEl) {
                 abrirCarrito();
             } else {
                 agregarAlCarrito(p.id, null, cartRowEl);
-                cartRowEl.textContent = '✓ En el carrito — Ver carrito';
+                cartRowEl.textContent = 'âœ“ En el carrito â€” Ver carrito';
                 cartRowEl.className = 'btn-carrito en-carrito';
             }
         };
@@ -2146,7 +2214,7 @@ function _getShareData() {
     return {
         nombre: p.nombre,
         precio: p.precioActual.toFixed(2),
-        texto: '🛍️ *' + p.nombre + '* — $' + p.precioActual.toFixed(2) + ' USD\n📦 Stock disponible\n👉 ' + url,
+        texto: 'ðŸ›ï¸ *' + p.nombre + '* â€” $' + p.precioActual.toFixed(2) + ' USD\nðŸ“¦ Stock disponible\nðŸ‘‰ ' + url,
         url: url
     };
 }
@@ -2171,19 +2239,19 @@ function compartirTelegram() {
 
 function compartirTwitter() {
     const d = _getShareData(); if (!d) return;
-    const msg = encodeURIComponent(`${d.nombre} — $${d.precio} USD en @TiendaMax 🛍️ ${d.url}`);
+    const msg = encodeURIComponent(`${d.nombre} â€” $${d.precio} USD en @TiendaMax ðŸ›ï¸ ${d.url}`);
     window.open(`https://twitter.com/intent/tweet?text=${msg}`, '_blank', 'noopener,noreferrer');
 }
 
 function compartirNativo() {
     const p = _detalleProductoActual;
     if (!p) return;
-    const texto = `🛍️ ${p.nombre} — $${p.precioActual.toFixed(2)} USD\n📦 Stock disponible\n👉 tiendamax.org`;
+    const texto = `ðŸ›ï¸ ${p.nombre} â€” $${p.precioActual.toFixed(2)} USD\nðŸ“¦ Stock disponible\nðŸ‘‰ tiendamax.org`;
     const urlProducto = 'https://tiendamax.org/#producto-' + p.id;
     if (navigator.share) {
         navigator.share({ title: p.nombre, text: texto, url: urlProducto }).catch(() => {});
     } else {
-        navigator.clipboard.writeText(texto + '\n' + urlProducto).then(() => mostrarNotificacion('📤 Texto copiado para compartir'));
+        navigator.clipboard.writeText(texto + '\n' + urlProducto).then(() => mostrarNotificacion('ðŸ“¤ Texto copiado para compartir'));
     }
 }
 
@@ -2197,7 +2265,7 @@ function copiarLinkProducto() {
         ? 'https://tiendamax.org/#producto-' + p.id
         : 'https://tiendamax.org';
     navigator.clipboard.writeText(url).then(() =>
-        mostrarNotificacion('🔗 Enlace copiado — ¡listo para compartir!')
+        mostrarNotificacion('ðŸ”— Enlace copiado â€” Â¡listo para compartir!')
     ).catch(() => {
         // Fallback para dispositivos sin clipboard API
         const ta = document.createElement('textarea');
@@ -2208,7 +2276,7 @@ function copiarLinkProducto() {
         ta.select();
         document.execCommand('copy');
         document.body.removeChild(ta);
-        mostrarNotificacion('🔗 Enlace copiado');
+        mostrarNotificacion('ðŸ”— Enlace copiado');
     });
 }
 
@@ -2218,20 +2286,20 @@ function contactarProducto(nombre) {
     if (p) {
         const precio = parseFloat(p.precioActual).toFixed(2);
         msg = encodeURIComponent(
-            `¡Hola! Me gustaría hacer este pedido:\n\n` +
-            `• ${p.nombre} x1 — $${precio} USD\n\n` +
-            `💰 Total: $${precio} USD\n\n` +
-            `¿Está disponible?`
+            `Â¡Hola! Me gustarÃ­a hacer este pedido:\n\n` +
+            `â€¢ ${p.nombre} x1 â€” $${precio} USD\n\n` +
+            `ðŸ’° Total: $${precio} USD\n\n` +
+            `Â¿EstÃ¡ disponible?`
         );
     } else {
-        msg = encodeURIComponent(`¡Hola! Me gustaría hacer este pedido:\n\n• ${nombre} x1\n\n¿Está disponible?`);
+        msg = encodeURIComponent(`Â¡Hola! Me gustarÃ­a hacer este pedido:\n\nâ€¢ ${nombre} x1\n\nÂ¿EstÃ¡ disponible?`);
     }
     window.open(`https://wa.me/${getNumeroWhatsApp()}?text=${msg}`, '_blank', 'noopener,noreferrer');
 }
 
-// actualizarListaProductos está definida más abajo (versión mejorada con filtros por categoría)
+// actualizarListaProductos estÃ¡ definida mÃ¡s abajo (versiÃ³n mejorada con filtros por categorÃ­a)
 
-// ===== FUNCIÓN DE COPIAR PARA FACEBOOK Y REVOLICO =====
+// ===== FUNCIÃ“N DE COPIAR PARA FACEBOOK Y REVOLICO =====
 
 function copiarParaRevolico(id) {
     const producto = productos.find(p => p.id === id);
@@ -2242,14 +2310,14 @@ ${producto.nombre}
 
 ${producto.descripcion}
 
-💰 Precio: $${producto.precioActual} USD
-${producto.stock > 0 ? `📦 Stock: ${producto.stock} unidades disponibles` : '❌ Agotado'}
+ðŸ’° Precio: $${producto.precioActual} USD
+${producto.stock > 0 ? `ðŸ“¦ Stock: ${producto.stock} unidades disponibles` : 'âŒ Agotado'}
 
-📞 Contacto: +53 54320170
+ðŸ“ž Contacto: +53 54320170
     `.trim();
 
     navigator.clipboard.writeText(texto).then(() => {
-        mostrarNotificacion('✅ ¡Datos copiados! Ahora pega en Revolico.');
+        mostrarNotificacion('âœ… Â¡Datos copiados! Ahora pega en Revolico.');
         setTimeout(() => { window.open('https://www.revolico.com/item/publish', '_blank', 'noopener,noreferrer'); }, 500);
     }).catch(() => { 
         window.open('https://www.revolico.com/item/publish', '_blank', 'noopener,noreferrer');
@@ -2261,35 +2329,35 @@ function copiarParaFacebook(id) {
     if (!producto) return;
 
     const texto = `
-🛍️ ${producto.nombre}
+ðŸ›ï¸ ${producto.nombre}
 
 ${producto.descripcion}
 
-💰 Precio: $${producto.precioActual} USD
-${producto.descuento > 0 ? `🔥 ¡OFERTA! (-${producto.descuento}%)` : ''}
-${producto.stock > 0 ? `📦 Disponible: ${producto.stock} unidades` : '❌ Agotado'}
+ðŸ’° Precio: $${producto.precioActual} USD
+${producto.descuento > 0 ? `ðŸ”¥ Â¡OFERTA! (-${producto.descuento}%)` : ''}
+${producto.stock > 0 ? `ðŸ“¦ Disponible: ${producto.stock} unidades` : 'âŒ Agotado'}
 
-📞 Interesado? Contáctame por WhatsApp: +53 54320170
+ðŸ“ž Interesado? ContÃ¡ctame por WhatsApp: +53 54320170
 
 #TiendaMax #VentasCuba #GruposFacebook #Oferta
     `.trim();
 
     navigator.clipboard.writeText(texto).then(() => {
-        mostrarNotificacion('✅ ¡Texto copiado para GRUPOS! Ahora pega en tus grupos de Facebook.');
+        mostrarNotificacion('âœ… Â¡Texto copiado para GRUPOS! Ahora pega en tus grupos de Facebook.');
         setTimeout(() => { window.open('https://www.facebook.com/groups/feed/', '_blank', 'noopener,noreferrer'); }, 500);
     }).catch(() => { 
         window.open('https://www.facebook.com/groups/feed/', '_blank', 'noopener,noreferrer');
     });
 }
 
-// ===== PUBLICACIÓN EN REVOLICO =====
+// ===== PUBLICACIÃ“N EN REVOLICO =====
 
 function prepararPublicacionManual(id) {
     const producto = productos.find(p => p.id === id);
     if (!producto) return;
     const texto = `${producto.nombre}\n\n${producto.descripcion}\n\nPrecio: ${producto.precioActual} USD\nContacto: +53 54320170`;
     navigator.clipboard.writeText(texto).then(() => {
-        mostrarNotificacion('✅ ¡Datos copiados! Ahora pega en Revolico.');
+        mostrarNotificacion('âœ… Â¡Datos copiados! Ahora pega en Revolico.');
         setTimeout(() => { window.open('https://www.revolico.com/item/publish', '_blank', 'noopener,noreferrer'); }, 1000);
     }).catch(() => { window.open('https://www.revolico.com/item/publish', '_blank', 'noopener,noreferrer'); });
 }
@@ -2299,7 +2367,7 @@ async function publicarEnRevolico(id) {
         copiarYAbrirRevolico(id);
         return;
     }
-    mostrarNotificacion('⚠️ El asistente de Revolico no está disponible', 'error');
+    mostrarNotificacion('âš ï¸ El asistente de Revolico no estÃ¡ disponible', 'error');
 }
 
 async function publicarEnFacebook(id) {
@@ -2307,7 +2375,7 @@ async function publicarEnFacebook(id) {
         copiarYAbrirFacebook(id);
         return;
     }
-    mostrarNotificacion('⚠️ El asistente de Facebook no está disponible', 'error');
+    mostrarNotificacion('âš ï¸ El asistente de Facebook no estÃ¡ disponible', 'error');
 }
 
 async function publicarAhora() {
@@ -2315,10 +2383,10 @@ async function publicarAhora() {
         mostrarSelectorAsistenteRevolico();
         return;
     }
-    mostrarNotificacion('⚠️ El asistente de Revolico no está disponible', 'error');
+    mostrarNotificacion('âš ï¸ El asistente de Revolico no estÃ¡ disponible', 'error');
 }
 
-// ===== CATEGORÍAS (GESTIÓN) =====
+// ===== CATEGORÃAS (GESTIÃ“N) =====
 
 function actualizarSelectCategorias() {
     ['productCategory', 'editProductCategory'].forEach(id => {
@@ -2357,7 +2425,7 @@ function filtrarPorCategoria(cat) {
     const titulo = document.getElementById('tituloCategoriaActual');
     if (titulo) {
         const icono = obtenerIconoCategoria(cat);
-        titulo.textContent = cat === 'Todas' ? '🛍️ Todos los Productos' : `${icono} ${cat}`;
+        titulo.textContent = cat === 'Todas' ? 'ðŸ›ï¸ Todos los Productos' : `${icono} ${cat}`;
     }
 }
 
@@ -2367,8 +2435,8 @@ function actualizarListaCategorias() {
 
     list.innerHTML = `
         <div style="margin-bottom: 20px; padding: 15px; background: rgba(52, 152, 219, 0.1); border: 1px dashed #3498DB; border-radius: 10px; text-align: center;">
-            <p style="font-size: 13px; margin-bottom: 10px;">Para guardar tus categorías permanentemente, descarga este archivo y súbelo a GitHub.</p>
-            <button class="btn btn-primary" style="background:#3498DB" onclick="descargarCategoriasJSON()">📥 Descargar categorias.json</button>
+            <p style="font-size: 13px; margin-bottom: 10px;">Para guardar tus categorÃ­as permanentemente, descarga este archivo y sÃºbelo a GitHub.</p>
+            <button class="btn btn-primary" style="background:#3498DB" onclick="descargarCategoriasJSON()">ðŸ“¥ Descargar categorias.json</button>
         </div>
     `;
 
@@ -2377,7 +2445,7 @@ function actualizarListaCategorias() {
         item.className = 'category-item';
         item.innerHTML = `
             <span>${obtenerIconoCategoria(cat)} ${cat}</span>
-            ${cat !== 'General' ? `<button onclick="eliminarCategoria(${index})">🗑️</button>` : ''}
+            ${cat !== 'General' ? `<button onclick="eliminarCategoria(${index})">ðŸ—‘ï¸</button>` : ''}
         `;
         list.appendChild(item);
     });
@@ -2391,7 +2459,7 @@ function descargarCategoriasJSON() {
     document.body.appendChild(downloadAnchorNode);
     downloadAnchorNode.click();
     downloadAnchorNode.remove();
-    mostrarNotificacion('✅ Archivo categorias.json generado. Súbelo a tu GitHub.');
+    mostrarNotificacion('âœ… Archivo categorias.json generado. SÃºbelo a tu GitHub.');
 }
 
 function agregarCategoria() {
@@ -2401,7 +2469,7 @@ function agregarCategoria() {
     const icon = iconInput.value.trim();
     
     if (!name) return;
-    if (categorias.includes(name)) { mostrarNotificacion('La categoría ya existe', 'error'); return; }
+    if (categorias.includes(name)) { mostrarNotificacion('La categorÃ­a ya existe', 'error'); return; }
     
     categorias.push(name);
     
@@ -2420,7 +2488,7 @@ function agregarCategoria() {
     actualizarListaCategorias();
     renderizarCategoriasHome();
     if (typeof actualizarSelectCategoriasPadre === 'function') actualizarSelectCategoriasPadre();
-    mostrarNotificacion('✅ Categoría agregada');
+    mostrarNotificacion('âœ… CategorÃ­a agregada');
 }
 
 function guardarCategorias() {
@@ -2431,7 +2499,7 @@ function guardarCategorias() {
 function eliminarCategoria(index) {
     const nombre = categorias[index];
     if (nombre === 'General') return;
-    if (confirm(`¿Eliminar la categoría "${nombre}"?`)) {
+    if (confirm(`Â¿Eliminar la categorÃ­a "${nombre}"?`)) {
         // Eliminar icono personalizado si existe
         if (iconosPersonalizados[nombre]) {
             delete iconosPersonalizados[nombre];
@@ -2449,13 +2517,13 @@ function eliminarCategoria(index) {
     }
 }
 
-// ===== GESTIÓN DE PRODUCTOS (EDITAR/ELIMINAR) =====
+// ===== GESTIÃ“N DE PRODUCTOS (EDITAR/ELIMINAR) =====
 
 function eliminarProducto(id) {
-    if (!confirm('¿Estás seguro de eliminar este producto?')) return;
+    if (!confirm('Â¿EstÃ¡s seguro de eliminar este producto?')) return;
     productos = productos.filter(p => p.id !== id);
     guardarProductos();
-    // Una eliminación requiere sincronizar todos los productos
+    // Una eliminaciÃ³n requiere sincronizar todos los productos
     localStorage.setItem('productosModificados', JSON.stringify(productos.map(p => p.id)));
     localStorage.setItem('ultimaModificacion', Date.now().toString());
     sincronizarConBackend();
@@ -2464,7 +2532,7 @@ function eliminarProducto(id) {
     renderizarProductos();
     actualizarListaProductos();
     verificarOfertasYMostrarBanner();
-    mostrarNotificacion('🗑️ Producto eliminado', 'info');
+    mostrarNotificacion('ðŸ—‘ï¸ Producto eliminado', 'info');
 }
 
 function abrirEditModal(id) {
@@ -2480,7 +2548,7 @@ function abrirEditModal(id) {
     document.getElementById('editProductStock').value = p.stock;
     document.getElementById('editProductCategory').value = p.categoria;
 
-    // Cargar subcategorías del producto al editar
+    // Cargar subcategorÃ­as del producto al editar
     if (typeof actualizarSelectSubcategorias === 'function') {
         actualizarSelectSubcategorias();
         setTimeout(() => {
@@ -2489,7 +2557,7 @@ function abrirEditModal(id) {
         }, 50);
     }
     
-    // Nuevos campos en edición
+    // Nuevos campos en ediciÃ³n
     if (document.getElementById('editProductUsado')) document.getElementById('editProductUsado').checked = p.usado || false;
     if (document.getElementById('editProductGarantia')) document.getElementById('editProductGarantia').value = p.garantia || '';
     if (document.getElementById('editProductDevolucion')) document.getElementById('editProductDevolucion').checked = p.devolucion || false;
@@ -2537,7 +2605,7 @@ function guardarProductoEditado(event) {
             subcategoria: (document.getElementById('editProductSubcategory') && document.getElementById('editProductSubcategory').value) ? document.getElementById('editProductSubcategory').value : (productos[index].subcategoria || ''),
             masVendido: masVendidoSel ? masVendidoSel.value === 'true' : productos[index].masVendido,
             imagen: nuevaImagen || productos[index].imagen,
-            // Nuevos campos psicológicos y de estado
+            // Nuevos campos psicolÃ³gicos y de estado
             usado: document.getElementById('editProductUsado') ? document.getElementById('editProductUsado').checked : productos[index].usado,
             garantia: document.getElementById('editProductGarantia') ? document.getElementById('editProductGarantia').value.trim() : productos[index].garantia,
             devolucion: document.getElementById('editProductDevolucion') ? document.getElementById('editProductDevolucion').checked : productos[index].devolucion,
@@ -2547,14 +2615,14 @@ function guardarProductoEditado(event) {
         // Validar producto
         const errores = validarProducto(productoActualizado);
         if (errores.length > 0) {
-            mostrarNotificacion('❌ ' + errores[0], 'error');
+            mostrarNotificacion('âŒ ' + errores[0], 'error');
             return;
         }
 
         productos[index] = productoActualizado;
         guardarProductos();
 
-        // Guardar comisión en almacén separado para que persista
+        // Guardar comisiÃ³n en almacÃ©n separado para que persista
         const comisiones = JSON.parse(localStorage.getItem('comisiones') || '{}');
         comisiones[productoActualizado.id] = productoActualizado.comision || 0;
         localStorage.setItem('comisiones', JSON.stringify(comisiones));
@@ -2566,11 +2634,11 @@ function guardarProductoEditado(event) {
         renderizarMasVendidos();
         renderizarProductos();
         actualizarListaProductos();
-        mostrarNotificacion('✅ Producto actualizado');
+        mostrarNotificacion('âœ… Producto actualizado');
     };
 
     if (file) {
-        mostrarNotificacion('⏳ Subiendo imagen...', 'info');
+        mostrarNotificacion('â³ Subiendo imagen...', 'info');
         subirImagenAGitHub(file).then(imagenComprimida => actualizarProducto(imagenComprimida));
     } else {
         actualizarProducto(null);
@@ -2582,17 +2650,17 @@ function guardarProductoEditado(event) {
 async function verificarEstadoBackend() {
     const statusEl = document.getElementById('backendStatus');
     if (!statusEl) return;
-    statusEl.innerHTML = '🟠 <strong>Modo manual activo</strong> · Publicación asistida desde el navegador · Sin dependencia de backend roto';
+    statusEl.innerHTML = 'ðŸŸ  <strong>Modo manual activo</strong> Â· PublicaciÃ³n asistida desde el navegador Â· Sin dependencia de backend roto';
     statusEl.style.color = '#F39C12';
 }
 
 async function cargarEstadoPublicacion() {
     const logContainer = document.getElementById('historialPublicaciones');
     if (!logContainer) return;
-    logContainer.innerHTML = '<p style="font-size:13px;color:#666;">Modo manual activo. No existe historial automático porque este repo no incluye backend de publicación.</p>';
+    logContainer.innerHTML = '<p style="font-size:13px;color:#666;">Modo manual activo. No existe historial automÃ¡tico porque este repo no incluye backend de publicaciÃ³n.</p>';
 }
 
-// ===== SINCRONIZACIÓN CON GITHUB =====
+// ===== SINCRONIZACIÃ“N CON GITHUB =====
 
 function cargarConfiguracionGitHub() {
     document.getElementById('githubUser').value = localStorage.getItem('githubUser') || '';
@@ -2619,11 +2687,11 @@ function guardarConfiguracionGitHub(event) {
     localStorage.setItem('githubUser', document.getElementById('githubUser').value.trim());
     localStorage.setItem('githubRepo', document.getElementById('githubRepo').value.trim());
     localStorage.setItem('githubToken', document.getElementById('githubToken').value.trim());
-    mostrarNotificacion('✅ Configuración de GitHub guardada localmente');
+    mostrarNotificacion('âœ… ConfiguraciÃ³n de GitHub guardada localmente');
 }
 
 // ===== SISTEMA DE DELTA SYNC =====
-// Registra qué productos fueron modificados desde la última sincronización
+// Registra quÃ© productos fueron modificados desde la Ãºltima sincronizaciÃ³n
 function marcarProductoModificado(id) {
     const modificados = JSON.parse(localStorage.getItem('productosModificados') || '[]');
     if (!modificados.includes(id)) modificados.push(id);
@@ -2645,13 +2713,13 @@ async function sincronizarTodoConGitHub() {
     const repo  = localStorage.getItem('githubRepo');
     const token = localStorage.getItem('githubToken');
     if (!user || !repo || !token) {
-        mostrarNotificacion('❌ Configura primero tu usuario, repo y token en la pestaña Configuración', 'error');
+        mostrarNotificacion('âŒ Configura primero tu usuario, repo y token en la pestaÃ±a ConfiguraciÃ³n', 'error');
         switchTab('configuracion');
         return;
     }
 
     const btn = document.querySelector('[data-action="sincronizarTodoConGitHub"]');
-    if (btn) { btn.disabled = true; btn.textContent = '⏳ Sincronizando...'; }
+    if (btn) { btn.disabled = true; btn.textContent = 'â³ Sincronizando...'; }
 
     // --- Barra de progreso ---
     let barraContenedor = document.getElementById('syncProgressContenedor');
@@ -2684,12 +2752,12 @@ async function sincronizarTodoConGitHub() {
     const hayDelta = idsModificados.length > 0 && idsModificados.length < productos.length;
 
     if (hayDelta) {
-        mostrarNotificacion(`🔄 Subiendo ${idsModificados.length} producto(s) modificado(s)...`, 'info');
+        mostrarNotificacion(`ðŸ”„ Subiendo ${idsModificados.length} producto(s) modificado(s)...`, 'info');
     } else {
-        mostrarNotificacion('🚀 Sincronizando tienda completa con GitHub...', 'info');
+        mostrarNotificacion('ðŸš€ Sincronizando tienda completa con GitHub...', 'info');
     }
 
-    // Construir config.json con tasa + oferta del día para que todos los clientes la vean
+    // Construir config.json con tasa + oferta del dÃ­a para que todos los clientes la vean
     const _configSync = {
         tasaMN:              parseFloat(localStorage.getItem('tasaMN') || '0') || undefined,
         ofertaDiaId:         localStorage.getItem('ofertaDiaId') || undefined,
@@ -2725,8 +2793,8 @@ async function sincronizarTodoConGitHub() {
     // Subir secuencialmente para evitar conflictos de SHA en GitHub
     for (let i = 0; i < archivosFiltrados.length; i++) {
         const { path, data } = archivosFiltrados[i];
-        actualizarBarra(i, total, `Subiendo ${path}… (${i + 1}/${total})`);
-        if (btn) btn.textContent = `⏳ ${i + 1}/${total} archivos...`;
+        actualizarBarra(i, total, `Subiendo ${path}â€¦ (${i + 1}/${total})`);
+        if (btn) btn.textContent = `â³ ${i + 1}/${total} archivos...`;
         try {
             await subirArchivoAGitHub(user, repo, token, path, data);
             ok++;
@@ -2734,11 +2802,11 @@ async function sincronizarTodoConGitHub() {
             errors.push(`${path}: ${e.message}`);
         }
     }
-    actualizarBarra(total, total, errors.length === 0 ? '✅ ¡Todo subido correctamente!' : '⚠️ Completado con errores');
+    actualizarBarra(total, total, errors.length === 0 ? 'âœ… Â¡Todo subido correctamente!' : 'âš ï¸ Completado con errores');
 
-    if (btn) { btn.disabled = false; btn.textContent = '🔄 ACTUALIZAR TIENDA AHORA'; }
+    if (btn) { btn.disabled = false; btn.textContent = 'ðŸ”„ ACTUALIZAR TIENDA AHORA'; }
 
-    // Ocultar barra después de 4 segundos
+    // Ocultar barra despuÃ©s de 4 segundos
     setTimeout(() => {
         if (barraContenedor) barraContenedor.style.display = 'none';
     }, 4000);
@@ -2746,13 +2814,13 @@ async function sincronizarTodoConGitHub() {
     if (errors.length === 0) {
         limpiarProductosModificados();
         const info = hayDelta ? `${idsModificados.length} producto(s) actualizado(s)` : `${ok} archivos`;
-        mostrarNotificacion(`✅ Tienda actualizada (${info}). Visible en ~30 segundos.`);
+        mostrarNotificacion(`âœ… Tienda actualizada (${info}). Visible en ~30 segundos.`);
     } else {
         // Mostrar solo el primer error con mensaje claro (suelen tener la misma causa)
         const primerError = errors[0];
         const causa = primerError.includes(': ') ? primerError.split(': ').slice(1).join(': ').trim() : primerError;
-        mostrarNotificacion(`❌ ${causa}`, 'error');
-        console.error('Errores de sincronización:', errors);
+        mostrarNotificacion(`âŒ ${causa}`, 'error');
+        console.error('Errores de sincronizaciÃ³n:', errors);
     }
 }
 
@@ -2761,14 +2829,14 @@ async function sincronizarConGitHub() {
     const repo = localStorage.getItem('githubRepo');
     const token = localStorage.getItem('githubToken');
     if (!user || !repo || !token) {
-        console.log('ℹ️ GitHub no configurado. Saltando sincronización automática.');
+        console.log('â„¹ï¸ GitHub no configurado. Saltando sincronizaciÃ³n automÃ¡tica.');
         return;
     }
     try {
         await subirArchivoAGitHub(user, repo, token, 'productos.json', productos);
-        console.log('✅ Productos sincronizados con GitHub automáticamente');
+        console.log('âœ… Productos sincronizados con GitHub automÃ¡ticamente');
     } catch (e) {
-        console.warn('⚠️ Error al sincronizar automáticamente:', e.message);
+        console.warn('âš ï¸ Error al sincronizar automÃ¡ticamente:', e.message);
     }
 }
 
@@ -2777,11 +2845,11 @@ async function subirArchivoAGitHub(user, repo, token, path, data) {
     const jsonStr  = JSON.stringify(data, null, 2);
     const content  = btoa(unescape(encodeURIComponent(jsonStr)));
 
-    // Calcular tamaño aproximado en bytes (base64 → bytes originales)
+    // Calcular tamaÃ±o aproximado en bytes (base64 â†’ bytes originales)
     const sizeBytes = jsonStr.length;
     const apiBase   = `https://api.github.com/repos/${user}/${repo}`;
 
-    // Detectar la rama principal (main o master) automáticamente
+    // Detectar la rama principal (main o master) automÃ¡ticamente
     async function obtenerRamaPrincipal() {
         try {
             const res = await fetch(`${apiBase}`, { headers });
@@ -2793,7 +2861,7 @@ async function subirArchivoAGitHub(user, repo, token, path, data) {
         return 'main';
     }
 
-    // Función interna para obtener el SHA del archivo (Contents API)
+    // FunciÃ³n interna para obtener el SHA del archivo (Contents API)
     // Cache-buster para evitar que GitHub devuelva SHA desactualizado
     async function obtenerSHA() {
         try {
@@ -2807,10 +2875,10 @@ async function subirArchivoAGitHub(user, repo, token, path, data) {
         } catch (e) { return null; }
     }
 
-    // Para archivos < 900KB usar la Contents API normal (más simple)
+    // Para archivos < 900KB usar la Contents API normal (mÃ¡s simple)
     if (sizeBytes < 900 * 1024) {
         let sha = await obtenerSHA();
-        const body = { message: `Actualización de ${path}`, content };
+        const body = { message: `ActualizaciÃ³n de ${path}`, content };
         if (sha) body.sha = sha;
 
         let response = await fetch(`${apiBase}/contents/${path}`, {
@@ -2821,7 +2889,7 @@ async function subirArchivoAGitHub(user, repo, token, path, data) {
         for (let intento = 0; intento < 3 && !response.ok && (response.status === 409 || response.status === 422); intento++) {
             await new Promise(r => setTimeout(r, 800)); // esperar antes de reintentar
             sha = await obtenerSHA();
-            const bodyRetry = { message: `Actualización de ${path}`, content };
+            const bodyRetry = { message: `ActualizaciÃ³n de ${path}`, content };
             if (sha) bodyRetry.sha = sha;
             response = await fetch(`${apiBase}/contents/${path}`, {
                 method: 'PUT', headers, body: JSON.stringify(bodyRetry)
@@ -2829,12 +2897,12 @@ async function subirArchivoAGitHub(user, repo, token, path, data) {
         }
 
         if (!response.ok) {
-            // Dar mensajes de error claros según el código HTTP
+            // Dar mensajes de error claros segÃºn el cÃ³digo HTTP
             if (response.status === 401) {
-                throw new Error('Token inválido o expirado. Ve a Config y actualiza tu Token de Acceso.');
+                throw new Error('Token invÃ¡lido o expirado. Ve a Config y actualiza tu Token de Acceso.');
             }
             if (response.status === 403) {
-                throw new Error('Token sin permisos. Asegúrate de que tenga el permiso "repo" completo.');
+                throw new Error('Token sin permisos. AsegÃºrate de que tenga el permiso "repo" completo.');
             }
             // Para 404 en el PUT: verificar si es el repo o el archivo
             if (response.status === 404) {
@@ -2844,7 +2912,7 @@ async function subirArchivoAGitHub(user, repo, token, path, data) {
                     throw new Error(`Repositorio "${user}/${repo}" no encontrado. Verifica usuario y nombre del repo en Config.`);
                 }
                 // El repo existe pero el archivo no se pudo crear: problema de permisos del token
-                throw new Error('Token sin permisos de escritura. Asegúrate de que tenga el permiso "repo" completo (no solo "public_repo").');
+                throw new Error('Token sin permisos de escritura. AsegÃºrate de que tenga el permiso "repo" completo (no solo "public_repo").');
             }
             let errMsg = `Error ${response.status} al subir ${path}`;
             try { const err = await response.json(); errMsg = err.message || errMsg; } catch(e) {}
@@ -2867,7 +2935,7 @@ async function subirArchivoAGitHub(user, repo, token, path, data) {
     }
     const { sha: blobSha } = await blobRes.json();
 
-    // Paso 2: Obtener el SHA del commit más reciente (HEAD)
+    // Paso 2: Obtener el SHA del commit mÃ¡s reciente (HEAD)
     const refRes = await fetch(`${apiBase}/git/ref/heads/${rama}`, { headers });
     if (!refRes.ok) throw new Error(`No se pudo obtener la rama "${rama}"`);
     const { object: { sha: commitSha } } = await refRes.json();
@@ -2892,7 +2960,7 @@ async function subirArchivoAGitHub(user, repo, token, path, data) {
     const newCommitRes = await fetch(`${apiBase}/git/commits`, {
         method: 'POST', headers,
         body: JSON.stringify({
-            message: `Actualización de ${path}`,
+            message: `ActualizaciÃ³n de ${path}`,
             tree: newTreeSha,
             parents: [commitSha]
         })
@@ -2911,14 +2979,14 @@ async function subirArchivoAGitHub(user, repo, token, path, data) {
     }
 }
 
-// ===== LÓGICA DE PERSUASIÓN Y VENTAS =====
+// ===== LÃ“GICA DE PERSUASIÃ“N Y VENTAS =====
 
 function verificarOfertasYMostrarBanner() {
     const banner = document.getElementById('urgenciaBanner');
     if (!banner) return;
 
     // El banner superior solo debe verse en el inicio.
-    // En categorías/listados/detalle ya existen etiquetas dentro de las tarjetas.
+    // En categorÃ­as/listados/detalle ya existen etiquetas dentro de las tarjetas.
     if (typeof tmVistaInicioActiva === 'function' && !tmVistaInicioActiva()) {
         banner.style.setProperty('display', 'none', 'important');
         banner.onclick = null;
@@ -2926,9 +2994,9 @@ function verificarOfertasYMostrarBanner() {
         return;
     }
 
-    // Prioridad 1: Oferta del Día configurada en el admin
+    // Prioridad 1: Oferta del DÃ­a configurada en el admin
     const ofertaDiaId    = localStorage.getItem('ofertaDiaId');
-    const ofertaDiaTexto = localStorage.getItem('ofertaDiaTexto') || '🔥 OFERTA DEL DÍA';
+    const ofertaDiaTexto = localStorage.getItem('ofertaDiaTexto') || 'ðŸ”¥ OFERTA DEL DÃA';
 
     // Prioridad 2: Countdown activo
     const cdData = localStorage.getItem('activeCountdown');
@@ -2940,10 +3008,10 @@ function verificarOfertasYMostrarBanner() {
 
     if (ofertaDiaId) {
         targetId    = ofertaDiaId;
-        textoBanner = `<span class="flash-deal">${ofertaDiaTexto} · VER AHORA →</span>`;
+        textoBanner = `<span class="flash-deal">${ofertaDiaTexto} Â· VER AHORA â†’</span>`;
     } else if (cdValido) {
         targetId    = cdObj.productId;
-        textoBanner = `🔥 ${cdObj.texto || '¡Oferta especial!'} <span class="flash-deal">VER AHORA →</span>`;
+        textoBanner = `ðŸ”¥ ${cdObj.texto || 'Â¡Oferta especial!'} <span class="flash-deal">VER AHORA â†’</span>`;
     } else {
         banner.style.display = 'none';
         banner.onclick = null;
@@ -2970,10 +3038,10 @@ function verificarOfertasYMostrarBanner() {
     };
 }
 
-// ===== INICIALIZACIÓN =====
+// ===== INICIALIZACIÃ“N =====
 
 function inicializarTienda() {
-    console.log("🚀 Inicializando TiendaMax...");
+    console.log("ðŸš€ Inicializando TiendaMax...");
     // Restaurar badges inmediatamente al cargar
     actualizarContadorCarrito();
     actualizarBadgeCorazon();
@@ -3006,7 +3074,7 @@ function inicializarTienda() {
     }, 30000);
 
     // El tema se inicializa por _initTema() (ver toggleDarkMode arriba).
-    // Re-aplicamos por si el botón apareció después de cargar.
+    // Re-aplicamos por si el botÃ³n apareciÃ³ despuÃ©s de cargar.
     if (typeof _initTema === 'function') _initTema();
 
     iniciarCountdownsActivos();
@@ -3033,11 +3101,11 @@ if (document.readyState === 'loading') {
     });
 }
 
-// ===== AUTOMATIZACIÓN HÍBRIDA (SELENIUM) =====
+// ===== AUTOMATIZACIÃ“N HÃBRIDA (SELENIUM) =====
 
 
 // ===== COUNTDOWN TIMER =====
-// countdownIntervals ya está declarada arriba (al inicio del archivo)
+// countdownIntervals ya estÃ¡ declarada arriba (al inicio del archivo)
 // para evitar problemas de TDZ. Solo aseguramos que sea objeto.
 if (typeof countdownIntervals !== 'object' || countdownIntervals === null) {
     countdownIntervals = {};
@@ -3047,16 +3115,16 @@ function guardarCountdown() {
     const productId = document.getElementById('countdownProductSelect').value;
     const horas = parseInt(document.getElementById('countdownHoras').value) || 0;
     const minutos = parseInt(document.getElementById('countdownMinutos').value) || 0;
-    const texto = document.getElementById('countdownTexto').value.trim() || '¡Oferta especial!';
+    const texto = document.getElementById('countdownTexto').value.trim() || 'Â¡Oferta especial!';
 
     if (!productId) {
-        mostrarNotificacion('⚠️ Selecciona un producto', 'error');
+        mostrarNotificacion('âš ï¸ Selecciona un producto', 'error');
         return;
     }
 
     const duracionMs = (horas * 3600 + minutos * 60) * 1000;
     if (duracionMs <= 0) {
-        mostrarNotificacion('⚠️ Ingresa una duración válida', 'error');
+        mostrarNotificacion('âš ï¸ Ingresa una duraciÃ³n vÃ¡lida', 'error');
         return;
     }
 
@@ -3068,14 +3136,14 @@ function guardarCountdown() {
     const nombre = producto ? producto.nombre : 'Producto';
 
     const status = document.getElementById('countdownStatus');
-    if (status) status.innerHTML = `✅ Countdown activo para: <strong>${escapeHtml(nombre)}</strong>`;
+    if (status) status.innerHTML = `âœ… Countdown activo para: <strong>${escapeHtml(nombre)}</strong>`;
 
     // Re-render to show timer
     renderizarMasVendidos();
     renderizarProductos();
     iniciarCountdownsActivos();
 
-    mostrarNotificacion(`⏱️ Countdown activado para "${nombre}"`);
+    mostrarNotificacion(`â±ï¸ Countdown activado para "${nombre}"`);
 }
 
 function desactivarCountdown() {
@@ -3087,7 +3155,7 @@ function desactivarCountdown() {
     renderizarProductos();
     const status = document.getElementById('countdownStatus');
     if (status) status.innerHTML = 'Countdown desactivado.';
-    mostrarNotificacion('🗑️ Countdown desactivado');
+    mostrarNotificacion('ðŸ—‘ï¸ Countdown desactivado');
 }
 
 function getActiveCountdown() {
@@ -3108,7 +3176,7 @@ function renderCountdownHtml(productId) {
     if (!cd || String(cd.productId) !== String(productId)) return '';
     
     return `<div class="producto-countdown" id="countdown_${safeNum(productId)}">
-        <span class="countdown-label">🔥 ${escapeHtml(cd.texto)}</span>
+        <span class="countdown-label">ðŸ”¥ ${escapeHtml(cd.texto)}</span>
         <div class="countdown-time">
             <span class="countdown-block" id="cd_h_${safeNum(productId)}">--</span>
             <span class="countdown-sep">:</span>
@@ -3173,7 +3241,7 @@ function actualizarCountdownProductSelect() {
     const status = document.getElementById('countdownStatus');
     if (status && cd) {
         const producto = productos.find(p => p.id == cd.productId);
-        if (producto) status.innerHTML = `✅ Countdown activo para: <strong>${escapeHtml(producto.nombre)}</strong>`;
+        if (producto) status.innerHTML = `âœ… Countdown activo para: <strong>${escapeHtml(producto.nombre)}</strong>`;
     }
 }
 
@@ -3184,7 +3252,7 @@ function renderizarCategoriasHomeInstant() {
     // Load from localStorage immediately (no network wait)
     const localProds = JSON.parse(localStorage.getItem('productos')) || [];
     const localCats = JSON.parse(localStorage.getItem('categorias')) || [];
-    // Solo omitir si no hay absolutamente nada (primer uso sin datos en caché)
+    // Solo omitir si no hay absolutamente nada (primer uso sin datos en cachÃ©)
     if (localCats.length === 0) return;
     
     const grid = document.getElementById('categoriasGrid');
@@ -3193,7 +3261,7 @@ function renderizarCategoriasHomeInstant() {
     grid.innerHTML = '';
     const cardTodas = document.createElement('div');
     cardTodas.className = 'categoria-card';
-    cardTodas.innerHTML = `<span class="cat-icon">🛍️</span><span class="cat-name">Todos</span><span class="cat-count">${localProds.length} producto${localProds.length !== 1 ? 's' : ''}</span>`;
+    cardTodas.innerHTML = `<span class="cat-icon">ðŸ›ï¸</span><span class="cat-name">Todos</span><span class="cat-count">${localProds.length} producto${localProds.length !== 1 ? 's' : ''}</span>`;
     cardTodas.onclick = () => mostrarVistaCategoria('Todas');
     grid.appendChild(cardTodas);
 
@@ -3201,21 +3269,21 @@ function renderizarCategoriasHomeInstant() {
         const count = localProds.filter(p => p.categoria === cat).length;
         const card = document.createElement('div');
         card.className = 'categoria-card';
-        card.innerHTML = `<span class="cat-icon">${obtenerIconoCategoria(cat)}</span><span class="cat-name">${cat}</span><span class="cat-count">${count === 0 ? '🕐 Próximamente' : count + ' producto' + (count !== 1 ? 's' : '')}</span>`;
+        card.innerHTML = `<span class="cat-icon">${obtenerIconoCategoria(cat)}</span><span class="cat-name">${cat}</span><span class="cat-count">${count === 0 ? 'ðŸ• PrÃ³ximamente' : count + ' producto' + (count !== 1 ? 's' : '')}</span>`;
         card.onclick = () => mostrarVistaCategoria(cat);
         grid.appendChild(card);
     });
-    // Dispara animaciones CSS DESPUÉS de que el DOM está poblado
+    // Dispara animaciones CSS DESPUÃ‰S de que el DOM estÃ¡ poblado
     requestAnimationFrame(() => grid.classList.add('tm-rendered'));
 }
 
-// ── Inicialización robusta de categorías ──
-// Intenta renderizar inmediatamente, y si el grid aún no existe
-// (porque el DOM no está listo), reintenta en DOMContentLoaded.
-// Además programa un retry a los 800ms por si los datos llegaron tarde.
+// â”€â”€ InicializaciÃ³n robusta de categorÃ­as â”€â”€
+// Intenta renderizar inmediatamente, y si el grid aÃºn no existe
+// (porque el DOM no estÃ¡ listo), reintenta en DOMContentLoaded.
+// AdemÃ¡s programa un retry a los 800ms por si los datos llegaron tarde.
 function _initCategorias() {
     const grid = document.getElementById('categoriasGrid');
-    if (!grid) return; // DOM no listo aún
+    if (!grid) return; // DOM no listo aÃºn
     renderizarCategoriasHomeInstant();
 }
 
@@ -3225,7 +3293,7 @@ if (document.readyState !== 'loading') {
     document.addEventListener('DOMContentLoaded', _initCategorias);
 }
 
-// Retry robusto: si después de 800ms el grid sigue vacío, volver a intentar
+// Retry robusto: si despuÃ©s de 800ms el grid sigue vacÃ­o, volver a intentar
 // Esto cubre el caso PWA donde el SW demora en responder
 document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => {
@@ -3298,11 +3366,11 @@ mostrarVistaCategoria = function(categoria) {
     _origMostrarVistaCat(categoria);
 };
 
-// ═══════════════════════════════════════════════════════
-//  MEJORAS v3.0 — Gestión por categorías + Grupos FB
-// ═══════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+//  MEJORAS v3.0 â€” GestiÃ³n por categorÃ­as + Grupos FB
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
-// ── Gestión de productos por categorías ──────────────
+// â”€â”€ GestiÃ³n de productos por categorÃ­as â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 function actualizarListaProductos() {
     const productsList = document.getElementById('productsList');
@@ -3311,12 +3379,12 @@ function actualizarListaProductos() {
     const busqueda  = (document.getElementById('searchProductos')?.value || '').toLowerCase().trim();
     const filtroCat = document.getElementById('filtroCategoria')?.value || '';
 
-    // Actualizar opciones del filtro de categoría
+    // Actualizar opciones del filtro de categorÃ­a
     const selectFiltro = document.getElementById('filtroCategoria');
     if (selectFiltro) {
         const cats = [...new Set(productos.map(p => p.categoria).filter(Boolean))];
         const valorActual = selectFiltro.value;
-        selectFiltro.innerHTML = '<option value="">Todas las categorías</option>' +
+        selectFiltro.innerHTML = '<option value="">Todas las categorÃ­as</option>' +
             cats.map(c => `<option value="${c}" ${c === valorActual ? 'selected' : ''}>${c}</option>`).join('');
         selectFiltro.value = valorActual; // FIX: restaurar el filtro
     }
@@ -3332,7 +3400,7 @@ function actualizarListaProductos() {
         return;
     }
 
-    // Agrupar por categoría
+    // Agrupar por categorÃ­a
     const porCategoria = {};
     filtrados.forEach(p => {
         const cat = p.categoria || 'General';
@@ -3341,8 +3409,8 @@ function actualizarListaProductos() {
     });
 
     let html = `<div style="margin-bottom:14px;padding:12px 16px;background:rgba(39,174,96,0.1);border:1px dashed #27AE60;border-radius:10px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
-        <span style="font-size:13px;">📦 <strong>${safeNum(filtrados.length)}</strong> productos${filtroCat ? ` en <strong>${escapeHtml(filtroCat)}</strong>` : ''}</span>
-        <button class="btn btn-primary" onclick="descargarProductosJSON()" style="font-size:12px;padding:8px 14px;">📥 Descargar productos.json</button>
+        <span style="font-size:13px;">ðŸ“¦ <strong>${safeNum(filtrados.length)}</strong> productos${filtroCat ? ` en <strong>${escapeHtml(filtroCat)}</strong>` : ''}</span>
+        <button class="btn btn-primary" onclick="descargarProductosJSON()" style="font-size:12px;padding:8px 14px;">ðŸ“¥ Descargar productos.json</button>
     </div>`;
 
     Object.entries(porCategoria).forEach(([cat, prods]) => {
@@ -3360,22 +3428,22 @@ function actualizarListaProductos() {
             html += `<div class="product-item" style="border-left:3px solid var(--primary);">
                 <div class="product-item-info">
                     <img src="${_im}" alt="${_nm}" style="width:56px;height:56px;object-fit:cover;border-radius:8px;float:left;margin-right:12px;">
-                    <h4 style="margin:0 0 4px;">${_nm} ${producto.masVendido ? '🔥' : ''}</h4>
+                    <h4 style="margin:0 0 4px;">${_nm} ${producto.masVendido ? 'ðŸ”¥' : ''}</h4>
                     <p style="margin:0;font-size:12px;color:var(--text-muted);">
                         <strong>$${Number(producto.precioActual).toFixed(2)}</strong> USD
                         ${producto.descuento > 0 ? `<span style="color:#e74c3c;margin-left:6px;">-${safeNum(producto.descuento)}%</span>` : ''}
-                        · Stock: <strong>${safeNum(producto.stock)}</strong>
-                        ${producto.comision > 0 ? `· 💰 Comisión: <strong style="color:#27ae60;">$${Number(producto.comision).toFixed(2)}</strong>` : ''}
+                        Â· Stock: <strong>${safeNum(producto.stock)}</strong>
+                        ${producto.comision > 0 ? `Â· ðŸ’° ComisiÃ³n: <strong style="color:#27ae60;">$${Number(producto.comision).toFixed(2)}</strong>` : ''}
                     </p>
                 </div>
                 <div class="product-item-actions" style="clear:both;padding-top:8px;display:flex;flex-wrap:wrap;gap:6px;">
                     <button class="btn-small-icon" style="background:#27ae60;color:white;" onclick="ajustarStock(${_id}, 1)">+1 Stock</button>
                     <button class="btn-small-icon" style="background:#e74c3c;color:white;" onclick="ajustarStock(${_id}, -1)">-1 Stock</button>
-                    <button class="btn-small-icon btn-edit" onclick="abrirEditModal(${_id})">✏️ Editar</button>
-                    <button class="btn-small-icon btn-delete" onclick="eliminarProducto(${_id})">🗑️ Eliminar</button>
-                    <button class="btn-small-icon btn-revolico" style="background:#ff9800" onclick="copiarParaRevolico(${_id})">📋 Revolico</button>
-                    <button class="btn-small-icon btn-revolico" style="background:#4267B2" onclick="copiarParaFacebook(${_id})">📋 Facebook</button>
-                    <button class="btn-small-icon btn-revolico" onclick="publicarEnRevolico(${_id})">🤖 Rev</button>
+                    <button class="btn-small-icon btn-edit" onclick="abrirEditModal(${_id})">âœï¸ Editar</button>
+                    <button class="btn-small-icon btn-delete" onclick="eliminarProducto(${_id})">ðŸ—‘ï¸ Eliminar</button>
+                    <button class="btn-small-icon btn-revolico" style="background:#ff9800" onclick="copiarParaRevolico(${_id})">ðŸ“‹ Revolico</button>
+                    <button class="btn-small-icon btn-revolico" style="background:#4267B2" onclick="copiarParaFacebook(${_id})">ðŸ“‹ Facebook</button>
+                    <button class="btn-small-icon btn-revolico" onclick="publicarEnRevolico(${_id})">ðŸ¤– Rev</button>
                 </div>
             </div>`;
         });
@@ -3386,8 +3454,8 @@ function actualizarListaProductos() {
     productsList.innerHTML = html;
 }
 
-// ── Ajustar stock desde gestionar ──────────────────
-// desdeVenta=true cuando lo llama registrarVenta (omite notificación de stock para no duplicar)
+// â”€â”€ Ajustar stock desde gestionar â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// desdeVenta=true cuando lo llama registrarVenta (omite notificaciÃ³n de stock para no duplicar)
 function ajustarStock(id, cantidad, desdeVenta = false) {
     const p = productos.find(p => p.id === id);
     if (!p) return;
@@ -3396,15 +3464,15 @@ function ajustarStock(id, cantidad, desdeVenta = false) {
     guardarProductos();
     marcarProductoModificado(id);
     actualizarListaProductos();
-    // Solo mostrar notificación de stock cuando se ajusta desde Gestionar (no desde una venta)
+    // Solo mostrar notificaciÃ³n de stock cuando se ajusta desde Gestionar (no desde una venta)
     if (!desdeVenta) {
-        mostrarNotificacion(`📦 ${p.nombre}: ${antes} → ${p.stock} unidades`);
-        if (p.stock === 0) mostrarNotificacion(`🔴 ¡${p.nombre} agotado!`, 'error');
-        else if (p.stock <= 2) mostrarNotificacion(`⚠️ ${p.nombre}: solo ${p.stock} unidad(es)`, 'warning');
+        mostrarNotificacion(`ðŸ“¦ ${p.nombre}: ${antes} â†’ ${p.stock} unidades`);
+        if (p.stock === 0) mostrarNotificacion(`ðŸ”´ Â¡${p.nombre} agotado!`, 'error');
+        else if (p.stock <= 2) mostrarNotificacion(`âš ï¸ ${p.nombre}: solo ${p.stock} unidad(es)`, 'warning');
     }
 }
 
-// ── VENTAS — registro de ventas ─────────────────────
+// â”€â”€ VENTAS â€” registro de ventas â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function cargarVentas() {
     return JSON.parse(localStorage.getItem('registroVentas') || '[]');
 }
@@ -3418,7 +3486,7 @@ function guardarVenta(venta) {
 function exportarVentasCSV() {
     const ventas = cargarVentas();
     if (!ventas.length) { mostrarNotificacion('No hay ventas que exportar', 'info'); return; }
-    const header = 'Fecha,Producto,Cantidad,Precio,Comisión,Total,Ganancia';
+    const header = 'Fecha,Producto,Cantidad,Precio,ComisiÃ³n,Total,Ganancia';
     const rows = ventas.map(v =>
         `"${v.fecha}","${v.producto}",${v.cantidad},${v.precio},${v.comision || 0},${v.total},${v.ganancia || 0}`
     );
@@ -3430,7 +3498,7 @@ function exportarVentasCSV() {
     a.download = `ventas_tiendamax_${new Date().toISOString().slice(0,10)}.csv`;
     a.click();
     URL.revokeObjectURL(url);
-    mostrarNotificacion('✅ Historial exportado como CSV', 'success');
+    mostrarNotificacion('âœ… Historial exportado como CSV', 'success');
 }
 
 function registrarVenta(productoId, cantidad) {
@@ -3450,7 +3518,7 @@ function registrarVenta(productoId, cantidad) {
     guardarVenta(venta);
     ajustarStock(productoId, -(cantidad || 1), true); // true = viene de una venta confirmada
     renderizarVentas();
-    mostrarNotificacion(`✅ Venta registrada: ${p.nombre}`);
+    mostrarNotificacion(`âœ… Venta registrada: ${p.nombre}`);
     // Sincronizar historial con GitHub en segundo plano
     const _ghUser  = localStorage.getItem('githubUser');
     const _ghRepo  = localStorage.getItem('githubRepo');
@@ -3458,11 +3526,11 @@ function registrarVenta(productoId, cantidad) {
     if (_ghUser && _ghRepo && _ghToken) {
         const _ventas = JSON.parse(localStorage.getItem('registroVentas') || '[]');
         subirArchivoAGitHub(_ghUser, _ghRepo, _ghToken, 'ventas_historial.json', _ventas)
-            .catch(e => console.warn('⚠️ No se pudo sincronizar historial de ventas:', e.message));
+            .catch(e => console.warn('âš ï¸ No se pudo sincronizar historial de ventas:', e.message));
     }
 }
 
-// Página actual del historial de ventas
+// PÃ¡gina actual del historial de ventas
 let _ventasPagina = 0;
 const _VENTAS_POR_PAGINA = 20;
 
@@ -3471,7 +3539,7 @@ function renderizarVentas(pagina) {
     if (!cont) return;
     const ventas = cargarVentas();
     if (typeof pagina === 'number') _ventasPagina = pagina;
-    // Asegurar que la página sea válida
+    // Asegurar que la pÃ¡gina sea vÃ¡lida
     const totalPaginas = Math.max(1, Math.ceil(ventas.length / _VENTAS_POR_PAGINA));
     if (_ventasPagina >= totalPaginas) _ventasPagina = totalPaginas - 1;
     if (_ventasPagina < 0) _ventasPagina = 0;
@@ -3479,24 +3547,24 @@ function renderizarVentas(pagina) {
     const totalVentas   = ventas.reduce((s, v) => s + v.total, 0);
     const totalGanancia = ventas.reduce((s, v) => s + (v.ganancia || 0), 0);
     const totalUnidades = ventas.reduce((s, v) => s + (v.cantidad || 1), 0);
-    // Paginación
+    // PaginaciÃ³n
     const totalPaginas2 = Math.max(1, Math.ceil(ventas.length / _VENTAS_POR_PAGINA));
     const ventasPagina  = ventas.slice(_ventasPagina * _VENTAS_POR_PAGINA, (_ventasPagina + 1) * _VENTAS_POR_PAGINA);
 
     let html = `
     <div style="margin-bottom:16px;">
-        <h4 class="admin-section-title">📦 Registrar venta manual</h4>
+        <h4 class="admin-section-title">ðŸ“¦ Registrar venta manual</h4>
         <div style="display:flex;flex-direction:column;gap:8px;">
 
             <!-- Buscador -->
             <div class="admin-search-box">
-                <input type="text" id="ventaBuscador" placeholder="🔍 Buscar producto..." oninput="filtrarProductosVenta()"
+                <input type="text" id="ventaBuscador" placeholder="ðŸ” Buscar producto..." oninput="filtrarProductosVenta()"
                     class="admin-search-input">
                 <button onclick="limpiarBuscadorVenta()" type="button" id="ventaBuscadorClear"
-                    class="admin-search-clear">✕</button>
+                    class="admin-search-clear">âœ•</button>
             </div>
 
-            <!-- Filtro por categorías (chips) -->
+            <!-- Filtro por categorÃ­as (chips) -->
             <div id="ventaCategoriaChips" class="admin-chips">
                 <button onclick="filtrarVentaPorCategoria('')" type="button" data-cat=""
                     class="chip-cat chip-cat-activo admin-chip active"
@@ -3514,7 +3582,7 @@ function renderizarVentas(pagina) {
 
             <!-- Select oculto para mantener compatibilidad con registrarVentaDesdeForm -->
             <select id="ventaProductoSelect" class="admin-hidden">
-                <option value="">— Selecciona producto —</option>
+                <option value="">â€” Selecciona producto â€”</option>
                 ${productos.map(p => `<option value="${p.id}">${p.nombre}</option>`).join('')}
             </select>
 
@@ -3523,10 +3591,10 @@ function renderizarVentas(pagina) {
                 ${productos.filter(p => p.stock > 0).map(p => `
                 <div class="venta-prod-item admin-product-list-item" data-id="${p.id}" data-nombre="${p.nombre.toLowerCase()}" data-cat="${p.categoria||''}"
                     onclick="seleccionarProductoVenta(${p.id})">
-                    ${p.imagen ? `<img src="${p.imagen}" class="thumb" onerror="this.style.display='none'">` : '<div class="thumb-placeholder">📦</div>'}
+                    ${p.imagen ? `<img src="${p.imagen}" class="thumb" onerror="this.style.display='none'">` : '<div class="thumb-placeholder">ðŸ“¦</div>'}
                     <div class="info">
                         <div class="name">${p.nombre}</div>
-                        <div class="meta">${p.categoria||''} · Stock: ${p.stock}${p.comision ? ` · 💰$${p.comision}` : ''}</div>
+                        <div class="meta">${p.categoria||''} Â· Stock: ${p.stock}${p.comision ? ` Â· ðŸ’°$${p.comision}` : ''}</div>
                     </div>
                     <div class="price">$${p.precioActual}</div>
                 </div>`).join('')}
@@ -3540,53 +3608,53 @@ function renderizarVentas(pagina) {
                     <div id="ventaSelNombre" class="name"></div>
                     <div id="ventaSelInfo" class="meta"></div>
                 </div>
-                <button onclick="deseleccionarProductoVenta()" type="button" style="background:none;border:none;font-size:18px;cursor:pointer;color:#aaa;flex-shrink:0;">✕</button>
+                <button onclick="deseleccionarProductoVenta()" type="button" style="background:none;border:none;font-size:18px;cursor:pointer;color:#aaa;flex-shrink:0;">âœ•</button>
             </div>
 
             <div class="admin-input-row">
                 <input type="number" id="ventaCantidad" value="1" min="1" placeholder="Cantidad" class="admin-qty-input">
-                <button onclick="registrarVentaDesdeForm()" type="button" class="btn btn-primary">✅ Registrar venta</button>
+                <button onclick="registrarVentaDesdeForm()" type="button" class="btn btn-primary">âœ… Registrar venta</button>
             </div>
         </div>
     </div>
 
     <div class="admin-dash-header">
-        <h4>📋 Historial de ventas</h4>
+        <h4>ðŸ“‹ Historial de ventas</h4>
         <div class="admin-dash-actions">
-          <button onclick="exportarVentasCSV()" type="button" class="admin-btn-sm outline">📥 Exportar CSV</button>
-          <button onclick="borrarHistorialVentas()" type="button" class="admin-btn-sm red">🗑️ Limpiar</button>
+          <button onclick="exportarVentasCSV()" type="button" class="admin-btn-sm outline">ðŸ“¥ Exportar CSV</button>
+          <button onclick="borrarHistorialVentas()" type="button" class="admin-btn-sm red">ðŸ—‘ï¸ Limpiar</button>
         </div>
     </div>`;
 
     if (ventas.length === 0) {
-        html += '<p class="admin-empty">No hay ventas registradas aún.</p>';
+        html += '<p class="admin-empty">No hay ventas registradas aÃºn.</p>';
     } else {
         html += '<div style="display:flex;flex-direction:column;gap:8px;">';
         ventasPagina.forEach(v => {
             html += `<div class="admin-history-item">
                 <div class="info">
                     <div class="title">${v.producto}</div>
-                    <div class="meta">${v.fecha} · ${v.cantidad} unidad(es)</div>
+                    <div class="meta">${v.fecha} Â· ${v.cantidad} unidad(es)</div>
                 </div>
                 <div style="text-align:right;flex-shrink:0;">
                     <div class="total">$${v.total.toFixed(2)}</div>
                     ${v.ganancia > 0 ? `<div class="gain">Ganancia: $${v.ganancia.toFixed(2)}</div>` : ''}
                 </div>
-                <button onclick="eliminarVenta(${v.id})" type="button" style="background:#e74c3c;color:white;border:none;border-radius:6px;padding:4px 8px;font-size:11px;cursor:pointer;flex-shrink:0;">✕</button>
+                <button onclick="eliminarVenta(${v.id})" type="button" style="background:#e74c3c;color:white;border:none;border-radius:6px;padding:4px 8px;font-size:11px;cursor:pointer;flex-shrink:0;">âœ•</button>
             </div>`;
         });
         html += '</div>';
     }
 
-    // Controles de paginación
+    // Controles de paginaciÃ³n
     let paginacion = '';
     if (totalPaginas2 > 1) {
         paginacion = `<div class="admin-pagination">
-          <button onclick="renderizarVentas(0)" type="button" ${_ventasPagina===0?'disabled':''} >«</button>
-          <button onclick="renderizarVentas(${_ventasPagina}-1)" type="button" ${_ventasPagina===0?'disabled':''} >‹</button>
-          <span>Página ${_ventasPagina+1} de ${totalPaginas2} · ${ventas.length} ventas en total</span>
-          <button onclick="renderizarVentas(${_ventasPagina}+1)" type="button" ${_ventasPagina>=totalPaginas2-1?'disabled':''} >›</button>
-          <button onclick="renderizarVentas(${totalPaginas2}-1)" type="button" ${_ventasPagina>=totalPaginas2-1?'disabled':''} >»</button>
+          <button onclick="renderizarVentas(0)" type="button" ${_ventasPagina===0?'disabled':''} >Â«</button>
+          <button onclick="renderizarVentas(${_ventasPagina}-1)" type="button" ${_ventasPagina===0?'disabled':''} >â€¹</button>
+          <span>PÃ¡gina ${_ventasPagina+1} de ${totalPaginas2} Â· ${ventas.length} ventas en total</span>
+          <button onclick="renderizarVentas(${_ventasPagina}+1)" type="button" ${_ventasPagina>=totalPaginas2-1?'disabled':''} >â€º</button>
+          <button onclick="renderizarVentas(${totalPaginas2}-1)" type="button" ${_ventasPagina>=totalPaginas2-1?'disabled':''} >Â»</button>
         </div>`;
     }
     cont.innerHTML = html + paginacion;
@@ -3596,9 +3664,9 @@ function registrarVentaDesdeForm() {
     const sel = document.getElementById('ventaProductoSelect');
     const cant = parseInt(document.getElementById('ventaCantidad')?.value) || 1;
     const id = parseInt(sel?.value);
-    if (!id) { mostrarNotificacion('⚠️ Selecciona un producto primero', 'error'); return; }
+    if (!id) { mostrarNotificacion('âš ï¸ Selecciona un producto primero', 'error'); return; }
     registrarVenta(id, cant);
-    // Limpiar buscador y selección tras registrar
+    // Limpiar buscador y selecciÃ³n tras registrar
     deseleccionarProductoVenta();
     const b = document.getElementById('ventaBuscador');
     if (b) { b.value = ''; filtrarProductosVenta(); }
@@ -3613,28 +3681,28 @@ function eliminarVenta(id) {
 }
 
 function borrarHistorialVentas() {
-    if (!confirm('¿Borrar todo el historial de ventas?')) return;
+    if (!confirm('Â¿Borrar todo el historial de ventas?')) return;
     localStorage.removeItem('registroVentas');
     renderizarVentas();
-    mostrarNotificacion('🗑️ Historial borrado');
+    mostrarNotificacion('ðŸ—‘ï¸ Historial borrado');
 }
 
-// ── Grupos de Facebook con selección de productos ────
+// â”€â”€ Grupos de Facebook con selecciÃ³n de productos â”€â”€â”€â”€
 
-// cargarGruposFB está definida más abajo (versión completa con renderizarRevolicoConfig)
+// cargarGruposFB estÃ¡ definida mÃ¡s abajo (versiÃ³n completa con renderizarRevolicoConfig)
 
 function renderizarGruposFB(grupos) {
     const cont = document.getElementById('listaGruposFB');
     if (!cont) return;
 
     if (grupos.length === 0) {
-        cont.innerHTML = '<p style="font-size:13px;color:var(--text-muted);text-align:center;padding:10px;">No hay grupos configurados aún.</p>';
+        cont.innerHTML = '<p style="font-size:13px;color:var(--text-muted);text-align:center;padding:10px;">No hay grupos configurados aÃºn.</p>';
         return;
     }
 
     cont.innerHTML = grupos.map((g, i) => `
         <div style="background:white;border:1.5px solid var(--border-color);border-radius:12px;padding:14px;position:relative;" id="grupoFB_${i}">
-            <button onclick="eliminarGrupoFB(${i})" style="position:absolute;top:10px;right:10px;background:none;border:none;cursor:pointer;font-size:18px;color:#e74c3c;">✕</button>
+            <button onclick="eliminarGrupoFB(${i})" style="position:absolute;top:10px;right:10px;background:none;border:none;cursor:pointer;font-size:18px;color:#e74c3c;">âœ•</button>
             <div style="margin-bottom:10px;">
                 <label style="font-size:12px;font-weight:600;display:block;margin-bottom:4px;">URL del Grupo:</label>
                 <input type="text" value="${g.url||''}" onchange="actualizarGrupoFB(${i},'url',this.value)"
@@ -3655,7 +3723,7 @@ function renderizarGruposFB(grupos) {
                         </label>
                     `).join('')}
                 </div>
-                ${productos.length === 0 ? '<p style="font-size:12px;color:var(--text-muted);">No hay productos cargados aún.</p>' : ''}
+                ${productos.length === 0 ? '<p style="font-size:12px;color:var(--text-muted);">No hay productos cargados aÃºn.</p>' : ''}
             </div>
         </div>
     `).join('');
@@ -3702,7 +3770,7 @@ function guardarGruposFB() {
     const config = {
         grupos: validos,
         exportado: new Date().toISOString(),
-        instrucciones: "Copia este JSON y pégalo en el bot como variable GRUPOS_FB_CONFIG"
+        instrucciones: "Copia este JSON y pÃ©galo en el bot como variable GRUPOS_FB_CONFIG"
     };
 
     const blob = new Blob([JSON.stringify(config, null, 2)], {type: 'application/json'});
@@ -3711,39 +3779,39 @@ function guardarGruposFB() {
     a.download = 'grupos_facebook_config.json';
     a.click();
 
-    mostrarNotificacion(`✅ ${validos.length} grupos guardados. Descargado grupos_facebook_config.json para el bot.`);
+    mostrarNotificacion(`âœ… ${validos.length} grupos guardados. Descargado grupos_facebook_config.json para el bot.`);
 }
 
 
 // switchTab hooks are now inside the switchTab function directly
 
 
-// ═══════════════════════════════════════════════════════
-//  CONFIG PERSISTENTE — Grupos FB + Revolico por categoría
-// ═══════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+//  CONFIG PERSISTENTE â€” Grupos FB + Revolico por categorÃ­a
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
-// Categorías disponibles en Revolico
+// CategorÃ­as disponibles en Revolico
 const REVOLICO_CATS = [
-    "Computación > Accesorios",
-    "Computación > Computadoras",
-    "Computación > Impresoras y Tintas",
-    "Computación > Redes y Conectividad",
-    "Computación > Software",
-    "Electrónica > Audio y Video",
-    "Electrónica > Celulares y Tablets",
-    "Electrónica > Electrónica en General",
-    "Electrónica > Fotografía",
-    "Electrónica > Juegos y Consolas",
-    "Electrónica > TV y Monitores",
-    "Hogar y Jardín > Electrodomésticos",
-    "Hogar y Jardín > Energía Solar",
-    "Hogar y Jardín > Herramientas",
-    "Hogar y Jardín > Muebles",
-    "Vehículos > Accesorios",
+    "ComputaciÃ³n > Accesorios",
+    "ComputaciÃ³n > Computadoras",
+    "ComputaciÃ³n > Impresoras y Tintas",
+    "ComputaciÃ³n > Redes y Conectividad",
+    "ComputaciÃ³n > Software",
+    "ElectrÃ³nica > Audio y Video",
+    "ElectrÃ³nica > Celulares y Tablets",
+    "ElectrÃ³nica > ElectrÃ³nica en General",
+    "ElectrÃ³nica > FotografÃ­a",
+    "ElectrÃ³nica > Juegos y Consolas",
+    "ElectrÃ³nica > TV y Monitores",
+    "Hogar y JardÃ­n > ElectrodomÃ©sticos",
+    "Hogar y JardÃ­n > EnergÃ­a Solar",
+    "Hogar y JardÃ­n > Herramientas",
+    "Hogar y JardÃ­n > Muebles",
+    "VehÃ­culos > Accesorios",
     "Otros > General",
 ];
 
-// ── Revolico Config ──────────────────────────────────
+// â”€â”€ Revolico Config â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 function renderizarRevolicoConfig() {
     const cont = document.getElementById('listaRevolicoConfig');
@@ -3752,7 +3820,7 @@ function renderizarRevolicoConfig() {
     const config = JSON.parse(localStorage.getItem('revolicoConfig') || '{}');
 
     if (productos.length === 0) {
-        cont.innerHTML = '<p style="font-size:13px;color:var(--text-muted);text-align:center;padding:10px;">No hay productos cargados aún.</p>';
+        cont.innerHTML = '<p style="font-size:13px;color:var(--text-muted);text-align:center;padding:10px;">No hay productos cargados aÃºn.</p>';
         return;
     }
 
@@ -3764,7 +3832,7 @@ function renderizarRevolicoConfig() {
             <span style="flex:1;font-size:13px;font-weight:600;min-width:120px;">${p.nombre}</span>
             <select onchange="actualizarRevolicoCat(${p.id}, this.value)"
                 style="flex:2;min-width:180px;padding:8px 10px;border-radius:8px;border:1.5px solid var(--border-color);font-size:12px;background:var(--cream);">
-                <option value="">— No publicar en Revolico —</option>
+                <option value="">â€” No publicar en Revolico â€”</option>
                 ${REVOLICO_CATS.map(c => `<option value="${c}" ${c === catActual ? 'selected' : ''}>${c}</option>`).join('')}
             </select>
         </div>`;
@@ -3784,10 +3852,10 @@ function actualizarRevolicoCat(idProducto, categoria) {
 function guardarRevolicoConfig() {
     const config = JSON.parse(localStorage.getItem('revolicoConfig') || '{}');
     const asignados = Object.keys(config).length;
-    mostrarNotificacion(`✅ Config Revolico guardada (${asignados} productos asignados). Haz clic en ACTUALIZAR TIENDA para subir a GitHub.`);
+    mostrarNotificacion(`âœ… Config Revolico guardada (${asignados} productos asignados). Haz clic en ACTUALIZAR TIENDA para subir a GitHub.`);
 }
 
-// ── Grupos FB persistentes (carga al abrir pestaña) ──
+// â”€â”€ Grupos FB persistentes (carga al abrir pestaÃ±a) â”€â”€
 
 function cargarGruposFB() {
     const grupos = JSON.parse(localStorage.getItem('gruposFB') || '[]');
@@ -3795,12 +3863,12 @@ function cargarGruposFB() {
     renderizarRevolicoConfig();
 }
 
-// ── Patch guardarGruposFB para también actualizar localStorage limpio ──
+// â”€â”€ Patch guardarGruposFB para tambiÃ©n actualizar localStorage limpio â”€â”€
 const _origGuardarGrupos = guardarGruposFB;
 guardarGruposFB = function() {
     const grupos = JSON.parse(localStorage.getItem('gruposFB') || '[]');
     const validos = grupos.filter(g => g.url && g.url.includes('facebook.com'));
-    mostrarNotificacion(`✅ ${validos.length} grupos guardados. Haz clic en ACTUALIZAR TIENDA para que sean permanentes.`);
+    mostrarNotificacion(`âœ… ${validos.length} grupos guardados. Haz clic en ACTUALIZAR TIENDA para que sean permanentes.`);
     // FIX BUG #4: llamar al original para que descargue el JSON
     if (typeof _origGuardarGrupos === 'function') {
         try { _origGuardarGrupos(); } catch(e) { console.warn('Error en _origGuardarGrupos:', e); }
@@ -3809,19 +3877,19 @@ guardarGruposFB = function() {
 
 
 
-// ═══════════════════════════════════════════════════════
-//  OFERTA DEL DÍA
-// ═══════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+//  OFERTA DEL DÃA
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 function poblarSelectOfertaDia() {
     ['ofertaDiaSelect2'].forEach(selId => {
         const sel = document.getElementById(selId);
         if (!sel) return;
         const current = sel.value;
-        sel.innerHTML = '<option value="">— Sin oferta del día activa —</option>';
+        sel.innerHTML = '<option value="">â€” Sin oferta del dÃ­a activa â€”</option>';
         productos.forEach(p => {
             const opt = document.createElement('option');
             opt.value = p.id;
-            opt.textContent = p.nombre + ' — $' + p.precioActual.toFixed(2);
+            opt.textContent = p.nombre + ' â€” $' + p.precioActual.toFixed(2);
             sel.appendChild(opt);
         });
         const saved = localStorage.getItem('ofertaDiaId');
@@ -3833,13 +3901,13 @@ function poblarSelectOfertaDia() {
 
 function actualizarStatusOfertaDia() {
     const savedId = localStorage.getItem('ofertaDiaId');
-    const texto = localStorage.getItem('ofertaDiaTexto') || '🔥 OFERTA DEL DÍA';
+    const texto = localStorage.getItem('ofertaDiaTexto') || 'ðŸ”¥ OFERTA DEL DÃA';
     ['ofertaDiaStatus2'].forEach(id => {
         const el = document.getElementById(id);
         if (!el) return;
         if (savedId) {
             const p = productos.find(x => String(x.id) === String(savedId));
-            el.innerHTML = p ? '✅ Activa: <strong>' + escapeHtml(p.nombre) + '</strong> — Badge: "' + escapeHtml(texto) + '"' : '⚠️ Producto no encontrado';
+            el.innerHTML = p ? 'âœ… Activa: <strong>' + escapeHtml(p.nombre) + '</strong> â€” Badge: "' + escapeHtml(texto) + '"' : 'âš ï¸ Producto no encontrado';
         } else {
             el.textContent = 'Sin oferta activa.';
         }
@@ -3853,8 +3921,8 @@ function guardarOfertaDia2() {
     _guardarOfertaDiaDesde(sel, textoEl);
 }
 function _guardarOfertaDiaDesde(sel, textoEl) {
-    if (!sel || !sel.value) { mostrarNotificacion('⚠️ Selecciona un producto', 'error'); return; }
-    const texto = textoEl ? (textoEl.value.trim() || '🔥 OFERTA DEL DÍA') : '🔥 OFERTA DEL DÍA';
+    if (!sel || !sel.value) { mostrarNotificacion('âš ï¸ Selecciona un producto', 'error'); return; }
+    const texto = textoEl ? (textoEl.value.trim() || 'ðŸ”¥ OFERTA DEL DÃA') : 'ðŸ”¥ OFERTA DEL DÃA';
     const _ofId  = sel.value;
     const _ofTxt = texto;
     localStorage.setItem('ofertaDiaId', _ofId);
@@ -3863,7 +3931,7 @@ function _guardarOfertaDiaDesde(sel, textoEl) {
     actualizarStatusOfertaDia();
     renderizarProductos();
     renderizarMasVendidos();
-    mostrarNotificacion('🏷️ Oferta del Día activada');
+    mostrarNotificacion('ðŸ·ï¸ Oferta del DÃ­a activada');
     // Subir a GitHub para que TODOS los clientes la vean
     (async () => {
         const _u = localStorage.getItem('githubUser');
@@ -3876,7 +3944,7 @@ function _guardarOfertaDiaDesde(sel, textoEl) {
             existing.ofertaDiaTexto = _ofTxt;
             existing.ofertaDiaActualizado = new Date().toISOString();
             await subirArchivoAGitHub(_u, _r, _t, 'config.json', existing);
-            mostrarNotificacion('☁️ Oferta subida a GitHub — todos la verán', 'success');
+            mostrarNotificacion('â˜ï¸ Oferta subida a GitHub â€” todos la verÃ¡n', 'success');
         } catch(e) { console.warn('GitHub sync oferta:', e); }
     })();
 }
@@ -3887,7 +3955,7 @@ function desactivarOfertaDia() {
     poblarSelectOfertaDia();
     renderizarProductos();
     renderizarMasVendidos();
-    mostrarNotificacion('❌ Oferta del Día desactivada');
+    mostrarNotificacion('âŒ Oferta del DÃ­a desactivada');
     // Borrar en GitHub
     (async () => {
         const _u = localStorage.getItem('githubUser');
@@ -3906,7 +3974,7 @@ function getOfertaDiaId() {
     return localStorage.getItem('ofertaDiaId') || null;
 }
 function getOfertaDiaTexto() {
-    return localStorage.getItem('ofertaDiaTexto') || '🔥 OFERTA DEL DÍA';
+    return localStorage.getItem('ofertaDiaTexto') || 'ðŸ”¥ OFERTA DEL DÃA';
 }
 
 // Renderizar lista de productos agotados en el panel
@@ -3915,34 +3983,34 @@ function renderizarListaAgotados() {
     if (!el) return;
     const agotados = productos.filter(p => p.stock === 0);
     if (agotados.length === 0) {
-        el.innerHTML = '<p style="font-size:13px;color:#27ae60;text-align:center;">✅ No hay productos agotados actualmente.</p>';
+        el.innerHTML = '<p style="font-size:13px;color:#27ae60;text-align:center;">âœ… No hay productos agotados actualmente.</p>';
         return;
     }
-    // FIX BUG #8: sanitización anti-XSS
+    // FIX BUG #8: sanitizaciÃ³n anti-XSS
     el.innerHTML = agotados.map(p =>
         '<div style="display:flex;align-items:center;gap:10px;padding:10px;background:white;border-radius:10px;border:1px solid rgba(231,76,60,0.3);">' +
             '<img src="' + escapeAttr(p.imagen) + '" style="width:40px;height:40px;border-radius:8px;object-fit:cover;" onerror="this.style.display=\'none\'">' +
             '<div style="flex:1;"><div style="font-size:13px;font-weight:700;">' + escapeHtml(p.nombre) + '</div>' +
-            '<div style="font-size:11px;color:#e74c3c;font-weight:700;">📦 AGOTADO</div></div>' +
-            '<button class="btn btn-primary" onclick="abrirEditModal(' + safeNum(p.id) + ')" style="font-size:11px;padding:6px 10px;">✏️ Editar</button>' +
+            '<div style="font-size:11px;color:#e74c3c;font-weight:700;">ðŸ“¦ AGOTADO</div></div>' +
+            '<button class="btn btn-primary" onclick="abrirEditModal(' + safeNum(p.id) + ')" style="font-size:11px;padding:6px 10px;">âœï¸ Editar</button>' +
         '</div>'
     ).join('');
 }
 
-// ── Patch renderizarProductos to show agotado/oferta badges ──
+// â”€â”€ Patch renderizarProductos to show agotado/oferta badges â”€â”€
 const _origRenderProductosFinal = renderizarProductos;
 renderizarProductos = function() {
     const productosGrid = document.getElementById('productosGrid');
     if (!productosGrid) { _origRenderProductosFinal(); return; }
 
-    // Log de diagnóstico (solo en consola, no panel visual)
+    // Log de diagnÃ³stico (solo en consola, no panel visual)
     console.log('[TM RENDER]', {
         catSel: categoriaSeleccionada,
         subSel: subcategoriaSeleccionada,
         productos_total: Array.isArray(productos) ? productos.length : 'NO-ARRAY',
     });
 
-    // RESILIENCIA: si productos está vacío, intentar cargar de localStorage
+    // RESILIENCIA: si productos estÃ¡ vacÃ­o, intentar cargar de localStorage
     if (!Array.isArray(productos) || productos.length === 0) {
         try {
             const cached = JSON.parse(localStorage.getItem('productos') || '[]');
@@ -3957,11 +4025,11 @@ renderizarProductos = function() {
         ? productos
         : productos.filter(p => p.categoria === categoriaSeleccionada);
 
-    console.log('[TM RENDER] Tras filtro categoría:', productosFiltrados.length);
+    console.log('[TM RENDER] Tras filtro categorÃ­a:', productosFiltrados.length);
 
     if (categoriaSeleccionada !== 'Todas' && subcategoriaSeleccionada && subcategoriaSeleccionada !== 'Todas') {
         productosFiltrados = productosFiltrados.filter(p => p.subcategoria === subcategoriaSeleccionada);
-        console.log('[TM RENDER] Tras filtro subcategoría:', productosFiltrados.length);
+        console.log('[TM RENDER] Tras filtro subcategorÃ­a:', productosFiltrados.length);
     }
     if (_heroSearchActivo || _heroPrecioMin > 0 || _heroPrecioMax < Infinity) {
         const q = _heroSearchActivo;
@@ -3971,11 +4039,11 @@ renderizarProductos = function() {
                 (p.categoria||'').toLowerCase().includes(q);
             return matchQ;
         });
-        console.log('[TM RENDER] Tras filtro búsqueda:', productosFiltrados.length);
+        console.log('[TM RENDER] Tras filtro bÃºsqueda:', productosFiltrados.length);
     }
     console.log('[TM RENDER] FINAL productosFiltrados:', productosFiltrados.length);
 
-    // Ordenar: oferta del día primero
+    // Ordenar: oferta del dÃ­a primero
     const ofertaId = getOfertaDiaId();
     if (ofertaId) {
         productosFiltrados = productosFiltrados.sort((a, b) => {
@@ -3987,16 +4055,16 @@ renderizarProductos = function() {
 
     productosGrid.innerHTML = '';
     if (productosFiltrados.length === 0) {
-        // Mensaje contextual según la situación real
+        // Mensaje contextual segÃºn la situaciÃ³n real
         let mensaje;
         if (!Array.isArray(productos) || productos.length === 0) {
-            mensaje = '⏳ Cargando productos... Si esto persiste, recarga la página.';
+            mensaje = 'â³ Cargando productos... Si esto persiste, recarga la pÃ¡gina.';
         } else if (subcategoriaSeleccionada && subcategoriaSeleccionada !== 'Todas') {
-            mensaje = 'No hay productos en esta subcategoría aún.';
+            mensaje = 'No hay productos en esta subcategorÃ­a aÃºn.';
         } else if (_heroSearchActivo) {
-            mensaje = 'No hay productos que coincidan con tu búsqueda.';
+            mensaje = 'No hay productos que coincidan con tu bÃºsqueda.';
         } else {
-            mensaje = 'No hay productos en esta categoría aún.';
+            mensaje = 'No hay productos en esta categorÃ­a aÃºn.';
         }
         productosGrid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #999; padding: 60px 20px; font-size:15px;">' + escapeHtml(mensaje) + '</p>';
         return;
@@ -4009,19 +4077,19 @@ renderizarProductos = function() {
         card.className = 'producto-card' + (esAgotado ? ' card-agotado' : '');
         card.onclick = () => abrirDetalleProducto(producto.id);
         card.style.position = 'relative';
-        // Sanitización defensiva (escapeHtml/escapeAttr definidos al inicio del script)
+        // SanitizaciÃ³n defensiva (escapeHtml/escapeAttr definidos al inicio del script)
         const _id  = safeNum(producto.id);
         const _nom = escapeHtml(producto.nombre);
         const _des = escapeHtml(producto.descripcion);
         const _img = escapeAttr(producto.imagen);
         const _stk = safeNum(producto.stock);
         const _txt = escapeHtml(getOfertaDiaTexto());
-        // Para el onclick del botón Pedir: necesitamos un string seguro para JS
+        // Para el onclick del botÃ³n Pedir: necesitamos un string seguro para JS
         const _nomJS = (producto.nombre || '').replace(/[\\'"<>]/g, '');
         card.innerHTML =
             (esOfertaDia ? '<div class="badge-oferta-dia">' + _txt + '</div>' :
              esAgotado ? '<div class="badge-agotado">AGOTADO</div>' :
-             producto.masVendido ? '<div class="badge-vendido">🔥 Más Vendido</div>' : '') +
+             producto.masVendido ? '<div class="badge-vendido">ðŸ”¥ MÃ¡s Vendido</div>' : '') +
             '<div class="producto-image">' +
                 getMeGustaHTML(_id) +
                 '<img src="' + _img + '" alt="' + _nom + '" loading="lazy">' +
@@ -4035,8 +4103,8 @@ renderizarProductos = function() {
                 (producto.precioOriginal > 0 && producto.precioOriginal > producto.precioActual ? ' <span class="precio-ahorro">-$' + (parseFloat(producto.precioOriginal) - parseFloat(producto.precioActual)).toFixed(0) + '</span>' : '') +
             '</p>' +
             (esAgotado
-                ? '<div class="stock" style="color:#e74c3c;font-weight:700;">❌ Agotado</div><button class="btn btn-small btn-primary" disabled style="opacity:0.5;cursor:not-allowed;">No disponible</button>'
-                : (_stk <= 3 && _stk > 0 ? '<div class="stock stock-urgente">⚠️ ¡Solo quedan ' + _stk + '!</div>' : '<div class="stock">📦 Stock: ' + _stk + ' unidades</div>') +
+                ? '<div class="stock" style="color:#e74c3c;font-weight:700;">âŒ Agotado</div><button class="btn btn-small btn-primary" disabled style="opacity:0.5;cursor:not-allowed;">No disponible</button>'
+                : (_stk <= 3 && _stk > 0 ? '<div class="stock stock-urgente">âš ï¸ Â¡Solo quedan ' + _stk + '!</div>' : '<div class="stock">ðŸ“¦ Stock: ' + _stk + ' unidades</div>') +
                   (typeof renderCountdownHtml === 'function' ? renderCountdownHtml(_id) : '') +
                   '<button class="btn-pedir-card" data-nombre="' + _nom + '" onclick="event.stopPropagation(); tmComprar(event, ' + _id + ', this.dataset.nombre)" type="button"><span class="btn-pedir-wa-icon-sm"><svg viewBox="0 0 24 24" width="14" height="14" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg></span> Pedir</button>');
         productosGrid.appendChild(card);
@@ -4045,17 +4113,17 @@ renderizarProductos = function() {
 
 
 /* ============================================================
-   TIENDAMAX — PREMIUM UPGRADE PACK JS
-   Cursor · Progress bar · Toast glass · Placeholder animado
-   Separadores · Footer premium
+   TIENDAMAX â€” PREMIUM UPGRADE PACK JS
+   Cursor Â· Progress bar Â· Toast glass Â· Placeholder animado
+   Separadores Â· Footer premium
    ============================================================ */
 
 // ===== CURSOR DORADO ELIMINADO =====
 // El cursor custom dorado fue eliminado: ocultaba el cursor del sistema
-// cuando algo fallaba y no se veía bien en todos los modos. Ahora se usa
+// cuando algo fallaba y no se veÃ­a bien en todos los modos. Ahora se usa
 // el cursor nativo del navegador, que siempre funciona.
 (function removeOldCursor() {
-    // Limpiar el elemento si quedó de una versión anterior cacheada
+    // Limpiar el elemento si quedÃ³ de una versiÃ³n anterior cacheada
     const old = document.getElementById('tm-cursor');
     if (old) old.remove();
 })();
@@ -4077,7 +4145,7 @@ renderizarProductos = function() {
     update();
 })();
 
-// ===== TOAST GLASSMORPHISM — reemplaza mostrarNotificacion =====
+// ===== TOAST GLASSMORPHISM â€” reemplaza mostrarNotificacion =====
 (function overrideToast() {
     let toastEl = null;
     let hideTimer = null;
@@ -4095,12 +4163,12 @@ renderizarProductos = function() {
         const t = getToast();
         clearTimeout(hideTimer);
 
-        // Ícono
-        const icon = tipo === 'error' ? '✕' : tipo === 'info' ? 'i' : '✓';
+        // Ãcono
+        const icon = tipo === 'error' ? 'âœ•' : tipo === 'info' ? 'i' : 'âœ“';
         t.className = 'tm-toast' + (tipo === 'error' ? ' error' : '');
         t.innerHTML = `<span class="tm-toast-icon">${icon}</span><span>${mensaje}</span>`;
 
-        // Forzar reflow para reiniciar animación
+        // Forzar reflow para reiniciar animaciÃ³n
         t.classList.remove('show', 'hide');
         void t.offsetWidth;
         t.classList.add('show');
@@ -4112,14 +4180,14 @@ renderizarProductos = function() {
     };
 })();
 
-// ===== PLACEHOLDER ANIMADO EN BÚSQUEDA =====
+// ===== PLACEHOLDER ANIMADO EN BÃšSQUEDA =====
 (function initPlaceholder() {
     const frases = [
         'Buscar productos...',
         'WiFi, inversores...',
         'Celulares, cargadores...',
-        'Tecnología premium...',
-        'Energía solar...'
+        'TecnologÃ­a premium...',
+        'EnergÃ­a solar...'
     ];
     let idx = 0;
 
@@ -4127,7 +4195,7 @@ renderizarProductos = function() {
         const input = document.getElementById('heroSearchInput');
         if (!input || document.activeElement === input || input.value) return;
         idx = (idx + 1) % frases.length;
-        // Fade out → cambiar → fade in via style
+        // Fade out â†’ cambiar â†’ fade in via style
         input.style.transition = 'opacity 0.4s';
         input.style.opacity = '0';
         setTimeout(() => {
@@ -4136,7 +4204,7 @@ renderizarProductos = function() {
         }, 400);
     }
 
-    // Esperar a que el DOM esté listo
+    // Esperar a que el DOM estÃ© listo
     function startRotation() {
         const input = document.getElementById('heroSearchInput');
         if (!input) { setTimeout(startRotation, 500); return; }
@@ -4148,12 +4216,12 @@ renderizarProductos = function() {
 
 
 
-/* ════════════════════════════════════════════════════
-   PREMIUM UPGRADE PACK 2 — JS
-   Fly-to-cart · Skeleton loading · Analytics counter
-═════════════════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   PREMIUM UPGRADE PACK 2 â€” JS
+   Fly-to-cart Â· Skeleton loading Â· Analytics counter
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
-// ── 1. FLY-TO-CART: partícula que vuela al ícono del carrito ──
+// â”€â”€ 1. FLY-TO-CART: partÃ­cula que vuela al Ã­cono del carrito â”€â”€
 function flyToCart(originEl) {
     const cartBtn = document.querySelector('.cart-icon-btn');
     if (!cartBtn || !originEl) return;
@@ -4182,7 +4250,7 @@ function flyToCart(originEl) {
         const t = Math.min((now - start) / duration, 1);
         // Ease in-out cubic
         const e = t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t+2,3)/2;
-        // Arc: parábola en Y
+        // Arc: parÃ¡bola en Y
         const arc = -Math.sin(Math.PI * t) * 90;
 
         particle.style.transform = `translate(${dx * e}px, ${dy * e + arc}px) scale(${1 - t * 0.4})`;
@@ -4202,7 +4270,7 @@ function flyToCart(originEl) {
     requestAnimationFrame(step);
 }
 
-// ── FLY-TO-CART: función global que llama botones de comprar ──
+// â”€â”€ FLY-TO-CART: funciÃ³n global que llama botones de comprar â”€â”€
 function tmComprar(event, id, nombre) {
     const btn = (event && (event.currentTarget || event.target)) || null;
     if (btn) requestAnimationFrame(() => flyToCart(btn));
@@ -4212,10 +4280,10 @@ function tmComprar(event, id, nombre) {
     if (_prod) {
         const precio = parseFloat(_prod.precioActual).toFixed(2);
         const msg = encodeURIComponent(
-            `¡Hola! Me gustaría hacer este pedido:\n\n` +
-            `• ${_prod.nombre} x1 — $${precio} USD\n\n` +
-            `💰 Total: $${precio} USD\n\n` +
-            `¿Está disponible?`
+            `Â¡Hola! Me gustarÃ­a hacer este pedido:\n\n` +
+            `â€¢ ${_prod.nombre} x1 â€” $${precio} USD\n\n` +
+            `ðŸ’° Total: $${precio} USD\n\n` +
+            `Â¿EstÃ¡ disponible?`
         );
         window.open(`https://wa.me/${getNumeroWhatsApp()}?text=${msg}`, '_blank', 'noopener,noreferrer');
     } else if (typeof contactarProducto === 'function') {
@@ -4230,7 +4298,7 @@ agregarAlCarrito = function(id, _unused, originEl) {
     if (originEl) requestAnimationFrame(() => flyToCart(originEl));
 };
 
-// ── 2. SKELETON LOADING en grids de productos ──
+// â”€â”€ 2. SKELETON LOADING en grids de productos â”€â”€
 function mostrarSkeletons(containerId, cantidad = 6) {
     const container = document.getElementById(containerId);
     if (!container) return;
@@ -4248,7 +4316,7 @@ function mostrarSkeletons(containerId, cantidad = 6) {
     container.innerHTML = skeletonHTML;
 }
 
-// ── 3. ANALYTICS COUNTER ANIMADO ──
+// â”€â”€ 3. ANALYTICS COUNTER ANIMADO â”€â”€
 function animarContador(el, target, duration = 1200, prefix = '', suffix = '') {
     const isFloat = String(target).includes('.');
     const decimals = isFloat ? 2 : 0;
@@ -4280,7 +4348,7 @@ stat = function(icon, label, value, color) {
         '<div style="font-size:11px;color:#999;text-transform:uppercase;letter-spacing:0.5px;">' + label + '</div>' +
         '</div>';
 
-    // Animar después del render
+    // Animar despuÃ©s del render
     if (isNumeric) {
         setTimeout(() => {
             const el = document.getElementById(id);
@@ -4298,7 +4366,7 @@ stat = function(icon, label, value, color) {
 };
 
 
-// ── Buscador y filtro de categorías en Ventas ────────────────────
+// â”€â”€ Buscador y filtro de categorÃ­as en Ventas â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 let _ventaCatActiva = '';
 
 function filtrarProductosVenta() {
@@ -4348,7 +4416,7 @@ function seleccionarProductoVenta(id) {
         const nom = document.getElementById('ventaSelNombre');
         if (nom) nom.textContent = p.nombre;
         const inf = document.getElementById('ventaSelInfo');
-        if (inf) inf.innerHTML = `$${p.precioActual} · Stock: ${p.stock}${p.comision ? ` · 💰 Comisión: $${p.comision}` : ''}`;
+        if (inf) inf.innerHTML = `$${p.precioActual} Â· Stock: ${p.stock}${p.comision ? ` Â· ðŸ’° ComisiÃ³n: $${p.comision}` : ''}`;
     }
 
     const cantEl = document.getElementById('ventaCantidad');
@@ -4372,18 +4440,18 @@ function limpiarBuscadorVenta() {
     filtrarProductosVenta();
 }
 
-// ══════════════════════════════════════════════════════════════════
-//  TIENDAMAX — PREMIUM PACK v2
-//  1. Vistas por producto (público + panel admin)
-//  2. Dashboard de ventas con gráfica
-//  3. Badges "Últimas X unidades" en tarjetas de cliente
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+//  TIENDAMAX â€” PREMIUM PACK v2
+//  1. Vistas por producto (pÃºblico + panel admin)
+//  2. Dashboard de ventas con grÃ¡fica
+//  3. Badges "Ãšltimas X unidades" en tarjetas de cliente
 //  4. Alerta de stock bajo en tab Gestionar
 //  5. Animaciones fade-in al scroll
-//  6. Quick View (vista rápida sin abrir detalle)
+//  6. Quick View (vista rÃ¡pida sin abrir detalle)
 //  7. Exportar ventas a CSV
-// ══════════════════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
-// ── 1. VISTAS POR PRODUCTO ─────────────────────────────────────────
+// â”€â”€ 1. VISTAS POR PRODUCTO â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function _cargarVistas() {
     return JSON.parse(localStorage.getItem('vistasProd') || '{}');
 }
@@ -4425,15 +4493,15 @@ abrirDetalleProducto = function(id) {
         const catEl = document.getElementById('detailProductCategory');
         if (catEl && catEl.parentNode) catEl.parentNode.appendChild(vistaEl);
     }
-    vistaEl.innerHTML = `👁️ ${total.toLocaleString()} vista${total !== 1 ? 's' : ''}`;
+    vistaEl.innerHTML = `ðŸ‘ï¸ ${total.toLocaleString()} vista${total !== 1 ? 's' : ''}`;
 };
 
-// ── 2. DASHBOARD DE VENTAS CON GRÁFICA ────────────────────────────
+// â”€â”€ 2. DASHBOARD DE VENTAS CON GRÃFICA â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function renderizarDashboardVentas(contenedor) {
     const ventas = cargarVentas();
     if (ventas.length === 0) return '';
 
-    // Agrupar por día (últimos 14 días)
+    // Agrupar por dÃ­a (Ãºltimos 14 dÃ­as)
     const hoy = new Date();
     const dias = [];
     for (let i = 13; i >= 0; i--) {
@@ -4454,7 +4522,7 @@ function renderizarDashboardVentas(contenedor) {
         // pero d.label es "25/05". Hay que extraer dd/mm correctamente.
         let fechaCorta = '';
         if (v.fecha) {
-            // Intentar match con formato Date estándar primero
+            // Intentar match con formato Date estÃ¡ndar primero
             const d_parsed = new Date(v.fecha);
             if (!isNaN(d_parsed.getTime())) {
                 const dd = String(d_parsed.getDate()).padStart(2, '0');
@@ -4478,7 +4546,7 @@ function renderizarDashboardVentas(contenedor) {
 
     const maxTotal = Math.max(...dias.map(d => d.total), 1);
 
-    // Top 5 productos más vendidos
+    // Top 5 productos mÃ¡s vendidos
     const topProd = {};
     ventas.forEach(v => {
         if (!topProd[v.producto]) topProd[v.producto] = { unidades: 0, ganancia: 0 };
@@ -4495,16 +4563,16 @@ function renderizarDashboardVentas(contenedor) {
     const totalVentas   = ventas.reduce((s, v) => s + v.total, 0);
     const totalGanancia = ventas.reduce((s, v) => s + (v.ganancia || 0), 0);
     const totalUnidades = ventas.reduce((s, v) => s + (v.cantidad || 1), 0);
-    // Paginación
+    // PaginaciÃ³n
     const totalPaginas2 = Math.max(1, Math.ceil(ventas.length / _VENTAS_POR_PAGINA));
     const ventasPagina  = ventas.slice(_ventasPagina * _VENTAS_POR_PAGINA, (_ventasPagina + 1) * _VENTAS_POR_PAGINA);
 
     return `
     <div style="margin-bottom:20px;">
         <h4 class="admin-dash-header">
-            📊 Dashboard de ventas
+            ðŸ“Š Dashboard de ventas
             <button onclick="exportarVentasCSV()" type="button" class="admin-btn-sm outline">
-                ⬇️ Exportar CSV
+                â¬‡ï¸ Exportar CSV
             </button>
         </h4>
 
@@ -4524,9 +4592,9 @@ function renderizarDashboardVentas(contenedor) {
             </div>
         </div>
 
-        <!-- Gráfica de barras últimos 14 días -->
+        <!-- GrÃ¡fica de barras Ãºltimos 14 dÃ­as -->
         <div class="admin-chart-box">
-            <div class="admin-chart-title">Ventas por día (últimos 14 días)</div>
+            <div class="admin-chart-title">Ventas por dÃ­a (Ãºltimos 14 dÃ­as)</div>
             <div class="admin-chart-bars">
                 ${dias.map(d => {
                     const h = Math.max(4, Math.round((d.total / maxTotal) * 70));
@@ -4545,7 +4613,7 @@ function renderizarDashboardVentas(contenedor) {
         <!-- Top 5 productos por ventas -->
         ${topList.length > 0 ? `
         <div style="margin-bottom:14px;">
-            <div class="admin-chart-title">🏆 Más vendidos</div>
+            <div class="admin-chart-title">ðŸ† MÃ¡s vendidos</div>
             ${topList.map(([nombre, d], i) => `
             <div class="admin-top-item">
                 <span class="admin-top-rank">${i+1}</span>
@@ -4558,13 +4626,13 @@ function renderizarDashboardVentas(contenedor) {
         <!-- Top productos por vistas -->
         ${topVistas.length > 0 ? `
         <div>
-            <div class="admin-chart-title">👁️ Más vistos</div>
+            <div class="admin-chart-title">ðŸ‘ï¸ MÃ¡s vistos</div>
             ${topVistas.map(({ producto: p, vistas }, i) => `
             <div class="admin-top-item">
                 <span class="admin-top-rank">${i+1}</span>
                 ${p.imagen ? `<img src="${p.imagen}" class="admin-top-thumb" onerror="this.style.display='none'">` : ''}
                 <span class="admin-top-name">${p.nombre}</span>
-                <span class="admin-top-value blue">👁️ ${vistas.toLocaleString()}</span>
+                <span class="admin-top-value blue">ðŸ‘ï¸ ${vistas.toLocaleString()}</span>
             </div>`).join('')}
         </div>` : ''}
     </div>`;
@@ -4586,7 +4654,7 @@ renderizarVentas = function() {
     }
 };
 
-// ── 4. ALERTA DE STOCK BAJO EN TAB GESTIONAR ──────────────────────
+// â”€â”€ 4. ALERTA DE STOCK BAJO EN TAB GESTIONAR â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function actualizarBadgeStockBajo() {
     const btn = document.querySelector('.tab-btn[data-tab="manage-products"]');
     if (!btn) return;
@@ -4618,10 +4686,10 @@ guardarProductos = function() {
     setTimeout(actualizarBadgeStockBajo, 50);
 };
 
-// ── 5. ANIMACIONES FADE-IN AL SCROLL ──────────────────────────────
+// â”€â”€ 5. ANIMACIONES FADE-IN AL SCROLL â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function initScrollAnimations() {
     if (typeof IntersectionObserver === 'undefined') return;
-    // FIX: evitar duplicación de <style> con cada render
+    // FIX: evitar duplicaciÃ³n de <style> con cada render
     if (document.getElementById('tm-scroll-anim-style')) return;
     const style = document.createElement('style');
     style.id = 'tm-scroll-anim-style';
@@ -4654,7 +4722,7 @@ function initScrollAnimations() {
     mutObs.observe(grid, { childList: true, subtree: true });
 }
 
-// ── 6. EXPORTAR VENTAS A CSV ───────────────────────────────────────
+// â”€â”€ 6. EXPORTAR VENTAS A CSV â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 function mostrarVistaMeGusta() {
     // Inyectar estilos para que las cards sean siempre visibles
@@ -4696,12 +4764,12 @@ function mostrarVistaMeGusta() {
     const vacioEl  = document.getElementById('meGustaVacio');
     if (!grid) return;
 
-    // Usar siempre el array global productos (más confiable que localStorage)
+    // Usar siempre el array global productos (mÃ¡s confiable que localStorage)
     const cat = (typeof productos !== 'undefined' && productos.length > 0)
         ? productos
         : JSON.parse(localStorage.getItem('productos') || '[]');
 
-    // Si aún no hay catálogo, esperar hasta 5 segundos
+    // Si aÃºn no hay catÃ¡logo, esperar hasta 5 segundos
     if (cat.length === 0 && wishlist.length > 0) {
         if (statsEl) statsEl.textContent = 'Cargando...';
         grid.style.display = 'none';
@@ -4712,7 +4780,7 @@ function mostrarVistaMeGusta() {
         } else {
             // FIX BUG #25: dar feedback al usuario si no se pudo cargar
             mostrarVistaMeGusta._t = 0;
-            if (statsEl) statsEl.textContent = 'No se pudo cargar el catálogo. Recarga la página.';
+            if (statsEl) statsEl.textContent = 'No se pudo cargar el catÃ¡logo. Recarga la pÃ¡gina.';
             console.warn('[mostrarVistaMeGusta] No se pudo cargar tras 7 intentos.');
         }
         return;
@@ -4740,7 +4808,7 @@ function mostrarVistaMeGusta() {
             card.className = 'producto-card' + (esAgotado ? ' card-agotado' : '');
             card.onclick = () => abrirDetalleProducto(producto.id);
             card.style.position = 'relative';
-            // Sanitización defensiva anti-XSS
+            // SanitizaciÃ³n defensiva anti-XSS
             const _id  = safeNum(producto.id);
             const _nom = escapeHtml(producto.nombre);
             const _des = escapeHtml(producto.descripcion || '');
@@ -4748,15 +4816,15 @@ function mostrarVistaMeGusta() {
             const _stk = safeNum(producto.stock);
             const _txt = escapeHtml(getOfertaDiaTexto());
             const stockHTML = esAgotado
-                ? '<div class="stock" style="color:#e74c3c;font-weight:700;">❌ Agotado</div>'
+                ? '<div class="stock" style="color:#e74c3c;font-weight:700;">âŒ Agotado</div>'
                 : (_stk <= 3
-                    ? '<div class="stock stock-urgente">⚠️ ¡Solo quedan ' + _stk + '!</div>'
-                    : '<div class="stock">📦 Stock: ' + _stk + ' unidades</div>') +
-                  '<button class="btn-pedir-card" data-nombre="' + _nom + '" onclick="event.stopPropagation();tmComprar(event,' + _id + ',this.dataset.nombre)">🛒 Pedir</button>';
+                    ? '<div class="stock stock-urgente">âš ï¸ Â¡Solo quedan ' + _stk + '!</div>'
+                    : '<div class="stock">ðŸ“¦ Stock: ' + _stk + ' unidades</div>') +
+                  '<button class="btn-pedir-card" data-nombre="' + _nom + '" onclick="event.stopPropagation();tmComprar(event,' + _id + ',this.dataset.nombre)">ðŸ›’ Pedir</button>';
             card.innerHTML =
                 (esOfertaDia ? '<div class="badge-oferta-dia">' + _txt + '</div>' :
                  esAgotado   ? '<div class="badge-agotado">AGOTADO</div>' :
-                 producto.masVendido ? '<div class="badge-vendido">🔥 Más Vendido</div>' : '') +
+                 producto.masVendido ? '<div class="badge-vendido">ðŸ”¥ MÃ¡s Vendido</div>' : '') +
                 '<div class="producto-image">' +
                     getMeGustaHTML(_id) +
                     '<img src="' + _img + '" alt="' + _nom + '" loading="lazy">' +
@@ -4782,9 +4850,9 @@ function cerrarVistaMeGusta() {
     mostrarVistaInicio();
 }
 
-// ══════════════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 //  VISTA: MIS PEDIDOS (historial del cliente)
-// ══════════════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 function guardarPedidoCliente(itemsCarrito) {
     const pedidos = JSON.parse(localStorage.getItem('pedidos_cliente_v1') || '[]');
     const total   = itemsCarrito.reduce((s, i) => s + i.precio * i.cantidad, 0);
@@ -4823,19 +4891,19 @@ function mostrarVistaPedidos() {
         if (listaEl) listaEl.innerHTML = pedidos.map(p => `
           <div class="pedido-card">
             <div class="pedido-card-header">
-              <span class="pedido-fecha">📅 ${p.fecha}</span>
+              <span class="pedido-fecha">ðŸ“… ${p.fecha}</span>
               <span class="pedido-total">$${p.total.toFixed(2)} USD</span>
             </div>
             <div class="pedido-items">
               ${p.items.map(i => `
                 <div class="pedido-item">
                   <span class="pedido-item-nombre">${i.nombre}</span>
-                  <span class="pedido-item-qty">×${i.cantidad}</span>
+                  <span class="pedido-item-qty">Ã—${i.cantidad}</span>
                   <span class="pedido-item-precio">$${(i.precio * i.cantidad).toFixed(2)}</span>
                 </div>
               `).join('')}
             </div>
-            <button class="pedido-btn-repetir" onclick="repetirPedido(${p.id})">🔄 Pedir de nuevo</button>
+            <button class="pedido-btn-repetir" onclick="repetirPedido(${p.id})">ðŸ”„ Pedir de nuevo</button>
           </div>
         `).join('');
     }
@@ -4861,10 +4929,10 @@ function repetirPedido(pedidoId) {
 }
 
 
-// ══════════════════════════════════════════════════════════════
-//  DEEP LINKS — Abrir producto directo desde URL compartida
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+//  DEEP LINKS â€” Abrir producto directo desde URL compartida
 //  Ejemplo: tiendamax.org/#producto-1777923552923
-// ══════════════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 function _procesarDeepLink() {
     const hash = window.location.hash;
     if (!hash.startsWith('#producto-')) return;
@@ -4881,7 +4949,7 @@ function _procesarDeepLink() {
         const local = JSON.parse(localStorage.getItem('productos') || '[]');
         const pLocal = local.find(x => x.id === id || String(x.id) === String(id));
         if (pLocal) {
-            // Inyectar en el array global si está vacío y abrir
+            // Inyectar en el array global si estÃ¡ vacÃ­o y abrir
             if (typeof productos !== 'undefined' && productos.length === 0) {
                 productos.push(...local);
             }
@@ -4909,12 +4977,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// ══════════════════════════════════════════════════════════════
-//  NOTIFICACIÓN DE CARRITO ABANDONADO
-//  Lógica: si hay productos en el carrito y el usuario lleva
-//  más de 2 horas sin interactuar, se envía una notificación push.
-//  Se usa el SW existente — no requiere backend.
-// ══════════════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+//  NOTIFICACIÃ“N DE CARRITO ABANDONADO
+//  LÃ³gica: si hay productos en el carrito y el usuario lleva
+//  mÃ¡s de 2 horas sin interactuar, se envÃ­a una notificaciÃ³n push.
+//  Se usa el SW existente â€” no requiere backend.
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 (function initCarritoAbandonado() {
     const DELAY_MS  = 2 * 60 * 60 * 1000; // 2 horas
     const KEY_TIMER = 'carrito_notif_timer';
@@ -4938,7 +5006,7 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.removeItem(KEY_SENT);
 
         _timer = setTimeout(async () => {
-            // Verificar que aún hay carrito y no se envió ya
+            // Verificar que aÃºn hay carrito y no se enviÃ³ ya
             const carritoActual = JSON.parse(localStorage.getItem('carrito_v2') || '{"items":[]}').items || [];
             if (carritoActual.length === 0) return;
             if (localStorage.getItem(KEY_SENT)) return;
@@ -4946,12 +5014,12 @@ document.addEventListener('DOMContentLoaded', () => {
             const total = carritoActual.reduce((s, i) => s + i.precio * i.cantidad, 0);
             const nombres = carritoActual.slice(0, 2).map(i => i.nombre.substring(0, 20)).join(', ');
             const cuerpo  = carritoActual.length === 1
-                ? '¡Tienes ' + carritoActual[0].nombre.substring(0, 30) + ' esperándote! ($' + total.toFixed(0) + ' USD)'
-                : '¡Tienes ' + carritoActual.length + ' productos en tu carrito! ' + nombres + '... ($' + total.toFixed(0) + ' USD)';
+                ? 'Â¡Tienes ' + carritoActual[0].nombre.substring(0, 30) + ' esperÃ¡ndote! ($' + total.toFixed(0) + ' USD)'
+                : 'Â¡Tienes ' + carritoActual.length + ' productos en tu carrito! ' + nombres + '... ($' + total.toFixed(0) + ' USD)';
 
             try {
                 const reg = await navigator.serviceWorker.ready;
-                await reg.showNotification('🛒 ¿Olvidaste algo?', {
+                await reg.showNotification('ðŸ›’ Â¿Olvidaste algo?', {
                     body: cuerpo,
                     icon: '/icons/icon-192.png',
                     badge: '/icons/icon-192.png',
@@ -4960,13 +5028,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     tag: 'carrito-abandonado',
                     renotify: false,
                     actions: [
-                        { action: 'ver', title: '🛒 Ver carrito' },
-                        { action: 'cerrar', title: 'Más tarde' }
+                        { action: 'ver', title: 'ðŸ›’ Ver carrito' },
+                        { action: 'cerrar', title: 'MÃ¡s tarde' }
                     ]
                 });
                 localStorage.setItem(KEY_SENT, '1');
             } catch(err) {
-                console.log('Notificación carrito:', err);
+                console.log('NotificaciÃ³n carrito:', err);
             }
         }, DELAY_MS);
     }
@@ -4978,7 +5046,7 @@ document.addEventListener('DOMContentLoaded', () => {
         programarNotificacion();
     };
 
-    // Al cargar la página: verificar si hay un timer pendiente del pasado
+    // Al cargar la pÃ¡gina: verificar si hay un timer pendiente del pasado
     window.addEventListener('load', () => {
         const disparoGuardado = parseInt(localStorage.getItem(KEY_TIMER) || '0');
         if (disparoGuardado && Date.now() < disparoGuardado && carrito && carrito.length > 0) {
@@ -4989,7 +5057,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Al abrir el carrito: cancelar el timer (el usuario está activo)
+    // Al abrir el carrito: cancelar el timer (el usuario estÃ¡ activo)
     const _abrirOriginal = abrirCarrito;
     window.abrirCarrito = function() {
         cancelarTimer();
@@ -5000,25 +5068,25 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 })();
 
-// ── REGISTRO DEL SERVICE WORKER + NOTIFICACIONES PUSH ──────────────
+// â”€â”€ REGISTRO DEL SERVICE WORKER + NOTIFICACIONES PUSH â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // NOTA: El SW se registra desde index.html (con auto-reload).
-// Aquí solo manejamos el banner de permiso para notificaciones.
+// AquÃ­ solo manejamos el banner de permiso para notificaciones.
 (function initPush() {
     if (!('serviceWorker' in navigator)) return;
 
-    // ═══════════════════════════════════════════════════════
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
     //  PRE-PROMPT INTELIGENTE para notificaciones
-    //  Se muestra SOLO en momentos de alta intención:
-    //    • Tras 30s de navegación activa (no al cargar)
-    //    • Tras marcar 2 ❤️ Me Gusta
-    //    • Tras hacer scroll a la 2ª pantalla
-    //    • Tras abrir 3 detalles de productos
+    //  Se muestra SOLO en momentos de alta intenciÃ³n:
+    //    â€¢ Tras 30s de navegaciÃ³n activa (no al cargar)
+    //    â€¢ Tras marcar 2 â¤ï¸ Me Gusta
+    //    â€¢ Tras hacer scroll a la 2Âª pantalla
+    //    â€¢ Tras abrir 3 detalles de productos
     //
     //  NO se muestra si:
-    //    • Ya tiene permiso granted
-    //    • Está denied (no se puede repreguntar el nativo)
-    //    • El usuario dijo "Ahora no" hace menos de X días
-    // ═══════════════════════════════════════════════════════
+    //    â€¢ Ya tiene permiso granted
+    //    â€¢ EstÃ¡ denied (no se puede repreguntar el nativo)
+    //    â€¢ El usuario dijo "Ahora no" hace menos de X dÃ­as
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
     let _bannerYaMostrado = false;
     function _mostrarBannerPushAhora() {
         if (_bannerYaMostrado) return;
@@ -5027,7 +5095,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Si ya tiene permiso concedido, no molestar
         if (Notification.permission === 'granted') return;
 
-        // Si el usuario cerró el banner antes, esperar el tiempo configurado
+        // Si el usuario cerrÃ³ el banner antes, esperar el tiempo configurado
         const pospuesto = parseInt(localStorage.getItem('tm_push_pospuesto') || '0');
         if (Date.now() < pospuesto) return;
 
@@ -5037,17 +5105,17 @@ document.addEventListener('DOMContentLoaded', () => {
         const anterior = document.getElementById('tm-push-banner-wrap');
         if (anterior) anterior.remove();
 
-        // Mensaje según el estado del permiso
+        // Mensaje segÃºn el estado del permiso
         const estaDenegado = Notification.permission === 'denied';
-        const titulo  = estaDenegado ? '🔔 Notificaciones bloqueadas' : '🔔 ¿Quieres avisos de ofertas?';
+        const titulo  = estaDenegado ? 'ðŸ”” Notificaciones bloqueadas' : 'ðŸ”” Â¿Quieres avisos de ofertas?';
         const cuerpo  = estaDenegado
-            ? 'Para reactivarlas: tres puntos del navegador → Ajustes → Notificaciones → Permitir'
+            ? 'Para reactivarlas: tres puntos del navegador â†’ Ajustes â†’ Notificaciones â†’ Permitir'
             : 'Te avisamos cuando bajen los precios o lleguen productos nuevos. Sin spam.';
-        const btnTexto = estaDenegado ? 'Cómo activarlas' : '🔔 Avísame';
+        const btnTexto = estaDenegado ? 'CÃ³mo activarlas' : 'ðŸ”” AvÃ­same';
 
         const b = document.createElement('div');
         b.id = 'tm-push-banner-wrap';
-        b.innerHTML = `<div id="tm-push-banner" style="background:#1a1a1a;border:1.5px solid #C9A96E;border-radius:14px;padding:14px 18px;display:flex;align-items:center;gap:12px;box-shadow:0 8px 32px rgba(0,0,0,0.5);font-family:sans-serif;animation:slideUpBanner .35s ease"><span style="font-size:26px;flex-shrink:0">🔔</span><div style="flex:1;min-width:0"><div style="font-weight:700;font-size:14px;color:#C9A96E;margin-bottom:2px">${escapeHtml(titulo)}</div><div style="font-size:12px;color:#aaa;line-height:1.3">${escapeHtml(cuerpo)}</div></div><div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0"><button id="tm-push-si" style="background:#C9A96E;color:#000;border:none;border-radius:8px;padding:7px 12px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap">${escapeHtml(btnTexto)}</button><button id="tm-push-no" style="background:none;border:none;color:#666;font-size:11px;cursor:pointer;text-align:center">Ahora no</button></div></div>`;
+        b.innerHTML = `<div id="tm-push-banner" style="background:#1a1a1a;border:1.5px solid #C9A96E;border-radius:14px;padding:14px 18px;display:flex;align-items:center;gap:12px;box-shadow:0 8px 32px rgba(0,0,0,0.5);font-family:sans-serif;animation:slideUpBanner .35s ease"><span style="font-size:26px;flex-shrink:0">ðŸ””</span><div style="flex:1;min-width:0"><div style="font-weight:700;font-size:14px;color:#C9A96E;margin-bottom:2px">${escapeHtml(titulo)}</div><div style="font-size:12px;color:#aaa;line-height:1.3">${escapeHtml(cuerpo)}</div></div><div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0"><button id="tm-push-si" style="background:#C9A96E;color:#000;border:none;border-radius:8px;padding:7px 12px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap">${escapeHtml(btnTexto)}</button><button id="tm-push-no" style="background:none;border:none;color:#666;font-size:11px;cursor:pointer;text-align:center">Ahora no</button></div></div>`;
         if (!document.getElementById('slideUpBannerStyle')) {
             const s = document.createElement('style');
             s.id = 'slideUpBannerStyle';
@@ -5059,21 +5127,21 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('tm-push-si').onclick = async () => {
             b.remove();
             if (estaDenegado) {
-                // Mostrar guía para Android
-                alert('Para activar las notificaciones:\n\n1. Toca los 3 puntos del navegador\n2. Ajustes → Configuración del sitio\n3. Notificaciones → Permitir');
+                // Mostrar guÃ­a para Android
+                alert('Para activar las notificaciones:\n\n1. Toca los 3 puntos del navegador\n2. Ajustes â†’ ConfiguraciÃ³n del sitio\n3. Notificaciones â†’ Permitir');
                 return;
             }
             const perm = await Notification.requestPermission();
             if (perm === 'granted') {
                 const reg = await navigator.serviceWorker.ready;
-                reg.showNotification('✅ TiendaMax activado', {
+                reg.showNotification('âœ… TiendaMax activado', {
                     body: 'Te avisaremos de ofertas y productos nuevos.',
                     icon: '/icons/icon-192.png',
                     badge: '/icons/icon-192.png',
                     vibrate: [200, 100, 200]
                 });
                 // FIX: registrar token FCM tras conceder permiso.
-                // Cargar config de localStorage o de config.json si no está local.
+                // Cargar config de localStorage o de config.json si no estÃ¡ local.
                 (async () => {
                     try {
                         let fbConfig = null;
@@ -5094,7 +5162,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             }
                         }
                         if (fbConfig && fbConfig.projectId) {
-                            console.log('[FCM] Iniciando FCM tras permitir notificación...');
+                            console.log('[FCM] Iniciando FCM tras permitir notificaciÃ³n...');
                             inicializarFirebaseFCMClient(fbConfig);
                         } else {
                             console.error('[FCM] No se pudo cargar firebaseConfig');
@@ -5104,21 +5172,21 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 })();
             } else if (perm === 'denied') {
-                // Si lo denegó ahora, volver a preguntar en 6 horas
+                // Si lo denegÃ³ ahora, volver a preguntar en 6 horas
                 localStorage.setItem('tm_push_pospuesto', Date.now() + 6 * 60 * 60 * 1000);
             }
         };
 
         document.getElementById('tm-push-no').onclick = () => {
             b.remove();
-            // Pospuesto: cuántas veces lo ha rechazado
+            // Pospuesto: cuÃ¡ntas veces lo ha rechazado
             const rechazos = parseInt(localStorage.getItem('tm_push_rechazos') || '0') + 1;
             localStorage.setItem('tm_push_rechazos', String(rechazos));
-            // Cada rechazo añade más tiempo de espera: 1 día, 3 días, 7 días, 14 días, 30 días
+            // Cada rechazo aÃ±ade mÃ¡s tiempo de espera: 1 dÃ­a, 3 dÃ­as, 7 dÃ­as, 14 dÃ­as, 30 dÃ­as
             const dias = [1, 3, 7, 14, 30][Math.min(rechazos - 1, 4)];
             const ms = dias * 24 * 60 * 60 * 1000;
             localStorage.setItem('tm_push_pospuesto', String(Date.now() + ms));
-            console.log('[push] Rechazo #' + rechazos + ' — re-preguntará en ' + dias + ' días');
+            console.log('[push] Rechazo #' + rechazos + ' â€” re-preguntarÃ¡ en ' + dias + ' dÃ­as');
         };
     }
 
@@ -5130,17 +5198,17 @@ document.addEventListener('DOMContentLoaded', () => {
         _mostrarBannerPushAhora();
     }
 
-    // Trigger 1: después de 45 segundos de navegación
+    // Trigger 1: despuÃ©s de 45 segundos de navegaciÃ³n
     setTimeout(() => _maybeMostrarPushBanner('45s navegando'), 45000);
 
-    // Trigger 2: tras hacer scroll a la 2ª pantalla
+    // Trigger 2: tras hacer scroll a la 2Âª pantalla
     let _scrolled = false;
     window.addEventListener('scroll', function onScroll() {
         if (_scrolled) return;
         if (window.scrollY > window.innerHeight * 1.5) {
             _scrolled = true;
             window.removeEventListener('scroll', onScroll);
-            setTimeout(() => _maybeMostrarPushBanner('scroll 2ª pantalla'), 1500);
+            setTimeout(() => _maybeMostrarPushBanner('scroll 2Âª pantalla'), 1500);
         }
     }, { passive: true });
 
@@ -5181,10 +5249,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 data: { url: url || '/' },
                 vibrate: [200, 100, 200],
                 actions: [
-                    { action: 'ver', title: '👀 Ver' },
+                    { action: 'ver', title: 'ðŸ‘€ Ver' },
                     { action: 'cerrar', title: 'Cerrar' }
                 ],
-                // tag agrupa notificaciones del mismo tipo (solo se muestra la última)
+                // tag agrupa notificaciones del mismo tipo (solo se muestra la Ãºltima)
                 tag: 'tm-' + (titulo.substring(0, 20)),
                 renotify: true,
             };
@@ -5193,45 +5261,45 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         nuevoProducto(nombre, precio, id, imagen) {
             const url = id ? '/p/producto-' + id + '.html' : '/';
-            this.enviar('🆕 Nuevo en TiendaMax', nombre + ' desde $' + precio + ' USD', url, imagen);
+            this.enviar('ðŸ†• Nuevo en TiendaMax', nombre + ' desde $' + precio + ' USD', url, imagen);
         },
         rebaja(nombre, antes, ahora, id, imagen) {
             const url = id ? '/p/producto-' + id + '.html' : '/';
             const pct = antes > 0 ? Math.round((antes - ahora) / antes * 100) : 0;
-            const titulo = pct > 0 ? '🏷️ ¡Rebaja -' + pct + '%!' : '🏷️ Bajada de precio';
-            this.enviar(titulo, nombre + ': $' + antes + ' → $' + ahora + ' USD', url, imagen);
+            const titulo = pct > 0 ? 'ðŸ·ï¸ Â¡Rebaja -' + pct + '%!' : 'ðŸ·ï¸ Bajada de precio';
+            this.enviar(titulo, nombre + ': $' + antes + ' â†’ $' + ahora + ' USD', url, imagen);
         },
         relampago(nombre, precio, min) {
-            this.enviar('⚡ ¡Oferta relámpago ' + (min||60) + ' min!', nombre + ' — $' + precio + ' USD');
+            this.enviar('âš¡ Â¡Oferta relÃ¡mpago ' + (min||60) + ' min!', nombre + ' â€” $' + precio + ' USD');
         },
         ofertaDia(nombre, precio, id, imagen) {
             const url = id ? '/p/producto-' + id + '.html' : '/';
-            this.enviar('☀️ Oferta del día', nombre + ' — Solo hoy: $' + precio + ' USD', url, imagen);
+            this.enviar('â˜€ï¸ Oferta del dÃ­a', nombre + ' â€” Solo hoy: $' + precio + ' USD', url, imagen);
         },
-        // Métodos para mostrar AGRUPADOS (ej: tras agregar 5 productos)
+        // MÃ©todos para mostrar AGRUPADOS (ej: tras agregar 5 productos)
         nuevosAgrupados(cantidad) {
-            this.enviar('🆕 ' + cantidad + ' productos nuevos', 'Ven a ver las novedades 🛍️', '/');
+            this.enviar('ðŸ†• ' + cantidad + ' productos nuevos', 'Ven a ver las novedades ðŸ›ï¸', '/');
         },
         rebajasAgrupadas(cantidad) {
-            this.enviar('🏷️ ' + cantidad + ' productos en oferta', '¡Aprovecha antes de que se acaben!', '/');
+            this.enviar('ðŸ·ï¸ ' + cantidad + ' productos en oferta', 'Â¡Aprovecha antes de que se acaben!', '/');
         }
     };
 })();
 
-// ═══════════════════════════════════════════════════════
-//  #4 BADGE "NUEVO" — Productos de los últimos 7 días
-// ═══════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+//  #4 BADGE "NUEVO" â€” Productos de los Ãºltimos 7 dÃ­as
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 function esProductoNuevo(producto) {
     if (!producto || !producto.fechaAgregado) return false;
     const dias7 = 7 * 24 * 60 * 60 * 1000;
     return (Date.now() - new Date(producto.fechaAgregado).getTime()) < dias7;
 }
 
-// ═══════════════════════════════════════════════════════
-//  #1 CONVERTIDOR USD → MN
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+//  #1 CONVERTIDOR USD â†’ MN
 //  Tasa se carga desde config.json en GitHub (sube a todos)
 //  + 10 MN de margen sobre la tasa base configurada
-// ═══════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 let _monedaActual = localStorage.getItem('monedaActual') || 'USD';
 
 function getTasaMN() {
@@ -5269,7 +5337,7 @@ async function cargarTasaDesdeGitHub() {
             if (res.ok) cfg = await res.json();
         }
         if (!cfg) {
-            // Fallback: ruta relativa — siempre funciona en GitHub Pages
+            // Fallback: ruta relativa â€” siempre funciona en GitHub Pages
             const res = await fetch(`config.json?_=${Date.now()}`);
             if (res.ok) cfg = await res.json();
         }
@@ -5279,14 +5347,14 @@ async function cargarTasaDesdeGitHub() {
                 localStorage.setItem('tasaMN', String(cfg.tasaMN));
                 if (_monedaActual === 'MN') actualizarPreciosMostrados();
                 if (typeof actualizarBurbujaTasa === 'function') actualizarBurbujaTasa();
-                console.log(`✅ Tasa MN cargada desde GitHub: ${cfg.tasaMN} MN/USD`);
+                console.log(`âœ… Tasa MN cargada desde GitHub: ${cfg.tasaMN} MN/USD`);
             }
-            // Cargar oferta del día
+            // Cargar oferta del dÃ­a
             if (cfg.ofertaDiaId) {
                 localStorage.setItem('ofertaDiaId', String(cfg.ofertaDiaId));
                 if (cfg.ofertaDiaTexto) localStorage.setItem('ofertaDiaTexto', cfg.ofertaDiaTexto);
             }
-            // Cargar configuración de Firebase y arrancar FCM
+            // Cargar configuraciÃ³n de Firebase y arrancar FCM
             if (cfg.firebaseConfig) {
                 localStorage.setItem('firebaseConfig', JSON.stringify(cfg.firebaseConfig));
                 if (cfg.fcmServerKey) {
@@ -5312,7 +5380,7 @@ function setCurrency(moneda) {
     document.getElementById('curMN')?.classList.toggle('active', moneda === 'MN');
     // Actualizar etiqueta de tasa
     const tasa = getTasaMN();
-    // tasaLabel está deshabilitado: la tasa se muestra en el botón del toggle
+    // tasaLabel estÃ¡ deshabilitado: la tasa se muestra en el botÃ³n del toggle
     const label = document.getElementById('tasaLabel');
     if (label) { label.textContent = ''; label.style.display = 'none'; }
     // Actualizar todos los precios visibles
@@ -5346,7 +5414,7 @@ function actualizarPreciosMostrados() {
     }
 }
 
-// ── BURBUJA TASA DEL DÍA ──────────────────────────────────────────
+// â”€â”€ BURBUJA TASA DEL DÃA â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // Muestra una burbuja flotante visible para TODOS con la tasa actual
 function actualizarBurbujaTasa() {
     const tasa = getTasaMN();
@@ -5374,7 +5442,7 @@ function actualizarBurbujaTasa() {
             'transition:opacity 0.3s,transform 0.3s',
             'animation:tasaBurbujaIn 0.4s cubic-bezier(.34,1.56,.64,1) both',
         ].join(';');
-        burbuja.title = 'Tasa de cambio del día (incluye margen)';
+        burbuja.title = 'Tasa de cambio del dÃ­a (incluye margen)';
         // Inyectar keyframe solo una vez
         if (!document.getElementById('tasaBurbujaStyle')) {
             const s = document.createElement('style');
@@ -5391,13 +5459,13 @@ function actualizarBurbujaTasa() {
         }
         document.body.appendChild(burbuja);
     }
-    // Burbuja flotante oculta — la tasa se muestra en la barra del header
+    // Burbuja flotante oculta â€” la tasa se muestra en la barra del header
     burbuja.style.display = 'none';
 
     // Actualizar barra de moneda del navbar
     const curMNBtn = document.getElementById('curMN');
     const tasaLabel = document.getElementById('tasaLabel');
-    // Solo actualizar el botón del toggle; el tasaLabel está oculto
+    // Solo actualizar el botÃ³n del toggle; el tasaLabel estÃ¡ oculto
     if (tasa > 0) {
         if (curMNBtn) curMNBtn.textContent = tasa + ' MN';
     } else {
@@ -5408,7 +5476,7 @@ function actualizarBurbujaTasa() {
 
 // Inicializar barra de moneda al cargar
 document.addEventListener('DOMContentLoaded', () => {
-    // tasaLabel está deshabilitado: la tasa se muestra en el botón del toggle
+    // tasaLabel estÃ¡ deshabilitado: la tasa se muestra en el botÃ³n del toggle
     const label = document.getElementById('tasaLabel');
     if (label) { label.textContent = ''; label.style.display = 'none'; }
 
@@ -5425,14 +5493,14 @@ document.addEventListener('DOMContentLoaded', () => {
 window.tmFormatPrecio = formatPrecio;
 
 
-// ═══════════════════════════════════════════════════════
-//  🔔 INTEGRACIÓN CON FIREBASE CLOUD MESSAGING (FCM)
-// ═══════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+//  ðŸ”” INTEGRACIÃ“N CON FIREBASE CLOUD MESSAGING (FCM)
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
 async function inicializarFirebaseFCMClient(config) {
     if (!config || !config.projectId) return;
     
-    // Evitar doble inicialización si las librerías ya se cargaron y Firebase existe
+    // Evitar doble inicializaciÃ³n si las librerÃ­as ya se cargaron y Firebase existe
     if (window.firebase && firebase.apps.length) {
         ejecutarInitFCM(config);
         return;
@@ -5440,7 +5508,7 @@ async function inicializarFirebaseFCMClient(config) {
 
     console.log('[FCM] Cargando SDK de Firebase...');
     
-    // Cargar SDK dinámicamente de forma ordenada (App -> Messaging)
+    // Cargar SDK dinÃ¡micamente de forma ordenada (App -> Messaging)
     const scriptApp = document.createElement('script');
     scriptApp.src = 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js';
     scriptApp.onload = () => {
@@ -5465,7 +5533,7 @@ function ejecutarInitFCM(config) {
     try {
         const messaging = firebase.messaging();
         // FIX: registrar el SW dedicado de Firebase (firebase-messaging-sw.js)
-        // El SW de TiendaMax (sw.js) NO sirve para FCM — debe ser uno propio.
+        // El SW de TiendaMax (sw.js) NO sirve para FCM â€” debe ser uno propio.
         navigator.serviceWorker.register('/firebase-messaging-sw.js', { scope: '/firebase-cloud-messaging-push-scope' })
             .then(fcmReg => {
                 console.log('[FCM] Service Worker dedicado registrado:', fcmReg.scope);
@@ -5486,7 +5554,7 @@ function ejecutarInitFCM(config) {
         // Manejar mensajes en primer plano (Foreground)
         messaging.onMessage((payload) => {
             console.log('[FCM] Mensaje recibido en primer plano:', payload);
-            const title = payload.notification?.title || payload.data?.title || '📢 TiendaMax';
+            const title = payload.notification?.title || payload.data?.title || 'ðŸ“¢ TiendaMax';
             const body = payload.notification?.body || payload.data?.body || '';
             const url = payload.data?.url || '/';
             
@@ -5497,8 +5565,8 @@ function ejecutarInitFCM(config) {
     }
 }
 
-// FIX: función reutilizable para registrar token FCM tras permiso concedido.
-// Llamada desde el handler del botón "Avísame" del banner.
+// FIX: funciÃ³n reutilizable para registrar token FCM tras permiso concedido.
+// Llamada desde el handler del botÃ³n "AvÃ­same" del banner.
 async function tmRegistrarTokenFCMSiPermitido() {
     if (Notification.permission !== 'granted') return;
     // Si ya hay FCM iniciado (pending desde init), usar esa referencia
@@ -5537,11 +5605,11 @@ async function solicitarYRegistrarTokenFCM(messaging, config, fcmReg) {
     try {
         const vapidKey = config.vapidKey || localStorage.getItem('firebaseVapidKey');
         if (!vapidKey) {
-            console.warn('[FCM] No se especificó la clave VAPID. No se puede obtener token.');
+            console.warn('[FCM] No se especificÃ³ la clave VAPID. No se puede obtener token.');
             return;
         }
         
-        // FIX: pasar el serviceWorkerRegistration explícitamente a getToken
+        // FIX: pasar el serviceWorkerRegistration explÃ­citamente a getToken
         const opts = { vapidKey: vapidKey };
         if (fcmReg) opts.serviceWorkerRegistration = fcmReg;
         const token = await messaging.getToken(opts);
@@ -5563,7 +5631,7 @@ async function solicitarYRegistrarTokenFCM(messaging, config, fcmReg) {
                     userAgent: navigator.userAgent
                 })
             });
-            console.log('[FCM] Token registrado con éxito en la base de datos de Firebase.');
+            console.log('[FCM] Token registrado con Ã©xito en la base de datos de Firebase.');
         } else {
             console.warn('[FCM] No se pudo obtener el token de Firebase.');
         }
@@ -5585,25 +5653,25 @@ async function guardarConfigFirebaseAdmin() {
     const serverKey = serverInput.value.trim();
     
     if (!rawJson) {
-        if (status) status.textContent = '⚠️ El JSON de configuración de Firebase es requerido.';
+        if (status) status.textContent = 'âš ï¸ El JSON de configuraciÃ³n de Firebase es requerido.';
         return;
     }
     if (!vapidKey) {
-        if (status) status.textContent = '⚠️ La Clave VAPID de Web Push es requerida.';
+        if (status) status.textContent = 'âš ï¸ La Clave VAPID de Web Push es requerida.';
         return;
     }
     
     let parsedConfig = null;
     try {
         let text = rawJson.replace(/\xa0/g, ' ').trim();
-        // Limpiar declaraciones si copiaron el código entero
+        // Limpiar declaraciones si copiaron el cÃ³digo entero
         text = text.replace(/^(const|let|var)\s+\w+\s*=\s*/, '');
         text = text.replace(/;$/, '');
-        // Parseo seguro: intentar JSON.parse después de normalizar claves sin comillas
+        // Parseo seguro: intentar JSON.parse despuÃ©s de normalizar claves sin comillas
         let jsonText = text;
-        // Si parece un objeto JS (claves sin comillas), añadir comillas
+        // Si parece un objeto JS (claves sin comillas), aÃ±adir comillas
         if (!/^\s*\{[\s\S]*\}\s*$/.test(jsonText)) {
-            throw new Error('Configuración no es un objeto');
+            throw new Error('ConfiguraciÃ³n no es un objeto');
         }
         // claves sin comillas -> con comillas
         jsonText = jsonText.replace(/([\{,]\s*)([A-Za-z_$][\w$]*)\s*:/g, '$1"$2":');
@@ -5613,10 +5681,10 @@ async function guardarConfigFirebaseAdmin() {
         jsonText = jsonText.replace(/,(\s*[\}\]])/g, '$1');
         parsedConfig = JSON.parse(jsonText);
     } catch (e) {
-        console.warn('[FCM] Falló parseo JSON, intentando fallback regex...', e);
+        console.warn('[FCM] FallÃ³ parseo JSON, intentando fallback regex...', e);
     }
     
-    // Fallback robusto con Regex si falló o si tiene URLs con enlaces Markdown de chats
+    // Fallback robusto con Regex si fallÃ³ o si tiene URLs con enlaces Markdown de chats
     let fallbackUsed = false;
     if (!parsedConfig || typeof parsedConfig !== 'object' || !parsedConfig.projectId) {
         fallbackUsed = true;
@@ -5624,7 +5692,7 @@ async function guardarConfigFirebaseAdmin() {
         const lines = rawJson.split('\n');
         for (const line of lines) {
             const cleanLine = line.replace(/\xa0/g, ' ').trim();
-            // Buscar patron clave: "valor" o clave: 'valor' o clave: valor (sin comillas para números)
+            // Buscar patron clave: "valor" o clave: 'valor' o clave: valor (sin comillas para nÃºmeros)
             const match = cleanLine.match(/(\w+)\s*:\s*["']?([^"',\s\}]+)["']?/);
             if (match) {
                 const key = match[1];
@@ -5641,12 +5709,12 @@ async function guardarConfigFirebaseAdmin() {
     
     if (!parsedConfig || typeof parsedConfig !== 'object' || !parsedConfig.projectId) {
         if (status) {
-            status.textContent = '❌ Error: Configuración inválida o falta el campo "projectId". Contenido parseado: ' + JSON.stringify(parsedConfig);
+            status.textContent = 'âŒ Error: ConfiguraciÃ³n invÃ¡lida o falta el campo "projectId". Contenido parseado: ' + JSON.stringify(parsedConfig);
         }
         return;
     }
     
-    // Guardar vapidKey dentro del objeto de configuración para consistencia
+    // Guardar vapidKey dentro del objeto de configuraciÃ³n para consistencia
     parsedConfig.vapidKey = vapidKey;
     
     localStorage.setItem('firebaseConfig', JSON.stringify(parsedConfig));
@@ -5657,14 +5725,14 @@ async function guardarConfigFirebaseAdmin() {
         localStorage.removeItem('fcmServerKey');
     }
     
-    if (status) status.textContent = '⏳ Guardando y subiendo a GitHub...';
+    if (status) status.textContent = 'â³ Guardando y subiendo a GitHub...';
     
     const user = localStorage.getItem('githubUser');
     const repo = localStorage.getItem('githubRepo');
     const token = localStorage.getItem('githubToken');
     
     if (!user || !repo || !token) {
-        if (status) status.textContent = '⚠️ Guardado localmente en navegador. Para sincronizar globalmente con GitHub, configura tus credenciales arriba.';
+        if (status) status.textContent = 'âš ï¸ Guardado localmente en navegador. Para sincronizar globalmente con GitHub, configura tus credenciales arriba.';
         // Inicializar de una vez localmente para probar
         inicializarFirebaseFCMClient(parsedConfig);
         return;
@@ -5684,12 +5752,12 @@ async function guardarConfigFirebaseAdmin() {
         existing.actualizado = new Date().toISOString();
         
         await subirArchivoAGitHub(user, repo, token, 'config.json', existing);
-        if (status) status.textContent = '✅ ¡Guardado y sincronizado con GitHub con éxito!';
-        mostrarNotificacion('✅ Configuración de Firebase guardada y sincronizada.', 'success');
+        if (status) status.textContent = 'âœ… Â¡Guardado y sincronizado con GitHub con Ã©xito!';
+        mostrarNotificacion('âœ… ConfiguraciÃ³n de Firebase guardada y sincronizada.', 'success');
         inicializarFirebaseFCMClient(parsedConfig);
     } catch (e) {
         console.error(e);
-        if (status) status.textContent = '❌ Error: ' + e.message;
+        if (status) status.textContent = 'âŒ Error: ' + e.message;
     }
 }
 
@@ -5700,42 +5768,42 @@ async function enviarPushManualAdmin() {
     const status = document.getElementById('manualPushStatus');
     
     if (!title || !body) {
-        if (status) status.textContent = '⚠️ Título y cuerpo son requeridos.';
+        if (status) status.textContent = 'âš ï¸ TÃ­tulo y cuerpo son requeridos.';
         return;
     }
     
     const serverKey = localStorage.getItem('fcmServerKey');
     const fbConfigRaw = localStorage.getItem('firebaseConfig');
     if (!serverKey || !fbConfigRaw) {
-        if (status) status.textContent = '⚠️ Configura Firebase y guarda la Clave de Servidor primero.';
+        if (status) status.textContent = 'âš ï¸ Configura Firebase y guarda la Clave de Servidor primero.';
         return;
     }
     
     const fbConfig = JSON.parse(fbConfigRaw);
     const rtdbUrl = fbConfig.databaseURL || `https://${fbConfig.projectId}-default-rtdb.firebaseio.com`;
     
-    if (status) status.textContent = '⏳ Buscando suscriptores en Firebase...';
+    if (status) status.textContent = 'â³ Buscando suscriptores en Firebase...';
     
     try {
         const res = await fetch(`${rtdbUrl}/tokens.json`);
         if (!res.ok) {
-            if (status) status.textContent = '❌ No se pudo conectar a Realtime Database.';
+            if (status) status.textContent = 'âŒ No se pudo conectar a Realtime Database.';
             return;
         }
         
         const tokensData = await res.json();
         if (!tokensData) {
-            if (status) status.textContent = '⚠️ No hay ningún suscriptor registrado todavía.';
+            if (status) status.textContent = 'âš ï¸ No hay ningÃºn suscriptor registrado todavÃ­a.';
             return;
         }
         
         const tokens = Object.values(tokensData).map(t => t.token).filter(Boolean);
         if (tokens.length === 0) {
-            if (status) status.textContent = '⚠️ No se encontraron tokens válidos.';
+            if (status) status.textContent = 'âš ï¸ No se encontraron tokens vÃ¡lidos.';
             return;
         }
         
-        if (status) status.textContent = `⏳ Enviando a ${tokens.length} suscriptores...`;
+        if (status) status.textContent = `â³ Enviando a ${tokens.length} suscriptores...`;
         
         const response = await fetch('https://fcm.googleapis.com/fcm/send', {
             method: 'POST',
@@ -5759,7 +5827,7 @@ async function enviarPushManualAdmin() {
         
         if (response.ok) {
             const resData = await response.json();
-            if (status) status.textContent = `✅ Enviado. Éxitos: ${resData.success || 0}, Fallos: ${resData.failure || 0}`;
+            if (status) status.textContent = `âœ… Enviado. Ã‰xitos: ${resData.success || 0}, Fallos: ${resData.failure || 0}`;
             
             // Limpiar tokens obsoletos
             if (resData.results) {
@@ -5773,11 +5841,11 @@ async function enviarPushManualAdmin() {
                 }
             }
         } else {
-            if (status) status.textContent = `❌ Error en el envío FCM: ${response.status} ${response.statusText}`;
+            if (status) status.textContent = `âŒ Error en el envÃ­o FCM: ${response.status} ${response.statusText}`;
         }
     } catch (e) {
         console.error(e);
-        if (status) status.textContent = '❌ Error de conexión o credenciales inválidas.';
+        if (status) status.textContent = 'âŒ Error de conexiÃ³n o credenciales invÃ¡lidas.';
     }
 }
 
@@ -5786,24 +5854,24 @@ window.tmMonedaActual = () => _monedaActual;
 // Cargar tasa actualizada desde GitHub al iniciar
 cargarTasaDesdeGitHub();
 
-// Guardar tasa desde panel admin → localStorage + GitHub
+// Guardar tasa desde panel admin â†’ localStorage + GitHub
 async function guardarTasaMNAdmin() {
     const input = document.getElementById('adminTasaMN');
     const status = document.getElementById('tasaMNStatus');
     if (!input) return;
     const val = parseFloat(input.value);
     if (!val || val < 1) {
-        if (status) status.textContent = '⚠️ Ingresa un valor válido';
+        if (status) status.textContent = 'âš ï¸ Ingresa un valor vÃ¡lido';
         return;
     }
     localStorage.setItem('tasaMN', String(val));
-    if (status) status.textContent = '💾 Guardado localmente...';
+    if (status) status.textContent = 'ðŸ’¾ Guardado localmente...';
     // Subir a GitHub para que todos lo vean
     const ok = await guardarTasaEnGitHub(val);
     if (status) {
         status.textContent = ok
-            ? `✅ Tasa ${val} MN/USD subida a GitHub. Clientes verán ${val + 10} MN/USD.`
-            : '✅ Guardado local. Configura GitHub para sincronizar con todos.';
+            ? `âœ… Tasa ${val} MN/USD subida a GitHub. Clientes verÃ¡n ${val + 10} MN/USD.`
+            : 'âœ… Guardado local. Configura GitHub para sincronizar con todos.';
         status.style.color = ok ? '#2ECC71' : '#C9A96E';
     }
     // Actualizar precios en pantalla y burbuja de tasa
@@ -5813,12 +5881,12 @@ async function guardarTasaMNAdmin() {
 
 
 
-// ═══════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 //  PARCHE DE ESTABILIDAD 2026-05-23
 //  - Moneda robusta
 //  - Grid de productos consistente
 //  - Vistos recientes reactivado
-// ═══════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 (function () {
     function tmGetOfertaId() {
         return typeof getOfertaDiaId === 'function' ? getOfertaDiaId() : null;
@@ -5880,7 +5948,7 @@ async function guardarTasaMNAdmin() {
             if (producto.stock > 0 && producto.stock <= 3 && !card.querySelector('.badge-stock-urgente')) {
                 const badge = document.createElement('div');
                 badge.className = 'badge-stock-urgente';
-                badge.textContent = '⚡ Últimas ' + producto.stock;
+                badge.textContent = 'âš¡ Ãšltimas ' + producto.stock;
                 badge.style.cssText = 'position:absolute;top:8px;left:8px;background:linear-gradient(135deg,#e74c3c,#c0392b);color:white;font-size:10px;font-weight:800;padding:3px 8px;border-radius:20px;box-shadow:0 2px 6px rgba(231,76,60,.4);z-index:3;letter-spacing:0.3px;';
                 card.style.position = 'relative';
                 card.appendChild(badge);
@@ -5890,7 +5958,7 @@ async function guardarTasaMNAdmin() {
             if (vistas >= 10 && !card.querySelector('.badge-vistas-pub')) {
                 const vBadge = document.createElement('div');
                 vBadge.className = 'badge-vistas-pub';
-                vBadge.innerHTML = '👁️ ' + (vistas >= 1000 ? (vistas / 1000).toFixed(1) + 'k' : vistas);
+                vBadge.innerHTML = 'ðŸ‘ï¸ ' + (vistas >= 1000 ? (vistas / 1000).toFixed(1) + 'k' : vistas);
                 vBadge.style.cssText = 'position:absolute;bottom:54px;right:8px;background:rgba(0,0,0,0.55);backdrop-filter:blur(4px);color:white;font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;z-index:3;';
                 card.appendChild(vBadge);
             }
@@ -5930,7 +5998,7 @@ async function guardarTasaMNAdmin() {
 
             if (producto.stock === 0) {
                 const stockCount = card.querySelector('.stock-count span');
-                if (stockCount) stockCount.textContent = '❌ Producto agotado';
+                if (stockCount) stockCount.textContent = 'âŒ Producto agotado';
                 const stockBar = card.querySelector('.stock-bar-fill');
                 if (stockBar) stockBar.style.width = '8%';
                 const btn = card.querySelector('.btn-pedir-card');
@@ -6030,7 +6098,7 @@ async function guardarTasaMNAdmin() {
 })();
 
 
-// === popstate: cerrar modal de producto al pulsar "Atrás" del navegador/móvil ===
+// === popstate: cerrar modal de producto al pulsar "AtrÃ¡s" del navegador/mÃ³vil ===
 window.addEventListener('popstate', function() {
     const modal = document.getElementById('productDetailModal');
     if (modal && !modal.classList.contains('hidden')) {
@@ -6045,8 +6113,8 @@ window.addEventListener('popstate', function() {
     }
 });
 
-// ═══════════════════════════════════════════════════════════
-//  🔔 PANEL DE CONTROL DE NOTIFICACIONES (modal con ON/OFF)
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+//  ðŸ”” PANEL DE CONTROL DE NOTIFICACIONES (modal con ON/OFF)
 //
 //  Funciones expuestas globalmente:
 //    - abrirModalNotificaciones()
@@ -6054,11 +6122,11 @@ window.addEventListener('popstate', function() {
 //    - toggleNotificacionesTM()
 //
 //  Estado:
-//    - 'granted'   → permiso concedido, hay token, ACTIVO
-//    - 'denied'    → bloqueado por usuario (no se puede repedir)
-//    - 'default'   → nunca decidió
-//    - 'no-token'  → permiso OK pero sin token registrado
-// ═══════════════════════════════════════════════════════════
+//    - 'granted'   â†’ permiso concedido, hay token, ACTIVO
+//    - 'denied'    â†’ bloqueado por usuario (no se puede repedir)
+//    - 'default'   â†’ nunca decidiÃ³
+//    - 'no-token'  â†’ permiso OK pero sin token registrado
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
 (function tmPanelNotificaciones() {
     'use strict';
@@ -6076,7 +6144,7 @@ window.addEventListener('popstate', function() {
         return 'activo';
     }
 
-    // Actualiza el ícono del header según el estado
+    // Actualiza el Ã­cono del header segÃºn el estado
     function actualizarIconoHeader() {
         const btn = document.getElementById('notifHeaderBtn');
         const icon = document.getElementById('notifHeaderIcon');
@@ -6087,7 +6155,7 @@ window.addEventListener('popstate', function() {
 
         btn.classList.remove('activo', 'desactivado', 'bloqueado');
 
-        // SVG del ícono según estado
+        // SVG del Ã­cono segÃºn estado
         if (estado === 'activo') {
             btn.classList.add('activo');
             btn.title = 'Notificaciones activas (toca para gestionar)';
@@ -6095,7 +6163,7 @@ window.addEventListener('popstate', function() {
             if (icon) icon.innerHTML = '<path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/><circle cx="18" cy="6" r="3" fill="#25d366" stroke="#0e0e12" stroke-width="1.5"/>';
         } else if (estado === 'bloqueado') {
             btn.classList.add('bloqueado');
-            btn.title = 'Notificaciones bloqueadas (toca para ver cómo activarlas)';
+            btn.title = 'Notificaciones bloqueadas (toca para ver cÃ³mo activarlas)';
             // Campana tachada
             if (icon) icon.innerHTML = '<path d="M13.73 21a2 2 0 0 1-3.46 0"/><path d="M18.63 13A17.89 17.89 0 0 1 18 8"/><path d="M6.26 6.26A5.86 5.86 0 0 0 6 8c0 7-3 9-3 9h14"/><path d="M18 8a6 6 0 0 0-9.33-5"/><line x1="1" y1="1" x2="23" y2="23"/>';
         } else {
@@ -6121,7 +6189,7 @@ window.addEventListener('popstate', function() {
         document.body.style.overflow = '';
     };
 
-    // Refresca el contenido del modal según estado
+    // Refresca el contenido del modal segÃºn estado
     function actualizarModalNotif() {
         const estado = detectarEstadoNotif();
         _estadoActual = estado;
@@ -6139,7 +6207,7 @@ window.addEventListener('popstate', function() {
         infoBlock.style.display = 'none';
 
         if (estado === 'no-soporta') {
-            icono.textContent = '⚠️';
+            icono.textContent = 'âš ï¸';
             texto.textContent = 'No soportado';
             subtexto.textContent = 'Tu navegador no soporta notificaciones push.';
             boton.textContent = 'Cerrar';
@@ -6151,7 +6219,7 @@ window.addEventListener('popstate', function() {
 
         if (estado === 'bloqueado') {
             box.classList.add('bloqueado');
-            icono.textContent = '🚫';
+            icono.textContent = 'ðŸš«';
             texto.textContent = 'Bloqueadas en el navegador';
             subtexto.textContent = 'Tienes que reactivarlas desde ajustes del navegador.';
             boton.textContent = 'Entendido';
@@ -6162,10 +6230,10 @@ window.addEventListener('popstate', function() {
         }
 
         if (estado === 'activo') {
-            icono.textContent = '🔔';
+            icono.textContent = 'ðŸ””';
             texto.textContent = 'Notificaciones ACTIVAS';
-            subtexto.textContent = 'Recibirás ofertas, productos nuevos y cambios de tasa';
-            boton.textContent = '🔕 Desactivar notificaciones';
+            subtexto.textContent = 'RecibirÃ¡s ofertas, productos nuevos y cambios de tasa';
+            boton.textContent = 'ðŸ”• Desactivar notificaciones';
             boton.classList.add('desactivar');
             boton.onclick = toggleNotificacionesTM;
             return;
@@ -6173,15 +6241,15 @@ window.addEventListener('popstate', function() {
 
         // sin-decidir o sin-token
         box.classList.add('desactivado');
-        icono.textContent = '🔕';
+        icono.textContent = 'ðŸ”•';
         texto.textContent = 'Notificaciones APAGADAS';
-        subtexto.textContent = 'Te estás perdiendo las ofertas relámpago 🔥';
-        boton.textContent = '🔔 Activar notificaciones';
+        subtexto.textContent = 'Te estÃ¡s perdiendo las ofertas relÃ¡mpago ðŸ”¥';
+        boton.textContent = 'ðŸ”” Activar notificaciones';
         boton.classList.remove('desactivar');
         boton.onclick = toggleNotificacionesTM;
     }
 
-    // Toggle: activa o desactiva según estado actual
+    // Toggle: activa o desactiva segÃºn estado actual
     window.toggleNotificacionesTM = async function() {
         const boton = document.getElementById('notifBotonAccion');
         const estado = detectarEstadoNotif();
@@ -6192,18 +6260,18 @@ window.addEventListener('popstate', function() {
         }
 
         if (estado === 'activo') {
-            // ─── DESACTIVAR ───
+            // â”€â”€â”€ DESACTIVAR â”€â”€â”€
             boton.disabled = true;
-            boton.textContent = '⏳ Desactivando...';
+            boton.textContent = 'â³ Desactivando...';
             try {
                 await desuscribirFCM();
                 if (typeof mostrarNotificacion === 'function') {
-                    mostrarNotificacion('🔕 Notificaciones desactivadas', 'info');
+                    mostrarNotificacion('ðŸ”• Notificaciones desactivadas', 'info');
                 }
             } catch (e) {
                 console.error('[notif] Error desuscribiendo:', e);
                 if (typeof mostrarNotificacion === 'function') {
-                    mostrarNotificacion('⚠️ Error al desactivar: ' + e.message, 'error');
+                    mostrarNotificacion('âš ï¸ Error al desactivar: ' + e.message, 'error');
                 }
             }
             boton.disabled = false;
@@ -6212,17 +6280,17 @@ window.addEventListener('popstate', function() {
             return;
         }
 
-        // ─── ACTIVAR ───
+        // â”€â”€â”€ ACTIVAR â”€â”€â”€
         boton.disabled = true;
-        boton.textContent = '⏳ Activando...';
+        boton.textContent = 'â³ Activando...';
 
         try {
-            // Pedir permiso del navegador si aún no está concedido
+            // Pedir permiso del navegador si aÃºn no estÃ¡ concedido
             if (Notification.permission !== 'granted') {
                 const perm = await Notification.requestPermission();
                 if (perm === 'denied') {
                     if (typeof mostrarNotificacion === 'function') {
-                        mostrarNotificacion('🚫 Bloqueado. Ve a ajustes del navegador.', 'error');
+                        mostrarNotificacion('ðŸš« Bloqueado. Ve a ajustes del navegador.', 'error');
                     }
                     actualizarModalNotif();
                     actualizarIconoHeader();
@@ -6264,12 +6332,12 @@ window.addEventListener('popstate', function() {
             const nuevoEstado = detectarEstadoNotif();
             if (nuevoEstado === 'activo') {
                 if (typeof mostrarNotificacion === 'function') {
-                    mostrarNotificacion('🔔 ¡Notificaciones activadas!', 'success');
+                    mostrarNotificacion('ðŸ”” Â¡Notificaciones activadas!', 'success');
                 }
                 // Mostrar push de bienvenida local
                 try {
                     const reg = await navigator.serviceWorker.ready;
-                    reg.showNotification('✅ TiendaMax activado', {
+                    reg.showNotification('âœ… TiendaMax activado', {
                         body: 'Te avisaremos de ofertas y productos nuevos.',
                         icon: '/icons/icon-192.png',
                         badge: '/icons/icon-192.png',
@@ -6279,13 +6347,13 @@ window.addEventListener('popstate', function() {
                 } catch(e) {}
             } else {
                 if (typeof mostrarNotificacion === 'function') {
-                    mostrarNotificacion('⚠️ No se pudo completar. Reintenta.', 'error');
+                    mostrarNotificacion('âš ï¸ No se pudo completar. Reintenta.', 'error');
                 }
             }
         } catch(e) {
             console.error('[notif] Error activando:', e);
             if (typeof mostrarNotificacion === 'function') {
-                mostrarNotificacion('❌ Error: ' + e.message, 'error');
+                mostrarNotificacion('âŒ Error: ' + e.message, 'error');
             }
         }
 
@@ -6322,7 +6390,7 @@ window.addEventListener('popstate', function() {
         // 2. Borrar de localStorage
         localStorage.removeItem('fcmToken');
 
-        // 3. Revocar token FCM (le dice a Firebase que no envíe más)
+        // 3. Revocar token FCM (le dice a Firebase que no envÃ­e mÃ¡s)
         try {
             if (window.firebase && firebase.messaging) {
                 const messaging = firebase.messaging();
@@ -6347,16 +6415,16 @@ window.addEventListener('popstate', function() {
         }
     });
 
-    // Actualizar ícono al cargar y cada vez que cambie el estado
+    // Actualizar Ã­cono al cargar y cada vez que cambie el estado
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', actualizarIconoHeader);
     } else {
         actualizarIconoHeader();
     }
-    // Refrescar el ícono cada 5 segundos por si cambió el permiso en otra pestaña
+    // Refrescar el Ã­cono cada 5 segundos por si cambiÃ³ el permiso en otra pestaÃ±a
     setInterval(actualizarIconoHeader, 5000);
 
-    // Exponer para depuración
+    // Exponer para depuraciÃ³n
     window._tmNotif = {
         actualizarIconoHeader,
         actualizarModalNotif,
@@ -6365,10 +6433,10 @@ window.addEventListener('popstate', function() {
     };
 })();
 
-// ═══════════════════════════════════════════════════════════
-//  ⬆️ BOTÓN "SUBIR ARRIBA" flotante
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+//  â¬†ï¸ BOTÃ“N "SUBIR ARRIBA" flotante
 //  Aparece tras hacer scroll hacia abajo. Al pulsar, sube suave.
-// ═══════════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 (function tmBotonSubirArriba() {
     'use strict';
 
@@ -6376,7 +6444,7 @@ window.addEventListener('popstate', function() {
         if (document.getElementById('tm-subir-arriba')) return;
         const btn = document.createElement('button');
         btn.id = 'tm-subir-arriba';
-        btn.setAttribute('aria-label', 'Subir al inicio de la página');
+        btn.setAttribute('aria-label', 'Subir al inicio de la pÃ¡gina');
         btn.title = 'Subir arriba';
         btn.innerHTML = '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>';
         btn.style.cssText = [
@@ -6434,3 +6502,4 @@ window.addEventListener('popstate', function() {
         init();
     }
 })();
+

@@ -1,15 +1,15 @@
-// ═══════════════════════════════════════════════════════
-// TiendaMax — Service Worker v35
-// - Cache-first para shell estático
+﻿// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// TiendaMax â€” Service Worker v36
+// - Cache-first para shell estÃ¡tico
 // - Network-first para JSON de datos
 // - Soporte de Notificaciones Push (FCM)
 // - Manejo de pushsubscriptionchange para no perder tokens
-// ═══════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
-const CACHE_NAME = 'tiendamax-v43';
+const CACHE_NAME = 'tiendamax-v44';
 const STATIC_ASSETS = [
   '/index.html',
-  // CSS público (index.html)
+  // CSS pÃºblico (index.html)
   '/css/styles.css',
   '/css/animations.css',
   '/css/styles.banner.fix.css',
@@ -33,7 +33,7 @@ const STATIC_ASSETS = [
   '/icons/icon-512.png'
 ];
 
-// ── Instalar: cachear shell ──
+// â”€â”€ Instalar: cachear shell â”€â”€
 self.addEventListener('install', e => {
   e.waitUntil(
     caches.open(CACHE_NAME)
@@ -42,7 +42,7 @@ self.addEventListener('install', e => {
   );
 });
 
-// ── Activar: borrar caches viejas y tomar control ──
+// â”€â”€ Activar: borrar caches viejas y tomar control â”€â”€
 self.addEventListener('activate', e => {
   e.waitUntil(
     (async () => {
@@ -52,10 +52,10 @@ self.addEventListener('activate', e => {
         keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k))
       );
 
-      // Tomar control de todas las pestañas abiertas
+      // Tomar control de todas las pestaÃ±as abiertas
       await self.clients.claim();
 
-      // Forzar reload de las páginas abiertas para que carguen la versión nueva
+      // Forzar reload de las pÃ¡ginas abiertas para que carguen la versiÃ³n nueva
       const allClients = await self.clients.matchAll({ type: 'window' });
       for (const client of allClients) {
         client.postMessage({ type: 'SW_UPDATED', version: CACHE_NAME });
@@ -64,12 +64,12 @@ self.addEventListener('activate', e => {
   );
 });
 
-// ── Mensajes ──
+// â”€â”€ Mensajes â”€â”€
 self.addEventListener('message', e => {
   if (e.data === 'SKIP_WAITING') self.skipWaiting();
 });
 
-// ── Estrategia de fetch ──
+// â”€â”€ Estrategia de fetch â”€â”€
 self.addEventListener('fetch', e => {
   const url = new URL(e.request.url);
 
@@ -87,7 +87,7 @@ self.addEventListener('fetch', e => {
 
   const path = url.pathname;
 
-  // JSON de datos → siempre red, con fallback a cache si offline
+  // JSON de datos â†’ siempre red, con fallback a cache si offline
   if (path.endsWith('.json')) {
     e.respondWith(
       fetch(e.request)
@@ -103,7 +103,7 @@ self.addEventListener('fetch', e => {
     return;
   }
 
-  // JS y CSS críticos → Network-first
+  // JS y CSS crÃ­ticos â†’ Network-first
   if (path.endsWith('.js') || path.endsWith('.css')) {
     e.respondWith(
       fetch(e.request)
@@ -119,7 +119,7 @@ self.addEventListener('fetch', e => {
     return;
   }
 
-  // Shell estático → Cache-first
+  // Shell estÃ¡tico â†’ Cache-first
   if (STATIC_ASSETS.some(a => path.endsWith(a.split('/').pop()))) {
     e.respondWith(
       caches.open(CACHE_NAME).then(cache =>
@@ -135,7 +135,7 @@ self.addEventListener('fetch', e => {
     return;
   }
 
-  // Resto → Network-first con fallback a /index.html para navegación
+  // Resto â†’ Network-first con fallback a /index.html para navegaciÃ³n
   e.respondWith(
     fetch(e.request)
       .then(res => {
@@ -152,14 +152,14 @@ self.addEventListener('fetch', e => {
   );
 });
 
-// ═══════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 // PUSH NOTIFICATIONS
-// ═══════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
 self.addEventListener('push', e => {
   let datos = {
-    titulo: '📢 TiendaMax',
-    cuerpo: 'Tienes una nueva notificación',
+    titulo: 'ðŸ“¢ TiendaMax',
+    cuerpo: 'Tienes una nueva notificaciÃ³n',
     url: '/',
     icono: '/icons/icon-192.png'
   };
@@ -203,7 +203,7 @@ self.addEventListener('push', e => {
       data: { url: datos.url },
       vibrate: [200, 100, 200],
       actions: [
-        { action: 'ver',    title: '👀 Ver oferta' },
+        { action: 'ver',    title: 'ðŸ‘€ Ver oferta' },
         { action: 'cerrar', title: 'Cerrar' }
       ]
     })
@@ -230,8 +230,8 @@ self.addEventListener('notificationclick', e => {
   );
 });
 
-// ── Manejo de renovación de suscripción (evita tokens muertos) ──
-// Cuando el navegador rota la subscripción, avisamos a la página para
+// â”€â”€ Manejo de renovaciÃ³n de suscripciÃ³n (evita tokens muertos) â”€â”€
+// Cuando el navegador rota la subscripciÃ³n, avisamos a la pÃ¡gina para
 // que pida un nuevo token de FCM y lo registre.
 self.addEventListener('pushsubscriptionchange', event => {
   event.waitUntil((async () => {
@@ -239,3 +239,4 @@ self.addEventListener('pushsubscriptionchange', event => {
     all.forEach(c => c.postMessage({ type: 'PUSH_SUBSCRIPTION_CHANGE' }));
   })());
 });
+
