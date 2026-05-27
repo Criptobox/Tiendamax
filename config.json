@@ -13,5 +13,10 @@
     "appId": "1:238891228701:web:d515133e229c48a5adb0f4",
     "vapidKey": "BAXhJOhwCtSkc1jH09b2q04lVg5Cr4QNK3C9dqUcBIjzEJZJ66vkS7MfNLAhopd-eK3jYkpXFMk4zBzQfs8nbhc"
   },
-  "actualizado": "2026-05-26T21:36:37.536Z"
+  "actualizado": "2026-05-26T21:36:37.536Z",
+  "adminAuth": {
+    "hash": "c889aa149ff083bb219222488a622a5828e2fd93a29b1fcc2215769fc06c9598",
+    "salt": "3967b7b1034a7e5f97cf062947acc76c",
+    "iterations": 310000
+  }
 }
