@@ -1,24 +1,17 @@
 // ═══════════════════════════════════════════════════════
-// TiendaMax — Service Worker v42
-// - Cache-first para shell estático
-// - Network-first para JSON de datos
-// - Soporte de Notificaciones Push (FCM)
-// - Manejo de pushsubscriptionchange para no perder tokens
+// TiendaMax — Service Worker v43 — LIMPIEZA FORZADA
 // ═══════════════════════════════════════════════════════
 
-const CACHE_NAME = 'tiendamax-v51';
+const CACHE_NAME = 'tiendamax-v52';
 const STATIC_ASSETS = [
   '/index.html',
-  // CSS público (index.html)
   '/css/styles.css',
   '/css/animations.css',
   '/css/styles.banner.fix.css',
   '/css/styles.fixes.css',
   '/css/premium-theme.css',
   '/css/light-mode.css',
-  // CSS admin (admin.html)
   '/css/admin.css',
-  // JS
   '/js/secure-storage.js',
   '/js/script.js',
   '/js/analytics.js',
@@ -28,36 +21,28 @@ const STATIC_ASSETS = [
   '/js/revolico_integration.js',
   '/js/biometric-auth.js',
   '/js/event-delegation.js',
-  // Assets
   '/og-image.svg',
   '/manifest.json',
   '/icons/icon-192.png',
   '/icons/icon-512.png'
 ];
 
-// ── Instalar: cachear shell ──
 self.addEventListener('install', e => {
+  self.skipWaiting();
   e.waitUntil(
     caches.open(CACHE_NAME)
       .then(cache => cache.addAll(STATIC_ASSETS).catch(() => {}))
-      .then(() => self.skipWaiting())
   );
 });
 
-// ── Activar: borrar caches viejas y tomar control ──
 self.addEventListener('activate', e => {
   e.waitUntil(
     (async () => {
-      // Borrar TODAS las caches anteriores
       const keys = await caches.keys();
       await Promise.all(
         keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k))
       );
-
-      // Tomar control de todas las pestañas abiertas
       await self.clients.claim();
-
-      // Forzar reload de las páginas abiertas para que carguen la versión nueva
       const allClients = await self.clients.matchAll({ type: 'window' });
       for (const client of allClients) {
         client.postMessage({ type: 'SW_UPDATED', version: CACHE_NAME });
@@ -66,16 +51,13 @@ self.addEventListener('activate', e => {
   );
 });
 
-// ── Mensajes ──
 self.addEventListener('message', e => {
   if (e.data === 'SKIP_WAITING') self.skipWaiting();
 });
 
-// ── Estrategia de fetch ──
 self.addEventListener('fetch', e => {
   const url = new URL(e.request.url);
 
-  // Dominios externos: pasar transparentes al navegador
   const externos = [
     'gstatic.com', 'googleapis.com', 'firebaseio.com', 'firebaseapp.com',
     'github.com', 'githubusercontent.com',
@@ -89,7 +71,6 @@ self.addEventListener('fetch', e => {
 
   const path = url.pathname;
 
-  // JSON de datos → siempre red, con fallback a cache si offline
   if (path.endsWith('.json')) {
     e.respondWith(
       fetch(e.request)
@@ -105,7 +86,6 @@ self.addEventListener('fetch', e => {
     return;
   }
 
-  // JS y CSS críticos → Network-first
   if (path.endsWith('.js') || path.endsWith('.css')) {
     e.respondWith(
       fetch(e.request)
@@ -121,7 +101,6 @@ self.addEventListener('fetch', e => {
     return;
   }
 
-  // Shell estático → Cache-first
   if (STATIC_ASSETS.some(a => path.endsWith(a.split('/').pop()))) {
     e.respondWith(
       caches.open(CACHE_NAME).then(cache =>
@@ -137,7 +116,6 @@ self.addEventListener('fetch', e => {
     return;
   }
 
-  // Resto → Network-first con fallback a /index.html para navegación
   e.respondWith(
     fetch(e.request)
       .then(res => {
@@ -154,10 +132,6 @@ self.addEventListener('fetch', e => {
   );
 });
 
-// ═══════════════════════════════════════════════════════
-// PUSH NOTIFICATIONS
-// ═══════════════════════════════════════════════════════
-
 self.addEventListener('push', e => {
   let datos = {
     titulo: '📢 TiendaMax',
@@ -168,27 +142,18 @@ self.addEventListener('push', e => {
   if (e.data) {
     try {
       const jsonPayload = e.data.json();
-      console.log('[SW] Push recibido:', jsonPayload);
-
-      // Estructura FCM v1 (con campos nested)
       if (jsonPayload.notification) {
         datos.titulo = jsonPayload.notification.title || datos.titulo;
         datos.cuerpo = jsonPayload.notification.body  || datos.cuerpo;
-        if (jsonPayload.notification.icon) {
-          datos.icono = jsonPayload.notification.icon;
-        } else if (jsonPayload.notification.image) {
-          datos.icono = jsonPayload.notification.image;
-        }
+        if (jsonPayload.notification.icon) datos.icono = jsonPayload.notification.icon;
+        else if (jsonPayload.notification.image) datos.icono = jsonPayload.notification.image;
       }
-
       if (jsonPayload.data) {
         datos.url    = jsonPayload.data.url || jsonPayload.data.click_action || datos.url;
         datos.titulo = jsonPayload.data.title || jsonPayload.data.titulo || datos.titulo;
         datos.cuerpo = jsonPayload.data.body  || jsonPayload.data.cuerpo  || datos.cuerpo;
         if (jsonPayload.data.icon) datos.icono = jsonPayload.data.icon;
       }
-
-      // Campos planos
       if (jsonPayload.title || jsonPayload.titulo) datos.titulo = jsonPayload.title || jsonPayload.titulo;
       if (jsonPayload.body  || jsonPayload.cuerpo) datos.cuerpo = jsonPayload.body  || jsonPayload.cuerpo;
       if (jsonPayload.url)                          datos.url    = jsonPayload.url;
@@ -215,9 +180,7 @@ self.addEventListener('push', e => {
 self.addEventListener('notificationclick', e => {
   e.notification.close();
   if (e.action === 'cerrar') return;
-
   const urlDestino = (e.notification.data && e.notification.data.url) || '/';
-
   e.waitUntil(
     clients.matchAll({ type: 'window', includeUncontrolled: true }).then(lista => {
       for (const client of lista) {
@@ -232,9 +195,6 @@ self.addEventListener('notificationclick', e => {
   );
 });
 
-// ── Manejo de renovación de suscripción (evita tokens muertos) ──
-// Cuando el navegador rota la subscripción, avisamos a la página para
-// que pida un nuevo token de FCM y lo registre.
 self.addEventListener('pushsubscriptionchange', event => {
   event.waitUntil((async () => {
     const all = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
