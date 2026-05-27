@@ -683,6 +683,18 @@ function _getSalt() {
     return salt;
 }
 
+// SHA-256 para migración desde hashes hardcodeados viejos
+async function _hashSha256(password) {
+    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(password));
+    return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+// Hashes SHA-256 legacy (se aceptan durante migración, tras primer login se actualizan)
+const _OLD_HASHES = [
+    'a338781ef2610e22bde9dae45f2d8aaa6a8a8c4584158f18cd91089b9192bc62',
+    '90035f586903f0259868846c2459740b957630712759861619894101e405187e'
+];
+
 let productos = JSON.parse(localStorage.getItem('productos')) || [];
 let categorias = JSON.parse(localStorage.getItem('categorias')) || ['General'];
 let usuarioAutenticado = false;
@@ -1037,14 +1049,14 @@ function validarProducto(producto) {
 
 // ===== CARGA DE DATOS DESDE GITHUB =====
 
-// Función para hashear la contraseña (PBKDF2)
-async function hashPassword(password) {
-    const salt = _getSalt();
+// Función para hashear la contraseña (PBKDF2). salt opcional (default: _getSalt())
+async function hashPassword(password, salt) {
+    const s = salt || _getSalt();
     const keyMaterial = await crypto.subtle.importKey(
         'raw', new TextEncoder().encode(password), 'PBKDF2', false, ['deriveBits']
     );
     const bits = await crypto.subtle.deriveBits(
-        { name: 'PBKDF2', salt: new TextEncoder().encode(salt), iterations: AUTH_ITERATIONS, hash: 'SHA-256' },
+        { name: 'PBKDF2', salt: new TextEncoder().encode(s), iterations: AUTH_ITERATIONS, hash: 'SHA-256' },
         keyMaterial, 256
     );
     const hashArray = Array.from(new Uint8Array(bits));
@@ -1613,73 +1625,144 @@ async function verificarPassword(event) {
     const passwordInput = document.getElementById('adminPassword').value.trim();
     if (!passwordInput) { mostrarNotificacion('❌ Escribe la contraseña', 'error'); return; }
 
-    const storedHash = localStorage.getItem(AUTH_HASH_KEY);
-    const storedSalt = localStorage.getItem(AUTH_SALT_KEY);
+    // 1. Intentar auth global desde GitHub config.json
+    const ghUser = localStorage.getItem('githubUser');
+    const ghRepo = localStorage.getItem('githubRepo');
+    let ghHash = null, ghSalt = null;
+    if (ghUser && ghRepo) {
+        try {
+            const cfgRes = await fetch(`https://raw.githubusercontent.com/${ghUser}/${ghRepo}/main/config.json?_=${Date.now()}`);
+            if (cfgRes.ok) {
+                const cfg = await cfgRes.json();
+                if (cfg.adminAuth && cfg.adminAuth.hash && cfg.adminAuth.salt) {
+                    ghHash = cfg.adminAuth.hash;
+                    ghSalt = cfg.adminAuth.salt;
+                }
+            }
+        } catch(e) {}
+    }
+    if (ghHash && ghSalt) {
+        const inputHash = await hashPassword(passwordInput, ghSalt);
+        if (inputHash === ghHash) {
+            localStorage.removeItem('admin_rl');
+            try { localStorage.setItem(AUTH_SALT_KEY, ghSalt); } catch(e) {}
+            try { localStorage.setItem(AUTH_HASH_KEY, ghHash); } catch(e) {}
+            usuarioAutenticado = true;
+            cerrarLoginModal();
+            abrirAdminPanel();
+            return;
+        }
+    }
 
-    // ── PRIMER ACCESO: no hay hash guardado → configurar contraseña ──
-    if (!storedHash || !storedSalt) {
-        const hash = await hashPassword(passwordInput);
-        try { localStorage.setItem(AUTH_HASH_KEY, hash); } catch(e) {}
+    // 2. Intentar auth local (per-browser backup)
+    const lsHash = localStorage.getItem(AUTH_HASH_KEY);
+    const lsSalt = localStorage.getItem(AUTH_SALT_KEY);
+    if (lsHash && lsSalt) {
+        const inputHash = await hashPassword(passwordInput, lsSalt);
+        if (inputHash === lsHash) {
+            localStorage.removeItem('admin_rl');
+            usuarioAutenticado = true;
+            cerrarLoginModal();
+            abrirAdminPanel();
+            return;
+        }
+    }
+
+    // 3. Migración: aceptar hashes SHA-256 hardcodeados legacy
+    const inputSha = await _hashSha256(passwordInput);
+    if (_OLD_HASHES.includes(inputSha)) {
+        const ns = _generarSal();
+        const nh = await hashPassword(passwordInput, ns);
+        try { localStorage.setItem(AUTH_SALT_KEY, ns); } catch(e) {}
+        try { localStorage.setItem(AUTH_HASH_KEY, nh); } catch(e) {}
+        // Subir a GitHub si hay credenciales
+        if (ghUser && ghRepo) {
+            const ghToken = localStorage.getItem('githubToken');
+            if (ghToken) {
+                try {
+                    const r = await fetch(`https://raw.githubusercontent.com/${ghUser}/${ghRepo}/main/config.json?_=${Date.now()}`);
+                    const cfg = r.ok ? await r.json() : {};
+                    cfg.adminAuth = { hash: nh, salt: ns, iterations: AUTH_ITERATIONS };
+                    await subirArchivoAGitHub(ghUser, ghRepo, ghToken, 'config.json', cfg);
+                } catch(e) {}
+            }
+        }
         localStorage.removeItem('admin_rl');
         usuarioAutenticado = true;
         cerrarLoginModal();
         abrirAdminPanel();
-        mostrarNotificacion('✅ Contraseña configurada por primera vez.', 'success');
+        mostrarNotificacion('✅ Contraseña migrada al nuevo sistema. Cámbiala desde Configuración.', 'success');
         return;
     }
 
-    // ── ACCESO NORMAL: verificar contra el hash guardado ──
-    const inputHash = await hashPassword(passwordInput);
-    if (inputHash === storedHash) {
-        localStorage.removeItem('admin_rl');
-        usuarioAutenticado = true;
-        cerrarLoginModal();
-        abrirAdminPanel();
-    } else {
-        const newCount = (rl.count || 0) + 1;
-        const lockout = newCount >= 3 ? Date.now() + 5 * 60 * 1000 : rl.until;
-        localStorage.setItem('admin_rl', JSON.stringify({ count: newCount, until: lockout }));
-        const msg = newCount >= 3
-            ? '🔒 3 intentos fallidos. Bloqueado 5 min.'
-            : `❌ Contraseña incorrecta (intento ${newCount}/3)`;
-        mostrarNotificacion(msg, 'error');
-        document.getElementById('adminPassword').value = '';
-    }
+    // 4. Todo falló
+    const newCount = (rl.count || 0) + 1;
+    const lockout = newCount >= 3 ? Date.now() + 5 * 60 * 1000 : rl.until;
+    localStorage.setItem('admin_rl', JSON.stringify({ count: newCount, until: lockout }));
+    const msg = newCount >= 3
+        ? '🔒 3 intentos fallidos. Bloqueado 5 min.'
+        : `❌ Contraseña incorrecta (intento ${newCount}/3)`;
+    mostrarNotificacion(msg, 'error');
+    document.getElementById('adminPassword').value = '';
 }
 
 // Cambiar contraseña (llamado desde admin.html)
 async function cambiarPasswordAdmin(ci, ni, coi) {
-    const ch = localStorage.getItem(AUTH_HASH_KEY);
-    const cs = localStorage.getItem(AUTH_SALT_KEY);
-    if (!ch || !cs) {
-        mostrarNotificacion('❌ No hay contraseña configurada. Accede primero.', 'error');
-        return;
-    }
     if (!ci || !ni || !coi) {
         mostrarNotificacion('❌ Completa todos los campos', 'error');
         return;
     }
-    const _h = async (p) => {
-        const km = await crypto.subtle.importKey('raw', new TextEncoder().encode(p), 'PBKDF2', false, ['deriveBits']);
-        const b = await crypto.subtle.deriveBits(
-            { name: 'PBKDF2', salt: new TextEncoder().encode(cs), iterations: AUTH_ITERATIONS, hash: 'SHA-256' },
-            km, 256
-        );
-        return Array.from(new Uint8Array(b)).map(x => x.toString(16).padStart(2, '0')).join('');
-    };
-    const ch2 = await _h(ci);
+
+    // Detectar sal vigente: GitHub primero, luego localStorage
+    const ghUser = localStorage.getItem('githubUser');
+    const ghRepo = localStorage.getItem('githubRepo');
+    let ch = null, cs = null;
+    if (ghUser && ghRepo) {
+        try {
+            const r = await fetch(`https://raw.githubusercontent.com/${ghUser}/${ghRepo}/main/config.json?_=${Date.now()}`);
+            if (r.ok) {
+                const cfg = await r.json();
+                if (cfg.adminAuth && cfg.adminAuth.hash && cfg.adminAuth.salt) {
+                    ch = cfg.adminAuth.hash;
+                    cs = cfg.adminAuth.salt;
+                }
+            }
+        } catch(e) {}
+    }
+    if (!ch || !cs) {
+        ch = localStorage.getItem(AUTH_HASH_KEY);
+        cs = localStorage.getItem(AUTH_SALT_KEY);
+    }
+    if (!ch || !cs) {
+        mostrarNotificacion('❌ No hay contraseña configurada. Accede primero o configura GitHub.', 'error');
+        return;
+    }
+
+    const ch2 = await hashPassword(ci, cs);
     if (ch2 !== ch) { mostrarNotificacion('❌ Contraseña actual incorrecta', 'error'); return; }
     if (ni.length < 4) { mostrarNotificacion('❌ La nueva contraseña debe tener al menos 4 caracteres', 'error'); return; }
     if (ni !== coi) { mostrarNotificacion('❌ Las contraseñas nuevas no coinciden', 'error'); return; }
+
     const ns = _generarSal();
-    const km2 = await crypto.subtle.importKey('raw', new TextEncoder().encode(ni), 'PBKDF2', false, ['deriveBits']);
-    const b2 = await crypto.subtle.deriveBits(
-        { name: 'PBKDF2', salt: new TextEncoder().encode(ns), iterations: AUTH_ITERATIONS, hash: 'SHA-256' },
-        km2, 256
-    );
-    const nh = Array.from(new Uint8Array(b2)).map(x => x.toString(16).padStart(2, '0')).join('');
+    const nh = await hashPassword(ni, ns);
     try { localStorage.setItem(AUTH_SALT_KEY, ns); } catch(e) {}
     try { localStorage.setItem(AUTH_HASH_KEY, nh); } catch(e) {}
+
+    // Subir a GitHub
+    if (ghUser && ghRepo) {
+        const ghToken = localStorage.getItem('githubToken');
+        if (ghToken) {
+            try {
+                const r = await fetch(`https://raw.githubusercontent.com/${ghUser}/${ghRepo}/main/config.json?_=${Date.now()}`);
+                const cfg = r.ok ? await r.json() : {};
+                cfg.adminAuth = { hash: nh, salt: ns, iterations: AUTH_ITERATIONS };
+                await subirArchivoAGitHub(ghUser, ghRepo, ghToken, 'config.json', cfg);
+            } catch(e) {
+                mostrarNotificacion('⚠️ Guardado local pero no se pudo subir a GitHub.', 'error');
+            }
+        }
+    }
+
     mostrarNotificacion('✅ Contraseña cambiada con éxito', 'success');
     document.getElementById('ci').value = '';
     document.getElementById('ni').value = '';
