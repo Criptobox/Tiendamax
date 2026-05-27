@@ -15,8 +15,8 @@
   },
   "actualizado": "2026-05-26T21:36:37.536Z",
   "adminAuth": {
-    "hash": "c889aa149ff083bb219222488a622a5828e2fd93a29b1fcc2215769fc06c9598",
-    "salt": "3967b7b1034a7e5f97cf062947acc76c",
+    "hash": "f3270f9fda7282502ecf4a0a1755afce6c1d59e0f32cbbddda84a814a3d91ee8",
+    "salt": "10083a9ed8df509432b24324884d4219",
     "iterations": 310000
   }
 }
