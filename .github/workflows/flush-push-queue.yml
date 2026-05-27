@@ -37,6 +37,7 @@ jobs:
       - name: Procesar cola y enviar
         env:
           FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          SOLO_FLUSH: "1"
         run: python scripts/send_notifications.py
 
       - name: Commit cola actualizada (con reintento por race condition)
