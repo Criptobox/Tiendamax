@@ -1,97 +1,75 @@
-
-// ═══════════════════════════════════════════════════════
-//  DASHBOARD REAL-TIME (Métricas Basadas en Hechos)
-// ═══════════════════════════════════════════════════════
-
 function renderizarAnalytics() {
     const el = document.getElementById('analyticsContent');
     if (!el) return;
 
-    // 1. CARGA DE DATOS REALES (Strict)
-    // Solo lo que el admin confirmó manualmente en la pestaña Ventas
-    const ventasConfirmadas = JSON.parse(localStorage.getItem('registroVentas') || '[]');
-    // Solo clics reales de clientes en las tarjetas
-    const vistasReales = JSON.parse(localStorage.getItem('vistasProd') || '{}');
+    const ventas = JSON.parse(localStorage.getItem('registroVentas') || '[]');
+    const vistas = JSON.parse(localStorage.getItem('vistasProd') || '{}');
 
-    // ── CÁLCULO FINANCIERO ──
-    const totalIngresos   = ventasConfirmadas.reduce((s, v) => s + (v.total || 0), 0);
-    const gananciaNeta    = ventasConfirmadas.reduce((s, v) => s + (v.ganancia || 0), 0);
-    const unidadesVendidas = ventasConfirmadas.reduce((s, v) => s + (v.cantidad || 1), 0);
+    const totalIngresos = ventas.reduce((s, v) => s + (v.total || 0), 0);
+    const gananciaNeta = ventas.reduce((s, v) => s + (v.ganancia || 0), 0);
+    const unidadesVendidas = ventas.reduce((s, v) => s + (v.cantidad || 1), 0);
 
-    // ── ESTADO DE INVENTARIO ──
-    const agotados = productos.filter(p => p.stock === 0);
-    const criticos = productos.filter(p => p.stock > 0 && p.stock <= 3);
+    const agotados = productos.filter(p => p.stock === 0).length;
+    const criticos = productos.filter(p => p.stock > 0 && p.stock <= 3).length;
 
-    // ── TOP PERFORMANCE ──
-    // Procesamos el catálogo comparando vistas vs ventas reales
-    const performanceMap = productos.map(p => {
+    const performance = productos.map(p => {
         const idStr = String(p.id);
-        const v = vistasReales[idStr] || 0;
-        const s = ventasConfirmadas.filter(sale => String(sale.productoId) === idStr)
-                                   .reduce((acc, sale) => acc + (sale.cantidad || 1), 0);
+        const v = vistas[idStr] || 0;
+        const s = ventas.filter(sale => String(sale.productoId) === idStr).reduce((acc, sale) => acc + (sale.cantidad || 1), 0);
         return { ...p, vistas: v, ventas: s };
     });
 
-    const topVentas = [...performanceMap].sort((a,b) => b.ventas - a.ventas).slice(0, 5);
-    const topInteres = [...performanceMap].sort((a,b) => b.vistas - a.vistas).slice(0, 5);
+    const topVentas = [...performance].sort((a,b) => b.ventas - a.ventas).slice(0, 5);
+    const topInteres = [...performance].sort((a,b) => b.vistas - a.vistas).slice(0, 5);
 
-    // ── RENDERIZADO UI ──
     el.innerHTML = `
-        <!-- Bloque 1: Dinero Real (Solo ventas confirmadas) -->
-        <div class="admin-stats-grid">
-            <div class="admin-stat-card green">
-                <div class="admin-stat-value">$${totalIngresos.toLocaleString()}</div>
-                <div class="admin-stat-label">Ingresos Confirmados</div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 30px;">
+            <div style="padding: 20px; border-radius: 15px; text-align: center; background: linear-gradient(135deg, #1e5e2f, #27ae60); box-shadow: 0 4px 15px rgba(0,0,0,0.3);">
+                <span style="font-size: 32px; font-weight: 800; display: block; color: white;">$${totalIngresos.toLocaleString()}</span>
+                <span style="font-size: 12px; text-transform: uppercase; opacity: 0.9; color: white;">Ventas (USD)</span>
             </div>
-            <div class="admin-stat-card gold">
-                <div class="admin-stat-value">$${gananciaNeta.toLocaleString()}</div>
-                <div class="admin-stat-label">Ganancia Real (Comisión)</div>
+            <div style="padding: 20px; border-radius: 15px; text-align: center; background: linear-gradient(135deg, #8a6d3b, #C9A96E); box-shadow: 0 4px 15px rgba(0,0,0,0.3);">
+                <span style="font-size: 32px; font-weight: 800; display: block; color: white;">$${gananciaNeta.toLocaleString()}</span>
+                <span style="font-size: 12px; text-transform: uppercase; opacity: 0.9; color: white;">Ganancia Neta</span>
             </div>
-            <div class="admin-stat-card blue">
-                <div class="admin-stat-value">${unidadesVendidas}</div>
-                <div class="admin-stat-label">Productos Entregados</div>
-            </div>
-        </div>
-
-        <!-- Bloque 2: Alertas de Stock -->
-        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px; margin-bottom:24px;">
-            <div class="admin-alert-box ${agotados.length > 0 ? 'red' : 'green'}" style="margin:0;">
-                <strong>${agotados.length} Agotados</strong><br>
-                <span>${agotados.length > 0 ? 'No se pueden pedir' : 'Todo disponible'}</span>
-            </div>
-            <div class="admin-alert-box ${criticos.length > 0 ? 'orange' : 'green'}" style="margin:0; border-color:#f39c12; color:#f39c12; background:rgba(243,156,18,0.05)">
-                <strong>${criticos.length} Casi Agotados</strong><br>
-                <span>Menos de 3 unidades</span>
+            <div style="padding: 20px; border-radius: 15px; text-align: center; background: linear-gradient(135deg, #214d72, #3498db); box-shadow: 0 4px 15px rgba(0,0,0,0.3);">
+                <span style="font-size: 32px; font-weight: 800; display: block; color: white;">${unidadesVendidas}</span>
+                <span style="font-size: 12px; text-transform: uppercase; opacity: 0.9; color: white;">Uds. Vendidas</span>
             </div>
         </div>
 
-        <!-- Bloque 3: Comparativa Real -->
-        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap:20px;">
-            
-            <div class="admin-chart-box">
-                <div class="admin-chart-title">🏆 Ventas Reales (Confirmadas)</div>
-                <div class="admin-top-list">
-                    ${topVentas.filter(p => p.ventas > 0).map((p, i) => `
-                        <div class="admin-top-item">
-                            <span class="admin-top-rank">${i+1}</span>
-                            <span class="admin-top-name">${p.nombre}</span>
-                            <span class="admin-top-value gold">${p.ventas} uds</span>
-                        </div>
-                    `).join('') || '<p class="admin-empty">Sin ventas hoy</p>'}
-                </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 30px;">
+            <div style="padding: 15px; border-radius: 12px; border-left: 5px solid #e74c3c; background: rgba(255,255,255,0.05); color: #ff9999;">
+                <strong>⚠️ ${agotados} Productos Agotados</strong><br>
+                <small style="font-size:11px;">Reponer stock urgente</small>
+            </div>
+            <div style="padding: 15px; border-radius: 12px; border-left: 5px solid #f39c12; background: rgba(255,255,255,0.05); color: #ffcc66;">
+                <strong>⚡ ${criticos} Stock Crítico</strong><br>
+                <small style="font-size:11px;">Menos de 3 unidades restantes</small>
+            </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+            <div style="background: #1a1a1a; padding: 20px; border-radius: 16px; border: 1px solid #333;">
+                <span style="font-size: 16px; color: var(--gold); font-weight: bold; margin-bottom: 15px; display: flex; align-items: center; gap: 8px;">🏆 Top Ventas (Uds)</span>
+                ${topVentas.filter(p => p.ventas > 0).map((p, i) => `
+                    <div style="display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid #2a2a2a;">
+                        <span style="font-weight: 900; color: #555; width: 20px;">${i+1}</span>
+                        <span style="flex: 1; font-size: 14px; color: #eee;">${p.nombre}</span>
+                        <span style="font-weight: bold; font-size: 14px; color: var(--gold);">${p.ventas} uds</span>
+                    </div>
+                `).join('') || '<p style="text-align:center; color:#555; padding:10px;">Sin ventas</p>'}
             </div>
 
-            <div class="admin-chart-box">
-                <div class="admin-chart-title">👁️ Interés de Clientes (Vistas)</div>
-                <div class="admin-top-list">
-                    ${topInteres.filter(p => p.vistas > 0).map((p, i) => `
-                        <div class="admin-top-item">
-                            <span class="admin-top-rank">${i+1}</span>
-                            <span class="admin-top-name">${p.nombre}</span>
-                            <span class="admin-top-value blue">👁️ ${p.vistas}</span>
-                        </div>
-                    `).join('') || '<p class="admin-empty">Sin visitas registradas</p>'}
-                </div>
+            <div style="background: #1a1a1a; padding: 20px; border-radius: 16px; border: 1px solid #333;">
+                <span style="font-size: 16px; color: #3498db; font-weight: bold; margin-bottom: 15px; display: flex; align-items: center; gap: 8px;">👁️ Más Vistos</span>
+                ${topInteres.filter(p => p.vistas > 0).map((p, i) => `
+                    <div style="display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid #2a2a2a;">
+                        <span style="font-weight: 900; color: #555; width: 20px;">${i+1}</span>
+                        <span style="flex: 1; font-size: 14px; color: #eee;">${p.nombre}</span>
+                        <span style="font-weight: bold; font-size: 14px; color: #3498db;">${p.vistas} vistas</span>
+                    </div>
+                `).join('') || '<p style="text-align:center; color:#555; padding:10px;">Sin visitas</p>'}
             </div>
         </div>
     `;

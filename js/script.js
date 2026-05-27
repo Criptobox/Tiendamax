@@ -1835,19 +1835,11 @@ function renderizarProductos(isLoadMore = false) {
     if (categoriaSeleccionada !== 'Todas' && subcategoriaSeleccionada && subcategoriaSeleccionada !== 'Todas') {
         productosFiltrados = productosFiltrados.filter(p => p.subcategoria === subcategoriaSeleccionada);
     }
+    
+    // Filtro de búsqueda y precio (NUEVO)
 
     // Filtro de búsqueda hero y precio
-    if (_heroSearchActivo || _heroPrecioMin > 0 || _heroPrecioMax < Infinity) {
-        const q = _heroSearchActivo;
-        productosFiltrados = productosFiltrados.filter(p => {
-            const matchQ = !q || p.nombre.toLowerCase().includes(q) ||
-                (p.descripcion||'').toLowerCase().includes(q) ||
-                (p.categoria||'').toLowerCase().includes(q);
-            const matchP = p.precioActual >= _heroPrecioMin && p.precioActual <= _heroPrecioMax;
-            return matchQ && matchP;
-        });
-    }
-
+    
     productosGrid.innerHTML = '';
 
     if (productosFiltrados.length === 0) {
@@ -3919,9 +3911,22 @@ function renderizarListaAgotados() {
         el.innerHTML = '<p style="font-size:13px;color:#27ae60;text-align:center;">✅ No hay productos agotados actualmente.</p>';
         return;
     }
+    el.innerHTML = agotados.map(p =>
+        '<div style="display:flex;align-items:center;gap:10px;padding:12px;background:rgba(0,0,0,0.3);border-radius:12px;border:1.5px solid rgba(231,76,60,0.3);color:#eee;">' +
+            '<img src="' + escapeAttr(p.imagen) + '" style="width:45px;height:45px;border-radius:8px;object-fit:cover;" onerror="this.style.display=\'none\'">' +
+            '<div style="flex:1;"><div style="font-size:14px;font-weight:700;color:#eee;">' + escapeHtml(p.nombre) + '</div>' +
+            '<div style="font-size:11px;color:#e74c3c;font-weight:700;margin-top:2px;">📦 PRODUCTO AGOTADO</div></div>' +
+            '<button class="btn btn-primary" onclick="abrirEditModal(' + safeNum(p.id) + ')" style="font-size:11px;padding:6px 12px;background:#e74c3c;border:none;">✏️ Editar</button>' +
+        '</div>'
+    ).join('');
+}
+
+}
+
+}
     // FIX BUG #8: sanitización anti-XSS
     el.innerHTML = agotados.map(p =>
-        '<div style="display:flex;align-items:center;gap:10px;padding:10px;background:white;border-radius:10px;border:1px solid rgba(231,76,60,0.3);">' +
+        '<div style="display:flex;align-items:center;gap:10px;padding:10px;background:rgba(0,0,0,0.3);border-radius:12px;border:1.5px solid rgba(231,76,60,0.3);color:#eee;">' +
             '<img src="' + escapeAttr(p.imagen) + '" style="width:40px;height:40px;border-radius:8px;object-fit:cover;" onerror="this.style.display=\'none\'">' +
             '<div style="flex:1;"><div style="font-size:13px;font-weight:700;">' + escapeHtml(p.nombre) + '</div>' +
             '<div style="font-size:11px;color:#e74c3c;font-weight:700;">📦 AGOTADO</div></div>' +
@@ -3958,23 +3963,28 @@ renderizarProductos = function() {
         ? productos
         : productos.filter(p => p.categoria === categoriaSeleccionada);
 
+    if (categoriaSeleccionada !== 'Todas' && subcategoriaSeleccionada && subcategoriaSeleccionada !== 'Todas') {
+        productosFiltrados = productosFiltrados.filter(p => p.subcategoria === subcategoriaSeleccionada);
+    }
+    
+    // Filtro de búsqueda y precio (Integrado)
+    if (_heroSearchActivo || _heroPrecioMin > 0 || _heroPrecioMax < Infinity) {
+        productosFiltrados = productosFiltrados.filter(p => {
+            const q = (_heroSearchActivo || '').toLowerCase();
+            const matchQ = !q || p.nombre.toLowerCase().includes(q) || (p.descripcion||'').toLowerCase().includes(q);
+            const matchP = p.precioActual >= _heroPrecioMin && p.precioActual <= _heroPrecioMax;
+            return matchQ && matchP;
+        });
+    }
+
     console.log('[TM RENDER] Tras filtro categoría:', productosFiltrados.length);
 
     if (categoriaSeleccionada !== 'Todas' && subcategoriaSeleccionada && subcategoriaSeleccionada !== 'Todas') {
         productosFiltrados = productosFiltrados.filter(p => p.subcategoria === subcategoriaSeleccionada);
-        console.log('[TM RENDER] Tras filtro subcategoría:', productosFiltrados.length);
     }
-    if (_heroSearchActivo || _heroPrecioMin > 0 || _heroPrecioMax < Infinity) {
-        const q = _heroSearchActivo;
-        productosFiltrados = productosFiltrados.filter(p => {
-            const matchQ = !q || p.nombre.toLowerCase().includes(q) ||
-                (p.descripcion||'').toLowerCase().includes(q) ||
-                (p.categoria||'').toLowerCase().includes(q);
-            return matchQ;
-        });
-        console.log('[TM RENDER] Tras filtro búsqueda:', productosFiltrados.length);
-    }
-    console.log('[TM RENDER] FINAL productosFiltrados:', productosFiltrados.length);
+    
+    // Filtro de búsqueda y precio (NUEVO)
+        console.log('[TM RENDER] FINAL productosFiltrados:', productosFiltrados.length);
 
     // Ordenar: oferta del día primero
     const ofertaId = getOfertaDiaId();
@@ -6438,3 +6448,25 @@ window.addEventListener('popstate', function() {
         init();
     }
 })();
+
+// ── FUNCIONES DE FILTRADO DE PRECIO ──
+function aplicarFiltrosPrecio() {
+    const min = parseFloat(document.getElementById('filterPriceMin').value) || 0;
+    const max = parseFloat(document.getElementById('filterPriceMax').value) || Infinity;
+    
+    if (typeof _heroPrecioMin !== 'undefined') {
+        _heroPrecioMin = min;
+        _heroPrecioMax = max;
+        renderizarProductos();
+    }
+}
+
+function limpiarFiltrosPrecio() {
+    document.getElementById('filterPriceMin').value = '';
+    document.getElementById('filterPriceMax').value = '';
+    if (typeof _heroPrecioMin !== 'undefined') {
+        _heroPrecioMin = 0;
+        _heroPrecioMax = Infinity;
+        renderizarProductos();
+    }
+}

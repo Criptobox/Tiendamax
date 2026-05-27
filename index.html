@@ -1012,28 +1012,7 @@
     </script>
 
     <!-- LOGICA DE FILTROS DE PRECIO -->
-    <script>
-    function aplicarFiltrosPrecio() {
-        const min = parseFloat(document.getElementById('filterPriceMin').value) || 0;
-        const max = parseFloat(document.getElementById('filterPriceMax').value) || Infinity;
-        
-        if (typeof _heroPrecioMin !== 'undefined') {
-            _heroPrecioMin = min;
-            _heroPrecioMax = max;
-            renderizarProductos();
-        }
-    }
-
-    function limpiarFiltrosPrecio() {
-        document.getElementById('filterPriceMin').value = '';
-        document.getElementById('filterPriceMax').value = '';
-        if (typeof _heroPrecioMin !== 'undefined') {
-            _heroPrecioMin = 0;
-            _heroPrecioMax = Infinity;
-            renderizarProductos();
-        }
-    }
-    </script>
+    
 
 </body>
 </html>
