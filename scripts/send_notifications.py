@@ -363,6 +363,12 @@ def main() -> int:
     hora_actual = hora_local_cuba()
     print(f"🕐 Hora local Cuba: {hora_actual.strftime('%H:%M %d/%m/%Y')}")
 
+    # SOLO_FLUSH=1 → lo llamó flush-push-queue (programado).
+    #               Solo procesa la cola existente, NO detecta cambios nuevos.
+    #               Evita el bug de doble detección cuando HEAD~1 sigue apuntando
+    #               al commit de la tasa tras el commit del push_queue.
+    solo_flush = os.environ.get("SOLO_FLUSH", "0") == "1"
+
     # Cargar archivos actuales
     try:
         config_actual = json.loads(Path("config.json").read_text(encoding="utf-8"))
@@ -375,10 +381,14 @@ def main() -> int:
         print(f"❌ Error leyendo productos.json: {e}")
         return 1
 
-    config_anterior = get_previous_json("config.json")
-    prod_anterior   = get_previous_json("productos.json")
+    if solo_flush:
+        print("ℹ️  Modo SOLO_FLUSH: procesando cola existente sin detectar cambios nuevos.")
+        cambios = {"tasa": None, "nuevos": [], "rebajas": []}
+    else:
+        config_anterior = get_previous_json("config.json")
+        prod_anterior   = get_previous_json("productos.json")
+        cambios = detectar_cambios(config_actual, config_anterior, prod_actual, prod_anterior)
 
-    cambios = detectar_cambios(config_actual, config_anterior, prod_actual, prod_anterior)
     cola = cargar_cola()
 
     # ============================================================
