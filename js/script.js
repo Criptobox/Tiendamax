@@ -1687,7 +1687,9 @@ async function verificarPassword(event) {
                                 headers: { 'Authorization': `token ${ghToken}`, 'Content-Type': 'application/json' },
                                 body: JSON.stringify({ message: 'Migrar contraseña admin', content })
                             });
-                        } catch(e) {}
+                        } catch(e) {
+                            console.warn('Migración: no se pudo subir a GitHub, guardado local:', e);
+                        }
                     }
                 }
                 localStorage.removeItem('admin_rl');
@@ -5845,11 +5847,7 @@ async function guardarConfigFirebaseAdmin() {
         ).then(r => r.ok ? r.json() : {}).catch(() => ({}));
         
         existing.firebaseConfig = parsedConfig;
-        if (serverKey) {
-            existing.fcmServerKey = serverKey;
-        } else {
-            delete existing.fcmServerKey;
-        }
+        delete existing.fcmServerKey; // no subir server key a GitHub
         existing.actualizado = new Date().toISOString();
         
         await subirArchivoAGitHub(user, repo, token, 'config.json', existing);
