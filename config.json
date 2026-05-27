@@ -2,7 +2,7 @@
   "tasaMN": 560,
   "ofertaDiaId": "1778104115783",
   "ofertaDiaTexto": "🔥🔥OFERTA🔥🔥",
-  "ofertaDiaActualizado": "2026-05-26T21:36:37.536Z",
+  "ofertaDiaActualizado": "2026-05-27T07:46:01.171Z",
   "firebaseConfig": {
     "apiKey": "AIzaSyDlmR0_lwZSf7LcoVaz3FvFU3VvBDnCRcM",
     "authDomain": "tiendamax-8feb5.firebaseapp.com",
@@ -13,10 +13,5 @@
     "appId": "1:238891228701:web:d515133e229c48a5adb0f4",
     "vapidKey": "BAXhJOhwCtSkc1jH09b2q04lVg5Cr4QNK3C9dqUcBIjzEJZJ66vkS7MfNLAhopd-eK3jYkpXFMk4zBzQfs8nbhc"
   },
-  "actualizado": "2026-05-26T21:36:37.536Z",
-  "adminAuth": {
-    "hash": "69443155b41ddc5e246ff23adb7445ec56a3e91b1e62c4fda53eade9eb9ed451",
-    "salt": "4afafa4af6d280201a73448ed99e68a5",
-    "iterations": 310000
-  }
+  "actualizado": "2026-05-27T07:46:01.171Z"
 }
