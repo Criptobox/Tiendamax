@@ -370,6 +370,13 @@
                 <!-- Tab: Configuración GitHub -->
                 <div id="configuracion" class="admin-tab">
                     <h3>Configuración de Sincronización</h3>
+                    <!-- Seguridad Avanzada -->
+                    <div class="admin-config-box" style="background:rgba(231,76,60,0.05); border:1.5px solid rgba(231,76,60,0.3);">
+                        <h4 class="admin-h4-flex"><span style="font-size:20px;">🔒</span> Seguridad y Accesos</h4>
+                        <p class="admin-hint">Historial de los últimos 10 accesos exitosos a este panel.</p>
+                        <div id="securityLogsContent" style="background:rgba(0,0,0,0.2); border-radius:8px; padding:10px; max-height:150px; overflow-y:auto;"></div>
+                        <button type="button" onclick="cerrarAdminPanelForzoso()" class="btn" style="margin-top:12px; width:100%; background:#e74c3c; color:white;">🔒 Cerrar Sesión Ahora</button>
+                    </div>
 
                     <!-- NÚMERO WHATSAPP -->
                     <div class="admin-config-box whatsapp">
@@ -511,15 +518,32 @@ Ej:
                 </div>
 
 
-                <!-- Tab: Apariencia / Imagen Hero -->
+                <!-- Tab: Analytics Dashboard -->
                 <div id="analytics" class="admin-tab">
-                    <h3 style="margin-bottom:20px;">📊 Analytics de la Tienda</h3>
+                    <h3 style="margin-bottom:20px;">📊 Dashboard de Control</h3>
                     <div id="analyticsContent">
-                        <p style="color:#999;text-align:center;padding:40px 0;">Cargando estadísticas...</p>
+                        <p style="color:#999;text-align:center;padding:40px 0;">Cargando estadísticas inteligentes...</p>
                     </div>
                 </div>
 
                 <div id="apariencia" class="admin-tab">
+                    <h3 style="margin-top:30px;">🎨 Temas y Personalización</h3>
+                    <div class="admin-config-box" style="background:rgba(201,169,110,0.05); border:1px solid var(--gold);">
+                        <div class="form-group">
+                            <label>Color Principal (Tema):</label>
+                            <input type="color" id="themePrimaryColor" value="#C9A96E" onchange="cambiarVistaPreviaColor(this.value)">
+                        </div>
+                        <div class="form-group">
+                            <label>Estilo de Bordes:</label>
+                            <select id="themeBorderRadius" onchange="cambiarVistaPreviaBordes(this.value)">
+                                <option value="20px">Muy Redondeado (Premium)</option>
+                                <option value="12px">Redondeado Estándar</option>
+                                <option value="4px">Casi Recto (Moderno)</option>
+                                <option value="0px">Recto (Clásico)</option>
+                            </select>
+                        </div>
+                        <button type="button" onclick="guardarConfiguracionVisual()" class="btn btn-primary" style="width:100%;">💾 Guardar y Aplicar Tema</button>
+                    </div>
                     <h3>🎨 Apariencia</h3>
 
                     <!-- BANNERS HERO -->
@@ -671,6 +695,9 @@ Ej:
     </div>
 
     <script src="js/script.js?v=37" defer></script>
+    <script src="js/customization.js?v=1" defer></script>
+    <script src="js/security.js?v=1" defer></script>
+    <script src="js/dashboard.js?v=1" defer></script>
     <script src="js/subcategorias.js?v=11" defer></script>
     <script src="js/revolico_integration.js?v=10" defer></script>
     <script src="js/biometric-auth.js?v=2" defer></script>

@@ -6,7 +6,7 @@
 // - Manejo de pushsubscriptionchange para no perder tokens
 // ═══════════════════════════════════════════════════════
 
-const CACHE_NAME = 'tiendamax-v43';
+const CACHE_NAME = 'tiendamax-v46';
 const STATIC_ASSETS = [
   '/index.html',
   // CSS público (index.html)
@@ -20,6 +20,9 @@ const STATIC_ASSETS = [
   '/css/admin.css',
   // JS
   '/js/script.js',
+  '/js/dashboard.js',
+  '/js/customization.js',
+  '/js/security.js',
   '/js/share-patch.js',
   '/js/banners.js',
   '/js/subcategorias.js',
