@@ -663,7 +663,10 @@ function verificarProductosNuevos() {
 
 
 // ===== CONFIGURACIÓN GLOBAL =====
-const PASSWORD_ADMIN_HASH = 'a338781ef2610e22bde9dae45f2d8aaa6a8a8c4584158f18cd91089b9192bc62';
+// ⚠️ NO se guardan hashes de contraseña en el código fuente.
+// La autenticación usa PBKDF2 con sal aleatoria; el hash se guarda
+// en localStorage solo después de que el admin configura su contraseña
+// desde el panel. Ver función verificarPassword() más abajo.
 
 let productos = JSON.parse(localStorage.getItem('productos')) || [];
 let categorias = JSON.parse(localStorage.getItem('categorias')) || ['General'];
@@ -1019,13 +1022,8 @@ function validarProducto(producto) {
 
 // ===== CARGA DE DATOS DESDE GITHUB =====
 
-// Función para hashear la contraseña
-async function hashPassword(password) {
-    const msgUint8 = new TextEncoder().encode(password);
-    const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);
-    const hashArray = Array.from(new Uint8Array(hashBuffer));
-    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-}
+// Nota: hashPassword (SHA-256 sin sal) eliminado en v38.
+// La autenticación ahora usa _derivarClave (PBKDF2+sal, ver sección AUTENTICACIÓN).
 
 async function cargarDatosDesdeGitHub() {
     // Intentar usar raw.githubusercontent.com si está configurado (no tiene límite de 1MB)
@@ -1564,6 +1562,10 @@ function renderizarMasVendidos() {
 }
 
 // ===== AUTENTICACIÓN =====
+// Sistema PBKDF2 + sal aleatoria.
+// El hash NUNCA vive en el código fuente; se deriva y guarda en
+// localStorage la primera vez que el admin configura su contraseña
+// (o al hacer "Cambiar contraseña" en el panel).
 
 function abrirLoginAdmin() {
     window.location.href = 'admin.html';
@@ -1574,6 +1576,34 @@ function cerrarLoginModal() {
     modal.classList.add('hidden');
     modal.style.removeProperty('display');
     document.getElementById('adminPassword').value = '';
+}
+
+/**
+ * Deriva una clave PBKDF2-SHA-256 (310 000 iteraciones) a partir
+ * de la contraseña y la sal (hex). Devuelve hex string.
+ */
+async function _derivarClave(password, saltHex) {
+    const enc = new TextEncoder();
+    const keyMaterial = await crypto.subtle.importKey(
+        'raw', enc.encode(password), 'PBKDF2', false, ['deriveBits']
+    );
+    const salt = Uint8Array.from(saltHex.match(/.{2}/g).map(b => parseInt(b, 16)));
+    const bits  = await crypto.subtle.deriveBits(
+        { name: 'PBKDF2', hash: 'SHA-256', salt, iterations: 310_000 },
+        keyMaterial, 256
+    );
+    return Array.from(new Uint8Array(bits)).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+/**
+ * Guarda una contraseña nueva con PBKDF2 en localStorage.
+ * Llamar desde el panel de configuración al cambiar la contraseña.
+ */
+async function guardarPasswordAdmin(password) {
+    const saltArr = crypto.getRandomValues(new Uint8Array(16));
+    const saltHex = Array.from(saltArr).map(b => b.toString(16).padStart(2, '0')).join('');
+    const hash    = await _derivarClave(password, saltHex);
+    localStorage.setItem('admin_cred', JSON.stringify({ salt: saltHex, hash }));
 }
 
 async function verificarPassword(event) {
@@ -1588,22 +1618,38 @@ async function verificarPassword(event) {
     }
 
     const passwordInput = document.getElementById('adminPassword').value.trim();
-    const inputHash = await hashPassword(passwordInput);
-    
-    const hashesValidos = [
-        'a338781ef2610e22bde9dae45f2d8aaa6a8a8c4584158f18cd91089b9192bc62',
-        '90035f586903f0259868846c2459740b957630712759861619894101e405187e'
-    ];
-    
-    if (hashesValidos.includes(inputHash)) {
+
+    // ── Leer credencial almacenada ──
+    const credRaw = localStorage.getItem('admin_cred');
+    if (!credRaw) {
+        // Primera vez: no hay contraseña configurada — aceptar cualquiera y configurarla
+        await guardarPasswordAdmin(passwordInput);
+        localStorage.removeItem('admin_rl');
+        usuarioAutenticado = true;
+        cerrarLoginModal();
+        abrirAdminPanel();
+        mostrarNotificacion('✅ Contraseña configurada. Recuerda guardarla en un lugar seguro.', 'ok');
+        return;
+    }
+
+    let cred;
+    try { cred = JSON.parse(credRaw); } catch { cred = null; }
+
+    if (!cred || !cred.salt || !cred.hash) {
+        mostrarNotificacion('❌ Credencial corrupta. Borra admin_cred de localStorage y reconfigura.', 'error');
+        return;
+    }
+
+    const inputHash = await _derivarClave(passwordInput, cred.salt);
+
+    if (inputHash === cred.hash) {
         localStorage.removeItem('admin_rl');
         usuarioAutenticado = true;
         cerrarLoginModal();
         abrirAdminPanel();
     } else {
-        // Registrar intento fallido
         const newCount = (rl.count || 0) + 1;
-        const lockout = newCount >= 3 ? Date.now() + 5 * 60 * 1000 : rl.until;
+        const lockout  = newCount >= 3 ? Date.now() + 5 * 60 * 1000 : rl.until;
         localStorage.setItem('admin_rl', JSON.stringify({ count: newCount, until: lockout }));
         const msg = newCount >= 3
             ? '🔒 3 intentos fallidos. Bloqueado 5 min.'
@@ -1613,7 +1659,24 @@ async function verificarPassword(event) {
     }
 }
 
-function abrirAdminPanel() {
+/** Llamado desde el panel de configuración para cambiar la contraseña. */
+async function cambiarPasswordAdmin() {
+    const np  = (document.getElementById('newAdminPassword')?.value  || '').trim();
+    const cp  = (document.getElementById('confirmAdminPassword')?.value || '').trim();
+    const st  = document.getElementById('passwordChangeStatus');
+    const set = (msg, ok) => { if (st) { st.textContent = msg; st.style.color = ok ? '#2ecc71' : '#e74c3c'; } };
+
+    if (np.length < 8)       { set('❌ La contraseña debe tener al menos 8 caracteres.', false); return; }
+    if (np !== cp)           { set('❌ Las contraseñas no coinciden.', false); return; }
+
+    await guardarPasswordAdmin(np);
+    if (document.getElementById('newAdminPassword'))    document.getElementById('newAdminPassword').value    = '';
+    if (document.getElementById('confirmAdminPassword')) document.getElementById('confirmAdminPassword').value = '';
+    set('✅ Contraseña guardada correctamente en este dispositivo.', true);
+    mostrarNotificacion('🔑 Contraseña actualizada', 'ok');
+}
+
+
     if (!usuarioAutenticado) { abrirLoginAdmin(); return; }
     const panel = document.getElementById('adminPanel');
     if (!panel) return;

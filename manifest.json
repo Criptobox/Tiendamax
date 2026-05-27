@@ -5,7 +5,10 @@
     "start_url": "/",
     "scope": "/",
     "display": "standalone",
-    "display_override": ["standalone", "window-controls-overlay"],
+    "display_override": [
+        "standalone",
+        "window-controls-overlay"
+    ],
     "background_color": "#0D0D0D",
     "theme_color": "#0D0D0D",
     "orientation": "portrait-primary",
@@ -47,12 +50,5 @@
         "business"
     ],
     "lang": "es",
-    "shortcuts": [
-        {
-            "name": "Panel Admin",
-            "short_name": "Admin",
-            "description": "Abrir panel de administración",
-            "url": "/?admin=1"
-        }
-    ]
+    "shortcuts": []
 }

@@ -15,7 +15,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png">
 
     <!-- Solo CSS del admin -->
-    <link rel="stylesheet" href="css/styles.css?v=12">
+    <link rel="stylesheet" href="css/styles.css?v=13">
     <link rel="stylesheet" href="css/admin.css?v=3">
 
     <style>
@@ -371,7 +371,24 @@
                 <div id="configuracion" class="admin-tab">
                     <h3>Configuración de Sincronización</h3>
 
-                    <!-- NÚMERO WHATSAPP -->
+                    <!-- CAMBIO DE CONTRASEÑA ADMIN -->
+                    <div class="admin-config-box" style="border:2px solid #e74c3c;border-radius:12px;padding:20px;background:rgba(231,76,60,0.06);margin-bottom:20px;">
+                        <h4 class="admin-h4-flex"><span style="font-size:20px;">🔑</span> Contraseña del Panel</h4>
+                        <p class="admin-hint" style="color:#aaa;font-size:12px;margin-bottom:12px;">
+                            La contraseña se guarda en <em>este dispositivo</em> con PBKDF2 (nunca en el código fuente).
+                            Si es la primera vez, escribe la contraseña que quieras usar y pulsa Guardar.
+                        </p>
+                        <div class="form-group" style="margin-bottom:10px;">
+                            <label>Nueva contraseña:</label>
+                            <input type="password" id="newAdminPassword" placeholder="Mínimo 8 caracteres" minlength="8" autocomplete="new-password">
+                        </div>
+                        <div class="form-group" style="margin-bottom:10px;">
+                            <label>Confirmar contraseña:</label>
+                            <input type="password" id="confirmAdminPassword" placeholder="Repite la contraseña" autocomplete="new-password">
+                        </div>
+                        <button onclick="cambiarPasswordAdmin()" type="button" class="btn btn-primary" style="background:#e74c3c;width:100%;font-weight:800;">🔑 Guardar nueva contraseña</button>
+                        <p id="passwordChangeStatus" style="font-size:12px;margin-top:8px;text-align:center;font-weight:bold;"></p>
+                    </div>
                     <div class="admin-config-box whatsapp">
                         <h4 class="admin-h4-flex"><span style="font-size:20px;">💬</span> Número de WhatsApp</h4>
                         <p class="admin-hint">Este número recibe todos los pedidos. Sin código +53, solo dígitos.</p>
@@ -670,7 +687,7 @@ Ej:
         </div>
     </div>
 
-    <script src="js/script.js?v=37" defer></script>
+    <script src="js/script.js?v=38" defer></script>
     <script src="js/subcategorias.js?v=11" defer></script>
     <script src="js/revolico_integration.js?v=10" defer></script>
     <script src="js/biometric-auth.js?v=2" defer></script>

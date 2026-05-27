@@ -1,4 +1,10 @@
 User-agent: *
 Allow: /
 
+# Archivos de datos internos — no indexar
+Disallow: /ventas_historial.json
+Disallow: /comisiones.json
+Disallow: /.push_queue.json
+Disallow: /admin.html
+
 Sitemap: https://tiendamax.org/sitemap.xml

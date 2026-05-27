@@ -162,7 +162,18 @@ def regenerate_pages(products: list[dict]) -> tuple[int, list[str]]:
         name  = (p.get("nombre") or "").strip()
         desc  = desc_short(p.get("descripcion") or "")
         price = f"{float(p.get('precioActual') or 0):.2f}"
-        img   = p.get("imagen") or f"{SITE}/og-image.svg"
+        raw_img = p.get("imagen") or ""
+        # Nunca incrustar base64 en el HTML estático: los scrapers de OG no las procesan
+        # y dispara el tamaño del archivo. Usar la imagen local si existe, si no el fallback.
+        if raw_img.startswith("data:"):
+            # Intentar imagen local derivada del id del producto
+            local_img = f"{SITE}/imagenes/img_{pid}.jpg"
+            img = local_img
+        elif raw_img:
+            img = raw_img
+        else:
+            img = f"{SITE}/og-image.svg"
+
 
         # Sanitización: HTML escape para todo lo inyectado
         html_name = escape(name)
