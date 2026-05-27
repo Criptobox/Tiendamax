@@ -1,7 +1,6 @@
 'use strict';
 // ===== VARIABLES GLOBALES INICIALIZADAS TEMPRANO (evitar TDZ) =====
 var countdownIntervals = {};
-var _heroPrecioMin = 0; var _heroPrecioMax = Infinity;
 
 // ===== HELPER DE SANITIZACIÓN HTML (anti-XSS) =====
 function escapeHtml(s) {
@@ -1818,107 +1817,12 @@ async function sincronizarConBackend() {
 // ===== RENDERIZAR PRODUCTOS =====
 
 
-
-
 let productosVisibleCount = 20;
+
 function renderizarProductos(isLoadMore = false) {
-    if (!isLoadMore) productosVisibleCount = 20;
-    const grid = document.getElementById('productosGrid');
-    if (!grid) return;
-
-    let list = (typeof productos !== 'undefined') ? [...productos] : [];
-
-    // Filtro Categoría
-    if (categoriaSeleccionada !== 'Todas') {
-        list = list.filter(p => p.categoria === categoriaSeleccionada);
-        if (subcategoriaSeleccionada && subcategoriaSeleccionada !== 'Todas') {
-            list = list.filter(p => p.subcategoria === subcategoriaSeleccionada);
-        }
+    if (!isLoadMore) {
+        productosVisibleCount = 20;
     }
-
-    // Filtro Búsqueda + PRECIO (Corregido)
-    const q = (_heroSearchActivo || '').toLowerCase().trim();
-    const minP = parseFloat(_heroPrecioMin) || 0;
-    const maxP = parseFloat(_heroPrecioMax) || Infinity;
-
-    list = list.filter(p => {
-        const matchQ = !q || p.nombre.toLowerCase().includes(q) || (p.descripcion||'').toLowerCase().includes(q);
-        const matchP = p.precioActual >= minP && p.precioActual <= maxP;
-        return matchQ && matchP;
-    });
-
-    const ofId = getOfertaDiaId();
-    if (ofId) {
-        list.sort((a, b) => (String(a.id) === String(ofId)) ? -1 : (String(b.id) === String(ofId)) ? 1 : 0);
-    }
-
-    grid.innerHTML = '';
-    if (list.length === 0) {
-        grid.innerHTML = '<p style="grid-column:1/-1; text-align:center; padding:60px; color:#888;">No hay productos con estos filtros.</p>';
-        return;
-    }
-
-    list.slice(0, productosVisibleCount).forEach(p => {
-        const card = document.createElement('div');
-        const esAgotado = p.stock === 0;
-        const esOferta = String(p.id) === String(ofId);
-        card.className = 'producto-card' + (esAgotado ? ' card-agotado' : '');
-        card.onclick = () => abrirDetalleProducto(p.id);
-        
-        const _nom = escapeHtml(p.nombre);
-        const _pre = typeof formatPrecio === 'function' ? formatPrecio(p.precioActual) : '$' + p.precioActual;
-
-        card.innerHTML = (esOferta ? '<div class="badge-oferta-dia">' + escapeHtml(getOfertaDiaTexto()) + '</div>' : (esAgotado ? '<div class="badge-agotado">AGOTADO</div>' : (p.masVendido ? '<div class="badge-vendido">🔥 TOP</div>' : ''))) +
-            '<div class="producto-image">' +
-                getMeGustaHTML(p.id) +
-                '<img src="' + escapeAttr(p.imagen) + '" alt="' + _nom + '" loading="lazy">' +
-            '</div>' +
-            '<h3>' + _nom + '</h3>' +
-            '<p class="producto-description">' + escapeHtml(p.descripcion) + '</p>' +
-            '<p class="precio"><span class="precio-actual" data-usd="' + p.precioActual + '">' + _pre + '</span></p>' +
-            (esAgotado ? '<div class="stock" style="color:#e74c3c; font-weight:bold;">❌ Agotado</div>' : '<div class="stock">📦 Stock: ' + p.stock + ' uds</div>') +
-            (!esAgotado ? '<button class="btn-pedir-card" type="button" onclick="event.stopPropagation(); tmComprar(event, ' + p.id + ", '" + _nom.replace("'", "\'") + "')">🛒 Pedir</button>" : "");
-        grid.appendChild(card);
-    });
-}
-
-    }
-
-    // Filtro Búsqueda + PRECIO (Corregido)
-    const q = (_heroSearchActivo || '').toLowerCase().trim();
-    const min = parseFloat(_heroPrecioMin) || 0;
-    const max = parseFloat(_heroPrecioMax) || Infinity;
-
-    list = list.filter(p => {
-        const matchQ = !q || p.nombre.toLowerCase().includes(q) || (p.descripcion||'').toLowerCase().includes(q);
-        const matchP = p.precioActual >= min && p.precioActual <= max;
-        return matchQ && matchP;
-    });
-
-    const ofId = getOfertaDiaId();
-    if (ofId) {
-        list.sort((a, b) => (String(a.id) === String(ofId)) ? -1 : (String(b.id) === String(ofId)) ? 1 : 0);
-    }
-
-    grid.innerHTML = '';
-    if (list.length === 0) {
-        grid.innerHTML = '<p style="grid-column:1/-1; text-align:center; padding:60px; color:#888;">No hay productos con estos filtros.</p>';
-        return;
-    }
-
-    list.slice(0, productosVisibleCount).forEach(p => {
-        const card = document.createElement('div');
-        const esAgotado = p.stock === 0;
-        card.className = 'producto-card' + (esAgotado ? ' card-agotado' : '');
-        card.onclick = () => abrirDetalleProducto(p.id);
-        
-        const priceHTML = typeof formatPrecio === 'function' ? formatPrecio(p.precioActual) : '$' + p.precioActual;
-
-        card.innerHTML = ;
-        grid.appendChild(card);
-    });
-}
-
     const productosGrid = document.getElementById('productosGrid');
     if (!productosGrid) return;
 
@@ -6530,37 +6434,3 @@ window.addEventListener('popstate', function() {
         init();
     }
 })();
-
-function aplicarFiltrosPrecio() {
-    _heroPrecioMin = parseFloat(document.getElementById('filterPriceMin').value) || 0;
-    _heroPrecioMax = parseFloat(document.getElementById('filterPriceMax').value) || Infinity;
-    renderizarProductos();
-}
-
-function limpiarFiltrosPrecio() {
-    document.getElementById('filterPriceMin').value = '';
-    document.getElementById('filterPriceMax').value = '';
-    _heroPrecioMin = 0;
-    _heroPrecioMax = Infinity;
-    renderizarProductos();
-}
-
-function renderizarListaAgotados() {
-    const el = document.getElementById('productosAgotadosList');
-    if (!el) return;
-    const agotados = productos.filter(p => p.stock === 0);
-    if (agotados.length === 0) {
-        el.innerHTML = '<p style="font-size:13px;color:#27ae60;text-align:center;padding:10px;">✅ Inventario al día.</p>';
-        return;
-    }
-    el.innerHTML = agotados.map(p => `
-        <div style="display:flex; align-items:center; gap:12px; padding:12px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:12px; margin-bottom:8px;">
-            <img src="${p.imagen}" style="width:45px; height:45px; border-radius:8px; object-fit:cover; opacity:0.7;">
-            <div style="flex:1;">
-                <div style="font-size:14px; font-weight:700; color:#eee;">${p.nombre}</div>
-                <div style="font-size:11px; color:#e74c3c; font-weight:800;">AGOTADO</div>
-            </div>
-            <button class="btn" style="background:#333; color:white; font-size:11px; padding:6px 12px; border:none; border-radius:8px;" onclick="abrirEditModal(${p.id})">Editar</button>
-        </div>
-    `).join('');
-}
