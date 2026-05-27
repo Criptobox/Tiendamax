@@ -1,5 +1,5 @@
 {
-  "tasaMN": 560,
+  "tasaMN": 565.0,
   "ofertaDiaId": "1778104115783",
   "ofertaDiaTexto": "🔥🔥OFERTA🔥🔥",
   "ofertaDiaActualizado": "2026-05-26T21:36:37.536Z",
@@ -13,5 +13,7 @@
     "appId": "1:238891228701:web:d515133e229c48a5adb0f4",
     "vapidKey": "BAXhJOhwCtSkc1jH09b2q04lVg5Cr4QNK3C9dqUcBIjzEJZJ66vkS7MfNLAhopd-eK3jYkpXFMk4zBzQfs8nbhc"
   },
-  "actualizado": "2026-05-26T21:36:37.536Z"
+  "actualizado": "2026-05-27T22:40:32.915149+00:00",
+  "tasaFuente": "elTOQUE",
+  "tasaActualizada": "2026-05-27T18:29:50.000Z"
 }
