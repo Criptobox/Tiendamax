@@ -14,12 +14,29 @@ function _tmRtdbUrl() {
     return null;
 }
 
+// ── Rate limiting para prevenir abuso ──────────────────
+const _tmAnalyticsSessions = {};
+const _tmAnalyticsCooldown = 30000;
+const _tmAnalyticsMaxPerSession = 100;
+let _tmAnalyticsCount = 0;
+
+function _tmCanTrack(tipo, id) {
+    const key = `${tipo}_${id}`;
+    const now = Date.now();
+    if (_tmAnalyticsCount >= _tmAnalyticsMaxPerSession) return false;
+    if (_tmAnalyticsSessions[key] && (now - _tmAnalyticsSessions[key]) < _tmAnalyticsCooldown) return false;
+    _tmAnalyticsSessions[key] = now;
+    _tmAnalyticsCount++;
+    return true;
+}
+
 // ── Registrar un evento (fire-and-forget, nunca bloquea la UI) ──
 // tipo: 'vistas' | 'whatsapp'
 // id:   ID del producto (string o number)
 async function tmTrackEventoV2(tipo, id) {
     const base = _tmRtdbUrl();
     if (!base || !id) return;
+    if (!_tmCanTrack(tipo, id)) return;
     try {
         const url = `${base}/analytics/${tipo}/${String(id)}/count.json`;
         const r = await fetch(url);

@@ -237,7 +237,7 @@ function agregarSubcategoriaAlEditModal() {
 async function sincronizarSubcategoriasConGitHub() {
     const user = localStorage.getItem('githubUser');
     const repo = localStorage.getItem('githubRepo');
-    const token = localStorage.getItem('githubToken');
+    const token = (typeof obtenerGitHubToken === 'function') ? await obtenerGitHubToken() : localStorage.getItem('githubToken');
     if (!user || !repo || !token) {
         mostrarNotificacion('⚠️ Configura GitHub en la pestaña Configuración primero', 'error');
         return;

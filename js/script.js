@@ -440,7 +440,7 @@ function guardarResena() {
     (async function subirResena() {
         const user  = localStorage.getItem('githubUser');
         const repo  = localStorage.getItem('githubRepo');
-        const token = localStorage.getItem('githubToken');
+        const token = await obtenerGitHubToken();
         if (!user || !repo || !token) {
             // Sin credenciales de admin: la reseña solo queda en este dispositivo
             // FIX: mensaje honesto - sin admin no hay sync con GitHub
@@ -667,7 +667,8 @@ function verificarProductosNuevos() {
 // Constantes para autenticacion PBKDF2
 const AUTH_SALT_KEY = 'tm_auth_salt_v3';
 const AUTH_HASH_KEY = 'tm_auth_hash_v3';
-const AUTH_ITERATIONS = 310000;
+const AUTH_ITERATIONS = 600000;
+const AUTH_ITERATIONS_LEGACY = 310000;
 
 function _generarSal() {
     const arr = new Uint8Array(16);
@@ -917,7 +918,7 @@ document.addEventListener('click', (e) => {
 async function subirImagenAGitHub(fileOrBase64) {
     const user  = localStorage.getItem('githubUser');
     const repo  = localStorage.getItem('githubRepo');
-    const token = localStorage.getItem('githubToken');
+    const token = await obtenerGitHubToken();
 
     const base64full = await comprimirImagen(fileOrBase64);
 
@@ -1051,13 +1052,14 @@ function validarProducto(producto) {
 // ===== CARGA DE DATOS DESDE GITHUB =====
 
 // Función para hashear la contraseña (PBKDF2). salt opcional (default: _getSalt())
-async function hashPassword(password, salt) {
+async function hashPassword(password, salt, iterations) {
     const s = salt || _getSalt();
+    const iter = iterations || AUTH_ITERATIONS;
     const keyMaterial = await crypto.subtle.importKey(
         'raw', new TextEncoder().encode(password), 'PBKDF2', false, ['deriveBits']
     );
     const bits = await crypto.subtle.deriveBits(
-        { name: 'PBKDF2', salt: new TextEncoder().encode(s), iterations: AUTH_ITERATIONS, hash: 'SHA-256' },
+        { name: 'PBKDF2', salt: new TextEncoder().encode(s), iterations: iter, hash: 'SHA-256' },
         keyMaterial, 256
     );
     const hashArray = Array.from(new Uint8Array(bits));
@@ -1645,12 +1647,48 @@ async function verificarPassword(event) {
     // 2. Auth según disponibilidad: GitHub primero, luego local, luego migración
     if (ghHash && ghSalt) {
         // 2a. Auth global desde GitHub
-        const inputHash = await hashPassword(passwordInput, ghSalt);
-        if (inputHash === ghHash) {
+        let inputHash = await hashPassword(passwordInput, ghSalt, AUTH_ITERATIONS);
+        let matched = inputHash === ghHash;
+        let needsMigration = false;
+        
+        // Si falla con iteraciones nuevas, intentar con legacy
+        if (!matched) {
+            inputHash = await hashPassword(passwordInput, ghSalt, AUTH_ITERATIONS_LEGACY);
+            if (inputHash === ghHash) {
+                matched = true;
+                needsMigration = true;
+            }
+        }
+        
+        if (matched) {
             localStorage.removeItem('admin_rl');
             try { localStorage.setItem(AUTH_SALT_KEY, ghSalt); } catch(e) {}
             try { localStorage.setItem(AUTH_HASH_KEY, ghHash); } catch(e) {}
             usuarioAutenticado = true;
+            if (typeof setSessionPassword === 'function') setSessionPassword(passwordInput);
+            if (typeof migrateLegacyTokenIfNeeded === 'function') await migrateLegacyTokenIfNeeded(passwordInput);
+            
+            // Migrar hash a nuevas iteraciones si es necesario
+            if (needsMigration) {
+                const newHash = await hashPassword(passwordInput, ghSalt, AUTH_ITERATIONS);
+                const ghToken = await obtenerGitHubToken();
+                if (ghToken) {
+                    try {
+                        const authData = { hash: newHash, salt: ghSalt, iterations: AUTH_ITERATIONS };
+                        const jsonStr = JSON.stringify(authData);
+                        const content = btoa(unescape(encodeURIComponent(jsonStr)));
+                        await fetch(`https://api.github.com/repos/${ghUser}/${ghRepo}/contents/.admin-auth.json`, {
+                            method: 'PUT',
+                            headers: { 'Authorization': `token ${ghToken}`, 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ message: 'Migrar hash a 600K iteraciones', content })
+                        });
+                        mostrarNotificacion('🔐 Seguridad mejorada automáticamente', 'success');
+                    } catch(e) {
+                        console.warn('No se pudo migrar hash a GitHub:', e);
+                    }
+                }
+            }
+            
             cerrarLoginModal();
             abrirAdminPanel();
             return;
@@ -1660,10 +1698,26 @@ async function verificarPassword(event) {
         const lsSalt = localStorage.getItem(AUTH_SALT_KEY);
         if (lsHash && lsSalt) {
             // 2b. Auth local (per-browser backup)
-            const inputHash = await hashPassword(passwordInput, lsSalt);
-            if (inputHash === lsHash) {
+            let inputHash = await hashPassword(passwordInput, lsSalt, AUTH_ITERATIONS);
+            let matched = inputHash === lsHash;
+            
+            // Si falla con iteraciones nuevas, intentar con legacy
+            if (!matched) {
+                inputHash = await hashPassword(passwordInput, lsSalt, AUTH_ITERATIONS_LEGACY);
+                if (inputHash === lsHash) {
+                    matched = true;
+                    // Migrar hash local a nuevas iteraciones
+                    const newHash = await hashPassword(passwordInput, lsSalt, AUTH_ITERATIONS);
+                    try { localStorage.setItem(AUTH_HASH_KEY, newHash); } catch(e) {}
+                    mostrarNotificacion('🔐 Seguridad mejorada automáticamente', 'success');
+                }
+            }
+            
+            if (matched) {
                 localStorage.removeItem('admin_rl');
                 usuarioAutenticado = true;
+                if (typeof setSessionPassword === 'function') setSessionPassword(passwordInput);
+                if (typeof migrateLegacyTokenIfNeeded === 'function') await migrateLegacyTokenIfNeeded(passwordInput);
                 cerrarLoginModal();
                 abrirAdminPanel();
                 return;
@@ -1695,6 +1749,8 @@ async function verificarPassword(event) {
                 }
                 localStorage.removeItem('admin_rl');
                 usuarioAutenticado = true;
+                if (typeof setSessionPassword === 'function') setSessionPassword(passwordInput);
+                if (typeof migrateLegacyTokenIfNeeded === 'function') await migrateLegacyTokenIfNeeded(passwordInput);
                 cerrarLoginModal();
                 abrirAdminPanel();
                 mostrarNotificacion('✅ Contraseña migrada al nuevo sistema. Cámbiala desde Configuración.', 'success');
@@ -1816,6 +1872,8 @@ function cerrarAdminPanel() {
     panel.classList.remove('visible');
     panel.style.removeProperty('display');
     document.body.classList.remove('admin-mode');
+    if (typeof clearSessionPassword === 'function') clearSessionPassword();
+    usuarioAutenticado = false;
 }
 
 function switchTab(tabName) {
@@ -2770,9 +2828,20 @@ async function cargarEstadoPublicacion() {
 function cargarConfiguracionGitHub() {
     document.getElementById('githubUser').value = localStorage.getItem('githubUser') || '';
     document.getElementById('githubRepo').value = localStorage.getItem('githubRepo') || 'Tiendamax';
-    document.getElementById('githubToken').value = localStorage.getItem('githubToken') || '';
+    const tokenField = document.getElementById('githubToken');
+    if (tokenField) {
+        if (typeof hasSecureGitHubToken === 'function' && hasSecureGitHubToken()) {
+            tokenField.value = '';
+            tokenField.placeholder = '🔐 Token cifrado (ingresa uno nuevo para cambiar)';
+        } else if (typeof hasLegacyGitHubToken === 'function' && hasLegacyGitHubToken()) {
+            tokenField.value = '';
+            tokenField.placeholder = '⚠️ Token sin cifrar — guarda para cifrar';
+        } else {
+            tokenField.value = '';
+            tokenField.placeholder = 'ghp_xxxxxxxxxxxx';
+        }
+    }
     
-    // Cargar config de Firebase
     const fbConfig = localStorage.getItem('firebaseConfig');
     if (fbConfig) {
         try {
@@ -2787,12 +2856,44 @@ function cargarConfiguracionGitHub() {
     document.getElementById('firebaseServerKey').value = localStorage.getItem('fcmServerKey') || '';
 }
 
-function guardarConfiguracionGitHub(event) {
+async function guardarConfiguracionGitHub(event) {
     event.preventDefault();
     localStorage.setItem('githubUser', document.getElementById('githubUser').value.trim());
     localStorage.setItem('githubRepo', document.getElementById('githubRepo').value.trim());
-    localStorage.setItem('githubToken', document.getElementById('githubToken').value.trim());
-    mostrarNotificacion('✅ Configuración de GitHub guardada localmente');
+    
+    const newToken = document.getElementById('githubToken').value.trim();
+    if (newToken) {
+        if (typeof secureSaveGitHubToken === 'function') {
+            const password = _sessionPassword || null;
+            if (!password) {
+                mostrarNotificacion('⚠️ Inicia sesión primero para cifrar el token', 'error');
+                return;
+            }
+            const saved = await secureSaveGitHubToken(newToken, password);
+            if (saved) {
+                mostrarNotificacion('✅ Configuración guardada — token cifrado con AES-256', 'success');
+            } else {
+                mostrarNotificacion('❌ Error cifrando el token', 'error');
+                return;
+            }
+        } else {
+            localStorage.setItem('githubToken', newToken);
+            mostrarNotificacion('⚠️ Token guardado sin cifrar (secure-storage.js no cargado)', 'error');
+        }
+    } else {
+        mostrarNotificacion('✅ Configuración de GitHub guardada', 'success');
+    }
+}
+
+async function obtenerGitHubToken() {
+    if (typeof secureGetGitHubToken === 'function') {
+        const password = _sessionPassword || null;
+        if (password) {
+            const token = await secureGetGitHubToken(password);
+            if (token) return token;
+        }
+    }
+    return localStorage.getItem('githubToken') || null;
 }
 
 // ===== SISTEMA DE DELTA SYNC =====
@@ -2816,7 +2917,7 @@ function obtenerProductosModificados() {
 async function sincronizarTodoConGitHub() {
     const user  = localStorage.getItem('githubUser');
     const repo  = localStorage.getItem('githubRepo');
-    const token = localStorage.getItem('githubToken');
+    const token = await obtenerGitHubToken();
     if (!user || !repo || !token) {
         mostrarNotificacion('❌ Configura primero tu usuario, repo y token en la pestaña Configuración', 'error');
         switchTab('configuracion');
@@ -2932,7 +3033,7 @@ async function sincronizarTodoConGitHub() {
 async function sincronizarConGitHub() {
     const user = localStorage.getItem('githubUser');
     const repo = localStorage.getItem('githubRepo');
-    const token = localStorage.getItem('githubToken');
+    const token = await obtenerGitHubToken();
     if (!user || !repo || !token) {
         console.log('ℹ️ GitHub no configurado. Saltando sincronización automática.');
         return;
@@ -3627,7 +3728,7 @@ function registrarVenta(productoId, cantidad) {
     // Sincronizar historial con GitHub en segundo plano
     const _ghUser  = localStorage.getItem('githubUser');
     const _ghRepo  = localStorage.getItem('githubRepo');
-    const _ghToken = localStorage.getItem('githubToken');
+    const _ghToken = await obtenerGitHubToken();
     if (_ghUser && _ghRepo && _ghToken) {
         const _ventas = JSON.parse(localStorage.getItem('registroVentas') || '[]');
         subirArchivoAGitHub(_ghUser, _ghRepo, _ghToken, 'ventas_historial.json', _ventas)
@@ -4041,7 +4142,7 @@ function _guardarOfertaDiaDesde(sel, textoEl) {
     (async () => {
         const _u = localStorage.getItem('githubUser');
         const _r = localStorage.getItem('githubRepo');
-        const _t = localStorage.getItem('githubToken');
+        const _t = await obtenerGitHubToken();
         if (!_u || !_r || !_t) return;
         try {
             const existing = await fetch(`https://raw.githubusercontent.com/${_u}/${_r}/main/config.json?_=${Date.now()}`).then(r=>r.ok?r.json():{}).catch(()=>({}));
@@ -4065,7 +4166,7 @@ function desactivarOfertaDia() {
     (async () => {
         const _u = localStorage.getItem('githubUser');
         const _r = localStorage.getItem('githubRepo');
-        const _t = localStorage.getItem('githubToken');
+        const _t = await obtenerGitHubToken();
         if (!_u || !_r || !_t) return;
         try {
             const existing = await fetch(`https://raw.githubusercontent.com/${_u}/${_r}/main/config.json?_=${Date.now()}`).then(r=>r.ok?r.json():{}).catch(()=>({}));
@@ -5417,7 +5518,7 @@ function getTasaMN() {
 async function guardarTasaEnGitHub(tasaBase) {
     const user  = localStorage.getItem('githubUser');
     const repo  = localStorage.getItem('githubRepo');
-    const token = localStorage.getItem('githubToken');
+    const token = await obtenerGitHubToken();
     if (!user || !repo || !token) return false;
     try {
         // Leer config existente antes de escribir para no borrar ofertaDiaId ni otros campos
@@ -5835,11 +5936,10 @@ async function guardarConfigFirebaseAdmin() {
     
     const user = localStorage.getItem('githubUser');
     const repo = localStorage.getItem('githubRepo');
-    const token = localStorage.getItem('githubToken');
+    const token = await obtenerGitHubToken();
     
     if (!user || !repo || !token) {
         if (status) status.textContent = '⚠️ Guardado localmente en navegador. Para sincronizar globalmente con GitHub, configura tus credenciales arriba.';
-        // Inicializar de una vez localmente para probar
         inicializarFirebaseFCMClient(parsedConfig);
         return;
     }
