@@ -1,6 +1,7 @@
 'use strict';
 // ===== VARIABLES GLOBALES INICIALIZADAS TEMPRANO (evitar TDZ) =====
 var countdownIntervals = {};
+var _heroPrecioMin = 0; var _heroPrecioMax = Infinity;
 
 // ===== HELPER DE SANITIZACIÓN HTML (anti-XSS) =====
 function escapeHtml(s) {
@@ -1678,7 +1679,6 @@ function switchTab(tabName) {
         }, 100);
     }
     if (tabName === 'configuracion') {
-        setTimeout(renderizarLogsSeguridad, 100);
         setTimeout(cargarNumeroWhatsApp, 100);
         setTimeout(cargarConfiguracionGitHub, 100);
     }
@@ -1819,6 +1819,106 @@ async function sincronizarConBackend() {
 
 
 
+
+let productosVisibleCount = 20;
+function renderizarProductos(isLoadMore = false) {
+    if (!isLoadMore) productosVisibleCount = 20;
+    const grid = document.getElementById('productosGrid');
+    if (!grid) return;
+
+    let list = (typeof productos !== 'undefined') ? [...productos] : [];
+
+    // Filtro Categoría
+    if (categoriaSeleccionada !== 'Todas') {
+        list = list.filter(p => p.categoria === categoriaSeleccionada);
+        if (subcategoriaSeleccionada && subcategoriaSeleccionada !== 'Todas') {
+            list = list.filter(p => p.subcategoria === subcategoriaSeleccionada);
+        }
+    }
+
+    // Filtro Búsqueda + PRECIO (Corregido)
+    const q = (_heroSearchActivo || '').toLowerCase().trim();
+    const minP = parseFloat(_heroPrecioMin) || 0;
+    const maxP = parseFloat(_heroPrecioMax) || Infinity;
+
+    list = list.filter(p => {
+        const matchQ = !q || p.nombre.toLowerCase().includes(q) || (p.descripcion||'').toLowerCase().includes(q);
+        const matchP = p.precioActual >= minP && p.precioActual <= maxP;
+        return matchQ && matchP;
+    });
+
+    const ofId = getOfertaDiaId();
+    if (ofId) {
+        list.sort((a, b) => (String(a.id) === String(ofId)) ? -1 : (String(b.id) === String(ofId)) ? 1 : 0);
+    }
+
+    grid.innerHTML = '';
+    if (list.length === 0) {
+        grid.innerHTML = '<p style="grid-column:1/-1; text-align:center; padding:60px; color:#888;">No hay productos con estos filtros.</p>';
+        return;
+    }
+
+    list.slice(0, productosVisibleCount).forEach(p => {
+        const card = document.createElement('div');
+        const esAgotado = p.stock === 0;
+        const esOferta = String(p.id) === String(ofId);
+        card.className = 'producto-card' + (esAgotado ? ' card-agotado' : '');
+        card.onclick = () => abrirDetalleProducto(p.id);
+        
+        const _nom = escapeHtml(p.nombre);
+        const _pre = typeof formatPrecio === 'function' ? formatPrecio(p.precioActual) : '$' + p.precioActual;
+
+        card.innerHTML = (esOferta ? '<div class="badge-oferta-dia">' + escapeHtml(getOfertaDiaTexto()) + '</div>' : (esAgotado ? '<div class="badge-agotado">AGOTADO</div>' : (p.masVendido ? '<div class="badge-vendido">🔥 TOP</div>' : ''))) +
+            '<div class="producto-image">' +
+                getMeGustaHTML(p.id) +
+                '<img src="' + escapeAttr(p.imagen) + '" alt="' + _nom + '" loading="lazy">' +
+            '</div>' +
+            '<h3>' + _nom + '</h3>' +
+            '<p class="producto-description">' + escapeHtml(p.descripcion) + '</p>' +
+            '<p class="precio"><span class="precio-actual" data-usd="' + p.precioActual + '">' + _pre + '</span></p>' +
+            (esAgotado ? '<div class="stock" style="color:#e74c3c; font-weight:bold;">❌ Agotado</div>' : '<div class="stock">📦 Stock: ' + p.stock + ' uds</div>') +
+            (!esAgotado ? '<button class="btn-pedir-card" type="button" onclick="event.stopPropagation(); tmComprar(event, ' + p.id + ", '" + _nom.replace("'", "\'") + "')">🛒 Pedir</button>" : "");
+        grid.appendChild(card);
+    });
+}
+
+    }
+
+    // Filtro Búsqueda + PRECIO (Corregido)
+    const q = (_heroSearchActivo || '').toLowerCase().trim();
+    const min = parseFloat(_heroPrecioMin) || 0;
+    const max = parseFloat(_heroPrecioMax) || Infinity;
+
+    list = list.filter(p => {
+        const matchQ = !q || p.nombre.toLowerCase().includes(q) || (p.descripcion||'').toLowerCase().includes(q);
+        const matchP = p.precioActual >= min && p.precioActual <= max;
+        return matchQ && matchP;
+    });
+
+    const ofId = getOfertaDiaId();
+    if (ofId) {
+        list.sort((a, b) => (String(a.id) === String(ofId)) ? -1 : (String(b.id) === String(ofId)) ? 1 : 0);
+    }
+
+    grid.innerHTML = '';
+    if (list.length === 0) {
+        grid.innerHTML = '<p style="grid-column:1/-1; text-align:center; padding:60px; color:#888;">No hay productos con estos filtros.</p>';
+        return;
+    }
+
+    list.slice(0, productosVisibleCount).forEach(p => {
+        const card = document.createElement('div');
+        const esAgotado = p.stock === 0;
+        card.className = 'producto-card' + (esAgotado ? ' card-agotado' : '');
+        card.onclick = () => abrirDetalleProducto(p.id);
+        
+        const priceHTML = typeof formatPrecio === 'function' ? formatPrecio(p.precioActual) : '$' + p.precioActual;
+
+        card.innerHTML = ;
+        grid.appendChild(card);
+    });
+}
+
     const productosGrid = document.getElementById('productosGrid');
     if (!productosGrid) return;
 
@@ -1830,11 +1930,19 @@ async function sincronizarConBackend() {
     if (categoriaSeleccionada !== 'Todas' && subcategoriaSeleccionada && subcategoriaSeleccionada !== 'Todas') {
         productosFiltrados = productosFiltrados.filter(p => p.subcategoria === subcategoriaSeleccionada);
     }
-    
-    // Filtro de búsqueda y precio (NUEVO)
 
     // Filtro de búsqueda hero y precio
-    
+    if (_heroSearchActivo || _heroPrecioMin > 0 || _heroPrecioMax < Infinity) {
+        const q = _heroSearchActivo;
+        productosFiltrados = productosFiltrados.filter(p => {
+            const matchQ = !q || p.nombre.toLowerCase().includes(q) ||
+                (p.descripcion||'').toLowerCase().includes(q) ||
+                (p.categoria||'').toLowerCase().includes(q);
+            const matchP = p.precioActual >= _heroPrecioMin && p.precioActual <= _heroPrecioMax;
+            return matchQ && matchP;
+        });
+    }
+
     productosGrid.innerHTML = '';
 
     if (productosFiltrados.length === 0) {
@@ -2050,7 +2158,7 @@ if (_detailPrecioOldEl) {
     setEstrellas(0);
 
     // Historial de vistas
-    registrarVisto(p.id); registrarVistaProd(p.id);
+    registrarVisto(p.id);
 
     // Personas viendo (contador simulado con base en vistas reales)
     (function() {
@@ -3898,22 +4006,17 @@ function getOfertaDiaTexto() {
 }
 
 // Renderizar lista de productos agotados en el panel
-    el.innerHTML = agotados.map(p =>
-        '<div style="display:flex;align-items:center;gap:10px;padding:12px;background:rgba(0,0,0,0.3);border-radius:12px;border:1.5px solid rgba(231,76,60,0.3);color:#eee;">' +
-            '<img src="' + escapeAttr(p.imagen) + '" style="width:45px;height:45px;border-radius:8px;object-fit:cover;" onerror="this.style.display=\'none\'">' +
-            '<div style="flex:1;"><div style="font-size:14px;font-weight:700;color:#eee;">' + escapeHtml(p.nombre) + '</div>' +
-            '<div style="font-size:11px;color:#e74c3c;font-weight:700;margin-top:2px;">📦 PRODUCTO AGOTADO</div></div>' +
-            '<button class="btn btn-primary" onclick="abrirEditModal(' + safeNum(p.id) + ')" style="font-size:11px;padding:6px 12px;background:#e74c3c;border:none;">✏️ Editar</button>' +
-        '</div>'
-    ).join('');
-}
-
-}
-
-}
+function renderizarListaAgotados() {
+    const el = document.getElementById('productosAgotadosList');
+    if (!el) return;
+    const agotados = productos.filter(p => p.stock === 0);
+    if (agotados.length === 0) {
+        el.innerHTML = '<p style="font-size:13px;color:#27ae60;text-align:center;">✅ No hay productos agotados actualmente.</p>';
+        return;
+    }
     // FIX BUG #8: sanitización anti-XSS
     el.innerHTML = agotados.map(p =>
-        '<div style="display:flex;align-items:center;gap:10px;padding:10px;background:rgba(0,0,0,0.3);border-radius:12px;border:1.5px solid rgba(231,76,60,0.3);color:#eee;">' +
+        '<div style="display:flex;align-items:center;gap:10px;padding:10px;background:white;border-radius:10px;border:1px solid rgba(231,76,60,0.3);">' +
             '<img src="' + escapeAttr(p.imagen) + '" style="width:40px;height:40px;border-radius:8px;object-fit:cover;" onerror="this.style.display=\'none\'">' +
             '<div style="flex:1;"><div style="font-size:13px;font-weight:700;">' + escapeHtml(p.nombre) + '</div>' +
             '<div style="font-size:11px;color:#e74c3c;font-weight:700;">📦 AGOTADO</div></div>' +
@@ -3924,7 +4027,117 @@ function getOfertaDiaTexto() {
 
 // ── Patch renderizarProductos to show agotado/oferta badges ──
 const _origRenderProductosFinal = renderizarProductos;
+renderizarProductos = function() {
+    const productosGrid = document.getElementById('productosGrid');
+    if (!productosGrid) { _origRenderProductosFinal(); return; }
 
+    // Log de diagnóstico (solo en consola, no panel visual)
+    console.log('[TM RENDER]', {
+        catSel: categoriaSeleccionada,
+        subSel: subcategoriaSeleccionada,
+        productos_total: Array.isArray(productos) ? productos.length : 'NO-ARRAY',
+    });
+
+    // RESILIENCIA: si productos está vacío, intentar cargar de localStorage
+    if (!Array.isArray(productos) || productos.length === 0) {
+        try {
+            const cached = JSON.parse(localStorage.getItem('productos') || '[]');
+            if (Array.isArray(cached) && cached.length > 0) {
+                productos = cached;
+                console.log('[TM RENDER] Productos recuperados de localStorage:', productos.length);
+            }
+        } catch(e) {}
+    }
+
+    let productosFiltrados = categoriaSeleccionada === 'Todas'
+        ? productos
+        : productos.filter(p => p.categoria === categoriaSeleccionada);
+
+    console.log('[TM RENDER] Tras filtro categoría:', productosFiltrados.length);
+
+    if (categoriaSeleccionada !== 'Todas' && subcategoriaSeleccionada && subcategoriaSeleccionada !== 'Todas') {
+        productosFiltrados = productosFiltrados.filter(p => p.subcategoria === subcategoriaSeleccionada);
+        console.log('[TM RENDER] Tras filtro subcategoría:', productosFiltrados.length);
+    }
+    if (_heroSearchActivo || _heroPrecioMin > 0 || _heroPrecioMax < Infinity) {
+        const q = _heroSearchActivo;
+        productosFiltrados = productosFiltrados.filter(p => {
+            const matchQ = !q || p.nombre.toLowerCase().includes(q) ||
+                (p.descripcion||'').toLowerCase().includes(q) ||
+                (p.categoria||'').toLowerCase().includes(q);
+            return matchQ;
+        });
+        console.log('[TM RENDER] Tras filtro búsqueda:', productosFiltrados.length);
+    }
+    console.log('[TM RENDER] FINAL productosFiltrados:', productosFiltrados.length);
+
+    // Ordenar: oferta del día primero
+    const ofertaId = getOfertaDiaId();
+    if (ofertaId) {
+        productosFiltrados = productosFiltrados.sort((a, b) => {
+            if (String(a.id) === String(ofertaId)) return -1;
+            if (String(b.id) === String(ofertaId)) return 1;
+            return 0;
+        });
+    }
+
+    productosGrid.innerHTML = '';
+    if (productosFiltrados.length === 0) {
+        // Mensaje contextual según la situación real
+        let mensaje;
+        if (!Array.isArray(productos) || productos.length === 0) {
+            mensaje = '⏳ Cargando productos... Si esto persiste, recarga la página.';
+        } else if (subcategoriaSeleccionada && subcategoriaSeleccionada !== 'Todas') {
+            mensaje = 'No hay productos en esta subcategoría aún.';
+        } else if (_heroSearchActivo) {
+            mensaje = 'No hay productos que coincidan con tu búsqueda.';
+        } else {
+            mensaje = 'No hay productos en esta categoría aún.';
+        }
+        productosGrid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #999; padding: 60px 20px; font-size:15px;">' + escapeHtml(mensaje) + '</p>';
+        return;
+    }
+
+    productosFiltrados.forEach(producto => {
+        const esAgotado = producto.stock === 0;
+        const esOfertaDia = String(producto.id) === String(ofertaId);
+        const card = document.createElement('div');
+        card.className = 'producto-card' + (esAgotado ? ' card-agotado' : '');
+        card.onclick = () => abrirDetalleProducto(producto.id);
+        card.style.position = 'relative';
+        // Sanitización defensiva (escapeHtml/escapeAttr definidos al inicio del script)
+        const _id  = safeNum(producto.id);
+        const _nom = escapeHtml(producto.nombre);
+        const _des = escapeHtml(producto.descripcion);
+        const _img = escapeAttr(producto.imagen);
+        const _stk = safeNum(producto.stock);
+        const _txt = escapeHtml(getOfertaDiaTexto());
+        // Para el onclick del botón Pedir: necesitamos un string seguro para JS
+        const _nomJS = (producto.nombre || '').replace(/[\\'"<>]/g, '');
+        card.innerHTML =
+            (esOfertaDia ? '<div class="badge-oferta-dia">' + _txt + '</div>' :
+             esAgotado ? '<div class="badge-agotado">AGOTADO</div>' :
+             producto.masVendido ? '<div class="badge-vendido">🔥 Más Vendido</div>' : '') +
+            '<div class="producto-image">' +
+                getMeGustaHTML(_id) +
+                '<img src="' + _img + '" alt="' + _nom + '" loading="lazy">' +
+                (producto.precioOriginal > 0 && producto.precioOriginal > producto.precioActual ? '<div class="badge">-$' + (producto.precioOriginal - producto.precioActual).toFixed(0) + '</div>' : '') +
+            '</div>' +
+            '<h3>' + _nom + '</h3>' +
+            '<p class="producto-description">' + _des + '</p>' +
+            '<p class="precio">' +
+                (producto.precioOriginal > 0 && producto.precioOriginal > producto.precioActual ? '<span class="precio-tachado">$' + parseFloat(producto.precioOriginal).toFixed(2) + ' USD</span> ' : '') +
+                '<span class="precio-actual" data-usd="' + safeNum(producto.precioActual) + '">$' + Number(producto.precioActual).toFixed(2) + ' USD</span>' +
+                (producto.precioOriginal > 0 && producto.precioOriginal > producto.precioActual ? ' <span class="precio-ahorro">-$' + (parseFloat(producto.precioOriginal) - parseFloat(producto.precioActual)).toFixed(0) + '</span>' : '') +
+            '</p>' +
+            (esAgotado
+                ? '<div class="stock" style="color:#e74c3c;font-weight:700;">❌ Agotado</div><button class="btn btn-small btn-primary" disabled style="opacity:0.5;cursor:not-allowed;">No disponible</button>'
+                : (_stk <= 3 && _stk > 0 ? '<div class="stock stock-urgente">⚠️ ¡Solo quedan ' + _stk + '!</div>' : '<div class="stock">📦 Stock: ' + _stk + ' unidades</div>') +
+                  (typeof renderCountdownHtml === 'function' ? renderCountdownHtml(_id) : '') +
+                  '<button class="btn-pedir-card" data-nombre="' + _nom + '" onclick="event.stopPropagation(); tmComprar(event, ' + _id + ', this.dataset.nombre)" type="button"><span class="btn-pedir-wa-icon-sm"><svg viewBox="0 0 24 24" width="14" height="14" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg></span> Pedir</button>');
+        productosGrid.appendChild(card);
+    });
+};
 
 
 /* ============================================================
@@ -5841,6 +6054,12 @@ async function guardarTasaMNAdmin() {
     }
 
     const _tmRenderProductosPrev = renderizarProductos;
+    renderizarProductos = function () {
+        _tmRenderProductosPrev.apply(this, arguments);
+        tmPostProcesarGridProductos();
+        if (typeof iniciarCountdownsActivos === 'function') setTimeout(iniciarCountdownsActivos, 50);
+        if (typeof initScrollAnimations === 'function') setTimeout(initScrollAnimations, 20);
+    };
 
     const _tmRenderMasVendidosPrev = renderizarMasVendidos;
     renderizarMasVendidos = function () {
@@ -6040,9 +6259,6 @@ window.addEventListener('popstate', function() {
 
         if (estado === 'activo') {
             icono.textContent = '🔔';
-        if (typeof _heroPrecioMin !== "undefined" && typeof _heroPrecioMax !== "undefined") {
-            lista = lista.filter(p => p.precioActual >= _heroPrecioMin && p.precioActual <= _heroPrecioMax);
-        }
             texto.textContent = 'Notificaciones ACTIVAS';
             subtexto.textContent = 'Recibirás ofertas, productos nuevos y cambios de tasa';
             boton.textContent = '🔕 Desactivar notificaciones';
@@ -6315,175 +6531,36 @@ window.addEventListener('popstate', function() {
     }
 })();
 
-
-
-
-}
-
-
-    const searchQ = (_heroSearchActivo || '').toLowerCase().trim();
-    if (searchQ || _heroPrecioMin > 0 || _heroPrecioMax < Infinity) {
-        filtrados = filtrados.filter(p => {
-            const matchQ = !searchQ || p.nombre.toLowerCase().includes(searchQ) || (p.descripcion||'').toLowerCase().includes(searchQ);
-            const matchP = p.precioActual >= _heroPrecioMin && p.precioActual <= _heroPrecioMax;
-            return matchQ && matchP;
-        });
-    }
-
-    const ofId = getOfertaDiaId();
-    if (ofId) {
-        filtrados.sort((a, b) => (String(a.id) === String(ofId)) ? -1 : (String(b.id) === String(ofId)) ? 1 : 0);
-    }
-
-    grid.innerHTML = '';
-    if (filtrados.length === 0) {
-        grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #666; padding: 60px 20px;">No se encontraron productos.</p>';
-        return;
-    }
-
-    filtrados.slice(0, productosVisibleCount).forEach(p => {
-        const card = document.createElement('div');
-        const esAgotado = p.stock === 0;
-        const esOferta = String(p.id) === String(ofId);
-        card.className = 'producto-card' + (esAgotado ? ' card-agotado' : '');
-        card.onclick = () => abrirDetalleProducto(p.id);
-        
-        const _nom = escapeHtml(p.nombre);
-        const _pre = typeof formatPrecio === 'function' ? formatPrecio(p.precioActual) : '$' + p.precioActual;
-
-        card.innerHTML = `
-            ${esOferta ? '<div class="badge-oferta-dia">' + escapeHtml(getOfertaDiaTexto()) + '</div>' : (esAgotado ? '<div class="badge-agotado">AGOTADO</div>' : (p.masVendido ? '<div class="badge-vendido">🔥 TOP</div>' : ''))}
-            <div class="producto-image">
-                ${getMeGustaHTML(p.id)}
-                <img src="${escapeAttr(p.imagen)}" alt="${_nom}" loading="lazy">
-            </div>
-            <h3>${_nom}</h3>
-            <p class="producto-description">${escapeHtml(p.descripcion)}</p>
-            <p class="precio"><span class="precio-actual" data-usd="${safeNum(p.precioActual)}">${_pre}</span></p>
-            ${esAgotado ? '<div class="stock" style="color:#e74c3c">❌ Agotado</div>' : '<div class="stock">📦 Stock: ' + p.stock + ' uds</div>'}
-            ${!esAgotado ? '<button class="btn-pedir-card" type="button">🛒 Pedir</button>' : ''}
-        `;
-        grid.appendChild(card);
-    });
-
-    if (filtrados.length > productosVisibleCount) {
-        const btnWrap = document.createElement('div');
-        btnWrap.style.cssText = 'grid-column: 1/-1; text-align: center; margin-top: 20px;';
-        btnWrap.innerHTML = '<button class="btn-seguir-viendo" onclick="productosVisibleCount+=20; renderizarProductos(true)">👁️ Cargar más</button>';
-        grid.appendChild(btnWrap);
-    }
-}
-
-    el.innerHTML = agotados.map(p => `
-        <div style="display:flex; align-items:center; gap:12px; padding:12px; background:rgba(255,255,255,0.03); border-radius:12px; border:1px solid rgba(255,255,255,0.08); margin-bottom:8px;">
-            <img src="${escapeAttr(p.imagen)}" style="width:45px; height:45px; border-radius:8px; object-fit:cover; opacity:0.7;">
-            <div style="flex:1;">
-                <div style="font-size:14px; font-weight:700; color:#eee;">${escapeHtml(p.nombre)}</div>
-                <div style="font-size:11px; color:#e74c3c; font-weight:800; text-transform:uppercase; margin-top:2px;">⚠️ Agotado</div>
-            </div>
-            <button class="btn btn-primary" onclick="abrirEditModal(${p.id})" style="font-size:11px; padding:6px 12px; background:#444; border:none; color:white;">Editar</button>
-        </div>
-    `).join('');
-}
-
-// ── MOTOR DE RENDERIZADO UNIFICADO ──
-
-let productosVisibleCount = 20;
-function renderizarProductos(isLoadMore = false) {
-    if (!isLoadMore) productosVisibleCount = 20;
-    const grid = document.getElementById('productosGrid');
-    if (!grid) return;
-
-    let list = (typeof productos !== "undefined" && Array.isArray(productos)) ? [...productos] : [];
-
-    if (typeof categoriaSeleccionada !== "undefined" && categoriaSeleccionada !== "Todas") {
-        list = list.filter(p => p.categoria === categoriaSeleccionada);
-        if (typeof subcategoriaSeleccionada !== "undefined" && subcategoriaSeleccionada && subcategoriaSeleccionada !== "Todas") {
-            list = list.filter(p => p.subcategoria === subcategoriaSeleccionada);
-        }
-    }
-
-    const q = (typeof _heroSearchActivo !== "undefined" ? _heroSearchActivo : "").toLowerCase().trim();
-    const minP = parseFloat(typeof _heroPrecioMin !== "undefined" ? _heroPrecioMin : 0) || 0;
-    const maxP = parseFloat(typeof _heroPrecioMax !== "undefined" ? _heroPrecioMax : Infinity) || Infinity;
-
-    list = list.filter(p => {
-        const matchQ = !q || p.nombre.toLowerCase().includes(q) || (p.descripcion||"").toLowerCase().includes(q);
-        const matchP = p.precioActual >= minP && p.precioActual <= maxP;
-        return matchQ && matchP;
-    });
-
-    const ofId = (typeof getOfertaDiaId === "function") ? getOfertaDiaId() : null;
-    if (ofId) {
-        list.sort((a, b) => (String(a.id) === String(ofId)) ? -1 : (String(b.id) === String(ofId)) ? 1 : 0);
-    }
-
-    grid.innerHTML = "";
-    if (list.length === 0) {
-        grid.innerHTML = '<p style="grid-column:1/-1; text-align:center; padding:60px 20px; color:#888; font-size:14px;">No hay productos con estos filtros.</p>';
-        return;
-    }
-
-    list.slice(0, productosVisibleCount).forEach(p => {
-        const card = document.createElement("div");
-        const esAgotado = p.stock === 0;
-        const esOferta = String(p.id) === String(ofId);
-        card.className = "producto-card" + (esAgotado ? " card-agotado" : "");
-        card.onclick = () => abrirDetalleProducto(p.id);
-        
-        const priceHTML = typeof formatPrecio === "function" ? formatPrecio(p.precioActual) : "$" + p.precioActual;
-
-        card.innerHTML = (esOferta ? '<div class="badge-oferta-dia">' + escapeHtml(getOfertaDiaTexto()) + '</div>' : (esAgotado ? '<div class="badge-agotado">AGOTADO</div>' : "")) +
-            '<div class="producto-image">' +
-                ((typeof getMeGustaHTML === "function") ? getMeGustaHTML(p.id) : "") +
-                '<img src="' + escapeAttr(p.imagen) + '" alt="' + escapeHtml(p.nombre) + '" loading="lazy">' +
-            '</div>' +
-            '<h3>' + escapeHtml(p.nombre) + '</h3>' +
-            '<p class="producto-description">' + escapeHtml(p.descripcion) + '</p>' +
-            '<p class="precio"><span class="precio-actual" data-usd="' + p.precioActual + '">' + priceHTML + '</span></p>' +
-            (esAgotado ? '<div class="stock" style="color:#e74c3c; font-weight:bold;">❌ Agotado</div>' : '<div class="stock">📦 Stock: ' + p.stock + ' uds</div>') +
-            (!esAgotado ? '<button class="btn-pedir-card" type="button" onclick="event.stopPropagation(); tmComprar(event, ' + p.id + ', '' + escapeHtml(p.nombre).replace(/'/g, "\'") + '')">🛒 Pedir</button>' : "");
-        grid.appendChild(card);
-    });
-
-    if (list.length > productosVisibleCount) {
-        const wrap = document.createElement("div");
-        wrap.style.cssText = "grid-column:1/-1; text-align:center; padding:30px 0;";
-        wrap.innerHTML = '<button class="btn-seguir-viendo" onclick="productosVisibleCount+=20; renderizarProductos(true)">👁️ Cargar más productos</button>';
-        grid.appendChild(wrap);
-    }
-}
-
-function renderizarListaAgotados() {
-    const el = document.getElementById("productosAgotadosList");
-    if (!el) return;
-    const agotados = productos.filter(p => p.stock === 0);
-    if (agotados.length === 0) {
-        el.innerHTML = '<p style="font-size:13px; color:#27ae60; text-align:center; padding:15px;">✅ Todo el inventario está disponible.</p>';
-        return;
-    }
-    el.innerHTML = agotados.map(p => `
-        <div style="display:flex; align-items:center; gap:12px; padding:14px; background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.08); border-radius:12px; margin-bottom:10px;">
-            <img src="${escapeAttr(p.imagen)}" style="width:45px; height:45px; border-radius:8px; object-fit:cover; opacity:0.6; background:#000;">
-            <div style="flex:1;">
-                <div style="font-size:14px; font-weight:700; color:#eee;">${escapeHtml(p.nombre)}</div>
-                <div style="font-size:11px; color:#e74c3c; font-weight:800; margin-top:2px;">⚠️ AGOTADO</div>
-            </div>
-            <button class="btn" style="background:#333; color:white; font-size:11px; padding:6px 12px; border:none; border-radius:8px; cursor:pointer;" onclick="abrirEditModal(${p.id})">Editar</button>
-        </div>
-    `).join("");
-}
-
 function aplicarFiltrosPrecio() {
-    _heroPrecioMin = parseFloat(document.getElementById("filterPriceMin").value) || 0;
-    _heroPrecioMax = parseFloat(document.getElementById("filterPriceMax").value) || Infinity;
+    _heroPrecioMin = parseFloat(document.getElementById('filterPriceMin').value) || 0;
+    _heroPrecioMax = parseFloat(document.getElementById('filterPriceMax').value) || Infinity;
     renderizarProductos();
 }
 
 function limpiarFiltrosPrecio() {
-    document.getElementById("filterPriceMin").value = "";
-    document.getElementById("filterPriceMax").value = "";
+    document.getElementById('filterPriceMin').value = '';
+    document.getElementById('filterPriceMax').value = '';
     _heroPrecioMin = 0;
     _heroPrecioMax = Infinity;
     renderizarProductos();
+}
+
+function renderizarListaAgotados() {
+    const el = document.getElementById('productosAgotadosList');
+    if (!el) return;
+    const agotados = productos.filter(p => p.stock === 0);
+    if (agotados.length === 0) {
+        el.innerHTML = '<p style="font-size:13px;color:#27ae60;text-align:center;padding:10px;">✅ Inventario al día.</p>';
+        return;
+    }
+    el.innerHTML = agotados.map(p => `
+        <div style="display:flex; align-items:center; gap:12px; padding:12px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:12px; margin-bottom:8px;">
+            <img src="${p.imagen}" style="width:45px; height:45px; border-radius:8px; object-fit:cover; opacity:0.7;">
+            <div style="flex:1;">
+                <div style="font-size:14px; font-weight:700; color:#eee;">${p.nombre}</div>
+                <div style="font-size:11px; color:#e74c3c; font-weight:800;">AGOTADO</div>
+            </div>
+            <button class="btn" style="background:#333; color:white; font-size:11px; padding:6px 12px; border:none; border-radius:8px;" onclick="abrirEditModal(${p.id})">Editar</button>
+        </div>
+    `).join('');
 }
