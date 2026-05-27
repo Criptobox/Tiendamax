@@ -338,6 +338,7 @@ function comprarCarrito() {
     if (carrito.length === 0) return;
     // Guardar en historial del cliente antes de abrir WhatsApp
     guardarPedidoCliente(carrito.slice());
+    if (typeof tmTrackWhatsApp === 'function') carrito.forEach(i => tmTrackWhatsApp(i.id)); // 📊 Analytics
     const lineas = carrito.map(i =>
         '• ' + i.nombre + ' x' + i.cantidad + ' — $' + (i.precio * i.cantidad).toFixed(2) + ' USD'
     );
@@ -1835,7 +1836,7 @@ function switchTab(tabName) {
     if (tabName === 'publicar-ahora') setTimeout(cargarGruposFB, 100);
     if (tabName === 'manage-products') setTimeout(actualizarListaProductos, 100);
     if (tabName === 'ventas') setTimeout(renderizarVentas, 100);
-    if (tabName === 'analytics') setTimeout(renderizarAnalytics, 100);
+    if (tabName === 'analytics') setTimeout(renderizarAnalyticsFirebase, 100);
     if (tabName === 'manage-subcategories') {
         setTimeout(() => {
             if (typeof actualizarSelectCategoriasPadre === 'function') actualizarSelectCategoriasPadre();
@@ -2093,6 +2094,7 @@ let _detalleProductoActual = null;
 function abrirDetalleProducto(id) {
     const p = productos.find(prod => prod.id === id);
     if (!p) return;
+    if (typeof tmTrackVista === 'function') tmTrackVista(id); // 📊 Analytics
     if (typeof actualizarVisibilidadBannerOferta === 'function') actualizarVisibilidadBannerOferta(false);
     _detalleProductoActual = p;
     // Deep link: actualizar URL sin recargar
@@ -4378,6 +4380,7 @@ function tmComprar(event, id, nombre) {
     const btn = (event && (event.currentTarget || event.target)) || null;
     if (btn) requestAnimationFrame(() => flyToCart(btn));
     agregarAlCarrito(id);
+    if (typeof tmTrackWhatsApp === 'function') tmTrackWhatsApp(id); // 📊 Analytics
     // Buscar producto para tener el precio en el mensaje
     const _prod = productos.find(p => p.id === id || p.id === Number(id));
     if (_prod) {
