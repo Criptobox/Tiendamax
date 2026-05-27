@@ -2864,7 +2864,7 @@ async function guardarConfiguracionGitHub(event) {
     const newToken = document.getElementById('githubToken').value.trim();
     if (newToken) {
         if (typeof secureSaveGitHubToken === 'function') {
-            const password = _sessionPassword || null;
+            const password = window._sessionPassword || null;
             if (!password) {
                 mostrarNotificacion('⚠️ Inicia sesión primero para cifrar el token', 'error');
                 return;
@@ -2887,7 +2887,7 @@ async function guardarConfiguracionGitHub(event) {
 
 async function obtenerGitHubToken() {
     if (typeof secureGetGitHubToken === 'function') {
-        const password = _sessionPassword || null;
+        const password = window._sessionPassword || null;
         if (password) {
             const token = await secureGetGitHubToken(password);
             if (token) return token;

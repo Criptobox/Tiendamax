@@ -170,14 +170,14 @@ async function migrateLegacyTokenIfNeeded(adminPassword) {
 // ═══════════════════════════════════════════════════════
 
 // Wrapper síncrono para compatibilidad (requiere password en sesión)
-let _sessionPassword = null;
+window._sessionPassword = null;
 
 function setSessionPassword(password) {
-    _sessionPassword = password;
+    window._sessionPassword = password;
 }
 
 function clearSessionPassword() {
-    _sessionPassword = null;
+    window._sessionPassword = null;
 }
 
 // Versión síncrona para código legacy (usa password de sesión)
@@ -188,10 +188,10 @@ function getGitHubTokenSync() {
     }
     // Si hay token cifrado pero no password en sesión, retornar null
     // El código debe usar la versión async
-    if (!_sessionPassword) {
+    if (!window._sessionPassword) {
         console.warn('[SecureStorage] Token cifrado requiere password. Usa secureGetGitHubToken()');
         return null;
     }
     // Retornar promesa para mantener compatibilidad
-    return secureGetGitHubToken(_sessionPassword);
+    return secureGetGitHubToken(window._sessionPassword);
 }
