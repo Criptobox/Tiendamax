@@ -1,8 +1,8 @@
-﻿// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-//  TiendaMax â€” Firebase Messaging Service Worker v3
-//  Maneja las notificaciones push cuando la pestaÃ±a estÃ¡
+// ════════════════════════════════════════════════════════════════
+//  TiendaMax — Firebase Messaging Service Worker v3
+//  Maneja las notificaciones push cuando la pestaña está
 //  cerrada o en background. Renderiza imagen del producto.
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ════════════════════════════════════════════════════════════════
 
 importScripts('https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js');
 importScripts('https://www.gstatic.com/firebasejs/10.8.0/firebase-messaging-compat.js');
@@ -19,19 +19,19 @@ firebase.initializeApp({
 
 const messaging = firebase.messaging();
 
-// FunciÃ³n auxiliar para construir y mostrar notificaciÃ³n
+// Función auxiliar para construir y mostrar notificación
 function mostrarNotificacionTM(payload) {
   console.log('[firebase-messaging-sw v3] Payload recibido:', payload);
 
   const notif = payload.notification || {};
   const data  = payload.data || {};
 
-  const titulo = notif.title  || data.title  || 'ðŸ“¢ TiendaMax';
-  const cuerpo = notif.body   || data.body   || 'Tienes una nueva notificaciÃ³n';
+  const titulo = notif.title  || data.title  || '📢 TiendaMax';
+  const cuerpo = notif.body   || data.body   || 'Tienes una nueva notificación';
   const url    = data.url     || notif.click_action || '/';
   // Imagen del producto (importante para pushes de rebajas/productos nuevos)
   let imagen   = notif.image  || data.image || null;
-  // Limpiar si viene vacÃ­o
+  // Limpiar si viene vacío
   if (imagen && (imagen === '' || imagen === 'null' || imagen === 'undefined')) {
     imagen = null;
   }
@@ -48,12 +48,12 @@ function mostrarNotificacionTM(payload) {
     renotify: true,
     requireInteraction: false,
     actions: [
-      { action: 'ver',    title: 'ðŸ‘€ Ver oferta' },
+      { action: 'ver',    title: '👀 Ver oferta' },
       { action: 'cerrar', title: 'Cerrar' }
     ]
   };
 
-  // AÃ±adir imagen solo si existe (la imagen grande del push)
+  // Añadir imagen solo si existe (la imagen grande del push)
   if (imagen) {
     opciones.image = imagen;
   }
@@ -61,7 +61,7 @@ function mostrarNotificacionTM(payload) {
   return self.registration.showNotification(titulo, opciones);
 }
 
-// 1. Mensajes recibidos en BACKGROUND (app cerrada o en otra pestaÃ±a)
+// 1. Mensajes recibidos en BACKGROUND (app cerrada o en otra pestaña)
 messaging.onBackgroundMessage((payload) => {
   return mostrarNotificacionTM(payload);
 });
@@ -81,17 +81,17 @@ self.addEventListener('push', (event) => {
       return;
     }
   }
-  // Si la lib de firebase ya manejÃ³ esto, no duplicar
+  // Si la lib de firebase ya manejó esto, no duplicar
   // (firebase llama onBackgroundMessage para mensajes con "notification";
-  //  para data-only message, tambiÃ©n, pero por si acaso usamos waitUntil)
+  //  para data-only message, también, pero por si acaso usamos waitUntil)
   if (payload.notification) {
-    // Firebase ya manejarÃ¡ vÃ­a onBackgroundMessage
+    // Firebase ya manejará vía onBackgroundMessage
     return;
   }
   event.waitUntil(mostrarNotificacionTM(payload));
 });
 
-// 3. Click en la notificaciÃ³n â†’ navegar al producto
+// 3. Click en la notificación → navegar al producto
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();
   if (event.action === 'cerrar') return;
@@ -119,4 +119,3 @@ self.addEventListener('notificationclick', (event) => {
 });
 
 console.log('[firebase-messaging-sw v3] Cargado correctamente');
-

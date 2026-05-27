@@ -1,16 +1,16 @@
-﻿/* ============================================================
-   TIENDAMAX â€” MODO CLARO (Light Mode)
+/* ============================================================
+   TIENDAMAX — MODO CLARO (Light Mode)
    ----------------------------------------------------------------
    El sitio por defecto es OSCURO (tema premium).
-   Cuando el usuario pulsa el botÃ³n â˜€ï¸/ðŸŒ™, se aÃ±ade a <body>
+   Cuando el usuario pulsa el botón ☀️/🌙, se añade a <body>
    la clase `light-mode` y se aplican estas reglas.
 
    IMPORTANTE: para vencer a `html body { ... !important }` del
-   premium-theme.css, todas las reglas aquÃ­ usan `html body.light-mode`
-   y `!important`. Este archivo se carga DESPUÃ‰S de premium-theme.css.
+   premium-theme.css, todas las reglas aquí usan `html body.light-mode`
+   y `!important`. Este archivo se carga DESPUÉS de premium-theme.css.
    ============================================================ */
 
-/* â”€â”€ Paleta clara (overrides de :root) â”€â”€ */
+/* ── Paleta clara (overrides de :root) ── */
 html body.light-mode {
     --bg:       #FAF8F5 !important;  /* cream */
     --panel:    #FFFFFF !important;
@@ -20,13 +20,13 @@ html body.light-mode {
     --muted:    #6B6B7A !important;
 }
 
-/* â”€â”€ BASE â”€â”€ */
+/* ── BASE ── */
 html body.light-mode {
     background: #FAF8F5 !important;
     color: #1A1A1A !important;
 }
 
-/* â”€â”€ HEADER â”€â”€ */
+/* ── HEADER ── */
 html body.light-mode .header {
     background: rgba(255, 255, 255, 0.85) !important;
     border-bottom: 1px solid rgba(0, 0, 0, 0.08) !important;
@@ -40,13 +40,13 @@ html body.light-mode .nav a:hover {
     color: #1A1A1A !important;
 }
 
-/* â•â•â• LOGO EN MODO CLARO â•â•â•
+/* ═══ LOGO EN MODO CLARO ═══
    Problema previo: el premium-theme aplica color blanco al texto del logo y
    styles.css aplica un gradiente shimmer con -webkit-text-fill-color: transparent
    que dejaba "Tienda" invisible sobre fondos claros.
 
-   SoluciÃ³n: forzamos color sÃ³lido y eliminamos el clip de fondo para "Tienda".
-   "Max" mantiene el coral, el badge "M" mantiene su pÃ­ldora naranja.
+   Solución: forzamos color sólido y eliminamos el clip de fondo para "Tienda".
+   "Max" mantiene el coral, el badge "M" mantiene su píldora naranja.
 */
 html body.light-mode .logo,
 html body.light-mode .logo-premium,
@@ -79,13 +79,13 @@ html body.light-mode .logo h1 span:not(.logo-badge) {
     background-clip: border-box !important;
     animation: none !important;
 }
-/* El badge "M" mantiene su pÃ­ldora naranja con texto blanco */
+/* El badge "M" mantiene su píldora naranja con texto blanco */
 html body.light-mode .logo-badge {
     color: #FFFFFF !important;
     -webkit-text-fill-color: #FFFFFF !important;
     background: linear-gradient(135deg, #FF6B35, #E8501E) !important;
 }
-/* Logo del menÃº mÃ³vil */
+/* Logo del menú móvil */
 html body.light-mode .mobile-menu-logo {
     color: #1A1A1A !important;
     -webkit-text-fill-color: #1A1A1A !important;
@@ -101,7 +101,7 @@ html body.light-mode .mobile-menu-logo em {
     background-clip: border-box !important;
 }
 
-/* Botones del header (carrito, corazÃ³n, hamburguesa) */
+/* Botones del header (carrito, corazón, hamburguesa) */
 html body.light-mode .cart-icon-btn,
 html body.light-mode .heart-icon-btn,
 html body.light-mode .hamburger-btn {
@@ -113,14 +113,14 @@ html body.light-mode .hamburger-btn span {
     background: #1A1A1A !important;
 }
 
-/* BotÃ³n cambiar tema */
+/* Botón cambiar tema */
 html body.light-mode .theme-toggle {
     background: #FFFFFF !important;
     color: #1A1A1A !important;
     border: 1px solid rgba(0, 0, 0, 0.12) !important;
 }
 
-/* â”€â”€ BARRA DE MONEDA â”€â”€ */
+/* ── BARRA DE MONEDA ── */
 html body.light-mode .currency-bar {
     background: linear-gradient(90deg, #FFFFFF, #F4F1EC) !important;
     border-bottom: 1px solid rgba(232, 80, 30, 0.18) !important;
@@ -145,7 +145,7 @@ html body.light-mode .currency-bar .tasa-info {
     color: #E8501E !important;
 }
 
-/* â”€â”€ HERO â”€â”€ */
+/* ── HERO ── */
 html body.light-mode .hero {
     background: radial-gradient(ellipse 60% 50% at 0% 50%, rgba(232, 80, 30, .08), transparent) !important;
 }
@@ -166,7 +166,7 @@ html body.light-mode .hero-divider {
     background: linear-gradient(90deg, transparent, rgba(232, 80, 30, .4), transparent) !important;
 }
 
-/* â”€â”€ BÃšSQUEDA â”€â”€ */
+/* ── BÚSQUEDA ── */
 html body.light-mode .hsb-wrap {
     background: #FAF8F5 !important;
 }
@@ -200,7 +200,7 @@ html body.light-mode .hsb-sug-empty {
     color: #6B6B7A !important;
 }
 
-/* â”€â”€ CATEGORÃAS HOME â”€â”€ */
+/* ── CATEGORÍAS HOME ── */
 html body.light-mode .categorias-home {
     background: #FAF8F5 !important;
 }
@@ -244,7 +244,7 @@ html body.light-mode .skeleton-card {
     background: rgba(0, 0, 0, 0.04) !important;
 }
 
-/* â”€â”€ PRODUCTOS â”€â”€ */
+/* ── PRODUCTOS ── */
 html body.light-mode .productos-categoria,
 html body.light-mode .mas-vendidos {
     background: #FAF8F5 !important;
@@ -348,7 +348,7 @@ html body.light-mode .stock-bar {
     background: rgba(0, 0, 0, 0.06) !important;
 }
 
-/* â”€â”€ BENEFICIOS â”€â”€ */
+/* ── BENEFICIOS ── */
 html body.light-mode .beneficios {
     background: #F4F1EC !important;
 }
@@ -367,7 +367,7 @@ html body.light-mode .beneficio-card p {
     color: #6B6B7A !important;
 }
 
-/* â”€â”€ TESTIMONIOS â”€â”€ */
+/* ── TESTIMONIOS ── */
 html body.light-mode .testimonios {
     background: #FAF8F5 !important;
 }
@@ -387,7 +387,7 @@ html body.light-mode .testimonio-card .autor {
     color: #6B6B7A !important;
 }
 
-/* â”€â”€ PRUEBA SOCIAL STRIP â”€â”€ */
+/* ── PRUEBA SOCIAL STRIP ── */
 html body.light-mode .prueba-social-strip {
     background: #F4F1EC !important;
 }
@@ -402,7 +402,7 @@ html body.light-mode .mini-review-item {
     color: #999 !important;
 }
 
-/* â”€â”€ CTA FINAL â”€â”€ */
+/* ── CTA FINAL ── */
 html body.light-mode .cta-final {
     background: linear-gradient(135deg, #FF6B35, #E8501E) !important;
     color: #FFFFFF !important;
@@ -412,7 +412,7 @@ html body.light-mode .cta-final p {
     color: #FFFFFF !important;
 }
 
-/* â”€â”€ MENÃš MÃ“VIL â”€â”€ */
+/* ── MENÚ MÓVIL ── */
 html body.light-mode .mobile-menu-overlay {
     background: rgba(255, 255, 255, 0.98) !important;
     color: #1A1A1A !important;
@@ -430,7 +430,7 @@ html body.light-mode .mobile-menu-close {
     color: #1A1A1A !important;
 }
 
-/* â”€â”€ MODAL DE PRODUCTO â”€â”€ */
+/* ── MODAL DE PRODUCTO ── */
 html body.light-mode .modal-content,
 html body.light-mode #productDetailModal .modal-content {
     background: #FFFFFF !important;
@@ -467,7 +467,7 @@ html body.light-mode .resena-fecha {
     color: #999 !important;
 }
 
-/* â”€â”€ CARRITO DRAWER â”€â”€ */
+/* ── CARRITO DRAWER ── */
 html body.light-mode .carrito-drawer {
     background: #FFFFFF !important;
     color: #1A1A1A !important;
@@ -491,10 +491,10 @@ html body.light-mode .carrito-footer {
     border-top: 1px solid rgba(0, 0, 0, 0.08) !important;
 }
 
-/* â”€â”€ BANNER URGENCIA (mantener su personalidad naranja) â”€â”€ */
-/* No tocamos .flash-deal: la pÃ­ldora se mantiene igual en ambos modos. */
+/* ── BANNER URGENCIA (mantener su personalidad naranja) ── */
+/* No tocamos .flash-deal: la píldora se mantiene igual en ambos modos. */
 
-/* â”€â”€ ME GUSTA / PEDIDOS VIEW â”€â”€ */
+/* ── ME GUSTA / PEDIDOS VIEW ── */
 html body.light-mode #vistaMeGusta,
 html body.light-mode #vistaPedidos {
     background: #FAF8F5 !important;
@@ -508,12 +508,12 @@ html body.light-mode #meGustaGrid .producto-card h3 { color: #1A1A1A !important;
 html body.light-mode #meGustaGrid .producto-card .precio-actual { color: #E8501E !important; }
 html body.light-mode #meGustaGrid .producto-card .producto-description { color: #6B6B7A !important; }
 
-/* â”€â”€ TEXTO GENERAL FALLBACK â”€â”€ */
+/* ── TEXTO GENERAL FALLBACK ── */
 html body.light-mode {
     color: #1A1A1A !important;
 }
 
-/* â”€â”€ Footer / cualquier secciÃ³n con fondo oscuro forzado â”€â”€ */
+/* ── Footer / cualquier sección con fondo oscuro forzado ── */
 html body.light-mode .footer,
 html body.light-mode footer {
     background: #1A1A1A !important;
@@ -544,11 +544,11 @@ html body .logo-badge {
 
 
 /* ============================================================
-   AÃ‘ADIDOS v34: Cobertura ampliada de modo claro
+   AÑADIDOS v34: Cobertura ampliada de modo claro
    Cubre badges, detalle del producto, relacionados, etc.
    ============================================================ */
 
-/* â”€â”€ BADGES â”€â”€ */
+/* ── BADGES ── */
 html body.light-mode .badge {
     background: rgba(232, 80, 30, 0.12) !important;
     border: 1px solid rgba(232, 80, 30, 0.3) !important;
@@ -581,7 +581,7 @@ html body.light-mode .badge-vistas-pub {
     color: white !important;
 }
 
-/* â”€â”€ DETALLE DEL PRODUCTO MODAL â”€â”€ */
+/* ── DETALLE DEL PRODUCTO MODAL ── */
 html body.light-mode .detail-modal-content,
 html body.light-mode .detail-body {
     background: #FFFFFF !important;
@@ -614,7 +614,7 @@ html body.light-mode .detail-resena-add-btn {
     color: white !important;
 }
 
-/* â”€â”€ PRODUCTOS RELACIONADOS â”€â”€ */
+/* ── PRODUCTOS RELACIONADOS ── */
 html body.light-mode .rel-card {
     background: #FFFFFF !important;
     border: 1px solid rgba(0, 0, 0, 0.08) !important;
@@ -626,7 +626,7 @@ html body.light-mode .rel-card-price {
     color: #E8501E !important;
 }
 
-/* â”€â”€ CARRITO SIMILARES â”€â”€ */
+/* ── CARRITO SIMILARES ── */
 html body.light-mode .cs-card {
     background: #F4F1EC !important;
     border: 1px solid rgba(0, 0, 0, 0.06) !important;
@@ -657,7 +657,7 @@ html body.light-mode .cart-count {
     color: white !important;
 }
 
-/* â”€â”€ BOTONES PRIMARIOS â”€â”€ */
+/* ── BOTONES PRIMARIOS ── */
 html body.light-mode .btn-primary,
 html body.light-mode .btn.btn-primary {
     background: linear-gradient(135deg, #FF6B35, #E8501E) !important;
@@ -687,7 +687,7 @@ html body.light-mode .btn-publicar-grande {
     color: white !important;
 }
 
-/* â”€â”€ COUNTDOWN â”€â”€ */
+/* ── COUNTDOWN ── */
 html body.light-mode .countdown-block {
     background: #1A1A1A !important;
     color: #FFFFFF !important;
@@ -697,7 +697,7 @@ html body.light-mode .producto-countdown {
     border: 1px solid rgba(232, 80, 30, 0.2) !important;
 }
 
-/* â”€â”€ PEDIDOS / FORMS â”€â”€ */
+/* ── PEDIDOS / FORMS ── */
 html body.light-mode .pedido-card {
     background: #FFFFFF !important;
     border: 1px solid rgba(0, 0, 0, 0.08) !important;
@@ -735,17 +735,17 @@ html body.light-mode .resenas-vacio {
     color: #6B6B7A !important;
 }
 
-/* â”€â”€ PRECIO â”€â”€ */
+/* ── PRECIO ── */
 html body.light-mode .precio {
     color: #1A1A1A !important;
 }
 
-/* â”€â”€ STOCK BAR â”€â”€ */
+/* ── STOCK BAR ── */
 html body.light-mode .stock-bar-fill {
     background: linear-gradient(90deg, #FF6B35, #E8501E) !important;
 }
 
-/* â”€â”€ TOAST (notificaciÃ³n) â”€â”€ */
+/* ── TOAST (notificación) ── */
 html body.light-mode .tm-toast {
     background: rgba(255, 255, 255, 0.98) !important;
     color: #1A1A1A !important;
@@ -753,16 +753,16 @@ html body.light-mode .tm-toast {
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15) !important;
 }
 
-/* â”€â”€ WhatsApp y grupos â”€â”€ */
+/* ── WhatsApp y grupos ── */
 html body.light-mode .whatsapp-btn,
 html body.light-mode .whatsapp-group-btn {
     background: #25d366 !important;
     color: white !important;
 }
 
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-   ðŸ‘€ VISTOS RECIENTEMENTE (modo claro)
-   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+/* ════════════════════════════════════════════════════════════
+   👀 VISTOS RECIENTEMENTE (modo claro)
+   ════════════════════════════════════════════════════════════ */
 html body.light-mode .recientes-section {
     background: #FAF8F5 !important;
 }
@@ -783,4 +783,3 @@ html body.light-mode .rec-card-nombre {
 html body.light-mode .rec-card-precio {
     color: #E8501E !important;
 }
-

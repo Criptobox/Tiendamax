@@ -1,11 +1,11 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="noindex, nofollow">
     <meta name="theme-color" content="#0D0D0D">
-    <title>Panel Admin â€” TiendaMax</title>
+    <title>Panel Admin — TiendaMax</title>
 
     <!-- Favicons completos -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
@@ -19,7 +19,7 @@
     <link rel="stylesheet" href="css/admin.css?v=3">
 
     <style>
-    /* Reset de pÃ¡gina para admin puro */
+    /* Reset de página para admin puro */
     html, body {
         background: #0D0D0D !important;
         min-height: 100vh;
@@ -39,26 +39,26 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h2>Acceso de Administrador</h2>
-                <button data-action="cerrarLoginModal" aria-label="Cerrar modal de acceso" type="button" class="close-btn">âœ•</button>
+                <button data-action="cerrarLoginModal" aria-label="Cerrar modal de acceso" type="button" class="close-btn">✕</button>
             </div>
 
-            <!-- BotÃ³n biomÃ©trico (huella / Face ID / Windows Hello) -->
+            <!-- Botón biométrico (huella / Face ID / Windows Hello) -->
             <div id="biometricLoginBox" style="padding: 20px 28px 0; display: none;">
                 <button type="button" id="btnBiometricLogin" class="btn btn-primary" style="width:100%; display:flex; align-items:center; justify-content:center; gap:10px; padding:16px;">
-                    <span style="font-size:24px;">ðŸ‘†</span>
+                    <span style="font-size:24px;">👆</span>
                     <span>Acceder con huella / Face ID</span>
                 </button>
-                <p style="text-align:center; font-size:12px; color:#888; margin:12px 0 0;">â€” o â€”</p>
+                <p style="text-align:center; font-size:12px; color:#888; margin:12px 0 0;">— o —</p>
             </div>
 
             <form onsubmit="verificarPassword(event)">
                 <div class="form-group">
-                    <label>ContraseÃ±a:</label>
+                    <label>Contraseña:</label>
                     <input type="password" id="adminPassword" required autofocus>
                 </div>
-                <button type="submit" class="btn btn-primary">ðŸ”“ Acceder con contraseÃ±a</button>
+                <button type="submit" class="btn btn-primary">🔓 Acceder con contraseña</button>
                 <button type="button" id="btnBiometricRegister" style="width:100%; margin-top:10px; padding:10px; background:transparent; border:1px solid #ddd; border-radius:8px; cursor:pointer; font-size:13px; color:#666; display:none;">
-                    ðŸ” Registrar huella en este dispositivo
+                    🔐 Registrar huella en este dispositivo
                 </button>
             </form>
         </div>
@@ -68,31 +68,31 @@
         <div id="adminPanel" class="admin-panel hidden">
         <div class="admin-panel-content">
             <div class="admin-header">
-                <h2>âš™ï¸ Panel de AdministraciÃ³n</h2>
-                <button data-action="cerrarAdminPanel" aria-label="Cerrar panel de administraciÃ³n" type="button" class="close-btn">âœ•</button>
+                <h2>⚙️ Panel de Administración</h2>
+                <button data-action="cerrarAdminPanel" aria-label="Cerrar panel de administración" type="button" class="close-btn">✕</button>
             </div>
             <!-- TABS: visibles solo en desktop -->
             <div class="admin-tabs admin-tabs-desktop">
-                <button data-action="switchTab" data-arg="add-products" type="button" class="tab-btn active" data-tab="add-products">âž• Agregar</button>
-                <button data-action="switchTab" data-arg="publicar-ahora" type="button" class="tab-btn" data-tab="publicar-ahora">ðŸš€ Publicar</button>
-                <button data-action="switchTab" data-arg="manage-products" type="button" class="tab-btn" data-tab="manage-products">ðŸ“‹ Gestionar</button>
-                <button data-action="switchTab" data-arg="ventas" type="button" class="tab-btn" data-tab="ventas">ðŸ’° Ventas</button>
-                <button data-action="switchTab" data-arg="manage-categories" type="button" class="tab-btn" data-tab="manage-categories">ðŸ·ï¸ CategorÃ­as</button>
-                <button data-action="switchTab" data-arg="manage-subcategories" type="button" class="tab-btn" data-tab="manage-subcategories">ðŸ“‚ SubcategorÃ­as</button>
-                <button data-action="switchTab" data-arg="configuracion" type="button" class="tab-btn" data-tab="configuracion">âš™ï¸ Config</button>
-                <button data-action="switchTab" data-arg="oferta-dia" type="button" class="tab-btn" data-tab="oferta-dia">ðŸ·ï¸ Oferta DÃ­a</button>
-                <button data-action="switchTab" data-arg="apariencia" type="button" class="tab-btn" data-tab="apariencia">ðŸŽ¨ Apariencia</button>
-                <button data-action="switchTab" data-arg="analytics" type="button" class="tab-btn" data-tab="analytics">ðŸ“Š Analytics</button>
+                <button data-action="switchTab" data-arg="add-products" type="button" class="tab-btn active" data-tab="add-products">➕ Agregar</button>
+                <button data-action="switchTab" data-arg="publicar-ahora" type="button" class="tab-btn" data-tab="publicar-ahora">🚀 Publicar</button>
+                <button data-action="switchTab" data-arg="manage-products" type="button" class="tab-btn" data-tab="manage-products">📋 Gestionar</button>
+                <button data-action="switchTab" data-arg="ventas" type="button" class="tab-btn" data-tab="ventas">💰 Ventas</button>
+                <button data-action="switchTab" data-arg="manage-categories" type="button" class="tab-btn" data-tab="manage-categories">🏷️ Categorías</button>
+                <button data-action="switchTab" data-arg="manage-subcategories" type="button" class="tab-btn" data-tab="manage-subcategories">📂 Subcategorías</button>
+                <button data-action="switchTab" data-arg="configuracion" type="button" class="tab-btn" data-tab="configuracion">⚙️ Config</button>
+                <button data-action="switchTab" data-arg="oferta-dia" type="button" class="tab-btn" data-tab="oferta-dia">🏷️ Oferta Día</button>
+                <button data-action="switchTab" data-arg="apariencia" type="button" class="tab-btn" data-tab="apariencia">🎨 Apariencia</button>
+                <button data-action="switchTab" data-arg="analytics" type="button" class="tab-btn" data-tab="analytics">📊 Analytics</button>
             </div>
 
-            <!-- ACORDEÃ“N PREMIUM: visible solo en mÃ³vil -->
+            <!-- ACORDEÓN PREMIUM: visible solo en móvil -->
             <div class="admin-accordion" id="adminAccordion">
                 <div class="acc-row" data-tab-target="add-products">
                     <button class="acc-trigger" type="button" aria-expanded="false">
-                        <span class="acc-icon-wrap"><span class="acc-icon">âž•</span></span>
+                        <span class="acc-icon-wrap"><span class="acc-icon">➕</span></span>
                         <span class="acc-text">
                             <span class="acc-label">Agregar producto</span>
-                            <span class="acc-sub">Nombre Â· precio Â· foto Â· stock</span>
+                            <span class="acc-sub">Nombre · precio · foto · stock</span>
                         </span>
                         <span class="acc-chevron" aria-hidden="true"></span>
                     </button>
@@ -100,10 +100,10 @@
                 </div>
                 <div class="acc-row" data-tab-target="publicar-ahora">
                     <button class="acc-trigger" type="button" aria-expanded="false">
-                        <span class="acc-icon-wrap"><span class="acc-icon">ðŸš€</span></span>
+                        <span class="acc-icon-wrap"><span class="acc-icon">🚀</span></span>
                         <span class="acc-text">
                             <span class="acc-label">Publicar</span>
-                            <span class="acc-sub">Revolico Â· Facebook Grupos</span>
+                            <span class="acc-sub">Revolico · Facebook Grupos</span>
                         </span>
                         <span class="acc-chevron" aria-hidden="true"></span>
                     </button>
@@ -111,10 +111,10 @@
                 </div>
                 <div class="acc-row" data-tab-target="manage-products">
                     <button class="acc-trigger" type="button" aria-expanded="false">
-                        <span class="acc-icon-wrap"><span class="acc-icon">ðŸ“‹</span></span>
+                        <span class="acc-icon-wrap"><span class="acc-icon">📋</span></span>
                         <span class="acc-text">
                             <span class="acc-label">Gestionar productos</span>
-                            <span class="acc-sub">Editar Â· eliminar Â· destacar</span>
+                            <span class="acc-sub">Editar · eliminar · destacar</span>
                         </span>
                         <span class="acc-chevron" aria-hidden="true"></span>
                     </button>
@@ -122,7 +122,7 @@
                 </div>
                 <div class="acc-row" data-tab-target="ventas">
                     <button class="acc-trigger" type="button" aria-expanded="false">
-                        <span class="acc-icon-wrap"><span class="acc-icon">ðŸ’°</span></span>
+                        <span class="acc-icon-wrap"><span class="acc-icon">💰</span></span>
                         <span class="acc-text">
                             <span class="acc-label">Ventas</span>
                             <span class="acc-sub">Control de ganancias</span>
@@ -133,10 +133,10 @@
                 </div>
                 <div class="acc-row" data-tab-target="manage-categories">
                     <button class="acc-trigger" type="button" aria-expanded="false">
-                        <span class="acc-icon-wrap"><span class="acc-icon">ðŸ·ï¸</span></span>
+                        <span class="acc-icon-wrap"><span class="acc-icon">🏷️</span></span>
                         <span class="acc-text">
-                            <span class="acc-label">CategorÃ­as</span>
-                            <span class="acc-sub">Organiza tu catÃ¡logo</span>
+                            <span class="acc-label">Categorías</span>
+                            <span class="acc-sub">Organiza tu catálogo</span>
                         </span>
                         <span class="acc-chevron" aria-hidden="true"></span>
                     </button>
@@ -144,10 +144,10 @@
                 </div>
                 <div class="acc-row" data-tab-target="manage-subcategories">
                     <button class="acc-trigger" type="button" aria-expanded="false">
-                        <span class="acc-icon-wrap"><span class="acc-icon">ðŸ“‚</span></span>
+                        <span class="acc-icon-wrap"><span class="acc-icon">📂</span></span>
                         <span class="acc-text">
-                            <span class="acc-label">SubcategorÃ­as</span>
-                            <span class="acc-sub">OrganizaciÃ³n interna</span>
+                            <span class="acc-label">Subcategorías</span>
+                            <span class="acc-sub">Organización interna</span>
                         </span>
                         <span class="acc-chevron" aria-hidden="true"></span>
                     </button>
@@ -155,10 +155,10 @@
                 </div>
                 <div class="acc-row" data-tab-target="configuracion">
                     <button class="acc-trigger" type="button" aria-expanded="false">
-                        <span class="acc-icon-wrap"><span class="acc-icon">âš™ï¸</span></span>
+                        <span class="acc-icon-wrap"><span class="acc-icon">⚙️</span></span>
                         <span class="acc-text">
-                            <span class="acc-label">ConfiguraciÃ³n</span>
-                            <span class="acc-sub">GitHub Â· WhatsApp Â· Tasa</span>
+                            <span class="acc-label">Configuración</span>
+                            <span class="acc-sub">GitHub · WhatsApp · Tasa</span>
                         </span>
                         <span class="acc-chevron" aria-hidden="true"></span>
                     </button>
@@ -166,10 +166,10 @@
                 </div>
                 <div class="acc-row" data-tab-target="oferta-dia">
                     <button class="acc-trigger" type="button" aria-expanded="false">
-                        <span class="acc-icon-wrap"><span class="acc-icon">ðŸ·ï¸</span></span>
+                        <span class="acc-icon-wrap"><span class="acc-icon">🏷️</span></span>
                         <span class="acc-text">
-                            <span class="acc-label">Oferta del DÃ­a</span>
-                            <span class="acc-sub">Badge especial Â· FOMO</span>
+                            <span class="acc-label">Oferta del Día</span>
+                            <span class="acc-sub">Badge especial · FOMO</span>
                         </span>
                         <span class="acc-chevron" aria-hidden="true"></span>
                     </button>
@@ -177,10 +177,10 @@
                 </div>
                 <div class="acc-row" data-tab-target="apariencia">
                     <button class="acc-trigger" type="button" aria-expanded="false">
-                        <span class="acc-icon-wrap"><span class="acc-icon">ðŸŽ¨</span></span>
+                        <span class="acc-icon-wrap"><span class="acc-icon">🎨</span></span>
                         <span class="acc-text">
                             <span class="acc-label">Apariencia</span>
-                            <span class="acc-sub">Banners Â· Hero Â· Colores</span>
+                            <span class="acc-sub">Banners · Hero · Colores</span>
                         </span>
                         <span class="acc-chevron" aria-hidden="true"></span>
                     </button>
@@ -188,10 +188,10 @@
                 </div>
                 <div class="acc-row" data-tab-target="analytics">
                     <button class="acc-trigger" type="button" aria-expanded="false">
-                        <span class="acc-icon-wrap"><span class="acc-icon">ðŸ“Š</span></span>
+                        <span class="acc-icon-wrap"><span class="acc-icon">📊</span></span>
                         <span class="acc-text">
                             <span class="acc-label">Analytics</span>
-                            <span class="acc-sub">EstadÃ­sticas de la tienda</span>
+                            <span class="acc-sub">Estadísticas de la tienda</span>
                         </span>
                         <span class="acc-chevron" aria-hidden="true"></span>
                     </button>
@@ -208,28 +208,28 @@
                             <input type="text" id="productName" required>
                         </div>
                         <div class="form-group">
-                            <label>DescripciÃ³n:</label>
+                            <label>Descripción:</label>
                             <textarea id="productDescription" required rows="4"></textarea>
                         </div>
                         <div class="form-group">
-                            <label>CategorÃ­a:</label>
+                            <label>Categoría:</label>
                             <select id="productCategory" required>
                                 <option value="General">General</option>
                             </select>
                         </div>
                         <div class="form-group">
-                            <label>Â¿Mostrar en "MÃ¡s Vendidos"?</label>
+                            <label>¿Mostrar en "Más Vendidos"?</label>
                             <select id="productMasVendido">
                                 <option value="false">No</option>
-                                <option value="true">SÃ­ â€” Destacar en la pÃ¡gina principal</option>
+                                <option value="true">Sí — Destacar en la página principal</option>
                             </select>
                         </div>
                         <div class="form-group">
                             <label>
                                 <input type="checkbox" id="productUsado">
-                                âœ¨ Este es un producto usado/refurbished
+                                ✨ Este es un producto usado/refurbished
                             </label>
-                            <small>Marca esta opciÃ³n si el producto es de segunda mano o ha sido restaurado</small>
+                            <small>Marca esta opción si el producto es de segunda mano o ha sido restaurado</small>
                         </div>
                         <div class="form-group">
                             <label>Foto del Producto:</label>
@@ -252,166 +252,174 @@
                                 <input type="number" id="productStock" required placeholder="0" min="0">
                             </div>
                             <div class="form-group">
-                                <label>ðŸ’° Mi comisiÃ³n (USD):</label>
+                                <label>💰 Mi comisión (USD):</label>
                                 <input type="number" id="productComision" placeholder="0.00" step="0.01" min="0">
-                                <small>Lo que ganas tÃº por cada venta</small>
+                                <small>Lo que ganas tú por cada venta</small>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label>GarantÃ­a (opcional):</label>
-                            <input type="text" id="productGarantia" placeholder="Ej: 6 meses de garantÃ­a" maxlength="50">
+                            <label>Garantía (opcional):</label>
+                            <input type="text" id="productGarantia" placeholder="Ej: 6 meses de garantía" maxlength="50">
                         </div>
                         <div class="form-group">
                             <label>
                                 <input type="checkbox" id="productDevolucion">
-                                âœ“ DevoluciÃ³n segura / GarantÃ­a de satisfacciÃ³n
+                                ✓ Devolución segura / Garantía de satisfacción
                             </label>
                         </div>
-                        <button type="submit" class="btn btn-primary">âœ… Agregar Producto</button>
+                        <button type="submit" class="btn btn-primary">✅ Agregar Producto</button>
                     </form>
                 </div>
 
                 <!-- Tab: Ventas -->
                 <div id="ventas" class="admin-tab">
-                    <h3>ðŸ’° Control de Ventas</h3>
+                    <h3>💰 Control de Ventas</h3>
                     <p style="font-size:13px;color:#888;margin-bottom:16px;">Registra ventas manualmente y lleva el control de tus ganancias.</p>
                     <div id="ventasContenido"></div>
                 </div>
 
                 <!-- Tab: Publicar -->
                 <div id="publicar-ahora" class="admin-tab">
-                    <div id="backendStatus" class="backend-status">ðŸŸ  Modo manual activo â€” esta copia no incluye backend de automatizaciÃ³n.</div>
+                    <div id="backendStatus" class="backend-status">🟠 Modo manual activo — esta copia no incluye backend de automatización.</div>
 
                     <div class="horarios-info" style="margin-bottom:16px;">
-                        <h4>ðŸ–±ï¸ PublicaciÃ³n manual asistida</h4>
-                        <div class="horario-item">ðŸ“˜ <strong>Facebook</strong> â€” copia el texto y abre Facebook</div>
-                        <div class="horario-item">ðŸŸ  <strong>Revolico</strong> â€” copia el texto y abre Revolico</div>
-                        <div class="horario-item">â˜ï¸ <strong>ConfiguraciÃ³n</strong> â€” los grupos y categorÃ­as sÃ­ se guardan en tu tienda</div>
+                        <h4>🖱️ Publicación manual asistida</h4>
+                        <div class="horario-item">📘 <strong>Facebook</strong> — copia el texto y abre Facebook</div>
+                        <div class="horario-item">🟠 <strong>Revolico</strong> — copia el texto y abre Revolico</div>
+                        <div class="horario-item">☁️ <strong>Configuración</strong> — los grupos y categorías sí se guardan en tu tienda</div>
                         <p style="margin:8px 0 0;font-size:12px;opacity:0.9">Quitamos la dependencia del backend roto para dejar el panel estable y funcional desde el navegador.</p>
                     </div>
 
-                    <!-- Accesos rÃ¡pidos -->
+                    <!-- Accesos rápidos -->
                     <div class="admin-stack">
-                        <button data-action="mostrarSelectorAsistenteFacebook" type="button" class="btn-publicar-grande" style="background:#4267B2;margin-bottom:0">ðŸ“˜ Asistente Facebook</button>
-                        <button data-action="mostrarSelectorAsistenteRevolico" type="button" id="btnPublicarAhora" class="btn-publicar-grande" style="margin-bottom:0">ðŸŸ  Asistente Revolico</button>
+                        <button data-action="mostrarSelectorAsistenteFacebook" type="button" class="btn-publicar-grande" style="background:#4267B2;margin-bottom:0">📘 Asistente Facebook</button>
+                        <button data-action="mostrarSelectorAsistenteRevolico" type="button" id="btnPublicarAhora" class="btn-publicar-grande" style="margin-bottom:0">🟠 Asistente Revolico</button>
                     </div>
 
                     <!-- Configurador de Grupos de Facebook -->
                     <div class="admin-config-box oferta">
-                        <h4 style="margin-bottom:4px;">ðŸ“˜ Grupos de Facebook</h4>
-                        <p style="font-size:12px;color:var(--text-muted);margin-bottom:14px;">Configura quÃ© productos publicar en cada grupo.</p>
+                        <h4 style="margin-bottom:4px;">📘 Grupos de Facebook</h4>
+                        <p style="font-size:12px;color:var(--text-muted);margin-bottom:14px;">Configura qué productos publicar en cada grupo.</p>
                         <div id="listaGruposFB" style="display:flex;flex-direction:column;gap:10px;"></div>
                         <button data-action="agregarGrupoFB" type="button" class="btn btn-primary" style="margin-top:12px;width:100%;">+ Agregar Grupo</button>
-                        <button data-action="guardarGruposFB" type="button" class="btn" style="margin-top:8px;width:100%;background:#27AE60;color:white;">ðŸ’¾ Guardar Grupos</button>
+                        <button data-action="guardarGruposFB" type="button" class="btn" style="margin-top:8px;width:100%;background:#27AE60;color:white;">💾 Guardar Grupos</button>
                     </div>
 
-                    <!-- Configurador de Revolico por categorÃ­as -->
+                    <!-- Configurador de Revolico por categorías -->
                     <div class="admin-config-box oferta">
-                        <h4 style="margin-bottom:4px;">ðŸ”µ Revolico â€” CategorÃ­as por Producto</h4>
-                        <p style="font-size:12px;color:var(--text-muted);margin-bottom:14px;">Elige en quÃ© categorÃ­a de Revolico se publica cada producto. Se guarda automÃ¡ticamente con tu tienda.</p>
+                        <h4 style="margin-bottom:4px;">🔵 Revolico — Categorías por Producto</h4>
+                        <p style="font-size:12px;color:var(--text-muted);margin-bottom:14px;">Elige en qué categoría de Revolico se publica cada producto. Se guarda automáticamente con tu tienda.</p>
                         <div id="listaRevolicoConfig" style="display:flex;flex-direction:column;gap:10px;"></div>
-                        <button data-action="guardarRevolicoConfig" type="button" class="btn" style="margin-top:12px;width:100%;background:#0084FF;color:white;">ðŸ’¾ Guardar Config Revolico</button>
+                        <button data-action="guardarRevolicoConfig" type="button" class="btn" style="margin-top:12px;width:100%;background:#0084FF;color:white;">💾 Guardar Config Revolico</button>
                     </div>
 
                     <div id="resultadoPublicacion" class="resultado-publicacion"></div>
                     <div class="tab-historial">
-                        <h4 style="margin-bottom:12px">ðŸ“‹ Estado del asistente</h4>
-                        <div id="historialPublicaciones"><p style="color:#666;font-size:13px">Modo manual activo. No se guarda historial automÃ¡tico en esta versiÃ³n.</p></div>
+                        <h4 style="margin-bottom:12px">📋 Estado del asistente</h4>
+                        <div id="historialPublicaciones"><p style="color:#666;font-size:13px">Modo manual activo. No se guarda historial automático en esta versión.</p></div>
                     </div>
                 </div>
 
                 <!-- Tab: Gestionar Productos -->
-                <!-- Tab: Gestionar Productos (por categorÃ­as) -->
+                <!-- Tab: Gestionar Productos (por categorías) -->
                 <div id="manage-products" class="admin-tab">
                     <div class="admin-row-flex">
-                        <input type="text" id="searchProductos" placeholder="ðŸ” Buscar producto..." oninput="actualizarListaProductos()" style="flex:1;min-width:180px;padding:10px 14px;border-radius:10px;border:1.5px solid var(--border-color);font-size:14px;background:var(--cream);">
+                        <input type="text" id="searchProductos" placeholder="🔍 Buscar producto..." oninput="actualizarListaProductos()" style="flex:1;min-width:180px;padding:10px 14px;border-radius:10px;border:1.5px solid var(--border-color);font-size:14px;background:var(--cream);">
                         <select id="filtroCategoria" onchange="actualizarListaProductos()" style="padding:10px 14px;border-radius:10px;border:1.5px solid var(--border-color);font-size:14px;background:var(--cream);">
-                            <option value="">Todas las categorÃ­as</option>
+                            <option value="">Todas las categorías</option>
                         </select>
                     </div>
                     <div id="productsList" class="products-list">
-                        <p class="no-products">No hay productos aÃºn</p>
+                        <p class="no-products">No hay productos aún</p>
                     </div>
                 </div>
 
-                <!-- Tab: Gestionar CategorÃ­as -->
+                <!-- Tab: Gestionar Categorías -->
                 <div id="manage-categories" class="admin-tab">
                     <div class="categories-section">
                         <h3>Gestionar Categorias</h3>
                         <div class="form-group" style="display: flex; gap: 10px; margin-bottom: 10px;">
-                        <input type="text" id="newCategoryName" placeholder="Nombre de la categorÃ­a" style="flex: 2;">
-                        <input type="text" id="newCategoryIcon" placeholder="Icono (Ej: ðŸ“¦)" style="flex: 1; text-align: center;">
+                        <input type="text" id="newCategoryName" placeholder="Nombre de la categoría" style="flex: 2;">
+                        <input type="text" id="newCategoryIcon" placeholder="Icono (Ej: 📦)" style="flex: 1; text-align: center;">
                         <button data-action="agregarCategoria" type="button" class="btn btn-primary" style="flex: 1;">+ Agregar</button>
                     </div>
-                    <p style="font-size: 12px; color: #666; margin-bottom: 20px;">ðŸ’¡ Si dejas el icono vacÃ­o, se asignarÃ¡ uno automÃ¡ticamente segÃºn el nombre.</p>
+                    <p style="font-size: 12px; color: #666; margin-bottom: 20px;">💡 Si dejas el icono vacío, se asignará uno automáticamente según el nombre.</p>
                         <div id="categoryList" class="category-list"></div>
                     </div>
                 </div>
 
-                <!-- Tab: Gestionar SubcategorÃ­as -->
+                <!-- Tab: Gestionar Subcategorías -->
                 <div id="manage-subcategories" class="admin-tab">
                     <div class="subcategories-section">
-                        <h3>Gestionar SubcategorÃ­as</h3>
-                        <p style="font-size: 13px; margin-bottom: 15px; color: #666;">Las subcategorÃ­as ayudan a organizar mejor tus productos dentro de cada categorÃ­a.</p>
+                        <h3>Gestionar Subcategorías</h3>
+                        <p style="font-size: 13px; margin-bottom: 15px; color: #666;">Las subcategorías ayudan a organizar mejor tus productos dentro de cada categoría.</p>
                         <div class="form-group">
-                            <label>CategorÃ­a:</label>
+                            <label>Categoría:</label>
                             <select id="subcategoryParentCategory">
-                                <option value="">-- Selecciona una categorÃ­a --</option>
+                                <option value="">-- Selecciona una categoría --</option>
                             </select>
                         </div>
                         <div class="form-group subcategory-add-row">
-                            <input type="text" id="newSubcategoryName" placeholder="Nombre de la subcategorÃ­a">
+                            <input type="text" id="newSubcategoryName" placeholder="Nombre de la subcategoría">
                             <button data-action="agregarSubcategoria" type="button" class="btn btn-primary">+ Agregar</button>
                         </div>
                         <div id="subcategoryList" class="subcategory-list"></div>
                     </div>
                 </div>
 
-                <!-- Tab: ConfiguraciÃ³n GitHub -->
+                <!-- Tab: Configuración GitHub -->
                 <div id="configuracion" class="admin-tab">
-                    <h3>ConfiguraciÃ³n de SincronizaciÃ³n</h3>
+                    <h3>Configuración de Sincronización</h3>
 
-                    <!-- Cambio de contraseÃ±a admin -->
-                    <div class="admin-config-box" style="margin-bottom:25px;padding:15px;background:#1a1a2e;border-radius:12px;border:1px solid #333;">
-                        <h4 class="admin-h4-flex"><span style="font-size:20px;">ðŸ”</span> Cambiar contraseÃ±a de administrador</h4>
-                        <p class="admin-hint" style="margin-bottom:12px;">Establece o cambia tu contraseÃ±a. Se guarda con PBKDF2 + sal aleatoria (310k iteraciones).</p>
-                        <form onsubmit="cambiarPasswordAdmin(event); return false;" style="display:flex;flex-direction:column;gap:8px;max-width:400px;">
-                            <input type="password" id="adminPasswordActual" placeholder="ContraseÃ±a actual" required style="padding:10px 12px;border-radius:8px;border:1px solid #444;background:#16213e;color:#e0e0e0;font-size:14px;">
-                            <input type="password" id="adminPasswordNueva" placeholder="Nueva contraseÃ±a (mÃ­n. 6 caracteres)" minlength="6" required style="padding:10px 12px;border-radius:8px;border:1px solid #444;background:#16213e;color:#e0e0e0;font-size:14px;">
-                            <input type="password" id="adminPasswordConfirmar" placeholder="Confirmar nueva contraseÃ±a" minlength="6" required style="padding:10px 12px;border-radius:8px;border:1px solid #444;background:#16213e;color:#e0e0e0;font-size:14px;">
-                            <button type="submit" style="padding:10px;border:none;border-radius:8px;background:#00b4d8;color:#fff;font-size:14px;font-weight:600;cursor:pointer;">ðŸ”‘ Cambiar contraseÃ±a</button>
+                    <!-- NÚMERO WHATSAPP -->
+                    <div class="admin-config-box whatsapp">
+                        <h4 class="admin-h4-flex"><span style="font-size:20px;">💬</span> Número de WhatsApp</h4>
+                        <p class="admin-hint">Este número recibe todos los pedidos. Sin código +53, solo dígitos.</p>
+                        <div class="form-group">
+                            <label>Número (solo dígitos, sin espacios):</label>
+                            <input type="tel" id="adminWhatsappNum" placeholder="Ej: 5354320170" maxlength="20"
+                                style="font-size:16px;font-weight:700;letter-spacing:1px;">
+                            <p class="admin-note">Incluye el código de país. Cuba: 53 + número (ej: 5354320170)</p>
+                        </div>
+                        <button data-action="guardarNumeroWhatsApp" type="button" class="btn btn-primary" style="background:#25d366;width:100%;">💾 Guardar número</button>
+                    </div>
+
+                    <!-- CAMBIAR CONTRASEÑA ADMIN -->
+                    <div class="admin-config-box password">
+                        <h4 class="admin-h4-flex"><span style="font-size:20px;">🔑</span> Cambiar contraseña de administrador</h4>
+                        <p class="admin-hint">Establece o cambia la contraseña de acceso al panel de administración.</p>
+                        <form onsubmit="cambiarPasswordAdmin(document.getElementById('ci').value,document.getElementById('ni').value,document.getElementById('coi').value);return false">
+                            <div class="form-group">
+                                <label>Contraseña actual:</label>
+                                <input type="password" id="ci" placeholder="Contraseña actual" autocomplete="current-password" style="font-size:16px;font-weight:600;">
+                            </div>
+                            <div class="form-group">
+                                <label>Nueva contraseña:</label>
+                                <input type="password" id="ni" placeholder="Nueva contraseña (mín. 4 caracteres)" autocomplete="new-password" style="font-size:16px;font-weight:600;">
+                            </div>
+                            <div class="form-group">
+                                <label>Confirmar nueva contraseña:</label>
+                                <input type="password" id="coi" placeholder="Repite la nueva contraseña" autocomplete="new-password" style="font-size:16px;font-weight:600;">
+                            </div>
+                            <button type="submit" class="btn btn-primary" style="background:linear-gradient(135deg,#C9A96E,#E8C88A);color:#0D0D0D;width:100%;font-weight:800;">🔑 Cambiar contraseña</button>
                         </form>
                     </div>
 
-                    <!-- NÃšMERO WHATSAPP -->
-                    <div class="admin-config-box whatsapp">
-                        <h4 class="admin-h4-flex"><span style="font-size:20px;">ðŸ’¬</span> NÃºmero de WhatsApp</h4>
-                        <p class="admin-hint">Este nÃºmero recibe todos los pedidos. Sin cÃ³digo +53, solo dÃ­gitos.</p>
-                        <div class="form-group">
-                            <label>NÃºmero (solo dÃ­gitos, sin espacios):</label>
-                            <input type="tel" id="adminWhatsappNum" placeholder="Ej: 5354320170" maxlength="20"
-                                style="font-size:16px;font-weight:700;letter-spacing:1px;">
-                            <p class="admin-note">Incluye el cÃ³digo de paÃ­s. Cuba: 53 + nÃºmero (ej: 5354320170)</p>
-                        </div>
-                        <button data-action="guardarNumeroWhatsApp" type="button" class="btn btn-primary" style="background:#25d366;width:100%;">ðŸ’¾ Guardar nÃºmero</button>
-                    </div>
-
-
-                    <!-- Tasa de cambio USD â†’ MN -->
+                    <!-- Tasa de cambio USD → MN -->
                     <div class="admin-config-box tasa">
-                        <h4 class="admin-h4-flex"><span style="font-size:20px;">ðŸ’±</span> Tasa de cambio USD â†’ MN</h4>
-                        <p class="admin-hint">Pon la tasa del dÃ­a (sin el +10 de margen, eso se suma automÃ¡tico). Al guardar sube a GitHub y todos los clientes la ven al instante.</p>
+                        <h4 class="admin-h4-flex"><span style="font-size:20px;">💱</span> Tasa de cambio USD → MN</h4>
+                        <p class="admin-hint">Pon la tasa del día (sin el +10 de margen, eso se suma automático). Al guardar sube a GitHub y todos los clientes la ven al instante.</p>
                         <div class="form-group">
                             <label>Tasa base hoy (MN por 1 USD):</label>
                             <input type="number" id="adminTasaMN" placeholder="Ej: 340" min="1" max="9999" step="1"
                                 style="font-size:20px;font-weight:700;letter-spacing:1px;width:100%;">
-                            <p class="admin-note">El cliente verÃ¡ esta tasa +10 MN de margen. Ej: si pones 340, el cliente ve 350 MN por USD.</p>
+                            <p class="admin-note">El cliente verá esta tasa +10 MN de margen. Ej: si pones 340, el cliente ve 350 MN por USD.</p>
                         </div>
-                        <button onclick="guardarTasaMNAdmin()" type="button" class="btn btn-primary" style="background:linear-gradient(135deg,#C9A96E,#E8C88A);color:#0D0D0D;width:100%;font-weight:800;">ðŸ’¾ Guardar tasa y subir a GitHub</button>
+                        <button onclick="guardarTasaMNAdmin()" type="button" class="btn btn-primary" style="background:linear-gradient(135deg,#C9A96E,#E8C88A);color:#0D0D0D;width:100%;font-weight:800;">💾 Guardar tasa y subir a GitHub</button>
                         <p id="tasaMNStatus" style="font-size:12px;margin-top:8px;text-align:center;color:rgba(255,255,255,0.4);"></p>
                     </div>
 
-                    <p style="font-size: 14px; margin-bottom: 20px; color: var(--text-color);">Configura tu cuenta de GitHub para que los cambios se guarden automÃ¡ticamente para todos tus clientes.</p>
+                    <p style="font-size: 14px; margin-bottom: 20px; color: var(--text-color);">Configura tu cuenta de GitHub para que los cambios se guarden automáticamente para todos tus clientes.</p>
                     <form id="githubConfigForm" onsubmit="guardarConfiguracionGitHub(event)">
                         <div class="form-group">
                             <label>Usuario de GitHub:</label>
@@ -426,17 +434,17 @@
                             <input type="password" id="githubToken" placeholder="ghp_xxxxxxxxxxxx" required>
                             <p style="font-size: 11px; margin-top: 5px; opacity: 0.7;">Consigue tu token en GitHub Settings -> Developer Settings -> Tokens (classic). Debe tener permiso 'repo'.</p>
                         </div>
-                        <button type="submit" class="btn btn-primary" style="width: 100%;">ðŸ’¾ Guardar ConfiguraciÃ³n</button>
+                        <button type="submit" class="btn btn-primary" style="width: 100%;">💾 Guardar Configuración</button>
                     </form>
 
                     <!-- Notificaciones Push (Firebase) -->
                     <div class="admin-config-box firebase" style="margin-top: 25px; border: 2px solid #C9A96E; border-radius: 12px; padding: 20px; background: rgba(201, 169, 110, 0.05);">
-                        <h4 class="admin-h4-flex" style="color:#C9A96E; margin-bottom: 12px;"><span style="font-size:20px;">ðŸ””</span> Notificaciones Push (Firebase)</h4>
-                        <p class="admin-hint" style="color:#aaa; font-size:12px; margin-bottom:15px; line-height:1.4;">Configure Firebase Cloud Messaging para enviar notificaciones automÃ¡ticas instantÃ¡neas al agregar nuevos productos, lanzar ofertas o cambiar la tasa de cambio.</p>
+                        <h4 class="admin-h4-flex" style="color:#C9A96E; margin-bottom: 12px;"><span style="font-size:20px;">🔔</span> Notificaciones Push (Firebase)</h4>
+                        <p class="admin-hint" style="color:#aaa; font-size:12px; margin-bottom:15px; line-height:1.4;">Configure Firebase Cloud Messaging para enviar notificaciones automáticas instantáneas al agregar nuevos productos, lanzar ofertas o cambiar la tasa de cambio.</p>
                         
                         <div class="form-group" style="margin-bottom: 15px;">
-                            <label style="display:block; margin-bottom:5px; font-weight:bold; color:#fff;">Firebase Web Config (JSON o CÃ³digo de InicializaciÃ³n):</label>
-                            <textarea id="firebaseConfigJson" placeholder="Pega aquÃ­ el objeto firebaseConfig completo que te da la consola de Firebase...
+                            <label style="display:block; margin-bottom:5px; font-weight:bold; color:#fff;">Firebase Web Config (JSON o Código de Inicialización):</label>
+                            <textarea id="firebaseConfigJson" placeholder="Pega aquí el objeto firebaseConfig completo que te da la consola de Firebase...
 Ej:
 {
   apiKey: 'AIzaSy...',
@@ -444,30 +452,30 @@ Ej:
   projectId: '...',
   ...
 }" rows="7" style="font-family: monospace; font-size: 13px; width: 100%; border: 1px solid var(--border-color); border-radius: 8px; background: #222; color: #fff; padding: 10px; box-sizing: border-box; resize: vertical;"></textarea>
-                            <p class="admin-note" style="font-size:11px; margin-top:5px; opacity:0.7;">Consigue esto en la Consola de Firebase -> ConfiguraciÃ³n del proyecto -> Tus Apps (Web App).</p>
+                            <p class="admin-note" style="font-size:11px; margin-top:5px; opacity:0.7;">Consigue esto en la Consola de Firebase -> Configuración del proyecto -> Tus Apps (Web App).</p>
                         </div>
 
                         <div class="form-group" style="margin-bottom: 15px;">
                             <label style="display:block; margin-bottom:5px; font-weight:bold; color:#fff;">Clave VAPID de Web Push (Key Pair):</label>
                             <input type="text" id="firebaseVapidKey" placeholder="Pega tu clave VAPID (Key Pair) de Firebase" style="width: 100%; box-sizing: border-box; background:#222; color:#fff; border:1px solid var(--border-color); border-radius:8px; padding:8px;">
-                            <p class="admin-note" style="font-size:11px; margin-top:5px; opacity:0.7;">ConsÃ­guela en Firebase Console -> ConfiguraciÃ³n del proyecto -> Cloud Messaging -> Web configuration -> Web Push certificates.</p>
+                            <p class="admin-note" style="font-size:11px; margin-top:5px; opacity:0.7;">Consíguela en Firebase Console -> Configuración del proyecto -> Cloud Messaging -> Web configuration -> Web Push certificates.</p>
                         </div>
 
                         <div class="form-group" style="margin-bottom: 15px;">
                             <label style="display:block; margin-bottom:5px; font-weight:bold; color:#fff;">Clave de Servidor FCM Legacy (Opcional):</label>
-                            <input type="text" id="firebaseServerKey" placeholder="Pega tu clave de servidor (Server Key) para envÃ­o directo" style="width: 100%; box-sizing: border-box; background:#222; color:#fff; border:1px solid var(--border-color); border-radius:8px; padding:8px;">
+                            <input type="text" id="firebaseServerKey" placeholder="Pega tu clave de servidor (Server Key) para envío directo" style="width: 100%; box-sizing: border-box; background:#222; color:#fff; border:1px solid var(--border-color); border-radius:8px; padding:8px;">
                             <p class="admin-note" style="font-size:11px; margin-top:5px; opacity:0.7;">Requerido para enviar notificaciones de prueba o manuales directamente desde este panel de control.</p>
                         </div>
 
-                        <button onclick="guardarConfigFirebaseAdmin()" type="button" class="btn btn-primary" style="background:linear-gradient(135deg,#C9A96E,#E8C88A); color:#0D0D0D; width:100%; font-weight:800; border:none; border-radius:8px; padding:12px; cursor:pointer; font-size:14px;">ðŸ’¾ Guardar ConfiguraciÃ³n de Firebase</button>
+                        <button onclick="guardarConfigFirebaseAdmin()" type="button" class="btn btn-primary" style="background:linear-gradient(135deg,#C9A96E,#E8C88A); color:#0D0D0D; width:100%; font-weight:800; border:none; border-radius:8px; padding:12px; cursor:pointer; font-size:14px;">💾 Guardar Configuración de Firebase</button>
                         <p id="firebaseConfigStatus" style="font-size:12px; margin-top:8px; text-align:center; color:#C9A96E; font-weight:bold;"></p>
 
-                        <!-- Sub-secciÃ³n EnvÃ­o Manual -->
+                        <!-- Sub-sección Envío Manual -->
                         <div class="fcm-manual-send" style="margin-top: 20px; border-top: 1px dashed rgba(255,255,255,0.15); padding-top: 15px;">
-                            <h5 style="margin-bottom: 10px; color: #fff; font-size: 14px; display:flex; align-items:center; gap:6px;">ðŸ“£ Enviar NotificaciÃ³n Manual</h5>
+                            <h5 style="margin-bottom: 10px; color: #fff; font-size: 14px; display:flex; align-items:center; gap:6px;">📣 Enviar Notificación Manual</h5>
                             
                             <div class="form-group" style="margin-bottom: 10px;">
-                                <input type="text" id="manualPushTitle" placeholder="TÃ­tulo (ej: Â¡Oferta Flash de Fin de Semana!)" style="font-size: 13px; width: 100%; box-sizing: border-box; background:#181818; color:#fff; border:1px solid #333; border-radius:6px; padding:6px 10px;">
+                                <input type="text" id="manualPushTitle" placeholder="Título (ej: ¡Oferta Flash de Fin de Semana!)" style="font-size: 13px; width: 100%; box-sizing: border-box; background:#181818; color:#fff; border:1px solid #333; border-radius:6px; padding:6px 10px;">
                             </div>
                             <div class="form-group" style="margin-bottom: 10px;">
                                 <input type="text" id="manualPushBody" placeholder="Mensaje (ej: 20% de descuento en todos los calzados)" style="font-size: 13px; width: 100%; box-sizing: border-box; background:#181818; color:#fff; border:1px solid #333; border-radius:6px; padding:6px 10px;">
@@ -475,46 +483,46 @@ Ej:
                             <div class="form-group" style="margin-bottom: 10px;">
                                 <input type="text" id="manualPushUrl" placeholder="Ruta/Enlace al hacer click (ej: /p/producto-1778104115783.html)" style="font-size: 13px; width: 100%; box-sizing: border-box; background:#181818; color:#fff; border:1px solid #333; border-radius:6px; padding:6px 10px;">
                             </div>
-                            <button onclick="enviarPushManualAdmin()" type="button" class="btn btn-secondary" style="background: #2a2a2a; color: #fff; border: 1px solid rgba(255,255,255,0.2); width: 100%; font-size: 13px; padding: 10px; cursor: pointer; border-radius:6px; font-weight:bold;">ðŸ“£ Enviar NotificaciÃ³n Ahora</button>
+                            <button onclick="enviarPushManualAdmin()" type="button" class="btn btn-secondary" style="background: #2a2a2a; color: #fff; border: 1px solid rgba(255,255,255,0.2); width: 100%; font-size: 13px; padding: 10px; cursor: pointer; border-radius:6px; font-weight:bold;">📣 Enviar Notificación Ahora</button>
                             <p id="manualPushStatus" style="font-size:11px; margin-top:6px; text-align:center; color:rgba(255,255,255,0.5);"></p>
                         </div>
                     </div>
                     <div style="margin-top: 30px; padding: 20px; border: 2px solid #FF6B35; border-radius: 12px; text-align: center; background: rgba(255, 107, 53, 0.05);">
-                        <h4 style="margin-bottom: 10px;">ðŸš€ SincronizaciÃ³n Global</h4>
-                        <p style="font-size: 13px; margin-bottom: 15px;">Usa este botÃ³n cada vez que agregues productos o categorÃ­as para que sean visibles para todos.</p>
-                        <button data-action="sincronizarTodoConGitHub" type="button" class="btn btn-primary" style="padding: 15px 30px; font-size: 16px; background: #FF6B35;">ðŸ”„ ACTUALIZAR TIENDA AHORA</button>
+                        <h4 style="margin-bottom: 10px;">🚀 Sincronización Global</h4>
+                        <p style="font-size: 13px; margin-bottom: 15px;">Usa este botón cada vez que agregues productos o categorías para que sean visibles para todos.</p>
+                        <button data-action="sincronizarTodoConGitHub" type="button" class="btn btn-primary" style="padding: 15px 30px; font-size: 16px; background: #FF6B35;">🔄 ACTUALIZAR TIENDA AHORA</button>
                     </div>
                 </div>
 
-                <!-- Tab: Oferta del DÃ­a (standalone) -->
+                <!-- Tab: Oferta del Día (standalone) -->
                 <div id="oferta-dia" class="admin-tab">
-                    <h3 style="margin-bottom:6px;">ðŸ·ï¸ Oferta del DÃ­a</h3>
-                    <p style="font-size:13px;color:var(--text-muted);margin-bottom:20px;">Selecciona un producto para destacarlo con badge especial "Oferta del DÃ­a". AparecerÃ¡ primero en la tienda y con un diseÃ±o llamativo.</p>
+                    <h3 style="margin-bottom:6px;">🏷️ Oferta del Día</h3>
+                    <p style="font-size:13px;color:var(--text-muted);margin-bottom:20px;">Selecciona un producto para destacarlo con badge especial "Oferta del Día". Aparecerá primero en la tienda y con un diseño llamativo.</p>
 
                     <div style="background:var(--cream);border-radius:14px;padding:20px;margin-bottom:20px;">
                         <div class="form-group">
-                            <label>Producto para Oferta del DÃ­a:</label>
+                            <label>Producto para Oferta del Día:</label>
                             <select id="ofertaDiaSelect2" style="width:100%;padding:12px;border-radius:10px;border:1.5px solid var(--border-color);font-size:14px;"></select>
                         </div>
                         <div class="form-group">
                             <label>Texto del badge:</label>
-                            <input type="text" id="ofertaDiaTexto2" placeholder="ðŸ”¥ OFERTA DEL DÃA" maxlength="30">
+                            <input type="text" id="ofertaDiaTexto2" placeholder="🔥 OFERTA DEL DÍA" maxlength="30">
                         </div>
                         <div id="ofertaDiaStatus2" style="font-size:13px;color:#ff5722;margin-bottom:12px;min-height:20px;font-weight:600;"></div>
                         <div style="display:flex;gap:10px;">
-                            <button data-action="guardarOfertaDia2" type="button" class="btn btn-primary" style="background:#ff5722;flex:1;padding:14px;">âœ… Activar</button>
-                            <button data-action="desactivarOfertaDia" aria-label="Desactivar oferta del dÃ­a" type="button" class="btn btn-secondary" style="flex:1;padding:14px;">âŒ Desactivar</button>
+                            <button data-action="guardarOfertaDia2" type="button" class="btn btn-primary" style="background:#ff5722;flex:1;padding:14px;">✅ Activar</button>
+                            <button data-action="desactivarOfertaDia" aria-label="Desactivar oferta del día" type="button" class="btn btn-secondary" style="flex:1;padding:14px;">❌ Desactivar</button>
                         </div>
                     </div>
 
                     <!-- Modo agotado -->
                     <div class="admin-config-box agotado">
-                        <h4 style="margin:0 0 8px;display:flex;align-items:center;gap:8px;"><span style="font-size:20px;">ðŸ“¦</span> Modo Producto Agotado</h4>
-                        <p class="admin-hint">Los productos con stock = 0 se mostrarÃ¡n automÃ¡ticamente con el badge "AGOTADO" y el botÃ³n de compra desactivado. Para marcar un producto como agotado, edÃ­talo y pon el stock en 0.</p>
+                        <h4 style="margin:0 0 8px;display:flex;align-items:center;gap:8px;"><span style="font-size:20px;">📦</span> Modo Producto Agotado</h4>
+                        <p class="admin-hint">Los productos con stock = 0 se mostrarán automáticamente con el badge "AGOTADO" y el botón de compra desactivado. Para marcar un producto como agotado, edítalo y pon el stock en 0.</p>
                         <div style="display:flex;align-items:center;gap:12px;padding:14px;background:white;border-radius:10px;border:1px solid rgba(231,76,60,0.2);">
-                            <div style="width:50px;height:50px;background:#f8d7da;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;">ðŸ“¦</div>
+                            <div style="width:50px;height:50px;background:#f8d7da;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;">📦</div>
                             <div>
-                                <div style="font-size:13px;font-weight:700;color:#e74c3c;">Stock = 0 â†’ Badge AGOTADO</div>
+                                <div style="font-size:13px;font-weight:700;color:#e74c3c;">Stock = 0 → Badge AGOTADO</div>
                                 <div style="font-size:12px;color:#666;margin-top:2px;">El producto se muestra pero no se puede comprar</div>
                             </div>
                         </div>
@@ -525,50 +533,50 @@ Ej:
 
                 <!-- Tab: Apariencia / Imagen Hero -->
                 <div id="analytics" class="admin-tab">
-                    <h3 style="margin-bottom:20px;">ðŸ“Š Analytics de la Tienda</h3>
+                    <h3 style="margin-bottom:20px;">📊 Analytics de la Tienda</h3>
                     <div id="analyticsContent">
-                        <p style="color:#999;text-align:center;padding:40px 0;">Cargando estadÃ­sticas...</p>
+                        <p style="color:#999;text-align:center;padding:40px 0;">Cargando estadísticas...</p>
                     </div>
                 </div>
 
                 <div id="apariencia" class="admin-tab">
-                    <h3>ðŸŽ¨ Apariencia</h3>
+                    <h3>🎨 Apariencia</h3>
 
                     <!-- BANNERS HERO -->
                     <div class="form-group" style="margin-top:20px;">
-                        <label><b>ðŸ–¼ï¸ Banners promocionales</b></label>
+                        <label><b>🖼️ Banners promocionales</b></label>
                         <p style="font-size:12px;color:#888;margin-bottom:10px;">Agrega banners que van pasando solos. Al tocarlos llevan al link que pongas.</p>
                         <div id="bannerList" style="display:flex;flex-direction:column;gap:8px;margin-bottom:12px;"></div>
                         <div style="display:flex;flex-direction:column;gap:8px;">
-                            <label class="admin-label-sm">ðŸ“· Imagen del banner:</label>
+                            <label class="admin-label-sm">📷 Imagen del banner:</label>
                             <input type="file" id="nuevoBannerFile" accept="image/*" style="width:100%;">
                             <p style="font-size:11px;color:#aaa;margin:0;">O pega una URL directamente:</p>
                             <input type="url" id="nuevoBannerUrl" placeholder="https://... URL de la imagen (opcional)">
-                            <label class="admin-label-sm">ðŸ”— Link al tocar (opcional):</label>
+                            <label class="admin-label-sm">🔗 Link al tocar (opcional):</label>
                             <input type="url" id="nuevoBannerLink" placeholder="https://wa.me/grupo o cualquier link">
                             <button type="button" onclick="agregarBanner()" class="btn btn-primary">+ Agregar banner</button>
-                            <button type="button" onclick="exportarBannersJSON()" class="btn" style="background:#8e44ad;color:white;">ðŸ“¥ Descargar banners.json â†’ subir a GitHub</button>
+                            <button type="button" onclick="exportarBannersJSON()" class="btn" style="background:#8e44ad;color:white;">📥 Descargar banners.json → subir a GitHub</button>
                         </div>
                     </div>
 
                     <!-- TAGLINE EDITABLE -->
                     <div class="form-group" style="margin-top:24px;">
-                        <label><b>âœï¸ Texto del banner principal</b></label>
+                        <label><b>✏️ Texto del banner principal</b></label>
                         <p style="font-size:12px;color:#888;margin-bottom:8px;">El texto que aparece sobre la imagen principal.</p>
-                        <input type="text" id="heroTaglineInput" placeholder="âš¡ Inversores Â· ðŸ“¡ WiFi Â· ðŸ“± TecnologÃ­a" style="width:100%;">
-                        <button type="button" onclick="guardarTagline()" class="btn btn-primary" style="margin-top:8px;width:100%;">ðŸ’¾ Guardar texto</button>
+                        <input type="text" id="heroTaglineInput" placeholder="⚡ Inversores · 📡 WiFi · 📱 Tecnología" style="width:100%;">
+                        <button type="button" onclick="guardarTagline()" class="btn btn-primary" style="margin-top:8px;width:100%;">💾 Guardar texto</button>
                     </div>
-                    <h3 style="margin-bottom:18px;">ðŸŽ¨ PersonalizaciÃ³n Visual</h3>
+                    <h3 style="margin-bottom:18px;">🎨 Personalización Visual</h3>
 
                     <div style="background:var(--cream);padding:20px;border-radius:14px;margin-bottom:24px;">
-                        <h4 style="margin-bottom:6px;">ðŸ§¹ Limpieza aplicada al Hero</h4>
-                        <p class="admin-hint-lg">La antigua imagen fija del hero fue retirada porque la portada actual usa el slider de banners. Ahora toda la portada se gestiona desde â€œBanners promocionalesâ€ y el texto editable de arriba.</p>
+                        <h4 style="margin-bottom:6px;">🧹 Limpieza aplicada al Hero</h4>
+                        <p class="admin-hint-lg">La antigua imagen fija del hero fue retirada porque la portada actual usa el slider de banners. Ahora toda la portada se gestiona desde “Banners promocionales” y el texto editable de arriba.</p>
                     </div>
 
                     <!-- COUNTDOWN TIMER -->
                     <div style="background:var(--cream);padding:20px;border-radius:14px;">
-                        <h4 style="margin-bottom:6px;">â±ï¸ CronÃ³metro de Oferta (FOMO)</h4>
-                        <p class="admin-hint-lg">AÃ±ade un contador regresivo a un producto para crear urgencia. Aparece visible en la tarjeta del producto.</p>
+                        <h4 style="margin-bottom:6px;">⏱️ Cronómetro de Oferta (FOMO)</h4>
+                        <p class="admin-hint-lg">Añade un contador regresivo a un producto para crear urgencia. Aparece visible en la tarjeta del producto.</p>
                         
                         <div class="form-group">
                             <label>Seleccionar Producto:</label>
@@ -588,10 +596,10 @@ Ej:
                         </div>
                         <div class="form-group">
                             <label>Texto de la oferta:</label>
-                            <input type="text" id="countdownTexto" placeholder="Â¡Oferta especial!" value="Â¡Oferta especial!">
+                            <input type="text" id="countdownTexto" placeholder="¡Oferta especial!" value="¡Oferta especial!">
                         </div>
-                        <button data-action="guardarCountdown" type="button" class="btn btn-primary" style="width:100%;background:var(--coral);">â±ï¸ Activar Countdown</button>
-                        <button data-action="desactivarCountdown" aria-label="Desactivar cronÃ³metro" type="button" class="btn" style="width:100%;margin-top:8px;background:transparent;border:1px solid #e74c3c;color:#e74c3c;">ðŸ—‘ï¸ Desactivar Countdown</button>
+                        <button data-action="guardarCountdown" type="button" class="btn btn-primary" style="width:100%;background:var(--coral);">⏱️ Activar Countdown</button>
+                        <button data-action="desactivarCountdown" aria-label="Desactivar cronómetro" type="button" class="btn" style="width:100%;margin-top:8px;background:transparent;border:1px solid #e74c3c;color:#e74c3c;">🗑️ Desactivar Countdown</button>
                         
                         <div id="countdownStatus" style="margin-top:12px;font-size:13px;color:var(--text-muted);"></div>
                     </div>
@@ -606,8 +614,8 @@ Ej:
     <div id="editModal" class="modal hidden" data-backdrop-close="cerrarEditModal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>âœï¸ Editar producto</h2>
-                <button data-action="cerrarEditModal" aria-label="Cerrar ediciÃ³n" type="button" class="close-btn">âœ•</button>
+                <h2>✏️ Editar producto</h2>
+                <button data-action="cerrarEditModal" aria-label="Cerrar edición" type="button" class="close-btn">✕</button>
             </div>
             <form id="editForm">
                 <input type="hidden" id="editProductId">
@@ -616,33 +624,33 @@ Ej:
                     <input type="text" id="editProductName" required>
                 </div>
                 <div class="form-group">
-                    <label>DescripciÃ³n:</label>
+                    <label>Descripción:</label>
                     <textarea id="editProductDescription" required rows="4"></textarea>
                 </div>
                 <div class="form-group">
-                    <label>CategorÃ­a:</label>
+                    <label>Categoría:</label>
                     <select id="editProductCategory" required>
                         <option value="General">General</option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label>Â¿Mostrar en "MÃ¡s Vendidos"?</label>
+                    <label>¿Mostrar en "Más Vendidos"?</label>
                     <select id="editProductMasVendido">
                         <option value="false">No</option>
-                        <option value="true">SÃ­ â€” Destacar en la pÃ¡gina principal</option>
+                        <option value="true">Sí — Destacar en la página principal</option>
                     </select>
                 </div>
                 <div class="form-group">
                     <label>
                         <input type="checkbox" id="editProductUsado">
-                        âœ¨ Este es un producto usado/refurbished
+                        ✨ Este es un producto usado/refurbished
                     </label>
                 </div>
                 <div class="form-group">
                     <label>Imagen actual:</label>
                     <div id="currentImagePreview" style="margin-bottom:10px;"></div>
                     <input type="file" id="editProductImage" accept="image/*">
-                    <small>DÃ©jalo vacÃ­o para mantener la imagen actual.</small>
+                    <small>Déjalo vacío para mantener la imagen actual.</small>
                 </div>
                 <div class="form-row">
                     <div class="form-group">
@@ -660,22 +668,22 @@ Ej:
                         <input type="number" id="editProductStock" required placeholder="0" min="0">
                     </div>
                     <div class="form-group">
-                        <label>ðŸ’° Mi comisiÃ³n (USD):</label>
+                        <label>💰 Mi comisión (USD):</label>
                         <input type="number" id="editProductComision" placeholder="0.00" step="0.01" min="0">
                     </div>
                 </div>
                 <div class="form-group">
-                    <label>GarantÃ­a (opcional):</label>
-                    <input type="text" id="editProductGarantia" placeholder="Ej: 6 meses de garantÃ­a" maxlength="50">
+                    <label>Garantía (opcional):</label>
+                    <input type="text" id="editProductGarantia" placeholder="Ej: 6 meses de garantía" maxlength="50">
                 </div>
                 <div class="form-group">
                     <label>
                         <input type="checkbox" id="editProductDevolucion">
-                        âœ“ DevoluciÃ³n segura / GarantÃ­a de satisfacciÃ³n
+                        ✓ Devolución segura / Garantía de satisfacción
                     </label>
                 </div>
                 <div style="display:flex;gap:10px;flex-wrap:wrap;">
-                    <button type="submit" class="btn btn-primary" style="flex:1;min-width:180px;">ðŸ’¾ Guardar cambios</button>
+                    <button type="submit" class="btn btn-primary" style="flex:1;min-width:180px;">💾 Guardar cambios</button>
                     <button data-action="cerrarEditModal" type="button" class="btn btn-secondary" style="flex:1;min-width:180px;">Cancelar</button>
                 </div>
             </form>
@@ -715,11 +723,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
-<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-     ACORDEÃ“N MÃ“VIL â€” lÃ³gica de clases Ãºnicamente.
-     admin-clean.css maneja todo el layout/scroll vÃ­a
-     .acc-overlay y .has-overlay. El JS solo aÃ±ade/quita clases.
-     â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+<!-- ══════════════════════════════════════════════════
+     ACORDEÓN MÓVIL — lógica de clases únicamente.
+     admin-clean.css maneja todo el layout/scroll vía
+     .acc-overlay y .has-overlay. El JS solo añade/quita clases.
+     ══════════════════════════════════════════════════ -->
 <script>
 (function(){
     'use strict';
@@ -744,7 +752,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    /* Cerrar una fila â€” solo quitar clases */
+    /* Cerrar una fila — solo quitar clases */
     function closeRow(r){
         var acc = document.getElementById('adminAccordion');
         r.classList.remove('acc-open', 'acc-overlay');
@@ -753,24 +761,24 @@ document.addEventListener('DOMContentLoaded', () => {
         if(acc) acc.classList.remove('has-overlay');
     }
 
-    /* Abrir una fila â€” solo aÃ±adir clases, el CSS hace el resto */
+    /* Abrir una fila — solo añadir clases, el CSS hace el resto */
     function openRow(row){
         var acc = document.getElementById('adminAccordion');
         if(!acc) return;
 
-        /* Cerrar todas las demÃ¡s */
+        /* Cerrar todas las demás */
         acc.querySelectorAll('.acc-row.acc-open').forEach(closeRow);
 
         var tabId = row.getAttribute('data-tab-target');
         var body  = row.querySelector('.acc-body');
         if(!body) return;
 
-        /* Mover el tab al body del acordeÃ³n */
+        /* Mover el tab al body del acordeón */
         mount(tabId, body);
 
-        /* AÃ±adir clases â€” admin-clean.css aplica el layout/scroll automÃ¡ticamente:
-           .acc-row.acc-overlay â†’ position:sticky, z-index:50
-           .acc-row.acc-overlay .acc-body â†’ max-height:78vh, overflow-y:auto */
+        /* Añadir clases — admin-clean.css aplica el layout/scroll automáticamente:
+           .acc-row.acc-overlay → position:sticky, z-index:50
+           .acc-row.acc-overlay .acc-body → max-height:78vh, overflow-y:auto */
         row.classList.add('acc-open', 'acc-overlay');
         acc.classList.add('has-overlay');
 
@@ -780,7 +788,7 @@ document.addEventListener('DOMContentLoaded', () => {
         /* Notificar a script.js */
         if(typeof switchTab === 'function') switchTab(tabId);
 
-        /* Scroll suave al inicio del row dentro del acordeÃ³n */
+        /* Scroll suave al inicio del row dentro del acordeón */
         setTimeout(function(){
             var scrollParent = acc;
             var rowTop = row.offsetTop - (scrollParent.offsetTop || 0);
@@ -789,7 +797,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 80);
     }
 
-    /* Sincronizar acordeÃ³n con el tab activo al abrir el panel */
+    /* Sincronizar acordeón con el tab activo al abrir el panel */
     function sync(){
         var a = document.querySelector('.admin-tab.active');
         if(!a) return;
@@ -801,7 +809,7 @@ document.addEventListener('DOMContentLoaded', () => {
         var acc = document.getElementById('adminAccordion');
         if(!acc) return;
 
-        /* DelegaciÃ³n de clicks en triggers */
+        /* Delegación de clicks en triggers */
         acc.addEventListener('click', function(e){
             var trig = e.target.closest ? e.target.closest('.acc-trigger') : null;
             if(!trig) return;

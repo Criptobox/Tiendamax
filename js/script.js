@@ -2,7 +2,7 @@
 // ===== VARIABLES GLOBALES INICIALIZADAS TEMPRANO (evitar TDZ) =====
 var countdownIntervals = {};
 
-// ===== HELPER DE SANITIZACIÃƒâ€œN HTML (anti-XSS) =====
+// ===== HELPER DE SANITIZACIÓN HTML (anti-XSS) =====
 function escapeHtml(s) {
     if (s === null || s === undefined) return '';
     return String(s)
@@ -19,9 +19,9 @@ function safeNum(n, def = 0) {
 }
 
 
-// Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
-//  Ã°Å¸â€ºâ€™ CARRITO DE COMPRAS Ã¢â‚¬â€ con persistencia 24h
-// Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
+// ═══════════════════════════════════════════════════════
+//  🛒 CARRITO DE COMPRAS — con persistencia 24h
+// ═══════════════════════════════════════════════════════
 
 function _cargarCarrito() {
     try {
@@ -53,9 +53,9 @@ function actualizarContadorCarrito() {
 }
 
 
-// Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
+// ══════════════════════════════════════════════════════════════
 //  ME GUSTA / WISHLIST
-// Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
+// ══════════════════════════════════════════════════════════════
 let wishlist = JSON.parse(localStorage.getItem('wishlist_v1') || '[]').map(String);
 
 function guardarWishlist() {
@@ -69,10 +69,10 @@ function toggleMeGusta(id, e) {
     const agregando = idx === -1;
     if (agregando) {
         wishlist.push(id);
-        mostrarNotificacion('Ã¢ÂÂ¤Ã¯Â¸Â Agregado a Me Gusta');
+        mostrarNotificacion('❤️ Agregado a Me Gusta');
     } else {
         wishlist.splice(idx, 1);
-        mostrarNotificacion('Ã°Å¸Â¤Â Eliminado de Me Gusta');
+        mostrarNotificacion('🤍 Eliminado de Me Gusta');
     }
     guardarWishlist();
     actualizarBadgeCorazon();
@@ -81,13 +81,13 @@ function toggleMeGusta(id, e) {
     document.querySelectorAll('[data-like-id="' + id + '"]').forEach(btn => {
         btn.classList.toggle('liked', wishlist.includes(id));
         btn.setAttribute('aria-label', wishlist.includes(id) ? 'Quitar me gusta' : 'Me gusta');
-        // AnimaciÃƒÂ³n del corazÃƒÂ³n en el botÃƒÂ³n
+        // Animación del corazón en el botón
         btn.classList.remove('heart-pop');
         void btn.offsetWidth;
         btn.classList.add('heart-pop');
     });
 
-    // AnimaciÃƒÂ³n fly-to-heart solo al agregar
+    // Animación fly-to-heart solo al agregar
     if (agregando && e) {
         flyToHeart(e);
     }
@@ -114,20 +114,20 @@ function flyToHeart(e) {
     const heartBtn = document.getElementById('heartHeaderBtn');
     if (!heartBtn) return;
 
-    // PosiciÃƒÂ³n origen (donde se tocÃƒÂ³)
-    // FIX: en touchend, e.touches estÃƒÂ¡ vacÃƒÂ­o, usar changedTouches
+    // Posición origen (donde se tocó)
+    // FIX: en touchend, e.touches está vacío, usar changedTouches
     var touch = (e.touches && e.touches[0]) || (e.changedTouches && e.changedTouches[0]);
     const srcX = e.clientX || (touch ? touch.clientX : window.innerWidth / 2);
     const srcY = e.clientY || (touch ? touch.clientY : 100);
 
-    // PosiciÃƒÂ³n destino (el corazÃƒÂ³n del header)
+    // Posición destino (el corazón del header)
     const destRect = heartBtn.getBoundingClientRect();
     const destX = destRect.left + destRect.width / 2;
     const destY = destRect.top + destRect.height / 2;
 
-    // Crear partÃƒÂ­cula voladora
+    // Crear partícula voladora
     const fly = document.createElement('div');
-    fly.innerHTML = 'Ã¢ÂÂ¤Ã¯Â¸Â';
+    fly.innerHTML = '❤️';
     fly.style.cssText = [
         'position:fixed',
         'left:' + srcX + 'px',
@@ -142,7 +142,7 @@ function flyToHeart(e) {
     ].join(';');
     document.body.appendChild(fly);
 
-    // Forzar reflow y luego animar hacia el corazÃƒÂ³n del header
+    // Forzar reflow y luego animar hacia el corazón del header
     requestAnimationFrame(() => {
         requestAnimationFrame(() => {
             fly.style.left  = destX + 'px';
@@ -185,7 +185,7 @@ function agregarAlCarrito(id) {
         if (existing.cantidad < p.stock) {
             existing.cantidad++;
         } else {
-            mostrarNotificacion('Ã¢Å¡Â Ã¯Â¸Â No hay mÃƒÂ¡s unidades disponibles', 'error');
+            mostrarNotificacion('⚠️ No hay más unidades disponibles', 'error');
             return;
         }
     } else {
@@ -198,7 +198,7 @@ function agregarAlCarrito(id) {
         });
     }
     guardarCarrito();
-    mostrarNotificacion('Ã¢Å“â€¦ ' + p.nombre.substring(0,25) + ' agregado al carrito');
+    mostrarNotificacion('✅ ' + p.nombre.substring(0,25) + ' agregado al carrito');
     renderizarCarrito();
     actualizarBotonesCarrito();
 }
@@ -272,13 +272,13 @@ function renderizarCarrito() {
                 '<div class="carrito-item-name">' + nombre + '</div>' +
                 '<div class="carrito-item-price">$' + subtotal + ' USD</div>' +
                 '<div class="carrito-item-controls">' +
-                    '<button class="carrito-qty-btn" onclick="cambiarCantidad(' + idSafe + ',-1)">Ã¢Ë†â€™</button>' +
+                    '<button class="carrito-qty-btn" onclick="cambiarCantidad(' + idSafe + ',-1)">−</button>' +
                     '<span class="carrito-qty-num">' + safeNum(item.cantidad, 1) + '</span>' +
                     '<button class="carrito-qty-btn" onclick="cambiarCantidad(' + idSafe + ',1)">+</button>' +
                     '<span style="font-size:11px;color:#aaa;margin-left:4px;">$' + item.precio.toFixed(2) + ' c/u</span>' +
                 '</div>' +
             '</div>' +
-            '<button class="carrito-item-del" onclick="quitarDelCarrito(' + idSafe + ')" title="Eliminar">Ã¢Å“â€¢</button>' +
+            '<button class="carrito-item-del" onclick="quitarDelCarrito(' + idSafe + ')" title="Eliminar">✕</button>' +
             '</div>';
     }).join('');
 
@@ -295,7 +295,7 @@ function renderizarSimilaresCarrito() {
 
     if (carrito.length === 0) { secEl.style.display = 'none'; return; }
 
-    // CategorÃƒÂ­as presentes en el carrito
+    // Categorías presentes en el carrito
     const categoriasCarrito = [...new Set(
         carrito.map(i => {
             const p = productos.find(x => x.id === i.id);
@@ -305,7 +305,7 @@ function renderizarSimilaresCarrito() {
 
     const idsEnCarrito = new Set(carrito.map(i => i.id));
 
-    // Similares: misma categorÃƒÂ­a, no en carrito, disponibles, mÃƒÂ¡x 3 aleatorios
+    // Similares: misma categoría, no en carrito, disponibles, máx 3 aleatorios
     const similares = productos
         .filter(p =>
             !idsEnCarrito.has(p.id) &&
@@ -329,7 +329,7 @@ function renderizarSimilaresCarrito() {
                 '<div class="cs-card-nombre">' + nombre + '</div>' +
                 '<div class="cs-card-precio">$' + Number(p.precioActual).toFixed(2) + ' USD</div>' +
             '</div>' +
-            '<button class="cs-card-btn" onclick="agregarAlCarrito(' + idSafe + ');renderizarCarrito();">Ã°Å¸â€ºâ€™ Agregar</button>' +
+            '<button class="cs-card-btn" onclick="agregarAlCarrito(' + idSafe + ');renderizarCarrito();">🛒 Agregar</button>' +
         '</div>';
     }).join('');
 }
@@ -339,7 +339,7 @@ function comprarCarrito() {
     // Guardar en historial del cliente antes de abrir WhatsApp
     guardarPedidoCliente(carrito.slice());
     const lineas = carrito.map(i =>
-        'Ã¢â‚¬Â¢ ' + i.nombre + ' x' + i.cantidad + ' Ã¢â‚¬â€ $' + (i.precio * i.cantidad).toFixed(2) + ' USD'
+        '• ' + i.nombre + ' x' + i.cantidad + ' — $' + (i.precio * i.cantidad).toFixed(2) + ' USD'
     );
     const total = carrito.reduce((s, i) => s + i.precio * i.cantidad, 0);
     const msg = encodeURIComponent(
@@ -358,17 +358,17 @@ function actualizarBotonesCarrito() {
         const enCarrito = carrito.some(x => String(x.id) === String(id));
         if (enCarrito) {
             btn.classList.add('en-carrito');
-            btn.textContent = 'Ã¢Å“â€œ En carrito';
+            btn.textContent = '✓ En carrito';
         } else {
             btn.classList.remove('en-carrito');
-            btn.textContent = 'Ã°Å¸â€ºâ€™ Agregar';
+            btn.textContent = '🛒 Agregar';
         }
     });
 }
 
-// Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
-//  Ã¢Â­Â RESEÃƒâ€˜AS
-// Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
+// ═══════════════════════════════════════════════════════
+//  ⭐ RESEÑAS
+// ═══════════════════════════════════════════════════════
 let _estrellasSeleccionadas = 0;
 let _productoResena = null;
 
@@ -378,7 +378,7 @@ function mostrarFormResena() {
     if (!form) return;
     const visible = form.style.display !== 'none';
     form.style.display = visible ? 'none' : 'block';
-    if (btn) btn.textContent = visible ? '+ Agregar reseÃƒÂ±a' : 'Ã¢Å“â€¢ Cancelar';
+    if (btn) btn.textContent = visible ? '+ Agregar reseña' : '✕ Cancelar';
     _estrellasSeleccionadas = 0;
     setEstrellas(0);
     const autorEl = document.getElementById('resenaAutor');
@@ -398,9 +398,9 @@ function guardarResena() {
     if (!_detalleProductoActual) return;
     const autor = (document.getElementById('resenaAutor')?.value || '').trim();
     const texto = (document.getElementById('resenaTexto')?.value || '').trim();
-    if (!autor) { mostrarNotificacion('Ã¢Å¡Â Ã¯Â¸Â Escribe tu nombre', 'error'); return; }
-    if (_estrellasSeleccionadas === 0) { mostrarNotificacion('Ã¢Å¡Â Ã¯Â¸Â Selecciona una valoraciÃƒÂ³n', 'error'); return; }
-    if (!texto) { mostrarNotificacion('Ã¢Å¡Â Ã¯Â¸Â Escribe tu reseÃƒÂ±a', 'error'); return; }
+    if (!autor) { mostrarNotificacion('⚠️ Escribe tu nombre', 'error'); return; }
+    if (_estrellasSeleccionadas === 0) { mostrarNotificacion('⚠️ Selecciona una valoración', 'error'); return; }
+    if (!texto) { mostrarNotificacion('⚠️ Escribe tu reseña', 'error'); return; }
 
     const nuevaResena = {
         autor,
@@ -416,7 +416,7 @@ function guardarResena() {
     const resenasSlice = resenas.slice(0, 20);
     localStorage.setItem(key, JSON.stringify(resenasSlice));
 
-    // TambiÃƒÂ©n guardar dentro del array de productos en localStorage para que
+    // También guardar dentro del array de productos en localStorage para que
     // se incluyan en el productos.json descargable y sean persistentes
     try {
         const prodIndex = productos.findIndex(p => p.id === _detalleProductoActual.id);
@@ -425,25 +425,25 @@ function guardarResena() {
             productos[prodIndex].resenas.unshift(nuevaResena);
             productos[prodIndex].resenas = productos[prodIndex].resenas.slice(0, 20);
             localStorage.setItem('productos', JSON.stringify(productos));
-            // Sincronizar tambiÃƒÂ©n con el producto actual en memoria
+            // Sincronizar también con el producto actual en memoria
             _detalleProductoActual.resenas = productos[prodIndex].resenas;
         }
-    } catch(e) { /* no crÃƒÂ­tico */ }
+    } catch(e) { /* no crítico */ }
 
     mostrarFormResena(); // cerrar form
     renderizarResenas(_detalleProductoActual.id);
-    mostrarNotificacion('Ã¢Å“â€¦ Ã‚Â¡ReseÃƒÂ±a publicada!');
+    mostrarNotificacion('✅ ¡Reseña publicada!');
 
-    // Intentar subir la reseÃƒÂ±a a GitHub para que todos la vean
+    // Intentar subir la reseña a GitHub para que todos la vean
     // (funciona si el dispositivo tiene credenciales de admin guardadas)
     (async function subirResena() {
         const user  = localStorage.getItem('githubUser');
         const repo  = localStorage.getItem('githubRepo');
         const token = localStorage.getItem('githubToken');
         if (!user || !repo || !token) {
-            // Sin credenciales de admin: la reseÃƒÂ±a solo queda en este dispositivo
+            // Sin credenciales de admin: la reseña solo queda en este dispositivo
             // FIX: mensaje honesto - sin admin no hay sync con GitHub
-            mostrarNotificacion('Ã°Å¸â€™Â¾ ReseÃƒÂ±a guardada en este dispositivo. Solo tÃƒÂº la verÃƒÂ¡s aquÃƒÂ­.', 'info');
+            mostrarNotificacion('💾 Reseña guardada en este dispositivo. Solo tú la verás aquí.', 'info');
             return;
         }
         try {
@@ -451,7 +451,7 @@ function guardarResena() {
             const url = 'https://raw.githubusercontent.com/' + user + '/' + repo + '/main/productos.json?_=' + Date.now();
             const res = await fetch(url);
             let prods = res.ok ? await res.json() : productos;
-            // Fusionar la reseÃƒÂ±a reciÃƒÂ©n guardada
+            // Fusionar la reseña recién guardada
             const idx = prods.findIndex(function(p){ return p.id === _detalleProductoActual.id; });
             if (idx !== -1) {
                 if (!prods[idx].resenas) prods[idx].resenas = [];
@@ -464,12 +464,12 @@ function guardarResena() {
                     prods[idx].resenas = prods[idx].resenas.slice(0, 20);
                 }
                 await subirArchivoAGitHub(user, repo, token, 'productos.json', prods);
-                mostrarNotificacion('Ã¢ËœÂÃ¯Â¸Â ReseÃƒÂ±a subida Ã¢â‚¬â€ visible para todos', 'success');
-                // Actualizar memoria local con el array de GitHub (tiene todas las reseÃƒÂ±as)
+                mostrarNotificacion('☁️ Reseña subida — visible para todos', 'success');
+                // Actualizar memoria local con el array de GitHub (tiene todas las reseñas)
                 productos = prods;
                 localStorage.setItem('productos', JSON.stringify(productos));
             }
-        } catch(e) { /* sin internet o sin token: la reseÃƒÂ±a queda guardada localmente */ }
+        } catch(e) { /* sin internet o sin token: la reseña queda guardada localmente */ }
     })();
 }
 
@@ -477,7 +477,7 @@ function renderizarResenas(productoId) {
     const el = document.getElementById('listaResenas');
     if (!el) return;
 
-    // Buscar reseÃƒÂ±as: primero en el producto en memoria, luego en localStorage
+    // Buscar reseñas: primero en el producto en memoria, luego en localStorage
     let resenas = [];
     const prodEnMemoria = productos.find(p => p.id === productoId);
     if (prodEnMemoria && Array.isArray(prodEnMemoria.resenas) && prodEnMemoria.resenas.length > 0) {
@@ -488,15 +488,15 @@ function renderizarResenas(productoId) {
     }
 
     if (resenas.length === 0) {
-        el.innerHTML = '<p class="resenas-vacio">SÃƒÂ© el primero en dejar una reseÃƒÂ±a Ã°Å¸Å’Å¸</p>';
+        el.innerHTML = '<p class="resenas-vacio">Sé el primero en dejar una reseña 🌟</p>';
         return;
     }
     const promedio = (resenas.reduce((s, r) => s + r.estrellas, 0) / resenas.length).toFixed(1);
     el.innerHTML =
         '<div style="text-align:center;margin-bottom:14px;">' +
             '<span style="font-size:28px;font-weight:900;color:#f59e0b;">' + promedio + '</span>' +
-            '<span style="color:#f59e0b;font-size:18px;margin-left:6px;">' + 'Ã¢Ëœâ€¦'.repeat(Math.round(parseFloat(promedio))) + '</span>' +
-            '<div style="font-size:12px;color:#aaa;">' + resenas.length + ' reseÃƒÂ±a' + (resenas.length !== 1 ? 's' : '') + '</div>' +
+            '<span style="color:#f59e0b;font-size:18px;margin-left:6px;">' + '★'.repeat(Math.round(parseFloat(promedio))) + '</span>' +
+            '<div style="font-size:12px;color:#aaa;">' + resenas.length + ' reseña' + (resenas.length !== 1 ? 's' : '') + '</div>' +
         '</div>' +
         resenas.map(r => {
             const e = Math.max(0, Math.min(5, parseInt(r.estrellas, 10) || 0));
@@ -504,7 +504,7 @@ function renderizarResenas(productoId) {
                 '<div class="resena-top">' +
                     '<span class="resena-autor">' + escapeHtml(r.autor) + '</span>' +
                     '<div style="display:flex;align-items:center;gap:6px;">' +
-                        '<span class="resena-estrellas">' + 'Ã¢Ëœâ€¦'.repeat(e) + 'Ã¢Ëœâ€ '.repeat(5 - e) + '</span>' +
+                        '<span class="resena-estrellas">' + '★'.repeat(e) + '☆'.repeat(5 - e) + '</span>' +
                         '<span class="resena-fecha">' + escapeHtml(r.fecha) + '</span>' +
                     '</div>' +
                 '</div>' +
@@ -513,13 +513,13 @@ function renderizarResenas(productoId) {
         }).join('');
 }
 
-// Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
-//  Ã°Å¸â€¢Â VISTOS RECIENTEMENTE (v2 - con timestamps y caducidad)
+// ═══════════════════════════════════════════════════════
+//  🕐 VISTOS RECIENTEMENTE (v2 - con timestamps y caducidad)
 //
 //  Guarda hasta 12 productos vistos por el cliente, con
-//  timestamp para caducar tras 30 dÃƒÂ­as. Solo se guardan
-//  visualizaciones REALES (productos que el cliente abriÃƒÂ³).
-// Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
+//  timestamp para caducar tras 30 días. Solo se guardan
+//  visualizaciones REALES (productos que el cliente abrió).
+// ═══════════════════════════════════════════════════════
 const _TM_VISTOS_MAX = 12;
 const _TM_VISTOS_DIAS_CADUCIDAD = 30;
 
@@ -539,7 +539,7 @@ function _guardarVistos(arr) {
     try {
         localStorage.setItem('recientes_v2', JSON.stringify(arr));
     } catch(e) {
-        // Si la cuota estÃƒÂ¡ llena, intentar reducir a la mitad
+        // Si la cuota está llena, intentar reducir a la mitad
         try {
             localStorage.setItem('recientes_v2', JSON.stringify(arr.slice(0, 6)));
         } catch(e2) {}
@@ -551,22 +551,22 @@ function registrarVisto(id) {
     let vistos = _cargarVistos();
     // Quitar si ya existe (para subirlo al top)
     vistos = vistos.filter(x => String(x.id) !== String(id));
-    // AÃƒÂ±adir al principio con timestamp
+    // Añadir al principio con timestamp
     vistos.unshift({ id: String(id), t: Date.now() });
     // Limitar a 12
     vistos = vistos.slice(0, _TM_VISTOS_MAX);
     _guardarVistos(vistos);
-    // Re-renderizar las secciones si estÃƒÂ¡n visibles
+    // Re-renderizar las secciones si están visibles
     setTimeout(renderizarRecientes, 100);
 }
 
 function limpiarRecientes() {
     try { localStorage.removeItem('recientes_v2'); } catch(e) {}
-    try { localStorage.removeItem('recientes'); } catch(e) {}  // limpiar versiÃƒÂ³n vieja
+    try { localStorage.removeItem('recientes'); } catch(e) {}  // limpiar versión vieja
     renderizarRecientes();
 }
 
-// Renderiza los productos vistos en la secciÃƒÂ³n "seccionRecientes" (home)
+// Renderiza los productos vistos en la sección "seccionRecientes" (home)
 // y en "detailVistosGrid" (modal de detalle). Si no hay productos, oculta las secciones.
 function renderizarRecientes() {
     if (!Array.isArray(productos) || productos.length === 0) return;
@@ -575,14 +575,14 @@ function renderizarRecientes() {
     const productoActualId = (typeof _detalleProductoActual !== 'undefined' && _detalleProductoActual)
         ? String(_detalleProductoActual.id) : null;
 
-    // Resolver IDs Ã¢â€ â€™ objetos producto. Excluir el producto que estÃƒÂ¡ abierto ahora.
+    // Resolver IDs → objetos producto. Excluir el producto que está abierto ahora.
     const items = vistos
         .map(v => productos.find(p => String(p.id) === String(v.id)))
         .filter(Boolean)
         .filter(p => String(p.id) !== productoActualId)
         .slice(0, 6);
 
-    // Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ SecciÃƒÂ³n en HOME Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
+    // ─── Sección en HOME ───
     const secHome = document.getElementById('seccionRecientes');
     const gridHome = document.getElementById('recientesGrid');
     if (secHome && gridHome) {
@@ -594,7 +594,7 @@ function renderizarRecientes() {
         }
     }
 
-    // Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ SecciÃƒÂ³n en DETALLE de producto Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
+    // ─── Sección en DETALLE de producto ───
     const secDet = document.getElementById('detailVistosSection');
     const gridDet = document.getElementById('detailVistosGrid');
     if (secDet && gridDet) {
@@ -623,9 +623,9 @@ function _renderCardRecientes(p) {
         + '</div>';
 }
 
-// Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
-//  Ã°Å¸â€â€ NOTIFICACIONES PUSH
-// Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
+// ═══════════════════════════════════════════════════════
+//  🔔 NOTIFICACIONES PUSH
+// ═══════════════════════════════════════════════════════
 async function solicitarNotificaciones() {
     if (!('Notification' in window)) return false;
     if (Notification.permission === 'granted') return true;
@@ -646,7 +646,7 @@ function mostrarNotificacionPush(titulo, cuerpo, icono) {
     } catch(e) {}
 }
 
-// Verificar si hay productos nuevos desde la ÃƒÂºltima visita
+// Verificar si hay productos nuevos desde la última visita
 function verificarProductosNuevos() {
     const ultimaVisita = parseInt(localStorage.getItem('ultimaVisita') || '0');
     const ahora = Date.now();
@@ -655,14 +655,14 @@ function verificarProductosNuevos() {
     const nuevos = productos.filter(p => p.id > ultimaVisita).length;
     if (nuevos > 0 && Notification.permission === 'granted') {
         mostrarNotificacionPush(
-            'Ã°Å¸â€ºÂÃ¯Â¸Â TiendaMax',
-            nuevos === 1 ? 'Ã‚Â¡Hay 1 producto nuevo!' : `Ã‚Â¡Hay ${nuevos} productos nuevos!`
+            '🛍️ TiendaMax',
+            nuevos === 1 ? '¡Hay 1 producto nuevo!' : `¡Hay ${nuevos} productos nuevos!`
         );
     }
 }
 
 
-// ===== CONFIGURACION GLOBAL =====
+// ===== CONFIGURACIÓN GLOBAL =====
 // Constantes para autenticacion PBKDF2
 const AUTH_SALT_KEY = 'tm_auth_salt_v3';
 const AUTH_HASH_KEY = 'tm_auth_hash_v3';
@@ -683,58 +683,57 @@ function _getSalt() {
     return salt;
 }
 
-
 let productos = JSON.parse(localStorage.getItem('productos')) || [];
 let categorias = JSON.parse(localStorage.getItem('categorias')) || ['General'];
 let usuarioAutenticado = false;
 let categoriaSeleccionada = 'Todas';
 let subcategoriaSeleccionada = 'Todas';
 
-// Iconos para cada categorÃƒÂ­a (Mapeo automÃƒÂ¡tico por palabras clave)
+// Iconos para cada categoría (Mapeo automático por palabras clave)
 const ICONOS_MAPA = {
-    'wifi': 'Ã°Å¸â€œÂ¡', 'internet': 'Ã°Å¸â€œÂ¡', 'red': 'Ã°Å¸â€œÂ¡', 'router': 'Ã°Å¸â€œÂ¡',
-    'energia': 'Ã¢Å¡Â¡', 'bateria': 'Ã¢Å¡Â¡', 'luz': 'Ã¢Å¡Â¡', 'corriente': 'Ã¢Å¡Â¡', 'inversor': 'Ã¢Å¡Â¡',
-    'celular': 'Ã°Å¸â€œÂ±', 'telefono': 'Ã°Å¸â€œÂ±', 'movil': 'Ã°Å¸â€œÂ±', 'iphone': 'Ã°Å¸â€œÂ±', 'android': 'Ã°Å¸â€œÂ±',
-    'utiles': 'Ã°Å¸â€Â§', 'herramienta': 'Ã°Å¸â€Â§', 'reparacion': 'Ã°Å¸â€Â§', 'ferreteria': 'Ã°Å¸â€Â§',
-    'ropa': 'Ã°Å¸â€˜â€”', 'vestir': 'Ã°Å¸â€˜â€”', 'moda': 'Ã°Å¸â€˜â€”', 'calzado': 'Ã°Å¸â€˜â€”', 'zapatos': 'Ã°Å¸â€˜â€”',
-    'electronica': 'Ã°Å¸â€™Â»', 'computadora': 'Ã°Å¸â€™Â»', 'laptop': 'Ã°Å¸â€™Â»', 'tecnologia': 'Ã°Å¸â€™Â»',
-    'hogar': 'Ã°Å¸ÂÂ ', 'casa': 'Ã°Å¸ÂÂ ', 'mueble': 'Ã°Å¸ÂÂ ', 'cocina': 'Ã°Å¸ÂÂ ',
-    'alimento': 'Ã°Å¸ÂÅ½', 'comida': 'Ã°Å¸ÂÅ½', 'fruta': 'Ã°Å¸ÂÅ½', 'dulce': 'Ã°Å¸ÂÅ½',
-    'belleza': 'Ã°Å¸â€™â€ž', 'maquillaje': 'Ã°Å¸â€™â€ž', 'perfume': 'Ã°Å¸â€™â€ž', 'cuidado': 'Ã°Å¸â€™â€ž',
-    'deporte': 'Ã¢Å¡Â½', 'gym': 'Ã¢Å¡Â½', 'ejercicio': 'Ã¢Å¡Â½', 'fitness': 'Ã¢Å¡Â½',
-    'juguete': 'Ã°Å¸Â§Â¸', 'niÃƒÂ±o': 'Ã°Å¸Â§Â¸', 'bebe': 'Ã°Å¸Â§Â¸', 'diversion': 'Ã°Å¸Â§Â¸',
-    'libro': 'Ã°Å¸â€œÅ¡', 'estudio': 'Ã°Å¸â€œÅ¡', 'papeleria': 'Ã°Å¸â€œÅ¡', 'escuela': 'Ã°Å¸â€œÅ¡',
-    'auto': 'Ã°Å¸Å¡â€”', 'carro': 'Ã°Å¸Å¡â€”', 'moto': 'Ã°Å¸Å¡â€”', 'vehiculo': 'Ã°Å¸Å¡â€”', 'repuesto': 'Ã°Å¸Å¡â€”',
-    'reloj': 'Ã¢Å’Å¡', 'joya': 'Ã°Å¸â€™Å½', 'accesorio': 'Ã°Å¸â€™Â',
-    'mascota': 'Ã°Å¸ÂÂ¾', 'perro': 'Ã°Å¸ÂÂ¾', 'gato': 'Ã°Å¸ÂÂ¾',
-    'musica': 'Ã°Å¸Å½Âµ', 'audio': 'Ã°Å¸â€Å ', 'sonido': 'Ã°Å¸â€Å ',
-    'viaje': 'Ã¢Å“Ë†Ã¯Â¸Â', 'maleta': 'Ã°Å¸Â§Â³',
-    'general': 'Ã°Å¸â€ºÂÃ¯Â¸Â'
+    'wifi': '📡', 'internet': '📡', 'red': '📡', 'router': '📡',
+    'energia': '⚡', 'bateria': '⚡', 'luz': '⚡', 'corriente': '⚡', 'inversor': '⚡',
+    'celular': '📱', 'telefono': '📱', 'movil': '📱', 'iphone': '📱', 'android': '📱',
+    'utiles': '🔧', 'herramienta': '🔧', 'reparacion': '🔧', 'ferreteria': '🔧',
+    'ropa': '👗', 'vestir': '👗', 'moda': '👗', 'calzado': '👗', 'zapatos': '👗',
+    'electronica': '💻', 'computadora': '💻', 'laptop': '💻', 'tecnologia': '💻',
+    'hogar': '🏠', 'casa': '🏠', 'mueble': '🏠', 'cocina': '🏠',
+    'alimento': '🍎', 'comida': '🍎', 'fruta': '🍎', 'dulce': '🍎',
+    'belleza': '💄', 'maquillaje': '💄', 'perfume': '💄', 'cuidado': '💄',
+    'deporte': '⚽', 'gym': '⚽', 'ejercicio': '⚽', 'fitness': '⚽',
+    'juguete': '🧸', 'niño': '🧸', 'bebe': '🧸', 'diversion': '🧸',
+    'libro': '📚', 'estudio': '📚', 'papeleria': '📚', 'escuela': '📚',
+    'auto': '🚗', 'carro': '🚗', 'moto': '🚗', 'vehiculo': '🚗', 'repuesto': '🚗',
+    'reloj': '⌚', 'joya': '💎', 'accesorio': '💍',
+    'mascota': '🐾', 'perro': '🐾', 'gato': '🐾',
+    'musica': '🎵', 'audio': '🔊', 'sonido': '🔊',
+    'viaje': '✈️', 'maleta': '🧳',
+    'general': '🛍️'
 };
 
 // Cargar iconos personalizados desde localStorage
 let iconosPersonalizados = JSON.parse(localStorage.getItem('iconosPersonalizados')) || {};
 
 function obtenerIconoCategoria(nombre) {
-    if (!nombre) return 'Ã°Å¸â€ºÂÃ¯Â¸Â';
+    if (!nombre) return '🛍️';
     
     // 1. Prioridad: Icono personalizado guardado por el usuario
     if (iconosPersonalizados[nombre]) return iconosPersonalizados[nombre];
     
-    // 2. Mapeo automÃƒÂ¡tico por palabras clave
+    // 2. Mapeo automático por palabras clave
     const nombreMinus = nombre.toLowerCase();
     for (const [clave, icono] of Object.entries(ICONOS_MAPA)) {
         if (nombreMinus.includes(clave)) return icono;
     }
     
-    // 3. Por defecto: Icono de "Todos" (Ã°Å¸â€ºÂÃ¯Â¸Â) si no se encuentra nada
-    return 'Ã°Å¸â€ºÂÃ¯Â¸Â';
+    // 3. Por defecto: Icono de "Todos" (🛍️) si no se encuentra nada
+    return '🛍️';
 }
 
 
-// Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
-//  BÃƒÅ¡SQUEDA HERO Ã¢â‚¬â€ con IA (Claude API)
-// Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
+// ═══════════════════════════════════════════════════════
+//  BÚSQUEDA HERO — con IA (Claude API)
+// ═══════════════════════════════════════════════════════
 let _heroSearchActivo = '';
 let _heroPrecioMin    = 0;
 let _heroPrecioMax    = Infinity;
@@ -761,7 +760,7 @@ function cerrarPanelBusqueda() {
 function inicializarSliderPrecios() {}
 function actualizarSliderPrecio() {}
 
-// BÃƒÂºsqueda local rÃƒÂ¡pida
+// Búsqueda local rápida
 function busquedaLocal(q) {
     if (!q) return productos.slice(0, 6);
     const ql = q.toLowerCase();
@@ -773,14 +772,14 @@ function busquedaLocal(q) {
     ).slice(0, 6);
 }
 
-// BÃƒÂºsqueda inteligente local (sin depender de APIs externas)
+// Búsqueda inteligente local (sin depender de APIs externas)
 async function busquedaConIA(q) {
     if (!q || q.length < 3 || productos.length === 0) return null;
 
     const normalizar = (txt) => String(txt || '')
         .toLowerCase()
         .normalize('NFD')
-        .replace(/[ÃŒâ‚¬-ÃÂ¯]/g, '')
+        .replace(/[̀-ͯ]/g, '')
         .replace(/[^a-z0-9\s]/g, ' ');
 
     const alias = {
@@ -827,7 +826,7 @@ function renderSugerencias(resultados, q) {
     const sugBox = document.getElementById('heroSearchSuggestions');
     if (!sugBox) return;
     if (!resultados || resultados.length === 0) {
-        sugBox.innerHTML = '<div class="hsb-sug-empty">Ã°Å¸Ëœâ€¢ Sin resultados para "' + escapeHtml(q) + '"</div>';
+        sugBox.innerHTML = '<div class="hsb-sug-empty">😕 Sin resultados para "' + escapeHtml(q) + '"</div>';
         return;
     }
     sugBox.innerHTML = resultados.map(p => {
@@ -859,7 +858,7 @@ async function buscarDesdeHero(query) {
         if (q.length >= 3) {
             if (aiLabel) aiLabel.style.display = 'block';
             if (locales.length < 2 && sugBox) {
-                sugBox.innerHTML = '<div class="hsb-ai-loading">Ã°Å¸Â¤â€“ Buscando con IA</div>';
+                sugBox.innerHTML = '<div class="hsb-ai-loading">🤖 Buscando con IA</div>';
             }
             _aiSearchTimer = setTimeout(async () => {
                 const iaResultados = await busquedaConIA(q);
@@ -899,9 +898,9 @@ document.addEventListener('click', (e) => {
     if (!e.target.closest('.hsb-wrap')) cerrarPanelBusqueda();
 });
 
-// Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
-//  SUBIDA DE IMÃƒÂGENES A GITHUB (archivos .jpg reales)
-// Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
+// ═══════════════════════════════════════════════════════
+//  SUBIDA DE IMÁGENES A GITHUB (archivos .jpg reales)
+// ═══════════════════════════════════════════════════════
 async function subirImagenAGitHub(fileOrBase64) {
     const user  = localStorage.getItem('githubUser');
     const repo  = localStorage.getItem('githubRepo');
@@ -926,9 +925,9 @@ async function subirImagenAGitHub(fileOrBase64) {
     return base64full;
 }
 
-// Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
+// ═══════════════════════════════════════════════════════
 //  ANALYTICS
-// Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
+// ═══════════════════════════════════════════════════════
 function renderizarAnalytics() {
     const el = document.getElementById('analyticsContent');
     if (!el) return;
@@ -945,26 +944,26 @@ function renderizarAnalytics() {
     productos.forEach(p => { catConteo[p.categoria] = (catConteo[p.categoria]||0)+1; });
     const topCats = Object.entries(catConteo).sort((a,b) => b[1]-a[1]).slice(0,5);
 
-    // Calcular tamaÃƒÂ±o estimado del JSON (base64 vs URL)
+    // Calcular tamaño estimado del JSON (base64 vs URL)
     const pesoBase64 = productos.filter(p => p.imagen?.startsWith('data:')).reduce((s,p) => s + p.imagen.length, 0);
     const pesoKB     = Math.round(pesoBase64 / 1024);
 
     el.innerHTML = `
         <div class="admin-analytics-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:24px;">
-            ${stat('Ã°Å¸â€œÂ¦', 'Productos', totalProductos)}
-            ${stat('Ã°Å¸ÂÂ·Ã¯Â¸Â', 'CategorÃƒÂ­as', Object.keys(catConteo).length)}
-            ${stat('Ã°Å¸â€œÅ ', 'Stock total', totalStock)}
-            ${stat('Ã¢Å¡Â Ã¯Â¸Â', 'Sin stock', sinStock, sinStock > 0 ? '#e74c3c' : null)}
-            ${stat('Ã°Å¸â€Â¥', 'MÃƒÂ¡s vendidos', masVendidos)}
-            ${stat('Ã°Å¸ÂÂ·Ã¯Â¸Â', 'Con descuento', conDescuento)}
-            ${stat('Ã°Å¸â€™Â°', 'Precio prom.', '$'+precioPromedio)}
-            ${stat('Ã°Å¸â€œË†', 'Precio max.', '$'+precioMax)}
+            ${stat('📦', 'Productos', totalProductos)}
+            ${stat('🏷️', 'Categorías', Object.keys(catConteo).length)}
+            ${stat('📊', 'Stock total', totalStock)}
+            ${stat('⚠️', 'Sin stock', sinStock, sinStock > 0 ? '#e74c3c' : null)}
+            ${stat('🔥', 'Más vendidos', masVendidos)}
+            ${stat('🏷️', 'Con descuento', conDescuento)}
+            ${stat('💰', 'Precio prom.', '$'+precioPromedio)}
+            ${stat('📈', 'Precio max.', '$'+precioMax)}
         </div>
         <div class="admin-alert-box ${pesoKB > 500 ? 'red' : 'green'}">
-            <strong>${pesoKB > 500 ? 'Ã¢Å¡Â Ã¯Â¸Â ImÃƒÂ¡genes pesadas' : 'Ã¢Å“â€¦ ImÃƒÂ¡genes optimizadas'}</strong><br>
-            <span>${pesoKB > 500 ? pesoKB+'KB en base64 Ã¢â‚¬â€ ejecuta <em>migrar_imagenes.html</em> para reducirlo a &lt;50KB' : 'Las imÃƒÂ¡genes estÃƒÂ¡n guardadas como URLs. Ã‚Â¡Perfecto!'}</span>
+            <strong>${pesoKB > 500 ? '⚠️ Imágenes pesadas' : '✅ Imágenes optimizadas'}</strong><br>
+            <span>${pesoKB > 500 ? pesoKB+'KB en base64 — ejecuta <em>migrar_imagenes.html</em> para reducirlo a &lt;50KB' : 'Las imágenes están guardadas como URLs. ¡Perfecto!'}</span>
         </div>
-        <h4 class="admin-section-title">Top categorÃƒÂ­as por productos</h4>
+        <h4 class="admin-section-title">Top categorías por productos</h4>
         <div style="display:flex;flex-direction:column;gap:8px;">
             ${topCats.map(([cat, n]) => `
                 <div class="admin-cat-rank">
@@ -999,7 +998,7 @@ function stat(icon, label, value, color) {
     return html;
 }
 
-// ===== VALIDACIÃƒâ€œN DE CAMPOS =====
+// ===== VALIDACIÓN DE CAMPOS =====
 
 function validarProducto(producto) {
     const errores = [];
@@ -1008,7 +1007,7 @@ function validarProducto(producto) {
         errores.push('El nombre del producto es requerido');
     }
     if (!producto.descripcion || producto.descripcion.trim().length === 0) {
-        errores.push('La descripciÃƒÂ³n es requerida');
+        errores.push('La descripción es requerida');
     }
     if (!producto.imagen) {
         errores.push('La imagen es requerida');
@@ -1016,13 +1015,13 @@ function validarProducto(producto) {
     if (!producto.precioActual || producto.precioActual <= 0) {
         errores.push('El precio debe ser mayor a 0');
     }
-    // FIX: permitir stock = 0 (producto agotado al crearlo). Solo rechazar negativos o no-nÃƒÂºmeros.
+    // FIX: permitir stock = 0 (producto agotado al crearlo). Solo rechazar negativos o no-números.
     if (producto.stock === undefined || producto.stock === null ||
         isNaN(Number(producto.stock)) || Number(producto.stock) < 0) {
         errores.push('El stock no puede ser negativo');
     }
     if (!producto.categoria) {
-        errores.push('La categorÃƒÂ­a es requerida');
+        errores.push('La categoría es requerida');
     }
     
     // Solo calcular descuento si hay precio original definido
@@ -1038,24 +1037,29 @@ function validarProducto(producto) {
 
 // ===== CARGA DE DATOS DESDE GITHUB =====
 
-// FunciÃƒÂ³n para hashear la contraseÃƒÂ±a
+// Función para hashear la contraseña (PBKDF2)
 async function hashPassword(password) {
     const salt = _getSalt();
-    const enc = new TextEncoder();
-    const keyMaterial = await crypto.subtle.importKey('raw', enc.encode(password), 'PBKDF2', false, ['deriveBits']);
-    const bits = await crypto.subtle.deriveBits({ name: 'PBKDF2', salt: enc.encode(salt), iterations: AUTH_ITERATIONS, hash: 'SHA-256' }, keyMaterial, 256);
-    return Array.from(new Uint8Array(bits)).map(b => b.toString(16).padStart(2, '0')).join('');
+    const keyMaterial = await crypto.subtle.importKey(
+        'raw', new TextEncoder().encode(password), 'PBKDF2', false, ['deriveBits']
+    );
+    const bits = await crypto.subtle.deriveBits(
+        { name: 'PBKDF2', salt: new TextEncoder().encode(salt), iterations: AUTH_ITERATIONS, hash: 'SHA-256' },
+        keyMaterial, 256
+    );
+    const hashArray = Array.from(new Uint8Array(bits));
+    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 }
 
 async function cargarDatosDesdeGitHub() {
-    // Intentar usar raw.githubusercontent.com si estÃƒÂ¡ configurado (no tiene lÃƒÂ­mite de 1MB)
+    // Intentar usar raw.githubusercontent.com si está configurado (no tiene límite de 1MB)
     const ghUser = localStorage.getItem('githubUser');
     const ghRepo = localStorage.getItem('githubRepo');
     const baseUrl = (ghUser && ghRepo)
         ? `https://raw.githubusercontent.com/${ghUser}/${ghRepo}/main`
         : null;
 
-    // FunciÃƒÂ³n helper: intenta raw primero, luego relativo
+    // Función helper: intenta raw primero, luego relativo
     async function fetchJSON(filename) {
         if (baseUrl) {
             try {
@@ -1070,8 +1074,8 @@ async function cargarDatosDesdeGitHub() {
     }
 
     try {
-        // Ã¢â€â‚¬Ã¢â€â‚¬ PASO 1: Cargar archivos pequeÃƒÂ±os y configuraciÃƒÂ³n primero (rÃƒÂ¡pido) Ã¢â€â‚¬Ã¢â€â‚¬
-        // categorias.json es solo ~300 bytes Ã¢â€ â€™ aparece instantÃƒÂ¡neamente
+        // ── PASO 1: Cargar archivos pequeños y configuración primero (rápido) ──
+        // categorias.json es solo ~300 bytes → aparece instantáneamente
         const [dataCat, dataComisiones, dataG, dataR, dataVentas] = await Promise.all([
             fetchJSON('categorias.json').catch(() => null),
             fetchJSON('comisiones.json').catch(() => null),
@@ -1080,7 +1084,7 @@ async function cargarDatosDesdeGitHub() {
             fetchJSON('ventas_historial.json').catch(() => null),
         ]);
 
-        // Aplicar categorÃƒÂ­as de inmediato para que el grid aparezca rÃƒÂ¡pido
+        // Aplicar categorías de inmediato para que el grid aparezca rápido
         if (dataCat) {
             if (Array.isArray(dataCat) && dataCat.length > 0) {
                 categorias = dataCat;
@@ -1103,13 +1107,13 @@ async function cargarDatosDesdeGitHub() {
         // Aplicar config grupos FB
         if (dataG && dataG.grupos) {
             localStorage.setItem('gruposFB', JSON.stringify(dataG.grupos));
-            console.log('Ã¢Å“â€¦ Grupos FB cargados desde GitHub');
+            console.log('✅ Grupos FB cargados desde GitHub');
         }
 
         // Aplicar config Revolico
         if (dataR && Object.keys(dataR).length > 0) {
             localStorage.setItem('revolicoConfig', JSON.stringify(dataR));
-            console.log('Ã¢Å“â€¦ Config Revolico cargada desde GitHub');
+            console.log('✅ Config Revolico cargada desde GitHub');
         }
 
         // Aplicar historial de ventas (merge: GitHub + locales nuevas, sin duplicados)
@@ -1121,17 +1125,17 @@ async function cargarDatosDesdeGitHub() {
                 .sort((a, b) => b.id - a.id)
                 .slice(0, 500);
             localStorage.setItem('registroVentas', JSON.stringify(merged));
-            console.log('Ã¢Å“â€¦ Historial de ventas sincronizado desde GitHub');
+            console.log('✅ Historial de ventas sincronizado desde GitHub');
         }
 
-        // Renderizar categorÃƒÂ­as YA (con datos frescos, sin esperar archivos pesados)
+        // Renderizar categorías YA (con datos frescos, sin esperar archivos pesados)
         renderizarCategoriasHomeInstant(); // actualiza el grid visual inmediatamente
         renderizarCategoriasHome();
         actualizarSelectCategorias();
         actualizarBotonesCategorias();
         actualizarListaCategorias();
 
-        // Ã¢â€â‚¬Ã¢â€â‚¬ PASO 2: Cargar archivos pesados en paralelo (banners + productos) Ã¢â€â‚¬Ã¢â€â‚¬
+        // ── PASO 2: Cargar archivos pesados en paralelo (banners + productos) ──
         const [dataBanners, dataProd] = await Promise.all([
             fetchJSON('banners.json').catch(() => null),
             fetchJSON('productos.json').catch(() => null),
@@ -1172,41 +1176,41 @@ async function cargarDatosDesdeGitHub() {
                 return p;
             });
             localStorage.setItem('productos', JSON.stringify(productos));
-            // Refrescar categorÃƒÂ­as con conteos reales ahora que productos estÃƒÂ¡ listo
+            // Refrescar categorías con conteos reales ahora que productos está listo
             renderizarCategoriasHomeInstant();
         }
 
-        // Re-renderizar todo ahora que los productos estÃƒÂ¡n listos
+        // Re-renderizar todo ahora que los productos están listos
         renderizarCategoriasHome();
         renderizarMasVendidos();
-        renderizarRecientes();  // Ã°Å¸â€˜â‚¬ Vistos recientemente
+        renderizarRecientes();  // 👀 Vistos recientemente
         actualizarListaProductos();
         actualizarSelectCategorias();
         actualizarBotonesCategorias();
         actualizarListaCategorias();
         verificarOfertasYMostrarBanner();
         inicializarSliderPrecios();
-        // Refrescar Me Gusta si estÃƒÂ¡ visible
+        // Refrescar Me Gusta si está visible
         const vMG = document.getElementById('vistaMeGusta');
         if (vMG && vMG.style.display !== 'none') mostrarVistaMeGusta();
         verificarProductosNuevos();
 
-        // CRÃƒÂTICO: si el usuario YA navegÃƒÂ³ a una categorÃƒÂ­a mientras se cargaba,
+        // CRÍTICO: si el usuario YA navegó a una categoría mientras se cargaba,
         // re-renderizar la vista de productos con los datos frescos.
         const vCat = document.getElementById('vistaCategoria');
         if (vCat && vCat.style.display === 'block') {
-            console.log('[TM] Re-renderizando vista categorÃƒÂ­a con datos frescos');
+            console.log('[TM] Re-renderizando vista categoría con datos frescos');
             renderizarProductos();
         }
 
-        console.log('Ã¢Å“â€¦ Datos sincronizados con GitHub (productos:', productos.length + ')');
+        console.log('✅ Datos sincronizados con GitHub (productos:', productos.length + ')');
     } catch (e) {
-        console.warn('Ã¢Å¡Â Ã¯Â¸Â Error en cargarDatosDesdeGitHub:', e && e.message);
-        console.log('Ã¢â€žÂ¹Ã¯Â¸Â Iniciando con datos locales (productos:', (productos || []).length + ')');
+        console.warn('⚠️ Error en cargarDatosDesdeGitHub:', e && e.message);
+        console.log('ℹ️ Iniciando con datos locales (productos:', (productos || []).length + ')');
         renderizarCategoriasHome();
         renderizarMasVendidos();
         verificarOfertasYMostrarBanner();
-        // TambiÃƒÂ©n re-render si estamos en vista categorÃƒÂ­a
+        // También re-render si estamos en vista categoría
         const vCat = document.getElementById('vistaCategoria');
         if (vCat && vCat.style.display === 'block' && typeof renderizarProductos === 'function') {
             renderizarProductos();
@@ -1214,7 +1218,7 @@ async function cargarDatosDesdeGitHub() {
     }
 }
 
-// Sincronizar entre pestaÃƒÂ±as
+// Sincronizar entre pestañas
 window.addEventListener('storage', (event) => {
     if (event.key === 'productos') {
         productos = JSON.parse(event.newValue) || [];
@@ -1258,9 +1262,9 @@ function guardarNumeroWhatsApp() {
     const input = document.getElementById('adminWhatsappNum');
     if (!input) return;
     const num = input.value.trim().replace(/\D/g, '');
-    if (!num || num.length < 6) { mostrarNotificacion('Ã¢Å¡Â Ã¯Â¸Â NÃƒÂºmero invÃƒÂ¡lido', 'error'); return; }
+    if (!num || num.length < 6) { mostrarNotificacion('⚠️ Número inválido', 'error'); return; }
     localStorage.setItem('whatsappNumero', num);
-    mostrarNotificacion('Ã¢Å“â€¦ NÃƒÂºmero de WhatsApp guardado: +' + num);
+    mostrarNotificacion('✅ Número de WhatsApp guardado: +' + num);
 }
 
 function cargarNumeroWhatsApp() {
@@ -1271,7 +1275,7 @@ function cargarNumeroWhatsApp() {
 
 function contactarWhatsApp() {
     const numeroWhatsApp = getNumeroWhatsApp();
-    const mensaje = encodeURIComponent('Hola, me interesa conocer mÃƒÂ¡s sobre tus productos. Ã‚Â¿Puedes ayudarme?');
+    const mensaje = encodeURIComponent('Hola, me interesa conocer más sobre tus productos. ¿Puedes ayudarme?');
     window.open(`https://wa.me/${numeroWhatsApp}?text=${mensaje}`, '_blank', 'noopener,noreferrer');
 }
 
@@ -1280,22 +1284,22 @@ function scrollToProductos() {
     if (el) el.scrollIntoView({ behavior: 'smooth' });
 }
 
-// Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
-//  Ã°Å¸Å’â€” MODO CLARO / OSCURO
+// ═══════════════════════════════════════════════════════
+//  🌗 MODO CLARO / OSCURO
 //  El sitio es OSCURO por defecto (tema premium).
-//  El usuario puede alternar a CLARO con el botÃƒÂ³n Ã¢Ëœâ‚¬Ã¯Â¸Â/Ã°Å¸Å’â„¢.
+//  El usuario puede alternar a CLARO con el botón ☀️/🌙.
 //  Se guarda en localStorage como 'tm_theme' = 'light' | 'dark'
-// Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
+// ═══════════════════════════════════════════════════════
 function aplicarTema(tema) {
     // tema: 'light' o 'dark' (cualquier otra cosa = dark)
     const claro = (tema === 'light');
     document.body.classList.toggle('light-mode', claro);
     // Limpiar la clase preliminar que pusimos en <html> para evitar parpadeo
     document.documentElement.classList.remove('tm-pre-light');
-    // Actualizar TODOS los botones de tema (puede haber mÃƒÂ¡s de uno)
+    // Actualizar TODOS los botones de tema (puede haber más de uno)
     document.querySelectorAll('.theme-toggle').forEach(btn => {
-        // En claro mostramos Ã°Å¸Å’â„¢ (acciÃƒÂ³n = ir a oscuro). En oscuro mostramos Ã¢Ëœâ‚¬Ã¯Â¸Â.
-        btn.textContent = claro ? 'Ã°Å¸Å’â„¢' : 'Ã¢Ëœâ‚¬Ã¯Â¸Â';
+        // En claro mostramos 🌙 (acción = ir a oscuro). En oscuro mostramos ☀️.
+        btn.textContent = claro ? '🌙' : '☀️';
         btn.setAttribute('aria-label', claro ? 'Activar modo oscuro' : 'Activar modo claro');
         btn.setAttribute('title',      claro ? 'Activar modo oscuro' : 'Activar modo claro');
     });
@@ -1313,7 +1317,7 @@ function toggleDarkMode() {
 function _initTema() {
     let pref = null;
     try { pref = localStorage.getItem('tm_theme'); } catch(e) {}
-    // MigraciÃƒÂ³n suave desde la versiÃƒÂ³n anterior (darkMode booleano)
+    // Migración suave desde la versión anterior (darkMode booleano)
     if (pref === null) {
         try {
             const legacy = localStorage.getItem('darkMode');
@@ -1352,7 +1356,7 @@ function mostrarNotificacion(mensaje, tipo = 'success') {
     setTimeout(() => notif.remove(), 4000);
 }
 
-// ===== NAVEGACIÃƒâ€œN ENTRE VISTAS =====
+// ===== NAVEGACIÓN ENTRE VISTAS =====
 
 function tmElementoVisible(id) {
     const el = document.getElementById(id);
@@ -1393,7 +1397,7 @@ function mostrarVistaCategoria(categoria) {
     categoriaSeleccionada = categoria;
     subcategoriaSeleccionada = 'Todas';
 
-    // RESILIENCIA: si el array de productos en memoria estÃƒÂ¡ vacÃƒÂ­o
+    // RESILIENCIA: si el array de productos en memoria está vacío
     // pero hay datos en localStorage (caso PWA con cache), recargarlos.
     if ((!Array.isArray(productos) || productos.length === 0)) {
         try {
@@ -1405,8 +1409,8 @@ function mostrarVistaCategoria(categoria) {
         } catch(e) {}
     }
 
-    // Si navegamos a una categorÃƒÂ­a especÃƒÂ­fica (no "Todas"), limpiar filtros
-    // de bÃƒÂºsqueda previos para que aparezcan todos los productos de la categorÃƒÂ­a.
+    // Si navegamos a una categoría específica (no "Todas"), limpiar filtros
+    // de búsqueda previos para que aparezcan todos los productos de la categoría.
     // Si vamos a "Todas", mantener los filtros (puede venir de aplicarBusquedaHero).
     if (categoria !== 'Todas') {
         _heroSearchActivo = '';
@@ -1420,7 +1424,7 @@ function mostrarVistaCategoria(categoria) {
     actualizarVisibilidadBannerOferta(false);
 
     const icono = obtenerIconoCategoria(categoria);
-    const titulo = categoria === 'Todas' ? 'Ã°Å¸â€ºÂÃ¯Â¸Â Todos los Productos' : `${icono} ${categoria}`;
+    const titulo = categoria === 'Todas' ? '🛍️ Todos los Productos' : `${icono} ${categoria}`;
     document.getElementById('tituloCategoriaActual').textContent = titulo;
 
     actualizarBotonesCategorias();
@@ -1434,17 +1438,17 @@ function renderizarSubcategoriaTabs() {
     const filtroContainer = document.getElementById('categoriaFiltro');
     if (!tabsContainer) return;
 
-    // Si es "Todas", mostrar el filtro de categorÃƒÂ­as y ocultar tabs
+    // Si es "Todas", mostrar el filtro de categorías y ocultar tabs
     if (categoriaSeleccionada === 'Todas') {
         tabsContainer.style.display = 'none';
         if (filtroContainer) filtroContainer.style.display = 'flex';
         return;
     }
 
-    // Ocultar filtro de todas las categorÃƒÂ­as
+    // Ocultar filtro de todas las categorías
     if (filtroContainer) filtroContainer.style.display = 'none';
 
-    // Obtener subcategorÃƒÂ­as de la categorÃƒÂ­a actual
+    // Obtener subcategorías de la categoría actual
     const subcats = (typeof subcategorias !== 'undefined' && subcategorias[categoriaSeleccionada]) 
         ? subcategorias[categoriaSeleccionada] 
         : [];
@@ -1457,10 +1461,10 @@ function renderizarSubcategoriaTabs() {
     tabsContainer.style.display = 'flex';
     tabsContainer.innerHTML = '';
 
-    // Tab "Todas" para esta categorÃƒÂ­a
+    // Tab "Todas" para esta categoría
     const tabTodas = document.createElement('button');
     tabTodas.className = `subcategoria-tab ${subcategoriaSeleccionada === 'Todas' ? 'active' : ''}`;
-    tabTodas.innerHTML = `<span class="tab-icon">Ã°Å¸â€Å½</span><span class="tab-label">Todos</span>`;
+    tabTodas.innerHTML = `<span class="tab-icon">🔎</span><span class="tab-label">Todos</span>`;
     tabTodas.onclick = () => seleccionarSubcategoria('Todas');
     tabsContainer.appendChild(tabTodas);
 
@@ -1495,7 +1499,7 @@ function volverAlInicio() {
     mostrarVistaInicio();
 }
 
-// ===== RENDERIZAR CATEGORÃƒÂAS EN LA HOME =====
+// ===== RENDERIZAR CATEGORÍAS EN LA HOME =====
 
 function renderizarCategoriasHome() {
     const grid = document.getElementById('categoriasGrid');
@@ -1507,7 +1511,7 @@ function renderizarCategoriasHome() {
     cardTodas.className = 'categoria-card';
     const totalProductos = productos.length;
     cardTodas.innerHTML = `
-        <span class="cat-icon">Ã°Å¸â€ºÂÃ¯Â¸Â</span>
+        <span class="cat-icon">🛍️</span>
         <span class="cat-name">Todos</span>
         <span class="cat-count">${safeNum(totalProductos)} producto${totalProductos !== 1 ? 's' : ''}</span>
     `;
@@ -1521,19 +1525,19 @@ function renderizarCategoriasHome() {
         card.innerHTML = `
             <span class="cat-icon">${escapeHtml(obtenerIconoCategoria(cat))}</span>
             <span class="cat-name">${escapeHtml(cat)}</span>
-            <span class="cat-count">${count === 0 ? 'Ã°Å¸â€¢Â PrÃƒÂ³ximamente' : safeNum(count) + ' producto' + (count !== 1 ? 's' : '')}</span>
+            <span class="cat-count">${count === 0 ? '🕐 Próximamente' : safeNum(count) + ' producto' + (count !== 1 ? 's' : '')}</span>
         `;
         card.onclick = () => mostrarVistaCategoria(cat);
         grid.appendChild(card);
     });
-    // Dispara animaciones CSS DESPUÃƒâ€°S de que el DOM estÃƒÂ¡ poblado
-    // Si ya tiene tm-rendered (del render instantÃƒÂ¡neo), no la quitar para evitar parpadeo
+    // Dispara animaciones CSS DESPUÉS de que el DOM está poblado
+    // Si ya tiene tm-rendered (del render instantáneo), no la quitar para evitar parpadeo
     if (!grid.classList.contains('tm-rendered')) {
         requestAnimationFrame(() => grid.classList.add('tm-rendered'));
     }
 }
 
-// ===== RENDERIZAR MÃƒÂS VENDIDOS =====
+// ===== RENDERIZAR MÁS VENDIDOS =====
 
 function renderizarMasVendidos() {
     const grid = document.getElementById('masVendidosGrid');
@@ -1560,7 +1564,7 @@ function renderizarMasVendidos() {
             const _img    = escapeAttr(producto.imagen);
             const _id     = safeNum(producto.id);
             card.innerHTML = `
-	            <div class="badge-vendido">Ã°Å¸â€Â¥ MÃƒÂ¡s Vendido</div>
+	            <div class="badge-vendido">🔥 Más Vendido</div>
 	            <div class="producto-image">
 	                <img src="${_img}" alt="${_nombre}" loading="lazy">
 	                ${(producto.precioOriginal > 0 && producto.precioOriginal > producto.precioActual) ? `<div class="badge">-$${(producto.precioOriginal - producto.precioActual).toFixed(0)}</div>` : ''}
@@ -1571,7 +1575,7 @@ function renderizarMasVendidos() {
 	                ${(producto.precioOriginal > 0 && producto.precioOriginal > producto.precioActual) ? '<span class="precio-tachado">$' + parseFloat(producto.precioOriginal).toFixed(2) + ' USD</span> ' : ''}<span class="precio-actual" data-usd="${safeNum(producto.precioActual)}">${typeof formatPrecio==='function'?formatPrecio(producto.precioActual):'$'+producto.precioActual.toFixed(2)+' USD'}</span>${(producto.precioOriginal > 0 && producto.precioOriginal > producto.precioActual) ? ' <span class="precio-ahorro">-$' + (producto.precioOriginal - producto.precioActual).toFixed(0) + '</span>' : ''}
 	            </p>
             <div class="stock-count">
-                <span>Ã°Å¸â€œÂ¦ Solo quedan ${safeNum(producto.stock)} unidades</span>
+                <span>📦 Solo quedan ${safeNum(producto.stock)} unidades</span>
             </div>
             <div class="stock-bar">
                 <div class="stock-bar-fill" style="width: ${Math.max(15, (safeNum(producto.stock) / 20) * 100)}%"></div>
@@ -1583,7 +1587,7 @@ function renderizarMasVendidos() {
     });
 }
 
-// ===== AUTENTICACIÃƒâ€œN =====
+// ===== AUTENTICACIÓN =====
 
 function abrirLoginAdmin() {
     window.location.href = 'admin.html';
@@ -1598,52 +1602,88 @@ function cerrarLoginModal() {
 
 async function verificarPassword(event) {
     event.preventDefault();
-    const rl = JSON.parse(localStorage.getItem('admin_rl') || JSON.stringify({count:0,until:0}));
+
+    const rl = JSON.parse(localStorage.getItem('admin_rl') || '{"count":0,"until":0}');
     if (Date.now() < rl.until) {
         const mins = Math.ceil((rl.until - Date.now()) / 60000);
-        mostrarNotificacion('Demasiados intentos. Espera ' + mins + ' min.', 'error');
+        mostrarNotificacion(`🔒 Demasiados intentos. Espera ${mins} min.`, 'error');
         return;
     }
+
     const passwordInput = document.getElementById('adminPassword').value.trim();
-    if (!passwordInput) { mostrarNotificacion('Escribe la contrasena', 'error'); return; }
+    if (!passwordInput) { mostrarNotificacion('❌ Escribe la contraseña', 'error'); return; }
+
     const storedHash = localStorage.getItem(AUTH_HASH_KEY);
-    if (!storedHash) {
+    const storedSalt = localStorage.getItem(AUTH_SALT_KEY);
+
+    // ── PRIMER ACCESO: no hay hash guardado → configurar contraseña ──
+    if (!storedHash || !storedSalt) {
         const hash = await hashPassword(passwordInput);
-        localStorage.setItem(AUTH_HASH_KEY, hash);
+        try { localStorage.setItem(AUTH_HASH_KEY, hash); } catch(e) {}
         localStorage.removeItem('admin_rl');
-        usuarioAutenticado = true; cerrarLoginModal(); abrirAdminPanel();
-        mostrarNotificacion('Contrasena configurada correctamente', 'success');
+        usuarioAutenticado = true;
+        cerrarLoginModal();
+        abrirAdminPanel();
+        mostrarNotificacion('✅ Contraseña configurada por primera vez.', 'success');
         return;
     }
+
+    // ── ACCESO NORMAL: verificar contra el hash guardado ──
     const inputHash = await hashPassword(passwordInput);
     if (inputHash === storedHash) {
-        localStorage.removeItem('admin_rl'); usuarioAutenticado = true; cerrarLoginModal(); abrirAdminPanel();
+        localStorage.removeItem('admin_rl');
+        usuarioAutenticado = true;
+        cerrarLoginModal();
+        abrirAdminPanel();
     } else {
         const newCount = (rl.count || 0) + 1;
         const lockout = newCount >= 3 ? Date.now() + 5 * 60 * 1000 : rl.until;
         localStorage.setItem('admin_rl', JSON.stringify({ count: newCount, until: lockout }));
-        const msg = newCount >= 3 ? '3 intentos fallidos. Bloqueado 5 min.' : 'Contrasena incorrecta (intento ' + newCount + '/3)';
+        const msg = newCount >= 3
+            ? '🔒 3 intentos fallidos. Bloqueado 5 min.'
+            : `❌ Contraseña incorrecta (intento ${newCount}/3)`;
         mostrarNotificacion(msg, 'error');
         document.getElementById('adminPassword').value = '';
     }
 }
 
-async function cambiarPasswordAdmin(event) {
-    if (event) event.preventDefault();
-    var ci = document.getElementById('adminPasswordActual');
-    var ni = document.getElementById('adminPasswordNueva');
-    var coi = document.getElementById('adminPasswordConfirmar');
-    if (!ci || !ni || !coi) { mostrarNotificacion('Error en el formulario', 'error'); return; }
-    var current = ci.value.trim(); var nueva = ni.value.trim(); var confirmar = coi.value.trim();
-    if ((await hashPassword(current)) !== localStorage.getItem(AUTH_HASH_KEY)) {
-        mostrarNotificacion('Contrasena actual incorrecta', 'error'); ci.value = ''; return;
+// Cambiar contraseña (llamado desde admin.html)
+async function cambiarPasswordAdmin(ci, ni, coi) {
+    const ch = localStorage.getItem(AUTH_HASH_KEY);
+    const cs = localStorage.getItem(AUTH_SALT_KEY);
+    if (!ch || !cs) {
+        mostrarNotificacion('❌ No hay contraseña configurada. Accede primero.', 'error');
+        return;
     }
-    if (nueva.length < 6) { mostrarNotificacion('Minimo 6 caracteres', 'error'); return; }
-    if (nueva !== confirmar) { mostrarNotificacion('Las contrasenas no coinciden', 'error'); ni.value = ''; coi.value = ''; return; }
-    localStorage.removeItem(AUTH_SALT_KEY);
-    localStorage.setItem(AUTH_HASH_KEY, await hashPassword(nueva));
-    ci.value = ''; ni.value = ''; coi.value = '';
-    mostrarNotificacion('Contrasena cambiada exitosamente', 'success');
+    if (!ci || !ni || !coi) {
+        mostrarNotificacion('❌ Completa todos los campos', 'error');
+        return;
+    }
+    const _h = async (p) => {
+        const km = await crypto.subtle.importKey('raw', new TextEncoder().encode(p), 'PBKDF2', false, ['deriveBits']);
+        const b = await crypto.subtle.deriveBits(
+            { name: 'PBKDF2', salt: new TextEncoder().encode(cs), iterations: AUTH_ITERATIONS, hash: 'SHA-256' },
+            km, 256
+        );
+        return Array.from(new Uint8Array(b)).map(x => x.toString(16).padStart(2, '0')).join('');
+    };
+    const ch2 = await _h(ci);
+    if (ch2 !== ch) { mostrarNotificacion('❌ Contraseña actual incorrecta', 'error'); return; }
+    if (ni.length < 4) { mostrarNotificacion('❌ La nueva contraseña debe tener al menos 4 caracteres', 'error'); return; }
+    if (ni !== coi) { mostrarNotificacion('❌ Las contraseñas nuevas no coinciden', 'error'); return; }
+    const ns = _generarSal();
+    const km2 = await crypto.subtle.importKey('raw', new TextEncoder().encode(ni), 'PBKDF2', false, ['deriveBits']);
+    const b2 = await crypto.subtle.deriveBits(
+        { name: 'PBKDF2', salt: new TextEncoder().encode(ns), iterations: AUTH_ITERATIONS, hash: 'SHA-256' },
+        km2, 256
+    );
+    const nh = Array.from(new Uint8Array(b2)).map(x => x.toString(16).padStart(2, '0')).join('');
+    try { localStorage.setItem(AUTH_SALT_KEY, ns); } catch(e) {}
+    try { localStorage.setItem(AUTH_HASH_KEY, nh); } catch(e) {}
+    mostrarNotificacion('✅ Contraseña cambiada con éxito', 'success');
+    document.getElementById('ci').value = '';
+    document.getElementById('ni').value = '';
+    document.getElementById('coi').value = '';
 }
 
 function abrirAdminPanel() {
@@ -1680,7 +1720,7 @@ function cerrarAdminPanel() {
 }
 
 function switchTab(tabName) {
-    // Remove active from all tabs (class only Ã¢â‚¬â€ never use inline style on admin-tabs)
+    // Remove active from all tabs (class only — never use inline style on admin-tabs)
     document.querySelectorAll('.admin-tab').forEach(tab => {
         tab.classList.remove('active');
         tab.style.removeProperty('display'); // Fix: clear any rogue inline display
@@ -1724,8 +1764,8 @@ function agregarProductoForm(event) {
     const file = fileInput.files[0];
     if (!file) { mostrarNotificacion('Por favor selecciona una imagen', 'error'); return; }
 
-    // Mostrar indicador de compresiÃƒÂ³n
-    mostrarNotificacion('Ã¢ÂÂ³ Subiendo imagen...', 'info');
+    // Mostrar indicador de compresión
+    mostrarNotificacion('⏳ Subiendo imagen...', 'info');
 
     subirImagenAGitHub(file).then(imagenComprimida => {
         const masVendidoVal = document.getElementById('productMasVendido');
@@ -1750,14 +1790,14 @@ function agregarProductoForm(event) {
         // Validar producto
         const errores = validarProducto(producto);
         if (errores.length > 0) {
-            mostrarNotificacion('Ã¢ÂÅ’ ' + errores[0], 'error');
+            mostrarNotificacion('❌ ' + errores[0], 'error');
             return;
         }
 
         productos.push(producto);
         guardarProductos();
 
-        // Guardar comisiÃƒÂ³n en almacÃƒÂ©n separado (siempre, aunque sea 0)
+        // Guardar comisión en almacén separado (siempre, aunque sea 0)
         const comisiones = JSON.parse(localStorage.getItem('comisiones') || '{}');
         comisiones[producto.id] = producto.comision || 0;
         localStorage.setItem('comisiones', JSON.stringify(comisiones));
@@ -1765,10 +1805,10 @@ function agregarProductoForm(event) {
         marcarProductoModificado(producto.id);
         sincronizarConGitHub();
         document.getElementById('productForm').reset();
-        mostrarNotificacion('Ã¢Å“â€¦ Ã‚Â¡Producto agregado exitosamente!');
-        // NotificaciÃƒÂ³n local LOCAL (solo para el propio admin que estÃƒÂ¡ agregando).
-        // Las notificaciones a los CLIENTES se envÃƒÂ­an por el workflow de GitHub Actions
-        // (scripts/send_notifications.py) que agrupa los cambios automÃƒÂ¡ticamente.
+        mostrarNotificacion('✅ ¡Producto agregado exitosamente!');
+        // Notificación local LOCAL (solo para el propio admin que está agregando).
+        // Las notificaciones a los CLIENTES se envían por el workflow de GitHub Actions
+        // (scripts/send_notifications.py) que agrupa los cambios automáticamente.
         if (window.TiendaMaxPush) {
             window.TiendaMaxPush.nuevoProducto(producto.nombre, producto.precioActual, producto.id, producto.imagen);
         }
@@ -1784,8 +1824,8 @@ function guardarProductos() {
     localStorage.setItem('productos', JSON.stringify(productos));
 }
 
-// ===== COMPRESIÃƒâ€œN DE IMÃƒÂGENES =====
-// Comprime una imagen (File o base64) a mÃƒÂ¡ximo ~40KB manteniendo buena calidad visual
+// ===== COMPRESIÓN DE IMÁGENES =====
+// Comprime una imagen (File o base64) a máximo ~40KB manteniendo buena calidad visual
 function comprimirImagen(source, maxKB = 25, maxWidth = 480, maxHeight = 480) {
     return new Promise((resolve) => {
         const canvas = document.createElement('canvas');
@@ -1804,9 +1844,9 @@ function comprimirImagen(source, maxKB = 25, maxWidth = 480, maxHeight = 480) {
             ctx.drawImage(img, 0, 0, width, height);
 
             let quality = 0.82;
-            // Intentar WebP primero (mejor compresiÃƒÂ³n)
+            // Intentar WebP primero (mejor compresión)
             let result = canvas.toDataURL('image/webp', quality);
-            // Si el navegador no soporta WebP, devuelve PNG Ã¢â‚¬â€ detectarlo
+            // Si el navegador no soporta WebP, devuelve PNG — detectarlo
             const supportsWebP = result.startsWith('data:image/webp');
             const fmt = supportsWebP ? 'image/webp' : 'image/jpeg';
             if (!supportsWebP) result = canvas.toDataURL(fmt, quality);
@@ -1838,12 +1878,12 @@ function descargarProductosJSON() {
     document.body.appendChild(downloadAnchorNode);
     downloadAnchorNode.click();
     downloadAnchorNode.remove();
-    mostrarNotificacion('Ã¢Å“â€¦ Archivo productos.json generado. SÃƒÂºbelo a tu GitHub.');
+    mostrarNotificacion('✅ Archivo productos.json generado. Súbelo a tu GitHub.');
 }
 
 async function sincronizarConBackend() {
-    // Backend eliminado en esta versiÃƒÂ³n del repo.
-    // Dejamos esta funciÃƒÂ³n como no-op para evitar errores y mantener compatibilidad.
+    // Backend eliminado en esta versión del repo.
+    // Dejamos esta función como no-op para evitar errores y mantener compatibilidad.
     return false;
 }
 
@@ -1863,12 +1903,12 @@ function renderizarProductos(isLoadMore = false) {
         ? productos 
         : productos.filter(p => p.categoria === categoriaSeleccionada);
 
-    // Filtrar por subcategorÃƒÂ­a si hay una seleccionada (y no es 'Todas')
+    // Filtrar por subcategoría si hay una seleccionada (y no es 'Todas')
     if (categoriaSeleccionada !== 'Todas' && subcategoriaSeleccionada && subcategoriaSeleccionada !== 'Todas') {
         productosFiltrados = productosFiltrados.filter(p => p.subcategoria === subcategoriaSeleccionada);
     }
 
-    // Filtro de bÃƒÂºsqueda hero y precio
+    // Filtro de búsqueda hero y precio
     if (_heroSearchActivo || _heroPrecioMin > 0 || _heroPrecioMax < Infinity) {
         const q = _heroSearchActivo;
         productosFiltrados = productosFiltrados.filter(p => {
@@ -1883,16 +1923,16 @@ function renderizarProductos(isLoadMore = false) {
     productosGrid.innerHTML = '';
 
     if (productosFiltrados.length === 0) {
-        // Mensaje contextual segÃƒÂºn la situaciÃƒÂ³n real
+        // Mensaje contextual según la situación real
         let mensaje;
         if (!Array.isArray(productos) || productos.length === 0) {
-            mensaje = 'Ã¢ÂÂ³ Cargando productos... Si esto persiste, recarga la pÃƒÂ¡gina.';
+            mensaje = '⏳ Cargando productos... Si esto persiste, recarga la página.';
         } else if (subcategoriaSeleccionada && subcategoriaSeleccionada !== 'Todas') {
-            mensaje = 'No hay productos en esta subcategorÃƒÂ­a aÃƒÂºn.';
+            mensaje = 'No hay productos en esta subcategoría aún.';
         } else if (_heroSearchActivo) {
-            mensaje = 'No hay productos que coincidan con tu bÃƒÂºsqueda.';
+            mensaje = 'No hay productos que coincidan con tu búsqueda.';
         } else {
-            mensaje = 'No hay productos en esta categorÃƒÂ­a aÃƒÂºn.';
+            mensaje = 'No hay productos en esta categoría aún.';
         }
         productosGrid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #999; padding: 60px 20px; font-size:15px;">' + escapeHtml(mensaje) + '</p>';
         return;
@@ -1910,7 +1950,7 @@ function renderizarProductos(isLoadMore = false) {
         const _id     = safeNum(producto.id);
         const _stock  = safeNum(producto.stock);
         card.innerHTML = `
-            ${producto.masVendido ? '<div class="badge-vendido">Ã°Å¸â€Â¥ MÃƒÂ¡s Vendido</div>' : ''}
+            ${producto.masVendido ? '<div class="badge-vendido">🔥 Más Vendido</div>' : ''}
             <div class="producto-image">
                 <img src="${_img}" alt="${_nombre}" loading="lazy">
                 ${(producto.precioOriginal > 0 && producto.precioOriginal > producto.precioActual) ? `<div class="badge">-$${(producto.precioOriginal - producto.precioActual).toFixed(0)}</div>` : ''}
@@ -1920,9 +1960,9 @@ function renderizarProductos(isLoadMore = false) {
 	            <p class="precio">
 	                <span class="precio-actual" data-usd="${safeNum(producto.precioActual)}">${typeof formatPrecio === 'function' ? formatPrecio(producto.precioActual) : '$'+producto.precioActual.toFixed(2)+' USD'}</span>
 	            </p>
-            <div class="stock">Ã°Å¸â€œÂ¦ Stock: ${_stock} unidades</div>
+            <div class="stock">📦 Stock: ${_stock} unidades</div>
             ${typeof renderCountdownHtml === 'function' ? renderCountdownHtml(_id) : ''}
-            <button data-action="agregarAlCarrito" data-arg="${_id}" class="btn btn-primary btn-add-cart">Ã°Å¸â€ºâ€™ AÃƒÂ±adir</button>
+            <button data-action="agregarAlCarrito" data-arg="${_id}" class="btn btn-primary btn-add-cart">🛒 Añadir</button>
         `;
         productosGrid.appendChild(card);
     });
@@ -1936,7 +1976,7 @@ function renderizarProductos(isLoadMore = false) {
                 Mostrando ${Math.min(productosVisibleCount, productosFiltrados.length)} de ${productosFiltrados.length} productos
             </p>
             <button class="btn-seguir-viendo">
-                Ã°Å¸â€˜ÂÃ¯Â¸Â Seguir viendo <span style="background:rgba(255,255,255,0.12);padding:2px 8px;border-radius:20px;font-size:11px;margin-left:4px">${restantes} mÃƒÂ¡s</span>
+                👁️ Seguir viendo <span style="background:rgba(255,255,255,0.12);padding:2px 8px;border-radius:20px;font-size:11px;margin-left:4px">${restantes} más</span>
             </button>`;
         loadMoreBtn.querySelector('.btn-seguir-viendo').onclick = () => {
             productosVisibleCount += 20;
@@ -1958,7 +1998,7 @@ function abrirDetalleProducto(id) {
     if (typeof actualizarVisibilidadBannerOferta === 'function') actualizarVisibilidadBannerOferta(false);
     _detalleProductoActual = p;
     // Deep link: actualizar URL sin recargar
-    // pushState para que el botÃƒÂ³n "AtrÃƒÂ¡s" cierre el modal en lugar de salir del sitio
+    // pushState para que el botón "Atrás" cierre el modal en lugar de salir del sitio
     if (location.hash !== '#producto-' + id) {
         history.pushState({ modalProducto: id }, '', '#producto-' + id);
     }
@@ -1972,12 +2012,12 @@ function abrirDetalleProducto(id) {
     img.alt = p.nombre;
     img.classList.remove('zoomed');
 
-    // CategorÃƒÂ­a y subcategorÃƒÂ­a
+    // Categoría y subcategoría
     document.getElementById('detailProductCategory').textContent =
         obtenerIconoCategoria(p.categoria) + ' ' + p.categoria;
     const subEl = document.getElementById('detailSubcategoria');
     if (p.subcategoria && p.subcategoria !== 'Todas') {
-        subEl.textContent = 'Ã¢â€ Â³ ' + p.subcategoria;
+        subEl.textContent = '↳ ' + p.subcategoria;
         subEl.style.display = 'block';
     } else {
         subEl.style.display = 'none';
@@ -1989,7 +2029,7 @@ function abrirDetalleProducto(id) {
     badge.style.display = _hasPrecioOrig ? 'inline-block' : 'none';
     if (_hasPrecioOrig) badge.textContent = `-$${(parseFloat(p.precioOriginal) - parseFloat(p.precioActual)).toFixed(0)}`;
 
-    // MÃƒÂ¡s vendido badge
+    // Más vendido badge
     const hotBadge = document.getElementById('detailMasVendidoBadge');
     hotBadge.style.display = (p.masVendido === true || p.masVendido === 'true') ? 'block' : 'none';
 
@@ -1997,10 +2037,10 @@ function abrirDetalleProducto(id) {
     const precioOriginal = p.descuento > 0
         ? (p.precioActual / (1 - p.descuento / 100))
         : null;
-    // NOTA: el bloque que actualiza #detailPriceOriginal estÃƒÂ¡ abajo (despuÃƒÂ©s de
-    // este comentario) y siempre gana. El cÃƒÂ¡lculo de precioOriginal se mantiene
+    // NOTA: el bloque que actualiza #detailPriceOriginal está abajo (después de
+    // este comentario) y siempre gana. El cálculo de precioOriginal se mantiene
     // por si descuento > 0 (para badge "Ahorras $X"). El antiguo bloque que
-    // escribÃƒÂ­a aquÃƒÂ­ en #detailPriceOriginal se eliminÃƒÂ³ (era cÃƒÂ³digo muerto).
+    // escribía aquí en #detailPriceOriginal se eliminó (era código muerto).
     // Precio en modal con tachado real
 const _detailPrecioEl = document.getElementById('detailPriceActual');
 const _detailPrecioOldEl = document.getElementById('detailPriceOriginal');
@@ -2028,32 +2068,32 @@ if (_detailPrecioOldEl) {
     const stockEl = document.getElementById('detailProductStock');
     const _stockN = safeNum(p.stock);
     if (_stockN === 0) {
-        stockEl.innerHTML = '<span style="color:#e74c3c;font-weight:700;">Ã¢ÂÅ’ Sin stock</span>';
+        stockEl.innerHTML = '<span style="color:#e74c3c;font-weight:700;">❌ Sin stock</span>';
     } else if (_stockN <= 3) {
-        stockEl.innerHTML = `<span style="color:#e67e22;font-weight:700;">Ã¢Å¡Â Ã¯Â¸Â Ã‚Â¡ÃƒÅ¡ltimas ${_stockN} unidades!</span>`;
+        stockEl.innerHTML = `<span style="color:#e67e22;font-weight:700;">⚠️ ¡Últimas ${_stockN} unidades!</span>`;
     } else {
-        stockEl.innerHTML = `<span>Ã°Å¸â€œÂ¦ ${_stockN} unidades disponibles</span>`;
+        stockEl.innerHTML = `<span>📦 ${_stockN} unidades disponibles</span>`;
     }
     document.getElementById('detailStockBarFill').style.width =
         `${Math.min(100, Math.max(8, (p.stock / 20) * 100))}%`;
 
-    // Badges extra: garantia, devoluciÃƒÂ³n, usado
+    // Badges extra: garantia, devolución, usado
     const extBadges = document.getElementById('detailExtraBadges');
     let badges = '';
-    if (p.garantia) badges += `<span class="detail-badge-tag dtag-garantia">Ã°Å¸â€ºÂ¡Ã¯Â¸Â GarantÃƒÂ­a: ${escapeHtml(p.garantia)}</span>`;
-    if (p.devolucion) badges += `<span class="detail-badge-tag dtag-devolucion">Ã¢â€ Â©Ã¯Â¸Â DevoluciÃƒÂ³n aceptada</span>`;
-    if (p.usado) badges += `<span class="detail-badge-tag dtag-usado">Ã¢â„¢Â»Ã¯Â¸Â Producto usado</span>`;
+    if (p.garantia) badges += `<span class="detail-badge-tag dtag-garantia">🛡️ Garantía: ${escapeHtml(p.garantia)}</span>`;
+    if (p.devolucion) badges += `<span class="detail-badge-tag dtag-devolucion">↩️ Devolución aceptada</span>`;
+    if (p.usado) badges += `<span class="detail-badge-tag dtag-usado">♻️ Producto usado</span>`;
     extBadges.innerHTML = badges;
 
-    // DescripciÃƒÂ³n
-    // DescripciÃƒÂ³n: usar textContent preserva saltos de lÃƒÂ­nea con CSS white-space
+    // Descripción
+    // Descripción: usar textContent preserva saltos de línea con CSS white-space
     document.getElementById('detailProductDescription').textContent = p.descripcion || '';
 
-    // BotÃƒÂ³n comprar (estilo WhatsApp "Pedir")
+    // Botón comprar (estilo WhatsApp "Pedir")
     const buyBtn = document.getElementById('detailBuyBtn');
     buyBtn.disabled = p.stock === 0;
     if (p.stock === 0) {
-        buyBtn.innerHTML = 'Ã¢ÂÅ’ Sin stock';
+        buyBtn.innerHTML = '❌ Sin stock';
     } else {
         buyBtn.innerHTML = `
             <span class="btn-pedir-wa-icon">
@@ -2066,7 +2106,7 @@ if (_detailPrecioOldEl) {
     }
     buyBtn.onclick = () => contactarProducto(p.nombre);
 
-    // Productos relacionados (misma categorÃƒÂ­a, excluir actual)
+    // Productos relacionados (misma categoría, excluir actual)
     const relacionados = productos
         .filter(x => x.id !== p.id && x.categoria === p.categoria)
         .slice(0, 4);
@@ -2086,11 +2126,11 @@ if (_detailPrecioOldEl) {
         relSection.style.display = 'none';
     }
 
-    // ReseÃƒÂ±as
+    // Reseñas
     renderizarResenas(p.id);
     document.getElementById('formResena').style.display = 'none';
     const btnResena = document.getElementById('btnAgregarResena');
-    if (btnResena) btnResena.textContent = '+ Agregar reseÃƒÂ±a';
+    if (btnResena) btnResena.textContent = '+ Agregar reseña';
     _estrellasSeleccionadas = 0;
     setEstrellas(0);
 
@@ -2106,13 +2146,13 @@ if (_detailPrecioOldEl) {
         const base = Math.min(12, 2 + Math.floor(vistas / 3));
         const personas = base + Math.floor(Math.random() * 4);
         vDiv.style.display = 'flex';
-        vDiv.innerHTML = '<span>Ã°Å¸â€˜ÂÃ¯Â¸Â ' + personas + ' personas estÃƒÂ¡n viendo esto ahora</span>';
+        vDiv.innerHTML = '<span>👁️ ' + personas + ' personas están viendo esto ahora</span>';
     })();
 
-    // BotÃƒÂ³n carrito en modal
+    // Botón carrito en modal
     const detailBuyRow = document.getElementById('detailBuyBtn');
     if (detailBuyRow) {
-        // Agregar botÃƒÂ³n carrito junto al de comprar si no existe
+        // Agregar botón carrito junto al de comprar si no existe
         let cartRowEl = document.getElementById('detailCartBtn');
         if (!cartRowEl) {
             cartRowEl = document.createElement('button');
@@ -2122,7 +2162,7 @@ if (_detailPrecioOldEl) {
             detailBuyRow.parentNode.insertBefore(cartRowEl, detailBuyRow.nextSibling);
         }
         const enCarro = carrito.some(x => x.id === p.id);
-        cartRowEl.textContent  = enCarro ? 'Ã¢Å“â€œ En el carrito Ã¢â‚¬â€ Ver carrito' : 'Ã°Å¸â€ºâ€™ Agregar al carrito';
+        cartRowEl.textContent  = enCarro ? '✓ En el carrito — Ver carrito' : '🛒 Agregar al carrito';
         cartRowEl.className    = 'btn-carrito' + (enCarro ? ' en-carrito' : '');
         cartRowEl.style.cssText = 'width:100%;margin-bottom:10px;padding:12px;font-size:14px;';
         cartRowEl.onclick = () => {
@@ -2131,7 +2171,7 @@ if (_detailPrecioOldEl) {
                 abrirCarrito();
             } else {
                 agregarAlCarrito(p.id, null, cartRowEl);
-                cartRowEl.textContent = 'Ã¢Å“â€œ En el carrito Ã¢â‚¬â€ Ver carrito';
+                cartRowEl.textContent = '✓ En el carrito — Ver carrito';
                 cartRowEl.className = 'btn-carrito en-carrito';
             }
         };
@@ -2179,7 +2219,7 @@ function _getShareData() {
     return {
         nombre: p.nombre,
         precio: p.precioActual.toFixed(2),
-        texto: 'Ã°Å¸â€ºÂÃ¯Â¸Â *' + p.nombre + '* Ã¢â‚¬â€ $' + p.precioActual.toFixed(2) + ' USD\nÃ°Å¸â€œÂ¦ Stock disponible\nÃ°Å¸â€˜â€° ' + url,
+        texto: '🛍️ *' + p.nombre + '* — $' + p.precioActual.toFixed(2) + ' USD\n📦 Stock disponible\n👉 ' + url,
         url: url
     };
 }
@@ -2204,19 +2244,19 @@ function compartirTelegram() {
 
 function compartirTwitter() {
     const d = _getShareData(); if (!d) return;
-    const msg = encodeURIComponent(`${d.nombre} Ã¢â‚¬â€ $${d.precio} USD en @TiendaMax Ã°Å¸â€ºÂÃ¯Â¸Â ${d.url}`);
+    const msg = encodeURIComponent(`${d.nombre} — $${d.precio} USD en @TiendaMax 🛍️ ${d.url}`);
     window.open(`https://twitter.com/intent/tweet?text=${msg}`, '_blank', 'noopener,noreferrer');
 }
 
 function compartirNativo() {
     const p = _detalleProductoActual;
     if (!p) return;
-    const texto = `Ã°Å¸â€ºÂÃ¯Â¸Â ${p.nombre} Ã¢â‚¬â€ $${p.precioActual.toFixed(2)} USD\nÃ°Å¸â€œÂ¦ Stock disponible\nÃ°Å¸â€˜â€° tiendamax.org`;
+    const texto = `🛍️ ${p.nombre} — $${p.precioActual.toFixed(2)} USD\n📦 Stock disponible\n👉 tiendamax.org`;
     const urlProducto = 'https://tiendamax.org/#producto-' + p.id;
     if (navigator.share) {
         navigator.share({ title: p.nombre, text: texto, url: urlProducto }).catch(() => {});
     } else {
-        navigator.clipboard.writeText(texto + '\n' + urlProducto).then(() => mostrarNotificacion('Ã°Å¸â€œÂ¤ Texto copiado para compartir'));
+        navigator.clipboard.writeText(texto + '\n' + urlProducto).then(() => mostrarNotificacion('📤 Texto copiado para compartir'));
     }
 }
 
@@ -2230,7 +2270,7 @@ function copiarLinkProducto() {
         ? 'https://tiendamax.org/#producto-' + p.id
         : 'https://tiendamax.org';
     navigator.clipboard.writeText(url).then(() =>
-        mostrarNotificacion('Ã°Å¸â€â€” Enlace copiado Ã¢â‚¬â€ Ã‚Â¡listo para compartir!')
+        mostrarNotificacion('🔗 Enlace copiado — ¡listo para compartir!')
     ).catch(() => {
         // Fallback para dispositivos sin clipboard API
         const ta = document.createElement('textarea');
@@ -2241,7 +2281,7 @@ function copiarLinkProducto() {
         ta.select();
         document.execCommand('copy');
         document.body.removeChild(ta);
-        mostrarNotificacion('Ã°Å¸â€â€” Enlace copiado');
+        mostrarNotificacion('🔗 Enlace copiado');
     });
 }
 
@@ -2251,20 +2291,20 @@ function contactarProducto(nombre) {
     if (p) {
         const precio = parseFloat(p.precioActual).toFixed(2);
         msg = encodeURIComponent(
-            `Ã‚Â¡Hola! Me gustarÃƒÂ­a hacer este pedido:\n\n` +
-            `Ã¢â‚¬Â¢ ${p.nombre} x1 Ã¢â‚¬â€ $${precio} USD\n\n` +
-            `Ã°Å¸â€™Â° Total: $${precio} USD\n\n` +
-            `Ã‚Â¿EstÃƒÂ¡ disponible?`
+            `¡Hola! Me gustaría hacer este pedido:\n\n` +
+            `• ${p.nombre} x1 — $${precio} USD\n\n` +
+            `💰 Total: $${precio} USD\n\n` +
+            `¿Está disponible?`
         );
     } else {
-        msg = encodeURIComponent(`Ã‚Â¡Hola! Me gustarÃƒÂ­a hacer este pedido:\n\nÃ¢â‚¬Â¢ ${nombre} x1\n\nÃ‚Â¿EstÃƒÂ¡ disponible?`);
+        msg = encodeURIComponent(`¡Hola! Me gustaría hacer este pedido:\n\n• ${nombre} x1\n\n¿Está disponible?`);
     }
     window.open(`https://wa.me/${getNumeroWhatsApp()}?text=${msg}`, '_blank', 'noopener,noreferrer');
 }
 
-// actualizarListaProductos estÃƒÂ¡ definida mÃƒÂ¡s abajo (versiÃƒÂ³n mejorada con filtros por categorÃƒÂ­a)
+// actualizarListaProductos está definida más abajo (versión mejorada con filtros por categoría)
 
-// ===== FUNCIÃƒâ€œN DE COPIAR PARA FACEBOOK Y REVOLICO =====
+// ===== FUNCIÓN DE COPIAR PARA FACEBOOK Y REVOLICO =====
 
 function copiarParaRevolico(id) {
     const producto = productos.find(p => p.id === id);
@@ -2275,14 +2315,14 @@ ${producto.nombre}
 
 ${producto.descripcion}
 
-Ã°Å¸â€™Â° Precio: $${producto.precioActual} USD
-${producto.stock > 0 ? `Ã°Å¸â€œÂ¦ Stock: ${producto.stock} unidades disponibles` : 'Ã¢ÂÅ’ Agotado'}
+💰 Precio: $${producto.precioActual} USD
+${producto.stock > 0 ? `📦 Stock: ${producto.stock} unidades disponibles` : '❌ Agotado'}
 
-Ã°Å¸â€œÅ¾ Contacto: +53 54320170
+📞 Contacto: +53 54320170
     `.trim();
 
     navigator.clipboard.writeText(texto).then(() => {
-        mostrarNotificacion('Ã¢Å“â€¦ Ã‚Â¡Datos copiados! Ahora pega en Revolico.');
+        mostrarNotificacion('✅ ¡Datos copiados! Ahora pega en Revolico.');
         setTimeout(() => { window.open('https://www.revolico.com/item/publish', '_blank', 'noopener,noreferrer'); }, 500);
     }).catch(() => { 
         window.open('https://www.revolico.com/item/publish', '_blank', 'noopener,noreferrer');
@@ -2294,35 +2334,35 @@ function copiarParaFacebook(id) {
     if (!producto) return;
 
     const texto = `
-Ã°Å¸â€ºÂÃ¯Â¸Â ${producto.nombre}
+🛍️ ${producto.nombre}
 
 ${producto.descripcion}
 
-Ã°Å¸â€™Â° Precio: $${producto.precioActual} USD
-${producto.descuento > 0 ? `Ã°Å¸â€Â¥ Ã‚Â¡OFERTA! (-${producto.descuento}%)` : ''}
-${producto.stock > 0 ? `Ã°Å¸â€œÂ¦ Disponible: ${producto.stock} unidades` : 'Ã¢ÂÅ’ Agotado'}
+💰 Precio: $${producto.precioActual} USD
+${producto.descuento > 0 ? `🔥 ¡OFERTA! (-${producto.descuento}%)` : ''}
+${producto.stock > 0 ? `📦 Disponible: ${producto.stock} unidades` : '❌ Agotado'}
 
-Ã°Å¸â€œÅ¾ Interesado? ContÃƒÂ¡ctame por WhatsApp: +53 54320170
+📞 Interesado? Contáctame por WhatsApp: +53 54320170
 
 #TiendaMax #VentasCuba #GruposFacebook #Oferta
     `.trim();
 
     navigator.clipboard.writeText(texto).then(() => {
-        mostrarNotificacion('Ã¢Å“â€¦ Ã‚Â¡Texto copiado para GRUPOS! Ahora pega en tus grupos de Facebook.');
+        mostrarNotificacion('✅ ¡Texto copiado para GRUPOS! Ahora pega en tus grupos de Facebook.');
         setTimeout(() => { window.open('https://www.facebook.com/groups/feed/', '_blank', 'noopener,noreferrer'); }, 500);
     }).catch(() => { 
         window.open('https://www.facebook.com/groups/feed/', '_blank', 'noopener,noreferrer');
     });
 }
 
-// ===== PUBLICACIÃƒâ€œN EN REVOLICO =====
+// ===== PUBLICACIÓN EN REVOLICO =====
 
 function prepararPublicacionManual(id) {
     const producto = productos.find(p => p.id === id);
     if (!producto) return;
     const texto = `${producto.nombre}\n\n${producto.descripcion}\n\nPrecio: ${producto.precioActual} USD\nContacto: +53 54320170`;
     navigator.clipboard.writeText(texto).then(() => {
-        mostrarNotificacion('Ã¢Å“â€¦ Ã‚Â¡Datos copiados! Ahora pega en Revolico.');
+        mostrarNotificacion('✅ ¡Datos copiados! Ahora pega en Revolico.');
         setTimeout(() => { window.open('https://www.revolico.com/item/publish', '_blank', 'noopener,noreferrer'); }, 1000);
     }).catch(() => { window.open('https://www.revolico.com/item/publish', '_blank', 'noopener,noreferrer'); });
 }
@@ -2332,7 +2372,7 @@ async function publicarEnRevolico(id) {
         copiarYAbrirRevolico(id);
         return;
     }
-    mostrarNotificacion('Ã¢Å¡Â Ã¯Â¸Â El asistente de Revolico no estÃƒÂ¡ disponible', 'error');
+    mostrarNotificacion('⚠️ El asistente de Revolico no está disponible', 'error');
 }
 
 async function publicarEnFacebook(id) {
@@ -2340,7 +2380,7 @@ async function publicarEnFacebook(id) {
         copiarYAbrirFacebook(id);
         return;
     }
-    mostrarNotificacion('Ã¢Å¡Â Ã¯Â¸Â El asistente de Facebook no estÃƒÂ¡ disponible', 'error');
+    mostrarNotificacion('⚠️ El asistente de Facebook no está disponible', 'error');
 }
 
 async function publicarAhora() {
@@ -2348,10 +2388,10 @@ async function publicarAhora() {
         mostrarSelectorAsistenteRevolico();
         return;
     }
-    mostrarNotificacion('Ã¢Å¡Â Ã¯Â¸Â El asistente de Revolico no estÃƒÂ¡ disponible', 'error');
+    mostrarNotificacion('⚠️ El asistente de Revolico no está disponible', 'error');
 }
 
-// ===== CATEGORÃƒÂAS (GESTIÃƒâ€œN) =====
+// ===== CATEGORÍAS (GESTIÓN) =====
 
 function actualizarSelectCategorias() {
     ['productCategory', 'editProductCategory'].forEach(id => {
@@ -2390,7 +2430,7 @@ function filtrarPorCategoria(cat) {
     const titulo = document.getElementById('tituloCategoriaActual');
     if (titulo) {
         const icono = obtenerIconoCategoria(cat);
-        titulo.textContent = cat === 'Todas' ? 'Ã°Å¸â€ºÂÃ¯Â¸Â Todos los Productos' : `${icono} ${cat}`;
+        titulo.textContent = cat === 'Todas' ? '🛍️ Todos los Productos' : `${icono} ${cat}`;
     }
 }
 
@@ -2400,8 +2440,8 @@ function actualizarListaCategorias() {
 
     list.innerHTML = `
         <div style="margin-bottom: 20px; padding: 15px; background: rgba(52, 152, 219, 0.1); border: 1px dashed #3498DB; border-radius: 10px; text-align: center;">
-            <p style="font-size: 13px; margin-bottom: 10px;">Para guardar tus categorÃƒÂ­as permanentemente, descarga este archivo y sÃƒÂºbelo a GitHub.</p>
-            <button class="btn btn-primary" style="background:#3498DB" onclick="descargarCategoriasJSON()">Ã°Å¸â€œÂ¥ Descargar categorias.json</button>
+            <p style="font-size: 13px; margin-bottom: 10px;">Para guardar tus categorías permanentemente, descarga este archivo y súbelo a GitHub.</p>
+            <button class="btn btn-primary" style="background:#3498DB" onclick="descargarCategoriasJSON()">📥 Descargar categorias.json</button>
         </div>
     `;
 
@@ -2410,7 +2450,7 @@ function actualizarListaCategorias() {
         item.className = 'category-item';
         item.innerHTML = `
             <span>${obtenerIconoCategoria(cat)} ${cat}</span>
-            ${cat !== 'General' ? `<button onclick="eliminarCategoria(${index})">Ã°Å¸â€”â€˜Ã¯Â¸Â</button>` : ''}
+            ${cat !== 'General' ? `<button onclick="eliminarCategoria(${index})">🗑️</button>` : ''}
         `;
         list.appendChild(item);
     });
@@ -2424,7 +2464,7 @@ function descargarCategoriasJSON() {
     document.body.appendChild(downloadAnchorNode);
     downloadAnchorNode.click();
     downloadAnchorNode.remove();
-    mostrarNotificacion('Ã¢Å“â€¦ Archivo categorias.json generado. SÃƒÂºbelo a tu GitHub.');
+    mostrarNotificacion('✅ Archivo categorias.json generado. Súbelo a tu GitHub.');
 }
 
 function agregarCategoria() {
@@ -2434,7 +2474,7 @@ function agregarCategoria() {
     const icon = iconInput.value.trim();
     
     if (!name) return;
-    if (categorias.includes(name)) { mostrarNotificacion('La categorÃƒÂ­a ya existe', 'error'); return; }
+    if (categorias.includes(name)) { mostrarNotificacion('La categoría ya existe', 'error'); return; }
     
     categorias.push(name);
     
@@ -2453,7 +2493,7 @@ function agregarCategoria() {
     actualizarListaCategorias();
     renderizarCategoriasHome();
     if (typeof actualizarSelectCategoriasPadre === 'function') actualizarSelectCategoriasPadre();
-    mostrarNotificacion('Ã¢Å“â€¦ CategorÃƒÂ­a agregada');
+    mostrarNotificacion('✅ Categoría agregada');
 }
 
 function guardarCategorias() {
@@ -2464,7 +2504,7 @@ function guardarCategorias() {
 function eliminarCategoria(index) {
     const nombre = categorias[index];
     if (nombre === 'General') return;
-    if (confirm(`Ã‚Â¿Eliminar la categorÃƒÂ­a "${nombre}"?`)) {
+    if (confirm(`¿Eliminar la categoría "${nombre}"?`)) {
         // Eliminar icono personalizado si existe
         if (iconosPersonalizados[nombre]) {
             delete iconosPersonalizados[nombre];
@@ -2482,13 +2522,13 @@ function eliminarCategoria(index) {
     }
 }
 
-// ===== GESTIÃƒâ€œN DE PRODUCTOS (EDITAR/ELIMINAR) =====
+// ===== GESTIÓN DE PRODUCTOS (EDITAR/ELIMINAR) =====
 
 function eliminarProducto(id) {
-    if (!confirm('Ã‚Â¿EstÃƒÂ¡s seguro de eliminar este producto?')) return;
+    if (!confirm('¿Estás seguro de eliminar este producto?')) return;
     productos = productos.filter(p => p.id !== id);
     guardarProductos();
-    // Una eliminaciÃƒÂ³n requiere sincronizar todos los productos
+    // Una eliminación requiere sincronizar todos los productos
     localStorage.setItem('productosModificados', JSON.stringify(productos.map(p => p.id)));
     localStorage.setItem('ultimaModificacion', Date.now().toString());
     sincronizarConBackend();
@@ -2497,7 +2537,7 @@ function eliminarProducto(id) {
     renderizarProductos();
     actualizarListaProductos();
     verificarOfertasYMostrarBanner();
-    mostrarNotificacion('Ã°Å¸â€”â€˜Ã¯Â¸Â Producto eliminado', 'info');
+    mostrarNotificacion('🗑️ Producto eliminado', 'info');
 }
 
 function abrirEditModal(id) {
@@ -2513,7 +2553,7 @@ function abrirEditModal(id) {
     document.getElementById('editProductStock').value = p.stock;
     document.getElementById('editProductCategory').value = p.categoria;
 
-    // Cargar subcategorÃƒÂ­as del producto al editar
+    // Cargar subcategorías del producto al editar
     if (typeof actualizarSelectSubcategorias === 'function') {
         actualizarSelectSubcategorias();
         setTimeout(() => {
@@ -2522,7 +2562,7 @@ function abrirEditModal(id) {
         }, 50);
     }
     
-    // Nuevos campos en ediciÃƒÂ³n
+    // Nuevos campos en edición
     if (document.getElementById('editProductUsado')) document.getElementById('editProductUsado').checked = p.usado || false;
     if (document.getElementById('editProductGarantia')) document.getElementById('editProductGarantia').value = p.garantia || '';
     if (document.getElementById('editProductDevolucion')) document.getElementById('editProductDevolucion').checked = p.devolucion || false;
@@ -2570,7 +2610,7 @@ function guardarProductoEditado(event) {
             subcategoria: (document.getElementById('editProductSubcategory') && document.getElementById('editProductSubcategory').value) ? document.getElementById('editProductSubcategory').value : (productos[index].subcategoria || ''),
             masVendido: masVendidoSel ? masVendidoSel.value === 'true' : productos[index].masVendido,
             imagen: nuevaImagen || productos[index].imagen,
-            // Nuevos campos psicolÃƒÂ³gicos y de estado
+            // Nuevos campos psicológicos y de estado
             usado: document.getElementById('editProductUsado') ? document.getElementById('editProductUsado').checked : productos[index].usado,
             garantia: document.getElementById('editProductGarantia') ? document.getElementById('editProductGarantia').value.trim() : productos[index].garantia,
             devolucion: document.getElementById('editProductDevolucion') ? document.getElementById('editProductDevolucion').checked : productos[index].devolucion,
@@ -2580,14 +2620,14 @@ function guardarProductoEditado(event) {
         // Validar producto
         const errores = validarProducto(productoActualizado);
         if (errores.length > 0) {
-            mostrarNotificacion('Ã¢ÂÅ’ ' + errores[0], 'error');
+            mostrarNotificacion('❌ ' + errores[0], 'error');
             return;
         }
 
         productos[index] = productoActualizado;
         guardarProductos();
 
-        // Guardar comisiÃƒÂ³n en almacÃƒÂ©n separado para que persista
+        // Guardar comisión en almacén separado para que persista
         const comisiones = JSON.parse(localStorage.getItem('comisiones') || '{}');
         comisiones[productoActualizado.id] = productoActualizado.comision || 0;
         localStorage.setItem('comisiones', JSON.stringify(comisiones));
@@ -2599,11 +2639,11 @@ function guardarProductoEditado(event) {
         renderizarMasVendidos();
         renderizarProductos();
         actualizarListaProductos();
-        mostrarNotificacion('Ã¢Å“â€¦ Producto actualizado');
+        mostrarNotificacion('✅ Producto actualizado');
     };
 
     if (file) {
-        mostrarNotificacion('Ã¢ÂÂ³ Subiendo imagen...', 'info');
+        mostrarNotificacion('⏳ Subiendo imagen...', 'info');
         subirImagenAGitHub(file).then(imagenComprimida => actualizarProducto(imagenComprimida));
     } else {
         actualizarProducto(null);
@@ -2615,17 +2655,17 @@ function guardarProductoEditado(event) {
 async function verificarEstadoBackend() {
     const statusEl = document.getElementById('backendStatus');
     if (!statusEl) return;
-    statusEl.innerHTML = 'Ã°Å¸Å¸Â  <strong>Modo manual activo</strong> Ã‚Â· PublicaciÃƒÂ³n asistida desde el navegador Ã‚Â· Sin dependencia de backend roto';
+    statusEl.innerHTML = '🟠 <strong>Modo manual activo</strong> · Publicación asistida desde el navegador · Sin dependencia de backend roto';
     statusEl.style.color = '#F39C12';
 }
 
 async function cargarEstadoPublicacion() {
     const logContainer = document.getElementById('historialPublicaciones');
     if (!logContainer) return;
-    logContainer.innerHTML = '<p style="font-size:13px;color:#666;">Modo manual activo. No existe historial automÃƒÂ¡tico porque este repo no incluye backend de publicaciÃƒÂ³n.</p>';
+    logContainer.innerHTML = '<p style="font-size:13px;color:#666;">Modo manual activo. No existe historial automático porque este repo no incluye backend de publicación.</p>';
 }
 
-// ===== SINCRONIZACIÃƒâ€œN CON GITHUB =====
+// ===== SINCRONIZACIÓN CON GITHUB =====
 
 function cargarConfiguracionGitHub() {
     document.getElementById('githubUser').value = localStorage.getItem('githubUser') || '';
@@ -2652,11 +2692,11 @@ function guardarConfiguracionGitHub(event) {
     localStorage.setItem('githubUser', document.getElementById('githubUser').value.trim());
     localStorage.setItem('githubRepo', document.getElementById('githubRepo').value.trim());
     localStorage.setItem('githubToken', document.getElementById('githubToken').value.trim());
-    mostrarNotificacion('Ã¢Å“â€¦ ConfiguraciÃƒÂ³n de GitHub guardada localmente');
+    mostrarNotificacion('✅ Configuración de GitHub guardada localmente');
 }
 
 // ===== SISTEMA DE DELTA SYNC =====
-// Registra quÃƒÂ© productos fueron modificados desde la ÃƒÂºltima sincronizaciÃƒÂ³n
+// Registra qué productos fueron modificados desde la última sincronización
 function marcarProductoModificado(id) {
     const modificados = JSON.parse(localStorage.getItem('productosModificados') || '[]');
     if (!modificados.includes(id)) modificados.push(id);
@@ -2678,13 +2718,13 @@ async function sincronizarTodoConGitHub() {
     const repo  = localStorage.getItem('githubRepo');
     const token = localStorage.getItem('githubToken');
     if (!user || !repo || !token) {
-        mostrarNotificacion('Ã¢ÂÅ’ Configura primero tu usuario, repo y token en la pestaÃƒÂ±a ConfiguraciÃƒÂ³n', 'error');
+        mostrarNotificacion('❌ Configura primero tu usuario, repo y token en la pestaña Configuración', 'error');
         switchTab('configuracion');
         return;
     }
 
     const btn = document.querySelector('[data-action="sincronizarTodoConGitHub"]');
-    if (btn) { btn.disabled = true; btn.textContent = 'Ã¢ÂÂ³ Sincronizando...'; }
+    if (btn) { btn.disabled = true; btn.textContent = '⏳ Sincronizando...'; }
 
     // --- Barra de progreso ---
     let barraContenedor = document.getElementById('syncProgressContenedor');
@@ -2717,12 +2757,12 @@ async function sincronizarTodoConGitHub() {
     const hayDelta = idsModificados.length > 0 && idsModificados.length < productos.length;
 
     if (hayDelta) {
-        mostrarNotificacion(`Ã°Å¸â€â€ž Subiendo ${idsModificados.length} producto(s) modificado(s)...`, 'info');
+        mostrarNotificacion(`🔄 Subiendo ${idsModificados.length} producto(s) modificado(s)...`, 'info');
     } else {
-        mostrarNotificacion('Ã°Å¸Å¡â‚¬ Sincronizando tienda completa con GitHub...', 'info');
+        mostrarNotificacion('🚀 Sincronizando tienda completa con GitHub...', 'info');
     }
 
-    // Construir config.json con tasa + oferta del dÃƒÂ­a para que todos los clientes la vean
+    // Construir config.json con tasa + oferta del día para que todos los clientes la vean
     const _configSync = {
         tasaMN:              parseFloat(localStorage.getItem('tasaMN') || '0') || undefined,
         ofertaDiaId:         localStorage.getItem('ofertaDiaId') || undefined,
@@ -2758,8 +2798,8 @@ async function sincronizarTodoConGitHub() {
     // Subir secuencialmente para evitar conflictos de SHA en GitHub
     for (let i = 0; i < archivosFiltrados.length; i++) {
         const { path, data } = archivosFiltrados[i];
-        actualizarBarra(i, total, `Subiendo ${path}Ã¢â‚¬Â¦ (${i + 1}/${total})`);
-        if (btn) btn.textContent = `Ã¢ÂÂ³ ${i + 1}/${total} archivos...`;
+        actualizarBarra(i, total, `Subiendo ${path}… (${i + 1}/${total})`);
+        if (btn) btn.textContent = `⏳ ${i + 1}/${total} archivos...`;
         try {
             await subirArchivoAGitHub(user, repo, token, path, data);
             ok++;
@@ -2767,11 +2807,11 @@ async function sincronizarTodoConGitHub() {
             errors.push(`${path}: ${e.message}`);
         }
     }
-    actualizarBarra(total, total, errors.length === 0 ? 'Ã¢Å“â€¦ Ã‚Â¡Todo subido correctamente!' : 'Ã¢Å¡Â Ã¯Â¸Â Completado con errores');
+    actualizarBarra(total, total, errors.length === 0 ? '✅ ¡Todo subido correctamente!' : '⚠️ Completado con errores');
 
-    if (btn) { btn.disabled = false; btn.textContent = 'Ã°Å¸â€â€ž ACTUALIZAR TIENDA AHORA'; }
+    if (btn) { btn.disabled = false; btn.textContent = '🔄 ACTUALIZAR TIENDA AHORA'; }
 
-    // Ocultar barra despuÃƒÂ©s de 4 segundos
+    // Ocultar barra después de 4 segundos
     setTimeout(() => {
         if (barraContenedor) barraContenedor.style.display = 'none';
     }, 4000);
@@ -2779,13 +2819,13 @@ async function sincronizarTodoConGitHub() {
     if (errors.length === 0) {
         limpiarProductosModificados();
         const info = hayDelta ? `${idsModificados.length} producto(s) actualizado(s)` : `${ok} archivos`;
-        mostrarNotificacion(`Ã¢Å“â€¦ Tienda actualizada (${info}). Visible en ~30 segundos.`);
+        mostrarNotificacion(`✅ Tienda actualizada (${info}). Visible en ~30 segundos.`);
     } else {
         // Mostrar solo el primer error con mensaje claro (suelen tener la misma causa)
         const primerError = errors[0];
         const causa = primerError.includes(': ') ? primerError.split(': ').slice(1).join(': ').trim() : primerError;
-        mostrarNotificacion(`Ã¢ÂÅ’ ${causa}`, 'error');
-        console.error('Errores de sincronizaciÃƒÂ³n:', errors);
+        mostrarNotificacion(`❌ ${causa}`, 'error');
+        console.error('Errores de sincronización:', errors);
     }
 }
 
@@ -2794,14 +2834,14 @@ async function sincronizarConGitHub() {
     const repo = localStorage.getItem('githubRepo');
     const token = localStorage.getItem('githubToken');
     if (!user || !repo || !token) {
-        console.log('Ã¢â€žÂ¹Ã¯Â¸Â GitHub no configurado. Saltando sincronizaciÃƒÂ³n automÃƒÂ¡tica.');
+        console.log('ℹ️ GitHub no configurado. Saltando sincronización automática.');
         return;
     }
     try {
         await subirArchivoAGitHub(user, repo, token, 'productos.json', productos);
-        console.log('Ã¢Å“â€¦ Productos sincronizados con GitHub automÃƒÂ¡ticamente');
+        console.log('✅ Productos sincronizados con GitHub automáticamente');
     } catch (e) {
-        console.warn('Ã¢Å¡Â Ã¯Â¸Â Error al sincronizar automÃƒÂ¡ticamente:', e.message);
+        console.warn('⚠️ Error al sincronizar automáticamente:', e.message);
     }
 }
 
@@ -2810,11 +2850,11 @@ async function subirArchivoAGitHub(user, repo, token, path, data) {
     const jsonStr  = JSON.stringify(data, null, 2);
     const content  = btoa(unescape(encodeURIComponent(jsonStr)));
 
-    // Calcular tamaÃƒÂ±o aproximado en bytes (base64 Ã¢â€ â€™ bytes originales)
+    // Calcular tamaño aproximado en bytes (base64 → bytes originales)
     const sizeBytes = jsonStr.length;
     const apiBase   = `https://api.github.com/repos/${user}/${repo}`;
 
-    // Detectar la rama principal (main o master) automÃƒÂ¡ticamente
+    // Detectar la rama principal (main o master) automáticamente
     async function obtenerRamaPrincipal() {
         try {
             const res = await fetch(`${apiBase}`, { headers });
@@ -2826,7 +2866,7 @@ async function subirArchivoAGitHub(user, repo, token, path, data) {
         return 'main';
     }
 
-    // FunciÃƒÂ³n interna para obtener el SHA del archivo (Contents API)
+    // Función interna para obtener el SHA del archivo (Contents API)
     // Cache-buster para evitar que GitHub devuelva SHA desactualizado
     async function obtenerSHA() {
         try {
@@ -2840,10 +2880,10 @@ async function subirArchivoAGitHub(user, repo, token, path, data) {
         } catch (e) { return null; }
     }
 
-    // Para archivos < 900KB usar la Contents API normal (mÃƒÂ¡s simple)
+    // Para archivos < 900KB usar la Contents API normal (más simple)
     if (sizeBytes < 900 * 1024) {
         let sha = await obtenerSHA();
-        const body = { message: `ActualizaciÃƒÂ³n de ${path}`, content };
+        const body = { message: `Actualización de ${path}`, content };
         if (sha) body.sha = sha;
 
         let response = await fetch(`${apiBase}/contents/${path}`, {
@@ -2854,7 +2894,7 @@ async function subirArchivoAGitHub(user, repo, token, path, data) {
         for (let intento = 0; intento < 3 && !response.ok && (response.status === 409 || response.status === 422); intento++) {
             await new Promise(r => setTimeout(r, 800)); // esperar antes de reintentar
             sha = await obtenerSHA();
-            const bodyRetry = { message: `ActualizaciÃƒÂ³n de ${path}`, content };
+            const bodyRetry = { message: `Actualización de ${path}`, content };
             if (sha) bodyRetry.sha = sha;
             response = await fetch(`${apiBase}/contents/${path}`, {
                 method: 'PUT', headers, body: JSON.stringify(bodyRetry)
@@ -2862,12 +2902,12 @@ async function subirArchivoAGitHub(user, repo, token, path, data) {
         }
 
         if (!response.ok) {
-            // Dar mensajes de error claros segÃƒÂºn el cÃƒÂ³digo HTTP
+            // Dar mensajes de error claros según el código HTTP
             if (response.status === 401) {
-                throw new Error('Token invÃƒÂ¡lido o expirado. Ve a Config y actualiza tu Token de Acceso.');
+                throw new Error('Token inválido o expirado. Ve a Config y actualiza tu Token de Acceso.');
             }
             if (response.status === 403) {
-                throw new Error('Token sin permisos. AsegÃƒÂºrate de que tenga el permiso "repo" completo.');
+                throw new Error('Token sin permisos. Asegúrate de que tenga el permiso "repo" completo.');
             }
             // Para 404 en el PUT: verificar si es el repo o el archivo
             if (response.status === 404) {
@@ -2877,7 +2917,7 @@ async function subirArchivoAGitHub(user, repo, token, path, data) {
                     throw new Error(`Repositorio "${user}/${repo}" no encontrado. Verifica usuario y nombre del repo en Config.`);
                 }
                 // El repo existe pero el archivo no se pudo crear: problema de permisos del token
-                throw new Error('Token sin permisos de escritura. AsegÃƒÂºrate de que tenga el permiso "repo" completo (no solo "public_repo").');
+                throw new Error('Token sin permisos de escritura. Asegúrate de que tenga el permiso "repo" completo (no solo "public_repo").');
             }
             let errMsg = `Error ${response.status} al subir ${path}`;
             try { const err = await response.json(); errMsg = err.message || errMsg; } catch(e) {}
@@ -2900,7 +2940,7 @@ async function subirArchivoAGitHub(user, repo, token, path, data) {
     }
     const { sha: blobSha } = await blobRes.json();
 
-    // Paso 2: Obtener el SHA del commit mÃƒÂ¡s reciente (HEAD)
+    // Paso 2: Obtener el SHA del commit más reciente (HEAD)
     const refRes = await fetch(`${apiBase}/git/ref/heads/${rama}`, { headers });
     if (!refRes.ok) throw new Error(`No se pudo obtener la rama "${rama}"`);
     const { object: { sha: commitSha } } = await refRes.json();
@@ -2925,7 +2965,7 @@ async function subirArchivoAGitHub(user, repo, token, path, data) {
     const newCommitRes = await fetch(`${apiBase}/git/commits`, {
         method: 'POST', headers,
         body: JSON.stringify({
-            message: `ActualizaciÃƒÂ³n de ${path}`,
+            message: `Actualización de ${path}`,
             tree: newTreeSha,
             parents: [commitSha]
         })
@@ -2944,14 +2984,14 @@ async function subirArchivoAGitHub(user, repo, token, path, data) {
     }
 }
 
-// ===== LÃƒâ€œGICA DE PERSUASIÃƒâ€œN Y VENTAS =====
+// ===== LÓGICA DE PERSUASIÓN Y VENTAS =====
 
 function verificarOfertasYMostrarBanner() {
     const banner = document.getElementById('urgenciaBanner');
     if (!banner) return;
 
     // El banner superior solo debe verse en el inicio.
-    // En categorÃƒÂ­as/listados/detalle ya existen etiquetas dentro de las tarjetas.
+    // En categorías/listados/detalle ya existen etiquetas dentro de las tarjetas.
     if (typeof tmVistaInicioActiva === 'function' && !tmVistaInicioActiva()) {
         banner.style.setProperty('display', 'none', 'important');
         banner.onclick = null;
@@ -2959,9 +2999,9 @@ function verificarOfertasYMostrarBanner() {
         return;
     }
 
-    // Prioridad 1: Oferta del DÃƒÂ­a configurada en el admin
+    // Prioridad 1: Oferta del Día configurada en el admin
     const ofertaDiaId    = localStorage.getItem('ofertaDiaId');
-    const ofertaDiaTexto = localStorage.getItem('ofertaDiaTexto') || 'Ã°Å¸â€Â¥ OFERTA DEL DÃƒÂA';
+    const ofertaDiaTexto = localStorage.getItem('ofertaDiaTexto') || '🔥 OFERTA DEL DÍA';
 
     // Prioridad 2: Countdown activo
     const cdData = localStorage.getItem('activeCountdown');
@@ -2973,10 +3013,10 @@ function verificarOfertasYMostrarBanner() {
 
     if (ofertaDiaId) {
         targetId    = ofertaDiaId;
-        textoBanner = `<span class="flash-deal">${ofertaDiaTexto} Ã‚Â· VER AHORA Ã¢â€ â€™</span>`;
+        textoBanner = `<span class="flash-deal">${ofertaDiaTexto} · VER AHORA →</span>`;
     } else if (cdValido) {
         targetId    = cdObj.productId;
-        textoBanner = `Ã°Å¸â€Â¥ ${cdObj.texto || 'Ã‚Â¡Oferta especial!'} <span class="flash-deal">VER AHORA Ã¢â€ â€™</span>`;
+        textoBanner = `🔥 ${cdObj.texto || '¡Oferta especial!'} <span class="flash-deal">VER AHORA →</span>`;
     } else {
         banner.style.display = 'none';
         banner.onclick = null;
@@ -3003,10 +3043,10 @@ function verificarOfertasYMostrarBanner() {
     };
 }
 
-// ===== INICIALIZACIÃƒâ€œN =====
+// ===== INICIALIZACIÓN =====
 
 function inicializarTienda() {
-    console.log("Ã°Å¸Å¡â‚¬ Inicializando TiendaMax...");
+    console.log("🚀 Inicializando TiendaMax...");
     // Restaurar badges inmediatamente al cargar
     actualizarContadorCarrito();
     actualizarBadgeCorazon();
@@ -3039,7 +3079,7 @@ function inicializarTienda() {
     }, 30000);
 
     // El tema se inicializa por _initTema() (ver toggleDarkMode arriba).
-    // Re-aplicamos por si el botÃƒÂ³n apareciÃƒÂ³ despuÃƒÂ©s de cargar.
+    // Re-aplicamos por si el botón apareció después de cargar.
     if (typeof _initTema === 'function') _initTema();
 
     iniciarCountdownsActivos();
@@ -3066,11 +3106,11 @@ if (document.readyState === 'loading') {
     });
 }
 
-// ===== AUTOMATIZACIÃƒâ€œN HÃƒÂBRIDA (SELENIUM) =====
+// ===== AUTOMATIZACIÓN HÍBRIDA (SELENIUM) =====
 
 
 // ===== COUNTDOWN TIMER =====
-// countdownIntervals ya estÃƒÂ¡ declarada arriba (al inicio del archivo)
+// countdownIntervals ya está declarada arriba (al inicio del archivo)
 // para evitar problemas de TDZ. Solo aseguramos que sea objeto.
 if (typeof countdownIntervals !== 'object' || countdownIntervals === null) {
     countdownIntervals = {};
@@ -3080,16 +3120,16 @@ function guardarCountdown() {
     const productId = document.getElementById('countdownProductSelect').value;
     const horas = parseInt(document.getElementById('countdownHoras').value) || 0;
     const minutos = parseInt(document.getElementById('countdownMinutos').value) || 0;
-    const texto = document.getElementById('countdownTexto').value.trim() || 'Ã‚Â¡Oferta especial!';
+    const texto = document.getElementById('countdownTexto').value.trim() || '¡Oferta especial!';
 
     if (!productId) {
-        mostrarNotificacion('Ã¢Å¡Â Ã¯Â¸Â Selecciona un producto', 'error');
+        mostrarNotificacion('⚠️ Selecciona un producto', 'error');
         return;
     }
 
     const duracionMs = (horas * 3600 + minutos * 60) * 1000;
     if (duracionMs <= 0) {
-        mostrarNotificacion('Ã¢Å¡Â Ã¯Â¸Â Ingresa una duraciÃƒÂ³n vÃƒÂ¡lida', 'error');
+        mostrarNotificacion('⚠️ Ingresa una duración válida', 'error');
         return;
     }
 
@@ -3101,14 +3141,14 @@ function guardarCountdown() {
     const nombre = producto ? producto.nombre : 'Producto';
 
     const status = document.getElementById('countdownStatus');
-    if (status) status.innerHTML = `Ã¢Å“â€¦ Countdown activo para: <strong>${escapeHtml(nombre)}</strong>`;
+    if (status) status.innerHTML = `✅ Countdown activo para: <strong>${escapeHtml(nombre)}</strong>`;
 
     // Re-render to show timer
     renderizarMasVendidos();
     renderizarProductos();
     iniciarCountdownsActivos();
 
-    mostrarNotificacion(`Ã¢ÂÂ±Ã¯Â¸Â Countdown activado para "${nombre}"`);
+    mostrarNotificacion(`⏱️ Countdown activado para "${nombre}"`);
 }
 
 function desactivarCountdown() {
@@ -3120,7 +3160,7 @@ function desactivarCountdown() {
     renderizarProductos();
     const status = document.getElementById('countdownStatus');
     if (status) status.innerHTML = 'Countdown desactivado.';
-    mostrarNotificacion('Ã°Å¸â€”â€˜Ã¯Â¸Â Countdown desactivado');
+    mostrarNotificacion('🗑️ Countdown desactivado');
 }
 
 function getActiveCountdown() {
@@ -3141,7 +3181,7 @@ function renderCountdownHtml(productId) {
     if (!cd || String(cd.productId) !== String(productId)) return '';
     
     return `<div class="producto-countdown" id="countdown_${safeNum(productId)}">
-        <span class="countdown-label">Ã°Å¸â€Â¥ ${escapeHtml(cd.texto)}</span>
+        <span class="countdown-label">🔥 ${escapeHtml(cd.texto)}</span>
         <div class="countdown-time">
             <span class="countdown-block" id="cd_h_${safeNum(productId)}">--</span>
             <span class="countdown-sep">:</span>
@@ -3206,7 +3246,7 @@ function actualizarCountdownProductSelect() {
     const status = document.getElementById('countdownStatus');
     if (status && cd) {
         const producto = productos.find(p => p.id == cd.productId);
-        if (producto) status.innerHTML = `Ã¢Å“â€¦ Countdown activo para: <strong>${escapeHtml(producto.nombre)}</strong>`;
+        if (producto) status.innerHTML = `✅ Countdown activo para: <strong>${escapeHtml(producto.nombre)}</strong>`;
     }
 }
 
@@ -3217,7 +3257,7 @@ function renderizarCategoriasHomeInstant() {
     // Load from localStorage immediately (no network wait)
     const localProds = JSON.parse(localStorage.getItem('productos')) || [];
     const localCats = JSON.parse(localStorage.getItem('categorias')) || [];
-    // Solo omitir si no hay absolutamente nada (primer uso sin datos en cachÃƒÂ©)
+    // Solo omitir si no hay absolutamente nada (primer uso sin datos en caché)
     if (localCats.length === 0) return;
     
     const grid = document.getElementById('categoriasGrid');
@@ -3226,7 +3266,7 @@ function renderizarCategoriasHomeInstant() {
     grid.innerHTML = '';
     const cardTodas = document.createElement('div');
     cardTodas.className = 'categoria-card';
-    cardTodas.innerHTML = `<span class="cat-icon">Ã°Å¸â€ºÂÃ¯Â¸Â</span><span class="cat-name">Todos</span><span class="cat-count">${localProds.length} producto${localProds.length !== 1 ? 's' : ''}</span>`;
+    cardTodas.innerHTML = `<span class="cat-icon">🛍️</span><span class="cat-name">Todos</span><span class="cat-count">${localProds.length} producto${localProds.length !== 1 ? 's' : ''}</span>`;
     cardTodas.onclick = () => mostrarVistaCategoria('Todas');
     grid.appendChild(cardTodas);
 
@@ -3234,21 +3274,21 @@ function renderizarCategoriasHomeInstant() {
         const count = localProds.filter(p => p.categoria === cat).length;
         const card = document.createElement('div');
         card.className = 'categoria-card';
-        card.innerHTML = `<span class="cat-icon">${obtenerIconoCategoria(cat)}</span><span class="cat-name">${cat}</span><span class="cat-count">${count === 0 ? 'Ã°Å¸â€¢Â PrÃƒÂ³ximamente' : count + ' producto' + (count !== 1 ? 's' : '')}</span>`;
+        card.innerHTML = `<span class="cat-icon">${obtenerIconoCategoria(cat)}</span><span class="cat-name">${cat}</span><span class="cat-count">${count === 0 ? '🕐 Próximamente' : count + ' producto' + (count !== 1 ? 's' : '')}</span>`;
         card.onclick = () => mostrarVistaCategoria(cat);
         grid.appendChild(card);
     });
-    // Dispara animaciones CSS DESPUÃƒâ€°S de que el DOM estÃƒÂ¡ poblado
+    // Dispara animaciones CSS DESPUÉS de que el DOM está poblado
     requestAnimationFrame(() => grid.classList.add('tm-rendered'));
 }
 
-// Ã¢â€â‚¬Ã¢â€â‚¬ InicializaciÃƒÂ³n robusta de categorÃƒÂ­as Ã¢â€â‚¬Ã¢â€â‚¬
-// Intenta renderizar inmediatamente, y si el grid aÃƒÂºn no existe
-// (porque el DOM no estÃƒÂ¡ listo), reintenta en DOMContentLoaded.
-// AdemÃƒÂ¡s programa un retry a los 800ms por si los datos llegaron tarde.
+// ── Inicialización robusta de categorías ──
+// Intenta renderizar inmediatamente, y si el grid aún no existe
+// (porque el DOM no está listo), reintenta en DOMContentLoaded.
+// Además programa un retry a los 800ms por si los datos llegaron tarde.
 function _initCategorias() {
     const grid = document.getElementById('categoriasGrid');
-    if (!grid) return; // DOM no listo aÃƒÂºn
+    if (!grid) return; // DOM no listo aún
     renderizarCategoriasHomeInstant();
 }
 
@@ -3258,7 +3298,7 @@ if (document.readyState !== 'loading') {
     document.addEventListener('DOMContentLoaded', _initCategorias);
 }
 
-// Retry robusto: si despuÃƒÂ©s de 800ms el grid sigue vacÃƒÂ­o, volver a intentar
+// Retry robusto: si después de 800ms el grid sigue vacío, volver a intentar
 // Esto cubre el caso PWA donde el SW demora en responder
 document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => {
@@ -3331,11 +3371,11 @@ mostrarVistaCategoria = function(categoria) {
     _origMostrarVistaCat(categoria);
 };
 
-// Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
-//  MEJORAS v3.0 Ã¢â‚¬â€ GestiÃƒÂ³n por categorÃƒÂ­as + Grupos FB
-// Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
+// ═══════════════════════════════════════════════════════
+//  MEJORAS v3.0 — Gestión por categorías + Grupos FB
+// ═══════════════════════════════════════════════════════
 
-// Ã¢â€â‚¬Ã¢â€â‚¬ GestiÃƒÂ³n de productos por categorÃƒÂ­as Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
+// ── Gestión de productos por categorías ──────────────
 
 function actualizarListaProductos() {
     const productsList = document.getElementById('productsList');
@@ -3344,12 +3384,12 @@ function actualizarListaProductos() {
     const busqueda  = (document.getElementById('searchProductos')?.value || '').toLowerCase().trim();
     const filtroCat = document.getElementById('filtroCategoria')?.value || '';
 
-    // Actualizar opciones del filtro de categorÃƒÂ­a
+    // Actualizar opciones del filtro de categoría
     const selectFiltro = document.getElementById('filtroCategoria');
     if (selectFiltro) {
         const cats = [...new Set(productos.map(p => p.categoria).filter(Boolean))];
         const valorActual = selectFiltro.value;
-        selectFiltro.innerHTML = '<option value="">Todas las categorÃƒÂ­as</option>' +
+        selectFiltro.innerHTML = '<option value="">Todas las categorías</option>' +
             cats.map(c => `<option value="${c}" ${c === valorActual ? 'selected' : ''}>${c}</option>`).join('');
         selectFiltro.value = valorActual; // FIX: restaurar el filtro
     }
@@ -3365,7 +3405,7 @@ function actualizarListaProductos() {
         return;
     }
 
-    // Agrupar por categorÃƒÂ­a
+    // Agrupar por categoría
     const porCategoria = {};
     filtrados.forEach(p => {
         const cat = p.categoria || 'General';
@@ -3374,8 +3414,8 @@ function actualizarListaProductos() {
     });
 
     let html = `<div style="margin-bottom:14px;padding:12px 16px;background:rgba(39,174,96,0.1);border:1px dashed #27AE60;border-radius:10px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
-        <span style="font-size:13px;">Ã°Å¸â€œÂ¦ <strong>${safeNum(filtrados.length)}</strong> productos${filtroCat ? ` en <strong>${escapeHtml(filtroCat)}</strong>` : ''}</span>
-        <button class="btn btn-primary" onclick="descargarProductosJSON()" style="font-size:12px;padding:8px 14px;">Ã°Å¸â€œÂ¥ Descargar productos.json</button>
+        <span style="font-size:13px;">📦 <strong>${safeNum(filtrados.length)}</strong> productos${filtroCat ? ` en <strong>${escapeHtml(filtroCat)}</strong>` : ''}</span>
+        <button class="btn btn-primary" onclick="descargarProductosJSON()" style="font-size:12px;padding:8px 14px;">📥 Descargar productos.json</button>
     </div>`;
 
     Object.entries(porCategoria).forEach(([cat, prods]) => {
@@ -3393,22 +3433,22 @@ function actualizarListaProductos() {
             html += `<div class="product-item" style="border-left:3px solid var(--primary);">
                 <div class="product-item-info">
                     <img src="${_im}" alt="${_nm}" style="width:56px;height:56px;object-fit:cover;border-radius:8px;float:left;margin-right:12px;">
-                    <h4 style="margin:0 0 4px;">${_nm} ${producto.masVendido ? 'Ã°Å¸â€Â¥' : ''}</h4>
+                    <h4 style="margin:0 0 4px;">${_nm} ${producto.masVendido ? '🔥' : ''}</h4>
                     <p style="margin:0;font-size:12px;color:var(--text-muted);">
                         <strong>$${Number(producto.precioActual).toFixed(2)}</strong> USD
                         ${producto.descuento > 0 ? `<span style="color:#e74c3c;margin-left:6px;">-${safeNum(producto.descuento)}%</span>` : ''}
-                        Ã‚Â· Stock: <strong>${safeNum(producto.stock)}</strong>
-                        ${producto.comision > 0 ? `Ã‚Â· Ã°Å¸â€™Â° ComisiÃƒÂ³n: <strong style="color:#27ae60;">$${Number(producto.comision).toFixed(2)}</strong>` : ''}
+                        · Stock: <strong>${safeNum(producto.stock)}</strong>
+                        ${producto.comision > 0 ? `· 💰 Comisión: <strong style="color:#27ae60;">$${Number(producto.comision).toFixed(2)}</strong>` : ''}
                     </p>
                 </div>
                 <div class="product-item-actions" style="clear:both;padding-top:8px;display:flex;flex-wrap:wrap;gap:6px;">
                     <button class="btn-small-icon" style="background:#27ae60;color:white;" onclick="ajustarStock(${_id}, 1)">+1 Stock</button>
                     <button class="btn-small-icon" style="background:#e74c3c;color:white;" onclick="ajustarStock(${_id}, -1)">-1 Stock</button>
-                    <button class="btn-small-icon btn-edit" onclick="abrirEditModal(${_id})">Ã¢Å“ÂÃ¯Â¸Â Editar</button>
-                    <button class="btn-small-icon btn-delete" onclick="eliminarProducto(${_id})">Ã°Å¸â€”â€˜Ã¯Â¸Â Eliminar</button>
-                    <button class="btn-small-icon btn-revolico" style="background:#ff9800" onclick="copiarParaRevolico(${_id})">Ã°Å¸â€œâ€¹ Revolico</button>
-                    <button class="btn-small-icon btn-revolico" style="background:#4267B2" onclick="copiarParaFacebook(${_id})">Ã°Å¸â€œâ€¹ Facebook</button>
-                    <button class="btn-small-icon btn-revolico" onclick="publicarEnRevolico(${_id})">Ã°Å¸Â¤â€“ Rev</button>
+                    <button class="btn-small-icon btn-edit" onclick="abrirEditModal(${_id})">✏️ Editar</button>
+                    <button class="btn-small-icon btn-delete" onclick="eliminarProducto(${_id})">🗑️ Eliminar</button>
+                    <button class="btn-small-icon btn-revolico" style="background:#ff9800" onclick="copiarParaRevolico(${_id})">📋 Revolico</button>
+                    <button class="btn-small-icon btn-revolico" style="background:#4267B2" onclick="copiarParaFacebook(${_id})">📋 Facebook</button>
+                    <button class="btn-small-icon btn-revolico" onclick="publicarEnRevolico(${_id})">🤖 Rev</button>
                 </div>
             </div>`;
         });
@@ -3419,8 +3459,8 @@ function actualizarListaProductos() {
     productsList.innerHTML = html;
 }
 
-// Ã¢â€â‚¬Ã¢â€â‚¬ Ajustar stock desde gestionar Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
-// desdeVenta=true cuando lo llama registrarVenta (omite notificaciÃƒÂ³n de stock para no duplicar)
+// ── Ajustar stock desde gestionar ──────────────────
+// desdeVenta=true cuando lo llama registrarVenta (omite notificación de stock para no duplicar)
 function ajustarStock(id, cantidad, desdeVenta = false) {
     const p = productos.find(p => p.id === id);
     if (!p) return;
@@ -3429,15 +3469,15 @@ function ajustarStock(id, cantidad, desdeVenta = false) {
     guardarProductos();
     marcarProductoModificado(id);
     actualizarListaProductos();
-    // Solo mostrar notificaciÃƒÂ³n de stock cuando se ajusta desde Gestionar (no desde una venta)
+    // Solo mostrar notificación de stock cuando se ajusta desde Gestionar (no desde una venta)
     if (!desdeVenta) {
-        mostrarNotificacion(`Ã°Å¸â€œÂ¦ ${p.nombre}: ${antes} Ã¢â€ â€™ ${p.stock} unidades`);
-        if (p.stock === 0) mostrarNotificacion(`Ã°Å¸â€Â´ Ã‚Â¡${p.nombre} agotado!`, 'error');
-        else if (p.stock <= 2) mostrarNotificacion(`Ã¢Å¡Â Ã¯Â¸Â ${p.nombre}: solo ${p.stock} unidad(es)`, 'warning');
+        mostrarNotificacion(`📦 ${p.nombre}: ${antes} → ${p.stock} unidades`);
+        if (p.stock === 0) mostrarNotificacion(`🔴 ¡${p.nombre} agotado!`, 'error');
+        else if (p.stock <= 2) mostrarNotificacion(`⚠️ ${p.nombre}: solo ${p.stock} unidad(es)`, 'warning');
     }
 }
 
-// Ã¢â€â‚¬Ã¢â€â‚¬ VENTAS Ã¢â‚¬â€ registro de ventas Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
+// ── VENTAS — registro de ventas ─────────────────────
 function cargarVentas() {
     return JSON.parse(localStorage.getItem('registroVentas') || '[]');
 }
@@ -3451,7 +3491,7 @@ function guardarVenta(venta) {
 function exportarVentasCSV() {
     const ventas = cargarVentas();
     if (!ventas.length) { mostrarNotificacion('No hay ventas que exportar', 'info'); return; }
-    const header = 'Fecha,Producto,Cantidad,Precio,ComisiÃƒÂ³n,Total,Ganancia';
+    const header = 'Fecha,Producto,Cantidad,Precio,Comisión,Total,Ganancia';
     const rows = ventas.map(v =>
         `"${v.fecha}","${v.producto}",${v.cantidad},${v.precio},${v.comision || 0},${v.total},${v.ganancia || 0}`
     );
@@ -3463,7 +3503,7 @@ function exportarVentasCSV() {
     a.download = `ventas_tiendamax_${new Date().toISOString().slice(0,10)}.csv`;
     a.click();
     URL.revokeObjectURL(url);
-    mostrarNotificacion('Ã¢Å“â€¦ Historial exportado como CSV', 'success');
+    mostrarNotificacion('✅ Historial exportado como CSV', 'success');
 }
 
 function registrarVenta(productoId, cantidad) {
@@ -3483,7 +3523,7 @@ function registrarVenta(productoId, cantidad) {
     guardarVenta(venta);
     ajustarStock(productoId, -(cantidad || 1), true); // true = viene de una venta confirmada
     renderizarVentas();
-    mostrarNotificacion(`Ã¢Å“â€¦ Venta registrada: ${p.nombre}`);
+    mostrarNotificacion(`✅ Venta registrada: ${p.nombre}`);
     // Sincronizar historial con GitHub en segundo plano
     const _ghUser  = localStorage.getItem('githubUser');
     const _ghRepo  = localStorage.getItem('githubRepo');
@@ -3491,11 +3531,11 @@ function registrarVenta(productoId, cantidad) {
     if (_ghUser && _ghRepo && _ghToken) {
         const _ventas = JSON.parse(localStorage.getItem('registroVentas') || '[]');
         subirArchivoAGitHub(_ghUser, _ghRepo, _ghToken, 'ventas_historial.json', _ventas)
-            .catch(e => console.warn('Ã¢Å¡Â Ã¯Â¸Â No se pudo sincronizar historial de ventas:', e.message));
+            .catch(e => console.warn('⚠️ No se pudo sincronizar historial de ventas:', e.message));
     }
 }
 
-// PÃƒÂ¡gina actual del historial de ventas
+// Página actual del historial de ventas
 let _ventasPagina = 0;
 const _VENTAS_POR_PAGINA = 20;
 
@@ -3504,7 +3544,7 @@ function renderizarVentas(pagina) {
     if (!cont) return;
     const ventas = cargarVentas();
     if (typeof pagina === 'number') _ventasPagina = pagina;
-    // Asegurar que la pÃƒÂ¡gina sea vÃƒÂ¡lida
+    // Asegurar que la página sea válida
     const totalPaginas = Math.max(1, Math.ceil(ventas.length / _VENTAS_POR_PAGINA));
     if (_ventasPagina >= totalPaginas) _ventasPagina = totalPaginas - 1;
     if (_ventasPagina < 0) _ventasPagina = 0;
@@ -3512,24 +3552,24 @@ function renderizarVentas(pagina) {
     const totalVentas   = ventas.reduce((s, v) => s + v.total, 0);
     const totalGanancia = ventas.reduce((s, v) => s + (v.ganancia || 0), 0);
     const totalUnidades = ventas.reduce((s, v) => s + (v.cantidad || 1), 0);
-    // PaginaciÃƒÂ³n
+    // Paginación
     const totalPaginas2 = Math.max(1, Math.ceil(ventas.length / _VENTAS_POR_PAGINA));
     const ventasPagina  = ventas.slice(_ventasPagina * _VENTAS_POR_PAGINA, (_ventasPagina + 1) * _VENTAS_POR_PAGINA);
 
     let html = `
     <div style="margin-bottom:16px;">
-        <h4 class="admin-section-title">Ã°Å¸â€œÂ¦ Registrar venta manual</h4>
+        <h4 class="admin-section-title">📦 Registrar venta manual</h4>
         <div style="display:flex;flex-direction:column;gap:8px;">
 
             <!-- Buscador -->
             <div class="admin-search-box">
-                <input type="text" id="ventaBuscador" placeholder="Ã°Å¸â€Â Buscar producto..." oninput="filtrarProductosVenta()"
+                <input type="text" id="ventaBuscador" placeholder="🔍 Buscar producto..." oninput="filtrarProductosVenta()"
                     class="admin-search-input">
                 <button onclick="limpiarBuscadorVenta()" type="button" id="ventaBuscadorClear"
-                    class="admin-search-clear">Ã¢Å“â€¢</button>
+                    class="admin-search-clear">✕</button>
             </div>
 
-            <!-- Filtro por categorÃƒÂ­as (chips) -->
+            <!-- Filtro por categorías (chips) -->
             <div id="ventaCategoriaChips" class="admin-chips">
                 <button onclick="filtrarVentaPorCategoria('')" type="button" data-cat=""
                     class="chip-cat chip-cat-activo admin-chip active"
@@ -3547,7 +3587,7 @@ function renderizarVentas(pagina) {
 
             <!-- Select oculto para mantener compatibilidad con registrarVentaDesdeForm -->
             <select id="ventaProductoSelect" class="admin-hidden">
-                <option value="">Ã¢â‚¬â€ Selecciona producto Ã¢â‚¬â€</option>
+                <option value="">— Selecciona producto —</option>
                 ${productos.map(p => `<option value="${p.id}">${p.nombre}</option>`).join('')}
             </select>
 
@@ -3556,10 +3596,10 @@ function renderizarVentas(pagina) {
                 ${productos.filter(p => p.stock > 0).map(p => `
                 <div class="venta-prod-item admin-product-list-item" data-id="${p.id}" data-nombre="${p.nombre.toLowerCase()}" data-cat="${p.categoria||''}"
                     onclick="seleccionarProductoVenta(${p.id})">
-                    ${p.imagen ? `<img src="${p.imagen}" class="thumb" onerror="this.style.display='none'">` : '<div class="thumb-placeholder">Ã°Å¸â€œÂ¦</div>'}
+                    ${p.imagen ? `<img src="${p.imagen}" class="thumb" onerror="this.style.display='none'">` : '<div class="thumb-placeholder">📦</div>'}
                     <div class="info">
                         <div class="name">${p.nombre}</div>
-                        <div class="meta">${p.categoria||''} Ã‚Â· Stock: ${p.stock}${p.comision ? ` Ã‚Â· Ã°Å¸â€™Â°$${p.comision}` : ''}</div>
+                        <div class="meta">${p.categoria||''} · Stock: ${p.stock}${p.comision ? ` · 💰$${p.comision}` : ''}</div>
                     </div>
                     <div class="price">$${p.precioActual}</div>
                 </div>`).join('')}
@@ -3573,53 +3613,53 @@ function renderizarVentas(pagina) {
                     <div id="ventaSelNombre" class="name"></div>
                     <div id="ventaSelInfo" class="meta"></div>
                 </div>
-                <button onclick="deseleccionarProductoVenta()" type="button" style="background:none;border:none;font-size:18px;cursor:pointer;color:#aaa;flex-shrink:0;">Ã¢Å“â€¢</button>
+                <button onclick="deseleccionarProductoVenta()" type="button" style="background:none;border:none;font-size:18px;cursor:pointer;color:#aaa;flex-shrink:0;">✕</button>
             </div>
 
             <div class="admin-input-row">
                 <input type="number" id="ventaCantidad" value="1" min="1" placeholder="Cantidad" class="admin-qty-input">
-                <button onclick="registrarVentaDesdeForm()" type="button" class="btn btn-primary">Ã¢Å“â€¦ Registrar venta</button>
+                <button onclick="registrarVentaDesdeForm()" type="button" class="btn btn-primary">✅ Registrar venta</button>
             </div>
         </div>
     </div>
 
     <div class="admin-dash-header">
-        <h4>Ã°Å¸â€œâ€¹ Historial de ventas</h4>
+        <h4>📋 Historial de ventas</h4>
         <div class="admin-dash-actions">
-          <button onclick="exportarVentasCSV()" type="button" class="admin-btn-sm outline">Ã°Å¸â€œÂ¥ Exportar CSV</button>
-          <button onclick="borrarHistorialVentas()" type="button" class="admin-btn-sm red">Ã°Å¸â€”â€˜Ã¯Â¸Â Limpiar</button>
+          <button onclick="exportarVentasCSV()" type="button" class="admin-btn-sm outline">📥 Exportar CSV</button>
+          <button onclick="borrarHistorialVentas()" type="button" class="admin-btn-sm red">🗑️ Limpiar</button>
         </div>
     </div>`;
 
     if (ventas.length === 0) {
-        html += '<p class="admin-empty">No hay ventas registradas aÃƒÂºn.</p>';
+        html += '<p class="admin-empty">No hay ventas registradas aún.</p>';
     } else {
         html += '<div style="display:flex;flex-direction:column;gap:8px;">';
         ventasPagina.forEach(v => {
             html += `<div class="admin-history-item">
                 <div class="info">
                     <div class="title">${v.producto}</div>
-                    <div class="meta">${v.fecha} Ã‚Â· ${v.cantidad} unidad(es)</div>
+                    <div class="meta">${v.fecha} · ${v.cantidad} unidad(es)</div>
                 </div>
                 <div style="text-align:right;flex-shrink:0;">
                     <div class="total">$${v.total.toFixed(2)}</div>
                     ${v.ganancia > 0 ? `<div class="gain">Ganancia: $${v.ganancia.toFixed(2)}</div>` : ''}
                 </div>
-                <button onclick="eliminarVenta(${v.id})" type="button" style="background:#e74c3c;color:white;border:none;border-radius:6px;padding:4px 8px;font-size:11px;cursor:pointer;flex-shrink:0;">Ã¢Å“â€¢</button>
+                <button onclick="eliminarVenta(${v.id})" type="button" style="background:#e74c3c;color:white;border:none;border-radius:6px;padding:4px 8px;font-size:11px;cursor:pointer;flex-shrink:0;">✕</button>
             </div>`;
         });
         html += '</div>';
     }
 
-    // Controles de paginaciÃƒÂ³n
+    // Controles de paginación
     let paginacion = '';
     if (totalPaginas2 > 1) {
         paginacion = `<div class="admin-pagination">
-          <button onclick="renderizarVentas(0)" type="button" ${_ventasPagina===0?'disabled':''} >Ã‚Â«</button>
-          <button onclick="renderizarVentas(${_ventasPagina}-1)" type="button" ${_ventasPagina===0?'disabled':''} >Ã¢â‚¬Â¹</button>
-          <span>PÃƒÂ¡gina ${_ventasPagina+1} de ${totalPaginas2} Ã‚Â· ${ventas.length} ventas en total</span>
-          <button onclick="renderizarVentas(${_ventasPagina}+1)" type="button" ${_ventasPagina>=totalPaginas2-1?'disabled':''} >Ã¢â‚¬Âº</button>
-          <button onclick="renderizarVentas(${totalPaginas2}-1)" type="button" ${_ventasPagina>=totalPaginas2-1?'disabled':''} >Ã‚Â»</button>
+          <button onclick="renderizarVentas(0)" type="button" ${_ventasPagina===0?'disabled':''} >«</button>
+          <button onclick="renderizarVentas(${_ventasPagina}-1)" type="button" ${_ventasPagina===0?'disabled':''} >‹</button>
+          <span>Página ${_ventasPagina+1} de ${totalPaginas2} · ${ventas.length} ventas en total</span>
+          <button onclick="renderizarVentas(${_ventasPagina}+1)" type="button" ${_ventasPagina>=totalPaginas2-1?'disabled':''} >›</button>
+          <button onclick="renderizarVentas(${totalPaginas2}-1)" type="button" ${_ventasPagina>=totalPaginas2-1?'disabled':''} >»</button>
         </div>`;
     }
     cont.innerHTML = html + paginacion;
@@ -3629,9 +3669,9 @@ function registrarVentaDesdeForm() {
     const sel = document.getElementById('ventaProductoSelect');
     const cant = parseInt(document.getElementById('ventaCantidad')?.value) || 1;
     const id = parseInt(sel?.value);
-    if (!id) { mostrarNotificacion('Ã¢Å¡Â Ã¯Â¸Â Selecciona un producto primero', 'error'); return; }
+    if (!id) { mostrarNotificacion('⚠️ Selecciona un producto primero', 'error'); return; }
     registrarVenta(id, cant);
-    // Limpiar buscador y selecciÃƒÂ³n tras registrar
+    // Limpiar buscador y selección tras registrar
     deseleccionarProductoVenta();
     const b = document.getElementById('ventaBuscador');
     if (b) { b.value = ''; filtrarProductosVenta(); }
@@ -3646,28 +3686,28 @@ function eliminarVenta(id) {
 }
 
 function borrarHistorialVentas() {
-    if (!confirm('Ã‚Â¿Borrar todo el historial de ventas?')) return;
+    if (!confirm('¿Borrar todo el historial de ventas?')) return;
     localStorage.removeItem('registroVentas');
     renderizarVentas();
-    mostrarNotificacion('Ã°Å¸â€”â€˜Ã¯Â¸Â Historial borrado');
+    mostrarNotificacion('🗑️ Historial borrado');
 }
 
-// Ã¢â€â‚¬Ã¢â€â‚¬ Grupos de Facebook con selecciÃƒÂ³n de productos Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
+// ── Grupos de Facebook con selección de productos ────
 
-// cargarGruposFB estÃƒÂ¡ definida mÃƒÂ¡s abajo (versiÃƒÂ³n completa con renderizarRevolicoConfig)
+// cargarGruposFB está definida más abajo (versión completa con renderizarRevolicoConfig)
 
 function renderizarGruposFB(grupos) {
     const cont = document.getElementById('listaGruposFB');
     if (!cont) return;
 
     if (grupos.length === 0) {
-        cont.innerHTML = '<p style="font-size:13px;color:var(--text-muted);text-align:center;padding:10px;">No hay grupos configurados aÃƒÂºn.</p>';
+        cont.innerHTML = '<p style="font-size:13px;color:var(--text-muted);text-align:center;padding:10px;">No hay grupos configurados aún.</p>';
         return;
     }
 
     cont.innerHTML = grupos.map((g, i) => `
         <div style="background:white;border:1.5px solid var(--border-color);border-radius:12px;padding:14px;position:relative;" id="grupoFB_${i}">
-            <button onclick="eliminarGrupoFB(${i})" style="position:absolute;top:10px;right:10px;background:none;border:none;cursor:pointer;font-size:18px;color:#e74c3c;">Ã¢Å“â€¢</button>
+            <button onclick="eliminarGrupoFB(${i})" style="position:absolute;top:10px;right:10px;background:none;border:none;cursor:pointer;font-size:18px;color:#e74c3c;">✕</button>
             <div style="margin-bottom:10px;">
                 <label style="font-size:12px;font-weight:600;display:block;margin-bottom:4px;">URL del Grupo:</label>
                 <input type="text" value="${g.url||''}" onchange="actualizarGrupoFB(${i},'url',this.value)"
@@ -3688,7 +3728,7 @@ function renderizarGruposFB(grupos) {
                         </label>
                     `).join('')}
                 </div>
-                ${productos.length === 0 ? '<p style="font-size:12px;color:var(--text-muted);">No hay productos cargados aÃƒÂºn.</p>' : ''}
+                ${productos.length === 0 ? '<p style="font-size:12px;color:var(--text-muted);">No hay productos cargados aún.</p>' : ''}
             </div>
         </div>
     `).join('');
@@ -3735,7 +3775,7 @@ function guardarGruposFB() {
     const config = {
         grupos: validos,
         exportado: new Date().toISOString(),
-        instrucciones: "Copia este JSON y pÃƒÂ©galo en el bot como variable GRUPOS_FB_CONFIG"
+        instrucciones: "Copia este JSON y pégalo en el bot como variable GRUPOS_FB_CONFIG"
     };
 
     const blob = new Blob([JSON.stringify(config, null, 2)], {type: 'application/json'});
@@ -3744,39 +3784,39 @@ function guardarGruposFB() {
     a.download = 'grupos_facebook_config.json';
     a.click();
 
-    mostrarNotificacion(`Ã¢Å“â€¦ ${validos.length} grupos guardados. Descargado grupos_facebook_config.json para el bot.`);
+    mostrarNotificacion(`✅ ${validos.length} grupos guardados. Descargado grupos_facebook_config.json para el bot.`);
 }
 
 
 // switchTab hooks are now inside the switchTab function directly
 
 
-// Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
-//  CONFIG PERSISTENTE Ã¢â‚¬â€ Grupos FB + Revolico por categorÃƒÂ­a
-// Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
+// ═══════════════════════════════════════════════════════
+//  CONFIG PERSISTENTE — Grupos FB + Revolico por categoría
+// ═══════════════════════════════════════════════════════
 
-// CategorÃƒÂ­as disponibles en Revolico
+// Categorías disponibles en Revolico
 const REVOLICO_CATS = [
-    "ComputaciÃƒÂ³n > Accesorios",
-    "ComputaciÃƒÂ³n > Computadoras",
-    "ComputaciÃƒÂ³n > Impresoras y Tintas",
-    "ComputaciÃƒÂ³n > Redes y Conectividad",
-    "ComputaciÃƒÂ³n > Software",
-    "ElectrÃƒÂ³nica > Audio y Video",
-    "ElectrÃƒÂ³nica > Celulares y Tablets",
-    "ElectrÃƒÂ³nica > ElectrÃƒÂ³nica en General",
-    "ElectrÃƒÂ³nica > FotografÃƒÂ­a",
-    "ElectrÃƒÂ³nica > Juegos y Consolas",
-    "ElectrÃƒÂ³nica > TV y Monitores",
-    "Hogar y JardÃƒÂ­n > ElectrodomÃƒÂ©sticos",
-    "Hogar y JardÃƒÂ­n > EnergÃƒÂ­a Solar",
-    "Hogar y JardÃƒÂ­n > Herramientas",
-    "Hogar y JardÃƒÂ­n > Muebles",
-    "VehÃƒÂ­culos > Accesorios",
+    "Computación > Accesorios",
+    "Computación > Computadoras",
+    "Computación > Impresoras y Tintas",
+    "Computación > Redes y Conectividad",
+    "Computación > Software",
+    "Electrónica > Audio y Video",
+    "Electrónica > Celulares y Tablets",
+    "Electrónica > Electrónica en General",
+    "Electrónica > Fotografía",
+    "Electrónica > Juegos y Consolas",
+    "Electrónica > TV y Monitores",
+    "Hogar y Jardín > Electrodomésticos",
+    "Hogar y Jardín > Energía Solar",
+    "Hogar y Jardín > Herramientas",
+    "Hogar y Jardín > Muebles",
+    "Vehículos > Accesorios",
     "Otros > General",
 ];
 
-// Ã¢â€â‚¬Ã¢â€â‚¬ Revolico Config Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
+// ── Revolico Config ──────────────────────────────────
 
 function renderizarRevolicoConfig() {
     const cont = document.getElementById('listaRevolicoConfig');
@@ -3785,7 +3825,7 @@ function renderizarRevolicoConfig() {
     const config = JSON.parse(localStorage.getItem('revolicoConfig') || '{}');
 
     if (productos.length === 0) {
-        cont.innerHTML = '<p style="font-size:13px;color:var(--text-muted);text-align:center;padding:10px;">No hay productos cargados aÃƒÂºn.</p>';
+        cont.innerHTML = '<p style="font-size:13px;color:var(--text-muted);text-align:center;padding:10px;">No hay productos cargados aún.</p>';
         return;
     }
 
@@ -3797,7 +3837,7 @@ function renderizarRevolicoConfig() {
             <span style="flex:1;font-size:13px;font-weight:600;min-width:120px;">${p.nombre}</span>
             <select onchange="actualizarRevolicoCat(${p.id}, this.value)"
                 style="flex:2;min-width:180px;padding:8px 10px;border-radius:8px;border:1.5px solid var(--border-color);font-size:12px;background:var(--cream);">
-                <option value="">Ã¢â‚¬â€ No publicar en Revolico Ã¢â‚¬â€</option>
+                <option value="">— No publicar en Revolico —</option>
                 ${REVOLICO_CATS.map(c => `<option value="${c}" ${c === catActual ? 'selected' : ''}>${c}</option>`).join('')}
             </select>
         </div>`;
@@ -3817,10 +3857,10 @@ function actualizarRevolicoCat(idProducto, categoria) {
 function guardarRevolicoConfig() {
     const config = JSON.parse(localStorage.getItem('revolicoConfig') || '{}');
     const asignados = Object.keys(config).length;
-    mostrarNotificacion(`Ã¢Å“â€¦ Config Revolico guardada (${asignados} productos asignados). Haz clic en ACTUALIZAR TIENDA para subir a GitHub.`);
+    mostrarNotificacion(`✅ Config Revolico guardada (${asignados} productos asignados). Haz clic en ACTUALIZAR TIENDA para subir a GitHub.`);
 }
 
-// Ã¢â€â‚¬Ã¢â€â‚¬ Grupos FB persistentes (carga al abrir pestaÃƒÂ±a) Ã¢â€â‚¬Ã¢â€â‚¬
+// ── Grupos FB persistentes (carga al abrir pestaña) ──
 
 function cargarGruposFB() {
     const grupos = JSON.parse(localStorage.getItem('gruposFB') || '[]');
@@ -3828,12 +3868,12 @@ function cargarGruposFB() {
     renderizarRevolicoConfig();
 }
 
-// Ã¢â€â‚¬Ã¢â€â‚¬ Patch guardarGruposFB para tambiÃƒÂ©n actualizar localStorage limpio Ã¢â€â‚¬Ã¢â€â‚¬
+// ── Patch guardarGruposFB para también actualizar localStorage limpio ──
 const _origGuardarGrupos = guardarGruposFB;
 guardarGruposFB = function() {
     const grupos = JSON.parse(localStorage.getItem('gruposFB') || '[]');
     const validos = grupos.filter(g => g.url && g.url.includes('facebook.com'));
-    mostrarNotificacion(`Ã¢Å“â€¦ ${validos.length} grupos guardados. Haz clic en ACTUALIZAR TIENDA para que sean permanentes.`);
+    mostrarNotificacion(`✅ ${validos.length} grupos guardados. Haz clic en ACTUALIZAR TIENDA para que sean permanentes.`);
     // FIX BUG #4: llamar al original para que descargue el JSON
     if (typeof _origGuardarGrupos === 'function') {
         try { _origGuardarGrupos(); } catch(e) { console.warn('Error en _origGuardarGrupos:', e); }
@@ -3842,19 +3882,19 @@ guardarGruposFB = function() {
 
 
 
-// Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
-//  OFERTA DEL DÃƒÂA
-// Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
+// ═══════════════════════════════════════════════════════
+//  OFERTA DEL DÍA
+// ═══════════════════════════════════════════════════════
 function poblarSelectOfertaDia() {
     ['ofertaDiaSelect2'].forEach(selId => {
         const sel = document.getElementById(selId);
         if (!sel) return;
         const current = sel.value;
-        sel.innerHTML = '<option value="">Ã¢â‚¬â€ Sin oferta del dÃƒÂ­a activa Ã¢â‚¬â€</option>';
+        sel.innerHTML = '<option value="">— Sin oferta del día activa —</option>';
         productos.forEach(p => {
             const opt = document.createElement('option');
             opt.value = p.id;
-            opt.textContent = p.nombre + ' Ã¢â‚¬â€ $' + p.precioActual.toFixed(2);
+            opt.textContent = p.nombre + ' — $' + p.precioActual.toFixed(2);
             sel.appendChild(opt);
         });
         const saved = localStorage.getItem('ofertaDiaId');
@@ -3866,13 +3906,13 @@ function poblarSelectOfertaDia() {
 
 function actualizarStatusOfertaDia() {
     const savedId = localStorage.getItem('ofertaDiaId');
-    const texto = localStorage.getItem('ofertaDiaTexto') || 'Ã°Å¸â€Â¥ OFERTA DEL DÃƒÂA';
+    const texto = localStorage.getItem('ofertaDiaTexto') || '🔥 OFERTA DEL DÍA';
     ['ofertaDiaStatus2'].forEach(id => {
         const el = document.getElementById(id);
         if (!el) return;
         if (savedId) {
             const p = productos.find(x => String(x.id) === String(savedId));
-            el.innerHTML = p ? 'Ã¢Å“â€¦ Activa: <strong>' + escapeHtml(p.nombre) + '</strong> Ã¢â‚¬â€ Badge: "' + escapeHtml(texto) + '"' : 'Ã¢Å¡Â Ã¯Â¸Â Producto no encontrado';
+            el.innerHTML = p ? '✅ Activa: <strong>' + escapeHtml(p.nombre) + '</strong> — Badge: "' + escapeHtml(texto) + '"' : '⚠️ Producto no encontrado';
         } else {
             el.textContent = 'Sin oferta activa.';
         }
@@ -3886,8 +3926,8 @@ function guardarOfertaDia2() {
     _guardarOfertaDiaDesde(sel, textoEl);
 }
 function _guardarOfertaDiaDesde(sel, textoEl) {
-    if (!sel || !sel.value) { mostrarNotificacion('Ã¢Å¡Â Ã¯Â¸Â Selecciona un producto', 'error'); return; }
-    const texto = textoEl ? (textoEl.value.trim() || 'Ã°Å¸â€Â¥ OFERTA DEL DÃƒÂA') : 'Ã°Å¸â€Â¥ OFERTA DEL DÃƒÂA';
+    if (!sel || !sel.value) { mostrarNotificacion('⚠️ Selecciona un producto', 'error'); return; }
+    const texto = textoEl ? (textoEl.value.trim() || '🔥 OFERTA DEL DÍA') : '🔥 OFERTA DEL DÍA';
     const _ofId  = sel.value;
     const _ofTxt = texto;
     localStorage.setItem('ofertaDiaId', _ofId);
@@ -3896,7 +3936,7 @@ function _guardarOfertaDiaDesde(sel, textoEl) {
     actualizarStatusOfertaDia();
     renderizarProductos();
     renderizarMasVendidos();
-    mostrarNotificacion('Ã°Å¸ÂÂ·Ã¯Â¸Â Oferta del DÃƒÂ­a activada');
+    mostrarNotificacion('🏷️ Oferta del Día activada');
     // Subir a GitHub para que TODOS los clientes la vean
     (async () => {
         const _u = localStorage.getItem('githubUser');
@@ -3909,7 +3949,7 @@ function _guardarOfertaDiaDesde(sel, textoEl) {
             existing.ofertaDiaTexto = _ofTxt;
             existing.ofertaDiaActualizado = new Date().toISOString();
             await subirArchivoAGitHub(_u, _r, _t, 'config.json', existing);
-            mostrarNotificacion('Ã¢ËœÂÃ¯Â¸Â Oferta subida a GitHub Ã¢â‚¬â€ todos la verÃƒÂ¡n', 'success');
+            mostrarNotificacion('☁️ Oferta subida a GitHub — todos la verán', 'success');
         } catch(e) { console.warn('GitHub sync oferta:', e); }
     })();
 }
@@ -3920,7 +3960,7 @@ function desactivarOfertaDia() {
     poblarSelectOfertaDia();
     renderizarProductos();
     renderizarMasVendidos();
-    mostrarNotificacion('Ã¢ÂÅ’ Oferta del DÃƒÂ­a desactivada');
+    mostrarNotificacion('❌ Oferta del Día desactivada');
     // Borrar en GitHub
     (async () => {
         const _u = localStorage.getItem('githubUser');
@@ -3939,7 +3979,7 @@ function getOfertaDiaId() {
     return localStorage.getItem('ofertaDiaId') || null;
 }
 function getOfertaDiaTexto() {
-    return localStorage.getItem('ofertaDiaTexto') || 'Ã°Å¸â€Â¥ OFERTA DEL DÃƒÂA';
+    return localStorage.getItem('ofertaDiaTexto') || '🔥 OFERTA DEL DÍA';
 }
 
 // Renderizar lista de productos agotados en el panel
@@ -3948,34 +3988,34 @@ function renderizarListaAgotados() {
     if (!el) return;
     const agotados = productos.filter(p => p.stock === 0);
     if (agotados.length === 0) {
-        el.innerHTML = '<p style="font-size:13px;color:#27ae60;text-align:center;">Ã¢Å“â€¦ No hay productos agotados actualmente.</p>';
+        el.innerHTML = '<p style="font-size:13px;color:#27ae60;text-align:center;">✅ No hay productos agotados actualmente.</p>';
         return;
     }
-    // FIX BUG #8: sanitizaciÃƒÂ³n anti-XSS
+    // FIX BUG #8: sanitización anti-XSS
     el.innerHTML = agotados.map(p =>
         '<div style="display:flex;align-items:center;gap:10px;padding:10px;background:white;border-radius:10px;border:1px solid rgba(231,76,60,0.3);">' +
             '<img src="' + escapeAttr(p.imagen) + '" style="width:40px;height:40px;border-radius:8px;object-fit:cover;" onerror="this.style.display=\'none\'">' +
             '<div style="flex:1;"><div style="font-size:13px;font-weight:700;">' + escapeHtml(p.nombre) + '</div>' +
-            '<div style="font-size:11px;color:#e74c3c;font-weight:700;">Ã°Å¸â€œÂ¦ AGOTADO</div></div>' +
-            '<button class="btn btn-primary" onclick="abrirEditModal(' + safeNum(p.id) + ')" style="font-size:11px;padding:6px 10px;">Ã¢Å“ÂÃ¯Â¸Â Editar</button>' +
+            '<div style="font-size:11px;color:#e74c3c;font-weight:700;">📦 AGOTADO</div></div>' +
+            '<button class="btn btn-primary" onclick="abrirEditModal(' + safeNum(p.id) + ')" style="font-size:11px;padding:6px 10px;">✏️ Editar</button>' +
         '</div>'
     ).join('');
 }
 
-// Ã¢â€â‚¬Ã¢â€â‚¬ Patch renderizarProductos to show agotado/oferta badges Ã¢â€â‚¬Ã¢â€â‚¬
+// ── Patch renderizarProductos to show agotado/oferta badges ──
 const _origRenderProductosFinal = renderizarProductos;
 renderizarProductos = function() {
     const productosGrid = document.getElementById('productosGrid');
     if (!productosGrid) { _origRenderProductosFinal(); return; }
 
-    // Log de diagnÃƒÂ³stico (solo en consola, no panel visual)
+    // Log de diagnóstico (solo en consola, no panel visual)
     console.log('[TM RENDER]', {
         catSel: categoriaSeleccionada,
         subSel: subcategoriaSeleccionada,
         productos_total: Array.isArray(productos) ? productos.length : 'NO-ARRAY',
     });
 
-    // RESILIENCIA: si productos estÃƒÂ¡ vacÃƒÂ­o, intentar cargar de localStorage
+    // RESILIENCIA: si productos está vacío, intentar cargar de localStorage
     if (!Array.isArray(productos) || productos.length === 0) {
         try {
             const cached = JSON.parse(localStorage.getItem('productos') || '[]');
@@ -3990,11 +4030,11 @@ renderizarProductos = function() {
         ? productos
         : productos.filter(p => p.categoria === categoriaSeleccionada);
 
-    console.log('[TM RENDER] Tras filtro categorÃƒÂ­a:', productosFiltrados.length);
+    console.log('[TM RENDER] Tras filtro categoría:', productosFiltrados.length);
 
     if (categoriaSeleccionada !== 'Todas' && subcategoriaSeleccionada && subcategoriaSeleccionada !== 'Todas') {
         productosFiltrados = productosFiltrados.filter(p => p.subcategoria === subcategoriaSeleccionada);
-        console.log('[TM RENDER] Tras filtro subcategorÃƒÂ­a:', productosFiltrados.length);
+        console.log('[TM RENDER] Tras filtro subcategoría:', productosFiltrados.length);
     }
     if (_heroSearchActivo || _heroPrecioMin > 0 || _heroPrecioMax < Infinity) {
         const q = _heroSearchActivo;
@@ -4004,11 +4044,11 @@ renderizarProductos = function() {
                 (p.categoria||'').toLowerCase().includes(q);
             return matchQ;
         });
-        console.log('[TM RENDER] Tras filtro bÃƒÂºsqueda:', productosFiltrados.length);
+        console.log('[TM RENDER] Tras filtro búsqueda:', productosFiltrados.length);
     }
     console.log('[TM RENDER] FINAL productosFiltrados:', productosFiltrados.length);
 
-    // Ordenar: oferta del dÃƒÂ­a primero
+    // Ordenar: oferta del día primero
     const ofertaId = getOfertaDiaId();
     if (ofertaId) {
         productosFiltrados = productosFiltrados.sort((a, b) => {
@@ -4020,16 +4060,16 @@ renderizarProductos = function() {
 
     productosGrid.innerHTML = '';
     if (productosFiltrados.length === 0) {
-        // Mensaje contextual segÃƒÂºn la situaciÃƒÂ³n real
+        // Mensaje contextual según la situación real
         let mensaje;
         if (!Array.isArray(productos) || productos.length === 0) {
-            mensaje = 'Ã¢ÂÂ³ Cargando productos... Si esto persiste, recarga la pÃƒÂ¡gina.';
+            mensaje = '⏳ Cargando productos... Si esto persiste, recarga la página.';
         } else if (subcategoriaSeleccionada && subcategoriaSeleccionada !== 'Todas') {
-            mensaje = 'No hay productos en esta subcategorÃƒÂ­a aÃƒÂºn.';
+            mensaje = 'No hay productos en esta subcategoría aún.';
         } else if (_heroSearchActivo) {
-            mensaje = 'No hay productos que coincidan con tu bÃƒÂºsqueda.';
+            mensaje = 'No hay productos que coincidan con tu búsqueda.';
         } else {
-            mensaje = 'No hay productos en esta categorÃƒÂ­a aÃƒÂºn.';
+            mensaje = 'No hay productos en esta categoría aún.';
         }
         productosGrid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #999; padding: 60px 20px; font-size:15px;">' + escapeHtml(mensaje) + '</p>';
         return;
@@ -4042,19 +4082,19 @@ renderizarProductos = function() {
         card.className = 'producto-card' + (esAgotado ? ' card-agotado' : '');
         card.onclick = () => abrirDetalleProducto(producto.id);
         card.style.position = 'relative';
-        // SanitizaciÃƒÂ³n defensiva (escapeHtml/escapeAttr definidos al inicio del script)
+        // Sanitización defensiva (escapeHtml/escapeAttr definidos al inicio del script)
         const _id  = safeNum(producto.id);
         const _nom = escapeHtml(producto.nombre);
         const _des = escapeHtml(producto.descripcion);
         const _img = escapeAttr(producto.imagen);
         const _stk = safeNum(producto.stock);
         const _txt = escapeHtml(getOfertaDiaTexto());
-        // Para el onclick del botÃƒÂ³n Pedir: necesitamos un string seguro para JS
+        // Para el onclick del botón Pedir: necesitamos un string seguro para JS
         const _nomJS = (producto.nombre || '').replace(/[\\'"<>]/g, '');
         card.innerHTML =
             (esOfertaDia ? '<div class="badge-oferta-dia">' + _txt + '</div>' :
              esAgotado ? '<div class="badge-agotado">AGOTADO</div>' :
-             producto.masVendido ? '<div class="badge-vendido">Ã°Å¸â€Â¥ MÃƒÂ¡s Vendido</div>' : '') +
+             producto.masVendido ? '<div class="badge-vendido">🔥 Más Vendido</div>' : '') +
             '<div class="producto-image">' +
                 getMeGustaHTML(_id) +
                 '<img src="' + _img + '" alt="' + _nom + '" loading="lazy">' +
@@ -4068,8 +4108,8 @@ renderizarProductos = function() {
                 (producto.precioOriginal > 0 && producto.precioOriginal > producto.precioActual ? ' <span class="precio-ahorro">-$' + (parseFloat(producto.precioOriginal) - parseFloat(producto.precioActual)).toFixed(0) + '</span>' : '') +
             '</p>' +
             (esAgotado
-                ? '<div class="stock" style="color:#e74c3c;font-weight:700;">Ã¢ÂÅ’ Agotado</div><button class="btn btn-small btn-primary" disabled style="opacity:0.5;cursor:not-allowed;">No disponible</button>'
-                : (_stk <= 3 && _stk > 0 ? '<div class="stock stock-urgente">Ã¢Å¡Â Ã¯Â¸Â Ã‚Â¡Solo quedan ' + _stk + '!</div>' : '<div class="stock">Ã°Å¸â€œÂ¦ Stock: ' + _stk + ' unidades</div>') +
+                ? '<div class="stock" style="color:#e74c3c;font-weight:700;">❌ Agotado</div><button class="btn btn-small btn-primary" disabled style="opacity:0.5;cursor:not-allowed;">No disponible</button>'
+                : (_stk <= 3 && _stk > 0 ? '<div class="stock stock-urgente">⚠️ ¡Solo quedan ' + _stk + '!</div>' : '<div class="stock">📦 Stock: ' + _stk + ' unidades</div>') +
                   (typeof renderCountdownHtml === 'function' ? renderCountdownHtml(_id) : '') +
                   '<button class="btn-pedir-card" data-nombre="' + _nom + '" onclick="event.stopPropagation(); tmComprar(event, ' + _id + ', this.dataset.nombre)" type="button"><span class="btn-pedir-wa-icon-sm"><svg viewBox="0 0 24 24" width="14" height="14" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg></span> Pedir</button>');
         productosGrid.appendChild(card);
@@ -4078,17 +4118,17 @@ renderizarProductos = function() {
 
 
 /* ============================================================
-   TIENDAMAX Ã¢â‚¬â€ PREMIUM UPGRADE PACK JS
-   Cursor Ã‚Â· Progress bar Ã‚Â· Toast glass Ã‚Â· Placeholder animado
-   Separadores Ã‚Â· Footer premium
+   TIENDAMAX — PREMIUM UPGRADE PACK JS
+   Cursor · Progress bar · Toast glass · Placeholder animado
+   Separadores · Footer premium
    ============================================================ */
 
 // ===== CURSOR DORADO ELIMINADO =====
 // El cursor custom dorado fue eliminado: ocultaba el cursor del sistema
-// cuando algo fallaba y no se veÃƒÂ­a bien en todos los modos. Ahora se usa
+// cuando algo fallaba y no se veía bien en todos los modos. Ahora se usa
 // el cursor nativo del navegador, que siempre funciona.
 (function removeOldCursor() {
-    // Limpiar el elemento si quedÃƒÂ³ de una versiÃƒÂ³n anterior cacheada
+    // Limpiar el elemento si quedó de una versión anterior cacheada
     const old = document.getElementById('tm-cursor');
     if (old) old.remove();
 })();
@@ -4110,7 +4150,7 @@ renderizarProductos = function() {
     update();
 })();
 
-// ===== TOAST GLASSMORPHISM Ã¢â‚¬â€ reemplaza mostrarNotificacion =====
+// ===== TOAST GLASSMORPHISM — reemplaza mostrarNotificacion =====
 (function overrideToast() {
     let toastEl = null;
     let hideTimer = null;
@@ -4128,12 +4168,12 @@ renderizarProductos = function() {
         const t = getToast();
         clearTimeout(hideTimer);
 
-        // ÃƒÂcono
-        const icon = tipo === 'error' ? 'Ã¢Å“â€¢' : tipo === 'info' ? 'i' : 'Ã¢Å“â€œ';
+        // Ícono
+        const icon = tipo === 'error' ? '✕' : tipo === 'info' ? 'i' : '✓';
         t.className = 'tm-toast' + (tipo === 'error' ? ' error' : '');
         t.innerHTML = `<span class="tm-toast-icon">${icon}</span><span>${mensaje}</span>`;
 
-        // Forzar reflow para reiniciar animaciÃƒÂ³n
+        // Forzar reflow para reiniciar animación
         t.classList.remove('show', 'hide');
         void t.offsetWidth;
         t.classList.add('show');
@@ -4145,14 +4185,14 @@ renderizarProductos = function() {
     };
 })();
 
-// ===== PLACEHOLDER ANIMADO EN BÃƒÅ¡SQUEDA =====
+// ===== PLACEHOLDER ANIMADO EN BÚSQUEDA =====
 (function initPlaceholder() {
     const frases = [
         'Buscar productos...',
         'WiFi, inversores...',
         'Celulares, cargadores...',
-        'TecnologÃƒÂ­a premium...',
-        'EnergÃƒÂ­a solar...'
+        'Tecnología premium...',
+        'Energía solar...'
     ];
     let idx = 0;
 
@@ -4160,7 +4200,7 @@ renderizarProductos = function() {
         const input = document.getElementById('heroSearchInput');
         if (!input || document.activeElement === input || input.value) return;
         idx = (idx + 1) % frases.length;
-        // Fade out Ã¢â€ â€™ cambiar Ã¢â€ â€™ fade in via style
+        // Fade out → cambiar → fade in via style
         input.style.transition = 'opacity 0.4s';
         input.style.opacity = '0';
         setTimeout(() => {
@@ -4169,7 +4209,7 @@ renderizarProductos = function() {
         }, 400);
     }
 
-    // Esperar a que el DOM estÃƒÂ© listo
+    // Esperar a que el DOM esté listo
     function startRotation() {
         const input = document.getElementById('heroSearchInput');
         if (!input) { setTimeout(startRotation, 500); return; }
@@ -4181,12 +4221,12 @@ renderizarProductos = function() {
 
 
 
-/* Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
-   PREMIUM UPGRADE PACK 2 Ã¢â‚¬â€ JS
-   Fly-to-cart Ã‚Â· Skeleton loading Ã‚Â· Analytics counter
-Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â */
+/* ════════════════════════════════════════════════════
+   PREMIUM UPGRADE PACK 2 — JS
+   Fly-to-cart · Skeleton loading · Analytics counter
+═════════════════════════════════════════════════════ */
 
-// Ã¢â€â‚¬Ã¢â€â‚¬ 1. FLY-TO-CART: partÃƒÂ­cula que vuela al ÃƒÂ­cono del carrito Ã¢â€â‚¬Ã¢â€â‚¬
+// ── 1. FLY-TO-CART: partícula que vuela al ícono del carrito ──
 function flyToCart(originEl) {
     const cartBtn = document.querySelector('.cart-icon-btn');
     if (!cartBtn || !originEl) return;
@@ -4215,7 +4255,7 @@ function flyToCart(originEl) {
         const t = Math.min((now - start) / duration, 1);
         // Ease in-out cubic
         const e = t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t+2,3)/2;
-        // Arc: parÃƒÂ¡bola en Y
+        // Arc: parábola en Y
         const arc = -Math.sin(Math.PI * t) * 90;
 
         particle.style.transform = `translate(${dx * e}px, ${dy * e + arc}px) scale(${1 - t * 0.4})`;
@@ -4235,7 +4275,7 @@ function flyToCart(originEl) {
     requestAnimationFrame(step);
 }
 
-// Ã¢â€â‚¬Ã¢â€â‚¬ FLY-TO-CART: funciÃƒÂ³n global que llama botones de comprar Ã¢â€â‚¬Ã¢â€â‚¬
+// ── FLY-TO-CART: función global que llama botones de comprar ──
 function tmComprar(event, id, nombre) {
     const btn = (event && (event.currentTarget || event.target)) || null;
     if (btn) requestAnimationFrame(() => flyToCart(btn));
@@ -4245,10 +4285,10 @@ function tmComprar(event, id, nombre) {
     if (_prod) {
         const precio = parseFloat(_prod.precioActual).toFixed(2);
         const msg = encodeURIComponent(
-            `Ã‚Â¡Hola! Me gustarÃƒÂ­a hacer este pedido:\n\n` +
-            `Ã¢â‚¬Â¢ ${_prod.nombre} x1 Ã¢â‚¬â€ $${precio} USD\n\n` +
-            `Ã°Å¸â€™Â° Total: $${precio} USD\n\n` +
-            `Ã‚Â¿EstÃƒÂ¡ disponible?`
+            `¡Hola! Me gustaría hacer este pedido:\n\n` +
+            `• ${_prod.nombre} x1 — $${precio} USD\n\n` +
+            `💰 Total: $${precio} USD\n\n` +
+            `¿Está disponible?`
         );
         window.open(`https://wa.me/${getNumeroWhatsApp()}?text=${msg}`, '_blank', 'noopener,noreferrer');
     } else if (typeof contactarProducto === 'function') {
@@ -4263,7 +4303,7 @@ agregarAlCarrito = function(id, _unused, originEl) {
     if (originEl) requestAnimationFrame(() => flyToCart(originEl));
 };
 
-// Ã¢â€â‚¬Ã¢â€â‚¬ 2. SKELETON LOADING en grids de productos Ã¢â€â‚¬Ã¢â€â‚¬
+// ── 2. SKELETON LOADING en grids de productos ──
 function mostrarSkeletons(containerId, cantidad = 6) {
     const container = document.getElementById(containerId);
     if (!container) return;
@@ -4281,7 +4321,7 @@ function mostrarSkeletons(containerId, cantidad = 6) {
     container.innerHTML = skeletonHTML;
 }
 
-// Ã¢â€â‚¬Ã¢â€â‚¬ 3. ANALYTICS COUNTER ANIMADO Ã¢â€â‚¬Ã¢â€â‚¬
+// ── 3. ANALYTICS COUNTER ANIMADO ──
 function animarContador(el, target, duration = 1200, prefix = '', suffix = '') {
     const isFloat = String(target).includes('.');
     const decimals = isFloat ? 2 : 0;
@@ -4313,7 +4353,7 @@ stat = function(icon, label, value, color) {
         '<div style="font-size:11px;color:#999;text-transform:uppercase;letter-spacing:0.5px;">' + label + '</div>' +
         '</div>';
 
-    // Animar despuÃƒÂ©s del render
+    // Animar después del render
     if (isNumeric) {
         setTimeout(() => {
             const el = document.getElementById(id);
@@ -4331,7 +4371,7 @@ stat = function(icon, label, value, color) {
 };
 
 
-// Ã¢â€â‚¬Ã¢â€â‚¬ Buscador y filtro de categorÃƒÂ­as en Ventas Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
+// ── Buscador y filtro de categorías en Ventas ────────────────────
 let _ventaCatActiva = '';
 
 function filtrarProductosVenta() {
@@ -4381,7 +4421,7 @@ function seleccionarProductoVenta(id) {
         const nom = document.getElementById('ventaSelNombre');
         if (nom) nom.textContent = p.nombre;
         const inf = document.getElementById('ventaSelInfo');
-        if (inf) inf.innerHTML = `$${p.precioActual} Ã‚Â· Stock: ${p.stock}${p.comision ? ` Ã‚Â· Ã°Å¸â€™Â° ComisiÃƒÂ³n: $${p.comision}` : ''}`;
+        if (inf) inf.innerHTML = `$${p.precioActual} · Stock: ${p.stock}${p.comision ? ` · 💰 Comisión: $${p.comision}` : ''}`;
     }
 
     const cantEl = document.getElementById('ventaCantidad');
@@ -4405,18 +4445,18 @@ function limpiarBuscadorVenta() {
     filtrarProductosVenta();
 }
 
-// Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
-//  TIENDAMAX Ã¢â‚¬â€ PREMIUM PACK v2
-//  1. Vistas por producto (pÃƒÂºblico + panel admin)
-//  2. Dashboard de ventas con grÃƒÂ¡fica
-//  3. Badges "ÃƒÅ¡ltimas X unidades" en tarjetas de cliente
+// ══════════════════════════════════════════════════════════════════
+//  TIENDAMAX — PREMIUM PACK v2
+//  1. Vistas por producto (público + panel admin)
+//  2. Dashboard de ventas con gráfica
+//  3. Badges "Últimas X unidades" en tarjetas de cliente
 //  4. Alerta de stock bajo en tab Gestionar
 //  5. Animaciones fade-in al scroll
-//  6. Quick View (vista rÃƒÂ¡pida sin abrir detalle)
+//  6. Quick View (vista rápida sin abrir detalle)
 //  7. Exportar ventas a CSV
-// Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
+// ══════════════════════════════════════════════════════════════════
 
-// Ã¢â€â‚¬Ã¢â€â‚¬ 1. VISTAS POR PRODUCTO Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
+// ── 1. VISTAS POR PRODUCTO ─────────────────────────────────────────
 function _cargarVistas() {
     return JSON.parse(localStorage.getItem('vistasProd') || '{}');
 }
@@ -4458,15 +4498,15 @@ abrirDetalleProducto = function(id) {
         const catEl = document.getElementById('detailProductCategory');
         if (catEl && catEl.parentNode) catEl.parentNode.appendChild(vistaEl);
     }
-    vistaEl.innerHTML = `Ã°Å¸â€˜ÂÃ¯Â¸Â ${total.toLocaleString()} vista${total !== 1 ? 's' : ''}`;
+    vistaEl.innerHTML = `👁️ ${total.toLocaleString()} vista${total !== 1 ? 's' : ''}`;
 };
 
-// Ã¢â€â‚¬Ã¢â€â‚¬ 2. DASHBOARD DE VENTAS CON GRÃƒÂFICA Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
+// ── 2. DASHBOARD DE VENTAS CON GRÁFICA ────────────────────────────
 function renderizarDashboardVentas(contenedor) {
     const ventas = cargarVentas();
     if (ventas.length === 0) return '';
 
-    // Agrupar por dÃƒÂ­a (ÃƒÂºltimos 14 dÃƒÂ­as)
+    // Agrupar por día (últimos 14 días)
     const hoy = new Date();
     const dias = [];
     for (let i = 13; i >= 0; i--) {
@@ -4487,7 +4527,7 @@ function renderizarDashboardVentas(contenedor) {
         // pero d.label es "25/05". Hay que extraer dd/mm correctamente.
         let fechaCorta = '';
         if (v.fecha) {
-            // Intentar match con formato Date estÃƒÂ¡ndar primero
+            // Intentar match con formato Date estándar primero
             const d_parsed = new Date(v.fecha);
             if (!isNaN(d_parsed.getTime())) {
                 const dd = String(d_parsed.getDate()).padStart(2, '0');
@@ -4511,7 +4551,7 @@ function renderizarDashboardVentas(contenedor) {
 
     const maxTotal = Math.max(...dias.map(d => d.total), 1);
 
-    // Top 5 productos mÃƒÂ¡s vendidos
+    // Top 5 productos más vendidos
     const topProd = {};
     ventas.forEach(v => {
         if (!topProd[v.producto]) topProd[v.producto] = { unidades: 0, ganancia: 0 };
@@ -4528,16 +4568,16 @@ function renderizarDashboardVentas(contenedor) {
     const totalVentas   = ventas.reduce((s, v) => s + v.total, 0);
     const totalGanancia = ventas.reduce((s, v) => s + (v.ganancia || 0), 0);
     const totalUnidades = ventas.reduce((s, v) => s + (v.cantidad || 1), 0);
-    // PaginaciÃƒÂ³n
+    // Paginación
     const totalPaginas2 = Math.max(1, Math.ceil(ventas.length / _VENTAS_POR_PAGINA));
     const ventasPagina  = ventas.slice(_ventasPagina * _VENTAS_POR_PAGINA, (_ventasPagina + 1) * _VENTAS_POR_PAGINA);
 
     return `
     <div style="margin-bottom:20px;">
         <h4 class="admin-dash-header">
-            Ã°Å¸â€œÅ  Dashboard de ventas
+            📊 Dashboard de ventas
             <button onclick="exportarVentasCSV()" type="button" class="admin-btn-sm outline">
-                Ã¢Â¬â€¡Ã¯Â¸Â Exportar CSV
+                ⬇️ Exportar CSV
             </button>
         </h4>
 
@@ -4557,9 +4597,9 @@ function renderizarDashboardVentas(contenedor) {
             </div>
         </div>
 
-        <!-- GrÃƒÂ¡fica de barras ÃƒÂºltimos 14 dÃƒÂ­as -->
+        <!-- Gráfica de barras últimos 14 días -->
         <div class="admin-chart-box">
-            <div class="admin-chart-title">Ventas por dÃƒÂ­a (ÃƒÂºltimos 14 dÃƒÂ­as)</div>
+            <div class="admin-chart-title">Ventas por día (últimos 14 días)</div>
             <div class="admin-chart-bars">
                 ${dias.map(d => {
                     const h = Math.max(4, Math.round((d.total / maxTotal) * 70));
@@ -4578,7 +4618,7 @@ function renderizarDashboardVentas(contenedor) {
         <!-- Top 5 productos por ventas -->
         ${topList.length > 0 ? `
         <div style="margin-bottom:14px;">
-            <div class="admin-chart-title">Ã°Å¸Ââ€  MÃƒÂ¡s vendidos</div>
+            <div class="admin-chart-title">🏆 Más vendidos</div>
             ${topList.map(([nombre, d], i) => `
             <div class="admin-top-item">
                 <span class="admin-top-rank">${i+1}</span>
@@ -4591,13 +4631,13 @@ function renderizarDashboardVentas(contenedor) {
         <!-- Top productos por vistas -->
         ${topVistas.length > 0 ? `
         <div>
-            <div class="admin-chart-title">Ã°Å¸â€˜ÂÃ¯Â¸Â MÃƒÂ¡s vistos</div>
+            <div class="admin-chart-title">👁️ Más vistos</div>
             ${topVistas.map(({ producto: p, vistas }, i) => `
             <div class="admin-top-item">
                 <span class="admin-top-rank">${i+1}</span>
                 ${p.imagen ? `<img src="${p.imagen}" class="admin-top-thumb" onerror="this.style.display='none'">` : ''}
                 <span class="admin-top-name">${p.nombre}</span>
-                <span class="admin-top-value blue">Ã°Å¸â€˜ÂÃ¯Â¸Â ${vistas.toLocaleString()}</span>
+                <span class="admin-top-value blue">👁️ ${vistas.toLocaleString()}</span>
             </div>`).join('')}
         </div>` : ''}
     </div>`;
@@ -4619,7 +4659,7 @@ renderizarVentas = function() {
     }
 };
 
-// Ã¢â€â‚¬Ã¢â€â‚¬ 4. ALERTA DE STOCK BAJO EN TAB GESTIONAR Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
+// ── 4. ALERTA DE STOCK BAJO EN TAB GESTIONAR ──────────────────────
 function actualizarBadgeStockBajo() {
     const btn = document.querySelector('.tab-btn[data-tab="manage-products"]');
     if (!btn) return;
@@ -4651,10 +4691,10 @@ guardarProductos = function() {
     setTimeout(actualizarBadgeStockBajo, 50);
 };
 
-// Ã¢â€â‚¬Ã¢â€â‚¬ 5. ANIMACIONES FADE-IN AL SCROLL Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
+// ── 5. ANIMACIONES FADE-IN AL SCROLL ──────────────────────────────
 function initScrollAnimations() {
     if (typeof IntersectionObserver === 'undefined') return;
-    // FIX: evitar duplicaciÃƒÂ³n de <style> con cada render
+    // FIX: evitar duplicación de <style> con cada render
     if (document.getElementById('tm-scroll-anim-style')) return;
     const style = document.createElement('style');
     style.id = 'tm-scroll-anim-style';
@@ -4687,7 +4727,7 @@ function initScrollAnimations() {
     mutObs.observe(grid, { childList: true, subtree: true });
 }
 
-// Ã¢â€â‚¬Ã¢â€â‚¬ 6. EXPORTAR VENTAS A CSV Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
+// ── 6. EXPORTAR VENTAS A CSV ───────────────────────────────────────
 
 function mostrarVistaMeGusta() {
     // Inyectar estilos para que las cards sean siempre visibles
@@ -4729,12 +4769,12 @@ function mostrarVistaMeGusta() {
     const vacioEl  = document.getElementById('meGustaVacio');
     if (!grid) return;
 
-    // Usar siempre el array global productos (mÃƒÂ¡s confiable que localStorage)
+    // Usar siempre el array global productos (más confiable que localStorage)
     const cat = (typeof productos !== 'undefined' && productos.length > 0)
         ? productos
         : JSON.parse(localStorage.getItem('productos') || '[]');
 
-    // Si aÃƒÂºn no hay catÃƒÂ¡logo, esperar hasta 5 segundos
+    // Si aún no hay catálogo, esperar hasta 5 segundos
     if (cat.length === 0 && wishlist.length > 0) {
         if (statsEl) statsEl.textContent = 'Cargando...';
         grid.style.display = 'none';
@@ -4745,7 +4785,7 @@ function mostrarVistaMeGusta() {
         } else {
             // FIX BUG #25: dar feedback al usuario si no se pudo cargar
             mostrarVistaMeGusta._t = 0;
-            if (statsEl) statsEl.textContent = 'No se pudo cargar el catÃƒÂ¡logo. Recarga la pÃƒÂ¡gina.';
+            if (statsEl) statsEl.textContent = 'No se pudo cargar el catálogo. Recarga la página.';
             console.warn('[mostrarVistaMeGusta] No se pudo cargar tras 7 intentos.');
         }
         return;
@@ -4773,7 +4813,7 @@ function mostrarVistaMeGusta() {
             card.className = 'producto-card' + (esAgotado ? ' card-agotado' : '');
             card.onclick = () => abrirDetalleProducto(producto.id);
             card.style.position = 'relative';
-            // SanitizaciÃƒÂ³n defensiva anti-XSS
+            // Sanitización defensiva anti-XSS
             const _id  = safeNum(producto.id);
             const _nom = escapeHtml(producto.nombre);
             const _des = escapeHtml(producto.descripcion || '');
@@ -4781,15 +4821,15 @@ function mostrarVistaMeGusta() {
             const _stk = safeNum(producto.stock);
             const _txt = escapeHtml(getOfertaDiaTexto());
             const stockHTML = esAgotado
-                ? '<div class="stock" style="color:#e74c3c;font-weight:700;">Ã¢ÂÅ’ Agotado</div>'
+                ? '<div class="stock" style="color:#e74c3c;font-weight:700;">❌ Agotado</div>'
                 : (_stk <= 3
-                    ? '<div class="stock stock-urgente">Ã¢Å¡Â Ã¯Â¸Â Ã‚Â¡Solo quedan ' + _stk + '!</div>'
-                    : '<div class="stock">Ã°Å¸â€œÂ¦ Stock: ' + _stk + ' unidades</div>') +
-                  '<button class="btn-pedir-card" data-nombre="' + _nom + '" onclick="event.stopPropagation();tmComprar(event,' + _id + ',this.dataset.nombre)">Ã°Å¸â€ºâ€™ Pedir</button>';
+                    ? '<div class="stock stock-urgente">⚠️ ¡Solo quedan ' + _stk + '!</div>'
+                    : '<div class="stock">📦 Stock: ' + _stk + ' unidades</div>') +
+                  '<button class="btn-pedir-card" data-nombre="' + _nom + '" onclick="event.stopPropagation();tmComprar(event,' + _id + ',this.dataset.nombre)">🛒 Pedir</button>';
             card.innerHTML =
                 (esOfertaDia ? '<div class="badge-oferta-dia">' + _txt + '</div>' :
                  esAgotado   ? '<div class="badge-agotado">AGOTADO</div>' :
-                 producto.masVendido ? '<div class="badge-vendido">Ã°Å¸â€Â¥ MÃƒÂ¡s Vendido</div>' : '') +
+                 producto.masVendido ? '<div class="badge-vendido">🔥 Más Vendido</div>' : '') +
                 '<div class="producto-image">' +
                     getMeGustaHTML(_id) +
                     '<img src="' + _img + '" alt="' + _nom + '" loading="lazy">' +
@@ -4815,9 +4855,9 @@ function cerrarVistaMeGusta() {
     mostrarVistaInicio();
 }
 
-// Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
+// ══════════════════════════════════════════════════════════════
 //  VISTA: MIS PEDIDOS (historial del cliente)
-// Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
+// ══════════════════════════════════════════════════════════════
 function guardarPedidoCliente(itemsCarrito) {
     const pedidos = JSON.parse(localStorage.getItem('pedidos_cliente_v1') || '[]');
     const total   = itemsCarrito.reduce((s, i) => s + i.precio * i.cantidad, 0);
@@ -4856,19 +4896,19 @@ function mostrarVistaPedidos() {
         if (listaEl) listaEl.innerHTML = pedidos.map(p => `
           <div class="pedido-card">
             <div class="pedido-card-header">
-              <span class="pedido-fecha">Ã°Å¸â€œâ€¦ ${p.fecha}</span>
+              <span class="pedido-fecha">📅 ${p.fecha}</span>
               <span class="pedido-total">$${p.total.toFixed(2)} USD</span>
             </div>
             <div class="pedido-items">
               ${p.items.map(i => `
                 <div class="pedido-item">
                   <span class="pedido-item-nombre">${i.nombre}</span>
-                  <span class="pedido-item-qty">Ãƒâ€”${i.cantidad}</span>
+                  <span class="pedido-item-qty">×${i.cantidad}</span>
                   <span class="pedido-item-precio">$${(i.precio * i.cantidad).toFixed(2)}</span>
                 </div>
               `).join('')}
             </div>
-            <button class="pedido-btn-repetir" onclick="repetirPedido(${p.id})">Ã°Å¸â€â€ž Pedir de nuevo</button>
+            <button class="pedido-btn-repetir" onclick="repetirPedido(${p.id})">🔄 Pedir de nuevo</button>
           </div>
         `).join('');
     }
@@ -4894,10 +4934,10 @@ function repetirPedido(pedidoId) {
 }
 
 
-// Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
-//  DEEP LINKS Ã¢â‚¬â€ Abrir producto directo desde URL compartida
+// ══════════════════════════════════════════════════════════════
+//  DEEP LINKS — Abrir producto directo desde URL compartida
 //  Ejemplo: tiendamax.org/#producto-1777923552923
-// Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
+// ══════════════════════════════════════════════════════════════
 function _procesarDeepLink() {
     const hash = window.location.hash;
     if (!hash.startsWith('#producto-')) return;
@@ -4914,7 +4954,7 @@ function _procesarDeepLink() {
         const local = JSON.parse(localStorage.getItem('productos') || '[]');
         const pLocal = local.find(x => x.id === id || String(x.id) === String(id));
         if (pLocal) {
-            // Inyectar en el array global si estÃƒÂ¡ vacÃƒÂ­o y abrir
+            // Inyectar en el array global si está vacío y abrir
             if (typeof productos !== 'undefined' && productos.length === 0) {
                 productos.push(...local);
             }
@@ -4942,12 +4982,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
-//  NOTIFICACIÃƒâ€œN DE CARRITO ABANDONADO
-//  LÃƒÂ³gica: si hay productos en el carrito y el usuario lleva
-//  mÃƒÂ¡s de 2 horas sin interactuar, se envÃƒÂ­a una notificaciÃƒÂ³n push.
-//  Se usa el SW existente Ã¢â‚¬â€ no requiere backend.
-// Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
+// ══════════════════════════════════════════════════════════════
+//  NOTIFICACIÓN DE CARRITO ABANDONADO
+//  Lógica: si hay productos en el carrito y el usuario lleva
+//  más de 2 horas sin interactuar, se envía una notificación push.
+//  Se usa el SW existente — no requiere backend.
+// ══════════════════════════════════════════════════════════════
 (function initCarritoAbandonado() {
     const DELAY_MS  = 2 * 60 * 60 * 1000; // 2 horas
     const KEY_TIMER = 'carrito_notif_timer';
@@ -4971,7 +5011,7 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.removeItem(KEY_SENT);
 
         _timer = setTimeout(async () => {
-            // Verificar que aÃƒÂºn hay carrito y no se enviÃƒÂ³ ya
+            // Verificar que aún hay carrito y no se envió ya
             const carritoActual = JSON.parse(localStorage.getItem('carrito_v2') || '{"items":[]}').items || [];
             if (carritoActual.length === 0) return;
             if (localStorage.getItem(KEY_SENT)) return;
@@ -4979,12 +5019,12 @@ document.addEventListener('DOMContentLoaded', () => {
             const total = carritoActual.reduce((s, i) => s + i.precio * i.cantidad, 0);
             const nombres = carritoActual.slice(0, 2).map(i => i.nombre.substring(0, 20)).join(', ');
             const cuerpo  = carritoActual.length === 1
-                ? 'Ã‚Â¡Tienes ' + carritoActual[0].nombre.substring(0, 30) + ' esperÃƒÂ¡ndote! ($' + total.toFixed(0) + ' USD)'
-                : 'Ã‚Â¡Tienes ' + carritoActual.length + ' productos en tu carrito! ' + nombres + '... ($' + total.toFixed(0) + ' USD)';
+                ? '¡Tienes ' + carritoActual[0].nombre.substring(0, 30) + ' esperándote! ($' + total.toFixed(0) + ' USD)'
+                : '¡Tienes ' + carritoActual.length + ' productos en tu carrito! ' + nombres + '... ($' + total.toFixed(0) + ' USD)';
 
             try {
                 const reg = await navigator.serviceWorker.ready;
-                await reg.showNotification('Ã°Å¸â€ºâ€™ Ã‚Â¿Olvidaste algo?', {
+                await reg.showNotification('🛒 ¿Olvidaste algo?', {
                     body: cuerpo,
                     icon: '/icons/icon-192.png',
                     badge: '/icons/icon-192.png',
@@ -4993,13 +5033,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     tag: 'carrito-abandonado',
                     renotify: false,
                     actions: [
-                        { action: 'ver', title: 'Ã°Å¸â€ºâ€™ Ver carrito' },
-                        { action: 'cerrar', title: 'MÃƒÂ¡s tarde' }
+                        { action: 'ver', title: '🛒 Ver carrito' },
+                        { action: 'cerrar', title: 'Más tarde' }
                     ]
                 });
                 localStorage.setItem(KEY_SENT, '1');
             } catch(err) {
-                console.log('NotificaciÃƒÂ³n carrito:', err);
+                console.log('Notificación carrito:', err);
             }
         }, DELAY_MS);
     }
@@ -5011,7 +5051,7 @@ document.addEventListener('DOMContentLoaded', () => {
         programarNotificacion();
     };
 
-    // Al cargar la pÃƒÂ¡gina: verificar si hay un timer pendiente del pasado
+    // Al cargar la página: verificar si hay un timer pendiente del pasado
     window.addEventListener('load', () => {
         const disparoGuardado = parseInt(localStorage.getItem(KEY_TIMER) || '0');
         if (disparoGuardado && Date.now() < disparoGuardado && carrito && carrito.length > 0) {
@@ -5022,7 +5062,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Al abrir el carrito: cancelar el timer (el usuario estÃƒÂ¡ activo)
+    // Al abrir el carrito: cancelar el timer (el usuario está activo)
     const _abrirOriginal = abrirCarrito;
     window.abrirCarrito = function() {
         cancelarTimer();
@@ -5033,25 +5073,25 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 })();
 
-// Ã¢â€â‚¬Ã¢â€â‚¬ REGISTRO DEL SERVICE WORKER + NOTIFICACIONES PUSH Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
+// ── REGISTRO DEL SERVICE WORKER + NOTIFICACIONES PUSH ──────────────
 // NOTA: El SW se registra desde index.html (con auto-reload).
-// AquÃƒÂ­ solo manejamos el banner de permiso para notificaciones.
+// Aquí solo manejamos el banner de permiso para notificaciones.
 (function initPush() {
     if (!('serviceWorker' in navigator)) return;
 
-    // Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
+    // ═══════════════════════════════════════════════════════
     //  PRE-PROMPT INTELIGENTE para notificaciones
-    //  Se muestra SOLO en momentos de alta intenciÃƒÂ³n:
-    //    Ã¢â‚¬Â¢ Tras 30s de navegaciÃƒÂ³n activa (no al cargar)
-    //    Ã¢â‚¬Â¢ Tras marcar 2 Ã¢ÂÂ¤Ã¯Â¸Â Me Gusta
-    //    Ã¢â‚¬Â¢ Tras hacer scroll a la 2Ã‚Âª pantalla
-    //    Ã¢â‚¬Â¢ Tras abrir 3 detalles de productos
+    //  Se muestra SOLO en momentos de alta intención:
+    //    • Tras 30s de navegación activa (no al cargar)
+    //    • Tras marcar 2 ❤️ Me Gusta
+    //    • Tras hacer scroll a la 2ª pantalla
+    //    • Tras abrir 3 detalles de productos
     //
     //  NO se muestra si:
-    //    Ã¢â‚¬Â¢ Ya tiene permiso granted
-    //    Ã¢â‚¬Â¢ EstÃƒÂ¡ denied (no se puede repreguntar el nativo)
-    //    Ã¢â‚¬Â¢ El usuario dijo "Ahora no" hace menos de X dÃƒÂ­as
-    // Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
+    //    • Ya tiene permiso granted
+    //    • Está denied (no se puede repreguntar el nativo)
+    //    • El usuario dijo "Ahora no" hace menos de X días
+    // ═══════════════════════════════════════════════════════
     let _bannerYaMostrado = false;
     function _mostrarBannerPushAhora() {
         if (_bannerYaMostrado) return;
@@ -5060,7 +5100,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Si ya tiene permiso concedido, no molestar
         if (Notification.permission === 'granted') return;
 
-        // Si el usuario cerrÃƒÂ³ el banner antes, esperar el tiempo configurado
+        // Si el usuario cerró el banner antes, esperar el tiempo configurado
         const pospuesto = parseInt(localStorage.getItem('tm_push_pospuesto') || '0');
         if (Date.now() < pospuesto) return;
 
@@ -5070,17 +5110,17 @@ document.addEventListener('DOMContentLoaded', () => {
         const anterior = document.getElementById('tm-push-banner-wrap');
         if (anterior) anterior.remove();
 
-        // Mensaje segÃƒÂºn el estado del permiso
+        // Mensaje según el estado del permiso
         const estaDenegado = Notification.permission === 'denied';
-        const titulo  = estaDenegado ? 'Ã°Å¸â€â€ Notificaciones bloqueadas' : 'Ã°Å¸â€â€ Ã‚Â¿Quieres avisos de ofertas?';
+        const titulo  = estaDenegado ? '🔔 Notificaciones bloqueadas' : '🔔 ¿Quieres avisos de ofertas?';
         const cuerpo  = estaDenegado
-            ? 'Para reactivarlas: tres puntos del navegador Ã¢â€ â€™ Ajustes Ã¢â€ â€™ Notificaciones Ã¢â€ â€™ Permitir'
+            ? 'Para reactivarlas: tres puntos del navegador → Ajustes → Notificaciones → Permitir'
             : 'Te avisamos cuando bajen los precios o lleguen productos nuevos. Sin spam.';
-        const btnTexto = estaDenegado ? 'CÃƒÂ³mo activarlas' : 'Ã°Å¸â€â€ AvÃƒÂ­same';
+        const btnTexto = estaDenegado ? 'Cómo activarlas' : '🔔 Avísame';
 
         const b = document.createElement('div');
         b.id = 'tm-push-banner-wrap';
-        b.innerHTML = `<div id="tm-push-banner" style="background:#1a1a1a;border:1.5px solid #C9A96E;border-radius:14px;padding:14px 18px;display:flex;align-items:center;gap:12px;box-shadow:0 8px 32px rgba(0,0,0,0.5);font-family:sans-serif;animation:slideUpBanner .35s ease"><span style="font-size:26px;flex-shrink:0">Ã°Å¸â€â€</span><div style="flex:1;min-width:0"><div style="font-weight:700;font-size:14px;color:#C9A96E;margin-bottom:2px">${escapeHtml(titulo)}</div><div style="font-size:12px;color:#aaa;line-height:1.3">${escapeHtml(cuerpo)}</div></div><div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0"><button id="tm-push-si" style="background:#C9A96E;color:#000;border:none;border-radius:8px;padding:7px 12px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap">${escapeHtml(btnTexto)}</button><button id="tm-push-no" style="background:none;border:none;color:#666;font-size:11px;cursor:pointer;text-align:center">Ahora no</button></div></div>`;
+        b.innerHTML = `<div id="tm-push-banner" style="background:#1a1a1a;border:1.5px solid #C9A96E;border-radius:14px;padding:14px 18px;display:flex;align-items:center;gap:12px;box-shadow:0 8px 32px rgba(0,0,0,0.5);font-family:sans-serif;animation:slideUpBanner .35s ease"><span style="font-size:26px;flex-shrink:0">🔔</span><div style="flex:1;min-width:0"><div style="font-weight:700;font-size:14px;color:#C9A96E;margin-bottom:2px">${escapeHtml(titulo)}</div><div style="font-size:12px;color:#aaa;line-height:1.3">${escapeHtml(cuerpo)}</div></div><div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0"><button id="tm-push-si" style="background:#C9A96E;color:#000;border:none;border-radius:8px;padding:7px 12px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap">${escapeHtml(btnTexto)}</button><button id="tm-push-no" style="background:none;border:none;color:#666;font-size:11px;cursor:pointer;text-align:center">Ahora no</button></div></div>`;
         if (!document.getElementById('slideUpBannerStyle')) {
             const s = document.createElement('style');
             s.id = 'slideUpBannerStyle';
@@ -5092,21 +5132,21 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('tm-push-si').onclick = async () => {
             b.remove();
             if (estaDenegado) {
-                // Mostrar guÃƒÂ­a para Android
-                alert('Para activar las notificaciones:\n\n1. Toca los 3 puntos del navegador\n2. Ajustes Ã¢â€ â€™ ConfiguraciÃƒÂ³n del sitio\n3. Notificaciones Ã¢â€ â€™ Permitir');
+                // Mostrar guía para Android
+                alert('Para activar las notificaciones:\n\n1. Toca los 3 puntos del navegador\n2. Ajustes → Configuración del sitio\n3. Notificaciones → Permitir');
                 return;
             }
             const perm = await Notification.requestPermission();
             if (perm === 'granted') {
                 const reg = await navigator.serviceWorker.ready;
-                reg.showNotification('Ã¢Å“â€¦ TiendaMax activado', {
+                reg.showNotification('✅ TiendaMax activado', {
                     body: 'Te avisaremos de ofertas y productos nuevos.',
                     icon: '/icons/icon-192.png',
                     badge: '/icons/icon-192.png',
                     vibrate: [200, 100, 200]
                 });
                 // FIX: registrar token FCM tras conceder permiso.
-                // Cargar config de localStorage o de config.json si no estÃƒÂ¡ local.
+                // Cargar config de localStorage o de config.json si no está local.
                 (async () => {
                     try {
                         let fbConfig = null;
@@ -5127,7 +5167,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             }
                         }
                         if (fbConfig && fbConfig.projectId) {
-                            console.log('[FCM] Iniciando FCM tras permitir notificaciÃƒÂ³n...');
+                            console.log('[FCM] Iniciando FCM tras permitir notificación...');
                             inicializarFirebaseFCMClient(fbConfig);
                         } else {
                             console.error('[FCM] No se pudo cargar firebaseConfig');
@@ -5137,21 +5177,21 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 })();
             } else if (perm === 'denied') {
-                // Si lo denegÃƒÂ³ ahora, volver a preguntar en 6 horas
+                // Si lo denegó ahora, volver a preguntar en 6 horas
                 localStorage.setItem('tm_push_pospuesto', Date.now() + 6 * 60 * 60 * 1000);
             }
         };
 
         document.getElementById('tm-push-no').onclick = () => {
             b.remove();
-            // Pospuesto: cuÃƒÂ¡ntas veces lo ha rechazado
+            // Pospuesto: cuántas veces lo ha rechazado
             const rechazos = parseInt(localStorage.getItem('tm_push_rechazos') || '0') + 1;
             localStorage.setItem('tm_push_rechazos', String(rechazos));
-            // Cada rechazo aÃƒÂ±ade mÃƒÂ¡s tiempo de espera: 1 dÃƒÂ­a, 3 dÃƒÂ­as, 7 dÃƒÂ­as, 14 dÃƒÂ­as, 30 dÃƒÂ­as
+            // Cada rechazo añade más tiempo de espera: 1 día, 3 días, 7 días, 14 días, 30 días
             const dias = [1, 3, 7, 14, 30][Math.min(rechazos - 1, 4)];
             const ms = dias * 24 * 60 * 60 * 1000;
             localStorage.setItem('tm_push_pospuesto', String(Date.now() + ms));
-            console.log('[push] Rechazo #' + rechazos + ' Ã¢â‚¬â€ re-preguntarÃƒÂ¡ en ' + dias + ' dÃƒÂ­as');
+            console.log('[push] Rechazo #' + rechazos + ' — re-preguntará en ' + dias + ' días');
         };
     }
 
@@ -5163,17 +5203,17 @@ document.addEventListener('DOMContentLoaded', () => {
         _mostrarBannerPushAhora();
     }
 
-    // Trigger 1: despuÃƒÂ©s de 45 segundos de navegaciÃƒÂ³n
+    // Trigger 1: después de 45 segundos de navegación
     setTimeout(() => _maybeMostrarPushBanner('45s navegando'), 45000);
 
-    // Trigger 2: tras hacer scroll a la 2Ã‚Âª pantalla
+    // Trigger 2: tras hacer scroll a la 2ª pantalla
     let _scrolled = false;
     window.addEventListener('scroll', function onScroll() {
         if (_scrolled) return;
         if (window.scrollY > window.innerHeight * 1.5) {
             _scrolled = true;
             window.removeEventListener('scroll', onScroll);
-            setTimeout(() => _maybeMostrarPushBanner('scroll 2Ã‚Âª pantalla'), 1500);
+            setTimeout(() => _maybeMostrarPushBanner('scroll 2ª pantalla'), 1500);
         }
     }, { passive: true });
 
@@ -5214,10 +5254,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 data: { url: url || '/' },
                 vibrate: [200, 100, 200],
                 actions: [
-                    { action: 'ver', title: 'Ã°Å¸â€˜â‚¬ Ver' },
+                    { action: 'ver', title: '👀 Ver' },
                     { action: 'cerrar', title: 'Cerrar' }
                 ],
-                // tag agrupa notificaciones del mismo tipo (solo se muestra la ÃƒÂºltima)
+                // tag agrupa notificaciones del mismo tipo (solo se muestra la última)
                 tag: 'tm-' + (titulo.substring(0, 20)),
                 renotify: true,
             };
@@ -5226,45 +5266,45 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         nuevoProducto(nombre, precio, id, imagen) {
             const url = id ? '/p/producto-' + id + '.html' : '/';
-            this.enviar('Ã°Å¸â€ â€¢ Nuevo en TiendaMax', nombre + ' desde $' + precio + ' USD', url, imagen);
+            this.enviar('🆕 Nuevo en TiendaMax', nombre + ' desde $' + precio + ' USD', url, imagen);
         },
         rebaja(nombre, antes, ahora, id, imagen) {
             const url = id ? '/p/producto-' + id + '.html' : '/';
             const pct = antes > 0 ? Math.round((antes - ahora) / antes * 100) : 0;
-            const titulo = pct > 0 ? 'Ã°Å¸ÂÂ·Ã¯Â¸Â Ã‚Â¡Rebaja -' + pct + '%!' : 'Ã°Å¸ÂÂ·Ã¯Â¸Â Bajada de precio';
-            this.enviar(titulo, nombre + ': $' + antes + ' Ã¢â€ â€™ $' + ahora + ' USD', url, imagen);
+            const titulo = pct > 0 ? '🏷️ ¡Rebaja -' + pct + '%!' : '🏷️ Bajada de precio';
+            this.enviar(titulo, nombre + ': $' + antes + ' → $' + ahora + ' USD', url, imagen);
         },
         relampago(nombre, precio, min) {
-            this.enviar('Ã¢Å¡Â¡ Ã‚Â¡Oferta relÃƒÂ¡mpago ' + (min||60) + ' min!', nombre + ' Ã¢â‚¬â€ $' + precio + ' USD');
+            this.enviar('⚡ ¡Oferta relámpago ' + (min||60) + ' min!', nombre + ' — $' + precio + ' USD');
         },
         ofertaDia(nombre, precio, id, imagen) {
             const url = id ? '/p/producto-' + id + '.html' : '/';
-            this.enviar('Ã¢Ëœâ‚¬Ã¯Â¸Â Oferta del dÃƒÂ­a', nombre + ' Ã¢â‚¬â€ Solo hoy: $' + precio + ' USD', url, imagen);
+            this.enviar('☀️ Oferta del día', nombre + ' — Solo hoy: $' + precio + ' USD', url, imagen);
         },
-        // MÃƒÂ©todos para mostrar AGRUPADOS (ej: tras agregar 5 productos)
+        // Métodos para mostrar AGRUPADOS (ej: tras agregar 5 productos)
         nuevosAgrupados(cantidad) {
-            this.enviar('Ã°Å¸â€ â€¢ ' + cantidad + ' productos nuevos', 'Ven a ver las novedades Ã°Å¸â€ºÂÃ¯Â¸Â', '/');
+            this.enviar('🆕 ' + cantidad + ' productos nuevos', 'Ven a ver las novedades 🛍️', '/');
         },
         rebajasAgrupadas(cantidad) {
-            this.enviar('Ã°Å¸ÂÂ·Ã¯Â¸Â ' + cantidad + ' productos en oferta', 'Ã‚Â¡Aprovecha antes de que se acaben!', '/');
+            this.enviar('🏷️ ' + cantidad + ' productos en oferta', '¡Aprovecha antes de que se acaben!', '/');
         }
     };
 })();
 
-// Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
-//  #4 BADGE "NUEVO" Ã¢â‚¬â€ Productos de los ÃƒÂºltimos 7 dÃƒÂ­as
-// Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
+// ═══════════════════════════════════════════════════════
+//  #4 BADGE "NUEVO" — Productos de los últimos 7 días
+// ═══════════════════════════════════════════════════════
 function esProductoNuevo(producto) {
     if (!producto || !producto.fechaAgregado) return false;
     const dias7 = 7 * 24 * 60 * 60 * 1000;
     return (Date.now() - new Date(producto.fechaAgregado).getTime()) < dias7;
 }
 
-// Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
-//  #1 CONVERTIDOR USD Ã¢â€ â€™ MN
+// ═══════════════════════════════════════════════════════
+//  #1 CONVERTIDOR USD → MN
 //  Tasa se carga desde config.json en GitHub (sube a todos)
 //  + 10 MN de margen sobre la tasa base configurada
-// Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
+// ═══════════════════════════════════════════════════════
 let _monedaActual = localStorage.getItem('monedaActual') || 'USD';
 
 function getTasaMN() {
@@ -5302,7 +5342,7 @@ async function cargarTasaDesdeGitHub() {
             if (res.ok) cfg = await res.json();
         }
         if (!cfg) {
-            // Fallback: ruta relativa Ã¢â‚¬â€ siempre funciona en GitHub Pages
+            // Fallback: ruta relativa — siempre funciona en GitHub Pages
             const res = await fetch(`config.json?_=${Date.now()}`);
             if (res.ok) cfg = await res.json();
         }
@@ -5312,14 +5352,14 @@ async function cargarTasaDesdeGitHub() {
                 localStorage.setItem('tasaMN', String(cfg.tasaMN));
                 if (_monedaActual === 'MN') actualizarPreciosMostrados();
                 if (typeof actualizarBurbujaTasa === 'function') actualizarBurbujaTasa();
-                console.log(`Ã¢Å“â€¦ Tasa MN cargada desde GitHub: ${cfg.tasaMN} MN/USD`);
+                console.log(`✅ Tasa MN cargada desde GitHub: ${cfg.tasaMN} MN/USD`);
             }
-            // Cargar oferta del dÃƒÂ­a
+            // Cargar oferta del día
             if (cfg.ofertaDiaId) {
                 localStorage.setItem('ofertaDiaId', String(cfg.ofertaDiaId));
                 if (cfg.ofertaDiaTexto) localStorage.setItem('ofertaDiaTexto', cfg.ofertaDiaTexto);
             }
-            // Cargar configuraciÃƒÂ³n de Firebase y arrancar FCM
+            // Cargar configuración de Firebase y arrancar FCM
             if (cfg.firebaseConfig) {
                 localStorage.setItem('firebaseConfig', JSON.stringify(cfg.firebaseConfig));
                 if (cfg.fcmServerKey) {
@@ -5345,7 +5385,7 @@ function setCurrency(moneda) {
     document.getElementById('curMN')?.classList.toggle('active', moneda === 'MN');
     // Actualizar etiqueta de tasa
     const tasa = getTasaMN();
-    // tasaLabel estÃƒÂ¡ deshabilitado: la tasa se muestra en el botÃƒÂ³n del toggle
+    // tasaLabel está deshabilitado: la tasa se muestra en el botón del toggle
     const label = document.getElementById('tasaLabel');
     if (label) { label.textContent = ''; label.style.display = 'none'; }
     // Actualizar todos los precios visibles
@@ -5379,7 +5419,7 @@ function actualizarPreciosMostrados() {
     }
 }
 
-// Ã¢â€â‚¬Ã¢â€â‚¬ BURBUJA TASA DEL DÃƒÂA Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
+// ── BURBUJA TASA DEL DÍA ──────────────────────────────────────────
 // Muestra una burbuja flotante visible para TODOS con la tasa actual
 function actualizarBurbujaTasa() {
     const tasa = getTasaMN();
@@ -5407,7 +5447,7 @@ function actualizarBurbujaTasa() {
             'transition:opacity 0.3s,transform 0.3s',
             'animation:tasaBurbujaIn 0.4s cubic-bezier(.34,1.56,.64,1) both',
         ].join(';');
-        burbuja.title = 'Tasa de cambio del dÃƒÂ­a (incluye margen)';
+        burbuja.title = 'Tasa de cambio del día (incluye margen)';
         // Inyectar keyframe solo una vez
         if (!document.getElementById('tasaBurbujaStyle')) {
             const s = document.createElement('style');
@@ -5424,13 +5464,13 @@ function actualizarBurbujaTasa() {
         }
         document.body.appendChild(burbuja);
     }
-    // Burbuja flotante oculta Ã¢â‚¬â€ la tasa se muestra en la barra del header
+    // Burbuja flotante oculta — la tasa se muestra en la barra del header
     burbuja.style.display = 'none';
 
     // Actualizar barra de moneda del navbar
     const curMNBtn = document.getElementById('curMN');
     const tasaLabel = document.getElementById('tasaLabel');
-    // Solo actualizar el botÃƒÂ³n del toggle; el tasaLabel estÃƒÂ¡ oculto
+    // Solo actualizar el botón del toggle; el tasaLabel está oculto
     if (tasa > 0) {
         if (curMNBtn) curMNBtn.textContent = tasa + ' MN';
     } else {
@@ -5441,7 +5481,7 @@ function actualizarBurbujaTasa() {
 
 // Inicializar barra de moneda al cargar
 document.addEventListener('DOMContentLoaded', () => {
-    // tasaLabel estÃƒÂ¡ deshabilitado: la tasa se muestra en el botÃƒÂ³n del toggle
+    // tasaLabel está deshabilitado: la tasa se muestra en el botón del toggle
     const label = document.getElementById('tasaLabel');
     if (label) { label.textContent = ''; label.style.display = 'none'; }
 
@@ -5458,14 +5498,14 @@ document.addEventListener('DOMContentLoaded', () => {
 window.tmFormatPrecio = formatPrecio;
 
 
-// Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
-//  Ã°Å¸â€â€ INTEGRACIÃƒâ€œN CON FIREBASE CLOUD MESSAGING (FCM)
-// Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
+// ═══════════════════════════════════════════════════════
+//  🔔 INTEGRACIÓN CON FIREBASE CLOUD MESSAGING (FCM)
+// ═══════════════════════════════════════════════════════
 
 async function inicializarFirebaseFCMClient(config) {
     if (!config || !config.projectId) return;
     
-    // Evitar doble inicializaciÃƒÂ³n si las librerÃƒÂ­as ya se cargaron y Firebase existe
+    // Evitar doble inicialización si las librerías ya se cargaron y Firebase existe
     if (window.firebase && firebase.apps.length) {
         ejecutarInitFCM(config);
         return;
@@ -5473,7 +5513,7 @@ async function inicializarFirebaseFCMClient(config) {
 
     console.log('[FCM] Cargando SDK de Firebase...');
     
-    // Cargar SDK dinÃƒÂ¡micamente de forma ordenada (App -> Messaging)
+    // Cargar SDK dinámicamente de forma ordenada (App -> Messaging)
     const scriptApp = document.createElement('script');
     scriptApp.src = 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js';
     scriptApp.onload = () => {
@@ -5498,7 +5538,7 @@ function ejecutarInitFCM(config) {
     try {
         const messaging = firebase.messaging();
         // FIX: registrar el SW dedicado de Firebase (firebase-messaging-sw.js)
-        // El SW de TiendaMax (sw.js) NO sirve para FCM Ã¢â‚¬â€ debe ser uno propio.
+        // El SW de TiendaMax (sw.js) NO sirve para FCM — debe ser uno propio.
         navigator.serviceWorker.register('/firebase-messaging-sw.js', { scope: '/firebase-cloud-messaging-push-scope' })
             .then(fcmReg => {
                 console.log('[FCM] Service Worker dedicado registrado:', fcmReg.scope);
@@ -5519,7 +5559,7 @@ function ejecutarInitFCM(config) {
         // Manejar mensajes en primer plano (Foreground)
         messaging.onMessage((payload) => {
             console.log('[FCM] Mensaje recibido en primer plano:', payload);
-            const title = payload.notification?.title || payload.data?.title || 'Ã°Å¸â€œÂ¢ TiendaMax';
+            const title = payload.notification?.title || payload.data?.title || '📢 TiendaMax';
             const body = payload.notification?.body || payload.data?.body || '';
             const url = payload.data?.url || '/';
             
@@ -5530,8 +5570,8 @@ function ejecutarInitFCM(config) {
     }
 }
 
-// FIX: funciÃƒÂ³n reutilizable para registrar token FCM tras permiso concedido.
-// Llamada desde el handler del botÃƒÂ³n "AvÃƒÂ­same" del banner.
+// FIX: función reutilizable para registrar token FCM tras permiso concedido.
+// Llamada desde el handler del botón "Avísame" del banner.
 async function tmRegistrarTokenFCMSiPermitido() {
     if (Notification.permission !== 'granted') return;
     // Si ya hay FCM iniciado (pending desde init), usar esa referencia
@@ -5570,11 +5610,11 @@ async function solicitarYRegistrarTokenFCM(messaging, config, fcmReg) {
     try {
         const vapidKey = config.vapidKey || localStorage.getItem('firebaseVapidKey');
         if (!vapidKey) {
-            console.warn('[FCM] No se especificÃƒÂ³ la clave VAPID. No se puede obtener token.');
+            console.warn('[FCM] No se especificó la clave VAPID. No se puede obtener token.');
             return;
         }
         
-        // FIX: pasar el serviceWorkerRegistration explÃƒÂ­citamente a getToken
+        // FIX: pasar el serviceWorkerRegistration explícitamente a getToken
         const opts = { vapidKey: vapidKey };
         if (fcmReg) opts.serviceWorkerRegistration = fcmReg;
         const token = await messaging.getToken(opts);
@@ -5596,7 +5636,7 @@ async function solicitarYRegistrarTokenFCM(messaging, config, fcmReg) {
                     userAgent: navigator.userAgent
                 })
             });
-            console.log('[FCM] Token registrado con ÃƒÂ©xito en la base de datos de Firebase.');
+            console.log('[FCM] Token registrado con éxito en la base de datos de Firebase.');
         } else {
             console.warn('[FCM] No se pudo obtener el token de Firebase.');
         }
@@ -5618,25 +5658,25 @@ async function guardarConfigFirebaseAdmin() {
     const serverKey = serverInput.value.trim();
     
     if (!rawJson) {
-        if (status) status.textContent = 'Ã¢Å¡Â Ã¯Â¸Â El JSON de configuraciÃƒÂ³n de Firebase es requerido.';
+        if (status) status.textContent = '⚠️ El JSON de configuración de Firebase es requerido.';
         return;
     }
     if (!vapidKey) {
-        if (status) status.textContent = 'Ã¢Å¡Â Ã¯Â¸Â La Clave VAPID de Web Push es requerida.';
+        if (status) status.textContent = '⚠️ La Clave VAPID de Web Push es requerida.';
         return;
     }
     
     let parsedConfig = null;
     try {
         let text = rawJson.replace(/\xa0/g, ' ').trim();
-        // Limpiar declaraciones si copiaron el cÃƒÂ³digo entero
+        // Limpiar declaraciones si copiaron el código entero
         text = text.replace(/^(const|let|var)\s+\w+\s*=\s*/, '');
         text = text.replace(/;$/, '');
-        // Parseo seguro: intentar JSON.parse despuÃƒÂ©s de normalizar claves sin comillas
+        // Parseo seguro: intentar JSON.parse después de normalizar claves sin comillas
         let jsonText = text;
-        // Si parece un objeto JS (claves sin comillas), aÃƒÂ±adir comillas
+        // Si parece un objeto JS (claves sin comillas), añadir comillas
         if (!/^\s*\{[\s\S]*\}\s*$/.test(jsonText)) {
-            throw new Error('ConfiguraciÃƒÂ³n no es un objeto');
+            throw new Error('Configuración no es un objeto');
         }
         // claves sin comillas -> con comillas
         jsonText = jsonText.replace(/([\{,]\s*)([A-Za-z_$][\w$]*)\s*:/g, '$1"$2":');
@@ -5646,10 +5686,10 @@ async function guardarConfigFirebaseAdmin() {
         jsonText = jsonText.replace(/,(\s*[\}\]])/g, '$1');
         parsedConfig = JSON.parse(jsonText);
     } catch (e) {
-        console.warn('[FCM] FallÃƒÂ³ parseo JSON, intentando fallback regex...', e);
+        console.warn('[FCM] Falló parseo JSON, intentando fallback regex...', e);
     }
     
-    // Fallback robusto con Regex si fallÃƒÂ³ o si tiene URLs con enlaces Markdown de chats
+    // Fallback robusto con Regex si falló o si tiene URLs con enlaces Markdown de chats
     let fallbackUsed = false;
     if (!parsedConfig || typeof parsedConfig !== 'object' || !parsedConfig.projectId) {
         fallbackUsed = true;
@@ -5657,7 +5697,7 @@ async function guardarConfigFirebaseAdmin() {
         const lines = rawJson.split('\n');
         for (const line of lines) {
             const cleanLine = line.replace(/\xa0/g, ' ').trim();
-            // Buscar patron clave: "valor" o clave: 'valor' o clave: valor (sin comillas para nÃƒÂºmeros)
+            // Buscar patron clave: "valor" o clave: 'valor' o clave: valor (sin comillas para números)
             const match = cleanLine.match(/(\w+)\s*:\s*["']?([^"',\s\}]+)["']?/);
             if (match) {
                 const key = match[1];
@@ -5674,12 +5714,12 @@ async function guardarConfigFirebaseAdmin() {
     
     if (!parsedConfig || typeof parsedConfig !== 'object' || !parsedConfig.projectId) {
         if (status) {
-            status.textContent = 'Ã¢ÂÅ’ Error: ConfiguraciÃƒÂ³n invÃƒÂ¡lida o falta el campo "projectId". Contenido parseado: ' + JSON.stringify(parsedConfig);
+            status.textContent = '❌ Error: Configuración inválida o falta el campo "projectId". Contenido parseado: ' + JSON.stringify(parsedConfig);
         }
         return;
     }
     
-    // Guardar vapidKey dentro del objeto de configuraciÃƒÂ³n para consistencia
+    // Guardar vapidKey dentro del objeto de configuración para consistencia
     parsedConfig.vapidKey = vapidKey;
     
     localStorage.setItem('firebaseConfig', JSON.stringify(parsedConfig));
@@ -5690,14 +5730,14 @@ async function guardarConfigFirebaseAdmin() {
         localStorage.removeItem('fcmServerKey');
     }
     
-    if (status) status.textContent = 'Ã¢ÂÂ³ Guardando y subiendo a GitHub...';
+    if (status) status.textContent = '⏳ Guardando y subiendo a GitHub...';
     
     const user = localStorage.getItem('githubUser');
     const repo = localStorage.getItem('githubRepo');
     const token = localStorage.getItem('githubToken');
     
     if (!user || !repo || !token) {
-        if (status) status.textContent = 'Ã¢Å¡Â Ã¯Â¸Â Guardado localmente en navegador. Para sincronizar globalmente con GitHub, configura tus credenciales arriba.';
+        if (status) status.textContent = '⚠️ Guardado localmente en navegador. Para sincronizar globalmente con GitHub, configura tus credenciales arriba.';
         // Inicializar de una vez localmente para probar
         inicializarFirebaseFCMClient(parsedConfig);
         return;
@@ -5717,12 +5757,12 @@ async function guardarConfigFirebaseAdmin() {
         existing.actualizado = new Date().toISOString();
         
         await subirArchivoAGitHub(user, repo, token, 'config.json', existing);
-        if (status) status.textContent = 'Ã¢Å“â€¦ Ã‚Â¡Guardado y sincronizado con GitHub con ÃƒÂ©xito!';
-        mostrarNotificacion('Ã¢Å“â€¦ ConfiguraciÃƒÂ³n de Firebase guardada y sincronizada.', 'success');
+        if (status) status.textContent = '✅ ¡Guardado y sincronizado con GitHub con éxito!';
+        mostrarNotificacion('✅ Configuración de Firebase guardada y sincronizada.', 'success');
         inicializarFirebaseFCMClient(parsedConfig);
     } catch (e) {
         console.error(e);
-        if (status) status.textContent = 'Ã¢ÂÅ’ Error: ' + e.message;
+        if (status) status.textContent = '❌ Error: ' + e.message;
     }
 }
 
@@ -5733,42 +5773,42 @@ async function enviarPushManualAdmin() {
     const status = document.getElementById('manualPushStatus');
     
     if (!title || !body) {
-        if (status) status.textContent = 'Ã¢Å¡Â Ã¯Â¸Â TÃƒÂ­tulo y cuerpo son requeridos.';
+        if (status) status.textContent = '⚠️ Título y cuerpo son requeridos.';
         return;
     }
     
     const serverKey = localStorage.getItem('fcmServerKey');
     const fbConfigRaw = localStorage.getItem('firebaseConfig');
     if (!serverKey || !fbConfigRaw) {
-        if (status) status.textContent = 'Ã¢Å¡Â Ã¯Â¸Â Configura Firebase y guarda la Clave de Servidor primero.';
+        if (status) status.textContent = '⚠️ Configura Firebase y guarda la Clave de Servidor primero.';
         return;
     }
     
     const fbConfig = JSON.parse(fbConfigRaw);
     const rtdbUrl = fbConfig.databaseURL || `https://${fbConfig.projectId}-default-rtdb.firebaseio.com`;
     
-    if (status) status.textContent = 'Ã¢ÂÂ³ Buscando suscriptores en Firebase...';
+    if (status) status.textContent = '⏳ Buscando suscriptores en Firebase...';
     
     try {
         const res = await fetch(`${rtdbUrl}/tokens.json`);
         if (!res.ok) {
-            if (status) status.textContent = 'Ã¢ÂÅ’ No se pudo conectar a Realtime Database.';
+            if (status) status.textContent = '❌ No se pudo conectar a Realtime Database.';
             return;
         }
         
         const tokensData = await res.json();
         if (!tokensData) {
-            if (status) status.textContent = 'Ã¢Å¡Â Ã¯Â¸Â No hay ningÃƒÂºn suscriptor registrado todavÃƒÂ­a.';
+            if (status) status.textContent = '⚠️ No hay ningún suscriptor registrado todavía.';
             return;
         }
         
         const tokens = Object.values(tokensData).map(t => t.token).filter(Boolean);
         if (tokens.length === 0) {
-            if (status) status.textContent = 'Ã¢Å¡Â Ã¯Â¸Â No se encontraron tokens vÃƒÂ¡lidos.';
+            if (status) status.textContent = '⚠️ No se encontraron tokens válidos.';
             return;
         }
         
-        if (status) status.textContent = `Ã¢ÂÂ³ Enviando a ${tokens.length} suscriptores...`;
+        if (status) status.textContent = `⏳ Enviando a ${tokens.length} suscriptores...`;
         
         const response = await fetch('https://fcm.googleapis.com/fcm/send', {
             method: 'POST',
@@ -5792,7 +5832,7 @@ async function enviarPushManualAdmin() {
         
         if (response.ok) {
             const resData = await response.json();
-            if (status) status.textContent = `Ã¢Å“â€¦ Enviado. Ãƒâ€°xitos: ${resData.success || 0}, Fallos: ${resData.failure || 0}`;
+            if (status) status.textContent = `✅ Enviado. Éxitos: ${resData.success || 0}, Fallos: ${resData.failure || 0}`;
             
             // Limpiar tokens obsoletos
             if (resData.results) {
@@ -5806,11 +5846,11 @@ async function enviarPushManualAdmin() {
                 }
             }
         } else {
-            if (status) status.textContent = `Ã¢ÂÅ’ Error en el envÃƒÂ­o FCM: ${response.status} ${response.statusText}`;
+            if (status) status.textContent = `❌ Error en el envío FCM: ${response.status} ${response.statusText}`;
         }
     } catch (e) {
         console.error(e);
-        if (status) status.textContent = 'Ã¢ÂÅ’ Error de conexiÃƒÂ³n o credenciales invÃƒÂ¡lidas.';
+        if (status) status.textContent = '❌ Error de conexión o credenciales inválidas.';
     }
 }
 
@@ -5819,24 +5859,24 @@ window.tmMonedaActual = () => _monedaActual;
 // Cargar tasa actualizada desde GitHub al iniciar
 cargarTasaDesdeGitHub();
 
-// Guardar tasa desde panel admin Ã¢â€ â€™ localStorage + GitHub
+// Guardar tasa desde panel admin → localStorage + GitHub
 async function guardarTasaMNAdmin() {
     const input = document.getElementById('adminTasaMN');
     const status = document.getElementById('tasaMNStatus');
     if (!input) return;
     const val = parseFloat(input.value);
     if (!val || val < 1) {
-        if (status) status.textContent = 'Ã¢Å¡Â Ã¯Â¸Â Ingresa un valor vÃƒÂ¡lido';
+        if (status) status.textContent = '⚠️ Ingresa un valor válido';
         return;
     }
     localStorage.setItem('tasaMN', String(val));
-    if (status) status.textContent = 'Ã°Å¸â€™Â¾ Guardado localmente...';
+    if (status) status.textContent = '💾 Guardado localmente...';
     // Subir a GitHub para que todos lo vean
     const ok = await guardarTasaEnGitHub(val);
     if (status) {
         status.textContent = ok
-            ? `Ã¢Å“â€¦ Tasa ${val} MN/USD subida a GitHub. Clientes verÃƒÂ¡n ${val + 10} MN/USD.`
-            : 'Ã¢Å“â€¦ Guardado local. Configura GitHub para sincronizar con todos.';
+            ? `✅ Tasa ${val} MN/USD subida a GitHub. Clientes verán ${val + 10} MN/USD.`
+            : '✅ Guardado local. Configura GitHub para sincronizar con todos.';
         status.style.color = ok ? '#2ECC71' : '#C9A96E';
     }
     // Actualizar precios en pantalla y burbuja de tasa
@@ -5846,12 +5886,12 @@ async function guardarTasaMNAdmin() {
 
 
 
-// Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
+// ═══════════════════════════════════════════════════════
 //  PARCHE DE ESTABILIDAD 2026-05-23
 //  - Moneda robusta
 //  - Grid de productos consistente
 //  - Vistos recientes reactivado
-// Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
+// ═══════════════════════════════════════════════════════
 (function () {
     function tmGetOfertaId() {
         return typeof getOfertaDiaId === 'function' ? getOfertaDiaId() : null;
@@ -5913,7 +5953,7 @@ async function guardarTasaMNAdmin() {
             if (producto.stock > 0 && producto.stock <= 3 && !card.querySelector('.badge-stock-urgente')) {
                 const badge = document.createElement('div');
                 badge.className = 'badge-stock-urgente';
-                badge.textContent = 'Ã¢Å¡Â¡ ÃƒÅ¡ltimas ' + producto.stock;
+                badge.textContent = '⚡ Últimas ' + producto.stock;
                 badge.style.cssText = 'position:absolute;top:8px;left:8px;background:linear-gradient(135deg,#e74c3c,#c0392b);color:white;font-size:10px;font-weight:800;padding:3px 8px;border-radius:20px;box-shadow:0 2px 6px rgba(231,76,60,.4);z-index:3;letter-spacing:0.3px;';
                 card.style.position = 'relative';
                 card.appendChild(badge);
@@ -5923,7 +5963,7 @@ async function guardarTasaMNAdmin() {
             if (vistas >= 10 && !card.querySelector('.badge-vistas-pub')) {
                 const vBadge = document.createElement('div');
                 vBadge.className = 'badge-vistas-pub';
-                vBadge.innerHTML = 'Ã°Å¸â€˜ÂÃ¯Â¸Â ' + (vistas >= 1000 ? (vistas / 1000).toFixed(1) + 'k' : vistas);
+                vBadge.innerHTML = '👁️ ' + (vistas >= 1000 ? (vistas / 1000).toFixed(1) + 'k' : vistas);
                 vBadge.style.cssText = 'position:absolute;bottom:54px;right:8px;background:rgba(0,0,0,0.55);backdrop-filter:blur(4px);color:white;font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;z-index:3;';
                 card.appendChild(vBadge);
             }
@@ -5963,7 +6003,7 @@ async function guardarTasaMNAdmin() {
 
             if (producto.stock === 0) {
                 const stockCount = card.querySelector('.stock-count span');
-                if (stockCount) stockCount.textContent = 'Ã¢ÂÅ’ Producto agotado';
+                if (stockCount) stockCount.textContent = '❌ Producto agotado';
                 const stockBar = card.querySelector('.stock-bar-fill');
                 if (stockBar) stockBar.style.width = '8%';
                 const btn = card.querySelector('.btn-pedir-card');
@@ -6063,7 +6103,7 @@ async function guardarTasaMNAdmin() {
 })();
 
 
-// === popstate: cerrar modal de producto al pulsar "AtrÃƒÂ¡s" del navegador/mÃƒÂ³vil ===
+// === popstate: cerrar modal de producto al pulsar "Atrás" del navegador/móvil ===
 window.addEventListener('popstate', function() {
     const modal = document.getElementById('productDetailModal');
     if (modal && !modal.classList.contains('hidden')) {
@@ -6078,8 +6118,8 @@ window.addEventListener('popstate', function() {
     }
 });
 
-// Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
-//  Ã°Å¸â€â€ PANEL DE CONTROL DE NOTIFICACIONES (modal con ON/OFF)
+// ═══════════════════════════════════════════════════════════
+//  🔔 PANEL DE CONTROL DE NOTIFICACIONES (modal con ON/OFF)
 //
 //  Funciones expuestas globalmente:
 //    - abrirModalNotificaciones()
@@ -6087,11 +6127,11 @@ window.addEventListener('popstate', function() {
 //    - toggleNotificacionesTM()
 //
 //  Estado:
-//    - 'granted'   Ã¢â€ â€™ permiso concedido, hay token, ACTIVO
-//    - 'denied'    Ã¢â€ â€™ bloqueado por usuario (no se puede repedir)
-//    - 'default'   Ã¢â€ â€™ nunca decidiÃƒÂ³
-//    - 'no-token'  Ã¢â€ â€™ permiso OK pero sin token registrado
-// Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
+//    - 'granted'   → permiso concedido, hay token, ACTIVO
+//    - 'denied'    → bloqueado por usuario (no se puede repedir)
+//    - 'default'   → nunca decidió
+//    - 'no-token'  → permiso OK pero sin token registrado
+// ═══════════════════════════════════════════════════════════
 
 (function tmPanelNotificaciones() {
     'use strict';
@@ -6109,7 +6149,7 @@ window.addEventListener('popstate', function() {
         return 'activo';
     }
 
-    // Actualiza el ÃƒÂ­cono del header segÃƒÂºn el estado
+    // Actualiza el ícono del header según el estado
     function actualizarIconoHeader() {
         const btn = document.getElementById('notifHeaderBtn');
         const icon = document.getElementById('notifHeaderIcon');
@@ -6120,7 +6160,7 @@ window.addEventListener('popstate', function() {
 
         btn.classList.remove('activo', 'desactivado', 'bloqueado');
 
-        // SVG del ÃƒÂ­cono segÃƒÂºn estado
+        // SVG del ícono según estado
         if (estado === 'activo') {
             btn.classList.add('activo');
             btn.title = 'Notificaciones activas (toca para gestionar)';
@@ -6128,7 +6168,7 @@ window.addEventListener('popstate', function() {
             if (icon) icon.innerHTML = '<path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/><circle cx="18" cy="6" r="3" fill="#25d366" stroke="#0e0e12" stroke-width="1.5"/>';
         } else if (estado === 'bloqueado') {
             btn.classList.add('bloqueado');
-            btn.title = 'Notificaciones bloqueadas (toca para ver cÃƒÂ³mo activarlas)';
+            btn.title = 'Notificaciones bloqueadas (toca para ver cómo activarlas)';
             // Campana tachada
             if (icon) icon.innerHTML = '<path d="M13.73 21a2 2 0 0 1-3.46 0"/><path d="M18.63 13A17.89 17.89 0 0 1 18 8"/><path d="M6.26 6.26A5.86 5.86 0 0 0 6 8c0 7-3 9-3 9h14"/><path d="M18 8a6 6 0 0 0-9.33-5"/><line x1="1" y1="1" x2="23" y2="23"/>';
         } else {
@@ -6154,7 +6194,7 @@ window.addEventListener('popstate', function() {
         document.body.style.overflow = '';
     };
 
-    // Refresca el contenido del modal segÃƒÂºn estado
+    // Refresca el contenido del modal según estado
     function actualizarModalNotif() {
         const estado = detectarEstadoNotif();
         _estadoActual = estado;
@@ -6172,7 +6212,7 @@ window.addEventListener('popstate', function() {
         infoBlock.style.display = 'none';
 
         if (estado === 'no-soporta') {
-            icono.textContent = 'Ã¢Å¡Â Ã¯Â¸Â';
+            icono.textContent = '⚠️';
             texto.textContent = 'No soportado';
             subtexto.textContent = 'Tu navegador no soporta notificaciones push.';
             boton.textContent = 'Cerrar';
@@ -6184,7 +6224,7 @@ window.addEventListener('popstate', function() {
 
         if (estado === 'bloqueado') {
             box.classList.add('bloqueado');
-            icono.textContent = 'Ã°Å¸Å¡Â«';
+            icono.textContent = '🚫';
             texto.textContent = 'Bloqueadas en el navegador';
             subtexto.textContent = 'Tienes que reactivarlas desde ajustes del navegador.';
             boton.textContent = 'Entendido';
@@ -6195,10 +6235,10 @@ window.addEventListener('popstate', function() {
         }
 
         if (estado === 'activo') {
-            icono.textContent = 'Ã°Å¸â€â€';
+            icono.textContent = '🔔';
             texto.textContent = 'Notificaciones ACTIVAS';
-            subtexto.textContent = 'RecibirÃƒÂ¡s ofertas, productos nuevos y cambios de tasa';
-            boton.textContent = 'Ã°Å¸â€â€¢ Desactivar notificaciones';
+            subtexto.textContent = 'Recibirás ofertas, productos nuevos y cambios de tasa';
+            boton.textContent = '🔕 Desactivar notificaciones';
             boton.classList.add('desactivar');
             boton.onclick = toggleNotificacionesTM;
             return;
@@ -6206,15 +6246,15 @@ window.addEventListener('popstate', function() {
 
         // sin-decidir o sin-token
         box.classList.add('desactivado');
-        icono.textContent = 'Ã°Å¸â€â€¢';
+        icono.textContent = '🔕';
         texto.textContent = 'Notificaciones APAGADAS';
-        subtexto.textContent = 'Te estÃƒÂ¡s perdiendo las ofertas relÃƒÂ¡mpago Ã°Å¸â€Â¥';
-        boton.textContent = 'Ã°Å¸â€â€ Activar notificaciones';
+        subtexto.textContent = 'Te estás perdiendo las ofertas relámpago 🔥';
+        boton.textContent = '🔔 Activar notificaciones';
         boton.classList.remove('desactivar');
         boton.onclick = toggleNotificacionesTM;
     }
 
-    // Toggle: activa o desactiva segÃƒÂºn estado actual
+    // Toggle: activa o desactiva según estado actual
     window.toggleNotificacionesTM = async function() {
         const boton = document.getElementById('notifBotonAccion');
         const estado = detectarEstadoNotif();
@@ -6225,18 +6265,18 @@ window.addEventListener('popstate', function() {
         }
 
         if (estado === 'activo') {
-            // Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ DESACTIVAR Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
+            // ─── DESACTIVAR ───
             boton.disabled = true;
-            boton.textContent = 'Ã¢ÂÂ³ Desactivando...';
+            boton.textContent = '⏳ Desactivando...';
             try {
                 await desuscribirFCM();
                 if (typeof mostrarNotificacion === 'function') {
-                    mostrarNotificacion('Ã°Å¸â€â€¢ Notificaciones desactivadas', 'info');
+                    mostrarNotificacion('🔕 Notificaciones desactivadas', 'info');
                 }
             } catch (e) {
                 console.error('[notif] Error desuscribiendo:', e);
                 if (typeof mostrarNotificacion === 'function') {
-                    mostrarNotificacion('Ã¢Å¡Â Ã¯Â¸Â Error al desactivar: ' + e.message, 'error');
+                    mostrarNotificacion('⚠️ Error al desactivar: ' + e.message, 'error');
                 }
             }
             boton.disabled = false;
@@ -6245,17 +6285,17 @@ window.addEventListener('popstate', function() {
             return;
         }
 
-        // Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ ACTIVAR Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
+        // ─── ACTIVAR ───
         boton.disabled = true;
-        boton.textContent = 'Ã¢ÂÂ³ Activando...';
+        boton.textContent = '⏳ Activando...';
 
         try {
-            // Pedir permiso del navegador si aÃƒÂºn no estÃƒÂ¡ concedido
+            // Pedir permiso del navegador si aún no está concedido
             if (Notification.permission !== 'granted') {
                 const perm = await Notification.requestPermission();
                 if (perm === 'denied') {
                     if (typeof mostrarNotificacion === 'function') {
-                        mostrarNotificacion('Ã°Å¸Å¡Â« Bloqueado. Ve a ajustes del navegador.', 'error');
+                        mostrarNotificacion('🚫 Bloqueado. Ve a ajustes del navegador.', 'error');
                     }
                     actualizarModalNotif();
                     actualizarIconoHeader();
@@ -6297,12 +6337,12 @@ window.addEventListener('popstate', function() {
             const nuevoEstado = detectarEstadoNotif();
             if (nuevoEstado === 'activo') {
                 if (typeof mostrarNotificacion === 'function') {
-                    mostrarNotificacion('Ã°Å¸â€â€ Ã‚Â¡Notificaciones activadas!', 'success');
+                    mostrarNotificacion('🔔 ¡Notificaciones activadas!', 'success');
                 }
                 // Mostrar push de bienvenida local
                 try {
                     const reg = await navigator.serviceWorker.ready;
-                    reg.showNotification('Ã¢Å“â€¦ TiendaMax activado', {
+                    reg.showNotification('✅ TiendaMax activado', {
                         body: 'Te avisaremos de ofertas y productos nuevos.',
                         icon: '/icons/icon-192.png',
                         badge: '/icons/icon-192.png',
@@ -6312,13 +6352,13 @@ window.addEventListener('popstate', function() {
                 } catch(e) {}
             } else {
                 if (typeof mostrarNotificacion === 'function') {
-                    mostrarNotificacion('Ã¢Å¡Â Ã¯Â¸Â No se pudo completar. Reintenta.', 'error');
+                    mostrarNotificacion('⚠️ No se pudo completar. Reintenta.', 'error');
                 }
             }
         } catch(e) {
             console.error('[notif] Error activando:', e);
             if (typeof mostrarNotificacion === 'function') {
-                mostrarNotificacion('Ã¢ÂÅ’ Error: ' + e.message, 'error');
+                mostrarNotificacion('❌ Error: ' + e.message, 'error');
             }
         }
 
@@ -6355,7 +6395,7 @@ window.addEventListener('popstate', function() {
         // 2. Borrar de localStorage
         localStorage.removeItem('fcmToken');
 
-        // 3. Revocar token FCM (le dice a Firebase que no envÃƒÂ­e mÃƒÂ¡s)
+        // 3. Revocar token FCM (le dice a Firebase que no envíe más)
         try {
             if (window.firebase && firebase.messaging) {
                 const messaging = firebase.messaging();
@@ -6380,16 +6420,16 @@ window.addEventListener('popstate', function() {
         }
     });
 
-    // Actualizar ÃƒÂ­cono al cargar y cada vez que cambie el estado
+    // Actualizar ícono al cargar y cada vez que cambie el estado
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', actualizarIconoHeader);
     } else {
         actualizarIconoHeader();
     }
-    // Refrescar el ÃƒÂ­cono cada 5 segundos por si cambiÃƒÂ³ el permiso en otra pestaÃƒÂ±a
+    // Refrescar el ícono cada 5 segundos por si cambió el permiso en otra pestaña
     setInterval(actualizarIconoHeader, 5000);
 
-    // Exponer para depuraciÃƒÂ³n
+    // Exponer para depuración
     window._tmNotif = {
         actualizarIconoHeader,
         actualizarModalNotif,
@@ -6398,10 +6438,10 @@ window.addEventListener('popstate', function() {
     };
 })();
 
-// Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
-//  Ã¢Â¬â€ Ã¯Â¸Â BOTÃƒâ€œN "SUBIR ARRIBA" flotante
+// ═══════════════════════════════════════════════════════════
+//  ⬆️ BOTÓN "SUBIR ARRIBA" flotante
 //  Aparece tras hacer scroll hacia abajo. Al pulsar, sube suave.
-// Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
+// ═══════════════════════════════════════════════════════════
 (function tmBotonSubirArriba() {
     'use strict';
 
@@ -6409,7 +6449,7 @@ window.addEventListener('popstate', function() {
         if (document.getElementById('tm-subir-arriba')) return;
         const btn = document.createElement('button');
         btn.id = 'tm-subir-arriba';
-        btn.setAttribute('aria-label', 'Subir al inicio de la pÃƒÂ¡gina');
+        btn.setAttribute('aria-label', 'Subir al inicio de la página');
         btn.title = 'Subir arriba';
         btn.innerHTML = '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>';
         btn.style.cssText = [
@@ -6467,4 +6507,3 @@ window.addEventListener('popstate', function() {
         init();
     }
 })();
-
