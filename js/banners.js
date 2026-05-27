@@ -204,19 +204,22 @@
         list.innerHTML = banners.map(function(b, i) {
             var url  = typeof b === 'string' ? b : b.url;
             var link = typeof b === 'string' ? '' : (b.link || '');
+            var urlSafe  = _escA(url);
+            var linkSafe = _escA(link);
+            var urlThumb = url.length > 200 ? _escA(url.substring(0,50)) + '...' : urlSafe;
             return '<div id="banner-item-' + i + '" style="display:flex;flex-direction:column;gap:6px;background:rgba(0,0,0,0.05);padding:10px;border-radius:8px;">' +
                 '<div style="display:flex;align-items:center;gap:8px;">' +
-                    '<img src="' + (url.length > 200 ? url.substring(0,50)+'...' : url) + '" style="width:60px;height:40px;object-fit:contain;border-radius:6px;flex-shrink:0;">' +
+                    '<img src="' + urlSafe + '" style="width:60px;height:40px;object-fit:contain;border-radius:6px;flex-shrink:0;">' +
                     '<div style="flex:1;min-width:0;">' +
                         '<div style="font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#555;">Banner ' + (i+1) + '</div>' +
-                        (link ? '<div style="font-size:10px;color:#25D366;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">🔗 ' + link + '</div>' : '<div style="font-size:10px;color:#aaa;">Sin link</div>') +
+                        (link ? '<div style="font-size:10px;color:#25D366;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">🔗 ' + linkSafe + '</div>' : '<div style="font-size:10px;color:#aaa;">Sin link</div>') +
                     '</div>' +
                     '<button onclick="editarBanner(' + i + ')" type="button" style="background:#3498db;color:white;border:none;border-radius:6px;padding:4px 8px;cursor:pointer;font-size:12px;flex-shrink:0;">✏️</button>' +
                     '<button onclick="eliminarBanner(' + i + ')" type="button" style="background:#e74c3c;color:white;border:none;border-radius:6px;padding:4px 8px;cursor:pointer;font-size:12px;flex-shrink:0;">🗑️</button>' +
                 '</div>' +
                 '<div id="banner-edit-' + i + '" style="display:none;flex-direction:column;gap:6px;padding-top:6px;border-top:1px solid rgba(0,0,0,0.1);">' +
                     '<input type="file" id="banner-edit-file-' + i + '" accept="image/*" style="font-size:12px;">' +
-                    '<input type="url" id="banner-edit-link-' + i + '" value="' + link + '" placeholder="Link al tocar (WhatsApp, etc.)" style="font-size:12px;">' +
+                    '<input type="url" id="banner-edit-link-' + i + '" value="' + linkSafe + '" placeholder="Link al tocar (WhatsApp, etc.)" style="font-size:12px;">' +
                     '<div style="display:flex;gap:6px;">' +
                         '<button onclick="guardarEdicionBanner(' + i + ')" type="button" style="flex:1;background:#27ae60;color:white;border:none;border-radius:6px;padding:6px;cursor:pointer;font-size:12px;">💾 Guardar</button>' +
                         '<button onclick="cancelarEdicionBanner(' + i + ')" type="button" style="background:#888;color:white;border:none;border-radius:6px;padding:6px 10px;cursor:pointer;font-size:12px;">✕</button>' +

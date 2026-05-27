@@ -17,47 +17,11 @@ function _tmRtdbUrl() {
 // ── Registrar un evento (fire-and-forget, nunca bloquea la UI) ──
 // tipo: 'vistas' | 'whatsapp'
 // id:   ID del producto (string o number)
-async function tmTrackEvento(tipo, id) {
-    const base = _tmRtdbUrl();
-    if (!base || !id) return;
-    const path = `analytics/${tipo}/${id}`;
-    try {
-        // Firebase REST: transacción de incremento atómico
-        await fetch(`${base}/${path}.json`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ '.sv': 'timestamp' })   // marca de tiempo (no se usa, solo para que el POST no falle con null)
-        });
-        // Usamos runTransaction-like via GET + PUT
-        const res  = await fetch(`${base}/${path}/count.json`);
-        const prev = res.ok ? (await res.json()) || 0 : 0;
-        await fetch(`${base}/${path}/count.json`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(prev + 1)
-        });
-    } catch(e) {
-        // Silencioso — analytics nunca debe romper la tienda
-    }
-}
-
-// Versión mejor: usa el endpoint de transacción nativa de Firebase
-// (más robusta ante concurrencia — reemplaza la anterior)
 async function tmTrackEventoV2(tipo, id) {
     const base = _tmRtdbUrl();
     if (!base || !id) return;
     try {
-        // Firebase REST soporta incremento atómico con el operador {".sv": "increment"}
-        // disponible desde la API REST con el query param ?writeSizeLimit=unlimited
         const url = `${base}/analytics/${tipo}/${String(id)}/count.json`;
-        await fetch(url, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            // Leemos primero y sumamos (workaround REST — no hay increment en REST puro)
-            body: JSON.stringify({ dummy: 1 })   // placeholder, se reemplaza abajo
-        });
-
-        // Patrón correcto: GET → PUT con valor+1
         const r = await fetch(url);
         const v = r.ok ? (await r.json()) : null;
         const actual = (typeof v === 'number') ? v : 0;
