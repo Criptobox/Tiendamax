@@ -82,9 +82,7 @@
     <meta property="og:url" content="https://tiendamax.org/">
     <meta property="og:title" content="TiendaMax — Donde encuentras lo que necesitas">
     <meta property="og:description" content="Calidad premium, precios increíbles y atención personalizada. Miles de clientes satisfechos confían en TiendaMax cada día.">
-    <meta property="og:image" content="https://tiendamax.org/imagenes/banner_1778892244690_0.jpg">
-    <meta property="og:image:width" content="1200">
-    <meta property="og:image:height" content="630">
+    <meta property="og:image" content="https://tiendamax.org/og-image.svg">
     <meta property="og:locale" content="es_CU">
     <meta property="og:site_name" content="TiendaMax">
 
@@ -92,7 +90,7 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="TiendaMax — Donde encuentras lo que necesitas">
     <meta name="twitter:description" content="Calidad premium, precios increíbles y atención personalizada. ¡Pide por WhatsApp!">
-    <meta name="twitter:image" content="https://tiendamax.org/imagenes/banner_1778892244690_0.jpg">
+    <meta name="twitter:image" content="https://tiendamax.org/og-image.svg">
 
     <title>TiendaMax — Donde encuentras lo que necesitas | tiendamax.org</title>
 
@@ -117,19 +115,104 @@
     }
     </script>
     
-    <!-- Preload recursos críticos para mejorar LCP -->
-    <link rel="preload" href="css/styles.css?v=13" as="style">
-    <link rel="preload" href="js/script.js?v=38" as="script">
-
-    <link rel="stylesheet" href="css/styles.css?v=13">
+    <link rel="stylesheet" href="css/styles.css?v=12">
     <link rel="stylesheet" href="css/animations.css?v=10">
-    <!-- styles.banner.fix.css y styles.fixes.css fusionados en styles.css desde v13 -->
+    <link rel="stylesheet" href="css/styles.banner.fix.css?v=2">
+    <link rel="stylesheet" href="css/styles.fixes.css?v=13">
     <!-- ===== TEMA PREMIUM (NUEVO) — debe ir al final ===== -->
     <link rel="stylesheet" href="css/premium-theme.css?v=6">
     <!-- ===== MODO CLARO (overrides cuando body.light-mode) — debe ir DESPUÉS del premium ===== -->
     <link rel="stylesheet" href="css/light-mode.css?v=5">
 
 
+    <!-- Estilos para "Vistos Recientemente" -->
+    <style>
+    .recientes-section {
+        padding: 40px 0;
+        background: rgba(255, 255, 255, 0.02);
+    }
+    .recientes-section .section-header {
+        text-align: center;
+        margin-bottom: 24px;
+    }
+    .recientes-section .section-header h2 {
+        font-size: 22px;
+        color: #fff;
+        margin-bottom: 6px;
+        font-weight: 700;
+    }
+    .recientes-section .section-header p {
+        color: rgba(255, 255, 255, 0.55);
+        font-size: 13px;
+    }
+    .recientes-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        gap: 14px;
+    }
+    @media (max-width: 600px) {
+        .recientes-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+    }
+    .rec-card {
+        background: rgba(22, 22, 31, 0.85);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 14px;
+        padding: 0;
+        cursor: pointer;
+        transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+        overflow: hidden;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+    }
+    .rec-card:hover {
+        transform: translateY(-3px);
+        border-color: rgba(255, 106, 0, 0.4);
+        box-shadow: 0 10px 28px rgba(255, 106, 0, 0.18);
+    }
+    .rec-card img {
+        width: 100%;
+        aspect-ratio: 1 / 1;
+        object-fit: contain;
+        background: linear-gradient(180deg, #1c1f2a 0%, #11131b 100%);
+        display: block;
+    }
+    .rec-card-info {
+        padding: 10px 12px 12px;
+    }
+    .rec-card-nombre {
+        font-size: 13px;
+        color: rgba(255, 255, 255, 0.9);
+        font-weight: 600;
+        line-height: 1.3;
+        margin-bottom: 4px;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+    .rec-card-precio {
+        font-size: 14px;
+        font-weight: 800;
+        color: #ff9d63;
+    }
+    .rec-card-agotado {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        background: rgba(231, 76, 60, 0.9);
+        color: #fff;
+        font-size: 10px;
+        font-weight: 700;
+        padding: 3px 8px;
+        border-radius: 10px;
+        z-index: 2;
+        letter-spacing: 0.3px;
+    }
+    </style>
 </head>
 <body>
 
@@ -216,8 +299,8 @@
         <a data-action="cerrarMenuMovil" href="#testimonios">Testimonios</a>
         <a data-action="cerrarMenuMovil" href="#contacto">Contacto</a>
         <button type="button" class="nav-mobile-link" data-action="abrirLoginAdmin,cerrarMenuMovil">⚙️ Ajustes</button>
-        <button type="button" class="nav-mobile-link" data-action="cerrarMenuMovil,mostrarVistaMeGusta">❤️ Mis Me Gusta</button>
-        <button type="button" class="nav-mobile-link" data-action="cerrarMenuMovil,mostrarVistaPedidos">📋 Mis Pedidos</button>
+        <button type="button" class="nav-mobile-link" onclick="cerrarMenuMovil();mostrarVistaMeGusta()">❤️ Mis Me Gusta</button>
+        <button type="button" class="nav-mobile-link" onclick="cerrarMenuMovil();mostrarVistaPedidos()">📋 Mis Pedidos</button>
         <div class="mobile-menu-actions">
             <a href="https://chat.whatsapp.com/BnTdAU0Q3p25BOMTYuEpBN" class="mobile-action-grupo" target="_blank" rel="noopener">💬 Grupo WhatsApp</a>
             <a href="https://wa.me/5354320170?text=Hola,%20necesito%20ayuda%20con%20un%20producto" class="mobile-action-ayuda" target="_blank" rel="noopener">🎧 Ayuda</a>
@@ -233,11 +316,11 @@
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="22" height="22"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
                     <span class="cart-count" id="cartCount" style="display:none;">0</span>
                 </button>
-                <button data-action="mostrarVistaMeGusta" type="button" class="heart-icon-btn" id="heartHeaderBtn" aria-label="Mis Me Gusta" title="Mis Me Gusta">
+                <button onclick="mostrarVistaMeGusta()" type="button" class="heart-icon-btn" id="heartHeaderBtn" aria-label="Mis Me Gusta" title="Mis Me Gusta">
                     <svg id="heartHeaderIcon" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
                     <span class="heart-count" id="heartCount" style="display:none;">0</span>
                 </button>
-                <button data-action="abrirModalNotificaciones" type="button" class="notif-icon-btn" id="notifHeaderBtn" aria-label="Notificaciones" title="Notificaciones">
+                <button onclick="abrirModalNotificaciones()" type="button" class="notif-icon-btn" id="notifHeaderBtn" aria-label="Notificaciones" title="Notificaciones">
                     <svg id="notifHeaderIcon" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
                         <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
@@ -266,8 +349,8 @@
     <div class="currency-bar" id="currencyBar">
         <span class="tasa-info-prefix">💱 Paga en:</span>
         <div class="currency-toggle">
-            <button type="button" class="cur-btn active" id="curUSD" data-action="setCurrency" data-arg="USD">💵 USD</button>
-            <button type="button" class="cur-btn" id="curMN" data-action="setCurrency" data-arg="MN">-- MN</button>
+            <button type="button" class="cur-btn active" id="curUSD" onclick="setCurrency('USD')">💵 USD</button>
+            <button type="button" class="cur-btn" id="curMN" onclick="setCurrency('MN')">-- MN</button>
         </div>
         <!-- Tasa-info ocultada: era duplicado del botón "X MN" que ya muestra la tasa -->
         <span class="tasa-info" id="tasaLabel" style="display:none !important;"></span>
@@ -298,7 +381,85 @@
     })();
     </script>
 
-    
+    <style>
+    /* ── Barra de moneda premium ── */
+    .currency-bar {
+        background: linear-gradient(90deg,rgba(18,18,26,.98),rgba(28,28,40,.98)) !important;
+        border-bottom: 1px solid rgba(255,106,0,.22) !important;
+        padding: 7px 16px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 12px !important;
+        position: sticky !important;
+        top: calc(var(--tm-safe-top, 0px) + var(--tm-urgencia-h, 0px) + var(--tm-header-h, 70px)) !important;
+        z-index: 1002 !important;
+        box-shadow: 0 2px 14px rgba(0,0,0,.4) !important;
+        flex-wrap: nowrap !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        border-radius: 0 !important;
+    }
+    .tasa-info-prefix {
+        font-size: 12px;
+        color: rgba(255,255,255,.75);
+        font-weight: 700;
+        letter-spacing: .3px;
+        white-space: nowrap;
+    }
+    .currency-bar .currency-toggle {
+        background: rgba(0,0,0,.45) !important;
+        border: 1px solid rgba(255,106,0,.18) !important;
+        border-radius: 10px !important;
+        padding: 3px !important;
+        display: flex !important;
+        gap: 2px !important;
+    }
+    .currency-bar .cur-btn {
+        border-radius: 8px !important;
+        padding: 4px 16px !important;
+        font-size: 13px !important;
+        font-weight: 800 !important;
+        letter-spacing: .4px !important;
+        color: rgba(255,255,255,.75) !important;
+        transition: all .2s !important;
+        border: none !important;
+        background: transparent !important;
+        cursor: pointer !important;
+        white-space: nowrap !important;
+    }
+    .currency-bar .cur-btn.active {
+        background: linear-gradient(135deg,#ff6a00,#ff3d00) !important;
+        color: #fff !important;
+        box-shadow: 0 2px 10px rgba(255,106,0,.5) !important;
+    }
+    .currency-bar .tasa-info {
+        font-size: 11px !important;
+        font-weight: 700 !important;
+        color: #ff9d63 !important;
+        background: rgba(255,106,0,.1) !important;
+        border: 1px solid rgba(255,106,0,.22) !important;
+        border-radius: 20px !important;
+        padding: 2px 10px !important;
+        white-space: nowrap !important;
+    }
+
+    @media (max-width: 768px) {
+        .currency-bar {
+            justify-content: center !important;
+            padding: 7px 10px !important;
+            gap: 8px !important;
+        }
+        .tasa-info-prefix {
+            font-size: 11px;
+        }
+        .currency-bar .cur-btn {
+            padding: 5px 12px !important;
+            font-size: 12px !important;
+        }
+    }
+    </style>
 </header>
 
     <!-- ===== VISTA INICIO ===== -->
@@ -319,8 +480,8 @@
                 <!-- Banner Slider -->
                 <div id="heroBannerSlider" class="hero-banner-slider">
                     <div class="hero-banner-track" id="heroBannerTrack"></div>
-                    <button class="hero-banner-prev" data-action="moverBanner" data-arg="-1" type="button">&#8249;</button>
-                    <button class="hero-banner-next" data-action="moverBanner" data-arg="1" type="button">&#8250;</button>
+                    <button class="hero-banner-prev" onclick="moverBanner(-1)" type="button">&#8249;</button>
+                    <button class="hero-banner-next" onclick="moverBanner(1)" type="button">&#8250;</button>
                     <div class="hero-banner-dots" id="heroBannerDots"></div>
                 </div>
                 <div id="heroFallback" class="image-placeholder" style="display:none;">✦ TiendaMax ✦</div>
@@ -336,7 +497,12 @@
                         </span>
                     </span>
                 </div>
-                
+                <style>
+                @keyframes taglinePulse {
+                    0%,100% { transform: translateY(0); }
+                    50%      { transform: translateY(3px); }
+                }
+                </style>
             </div>
         </section>
         <div class="hero-divider"></div>
@@ -524,7 +690,7 @@
             <div class="container">
                 <div class="categoria-header">
                     <div class="categoria-header-left">
-                        <button data-action="cerrarVistaMeGusta" type="button" class="btn-volver">← Volver</button>
+                        <button onclick="cerrarVistaMeGusta()" type="button" class="btn-volver">← Volver</button>
                         <h2>❤️ Mis Me Gusta</h2>
                     </div>
                     <div id="meGustaStats" class="categoria-stats" style="font-size:13px;color:#aaa;"></div>
@@ -533,7 +699,7 @@
                 <div id="meGustaVacio" style="display:none;text-align:center;padding:60px 20px;">
                     <div style="font-size:52px;margin-bottom:16px;">🤍</div>
                     <p style="font-size:15px;color:#aaa;margin-bottom:20px;">Aún no tienes productos guardados.<br>Toca el ❤️ en cualquier producto para guardarlo aquí.</p>
-                    <button data-action="cerrarVistaMeGusta,mostrarVistaCategoria" data-arg="Todas" class="btn btn-primary">Ver productos</button>
+                    <button onclick="cerrarVistaMeGusta();mostrarVistaCategoria('Todas')" class="btn btn-primary">Ver productos</button>
                 </div>
             </div>
         </section>
@@ -546,7 +712,7 @@
             <div class="container">
                 <div class="categoria-header">
                     <div class="categoria-header-left">
-                        <button data-action="cerrarVistaPedidos" type="button" class="btn-volver">← Volver</button>
+                        <button onclick="cerrarVistaPedidos()" type="button" class="btn-volver">← Volver</button>
                         <h2>📋 Mis Pedidos</h2>
                     </div>
                     <div id="pedidosStats" class="categoria-stats" style="font-size:13px;color:#aaa;"></div>
@@ -555,7 +721,7 @@
                 <div id="pedidosVacio" style="display:none;text-align:center;padding:60px 20px;">
                     <div style="font-size:52px;margin-bottom:16px;">📭</div>
                     <p style="font-size:15px;color:#aaa;margin-bottom:20px;">Aún no tienes pedidos.<br>Cuando hagas un pedido por WhatsApp aparecerá aquí.</p>
-                    <button data-action="cerrarVistaPedidos,mostrarVistaCategoria" data-arg="Todas" class="btn btn-primary">Ver productos</button>
+                    <button onclick="cerrarVistaPedidos();mostrarVistaCategoria('Todas')" class="btn btn-primary">Ver productos</button>
                 </div>
             </div>
         </section>
@@ -819,7 +985,7 @@
         });
     })();
     </script>
-    <script src="js/script.js?v=38" defer></script>
+    <script src="js/script.js?v=37" defer></script>
     <script src="js/subcategorias.js?v=11" defer></script>
     <script src="js/share-patch.js?v=2" defer></script>
     <script src="js/revolico_integration.js?v=10" defer></script>
@@ -908,9 +1074,9 @@ document.addEventListener('DOMContentLoaded', () => {
 <!-- ═══════════════════════════════════════════════════════════
      MODAL DE NOTIFICACIONES (controla ON/OFF FCM)
      ═══════════════════════════════════════════════════════════ -->
-<div id="notifModalOverlay" class="notif-modal-overlay" data-backdrop-close="cerrarModalNotificaciones">
+<div id="notifModalOverlay" class="notif-modal-overlay" onclick="if(event.target===this)cerrarModalNotificaciones()">
     <div class="notif-modal">
-        <button class="notif-modal-close" data-action="cerrarModalNotificaciones" aria-label="Cerrar">&times;</button>
+        <button class="notif-modal-close" onclick="cerrarModalNotificaciones()" aria-label="Cerrar">&times;</button>
         <div class="notif-modal-header">
             <div class="notif-modal-icon">🔔</div>
             <h2>Notificaciones</h2>
@@ -923,7 +1089,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <div class="notif-estado-subtexto" id="notifEstadoSubtexto">Verificando estado…</div>
         </div>
 
-        <button id="notifBotonAccion" class="notif-modal-boton" data-action="toggleNotificacionesTM">
+        <button id="notifBotonAccion" class="notif-modal-boton" onclick="toggleNotificacionesTM()">
             Cargando…
         </button>
 
@@ -944,7 +1110,233 @@ document.addEventListener('DOMContentLoaded', () => {
     </div>
 </div>
 
+<style>
+/* ═════ Botón notif del header ═════ */
+.notif-icon-btn {
+    width: 46px;
+    height: 46px;
+    background: rgba(255,255,255,.05);
+    border: 1px solid rgba(255,255,255,.1);
+    border-radius: 12px;
+    color: #fff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    transition: all .2s;
+    padding: 0;
+}
+.notif-icon-btn:hover {
+    background: rgba(255,106,0,.15);
+    border-color: rgba(255,106,0,.3);
+}
+.notif-icon-btn.activo {
+    color: #ffa84a;
+}
+.notif-icon-btn.desactivado {
+    color: #888;
+}
+.notif-icon-btn.bloqueado {
+    color: #e74c3c;
+}
+.notif-dot {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: #555;
+    border: 1.5px solid #0e0e12;
+    transition: background .2s;
+}
+.notif-icon-btn.activo .notif-dot {
+    background: #25d366;
+    box-shadow: 0 0 6px rgba(37,211,102,.6);
+}
+.notif-icon-btn.bloqueado .notif-dot {
+    background: #e74c3c;
+}
 
+/* En modo claro */
+html body.light-mode .notif-icon-btn {
+    background: rgba(0,0,0,.04) !important;
+    border-color: rgba(0,0,0,.08) !important;
+    color: #1a1a1a !important;
+}
+html body.light-mode .notif-icon-btn.activo {
+    color: #E8501E !important;
+}
+html body.light-mode .notif-dot {
+    border-color: #FAF8F5 !important;
+}
+
+/* ═════ Overlay del modal ═════ */
+.notif-modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,.7);
+    z-index: 100000;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+.notif-modal-overlay.activo {
+    display: flex;
+    animation: notifFadeIn .2s ease;
+}
+@keyframes notifFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+.notif-modal {
+    background: #1a1a1f;
+    border: 1px solid rgba(255,106,0,.3);
+    border-radius: 20px;
+    padding: 28px 24px 22px;
+    max-width: 420px;
+    width: 100%;
+    color: #fff;
+    position: relative;
+    box-shadow: 0 20px 60px rgba(0,0,0,.5);
+    animation: notifSlideUp .3s ease;
+}
+@keyframes notifSlideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.notif-modal-close {
+    position: absolute;
+    top: 12px; right: 14px;
+    background: transparent;
+    border: none;
+    color: #aaa;
+    font-size: 28px;
+    cursor: pointer;
+    line-height: 1;
+    padding: 4px 10px;
+    border-radius: 6px;
+}
+.notif-modal-close:hover {
+    background: rgba(255,255,255,.08);
+    color: #fff;
+}
+.notif-modal-header {
+    text-align: center;
+    margin-bottom: 18px;
+}
+.notif-modal-icon {
+    font-size: 42px;
+    margin-bottom: 8px;
+}
+.notif-modal-header h2 {
+    font-size: 20px;
+    color: #ff8a3d;
+    margin: 0 0 6px;
+    font-weight: 700;
+}
+.notif-modal-header p {
+    font-size: 13px;
+    color: #ccc;
+    margin: 0;
+    line-height: 1.5;
+}
+.notif-modal-estado {
+    background: rgba(37,211,102,.1);
+    border: 1px solid rgba(37,211,102,.3);
+    border-radius: 12px;
+    padding: 16px;
+    text-align: center;
+    margin-bottom: 14px;
+    transition: all .2s;
+}
+.notif-modal-estado.desactivado {
+    background: rgba(150,150,150,.1);
+    border-color: rgba(150,150,150,.3);
+}
+.notif-modal-estado.bloqueado {
+    background: rgba(231,76,60,.1);
+    border-color: rgba(231,76,60,.3);
+}
+.notif-estado-icono {
+    font-size: 36px;
+    margin-bottom: 4px;
+}
+.notif-estado-texto {
+    font-size: 15px;
+    color: #fff;
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+.notif-estado-subtexto {
+    font-size: 12px;
+    color: #aaa;
+    line-height: 1.4;
+}
+.notif-modal-boton {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, #ff6a00, #ff3d00);
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all .2s;
+    box-shadow: 0 6px 18px rgba(255,106,0,.3);
+}
+.notif-modal-boton:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 22px rgba(255,106,0,.4);
+}
+.notif-modal-boton:disabled {
+    opacity: .6;
+    cursor: not-allowed;
+    transform: none;
+}
+.notif-modal-boton.desactivar {
+    background: linear-gradient(135deg, #555, #333);
+    box-shadow: 0 6px 18px rgba(0,0,0,.3);
+}
+.notif-modal-info {
+    background: rgba(231,76,60,.08);
+    border: 1px solid rgba(231,76,60,.25);
+    border-radius: 10px;
+    padding: 12px;
+    margin-top: 14px;
+    font-size: 12px;
+    color: #ddd;
+}
+.notif-modal-info strong { color: #ff8a3d; display: block; margin-bottom: 6px; }
+.notif-modal-info p { margin: 6px 0; }
+.notif-modal-info ol { padding-left: 18px; margin: 6px 0; line-height: 1.6; }
+.notif-modal-footer {
+    text-align: center;
+    margin-top: 14px;
+    color: #777;
+    font-size: 11px;
+}
+
+/* Modo claro modal */
+html body.light-mode .notif-modal {
+    background: #fff !important;
+    color: #1a1a1a !important;
+    border-color: rgba(232,80,30,.3) !important;
+}
+html body.light-mode .notif-modal-header h2 { color: #E8501E !important; }
+html body.light-mode .notif-modal-header p { color: #555 !important; }
+html body.light-mode .notif-modal-close { color: #555 !important; }
+html body.light-mode .notif-estado-texto { color: #1a1a1a !important; }
+html body.light-mode .notif-estado-subtexto { color: #555 !important; }
+html body.light-mode .notif-modal-info { color: #333 !important; }
+html body.light-mode .notif-modal-footer { color: #888 !important; }
+</style>
 
 </body>
 </html>

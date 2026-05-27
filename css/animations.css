@@ -127,13 +127,3 @@
         animation: none !important;
     }
 }
-
-
-/* ================================================================
-   ANIMACIONES EXTRAÍDAS DE index.html
-   ================================================================ */
-/* ── Hero tagline animation (extraído de index.html) ── */
-@keyframes taglinePulse {
-                    0%,100% { transform: translateY(0); }
-                    50%      { transform: translateY(3px); }
-                }
