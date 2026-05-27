@@ -212,68 +212,6 @@
         z-index: 2;
         letter-spacing: 0.3px;
     }
-
-    /* FILTROS DE PRECIO */
-    .price-filters-wrap {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        margin: 15px 0 20px;
-        flex-wrap: wrap;
-        background: rgba(255,255,255,0.03);
-        padding: 12px 16px;
-        border-radius: 12px;
-        border: 1px solid rgba(255,255,255,0.05);
-    }
-    .price-filter-group {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
-    .price-filter-group label {
-        font-size: 12px;
-        color: rgba(255,255,255,0.5);
-        font-weight: 600;
-    }
-    .price-filter-group input {
-        width: 80px;
-        background: rgba(0,0,0,0.3);
-        border: 1px solid rgba(255,255,255,0.1);
-        border-radius: 8px;
-        padding: 6px 10px;
-        color: #fff;
-        font-size: 13px;
-        outline: none;
-    }
-    .price-filter-group input:focus {
-        border-color: #ff6a00;
-    }
-    .btn-clear-filters {
-        background: rgba(255,255,255,0.05);
-        border: none;
-        color: rgba(255,255,255,0.4);
-        width: 28px;
-        height: 28px;
-        border-radius: 50%;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: all 0.2s;
-    }
-    .btn-clear-filters:hover {
-        background: rgba(231, 76, 60, 0.2);
-        color: #e74c3c;
-    }
-    @media (max-width: 480px) {
-        .price-filters-wrap {
-            gap: 15px;
-            justify-content: center;
-        }
-        .price-filter-group input {
-            width: 70px;
-        }
-    }
     </style>
 </head>
 <body>
@@ -651,13 +589,21 @@
                         <span class="prueba-num">500+</span>
                         <span class="prueba-label">Clientes satisfechos</span>
                     </div>
+                    <div class="prueba-sep">|</div>
                     <div class="prueba-stat">
                         <span class="prueba-num">⭐ 4.9</span>
                         <span class="prueba-label">Valoración promedio</span>
                     </div>
+                    <div class="prueba-sep">|</div>
                     <div class="prueba-stat">
                         <span class="prueba-num">🔒 100%</span>
                         <span class="prueba-label">Compra segura</span>
+                    </div>
+                    <div class="prueba-sep prueba-reviews-sep">|</div>
+                    <div class="prueba-mini-reviews" aria-hidden="true">
+                        <span class="mini-review-item">"Excelente calidad" — Pedro M.</span>
+                        <span class="mini-review-item">"Envío rápido" — Ana R.</span>
+                        <span class="mini-review-item">"Precios increíbles" — Luis T.</span>
                     </div>
                 </div>
             </div>
@@ -670,7 +616,7 @@
                 <div class="beneficios-grid">
                     <div class="beneficio-card"><div class="icon">🏆</div><h3>Calidad Garantizada</h3><p>Productos seleccionados cuidadosamente para tu satisfacción</p></div>
                     <div class="beneficio-card"><div class="icon">💰</div><h3>Mejores Precios</h3><p>Competencia directa con ofertas exclusivas para ti</p></div>
-                    <div class="beneficio-card"><div class="icon">🚚</div><h3>Envío Rápido</h3><p>Recebe tu compra en el menor tiempo posible</p></div>
+                    <div class="beneficio-card"><div class="icon">🚚</div><h3>Envío Rápido</h3><p>Recibe tu compra en el menor tiempo posible</p></div>
                     <div class="beneficio-card"><div class="icon">🛡️</div><h3>Compra Segura</h3><p>Proteccion total en todas tus transacciones</p></div>
                     <div class="beneficio-card"><div class="icon">📞</div><h3>Soporte 24/7</h3><p>Estamos aquí para ayudarte en cualquier momento</p></div>
                     <div class="beneficio-card"><div class="icon">⭐</div><h3>Clientes Felices</h3><p>Miles de reseñas positivas de clientes satisfechos</p></div>
@@ -725,20 +671,6 @@
                     </div>
                     <div id="categoriaStats" class="categoria-stats"></div>
                 </div>
-
-                <!-- FILTROS DE PRECIO -->
-                <div class="price-filters-wrap">
-                    <div class="price-filter-group">
-                        <label>Min $</label>
-                        <input type="number" id="filterPriceMin" placeholder="0" oninput="aplicarFiltrosPrecio()">
-                    </div>
-                    <div class="price-filter-group">
-                        <label>Max $</label>
-                        <input type="number" id="filterPriceMax" placeholder="Max" oninput="aplicarFiltrosPrecio()">
-                    </div>
-                    <button class="btn-clear-filters" onclick="limpiarFiltrosPrecio()" title="Limpiar filtros">✕</button>
-                </div>
-
                 <!-- Pestañas de subcategorías (solo aparece si hay subcategorías) -->
                 <div id="subcategoriaTabs" class="subcategoria-tabs" style="display:none;"></div>
                 <!-- Filtro de categorías (vista global "Todas") -->
@@ -797,6 +729,9 @@
     <!-- FIN VISTA MIS PEDIDOS -->
 
 
+    <!-- Banners móviles (solo visible en móvil, mismo estilo que los laterales de escritorio) -->
+
+
     <!-- Footer -->
     <footer class="footer-premium">
         <div class="container">
@@ -836,9 +771,12 @@
         </div>
     </footer>
 
+    <!-- Botones flotantes removidos: reemplazados por banners laterales en sección categorías -->
+
     <!-- Botones de control -->
     <div class="control-buttons">
         <button data-action="toggleDarkMode" aria-label="Activar modo claro" type="button" class="theme-toggle" title="Activar modo claro">☀️</button>
+        <!-- Admin toggle movido al navbar -->
     </div>
 
 
@@ -935,11 +873,28 @@
                         <div id="panelCompartirRedes" class="panel-compartir-redes" style="display:none;">
                             <p class="panel-compartir-titulo">Compartir en redes</p>
                             <div class="panel-compartir-grid">
-                                <button data-action="compartirWhatsApp" class="red-social-btn red-whatsapp" type="button">WhatsApp</button>
-                                <button data-action="compartirFacebook" class="red-social-btn red-facebook" type="button">Facebook</button>
-                                <button data-action="compartirTelegram" class="red-social-btn red-telegram" type="button">Telegram</button>
-                                <button data-action="compartirTwitter" class="red-social-btn red-twitter" type="button">X (Twitter)</button>
-                                <button data-action="copiarLinkProducto" class="red-social-btn red-copiar" type="button">🔗 Copiar enlace</button>
+                                <button data-action="compartirWhatsApp" class="red-social-btn red-whatsapp" type="button">
+                                    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                                    WhatsApp
+                                </button>
+                                <button data-action="compartirFacebook" class="red-social-btn red-facebook" type="button">
+                                    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                                    Facebook
+                                </button>
+                                <button data-action="compartirTelegram" class="red-social-btn red-telegram" type="button">
+                                    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+                                    Telegram
+                                </button>
+                                <button data-action="compartirTwitter" class="red-social-btn red-twitter" type="button">
+                                    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                                    X (Twitter)
+                                </button>
+                                <button data-action="copiarLinkProducto" class="red-social-btn red-copiar" type="button">
+                                    🔗 Copiar enlace
+                                </button>
+                                <button data-action="compartirNativo" class="red-social-btn red-mas" type="button">
+                                    ••• Más opciones
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -989,15 +944,53 @@
     </div>
 
 
+    <script>
+    /* ── Fade-in secciones: TiendaMax Premium ── */
+    (function() {
+        var selectors = [
+            '.beneficio-card',
+            '.testimonio-card',
+            '.categorias-home .section-eyebrow',
+            '.categorias-home .section-title',
+            '.categorias-home .section-subtitle',
+            '.prueba-stat',
+            '.cta-final h2',
+            '.cta-final p',
+            '.hero-content .subtitle',
+            '.hero-content h1',
+            '.hero-content .description'
+        ];
+        var elements = document.querySelectorAll(selectors.join(','));
+
+        if (!('IntersectionObserver' in window)) {
+            elements.forEach(function(el) { el.classList.add('tm-visible'); });
+            return;
+        }
+
+        var observer = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('tm-visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1, rootMargin: '0px 0px -30px 0px' });
+
+        elements.forEach(function(el, i) {
+            el.classList.add('tm-fade');
+            var siblings = el.parentNode ? el.parentNode.querySelectorAll('.tm-fade') : [];
+            var idx = Array.prototype.indexOf.call(siblings, el);
+            el.style.setProperty('--tm-delay', Math.min(idx, 7) * 0.09 + 's');
+            observer.observe(el);
+        });
+    })();
+    </script>
     <script src="js/script.js?v=37" defer></script>
-    <script src="js/customization.js?v=1" defer></script>
     <script src="js/subcategorias.js?v=11" defer></script>
     <script src="js/share-patch.js?v=2" defer></script>
     <script src="js/revolico_integration.js?v=10" defer></script>
     <script src="js/biometric-auth.js?v=2" defer></script>
     <script src="js/event-delegation.js?v=2" defer></script>
-    <script src="js/banners.js?v=3" defer></script>
-
     <script>
     function abrirMenuMovil() {
         document.getElementById('mobileMenuOverlay').classList.add('open');
@@ -1009,10 +1002,341 @@
         document.getElementById('hamburgerBtn').classList.remove('open');
         document.body.style.overflow = '';
     }
+    document.addEventListener('DOMContentLoaded', function() {
+        var overlay = document.getElementById('mobileMenuOverlay');
+        if(overlay) overlay.addEventListener('click', function(e){
+            if(e.target === this) cerrarMenuMovil();
+        });
+    });
     </script>
 
-    <!-- LOGICA DE FILTROS DE PRECIO -->
-    
+    <script>
+    // Service Worker con auto-actualización y reload cuando hay versión nueva
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('/sw.js').then(reg => {
+                // Si hay un SW esperando, decirle que tome el control YA
+                if (reg.waiting) reg.waiting.postMessage('SKIP_WAITING');
+
+                // Detectar nueva versión
+                reg.addEventListener('updatefound', () => {
+                    const nw = reg.installing;
+                    if (!nw) return;
+                    nw.addEventListener('statechange', () => {
+                        if (nw.state === 'installed' && navigator.serviceWorker.controller) {
+                            // Hay una versión nueva instalada y otro SW activo: actualizar
+                            nw.postMessage('SKIP_WAITING');
+                        }
+                    });
+                });
+
+                // Cuando el nuevo SW toma control, recargar la página
+                let refreshing = false;
+                navigator.serviceWorker.addEventListener('controllerchange', () => {
+                    if (refreshing) return;
+                    refreshing = true;
+                    console.log('[SW] Versión nueva activada, recargando...');
+                    window.location.reload();
+                });
+
+                // Escuchar mensajes del SW (ej: actualización forzosa)
+                navigator.serviceWorker.addEventListener('message', (event) => {
+                    if (event.data && event.data.type === 'SW_UPDATED') {
+                        console.log('[SW] Recibido SW_UPDATED:', event.data.version);
+                        if (!refreshing) {
+                            refreshing = true;
+                            window.location.reload();
+                        }
+                    }
+                });
+            }).catch(() => {});
+        });
+    }
+    </script>
+<!-- ===== BANNER SLIDER + TAGLINE (movido a archivo externo para reuso en admin) ===== -->
+    <script src="js/banners.js?v=3" defer></script>
+<script>
+// ── WhatsApp dinámico — lee el número guardado en admin ──
+(function actualizarEnlacesWhatsApp() {
+  const num = localStorage.getItem('whatsappNumero') || '5354320170';
+  document.querySelectorAll('a[href*="wa.me/"]').forEach(a => {
+    a.href = a.href.replace(/wa\.me\/\d+/, 'wa.me/' + num);
+  });
+})();
+document.addEventListener('DOMContentLoaded', () => {
+  const num = localStorage.getItem('whatsappNumero') || '5354320170';
+  document.querySelectorAll('a[href*="wa.me/"]').forEach(a => {
+    a.href = a.href.replace(/wa\.me\/\d+/, 'wa.me/' + num);
+  });
+});
+</script>
+
+<!-- ═══════════════════════════════════════════════════════════
+     MODAL DE NOTIFICACIONES (controla ON/OFF FCM)
+     ═══════════════════════════════════════════════════════════ -->
+<div id="notifModalOverlay" class="notif-modal-overlay" onclick="if(event.target===this)cerrarModalNotificaciones()">
+    <div class="notif-modal">
+        <button class="notif-modal-close" onclick="cerrarModalNotificaciones()" aria-label="Cerrar">&times;</button>
+        <div class="notif-modal-header">
+            <div class="notif-modal-icon">🔔</div>
+            <h2>Notificaciones</h2>
+            <p>Te avisamos cuando bajan los precios o llegan productos nuevos.</p>
+        </div>
+
+        <div class="notif-modal-estado" id="notifEstadoBox">
+            <div class="notif-estado-icono" id="notifEstadoIcono">🔔</div>
+            <div class="notif-estado-texto" id="notifEstadoTexto">Cargando…</div>
+            <div class="notif-estado-subtexto" id="notifEstadoSubtexto">Verificando estado…</div>
+        </div>
+
+        <button id="notifBotonAccion" class="notif-modal-boton" onclick="toggleNotificacionesTM()">
+            Cargando…
+        </button>
+
+        <div class="notif-modal-info" id="notifModalInfoBloqueado" style="display:none">
+            <strong>⚠️ Notificaciones bloqueadas</strong>
+            <p>Para reactivarlas:</p>
+            <ol>
+                <li>Toca los <b>3 puntos</b> arriba a la derecha de Chrome</li>
+                <li>Ve a <b>Configuración del sitio</b></li>
+                <li>Busca <b>Notificaciones</b> → <b>Permitir</b></li>
+                <li>Recarga la página</li>
+            </ol>
+        </div>
+
+        <div class="notif-modal-footer">
+            <small>Tu privacidad es importante. No compartimos tu información.</small>
+        </div>
+    </div>
+</div>
+
+<style>
+/* ═════ Botón notif del header ═════ */
+.notif-icon-btn {
+    width: 46px;
+    height: 46px;
+    background: rgba(255,255,255,.05);
+    border: 1px solid rgba(255,255,255,.1);
+    border-radius: 12px;
+    color: #fff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    transition: all .2s;
+    padding: 0;
+}
+.notif-icon-btn:hover {
+    background: rgba(255,106,0,.15);
+    border-color: rgba(255,106,0,.3);
+}
+.notif-icon-btn.activo {
+    color: #ffa84a;
+}
+.notif-icon-btn.desactivado {
+    color: #888;
+}
+.notif-icon-btn.bloqueado {
+    color: #e74c3c;
+}
+.notif-dot {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: #555;
+    border: 1.5px solid #0e0e12;
+    transition: background .2s;
+}
+.notif-icon-btn.activo .notif-dot {
+    background: #25d366;
+    box-shadow: 0 0 6px rgba(37,211,102,.6);
+}
+.notif-icon-btn.bloqueado .notif-dot {
+    background: #e74c3c;
+}
+
+/* En modo claro */
+html body.light-mode .notif-icon-btn {
+    background: rgba(0,0,0,.04) !important;
+    border-color: rgba(0,0,0,.08) !important;
+    color: #1a1a1a !important;
+}
+html body.light-mode .notif-icon-btn.activo {
+    color: #E8501E !important;
+}
+html body.light-mode .notif-dot {
+    border-color: #FAF8F5 !important;
+}
+
+/* ═════ Overlay del modal ═════ */
+.notif-modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,.7);
+    z-index: 100000;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+.notif-modal-overlay.activo {
+    display: flex;
+    animation: notifFadeIn .2s ease;
+}
+@keyframes notifFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+.notif-modal {
+    background: #1a1a1f;
+    border: 1px solid rgba(255,106,0,.3);
+    border-radius: 20px;
+    padding: 28px 24px 22px;
+    max-width: 420px;
+    width: 100%;
+    color: #fff;
+    position: relative;
+    box-shadow: 0 20px 60px rgba(0,0,0,.5);
+    animation: notifSlideUp .3s ease;
+}
+@keyframes notifSlideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.notif-modal-close {
+    position: absolute;
+    top: 12px; right: 14px;
+    background: transparent;
+    border: none;
+    color: #aaa;
+    font-size: 28px;
+    cursor: pointer;
+    line-height: 1;
+    padding: 4px 10px;
+    border-radius: 6px;
+}
+.notif-modal-close:hover {
+    background: rgba(255,255,255,.08);
+    color: #fff;
+}
+.notif-modal-header {
+    text-align: center;
+    margin-bottom: 18px;
+}
+.notif-modal-icon {
+    font-size: 42px;
+    margin-bottom: 8px;
+}
+.notif-modal-header h2 {
+    font-size: 20px;
+    color: #ff8a3d;
+    margin: 0 0 6px;
+    font-weight: 700;
+}
+.notif-modal-header p {
+    font-size: 13px;
+    color: #ccc;
+    margin: 0;
+    line-height: 1.5;
+}
+.notif-modal-estado {
+    background: rgba(37,211,102,.1);
+    border: 1px solid rgba(37,211,102,.3);
+    border-radius: 12px;
+    padding: 16px;
+    text-align: center;
+    margin-bottom: 14px;
+    transition: all .2s;
+}
+.notif-modal-estado.desactivado {
+    background: rgba(150,150,150,.1);
+    border-color: rgba(150,150,150,.3);
+}
+.notif-modal-estado.bloqueado {
+    background: rgba(231,76,60,.1);
+    border-color: rgba(231,76,60,.3);
+}
+.notif-estado-icono {
+    font-size: 36px;
+    margin-bottom: 4px;
+}
+.notif-estado-texto {
+    font-size: 15px;
+    color: #fff;
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+.notif-estado-subtexto {
+    font-size: 12px;
+    color: #aaa;
+    line-height: 1.4;
+}
+.notif-modal-boton {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, #ff6a00, #ff3d00);
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all .2s;
+    box-shadow: 0 6px 18px rgba(255,106,0,.3);
+}
+.notif-modal-boton:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 22px rgba(255,106,0,.4);
+}
+.notif-modal-boton:disabled {
+    opacity: .6;
+    cursor: not-allowed;
+    transform: none;
+}
+.notif-modal-boton.desactivar {
+    background: linear-gradient(135deg, #555, #333);
+    box-shadow: 0 6px 18px rgba(0,0,0,.3);
+}
+.notif-modal-info {
+    background: rgba(231,76,60,.08);
+    border: 1px solid rgba(231,76,60,.25);
+    border-radius: 10px;
+    padding: 12px;
+    margin-top: 14px;
+    font-size: 12px;
+    color: #ddd;
+}
+.notif-modal-info strong { color: #ff8a3d; display: block; margin-bottom: 6px; }
+.notif-modal-info p { margin: 6px 0; }
+.notif-modal-info ol { padding-left: 18px; margin: 6px 0; line-height: 1.6; }
+.notif-modal-footer {
+    text-align: center;
+    margin-top: 14px;
+    color: #777;
+    font-size: 11px;
+}
+
+/* Modo claro modal */
+html body.light-mode .notif-modal {
+    background: #fff !important;
+    color: #1a1a1a !important;
+    border-color: rgba(232,80,30,.3) !important;
+}
+html body.light-mode .notif-modal-header h2 { color: #E8501E !important; }
+html body.light-mode .notif-modal-header p { color: #555 !important; }
+html body.light-mode .notif-modal-close { color: #555 !important; }
+html body.light-mode .notif-estado-texto { color: #1a1a1a !important; }
+html body.light-mode .notif-estado-subtexto { color: #555 !important; }
+html body.light-mode .notif-modal-info { color: #333 !important; }
+html body.light-mode .notif-modal-footer { color: #888 !important; }
+</style>
 
 </body>
 </html>
