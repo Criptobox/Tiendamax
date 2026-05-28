@@ -1,0 +1,46 @@
+{
+  "rules": {
+    "analytics": {
+      "vistas": {
+        "$productId": {
+          "count": {
+            ".read": true,
+            ".write": true,
+            ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 1000000"
+          }
+        }
+      },
+      "whatsapp": {
+        "$productId": {
+          "count": {
+            ".read": true,
+            ".write": true,
+            ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 1000000"
+          }
+        }
+      },
+      ".read": true,
+      ".write": false
+    },
+    "tokens": {
+      "$tokenId": {
+        ".read": false,
+        ".write": true,
+        ".validate": "newData.hasChildren(['token', 'timestamp']) && newData.child('timestamp').val() <= now + 60000",
+        "token": {
+          ".validate": "newData.isString() && newData.val().length > 50 && newData.val().length < 500"
+        },
+        "timestamp": {
+          ".validate": "newData.isNumber()"
+        },
+        "userAgent": {
+          ".validate": "newData.isString()"
+        }
+      },
+      ".read": "auth != null",
+      ".write": false
+    },
+    ".read": false,
+    ".write": false
+  }
+}
