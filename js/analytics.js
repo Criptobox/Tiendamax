@@ -82,7 +82,10 @@ function tmDesregistrarSuscriptor() {
 function _tmFetch(url, ms = 6000) {
     const ctrl = new AbortController();
     const t = setTimeout(() => ctrl.abort(), ms);
-    return fetch(url, { signal: ctrl.signal }).finally(() => clearTimeout(t));
+    // Anti-caché: lee siempre la lista fresca de Firebase (antes el navegador/SW
+    // servía una copia vieja y los suscriptores dados de baja seguían apareciendo).
+    const sep = url.includes('?') ? '&' : '?';
+    return fetch(url + sep + '_=' + Date.now(), { signal: ctrl.signal, cache: 'no-store' }).finally(() => clearTimeout(t));
 }
 
 // ── Parsear userAgent simple ────────────────────────────
