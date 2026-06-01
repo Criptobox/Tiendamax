@@ -1,7 +1,8 @@
 // ═══════════════════════════════════════════════════════
-// TiendaMax — Service Worker v110 (badge MÁS VENDIDO sólido en claro y oscuro)
-// v110: badge "Más Vendido" con color sólido tambien en modo oscuro.
-// v109: badge "Más Vendido" visible en modo claro.
+// TiendaMax — Service Worker v111 (badge solido + footer movil naranja)
+// v111: footer movil "Max" en naranja para igualar el logo.
+// v110: badge "Mas Vendido" solido en oscuro.
+// v109: badge "Mas Vendido" visible en claro.
 // v108: añade hero-efectos (líneas + typewriter) y fuerza actualización de caché.
 // v107: galería de imágenes por producto.
 // v106: dashboard unificado móvil.
@@ -17,7 +18,7 @@
 //      usan el mismo helper _mensajeOrdenWA con formato premium.
 // ═══════════════════════════════════════════════════════
 
-const CACHE_NAME = 'tiendamax-v110';
+const CACHE_NAME = 'tiendamax-v111';
 
 const STATIC_ASSETS = [
   '/',
