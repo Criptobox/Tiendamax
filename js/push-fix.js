@@ -1,5 +1,5 @@
 // ════════════════════════════════════════════════════════════════
-//  TiendaMax — push-fix.js  v2  (suscripción confiable de 1 toque)
+//  TiendaMax — push-fix.js  v3  (suscripción 1 toque + respeta baja)
 //  Hace que TANTO el cartel inicial ("Avísame") COMO la campana 🔔
 //  registren al suscriptor de inmediato al dar "Permitir", sin pasos
 //  extra. Espera de verdad: SDK -> SW -> getToken -> escritura /tokens.
@@ -44,6 +44,9 @@
   // Núcleo: resuelve SOLO cuando el token se escribió (o lanza error).
   async function registrarTokenRobusto(cfgArg) {
     if (!("Notification" in window) || Notification.permission !== "granted") return false;
+    // Respeta la baja: si el usuario se desuscribió, NO re-registrar al cargar.
+    // (La campana 🔔 borra este flag antes de reactivar, así que ahí sí procede.)
+    if (localStorage.getItem("tm_push_desuscrito") === "1") return false;
 
     var cfg = await obtenerConfig(cfgArg);
     if (!cfg || !cfg.projectId) throw new Error("Sin configuración de Firebase");
@@ -91,7 +94,7 @@
     localStorage.setItem("fcmToken", token);
     try { localStorage.removeItem("tm_push_desuscrito"); } catch (e) {}
     if (typeof window.tmRegistrarSuscriptor === "function") { try { window.tmRegistrarSuscriptor(); } catch (e) {} }
-    console.log("[push-fix v2] ✅ Suscriptor registrado.");
+    console.log("[push-fix v3] ✅ Suscriptor registrado.");
     return true;
   }
 
@@ -106,7 +109,7 @@
       if (localStorage.getItem("tm_push_desuscrito") === "1") return;
       if (localStorage.getItem("fcmToken")) return;
       setTimeout(function () {
-        registrarTokenRobusto().catch(function (e) { console.warn("[push-fix v2] auto-recuperación:", e.message); });
+        registrarTokenRobusto().catch(function (e) { console.warn("[push-fix v3] auto-recuperación:", e.message); });
       }, 3000);
     } catch (e) {}
   }
