@@ -1,0 +1,1963 @@
+/* ═══════════════════════════════════════════════════════════════
+   ADMIN PREMIUM — Estilos para PC y Móvil
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ─────────────────────────────────────────
+   DESKTOP (> 768px): Panel mejorado con
+   tabs horizontales estilo premium oscuro
+   ───────────────────────────────────────── */
+
+/* Acordeón oculto en desktop */
+.admin-accordion { display: none; }
+
+/* ── Header premium ── */
+.admin-header {
+    background: linear-gradient(135deg, #111 0%, #0e0e0e 100%) !important;
+    border-bottom: 0.5px solid rgba(201,169,110,0.18) !important;
+    padding: 18px 26px !important;
+    position: relative;
+}
+.admin-header::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(201,169,110,0.25), transparent);
+}
+.admin-header h2 {
+    color: rgba(255,255,255,0.92) !important;
+    font-size: 17px !important;
+    letter-spacing: 0.2px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.admin-header h2::before {
+    content: 'M';
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #C9A96E, #E8C88A);
+    color: #0D0D0D;
+    font-family: Georgia, serif;
+    font-size: 16px;
+    font-weight: 900;
+    line-height: 1;
+    flex-shrink: 0;
+}
+.admin-header .close-btn {
+    background: rgba(255,255,255,0.07) !important;
+    border: 0.5px solid rgba(255,255,255,0.12) !important;
+    color: rgba(255,255,255,0.5) !important;
+    border-radius: 50% !important;
+    width: 32px !important;
+    height: 32px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 16px !important;
+    transition: background 0.2s, color 0.2s !important;
+}
+.admin-header .close-btn:hover {
+    background: rgba(255,255,255,0.13) !important;
+    color: rgba(255,255,255,0.85) !important;
+}
+
+/* ── Tabs desktop premium ── */
+.admin-tabs-desktop {
+    background: #0f0f0f !important;
+    border-bottom: 0.5px solid rgba(255,255,255,0.06) !important;
+    padding: 0 4px !important;
+    gap: 0 !important;
+}
+.admin-tabs-desktop .tab-btn {
+    color: rgba(255,255,255,0.38) !important;
+    font-size: 12px !important;
+    font-weight: 500 !important;
+    padding: 14px 12px !important;
+    border-bottom: 2px solid transparent !important;
+    letter-spacing: 0.2px;
+    transition: color 0.2s, border-color 0.2s, background 0.2s !important;
+    border-radius: 0 !important;
+    white-space: nowrap;
+}
+.admin-tabs-desktop .tab-btn:hover {
+    color: rgba(255,255,255,0.65) !important;
+    background: rgba(255,255,255,0.04) !important;
+}
+.admin-tabs-desktop .tab-btn.active {
+    color: #C9A96E !important;
+    border-bottom-color: #C9A96E !important;
+    background: rgba(201,169,110,0.05) !important;
+}
+
+/* ── Contenido del panel ── */
+.admin-panel-content {
+    background: #141414 !important;
+}
+
+/* ── admin-tab en desktop: fondo oscuro consistente ── */
+.admin-tab {
+    color: rgba(255,255,255,0.82) !important;
+}
+.admin-tab h3, .admin-tab h4 {
+    color: rgba(255,255,255,0.90) !important;
+}
+.admin-tab p, .admin-tab label, .admin-tab small {
+    color: rgba(255,255,255,0.55) !important;
+}
+
+/* Inputs y selects en panel oscuro */
+.admin-tab .form-group input,
+.admin-tab .form-group textarea,
+.admin-tab .form-group select {
+    background: rgba(255,255,255,0.05) !important;
+    border-color: rgba(255,255,255,0.1) !important;
+    color: rgba(255,255,255,0.88) !important;
+    font-size: 14px !important;
+    border-radius: 10px !important;
+}
+.admin-tab .form-group input::placeholder,
+.admin-tab .form-group textarea::placeholder {
+    color: rgba(255,255,255,0.22) !important;
+}
+.admin-tab .form-group input:focus,
+.admin-tab .form-group textarea:focus,
+.admin-tab .form-group select:focus {
+    border-color: rgba(201,169,110,0.5) !important;
+    box-shadow: 0 0 0 3px rgba(201,169,110,0.08) !important;
+    outline: none !important;
+}
+
+/* Cajas internas con fondo (var --cream, white, etc.) */
+.admin-tab > div[style*="background"],
+.admin-tab > div > div[style*="background"] {
+    background: rgba(255,255,255,0.04) !important;
+    border-color: rgba(255,255,255,0.08) !important;
+    color: rgba(255,255,255,0.75) !important;
+}
+
+/* Botón primario premium */
+.admin-tab .btn-primary,
+.admin-tab button.btn-primary {
+    background: linear-gradient(135deg, #C9A96E, #E8C88A) !important;
+    color: #0D0D0D !important;
+    border: none !important;
+    font-weight: 700 !important;
+    border-radius: 10px !important;
+}
+.admin-tab .btn-primary:hover {
+    background: linear-gradient(135deg, #d4b67c, #f0d495) !important;
+}
+
+/* Scrollbar del contenido */
+.admin-content::-webkit-scrollbar { width: 4px; }
+.admin-content::-webkit-scrollbar-track { background: transparent; }
+.admin-content::-webkit-scrollbar-thumb { background: rgba(201,169,110,0.2); border-radius: 4px; }
+
+
+/* ═══════════════════════════════════════════════════
+   MÓVIL (≤ 768px): Acordeón premium
+   ═══════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+
+    /* Ocultar tabs desktop, mostrar acordeón */
+    .admin-tabs-desktop { display: none !important; }
+    .admin-accordion    { display: flex !important; flex-direction: column; }
+
+    /* Panel: pantalla completa */
+    .admin-panel-content {
+        width: 100% !important;
+        max-width: 100% !important;
+        height: 100dvh !important;
+        max-height: 100dvh !important;
+        border-radius: 0 !important;
+        margin: 0 !important;
+        display: flex;
+        flex-direction: column;
+        background: #0f0f0f !important;
+    }
+
+    /* Header móvil más compacto */
+    .admin-header {
+        padding: 14px 16px !important;
+        flex-shrink: 0;
+    }
+    .admin-header h2 { font-size: 14px !important; }
+
+    /* Ocultar el admin-content original (los tabs viven dentro del acordeón) */
+    .admin-content {
+        display: none !important;
+    }
+
+    /* Wrapper del acordeón: scroll vertical */
+    .admin-accordion {
+        flex: 1;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior: contain;
+        padding: 10px 10px 24px;
+        gap: 6px;
+    }
+    .admin-accordion::-webkit-scrollbar { display: none; }
+
+    /* ── Cada fila (píldora) ── */
+    .acc-row {
+        border-radius: 14px;
+        overflow: hidden;
+        border: 0.5px solid rgba(255,255,255,0.07);
+        background: #191919;
+        transition: border-color 0.25s;
+    }
+    .acc-row.acc-open {
+        border-color: rgba(201,169,110,0.32);
+    }
+
+    /* ── Trigger (cabecera de la píldora) ── */
+    .acc-trigger {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        width: 100%;
+        padding: 14px 16px;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        text-align: left;
+        -webkit-tap-highlight-color: transparent;
+        transition: background 0.15s;
+    }
+    .acc-trigger:active { background: rgba(255,255,255,0.03); }
+
+    /* Ícono con fondo */
+    .acc-icon-wrap {
+        width: 38px;
+        height: 38px;
+        border-radius: 11px;
+        background: rgba(255,255,255,0.05);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        transition: background 0.25s;
+    }
+    .acc-icon { font-size: 18px; line-height: 1; }
+    .acc-row.acc-open .acc-icon-wrap {
+        background: rgba(201,169,110,0.14);
+    }
+
+    /* Texto */
+    .acc-text { flex: 1; min-width: 0; }
+    .acc-label {
+        display: block;
+        font-size: 13px;
+        font-weight: 600;
+        color: rgba(255,255,255,0.60);
+        transition: color 0.25s;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .acc-sub {
+        display: block;
+        font-size: 10px;
+        color: rgba(255,255,255,0.22);
+        margin-top: 2px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .acc-row.acc-open .acc-label { color: #C9A96E; }
+
+    /* Chevron animado */
+    .acc-chevron {
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        border: 0.5px solid rgba(255,255,255,0.1);
+        flex-shrink: 0;
+        position: relative;
+        transition: transform 0.28s cubic-bezier(0.4,0,0.2,1),
+                    border-color 0.25s;
+    }
+    .acc-chevron::before,
+    .acc-chevron::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        width: 5px;
+        height: 1.5px;
+        background: rgba(255,255,255,0.28);
+        border-radius: 2px;
+        transition: background 0.25s;
+    }
+    .acc-chevron::before { left: 5px;  transform: translateY(-50%) rotate(45deg);  transform-origin: right center; }
+    .acc-chevron::after  { right: 5px; transform: translateY(-50%) rotate(-45deg); transform-origin: left center; }
+    .acc-row.acc-open .acc-chevron {
+        transform: rotate(180deg);
+        border-color: rgba(201,169,110,0.35);
+    }
+    .acc-row.acc-open .acc-chevron::before,
+    .acc-row.acc-open .acc-chevron::after { background: #C9A96E; }
+
+    /* Separador dorado */
+    .acc-row.acc-open .acc-trigger {
+        border-bottom: 0.5px solid rgba(201,169,110,0.18);
+    }
+
+    /* ── Cuerpo expandible ── */
+    .acc-body {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.32s cubic-bezier(0.4,0,0.2,1);
+        background: #111;
+    }
+    .acc-row.acc-open .acc-body { /* max-height se setea por JS */ }
+
+    /* El admin-tab dentro del accordeón */
+    .acc-body .admin-tab {
+        display: block !important;
+        padding: 18px 16px 20px !important;
+    }
+
+    /* ── Formularios táctiles dentro del acordeón ── */
+    .acc-body .form-group { margin-bottom: 16px; }
+    .acc-body .form-group label {
+        font-size: 12px !important;
+        color: rgba(255,255,255,0.45) !important;
+        margin-bottom: 6px;
+        display: block;
+    }
+    .acc-body .form-group input,
+    .acc-body .form-group textarea,
+    .acc-body .form-group select {
+        padding: 13px 14px !important;
+        font-size: 16px !important;
+        min-height: 44px;
+        border-radius: 10px !important;
+        background: rgba(255,255,255,0.05) !important;
+        border: 0.5px solid rgba(255,255,255,0.1) !important;
+        color: rgba(255,255,255,0.88) !important;
+        width: 100%;
+        box-sizing: border-box;
+    }
+    .acc-body .form-group input[type="file"] {
+        padding: 10px 12px !important;
+        font-size: 13px !important;
+    }
+    .acc-body .form-group input::placeholder,
+    .acc-body .form-group textarea::placeholder {
+        color: rgba(255,255,255,0.2) !important;
+    }
+    .acc-body .form-group input:focus,
+    .acc-body .form-group textarea:focus,
+    .acc-body .form-group select:focus {
+        outline: none !important;
+        border-color: rgba(201,169,110,0.45) !important;
+        box-shadow: 0 0 0 3px rgba(201,169,110,0.07) !important;
+    }
+    .acc-body .form-group small {
+        color: rgba(255,255,255,0.3) !important;
+        font-size: 11px !important;
+    }
+    .acc-body .form-row {
+        grid-template-columns: 1fr !important;
+        gap: 0 !important;
+    }
+
+    /* Botones táctiles */
+    .acc-body .btn {
+        min-height: 44px !important;
+        font-size: 14px !important;
+        padding: 12px 18px !important;
+        border-radius: 10px !important;
+    }
+    .acc-body .btn-primary {
+        background: linear-gradient(135deg, #C9A96E, #E8C88A) !important;
+        color: #0D0D0D !important;
+        border: none !important;
+        font-weight: 700 !important;
+    }
+
+    /* Lista de productos en acordeón */
+    .acc-body .product-item {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 10px;
+        padding: 12px !important;
+        background: rgba(255,255,255,0.03) !important;
+        border-radius: 10px;
+        border: 0.5px solid rgba(255,255,255,0.07) !important;
+        margin-bottom: 8px;
+    }
+    .acc-body .product-item-actions {
+        display: flex !important;
+        flex-wrap: wrap !important;
+        gap: 6px !important;
+        width: 100%;
+    }
+    .acc-body .btn-small-icon {
+        flex: 1 1 auto !important;
+        min-height: 38px !important;
+        font-size: 12px !important;
+        padding: 8px 10px !important;
+        border-radius: 8px !important;
+        text-align: center;
+    }
+
+    /* Búsqueda + filtro */
+    .acc-body #searchProductos,
+    .acc-body #filtroCategoria {
+        font-size: 16px !important;
+        padding: 13px 14px !important;
+        width: 100% !important;
+    }
+    .acc-body #manage-products > div:first-child {
+        flex-direction: column !important;
+        gap: 10px !important;
+    }
+
+    /* h3/h4/p dentro del acordeón */
+    .acc-body h3, .acc-body h4 {
+        color: rgba(255,255,255,0.85) !important;
+        font-size: 14px !important;
+    }
+    .acc-body p, .acc-body label {
+        color: rgba(255,255,255,0.50) !important;
+    }
+    .acc-body > .admin-tab > div[style*="background"],
+    .acc-body > .admin-tab > div > div[style*="background"] {
+        background: rgba(255,255,255,0.04) !important;
+        border-color: rgba(255,255,255,0.08) !important;
+    }
+}
+
+/* ═════════════════════════════════
+   Pantallas muy pequeñas (< 380px)
+   ═════════════════════════════════ */
+@media (max-width: 380px) {
+    .admin-header h2 { font-size: 12px !important; }
+    .acc-trigger { padding: 12px 12px !important; }
+    .acc-icon-wrap { width: 34px !important; height: 34px !important; }
+    .acc-label { font-size: 12px !important; }
+    .acc-body .admin-tab { padding: 14px 12px 16px !important; }
+}
+-e 
+
+/* ============================================================
+   ADMIN CLEAN — Integrado desde admin-clean.css
+   ============================================================ */
+
+/* ============================================================
+   TIENDAMAX — ADMIN PANEL CLEANUP CSS
+   Reemplaza estilos inline comunes del panel administrativo
+   ============================================================ */
+
+/* ── Cajas de config (WhatsApp, Tasa, etc.) ─────────────── */
+.admin-config-box {
+    border-radius: 14px;
+    padding: 18px 20px;
+    margin-bottom: 24px;
+}
+
+.admin-config-box.whatsapp {
+    background: rgba(37,211,102,0.08);
+    border: 1.5px solid #25d366;
+}
+
+.admin-config-box.tasa {
+    background: rgba(201,169,110,0.08);
+    border: 1.5px solid rgba(201,169,110,0.4);
+}
+
+.admin-config-box.oferta {
+    background: var(--cream);
+    border: 1.5px solid var(--border-color);
+}
+
+.admin-config-box.agotado {
+    background: rgba(231,76,60,0.07);
+    border: 1.5px solid #e74c3c;
+}
+
+.admin-config-box h4 {
+    margin: 0 0 6px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.admin-config-box h4 .icon {
+    font-size: 20px;
+}
+
+.admin-config-box p.hint {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 14px;
+}
+
+.admin-config-box .input-xl {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    width: 100%;
+}
+
+.admin-config-box .input-lg {
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.admin-config-box .note {
+    font-size: 11px;
+    margin-top: 5px;
+    opacity: 0.7;
+    color: var(--text-muted);
+}
+
+/* ── Botones apilados / filas de acción ─────────────────── */
+.admin-actions-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.admin-actions-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.admin-actions-row > .btn,
+.admin-actions-row > button {
+    flex: 1;
+    min-width: 120px;
+}
+
+/* ── Lista de productos admin (items) ───────────────────── */
+.admin-product-item {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 12px;
+    background: rgba(255,255,255,0.03);
+    border-radius: 10px;
+    border: 0.5px solid rgba(255,255,255,0.07);
+    margin-bottom: 8px;
+}
+
+body.dark-mode .admin-product-item {
+    background: rgba(255,255,255,0.03);
+}
+
+.admin-product-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    width: 100%;
+}
+
+.admin-product-actions .btn-sm {
+    flex: 1 1 auto;
+    min-height: 38px;
+    font-size: 12px;
+    padding: 8px 10px;
+    border-radius: 8px;
+    text-align: center;
+}
+
+/* ── Sync progress bar ──────────────────────────────────── */
+.admin-sync-bar-wrap {
+    margin-top: 14px;
+}
+
+.admin-sync-track {
+    background: #2a2a2a;
+    border-radius: 8px;
+    overflow: hidden;
+    height: 14px;
+    margin-bottom: 6px;
+}
+
+.admin-sync-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #FF6B35, #ff9a6c);
+    transition: width 0.4s ease;
+    border-radius: 8px;
+}
+
+.admin-sync-text {
+    font-size: 12px;
+    color: #aaa;
+    text-align: center;
+    margin: 0;
+}
+
+/* ── Formularios táctiles (móvil admin) ─────────────────── */
+.admin-touch-form .form-group {
+    margin-bottom: 16px;
+}
+
+.admin-touch-form .form-group label {
+    font-size: 12px;
+    color: rgba(255,255,255,0.45);
+    margin-bottom: 6px;
+    display: block;
+}
+
+.admin-touch-form input,
+.admin-touch-form textarea,
+.admin-touch-form select {
+    padding: 13px 14px;
+    font-size: 16px;
+    min-height: 44px;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.05);
+    border: 0.5px solid rgba(255,255,255,0.1);
+    color: rgba(255,255,255,0.88);
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.admin-touch-form input:focus,
+.admin-touch-form textarea:focus,
+.admin-touch-form select:focus {
+    outline: none;
+    border-color: rgba(201,169,110,0.45);
+    box-shadow: 0 0 0 3px rgba(201,169,110,0.07);
+}
+
+.admin-touch-form input[type="file"] {
+    padding: 10px 12px;
+    font-size: 13px;
+}
+
+/* ── Preview boxes (hero image, etc.) ───────────────────── */
+.admin-preview-box {
+    width: 100%;
+    height: 160px;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #eee;
+    margin-bottom: 14px;
+    position: relative;
+}
+
+.admin-preview-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.admin-preview-placeholder {
+    width: 100%;
+    height: 100%;
+    background: var(--graphite);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255,255,255,0.4);
+    font-size: 14px;
+}
+
+/* ── Tab contadores / badges ──────────────────────────────── */
+.admin-tab .badge-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #e74c3c;
+    color: white;
+    border-radius: 50%;
+    font-size: 10px;
+    font-weight: 800;
+    min-width: 16px;
+    height: 16px;
+    padding: 0 3px;
+    margin-left: 4px;
+    vertical-align: middle;
+}
+
+/* ── Caja de info / callout ─────────────────────────────── */
+.admin-callout {
+    background: rgba(52,152,219,0.1);
+    border: 1px dashed #3498db;
+    border-radius: 10px;
+    text-align: center;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+.admin-callout p {
+    font-size: 13px;
+    margin-bottom: 10px;
+    color: var(--text-muted);
+}
+
+/* ── Sincronización global box ───────────────────────────── */
+.admin-sync-box {
+    margin-top: 30px;
+    padding: 20px;
+    border: 2px solid #FF6B35;
+    border-radius: 12px;
+    text-align: center;
+    background: rgba(255,107,53,0.05);
+}
+
+.admin-sync-box h4 {
+    margin-bottom: 10px;
+    font-size: 15px;
+}
+
+.admin-sync-box p {
+    font-size: 13px;
+    margin-bottom: 15px;
+    color: var(--text-muted);
+}
+
+.admin-sync-box .btn-xl {
+    padding: 15px 30px;
+    font-size: 16px;
+    background: #FF6B35;
+}
+
+/* ── Status text (tasa, oferta, etc.) ───────────────────── */
+.admin-status-text {
+    font-size: 12px;
+    margin-top: 8px;
+    text-align: center;
+    color: rgba(255,255,255,0.4);
+}
+
+/* ── Banner list items ──────────────────────────────────── */
+.admin-banner-item {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    background: rgba(0,0,0,0.05);
+    padding: 10px;
+    border-radius: 8px;
+}
+
+.admin-banner-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.admin-banner-thumb {
+    width: 60px;
+    height: 40px;
+    object-fit: contain;
+    border-radius: 6px;
+    flex-shrink: 0;
+}
+
+.admin-banner-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.admin-banner-title {
+    font-size: 11px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: #555;
+}
+
+.admin-banner-link {
+    font-size: 10px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.admin-banner-link.has-link {
+    color: #25D366;
+}
+
+.admin-banner-link.no-link {
+    color: #aaa;
+}
+
+/* ── Edit sub-panel dentro de banner list ───────────────── */
+.admin-edit-panel {
+    display: none;
+    flex-direction: column;
+    gap: 6px;
+    padding-top: 6px;
+    border-top: 1px solid rgba(0,0,0,0.1);
+}
+
+/* ── Scrollbars admin (dark) ────────────────────────────── */
+.admin-panel-content::-webkit-scrollbar,
+.admin-accordion::-webkit-scrollbar {
+    width: 4px;
+}
+.admin-panel-content::-webkit-scrollbar-track,
+.admin-accordion::-webkit-scrollbar-track {
+    background: transparent;
+}
+.admin-panel-content::-webkit-scrollbar-thumb,
+.admin-accordion::-webkit-scrollbar-thumb {
+    background: rgba(201,169,110,0.2);
+    border-radius: 4px;
+}
+
+/* ============================================================
+   SISTEMA DE PÍLDORAS / ACORDEÓN OVERLAY (MÓVIL)
+   Cuando se toca una píldora, pasa al inicio y se sobrepone
+   ============================================================ */
+
+@media (max-width: 768px) {
+    /* Contenedor relativo para que el overlay funcione */
+    .admin-accordion {
+        position: relative;
+        padding: 10px 10px 80px; /* espacio inferior para no tapar con el teclado */
+    }
+
+    /* Fila normal (cerrada) */
+    .acc-row {
+        transition: opacity 0.25s ease, transform 0.25s ease, margin 0.25s ease;
+        position: relative;
+        z-index: 1;
+    }
+
+    /* Cuando UNA fila está abierta en overlay, las demás se atenúan */
+    .admin-accordion:has(.acc-overlay) .acc-row:not(.acc-overlay) {
+        opacity: 0.25;
+        transform: scale(0.97);
+        pointer-events: none;
+        filter: blur(1px);
+    }
+
+    /* La fila activa — se expande en su lugar, sin sticky ni overlay */
+    .acc-row.acc-overlay {
+        position: static;           /* sin sticky — evita conflictos de scroll */
+        overflow: visible;          /* anula el overflow:hidden de admin.premium.css */
+        z-index: auto;
+        background: #0f0f0f;
+        border-color: rgba(201,169,110,0.5);
+        box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+        border-radius: 16px;
+        margin-bottom: 14px;
+        transform: none;
+    }
+
+    /* Trigger sin sticky — scroll del acordeón lleva al trigger naturalmente */
+    .acc-row.acc-overlay .acc-trigger {
+        position: relative;
+        z-index: auto;
+        background: #0f0f0f;
+        border-bottom: 1px solid rgba(201,169,110,0.25);
+    }
+
+    /* Body: sin max-height, sin overflow propio — el acordeón hace el scroll */
+    .acc-row.acc-overlay .acc-body {
+        position: relative;
+        z-index: auto;
+        max-height: none !important;  /* sin límite: el contenido se muestra completo */
+        overflow: visible !important;  /* el scroll lo maneja .admin-accordion */
+        background: #111;
+        border-radius: 0 0 14px 14px;
+        padding-bottom: 24px;
+    }
+
+    /* Eliminar el botón "✕ Cerrar" del pseudo-elemento */
+    .acc-row.acc-overlay::after {
+        display: none;
+        content: none;
+    }
+}
+
+/* Fallback para navegadores sin :has() — JS añade clase .has-overlay */
+.admin-accordion.has-overlay .acc-row:not(.acc-overlay) {
+    opacity: 0.25;
+    transform: scale(0.97);
+    pointer-events: none;
+    filter: blur(1px);
+}
+
+/* ── Clases de utilidad admin (limpian más inline styles) ── */
+.admin-hint {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 14px;
+}
+
+.admin-hint-lg {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+}
+
+.admin-h4-flex {
+    margin: 0 0 6px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.admin-label-sm {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+}
+
+.admin-note {
+    font-size: 11px;
+    margin-top: 5px;
+    opacity: 0.7;
+    color: var(--text-muted);
+}
+
+.admin-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.admin-row-flex {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+}
+
+/* ============================================================
+   VENTAS & ANALYTICS — Clases para limpiar inline styles
+   ============================================================ */
+
+/* ── Stats cards (grid de totales) ── */
+.admin-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 20px;
+}
+.admin-stat-card {
+    color: white;
+    padding: 16px;
+    border-radius: 12px;
+    text-align: center;
+}
+.admin-stat-card.green { background: linear-gradient(135deg, #27ae60, #2ecc71); }
+.admin-stat-card.gold  { background: linear-gradient(135deg, #f39c12, #f1c40f); }
+.admin-stat-card.blue  { background: linear-gradient(135deg, #3498db, #2980b9); }
+.admin-stat-card.red   { background: linear-gradient(135deg, #e74c3c, #c0392b); }
+
+.admin-stat-value {
+    font-size: 22px;
+    font-weight: 900;
+}
+.admin-stat-label {
+    font-size: 11px;
+    opacity: 0.9;
+}
+
+/* ── Dashboard header ── */
+.admin-dash-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+.admin-dash-header h4 {
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+}
+.admin-dash-actions {
+    display: flex;
+    gap: 8px;
+}
+
+/* ── Chart box ── */
+.admin-chart-box {
+    background: #f9f9f9;
+    border: 1px solid #eee;
+    border-radius: 12px;
+    padding: 14px;
+    margin-bottom: 16px;
+}
+body.dark-mode .admin-chart-box {
+    background: #1a1a1a;
+    border-color: #2a2a2a;
+}
+
+.admin-chart-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: #555;
+    margin-bottom: 10px;
+}
+body.dark-mode .admin-chart-title { color: #aaa; }
+
+.admin-chart-bars {
+    display: flex;
+    align-items: flex-end;
+    gap: 3px;
+    height: 70px;
+}
+.admin-chart-bar {
+    flex: 1;
+    border-radius: 4px 4px 0 0;
+    cursor: default;
+    transition: opacity 0.2s;
+}
+.admin-chart-bar:hover { opacity: 0.7; }
+.admin-chart-bar.empty { background: #e8e8e8; }
+body.dark-mode .admin-chart-bar.empty { background: #333; }
+.admin-chart-bar.filled { background: linear-gradient(180deg, #27ae60, #2ecc71); }
+
+.admin-chart-footer {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 4px;
+}
+.admin-chart-footer span {
+    font-size: 9px;
+    color: #aaa;
+}
+
+/* ── Top lists ── */
+.admin-top-list { margin-bottom: 14px; }
+.admin-top-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+body.dark-mode .admin-top-item { border-color: #2a2a2a; }
+
+.admin-top-rank {
+    font-size: 13px;
+    font-weight: 800;
+    color: #ccc;
+    min-width: 18px;
+}
+.admin-top-thumb {
+    width: 28px;
+    height: 28px;
+    object-fit: cover;
+    border-radius: 5px;
+    flex-shrink: 0;
+}
+.admin-top-name {
+    flex: 1;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.admin-top-meta {
+    font-size: 11px;
+    color: #888;
+}
+body.dark-mode .admin-top-meta { color: #777; }
+
+.admin-top-value {
+    font-size: 11px;
+    font-weight: 700;
+}
+.admin-top-value.gold  { color: #f39c12; }
+.admin-top-value.blue  { color: #3498db; }
+
+/* ── Registrar venta section ── */
+.admin-section-title {
+    margin-bottom: 10px;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.admin-search-box {
+    position: relative;
+}
+.admin-search-input {
+    width: 100%;
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    font-size: 14px;
+    box-sizing: border-box;
+    background: var(--cream);
+    color: var(--text-primary);
+}
+body.dark-mode .admin-search-input {
+    background: #1e1e1e;
+    border-color: #333;
+    color: #eee;
+}
+.admin-search-clear {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    color: #aaa;
+    display: none;
+}
+
+/* ── Chips de categoría ── */
+.admin-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+.admin-chip {
+    padding: 5px 12px;
+    border-radius: 20px;
+    border: 1px solid #ddd;
+    background: white;
+    color: #555;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+body.dark-mode .admin-chip {
+    background: #1e1e1e;
+    border-color: #333;
+    color: #aaa;
+}
+.admin-chip.active {
+    background: #3498db;
+    border-color: #3498db;
+    color: white;
+}
+
+/* ── Lista de productos para venta ── */
+.admin-product-list {
+    max-height: 220px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    padding: 6px;
+    background: #fafafa;
+}
+body.dark-mode .admin-product-list {
+    background: #141414;
+    border-color: #2a2a2a;
+}
+
+.admin-product-list-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: all 0.15s;
+    background: white;
+}
+body.dark-mode .admin-product-list-item {
+    background: #1e1e1e;
+}
+.admin-product-list-item:hover,
+.admin-product-list-item.selected {
+    border-color: #27ae60;
+    background: rgba(39,174,96,0.08);
+}
+
+.admin-product-list-item .thumb {
+    width: 38px;
+    height: 38px;
+    object-fit: cover;
+    border-radius: 6px;
+    flex-shrink: 0;
+}
+.admin-product-list-item .thumb-placeholder {
+    width: 38px;
+    height: 38px;
+    border-radius: 6px;
+    background: #eee;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+}
+body.dark-mode .admin-product-list-item .thumb-placeholder { background: #2a2a2a; }
+
+.admin-product-list-item .info {
+    flex: 1;
+    min-width: 0;
+}
+.admin-product-list-item .name {
+    font-weight: 600;
+    font-size: 13px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.admin-product-list-item .meta {
+    font-size: 11px;
+    color: #888;
+}
+body.dark-mode .admin-product-list-item .meta { color: #777; }
+
+.admin-product-list-item .price {
+    font-weight: 700;
+    color: #27ae60;
+    font-size: 13px;
+    flex-shrink: 0;
+}
+
+/* ── Tarjeta producto seleccionado ── */
+.admin-selected-card {
+    display: none;
+    background: linear-gradient(135deg, rgba(39,174,96,0.08), rgba(39,174,96,0.03));
+    border: 1.5px solid rgba(39,174,96,0.35);
+    border-radius: 10px;
+    padding: 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.admin-selected-card img {
+    width: 48px;
+    height: 48px;
+    object-fit: cover;
+    border-radius: 8px;
+    flex-shrink: 0;
+}
+.admin-selected-card .info {
+    flex: 1;
+    min-width: 0;
+}
+.admin-selected-card .name {
+    font-weight: 700;
+    font-size: 14px;
+}
+.admin-selected-card .meta {
+    font-size: 12px;
+    color: #555;
+    margin-top: 2px;
+}
+body.dark-mode .admin-selected-card .meta { color: #aaa; }
+
+/* ── Input row (cantidad + botón) ── */
+.admin-input-row {
+    display: flex;
+    gap: 8px;
+}
+.admin-input-row input {
+    flex: 1;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    font-size: 14px;
+    background: var(--cream);
+    color: var(--text-primary);
+}
+body.dark-mode .admin-input-row input {
+    background: #1e1e1e;
+    border-color: #333;
+    color: #eee;
+}
+.admin-input-row .btn {
+    flex: 2;
+}
+
+/* ── Historial de ventas items ── */
+.admin-history-item {
+    background: rgba(39,174,96,0.06);
+    border: 1px solid rgba(39,174,96,0.2);
+    border-radius: 10px;
+    padding: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+body.dark-mode .admin-history-item {
+    background: rgba(39,174,96,0.04);
+    border-color: rgba(39,174,96,0.15);
+}
+.admin-history-item .info {
+    flex: 1;
+    min-width: 0;
+}
+.admin-history-item .title {
+    font-weight: 700;
+    font-size: 13px;
+}
+.admin-history-item .meta {
+    font-size: 11px;
+    color: #888;
+    margin-top: 2px;
+}
+body.dark-mode .admin-history-item .meta { color: #777; }
+
+.admin-history-item .total {
+    font-size: 14px;
+    font-weight: 700;
+    color: #27ae60;
+}
+.admin-history-item .gain {
+    font-size: 11px;
+    color: #f39c12;
+}
+
+/* ── Botones pequeños (exportar/limpiar) ── */
+.admin-btn-sm {
+    background: #27ae60;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-size: 12px;
+    cursor: pointer;
+    font-weight: 600;
+}
+.admin-btn-sm.red { background: #e74c3c; }
+.admin-btn-sm.outline {
+    background: transparent;
+    border: 1px solid #27ae60;
+    color: #27ae60;
+}
+
+/* ── Paginación ── */
+.admin-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 16px;
+    flex-wrap: wrap;
+}
+.admin-pagination button {
+    padding: 6px 14px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    background: white;
+    cursor: pointer;
+    font-size: 13px;
+}
+.admin-pagination button:disabled {
+    background: #eee;
+    cursor: not-allowed;
+}
+body.dark-mode .admin-pagination button {
+    background: #1e1e1e;
+    border-color: #333;
+    color: #eee;
+}
+body.dark-mode .admin-pagination button:disabled {
+    background: #2a2a2a;
+    color: #666;
+}
+.admin-pagination span {
+    font-size: 13px;
+    opacity: 0.7;
+}
+
+/* ── Analytics stat card (reemplaza stat inline) ── */
+.admin-analytics-stat {
+    background: var(--bg-secondary, #f9f6f1);
+    border-radius: 12px;
+    padding: 14px;
+    text-align: center;
+}
+body.dark-mode .admin-analytics-stat {
+    background: #1e1e1e;
+}
+.admin-analytics-stat .icon {
+    font-size: 22px;
+}
+.admin-analytics-stat .value {
+    font-weight: 800;
+    color: var(--primary-color, #c9a96e);
+}
+.admin-analytics-stat .label {
+    font-size: 11px;
+    color: #999;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+body.dark-mode .admin-analytics-stat .label { color: #777; }
+
+/* ── Alert box (analytics info) ── */
+.admin-alert-box {
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-bottom: 20px;
+    font-size: 13px;
+}
+.admin-alert-box.red {
+    background: rgba(231,76,60,0.08);
+    border: 1px solid #e74c3c;
+    color: #e74c3c;
+}
+.admin-alert-box.green {
+    background: rgba(39,174,96,0.08);
+    border: 1px solid #27ae60;
+    color: #27ae60;
+}
+
+/* ── Category rank bars ── */
+.admin-cat-rank {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.admin-cat-rank .name {
+    min-width: 120px;
+    font-size: 13px;
+}
+.admin-cat-rank .bar-wrap {
+    flex: 1;
+    background: #f0ebe4;
+    border-radius: 99px;
+    height: 8px;
+    overflow: hidden;
+}
+body.dark-mode .admin-cat-rank .bar-wrap { background: #2a2a2a; }
+.admin-cat-rank .bar-fill {
+    background: var(--primary-color, #c9a96e);
+    height: 100%;
+    border-radius: 99px;
+}
+.admin-cat-rank .count {
+    font-size: 12px;
+    color: #999;
+    min-width: 24px;
+}
+body.dark-mode .admin-cat-rank .count { color: #777; }
+
+/* ── Empty / hint text ── */
+.admin-empty {
+    text-align: center;
+    color: #aaa;
+    padding: 16px;
+    font-size: 13px;
+}
+body.dark-mode .admin-empty { color: #666; }
+
+/* ── Hidden selects ── */
+.admin-hidden { display: none !important; }
+
+/* ── Venta cantidad input ── */
+.admin-qty-input {
+    flex: 1;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    font-size: 14px;
+    background: var(--cream);
+    color: var(--text-primary);
+}
+body.dark-mode .admin-qty-input {
+    background: #1e1e1e;
+    border-color: #333;
+    color: #eee;
+}
+
+
+/* ════════════════════════════════════════════════════════════
+   DARK MODE UNIVERSAL — Admin panel
+   Aplica dentro del #adminPanel y del #loginModal
+   sin depender de body.dark-mode (que puede no estar activo)
+   ════════════════════════════════════════════════════════════ */
+
+/* ── Login modal ── */
+#loginModal .modal-content {
+    background: #141414 !important;
+    color: rgba(255,255,255,0.9) !important;
+}
+#loginModal .modal-content .form-group input,
+#loginModal .modal-content .form-group textarea,
+#loginModal .modal-content .form-group select {
+    background: #1e1e1e !important;
+    color: rgba(255,255,255,0.88) !important;
+    border-color: rgba(255,255,255,0.1) !important;
+}
+#loginModal .modal-content .form-group label {
+    color: rgba(255,255,255,0.6) !important;
+}
+#loginModal .modal-content form {
+    background: #141414 !important;
+}
+
+/* ── Admin panel: todos los inputs / selects / textareas ── */
+#adminPanel .form-group input,
+#adminPanel .form-group textarea,
+#adminPanel .form-group select,
+#adminPanel input[type="text"],
+#adminPanel input[type="number"],
+#adminPanel input[type="url"],
+#adminPanel input[type="email"],
+#adminPanel input[type="password"],
+#adminPanel input[type="file"],
+#adminPanel textarea,
+#adminPanel select {
+    background: #1e1e1e !important;
+    color: rgba(255,255,255,0.88) !important;
+    border-color: rgba(255,255,255,0.1) !important;
+}
+#adminPanel .form-group input::placeholder,
+#adminPanel .form-group textarea::placeholder {
+    color: rgba(255,255,255,0.25) !important;
+}
+
+/* ── Tarjetas de producto (fondo blanco → oscuro) ── */
+#adminPanel .admin-product-item,
+#adminPanel .product-item,
+#adminPanel .admin-product-list-item {
+    background: #1e1e1e !important;
+    border-color: rgba(255,255,255,0.08) !important;
+    color: rgba(255,255,255,0.85) !important;
+}
+#adminPanel .admin-product-item:hover,
+#adminPanel .admin-product-list-item:hover {
+    background: #252525 !important;
+}
+
+/* ── Chips y badges ── */
+#adminPanel .admin-chip {
+    background: #1e1e1e !important;
+    border-color: rgba(255,255,255,0.12) !important;
+    color: rgba(255,255,255,0.7) !important;
+}
+#adminPanel .admin-chip.active {
+    background: #2563eb !important;
+    color: #fff !important;
+}
+
+/* ── Listas de productos / paginación ── */
+#adminPanel .admin-product-list {
+    background: #141414 !important;
+    border-color: rgba(255,255,255,0.07) !important;
+}
+#adminPanel .admin-pagination button {
+    background: #1e1e1e !important;
+    border-color: rgba(255,255,255,0.1) !important;
+    color: rgba(255,255,255,0.7) !important;
+}
+#adminPanel .admin-pagination button:disabled {
+    background: #141414 !important;
+    color: rgba(255,255,255,0.25) !important;
+}
+
+/* ── Tablas ── */
+#adminPanel table,
+#adminPanel th,
+#adminPanel td {
+    background: #141414 !important;
+    border-color: rgba(255,255,255,0.07) !important;
+    color: rgba(255,255,255,0.8) !important;
+}
+#adminPanel tr:nth-child(even) td {
+    background: #1a1a1a !important;
+}
+
+/* ── Cajas de configuración ── */
+#adminPanel .admin-config-box {
+    background: #141414 !important;
+    border-color: rgba(255,255,255,0.08) !important;
+}
+#adminPanel .admin-hint,
+#adminPanel .admin-note,
+#adminPanel .admin-label {
+    color: rgba(255,255,255,0.45) !important;
+}
+
+/* ── Fondo de tarjetas similares en carrito ── */
+#adminPanel .cs-card,
+#adminPanel .pedido-card {
+    background: #1e1e1e !important;
+    border-color: rgba(255,255,255,0.08) !important;
+}
+
+/* ── Scrollbars del panel ── */
+#adminPanel ::-webkit-scrollbar { width: 4px; }
+#adminPanel ::-webkit-scrollbar-track { background: #0f0f0f; }
+#adminPanel ::-webkit-scrollbar-thumb { background: rgba(201,169,110,0.3); border-radius: 4px; }
+
+
+/* ============================================================
+   HOTFIX 2026-05-24 — Categorías/Subcategorías en admin oscuro
+   ============================================================ */
+#adminPanel #categoryList,
+#adminPanel #subcategoryList {
+    color: rgba(255,255,255,0.88) !important;
+}
+
+#adminPanel #categoryList > .category-item,
+#adminPanel #subcategoryList .subcategory-item {
+    background: #1e1e1e !important;
+    border: 1px solid rgba(255,255,255,0.08) !important;
+    color: rgba(255,255,255,0.88) !important;
+    box-shadow: none !important;
+}
+
+#adminPanel #categoryList > .category-item {
+    border-left: 3px solid #C9A96E !important;
+    border-radius: 12px !important;
+}
+
+#adminPanel #subcategoryList .subcategory-item {
+    border-left: 3px solid #9B59B6 !important;
+    border-radius: 10px !important;
+}
+
+#adminPanel #categoryList > .category-item span,
+#adminPanel #subcategoryList .subcategory-item span,
+#adminPanel #subcategoryList h4 {
+    color: rgba(255,255,255,0.9) !important;
+}
+
+#adminPanel #categoryList > div[style*="background"],
+#adminPanel #subcategoryList > div[style*="background"],
+#adminPanel #subcategoryList > div[style*="margin-bottom"] {
+    color: rgba(255,255,255,0.85) !important;
+}
+
+#adminPanel #categoryList > div[style*="background"],
+#adminPanel #subcategoryList > div[style*="background"] {
+    background: rgba(255,255,255,0.04) !important;
+    border-color: rgba(255,255,255,0.1) !important;
+}
+
+#adminPanel #categoryList button,
+#adminPanel #subcategoryList button {
+    border: none !important;
+    border-radius: 8px !important;
+    color: #fff !important;
+}
+
+#adminPanel #categoryList > .category-item button {
+    background: #e74c3c !important;
+    padding: 6px 10px !important;
+    font-size: 12px !important;
+    cursor: pointer !important;
+}
+
+#adminPanel #subcategoryList .subcategory-item button {
+    background: #e74c3c !important;
+    padding: 4px 8px !important;
+    font-size: 11px !important;
+    cursor: pointer !important;
+}
+
+#adminPanel #categoryList p,
+#adminPanel #subcategoryList p {
+    color: rgba(255,255,255,0.58) !important;
+}
+
+/* ============================================================
+   HOTFIX 2026-05-24 — Editar producto en modo oscuro
+   El modal de edición vive fuera de #adminPanel, por eso no recibía
+   los estilos oscuros universales del panel.
+   ============================================================ */
+#editModal {
+    background: rgba(0,0,0,0.78) !important;
+}
+
+#editModal .modal-content {
+    background: #141414 !important;
+    color: rgba(255,255,255,0.90) !important;
+    border: 1px solid rgba(255,255,255,0.08) !important;
+    box-shadow: 0 28px 80px rgba(0,0,0,0.58) !important;
+}
+
+#editModal .modal-content form {
+    background: #141414 !important;
+}
+
+#editModal .modal-header {
+    background: linear-gradient(135deg, #101010 0%, #090909 100%) !important;
+    border-bottom: 1px solid rgba(255,255,255,0.08) !important;
+}
+
+#editModal .modal-header h2 {
+    color: rgba(255,255,255,0.94) !important;
+}
+
+#editModal .form-group label,
+#editModal .form-group small {
+    color: rgba(255,255,255,0.58) !important;
+}
+
+#editModal .form-group input,
+#editModal .form-group textarea,
+#editModal .form-group select {
+    background: #1f1f1f !important;
+    color: rgba(255,255,255,0.90) !important;
+    border-color: rgba(255,255,255,0.12) !important;
+    caret-color: #E8C88A !important;
+}
+
+#editModal .form-group input::placeholder,
+#editModal .form-group textarea::placeholder {
+    color: rgba(255,255,255,0.28) !important;
+}
+
+#editModal .form-group input:focus,
+#editModal .form-group textarea:focus,
+#editModal .form-group select:focus {
+    border-color: rgba(232,200,138,0.56) !important;
+    box-shadow: 0 0 0 3px rgba(201,169,110,0.10) !important;
+    outline: none !important;
+}
+
+#editModal input[type="file"] {
+    background: #1f1f1f !important;
+    color: rgba(255,255,255,0.70) !important;
+}
+
+#editModal input[type="file"]::file-selector-button,
+#editModal input[type="file"]::-webkit-file-upload-button {
+    background: linear-gradient(135deg, #2a2a2a, #222) !important;
+    color: rgba(255,255,255,0.88) !important;
+    border: 1px solid rgba(255,255,255,0.14) !important;
+    border-radius: 10px !important;
+    padding: 8px 12px !important;
+    margin-right: 12px !important;
+    font-weight: 700 !important;
+}
+
+#editModal input[type="checkbox"] {
+    width: auto !important;
+    accent-color: #E8C88A !important;
+}
+
+#editModal select option {
+    background: #1f1f1f !important;
+    color: rgba(255,255,255,0.90) !important;
+}
+
+#editModal #currentImagePreview img {
+    border-radius: 12px !important;
+    border: 1px solid rgba(255,255,255,0.10) !important;
+    background: #0f0f0f !important;
+}
+
+#editModal .btn-primary {
+    background: linear-gradient(135deg, #ff6a00, #ff3d00) !important;
+    color: #fff !important;
+    border: none !important;
+    box-shadow: 0 10px 26px rgba(255,106,0,0.24) !important;
+}
+
+#editModal .btn-secondary {
+    background: transparent !important;
+    color: rgba(255,255,255,0.72) !important;
+    border: 1px solid rgba(255,255,255,0.16) !important;
+}
+
+@media (max-width: 768px) {
+    #editModal {
+        align-items: flex-end !important;
+    }
+
+    #editModal .modal-content {
+        width: 100% !important;
+        max-width: 100% !important;
+        max-height: 94dvh !important;
+        border-radius: 22px 22px 0 0 !important;
+    }
+
+    #editModal .modal-content form {
+        padding: 22px 18px calc(26px + env(safe-area-inset-bottom, 0px)) !important;
+    }
+
+    #editModal .form-row {
+        grid-template-columns: 1fr !important;
+        gap: 0 !important;
+    }
+
+    #editModal .form-group input,
+    #editModal .form-group textarea,
+    #editModal .form-group select {
+        min-height: 50px !important;
+        font-size: 16px !important;
+        border-radius: 14px !important;
+    }
+}
+
+/* === Dashboard ventas claro (Fase 1) === */
+.admin-stats-grid.admin-stats-grid-compact {
+    grid-template-columns: repeat(auto-fit, minmax(128px, 1fr));
+}
+.admin-stat-card.purple { background: linear-gradient(135deg, #8e44ad, #9b59b6); }
+.admin-stat-card.dark { background: linear-gradient(135deg, #2c3e50, #34495e); }
+.admin-stat-sub {
+    margin-top: 4px;
+    font-size: 10px;
+    opacity: 0.78;
+    font-weight: 600;
+}
+.admin-inventory-strip {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: -6px 0 16px;
+}
+.admin-inventory-strip span {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 7px 10px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.08);
+    color: rgba(255,255,255,0.78);
+    font-size: 11px;
+    font-weight: 700;
+}
+.admin-dashboard-grid2 {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+}
+.admin-empty-mini {
+    padding: 16px 8px;
+    text-align: center;
+    color: #888;
+    font-size: 12px;
+}
+.admin-top-value.red { color: #e74c3c; }
+@media (max-width: 720px) {
+    .admin-dashboard-grid2 { grid-template-columns: 1fr; }
+    .admin-inventory-strip span { width: 100%; justify-content: center; }
+}
+body:not(.dark-mode) .admin-inventory-strip span {
+    background: rgba(0,0,0,0.035);
+    border-color: rgba(0,0,0,0.08);
+    color: #555;
+}
+
+/* === FIX dashboard móvil: una sola gráfica, sin desbordes y texto legible === */
+#ventasContenido,
+.tm-dashboard-ventas,
+.tm-dashboard-ventas-inner,
+.admin-unified-dashboard {
+    max-width: 100% !important;
+    min-width: 0 !important;
+    overflow-x: hidden !important;
+}
+
+.admin-unified-dashboard,
+#adminPanel .admin-chart-box {
+    background: #16161f !important;
+    border: 1px solid rgba(255,255,255,0.08) !important;
+    color: #f2f2f5 !important;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.22) !important;
+}
+
+#adminPanel .admin-chart-title,
+#adminPanel .admin-top-name,
+#adminPanel .admin-top-meta,
+#adminPanel .admin-chart-footer span,
+#adminPanel .admin-empty-mini {
+    color: inherit !important;
+}
+
+#adminPanel .admin-chart-title {
+    color: rgba(255,255,255,0.78) !important;
+    font-weight: 800 !important;
+}
+
+#adminPanel .admin-top-item {
+    min-width: 0 !important;
+    border-bottom-color: rgba(255,255,255,0.08) !important;
+}
+
+#adminPanel .admin-top-name {
+    color: rgba(255,255,255,0.92) !important;
+    min-width: 0 !important;
+}
+
+#adminPanel .admin-top-meta {
+    color: rgba(255,255,255,0.58) !important;
+    flex-shrink: 0 !important;
+}
+
+#adminPanel .admin-top-rank {
+    color: rgba(255,255,255,0.35) !important;
+}
+
+#adminPanel .admin-top-value {
+    flex-shrink: 0 !important;
+    white-space: nowrap !important;
+}
+
+.admin-unified-sections {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 16px;
+    padding-top: 14px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+}
+
+.admin-mini-section {
+    min-width: 0 !important;
+    background: rgba(255,255,255,0.035);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 12px;
+    padding: 10px 12px;
+    overflow: hidden;
+}
+
+#adminPanel .admin-chart-bars {
+    width: 100% !important;
+    min-width: 0 !important;
+}
+
+@media (max-width: 720px) {
+    .admin-unified-sections {
+        grid-template-columns: 1fr !important;
+    }
+    #adminPanel .admin-top-item {
+        gap: 7px !important;
+    }
+    #adminPanel .admin-top-thumb {
+        width: 34px !important;
+        height: 34px !important;
+    }
+}
+
+/* === Preview de galería en edición de productos === */
+.admin-gallery-preview {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    padding: 8px;
+    border: 1px dashed rgba(201,169,110,.35);
+    border-radius: 12px;
+    background: rgba(255,255,255,.04);
+}
+.admin-gallery-preview img {
+    width: 58px;
+    height: 58px;
+    object-fit: cover;
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,.12);
+}

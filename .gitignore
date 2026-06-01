@@ -1,0 +1,13 @@
+# Historial de ventas — migrado a Firebase
+ventas_historial.json
+
+# Credenciales y auth local
+.admin-auth.json
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+
+# Editores
+.vscode/
+*.swp
