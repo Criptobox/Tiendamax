@@ -949,8 +949,7 @@ if (productos.length === 0) {
     tmDB.get('productos').then(idbProds => {
         if (Array.isArray(idbProds) && idbProds.length > 0 && productos.length === 0) {
             productos = idbProds;
-            if (typeof actualizarUI === 'function') actualizarUI();
-            else if (typeof renderizarProductos === 'function') renderizarProductos();
+            if (typeof renderizarProductos === 'function') renderizarProductos();
         }
     }).catch(() => {});
 }
@@ -4700,8 +4699,11 @@ async function _fbFetch(url, ttlMs = 300_000) {
     if (!res.ok) throw new Error('HTTP ' + res.status);
     const data = await res.json();
     try {
+        // Si el nodo está vacío (null) se cachea con TTL corto para no bloquear
+        // la primera reseña que otro usuario publique en el mismo producto.
+        const efectiveTTL = data === null ? Math.min(ttlMs, 60_000) : ttlMs;
         sessionStorage.setItem(KEY, JSON.stringify(data));
-        sessionStorage.setItem(KEY_TS, String(Date.now()));
+        sessionStorage.setItem(KEY_TS, String(Date.now() - (ttlMs - efectiveTTL)));
     } catch(e) {}
     return data;
 }
