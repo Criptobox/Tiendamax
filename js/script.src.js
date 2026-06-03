@@ -501,7 +501,7 @@ function guardarResena() {
                 });
                 if (r.ok) {
                     mostrarNotificacion('✅ ¡Reseña publicada! Visible para todos');
-                    // Recargar reseñas desde Firebase
+                    _fbInvalidarResenas(base, pid); // forzar re-fetch en renderizarResenas
                     await renderizarResenas(pid);
                     return;
                 }
@@ -526,17 +526,14 @@ async function renderizarResenas(productoId) {
 
     let resenas = [];
 
-    // Leer desde Firebase (fuente de verdad)
+    // Leer desde Firebase (fuente de verdad), con cache de sesión de 5 min
     try {
         const cfg = JSON.parse(localStorage.getItem('firebaseConfig') || '{}');
         const base = cfg.databaseURL || (cfg.projectId ? 'https://' + cfg.projectId + '-default-rtdb.firebaseio.com' : null);
         if (base) {
-            const r = await fetch(base + '/resenas/' + pid + '.json');
-            if (r.ok) {
-                const data = await r.json();
-                if (data && typeof data === 'object') {
-                    resenas = Object.values(data).filter(Boolean).sort((a,b) => b.id - a.id);
-                }
+            const data = await _fbFetch(base + '/resenas/' + pid + '.json', 300_000);
+            if (data && typeof data === 'object') {
+                resenas = Object.values(data).filter(Boolean).sort((a,b) => b.id - a.id);
             }
         }
     } catch(e) {}
@@ -589,10 +586,8 @@ async function cargarTestimoniosFirebase() {
         const base = cfg.databaseURL || (cfg.projectId ? 'https://' + cfg.projectId + '-default-rtdb.firebaseio.com' : null);
         if (!base) throw new Error('no config');
 
-        // Leer todas las reseñas de todos los productos
-        const r = await fetch(base + '/resenas.json?shallow=true');
-        if (!r.ok) throw new Error('fetch failed');
-        const productIds = await r.json();
+        // Leer todas las reseñas de todos los productos (cache de sesión: 10 min)
+        const productIds = await _fbFetch(base + '/resenas.json?shallow=true', 600_000);
         if (!productIds || typeof productIds !== 'object') throw new Error('empty');
 
         // Buscar reseñas de cada producto en paralelo (máx 6 para no saturar)
@@ -600,9 +595,7 @@ async function cargarTestimoniosFirebase() {
         const allResenas = [];
         await Promise.all(pids.map(async pid => {
             try {
-                const rp = await fetch(base + '/resenas/' + pid + '.json');
-                if (!rp.ok) return;
-                const data = await rp.json();
+                const data = await _fbFetch(base + '/resenas/' + pid + '.json', 300_000);
                 if (data && typeof data === 'object') {
                     Object.values(data).filter(Boolean).forEach(r => allResenas.push(r));
                 }
@@ -4556,6 +4549,38 @@ function obtenerGitHubToken() {
     return localStorage.getItem('githubToken') || '';
 }
 
+// ===== CACHE DE FIREBASE RTDB EN SESSIONSTORAGE =====
+// Evita releer los mismos nodos de Firebase dentro de la misma sesión del navegador.
+// ttlMs: tiempo de vida en ms (por defecto 5 min). Pasar 0 para forzar red.
+async function _fbFetch(url, ttlMs = 300_000) {
+    const KEY = '_fb_' + url;
+    const KEY_TS = KEY + '_ts';
+    try {
+        const ts = parseInt(sessionStorage.getItem(KEY_TS) || '0', 10);
+        if (ttlMs > 0 && Date.now() - ts < ttlMs) {
+            const cached = sessionStorage.getItem(KEY);
+            if (cached !== null) return JSON.parse(cached);
+        }
+    } catch(e) {}
+    const res = await fetch(url);
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const data = await res.json();
+    try {
+        sessionStorage.setItem(KEY, JSON.stringify(data));
+        sessionStorage.setItem(KEY_TS, String(Date.now()));
+    } catch(e) {}
+    return data;
+}
+
+// Invalida la entrada de cache de reviews para un producto concreto.
+function _fbInvalidarResenas(base, pid) {
+    try {
+        const url = base + '/resenas/' + String(pid) + '.json';
+        sessionStorage.removeItem('_fb_' + url);
+        sessionStorage.removeItem('_fb_' + url + '_ts');
+    } catch(e) {}
+}
+
 // ===== BARRA DE PROGRESO DORADA =====
 (function initProgress() {
     const bar = document.createElement('div');
@@ -4924,15 +4949,13 @@ abrirDetalleProducto = function(id) {
         if (catEl && catEl.parentNode) catEl.parentNode.appendChild(vistaEl);
     }
     vistaEl.innerHTML = `👁️ ${localTotal.toLocaleString()} vista${localTotal !== 1 ? 's' : ''}`;
-    // Leer el conteo real desde Firebase y actualizar
+    // Leer el conteo real desde Firebase y actualizar (cache 2 min dentro de la sesión)
     (async () => {
         try {
             const cfg = JSON.parse(localStorage.getItem('firebaseConfig') || '{}');
             const base = cfg.databaseURL || (cfg.projectId ? `https://${cfg.projectId}-default-rtdb.firebaseio.com` : null);
             if (!base) return;
-            const res = await fetch(`${base}/analytics/vistas/${String(id)}/count.json`);
-            if (!res.ok) return;
-            const fbCount = await res.json();
+            const fbCount = await _fbFetch(`${base}/analytics/vistas/${String(id)}/count.json`, 120_000);
             if (typeof fbCount !== 'number' || fbCount <= 0) return;
             const el = document.getElementById('detailVistasBadge');
             if (el) el.innerHTML = `👁️ ${fbCount.toLocaleString()} vista${fbCount !== 1 ? 's' : ''}`;
