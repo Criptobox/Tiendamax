@@ -1,69 +1,4 @@
 'use strict';
-// ═══════════════════════════════════════════════════════════════════
-// TABLA DE CONTENIDOS — js/script.src.js (buscar con Ctrl+G o el número de línea)
-//
-//   ~  1  Globals / Constants / Helpers (escapeHtml, safeNum…)
-//   ~ 29  IndexedDB wrapper (tmDB, guardarProductosLocal)
-//   ~ 88  Carrito de compras
-//   ~122  Wishlist / Me Gusta
-//   ~498  Reseñas (renderizarResenas, guardarResena)
-//   ~698  Productos recientes (recientes_v2)
-//   ~808  Notificaciones push del navegador
-//   ~847  Auth / Login admin (PBKDF2, salt, hash)
-//   ~897  Iconos de categoría (ICONOS_MAPA)
-//   ~938  Búsqueda (busquedaLocal, busquedaConIA, sugerencias)
-//   ~1124 Subida de imágenes a GitHub
-//   ~1152 Validación de campos
-//   ~1212 Carga de datos desde GitHub (inicializarTienda)
-//   ~1404 Utilidades generales (mostrarNotificacion, formatearPrecio…)
-//   ~1459 Modales
-//   ~1531 Navegación entre vistas
-//   ~1674 Renderizar categorías
-//   ~1712 Más vendidos
-//   ~1763 Autenticación (login/logout admin)
-//   ~2024 Productos CRUD (guardarProductos, eliminarProducto…)
-//   ~2088 Compresión de imágenes
-//   ~2151 Renderizar grid de productos
-//   ~2258 Galería de producto
-//   ~2318 Detalle de producto (abrirDetalleProducto, modal)
-//   ~2650 Copiar para Facebook/Revolico
-//   ~2701 Publicación en Revolico
-//   ~2737 Gestión de categorías
-//   ~2868 Gestión de productos (editar/eliminar desde admin)
-//   ~3002 Estado del backend
-//   ~3017 Sincronización con GitHub (cargarConfiguracionGitHub)
-//   ~3048 Delta Sync (subirArchivoAGitHub, commit batch)
-//   ~3337 Lógica de persuasión y ventas
-//   ~3410 Inicialización principal (inicializarTienda, DOMContentLoaded)
-//   ~3476 Countdown timer
-//   ~3617 Fast categories (renderizado desde localStorage)
-//   ~3738 Admin — Gestionar (stock, comisiones, tabla)
-//   ~3869 Ventas — registro y listado
-//   ~4143 Grupos de Facebook
-//   ~4242 Tasa MN — actualización manual
-//   ~4267 Revolico config
-//   ~4333 Oferta del día
-//   ~4481 Badges de agotado/oferta en grid
-//   ~4615 Token de GitHub (obtenerGitHubToken)
-//   ~4621 Cache Firebase RTDB (_fbFetch, _fbInvalidarResenas)
-//   ~4653 Barra de progreso dorada
-//   ~4675 Toast glassmorphism
-//   ~4710 Placeholder animado en búsqueda
-//   ~4751 Animaciones UI (fly-to-cart, skeleton, analytics counter)
-//   ~4893 Búsqueda/filtro en pestaña Ventas
-//   ~4967 Analytics premium (vistas, dashboard, exportar CSV)
-//   ~5419 Carrusel / slider
-//   ~5498 Modo offline
-//   ~5546 WhatsApp integration
-//   ~5637 Registro Service Worker + Notificaciones push FCM
-//   ~5855 Configuración de tienda (horario, WhatsApp, etc.)
-//   ~5983 Burbuja tasa del día
-//   ~6062 Pedidos / Mis pedidos
-//   ~6452 Cupones / descuentos
-//   ~6684 Checkout / confirmación de pedido
-//   ~7013 Inicialización tardía (tablas, tooltips, misc)
-// ═══════════════════════════════════════════════════════════════════
-
 // ===== VARIABLES GLOBALES INICIALIZADAS TEMPRANO (evitar TDZ) =====
 var countdownIntervals = {};
 let _monedaActual = localStorage.getItem('monedaActual') || 'USD';
@@ -90,65 +25,6 @@ function safeNum(n, def = 0) {
     return isFinite(v) ? v : def;
 }
 
-
-// ===== INDEXEDDB WRAPPER =====
-// Almacenamiento alternativo para datos grandes (productos) cuando localStorage se llena.
-// API idéntica a localStorage pero async; nunca lanza excepciones al caller.
-const tmDB = (() => {
-    let _db = null;
-    function _open() {
-        if (_db) return Promise.resolve(_db);
-        return new Promise((resolve, reject) => {
-            const req = indexedDB.open('tiendamax', 1);
-            req.onupgradeneeded = e => { e.target.result.createObjectStore('kv'); };
-            req.onsuccess  = e => { _db = e.target.result; resolve(_db); };
-            req.onerror    = () => reject(req.error);
-        });
-    }
-    async function get(key) {
-        try {
-            const db = await _open();
-            return new Promise((res, rej) => {
-                const r = db.transaction('kv').objectStore('kv').get(key);
-                r.onsuccess = () => res(r.result ?? null);
-                r.onerror   = () => rej(r.error);
-            });
-        } catch(e) { return null; }
-    }
-    async function set(key, value) {
-        try {
-            const db = await _open();
-            return new Promise((res, rej) => {
-                const r = db.transaction('kv','readwrite').objectStore('kv').put(value, key);
-                r.onsuccess = () => res();
-                r.onerror   = () => rej(r.error);
-            });
-        } catch(e) {}
-    }
-    async function remove(key) {
-        try {
-            const db = await _open();
-            return new Promise((res, rej) => {
-                const r = db.transaction('kv','readwrite').objectStore('kv').delete(key);
-                r.onsuccess = () => res();
-                r.onerror   = () => rej(r.error);
-            });
-        } catch(e) {}
-    }
-    return { get, set, remove };
-})();
-
-// Guarda productos en localStorage con fallback a IDB si hay QuotaExceededError.
-async function guardarProductosLocal(lista) {
-    try {
-        localStorage.setItem('productos', JSON.stringify(lista));
-    } catch(e) {
-        if (e.name === 'QuotaExceededError') {
-            console.warn('⚠️ localStorage lleno — productos guardados solo en IndexedDB');
-        }
-    }
-    await tmDB.set('productos', lista);
-}
 
 // ═══════════════════════════════════════════════════════
 //  🛒 CARRITO DE COMPRAS — con persistencia 24h
@@ -625,7 +501,7 @@ function guardarResena() {
                 });
                 if (r.ok) {
                     mostrarNotificacion('✅ ¡Reseña publicada! Visible para todos');
-                    _fbInvalidarResenas(base, pid); // forzar re-fetch en renderizarResenas
+                    // Recargar reseñas desde Firebase
                     await renderizarResenas(pid);
                     return;
                 }
@@ -650,14 +526,17 @@ async function renderizarResenas(productoId) {
 
     let resenas = [];
 
-    // Leer desde Firebase (fuente de verdad), con cache de sesión de 5 min
+    // Leer desde Firebase (fuente de verdad)
     try {
         const cfg = JSON.parse(localStorage.getItem('firebaseConfig') || '{}');
         const base = cfg.databaseURL || (cfg.projectId ? 'https://' + cfg.projectId + '-default-rtdb.firebaseio.com' : null);
         if (base) {
-            const data = await _fbFetch(base + '/resenas/' + pid + '.json', 300_000);
-            if (data && typeof data === 'object') {
-                resenas = Object.values(data).filter(Boolean).sort((a,b) => b.id - a.id);
+            const r = await fetch(base + '/resenas/' + pid + '.json');
+            if (r.ok) {
+                const data = await r.json();
+                if (data && typeof data === 'object') {
+                    resenas = Object.values(data).filter(Boolean).sort((a,b) => b.id - a.id);
+                }
             }
         }
     } catch(e) {}
@@ -710,8 +589,10 @@ async function cargarTestimoniosFirebase() {
         const base = cfg.databaseURL || (cfg.projectId ? 'https://' + cfg.projectId + '-default-rtdb.firebaseio.com' : null);
         if (!base) throw new Error('no config');
 
-        // Leer todas las reseñas de todos los productos (cache de sesión: 10 min)
-        const productIds = await _fbFetch(base + '/resenas.json?shallow=true', 600_000);
+        // Leer todas las reseñas de todos los productos
+        const r = await fetch(base + '/resenas.json?shallow=true');
+        if (!r.ok) throw new Error('fetch failed');
+        const productIds = await r.json();
         if (!productIds || typeof productIds !== 'object') throw new Error('empty');
 
         // Buscar reseñas de cada producto en paralelo (máx 6 para no saturar)
@@ -719,7 +600,9 @@ async function cargarTestimoniosFirebase() {
         const allResenas = [];
         await Promise.all(pids.map(async pid => {
             try {
-                const data = await _fbFetch(base + '/resenas/' + pid + '.json', 300_000);
+                const rp = await fetch(base + '/resenas/' + pid + '.json');
+                if (!rp.ok) return;
+                const data = await rp.json();
                 if (data && typeof data === 'object') {
                     Object.values(data).filter(Boolean).forEach(r => allResenas.push(r));
                 }
@@ -944,15 +827,6 @@ const _OLD_HASHES = [
 
 let productos = JSON.parse(localStorage.getItem('productos')) || [];
 let categorias = JSON.parse(localStorage.getItem('categorias')) || ['General'];
-// Si localStorage estaba vacío (p.ej. cuota excedida), intentar IDB en background
-if (productos.length === 0) {
-    tmDB.get('productos').then(idbProds => {
-        if (Array.isArray(idbProds) && idbProds.length > 0 && productos.length === 0) {
-            productos = idbProds;
-            if (typeof renderizarProductos === 'function') renderizarProductos();
-        }
-    }).catch(() => {});
-}
 let usuarioAutenticado = false;
 let categoriaSeleccionada = 'Todas';
 let subcategoriaSeleccionada = 'Todas';
@@ -1395,7 +1269,7 @@ async function cargarDatosDesdeGitHub() {
                 if (local && local.resenas && local.resenas.length > 0) p.resenas = local.resenas;
                 return p;
             });
-            guardarProductosLocal(productos); // IDB fallback si localStorage está lleno
+            localStorage.setItem('productos', JSON.stringify(productos));
             // Refrescar categorías con conteos reales ahora que productos está listo
             renderizarCategoriasHomeInstant();
         }
@@ -1757,13 +1631,13 @@ function renderizarCategoriasHome() {
     categorias.forEach(cat => {
         const count = productos.filter(p => p.categoria === cat).length;
         const card = document.createElement('div');
-        card.className = 'categoria-card' + (count === 0 ? ' cat-proximamente' : '');
+        card.className = 'categoria-card';
         card.innerHTML = `
             <span class="cat-icon">${escapeHtml(obtenerIconoCategoria(cat))}</span>
             <span class="cat-name">${escapeHtml(cat)}</span>
             <span class="cat-count">${count === 0 ? '🕐 Próximamente' : safeNum(count) + ' producto' + (count !== 1 ? 's' : '')}</span>
         `;
-        card.onclick = count === 0 ? null : () => mostrarVistaCategoria(cat);
+        card.onclick = () => mostrarVistaCategoria(cat);
         grid.appendChild(card);
     });
     // Dispara animaciones CSS DESPUÉS de que el DOM está poblado
@@ -2146,7 +2020,7 @@ async function agregarProductoForm(event) {
 }
 
 function guardarProductos() {
-    guardarProductosLocal(productos);
+    localStorage.setItem('productos', JSON.stringify(productos));
 }
 
 // ===== COMPRESIÓN DE IMÁGENES =====
@@ -3201,10 +3075,10 @@ async function sincronizarTodoConGitHub() {
         { path: 'config.json',                 data: _configSync },
     ];
 
-    // Si hay productos modificados: subir solo productos.json + comisiones.json + config.json
+    // Si hay productos modificados: subir solo productos.json + config.json + grupos
     // Si no hay delta: subir todo
     const archivosFiltrados = hayDelta
-        ? archivos.filter(a => a.path === 'productos.json' || a.path === 'config.json')
+        ? archivos.filter(a => ['productos.json', 'config.json', 'grupos_facebook_config.json'].includes(a.path))
         : archivos;
 
     let ok = 0, errors = [];
@@ -3426,8 +3300,19 @@ function verificarOfertasYMostrarBanner() {
 
     if (ofertaDiaId) {
         targetId = ofertaDiaId;
+        while (banner.firstChild) banner.removeChild(banner.firstChild);
+        const spanFlash = document.createElement('span');
+        spanFlash.className = 'flash-deal';
+        spanFlash.textContent = ofertaDiaTexto + ' · VER AHORA →';
+        banner.appendChild(spanFlash);
     } else if (cdValido) {
         targetId = cdObj.productId;
+        while (banner.firstChild) banner.removeChild(banner.firstChild);
+        banner.appendChild(document.createTextNode('🔥 ' + (cdObj.texto || '¡Oferta especial!') + ' '));
+        const spanFlash = document.createElement('span');
+        spanFlash.className = 'flash-deal';
+        spanFlash.textContent = 'VER AHORA →';
+        banner.appendChild(spanFlash);
     } else {
         // No hay oferta ni countdown → ocultar con !important + clase para
         // ganarle a la regla CSS '.urgencia-banner{display:flex !important}'
@@ -3440,19 +3325,6 @@ function verificarOfertasYMostrarBanner() {
 
     // Sí hay oferta → quitar la clase que lo bloquea y mostrarlo
     if (document.body) document.body.classList.remove('tm-no-oferta-banner');
-    while (banner.firstChild) banner.removeChild(banner.firstChild);
-    if (ofertaDiaId) {
-        const sp = document.createElement('span');
-        sp.className = 'flash-deal';
-        sp.textContent = ofertaDiaTexto + ' · VER AHORA →';
-        banner.appendChild(sp);
-    } else {
-        banner.appendChild(document.createTextNode('🔥 ' + (cdObj.texto || '¡Oferta especial!') + ' '));
-        const sp = document.createElement('span');
-        sp.className = 'flash-deal';
-        sp.textContent = 'VER AHORA →';
-        banner.appendChild(sp);
-    }
     banner.style.setProperty('display', 'flex', 'important');
     banner.style.cursor  = 'pointer';
     setTimeout(actualizarOffsetsUI, 0);
@@ -3701,9 +3573,9 @@ function renderizarCategoriasHomeInstant() {
     localCats.forEach(cat => {
         const count = localProds.filter(p => p.categoria === cat).length;
         const card = document.createElement('div');
-        card.className = 'categoria-card' + (count === 0 ? ' cat-proximamente' : '');
+        card.className = 'categoria-card';
         card.innerHTML = `<span class="cat-icon">${obtenerIconoCategoria(cat)}</span><span class="cat-name">${cat}</span><span class="cat-count">${count === 0 ? '🕐 Próximamente' : count + ' producto' + (count !== 1 ? 's' : '')}</span>`;
-        card.onclick = count === 0 ? null : () => mostrarVistaCategoria(cat);
+        card.onclick = () => mostrarVistaCategoria(cat);
         grid.appendChild(card);
     });
     // Dispara animaciones CSS DESPUÉS de que el DOM está poblado
@@ -4145,13 +4017,7 @@ function renderizarVentas(pagina) {
         html += '<p class="admin-empty">No hay ventas registradas aún.</p>';
     } else {
         html += '<div style="display:flex;flex-direction:column;gap:8px;">';
-        let _lastVentaDate = null;
         ventasPagina.forEach(v => {
-            const _vFecha = new Date(Number(v.id || 0)).toLocaleDateString('es-ES', {day:'numeric', month:'short', year:'numeric'});
-            if (_vFecha !== _lastVentaDate) {
-                _lastVentaDate = _vFecha;
-                html += `<div style="font-size:10px;color:#888;letter-spacing:.4px;padding:10px 0 4px;border-bottom:1px solid rgba(255,255,255,0.06);text-transform:uppercase;">${_vFecha}</div>`;
-            }
             html += `<div class="admin-history-item">
                 <div class="info">
                     <div class="title">${v.producto}</div>
@@ -4218,38 +4084,128 @@ function renderizarGruposFB(grupos) {
     const cont = document.getElementById('listaGruposFB');
     if (!cont) return;
 
+    cont.innerHTML = '';
+
     if (grupos.length === 0) {
-        cont.innerHTML = '<p style="font-size:13px;color:var(--text-muted);text-align:center;padding:10px;">No hay grupos configurados aún.</p>';
+        const empty = document.createElement('p');
+        empty.style.cssText = 'font-size:13px;color:var(--text-muted);text-align:center;padding:10px;';
+        empty.textContent = 'No hay grupos configurados aún.';
+        cont.appendChild(empty);
         return;
     }
 
-    cont.innerHTML = grupos.map((g, i) => `
-        <div style="background:var(--card-bg,#fff);border:1.5px solid var(--border-color);border-radius:12px;padding:14px;position:relative;" id="grupoFB_${i}">
-            <button onclick="eliminarGrupoFB(${i})" style="position:absolute;top:10px;right:10px;background:none;border:none;cursor:pointer;font-size:18px;color:#e74c3c;">✕</button>
-            <div style="margin-bottom:10px;">
-                <label style="font-size:12px;font-weight:600;display:block;margin-bottom:4px;">URL del Grupo:</label>
-                <input type="text" value="${g.url||''}" onchange="actualizarGrupoFB(${i},'url',this.value)"
-                    placeholder="https://www.facebook.com/groups/..." 
-                    style="width:100%;padding:8px 10px;border-radius:8px;border:1px solid var(--border-color);font-size:13px;box-sizing:border-box;">
-            </div>
-            <div>
-                <label style="font-size:12px;font-weight:600;display:block;margin-bottom:6px;">Productos a publicar en este grupo:</label>
-                <div style="display:flex;flex-direction:column;gap:6px;">
-                    ${productos.map(p => `
-                        <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer;">
-                            <input type="checkbox" ${(g.productos||[]).includes(p.id) ? 'checked' : ''}
-                                onchange="toggleProductoEnGrupo(${i}, ${p.id}, this.checked)"
-                                style="width:16px;height:16px;accent-color:var(--primary);">
-                            <img src="${p.imagen}" style="width:28px;height:28px;border-radius:6px;object-fit:cover;" onerror="this.style.display='none'">
-                            <span>${p.nombre}</span>
-                            <span style="margin-left:auto;color:var(--primary);font-weight:600;">$${p.precioActual}</span>
-                        </label>
-                    `).join('')}
-                </div>
-                ${productos.length === 0 ? '<p style="font-size:12px;color:var(--text-muted);">No hay productos cargados aún.</p>' : ''}
-            </div>
-        </div>
-    `).join('');
+    grupos.forEach((g, i) => {
+        const card = document.createElement('div');
+        card.id = `grupoFB_${i}`;
+        card.style.cssText = 'background:var(--card-bg,#fff);border:1.5px solid var(--border-color);border-radius:12px;padding:14px;position:relative;';
+
+        // Botón eliminar
+        const btnDel = document.createElement('button');
+        btnDel.type = 'button';
+        btnDel.style.cssText = 'position:absolute;top:10px;right:10px;background:none;border:none;cursor:pointer;font-size:18px;color:#e74c3c;';
+        btnDel.textContent = '✕';
+        btnDel.addEventListener('click', () => eliminarGrupoFB(i));
+        card.appendChild(btnDel);
+
+        // Campo nombre
+        const labelNombre = document.createElement('label');
+        labelNombre.style.cssText = 'font-size:12px;font-weight:600;display:block;margin-bottom:4px;';
+        labelNombre.textContent = 'Nombre del grupo:';
+        const inputNombre = document.createElement('input');
+        inputNombre.type = 'text';
+        inputNombre.value = g.nombre || '';
+        inputNombre.placeholder = 'Ej: Tecnología Cuba, Ofertas Habana…';
+        inputNombre.style.cssText = 'width:100%;padding:8px 10px;border-radius:8px;border:1px solid var(--border-color);font-size:13px;box-sizing:border-box;margin-bottom:10px;';
+        inputNombre.addEventListener('input', () => actualizarGrupoFB(i, 'nombre', inputNombre.value));
+        const wrapNombre = document.createElement('div');
+        wrapNombre.style.marginBottom = '8px';
+        wrapNombre.appendChild(labelNombre);
+        wrapNombre.appendChild(inputNombre);
+        card.appendChild(wrapNombre);
+
+        // Campo URL
+        const labelUrl = document.createElement('label');
+        labelUrl.style.cssText = 'font-size:12px;font-weight:600;display:block;margin-bottom:4px;';
+        labelUrl.textContent = 'URL del Grupo:';
+        const inputUrl = document.createElement('input');
+        inputUrl.type = 'text';
+        inputUrl.value = g.url || '';
+        inputUrl.placeholder = 'https://www.facebook.com/groups/...';
+        inputUrl.style.cssText = 'width:100%;padding:8px 10px;border-radius:8px;border:1px solid var(--border-color);font-size:13px;box-sizing:border-box;';
+        inputUrl.addEventListener('input', () => actualizarGrupoFB(i, 'url', inputUrl.value));
+        const wrapUrl = document.createElement('div');
+        wrapUrl.style.marginBottom = '12px';
+        wrapUrl.appendChild(labelUrl);
+        wrapUrl.appendChild(inputUrl);
+        card.appendChild(wrapUrl);
+
+        // Lista de productos con checkboxes
+        const labelProds = document.createElement('label');
+        labelProds.style.cssText = 'font-size:12px;font-weight:600;display:block;margin-bottom:6px;';
+        labelProds.textContent = 'Productos a publicar en este grupo:';
+        card.appendChild(labelProds);
+
+        const listProds = document.createElement('div');
+        listProds.style.cssText = 'display:flex;flex-direction:column;gap:6px;margin-bottom:12px;';
+
+        if (productos.length === 0) {
+            const noP = document.createElement('p');
+            noP.style.cssText = 'font-size:12px;color:var(--text-muted);';
+            noP.textContent = 'No hay productos cargados aún.';
+            listProds.appendChild(noP);
+        } else {
+            const productosOrdenados = [...productos].sort((a, b) => {
+                const aAgo = !a.stock || a.stock <= 0;
+                const bAgo = !b.stock || b.stock <= 0;
+                return aAgo - bAgo;
+            });
+            productosOrdenados.forEach(p => {
+                const agotado = !p.stock || p.stock <= 0;
+                const row = document.createElement('label');
+                row.style.cssText = `display:flex;align-items:center;gap:8px;font-size:13px;
+                    cursor:${agotado ? 'not-allowed' : 'pointer'};
+                    opacity:${agotado ? '0.38' : '1'};`;
+                const chk = document.createElement('input');
+                chk.type = 'checkbox';
+                chk.checked = !agotado && (g.productos || []).includes(p.id);
+                chk.disabled = agotado;
+                chk.style.cssText = 'width:16px;height:16px;accent-color:var(--primary);flex-shrink:0;';
+                if (!agotado) chk.addEventListener('change', () => toggleProductoEnGrupo(i, p.id, chk.checked));
+                const img = document.createElement('img');
+                img.src = p.imagen || '';
+                img.style.cssText = 'width:28px;height:28px;border-radius:6px;object-fit:cover;flex-shrink:0;';
+                img.onerror = () => { img.style.display = 'none'; };
+                const nombre = document.createElement('span');
+                nombre.style.cssText = 'overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;';
+                nombre.textContent = p.nombre;
+                const right = document.createElement('span');
+                right.style.cssText = 'margin-left:auto;font-size:11px;font-weight:600;flex-shrink:0;white-space:nowrap;';
+                if (agotado) {
+                    right.style.color = '#e74c3c';
+                    right.textContent = '🚫 Agotado';
+                } else {
+                    right.style.color = 'var(--primary)';
+                    right.textContent = `$${p.precioActual}`;
+                }
+                row.appendChild(chk);
+                row.appendChild(img);
+                row.appendChild(nombre);
+                row.appendChild(right);
+                listProds.appendChild(row);
+            });
+        }
+        card.appendChild(listProds);
+
+        // Botón publicar en este grupo
+        const btnPublicar = document.createElement('button');
+        btnPublicar.type = 'button';
+        btnPublicar.style.cssText = 'width:100%;padding:10px;background:#4267B2;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;';
+        btnPublicar.textContent = '📢 Publicar productos en este grupo';
+        btnPublicar.addEventListener('click', () => publicarEnGrupoFB(i));
+        card.appendChild(btnPublicar);
+
+        cont.appendChild(card);
+    });
 }
 
 function agregarGrupoFB() {
@@ -4285,24 +4241,30 @@ function toggleProductoEnGrupo(iGrupo, idProducto, checked) {
     localStorage.setItem('gruposFB', JSON.stringify(grupos));
 }
 
-function guardarGruposFB() {
+async function guardarGruposFB() {
     const grupos = JSON.parse(localStorage.getItem('gruposFB') || '[]');
     const validos = grupos.filter(g => g.url && g.url.includes('facebook.com'));
 
-    // Exportar para el bot
-    const config = {
-        grupos: validos,
-        exportado: new Date().toISOString(),
-        instrucciones: "Copia este JSON y pégalo en el bot como variable GRUPOS_FB_CONFIG"
-    };
+    localStorage.setItem('gruposFB', JSON.stringify(validos));
 
-    const blob = new Blob([JSON.stringify(config, null, 2)], {type: 'application/json'});
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = 'grupos_facebook_config.json';
-    a.click();
+    const data = { grupos: validos, exportado: new Date().toISOString() };
 
-    mostrarNotificacion(`✅ ${validos.length} grupos guardados. Descargado grupos_facebook_config.json para el bot.`);
+    const user  = localStorage.getItem('githubUser');
+    const repo  = localStorage.getItem('githubRepo');
+    const token = localStorage.getItem('githubToken');
+
+    if (!user || !repo || !token) {
+        mostrarNotificacion(`✅ ${validos.length} grupos guardados localmente. Configura GitHub para persistirlos en la nube.`, 'info');
+        return;
+    }
+
+    try {
+        mostrarNotificacion('☁️ Guardando grupos en GitHub…', 'info');
+        await subirArchivoAGitHub(user, repo, token, 'grupos_facebook_config.json', data);
+        mostrarNotificacion(`✅ ${validos.length} grupos guardados en GitHub — persistirán aunque borres el navegador.`, 'success');
+    } catch(e) {
+        mostrarNotificacion('⚠️ Grupos guardados localmente. Error al subir a GitHub: ' + e.message, 'warning');
+    }
 }
 
 
@@ -4340,26 +4302,70 @@ function renderizarRevolicoConfig() {
     const cont = document.getElementById('listaRevolicoConfig');
     if (!cont) return;
 
+    cont.innerHTML = '';
     const config = JSON.parse(localStorage.getItem('revolicoConfig') || '{}');
 
     if (productos.length === 0) {
-        cont.innerHTML = '<p style="font-size:13px;color:var(--text-muted);text-align:center;padding:10px;">No hay productos cargados aún.</p>';
+        const empty = document.createElement('p');
+        empty.style.cssText = 'font-size:13px;color:var(--text-muted);text-align:center;padding:10px;';
+        empty.textContent = 'No hay productos cargados aún.';
+        cont.appendChild(empty);
         return;
     }
 
-    cont.innerHTML = productos.map(p => {
+    const ordenados = [...productos].sort((a, b) => {
+        const aAgo = !a.stock || a.stock <= 0;
+        const bAgo = !b.stock || b.stock <= 0;
+        return aAgo - bAgo;
+    });
+
+    ordenados.forEach(p => {
+        const agotado = !p.stock || p.stock <= 0;
         const catActual = config[p.id] || '';
-        return `
-        <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--card-bg,#fff);border-radius:10px;border:1px solid var(--border-color);flex-wrap:wrap;">
-            <img src="${p.imagen}" style="width:40px;height:40px;border-radius:8px;object-fit:cover;flex-shrink:0;" onerror="this.style.display='none'">
-            <span style="flex:1;font-size:13px;font-weight:600;min-width:120px;">${p.nombre}</span>
-            <select onchange="actualizarRevolicoCat(${p.id}, this.value)"
-                style="flex:2;min-width:180px;padding:8px 10px;border-radius:8px;border:1.5px solid var(--border-color);font-size:12px;background:var(--card-bg,#fff);color:var(--text-primary,#333);">
-                <option value="">— No publicar en Revolico —</option>
-                ${REVOLICO_CATS.map(c => `<option value="${c}" ${c === catActual ? 'selected' : ''}>${c}</option>`).join('')}
-            </select>
-        </div>`;
-    }).join('');
+
+        const row = document.createElement('div');
+        row.style.cssText = `display:flex;align-items:center;gap:10px;padding:10px 12px;
+            background:var(--card-bg,#fff);border-radius:10px;border:1px solid var(--border-color);
+            flex-wrap:wrap;opacity:${agotado ? '0.38' : '1'};`;
+
+        const img = document.createElement('img');
+        img.src = p.imagen || '';
+        img.style.cssText = 'width:40px;height:40px;border-radius:8px;object-fit:cover;flex-shrink:0;';
+        img.onerror = () => { img.style.display = 'none'; };
+
+        const nombre = document.createElement('span');
+        nombre.style.cssText = 'flex:1;font-size:13px;font-weight:600;min-width:120px;';
+        nombre.textContent = p.nombre;
+
+        if (agotado) {
+            const badge = document.createElement('span');
+            badge.style.cssText = 'font-size:11px;color:#e74c3c;font-weight:700;flex:2;min-width:180px;';
+            badge.textContent = '🚫 Agotado — no se publicará';
+            row.appendChild(img);
+            row.appendChild(nombre);
+            row.appendChild(badge);
+        } else {
+            const sel = document.createElement('select');
+            sel.style.cssText = 'flex:2;min-width:180px;padding:8px 10px;border-radius:8px;border:1.5px solid var(--border-color);font-size:12px;background:var(--card-bg,#fff);color:var(--text-primary,#333);';
+            const optDefault = document.createElement('option');
+            optDefault.value = '';
+            optDefault.textContent = '— No publicar en Revolico —';
+            sel.appendChild(optDefault);
+            REVOLICO_CATS.forEach(c => {
+                const opt = document.createElement('option');
+                opt.value = c;
+                opt.textContent = c;
+                if (c === catActual) opt.selected = true;
+                sel.appendChild(opt);
+            });
+            sel.addEventListener('change', () => actualizarRevolicoCat(p.id, sel.value));
+            row.appendChild(img);
+            row.appendChild(nombre);
+            row.appendChild(sel);
+        }
+
+        cont.appendChild(row);
+    });
 }
 
 function actualizarRevolicoCat(idProducto, categoria) {
@@ -4539,9 +4545,9 @@ function renderizarListaAgotados() {
     }
     // FIX BUG #8: sanitización anti-XSS
     el.innerHTML = agotados.map(p =>
-        '<div style="display:flex;align-items:center;gap:10px;padding:10px;background:rgba(255,255,255,0.05);border-radius:10px;border:1px solid rgba(231,76,60,0.3);">' +
+        '<div style="display:flex;align-items:center;gap:10px;padding:10px;background:var(--card-bg,#fff);border-radius:10px;border:1px solid rgba(231,76,60,0.3);">' +
             '<img src="' + escapeAttr(p.imagen) + '" style="width:40px;height:40px;border-radius:8px;object-fit:cover;" onerror="this.style.display=\'none\'">' +
-            '<div style="flex:1;"><div style="font-size:13px;font-weight:700;color:var(--text,#f2f2f5);">' + escapeHtml(p.nombre) + '</div>' +
+            '<div style="flex:1;"><div style="font-size:13px;font-weight:700;">' + escapeHtml(p.nombre) + '</div>' +
             '<div style="font-size:11px;color:#e74c3c;font-weight:700;">📦 AGOTADO</div></div>' +
             '<button class="btn btn-primary" onclick="abrirEditModal(' + safeNum(p.id) + ')" style="font-size:11px;padding:6px 10px;">✏️ Editar</button>' +
         '</div>'
@@ -4682,64 +4688,18 @@ renderizarProductos = function() {
     if (old) old.remove();
 })();
 
-// ===== ACCESO CENTRALIZADO AL TOKEN DE GITHUB =====
-// Punto único de lectura: facilita auditoría y futura migración a proxy seguro.
-function obtenerGitHubToken() {
-    return localStorage.getItem('githubToken') || '';
-}
-
-// ===== CACHE DE FIREBASE RTDB EN SESSIONSTORAGE =====
-// Evita releer los mismos nodos de Firebase dentro de la misma sesión del navegador.
-// ttlMs: tiempo de vida en ms (por defecto 5 min). Pasar 0 para forzar red.
-async function _fbFetch(url, ttlMs = 300_000) {
-    const KEY = '_fb_' + url;
-    const KEY_TS = KEY + '_ts';
-    try {
-        const ts = parseInt(sessionStorage.getItem(KEY_TS) || '0', 10);
-        if (ttlMs > 0 && Date.now() - ts < ttlMs) {
-            const cached = sessionStorage.getItem(KEY);
-            if (cached !== null) return JSON.parse(cached);
-        }
-    } catch(e) {}
-    const res = await fetch(url);
-    if (!res.ok) throw new Error('HTTP ' + res.status);
-    const data = await res.json();
-    try {
-        // Si el nodo está vacío (null) se cachea con TTL corto para no bloquear
-        // la primera reseña que otro usuario publique en el mismo producto.
-        const efectiveTTL = data === null ? Math.min(ttlMs, 60_000) : ttlMs;
-        sessionStorage.setItem(KEY, JSON.stringify(data));
-        sessionStorage.setItem(KEY_TS, String(Date.now() - (ttlMs - efectiveTTL)));
-    } catch(e) {}
-    return data;
-}
-
-// Invalida la entrada de cache de reviews para un producto concreto.
-function _fbInvalidarResenas(base, pid) {
-    try {
-        const url = base + '/resenas/' + String(pid) + '.json';
-        sessionStorage.removeItem('_fb_' + url);
-        sessionStorage.removeItem('_fb_' + url + '_ts');
-    } catch(e) {}
-}
-
 // ===== BARRA DE PROGRESO DORADA =====
 (function initProgress() {
     const bar = document.createElement('div');
     bar.id = 'tm-progress';
     document.body.appendChild(bar);
 
-    let _rafProgress = null;
     function update() {
-        if (_rafProgress) return;
-        _rafProgress = requestAnimationFrame(() => {
-            _rafProgress = null;
-            const scrollTop = window.scrollY || document.documentElement.scrollTop;
-            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-            const pct = docHeight > 0 ? Math.min(100, (scrollTop / docHeight) * 100) : 0;
-            bar.style.width = pct + '%';
-            bar.style.opacity = pct > 1 ? '1' : '0';
-        });
+        const scrollTop = window.scrollY || document.documentElement.scrollTop;
+        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        const pct = docHeight > 0 ? Math.min(100, (scrollTop / docHeight) * 100) : 0;
+        bar.style.width = pct + '%';
+        bar.style.opacity = pct > 1 ? '1' : '0';
     }
     window.addEventListener('scroll', update, { passive: true });
     update();
@@ -5091,13 +5051,15 @@ abrirDetalleProducto = function(id) {
         if (catEl && catEl.parentNode) catEl.parentNode.appendChild(vistaEl);
     }
     vistaEl.innerHTML = `👁️ ${localTotal.toLocaleString()} vista${localTotal !== 1 ? 's' : ''}`;
-    // Leer el conteo real desde Firebase y actualizar (cache 2 min dentro de la sesión)
+    // Leer el conteo real desde Firebase y actualizar
     (async () => {
         try {
             const cfg = JSON.parse(localStorage.getItem('firebaseConfig') || '{}');
             const base = cfg.databaseURL || (cfg.projectId ? `https://${cfg.projectId}-default-rtdb.firebaseio.com` : null);
             if (!base) return;
-            const fbCount = await _fbFetch(`${base}/analytics/vistas/${String(id)}/count.json`, 120_000);
+            const res = await fetch(`${base}/analytics/vistas/${String(id)}/count.json`);
+            if (!res.ok) return;
+            const fbCount = await res.json();
             if (typeof fbCount !== 'number' || fbCount <= 0) return;
             const el = document.getElementById('detailVistasBadge');
             if (el) el.innerHTML = `👁️ ${fbCount.toLocaleString()} vista${fbCount !== 1 ? 's' : ''}`;
@@ -5199,22 +5161,14 @@ function renderizarDashboardVentas(contenedor) {
     const miniSection = (title, html) =>
         '<div class="admin-mini-section"><div class="admin-chart-title">' + title + '</div>' + (html || empty) + '</div>';
 
-    const _maxVenta = topList.length ? (topList[0].total || 1) : 1;
-    const masVendidosHtml = topList.length ? topList.map((d, i) => {
-        const pct = Math.round((d.total / _maxVenta) * 100);
-        return `<div class="admin-top-item" style="flex-direction:column;align-items:stretch;gap:3px;">
-            <div style="display:flex;align-items:center;gap:6px;">
-                <span class="admin-top-rank">${i + 1}</span>
-                ${imgTag(d.producto)}
-                <span class="admin-top-name" style="flex:1;">${escapeHtml(d.nombre)}</span>
-                <span class="admin-top-meta">${d.unidades} uds</span>
-                <span class="admin-top-value gold">$${d.total.toFixed(0)}</span>
-            </div>
-            <div style="height:4px;background:rgba(255,255,255,0.06);border-radius:2px;overflow:hidden;margin-left:24px;">
-                <div style="height:100%;width:${pct}%;background:linear-gradient(90deg,#c9a96e,#f0c040);border-radius:2px;"></div>
-            </div>
-        </div>`;
-    }).join('') : '';
+    const masVendidosHtml = topList.length ? topList.map((d, i) => `
+        <div class="admin-top-item">
+            <span class="admin-top-rank">${i + 1}</span>
+            ${imgTag(d.producto)}
+            <span class="admin-top-name">${escapeHtml(d.nombre)}</span>
+            <span class="admin-top-meta">${d.unidades} uds</span>
+            <span class="admin-top-value gold">$${d.total.toFixed(0)}</span>
+        </div>`).join('') : '';
 
     const reponerHtml = reponer.length ? reponer.map((p, i) => `
         <div class="admin-top-item">
@@ -5265,22 +5219,15 @@ function renderizarDashboardVentas(contenedor) {
 
         <div class="admin-chart-box admin-unified-dashboard">
             <div class="admin-chart-title">📈 Resumen general — una sola gráfica</div>
-            <div class="admin-chart-bars" style="align-items:flex-end;">
-                ${dias.map((d, i) => {
-                    const tieneVenta = d.total > 0;
-                    const h = tieneVenta ? Math.max(10, Math.round((d.total / maxTotal) * 72)) : 0;
-                    const esHoy = i === dias.length - 1;
-                    return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;justify-content:flex-end;">
-                        ${tieneVenta
-                            ? `<div style="font-size:7px;color:#c9a96e;font-weight:700;white-space:nowrap;">$${d.total >= 1000 ? (d.total/1000).toFixed(1)+'k' : d.total.toFixed(0)}</div>
-                               <div title="${d.label}: $${d.total.toFixed(2)} · ${d.unidades} ud(s)"
-                                class="admin-chart-bar filled"
-                                style="height:${h}px;width:80%;background:${esHoy ? 'linear-gradient(180deg,#f0c040,#c97d00)' : 'linear-gradient(180deg,#c9a96e,#8a6a30)'};border-radius:3px 3px 0 0;cursor:pointer;"></div>`
-                            : `<div style="height:3px;width:2px;background:rgba(255,255,255,0.08);border-radius:1px;align-self:flex-end;"></div>`}
-                        <div style="font-size:7px;color:${tieneVenta ? (esHoy ? '#f0c040' : '#888') : '#333'};margin-top:2px;white-space:nowrap;">${tieneVenta || esHoy ? d.label.slice(0,5) : ''}</div>
-                    </div>`;
+            <div class="admin-chart-bars">
+                ${dias.map(d => {
+                    const h = Math.max(4, Math.round((d.total / maxTotal) * 78));
+                    return `<div title="${d.label}: $${d.total.toFixed(2)} · Ganancia $${d.ganancia.toFixed(2)} · ${d.unidades} ud(s)"
+                        class="admin-chart-bar ${d.total > 0 ? 'filled' : 'empty'}"
+                        style="height:${h}px;"></div>`;
                 }).join('')}
             </div>
+            <div class="admin-chart-footer"><span>${dias[0].label}</span><span>hoy</span></div>
 
             <div class="admin-unified-sections">
                 ${miniSection('🏆 Más vendidos', masVendidosHtml)}
@@ -7140,24 +7087,19 @@ window.addEventListener('popstate', function() {
         return btn;
     }
 
-    let _rafSubir = null;
     function mostrarOcultar() {
-        if (_rafSubir) return;
-        _rafSubir = requestAnimationFrame(() => {
-            _rafSubir = null;
-            const btn = document.getElementById('tm-subir-arriba') || crearBoton();
-            if (!btn) return;
-            const debeMostrar = window.scrollY > window.innerHeight * 1.2;
-            if (debeMostrar) {
-                btn.style.opacity = '1';
-                btn.style.visibility = 'visible';
-                btn.style.transform = 'translateY(0) scale(1)';
-            } else {
-                btn.style.opacity = '0';
-                btn.style.visibility = 'hidden';
-                btn.style.transform = 'translateY(20px) scale(.85)';
-            }
-        });
+        const btn = document.getElementById('tm-subir-arriba') || crearBoton();
+        if (!btn) return;
+        const debeMostrar = window.scrollY > window.innerHeight * 1.2;
+        if (debeMostrar) {
+            btn.style.opacity = '1';
+            btn.style.visibility = 'visible';
+            btn.style.transform = 'translateY(0) scale(1)';
+        } else {
+            btn.style.opacity = '0';
+            btn.style.visibility = 'hidden';
+            btn.style.transform = 'translateY(20px) scale(.85)';
+        }
     }
 
     function init() {

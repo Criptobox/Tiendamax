@@ -90,6 +90,7 @@
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta property="og:image:type" content="image/png">
+    <meta name="twitter:image:alt" content="TiendaMax — Tienda online en Cuba">
     <meta property="og:locale" content="es_CU">
     <meta property="og:site_name" content="TiendaMax">
 
@@ -259,7 +260,11 @@
             }
             var t = texto || '🔥 OFERTA DEL DÍA';
             if (document.body) document.body.classList.remove('tm-no-oferta-banner');
-            banner.innerHTML = '<span class="flash-deal">' + t + ' · VER AHORA →</span>';
+            while (banner.firstChild) banner.removeChild(banner.firstChild);
+            var spanFlash = document.createElement('span');
+            spanFlash.className = 'flash-deal';
+            spanFlash.textContent = t + ' · VER AHORA →';
+            banner.appendChild(spanFlash);
             banner.style.setProperty('display', 'flex', 'important');
             banner.style.cursor  = 'pointer';
             banner.style.overflow = 'visible';

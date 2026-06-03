@@ -1,10 +1,17 @@
 // ═══════════════════════════════════════════════════════
-// TiendaMax — Service Worker v122
-// v121: cards "Vistos recientemente" más pequeñas — 3 columnas en móvil, imagen 4:3.
-// v120: bundle.css v2 — mejoras homepage: espaciado, grid centrado, Próximamente dimmed.
+// TiendaMax — Service Worker v123
+// v123: asistente Facebook/Revolico mejorado — grupos, precio MN, categorías Revolico.
+// v66: corrige assets cacheados inexistentes y fuerza actualización de caché.
+// v65: fuerza actualización de caché para el nuevo estilo naranja del botón
+//      "Avísame cuando vuelva" en productos agotados.
+// v64: fuerza actualización de caché para cargar los arreglos de tarjetas
+//      móviles, barra de moneda y offset del header.
+// v62: las 3 funciones que mandan pedidos por WhatsApp
+//      (comprarCarrito, tmComprar, contactarProducto) ahora
+//      usan el mismo helper _mensajeOrdenWA con formato premium.
 // ═══════════════════════════════════════════════════════
 
-const CACHE_NAME = 'tiendamax-v122';
+const CACHE_NAME = 'tiendamax-v123';
 
 const STATIC_ASSETS = [
   '/',
@@ -17,6 +24,7 @@ const STATIC_ASSETS = [
   '/css/light-mode.css',
   '/css/admin.css',
   '/js/script.js',
+  '/js/analytics.js',
   '/js/seo-dynamico.js',
   '/js/share-patch.js',
   '/js/push-fix.js',
@@ -119,35 +127,6 @@ self.addEventListener('fetch', e => {
                     return res;
                 })
                 .catch(() => caches.match(e.request).then(c => c || caches.match('/index.html')))
-        );
-        return;
-    }
-
-    // Upgrade transparente a WebP para imágenes de producto
-    // Solo si el browser acepta WebP (header Accept lo indica) y la URL es de /imagenes/
-    const esImagenProducto = /\/imagenes\/.+\.(jpe?g|png)$/i.test(path);
-    const aceptaWebP = (e.request.headers.get('accept') || '').includes('image/webp');
-    if (esImagenProducto && aceptaWebP) {
-        const webpUrl = e.request.url.replace(/\.(jpe?g|png)(\?.*)?$/i, '.webp');
-        const webpReq = new Request(webpUrl, { headers: e.request.headers });
-        e.respondWith(
-            caches.match(webpReq).then(cached => {
-                if (cached) return cached;
-                return fetch(webpReq).then(res => {
-                    if (res.ok) {
-                        // WebP existe: cachear y servir
-                        caches.open(CACHE_NAME).then(c => c.put(webpReq, res.clone())).catch(() => {});
-                        return res;
-                    }
-                    // WebP aún no generado: fallback al original
-                    return fetch(e.request).then(origRes => {
-                        if (origRes.ok) caches.open(CACHE_NAME).then(c => c.put(e.request, origRes.clone())).catch(() => {});
-                        return origRes;
-                    });
-                }).catch(() =>
-                    caches.match(e.request).then(c => c || fetch(e.request))
-                );
-            })
         );
         return;
     }

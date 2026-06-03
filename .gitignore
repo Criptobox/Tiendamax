@@ -3,11 +3,15 @@ __pycache__/
 *.py[cod]
 *.pyo
 
-# Temp files
-*.tmp
-.*.tmp
+# Claude Code internal
+.claude/
 
 # OS
 .DS_Store
 Thumbs.db
-.claude/
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
