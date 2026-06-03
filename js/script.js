@@ -2262,7 +2262,7 @@ function abrirDetalleProducto(id) {
     
     const p = productos.find(prod => prod.id === id);
     if (!p) {
-        console.error('[DEBUG] Producto no encontrado:', id);
+        console.warn('Producto no encontrado:', id);
         return;
     }
     
@@ -3296,15 +3296,23 @@ function verificarOfertasYMostrarBanner() {
     const cdObj  = cdData ? (() => { try { return JSON.parse(cdData); } catch(e) { return null; } })() : null;
     const cdValido = cdObj && cdObj.endTime && cdObj.endTime > Date.now();
 
-    let targetId    = null;
-    let textoBanner = '';
+    let targetId = null;
 
     if (ofertaDiaId) {
-        targetId    = ofertaDiaId;
-        textoBanner = `<span class="flash-deal">${ofertaDiaTexto} · VER AHORA →</span>`;
+        targetId = ofertaDiaId;
+        while (banner.firstChild) banner.removeChild(banner.firstChild);
+        const spanFlash = document.createElement('span');
+        spanFlash.className = 'flash-deal';
+        spanFlash.textContent = ofertaDiaTexto + ' · VER AHORA →';
+        banner.appendChild(spanFlash);
     } else if (cdValido) {
-        targetId    = cdObj.productId;
-        textoBanner = `🔥 ${cdObj.texto || '¡Oferta especial!'} <span class="flash-deal">VER AHORA →</span>`;
+        targetId = cdObj.productId;
+        while (banner.firstChild) banner.removeChild(banner.firstChild);
+        banner.appendChild(document.createTextNode('🔥 ' + (cdObj.texto || '¡Oferta especial!') + ' '));
+        const spanFlash = document.createElement('span');
+        spanFlash.className = 'flash-deal';
+        spanFlash.textContent = 'VER AHORA →';
+        banner.appendChild(spanFlash);
     } else {
         // No hay oferta ni countdown → ocultar con !important + clase para
         // ganarle a la regla CSS '.urgencia-banner{display:flex !important}'
@@ -3317,7 +3325,6 @@ function verificarOfertasYMostrarBanner() {
 
     // Sí hay oferta → quitar la clase que lo bloquea y mostrarlo
     if (document.body) document.body.classList.remove('tm-no-oferta-banner');
-    banner.innerHTML = textoBanner;
     banner.style.setProperty('display', 'flex', 'important');
     banner.style.cursor  = 'pointer';
     setTimeout(actualizarOffsetsUI, 0);

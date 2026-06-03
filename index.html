@@ -87,6 +87,10 @@
     <meta property="og:title" content="TiendaMax — Donde encuentras lo que necesitas">
     <meta property="og:description" content="Calidad premium, precios increíbles y atención personalizada. Miles de clientes satisfechos confían en TiendaMax cada día.">
     <meta property="og:image" content="https://tiendamax.org/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:type" content="image/png">
+    <meta name="twitter:image:alt" content="TiendaMax — Tienda online en Cuba">
     <meta property="og:locale" content="es_CU">
     <meta property="og:site_name" content="TiendaMax">
 
@@ -334,7 +338,7 @@
 
     <header class="header">
         <div class="container header-content">
-            <div class="logo"><div data-action="volverAlInicio" class="logo-premium" role="button" tabindex="0"><span class="logo-badge">M</span>Tienda<em>Max</em></div></div>
+            <div class="logo"><div data-action="volverAlInicio" class="logo-premium" role="button" tabindex="0" aria-label="Ir a página principal"><span class="logo-badge">M</span>Tienda<em>Max</em></div></div>
             <!-- Carrito + Corazón + Hamburguesa -->
             <div class="header-right">
                 <button data-action="abrirCarrito" type="button" class="cart-icon-btn" aria-label="Carrito" title="Ver carrito">
@@ -544,6 +548,7 @@
                     id="heroSearchInput"
                     class="hsb-input"
                     placeholder="Buscar productos..."
+                    aria-label="Buscar productos en TiendaMax"
                     oninput="buscarDesdeHero(this.value)"
                     onkeydown="if(event.key==='Enter') aplicarBusquedaHero()"
                     onfocus="abrirPanelBusqueda()"
@@ -728,7 +733,7 @@
                 <div id="meGustaVacio" style="display:none;text-align:center;padding:60px 20px;">
                     <div style="font-size:52px;margin-bottom:16px;">🤍</div>
                     <p style="font-size:15px;color:#aaa;margin-bottom:20px;">Aún no tienes productos guardados.<br>Toca el ❤️ en cualquier producto para guardarlo aquí.</p>
-                    <button onclick="cerrarVistaMeGusta();mostrarVistaCategoria('Todas')" class="btn btn-primary">Ver productos</button>
+                    <button type="button" onclick="cerrarVistaMeGusta();mostrarVistaCategoria('Todas')" class="btn btn-primary">Ver productos</button>
                 </div>
             </div>
         </section>
@@ -750,7 +755,7 @@
                 <div id="pedidosVacio" style="display:none;text-align:center;padding:60px 20px;">
                     <div style="font-size:52px;margin-bottom:16px;">📭</div>
                     <p style="font-size:15px;color:#aaa;margin-bottom:20px;">Aún no tienes pedidos.<br>Cuando hagas un pedido por WhatsApp aparecerá aquí.</p>
-                    <button onclick="cerrarVistaPedidos();mostrarVistaCategoria('Todas')" class="btn btn-primary">Ver productos</button>
+                    <button type="button" onclick="cerrarVistaPedidos();mostrarVistaCategoria('Todas')" class="btn btn-primary">Ver productos</button>
                 </div>
             </div>
         </section>
