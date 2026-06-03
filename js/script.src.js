@@ -3749,13 +3749,14 @@ function actualizarListaProductos() {
         return;
     }
 
-    // Agrupar por categoría
+    // Agrupar por categoría — agotados al final dentro de cada grupo
     const porCategoria = {};
     filtrados.forEach(p => {
         const cat = p.categoria || 'General';
         if (!porCategoria[cat]) porCategoria[cat] = [];
         porCategoria[cat].push(p);
     });
+    Object.values(porCategoria).forEach(arr => arr.sort((a, b) => (a.stock > 0 ? 0 : 1) - (b.stock > 0 ? 0 : 1)));
 
     let html = `<div style="margin-bottom:14px;padding:12px 16px;background:rgba(39,174,96,0.1);border:1px dashed #27AE60;border-radius:10px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
         <span style="font-size:13px;">📦 <strong>${safeNum(filtrados.length)}</strong> productos${filtroCat ? ` en <strong>${escapeHtml(filtroCat)}</strong>` : ''}</span>

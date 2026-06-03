@@ -1,5 +1,6 @@
 // ═══════════════════════════════════════════════════════
-// TiendaMax — Service Worker v127
+// TiendaMax — Service Worker v128
+// v128: agotados al final en Gestionar.
 // v127: categorías con 0 productos opacas, botón →0 en tarjetas Gestionar.
 // v126: fix fotos en modal editar (reset inputs, botón eliminar por foto), tarjetas Gestionar optimizadas.
 // v125: fondo coloreado en KPIs de Analytics (gradiente sólido como panel de Ventas).
@@ -14,7 +15,7 @@
 //      usan el mismo helper _mensajeOrdenWA con formato premium.
 // ═══════════════════════════════════════════════════════
 
-const CACHE_NAME = 'tiendamax-v127';
+const CACHE_NAME = 'tiendamax-v128';
 
 const STATIC_ASSETS = [
   '/',
