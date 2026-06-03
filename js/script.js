@@ -3075,10 +3075,10 @@ async function sincronizarTodoConGitHub() {
         { path: 'config.json',                 data: _configSync },
     ];
 
-    // Si hay productos modificados: subir solo productos.json + comisiones.json + config.json
+    // Si hay productos modificados: subir solo productos.json + config.json + grupos
     // Si no hay delta: subir todo
     const archivosFiltrados = hayDelta
-        ? archivos.filter(a => a.path === 'productos.json' || a.path === 'config.json')
+        ? archivos.filter(a => ['productos.json', 'config.json', 'grupos_facebook_config.json'].includes(a.path))
         : archivos;
 
     let ok = 0, errors = [];
@@ -4218,24 +4218,30 @@ function toggleProductoEnGrupo(iGrupo, idProducto, checked) {
     localStorage.setItem('gruposFB', JSON.stringify(grupos));
 }
 
-function guardarGruposFB() {
+async function guardarGruposFB() {
     const grupos = JSON.parse(localStorage.getItem('gruposFB') || '[]');
     const validos = grupos.filter(g => g.url && g.url.includes('facebook.com'));
 
-    // Exportar para el bot
-    const config = {
-        grupos: validos,
-        exportado: new Date().toISOString(),
-        instrucciones: "Copia este JSON y pégalo en el bot como variable GRUPOS_FB_CONFIG"
-    };
+    localStorage.setItem('gruposFB', JSON.stringify(validos));
 
-    const blob = new Blob([JSON.stringify(config, null, 2)], {type: 'application/json'});
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = 'grupos_facebook_config.json';
-    a.click();
+    const data = { grupos: validos, exportado: new Date().toISOString() };
 
-    mostrarNotificacion(`✅ ${validos.length} grupos guardados. Descargado grupos_facebook_config.json para el bot.`);
+    const user  = localStorage.getItem('githubUser');
+    const repo  = localStorage.getItem('githubRepo');
+    const token = localStorage.getItem('githubToken');
+
+    if (!user || !repo || !token) {
+        mostrarNotificacion(`✅ ${validos.length} grupos guardados localmente. Configura GitHub para persistirlos en la nube.`, 'info');
+        return;
+    }
+
+    try {
+        mostrarNotificacion('☁️ Guardando grupos en GitHub…', 'info');
+        await subirArchivoAGitHub(user, repo, token, 'grupos_facebook_config.json', data);
+        mostrarNotificacion(`✅ ${validos.length} grupos guardados en GitHub — persistirán aunque borres el navegador.`, 'success');
+    } catch(e) {
+        mostrarNotificacion('⚠️ Grupos guardados localmente. Error al subir a GitHub: ' + e.message, 'warning');
+    }
 }
 
 
