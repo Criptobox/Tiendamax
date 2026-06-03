@@ -26,6 +26,65 @@ function safeNum(n, def = 0) {
 }
 
 
+// ===== INDEXEDDB WRAPPER =====
+// Almacenamiento alternativo para datos grandes (productos) cuando localStorage se llena.
+// API idéntica a localStorage pero async; nunca lanza excepciones al caller.
+const tmDB = (() => {
+    let _db = null;
+    function _open() {
+        if (_db) return Promise.resolve(_db);
+        return new Promise((resolve, reject) => {
+            const req = indexedDB.open('tiendamax', 1);
+            req.onupgradeneeded = e => { e.target.result.createObjectStore('kv'); };
+            req.onsuccess  = e => { _db = e.target.result; resolve(_db); };
+            req.onerror    = () => reject(req.error);
+        });
+    }
+    async function get(key) {
+        try {
+            const db = await _open();
+            return new Promise((res, rej) => {
+                const r = db.transaction('kv').objectStore('kv').get(key);
+                r.onsuccess = () => res(r.result ?? null);
+                r.onerror   = () => rej(r.error);
+            });
+        } catch(e) { return null; }
+    }
+    async function set(key, value) {
+        try {
+            const db = await _open();
+            return new Promise((res, rej) => {
+                const r = db.transaction('kv','readwrite').objectStore('kv').put(value, key);
+                r.onsuccess = () => res();
+                r.onerror   = () => rej(r.error);
+            });
+        } catch(e) {}
+    }
+    async function remove(key) {
+        try {
+            const db = await _open();
+            return new Promise((res, rej) => {
+                const r = db.transaction('kv','readwrite').objectStore('kv').delete(key);
+                r.onsuccess = () => res();
+                r.onerror   = () => rej(r.error);
+            });
+        } catch(e) {}
+    }
+    return { get, set, remove };
+})();
+
+// Guarda productos en localStorage con fallback a IDB si hay QuotaExceededError.
+async function guardarProductosLocal(lista) {
+    try {
+        localStorage.setItem('productos', JSON.stringify(lista));
+    } catch(e) {
+        if (e.name === 'QuotaExceededError') {
+            console.warn('⚠️ localStorage lleno — productos guardados solo en IndexedDB');
+        }
+    }
+    await tmDB.set('productos', lista);
+}
+
 // ═══════════════════════════════════════════════════════
 //  🛒 CARRITO DE COMPRAS — con persistencia 24h
 // ═══════════════════════════════════════════════════════
@@ -820,6 +879,16 @@ const _OLD_HASHES = [
 
 let productos = JSON.parse(localStorage.getItem('productos')) || [];
 let categorias = JSON.parse(localStorage.getItem('categorias')) || ['General'];
+// Si localStorage estaba vacío (p.ej. cuota excedida), intentar IDB en background
+if (productos.length === 0) {
+    tmDB.get('productos').then(idbProds => {
+        if (Array.isArray(idbProds) && idbProds.length > 0 && productos.length === 0) {
+            productos = idbProds;
+            if (typeof actualizarUI === 'function') actualizarUI();
+            else if (typeof renderizarProductos === 'function') renderizarProductos();
+        }
+    }).catch(() => {});
+}
 let usuarioAutenticado = false;
 let categoriaSeleccionada = 'Todas';
 let subcategoriaSeleccionada = 'Todas';
@@ -1262,7 +1331,7 @@ async function cargarDatosDesdeGitHub() {
                 if (local && local.resenas && local.resenas.length > 0) p.resenas = local.resenas;
                 return p;
             });
-            localStorage.setItem('productos', JSON.stringify(productos));
+            guardarProductosLocal(productos); // IDB fallback si localStorage está lleno
             // Refrescar categorías con conteos reales ahora que productos está listo
             renderizarCategoriasHomeInstant();
         }
@@ -2013,7 +2082,7 @@ async function agregarProductoForm(event) {
 }
 
 function guardarProductos() {
-    localStorage.setItem('productos', JSON.stringify(productos));
+    guardarProductosLocal(productos);
 }
 
 // ===== COMPRESIÓN DE IMÁGENES =====
