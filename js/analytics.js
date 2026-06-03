@@ -262,12 +262,12 @@ async function renderizarAnalyticsFirebase() {
 
         <!-- KPIs principales -->
         <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:20px;">
-            ${_kpi('👁️','Vistas', totalVistas, '#c9a96e', totalVistas === 0 ? 'sin datos' : topVistas[0] ? topVistas[0].nombre.slice(0,14)+'…' : '')}
-            ${_kpi('💬','Clicks WA', totalWA, '#25d366', totalWA === 0 ? 'sin pedidos' : totalWA === 1 ? '1 pedido' : totalWA + ' pedidos')}
+            ${_kpi('👁️','Vistas', totalVistas, '#c9a96e', totalVistas === 0 ? 'sin datos' : topVistas[0] ? '↑ ' + topVistas[0].nombre.slice(0,12) : '')}
+            ${_kpi('💬','Clicks WA', totalWA, '#25d366', totalWA === 0 ? 'sin pedidos aún' : totalWA === 1 ? '1 pedido' : totalWA + ' pedidos')}
             ${_kpi('🔔','Suscriptores', suscriptores, '#4fc3f7', suscriptores === 0 ? 'nadie aún' : deviceArr[0] ? deviceArr[0][1].icon + ' ' + deviceArr[0][0] : '')}
             ${_kpi('📈','Conversión', conversion + '%', parseFloat(conversion) >= 10 ? '#25d366' : parseFloat(conversion) >= 5 ? '#c9a96e' : '#e74c3c', totalVistas > 0 ? totalWA + ' de ' + totalVistas : 'sin tráfico')}
-            ${_kpi('📦','Productos', totalProductos, '#c9a96e', stockBajo.length > 0 ? '⚠️ ' + stockBajo.length + ' stock bajo' : 'catálogo ok')}
-            ${_kpi('⚠️','Sin stock', sinStockList.length, sinStockList.length > 0 ? '#e74c3c' : '#25d366', sinStockList.length > 0 ? sinStockList[0].nombre.slice(0,14)+'…' : '✅ todo disponible')}
+            ${_kpi('📦','Productos', totalProductos, '#c9a96e', stockBajo.length > 0 ? '⚠️ ' + stockBajo.length + ' bajo' : 'catálogo ok')}
+            ${_kpi('⚠️','Sin stock', sinStockList.length, sinStockList.length > 0 ? '#e74c3c' : '#25d366', sinStockList.length > 0 ? sinStockList[0].nombre.slice(0,12) : '✅ ok')}
         </div>
 
         <!-- Gráfica mensual de ventas -->
@@ -522,11 +522,12 @@ function _cardStyle() {
     return `background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;`;
 }
 function _kpi(icon, label, value, color = '#c9a96e', sub = '') {
-    return `<div style="${_cardStyle()}padding:14px 10px;text-align:center;border-left:3px solid ${color};border-radius:12px;">
-        <div style="font-size:16px;margin-bottom:2px;">${icon}</div>
-        <div style="font-size:22px;font-weight:800;color:${color};line-height:1.1;">${value}</div>
+    const subTrimmed = sub.length > 16 ? sub.slice(0, 14) + '…' : sub;
+    return `<div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-left:4px solid ${color};border-radius:12px;padding:12px 8px;text-align:center;">
+        <div style="font-size:15px;margin-bottom:2px;">${icon}</div>
+        <div style="font-size:21px;font-weight:800;color:${color};line-height:1.1;">${value}</div>
         <div style="font-size:10px;color:#888;margin-top:3px;letter-spacing:.3px;">${label}</div>
-        ${sub ? `<div style="font-size:9px;color:#666;margin-top:2px;">${sub}</div>` : ''}
+        ${subTrimmed ? `<div style="font-size:9px;color:#666;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${subTrimmed}</div>` : ''}
     </div>`;
 }
 function _inventarioItem(icon, label, value, color = '#c9a96e') {
