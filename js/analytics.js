@@ -531,11 +531,11 @@ function _cardStyle() {
 }
 function _kpi(icon, label, value, color = '#c9a96e', sub = '') {
     const subTrimmed = sub.length > 16 ? sub.slice(0, 14) + '…' : sub;
-    return `<div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-left:4px solid ${color};border-radius:12px;padding:12px 8px;text-align:center;">
+    return `<div style="background:linear-gradient(135deg,${color}dd,${color}99);border-radius:12px;padding:12px 8px;text-align:center;box-shadow:0 2px 8px ${color}44;">
         <div style="font-size:15px;margin-bottom:2px;">${icon}</div>
-        <div style="font-size:21px;font-weight:800;color:${color};line-height:1.1;">${value}</div>
-        <div style="font-size:10px;color:#888;margin-top:3px;letter-spacing:.3px;">${label}</div>
-        ${subTrimmed ? `<div style="font-size:9px;color:#666;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${subTrimmed}</div>` : ''}
+        <div style="font-size:22px;font-weight:900;color:#fff;line-height:1.1;text-shadow:0 1px 3px rgba(0,0,0,.3);">${value}</div>
+        <div style="font-size:10px;color:rgba(255,255,255,.85);margin-top:3px;letter-spacing:.3px;">${label}</div>
+        ${subTrimmed ? `<div style="font-size:9px;color:rgba(255,255,255,.65);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${subTrimmed}</div>` : ''}
     </div>`;
 }
 function _inventarioItem(icon, label, value, color = '#c9a96e') {

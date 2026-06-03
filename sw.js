@@ -1,5 +1,6 @@
 // ═══════════════════════════════════════════════════════
-// TiendaMax — Service Worker v124
+// TiendaMax — Service Worker v125
+// v125: fondo coloreado en KPIs de Analytics (gradiente sólido como panel de Ventas).
 // v124: colores en KPIs de Analytics, mejoras visuales en Ventas y Analytics.
 // v66: corrige assets cacheados inexistentes y fuerza actualización de caché.
 // v65: fuerza actualización de caché para el nuevo estilo naranja del botón
@@ -11,7 +12,7 @@
 //      usan el mismo helper _mensajeOrdenWA con formato premium.
 // ═══════════════════════════════════════════════════════
 
-const CACHE_NAME = 'tiendamax-v124';
+const CACHE_NAME = 'tiendamax-v125';
 
 const STATIC_ASSETS = [
   '/',
