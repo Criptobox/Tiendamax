@@ -539,28 +539,6 @@
     "comision": 1.8
   },
   {
-    "id": 1778336935232,
-    "nombre": "ROUTER FENVI AX3000 Wi-Fi 6",
-    "descripcion": "El router FENVI AX3000 Wi-Fi 6 Mesh es un dispositivo de doble banda. Soporta 574 mbps por la 2.4 GHz y 2402 mbps por la 5.8 GHz. Esta diseñado para mejorar la cobertura doméstica con velocidades de hasta 3000mbps. Tiene 3 puertos LAN y 1 puerto WAN. Equipado con 4 antenas de alta ganancia y puerto Gigabit que le permite una conexión rápida y estable.",
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1780510926753.jpg",
-    "precioActual": 110,
-    "descuento": 0,
-    "stock": 4,
-    "categoria": "WIFI",
-    "subcategoria": "",
-    "masVendido": false,
-    "usado": false,
-    "garantia": "",
-    "devolucion": false,
-    "comision": 10,
-    "precioOriginal": 0,
-    "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1780510926753.jpg",
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1780510904119.jpg",
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1780510929473.jpg"
-    ]
-  },
-  {
     "id": 1778383966832,
     "nombre": "Sistema de alarma",
     "descripcion": "Sistema de alarma, posee:\n\n🔸4 sensores de movimiento\n🔸8 sensores de contacto \n🔸3 llaveros \n🔸1 sirena\n🔸3 mandos para su control\n🔸1 botón de emergencia SOS\n🔸1 panel de control de 2.4 pulgadas\n\n✅Recordatorio de puertas y ventanas sin cerrar, recordatorio de alarma de bajo voltaje.\n✅5 juegos de llamadas de alarma preestablecidas.\n✅Batería integrada.",
@@ -583,7 +561,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1778384078432_ext.jpg",
     "precioActual": 25,
     "descuento": 0,
-    "stock": 7,
+    "stock": 0,
     "categoria": "SEGURIDAD",
     "subcategoria": "",
     "masVendido": false,
@@ -612,8 +590,8 @@
     "id": 1778384238305,
     "nombre": "Sistema de Seguridad ZOSI para el Hogar",
     "descripcion": "**Sistema de Seguridad ZOSI para el Hogar – 8 Canales, 2MP HD, DVR Lite 5MP, 1TB, Grabación 24/7**  \nEste kit incluye:  \n\n- **8 canales** compatibles con cámaras ZOSI \n- **Resolución HD de 2MP (1080p)** para imágenes nítidas y detalladas.  \n- **DVR Lite con capacidad de 5MP**, permitiendo una grabación superior.  \n- **Almacenamiento de 1TB** para guardar horas de grabación continua.  \n- **Grabación 24/7** con detección de movimiento para mayor seguridad.  \n- **Alimentación por USB**, facilitando la instalación y el uso.  \n- Compatibilidad con **cámaras ZOSI** para una integración perfecta.\n- *8 cámaras Zosi*",
-    "imagen": "https://tiendamax.org/imagenes/img_1778384238305_ext.jpg",
-    "precioActual": 400,
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1780511204355.jpg",
+    "precioActual": 420,
     "descuento": 0,
     "stock": 3,
     "categoria": "SEGURIDAD",
@@ -622,7 +600,12 @@
     "usado": false,
     "garantia": "",
     "devolucion": false,
-    "comision": 20
+    "comision": 20,
+    "precioOriginal": 0,
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1780511204355.jpg",
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1780511224112.jpg"
+    ]
   },
   {
     "id": 1778384314795,
@@ -962,7 +945,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1778820983383_ext.jpg",
     "precioActual": 35,
     "descuento": 0,
-    "stock": 15,
+    "stock": 0,
     "comision": 1.8,
     "categoria": "UTILES",
     "subcategoria": "",
