@@ -1,4 +1,69 @@
 'use strict';
+// ═══════════════════════════════════════════════════════════════════
+// TABLA DE CONTENIDOS — js/script.src.js (buscar con Ctrl+G o el número de línea)
+//
+//   ~  1  Globals / Constants / Helpers (escapeHtml, safeNum…)
+//   ~ 29  IndexedDB wrapper (tmDB, guardarProductosLocal)
+//   ~ 88  Carrito de compras
+//   ~122  Wishlist / Me Gusta
+//   ~498  Reseñas (renderizarResenas, guardarResena)
+//   ~698  Productos recientes (recientes_v2)
+//   ~808  Notificaciones push del navegador
+//   ~847  Auth / Login admin (PBKDF2, salt, hash)
+//   ~897  Iconos de categoría (ICONOS_MAPA)
+//   ~938  Búsqueda (busquedaLocal, busquedaConIA, sugerencias)
+//   ~1124 Subida de imágenes a GitHub
+//   ~1152 Validación de campos
+//   ~1212 Carga de datos desde GitHub (inicializarTienda)
+//   ~1404 Utilidades generales (mostrarNotificacion, formatearPrecio…)
+//   ~1459 Modales
+//   ~1531 Navegación entre vistas
+//   ~1674 Renderizar categorías
+//   ~1712 Más vendidos
+//   ~1763 Autenticación (login/logout admin)
+//   ~2024 Productos CRUD (guardarProductos, eliminarProducto…)
+//   ~2088 Compresión de imágenes
+//   ~2151 Renderizar grid de productos
+//   ~2258 Galería de producto
+//   ~2318 Detalle de producto (abrirDetalleProducto, modal)
+//   ~2650 Copiar para Facebook/Revolico
+//   ~2701 Publicación en Revolico
+//   ~2737 Gestión de categorías
+//   ~2868 Gestión de productos (editar/eliminar desde admin)
+//   ~3002 Estado del backend
+//   ~3017 Sincronización con GitHub (cargarConfiguracionGitHub)
+//   ~3048 Delta Sync (subirArchivoAGitHub, commit batch)
+//   ~3337 Lógica de persuasión y ventas
+//   ~3410 Inicialización principal (inicializarTienda, DOMContentLoaded)
+//   ~3476 Countdown timer
+//   ~3617 Fast categories (renderizado desde localStorage)
+//   ~3738 Admin — Gestionar (stock, comisiones, tabla)
+//   ~3869 Ventas — registro y listado
+//   ~4143 Grupos de Facebook
+//   ~4242 Tasa MN — actualización manual
+//   ~4267 Revolico config
+//   ~4333 Oferta del día
+//   ~4481 Badges de agotado/oferta en grid
+//   ~4615 Token de GitHub (obtenerGitHubToken)
+//   ~4621 Cache Firebase RTDB (_fbFetch, _fbInvalidarResenas)
+//   ~4653 Barra de progreso dorada
+//   ~4675 Toast glassmorphism
+//   ~4710 Placeholder animado en búsqueda
+//   ~4751 Animaciones UI (fly-to-cart, skeleton, analytics counter)
+//   ~4893 Búsqueda/filtro en pestaña Ventas
+//   ~4967 Analytics premium (vistas, dashboard, exportar CSV)
+//   ~5419 Carrusel / slider
+//   ~5498 Modo offline
+//   ~5546 WhatsApp integration
+//   ~5637 Registro Service Worker + Notificaciones push FCM
+//   ~5855 Configuración de tienda (horario, WhatsApp, etc.)
+//   ~5983 Burbuja tasa del día
+//   ~6062 Pedidos / Mis pedidos
+//   ~6452 Cupones / descuentos
+//   ~6684 Checkout / confirmación de pedido
+//   ~7013 Inicialización tardía (tablas, tooltips, misc)
+// ═══════════════════════════════════════════════════════════════════
+
 // ===== VARIABLES GLOBALES INICIALIZADAS TEMPRANO (evitar TDZ) =====
 var countdownIntervals = {};
 let _monedaActual = localStorage.getItem('monedaActual') || 'USD';
