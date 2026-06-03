@@ -122,11 +122,22 @@ def read_json(path: Path, default):
         return default
 
 
+def _atomic_write(path: Path, content: str):
+    """Escribe content en path de forma atómica usando un archivo temporal."""
+    tmp = path.parent / f".{path.name}.tmp"
+    try:
+        tmp.write_text(content, encoding="utf-8")
+        tmp.replace(path)
+    except Exception:
+        tmp.unlink(missing_ok=True)
+        raise
+
+
 def write_json(path: Path, data):
     new = json.dumps(data, ensure_ascii=False, indent=2) + "\n"
     old = path.read_text(encoding="utf-8") if path.exists() else ""
     if new != old:
-        path.write_text(new, encoding="utf-8")
+        _atomic_write(path, new)
         print(f"✏️  Actualizado: {path.relative_to(ROOT)}")
         return True
     return False
@@ -135,7 +146,7 @@ def write_json(path: Path, data):
 def write_text(path: Path, content: str):
     old = path.read_text(encoding="utf-8") if path.exists() else ""
     if content != old:
-        path.write_text(content, encoding="utf-8")
+        _atomic_write(path, content)
         print(f"✏️  Actualizado: {path.relative_to(ROOT)}")
         return True
     return False
@@ -197,7 +208,7 @@ def regenerate_pages(products: list[dict]) -> tuple[int, list[str]]:
     removed = []
     for fname in os.listdir(P_DIR):
         if fname.startswith("producto-") and fname.endswith(".html") and fname not in valid_files:
-            (P_DIR / fname).unlink()
+            (P_DIR / fname).unlink(missing_ok=True)
             removed.append(fname)
             print(f"🗑️  Borrado huérfano: p/{fname}")
 
@@ -260,9 +271,13 @@ def cleanup_comisiones(products: list[dict], comm: dict) -> bool:
 
 
 def main() -> int:
-    products = read_json(PROD, [])
+    products = read_json(PROD, None)
     if not isinstance(products, list):
-        print("❌ productos.json no es una lista", file=sys.stderr)
+        print("❌ productos.json no es una lista o no pudo leerse", file=sys.stderr)
+        return 1
+    if len(products) == 0:
+        # Podría ser corrupción silenciosa; abortar para no borrar todas las páginas
+        print("⚠️  productos.json está vacío — abortando para evitar borrado masivo de /p/", file=sys.stderr)
         return 1
 
     print(f"📦 {len(products)} productos cargados")
