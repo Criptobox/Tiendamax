@@ -58,7 +58,7 @@
     "precioOriginal": 0,
     "precioActual": 130,
     "descuento": 0,
-    "stock": 1,
+    "stock": 0,
     "categoria": "WIFI",
     "subcategoria": "",
     "masVendido": false,
@@ -75,7 +75,7 @@
     "precioOriginal": 0,
     "precioActual": 80,
     "descuento": 0,
-    "stock": 3,
+    "stock": 0,
     "categoria": "WIFI",
     "subcategoria": "",
     "masVendido": false,
@@ -105,7 +105,7 @@
     "id": 1778102214012,
     "nombre": "Switch de 8 puertos",
     "descripcion": "Switch de 8 puertos ethernet de 1 gigabite.",
-    "imagen": "https://tiendamax.org/imagenes/img_1778102214012.jpg",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1780510811569.jpg",
     "precioActual": 30,
     "descuento": 0,
     "stock": 9,
@@ -115,7 +115,11 @@
     "garantia": "",
     "devolucion": false,
     "subcategoria": "",
-    "comision": 1.8
+    "comision": 1.8,
+    "precioOriginal": 0,
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1780510811569.jpg"
+    ]
   },
   {
     "id": 1778102507659,
