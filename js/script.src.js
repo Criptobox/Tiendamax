@@ -4077,38 +4077,112 @@ function renderizarGruposFB(grupos) {
     const cont = document.getElementById('listaGruposFB');
     if (!cont) return;
 
+    cont.innerHTML = '';
+
     if (grupos.length === 0) {
-        cont.innerHTML = '<p style="font-size:13px;color:var(--text-muted);text-align:center;padding:10px;">No hay grupos configurados aún.</p>';
+        const empty = document.createElement('p');
+        empty.style.cssText = 'font-size:13px;color:var(--text-muted);text-align:center;padding:10px;';
+        empty.textContent = 'No hay grupos configurados aún.';
+        cont.appendChild(empty);
         return;
     }
 
-    cont.innerHTML = grupos.map((g, i) => `
-        <div style="background:var(--card-bg,#fff);border:1.5px solid var(--border-color);border-radius:12px;padding:14px;position:relative;" id="grupoFB_${i}">
-            <button onclick="eliminarGrupoFB(${i})" style="position:absolute;top:10px;right:10px;background:none;border:none;cursor:pointer;font-size:18px;color:#e74c3c;">✕</button>
-            <div style="margin-bottom:10px;">
-                <label style="font-size:12px;font-weight:600;display:block;margin-bottom:4px;">URL del Grupo:</label>
-                <input type="text" value="${g.url||''}" onchange="actualizarGrupoFB(${i},'url',this.value)"
-                    placeholder="https://www.facebook.com/groups/..." 
-                    style="width:100%;padding:8px 10px;border-radius:8px;border:1px solid var(--border-color);font-size:13px;box-sizing:border-box;">
-            </div>
-            <div>
-                <label style="font-size:12px;font-weight:600;display:block;margin-bottom:6px;">Productos a publicar en este grupo:</label>
-                <div style="display:flex;flex-direction:column;gap:6px;">
-                    ${productos.map(p => `
-                        <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer;">
-                            <input type="checkbox" ${(g.productos||[]).includes(p.id) ? 'checked' : ''}
-                                onchange="toggleProductoEnGrupo(${i}, ${p.id}, this.checked)"
-                                style="width:16px;height:16px;accent-color:var(--primary);">
-                            <img src="${p.imagen}" style="width:28px;height:28px;border-radius:6px;object-fit:cover;" onerror="this.style.display='none'">
-                            <span>${p.nombre}</span>
-                            <span style="margin-left:auto;color:var(--primary);font-weight:600;">$${p.precioActual}</span>
-                        </label>
-                    `).join('')}
-                </div>
-                ${productos.length === 0 ? '<p style="font-size:12px;color:var(--text-muted);">No hay productos cargados aún.</p>' : ''}
-            </div>
-        </div>
-    `).join('');
+    grupos.forEach((g, i) => {
+        const card = document.createElement('div');
+        card.id = `grupoFB_${i}`;
+        card.style.cssText = 'background:var(--card-bg,#fff);border:1.5px solid var(--border-color);border-radius:12px;padding:14px;position:relative;';
+
+        // Botón eliminar
+        const btnDel = document.createElement('button');
+        btnDel.type = 'button';
+        btnDel.style.cssText = 'position:absolute;top:10px;right:10px;background:none;border:none;cursor:pointer;font-size:18px;color:#e74c3c;';
+        btnDel.textContent = '✕';
+        btnDel.addEventListener('click', () => eliminarGrupoFB(i));
+        card.appendChild(btnDel);
+
+        // Campo nombre
+        const labelNombre = document.createElement('label');
+        labelNombre.style.cssText = 'font-size:12px;font-weight:600;display:block;margin-bottom:4px;';
+        labelNombre.textContent = 'Nombre del grupo:';
+        const inputNombre = document.createElement('input');
+        inputNombre.type = 'text';
+        inputNombre.value = g.nombre || '';
+        inputNombre.placeholder = 'Ej: Tecnología Cuba, Ofertas Habana…';
+        inputNombre.style.cssText = 'width:100%;padding:8px 10px;border-radius:8px;border:1px solid var(--border-color);font-size:13px;box-sizing:border-box;margin-bottom:10px;';
+        inputNombre.addEventListener('input', () => actualizarGrupoFB(i, 'nombre', inputNombre.value));
+        const wrapNombre = document.createElement('div');
+        wrapNombre.style.marginBottom = '8px';
+        wrapNombre.appendChild(labelNombre);
+        wrapNombre.appendChild(inputNombre);
+        card.appendChild(wrapNombre);
+
+        // Campo URL
+        const labelUrl = document.createElement('label');
+        labelUrl.style.cssText = 'font-size:12px;font-weight:600;display:block;margin-bottom:4px;';
+        labelUrl.textContent = 'URL del Grupo:';
+        const inputUrl = document.createElement('input');
+        inputUrl.type = 'text';
+        inputUrl.value = g.url || '';
+        inputUrl.placeholder = 'https://www.facebook.com/groups/...';
+        inputUrl.style.cssText = 'width:100%;padding:8px 10px;border-radius:8px;border:1px solid var(--border-color);font-size:13px;box-sizing:border-box;';
+        inputUrl.addEventListener('input', () => actualizarGrupoFB(i, 'url', inputUrl.value));
+        const wrapUrl = document.createElement('div');
+        wrapUrl.style.marginBottom = '12px';
+        wrapUrl.appendChild(labelUrl);
+        wrapUrl.appendChild(inputUrl);
+        card.appendChild(wrapUrl);
+
+        // Lista de productos con checkboxes
+        const labelProds = document.createElement('label');
+        labelProds.style.cssText = 'font-size:12px;font-weight:600;display:block;margin-bottom:6px;';
+        labelProds.textContent = 'Productos a publicar en este grupo:';
+        card.appendChild(labelProds);
+
+        const listProds = document.createElement('div');
+        listProds.style.cssText = 'display:flex;flex-direction:column;gap:6px;margin-bottom:12px;';
+
+        if (productos.length === 0) {
+            const noP = document.createElement('p');
+            noP.style.cssText = 'font-size:12px;color:var(--text-muted);';
+            noP.textContent = 'No hay productos cargados aún.';
+            listProds.appendChild(noP);
+        } else {
+            productos.forEach(p => {
+                const row = document.createElement('label');
+                row.style.cssText = 'display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer;';
+                const chk = document.createElement('input');
+                chk.type = 'checkbox';
+                chk.checked = (g.productos || []).includes(p.id);
+                chk.style.cssText = 'width:16px;height:16px;accent-color:var(--primary);';
+                chk.addEventListener('change', () => toggleProductoEnGrupo(i, p.id, chk.checked));
+                const img = document.createElement('img');
+                img.src = p.imagen || '';
+                img.style.cssText = 'width:28px;height:28px;border-radius:6px;object-fit:cover;';
+                img.onerror = () => { img.style.display = 'none'; };
+                const nombre = document.createElement('span');
+                nombre.textContent = p.nombre;
+                const precio = document.createElement('span');
+                precio.style.cssText = 'margin-left:auto;color:var(--primary);font-weight:600;';
+                precio.textContent = `$${p.precioActual}`;
+                row.appendChild(chk);
+                row.appendChild(img);
+                row.appendChild(nombre);
+                row.appendChild(precio);
+                listProds.appendChild(row);
+            });
+        }
+        card.appendChild(listProds);
+
+        // Botón publicar en este grupo
+        const btnPublicar = document.createElement('button');
+        btnPublicar.type = 'button';
+        btnPublicar.style.cssText = 'width:100%;padding:10px;background:#4267B2;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;';
+        btnPublicar.textContent = '📢 Publicar productos en este grupo';
+        btnPublicar.addEventListener('click', () => publicarEnGrupoFB(i));
+        card.appendChild(btnPublicar);
+
+        cont.appendChild(card);
+    });
 }
 
 function agregarGrupoFB() {

@@ -215,6 +215,94 @@ function cerrarFbSelector() {
     if (m) { m.classList.add('hidden'); m.style.display = 'none'; }
 }
 
+// Publicar todos los productos asignados a un grupo específico
+function publicarEnGrupoFB(iGrupo) {
+    const grupos = JSON.parse(localStorage.getItem('gruposFB') || '[]');
+    const grupo = grupos[iGrupo];
+    if (!grupo || !grupo.url) {
+        mostrarNotificacion('❌ Agrega la URL del grupo primero', 'error'); return;
+    }
+    const idsAsignados = grupo.productos || [];
+    const prods = (typeof productos !== 'undefined')
+        ? productos.filter(p => idsAsignados.includes(p.id))
+        : [];
+    if (prods.length === 0) {
+        mostrarNotificacion('❌ No hay productos seleccionados para este grupo', 'error'); return;
+    }
+
+    const existing = document.getElementById('grupoPublicarModal');
+    if (existing) document.body.removeChild(existing);
+
+    const modal = document.createElement('div');
+    modal.id = 'grupoPublicarModal';
+    modal.className = 'modal';
+    modal.style.display = 'flex';
+
+    const nombreGrupo = _escH(grupo.nombre || grupo.url);
+
+    modal.innerHTML = `
+      <div class="modal-content" style="max-width:520px;max-height:90vh;display:flex;flex-direction:column;">
+        <div class="modal-header">
+          <h2>📢 Publicar en: ${nombreGrupo}</h2>
+          <button class="close-btn" onclick="cerrarGrupoPublicarModal()" type="button">✕</button>
+        </div>
+        <p style="font-size:12px;opacity:.7;margin:8px 0 12px;">
+          Haz clic en cada producto. El texto se copia y se abre el grupo — pega y publica, luego vuelve y continúa con el siguiente.
+        </p>
+        <div id="grupoPublicarList" style="flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:8px;"></div>
+      </div>`;
+
+    document.body.appendChild(modal);
+
+    const list = document.getElementById('grupoPublicarList');
+    prods.forEach((p, idx) => {
+        const agotado = p.stock === 0;
+        const row = document.createElement('div');
+        row.id = `gprow_${p.id}`;
+        row.style.cssText = `display:flex;align-items:center;gap:10px;padding:10px 12px;
+            background:rgba(255,255,255,${agotado ? '.03' : '.06'});border-radius:10px;
+            opacity:${agotado ? '.5' : '1'};`;
+
+        const num = document.createElement('span');
+        num.style.cssText = 'font-size:12px;font-weight:700;opacity:.5;min-width:18px;';
+        num.textContent = `${idx + 1}.`;
+
+        const info = document.createElement('div');
+        info.style.cssText = 'flex:1;min-width:0;';
+        const nombre = document.createElement('div');
+        nombre.style.cssText = 'font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;';
+        nombre.textContent = p.nombre;
+        const meta = document.createElement('div');
+        meta.style.cssText = 'font-size:11px;opacity:.6;margin-top:2px;';
+        meta.textContent = `$${p.precioActual} · ${agotado ? '🚫 Agotado' : `📦 ${p.stock} uds`}`;
+        info.appendChild(nombre);
+        info.appendChild(meta);
+
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.style.cssText = 'background:#4267B2;color:#fff;border:none;padding:7px 14px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0;';
+        btn.textContent = '📋 Copiar y Abrir';
+        btn.addEventListener('click', async () => {
+            await copiarYAbrirFacebook(p.id, grupo.url);
+            // Marcar como publicado visualmente
+            btn.textContent = '✅ Publicado';
+            btn.style.background = '#27AE60';
+            btn.disabled = true;
+            row.style.opacity = '.5';
+        });
+
+        row.appendChild(num);
+        row.appendChild(info);
+        row.appendChild(btn);
+        list.appendChild(row);
+    });
+}
+
+function cerrarGrupoPublicarModal() {
+    const m = document.getElementById('grupoPublicarModal');
+    if (m) { m.classList.add('hidden'); m.style.display = 'none'; }
+}
+
 
 // ══════════════════════════════════════════════════════════════
 //  REVOLICO
