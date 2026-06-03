@@ -28,7 +28,7 @@
             var url  = typeof b === 'string' ? b : (b && b.url) || '';
             var link = typeof b === 'string' ? '' : (b && b.link) || '';
             // Solo aceptamos http(s) o data: para src
-            if (!/^(https?:|data:|\/)/i.test(url)) url = '';
+            if (!/^(https?:|data:)/i.test(url)) url = '';
 
             var slide = document.createElement('div');
             slide.className = 'hero-banner-slide';
