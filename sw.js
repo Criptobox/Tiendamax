@@ -1,24 +1,11 @@
 // ═══════════════════════════════════════════════════════
-// TiendaMax — Service Worker v111 (badge solido + footer movil naranja)
-// v111: footer movil "Max" en naranja para igualar el logo.
-// v110: badge "Mas Vendido" solido en oscuro.
-// v109: badge "Mas Vendido" visible en claro.
-// v108: añade hero-efectos (líneas + typewriter) y fuerza actualización de caché.
-// v107: galería de imágenes por producto.
-// v106: dashboard unificado móvil.
-// v105: dashboard, limpieza y tooling.
-// v67: actualiza caché para que todos los favicons/iconos usen el logo nuevo.
-// v66: corrige assets cacheados inexistentes y fuerza actualización de caché.
-// v65: fuerza actualización de caché para el nuevo estilo naranja del botón
-//      "Avísame cuando vuelva" en productos agotados.
-// v64: fuerza actualización de caché para cargar los arreglos de tarjetas
-//      móviles, barra de moneda y offset del header.
-// v62: las 3 funciones que mandan pedidos por WhatsApp
-//      (comprarCarrito, tmComprar, contactarProducto) ahora
-//      usan el mismo helper _mensajeOrdenWA con formato premium.
+// TiendaMax — Service Worker v117
+// v117: sirve WebP transparentemente para imágenes de producto
+//       (intercepción en fetch handler; fallback automático a JPEG/PNG).
+// v116: (anterior)
 // ═══════════════════════════════════════════════════════
 
-const CACHE_NAME = 'tiendamax-v116';
+const CACHE_NAME = 'tiendamax-v117';
 
 const STATIC_ASSETS = [
   '/',
@@ -134,6 +121,35 @@ self.addEventListener('fetch', e => {
                     return res;
                 })
                 .catch(() => caches.match(e.request).then(c => c || caches.match('/index.html')))
+        );
+        return;
+    }
+
+    // Upgrade transparente a WebP para imágenes de producto
+    // Solo si el browser acepta WebP (header Accept lo indica) y la URL es de /imagenes/
+    const esImagenProducto = /\/imagenes\/.+\.(jpe?g|png)$/i.test(path);
+    const aceptaWebP = (e.request.headers.get('accept') || '').includes('image/webp');
+    if (esImagenProducto && aceptaWebP) {
+        const webpUrl = e.request.url.replace(/\.(jpe?g|png)(\?.*)?$/i, '.webp');
+        const webpReq = new Request(webpUrl, { headers: e.request.headers });
+        e.respondWith(
+            caches.match(webpReq).then(cached => {
+                if (cached) return cached;
+                return fetch(webpReq).then(res => {
+                    if (res.ok) {
+                        // WebP existe: cachear y servir
+                        caches.open(CACHE_NAME).then(c => c.put(webpReq, res.clone())).catch(() => {});
+                        return res;
+                    }
+                    // WebP aún no generado: fallback al original
+                    return fetch(e.request).then(origRes => {
+                        if (origRes.ok) caches.open(CACHE_NAME).then(c => c.put(e.request, origRes.clone())).catch(() => {});
+                        return origRes;
+                    });
+                }).catch(() =>
+                    caches.match(e.request).then(c => c || fetch(e.request))
+                );
+            })
         );
         return;
     }
