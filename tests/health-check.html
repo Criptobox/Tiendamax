@@ -453,6 +453,78 @@ suites.push({
     ]
 });
 
+suites.push({
+    group: '🌍 Conectividad en vivo — tiendamax.org',
+    async: true,
+    note: 'Estos tests hacen fetch real al sitio. Requieren conexión a internet.',
+    cases: [
+        { name: 'productos.json carga y tiene items', async: true, fn: async ()=>{
+            const r = await fetch('https://tiendamax.org/productos.json', { cache: 'no-store' });
+            if (!r.ok) throw new Error(`HTTP ${r.status}`);
+            const data = await r.json();
+            const arr = Array.isArray(data) ? data : (data.productos || []);
+            if (arr.length === 0) throw new Error('Array vacío — sin productos');
+            expect(arr.length).toBeGreaterThan(0);
+        }},
+        { name: 'config.json carga y tiene tasa', async: true, fn: async ()=>{
+            const r = await fetch('https://tiendamax.org/config.json', { cache: 'no-store' });
+            if (!r.ok) throw new Error(`HTTP ${r.status}`);
+            const cfg = await r.json();
+            if (!cfg.tasaCambio && !cfg.tasa && !cfg.rate) throw new Error('Sin campo de tasa en config.json');
+            expect(true).toBeTruthy();
+        }},
+        { name: 'manifest.json es válido', async: true, fn: async ()=>{
+            const r = await fetch('https://tiendamax.org/manifest.json', { cache: 'no-store' });
+            if (!r.ok) throw new Error(`HTTP ${r.status}`);
+            const m = await r.json();
+            if (!m.name) throw new Error('manifest.json sin campo "name"');
+            expect(m.name.length).toBeGreaterThan(0);
+        }},
+        { name: 'sw.js responde 200', async: true, fn: async ()=>{
+            const r = await fetch('https://tiendamax.org/sw.js', { cache: 'no-store' });
+            if (!r.ok) throw new Error(`HTTP ${r.status}`);
+            expect(r.status).toBe(200);
+        }},
+        { name: 'script.js responde 200', async: true, fn: async ()=>{
+            const r = await fetch('https://tiendamax.org/js/script.js', { cache: 'no-store' });
+            if (!r.ok) throw new Error(`HTTP ${r.status}`);
+            expect(r.status).toBe(200);
+        }},
+        { name: 'bundle.css responde 200', async: true, fn: async ()=>{
+            const r = await fetch('https://tiendamax.org/css/bundle.css', { cache: 'no-store' });
+            if (!r.ok) throw new Error(`HTTP ${r.status}`);
+            expect(r.status).toBe(200);
+        }},
+        { name: 'og-image.png responde 200', async: true, fn: async ()=>{
+            const r = await fetch('https://tiendamax.org/og-image.png', { cache: 'no-store' });
+            if (!r.ok) throw new Error(`HTTP ${r.status}`);
+            expect(r.status).toBe(200);
+        }},
+        { name: 'icon-192.png responde 200', async: true, fn: async ()=>{
+            const r = await fetch('https://tiendamax.org/iconos/icon-192.png', { cache: 'no-store' });
+            if (!r.ok) throw new Error(`HTTP ${r.status}`);
+            expect(r.status).toBe(200);
+        }},
+        { name: 'productos.json tiene campos obligatorios', async: true, fn: async ()=>{
+            const r = await fetch('https://tiendamax.org/productos.json', { cache: 'no-store' });
+            if (!r.ok) throw new Error(`HTTP ${r.status}`);
+            const data = await r.json();
+            const arr = Array.isArray(data) ? data : (data.productos || []);
+            const p = arr[0];
+            if (!p) throw new Error('Sin productos');
+            const campos = ['id','nombre','precioActual'];
+            for (const c of campos) {
+                if (p[c] === undefined) throw new Error(`Falta campo "${c}" en primer producto`);
+            }
+            expect(true).toBeTruthy();
+        }},
+        { name: 'Notificaciones Push soportadas', fn: ()=>{
+            if (!('Notification' in window)) throw new Error('API Notification no disponible en este browser');
+            expect(['default','granted','denied'].includes(Notification.permission)).toBeTruthy();
+        }},
+    ]
+});
+
 // ═══════════════════════════════════════════════════════════
 //  RUNNER
 // ═══════════════════════════════════════════════════════════
@@ -501,9 +573,9 @@ async function runAll() {
                 err.textContent = e.message;
                 const wrapper = document.createElement('div');
                 wrapper.style.flex = '1';
-                wrapper.appendChild(name);
+                wrapper.appendChild(name);  // mueve name de row a wrapper
                 wrapper.appendChild(err);
-                row.replaceChild(wrapper, name);
+                row.appendChild(wrapper);   // añade wrapper al final de row (junto al badge)
                 totalFail++;
             }
 
