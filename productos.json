@@ -934,27 +934,6 @@
     "devolucion": false
   },
   {
-    "id": 1778821500770,
-    "nombre": "Audífonos Bluetooth",
-    "descripcion": "Audífonos económicos, elegantes, táctiles, con 40 horas de bateria, alta calidad de sonido, cancelacion de ruido de ambiente en llamadas, haciendo la voz mas clara y legible en las mismas. Buena calidad de musica y buenos  bajos. Diseño similar a los de  iPhone. Son compactos  y compatibles con todo tipo de telefonos. Se cargan con cable lighting de iphone (incluído en la caja).",
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1780511344785.jpg",
-    "precioActual": 15,
-    "descuento": 0,
-    "stock": 28,
-    "comision": 1.8,
-    "categoria": "CELULARES",
-    "subcategoria": "",
-    "masVendido": false,
-    "usado": false,
-    "garantia": "",
-    "devolucion": false,
-    "precioOriginal": 0,
-    "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1780511344785.jpg",
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1780511346815.jpg"
-    ]
-  },
-  {
     "id": 1778906281677,
     "nombre": "Cargador Inteligente de Alta Potencia 84V 10A",
     "descripcion": "Moto Eléctrica | Carga Rápida 110V\n​📝 Descripción del Producto\n​Lleva la carga de tu vehículo eléctrico al siguiente nivel con el cargador inteligente de alta potencia de 84V y 10A. Diseñado para quienes no tienen tiempo que perder, este cargador premium reduce drásticamente el tiempo de espera gracias a su potente salida de 10 amperios, garantizando una carga rápida, eficiente y, sobre todo, segura para la batería de tu moto o scooter eléctrico.",
