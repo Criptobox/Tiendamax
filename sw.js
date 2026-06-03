@@ -1,5 +1,6 @@
 // ═══════════════════════════════════════════════════════
-// TiendaMax — Service Worker v129
+// TiendaMax — Service Worker v130
+// v130: PWA install más robusto (delay 1.5s, botón en menú, dismiss 2 días).
 // v129: fix definitivo opacidad categorías vacías (clase proximamente + !important).
 // v128: agotados al final en Gestionar.
 // v127: categorías con 0 productos opacas, botón →0 en tarjetas Gestionar.
@@ -16,7 +17,7 @@
 //      usan el mismo helper _mensajeOrdenWA con formato premium.
 // ═══════════════════════════════════════════════════════
 
-const CACHE_NAME = 'tiendamax-v129';
+const CACHE_NAME = 'tiendamax-v130';
 
 const STATIC_ASSETS = [
   '/',

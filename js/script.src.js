@@ -7218,7 +7218,7 @@ window.addEventListener('popstate', function() {
     'use strict';
     var deferredPrompt = null;
     var DISMISS_KEY = 'pwaInstallDismissed';
-    var DISMISS_DIAS = 7;
+    var DISMISS_DIAS = 2;
 
     function yaInstalada() {
         return window.matchMedia('(display-mode: standalone)').matches ||
@@ -7286,9 +7286,38 @@ window.addEventListener('popstate', function() {
     window.addEventListener('beforeinstallprompt', function (e) {
         e.preventDefault();
         deferredPrompt = e;
-        // Mostrar el banner bonito tras unos segundos (no apenas entra)
-        setTimeout(mostrarBannerInstalar, 4000);
+        // Mostrar el banner bonito rápido (1.5s) para no perderlo si el SW fuerza un reload
+        setTimeout(mostrarBannerInstalar, 1500);
+        // Mostrar/actualizar botón en el menú de navegación
+        _mostrarBtnInstalarMenu();
     });
+
+    // Botón de instalación en el menú móvil
+    function _mostrarBtnInstalarMenu() {
+        if (yaInstalada()) return;
+        if (document.getElementById('tm-install-menu-btn')) return;
+        var menu = document.getElementById('mobileMenuOverlay');
+        if (!menu) return;
+        var btn = document.createElement('button');
+        btn.id = 'tm-install-menu-btn';
+        btn.type = 'button';
+        btn.className = 'nav-mobile-link';
+        btn.style.cssText = 'color:#C9A96E;font-weight:700;';
+        btn.textContent = '📲 Instalar app';
+        btn.onclick = function () {
+            document.getElementById('mobileMenuOverlay').classList.remove('open');
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then(function () { deferredPrompt = null; }).catch(function () {});
+            } else {
+                mostrarBannerInstalar();
+            }
+        };
+        // Insertar antes de mobile-menu-actions
+        var actions = menu.querySelector('.mobile-menu-actions');
+        if (actions) menu.insertBefore(btn, actions);
+        else menu.appendChild(btn);
+    }
 
     // Si se instala, limpiar
     window.addEventListener('appinstalled', function () {
