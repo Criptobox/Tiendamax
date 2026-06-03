@@ -4147,7 +4147,12 @@ function renderizarGruposFB(grupos) {
             noP.textContent = 'No hay productos cargados aún.';
             listProds.appendChild(noP);
         } else {
-            productos.forEach(p => {
+            const productosOrdenados = [...productos].sort((a, b) => {
+                const aAgo = !a.stock || a.stock <= 0;
+                const bAgo = !b.stock || b.stock <= 0;
+                return aAgo - bAgo;
+            });
+            productosOrdenados.forEach(p => {
                 const agotado = !p.stock || p.stock <= 0;
                 const row = document.createElement('label');
                 row.style.cssText = `display:flex;align-items:center;gap:8px;font-size:13px;

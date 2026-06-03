@@ -225,6 +225,7 @@ function publicarEnGrupoFB(iGrupo) {
     const idsAsignados = grupo.productos || [];
     const prods = (typeof productos !== 'undefined')
         ? productos.filter(p => idsAsignados.includes(p.id))
+              .sort((a, b) => (!a.stock || a.stock <= 0) - (!b.stock || b.stock <= 0))
         : [];
     if (prods.length === 0) {
         mostrarNotificacion('❌ No hay productos seleccionados para este grupo', 'error'); return;
