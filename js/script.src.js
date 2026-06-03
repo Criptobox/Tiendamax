@@ -1072,7 +1072,8 @@ async function subirImagenAGitHub(fileOrBase64) {
     if (!user || !repo || !token) return base64full; // fallback sin config
 
     try {
-        const base64data = base64full.split(',')[1];
+        const base64data = base64full.includes(',') ? base64full.split(',')[1] : base64full;
+        if (!base64data) return base64full; // fallback si el data URL está malformado
         const filename   = 'img_' + Date.now() + '.jpg';
         const path       = 'imagenes/' + filename;
         const apiUrl     = 'https://api.github.com/repos/' + user + '/' + repo + '/contents/' + path;
@@ -1779,7 +1780,7 @@ async function verificarPassword(event) {
                         try {
                             const authData = { hash: nh, salt: ns, iterations: AUTH_ITERATIONS };
                             const jsonStr = JSON.stringify(authData);
-                            const content = btoa(unescape(encodeURIComponent(jsonStr)));
+                            const content = btoa(Array.from(new TextEncoder().encode(jsonStr), b => String.fromCharCode(b)).join(''));
                             await fetch(`https://api.github.com/repos/${ghUser}/${ghRepo}/contents/.admin-auth.json`, {
                                 method: 'PUT',
                                 headers: { 'Authorization': `token ${ghToken}`, 'Content-Type': 'application/json' },
@@ -1860,7 +1861,7 @@ async function cambiarPasswordAdmin(ci, ni, coi) {
             try {
                 const authData = { hash: nh, salt: ns, iterations: AUTH_ITERATIONS };
                 const jsonStr = JSON.stringify(authData);
-                const content = btoa(unescape(encodeURIComponent(jsonStr)));
+                const content = btoa(Array.from(new TextEncoder().encode(jsonStr), b => String.fromCharCode(b)).join(''));
                 const ghRes = await fetch(`https://api.github.com/repos/${ghUser}/${ghRepo}/contents/.admin-auth.json`, {
                     method: 'PUT',
                     headers: { 'Authorization': `token ${ghToken}`, 'Content-Type': 'application/json' },
@@ -2457,8 +2458,7 @@ if (_detailPrecioOldEl) {
 
     // Abrir modal
     const modal = document.getElementById('productDetailModal');
-    
-    
+    if (!modal) return;
     modal.classList.remove('hidden');
     modal.style.removeProperty('display');
     document.body.style.overflow = 'hidden';
@@ -2473,6 +2473,7 @@ function cerrarDetalleModal() {
     if (_pcr) _pcr.style.display = 'none';
 
     const modal = document.getElementById('productDetailModal');
+    if (!modal) return;
     modal.classList.add('hidden');
     modal.style.removeProperty('display');
     document.body.style.overflow = '';
@@ -3135,7 +3136,7 @@ async function sincronizarConGitHub() {
 async function subirArchivoAGitHub(user, repo, token, path, data) {
     const headers = { 'Authorization': `token ${token}`, 'Content-Type': 'application/json', 'Accept': 'application/vnd.github.v3+json' };
     const jsonStr  = JSON.stringify(data, null, 2);
-    const content  = btoa(unescape(encodeURIComponent(jsonStr)));
+    const content  = btoa(Array.from(new TextEncoder().encode(jsonStr), b => String.fromCharCode(b)).join(''));
 
     // Calcular tamaño aproximado en bytes (base64 → bytes originales)
     const sizeBytes = jsonStr.length;
