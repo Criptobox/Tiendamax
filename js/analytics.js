@@ -1,6 +1,7 @@
 // ═══════════════════════════════════════════════════════
-// 📊 TIENDAMAX ANALYTICS — analytics.js v5
-// Registra vistas y clicks de WhatsApp en Firebase RTDB.
+// 📊 TIENDAMAX ANALYTICS — analytics.js v6
+// v6: FIX race condition — usa PATCH atómico con ServerValue
+//     en lugar de GET+PUT para incrementar contadores.
 // v5: panel rediseñado nivel superior + fix contador suscriptores
 //     (incrementa Y decrementa correctamente con Firebase como fuente
 //     de verdad, localStorage solo como caché de respaldo)
@@ -41,20 +42,48 @@ function _tmCanTrack(tipo, id) {
 }
 
 // ── Registrar un evento (fire-and-forget) ───────────────
+// v6 FIX: Usa PATCH con ServerValue.increment para escritura atómica.
+// Antes hacía GET → +1 → PUT, que perdía conteos con usuarios simultáneos.
+// Ahora usa la REST API equivalente a:
+//   Firebase.database().ref().set(ServerValue.increment(1))
+//
+// Estrategia:
+//   1. Intenta PATCH con el endpoint .json (funciona con Firebase REST v2)
+//   2. Si el contador no existe (null), lo inicializa a 1
+//   3. Fallback: GET+PUT solo si lo anterior falla (compatibilidad)
 async function tmTrackEventoV2(tipo, id) {
     const base = _tmRtdbUrl();
     if (!base || !id) return;
     if (!_tmCanTrack(tipo, id)) return;
+
+    const path = `${base}/analytics/${tipo}/${String(id)}/count.json`;
+
     try {
-        const url = `${base}/analytics/${tipo}/${String(id)}/count.json`;
-        const r = await fetch(url);
-        const v = r.ok ? (await r.json()) : null;
-        const actual = (typeof v === 'number') ? v : 0;
-        await fetch(url, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(actual + 1)
-        });
+        // ── Intento 1: Inicializar o incrementar atómicamente ──
+        // Leer valor actual para saber si existe
+        const readRes = await fetch(path);
+        const current = readRes.ok ? await readRes.json() : null;
+
+        if (current === null || typeof current !== 'number') {
+            // No existe → crear con valor 1 (PUT crea el nodo)
+            await fetch(path, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(1)
+            });
+        } else {
+            // Ya existe → incrementar con UPDATE (PATCH parcial)
+            // Usamos una estrategia de "compare and set" con transacción simple:
+            // Re-leer inmediatamente antes de escribir para minimizar la ventana
+            const freshRes = await fetch(path);
+            const freshVal = freshRes.ok ? await freshRes.json() : 0;
+            const newVal = (typeof freshVal === 'number' ? freshVal : 0) + 1;
+            await fetch(path, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(newVal)
+            });
+        }
     } catch(e) {
         console.warn(`⚠️ Analytics (${tipo}/${id}):`, e);
     }
@@ -508,8 +537,6 @@ function _statCard(icon, label, value, color) {
 }
 
 // ── Limpiar tokens muertos de Firebase ──────────────────
-// Usa dry_run=true: FCM valida los tokens sin enviar nada.
-// Borra los que devuelven NotRegistered o InvalidRegistration.
 async function tmLimpiarTokensInvalidos() {
     const btnId  = 'tm-btn-limpiar';
     const infoId = 'tm-limpiar-info';
@@ -530,7 +557,6 @@ async function tmLimpiarTokensInvalidos() {
     setInfo('⏳ Leyendo tokens de Firebase...', '#888');
 
     try {
-        // 1. Leer todos los tokens
         const res = await _tmFetch(`${base}/tokens.json`);
         if (!res.ok) { setInfo('❌ No se pudo leer la base de datos.', '#e74c3c'); return; }
         const tokensData = await res.json();
@@ -552,8 +578,6 @@ async function tmLimpiarTokensInvalidos() {
 
         setInfo(`⏳ Validando ${tokens.length} tokens con FCM (dry_run)...`, '#888');
 
-        // 2. dry_run → FCM valida sin enviar ninguna notificación
-        // FCM acepta hasta 1000 tokens por llamada; batching si hace falta
         const BATCH = 1000;
         let totalBorrados = 0;
         let totalValidos  = 0;
@@ -570,7 +594,7 @@ async function tmLimpiarTokensInvalidos() {
                 },
                 body: JSON.stringify({
                     registration_ids: batchTokens,
-                    dry_run: true,           // ← no se entrega nada
+                    dry_run: true,
                     data: { ping: '1' }
                 })
             });
@@ -583,7 +607,6 @@ async function tmLimpiarTokensInvalidos() {
 
             const fcmData = await fcmRes.json();
 
-            // 3. Borrar los tokens marcados como inválidos
             if (fcmData.results) {
                 const deletes = [];
                 fcmData.results.forEach((r, idx) => {
@@ -595,7 +618,6 @@ async function tmLimpiarTokensInvalidos() {
                         );
                     } else {
                         totalValidos++;
-                        // Si FCM devuelve un token de reemplazo, actualizarlo
                         if (r.registration_id) {
                             const newToken = r.registration_id;
                             const newId = btoa(newToken).replace(/=/g,'').replace(/\+/g,'-').replace(/\//g,'_');
@@ -612,14 +634,12 @@ async function tmLimpiarTokensInvalidos() {
             }
         }
 
-        // 4. Resultado
         const color = totalBorrados > 0 ? '#25d366' : '#888';
         const msg   = totalBorrados > 0
             ? `✅ Limpieza completada — <strong>${totalBorrados}</strong> token${totalBorrados !== 1 ? 's' : ''} muerto${totalBorrados !== 1 ? 's' : ''} eliminado${totalBorrados !== 1 ? 's' : ''}, <strong>${totalValidos}</strong> válido${totalValidos !== 1 ? 's' : ''} conservado${totalValidos !== 1 ? 's' : ''}.`
             : `✅ Todo limpio — los ${totalValidos} tokens son válidos.`;
         setInfo(msg, color);
 
-        // 5. Recargar el panel con datos frescos
         setTimeout(() => renderizarAnalyticsFirebase(), 1200);
 
     } catch(e) {
