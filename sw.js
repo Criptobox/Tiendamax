@@ -1,13 +1,6 @@
 // ═══════════════════════════════════════════════════════
-// TiendaMax — Service Worker v111 (badge solido + footer movil naranja)
-// v111: footer movil "Max" en naranja para igualar el logo.
-// v110: badge "Mas Vendido" solido en oscuro.
-// v109: badge "Mas Vendido" visible en claro.
-// v108: añade hero-efectos (líneas + typewriter) y fuerza actualización de caché.
-// v107: galería de imágenes por producto.
-// v106: dashboard unificado móvil.
-// v105: dashboard, limpieza y tooling.
-// v67: actualiza caché para que todos los favicons/iconos usen el logo nuevo.
+// TiendaMax — Service Worker v123
+// v123: asistente Facebook/Revolico mejorado — grupos, precio MN, categorías Revolico.
 // v66: corrige assets cacheados inexistentes y fuerza actualización de caché.
 // v65: fuerza actualización de caché para el nuevo estilo naranja del botón
 //      "Avísame cuando vuelva" en productos agotados.
@@ -18,7 +11,7 @@
 //      usan el mismo helper _mensajeOrdenWA con formato premium.
 // ═══════════════════════════════════════════════════════
 
-const CACHE_NAME = 'tiendamax-v116';
+const CACHE_NAME = 'tiendamax-v123';
 
 const STATIC_ASSETS = [
   '/',
