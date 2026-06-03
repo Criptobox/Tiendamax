@@ -1169,9 +1169,9 @@
     "id": 1780344659047,
     "nombre": "ZOSl-camara de sequridad CCTV",
     "descripcion": "ZOSl-camara de sequridad CCTV impermeable para exteriores e interiores, Kit de sistema DVR 108OP 2MP.TVI.AHD.CVBS.IR CUT. Visión nocturna",
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1780344655996.jpg",
+    "imagen": "https://tiendamax.org/imagenes/img_1780344655996.jpg",
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1780344655996.jpg"
+      "https://tiendamax.org/imagenes/img_1780344655996.jpg"
     ],
     "precioActual": 45,
     "precioOriginal": 0,
@@ -1179,6 +1179,26 @@
     "stock": 11,
     "comision": 2.5,
     "categoria": "SEGURIDAD",
+    "subcategoria": "",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false
+  },
+  {
+    "id": 1780510681519,
+    "nombre": "Router Tenda RX2 Pro – Wi-Fi 6 Dual-Band Gigabit",
+    "descripcion": "​Tecnología Wi-Fi 6 de Última Generación: Mayor velocidad de transmisión, más capacidad de dispositivos conectados y una latencia extremadamente baja.\n​Doble Banda Gigabit (Dual-Band): Optimiza de forma inteligente el tráfico de tu red para darte la máxima velocidad disponible tanto en 2.4 GHz como en 5 GHz.\n​Adiós a las Zonas Muertas: Equipado con 5 antenas externas de alta ganancia (6dBi) y un módulo de mejora de señal de alto rendimiento, garantizando cobertura total incluso en casas grandes.\n​Puertos Totalmente Gigabit: Puertos cableados de alta velocidad (hasta 1000 Mbps) para exprimir al máximo tu plan de internet y asegurar estabilidad en consolas o PCs.\n​Seguridad Avanzada: Compatible con el último protocolo de seguridad WPA3 para proteger tu red contra accesos no deseados.\n​Listo para el Futuro: Soporte nativo para IPv6 y gestión sencilla desde la comodidad de una App móvil.",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1780510677267.jpg",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1780510677267.jpg"
+    ],
+    "precioActual": 110,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 1,
+    "comision": 10,
+    "categoria": "WIFI",
     "subcategoria": "",
     "masVendido": false,
     "usado": false,
