@@ -1,11 +1,10 @@
 // ═══════════════════════════════════════════════════════
-// TiendaMax — Service Worker v119
-// v119: eliminar analytics.js del cache estático (el ?v= en el HTML ya lo versiona),
-//       fix admin.css y script.js para modo oscuro.
-// v118: (anterior)
+// TiendaMax — Service Worker v120
+// v120: bundle.css v2 — mejoras homepage: espaciado, grid centrado, Próximamente dimmed.
+// v119: (anterior)
 // ═══════════════════════════════════════════════════════
 
-const CACHE_NAME = 'tiendamax-v119';
+const CACHE_NAME = 'tiendamax-v120';
 
 const STATIC_ASSETS = [
   '/',

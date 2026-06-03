@@ -1757,13 +1757,13 @@ function renderizarCategoriasHome() {
     categorias.forEach(cat => {
         const count = productos.filter(p => p.categoria === cat).length;
         const card = document.createElement('div');
-        card.className = 'categoria-card';
+        card.className = 'categoria-card' + (count === 0 ? ' cat-proximamente' : '');
         card.innerHTML = `
             <span class="cat-icon">${escapeHtml(obtenerIconoCategoria(cat))}</span>
             <span class="cat-name">${escapeHtml(cat)}</span>
             <span class="cat-count">${count === 0 ? '🕐 Próximamente' : safeNum(count) + ' producto' + (count !== 1 ? 's' : '')}</span>
         `;
-        card.onclick = () => mostrarVistaCategoria(cat);
+        card.onclick = count === 0 ? null : () => mostrarVistaCategoria(cat);
         grid.appendChild(card);
     });
     // Dispara animaciones CSS DESPUÉS de que el DOM está poblado
@@ -3701,9 +3701,9 @@ function renderizarCategoriasHomeInstant() {
     localCats.forEach(cat => {
         const count = localProds.filter(p => p.categoria === cat).length;
         const card = document.createElement('div');
-        card.className = 'categoria-card';
+        card.className = 'categoria-card' + (count === 0 ? ' cat-proximamente' : '');
         card.innerHTML = `<span class="cat-icon">${obtenerIconoCategoria(cat)}</span><span class="cat-name">${cat}</span><span class="cat-count">${count === 0 ? '🕐 Próximamente' : count + ' producto' + (count !== 1 ? 's' : '')}</span>`;
-        card.onclick = () => mostrarVistaCategoria(cat);
+        card.onclick = count === 0 ? null : () => mostrarVistaCategoria(cat);
         grid.appendChild(card);
     });
     // Dispara animaciones CSS DESPUÉS de que el DOM está poblado
