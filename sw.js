@@ -1,6 +1,6 @@
 // ═══════════════════════════════════════════════════════
-// TiendaMax — Service Worker v123
-// v123: asistente Facebook/Revolico mejorado — grupos, precio MN, categorías Revolico.
+// TiendaMax — Service Worker v124
+// v124: colores en KPIs de Analytics, mejoras visuales en Ventas y Analytics.
 // v66: corrige assets cacheados inexistentes y fuerza actualización de caché.
 // v65: fuerza actualización de caché para el nuevo estilo naranja del botón
 //      "Avísame cuando vuelva" en productos agotados.
@@ -11,7 +11,7 @@
 //      usan el mismo helper _mensajeOrdenWA con formato premium.
 // ═══════════════════════════════════════════════════════
 
-const CACHE_NAME = 'tiendamax-v123';
+const CACHE_NAME = 'tiendamax-v124';
 
 const STATIC_ASSETS = [
   '/',

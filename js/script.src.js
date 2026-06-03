@@ -5193,14 +5193,16 @@ function renderizarDashboardVentas(contenedor) {
     const miniSection = (title, html) =>
         '<div class="admin-mini-section"><div class="admin-chart-title">' + title + '</div>' + (html || empty) + '</div>';
 
-    const masVendidosHtml = topList.length ? topList.map((d, i) => `
+    const masVendidosHtml = topList.length ? topList.map((d, i) => {
+        const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : (i + 1) + '.';
+        return `
         <div class="admin-top-item">
-            <span class="admin-top-rank">${i + 1}</span>
+            <span class="admin-top-rank" style="font-size:${i<3?'14px':'11px'}">${medal}</span>
             ${imgTag(d.producto)}
             <span class="admin-top-name">${escapeHtml(d.nombre)}</span>
             <span class="admin-top-meta">${d.unidades} uds</span>
             <span class="admin-top-value gold">$${d.total.toFixed(0)}</span>
-        </div>`).join('') : '';
+        </div>`;}).join('') : '';
 
     const reponerHtml = reponer.length ? reponer.map((p, i) => `
         <div class="admin-top-item">

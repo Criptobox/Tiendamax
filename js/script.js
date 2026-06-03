@@ -1,1 +1,7240 @@
-"use strict";var countdownIntervals={};let _monedaActual=localStorage.getItem("monedaActual")||"USD";const LOCKOUT_DURATION_MS=3e5,PUSH_BANNER_DELAY_MS=45e3,PUSH_BANNER_DENY_DELAY_HOURS=6,PUSH_RECHAZO_DELAY_DAYS=[1,3,7,14,30];function escapeHtml(e){return null==e?"":String(e).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;")}function escapeAttr(e){return escapeHtml(e)}function safeNum(e,t=0){const o=Number(e);return isFinite(o)?o:t}function _cargarCarrito(){try{const e=localStorage.getItem("carrito_v2");if(!e)return[];const{items:t,expires:o}=JSON.parse(e);return Date.now()>o?(localStorage.removeItem("carrito_v2"),[]):t||[]}catch{return[]}}let carrito=_cargarCarrito();function guardarCarrito(){const e={items:carrito,expires:Date.now()+864e5};localStorage.setItem("carrito_v2",JSON.stringify(e)),actualizarContadorCarrito()}function actualizarContadorCarrito(){const e=carrito.reduce((e,t)=>e+t.cantidad,0),t=document.getElementById("cartCount");t&&(0===e?t.style.display="none":(t.style.display="flex",t.textContent=e>99?"99+":e))}let wishlist=JSON.parse(localStorage.getItem("wishlist_v1")||"[]").map(String);function guardarWishlist(){localStorage.setItem("wishlist_v1",JSON.stringify(wishlist))}function toggleMeGusta(e,t){t&&(t.stopPropagation(),t.preventDefault()),e=String(e);const o=wishlist.indexOf(e),a=-1===o;a?(wishlist.push(e),mostrarNotificacion("❤️ Agregado a Me Gusta")):(wishlist.splice(o,1),mostrarNotificacion("🤍 Eliminado de Me Gusta")),guardarWishlist(),actualizarBadgeCorazon(),document.querySelectorAll('[data-like-id="'+e+'"]').forEach(t=>{t.classList.toggle("liked",wishlist.includes(e)),t.setAttribute("aria-label",wishlist.includes(e)?"Quitar me gusta":"Me gusta"),t.classList.remove("heart-pop"),t.classList.add("heart-pop")}),a&&t&&flyToHeart(t)}function actualizarBadgeCorazon(){const e=document.getElementById("heartCount"),t=document.getElementById("heartHeaderBtn"),o=document.getElementById("heartHeaderIcon");if(!e)return;const a=wishlist.length;0===a?(e.style.display="none",o&&(o.setAttribute("fill","none"),o.style.color="")):(e.style.display="flex",e.textContent=a>99?"99+":a,o&&(o.setAttribute("fill","currentColor"),o.style.color="#e74c3c")),t&&t.classList.toggle("has-likes",a>0)}function flyToHeart(e){const t=document.getElementById("heartHeaderBtn");if(!t)return;var o=e.touches&&e.touches[0]||e.changedTouches&&e.changedTouches[0];const a=e.clientX||(o?o.clientX:window.innerWidth/2),n=e.clientY||(o?o.clientY:100),r=t.getBoundingClientRect(),i=r.left+r.width/2,c=r.top+r.height/2,s=document.createElement("div");s.innerHTML="❤️",s.style.cssText=["position:fixed","left:"+a+"px","top:"+n+"px","font-size:22px","pointer-events:none","z-index:99999","transform:translate(-50%,-50%) scale(1)","transition:left 0.55s cubic-bezier(.4,0,.2,1),top 0.55s cubic-bezier(.4,0,.2,1),transform 0.55s,opacity 0.55s","opacity:1","will-change:transform,left,top"].join(";"),document.body.appendChild(s),requestAnimationFrame(()=>{requestAnimationFrame(()=>{s.style.left=i+"px",s.style.top=c+"px",s.style.transform="translate(-50%,-50%) scale(0.3)",s.style.opacity="0"})}),setTimeout(()=>{s.remove(),t&&(t.classList.remove("heart-land"),t.classList.add("heart-land"))},560)}function getMeGustaHTML(e){e=String(e);const t=wishlist.includes(e);return'<button class="btn-megusta'+(t?" liked":"")+'" data-like-id="'+e+'" aria-label="'+(t?"Quitar me gusta":"Me gusta")+'" onclick="toggleMeGusta('+e+', event)" type="button"><svg viewBox="0 0 24 24" width="16" height="16" fill="'+(t?"currentColor":"none")+'" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></button>'}function agregarAlCarrito(e){const t=productos.find(t=>t.id===e);if(!t||0===t.stock)return;const o=carrito.find(t=>t.id===e);if(o){if(!(o.cantidad<t.stock))return void mostrarNotificacion("⚠️ No hay más unidades disponibles","error");o.cantidad++}else carrito.push({id:t.id,nombre:t.nombre,precio:t.precioActual,imagen:t.imagen,cantidad:1});guardarCarrito(),mostrarNotificacion("✅ "+t.nombre.substring(0,25)+" agregado al carrito"),renderizarCarrito(),actualizarBotonesCarrito()}function quitarDelCarrito(e){carrito=carrito.filter(t=>t.id!==e),guardarCarrito(),renderizarCarrito(),actualizarBotonesCarrito()}function cambiarCantidad(e,t){const o=carrito.find(t=>t.id===e);if(!o)return;const a=productos.find(t=>t.id===e),n=Math.min(a?a.stock:99,o.cantidad+t);n<=0?quitarDelCarrito(e):(o.cantidad=n,guardarCarrito(),renderizarCarrito())}function limpiarCarrito(){carrito=[],guardarCarrito(),renderizarCarrito(),actualizarBotonesCarrito()}function abrirCarrito(){renderizarCarrito(),document.getElementById("carritoDrawer").classList.remove("hidden"),document.body.style.overflow="hidden"}function cerrarCarrito(){document.getElementById("carritoDrawer").classList.add("hidden"),document.body.style.overflow=""}function renderizarCarrito(){const e=document.getElementById("carritoItems"),t=document.getElementById("carritoVacio"),o=document.getElementById("carritoFooter"),a=document.getElementById("carritoTotal");if(!e)return;if(0===carrito.length)return e.innerHTML="",t.style.display="block",void(o.style.display="none");t.style.display="none",o.style.display="block";const n=carrito.reduce((e,t)=>e+t.precio*t.cantidad,0);a&&(a.textContent="$"+n.toFixed(2)+" USD"),e.innerHTML=carrito.map(e=>{const t=(e.precio*e.cantidad).toFixed(2),o=escapeHtml(e.nombre),a=escapeAttr(e.imagen),n=safeNum(e.id);return'<div class="carrito-item" id="cartItem-'+n+'"><img class="carrito-item-img" src="'+a+'" alt="'+o+'" onerror="this.style.display=\'none\'"><div class="carrito-item-info"><div class="carrito-item-name">'+o+'</div><div class="carrito-item-price">$'+t+' USD</div><div class="carrito-item-controls"><button class="carrito-qty-btn" onclick="cambiarCantidad('+n+',-1)">−</button><span class="carrito-qty-num">'+safeNum(e.cantidad,1)+'</span><button class="carrito-qty-btn" onclick="cambiarCantidad('+n+',1)">+</button><span style="font-size:11px;color:#aaa;margin-left:4px;">$'+e.precio.toFixed(2)+' c/u</span></div></div><button class="carrito-item-del" onclick="quitarDelCarrito('+n+')" title="Eliminar">✕</button></div>'}).join(""),renderizarSimilaresCarrito(),actualizarContadorCarrito()}function renderizarSimilaresCarrito(){const e=document.getElementById("carritoSimilares"),t=document.getElementById("carritoSimilaresGrid");if(!e||!t||void 0===productos)return;if(0===carrito.length)return void(e.style.display="none");const o=[...new Set(carrito.map(e=>{const t=productos.find(t=>t.id===e.id);return t&&t.categoria||""}).filter(Boolean))],a=new Set(carrito.map(e=>e.id)),n=productos.filter(e=>!a.has(e.id)&&o.includes(e.categoria||"")&&e.precioActual>0&&!0!==e.agotado).sort(()=>Math.random()-.5).slice(0,3);0!==n.length?(e.style.display="block",t.innerHTML=n.map(e=>{const t=escapeAttr(e.imagenes&&e.imagenes[0]?e.imagenes[0]:e.imagen||""),o=escapeHtml(e.nombre),a=safeNum(e.id);return'<div class="cs-card"><img class="cs-card-img" src="'+t+'" alt="'+o+'" loading="lazy" onerror="this.style.display=\'none\'"><div class="cs-card-body"><div class="cs-card-nombre">'+o+'</div><div class="cs-card-precio">$'+Number(e.precioActual).toFixed(2)+' USD</div></div><button class="cs-card-btn" onclick="agregarAlCarrito('+a+');renderizarCarrito();">🛒 Agregar</button></div>'}).join("")):e.style.display="none"}function _mensajeOrdenWA(e){const t=[];t.push("🛒✨ *NUEVA ORDEN — TIENDAMAX* ✨🛒"),t.push("━━━━━━━━━━━━━━━━━━━━━━"),t.push(""),e.forEach((e,o)=>{const a=Number(e.precio||0),n=Number(e.cantidad||1);t.push("🔹 *"+(o+1)+".* "+e.nombre),t.push(a>0?"      ▸ Cant: *"+n+"*  ·  $"+a.toFixed(2)+" USD c/u":"      ▸ Cant: *"+n+"*"),t.push("")});const o=e.reduce((e,t)=>e+Number(t.precio||0)*Number(t.cantidad||1),0);if(t.push("━━━━━━━━━━━━━━━━━━━━━━"),o>0){t.push("💰 *Subtotal:* $"+o.toFixed(2)+" USD");const e="function"==typeof getTasaMN?getTasaMN():0;if(e>0){const a=Math.round(o*e).toLocaleString("es-CU");t.push("📈 *Tasa:* 1 USD = "+e+" MN"),t.push("💵 *TOTAL:* *"+a+" MN*")}}return t.push(""),t.push("🚚 _Envíame los datos para coordinar la entrega, por favor._"),t.push(""),t.push("🙏 _¡Gracias por tu compra!_ ❤️"),t.push(1===e.length&&e[0].id?"🔗 https://tiendamax.org/p/producto-"+e[0].id+".html":"🔗 https://tiendamax.org"),encodeURIComponent(t.join("\n"))}function comprarCarrito(){if(0===carrito.length)return;guardarPedidoCliente(carrito.slice()),"function"==typeof tmTrackWhatsApp&&carrito.forEach(e=>tmTrackWhatsApp(e.id));const e=_mensajeOrdenWA(carrito);window.open("https://wa.me/"+getNumeroWhatsApp()+"?text="+e,"_blank","noopener,noreferrer")}function actualizarBotonesCarrito(){document.querySelectorAll("[data-cart-id]").forEach(e=>{const t=e.getAttribute("data-cart-id");carrito.some(e=>String(e.id)===String(t))?(e.classList.add("en-carrito"),e.textContent="✓ En carrito"):(e.classList.remove("en-carrito"),e.textContent="🛒 Agregar")})}let _estrellasSeleccionadas=0,_productoResena=null;function mostrarFormResena(){const e=document.getElementById("formResena"),t=document.getElementById("btnAgregarResena");if(!e)return;const o="none"!==e.style.display;e.style.display=o?"none":"block",t&&(t.textContent=o?"+ Agregar reseña":"✕ Cancelar"),_estrellasSeleccionadas=0,setEstrellas(0);const a=document.getElementById("resenaAutor"),n=document.getElementById("resenaTexto");a&&(a.value=""),n&&(n.value="")}function setEstrellas(e){_estrellasSeleccionadas=e,document.querySelectorAll(".estrella-btn").forEach((t,o)=>{t.classList.toggle("activa",o<e)})}function guardarResena(){if(!_detalleProductoActual)return;const e=(document.getElementById("resenaAutor")?.value||"").trim(),t=(document.getElementById("resenaTexto")?.value||"").trim();if(!e)return void mostrarNotificacion("⚠️ Escribe tu nombre","error");if(0===_estrellasSeleccionadas)return void mostrarNotificacion("⚠️ Selecciona una valoración","error");if(!t)return void mostrarNotificacion("⚠️ Escribe tu reseña","error");if(t.length<10)return void mostrarNotificacion("⚠️ La reseña es muy corta","error");const o=String(_detalleProductoActual.id),a=Date.now(),n={id:a,autor:e.substring(0,50),texto:t.substring(0,400),estrellas:_estrellasSeleccionadas,fecha:(new Date).toLocaleDateString("es-ES",{day:"numeric",month:"short",year:"numeric"}),productoId:o,productoNombre:_detalleProductoActual.nombre||""};mostrarFormResena(),mostrarNotificacion("⏳ Publicando reseña..."),(async()=>{try{const e=JSON.parse(localStorage.getItem("firebaseConfig")||"{}"),t=e.databaseURL||(e.projectId?"https://"+e.projectId+"-default-rtdb.firebaseio.com":null);if(t&&(await fetch(t+"/resenas/"+o+"/"+a+".json",{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(n)})).ok)return mostrarNotificacion("✅ ¡Reseña publicada! Visible para todos"),void await renderizarResenas(o)}catch(e){}const e="resenas_"+o,t=JSON.parse(localStorage.getItem(e)||"[]");t.unshift(n),localStorage.setItem(e,JSON.stringify(t.slice(0,20))),mostrarNotificacion("💾 Reseña guardada localmente"),await renderizarResenas(o)})()}async function renderizarResenas(e){const t=document.getElementById("listaResenas");if(!t)return;const o=String(e);t.innerHTML='<p class="resenas-vacio" style="color:#aaa;font-size:13px;text-align:center;padding:12px;">⏳ Cargando reseñas...</p>';let a=[];try{const e=JSON.parse(localStorage.getItem("firebaseConfig")||"{}"),t=e.databaseURL||(e.projectId?"https://"+e.projectId+"-default-rtdb.firebaseio.com":null);if(t){const e=await fetch(t+"/resenas/"+o+".json");if(e.ok){const t=await e.json();t&&"object"==typeof t&&(a=Object.values(t).filter(Boolean).sort((e,t)=>t.id-e.id))}}}catch(e){}if(0===a.length){const t=productos.find(t=>t.id===e);a=t&&Array.isArray(t.resenas)&&t.resenas.length>0?t.resenas:JSON.parse(localStorage.getItem("resenas_"+o)||"[]")}if(0===a.length)return void(t.innerHTML='<p class="resenas-vacio">Sé el primero en dejar una reseña 🌟</p>');const n=(a.reduce((e,t)=>e+t.estrellas,0)/a.length).toFixed(1);t.innerHTML='<div style="text-align:center;margin-bottom:14px;"><span style="font-size:28px;font-weight:900;color:#f59e0b;">'+n+'</span><span style="color:#f59e0b;font-size:18px;margin-left:6px;">'+"★".repeat(Math.round(parseFloat(n)))+'</span><div style="font-size:12px;color:#aaa;">'+a.length+" reseña"+(1!==a.length?"s":"")+"</div></div>"+a.map(e=>{const t=Math.max(0,Math.min(5,parseInt(e.estrellas,10)||0));return'<div class="resena-item"><div class="resena-top"><span class="resena-autor">'+escapeHtml(e.autor)+'</span><div style="display:flex;align-items:center;gap:6px;"><span class="resena-estrellas">'+"★".repeat(t)+"☆".repeat(5-t)+'</span><span class="resena-fecha">'+escapeHtml(e.fecha)+'</span></div></div><p class="resena-texto">'+escapeHtml(e.texto)+"</p></div>"}).join("")}async function cargarTestimoniosFirebase(){const e=document.getElementById("testimoniosGrid"),t=document.getElementById("testimoniosCTA");if(e)try{const o=JSON.parse(localStorage.getItem("firebaseConfig")||"{}"),a=o.databaseURL||(o.projectId?"https://"+o.projectId+"-default-rtdb.firebaseio.com":null);if(!a)throw new Error("no config");const n=await fetch(a+"/resenas.json?shallow=true");if(!n.ok)throw new Error("fetch failed");const r=await n.json();if(!r||"object"!=typeof r)throw new Error("empty");const i=Object.keys(r).slice(0,6),c=[];if(await Promise.all(i.map(async e=>{try{const t=await fetch(a+"/resenas/"+e+".json");if(!t.ok)return;const o=await t.json();o&&"object"==typeof o&&Object.values(o).filter(Boolean).forEach(e=>c.push(e))}catch(e){}})),0===c.length)throw new Error("no resenas");const s=c.filter(e=>e.estrellas>=4&&e.texto&&e.texto.length>15).sort((e,t)=>t.id-e.id).slice(0,6);if(0===s.length)throw new Error("no good resenas");const d=e=>"⭐".repeat(Math.min(5,Math.max(1,e)));e.innerHTML=s.map(e=>'<div class="testimonio-card"><div class="stars">'+d(e.estrellas)+'</div><p>"'+escapeHtml(e.texto.substring(0,200))+'"</p><p class="autor">— '+escapeHtml(e.autor)+(e.productoNombre?' <span style="font-size:10px;opacity:0.5;font-weight:400;">· '+escapeHtml(e.productoNombre.substring(0,30))+"</span>":"")+"</p></div>").join(""),t&&(t.style.display="block")}catch(t){e.innerHTML='<div class="testimonio-card" style="grid-column:1/-1;text-align:center;padding:40px;"><div style="font-size:40px;margin-bottom:12px;">⭐</div><p style="color:rgba(255,255,255,0.5);font-size:15px;">Aún no hay reseñas. ¡Sé el primero en compartir tu experiencia!</p></div>'}}const _TM_VISTOS_MAX=12,_TM_VISTOS_DIAS_CADUCIDAD=30;function _cargarVistos(){try{const e=localStorage.getItem("recientes_v2");if(!e)return[];const t=JSON.parse(e);if(!Array.isArray(t))return[];const o=Date.now()-2592e6;return t.filter(e=>e&&e.t&&e.t>o)}catch(e){return[]}}function _guardarVistos(e){try{localStorage.setItem("recientes_v2",JSON.stringify(e))}catch(t){try{localStorage.setItem("recientes_v2",JSON.stringify(e.slice(0,6)))}catch(e){}}}function registrarVisto(e){if(!e)return;let t=_cargarVistos();t=t.filter(t=>String(t.id)!==String(e)),t.unshift({id:String(e),t:Date.now()}),t=t.slice(0,12),_guardarVistos(t),setTimeout(renderizarRecientes,100)}function limpiarRecientes(){try{localStorage.removeItem("recientes_v2")}catch(e){}try{localStorage.removeItem("recientes")}catch(e){}renderizarRecientes()}function renderizarRecientes(){if(!Array.isArray(productos)||0===productos.length)return;const e=_cargarVistos(),t=void 0!==_detalleProductoActual&&_detalleProductoActual?String(_detalleProductoActual.id):null,o=e.map(e=>productos.find(t=>String(t.id)===String(e.id))).filter(Boolean).filter(e=>String(e.id)!==t).slice(0,6),a=document.getElementById("seccionRecientes"),n=document.getElementById("recientesGrid");a&&n&&(0===o.length?a.style.display="none":(a.style.display="",n.innerHTML=o.map(_renderCardRecientes).join("")));const r=document.getElementById("detailVistosSection"),i=document.getElementById("detailVistosGrid");r&&i&&(0===o.length?r.style.display="none":(r.style.display="block",i.innerHTML=o.map(_renderCardRecientes).join("")))}function _renderCardRecientes(e){const t=safeNum(e.id),o=escapeHtml(e.nombre),a=escapeAttr(e.imagen||""),n=Number(e.precioActual||0).toFixed(2);return'<div class="rec-card" onclick="abrirDetalleProducto('+t+')">'+(0===e.stock?'<span class="rec-card-agotado">Agotado</span>':"")+'<img src="'+a+'" alt="'+o+'" loading="lazy" onerror="this.style.display=\'none\'"><div class="rec-card-info"><div class="rec-card-nombre">'+o+'</div><div class="rec-card-precio">$'+n+"</div></div></div>"}async function solicitarNotificaciones(){return"Notification"in window&&("granted"===Notification.permission||"denied"!==Notification.permission&&"granted"===await Notification.requestPermission())}function mostrarNotificacionPush(e,t,o){if("granted"===Notification.permission)try{new Notification(e,{body:t,icon:o||"https://tiendamax.org/favicon.ico",badge:"https://tiendamax.org/favicon.ico",tag:"tiendamax"})}catch(e){}}function verificarProductosNuevos(){const e=parseInt(localStorage.getItem("ultimaVisita")||"0"),t=Date.now();if(localStorage.setItem("ultimaVisita",t.toString()),0===e)return;const o=productos.filter(t=>t.id>e).length;o>0&&"granted"===Notification.permission&&mostrarNotificacionPush("🛍️ TiendaMax",1===o?"¡Hay 1 producto nuevo!":`¡Hay ${o} productos nuevos!`)}const AUTH_SALT_KEY="tm_auth_salt_v3",AUTH_HASH_KEY="tm_auth_hash_v3",AUTH_ITERATIONS=31e4;function _generarSal(){const e=new Uint8Array(16);return crypto.getRandomValues(e),Array.from(e).map(e=>e.toString(16).padStart(2,"0")).join("")}function _getSalt(){let e=localStorage.getItem(AUTH_SALT_KEY);if(!e){e=_generarSal();try{localStorage.setItem(AUTH_SALT_KEY,e)}catch(e){}}return e}async function _hashSha256(e){const t=await crypto.subtle.digest("SHA-256",(new TextEncoder).encode(e));return Array.from(new Uint8Array(t)).map(e=>e.toString(16).padStart(2,"0")).join("")}const _OLD_HASHES=["a338781ef2610e22bde9dae45f2d8aaa6a8a8c4584158f18cd91089b9192bc62","90035f586903f0259868846c2459740b957630712759861619894101e405187e"];let productos=JSON.parse(localStorage.getItem("productos"))||[],categorias=JSON.parse(localStorage.getItem("categorias"))||["General"],usuarioAutenticado=!1,categoriaSeleccionada="Todas",subcategoriaSeleccionada="Todas";const ICONOS_MAPA={wifi:"📡",internet:"📡",red:"📡",router:"📡",energia:"⚡",bateria:"⚡",luz:"⚡",corriente:"⚡",inversor:"⚡",celular:"📱",telefono:"📱",movil:"📱",iphone:"📱",android:"📱",utiles:"🔧",herramienta:"🔧",reparacion:"🔧",ferreteria:"🔧",ropa:"👗",vestir:"👗",moda:"👗",calzado:"👗",zapatos:"👗",electronica:"💻",computadora:"💻",laptop:"💻",tecnologia:"💻",hogar:"🏠",casa:"🏠",mueble:"🏠",cocina:"🏠",alimento:"🍎",comida:"🍎",fruta:"🍎",dulce:"🍎",belleza:"💄",maquillaje:"💄",perfume:"💄",cuidado:"💄",deporte:"⚽",gym:"⚽",ejercicio:"⚽",fitness:"⚽",juguete:"🧸","niño":"🧸",bebe:"🧸",diversion:"🧸",libro:"📚",estudio:"📚",papeleria:"📚",escuela:"📚",auto:"🚗",carro:"🚗",moto:"🚗",vehiculo:"🚗",repuesto:"🚗",reloj:"⌚",joya:"💎",accesorio:"💍",mascota:"🐾",perro:"🐾",gato:"🐾",musica:"🎵",audio:"🔊",sonido:"🔊",viaje:"✈️",maleta:"🧳",general:"🛍️"};let iconosPersonalizados=JSON.parse(localStorage.getItem("iconosPersonalizados"))||{};function obtenerIconoCategoria(e){if(!e)return"🛍️";if(iconosPersonalizados[e])return iconosPersonalizados[e];const t=e.toLowerCase();for(const[e,o]of Object.entries(ICONOS_MAPA))if(t.includes(e))return o;return"🛍️"}let _heroSearchActivo="",_heroPrecioMin=0,_heroPrecioMax=1/0,_heroSearchTimer=null,_aiSearchTimer=null;function abrirPanelBusqueda(){const e=document.getElementById("heroSearchPanel"),t=document.getElementById("heroSearchBar");e&&(e.classList.add("visible"),t&&t.classList.add("open"),setTimeout(()=>document.getElementById("heroSearchInput")?.focus(),50))}function cerrarPanelBusqueda(){const e=document.getElementById("heroSearchPanel"),t=document.getElementById("heroSearchBar");e&&e.classList.remove("visible"),t&&t.classList.remove("open")}function inicializarSliderPrecios(){}function actualizarSliderPrecio(){}function busquedaLocal(e){if(!e)return productos.slice(0,6);const t=e.toLowerCase();return productos.filter(e=>e.nombre.toLowerCase().includes(t)||(e.descripcion||"").toLowerCase().includes(t)||(e.categoria||"").toLowerCase().includes(t)||(e.subcategoria||"").toLowerCase().includes(t)).slice(0,6)}async function busquedaConIA(e){if(!e||e.length<3||0===productos.length)return null;const t=e=>String(e||"").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/[^a-z0-9\s]/g," "),o={wifi:["router","internet","red","repetidor"],internet:["wifi","router","red"],bateria:["bateria","power bank","energia","corriente"],energia:["inversor","bateria","corriente","solar"],corriente:["energia","inversor","bateria"],telefono:["celular","movil","smartphone"],celular:["telefono","movil","smartphone"],laptop:["computadora","pc"],computadora:["laptop","pc"],camara:["foto","fotografia"],tv:["televisor","monitor"]},a=t(e).split(/\s+/).filter(Boolean),n=new Set(a);a.forEach(e=>(o[e]||[]).forEach(e=>n.add(e)));const r=productos.map(o=>{const a=t([o.nombre,o.descripcion,o.categoria,o.subcategoria].join(" "));let r=0;return n.forEach(e=>{e&&(a.includes(e)&&(r+=2),t(o.nombre).includes(e)&&(r+=4),(t(o.categoria).includes(e)||t(o.subcategoria).includes(e))&&(r+=2))}),t(o.nombre).includes(t(e))&&(r+=8),0===r?null:{producto:o,score:r}}).filter(Boolean).sort((e,t)=>t.score-e.score||e.producto.stock-t.producto.stock).slice(0,5).map(e=>e.producto);return r.length?r:null}function renderSugerencias(e,t){const o=document.getElementById("heroSearchSuggestions");if(o){if(!e||0===e.length){const e=productos.filter(e=>e.stock>0&&(!0===e.masVendido||"true"===e.masVendido)).slice(0,4),a=e.length>0?e:productos.filter(e=>e.stock>0).slice(0,4);if(0===a.length)return void(o.innerHTML='<div class="hsb-sug-empty">😕 Sin resultados para "'+escapeHtml(t)+'"</div>');const n=a.map(e=>'<div class="hsb-sug-item" onclick="seleccionarSugerencia('+safeNum(e.id)+')"><img class="hsb-sug-img" src="'+escapeAttr(e.imagen)+'" loading="lazy" onerror="this.style.display=\'none\'"><span class="hsb-sug-name">'+escapeHtml(e.nombre)+'</span><span class="hsb-sug-price">$'+Number(e.precioActual).toFixed(2)+"</span></div>").join("");return void(o.innerHTML='<div class="hsb-sug-empty" style="padding:8px 12px;font-size:12px;">😕 Sin resultados para "'+escapeHtml(t)+'"</div><div style="padding:6px 12px;font-size:11px;opacity:0.6;border-top:1px solid rgba(255,255,255,0.08);">🔥 Te puede interesar</div>'+n)}o.innerHTML=e.map(e=>{const o=t?resaltarTexto(escapeHtml(e.nombre),t):escapeHtml(e.nombre),a=0===e.stock?'<span style="color:#e74c3c;font-size:10px;font-weight:700;margin-left:4px;">AGOTADO</span>':"";return'<div class="hsb-sug-item" onclick="seleccionarSugerencia('+safeNum(e.id)+')"><img class="hsb-sug-img" src="'+escapeAttr(e.imagen)+'" loading="lazy" onerror="this.style.display=\'none\'"><span class="hsb-sug-name">'+o+a+'</span><span class="hsb-sug-price">$'+Number(e.precioActual).toFixed(2)+"</span></div>"}).join("")}}async function buscarDesdeHero(e){clearTimeout(_heroSearchTimer),clearTimeout(_aiSearchTimer);const t=(e||"").trim(),o=document.getElementById("heroSearchSuggestions"),a=document.getElementById("hsb-ai-label");if(!t)return o&&(o.innerHTML=""),void(a&&(a.style.display="none"));_heroSearchTimer=setTimeout(async()=>{const e=busquedaLocal(t);renderSugerencias(e,t),t.length>=3&&(a&&(a.style.display="block"),e.length<2&&o&&(o.innerHTML='<div class="hsb-ai-loading">🤖 Buscando con IA</div>'),_aiSearchTimer=setTimeout(async()=>{const o=await busquedaConIA(t);renderSugerencias(o&&o.length>0?o:e.length>0?e:[],t)},600))},150)}function aplicarBusquedaHero(){const e=(document.getElementById("heroSearchInput")?.value||"").trim().toLowerCase();_heroSearchActivo=e,_heroPrecioMin=0,_heroPrecioMax=1/0,cerrarPanelBusqueda(),mostrarVistaCategoria("Todas")}function seleccionarSugerencia(e){cerrarPanelBusqueda(),abrirDetalleProducto(e)}function resaltarTexto(e,t){try{const o=new RegExp("("+t.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")+")","gi");return e.replace(o,'<mark style="background:rgba(201,169,110,0.25);color:inherit;border-radius:3px;padding:0 2px;">$1</mark>')}catch(t){return e}}async function subirImagenAGitHub(e){const t=localStorage.getItem("githubUser"),o=localStorage.getItem("githubRepo"),a=localStorage.getItem("githubToken"),n=await comprimirImagen(e);if(!t||!o||!a)return n;try{const e=n.includes(",")?n.split(",")[1]:n;if(!e)return n;const r="img_"+Date.now()+".jpg",i="imagenes/"+r,c="https://api.github.com/repos/"+t+"/"+o+"/contents/"+i,s={Authorization:"token "+a,"Content-Type":"application/json"};if((await fetch(c,{method:"PUT",headers:s,body:JSON.stringify({message:"Imagen: "+r,content:e})})).ok)return"https://raw.githubusercontent.com/"+t+"/"+o+"/main/"+i}catch(e){}return n}function stat(e,t,o,a){const n="ts"+Math.random().toString(36).slice(2,7),r='<div class="admin-analytics-stat"><div class="icon">'+e+'</div><div id="'+n+'" class="tm-counter admin-stat-value" style="color:'+(a||"var(--primary-color,#c9a96e)")+';">'+o+'</div><div class="label">'+t+"</div></div>";return setTimeout(()=>{const e=document.getElementById(n);e&&("number"==typeof o?animarContador(e,o,800+500*Math.random()):"string"==typeof o&&o.startsWith("$")&&animarContador(e,parseFloat(o.replace("$","")),1e3,"$"))},60),r}function validarProducto(e){const t=[];if(e.nombre&&0!==e.nombre.trim().length||t.push("El nombre del producto es requerido"),e.descripcion&&0!==e.descripcion.trim().length||t.push("La descripción es requerida"),e.imagen||t.push("La imagen es requerida"),(!e.precioActual||e.precioActual<=0)&&t.push("El precio debe ser mayor a 0"),(null==e.stock||isNaN(Number(e.stock))||Number(e.stock)<0)&&t.push("El stock no puede ser negativo"),e.categoria||t.push("La categoría es requerida"),e.precioOriginal&&e.precioOriginal>0&&e.precioOriginal>e.precioActual){const t=Math.round((e.precioOriginal-e.precioActual)/e.precioOriginal*100);e.descuento=t}else e.descuento||(e.descuento=0);return t}async function hashPassword(e,t){const o=t||_getSalt(),a=await crypto.subtle.importKey("raw",(new TextEncoder).encode(e),"PBKDF2",!1,["deriveBits"]),n=await crypto.subtle.deriveBits({name:"PBKDF2",salt:(new TextEncoder).encode(o),iterations:31e4,hash:"SHA-256"},a,256);return Array.from(new Uint8Array(n)).map(e=>e.toString(16).padStart(2,"0")).join("")}async function cargarDatosDesdeGitHub(){const e=localStorage.getItem("githubUser"),t=localStorage.getItem("githubRepo"),o=e&&t?`https://raw.githubusercontent.com/${e}/${t}/main`:null;async function a(e){if(o)try{const t=await fetch(`${o}/${e}?_=${Date.now()}`);if(t.ok)return await t.json()}catch(e){}const t=await fetch(`${e}?_=${Date.now()}`);return t.ok?await t.json():null}try{const[e,t,o,n]=await Promise.all([a("categorias.json").catch(()=>null),Promise.resolve(null),a("grupos_facebook_config.json").catch(()=>null),a("revolico_config.json").catch(()=>null)]);e&&(Array.isArray(e)&&e.length>0?(categorias=e,localStorage.setItem("categorias",JSON.stringify(categorias))):e.nombres&&e.nombres.length>0&&(categorias=e.nombres,localStorage.setItem("categorias",JSON.stringify(categorias)),e.iconos&&Object.keys(e.iconos).length>0&&(Object.assign(iconosPersonalizados,e.iconos),localStorage.setItem("iconosPersonalizados",JSON.stringify(iconosPersonalizados))))),o&&o.grupos&&localStorage.setItem("gruposFB",JSON.stringify(o.grupos)),n&&Object.keys(n).length>0&&localStorage.setItem("revolicoConfig",JSON.stringify(n)),setTimeout(_fbSincronizarVentasAlIniciar,2e3),renderizarCategoriasHomeInstant(),renderizarCategoriasHome(),actualizarSelectCategorias(),actualizarBotonesCategorias(),actualizarListaCategorias();const[r,i]=await Promise.all([a("banners.json").catch(()=>null),a("productos.json").catch(()=>null)]);if(r&&Array.isArray(r)&&r.length>0&&(localStorage.setItem("heroBanners",JSON.stringify(r)),"function"==typeof window.recargarBanners&&window.recargarBanners(r)),i&&i.length>0){const e=JSON.parse(localStorage.getItem("productos")||"[]"),t={};e.forEach(e=>{t[e.id]=e}),productos=i.map(e=>{const o=e=>e&&e.includes("raw.githubusercontent.com")?e.replace(/https:\/\/raw\.githubusercontent\.com\/[^/]+\/[^/]+\/main\//,"https://tiendamax.org/"):e;e.imagen&&(e.imagen=o(e.imagen)),e.imagenSecundaria&&(e.imagenSecundaria=o(e.imagenSecundaria)),Array.isArray(e.imagenes)&&(e.imagenes=e.imagenes.map(o));const a=t[e.id];return a&&void 0!==a.comision&&void 0===e.comision&&(e.comision=a.comision),a&&a.resenas&&a.resenas.length>0&&(e.resenas=a.resenas),e}),localStorage.setItem("productos",JSON.stringify(productos)),renderizarCategoriasHomeInstant()}renderizarCategoriasHome(),renderizarMasVendidos(),renderizarRecientes(),setTimeout(cargarTestimoniosFirebase,1500),actualizarListaProductos(),actualizarSelectCategorias(),actualizarBotonesCategorias(),actualizarListaCategorias(),verificarOfertasYMostrarBanner();const c=document.getElementById("adminPanel");c&&c.classList.contains("visible")&&poblarSelectOfertaDia(),inicializarSliderPrecios();const s=document.getElementById("vistaMeGusta");s&&"none"!==s.style.display&&mostrarVistaMeGusta(),verificarProductosNuevos();const d=document.getElementById("vistaCategoria");d&&"block"===d.style.display&&renderizarProductos()}catch(e){console.warn("⚠️ Error en cargarDatosDesdeGitHub:",e&&e.message),renderizarCategoriasHome(),renderizarMasVendidos(),verificarOfertasYMostrarBanner();const t=document.getElementById("vistaCategoria");t&&"block"===t.style.display&&"function"==typeof renderizarProductos&&renderizarProductos()}}function actualizarOffsetsUI(){try{const e=document.documentElement,t=document.getElementById("urgenciaBanner"),o=document.querySelector(".header"),a=document.querySelector(".header-content"),n=document.getElementById("currencyBar"),r=t&&"none"!==getComputedStyle(t).display?Math.ceil(t.getBoundingClientRect().height):0,i=a?Math.ceil(a.getBoundingClientRect().height):o?Math.ceil(o.getBoundingClientRect().height):70,c=n?Math.ceil(n.getBoundingClientRect().height):0;e.style.setProperty("--tm-urgencia-h",r+"px"),e.style.setProperty("--tm-header-h",i+"px"),e.style.setProperty("--tm-currency-h",c+"px")}catch(e){}}function getNumeroWhatsApp(){return localStorage.getItem("whatsappNumero")||"5354320170"}function guardarNumeroWhatsApp(){const e=document.getElementById("adminWhatsappNum");if(!e)return;const t=e.value.trim().replace(/\D/g,"");!t||t.length<6?mostrarNotificacion("⚠️ Número inválido","error"):(localStorage.setItem("whatsappNumero",t),mostrarNotificacion("✅ Número de WhatsApp guardado: +"+t))}function cargarNumeroWhatsApp(){const e=localStorage.getItem("whatsappNumero"),t=document.getElementById("adminWhatsappNum");t&&e&&(t.value=e)}function contactarWhatsApp(){const e=getNumeroWhatsApp(),t=encodeURIComponent("Hola, me interesa conocer más sobre tus productos. ¿Puedes ayudarme?");window.open(`https://wa.me/${e}?text=${t}`,"_blank","noopener,noreferrer")}function scrollToProductos(){const e=document.querySelector("#categorias-home");e&&e.scrollIntoView({behavior:"smooth"})}function aplicarTema(e){const t="light"===e;document.body.classList.toggle("light-mode",t),document.documentElement.classList.remove("tm-pre-light"),document.querySelectorAll(".theme-toggle").forEach(e=>{e.textContent=t?"🌙":"☀️",e.setAttribute("aria-label",t?"Activar modo oscuro":"Activar modo claro"),e.setAttribute("title",t?"Activar modo oscuro":"Activar modo claro")});const o=document.querySelector('meta[name="theme-color"]');o&&o.setAttribute("content",t?"#FAF8F5":"#0D0D0D");try{localStorage.setItem("tm_theme",t?"light":"dark")}catch(e){}}function toggleDarkMode(){aplicarTema(document.body.classList.contains("light-mode")?"dark":"light")}function _initTema(){let e=null;try{e=localStorage.getItem("tm_theme")}catch(e){}if(null===e)try{e="false"===localStorage.getItem("darkMode")?"light":"dark",localStorage.setItem("tm_theme",e),localStorage.removeItem("darkMode")}catch(t){e="dark"}aplicarTema("light"===e?"light":"dark")}function mostrarNotificacion(e,t="success"){const o=document.createElement("div");o.className=`notificacion notif-${t}`,o.textContent=e,o.style.cssText=`\n        position: fixed;\n        top: 20px;\n        right: 20px;\n        background: ${"error"===t?"#e74c3c":"info"===t?"#3498db":"#27ae60"};\n        color: white;\n        padding: 15px 20px;\n        border-radius: 8px;\n        z-index: 10000;\n        animation: slideIn 0.3s ease;\n        box-shadow: 0 4px 12px rgba(0,0,0,0.15);\n    `,document.body.appendChild(o),setTimeout(()=>o.remove(),4e3)}function tmElementoVisible(e){const t=document.getElementById(e);return!(!t||"none"===getComputedStyle(t).display)}function tmVistaInicioActiva(){const e=document.body&&document.body.classList.contains("tm-no-oferta-banner"),t=document.getElementById("vistaInicio"),o=!t||"none"!==getComputedStyle(t).display,a=tmElementoVisible("productDetailModal")&&!document.getElementById("productDetailModal").classList.contains("hidden"),n=tmElementoVisible("vistaCategoria")||tmElementoVisible("vistaMeGusta")||tmElementoVisible("vistaPedidos");return o&&!a&&!n&&!e}function actualizarVisibilidadBannerOferta(e){const t=document.getElementById("urgenciaBanner");document.body&&document.body.classList.toggle("tm-no-oferta-banner",!e),t&&(e?(document.body&&document.body.classList.remove("tm-no-oferta-banner"),verificarOfertasYMostrarBanner()):(t.style.setProperty("display","none","important"),t.onclick=null,"function"==typeof actualizarOffsetsUI&&setTimeout(actualizarOffsetsUI,0)))}function mostrarVistaInicio(){document.getElementById("vistaInicio").style.display="block",document.getElementById("vistaCategoria").style.display="none",actualizarVisibilidadBannerOferta(!0),window.scrollTo({top:0,behavior:"smooth"})}function mostrarVistaCategoria(e){if(categoriaSeleccionada=e,subcategoriaSeleccionada="Todas",!Array.isArray(productos)||0===productos.length)try{const e=JSON.parse(localStorage.getItem("productos")||"[]");Array.isArray(e)&&e.length>0&&(productos=e)}catch(e){}if("Todas"!==e){_heroSearchActivo="",_heroPrecioMin=0,_heroPrecioMax=1/0;const e=document.getElementById("heroSearchInput");e&&(e.value="")}document.getElementById("vistaInicio").style.display="none",document.getElementById("vistaCategoria").style.display="block",actualizarVisibilidadBannerOferta(!1);const t=obtenerIconoCategoria(e),o="Todas"===e?"🛍️ Todos los Productos":`${t} ${e}`;document.getElementById("tituloCategoriaActual").textContent=o,actualizarBotonesCategorias(),renderizarSubcategoriaTabs(),renderizarProductos(),window.scrollTo({top:0,behavior:"smooth"})}function renderizarSubcategoriaTabs(){const e=document.getElementById("subcategoriaTabs"),t=document.getElementById("categoriaFiltro");if(!e)return;if("Todas"===categoriaSeleccionada)return e.style.display="none",void(t&&(t.style.display="flex"));t&&(t.style.display="none");const o="undefined"!=typeof subcategorias&&subcategorias[categoriaSeleccionada]?subcategorias[categoriaSeleccionada]:[];if(0===o.length)return void(e.style.display="none");e.style.display="flex",e.innerHTML="";const a=document.createElement("button");a.className="subcategoria-tab "+("Todas"===subcategoriaSeleccionada?"active":""),a.innerHTML='<span class="tab-icon">🔎</span><span class="tab-label">Todos</span>',a.onclick=()=>seleccionarSubcategoria("Todas"),e.appendChild(a),o.forEach(t=>{const o=document.createElement("button");o.className="subcategoria-tab "+(subcategoriaSeleccionada===t?"active":""),o.innerHTML=`<span class="tab-label">${escapeHtml(t)}</span>`,o.onclick=()=>seleccionarSubcategoria(t),e.appendChild(o)}),actualizarCategoriaStats()}function seleccionarSubcategoria(e){subcategoriaSeleccionada=e,renderizarSubcategoriaTabs(),renderizarProductos()}function actualizarCategoriaStats(){const e=document.getElementById("categoriaStats");if(!e)return;const t="Todas"===categoriaSeleccionada?productos.length:productos.filter(e=>e.categoria===categoriaSeleccionada).length;e.textContent=`${t} producto${1!==t?"s":""}`}function volverAlInicio(){mostrarVistaInicio()}function renderizarCategoriasHome(){const e=document.getElementById("categoriasGrid");if(!e)return;e.innerHTML="";const t=document.createElement("div");t.className="categoria-card";const o=productos.length;t.innerHTML=`\n        <span class="cat-icon">🛍️</span>\n        <span class="cat-name">Todos</span>\n        <span class="cat-count">${safeNum(o)} producto${1!==o?"s":""}</span>\n    `,t.onclick=()=>mostrarVistaCategoria("Todas"),e.appendChild(t),categorias.forEach(t=>{const o=productos.filter(e=>e.categoria===t).length,a=document.createElement("div");a.className="categoria-card",a.innerHTML=`\n            <span class="cat-icon">${escapeHtml(obtenerIconoCategoria(t))}</span>\n            <span class="cat-name">${escapeHtml(t)}</span>\n            <span class="cat-count">${0===o?"🕐 Próximamente":safeNum(o)+" producto"+(1!==o?"s":"")}</span>\n        `,a.onclick=()=>mostrarVistaCategoria(t),e.appendChild(a)}),e.classList.contains("tm-rendered")||requestAnimationFrame(()=>e.classList.add("tm-rendered"))}function renderizarMasVendidos(){const e=document.getElementById("masVendidosGrid"),t=document.getElementById("masVendidosVacio");if(!e)return;const o=productos.filter(e=>(!0===e.masVendido||"true"===e.masVendido)&&e.stock>0),a=o.length>0?o:productos.filter(e=>e.stock>0).slice(0,3);e.innerHTML="",0!==a.length?(t&&(t.style.display="none"),a.forEach(t=>{const o=document.createElement("div");o.className="producto-card tm-anim-card",o.onclick=()=>abrirDetalleProducto(t.id);const a=escapeHtml(t.nombre),n=escapeHtml(t.descripcion),r=escapeAttr(t.imagen),i=safeNum(t.id);o.innerHTML=`\n\t            <div class="badge-vendido">🔥 Más Vendido</div>\n\t            <div class="producto-image">\n\t                <img src="${r}" alt="${a}" loading="lazy" onerror="this.src='/iconos/favicon-192.png';this.style.objectFit='contain';this.style.opacity='0.3'">\n\t                ${t.precioOriginal>0&&t.precioOriginal>t.precioActual?`<div class="badge">-$${(t.precioOriginal-t.precioActual).toFixed(0)}</div>`:""}\n\t            </div>\n\t            <h3>${a}</h3>\n\t            <p class="producto-description">${n}</p>\n\t            <p class="precio">\n\t                ${t.precioOriginal>0&&t.precioOriginal>t.precioActual?'<span class="precio-tachado">$'+parseFloat(t.precioOriginal).toFixed(2)+" USD</span> ":""}<span class="precio-actual" data-usd="${safeNum(t.precioActual)}">${"function"==typeof formatPrecio?formatPrecio(t.precioActual):"$"+t.precioActual.toFixed(2)+" USD"}</span>${t.precioOriginal>0&&t.precioOriginal>t.precioActual?' <span class="precio-ahorro">-$'+(t.precioOriginal-t.precioActual).toFixed(0)+"</span>":""}\n\t            </p>\n            <div class="stock-count">\n                <span>📦 Solo quedan ${safeNum(t.stock)} unidades</span>\n            </div>\n            <div class="stock-bar">\n                <div class="stock-bar-fill" style="width: ${Math.min(100,safeNum(t.stock)/20*100)}%"></div>\n            </div>\n            \n            <button class="btn-pedir-card" onclick="event.stopPropagation(); tmComprar(event, ${i}, this.dataset.nombre)" data-nombre="${a}" type="button"><span class="btn-pedir-wa-icon-sm"><svg viewBox="0 0 24 24" width="14" height="14" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg></span> Pedir</button>\n        `,e.appendChild(o),window._tmAnimObs&&window._tmAnimObs.observe(o)})):t&&(t.style.display="block")}function abrirLoginAdmin(){window.location.href="admin.html"}function cerrarLoginModal(){const e=document.getElementById("loginModal");e.classList.add("hidden"),e.style.removeProperty("display"),document.getElementById("adminPassword").value=""}async function verificarPassword(e){e.preventDefault();const t=JSON.parse(localStorage.getItem("admin_rl")||'{"count":0,"until":0}');if(Date.now()<t.until)return void mostrarNotificacion(`🔒 Demasiados intentos. Espera ${Math.ceil((t.until-Date.now())/6e4)} min.`,"error");const o=document.getElementById("adminPassword").value.trim();if(!o)return void mostrarNotificacion("❌ Escribe la contraseña","error");const a=localStorage.getItem("githubUser"),n=localStorage.getItem("githubRepo");let r=null,i=null;if(a&&n)try{const e=await fetch(`https://raw.githubusercontent.com/${a}/${n}/main/.admin-auth.json?_=${Date.now()}`);if(e.ok){const t=await e.json();t.hash&&t.salt&&(r=t.hash,i=t.salt)}}catch(e){}if(r&&i){if(await hashPassword(o,i)===r){localStorage.removeItem("admin_rl");try{localStorage.setItem(AUTH_SALT_KEY,i)}catch(e){}try{localStorage.setItem(AUTH_HASH_KEY,r)}catch(e){}return usuarioAutenticado=!0,cerrarLoginModal(),void abrirAdminPanel()}}else{const e=localStorage.getItem(AUTH_HASH_KEY),t=localStorage.getItem(AUTH_SALT_KEY);if(e&&t){if(await hashPassword(o,t)===e)return localStorage.removeItem("admin_rl"),usuarioAutenticado=!0,cerrarLoginModal(),void abrirAdminPanel()}else{const e=await _hashSha256(o);if(_OLD_HASHES.includes(e)){const e=_generarSal(),t=await hashPassword(o,e);try{localStorage.setItem(AUTH_SALT_KEY,e)}catch(e){}try{localStorage.setItem(AUTH_HASH_KEY,t)}catch(e){}if(a&&n){const o=localStorage.getItem("githubToken");if(o)try{const r=JSON.stringify({hash:t,salt:e,iterations:31e4}),i=btoa(Array.from((new TextEncoder).encode(r),e=>String.fromCharCode(e)).join(""));await fetch(`https://api.github.com/repos/${a}/${n}/contents/.admin-auth.json`,{method:"PUT",headers:{Authorization:`token ${o}`,"Content-Type":"application/json"},body:JSON.stringify({message:"Migrar contraseña admin",content:i})})}catch(e){console.warn("Migración: no se pudo subir a GitHub, guardado local:",e)}}return localStorage.removeItem("admin_rl"),usuarioAutenticado=!0,cerrarLoginModal(),abrirAdminPanel(),void mostrarNotificacion("✅ Contraseña migrada al nuevo sistema. Cámbiala desde Configuración.","success")}}}const c=(t.count||0)+1,s=c>=3?Date.now()+3e5:t.until;localStorage.setItem("admin_rl",JSON.stringify({count:c,until:s})),mostrarNotificacion(c>=3?"🔒 3 intentos fallidos. Bloqueado 5 min.":`❌ Contraseña incorrecta (intento ${c}/3)`,"error"),document.getElementById("adminPassword").value=""}async function cambiarPasswordAdmin(e,t,o){if(!e||!t||!o)return void mostrarNotificacion("❌ Completa todos los campos","error");const a=localStorage.getItem("githubUser"),n=localStorage.getItem("githubRepo");let r=null,i=null;if(a&&n)try{const e=await fetch(`https://raw.githubusercontent.com/${a}/${n}/main/.admin-auth.json?_=${Date.now()}`);if(e.ok){const t=await e.json();t.hash&&t.salt&&(r=t.hash,i=t.salt)}}catch(e){}if(r&&i||(r=localStorage.getItem(AUTH_HASH_KEY),i=localStorage.getItem(AUTH_SALT_KEY)),!r||!i)return void mostrarNotificacion("❌ No hay contraseña configurada. Accede primero o configura GitHub.","error");if(await hashPassword(e,i)!==r)return void mostrarNotificacion("❌ Contraseña actual incorrecta","error");if(t.length<4)return void mostrarNotificacion("❌ La nueva contraseña debe tener al menos 4 caracteres","error");if(t!==o)return void mostrarNotificacion("❌ Las contraseñas nuevas no coinciden","error");const c=_generarSal(),s=await hashPassword(t,c);try{localStorage.setItem(AUTH_SALT_KEY,c)}catch(e){}try{localStorage.setItem(AUTH_HASH_KEY,s)}catch(e){}if(a&&n){const e=localStorage.getItem("githubToken");if(e)try{const t=JSON.stringify({hash:s,salt:c,iterations:31e4}),o=btoa(Array.from((new TextEncoder).encode(t),e=>String.fromCharCode(e)).join("")),r=await fetch(`https://api.github.com/repos/${a}/${n}/contents/.admin-auth.json`,{method:"PUT",headers:{Authorization:`token ${e}`,"Content-Type":"application/json"},body:JSON.stringify({message:"Actualizar contraseña admin",content:o})});if(!r.ok){const e=await r.json().catch(()=>({}));throw new Error(e.message||`HTTP ${r.status}`)}}catch(e){mostrarNotificacion(`⚠️ No se pudo subir a GitHub: ${e.message}`,"error")}}mostrarNotificacion("✅ Contraseña cambiada con éxito","success"),document.getElementById("ci").value="",document.getElementById("ni").value="",document.getElementById("coi").value=""}function abrirAdminPanel(){if(!usuarioAutenticado)return void abrirLoginAdmin();const e=document.getElementById("adminPanel");if(!e)return;e.classList.remove("hidden"),e.classList.add("visible"),e.style.removeProperty("display"),document.body.classList.add("admin-mode"),actualizarListaProductos(),actualizarSelectCategorias(),actualizarListaCategorias(),verificarEstadoBackend(),actualizarCountdownProductSelect(),cargarNumeroWhatsApp(),poblarSelectOfertaDia(),setTimeout(()=>{"function"==typeof renderizarAnalyticsFirebase&&renderizarAnalyticsFirebase()},500);const t=document.getElementById("adminTasaMN");if(t){const e=localStorage.getItem("tasaMN");e&&(t.value=e)}}function cerrarAdminPanel(){const e=document.getElementById("adminPanel");e&&(e.classList.add("hidden"),e.classList.remove("visible"),e.style.removeProperty("display"),document.body.classList.remove("admin-mode"))}function switchTab(e){document.querySelectorAll(".admin-tab").forEach(e=>{e.classList.remove("active"),e.style.removeProperty("display")}),document.querySelectorAll(".tab-btn").forEach(e=>e.classList.remove("active"));const t=document.getElementById(e);t&&t.classList.add("active"),document.querySelectorAll(".tab-btn").forEach(t=>{t.getAttribute("data-tab")===e&&t.classList.add("active")}),"publicar-ahora"===e&&setTimeout(cargarGruposFB,100),"manage-products"===e&&setTimeout(actualizarListaProductos,100),"ventas"===e&&setTimeout(renderizarVentas,100),"analytics"===e&&setTimeout(()=>{"function"==typeof renderizarAnalyticsFirebase&&renderizarAnalyticsFirebase()},150),"manage-subcategories"===e&&setTimeout(()=>{"function"==typeof actualizarSelectCategoriasPadre&&actualizarSelectCategoriasPadre(),"function"==typeof actualizarListaSubcategorias&&actualizarListaSubcategorias()},50),"oferta-dia"===e&&setTimeout(()=>{poblarSelectOfertaDia(),renderizarListaAgotados()},100),"configuracion"===e&&(setTimeout(cargarNumeroWhatsApp,100),setTimeout(cargarConfiguracionGitHub,100))}async function agregarProductoForm(e){e.preventDefault();const t=document.getElementById("productImage"),o=t&&t.files?t.files[0]:null;if(o)try{mostrarNotificacion("⏳ Subiendo imagen principal...","info");const e=await subirImagenAGitHub(o),t=_tmDedupImagenes([e,...await subirMultiplesImagenes("productImagesExtra")]),a=document.getElementById("productMasVendido"),n={id:Date.now(),nombre:document.getElementById("productName").value.trim(),descripcion:document.getElementById("productDescription").value.trim(),imagen:e,imagenes:t,precioActual:parseFloat(document.getElementById("productPriceActual").value)||0,precioOriginal:parseFloat(document.getElementById("productPrecioOriginal")?.value)||0,descuento:0,stock:parseInt(document.getElementById("productStock").value)||0,comision:parseFloat(document.getElementById("productComision")?.value)||0,categoria:document.getElementById("productCategory").value,subcategoria:document.getElementById("productSubcategory")&&document.getElementById("productSubcategory").value?document.getElementById("productSubcategory").value:"",masVendido:!!a&&"true"===a.value,usado:document.getElementById("productUsado").checked,garantia:document.getElementById("productGarantia").value.trim(),devolucion:!!document.getElementById("productDevolucion")&&document.getElementById("productDevolucion").checked},r=validarProducto(n);if(r.length>0)return void mostrarNotificacion("❌ "+r[0],"error");productos.push(n),guardarProductos(),marcarProductoModificado(n.id),sincronizarConGitHub(),document.getElementById("productForm").reset(),mostrarNotificacion("✅ ¡Producto agregado exitosamente!"),window.TiendaMaxPush&&window.TiendaMaxPush.nuevoProducto(n.nombre,n.precioActual,n.id,n.imagen),renderizarCategoriasHome(),renderizarMasVendidos(),renderizarProductos(),actualizarListaProductos(),verificarOfertasYMostrarBanner()}catch(e){console.error("Error subiendo imágenes:",e),mostrarNotificacion("❌ Error subiendo imágenes: "+(e.message||e),"error")}else mostrarNotificacion("Por favor selecciona una imagen principal","error")}function guardarProductos(){localStorage.setItem("productos",JSON.stringify(productos))}function comprimirImagen(e,t=25,o=480,a=480){return new Promise(n=>{const r=document.createElement("canvas"),i=r.getContext("2d"),c=new Image;if(c.onload=function(){let{width:e,height:s}=c;if(e>o||s>a){const t=Math.min(o/e,a/s);e=Math.round(e*t),s=Math.round(s*t)}r.width=e,r.height=s,i.drawImage(c,0,0,e,s);let d=.82,l=r.toDataURL("image/webp",d);const u=l.startsWith("data:image/webp"),m=u?"image/webp":"image/jpeg";for(u||(l=r.toDataURL(m,d));l.length>1024*t*1.37&&d>.2;)d-=.06,l=r.toDataURL(m,d);n(l)},c.onerror=()=>n(e),"string"==typeof e)c.src=e;else{const t=new FileReader;t.onload=e=>{c.src=e.target.result},t.readAsDataURL(e)}})}function descargarProductosJSON(){const e="data:text/json;charset=utf-8,"+encodeURIComponent(JSON.stringify(productos,null,2)),t=document.createElement("a");t.setAttribute("href",e),t.setAttribute("download","productos.json"),document.body.appendChild(t),t.click(),t.remove(),mostrarNotificacion("✅ Archivo productos.json generado. Súbelo a tu GitHub.")}async function sincronizarConBackend(){return!1}document.addEventListener("click",e=>{e.target.closest(".hsb-wrap")||cerrarPanelBusqueda()}),window.addEventListener("storage",e=>{"productos"===e.key&&(productos=JSON.parse(e.newValue)||[],renderizarCategoriasHome(),renderizarMasVendidos(),renderizarProductos(),actualizarListaProductos()),"categorias"===e.key&&(categorias=JSON.parse(e.newValue)||["General"],actualizarSelectCategorias(),actualizarBotonesCategorias(),actualizarListaCategorias(),renderizarCategoriasHome(),renderizarProductos(),"function"==typeof actualizarSelectCategoriasPadre&&actualizarSelectCategoriasPadre())}),"loading"===document.readyState?document.addEventListener("DOMContentLoaded",_initTema):_initTema();let productosVisibleCount=20;function renderizarProductos(e=!1){e||(productosVisibleCount=20);const t=document.getElementById("productosGrid");if(!t)return;let o=("Todas"===categoriaSeleccionada?productos:productos.filter(e=>e.categoria===categoriaSeleccionada)).slice().sort((e,t)=>(0===e.stock?1:0)-(0===t.stock?1:0));if("Todas"!==categoriaSeleccionada&&subcategoriaSeleccionada&&"Todas"!==subcategoriaSeleccionada&&(o=o.filter(e=>e.subcategoria===subcategoriaSeleccionada)),_heroSearchActivo||_heroPrecioMin>0||_heroPrecioMax<1/0){const e=_heroSearchActivo;o=o.filter(t=>(!e||t.nombre.toLowerCase().includes(e)||(t.descripcion||"").toLowerCase().includes(e)||(t.categoria||"").toLowerCase().includes(e))&&t.precioActual>=_heroPrecioMin&&t.precioActual<=_heroPrecioMax)}if(t.innerHTML="",0===o.length){let e;return e=Array.isArray(productos)&&0!==productos.length?subcategoriaSeleccionada&&"Todas"!==subcategoriaSeleccionada?"No hay productos en esta subcategoría aún.":_heroSearchActivo?"No hay productos que coincidan con tu búsqueda.":"No hay productos en esta categoría aún.":"⏳ Cargando productos... Si esto persiste, recarga la página.",void(t.innerHTML='<p style="grid-column: 1/-1; text-align: center; color: #999; padding: 60px 20px; font-size:15px;">'+escapeHtml(e)+"</p>")}if(o.slice(0,productosVisibleCount).forEach(e=>{const o=document.createElement("div");o.className="producto-card",o.onclick=()=>abrirDetalleProducto(e.id);const a=escapeHtml(e.nombre),n=escapeHtml(e.descripcion),r=escapeAttr(e.imagen),i=safeNum(e.id),c=safeNum(e.stock);o.innerHTML=`\n            ${e.masVendido?'<div class="badge-vendido">🔥 Más Vendido</div>':""}\n            <div class="producto-image">\n                <img src="${r}" alt="${a}" loading="lazy" onerror="this.src='/iconos/favicon-192.png';this.style.opacity='0.3'">\n                ${e.precioOriginal>0&&e.precioOriginal>e.precioActual?`<div class="badge">-$${(e.precioOriginal-e.precioActual).toFixed(0)}</div>`:""}\n            </div>\n            <h3>${a}</h3>\n            <p class="producto-description">${n}</p>\n\t            <p class="precio">\n\t                <span class="precio-actual" data-usd="${safeNum(e.precioActual)}">${"function"==typeof formatPrecio?formatPrecio(e.precioActual):"$"+e.precioActual.toFixed(2)+" USD"}</span>\n\t            </p>\n            <div class="stock">📦 Stock: ${c} unidades</div>\n            ${"function"==typeof renderCountdownHtml?renderCountdownHtml(i):""}\n            <button data-action="agregarAlCarrito" data-arg="${i}" class="btn btn-primary btn-add-cart">🛒 Añadir</button>\n        `,t.appendChild(o),window._tmAnimObs&&window._tmAnimObs.observe(o)}),o.length>productosVisibleCount){const e=document.createElement("div");e.style.cssText="grid-column:1/-1;display:flex;flex-direction:column;align-items:center;gap:10px;margin-top:28px;padding:0 16px";const a=o.length-productosVisibleCount;e.innerHTML=`\n            <p style="color:rgba(255,255,255,0.35);font-size:12px;letter-spacing:.5px;text-transform:uppercase">\n                Mostrando ${Math.min(productosVisibleCount,o.length)} de ${o.length} productos\n            </p>\n            <button class="btn-seguir-viendo">\n                👁️ Seguir viendo <span style="background:rgba(255,255,255,0.12);padding:2px 8px;border-radius:20px;font-size:11px;margin-left:4px">${a} más</span>\n            </button>`,e.querySelector(".btn-seguir-viendo").onclick=()=>{productosVisibleCount+=20,renderizarProductos(!0)},t.appendChild(e)}}function _tmDedupImagenes(e){const t=[];return(e||[]).forEach(e=>{(e=(e||"").trim())&&!t.includes(e)&&t.push(e)}),t}function obtenerImagenesProducto(e){return e?_tmDedupImagenes([e.imagen,...Array.isArray(e.imagenes)?e.imagenes:[],e.imagenSecundaria]):[]}async function subirMultiplesImagenes(e){const t=document.getElementById(e),o=t&&t.files?Array.from(t.files).filter(Boolean):[];if(!o.length)return[];const a=[];for(let e=0;e<o.length;e++)mostrarNotificacion("⏳ Subiendo foto "+(e+1)+" de "+o.length+"...","info"),a.push(await subirImagenAGitHub(o[e]));return a.filter(Boolean)}function renderizarGaleriaDetalle(e){const t=document.getElementById("detailGalleryThumbs"),o=document.getElementById("detailProductImage");if(!t||!o)return;const a=obtenerImagenesProducto(e);if(a.length<=1)return t.style.display="none",void(t.innerHTML="");t.style.display="flex",t.innerHTML=a.map((e,t)=>'<button type="button" class="detail-gallery-thumb'+(0===t?" active":"")+'" data-img="'+escapeAttr(e)+'" aria-label="Ver imagen '+(t+1)+'"><img src="'+escapeAttr(e)+'" alt="" loading="lazy" onerror="this.style.display=\'none\'"></button>').join(""),t.querySelectorAll(".detail-gallery-thumb").forEach(e=>{e.addEventListener("click",function(e){e.stopPropagation();const a=this.getAttribute("data-img");a&&(o.src=a,o.classList.remove("zoomed"),t.querySelectorAll(".detail-gallery-thumb").forEach(e=>e.classList.remove("active")),this.classList.add("active"))})})}let _detalleProductoActual=null;function abrirDetalleProducto(e){const t=productos.find(t=>t.id===e);if(!t)return void console.warn("Producto no encontrado:",e);"function"==typeof tmTrackVista&&tmTrackVista(e),"function"==typeof actualizarVisibilidadBannerOferta&&actualizarVisibilidadBannerOferta(!1),_detalleProductoActual=t,location.hash!=="#producto-"+e&&history.pushState({modalProducto:e},"","#producto-"+e),"function"==typeof actualizarSEOPorProducto&&actualizarSEOPorProducto(t),document.getElementById("detailProductName").textContent=t.nombre;const o=document.getElementById("detailProductImage"),a=obtenerImagenesProducto(t);o.src=a[0]||t.imagen||"",o.alt=t.nombre,o.classList.remove("zoomed"),renderizarGaleriaDetalle(t),document.getElementById("detailProductCategory").textContent=obtenerIconoCategoria(t.categoria)+" "+t.categoria;const n=document.getElementById("detailSubcategoria");t.subcategoria&&"Todas"!==t.subcategoria?(n.textContent="↳ "+t.subcategoria,n.style.display="block"):n.style.display="none";const r=document.getElementById("detailProductBadge"),i=t.precioOriginal>0&&parseFloat(t.precioOriginal)>parseFloat(t.precioActual);r.style.display=i?"inline-block":"none",i&&(r.textContent=`-$${(parseFloat(t.precioOriginal)-parseFloat(t.precioActual)).toFixed(0)}`),document.getElementById("detailMasVendidoBadge").style.display=!0===t.masVendido||"true"===t.masVendido?"block":"none";const c=t.descuento>0?t.precioActual/(1-t.descuento/100):null,s=document.getElementById("detailPriceActual"),d=document.getElementById("detailPriceOriginal");s&&(s.textContent="function"==typeof formatPrecio?formatPrecio(t.precioActual):`$${t.precioActual.toFixed(2)} USD`),d&&(t.precioOriginal>0&&parseFloat(t.precioOriginal)>parseFloat(t.precioActual)?(d.textContent=`$${parseFloat(t.precioOriginal).toFixed(2)} USD`,d.style.display="inline"):d.style.display="none");const l=document.getElementById("detailAhorroBadge");if(c&&t.descuento>0){const e=(c-t.precioActual).toFixed(2);l.textContent=`Ahorras $${e}`,l.style.display="inline"}else l.style.display="none";const u=document.getElementById("detailProductStock"),m=safeNum(t.stock);u.innerHTML=0===m?'<span style="color:#e74c3c;font-weight:700;">❌ Sin stock</span>':m<=3?`<span style="color:#e67e22;font-weight:700;">⚠️ ¡Últimas ${m} unidades!</span>`:`<span>📦 ${m} unidades disponibles</span>`,document.getElementById("detailStockBarFill").style.width=`${Math.min(100,Math.max(8,t.stock/20*100))}%`;const p=document.getElementById("detailExtraBadges");let g="";t.garantia&&(g+=`<span class="detail-badge-tag dtag-garantia">🛡️ Garantía: ${escapeHtml(t.garantia)}</span>`),t.devolucion&&(g+='<span class="detail-badge-tag dtag-devolucion">↩️ Devolución aceptada</span>'),t.usado&&(g+='<span class="detail-badge-tag dtag-usado">♻️ Producto usado</span>'),p.innerHTML=g,document.getElementById("detailProductDescription").textContent=t.descripcion||"";const f=document.getElementById("detailBuyBtn");f.disabled=0===t.stock,f.innerHTML=0===t.stock?"❌ Sin stock":'\n            <span class="btn-pedir-wa-icon">\n                <svg viewBox="0 0 24 24" width="22" height="22" fill="white" xmlns="http://www.w3.org/2000/svg">\n                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>\n                </svg>\n            </span>\n            <span class="btn-pedir-wa-text">Pedir</span>\n        ',f.onclick=()=>contactarProducto(t.nombre);const b=productos.filter(e=>e.id!==t.id&&e.categoria===t.categoria).slice(0,4),y=document.getElementById("detailRelacionados"),h=document.getElementById("detailRelacionadosGrid");b.length>0?(h.innerHTML=b.map(e=>`\n            <div class="rel-card" onclick="abrirDetalleProducto(${safeNum(e.id)})">\n                <img src="${escapeAttr(e.imagen)}" alt="${escapeHtml(e.nombre)}" loading="lazy" onerror="this.style.display='none'"\n                     onerror="this.style.display='none'">\n                <div class="rel-card-name">${escapeHtml(e.nombre)}</div>\n                <div class="rel-card-price">$${Number(e.precioActual).toFixed(2)}</div>\n            </div>\n        `).join(""),y.style.display="block"):y.style.display="none",renderizarResenas(t.id),document.getElementById("formResena").style.display="none";const v=document.getElementById("btnAgregarResena");v&&(v.textContent="+ Agregar reseña"),_estrellasSeleccionadas=0,setEstrellas(0),registrarVisto(t.id),function(){const e=document.getElementById("detailPersonasViendo");if(!e)return;const o=obtenerVistasProd(t.id)||0,a=Math.min(12,2+Math.floor(o/3))+Math.floor(4*Math.random());e.style.display="flex",e.innerHTML="<span>👁️ "+a+" personas están viendo esto ahora</span>"}();const S=document.getElementById("detailBuyBtn");if(S){let e=document.getElementById("detailCartBtn");e||(e=document.createElement("button"),e.id="detailCartBtn",e.className="btn-carrito",e.style.cssText="width:100%;margin-bottom:10px;padding:12px;font-size:14px;",S.parentNode.insertBefore(e,S.nextSibling));const o=carrito.some(e=>e.id===t.id);e.textContent=o?"✓ En el carrito — Ver carrito":"🛒 Agregar al carrito",e.className="btn-carrito"+(o?" en-carrito":""),e.style.cssText="width:100%;margin-bottom:10px;padding:12px;font-size:14px;",e.onclick=()=>{carrito.some(e=>e.id===t.id)?(cerrarDetalleModal(),abrirCarrito()):(agregarAlCarrito(t.id,null,e),e.textContent="✓ En el carrito — Ver carrito",e.className="btn-carrito en-carrito")}}const w=document.getElementById("productDetailModal");w&&(w.classList.remove("hidden"),w.style.removeProperty("display"),document.body.style.overflow="hidden")}function cerrarDetalleModal(){var e=document.getElementById("panelCompartirRedes");e&&(e.style.display="none");const t=document.getElementById("productDetailModal");t&&(t.classList.add("hidden"),t.style.removeProperty("display"),document.body.style.overflow="",_detalleProductoActual=null,"function"==typeof actualizarVisibilidadBannerOferta&&actualizarVisibilidadBannerOferta("function"!=typeof tmVistaInicioActiva||tmVistaInicioActiva()),history.replaceState(null,"",window.location.pathname+window.location.search),"function"==typeof restaurarSEOOriginal&&restaurarSEOOriginal())}function toggleZoomImagen(e){e.classList.toggle("zoomed")}function abrirPanelCompartir(){const e=document.getElementById("panelCompartirRedes");e&&(e.style.display="none"!==e.style.display?"none":"block")}function _getShareData(){const e=_detalleProductoActual;if(!e)return null;const t="https://tiendamax.org/#producto-"+e.id;return{nombre:e.nombre,precio:e.precioActual.toFixed(2),texto:"🛍️ *"+e.nombre+"* — $"+e.precioActual.toFixed(2)+" USD\n📦 Stock disponible\n👉 "+t,url:t}}function compartirWhatsApp(){const e=_getShareData();if(!e)return;const t=encodeURIComponent(e.texto);window.open(`https://wa.me/?text=${t}`,"_blank","noopener,noreferrer")}function compartirFacebook(){const e=_getShareData();if(!e)return;const t=encodeURIComponent(e.url);window.open(`https://www.facebook.com/sharer/sharer.php?u=${t}&quote=${encodeURIComponent(e.texto)}`,"_blank","noopener,noreferrer")}function compartirTelegram(){const e=_getShareData();e&&window.open(`https://t.me/share/url?url=${encodeURIComponent(e.url)}&text=${encodeURIComponent(e.texto)}`,"_blank","noopener,noreferrer")}function compartirTwitter(){const e=_getShareData();if(!e)return;const t=encodeURIComponent(`${e.nombre} — $${e.precio} USD en @TiendaMax 🛍️ ${e.url}`);window.open(`https://twitter.com/intent/tweet?text=${t}`,"_blank","noopener,noreferrer")}function compartirNativo(){const e=_detalleProductoActual;if(!e)return;const t=`🛍️ ${e.nombre} — $${e.precioActual.toFixed(2)} USD\n📦 Stock disponible\n👉 tiendamax.org`,o="https://tiendamax.org/#producto-"+e.id;navigator.share?navigator.share({title:e.nombre,text:t,url:o}).catch(()=>{}):navigator.clipboard.writeText(t+"\n"+o).then(()=>mostrarNotificacion("📤 Texto copiado para compartir"))}function compartirProducto(){abrirPanelCompartir()}function copiarLinkProducto(){const e=_detalleProductoActual?"https://tiendamax.org/#producto-"+_detalleProductoActual.id:"https://tiendamax.org";navigator.clipboard.writeText(e).then(()=>mostrarNotificacion("🔗 Enlace copiado — ¡listo para compartir!")).catch(()=>{const t=document.createElement("textarea");t.value=e,t.style.position="fixed",t.style.opacity="0",document.body.appendChild(t),t.select(),document.execCommand("copy"),document.body.removeChild(t),mostrarNotificacion("🔗 Enlace copiado")})}function contactarProducto(e){const t=_mensajeOrdenWA([_detalleProductoActual?{id:_detalleProductoActual.id,nombre:_detalleProductoActual.nombre,precio:parseFloat(_detalleProductoActual.precioActual)||0,cantidad:1}:{nombre:e||"Producto",precio:0,cantidad:1}]);window.open(`https://wa.me/${getNumeroWhatsApp()}?text=${t}`,"_blank","noopener,noreferrer")}function copiarParaRevolico(e){const t=productos.find(t=>t.id===e);if(!t)return;const o=`\n${t.nombre}\n\n${t.descripcion}\n\n💰 Precio: $${t.precioActual} USD\n${t.stock>0?`📦 Stock: ${t.stock} unidades disponibles`:"❌ Agotado"}\n\n📞 Contacto: +53 54320170\n    `.trim();navigator.clipboard.writeText(o).then(()=>{mostrarNotificacion("✅ ¡Datos copiados! Ahora pega en Revolico."),setTimeout(()=>{window.open("https://www.revolico.com/item/publish","_blank","noopener,noreferrer")},500)}).catch(()=>{window.open("https://www.revolico.com/item/publish","_blank","noopener,noreferrer")})}function copiarParaFacebook(e){const t=productos.find(t=>t.id===e);if(!t)return;const o=`\n🛍️ ${t.nombre}\n\n${t.descripcion}\n\n💰 Precio: $${t.precioActual} USD\n${t.descuento>0?`🔥 ¡OFERTA! (-${t.descuento}%)`:""}\n${t.stock>0?`📦 Disponible: ${t.stock} unidades`:"❌ Agotado"}\n\n📞 Interesado? Contáctame por WhatsApp: +53 54320170\n\n#TiendaMax #VentasCuba #GruposFacebook #Oferta\n    `.trim();navigator.clipboard.writeText(o).then(()=>{mostrarNotificacion("✅ ¡Texto copiado para GRUPOS! Ahora pega en tus grupos de Facebook."),setTimeout(()=>{window.open("https://www.facebook.com/groups/feed/","_blank","noopener,noreferrer")},500)}).catch(()=>{window.open("https://www.facebook.com/groups/feed/","_blank","noopener,noreferrer")})}function prepararPublicacionManual(e){const t=productos.find(t=>t.id===e);t&&navigator.clipboard.writeText(`${t.nombre}\n\n${t.descripcion}\n\nPrecio: ${t.precioActual} USD\nContacto: +53 54320170`).then(()=>{mostrarNotificacion("✅ ¡Datos copiados! Ahora pega en Revolico."),setTimeout(()=>{window.open("https://www.revolico.com/item/publish","_blank","noopener,noreferrer")},1e3)}).catch(()=>{window.open("https://www.revolico.com/item/publish","_blank","noopener,noreferrer")})}async function publicarEnRevolico(e){"function"!=typeof copiarYAbrirRevolico?mostrarNotificacion("⚠️ El asistente de Revolico no está disponible","error"):copiarYAbrirRevolico(e)}async function publicarEnFacebook(e){"function"!=typeof copiarYAbrirFacebook?mostrarNotificacion("⚠️ El asistente de Facebook no está disponible","error"):copiarYAbrirFacebook(e)}async function publicarAhora(){"function"!=typeof mostrarSelectorAsistenteRevolico?mostrarNotificacion("⚠️ El asistente de Revolico no está disponible","error"):mostrarSelectorAsistenteRevolico()}function actualizarSelectCategorias(){["productCategory","editProductCategory"].forEach(e=>{const t=document.getElementById(e);if(!t)return;const o=t.value;t.innerHTML="",categorias.forEach(e=>{const o=document.createElement("option");o.value=e,o.textContent=e,t.appendChild(o)}),t.value=o||"General"})}function actualizarBotonesCategorias(){const e=document.getElementById("categoriaFiltro");e&&(e.innerHTML=`<button class="categoria-btn ${"Todas"===categoriaSeleccionada?"active":""}" onclick="filtrarPorCategoria('Todas')">Todas</button>`,categorias.forEach(t=>{const o=document.createElement("button");o.className="categoria-btn "+(categoriaSeleccionada===t?"active":""),o.textContent=t,o.onclick=()=>filtrarPorCategoria(t),e.appendChild(o)}))}function filtrarPorCategoria(e){categoriaSeleccionada=e,actualizarBotonesCategorias(),renderizarProductos();const t=document.getElementById("tituloCategoriaActual");if(t){const o=obtenerIconoCategoria(e);t.textContent="Todas"===e?"🛍️ Todos los Productos":`${o} ${e}`}}function actualizarListaCategorias(){const e=document.getElementById("categoryList");e&&(e.innerHTML='\n        <div style="margin-bottom: 20px; padding: 15px; background: rgba(52, 152, 219, 0.1); border: 1px dashed #3498DB; border-radius: 10px; text-align: center;">\n            <p style="font-size: 13px; margin-bottom: 10px;">Para guardar tus categorías permanentemente, descarga este archivo y súbelo a GitHub.</p>\n            <button class="btn btn-primary" style="background:#3498DB" onclick="descargarCategoriasJSON()">📥 Descargar categorias.json</button>\n        </div>\n    ',categorias.forEach((t,o)=>{const a=document.createElement("div");a.className="category-item",a.innerHTML=`\n            <span>${obtenerIconoCategoria(t)} ${t}</span>\n            ${"General"!==t?`<button onclick="eliminarCategoria(${o})">🗑️</button>`:""}\n        `,e.appendChild(a)}))}function descargarCategoriasJSON(){const e="data:text/json;charset=utf-8,"+encodeURIComponent(JSON.stringify(categorias,null,2)),t=document.createElement("a");t.setAttribute("href",e),t.setAttribute("download","categorias.json"),document.body.appendChild(t),t.click(),t.remove(),mostrarNotificacion("✅ Archivo categorias.json generado. Súbelo a tu GitHub.")}function agregarCategoria(){const e=document.getElementById("newCategoryName"),t=document.getElementById("newCategoryIcon"),o=e.value.trim(),a=t.value.trim();o&&(categorias.includes(o)?mostrarNotificacion("La categoría ya existe","error"):(categorias.push(o),a&&(iconosPersonalizados[o]=a,localStorage.setItem("iconosPersonalizados",JSON.stringify(iconosPersonalizados))),guardarCategorias(),e.value="",t.value="",actualizarSelectCategorias(),actualizarBotonesCategorias(),actualizarListaCategorias(),renderizarCategoriasHome(),"function"==typeof actualizarSelectCategoriasPadre&&actualizarSelectCategoriasPadre(),mostrarNotificacion("✅ Categoría agregada")))}function guardarCategorias(){localStorage.setItem("categorias",JSON.stringify(categorias)),localStorage.setItem("iconosPersonalizados",JSON.stringify(iconosPersonalizados))}function eliminarCategoria(e){const t=categorias[e];"General"!==t&&confirm(`¿Eliminar la categoría "${t}"?`)&&(iconosPersonalizados[t]&&(delete iconosPersonalizados[t],localStorage.setItem("iconosPersonalizados",JSON.stringify(iconosPersonalizados))),categorias.splice(e,1),guardarCategorias(),actualizarSelectCategorias(),actualizarBotonesCategorias(),actualizarListaCategorias(),renderizarCategoriasHome(),renderizarProductos(),"function"==typeof actualizarSelectCategoriasPadre&&actualizarSelectCategoriasPadre())}function eliminarProducto(e){confirm("¿Estás seguro de eliminar este producto?")&&(productos=productos.filter(t=>t.id!==e),guardarProductos(),localStorage.setItem("productosModificados",JSON.stringify(productos.map(e=>e.id))),localStorage.setItem("ultimaModificacion",Date.now().toString()),sincronizarConBackend(),renderizarCategoriasHome(),renderizarMasVendidos(),renderizarProductos(),actualizarListaProductos(),verificarOfertasYMostrarBanner(),mostrarNotificacion("🗑️ Producto eliminado","info"))}function abrirEditModal(e){const t=productos.find(t=>t.id===e);if(!t)return;document.getElementById("editProductId").value=t.id,document.getElementById("editProductName").value=t.nombre,document.getElementById("editProductDescription").value=t.descripcion,document.getElementById("editProductPriceActual").value=t.precioActual;const o=document.getElementById("editProductPrecioOriginal");o&&(o.value=t.precioOriginal>0?t.precioOriginal:""),document.getElementById("editProductStock").value=t.stock,document.getElementById("editProductCategory").value=t.categoria,"function"==typeof actualizarSelectSubcategorias&&(actualizarSelectSubcategorias(),setTimeout(()=>{const e=document.getElementById("editProductSubcategory");e&&t.subcategoria&&(e.value=t.subcategoria)},50)),document.getElementById("editProductUsado")&&(document.getElementById("editProductUsado").checked=t.usado||!1),document.getElementById("editProductGarantia")&&(document.getElementById("editProductGarantia").value=t.garantia||""),document.getElementById("editProductDevolucion")&&(document.getElementById("editProductDevolucion").checked=t.devolucion||!1),document.getElementById("editProductComision")&&(document.getElementById("editProductComision").value=t.comision||"");const a=document.getElementById("editProductMasVendido");a&&(a.value=t.masVendido?"true":"false");const n=document.getElementById("currentImagePreview");if(n){const e=obtenerImagenesProducto(t);n.innerHTML=e.length?'<div class="admin-gallery-preview">'+e.map((e,t)=>'<img src="'+escapeAttr(e)+'" title="Imagen '+(t+1)+'" onerror="this.style.display=\'none\'">').join("")+"</div>":'<span style="font-size:12px;color:#888;">Sin imágenes</span>'}const r=document.getElementById("editModal");r.classList.remove("hidden"),r.style.removeProperty("display")}function cerrarEditModal(){const e=document.getElementById("editModal");e.classList.add("hidden"),e.style.removeProperty("display")}async function guardarProductoEditado(e){e.preventDefault();const t=parseInt(document.getElementById("editProductId").value),o=productos.findIndex(e=>e.id===t);if(-1===o)return;const a=document.getElementById("editProductMasVendido"),n=document.getElementById("editProductImage"),r=n&&n.files?n.files[0]:null;try{let e=null;r&&(mostrarNotificacion("⏳ Subiendo imagen principal...","info"),e=await subirImagenAGitHub(r));const t=await subirMultiplesImagenes("editProductImagesExtra"),n=e||productos[o].imagen,i=obtenerImagenesProducto(productos[o]),c=_tmDedupImagenes([n,...i.filter(e=>e!==productos[o].imagen&&e!==n),...t]),s={...productos[o],nombre:document.getElementById("editProductName").value.trim(),descripcion:document.getElementById("editProductDescription").value.trim(),precioActual:parseFloat(document.getElementById("editProductPriceActual").value)||0,precioOriginal:parseFloat(document.getElementById("editProductPrecioOriginal")?.value)||0,descuento:0,stock:parseInt(document.getElementById("editProductStock").value)||0,categoria:document.getElementById("editProductCategory").value,subcategoria:document.getElementById("editProductSubcategory")&&document.getElementById("editProductSubcategory").value?document.getElementById("editProductSubcategory").value:productos[o].subcategoria||"",masVendido:a?"true"===a.value:productos[o].masVendido,imagen:n,imagenes:c,usado:document.getElementById("editProductUsado")?document.getElementById("editProductUsado").checked:productos[o].usado,garantia:document.getElementById("editProductGarantia")?document.getElementById("editProductGarantia").value.trim():productos[o].garantia,devolucion:document.getElementById("editProductDevolucion")?document.getElementById("editProductDevolucion").checked:productos[o].devolucion,comision:document.getElementById("editProductComision")?parseFloat(document.getElementById("editProductComision").value)||0:productos[o].comision||0},d=validarProducto(s);if(d.length>0)return void mostrarNotificacion("❌ "+d[0],"error");productos[o]=s,guardarProductos(),marcarProductoModificado(s.id),sincronizarConGitHub(),cerrarEditModal(),renderizarCategoriasHome(),renderizarMasVendidos(),renderizarProductos(),actualizarListaProductos(),mostrarNotificacion("✅ Producto actualizado")}catch(e){console.error("Error actualizando producto:",e),mostrarNotificacion("❌ Error actualizando imágenes: "+(e.message||e),"error")}}async function verificarEstadoBackend(){const e=document.getElementById("backendStatus");e&&(e.innerHTML="🟠 <strong>Modo manual activo</strong> · Publicación asistida desde el navegador · Sin dependencia de backend roto",e.style.color="#F39C12")}async function cargarEstadoPublicacion(){const e=document.getElementById("historialPublicaciones");e&&(e.innerHTML='<p style="font-size:13px;color:#666;">Modo manual activo. No existe historial automático porque este repo no incluye backend de publicación.</p>')}function cargarConfiguracionGitHub(){document.getElementById("githubUser").value=localStorage.getItem("githubUser")||"",document.getElementById("githubRepo").value=localStorage.getItem("githubRepo")||"Tiendamax",document.getElementById("githubToken").value=localStorage.getItem("githubToken")||"";const e=localStorage.getItem("firebaseConfig");if(e)try{document.getElementById("firebaseConfigJson").value=JSON.stringify(JSON.parse(e),null,2)}catch(t){document.getElementById("firebaseConfigJson").value=e}else document.getElementById("firebaseConfigJson").value="";document.getElementById("firebaseVapidKey").value=localStorage.getItem("firebaseVapidKey")||"",document.getElementById("firebaseServerKey").value=localStorage.getItem("fcmServerKey")||""}function guardarConfiguracionGitHub(e){e.preventDefault(),localStorage.setItem("githubUser",document.getElementById("githubUser").value.trim()),localStorage.setItem("githubRepo",document.getElementById("githubRepo").value.trim()),localStorage.setItem("githubToken",document.getElementById("githubToken").value.trim()),mostrarNotificacion("✅ Configuración de GitHub guardada localmente")}function marcarProductoModificado(e){const t=JSON.parse(localStorage.getItem("productosModificados")||"[]");t.includes(e)||t.push(e),localStorage.setItem("productosModificados",JSON.stringify(t)),localStorage.setItem("ultimaModificacion",Date.now().toString())}function limpiarProductosModificados(){localStorage.removeItem("productosModificados"),localStorage.setItem("ultimaSincronizacion",Date.now().toString())}function obtenerProductosModificados(){return JSON.parse(localStorage.getItem("productosModificados")||"[]")}async function sincronizarTodoConGitHub(){const e=localStorage.getItem("githubUser"),t=localStorage.getItem("githubRepo"),o=localStorage.getItem("githubToken");if(!e||!t||!o)return mostrarNotificacion("❌ Configura primero tu usuario, repo y token en la pestaña Configuración","error"),void switchTab("configuracion");const a=document.querySelector('[data-action="sincronizarTodoConGitHub"]');a&&(a.disabled=!0,a.textContent="⏳ Sincronizando...");let n=document.getElementById("syncProgressContenedor");n||(n=document.createElement("div"),n.id="syncProgressContenedor",n.style.cssText="margin-top:14px;",n.innerHTML='\n            <div style="background:#2a2a2a;border-radius:8px;overflow:hidden;height:14px;margin-bottom:6px;">\n                <div id="syncProgressBarra" style="height:100%;width:0%;background:linear-gradient(90deg,#FF6B35,#ff9a6c);transition:width 0.4s ease;border-radius:8px;"></div>\n            </div>\n            <p id="syncProgressTexto" style="font-size:12px;color:#aaa;text-align:center;margin:0;"></p>\n        ',a&&a.parentNode.insertBefore(n,a.nextSibling)),n.style.display="block";const r=document.getElementById("syncProgressBarra"),i=document.getElementById("syncProgressTexto");function c(e,t,o){const a=Math.round(e/t*100);r&&(r.style.width=a+"%"),i&&(i.textContent=o)}r&&(r.style.width="0%"),i&&(i.textContent="Preparando...");const s=obtenerProductosModificados(),d=s.length>0&&s.length<productos.length;mostrarNotificacion(d?`🔄 Subiendo ${s.length} producto(s) modificado(s)...`:"🚀 Sincronizando tienda completa con GitHub...","info");const l={tasaMN:parseFloat(localStorage.getItem("tasaMN")||"0")||void 0,ofertaDiaId:localStorage.getItem("ofertaDiaId")||void 0,ofertaDiaTexto:localStorage.getItem("ofertaDiaTexto")||void 0,ofertaDiaActualizado:localStorage.getItem("ofertaDiaId")?(new Date).toISOString():void 0,firebaseConfig:localStorage.getItem("firebaseConfig")?JSON.parse(localStorage.getItem("firebaseConfig")):void 0,fcmServerKey:localStorage.getItem("fcmServerKey")||void 0,actualizado:(new Date).toISOString()};Object.keys(l).forEach(e=>void 0===l[e]&&delete l[e]);const u=[{path:"productos.json",data:productos},{path:"categorias.json",data:{nombres:categorias,iconos:iconosPersonalizados}},{path:"subcategorias.json",data:JSON.parse(localStorage.getItem("subcategorias")||"{}")},{path:"grupos_facebook_config.json",data:{grupos:JSON.parse(localStorage.getItem("gruposFB")||"[]"),exportado:(new Date).toISOString()}},{path:"revolico_config.json",data:JSON.parse(localStorage.getItem("revolicoConfig")||"{}")},{path:"banners.json",data:JSON.parse(localStorage.getItem("heroBanners")||"[]")},{path:"config.json",data:l}],m=d?u.filter(e=>["productos.json","config.json","grupos_facebook_config.json"].includes(e.path)):u;let p=0,g=[];const f=m.length;for(let n=0;n<m.length;n++){const{path:r,data:i}=m[n];c(n,f,`Subiendo ${r}… (${n+1}/${f})`),a&&(a.textContent=`⏳ ${n+1}/${f} archivos...`);try{await subirArchivoAGitHub(e,t,o,r,i),p++}catch(e){g.push(`${r}: ${e.message}`)}}if(c(f,f,0===g.length?"✅ ¡Todo subido correctamente!":"⚠️ Completado con errores"),a&&(a.disabled=!1,a.textContent="🔄 ACTUALIZAR TIENDA AHORA"),setTimeout(()=>{n&&(n.style.display="none")},4e3),0===g.length)limpiarProductosModificados(),mostrarNotificacion(`✅ Tienda actualizada (${d?`${s.length} producto(s) actualizado(s)`:`${p} archivos`}). Visible en ~30 segundos.`);else{const e=g[0];mostrarNotificacion(`❌ ${e.includes(": ")?e.split(": ").slice(1).join(": ").trim():e}`,"error"),console.error("Errores de sincronización:",g)}}async function sincronizarConGitHub(){const e=localStorage.getItem("githubUser"),t=localStorage.getItem("githubRepo"),o=localStorage.getItem("githubToken");if(e&&t&&o)try{await subirArchivoAGitHub(e,t,o,"productos.json",productos)}catch(e){console.warn("⚠️ Error al sincronizar automáticamente:",e.message)}}async function subirArchivoAGitHub(e,t,o,a,n){const r={Authorization:`token ${o}`,"Content-Type":"application/json",Accept:"application/vnd.github.v3+json"},i=JSON.stringify(n,null,2),c=btoa(Array.from((new TextEncoder).encode(i),e=>String.fromCharCode(e)).join("")),s=`https://api.github.com/repos/${e}/${t}`;async function d(){try{const e=await fetch(`${s}/contents/${a}?_=${Date.now()}`,{headers:r});return e.ok&&(await e.json()).sha||null}catch(e){return null}}if(i.length<921600){let o=await d();const n={message:`Actualización de ${a}`,content:c};o&&(n.sha=o);let i=await fetch(`${s}/contents/${a}`,{method:"PUT",headers:r,body:JSON.stringify(n)});for(let e=0;e<3&&!i.ok&&(409===i.status||422===i.status);e++){await new Promise(e=>setTimeout(e,800)),o=await d();const e={message:`Actualización de ${a}`,content:c};o&&(e.sha=o),i=await fetch(`${s}/contents/${a}`,{method:"PUT",headers:r,body:JSON.stringify(e)})}if(!i.ok){if(401===i.status)throw new Error("Token inválido o expirado. Ve a Config y actualiza tu Token de Acceso.");if(403===i.status)throw new Error('Token sin permisos. Asegúrate de que tenga el permiso "repo" completo.');if(404===i.status){if(!(await fetch(`${s}`,{headers:r})).ok)throw new Error(`Repositorio "${e}/${t}" no encontrado. Verifica usuario y nombre del repo en Config.`);throw new Error('Token sin permisos de escritura. Asegúrate de que tenga el permiso "repo" completo (no solo "public_repo").')}let o=`Error ${i.status} al subir ${a}`;try{o=(await i.json()).message||o}catch(e){}throw new Error(o)}return}const l=await async function(){try{const e=await fetch(`${s}`,{headers:r});if(e.ok)return(await e.json()).default_branch||"main"}catch(e){}return"main"}(),u=await fetch(`${s}/git/blobs`,{method:"POST",headers:r,body:JSON.stringify({content:c,encoding:"base64"})});if(!u.ok){const e=await u.json();throw new Error(`Error creando blob: ${e.message}`)}const{sha:m}=await u.json(),p=await fetch(`${s}/git/ref/heads/${l}`,{headers:r});if(!p.ok)throw new Error(`No se pudo obtener la rama "${l}"`);const{object:{sha:g}}=await p.json(),f=await fetch(`${s}/git/commits/${g}`,{headers:r});if(!f.ok)throw new Error("No se pudo obtener el commit");const{tree:{sha:b}}=await f.json(),y=await fetch(`${s}/git/trees`,{method:"POST",headers:r,body:JSON.stringify({base_tree:b,tree:[{path:a,mode:"100644",type:"blob",sha:m}]})});if(!y.ok)throw new Error("Error creando tree");const{sha:h}=await y.json(),v=await fetch(`${s}/git/commits`,{method:"POST",headers:r,body:JSON.stringify({message:`Actualización de ${a}`,tree:h,parents:[g]})});if(!v.ok)throw new Error("Error creando commit");const{sha:S}=await v.json(),w=await fetch(`${s}/git/refs/heads/${l}`,{method:"PATCH",headers:r,body:JSON.stringify({sha:S,force:!0})});if(!w.ok){const e=await w.json();throw new Error(`Error actualizando ref: ${e.message}`)}}function verificarOfertasYMostrarBanner(){const e=document.getElementById("urgenciaBanner");if(!e)return;if("function"==typeof tmVistaInicioActiva&&!tmVistaInicioActiva())return e.style.setProperty("display","none","important"),e.onclick=null,void("function"==typeof actualizarOffsetsUI&&setTimeout(actualizarOffsetsUI,0));const t=localStorage.getItem("ofertaDiaId"),o=localStorage.getItem("ofertaDiaTexto")||"🔥 OFERTA DEL DÍA",a=localStorage.getItem("activeCountdown"),n=a?(()=>{try{return JSON.parse(a)}catch(e){return null}})():null,r=n&&n.endTime&&n.endTime>Date.now();let i=null;if(t){for(i=t;e.firstChild;)e.removeChild(e.firstChild);const a=document.createElement("span");a.className="flash-deal",a.textContent=o+" · VER AHORA →",e.appendChild(a)}else{if(!r)return e.style.setProperty("display","none","important"),document.body&&document.body.classList.add("tm-no-oferta-banner"),e.onclick=null,void setTimeout(actualizarOffsetsUI,0);{for(i=n.productId;e.firstChild;)e.removeChild(e.firstChild);e.appendChild(document.createTextNode("🔥 "+(n.texto||"¡Oferta especial!")+" "));const t=document.createElement("span");t.className="flash-deal",t.textContent="VER AHORA →",e.appendChild(t)}}document.body&&document.body.classList.remove("tm-no-oferta-banner"),e.style.setProperty("display","flex","important"),e.style.cursor="pointer",setTimeout(actualizarOffsetsUI,0),e.onclick=()=>{if(!i)return;const e=Number(i),t=document.querySelector(`[onclick*="abrirDetalleProducto(${e})"]`);t&&(t.scrollIntoView({behavior:"smooth",block:"center"}),t.style.transition="box-shadow 0.3s",t.style.boxShadow="0 0 0 3px #ff6b35, 0 8px 32px rgba(255,107,53,0.5)",setTimeout(()=>{t.style.boxShadow=""},2e3)),abrirDetalleProducto(e)}}function inicializarTienda(){actualizarContadorCarrito(),actualizarBadgeCorazon(),cargarDatosDesdeGitHub();const e=document.getElementById("productForm");e&&(e.onsubmit=null,e.addEventListener("submit",agregarProductoForm));const t=document.getElementById("editForm");t&&(t.onsubmit=null,t.addEventListener("submit",guardarProductoEditado));const o=document.querySelector("#loginModal form");o&&(o.onsubmit=null,o.addEventListener("submit",verificarPassword)),setInterval(()=>{const e=document.getElementById("adminPanel");e&&!e.classList.contains("hidden")&&verificarEstadoBackend()},3e4),"function"==typeof _initTema&&_initTema(),iniciarCountdownsActivos(),actualizarOffsetsUI(),actualizarVisibilidadBannerOferta(!0),setTimeout(actualizarOffsetsUI,200),setTimeout(actualizarOffsetsUI,1200),window.addEventListener("resize",actualizarOffsetsUI),window.visualViewport&&window.visualViewport.addEventListener("resize",actualizarOffsetsUI)}function guardarCountdown(){const e=document.getElementById("countdownProductSelect").value,t=parseInt(document.getElementById("countdownHoras").value)||0,o=parseInt(document.getElementById("countdownMinutos").value)||0,a=document.getElementById("countdownTexto").value.trim()||"¡Oferta especial!";if(!e)return void mostrarNotificacion("⚠️ Selecciona un producto","error");const n=1e3*(3600*t+60*o);if(n<=0)return void mostrarNotificacion("⚠️ Ingresa una duración válida","error");const r=Date.now()+n;localStorage.setItem("activeCountdown",JSON.stringify({productId:e,endTime:r,texto:a}));const i=productos.find(t=>t.id==e),c=i?i.nombre:"Producto",s=document.getElementById("countdownStatus");s&&(s.innerHTML=`✅ Countdown activo para: <strong>${escapeHtml(c)}</strong>`),renderizarMasVendidos(),renderizarProductos(),iniciarCountdownsActivos(),mostrarNotificacion(`⏱️ Countdown activado para "${c}"`)}function desactivarCountdown(){localStorage.removeItem("activeCountdown"),countdownIntervals&&"object"==typeof countdownIntervals||(countdownIntervals={}),Object.values(countdownIntervals).forEach(clearInterval),countdownIntervals={},renderizarMasVendidos(),renderizarProductos();const e=document.getElementById("countdownStatus");e&&(e.innerHTML="Countdown desactivado."),mostrarNotificacion("🗑️ Countdown desactivado")}function getActiveCountdown(){try{const e=localStorage.getItem("activeCountdown");if(!e)return null;const t=JSON.parse(e);return t.endTime<=Date.now()?(localStorage.removeItem("activeCountdown"),null):t}catch{return null}}function renderCountdownHtml(e){const t=getActiveCountdown();return t&&String(t.productId)===String(e)?`<div class="producto-countdown" id="countdown_${safeNum(e)}">\n        <span class="countdown-label">🔥 ${escapeHtml(t.texto)}</span>\n        <div class="countdown-time">\n            <span class="countdown-block" id="cd_h_${safeNum(e)}">--</span>\n            <span class="countdown-sep">:</span>\n            <span class="countdown-block" id="cd_m_${safeNum(e)}">--</span>\n            <span class="countdown-sep">:</span>\n            <span class="countdown-block" id="cd_s_${safeNum(e)}">--</span>\n        </div>\n    </div>`:""}function iniciarCountdownsActivos(){countdownIntervals&&"object"==typeof countdownIntervals||(countdownIntervals={}),Object.values(countdownIntervals).forEach(clearInterval),countdownIntervals={};const e=getActiveCountdown();if(!e)return;const t=e.productId,o=()=>{const o=Math.max(0,e.endTime-Date.now()),a=Math.floor(o/36e5),n=Math.floor(o%36e5/6e4),r=Math.floor(o%6e4/1e3),i=e=>String(e).padStart(2,"0");["masVendidosGrid","productosGrid"].forEach(e=>{const o=document.getElementById(`cd_h_${t}`),c=document.getElementById(`cd_m_${t}`),s=document.getElementById(`cd_s_${t}`);o&&(o.textContent=i(a)),c&&(c.textContent=i(n)),s&&(s.textContent=i(r))}),o<=0&&(clearInterval(countdownIntervals[t]),localStorage.removeItem("activeCountdown"))};o(),countdownIntervals[t]=setInterval(o,1e3)}function actualizarCountdownProductSelect(){const e=document.getElementById("countdownProductSelect");if(!e)return;const t=e.value;e.innerHTML='<option value="">-- Ninguno (desactivar timer) --</option>',productos.forEach(t=>{const o=document.createElement("option");o.value=t.id,o.textContent=t.nombre,e.appendChild(o)});const o=getActiveCountdown();o?e.value=o.productId:t&&(e.value=t);const a=document.getElementById("countdownStatus");if(a&&o){const e=productos.find(e=>e.id==o.productId);e&&(a.innerHTML=`✅ Countdown activo para: <strong>${escapeHtml(e.nombre)}</strong>`)}}function renderizarCategoriasHomeInstant(){const e=JSON.parse(localStorage.getItem("productos"))||[],t=JSON.parse(localStorage.getItem("categorias"))||[];if(0===t.length)return;const o=document.getElementById("categoriasGrid");if(!o)return;o.innerHTML="";const a=document.createElement("div");a.className="categoria-card",a.innerHTML=`<span class="cat-icon">🛍️</span><span class="cat-name">Todos</span><span class="cat-count">${e.length} producto${1!==e.length?"s":""}</span>`,a.onclick=()=>mostrarVistaCategoria("Todas"),o.appendChild(a),t.forEach(t=>{const a=e.filter(e=>e.categoria===t).length,n=document.createElement("div");n.className="categoria-card",n.innerHTML=`<span class="cat-icon">${obtenerIconoCategoria(t)}</span><span class="cat-name">${t}</span><span class="cat-count">${0===a?"🕐 Próximamente":a+" producto"+(1!==a?"s":"")}</span>`,n.onclick=()=>mostrarVistaCategoria(t),o.appendChild(n)}),requestAnimationFrame(()=>o.classList.add("tm-rendered"))}function _initCategorias(){document.getElementById("categoriasGrid")&&renderizarCategoriasHomeInstant()}"loading"===document.readyState?(document.addEventListener("DOMContentLoaded",inicializarTienda),document.addEventListener("DOMContentLoaded",()=>{document.querySelectorAll('[data-action="sincronizarTodoConGitHub"]').forEach(e=>{e.addEventListener("click",sincronizarTodoConGitHub)})})):(inicializarTienda(),document.querySelectorAll('[data-action="sincronizarTodoConGitHub"]').forEach(e=>{e.addEventListener("click",sincronizarTodoConGitHub)})),"object"==typeof countdownIntervals&&null!==countdownIntervals||(countdownIntervals={}),"loading"!==document.readyState?_initCategorias():document.addEventListener("DOMContentLoaded",_initCategorias),document.addEventListener("DOMContentLoaded",()=>{setTimeout(()=>{const e=document.getElementById("categoriasGrid");e&&0===e.children.length&&renderizarCategoriasHomeInstant()},800),setTimeout(()=>{const e=document.getElementById("categoriasGrid");e&&0===e.children.length&&renderizarCategoriasHomeInstant()},2e3)});const _origActualizarListaProductos=actualizarListaProductos;async function cargarSubcategoriasDesdeGitHub(){try{const e=await fetch("subcategorias.json",{cache:"no-store"});if(e.ok){const t=await e.json();t&&"object"==typeof t&&"undefined"!=typeof subcategorias&&(Object.assign(subcategorias,t),localStorage.setItem("subcategorias",JSON.stringify(subcategorias)))}}catch(e){console.log("Subcategorias: usando datos locales")}}actualizarListaProductos=function(){_origActualizarListaProductos(),"function"==typeof actualizarCountdownProductSelect&&actualizarCountdownProductSelect()};const _origCargarDatos=cargarDatosDesdeGitHub;cargarDatosDesdeGitHub=async function(){await _origCargarDatos(),await cargarSubcategoriasDesdeGitHub(),void 0!==categoriaSeleccionada&&categoriaSeleccionada&&"Todas"!==categoriaSeleccionada&&"function"==typeof renderizarSubcategoriaTabs&&renderizarSubcategoriaTabs()};const _origMostrarVistaCat=mostrarVistaCategoria;function actualizarListaProductos(){const e=document.getElementById("productsList");if(!e)return;const t=(document.getElementById("searchProductos")?.value||"").toLowerCase().trim(),o=document.getElementById("filtroCategoria")?.value||"",a=document.getElementById("filtroCategoria");if(a){const e=[...new Set(productos.map(e=>e.categoria).filter(Boolean))],t=a.value;a.innerHTML='<option value="">Todas las categorías</option>'+e.map(e=>`<option value="${e}" ${e===t?"selected":""}>${e}</option>`).join(""),a.value=t}let n=productos.filter(e=>(!t||e.nombre.toLowerCase().includes(t)||(e.descripcion||"").toLowerCase().includes(t))&&(!o||e.categoria===o));if(0===n.length)return void(e.innerHTML='<p class="no-products">No se encontraron productos</p>');const r={};n.forEach(e=>{const t=e.categoria||"General";r[t]||(r[t]=[]),r[t].push(e)});let i=`<div style="margin-bottom:14px;padding:12px 16px;background:rgba(39,174,96,0.1);border:1px dashed #27AE60;border-radius:10px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">\n        <span style="font-size:13px;">📦 <strong>${safeNum(n.length)}</strong> productos${o?` en <strong>${escapeHtml(o)}</strong>`:""}</span>\n        <button class="btn btn-primary" onclick="descargarProductosJSON()" style="font-size:12px;padding:8px 14px;">📥 Descargar productos.json</button>\n    </div>`;Object.entries(r).forEach(([e,t])=>{i+=`<div style="margin-bottom:24px;">\n            <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;padding:10px 14px;background:var(--primary);border-radius:10px;">\n                <span style="font-size:16px;font-weight:700;color:white;">${escapeHtml(e)}</span>\n                <span style="font-size:12px;color:rgba(255,255,255,0.8);margin-left:auto;">${safeNum(t.length)} producto${t.length>1?"s":""}</span>\n            </div>\n            <div style="display:flex;flex-direction:column;gap:10px;">`,t.forEach(e=>{const t=safeNum(e.id),o=escapeHtml(e.nombre),a=escapeAttr(e.imagen);i+=`<div class="product-item" style="border-left:3px solid var(--primary);">\n                <div class="product-item-info">\n                    <img src="${a}" alt="${o}" style="width:56px;height:56px;object-fit:cover;border-radius:8px;float:left;margin-right:12px;" onerror="this.src='/iconos/favicon-192.png';this.style.opacity='0.3'">\n                    <h4 style="margin:0 0 4px;">${o} ${e.masVendido?"🔥":""}</h4>\n                    <p style="margin:0;font-size:12px;color:var(--text-muted);">\n                        <strong>$${Number(e.precioActual).toFixed(2)}</strong> USD\n                        ${e.descuento>0?`<span style="color:#e74c3c;margin-left:6px;">-${safeNum(e.descuento)}%</span>`:""}\n                        · Stock: <strong>${safeNum(e.stock)}</strong>\n                        ${e.comision>0?`· 💰 Comisión: <strong style="color:#27ae60;">$${Number(e.comision).toFixed(2)}</strong>`:""}\n                    </p>\n                </div>\n                <div class="product-item-actions" style="clear:both;padding-top:8px;display:flex;flex-wrap:wrap;gap:6px;">\n                    <button class="btn-small-icon" style="background:#27ae60;color:white;" onclick="ajustarStock(${t}, 1)">+1 Stock</button>\n                    <button class="btn-small-icon" style="background:#e74c3c;color:white;" onclick="ajustarStock(${t}, -1)">-1 Stock</button>\n                    <button class="btn-small-icon btn-edit" onclick="abrirEditModal(${t})">✏️ Editar</button>\n                    <button class="btn-small-icon btn-delete" onclick="eliminarProducto(${t})">🗑️ Eliminar</button>\n                    <button class="btn-small-icon btn-revolico" style="background:#ff9800" onclick="copiarParaRevolico(${t})">📋 Revolico</button>\n                    <button class="btn-small-icon btn-revolico" style="background:#4267B2" onclick="copiarParaFacebook(${t})">📋 Facebook</button>\n                    <button class="btn-small-icon btn-revolico" onclick="publicarEnRevolico(${t})">🤖 Rev</button>\n                </div>\n            </div>`}),i+="</div></div>"}),e.innerHTML=i}function ajustarStock(e,t,o=!1){const a=productos.find(t=>t.id===e);if(!a)return;const n=a.stock;a.stock=Math.max(0,(a.stock||0)+t),guardarProductos(),marcarProductoModificado(e),actualizarListaProductos(),o||(mostrarNotificacion(`📦 ${a.nombre}: ${n} → ${a.stock} unidades`),0===a.stock?mostrarNotificacion(`🔴 ¡${a.nombre} agotado!`,"error"):a.stock<=2&&mostrarNotificacion(`⚠️ ${a.nombre}: solo ${a.stock} unidad(es)`,"warning"))}function _fbRtdbUrl(){try{return JSON.parse(localStorage.getItem("firebaseConfig")||"{}").databaseURL||null}catch{return null}}function _fbGuardarVenta(e){const t=_fbRtdbUrl();t&&fetch(`${t}/ventas/${e.id}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(e)}).catch(e=>console.warn("⚠️ Firebase ventas write:",e.message))}function _fbEliminarVenta(e){const t=_fbRtdbUrl();t&&fetch(`${t}/ventas/${e}.json`,{method:"DELETE"}).catch(e=>console.warn("⚠️ Firebase ventas delete:",e.message))}function _fbBorrarTodasVentas(){const e=_fbRtdbUrl();e&&fetch(`${e}/ventas.json`,{method:"DELETE"}).catch(e=>console.warn("⚠️ Firebase ventas clear:",e.message))}async function _fbMigrarVentasRaiz(e){const t=[];for(let o=0;o<20;o++)try{const a=await fetch(`${e}/${o}.json`);if(!a.ok)continue;const n=await a.json();if(!n||"object"!=typeof n||!n.id||!n.producto)continue;(await fetch(`${e}/ventas/${n.id}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(n)})).ok&&(await fetch(`${e}/${o}.json`,{method:"DELETE"}).catch(()=>{}),t.push(n))}catch(e){}return t.length&&console.log(`✅ Migradas ${t.length} ventas de raíz a /ventas/`),t}async function _fbSincronizarVentasAlIniciar(){const e=_fbRtdbUrl();if(e)try{const t=await _fbMigrarVentasRaiz(e),o=await fetch(`${e}/ventas.json`);if(!o.ok)return;const a=await o.json(),n=a&&"object"==typeof a?Object.values(a).filter(Boolean):[],r=[...n,...t.filter(e=>!n.find(t=>t.id===e.id))],i=JSON.parse(localStorage.getItem("registroVentas")||"[]"),c=new Set(r.map(e=>e.id)),s=i.filter(e=>!c.has(e.id));s.forEach(e=>_fbGuardarVenta(e));const d=[...r,...s].sort((e,t)=>t.id-e.id).slice(0,500);d.length&&(localStorage.setItem("registroVentas",JSON.stringify(d)),renderizarVentas())}catch(e){console.warn("⚠️ No se pudo sincronizar ventas desde Firebase:",e.message)}}function cargarVentas(){return JSON.parse(localStorage.getItem("registroVentas")||"[]")}function guardarVenta(e){const t=cargarVentas();t.unshift(e),localStorage.setItem("registroVentas",JSON.stringify(t.slice(0,500))),_fbGuardarVenta(e)}function exportarVentasCSV(){const e=cargarVentas();if(!e.length)return void mostrarNotificacion("No hay ventas que exportar","info");const t=["Fecha,Producto,Cantidad,Precio,Comisión,Total,Ganancia",...e.map(e=>`"${e.fecha}","${e.producto}",${e.cantidad},${e.precio},${e.comision||0},${e.total},${e.ganancia||0}`)].join("\n"),o=new Blob([t],{type:"text/csv;charset=utf-8;"}),a=URL.createObjectURL(o),n=document.createElement("a");n.href=a,n.download=`ventas_tiendamax_${(new Date).toISOString().slice(0,10)}.csv`,n.click(),URL.revokeObjectURL(a),mostrarNotificacion("✅ Historial exportado como CSV","success")}function registrarVenta(e,t){const o=productos.find(t=>t.id===e);o&&(guardarVenta({id:Date.now(),fecha:(new Date).toLocaleDateString("es-ES",{day:"numeric",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit"}),producto:o.nombre,productoId:o.id,cantidad:t||1,precio:o.precioActual,comision:o.comision||0,total:o.precioActual*(t||1),ganancia:(o.comision||0)*(t||1)}),ajustarStock(e,-(t||1),!0),renderizarVentas(),mostrarNotificacion(`✅ Venta registrada: ${o.nombre}`))}mostrarVistaCategoria=function(e){if("undefined"!=typeof subcategorias)try{const e=JSON.parse(localStorage.getItem("subcategorias"));e&&Object.assign(subcategorias,e)}catch(e){}_origMostrarVistaCat(e)},function(){const e=document.createElement("style");e.textContent="\n        .tm-anim-card {\n            opacity: 0;\n            transform: translateY(20px);\n            transition: opacity .45s ease, transform .45s ease;\n        }\n        .tm-anim-card.tm-visible {\n            opacity: 1;\n            transform: translateY(0);\n        }\n    ",document.head.appendChild(e),window._tmAnimObs=new IntersectionObserver(e=>{e.forEach((e,t)=>{e.isIntersecting&&(setTimeout(()=>e.target.classList.add("tm-visible"),60*t),window._tmAnimObs.unobserve(e.target))})},{threshold:.08})}();let _ventasPagina=0;const _VENTAS_POR_PAGINA=20;function renderizarVentas(e){const t=document.getElementById("ventasContenido");if(!t)return;const o=cargarVentas();"number"==typeof e&&(_ventasPagina=e);const a=Math.max(1,Math.ceil(o.length/_VENTAS_POR_PAGINA));_ventasPagina>=a&&(_ventasPagina=a-1),_ventasPagina<0&&(_ventasPagina=0),o.reduce((e,t)=>e+t.total,0),o.reduce((e,t)=>e+(t.ganancia||0),0),o.reduce((e,t)=>e+(t.cantidad||1),0);const n=Math.max(1,Math.ceil(o.length/_VENTAS_POR_PAGINA)),r=o.slice(_ventasPagina*_VENTAS_POR_PAGINA,(_ventasPagina+1)*_VENTAS_POR_PAGINA);let i=`\n    <div style="margin-bottom:16px;">\n        <h4 class="admin-section-title">📦 Registrar venta manual</h4>\n        <div style="display:flex;flex-direction:column;gap:8px;">\n\n            \x3c!-- Buscador --\x3e\n            <div class="admin-search-box">\n                <input type="text" id="ventaBuscador" placeholder="🔍 Buscar producto..." oninput="filtrarProductosVenta()"\n                    class="admin-search-input">\n                <button onclick="limpiarBuscadorVenta()" type="button" id="ventaBuscadorClear"\n                    class="admin-search-clear">✕</button>\n            </div>\n\n            \x3c!-- Filtro por categorías (chips) --\x3e\n            <div id="ventaCategoriaChips" class="admin-chips">\n                <button onclick="filtrarVentaPorCategoria('')" type="button" data-cat=""\n                    class="chip-cat chip-cat-activo admin-chip active"\n                    style="">\n                    Todas\n                </button>\n                ${[...new Set(productos.map(e=>e.categoria).filter(Boolean))].map(e=>`<button onclick="filtrarVentaPorCategoria('${e.replace(/'/g,"&#39;")}')" type="button" data-cat="${e}"\n                        class="chip-cat admin-chip"\n                        style="">\n                        ${e}\n                    </button>`).join("")}\n            </div>\n\n            \x3c!-- Select oculto para mantener compatibilidad con registrarVentaDesdeForm --\x3e\n            <select id="ventaProductoSelect" class="admin-hidden">\n                <option value="">— Selecciona producto —</option>\n                ${productos.map(e=>`<option value="${e.id}">${e.nombre}</option>`).join("")}\n            </select>\n\n            \x3c!-- Lista de productos filtrados --\x3e\n            <div id="ventaProductosLista" class="admin-product-list">\n                ${productos.filter(e=>e.stock>0).map(e=>`\n                <div class="venta-prod-item admin-product-list-item" data-id="${e.id}" data-nombre="${e.nombre.toLowerCase()}" data-cat="${e.categoria||""}"\n                    onclick="seleccionarProductoVenta(${e.id})">\n                    ${e.imagen?`<img src="${e.imagen}" class="thumb" onerror="this.style.display='none'">`:'<div class="thumb-placeholder">📦</div>'}\n                    <div class="info">\n                        <div class="name">${e.nombre}</div>\n                        <div class="meta">${e.categoria||""} · Stock: ${e.stock}${e.comision?` · 💰$${e.comision}`:""}</div>\n                    </div>\n                    <div class="price">$${e.precioActual}</div>\n                </div>`).join("")}\n                ${0===productos.filter(e=>e.stock>0).length?'<p class="admin-empty">Sin productos con stock</p>':""}\n            </div>\n\n            \x3c!-- Tarjeta del producto seleccionado --\x3e\n            <div id="ventaProductoSeleccionado" class="admin-selected-card">\n                <img id="ventaSelImg" src="" onerror="this.style.display='none'">\n                <div class="info">\n                    <div id="ventaSelNombre" class="name"></div>\n                    <div id="ventaSelInfo" class="meta"></div>\n                </div>\n                <button onclick="deseleccionarProductoVenta()" type="button" style="background:none;border:none;font-size:18px;cursor:pointer;color:#aaa;flex-shrink:0;">✕</button>\n            </div>\n\n            <div class="admin-input-row">\n                <input type="number" id="ventaCantidad" value="1" min="1" placeholder="Cantidad" class="admin-qty-input">\n                <button onclick="registrarVentaDesdeForm()" type="button" class="btn btn-primary">✅ Registrar venta</button>\n            </div>\n        </div>\n    </div>\n\n    <div class="admin-dash-header">\n        <h4>📋 Historial de ventas</h4>\n        <div class="admin-dash-actions">\n          <button onclick="exportarVentasCSV()" type="button" class="admin-btn-sm outline">📥 Exportar CSV</button>\n          <button onclick="borrarHistorialVentas()" type="button" class="admin-btn-sm red">🗑️ Limpiar</button>\n        </div>\n    </div>`;0===o.length?i+='<p class="admin-empty">No hay ventas registradas aún.</p>':(i+='<div style="display:flex;flex-direction:column;gap:8px;">',r.forEach(e=>{i+=`<div class="admin-history-item">\n                <div class="info">\n                    <div class="title">${e.producto}</div>\n                    <div class="meta">${e.fecha} · ${e.cantidad} unidad(es)</div>\n                </div>\n                <div style="text-align:right;flex-shrink:0;">\n                    <div class="total">$${e.total.toFixed(2)}</div>\n                    ${e.ganancia>0?`<div class="gain">Ganancia: $${e.ganancia.toFixed(2)}</div>`:""}\n                </div>\n                <button onclick="eliminarVenta(${e.id})" type="button" style="background:#e74c3c;color:white;border:none;border-radius:6px;padding:4px 8px;font-size:11px;cursor:pointer;flex-shrink:0;">✕</button>\n            </div>`}),i+="</div>");let c="";n>1&&(c=`<div class="admin-pagination">\n          <button onclick="renderizarVentas(0)" type="button" ${0===_ventasPagina?"disabled":""} >«</button>\n          <button onclick="renderizarVentas(${_ventasPagina}-1)" type="button" ${0===_ventasPagina?"disabled":""} >‹</button>\n          <span>Página ${_ventasPagina+1} de ${n} · ${o.length} ventas en total</span>\n          <button onclick="renderizarVentas(${_ventasPagina}+1)" type="button" ${_ventasPagina>=n-1?"disabled":""} >›</button>\n          <button onclick="renderizarVentas(${n}-1)" type="button" ${_ventasPagina>=n-1?"disabled":""} >»</button>\n        </div>`),t.innerHTML=i+c}function registrarVentaDesdeForm(){const e=document.getElementById("ventaProductoSelect"),t=parseInt(document.getElementById("ventaCantidad")?.value)||1,o=parseInt(e?.value);if(!o)return void mostrarNotificacion("⚠️ Selecciona un producto primero","error");registrarVenta(o,t),deseleccionarProductoVenta();const a=document.getElementById("ventaBuscador");a&&(a.value="",filtrarProductosVenta());const n=document.getElementById("ventaCantidad");n&&(n.value="1")}function eliminarVenta(e){const t=cargarVentas().filter(t=>t.id!==e);localStorage.setItem("registroVentas",JSON.stringify(t)),renderizarVentas(),_fbEliminarVenta(e)}function borrarHistorialVentas(){confirm("¿Borrar todo el historial de ventas?")&&(localStorage.removeItem("registroVentas"),renderizarVentas(),mostrarNotificacion("🗑️ Historial borrado"),_fbBorrarTodasVentas())}function renderizarGruposFB(e){const t=document.getElementById("listaGruposFB");if(t){if(t.innerHTML="",0===e.length){const e=document.createElement("p");return e.style.cssText="font-size:13px;color:var(--text-muted);text-align:center;padding:10px;",e.textContent="No hay grupos configurados aún.",void t.appendChild(e)}e.forEach((e,o)=>{const a=document.createElement("div");a.id=`grupoFB_${o}`,a.style.cssText="background:var(--card-bg,#fff);border:1.5px solid var(--border-color);border-radius:12px;padding:14px;position:relative;";const n=document.createElement("button");n.type="button",n.style.cssText="position:absolute;top:10px;right:10px;background:none;border:none;cursor:pointer;font-size:18px;color:#e74c3c;",n.textContent="✕",n.addEventListener("click",()=>eliminarGrupoFB(o)),a.appendChild(n);const r=document.createElement("label");r.style.cssText="font-size:12px;font-weight:600;display:block;margin-bottom:4px;",r.textContent="Nombre del grupo:";const i=document.createElement("input");i.type="text",i.value=e.nombre||"",i.placeholder="Ej: Tecnología Cuba, Ofertas Habana…",i.style.cssText="width:100%;padding:8px 10px;border-radius:8px;border:1px solid var(--border-color);font-size:13px;box-sizing:border-box;margin-bottom:10px;",i.addEventListener("input",()=>actualizarGrupoFB(o,"nombre",i.value));const c=document.createElement("div");c.style.marginBottom="8px",c.appendChild(r),c.appendChild(i),a.appendChild(c);const s=document.createElement("label");s.style.cssText="font-size:12px;font-weight:600;display:block;margin-bottom:4px;",s.textContent="URL del Grupo:";const d=document.createElement("input");d.type="text",d.value=e.url||"",d.placeholder="https://www.facebook.com/groups/...",d.style.cssText="width:100%;padding:8px 10px;border-radius:8px;border:1px solid var(--border-color);font-size:13px;box-sizing:border-box;",d.addEventListener("input",()=>actualizarGrupoFB(o,"url",d.value));const l=document.createElement("div");l.style.marginBottom="12px",l.appendChild(s),l.appendChild(d),a.appendChild(l);const u=document.createElement("label");u.style.cssText="font-size:12px;font-weight:600;display:block;margin-bottom:6px;",u.textContent="Productos a publicar en este grupo:",a.appendChild(u);const m=document.createElement("div");if(m.style.cssText="display:flex;flex-direction:column;gap:6px;margin-bottom:12px;",0===productos.length){const e=document.createElement("p");e.style.cssText="font-size:12px;color:var(--text-muted);",e.textContent="No hay productos cargados aún.",m.appendChild(e)}else[...productos].sort((e,t)=>(!e.stock||e.stock<=0)-(!t.stock||t.stock<=0)).forEach(t=>{const a=!t.stock||t.stock<=0,n=document.createElement("label");n.style.cssText=`display:flex;align-items:center;gap:8px;font-size:13px;\n                    cursor:${a?"not-allowed":"pointer"};\n                    opacity:${a?"0.38":"1"};`;const r=document.createElement("input");r.type="checkbox",r.checked=!a&&(e.productos||[]).includes(t.id),r.disabled=a,r.style.cssText="width:16px;height:16px;accent-color:var(--primary);flex-shrink:0;",a||r.addEventListener("change",()=>toggleProductoEnGrupo(o,t.id,r.checked));const i=document.createElement("img");i.src=t.imagen||"",i.style.cssText="width:28px;height:28px;border-radius:6px;object-fit:cover;flex-shrink:0;",i.onerror=()=>{i.style.display="none"};const c=document.createElement("span");c.style.cssText="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;",c.textContent=t.nombre;const s=document.createElement("span");s.style.cssText="margin-left:auto;font-size:11px;font-weight:600;flex-shrink:0;white-space:nowrap;",a?(s.style.color="#e74c3c",s.textContent="🚫 Agotado"):(s.style.color="var(--primary)",s.textContent=`$${t.precioActual}`),n.appendChild(r),n.appendChild(i),n.appendChild(c),n.appendChild(s),m.appendChild(n)});a.appendChild(m);const p=document.createElement("button");p.type="button",p.style.cssText="width:100%;padding:10px;background:#4267B2;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;",p.textContent="📢 Publicar productos en este grupo",p.addEventListener("click",()=>publicarEnGrupoFB(o)),a.appendChild(p),t.appendChild(a)})}}function agregarGrupoFB(){const e=JSON.parse(localStorage.getItem("gruposFB")||"[]");e.push({url:"",productos:productos.map(e=>e.id)}),localStorage.setItem("gruposFB",JSON.stringify(e)),renderizarGruposFB(e)}function eliminarGrupoFB(e){const t=JSON.parse(localStorage.getItem("gruposFB")||"[]");t.splice(e,1),localStorage.setItem("gruposFB",JSON.stringify(t)),renderizarGruposFB(t)}function actualizarGrupoFB(e,t,o){const a=JSON.parse(localStorage.getItem("gruposFB")||"[]");a[e]&&(a[e][t]=o),localStorage.setItem("gruposFB",JSON.stringify(a))}function toggleProductoEnGrupo(e,t,o){const a=JSON.parse(localStorage.getItem("gruposFB")||"[]");a[e]&&(a[e].productos||(a[e].productos=[]),o?a[e].productos.includes(t)||a[e].productos.push(t):a[e].productos=a[e].productos.filter(e=>e!==t),localStorage.setItem("gruposFB",JSON.stringify(a)))}async function guardarGruposFB(){const e=JSON.parse(localStorage.getItem("gruposFB")||"[]").filter(e=>e.url&&e.url.includes("facebook.com"));localStorage.setItem("gruposFB",JSON.stringify(e));const t={grupos:e,exportado:(new Date).toISOString()},o=localStorage.getItem("githubUser"),a=localStorage.getItem("githubRepo"),n=localStorage.getItem("githubToken");if(o&&a&&n)try{mostrarNotificacion("☁️ Guardando grupos en GitHub…","info"),await subirArchivoAGitHub(o,a,n,"grupos_facebook_config.json",t),mostrarNotificacion(`✅ ${e.length} grupos guardados en GitHub — persistirán aunque borres el navegador.`,"success")}catch(e){mostrarNotificacion("⚠️ Grupos guardados localmente. Error al subir a GitHub: "+e.message,"warning")}else mostrarNotificacion(`✅ ${e.length} grupos guardados localmente. Configura GitHub para persistirlos en la nube.`,"info")}const REVOLICO_CATS=["Computación > Accesorios","Computación > Computadoras","Computación > Impresoras y Tintas","Computación > Redes y Conectividad","Computación > Software","Electrónica > Audio y Video","Electrónica > Celulares y Tablets","Electrónica > Electrónica en General","Electrónica > Fotografía","Electrónica > Juegos y Consolas","Electrónica > TV y Monitores","Hogar y Jardín > Electrodomésticos","Hogar y Jardín > Energía Solar","Hogar y Jardín > Herramientas","Hogar y Jardín > Muebles","Vehículos > Accesorios","Otros > General"];function renderizarRevolicoConfig(){const e=document.getElementById("listaRevolicoConfig");if(!e)return;e.innerHTML="";const t=JSON.parse(localStorage.getItem("revolicoConfig")||"{}");if(0===productos.length){const t=document.createElement("p");return t.style.cssText="font-size:13px;color:var(--text-muted);text-align:center;padding:10px;",t.textContent="No hay productos cargados aún.",void e.appendChild(t)}[...productos].sort((e,t)=>(!e.stock||e.stock<=0)-(!t.stock||t.stock<=0)).forEach(o=>{const a=!o.stock||o.stock<=0,n=t[o.id]||"",r=document.createElement("div");r.style.cssText=`display:flex;align-items:center;gap:10px;padding:10px 12px;\n            background:var(--card-bg,#fff);border-radius:10px;border:1px solid var(--border-color);\n            flex-wrap:wrap;opacity:${a?"0.38":"1"};`;const i=document.createElement("img");i.src=o.imagen||"",i.style.cssText="width:40px;height:40px;border-radius:8px;object-fit:cover;flex-shrink:0;",i.onerror=()=>{i.style.display="none"};const c=document.createElement("span");if(c.style.cssText="flex:1;font-size:13px;font-weight:600;min-width:120px;",c.textContent=o.nombre,a){const e=document.createElement("span");e.style.cssText="font-size:11px;color:#e74c3c;font-weight:700;flex:2;min-width:180px;",e.textContent="🚫 Agotado — no se publicará",r.appendChild(i),r.appendChild(c),r.appendChild(e)}else{const e=document.createElement("select");e.style.cssText="flex:2;min-width:180px;padding:8px 10px;border-radius:8px;border:1.5px solid var(--border-color);font-size:12px;background:var(--card-bg,#fff);color:var(--text-primary,#333);";const t=document.createElement("option");t.value="",t.textContent="— No publicar en Revolico —",e.appendChild(t),REVOLICO_CATS.forEach(t=>{const o=document.createElement("option");o.value=t,o.textContent=t,t===n&&(o.selected=!0),e.appendChild(o)}),e.addEventListener("change",()=>actualizarRevolicoCat(o.id,e.value)),r.appendChild(i),r.appendChild(c),r.appendChild(e)}e.appendChild(r)})}function actualizarRevolicoCat(e,t){const o=JSON.parse(localStorage.getItem("revolicoConfig")||"{}");t?o[e]=t:delete o[e],localStorage.setItem("revolicoConfig",JSON.stringify(o))}function guardarRevolicoConfig(){const e=JSON.parse(localStorage.getItem("revolicoConfig")||"{}");mostrarNotificacion(`✅ Config Revolico guardada (${Object.keys(e).length} productos asignados). Haz clic en ACTUALIZAR TIENDA para subir a GitHub.`)}function cargarGruposFB(){renderizarGruposFB(JSON.parse(localStorage.getItem("gruposFB")||"[]")),renderizarRevolicoConfig()}const _origGuardarGrupos=guardarGruposFB;function poblarSelectOfertaDia(){productos&&productos.length?(["ofertaDiaSelect2"].forEach(e=>{const t=document.getElementById(e);if(!t)return;const o=t.value;t.innerHTML='<option value="">— Sin oferta del día activa —</option>',productos.forEach(e=>{const o=document.createElement("option");o.value=e.id,o.textContent=e.nombre+" — $"+(parseFloat(e.precioActual)||0).toFixed(2),t.appendChild(o)});const a=localStorage.getItem("ofertaDiaId");a?t.value=a:o&&(t.value=o)}),actualizarStatusOfertaDia()):setTimeout(poblarSelectOfertaDia,1e3)}function actualizarStatusOfertaDia(){const e=localStorage.getItem("ofertaDiaId"),t=localStorage.getItem("ofertaDiaTexto")||"🔥 OFERTA DEL DÍA";["ofertaDiaStatus2"].forEach(o=>{const a=document.getElementById(o);if(a)if(e){const o=productos.find(t=>String(t.id)===String(e));a.innerHTML=o?"✅ Activa: <strong>"+escapeHtml(o.nombre)+'</strong> — Badge: "'+escapeHtml(t)+'"':"⚠️ Producto no encontrado"}else a.textContent="Sin oferta activa."})}function guardarOfertaDia2(){_guardarOfertaDiaDesde(document.getElementById("ofertaDiaSelect2"),document.getElementById("ofertaDiaTexto2"))}function _guardarOfertaDiaDesde(e,t){if(!e||!e.value)return void mostrarNotificacion("⚠️ Selecciona un producto","error");const o=t&&t.value.trim()||"🔥 OFERTA DEL DÍA",a=e.value,n=o;localStorage.setItem("ofertaDiaId",a),localStorage.setItem("ofertaDiaTexto",n),verificarOfertasYMostrarBanner(),actualizarStatusOfertaDia(),renderizarProductos(),renderizarMasVendidos(),mostrarNotificacion("🏷️ Oferta del Día activada"),(async()=>{const e=localStorage.getItem("githubUser"),t=localStorage.getItem("githubRepo"),o=localStorage.getItem("githubToken");if(e&&t&&o)try{const r=await _leerConfigActual();r.ofertaDiaId=a,r.ofertaDiaTexto=n,r.ofertaDiaActualizado=(new Date).toISOString(),await subirArchivoAGitHub(e,t,o,"config.json",r),mostrarNotificacion("☁️ Oferta subida a GitHub — todos la verán","success")}catch(e){mostrarNotificacion("⚠️ Error al sincronizar con GitHub: "+e.message,"error")}else mostrarNotificacion("⚠️ Configura GitHub en Config para que la vean todos","error")})()}function desactivarOfertaDia(){localStorage.removeItem("ofertaDiaId"),localStorage.removeItem("ofertaDiaTexto"),verificarOfertasYMostrarBanner(),poblarSelectOfertaDia(),renderizarProductos(),renderizarMasVendidos(),mostrarNotificacion("❌ Oferta del Día desactivada"),(async()=>{const e=localStorage.getItem("githubUser"),t=localStorage.getItem("githubRepo"),o=localStorage.getItem("githubToken");if(e&&t&&o)try{const a=await _leerConfigActual();delete a.ofertaDiaId,delete a.ofertaDiaTexto,a.ofertaDiaActualizado=(new Date).toISOString(),await subirArchivoAGitHub(e,t,o,"config.json",a),mostrarNotificacion("☁️ Oferta eliminada en GitHub — ya nadie la verá","success")}catch(e){mostrarNotificacion("⚠️ Error al sincronizar con GitHub: "+e.message,"error")}else mostrarNotificacion("⚠️ Configura GitHub en Config para sincronizar","error")})()}async function _leerConfigActual(){const e=await fetch("config.json?_="+Date.now(),{cache:"no-store"});if(!e.ok)throw new Error("No se pudo leer config.json actual (HTTP "+e.status+")");const t=await e.json();if(!t||"object"!=typeof t)throw new Error("config.json inválido");return t}function getOfertaDiaId(){return localStorage.getItem("ofertaDiaId")||null}function getOfertaDiaTexto(){return localStorage.getItem("ofertaDiaTexto")||"🔥 OFERTA DEL DÍA"}function renderizarListaAgotados(){const e=document.getElementById("productosAgotadosList");if(!e)return;const t=productos.filter(e=>0===e.stock);e.innerHTML=0!==t.length?t.map(e=>'<div style="display:flex;align-items:center;gap:10px;padding:10px;background:var(--card-bg,#fff);border-radius:10px;border:1px solid rgba(231,76,60,0.3);"><img src="'+escapeAttr(e.imagen)+'" style="width:40px;height:40px;border-radius:8px;object-fit:cover;" onerror="this.style.display=\'none\'"><div style="flex:1;"><div style="font-size:13px;font-weight:700;">'+escapeHtml(e.nombre)+'</div><div style="font-size:11px;color:#e74c3c;font-weight:700;">📦 AGOTADO</div></div><button class="btn btn-primary" onclick="abrirEditModal('+safeNum(e.id)+')" style="font-size:11px;padding:6px 10px;">✏️ Editar</button></div>').join(""):'<p style="font-size:13px;color:#27ae60;text-align:center;">✅ No hay productos agotados actualmente.</p>'}guardarGruposFB=function(){if(mostrarNotificacion(`✅ ${JSON.parse(localStorage.getItem("gruposFB")||"[]").filter(e=>e.url&&e.url.includes("facebook.com")).length} grupos guardados. Haz clic en ACTUALIZAR TIENDA para que sean permanentes.`),"function"==typeof _origGuardarGrupos)try{_origGuardarGrupos()}catch(e){console.warn("Error en _origGuardarGrupos:",e)}};const _origRenderProductosFinal=renderizarProductos;function flyToCart(e){const t=document.querySelector(".cart-icon-btn");if(!t||!e)return;const o=e.getBoundingClientRect(),a=t.getBoundingClientRect(),n=document.createElement("div");n.className="fly-particle",n.style.cssText=`\n        left: ${o.left+o.width/2-7}px;\n        top:  ${o.top+o.height/2-7}px;\n        opacity: 1;\n    `,document.body.appendChild(n);const r=a.left+a.width/2-7-(o.left+o.width/2-7),i=a.top+a.height/2-7-(o.top+o.height/2-7),c=performance.now();requestAnimationFrame(function e(o){const a=Math.min((o-c)/650,1),s=a<.5?4*a*a*a:1-Math.pow(-2*a+2,3)/2,d=90*-Math.sin(Math.PI*a);n.style.transform=`translate(${r*s}px, ${i*s+d}px) scale(${1-.4*a})`,n.style.opacity=a>.7?1-(a-.7)/.3:"1",a<1?requestAnimationFrame(e):(n.remove(),t.classList.remove("bounce"),t.classList.add("bounce"),setTimeout(()=>t.classList.remove("bounce"),560))})}function tmComprar(e,t,o){const a=e&&(e.currentTarget||e.target)||null;a&&requestAnimationFrame(()=>flyToCart(a)),"function"==typeof tmTrackWhatsApp&&tmTrackWhatsApp(t);const n=productos.find(e=>e.id===t||e.id===Number(t)),r=_mensajeOrdenWA([n?{id:n.id,nombre:n.nombre,precio:parseFloat(n.precioActual)||0,cantidad:1}:{id:t,nombre:o||"Producto",precio:0,cantidad:1}]);window.open(`https://wa.me/${getNumeroWhatsApp()}?text=${r}`,"_blank","noopener,noreferrer")}renderizarProductos=function(){const e=document.getElementById("productosGrid");if(!e)return void _origRenderProductosFinal();if(!Array.isArray(productos)||0===productos.length)try{const e=JSON.parse(localStorage.getItem("productos")||"[]");Array.isArray(e)&&e.length>0&&(productos=e)}catch(e){}let t="Todas"===categoriaSeleccionada?productos:productos.filter(e=>e.categoria===categoriaSeleccionada);if("Todas"!==categoriaSeleccionada&&subcategoriaSeleccionada&&"Todas"!==subcategoriaSeleccionada&&(t=t.filter(e=>e.subcategoria===subcategoriaSeleccionada)),_heroSearchActivo||_heroPrecioMin>0||_heroPrecioMax<1/0){const e=_heroSearchActivo;t=t.filter(t=>!e||t.nombre.toLowerCase().includes(e)||(t.descripcion||"").toLowerCase().includes(e)||(t.categoria||"").toLowerCase().includes(e))}const o=getOfertaDiaId();if(o&&(t=t.sort((e,t)=>String(e.id)===String(o)?-1:String(t.id)===String(o)?1:0)),t=t.sort((e,t)=>(0===e.stock?1:0)-(0===t.stock?1:0)),e.innerHTML="",0===t.length){let t;return t=Array.isArray(productos)&&0!==productos.length?subcategoriaSeleccionada&&"Todas"!==subcategoriaSeleccionada?"No hay productos en esta subcategoría aún.":_heroSearchActivo?"No hay productos que coincidan con tu búsqueda.":"No hay productos en esta categoría aún.":"⏳ Cargando productos... Si esto persiste, recarga la página.",void(e.innerHTML='<p style="grid-column: 1/-1; text-align: center; color: #999; padding: 60px 20px; font-size:15px;">'+escapeHtml(t)+"</p>")}t.forEach(t=>{const a=0===t.stock,n=String(t.id)===String(o),r=document.createElement("div");r.className="producto-card"+(a?" card-agotado":""),r.onclick=()=>abrirDetalleProducto(t.id),r.style.position="relative";const i=safeNum(t.id),c=escapeHtml(t.nombre),s=escapeHtml(t.descripcion),d=escapeAttr(t.imagen),l=safeNum(t.stock),u=escapeHtml(getOfertaDiaTexto());(t.nombre||"").replace(/[\\'"<>]/g,""),r.innerHTML=(n?'<div class="badge-oferta-dia">'+u+"</div>":a?'<div class="badge-agotado">AGOTADO</div>':t.masVendido?'<div class="badge-vendido">🔥 Más Vendido</div>':"")+'<div class="producto-image">'+getMeGustaHTML(i)+'<img src="'+d+'" alt="'+c+'" loading="lazy" onerror="this.src=\'/iconos/favicon-192.png\';this.style.opacity=\'0.3\'">'+(t.precioOriginal>0&&t.precioOriginal>t.precioActual?'<div class="badge">-$'+(t.precioOriginal-t.precioActual).toFixed(0)+"</div>":"")+"</div><h3>"+c+'</h3><p class="producto-description">'+s+'</p><p class="precio">'+(t.precioOriginal>0&&t.precioOriginal>t.precioActual?'<span class="precio-tachado">$'+parseFloat(t.precioOriginal).toFixed(2)+" USD</span> ":"")+'<span class="precio-actual" data-usd="'+safeNum(t.precioActual)+'">$'+Number(t.precioActual).toFixed(2)+" USD</span>"+(t.precioOriginal>0&&t.precioOriginal>t.precioActual?' <span class="precio-ahorro">-$'+(parseFloat(t.precioOriginal)-parseFloat(t.precioActual)).toFixed(0)+"</span>":"")+"</p>"+(a?'<div class="stock" style="color:#e74c3c;font-weight:700;">❌ Agotado</div><button class="btn btn-small" disabled style="background:#555;color:#aaa;cursor:not-allowed;box-shadow:none;">🚫 No disponible</button>':(l<=3&&l>0?'<div class="stock stock-urgente">⚠️ ¡Solo quedan '+l+"!</div>":'<div class="stock">📦 Stock: '+l+" unidades</div>")+("function"==typeof renderCountdownHtml?renderCountdownHtml(i):"")+'<button class="btn-pedir-card" data-nombre="'+c+'" onclick="event.stopPropagation(); tmComprar(event, '+i+', this.dataset.nombre)" type="button"><span class="btn-pedir-wa-icon-sm"><svg viewBox="0 0 24 24" width="14" height="14" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg></span> Pedir</button>'),e.appendChild(r)})},function(){const e=document.getElementById("tm-cursor");e&&e.remove()}(),function(){const e=document.createElement("div");function t(){const t=window.scrollY||document.documentElement.scrollTop,o=document.documentElement.scrollHeight-window.innerHeight,a=o>0?Math.min(100,t/o*100):0;e.style.width=a+"%",e.style.opacity=a>1?"1":"0"}e.id="tm-progress",document.body.appendChild(e),window.addEventListener("scroll",t,{passive:!0}),t()}(),function(){let e=null,t=null;window.mostrarNotificacion=function(o,a="success"){const n=(e||(e=document.createElement("div"),e.className="tm-toast",document.body.appendChild(e)),e);clearTimeout(t);const r="error"===a?"✕":"info"===a?"i":"✓";n.className="tm-toast"+("error"===a?" error":""),n.innerHTML=`<span class="tm-toast-icon">${r}</span><span>${o}</span>`,n.classList.remove("show","hide"),n.classList.add("show"),t=setTimeout(()=>{n.classList.add("hide"),setTimeout(()=>{n&&n.classList.remove("show","hide")},350)},3500)}}(),function(){const e=["Buscar productos...","WiFi, inversores...","Celulares, cargadores...","Tecnología premium...","Energía solar..."];let t=0;function o(){const o=document.getElementById("heroSearchInput");o&&document.activeElement!==o&&!o.value&&(t=(t+1)%e.length,o.style.transition="opacity 0.4s",o.style.opacity="0",setTimeout(()=>{o.placeholder=e[t],o.style.opacity="1"},400))}setTimeout(function e(){document.getElementById("heroSearchInput")?setInterval(o,3200):setTimeout(e,500)},2e3)}();const _origAgregarAlCarrito=agregarAlCarrito;function mostrarSkeletons(e,t=6){const o=document.getElementById(e);if(!o)return;const a=Array(t).fill(0).map(()=>'\n        <div class="skeleton-card">\n            <div class="skeleton-img"></div>\n            <div class="skeleton-line"></div>\n            <div class="skeleton-line short"></div>\n            <div class="skeleton-line price"></div>\n            <div style="margin:12px 16px 16px;height:36px;border-radius:10px;background:linear-gradient(90deg,#f0ebe4 25%,#e8e2da 50%,#f0ebe4 75%);background-size:200% auto;animation:skeletonPulse 1.5s ease-in-out infinite;"></div>\n        </div>\n    ').join("");o.innerHTML=a}function animarContador(e,t,o=1200,a="",n=""){const r=String(t).includes(".")?2:0,i=parseFloat(t)||0,c=performance.now();requestAnimationFrame(function t(s){const d=Math.min((s-c)/o,1),l=1===d?1:1-Math.pow(2,-10*d);e.textContent=a+(i*l).toFixed(r)+n,d<1?requestAnimationFrame(t):e.textContent=a+i.toFixed(r)+n})}agregarAlCarrito=function(e,t,o){_origAgregarAlCarrito(e),o&&requestAnimationFrame(()=>flyToCart(o))};const _origStat=stat;stat=function(e,t,o,a){const n="number"==typeof o||"string"==typeof o&&o.startsWith("$"),r="tm-stat-"+Math.random().toString(36).slice(2,7),i='<div style="background:var(--bg-secondary,#f9f6f1);border-radius:12px;padding:14px;text-align:center;"><div style="font-size:22px;">'+e+'</div><div id="'+r+'" class="tm-counter" style="font-size:'+("number"==typeof o?"22px":"18px")+";font-weight:800;color:"+(a||"var(--primary-color,#c9a96e)")+';">'+o+'</div><div style="font-size:11px;color:#999;text-transform:uppercase;letter-spacing:0.5px;">'+t+"</div></div>";return n&&setTimeout(()=>{const e=document.getElementById(r);e&&("number"==typeof o?animarContador(e,o,900+400*Math.random()):"string"==typeof o&&o.startsWith("$")&&animarContador(e,parseFloat(o.replace("$","")),1e3,"$"))},80),i};let _ventaCatActiva="";function filtrarProductosVenta(){const e=(document.getElementById("ventaBuscador")?.value||"").toLowerCase().trim(),t=document.getElementById("ventaBuscadorClear");t&&(t.style.display=e?"block":"none"),document.querySelectorAll(".venta-prod-item").forEach(t=>{const o=t.dataset.cat||"",a=!e||(t.dataset.nombre||"").includes(e);t.style.display=!a||_ventaCatActiva&&o!==_ventaCatActiva?"none":""})}function filtrarVentaPorCategoria(e){_ventaCatActiva=e,document.querySelectorAll(".chip-cat").forEach(t=>{const o=t.dataset.cat===e;t.style.background=o?"#3498db":"white",t.style.color=o?"white":"#555",t.style.borderColor=o?"#3498db":"#ddd"}),filtrarProductosVenta()}function seleccionarProductoVenta(e){const t=productos.find(t=>t.id===e);if(!t)return;const o=document.getElementById("ventaProductoSelect");o&&(o.value=e),document.querySelectorAll(".venta-prod-item").forEach(t=>{const o=parseInt(t.dataset.id)===e;t.style.borderColor=o?"#27ae60":"transparent",t.style.background=o?"rgba(39,174,96,0.08)":"white"});const a=document.getElementById("ventaProductoSeleccionado");if(a){a.style.display="flex";const e=document.getElementById("ventaSelImg");e&&(e.src=t.imagen||"",e.style.display=t.imagen?"":"none");const o=document.getElementById("ventaSelNombre");o&&(o.textContent=t.nombre);const n=document.getElementById("ventaSelInfo");n&&(n.innerHTML=`$${t.precioActual} · Stock: ${t.stock}${t.comision?` · 💰 Comisión: $${t.comision}`:""}`)}const n=document.getElementById("ventaCantidad");n&&(n.focus(),n.select())}function deseleccionarProductoVenta(){const e=document.getElementById("ventaProductoSelect");e&&(e.value=""),document.querySelectorAll(".venta-prod-item").forEach(e=>{e.style.borderColor="transparent",e.style.background="white"});const t=document.getElementById("ventaProductoSeleccionado");t&&(t.style.display="none")}function limpiarBuscadorVenta(){const e=document.getElementById("ventaBuscador");e&&(e.value="",e.focus()),filtrarProductosVenta()}function _cargarVistas(){return JSON.parse(localStorage.getItem("vistasProd")||"{}")}function _guardarVistas(e){localStorage.setItem("vistasProd",JSON.stringify(e))}function registrarVistaProd(e){const t=_cargarVistas();return t[e]=(t[e]||0)+1,_guardarVistas(t),t[e]}function obtenerVistasProd(e){return _cargarVistas()[e]||0}function obtenerTopProductosPorVistas(e=5){const t=_cargarVistas();return Object.entries(t).sort((e,t)=>t[1]-e[1]).slice(0,e).map(([e,t])=>({producto:productos.find(t=>String(t.id)===String(e)),vistas:t})).filter(e=>e.producto)}const _origAbrirDetalle=abrirDetalleProducto;function renderizarDashboardVentas(e){const t=cargarVentas(),o=Array.isArray(productos)?productos:[],a=t.reduce((e,t)=>e+Number(t.total||0),0),n=t.reduce((e,t)=>e+Number(t.ganancia||0),0),r=t.reduce((e,t)=>e+Number(t.cantidad||1),0),i=t.length?a/t.length:0,c=a>0?n/a*100:0,s=Date.now(),d=new Date;d.setHours(0,0,0,0);const l=t.filter(e=>Number(e.id||0)>=d.getTime()),u=t.filter(e=>Number(e.id||0)>=s-6048e5),m=l.reduce((e,t)=>e+Number(t.total||0),0),p=u.reduce((e,t)=>e+Number(t.total||0),0),g=o.filter(e=>Number(e.stock||0)>0&&Number(e.stock||0)<=3).sort((e,t)=>Number(e.stock||0)-Number(t.stock||0)),f=o.filter(e=>0===Number(e.stock||0)),b=o.reduce((e,t)=>e+Number(t.precioActual||0)*Number(t.stock||0),0),y=o.filter(e=>Number(e.stock||0)>0).length,h=[];for(let e=13;e>=0;e--){const t=new Date;t.setDate(t.getDate()-e),t.setHours(0,0,0,0);const o=new Date(t);o.setDate(o.getDate()+1),h.push({label:t.toLocaleDateString("es-ES",{day:"2-digit",month:"2-digit"}),desde:t.getTime(),hasta:o.getTime(),total:0,ganancia:0,unidades:0,ventas:0})}t.forEach(e=>{const t=Number(e.id||0),o=h.find(e=>t>=e.desde&&t<e.hasta);o&&(o.total+=Number(e.total||0),o.ganancia+=Number(e.ganancia||0),o.unidades+=Number(e.cantidad||1),o.ventas+=1)});const v=Math.max(...h.map(e=>e.total),1),S={};t.forEach(e=>{const t=String(e.productoId||e.producto||"");if(!S[t]){const a=o.find(t=>String(t.id)===String(e.productoId));S[t]={nombre:e.producto||(a?a.nombre:"Producto"),producto:a,unidades:0,total:0,ganancia:0}}S[t].unidades+=Number(e.cantidad||1),S[t].total+=Number(e.total||0),S[t].ganancia+=Number(e.ganancia||0)});const w=Object.values(S).sort((e,t)=>t.total-e.total||t.unidades-e.unidades).slice(0,5),I=obtenerTopProductosPorVistas(5),x=t.slice(0,5),C=[...g,...f].slice(0,5),E=(e,t,o,a)=>'<div class="admin-stat-card '+e+'"><div class="admin-stat-value">'+t+'</div><div class="admin-stat-label">'+o+"</div>"+(a?'<div class="admin-stat-sub">'+a+"</div>":"")+"</div>",A=e=>e&&e.imagen?'<img src="'+escapeAttr(e.imagen)+'" class="admin-top-thumb" onerror="this.style.display=\'none\'">':"",N=(e,t)=>'<div class="admin-mini-section"><div class="admin-chart-title">'+e+"</div>"+(t||'<div class="admin-empty-mini">Sin datos todavía</div>')+"</div>",T=w.length?w.map((e,t)=>`\n        <div class="admin-top-item">\n            <span class="admin-top-rank">${t+1}</span>\n            ${A(e.producto)}\n            <span class="admin-top-name">${escapeHtml(e.nombre)}</span>\n            <span class="admin-top-meta">${e.unidades} uds</span>\n            <span class="admin-top-value gold">$${e.total.toFixed(0)}</span>\n        </div>`).join(""):"",k=C.length?C.map((e,t)=>`\n        <div class="admin-top-item">\n            <span class="admin-top-rank">${t+1}</span>\n            ${A(e)}\n            <span class="admin-top-name">${escapeHtml(e.nombre)}</span>\n            <span class="admin-top-value ${0===Number(e.stock||0)?"red":"gold"}">${0===Number(e.stock||0)?"Agotado":e.stock+" uds"}</span>\n        </div>`).join(""):"",B=I.length?I.map(({producto:e,vistas:t},o)=>`\n        <div class="admin-top-item">\n            <span class="admin-top-rank">${o+1}</span>\n            ${A(e)}\n            <span class="admin-top-name">${escapeHtml(e.nombre)}</span>\n            <span class="admin-top-value blue">👁️ ${t.toLocaleString()}</span>\n        </div>`).join(""):"",P=x.length?x.map(e=>`\n        <div class="admin-top-item">\n            <span class="admin-top-name">${escapeHtml(e.producto||"Producto")}</span>\n            <span class="admin-top-meta">${safeNum(e.cantidad,1)} uds</span>\n            <span class="admin-top-value gold">$${Number(e.total||0).toFixed(0)}</span>\n        </div>`).join(""):"";return`\n    <div class="tm-dashboard-ventas-inner">\n        <div class="admin-dash-header">\n            <h4>📊 Dashboard de ventas</h4>\n            <div class="admin-dash-actions">\n                <button onclick="exportarVentasCSV()" type="button" class="admin-btn-sm outline">⬇️ Exportar CSV</button>\n            </div>\n        </div>\n\n        <div class="admin-stats-grid admin-stats-grid-compact">\n            ${E("green","$"+a.toFixed(0),"Total vendido",t.length+" venta"+(1!==t.length?"s":""))}\n            ${E("gold","$"+n.toFixed(0),"Mi ganancia",c.toFixed(1)+"% margen")}\n            ${E("blue",String(r),"Unidades","$"+i.toFixed(0)+" ticket prom.")}\n            ${E("purple","$"+m.toFixed(0),"Hoy",l.length+" venta"+(1!==l.length?"s":""))}\n            ${E("dark","$"+p.toFixed(0),"Últimos 7 días",u.length+" venta"+(1!==u.length?"s":""))}\n            ${E("red",String(f.length),"Agotados",g.length+" con stock bajo")}\n        </div>\n\n        <div class="admin-inventory-strip">\n            <span>📦 Productos con stock: <strong>${y}</strong></span>\n            <span>⚠️ Stock bajo: <strong>${g.length}</strong></span>\n            <span>💵 Inventario estimado: <strong>$${b.toFixed(0)}</strong></span>\n        </div>\n\n        <div class="admin-chart-box admin-unified-dashboard">\n            <div class="admin-chart-title">📈 Resumen general — una sola gráfica</div>\n            <div class="admin-chart-bars">\n                ${h.map(e=>{const t=Math.max(4,Math.round(e.total/v*78));return`<div title="${e.label}: $${e.total.toFixed(2)} · Ganancia $${e.ganancia.toFixed(2)} · ${e.unidades} ud(s)"\n                        class="admin-chart-bar ${e.total>0?"filled":"empty"}"\n                        style="height:${t}px;"></div>`}).join("")}\n            </div>\n            <div class="admin-chart-footer"><span>${h[0].label}</span><span>hoy</span></div>\n\n            <div class="admin-unified-sections">\n                ${N("🏆 Más vendidos",T)}\n                ${N("⚠️ Reponer primero",k)}\n                ${N("👁️ Más vistos",B)}\n                ${N("🧾 Ventas recientes",P)}\n            </div>\n        </div>\n    </div>`}abrirDetalleProducto=function(e){_origAbrirDetalle(e);const t=registrarVistaProd(e);let o=document.getElementById("detailVistasBadge");if(!o){o=document.createElement("span"),o.id="detailVistasBadge",o.style.cssText="display:inline-flex;align-items:center;gap:4px;font-size:12px;color:#888;margin-left:10px;";const e=document.getElementById("detailProductCategory");e&&e.parentNode&&e.parentNode.appendChild(o)}o.innerHTML=`👁️ ${t.toLocaleString()} vista${1!==t?"s":""}`,(async()=>{try{const t=JSON.parse(localStorage.getItem("firebaseConfig")||"{}"),o=t.databaseURL||(t.projectId?`https://${t.projectId}-default-rtdb.firebaseio.com`:null);if(!o)return;const a=await fetch(`${o}/analytics/vistas/${String(e)}/count.json`);if(!a.ok)return;const n=await a.json();if("number"!=typeof n||n<=0)return;const r=document.getElementById("detailVistasBadge");r&&(r.innerHTML=`👁️ ${n.toLocaleString()} vista${1!==n?"s":""}`)}catch(e){}})()};const _origRenderVentas=renderizarVentas;function actualizarBadgeStockBajo(){const e=document.querySelector('.tab-btn[data-tab="manage-products"]');if(!e)return;const t=productos.filter(e=>e.stock>0&&e.stock<=3).length+productos.filter(e=>0===e.stock).length,o=e.querySelector(".stock-alert-badge");if(o&&o.remove(),t>0){const o=document.createElement("span");o.className="stock-alert-badge",o.textContent=t,o.style.cssText="\n            display:inline-flex;align-items:center;justify-content:center;\n            background:#e74c3c;color:white;border-radius:50%;\n            font-size:10px;font-weight:800;min-width:16px;height:16px;\n            padding:0 3px;margin-left:4px;vertical-align:middle;",e.appendChild(o)}}renderizarVentas=function(){_origRenderVentas();const e=document.getElementById("ventasContenido");if(!e)return;if(e.querySelector(".tm-dashboard-ventas"))return;const t=renderizarDashboardVentas();if(t){const o=document.createElement("div");o.className="tm-dashboard-ventas",o.innerHTML=t,e.insertBefore(o,e.firstChild)}};const _origGuardarProd=guardarProductos;function initScrollAnimations(){if("undefined"==typeof IntersectionObserver)return;if(document.getElementById("tm-scroll-anim-style"))return;const e=document.createElement("style");e.id="tm-scroll-anim-style",e.textContent="\n        .producto-card { opacity: 0; transform: translateY(18px); transition: opacity .45s ease, transform .45s ease; }\n        .producto-card.visible { opacity: 1; transform: translateY(0); }\n        .categoria-card { opacity: 0; transform: translateY(14px); transition: opacity .4s ease, transform .4s ease; }\n        .categoria-card.visible { opacity: 1; transform: translateY(0); }\n    ",document.head.appendChild(e);const t=new IntersectionObserver(e=>{e.forEach(e=>{e.isIntersecting&&(e.target.classList.add("visible"),t.unobserve(e.target))})},{threshold:.08});function o(){document.querySelectorAll(".producto-card:not(.visible), .categoria-card:not(.visible)").forEach(e=>t.observe(e))}o();const a=new MutationObserver(o),n=document.getElementById("productosGrid")||document.body;a.observe(n,{childList:!0,subtree:!0})}function mostrarVistaMeGusta(){if(!document.getElementById("meGustaStyles")){const e=document.createElement("style");e.id="meGustaStyles",e.textContent="\n            #meGustaGrid .producto-card {\n                background: var(--card-bg, #fff) !important;\n                border: 1px solid rgba(128,128,128,0.2) !important;\n                border-bottom: 3px solid #e74c3c !important;\n                opacity: 1 !important;\n                visibility: visible !important;\n                display: flex !important;\n                flex-direction: column !important;\n            }\n            body.dark-mode #meGustaGrid .producto-card {\n                background: #1e1e1e !important;\n                color: #fff !important;\n            }\n            body.dark-mode #meGustaGrid .producto-card h3 { color: rgba(255,255,255,0.9) !important; }\n            body.dark-mode #meGustaGrid .producto-card .precio-actual { color: #e74c3c !important; }\n            body.dark-mode #meGustaGrid .producto-card .producto-description { color: rgba(255,255,255,0.6) !important; }\n        ",document.head.appendChild(e)}document.getElementById("vistaInicio").style.display="none",document.getElementById("vistaCategoria").style.display="none";const e=document.getElementById("vistaPedidos");e&&(e.style.display="none");const t=document.getElementById("vistaMeGusta");if(!t)return;t.style.display="block",actualizarVisibilidadBannerOferta(!1);const o=document.getElementById("meGustaStats"),a=document.getElementById("meGustaGrid"),n=document.getElementById("meGustaVacio");if(!a)return;const r=void 0!==productos&&productos.length>0?productos:JSON.parse(localStorage.getItem("productos")||"[]");if(0===r.length&&wishlist.length>0)return o&&(o.textContent="Cargando..."),a.style.display="none",n&&(n.style.display="none"),mostrarVistaMeGusta._t=(mostrarVistaMeGusta._t||0)+1,void(mostrarVistaMeGusta._t<7?setTimeout(mostrarVistaMeGusta,700):(mostrarVistaMeGusta._t=0,o&&(o.textContent="No se pudo cargar el catálogo. Recarga la página."),console.warn("[mostrarVistaMeGusta] No se pudo cargar tras 7 intentos.")));mostrarVistaMeGusta._t=0;const i=wishlist.map(e=>r.find(t=>String(t.id)===String(e))).filter(Boolean);if(o&&(o.textContent=i.length+" producto"+(1!==i.length?"s":"")+" guardado"+(1!==i.length?"s":"")),0===i.length)a.style.display="none",n&&(n.style.display="block");else{n&&(n.style.display="none"),a.style.display="",a.innerHTML="";const e=getOfertaDiaId();i.forEach(t=>{const o=0===t.stock,n=String(t.id)===String(e),r=document.createElement("div");r.className="producto-card"+(o?" card-agotado":""),r.onclick=()=>abrirDetalleProducto(t.id),r.style.position="relative";const i=safeNum(t.id),c=escapeHtml(t.nombre),s=escapeHtml(t.descripcion||""),d=escapeAttr(t.imagen||""),l=safeNum(t.stock),u=escapeHtml(getOfertaDiaTexto()),m=o?'<div class="stock" style="color:#e74c3c;font-weight:700;">❌ Agotado</div>':(l<=3?'<div class="stock stock-urgente">⚠️ ¡Solo quedan '+l+"!</div>":'<div class="stock">📦 Stock: '+l+" unidades</div>")+'<button class="btn-pedir-card" data-nombre="'+c+'" onclick="event.stopPropagation();tmComprar(event,'+i+',this.dataset.nombre)">🛒 Pedir</button>';r.innerHTML=(n?'<div class="badge-oferta-dia">'+u+"</div>":o?'<div class="badge-agotado">AGOTADO</div>':t.masVendido?'<div class="badge-vendido">🔥 Más Vendido</div>':"")+'<div class="producto-image">'+getMeGustaHTML(i)+'<img src="'+d+'" alt="'+c+'" loading="lazy" onerror="this.src=\'/iconos/favicon-192.png\';this.style.opacity=\'0.3\'">'+(t.precioOriginal>0&&t.precioOriginal>t.precioActual?'<div class="badge">-$'+(t.precioOriginal-t.precioActual).toFixed(0)+"</div>":"")+"</div><h3>"+c+'</h3><p class="producto-description">'+s+'</p><p class="precio">'+(t.descuento>0?'<span class="precio-tachado">$'+(Number(t.precioActual)/(1-t.descuento/100)).toFixed(2)+" USD</span> ":"")+'<span class="precio-actual" data-usd="'+safeNum(t.precioActual)+'">$'+Number(t.precioActual).toFixed(2)+" USD</span>"+(t.precioOriginal>0&&t.precioOriginal>t.precioActual?' <span class="precio-ahorro">-$'+(parseFloat(t.precioOriginal)-parseFloat(t.precioActual)).toFixed(0)+"</span>":"")+"</p>"+m,a.appendChild(r)})}window.scrollTo({top:0,behavior:"smooth"})}function cerrarVistaMeGusta(){const e=document.getElementById("vistaMeGusta");e&&(e.style.display="none"),mostrarVistaInicio()}function guardarPedidoCliente(e){const t=JSON.parse(localStorage.getItem("pedidos_cliente_v1")||"[]"),o=e.reduce((e,t)=>e+t.precio*t.cantidad,0);t.unshift({id:Date.now(),fecha:(new Date).toLocaleDateString("es-ES",{day:"numeric",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit"}),items:e.map(e=>({id:e.id,nombre:e.nombre,cantidad:e.cantidad,precio:e.precio})),total:o}),localStorage.setItem("pedidos_cliente_v1",JSON.stringify(t.slice(0,50)))}function mostrarVistaPedidos(){document.getElementById("vistaInicio").style.display="none",document.getElementById("vistaCategoria").style.display="none";const e=document.getElementById("vistaMeGusta");e&&(e.style.display="none");const t=document.getElementById("vistaPedidos");if(!t)return;t.style.display="block",actualizarVisibilidadBannerOferta(!1);const o=JSON.parse(localStorage.getItem("pedidos_cliente_v1")||"[]"),a=document.getElementById("pedidosStats"),n=document.getElementById("pedidosLista"),r=document.getElementById("pedidosVacio");a&&(a.textContent=o.length+" pedido"+(1!==o.length?"s":"")),0===o.length?(n&&(n.innerHTML=""),r&&(r.style.display="block")):(r&&(r.style.display="none"),n&&(n.innerHTML=o.map(e=>`\n          <div class="pedido-card">\n            <div class="pedido-card-header">\n              <span class="pedido-fecha">📅 ${e.fecha}</span>\n              <span class="pedido-total">$${e.total.toFixed(2)} USD</span>\n            </div>\n            <div class="pedido-items">\n              ${e.items.map(e=>`\n                <div class="pedido-item">\n                  <span class="pedido-item-nombre">${e.nombre}</span>\n                  <span class="pedido-item-qty">×${e.cantidad}</span>\n                  <span class="pedido-item-precio">$${(e.precio*e.cantidad).toFixed(2)}</span>\n                </div>\n              `).join("")}\n            </div>\n            <button class="pedido-btn-repetir" onclick="repetirPedido(${e.id})">🔄 Pedir de nuevo</button>\n          </div>\n        `).join(""))),window.scrollTo({top:0,behavior:"smooth"})}function cerrarVistaPedidos(){const e=document.getElementById("vistaPedidos");e&&(e.style.display="none"),mostrarVistaInicio()}function repetirPedido(e){const t=JSON.parse(localStorage.getItem("pedidos_cliente_v1")||"[]").find(t=>t.id===e);t&&(t.items.forEach(e=>{const t=productos.find(t=>t.id===e.id);t&&t.stock>0&&agregarAlCarrito(e.id)}),cerrarVistaPedidos(),setTimeout(abrirCarrito,300))}function _procesarDeepLink(){const e=window.location.hash;if(!e.startsWith("#producto-"))return;const t=parseInt(e.replace("#producto-",""),10);if(!t)return;const o=()=>{if(void 0!==productos&&productos.length>0){const e=productos.find(e=>e.id===t||String(e.id)===String(t));if(e)return abrirDetalleProducto(e.id),!0}const e=JSON.parse(localStorage.getItem("productos")||"[]"),o=e.find(e=>e.id===t||String(e.id)===String(t));return!!o&&(void 0!==productos&&0===productos.length&&productos.push(...e),abrirDetalleProducto(o.id),!0)};if(!o()){let e=0;const t=setInterval(()=>{e++,(o()||e>=26)&&clearInterval(t)},300)}}function esProductoNuevo(e){return!(!e||!e.fechaAgregado)&&Date.now()-new Date(e.fechaAgregado).getTime()<6048e5}function getTasaMN(){const e=parseFloat(localStorage.getItem("tasaMN")||"0");return e>0?e+10:0}async function guardarTasaEnGitHub(e){const t=localStorage.getItem("githubUser"),o=localStorage.getItem("githubRepo"),a=localStorage.getItem("githubToken");if(!t||!o||!a)return!1;try{const n=await fetch(`https://raw.githubusercontent.com/${t}/${o}/main/config.json?_=${Date.now()}`).then(e=>e.ok?e.json():{}).catch(()=>({}));return n.tasaMN=e,n.actualizado=(new Date).toISOString(),await subirArchivoAGitHub(t,o,a,"config.json",n),!0}catch(e){return!1}}async function cargarTasaDesdeGitHub(){const e=localStorage.getItem("githubUser"),t=localStorage.getItem("githubRepo");try{let o=null;if(e&&t){const a=await fetch(`https://raw.githubusercontent.com/${e}/${t}/main/config.json?_=${Date.now()}`);a.ok&&(o=await a.json())}if(!o){const e=await fetch(`config.json?_=${Date.now()}`);e.ok&&(o=await e.json())}o&&(o.tasaMN&&parseFloat(o.tasaMN)>0&&(localStorage.setItem("tasaMN",String(o.tasaMN)),"MN"===_monedaActual&&actualizarPreciosMostrados(),"function"==typeof actualizarBurbujaTasa&&actualizarBurbujaTasa(),console.log(`✅ Tasa MN cargada desde GitHub: ${o.tasaMN} MN/USD`)),o.ofertaDiaId&&(localStorage.setItem("ofertaDiaId",String(o.ofertaDiaId)),o.ofertaDiaTexto&&localStorage.setItem("ofertaDiaTexto",o.ofertaDiaTexto)),o.firebaseConfig&&(localStorage.setItem("firebaseConfig",JSON.stringify(o.firebaseConfig)),o.fcmServerKey&&localStorage.setItem("fcmServerKey",o.fcmServerKey),o.firebaseConfig.vapidKey&&localStorage.setItem("firebaseVapidKey",o.firebaseConfig.vapidKey),inicializarFirebaseFCMClient(o.firebaseConfig)),verificarOfertasYMostrarBanner())}catch(e){}}function setCurrency(e){_monedaActual=e,localStorage.setItem("monedaActual",e),document.getElementById("curUSD")?.classList.toggle("active","USD"===e),document.getElementById("curMN")?.classList.toggle("active","MN"===e),getTasaMN();const t=document.getElementById("tasaLabel");t&&(t.textContent="",t.style.display="none"),actualizarPreciosMostrados()}function formatPrecio(e){if("MN"===_monedaActual){const t=getTasaMN();if(t>0)return`$${Math.round(e*t).toLocaleString()} MN`}return`$${parseFloat(e).toFixed(2)} USD`}function actualizarPreciosMostrados(){document.querySelectorAll("[data-precio-usd]").forEach(e=>{const t=parseFloat(e.getAttribute("data-precio-usd"));e.textContent=formatPrecio(t)});const e=document.getElementById("productosGrid");e&&e.children.length>0&&e.querySelectorAll(".precio-actual").forEach(e=>{const t=parseFloat(e.getAttribute("data-usd")||e.textContent.replace(/[^0-9.]/g,""));!isNaN(t)&&t>0&&(e.getAttribute("data-usd")||e.setAttribute("data-usd",t),e.textContent=formatPrecio(t))})}function actualizarBurbujaTasa(){const e=getTasaMN();let t=document.getElementById("tasaBurbuja");if(!t){if(t=document.createElement("div"),t.id="tasaBurbuja",t.style.cssText=["position:fixed","bottom:80px","right:16px","z-index:9990","background:linear-gradient(135deg,#C9A96E,#E8C88A)","color:#0D0D0D","font-weight:800","font-size:12px","padding:7px 13px","border-radius:999px","box-shadow:0 3px 14px rgba(0,0,0,0.35)","cursor:default","user-select:none","display:flex","align-items:center","gap:5px","transition:opacity 0.3s,transform 0.3s","animation:tasaBurbujaIn 0.4s cubic-bezier(.34,1.56,.64,1) both"].join(";"),t.title="Tasa de cambio del día (incluye margen)",!document.getElementById("tasaBurbujaStyle")){const e=document.createElement("style");e.id="tasaBurbujaStyle",e.textContent="\n                @keyframes tasaBurbujaIn {\n                    from { opacity:0; transform:scale(0.6) translateY(12px); }\n                    to   { opacity:1; transform:scale(1) translateY(0); }\n                }\n                #tasaBurbuja:hover { transform:scale(1.06); }\n                @media(max-width:480px){ #tasaBurbuja { bottom:70px; right:10px; font-size:11px; padding:6px 11px; } }\n            ",document.head.appendChild(e)}document.body.appendChild(t)}t.style.display="none";const o=document.getElementById("curMN"),a=document.getElementById("tasaLabel");e>0?o&&(o.textContent=e+" MN"):o&&(o.textContent="-- MN"),a&&(a.style.display="none")}async function inicializarFirebaseFCMClient(e){if(!e||!e.projectId)return;if(window.firebase&&firebase.apps.length)return void ejecutarInitFCM(e);const t=document.createElement("script");t.src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js",t.onload=()=>{const t=document.createElement("script");t.src="https://www.gstatic.com/firebasejs/10.8.0/firebase-messaging-compat.js",t.onload=()=>{firebase.apps.length||firebase.initializeApp(e),firebase.messaging.isSupported()?ejecutarInitFCM(e):console.warn("[FCM] Este navegador no soporta Firebase Cloud Messaging.")},document.head.appendChild(t)},document.head.appendChild(t)}function ejecutarInitFCM(e){try{const t=firebase.messaging();navigator.serviceWorker.register("/firebase-messaging-sw.js",{scope:"/firebase-cloud-messaging-push-scope"}).then(o=>{try{t.useServiceWorker(o)}catch(e){console.warn("[FCM] useServiceWorker:",e)}"granted"===Notification.permission?"1"===localStorage.getItem("tm_push_desuscrito")?window._tmFcmPending={messaging:t,config:e,fcmReg:o}:solicitarYRegistrarTokenFCM(t,e,o):"default"===Notification.permission&&(window._tmFcmPending={messaging:t,config:e,fcmReg:o})}).catch(e=>{console.error("[FCM] Error registrando firebase-messaging-sw.js:",e)}),t.onMessage(e=>{mostrarNotificacion((e.notification?.title||e.data?.title||"📢 TiendaMax")+": "+(e.notification?.body||e.data?.body||""),"info")})}catch(e){console.error("[FCM] Error inicializando FCM:",e)}}async function tmRegistrarTokenFCMSiPermitido(){if("granted"!==Notification.permission)return;if(window._tmFcmPending&&window._tmFcmPending.messaging){const e=window._tmFcmPending;return void await solicitarYRegistrarTokenFCM(e.messaging,e.config,e.fcmReg)}let e=null;try{const t=localStorage.getItem("firebaseConfig");t&&(e=JSON.parse(t))}catch(e){}if(!e||!e.projectId)try{const t=await fetch("config.json?_="+Date.now());t.ok&&(e=(await t.json()).firebaseConfig,e&&localStorage.setItem("firebaseConfig",JSON.stringify(e)))}catch(e){console.error("[FCM] Error cargando config:",e)}e&&e.projectId&&"function"==typeof inicializarFirebaseFCMClient&&await inicializarFirebaseFCMClient(e)}async function solicitarYRegistrarTokenFCM(e,t,o){try{const a=t.vapidKey||localStorage.getItem("firebaseVapidKey");if(!a)return void console.warn("[FCM] No se especificó la clave VAPID. No se puede obtener token.");const n={vapidKey:a};o&&(n.serviceWorkerRegistration=o);const r=await e.getToken(n);if(r){localStorage.setItem("fcmToken",r);const e=btoa(r).replace(/=/g,"").replace(/\+/g,"-").replace(/\//g,"_"),o=t.databaseURL||`https://${t.projectId}-default-rtdb.firebaseio.com`;await fetch(`${o}/tokens/${e}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({token:r,timestamp:Date.now(),userAgent:navigator.userAgent})})}else console.warn("[FCM] No se pudo obtener el token de Firebase.")}catch(e){console.error("[FCM] Error al registrar token FCM:",e)}}async function guardarConfigFirebaseAdmin(){const e=document.getElementById("firebaseConfigJson"),t=document.getElementById("firebaseVapidKey"),o=document.getElementById("firebaseServerKey"),a=document.getElementById("firebaseConfigStatus");if(!e||!t)return;const n=e.value.trim(),r=t.value.trim(),i=o.value.trim();if(!n)return void(a&&(a.textContent="⚠️ El JSON de configuración de Firebase es requerido."));if(!r)return void(a&&(a.textContent="⚠️ La Clave VAPID de Web Push es requerida."));let c=null;try{let e=n.replace(/\xa0/g," ").trim();e=e.replace(/^(const|let|var)\s+\w+\s*=\s*/,""),e=e.replace(/;$/,"");let t=e;if(!/^\s*\{[\s\S]*\}\s*$/.test(t))throw new Error("Configuración no es un objeto");t=t.replace(/([\{,]\s*)([A-Za-z_$][\w$]*)\s*:/g,'$1"$2":'),t=t.replace(/'([^'\\]*)'/g,'"$1"'),t=t.replace(/,(\s*[\}\]])/g,"$1"),c=JSON.parse(t)}catch(e){console.warn("[FCM] Falló parseo JSON, intentando fallback regex...",e)}let s=!1;if(!c||"object"!=typeof c||!c.projectId){s=!0,c={};const e=n.split("\n");for(const t of e){const e=t.replace(/\xa0/g," ").trim().match(/(\w+)\s*:\s*["']?([^"',\s\}]+)["']?/);if(e){const t=e[1];let o=e[2];if(o.includes("[")&&o.includes("]")){const e=o.match(/\[([^\]]+)\]/);e&&(o=e[1])}c[t]=o}}}if(!c||"object"!=typeof c||!c.projectId)return void(a&&(a.textContent='❌ Error: Configuración inválida o falta el campo "projectId". Contenido parseado: '+JSON.stringify(c)));c.vapidKey=r,localStorage.setItem("firebaseConfig",JSON.stringify(c)),localStorage.setItem("firebaseVapidKey",r),i?localStorage.setItem("fcmServerKey",i):localStorage.removeItem("fcmServerKey"),a&&(a.textContent="⏳ Guardando y subiendo a GitHub...");const d=localStorage.getItem("githubUser"),l=localStorage.getItem("githubRepo"),u=localStorage.getItem("githubToken");if(!d||!l||!u)return a&&(a.textContent="⚠️ Guardado localmente en navegador. Para sincronizar globalmente con GitHub, configura tus credenciales arriba."),void inicializarFirebaseFCMClient(c);try{const e=await fetch(`https://raw.githubusercontent.com/${d}/${l}/main/config.json?_=${Date.now()}`).then(e=>e.ok?e.json():{}).catch(()=>({}));e.firebaseConfig=c,delete e.fcmServerKey,e.actualizado=(new Date).toISOString(),await subirArchivoAGitHub(d,l,u,"config.json",e),a&&(a.textContent="✅ ¡Guardado y sincronizado con GitHub con éxito!"),mostrarNotificacion("✅ Configuración de Firebase guardada y sincronizada.","success"),inicializarFirebaseFCMClient(c)}catch(e){console.error(e),a&&(a.textContent="❌ Error: "+e.message)}}async function enviarPushManualAdmin(){const e=document.getElementById("manualPushTitle").value.trim(),t=document.getElementById("manualPushBody").value.trim(),o=document.getElementById("manualPushUrl").value.trim(),a=document.getElementById("manualPushStatus");if(!e||!t)return void(a&&(a.textContent="⚠️ Título y cuerpo son requeridos."));const n=localStorage.getItem("fcmServerKey"),r=localStorage.getItem("firebaseConfig");if(!n||!r)return void(a&&(a.textContent="⚠️ Configura Firebase y guarda la Clave de Servidor primero."));const i=JSON.parse(r),c=i.databaseURL||`https://${i.projectId}-default-rtdb.firebaseio.com`;a&&(a.textContent="⏳ Buscando suscriptores en Firebase...");try{const r=await fetch(`${c}/tokens.json`);if(!r.ok)return void(a&&(a.textContent="❌ No se pudo conectar a Realtime Database."));const i=await r.json();if(!i)return void(a&&(a.textContent="⚠️ No hay ningún suscriptor registrado todavía."));const s=Object.values(i).map(e=>e.token).filter(Boolean);if(0===s.length)return void(a&&(a.textContent="⚠️ No se encontraron tokens válidos."));a&&(a.textContent=`⏳ Enviando a ${s.length} suscriptores...`);const d=await fetch("https://fcm.googleapis.com/fcm/send",{method:"POST",headers:{"Content-Type":"application/json",Authorization:`key=${n}`},body:JSON.stringify({registration_ids:s,notification:{title:e,body:t,icon:"/iconos/icon-192.png",click_action:window.location.origin+(o||"/")},data:{url:o||"/"}})});if(d.ok){const e=await d.json();if(a&&(a.textContent=`✅ Enviado. Éxitos: ${e.success||0}, Fallos: ${e.failure||0}`),e.results){const t=Object.keys(i);for(let o=0;o<e.results.length;o++){const a=e.results[o];"NotRegistered"!==a.error&&"InvalidRegistration"!==a.error||fetch(`${c}/tokens/${t[o]}.json`,{method:"DELETE"}).catch(()=>null)}}}else a&&(a.textContent=`❌ Error en el envío FCM: ${d.status} ${d.statusText}`)}catch(e){console.error(e),a&&(a.textContent="❌ Error de conexión o credenciales inválidas.")}}async function guardarTasaMNAdmin(){const e=document.getElementById("adminTasaMN"),t=document.getElementById("tasaMNStatus");if(!e)return;const o=parseFloat(e.value);if(!o||o<1)return void(t&&(t.textContent="⚠️ Ingresa un valor válido"));localStorage.setItem("tasaMN",String(o)),t&&(t.textContent="💾 Guardado localmente...");const a=await guardarTasaEnGitHub(o);t&&(t.textContent=a?`✅ Tasa ${o} MN/USD subida a GitHub. Clientes verán ${o+10} MN/USD.`:"✅ Guardado local. Configura GitHub para sincronizar con todos.",t.style.color=a?"#2ECC71":"#C9A96E"),"MN"===_monedaActual&&actualizarPreciosMostrados(),"function"==typeof actualizarBurbujaTasa&&actualizarBurbujaTasa()}guardarProductos=function(){_origGuardarProd(),setTimeout(actualizarBadgeStockBajo,50)},window.addEventListener("hashchange",_procesarDeepLink),document.addEventListener("DOMContentLoaded",()=>{window.location.hash.startsWith("#producto-")&&setTimeout(_procesarDeepLink,100)}),function(){const e=72e5,t="carrito_notif_timer",o="carrito_notif_sent";let a=null;function n(){a&&(clearTimeout(a),a=null),localStorage.removeItem(t)}function r(){if(n(),!carrito||0===carrito.length)return;if("undefined"==typeof Notification||"granted"!==Notification.permission)return;const r=Date.now()+e;localStorage.setItem(t,r),localStorage.removeItem(o),a=setTimeout(async()=>{const e=JSON.parse(localStorage.getItem("carrito_v2")||'{"items":[]}').items||[];if(0===e.length)return;if(localStorage.getItem(o))return;const t=e.reduce((e,t)=>e+t.precio*t.cantidad,0),a=e.slice(0,2).map(e=>e.nombre.substring(0,20)).join(", "),n=1===e.length?"¡Tienes "+e[0].nombre.substring(0,30)+" esperándote! ($"+t.toFixed(0)+" USD)":"¡Tienes "+e.length+" productos en tu carrito! "+a+"... ($"+t.toFixed(0)+" USD)";try{const e=await navigator.serviceWorker.ready;await e.showNotification("🛒 ¿Olvidaste algo?",{body:n,icon:"/iconos/icon-192.png",badge:"/iconos/icon-192.png",data:{url:"/?carrito=1"},vibrate:[200,100,200],tag:"carrito-abandonado",renotify:!1,actions:[{action:"ver",title:"🛒 Ver carrito"},{action:"cerrar",title:"Más tarde"}]}),localStorage.setItem(o,"1")}catch(e){console.log("Notificación carrito:",e)}},e)}const i=guardarCarrito;window.guardarCarrito=function(){i(),r()},window.addEventListener("load",()=>{const e=parseInt(localStorage.getItem(t)||"0");if(e&&Date.now()<e&&carrito&&carrito.length>0){const t=e-Date.now();a=setTimeout(()=>r(),t)}else r()});const c=abrirCarrito;window.abrirCarrito=function(){n(),localStorage.removeItem(o),c(),setTimeout(r,500)}}(),function(){if(!("serviceWorker"in navigator))return;let e=!1;function t(t){e||"Notification"in window&&"granted"!==Notification.permission&&(console.log("[push] Trigger:",t),function(){if(e)return;if(!("Notification"in window))return;if("granted"===Notification.permission)return;const t=parseInt(localStorage.getItem("tm_push_pospuesto")||"0");if(Date.now()<t)return;e=!0;const o=document.getElementById("tm-push-banner-wrap");o&&o.remove();const a="denied"===Notification.permission,n=a?"🔔 Notificaciones bloqueadas":"🔔 ¿Quieres avisos de ofertas?",r=a?"Para reactivarlas: tres puntos del navegador → Ajustes → Notificaciones → Permitir":"Te avisamos cuando bajen los precios o lleguen productos nuevos. Sin spam.",i=a?"Cómo activarlas":"🔔 Avísame",c=document.createElement("div");if(c.id="tm-push-banner-wrap",c.innerHTML=`<div id="tm-push-banner" style="background:#1a1a1a;border:1.5px solid #C9A96E;border-radius:14px;padding:14px 18px;display:flex;align-items:center;gap:12px;box-shadow:0 8px 32px rgba(0,0,0,0.5);font-family:sans-serif;animation:slideUpBanner .35s ease"><span style="font-size:26px;flex-shrink:0">🔔</span><div style="flex:1;min-width:0"><div style="font-weight:700;font-size:14px;color:#C9A96E;margin-bottom:2px">${escapeHtml(n)}</div><div style="font-size:12px;color:#aaa;line-height:1.3">${escapeHtml(r)}</div></div><div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0"><button id="tm-push-si" style="background:#C9A96E;color:#000;border:none;border-radius:8px;padding:7px 12px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap">${escapeHtml(i)}</button><button id="tm-push-no" style="background:none;border:none;color:#666;font-size:11px;cursor:pointer;text-align:center">Ahora no</button></div></div>`,!document.getElementById("slideUpBannerStyle")){const e=document.createElement("style");e.id="slideUpBannerStyle",e.textContent="@keyframes slideUpBanner{from{opacity:0;transform:translateX(-50%) translateY(20px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}",document.head.appendChild(e)}document.body.appendChild(c),document.getElementById("tm-push-si").onclick=async()=>{if(c.remove(),a)return void alert("Para activar las notificaciones:\n\n1. Toca los 3 puntos del navegador\n2. Ajustes → Configuración del sitio\n3. Notificaciones → Permitir");const e=await Notification.requestPermission();"granted"===e?((await navigator.serviceWorker.ready).showNotification("✅ TiendaMax activado",{body:"Te avisaremos de ofertas y productos nuevos.",icon:"/iconos/icon-192.png",badge:"/iconos/icon-192.png",vibrate:[200,100,200]}),(async()=>{try{let e=null;const t=localStorage.getItem("firebaseConfig");if(t)try{e=JSON.parse(t)}catch(e){}if(!e||!e.projectId){const t=await fetch("config.json?_="+Date.now());t.ok&&(e=(await t.json()).firebaseConfig,e&&(localStorage.setItem("firebaseConfig",JSON.stringify(e)),e.vapidKey&&localStorage.setItem("firebaseVapidKey",e.vapidKey)))}e&&e.projectId?inicializarFirebaseFCMClient(e):console.error("[FCM] No se pudo cargar firebaseConfig")}catch(e){console.error("[FCM] Error iniciando FCM:",e)}})()):"denied"===e&&localStorage.setItem("tm_push_pospuesto",Date.now()+216e5)},document.getElementById("tm-push-no").onclick=()=>{c.remove();const e=parseInt(localStorage.getItem("tm_push_rechazos")||"0")+1;localStorage.setItem("tm_push_rechazos",String(e));const t=PUSH_RECHAZO_DELAY_DAYS[Math.min(e-1,PUSH_RECHAZO_DELAY_DAYS.length-1)],o=24*t*60*60*1e3;localStorage.setItem("tm_push_pospuesto",String(Date.now()+o)),console.log("[push] Rechazo #"+e+" — re-preguntará en "+t+" días")}}())}setTimeout(()=>t("45s navegando"),45e3);let o=!1;window.addEventListener("scroll",function e(){o||window.scrollY>1.5*window.innerHeight&&(o=!0,window.removeEventListener("scroll",e),setTimeout(()=>t("scroll 2ª pantalla"),1500))},{passive:!0});let a=parseInt(localStorage.getItem("tm_likes_session")||"0");document.addEventListener("click",function(e){e.target.closest("[data-like-id]")&&(a++,localStorage.setItem("tm_likes_session",String(a)),a>=2&&setTimeout(()=>t("2 me gusta"),2e3))});let n=parseInt(localStorage.getItem("tm_detalles_session")||"0");const r=window.abrirDetalleProducto;"function"==typeof r&&(window.abrirDetalleProducto=function(){r.apply(this,arguments),n++,localStorage.setItem("tm_detalles_session",String(n)),n>=3&&setTimeout(()=>t("3 detalles abiertos"),1500)}),window.TiendaMaxPush={async enviar(e,t,o,a){if("granted"!==Notification.permission)return;const n=await navigator.serviceWorker.ready,r={body:t,icon:"/iconos/icon-192.png",badge:"/iconos/icon-192.png",data:{url:o||"/"},vibrate:[200,100,200],actions:[{action:"ver",title:"👀 Ver"},{action:"cerrar",title:"Cerrar"}],tag:"tm-"+e.substring(0,20),renotify:!0};a&&(r.image=a),n.showNotification(e,r)},nuevoProducto(e,t,o,a){this.enviar("🆕 Nuevo en TiendaMax",e+" desde $"+t+" USD",o?"/p/producto-"+o+".html":"/",a)},rebaja(e,t,o,a,n){const r=a?"/p/producto-"+a+".html":"/",i=t>0?Math.round((t-o)/t*100):0;this.enviar(i>0?"🏷️ ¡Rebaja -"+i+"%!":"🏷️ Bajada de precio",e+": $"+t+" → $"+o+" USD",r,n)},relampago(e,t,o){this.enviar("⚡ ¡Oferta relámpago "+(o||60)+" min!",e+" — $"+t+" USD")},ofertaDia(e,t,o,a){this.enviar("☀️ Oferta del día",e+" — Solo hoy: $"+t+" USD",o?"/p/producto-"+o+".html":"/",a)},nuevosAgrupados(e){this.enviar("🆕 "+e+" productos nuevos","Ven a ver las novedades 🛍️","/")},rebajasAgrupadas(e){this.enviar("🏷️ "+e+" productos en oferta","¡Aprovecha antes de que se acaben!","/")}}}(),document.addEventListener("DOMContentLoaded",()=>{const e=document.getElementById("tasaLabel");e&&(e.textContent="",e.style.display="none"),"MN"===_monedaActual&&(document.getElementById("curUSD")?.classList.remove("active"),document.getElementById("curMN")?.classList.add("active")),actualizarBurbujaTasa(),verificarOfertasYMostrarBanner()}),window.tmFormatPrecio=formatPrecio,window.tmRegistrarTokenFCMSiPermitido=tmRegistrarTokenFCMSiPermitido,window.tmMonedaActual=()=>_monedaActual,cargarTasaDesdeGitHub(),function(){const e=renderizarProductos;renderizarProductos=function(){e.apply(this,arguments),function(){const e=document.getElementById("productosGrid");if(!e)return;const t=function(){let e=Array.isArray(productos)?productos.slice():[];if(void 0!==categoriaSeleccionada&&"Todas"!==categoriaSeleccionada&&(e=e.filter(e=>e.categoria===categoriaSeleccionada)),void 0!==categoriaSeleccionada&&"Todas"!==categoriaSeleccionada&&void 0!==subcategoriaSeleccionada&&subcategoriaSeleccionada&&"Todas"!==subcategoriaSeleccionada&&(e=e.filter(e=>e.subcategoria===subcategoriaSeleccionada)),void 0!==_heroSearchActivo&&_heroSearchActivo){const t=_heroSearchActivo;e=e.filter(e=>(e.nombre||"").toLowerCase().includes(t)||(e.descripcion||"").toLowerCase().includes(t)||(e.categoria||"").toLowerCase().includes(t)||(e.subcategoria||"").toLowerCase().includes(t))}const t="function"==typeof getOfertaDiaId?getOfertaDiaId():null;return t&&e.sort((e,o)=>String(e.id)===String(t)?-1:String(o.id)===String(t)?1:0),"number"==typeof productosVisibleCount&&Number.isFinite(productosVisibleCount)&&(e=e.slice(0,productosVisibleCount)),e}();Array.from(e.querySelectorAll(".producto-card")).forEach((e,o)=>{const a=t[o];if(!a)return;if(e.dataset.productId=String(a.id),e.querySelectorAll(".precio-actual").forEach(e=>{e.setAttribute("data-usd",String(a.precioActual)),e.textContent="function"==typeof formatPrecio?formatPrecio(a.precioActual):"$"+Number(a.precioActual).toFixed(2)+" USD"}),a.stock>0&&a.stock<=3&&!e.querySelector(".badge-stock-urgente")){const t=document.createElement("div");t.className="badge-stock-urgente",t.textContent="⚡ Últimas "+a.stock,t.style.cssText="position:absolute;top:8px;left:8px;background:linear-gradient(135deg,#e74c3c,#c0392b);color:white;font-size:10px;font-weight:800;padding:3px 8px;border-radius:20px;box-shadow:0 2px 6px rgba(231,76,60,.4);z-index:3;letter-spacing:0.3px;",e.style.position="relative",e.appendChild(t)}const n="function"==typeof obtenerVistasProd&&obtenerVistasProd(a.id)||0;if(n>=10&&!e.querySelector(".badge-vistas-pub")){const t=document.createElement("div");t.className="badge-vistas-pub",t.innerHTML="👁️ "+(n>=1e3?(n/1e3).toFixed(1)+"k":n),t.style.cssText="position:absolute;bottom:54px;right:8px;background:rgba(0,0,0,0.55);backdrop-filter:blur(4px);color:white;font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;z-index:3;",e.appendChild(t)}if("function"==typeof esProductoNuevo&&esProductoNuevo(a)&&!e.querySelector(".badge-nuevo")){const t=document.createElement("div");t.className="badge-nuevo",t.textContent="NUEVO";const o=e.querySelector(".producto-image");o&&o.appendChild(t)}})}(),"function"==typeof iniciarCountdownsActivos&&setTimeout(iniciarCountdownsActivos,50),"function"==typeof initScrollAnimations&&setTimeout(initScrollAnimations,20)};const t=renderizarMasVendidos;renderizarMasVendidos=function(){t.apply(this,arguments),function(){const e=document.getElementById("masVendidosGrid");if(!e)return;const t=function(){const e=productos.filter(e=>(!0===e.masVendido||"true"===e.masVendido)&&e.stock>0);return e.length>0?e:productos.filter(e=>e.stock>0).slice(0,3)}(),o=Array.from(e.querySelectorAll(".producto-card")),a="function"==typeof getActiveCountdown?getActiveCountdown():null;o.forEach((e,o)=>{const n=t[o];if(n){if(e.dataset.productId=String(n.id),e.querySelectorAll(".precio-actual").forEach(e=>{e.setAttribute("data-usd",String(n.precioActual)),e.textContent="function"==typeof formatPrecio?formatPrecio(n.precioActual):"$"+Number(n.precioActual).toFixed(2)+" USD"}),0===n.stock){const t=e.querySelector(".stock-count span");t&&(t.textContent="❌ Producto agotado");const o=e.querySelector(".stock-bar-fill");o&&(o.style.width="8%");const a=e.querySelector(".btn-pedir-card");a&&(a.textContent="No disponible",a.disabled=!0,a.style.opacity="0.6",a.style.cursor="not-allowed")}if(a&&String(a.productId)===String(n.id)&&!e.querySelector(".producto-countdown")&&"function"==typeof renderCountdownHtml){const t=e.querySelector(".btn-pedir-card");if(t){const o=document.createElement("div");o.innerHTML=renderCountdownHtml(n.id),o.firstElementChild&&e.insertBefore(o.firstElementChild,t)}}}}),"function"==typeof iniciarCountdownsActivos&&setTimeout(iniciarCountdownsActivos,50)}()},actualizarPreciosMostrados=function(){document.querySelectorAll(".precio-actual").forEach(e=>{let t=parseFloat(e.getAttribute("data-usd")||"");if(!Number.isFinite(t)){const o=e.closest(".producto-card"),a=o&&o.dataset?o.dataset.productId:"",n=a?productos.find(e=>String(e.id)===String(a)):null;n&&(t=Number(n.precioActual),e.setAttribute("data-usd",String(t)))}Number.isFinite(t)&&(e.textContent="function"==typeof formatPrecio?formatPrecio(t):"$"+t.toFixed(2)+" USD")});const e=document.getElementById("detailPriceActual");e&&_detalleProductoActual&&(e.setAttribute("data-usd",String(_detalleProductoActual.precioActual)),e.textContent="function"==typeof formatPrecio?formatPrecio(_detalleProductoActual.precioActual):"$"+Number(_detalleProductoActual.precioActual).toFixed(2)+" USD")},document.addEventListener("DOMContentLoaded",function(){setTimeout(function(){"function"==typeof renderizarRecientes&&renderizarRecientes(),"function"==typeof actualizarPreciosMostrados&&actualizarPreciosMostrados(),"function"==typeof actualizarBadgeStockBajo&&actualizarBadgeStockBajo(),"function"==typeof initScrollAnimations&&initScrollAnimations(),"function"==typeof verificarEstadoBackend&&verificarEstadoBackend(),"function"==typeof cargarEstadoPublicacion&&cargarEstadoPublicacion()},150)})}(),function(){try{"1"===new URLSearchParams(location.search).get("admin")&&setTimeout(()=>{"function"==typeof abrirLoginAdmin&&abrirLoginAdmin()},600)}catch(e){}}(),window.addEventListener("popstate",function(){const e=document.getElementById("productDetailModal");e&&!e.classList.contains("hidden")&&("function"==typeof cerrarDetalleModal?cerrarDetalleModal():(e.classList.add("hidden"),document.body.style.overflow="",void 0!==_detalleProductoActual&&(_detalleProductoActual=null)))}),function(){let e="desconocido";function t(){return"Notification"in window?"denied"===Notification.permission?"bloqueado":"default"===Notification.permission?"sin-decidir":localStorage.getItem("fcmToken")?"activo":"sin-token":"no-soporta"}function o(){const o=document.getElementById("notifHeaderBtn"),a=document.getElementById("notifHeaderIcon");if(!o)return;const n=t();e=n,o.classList.remove("activo","desactivado","bloqueado"),"activo"===n?(o.classList.add("activo"),o.title="Notificaciones activas (toca para gestionar)",a&&(a.innerHTML='<path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/><circle cx="18" cy="6" r="3" fill="#25d366" stroke="#0e0e12" stroke-width="1.5"/>')):"bloqueado"===n?(o.classList.add("bloqueado"),o.title="Notificaciones bloqueadas (toca para ver cómo activarlas)",a&&(a.innerHTML='<path d="M13.73 21a2 2 0 0 1-3.46 0"/><path d="M18.63 13A17.89 17.89 0 0 1 18 8"/><path d="M6.26 6.26A5.86 5.86 0 0 0 6 8c0 7-3 9-3 9h14"/><path d="M18 8a6 6 0 0 0-9.33-5"/><line x1="1" y1="1" x2="23" y2="23"/>')):(o.classList.add("desactivado"),o.title="Activar notificaciones",a&&(a.innerHTML='<path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>'))}function a(){const o=t();e=o;const a=document.getElementById("notifEstadoBox"),n=document.getElementById("notifEstadoIcono"),r=document.getElementById("notifEstadoTexto"),i=document.getElementById("notifEstadoSubtexto"),c=document.getElementById("notifBotonAccion"),s=document.getElementById("notifModalInfoBloqueado");if(a&&c){if(a.classList.remove("desactivado","bloqueado"),s.style.display="none","no-soporta"===o)return n.textContent="⚠️",r.textContent="No soportado",i.textContent="Tu navegador no soporta notificaciones push.",c.textContent="Cerrar",c.onclick=cerrarModalNotificaciones,c.classList.add("desactivar"),void a.classList.add("bloqueado");if("bloqueado"===o)return a.classList.add("bloqueado"),n.textContent="🚫",r.textContent="Bloqueadas en el navegador",i.textContent="Tienes que reactivarlas desde ajustes del navegador.",c.textContent="Entendido",c.onclick=cerrarModalNotificaciones,c.classList.add("desactivar"),void(s.style.display="block");if("activo"===o)return n.textContent="🔔",r.textContent="Notificaciones ACTIVAS",i.textContent="Recibirás ofertas, productos nuevos y cambios de tasa",c.textContent="🔕 Desactivar notificaciones",c.classList.add("desactivar"),void(c.onclick=toggleNotificacionesTM);a.classList.add("desactivado"),n.textContent="🔕",r.textContent="Notificaciones APAGADAS",i.textContent="Te estás perdiendo las ofertas relámpago 🔥",c.textContent="🔔 Activar notificaciones",c.classList.remove("desactivar"),c.onclick=toggleNotificacionesTM}}async function n(){const e=localStorage.getItem("fcmToken");if(e)try{let t=null;const o=localStorage.getItem("firebaseConfig");if(o&&(t=JSON.parse(o)),!t){const e=await fetch("config.json?_="+Date.now());e.ok&&(t=(await e.json()).firebaseConfig)}if(t&&t.databaseURL){const o=btoa(e).replace(/=/g,"").replace(/\+/g,"-").replace(/\//g,"_"),a=t.databaseURL+"/tokens/"+o+".json";await fetch(a,{method:"DELETE"}),console.log("[notif] Token borrado de Firebase RTDB")}}catch(e){console.warn("[notif] Error borrando token de RTDB:",e)}localStorage.removeItem("fcmToken"),localStorage.setItem("tm_push_desuscrito","1");try{const e=await navigator.serviceWorker.ready;e&&e.active&&e.active.postMessage({type:"TM_SET_DESUSCRITO"})}catch(e){}"function"==typeof tmDesregistrarSuscriptor&&tmDesregistrarSuscriptor(),localStorage.setItem("tm_push_pospuesto",String(Date.now()+2592e6))}window.abrirModalNotificaciones=function(){const e=document.getElementById("notifModalOverlay");e&&(e.classList.add("activo"),document.body.style.overflow="hidden",a())},window.cerrarModalNotificaciones=function(){const e=document.getElementById("notifModalOverlay");e&&(e.classList.remove("activo"),document.body.style.overflow="")},window.toggleNotificacionesTM=async function(){const e=document.getElementById("notifBotonAccion"),r=t();if("no-soporta"!==r&&"bloqueado"!==r){if("activo"===r){e.disabled=!0,e.textContent="⏳ Desactivando...";try{await n(),"function"==typeof mostrarNotificacion&&mostrarNotificacion("🔕 Notificaciones desactivadas","info")}catch(e){console.error("[notif] Error desuscribiendo:",e),"function"==typeof mostrarNotificacion&&mostrarNotificacion("⚠️ Error al desactivar: "+e.message,"error")}return e.disabled=!1,a(),void o()}e.disabled=!0,e.textContent="⏳ Activando...";try{localStorage.removeItem("tm_push_desuscrito");try{const e=await navigator.serviceWorker.ready;e&&e.active&&e.active.postMessage({type:"TM_CLEAR_DESUSCRITO"})}catch(e){}if("granted"!==Notification.permission){const t=await Notification.requestPermission();if("denied"===t)return"function"==typeof mostrarNotificacion&&mostrarNotificacion("🚫 Bloqueado. Ve a ajustes del navegador.","error"),a(),o(),void(e.disabled=!1);if("granted"!==t)return e.disabled=!1,void a()}if("function"==typeof tmRegistrarTokenFCMSiPermitido)await tmRegistrarTokenFCMSiPermitido();else if("function"==typeof inicializarFirebaseFCMClient){let e=null;try{const t=localStorage.getItem("firebaseConfig");t&&(e=JSON.parse(t))}catch(e){}if(!e||!e.projectId){const t=await fetch("config.json?_="+Date.now());t.ok&&(e=(await t.json()).firebaseConfig,e&&localStorage.setItem("firebaseConfig",JSON.stringify(e)))}e&&e.projectId&&await inicializarFirebaseFCMClient(e)}if(await new Promise(e=>setTimeout(e,1500)),"activo"===t()){"function"==typeof mostrarNotificacion&&mostrarNotificacion("🔔 ¡Notificaciones activadas!","success");try{(await navigator.serviceWorker.ready).showNotification("✅ TiendaMax activado",{body:"Te avisaremos de ofertas y productos nuevos.",icon:"/iconos/icon-192.png",badge:"/iconos/icon-192.png",vibrate:[200,100,200],tag:"tm-bienvenida"})}catch(e){}}else"function"==typeof mostrarNotificacion&&mostrarNotificacion("⚠️ No se pudo completar. Reintenta.","error")}catch(e){console.error("[notif] Error activando:",e),"function"==typeof mostrarNotificacion&&mostrarNotificacion("❌ Error: "+e.message,"error")}e.disabled=!1,a(),o()}else cerrarModalNotificaciones()},document.addEventListener("keydown",function(e){if("Escape"===e.key){const e=document.getElementById("notifModalOverlay");e&&e.classList.contains("activo")&&cerrarModalNotificaciones()}}),"loading"===document.readyState?document.addEventListener("DOMContentLoaded",o):o(),setInterval(o,5e3),window._tmNotif={actualizarIconoHeader:o,actualizarModalNotif:a,detectarEstadoNotif:t,desuscribirFCM:n}}(),function(){function e(){if(document.getElementById("tm-subir-arriba"))return;const e=document.createElement("button");return e.id="tm-subir-arriba",e.setAttribute("aria-label","Subir al inicio de la página"),e.title="Subir arriba",e.innerHTML='<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>',e.style.cssText=["position:fixed","bottom:20px","left:16px","width:48px","height:48px","border-radius:50%","background:linear-gradient(135deg,#ff6a00,#ff3d00)","color:#fff","border:none","box-shadow:0 6px 20px rgba(255,106,0,.45)","cursor:pointer","opacity:0","visibility:hidden","transform:translateY(20px) scale(.85)","transition:opacity .3s,transform .3s,visibility .3s","z-index:9998","display:flex","align-items:center","justify-content:center"].join(";"),e.onclick=()=>{window.scrollTo({top:0,behavior:"smooth"})},document.body.appendChild(e),e}function t(){const t=document.getElementById("tm-subir-arriba")||e();t&&(window.scrollY>1.2*window.innerHeight?(t.style.opacity="1",t.style.visibility="visible",t.style.transform="translateY(0) scale(1)"):(t.style.opacity="0",t.style.visibility="hidden",t.style.transform="translateY(20px) scale(.85)"))}function o(){e(),window.addEventListener("scroll",t,{passive:!0}),t()}"loading"===document.readyState?document.addEventListener("DOMContentLoaded",o):o()}(),function(){var e=null,t="pwaInstallDismissed";function o(e){return"function"==typeof escapeHtml?escapeHtml(e):String(e).replace(/[&<>"]/g,function(e){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[e]})}function a(){if(!document.getElementById("tm-install-banner-wrap")&&!window.matchMedia("(display-mode: standalone)").matches&&!0!==window.navigator.standalone&&!function(){try{var e=parseInt(localStorage.getItem(t)||"0",10);return e&&Date.now()-e<6048e5}catch(e){return!1}}()){if(!document.getElementById("slideUpBannerStyle")){var a=document.createElement("style");a.id="slideUpBannerStyle",a.textContent="@keyframes slideUpBanner{from{opacity:0;transform:translateX(-50%) translateY(20px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}",document.head.appendChild(a)}var n=document.createElement("div");n.id="tm-install-banner-wrap",n.style.cssText="position:fixed;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom,0px) + 20px);z-index:2000;width:min(92vw,380px);max-width:380px",n.innerHTML='<div style="background:#1a1a1a;border:1.5px solid #C9A96E;border-radius:14px;padding:14px 18px;display:flex;align-items:center;gap:12px;box-shadow:0 8px 32px rgba(0,0,0,0.5);font-family:sans-serif;animation:slideUpBanner .35s ease"><span style="font-size:26px;flex-shrink:0">📲</span><div style="flex:1;min-width:0"><div style="font-weight:700;font-size:14px;color:#C9A96E;margin-bottom:2px">'+o("Instala TiendaMax")+'</div><div style="font-size:12px;color:#aaa;line-height:1.3">'+o("Acceso directo desde tu pantalla de inicio, más rápido y sin ocupar espacio.")+'</div></div><div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0"><button id="tm-install-si" style="background:#C9A96E;color:#000;border:none;border-radius:8px;padding:7px 12px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap">Instalar</button><button id="tm-install-no" style="background:none;border:none;color:#666;font-size:11px;cursor:pointer;text-align:center">Ahora no</button></div></div>',document.body.appendChild(n),document.getElementById("tm-install-si").onclick=async function(){if(n.remove(),e){e.prompt();try{await e.userChoice}catch(e){}e=null}},document.getElementById("tm-install-no").onclick=function(){n.remove();try{localStorage.setItem(t,String(Date.now()))}catch(e){}}}}window.addEventListener("beforeinstallprompt",function(t){t.preventDefault(),e=t,setTimeout(a,4e3)}),window.addEventListener("appinstalled",function(){var o=document.getElementById("tm-install-banner-wrap");o&&o.remove(),e=null;try{localStorage.removeItem(t)}catch(e){}})}();
+'use strict';
+// ===== VARIABLES GLOBALES INICIALIZADAS TEMPRANO (evitar TDZ) =====
+var countdownIntervals = {};
+let _monedaActual = localStorage.getItem('monedaActual') || 'USD';
+
+// ===== CONSTANTES DE CONFIGURACIÓN =====
+const LOCKOUT_DURATION_MS = 5 * 60 * 1000; // 5 minutos de bloqueo tras intentos fallidos
+const PUSH_BANNER_DELAY_MS = 45000; // 45 segundos antes de mostrar banner de notificaciones
+const PUSH_BANNER_DENY_DELAY_HOURS = 6; // 6 horas si el usuario deniega permisos
+const PUSH_RECHAZO_DELAY_DAYS = [1, 3, 7, 14, 30]; // Días de espera según cantidad de rechazos
+
+// ===== HELPER DE SANITIZACIÓN HTML (anti-XSS) =====
+function escapeHtml(s) {
+    if (s === null || s === undefined) return '';
+    return String(s)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
+function escapeAttr(s) { return escapeHtml(s); }
+function safeNum(n, def = 0) {
+    const v = Number(n);
+    return isFinite(v) ? v : def;
+}
+
+
+// ═══════════════════════════════════════════════════════
+//  🛒 CARRITO DE COMPRAS — con persistencia 24h
+// ═══════════════════════════════════════════════════════
+
+function _cargarCarrito() {
+    try {
+        const raw = localStorage.getItem('carrito_v2');
+        if (!raw) return [];
+        const { items, expires } = JSON.parse(raw);
+        if (Date.now() > expires) { localStorage.removeItem('carrito_v2'); return []; }
+        return items || [];
+    } catch { return []; }
+}
+let carrito = _cargarCarrito();
+
+function guardarCarrito() {
+    const payload = { items: carrito, expires: Date.now() + 24 * 60 * 60 * 1000 };
+    localStorage.setItem('carrito_v2', JSON.stringify(payload));
+    actualizarContadorCarrito();
+}
+
+function actualizarContadorCarrito() {
+    const total = carrito.reduce((s, i) => s + i.cantidad, 0);
+    const el = document.getElementById('cartCount');
+    if (!el) return;
+    if (total === 0) {
+        el.style.display = 'none';
+    } else {
+        el.style.display = 'flex';
+        el.textContent = total > 99 ? '99+' : total;
+    }
+}
+
+
+// ══════════════════════════════════════════════════════════════
+//  ME GUSTA / WISHLIST
+// ══════════════════════════════════════════════════════════════
+let wishlist = JSON.parse(localStorage.getItem('wishlist_v1') || '[]').map(String);
+
+function guardarWishlist() {
+    localStorage.setItem('wishlist_v1', JSON.stringify(wishlist));
+}
+
+function toggleMeGusta(id, e) {
+    if (e) { e.stopPropagation(); e.preventDefault(); }
+    id = String(id);
+    const idx = wishlist.indexOf(id);
+    const agregando = idx === -1;
+    if (agregando) {
+        wishlist.push(id);
+        mostrarNotificacion('❤️ Agregado a Me Gusta');
+    } else {
+        wishlist.splice(idx, 1);
+        mostrarNotificacion('🤍 Eliminado de Me Gusta');
+    }
+    guardarWishlist();
+    actualizarBadgeCorazon();
+
+    // Actualizar todos los botones de esta card
+    document.querySelectorAll('[data-like-id="' + id + '"]').forEach(btn => {
+        btn.classList.toggle('liked', wishlist.includes(id));
+        btn.setAttribute('aria-label', wishlist.includes(id) ? 'Quitar me gusta' : 'Me gusta');
+        // Animación del corazón en el botón
+        btn.classList.remove('heart-pop');
+        void btn.offsetWidth;
+        btn.classList.add('heart-pop');
+    });
+
+    // Animación fly-to-heart solo al agregar
+    if (agregando && e) {
+        flyToHeart(e);
+    }
+}
+
+function actualizarBadgeCorazon() {
+    const el = document.getElementById('heartCount');
+    const btn = document.getElementById('heartHeaderBtn');
+    const icon = document.getElementById('heartHeaderIcon');
+    if (!el) return;
+    const total = wishlist.length;
+    if (total === 0) {
+        el.style.display = 'none';
+        if (icon) { icon.setAttribute('fill', 'none'); icon.style.color = ''; }
+    } else {
+        el.style.display = 'flex';
+        el.textContent = total > 99 ? '99+' : total;
+        if (icon) { icon.setAttribute('fill', 'currentColor'); icon.style.color = '#e74c3c'; }
+    }
+    if (btn) btn.classList.toggle('has-likes', total > 0);
+}
+
+function flyToHeart(e) {
+    const heartBtn = document.getElementById('heartHeaderBtn');
+    if (!heartBtn) return;
+
+    // Posición origen (donde se tocó)
+    // FIX: en touchend, e.touches está vacío, usar changedTouches
+    var touch = (e.touches && e.touches[0]) || (e.changedTouches && e.changedTouches[0]);
+    const srcX = e.clientX || (touch ? touch.clientX : window.innerWidth / 2);
+    const srcY = e.clientY || (touch ? touch.clientY : 100);
+
+    // Posición destino (el corazón del header)
+    const destRect = heartBtn.getBoundingClientRect();
+    const destX = destRect.left + destRect.width / 2;
+    const destY = destRect.top + destRect.height / 2;
+
+    // Crear partícula voladora
+    const fly = document.createElement('div');
+    fly.innerHTML = '❤️';
+    fly.style.cssText = [
+        'position:fixed',
+        'left:' + srcX + 'px',
+        'top:' + srcY + 'px',
+        'font-size:22px',
+        'pointer-events:none',
+        'z-index:99999',
+        'transform:translate(-50%,-50%) scale(1)',
+        'transition:left 0.55s cubic-bezier(.4,0,.2,1),top 0.55s cubic-bezier(.4,0,.2,1),transform 0.55s,opacity 0.55s',
+        'opacity:1',
+        'will-change:transform,left,top'
+    ].join(';');
+    document.body.appendChild(fly);
+
+    // Forzar reflow y luego animar hacia el corazón del header
+    requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+            fly.style.left  = destX + 'px';
+            fly.style.top   = destY + 'px';
+            fly.style.transform = 'translate(-50%,-50%) scale(0.3)';
+            fly.style.opacity = '0';
+        });
+    });
+
+    // Pulso en el header al aterrizar
+    setTimeout(() => {
+        fly.remove();
+        if (heartBtn) {
+            heartBtn.classList.remove('heart-land');
+            void heartBtn.offsetWidth;
+            heartBtn.classList.add('heart-land');
+        }
+    }, 560);
+}
+
+function getMeGustaHTML(id) {
+    id = String(id);
+    const liked = wishlist.includes(id);
+    return '<button class="btn-megusta' + (liked ? ' liked' : '') + '" ' +
+        'data-like-id="' + id + '" ' +
+        'aria-label="' + (liked ? 'Quitar me gusta' : 'Me gusta') + '" ' +
+        'onclick="toggleMeGusta(' + id + ', event)" type="button">' +
+        '<svg viewBox="0 0 24 24" width="16" height="16" fill="' + (liked ? 'currentColor' : 'none') + '" stroke="currentColor" stroke-width="2">' +
+        '<path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>' +
+        '</svg>' +
+        '</button>';
+}
+
+function agregarAlCarrito(id) {
+    const p = productos.find(x => x.id === id);
+    if (!p || p.stock === 0) return;
+
+    const existing = carrito.find(x => x.id === id);
+    if (existing) {
+        if (existing.cantidad < p.stock) {
+            existing.cantidad++;
+        } else {
+            mostrarNotificacion('⚠️ No hay más unidades disponibles', 'error');
+            return;
+        }
+    } else {
+        carrito.push({
+            id:       p.id,
+            nombre:   p.nombre,
+            precio:   p.precioActual,
+            imagen:   p.imagen,
+            cantidad: 1
+        });
+    }
+    guardarCarrito();
+    mostrarNotificacion('✅ ' + p.nombre.substring(0,25) + ' agregado al carrito');
+    renderizarCarrito();
+    actualizarBotonesCarrito();
+}
+
+function quitarDelCarrito(id) {
+    carrito = carrito.filter(x => x.id !== id);
+    guardarCarrito();
+    renderizarCarrito();
+    actualizarBotonesCarrito();
+}
+
+function cambiarCantidad(id, delta) {
+    const item = carrito.find(x => x.id === id);
+    if (!item) return;
+    const p = productos.find(x => x.id === id);
+    const maxStock = p ? p.stock : 99;
+    const nueva = Math.min(maxStock, item.cantidad + delta);
+    if (nueva <= 0) { quitarDelCarrito(id); return; }
+    item.cantidad = nueva;
+    guardarCarrito();
+    renderizarCarrito();
+}
+
+function limpiarCarrito() {
+    carrito = [];
+    guardarCarrito();
+    renderizarCarrito();
+    actualizarBotonesCarrito();
+}
+
+function abrirCarrito() {
+    renderizarCarrito();
+    const drawer = document.getElementById('carritoDrawer');
+    drawer.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+}
+
+function cerrarCarrito() {
+    document.getElementById('carritoDrawer').classList.add('hidden');
+    document.body.style.overflow = '';
+}
+
+function renderizarCarrito() {
+    const itemsEl  = document.getElementById('carritoItems');
+    const vacioEl  = document.getElementById('carritoVacio');
+    const footerEl = document.getElementById('carritoFooter');
+    const totalEl  = document.getElementById('carritoTotal');
+    if (!itemsEl) return;
+
+    if (carrito.length === 0) {
+        itemsEl.innerHTML  = '';
+        vacioEl.style.display  = 'block';
+        footerEl.style.display = 'none';
+        return;
+    }
+
+    vacioEl.style.display  = 'none';
+    footerEl.style.display = 'block';
+
+    const total = carrito.reduce((s, i) => s + i.precio * i.cantidad, 0);
+    if (totalEl) totalEl.textContent = '$' + total.toFixed(2) + ' USD';
+
+    itemsEl.innerHTML = carrito.map(item => {
+        const subtotal = (item.precio * item.cantidad).toFixed(2);
+        const nombre   = escapeHtml(item.nombre);
+        const imagen   = escapeAttr(item.imagen);
+        const idSafe   = safeNum(item.id);
+        return '<div class="carrito-item" id="cartItem-' + idSafe + '">' +
+            '<img class="carrito-item-img" src="' + imagen + '" alt="' + nombre + '" onerror="this.style.display=\'none\'">'  +
+            '<div class="carrito-item-info">' +
+                '<div class="carrito-item-name">' + nombre + '</div>' +
+                '<div class="carrito-item-price">$' + subtotal + ' USD</div>' +
+                '<div class="carrito-item-controls">' +
+                    '<button class="carrito-qty-btn" onclick="cambiarCantidad(' + idSafe + ',-1)">−</button>' +
+                    '<span class="carrito-qty-num">' + safeNum(item.cantidad, 1) + '</span>' +
+                    '<button class="carrito-qty-btn" onclick="cambiarCantidad(' + idSafe + ',1)">+</button>' +
+                    '<span style="font-size:11px;color:#aaa;margin-left:4px;">$' + item.precio.toFixed(2) + ' c/u</span>' +
+                '</div>' +
+            '</div>' +
+            '<button class="carrito-item-del" onclick="quitarDelCarrito(' + idSafe + ')" title="Eliminar">✕</button>' +
+            '</div>';
+    }).join('');
+
+    // Mostrar productos similares debajo de los items
+    renderizarSimilaresCarrito();
+    // Siempre sincronizar el badge del header
+    actualizarContadorCarrito();
+}
+
+function renderizarSimilaresCarrito() {
+    const secEl  = document.getElementById('carritoSimilares');
+    const gridEl = document.getElementById('carritoSimilaresGrid');
+    if (!secEl || !gridEl || typeof productos === 'undefined') return;
+
+    if (carrito.length === 0) { secEl.style.display = 'none'; return; }
+
+    // Categorías presentes en el carrito
+    const categoriasCarrito = [...new Set(
+        carrito.map(i => {
+            const p = productos.find(x => x.id === i.id);
+            return p ? (p.categoria || '') : '';
+        }).filter(Boolean)
+    )];
+
+    const idsEnCarrito = new Set(carrito.map(i => i.id));
+
+    // Similares: misma categoría, no en carrito, disponibles, máx 3 aleatorios
+    const similares = productos
+        .filter(p =>
+            !idsEnCarrito.has(p.id) &&
+            categoriasCarrito.includes(p.categoria || '') &&
+            p.precioActual > 0 &&
+            p.agotado !== true
+        )
+        .sort(() => Math.random() - 0.5)
+        .slice(0, 3);
+
+    if (similares.length === 0) { secEl.style.display = 'none'; return; }
+
+    secEl.style.display = 'block';
+    gridEl.innerHTML = similares.map(p => {
+        const img    = escapeAttr((p.imagenes && p.imagenes[0]) ? p.imagenes[0] : (p.imagen || ''));
+        const nombre = escapeHtml(p.nombre);
+        const idSafe = safeNum(p.id);
+        return '<div class="cs-card">' +
+            '<img class="cs-card-img" src="' + img + '" alt="' + nombre + '" loading="lazy" onerror="this.style.display=\'none\'">' +
+            '<div class="cs-card-body">' +
+                '<div class="cs-card-nombre">' + nombre + '</div>' +
+                '<div class="cs-card-precio">$' + Number(p.precioActual).toFixed(2) + ' USD</div>' +
+            '</div>' +
+            '<button class="cs-card-btn" onclick="agregarAlCarrito(' + idSafe + ');renderizarCarrito();">🛒 Agregar</button>' +
+        '</div>';
+    }).join('');
+}
+
+// ── Helper compartido: construye el mensaje premium para WhatsApp ──
+// Recibe un array de items { id?, nombre, precio, cantidad } y devuelve
+// el mensaje YA encoded listo para meter en `?text=`.
+// Lo usan: comprarCarrito (carrito), tmComprar (botón "Pedir" de cards),
+// y contactarProducto (botón "Pedir" del modal de detalle).
+//
+// Si hay UN solo item con id, el link al final apunta a la página del
+// producto (/p/producto-{id}.html) para que WhatsApp genere la previa
+// con miniatura usando los meta og:image. Si hay varios, link genérico.
+function _mensajeOrdenWA(items) {
+    // Emojis como escape ASCII para evitar corrupción de 4-byte UTF-8 en servidor
+    const E = {
+        cart : '\uD83D\uDED2',  // 🛒
+        spark: '\u2728',        // ✨  (BMP — ok directo, pero escapado por consistencia)
+        dot  : '\uD83D\uDD39',  // 🔹
+        money: '\uD83D\uDCB0',  // 💰
+        chart: '\uD83D\uDCC8',  // 📈
+        bill : '\uD83D\uDCB5',  // 💵
+        truck: '\uD83D\uDE9A',  // 🚚
+        pray : '\uD83D\uDE4F',  // 🙏
+        heart: '\u2764\uFE0F',  // ❤️
+        link : '\uD83D\uDD17',  // 🔗
+    };
+
+    const L = [];
+    L.push(E.cart + E.spark + ' *NUEVA ORDEN \u2014 TIENDAMAX* ' + E.spark + E.cart);
+    L.push('\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501');
+    L.push('');
+
+    items.forEach((it, i) => {
+        const precio = Number(it.precio || 0);
+        const cant   = Number(it.cantidad || 1);
+        L.push(E.dot + ' *' + (i + 1) + '.* ' + it.nombre);
+        L.push(precio > 0
+            ? '      \u25b8 Cant: *' + cant + '*  \u00b7  $' + precio.toFixed(2) + ' USD c/u'
+            : '      \u25b8 Cant: *' + cant + '*');
+        L.push('');
+    });
+
+    const subtotal = items.reduce(
+        (s, i) => s + Number(i.precio || 0) * Number(i.cantidad || 1), 0
+    );
+
+    L.push('\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501');
+    if (subtotal > 0) {
+        L.push(E.money + ' *Subtotal:* $' + subtotal.toFixed(2) + ' USD');
+        const tasaFinal = (typeof getTasaMN === 'function') ? getTasaMN() : 0;
+        if (tasaFinal > 0) {
+            const totalMN = Math.round(subtotal * tasaFinal).toLocaleString('es-CU');
+            L.push(E.chart + ' *Tasa:* 1 USD = ' + tasaFinal + ' MN');
+            L.push(E.bill  + ' *TOTAL:* *' + totalMN + ' MN*');
+        }
+    }
+
+    L.push('');
+    L.push(E.truck + ' _Env\u00edame los datos para coordinar la entrega, por favor._');
+    L.push('');
+    L.push(E.pray + ' _\u00a1Gracias por tu compra!_ ' + E.heart);
+
+    // Un solo producto con id → link al producto (WhatsApp genera miniatura con og:image)
+    // Varios productos → link genérico a la tienda
+    if (items.length === 1 && items[0].id) {
+        L.push(E.link + ' https://tiendamax.org/p/producto-' + items[0].id + '.html');
+    } else {
+        L.push(E.link + ' https://tiendamax.org');
+    }
+
+    return encodeURIComponent(L.join('\n'));
+}
+
+function comprarCarrito() {
+    if (carrito.length === 0) return;
+    // Historial del cliente + analytics antes de abrir WhatsApp
+    guardarPedidoCliente(carrito.slice());
+    if (typeof tmTrackWhatsApp === 'function') carrito.forEach(i => tmTrackWhatsApp(i.id));
+    const msg = _mensajeOrdenWA(carrito);
+    window.open('https://wa.me/' + getNumeroWhatsApp() + '?text=' + msg, '_blank', 'noopener,noreferrer');
+}
+
+// Actualiza el estado visual de los botones "Agregar al carrito" en los cards
+function actualizarBotonesCarrito() {
+    document.querySelectorAll('[data-cart-id]').forEach(btn => {
+        const id = btn.getAttribute('data-cart-id');
+        // FIX: comparar como strings para evitar bugs si los IDs cambian de tipo
+        const enCarrito = carrito.some(x => String(x.id) === String(id));
+        if (enCarrito) {
+            btn.classList.add('en-carrito');
+            btn.textContent = '✓ En carrito';
+        } else {
+            btn.classList.remove('en-carrito');
+            btn.textContent = '🛒 Agregar';
+        }
+    });
+}
+
+// ═══════════════════════════════════════════════════════
+//  ⭐ RESEÑAS
+// ═══════════════════════════════════════════════════════
+let _estrellasSeleccionadas = 0;
+let _productoResena = null;
+
+function mostrarFormResena() {
+    const form = document.getElementById('formResena');
+    const btn  = document.getElementById('btnAgregarResena');
+    if (!form) return;
+    const visible = form.style.display !== 'none';
+    form.style.display = visible ? 'none' : 'block';
+    if (btn) btn.textContent = visible ? '+ Agregar reseña' : '✕ Cancelar';
+    _estrellasSeleccionadas = 0;
+    setEstrellas(0);
+    const autorEl = document.getElementById('resenaAutor');
+    const textoEl = document.getElementById('resenaTexto');
+    if (autorEl) autorEl.value = '';
+    if (textoEl) textoEl.value = '';
+}
+
+function setEstrellas(n) {
+    _estrellasSeleccionadas = n;
+    document.querySelectorAll('.estrella-btn').forEach((btn, i) => {
+        btn.classList.toggle('activa', i < n);
+    });
+}
+
+function guardarResena() {
+    if (!_detalleProductoActual) return;
+    const autor = (document.getElementById('resenaAutor')?.value || '').trim();
+    const texto = (document.getElementById('resenaTexto')?.value || '').trim();
+    if (!autor) { mostrarNotificacion('⚠️ Escribe tu nombre', 'error'); return; }
+    if (_estrellasSeleccionadas === 0) { mostrarNotificacion('⚠️ Selecciona una valoración', 'error'); return; }
+    if (!texto) { mostrarNotificacion('⚠️ Escribe tu reseña', 'error'); return; }
+    if (texto.length < 10) { mostrarNotificacion('⚠️ La reseña es muy corta', 'error'); return; }
+
+    const pid = String(_detalleProductoActual.id);
+    const ts  = Date.now();
+    const nuevaResena = {
+        id: ts,
+        autor: autor.substring(0, 50),
+        texto: texto.substring(0, 400),
+        estrellas: _estrellasSeleccionadas,
+        fecha: new Date().toLocaleDateString('es-ES', { day:'numeric', month:'short', year:'numeric' }),
+        productoId: pid,
+        productoNombre: _detalleProductoActual.nombre || ''
+    };
+
+    mostrarFormResena();
+    mostrarNotificacion('⏳ Publicando reseña...');
+
+    // Guardar en Firebase — visible para todos al instante
+    (async () => {
+        try {
+            const cfg = JSON.parse(localStorage.getItem('firebaseConfig') || '{}');
+            const base = cfg.databaseURL || (cfg.projectId ? 'https://' + cfg.projectId + '-default-rtdb.firebaseio.com' : null);
+            if (base) {
+                const r = await fetch(base + '/resenas/' + pid + '/' + ts + '.json', {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(nuevaResena)
+                });
+                if (r.ok) {
+                    mostrarNotificacion('✅ ¡Reseña publicada! Visible para todos');
+                    // Recargar reseñas desde Firebase
+                    await renderizarResenas(pid);
+                    return;
+                }
+            }
+        } catch(e) {}
+        // Fallback local
+        const key = 'resenas_' + pid;
+        const resenas = JSON.parse(localStorage.getItem(key) || '[]');
+        resenas.unshift(nuevaResena);
+        localStorage.setItem(key, JSON.stringify(resenas.slice(0, 20)));
+        mostrarNotificacion('💾 Reseña guardada localmente');
+        await renderizarResenas(pid);
+    })();
+}
+
+async function renderizarResenas(productoId) {
+    const el = document.getElementById('listaResenas');
+    if (!el) return;
+    const pid = String(productoId);
+
+    el.innerHTML = '<p class="resenas-vacio" style="color:#aaa;font-size:13px;text-align:center;padding:12px;">⏳ Cargando reseñas...</p>';
+
+    let resenas = [];
+
+    // Leer desde Firebase (fuente de verdad)
+    try {
+        const cfg = JSON.parse(localStorage.getItem('firebaseConfig') || '{}');
+        const base = cfg.databaseURL || (cfg.projectId ? 'https://' + cfg.projectId + '-default-rtdb.firebaseio.com' : null);
+        if (base) {
+            const r = await fetch(base + '/resenas/' + pid + '.json');
+            if (r.ok) {
+                const data = await r.json();
+                if (data && typeof data === 'object') {
+                    resenas = Object.values(data).filter(Boolean).sort((a,b) => b.id - a.id);
+                }
+            }
+        }
+    } catch(e) {}
+
+    // Fallback a localStorage si Firebase no responde
+    if (resenas.length === 0) {
+        const prodEnMemoria = productos.find(p => p.id === productoId);
+        if (prodEnMemoria && Array.isArray(prodEnMemoria.resenas) && prodEnMemoria.resenas.length > 0) {
+            resenas = prodEnMemoria.resenas;
+        } else {
+            const key = 'resenas_' + pid;
+            resenas = JSON.parse(localStorage.getItem(key) || '[]');
+        }
+    }
+
+    if (resenas.length === 0) {
+        el.innerHTML = '<p class="resenas-vacio">Sé el primero en dejar una reseña 🌟</p>';
+        return;
+    }
+    const promedio = (resenas.reduce((s, r) => s + r.estrellas, 0) / resenas.length).toFixed(1);
+    el.innerHTML =
+        '<div style="text-align:center;margin-bottom:14px;">' +
+            '<span style="font-size:28px;font-weight:900;color:#f59e0b;">' + promedio + '</span>' +
+            '<span style="color:#f59e0b;font-size:18px;margin-left:6px;">' + '★'.repeat(Math.round(parseFloat(promedio))) + '</span>' +
+            '<div style="font-size:12px;color:#aaa;">' + resenas.length + ' reseña' + (resenas.length !== 1 ? 's' : '') + '</div>' +
+        '</div>' +
+        resenas.map(r => {
+            const e = Math.max(0, Math.min(5, parseInt(r.estrellas, 10) || 0));
+            return '<div class="resena-item">' +
+                '<div class="resena-top">' +
+                    '<span class="resena-autor">' + escapeHtml(r.autor) + '</span>' +
+                    '<div style="display:flex;align-items:center;gap:6px;">' +
+                        '<span class="resena-estrellas">' + '★'.repeat(e) + '☆'.repeat(5 - e) + '</span>' +
+                        '<span class="resena-fecha">' + escapeHtml(r.fecha) + '</span>' +
+                    '</div>' +
+                '</div>' +
+                '<p class="resena-texto">' + escapeHtml(r.texto) + '</p>' +
+            '</div>';
+        }).join('');
+}
+
+// ── TESTIMONIOS DINÁMICOS DESDE FIREBASE ────────────────
+async function cargarTestimoniosFirebase() {
+    const grid = document.getElementById('testimoniosGrid');
+    const cta  = document.getElementById('testimoniosCTA');
+    if (!grid) return;
+
+    try {
+        const cfg = JSON.parse(localStorage.getItem('firebaseConfig') || '{}');
+        const base = cfg.databaseURL || (cfg.projectId ? 'https://' + cfg.projectId + '-default-rtdb.firebaseio.com' : null);
+        if (!base) throw new Error('no config');
+
+        // Leer todas las reseñas de todos los productos
+        const r = await fetch(base + '/resenas.json?shallow=true');
+        if (!r.ok) throw new Error('fetch failed');
+        const productIds = await r.json();
+        if (!productIds || typeof productIds !== 'object') throw new Error('empty');
+
+        // Buscar reseñas de cada producto en paralelo (máx 6 para no saturar)
+        const pids = Object.keys(productIds).slice(0, 6);
+        const allResenas = [];
+        await Promise.all(pids.map(async pid => {
+            try {
+                const rp = await fetch(base + '/resenas/' + pid + '.json');
+                if (!rp.ok) return;
+                const data = await rp.json();
+                if (data && typeof data === 'object') {
+                    Object.values(data).filter(Boolean).forEach(r => allResenas.push(r));
+                }
+            } catch(e) {}
+        }));
+
+        if (allResenas.length === 0) throw new Error('no resenas');
+
+        // Ordenar por más recientes y tomar las mejores con 4-5 estrellas
+        const mejores = allResenas
+            .filter(r => r.estrellas >= 4 && r.texto && r.texto.length > 15)
+            .sort((a, b) => b.id - a.id)
+            .slice(0, 6);
+
+        if (mejores.length === 0) throw new Error('no good resenas');
+
+        const stars = n => '⭐'.repeat(Math.min(5, Math.max(1, n)));
+
+        grid.innerHTML = mejores.map(r =>
+            '<div class="testimonio-card">' +
+                '<div class="stars">' + stars(r.estrellas) + '</div>' +
+                '<p>"' + escapeHtml(r.texto.substring(0, 200)) + '"</p>' +
+                '<p class="autor">— ' + escapeHtml(r.autor) +
+                (r.productoNombre ? ' <span style="font-size:10px;opacity:0.5;font-weight:400;">· ' + escapeHtml(r.productoNombre.substring(0, 30)) + '</span>' : '') +
+                '</p>' +
+            '</div>'
+        ).join('');
+
+        if (cta) cta.style.display = 'block';
+
+    } catch(e) {
+        // Sin reseñas reales aún — mostrar mensaje invitando a dejar una
+        grid.innerHTML =
+            '<div class="testimonio-card" style="grid-column:1/-1;text-align:center;padding:40px;">' +
+                '<div style="font-size:40px;margin-bottom:12px;">⭐</div>' +
+                '<p style="color:rgba(255,255,255,0.5);font-size:15px;">Aún no hay reseñas. ¡Sé el primero en compartir tu experiencia!</p>' +
+            '</div>';
+    }
+}
+
+// ═══════════════════════════════════════════════════════
+//  🕐 VISTOS RECIENTEMENTE (v2 - con timestamps y caducidad)
+//
+//  Guarda hasta 12 productos vistos por el cliente, con
+//  timestamp para caducar tras 30 días. Solo se guardan
+//  visualizaciones REALES (productos que el cliente abrió).
+// ═══════════════════════════════════════════════════════
+const _TM_VISTOS_MAX = 12;
+const _TM_VISTOS_DIAS_CADUCIDAD = 30;
+
+function _cargarVistos() {
+    try {
+        const raw = localStorage.getItem('recientes_v2');
+        if (!raw) return [];
+        const arr = JSON.parse(raw);
+        if (!Array.isArray(arr)) return [];
+        // Filtrar caducados
+        const limite = Date.now() - _TM_VISTOS_DIAS_CADUCIDAD * 24 * 60 * 60 * 1000;
+        return arr.filter(x => x && x.t && x.t > limite);
+    } catch(e) { return []; }
+}
+
+function _guardarVistos(arr) {
+    try {
+        localStorage.setItem('recientes_v2', JSON.stringify(arr));
+    } catch(e) {
+        // Si la cuota está llena, intentar reducir a la mitad
+        try {
+            localStorage.setItem('recientes_v2', JSON.stringify(arr.slice(0, 6)));
+        } catch(e2) {}
+    }
+}
+
+function registrarVisto(id) {
+    if (!id) return;
+    let vistos = _cargarVistos();
+    // Quitar si ya existe (para subirlo al top)
+    vistos = vistos.filter(x => String(x.id) !== String(id));
+    // Añadir al principio con timestamp
+    vistos.unshift({ id: String(id), t: Date.now() });
+    // Limitar a 12
+    vistos = vistos.slice(0, _TM_VISTOS_MAX);
+    _guardarVistos(vistos);
+    // Re-renderizar las secciones si están visibles
+    setTimeout(renderizarRecientes, 100);
+}
+
+function limpiarRecientes() {
+    try { localStorage.removeItem('recientes_v2'); } catch(e) {}
+    try { localStorage.removeItem('recientes'); } catch(e) {}  // limpiar versión vieja
+    renderizarRecientes();
+}
+
+// Renderiza los productos vistos en la sección "seccionRecientes" (home)
+// y en "detailVistosGrid" (modal de detalle). Si no hay productos, oculta las secciones.
+function renderizarRecientes() {
+    if (!Array.isArray(productos) || productos.length === 0) return;
+
+    const vistos = _cargarVistos();
+    const productoActualId = (typeof _detalleProductoActual !== 'undefined' && _detalleProductoActual)
+        ? String(_detalleProductoActual.id) : null;
+
+    // Resolver IDs → objetos producto. Excluir el producto que está abierto ahora.
+    const items = vistos
+        .map(v => productos.find(p => String(p.id) === String(v.id)))
+        .filter(Boolean)
+        .filter(p => String(p.id) !== productoActualId)
+        .slice(0, 6);
+
+    // ─── Sección en HOME ───
+    const secHome = document.getElementById('seccionRecientes');
+    const gridHome = document.getElementById('recientesGrid');
+    if (secHome && gridHome) {
+        if (items.length === 0) {
+            secHome.style.display = 'none';
+        } else {
+            secHome.style.display = '';
+            gridHome.innerHTML = items.map(_renderCardRecientes).join('');
+        }
+    }
+
+    // ─── Sección en DETALLE de producto ───
+    const secDet = document.getElementById('detailVistosSection');
+    const gridDet = document.getElementById('detailVistosGrid');
+    if (secDet && gridDet) {
+        if (items.length === 0) {
+            secDet.style.display = 'none';
+        } else {
+            secDet.style.display = 'block';
+            gridDet.innerHTML = items.map(_renderCardRecientes).join('');
+        }
+    }
+}
+
+function _renderCardRecientes(p) {
+    const id = safeNum(p.id);
+    const nombre = escapeHtml(p.nombre);
+    const img = escapeAttr(p.imagen || '');
+    const precio = Number(p.precioActual || 0).toFixed(2);
+    const agotado = p.stock === 0;
+    return '<div class="rec-card" onclick="abrirDetalleProducto(' + id + ')">'
+        + (agotado ? '<span class="rec-card-agotado">Agotado</span>' : '')
+        + '<img src="' + img + '" alt="' + nombre + '" loading="lazy" onerror="this.style.display=\'none\'">'
+        + '<div class="rec-card-info">'
+        +     '<div class="rec-card-nombre">' + nombre + '</div>'
+        +     '<div class="rec-card-precio">$' + precio + '</div>'
+        + '</div>'
+        + '</div>';
+}
+
+// ═══════════════════════════════════════════════════════
+//  🔔 NOTIFICACIONES PUSH
+// ═══════════════════════════════════════════════════════
+async function solicitarNotificaciones() {
+    if (!('Notification' in window)) return false;
+    if (Notification.permission === 'granted') return true;
+    if (Notification.permission === 'denied') return false;
+    const perm = await Notification.requestPermission();
+    return perm === 'granted';
+}
+
+function mostrarNotificacionPush(titulo, cuerpo, icono) {
+    if (Notification.permission !== 'granted') return;
+    try {
+        new Notification(titulo, {
+            body: cuerpo,
+            icon: icono || 'https://tiendamax.org/favicon.ico',
+            badge: 'https://tiendamax.org/favicon.ico',
+            tag: 'tiendamax'
+        });
+    } catch(e) {}
+}
+
+// Verificar si hay productos nuevos desde la última visita
+function verificarProductosNuevos() {
+    const ultimaVisita = parseInt(localStorage.getItem('ultimaVisita') || '0');
+    const ahora = Date.now();
+    localStorage.setItem('ultimaVisita', ahora.toString());
+    if (ultimaVisita === 0) return; // Primera visita
+    const nuevos = productos.filter(p => p.id > ultimaVisita).length;
+    if (nuevos > 0 && Notification.permission === 'granted') {
+        mostrarNotificacionPush(
+            '🛍️ TiendaMax',
+            nuevos === 1 ? '¡Hay 1 producto nuevo!' : `¡Hay ${nuevos} productos nuevos!`
+        );
+    }
+}
+
+
+// ===== CONFIGURACIÓN GLOBAL =====
+// Constantes para autenticacion PBKDF2
+const AUTH_SALT_KEY = 'tm_auth_salt_v3';
+const AUTH_HASH_KEY = 'tm_auth_hash_v3';
+const AUTH_ITERATIONS = 310000;
+
+function _generarSal() {
+    const arr = new Uint8Array(16);
+    crypto.getRandomValues(arr);
+    return Array.from(arr).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+function _getSalt() {
+    let salt = localStorage.getItem(AUTH_SALT_KEY);
+    if (!salt) {
+        salt = _generarSal();
+        try { localStorage.setItem(AUTH_SALT_KEY, salt); } catch(e) {}
+    }
+    return salt;
+}
+
+// SHA-256 para migración desde hashes hardcodeados viejos
+async function _hashSha256(password) {
+    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(password));
+    return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+// Hashes SHA-256 legacy (se aceptan durante migración, tras primer login se actualizan)
+const _OLD_HASHES = [
+    'a338781ef2610e22bde9dae45f2d8aaa6a8a8c4584158f18cd91089b9192bc62',
+    '90035f586903f0259868846c2459740b957630712759861619894101e405187e'
+];
+
+let productos = JSON.parse(localStorage.getItem('productos')) || [];
+let categorias = JSON.parse(localStorage.getItem('categorias')) || ['General'];
+let usuarioAutenticado = false;
+let categoriaSeleccionada = 'Todas';
+let subcategoriaSeleccionada = 'Todas';
+
+// Iconos para cada categoría (Mapeo automático por palabras clave)
+const ICONOS_MAPA = {
+    'wifi': '📡', 'internet': '📡', 'red': '📡', 'router': '📡',
+    'energia': '⚡', 'bateria': '⚡', 'luz': '⚡', 'corriente': '⚡', 'inversor': '⚡',
+    'celular': '📱', 'telefono': '📱', 'movil': '📱', 'iphone': '📱', 'android': '📱',
+    'utiles': '🔧', 'herramienta': '🔧', 'reparacion': '🔧', 'ferreteria': '🔧',
+    'ropa': '👗', 'vestir': '👗', 'moda': '👗', 'calzado': '👗', 'zapatos': '👗',
+    'electronica': '💻', 'computadora': '💻', 'laptop': '💻', 'tecnologia': '💻',
+    'hogar': '🏠', 'casa': '🏠', 'mueble': '🏠', 'cocina': '🏠',
+    'alimento': '🍎', 'comida': '🍎', 'fruta': '🍎', 'dulce': '🍎',
+    'belleza': '💄', 'maquillaje': '💄', 'perfume': '💄', 'cuidado': '💄',
+    'deporte': '⚽', 'gym': '⚽', 'ejercicio': '⚽', 'fitness': '⚽',
+    'juguete': '🧸', 'niño': '🧸', 'bebe': '🧸', 'diversion': '🧸',
+    'libro': '📚', 'estudio': '📚', 'papeleria': '📚', 'escuela': '📚',
+    'auto': '🚗', 'carro': '🚗', 'moto': '🚗', 'vehiculo': '🚗', 'repuesto': '🚗',
+    'reloj': '⌚', 'joya': '💎', 'accesorio': '💍',
+    'mascota': '🐾', 'perro': '🐾', 'gato': '🐾',
+    'musica': '🎵', 'audio': '🔊', 'sonido': '🔊',
+    'viaje': '✈️', 'maleta': '🧳',
+    'general': '🛍️'
+};
+
+// Cargar iconos personalizados desde localStorage
+let iconosPersonalizados = JSON.parse(localStorage.getItem('iconosPersonalizados')) || {};
+
+function obtenerIconoCategoria(nombre) {
+    if (!nombre) return '🛍️';
+    
+    // 1. Prioridad: Icono personalizado guardado por el usuario
+    if (iconosPersonalizados[nombre]) return iconosPersonalizados[nombre];
+    
+    // 2. Mapeo automático por palabras clave
+    const nombreMinus = nombre.toLowerCase();
+    for (const [clave, icono] of Object.entries(ICONOS_MAPA)) {
+        if (nombreMinus.includes(clave)) return icono;
+    }
+    
+    // 3. Por defecto: Icono de "Todos" (🛍️) si no se encuentra nada
+    return '🛍️';
+}
+
+
+// ═══════════════════════════════════════════════════════
+//  BÚSQUEDA HERO — con IA (Claude API)
+// ═══════════════════════════════════════════════════════
+let _heroSearchActivo = '';
+let _heroPrecioMin    = 0;
+let _heroPrecioMax    = Infinity;
+let _heroSearchTimer  = null;
+let _aiSearchTimer    = null;
+
+function abrirPanelBusqueda() {
+    const panel = document.getElementById('heroSearchPanel');
+    const bar   = document.getElementById('heroSearchBar');
+    if (!panel) return;
+    panel.classList.add('visible');
+    if (bar) bar.classList.add('open');
+    setTimeout(() => document.getElementById('heroSearchInput')?.focus(), 50);
+}
+
+function cerrarPanelBusqueda() {
+    const panel = document.getElementById('heroSearchPanel');
+    const bar   = document.getElementById('heroSearchBar');
+    if (panel) panel.classList.remove('visible');
+    if (bar)   bar.classList.remove('open');
+}
+
+// Stubs de compatibilidad
+function inicializarSliderPrecios() {}
+function actualizarSliderPrecio() {}
+
+// Búsqueda local rápida
+function busquedaLocal(q) {
+    if (!q) return productos.slice(0, 6);
+    const ql = q.toLowerCase();
+    return productos.filter(p =>
+        p.nombre.toLowerCase().includes(ql) ||
+        (p.descripcion||'').toLowerCase().includes(ql) ||
+        (p.categoria||'').toLowerCase().includes(ql) ||
+        (p.subcategoria||'').toLowerCase().includes(ql)
+    ).slice(0, 6);
+}
+
+// Búsqueda inteligente local (sin depender de APIs externas)
+async function busquedaConIA(q) {
+    if (!q || q.length < 3 || productos.length === 0) return null;
+
+    const normalizar = (txt) => String(txt || '')
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[̀-ͯ]/g, '')
+        .replace(/[^a-z0-9\s]/g, ' ');
+
+    const alias = {
+        wifi: ['router', 'internet', 'red', 'repetidor'],
+        internet: ['wifi', 'router', 'red'],
+        bateria: ['bateria', 'power bank', 'energia', 'corriente'],
+        energia: ['inversor', 'bateria', 'corriente', 'solar'],
+        corriente: ['energia', 'inversor', 'bateria'],
+        telefono: ['celular', 'movil', 'smartphone'],
+        celular: ['telefono', 'movil', 'smartphone'],
+        laptop: ['computadora', 'pc'],
+        computadora: ['laptop', 'pc'],
+        camara: ['foto', 'fotografia'],
+        tv: ['televisor', 'monitor']
+    };
+
+    const tokensBase = normalizar(q).split(/\s+/).filter(Boolean);
+    const tokens = new Set(tokensBase);
+    tokensBase.forEach(t => (alias[t] || []).forEach(a => tokens.add(a)));
+
+    const resultados = productos
+        .map(p => {
+            const texto = normalizar([p.nombre, p.descripcion, p.categoria, p.subcategoria].join(' '));
+            let score = 0;
+            tokens.forEach(t => {
+                if (!t) return;
+                if (texto.includes(t)) score += 2;
+                if (normalizar(p.nombre).includes(t)) score += 4;
+                if (normalizar(p.categoria).includes(t) || normalizar(p.subcategoria).includes(t)) score += 2;
+            });
+            if (normalizar(p.nombre).includes(normalizar(q))) score += 8;
+            if (score === 0) return null;
+            return { producto: p, score };
+        })
+        .filter(Boolean)
+        .sort((a, b) => b.score - a.score || a.producto.stock - b.producto.stock)
+        .slice(0, 5)
+        .map(x => x.producto);
+
+    return resultados.length ? resultados : null;
+}
+
+function renderSugerencias(resultados, q) {
+    const sugBox = document.getElementById('heroSearchSuggestions');
+    if (!sugBox) return;
+    if (!resultados || resultados.length === 0) {
+        // Mostrar más vendidos como sugerencia cuando no hay resultados
+        const sugeridos = productos
+            .filter(p => p.stock > 0 && (p.masVendido === true || p.masVendido === 'true'))
+            .slice(0, 4);
+        const fallback = sugeridos.length > 0 ? sugeridos : productos.filter(p => p.stock > 0).slice(0, 4);
+        if (fallback.length === 0) {
+            sugBox.innerHTML = '<div class="hsb-sug-empty">😕 Sin resultados para "' + escapeHtml(q) + '"</div>';
+            return;
+        }
+        const items = fallback.map(p =>
+            '<div class="hsb-sug-item" onclick="seleccionarSugerencia(' + safeNum(p.id) + ')">' +
+            '<img class="hsb-sug-img" src="' + escapeAttr(p.imagen) + '" loading="lazy" onerror="this.style.display=\'none\'">' +
+            '<span class="hsb-sug-name">' + escapeHtml(p.nombre) + '</span>' +
+            '<span class="hsb-sug-price">$' + Number(p.precioActual).toFixed(2) + '</span>' +
+            '</div>'
+        ).join('');
+        sugBox.innerHTML =
+            '<div class="hsb-sug-empty" style="padding:8px 12px;font-size:12px;">😕 Sin resultados para "' + escapeHtml(q) + '"</div>' +
+            '<div style="padding:6px 12px;font-size:11px;opacity:0.6;border-top:1px solid rgba(255,255,255,0.08);">🔥 Te puede interesar</div>' +
+            items;
+        return;
+    }
+    sugBox.innerHTML = resultados.map(p => {
+        // resaltarTexto ya genera HTML controlado a partir de p.nombre escapado
+        const nombre = q ? resaltarTexto(escapeHtml(p.nombre), q) : escapeHtml(p.nombre);
+        const agotadoBadge = p.stock === 0 ? '<span style="color:#e74c3c;font-size:10px;font-weight:700;margin-left:4px;">AGOTADO</span>' : '';
+        return '<div class="hsb-sug-item" onclick="seleccionarSugerencia(' + safeNum(p.id) + ')">' +
+            '<img class="hsb-sug-img" src="' + escapeAttr(p.imagen) + '" loading="lazy" onerror="this.style.display=\'none\'">' +
+            '<span class="hsb-sug-name">' + nombre + agotadoBadge + '</span>' +
+            '<span class="hsb-sug-price">$' + Number(p.precioActual).toFixed(2) + '</span>' +
+            '</div>';
+    }).join('');
+}
+
+async function buscarDesdeHero(query) {
+    clearTimeout(_heroSearchTimer);
+    clearTimeout(_aiSearchTimer);
+    const q = (query || '').trim();
+    const sugBox = document.getElementById('heroSearchSuggestions');
+    const aiLabel = document.getElementById('hsb-ai-label');
+    if (!q) {
+        if (sugBox) sugBox.innerHTML = '';
+        if (aiLabel) aiLabel.style.display = 'none';
+        return;
+    }
+    _heroSearchTimer = setTimeout(async () => {
+        const locales = busquedaLocal(q);
+        renderSugerencias(locales, q);
+        if (q.length >= 3) {
+            if (aiLabel) aiLabel.style.display = 'block';
+            if (locales.length < 2 && sugBox) {
+                sugBox.innerHTML = '<div class="hsb-ai-loading">🤖 Buscando con IA</div>';
+            }
+            _aiSearchTimer = setTimeout(async () => {
+                const iaResultados = await busquedaConIA(q);
+                if (iaResultados && iaResultados.length > 0) {
+                    renderSugerencias(iaResultados, q);
+                } else {
+                    renderSugerencias(locales.length > 0 ? locales : [], q);
+                }
+            }, 600);
+        }
+    }, 150);
+}
+
+function aplicarBusquedaHero() {
+    const q = (document.getElementById('heroSearchInput')?.value || '').trim().toLowerCase();
+    _heroSearchActivo = q;
+    _heroPrecioMin = 0;
+    _heroPrecioMax = Infinity;
+    cerrarPanelBusqueda();
+    mostrarVistaCategoria('Todas');
+}
+
+function seleccionarSugerencia(id) {
+    cerrarPanelBusqueda();
+    abrirDetalleProducto(id);
+}
+
+function resaltarTexto(texto, query) {
+    try {
+        const re = new RegExp('(' + query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi');
+        return texto.replace(re, '<mark style="background:rgba(201,169,110,0.25);color:inherit;border-radius:3px;padding:0 2px;">$1</mark>');
+    } catch(e) { return texto; }
+}
+
+// Cerrar panel al tocar fuera
+document.addEventListener('click', (e) => {
+    if (!e.target.closest('.hsb-wrap')) cerrarPanelBusqueda();
+});
+
+// ═══════════════════════════════════════════════════════
+//  SUBIDA DE IMÁGENES A GITHUB (archivos .jpg reales)
+// ═══════════════════════════════════════════════════════
+async function subirImagenAGitHub(fileOrBase64) {
+    const user  = localStorage.getItem('githubUser');
+    const repo  = localStorage.getItem('githubRepo');
+    const token = localStorage.getItem('githubToken');
+
+    const base64full = await comprimirImagen(fileOrBase64);
+
+    if (!user || !repo || !token) return base64full; // fallback sin config
+
+    try {
+        const base64data = base64full.includes(',') ? base64full.split(',')[1] : base64full;
+        if (!base64data) return base64full; // fallback si el data URL está malformado
+        const filename   = 'img_' + Date.now() + '.jpg';
+        const path       = 'imagenes/' + filename;
+        const apiUrl     = 'https://api.github.com/repos/' + user + '/' + repo + '/contents/' + path;
+        const headers    = { 'Authorization': 'token ' + token, 'Content-Type': 'application/json' };
+        const res = await fetch(apiUrl, {
+            method: 'PUT', headers,
+            body: JSON.stringify({ message: 'Imagen: ' + filename, content: base64data })
+        });
+        if (res.ok) return 'https://raw.githubusercontent.com/' + user + '/' + repo + '/main/' + path;
+    } catch(e) { /* fallback */ }
+    return base64full;
+}
+
+// ═══════════════════════════════════════════════════════
+//  ANALYTICS
+// ═══════════════════════════════════════════════════════
+function stat(icon, label, value, color) {
+    const uid = 'ts' + Math.random().toString(36).slice(2,7);
+    const sizeCls = typeof value === 'number' ? 'admin-stat-value' : 'admin-stat-value';
+    const html = '<div class="admin-analytics-stat">' +
+        '<div class="icon">' + icon + '</div>' +
+        '<div id="' + uid + '" class="tm-counter ' + sizeCls + '" style="color:' + (color||'var(--primary-color,#c9a96e)') + ';">' + value + '</div>' +
+        '<div class="label">' + label + '</div>' +
+        '</div>';
+    setTimeout(() => {
+        const el = document.getElementById(uid);
+        if (!el) return;
+        if (typeof value === 'number') {
+            animarContador(el, value, 800 + Math.random() * 500);
+        } else if (typeof value === 'string' && value.startsWith('$')) {
+            animarContador(el, parseFloat(value.replace('$','')), 1000, '$');
+        }
+    }, 60);
+    return html;
+}
+
+// ===== VALIDACIÓN DE CAMPOS =====
+
+function validarProducto(producto) {
+    const errores = [];
+    
+    if (!producto.nombre || producto.nombre.trim().length === 0) {
+        errores.push('El nombre del producto es requerido');
+    }
+    if (!producto.descripcion || producto.descripcion.trim().length === 0) {
+        errores.push('La descripción es requerida');
+    }
+    if (!producto.imagen) {
+        errores.push('La imagen es requerida');
+    }
+    if (!producto.precioActual || producto.precioActual <= 0) {
+        errores.push('El precio debe ser mayor a 0');
+    }
+    // FIX: permitir stock = 0 (producto agotado al crearlo). Solo rechazar negativos o no-números.
+    if (producto.stock === undefined || producto.stock === null ||
+        isNaN(Number(producto.stock)) || Number(producto.stock) < 0) {
+        errores.push('El stock no puede ser negativo');
+    }
+    if (!producto.categoria) {
+        errores.push('La categoría es requerida');
+    }
+    
+    // Solo calcular descuento si hay precio original definido
+    if (producto.precioOriginal && producto.precioOriginal > 0 && producto.precioOriginal > producto.precioActual) {
+        const descuentoCalculado = Math.round(((producto.precioOriginal - producto.precioActual) / producto.precioOriginal) * 100);
+        producto.descuento = descuentoCalculado;
+    } else if (!producto.descuento) {
+        producto.descuento = 0;
+    }
+    
+    return errores;
+}
+
+// ===== CARGA DE DATOS DESDE GITHUB =====
+
+// Función para hashear la contraseña (PBKDF2). salt opcional (default: _getSalt())
+async function hashPassword(password, salt) {
+    const s = salt || _getSalt();
+    const keyMaterial = await crypto.subtle.importKey(
+        'raw', new TextEncoder().encode(password), 'PBKDF2', false, ['deriveBits']
+    );
+    const bits = await crypto.subtle.deriveBits(
+        { name: 'PBKDF2', salt: new TextEncoder().encode(s), iterations: AUTH_ITERATIONS, hash: 'SHA-256' },
+        keyMaterial, 256
+    );
+    const hashArray = Array.from(new Uint8Array(bits));
+    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+async function cargarDatosDesdeGitHub() {
+    // Intentar usar raw.githubusercontent.com si está configurado (no tiene límite de 1MB)
+    const ghUser = localStorage.getItem('githubUser');
+    const ghRepo = localStorage.getItem('githubRepo');
+    const baseUrl = (ghUser && ghRepo)
+        ? `https://raw.githubusercontent.com/${ghUser}/${ghRepo}/main`
+        : null;
+
+    // Función helper: intenta raw primero, luego relativo
+    async function fetchJSON(filename) {
+        if (baseUrl) {
+            try {
+                const res = await fetch(`${baseUrl}/${filename}?_=${Date.now()}`);
+                if (res.ok) return await res.json();
+            } catch(e) {}
+        }
+        // Fallback: ruta relativa (funciona en GitHub Pages)
+        const res = await fetch(`${filename}?_=${Date.now()}`);
+        if (res.ok) return await res.json();
+        return null;
+    }
+
+    try {
+        // ── PASO 1: Cargar archivos pequeños y configuración primero (rápido) ──
+        // categorias.json es solo ~300 bytes → aparece instantáneamente
+        const [dataCat, dataComisiones, dataG, dataR] = await Promise.all([
+            fetchJSON('categorias.json').catch(() => null),
+            Promise.resolve(null), // comisiones consolidadas en productos.json
+            fetchJSON('grupos_facebook_config.json').catch(() => null),
+            fetchJSON('revolico_config.json').catch(() => null),
+        ]);
+
+        // Aplicar categorías de inmediato para que el grid aparezca rápido
+        if (dataCat) {
+            if (Array.isArray(dataCat) && dataCat.length > 0) {
+                categorias = dataCat;
+                localStorage.setItem('categorias', JSON.stringify(categorias));
+            } else if (dataCat.nombres && dataCat.nombres.length > 0) {
+                categorias = dataCat.nombres;
+                localStorage.setItem('categorias', JSON.stringify(categorias));
+                if (dataCat.iconos && Object.keys(dataCat.iconos).length > 0) {
+                    Object.assign(iconosPersonalizados, dataCat.iconos);
+                    localStorage.setItem('iconosPersonalizados', JSON.stringify(iconosPersonalizados));
+                }
+            }
+        }
+
+        // comisiones consolidadas en productos.json — no se usa archivo separado
+
+        // Aplicar config grupos FB
+        if (dataG && dataG.grupos) {
+            localStorage.setItem('gruposFB', JSON.stringify(dataG.grupos));
+            
+        }
+
+        // Aplicar config Revolico
+        if (dataR && Object.keys(dataR).length > 0) {
+            localStorage.setItem('revolicoConfig', JSON.stringify(dataR));
+            
+        }
+
+        // Ventas migradas a Firebase — sync en background tras cargar productos
+        setTimeout(_fbSincronizarVentasAlIniciar, 2000);
+
+        // Renderizar categorías YA (con datos frescos, sin esperar archivos pesados)
+        renderizarCategoriasHomeInstant(); // actualiza el grid visual inmediatamente
+        renderizarCategoriasHome();
+        actualizarSelectCategorias();
+        actualizarBotonesCategorias();
+        actualizarListaCategorias();
+
+        // ── PASO 2: Cargar archivos pesados en paralelo (banners + productos) ──
+        const [dataBanners, dataProd] = await Promise.all([
+            fetchJSON('banners.json').catch(() => null),
+            fetchJSON('productos.json').catch(() => null),
+        ]);
+
+        // Aplicar banners
+        if (dataBanners && Array.isArray(dataBanners) && dataBanners.length > 0) {
+            localStorage.setItem('heroBanners', JSON.stringify(dataBanners));
+            if (typeof window.recargarBanners === 'function') window.recargarBanners(dataBanners);
+        }
+
+        // Aplicar productos
+        if (dataProd && dataProd.length > 0) {
+            // Guardar en localStorage ANTES de renderizar para que Instant tenga datos frescos
+            const productosLocales = JSON.parse(localStorage.getItem('productos') || '[]');
+            const mapaLocal = {};
+            productosLocales.forEach(p => { mapaLocal[p.id] = p; });
+
+            productos = dataProd.map(p => {
+                const fix = url => url && url.includes('raw.githubusercontent.com')
+                    ? url.replace(/https:\/\/raw\.githubusercontent\.com\/[^/]+\/[^/]+\/main\//,'https://tiendamax.org/')
+                    : url;
+                if (p.imagen) p.imagen = fix(p.imagen);
+                if (p.imagenSecundaria) p.imagenSecundaria = fix(p.imagenSecundaria);
+                if (Array.isArray(p.imagenes)) p.imagenes = p.imagenes.map(fix);
+
+                // comision viene directamente del producto en productos.json
+                const local = mapaLocal[p.id];
+                if (local && local.comision !== undefined && p.comision === undefined) {
+                    p.comision = local.comision;
+                }
+                if (local && local.resenas && local.resenas.length > 0) p.resenas = local.resenas;
+                return p;
+            });
+            localStorage.setItem('productos', JSON.stringify(productos));
+            // Refrescar categorías con conteos reales ahora que productos está listo
+            renderizarCategoriasHomeInstant();
+        }
+
+        // Re-renderizar todo ahora que los productos están listos
+        renderizarCategoriasHome();
+        renderizarMasVendidos();
+        renderizarRecientes();  // 👀 Vistos recientemente
+        setTimeout(cargarTestimoniosFirebase, 1500); // 🌟 Testimonios reales
+        actualizarListaProductos();
+        actualizarSelectCategorias();
+        actualizarBotonesCategorias();
+        actualizarListaCategorias();
+        verificarOfertasYMostrarBanner();
+        // Si el admin está abierto, actualizar el select de oferta del día
+        // con los productos frescos recién cargados
+        const adminAbierto = document.getElementById('adminPanel');
+        if (adminAbierto && adminAbierto.classList.contains('visible')) {
+            poblarSelectOfertaDia();
+        }
+        inicializarSliderPrecios();
+        // Refrescar Me Gusta si está visible
+        const vMG = document.getElementById('vistaMeGusta');
+        if (vMG && vMG.style.display !== 'none') mostrarVistaMeGusta();
+        verificarProductosNuevos();
+
+        // CRÍTICO: si el usuario YA navegó a una categoría mientras se cargaba,
+        // re-renderizar la vista de productos con los datos frescos.
+        const vCat = document.getElementById('vistaCategoria');
+        if (vCat && vCat.style.display === 'block') {
+            
+            renderizarProductos();
+        }
+
+        
+    } catch (e) {
+        console.warn('⚠️ Error en cargarDatosDesdeGitHub:', e && e.message);
+        
+        renderizarCategoriasHome();
+        renderizarMasVendidos();
+        verificarOfertasYMostrarBanner();
+        // También re-render si estamos en vista categoría
+        const vCat = document.getElementById('vistaCategoria');
+        if (vCat && vCat.style.display === 'block' && typeof renderizarProductos === 'function') {
+            renderizarProductos();
+        }
+    }
+}
+
+// Sincronizar entre pestañas
+window.addEventListener('storage', (event) => {
+    if (event.key === 'productos') {
+        productos = JSON.parse(event.newValue) || [];
+        renderizarCategoriasHome();
+        renderizarMasVendidos();
+        renderizarProductos();
+        actualizarListaProductos();
+    }
+    if (event.key === 'categorias') {
+        categorias = JSON.parse(event.newValue) || ['General'];
+        actualizarSelectCategorias();
+        actualizarBotonesCategorias();
+        actualizarListaCategorias();
+        renderizarCategoriasHome();
+        renderizarProductos();
+        if (typeof actualizarSelectCategoriasPadre === 'function') actualizarSelectCategoriasPadre();
+    }
+});
+
+// ===== FUNCIONES DE UTILIDAD =====
+
+function actualizarOffsetsUI() {
+    try {
+        const root = document.documentElement;
+        const urg = document.getElementById('urgenciaBanner');
+        const header = document.querySelector('.header');
+        const headerContent = document.querySelector('.header-content');
+        const currencyBar = document.getElementById('currencyBar');
+        const urgVisible = urg && getComputedStyle(urg).display !== 'none';
+        const urgH = urgVisible ? Math.ceil(urg.getBoundingClientRect().height) : 0;
+        // --tm-header-h debe representar solo la fila superior del header.
+        // Antes se medía .header completo, que incluye la barra de moneda; eso
+        // duplicaba el offset y podía provocar saltos/solapes al hacer scroll.
+        const headerH = headerContent
+            ? Math.ceil(headerContent.getBoundingClientRect().height)
+            : (header ? Math.ceil(header.getBoundingClientRect().height) : 70);
+        const currencyH = currencyBar ? Math.ceil(currencyBar.getBoundingClientRect().height) : 0;
+        root.style.setProperty('--tm-urgencia-h', urgH + 'px');
+        root.style.setProperty('--tm-header-h', headerH + 'px');
+        root.style.setProperty('--tm-currency-h', currencyH + 'px');
+    } catch (e) {}
+}
+
+
+function getNumeroWhatsApp() {
+    return localStorage.getItem('whatsappNumero') || '5354320170';
+}
+
+function guardarNumeroWhatsApp() {
+    const input = document.getElementById('adminWhatsappNum');
+    if (!input) return;
+    const num = input.value.trim().replace(/\D/g, '');
+    if (!num || num.length < 6) { mostrarNotificacion('⚠️ Número inválido', 'error'); return; }
+    localStorage.setItem('whatsappNumero', num);
+    mostrarNotificacion('✅ Número de WhatsApp guardado: +' + num);
+}
+
+function cargarNumeroWhatsApp() {
+    const saved = localStorage.getItem('whatsappNumero');
+    const input = document.getElementById('adminWhatsappNum');
+    if (input && saved) input.value = saved;
+}
+
+function contactarWhatsApp() {
+    const numeroWhatsApp = getNumeroWhatsApp();
+    const mensaje = encodeURIComponent('Hola, me interesa conocer más sobre tus productos. ¿Puedes ayudarme?');
+    window.open(`https://wa.me/${numeroWhatsApp}?text=${mensaje}`, '_blank', 'noopener,noreferrer');
+}
+
+function scrollToProductos() {
+    const el = document.querySelector('#categorias-home');
+    if (el) el.scrollIntoView({ behavior: 'smooth' });
+}
+
+// ═══════════════════════════════════════════════════════
+//  🌗 MODO CLARO / OSCURO
+//  El sitio es OSCURO por defecto (tema premium).
+//  El usuario puede alternar a CLARO con el botón ☀️/🌙.
+//  Se guarda en localStorage como 'tm_theme' = 'light' | 'dark'
+// ═══════════════════════════════════════════════════════
+function aplicarTema(tema) {
+    // tema: 'light' o 'dark' (cualquier otra cosa = dark)
+    const claro = (tema === 'light');
+    document.body.classList.toggle('light-mode', claro);
+    // Limpiar la clase preliminar que pusimos en <html> para evitar parpadeo
+    document.documentElement.classList.remove('tm-pre-light');
+    // Actualizar TODOS los botones de tema (puede haber más de uno)
+    document.querySelectorAll('.theme-toggle').forEach(btn => {
+        // En claro mostramos 🌙 (acción = ir a oscuro). En oscuro mostramos ☀️.
+        btn.textContent = claro ? '🌙' : '☀️';
+        btn.setAttribute('aria-label', claro ? 'Activar modo oscuro' : 'Activar modo claro');
+        btn.setAttribute('title',      claro ? 'Activar modo oscuro' : 'Activar modo claro');
+    });
+    // Color del navegador (theme-color del browser bar)
+    const metaTheme = document.querySelector('meta[name="theme-color"]');
+    if (metaTheme) metaTheme.setAttribute('content', claro ? '#FAF8F5' : '#0D0D0D');
+    try { localStorage.setItem('tm_theme', claro ? 'light' : 'dark'); } catch(e) {}
+}
+
+function toggleDarkMode() {
+    const esClaroAhora = document.body.classList.contains('light-mode');
+    aplicarTema(esClaroAhora ? 'dark' : 'light');
+}
+
+function _initTema() {
+    let pref = null;
+    try { pref = localStorage.getItem('tm_theme'); } catch(e) {}
+    // Migración suave desde la versión anterior (darkMode booleano)
+    if (pref === null) {
+        try {
+            const legacy = localStorage.getItem('darkMode');
+            if (legacy === 'false') pref = 'light';
+            else pref = 'dark';
+            localStorage.setItem('tm_theme', pref);
+            localStorage.removeItem('darkMode');
+        } catch(e) { pref = 'dark'; }
+    }
+    aplicarTema(pref === 'light' ? 'light' : 'dark');
+}
+// Ejecutar lo antes posible
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', _initTema);
+} else {
+    _initTema();
+}
+
+function mostrarNotificacion(mensaje, tipo = 'success') {
+    const notif = document.createElement('div');
+    notif.className = `notificacion notif-${tipo}`;
+    notif.textContent = mensaje;
+    notif.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: ${tipo === 'error' ? '#e74c3c' : tipo === 'info' ? '#3498db' : '#27ae60'};
+        color: white;
+        padding: 15px 20px;
+        border-radius: 8px;
+        z-index: 10000;
+        animation: slideIn 0.3s ease;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    `;
+    document.body.appendChild(notif);
+    setTimeout(() => notif.remove(), 4000);
+}
+
+// ===== NAVEGACIÓN ENTRE VISTAS =====
+
+function tmElementoVisible(id) {
+    const el = document.getElementById(id);
+    return !!(el && getComputedStyle(el).display !== 'none');
+}
+
+function tmVistaInicioActiva() {
+    const bodyBloqueaBanner = document.body && document.body.classList.contains('tm-no-oferta-banner');
+    const inicio = document.getElementById('vistaInicio');
+    const inicioVisible = !inicio || getComputedStyle(inicio).display !== 'none';
+    const detalleAbierto = tmElementoVisible('productDetailModal') && !document.getElementById('productDetailModal').classList.contains('hidden');
+    const otraVistaVisible = tmElementoVisible('vistaCategoria') || tmElementoVisible('vistaMeGusta') || tmElementoVisible('vistaPedidos');
+    return inicioVisible && !detalleAbierto && !otraVistaVisible && !bodyBloqueaBanner;
+}
+
+function actualizarVisibilidadBannerOferta(esHome) {
+    const banner = document.getElementById('urgenciaBanner');
+    if (document.body) document.body.classList.toggle('tm-no-oferta-banner', !esHome);
+    if (!banner) return;
+    if (esHome) {
+        if (document.body) document.body.classList.remove('tm-no-oferta-banner');
+        verificarOfertasYMostrarBanner();
+    } else {
+        banner.style.setProperty('display', 'none', 'important');
+        banner.onclick = null;
+        if (typeof actualizarOffsetsUI === 'function') setTimeout(actualizarOffsetsUI, 0);
+    }
+}
+
+function mostrarVistaInicio() {
+    document.getElementById('vistaInicio').style.display = 'block';
+    document.getElementById('vistaCategoria').style.display = 'none';
+    actualizarVisibilidadBannerOferta(true);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function mostrarVistaCategoria(categoria) {
+    categoriaSeleccionada = categoria;
+    subcategoriaSeleccionada = 'Todas';
+
+    // RESILIENCIA: si el array de productos en memoria está vacío
+    // pero hay datos en localStorage (caso PWA con cache), recargarlos.
+    if ((!Array.isArray(productos) || productos.length === 0)) {
+        try {
+            const cached = JSON.parse(localStorage.getItem('productos') || '[]');
+            if (Array.isArray(cached) && cached.length > 0) {
+                productos = cached;
+                
+            }
+        } catch(e) {}
+    }
+
+    // Si navegamos a una categoría específica (no "Todas"), limpiar filtros
+    // de búsqueda previos para que aparezcan todos los productos de la categoría.
+    // Si vamos a "Todas", mantener los filtros (puede venir de aplicarBusquedaHero).
+    if (categoria !== 'Todas') {
+        _heroSearchActivo = '';
+        _heroPrecioMin = 0;
+        _heroPrecioMax = Infinity;
+        const heroInput = document.getElementById('heroSearchInput');
+        if (heroInput) heroInput.value = '';
+    }
+    document.getElementById('vistaInicio').style.display = 'none';
+    document.getElementById('vistaCategoria').style.display = 'block';
+    actualizarVisibilidadBannerOferta(false);
+
+    const icono = obtenerIconoCategoria(categoria);
+    const titulo = categoria === 'Todas' ? '🛍️ Todos los Productos' : `${icono} ${categoria}`;
+    document.getElementById('tituloCategoriaActual').textContent = titulo;
+
+    actualizarBotonesCategorias();
+    renderizarSubcategoriaTabs();
+    renderizarProductos();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function renderizarSubcategoriaTabs() {
+    const tabsContainer = document.getElementById('subcategoriaTabs');
+    const filtroContainer = document.getElementById('categoriaFiltro');
+    if (!tabsContainer) return;
+
+    // Si es "Todas", mostrar el filtro de categorías y ocultar tabs
+    if (categoriaSeleccionada === 'Todas') {
+        tabsContainer.style.display = 'none';
+        if (filtroContainer) filtroContainer.style.display = 'flex';
+        return;
+    }
+
+    // Ocultar filtro de todas las categorías
+    if (filtroContainer) filtroContainer.style.display = 'none';
+
+    // Obtener subcategorías de la categoría actual
+    const subcats = (typeof subcategorias !== 'undefined' && subcategorias[categoriaSeleccionada]) 
+        ? subcategorias[categoriaSeleccionada] 
+        : [];
+
+    if (subcats.length === 0) {
+        tabsContainer.style.display = 'none';
+        return;
+    }
+
+    tabsContainer.style.display = 'flex';
+    tabsContainer.innerHTML = '';
+
+    // Tab "Todas" para esta categoría
+    const tabTodas = document.createElement('button');
+    tabTodas.className = `subcategoria-tab ${subcategoriaSeleccionada === 'Todas' ? 'active' : ''}`;
+    tabTodas.innerHTML = `<span class="tab-icon">🔎</span><span class="tab-label">Todos</span>`;
+    tabTodas.onclick = () => seleccionarSubcategoria('Todas');
+    tabsContainer.appendChild(tabTodas);
+
+    subcats.forEach(subcat => {
+        const tab = document.createElement('button');
+        tab.className = `subcategoria-tab ${subcategoriaSeleccionada === subcat ? 'active' : ''}`;
+        tab.innerHTML = `<span class="tab-label">${escapeHtml(subcat)}</span>`;
+        tab.onclick = () => seleccionarSubcategoria(subcat);
+        tabsContainer.appendChild(tab);
+    });
+
+    // Actualizar stats
+    actualizarCategoriaStats();
+}
+
+function seleccionarSubcategoria(subcat) {
+    subcategoriaSeleccionada = subcat;
+    renderizarSubcategoriaTabs();
+    renderizarProductos();
+}
+
+function actualizarCategoriaStats() {
+    const statsEl = document.getElementById('categoriaStats');
+    if (!statsEl) return;
+    const total = categoriaSeleccionada === 'Todas' 
+        ? productos.length 
+        : productos.filter(p => p.categoria === categoriaSeleccionada).length;
+    statsEl.textContent = `${total} producto${total !== 1 ? 's' : ''}`;
+}
+
+function volverAlInicio() {
+    mostrarVistaInicio();
+}
+
+// ===== RENDERIZAR CATEGORÍAS EN LA HOME =====
+
+function renderizarCategoriasHome() {
+    const grid = document.getElementById('categoriasGrid');
+    if (!grid) return;
+
+    grid.innerHTML = '';
+
+    const cardTodas = document.createElement('div');
+    cardTodas.className = 'categoria-card';
+    const totalProductos = productos.length;
+    cardTodas.innerHTML = `
+        <span class="cat-icon">🛍️</span>
+        <span class="cat-name">Todos</span>
+        <span class="cat-count">${safeNum(totalProductos)} producto${totalProductos !== 1 ? 's' : ''}</span>
+    `;
+    cardTodas.onclick = () => mostrarVistaCategoria('Todas');
+    grid.appendChild(cardTodas);
+
+    categorias.forEach(cat => {
+        const count = productos.filter(p => p.categoria === cat).length;
+        const card = document.createElement('div');
+        card.className = 'categoria-card';
+        card.innerHTML = `
+            <span class="cat-icon">${escapeHtml(obtenerIconoCategoria(cat))}</span>
+            <span class="cat-name">${escapeHtml(cat)}</span>
+            <span class="cat-count">${count === 0 ? '🕐 Próximamente' : safeNum(count) + ' producto' + (count !== 1 ? 's' : '')}</span>
+        `;
+        card.onclick = () => mostrarVistaCategoria(cat);
+        grid.appendChild(card);
+    });
+    // Dispara animaciones CSS DESPUÉS de que el DOM está poblado
+    // Si ya tiene tm-rendered (del render instantáneo), no la quitar para evitar parpadeo
+    if (!grid.classList.contains('tm-rendered')) {
+        requestAnimationFrame(() => grid.classList.add('tm-rendered'));
+    }
+}
+
+// ===== RENDERIZAR MÁS VENDIDOS =====
+
+function renderizarMasVendidos() {
+    const grid = document.getElementById('masVendidosGrid');
+    const vacio = document.getElementById('masVendidosVacio');
+    if (!grid) return;
+
+    const masVendidos = productos.filter(p => (p.masVendido === true || p.masVendido === 'true') && p.stock > 0);
+    const productosAMostrar = masVendidos.length > 0 ? masVendidos : productos.filter(p => p.stock > 0).slice(0, 3);
+
+    grid.innerHTML = '';
+
+    if (productosAMostrar.length === 0) {
+        if (vacio) vacio.style.display = 'block';
+        return;
+    }
+    if (vacio) vacio.style.display = 'none';
+
+    productosAMostrar.forEach(producto => {
+        const card = document.createElement('div');
+        card.className = 'producto-card tm-anim-card';
+        card.onclick = () => abrirDetalleProducto(producto.id);
+            const _nombre = escapeHtml(producto.nombre);
+            const _desc   = escapeHtml(producto.descripcion);
+            const _img    = escapeAttr(producto.imagen);
+            const _id     = safeNum(producto.id);
+            card.innerHTML = `
+	            <div class="badge-vendido">🔥 Más Vendido</div>
+	            <div class="producto-image">
+	                <img src="${_img}" alt="${_nombre}" loading="lazy" onerror="this.src='/iconos/favicon-192.png';this.style.objectFit='contain';this.style.opacity='0.3'">
+	                ${(producto.precioOriginal > 0 && producto.precioOriginal > producto.precioActual) ? `<div class="badge">-$${(producto.precioOriginal - producto.precioActual).toFixed(0)}</div>` : ''}
+	            </div>
+	            <h3>${_nombre}</h3>
+	            <p class="producto-description">${_desc}</p>
+	            <p class="precio">
+	                ${(producto.precioOriginal > 0 && producto.precioOriginal > producto.precioActual) ? '<span class="precio-tachado">$' + parseFloat(producto.precioOriginal).toFixed(2) + ' USD</span> ' : ''}<span class="precio-actual" data-usd="${safeNum(producto.precioActual)}">${typeof formatPrecio==='function'?formatPrecio(producto.precioActual):'$'+producto.precioActual.toFixed(2)+' USD'}</span>${(producto.precioOriginal > 0 && producto.precioOriginal > producto.precioActual) ? ' <span class="precio-ahorro">-$' + (producto.precioOriginal - producto.precioActual).toFixed(0) + '</span>' : ''}
+	            </p>
+            <div class="stock-count">
+                <span>📦 Solo quedan ${safeNum(producto.stock)} unidades</span>
+            </div>
+            <div class="stock-bar">
+                <div class="stock-bar-fill" style="width: ${Math.min(100, (safeNum(producto.stock) / 20) * 100)}%"></div>
+            </div>
+            
+            <button class="btn-pedir-card" onclick="event.stopPropagation(); tmComprar(event, ${_id}, this.dataset.nombre)" data-nombre="${_nombre}" type="button"><span class="btn-pedir-wa-icon-sm"><svg viewBox="0 0 24 24" width="14" height="14" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg></span> Pedir</button>
+        `;
+        grid.appendChild(card);
+        if (window._tmAnimObs) window._tmAnimObs.observe(card);
+    });
+}
+
+// ===== AUTENTICACIÓN =====
+
+function abrirLoginAdmin() {
+    window.location.href = 'admin.html';
+}
+
+function cerrarLoginModal() {
+    const modal = document.getElementById('loginModal');
+    modal.classList.add('hidden');
+    modal.style.removeProperty('display');
+    document.getElementById('adminPassword').value = '';
+}
+
+async function verificarPassword(event) {
+    event.preventDefault();
+
+    const rl = JSON.parse(localStorage.getItem('admin_rl') || '{"count":0,"until":0}');
+    if (Date.now() < rl.until) {
+        const mins = Math.ceil((rl.until - Date.now()) / 60000);
+        mostrarNotificacion(`🔒 Demasiados intentos. Espera ${mins} min.`, 'error');
+        return;
+    }
+
+    const passwordInput = document.getElementById('adminPassword').value.trim();
+    if (!passwordInput) { mostrarNotificacion('❌ Escribe la contraseña', 'error'); return; }
+
+    // 1. Intentar auth global desde GitHub .admin-auth.json
+    const ghUser = localStorage.getItem('githubUser');
+    const ghRepo = localStorage.getItem('githubRepo');
+    let ghHash = null, ghSalt = null;
+    if (ghUser && ghRepo) {
+        try {
+            const cfgRes = await fetch(`https://raw.githubusercontent.com/${ghUser}/${ghRepo}/main/.admin-auth.json?_=${Date.now()}`);
+            if (cfgRes.ok) {
+                const cfg = await cfgRes.json();
+                if (cfg.hash && cfg.salt) {
+                    ghHash = cfg.hash;
+                    ghSalt = cfg.salt;
+                }
+            }
+        } catch(e) {}
+    }
+    // 2. Auth según disponibilidad: GitHub primero, luego local, luego migración
+    if (ghHash && ghSalt) {
+        // 2a. Auth global desde GitHub
+        const inputHash = await hashPassword(passwordInput, ghSalt);
+        if (inputHash === ghHash) {
+            localStorage.removeItem('admin_rl');
+            try { localStorage.setItem(AUTH_SALT_KEY, ghSalt); } catch(e) {}
+            try { localStorage.setItem(AUTH_HASH_KEY, ghHash); } catch(e) {}
+            usuarioAutenticado = true;
+            cerrarLoginModal();
+            abrirAdminPanel();
+            return;
+        }
+    } else {
+        const lsHash = localStorage.getItem(AUTH_HASH_KEY);
+        const lsSalt = localStorage.getItem(AUTH_SALT_KEY);
+        if (lsHash && lsSalt) {
+            // 2b. Auth local (per-browser backup)
+            const inputHash = await hashPassword(passwordInput, lsSalt);
+            if (inputHash === lsHash) {
+                localStorage.removeItem('admin_rl');
+                usuarioAutenticado = true;
+                cerrarLoginModal();
+                abrirAdminPanel();
+                return;
+            }
+        } else {
+            // 2c. No hay auth configurado → migración SHA-256 legacy
+            const inputSha = await _hashSha256(passwordInput);
+            if (_OLD_HASHES.includes(inputSha)) {
+                const ns = _generarSal();
+                const nh = await hashPassword(passwordInput, ns);
+                try { localStorage.setItem(AUTH_SALT_KEY, ns); } catch(e) {}
+                try { localStorage.setItem(AUTH_HASH_KEY, nh); } catch(e) {}
+                if (ghUser && ghRepo) {
+                    const ghToken = localStorage.getItem('githubToken');
+                    if (ghToken) {
+                        try {
+                            const authData = { hash: nh, salt: ns, iterations: AUTH_ITERATIONS };
+                            const jsonStr = JSON.stringify(authData);
+                            const content = btoa(Array.from(new TextEncoder().encode(jsonStr), b => String.fromCharCode(b)).join(''));
+                            await fetch(`https://api.github.com/repos/${ghUser}/${ghRepo}/contents/.admin-auth.json`, {
+                                method: 'PUT',
+                                headers: { 'Authorization': `token ${ghToken}`, 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ message: 'Migrar contraseña admin', content })
+                            });
+                        } catch(e) {
+                            console.warn('Migración: no se pudo subir a GitHub, guardado local:', e);
+                        }
+                    }
+                }
+                localStorage.removeItem('admin_rl');
+                usuarioAutenticado = true;
+                cerrarLoginModal();
+                abrirAdminPanel();
+                mostrarNotificacion('✅ Contraseña migrada al nuevo sistema. Cámbiala desde Configuración.', 'success');
+                return;
+            }
+        }
+    }
+
+    // 3. Todo falló
+    const newCount = (rl.count || 0) + 1;
+    const lockout = newCount >= 3 ? Date.now() + LOCKOUT_DURATION_MS : rl.until;
+    localStorage.setItem('admin_rl', JSON.stringify({ count: newCount, until: lockout }));
+    const msg = newCount >= 3
+        ? '🔒 3 intentos fallidos. Bloqueado 5 min.'
+        : `❌ Contraseña incorrecta (intento ${newCount}/3)`;
+    mostrarNotificacion(msg, 'error');
+    document.getElementById('adminPassword').value = '';
+}
+
+// Cambiar contraseña (llamado desde admin.html)
+async function cambiarPasswordAdmin(ci, ni, coi) {
+    if (!ci || !ni || !coi) {
+        mostrarNotificacion('❌ Completa todos los campos', 'error');
+        return;
+    }
+
+    // Detectar sal vigente: GitHub primero, luego localStorage
+    const ghUser = localStorage.getItem('githubUser');
+    const ghRepo = localStorage.getItem('githubRepo');
+    let ch = null, cs = null;
+    if (ghUser && ghRepo) {
+        try {
+            const r = await fetch(`https://raw.githubusercontent.com/${ghUser}/${ghRepo}/main/.admin-auth.json?_=${Date.now()}`);
+            if (r.ok) {
+                const cfg = await r.json();
+                if (cfg.hash && cfg.salt) {
+                    ch = cfg.hash;
+                    cs = cfg.salt;
+                }
+            }
+        } catch(e) {}
+    }
+    if (!ch || !cs) {
+        ch = localStorage.getItem(AUTH_HASH_KEY);
+        cs = localStorage.getItem(AUTH_SALT_KEY);
+    }
+    if (!ch || !cs) {
+        mostrarNotificacion('❌ No hay contraseña configurada. Accede primero o configura GitHub.', 'error');
+        return;
+    }
+
+    const ch2 = await hashPassword(ci, cs);
+    if (ch2 !== ch) { mostrarNotificacion('❌ Contraseña actual incorrecta', 'error'); return; }
+    if (ni.length < 4) { mostrarNotificacion('❌ La nueva contraseña debe tener al menos 4 caracteres', 'error'); return; }
+    if (ni !== coi) { mostrarNotificacion('❌ Las contraseñas nuevas no coinciden', 'error'); return; }
+
+    const ns = _generarSal();
+    const nh = await hashPassword(ni, ns);
+    try { localStorage.setItem(AUTH_SALT_KEY, ns); } catch(e) {}
+    try { localStorage.setItem(AUTH_HASH_KEY, nh); } catch(e) {}
+
+    // Subir a GitHub (PUT directo para evitar bugs de subirArchivoAGitHub)
+    if (ghUser && ghRepo) {
+        const ghToken = localStorage.getItem('githubToken');
+        if (ghToken) {
+            try {
+                const authData = { hash: nh, salt: ns, iterations: AUTH_ITERATIONS };
+                const jsonStr = JSON.stringify(authData);
+                const content = btoa(Array.from(new TextEncoder().encode(jsonStr), b => String.fromCharCode(b)).join(''));
+                const ghRes = await fetch(`https://api.github.com/repos/${ghUser}/${ghRepo}/contents/.admin-auth.json`, {
+                    method: 'PUT',
+                    headers: { 'Authorization': `token ${ghToken}`, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: 'Actualizar contraseña admin', content })
+                });
+                if (!ghRes.ok) {
+                    const err = await ghRes.json().catch(() => ({}));
+                    throw new Error(err.message || `HTTP ${ghRes.status}`);
+                }
+            } catch(e) {
+                mostrarNotificacion(`⚠️ No se pudo subir a GitHub: ${e.message}`, 'error');
+            }
+        }
+    }
+
+    mostrarNotificacion('✅ Contraseña cambiada con éxito', 'success');
+    document.getElementById('ci').value = '';
+    document.getElementById('ni').value = '';
+    document.getElementById('coi').value = '';
+}
+
+function abrirAdminPanel() {
+    if (!usuarioAutenticado) { abrirLoginAdmin(); return; }
+    const panel = document.getElementById('adminPanel');
+    if (!panel) return;
+    panel.classList.remove('hidden');
+    panel.classList.add('visible');
+    panel.style.removeProperty('display');
+    document.body.classList.add('admin-mode');
+
+    actualizarListaProductos();
+    actualizarSelectCategorias();
+    actualizarListaCategorias();
+    verificarEstadoBackend();
+    actualizarCountdownProductSelect();
+    cargarNumeroWhatsApp();
+    poblarSelectOfertaDia();
+    // FIX: Cargar analytics cuando se abre el panel admin
+    setTimeout(() => {
+        if (typeof renderizarAnalyticsFirebase === 'function') {
+            renderizarAnalyticsFirebase();
+        }
+    }, 500);
+
+    const inputTasa = document.getElementById('adminTasaMN');
+    if (inputTasa) {
+        const saved = localStorage.getItem('tasaMN');
+        if (saved) inputTasa.value = saved;
+    }
+}
+
+function cerrarAdminPanel() {
+    const panel = document.getElementById('adminPanel');
+    if (!panel) return;
+    panel.classList.add('hidden');
+    panel.classList.remove('visible');
+    panel.style.removeProperty('display');
+    document.body.classList.remove('admin-mode');
+}
+
+function switchTab(tabName) {
+    // Remove active from all tabs (class only — never use inline style on admin-tabs)
+    document.querySelectorAll('.admin-tab').forEach(tab => {
+        tab.classList.remove('active');
+        tab.style.removeProperty('display'); // Fix: clear any rogue inline display
+    });
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+
+    const targetTab = document.getElementById(tabName);
+    if (targetTab) targetTab.classList.add('active');
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        if (btn.getAttribute('data-tab') === tabName) btn.classList.add('active');
+    });
+
+    // Tab-specific hooks consolidados
+    if (tabName === 'publicar-ahora') setTimeout(cargarGruposFB, 100);
+    if (tabName === 'manage-products') setTimeout(actualizarListaProductos, 100);
+    if (tabName === 'ventas') setTimeout(renderizarVentas, 100);
+    if (tabName === 'analytics') setTimeout(() => { if (typeof renderizarAnalyticsFirebase === 'function') renderizarAnalyticsFirebase(); }, 150);
+    if (tabName === 'manage-subcategories') {
+        setTimeout(() => {
+            if (typeof actualizarSelectCategoriasPadre === 'function') actualizarSelectCategoriasPadre();
+            if (typeof actualizarListaSubcategorias === 'function') actualizarListaSubcategorias();
+        }, 50);
+    }
+    if (tabName === 'oferta-dia') {
+        setTimeout(() => {
+            poblarSelectOfertaDia();
+            renderizarListaAgotados();
+        }, 100);
+    }
+    if (tabName === 'configuracion') {
+        setTimeout(cargarNumeroWhatsApp, 100);
+        setTimeout(cargarConfiguracionGitHub, 100);
+    }
+}
+
+// ===== PRODUCTOS =====
+
+async function agregarProductoForm(event) {
+    event.preventDefault();
+    const fileInput = document.getElementById('productImage');
+    const file = fileInput && fileInput.files ? fileInput.files[0] : null;
+    if (!file) { mostrarNotificacion('Por favor selecciona una imagen principal', 'error'); return; }
+
+    try {
+        mostrarNotificacion('⏳ Subiendo imagen principal...', 'info');
+        const imagenPrincipal = await subirImagenAGitHub(file);
+        const extras = await subirMultiplesImagenes('productImagesExtra');
+        const imagenes = _tmDedupImagenes([imagenPrincipal, ...extras]);
+
+        const masVendidoVal = document.getElementById('productMasVendido');
+        const producto = {
+            id: Date.now(),
+            nombre: document.getElementById('productName').value.trim(),
+            descripcion: document.getElementById('productDescription').value.trim(),
+            imagen: imagenPrincipal,
+            imagenes: imagenes,
+            precioActual: parseFloat(document.getElementById('productPriceActual').value) || 0,
+            precioOriginal: parseFloat(document.getElementById('productPrecioOriginal')?.value) || 0,
+            descuento: 0,
+            stock: parseInt(document.getElementById('productStock').value) || 0,
+            comision: parseFloat(document.getElementById('productComision')?.value) || 0,
+            categoria: document.getElementById('productCategory').value,
+            subcategoria: (document.getElementById('productSubcategory') && document.getElementById('productSubcategory').value) ? document.getElementById('productSubcategory').value : '',
+            masVendido: masVendidoVal ? masVendidoVal.value === 'true' : false,
+            usado: document.getElementById('productUsado').checked,
+            garantia: document.getElementById('productGarantia').value.trim(),
+            devolucion: document.getElementById('productDevolucion') ? document.getElementById('productDevolucion').checked : false
+        };
+
+        const errores = validarProducto(producto);
+        if (errores.length > 0) {
+            mostrarNotificacion('❌ ' + errores[0], 'error');
+            return;
+        }
+
+        productos.push(producto);
+        guardarProductos();
+        marcarProductoModificado(producto.id);
+        sincronizarConGitHub();
+        document.getElementById('productForm').reset();
+        mostrarNotificacion('✅ ¡Producto agregado exitosamente!');
+        if (window.TiendaMaxPush) {
+            window.TiendaMaxPush.nuevoProducto(producto.nombre, producto.precioActual, producto.id, producto.imagen);
+        }
+        renderizarCategoriasHome();
+        renderizarMasVendidos();
+        renderizarProductos();
+        actualizarListaProductos();
+        verificarOfertasYMostrarBanner();
+    } catch (e) {
+        console.error('Error subiendo imágenes:', e);
+        mostrarNotificacion('❌ Error subiendo imágenes: ' + (e.message || e), 'error');
+    }
+}
+
+function guardarProductos() {
+    localStorage.setItem('productos', JSON.stringify(productos));
+}
+
+// ===== COMPRESIÓN DE IMÁGENES =====
+// Comprime una imagen (File o base64) a máximo ~40KB manteniendo buena calidad visual
+function comprimirImagen(source, maxKB = 25, maxWidth = 480, maxHeight = 480) {
+    return new Promise((resolve) => {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        const img = new Image();
+
+        img.onload = function () {
+            let { width, height } = img;
+            if (width > maxWidth || height > maxHeight) {
+                const ratio = Math.min(maxWidth / width, maxHeight / height);
+                width  = Math.round(width  * ratio);
+                height = Math.round(height * ratio);
+            }
+            canvas.width  = width;
+            canvas.height = height;
+            ctx.drawImage(img, 0, 0, width, height);
+
+            let quality = 0.82;
+            // Intentar WebP primero (mejor compresión)
+            let result = canvas.toDataURL('image/webp', quality);
+            // Si el navegador no soporta WebP, devuelve PNG — detectarlo
+            const supportsWebP = result.startsWith('data:image/webp');
+            const fmt = supportsWebP ? 'image/webp' : 'image/jpeg';
+            if (!supportsWebP) result = canvas.toDataURL(fmt, quality);
+            // Reducir calidad hasta entrar en maxKB
+            while (result.length > maxKB * 1024 * 1.37 && quality > 0.2) {
+                quality -= 0.06;
+                result = canvas.toDataURL(fmt, quality);
+            }
+            resolve(result);
+        };
+
+        img.onerror = () => resolve(source);
+
+        if (typeof source === 'string') {
+            img.src = source;
+        } else {
+            const reader = new FileReader();
+            reader.onload = (e) => { img.src = e.target.result; };
+            reader.readAsDataURL(source);
+        }
+    });
+}
+
+function descargarProductosJSON() {
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(productos, null, 2));
+    const downloadAnchorNode = document.createElement('a');
+    downloadAnchorNode.setAttribute("href", dataStr);
+    downloadAnchorNode.setAttribute("download", "productos.json");
+    document.body.appendChild(downloadAnchorNode);
+    downloadAnchorNode.click();
+    downloadAnchorNode.remove();
+    mostrarNotificacion('✅ Archivo productos.json generado. Súbelo a tu GitHub.');
+}
+
+async function sincronizarConBackend() {
+    // Backend eliminado en esta versión del repo.
+    // Dejamos esta función como no-op para evitar errores y mantener compatibilidad.
+    return false;
+}
+
+// ===== RENDERIZAR PRODUCTOS =====
+
+
+let productosVisibleCount = 20;
+
+function renderizarProductos(isLoadMore = false) {
+    if (!isLoadMore) {
+        productosVisibleCount = 20;
+    }
+    const productosGrid = document.getElementById('productosGrid');
+    if (!productosGrid) return;
+
+    let productosFiltrados = (categoriaSeleccionada === 'Todas' 
+        ? productos 
+        : productos.filter(p => p.categoria === categoriaSeleccionada))
+        .slice().sort((a, b) => {
+            const aAgotado = a.stock === 0 ? 1 : 0;
+            const bAgotado = b.stock === 0 ? 1 : 0;
+            return aAgotado - bAgotado;
+        });
+
+    // Filtrar por subcategoría si hay una seleccionada (y no es 'Todas')
+    if (categoriaSeleccionada !== 'Todas' && subcategoriaSeleccionada && subcategoriaSeleccionada !== 'Todas') {
+        productosFiltrados = productosFiltrados.filter(p => p.subcategoria === subcategoriaSeleccionada);
+    }
+
+    // Filtro de búsqueda hero y precio
+    if (_heroSearchActivo || _heroPrecioMin > 0 || _heroPrecioMax < Infinity) {
+        const q = _heroSearchActivo;
+        productosFiltrados = productosFiltrados.filter(p => {
+            const matchQ = !q || p.nombre.toLowerCase().includes(q) ||
+                (p.descripcion||'').toLowerCase().includes(q) ||
+                (p.categoria||'').toLowerCase().includes(q);
+            const matchP = p.precioActual >= _heroPrecioMin && p.precioActual <= _heroPrecioMax;
+            return matchQ && matchP;
+        });
+    }
+
+    productosGrid.innerHTML = '';
+
+    if (productosFiltrados.length === 0) {
+        // Mensaje contextual según la situación real
+        let mensaje;
+        if (!Array.isArray(productos) || productos.length === 0) {
+            mensaje = '⏳ Cargando productos... Si esto persiste, recarga la página.';
+        } else if (subcategoriaSeleccionada && subcategoriaSeleccionada !== 'Todas') {
+            mensaje = 'No hay productos en esta subcategoría aún.';
+        } else if (_heroSearchActivo) {
+            mensaje = 'No hay productos que coincidan con tu búsqueda.';
+        } else {
+            mensaje = 'No hay productos en esta categoría aún.';
+        }
+        productosGrid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #999; padding: 60px 20px; font-size:15px;">' + escapeHtml(mensaje) + '</p>';
+        return;
+    }
+
+    const productosAMostrar = productosFiltrados.slice(0, productosVisibleCount);
+
+    productosAMostrar.forEach(producto => {
+        const card = document.createElement('div');
+        card.className = 'producto-card';
+        card.onclick = () => abrirDetalleProducto(producto.id);
+        const _nombre = escapeHtml(producto.nombre);
+        const _desc   = escapeHtml(producto.descripcion);
+        const _img    = escapeAttr(producto.imagen);
+        const _id     = safeNum(producto.id);
+        const _stock  = safeNum(producto.stock);
+        card.innerHTML = `
+            ${producto.masVendido ? '<div class="badge-vendido">🔥 Más Vendido</div>' : ''}
+            <div class="producto-image">
+                <img src="${_img}" alt="${_nombre}" loading="lazy" onerror="this.src='/iconos/favicon-192.png';this.style.opacity='0.3'">
+                ${(producto.precioOriginal > 0 && producto.precioOriginal > producto.precioActual) ? `<div class="badge">-$${(producto.precioOriginal - producto.precioActual).toFixed(0)}</div>` : ''}
+            </div>
+            <h3>${_nombre}</h3>
+            <p class="producto-description">${_desc}</p>
+	            <p class="precio">
+	                <span class="precio-actual" data-usd="${safeNum(producto.precioActual)}">${typeof formatPrecio === 'function' ? formatPrecio(producto.precioActual) : '$'+producto.precioActual.toFixed(2)+' USD'}</span>
+	            </p>
+            <div class="stock">📦 Stock: ${_stock} unidades</div>
+            ${typeof renderCountdownHtml === 'function' ? renderCountdownHtml(_id) : ''}
+            <button data-action="agregarAlCarrito" data-arg="${_id}" class="btn btn-primary btn-add-cart">🛒 Añadir</button>
+        `;
+        productosGrid.appendChild(card);
+        if (window._tmAnimObs) window._tmAnimObs.observe(card);
+    });
+
+    if (productosFiltrados.length > productosVisibleCount) {
+        const loadMoreBtn = document.createElement('div');
+        loadMoreBtn.style.cssText = 'grid-column:1/-1;display:flex;flex-direction:column;align-items:center;gap:10px;margin-top:28px;padding:0 16px';
+        const restantes = productosFiltrados.length - productosVisibleCount;
+        loadMoreBtn.innerHTML = `
+            <p style="color:rgba(255,255,255,0.35);font-size:12px;letter-spacing:.5px;text-transform:uppercase">
+                Mostrando ${Math.min(productosVisibleCount, productosFiltrados.length)} de ${productosFiltrados.length} productos
+            </p>
+            <button class="btn-seguir-viendo">
+                👁️ Seguir viendo <span style="background:rgba(255,255,255,0.12);padding:2px 8px;border-radius:20px;font-size:11px;margin-left:4px">${restantes} más</span>
+            </button>`;
+        loadMoreBtn.querySelector('.btn-seguir-viendo').onclick = () => {
+            productosVisibleCount += 20;
+            renderizarProductos(true);
+        };
+        productosGrid.appendChild(loadMoreBtn);
+    }
+}
+
+
+
+// ===== GALERÍA DE PRODUCTO =====
+function _tmDedupImagenes(arr) {
+    const out = [];
+    (arr || []).forEach(u => {
+        u = (u || '').trim();
+        if (u && !out.includes(u)) out.push(u);
+    });
+    return out;
+}
+
+function obtenerImagenesProducto(producto) {
+    if (!producto) return [];
+    return _tmDedupImagenes([
+        producto.imagen,
+        ...(Array.isArray(producto.imagenes) ? producto.imagenes : []),
+        producto.imagenSecundaria
+    ]);
+}
+
+async function subirMultiplesImagenes(inputId) {
+    const input = document.getElementById(inputId);
+    const files = input && input.files ? Array.from(input.files).filter(Boolean) : [];
+    if (!files.length) return [];
+    const urls = [];
+    for (let i = 0; i < files.length; i++) {
+        mostrarNotificacion('⏳ Subiendo foto ' + (i + 1) + ' de ' + files.length + '...', 'info');
+        urls.push(await subirImagenAGitHub(files[i]));
+    }
+    return urls.filter(Boolean);
+}
+
+function renderizarGaleriaDetalle(producto) {
+    const thumbs = document.getElementById('detailGalleryThumbs');
+    const img = document.getElementById('detailProductImage');
+    if (!thumbs || !img) return;
+    const imagenes = obtenerImagenesProducto(producto);
+    if (imagenes.length <= 1) {
+        thumbs.style.display = 'none';
+        thumbs.innerHTML = '';
+        return;
+    }
+    thumbs.style.display = 'flex';
+    thumbs.innerHTML = imagenes.map((url, i) =>
+        '<button type="button" class="detail-gallery-thumb' + (i === 0 ? ' active' : '') + '" data-img="' + escapeAttr(url) + '" aria-label="Ver imagen ' + (i + 1) + '">' +
+            '<img src="' + escapeAttr(url) + '" alt="" loading="lazy" onerror="this.style.display=\'none\'">' +
+        '</button>'
+    ).join('');
+    thumbs.querySelectorAll('.detail-gallery-thumb').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            const url = this.getAttribute('data-img');
+            if (!url) return;
+            img.src = url;
+            img.classList.remove('zoomed');
+            thumbs.querySelectorAll('.detail-gallery-thumb').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+        });
+    });
+}
+
+// ===== DETALLE DE PRODUCTO =====
+
+// Producto actualmente abierto en el modal
+let _detalleProductoActual = null;
+
+function abrirDetalleProducto(id) {
+    
+    const p = productos.find(prod => prod.id === id);
+    if (!p) {
+        console.warn('Producto no encontrado:', id);
+        return;
+    }
+    
+    if (typeof tmTrackVista === 'function') tmTrackVista(id); // 📊 Analytics
+    if (typeof actualizarVisibilidadBannerOferta === 'function') actualizarVisibilidadBannerOferta(false);
+    _detalleProductoActual = p;
+    // Deep link: actualizar URL sin recargar
+    // pushState para que el botón "Atrás" cierre el modal en lugar de salir del sitio
+    if (location.hash !== '#producto-' + id) {
+        history.pushState({ modalProducto: id }, '', '#producto-' + id);
+    }
+    
+    // SEO dinámico: actualizar meta tags para este producto
+    if (typeof actualizarSEOPorProducto === 'function') {
+        actualizarSEOPorProducto(p);
+    }
+
+    // Nombre
+    document.getElementById('detailProductName').textContent = p.nombre;
+
+    // Imagen + galería (reset zoom)
+    const img = document.getElementById('detailProductImage');
+    const _imagenesDetalle = obtenerImagenesProducto(p);
+    img.src = _imagenesDetalle[0] || p.imagen || '';
+    img.alt = p.nombre;
+    img.classList.remove('zoomed');
+    renderizarGaleriaDetalle(p);
+
+    // Categoría y subcategoría
+    document.getElementById('detailProductCategory').textContent =
+        obtenerIconoCategoria(p.categoria) + ' ' + p.categoria;
+    const subEl = document.getElementById('detailSubcategoria');
+    if (p.subcategoria && p.subcategoria !== 'Todas') {
+        subEl.textContent = '↳ ' + p.subcategoria;
+        subEl.style.display = 'block';
+    } else {
+        subEl.style.display = 'none';
+    }
+
+    // Descuento badge
+    const badge = document.getElementById('detailProductBadge');
+    const _hasPrecioOrig = p.precioOriginal > 0 && parseFloat(p.precioOriginal) > parseFloat(p.precioActual);
+    badge.style.display = _hasPrecioOrig ? 'inline-block' : 'none';
+    if (_hasPrecioOrig) badge.textContent = `-$${(parseFloat(p.precioOriginal) - parseFloat(p.precioActual)).toFixed(0)}`;
+
+    // Más vendido badge
+    const hotBadge = document.getElementById('detailMasVendidoBadge');
+    hotBadge.style.display = (p.masVendido === true || p.masVendido === 'true') ? 'block' : 'none';
+
+    // Precio
+    const precioOriginal = p.descuento > 0
+        ? (p.precioActual / (1 - p.descuento / 100))
+        : null;
+    // NOTA: el bloque que actualiza #detailPriceOriginal está abajo (después de
+    // este comentario) y siempre gana. El cálculo de precioOriginal se mantiene
+    // por si descuento > 0 (para badge "Ahorras $X"). El antiguo bloque que
+    // escribía aquí en #detailPriceOriginal se eliminó (era código muerto).
+    // Precio en modal con tachado real
+const _detailPrecioEl = document.getElementById('detailPriceActual');
+const _detailPrecioOldEl = document.getElementById('detailPriceOriginal');
+if (_detailPrecioEl) _detailPrecioEl.textContent = typeof formatPrecio === 'function' ? formatPrecio(p.precioActual) : `$${p.precioActual.toFixed(2)} USD`;
+if (_detailPrecioOldEl) {
+    if (p.precioOriginal > 0 && parseFloat(p.precioOriginal) > parseFloat(p.precioActual)) {
+        _detailPrecioOldEl.textContent = `$${parseFloat(p.precioOriginal).toFixed(2)} USD`;
+        _detailPrecioOldEl.style.display = 'inline';
+    } else {
+        _detailPrecioOldEl.style.display = 'none';
+    }
+}
+
+    // Ahorro
+    const ahorroEl = document.getElementById('detailAhorroBadge');
+    if (precioOriginal && p.descuento > 0) {
+        const ahorro = (precioOriginal - p.precioActual).toFixed(2);
+        ahorroEl.textContent = `Ahorras $${ahorro}`;
+        ahorroEl.style.display = 'inline';
+    } else {
+        ahorroEl.style.display = 'none';
+    }
+
+    // Stock
+    const stockEl = document.getElementById('detailProductStock');
+    const _stockN = safeNum(p.stock);
+    if (_stockN === 0) {
+        stockEl.innerHTML = '<span style="color:#e74c3c;font-weight:700;">❌ Sin stock</span>';
+    } else if (_stockN <= 3) {
+        stockEl.innerHTML = `<span style="color:#e67e22;font-weight:700;">⚠️ ¡Últimas ${_stockN} unidades!</span>`;
+    } else {
+        stockEl.innerHTML = `<span>📦 ${_stockN} unidades disponibles</span>`;
+    }
+    document.getElementById('detailStockBarFill').style.width =
+        `${Math.min(100, Math.max(8, (p.stock / 20) * 100))}%`;
+
+    // Badges extra: garantia, devolución, usado
+    const extBadges = document.getElementById('detailExtraBadges');
+    let badges = '';
+    if (p.garantia) badges += `<span class="detail-badge-tag dtag-garantia">🛡️ Garantía: ${escapeHtml(p.garantia)}</span>`;
+    if (p.devolucion) badges += `<span class="detail-badge-tag dtag-devolucion">↩️ Devolución aceptada</span>`;
+    if (p.usado) badges += `<span class="detail-badge-tag dtag-usado">♻️ Producto usado</span>`;
+    extBadges.innerHTML = badges;
+
+    // Descripción
+    // Descripción: usar textContent preserva saltos de línea con CSS white-space
+    document.getElementById('detailProductDescription').textContent = p.descripcion || '';
+
+    // Botón comprar (estilo WhatsApp "Pedir")
+    const buyBtn = document.getElementById('detailBuyBtn');
+    buyBtn.disabled = p.stock === 0;
+    if (p.stock === 0) {
+        buyBtn.innerHTML = '❌ Sin stock';
+    } else {
+        buyBtn.innerHTML = `
+            <span class="btn-pedir-wa-icon">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="white" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+                </svg>
+            </span>
+            <span class="btn-pedir-wa-text">Pedir</span>
+        `;
+    }
+    buyBtn.onclick = () => contactarProducto(p.nombre);
+
+    // Productos relacionados (misma categoría, excluir actual)
+    const relacionados = productos
+        .filter(x => x.id !== p.id && x.categoria === p.categoria)
+        .slice(0, 4);
+    const relSection = document.getElementById('detailRelacionados');
+    const relGrid    = document.getElementById('detailRelacionadosGrid');
+    if (relacionados.length > 0) {
+        relGrid.innerHTML = relacionados.map(r => `
+            <div class="rel-card" onclick="abrirDetalleProducto(${safeNum(r.id)})">
+                <img src="${escapeAttr(r.imagen)}" alt="${escapeHtml(r.nombre)}" loading="lazy" onerror="this.style.display='none'"
+                     onerror="this.style.display='none'">
+                <div class="rel-card-name">${escapeHtml(r.nombre)}</div>
+                <div class="rel-card-price">$${Number(r.precioActual).toFixed(2)}</div>
+            </div>
+        `).join('');
+        relSection.style.display = 'block';
+    } else {
+        relSection.style.display = 'none';
+    }
+
+    // Reseñas
+    renderizarResenas(p.id);
+    document.getElementById('formResena').style.display = 'none';
+    const btnResena = document.getElementById('btnAgregarResena');
+    if (btnResena) btnResena.textContent = '+ Agregar reseña';
+    _estrellasSeleccionadas = 0;
+    setEstrellas(0);
+
+    // Historial de vistas
+    registrarVisto(p.id);
+
+    // Personas viendo (contador simulado con base en vistas reales)
+    (function() {
+        const vDiv = document.getElementById('detailPersonasViendo');
+        if (!vDiv) return;
+        const vistas = obtenerVistasProd(p.id) || 0;
+        // Simular personas activas: entre 2 y 12, influenciado por vistas
+        const base = Math.min(12, 2 + Math.floor(vistas / 3));
+        const personas = base + Math.floor(Math.random() * 4);
+        vDiv.style.display = 'flex';
+        vDiv.innerHTML = '<span>👁️ ' + personas + ' personas están viendo esto ahora</span>';
+    })();
+
+    // Botón carrito en modal
+    const detailBuyRow = document.getElementById('detailBuyBtn');
+    if (detailBuyRow) {
+        // Agregar botón carrito junto al de comprar si no existe
+        let cartRowEl = document.getElementById('detailCartBtn');
+        if (!cartRowEl) {
+            cartRowEl = document.createElement('button');
+            cartRowEl.id = 'detailCartBtn';
+            cartRowEl.className = 'btn-carrito';
+            cartRowEl.style.cssText = 'width:100%;margin-bottom:10px;padding:12px;font-size:14px;';
+            detailBuyRow.parentNode.insertBefore(cartRowEl, detailBuyRow.nextSibling);
+        }
+        const enCarro = carrito.some(x => x.id === p.id);
+        cartRowEl.textContent  = enCarro ? '✓ En el carrito — Ver carrito' : '🛒 Agregar al carrito';
+        cartRowEl.className    = 'btn-carrito' + (enCarro ? ' en-carrito' : '');
+        cartRowEl.style.cssText = 'width:100%;margin-bottom:10px;padding:12px;font-size:14px;';
+        cartRowEl.onclick = () => {
+            if (carrito.some(x => x.id === p.id)) {
+                cerrarDetalleModal();
+                abrirCarrito();
+            } else {
+                agregarAlCarrito(p.id, null, cartRowEl);
+                cartRowEl.textContent = '✓ En el carrito — Ver carrito';
+                cartRowEl.className = 'btn-carrito en-carrito';
+            }
+        };
+    }
+
+    // Abrir modal
+    const modal = document.getElementById('productDetailModal');
+    if (!modal) return;
+    modal.classList.remove('hidden');
+    modal.style.removeProperty('display');
+    document.body.style.overflow = 'hidden';
+    
+    
+    
+}
+
+function cerrarDetalleModal() {
+    // FIX: cerrar panel de compartir si estaba abierto
+    var _pcr = document.getElementById('panelCompartirRedes');
+    if (_pcr) _pcr.style.display = 'none';
+
+    const modal = document.getElementById('productDetailModal');
+    if (!modal) return;
+    modal.classList.add('hidden');
+    modal.style.removeProperty('display');
+    document.body.style.overflow = '';
+    _detalleProductoActual = null;
+    if (typeof actualizarVisibilidadBannerOferta === 'function') {
+        actualizarVisibilidadBannerOferta(typeof tmVistaInicioActiva === 'function' ? tmVistaInicioActiva() : true);
+    }
+    // Limpiar el hash de la URL
+    history.replaceState(null, '', window.location.pathname + window.location.search);
+    
+    // SEO dinámico: restaurar meta tags originales
+    if (typeof restaurarSEOOriginal === 'function') {
+        restaurarSEOOriginal();
+    }
+}
+
+function toggleZoomImagen(img) {
+    img.classList.toggle('zoomed');
+}
+
+function abrirPanelCompartir() {
+    const panel = document.getElementById('panelCompartirRedes');
+    if (!panel) return;
+    const visible = panel.style.display !== 'none';
+    panel.style.display = visible ? 'none' : 'block';
+}
+
+function _getShareData() {
+    const p = _detalleProductoActual;
+    if (!p) return null;
+    const url = 'https://tiendamax.org/#producto-' + p.id;
+    return {
+        nombre: p.nombre,
+        precio: p.precioActual.toFixed(2),
+        texto: '🛍️ *' + p.nombre + '* — $' + p.precioActual.toFixed(2) + ' USD\n📦 Stock disponible\n👉 ' + url,
+        url: url
+    };
+}
+
+function compartirWhatsApp() {
+    const d = _getShareData(); if (!d) return;
+    const msg = encodeURIComponent(d.texto);
+    window.open(`https://wa.me/?text=${msg}`, '_blank', 'noopener,noreferrer');
+}
+
+function compartirFacebook() {
+    const d = _getShareData(); if (!d) return;
+    const url = encodeURIComponent(d.url);
+    window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}&quote=${encodeURIComponent(d.texto)}`, '_blank', 'noopener,noreferrer');
+}
+
+function compartirTelegram() {
+    const d = _getShareData(); if (!d) return;
+    // FIX: eliminada variable msg que no se usaba
+    window.open(`https://t.me/share/url?url=${encodeURIComponent(d.url)}&text=${encodeURIComponent(d.texto)}`, '_blank', 'noopener,noreferrer');
+}
+
+function compartirTwitter() {
+    const d = _getShareData(); if (!d) return;
+    const msg = encodeURIComponent(`${d.nombre} — $${d.precio} USD en @TiendaMax 🛍️ ${d.url}`);
+    window.open(`https://twitter.com/intent/tweet?text=${msg}`, '_blank', 'noopener,noreferrer');
+}
+
+function compartirNativo() {
+    const p = _detalleProductoActual;
+    if (!p) return;
+    const texto = `🛍️ ${p.nombre} — $${p.precioActual.toFixed(2)} USD\n📦 Stock disponible\n👉 tiendamax.org`;
+    const urlProducto = 'https://tiendamax.org/#producto-' + p.id;
+    if (navigator.share) {
+        navigator.share({ title: p.nombre, text: texto, url: urlProducto }).catch(() => {});
+    } else {
+        navigator.clipboard.writeText(texto + '\n' + urlProducto).then(() => mostrarNotificacion('📤 Texto copiado para compartir'));
+    }
+}
+
+function compartirProducto() {
+    abrirPanelCompartir();
+}
+
+function copiarLinkProducto() {
+    const p = _detalleProductoActual;
+    const url = p
+        ? 'https://tiendamax.org/#producto-' + p.id
+        : 'https://tiendamax.org';
+    navigator.clipboard.writeText(url).then(() =>
+        mostrarNotificacion('🔗 Enlace copiado — ¡listo para compartir!')
+    ).catch(() => {
+        // Fallback para dispositivos sin clipboard API
+        const ta = document.createElement('textarea');
+        ta.value = url;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        mostrarNotificacion('🔗 Enlace copiado');
+    });
+}
+
+function contactarProducto(nombre) {
+    const p = _detalleProductoActual;
+    const item = p
+        ? { id: p.id, nombre: p.nombre, precio: parseFloat(p.precioActual) || 0, cantidad: 1 }
+        : { nombre: nombre || 'Producto', precio: 0, cantidad: 1 };
+    const msg = _mensajeOrdenWA([item]);
+    window.open(`https://wa.me/${getNumeroWhatsApp()}?text=${msg}`, '_blank', 'noopener,noreferrer');
+}
+
+// actualizarListaProductos está definida más abajo (versión mejorada con filtros por categoría)
+
+// ===== FUNCIÓN DE COPIAR PARA FACEBOOK Y REVOLICO =====
+
+function copiarParaRevolico(id) {
+    const producto = productos.find(p => p.id === id);
+    if (!producto) return;
+
+    const texto = `
+${producto.nombre}
+
+${producto.descripcion}
+
+💰 Precio: $${producto.precioActual} USD
+${producto.stock > 0 ? `📦 Stock: ${producto.stock} unidades disponibles` : '❌ Agotado'}
+
+📞 Contacto: +53 54320170
+    `.trim();
+
+    navigator.clipboard.writeText(texto).then(() => {
+        mostrarNotificacion('✅ ¡Datos copiados! Ahora pega en Revolico.');
+        setTimeout(() => { window.open('https://www.revolico.com/item/publish', '_blank', 'noopener,noreferrer'); }, 500);
+    }).catch(() => { 
+        window.open('https://www.revolico.com/item/publish', '_blank', 'noopener,noreferrer');
+    });
+}
+
+function copiarParaFacebook(id) {
+    const producto = productos.find(p => p.id === id);
+    if (!producto) return;
+
+    const texto = `
+🛍️ ${producto.nombre}
+
+${producto.descripcion}
+
+💰 Precio: $${producto.precioActual} USD
+${producto.descuento > 0 ? `🔥 ¡OFERTA! (-${producto.descuento}%)` : ''}
+${producto.stock > 0 ? `📦 Disponible: ${producto.stock} unidades` : '❌ Agotado'}
+
+📞 Interesado? Contáctame por WhatsApp: +53 54320170
+
+#TiendaMax #VentasCuba #GruposFacebook #Oferta
+    `.trim();
+
+    navigator.clipboard.writeText(texto).then(() => {
+        mostrarNotificacion('✅ ¡Texto copiado para GRUPOS! Ahora pega en tus grupos de Facebook.');
+        setTimeout(() => { window.open('https://www.facebook.com/groups/feed/', '_blank', 'noopener,noreferrer'); }, 500);
+    }).catch(() => { 
+        window.open('https://www.facebook.com/groups/feed/', '_blank', 'noopener,noreferrer');
+    });
+}
+
+// ===== PUBLICACIÓN EN REVOLICO =====
+
+function prepararPublicacionManual(id) {
+    const producto = productos.find(p => p.id === id);
+    if (!producto) return;
+    const texto = `${producto.nombre}\n\n${producto.descripcion}\n\nPrecio: ${producto.precioActual} USD\nContacto: +53 54320170`;
+    navigator.clipboard.writeText(texto).then(() => {
+        mostrarNotificacion('✅ ¡Datos copiados! Ahora pega en Revolico.');
+        setTimeout(() => { window.open('https://www.revolico.com/item/publish', '_blank', 'noopener,noreferrer'); }, 1000);
+    }).catch(() => { window.open('https://www.revolico.com/item/publish', '_blank', 'noopener,noreferrer'); });
+}
+
+async function publicarEnRevolico(id) {
+    if (typeof copiarYAbrirRevolico === 'function') {
+        copiarYAbrirRevolico(id);
+        return;
+    }
+    mostrarNotificacion('⚠️ El asistente de Revolico no está disponible', 'error');
+}
+
+async function publicarEnFacebook(id) {
+    if (typeof copiarYAbrirFacebook === 'function') {
+        copiarYAbrirFacebook(id);
+        return;
+    }
+    mostrarNotificacion('⚠️ El asistente de Facebook no está disponible', 'error');
+}
+
+async function publicarAhora() {
+    if (typeof mostrarSelectorAsistenteRevolico === 'function') {
+        mostrarSelectorAsistenteRevolico();
+        return;
+    }
+    mostrarNotificacion('⚠️ El asistente de Revolico no está disponible', 'error');
+}
+
+// ===== CATEGORÍAS (GESTIÓN) =====
+
+function actualizarSelectCategorias() {
+    ['productCategory', 'editProductCategory'].forEach(id => {
+        const select = document.getElementById(id);
+        if (!select) return;
+        const val = select.value;
+        select.innerHTML = '';
+        categorias.forEach(cat => {
+            const opt = document.createElement('option');
+            opt.value = cat; opt.textContent = cat;
+            select.appendChild(opt);
+        });
+        select.value = val || 'General';
+    });
+}
+
+function actualizarBotonesCategorias() {
+    const container = document.getElementById('categoriaFiltro');
+    if (!container) return;
+
+    container.innerHTML = `<button class="categoria-btn ${categoriaSeleccionada === 'Todas' ? 'active' : ''}" onclick="filtrarPorCategoria('Todas')">Todas</button>`;
+
+    categorias.forEach(cat => {
+        const btn = document.createElement('button');
+        btn.className = `categoria-btn ${categoriaSeleccionada === cat ? 'active' : ''}`;
+        btn.textContent = cat;
+        btn.onclick = () => filtrarPorCategoria(cat);
+        container.appendChild(btn);
+    });
+}
+
+function filtrarPorCategoria(cat) {
+    categoriaSeleccionada = cat;
+    actualizarBotonesCategorias();
+    renderizarProductos();
+    const titulo = document.getElementById('tituloCategoriaActual');
+    if (titulo) {
+        const icono = obtenerIconoCategoria(cat);
+        titulo.textContent = cat === 'Todas' ? '🛍️ Todos los Productos' : `${icono} ${cat}`;
+    }
+}
+
+function actualizarListaCategorias() {
+    const list = document.getElementById('categoryList');
+    if (!list) return;
+
+    list.innerHTML = `
+        <div style="margin-bottom: 20px; padding: 15px; background: rgba(52, 152, 219, 0.1); border: 1px dashed #3498DB; border-radius: 10px; text-align: center;">
+            <p style="font-size: 13px; margin-bottom: 10px;">Para guardar tus categorías permanentemente, descarga este archivo y súbelo a GitHub.</p>
+            <button class="btn btn-primary" style="background:#3498DB" onclick="descargarCategoriasJSON()">📥 Descargar categorias.json</button>
+        </div>
+    `;
+
+    categorias.forEach((cat, index) => {
+        const item = document.createElement('div');
+        item.className = 'category-item';
+        item.innerHTML = `
+            <span>${obtenerIconoCategoria(cat)} ${cat}</span>
+            ${cat !== 'General' ? `<button onclick="eliminarCategoria(${index})">🗑️</button>` : ''}
+        `;
+        list.appendChild(item);
+    });
+}
+
+function descargarCategoriasJSON() {
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(categorias, null, 2));
+    const downloadAnchorNode = document.createElement('a');
+    downloadAnchorNode.setAttribute("href", dataStr);
+    downloadAnchorNode.setAttribute("download", "categorias.json");
+    document.body.appendChild(downloadAnchorNode);
+    downloadAnchorNode.click();
+    downloadAnchorNode.remove();
+    mostrarNotificacion('✅ Archivo categorias.json generado. Súbelo a tu GitHub.');
+}
+
+function agregarCategoria() {
+    const input = document.getElementById('newCategoryName');
+    const iconInput = document.getElementById('newCategoryIcon');
+    const name = input.value.trim();
+    const icon = iconInput.value.trim();
+    
+    if (!name) return;
+    if (categorias.includes(name)) { mostrarNotificacion('La categoría ya existe', 'error'); return; }
+    
+    categorias.push(name);
+    
+    // Si el usuario puso un icono, guardarlo como personalizado
+    if (icon) {
+        iconosPersonalizados[name] = icon;
+        localStorage.setItem('iconosPersonalizados', JSON.stringify(iconosPersonalizados));
+    }
+    
+    guardarCategorias();
+    input.value = '';
+    iconInput.value = '';
+    
+    actualizarSelectCategorias();
+    actualizarBotonesCategorias();
+    actualizarListaCategorias();
+    renderizarCategoriasHome();
+    if (typeof actualizarSelectCategoriasPadre === 'function') actualizarSelectCategoriasPadre();
+    mostrarNotificacion('✅ Categoría agregada');
+}
+
+function guardarCategorias() {
+    localStorage.setItem('categorias', JSON.stringify(categorias));
+    localStorage.setItem('iconosPersonalizados', JSON.stringify(iconosPersonalizados));
+}
+
+function eliminarCategoria(index) {
+    const nombre = categorias[index];
+    if (nombre === 'General') return;
+    if (confirm(`¿Eliminar la categoría "${nombre}"?`)) {
+        // Eliminar icono personalizado si existe
+        if (iconosPersonalizados[nombre]) {
+            delete iconosPersonalizados[nombre];
+            localStorage.setItem('iconosPersonalizados', JSON.stringify(iconosPersonalizados));
+        }
+        
+        categorias.splice(index, 1);
+        guardarCategorias();
+        actualizarSelectCategorias();
+        actualizarBotonesCategorias();
+        actualizarListaCategorias();
+        renderizarCategoriasHome();
+        renderizarProductos();
+        if (typeof actualizarSelectCategoriasPadre === 'function') actualizarSelectCategoriasPadre();
+    }
+}
+
+// ===== GESTIÓN DE PRODUCTOS (EDITAR/ELIMINAR) =====
+
+function eliminarProducto(id) {
+    if (!confirm('¿Estás seguro de eliminar este producto?')) return;
+    productos = productos.filter(p => p.id !== id);
+    guardarProductos();
+    // Una eliminación requiere sincronizar todos los productos
+    localStorage.setItem('productosModificados', JSON.stringify(productos.map(p => p.id)));
+    localStorage.setItem('ultimaModificacion', Date.now().toString());
+    sincronizarConBackend();
+    renderizarCategoriasHome();
+    renderizarMasVendidos();
+    renderizarProductos();
+    actualizarListaProductos();
+    verificarOfertasYMostrarBanner();
+    mostrarNotificacion('🗑️ Producto eliminado', 'info');
+}
+
+function abrirEditModal(id) {
+    const p = productos.find(prod => prod.id === id);
+    if (!p) return;
+
+    document.getElementById('editProductId').value = p.id;
+    document.getElementById('editProductName').value = p.nombre;
+    document.getElementById('editProductDescription').value = p.descripcion;
+    document.getElementById('editProductPriceActual').value = p.precioActual;
+    const _epOrig = document.getElementById('editProductPrecioOriginal');
+    if (_epOrig) _epOrig.value = p.precioOriginal > 0 ? p.precioOriginal : '';
+    document.getElementById('editProductStock').value = p.stock;
+    document.getElementById('editProductCategory').value = p.categoria;
+
+    // Cargar subcategorías del producto al editar
+    if (typeof actualizarSelectSubcategorias === 'function') {
+        actualizarSelectSubcategorias();
+        setTimeout(() => {
+            const editSubcat = document.getElementById('editProductSubcategory');
+            if (editSubcat && p.subcategoria) editSubcat.value = p.subcategoria;
+        }, 50);
+    }
+    
+    // Nuevos campos en edición
+    if (document.getElementById('editProductUsado')) document.getElementById('editProductUsado').checked = p.usado || false;
+    if (document.getElementById('editProductGarantia')) document.getElementById('editProductGarantia').value = p.garantia || '';
+    if (document.getElementById('editProductDevolucion')) document.getElementById('editProductDevolucion').checked = p.devolucion || false;
+    if (document.getElementById('editProductComision')) document.getElementById('editProductComision').value = p.comision || '';
+
+    const masVendidoSel = document.getElementById('editProductMasVendido');
+    if (masVendidoSel) masVendidoSel.value = p.masVendido ? 'true' : 'false';
+
+    const preview = document.getElementById('currentImagePreview');
+    if (preview) {
+        const imgs = obtenerImagenesProducto(p);
+        preview.innerHTML = imgs.length
+            ? '<div class="admin-gallery-preview">' + imgs.map((url, i) => '<img src="' + escapeAttr(url) + '" title="Imagen ' + (i + 1) + '" onerror="this.style.display=\'none\'">').join('') + '</div>'
+            : '<span style="font-size:12px;color:#888;">Sin imágenes</span>';
+    }
+
+    const modal = document.getElementById('editModal');
+    modal.classList.remove('hidden');
+    modal.style.removeProperty('display');
+}
+
+function cerrarEditModal() {
+    const modal = document.getElementById('editModal');
+    modal.classList.add('hidden');
+    modal.style.removeProperty('display');
+}
+
+async function guardarProductoEditado(event) {
+    event.preventDefault();
+    const id = parseInt(document.getElementById('editProductId').value);
+    const index = productos.findIndex(p => p.id === id);
+    if (index === -1) return;
+
+    const masVendidoSel = document.getElementById('editProductMasVendido');
+    const fileInput = document.getElementById('editProductImage');
+    const file = fileInput && fileInput.files ? fileInput.files[0] : null;
+
+    try {
+        let nuevaImagen = null;
+        if (file) {
+            mostrarNotificacion('⏳ Subiendo imagen principal...', 'info');
+            nuevaImagen = await subirImagenAGitHub(file);
+        }
+        const extrasNuevas = await subirMultiplesImagenes('editProductImagesExtra');
+        const imagenPrincipal = nuevaImagen || productos[index].imagen;
+        const anteriores = obtenerImagenesProducto(productos[index]);
+        const imagenes = _tmDedupImagenes([
+            imagenPrincipal,
+            ...anteriores.filter(url => url !== productos[index].imagen && url !== imagenPrincipal),
+            ...extrasNuevas
+        ]);
+
+        const productoActualizado = {
+            ...productos[index],
+            nombre: document.getElementById('editProductName').value.trim(),
+            descripcion: document.getElementById('editProductDescription').value.trim(),
+            precioActual: parseFloat(document.getElementById('editProductPriceActual').value) || 0,
+            precioOriginal: parseFloat(document.getElementById('editProductPrecioOriginal')?.value) || 0,
+            descuento: 0,
+            stock: parseInt(document.getElementById('editProductStock').value) || 0,
+            categoria: document.getElementById('editProductCategory').value,
+            subcategoria: (document.getElementById('editProductSubcategory') && document.getElementById('editProductSubcategory').value) ? document.getElementById('editProductSubcategory').value : (productos[index].subcategoria || ''),
+            masVendido: masVendidoSel ? masVendidoSel.value === 'true' : productos[index].masVendido,
+            imagen: imagenPrincipal,
+            imagenes: imagenes,
+            usado: document.getElementById('editProductUsado') ? document.getElementById('editProductUsado').checked : productos[index].usado,
+            garantia: document.getElementById('editProductGarantia') ? document.getElementById('editProductGarantia').value.trim() : productos[index].garantia,
+            devolucion: document.getElementById('editProductDevolucion') ? document.getElementById('editProductDevolucion').checked : productos[index].devolucion,
+            comision: document.getElementById('editProductComision') ? parseFloat(document.getElementById('editProductComision').value) || 0 : productos[index].comision || 0
+        };
+
+        const errores = validarProducto(productoActualizado);
+        if (errores.length > 0) {
+            mostrarNotificacion('❌ ' + errores[0], 'error');
+            return;
+        }
+
+        productos[index] = productoActualizado;
+        guardarProductos();
+        marcarProductoModificado(productoActualizado.id);
+        sincronizarConGitHub();
+        cerrarEditModal();
+        renderizarCategoriasHome();
+        renderizarMasVendidos();
+        renderizarProductos();
+        actualizarListaProductos();
+        mostrarNotificacion('✅ Producto actualizado');
+    } catch (e) {
+        console.error('Error actualizando producto:', e);
+        mostrarNotificacion('❌ Error actualizando imágenes: ' + (e.message || e), 'error');
+    }
+}
+
+// ===== ESTADO DEL BACKEND =====
+
+async function verificarEstadoBackend() {
+    const statusEl = document.getElementById('backendStatus');
+    if (!statusEl) return;
+    statusEl.innerHTML = '🟠 <strong>Modo manual activo</strong> · Publicación asistida desde el navegador · Sin dependencia de backend roto';
+    statusEl.style.color = '#F39C12';
+}
+
+async function cargarEstadoPublicacion() {
+    const logContainer = document.getElementById('historialPublicaciones');
+    if (!logContainer) return;
+    logContainer.innerHTML = '<p style="font-size:13px;color:#666;">Modo manual activo. No existe historial automático porque este repo no incluye backend de publicación.</p>';
+}
+
+// ===== SINCRONIZACIÓN CON GITHUB =====
+
+function cargarConfiguracionGitHub() {
+    document.getElementById('githubUser').value = localStorage.getItem('githubUser') || '';
+    document.getElementById('githubRepo').value = localStorage.getItem('githubRepo') || 'Tiendamax';
+    document.getElementById('githubToken').value = localStorage.getItem('githubToken') || '';
+    
+    const fbConfig = localStorage.getItem('firebaseConfig');
+    if (fbConfig) {
+        try {
+            document.getElementById('firebaseConfigJson').value = JSON.stringify(JSON.parse(fbConfig), null, 2);
+        } catch(e) {
+            document.getElementById('firebaseConfigJson').value = fbConfig;
+        }
+    } else {
+        document.getElementById('firebaseConfigJson').value = '';
+    }
+    document.getElementById('firebaseVapidKey').value = localStorage.getItem('firebaseVapidKey') || '';
+    document.getElementById('firebaseServerKey').value = localStorage.getItem('fcmServerKey') || '';
+}
+
+function guardarConfiguracionGitHub(event) {
+    event.preventDefault();
+    localStorage.setItem('githubUser', document.getElementById('githubUser').value.trim());
+    localStorage.setItem('githubRepo', document.getElementById('githubRepo').value.trim());
+    localStorage.setItem('githubToken', document.getElementById('githubToken').value.trim());
+    mostrarNotificacion('✅ Configuración de GitHub guardada localmente');
+}
+
+
+
+// ===== SISTEMA DE DELTA SYNC =====
+// Registra qué productos fueron modificados desde la última sincronización
+function marcarProductoModificado(id) {
+    const modificados = JSON.parse(localStorage.getItem('productosModificados') || '[]');
+    if (!modificados.includes(id)) modificados.push(id);
+    localStorage.setItem('productosModificados', JSON.stringify(modificados));
+    localStorage.setItem('ultimaModificacion', Date.now().toString());
+}
+
+function limpiarProductosModificados() {
+    localStorage.removeItem('productosModificados');
+    localStorage.setItem('ultimaSincronizacion', Date.now().toString());
+}
+
+function obtenerProductosModificados() {
+    return JSON.parse(localStorage.getItem('productosModificados') || '[]');
+}
+
+async function sincronizarTodoConGitHub() {
+    const user  = localStorage.getItem('githubUser');
+    const repo  = localStorage.getItem('githubRepo');
+    const token = localStorage.getItem('githubToken');
+    if (!user || !repo || !token) {
+        mostrarNotificacion('❌ Configura primero tu usuario, repo y token en la pestaña Configuración', 'error');
+        switchTab('configuracion');
+        return;
+    }
+
+    const btn = document.querySelector('[data-action="sincronizarTodoConGitHub"]');
+    if (btn) { btn.disabled = true; btn.textContent = '⏳ Sincronizando...'; }
+
+    // --- Barra de progreso ---
+    let barraContenedor = document.getElementById('syncProgressContenedor');
+    if (!barraContenedor) {
+        barraContenedor = document.createElement('div');
+        barraContenedor.id = 'syncProgressContenedor';
+        barraContenedor.style.cssText = 'margin-top:14px;';
+        barraContenedor.innerHTML = `
+            <div style="background:#2a2a2a;border-radius:8px;overflow:hidden;height:14px;margin-bottom:6px;">
+                <div id="syncProgressBarra" style="height:100%;width:0%;background:linear-gradient(90deg,#FF6B35,#ff9a6c);transition:width 0.4s ease;border-radius:8px;"></div>
+            </div>
+            <p id="syncProgressTexto" style="font-size:12px;color:#aaa;text-align:center;margin:0;"></p>
+        `;
+        if (btn) btn.parentNode.insertBefore(barraContenedor, btn.nextSibling);
+    }
+    barraContenedor.style.display = 'block';
+    const barra   = document.getElementById('syncProgressBarra');
+    const textoEl = document.getElementById('syncProgressTexto');
+    if (barra)   barra.style.width = '0%';
+    if (textoEl) textoEl.textContent = 'Preparando...';
+
+    function actualizarBarra(paso, total, mensaje) {
+        const pct = Math.round((paso / total) * 100);
+        if (barra)   barra.style.width = pct + '%';
+        if (textoEl) textoEl.textContent = mensaje;
+    }
+    // -------------------------
+
+    const idsModificados = obtenerProductosModificados();
+    const hayDelta = idsModificados.length > 0 && idsModificados.length < productos.length;
+
+    if (hayDelta) {
+        mostrarNotificacion(`🔄 Subiendo ${idsModificados.length} producto(s) modificado(s)...`, 'info');
+    } else {
+        mostrarNotificacion('🚀 Sincronizando tienda completa con GitHub...', 'info');
+    }
+
+    // Construir config.json con tasa + oferta del día para que todos los clientes la vean
+    const _configSync = {
+        tasaMN:              parseFloat(localStorage.getItem('tasaMN') || '0') || undefined,
+        ofertaDiaId:         localStorage.getItem('ofertaDiaId') || undefined,
+        ofertaDiaTexto:      localStorage.getItem('ofertaDiaTexto') || undefined,
+        ofertaDiaActualizado: localStorage.getItem('ofertaDiaId') ? new Date().toISOString() : undefined,
+        firebaseConfig:      localStorage.getItem('firebaseConfig') ? JSON.parse(localStorage.getItem('firebaseConfig')) : undefined,
+        fcmServerKey:        localStorage.getItem('fcmServerKey') || undefined,
+        actualizado:         new Date().toISOString(),
+    };
+    // Limpiar claves undefined
+    Object.keys(_configSync).forEach(k => _configSync[k] === undefined && delete _configSync[k]);
+
+    const archivos = [
+        { path: 'productos.json',              data: productos },
+        { path: 'categorias.json',             data: { nombres: categorias, iconos: iconosPersonalizados } },
+        { path: 'subcategorias.json',          data: JSON.parse(localStorage.getItem('subcategorias') || '{}') },
+        { path: 'grupos_facebook_config.json', data: { grupos: JSON.parse(localStorage.getItem('gruposFB') || '[]'), exportado: new Date().toISOString() } },
+        { path: 'revolico_config.json',        data: JSON.parse(localStorage.getItem('revolicoConfig') || '{}') },
+        { path: 'banners.json',                data: JSON.parse(localStorage.getItem('heroBanners') || '[]') },
+        // comisiones.json eliminado — consolidado en productos.json
+        // ventas_historial.json migrado a Firebase — ya no se sube a GitHub
+        { path: 'config.json',                 data: _configSync },
+    ];
+
+    // Si hay productos modificados: subir solo productos.json + config.json + grupos
+    // Si no hay delta: subir todo
+    const archivosFiltrados = hayDelta
+        ? archivos.filter(a => ['productos.json', 'config.json', 'grupos_facebook_config.json'].includes(a.path))
+        : archivos;
+
+    let ok = 0, errors = [];
+    const total = archivosFiltrados.length;
+    // Subir secuencialmente para evitar conflictos de SHA en GitHub
+    for (let i = 0; i < archivosFiltrados.length; i++) {
+        const { path, data } = archivosFiltrados[i];
+        actualizarBarra(i, total, `Subiendo ${path}… (${i + 1}/${total})`);
+        if (btn) btn.textContent = `⏳ ${i + 1}/${total} archivos...`;
+        try {
+            await subirArchivoAGitHub(user, repo, token, path, data);
+            ok++;
+        } catch (e) {
+            errors.push(`${path}: ${e.message}`);
+        }
+    }
+    actualizarBarra(total, total, errors.length === 0 ? '✅ ¡Todo subido correctamente!' : '⚠️ Completado con errores');
+
+    if (btn) { btn.disabled = false; btn.textContent = '🔄 ACTUALIZAR TIENDA AHORA'; }
+
+    // Ocultar barra después de 4 segundos
+    setTimeout(() => {
+        if (barraContenedor) barraContenedor.style.display = 'none';
+    }, 4000);
+
+    if (errors.length === 0) {
+        limpiarProductosModificados();
+        const info = hayDelta ? `${idsModificados.length} producto(s) actualizado(s)` : `${ok} archivos`;
+        mostrarNotificacion(`✅ Tienda actualizada (${info}). Visible en ~30 segundos.`);
+    } else {
+        // Mostrar solo el primer error con mensaje claro (suelen tener la misma causa)
+        const primerError = errors[0];
+        const causa = primerError.includes(': ') ? primerError.split(': ').slice(1).join(': ').trim() : primerError;
+        mostrarNotificacion(`❌ ${causa}`, 'error');
+        console.error('Errores de sincronización:', errors);
+    }
+}
+
+async function sincronizarConGitHub() {
+    const user = localStorage.getItem('githubUser');
+    const repo = localStorage.getItem('githubRepo');
+    const token = localStorage.getItem('githubToken');
+    if (!user || !repo || !token) {
+        
+        return;
+    }
+    try {
+        await subirArchivoAGitHub(user, repo, token, 'productos.json', productos);
+        
+    } catch (e) {
+        console.warn('⚠️ Error al sincronizar automáticamente:', e.message);
+    }
+}
+
+async function subirArchivoAGitHub(user, repo, token, path, data) {
+    const headers = { 'Authorization': `token ${token}`, 'Content-Type': 'application/json', 'Accept': 'application/vnd.github.v3+json' };
+    const jsonStr  = JSON.stringify(data, null, 2);
+    const content  = btoa(Array.from(new TextEncoder().encode(jsonStr), b => String.fromCharCode(b)).join(''));
+
+    // Calcular tamaño aproximado en bytes (base64 → bytes originales)
+    const sizeBytes = jsonStr.length;
+    const apiBase   = `https://api.github.com/repos/${user}/${repo}`;
+
+    // Detectar la rama principal (main o master) automáticamente
+    async function obtenerRamaPrincipal() {
+        try {
+            const res = await fetch(`${apiBase}`, { headers });
+            if (res.ok) {
+                const d = await res.json();
+                return d.default_branch || 'main';
+            }
+        } catch (e) {}
+        return 'main';
+    }
+
+    // Función interna para obtener el SHA del archivo (Contents API)
+    // Cache-buster para evitar que GitHub devuelva SHA desactualizado
+    async function obtenerSHA() {
+        try {
+            const res = await fetch(`${apiBase}/contents/${path}?_=${Date.now()}`, { headers });
+            if (res.ok) {
+                const d = await res.json();
+                return d.sha || null;
+            }
+            if (res.status === 404) return null;
+            return null;
+        } catch (e) { return null; }
+    }
+
+    // Para archivos < 900KB usar la Contents API normal (más simple)
+    if (sizeBytes < 900 * 1024) {
+        let sha = await obtenerSHA();
+        const body = { message: `Actualización de ${path}`, content };
+        if (sha) body.sha = sha;
+
+        let response = await fetch(`${apiBase}/contents/${path}`, {
+            method: 'PUT', headers, body: JSON.stringify(body)
+        });
+
+        // Reintentar con SHA fresco si hay conflicto (hasta 3 intentos)
+        for (let intento = 0; intento < 3 && !response.ok && (response.status === 409 || response.status === 422); intento++) {
+            await new Promise(r => setTimeout(r, 800)); // esperar antes de reintentar
+            sha = await obtenerSHA();
+            const bodyRetry = { message: `Actualización de ${path}`, content };
+            if (sha) bodyRetry.sha = sha;
+            response = await fetch(`${apiBase}/contents/${path}`, {
+                method: 'PUT', headers, body: JSON.stringify(bodyRetry)
+            });
+        }
+
+        if (!response.ok) {
+            // Dar mensajes de error claros según el código HTTP
+            if (response.status === 401) {
+                throw new Error('Token inválido o expirado. Ve a Config y actualiza tu Token de Acceso.');
+            }
+            if (response.status === 403) {
+                throw new Error('Token sin permisos. Asegúrate de que tenga el permiso "repo" completo.');
+            }
+            // Para 404 en el PUT: verificar si es el repo o el archivo
+            if (response.status === 404) {
+                // Comprobar si el repo existe realmente
+                const checkRepo = await fetch(`${apiBase}`, { headers });
+                if (!checkRepo.ok) {
+                    throw new Error(`Repositorio "${user}/${repo}" no encontrado. Verifica usuario y nombre del repo en Config.`);
+                }
+                // El repo existe pero el archivo no se pudo crear: problema de permisos del token
+                throw new Error('Token sin permisos de escritura. Asegúrate de que tenga el permiso "repo" completo (no solo "public_repo").');
+            }
+            let errMsg = `Error ${response.status} al subir ${path}`;
+            try { const err = await response.json(); errMsg = err.message || errMsg; } catch(e) {}
+            throw new Error(errMsg);
+        }
+        return;
+    }
+
+    // Para archivos >= 900KB usar el Git Data API (soporta archivos grandes)
+    const rama = await obtenerRamaPrincipal();
+
+    // Paso 1: Crear blob con el contenido
+    const blobRes = await fetch(`${apiBase}/git/blobs`, {
+        method: 'POST', headers,
+        body: JSON.stringify({ content, encoding: 'base64' })
+    });
+    if (!blobRes.ok) {
+        const e = await blobRes.json();
+        throw new Error(`Error creando blob: ${e.message}`);
+    }
+    const { sha: blobSha } = await blobRes.json();
+
+    // Paso 2: Obtener el SHA del commit más reciente (HEAD)
+    const refRes = await fetch(`${apiBase}/git/ref/heads/${rama}`, { headers });
+    if (!refRes.ok) throw new Error(`No se pudo obtener la rama "${rama}"`);
+    const { object: { sha: commitSha } } = await refRes.json();
+
+    // Paso 3: Obtener el tree SHA del commit
+    const commitRes = await fetch(`${apiBase}/git/commits/${commitSha}`, { headers });
+    if (!commitRes.ok) throw new Error('No se pudo obtener el commit');
+    const { tree: { sha: treeSha } } = await commitRes.json();
+
+    // Paso 4: Crear nuevo tree con el archivo actualizado
+    const newTreeRes = await fetch(`${apiBase}/git/trees`, {
+        method: 'POST', headers,
+        body: JSON.stringify({
+            base_tree: treeSha,
+            tree: [{ path, mode: '100644', type: 'blob', sha: blobSha }]
+        })
+    });
+    if (!newTreeRes.ok) throw new Error('Error creando tree');
+    const { sha: newTreeSha } = await newTreeRes.json();
+
+    // Paso 5: Crear nuevo commit
+    const newCommitRes = await fetch(`${apiBase}/git/commits`, {
+        method: 'POST', headers,
+        body: JSON.stringify({
+            message: `Actualización de ${path}`,
+            tree: newTreeSha,
+            parents: [commitSha]
+        })
+    });
+    if (!newCommitRes.ok) throw new Error('Error creando commit');
+    const { sha: newCommitSha } = await newCommitRes.json();
+
+    // Paso 6: Actualizar referencia HEAD (force:true evita el error "not a fast-forward")
+    const updateRefRes = await fetch(`${apiBase}/git/refs/heads/${rama}`, {
+        method: 'PATCH', headers,
+        body: JSON.stringify({ sha: newCommitSha, force: true })
+    });
+    if (!updateRefRes.ok) {
+        const e = await updateRefRes.json();
+        throw new Error(`Error actualizando ref: ${e.message}`);
+    }
+}
+
+// ===== LÓGICA DE PERSUASIÓN Y VENTAS =====
+
+function verificarOfertasYMostrarBanner() {
+    const banner = document.getElementById('urgenciaBanner');
+    if (!banner) return;
+
+    // El banner superior solo debe verse en el inicio.
+    // En categorías/listados/detalle ya existen etiquetas dentro de las tarjetas.
+    if (typeof tmVistaInicioActiva === 'function' && !tmVistaInicioActiva()) {
+        banner.style.setProperty('display', 'none', 'important');
+        banner.onclick = null;
+        if (typeof actualizarOffsetsUI === 'function') setTimeout(actualizarOffsetsUI, 0);
+        return;
+    }
+
+    // Prioridad 1: Oferta del Día configurada en el admin
+    const ofertaDiaId    = localStorage.getItem('ofertaDiaId');
+    const ofertaDiaTexto = localStorage.getItem('ofertaDiaTexto') || '🔥 OFERTA DEL DÍA';
+
+    // Prioridad 2: Countdown activo
+    const cdData = localStorage.getItem('activeCountdown');
+    const cdObj  = cdData ? (() => { try { return JSON.parse(cdData); } catch(e) { return null; } })() : null;
+    const cdValido = cdObj && cdObj.endTime && cdObj.endTime > Date.now();
+
+    let targetId = null;
+
+    if (ofertaDiaId) {
+        targetId = ofertaDiaId;
+        while (banner.firstChild) banner.removeChild(banner.firstChild);
+        const spanFlash = document.createElement('span');
+        spanFlash.className = 'flash-deal';
+        spanFlash.textContent = ofertaDiaTexto + ' · VER AHORA →';
+        banner.appendChild(spanFlash);
+    } else if (cdValido) {
+        targetId = cdObj.productId;
+        while (banner.firstChild) banner.removeChild(banner.firstChild);
+        banner.appendChild(document.createTextNode('🔥 ' + (cdObj.texto || '¡Oferta especial!') + ' '));
+        const spanFlash = document.createElement('span');
+        spanFlash.className = 'flash-deal';
+        spanFlash.textContent = 'VER AHORA →';
+        banner.appendChild(spanFlash);
+    } else {
+        // No hay oferta ni countdown → ocultar con !important + clase para
+        // ganarle a la regla CSS '.urgencia-banner{display:flex !important}'
+        banner.style.setProperty('display', 'none', 'important');
+        if (document.body) document.body.classList.add('tm-no-oferta-banner');
+        banner.onclick = null;
+        setTimeout(actualizarOffsetsUI, 0);
+        return;
+    }
+
+    // Sí hay oferta → quitar la clase que lo bloquea y mostrarlo
+    if (document.body) document.body.classList.remove('tm-no-oferta-banner');
+    banner.style.setProperty('display', 'flex', 'important');
+    banner.style.cursor  = 'pointer';
+    setTimeout(actualizarOffsetsUI, 0);
+
+    banner.onclick = () => {
+        if (!targetId) return;
+        const idNum = Number(targetId);
+        const tarjeta = document.querySelector(`[onclick*="abrirDetalleProducto(${idNum})"]`);
+        if (tarjeta) {
+            tarjeta.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            tarjeta.style.transition = 'box-shadow 0.3s';
+            tarjeta.style.boxShadow  = '0 0 0 3px #ff6b35, 0 8px 32px rgba(255,107,53,0.5)';
+            setTimeout(() => { tarjeta.style.boxShadow = ''; }, 2000);
+        }
+        abrirDetalleProducto(idNum);
+    };
+}
+
+// ===== INICIALIZACIÓN =====
+
+function inicializarTienda() {
+    
+    // Restaurar badges inmediatamente al cargar
+    actualizarContadorCarrito();
+    actualizarBadgeCorazon();
+    
+    cargarDatosDesdeGitHub();
+
+    const productForm = document.getElementById('productForm');
+    if (productForm) {
+        productForm.onsubmit = null;
+        productForm.addEventListener('submit', agregarProductoForm);
+    }
+
+    const editForm = document.getElementById('editForm');
+    if (editForm) {
+        editForm.onsubmit = null;
+        editForm.addEventListener('submit', guardarProductoEditado);
+    }
+
+    const loginForm = document.querySelector('#loginModal form');
+    if (loginForm) {
+        loginForm.onsubmit = null;
+        loginForm.addEventListener('submit', verificarPassword);
+    }
+
+    setInterval(() => {
+        const panel = document.getElementById('adminPanel');
+        if (panel && !panel.classList.contains('hidden')) {
+            verificarEstadoBackend();
+        }
+    }, 30000);
+
+    // El tema se inicializa por _initTema() (ver toggleDarkMode arriba).
+    // Re-aplicamos por si el botón apareció después de cargar.
+    if (typeof _initTema === 'function') _initTema();
+
+    iniciarCountdownsActivos();
+    actualizarOffsetsUI();
+    actualizarVisibilidadBannerOferta(true);
+    setTimeout(actualizarOffsetsUI, 200);
+    setTimeout(actualizarOffsetsUI, 1200);
+    window.addEventListener('resize', actualizarOffsetsUI);
+    if (window.visualViewport) window.visualViewport.addEventListener('resize', actualizarOffsetsUI);
+}
+
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', inicializarTienda);
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('[data-action="sincronizarTodoConGitHub"]').forEach(el => {
+            el.addEventListener('click', sincronizarTodoConGitHub);
+        });
+    });
+} else {
+    inicializarTienda();
+    document.querySelectorAll('[data-action="sincronizarTodoConGitHub"]').forEach(el => {
+        el.addEventListener('click', sincronizarTodoConGitHub);
+    });
+}
+
+// ===== AUTOMATIZACIÓN HÍBRIDA (SELENIUM) =====
+
+
+// ===== COUNTDOWN TIMER =====
+// countdownIntervals ya está declarada arriba (al inicio del archivo)
+// para evitar problemas de TDZ. Solo aseguramos que sea objeto.
+if (typeof countdownIntervals !== 'object' || countdownIntervals === null) {
+    countdownIntervals = {};
+}
+
+function guardarCountdown() {
+    const productId = document.getElementById('countdownProductSelect').value;
+    const horas = parseInt(document.getElementById('countdownHoras').value) || 0;
+    const minutos = parseInt(document.getElementById('countdownMinutos').value) || 0;
+    const texto = document.getElementById('countdownTexto').value.trim() || '¡Oferta especial!';
+
+    if (!productId) {
+        mostrarNotificacion('⚠️ Selecciona un producto', 'error');
+        return;
+    }
+
+    const duracionMs = (horas * 3600 + minutos * 60) * 1000;
+    if (duracionMs <= 0) {
+        mostrarNotificacion('⚠️ Ingresa una duración válida', 'error');
+        return;
+    }
+
+    const endTime = Date.now() + duracionMs;
+    const countdown = { productId, endTime, texto };
+    localStorage.setItem('activeCountdown', JSON.stringify(countdown));
+
+    const producto = productos.find(p => p.id == productId);
+    const nombre = producto ? producto.nombre : 'Producto';
+
+    const status = document.getElementById('countdownStatus');
+    if (status) status.innerHTML = `✅ Countdown activo para: <strong>${escapeHtml(nombre)}</strong>`;
+
+    // Re-render to show timer
+    renderizarMasVendidos();
+    renderizarProductos();
+    iniciarCountdownsActivos();
+
+    mostrarNotificacion(`⏱️ Countdown activado para "${nombre}"`);
+}
+
+function desactivarCountdown() {
+    localStorage.removeItem('activeCountdown');
+    if (!countdownIntervals || typeof countdownIntervals !== 'object') countdownIntervals = {};
+    Object.values(countdownIntervals).forEach(clearInterval);
+    countdownIntervals = {};
+    renderizarMasVendidos();
+    renderizarProductos();
+    const status = document.getElementById('countdownStatus');
+    if (status) status.innerHTML = 'Countdown desactivado.';
+    mostrarNotificacion('🗑️ Countdown desactivado');
+}
+
+function getActiveCountdown() {
+    try {
+        const saved = localStorage.getItem('activeCountdown');
+        if (!saved) return null;
+        const cd = JSON.parse(saved);
+        if (cd.endTime <= Date.now()) {
+            localStorage.removeItem('activeCountdown');
+            return null;
+        }
+        return cd;
+    } catch { return null; }
+}
+
+function renderCountdownHtml(productId) {
+    const cd = getActiveCountdown();
+    if (!cd || String(cd.productId) !== String(productId)) return '';
+    
+    return `<div class="producto-countdown" id="countdown_${safeNum(productId)}">
+        <span class="countdown-label">🔥 ${escapeHtml(cd.texto)}</span>
+        <div class="countdown-time">
+            <span class="countdown-block" id="cd_h_${safeNum(productId)}">--</span>
+            <span class="countdown-sep">:</span>
+            <span class="countdown-block" id="cd_m_${safeNum(productId)}">--</span>
+            <span class="countdown-sep">:</span>
+            <span class="countdown-block" id="cd_s_${safeNum(productId)}">--</span>
+        </div>
+    </div>`;
+}
+
+function iniciarCountdownsActivos() {
+    if (!countdownIntervals || typeof countdownIntervals !== 'object') countdownIntervals = {};
+    Object.values(countdownIntervals).forEach(clearInterval);
+    countdownIntervals = {};
+
+    const cd = getActiveCountdown();
+    if (!cd) return;
+
+    const pid = cd.productId;
+    const tickerFn = () => {
+        const remaining = Math.max(0, cd.endTime - Date.now());
+        const h = Math.floor(remaining / 3600000);
+        const m = Math.floor((remaining % 3600000) / 60000);
+        const s = Math.floor((remaining % 60000) / 1000);
+        const pad = n => String(n).padStart(2, '0');
+
+        ['masVendidosGrid', 'productosGrid'].forEach(gridId => {
+            const hEl = document.getElementById(`cd_h_${pid}`);
+            const mEl = document.getElementById(`cd_m_${pid}`);
+            const sEl = document.getElementById(`cd_s_${pid}`);
+            if (hEl) hEl.textContent = pad(h);
+            if (mEl) mEl.textContent = pad(m);
+            if (sEl) sEl.textContent = pad(s);
+        });
+
+        if (remaining <= 0) {
+            clearInterval(countdownIntervals[pid]);
+            localStorage.removeItem('activeCountdown');
+        }
+    };
+    tickerFn();
+    countdownIntervals[pid] = setInterval(tickerFn, 1000);
+}
+
+function actualizarCountdownProductSelect() {
+    const sel = document.getElementById('countdownProductSelect');
+    if (!sel) return;
+    const current = sel.value;
+    sel.innerHTML = '<option value="">-- Ninguno (desactivar timer) --</option>';
+    productos.forEach(p => {
+        const opt = document.createElement('option');
+        opt.value = p.id;
+        opt.textContent = p.nombre;
+        sel.appendChild(opt);
+    });
+    // Preselect active countdown product
+    const cd = getActiveCountdown();
+    if (cd) sel.value = cd.productId;
+    else if (current) sel.value = current;
+
+    // Update status
+    const status = document.getElementById('countdownStatus');
+    if (status && cd) {
+        const producto = productos.find(p => p.id == cd.productId);
+        if (producto) status.innerHTML = `✅ Countdown activo para: <strong>${escapeHtml(producto.nombre)}</strong>`;
+    }
+}
+
+// ===== FAST CATEGORIES - render from localStorage immediately =====
+// Patch renderizarCategoriasHome for performance 
+// (already called from cargarDatosDesdeGitHub, but we want instant local render too)
+function renderizarCategoriasHomeInstant() {
+    // Load from localStorage immediately (no network wait)
+    const localProds = JSON.parse(localStorage.getItem('productos')) || [];
+    const localCats = JSON.parse(localStorage.getItem('categorias')) || [];
+    // Solo omitir si no hay absolutamente nada (primer uso sin datos en caché)
+    if (localCats.length === 0) return;
+    
+    const grid = document.getElementById('categoriasGrid');
+    if (!grid) return;
+    
+    grid.innerHTML = '';
+    const cardTodas = document.createElement('div');
+    cardTodas.className = 'categoria-card';
+    cardTodas.innerHTML = `<span class="cat-icon">🛍️</span><span class="cat-name">Todos</span><span class="cat-count">${localProds.length} producto${localProds.length !== 1 ? 's' : ''}</span>`;
+    cardTodas.onclick = () => mostrarVistaCategoria('Todas');
+    grid.appendChild(cardTodas);
+
+    localCats.forEach(cat => {
+        const count = localProds.filter(p => p.categoria === cat).length;
+        const card = document.createElement('div');
+        card.className = 'categoria-card';
+        card.innerHTML = `<span class="cat-icon">${obtenerIconoCategoria(cat)}</span><span class="cat-name">${cat}</span><span class="cat-count">${count === 0 ? '🕐 Próximamente' : count + ' producto' + (count !== 1 ? 's' : '')}</span>`;
+        card.onclick = () => mostrarVistaCategoria(cat);
+        grid.appendChild(card);
+    });
+    // Dispara animaciones CSS DESPUÉS de que el DOM está poblado
+    requestAnimationFrame(() => grid.classList.add('tm-rendered'));
+}
+
+// ── Inicialización robusta de categorías ──
+// Intenta renderizar inmediatamente, y si el grid aún no existe
+// (porque el DOM no está listo), reintenta en DOMContentLoaded.
+// Además programa un retry a los 800ms por si los datos llegaron tarde.
+function _initCategorias() {
+    const grid = document.getElementById('categoriasGrid');
+    if (!grid) return; // DOM no listo aún
+    renderizarCategoriasHomeInstant();
+}
+
+if (document.readyState !== 'loading') {
+    _initCategorias();
+} else {
+    document.addEventListener('DOMContentLoaded', _initCategorias);
+}
+
+// Retry robusto: si después de 800ms el grid sigue vacío, volver a intentar
+// Esto cubre el caso PWA donde el SW demora en responder
+document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(() => {
+        const grid = document.getElementById('categoriasGrid');
+        if (grid && grid.children.length === 0) {
+            renderizarCategoriasHomeInstant();
+        }
+    }, 800);
+    // Segundo retry a los 2s por si la red es muy lenta
+    setTimeout(() => {
+        const grid = document.getElementById('categoriasGrid');
+        if (grid && grid.children.length === 0) {
+            renderizarCategoriasHomeInstant();
+        }
+    }, 2000);
+});
+
+
+
+// ===== PATCH actualizarListaProductos to also update countdown select =====
+const _origActualizarListaProductos = actualizarListaProductos;
+actualizarListaProductos = function() {
+    _origActualizarListaProductos();
+    if (typeof actualizarCountdownProductSelect === 'function') {
+        actualizarCountdownProductSelect();
+    }
+};
+
+// ===== FIX: Subcategories showing only General =====
+// Override renderizarSubcategoriaTabs to also load from GitHub subcategorias.json
+async function cargarSubcategoriasDesdeGitHub() {
+    try {
+        const res = await fetch('subcategorias.json', { cache: 'no-store' });
+        if (res.ok) {
+            const data = await res.json();
+            if (data && typeof data === 'object') {
+                // Merge with local - github takes priority
+                if (typeof subcategorias !== 'undefined') {
+                    Object.assign(subcategorias, data);
+                    localStorage.setItem('subcategorias', JSON.stringify(subcategorias));
+                }
+            }
+        }
+    } catch(e) {
+        console.log('Subcategorias: usando datos locales');
+    }
+}
+
+// Patch cargarDatosDesdeGitHub to also load subcategorias
+const _origCargarDatos = cargarDatosDesdeGitHub;
+cargarDatosDesdeGitHub = async function() {
+    await _origCargarDatos();
+    await cargarSubcategoriasDesdeGitHub();
+    // Re-render subcategoria tabs if a category is currently selected
+    if (typeof categoriaSeleccionada !== 'undefined' && categoriaSeleccionada && categoriaSeleccionada !== 'Todas') {
+        if (typeof renderizarSubcategoriaTabs === 'function') renderizarSubcategoriaTabs();
+    }
+};
+
+// FIX: When showing category view, make sure subcategorias are loaded first
+const _origMostrarVistaCat = mostrarVistaCategoria;
+mostrarVistaCategoria = function(categoria) {
+    // Reload subcategorias from localStorage fresh each time
+    if (typeof subcategorias !== 'undefined') {
+        try {
+            const fresh = JSON.parse(localStorage.getItem('subcategorias'));
+            if (fresh) Object.assign(subcategorias, fresh);
+        } catch(e) {}
+    }
+    _origMostrarVistaCat(categoria);
+};
+
+// ═══════════════════════════════════════════════════════
+//  MEJORAS v3.0 — Gestión por categorías + Grupos FB
+// ═══════════════════════════════════════════════════════
+
+// ── Gestión de productos por categorías ──────────────
+
+function actualizarListaProductos() {
+    const productsList = document.getElementById('productsList');
+    if (!productsList) return;
+
+    const busqueda  = (document.getElementById('searchProductos')?.value || '').toLowerCase().trim();
+    const filtroCat = document.getElementById('filtroCategoria')?.value || '';
+
+    // Actualizar opciones del filtro de categoría
+    const selectFiltro = document.getElementById('filtroCategoria');
+    if (selectFiltro) {
+        const cats = [...new Set(productos.map(p => p.categoria).filter(Boolean))];
+        const valorActual = selectFiltro.value;
+        selectFiltro.innerHTML = '<option value="">Todas las categorías</option>' +
+            cats.map(c => `<option value="${c}" ${c === valorActual ? 'selected' : ''}>${c}</option>`).join('');
+        selectFiltro.value = valorActual; // FIX: restaurar el filtro
+    }
+
+    let filtrados = productos.filter(p => {
+        const matchBusq = !busqueda || p.nombre.toLowerCase().includes(busqueda) || (p.descripcion||'').toLowerCase().includes(busqueda);
+        const matchCat  = !filtroCat || p.categoria === filtroCat;
+        return matchBusq && matchCat;
+    });
+
+    if (filtrados.length === 0) {
+        productsList.innerHTML = '<p class="no-products">No se encontraron productos</p>';
+        return;
+    }
+
+    // Agrupar por categoría
+    const porCategoria = {};
+    filtrados.forEach(p => {
+        const cat = p.categoria || 'General';
+        if (!porCategoria[cat]) porCategoria[cat] = [];
+        porCategoria[cat].push(p);
+    });
+
+    let html = `<div style="margin-bottom:14px;padding:12px 16px;background:rgba(39,174,96,0.1);border:1px dashed #27AE60;border-radius:10px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
+        <span style="font-size:13px;">📦 <strong>${safeNum(filtrados.length)}</strong> productos${filtroCat ? ` en <strong>${escapeHtml(filtroCat)}</strong>` : ''}</span>
+        <button class="btn btn-primary" onclick="descargarProductosJSON()" style="font-size:12px;padding:8px 14px;">📥 Descargar productos.json</button>
+    </div>`;
+
+    Object.entries(porCategoria).forEach(([cat, prods]) => {
+        html += `<div style="margin-bottom:24px;">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;padding:10px 14px;background:var(--primary);border-radius:10px;">
+                <span style="font-size:16px;font-weight:700;color:white;">${escapeHtml(cat)}</span>
+                <span style="font-size:12px;color:rgba(255,255,255,0.8);margin-left:auto;">${safeNum(prods.length)} producto${prods.length>1?'s':''}</span>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:10px;">`;
+
+        prods.forEach(producto => {
+            const _id = safeNum(producto.id);
+            const _nm = escapeHtml(producto.nombre);
+            const _im = escapeAttr(producto.imagen);
+            html += `<div class="product-item" style="border-left:3px solid var(--primary);">
+                <div class="product-item-info">
+                    <img src="${_im}" alt="${_nm}" style="width:56px;height:56px;object-fit:cover;border-radius:8px;float:left;margin-right:12px;" onerror="this.src='/iconos/favicon-192.png';this.style.opacity='0.3'">
+                    <h4 style="margin:0 0 4px;">${_nm} ${producto.masVendido ? '🔥' : ''}</h4>
+                    <p style="margin:0;font-size:12px;color:var(--text-muted);">
+                        <strong>$${Number(producto.precioActual).toFixed(2)}</strong> USD
+                        ${producto.descuento > 0 ? `<span style="color:#e74c3c;margin-left:6px;">-${safeNum(producto.descuento)}%</span>` : ''}
+                        · Stock: <strong>${safeNum(producto.stock)}</strong>
+                        ${producto.comision > 0 ? `· 💰 Comisión: <strong style="color:#27ae60;">$${Number(producto.comision).toFixed(2)}</strong>` : ''}
+                    </p>
+                </div>
+                <div class="product-item-actions" style="clear:both;padding-top:8px;display:flex;flex-wrap:wrap;gap:6px;">
+                    <button class="btn-small-icon" style="background:#27ae60;color:white;" onclick="ajustarStock(${_id}, 1)">+1 Stock</button>
+                    <button class="btn-small-icon" style="background:#e74c3c;color:white;" onclick="ajustarStock(${_id}, -1)">-1 Stock</button>
+                    <button class="btn-small-icon btn-edit" onclick="abrirEditModal(${_id})">✏️ Editar</button>
+                    <button class="btn-small-icon btn-delete" onclick="eliminarProducto(${_id})">🗑️ Eliminar</button>
+                    <button class="btn-small-icon btn-revolico" style="background:#ff9800" onclick="copiarParaRevolico(${_id})">📋 Revolico</button>
+                    <button class="btn-small-icon btn-revolico" style="background:#4267B2" onclick="copiarParaFacebook(${_id})">📋 Facebook</button>
+                    <button class="btn-small-icon btn-revolico" onclick="publicarEnRevolico(${_id})">🤖 Rev</button>
+                </div>
+            </div>`;
+        });
+
+        html += `</div></div>`;
+    });
+
+    productsList.innerHTML = html;
+}
+
+// ── Ajustar stock desde gestionar ──────────────────
+// desdeVenta=true cuando lo llama registrarVenta (omite notificación de stock para no duplicar)
+function ajustarStock(id, cantidad, desdeVenta = false) {
+    const p = productos.find(p => p.id === id);
+    if (!p) return;
+    const antes = p.stock;
+    p.stock = Math.max(0, (p.stock || 0) + cantidad);
+    guardarProductos();
+    marcarProductoModificado(id);
+    actualizarListaProductos();
+    // Solo mostrar notificación de stock cuando se ajusta desde Gestionar (no desde una venta)
+    if (!desdeVenta) {
+        mostrarNotificacion(`📦 ${p.nombre}: ${antes} → ${p.stock} unidades`);
+        if (p.stock === 0) mostrarNotificacion(`🔴 ¡${p.nombre} agotado!`, 'error');
+        else if (p.stock <= 2) mostrarNotificacion(`⚠️ ${p.nombre}: solo ${p.stock} unidad(es)`, 'warning');
+    }
+}
+
+// ── ANIMACIONES DE SCROLL ─────────────────────────────
+(function() {
+    const style = document.createElement('style');
+    style.textContent = `
+        .tm-anim-card {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity .45s ease, transform .45s ease;
+        }
+        .tm-anim-card.tm-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    `;
+    document.head.appendChild(style);
+    window._tmAnimObs = new IntersectionObserver((entries) => {
+        entries.forEach((e, i) => {
+            if (e.isIntersecting) {
+                setTimeout(() => e.target.classList.add('tm-visible'), i * 60);
+                window._tmAnimObs.unobserve(e.target);
+            }
+        });
+    }, { threshold: 0.08 });
+})();
+
+// ── VENTAS — registro de ventas ─────────────────────
+
+// Helper: obtiene la URL base de Firebase RTDB desde config guardada
+function _fbRtdbUrl() {
+    try {
+        const cfg = JSON.parse(localStorage.getItem('firebaseConfig') || '{}');
+        return cfg.databaseURL || null;
+    } catch { return null; }
+}
+
+// Escribe una venta en Firebase RTDB (sin bloquear — fire & forget)
+function _fbGuardarVenta(venta) {
+    const url = _fbRtdbUrl();
+    if (!url) return;
+    fetch(`${url}/ventas/${venta.id}.json`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(venta)
+    }).catch(e => console.warn('⚠️ Firebase ventas write:', e.message));
+}
+
+// Elimina una venta de Firebase RTDB
+function _fbEliminarVenta(id) {
+    const url = _fbRtdbUrl();
+    if (!url) return;
+    fetch(`${url}/ventas/${id}.json`, { method: 'DELETE' })
+        .catch(e => console.warn('⚠️ Firebase ventas delete:', e.message));
+}
+
+// Borra todo el nodo ventas en Firebase RTDB
+function _fbBorrarTodasVentas() {
+    const url = _fbRtdbUrl();
+    if (!url) return;
+    fetch(`${url}/ventas.json`, { method: 'DELETE' })
+        .catch(e => console.warn('⚠️ Firebase ventas clear:', e.message));
+}
+
+// Migra ventas guardadas accidentalmente en la raíz de Firebase (0,1,2,3...) a /ventas/{id}
+async function _fbMigrarVentasRaiz(url) {
+    const ventasMigradas = [];
+    // Probar nodos 0-19 individualmente (no requiere leer la raíz)
+    for (let k = 0; k < 20; k++) {
+        try {
+            const r = await fetch(`${url}/${k}.json`);
+            if (!r.ok) continue;
+            const v = await r.json();
+            if (!v || typeof v !== 'object' || !v.id || !v.producto) continue;
+            // Copiar a /ventas/{id}
+            const putRes = await fetch(`${url}/ventas/${v.id}.json`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(v)
+            });
+            if (putRes.ok) {
+                // Borrar del root (puede fallar si no hay permisos, no es crítico)
+                await fetch(`${url}/${k}.json`, { method: 'DELETE' }).catch(() => {});
+                ventasMigradas.push(v);
+            }
+        } catch(e) {}
+    }
+    if (ventasMigradas.length) console.log(`✅ Migradas ${ventasMigradas.length} ventas de raíz a /ventas/`);
+    return ventasMigradas;
+}
+
+// Carga ventas desde Firebase y hace merge con localStorage (en background al iniciar)
+async function _fbSincronizarVentasAlIniciar() {
+    const url = _fbRtdbUrl();
+    if (!url) return;
+    try {
+        // Migrar ventas mal guardadas en la raíz primero
+        const migradas = await _fbMigrarVentasRaiz(url);
+
+        const res = await fetch(`${url}/ventas.json`);
+        if (!res.ok) return;
+        const data = await res.json();
+        const ventasFB = data && typeof data === 'object' ? Object.values(data).filter(Boolean) : [];
+
+        // Combinar migradas + las ya en /ventas/
+        const todasFB = [...ventasFB, ...migradas.filter(m => !ventasFB.find(v => v.id === m.id))];
+
+        const ventasLocales = JSON.parse(localStorage.getItem('registroVentas') || '[]');
+        const idsFB = new Set(todasFB.map(v => v.id));
+        const soloLocales = ventasLocales.filter(v => !idsFB.has(v.id));
+        soloLocales.forEach(v => _fbGuardarVenta(v));
+        const merged = [...todasFB, ...soloLocales]
+            .sort((a, b) => b.id - a.id)
+            .slice(0, 500);
+        if (merged.length) {
+            localStorage.setItem('registroVentas', JSON.stringify(merged));
+            renderizarVentas();
+        }
+    } catch(e) {
+        console.warn('⚠️ No se pudo sincronizar ventas desde Firebase:', e.message);
+    }
+}
+
+function cargarVentas() {
+    return JSON.parse(localStorage.getItem('registroVentas') || '[]');
+}
+
+function guardarVenta(venta) {
+    const ventas = cargarVentas();
+    ventas.unshift(venta);
+    localStorage.setItem('registroVentas', JSON.stringify(ventas.slice(0, 500)));
+    // Persistir en Firebase (no bloquea la UI)
+    _fbGuardarVenta(venta);
+}
+
+function exportarVentasCSV() {
+    const ventas = cargarVentas();
+    if (!ventas.length) { mostrarNotificacion('No hay ventas que exportar', 'info'); return; }
+    const header = 'Fecha,Producto,Cantidad,Precio,Comisión,Total,Ganancia';
+    const rows = ventas.map(v =>
+        `"${v.fecha}","${v.producto}",${v.cantidad},${v.precio},${v.comision || 0},${v.total},${v.ganancia || 0}`
+    );
+    const csv = [header, ...rows].join('\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `ventas_tiendamax_${new Date().toISOString().slice(0,10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+    mostrarNotificacion('✅ Historial exportado como CSV', 'success');
+}
+
+function registrarVenta(productoId, cantidad) {
+    const p = productos.find(p => p.id === productoId);
+    if (!p) return;
+    const venta = {
+        id: Date.now(),
+        fecha: new Date().toLocaleDateString('es-ES', {day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit'}),
+        producto: p.nombre,
+        productoId: p.id,
+        cantidad: cantidad || 1,
+        precio: p.precioActual,
+        comision: p.comision || 0,
+        total: p.precioActual * (cantidad || 1),
+        ganancia: (p.comision || 0) * (cantidad || 1)
+    };
+    guardarVenta(venta);
+    ajustarStock(productoId, -(cantidad || 1), true); // true = viene de una venta confirmada
+    renderizarVentas();
+    mostrarNotificacion(`✅ Venta registrada: ${p.nombre}`);
+    // Ventas ahora se sincronizan con Firebase (ver _fbGuardarVenta)
+}
+
+// Página actual del historial de ventas
+let _ventasPagina = 0;
+const _VENTAS_POR_PAGINA = 20;
+
+function renderizarVentas(pagina) {
+    const cont = document.getElementById('ventasContenido');
+    if (!cont) return;
+    const ventas = cargarVentas();
+    if (typeof pagina === 'number') _ventasPagina = pagina;
+    // Asegurar que la página sea válida
+    const totalPaginas = Math.max(1, Math.ceil(ventas.length / _VENTAS_POR_PAGINA));
+    if (_ventasPagina >= totalPaginas) _ventasPagina = totalPaginas - 1;
+    if (_ventasPagina < 0) _ventasPagina = 0;
+
+    const totalVentas   = ventas.reduce((s, v) => s + v.total, 0);
+    const totalGanancia = ventas.reduce((s, v) => s + (v.ganancia || 0), 0);
+    const totalUnidades = ventas.reduce((s, v) => s + (v.cantidad || 1), 0);
+    // Paginación
+    const totalPaginas2 = Math.max(1, Math.ceil(ventas.length / _VENTAS_POR_PAGINA));
+    const ventasPagina  = ventas.slice(_ventasPagina * _VENTAS_POR_PAGINA, (_ventasPagina + 1) * _VENTAS_POR_PAGINA);
+
+    let html = `
+    <div style="margin-bottom:16px;">
+        <h4 class="admin-section-title">📦 Registrar venta manual</h4>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+
+            <!-- Buscador -->
+            <div class="admin-search-box">
+                <input type="text" id="ventaBuscador" placeholder="🔍 Buscar producto..." oninput="filtrarProductosVenta()"
+                    class="admin-search-input">
+                <button onclick="limpiarBuscadorVenta()" type="button" id="ventaBuscadorClear"
+                    class="admin-search-clear">✕</button>
+            </div>
+
+            <!-- Filtro por categorías (chips) -->
+            <div id="ventaCategoriaChips" class="admin-chips">
+                <button onclick="filtrarVentaPorCategoria('')" type="button" data-cat=""
+                    class="chip-cat chip-cat-activo admin-chip active"
+                    style="">
+                    Todas
+                </button>
+                ${[...new Set(productos.map(p => p.categoria).filter(Boolean))].map(cat =>
+                    `<button onclick="filtrarVentaPorCategoria('${cat.replace(/'/g,"&#39;")}')" type="button" data-cat="${cat}"
+                        class="chip-cat admin-chip"
+                        style="">
+                        ${cat}
+                    </button>`
+                ).join('')}
+            </div>
+
+            <!-- Select oculto para mantener compatibilidad con registrarVentaDesdeForm -->
+            <select id="ventaProductoSelect" class="admin-hidden">
+                <option value="">— Selecciona producto —</option>
+                ${productos.map(p => `<option value="${p.id}">${p.nombre}</option>`).join('')}
+            </select>
+
+            <!-- Lista de productos filtrados -->
+            <div id="ventaProductosLista" class="admin-product-list">
+                ${productos.filter(p => p.stock > 0).map(p => `
+                <div class="venta-prod-item admin-product-list-item" data-id="${p.id}" data-nombre="${p.nombre.toLowerCase()}" data-cat="${p.categoria||''}"
+                    onclick="seleccionarProductoVenta(${p.id})">
+                    ${p.imagen ? `<img src="${p.imagen}" class="thumb" onerror="this.style.display='none'">` : '<div class="thumb-placeholder">📦</div>'}
+                    <div class="info">
+                        <div class="name">${p.nombre}</div>
+                        <div class="meta">${p.categoria||''} · Stock: ${p.stock}${p.comision ? ` · 💰$${p.comision}` : ''}</div>
+                    </div>
+                    <div class="price">$${p.precioActual}</div>
+                </div>`).join('')}
+                ${productos.filter(p => p.stock > 0).length === 0 ? '<p class="admin-empty">Sin productos con stock</p>' : ''}
+            </div>
+
+            <!-- Tarjeta del producto seleccionado -->
+            <div id="ventaProductoSeleccionado" class="admin-selected-card">
+                <img id="ventaSelImg" src="" onerror="this.style.display='none'">
+                <div class="info">
+                    <div id="ventaSelNombre" class="name"></div>
+                    <div id="ventaSelInfo" class="meta"></div>
+                </div>
+                <button onclick="deseleccionarProductoVenta()" type="button" style="background:none;border:none;font-size:18px;cursor:pointer;color:#aaa;flex-shrink:0;">✕</button>
+            </div>
+
+            <div class="admin-input-row">
+                <input type="number" id="ventaCantidad" value="1" min="1" placeholder="Cantidad" class="admin-qty-input">
+                <button onclick="registrarVentaDesdeForm()" type="button" class="btn btn-primary">✅ Registrar venta</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="admin-dash-header">
+        <h4>📋 Historial de ventas</h4>
+        <div class="admin-dash-actions">
+          <button onclick="exportarVentasCSV()" type="button" class="admin-btn-sm outline">📥 Exportar CSV</button>
+          <button onclick="borrarHistorialVentas()" type="button" class="admin-btn-sm red">🗑️ Limpiar</button>
+        </div>
+    </div>`;
+
+    if (ventas.length === 0) {
+        html += '<p class="admin-empty">No hay ventas registradas aún.</p>';
+    } else {
+        html += '<div style="display:flex;flex-direction:column;gap:8px;">';
+        ventasPagina.forEach(v => {
+            html += `<div class="admin-history-item">
+                <div class="info">
+                    <div class="title">${v.producto}</div>
+                    <div class="meta">${v.fecha} · ${v.cantidad} unidad(es)</div>
+                </div>
+                <div style="text-align:right;flex-shrink:0;">
+                    <div class="total">$${v.total.toFixed(2)}</div>
+                    ${v.ganancia > 0 ? `<div class="gain">Ganancia: $${v.ganancia.toFixed(2)}</div>` : ''}
+                </div>
+                <button onclick="eliminarVenta(${v.id})" type="button" style="background:#e74c3c;color:white;border:none;border-radius:6px;padding:4px 8px;font-size:11px;cursor:pointer;flex-shrink:0;">✕</button>
+            </div>`;
+        });
+        html += '</div>';
+    }
+
+    // Controles de paginación
+    let paginacion = '';
+    if (totalPaginas2 > 1) {
+        paginacion = `<div class="admin-pagination">
+          <button onclick="renderizarVentas(0)" type="button" ${_ventasPagina===0?'disabled':''} >«</button>
+          <button onclick="renderizarVentas(${_ventasPagina}-1)" type="button" ${_ventasPagina===0?'disabled':''} >‹</button>
+          <span>Página ${_ventasPagina+1} de ${totalPaginas2} · ${ventas.length} ventas en total</span>
+          <button onclick="renderizarVentas(${_ventasPagina}+1)" type="button" ${_ventasPagina>=totalPaginas2-1?'disabled':''} >›</button>
+          <button onclick="renderizarVentas(${totalPaginas2}-1)" type="button" ${_ventasPagina>=totalPaginas2-1?'disabled':''} >»</button>
+        </div>`;
+    }
+    cont.innerHTML = html + paginacion;
+}
+
+function registrarVentaDesdeForm() {
+    const sel = document.getElementById('ventaProductoSelect');
+    const cant = parseInt(document.getElementById('ventaCantidad')?.value) || 1;
+    const id = parseInt(sel?.value);
+    if (!id) { mostrarNotificacion('⚠️ Selecciona un producto primero', 'error'); return; }
+    registrarVenta(id, cant);
+    // Limpiar buscador y selección tras registrar
+    deseleccionarProductoVenta();
+    const b = document.getElementById('ventaBuscador');
+    if (b) { b.value = ''; filtrarProductosVenta(); }
+    const cantEl = document.getElementById('ventaCantidad');
+    if (cantEl) cantEl.value = '1';
+}
+
+function eliminarVenta(id) {
+    const ventas = cargarVentas().filter(v => v.id !== id);
+    localStorage.setItem('registroVentas', JSON.stringify(ventas));
+    renderizarVentas();
+    _fbEliminarVenta(id);
+}
+
+function borrarHistorialVentas() {
+    if (!confirm('¿Borrar todo el historial de ventas?')) return;
+    localStorage.removeItem('registroVentas');
+    renderizarVentas();
+    mostrarNotificacion('🗑️ Historial borrado');
+    _fbBorrarTodasVentas();
+}
+
+// ── Grupos de Facebook con selección de productos ────
+
+// cargarGruposFB está definida más abajo (versión completa con renderizarRevolicoConfig)
+
+function renderizarGruposFB(grupos) {
+    const cont = document.getElementById('listaGruposFB');
+    if (!cont) return;
+
+    cont.innerHTML = '';
+
+    if (grupos.length === 0) {
+        const empty = document.createElement('p');
+        empty.style.cssText = 'font-size:13px;color:var(--text-muted);text-align:center;padding:10px;';
+        empty.textContent = 'No hay grupos configurados aún.';
+        cont.appendChild(empty);
+        return;
+    }
+
+    grupos.forEach((g, i) => {
+        const card = document.createElement('div');
+        card.id = `grupoFB_${i}`;
+        card.style.cssText = 'background:var(--card-bg,#fff);border:1.5px solid var(--border-color);border-radius:12px;padding:14px;position:relative;';
+
+        // Botón eliminar
+        const btnDel = document.createElement('button');
+        btnDel.type = 'button';
+        btnDel.style.cssText = 'position:absolute;top:10px;right:10px;background:none;border:none;cursor:pointer;font-size:18px;color:#e74c3c;';
+        btnDel.textContent = '✕';
+        btnDel.addEventListener('click', () => eliminarGrupoFB(i));
+        card.appendChild(btnDel);
+
+        // Campo nombre
+        const labelNombre = document.createElement('label');
+        labelNombre.style.cssText = 'font-size:12px;font-weight:600;display:block;margin-bottom:4px;';
+        labelNombre.textContent = 'Nombre del grupo:';
+        const inputNombre = document.createElement('input');
+        inputNombre.type = 'text';
+        inputNombre.value = g.nombre || '';
+        inputNombre.placeholder = 'Ej: Tecnología Cuba, Ofertas Habana…';
+        inputNombre.style.cssText = 'width:100%;padding:8px 10px;border-radius:8px;border:1px solid var(--border-color);font-size:13px;box-sizing:border-box;margin-bottom:10px;';
+        inputNombre.addEventListener('input', () => actualizarGrupoFB(i, 'nombre', inputNombre.value));
+        const wrapNombre = document.createElement('div');
+        wrapNombre.style.marginBottom = '8px';
+        wrapNombre.appendChild(labelNombre);
+        wrapNombre.appendChild(inputNombre);
+        card.appendChild(wrapNombre);
+
+        // Campo URL
+        const labelUrl = document.createElement('label');
+        labelUrl.style.cssText = 'font-size:12px;font-weight:600;display:block;margin-bottom:4px;';
+        labelUrl.textContent = 'URL del Grupo:';
+        const inputUrl = document.createElement('input');
+        inputUrl.type = 'text';
+        inputUrl.value = g.url || '';
+        inputUrl.placeholder = 'https://www.facebook.com/groups/...';
+        inputUrl.style.cssText = 'width:100%;padding:8px 10px;border-radius:8px;border:1px solid var(--border-color);font-size:13px;box-sizing:border-box;';
+        inputUrl.addEventListener('input', () => actualizarGrupoFB(i, 'url', inputUrl.value));
+        const wrapUrl = document.createElement('div');
+        wrapUrl.style.marginBottom = '12px';
+        wrapUrl.appendChild(labelUrl);
+        wrapUrl.appendChild(inputUrl);
+        card.appendChild(wrapUrl);
+
+        // Lista de productos con checkboxes
+        const labelProds = document.createElement('label');
+        labelProds.style.cssText = 'font-size:12px;font-weight:600;display:block;margin-bottom:6px;';
+        labelProds.textContent = 'Productos a publicar en este grupo:';
+        card.appendChild(labelProds);
+
+        const listProds = document.createElement('div');
+        listProds.style.cssText = 'display:flex;flex-direction:column;gap:6px;margin-bottom:12px;';
+
+        if (productos.length === 0) {
+            const noP = document.createElement('p');
+            noP.style.cssText = 'font-size:12px;color:var(--text-muted);';
+            noP.textContent = 'No hay productos cargados aún.';
+            listProds.appendChild(noP);
+        } else {
+            const productosOrdenados = [...productos].sort((a, b) => {
+                const aAgo = !a.stock || a.stock <= 0;
+                const bAgo = !b.stock || b.stock <= 0;
+                return aAgo - bAgo;
+            });
+            productosOrdenados.forEach(p => {
+                const agotado = !p.stock || p.stock <= 0;
+                const row = document.createElement('label');
+                row.style.cssText = `display:flex;align-items:center;gap:8px;font-size:13px;
+                    cursor:${agotado ? 'not-allowed' : 'pointer'};
+                    opacity:${agotado ? '0.38' : '1'};`;
+                const chk = document.createElement('input');
+                chk.type = 'checkbox';
+                chk.checked = !agotado && (g.productos || []).includes(p.id);
+                chk.disabled = agotado;
+                chk.style.cssText = 'width:16px;height:16px;accent-color:var(--primary);flex-shrink:0;';
+                if (!agotado) chk.addEventListener('change', () => toggleProductoEnGrupo(i, p.id, chk.checked));
+                const img = document.createElement('img');
+                img.src = p.imagen || '';
+                img.style.cssText = 'width:28px;height:28px;border-radius:6px;object-fit:cover;flex-shrink:0;';
+                img.onerror = () => { img.style.display = 'none'; };
+                const nombre = document.createElement('span');
+                nombre.style.cssText = 'overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;';
+                nombre.textContent = p.nombre;
+                const right = document.createElement('span');
+                right.style.cssText = 'margin-left:auto;font-size:11px;font-weight:600;flex-shrink:0;white-space:nowrap;';
+                if (agotado) {
+                    right.style.color = '#e74c3c';
+                    right.textContent = '🚫 Agotado';
+                } else {
+                    right.style.color = 'var(--primary)';
+                    right.textContent = `$${p.precioActual}`;
+                }
+                row.appendChild(chk);
+                row.appendChild(img);
+                row.appendChild(nombre);
+                row.appendChild(right);
+                listProds.appendChild(row);
+            });
+        }
+        card.appendChild(listProds);
+
+        // Botón publicar en este grupo
+        const btnPublicar = document.createElement('button');
+        btnPublicar.type = 'button';
+        btnPublicar.style.cssText = 'width:100%;padding:10px;background:#4267B2;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;';
+        btnPublicar.textContent = '📢 Publicar productos en este grupo';
+        btnPublicar.addEventListener('click', () => publicarEnGrupoFB(i));
+        card.appendChild(btnPublicar);
+
+        cont.appendChild(card);
+    });
+}
+
+function agregarGrupoFB() {
+    const grupos = JSON.parse(localStorage.getItem('gruposFB') || '[]');
+    grupos.push({ url: '', productos: productos.map(p => p.id) }); // Por defecto todos seleccionados
+    localStorage.setItem('gruposFB', JSON.stringify(grupos));
+    renderizarGruposFB(grupos);
+}
+
+function eliminarGrupoFB(i) {
+    const grupos = JSON.parse(localStorage.getItem('gruposFB') || '[]');
+    grupos.splice(i, 1);
+    localStorage.setItem('gruposFB', JSON.stringify(grupos));
+    renderizarGruposFB(grupos);
+}
+
+function actualizarGrupoFB(i, campo, valor) {
+    const grupos = JSON.parse(localStorage.getItem('gruposFB') || '[]');
+    if (grupos[i]) grupos[i][campo] = valor;
+    localStorage.setItem('gruposFB', JSON.stringify(grupos));
+}
+
+function toggleProductoEnGrupo(iGrupo, idProducto, checked) {
+    const grupos = JSON.parse(localStorage.getItem('gruposFB') || '[]');
+    if (!grupos[iGrupo]) return;
+    if (!grupos[iGrupo].productos) grupos[iGrupo].productos = [];
+    if (checked) {
+        if (!grupos[iGrupo].productos.includes(idProducto))
+            grupos[iGrupo].productos.push(idProducto);
+    } else {
+        grupos[iGrupo].productos = grupos[iGrupo].productos.filter(id => id !== idProducto);
+    }
+    localStorage.setItem('gruposFB', JSON.stringify(grupos));
+}
+
+async function guardarGruposFB() {
+    const grupos = JSON.parse(localStorage.getItem('gruposFB') || '[]');
+    const validos = grupos.filter(g => g.url && g.url.includes('facebook.com'));
+
+    localStorage.setItem('gruposFB', JSON.stringify(validos));
+
+    const data = { grupos: validos, exportado: new Date().toISOString() };
+
+    const user  = localStorage.getItem('githubUser');
+    const repo  = localStorage.getItem('githubRepo');
+    const token = localStorage.getItem('githubToken');
+
+    if (!user || !repo || !token) {
+        mostrarNotificacion(`✅ ${validos.length} grupos guardados localmente. Configura GitHub para persistirlos en la nube.`, 'info');
+        return;
+    }
+
+    try {
+        mostrarNotificacion('☁️ Guardando grupos en GitHub…', 'info');
+        await subirArchivoAGitHub(user, repo, token, 'grupos_facebook_config.json', data);
+        mostrarNotificacion(`✅ ${validos.length} grupos guardados en GitHub — persistirán aunque borres el navegador.`, 'success');
+    } catch(e) {
+        mostrarNotificacion('⚠️ Grupos guardados localmente. Error al subir a GitHub: ' + e.message, 'warning');
+    }
+}
+
+
+// switchTab hooks are now inside the switchTab function directly
+
+
+// ═══════════════════════════════════════════════════════
+//  CONFIG PERSISTENTE — Grupos FB + Revolico por categoría
+// ═══════════════════════════════════════════════════════
+
+// Categorías disponibles en Revolico
+const REVOLICO_CATS = [
+    "Computación > Accesorios",
+    "Computación > Computadoras",
+    "Computación > Impresoras y Tintas",
+    "Computación > Redes y Conectividad",
+    "Computación > Software",
+    "Electrónica > Audio y Video",
+    "Electrónica > Celulares y Tablets",
+    "Electrónica > Electrónica en General",
+    "Electrónica > Fotografía",
+    "Electrónica > Juegos y Consolas",
+    "Electrónica > TV y Monitores",
+    "Hogar y Jardín > Electrodomésticos",
+    "Hogar y Jardín > Energía Solar",
+    "Hogar y Jardín > Herramientas",
+    "Hogar y Jardín > Muebles",
+    "Vehículos > Accesorios",
+    "Otros > General",
+];
+
+// ── Revolico Config ──────────────────────────────────
+
+function renderizarRevolicoConfig() {
+    const cont = document.getElementById('listaRevolicoConfig');
+    if (!cont) return;
+
+    cont.innerHTML = '';
+    const config = JSON.parse(localStorage.getItem('revolicoConfig') || '{}');
+
+    if (productos.length === 0) {
+        const empty = document.createElement('p');
+        empty.style.cssText = 'font-size:13px;color:var(--text-muted);text-align:center;padding:10px;';
+        empty.textContent = 'No hay productos cargados aún.';
+        cont.appendChild(empty);
+        return;
+    }
+
+    const ordenados = [...productos].sort((a, b) => {
+        const aAgo = !a.stock || a.stock <= 0;
+        const bAgo = !b.stock || b.stock <= 0;
+        return aAgo - bAgo;
+    });
+
+    ordenados.forEach(p => {
+        const agotado = !p.stock || p.stock <= 0;
+        const catActual = config[p.id] || '';
+
+        const row = document.createElement('div');
+        row.style.cssText = `display:flex;align-items:center;gap:10px;padding:10px 12px;
+            background:var(--card-bg,#fff);border-radius:10px;border:1px solid var(--border-color);
+            flex-wrap:wrap;opacity:${agotado ? '0.38' : '1'};`;
+
+        const img = document.createElement('img');
+        img.src = p.imagen || '';
+        img.style.cssText = 'width:40px;height:40px;border-radius:8px;object-fit:cover;flex-shrink:0;';
+        img.onerror = () => { img.style.display = 'none'; };
+
+        const nombre = document.createElement('span');
+        nombre.style.cssText = 'flex:1;font-size:13px;font-weight:600;min-width:120px;';
+        nombre.textContent = p.nombre;
+
+        if (agotado) {
+            const badge = document.createElement('span');
+            badge.style.cssText = 'font-size:11px;color:#e74c3c;font-weight:700;flex:2;min-width:180px;';
+            badge.textContent = '🚫 Agotado — no se publicará';
+            row.appendChild(img);
+            row.appendChild(nombre);
+            row.appendChild(badge);
+        } else {
+            const sel = document.createElement('select');
+            sel.style.cssText = 'flex:2;min-width:180px;padding:8px 10px;border-radius:8px;border:1.5px solid var(--border-color);font-size:12px;background:var(--card-bg,#fff);color:var(--text-primary,#333);';
+            const optDefault = document.createElement('option');
+            optDefault.value = '';
+            optDefault.textContent = '— No publicar en Revolico —';
+            sel.appendChild(optDefault);
+            REVOLICO_CATS.forEach(c => {
+                const opt = document.createElement('option');
+                opt.value = c;
+                opt.textContent = c;
+                if (c === catActual) opt.selected = true;
+                sel.appendChild(opt);
+            });
+            sel.addEventListener('change', () => actualizarRevolicoCat(p.id, sel.value));
+            row.appendChild(img);
+            row.appendChild(nombre);
+            row.appendChild(sel);
+        }
+
+        cont.appendChild(row);
+    });
+}
+
+function actualizarRevolicoCat(idProducto, categoria) {
+    const config = JSON.parse(localStorage.getItem('revolicoConfig') || '{}');
+    if (categoria) {
+        config[idProducto] = categoria;
+    } else {
+        delete config[idProducto];
+    }
+    localStorage.setItem('revolicoConfig', JSON.stringify(config));
+}
+
+function guardarRevolicoConfig() {
+    const config = JSON.parse(localStorage.getItem('revolicoConfig') || '{}');
+    const asignados = Object.keys(config).length;
+    mostrarNotificacion(`✅ Config Revolico guardada (${asignados} productos asignados). Haz clic en ACTUALIZAR TIENDA para subir a GitHub.`);
+}
+
+// ── Grupos FB persistentes (carga al abrir pestaña) ──
+
+function cargarGruposFB() {
+    const grupos = JSON.parse(localStorage.getItem('gruposFB') || '[]');
+    renderizarGruposFB(grupos);
+    renderizarRevolicoConfig();
+}
+
+// ── Patch guardarGruposFB para también actualizar localStorage limpio ──
+const _origGuardarGrupos = guardarGruposFB;
+guardarGruposFB = function() {
+    const grupos = JSON.parse(localStorage.getItem('gruposFB') || '[]');
+    const validos = grupos.filter(g => g.url && g.url.includes('facebook.com'));
+    mostrarNotificacion(`✅ ${validos.length} grupos guardados. Haz clic en ACTUALIZAR TIENDA para que sean permanentes.`);
+    // FIX BUG #4: llamar al original para que descargue el JSON
+    if (typeof _origGuardarGrupos === 'function') {
+        try { _origGuardarGrupos(); } catch(e) { console.warn('Error en _origGuardarGrupos:', e); }
+    }
+};
+
+
+
+// ═══════════════════════════════════════════════════════
+//  OFERTA DEL DÍA
+// ═══════════════════════════════════════════════════════
+function poblarSelectOfertaDia() {
+    // Si los productos todavía no cargaron, reintentar cada segundo hasta que estén
+    if (!productos || !productos.length) {
+        setTimeout(poblarSelectOfertaDia, 1000);
+        return;
+    }
+    ['ofertaDiaSelect2'].forEach(selId => {
+        const sel = document.getElementById(selId);
+        if (!sel) return;
+        const current = sel.value;
+        sel.innerHTML = '<option value="">— Sin oferta del día activa —</option>';
+        productos.forEach(p => {
+            const opt = document.createElement('option');
+            opt.value = p.id;
+            opt.textContent = p.nombre + ' — $' + (parseFloat(p.precioActual) || 0).toFixed(2);
+            sel.appendChild(opt);
+        });
+        const saved = localStorage.getItem('ofertaDiaId');
+        if (saved) sel.value = saved;
+        else if (current) sel.value = current;
+    });
+    actualizarStatusOfertaDia();
+}
+
+function actualizarStatusOfertaDia() {
+    const savedId = localStorage.getItem('ofertaDiaId');
+    const texto = localStorage.getItem('ofertaDiaTexto') || '🔥 OFERTA DEL DÍA';
+    ['ofertaDiaStatus2'].forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        if (savedId) {
+            const p = productos.find(x => String(x.id) === String(savedId));
+            el.innerHTML = p ? '✅ Activa: <strong>' + escapeHtml(p.nombre) + '</strong> — Badge: "' + escapeHtml(texto) + '"' : '⚠️ Producto no encontrado';
+        } else {
+            el.textContent = 'Sin oferta activa.';
+        }
+    });
+}
+
+
+function guardarOfertaDia2() {
+    const sel = document.getElementById('ofertaDiaSelect2');
+    const textoEl = document.getElementById('ofertaDiaTexto2');
+    _guardarOfertaDiaDesde(sel, textoEl);
+}
+function _guardarOfertaDiaDesde(sel, textoEl) {
+    if (!sel || !sel.value) { mostrarNotificacion('⚠️ Selecciona un producto', 'error'); return; }
+    const texto = textoEl ? (textoEl.value.trim() || '🔥 OFERTA DEL DÍA') : '🔥 OFERTA DEL DÍA';
+    const _ofId  = sel.value;
+    const _ofTxt = texto;
+    localStorage.setItem('ofertaDiaId', _ofId);
+    localStorage.setItem('ofertaDiaTexto', _ofTxt);
+    verificarOfertasYMostrarBanner();
+    actualizarStatusOfertaDia();
+    renderizarProductos();
+    renderizarMasVendidos();
+    mostrarNotificacion('🏷️ Oferta del Día activada');
+    // Subir a GitHub para que TODOS los clientes la vean
+    (async () => {
+        const _u = localStorage.getItem('githubUser');
+        const _r = localStorage.getItem('githubRepo');
+        const _t = localStorage.getItem('githubToken');
+        if (!_u || !_r || !_t) {
+            mostrarNotificacion('⚠️ Configura GitHub en Config para que la vean todos', 'error');
+            return;
+        }
+        try {
+            const existing = await _leerConfigActual();
+            existing.ofertaDiaId = _ofId;
+            existing.ofertaDiaTexto = _ofTxt;
+            existing.ofertaDiaActualizado = new Date().toISOString();
+            await subirArchivoAGitHub(_u, _r, _t, 'config.json', existing);
+            mostrarNotificacion('☁️ Oferta subida a GitHub — todos la verán', 'success');
+        } catch(e) {
+            mostrarNotificacion('⚠️ Error al sincronizar con GitHub: ' + e.message, 'error');
+        }
+    })();
+}
+function desactivarOfertaDia() {
+    localStorage.removeItem('ofertaDiaId');
+    localStorage.removeItem('ofertaDiaTexto');
+    verificarOfertasYMostrarBanner();
+    poblarSelectOfertaDia();
+    renderizarProductos();
+    renderizarMasVendidos();
+    mostrarNotificacion('❌ Oferta del Día desactivada');
+    // Borrar en GitHub
+    (async () => {
+        const _u = localStorage.getItem('githubUser');
+        const _r = localStorage.getItem('githubRepo');
+        const _t = localStorage.getItem('githubToken');
+        if (!_u || !_r || !_t) {
+            mostrarNotificacion('⚠️ Configura GitHub en Config para sincronizar', 'error');
+            return;
+        }
+        try {
+            const existing = await _leerConfigActual();
+            delete existing.ofertaDiaId;
+            delete existing.ofertaDiaTexto;
+            existing.ofertaDiaActualizado = new Date().toISOString();
+            await subirArchivoAGitHub(_u, _r, _t, 'config.json', existing);
+            mostrarNotificacion('☁️ Oferta eliminada en GitHub — ya nadie la verá', 'success');
+        } catch(e) {
+            mostrarNotificacion('⚠️ Error al sincronizar con GitHub: ' + e.message, 'error');
+        }
+    })();
+}
+
+// Lee el config.json ACTUAL del sitio en vivo (sin adivinar rama main/master).
+// Lanza error si no se puede leer, para NUNCA subir un config vacío que borre
+// la tasa o la config de Firebase.
+async function _leerConfigActual() {
+    const res = await fetch('config.json?_=' + Date.now(), { cache: 'no-store' });
+    if (!res.ok) throw new Error('No se pudo leer config.json actual (HTTP ' + res.status + ')');
+    const cfg = await res.json();
+    if (!cfg || typeof cfg !== 'object') throw new Error('config.json inválido');
+    return cfg;
+}
+function getOfertaDiaId() {
+    return localStorage.getItem('ofertaDiaId') || null;
+}
+function getOfertaDiaTexto() {
+    return localStorage.getItem('ofertaDiaTexto') || '🔥 OFERTA DEL DÍA';
+}
+
+// Renderizar lista de productos agotados en el panel
+function renderizarListaAgotados() {
+    const el = document.getElementById('productosAgotadosList');
+    if (!el) return;
+    const agotados = productos.filter(p => p.stock === 0);
+    if (agotados.length === 0) {
+        el.innerHTML = '<p style="font-size:13px;color:#27ae60;text-align:center;">✅ No hay productos agotados actualmente.</p>';
+        return;
+    }
+    // FIX BUG #8: sanitización anti-XSS
+    el.innerHTML = agotados.map(p =>
+        '<div style="display:flex;align-items:center;gap:10px;padding:10px;background:var(--card-bg,#fff);border-radius:10px;border:1px solid rgba(231,76,60,0.3);">' +
+            '<img src="' + escapeAttr(p.imagen) + '" style="width:40px;height:40px;border-radius:8px;object-fit:cover;" onerror="this.style.display=\'none\'">' +
+            '<div style="flex:1;"><div style="font-size:13px;font-weight:700;">' + escapeHtml(p.nombre) + '</div>' +
+            '<div style="font-size:11px;color:#e74c3c;font-weight:700;">📦 AGOTADO</div></div>' +
+            '<button class="btn btn-primary" onclick="abrirEditModal(' + safeNum(p.id) + ')" style="font-size:11px;padding:6px 10px;">✏️ Editar</button>' +
+        '</div>'
+    ).join('');
+}
+
+// ── Patch renderizarProductos to show agotado/oferta badges ──
+const _origRenderProductosFinal = renderizarProductos;
+renderizarProductos = function() {
+    const productosGrid = document.getElementById('productosGrid');
+    if (!productosGrid) { _origRenderProductosFinal(); return; }
+
+    // Log de diagnóstico (solo en consola, no panel visual)
+    
+
+    // RESILIENCIA: si productos está vacío, intentar cargar de localStorage
+    if (!Array.isArray(productos) || productos.length === 0) {
+        try {
+            const cached = JSON.parse(localStorage.getItem('productos') || '[]');
+            if (Array.isArray(cached) && cached.length > 0) {
+                productos = cached;
+                
+            }
+        } catch(e) {}
+    }
+
+    let productosFiltrados = categoriaSeleccionada === 'Todas'
+        ? productos
+        : productos.filter(p => p.categoria === categoriaSeleccionada);
+
+    
+
+    if (categoriaSeleccionada !== 'Todas' && subcategoriaSeleccionada && subcategoriaSeleccionada !== 'Todas') {
+        productosFiltrados = productosFiltrados.filter(p => p.subcategoria === subcategoriaSeleccionada);
+        
+    }
+    if (_heroSearchActivo || _heroPrecioMin > 0 || _heroPrecioMax < Infinity) {
+        const q = _heroSearchActivo;
+        productosFiltrados = productosFiltrados.filter(p => {
+            const matchQ = !q || p.nombre.toLowerCase().includes(q) ||
+                (p.descripcion||'').toLowerCase().includes(q) ||
+                (p.categoria||'').toLowerCase().includes(q);
+            return matchQ;
+        });
+        
+    }
+    
+
+    // Ordenar: oferta del día primero
+    const ofertaId = getOfertaDiaId();
+    if (ofertaId) {
+        productosFiltrados = productosFiltrados.sort((a, b) => {
+            if (String(a.id) === String(ofertaId)) return -1;
+            if (String(b.id) === String(ofertaId)) return 1;
+            return 0;
+        });
+    }
+
+    // Siempre: agotados al final (después de cualquier otro sort)
+    productosFiltrados = productosFiltrados.sort((a, b) => {
+        const aAgotado = a.stock === 0 ? 1 : 0;
+        const bAgotado = b.stock === 0 ? 1 : 0;
+        return aAgotado - bAgotado;
+    });
+
+    productosGrid.innerHTML = '';
+    if (productosFiltrados.length === 0) {
+        // Mensaje contextual según la situación real
+        let mensaje;
+        if (!Array.isArray(productos) || productos.length === 0) {
+            mensaje = '⏳ Cargando productos... Si esto persiste, recarga la página.';
+        } else if (subcategoriaSeleccionada && subcategoriaSeleccionada !== 'Todas') {
+            mensaje = 'No hay productos en esta subcategoría aún.';
+        } else if (_heroSearchActivo) {
+            mensaje = 'No hay productos que coincidan con tu búsqueda.';
+        } else {
+            mensaje = 'No hay productos en esta categoría aún.';
+        }
+        productosGrid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #999; padding: 60px 20px; font-size:15px;">' + escapeHtml(mensaje) + '</p>';
+        return;
+    }
+
+    productosFiltrados.forEach(producto => {
+        const esAgotado = producto.stock === 0;
+        const esOfertaDia = String(producto.id) === String(ofertaId);
+        const card = document.createElement('div');
+        card.className = 'producto-card' + (esAgotado ? ' card-agotado' : '');
+        card.onclick = () => abrirDetalleProducto(producto.id);
+        card.style.position = 'relative';
+        // Sanitización defensiva (escapeHtml/escapeAttr definidos al inicio del script)
+        const _id  = safeNum(producto.id);
+        const _nom = escapeHtml(producto.nombre);
+        const _des = escapeHtml(producto.descripcion);
+        const _img = escapeAttr(producto.imagen);
+        const _stk = safeNum(producto.stock);
+        const _txt = escapeHtml(getOfertaDiaTexto());
+        // Para el onclick del botón Pedir: necesitamos un string seguro para JS
+        const _nomJS = (producto.nombre || '').replace(/[\\'"<>]/g, '');
+        card.innerHTML =
+            (esOfertaDia ? '<div class="badge-oferta-dia">' + _txt + '</div>' :
+             esAgotado ? '<div class="badge-agotado">AGOTADO</div>' :
+             producto.masVendido ? '<div class="badge-vendido">🔥 Más Vendido</div>' : '') +
+            '<div class="producto-image">' +
+                getMeGustaHTML(_id) +
+                '<img src="' + _img + '" alt="' + _nom + '" loading="lazy" onerror="this.src=\'/iconos/favicon-192.png\';this.style.opacity=\'0.3\'">' +
+                (producto.precioOriginal > 0 && producto.precioOriginal > producto.precioActual ? '<div class="badge">-$' + (producto.precioOriginal - producto.precioActual).toFixed(0) + '</div>' : '') +
+            '</div>' +
+            '<h3>' + _nom + '</h3>' +
+            '<p class="producto-description">' + _des + '</p>' +
+            '<p class="precio">' +
+                (producto.precioOriginal > 0 && producto.precioOriginal > producto.precioActual ? '<span class="precio-tachado">$' + parseFloat(producto.precioOriginal).toFixed(2) + ' USD</span> ' : '') +
+                '<span class="precio-actual" data-usd="' + safeNum(producto.precioActual) + '">$' + Number(producto.precioActual).toFixed(2) + ' USD</span>' +
+                (producto.precioOriginal > 0 && producto.precioOriginal > producto.precioActual ? ' <span class="precio-ahorro">-$' + (parseFloat(producto.precioOriginal) - parseFloat(producto.precioActual)).toFixed(0) + '</span>' : '') +
+            '</p>' +
+            (esAgotado
+                ? '<div class="stock" style="color:#e74c3c;font-weight:700;">❌ Agotado</div><button class="btn btn-small" disabled style="background:#555;color:#aaa;cursor:not-allowed;box-shadow:none;">🚫 No disponible</button>'
+                : (_stk <= 3 && _stk > 0 ? '<div class="stock stock-urgente">⚠️ ¡Solo quedan ' + _stk + '!</div>' : '<div class="stock">📦 Stock: ' + _stk + ' unidades</div>') +
+                  (typeof renderCountdownHtml === 'function' ? renderCountdownHtml(_id) : '') +
+                  '<button class="btn-pedir-card" data-nombre="' + _nom + '" onclick="event.stopPropagation(); tmComprar(event, ' + _id + ', this.dataset.nombre)" type="button"><span class="btn-pedir-wa-icon-sm"><svg viewBox="0 0 24 24" width="14" height="14" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg></span> Pedir</button>');
+        productosGrid.appendChild(card);
+    });
+};
+
+
+/* ============================================================
+   TIENDAMAX — PREMIUM UPGRADE PACK JS
+   Cursor · Progress bar · Toast glass · Placeholder animado
+   Separadores · Footer premium
+   ============================================================ */
+
+// ===== CURSOR DORADO ELIMINADO =====
+// El cursor custom dorado fue eliminado: ocultaba el cursor del sistema
+// cuando algo fallaba y no se veía bien en todos los modos. Ahora se usa
+// el cursor nativo del navegador, que siempre funciona.
+(function removeOldCursor() {
+    // Limpiar el elemento si quedó de una versión anterior cacheada
+    const old = document.getElementById('tm-cursor');
+    if (old) old.remove();
+})();
+
+// ===== BARRA DE PROGRESO DORADA =====
+(function initProgress() {
+    const bar = document.createElement('div');
+    bar.id = 'tm-progress';
+    document.body.appendChild(bar);
+
+    function update() {
+        const scrollTop = window.scrollY || document.documentElement.scrollTop;
+        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        const pct = docHeight > 0 ? Math.min(100, (scrollTop / docHeight) * 100) : 0;
+        bar.style.width = pct + '%';
+        bar.style.opacity = pct > 1 ? '1' : '0';
+    }
+    window.addEventListener('scroll', update, { passive: true });
+    update();
+})();
+
+// ===== TOAST GLASSMORPHISM — reemplaza mostrarNotificacion =====
+(function overrideToast() {
+    let toastEl = null;
+    let hideTimer = null;
+
+    function getToast() {
+        if (!toastEl) {
+            toastEl = document.createElement('div');
+            toastEl.className = 'tm-toast';
+            document.body.appendChild(toastEl);
+        }
+        return toastEl;
+    }
+
+    window.mostrarNotificacion = function(mensaje, tipo = 'success') {
+        const t = getToast();
+        clearTimeout(hideTimer);
+
+        // Ícono
+        const icon = tipo === 'error' ? '✕' : tipo === 'info' ? 'i' : '✓';
+        t.className = 'tm-toast' + (tipo === 'error' ? ' error' : '');
+        t.innerHTML = `<span class="tm-toast-icon">${icon}</span><span>${mensaje}</span>`;
+
+        // Forzar reflow para reiniciar animación
+        t.classList.remove('show', 'hide');
+        void t.offsetWidth;
+        t.classList.add('show');
+
+        hideTimer = setTimeout(() => {
+            t.classList.add('hide');
+            setTimeout(() => { if (t) t.classList.remove('show', 'hide'); }, 350);
+        }, 3500);
+    };
+})();
+
+// ===== PLACEHOLDER ANIMADO EN BÚSQUEDA =====
+(function initPlaceholder() {
+    const frases = [
+        'Buscar productos...',
+        'WiFi, inversores...',
+        'Celulares, cargadores...',
+        'Tecnología premium...',
+        'Energía solar...'
+    ];
+    let idx = 0;
+
+    function rotar() {
+        const input = document.getElementById('heroSearchInput');
+        if (!input || document.activeElement === input || input.value) return;
+        idx = (idx + 1) % frases.length;
+        // Fade out → cambiar → fade in via style
+        input.style.transition = 'opacity 0.4s';
+        input.style.opacity = '0';
+        setTimeout(() => {
+            input.placeholder = frases[idx];
+            input.style.opacity = '1';
+        }, 400);
+    }
+
+    // Esperar a que el DOM esté listo
+    function startRotation() {
+        const input = document.getElementById('heroSearchInput');
+        if (!input) { setTimeout(startRotation, 500); return; }
+        setInterval(rotar, 3200);
+    }
+    setTimeout(startRotation, 2000);
+})();
+
+
+
+
+/* ════════════════════════════════════════════════════
+   PREMIUM UPGRADE PACK 2 — JS
+   Fly-to-cart · Skeleton loading · Analytics counter
+═════════════════════════════════════════════════════ */
+
+// ── 1. FLY-TO-CART: partícula que vuela al ícono del carrito ──
+function flyToCart(originEl) {
+    const cartBtn = document.querySelector('.cart-icon-btn');
+    if (!cartBtn || !originEl) return;
+
+    const from = originEl.getBoundingClientRect();
+    const to   = cartBtn.getBoundingClientRect();
+
+    const particle = document.createElement('div');
+    particle.className = 'fly-particle';
+    particle.style.cssText = `
+        left: ${from.left + from.width / 2 - 7}px;
+        top:  ${from.top  + from.height/ 2 - 7}px;
+        opacity: 1;
+    `;
+    document.body.appendChild(particle);
+
+    // Calcular delta
+    const dx = (to.left + to.width / 2 - 7)  - (from.left + from.width  / 2 - 7);
+    const dy = (to.top  + to.height/ 2 - 7)  - (from.top  + from.height / 2 - 7);
+
+    // Arc animation usando requestAnimationFrame
+    const duration = 650;
+    const start = performance.now();
+
+    function step(now) {
+        const t = Math.min((now - start) / duration, 1);
+        // Ease in-out cubic
+        const e = t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t+2,3)/2;
+        // Arc: parábola en Y
+        const arc = -Math.sin(Math.PI * t) * 90;
+
+        particle.style.transform = `translate(${dx * e}px, ${dy * e + arc}px) scale(${1 - t * 0.4})`;
+        particle.style.opacity   = t > 0.7 ? (1 - (t - 0.7) / 0.3) : '1';
+
+        if (t < 1) {
+            requestAnimationFrame(step);
+        } else {
+            particle.remove();
+            // Bounce del carrito
+            cartBtn.classList.remove('bounce');
+            void cartBtn.offsetWidth; // reflow
+            cartBtn.classList.add('bounce');
+            setTimeout(() => cartBtn.classList.remove('bounce'), 560);
+        }
+    }
+    requestAnimationFrame(step);
+}
+
+// ── PEDIR POR WHATSAPP: abre WhatsApp directo (NO agrega al carrito) ──
+// FIX: Separar "Pedir" (WhatsApp) de "Agregar al carrito".
+// El botón "Pedir" solo envía el mensaje a WhatsApp y registra analytics.
+// Para agregar al carrito existe el botón "🛒 Añadir" en la tarjeta
+// y "🛒 Agregar al carrito" en el modal de detalle.
+function tmComprar(event, id, nombre) {
+    const btn = (event && (event.currentTarget || event.target)) || null;
+    if (btn) requestAnimationFrame(() => flyToCart(btn));
+    // 📊 Analytics: registrar click de WhatsApp
+    if (typeof tmTrackWhatsApp === 'function') tmTrackWhatsApp(id);
+    // Buscar producto para tener el precio en el mensaje
+    const _prod = productos.find(p => p.id === id || p.id === Number(id));
+    const item = _prod
+        ? { id: _prod.id, nombre: _prod.nombre, precio: parseFloat(_prod.precioActual) || 0, cantidad: 1 }
+        : { id: id, nombre: nombre || 'Producto', precio: 0, cantidad: 1 };
+    const msg = _mensajeOrdenWA([item]);
+    window.open(`https://wa.me/${getNumeroWhatsApp()}?text=${msg}`, '_blank', 'noopener,noreferrer');
+}
+// Patch agregarAlCarrito para fly desde modal
+const _origAgregarAlCarrito = agregarAlCarrito;
+agregarAlCarrito = function(id, _unused, originEl) {
+    _origAgregarAlCarrito(id);
+    if (originEl) requestAnimationFrame(() => flyToCart(originEl));
+};
+
+// ── 2. SKELETON LOADING en grids de productos ──
+function mostrarSkeletons(containerId, cantidad = 6) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+
+    const skeletonHTML = Array(cantidad).fill(0).map(() => `
+        <div class="skeleton-card">
+            <div class="skeleton-img"></div>
+            <div class="skeleton-line"></div>
+            <div class="skeleton-line short"></div>
+            <div class="skeleton-line price"></div>
+            <div style="margin:12px 16px 16px;height:36px;border-radius:10px;background:linear-gradient(90deg,#f0ebe4 25%,#e8e2da 50%,#f0ebe4 75%);background-size:200% auto;animation:skeletonPulse 1.5s ease-in-out infinite;"></div>
+        </div>
+    `).join('');
+
+    container.innerHTML = skeletonHTML;
+}
+
+// ── 3. ANALYTICS COUNTER ANIMADO ──
+function animarContador(el, target, duration = 1200, prefix = '', suffix = '') {
+    const isFloat = String(target).includes('.');
+    const decimals = isFloat ? 2 : 0;
+    const numTarget = parseFloat(target) || 0;
+    const start = performance.now();
+
+    function step(now) {
+        const t = Math.min((now - start) / duration, 1);
+        // Ease out expo
+        const e = t === 1 ? 1 : 1 - Math.pow(2, -10 * t);
+        const current = numTarget * e;
+        el.textContent = prefix + current.toFixed(decimals) + suffix;
+        if (t < 1) requestAnimationFrame(step);
+        else el.textContent = prefix + numTarget.toFixed(decimals) + suffix;
+    }
+    requestAnimationFrame(step);
+}
+
+// Patch stat() para usar contadores animados
+const _origStat = stat;
+stat = function(icon, label, value, color) {
+    const isNumeric = typeof value === 'number' || (typeof value === 'string' && value.startsWith('$'));
+    const id = 'tm-stat-' + Math.random().toString(36).slice(2,7);
+    const display = typeof value === 'number' ? value : value;
+
+    const html = '<div style="background:var(--bg-secondary,#f9f6f1);border-radius:12px;padding:14px;text-align:center;">' +
+        '<div style="font-size:22px;">' + icon + '</div>' +
+        '<div id="' + id + '" class="tm-counter" style="font-size:' + (typeof value === 'number' ? '22px' : '18px') + ';font-weight:800;color:' + (color || 'var(--primary-color,#c9a96e)') + ';">' + value + '</div>' +
+        '<div style="font-size:11px;color:#999;text-transform:uppercase;letter-spacing:0.5px;">' + label + '</div>' +
+        '</div>';
+
+    // Animar después del render
+    if (isNumeric) {
+        setTimeout(() => {
+            const el = document.getElementById(id);
+            if (!el) return;
+            if (typeof value === 'number') {
+                animarContador(el, value, 900 + Math.random() * 400);
+            } else if (typeof value === 'string' && value.startsWith('$')) {
+                const num = parseFloat(value.replace('$',''));
+                animarContador(el, num, 1000, '$');
+            }
+        }, 80);
+    }
+
+    return html;
+};
+
+
+// ── Buscador y filtro de categorías en Ventas ────────────────────
+let _ventaCatActiva = '';
+
+function filtrarProductosVenta() {
+    const q = (document.getElementById('ventaBuscador')?.value || '').toLowerCase().trim();
+    const clearBtn = document.getElementById('ventaBuscadorClear');
+    if (clearBtn) clearBtn.style.display = q ? 'block' : 'none';
+
+    const items = document.querySelectorAll('.venta-prod-item');
+    items.forEach(item => {
+        const nombre = item.dataset.nombre || '';
+        const cat    = item.dataset.cat    || '';
+        const coincideBusqueda = !q || nombre.includes(q);
+        const coincideCat      = !_ventaCatActiva || cat === _ventaCatActiva;
+        item.style.display = (coincideBusqueda && coincideCat) ? '' : 'none';
+    });
+}
+
+function filtrarVentaPorCategoria(cat) {
+    _ventaCatActiva = cat;
+    document.querySelectorAll('.chip-cat').forEach(btn => {
+        const activo = btn.dataset.cat === cat;
+        btn.style.background  = activo ? '#3498db' : 'white';
+        btn.style.color       = activo ? 'white'   : '#555';
+        btn.style.borderColor = activo ? '#3498db' : '#ddd';
+    });
+    filtrarProductosVenta();
+}
+
+function seleccionarProductoVenta(id) {
+    const p = productos.find(x => x.id === id);
+    if (!p) return;
+
+    const sel = document.getElementById('ventaProductoSelect');
+    if (sel) sel.value = id;
+
+    document.querySelectorAll('.venta-prod-item').forEach(item => {
+        const activo = parseInt(item.dataset.id) === id;
+        item.style.borderColor = activo ? '#27ae60' : 'transparent';
+        item.style.background  = activo ? 'rgba(39,174,96,0.08)' : 'white';
+    });
+
+    const card = document.getElementById('ventaProductoSeleccionado');
+    if (card) {
+        card.style.display = 'flex';
+        const img = document.getElementById('ventaSelImg');
+        if (img) { img.src = p.imagen || ''; img.style.display = p.imagen ? '' : 'none'; }
+        const nom = document.getElementById('ventaSelNombre');
+        if (nom) nom.textContent = p.nombre;
+        const inf = document.getElementById('ventaSelInfo');
+        if (inf) inf.innerHTML = `$${p.precioActual} · Stock: ${p.stock}${p.comision ? ` · 💰 Comisión: $${p.comision}` : ''}`;
+    }
+
+    const cantEl = document.getElementById('ventaCantidad');
+    if (cantEl) { cantEl.focus(); cantEl.select(); }
+}
+
+function deseleccionarProductoVenta() {
+    const sel = document.getElementById('ventaProductoSelect');
+    if (sel) sel.value = '';
+    document.querySelectorAll('.venta-prod-item').forEach(item => {
+        item.style.borderColor = 'transparent';
+        item.style.background  = 'white';
+    });
+    const card = document.getElementById('ventaProductoSeleccionado');
+    if (card) card.style.display = 'none';
+}
+
+function limpiarBuscadorVenta() {
+    const b = document.getElementById('ventaBuscador');
+    if (b) { b.value = ''; b.focus(); }
+    filtrarProductosVenta();
+}
+
+// ══════════════════════════════════════════════════════════════════
+//  TIENDAMAX — PREMIUM PACK v2
+//  1. Vistas por producto (público + panel admin)
+//  2. Dashboard de ventas con gráfica
+//  3. Badges "Últimas X unidades" en tarjetas de cliente
+//  4. Alerta de stock bajo en tab Gestionar
+//  5. Animaciones fade-in al scroll
+//  6. Quick View (vista rápida sin abrir detalle)
+//  7. Exportar ventas a CSV
+// ══════════════════════════════════════════════════════════════════
+
+// ── 1. VISTAS POR PRODUCTO ─────────────────────────────────────────
+function _cargarVistas() {
+    return JSON.parse(localStorage.getItem('vistasProd') || '{}');
+}
+function _guardarVistas(v) {
+    localStorage.setItem('vistasProd', JSON.stringify(v));
+}
+function registrarVistaProd(id) {
+    const v = _cargarVistas();
+    v[id] = (v[id] || 0) + 1;
+    _guardarVistas(v);
+    return v[id];
+}
+function obtenerVistasProd(id) {
+    return _cargarVistas()[id] || 0;
+}
+function obtenerTopProductosPorVistas(n = 5) {
+    const v = _cargarVistas();
+    return Object.entries(v)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, n)
+        .map(([id, vistas]) => ({
+            producto: productos.find(p => String(p.id) === String(id)),
+            vistas
+        }))
+        .filter(x => x.producto);
+}
+
+// Parchar abrirDetalleProducto para registrar vista y mostrarla
+const _origAbrirDetalle = abrirDetalleProducto;
+abrirDetalleProducto = function(id) {
+    _origAbrirDetalle(id);
+    // Mostrar contador local mientras carga Firebase
+    const localTotal = registrarVistaProd(id);
+    let vistaEl = document.getElementById('detailVistasBadge');
+    if (!vistaEl) {
+        vistaEl = document.createElement('span');
+        vistaEl.id = 'detailVistasBadge';
+        vistaEl.style.cssText = 'display:inline-flex;align-items:center;gap:4px;font-size:12px;color:#888;margin-left:10px;';
+        const catEl = document.getElementById('detailProductCategory');
+        if (catEl && catEl.parentNode) catEl.parentNode.appendChild(vistaEl);
+    }
+    vistaEl.innerHTML = `👁️ ${localTotal.toLocaleString()} vista${localTotal !== 1 ? 's' : ''}`;
+    // Leer el conteo real desde Firebase y actualizar
+    (async () => {
+        try {
+            const cfg = JSON.parse(localStorage.getItem('firebaseConfig') || '{}');
+            const base = cfg.databaseURL || (cfg.projectId ? `https://${cfg.projectId}-default-rtdb.firebaseio.com` : null);
+            if (!base) return;
+            const res = await fetch(`${base}/analytics/vistas/${String(id)}/count.json`);
+            if (!res.ok) return;
+            const fbCount = await res.json();
+            if (typeof fbCount !== 'number' || fbCount <= 0) return;
+            const el = document.getElementById('detailVistasBadge');
+            if (el) el.innerHTML = `👁️ ${fbCount.toLocaleString()} vista${fbCount !== 1 ? 's' : ''}`;
+        } catch(e) {}
+    })();
+};
+
+// ── 2. DASHBOARD DE VENTAS CON GRÁFICA ────────────────────────────
+function renderizarDashboardVentas(contenedor) {
+    const ventas = cargarVentas();
+    const prods = Array.isArray(productos) ? productos : [];
+
+    const totalVentas   = ventas.reduce((s, v) => s + Number(v.total || 0), 0);
+    const totalGanancia = ventas.reduce((s, v) => s + Number(v.ganancia || 0), 0);
+    const totalUnidades = ventas.reduce((s, v) => s + Number(v.cantidad || 1), 0);
+    const ticketProm    = ventas.length ? totalVentas / ventas.length : 0;
+    const margenPct     = totalVentas > 0 ? (totalGanancia / totalVentas) * 100 : 0;
+
+    const ahora = Date.now();
+    const inicioHoy = new Date();
+    inicioHoy.setHours(0, 0, 0, 0);
+    const ventasHoy = ventas.filter(v => Number(v.id || 0) >= inicioHoy.getTime());
+    const ventas7d  = ventas.filter(v => Number(v.id || 0) >= ahora - 7 * 24 * 60 * 60 * 1000);
+    const totalHoy  = ventasHoy.reduce((s, v) => s + Number(v.total || 0), 0);
+    const total7d   = ventas7d.reduce((s, v) => s + Number(v.total || 0), 0);
+
+    const stockBajo = prods.filter(p => Number(p.stock || 0) > 0 && Number(p.stock || 0) <= 3)
+        .sort((a, b) => Number(a.stock || 0) - Number(b.stock || 0));
+    const agotados = prods.filter(p => Number(p.stock || 0) === 0);
+    const inventarioUSD = prods.reduce((s, p) => s + (Number(p.precioActual || 0) * Number(p.stock || 0)), 0);
+    const productosConStock = prods.filter(p => Number(p.stock || 0) > 0).length;
+
+    // Gráfica ÚNICA: últimos 14 días. Incluye venta, ganancia y unidades en el tooltip.
+    const dias = [];
+    for (let i = 13; i >= 0; i--) {
+        const d = new Date();
+        d.setDate(d.getDate() - i);
+        d.setHours(0, 0, 0, 0);
+        const hasta = new Date(d); hasta.setDate(hasta.getDate() + 1);
+        dias.push({
+            label: d.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit' }),
+            desde: d.getTime(),
+            hasta: hasta.getTime(),
+            total: 0,
+            ganancia: 0,
+            unidades: 0,
+            ventas: 0
+        });
+    }
+    ventas.forEach(v => {
+        const ts = Number(v.id || 0);
+        const target = dias.find(d => ts >= d.desde && ts < d.hasta);
+        if (!target) return;
+        target.total    += Number(v.total || 0);
+        target.ganancia += Number(v.ganancia || 0);
+        target.unidades += Number(v.cantidad || 1);
+        target.ventas   += 1;
+    });
+    const maxTotal = Math.max(...dias.map(d => d.total), 1);
+
+    const topProd = {};
+    ventas.forEach(v => {
+        const key = String(v.productoId || v.producto || '');
+        if (!topProd[key]) {
+            const prod = prods.find(p => String(p.id) === String(v.productoId));
+            topProd[key] = {
+                nombre: v.producto || (prod ? prod.nombre : 'Producto'),
+                producto: prod,
+                unidades: 0,
+                total: 0,
+                ganancia: 0
+            };
+        }
+        topProd[key].unidades += Number(v.cantidad || 1);
+        topProd[key].total    += Number(v.total || 0);
+        topProd[key].ganancia += Number(v.ganancia || 0);
+    });
+    const topList = Object.values(topProd)
+        .sort((a, b) => b.total - a.total || b.unidades - a.unidades)
+        .slice(0, 5);
+
+    const topVistas = obtenerTopProductosPorVistas(5);
+    const ventasRecientes = ventas.slice(0, 5);
+    const reponer = [...stockBajo, ...agotados].slice(0, 5);
+
+    const kpiCard = (cls, value, label, sub) =>
+        '<div class="admin-stat-card ' + cls + '">' +
+            '<div class="admin-stat-value">' + value + '</div>' +
+            '<div class="admin-stat-label">' + label + '</div>' +
+            (sub ? '<div class="admin-stat-sub">' + sub + '</div>' : '') +
+        '</div>';
+
+    const imgTag = (p) => p && p.imagen
+        ? '<img src="' + escapeAttr(p.imagen) + '" class="admin-top-thumb" onerror="this.style.display=\'none\'">'
+        : '';
+
+    const empty = '<div class="admin-empty-mini">Sin datos todavía</div>';
+
+    const miniSection = (title, html) =>
+        '<div class="admin-mini-section"><div class="admin-chart-title">' + title + '</div>' + (html || empty) + '</div>';
+
+    const masVendidosHtml = topList.length ? topList.map((d, i) => {
+        const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : (i + 1) + '.';
+        return `
+        <div class="admin-top-item">
+            <span class="admin-top-rank" style="font-size:${i<3?'14px':'11px'}">${medal}</span>
+            ${imgTag(d.producto)}
+            <span class="admin-top-name">${escapeHtml(d.nombre)}</span>
+            <span class="admin-top-meta">${d.unidades} uds</span>
+            <span class="admin-top-value gold">$${d.total.toFixed(0)}</span>
+        </div>`;}).join('') : '';
+
+    const reponerHtml = reponer.length ? reponer.map((p, i) => `
+        <div class="admin-top-item">
+            <span class="admin-top-rank">${i + 1}</span>
+            ${imgTag(p)}
+            <span class="admin-top-name">${escapeHtml(p.nombre)}</span>
+            <span class="admin-top-value ${Number(p.stock || 0) === 0 ? 'red' : 'gold'}">${Number(p.stock || 0) === 0 ? 'Agotado' : (p.stock + ' uds')}</span>
+        </div>`).join('') : '';
+
+    const vistosHtml = topVistas.length ? topVistas.map(({ producto: p, vistas }, i) => `
+        <div class="admin-top-item">
+            <span class="admin-top-rank">${i + 1}</span>
+            ${imgTag(p)}
+            <span class="admin-top-name">${escapeHtml(p.nombre)}</span>
+            <span class="admin-top-value blue">👁️ ${vistas.toLocaleString()}</span>
+        </div>`).join('') : '';
+
+    const recientesHtml = ventasRecientes.length ? ventasRecientes.map(v => `
+        <div class="admin-top-item">
+            <span class="admin-top-name">${escapeHtml(v.producto || 'Producto')}</span>
+            <span class="admin-top-meta">${safeNum(v.cantidad, 1)} uds</span>
+            <span class="admin-top-value gold">$${Number(v.total || 0).toFixed(0)}</span>
+        </div>`).join('') : '';
+
+    return `
+    <div class="tm-dashboard-ventas-inner">
+        <div class="admin-dash-header">
+            <h4>📊 Dashboard de ventas</h4>
+            <div class="admin-dash-actions">
+                <button onclick="exportarVentasCSV()" type="button" class="admin-btn-sm outline">⬇️ Exportar CSV</button>
+            </div>
+        </div>
+
+        <div class="admin-stats-grid admin-stats-grid-compact">
+            ${kpiCard('green', '$' + totalVentas.toFixed(0), 'Total vendido', ventas.length + ' venta' + (ventas.length !== 1 ? 's' : ''))}
+            ${kpiCard('gold', '$' + totalGanancia.toFixed(0), 'Mi ganancia', margenPct.toFixed(1) + '% margen')}
+            ${kpiCard('blue', String(totalUnidades), 'Unidades', '$' + ticketProm.toFixed(0) + ' ticket prom.')}
+            ${kpiCard('purple', '$' + totalHoy.toFixed(0), 'Hoy', ventasHoy.length + ' venta' + (ventasHoy.length !== 1 ? 's' : ''))}
+            ${kpiCard('dark', '$' + total7d.toFixed(0), 'Últimos 7 días', ventas7d.length + ' venta' + (ventas7d.length !== 1 ? 's' : ''))}
+            ${kpiCard('red', String(agotados.length), 'Agotados', stockBajo.length + ' con stock bajo')}
+        </div>
+
+        <div class="admin-inventory-strip">
+            <span>📦 Productos con stock: <strong>${productosConStock}</strong></span>
+            <span>⚠️ Stock bajo: <strong>${stockBajo.length}</strong></span>
+            <span>💵 Inventario estimado: <strong>$${inventarioUSD.toFixed(0)}</strong></span>
+        </div>
+
+        <div class="admin-chart-box admin-unified-dashboard">
+            <div class="admin-chart-title">📈 Resumen general — una sola gráfica</div>
+            <div class="admin-chart-bars">
+                ${dias.map(d => {
+                    const h = Math.max(4, Math.round((d.total / maxTotal) * 78));
+                    return `<div title="${d.label}: $${d.total.toFixed(2)} · Ganancia $${d.ganancia.toFixed(2)} · ${d.unidades} ud(s)"
+                        class="admin-chart-bar ${d.total > 0 ? 'filled' : 'empty'}"
+                        style="height:${h}px;"></div>`;
+                }).join('')}
+            </div>
+            <div class="admin-chart-footer"><span>${dias[0].label}</span><span>hoy</span></div>
+
+            <div class="admin-unified-sections">
+                ${miniSection('🏆 Más vendidos', masVendidosHtml)}
+                ${miniSection('⚠️ Reponer primero', reponerHtml)}
+                ${miniSection('👁️ Más vistos', vistosHtml)}
+                ${miniSection('🧾 Ventas recientes', recientesHtml)}
+            </div>
+        </div>
+    </div>`;
+}
+
+// Parchar renderizarVentas para inyectar el dashboard arriba
+const _origRenderVentas = renderizarVentas;
+renderizarVentas = function() {
+    _origRenderVentas();
+    const cont = document.getElementById('ventasContenido');
+    if (!cont) return;
+    if (cont.querySelector('.tm-dashboard-ventas')) return;
+    const dashboard = renderizarDashboardVentas();
+    if (dashboard) {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'tm-dashboard-ventas';
+        wrapper.innerHTML = dashboard;
+        cont.insertBefore(wrapper, cont.firstChild);
+    }
+};
+
+// ── 4. ALERTA DE STOCK BAJO EN TAB GESTIONAR ──────────────────────
+function actualizarBadgeStockBajo() {
+    const btn = document.querySelector('.tab-btn[data-tab="manage-products"]');
+    if (!btn) return;
+    const bajos = productos.filter(p => p.stock > 0 && p.stock <= 3).length;
+    const agotados = productos.filter(p => p.stock === 0).length;
+    const total = bajos + agotados;
+
+    // Limpiar badge anterior
+    const prev = btn.querySelector('.stock-alert-badge');
+    if (prev) prev.remove();
+
+    if (total > 0) {
+        const badge = document.createElement('span');
+        badge.className = 'stock-alert-badge';
+        badge.textContent = total;
+        badge.style.cssText = `
+            display:inline-flex;align-items:center;justify-content:center;
+            background:#e74c3c;color:white;border-radius:50%;
+            font-size:10px;font-weight:800;min-width:16px;height:16px;
+            padding:0 3px;margin-left:4px;vertical-align:middle;`;
+        btn.appendChild(badge);
+    }
+}
+
+// Hook: actualizar badge cada vez que cambia el stock
+const _origGuardarProd = guardarProductos;
+guardarProductos = function() {
+    _origGuardarProd();
+    setTimeout(actualizarBadgeStockBajo, 50);
+};
+
+// ── 5. ANIMACIONES FADE-IN AL SCROLL ──────────────────────────────
+function initScrollAnimations() {
+    if (typeof IntersectionObserver === 'undefined') return;
+    // FIX: evitar duplicación de <style> con cada render
+    if (document.getElementById('tm-scroll-anim-style')) return;
+    const style = document.createElement('style');
+    style.id = 'tm-scroll-anim-style';
+    style.textContent = `
+        .producto-card { opacity: 0; transform: translateY(18px); transition: opacity .45s ease, transform .45s ease; }
+        .producto-card.visible { opacity: 1; transform: translateY(0); }
+        .categoria-card { opacity: 0; transform: translateY(14px); transition: opacity .4s ease, transform .4s ease; }
+        .categoria-card.visible { opacity: 1; transform: translateY(0); }
+    `;
+    document.head.appendChild(style);
+
+    const obs = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+            if (e.isIntersecting) {
+                e.target.classList.add('visible');
+                obs.unobserve(e.target);
+            }
+        });
+    }, { threshold: 0.08 });
+
+    function observarTarjetas() {
+        document.querySelectorAll('.producto-card:not(.visible), .categoria-card:not(.visible)')
+            .forEach(c => obs.observe(c));
+    }
+
+    // Observar tarjetas actuales y futuras
+    observarTarjetas();
+    const mutObs = new MutationObserver(observarTarjetas);
+    const grid = document.getElementById('productosGrid') || document.body;
+    mutObs.observe(grid, { childList: true, subtree: true });
+}
+
+// ── 6. EXPORTAR VENTAS A CSV ───────────────────────────────────────
+
+function mostrarVistaMeGusta() {
+    // Inyectar estilos para que las cards sean siempre visibles
+    if (!document.getElementById('meGustaStyles')) {
+        const st = document.createElement('style');
+        st.id = 'meGustaStyles';
+        st.textContent = `
+            #meGustaGrid .producto-card {
+                background: var(--card-bg, #fff) !important;
+                border: 1px solid rgba(128,128,128,0.2) !important;
+                border-bottom: 3px solid #e74c3c !important;
+                opacity: 1 !important;
+                visibility: visible !important;
+                display: flex !important;
+                flex-direction: column !important;
+            }
+            body.dark-mode #meGustaGrid .producto-card {
+                background: #1e1e1e !important;
+                color: #fff !important;
+            }
+            body.dark-mode #meGustaGrid .producto-card h3 { color: rgba(255,255,255,0.9) !important; }
+            body.dark-mode #meGustaGrid .producto-card .precio-actual { color: #e74c3c !important; }
+            body.dark-mode #meGustaGrid .producto-card .producto-description { color: rgba(255,255,255,0.6) !important; }
+        `;
+        document.head.appendChild(st);
+    }
+    document.getElementById('vistaInicio').style.display    = 'none';
+    document.getElementById('vistaCategoria').style.display = 'none';
+    const vPed = document.getElementById('vistaPedidos');
+    if (vPed) vPed.style.display = 'none';
+
+    const vistaEl = document.getElementById('vistaMeGusta');
+    if (!vistaEl) return;
+    vistaEl.style.display = 'block';
+    actualizarVisibilidadBannerOferta(false);
+
+    const statsEl  = document.getElementById('meGustaStats');
+    const grid     = document.getElementById('meGustaGrid');
+    const vacioEl  = document.getElementById('meGustaVacio');
+    if (!grid) return;
+
+    // Usar siempre el array global productos (más confiable que localStorage)
+    const cat = (typeof productos !== 'undefined' && productos.length > 0)
+        ? productos
+        : JSON.parse(localStorage.getItem('productos') || '[]');
+
+    // Si aún no hay catálogo, esperar hasta 5 segundos
+    if (cat.length === 0 && wishlist.length > 0) {
+        if (statsEl) statsEl.textContent = 'Cargando...';
+        grid.style.display = 'none';
+        if (vacioEl) vacioEl.style.display = 'none';
+        mostrarVistaMeGusta._t = (mostrarVistaMeGusta._t || 0) + 1;
+        if (mostrarVistaMeGusta._t < 7) {
+            setTimeout(mostrarVistaMeGusta, 700);
+        } else {
+            // FIX BUG #25: dar feedback al usuario si no se pudo cargar
+            mostrarVistaMeGusta._t = 0;
+            if (statsEl) statsEl.textContent = 'No se pudo cargar el catálogo. Recarga la página.';
+            console.warn('[mostrarVistaMeGusta] No se pudo cargar tras 7 intentos.');
+        }
+        return;
+    }
+    mostrarVistaMeGusta._t = 0;
+
+    const prods = wishlist
+        .map(wid => cat.find(p => String(p.id) === String(wid)))
+        .filter(Boolean);
+
+    if (statsEl) statsEl.textContent = prods.length + ' producto' + (prods.length !== 1 ? 's' : '') + ' guardado' + (prods.length !== 1 ? 's' : '');
+
+    if (prods.length === 0) {
+        grid.style.display  = 'none';
+        if (vacioEl) vacioEl.style.display = 'block';
+    } else {
+        if (vacioEl) vacioEl.style.display = 'none';
+        grid.style.display = '';
+        grid.innerHTML = '';
+        const ofertaId = getOfertaDiaId();
+        prods.forEach(producto => {
+            const esAgotado   = producto.stock === 0;
+            const esOfertaDia = String(producto.id) === String(ofertaId);
+            const card = document.createElement('div');
+            card.className = 'producto-card' + (esAgotado ? ' card-agotado' : '');
+            card.onclick = () => abrirDetalleProducto(producto.id);
+            card.style.position = 'relative';
+            // Sanitización defensiva anti-XSS
+            const _id  = safeNum(producto.id);
+            const _nom = escapeHtml(producto.nombre);
+            const _des = escapeHtml(producto.descripcion || '');
+            const _img = escapeAttr(producto.imagen || '');
+            const _stk = safeNum(producto.stock);
+            const _txt = escapeHtml(getOfertaDiaTexto());
+            const stockHTML = esAgotado
+                ? '<div class="stock" style="color:#e74c3c;font-weight:700;">❌ Agotado</div>'
+                : (_stk <= 3
+                    ? '<div class="stock stock-urgente">⚠️ ¡Solo quedan ' + _stk + '!</div>'
+                    : '<div class="stock">📦 Stock: ' + _stk + ' unidades</div>') +
+                  '<button class="btn-pedir-card" data-nombre="' + _nom + '" onclick="event.stopPropagation();tmComprar(event,' + _id + ',this.dataset.nombre)">🛒 Pedir</button>';
+            card.innerHTML =
+                (esOfertaDia ? '<div class="badge-oferta-dia">' + _txt + '</div>' :
+                 esAgotado   ? '<div class="badge-agotado">AGOTADO</div>' :
+                 producto.masVendido ? '<div class="badge-vendido">🔥 Más Vendido</div>' : '') +
+                '<div class="producto-image">' +
+                    getMeGustaHTML(_id) +
+                    '<img src="' + _img + '" alt="' + _nom + '" loading="lazy" onerror="this.src=\'/iconos/favicon-192.png\';this.style.opacity=\'0.3\'">' +
+                    (producto.precioOriginal > 0 && producto.precioOriginal > producto.precioActual ? '<div class="badge">-$' + (producto.precioOriginal - producto.precioActual).toFixed(0) + '</div>' : '') +
+                '</div>' +
+                '<h3>' + _nom + '</h3>' +
+                '<p class="producto-description">' + _des + '</p>' +
+                '<p class="precio">' +
+                (producto.descuento > 0 ? '<span class="precio-tachado">$' + (Number(producto.precioActual) / (1 - producto.descuento / 100)).toFixed(2) + ' USD</span> ' : '') +
+                '<span class="precio-actual" data-usd="' + safeNum(producto.precioActual) + '">$' + Number(producto.precioActual).toFixed(2) + ' USD</span>' +
+                (producto.precioOriginal > 0 && producto.precioOriginal > producto.precioActual ? ' <span class="precio-ahorro">-$' + (parseFloat(producto.precioOriginal) - parseFloat(producto.precioActual)).toFixed(0) + '</span>' : '') +
+            '</p>' +
+                stockHTML;
+            grid.appendChild(card);
+        });
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function cerrarVistaMeGusta() {
+    const v = document.getElementById('vistaMeGusta');
+    if (v) v.style.display = 'none';
+    mostrarVistaInicio();
+}
+
+// ══════════════════════════════════════════════════════════════
+//  VISTA: MIS PEDIDOS (historial del cliente)
+// ══════════════════════════════════════════════════════════════
+function guardarPedidoCliente(itemsCarrito) {
+    const pedidos = JSON.parse(localStorage.getItem('pedidos_cliente_v1') || '[]');
+    const total   = itemsCarrito.reduce((s, i) => s + i.precio * i.cantidad, 0);
+    pedidos.unshift({
+        id:     Date.now(),
+        fecha:  new Date().toLocaleDateString('es-ES', { day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' }),
+        items:  itemsCarrito.map(i => ({ id: i.id, nombre: i.nombre, cantidad: i.cantidad, precio: i.precio })),
+        total:  total
+    });
+    localStorage.setItem('pedidos_cliente_v1', JSON.stringify(pedidos.slice(0, 50)));
+}
+
+function mostrarVistaPedidos() {
+    document.getElementById('vistaInicio').style.display    = 'none';
+    document.getElementById('vistaCategoria').style.display = 'none';
+    const vMG = document.getElementById('vistaMeGusta');
+    if (vMG) vMG.style.display = 'none';
+
+    const vistaEl = document.getElementById('vistaPedidos');
+    if (!vistaEl) return;
+    vistaEl.style.display = 'block';
+    actualizarVisibilidadBannerOferta(false);
+
+    const pedidos   = JSON.parse(localStorage.getItem('pedidos_cliente_v1') || '[]');
+    const statsEl   = document.getElementById('pedidosStats');
+    const listaEl   = document.getElementById('pedidosLista');
+    const vacioEl   = document.getElementById('pedidosVacio');
+
+    if (statsEl) statsEl.textContent = pedidos.length + ' pedido' + (pedidos.length !== 1 ? 's' : '');
+
+    if (pedidos.length === 0) {
+        if (listaEl) listaEl.innerHTML = '';
+        if (vacioEl) vacioEl.style.display = 'block';
+    } else {
+        if (vacioEl) vacioEl.style.display = 'none';
+        if (listaEl) listaEl.innerHTML = pedidos.map(p => `
+          <div class="pedido-card">
+            <div class="pedido-card-header">
+              <span class="pedido-fecha">📅 ${p.fecha}</span>
+              <span class="pedido-total">$${p.total.toFixed(2)} USD</span>
+            </div>
+            <div class="pedido-items">
+              ${p.items.map(i => `
+                <div class="pedido-item">
+                  <span class="pedido-item-nombre">${i.nombre}</span>
+                  <span class="pedido-item-qty">×${i.cantidad}</span>
+                  <span class="pedido-item-precio">$${(i.precio * i.cantidad).toFixed(2)}</span>
+                </div>
+              `).join('')}
+            </div>
+            <button class="pedido-btn-repetir" onclick="repetirPedido(${p.id})">🔄 Pedir de nuevo</button>
+          </div>
+        `).join('');
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function cerrarVistaPedidos() {
+    const v = document.getElementById('vistaPedidos');
+    if (v) v.style.display = 'none';
+    mostrarVistaInicio();
+}
+
+function repetirPedido(pedidoId) {
+    const pedidos = JSON.parse(localStorage.getItem('pedidos_cliente_v1') || '[]');
+    const pedido  = pedidos.find(p => p.id === pedidoId);
+    if (!pedido) return;
+    pedido.items.forEach(item => {
+        const p = productos.find(x => x.id === item.id);
+        if (p && p.stock > 0) agregarAlCarrito(item.id);
+    });
+    cerrarVistaPedidos();
+    setTimeout(abrirCarrito, 300);
+}
+
+
+// ══════════════════════════════════════════════════════════════
+//  DEEP LINKS — Abrir producto directo desde URL compartida
+//  Ejemplo: tiendamax.org/#producto-1777923552923
+// ══════════════════════════════════════════════════════════════
+function _procesarDeepLink() {
+    const hash = window.location.hash;
+    if (!hash.startsWith('#producto-')) return;
+    const id = parseInt(hash.replace('#producto-', ''), 10);
+    if (!id) return;
+
+    const abrir = () => {
+        // Buscar en array global primero
+        if (typeof productos !== 'undefined' && productos.length > 0) {
+            const p = productos.find(x => x.id === id || String(x.id) === String(id));
+            if (p) { abrirDetalleProducto(p.id); return true; }
+        }
+        // Fallback: localStorage
+        const local = JSON.parse(localStorage.getItem('productos') || '[]');
+        const pLocal = local.find(x => x.id === id || String(x.id) === String(id));
+        if (pLocal) {
+            // Inyectar en el array global si está vacío y abrir
+            if (typeof productos !== 'undefined' && productos.length === 0) {
+                productos.push(...local);
+            }
+            abrirDetalleProducto(pLocal.id);
+            return true;
+        }
+        return false;
+    };
+
+    // Reintentar con polling cada 300ms hasta 8s
+    if (!abrir()) {
+        let intentos = 0;
+        const intervalo = setInterval(() => {
+            intentos++;
+            if (abrir() || intentos >= 26) clearInterval(intervalo);
+        }, 300);
+    }
+}
+
+window.addEventListener('hashchange', _procesarDeepLink);
+document.addEventListener('DOMContentLoaded', () => {
+    if (window.location.hash.startsWith('#producto-')) {
+        // Intentar inmediatamente con localStorage, y seguir reintentando
+        setTimeout(_procesarDeepLink, 100);
+    }
+});
+
+// ══════════════════════════════════════════════════════════════
+//  NOTIFICACIÓN DE CARRITO ABANDONADO
+//  Lógica: si hay productos en el carrito y el usuario lleva
+//  más de 2 horas sin interactuar, se envía una notificación push.
+//  Se usa el SW existente — no requiere backend.
+// ══════════════════════════════════════════════════════════════
+(function initCarritoAbandonado() {
+    const DELAY_MS  = 2 * 60 * 60 * 1000; // 2 horas
+    const KEY_TIMER = 'carrito_notif_timer';
+    const KEY_SENT  = 'carrito_notif_sent';
+    let   _timer    = null;
+
+    function cancelarTimer() {
+        if (_timer) { clearTimeout(_timer); _timer = null; }
+        localStorage.removeItem(KEY_TIMER);
+    }
+
+    function programarNotificacion() {
+        cancelarTimer();
+        // Solo si hay carrito con productos
+        if (!carrito || carrito.length === 0) return;
+        // Solo si tiene permiso de notificaciones
+        if (typeof Notification === 'undefined' || Notification.permission !== 'granted') return;
+
+        const disparoEn = Date.now() + DELAY_MS;
+        localStorage.setItem(KEY_TIMER, disparoEn);
+        localStorage.removeItem(KEY_SENT);
+
+        _timer = setTimeout(async () => {
+            // Verificar que aún hay carrito y no se envió ya
+            const carritoActual = JSON.parse(localStorage.getItem('carrito_v2') || '{"items":[]}').items || [];
+            if (carritoActual.length === 0) return;
+            if (localStorage.getItem(KEY_SENT)) return;
+
+            const total = carritoActual.reduce((s, i) => s + i.precio * i.cantidad, 0);
+            const nombres = carritoActual.slice(0, 2).map(i => i.nombre.substring(0, 20)).join(', ');
+            const cuerpo  = carritoActual.length === 1
+                ? '¡Tienes ' + carritoActual[0].nombre.substring(0, 30) + ' esperándote! ($' + total.toFixed(0) + ' USD)'
+                : '¡Tienes ' + carritoActual.length + ' productos en tu carrito! ' + nombres + '... ($' + total.toFixed(0) + ' USD)';
+
+            try {
+                const reg = await navigator.serviceWorker.ready;
+                await reg.showNotification('🛒 ¿Olvidaste algo?', {
+                    body: cuerpo,
+                    icon: '/iconos/icon-192.png',
+                    badge: '/iconos/icon-192.png',
+                    data: { url: '/?carrito=1' },
+                    vibrate: [200, 100, 200],
+                    tag: 'carrito-abandonado',
+                    renotify: false,
+                    actions: [
+                        { action: 'ver', title: '🛒 Ver carrito' },
+                        { action: 'cerrar', title: 'Más tarde' }
+                    ]
+                });
+                localStorage.setItem(KEY_SENT, '1');
+            } catch(err) {
+                console.log('Notificación carrito:', err);
+            }
+        }, DELAY_MS);
+    }
+
+    // Reprogramar cada vez que cambie el carrito
+    const _guardarOriginal = guardarCarrito;
+    window.guardarCarrito = function() {
+        _guardarOriginal();
+        programarNotificacion();
+    };
+
+    // Al cargar la página: verificar si hay un timer pendiente del pasado
+    window.addEventListener('load', () => {
+        const disparoGuardado = parseInt(localStorage.getItem(KEY_TIMER) || '0');
+        if (disparoGuardado && Date.now() < disparoGuardado && carrito && carrito.length > 0) {
+            const restante = disparoGuardado - Date.now();
+            _timer = setTimeout(() => programarNotificacion(), restante);
+        } else {
+            programarNotificacion();
+        }
+    });
+
+    // Al abrir el carrito: cancelar el timer (el usuario está activo)
+    const _abrirOriginal = abrirCarrito;
+    window.abrirCarrito = function() {
+        cancelarTimer();
+        localStorage.removeItem(KEY_SENT);
+        _abrirOriginal();
+        // Reprogramar cuando cierre
+        setTimeout(programarNotificacion, 500);
+    };
+})();
+
+// ── REGISTRO DEL SERVICE WORKER + NOTIFICACIONES PUSH ──────────────
+// NOTA: El SW se registra desde index.html (con auto-reload).
+// Aquí solo manejamos el banner de permiso para notificaciones.
+(function initPush() {
+    if (!('serviceWorker' in navigator)) return;
+
+    // ═══════════════════════════════════════════════════════
+    //  PRE-PROMPT INTELIGENTE para notificaciones
+    //  Se muestra SOLO en momentos de alta intención:
+    //    • Tras 30s de navegación activa (no al cargar)
+    //    • Tras marcar 2 ❤️ Me Gusta
+    //    • Tras hacer scroll a la 2ª pantalla
+    //    • Tras abrir 3 detalles de productos
+    //
+    //  NO se muestra si:
+    //    • Ya tiene permiso granted
+    //    • Está denied (no se puede repreguntar el nativo)
+    //    • El usuario dijo "Ahora no" hace menos de X días
+    // ═══════════════════════════════════════════════════════
+    let _bannerYaMostrado = false;
+    function _mostrarBannerPushAhora() {
+        if (_bannerYaMostrado) return;
+        if (!('Notification' in window)) return;
+
+        // Si ya tiene permiso concedido, no molestar
+        if (Notification.permission === 'granted') return;
+
+        // Si el usuario cerró el banner antes, esperar el tiempo configurado
+        const pospuesto = parseInt(localStorage.getItem('tm_push_pospuesto') || '0');
+        if (Date.now() < pospuesto) return;
+
+        _bannerYaMostrado = true;
+
+        // Eliminar banner anterior si existe
+        const anterior = document.getElementById('tm-push-banner-wrap');
+        if (anterior) anterior.remove();
+
+        // Mensaje según el estado del permiso
+        const estaDenegado = Notification.permission === 'denied';
+        const titulo  = estaDenegado ? '🔔 Notificaciones bloqueadas' : '🔔 ¿Quieres avisos de ofertas?';
+        const cuerpo  = estaDenegado
+            ? 'Para reactivarlas: tres puntos del navegador → Ajustes → Notificaciones → Permitir'
+            : 'Te avisamos cuando bajen los precios o lleguen productos nuevos. Sin spam.';
+        const btnTexto = estaDenegado ? 'Cómo activarlas' : '🔔 Avísame';
+
+        const b = document.createElement('div');
+        b.id = 'tm-push-banner-wrap';
+        b.innerHTML = `<div id="tm-push-banner" style="background:#1a1a1a;border:1.5px solid #C9A96E;border-radius:14px;padding:14px 18px;display:flex;align-items:center;gap:12px;box-shadow:0 8px 32px rgba(0,0,0,0.5);font-family:sans-serif;animation:slideUpBanner .35s ease"><span style="font-size:26px;flex-shrink:0">🔔</span><div style="flex:1;min-width:0"><div style="font-weight:700;font-size:14px;color:#C9A96E;margin-bottom:2px">${escapeHtml(titulo)}</div><div style="font-size:12px;color:#aaa;line-height:1.3">${escapeHtml(cuerpo)}</div></div><div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0"><button id="tm-push-si" style="background:#C9A96E;color:#000;border:none;border-radius:8px;padding:7px 12px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap">${escapeHtml(btnTexto)}</button><button id="tm-push-no" style="background:none;border:none;color:#666;font-size:11px;cursor:pointer;text-align:center">Ahora no</button></div></div>`;
+        if (!document.getElementById('slideUpBannerStyle')) {
+            const s = document.createElement('style');
+            s.id = 'slideUpBannerStyle';
+            s.textContent = '@keyframes slideUpBanner{from{opacity:0;transform:translateX(-50%) translateY(20px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}';
+            document.head.appendChild(s);
+        }
+        document.body.appendChild(b);
+
+        document.getElementById('tm-push-si').onclick = async () => {
+            b.remove();
+            if (estaDenegado) {
+                // Mostrar guía para Android
+                alert('Para activar las notificaciones:\n\n1. Toca los 3 puntos del navegador\n2. Ajustes → Configuración del sitio\n3. Notificaciones → Permitir');
+                return;
+            }
+            const perm = await Notification.requestPermission();
+            if (perm === 'granted') {
+                const reg = await navigator.serviceWorker.ready;
+                reg.showNotification('✅ TiendaMax activado', {
+                    body: 'Te avisaremos de ofertas y productos nuevos.',
+                    icon: '/iconos/icon-192.png',
+                    badge: '/iconos/icon-192.png',
+                    vibrate: [200, 100, 200]
+                });
+                // FIX: registrar token FCM tras conceder permiso.
+                // Cargar config de localStorage o de config.json si no está local.
+                (async () => {
+                    try {
+                        let fbConfig = null;
+                        const raw = localStorage.getItem('firebaseConfig');
+                        if (raw) {
+                            try { fbConfig = JSON.parse(raw); } catch(e) {}
+                        }
+                        if (!fbConfig || !fbConfig.projectId) {
+                            
+                            const r = await fetch('config.json?_=' + Date.now());
+                            if (r.ok) {
+                                const cfg = await r.json();
+                                fbConfig = cfg.firebaseConfig;
+                                if (fbConfig) {
+                                    localStorage.setItem('firebaseConfig', JSON.stringify(fbConfig));
+                                    if (fbConfig.vapidKey) localStorage.setItem('firebaseVapidKey', fbConfig.vapidKey);
+                                }
+                            }
+                        }
+                        if (fbConfig && fbConfig.projectId) {
+                            
+                            inicializarFirebaseFCMClient(fbConfig);
+                        } else {
+                            console.error('[FCM] No se pudo cargar firebaseConfig');
+                        }
+                    } catch(e) {
+                        console.error('[FCM] Error iniciando FCM:', e);
+                    }
+                })();
+            } else if (perm === 'denied') {
+                // Si lo denegó ahora, volver a preguntar en 6 horas
+                localStorage.setItem('tm_push_pospuesto', Date.now() + PUSH_BANNER_DENY_DELAY_HOURS * 60 * 60 * 1000);
+            }
+        };
+
+        document.getElementById('tm-push-no').onclick = () => {
+            b.remove();
+            // Pospuesto: cuántas veces lo ha rechazado
+            const rechazos = parseInt(localStorage.getItem('tm_push_rechazos') || '0') + 1;
+            localStorage.setItem('tm_push_rechazos', String(rechazos));
+            // Cada rechazo añade más tiempo de espera
+            const dias = PUSH_RECHAZO_DELAY_DAYS[Math.min(rechazos - 1, PUSH_RECHAZO_DELAY_DAYS.length - 1)];
+            const ms = dias * 24 * 60 * 60 * 1000;
+            localStorage.setItem('tm_push_pospuesto', String(Date.now() + ms));
+            console.log('[push] Rechazo #' + rechazos + ' — re-preguntará en ' + dias + ' días');
+        };
+    }
+
+    // Disparadores de momento correcto
+    function _maybeMostrarPushBanner(razon) {
+        if (_bannerYaMostrado) return;
+        if (!('Notification' in window) || Notification.permission === 'granted') return;
+        console.log('[push] Trigger:', razon);
+        _mostrarBannerPushAhora();
+    }
+
+    // Trigger 1: después de 45 segundos de navegación
+    setTimeout(() => _maybeMostrarPushBanner('45s navegando'), PUSH_BANNER_DELAY_MS);
+
+    // Trigger 2: tras hacer scroll a la 2ª pantalla
+    let _scrolled = false;
+    window.addEventListener('scroll', function onScroll() {
+        if (_scrolled) return;
+        if (window.scrollY > window.innerHeight * 1.5) {
+            _scrolled = true;
+            window.removeEventListener('scroll', onScroll);
+            setTimeout(() => _maybeMostrarPushBanner('scroll 2ª pantalla'), 1500);
+        }
+    }, { passive: true });
+
+    // Trigger 3: al marcar 2 Me Gusta
+    let _likesContados = parseInt(localStorage.getItem('tm_likes_session') || '0');
+    document.addEventListener('click', function(e) {
+        const btn = e.target.closest('[data-like-id]');
+        if (!btn) return;
+        _likesContados++;
+        localStorage.setItem('tm_likes_session', String(_likesContados));
+        if (_likesContados >= 2) {
+            setTimeout(() => _maybeMostrarPushBanner('2 me gusta'), 2000);
+        }
+    });
+
+    // Trigger 4: tras abrir 3 detalles de productos
+    let _detallesAbiertos = parseInt(localStorage.getItem('tm_detalles_session') || '0');
+    const _origAbrirDetalle = window.abrirDetalleProducto;
+    if (typeof _origAbrirDetalle === 'function') {
+        window.abrirDetalleProducto = function() {
+            _origAbrirDetalle.apply(this, arguments);
+            _detallesAbiertos++;
+            localStorage.setItem('tm_detalles_session', String(_detallesAbiertos));
+            if (_detallesAbiertos >= 3) {
+                setTimeout(() => _maybeMostrarPushBanner('3 detalles abiertos'), 1500);
+            }
+        };
+    }
+
+    window.TiendaMaxPush = {
+        async enviar(titulo, cuerpo, url, imagen) {
+            if (Notification.permission !== 'granted') return;
+            const reg = await navigator.serviceWorker.ready;
+            const opciones = {
+                body: cuerpo,
+                icon: '/iconos/icon-192.png',
+                badge: '/iconos/icon-192.png',
+                data: { url: url || '/' },
+                vibrate: [200, 100, 200],
+                actions: [
+                    { action: 'ver', title: '👀 Ver' },
+                    { action: 'cerrar', title: 'Cerrar' }
+                ],
+                // tag agrupa notificaciones del mismo tipo (solo se muestra la última)
+                tag: 'tm-' + (titulo.substring(0, 20)),
+                renotify: true,
+            };
+            if (imagen) opciones.image = imagen;
+            reg.showNotification(titulo, opciones);
+        },
+        nuevoProducto(nombre, precio, id, imagen) {
+            const url = id ? '/p/producto-' + id + '.html' : '/';
+            this.enviar('🆕 Nuevo en TiendaMax', nombre + ' desde $' + precio + ' USD', url, imagen);
+        },
+        rebaja(nombre, antes, ahora, id, imagen) {
+            const url = id ? '/p/producto-' + id + '.html' : '/';
+            const pct = antes > 0 ? Math.round((antes - ahora) / antes * 100) : 0;
+            const titulo = pct > 0 ? '🏷️ ¡Rebaja -' + pct + '%!' : '🏷️ Bajada de precio';
+            this.enviar(titulo, nombre + ': $' + antes + ' → $' + ahora + ' USD', url, imagen);
+        },
+        relampago(nombre, precio, min) {
+            this.enviar('⚡ ¡Oferta relámpago ' + (min||60) + ' min!', nombre + ' — $' + precio + ' USD');
+        },
+        ofertaDia(nombre, precio, id, imagen) {
+            const url = id ? '/p/producto-' + id + '.html' : '/';
+            this.enviar('☀️ Oferta del día', nombre + ' — Solo hoy: $' + precio + ' USD', url, imagen);
+        },
+        // Métodos para mostrar AGRUPADOS (ej: tras agregar 5 productos)
+        nuevosAgrupados(cantidad) {
+            this.enviar('🆕 ' + cantidad + ' productos nuevos', 'Ven a ver las novedades 🛍️', '/');
+        },
+        rebajasAgrupadas(cantidad) {
+            this.enviar('🏷️ ' + cantidad + ' productos en oferta', '¡Aprovecha antes de que se acaben!', '/');
+        }
+    };
+})();
+
+// ═══════════════════════════════════════════════════════
+//  #4 BADGE "NUEVO" — Productos de los últimos 7 días
+// ═══════════════════════════════════════════════════════
+function esProductoNuevo(producto) {
+    if (!producto || !producto.fechaAgregado) return false;
+    const dias7 = 7 * 24 * 60 * 60 * 1000;
+    return (Date.now() - new Date(producto.fechaAgregado).getTime()) < dias7;
+}
+
+// ═══════════════════════════════════════════════════════
+//  #1 CONVERTIDOR USD → MN
+//  Tasa se carga desde config.json en GitHub (sube a todos)
+//  + 10 MN de margen sobre la tasa base configurada
+// ═══════════════════════════════════════════════════════
+// _monedaActual ya está declarada al inicio del archivo
+
+function getTasaMN() {
+    const base = parseFloat(localStorage.getItem('tasaMN') || '0');
+    return base > 0 ? base + 10 : 0;
+}
+
+// Guardar tasa en GitHub para que todos la vean
+async function guardarTasaEnGitHub(tasaBase) {
+    const user  = localStorage.getItem('githubUser');
+    const repo  = localStorage.getItem('githubRepo');
+    const token = localStorage.getItem('githubToken');
+    if (!user || !repo || !token) return false;
+    try {
+        // Leer config existente antes de escribir para no borrar ofertaDiaId ni otros campos
+        const existing = await fetch(
+            `https://raw.githubusercontent.com/${user}/${repo}/main/config.json?_=${Date.now()}`
+        ).then(r => r.ok ? r.json() : {}).catch(() => ({}));
+        existing.tasaMN      = tasaBase;
+        existing.actualizado = new Date().toISOString();
+        await subirArchivoAGitHub(user, repo, token, 'config.json', existing);
+        return true;
+    } catch(e) { return false; }
+}
+
+// Cargar tasa desde GitHub al iniciar
+async function cargarTasaDesdeGitHub() {
+    const user = localStorage.getItem('githubUser');
+    const repo = localStorage.getItem('githubRepo');
+    try {
+        // Intentar ruta de GitHub raw primero; si no hay credenciales, ruta relativa (GitHub Pages)
+        let cfg = null;
+        if (user && repo) {
+            const res = await fetch(`https://raw.githubusercontent.com/${user}/${repo}/main/config.json?_=${Date.now()}`);
+            if (res.ok) cfg = await res.json();
+        }
+        if (!cfg) {
+            // Fallback: ruta relativa — siempre funciona en GitHub Pages
+            const res = await fetch(`config.json?_=${Date.now()}`);
+            if (res.ok) cfg = await res.json();
+        }
+        if (cfg) {
+            // Cargar tasa MN
+            if (cfg.tasaMN && parseFloat(cfg.tasaMN) > 0) {
+                localStorage.setItem('tasaMN', String(cfg.tasaMN));
+                if (_monedaActual === 'MN') actualizarPreciosMostrados();
+                if (typeof actualizarBurbujaTasa === 'function') actualizarBurbujaTasa();
+                console.log(`✅ Tasa MN cargada desde GitHub: ${cfg.tasaMN} MN/USD`);
+            }
+            // Cargar oferta del día
+            if (cfg.ofertaDiaId) {
+                localStorage.setItem('ofertaDiaId', String(cfg.ofertaDiaId));
+                if (cfg.ofertaDiaTexto) localStorage.setItem('ofertaDiaTexto', cfg.ofertaDiaTexto);
+            }
+            // Cargar configuración de Firebase y arrancar FCM
+            if (cfg.firebaseConfig) {
+                localStorage.setItem('firebaseConfig', JSON.stringify(cfg.firebaseConfig));
+                if (cfg.fcmServerKey) {
+                    localStorage.setItem('fcmServerKey', cfg.fcmServerKey);
+                }
+                if (cfg.firebaseConfig.vapidKey) {
+                    localStorage.setItem('firebaseVapidKey', cfg.firebaseConfig.vapidKey);
+                }
+                inicializarFirebaseFCMClient(cfg.firebaseConfig);
+            }
+            // Siempre verificar el banner (aunque GitHub no tenga ofertaDiaId,
+            // puede haberlo en localStorage de sesiones anteriores)
+            verificarOfertasYMostrarBanner();
+        }
+    } catch(e) {}
+}
+
+function setCurrency(moneda) {
+    _monedaActual = moneda;
+    localStorage.setItem('monedaActual', moneda);
+    // Actualizar botones
+    document.getElementById('curUSD')?.classList.toggle('active', moneda === 'USD');
+    document.getElementById('curMN')?.classList.toggle('active', moneda === 'MN');
+    // Actualizar etiqueta de tasa
+    const tasa = getTasaMN();
+    // tasaLabel está deshabilitado: la tasa se muestra en el botón del toggle
+    const label = document.getElementById('tasaLabel');
+    if (label) { label.textContent = ''; label.style.display = 'none'; }
+    // Actualizar todos los precios visibles
+    actualizarPreciosMostrados();
+}
+
+function formatPrecio(usd) {
+    if (_monedaActual === 'MN') {
+        const tasa = getTasaMN();
+        if (tasa > 0) return `$${Math.round(usd * tasa).toLocaleString()} MN`;
+    }
+    return `$${parseFloat(usd).toFixed(2)} USD`;
+}
+
+function actualizarPreciosMostrados() {
+    // Precios en tarjetas de productos
+    document.querySelectorAll('[data-precio-usd]').forEach(el => {
+        const usd = parseFloat(el.getAttribute('data-precio-usd'));
+        el.textContent = formatPrecio(usd);
+    });
+    // Re-renderizar si es necesario
+    const grid = document.getElementById('productosGrid');
+    if (grid && grid.children.length > 0) {
+        grid.querySelectorAll('.precio-actual').forEach(el => {
+            const usd = parseFloat(el.getAttribute('data-usd') || el.textContent.replace(/[^0-9.]/g, ''));
+            if (!isNaN(usd) && usd > 0) {
+                if (!el.getAttribute('data-usd')) el.setAttribute('data-usd', usd);
+                el.textContent = formatPrecio(usd);
+            }
+        });
+    }
+}
+
+// ── BURBUJA TASA DEL DÍA ──────────────────────────────────────────
+// Muestra una burbuja flotante visible para TODOS con la tasa actual
+function actualizarBurbujaTasa() {
+    const tasa = getTasaMN();
+    let burbuja = document.getElementById('tasaBurbuja');
+    if (!burbuja) {
+        burbuja = document.createElement('div');
+        burbuja.id = 'tasaBurbuja';
+        burbuja.style.cssText = [
+            'position:fixed',
+            'bottom:80px',
+            'right:16px',
+            'z-index:9990',
+            'background:linear-gradient(135deg,#C9A96E,#E8C88A)',
+            'color:#0D0D0D',
+            'font-weight:800',
+            'font-size:12px',
+            'padding:7px 13px',
+            'border-radius:999px',
+            'box-shadow:0 3px 14px rgba(0,0,0,0.35)',
+            'cursor:default',
+            'user-select:none',
+            'display:flex',
+            'align-items:center',
+            'gap:5px',
+            'transition:opacity 0.3s,transform 0.3s',
+            'animation:tasaBurbujaIn 0.4s cubic-bezier(.34,1.56,.64,1) both',
+        ].join(';');
+        burbuja.title = 'Tasa de cambio del día (incluye margen)';
+        // Inyectar keyframe solo una vez
+        if (!document.getElementById('tasaBurbujaStyle')) {
+            const s = document.createElement('style');
+            s.id = 'tasaBurbujaStyle';
+            s.textContent = `
+                @keyframes tasaBurbujaIn {
+                    from { opacity:0; transform:scale(0.6) translateY(12px); }
+                    to   { opacity:1; transform:scale(1) translateY(0); }
+                }
+                #tasaBurbuja:hover { transform:scale(1.06); }
+                @media(max-width:480px){ #tasaBurbuja { bottom:70px; right:10px; font-size:11px; padding:6px 11px; } }
+            `;
+            document.head.appendChild(s);
+        }
+        document.body.appendChild(burbuja);
+    }
+    // Burbuja flotante oculta — la tasa se muestra en la barra del header
+    burbuja.style.display = 'none';
+
+    // Actualizar barra de moneda del navbar
+    const curMNBtn = document.getElementById('curMN');
+    const tasaLabel = document.getElementById('tasaLabel');
+    // Solo actualizar el botón del toggle; el tasaLabel está oculto
+    if (tasa > 0) {
+        if (curMNBtn) curMNBtn.textContent = tasa + ' MN';
+    } else {
+        if (curMNBtn) curMNBtn.textContent = '-- MN';
+    }
+    if (tasaLabel) tasaLabel.style.display = 'none';
+}
+
+// Inicializar barra de moneda al cargar
+document.addEventListener('DOMContentLoaded', () => {
+    // tasaLabel está deshabilitado: la tasa se muestra en el botón del toggle
+    const label = document.getElementById('tasaLabel');
+    if (label) { label.textContent = ''; label.style.display = 'none'; }
+
+    if (_monedaActual === 'MN') {
+        document.getElementById('curUSD')?.classList.remove('active');
+        document.getElementById('curMN')?.classList.add('active');
+    }
+    // Mostrar burbuja y banner si ya hay datos en localStorage
+    actualizarBurbujaTasa();
+    verificarOfertasYMostrarBanner();
+});
+
+// Exponer formatPrecio globalmente para uso en renderizado
+window.tmFormatPrecio = formatPrecio;
+
+
+// ═══════════════════════════════════════════════════════
+//  🔔 INTEGRACIÓN CON FIREBASE CLOUD MESSAGING (FCM)
+// ═══════════════════════════════════════════════════════
+
+async function inicializarFirebaseFCMClient(config) {
+    if (!config || !config.projectId) return;
+    
+    // Evitar doble inicialización si las librerías ya se cargaron y Firebase existe
+    if (window.firebase && firebase.apps.length) {
+        ejecutarInitFCM(config);
+        return;
+    }
+
+    
+    
+    // Cargar SDK dinámicamente de forma ordenada (App -> Messaging)
+    const scriptApp = document.createElement('script');
+    scriptApp.src = 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js';
+    scriptApp.onload = () => {
+        const scriptMsg = document.createElement('script');
+        scriptMsg.src = 'https://www.gstatic.com/firebasejs/10.8.0/firebase-messaging-compat.js';
+        scriptMsg.onload = () => {
+            if (!firebase.apps.length) {
+                firebase.initializeApp(config);
+            }
+            if (firebase.messaging.isSupported()) {
+                ejecutarInitFCM(config);
+            } else {
+                console.warn('[FCM] Este navegador no soporta Firebase Cloud Messaging.');
+            }
+        };
+        document.head.appendChild(scriptMsg);
+    };
+    document.head.appendChild(scriptApp);
+}
+
+function ejecutarInitFCM(config) {
+    try {
+        const messaging = firebase.messaging();
+        // FIX: registrar el SW dedicado de Firebase (firebase-messaging-sw.js)
+        // El SW de TiendaMax (sw.js) NO sirve para FCM — debe ser uno propio.
+        navigator.serviceWorker.register('/firebase-messaging-sw.js', { scope: '/firebase-cloud-messaging-push-scope' })
+            .then(fcmReg => {
+                
+                try { messaging.useServiceWorker(fcmReg); } catch(e) { console.warn('[FCM] useServiceWorker:', e); }
+                if (Notification.permission === 'granted') {
+                    // [FIX] Solo registrar si el usuario NO se desuscribió manualmente
+                    const desuscrito = localStorage.getItem('tm_push_desuscrito') === '1';
+                    if (desuscrito) {
+                        
+                        window._tmFcmPending = { messaging: messaging, config: config, fcmReg: fcmReg };
+                    } else {
+                        
+                        solicitarYRegistrarTokenFCM(messaging, config, fcmReg);
+                    }
+                } else if (Notification.permission === 'default') {
+                    
+                    // Guardar referencias para reintento posterior cuando el usuario permita
+                    window._tmFcmPending = { messaging: messaging, config: config, fcmReg: fcmReg };
+                }
+            })
+            .catch(err => {
+                console.error('[FCM] Error registrando firebase-messaging-sw.js:', err);
+            });
+        
+        // Manejar mensajes en primer plano (Foreground)
+        messaging.onMessage((payload) => {
+            
+            const title = payload.notification?.title || payload.data?.title || '📢 TiendaMax';
+            const body = payload.notification?.body || payload.data?.body || '';
+            const url = payload.data?.url || '/';
+            
+            mostrarNotificacion(title + ': ' + body, 'info');
+        });
+    } catch(err) {
+        console.error('[FCM] Error inicializando FCM:', err);
+    }
+}
+
+// FIX: función reutilizable para registrar token FCM tras permiso concedido.
+// Llamada desde el handler del botón "Avísame" del banner.
+async function tmRegistrarTokenFCMSiPermitido() {
+    if (Notification.permission !== 'granted') return;
+    // Si ya hay FCM iniciado (pending desde init), usar esa referencia
+    if (window._tmFcmPending && window._tmFcmPending.messaging) {
+        const p = window._tmFcmPending;
+        await solicitarYRegistrarTokenFCM(p.messaging, p.config, p.fcmReg);
+        return;
+    }
+    // Si no, inicializar todo desde cero
+    let fbConfig = null;
+    try {
+        const raw = localStorage.getItem('firebaseConfig');
+        if (raw) fbConfig = JSON.parse(raw);
+    } catch(e) {}
+    if (!fbConfig || !fbConfig.projectId) {
+        try {
+            const r = await fetch('config.json?_=' + Date.now());
+            if (r.ok) {
+                const cfg = await r.json();
+                fbConfig = cfg.firebaseConfig;
+                if (fbConfig) localStorage.setItem('firebaseConfig', JSON.stringify(fbConfig));
+            }
+        } catch(e) {
+            console.error('[FCM] Error cargando config:', e);
+        }
+    }
+    if (fbConfig && fbConfig.projectId) {
+        if (typeof inicializarFirebaseFCMClient === 'function') {
+            await inicializarFirebaseFCMClient(fbConfig);
+        }
+    }
+}
+window.tmRegistrarTokenFCMSiPermitido = tmRegistrarTokenFCMSiPermitido;
+
+async function solicitarYRegistrarTokenFCM(messaging, config, fcmReg) {
+    try {
+        const vapidKey = config.vapidKey || localStorage.getItem('firebaseVapidKey');
+        if (!vapidKey) {
+            console.warn('[FCM] No se especificó la clave VAPID. No se puede obtener token.');
+            return;
+        }
+        
+        // FIX: pasar el serviceWorkerRegistration explícitamente a getToken
+        const opts = { vapidKey: vapidKey };
+        if (fcmReg) opts.serviceWorkerRegistration = fcmReg;
+        const token = await messaging.getToken(opts);
+        if (token) {
+            
+            // Guardar en localStorage
+            localStorage.setItem('fcmToken', token);
+            
+            // Registrar token en Firebase Realtime Database
+            const tokenId = btoa(token).replace(/=/g, '').replace(/\+/g, '-').replace(/\//g, '_');
+            const rtdbUrl = config.databaseURL || `https://${config.projectId}-default-rtdb.firebaseio.com`;
+            
+            await fetch(`${rtdbUrl}/tokens/${tokenId}.json`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    token: token,
+                    timestamp: Date.now(),
+                    userAgent: navigator.userAgent
+                })
+            });
+            
+        } else {
+            console.warn('[FCM] No se pudo obtener el token de Firebase.');
+        }
+    } catch (err) {
+        console.error('[FCM] Error al registrar token FCM:', err);
+    }
+}
+
+async function guardarConfigFirebaseAdmin() {
+    const jsonInput = document.getElementById('firebaseConfigJson');
+    const vapidInput = document.getElementById('firebaseVapidKey');
+    const serverInput = document.getElementById('firebaseServerKey');
+    const status = document.getElementById('firebaseConfigStatus');
+    
+    if (!jsonInput || !vapidInput) return;
+    
+    const rawJson = jsonInput.value.trim();
+    const vapidKey = vapidInput.value.trim();
+    const serverKey = serverInput.value.trim();
+    
+    if (!rawJson) {
+        if (status) status.textContent = '⚠️ El JSON de configuración de Firebase es requerido.';
+        return;
+    }
+    if (!vapidKey) {
+        if (status) status.textContent = '⚠️ La Clave VAPID de Web Push es requerida.';
+        return;
+    }
+    
+    let parsedConfig = null;
+    try {
+        let text = rawJson.replace(/\xa0/g, ' ').trim();
+        // Limpiar declaraciones si copiaron el código entero
+        text = text.replace(/^(const|let|var)\s+\w+\s*=\s*/, '');
+        text = text.replace(/;$/, '');
+        // Parseo seguro: intentar JSON.parse después de normalizar claves sin comillas
+        let jsonText = text;
+        // Si parece un objeto JS (claves sin comillas), añadir comillas
+        if (!/^\s*\{[\s\S]*\}\s*$/.test(jsonText)) {
+            throw new Error('Configuración no es un objeto');
+        }
+        // claves sin comillas -> con comillas
+        jsonText = jsonText.replace(/([\{,]\s*)([A-Za-z_$][\w$]*)\s*:/g, '$1"$2":');
+        // comillas simples -> dobles (solo valores tipo string)
+        jsonText = jsonText.replace(/'([^'\\]*)'/g, '"$1"');
+        // Quitar comas finales antes de } o ]
+        jsonText = jsonText.replace(/,(\s*[\}\]])/g, '$1');
+        parsedConfig = JSON.parse(jsonText);
+    } catch (e) {
+        console.warn('[FCM] Falló parseo JSON, intentando fallback regex...', e);
+    }
+    
+    // Fallback robusto con Regex si falló o si tiene URLs con enlaces Markdown de chats
+    let fallbackUsed = false;
+    if (!parsedConfig || typeof parsedConfig !== 'object' || !parsedConfig.projectId) {
+        fallbackUsed = true;
+        parsedConfig = {};
+        const lines = rawJson.split('\n');
+        for (const line of lines) {
+            const cleanLine = line.replace(/\xa0/g, ' ').trim();
+            // Buscar patron clave: "valor" o clave: 'valor' o clave: valor (sin comillas para números)
+            const match = cleanLine.match(/(\w+)\s*:\s*["']?([^"',\s\}]+)["']?/);
+            if (match) {
+                const key = match[1];
+                let val = match[2];
+                // Limpiar enlaces de chat tipo [texto](url)
+                if (val.includes('[') && val.includes(']')) {
+                    const cleanMatch = val.match(/\[([^\]]+)\]/);
+                    if (cleanMatch) val = cleanMatch[1];
+                }
+                parsedConfig[key] = val;
+            }
+        }
+    }
+    
+    if (!parsedConfig || typeof parsedConfig !== 'object' || !parsedConfig.projectId) {
+        if (status) {
+            status.textContent = '❌ Error: Configuración inválida o falta el campo "projectId". Contenido parseado: ' + JSON.stringify(parsedConfig);
+        }
+        return;
+    }
+    
+    // Guardar vapidKey dentro del objeto de configuración para consistencia
+    parsedConfig.vapidKey = vapidKey;
+    
+    localStorage.setItem('firebaseConfig', JSON.stringify(parsedConfig));
+    localStorage.setItem('firebaseVapidKey', vapidKey);
+    if (serverKey) {
+        localStorage.setItem('fcmServerKey', serverKey);
+    } else {
+        localStorage.removeItem('fcmServerKey');
+    }
+    
+    if (status) status.textContent = '⏳ Guardando y subiendo a GitHub...';
+    
+    const user = localStorage.getItem('githubUser');
+    const repo = localStorage.getItem('githubRepo');
+    const token = localStorage.getItem('githubToken');
+    
+    if (!user || !repo || !token) {
+        if (status) status.textContent = '⚠️ Guardado localmente en navegador. Para sincronizar globalmente con GitHub, configura tus credenciales arriba.';
+        inicializarFirebaseFCMClient(parsedConfig);
+        return;
+    }
+    
+    try {
+        const existing = await fetch(
+            `https://raw.githubusercontent.com/${user}/${repo}/main/config.json?_=${Date.now()}`
+        ).then(r => r.ok ? r.json() : {}).catch(() => ({}));
+        
+        existing.firebaseConfig = parsedConfig;
+        delete existing.fcmServerKey; // no subir server key a GitHub
+        existing.actualizado = new Date().toISOString();
+        
+        await subirArchivoAGitHub(user, repo, token, 'config.json', existing);
+        if (status) status.textContent = '✅ ¡Guardado y sincronizado con GitHub con éxito!';
+        mostrarNotificacion('✅ Configuración de Firebase guardada y sincronizada.', 'success');
+        inicializarFirebaseFCMClient(parsedConfig);
+    } catch (e) {
+        console.error(e);
+        if (status) status.textContent = '❌ Error: ' + e.message;
+    }
+}
+
+async function enviarPushManualAdmin() {
+    const title = document.getElementById('manualPushTitle').value.trim();
+    const body = document.getElementById('manualPushBody').value.trim();
+    const url = document.getElementById('manualPushUrl').value.trim();
+    const status = document.getElementById('manualPushStatus');
+    
+    if (!title || !body) {
+        if (status) status.textContent = '⚠️ Título y cuerpo son requeridos.';
+        return;
+    }
+    
+    const serverKey = localStorage.getItem('fcmServerKey');
+    const fbConfigRaw = localStorage.getItem('firebaseConfig');
+    if (!serverKey || !fbConfigRaw) {
+        if (status) status.textContent = '⚠️ Configura Firebase y guarda la Clave de Servidor primero.';
+        return;
+    }
+    
+    const fbConfig = JSON.parse(fbConfigRaw);
+    const rtdbUrl = fbConfig.databaseURL || `https://${fbConfig.projectId}-default-rtdb.firebaseio.com`;
+    
+    if (status) status.textContent = '⏳ Buscando suscriptores en Firebase...';
+    
+    try {
+        const res = await fetch(`${rtdbUrl}/tokens.json`);
+        if (!res.ok) {
+            if (status) status.textContent = '❌ No se pudo conectar a Realtime Database.';
+            return;
+        }
+        
+        const tokensData = await res.json();
+        if (!tokensData) {
+            if (status) status.textContent = '⚠️ No hay ningún suscriptor registrado todavía.';
+            return;
+        }
+        
+        const tokens = Object.values(tokensData).map(t => t.token).filter(Boolean);
+        if (tokens.length === 0) {
+            if (status) status.textContent = '⚠️ No se encontraron tokens válidos.';
+            return;
+        }
+        
+        if (status) status.textContent = `⏳ Enviando a ${tokens.length} suscriptores...`;
+        
+        const response = await fetch('https://fcm.googleapis.com/fcm/send', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `key=${serverKey}`
+            },
+            body: JSON.stringify({
+                registration_ids: tokens,
+                notification: {
+                    title: title,
+                    body: body,
+                    icon: '/iconos/icon-192.png',
+                    click_action: window.location.origin + (url || '/')
+                },
+                data: {
+                    url: url || '/'
+                }
+            })
+        });
+        
+        if (response.ok) {
+            const resData = await response.json();
+            if (status) status.textContent = `✅ Enviado. Éxitos: ${resData.success || 0}, Fallos: ${resData.failure || 0}`;
+            
+            // Limpiar tokens obsoletos
+            if (resData.results) {
+                const keysToDelete = Object.keys(tokensData);
+                for (let i = 0; i < resData.results.length; i++) {
+                    const result = resData.results[i];
+                    if (result.error === 'NotRegistered' || result.error === 'InvalidRegistration') {
+                        const tokenKey = keysToDelete[i];
+                        fetch(`${rtdbUrl}/tokens/${tokenKey}.json`, { method: 'DELETE' }).catch(() => null);
+                    }
+                }
+            }
+        } else {
+            if (status) status.textContent = `❌ Error en el envío FCM: ${response.status} ${response.statusText}`;
+        }
+    } catch (e) {
+        console.error(e);
+        if (status) status.textContent = '❌ Error de conexión o credenciales inválidas.';
+    }
+}
+
+window.tmMonedaActual = () => _monedaActual;
+
+// Cargar tasa actualizada desde GitHub al iniciar
+cargarTasaDesdeGitHub();
+
+// Guardar tasa desde panel admin → localStorage + GitHub
+async function guardarTasaMNAdmin() {
+    const input = document.getElementById('adminTasaMN');
+    const status = document.getElementById('tasaMNStatus');
+    if (!input) return;
+    const val = parseFloat(input.value);
+    if (!val || val < 1) {
+        if (status) status.textContent = '⚠️ Ingresa un valor válido';
+        return;
+    }
+    localStorage.setItem('tasaMN', String(val));
+    if (status) status.textContent = '💾 Guardado localmente...';
+    // Subir a GitHub para que todos lo vean
+    const ok = await guardarTasaEnGitHub(val);
+    if (status) {
+        status.textContent = ok
+            ? `✅ Tasa ${val} MN/USD subida a GitHub. Clientes verán ${val + 10} MN/USD.`
+            : '✅ Guardado local. Configura GitHub para sincronizar con todos.';
+        status.style.color = ok ? '#2ECC71' : '#C9A96E';
+    }
+    // Actualizar precios en pantalla y burbuja de tasa
+    if (_monedaActual === 'MN') actualizarPreciosMostrados();
+    if (typeof actualizarBurbujaTasa === 'function') actualizarBurbujaTasa();
+}
+
+
+
+// ═══════════════════════════════════════════════════════
+//  PARCHE DE ESTABILIDAD 2026-05-23
+//  - Moneda robusta
+//  - Grid de productos consistente
+//  - Vistos recientes reactivado
+// ═══════════════════════════════════════════════════════
+(function () {
+    function tmGetOfertaId() {
+        return typeof getOfertaDiaId === 'function' ? getOfertaDiaId() : null;
+    }
+
+    function tmFiltrarProductosActuales() {
+        let lista = Array.isArray(productos) ? productos.slice() : [];
+
+        if (typeof categoriaSeleccionada !== 'undefined' && categoriaSeleccionada !== 'Todas') {
+            lista = lista.filter(p => p.categoria === categoriaSeleccionada);
+        }
+        if (typeof categoriaSeleccionada !== 'undefined' && categoriaSeleccionada !== 'Todas' && typeof subcategoriaSeleccionada !== 'undefined' && subcategoriaSeleccionada && subcategoriaSeleccionada !== 'Todas') {
+            lista = lista.filter(p => p.subcategoria === subcategoriaSeleccionada);
+        }
+        if (typeof _heroSearchActivo !== 'undefined' && _heroSearchActivo) {
+            const q = _heroSearchActivo;
+            lista = lista.filter(p =>
+                (p.nombre || '').toLowerCase().includes(q) ||
+                (p.descripcion || '').toLowerCase().includes(q) ||
+                (p.categoria || '').toLowerCase().includes(q) ||
+                (p.subcategoria || '').toLowerCase().includes(q)
+            );
+        }
+
+        const ofertaId = tmGetOfertaId();
+        if (ofertaId) {
+            lista.sort((a, b) => {
+                if (String(a.id) === String(ofertaId)) return -1;
+                if (String(b.id) === String(ofertaId)) return 1;
+                return 0;
+            });
+        }
+
+        if (typeof productosVisibleCount === 'number' && Number.isFinite(productosVisibleCount)) {
+            lista = lista.slice(0, productosVisibleCount);
+        }
+        return lista;
+    }
+
+    function tmPostProcesarGridProductos() {
+        const grid = document.getElementById('productosGrid');
+        if (!grid) return;
+
+        const lista = tmFiltrarProductosActuales();
+        const cards = Array.from(grid.querySelectorAll('.producto-card'));
+
+        cards.forEach((card, index) => {
+            const producto = lista[index];
+            if (!producto) return;
+            card.dataset.productId = String(producto.id);
+
+            card.querySelectorAll('.precio-actual').forEach(el => {
+                el.setAttribute('data-usd', String(producto.precioActual));
+                el.textContent = typeof formatPrecio === 'function'
+                    ? formatPrecio(producto.precioActual)
+                    : ('$' + Number(producto.precioActual).toFixed(2) + ' USD');
+            });
+
+            if (producto.stock > 0 && producto.stock <= 3 && !card.querySelector('.badge-stock-urgente')) {
+                const badge = document.createElement('div');
+                badge.className = 'badge-stock-urgente';
+                badge.textContent = '⚡ Últimas ' + producto.stock;
+                badge.style.cssText = 'position:absolute;top:8px;left:8px;background:linear-gradient(135deg,#e74c3c,#c0392b);color:white;font-size:10px;font-weight:800;padding:3px 8px;border-radius:20px;box-shadow:0 2px 6px rgba(231,76,60,.4);z-index:3;letter-spacing:0.3px;';
+                card.style.position = 'relative';
+                card.appendChild(badge);
+            }
+
+            const vistas = typeof obtenerVistasProd === 'function' ? (obtenerVistasProd(producto.id) || 0) : 0;
+            if (vistas >= 10 && !card.querySelector('.badge-vistas-pub')) {
+                const vBadge = document.createElement('div');
+                vBadge.className = 'badge-vistas-pub';
+                vBadge.innerHTML = '👁️ ' + (vistas >= 1000 ? (vistas / 1000).toFixed(1) + 'k' : vistas);
+                vBadge.style.cssText = 'position:absolute;bottom:54px;right:8px;background:rgba(0,0,0,0.55);backdrop-filter:blur(4px);color:white;font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;z-index:3;';
+                card.appendChild(vBadge);
+            }
+
+            if (typeof esProductoNuevo === 'function' && esProductoNuevo(producto) && !card.querySelector('.badge-nuevo')) {
+                const badgeNuevo = document.createElement('div');
+                badgeNuevo.className = 'badge-nuevo';
+                badgeNuevo.textContent = 'NUEVO';
+                const imgWrap = card.querySelector('.producto-image');
+                if (imgWrap) imgWrap.appendChild(badgeNuevo);
+            }
+        });
+    }
+
+    function tmMasVendidosActuales() {
+        const lista = productos.filter(p => (p.masVendido === true || p.masVendido === 'true') && p.stock > 0);
+        return lista.length > 0 ? lista : productos.filter(p => p.stock > 0).slice(0, 3);
+    }
+
+    function tmPostProcesarMasVendidos() {
+        const grid = document.getElementById('masVendidosGrid');
+        if (!grid) return;
+        const lista = tmMasVendidosActuales();
+        const cards = Array.from(grid.querySelectorAll('.producto-card'));
+        const cd = typeof getActiveCountdown === 'function' ? getActiveCountdown() : null;
+
+        cards.forEach((card, index) => {
+            const producto = lista[index];
+            if (!producto) return;
+            card.dataset.productId = String(producto.id);
+            card.querySelectorAll('.precio-actual').forEach(el => {
+                el.setAttribute('data-usd', String(producto.precioActual));
+                el.textContent = typeof formatPrecio === 'function'
+                    ? formatPrecio(producto.precioActual)
+                    : ('$' + Number(producto.precioActual).toFixed(2) + ' USD');
+            });
+
+            if (producto.stock === 0) {
+                const stockCount = card.querySelector('.stock-count span');
+                if (stockCount) stockCount.textContent = '❌ Producto agotado';
+                const stockBar = card.querySelector('.stock-bar-fill');
+                if (stockBar) stockBar.style.width = '8%';
+                const btn = card.querySelector('.btn-pedir-card');
+                if (btn) {
+                    btn.textContent = 'No disponible';
+                    btn.disabled = true;
+                    btn.style.opacity = '0.6';
+                    btn.style.cursor = 'not-allowed';
+                }
+            }
+
+            if (cd && String(cd.productId) === String(producto.id) && !card.querySelector('.producto-countdown') && typeof renderCountdownHtml === 'function') {
+                const btn = card.querySelector('.btn-pedir-card');
+                if (btn) {
+                    const wrap = document.createElement('div');
+                    wrap.innerHTML = renderCountdownHtml(producto.id);
+                    if (wrap.firstElementChild) card.insertBefore(wrap.firstElementChild, btn);
+                }
+            }
+        });
+
+        if (typeof iniciarCountdownsActivos === 'function') {
+            setTimeout(iniciarCountdownsActivos, 50);
+        }
+    }
+
+    const _tmRenderProductosPrev = renderizarProductos;
+    renderizarProductos = function () {
+        _tmRenderProductosPrev.apply(this, arguments);
+        tmPostProcesarGridProductos();
+        if (typeof iniciarCountdownsActivos === 'function') setTimeout(iniciarCountdownsActivos, 50);
+        if (typeof initScrollAnimations === 'function') setTimeout(initScrollAnimations, 20);
+    };
+
+    const _tmRenderMasVendidosPrev = renderizarMasVendidos;
+    renderizarMasVendidos = function () {
+        _tmRenderMasVendidosPrev.apply(this, arguments);
+        tmPostProcesarMasVendidos();
+    };
+
+    actualizarPreciosMostrados = function () {
+        document.querySelectorAll('.precio-actual').forEach(el => {
+            let usd = parseFloat(el.getAttribute('data-usd') || '');
+            if (!Number.isFinite(usd)) {
+                const card = el.closest('.producto-card');
+                const productId = card && card.dataset ? card.dataset.productId : '';
+                const producto = productId ? productos.find(p => String(p.id) === String(productId)) : null;
+                if (producto) {
+                    usd = Number(producto.precioActual);
+                    el.setAttribute('data-usd', String(usd));
+                }
+            }
+            if (Number.isFinite(usd)) {
+                el.textContent = typeof formatPrecio === 'function'
+                    ? formatPrecio(usd)
+                    : ('$' + usd.toFixed(2) + ' USD');
+            }
+        });
+
+        const detailPrice = document.getElementById('detailPriceActual');
+        if (detailPrice && _detalleProductoActual) {
+            detailPrice.setAttribute('data-usd', String(_detalleProductoActual.precioActual));
+            detailPrice.textContent = typeof formatPrecio === 'function'
+                ? formatPrecio(_detalleProductoActual.precioActual)
+                : ('$' + Number(_detalleProductoActual.precioActual).toFixed(2) + ' USD');
+        }
+    };
+
+    // (FIX) Override eliminado: ahora renderizarRecientes funciona de verdad
+    // y muestra los productos vistos en home y en detalle.
+
+    document.addEventListener('DOMContentLoaded', function () {
+        setTimeout(function () {
+            if (typeof renderizarRecientes === 'function') renderizarRecientes();
+            if (typeof actualizarPreciosMostrados === 'function') actualizarPreciosMostrados();
+            if (typeof actualizarBadgeStockBajo === 'function') actualizarBadgeStockBajo();
+            if (typeof initScrollAnimations === 'function') initScrollAnimations();
+            if (typeof verificarEstadoBackend === 'function') verificarEstadoBackend();
+            if (typeof cargarEstadoPublicacion === 'function') cargarEstadoPublicacion();
+        }, 150);
+    });
+})();
+
+
+
+
+// === Soporte para shortcut "?admin=1" del manifest PWA ===
+(function() {
+    try {
+        const params = new URLSearchParams(location.search);
+        if (params.get('admin') === '1') {
+            setTimeout(() => {
+                if (typeof abrirLoginAdmin === 'function') abrirLoginAdmin();
+            }, 600);
+        }
+    } catch(e) {}
+})();
+
+
+// === popstate: cerrar modal de producto al pulsar "Atrás" del navegador/móvil ===
+window.addEventListener('popstate', function() {
+    const modal = document.getElementById('productDetailModal');
+    if (modal && !modal.classList.contains('hidden')) {
+        // FIX: el nombre correcto es cerrarDetalleModal, no cerrarDetalleProducto
+        if (typeof cerrarDetalleModal === 'function') {
+            cerrarDetalleModal();
+        } else {
+            modal.classList.add('hidden');
+            document.body.style.overflow = '';
+            if (typeof _detalleProductoActual !== 'undefined') _detalleProductoActual = null;
+        }
+    }
+});
+
+// ═══════════════════════════════════════════════════════════
+//  🔔 PANEL DE CONTROL DE NOTIFICACIONES (modal con ON/OFF)
+//
+//  Funciones expuestas globalmente:
+//    - abrirModalNotificaciones()
+//    - cerrarModalNotificaciones()
+//    - toggleNotificacionesTM()
+//
+//  Estado:
+//    - 'granted'   → permiso concedido, hay token, ACTIVO
+//    - 'denied'    → bloqueado por usuario (no se puede repedir)
+//    - 'default'   → nunca decidió
+//    - 'no-token'  → permiso OK pero sin token registrado
+// ═══════════════════════════════════════════════════════════
+
+(function tmPanelNotificaciones() {
+    'use strict';
+
+    let _estadoActual = 'desconocido';
+
+    // Detecta el estado actual de notificaciones
+    function detectarEstadoNotif() {
+        if (!('Notification' in window)) return 'no-soporta';
+        if (Notification.permission === 'denied') return 'bloqueado';
+        if (Notification.permission === 'default') return 'sin-decidir';
+        // permission === 'granted'
+        const tokenLocal = localStorage.getItem('fcmToken');
+        if (!tokenLocal) return 'sin-token';
+        return 'activo';
+    }
+
+    // Actualiza el ícono del header según el estado
+    function actualizarIconoHeader() {
+        const btn = document.getElementById('notifHeaderBtn');
+        const icon = document.getElementById('notifHeaderIcon');
+        if (!btn) return;
+
+        const estado = detectarEstadoNotif();
+        _estadoActual = estado;
+
+        btn.classList.remove('activo', 'desactivado', 'bloqueado');
+
+        // SVG del ícono según estado
+        if (estado === 'activo') {
+            btn.classList.add('activo');
+            btn.title = 'Notificaciones activas (toca para gestionar)';
+            // Campana rellena con onda
+            if (icon) icon.innerHTML = '<path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/><circle cx="18" cy="6" r="3" fill="#25d366" stroke="#0e0e12" stroke-width="1.5"/>';
+        } else if (estado === 'bloqueado') {
+            btn.classList.add('bloqueado');
+            btn.title = 'Notificaciones bloqueadas (toca para ver cómo activarlas)';
+            // Campana tachada
+            if (icon) icon.innerHTML = '<path d="M13.73 21a2 2 0 0 1-3.46 0"/><path d="M18.63 13A17.89 17.89 0 0 1 18 8"/><path d="M6.26 6.26A5.86 5.86 0 0 0 6 8c0 7-3 9-3 9h14"/><path d="M18 8a6 6 0 0 0-9.33-5"/><line x1="1" y1="1" x2="23" y2="23"/>';
+        } else {
+            btn.classList.add('desactivado');
+            btn.title = 'Activar notificaciones';
+            if (icon) icon.innerHTML = '<path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>';
+        }
+    }
+
+    // Abre el modal y actualiza el estado mostrado
+    window.abrirModalNotificaciones = function() {
+        const overlay = document.getElementById('notifModalOverlay');
+        if (!overlay) return;
+        overlay.classList.add('activo');
+        document.body.style.overflow = 'hidden';
+        actualizarModalNotif();
+    };
+
+    window.cerrarModalNotificaciones = function() {
+        const overlay = document.getElementById('notifModalOverlay');
+        if (!overlay) return;
+        overlay.classList.remove('activo');
+        document.body.style.overflow = '';
+    };
+
+    // Refresca el contenido del modal según estado
+    function actualizarModalNotif() {
+        const estado = detectarEstadoNotif();
+        _estadoActual = estado;
+
+        const box      = document.getElementById('notifEstadoBox');
+        const icono    = document.getElementById('notifEstadoIcono');
+        const texto    = document.getElementById('notifEstadoTexto');
+        const subtexto = document.getElementById('notifEstadoSubtexto');
+        const boton    = document.getElementById('notifBotonAccion');
+        const infoBlock = document.getElementById('notifModalInfoBloqueado');
+
+        if (!box || !boton) return;
+
+        box.classList.remove('desactivado', 'bloqueado');
+        infoBlock.style.display = 'none';
+
+        if (estado === 'no-soporta') {
+            icono.textContent = '⚠️';
+            texto.textContent = 'No soportado';
+            subtexto.textContent = 'Tu navegador no soporta notificaciones push.';
+            boton.textContent = 'Cerrar';
+            boton.onclick = cerrarModalNotificaciones;
+            boton.classList.add('desactivar');
+            box.classList.add('bloqueado');
+            return;
+        }
+
+        if (estado === 'bloqueado') {
+            box.classList.add('bloqueado');
+            icono.textContent = '🚫';
+            texto.textContent = 'Bloqueadas en el navegador';
+            subtexto.textContent = 'Tienes que reactivarlas desde ajustes del navegador.';
+            boton.textContent = 'Entendido';
+            boton.onclick = cerrarModalNotificaciones;
+            boton.classList.add('desactivar');
+            infoBlock.style.display = 'block';
+            return;
+        }
+
+        if (estado === 'activo') {
+            icono.textContent = '🔔';
+            texto.textContent = 'Notificaciones ACTIVAS';
+            subtexto.textContent = 'Recibirás ofertas, productos nuevos y cambios de tasa';
+            boton.textContent = '🔕 Desactivar notificaciones';
+            boton.classList.add('desactivar');
+            boton.onclick = toggleNotificacionesTM;
+            return;
+        }
+
+        // sin-decidir o sin-token
+        box.classList.add('desactivado');
+        icono.textContent = '🔕';
+        texto.textContent = 'Notificaciones APAGADAS';
+        subtexto.textContent = 'Te estás perdiendo las ofertas relámpago 🔥';
+        boton.textContent = '🔔 Activar notificaciones';
+        boton.classList.remove('desactivar');
+        boton.onclick = toggleNotificacionesTM;
+    }
+
+    // Toggle: activa o desactiva según estado actual
+    window.toggleNotificacionesTM = async function() {
+        const boton = document.getElementById('notifBotonAccion');
+        const estado = detectarEstadoNotif();
+
+        if (estado === 'no-soporta' || estado === 'bloqueado') {
+            cerrarModalNotificaciones();
+            return;
+        }
+
+        if (estado === 'activo') {
+            // ─── DESACTIVAR ───
+            boton.disabled = true;
+            boton.textContent = '⏳ Desactivando...';
+            try {
+                await desuscribirFCM();
+                if (typeof mostrarNotificacion === 'function') {
+                    mostrarNotificacion('🔕 Notificaciones desactivadas', 'info');
+                }
+            } catch (e) {
+                console.error('[notif] Error desuscribiendo:', e);
+                if (typeof mostrarNotificacion === 'function') {
+                    mostrarNotificacion('⚠️ Error al desactivar: ' + e.message, 'error');
+                }
+            }
+            boton.disabled = false;
+            actualizarModalNotif();
+            actualizarIconoHeader();
+            return;
+        }
+
+        // ─── ACTIVAR ───
+        boton.disabled = true;
+        boton.textContent = '⏳ Activando...';
+
+        try {
+            // [FIX] El usuario activa voluntariamente — limpiar flag de desuscripción manual
+            localStorage.removeItem('tm_push_desuscrito');
+            // Notificar al SW para que limpie el flag en IndexedDB
+            try {
+                const swReg = await navigator.serviceWorker.ready;
+                if (swReg && swReg.active) swReg.active.postMessage({ type: 'TM_CLEAR_DESUSCRITO' });
+            } catch(e) {}
+
+            // Pedir permiso del navegador si aún no está concedido
+            if (Notification.permission !== 'granted') {
+                const perm = await Notification.requestPermission();
+                if (perm === 'denied') {
+                    if (typeof mostrarNotificacion === 'function') {
+                        mostrarNotificacion('🚫 Bloqueado. Ve a ajustes del navegador.', 'error');
+                    }
+                    actualizarModalNotif();
+                    actualizarIconoHeader();
+                    boton.disabled = false;
+                    return;
+                }
+                if (perm !== 'granted') {
+                    boton.disabled = false;
+                    actualizarModalNotif();
+                    return;
+                }
+            }
+
+            // Inicializar FCM y registrar token
+            if (typeof tmRegistrarTokenFCMSiPermitido === 'function') {
+                await tmRegistrarTokenFCMSiPermitido();
+            } else if (typeof inicializarFirebaseFCMClient === 'function') {
+                let fbConfig = null;
+                try {
+                    const raw = localStorage.getItem('firebaseConfig');
+                    if (raw) fbConfig = JSON.parse(raw);
+                } catch(e) {}
+                if (!fbConfig || !fbConfig.projectId) {
+                    const r = await fetch('config.json?_=' + Date.now());
+                    if (r.ok) {
+                        const cfg = await r.json();
+                        fbConfig = cfg.firebaseConfig;
+                        if (fbConfig) localStorage.setItem('firebaseConfig', JSON.stringify(fbConfig));
+                    }
+                }
+                if (fbConfig && fbConfig.projectId) {
+                    await inicializarFirebaseFCMClient(fbConfig);
+                }
+            }
+
+            // Esperar un poquito a que el token se guarde
+            await new Promise(r => setTimeout(r, 1500));
+
+            const nuevoEstado = detectarEstadoNotif();
+            if (nuevoEstado === 'activo') {
+                if (typeof mostrarNotificacion === 'function') {
+                    mostrarNotificacion('🔔 ¡Notificaciones activadas!', 'success');
+                }
+                // Mostrar push de bienvenida local
+                try {
+                    const reg = await navigator.serviceWorker.ready;
+                    reg.showNotification('✅ TiendaMax activado', {
+                        body: 'Te avisaremos de ofertas y productos nuevos.',
+                        icon: '/iconos/icon-192.png',
+                        badge: '/iconos/icon-192.png',
+                        vibrate: [200, 100, 200],
+                        tag: 'tm-bienvenida'
+                    });
+                } catch(e) {}
+            } else {
+                if (typeof mostrarNotificacion === 'function') {
+                    mostrarNotificacion('⚠️ No se pudo completar. Reintenta.', 'error');
+                }
+            }
+        } catch(e) {
+            console.error('[notif] Error activando:', e);
+            if (typeof mostrarNotificacion === 'function') {
+                mostrarNotificacion('❌ Error: ' + e.message, 'error');
+            }
+        }
+
+        boton.disabled = false;
+        actualizarModalNotif();
+        actualizarIconoHeader();
+    };
+
+    // Desuscribir: borra token de Firebase RTDB + revoca FCM
+    async function desuscribirFCM() {
+        const tokenLocal = localStorage.getItem('fcmToken');
+
+        // 1. Borrar de Firebase Realtime Database
+        if (tokenLocal) {
+            try {
+                let fbConfig = null;
+                const raw = localStorage.getItem('firebaseConfig');
+                if (raw) fbConfig = JSON.parse(raw);
+                if (!fbConfig) {
+                    const r = await fetch('config.json?_=' + Date.now());
+                    if (r.ok) fbConfig = (await r.json()).firebaseConfig;
+                }
+                if (fbConfig && fbConfig.databaseURL) {
+                    const tokenId = btoa(tokenLocal).replace(/=/g,'').replace(/\+/g,'-').replace(/\//g,'_');
+                    const url = fbConfig.databaseURL + '/tokens/' + tokenId + '.json';
+                    await fetch(url, { method: 'DELETE' });
+                    console.log('[notif] Token borrado de Firebase RTDB');
+                }
+            } catch(e) {
+                console.warn('[notif] Error borrando token de RTDB:', e);
+            }
+        }
+
+        // 2. Borrar de localStorage
+        localStorage.removeItem('fcmToken');
+        // [FIX] Marcar que el usuario se desuscribió manualmente para evitar re-registro al recargar
+        localStorage.setItem('tm_push_desuscrito', '1');
+        // Notificar al SW para que guarde el flag en IndexedDB (localStorage no disponible en SW)
+        try {
+            const swReg = await navigator.serviceWorker.ready;
+            if (swReg && swReg.active) swReg.active.postMessage({ type: 'TM_SET_DESUSCRITO' });
+        } catch(e) {}
+        // Actualizar contador de suscriptores local
+        if (typeof tmDesregistrarSuscriptor === 'function') tmDesregistrarSuscriptor();
+
+        // 3. [FIX] deleteToken() eliminado — causaba re-registro automático del token
+        //    El DELETE en Firebase RTDB (paso 1) es suficiente para dejar de recibir pushes.
+
+        // 4. Limpiar el flag del banner para que no aparezca otra vez al instante
+        localStorage.setItem('tm_push_pospuesto', String(Date.now() + 30 * 24 * 60 * 60 * 1000));
+    }
+
+    // Cerrar modal con ESC
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            const overlay = document.getElementById('notifModalOverlay');
+            if (overlay && overlay.classList.contains('activo')) {
+                cerrarModalNotificaciones();
+            }
+        }
+    });
+
+    // Actualizar ícono al cargar y cada vez que cambie el estado
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', actualizarIconoHeader);
+    } else {
+        actualizarIconoHeader();
+    }
+    // Refrescar el ícono cada 5 segundos por si cambió el permiso en otra pestaña
+    setInterval(actualizarIconoHeader, 5000);
+
+    // Exponer para depuración
+    window._tmNotif = {
+        actualizarIconoHeader,
+        actualizarModalNotif,
+        detectarEstadoNotif,
+        desuscribirFCM
+    };
+})();
+
+// ═══════════════════════════════════════════════════════════
+//  ⬆️ BOTÓN "SUBIR ARRIBA" flotante
+//  Aparece tras hacer scroll hacia abajo. Al pulsar, sube suave.
+// ═══════════════════════════════════════════════════════════
+(function tmBotonSubirArriba() {
+    'use strict';
+
+    function crearBoton() {
+        if (document.getElementById('tm-subir-arriba')) return;
+        const btn = document.createElement('button');
+        btn.id = 'tm-subir-arriba';
+        btn.setAttribute('aria-label', 'Subir al inicio de la página');
+        btn.title = 'Subir arriba';
+        btn.innerHTML = '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>';
+        btn.style.cssText = [
+            'position:fixed',
+            'bottom:20px',
+            'left:16px',
+            'width:48px',
+            'height:48px',
+            'border-radius:50%',
+            'background:linear-gradient(135deg,#ff6a00,#ff3d00)',
+            'color:#fff',
+            'border:none',
+            'box-shadow:0 6px 20px rgba(255,106,0,.45)',
+            'cursor:pointer',
+            'opacity:0',
+            'visibility:hidden',
+            'transform:translateY(20px) scale(.85)',
+            'transition:opacity .3s,transform .3s,visibility .3s',
+            'z-index:9998',
+            'display:flex',
+            'align-items:center',
+            'justify-content:center'
+        ].join(';');
+        btn.onclick = () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+        document.body.appendChild(btn);
+        return btn;
+    }
+
+    function mostrarOcultar() {
+        const btn = document.getElementById('tm-subir-arriba') || crearBoton();
+        if (!btn) return;
+        const debeMostrar = window.scrollY > window.innerHeight * 1.2;
+        if (debeMostrar) {
+            btn.style.opacity = '1';
+            btn.style.visibility = 'visible';
+            btn.style.transform = 'translateY(0) scale(1)';
+        } else {
+            btn.style.opacity = '0';
+            btn.style.visibility = 'hidden';
+            btn.style.transform = 'translateY(20px) scale(.85)';
+        }
+    }
+
+    function init() {
+        crearBoton();
+        window.addEventListener('scroll', mostrarOcultar, { passive: true });
+        mostrarOcultar();
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
+})();
+
+// ═══════════════════════════════════════════════════════
+//  📲 BANNER DE INSTALACIÓN PWA PERSONALIZADO
+//  Reemplaza el cartel naranja por defecto del navegador
+//  por uno premium que combina con el de notificaciones.
+// ═══════════════════════════════════════════════════════
+(function () {
+    'use strict';
+    var deferredPrompt = null;
+    var DISMISS_KEY = 'pwaInstallDismissed';
+    var DISMISS_DIAS = 7;
+
+    function yaInstalada() {
+        return window.matchMedia('(display-mode: standalone)').matches ||
+               window.navigator.standalone === true;
+    }
+
+    function descartadaRecientemente() {
+        try {
+            var t = parseInt(localStorage.getItem(DISMISS_KEY) || '0', 10);
+            return t && (Date.now() - t) < DISMISS_DIAS * 24 * 60 * 60 * 1000;
+        } catch (e) { return false; }
+    }
+
+    function esc(s) {
+        return (typeof escapeHtml === 'function')
+            ? escapeHtml(s)
+            : String(s).replace(/[&<>"]/g, function (c) {
+                return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+              });
+    }
+
+    function mostrarBannerInstalar() {
+        if (document.getElementById('tm-install-banner-wrap')) return;
+        if (yaInstalada() || descartadaRecientemente()) return;
+
+        // Asegurar animación (reutiliza la del banner de notificaciones)
+        if (!document.getElementById('slideUpBannerStyle')) {
+            var s = document.createElement('style');
+            s.id = 'slideUpBannerStyle';
+            s.textContent = '@keyframes slideUpBanner{from{opacity:0;transform:translateX(-50%) translateY(20px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}';
+            document.head.appendChild(s);
+        }
+
+        var wrap = document.createElement('div');
+        wrap.id = 'tm-install-banner-wrap';
+        wrap.style.cssText = 'position:fixed;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom,0px) + 20px);z-index:2000;width:min(92vw,380px);max-width:380px';
+        wrap.innerHTML =
+            '<div style="background:#1a1a1a;border:1.5px solid #C9A96E;border-radius:14px;padding:14px 18px;display:flex;align-items:center;gap:12px;box-shadow:0 8px 32px rgba(0,0,0,0.5);font-family:sans-serif;animation:slideUpBanner .35s ease">' +
+                '<span style="font-size:26px;flex-shrink:0">📲</span>' +
+                '<div style="flex:1;min-width:0">' +
+                    '<div style="font-weight:700;font-size:14px;color:#C9A96E;margin-bottom:2px">' + esc('Instala TiendaMax') + '</div>' +
+                    '<div style="font-size:12px;color:#aaa;line-height:1.3">' + esc('Acceso directo desde tu pantalla de inicio, más rápido y sin ocupar espacio.') + '</div>' +
+                '</div>' +
+                '<div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0">' +
+                    '<button id="tm-install-si" style="background:#C9A96E;color:#000;border:none;border-radius:8px;padding:7px 12px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap">Instalar</button>' +
+                    '<button id="tm-install-no" style="background:none;border:none;color:#666;font-size:11px;cursor:pointer;text-align:center">Ahora no</button>' +
+                '</div>' +
+            '</div>';
+        document.body.appendChild(wrap);
+
+        document.getElementById('tm-install-si').onclick = async function () {
+            wrap.remove();
+            if (!deferredPrompt) return;
+            deferredPrompt.prompt();
+            try { await deferredPrompt.userChoice; } catch (e) {}
+            deferredPrompt = null;
+        };
+        document.getElementById('tm-install-no').onclick = function () {
+            wrap.remove();
+            try { localStorage.setItem(DISMISS_KEY, String(Date.now())); } catch (e) {}
+        };
+    }
+
+    // Capturar el evento y bloquear el cartel naranja por defecto del navegador
+    window.addEventListener('beforeinstallprompt', function (e) {
+        e.preventDefault();
+        deferredPrompt = e;
+        // Mostrar el banner bonito tras unos segundos (no apenas entra)
+        setTimeout(mostrarBannerInstalar, 4000);
+    });
+
+    // Si se instala, limpiar
+    window.addEventListener('appinstalled', function () {
+        var w = document.getElementById('tm-install-banner-wrap');
+        if (w) w.remove();
+        deferredPrompt = null;
+        try { localStorage.removeItem(DISMISS_KEY); } catch (e) {}
+    });
+})();

@@ -262,12 +262,12 @@ async function renderizarAnalyticsFirebase() {
 
         <!-- KPIs principales -->
         <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:20px;">
-            ${_kpi('👁️','Vistas', totalVistas, '#c9a96e', totalVistas === 0 ? 'sin datos' : topVistas[0] ? '↑ ' + topVistas[0].nombre.slice(0,12) : '')}
-            ${_kpi('💬','Clicks WA', totalWA, '#25d366', totalWA === 0 ? 'sin pedidos aún' : totalWA === 1 ? '1 pedido' : totalWA + ' pedidos')}
-            ${_kpi('🔔','Suscriptores', suscriptores, '#4fc3f7', suscriptores === 0 ? 'nadie aún' : deviceArr[0] ? deviceArr[0][1].icon + ' ' + deviceArr[0][0] : '')}
-            ${_kpi('📈','Conversión', conversion + '%', parseFloat(conversion) >= 10 ? '#25d366' : parseFloat(conversion) >= 5 ? '#c9a96e' : '#e74c3c', totalVistas > 0 ? totalWA + ' de ' + totalVistas : 'sin tráfico')}
-            ${_kpi('📦','Productos', totalProductos, '#c9a96e', stockBajo.length > 0 ? '⚠️ ' + stockBajo.length + ' bajo' : 'catálogo ok')}
-            ${_kpi('⚠️','Sin stock', sinStockList.length, sinStockList.length > 0 ? '#e74c3c' : '#25d366', sinStockList.length > 0 ? sinStockList[0].nombre.slice(0,12) : '✅ ok')}
+            ${_kpi('👁️','Vistas', totalVistas, '#3B82F6', totalVistas === 0 ? 'sin datos' : topVistas[0] ? '↑ ' + topVistas[0].nombre.slice(0,12) : '')}
+            ${_kpi('💬','Clicks WA', totalWA, '#25D366', totalWA === 0 ? 'sin pedidos aún' : totalWA === 1 ? '1 pedido' : totalWA + ' pedidos')}
+            ${_kpi('🔔','Suscriptores', suscriptores, '#F59E0B', suscriptores === 0 ? 'nadie aún' : deviceArr[0] ? deviceArr[0][1].icon + ' ' + deviceArr[0][0] : '')}
+            ${_kpi('📈','Conversión', conversion + '%', '#8B5CF6', totalVistas > 0 ? totalWA + ' de ' + totalVistas : 'sin tráfico')}
+            ${_kpi('📦','Productos', totalProductos, '#06B6D4', stockBajo.length > 0 ? '⚠️ ' + stockBajo.length + ' bajo' : 'catálogo ok')}
+            ${_kpi('⚠️','Sin stock', sinStockList.length, '#EF4444', sinStockList.length > 0 ? sinStockList[0].nombre.slice(0,12) : '✅ ok')}
         </div>
 
         <!-- Gráfica mensual de ventas -->
@@ -354,20 +354,24 @@ async function renderizarAnalyticsFirebase() {
                         <div style="font-size:10px;color:#25d366;font-weight:600;text-align:right;">WA</div>
                     </div>
                 </div>
-                ${topVistas.map((p,i) => `
+                ${topVistas.map((p,i) => {
+                    const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : (i+1) + '.';
+                    const barPct = Math.round(p.count/maxV*100);
+                    return `
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:7px 0;border-top:1px solid rgba(255,255,255,0.05);align-items:center;">
                     <div>
-                        <span style="font-size:10px;color:#666;margin-right:5px;">${i+1}</span>
-                        <span style="font-size:11px;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:inline-block;max-width:140px;vertical-align:middle">${p.nombre}</span>
-                        <div style="margin-top:3px;height:3px;background:rgba(255,255,255,0.06);border-radius:2px;overflow:hidden;">
-                            <div style="height:100%;background:linear-gradient(90deg,#c9a96e,#e8c88a);width:${Math.round(p.count/maxV*100)}%;border-radius:2px;"></div>
+                        <span style="font-size:${i<3?'14px':'10px'};margin-right:5px;vertical-align:middle;">${medal}</span>
+                        <span style="font-size:11px;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:inline-block;max-width:130px;vertical-align:middle">${p.nombre}</span>
+                        <div style="margin-top:4px;height:3px;background:rgba(255,255,255,0.06);border-radius:2px;overflow:hidden;">
+                            <div style="height:100%;background:linear-gradient(90deg,#3B82F6,#60A5FA);width:${barPct}%;border-radius:2px;transition:width .4s;"></div>
                         </div>
+                        <div style="font-size:9px;color:#555;margin-top:1px;">${barPct}% del top</div>
                     </div>
                     <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;text-align:right;">
-                        <span style="font-size:13px;font-weight:700;color:#c9a96e;">${p.count}</span>
-                        <span style="font-size:13px;font-weight:700;color:${p.wa>0?'#25d366':'#555'};">${p.wa}</span>
+                        <span style="font-size:13px;font-weight:700;color:#3B82F6;">${p.count}</span>
+                        <span style="font-size:13px;font-weight:700;color:${p.wa>0?'#25D366':'#555'};">${p.wa}</span>
                     </div>
-                </div>`).join('')}`
+                </div>`;}).join('')}`
             }
         </div>
 
@@ -387,17 +391,21 @@ async function renderizarAnalyticsFirebase() {
                 <div style="font-size:12px;font-weight:700;margin-bottom:12px;color:#fff;">📊 Conversión / categoría</div>
                 ${convCatArr.length === 0
                     ? `<div style="font-size:11px;color:#888;padding:8px 0;text-align:center;">Sin datos</div>`
-                    : convCatArr.map(c => `
+                    : convCatArr.map(c => {
+                        const pctVal = parseFloat(c.pct);
+                        const barColor = pctVal >= 30 ? '#25D366' : pctVal >= 10 ? '#F59E0B' : '#EF4444';
+                        const pctColor = pctVal >= 30 ? '#25D366' : pctVal >= 10 ? '#F59E0B' : '#EF4444';
+                        return `
                     <div style="margin-bottom:9px;">
                         <div style="display:flex;justify-content:space-between;margin-bottom:3px;">
                             <span style="font-size:10px;color:#aaa;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:80px;">${c.cat}</span>
-                            <span style="font-size:11px;font-weight:700;color:#c9a96e;">${c.pct}%</span>
+                            <span style="font-size:11px;font-weight:700;color:${pctColor};">${c.pct}%</span>
                         </div>
                         <div style="height:4px;background:rgba(255,255,255,0.07);border-radius:2px;overflow:hidden;">
-                            <div style="height:100%;border-radius:2px;background:${parseFloat(c.pct)>=15?'#25d366':parseFloat(c.pct)>=8?'#c9a96e':'#e17055'};width:${Math.min(100,parseFloat(c.pct)*4)}%;"></div>
+                            <div style="height:100%;border-radius:2px;background:${barColor};width:${Math.min(100,pctVal*4)}%;transition:width .4s;"></div>
                         </div>
                         <div style="font-size:10px;color:#666;margin-top:2px;">${c.v}v · ${c.w}wa</div>
-                    </div>`).join('')
+                    </div>`;}).join('')
                 }
             </div>
 

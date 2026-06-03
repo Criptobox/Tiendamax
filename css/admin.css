@@ -1328,7 +1328,8 @@ body.dark-mode .admin-history-item .meta { color: #777; }
 }
 .admin-history-item .gain {
     font-size: 11px;
-    color: #f39c12;
+    color: #27ae60;
+    font-weight: 600;
 }
 
 /* ── Botones pequeños (exportar/limpiar) ── */
