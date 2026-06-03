@@ -1631,8 +1631,7 @@ function renderizarCategoriasHome() {
     categorias.forEach(cat => {
         const count = productos.filter(p => p.categoria === cat).length;
         const card = document.createElement('div');
-        card.className = 'categoria-card';
-        if (count === 0) { card.style.opacity = '0.42'; card.style.pointerEvents = 'none'; }
+        card.className = 'categoria-card' + (count === 0 ? ' proximamente' : '');
         card.innerHTML = `
             <span class="cat-icon">${escapeHtml(obtenerIconoCategoria(cat))}</span>
             <span class="cat-name">${escapeHtml(cat)}</span>
@@ -3616,8 +3615,7 @@ function renderizarCategoriasHomeInstant() {
     localCats.forEach(cat => {
         const count = localProds.filter(p => p.categoria === cat).length;
         const card = document.createElement('div');
-        card.className = 'categoria-card';
-        if (count === 0) { card.style.opacity = '0.42'; card.style.pointerEvents = 'none'; }
+        card.className = 'categoria-card' + (count === 0 ? ' proximamente' : '');
         card.innerHTML = `<span class="cat-icon">${obtenerIconoCategoria(cat)}</span><span class="cat-name">${cat}</span><span class="cat-count">${count === 0 ? '🕐 Próximamente' : count + ' producto' + (count !== 1 ? 's' : '')}</span>`;
         card.onclick = () => mostrarVistaCategoria(cat);
         grid.appendChild(card);
@@ -5392,8 +5390,9 @@ function initScrollAnimations() {
     style.textContent = `
         .producto-card { opacity: 0; transform: translateY(18px); transition: opacity .45s ease, transform .45s ease; }
         .producto-card.visible { opacity: 1; transform: translateY(0); }
-        .categoria-card { opacity: 0; transform: translateY(14px); transition: opacity .4s ease, transform .4s ease; }
+        .categoria-card:not(.proximamente) { opacity: 0; transform: translateY(14px); transition: opacity .4s ease, transform .4s ease; }
         .categoria-card.visible { opacity: 1; transform: translateY(0); }
+        .categoria-card.proximamente { opacity: 0.4 !important; pointer-events: none !important; cursor: default !important; }
     `;
     document.head.appendChild(style);
 

@@ -1,5 +1,6 @@
 // ═══════════════════════════════════════════════════════
-// TiendaMax — Service Worker v128
+// TiendaMax — Service Worker v129
+// v129: fix definitivo opacidad categorías vacías (clase proximamente + !important).
 // v128: agotados al final en Gestionar.
 // v127: categorías con 0 productos opacas, botón →0 en tarjetas Gestionar.
 // v126: fix fotos en modal editar (reset inputs, botón eliminar por foto), tarjetas Gestionar optimizadas.
@@ -15,7 +16,7 @@
 //      usan el mismo helper _mensajeOrdenWA con formato premium.
 // ═══════════════════════════════════════════════════════
 
-const CACHE_NAME = 'tiendamax-v128';
+const CACHE_NAME = 'tiendamax-v129';
 
 const STATIC_ASSETS = [
   '/',
