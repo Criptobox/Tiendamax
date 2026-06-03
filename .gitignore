@@ -1,0 +1,12 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Temp files
+*.tmp
+.*.tmp
+
+# OS
+.DS_Store
+Thumbs.db
