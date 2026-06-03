@@ -261,13 +261,13 @@ async function renderizarAnalyticsFirebase() {
         </div>` : ''}
 
         <!-- KPIs principales -->
-        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px;margin-bottom:20px;">
-            ${_kpi('👁️','Vistas totales', totalVistas, '#c9a96e')}
-            ${_kpi('💬','Clicks WA', totalWA, '#25d366')}
-            ${_kpi('🔔','Suscriptores', suscriptores, '#4fc3f7')}
-            ${_kpi('📈','Conversión', conversion + '%', parseFloat(conversion) >= 10 ? '#25d366' : parseFloat(conversion) >= 5 ? '#c9a96e' : '#e74c3c')}
-            ${_kpi('📦','Productos', totalProductos, '#c9a96e')}
-            ${_kpi('⚠️','Sin stock', sinStockList.length, sinStockList.length > 0 ? '#e74c3c' : '#25d366')}
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:20px;">
+            ${_kpi('👁️','Vistas', totalVistas, '#c9a96e', totalVistas === 0 ? 'sin datos' : topVistas[0] ? topVistas[0].nombre.slice(0,14)+'…' : '')}
+            ${_kpi('💬','Clicks WA', totalWA, '#25d366', totalWA === 0 ? 'sin pedidos' : totalWA === 1 ? '1 pedido' : totalWA + ' pedidos')}
+            ${_kpi('🔔','Suscriptores', suscriptores, '#4fc3f7', suscriptores === 0 ? 'nadie aún' : deviceArr[0] ? deviceArr[0][1].icon + ' ' + deviceArr[0][0] : '')}
+            ${_kpi('📈','Conversión', conversion + '%', parseFloat(conversion) >= 10 ? '#25d366' : parseFloat(conversion) >= 5 ? '#c9a96e' : '#e74c3c', totalVistas > 0 ? totalWA + ' de ' + totalVistas : 'sin tráfico')}
+            ${_kpi('📦','Productos', totalProductos, '#c9a96e', stockBajo.length > 0 ? '⚠️ ' + stockBajo.length + ' stock bajo' : 'catálogo ok')}
+            ${_kpi('⚠️','Sin stock', sinStockList.length, sinStockList.length > 0 ? '#e74c3c' : '#25d366', sinStockList.length > 0 ? sinStockList[0].nombre.slice(0,14)+'…' : '✅ todo disponible')}
         </div>
 
         <!-- Gráfica mensual de ventas -->
@@ -288,13 +288,17 @@ async function renderizarAnalyticsFirebase() {
             const totalAnio = totalesMes.reduce((s,n) => s+n, 0);
             if (totalAnio === 0) return '';
             const bars = meses.map((m, i) => {
-                const h = Math.max(2, Math.round((totalesMes[i] / maxM) * 60));
                 const esActual = i === mesActual;
-                return '<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;">' +
-                    '<div title="' + m + ': $' + totalesMes[i].toFixed(0) + '" style="width:100%;height:' + h + 'px;border-radius:3px 3px 0 0;' +
-                    'background:' + (esActual ? '#f0a500' : totalesMes[i] > 0 ? '#f0a50055' : '#2a2a3a') + ';cursor:pointer;transition:opacity .2s;" ' +
-                    'onmouseover="this.style.opacity=0.6" onmouseout="this.style.opacity=1"></div>' +
-                    '<div style="font-size:8px;color:#555;">' + m + '</div></div>';
+                const tieneVentas = totalesMes[i] > 0;
+                const h = tieneVentas ? Math.max(8, Math.round((totalesMes[i] / maxM) * 60)) : 0;
+                const labelColor = esActual ? '#c9a96e' : tieneVentas ? '#666' : '#333';
+                return '<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;justify-content:flex-end;">' +
+                    (tieneVentas
+                        ? '<div title="' + m + ': $' + totalesMes[i].toFixed(0) + '" style="width:80%;height:' + h + 'px;border-radius:3px 3px 0 0;' +
+                          'background:' + (esActual ? 'linear-gradient(180deg,#f0a500,#c97d00)' : 'rgba(240,165,0,0.45)') + ';cursor:pointer;transition:opacity .2s;" ' +
+                          'onmouseover="this.style.opacity=0.7" onmouseout="this.style.opacity=1"></div>'
+                        : '<div style="width:2px;height:4px;background:#2a2a3a;border-radius:1px;"></div>') +
+                    '<div style="font-size:8px;color:' + labelColor + ';font-weight:' + (esActual ? '700' : '400') + ';">' + m + '</div></div>';
             }).join('');
             return '<div style="' + _cardStyle() + 'padding:14px;margin-bottom:16px;">' +
                 '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">' +
@@ -308,19 +312,34 @@ async function renderizarAnalyticsFirebase() {
         <!-- Funnel de conversión -->
         <div style="${_cardStyle()}padding:16px;margin-bottom:16px;">
             <div style="font-size:13px;font-weight:700;margin-bottom:14px;color:#fff;">🔽 Embudo de conversión</div>
-            <div style="display:flex;align-items:center;gap:0;overflow:hidden;border-radius:8px;">
-                <div style="flex:${Math.max(totalVistas,1)};background:#4a4a4a;padding:12px 0;text-align:center;font-size:12px;color:#ccc;min-width:80px;">
-                    👁️ <strong style="color:#c9a96e">${totalVistas}</strong><br><span style="font-size:10px">Vistas</span>
-                </div>
-                <div style="color:#666;padding:0 6px;font-size:18px;">›</div>
-                <div style="flex:${Math.max(totalWA,1)};background:rgba(37,211,102,0.25);border:1px solid rgba(37,211,102,0.4);padding:12px 0;text-align:center;font-size:12px;color:#ccc;min-width:60px;border-radius:8px;">
-                    💬 <strong style="color:#25d366">${totalWA}</strong><br><span style="font-size:10px">Pedidos WA</span>
-                </div>
-            </div>
-            <div style="margin-top:10px;font-size:11px;color:#888;text-align:right;">
-                Conversión global: <strong style="color:${parseFloat(conversion)>=10?'#25d366':parseFloat(conversion)>=5?'#c9a96e':'#e74c3c'}">${conversion}%</strong>
-                ${totalVistas===0?'<span style="color:#666;"> — Aún sin datos</span>':''}
-            </div>
+            ${totalVistas === 0
+                ? `<div style="font-size:12px;color:#888;text-align:center;padding:16px 0;">Sin tráfico registrado aún.</div>`
+                : (() => {
+                    const convColor = parseFloat(conversion) >= 10 ? '#25d366' : parseFloat(conversion) >= 5 ? '#c9a96e' : '#e74c3c';
+                    const waPct = Math.max(4, Math.round((totalWA / totalVistas) * 100));
+                    const perdidos = totalVistas - totalWA;
+                    return `
+                    <div style="display:flex;flex-direction:column;align-items:center;gap:0;">
+                        <!-- Paso 1: Vistas — barra completa -->
+                        <div style="width:100%;background:rgba(201,169,110,0.15);border:1px solid rgba(201,169,110,0.3);border-radius:10px 10px 0 0;padding:12px;text-align:center;">
+                            <div style="font-size:22px;font-weight:800;color:#c9a96e;">${totalVistas}</div>
+                            <div style="font-size:11px;color:#aaa;margin-top:2px;">👁️ Vistas totales</div>
+                        </div>
+                        <!-- Cuello del funnel -->
+                        <div style="display:flex;width:100%;height:16px;">
+                            <div style="flex:1;background:rgba(201,169,110,0.08);clip-path:polygon(0 0,100% 0,${50+waPct/2}% 100%,${50-waPct/2}% 100%);"></div>
+                        </div>
+                        <!-- Paso 2: WA — barra estrecha proporcional -->
+                        <div style="width:${Math.max(waPct, 20)}%;background:rgba(37,211,102,0.2);border:1px solid rgba(37,211,102,0.4);border-radius:0 0 10px 10px;padding:10px;text-align:center;">
+                            <div style="font-size:20px;font-weight:800;color:#25d366;">${totalWA}</div>
+                            <div style="font-size:11px;color:#aaa;margin-top:2px;">💬 Pedidos WA</div>
+                        </div>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;margin-top:12px;font-size:11px;">
+                        <span style="color:#888;">${perdidos} visitantes no pidieron</span>
+                        <span>Conversión: <strong style="color:${convColor}">${conversion}%</strong></span>
+                    </div>`;
+                })()}
         </div>
 
         <!-- Top productos con ambas métricas -->
@@ -351,6 +370,16 @@ async function renderizarAnalyticsFirebase() {
                 </div>`).join('')}`
             }
         </div>
+
+        <!-- Alerta: productos sin engagement -->
+        ${sinEngagement > 0 && sinEngagement >= Math.ceil(totalProductos * 0.4) ? `
+        <div style="background:rgba(230,126,34,0.08);border:1px solid rgba(230,126,34,0.3);border-radius:12px;padding:14px 16px;margin-bottom:16px;display:flex;align-items:flex-start;gap:12px;">
+            <div style="font-size:24px;flex-shrink:0;">👻</div>
+            <div>
+                <div style="font-size:13px;font-weight:700;color:#e67e22;margin-bottom:4px;">${sinEngagement} productos sin ninguna vista (${Math.round(sinEngagement/totalProductos*100)}% del catálogo)</div>
+                <div style="font-size:11px;color:#aaa;line-height:1.5;">Estos productos nunca han sido vistos. Revisa sus fotos, precios o si aparecen bien en el catálogo.</div>
+            </div>
+        </div>` : ''}
 
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
             <!-- Conversión por categoría -->
@@ -439,13 +468,15 @@ async function renderizarAnalyticsFirebase() {
                 ? `<div style="font-size:11px;color:#888;">Sin timestamp disponible</div>`
                 : recientes.map(t => {
                     const { tipo, icon } = _tmParseDevice(t.userAgent || '');
-                    return `<div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid rgba(255,255,255,0.04);">
-                        <span style="font-size:15px;">${icon}</span>
-                        <div style="flex:1;">
-                            <div style="font-size:11px;color:#ccc;">${tipo}</div>
+                    const fechaCorta = t.timestamp ? new Date(t.timestamp).toLocaleDateString('es-ES', {day:'2-digit', month:'short'}) : '';
+                    const browser = /Chrome/i.test(t.userAgent||'') ? 'Chrome' : /Firefox/i.test(t.userAgent||'') ? 'Firefox' : /Safari/i.test(t.userAgent||'') ? 'Safari' : /Edge/i.test(t.userAgent||'') ? 'Edge' : '';
+                    return `<div style="display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid rgba(255,255,255,0.04);">
+                        <div style="width:34px;height:34px;background:rgba(79,195,247,0.1);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">${icon}</div>
+                        <div style="flex:1;min-width:0;">
+                            <div style="font-size:12px;color:#ddd;font-weight:600;">${tipo}${browser ? ' · ' + browser : ''}</div>
                             <div style="font-size:10px;color:#666;">${_tmRelTime(t.timestamp)}</div>
                         </div>
-                        <div style="font-size:9px;color:#444;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${(t.userAgent||'').split(' ').pop()}</div>
+                        ${fechaCorta ? `<div style="font-size:10px;color:#555;flex-shrink:0;">${fechaCorta}</div>` : ''}
                     </div>`;
                 }).join('')}
             `}
@@ -490,11 +521,12 @@ async function renderizarAnalyticsFirebase() {
 function _cardStyle() {
     return `background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;`;
 }
-function _kpi(icon, label, value, color = '#c9a96e') {
-    return `<div style="${_cardStyle()}padding:14px 10px;text-align:center;">
-        <div style="font-size:18px;margin-bottom:3px;">${icon}</div>
-        <div style="font-size:20px;font-weight:700;color:${color};line-height:1.1;">${value}</div>
+function _kpi(icon, label, value, color = '#c9a96e', sub = '') {
+    return `<div style="${_cardStyle()}padding:14px 10px;text-align:center;border-left:3px solid ${color};border-radius:12px;">
+        <div style="font-size:16px;margin-bottom:2px;">${icon}</div>
+        <div style="font-size:22px;font-weight:800;color:${color};line-height:1.1;">${value}</div>
         <div style="font-size:10px;color:#888;margin-top:3px;letter-spacing:.3px;">${label}</div>
+        ${sub ? `<div style="font-size:9px;color:#666;margin-top:2px;">${sub}</div>` : ''}
     </div>`;
 }
 function _inventarioItem(icon, label, value, color = '#c9a96e') {
