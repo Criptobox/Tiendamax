@@ -59,6 +59,24 @@
       ".read": "auth != null",
       ".write": false
     },
+    "resenas": {
+      ".read": true,
+      ".write": false,
+      "$productoId": {
+        "$resenaId": {
+          ".write": true,
+          ".validate": "newData.hasChildren(['autor','texto','estrellas','fecha']) && newData.child('estrellas').isNumber() && newData.child('estrellas').val() >= 1 && newData.child('estrellas').val() <= 5 && newData.child('texto').val().length >= 10 && newData.child('texto').val().length <= 400 && newData.child('autor').val().length >= 1 && newData.child('autor').val().length <= 50"
+        }
+      }
+    },
+    "ventas": {
+      ".read": true,
+      ".write": false,
+      "$ventaId": {
+        ".write": true,
+        ".validate": "newData.hasChildren(['producto', 'precio', 'cantidad', 'total', 'fecha']) && newData.child('precio').isNumber() && newData.child('cantidad').isNumber() && newData.child('total').isNumber()"
+      }
+    },
     "avisos_count": {
       "$productId": {
         "count": {
