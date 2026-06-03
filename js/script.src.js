@@ -4556,12 +4556,17 @@ renderizarProductos = function() {
     bar.id = 'tm-progress';
     document.body.appendChild(bar);
 
+    let _rafProgress = null;
     function update() {
-        const scrollTop = window.scrollY || document.documentElement.scrollTop;
-        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-        const pct = docHeight > 0 ? Math.min(100, (scrollTop / docHeight) * 100) : 0;
-        bar.style.width = pct + '%';
-        bar.style.opacity = pct > 1 ? '1' : '0';
+        if (_rafProgress) return;
+        _rafProgress = requestAnimationFrame(() => {
+            _rafProgress = null;
+            const scrollTop = window.scrollY || document.documentElement.scrollTop;
+            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const pct = docHeight > 0 ? Math.min(100, (scrollTop / docHeight) * 100) : 0;
+            bar.style.width = pct + '%';
+            bar.style.opacity = pct > 1 ? '1' : '0';
+        });
     }
     window.addEventListener('scroll', update, { passive: true });
     update();
@@ -6949,19 +6954,24 @@ window.addEventListener('popstate', function() {
         return btn;
     }
 
+    let _rafSubir = null;
     function mostrarOcultar() {
-        const btn = document.getElementById('tm-subir-arriba') || crearBoton();
-        if (!btn) return;
-        const debeMostrar = window.scrollY > window.innerHeight * 1.2;
-        if (debeMostrar) {
-            btn.style.opacity = '1';
-            btn.style.visibility = 'visible';
-            btn.style.transform = 'translateY(0) scale(1)';
-        } else {
-            btn.style.opacity = '0';
-            btn.style.visibility = 'hidden';
-            btn.style.transform = 'translateY(20px) scale(.85)';
-        }
+        if (_rafSubir) return;
+        _rafSubir = requestAnimationFrame(() => {
+            _rafSubir = null;
+            const btn = document.getElementById('tm-subir-arriba') || crearBoton();
+            if (!btn) return;
+            const debeMostrar = window.scrollY > window.innerHeight * 1.2;
+            if (debeMostrar) {
+                btn.style.opacity = '1';
+                btn.style.visibility = 'visible';
+                btn.style.transform = 'translateY(0) scale(1)';
+            } else {
+                btn.style.opacity = '0';
+                btn.style.visibility = 'hidden';
+                btn.style.transform = 'translateY(20px) scale(.85)';
+            }
+        });
     }
 
     function init() {
