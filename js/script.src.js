@@ -4533,9 +4533,9 @@ function renderizarListaAgotados() {
     }
     // FIX BUG #8: sanitización anti-XSS
     el.innerHTML = agotados.map(p =>
-        '<div style="display:flex;align-items:center;gap:10px;padding:10px;background:var(--card-bg,#fff);border-radius:10px;border:1px solid rgba(231,76,60,0.3);">' +
+        '<div style="display:flex;align-items:center;gap:10px;padding:10px;background:rgba(255,255,255,0.05);border-radius:10px;border:1px solid rgba(231,76,60,0.3);">' +
             '<img src="' + escapeAttr(p.imagen) + '" style="width:40px;height:40px;border-radius:8px;object-fit:cover;" onerror="this.style.display=\'none\'">' +
-            '<div style="flex:1;"><div style="font-size:13px;font-weight:700;">' + escapeHtml(p.nombre) + '</div>' +
+            '<div style="flex:1;"><div style="font-size:13px;font-weight:700;color:var(--text,#f2f2f5);">' + escapeHtml(p.nombre) + '</div>' +
             '<div style="font-size:11px;color:#e74c3c;font-weight:700;">📦 AGOTADO</div></div>' +
             '<button class="btn btn-primary" onclick="abrirEditModal(' + safeNum(p.id) + ')" style="font-size:11px;padding:6px 10px;">✏️ Editar</button>' +
         '</div>'

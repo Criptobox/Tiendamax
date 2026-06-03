@@ -134,10 +134,17 @@
 
 /* Cajas internas con fondo (var --cream, white, etc.) */
 .admin-tab > div[style*="background"],
-.admin-tab > div > div[style*="background"] {
+.admin-tab > div > div[style*="background"],
+.admin-tab > div > div > div[style*="background"] {
     background: rgba(255,255,255,0.04) !important;
     border-color: rgba(255,255,255,0.08) !important;
     color: rgba(255,255,255,0.75) !important;
+}
+/* Items dinámicos generados en JS (productosAgotadosList, etc.) */
+.admin-tab #productosAgotadosList > div {
+    background: rgba(255,255,255,0.05) !important;
+    border-color: rgba(231,76,60,0.25) !important;
+    color: var(--text, #f2f2f5) !important;
 }
 
 /* Botón primario premium */
