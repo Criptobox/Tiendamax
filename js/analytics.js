@@ -108,7 +108,6 @@ function _tmRelTime(ts) {
     const days = Math.floor(d/86400000);
     if (days < 7)     return `hace ${days}d`;
     if (days < 30)    return `hace ${Math.floor(days/7)} sem`;
-    if (days < 30)    return 'hace menos de un mes';
     return `hace ${Math.floor(days/30)} mes${Math.floor(days/30) > 1 ? 'es' : ''}`;
 }
 

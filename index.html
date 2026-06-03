@@ -259,7 +259,11 @@
             }
             var t = texto || '🔥 OFERTA DEL DÍA';
             if (document.body) document.body.classList.remove('tm-no-oferta-banner');
-            banner.innerHTML = '<span class="flash-deal">' + t + ' · VER AHORA →</span>';
+            while (banner.firstChild) banner.removeChild(banner.firstChild);
+            var spanFlash = document.createElement('span');
+            spanFlash.className = 'flash-deal';
+            spanFlash.textContent = t + ' · VER AHORA →';
+            banner.appendChild(spanFlash);
             banner.style.setProperty('display', 'flex', 'important');
             banner.style.cursor  = 'pointer';
             banner.style.overflow = 'visible';
