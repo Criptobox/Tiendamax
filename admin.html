@@ -205,11 +205,11 @@
                     <form id="productForm">
                         <div class="form-group">
                             <label>Nombre del Producto:</label>
-                            <input type="text" id="productName" required>
+                            <input type="text" id="productName" required maxlength="200">
                         </div>
                         <div class="form-group">
                             <label>Descripción:</label>
-                            <textarea id="productDescription" required rows="4"></textarea>
+                            <textarea id="productDescription" required rows="4" maxlength="2000"></textarea>
                         </div>
                         <div class="form-group">
                             <label>Categoría:</label>
@@ -383,6 +383,7 @@
                         <div class="form-group">
                             <label>Número (solo dígitos, sin espacios):</label>
                             <input type="tel" id="adminWhatsappNum" placeholder="Ej: 5354320170" maxlength="20"
+                                pattern="[0-9+]{7,20}" title="Solo dígitos y + (mín. 7 caracteres)"
                                 style="font-size:16px;font-weight:700;letter-spacing:1px;">
                             <p class="admin-note">Incluye el código de país. Cuba: 53 + número (ej: 5354320170)</p>
                         </div>

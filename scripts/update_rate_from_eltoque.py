@@ -64,12 +64,6 @@ def fetch_eltoque_rate() -> tuple[float, str]:
     if not usd:
         raise RateUpdateError("No se encontró la estadística USD en elTOQUE")
 
-    # DEBUG: mostrar todos los valores disponibles
-    print(f"[DEBUG] USD keys: {list(usd.keys())}")
-    print(f"[DEBUG] USD median: {usd.get('median')}")
-    print(f"[DEBUG] USD ema_value: {usd.get('ema_value')}")
-    print(f"[DEBUG] USD completo: {usd}")
-
     # Preferimos la mediana porque coincide mejor con la referencia mostrada en el sitio.
     raw_rate = usd.get("median")
     source = "median"
@@ -79,7 +73,7 @@ def fetch_eltoque_rate() -> tuple[float, str]:
     if raw_rate is None:
         raise RateUpdateError("USD no trae median ni ema_value")
 
-    print(f"[DEBUG] Usando fuente: {source} = {raw_rate}")
+    print(f"Fuente de tasa: {source} = {raw_rate}")
 
     try:
         rate = float(raw_rate)
@@ -103,10 +97,14 @@ def load_config() -> dict[str, Any]:
 
 
 def save_config(config: dict[str, Any]) -> None:
-    CONFIG_PATH.write_text(
-        json.dumps(config, ensure_ascii=False, indent=2) + "\n",
-        encoding="utf-8",
-    )
+    content = json.dumps(config, ensure_ascii=False, indent=2) + "\n"
+    tmp = CONFIG_PATH.parent / f".{CONFIG_PATH.name}.tmp"
+    try:
+        tmp.write_text(content, encoding="utf-8")
+        tmp.replace(CONFIG_PATH)
+    except Exception:
+        tmp.unlink(missing_ok=True)
+        raise
 
 
 def main() -> int:

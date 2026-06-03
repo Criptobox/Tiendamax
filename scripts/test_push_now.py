@@ -74,7 +74,7 @@ def main() -> int:
 
     # Inicializar Firebase (lee FIREBASE_SERVICE_ACCOUNT del entorno)
     msg_api, db_api = init_firebase()
-    if not msg_api:
+    if not msg_api or not db_api:
         print("❌ Firebase no inicializa. Revisa FIREBASE_SERVICE_ACCOUNT.")
         return 1
 

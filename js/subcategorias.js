@@ -112,11 +112,14 @@ function actualizarListaSubcategorias() {
                 hasSubcategories = true;
                 const catDiv = document.createElement('div');
                 catDiv.style.marginBottom = '20px';
-                catDiv.innerHTML = `<h4 style="margin-bottom: 10px; color: #9B59B6;">📁 ${cat}</h4>`;
-                
+                const h4 = document.createElement('h4');
+                h4.style.cssText = 'margin-bottom: 10px; color: #9B59B6;';
+                h4.textContent = `📁 ${cat}`;
+                catDiv.appendChild(h4);
+
                 const subList = document.createElement('div');
                 subList.style.paddingLeft = '20px';
-                
+
                 subcategorias[cat].forEach(subcat => {
                     const item = document.createElement('div');
                     item.className = 'subcategory-item';
@@ -129,10 +132,14 @@ function actualizarListaSubcategorias() {
                         justify-content: space-between;
                         align-items: center;
                     `;
-                    item.innerHTML = `
-                        <span>📌 ${subcat}</span>
-                        <button onclick="eliminarSubcategoria('${cat}', '${subcat}')" style="background: #e74c3c; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer;">🗑️</button>
-                    `;
+                    const span = document.createElement('span');
+                    span.textContent = `📌 ${subcat}`;
+                    const btn = document.createElement('button');
+                    btn.style.cssText = 'background: #e74c3c; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer;';
+                    btn.textContent = '🗑️';
+                    btn.addEventListener('click', () => eliminarSubcategoria(cat, subcat));
+                    item.appendChild(span);
+                    item.appendChild(btn);
                     subList.appendChild(item);
                 });
                 
@@ -319,7 +326,11 @@ if (document.readyState === 'loading') {
 // Sincronizar cambios de categoría
 window.addEventListener('storage', (event) => {
     if (event.key === 'subcategorias') {
-        subcategorias = JSON.parse(event.newValue) || {};
+        if (event.newValue) {
+            try { subcategorias = JSON.parse(event.newValue); } catch(e) { subcategorias = {}; }
+        } else {
+            subcategorias = {};
+        }
         actualizarListaSubcategorias();
         actualizarSelectSubcategorias();
     }

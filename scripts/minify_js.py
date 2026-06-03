@@ -87,6 +87,7 @@ def minify(src: Path, dest: Path) -> tuple[int, int]:
         ],
         capture_output=True,
         text=True,
+        timeout=120,
     )
 
     if result.returncode != 0:

@@ -12,6 +12,10 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: send-notifications
+  cancel-in-progress: false
+
 jobs:
   send-notifications:
     runs-on: ubuntu-latest
