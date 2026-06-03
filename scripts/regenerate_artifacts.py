@@ -36,6 +36,8 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{title}</title>
+<meta name="description" content="{og_desc}">
+<meta name="robots" content="index, follow">
 
 <!-- ═══ Open Graph (WhatsApp, Facebook, Instagram) ═══ -->
 <meta property="og:type" content="product">
@@ -56,9 +58,30 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
 <meta name="twitter:description" content="{og_desc}">
 <meta name="twitter:image" content="{image}">
 
-<!-- ═══ Redireccionar al usuario a la app ═══ -->
-<meta http-equiv="refresh" content="0;url={app_url}">
+<!-- ═══ Redireccionar al usuario a la app (1s da tiempo al crawler) ═══ -->
+<meta http-equiv="refresh" content="1;url={app_url}">
 <link rel="canonical" href="{page_url}">
+
+<!-- ═══ JSON-LD para Google ═══ -->
+<script type="application/ld+json">
+{{
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "name": {json_name},
+  "description": {json_desc},
+  "image": {json_img},
+  "url": "{page_url}",
+  "brand": {{"@type": "Brand", "name": "TiendaMax"}},
+  "offers": {{
+    "@type": "Offer",
+    "price": "{price}",
+    "priceCurrency": "USD",
+    "availability": "{availability}",
+    "url": "{page_url}",
+    "seller": {{"@type": "Organization", "name": "TiendaMax"}}
+  }}
+}}
+</script>
 
 <style>
   * {{ margin: 0; padding: 0; box-sizing: border-box; }}
@@ -72,9 +95,10 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
     min-height: 100vh;
     text-align: center;
   }}
-  .loader {{ padding: 40px; }}
-  .loader h2 {{ color: #C9A96E; font-size: 18px; margin-bottom: 12px; }}
-  .loader p  {{ color: #888;    font-size: 14px; margin-bottom: 20px; }}
+  .loader {{ padding: 40px; max-width: 420px; }}
+  .loader h2 {{ color: #C9A96E; font-size: 18px; margin-bottom: 8px; }}
+  .price  {{ color: #FF6B35; font-size: 22px; font-weight: 700; margin-bottom: 8px; }}
+  .desc   {{ color: #888; font-size: 13px; line-height: 1.5; margin-bottom: 20px; }}
   .loader a  {{
     display: inline-block;
     background: linear-gradient(135deg, #FF6B35, #E8501E);
@@ -100,11 +124,11 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
 <div class="loader">
   <div class="spinner"></div>
   <h2>{html_name}</h2>
-  <p>${price} USD — Abriendo producto...</p>
+  <p class="price">${price} USD</p>
+  <p class="desc">{og_desc}</p>
   <a href="{app_url}">Abrir en TiendaMax</a>
 </div>
 <script>
-  // Redirección instantánea
   window.location.replace('{app_url_js}');
 </script>
 </body>
@@ -174,16 +198,26 @@ def regenerate_pages(products: list[dict]) -> tuple[int, list[str]]:
         desc  = desc_short(p.get("descripcion") or "")
         price = f"{float(p.get('precioActual') or 0):.2f}"
         img   = p.get("imagen") or f"{SITE}/og-image.svg"
+        stock = int(p.get("stock") or 0)
 
-        # Sanitización: HTML escape para todo lo inyectado
+        # Sanitización: HTML escape para todo lo inyectado en HTML
         html_name = escape(name)
         og_title  = escape(f"{name} — ${price} USD")
         og_desc   = escape(desc)
         image     = escape(img, quote=True)
 
+        # JSON-LD: json.dumps produce strings correctamente escapadas para JSON
+        json_name = json.dumps(name)
+        json_desc = json.dumps(desc)
+        json_img  = json.dumps(img)
+        availability = (
+            "https://schema.org/InStock"
+            if stock > 0
+            else "https://schema.org/OutOfStock"
+        )
+
         page_url  = f"{SITE}/p/producto-{pid}.html"
         app_url   = f"{SITE}/#producto-{pid}"
-        # En el script JS: escape para comilla simple
         app_url_js = app_url.replace("'", "\\'")
         title = escape(f"{name} — ${price} USD | TiendaMax")
 
@@ -197,6 +231,10 @@ def regenerate_pages(products: list[dict]) -> tuple[int, list[str]]:
             app_url=app_url,
             app_url_js=app_url_js,
             price=price,
+            json_name=json_name,
+            json_desc=json_desc,
+            json_img=json_img,
+            availability=availability,
         )
 
         fp = P_DIR / f"producto-{pid}.html"
