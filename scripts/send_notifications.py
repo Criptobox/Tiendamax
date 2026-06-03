@@ -59,10 +59,9 @@ def get_previous_json(filepath: str):
 # ============================================================
 # FIREBASE & QUEUE LOGIC
 # ============================================================
-import firebase_admin
-from firebase_admin import credentials, db, messaging
-
 def init_firebase():
+    import firebase_admin
+    from firebase_admin import credentials, db, messaging
     sa_json = os.environ.get("FIREBASE_SERVICE_ACCOUNT")
     if not sa_json:
         print("❌ Error: FIREBASE_SERVICE_ACCOUNT no configurada.")
