@@ -3841,34 +3841,29 @@ function _fbBorrarTodasVentas() {
 
 // Migra ventas guardadas accidentalmente en la raíz de Firebase (0,1,2,3...) a /ventas/{id}
 async function _fbMigrarVentasRaiz(url) {
-    try {
-        const res = await fetch(`${url}.json?shallow=true`);
-        if (!res.ok) return [];
-        const keys = await res.json();
-        if (!keys || typeof keys !== 'object') return [];
-        const numericKeys = Object.keys(keys).filter(k => /^\d+$/.test(k));
-        if (!numericKeys.length) return [];
-        const ventasMigradas = [];
-        await Promise.all(numericKeys.map(async k => {
-            try {
-                const r = await fetch(`${url}/${k}.json`);
-                if (!r.ok) return;
-                const v = await r.json();
-                if (v && v.id && v.producto) {
-                    // Mover a /ventas/{id} y borrar del root
-                    await fetch(`${url}/ventas/${v.id}.json`, {
-                        method: 'PUT',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(v)
-                    });
-                    await fetch(`${url}/${k}.json`, { method: 'DELETE' });
-                    ventasMigradas.push(v);
-                }
-            } catch(e) {}
-        }));
-        if (ventasMigradas.length) console.log(`✅ Migradas ${ventasMigradas.length} ventas de raíz a /ventas/`);
-        return ventasMigradas;
-    } catch(e) { return []; }
+    const ventasMigradas = [];
+    // Probar nodos 0-19 individualmente (no requiere leer la raíz)
+    for (let k = 0; k < 20; k++) {
+        try {
+            const r = await fetch(`${url}/${k}.json`);
+            if (!r.ok) continue;
+            const v = await r.json();
+            if (!v || typeof v !== 'object' || !v.id || !v.producto) continue;
+            // Copiar a /ventas/{id}
+            const putRes = await fetch(`${url}/ventas/${v.id}.json`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(v)
+            });
+            if (putRes.ok) {
+                // Borrar del root (puede fallar si no hay permisos, no es crítico)
+                await fetch(`${url}/${k}.json`, { method: 'DELETE' }).catch(() => {});
+                ventasMigradas.push(v);
+            }
+        } catch(e) {}
+    }
+    if (ventasMigradas.length) console.log(`✅ Migradas ${ventasMigradas.length} ventas de raíz a /ventas/`);
+    return ventasMigradas;
 }
 
 // Carga ventas desde Firebase y hace merge con localStorage (en background al iniciar)
