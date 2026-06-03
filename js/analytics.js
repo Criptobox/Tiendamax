@@ -309,38 +309,38 @@ async function renderizarAnalyticsFirebase() {
                 '</div>';
         })()}
 
-        <!-- Funnel de conversión -->
-        <div style="${_cardStyle()}padding:16px;margin-bottom:16px;">
-            <div style="font-size:13px;font-weight:700;margin-bottom:14px;color:#fff;">🔽 Embudo de conversión</div>
-            ${totalVistas === 0
-                ? `<div style="font-size:12px;color:#888;text-align:center;padding:16px 0;">Sin tráfico registrado aún.</div>`
-                : (() => {
-                    const convColor = parseFloat(conversion) >= 10 ? '#25d366' : parseFloat(conversion) >= 5 ? '#c9a96e' : '#e74c3c';
-                    const waPct = Math.max(4, Math.round((totalWA / totalVistas) * 100));
-                    const perdidos = totalVistas - totalWA;
-                    return `
-                    <div style="display:flex;flex-direction:column;align-items:center;gap:0;">
-                        <!-- Paso 1: Vistas — barra completa -->
-                        <div style="width:100%;background:rgba(201,169,110,0.15);border:1px solid rgba(201,169,110,0.3);border-radius:10px 10px 0 0;padding:12px;text-align:center;">
-                            <div style="font-size:22px;font-weight:800;color:#c9a96e;">${totalVistas}</div>
-                            <div style="font-size:11px;color:#aaa;margin-top:2px;">👁️ Vistas totales</div>
-                        </div>
-                        <!-- Cuello del funnel -->
-                        <div style="display:flex;width:100%;height:16px;">
-                            <div style="flex:1;background:rgba(201,169,110,0.08);clip-path:polygon(0 0,100% 0,${50+waPct/2}% 100%,${50-waPct/2}% 100%);"></div>
-                        </div>
-                        <!-- Paso 2: WA — barra estrecha proporcional -->
-                        <div style="width:${Math.max(waPct, 20)}%;background:rgba(37,211,102,0.2);border:1px solid rgba(37,211,102,0.4);border-radius:0 0 10px 10px;padding:10px;text-align:center;">
-                            <div style="font-size:20px;font-weight:800;color:#25d366;">${totalWA}</div>
-                            <div style="font-size:11px;color:#aaa;margin-top:2px;">💬 Pedidos WA</div>
-                        </div>
+        <!-- Funnel compacto — fila horizontal debajo del chart -->
+        ${totalVistas > 0 ? (() => {
+            const convColor = parseFloat(conversion) >= 10 ? '#25d366' : parseFloat(conversion) >= 5 ? '#c9a96e' : '#e74c3c';
+            const perdidos = totalVistas - totalWA;
+            const barWaPct = Math.round((totalWA / totalVistas) * 100);
+            return `<div style="${_cardStyle()}padding:12px 16px;margin-bottom:16px;display:flex;align-items:center;gap:0;">
+                <!-- Vistas -->
+                <div style="text-align:center;min-width:64px;">
+                    <div style="font-size:18px;font-weight:800;color:#c9a96e;">${totalVistas}</div>
+                    <div style="font-size:10px;color:#888;">👁️ Vistas</div>
+                </div>
+                <!-- Barra de progreso -->
+                <div style="flex:1;margin:0 10px;">
+                    <div style="height:6px;background:rgba(255,255,255,0.07);border-radius:3px;overflow:hidden;">
+                        <div style="height:100%;width:${barWaPct}%;background:${convColor};border-radius:3px;transition:width .4s;"></div>
                     </div>
-                    <div style="display:flex;justify-content:space-between;margin-top:12px;font-size:11px;">
-                        <span style="color:#888;">${perdidos} visitantes no pidieron</span>
-                        <span>Conversión: <strong style="color:${convColor}">${conversion}%</strong></span>
-                    </div>`;
-                })()}
-        </div>
+                    <div style="text-align:center;margin-top:4px;font-size:10px;color:#666;">${perdidos} no convirtieron</div>
+                </div>
+                <!-- Conversión % -->
+                <div style="text-align:center;min-width:44px;">
+                    <div style="font-size:16px;font-weight:800;color:${convColor};">${conversion}%</div>
+                    <div style="font-size:10px;color:#888;">conv.</div>
+                </div>
+                <!-- Separador -->
+                <div style="width:1px;height:36px;background:rgba(255,255,255,0.07);margin:0 12px;flex-shrink:0;"></div>
+                <!-- Pedidos WA -->
+                <div style="text-align:center;min-width:52px;">
+                    <div style="font-size:18px;font-weight:800;color:#25d366;">${totalWA}</div>
+                    <div style="font-size:10px;color:#888;">💬 WA</div>
+                </div>
+            </div>`;
+        })() : ''}
 
         <!-- Top productos con ambas métricas -->
         <div style="${_cardStyle()}padding:14px;margin-bottom:16px;">
