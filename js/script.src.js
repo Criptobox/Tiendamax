@@ -4295,26 +4295,70 @@ function renderizarRevolicoConfig() {
     const cont = document.getElementById('listaRevolicoConfig');
     if (!cont) return;
 
+    cont.innerHTML = '';
     const config = JSON.parse(localStorage.getItem('revolicoConfig') || '{}');
 
     if (productos.length === 0) {
-        cont.innerHTML = '<p style="font-size:13px;color:var(--text-muted);text-align:center;padding:10px;">No hay productos cargados aún.</p>';
+        const empty = document.createElement('p');
+        empty.style.cssText = 'font-size:13px;color:var(--text-muted);text-align:center;padding:10px;';
+        empty.textContent = 'No hay productos cargados aún.';
+        cont.appendChild(empty);
         return;
     }
 
-    cont.innerHTML = productos.map(p => {
+    const ordenados = [...productos].sort((a, b) => {
+        const aAgo = !a.stock || a.stock <= 0;
+        const bAgo = !b.stock || b.stock <= 0;
+        return aAgo - bAgo;
+    });
+
+    ordenados.forEach(p => {
+        const agotado = !p.stock || p.stock <= 0;
         const catActual = config[p.id] || '';
-        return `
-        <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--card-bg,#fff);border-radius:10px;border:1px solid var(--border-color);flex-wrap:wrap;">
-            <img src="${p.imagen}" style="width:40px;height:40px;border-radius:8px;object-fit:cover;flex-shrink:0;" onerror="this.style.display='none'">
-            <span style="flex:1;font-size:13px;font-weight:600;min-width:120px;">${p.nombre}</span>
-            <select onchange="actualizarRevolicoCat(${p.id}, this.value)"
-                style="flex:2;min-width:180px;padding:8px 10px;border-radius:8px;border:1.5px solid var(--border-color);font-size:12px;background:var(--card-bg,#fff);color:var(--text-primary,#333);">
-                <option value="">— No publicar en Revolico —</option>
-                ${REVOLICO_CATS.map(c => `<option value="${c}" ${c === catActual ? 'selected' : ''}>${c}</option>`).join('')}
-            </select>
-        </div>`;
-    }).join('');
+
+        const row = document.createElement('div');
+        row.style.cssText = `display:flex;align-items:center;gap:10px;padding:10px 12px;
+            background:var(--card-bg,#fff);border-radius:10px;border:1px solid var(--border-color);
+            flex-wrap:wrap;opacity:${agotado ? '0.38' : '1'};`;
+
+        const img = document.createElement('img');
+        img.src = p.imagen || '';
+        img.style.cssText = 'width:40px;height:40px;border-radius:8px;object-fit:cover;flex-shrink:0;';
+        img.onerror = () => { img.style.display = 'none'; };
+
+        const nombre = document.createElement('span');
+        nombre.style.cssText = 'flex:1;font-size:13px;font-weight:600;min-width:120px;';
+        nombre.textContent = p.nombre;
+
+        if (agotado) {
+            const badge = document.createElement('span');
+            badge.style.cssText = 'font-size:11px;color:#e74c3c;font-weight:700;flex:2;min-width:180px;';
+            badge.textContent = '🚫 Agotado — no se publicará';
+            row.appendChild(img);
+            row.appendChild(nombre);
+            row.appendChild(badge);
+        } else {
+            const sel = document.createElement('select');
+            sel.style.cssText = 'flex:2;min-width:180px;padding:8px 10px;border-radius:8px;border:1.5px solid var(--border-color);font-size:12px;background:var(--card-bg,#fff);color:var(--text-primary,#333);';
+            const optDefault = document.createElement('option');
+            optDefault.value = '';
+            optDefault.textContent = '— No publicar en Revolico —';
+            sel.appendChild(optDefault);
+            REVOLICO_CATS.forEach(c => {
+                const opt = document.createElement('option');
+                opt.value = c;
+                opt.textContent = c;
+                if (c === catActual) opt.selected = true;
+                sel.appendChild(opt);
+            });
+            sel.addEventListener('change', () => actualizarRevolicoCat(p.id, sel.value));
+            row.appendChild(img);
+            row.appendChild(nombre);
+            row.appendChild(sel);
+        }
+
+        cont.appendChild(row);
+    });
 }
 
 function actualizarRevolicoCat(idProducto, categoria) {
