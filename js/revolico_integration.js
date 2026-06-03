@@ -4,6 +4,12 @@
  * (Backend eliminado — solo funciones de copia de texto.)
  */
 
+function _escH(s) {
+    return String(s == null ? '' : s)
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
 // ── ASISTENTE FACEBOOK ────────────────────────────────────────────────────
 
 async function copiarYAbrirFacebook(productoId) {
@@ -53,14 +59,24 @@ function mostrarSelectorAsistenteFacebook() {
               <button class="close-btn" onclick="cerrarFbSelector()" type="button">✕</button>
             </div>
             <p style="margin:12px 0 8px;font-size:13px;opacity:.8;">Elige el producto. El texto se copia automáticamente.</p>
-            <div style="max-height:360px;overflow-y:auto;display:flex;flex-direction:column;gap:8px;">
-              ${productos.map(p => `
-                <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:#f8f8f8;border-radius:8px;">
-                  <span style="font-size:13px;">${p.nombre} — $${p.precioActual}</span>
-                  <button onclick="copiarYAbrirFacebook(${p.id}); cerrarFbSelector();" style="background:#3B5998;color:white;border:none;padding:5px 14px;border-radius:6px;cursor:pointer;font-size:12px;" type="button">Copiar y Abrir</button>
-                </div>`).join('')}
-            </div>
+            <div id="fbSelectorList" style="max-height:360px;overflow-y:auto;display:flex;flex-direction:column;gap:8px;"></div>
           </div>`;
+        const list = modal.querySelector('#fbSelectorList');
+        productos.forEach(p => {
+            const row = document.createElement('div');
+            row.style.cssText = 'display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:#f8f8f8;border-radius:8px;';
+            const span = document.createElement('span');
+            span.style.fontSize = '13px';
+            span.textContent = `${p.nombre} — $${p.precioActual}`;
+            const btn = document.createElement('button');
+            btn.style.cssText = 'background:#3B5998;color:white;border:none;padding:5px 14px;border-radius:6px;cursor:pointer;font-size:12px;';
+            btn.type = 'button';
+            btn.textContent = 'Copiar y Abrir';
+            btn.addEventListener('click', () => { copiarYAbrirFacebook(p.id); cerrarFbSelector(); });
+            row.appendChild(span);
+            row.appendChild(btn);
+            list.appendChild(row);
+        });
         document.body.appendChild(modal);
     }
     modal.classList.remove('hidden');
@@ -87,7 +103,11 @@ async function copiarYAbrirRevolico(productoId) {
     if (producto.garantia) texto += `🛡️ Garantía: ${producto.garantia}\n`;
     if (producto.devolucion) texto += `✓ Devolución Segura Garantizada\n`;
     texto += `💰 Precio: $${producto.precioActual} USD\n`;
-    if (producto.stock) texto += `📦 Stock: ${producto.stock} unidad${producto.stock !== 1 ? 'es' : ''}\n`;
+    if (producto.stock > 0) {
+        texto += `📦 Stock: ${producto.stock} unidad${producto.stock !== 1 ? 'es' : ''}\n`;
+    } else {
+        texto += `📦 Sin stock\n`;
+    }
     texto += `📲 WhatsApp: ${whatsapp}\n🔗 ${url}`;
 
     try { await navigator.clipboard.writeText(texto); } catch(e) {
@@ -117,14 +137,24 @@ function mostrarSelectorAsistenteRevolico() {
               <button class="close-btn" onclick="cerrarRevSelector()" type="button">✕</button>
             </div>
             <p style="margin:12px 0 8px;font-size:13px;opacity:.8;">Elige el producto. El texto se copia listo para pegar.</p>
-            <div style="max-height:360px;overflow-y:auto;display:flex;flex-direction:column;gap:8px;">
-              ${productos.map(p => `
-                <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:#f8f8f8;border-radius:8px;">
-                  <span style="font-size:13px;">${p.nombre} — $${p.precioActual}</span>
-                  <button onclick="copiarYAbrirRevolico(${p.id}); cerrarRevSelector();" style="background:#FF6B35;color:white;border:none;padding:5px 14px;border-radius:6px;cursor:pointer;font-size:12px;" type="button">Copiar y Abrir</button>
-                </div>`).join('')}
-            </div>
+            <div id="revSelectorList" style="max-height:360px;overflow-y:auto;display:flex;flex-direction:column;gap:8px;"></div>
           </div>`;
+        const list = modal.querySelector('#revSelectorList');
+        productos.forEach(p => {
+            const row = document.createElement('div');
+            row.style.cssText = 'display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:#f8f8f8;border-radius:8px;';
+            const span = document.createElement('span');
+            span.style.fontSize = '13px';
+            span.textContent = `${p.nombre} — $${p.precioActual}`;
+            const btn = document.createElement('button');
+            btn.style.cssText = 'background:#FF6B35;color:white;border:none;padding:5px 14px;border-radius:6px;cursor:pointer;font-size:12px;';
+            btn.type = 'button';
+            btn.textContent = 'Copiar y Abrir';
+            btn.addEventListener('click', () => { copiarYAbrirRevolico(p.id); cerrarRevSelector(); });
+            row.appendChild(span);
+            row.appendChild(btn);
+            list.appendChild(row);
+        });
         document.body.appendChild(modal);
     }
     modal.classList.remove('hidden');

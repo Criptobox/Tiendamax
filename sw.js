@@ -34,6 +34,7 @@ const STATIC_ASSETS = [
   '/js/analytics.js',
   '/js/seo-dynamico.js',
   '/js/share-patch.js',
+  '/js/push-fix.js',
   '/js/banners.js',
   '/js/subcategorias.js',
   '/js/revolico_integration.js',
@@ -96,10 +97,15 @@ self.addEventListener('fetch', e => {
 
     const path = url.pathname;
 
+    const _fetchWithTimeout = (req, ms) => Promise.race([
+        fetch(req),
+        new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), ms))
+    ]);
+
     // Estrategia Network-First para JSON (precios y productos siempre frescos)
     if (path.endsWith('.json')) {
         e.respondWith(
-            fetch(e.request)
+            _fetchWithTimeout(e.request, 5000)
                 .then(res => {
                     if (res.ok) {
                         const clone = res.clone();
@@ -119,7 +125,7 @@ self.addEventListener('fetch', e => {
                    (e.request.headers.get('accept') || '').includes('text/html');
     if (esHTML) {
         e.respondWith(
-            fetch(e.request)
+            _fetchWithTimeout(e.request, 5000)
                 .then(res => {
                     if (res.ok) {
                         const clone = res.clone();
