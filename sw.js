@@ -1,10 +1,11 @@
 // ═══════════════════════════════════════════════════════
-// TiendaMax — Service Worker v118
-// v118: forzar recarga de admin.css y script.js (fix fondos blancos en modo oscuro).
-// v117: sirve WebP transparentemente para imágenes de producto.
+// TiendaMax — Service Worker v119
+// v119: eliminar analytics.js del cache estático (el ?v= en el HTML ya lo versiona),
+//       fix admin.css y script.js para modo oscuro.
+// v118: (anterior)
 // ═══════════════════════════════════════════════════════
 
-const CACHE_NAME = 'tiendamax-v118';
+const CACHE_NAME = 'tiendamax-v119';
 
 const STATIC_ASSETS = [
   '/',
@@ -17,7 +18,6 @@ const STATIC_ASSETS = [
   '/css/light-mode.css',
   '/css/admin.css',
   '/js/script.js',
-  '/js/analytics.js',
   '/js/seo-dynamico.js',
   '/js/share-patch.js',
   '/js/push-fix.js',
