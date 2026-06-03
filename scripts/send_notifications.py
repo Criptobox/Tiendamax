@@ -38,14 +38,22 @@ def es_hora_diurna() -> bool:
 def es_hora_de_lote_productos() -> bool:
     return hora_local_cuba().hour == HORA_LOTE_PRODUCTOS
 
+ROOT = Path(__file__).resolve().parents[1]
+
 def get_previous_json(filepath: str):
     try:
         res = subprocess.run(
             ["git", "show", f"HEAD~1:{filepath}"],
-            capture_output=True, text=True, check=True
+            capture_output=True, text=True, check=False
         )
+        if res.returncode != 0:
+            return None  # Primer commit o archivo nuevo — sin historial previo
         return json.loads(res.stdout)
-    except Exception:
+    except json.JSONDecodeError as e:
+        print(f"⚠️ JSON malformado en HEAD~1:{filepath}: {e}", file=sys.stderr)
+        return None
+    except Exception as e:
+        print(f"⚠️ Error leyendo historial git de {filepath}: {e}", file=sys.stderr)
         return None
 
 # ============================================================
@@ -195,14 +203,18 @@ def procesar_restock(messaging_api, database, restock_items):
 # ============================================================
 def main():
     msg_api, db_api = init_firebase()
-    if not msg_api: return 1
+    if not msg_api or not db_api: return 1
 
     cola = cargar_cola(db_api)
     solo_flush = os.environ.get("SOLO_FLUSH") == "1"
 
     if not solo_flush:
-        c_act = json.loads(Path("config.json").read_text())
-        p_act = json.loads(Path("productos.json").read_text())
+        try:
+            c_act = json.loads((ROOT / "config.json").read_text(encoding="utf-8"))
+            p_act = json.loads((ROOT / "productos.json").read_text(encoding="utf-8"))
+        except (json.JSONDecodeError, FileNotFoundError) as e:
+            print(f"❌ Error leyendo JSON de datos: {e}", file=sys.stderr)
+            return 1
         cambios = detectar_cambios(c_act, get_previous_json("config.json"), p_act, get_previous_json("productos.json"))
         
         if cambios["tasa"]: cola["tasa_pendiente"] = cambios["tasa"]
