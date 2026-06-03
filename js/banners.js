@@ -72,6 +72,7 @@
     }
 
     window.irBanner = function(idx) {
+        if (banners.length === 0) return;
         current = (idx + banners.length) % banners.length;
         var track = document.getElementById('heroBannerTrack');
         if (track) track.style.transform = 'translateX(-' + (current * 100) + '%)';
