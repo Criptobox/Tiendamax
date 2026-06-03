@@ -3148,6 +3148,7 @@ async function sincronizarTodoConGitHub() {
 
     if (errors.length === 0) {
         limpiarProductosModificados();
+        _tmPublicarVersionFirebase(); // señal para forzar actualización en todos los clientes
         const info = hayDelta ? `${idsModificados.length} producto(s) actualizado(s)` : `${ok} archivos`;
         mostrarNotificacion(`✅ Tienda actualizada (${info}). Visible en ~30 segundos.`);
     } else {
@@ -3164,15 +3165,28 @@ async function sincronizarConGitHub() {
     const repo = localStorage.getItem('githubRepo');
     const token = localStorage.getItem('githubToken');
     if (!user || !repo || !token) {
-        
+
         return;
     }
     try {
         await subirArchivoAGitHub(user, repo, token, 'productos.json', productos);
-        
+        _tmPublicarVersionFirebase();
     } catch (e) {
         console.warn('⚠️ Error al sincronizar automáticamente:', e.message);
     }
+}
+
+// ── Señal de versión en Firebase para forzar actualización en todos los clientes ──
+async function _tmPublicarVersionFirebase() {
+    const base = _tmRtdbUrl();
+    if (!base) return;
+    try {
+        await fetch(`${base}/config/version.json`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(Date.now())
+        });
+    } catch(e) {}
 }
 
 async function subirArchivoAGitHub(user, repo, token, path, data) {

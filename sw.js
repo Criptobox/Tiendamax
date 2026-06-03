@@ -1,5 +1,6 @@
 // ═══════════════════════════════════════════════════════
-// TiendaMax — Service Worker v130
+// TiendaMax — Service Worker v131
+// v131: Firebase version signal para forzar actualización en todos los clientes.
 // v130: PWA install más robusto (delay 1.5s, botón en menú, dismiss 2 días).
 // v129: fix definitivo opacidad categorías vacías (clase proximamente + !important).
 // v128: agotados al final en Gestionar.
@@ -17,7 +18,7 @@
 //      usan el mismo helper _mensajeOrdenWA con formato premium.
 // ═══════════════════════════════════════════════════════
 
-const CACHE_NAME = 'tiendamax-v130';
+const CACHE_NAME = 'tiendamax-v131';
 
 const STATIC_ASSETS = [
   '/',

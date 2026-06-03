@@ -77,6 +77,13 @@
         ".validate": "newData.hasChildren(['producto', 'precio', 'cantidad', 'total', 'fecha']) && newData.child('precio').isNumber() && newData.child('cantidad').isNumber() && newData.child('total').isNumber()"
       }
     },
+    "config": {
+      "version": {
+        ".read": true,
+        ".write": true,
+        ".validate": "newData.isNumber()"
+      }
+    },
     "avisos_count": {
       "$productId": {
         "count": {

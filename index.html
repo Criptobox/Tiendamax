@@ -1104,6 +1104,38 @@
             }).catch(() => {});
         });
     }
+
+    // ── Forzar actualización cuando el admin publica una versión nueva ──
+    // Lee /config/version en Firebase; si cambió, fuerza update del SW y recarga.
+    (function() {
+        async function _checkDeployVersion() {
+            try {
+                const cfg = JSON.parse(localStorage.getItem('firebaseConfig') || '{}');
+                const base = cfg.databaseURL || (cfg.projectId ? 'https://' + cfg.projectId + '-default-rtdb.firebaseio.com' : null);
+                if (!base) return;
+                const r = await fetch(base + '/config/version.json?_=' + Date.now(), { cache: 'no-store' });
+                if (!r.ok) return;
+                const remoto = await r.json();
+                if (!remoto) return;
+                const local = localStorage.getItem('tm_deploy_version');
+                localStorage.setItem('tm_deploy_version', String(remoto));
+                if (local && local !== String(remoto)) {
+                    // Nueva versión detectada — actualizar SW y recargar
+                    if ('serviceWorker' in navigator) {
+                        const reg = await navigator.serviceWorker.getRegistration();
+                        if (reg) { await reg.update(); }
+                    }
+                    window.location.reload();
+                }
+            } catch(e) {}
+        }
+        // Al cargar la página
+        _checkDeployVersion();
+        // Al volver a la pestaña (cubre usuarios que la dejan abierta días)
+        document.addEventListener('visibilitychange', function() {
+            if (document.visibilityState === 'visible') _checkDeployVersion();
+        });
+    })();
     </script>
 <!-- ===== BANNER SLIDER + TAGLINE (movido a archivo externo para reuso en admin) ===== -->
     <script src="js/banners.js?v=3" defer></script>
