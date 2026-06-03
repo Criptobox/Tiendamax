@@ -12,7 +12,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: push-notifications
@@ -40,19 +40,3 @@ jobs:
           FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
         run: python scripts/test_push_now.py
 
-      - name: Commit cola si se vació
-        run: |
-          git config user.name  "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add .push_queue.json 2>/dev/null || true
-          if git diff --cached --quiet; then
-            echo "Sin cambios"
-            exit 0
-          fi
-          git commit -m "chore: cola vaciada tras test push [skip ci]"
-          for i in 1 2 3 4 5; do
-            if git push; then exit 0; fi
-            git pull --rebase origin main || git rebase --abort 2>/dev/null
-            sleep 2
-          done
-          exit 1
