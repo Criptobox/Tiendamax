@@ -4145,7 +4145,13 @@ function renderizarVentas(pagina) {
         html += '<p class="admin-empty">No hay ventas registradas aún.</p>';
     } else {
         html += '<div style="display:flex;flex-direction:column;gap:8px;">';
+        let _lastVentaDate = null;
         ventasPagina.forEach(v => {
+            const _vFecha = new Date(Number(v.id || 0)).toLocaleDateString('es-ES', {day:'numeric', month:'short', year:'numeric'});
+            if (_vFecha !== _lastVentaDate) {
+                _lastVentaDate = _vFecha;
+                html += `<div style="font-size:10px;color:#888;letter-spacing:.4px;padding:10px 0 4px;border-bottom:1px solid rgba(255,255,255,0.06);text-transform:uppercase;">${_vFecha}</div>`;
+            }
             html += `<div class="admin-history-item">
                 <div class="info">
                     <div class="title">${v.producto}</div>
@@ -5193,14 +5199,22 @@ function renderizarDashboardVentas(contenedor) {
     const miniSection = (title, html) =>
         '<div class="admin-mini-section"><div class="admin-chart-title">' + title + '</div>' + (html || empty) + '</div>';
 
-    const masVendidosHtml = topList.length ? topList.map((d, i) => `
-        <div class="admin-top-item">
-            <span class="admin-top-rank">${i + 1}</span>
-            ${imgTag(d.producto)}
-            <span class="admin-top-name">${escapeHtml(d.nombre)}</span>
-            <span class="admin-top-meta">${d.unidades} uds</span>
-            <span class="admin-top-value gold">$${d.total.toFixed(0)}</span>
-        </div>`).join('') : '';
+    const _maxVenta = topList.length ? (topList[0].total || 1) : 1;
+    const masVendidosHtml = topList.length ? topList.map((d, i) => {
+        const pct = Math.round((d.total / _maxVenta) * 100);
+        return `<div class="admin-top-item" style="flex-direction:column;align-items:stretch;gap:3px;">
+            <div style="display:flex;align-items:center;gap:6px;">
+                <span class="admin-top-rank">${i + 1}</span>
+                ${imgTag(d.producto)}
+                <span class="admin-top-name" style="flex:1;">${escapeHtml(d.nombre)}</span>
+                <span class="admin-top-meta">${d.unidades} uds</span>
+                <span class="admin-top-value gold">$${d.total.toFixed(0)}</span>
+            </div>
+            <div style="height:4px;background:rgba(255,255,255,0.06);border-radius:2px;overflow:hidden;margin-left:24px;">
+                <div style="height:100%;width:${pct}%;background:linear-gradient(90deg,#c9a96e,#f0c040);border-radius:2px;"></div>
+            </div>
+        </div>`;
+    }).join('') : '';
 
     const reponerHtml = reponer.length ? reponer.map((p, i) => `
         <div class="admin-top-item">
@@ -5251,15 +5265,22 @@ function renderizarDashboardVentas(contenedor) {
 
         <div class="admin-chart-box admin-unified-dashboard">
             <div class="admin-chart-title">📈 Resumen general — una sola gráfica</div>
-            <div class="admin-chart-bars">
-                ${dias.map(d => {
-                    const h = Math.max(4, Math.round((d.total / maxTotal) * 78));
-                    return `<div title="${d.label}: $${d.total.toFixed(2)} · Ganancia $${d.ganancia.toFixed(2)} · ${d.unidades} ud(s)"
-                        class="admin-chart-bar ${d.total > 0 ? 'filled' : 'empty'}"
-                        style="height:${h}px;"></div>`;
+            <div class="admin-chart-bars" style="align-items:flex-end;">
+                ${dias.map((d, i) => {
+                    const tieneVenta = d.total > 0;
+                    const h = tieneVenta ? Math.max(10, Math.round((d.total / maxTotal) * 72)) : 0;
+                    const esHoy = i === dias.length - 1;
+                    return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;justify-content:flex-end;">
+                        ${tieneVenta
+                            ? `<div style="font-size:7px;color:#c9a96e;font-weight:700;white-space:nowrap;">$${d.total >= 1000 ? (d.total/1000).toFixed(1)+'k' : d.total.toFixed(0)}</div>
+                               <div title="${d.label}: $${d.total.toFixed(2)} · ${d.unidades} ud(s)"
+                                class="admin-chart-bar filled"
+                                style="height:${h}px;width:80%;background:${esHoy ? 'linear-gradient(180deg,#f0c040,#c97d00)' : 'linear-gradient(180deg,#c9a96e,#8a6a30)'};border-radius:3px 3px 0 0;cursor:pointer;"></div>`
+                            : `<div style="height:3px;width:2px;background:rgba(255,255,255,0.08);border-radius:1px;align-self:flex-end;"></div>`}
+                        <div style="font-size:7px;color:${tieneVenta ? (esHoy ? '#f0c040' : '#888') : '#333'};margin-top:2px;white-space:nowrap;">${tieneVenta || esHoy ? d.label.slice(0,5) : ''}</div>
+                    </div>`;
                 }).join('')}
             </div>
-            <div class="admin-chart-footer"><span>${dias[0].label}</span><span>hoy</span></div>
 
             <div class="admin-unified-sections">
                 ${miniSection('🏆 Más vendidos', masVendidosHtml)}
