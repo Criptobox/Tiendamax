@@ -59,6 +59,14 @@
       ".read": "auth != null",
       ".write": false
     },
+    "ventas": {
+      ".read": true,
+      ".write": false,
+      "$ventaId": {
+        ".write": true,
+        ".validate": "newData.hasChildren(['producto', 'precio', 'cantidad', 'total', 'fecha']) && newData.child('precio').isNumber() && newData.child('cantidad').isNumber() && newData.child('total').isNumber()"
+      }
+    },
     "avisos_count": {
       "$productId": {
         "count": {

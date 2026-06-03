@@ -1,0 +1,28 @@
+name: 📊 Reporte diario Telegram
+
+on:
+  schedule:
+    - cron: '0 12 * * *'   # 8:00 AM Cuba (UTC-4)
+  workflow_dispatch:         # también se puede lanzar a mano desde GitHub
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Instalar dependencias
+        run: pip install httpx
+
+      - name: Enviar reporte
+        run: python bot/daily_report.py
+        env:
+          BOT_TOKEN:      ${{ secrets.BOT_TOKEN }}
+          ADMIN_CHAT_ID:  ${{ secrets.ADMIN_CHAT_ID }}
+          FIREBASE_URL:   ${{ secrets.FIREBASE_URL }}
+          GITHUB_TOKEN:   ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPO:    criptobox/tiendamax
