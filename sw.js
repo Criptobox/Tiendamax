@@ -1,54 +1,172 @@
 // ═══════════════════════════════════════════════════════
-// TiendaMax — Service Worker v111 (badge solido + footer movil naranja)
-// v111: footer movil "Max" en naranja para igualar el logo.
-// v110: badge "Mas Vendido" solido en oscuro.
-// v109: badge "Mas Vendido" visible en claro.
-// v108: añade hero-efectos (líneas + typewriter) y fuerza actualización de caché.
-// v107: galería de imágenes por producto.
-// v106: dashboard unificado móvil.
-// v105: dashboard, limpieza y tooling.
-// v67: actualiza caché para que todos los favicons/iconos usen el logo nuevo.
-// v66: corrige assets cacheados inexistentes y fuerza actualización de caché.
-// v65: fuerza actualización de caché para el nuevo estilo naranja del botón
-//      "Avísame cuando vuelva" en productos agotados.
-// v64: fuerza actualización de caché para cargar los arreglos de tarjetas
-//      móviles, barra de moneda y offset del header.
-// v62: las 3 funciones que mandan pedidos por WhatsApp
-//      (comprarCarrito, tmComprar, contactarProducto) ahora
-//      usan el mismo helper _mensajeOrdenWA con formato premium.
+// TiendaMax — Service Worker Unificado v117
+// v117: UNIFICACIÓN — absorbe la lógica de firebase-messaging-sw.js
+//        para eliminar el conflicto de dos SWs manejando push.
+//        Ahora un solo SW gestiona caché + Firebase Messaging.
+// v116: badge solido + footer movil naranja
 // ═══════════════════════════════════════════════════════
 
-const CACHE_NAME = 'tiendamax-v116';
+const CACHE_NAME = 'tiendamax-v117';
 
 const STATIC_ASSETS = [
-  '/',
-  '/index.html',
-  '/css/styles.css',
-  '/css/animations.css',
-  '/css/styles.banner.fix.css',
-  '/css/styles.fixes.css',
-  '/css/premium-theme.css',
-  '/css/light-mode.css',
-  '/css/admin.css',
-  '/js/script.js',
-  '/js/analytics.js',
-  '/js/seo-dynamico.js',
-  '/js/share-patch.js',
-  '/js/banners.js',
-  '/js/subcategorias.js',
-  '/js/revolico_integration.js',
-  '/js/biometric-auth.js',
-  '/js/event-delegation.js',
-  '/js/tienda-plus.js',
-  '/css/tienda-plus.css',
-  '/css/hero-efectos.css',
-  '/js/hero-efectos.js',
-  '/og-image.png',
-  '/manifest.json',
-  '/iconos/icon-192.png',
-  '/iconos/icon-512.png'
+    '/',
+    '/index.html',
+    '/css/styles.css',
+    '/css/animations.css',
+    '/css/styles.banner.fix.css',
+    '/css/styles.fixes.css',
+    '/css/premium-theme.css',
+    '/css/light-mode.css',
+    '/css/admin.css',
+    '/js/script.js',
+    '/js/analytics.js',
+    '/js/seo-dynamico.js',
+    '/js/share-patch.js',
+    '/js/banners.js',
+    '/js/subcategorias.js',
+    '/js/revolico_integration.js',
+    '/js/biometric-auth.js',
+    '/js/event-delegation.js',
+    '/js/tienda-plus.js',
+    '/css/tienda-plus.css',
+    '/css/hero-efectos.css',
+    '/js/hero-efectos.js',
+    '/og-image.png',
+    '/manifest.json',
+    '/iconos/icon-192.png',
+    '/iconos/icon-512.png'
 ];
 
+// ── IndexedDB helper (migrado desde firebase-messaging-sw.js v5) ──
+const IDB_NAME = 'tm_push_prefs';
+const IDB_STORE = 'prefs';
+const IDB_VERSION = 1;
+
+function abrirIDB() {
+    return new Promise((resolve, reject) => {
+        const req = indexedDB.open(IDB_NAME, IDB_VERSION);
+        req.onupgradeneeded = e => e.target.result.createObjectStore(IDB_STORE);
+        req.onsuccess = e => resolve(e.target.result);
+        req.onerror = e => reject(e.target.error);
+    });
+}
+
+async function idbGet(key) {
+    try {
+        const db = await abrirIDB();
+        return new Promise((resolve, reject) => {
+            const tx = db.transaction(IDB_STORE, 'readonly');
+            const req = tx.objectStore(IDB_STORE).get(key);
+            req.onsuccess = e => resolve(e.target.result);
+            req.onerror = e => reject(e.target.error);
+        });
+    } catch(e) { return undefined; }
+}
+
+async function idbSet(key, value) {
+    try {
+        const db = await abrirIDB();
+        return new Promise((resolve, reject) => {
+            const tx = db.transaction(IDB_STORE, 'readwrite');
+            const req = tx.objectStore(IDB_STORE).put(value, key);
+            req.onsuccess = () => resolve();
+            req.onerror = e => reject(e.target.error);
+        });
+    } catch(e) {}
+}
+
+// ── Firebase config — se carga dinámicamente desde config.json ──
+let _firebaseInitialized = false;
+
+async function initFirebaseInSW() {
+    if (_firebaseInitialized) return;
+    try {
+        // Cargar config.json desde caché o red
+        const res = await fetch('/config.json');
+        if (!res.ok) return;
+        const cfg = await res.json();
+        if (!cfg.firebaseConfig || !cfg.firebaseConfig.projectId) return;
+
+        // Importar Firebase SDK (ya están cacheados o se cargan desde red)
+        importScripts('https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js');
+        importScripts('https://www.gstatic.com/firebasejs/10.8.0/firebase-messaging-compat.js');
+
+        if (!firebase.apps.length) {
+            firebase.initializeApp(cfg.firebaseConfig);
+        }
+        _firebaseInitialized = true;
+        console.log('[SW v117] Firebase Messaging inicializado');
+    } catch(e) {
+        console.warn('[SW v117] No se pudo inicializar Firebase:', e.message);
+    }
+}
+
+// ── Mensajes desde el cliente (migrado desde firebase-messaging-sw.js) ──
+self.addEventListener('message', (event) => {
+    if (!event.data) return;
+
+    // SKIP_WAITING del index
+    if (event.data === 'SKIP_WAITING' || (event.data && event.data.type === 'SKIP_WAITING')) {
+        self.skipWaiting();
+    }
+
+    if (event.data.type === 'TM_SET_DESUSCRITO') {
+        idbSet('tm_push_desuscrito', '1').then(() => {
+            console.log('[SW v117] Flag desuscrito guardado en IndexedDB');
+        });
+    }
+
+    if (event.data.type === 'TM_CLEAR_DESUSCRITO') {
+        idbSet('tm_push_desuscrito', '0').then(() => {
+            console.log('[SW v117] Flag desuscrito borrado de IndexedDB');
+        });
+    }
+});
+
+// ── Helper: construir y mostrar notificación ──
+function mostrarNotificacionTM(payload) {
+    console.log('[SW v117] Payload recibido:', payload);
+
+    const notif = payload.notification || {};
+    const data = payload.data || {};
+
+    const titulo = notif.title || data.title || '📢 TiendaMax';
+    const cuerpo = notif.body || data.body || 'Tienes una nueva notificación';
+    const url = data.url || notif.click_action || '/';
+
+    let imagen = notif.image || data.image || null;
+    if (imagen && (imagen === '' || imagen === 'null' || imagen === 'undefined')) {
+        imagen = null;
+    }
+
+    const icono = notif.icon || data.icon || '/iconos/icon-192.png';
+    const tag = data.tag || 'tiendamax';
+
+    const opciones = {
+        body: cuerpo,
+        icon: icono,
+        badge: '/iconos/icon-192.png',
+        data: { url: url, fechaRecibida: Date.now() },
+        vibrate: [200, 100, 200],
+        tag: tag,
+        renotify: true,
+        requireInteraction: false,
+        actions: [
+            { action: 'ver', title: '👀 Ver oferta' },
+            { action: 'cerrar', title: 'Cerrar' }
+        ]
+    };
+
+    if (imagen) {
+        opciones.image = imagen;
+    }
+
+    return self.registration.showNotification(titulo, opciones);
+}
+
+// ═══════════════════════════════════════════════════════════
+//  INSTALL — cachear assets estáticos
+// ═══════════════════════════════════════════════════════════
 self.addEventListener('install', e => {
     self.skipWaiting();
     e.waitUntil(
@@ -57,21 +175,40 @@ self.addEventListener('install', e => {
     );
 });
 
-// Escuchar la orden del index para activar el SW nuevo de inmediato
-self.addEventListener('message', e => {
-    if (e.data === 'SKIP_WAITING' || (e.data && e.data.type === 'SKIP_WAITING')) {
-        self.skipWaiting();
-    }
-});
-
+// ═══════════════════════════════════════════════════════════
+//  ACTIVATE — limpiar cachés viejas + inicializar Firebase
+// ═══════════════════════════════════════════════════════════
 self.addEventListener('activate', e => {
     e.waitUntil(
         (async () => {
+            // Limpiar cachés viejas
             const keys = await caches.keys();
             await Promise.all(
                 keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k))
             );
             await self.clients.claim();
+
+            // Inicializar Firebase Messaging dentro del SW
+            await initFirebaseInSW();
+
+            // Registrar listener de background messages (solo una vez)
+            if (_firebaseInitialized && firebase.messaging) {
+                try {
+                    const messaging = firebase.messaging();
+                    messaging.onBackgroundMessage(async (payload) => {
+                        const desuscrito = await idbGet('tm_push_desuscrito');
+                        if (desuscrito === '1') {
+                            console.log('[SW v117] Usuario desuscrito, notificación bloqueada.');
+                            return;
+                        }
+                        return mostrarNotificacionTM(payload);
+                    });
+                    console.log('[SW v117] onBackgroundMessage registrado');
+                } catch(e) {
+                    console.warn('[SW v117] Error registrando onBackgroundMessage:', e);
+                }
+            }
+
             // Notificar a los clientes que el SW se ha actualizado
             const allClients = await self.clients.matchAll({ type: 'window' });
             for (const client of allClients) {
@@ -81,6 +218,9 @@ self.addEventListener('activate', e => {
     );
 });
 
+// ═══════════════════════════════════════════════════════════
+//  FETCH — estrategia de caché
+// ═══════════════════════════════════════════════════════════
 self.addEventListener('fetch', e => {
     const url = new URL(e.request.url);
     const externos = [
@@ -96,7 +236,7 @@ self.addEventListener('fetch', e => {
 
     const path = url.pathname;
 
-    // Estrategia Network-First para JSON (precios y productos siempre frescos)
+    // Network-First para JSON
     if (path.endsWith('.json')) {
         e.respondWith(
             fetch(e.request)
@@ -112,11 +252,10 @@ self.addEventListener('fetch', e => {
         return;
     }
 
-    // Estrategia Network-First para HTML (index y páginas siempre frescos,
-    // así los cambios se ven al instante sin depender del caché del SW)
+    // Network-First para HTML
     const esHTML = e.request.mode === 'navigate' ||
-                   path.endsWith('.html') || path === '/' ||
-                   (e.request.headers.get('accept') || '').includes('text/html');
+        path.endsWith('.html') || path === '/' ||
+        (e.request.headers.get('accept') || '').includes('text/html');
     if (esHTML) {
         e.respondWith(
             fetch(e.request)
@@ -132,7 +271,7 @@ self.addEventListener('fetch', e => {
         return;
     }
 
-    // Estrategia Cache-First para Assets estáticos (JS, CSS, imágenes, iconos)
+    // Cache-First para assets estáticos
     e.respondWith(
         caches.match(e.request).then(cached => {
             return cached || fetch(e.request).then(res => {
@@ -146,56 +285,74 @@ self.addEventListener('fetch', e => {
     );
 });
 
-// Manejo de Notificaciones Push
-self.addEventListener('push', e => {
-    let datos = {
-        titulo: '📢 TiendaMax',
-        cuerpo: 'Tienes una nueva notificación',
-        url: '/',
-        icono: '/iconos/icon-192.png'
-    };
+// ═══════════════════════════════════════════════════════════
+//  PUSH — manejador unificado (reemplaza los dos anteriores)
+//  Solo un listener de push, que verifica desuscripción
+//  y muestra la notificación.
+// ═══════════════════════════════════════════════════════════
+self.addEventListener('push', async (event) => {
+    if (!event.data) return;
 
-    if (e.data) {
+    // Verificar si el usuario se desuscribió manualmente
+    const desuscrito = await idbGet('tm_push_desuscrito');
+    if (desuscrito === '1') {
+        console.log('[SW v117] Usuario desuscrito, push bloqueado.');
+        return;
+    }
+
+    let payload = {};
+    try {
+        payload = event.data.json();
+    } catch (e) {
         try {
-            const jsonPayload = e.data.json();
-            // Manejo de estructura FCM estándar
-            if (jsonPayload.data) {
-                datos.url = jsonPayload.data.url || jsonPayload.data.click_action || datos.url;
-                datos.titulo = jsonPayload.data.title || jsonPayload.data.titulo || datos.titulo;
-                datos.cuerpo = jsonPayload.data.body || jsonPayload.data.cuerpo || datos.cuerpo;
-                if (jsonPayload.data.image) datos.icono = jsonPayload.data.image;
-            }
-        } catch (err) {
-            datos.cuerpo = e.data.text();
+            payload = { data: { body: event.data.text() } };
+        } catch (e2) {
+            console.warn('[SW v117] No se pudo parsear payload', e2);
+            return;
         }
     }
 
-    e.waitUntil(
-        self.registration.showNotification(datos.titulo, {
-            body: datos.cuerpo,
-            icon: '/iconos/icon-192.png',
-            image: datos.icono !== '/iconos/icon-192.png' ? datos.icono : undefined,
-            badge: '/iconos/icon-192.png',
-            data: { url: datos.url },
-            vibrate: [200, 100, 200],
-            actions: [
-                { action: 'ver', title: '👀 Ver ahora' },
-                { action: 'cerrar', title: 'Cerrar' }
-            ]
+    // Si Firebase ya va a manejar esta notificación vía onBackgroundMessage,
+    // NO la mostramos duplicada. Solo la mostramos si:
+    // - Tiene payload.data (FCM data message) → la mostramos nosotros
+    // - Tiene payload.notification (FCM notification message) → Firebase la maneja
+    //   (pero si Firebase no está inicializado, la mostramos como fallback)
+    if (payload.notification && _firebaseInitialized) {
+        // Firebase onBackgroundMessage se encargará
+        return;
+    }
+
+    // Si es un data message o Firebase no está inicializado, la mostramos
+    event.waitUntil(mostrarNotificacionTM(payload));
+});
+
+// ═══════════════════════════════════════════════════════════
+//  NOTIFICATION CLICK — manejador unificado
+// ═══════════════════════════════════════════════════════════
+self.addEventListener('notificationclick', (event) => {
+    event.notification.close();
+    if (event.action === 'cerrar') return;
+
+    const urlDestino = (event.notification.data && event.notification.data.url) || '/';
+
+    event.waitUntil(
+        clients.matchAll({ type: 'window', includeUncontrolled: true }).then(lista => {
+            // Intentar enfocar una ventana existente de TiendaMax
+            for (const client of lista) {
+                if (client.url.includes('tiendamax.org') && 'focus' in client) {
+                    client.focus();
+                    if ('navigate' in client) {
+                        return client.navigate(urlDestino).catch(() => clients.openWindow(urlDestino));
+                    }
+                    return;
+                }
+            }
+            // Si no hay ventana abierta, crear una nueva
+            if (clients.openWindow) {
+                return clients.openWindow(urlDestino);
+            }
         })
     );
 });
 
-self.addEventListener('notificationclick', e => {
-    e.notification.close();
-    if (e.action === 'cerrar') return;
-    const urlDestino = (e.notification.data && e.notification.data.url) || '/';
-    e.waitUntil(
-        clients.matchAll({ type: 'window' }).then(windowClients => {
-            for (let client of windowClients) {
-                if (client.url === urlDestino && 'focus' in client) return client.focus();
-            }
-            if (clients.openWindow) return clients.openWindow(urlDestino);
-        })
-    );
-});
+console.log('[SW v117] Service Worker Unificado cargado correctamente');
