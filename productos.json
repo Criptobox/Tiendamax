@@ -185,7 +185,7 @@
     "id": 1778104191957,
     "nombre": "Cargador inteligente de 15 AMPERES:",
     "descripcion": "Cargador inteligente de 15 AMPERES:\n•Carga y repara las baterias de acido plomo, calcio, gel, húmedas, lifepo4, AGM, entre otras.\n• Trabaja con 110 y 220 volts.\n•Ideal para cargar baterías de 12v(200A) y 24v(100A)\n•Las baterias  de 12v las carga a 15A y las de 24v a 8A.\n•Pantalla led iluminada de azúl.",
-    "imagen": "https://tiendamax.org/imagenes/img_1778104191957.jpg",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1780510718915.jpg",
     "precioActual": 65,
     "descuento": 0,
     "stock": 47,
@@ -195,7 +195,11 @@
     "garantia": "",
     "devolucion": false,
     "subcategoria": "",
-    "comision": 5
+    "comision": 5,
+    "precioOriginal": 0,
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1780510718915.jpg"
+    ]
   },
   {
     "id": 1778104287395,
