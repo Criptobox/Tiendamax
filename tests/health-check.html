@@ -470,7 +470,7 @@ suites.push({
             const r = await fetch('https://tiendamax.org/config.json', { cache: 'no-store' });
             if (!r.ok) throw new Error(`HTTP ${r.status}`);
             const cfg = await r.json();
-            if (!cfg.tasaCambio && !cfg.tasa && !cfg.rate) throw new Error('Sin campo de tasa en config.json');
+            if (!cfg.tasaMN && !cfg.tasaCambio && !cfg.tasa && !cfg.rate) throw new Error('Sin campo de tasa en config.json');
             expect(true).toBeTruthy();
         }},
         { name: 'manifest.json es válido', async: true, fn: async ()=>{
