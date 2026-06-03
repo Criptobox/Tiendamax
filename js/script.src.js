@@ -1632,6 +1632,7 @@ function renderizarCategoriasHome() {
         const count = productos.filter(p => p.categoria === cat).length;
         const card = document.createElement('div');
         card.className = 'categoria-card';
+        if (count === 0) { card.style.opacity = '0.42'; card.style.pointerEvents = 'none'; }
         card.innerHTML = `
             <span class="cat-icon">${escapeHtml(obtenerIconoCategoria(cat))}</span>
             <span class="cat-name">${escapeHtml(cat)}</span>
@@ -3616,6 +3617,7 @@ function renderizarCategoriasHomeInstant() {
         const count = localProds.filter(p => p.categoria === cat).length;
         const card = document.createElement('div');
         card.className = 'categoria-card';
+        if (count === 0) { card.style.opacity = '0.42'; card.style.pointerEvents = 'none'; }
         card.innerHTML = `<span class="cat-icon">${obtenerIconoCategoria(cat)}</span><span class="cat-name">${cat}</span><span class="cat-count">${count === 0 ? '🕐 Próximamente' : count + ' producto' + (count !== 1 ? 's' : '')}</span>`;
         card.onclick = () => mostrarVistaCategoria(cat);
         grid.appendChild(card);
@@ -3791,6 +3793,7 @@ function actualizarListaProductos() {
                     <button type="button" class="tm-stock-btn plus"  onclick="ajustarStock(${_id}, 1)">+</button>
                     <span class="tm-stock-label">Stock:</span>
                     <span class="tm-stock-value ${stockClass}">${stockLabel}</span>
+                    ${stock > 0 ? `<button type="button" class="tm-stock-btn zero" onclick="fijarStockCero(${_id})" title="Marcar agotado">→0</button>` : ''}
                 </div>
                 <div class="tm-prod-pub-row">
                     <button type="button" class="tm-pub-btn" style="background:#e67e22;" onclick="copiarParaRevolico(${_id})">📋 Revolico</button>
@@ -3807,6 +3810,16 @@ function actualizarListaProductos() {
 }
 
 // ── Ajustar stock desde gestionar ──────────────────
+function fijarStockCero(id) {
+    const p = productos.find(p => p.id === id);
+    if (!p || p.stock === 0) return;
+    p.stock = 0;
+    guardarProductos();
+    marcarProductoModificado(id);
+    actualizarListaProductos();
+    mostrarNotificacion(`🔴 ${p.nombre}: marcado como agotado`, 'warning');
+}
+
 // desdeVenta=true cuando lo llama registrarVenta (omite notificación de stock para no duplicar)
 function ajustarStock(id, cantidad, desdeVenta = false) {
     const p = productos.find(p => p.id === id);
