@@ -1,5 +1,6 @@
 // ═══════════════════════════════════════════════════════
-// TiendaMax — Service Worker v125
+// TiendaMax — Service Worker v126
+// v126: fix fotos en modal editar (reset inputs, botón eliminar por foto), tarjetas Gestionar optimizadas.
 // v125: fondo coloreado en KPIs de Analytics (gradiente sólido como panel de Ventas).
 // v124: colores en KPIs de Analytics, mejoras visuales en Ventas y Analytics.
 // v66: corrige assets cacheados inexistentes y fuerza actualización de caché.
@@ -12,7 +13,7 @@
 //      usan el mismo helper _mensajeOrdenWA con formato premium.
 // ═══════════════════════════════════════════════════════
 
-const CACHE_NAME = 'tiendamax-v125';
+const CACHE_NAME = 'tiendamax-v126';
 
 const STATIC_ASSETS = [
   '/',

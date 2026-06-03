@@ -1962,10 +1962,140 @@ body:not(.dark-mode) .admin-inventory-strip span {
     border-radius: 12px;
     background: rgba(255,255,255,.04);
 }
-.admin-gallery-preview img {
+.admin-gallery-item {
+    position: relative;
+    display: inline-block;
+}
+.admin-gallery-item img {
     width: 58px;
     height: 58px;
     object-fit: cover;
     border-radius: 10px;
     border: 1px solid rgba(255,255,255,.12);
+    display: block;
+}
+.admin-gallery-delete {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    width: 18px;
+    height: 18px;
+    background: #e74c3c;
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    font-size: 9px;
+    line-height: 18px;
+    text-align: center;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    box-shadow: 0 1px 4px rgba(0,0,0,.4);
+}
+.admin-gallery-delete:hover { background: #c0392b; }
+/* ── Compact product card in Gestionar ── */
+.tm-prod-card {
+    background: rgba(255,255,255,0.03);
+    border-radius: 10px;
+    border: 0.5px solid rgba(255,255,255,0.07);
+    padding: 10px 12px;
+    margin-bottom: 8px;
+}
+.tm-prod-card-header {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+}
+.tm-prod-thumb {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 8px;
+    flex-shrink: 0;
+}
+.tm-prod-info { flex: 1; min-width: 0; }
+.tm-prod-name {
+    font-size: 13px;
+    font-weight: 700;
+    color: #fff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 2px;
+}
+.tm-prod-meta { font-size: 11px; color: #888; }
+.tm-prod-commission { font-size: 11px; color: #27ae60; margin-top: 1px; }
+.tm-prod-icon-btn {
+    background: rgba(255,255,255,.08);
+    border: 0.5px solid rgba(255,255,255,.12);
+    border-radius: 7px;
+    color: #fff;
+    font-size: 16px;
+    width: 34px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+    padding: 0;
+}
+.tm-prod-icon-btn.edit { background: rgba(52,152,219,.25); border-color: rgba(52,152,219,.4); }
+.tm-prod-icon-btn.del  { background: rgba(231,76,60,.2); border-color: rgba(231,76,60,.35); }
+.tm-prod-stock-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 8px;
+}
+.tm-stock-btn {
+    background: rgba(255,255,255,.07);
+    border: 0.5px solid rgba(255,255,255,.12);
+    border-radius: 6px;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 700;
+    width: 30px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 0;
+    flex-shrink: 0;
+}
+.tm-stock-btn.plus  { background: rgba(39,174,96,.25); border-color: rgba(39,174,96,.4); }
+.tm-stock-btn.minus { background: rgba(231,76,60,.18); border-color: rgba(231,76,60,.3); }
+.tm-stock-label {
+    font-size: 12px;
+    color: #aaa;
+    flex: 1;
+}
+.tm-stock-value {
+    font-size: 13px;
+    font-weight: 700;
+}
+.tm-stock-value.out { color: #e74c3c; }
+.tm-stock-value.low { color: #f39c12; }
+.tm-stock-value.ok  { color: #2ecc71; }
+.tm-prod-pub-row {
+    display: flex;
+    gap: 5px;
+    margin-top: 7px;
+    flex-wrap: wrap;
+}
+.tm-pub-btn {
+    font-size: 11px;
+    padding: 5px 9px;
+    border-radius: 7px;
+    border: none;
+    cursor: pointer;
+    color: #fff;
+    font-weight: 600;
+    flex: 1;
+    min-width: 0;
+    text-align: center;
 }

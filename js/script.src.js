@@ -2821,6 +2821,46 @@ function eliminarProducto(id) {
     mostrarNotificacion('🗑️ Producto eliminado', 'info');
 }
 
+// ── Estado de la galería en el modal de edición ──────────
+let _editImagenesEliminar = new Set();
+let _editProductActual = null;
+
+function _renderEditGallery(p) {
+    const preview = document.getElementById('currentImagePreview');
+    if (!preview) return;
+    const imgs = obtenerImagenesProducto(p).filter(u => !_editImagenesEliminar.has(u));
+    preview.innerHTML = '';
+    if (!imgs.length) {
+        const s = document.createElement('span');
+        s.style.cssText = 'font-size:12px;color:#888;';
+        s.textContent = 'Sin imágenes';
+        preview.appendChild(s);
+        return;
+    }
+    const wrap = document.createElement('div');
+    wrap.className = 'admin-gallery-preview';
+    imgs.forEach(url => {
+        const item = document.createElement('div');
+        item.className = 'admin-gallery-item';
+        const img = document.createElement('img');
+        img.src = url;
+        img.onerror = () => { img.style.display = 'none'; };
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'admin-gallery-delete';
+        btn.title = 'Quitar esta foto';
+        btn.textContent = '✕';
+        btn.addEventListener('click', () => {
+            _editImagenesEliminar.add(url);
+            _renderEditGallery(p);
+        });
+        item.appendChild(img);
+        item.appendChild(btn);
+        wrap.appendChild(item);
+    });
+    preview.appendChild(wrap);
+}
+
 function abrirEditModal(id) {
     const p = productos.find(prod => prod.id === id);
     if (!p) return;
@@ -2852,13 +2892,14 @@ function abrirEditModal(id) {
     const masVendidoSel = document.getElementById('editProductMasVendido');
     if (masVendidoSel) masVendidoSel.value = p.masVendido ? 'true' : 'false';
 
-    const preview = document.getElementById('currentImagePreview');
-    if (preview) {
-        const imgs = obtenerImagenesProducto(p);
-        preview.innerHTML = imgs.length
-            ? '<div class="admin-gallery-preview">' + imgs.map((url, i) => '<img src="' + escapeAttr(url) + '" title="Imagen ' + (i + 1) + '" onerror="this.style.display=\'none\'">').join('') + '</div>'
-            : '<span style="font-size:12px;color:#888;">Sin imágenes</span>';
-    }
+    // Limpiar estado de fotos de la edición anterior
+    _editImagenesEliminar = new Set();
+    _editProductActual = p;
+    const _fi1 = document.getElementById('editProductImage');
+    if (_fi1) _fi1.value = '';
+    const _fi2 = document.getElementById('editProductImagesExtra');
+    if (_fi2) _fi2.value = '';
+    _renderEditGallery(p);
 
     const modal = document.getElementById('editModal');
     modal.classList.remove('hidden');
@@ -2889,7 +2930,8 @@ async function guardarProductoEditado(event) {
         }
         const extrasNuevas = await subirMultiplesImagenes('editProductImagesExtra');
         const imagenPrincipal = nuevaImagen || productos[index].imagen;
-        const anteriores = obtenerImagenesProducto(productos[index]);
+        // Excluir fotos marcadas para eliminar en el modal
+        const anteriores = obtenerImagenesProducto(productos[index]).filter(u => !_editImagenesEliminar.has(u));
         const imagenes = _tmDedupImagenes([
             imagenPrincipal,
             ...anteriores.filter(url => url !== productos[index].imagen && url !== imagenPrincipal),
@@ -3730,25 +3772,30 @@ function actualizarListaProductos() {
             const _id = safeNum(producto.id);
             const _nm = escapeHtml(producto.nombre);
             const _im = escapeAttr(producto.imagen);
-            html += `<div class="product-item" style="border-left:3px solid var(--primary);">
-                <div class="product-item-info">
-                    <img src="${_im}" alt="${_nm}" style="width:56px;height:56px;object-fit:cover;border-radius:8px;float:left;margin-right:12px;" onerror="this.src='/iconos/favicon-192.png';this.style.opacity='0.3'">
-                    <h4 style="margin:0 0 4px;">${_nm} ${producto.masVendido ? '🔥' : ''}</h4>
-                    <p style="margin:0;font-size:12px;color:var(--text-muted);">
-                        <strong>$${Number(producto.precioActual).toFixed(2)}</strong> USD
-                        ${producto.descuento > 0 ? `<span style="color:#e74c3c;margin-left:6px;">-${safeNum(producto.descuento)}%</span>` : ''}
-                        · Stock: <strong>${safeNum(producto.stock)}</strong>
-                        ${producto.comision > 0 ? `· 💰 Comisión: <strong style="color:#27ae60;">$${Number(producto.comision).toFixed(2)}</strong>` : ''}
-                    </p>
+            const stock = producto.stock || 0;
+            const stockClass = stock === 0 ? 'out' : stock <= 3 ? 'low' : 'ok';
+            const stockLabel = stock === 0 ? 'Agotado' : stock + ' uds';
+            html += `<div class="tm-prod-card">
+                <div class="tm-prod-card-header">
+                    <img src="${_im}" alt="" class="tm-prod-thumb" onerror="this.src='/iconos/favicon-192.png';this.style.opacity='0.3'">
+                    <div class="tm-prod-info">
+                        <div class="tm-prod-name">${_nm}${producto.masVendido ? ' 🔥' : ''}</div>
+                        <div class="tm-prod-meta">$${Number(producto.precioActual).toFixed(2)} USD${producto.descuento > 0 ? ' · <span style="color:#e74c3c;">−'+safeNum(producto.descuento)+'%</span>' : ''}</div>
+                        ${producto.comision > 0 ? `<div class="tm-prod-commission">💰 Comisión: $${Number(producto.comision).toFixed(2)}</div>` : ''}
+                    </div>
+                    <button type="button" class="tm-prod-icon-btn edit" onclick="abrirEditModal(${_id})" title="Editar">✏️</button>
+                    <button type="button" class="tm-prod-icon-btn del" onclick="eliminarProducto(${_id})" title="Eliminar">🗑️</button>
                 </div>
-                <div class="product-item-actions" style="clear:both;padding-top:8px;display:flex;flex-wrap:wrap;gap:6px;">
-                    <button class="btn-small-icon" style="background:#27ae60;color:white;" onclick="ajustarStock(${_id}, 1)">+1 Stock</button>
-                    <button class="btn-small-icon" style="background:#e74c3c;color:white;" onclick="ajustarStock(${_id}, -1)">-1 Stock</button>
-                    <button class="btn-small-icon btn-edit" onclick="abrirEditModal(${_id})">✏️ Editar</button>
-                    <button class="btn-small-icon btn-delete" onclick="eliminarProducto(${_id})">🗑️ Eliminar</button>
-                    <button class="btn-small-icon btn-revolico" style="background:#ff9800" onclick="copiarParaRevolico(${_id})">📋 Revolico</button>
-                    <button class="btn-small-icon btn-revolico" style="background:#4267B2" onclick="copiarParaFacebook(${_id})">📋 Facebook</button>
-                    <button class="btn-small-icon btn-revolico" onclick="publicarEnRevolico(${_id})">🤖 Rev</button>
+                <div class="tm-prod-stock-row">
+                    <button type="button" class="tm-stock-btn minus" onclick="ajustarStock(${_id},-1)">−</button>
+                    <button type="button" class="tm-stock-btn plus"  onclick="ajustarStock(${_id}, 1)">+</button>
+                    <span class="tm-stock-label">Stock:</span>
+                    <span class="tm-stock-value ${stockClass}">${stockLabel}</span>
+                </div>
+                <div class="tm-prod-pub-row">
+                    <button type="button" class="tm-pub-btn" style="background:#e67e22;" onclick="copiarParaRevolico(${_id})">📋 Revolico</button>
+                    <button type="button" class="tm-pub-btn" style="background:#4267B2;" onclick="copiarParaFacebook(${_id})">📋 Facebook</button>
+                    <button type="button" class="tm-pub-btn" style="background:#555;" onclick="publicarEnRevolico(${_id})">🤖 Asistente</button>
                 </div>
             </div>`;
         });
