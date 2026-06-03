@@ -1,11 +1,10 @@
 // ═══════════════════════════════════════════════════════
-// TiendaMax — Service Worker v117
-// v117: sirve WebP transparentemente para imágenes de producto
-//       (intercepción en fetch handler; fallback automático a JPEG/PNG).
-// v116: (anterior)
+// TiendaMax — Service Worker v118
+// v118: forzar recarga de admin.css y script.js (fix fondos blancos en modo oscuro).
+// v117: sirve WebP transparentemente para imágenes de producto.
 // ═══════════════════════════════════════════════════════
 
-const CACHE_NAME = 'tiendamax-v117';
+const CACHE_NAME = 'tiendamax-v118';
 
 const STATIC_ASSETS = [
   '/',
