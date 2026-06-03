@@ -4148,26 +4148,37 @@ function renderizarGruposFB(grupos) {
             listProds.appendChild(noP);
         } else {
             productos.forEach(p => {
+                const agotado = !p.stock || p.stock <= 0;
                 const row = document.createElement('label');
-                row.style.cssText = 'display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer;';
+                row.style.cssText = `display:flex;align-items:center;gap:8px;font-size:13px;
+                    cursor:${agotado ? 'not-allowed' : 'pointer'};
+                    opacity:${agotado ? '0.38' : '1'};`;
                 const chk = document.createElement('input');
                 chk.type = 'checkbox';
-                chk.checked = (g.productos || []).includes(p.id);
-                chk.style.cssText = 'width:16px;height:16px;accent-color:var(--primary);';
-                chk.addEventListener('change', () => toggleProductoEnGrupo(i, p.id, chk.checked));
+                chk.checked = !agotado && (g.productos || []).includes(p.id);
+                chk.disabled = agotado;
+                chk.style.cssText = 'width:16px;height:16px;accent-color:var(--primary);flex-shrink:0;';
+                if (!agotado) chk.addEventListener('change', () => toggleProductoEnGrupo(i, p.id, chk.checked));
                 const img = document.createElement('img');
                 img.src = p.imagen || '';
-                img.style.cssText = 'width:28px;height:28px;border-radius:6px;object-fit:cover;';
+                img.style.cssText = 'width:28px;height:28px;border-radius:6px;object-fit:cover;flex-shrink:0;';
                 img.onerror = () => { img.style.display = 'none'; };
                 const nombre = document.createElement('span');
+                nombre.style.cssText = 'overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;';
                 nombre.textContent = p.nombre;
-                const precio = document.createElement('span');
-                precio.style.cssText = 'margin-left:auto;color:var(--primary);font-weight:600;';
-                precio.textContent = `$${p.precioActual}`;
+                const right = document.createElement('span');
+                right.style.cssText = 'margin-left:auto;font-size:11px;font-weight:600;flex-shrink:0;white-space:nowrap;';
+                if (agotado) {
+                    right.style.color = '#e74c3c';
+                    right.textContent = '🚫 Agotado';
+                } else {
+                    right.style.color = 'var(--primary)';
+                    right.textContent = `$${p.precioActual}`;
+                }
                 row.appendChild(chk);
                 row.appendChild(img);
                 row.appendChild(nombre);
-                row.appendChild(precio);
+                row.appendChild(right);
                 listProds.appendChild(row);
             });
         }

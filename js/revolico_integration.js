@@ -280,16 +280,21 @@ function publicarEnGrupoFB(iGrupo) {
 
         const btn = document.createElement('button');
         btn.type = 'button';
-        btn.style.cssText = 'background:#4267B2;color:#fff;border:none;padding:7px 14px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0;';
-        btn.textContent = '📋 Copiar y Abrir';
-        btn.addEventListener('click', async () => {
-            await copiarYAbrirFacebook(p.id, grupo.url);
-            // Marcar como publicado visualmente
-            btn.textContent = '✅ Publicado';
-            btn.style.background = '#27AE60';
+        if (agotado) {
+            btn.textContent = '🚫 Agotado';
             btn.disabled = true;
-            row.style.opacity = '.5';
-        });
+            btn.style.cssText = 'background:#555;color:#999;border:none;padding:7px 14px;border-radius:8px;font-size:12px;font-weight:600;cursor:not-allowed;white-space:nowrap;flex-shrink:0;';
+        } else {
+            btn.textContent = '📋 Copiar y Abrir';
+            btn.style.cssText = 'background:#4267B2;color:#fff;border:none;padding:7px 14px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0;';
+            btn.addEventListener('click', async () => {
+                await copiarYAbrirFacebook(p.id, grupo.url);
+                btn.textContent = '✅ Publicado';
+                btn.style.background = '#27AE60';
+                btn.disabled = true;
+                row.style.opacity = '.5';
+            });
+        }
 
         row.appendChild(num);
         row.appendChild(info);
