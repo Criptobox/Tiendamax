@@ -1,10 +1,10 @@
 // ═══════════════════════════════════════════════════════
-// TiendaMax — Service Worker v120
+// TiendaMax — Service Worker v121
+// v121: cards "Vistos recientemente" más pequeñas — 3 columnas en móvil, imagen 4:3.
 // v120: bundle.css v2 — mejoras homepage: espaciado, grid centrado, Próximamente dimmed.
-// v119: (anterior)
 // ═══════════════════════════════════════════════════════
 
-const CACHE_NAME = 'tiendamax-v120';
+const CACHE_NAME = 'tiendamax-v121';
 
 const STATIC_ASSETS = [
   '/',
