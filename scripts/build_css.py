@@ -1,0 +1,46 @@
+#!/usr/bin/env python3
+"""
+TiendaMax — build_css.py
+Une los CSS fuente en uno solo (css/bundle.css) en el ORDEN del <head>.
+El orden importa: define la cascada. NO edites bundle.css a mano —
+edita los archivos fuente de abajo y deja que la GitHub Action lo regenere
+y lo minifique (con csso).
+"""
+import os
+
+CSS_DIR = os.path.join(os.path.dirname(__file__), "..", "css")
+
+# Orden EXACTO en que se cargaban en el <head>. No cambiar sin querer.
+ORDEN = [
+    "styles.css",
+    "animations.css",
+    "styles.banner.fix.css",
+    "styles.fixes.css",
+    "premium-theme.css",   # tema oscuro — va casi al final
+    "light-mode.css",      # overrides modo claro — DESPUÉS del premium
+    "tienda-plus.css",
+    "hero-efectos.css",
+]
+
+def main():
+    partes = ["/* TiendaMax bundle.css — generado por scripts/build_css.py. "
+              "NO editar a mano; edita los CSS fuente. */\n"]
+    for nombre in ORDEN:
+        ruta = os.path.join(CSS_DIR, nombre)
+        if not os.path.exists(ruta):
+            print(f"⚠️  No existe {nombre}, lo salto.")
+            continue
+        with open(ruta, encoding="utf-8") as f:
+            css = f.read()
+        partes.append(f"\n/* ===== {nombre} ===== */\n")
+        partes.append(css)
+        if not css.endswith("\n"):
+            partes.append("\n")
+    bundle = "".join(partes)
+    salida = os.path.join(CSS_DIR, "bundle.css")
+    with open(salida, "w", encoding="utf-8") as f:
+        f.write(bundle)
+    print(f"✅ bundle.css generado: {round(len(bundle.encode())/1024)} KB (sin minificar)")
+
+if __name__ == "__main__":
+    main()
