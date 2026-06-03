@@ -4550,6 +4550,12 @@ renderizarProductos = function() {
     if (old) old.remove();
 })();
 
+// ===== ACCESO CENTRALIZADO AL TOKEN DE GITHUB =====
+// Punto único de lectura: facilita auditoría y futura migración a proxy seguro.
+function obtenerGitHubToken() {
+    return localStorage.getItem('githubToken') || '';
+}
+
 // ===== BARRA DE PROGRESO DORADA =====
 (function initProgress() {
     const bar = document.createElement('div');

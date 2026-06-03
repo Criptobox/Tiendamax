@@ -436,9 +436,20 @@
                             <input type="text" id="githubRepo" placeholder="Ej: Tiendamax" required>
                         </div>
                         <div class="form-group">
-                            <label>Token de Acceso (Classic):</label>
-                            <input type="password" id="githubToken" placeholder="ghp_xxxxxxxxxxxx" required>
-                            <p style="font-size: 11px; margin-top: 5px; opacity: 0.7;">Consigue tu token en GitHub Settings -> Developer Settings -> Tokens (classic). Debe tener permiso 'repo'.</p>
+                            <label>Token de Acceso Personal (Fine-grained recomendado):</label>
+                            <input type="password" id="githubToken" placeholder="github_pat_... ó ghp_..." required>
+                            <p style="font-size: 11px; margin-top: 5px; opacity: 0.7;">
+                                GitHub Settings → Developer Settings → Personal access tokens →
+                                <strong>Fine-grained tokens</strong> → Solo activa
+                                <em>Repository permissions → Contents: Read and Write</em>.
+                                Evita los tokens Classic con permiso <code>repo</code> completo.
+                            </p>
+                        </div>
+                        <div style="background:rgba(255,165,0,0.1);border:1px solid rgba(255,165,0,0.35);border-radius:8px;padding:10px 14px;margin-bottom:14px;font-size:11px;line-height:1.6;color:#ffcc80;">
+                            ⚠️ <strong>Seguridad:</strong> Este token se guarda en tu navegador (localStorage).
+                            Usa siempre un <strong>Fine-grained token</strong> con permisos mínimos
+                            (solo Contents R/W en este repositorio). Rótalo cada 90 días.
+                            Nunca compartas este dispositivo con acceso al panel admin.
                         </div>
                         <button type="submit" class="btn btn-primary" style="width: 100%;">💾 Guardar Configuración</button>
                     </form>
