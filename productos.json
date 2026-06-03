@@ -490,7 +490,7 @@
     "id": 1778336689684,
     "nombre": "Switch de 5 puertos",
     "descripcion": "Switch de 5 puertos ethernet de 1 gigabite.",
-    "imagen": "https://tiendamax.org/imagenes/img_1778336689684.jpg",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1780510827238.jpg",
     "precioActual": 20,
     "descuento": 0,
     "stock": 20,
@@ -500,7 +500,11 @@
     "usado": false,
     "garantia": "",
     "devolucion": false,
-    "comision": 1.8
+    "comision": 1.8,
+    "precioOriginal": 0,
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1780510827238.jpg"
+    ]
   },
   {
     "id": 1778336789459,
