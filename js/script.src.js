@@ -3839,28 +3839,65 @@ function _fbBorrarTodasVentas() {
         .catch(e => console.warn('⚠️ Firebase ventas clear:', e.message));
 }
 
+// Migra ventas guardadas accidentalmente en la raíz de Firebase (0,1,2,3...) a /ventas/{id}
+async function _fbMigrarVentasRaiz(url) {
+    try {
+        const res = await fetch(`${url}.json?shallow=true`);
+        if (!res.ok) return [];
+        const keys = await res.json();
+        if (!keys || typeof keys !== 'object') return [];
+        const numericKeys = Object.keys(keys).filter(k => /^\d+$/.test(k));
+        if (!numericKeys.length) return [];
+        const ventasMigradas = [];
+        await Promise.all(numericKeys.map(async k => {
+            try {
+                const r = await fetch(`${url}/${k}.json`);
+                if (!r.ok) return;
+                const v = await r.json();
+                if (v && v.id && v.producto) {
+                    // Mover a /ventas/{id} y borrar del root
+                    await fetch(`${url}/ventas/${v.id}.json`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(v)
+                    });
+                    await fetch(`${url}/${k}.json`, { method: 'DELETE' });
+                    ventasMigradas.push(v);
+                }
+            } catch(e) {}
+        }));
+        if (ventasMigradas.length) console.log(`✅ Migradas ${ventasMigradas.length} ventas de raíz a /ventas/`);
+        return ventasMigradas;
+    } catch(e) { return []; }
+}
+
 // Carga ventas desde Firebase y hace merge con localStorage (en background al iniciar)
 async function _fbSincronizarVentasAlIniciar() {
     const url = _fbRtdbUrl();
     if (!url) return;
     try {
+        // Migrar ventas mal guardadas en la raíz primero
+        const migradas = await _fbMigrarVentasRaiz(url);
+
         const res = await fetch(`${url}/ventas.json`);
         if (!res.ok) return;
         const data = await res.json();
-        if (!data || typeof data !== 'object') return;
-        const ventasFB = Object.values(data).filter(Boolean);
-        if (!ventasFB.length) return;
+        const ventasFB = data && typeof data === 'object' ? Object.values(data).filter(Boolean) : [];
+
+        // Combinar migradas + las ya en /ventas/
+        const todasFB = [...ventasFB, ...migradas.filter(m => !ventasFB.find(v => v.id === m.id))];
+
         const ventasLocales = JSON.parse(localStorage.getItem('registroVentas') || '[]');
-        const idsFB = new Set(ventasFB.map(v => v.id));
+        const idsFB = new Set(todasFB.map(v => v.id));
         const soloLocales = ventasLocales.filter(v => !idsFB.has(v.id));
-        // Ventas locales que no están en FB aún → subirlas
         soloLocales.forEach(v => _fbGuardarVenta(v));
-        const merged = [...ventasFB, ...soloLocales]
+        const merged = [...todasFB, ...soloLocales]
             .sort((a, b) => b.id - a.id)
             .slice(0, 500);
-        localStorage.setItem('registroVentas', JSON.stringify(merged));
-        renderizarVentas();
-        
+        if (merged.length) {
+            localStorage.setItem('registroVentas', JSON.stringify(merged));
+            renderizarVentas();
+        }
     } catch(e) {
         console.warn('⚠️ No se pudo sincronizar ventas desde Firebase:', e.message);
     }
