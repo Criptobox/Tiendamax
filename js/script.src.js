@@ -343,13 +343,13 @@ function renderizarSimilaresCarrito() {
         const img    = escapeAttr((p.imagenes && p.imagenes[0]) ? p.imagenes[0] : (p.imagen || ''));
         const nombre = escapeHtml(p.nombre);
         const idSafe = safeNum(p.id);
-        return '<div class="cs-card">' +
+        return '<div class="cs-card" style="cursor:pointer" onclick="if(typeof cerrarCarrito===\'function\')cerrarCarrito();abrirDetalleProducto(' + idSafe + ')">' +
             '<img class="cs-card-img" src="' + img + '" alt="' + nombre + '" loading="lazy" onerror="this.style.display=\'none\'">' +
             '<div class="cs-card-body">' +
                 '<div class="cs-card-nombre">' + nombre + '</div>' +
                 '<div class="cs-card-precio">$' + Number(p.precioActual).toFixed(2) + ' USD</div>' +
             '</div>' +
-            '<button class="cs-card-btn" onclick="agregarAlCarrito(' + idSafe + ');renderizarCarrito();">🛒 Agregar</button>' +
+            '<button class="cs-card-btn" onclick="event.stopPropagation();agregarAlCarrito(' + idSafe + ');renderizarCarrito();">🛒 Agregar</button>' +
         '</div>';
     }).join('');
 }
