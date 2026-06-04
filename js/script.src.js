@@ -6697,6 +6697,23 @@ async function guardarTasaMNAdmin() {
                 if (imgWrap) imgWrap.appendChild(badgeNuevo);
             }
         });
+
+        // Separador visual entre disponibles y agotados
+        grid.querySelectorAll('.tm-agotados-header').forEach(el => el.remove());
+        const agotadoCards = Array.from(grid.querySelectorAll('.card-agotado'));
+        if (agotadoCards.length > 0) {
+            const header = document.createElement('div');
+            header.className = 'tm-agotados-header';
+            const n = agotadoCards.length;
+            header.innerHTML =
+                '<div class="tm-ah-left">' +
+                    '<span class="tm-ah-icon">📦</span>' +
+                    '<div><div class="tm-ah-title">Sin stock</div>' +
+                    '<div class="tm-ah-sub">Avísate cuando vuelvan</div></div>' +
+                '</div>' +
+                '<div class="tm-ah-count">' + n + ' producto' + (n === 1 ? '' : 's') + '</div>';
+            agotadoCards[0].parentNode.insertBefore(header, agotadoCards[0]);
+        }
     }
 
     function tmMasVendidosActuales() {

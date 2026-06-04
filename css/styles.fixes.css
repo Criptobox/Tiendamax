@@ -26,3 +26,12 @@ html body .categoria-card.cat-proximamente{opacity:.3 !important;filter:grayscal
 #tm-chip-slider{position:absolute;border-radius:50px;background:linear-gradient(135deg,#FF6B35,#e05528);box-shadow:0 4px 14px rgba(255,107,53,.32);transition:left .28s cubic-bezier(.4,0,.2,1),width .28s cubic-bezier(.4,0,.2,1),top .28s cubic-bezier(.4,0,.2,1);z-index:0;pointer-events:none}
 #categoriaFiltro .categoria-btn{position:relative;z-index:1;flex-shrink:0}
 #categoriaFiltro .categoria-btn.active{color:#fff !important;background:transparent !important;border-color:transparent !important;box-shadow:none !important}
+.tm-agotados-header{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:linear-gradient(135deg,rgba(180,28,28,.13),rgba(120,20,20,.07));border-top:1.5px solid rgba(231,76,60,.32);border-bottom:1px solid rgba(231,76,60,.14);border-radius:12px;margin:8px 0 4px}
+.tm-ah-left{display:flex;align-items:center;gap:9px}
+.tm-ah-icon{font-size:20px;line-height:1}
+.tm-ah-title{font-size:13px;font-weight:800;color:#e74c3c}
+.tm-ah-sub{font-size:10px;color:#7a2020;margin-top:1px;font-weight:500}
+.tm-ah-count{background:rgba(231,76,60,.17);border:1px solid rgba(231,76,60,.3);color:#e74c3c;font-size:11px;font-weight:800;padding:3px 10px;border-radius:50px;white-space:nowrap}
+html body #productosGrid .card-agotado{background:#130d0d !important;border-color:rgba(231,76,60,.2) !important}
+html body #productosGrid .card-agotado .producto-image{filter:grayscale(1) brightness(.52)}
+html body #productosGrid .card-agotado h3{color:rgba(255,255,255,.42) !important}

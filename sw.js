@@ -1,5 +1,6 @@
 // ═══════════════════════════════════════════════════════
-// TiendaMax — Service Worker v138
+// TiendaMax — Service Worker v139
+// v139: separador visual "Sin stock" entre disponibles y agotados en el grid.
 // v138: chip-slider animado en filtro de categorías — píldora naranja deslizante.
 // v137: carrito vacío animado — ícono flotante + puntos dorados.
 // v136: imágenes de producto con proporción 4:3 uniforme (era 1:1).
@@ -25,7 +26,7 @@
 //      usan el mismo helper _mensajeOrdenWA con formato premium.
 // ═══════════════════════════════════════════════════════
 
-const CACHE_NAME = 'tiendamax-v138';
+const CACHE_NAME = 'tiendamax-v139';
 
 const STATIC_ASSETS = [
   '/',
