@@ -7,3 +7,4 @@ html body .categorias-grid .categoria-card{flex:0 0 calc(20% - 9px) !important;m
 @media (max-width:600px){html body .categorias-grid .categoria-card{flex:0 0 calc(33.333% - 7px) !important;max-width:calc(33.333% - 7px) !important}}
 @media (max-width:380px){html body .categorias-grid .categoria-card{flex:0 0 calc(50% - 6px) !important;max-width:calc(50% - 6px) !important}}
 html body .categoria-card.cat-proximamente{opacity:.3 !important;filter:grayscale(.7) !important;pointer-events:none !important;cursor:default !important}
+.stock-count{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
