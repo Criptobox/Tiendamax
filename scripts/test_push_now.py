@@ -33,7 +33,7 @@ def cargar_tokens(database):
     tokens_data = ref.get()
     if not tokens_data:
         return [], ref
-    tokens = [v["token"] for v in tokens_data.values() if "token" in v]
+    tokens = [v["token"] for v in tokens_data.values() if isinstance(v, dict) and v.get("token")]
     return tokens, ref
 
 

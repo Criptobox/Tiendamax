@@ -62,7 +62,23 @@
     var messaging = firebase.messaging();
 
     var reg = await navigator.serviceWorker.register("/firebase-messaging-sw.js", { scope: "/firebase-cloud-messaging-push-scope" });
-    await navigator.serviceWorker.ready;
+    // Wait for THIS specific SW to be active (not just any SW via navigator.serviceWorker.ready,
+    // which resolves with sw.js scope "/" and may return before firebase-messaging-sw.js is active).
+    if (!reg.active) {
+      await new Promise(function (resolve, reject) {
+        var sw = reg.installing || reg.waiting;
+        if (!sw) { resolve(); return; }
+        var t = setTimeout(function () { reject(new Error("SW activation timeout")); }, 12000);
+        sw.addEventListener("statechange", function onsc() {
+          if (sw.state === "activated") {
+            clearTimeout(t); sw.removeEventListener("statechange", onsc); resolve();
+          } else if (sw.state === "redundant") {
+            clearTimeout(t); sw.removeEventListener("statechange", onsc);
+            reject(new Error("SW became redundant during activation"));
+          }
+        });
+      });
+    }
     try { messaging.useServiceWorker && messaging.useServiceWorker(reg); } catch (e) {}
 
     // Notificaciones en primer plano (toast), una sola vez
@@ -98,9 +114,24 @@
     return true;
   }
 
+  function notif(msg, tipo) {
+    if (typeof window.mostrarNotificacion === "function") { try { window.mostrarNotificacion(msg, tipo); } catch(e) {} }
+  }
+
+  function wrapRobusto(cfgArg) {
+    return registrarTokenRobusto(cfgArg).then(function (ok) {
+      if (ok) notif("✅ Notificaciones activadas correctamente.", "success");
+      return ok;
+    }).catch(function (e) {
+      console.error("[push-fix v3] Error al registrar:", e.message);
+      notif("⚠️ No se pudo activar las notificaciones. Intenta de nuevo.", "error");
+      return false;
+    });
+  }
+
   // Sobrescribe AMBAS rutas: la campana y el cartel inicial.
-  window.tmRegistrarTokenFCMSiPermitido = function () { return registrarTokenRobusto(); };
-  window.inicializarFirebaseFCMClient   = function (cfg) { return registrarTokenRobusto(cfg); };
+  window.tmRegistrarTokenFCMSiPermitido = function () { return wrapRobusto(); };
+  window.inicializarFirebaseFCMClient   = function (cfg) { return wrapRobusto(cfg); };
 
   // Recuperación automática: dispositivo con permiso ya dado pero sin token guardado.
   function autoRecuperar() {
