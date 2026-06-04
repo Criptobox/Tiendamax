@@ -133,3 +133,7 @@ html body .banners-pat-label{font-size:11px;color:#666;font-weight:700;letter-sp
 html body .banners-patrocinados-section .hero-image{margin:0 16px 8px;border-radius:18px;overflow:hidden}
 @media (min-width:769px){html body .banners-patrocinados-section .hero-image{max-width:960px;margin:0 auto 8px}}
 @media (max-width:768px){html body .banners-patrocinados-section .hero-image{margin:0 12px 8px;border-radius:14px}}
+/* ── Altura fija del banner patrocinado: evita que se distorsione en pantallas grandes */
+html body #heroImageContainer{max-width:960px !important;margin:0 auto 24px !important;height:clamp(180px,37.5vw,360px) !important}
+html body #heroBannerSlider,html body #heroImageContainer .hero-banner-slider{position:absolute !important;top:0 !important;left:0 !important;width:100% !important;height:100% !important}
+@media (max-width:768px){html body #heroImageContainer{margin:0 12px 16px !important;height:clamp(160px,65vw,280px) !important}}
