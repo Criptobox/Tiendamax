@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TiendaMax — Preview de Mejoras</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #111; font-family: -apple-system, 'Segoe UI', sans-serif; color: #fff; }
+
+  /* ── Layout ── */
+  .page { max-width: 1200px; margin: 0 auto; padding: 24px 16px; }
+  h1.page-title { text-align: center; font-size: 18px; color: #888; font-weight: 400; margin-bottom: 32px; letter-spacing: .5px; }
+  h1.page-title span { color: #E85D04; font-weight: 700; }
+
+  .comparison { display: flex; gap: 32px; justify-content: center; flex-wrap: wrap; }
+
+  .col { display: flex; flex-direction: column; gap: 12px; align-items: center; }
+  .col-label { font-size: 13px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: #555; }
+  .col-label.after { color: #E85D04; }
+
+  /* ── Phone frame ── */
+  .phone { width: 375px; background: #0e0e0e; border-radius: 36px; overflow: hidden; border: 2px solid #2a2a2a; box-shadow: 0 24px 60px rgba(0,0,0,.6); }
+  .phone-screen { overflow: hidden; }
+
+  /* ── Desktop frame ── */
+  .desktop { width: 680px; background: #0e0e0e; border-radius: 12px; overflow: hidden; border: 2px solid #2a2a2a; box-shadow: 0 24px 60px rgba(0,0,0,.6); }
+  .desktop-bar { height: 28px; background: #1e1e1e; display: flex; align-items: center; padding: 0 12px; gap: 6px; }
+  .desktop-bar span { width: 10px; height: 10px; border-radius: 50%; background: #444; }
+  .desktop-bar span:nth-child(1) { background: #ff5f57; }
+  .desktop-bar span:nth-child(2) { background: #febc2e; }
+  .desktop-bar span:nth-child(3) { background: #28c840; }
+
+  /* ── Common components ── */
+  .header { background: #0e0e0e; padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #1e1e1e; }
+  .logo { display: flex; align-items: center; gap: 8px; }
+  .logo-icon { width: 32px; height: 32px; background: #E85D04; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 14px; }
+  .logo-text { font-size: 16px; font-weight: 700; }
+  .logo-text span { color: #E85D04; }
+  .header-icons { display: flex; gap: 8px; }
+  .icon-btn { width: 36px; height: 36px; background: #1e1e1e; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 16px; position: relative; cursor: pointer; }
+  .icon-btn .dot { width: 8px; height: 8px; background: #25D366; border-radius: 50%; position: absolute; top: 4px; right: 4px; border: 1.5px solid #0e0e0e; }
+
+  .currency-bar { background: #161616; margin: 10px 14px; border-radius: 40px; padding: 8px 14px; display: flex; align-items: center; gap: 10px; font-size: 13px; color: #999; border: 1px solid #252525; }
+  .currency-bar .usd-pill { background: #E85D04; color: #fff; font-weight: 700; font-size: 12px; padding: 4px 12px; border-radius: 20px; display: flex; align-items: center; gap: 5px; }
+  .currency-bar .mn-val { color: #fff; font-weight: 600; }
+
+  /* ── Search bar ── */
+  .search-bar { margin: 8px 14px 4px; background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 14px; padding: 10px 14px; display: flex; align-items: center; gap: 8px; }
+  .search-bar span { font-size: 15px; }
+  .search-bar p { color: #555; font-size: 14px; }
+  .search-highlight { border-color: #E85D04 !important; }
+  .search-highlight p { color: #888 !important; }
+
+  /* ── Hero ── */
+  .hero { padding: 18px 14px 14px; }
+  .hero-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 700; color: #E85D04; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 10px; }
+  .hero-badge::before { content: ''; display: block; width: 24px; height: 2px; background: #E85D04; }
+  .hero-title { font-size: 28px; font-weight: 900; line-height: 1.15; margin-bottom: 8px; }
+  .hero-title.smaller { font-size: 22px; }
+  .hero-sub { font-size: 13px; color: #888; line-height: 1.5; margin-bottom: 18px; }
+  .hero-btns { display: flex; flex-direction: column; gap: 10px; }
+  .btn-orange { background: #E85D04; color: #fff; border: none; border-radius: 14px; padding: 14px; font-size: 15px; font-weight: 700; text-align: center; cursor: pointer; }
+  .btn-green { background: #25D366; color: #fff; border: none; border-radius: 14px; padding: 14px; font-size: 15px; font-weight: 700; text-align: center; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
+
+  /* ── Hero desktop row ── */
+  .hero-row { display: flex; gap: 24px; align-items: center; padding: 28px 24px; }
+  .hero-row .hero { flex: 1; padding: 0; }
+  .hero-row .hero .hero-title { font-size: 30px; }
+  .hero-row .hero-btns { flex-direction: row; }
+  .hero-row .btn-orange, .hero-row .btn-green { flex: 1; font-size: 14px; padding: 12px 16px; }
+  .hero-row .btn-green { flex: 1; }
+
+  /* ── Banner ── */
+  .banner { margin: 12px 14px; border-radius: 16px; overflow: hidden; position: relative; background: linear-gradient(135deg, #1a2a1a, #0d1f0d); aspect-ratio: 16/7; display: flex; align-items: center; justify-content: center; }
+  .banner-img { width: 100%; height: 100%; object-fit: cover; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #2d1b00, #1a1000); }
+  .banner-tag { position: absolute; top: 10px; left: 10px; background: rgba(0,0,0,.6); font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 6px; color: #FFD700; display: flex; align-items: center; gap: 4px; }
+  .banner-cta { position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,.65); backdrop-filter: blur(4px); padding: 8px 12px; font-size: 12px; font-weight: 600; display: flex; align-items: center; gap: 6px; }
+  .banner-placeholder { width: 100%; height: 110px; background: linear-gradient(135deg, #2d1b00 0%, #3a2510 40%, #1a1000 100%); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; }
+  .banner-placeholder .b-title { font-size: 22px; font-weight: 900; color: #FFD700; letter-spacing: 2px; }
+  .banner-placeholder .b-sub { font-size: 10px; color: #c8a96e; letter-spacing: 3px; }
+  .banner-dots { display: flex; gap: 5px; margin-top: 6px; }
+  .banner-dots span { width: 6px; height: 6px; border-radius: 50%; background: #555; }
+  .banner-dots span.active { background: #E85D04; width: 16px; border-radius: 3px; }
+
+  /* ── Horizontal bestsellers ── */
+  .section-label { padding: 14px 14px 8px; }
+  .section-label h3 { font-size: 16px; font-weight: 800; }
+  .section-label p { font-size: 12px; color: #666; margin-top: 2px; }
+  .h-scroll { display: flex; gap: 10px; padding: 4px 14px 14px; overflow-x: auto; scrollbar-width: none; }
+  .h-scroll::-webkit-scrollbar { display: none; }
+  .prod-card-sm { min-width: 120px; background: #1a1a1a; border-radius: 12px; overflow: hidden; border: 1px solid #252525; flex-shrink: 0; }
+  .prod-card-sm .img { width: 120px; height: 80px; background: linear-gradient(135deg, #252525, #1e1e1e); display: flex; align-items: center; justify-content: center; font-size: 28px; }
+  .prod-card-sm .info { padding: 6px 8px 8px; }
+  .prod-card-sm .name { font-size: 11px; font-weight: 600; line-height: 1.3; color: #ddd; }
+  .prod-card-sm .price { font-size: 12px; font-weight: 800; color: #E85D04; margin-top: 3px; }
+  .prod-card-sm .badge-top { font-size: 8px; font-weight: 800; background: #E85D04; color: #fff; padding: 2px 6px; border-radius: 4px 0 6px 0; }
+
+  /* ── Categories ── */
+  .cat-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; padding: 0 14px 16px; }
+  .cat-card { background: #1a1a1a; border-radius: 12px; padding: 12px 6px 8px; display: flex; flex-direction: column; align-items: center; gap: 4px; border: 1px solid #252525; cursor: pointer; }
+  .cat-card .emoji { font-size: 20px; }
+  .cat-card .cname { font-size: 9px; font-weight: 700; color: #ccc; text-align: center; text-transform: uppercase; letter-spacing: .3px; }
+  .cat-card .ccount { font-size: 9px; color: #555; }
+  .cat-card.active { border-color: #E85D04; background: #1e1200; }
+  .cat-card.active .cname { color: #E85D04; }
+
+  /* ── Desktop nav ── */
+  .desktop-header { background: #0e0e0e; padding: 10px 24px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #1e1e1e; }
+  .desktop-nav { display: flex; gap: 20px; }
+  .desktop-nav a { font-size: 12px; color: #666; text-decoration: none; font-weight: 600; letter-spacing: .5px; text-transform: uppercase; }
+  .desktop-nav a.active { color: #E85D04; }
+  .desktop-header .header-icons { gap: 6px; }
+  .desktop-header .icon-btn { width: 30px; height: 30px; font-size: 14px; }
+
+  .desktop-currency { background: #161616; margin: 10px 24px; border-radius: 40px; padding: 7px 14px; display: flex; align-items: center; gap: 10px; font-size: 12px; color: #999; border: 1px solid #252525; max-width: 320px; }
+  .desktop-currency .usd-pill { background: #E85D04; color: #fff; font-weight: 700; font-size: 11px; padding: 3px 10px; border-radius: 20px; }
+
+  .desktop-search { margin: 8px 24px 0; background: #1a1a1a; border: 1.5px solid #E85D04; border-radius: 10px; padding: 9px 14px; display: flex; align-items: center; gap: 8px; max-width: 400px; }
+  .desktop-search span { font-size: 14px; }
+  .desktop-search p { color: #888; font-size: 13px; }
+
+  /* ── Desktop bestsellers row ── */
+  .desktop-section { padding: 20px 24px 8px; }
+  .desktop-section h3 { font-size: 18px; font-weight: 800; margin-bottom: 4px; }
+  .desktop-section p { font-size: 12px; color: #555; }
+  .desktop-prod-row { display: flex; gap: 12px; padding: 12px 24px 20px; }
+  .desktop-prod-card { flex: 1; background: #1a1a1a; border-radius: 14px; overflow: hidden; border: 1px solid #252525; }
+  .desktop-prod-card .dimg { height: 100px; background: linear-gradient(135deg, #252525, #1e1e1e); display: flex; align-items: center; justify-content: center; font-size: 36px; }
+  .desktop-prod-card .dinfo { padding: 10px 12px; }
+  .desktop-prod-card .dname { font-size: 12px; font-weight: 600; color: #ddd; }
+  .desktop-prod-card .dprice { font-size: 14px; font-weight: 800; color: #E85D04; margin-top: 4px; }
+  .desktop-prod-card .dbadge { font-size: 9px; font-weight: 800; background: #E85D04; color: #fff; padding: 2px 8px; border-radius: 4px 0 8px 0; display: inline-block; margin-bottom: 4px; }
+
+  /* ── Desktop cat grid ── */
+  .desktop-cats { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; padding: 0 24px 24px; }
+
+  /* ── Divider ── */
+  .section-divider { width: 100%; height: 1px; background: #1e1e1e; margin: 8px 0; }
+
+  /* ── Change markers ── */
+  .change-marker { position: absolute; right: -10px; top: 50%; transform: translateY(-50%); background: #E85D04; color: #fff; font-size: 9px; font-weight: 800; padding: 2px 6px; border-radius: 4px; white-space: nowrap; z-index: 10; }
+  .relative { position: relative; }
+
+  /* ── Annotations ── */
+  .annotation { display: flex; align-items: flex-start; gap: 8px; font-size: 12px; color: #666; max-width: 375px; }
+  .annotation .num { min-width: 20px; height: 20px; background: #E85D04; color: #fff; border-radius: 50%; font-size: 10px; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+  .annotation p { line-height: 1.5; }
+  .annotation p strong { color: #ddd; }
+  .annotations { display: flex; flex-direction: column; gap: 10px; margin-top: 16px; }
+
+  .tag-new { display: inline-block; background: rgba(232,93,4,.15); color: #E85D04; border: 1px solid rgba(232,93,4,.3); font-size: 9px; font-weight: 800; padding: 2px 6px; border-radius: 4px; margin-left: 6px; vertical-align: middle; letter-spacing: .5px; }
+  .tag-moved { display: inline-block; background: rgba(37,211,102,.12); color: #25D366; border: 1px solid rgba(37,211,102,.3); font-size: 9px; font-weight: 800; padding: 2px 6px; border-radius: 4px; margin-left: 6px; vertical-align: middle; letter-spacing: .5px; }
+
+  /* ── Section titles ── */
+  .view-title { text-align: center; font-size: 22px; font-weight: 900; margin: 40px 0 8px; }
+  .view-title span { color: #E85D04; }
+  .view-subtitle { text-align: center; font-size: 13px; color: #555; margin-bottom: 24px; }
+
+  @media (max-width: 760px) {
+    .comparison { flex-direction: column; align-items: center; }
+    .desktop { width: 375px; }
+    .desktop-header { flex-wrap: wrap; gap: 8px; }
+    .desktop-nav { display: none; }
+    .desktop-cats { grid-template-columns: repeat(5, 1fr); }
+    .desktop-prod-row { overflow-x: auto; }
+    .desktop-prod-card { min-width: 140px; }
+    .hero-row { flex-direction: column; }
+    .hero-row .hero-btns { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <h1 class="page-title">TiendaMax — Preview de Mejoras <span>Propuesta Visual</span></h1>
+
+  <!-- ═══════════════════════════════ MOBILE ═══════════════════════════════ -->
+  <div class="view-title">Versión <span>Móvil</span></div>
+  <div class="view-subtitle">Reordenación del hero + búsqueda prominente + banner patrocinado abajo</div>
+
+  <div class="comparison">
+
+    <!-- ANTES -->
+    <div class="col">
+      <div class="col-label">Antes</div>
+      <div class="phone">
+        <div class="phone-screen">
+          <!-- Header -->
+          <div class="header">
+            <div class="logo">
+              <div class="logo-icon">M</div>
+              <div class="logo-text">Tienda <span>Max</span></div>
+            </div>
+            <div class="header-icons">
+              <div class="icon-btn">🛒</div>
+              <div class="icon-btn">🤍</div>
+              <div class="icon-btn">🔔<div class="dot"></div></div>
+              <div class="icon-btn">☰</div>
+            </div>
+          </div>
+          <!-- Currency -->
+          <div class="currency-bar">
+            🪙 Paga en:
+            <div class="usd-pill">💵 USD</div>
+            <div class="mn-val">610 MN</div>
+          </div>
+          <!-- Banner primero (problema) -->
+          <div style="margin:10px 14px; border-radius:16px; overflow:hidden; position:relative;">
+            <div class="banner-placeholder">
+              <div class="b-title">HOT DOGS</div>
+              <div class="b-sub">CLÁSICOS PREMIUM</div>
+              <div class="banner-dots"><span class="active"></span><span></span><span></span></div>
+            </div>
+            <div class="banner-tag">⭐ Patrocinado</div>
+            <div class="banner-cta">👆 Toca la imagen · Entra al grupo <span style="color:#25D366">📱</span></div>
+          </div>
+          <!-- Hero después -->
+          <div class="hero" style="padding-top:8px;">
+            <div class="hero-badge">⚡ Oferta limitada</div>
+            <div class="hero-title">Todo lo que necesitas a un mensaje de distancia.</div>
+            <div class="hero-sub">Envío rápido. Pide hoy y recibe antes de que se agoten las unidades.</div>
+            <div class="hero-btns">
+              <div class="btn-orange">Ver Categorías →</div>
+              <div class="btn-green">💬 WhatsApp</div>
+            </div>
+          </div>
+          <!-- Búsqueda al final (problema) -->
+          <div class="search-bar" style="margin-bottom:16px;">
+            <span>🔍</span><p>Tecnología premium...</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DESPUÉS -->
+    <div class="col">
+      <div class="col-label after">Después ✦</div>
+      <div class="phone">
+        <div class="phone-screen">
+          <!-- Header -->
+          <div class="header">
+            <div class="logo">
+              <div class="logo-icon">M</div>
+              <div class="logo-text">Tienda <span>Max</span></div>
+            </div>
+            <div class="header-icons">
+              <div class="icon-btn">🛒</div>
+              <div class="icon-btn">🤍</div>
+              <div class="icon-btn">🔔<div class="dot"></div></div>
+              <div class="icon-btn">☰</div>
+            </div>
+          </div>
+          <!-- Currency -->
+          <div class="currency-bar">
+            🪙 Paga en:
+            <div class="usd-pill">💵 USD</div>
+            <div class="mn-val">610 MN</div>
+          </div>
+          <!-- 1. Búsqueda arriba (NUEVO) -->
+          <div class="search-bar search-highlight" style="margin-bottom:8px;">
+            <span>🔍</span><p>Buscar productos...</p>
+          </div>
+          <!-- 2. Hero primero (MOVIDO) -->
+          <div class="hero" style="padding-top:10px; padding-bottom:10px;">
+            <div class="hero-badge">⚡ Oferta limitada</div>
+            <div class="hero-title smaller">Todo lo que necesitas, entregado hoy.</div>
+            <div class="hero-sub">Envío rápido. Pide hoy y recibe antes de que se agoten.</div>
+            <div class="hero-btns">
+              <div class="btn-orange">Ver Categorías →</div>
+              <div class="btn-green">💬 WhatsApp</div>
+            </div>
+          </div>
+          <!-- 3. Más Vendidos horizontal (NUEVO) -->
+          <div class="section-label">
+            <h3>🔥 Más Vendidos</h3>
+            <p>Los favoritos de nuestra comunidad</p>
+          </div>
+          <div class="h-scroll">
+            <div class="prod-card-sm">
+              <div class="img">⚡</div>
+              <div class="badge-top">+ VENDIDO</div>
+              <div class="info"><div class="name">Inversor 500W</div><div class="price">$35 USD</div></div>
+            </div>
+            <div class="prod-card-sm">
+              <div class="img">📡</div>
+              <div class="badge-top">+ VENDIDO</div>
+              <div class="info"><div class="name">Repetidor WiFi 5</div><div class="price">$28 USD</div></div>
+            </div>
+            <div class="prod-card-sm">
+              <div class="img">🔌</div>
+              <div class="badge-top">+ VENDIDO</div>
+              <div class="info"><div class="name">Switch 8 puertos</div><div class="price">$45 USD</div></div>
+            </div>
+            <div class="prod-card-sm">
+              <div class="img">💡</div>
+              <div class="badge-top">+ VENDIDO</div>
+              <div class="info"><div class="name">Panel Solar</div><div class="price">$120 USD</div></div>
+            </div>
+          </div>
+          <!-- 4. Banner patrocinado abajo (MOVIDO) -->
+          <div style="margin:4px 14px 14px; border-radius:16px; overflow:hidden; position:relative;">
+            <div class="banner-placeholder">
+              <div class="b-title">SOL & HABANA</div>
+              <div class="b-sub">MERCADO · DELIVERY</div>
+              <div class="banner-dots"><span class="active"></span><span></span><span></span></div>
+            </div>
+            <div class="banner-tag">⭐ Patrocinado</div>
+            <div class="banner-cta">👆 Toca la imagen · Entra al grupo <span style="color:#25D366">📱</span></div>
+          </div>
+        </div>
+      </div>
+      <!-- Annotations -->
+      <div class="annotations">
+        <div class="annotation"><div class="num">1</div><p><strong>Búsqueda arriba</strong> — 3er elemento visible, más clicks</p></div>
+        <div class="annotation"><div class="num">2</div><p><strong>Hero primero</strong> — tu propuesta de valor antes que el anuncio</p></div>
+        <div class="annotation"><div class="num">3</div><p><strong>Más Vendidos</strong> — carrusel horizontal, no requiere scroll</p></div>
+        <div class="annotation"><div class="num">4</div><p><strong>Banner patrocinado</strong> — después del hook, no antes</p></div>
+      </div>
+    </div>
+
+  </div><!-- end comparison mobile -->
+
+
+  <!-- ═══════════════════════════════ DESKTOP ═══════════════════════════════ -->
+  <div class="view-title" style="margin-top:60px;">Versión <span>Escritorio</span></div>
+  <div class="view-subtitle">Botón WhatsApp con mismo peso visual + búsqueda destacada + productos arriba</div>
+
+  <div class="comparison">
+
+    <!-- ANTES desktop -->
+    <div class="col">
+      <div class="col-label">Antes</div>
+      <div class="desktop">
+        <div class="desktop-bar"><span></span><span></span><span></span></div>
+        <!-- Header -->
+        <div class="desktop-header">
+          <div class="logo">
+            <div class="logo-icon">M</div>
+            <div class="logo-text" style="font-size:14px;">Tienda <span>Max</span></div>
+          </div>
+          <div class="desktop-nav">
+            <a href="#" class="active">INICIO</a><a href="#">CATEGORÍAS</a><a href="#">BENEFICIOS</a><a href="#">TESTIMONIOS</a><a href="#">CONTACTO</a>
+          </div>
+          <div class="header-icons">
+            <div class="icon-btn">🛒</div><div class="icon-btn">🤍</div><div class="icon-btn">🔔<div class="dot"></div></div>
+          </div>
+        </div>
+        <div class="desktop-currency">🪙 Paga en: <div class="usd-pill">💵 USD</div><span style="color:#fff;font-weight:600;">610 MN</span></div>
+        <!-- Hero row - botones desiguales -->
+        <div class="hero-row" style="padding-bottom:16px;">
+          <div class="hero">
+            <div class="hero-badge">⚡ Oferta limitada</div>
+            <div class="hero-title">Todo lo que necesitas a un mensaje de distancia.</div>
+            <div class="hero-sub">Envío rápido. Pide hoy y recibe antes de que se agoten las unidades.</div>
+            <div class="hero-btns" style="flex-direction:row;">
+              <!-- Botón orange grande, green pequeño (problema) -->
+              <div class="btn-orange" style="flex:2;">Ver Categorías →</div>
+              <div class="btn-green" style="flex:1;font-size:12px;padding:10px 8px;">💬 WA</div>
+            </div>
+          </div>
+          <div style="flex:1;min-width:200px;">
+            <div style="border-radius:14px; overflow:hidden; position:relative;">
+              <div class="banner-placeholder" style="height:130px;">
+                <div class="b-title" style="font-size:18px;">SOL & HABANA</div>
+                <div class="b-sub">MERCADO</div>
+              </div>
+              <div class="banner-tag">⭐ Patrocinado</div>
+              <div class="banner-cta" style="font-size:11px;">👆 Toca · Entra al grupo 📱</div>
+            </div>
+          </div>
+        </div>
+        <!-- Search debajo -->
+        <div style="margin:0 24px 16px; background:#1a1a1a; border:1px solid #2a2a2a; border-radius:10px; padding:9px 14px; display:flex; align-items:center; gap:8px; max-width:400px;">
+          <span>🔍</span><p style="color:#555;font-size:13px;">Celulares, cargadores...</p>
+        </div>
+        <!-- Cat grid -->
+        <div class="desktop-cats">
+          <div class="cat-card active"><div class="emoji">🛒</div><div class="cname">Todos</div><div class="ccount">74</div></div>
+          <div class="cat-card"><div class="emoji">📡</div><div class="cname">WiFi</div><div class="ccount">10</div></div>
+          <div class="cat-card"><div class="emoji">⚡</div><div class="cname">Energía</div><div class="ccount">15</div></div>
+          <div class="cat-card"><div class="emoji">📱</div><div class="cname">Celulares</div><div class="ccount">4</div></div>
+          <div class="cat-card"><div class="emoji">🔧</div><div class="cname">Útiles</div><div class="ccount">9</div></div>
+          <div class="cat-card"><div class="emoji">🚗</div><div class="cname">Carros</div><div class="ccount">15</div></div>
+          <div class="cat-card"><div class="emoji">👕</div><div class="cname">Ropa</div><div class="ccount">1</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DESPUÉS desktop -->
+    <div class="col">
+      <div class="col-label after">Después ✦</div>
+      <div class="desktop">
+        <div class="desktop-bar"><span></span><span></span><span></span></div>
+        <!-- Header -->
+        <div class="desktop-header">
+          <div class="logo">
+            <div class="logo-icon">M</div>
+            <div class="logo-text" style="font-size:14px;">Tienda <span>Max</span></div>
+          </div>
+          <div class="desktop-nav">
+            <a href="#" class="active">INICIO</a><a href="#">CATEGORÍAS</a><a href="#">BENEFICIOS</a><a href="#">TESTIMONIOS</a><a href="#">CONTACTO</a>
+          </div>
+          <div class="header-icons">
+            <div class="icon-btn">🛒</div><div class="icon-btn">🤍</div><div class="icon-btn">🔔<div class="dot"></div></div>
+          </div>
+        </div>
+        <div class="desktop-currency">🪙 Paga en: <div class="usd-pill">💵 USD</div><span style="color:#fff;font-weight:600;">610 MN</span></div>
+        <!-- Search arriba y destacada (NUEVO) -->
+        <div class="desktop-search">
+          <span>🔍</span><p>Buscar productos en TiendaMax...</p>
+        </div>
+        <!-- Hero row - botones iguales (FIX) -->
+        <div class="hero-row" style="padding-top:16px;padding-bottom:16px;">
+          <div class="hero">
+            <div class="hero-badge">⚡ Oferta limitada</div>
+            <div class="hero-title" style="font-size:26px;">Todo lo que necesitas, entregado hoy.</div>
+            <div class="hero-sub">Envío rápido. Pide hoy y recibe antes de que se agoten las unidades.</div>
+            <div class="hero-btns" style="flex-direction:row;">
+              <!-- Ambos botones iguales (FIX) -->
+              <div class="btn-orange" style="flex:1;">Ver Categorías →</div>
+              <div class="btn-green" style="flex:1;">💬 WhatsApp</div>
+            </div>
+          </div>
+          <div style="flex:1;min-width:200px;">
+            <div style="border-radius:14px; overflow:hidden; position:relative;">
+              <div class="banner-placeholder" style="height:130px;">
+                <div class="b-title" style="font-size:18px;">SOL & HABANA</div>
+                <div class="b-sub">MERCADO</div>
+              </div>
+              <div class="banner-tag">⭐ Patrocinado</div>
+              <div class="banner-cta" style="font-size:11px;">👆 Toca · Entra al grupo 📱</div>
+            </div>
+          </div>
+        </div>
+        <!-- Más vendidos arriba de categorías (NUEVO) -->
+        <div class="desktop-section">
+          <h3>🔥 Más Vendidos</h3>
+          <p>Los favoritos de nuestra comunidad</p>
+        </div>
+        <div class="desktop-prod-row">
+          <div class="desktop-prod-card">
+            <div class="dimg">⚡</div>
+            <div class="dinfo"><div class="dbadge">+ VENDIDO</div><div class="dname">Inversor 500W Faliken</div><div class="dprice">$35 USD</div></div>
+          </div>
+          <div class="desktop-prod-card">
+            <div class="dimg">📡</div>
+            <div class="dinfo"><div class="dbadge">+ VENDIDO</div><div class="dname">Repetidor WiFi 5 1200Mbps</div><div class="dprice">$28 USD</div></div>
+          </div>
+          <div class="desktop-prod-card">
+            <div class="dimg">🔌</div>
+            <div class="dinfo"><div class="dbadge">+ VENDIDO</div><div class="dname">Switch Gigabit 8 puertos</div><div class="dprice">$45 USD</div></div>
+          </div>
+          <div class="desktop-prod-card">
+            <div class="dimg">💡</div>
+            <div class="dinfo"><div class="dbadge">+ VENDIDO</div><div class="dname">Panel Solar 100W</div><div class="dprice">$120 USD</div></div>
+          </div>
+        </div>
+        <!-- Cat grid -->
+        <div class="desktop-cats">
+          <div class="cat-card active"><div class="emoji">🛒</div><div class="cname">Todos</div><div class="ccount">74</div></div>
+          <div class="cat-card"><div class="emoji">📡</div><div class="cname">WiFi</div><div class="ccount">10</div></div>
+          <div class="cat-card"><div class="emoji">⚡</div><div class="cname">Energía</div><div class="ccount">15</div></div>
+          <div class="cat-card"><div class="emoji">📱</div><div class="cname">Celulares</div><div class="ccount">4</div></div>
+          <div class="cat-card"><div class="emoji">🔧</div><div class="cname">Útiles</div><div class="ccount">9</div></div>
+          <div class="cat-card"><div class="emoji">🚗</div><div class="cname">Carros</div><div class="ccount">15</div></div>
+          <div class="cat-card"><div class="emoji">👕</div><div class="cname">Ropa</div><div class="ccount">1</div></div>
+        </div>
+      </div>
+      <!-- Annotations -->
+      <div class="annotations">
+        <div class="annotation"><div class="num">1</div><p><strong>Búsqueda destacada</strong> — borde naranja, segundo elemento visible</p></div>
+        <div class="annotation"><div class="num">2</div><p><strong>WhatsApp igual de grande</strong> — mismo peso que "Ver Categorías"</p></div>
+        <div class="annotation"><div class="num">3</div><p><strong>Más Vendidos arriba</strong> — antes de las categorías, captura intención inmediata</p></div>
+      </div>
+    </div>
+
+  </div><!-- end comparison desktop -->
+
+  <div style="text-align:center; margin:48px 0 16px; color:#333; font-size:12px;">
+    Preview generado · TiendaMax UX Proposal
+  </div>
+
+</div>
+</body>
+</html>
