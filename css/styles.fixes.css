@@ -21,3 +21,8 @@ html body .categoria-card.cat-proximamente{opacity:.3 !important;filter:grayscal
 .tm-sk-body{padding:12px;display:flex;flex-direction:column;gap:8px}
 .tm-sk-line{height:13px}
 .tm-sk-btn{height:40px;width:100%;border-radius:50px;margin-top:4px}
+#categoriaFiltro{position:relative !important;display:flex !important;flex-wrap:nowrap !important;overflow-x:auto !important;gap:8px !important;padding-bottom:8px !important;scrollbar-width:none !important}
+#categoriaFiltro::-webkit-scrollbar{display:none}
+#tm-chip-slider{position:absolute;border-radius:50px;background:linear-gradient(135deg,#FF6B35,#e05528);box-shadow:0 4px 14px rgba(255,107,53,.32);transition:left .28s cubic-bezier(.4,0,.2,1),width .28s cubic-bezier(.4,0,.2,1),top .28s cubic-bezier(.4,0,.2,1);z-index:0;pointer-events:none}
+#categoriaFiltro .categoria-btn{position:relative;z-index:1;flex-shrink:0}
+#categoriaFiltro .categoria-btn.active{color:#fff !important;background:transparent !important;border-color:transparent !important;box-shadow:none !important}

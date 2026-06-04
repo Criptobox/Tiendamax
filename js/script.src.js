@@ -6798,6 +6798,63 @@ async function guardarTasaMNAdmin() {
     // (FIX) Override eliminado: ahora renderizarRecientes funciona de verdad
     // y muestra los productos vistos en home y en detalle.
 
+    // ── Mejora 4: chip-slider animado para filtro de categorías ──
+    function _tmSliderInit() {
+        const wrap = document.getElementById('categoriaFiltro');
+        if (!wrap) return;
+        wrap.querySelectorAll('.categoria-btn').forEach(btn => {
+            if (!btn.dataset.tmCat) btn.dataset.tmCat = btn.textContent.trim();
+        });
+        let pill = document.getElementById('tm-chip-slider');
+        if (!pill) {
+            pill = document.createElement('div');
+            pill.id = 'tm-chip-slider';
+            wrap.insertBefore(pill, wrap.firstChild);
+        }
+        pill.style.transition = 'none';
+        _tmSliderMover();
+        requestAnimationFrame(() => { pill.style.transition = ''; });
+    }
+
+    function _tmSliderMover() {
+        const wrap = document.getElementById('categoriaFiltro');
+        const pill = document.getElementById('tm-chip-slider');
+        if (!wrap || !pill) return;
+        const active = wrap.querySelector('.categoria-btn.active');
+        if (!active) { pill.style.opacity = '0'; return; }
+        const wRect = wrap.getBoundingClientRect();
+        const aRect = active.getBoundingClientRect();
+        pill.style.opacity = '1';
+        pill.style.top = active.offsetTop + 'px';
+        pill.style.left = (aRect.left - wRect.left + wrap.scrollLeft) + 'px';
+        pill.style.width = aRect.width + 'px';
+        pill.style.height = active.offsetHeight + 'px';
+    }
+
+    const _origActBotones = actualizarBotonesCategorias;
+    actualizarBotonesCategorias = function() {
+        _origActBotones.apply(this, arguments);
+        _tmSliderInit();
+    };
+
+    const _origFiltrar = filtrarPorCategoria;
+    filtrarPorCategoria = function(cat) {
+        categoriaSeleccionada = cat;
+        const container = document.getElementById('categoriaFiltro');
+        if (container) {
+            container.querySelectorAll('.categoria-btn').forEach(btn => {
+                btn.classList.toggle('active', (btn.dataset.tmCat || btn.textContent.trim()) === cat);
+            });
+            _tmSliderMover();
+        }
+        renderizarProductos();
+        const titulo = document.getElementById('tituloCategoriaActual');
+        if (titulo) {
+            const icono = typeof obtenerIconoCategoria === 'function' ? obtenerIconoCategoria(cat) : '';
+            titulo.textContent = cat === 'Todas' ? '🛍️ Todos los Productos' : (icono + ' ' + cat);
+        }
+    };
+
     document.addEventListener('DOMContentLoaded', function () {
         setTimeout(function () {
             if (typeof renderizarRecientes === 'function') renderizarRecientes();
