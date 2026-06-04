@@ -1,5 +1,6 @@
 // ═══════════════════════════════════════════════════════
-// TiendaMax — Service Worker v151
+// TiendaMax — Service Worker v152
+// v152: botones CTA iguales (píldora) + banner patrocinado centrado en escritorio.
 // v151: barra búsqueda con borde naranja (igual moneda) + restaurar mensaje hero original.
 // v150: borde dorado + acento naranja en tarjetas Más Vendidos (móvil).
 // v147: push-fix.js — espera activación real de firebase-messaging-sw.js antes de getToken().
@@ -36,7 +37,7 @@
 //      usan el mismo helper _mensajeOrdenWA con formato premium.
 // ═══════════════════════════════════════════════════════
 
-const CACHE_NAME = 'tiendamax-v151';
+const CACHE_NAME = 'tiendamax-v152';
 
 const STATIC_ASSETS = [
   '/',
