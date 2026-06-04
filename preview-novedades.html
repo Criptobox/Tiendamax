@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Preview — Novedades TiendaMax</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0d0d0d;color:#fff;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;padding-bottom:60px}
+
+/* Header demo */
+.demo-header{background:#111;border-bottom:1px solid #222;padding:12px 16px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:50}
+.demo-logo{background:#FF6B35;border-radius:9px;width:30px;height:30px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:13px;color:#fff}
+.demo-logo-text{font-size:16px;font-weight:700}
+.demo-logo-text span{color:#FF6B35}
+
+/* Sección labels */
+.mejora-label{margin:28px 16px 14px;display:flex;align-items:center;gap:10px}
+.mejora-num{background:linear-gradient(135deg,#FF6B35,#e05528);color:#fff;font-size:11px;font-weight:900;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.mejora-titulo{font-size:15px;font-weight:800}
+.mejora-sub{font-size:12px;color:#666;margin-top:2px}
+
+/* ═══════════════════════════════
+   MEJORA 1 — Filtro de precio
+═══════════════════════════════ */
+.filtro-wrap{margin:0 16px;background:#141414;border:1px solid #222;border-radius:16px;padding:16px}
+.filtro-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.filtro-top-label{font-size:12px;font-weight:700;color:#aaa;letter-spacing:.04em;text-transform:uppercase}
+.filtro-valores{display:flex;gap:8px;align-items:center}
+.filtro-val{background:#1e1e1e;border:1px solid #2a2a2a;border-radius:8px;padding:5px 10px;font-size:13px;font-weight:700;color:#FF6B35;min-width:72px;text-align:center}
+.filtro-sep{font-size:12px;color:#444}
+.slider-track{position:relative;height:4px;background:#2a2a2a;border-radius:4px;margin:8px 4px 18px}
+.slider-fill{position:absolute;height:100%;background:linear-gradient(90deg,#FF6B35,#e05528);border-radius:4px;left:0%;width:72%}
+.slider-thumb{position:absolute;width:20px;height:20px;border-radius:50%;background:#FF6B35;box-shadow:0 2px 8px rgba(255,107,53,.5);top:50%;transform:translate(-50%,-50%);cursor:pointer;border:2px solid #fff}
+.thumb-min{left:0%}
+.thumb-max{left:72%}
+.filtro-chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}
+.f-chip{background:#1a1a1a;border:1px solid #2a2a2a;border-radius:50px;padding:5px 12px;font-size:11px;font-weight:600;color:#888;cursor:pointer}
+.f-chip.on{background:rgba(255,107,53,.12);border-color:rgba(255,107,53,.4);color:#FF6B35}
+.filtro-apply{width:100%;margin-top:14px;padding:10px;background:#FF6B35;color:#fff;border:none;border-radius:50px;font-size:13px;font-weight:700;cursor:pointer}
+
+/* ═══════════════════════════════
+   MEJORA 2 — Zoom en modal
+═══════════════════════════════ */
+.modal-demo{margin:0 16px;background:#141414;border:1px solid #222;border-radius:16px;overflow:hidden}
+.modal-img-wrap{position:relative;width:100%;aspect-ratio:4/3;background:linear-gradient(135deg,#1a1a1a,#222);display:flex;align-items:center;justify-content:center;overflow:hidden}
+.modal-img-emoji{font-size:72px;transition:transform .3s ease}
+.modal-img-wrap.zoomed .modal-img-emoji{transform:scale(2.2) translate(-15%,-10%)}
+.zoom-hint{position:absolute;bottom:10px;right:10px;background:rgba(0,0,0,.65);backdrop-filter:blur(6px);border-radius:8px;padding:5px 9px;font-size:10px;font-weight:600;color:rgba(255,255,255,.7);display:flex;align-items:center;gap:4px}
+.zoom-hint.hidden{opacity:0}
+.zoom-indicator{position:absolute;top:10px;right:10px;background:rgba(255,107,53,.85);color:#fff;font-size:10px;font-weight:800;padding:3px 8px;border-radius:20px;opacity:0;transition:opacity .2s}
+.modal-img-wrap.zoomed .zoom-indicator{opacity:1}
+.modal-img-wrap.zoomed .zoom-hint{opacity:0}
+.zoom-close{position:absolute;top:10px;left:10px;background:rgba(0,0,0,.6);border:none;color:#fff;width:28px;height:28px;border-radius:50%;font-size:14px;display:flex;align-items:center;justify-content:center;cursor:pointer;opacity:0;transition:opacity .2s}
+.modal-img-wrap.zoomed .zoom-close{opacity:1}
+.modal-body{padding:14px}
+.modal-name{font-size:15px;font-weight:800;margin-bottom:4px}
+.modal-price{font-size:20px;font-weight:900;background:linear-gradient(135deg,#FF6B35,#e85d28);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:12px}
+.modal-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:12px;background:#FF6B35;color:#fff;border:none;border-radius:50px;font-size:14px;font-weight:700;cursor:pointer}
+.tap-label{text-align:center;font-size:11px;color:#555;padding:10px 0 4px}
+.tap-btn{display:block;margin:0 auto 2px;background:rgba(255,107,53,.1);border:1px solid rgba(255,107,53,.3);color:#FF6B35;font-size:12px;font-weight:700;padding:6px 18px;border-radius:50px;cursor:pointer}
+
+/* ═══════════════════════════════
+   MEJORA 3 — Badge Recién llegado
+═══════════════════════════════ */
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;padding:0 16px}
+.card{background:#1a1a1a;border-radius:14px;overflow:hidden;border:1px solid #222;display:flex;flex-direction:column;position:relative}
+.card-img{width:100%;aspect-ratio:4/3;display:flex;align-items:center;justify-content:center;font-size:42px;background:linear-gradient(135deg,#1e1e1e,#252525);flex-shrink:0;position:relative}
+.card-body{padding:9px 11px 11px;display:flex;flex-direction:column;gap:4px;flex:1}
+.card-name{font-size:12px;font-weight:700;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:30px}
+.card-price{font-size:14px;font-weight:900;background:linear-gradient(135deg,#FF6B35,#e85d28);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.btn-pedir{display:flex;align-items:center;justify-content:center;gap:5px;width:100%;padding:8px;background:#FF6B35;color:#fff;border:none;border-radius:50px;font-size:12px;font-weight:700;cursor:pointer;margin-top:auto}
+.wa{width:16px;height:16px;background:#25D366;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:8px;flex-shrink:0}
+
+/* Badges */
+.badge-base{position:absolute;top:8px;left:8px;font-size:10px;font-weight:800;padding:3px 9px;border-radius:20px;letter-spacing:.04em;text-transform:uppercase;z-index:2}
+.badge-vendido{background:linear-gradient(135deg,#e55c00,#FF6B35);color:#fff;box-shadow:0 2px 8px rgba(255,107,53,.4)}
+.badge-nuevo{background:linear-gradient(135deg,#0a7a3e,#15c469);color:#fff;box-shadow:0 2px 8px rgba(21,196,105,.4);display:flex;align-items:center;gap:4px}
+.badge-agotado{background:linear-gradient(135deg,#9b1b1b,#e74c3c);color:#fff}
+.badge-oferta{background:linear-gradient(135deg,#7b2fa0,#b44fe0);color:#fff;box-shadow:0 2px 8px rgba(180,79,224,.4)}
+
+/* Badge nuevo — animación destello */
+@keyframes nuevo-shine{0%,100%{box-shadow:0 2px 8px rgba(21,196,105,.4)}50%{box-shadow:0 2px 16px rgba(21,196,105,.75),0 0 0 4px rgba(21,196,105,.1)}}
+.badge-nuevo{animation:nuevo-shine 2s ease-in-out infinite}
+
+.card.card-nuevo{border-color:rgba(21,196,105,.25)}
+.card.card-nuevo .card-img::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(21,196,105,.06) 0%,transparent 50%);pointer-events:none}
+
+/* Nota inferior */
+.preview-note{text-align:center;font-size:10px;color:#333;padding:32px 0 0;letter-spacing:.08em;text-transform:uppercase}
+.preview-note span{color:#FF6B35}
+
+/* Divisor */
+.divider{height:1px;background:linear-gradient(90deg,transparent,#222,transparent);margin:28px 16px 0}
+</style>
+</head>
+<body>
+
+<div class="demo-header">
+  <div class="demo-logo">M</div>
+  <div class="demo-logo-text">Tienda <span>Max</span></div>
+</div>
+
+<!-- ═══ MEJORA 1 — Filtro precio ═══ -->
+<div class="mejora-label">
+  <div class="mejora-num">1</div>
+  <div>
+    <div class="mejora-titulo">Filtro de precio</div>
+    <div class="mejora-sub">Slider + rangos rápidos</div>
+  </div>
+</div>
+
+<div class="filtro-wrap">
+  <div class="filtro-top">
+    <div class="filtro-top-label">Precio (USD)</div>
+    <div class="filtro-valores">
+      <div class="filtro-val">$0</div>
+      <div class="filtro-sep">—</div>
+      <div class="filtro-val" id="maxVal">$144</div>
+    </div>
+  </div>
+  <div class="slider-track">
+    <div class="slider-fill" id="sliderFill"></div>
+    <div class="slider-thumb thumb-min"></div>
+    <div class="slider-thumb thumb-max" id="thumbMax"></div>
+  </div>
+  <div class="filtro-chips">
+    <div class="f-chip" onclick="setRange(this,0,50)">Hasta $50</div>
+    <div class="f-chip on" onclick="setRange(this,0,150)">Hasta $150</div>
+    <div class="f-chip" onclick="setRange(this,0,300)">Hasta $300</div>
+    <div class="f-chip" onclick="setRange(this,50,9999)">Más de $50</div>
+  </div>
+  <button class="filtro-apply">Aplicar filtro</button>
+</div>
+
+<div class="divider"></div>
+
+<!-- ═══ MEJORA 2 — Zoom modal ═══ -->
+<div class="mejora-label">
+  <div class="mejora-num">2</div>
+  <div>
+    <div class="mejora-titulo">Zoom en foto del producto</div>
+    <div class="mejora-sub">Toca la imagen para ampliar</div>
+  </div>
+</div>
+
+<div class="modal-demo">
+  <div class="modal-img-wrap" id="modalImg" onclick="toggleZoom()">
+    <div class="modal-img-emoji">📡</div>
+    <div class="zoom-hint">🔍 Toca para ampliar</div>
+    <div class="zoom-indicator">🔍 2×</div>
+    <button class="zoom-close" onclick="event.stopPropagation();toggleZoom()">✕</button>
+  </div>
+  <div class="modal-body">
+    <div class="modal-name">Router WiFi 6 AX1800 Dual Band</div>
+    <div class="modal-price">$130.00 USD</div>
+    <button class="modal-btn">
+      <span style="width:20px;height:20px;background:#25D366;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px">📱</span>
+      Pedir por WhatsApp
+    </button>
+  </div>
+</div>
+<div class="tap-label">↑ Toca la imagen para ver el zoom</div>
+
+<div class="divider"></div>
+
+<!-- ═══ MEJORA 3 — Badge Recién llegado ═══ -->
+<div class="mejora-label">
+  <div class="mejora-num">3</div>
+  <div>
+    <div class="mejora-titulo">Badge "Recién llegado"</div>
+    <div class="mejora-sub">Productos nuevos con etiqueta verde + brillo</div>
+  </div>
+</div>
+
+<div class="grid">
+
+  <div class="card card-nuevo">
+    <div class="card-img">
+      🖥️
+      <div class="badge-base badge-nuevo">✨ Nuevo</div>
+    </div>
+    <div class="card-body">
+      <div class="card-name">Monitor 4K LG 27" IPS</div>
+      <div class="card-price">$320.00 USD</div>
+      <button class="btn-pedir"><div class="wa">📱</div> Pedir</button>
+    </div>
+  </div>
+
+  <div class="card card-nuevo">
+    <div class="card-img">
+      🎧
+      <div class="badge-base badge-nuevo">✨ Nuevo</div>
+    </div>
+    <div class="card-body">
+      <div class="card-name">Auriculares Sony WH-1000XM5</div>
+      <div class="card-price">$180.00 USD</div>
+      <button class="btn-pedir"><div class="wa">📱</div> Pedir</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-img">
+      🖱️
+      <div class="badge-base badge-vendido">🔥 Más Vendido</div>
+    </div>
+    <div class="card-body">
+      <div class="card-name">Mouse Logitech MX Master 3</div>
+      <div class="card-price">$65.00 USD</div>
+      <button class="btn-pedir"><div class="wa">📱</div> Pedir</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-img">
+      ⌨️
+      <div class="badge-base badge-oferta">🏷️ Oferta</div>
+    </div>
+    <div class="card-body">
+      <div class="card-name">Teclado Mecánico RGB Redragon</div>
+      <div class="card-price">$38.00 USD</div>
+      <button class="btn-pedir"><div class="wa">📱</div> Pedir</button>
+    </div>
+  </div>
+
+</div>
+
+<div class="preview-note">── <span>preview</span> · no afecta la tienda ──</div>
+
+<script>
+// Filtro de precio
+const MAX_PRECIO = 500;
+function setRange(el, min, max) {
+  document.querySelectorAll('.f-chip').forEach(c => c.classList.remove('on'));
+  el.classList.add('on');
+  const pct = Math.min(max, MAX_PRECIO) / MAX_PRECIO * 100;
+  document.getElementById('sliderFill').style.width = pct + '%';
+  document.getElementById('thumbMax').style.left = pct + '%';
+  document.getElementById('maxVal').textContent = max >= 9999 ? '$500+' : ('$' + max);
+}
+
+// Zoom modal
+function toggleZoom() {
+  document.getElementById('modalImg').classList.toggle('zoomed');
+}
+</script>
+</body>
+</html>
