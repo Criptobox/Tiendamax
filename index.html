@@ -823,9 +823,17 @@
             </div>
             <div class="carrito-body" id="carritoBody">
                 <div class="carrito-vacio" id="carritoVacio">
-                    <div style="font-size:48px;margin-bottom:12px;">🛍️</div>
-                    <p>Tu carrito está vacío</p>
-                    <button data-action="cerrarCarrito" aria-label="Cerrar carrito" type="button" class="btn btn-primary" style="margin-top:16px;">Ver productos</button>
+                    <div class="tm-empty-icon">🛒</div>
+                    <div class="tm-empty-dots">
+                        <div class="tm-empty-dot"></div>
+                        <div class="tm-empty-dot"></div>
+                        <div class="tm-empty-dot"></div>
+                        <div class="tm-empty-dot"></div>
+                        <div class="tm-empty-dot"></div>
+                    </div>
+                    <p style="font-size:17px;font-weight:800;margin-bottom:6px;">Tu carrito está vacío</p>
+                    <p style="font-size:13px;color:#888;line-height:1.5;max-width:200px;margin:0 auto 16px;">Explora los productos y agrega lo que te gusta 🙌</p>
+                    <button data-action="cerrarCarrito" aria-label="Cerrar carrito" type="button" class="btn btn-primary">🛍️ Ver productos</button>
                 </div>
                 <div id="carritoItems"></div>
                 <div id="carritoSimilares" class="carrito-similares" style="display:none;">

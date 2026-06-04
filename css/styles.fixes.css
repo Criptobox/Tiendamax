@@ -9,6 +9,12 @@ html body .categorias-grid .categoria-card{flex:0 0 calc(20% - 9px) !important;m
 html body .categoria-card.cat-proximamente{opacity:.3 !important;filter:grayscale(.7) !important;pointer-events:none !important;cursor:default !important}
 .stock-count{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 @keyframes tm-shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+@keyframes tm-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes tm-dot-pop{to{opacity:1;transform:scale(1.3)}}
+.tm-empty-icon{width:80px;height:80px;background:linear-gradient(135deg,#1e1e1e,#282828);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:36px;margin:0 auto 10px;box-shadow:0 0 0 10px rgba(201,169,110,.06),0 0 0 22px rgba(201,169,110,.03);animation:tm-float 3s ease-in-out infinite}
+.tm-empty-dots{display:flex;gap:6px;justify-content:center;margin-bottom:14px}
+.tm-empty-dot{width:6px;height:6px;border-radius:50%;background:#C9A96E;opacity:0;animation:tm-dot-pop .35s ease forwards}
+.tm-empty-dot:nth-child(1){animation-delay:.05s}.tm-empty-dot:nth-child(2){animation-delay:.15s}.tm-empty-dot:nth-child(3){animation-delay:.25s}.tm-empty-dot:nth-child(4){animation-delay:.35s}.tm-empty-dot:nth-child(5){animation-delay:.45s}
 .tm-sk-card{background:#1a1a1a;border-radius:16px;overflow:hidden;border:1px solid #222;display:flex;flex-direction:column}
 .tm-sk{background:linear-gradient(90deg,#1e1e1e 25%,#2c2c2c 50%,#1e1e1e 75%);background-size:200% 100%;animation:tm-shimmer 1.4s infinite;border-radius:8px}
 .tm-sk-img{width:100%;aspect-ratio:4/3;height:auto;border-radius:0;flex-shrink:0}

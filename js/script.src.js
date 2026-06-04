@@ -259,6 +259,11 @@ function renderizarCarrito() {
         itemsEl.innerHTML  = '';
         vacioEl.style.display  = 'block';
         footerEl.style.display = 'none';
+        vacioEl.querySelectorAll('.tm-empty-dot').forEach(d => {
+            d.style.animation = 'none';
+            d.offsetHeight;
+            d.style.animation = '';
+        });
         return;
     }
 
