@@ -1,5 +1,7 @@
 // ═══════════════════════════════════════════════════════
-// TiendaMax — Service Worker v123
+// TiendaMax — Service Worker v124
+// v124: push-fix.js actualizado — espera activación real de firebase-messaging-sw.js
+//       antes de llamar getToken(), evita fallos silenciosos en suscriptores nuevos.
 // v123: asistente Facebook/Revolico mejorado — grupos, precio MN, categorías Revolico.
 // v66: corrige assets cacheados inexistentes y fuerza actualización de caché.
 // v65: fuerza actualización de caché para el nuevo estilo naranja del botón
@@ -11,7 +13,7 @@
 //      usan el mismo helper _mensajeOrdenWA con formato premium.
 // ═══════════════════════════════════════════════════════
 
-const CACHE_NAME = 'tiendamax-v123';
+const CACHE_NAME = 'tiendamax-v124';
 
 const STATIC_ASSETS = [
   '/',
