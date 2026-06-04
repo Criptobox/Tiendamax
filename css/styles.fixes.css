@@ -99,6 +99,8 @@ html body #detailPersonasViendo{margin:8px 0 12px}
   /* Botón "Ver todos" visible solo en móvil */
   .mv-ver-todos-btn{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;margin-top:12px;padding:10px 16px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:12px;color:rgba(255,255,255,0.7);font-size:13px;font-weight:600;cursor:pointer}
   .mv-ver-todos-btn:active{background:rgba(255,255,255,0.1)}
+  /* Borde dorado + acento naranja arriba → marca "producto caliente" */
+  html body #masVendidosGrid .producto-card{border:1px solid rgba(201,169,110,0.28) !important;border-top:2.5px solid #FF6B35 !important;box-shadow:0 4px 16px rgba(201,169,110,0.08) !important}
 }
 /* ── UX Restructure: Search-first layout ─────────────────────────── */
 html body .hsb-wrap-top{margin-top:0;border-bottom:1px solid rgba(255,255,255,0.06)}

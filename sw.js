@@ -1,7 +1,7 @@
 // ═══════════════════════════════════════════════════════
-// TiendaMax — Service Worker v149
+// TiendaMax — Service Worker v150
+// v150: borde dorado + acento naranja en tarjetas Más Vendidos (móvil).
 // v149: Más Vendidos — 3 tarjetas compactas en móvil + botón "Ver todos".
-// v148: UX restructure — búsqueda arriba, hero sin banner, Más Vendidos primero, banners al fondo.
 // v147: push-fix.js — espera activación real de firebase-messaging-sw.js antes de getToken().
 // v146: eliminar click_action obsoleto (deprecado por FCM desde 2020).
 // v145: búsquedas a Firebase, ventas read-off, timezone Cuba fix.
@@ -36,7 +36,7 @@
 //      usan el mismo helper _mensajeOrdenWA con formato premium.
 // ═══════════════════════════════════════════════════════
 
-const CACHE_NAME = 'tiendamax-v149';
+const CACHE_NAME = 'tiendamax-v150';
 
 const STATIC_ASSETS = [
   '/',
