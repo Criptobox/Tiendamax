@@ -7350,7 +7350,11 @@ window.addEventListener('popstate', function() {
         } catch(e) {
             console.error('[notif] Error activando:', e);
             if (typeof mostrarNotificacion === 'function') {
-                mostrarNotificacion('❌ Error: ' + e.message, 'error');
+                const raw = (e.message || '').toLowerCase();
+                const msg = (raw.includes('fetch') || raw.includes('network') || raw.includes('conexión'))
+                    ? 'Sin conexión. Verifica tu internet e inténtalo de nuevo.'
+                    : (e.message || 'Error desconocido');
+                mostrarNotificacion('❌ ' + msg, 'error');
             }
         }
 
