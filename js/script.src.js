@@ -59,6 +59,13 @@ function actualizarContadorCarrito() {
     }
 }
 
+function _tmCartBump() {
+    const btn = document.querySelector('.cart-icon-btn');
+    const count = document.getElementById('cartCount');
+    if (btn) { btn.classList.remove('tm-cart-bump'); void btn.offsetWidth; btn.classList.add('tm-cart-bump'); setTimeout(() => btn.classList.remove('tm-cart-bump'), 450); }
+    if (count) { count.classList.remove('tm-count-pop'); void count.offsetWidth; count.classList.add('tm-count-pop'); setTimeout(() => count.classList.remove('tm-count-pop'), 350); }
+}
+
 
 // ══════════════════════════════════════════════════════════════
 //  ME GUSTA / WISHLIST
@@ -205,7 +212,8 @@ function agregarAlCarrito(id) {
         });
     }
     guardarCarrito();
-    mostrarNotificacion('✅ ' + p.nombre.substring(0,25) + ' agregado al carrito');
+    _tmToastProducto(p);
+    _tmCartBump();
     renderizarCarrito();
     actualizarBotonesCarrito();
 }
@@ -1469,6 +1477,35 @@ function mostrarNotificacion(mensaje, tipo = 'success') {
     `;
     document.body.appendChild(notif);
     setTimeout(() => notif.remove(), 4000);
+}
+
+function _tmToastProducto(p) {
+    document.querySelectorAll('.tm-toast-prod').forEach(t => t.remove());
+    const toast = document.createElement('div');
+    toast.className = 'tm-toast-prod';
+    const img = document.createElement('img');
+    img.className = 'tm-toast-img';
+    img.src = p.imagen || '';
+    img.alt = '';
+    const info = document.createElement('div');
+    info.className = 'tm-toast-info';
+    const nombre = document.createElement('div');
+    nombre.className = 'tm-toast-nombre';
+    nombre.textContent = p.nombre;
+    const precio = document.createElement('div');
+    precio.className = 'tm-toast-precio';
+    precio.textContent = typeof formatPrecio === 'function' ? formatPrecio(p.precioActual) : ('$' + Number(p.precioActual).toFixed(2) + ' USD');
+    info.appendChild(nombre);
+    info.appendChild(precio);
+    const check = document.createElement('div');
+    check.className = 'tm-toast-check';
+    check.textContent = '✓';
+    toast.appendChild(img);
+    toast.appendChild(info);
+    toast.appendChild(check);
+    document.body.appendChild(toast);
+    requestAnimationFrame(() => toast.classList.add('show'));
+    setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 250); }, 3000);
 }
 
 // ===== NAVEGACIÓN ENTRE VISTAS =====
@@ -6700,6 +6737,17 @@ async function guardarTasaMNAdmin() {
                 if (imgWrap) imgWrap.appendChild(badgeNuevo);
                 card.classList.add('tm-card-nueva');
             }
+
+            if (producto.precioOriginal > 0 && producto.precioOriginal > producto.precioActual && !card.querySelector('.badge-rebajado')) {
+                const pct = Math.round((1 - producto.precioActual / producto.precioOriginal) * 100);
+                const imgWrap = card.querySelector('.producto-image');
+                if (imgWrap) {
+                    const b = document.createElement('div');
+                    b.className = 'badge-rebajado';
+                    b.textContent = '▼ ' + pct + '%';
+                    imgWrap.appendChild(b);
+                }
+            }
         });
 
         // Separador visual entre disponibles y agotados
@@ -6875,6 +6923,53 @@ async function guardarTasaMNAdmin() {
             titulo.textContent = cat === 'Todas' ? '🛍️ Todos los Productos' : (icono + ' ' + cat);
         }
     };
+
+    // ── Pull-to-refresh ──
+    (function() {
+        const THRESHOLD = 80;
+        let startY = 0, pulling = false, active = false;
+        const ptr = document.createElement('div');
+        ptr.className = 'tm-ptr';
+        ptr.innerHTML = '<span class="tm-ptr-icon">↓</span><span class="tm-ptr-txt">Desliza para actualizar</span>';
+        document.body.appendChild(ptr);
+        const txt = ptr.querySelector('.tm-ptr-txt');
+
+        document.addEventListener('touchstart', function(e) {
+            if (window.scrollY > 0) return;
+            startY = e.touches[0].clientY;
+            pulling = true;
+        }, { passive: true });
+
+        document.addEventListener('touchmove', function(e) {
+            if (!pulling) return;
+            const dy = e.touches[0].clientY - startY;
+            if (dy < 10) return;
+            active = true;
+            ptr.classList.add('tm-ptr-visible');
+            ptr.classList.toggle('tm-ptr-ready', dy >= THRESHOLD);
+            txt.textContent = dy >= THRESHOLD ? 'Suelta para actualizar' : 'Desliza para actualizar';
+        }, { passive: true });
+
+        document.addEventListener('touchend', function() {
+            if (!active) { pulling = false; return; }
+            const wasReady = ptr.classList.contains('tm-ptr-ready');
+            ptr.classList.remove('tm-ptr-ready');
+            if (wasReady) {
+                ptr.classList.add('tm-ptr-loading');
+                ptr.querySelector('.tm-ptr-icon').textContent = '↻';
+                txt.textContent = 'Actualizando...';
+                setTimeout(function() {
+                    if (typeof renderizarProductos === 'function') renderizarProductos();
+                    ptr.classList.remove('tm-ptr-loading', 'tm-ptr-visible');
+                    ptr.querySelector('.tm-ptr-icon').textContent = '↓';
+                    txt.textContent = 'Desliza para actualizar';
+                }, 800);
+            } else {
+                ptr.classList.remove('tm-ptr-visible');
+            }
+            pulling = false; active = false;
+        }, { passive: true });
+    })();
 
     document.addEventListener('DOMContentLoaded', function () {
         setTimeout(function () {
