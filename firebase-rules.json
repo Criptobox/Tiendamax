@@ -37,7 +37,7 @@
           ".validate": "newData.isString()"
         }
       },
-      ".read": "auth != null",
+      ".read": true,
       ".write": false
     },
     ".read": false,
