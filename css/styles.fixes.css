@@ -129,7 +129,7 @@ html body .btn-wa:hover{background:#1db954 !important;transform:translateY(-2px)
 @media (max-width:480px){html body .cta-buttons-equal{flex-direction:column !important;max-width:320px !important}html body .cta-buttons-equal .btn{flex:unset !important;width:100% !important}html body .hero.hero-sin-imagen{padding:28px 20px 24px !important}}
 /* Sponsored banners section */
 html body .banners-patrocinados-section{padding:8px 0 16px}
-html body .banners-pat-label{font-size:11px;color:#666;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;padding:8px 16px 4px;margin:0}
+html body .banners-pat-label{display:none !important}
 html body .banners-patrocinados-section .hero-image{margin:0 16px 8px;border-radius:18px;overflow:hidden}
 @media (min-width:769px){html body .banners-patrocinados-section .hero-image{max-width:960px;margin:0 auto 8px}}
 @media (max-width:768px){html body .banners-patrocinados-section .hero-image{margin:0 12px 8px;border-radius:14px}}
@@ -139,3 +139,5 @@ html body #heroBannerSlider,html body #heroImageContainer .hero-banner-slider{po
 @media (max-width:768px){html body #heroImageContainer{margin:0 12px 16px !important;height:clamp(160px,65vw,280px) !important}}
 /* cover: imagen llena el contenedor sin espacios negros */
 html body .hero-banner-slide img{object-fit:cover !important;object-position:center center !important;background:none !important}
+/* Tarjetas del grid: misma altura en cada fila aunque tengan precio tachado o badges extra */
+html body .productos-grid .producto-card{height:100% !important;box-sizing:border-box !important}
