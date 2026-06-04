@@ -45,9 +45,16 @@
             img.src = url;
             img.alt = 'Banner TiendaMax';
             img.loading = 'lazy';
-            img.style.cssText = 'width:100%;height:100%;object-fit:contain;display:block;pointer-events:none;';
+            img.style.cssText = 'width:100%;height:100%;object-fit:cover;object-position:center;display:block;pointer-events:none;';
             img.onerror = function() { slide.style.background = '#1a1a1a'; };
             slide.appendChild(img);
+
+            if (slide.hasAttribute('data-banner-link')) {
+                var p = document.createElement('span');
+                p.textContent = '⭐ Patrocinado';
+                p.style.cssText = 'position:absolute;top:10px;left:10px;background:rgba(0,0,0,0.55);color:#fff;font-size:10px;font-weight:600;padding:3px 8px;border-radius:20px;z-index:2;';
+                slide.appendChild(p);
+            }
 
             track.appendChild(slide);
         });
