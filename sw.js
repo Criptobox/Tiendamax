@@ -1,5 +1,6 @@
 // ═══════════════════════════════════════════════════════
-// TiendaMax — Service Worker v143
+// TiendaMax — Service Worker v144
+// v144: banners flotantes secuenciales — notificaciones primero, install después.
 // v143: eliminar canvas de líneas animadas del hero (parpadeo en móvil).
 // v142: lazy load fade-in, búsquedas en analytics, preview admin.
 // v141: bounce carrito, toast con foto, pull-to-refresh, badge rebajado.
@@ -30,7 +31,7 @@
 //      usan el mismo helper _mensajeOrdenWA con formato premium.
 // ═══════════════════════════════════════════════════════
 
-const CACHE_NAME = 'tiendamax-v143';
+const CACHE_NAME = 'tiendamax-v144';
 
 const STATIC_ASSETS = [
   '/',

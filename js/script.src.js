@@ -5896,6 +5896,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const b = document.createElement('div');
         b.id = 'tm-push-banner-wrap';
+        b.style.cssText = 'position:fixed;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom,0px) + 20px);z-index:2000;width:min(92vw,380px);max-width:380px';
         b.innerHTML = `<div id="tm-push-banner" style="background:#1a1a1a;border:1.5px solid #C9A96E;border-radius:14px;padding:14px 18px;display:flex;align-items:center;gap:12px;box-shadow:0 8px 32px rgba(0,0,0,0.5);font-family:sans-serif;animation:slideUpBanner .35s ease"><span style="font-size:26px;flex-shrink:0">🔔</span><div style="flex:1;min-width:0"><div style="font-weight:700;font-size:14px;color:#C9A96E;margin-bottom:2px">${escapeHtml(titulo)}</div><div style="font-size:12px;color:#aaa;line-height:1.3">${escapeHtml(cuerpo)}</div></div><div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0"><button id="tm-push-si" style="background:#C9A96E;color:#000;border:none;border-radius:8px;padding:7px 12px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap">${escapeHtml(btnTexto)}</button><button id="tm-push-no" style="background:none;border:none;color:#666;font-size:11px;cursor:pointer;text-align:center">Ahora no</button></div></div>`;
         if (!document.getElementById('slideUpBannerStyle')) {
             const s = document.createElement('style');
@@ -5907,6 +5908,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         document.getElementById('tm-push-si').onclick = async () => {
             b.remove();
+            setTimeout(() => { try { if (typeof window._tmMostrarInstall === 'function') window._tmMostrarInstall(); } catch(e){} }, 5000);
             if (estaDenegado) {
                 alert('Para activar las notificaciones:\n\n1. Toca los 3 puntos del navegador\n2. Ajustes → Configuración del sitio\n3. Notificaciones → Permitir');
                 return;
@@ -5948,6 +5950,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         document.getElementById('tm-push-no').onclick = () => {
             b.remove();
+            setTimeout(() => { try { if (typeof window._tmMostrarInstall === 'function') window._tmMostrarInstall(); } catch(e){} }, 5000);
             // Pospuesto: cuántas veces lo ha rechazado
             const rechazos = parseInt(localStorage.getItem('tm_push_rechazos') || '0') + 1;
             localStorage.setItem('tm_push_rechazos', String(rechazos));
@@ -7505,14 +7508,14 @@ window.addEventListener('popstate', function() {
         wrap.id = 'tm-install-banner-wrap';
         wrap.style.cssText = 'position:fixed;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom,0px) + 20px);z-index:2000;width:min(92vw,380px);max-width:380px';
         wrap.innerHTML =
-            '<div style="background:#1a1a1a;border:1.5px solid #C9A96E;border-radius:14px;padding:14px 18px;display:flex;align-items:center;gap:12px;box-shadow:0 8px 32px rgba(0,0,0,0.5);font-family:sans-serif;animation:slideUpBanner .35s ease">' +
+            '<div style="background:#1a1a1a;border:1.5px solid rgba(255,107,53,.5);border-radius:14px;padding:14px 18px;display:flex;align-items:center;gap:12px;box-shadow:0 8px 32px rgba(0,0,0,0.5);font-family:sans-serif;animation:slideUpBanner .35s ease">' +
                 '<span style="font-size:26px;flex-shrink:0">📲</span>' +
                 '<div style="flex:1;min-width:0">' +
-                    '<div style="font-weight:700;font-size:14px;color:#C9A96E;margin-bottom:2px">' + esc('Instala TiendaMax') + '</div>' +
+                    '<div style="font-weight:700;font-size:14px;color:#FF6B35;margin-bottom:2px">' + esc('Instala TiendaMax') + '</div>' +
                     '<div style="font-size:12px;color:#aaa;line-height:1.3">' + esc('Acceso directo desde tu pantalla de inicio, más rápido y sin ocupar espacio.') + '</div>' +
                 '</div>' +
                 '<div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0">' +
-                    '<button id="tm-install-si" style="background:#C9A96E;color:#000;border:none;border-radius:8px;padding:7px 12px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap">Instalar</button>' +
+                    '<button id="tm-install-si" style="background:#FF6B35;color:#fff;border:none;border-radius:8px;padding:7px 12px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap">Instalar</button>' +
                     '<button id="tm-install-no" style="background:none;border:none;color:#666;font-size:11px;cursor:pointer;text-align:center">Ahora no</button>' +
                 '</div>' +
             '</div>';
@@ -7531,14 +7534,19 @@ window.addEventListener('popstate', function() {
         };
     }
 
+    // Exponer para que el banner de notificaciones lo active en secuencia
+    window._tmMostrarInstall = mostrarBannerInstalar;
+
     // Capturar el evento y bloquear el cartel naranja por defecto del navegador
     window.addEventListener('beforeinstallprompt', function (e) {
         e.preventDefault();
         deferredPrompt = e;
-        // Mostrar el banner bonito rápido (1.5s) para no perderlo si el SW fuerza un reload
-        setTimeout(mostrarBannerInstalar, 1500);
         // Mostrar/actualizar botón en el menú de navegación
         _mostrarBtnInstalarMenu();
+        // Si notificaciones ya están resueltas (no habrá banner push), mostrar install después de 20s
+        if (!('Notification' in window) || Notification.permission !== 'default') {
+            setTimeout(mostrarBannerInstalar, 20000);
+        }
     });
 
     // Botón de instalación en el menú móvil
