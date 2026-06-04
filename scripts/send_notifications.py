@@ -139,31 +139,72 @@ def detectar_cambios(config_actual, config_anterior, prod_actual, prod_anterior)
 # ============================================================
 # ENVÍO
 # ============================================================
+FCM_BATCH_SIZE = 500  # límite duro de send_each_for_multicast
+
+# Códigos de error FCM que indican token muerto (no recuperable)
+_FCM_DEAD_TOKEN_ERRORS = (
+    "NotRegistered",
+    "InvalidRegistration",
+    "Requested entity was not found",
+    "INVALID_ARGUMENT",
+    "registration-token-not-registered",
+)
+
 def enviar_push_fcm(messaging_api, database, tokens, keys, title, body, link, imagen=None, tag=None):
     if not tokens: return
     full_link = f"{SITE_URL}{link}" if not link.startswith("http") else link
-    message = messaging_api.MulticastMessage(
-        data={"url": full_link, "title": title, "body": body, "image": imagen or "", "icon": ICONO_PUSH, "tag": tag or "tiendamax"},
-        tokens=tokens,
-        webpush=messaging_api.WebpushConfig(headers={"Urgency": "high"}, fcm_options=messaging_api.WebpushFCMOptions(link=full_link))
-    )
-    response = messaging_api.send_each_for_multicast(message)
-    print(f"✅ Enviado: {response.success_count} | ❌ Fallidos: {response.failure_count}")
 
-    # Limpiar tokens inválidos de Firebase
+    # Deduplicar y sanear lista de tokens
+    tokens_uniq = list(dict.fromkeys(t for t in tokens if isinstance(t, str) and t))
+    total = len(tokens_uniq)
+    if not total: return
+
+    n_lotes = (total + FCM_BATCH_SIZE - 1) // FCM_BATCH_SIZE
+    print(f"📨 Enviando '{title}' — {total} suscriptor(es), {n_lotes} lote(s)")
+
+    total_ok = 0
+    total_fail = 0
     tokens_a_borrar = []
-    for i, result in enumerate(response.responses):
-        if not result.success:
-            err = str(result.exception) if result.exception else ""
-            if "NotRegistered" in err or "InvalidRegistration" in err:
-                tokens_a_borrar.append(tokens[i])
+
+    for lote_n, start in enumerate(range(0, total, FCM_BATCH_SIZE), 1):
+        batch = tokens_uniq[start:start + FCM_BATCH_SIZE]
+        message = messaging_api.MulticastMessage(
+            data={
+                "url": full_link, "title": title, "body": body,
+                "image": imagen or "", "icon": ICONO_PUSH, "tag": tag or "tiendamax",
+            },
+            tokens=batch,
+            webpush=messaging_api.WebpushConfig(
+                headers={"Urgency": "high"},
+                fcm_options=messaging_api.WebpushFCMOptions(link=full_link),
+            ),
+        )
+        try:
+            response = messaging_api.send_each_for_multicast(message)
+            total_ok += response.success_count
+            total_fail += response.failure_count
+            for j, result in enumerate(response.responses):
+                if not result.success and result.exception:
+                    err = str(result.exception)
+                    if any(pat in err for pat in _FCM_DEAD_TOKEN_ERRORS):
+                        tokens_a_borrar.append(batch[j])
+        except Exception as e:
+            print(f"⚠️ Error en lote {lote_n}/{n_lotes}: {e}", file=sys.stderr)
+
+    print(f"✅ Entregados: {total_ok} | ❌ Fallidos: {total_fail}")
+
+    # Limpiar tokens muertos de Firebase
     if tokens_a_borrar:
-        tokens_ref = database.reference("tokens")
-        all_tokens = tokens_ref.get() or {}
-        for key, val in all_tokens.items():
-            if isinstance(val, dict) and val.get("token") in tokens_a_borrar:
-                tokens_ref.child(key).delete()
-        print(f"🗑️ Tokens inválidos eliminados: {len(tokens_a_borrar)}")
+        borrar_set = set(tokens_a_borrar)
+        try:
+            tokens_ref = database.reference("tokens")
+            all_tokens = tokens_ref.get() or {}
+            for key, val in all_tokens.items():
+                if isinstance(val, dict) and val.get("token") in borrar_set:
+                    tokens_ref.child(key).delete()
+            print(f"🗑️ Tokens inválidos eliminados: {len(tokens_a_borrar)}")
+        except Exception as e:
+            print(f"⚠️ Error limpiando tokens: {e}", file=sys.stderr)
 
 
 def procesar_restock(messaging_api, database, restock_items):
@@ -261,7 +302,11 @@ def main():
         ref_tokens = db_api.reference("tokens")
         tokens_data = ref_tokens.get()
         if tokens_data:
-            tokens = [v["token"] for v in tokens_data.values() if "token" in v]
+            tokens = [
+                v["token"] for v in tokens_data.values()
+                if isinstance(v, dict) and v.get("token")
+            ]
+            print(f"🔑 Tokens en base: {len(tokens_data)} | Válidos: {len(tokens)}")
             for a in avisos:
                 enviar_push_fcm(msg_api, db_api, tokens, [], a["title"], a["body"], a["link"], a["imagen"])
                 if a["tipo"] == "tasa": cola["tasa_pendiente"] = None

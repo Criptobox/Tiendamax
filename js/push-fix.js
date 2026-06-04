@@ -83,7 +83,19 @@
     var reg;
     try {
       reg = await navigator.serviceWorker.register("/firebase-messaging-sw.js", { scope: "/firebase-cloud-messaging-push-scope" });
-      await navigator.serviceWorker.ready;
+      // Esperar que ESTE SW específico esté activo — navigator.serviceWorker.ready resuelve
+      // con sw.js (scope "/") y puede retornar antes de que firebase-messaging-sw.js active.
+      if (!reg.active) {
+        await new Promise(function (resolve, reject) {
+          var sw = reg.installing || reg.waiting;
+          if (!sw) { resolve(); return; }
+          var t = setTimeout(function () { reject(new Error("timeout activación SW")); }, 12000);
+          sw.addEventListener("statechange", function onsc() {
+            if (sw.state === "activated") { clearTimeout(t); sw.removeEventListener("statechange", onsc); resolve(); }
+            else if (sw.state === "redundant") { clearTimeout(t); sw.removeEventListener("statechange", onsc); reject(new Error("SW redundante")); }
+          });
+        });
+      }
     } catch (e) {
       throw new Error("Error al preparar el servicio de notificaciones: " + e.message);
     }
@@ -144,9 +156,23 @@
     }
   }
 
+  function _notif(msg, tipo) {
+    if (typeof window.mostrarNotificacion === "function") { try { window.mostrarNotificacion(msg, tipo); } catch(e) {} }
+  }
+  function _wrap(cfgArg) {
+    return registrarTokenRobusto(cfgArg).then(function (ok) {
+      if (ok) _notif("✅ Notificaciones activadas correctamente.", "success");
+      return ok;
+    }).catch(function (e) {
+      console.error("[push-fix v4] Error:", e.message);
+      _notif("⚠️ No se pudo activar las notificaciones. Intenta de nuevo.", "error");
+      return false;
+    });
+  }
+
   // Sobrescribe AMBAS rutas: la campana y el cartel inicial.
-  window.tmRegistrarTokenFCMSiPermitido = function () { return registrarTokenRobusto(); };
-  window.inicializarFirebaseFCMClient   = function (cfg) { return registrarTokenRobusto(cfg); };
+  window.tmRegistrarTokenFCMSiPermitido = function () { return _wrap(); };
+  window.inicializarFirebaseFCMClient   = function (cfg) { return _wrap(cfg); };
 
   // Al cargar: recuperar token si falta, y reintentar escritura RTDB si hay pendiente.
   function autoRecuperar() {

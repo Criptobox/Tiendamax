@@ -33,7 +33,7 @@
       "$tokenId": {
         ".read": false,
         ".write": true,
-        ".validate": "newData.hasChildren(['token', 'timestamp']) && newData.child('timestamp').val() <= now + 60000",
+        ".validate": "newData.hasChildren(['token', 'timestamp']) && newData.child('timestamp').val() >= now - 300000 && newData.child('timestamp').val() <= now + 300000",
         "token": {
           ".validate": "newData.isString() && newData.val().length > 50 && newData.val().length < 500"
         },

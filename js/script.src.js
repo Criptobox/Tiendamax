@@ -2312,11 +2312,12 @@ function renderizarGaleriaDetalle(producto) {
             const url = this.getAttribute('data-img');
             if (!url) return;
             img.src = url;
-            img.classList.remove('zoomed');
+            _resetZoomPan(img);
             thumbs.querySelectorAll('.detail-gallery-thumb').forEach(b => b.classList.remove('active'));
             this.classList.add('active');
         });
     });
+    _initSwipeGaleria(img);
 }
 
 // ===== DETALLE DE PRODUCTO =====
@@ -2354,7 +2355,7 @@ function abrirDetalleProducto(id) {
     const _imagenesDetalle = obtenerImagenesProducto(p);
     img.src = _imagenesDetalle[0] || p.imagen || '';
     img.alt = p.nombre;
-    img.classList.remove('zoomed');
+    _resetZoomPan(img);
     renderizarGaleriaDetalle(p);
 
     // Categoría y subcategoría
@@ -2482,16 +2483,32 @@ if (_detailPrecioOldEl) {
     // Historial de vistas
     registrarVisto(p.id);
 
-    // Personas viendo (contador simulado con base en vistas reales)
+    // Contador de vistas — local primero, Firebase en segundo plano
     (function() {
         const vDiv = document.getElementById('detailPersonasViendo');
         if (!vDiv) return;
-        const vistas = obtenerVistasProd(p.id) || 0;
-        // Simular personas activas: entre 2 y 12, influenciado por vistas
-        const base = Math.min(12, 2 + Math.floor(vistas / 3));
-        const personas = base + Math.floor(Math.random() * 4);
-        vDiv.style.display = 'flex';
-        vDiv.innerHTML = '<span>👁️ ' + personas + ' personas están viendo esto ahora</span>';
+        const prodId = p.id;
+        const local = obtenerVistasProd(prodId) || 0;
+        if (local > 0) {
+            vDiv.style.display = 'flex';
+            vDiv.innerHTML = '<span class="pv-inner">👁️ <strong>' + local.toLocaleString() + '</strong> personas vieron esto</span>';
+        }
+        (async () => {
+            try {
+                const cfg = JSON.parse(localStorage.getItem('firebaseConfig') || '{}');
+                const base = cfg.databaseURL || (cfg.projectId ? 'https://' + cfg.projectId + '-default-rtdb.firebaseio.com' : null);
+                if (!base) return;
+                const res = await fetch(base + '/analytics/vistas/' + String(prodId) + '/count.json');
+                if (!res.ok) return;
+                const cnt = await res.json();
+                if (typeof cnt !== 'number' || cnt <= 0) return;
+                const el = document.getElementById('detailPersonasViendo');
+                if (el) {
+                    el.style.display = 'flex';
+                    el.innerHTML = '<span class="pv-inner">👁️ <strong>' + cnt.toLocaleString() + '</strong> personas vieron esto</span>';
+                }
+            } catch(e) {}
+        })();
     })();
 
     // Botón carrito en modal
@@ -2541,6 +2558,8 @@ function cerrarDetalleModal() {
     var _pcr = document.getElementById('panelCompartirRedes');
     if (_pcr) _pcr.style.display = 'none';
 
+    _resetZoomPan(document.getElementById('detailProductImage'));
+
     const modal = document.getElementById('productDetailModal');
     if (!modal) return;
     modal.classList.add('hidden');
@@ -2559,10 +2578,77 @@ function cerrarDetalleModal() {
     }
 }
 
-function toggleZoomImagen(img) {
-    img.classList.toggle('zoomed');
+let _zoomPanState = null;
+
+function _resetZoomPan(img) {
+    if (!img) return;
+    if (_zoomPanState) { _zoomPanState.cleanup(); _zoomPanState = null; }
+    img.classList.remove('zoomed', 'dragging');
+    img.style.transform = '';
+    img.style.transition = '';
     const hint = img.parentElement && img.parentElement.querySelector('.detail-zoom-hint');
-    if (hint) hint.textContent = img.classList.contains('zoomed') ? '✕ Toca para cerrar' : '🔍 Toca para ampliar';
+    if (hint) hint.textContent = '🔍 Toca para ampliar';
+}
+
+function _initZoomPan(img) {
+    const SCALE = 2.2;
+    let tx = 0, ty = 0, startX = 0, startY = 0, startTx = 0, startTy = 0;
+    let isDragging = false, hasMoved = false;
+    function clamp(v, lo, hi) { return v < lo ? lo : v > hi ? hi : v; }
+    function maxPan() {
+        const wrap = img.parentElement;
+        if (!wrap) return { x: 0, y: 0 };
+        const iR = img.getBoundingClientRect(), wR = wrap.getBoundingClientRect();
+        return { x: Math.max(0, (iR.width * SCALE - wR.width) / 2), y: Math.max(0, (iR.height * SCALE - wR.height) / 2) };
+    }
+    function applyT(dur) {
+        const m = maxPan();
+        tx = clamp(tx, -m.x, m.x); ty = clamp(ty, -m.y, m.y);
+        img.style.transition = dur ? 'transform ' + dur + 'ms cubic-bezier(.4,0,.2,1)' : 'none';
+        img.style.transform = 'translate(' + tx + 'px,' + ty + 'px) scale(' + SCALE + ')';
+    }
+    function onMD(e) { isDragging = true; hasMoved = false; startX = e.clientX; startY = e.clientY; startTx = tx; startTy = ty; img.classList.add('dragging'); e.preventDefault(); }
+    function onMM(e) { if (!isDragging) return; const dx = e.clientX - startX, dy = e.clientY - startY; if (Math.abs(dx) > 3 || Math.abs(dy) > 3) hasMoved = true; tx = startTx + dx; ty = startTy + dy; applyT(0); }
+    function onMU() { isDragging = false; img.classList.remove('dragging'); if (!hasMoved) { _resetZoomPan(img); } else { applyT(150); } }
+    function onTS(e) { if (e.touches.length !== 1) return; startX = e.touches[0].clientX; startY = e.touches[0].clientY; startTx = tx; startTy = ty; hasMoved = false; e.preventDefault(); }
+    function onTM(e) { if (e.touches.length !== 1) return; const dx = e.touches[0].clientX - startX, dy = e.touches[0].clientY - startY; if (Math.abs(dx) > 5 || Math.abs(dy) > 5) hasMoved = true; tx = startTx + dx; ty = startTy + dy; applyT(0); e.preventDefault(); }
+    function onTE() { if (!hasMoved) { _resetZoomPan(img); } else { applyT(150); } }
+    img.addEventListener('mousedown', onMD);
+    document.addEventListener('mousemove', onMM);
+    document.addEventListener('mouseup', onMU);
+    img.addEventListener('touchstart', onTS, { passive: false });
+    img.addEventListener('touchmove', onTM, { passive: false });
+    img.addEventListener('touchend', onTE);
+    applyT(300);
+    _zoomPanState = { cleanup() { img.removeEventListener('mousedown', onMD); document.removeEventListener('mousemove', onMM); document.removeEventListener('mouseup', onMU); img.removeEventListener('touchstart', onTS); img.removeEventListener('touchmove', onTM); img.removeEventListener('touchend', onTE); } };
+}
+
+function toggleZoomImagen(img) {
+    if (img.classList.contains('zoomed')) { _resetZoomPan(img); return; }
+    img.classList.add('zoomed');
+    const hint = img.parentElement && img.parentElement.querySelector('.detail-zoom-hint');
+    if (hint) hint.textContent = '↔ Arrastra · Toca para cerrar';
+    _initZoomPan(img);
+}
+
+function _initSwipeGaleria(img) {
+    if (img._swipeGaleriaInited) return;
+    img._swipeGaleriaInited = true;
+    let swX = 0, swY = 0;
+    img.addEventListener('touchstart', function(e) {
+        if (img.classList.contains('zoomed') || e.touches.length !== 1) return;
+        swX = e.touches[0].clientX; swY = e.touches[0].clientY;
+    }, { passive: true });
+    img.addEventListener('touchend', function(e) {
+        if (img.classList.contains('zoomed')) return;
+        const dx = e.changedTouches[0].clientX - swX, dy = e.changedTouches[0].clientY - swY;
+        if (Math.abs(dx) < 40 || Math.abs(dy) > Math.abs(dx) * 0.8) return;
+        const thumbs = Array.from(document.querySelectorAll('#detailGalleryThumbs .detail-gallery-thumb'));
+        if (thumbs.length < 2) return;
+        const idx = thumbs.findIndex(t => t.classList.contains('active'));
+        const next = dx < 0 ? (idx + 1) % thumbs.length : (idx - 1 + thumbs.length) % thumbs.length;
+        thumbs[next].click();
+    }, { passive: true });
 }
 
 function abrirPanelCompartir() {
