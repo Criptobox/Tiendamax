@@ -1,7 +1,7 @@
 // ═══════════════════════════════════════════════════════
-// TiendaMax — Service Worker v154
-// v154: hero centrado completo — botones iguales, texto centrado, sin espacio vacío.
-// v153: bundle.css?v=152 para forzar recarga de estilos en navegadores.
+// TiendaMax — Service Worker v155
+// v155: estilos hero inline — independientes del bundle, botones iguales garantizados.
+// v154: hero centrado completo + botones iguales + bundle incluido.
 // v150: borde dorado + acento naranja en tarjetas Más Vendidos (móvil).
 // v147: push-fix.js — espera activación real de firebase-messaging-sw.js antes de getToken().
 // v146: eliminar click_action obsoleto (deprecado por FCM desde 2020).
@@ -37,7 +37,7 @@
 //      usan el mismo helper _mensajeOrdenWA con formato premium.
 // ═══════════════════════════════════════════════════════
 
-const CACHE_NAME = 'tiendamax-v154';
+const CACHE_NAME = 'tiendamax-v155';
 
 const STATIC_ASSETS = [
   '/',
