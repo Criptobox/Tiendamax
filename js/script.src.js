@@ -3761,13 +3761,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 // ===== PATCH actualizarListaProductos to also update countdown select =====
-const _origActualizarListaProductos = actualizarListaProductos;
-actualizarListaProductos = function() {
-    _origActualizarListaProductos();
-    if (typeof actualizarCountdownProductSelect === 'function') {
-        actualizarCountdownProductSelect();
-    }
-};
+if (typeof actualizarListaProductos === 'function') {
+    const _origActualizarListaProductos = actualizarListaProductos;
+    actualizarListaProductos = function() {
+        _origActualizarListaProductos();
+        if (typeof actualizarCountdownProductSelect === 'function') {
+            actualizarCountdownProductSelect();
+        }
+    };
+}
 
 // ===== FIX: Subcategories showing only General =====
 // Override renderizarSubcategoriaTabs to also load from GitHub subcategorias.json
@@ -3790,28 +3792,32 @@ async function cargarSubcategoriasDesdeGitHub() {
 }
 
 // Patch cargarDatosDesdeGitHub to also load subcategorias
-const _origCargarDatos = cargarDatosDesdeGitHub;
-cargarDatosDesdeGitHub = async function() {
-    await _origCargarDatos();
-    await cargarSubcategoriasDesdeGitHub();
-    // Re-render subcategoria tabs if a category is currently selected
-    if (typeof categoriaSeleccionada !== 'undefined' && categoriaSeleccionada && categoriaSeleccionada !== 'Todas') {
-        if (typeof renderizarSubcategoriaTabs === 'function') renderizarSubcategoriaTabs();
-    }
-};
+if (typeof cargarDatosDesdeGitHub === 'function') {
+    const _origCargarDatos = cargarDatosDesdeGitHub;
+    cargarDatosDesdeGitHub = async function() {
+        await _origCargarDatos();
+        await cargarSubcategoriasDesdeGitHub();
+        // Re-render subcategoria tabs if a category is currently selected
+        if (typeof categoriaSeleccionada !== 'undefined' && categoriaSeleccionada && categoriaSeleccionada !== 'Todas') {
+            if (typeof renderizarSubcategoriaTabs === 'function') renderizarSubcategoriaTabs();
+        }
+    };
+}
 
 // FIX: When showing category view, make sure subcategorias are loaded first
-const _origMostrarVistaCat = mostrarVistaCategoria;
-mostrarVistaCategoria = function(categoria) {
-    // Reload subcategorias from localStorage fresh each time
-    if (typeof subcategorias !== 'undefined') {
-        try {
-            const fresh = JSON.parse(localStorage.getItem('subcategorias'));
-            if (fresh) Object.assign(subcategorias, fresh);
-        } catch(e) {}
-    }
-    _origMostrarVistaCat(categoria);
-};
+if (typeof mostrarVistaCategoria === 'function') {
+    const _origMostrarVistaCat = mostrarVistaCategoria;
+    mostrarVistaCategoria = function(categoria) {
+        // Reload subcategorias from localStorage fresh each time
+        if (typeof subcategorias !== 'undefined') {
+            try {
+                const fresh = JSON.parse(localStorage.getItem('subcategorias'));
+                if (fresh) Object.assign(subcategorias, fresh);
+            } catch(e) {}
+        }
+        _origMostrarVistaCat(categoria);
+    };
+}
 
 // ═══════════════════════════════════════════════════════
 //  MEJORAS v3.0 — Gestión por categorías + Grupos FB
@@ -4748,6 +4754,7 @@ function renderizarListaAgotados() {
 }
 
 // ── Patch renderizarProductos to show agotado/oferta badges ──
+if (typeof renderizarProductos === 'function') {
 const _origRenderProductosFinal = renderizarProductos;
 renderizarProductos = function() {
     const productosGrid = document.getElementById('productosGrid');
@@ -4864,6 +4871,7 @@ renderizarProductos = function() {
         productosGrid.appendChild(card);
     });
 };
+} // end typeof renderizarProductos guard
 
 
 /* ============================================================
@@ -5043,11 +5051,13 @@ function tmComprar(event, id, nombre) {
     window.open(`https://wa.me/${getNumeroWhatsApp()}?text=${msg}`, '_blank', 'noopener,noreferrer');
 }
 // Patch agregarAlCarrito para fly desde modal
-const _origAgregarAlCarrito = agregarAlCarrito;
-agregarAlCarrito = function(id, _unused, originEl) {
-    _origAgregarAlCarrito(id);
-    if (originEl) requestAnimationFrame(() => flyToCart(originEl));
-};
+if (typeof agregarAlCarrito === 'function') {
+    const _origAgregarAlCarrito = agregarAlCarrito;
+    agregarAlCarrito = function(id, _unused, originEl) {
+        _origAgregarAlCarrito(id);
+        if (originEl) requestAnimationFrame(() => flyToCart(originEl));
+    };
+}
 
 // ── 2. SKELETON LOADING en grids de productos ──
 function mostrarSkeletons(containerId, cantidad = 6) {
@@ -5087,6 +5097,7 @@ function animarContador(el, target, duration = 1200, prefix = '', suffix = '') {
 }
 
 // Patch stat() para usar contadores animados
+if (typeof stat === 'function') {
 const _origStat = stat;
 stat = function(icon, label, value, color) {
     const isNumeric = typeof value === 'number' || (typeof value === 'string' && value.startsWith('$'));
@@ -5115,6 +5126,7 @@ stat = function(icon, label, value, color) {
 
     return html;
 };
+} // end typeof stat guard
 
 
 // ── Buscador y filtro de categorías en Ventas ────────────────────
@@ -5231,6 +5243,7 @@ function obtenerTopProductosPorVistas(n = 5) {
 }
 
 // Parchar abrirDetalleProducto para registrar vista y mostrarla
+if (typeof abrirDetalleProducto === 'function') {
 const _origAbrirDetalle = abrirDetalleProducto;
 abrirDetalleProducto = function(id) {
     _origAbrirDetalle(id);
@@ -5259,6 +5272,7 @@ abrirDetalleProducto = function(id) {
         } catch(e) {}
     })();
 };
+} // end typeof abrirDetalleProducto guard
 
 // ── 2. DASHBOARD DE VENTAS CON GRÁFICA ────────────────────────────
 function renderizarDashboardVentas(contenedor) {
@@ -5435,20 +5449,22 @@ function renderizarDashboardVentas(contenedor) {
 }
 
 // Parchar renderizarVentas para inyectar el dashboard arriba
-const _origRenderVentas = renderizarVentas;
-renderizarVentas = function() {
-    _origRenderVentas();
-    const cont = document.getElementById('ventasContenido');
-    if (!cont) return;
-    if (cont.querySelector('.tm-dashboard-ventas')) return;
-    const dashboard = renderizarDashboardVentas();
-    if (dashboard) {
-        const wrapper = document.createElement('div');
-        wrapper.className = 'tm-dashboard-ventas';
-        wrapper.innerHTML = dashboard;
-        cont.insertBefore(wrapper, cont.firstChild);
-    }
-};
+if (typeof renderizarVentas === 'function') {
+    const _origRenderVentas = renderizarVentas;
+    renderizarVentas = function() {
+        _origRenderVentas();
+        const cont = document.getElementById('ventasContenido');
+        if (!cont) return;
+        if (cont.querySelector('.tm-dashboard-ventas')) return;
+        const dashboard = renderizarDashboardVentas();
+        if (dashboard) {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'tm-dashboard-ventas';
+            wrapper.innerHTML = dashboard;
+            cont.insertBefore(wrapper, cont.firstChild);
+        }
+    };
+}
 
 // ── 4. ALERTA DE STOCK BAJO EN TAB GESTIONAR ──────────────────────
 function actualizarBadgeStockBajo() {
@@ -5476,11 +5492,13 @@ function actualizarBadgeStockBajo() {
 }
 
 // Hook: actualizar badge cada vez que cambia el stock
-const _origGuardarProd = guardarProductos;
-guardarProductos = function() {
-    _origGuardarProd();
-    setTimeout(actualizarBadgeStockBajo, 50);
-};
+if (typeof guardarProductos === 'function') {
+    const _origGuardarProd = guardarProductos;
+    guardarProductos = function() {
+        _origGuardarProd();
+        setTimeout(actualizarBadgeStockBajo, 50);
+    };
+}
 
 // ── 5. ANIMACIONES FADE-IN AL SCROLL ──────────────────────────────
 function initScrollAnimations() {
@@ -6929,12 +6947,15 @@ async function guardarTasaMNAdmin() {
         pill.style.height = active.offsetHeight + 'px';
     }
 
-    const _origActBotones = actualizarBotonesCategorias;
-    actualizarBotonesCategorias = function() {
-        _origActBotones.apply(this, arguments);
-        _tmSliderInit();
-    };
+    if (typeof actualizarBotonesCategorias === 'function') {
+        const _origActBotones = actualizarBotonesCategorias;
+        actualizarBotonesCategorias = function() {
+            _origActBotones.apply(this, arguments);
+            _tmSliderInit();
+        };
+    }
 
+    if (typeof filtrarPorCategoria === 'function') {
     const _origFiltrar = filtrarPorCategoria;
     filtrarPorCategoria = function(cat) {
         categoriaSeleccionada = cat;
@@ -6952,6 +6973,7 @@ async function guardarTasaMNAdmin() {
             titulo.textContent = cat === 'Todas' ? '🛍️ Todos los Productos' : (icono + ' ' + cat);
         }
     };
+    } // end typeof filtrarPorCategoria guard
 
     // ── Pull-to-refresh ──
     (function() {
@@ -7024,11 +7046,13 @@ async function guardarTasaMNAdmin() {
             });
         }
 
-        const _origRender = renderizarProductos;
-        renderizarProductos = function() {
-            _origRender.apply(this, arguments);
-            setTimeout(_tmObserveImgs, 30);
-        };
+        if (typeof renderizarProductos === 'function') {
+            const _origRender = renderizarProductos;
+            renderizarProductos = function() {
+                _origRender.apply(this, arguments);
+                setTimeout(_tmObserveImgs, 30);
+            };
+        }
 
         document.addEventListener('DOMContentLoaded', function() {
             setTimeout(_tmObserveImgs, 300);
