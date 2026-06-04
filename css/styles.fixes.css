@@ -109,17 +109,24 @@ html body .hsb-wrap-top .hsb-pill{background:rgba(0,0,0,.45) !important;border:1
 html body .hsb-wrap-top .hsb-pill:focus-within{border-color:rgba(255,106,0,.62) !important;box-shadow:0 0 0 3px rgba(255,106,0,.14),0 4px 20px rgba(0,0,0,.4) !important}
 html body .hsb-wrap-top .hsb-input{color:rgba(255,255,255,.85) !important;caret-color:#ff6a00 !important}
 html body .hsb-wrap-top .hsb-input::placeholder{color:rgba(255,255,255,.38) !important}
-/* Hero full-width without right banner */
-html body .hero.hero-sin-imagen{display:block !important;grid-template-columns:unset !important;text-align:center;padding:40px 24px 36px}
-html body .hero-content-full{max-width:680px;margin:0 auto}
-html body .hero-content-full h1,html body .hero-content-full h2{font-size:clamp(28px,6vw,52px);line-height:1.1}
-html body .hero-content-full .description{font-size:16px;max-width:480px;margin:0 auto 28px}
-/* Equal CTA buttons — ambos píldora, mismo tamaño */
-html body .cta-buttons-equal{display:flex;flex-direction:row;justify-content:center;gap:12px;flex-wrap:wrap}
-html body .cta-buttons-equal .btn{flex:1 1 160px;max-width:240px;text-align:center;justify-content:center;border-radius:50px !important}
-html body .btn-wa{background:#25D366 !important;color:#fff !important;border:none !important;display:inline-flex !important;align-items:center;justify-content:center;gap:8px;border-radius:50px !important}
+/* ── Hero compacto centrado — rewrite completo ───────────────────── */
+/* Cancela el grid de 2 columnas original */
+html body .hero.hero-sin-imagen{display:block !important;grid-template-columns:unset !important;min-height:unset !important;padding:40px 20px 36px !important;text-align:center !important}
+/* Resetea el padding asimétrico del hero-content original (80px 60px 80px 0) */
+html body .hero.hero-sin-imagen .hero-content,
+html body .hero-content-full{padding:0 !important;max-width:580px !important;margin:0 auto !important;text-align:center !important;display:flex !important;flex-direction:column !important;align-items:center !important}
+/* Título */
+html body .hero.hero-sin-imagen h1,html body .hero.hero-sin-imagen h2{font-size:clamp(26px,6.5vw,50px) !important;line-height:1.1 !important;text-align:center !important;margin-bottom:14px !important;width:100%}
+/* Subtítulo naranja */
+html body .hero.hero-sin-imagen .subtitle{justify-content:center !important;margin-bottom:10px !important}
+/* Descripción */
+html body .hero.hero-sin-imagen .description{font-size:15px !important;max-width:420px !important;margin:0 auto 28px !important;text-align:center !important}
+/* Botones: misma forma, mismo tamaño, sin márgenes que rompan alineación */
+html body .cta-buttons-equal{display:flex !important;flex-direction:row !important;justify-content:center !important;gap:12px !important;width:100% !important;max-width:400px !important;margin:0 auto !important}
+html body .cta-buttons-equal .btn{flex:1 !important;border-radius:50px !important;text-align:center !important;justify-content:center !important;margin:0 !important;padding:14px 20px !important;white-space:nowrap}
+html body .btn-wa{background:#25D366 !important;color:#fff !important;border:none !important;display:inline-flex !important;align-items:center !important;justify-content:center !important;gap:8px !important}
 html body .btn-wa:hover{background:#1db954 !important;transform:translateY(-2px);box-shadow:0 8px 24px rgba(37,211,102,.35)}
-@media (max-width:480px){html body .cta-buttons-equal{flex-direction:column;align-items:stretch}html body .cta-buttons-equal .btn{flex:unset;max-width:100%;width:100%}html body .hero.hero-sin-imagen{padding:32px 20px 28px}}
+@media (max-width:480px){html body .cta-buttons-equal{flex-direction:column !important;max-width:320px !important}html body .cta-buttons-equal .btn{flex:unset !important;width:100% !important}html body .hero.hero-sin-imagen{padding:28px 20px 24px !important}}
 /* Sponsored banners section */
 html body .banners-patrocinados-section{padding:8px 0 16px}
 html body .banners-pat-label{font-size:11px;color:#666;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;padding:8px 16px 4px;margin:0}
