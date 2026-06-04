@@ -2513,6 +2513,9 @@ if (_detailPrecioOldEl) {
     modal.classList.remove('hidden');
     modal.style.removeProperty('display');
     document.body.style.overflow = 'hidden';
+    // Scroll al top para que el usuario vea el producto desde el inicio
+    const detailBody = modal.querySelector('.detail-body') || modal.querySelector('.detail-modal-content');
+    if (detailBody) detailBody.scrollTop = 0;
     
     
     
