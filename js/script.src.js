@@ -1669,6 +1669,7 @@ function renderizarMasVendidos() {
         const card = document.createElement('div');
         card.className = 'producto-card tm-anim-card';
         card.onclick = () => abrirDetalleProducto(producto.id);
+        card.dataset.productId = String(producto.id);
             const _nombre = escapeHtml(producto.nombre);
             const _desc   = escapeHtml(producto.descripcion);
             const _img    = escapeAttr(producto.imagen);
@@ -4741,6 +4742,7 @@ renderizarProductos = function() {
         const card = document.createElement('div');
         card.className = 'producto-card' + (esAgotado ? ' card-agotado' : '');
         card.onclick = () => abrirDetalleProducto(producto.id);
+        card.dataset.productId = String(producto.id);
         card.style.position = 'relative';
         // Sanitización defensiva (escapeHtml/escapeAttr definidos al inicio del script)
         const _id  = safeNum(producto.id);
@@ -6619,6 +6621,9 @@ async function guardarTasaMNAdmin() {
             });
         }
 
+        // Agotados al final — mismo orden que renderizarProductos
+        lista.sort((a, b) => (a.stock === 0 ? 1 : 0) - (b.stock === 0 ? 1 : 0));
+
         if (typeof productosVisibleCount === 'number' && Number.isFinite(productosVisibleCount)) {
             lista = lista.slice(0, productosVisibleCount);
         }
@@ -6633,9 +6638,11 @@ async function guardarTasaMNAdmin() {
         const cards = Array.from(grid.querySelectorAll('.producto-card'));
 
         cards.forEach((card, index) => {
-            const producto = lista[index];
+            const pid = card.dataset.productId;
+            const producto = pid
+                ? productos.find(p => String(p.id) === pid)
+                : lista[index];
             if (!producto) return;
-            card.dataset.productId = String(producto.id);
 
             card.querySelectorAll('.precio-actual').forEach(el => {
                 el.setAttribute('data-usd', String(producto.precioActual));
@@ -6685,9 +6692,11 @@ async function guardarTasaMNAdmin() {
         const cd = typeof getActiveCountdown === 'function' ? getActiveCountdown() : null;
 
         cards.forEach((card, index) => {
-            const producto = lista[index];
+            const pid = card.dataset.productId;
+            const producto = pid
+                ? productos.find(p => String(p.id) === pid)
+                : lista[index];
             if (!producto) return;
-            card.dataset.productId = String(producto.id);
             card.querySelectorAll('.precio-actual').forEach(el => {
                 el.setAttribute('data-usd', String(producto.precioActual));
                 el.textContent = typeof formatPrecio === 'function'

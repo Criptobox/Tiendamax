@@ -1,5 +1,6 @@
 // ═══════════════════════════════════════════════════════
-// TiendaMax — Service Worker v133
+// TiendaMax — Service Worker v134
+// v134: fix crítico precios/fotos mezclados — post-processor usa dataset.productId en lugar de índice.
 // v133: alineación tarjetas producto — stock-count sin salto de línea.
 // v132: fix banner notificaciones — mismo flujo que modal campana.
 // v131: Firebase version signal para forzar actualización en todos los clientes.
@@ -20,7 +21,7 @@
 //      usan el mismo helper _mensajeOrdenWA con formato premium.
 // ═══════════════════════════════════════════════════════
 
-const CACHE_NAME = 'tiendamax-v133';
+const CACHE_NAME = 'tiendamax-v134';
 
 const STATIC_ASSETS = [
   '/',
