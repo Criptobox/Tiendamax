@@ -44,8 +44,7 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
 <meta property="og:title" content="{og_title}">
 <meta property="og:description" content="{og_desc}">
 <meta property="og:image" content="{image}">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="{og_title}">
 <meta property="og:url" content="{page_url}">
 <meta property="og:site_name" content="TiendaMax">
 <meta property="product:price:amount" content="{price}">
@@ -57,6 +56,7 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
 <meta name="twitter:title" content="{og_title}">
 <meta name="twitter:description" content="{og_desc}">
 <meta name="twitter:image" content="{image}">
+<meta name="twitter:image:alt" content="{og_title}">
 
 <!-- ═══ Redireccionar al usuario a la app (1s da tiempo al crawler) ═══ -->
 <meta http-equiv="refresh" content="1;url={app_url}">

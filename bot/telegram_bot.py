@@ -18,6 +18,7 @@ from datetime import datetime, date
 from zoneinfo import ZoneInfo
 
 import httpx
+from aiohttp import web
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import (
     Application, CommandHandler, MessageHandler,
@@ -539,6 +540,39 @@ async def handle_callback(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
 #  MAIN
 # ══════════════════════════════════════════════════════════════
 
+async def _health(request):
+    return web.Response(text="OK")
+
+
+async def _run(app):
+    port = int(os.environ.get("PORT", 8080))
+
+    # Servidor HTTP ligero — mantiene el servicio de Render despierto
+    aio_app = web.Application()
+    aio_app.router.add_get("/",       _health)
+    aio_app.router.add_get("/health", _health)
+    runner = web.AppRunner(aio_app)
+    await runner.setup()
+    await web.TCPSite(runner, "0.0.0.0", port).start()
+    log.info("Health endpoint escuchando en :%d", port)
+
+    async with app:
+        await app.initialize()
+        await app.start()
+        await app.updater.start_polling(allowed_updates=Update.ALL_TYPES)
+        log.info("TiendaMax Bot iniciado (long-polling)…")
+        try:
+            await asyncio.sleep(float("inf"))
+        except (asyncio.CancelledError, KeyboardInterrupt):
+            pass
+        finally:
+            await app.updater.stop()
+            await app.stop()
+            await app.shutdown()
+
+    await runner.cleanup()
+
+
 def main():
     # PicklePersistence guarda user_data en disco para sobrevivir reinicios del proceso
     persistence = PicklePersistence(filepath="bot_data.pkl")
@@ -553,8 +587,7 @@ def main():
     app.add_handler(CallbackQueryHandler(handle_callback))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_texto))
 
-    log.info("TiendaMax Bot iniciado (long-polling)…")
-    app.run_polling(allowed_updates=Update.ALL_TYPES)
+    asyncio.run(_run(app))
 
 if __name__ == "__main__":
     main()
