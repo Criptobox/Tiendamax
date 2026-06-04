@@ -1193,5 +1193,26 @@
     "garantia": "",
     "devolucion": false,
     "fechaAgregado": "2026-06-04T03:15:09.436Z"
+  },
+  {
+    "id": 1780543090267,
+    "nombre": "Audífonos ergonómicos",
+    "descripcion": "Audífonos ergonómicos, elegantes, táctiles, con 40 horas de bateria, alta calidad de sonido, cancelacion de ruido de ambiente en llamadas, haciendo la voz mas clara y legible en las mismas. Buena calidad de musica y buenos  bajos. Diseño similar a los de  iPhone. Son compactos  y compatibles con todo tipo de telefonos. Se cargan con cable lighting de iphone (incluído en la caja).",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1780543081597.jpg",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1780543081597.jpg"
+    ],
+    "precioActual": 20,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 20,
+    "comision": 1.8,
+    "categoria": "CELULARES",
+    "subcategoria": "",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "fechaAgregado": "2026-06-04T03:18:10.267Z"
   }
 ]
