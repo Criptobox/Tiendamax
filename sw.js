@@ -1,5 +1,6 @@
 // ═══════════════════════════════════════════════════════
-// TiendaMax — Service Worker v135
+// TiendaMax — Service Worker v136
+// v136: imágenes de producto con proporción 4:3 uniforme (era 1:1).
 // v135: skeleton loading en productosGrid y masVendidosGrid mientras carga data.
 // v134: fix crítico precios/fotos mezclados — post-processor usa dataset.productId en lugar de índice.
 // v133: alineación tarjetas producto — stock-count sin salto de línea.
@@ -22,7 +23,7 @@
 //      usan el mismo helper _mensajeOrdenWA con formato premium.
 // ═══════════════════════════════════════════════════════
 
-const CACHE_NAME = 'tiendamax-v135';
+const CACHE_NAME = 'tiendamax-v136';
 
 const STATIC_ASSETS = [
   '/',
