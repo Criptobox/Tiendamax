@@ -3402,8 +3402,23 @@ function verificarOfertasYMostrarBanner() {
 
 // ===== INICIALIZACIÓN =====
 
+function _tmInyectarSkeletons() {
+    const sk = '<div class="tm-sk-card">' +
+        '<div class="tm-sk tm-sk-img"></div>' +
+        '<div class="tm-sk-body">' +
+            '<div class="tm-sk tm-sk-line" style="width:80%"></div>' +
+            '<div class="tm-sk tm-sk-line" style="width:58%"></div>' +
+            '<div class="tm-sk tm-sk-line" style="width:40%"></div>' +
+            '<div class="tm-sk tm-sk-btn"></div>' +
+        '</div></div>';
+    const grid = document.getElementById('productosGrid');
+    if (grid && !grid.querySelector('.producto-card')) grid.innerHTML = Array(6).fill(sk).join('');
+    const mv = document.getElementById('masVendidosGrid');
+    if (mv && !mv.querySelector('.producto-card')) mv.innerHTML = Array(2).fill(sk).join('');
+}
+
 function inicializarTienda() {
-    
+    _tmInyectarSkeletons();
     // Restaurar badges inmediatamente al cargar
     actualizarContadorCarrito();
     actualizarBadgeCorazon();

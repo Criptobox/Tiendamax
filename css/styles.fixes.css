@@ -8,3 +8,10 @@ html body .categorias-grid .categoria-card{flex:0 0 calc(20% - 9px) !important;m
 @media (max-width:380px){html body .categorias-grid .categoria-card{flex:0 0 calc(50% - 6px) !important;max-width:calc(50% - 6px) !important}}
 html body .categoria-card.cat-proximamente{opacity:.3 !important;filter:grayscale(.7) !important;pointer-events:none !important;cursor:default !important}
 .stock-count{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@keyframes tm-shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+.tm-sk-card{background:#1a1a1a;border-radius:16px;overflow:hidden;border:1px solid #222;display:flex;flex-direction:column}
+.tm-sk{background:linear-gradient(90deg,#1e1e1e 25%,#2c2c2c 50%,#1e1e1e 75%);background-size:200% 100%;animation:tm-shimmer 1.4s infinite;border-radius:8px}
+.tm-sk-img{width:100%;aspect-ratio:4/3;border-radius:0;flex-shrink:0}
+.tm-sk-body{padding:12px;display:flex;flex-direction:column;gap:8px}
+.tm-sk-line{height:13px}
+.tm-sk-btn{height:40px;width:100%;border-radius:50px;margin-top:4px}

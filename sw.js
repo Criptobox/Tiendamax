@@ -1,5 +1,6 @@
 // ═══════════════════════════════════════════════════════
-// TiendaMax — Service Worker v134
+// TiendaMax — Service Worker v135
+// v135: skeleton loading en productosGrid y masVendidosGrid mientras carga data.
 // v134: fix crítico precios/fotos mezclados — post-processor usa dataset.productId en lugar de índice.
 // v133: alineación tarjetas producto — stock-count sin salto de línea.
 // v132: fix banner notificaciones — mismo flujo que modal campana.
@@ -21,7 +22,7 @@
 //      usan el mismo helper _mensajeOrdenWA con formato premium.
 // ═══════════════════════════════════════════════════════
 
-const CACHE_NAME = 'tiendamax-v134';
+const CACHE_NAME = 'tiendamax-v135';
 
 const STATIC_ASSETS = [
   '/',
