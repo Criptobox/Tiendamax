@@ -1,5 +1,6 @@
 // ═══════════════════════════════════════════════════════
-// TiendaMax — Service Worker v144
+// TiendaMax — Service Worker v145
+// v145: búsquedas a Firebase, ventas read-off, timezone Cuba fix.
 // v144: banners flotantes secuenciales — notificaciones primero, install después.
 // v143: eliminar canvas de líneas animadas del hero (parpadeo en móvil).
 // v142: lazy load fade-in, búsquedas en analytics, preview admin.
@@ -31,7 +32,7 @@
 //      usan el mismo helper _mensajeOrdenWA con formato premium.
 // ═══════════════════════════════════════════════════════
 
-const CACHE_NAME = 'tiendamax-v144';
+const CACHE_NAME = 'tiendamax-v145';
 
 const STATIC_ASSETS = [
   '/',

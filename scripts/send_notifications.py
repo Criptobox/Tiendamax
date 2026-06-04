@@ -10,14 +10,15 @@ import json
 import os
 import subprocess
 import sys
-from datetime import datetime, timezone, timedelta
+from datetime import datetime
 from pathlib import Path
 from typing import Any
+from zoneinfo import ZoneInfo
 
 # ============================================================
 # CONFIGURACIÓN
 # ============================================================
-ZONA_HORARIA_CUBA = timezone(timedelta(hours=-4))
+ZONA_HORARIA_CUBA = ZoneInfo("America/Havana")
 HORA_INICIO_DIURNO = 8
 HORA_FIN_DIURNO = 22
 HORA_LOTE_PRODUCTOS = 13

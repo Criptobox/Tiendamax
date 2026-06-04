@@ -19,6 +19,13 @@
           }
         }
       },
+      "busquedas": {
+        "$termino": {
+          ".read": true,
+          ".write": true,
+          ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 10000000"
+        }
+      },
       ".read": true,
       ".write": false
     },
@@ -70,7 +77,7 @@
       }
     },
     "ventas": {
-      ".read": true,
+      ".read": false,
       ".write": false,
       "$ventaId": {
         ".write": true,

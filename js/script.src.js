@@ -1046,6 +1046,24 @@ async function buscarDesdeHero(query) {
     }, 150);
 }
 
+function _tmRegistrarBusqueda(q) {
+    try {
+        const cfg = JSON.parse(localStorage.getItem('firebaseConfig') || '{}');
+        const base = cfg.databaseURL || (cfg.projectId ? 'https://' + cfg.projectId + '-default-rtdb.firebaseio.com' : null);
+        if (!base) return;
+        const key = q.replace(/[.#$/[\]]/g, '_').slice(0, 60);
+        const url = base + '/analytics/busquedas/' + encodeURIComponent(key) + '.json';
+        fetch(url + '?_=' + Date.now(), { cache: 'no-store' })
+            .then(r => r.ok ? r.json() : 0)
+            .then(count => fetch(url, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify((Number(count) || 0) + 1)
+            }))
+            .catch(() => {});
+    } catch(e) {}
+}
+
 function aplicarBusquedaHero() {
     const q = (document.getElementById('heroSearchInput')?.value || '').trim().toLowerCase();
     _heroSearchActivo = q;
@@ -1054,6 +1072,7 @@ function aplicarBusquedaHero() {
             const _bs = JSON.parse(localStorage.getItem('tm_busquedas_v1') || '{}');
             _bs[q] = (_bs[q] || 0) + 1;
             localStorage.setItem('tm_busquedas_v1', JSON.stringify(_bs));
+            _tmRegistrarBusqueda(q);
         } catch(e) {}
     }
     _heroPrecioMin = 0;
