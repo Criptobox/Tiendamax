@@ -1172,5 +1172,26 @@
     "usado": false,
     "garantia": "",
     "devolucion": false
+  },
+  {
+    "id": 1780542909435,
+    "nombre": "Sistema de Seguridad ZOSI para el Hogar – 8 Canales",
+    "descripcion": "**Sistema de Seguridad ZOSI para el Hogar – 8 Canales, 2MP HD, DVR Lite 5MP, 1TB, Grabación 24/7**  \nEste kit incluye:  \n\n- **8 canales** compatibles con cámaras ZOSI \n- **Resolución HD de 2MP (1080p)** para imágenes nítidas y detalladas.  \n- **DVR Lite con capacidad de 5MP**, permitiendo una grabación superior.  \n- **Almacenamiento de 1TB** para guardar horas de grabación continua.  \n- **Grabación 24/7** con detección de movimiento para mayor seguridad.  \n- **Alimentación por USB**, facilitando la instalación y el uso.  \n- Compatibilidad con **cámaras ZOSI** para una integración perfecta.\n- *8 cámaras Zosi*",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1780542905916.jpg",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1780542905916.jpg"
+    ],
+    "precioActual": 420,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 3,
+    "comision": 20,
+    "categoria": "SEGURIDAD",
+    "subcategoria": "",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "fechaAgregado": "2026-06-04T03:15:09.436Z"
   }
 ]
