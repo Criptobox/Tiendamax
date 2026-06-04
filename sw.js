@@ -1,5 +1,6 @@
 // ═══════════════════════════════════════════════════════
-// TiendaMax — Service Worker v145
+// TiendaMax — Service Worker v146
+// v146: eliminar click_action obsoleto (deprecado por FCM desde 2020).
 // v145: búsquedas a Firebase, ventas read-off, timezone Cuba fix.
 // v144: banners flotantes secuenciales — notificaciones primero, install después.
 // v143: eliminar canvas de líneas animadas del hero (parpadeo en móvil).
@@ -32,7 +33,7 @@
 //      usan el mismo helper _mensajeOrdenWA con formato premium.
 // ═══════════════════════════════════════════════════════
 
-const CACHE_NAME = 'tiendamax-v145';
+const CACHE_NAME = 'tiendamax-v146';
 
 const STATIC_ASSETS = [
   '/',
@@ -180,7 +181,7 @@ self.addEventListener('push', e => {
             const jsonPayload = e.data.json();
             // Manejo de estructura FCM estándar
             if (jsonPayload.data) {
-                datos.url = jsonPayload.data.url || jsonPayload.data.click_action || datos.url;
+                datos.url = jsonPayload.data.url || datos.url;
                 datos.titulo = jsonPayload.data.title || jsonPayload.data.titulo || datos.titulo;
                 datos.cuerpo = jsonPayload.data.body || jsonPayload.data.cuerpo || datos.cuerpo;
                 if (jsonPayload.data.image) datos.icono = jsonPayload.data.image;

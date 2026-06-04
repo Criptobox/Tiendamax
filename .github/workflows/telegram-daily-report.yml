@@ -2,7 +2,7 @@ name: 📊 Reporte diario Telegram
 
 on:
   schedule:
-    - cron: '0 12 * * *'   # 8:00 AM Cuba (UTC-4)
+    - cron: '0 12 * * *'   # ~8:00 AM Cuba (UTC-4 verano / UTC-5 invierno = ~7:00 AM)
   workflow_dispatch:         # también se puede lanzar a mano desde GitHub
 
 jobs:

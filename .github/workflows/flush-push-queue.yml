@@ -2,10 +2,10 @@ name: Notificaciones programadas (lote diario + cola)
 
 on:
   schedule:
-    - cron: '0 13 * * *' # 09:00 Cuba
-    - cron: '0 17 * * *' # 13:00 Cuba — LOTE DIARIO DE PRODUCTOS
-    - cron: '0 22 * * *' # 18:00 Cuba
-    - cron: '0 1 * * *'  # 21:00 Cuba
+    - cron: '0 13 * * *' # ~09:00 Cuba (UTC-4 verano / UTC-5 invierno = ~08:00)
+    - cron: '0 17 * * *' # ~13:00 Cuba — LOTE DIARIO DE PRODUCTOS
+    - cron: '0 22 * * *' # ~18:00 Cuba
+    - cron: '0 1 * * *'  # ~21:00 Cuba
   workflow_dispatch:
 
 permissions:
