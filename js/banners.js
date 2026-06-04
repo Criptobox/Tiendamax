@@ -49,13 +49,6 @@
             img.onerror = function() { slide.style.background = '#1a1a1a'; };
             slide.appendChild(img);
 
-            if (slide.hasAttribute('data-banner-link')) {
-                var p = document.createElement('span');
-                p.textContent = '⭐ Patrocinado';
-                p.style.cssText = 'position:absolute;top:10px;left:10px;background:rgba(0,0,0,0.55);color:#fff;font-size:10px;font-weight:600;padding:3px 8px;border-radius:20px;';
-                slide.appendChild(p);
-            }
-
             track.appendChild(slide);
         });
 

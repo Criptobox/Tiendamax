@@ -140,4 +140,5 @@ html body #heroBannerSlider,html body #heroImageContainer .hero-banner-slider{po
 /* cover: imagen llena el contenedor sin espacios negros */
 html body .hero-banner-slide img{object-fit:cover !important;object-position:center center !important;background:none !important}
 /* Tarjetas del grid: misma altura en cada fila aunque tengan precio tachado o badges extra */
-html body .productos-grid .producto-card{height:100% !important;box-sizing:border-box !important}
+html body .productos-grid{align-items:stretch !important}
+html body .productos-grid .producto-card{height:100% !important;align-self:stretch !important;box-sizing:border-box !important}
