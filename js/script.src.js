@@ -1996,7 +1996,8 @@ async function agregarProductoForm(event) {
             masVendido: masVendidoVal ? masVendidoVal.value === 'true' : false,
             usado: document.getElementById('productUsado').checked,
             garantia: document.getElementById('productGarantia').value.trim(),
-            devolucion: document.getElementById('productDevolucion') ? document.getElementById('productDevolucion').checked : false
+            devolucion: document.getElementById('productDevolucion') ? document.getElementById('productDevolucion').checked : false,
+            fechaAgregado: new Date().toISOString()
         };
 
         const errores = validarProducto(producto);
@@ -2498,6 +2499,8 @@ function cerrarDetalleModal() {
 
 function toggleZoomImagen(img) {
     img.classList.toggle('zoomed');
+    const hint = img.parentElement && img.parentElement.querySelector('.detail-zoom-hint');
+    if (hint) hint.textContent = img.classList.contains('zoomed') ? '✕ Toca para cerrar' : '🔍 Toca para ampliar';
 }
 
 function abrirPanelCompartir() {
@@ -6692,9 +6695,10 @@ async function guardarTasaMNAdmin() {
             if (typeof esProductoNuevo === 'function' && esProductoNuevo(producto) && !card.querySelector('.badge-nuevo')) {
                 const badgeNuevo = document.createElement('div');
                 badgeNuevo.className = 'badge-nuevo';
-                badgeNuevo.textContent = 'NUEVO';
+                badgeNuevo.textContent = '✨ Nuevo';
                 const imgWrap = card.querySelector('.producto-image');
                 if (imgWrap) imgWrap.appendChild(badgeNuevo);
+                card.classList.add('tm-card-nueva');
             }
         });
 
