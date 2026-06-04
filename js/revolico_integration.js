@@ -217,6 +217,7 @@ function cerrarFbSelector() {
 
 // Publicar todos los productos asignados a un grupo específico
 function publicarEnGrupoFB(iGrupo) {
+    if (typeof productos === 'undefined' || !Array.isArray(productos) || productos.length === 0) return;
     const grupos = JSON.parse(localStorage.getItem('gruposFB') || '[]');
     const grupo = grupos[iGrupo];
     if (!grupo || !grupo.url) {
