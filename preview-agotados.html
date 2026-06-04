@@ -8,7 +8,6 @@
   *{box-sizing:border-box;margin:0;padding:0}
   body{background:#0d0d0d;color:#fff;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;min-height:100vh;padding:0 0 60px}
 
-  /* ── Header demo ── */
   .demo-header{background:#111;border-bottom:1px solid #222;padding:14px 16px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:10}
   .demo-logo{background:#FF6B35;border-radius:10px;width:34px;height:34px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:15px;color:#fff}
   .demo-logo-text{font-size:17px;font-weight:700}
@@ -16,41 +15,77 @@
   .demo-currency{margin-left:auto;background:#1a1a1a;border:1px solid #2a2a2a;border-radius:20px;padding:6px 12px;font-size:12px;color:#aaa;display:flex;align-items:center;gap:6px}
   .demo-currency strong{color:#fff}
 
-  /* ── Chips ── */
+  /* Chips */
   .chip-row{display:flex;gap:8px;overflow-x:auto;padding:16px 16px 12px;scrollbar-width:none;position:relative}
   .chip-row::-webkit-scrollbar{display:none}
   .chip{background:#1a1a1a;border:1px solid #2a2a2a;border-radius:50px;padding:7px 16px;font-size:13px;font-weight:600;white-space:nowrap;color:#aaa;cursor:pointer;position:relative;z-index:1;transition:color .2s}
   .chip.active{color:#fff;background:transparent;border-color:transparent}
   .chip-slider{position:absolute;border-radius:50px;background:linear-gradient(135deg,#FF6B35,#e05528);box-shadow:0 4px 14px rgba(255,107,53,.35);z-index:0;pointer-events:none;transition:all .28s cubic-bezier(.4,0,.2,1)}
 
-  /* ── Grid ── */
+  /* ── Sección en stock ── */
   .section-label{padding:0 16px 12px;font-size:12px;color:#666;font-weight:600;letter-spacing:.05em;text-transform:uppercase}
   .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;padding:0 16px}
 
-  /* ── Divider ── */
-  .agotados-divider{grid-column:1/-1;display:flex;align-items:center;gap:10px;padding:18px 0 6px}
-  .agotados-divider-line{flex:1;height:1px;background:linear-gradient(90deg,rgba(231,76,60,.35),transparent)}
-  .agotados-divider-line.right{background:linear-gradient(270deg,rgba(231,76,60,.35),transparent)}
-  .agotados-divider-badge{display:flex;align-items:center;gap:6px;background:rgba(231,76,60,.1);border:1px solid rgba(231,76,60,.25);border-radius:50px;padding:5px 12px;font-size:11px;font-weight:700;color:#e74c3c;white-space:nowrap}
-
-  /* ── Cards ── */
+  /* ── Cards en stock ── */
   .card{background:#1a1a1a;border-radius:16px;overflow:hidden;border:1px solid #222;display:flex;flex-direction:column;position:relative}
-  .card.agotada{opacity:.65}
-  .card-img{width:100%;aspect-ratio:4/3;object-fit:cover;background:linear-gradient(135deg,#1e1e1e,#2a2a2a);display:flex;align-items:center;justify-content:center;font-size:40px;flex-shrink:0}
-  .agotado-badge{position:absolute;top:10px;left:10px;background:linear-gradient(135deg,#e74c3c,#c0392b);color:#fff;font-size:10px;font-weight:800;padding:3px 9px;border-radius:20px;letter-spacing:.04em;text-transform:uppercase}
-  .card-body{padding:10px 12px 12px;display:flex;flex-direction:column;gap:6px;flex:1}
+  .card-img{width:100%;aspect-ratio:4/3;display:flex;align-items:center;justify-content:center;font-size:48px;flex-shrink:0;background:linear-gradient(135deg,#1e1e1e,#2a2a2a)}
+  .card-body{padding:10px 12px 12px;display:flex;flex-direction:column;gap:5px;flex:1}
   .card-name{font-size:13px;font-weight:700;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:34px}
   .card-desc{font-size:11px;color:#666;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
   .card-price{font-size:16px;font-weight:900;background:linear-gradient(135deg,#FF6B35,#e85d28);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-  .card-price.agotado{background:none;-webkit-text-fill-color:#e74c3c;color:#e74c3c;font-size:12px;font-weight:700}
-  .btn-pedir{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;padding:10px;background:#FF6B35;color:#fff;border:none;border-radius:50px;font-size:13px;font-weight:700;cursor:pointer;margin-top:auto}
-  .btn-pedir .wa-dot{width:18px;height:18px;background:#25D366;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0}
-  .btn-avisame{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;padding:9px;background:transparent;color:#C9A96E;border:1px solid rgba(201,169,110,.4);border-radius:50px;font-size:12px;font-weight:700;cursor:pointer;margin-top:auto}
-  .btn-no-disp{display:flex;align-items:center;justify-content:center;gap:5px;width:100%;padding:9px;background:#222;color:#666;border:none;border-radius:50px;font-size:12px;font-weight:600;cursor:default;margin-top:4px}
   .stock-low{font-size:11px;color:#f39c12;font-weight:700}
+  .btn-pedir{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;padding:10px;background:#FF6B35;color:#fff;border:none;border-radius:50px;font-size:13px;font-weight:700;cursor:pointer;margin-top:auto}
+  .btn-pedir .wa-dot{width:18px;height:18px;background:#25D366;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;flex-shrink:0}
 
-  /* ── Label de contexto ── */
-  .preview-label{text-align:center;font-size:11px;color:#444;padding:32px 16px 10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase}
+  /* ════════════════════════════════════════
+     BLOQUE AGOTADOS — separación clara
+  ════════════════════════════════════════ */
+
+  /* Bloque encabezado que ocupa todo el ancho del grid */
+  .agotados-header{
+    grid-column:1/-1;
+    margin:24px -16px 0;
+    padding:14px 16px 12px;
+    background:linear-gradient(180deg,rgba(180,28,28,0.12) 0%,rgba(180,28,28,0.06) 100%);
+    border-top:1px solid rgba(231,76,60,.3);
+    border-bottom:1px solid rgba(231,76,60,.15);
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+  }
+  .agotados-header-left{display:flex;align-items:center;gap:8px}
+  .agotados-header-icon{font-size:18px}
+  .agotados-header-title{font-size:13px;font-weight:800;color:#e74c3c;letter-spacing:.02em}
+  .agotados-header-sub{font-size:11px;color:#a33;font-weight:500;margin-top:1px}
+  .agotados-header-count{background:rgba(231,76,60,.18);border:1px solid rgba(231,76,60,.3);color:#e74c3c;font-size:11px;font-weight:800;padding:3px 10px;border-radius:50px}
+
+  /* Cards agotadas — fondo diferente + imagen gris */
+  .card.agotada{
+    background:#161010;
+    border:1px solid rgba(231,76,60,.2);
+    opacity:1;
+  }
+  .card.agotada .card-img{
+    filter:grayscale(1) brightness(.55);
+    position:relative;
+  }
+  .agotado-overlay{
+    position:absolute;inset:0;
+    display:flex;align-items:center;justify-content:center;
+    background:rgba(0,0,0,.35);
+    font-size:11px;font-weight:800;letter-spacing:.08em;
+    color:rgba(255,255,255,.7);
+    text-transform:uppercase;
+    gap:5px;
+  }
+  .card-img-wrap{position:relative;flex-shrink:0}
+  .card.agotada .card-name{color:rgba(255,255,255,.55)}
+  .card.agotada .card-desc{color:#3a2a2a}
+  .card-price-out{font-size:12px;font-weight:700;color:#7a3030}
+  .btn-no-disp{display:flex;align-items:center;justify-content:center;gap:5px;width:100%;padding:8px;background:#1e1313;color:#5a3030;border:1px solid #2a1a1a;border-radius:50px;font-size:11px;font-weight:600;cursor:default}
+  .btn-avisame{display:flex;align-items:center;justify-content:center;gap:5px;width:100%;padding:8px;background:transparent;color:#C9A96E;border:1px solid rgba(201,169,110,.3);border-radius:50px;font-size:11px;font-weight:700;cursor:pointer;margin-top:4px}
+
+  .preview-label{text-align:center;font-size:11px;color:#333;padding:36px 16px 0;font-weight:600;letter-spacing:.1em;text-transform:uppercase}
   .preview-label span{color:#FF6B35}
 </style>
 </head>
@@ -62,22 +97,20 @@
   <div class="demo-currency">💱 <strong>USD</strong> · 610 MN</div>
 </div>
 
-<!-- Chips de categoría con slider -->
 <div class="chip-row" id="chipRow">
   <div class="chip-slider" id="chipSlider"></div>
-  <div class="chip" onclick="setChip(this,'Todas')">Todas</div>
-  <div class="chip active" onclick="setChip(this,'Tecnología')">Tecnología</div>
-  <div class="chip" onclick="setChip(this,'Audio')">Audio</div>
-  <div class="chip" onclick="setChip(this,'Hogar')">Hogar</div>
-  <div class="chip" onclick="setChip(this,'Redes')">Redes</div>
+  <div class="chip" onclick="setChip(this)">Todas</div>
+  <div class="chip active" onclick="setChip(this)">Tecnología</div>
+  <div class="chip" onclick="setChip(this)">Audio</div>
+  <div class="chip" onclick="setChip(this)">Hogar</div>
+  <div class="chip" onclick="setChip(this)">Redes</div>
 </div>
 
-<div class="section-label">Tecnología · 6 productos</div>
+<div class="section-label">Tecnología · 3 disponibles</div>
 
-<!-- Grid con separador -->
 <div class="grid">
 
-  <!-- ── En stock ── -->
+  <!-- EN STOCK -->
   <div class="card">
     <div class="card-img">🖥️</div>
     <div class="card-body">
@@ -109,45 +142,56 @@
     </div>
   </div>
 
-  <!-- ── SEPARADOR ── -->
-  <div class="agotados-divider">
-    <div class="agotados-divider-line"></div>
-    <div class="agotados-divider-badge">📦 Sin stock · 3 productos</div>
-    <div class="agotados-divider-line right"></div>
+  <!-- ════ ENCABEZADO AGOTADOS ════ -->
+  <div class="agotados-header">
+    <div class="agotados-header-left">
+      <div class="agotados-header-icon">📦</div>
+      <div>
+        <div class="agotados-header-title">Sin stock</div>
+        <div class="agotados-header-sub">Pide que te avisen cuando vuelvan</div>
+      </div>
+    </div>
+    <div class="agotados-header-count">3 productos</div>
   </div>
 
-  <!-- ── Agotados ── -->
+  <!-- AGOTADOS -->
   <div class="card agotada">
-    <div class="agotado-badge">Agotado</div>
-    <div class="card-img">📡</div>
+    <div class="card-img-wrap">
+      <div class="card-img">📡</div>
+      <div class="agotado-overlay">🚫 Agotado</div>
+    </div>
     <div class="card-body">
       <div class="card-name">Router WiFi 6 AX1800</div>
-      <div class="card-desc">Doble banda, hasta 1800 Mbps</div>
-      <div class="card-price agotado">✕ Agotado</div>
+      <div class="card-desc">Doble banda, 1800 Mbps</div>
+      <div class="card-price-out">Sin precio disponible</div>
       <button class="btn-no-disp">🚫 No disponible</button>
       <button class="btn-avisame">🔔 Avísame cuando vuelva</button>
     </div>
   </div>
 
   <div class="card agotada">
-    <div class="agotado-badge">Agotado</div>
-    <div class="card-img">🖨️</div>
+    <div class="card-img-wrap">
+      <div class="card-img">🖨️</div>
+      <div class="agotado-overlay">🚫 Agotado</div>
+    </div>
     <div class="card-body">
       <div class="card-name">Impresora Epson L3250 Multifunción</div>
       <div class="card-desc">Tinta continua, WiFi, escáner</div>
-      <div class="card-price agotado">✕ Agotado</div>
+      <div class="card-price-out">Sin precio disponible</div>
       <button class="btn-no-disp">🚫 No disponible</button>
       <button class="btn-avisame">🔔 Avísame cuando vuelva</button>
     </div>
   </div>
 
   <div class="card agotada">
-    <div class="agotado-badge">Agotado</div>
-    <div class="card-img">💾</div>
+    <div class="card-img-wrap">
+      <div class="card-img">💾</div>
+      <div class="agotado-overlay">🚫 Agotado</div>
+    </div>
     <div class="card-body">
       <div class="card-name">SSD 1TB Samsung 870 EVO</div>
-      <div class="card-desc">SATA III, lectura 560MB/s</div>
-      <div class="card-price agotado">✕ Agotado</div>
+      <div class="card-desc">SATA III, 560MB/s lectura</div>
+      <div class="card-price-out">Sin precio disponible</div>
       <button class="btn-no-disp">🚫 No disponible</button>
       <button class="btn-avisame">🔔 Avísame cuando vuelva</button>
     </div>
@@ -158,31 +202,25 @@
 <div class="preview-label">── <span>PREVIEW ONLY</span> · No afecta la tienda ──</div>
 
 <script>
-  function setChip(el, cat) {
+  function setChip(el) {
     document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
     el.classList.add('active');
-    moveSlider(el);
-  }
-
-  function moveSlider(active) {
     const row = document.getElementById('chipRow');
     const pill = document.getElementById('chipSlider');
     const rRect = row.getBoundingClientRect();
-    const aRect = active.getBoundingClientRect();
-    pill.style.top = active.offsetTop + 'px';
+    const aRect = el.getBoundingClientRect();
+    pill.style.top = el.offsetTop + 'px';
     pill.style.left = (aRect.left - rRect.left + row.scrollLeft) + 'px';
     pill.style.width = aRect.width + 'px';
-    pill.style.height = active.offsetHeight + 'px';
+    pill.style.height = el.offsetHeight + 'px';
     pill.style.opacity = '1';
   }
-
-  // Posicionar slider en el activo inicial
   window.addEventListener('load', () => {
     const active = document.querySelector('.chip.active');
     if (active) {
       const pill = document.getElementById('chipSlider');
       pill.style.transition = 'none';
-      moveSlider(active);
+      setChip(active);
       requestAnimationFrame(() => { pill.style.transition = ''; });
     }
   });
