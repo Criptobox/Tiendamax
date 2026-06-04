@@ -55,8 +55,14 @@ async def main():
 
     ventas = list(ventas_raw.values()) if isinstance(ventas_raw, dict) else []
     ventas_hoy = [v for v in ventas if v.get("fecha") == hoy]
-    ventas_mes = [v for v in ventas
-                  if str(now.month) in v.get("fecha", "") and str(now.year) in v.get("fecha", "")]
+    def _fecha_en_mes(fecha_str: str, año: int, mes: int) -> bool:
+        try:
+            d = datetime.strptime(fecha_str, "%d/%m/%Y")
+            return d.year == año and d.month == mes
+        except ValueError:
+            return False
+
+    ventas_mes = [v for v in ventas if _fecha_en_mes(v.get("fecha", ""), now.year, now.month)]
 
     def _sum(vs): return sum(v.get("total", 0) for v in vs)
     def _cnt(raw): return sum(

@@ -8,7 +8,12 @@ Comandos disponibles:
   /reporte                → informe de ventas y analytics
   /ayuda                  → lista de comandos
 """
-import os, json, re, logging, base64
+import asyncio
+import os
+import json
+import re
+import logging
+import base64
 from datetime import datetime, date
 from zoneinfo import ZoneInfo
 
@@ -16,7 +21,7 @@ import httpx
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import (
     Application, CommandHandler, MessageHandler,
-    filters, ContextTypes, CallbackQueryHandler,
+    filters, ContextTypes, CallbackQueryHandler, PicklePersistence,
 )
 
 logging.basicConfig(format="%(asctime)s %(levelname)s %(message)s", level=logging.INFO)
@@ -98,6 +103,14 @@ def buscar_producto_en_lista(productos: list, nombre: str) -> int:
                   or p.get("nombre", "").lower() in nombre_lower]
     return candidates[0] if len(candidates) == 1 else -1
 
+def _fecha_en_mes(fecha_str: str, año: int, mes: int) -> bool:
+    """Comprueba si una fecha 'DD/MM/YYYY' pertenece al mes y año indicados."""
+    try:
+        d = datetime.strptime(fecha_str, "%d/%m/%Y")
+        return d.year == año and d.month == mes
+    except ValueError:
+        return False
+
 
 # ══════════════════════════════════════════════════════════════
 #  PARSER — Mensaje WhatsApp "NUEVA ORDEN — TIENDAMAX"
@@ -141,26 +154,18 @@ def parse_orden_wa(text: str) -> list[dict] | None:
 async def registrar_ventas_y_stock(items: list[dict]) -> list[str]:
     """
     Para cada item:
-      1. Escribe venta en Firebase /ventas
-      2. Descuenta stock en productos.json (GitHub)
+      1. Escribe venta en Firebase /ventas (una sola vez, sin race condition)
+      2. Descuenta stock en productos.json con retry ante conflictos 409
     Retorna lista de mensajes de resultado.
     """
     resultados = []
-    try:
-        prods, sha = await get_productos()
-    except Exception as e:
-        return [f"❌ No se pudo cargar productos.json: {e}"]
 
-    prods_modificados = False
-
+    # ── 1. Registrar ventas en Firebase (nodo nuevo por venta, sin conflicto) ──
+    fb_ok: dict[str, bool] = {}
     for item in items:
-        nombre   = item["nombre"]
-        cantidad = item["cantidad"]
-        precio   = item["precio"]
-        total    = round(precio * cantidad, 2)
-        now      = datetime.now(TZ)
-
-        # — Firebase: registrar venta —
+        nombre, cantidad, precio = item["nombre"], item["cantidad"], item["precio"]
+        total = round(precio * cantidad, 2)
+        now   = datetime.now(TZ)
         venta = {
             "id":         int(now.timestamp() * 1000),
             "productoId": 0,
@@ -174,46 +179,73 @@ async def registrar_ventas_y_stock(items: list[dict]) -> list[str]:
         }
         try:
             await fb_post("ventas", venta)
-            fb_ok = True
+            fb_ok[nombre] = True
         except Exception as e:
-            fb_ok = False
+            fb_ok[nombre] = False
             resultados.append(f"⚠️ Firebase: {nombre} — {e}")
 
-        # — GitHub: bajar stock —
-        idx = buscar_producto_en_lista(prods, nombre)
-        if idx < 0:
-            resultados.append(
-                f"{'✅' if fb_ok else '⚠️'} *{nombre}* × {cantidad}"
+    # ── 2. Actualizar stock en GitHub con retry ante conflictos 409 ──
+    MAX_INTENTOS = 3
+    for intento in range(MAX_INTENTOS):
+        try:
+            prods, sha = await get_productos()
+        except Exception as e:
+            resultados.append(f"❌ No se pudo cargar productos.json: {e}")
+            return resultados
+
+        msgs_stock: list[str] = []
+        stock_actualizado = False
+
+        for item in items:
+            nombre, cantidad, precio = item["nombre"], item["cantidad"], item["precio"]
+            total = round(precio * cantidad, 2)
+            ok    = fb_ok.get(nombre, True)
+
+            idx = buscar_producto_en_lista(prods, nombre)
+            if idx < 0:
+                msgs_stock.append(
+                    f"{'✅' if ok else '⚠️'} *{nombre}* × {cantidad}"
+                    + (f" = ${total:.2f}" if precio else "")
+                    + " · stock no actualizado (producto no encontrado)"
+                )
+                continue
+
+            stock_antes = int(prods[idx].get("stock", 0))
+            stock_nuevo = max(0, stock_antes - cantidad)
+            prods[idx]["stock"] = stock_nuevo
+            stock_actualizado = True
+
+            alerta = " 🚨 *¡Sin stock!*" if stock_nuevo == 0 else \
+                     (" ⚠️ Stock bajo" if stock_nuevo <= 3 else "")
+            msgs_stock.append(
+                f"{'✅' if ok else '⚠️'} *{nombre}* × {cantidad}"
                 + (f" = ${total:.2f}" if precio else "")
-                + " · stock no actualizado (producto no encontrado)"
+                + f" · stock {stock_antes}→{stock_nuevo}{alerta}"
             )
-            continue
 
-        stock_antes = int(prods[idx].get("stock", 0))
-        stock_nuevo = max(0, stock_antes - cantidad)
-        prods[idx]["stock"] = stock_nuevo
-        # Guardar id real en la venta si es posible (para analytics)
-        venta["productoId"] = prods[idx].get("id", 0)
-        prods_modificados = True
+        if not stock_actualizado:
+            resultados.extend(msgs_stock)
+            break
 
-        alerta = " 🚨 *¡Sin stock!*" if stock_nuevo == 0 else \
-                 (" ⚠️ Stock bajo" if stock_nuevo <= 3 else "")
-        resultados.append(
-            f"{'✅' if fb_ok else '⚠️'} *{nombre}* × {cantidad}"
-            + (f" = ${total:.2f}" if precio else "")
-            + f" · stock {stock_antes}→{stock_nuevo}{alerta}"
-        )
-
-    # Un solo commit para todos los cambios de stock
-    if prods_modificados:
-        nombres = ", ".join(it["nombre"] for it in items)
+        nombres_str = ", ".join(it["nombre"] for it in items)
         try:
             await gh_put_file(
                 "productos.json", prods, sha,
-                f"bot: venta registrada — {nombres} [skip ci]"
+                f"bot: venta registrada — {nombres_str} [skip ci]"
             )
-        except Exception as e:
+            resultados.extend(msgs_stock)
+            break
+        except httpx.HTTPStatusError as e:
+            if e.response.status_code == 409 and intento < MAX_INTENTOS - 1:
+                log.warning(
+                    "Conflicto 409 en productos.json "
+                    f"(intento {intento + 1}/{MAX_INTENTOS}), reintentando en {2**intento}s…"
+                )
+                await asyncio.sleep(2 ** intento)
+                continue
+            resultados.extend(msgs_stock)
             resultados.append(f"⚠️ Error al actualizar stock en GitHub: {e}")
+            break
 
     return resultados
 
@@ -223,9 +255,8 @@ async def registrar_ventas_y_stock(items: list[dict]) -> list[str]:
 # ══════════════════════════════════════════════════════════════
 
 async def generar_reporte(periodo: str = "hoy") -> str:
-    hoy  = date.today().strftime("%d/%m/%Y")
-    now  = datetime.now(TZ)
-    mes  = f"{now.month:02d}/{now.year}"
+    hoy = date.today().strftime("%d/%m/%Y")
+    now = datetime.now(TZ)
 
     try:
         ventas_raw  = await fb_get("ventas") or {}
@@ -236,9 +267,7 @@ async def generar_reporte(periodo: str = "hoy") -> str:
 
     ventas = list(ventas_raw.values()) if isinstance(ventas_raw, dict) else []
     ventas_hoy = [v for v in ventas if v.get("fecha") == hoy]
-    ventas_mes = [v for v in ventas
-                  if v.get("fecha", "").endswith(f"/{now.month:02d}/{now.year}") or
-                     v.get("fecha", "").endswith(f"/{now.month}/{now.year}")]
+    ventas_mes = [v for v in ventas if _fecha_en_mes(v.get("fecha", ""), now.year, now.month)]
 
     def _sum(vs): return sum(v.get("total", 0) for v in vs)
     def _cnt(raw): return sum(
@@ -479,6 +508,12 @@ async def handle_texto(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
 
 async def handle_callback(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
     q = update.callback_query
+
+    # Verificar que solo el admin pueda confirmar/cancelar
+    if update.effective_user.id != ADMIN_ID:
+        await q.answer("⛔ No autorizado.", show_alert=True)
+        return
+
     await q.answer()
 
     if q.data == "cancelar":
@@ -505,7 +540,9 @@ async def handle_callback(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
 # ══════════════════════════════════════════════════════════════
 
 def main():
-    app = Application.builder().token(BOT_TOKEN).build()
+    # PicklePersistence guarda user_data en disco para sobrevivir reinicios del proceso
+    persistence = PicklePersistence(filepath="bot_data.pkl")
+    app = Application.builder().token(BOT_TOKEN).persistence(persistence).build()
 
     app.add_handler(CommandHandler("start",     cmd_start))
     app.add_handler(CommandHandler("ayuda",     cmd_ayuda))
