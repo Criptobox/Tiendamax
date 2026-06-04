@@ -1,33 +1,7 @@
 /* ════════════════════════════════════════════════════════
    TiendaMax · Efectos Premium del Hero
-   - Líneas diagonales animadas SOLO en el hero (canvas)
    - Cursor del efecto máquina de escribir del título
-   Scoped y aditivo: no modifica estilos existentes.
    ════════════════════════════════════════════════════════ */
-
-/* Canvas de líneas detrás del contenido del hero */
-#tmxHeroLines {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 0;
-    pointer-events: none;
-}
-
-/* Asegura que el contenido del hero quede por encima del canvas.
-   La .hero ya es position:relative en el CSS base. */
-.hero > .hero-content,
-.hero > .hero-image {
-    position: relative;
-    z-index: 1;
-}
-
-/* Fade suave del canvas para fundirlo con el fondo del hero */
-.hero::after {
-    /* el base ya define un ::after de glow; este lo complementa sin romperlo */
-    pointer-events: none;
-}
 
 /* Cursor parpadeante del efecto de escritura */
 .tmx-type-cursor {

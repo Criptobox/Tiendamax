@@ -1,5 +1,6 @@
 // ═══════════════════════════════════════════════════════
-// TiendaMax — Service Worker v142
+// TiendaMax — Service Worker v143
+// v143: eliminar canvas de líneas animadas del hero (parpadeo en móvil).
 // v142: lazy load fade-in, búsquedas en analytics, preview admin.
 // v141: bounce carrito, toast con foto, pull-to-refresh, badge rebajado.
 // v140: zoom 2.2× en imagen de detalle + badge verde animado "✨ Nuevo".
@@ -29,7 +30,7 @@
 //      usan el mismo helper _mensajeOrdenWA con formato premium.
 // ═══════════════════════════════════════════════════════
 
-const CACHE_NAME = 'tiendamax-v142';
+const CACHE_NAME = 'tiendamax-v143';
 
 const STATIC_ASSETS = [
   '/',
