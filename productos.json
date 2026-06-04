@@ -1202,9 +1202,9 @@
     "imagenes": [
       "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1780543081597.jpg"
     ],
-    "precioActual": 20,
-    "precioOriginal": 0,
-    "descuento": 0,
+    "precioActual": 15,
+    "precioOriginal": 20,
+    "descuento": 25,
     "stock": 20,
     "comision": 1.8,
     "categoria": "CELULARES",
