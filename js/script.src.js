@@ -504,8 +504,7 @@ function guardarResena() {
     // Guardar en Firebase — visible para todos al instante
     (async () => {
         try {
-            const cfg = JSON.parse(localStorage.getItem('firebaseConfig') || '{}');
-            const base = cfg.databaseURL || (cfg.projectId ? 'https://' + cfg.projectId + '-default-rtdb.firebaseio.com' : null);
+            const base = _fbRtdbUrl();
             if (base) {
                 const r = await fetch(base + '/resenas/' + pid + '/' + ts + '.json', {
                     method: 'PUT',
@@ -541,8 +540,7 @@ async function renderizarResenas(productoId) {
 
     // Leer desde Firebase (fuente de verdad)
     try {
-        const cfg = JSON.parse(localStorage.getItem('firebaseConfig') || '{}');
-        const base = cfg.databaseURL || (cfg.projectId ? 'https://' + cfg.projectId + '-default-rtdb.firebaseio.com' : null);
+        const base = _fbRtdbUrl();
         if (base) {
             const r = await fetch(base + '/resenas/' + pid + '.json');
             if (r.ok) {
@@ -598,8 +596,7 @@ async function cargarTestimoniosFirebase() {
     if (!grid) return;
 
     try {
-        const cfg = JSON.parse(localStorage.getItem('firebaseConfig') || '{}');
-        const base = cfg.databaseURL || (cfg.projectId ? 'https://' + cfg.projectId + '-default-rtdb.firebaseio.com' : null);
+        const base = _fbRtdbUrl();
         if (!base) throw new Error('no config');
 
         // Leer todas las reseñas de todos los productos
@@ -1048,8 +1045,7 @@ async function buscarDesdeHero(query) {
 
 function _tmRegistrarBusqueda(q) {
     try {
-        const cfg = JSON.parse(localStorage.getItem('firebaseConfig') || '{}');
-        const base = cfg.databaseURL || (cfg.projectId ? 'https://' + cfg.projectId + '-default-rtdb.firebaseio.com' : null);
+        const base = _fbRtdbUrl();
         if (!base) return;
         const key = q.replace(/[.#$/[\]]/g, '_').slice(0, 60);
         const url = base + '/analytics/busquedas/' + encodeURIComponent(key) + '.json';
@@ -3971,8 +3967,10 @@ function ajustarStock(id, cantidad, desdeVenta = false) {
 function _fbRtdbUrl() {
     try {
         const cfg = JSON.parse(localStorage.getItem('firebaseConfig') || '{}');
-        return cfg.databaseURL || null;
-    } catch { return null; }
+        if (!cfg || typeof cfg !== 'object') return null;
+        return cfg.databaseURL ||
+               (cfg.projectId ? `https://${cfg.projectId}-default-rtdb.firebaseio.com` : null);
+    } catch(e) { return null; }
 }
 
 // Escribe una venta en Firebase RTDB (sin bloquear — fire & forget)
@@ -5250,8 +5248,7 @@ abrirDetalleProducto = function(id) {
     // Leer el conteo real desde Firebase y actualizar
     (async () => {
         try {
-            const cfg = JSON.parse(localStorage.getItem('firebaseConfig') || '{}');
-            const base = cfg.databaseURL || (cfg.projectId ? `https://${cfg.projectId}-default-rtdb.firebaseio.com` : null);
+            const base = _fbRtdbUrl();
             if (!base) return;
             const res = await fetch(`${base}/analytics/vistas/${String(id)}/count.json`);
             if (!res.ok) return;
