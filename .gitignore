@@ -3,8 +3,11 @@ __pycache__/
 *.py[cod]
 *.pyo
 
-# Claude Code internal
+# Claude Code internal (settings e historial — no versionar)
 .claude/
+# Pero las skills del proyecto sí se versionan
+!.claude/skills/
+!.claude/skills/**
 
 # OS
 .DS_Store
