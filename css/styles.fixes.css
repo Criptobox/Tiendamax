@@ -103,7 +103,12 @@ html body #detailPersonasViendo{margin:8px 0 12px}
   html body #masVendidosGrid .producto-card{border:1px solid rgba(201,169,110,0.28) !important;border-top:2.5px solid #FF6B35 !important;box-shadow:0 4px 16px rgba(201,169,110,0.08) !important}
 }
 /* ── UX Restructure: Search-first layout ─────────────────────────── */
-html body .hsb-wrap-top{margin-top:0;border-bottom:1px solid rgba(255,255,255,0.06)}
+html body .hsb-wrap-top{margin-top:0;background:linear-gradient(90deg,rgba(18,18,26,.98),rgba(28,28,40,.98)) !important;border-bottom:1px solid rgba(255,106,0,.22) !important;padding-top:10px !important;padding-bottom:10px !important}
+/* Borde igual al selector de moneda */
+html body .hsb-wrap-top .hsb-pill{background:rgba(0,0,0,.45) !important;border:1px solid rgba(255,106,0,.32) !important;box-shadow:0 0 0 1px rgba(255,106,0,.08),0 4px 18px rgba(0,0,0,.35) !important}
+html body .hsb-wrap-top .hsb-pill:focus-within{border-color:rgba(255,106,0,.62) !important;box-shadow:0 0 0 3px rgba(255,106,0,.14),0 4px 20px rgba(0,0,0,.4) !important}
+html body .hsb-wrap-top .hsb-input{color:rgba(255,255,255,.85) !important;caret-color:#ff6a00 !important}
+html body .hsb-wrap-top .hsb-input::placeholder{color:rgba(255,255,255,.38) !important}
 /* Hero full-width without right banner */
 html body .hero.hero-sin-imagen{display:block !important;grid-template-columns:unset !important;text-align:center;padding:40px 24px 36px}
 html body .hero-content-full{max-width:680px;margin:0 auto}
