@@ -89,7 +89,7 @@
     function startAutoPlay() {
         clearInterval(timer);
         if (banners.length > 1) {
-            timer = setInterval(function() { irBanner(current + 1); }, 4000);
+            timer = setInterval(function() { irBanner(current + 1); }, 8000);
         }
     }
 

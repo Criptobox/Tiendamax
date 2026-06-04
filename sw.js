@@ -1,5 +1,6 @@
 // ═══════════════════════════════════════════════════════
-// TiendaMax — Service Worker v147
+// TiendaMax — Service Worker v148
+// v148: UX restructure — búsqueda arriba, hero sin banner, Más Vendidos primero, banners al fondo.
 // v147: push-fix.js — espera activación real de firebase-messaging-sw.js antes de getToken().
 // v146: eliminar click_action obsoleto (deprecado por FCM desde 2020).
 // v145: búsquedas a Firebase, ventas read-off, timezone Cuba fix.
@@ -34,7 +35,7 @@
 //      usan el mismo helper _mensajeOrdenWA con formato premium.
 // ═══════════════════════════════════════════════════════
 
-const CACHE_NAME = 'tiendamax-v147';
+const CACHE_NAME = 'tiendamax-v148';
 
 const STATIC_ASSETS = [
   '/',

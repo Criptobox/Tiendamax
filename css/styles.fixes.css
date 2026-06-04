@@ -71,3 +71,22 @@ html body .detail-share-mini{display:flex;gap:8px;margin-top:2px}
 html body .pv-inner{display:inline-flex;align-items:center;gap:6px;background:rgba(201,169,110,.1);border:1px solid rgba(201,169,110,.25);border-radius:20px;padding:5px 12px;font-size:13px;color:var(--gold,#C9A96E);font-weight:600}
 html body .pv-inner strong{color:#fff}
 html body #detailPersonasViendo{margin:8px 0 12px}
+
+/* ── UX Restructure: Search-first layout ─────────────────────────── */
+html body .hsb-wrap-top{margin-top:0;border-bottom:1px solid rgba(255,255,255,0.06)}
+/* Hero full-width without right banner */
+html body .hero.hero-sin-imagen{display:block !important;grid-template-columns:unset !important;text-align:center;padding:40px 24px 36px}
+html body .hero-content-full{max-width:680px;margin:0 auto}
+html body .hero-content-full h1,html body .hero-content-full h2{font-size:clamp(28px,6vw,52px);line-height:1.1}
+html body .hero-content-full .description{font-size:16px;max-width:480px;margin:0 auto 28px}
+/* Equal CTA buttons */
+html body .cta-buttons-equal{display:flex;flex-direction:row;justify-content:center;gap:12px;flex-wrap:wrap}
+html body .cta-buttons-equal .btn{flex:1 1 160px;max-width:240px;text-align:center;justify-content:center}
+html body .btn-wa{background:#25D366 !important;color:#fff !important;border:none !important;display:inline-flex !important;align-items:center;justify-content:center;gap:8px}
+html body .btn-wa:hover{background:#1db954 !important;transform:translateY(-2px);box-shadow:0 8px 24px rgba(37,211,102,.35)}
+@media (max-width:480px){html body .cta-buttons-equal{flex-direction:column;align-items:stretch}html body .cta-buttons-equal .btn{flex:unset;max-width:100%;width:100%}html body .hero.hero-sin-imagen{padding:32px 20px 28px}}
+/* Sponsored banners section */
+html body .banners-patrocinados-section{padding:8px 0 16px}
+html body .banners-pat-label{font-size:11px;color:#666;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;padding:8px 16px 4px;margin:0}
+html body .banners-patrocinados-section .hero-image{margin:0 16px 8px;border-radius:18px;overflow:hidden}
+@media (max-width:768px){html body .banners-patrocinados-section .hero-image{margin:0 12px 8px;border-radius:14px}}
