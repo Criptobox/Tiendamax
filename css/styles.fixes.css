@@ -61,3 +61,5 @@ html body .tm-card-nueva{border-color:rgba(21,196,105,.22) !important}
 .tm-ptr.tm-ptr-ready .tm-ptr-icon{transform:rotate(180deg)}
 .tm-ptr.tm-ptr-loading .tm-ptr-icon{animation:tm-ptr-spin .65s linear infinite}
 .badge-rebajado{position:absolute;top:8px;right:8px;background:linear-gradient(135deg,#7b2fa0,#b44fe0);color:#fff;font-size:10px;font-weight:900;padding:3px 8px;border-radius:20px;z-index:3;letter-spacing:.02em;box-shadow:0 2px 8px rgba(180,79,224,.4)}
+html body .producto-image img.tm-img-observe{opacity:0;transition:opacity .38s ease}
+html body .producto-image img.tm-img-observe.tm-vis{opacity:1}

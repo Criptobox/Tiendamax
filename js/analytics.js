@@ -522,6 +522,27 @@ async function renderizarAnalyticsFirebase() {
                 🔄 Actualizar
             </button>
         </div>
+
+        <div style="margin-top:28px">
+            <h4 style="font-size:13px;font-weight:800;color:rgba(255,255,255,.7);margin-bottom:14px;display:flex;align-items:center;gap:8px;"><span style="background:rgba(201,169,110,.15);border:1px solid rgba(201,169,110,.25);border-radius:8px;padding:4px 10px;font-size:11px;color:#C9A96E">🔍 Búsquedas</span></h4>
+            ${(function(){
+                try {
+                    const bs = JSON.parse(localStorage.getItem('tm_busquedas_v1') || '{}');
+                    const top = Object.entries(bs).sort((a,b)=>b[1]-a[1]).slice(0,8);
+                    if (!top.length) return '<p style="font-size:12px;color:#555;font-style:italic">Sin búsquedas registradas aún.</p>';
+                    const max = top[0][1];
+                    return top.map(([term, cnt]) =>
+                        `<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+                            <span style="font-size:12px;color:rgba(255,255,255,.75);min-width:110px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${term}</span>
+                            <div style="flex:1;height:6px;background:#1e1e1e;border-radius:3px;overflow:hidden">
+                                <div style="height:100%;width:${Math.round(cnt/max*100)}%;background:linear-gradient(90deg,#C9A96E,#e8c88a);border-radius:3px"></div>
+                            </div>
+                            <span style="font-size:11px;color:#666;min-width:24px;text-align:right">${cnt}</span>
+                        </div>`
+                    ).join('');
+                } catch(e) { return ''; }
+            })()}
+        </div>
     `;
 }
 

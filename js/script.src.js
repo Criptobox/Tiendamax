@@ -1049,6 +1049,13 @@ async function buscarDesdeHero(query) {
 function aplicarBusquedaHero() {
     const q = (document.getElementById('heroSearchInput')?.value || '').trim().toLowerCase();
     _heroSearchActivo = q;
+    if (q.length >= 2) {
+        try {
+            const _bs = JSON.parse(localStorage.getItem('tm_busquedas_v1') || '{}');
+            _bs[q] = (_bs[q] || 0) + 1;
+            localStorage.setItem('tm_busquedas_v1', JSON.stringify(_bs));
+        } catch(e) {}
+    }
     _heroPrecioMin = 0;
     _heroPrecioMax = Infinity;
     cerrarPanelBusqueda();
@@ -6969,6 +6976,41 @@ async function guardarTasaMNAdmin() {
             }
             pulling = false; active = false;
         }, { passive: true });
+    })();
+
+    // ── Lazy load fade-in ──
+    (function() {
+        var obs = typeof IntersectionObserver !== 'undefined' && new IntersectionObserver(function(entries) {
+            entries.forEach(function(e) {
+                if (!e.isIntersecting) return;
+                var img = e.target;
+                if (img.complete) {
+                    img.classList.add('tm-vis');
+                } else {
+                    img.addEventListener('load', function() { img.classList.add('tm-vis'); }, { once: true });
+                    img.addEventListener('error', function() { img.classList.add('tm-vis'); }, { once: true });
+                }
+                obs.unobserve(img);
+            });
+        }, { rootMargin: '80px' });
+
+        function _tmObserveImgs() {
+            if (!obs) return;
+            document.querySelectorAll('.producto-image img:not(.tm-img-observe)').forEach(function(img) {
+                img.classList.add('tm-img-observe');
+                obs.observe(img);
+            });
+        }
+
+        const _origRender = renderizarProductos;
+        renderizarProductos = function() {
+            _origRender.apply(this, arguments);
+            setTimeout(_tmObserveImgs, 30);
+        };
+
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(_tmObserveImgs, 300);
+        });
     })();
 
     document.addEventListener('DOMContentLoaded', function () {
