@@ -6,87 +6,61 @@
 <title>Preview — Sección Agotados</title>
 <style>
   *{box-sizing:border-box;margin:0;padding:0}
-  body{background:#0d0d0d;color:#fff;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;min-height:100vh;padding:0 0 60px}
+  body{background:#0d0d0d;color:#fff;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;padding-bottom:40px}
 
-  .demo-header{background:#111;border-bottom:1px solid #222;padding:14px 16px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:10}
-  .demo-logo{background:#FF6B35;border-radius:10px;width:34px;height:34px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:15px;color:#fff}
-  .demo-logo-text{font-size:17px;font-weight:700}
+  .demo-header{background:#111;border-bottom:1px solid #222;padding:12px 16px;display:flex;align-items:center;gap:10px}
+  .demo-logo{background:#FF6B35;border-radius:9px;width:30px;height:30px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:13px;color:#fff}
+  .demo-logo-text{font-size:16px;font-weight:700}
   .demo-logo-text span{color:#FF6B35}
-  .demo-currency{margin-left:auto;background:#1a1a1a;border:1px solid #2a2a2a;border-radius:20px;padding:6px 12px;font-size:12px;color:#aaa;display:flex;align-items:center;gap:6px}
-  .demo-currency strong{color:#fff}
 
   /* Chips */
-  .chip-row{display:flex;gap:8px;overflow-x:auto;padding:16px 16px 12px;scrollbar-width:none;position:relative}
+  .chip-row{display:flex;gap:8px;overflow-x:auto;padding:12px 16px 10px;scrollbar-width:none;position:relative}
   .chip-row::-webkit-scrollbar{display:none}
-  .chip{background:#1a1a1a;border:1px solid #2a2a2a;border-radius:50px;padding:7px 16px;font-size:13px;font-weight:600;white-space:nowrap;color:#aaa;cursor:pointer;position:relative;z-index:1;transition:color .2s}
+  .chip{background:#1a1a1a;border:1px solid #2a2a2a;border-radius:50px;padding:6px 14px;font-size:12px;font-weight:600;white-space:nowrap;color:#aaa;cursor:pointer;position:relative;z-index:1}
   .chip.active{color:#fff;background:transparent;border-color:transparent}
   .chip-slider{position:absolute;border-radius:50px;background:linear-gradient(135deg,#FF6B35,#e05528);box-shadow:0 4px 14px rgba(255,107,53,.35);z-index:0;pointer-events:none;transition:all .28s cubic-bezier(.4,0,.2,1)}
 
-  /* ── Sección en stock ── */
-  .section-label{padding:0 16px 12px;font-size:12px;color:#666;font-weight:600;letter-spacing:.05em;text-transform:uppercase}
-  .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;padding:0 16px}
+  .section-label{padding:0 16px 10px;font-size:11px;color:#555;font-weight:700;letter-spacing:.05em;text-transform:uppercase}
 
-  /* ── Cards en stock ── */
-  .card{background:#1a1a1a;border-radius:16px;overflow:hidden;border:1px solid #222;display:flex;flex-direction:column;position:relative}
-  .card-img{width:100%;aspect-ratio:4/3;display:flex;align-items:center;justify-content:center;font-size:48px;flex-shrink:0;background:linear-gradient(135deg,#1e1e1e,#2a2a2a)}
-  .card-body{padding:10px 12px 12px;display:flex;flex-direction:column;gap:5px;flex:1}
-  .card-name{font-size:13px;font-weight:700;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:34px}
-  .card-desc{font-size:11px;color:#666;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-  .card-price{font-size:16px;font-weight:900;background:linear-gradient(135deg,#FF6B35,#e85d28);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-  .stock-low{font-size:11px;color:#f39c12;font-weight:700}
-  .btn-pedir{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;padding:10px;background:#FF6B35;color:#fff;border:none;border-radius:50px;font-size:13px;font-weight:700;cursor:pointer;margin-top:auto}
-  .btn-pedir .wa-dot{width:18px;height:18px;background:#25D366;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;flex-shrink:0}
+  /* Grid */
+  .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;padding:0 16px}
 
-  /* ════════════════════════════════════════
-     BLOQUE AGOTADOS — separación clara
-  ════════════════════════════════════════ */
+  /* Tarjeta disponible */
+  .card{background:#1a1a1a;border-radius:14px;overflow:hidden;border:1px solid #222;display:flex;flex-direction:column}
+  .card-img{width:100%;aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;font-size:36px;background:linear-gradient(135deg,#1e1e1e,#252525);flex-shrink:0}
+  .card-body{padding:8px 10px 10px;display:flex;flex-direction:column;gap:4px;flex:1}
+  .card-name{font-size:12px;font-weight:700;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:30px}
+  .card-price{font-size:15px;font-weight:900;background:linear-gradient(135deg,#FF6B35,#e85d28);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+  .btn-pedir{display:flex;align-items:center;justify-content:center;gap:5px;width:100%;padding:8px;background:#FF6B35;color:#fff;border:none;border-radius:50px;font-size:12px;font-weight:700;cursor:pointer;margin-top:auto}
+  .wa{width:16px;height:16px;background:#25D366;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:8px;flex-shrink:0}
 
-  /* Bloque encabezado que ocupa todo el ancho del grid */
+  /* ════ SEPARADOR AGOTADOS ════ */
   .agotados-header{
     grid-column:1/-1;
-    margin:24px -16px 0;
-    padding:14px 16px 12px;
-    background:linear-gradient(180deg,rgba(180,28,28,0.12) 0%,rgba(180,28,28,0.06) 100%);
-    border-top:1px solid rgba(231,76,60,.3);
+    margin:14px -16px 4px;
+    padding:12px 16px;
+    background:linear-gradient(135deg,rgba(180,28,28,0.14),rgba(120,20,20,0.08));
+    border-top:1.5px solid rgba(231,76,60,.35);
     border-bottom:1px solid rgba(231,76,60,.15);
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
+    display:flex;align-items:center;justify-content:space-between;
   }
-  .agotados-header-left{display:flex;align-items:center;gap:8px}
-  .agotados-header-icon{font-size:18px}
-  .agotados-header-title{font-size:13px;font-weight:800;color:#e74c3c;letter-spacing:.02em}
-  .agotados-header-sub{font-size:11px;color:#a33;font-weight:500;margin-top:1px}
-  .agotados-header-count{background:rgba(231,76,60,.18);border:1px solid rgba(231,76,60,.3);color:#e74c3c;font-size:11px;font-weight:800;padding:3px 10px;border-radius:50px}
+  .ah-left{display:flex;align-items:center;gap:9px}
+  .ah-icon{font-size:20px}
+  .ah-title{font-size:13px;font-weight:800;color:#e74c3c}
+  .ah-sub{font-size:10px;color:#7a2020;margin-top:2px}
+  .ah-pill{background:rgba(231,76,60,.18);border:1px solid rgba(231,76,60,.35);color:#e74c3c;font-size:11px;font-weight:800;padding:3px 10px;border-radius:50px}
 
-  /* Cards agotadas — fondo diferente + imagen gris */
-  .card.agotada{
-    background:#161010;
-    border:1px solid rgba(231,76,60,.2);
-    opacity:1;
-  }
-  .card.agotada .card-img{
-    filter:grayscale(1) brightness(.55);
-    position:relative;
-  }
-  .agotado-overlay{
-    position:absolute;inset:0;
-    display:flex;align-items:center;justify-content:center;
-    background:rgba(0,0,0,.35);
-    font-size:11px;font-weight:800;letter-spacing:.08em;
-    color:rgba(255,255,255,.7);
-    text-transform:uppercase;
-    gap:5px;
-  }
+  /* Tarjeta agotada */
+  .card.out{background:#130d0d;border:1px solid rgba(231,76,60,.18)}
+  .card.out .card-img{filter:grayscale(1) brightness(.5);position:relative}
   .card-img-wrap{position:relative;flex-shrink:0}
-  .card.agotada .card-name{color:rgba(255,255,255,.55)}
-  .card.agotada .card-desc{color:#3a2a2a}
-  .card-price-out{font-size:12px;font-weight:700;color:#7a3030}
-  .btn-no-disp{display:flex;align-items:center;justify-content:center;gap:5px;width:100%;padding:8px;background:#1e1313;color:#5a3030;border:1px solid #2a1a1a;border-radius:50px;font-size:11px;font-weight:600;cursor:default}
-  .btn-avisame{display:flex;align-items:center;justify-content:center;gap:5px;width:100%;padding:8px;background:transparent;color:#C9A96E;border:1px solid rgba(201,169,110,.3);border-radius:50px;font-size:11px;font-weight:700;cursor:pointer;margin-top:4px}
+  .out-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.4);font-size:10px;font-weight:800;color:rgba(255,255,255,.6);letter-spacing:.06em;text-transform:uppercase;gap:4px}
+  .card.out .card-name{color:rgba(255,255,255,.4)}
+  .btn-nodisp{width:100%;padding:7px;background:#1a0e0e;color:#4a2020;border:1px solid #2a1212;border-radius:50px;font-size:11px;font-weight:600;cursor:default;margin-top:auto}
+  .btn-avisame{width:100%;padding:7px;background:transparent;color:#C9A96E;border:1px solid rgba(201,169,110,.3);border-radius:50px;font-size:11px;font-weight:700;cursor:pointer;margin-top:4px}
 
-  .preview-label{text-align:center;font-size:11px;color:#333;padding:36px 16px 0;font-weight:600;letter-spacing:.1em;text-transform:uppercase}
-  .preview-label span{color:#FF6B35}
+  .preview-note{text-align:center;font-size:10px;color:#333;padding:24px 0 0;letter-spacing:.08em;text-transform:uppercase}
+  .preview-note span{color:#FF6B35}
 </style>
 </head>
 <body>
@@ -94,7 +68,6 @@
 <div class="demo-header">
   <div class="demo-logo">M</div>
   <div class="demo-logo-text">Tienda <span>Max</span></div>
-  <div class="demo-currency">💱 <strong>USD</strong> · 610 MN</div>
 </div>
 
 <div class="chip-row" id="chipRow">
@@ -103,126 +76,88 @@
   <div class="chip active" onclick="setChip(this)">Tecnología</div>
   <div class="chip" onclick="setChip(this)">Audio</div>
   <div class="chip" onclick="setChip(this)">Hogar</div>
-  <div class="chip" onclick="setChip(this)">Redes</div>
 </div>
 
-<div class="section-label">Tecnología · 3 disponibles</div>
+<div class="section-label">2 disponibles</div>
 
 <div class="grid">
 
-  <!-- EN STOCK -->
+  <!-- DISPONIBLES -->
   <div class="card">
     <div class="card-img">🖥️</div>
     <div class="card-body">
-      <div class="card-name">Monitor LG 24" Full HD IPS</div>
-      <div class="card-desc">Panel IPS, 75Hz, HDMI+VGA</div>
+      <div class="card-name">Monitor LG 24" Full HD</div>
       <div class="card-price">$185.00 USD</div>
-      <div class="stock-low">⚠️ ¡Solo quedan 2!</div>
-      <button class="btn-pedir"><div class="wa-dot">📱</div> Pedir</button>
+      <button class="btn-pedir"><div class="wa">📱</div> Pedir</button>
     </div>
   </div>
 
   <div class="card">
     <div class="card-img">⌨️</div>
     <div class="card-body">
-      <div class="card-name">Teclado Mecánico RGB TKL</div>
-      <div class="card-desc">Switch Blue, USB, retroiluminado</div>
+      <div class="card-name">Teclado Mecánico RGB</div>
       <div class="card-price">$45.00 USD</div>
-      <button class="btn-pedir"><div class="wa-dot">📱</div> Pedir</button>
+      <button class="btn-pedir"><div class="wa">📱</div> Pedir</button>
     </div>
   </div>
 
-  <div class="card">
-    <div class="card-img">🖱️</div>
-    <div class="card-body">
-      <div class="card-name">Mouse Inalámbrico Logitech M185</div>
-      <div class="card-desc">2.4GHz, 1000 DPI, batería AA</div>
-      <div class="card-price">$22.00 USD</div>
-      <button class="btn-pedir"><div class="wa-dot">📱</div> Pedir</button>
-    </div>
-  </div>
-
-  <!-- ════ ENCABEZADO AGOTADOS ════ -->
+  <!-- ════ ENCABEZADO SIN STOCK ════ -->
   <div class="agotados-header">
-    <div class="agotados-header-left">
-      <div class="agotados-header-icon">📦</div>
+    <div class="ah-left">
+      <div class="ah-icon">📦</div>
       <div>
-        <div class="agotados-header-title">Sin stock</div>
-        <div class="agotados-header-sub">Pide que te avisen cuando vuelvan</div>
+        <div class="ah-title">Sin stock</div>
+        <div class="ah-sub">Avísate cuando vuelvan</div>
       </div>
     </div>
-    <div class="agotados-header-count">3 productos</div>
+    <div class="ah-pill">2 productos</div>
   </div>
 
   <!-- AGOTADOS -->
-  <div class="card agotada">
+  <div class="card out">
     <div class="card-img-wrap">
       <div class="card-img">📡</div>
-      <div class="agotado-overlay">🚫 Agotado</div>
+      <div class="out-overlay">🚫 Agotado</div>
     </div>
     <div class="card-body">
       <div class="card-name">Router WiFi 6 AX1800</div>
-      <div class="card-desc">Doble banda, 1800 Mbps</div>
-      <div class="card-price-out">Sin precio disponible</div>
-      <button class="btn-no-disp">🚫 No disponible</button>
-      <button class="btn-avisame">🔔 Avísame cuando vuelva</button>
+      <button class="btn-nodisp">🚫 No disponible</button>
+      <button class="btn-avisame">🔔 Avísame</button>
     </div>
   </div>
 
-  <div class="card agotada">
+  <div class="card out">
     <div class="card-img-wrap">
       <div class="card-img">🖨️</div>
-      <div class="agotado-overlay">🚫 Agotado</div>
+      <div class="out-overlay">🚫 Agotado</div>
     </div>
     <div class="card-body">
-      <div class="card-name">Impresora Epson L3250 Multifunción</div>
-      <div class="card-desc">Tinta continua, WiFi, escáner</div>
-      <div class="card-price-out">Sin precio disponible</div>
-      <button class="btn-no-disp">🚫 No disponible</button>
-      <button class="btn-avisame">🔔 Avísame cuando vuelva</button>
-    </div>
-  </div>
-
-  <div class="card agotada">
-    <div class="card-img-wrap">
-      <div class="card-img">💾</div>
-      <div class="agotado-overlay">🚫 Agotado</div>
-    </div>
-    <div class="card-body">
-      <div class="card-name">SSD 1TB Samsung 870 EVO</div>
-      <div class="card-desc">SATA III, 560MB/s lectura</div>
-      <div class="card-price-out">Sin precio disponible</div>
-      <button class="btn-no-disp">🚫 No disponible</button>
-      <button class="btn-avisame">🔔 Avísame cuando vuelva</button>
+      <div class="card-name">Impresora Epson L3250</div>
+      <button class="btn-nodisp">🚫 No disponible</button>
+      <button class="btn-avisame">🔔 Avísame</button>
     </div>
   </div>
 
 </div>
 
-<div class="preview-label">── <span>PREVIEW ONLY</span> · No afecta la tienda ──</div>
+<div class="preview-note">── <span>preview</span> · no afecta la tienda ──</div>
 
 <script>
   function setChip(el) {
-    document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+    document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
     el.classList.add('active');
-    const row = document.getElementById('chipRow');
-    const pill = document.getElementById('chipSlider');
-    const rRect = row.getBoundingClientRect();
-    const aRect = el.getBoundingClientRect();
-    pill.style.top = el.offsetTop + 'px';
-    pill.style.left = (aRect.left - rRect.left + row.scrollLeft) + 'px';
-    pill.style.width = aRect.width + 'px';
-    pill.style.height = el.offsetHeight + 'px';
-    pill.style.opacity = '1';
+    const row=document.getElementById('chipRow');
+    const pill=document.getElementById('chipSlider');
+    const rR=row.getBoundingClientRect(), aR=el.getBoundingClientRect();
+    pill.style.top=el.offsetTop+'px';
+    pill.style.left=(aR.left-rR.left+row.scrollLeft)+'px';
+    pill.style.width=aR.width+'px';
+    pill.style.height=el.offsetHeight+'px';
+    pill.style.opacity='1';
   }
-  window.addEventListener('load', () => {
-    const active = document.querySelector('.chip.active');
-    if (active) {
-      const pill = document.getElementById('chipSlider');
-      pill.style.transition = 'none';
-      setChip(active);
-      requestAnimationFrame(() => { pill.style.transition = ''; });
-    }
+  window.addEventListener('load',()=>{
+    const a=document.querySelector('.chip.active');
+    if(a){const p=document.getElementById('chipSlider');p.style.transition='none';setChip(a);requestAnimationFrame(()=>{p.style.transition='';})}
   });
 </script>
 </body>
