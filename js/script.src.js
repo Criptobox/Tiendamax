@@ -2251,6 +2251,7 @@ function renderizarGaleriaDetalle(producto) {
             this.classList.add('active');
         });
     });
+    _initSwipeGaleria(img);
 }
 
 // ===== DETALLE DE PRODUCTO =====
@@ -2416,16 +2417,32 @@ if (_detailPrecioOldEl) {
     // Historial de vistas
     registrarVisto(p.id);
 
-    // Personas viendo (contador simulado con base en vistas reales)
+    // Contador de vistas — local primero, Firebase en segundo plano
     (function() {
         const vDiv = document.getElementById('detailPersonasViendo');
         if (!vDiv) return;
-        const vistas = obtenerVistasProd(p.id) || 0;
-        // Simular personas activas: entre 2 y 12, influenciado por vistas
-        const base = Math.min(12, 2 + Math.floor(vistas / 3));
-        const personas = base + Math.floor(Math.random() * 4);
-        vDiv.style.display = 'flex';
-        vDiv.innerHTML = '<span>👁️ ' + personas + ' personas están viendo esto ahora</span>';
+        const prodId = p.id;
+        const local = obtenerVistasProd(prodId) || 0;
+        if (local > 0) {
+            vDiv.style.display = 'flex';
+            vDiv.innerHTML = '<span class="pv-inner">👁️ <strong>' + local.toLocaleString() + '</strong> personas vieron esto</span>';
+        }
+        (async () => {
+            try {
+                const cfg = JSON.parse(localStorage.getItem('firebaseConfig') || '{}');
+                const base = cfg.databaseURL || (cfg.projectId ? 'https://' + cfg.projectId + '-default-rtdb.firebaseio.com' : null);
+                if (!base) return;
+                const res = await fetch(base + '/analytics/vistas/' + String(prodId) + '/count.json');
+                if (!res.ok) return;
+                const cnt = await res.json();
+                if (typeof cnt !== 'number' || cnt <= 0) return;
+                const el = document.getElementById('detailPersonasViendo');
+                if (el) {
+                    el.style.display = 'flex';
+                    el.innerHTML = '<span class="pv-inner">👁️ <strong>' + cnt.toLocaleString() + '</strong> personas vieron esto</span>';
+                }
+            } catch(e) {}
+        })();
     })();
 
     // Botón carrito en modal
@@ -2607,6 +2624,30 @@ function toggleZoomImagen(img) {
     const hint = img.parentElement && img.parentElement.querySelector('.detail-zoom-hint');
     if (hint) hint.textContent = '↔ Arrastra · Toca para cerrar';
     _initZoomPan(img);
+}
+
+function _initSwipeGaleria(img) {
+    if (img._swipeGaleriaInited) return;
+    img._swipeGaleriaInited = true;
+    let swX = 0, swY = 0;
+    img.addEventListener('touchstart', function(e) {
+        if (img.classList.contains('zoomed') || e.touches.length !== 1) return;
+        swX = e.touches[0].clientX;
+        swY = e.touches[0].clientY;
+    }, { passive: true });
+    img.addEventListener('touchend', function(e) {
+        if (img.classList.contains('zoomed')) return;
+        const dx = e.changedTouches[0].clientX - swX;
+        const dy = e.changedTouches[0].clientY - swY;
+        if (Math.abs(dx) < 40 || Math.abs(dy) > Math.abs(dx) * 0.8) return;
+        const thumbs = Array.from(document.querySelectorAll('#detailGalleryThumbs .detail-gallery-thumb'));
+        if (thumbs.length < 2) return;
+        const idx = thumbs.findIndex(function(t) { return t.classList.contains('active'); });
+        const next = dx < 0
+            ? (idx + 1) % thumbs.length
+            : (idx - 1 + thumbs.length) % thumbs.length;
+        thumbs[next].click();
+    }, { passive: true });
 }
 
 function abrirPanelCompartir() {

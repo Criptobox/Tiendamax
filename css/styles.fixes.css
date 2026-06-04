@@ -4,3 +4,10 @@ html body .detail-image-wrap{overflow:hidden;cursor:zoom-in;border-radius:inheri
 html body .detail-img{transition:transform .3s cubic-bezier(.4,0,.2,1)}
 html body .detail-img.zoomed{cursor:grab}
 html body .detail-img.dragging{cursor:grabbing !important;transition:none !important}
+html body .btn-compartir-wa{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:13px 20px;background:#25D366;color:#fff;border:none;border-radius:50px;font-size:16px;font-weight:700;cursor:pointer;box-shadow:0 4px 16px rgba(37,211,102,.35);transition:transform .15s ease,box-shadow .15s ease,background .15s ease;margin-bottom:8px}
+html body .btn-compartir-wa:hover{background:#1db954;transform:translateY(-1px);box-shadow:0 6px 22px rgba(37,211,102,.48)}
+html body .btn-compartir-wa:active{transform:translateY(0)}
+html body .detail-share-mini{display:flex;gap:8px;margin-top:2px}
+html body .pv-inner{display:inline-flex;align-items:center;gap:6px;background:rgba(201,169,110,.1);border:1px solid rgba(201,169,110,.25);border-radius:20px;padding:5px 12px;font-size:13px;color:var(--gold,#C9A96E);font-weight:600}
+html body .pv-inner strong{color:#fff}
+html body #detailPersonasViendo{margin:8px 0 12px}
