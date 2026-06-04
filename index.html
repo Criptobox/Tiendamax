@@ -1067,8 +1067,8 @@
                     }
                 });
 
-                // Chequeo periódico cada 15 minutos por si la pestaña queda abierta
-                setInterval(() => { reg.update().catch(() => {}); }, 15 * 60 * 1000);
+                // Chequeo periódico cada 45 minutos por si la pestaña queda abierta
+                setInterval(() => { reg.update().catch(() => {}); }, 45 * 60 * 1000);
 
                 // Detectar nueva versión
                 reg.addEventListener('updatefound', () => {
