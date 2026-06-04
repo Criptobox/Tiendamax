@@ -1,5 +1,6 @@
 // ═══════════════════════════════════════════════════════
-// TiendaMax — Service Worker v131
+// TiendaMax — Service Worker v132
+// v132: fix banner notificaciones — mismo flujo que modal campana.
 // v131: Firebase version signal para forzar actualización en todos los clientes.
 // v130: PWA install más robusto (delay 1.5s, botón en menú, dismiss 2 días).
 // v129: fix definitivo opacidad categorías vacías (clase proximamente + !important).
@@ -18,7 +19,7 @@
 //      usan el mismo helper _mensajeOrdenWA con formato premium.
 // ═══════════════════════════════════════════════════════
 
-const CACHE_NAME = 'tiendamax-v131';
+const CACHE_NAME = 'tiendamax-v132';
 
 const STATIC_ASSETS = [
   '/',

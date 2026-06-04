@@ -5836,52 +5836,40 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('tm-push-si').onclick = async () => {
             b.remove();
             if (estaDenegado) {
-                // Mostrar guía para Android
                 alert('Para activar las notificaciones:\n\n1. Toca los 3 puntos del navegador\n2. Ajustes → Configuración del sitio\n3. Notificaciones → Permitir');
                 return;
             }
             const perm = await Notification.requestPermission();
             if (perm === 'granted') {
-                const reg = await navigator.serviceWorker.ready;
-                reg.showNotification('✅ TiendaMax activado', {
-                    body: 'Te avisaremos de ofertas y productos nuevos.',
-                    icon: '/iconos/icon-192.png',
-                    badge: '/iconos/icon-192.png',
-                    vibrate: [200, 100, 200]
-                });
-                // FIX: registrar token FCM tras conceder permiso.
-                // Cargar config de localStorage o de config.json si no está local.
-                (async () => {
+                // Mismo flujo que el modal de la campana:
+                // 1. Limpiar flag de desuscripción manual para que ejecutarInitFCM registre el token
+                localStorage.removeItem('tm_push_desuscrito');
+                try {
+                    const swReg = await navigator.serviceWorker.ready;
+                    if (swReg && swReg.active) swReg.active.postMessage({ type: 'TM_CLEAR_DESUSCRITO' });
+                } catch(e) {}
+                // 2. Registrar token FCM
+                try {
+                    await tmRegistrarTokenFCMSiPermitido();
+                } catch(e) {}
+                // 3. Esperar a que el token se guarde y mostrar resultado
+                await new Promise(r => setTimeout(r, 1500));
+                const token = localStorage.getItem('fcmToken');
+                if (token) {
+                    mostrarNotificacion('🔔 ¡Notificaciones activadas!', 'success');
                     try {
-                        let fbConfig = null;
-                        const raw = localStorage.getItem('firebaseConfig');
-                        if (raw) {
-                            try { fbConfig = JSON.parse(raw); } catch(e) {}
-                        }
-                        if (!fbConfig || !fbConfig.projectId) {
-                            
-                            const r = await fetch('config.json?_=' + Date.now());
-                            if (r.ok) {
-                                const cfg = await r.json();
-                                fbConfig = cfg.firebaseConfig;
-                                if (fbConfig) {
-                                    localStorage.setItem('firebaseConfig', JSON.stringify(fbConfig));
-                                    if (fbConfig.vapidKey) localStorage.setItem('firebaseVapidKey', fbConfig.vapidKey);
-                                }
-                            }
-                        }
-                        if (fbConfig && fbConfig.projectId) {
-                            
-                            inicializarFirebaseFCMClient(fbConfig);
-                        } else {
-                            console.error('[FCM] No se pudo cargar firebaseConfig');
-                        }
-                    } catch(e) {
-                        console.error('[FCM] Error iniciando FCM:', e);
-                    }
-                })();
+                        const reg = await navigator.serviceWorker.ready;
+                        reg.showNotification('✅ TiendaMax activado', {
+                            body: 'Te avisaremos de ofertas y productos nuevos.',
+                            icon: '/iconos/icon-192.png',
+                            badge: '/iconos/icon-192.png',
+                            vibrate: [200, 100, 200]
+                        });
+                    } catch(e) {}
+                } else {
+                    mostrarNotificacion('⚠️ Activa desde la campana 🔔 si no funciona', 'warning');
+                }
             } else if (perm === 'denied') {
-                // Si lo denegó ahora, volver a preguntar en 6 horas
                 localStorage.setItem('tm_push_pospuesto', Date.now() + PUSH_BANNER_DENY_DELAY_HOURS * 60 * 60 * 1000);
             }
         };
