@@ -16,7 +16,7 @@
 <section id="manage-subcategories" class="admin-tab"><div class="head"><div><h1>Subcategorías</h1><p class="sub">Organización por categoría padre.</p></div></div><div class="card"><div class="form-grid"><select id="subcategoryParentCategory"></select><input id="newSubcategoryName" placeholder="Nombre subcategoría"></div><button class="btn primary" data-action="agregarSubcategoria" style="margin-top:10px">+ Agregar</button></div><div id="subcategoryList" class="subcategory-list"></div></section>
 <section id="oferta-dia" class="admin-tab"><div class="head"><div><h1>Oferta del día</h1><p class="sub">Destacar producto y gestionar agotados.</p></div></div><div class="grid2"><div class="card"><h2>Oferta</h2><select id="ofertaDiaSelect2"></select><input id="ofertaDiaTexto2" placeholder="🔥 OFERTA DEL DÍA" style="margin-top:10px"><div class="actions"><button class="btn primary" data-action="guardarOfertaDia">Activar</button><button class="btn" data-action="desactivarOfertaDia">Desactivar</button></div><div id="ofertaDiaStatus2"></div></div><div class="card"><h2>Agotados</h2><div id="productosAgotadosList"></div></div></div></section>
 <section id="apariencia" class="admin-tab"><div class="head"><div><h1>Apariencia</h1><p class="sub">Banners, hero y countdown.</p></div></div><div class="grid2"><div class="card"><h2>Banners</h2><div id="bannerList"></div><input id="nuevoBannerFile" type="file" accept="image/*"><input id="nuevoBannerUrl" placeholder="URL imagen"><input id="nuevoBannerLink" placeholder="Link"><button class="btn primary" data-action="agregarBanner" style="margin-top:10px">+ Agregar banner</button><button class="btn gold" onclick="exportarBannersJSON()" style="margin-top:10px">📥 Descargar banners.json</button></div><div class="card"><h2>Countdown</h2><input id="heroTaglineInput" placeholder="Tagline"><select id="countdownProductSelect"></select><div class="form-grid"><input id="countdownHoras" type="number" value="2"><input id="countdownMinutos" type="number" value="30"></div><input id="countdownTexto" value="¡Oferta especial!"><button class="btn primary" data-action="guardarCountdown" style="margin-top:10px">Activar countdown</button><div id="countdownStatus"></div></div></div></section>
-<section id="configuracion" class="admin-tab"><div class="head"><div><h1>Configuración</h1><p class="sub">GitHub, WhatsApp, Firebase, tasa y seguridad.</p></div></div><div class="grid2"><div class="card"><h2>General</h2><label>WhatsApp<input id="adminWhatsappNum" placeholder="535..."></label><label>Tasa MN<input id="adminTasaMN" type="number"></label><button class="btn primary" data-action="guardarTasaMNAdmin" style="margin-top:10px">Guardar tasa</button><p id="tasaMNStatus"></p><h2>Contraseña</h2><input id="ci" type="password" placeholder="Actual"><input id="ni" type="password" placeholder="Nueva"><input id="coi" type="password" placeholder="Confirmar"><button class="btn" data-action="cambiarPasswordAdmin" style="margin-top:10px">Cambiar contraseña</button></div><div class="card"><h2>GitHub / Firebase</h2><form id="githubConfigForm" onsubmit="guardarConfiguracionGitHub(event)"><input id="githubUser" placeholder="Usuario GitHub"><input id="githubRepo" placeholder="Repo"><input id="githubToken" type="password" placeholder="Token"><button class="btn primary" type="submit" style="margin-top:10px">Guardar GitHub</button></form><textarea id="firebaseConfigJson" placeholder="firebaseConfig JSON" style="margin-top:10px"></textarea><input id="firebaseVapidKey" placeholder="VAPID key"><input id="firebaseServerKey" placeholder="Server key"><p id="firebaseConfigStatus"></p><input id="manualPushTitle" placeholder="Título push"><input id="manualPushBody" placeholder="Mensaje push"><input id="manualPushUrl" placeholder="URL push"><p id="manualPushStatus"></p><div class="tm-subs-box"><div class="tm-subs-num" id="tmSubscriberCount">—</div><small>Suscriptores push registrados</small><div class="actions" style="margin-top:10px"><button type="button" class="btn" onclick="tmAdminRefreshSubscribers()">↻ Actualizar suscriptores</button><button type="button" class="btn" onclick="if(typeof tmLimpiarTokensInvalidos==='function')tmLimpiarTokensInvalidos()">🧹 Limpiar tokens</button></div></div><div class="tm-config-actions"><button type="button" class="btn primary" data-action="sincronizarTodoConGitHub">🔄 ACTUALIZAR TIENDA AHORA</button><button type="button" class="btn gold" onclick="if(typeof descargarProductosJSON==='function')descargarProductosJSON()">📥 Backup productos</button></div></div></div></section>
+<section id="configuracion" class="admin-tab"><div class="head"><div><h1>Configuración</h1><p class="sub">GitHub, WhatsApp, Firebase, tasa y seguridad.</p></div></div><div class="grid2"><div class="card"><h2>General</h2><label>WhatsApp<input id="adminWhatsappNum" placeholder="535..."></label><label>Tasa MN<input id="adminTasaMN" type="number"></label><button class="btn primary" data-action="guardarTasaMNAdmin" style="margin-top:10px">Guardar tasa</button><p id="tasaMNStatus"></p><h2>Contraseña</h2><input id="ci" type="password" placeholder="Actual"><input id="ni" type="password" placeholder="Nueva"><input id="coi" type="password" placeholder="Confirmar"><button class="btn" type="button" onclick="tmCambiarPasswordFromInputs()" style="margin-top:10px">Cambiar contraseña</button></div><div class="card"><h2>GitHub / Firebase</h2><form id="githubConfigForm" onsubmit="guardarConfiguracionGitHub(event)"><input id="githubUser" placeholder="Usuario GitHub"><input id="githubRepo" placeholder="Repo"><input id="githubToken" type="password" placeholder="Token"><button class="btn primary" type="submit" style="margin-top:10px">Guardar GitHub</button></form><textarea id="firebaseConfigJson" placeholder="firebaseConfig JSON" style="margin-top:10px"></textarea><input id="firebaseVapidKey" placeholder="VAPID key"><input id="firebaseServerKey" placeholder="Server key"><p id="firebaseConfigStatus"></p><input id="manualPushTitle" placeholder="Título push"><input id="manualPushBody" placeholder="Mensaje push"><input id="manualPushUrl" placeholder="URL push"><p id="manualPushStatus"></p><div class="tm-subs-box"><div class="tm-subs-num" id="tmSubscriberCount">—</div><small>Suscriptores push registrados</small><div class="actions" style="margin-top:10px"><button type="button" class="btn" onclick="tmAdminRefreshSubscribers()">↻ Actualizar suscriptores</button><button type="button" class="btn" onclick="if(typeof tmLimpiarTokensInvalidos==='function')tmLimpiarTokensInvalidos()">🧹 Limpiar tokens</button></div></div><div class="tm-config-actions"><button type="button" class="btn primary" data-action="sincronizarTodoConGitHub">🔄 ACTUALIZAR TIENDA AHORA</button><button type="button" class="btn gold" onclick="if(typeof descargarProductosJSON==='function')descargarProductosJSON()">📥 Backup productos</button></div></div></div></section>
 <section id="atajos" class="admin-tab"><div class="head"><div><h1>Atajos</h1><p class="sub">Navegación rápida.</p></div></div><div class="grid2"><div class="card"><h2>⌘K</h2><p>Buscar acciones.</p></div><div class="card"><h2>N</h2><p>Crear producto.</p></div></div></section>
 </main></div></div>
 <div id="editModal" class="modal hidden"><div class="modal-content"><div class="modal-header"><h2>Editar producto</h2><button class="close-btn" data-action="cerrarEditModal">×</button></div><form id="editForm"><input type="hidden" id="editProductId"><input id="editProductName" required><textarea id="editProductDescription" required></textarea><select id="editProductCategory" required></select><select id="editProductMasVendido"><option value="false">No</option><option value="true">Sí</option></select><label class="check-row"><input type="checkbox" id="editProductUsado"> Usado</label><div id="currentImagePreview"></div><input type="file" id="editProductImage" accept="image/*"><input type="file" id="editProductImagesExtra" accept="image/*" multiple><input type="number" id="editProductPriceActual" required><input type="number" id="editProductPrecioOriginal"><input type="number" id="editProductStock" required><input type="number" id="editProductComision"><input id="editProductGarantia"><label class="check-row"><input type="checkbox" id="editProductDevolucion"> Devolución</label><div class="actions"><button type="submit" class="btn primary">Guardar cambios</button><button type="button" class="btn" data-action="cerrarEditModal">Cancelar</button></div></form></div></div>
@@ -315,6 +315,96 @@ async function tmAdminRefreshSubscribers(){
   window.addEventListener('resize', visibleActive);
   document.addEventListener('DOMContentLoaded',()=>setTimeout(visibleActive,500));
   document.addEventListener('click',e=>{ if(e.target.closest('.tab-btn')) setTimeout(()=>{try{document.querySelector('.tm-main')?.scrollTo({top:0,behavior:'smooth'});}catch(_){}},50); });
+})();
+</script>
+
+<script id="tm-ai-and-safety-v8">
+(function(){
+  const $=(s,r=document)=>r.querySelector(s);
+  function notify(msg,type){ if(typeof mostrarNotificacion==='function') mostrarNotificacion(msg,type||'info'); else console.log(msg); }
+  function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
+  function val(id){return ($('#'+id)||{}).value||'';}
+  function catBenefits(cat){
+    const m={
+      ENERGIA:'ideal para respaldo eléctrico, sistemas solares, inversores y uso diario con equipos de consumo importante',
+      WIFI:'pensado para mejorar conexión, cobertura y estabilidad de internet en casa, negocio u oficina',
+      CELULARES:'perfecto para uso diario, comunicación, redes, fotos y trabajo desde el móvil',
+      CARROS:'útil para mantenimiento, seguridad y mejor rendimiento del vehículo',
+      HOGAR:'práctico para mejorar comodidad, orden y funcionalidad del hogar',
+      MOTOS:'ideal para mantenimiento, uso diario y mejor desempeño de la moto',
+      'PC Y LAPTOPS':'recomendado para estudio, trabajo, gaming ligero y productividad'
+    };
+    return m[cat]||'seleccionado por su utilidad, buena relación calidad-precio y disponibilidad inmediata';
+  }
+  window.tmGenerateAIProductText=function(tone){
+    const name=(val('productName')||'Producto TiendaMax').trim();
+    const rawDesc=(val('productDescription')||'').trim();
+    const cat=(val('productCategory')||'General').trim();
+    const price=Number(val('productPriceActual')||0);
+    const stock=Number(val('productStock')||0);
+    const garantia=(val('productGarantia')||'').trim();
+    tone=tone||document.querySelector('.ai-box')?.dataset.tone||'ventas';
+    const benefit=catBenefits(cat);
+    let text='';
+    if(tone==='tecnico'){
+      text=`${name}\n\nDescripción técnica:\n${rawDesc || 'Producto disponible en TiendaMax con revisión visual y listo para entrega coordinada.'}\n\nCategoría: ${cat}\nPrecio: ${price?('$'+price.toFixed(2)+' USD'):'Consultar'}\nStock: ${stock>0?stock+' unidad(es) disponible(s)':'Agotado temporalmente'}${garantia?'\nGarantía: '+garantia:''}\n\nRecomendado para: ${benefit}.`;
+    }else if(tone==='whatsapp'){
+      text=`🔥 ${name}\n\n${rawDesc || 'Disponible en TiendaMax.'}\n\n💵 ${price?('$'+price.toFixed(2)+' USD'):'Precio a consultar'}\n📦 ${stock>0?('Disponible: '+stock):'Agotado por el momento'}\n🏷️ ${cat}\n\nEscríbenos para reservar o coordinar entrega.`;
+    }else{
+      text=`✨ ${name}\n\n${rawDesc || 'Producto disponible en TiendaMax.'}\n\nUna opción ${benefit}. ${stock>0?'Disponible ahora para entrega coordinada.':'Puedes consultarnos cuándo vuelve a estar disponible.'}\n\n💵 ${price?('$'+price.toFixed(2)+' USD'):''}${garantia?'\n🛡️ '+garantia:''}`;
+    }
+    const box=$('#aiText'); if(box) box.textContent=text;
+    const ai=$('.ai-box'); if(ai) ai.dataset.tone=tone;
+    return text;
+  };
+  window.tmUseAIProductText=function(){
+    const box=$('#aiText'), desc=$('#productDescription'); if(!box||!desc) return;
+    desc.value=box.textContent.trim();
+    desc.dispatchEvent(new Event('input',{bubbles:true}));
+    notify('Texto de IA aplicado a la descripción','success');
+  };
+  window.tmCambiarPasswordFromInputs=function(){
+    const ci=val('ci'), ni=val('ni'), coi=val('coi');
+    if(typeof cambiarPasswordAdmin==='function') return cambiarPasswordAdmin(ci,ni,coi);
+    notify('Función de contraseña no disponible todavía','error');
+  };
+  function compressSelectedImage(){
+    const input=$('#productImage'); const file=input&&input.files&&input.files[0];
+    if(!file){ input&&input.click(); notify('Selecciona una imagen principal primero','info'); return; }
+    const img=new Image();
+    img.onload=function(){
+      let w=img.width,h=img.height,max=1200; if(w>max){h=Math.round(h*max/w);w=max} if(h>max){w=Math.round(w*max/h);h=max}
+      const canvas=document.createElement('canvas'); canvas.width=w; canvas.height=h; canvas.getContext('2d').drawImage(img,0,0,w,h);
+      canvas.toBlob(function(blob){
+        const saved=Math.max(0,100-(blob.size/file.size*100));
+        notify(`Imagen comprimida para preview: ${(file.size/1024).toFixed(0)}KB → ${(blob.size/1024).toFixed(0)}KB (${saved.toFixed(0)}% ahorro)`,'success');
+        const pv=$('#pvEmoji'); if(pv){ const url=URL.createObjectURL(blob); pv.innerHTML='<img src="'+url+'" style="width:100%;height:100%;object-fit:cover">'; }
+      },'image/webp',0.82);
+    };
+    img.src=URL.createObjectURL(file);
+  }
+  function bindAI(){
+    const ai=$('.ai-box'); if(ai && !ai.dataset.bound){
+      ai.dataset.bound='1'; ai.dataset.tone='ventas';
+      ai.addEventListener('click',e=>{
+        const b=e.target.closest('button'); if(!b) return;
+        const t=(b.textContent||'').toLowerCase();
+        if(t.includes('usar')) return tmUseAIProductText();
+        if(t.includes('técnico')||t.includes('tecnico')) return tmGenerateAIProductText('tecnico');
+        if(t.includes('ventas')) return tmGenerateAIProductText('ventas');
+        if(t.includes('regenerar')) return tmGenerateAIProductText(ai.dataset.tone||'ventas');
+      });
+    }
+    ['productName','productCategory','productPriceActual','productStock','productGarantia'].forEach(id=>{const el=$('#'+id); if(el&&!el.dataset.aiBound){el.dataset.aiBound='1'; el.addEventListener('input',()=>{const box=$('#aiText'); if(box && /Escribe nombre/.test(box.textContent||'')) tmGenerateAIProductText('ventas');}); el.addEventListener('change',()=>{const box=$('#aiText'); if(box && /Escribe nombre/.test(box.textContent||'')) tmGenerateAIProductText('ventas');});}});
+    const comp=[...document.querySelectorAll('#add-products .btn.gold')].find(b=>(b.textContent||'').includes('Comprimir'));
+    if(comp&&!comp.dataset.bound){comp.dataset.bound='1'; comp.addEventListener('click',compressSelectedImage);}
+  }
+  function checkCommonFailures(){
+    // Avisos silenciosos en consola para detectar IDs críticos faltantes.
+    ['productForm','productName','productDescription','productCategory','productImage','productsList','githubConfigForm','analyticsContent','listaGruposFB','listaRevolicoConfig'].forEach(id=>{if(!document.getElementById(id)) console.warn('[admin-check] Falta elemento:',id);});
+  }
+  document.addEventListener('DOMContentLoaded',()=>{setTimeout(()=>{bindAI(); checkCommonFailures();},600);});
+  document.addEventListener('click',e=>{ if(e.target.closest('[data-arg="add-products"], [data-tab="add-products"]')) setTimeout(bindAI,250); });
 })();
 </script>
 </body></html>
