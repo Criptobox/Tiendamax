@@ -312,9 +312,16 @@
                                 <input type="number" id="productStock" required placeholder="0" min="0">
                             </div>
                             <div class="form-group">
-                                <label>💰 Mi comisión (USD):</label>
-                                <input type="number" id="productComision" placeholder="0.00" step="0.01" min="0">
-                                <small>Lo que ganas tú por cada venta</small>
+                                <label>💰 Mi comisión:</label>
+                                <div class="tm-comision-row">
+                                    <input type="number" id="productComision" placeholder="0.00" step="0.01" min="0" oninput="tmUpdateComisionHint('productComision','productComisionMoneda','tmComisionHint1')">
+                                    <div class="tm-moneda-toggle" id="tmMonedaToggle1">
+                                        <button type="button" class="tm-moneda-btn active" data-moneda="USD" onclick="tmSetMoneda('tmMonedaToggle1','USD','productComisionMoneda','productComision','tmComisionHint1')">USD</button>
+                                        <button type="button" class="tm-moneda-btn" data-moneda="MN" onclick="tmSetMoneda('tmMonedaToggle1','MN','productComisionMoneda','productComision','tmComisionHint1')">MN</button>
+                                    </div>
+                                </div>
+                                <input type="hidden" id="productComisionMoneda" value="USD">
+                                <span class="admin-mn-hint" id="tmComisionHint1">Lo que ganas por cada venta</span>
                             </div>
                         </div>
                         <div class="form-group">
@@ -774,8 +781,16 @@ Ej:
                         <input type="number" id="editProductStock" required placeholder="0" min="0">
                     </div>
                     <div class="form-group">
-                        <label>💰 Mi comisión (USD):</label>
-                        <input type="number" id="editProductComision" placeholder="0.00" step="0.01" min="0">
+                        <label>💰 Mi comisión:</label>
+                        <div class="tm-comision-row">
+                            <input type="number" id="editProductComision" placeholder="0.00" step="0.01" min="0" oninput="tmUpdateComisionHint('editProductComision','editProductComisionMoneda','tmComisionHintEdit')" oninput="tmUpdateMN(this,'tmMnHintEdit')">
+                            <div class="tm-moneda-toggle" id="tmMonedaToggleEdit">
+                                <button type="button" class="tm-moneda-btn active" data-moneda="USD" onclick="tmSetMoneda('tmMonedaToggleEdit','USD','editProductComisionMoneda','editProductComision','tmComisionHintEdit')">USD</button>
+                                <button type="button" class="tm-moneda-btn" data-moneda="MN" onclick="tmSetMoneda('tmMonedaToggleEdit','MN','editProductComisionMoneda','editProductComision','tmComisionHintEdit')">MN</button>
+                            </div>
+                        </div>
+                        <input type="hidden" id="editProductComisionMoneda" value="USD">
+                        <span class="admin-mn-hint" id="tmComisionHintEdit">Lo que ganas por cada venta</span>
                     </div>
                 </div>
                 <div class="form-group">
@@ -1269,6 +1284,199 @@ window.tmFilterCmdk = function() {
             }
             if (e.key === 'Escape') tmCloseCmdk();
         });
+    });
+})();
+
+// ═══ Toggle de moneda en comisiones ═══
+function tmSetMoneda(toggleId, moneda, hiddenId, inputId, hintId) {
+    // Activar botón
+    var toggle = document.getElementById(toggleId);
+    if (toggle) {
+        toggle.querySelectorAll('.tm-moneda-btn').forEach(function(b) {
+            b.classList.toggle('active', b.dataset.moneda === moneda);
+        });
+    }
+    // Guardar en hidden
+    var hidden = document.getElementById(hiddenId);
+    if (hidden) hidden.value = moneda;
+    // Actualizar hint
+    tmUpdateComisionHint(inputId, hiddenId, hintId);
+}
+
+function tmUpdateComisionHint(inputId, monedaId, hintId) {
+    var input   = document.getElementById(inputId);
+    var monedaEl = document.getElementById(monedaId);
+    var hint    = document.getElementById(hintId);
+    if (!hint) return;
+    var val    = parseFloat(input && input.value) || 0;
+    var moneda = (monedaEl && monedaEl.value) || 'USD';
+
+    if (!val) {
+        hint.textContent = 'Lo que ganas por cada venta';
+        hint.style.color = '';
+        return;
+    }
+
+    try {
+        var cfg  = JSON.parse(localStorage.getItem('tiendamax_config') || '{}');
+        var tasa = (cfg.tasaMN || 350) + 10;
+
+        if (moneda === 'USD') {
+            var mn = Math.round(val * tasa);
+            hint.textContent = '$' + val.toFixed(2) + ' USD ≈ ' + mn.toLocaleString() + ' MN';
+        } else {
+            var usd = (val / tasa).toFixed(2);
+            hint.textContent = val.toLocaleString() + ' MN ≈ $' + usd + ' USD';
+        }
+        hint.style.color = '#C9A96E';
+    } catch(e) {
+        hint.textContent = val + ' ' + moneda;
+    }
+}
+
+// Hook post-save para inyectar comisionMoneda en localStorage
+(function() {
+    // Interceptar submit del formulario de agregar
+    document.addEventListener('DOMContentLoaded', function() {
+        var form = document.getElementById('productForm');
+        if (form) {
+            form.addEventListener('submit', function() {
+                // Después de que script.js procese, inyectamos comisionMoneda
+                setTimeout(function() {
+                    var moneda = (document.getElementById('productComisionMoneda') || {}).value || 'USD';
+                    if (moneda === 'USD') return; // USD es el default, no necesita guardarse
+                    try {
+                        var prods = JSON.parse(localStorage.getItem('tiendamax_productos') || '[]');
+                        if (prods.length > 0) {
+                            prods[prods.length - 1].comisionMoneda = moneda;
+                            localStorage.setItem('tiendamax_productos', JSON.stringify(prods));
+                        }
+                    } catch(e) {}
+                }, 200);
+            }, true); // capture para correr después de script.js
+        }
+
+        // Interceptar submit del formulario de edición
+        var editForm = document.getElementById('editForm');
+        if (editForm) {
+            editForm.addEventListener('submit', function() {
+                setTimeout(function() {
+                    var moneda = (document.getElementById('editProductComisionMoneda') || {}).value || 'USD';
+                    var editId = (document.getElementById('editProductId') || {}).value;
+                    if (!editId) return;
+                    try {
+                        var prods = JSON.parse(localStorage.getItem('tiendamax_productos') || '[]');
+                        var idx   = prods.findIndex(function(p) { return String(p.id) === String(editId); });
+                        if (idx >= 0) {
+                            prods[idx].comisionMoneda = moneda;
+                            localStorage.setItem('tiendamax_productos', JSON.stringify(prods));
+                        }
+                    } catch(e) {}
+                }, 200);
+            }, true);
+        }
+
+        // Cuando se abre el modal de edición, restaurar el toggle al estado guardado
+        var observer = new MutationObserver(function(muts) {
+            muts.forEach(function(m) {
+                if (m.target.id === 'editModal' && !m.target.classList.contains('hidden')) {
+                    setTimeout(function() {
+                        var editId = (document.getElementById('editProductId') || {}).value;
+                        if (!editId) return;
+                        try {
+                            var prods  = JSON.parse(localStorage.getItem('tiendamax_productos') || '[]');
+                            var prod   = prods.find(function(p) { return String(p.id) === String(editId); });
+                            var moneda = (prod && prod.comisionMoneda) || 'USD';
+                            tmSetMoneda('tmMonedaToggleEdit', moneda, 'editProductComisionMoneda', 'editProductComision', 'tmComisionHintEdit');
+                        } catch(e) {}
+                    }, 80);
+                }
+            });
+        });
+        var editModal = document.getElementById('editModal');
+        if (editModal) observer.observe(editModal, { attributes: true, attributeFilter: ['class'] });
+    });
+})();
+
+// ═══ Ventas: mostrar ganancia en MN en el KPI y en el historial ═══
+(function() {
+    function getTasa() {
+        try {
+            var cfg = JSON.parse(localStorage.getItem('tiendamax_config') || '{}');
+            return (cfg.tasaMN || 350) + 10;
+        } catch(e) { return 360; }
+    }
+
+    function patchGananciaMN() {
+        var tasa = getTasa();
+
+        // ── 1. KPI "Mi ganancia" ─────────────────────────────────────────
+        // El card gold tiene: admin-stat-value con el total en $, admin-stat-label "Mi ganancia"
+        var kpiCards = document.querySelectorAll('.admin-stat-card');
+        kpiCards.forEach(function(card) {
+            var label = card.querySelector('.admin-stat-label');
+            if (!label || label.textContent.trim() !== 'Mi ganancia') return;
+            if (card.querySelector('.tm-kpi-mn')) return; // ya parcheado
+
+            var valueEl = card.querySelector('.admin-stat-value');
+            if (!valueEl) return;
+            var usdText = valueEl.textContent.trim().replace('$', '');
+            var usdVal  = parseFloat(usdText);
+            if (isNaN(usdVal)) return;
+
+            var mn = Math.round(usdVal * tasa);
+            var mnDiv = document.createElement('div');
+            mnDiv.className = 'tm-kpi-mn admin-stat-sub';
+            mnDiv.style.cssText = 'color:#C9A96E;font-weight:700;font-size:11px;margin-top:2px;';
+            mnDiv.textContent = '≈ ' + mn.toLocaleString() + ' MN';
+            card.appendChild(mnDiv);
+        });
+
+        // ── 2. Items del historial de ventas ─────────────────────────────
+        var gainDivs = document.querySelectorAll('.admin-history-item .gain');
+        gainDivs.forEach(function(div) {
+            if (div.querySelector('.tm-gain-mn')) return; // ya parcheado
+
+            var text   = div.textContent.trim();
+            var match  = text.match(/\$([0-9.]+)/);
+            if (!match) return;
+            var usdVal = parseFloat(match[1]);
+            if (!usdVal) return;
+
+            // Verificar si la comisión de este producto es MN
+            var histItem = div.closest('.admin-history-item');
+            var prodName = histItem && (histItem.querySelector('.title') || {}).textContent;
+            var prods    = [];
+            try { prods = JSON.parse(localStorage.getItem('tiendamax_productos') || '[]'); } catch(e) {}
+            var prod = prods.find(function(p) { return p.nombre === prodName; });
+            var moneda = (prod && prod.comisionMoneda) || 'USD';
+
+            var span = document.createElement('span');
+            span.className = 'tm-gain-mn';
+            span.style.cssText = 'display:block;font-size:10px;color:#C9A96E;font-weight:700;margin-top:1px;';
+
+            if (moneda === 'MN') {
+                // ganancia ya está en MN, mostrar equivalente USD
+                span.textContent = '≈ $' + (usdVal / tasa).toFixed(2) + ' USD';
+                div.innerHTML = 'Comisión: ' + usdVal.toLocaleString() + ' MN';
+                div.appendChild(span);
+            } else {
+                // ganancia en USD, mostrar MN
+                var mn = Math.round(usdVal * tasa);
+                span.textContent = '≈ ' + mn.toLocaleString() + ' MN';
+                div.appendChild(span);
+            }
+        });
+    }
+
+    // Observar cambios en ventasContenido
+    document.addEventListener('DOMContentLoaded', function() {
+        var cont = document.getElementById('ventasContenido');
+        if (!cont) return;
+        var obs = new MutationObserver(function() {
+            setTimeout(patchGananciaMN, 60);
+        });
+        obs.observe(cont, { childList: true, subtree: true });
     });
 })();
 </script>
