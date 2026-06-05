@@ -2208,3 +2208,10 @@ body:not(.dark-mode) .admin-inventory-strip span {
   .head h1,.admin-tab>h3{font-size:27px!important;}
 }
 /* === END MOBILE RESCUE v6 === */
+
+
+/* === ADD PRODUCT IA ORDER v7 === */
+.ai-under-description{margin-top:0!important}.ai-under-description .ai-box{margin-top:2px!important}
+@media(max-width:980px){.ai-under-description{order:3!important}.float-ai{display:none!important}}
+@media(min-width:981px){.ai-under-description{grid-column:1/-1!important}}
+/* === END ADD PRODUCT IA ORDER v7 === */
