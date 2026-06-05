@@ -133,13 +133,13 @@ html body .banners-pat-label{display:none !important}
 html body .banners-patrocinados-section .hero-image{margin:0 16px 8px;border-radius:18px;overflow:hidden}
 @media (min-width:769px){html body .banners-patrocinados-section .hero-image{max-width:960px;margin:0 auto 8px}}
 @media (max-width:768px){html body .banners-patrocinados-section .hero-image{margin:0 12px 8px;border-radius:14px}}
-/* ── Altura fija del banner patrocinado: evita que se distorsione en pantallas grandes */
-html body #heroImageContainer{max-width:960px !important;margin:0 auto 24px !important;height:clamp(180px,37.5vw,360px) !important;min-height:unset !important}
+/* ── Banner patrocinado: aspect-ratio fijo, imagen llena el marco sin barras */
+html body #heroImageContainer{max-width:960px !important;margin:0 auto 24px !important;aspect-ratio:16/7 !important;height:auto !important;min-height:unset !important}
 html body #heroBannerSlider,html body #heroImageContainer .hero-banner-slider{position:absolute !important;top:0 !important;left:0 !important;width:100% !important;height:100% !important}
-@media (max-width:768px){html body #heroImageContainer{margin:0 12px 16px !important;height:clamp(160px,65vw,280px) !important}}
-/* contain: imagen completa sin recortes; fondo oscuro oculta las barras */
+@media (max-width:768px){html body #heroImageContainer{margin:0 12px 16px !important}}
+/* cover: imagen llena el marco sin barras */
 html body .hero-banner-slide{background:#0d0d0d !important}
-html body .hero-banner-slide img{object-fit:contain !important;object-position:center center !important;background:none !important}
+html body .hero-banner-slide img{object-fit:cover !important;object-position:center center !important;background:none !important}
 /* Tarjetas del grid: misma altura en cada fila aunque tengan precio tachado o badges extra */
 html body .productos-grid{align-items:stretch !important}
 html body .productos-grid .producto-card{height:100% !important;align-self:stretch !important;box-sizing:border-box !important}
