@@ -4005,9 +4005,8 @@ function actualizarListaProductos() {
                     ${stock > 0 ? `<button type="button" class="tm-stock-btn zero" onclick="fijarStockCero(${_id})" title="Marcar agotado">→0</button>` : ''}
                 </div>
                 <div class="tm-prod-pub-row">
-                    <button type="button" class="tm-pub-btn" style="background:#e67e22;" onclick="copiarParaRevolico(${_id})">📋 Revolico</button>
+                    <button type="button" class="tm-pub-btn" style="background:#e67e22;" onclick="publicarEnRevolico(${_id})">🟠 Revolico</button>
                     <button type="button" class="tm-pub-btn" style="background:#4267B2;" onclick="copiarParaFacebook(${_id})">📋 Facebook</button>
-                    <button type="button" class="tm-pub-btn" style="background:#555;" onclick="publicarEnRevolico(${_id})">🤖 Asistente</button>
                 </div>
             </div>`;
         });
