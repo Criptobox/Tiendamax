@@ -142,7 +142,7 @@ function mostrarSelectorAsistenteFacebook() {
         </div>
         <p style="font-size:12px;opacity:.7;margin:8px 0 12px;">El texto se copia automáticamente. Pégalo en el grupo.</p>
         ${gruposHtml}
-        <input type="text" id="fbSearch" placeholder="🔍 Buscar producto…"
+        <input type="text" id="fbSearch" placeholder="🔍 Buscar producto…" aria-label="Buscar producto para publicar en Facebook"
           style="width:100%;padding:8px 12px;border:1px solid rgba(255,255,255,.12);border-radius:8px;background:rgba(255,255,255,.07);color:inherit;font-size:13px;margin-bottom:10px;outline:none;">
         <div id="fbSelectorList" style="flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:6px;"></div>
       </div>`;
@@ -366,7 +366,7 @@ function previsualizarRevolico(productoId) {
 
           <div>
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
-              <label style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;opacity:.6;">
+              <label for="revTituloTA" style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;opacity:.6;">
                 Título &nbsp;<span id="revTituloCount" style="color:#FF6B35;">${titulo.length}/70</span>
               </label>
               <button id="btnCopyTitulo" type="button" onclick="copiarRevTitulo()"
@@ -378,7 +378,7 @@ function previsualizarRevolico(productoId) {
 
           <div>
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
-              <label style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;opacity:.6;">Descripción</label>
+              <label for="revDescTA" style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;opacity:.6;">Descripción</label>
               <button id="btnCopyDesc" type="button" onclick="copiarRevDesc()"
                 style="${sBtnBase}background:rgba(255,107,53,.15);border:1px solid rgba(255,107,53,.35);color:#FF6B35;">📋 Copiar descripción</button>
             </div>
@@ -459,7 +459,7 @@ function mostrarSelectorAsistenteRevolico() {
         <p style="font-size:12px;opacity:.7;margin:8px 0 12px;">
           Selecciona el producto. Se abre vista previa con título y descripción editables.
         </p>
-        <input type="text" id="revSearch" placeholder="🔍 Buscar producto…"
+        <input type="text" id="revSearch" placeholder="🔍 Buscar producto…" aria-label="Buscar producto para publicar en Revolico"
           style="width:100%;padding:8px 12px;border:1px solid rgba(255,255,255,.12);border-radius:8px;background:rgba(255,255,255,.07);color:inherit;font-size:13px;margin-bottom:10px;outline:none;">
         <div id="revSelectorList" style="flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:6px;"></div>
       </div>`;

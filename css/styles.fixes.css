@@ -11,6 +11,7 @@ html body .categoria-card .cat-name{font-size:13px !important;font-weight:800 !i
 html body .categoria-card .cat-count{font-size:11px !important;font-weight:600 !important}
 html body .categoria-card.cat-proximamente{opacity:.3 !important;filter:grayscale(.7) !important;pointer-events:none !important;cursor:default !important}
 .stock-count{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.skip-link{position:absolute;top:-100%;left:0;padding:10px 18px;background:#0d0d0d;color:#fff;font-weight:700;font-size:14px;z-index:10000;border-radius:0 0 8px 0;text-decoration:none;transition:top .15s}.skip-link:focus{top:0}
 @keyframes tm-shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
 @keyframes tm-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
 @keyframes tm-dot-pop{to{opacity:1;transform:scale(1.3)}}
