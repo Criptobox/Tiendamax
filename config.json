@@ -1,5 +1,5 @@
 {
-  "tasaMN": 610.0,
+  "tasaMN": 612.0,
   "firebaseConfig": {
     "apiKey": "AIzaSyDlmR0_lwZSf7LcoVaz3FvFU3VvBDnCRcM",
     "authDomain": "tiendamax-8feb5.firebaseapp.com",
@@ -10,7 +10,7 @@
     "appId": "1:238891228701:web:d515133e229c48a5adb0f4",
     "vapidKey": "BAXhJOhwCtSkc1jH09b2q04lVg5Cr4QNK3C9dqUcBIjzEJZJ66vkS7MfNLAhopd-eK3jYkpXFMk4zBzQfs8nbhc"
   },
-  "actualizado": "2026-06-04T21:36:02.157256+00:00",
+  "actualizado": "2026-06-05T19:53:29.749808+00:00",
   "tasaFuente": "elTOQUE",
-  "tasaActualizada": "2026-06-04T17:16:15.000Z"
+  "tasaActualizada": "2026-06-05T15:37:29.000Z"
 }
