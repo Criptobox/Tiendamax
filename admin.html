@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,9 +14,14 @@
     <link rel="shortcut icon" href="/favicon.ico?v=2">
     <link rel="apple-touch-icon" sizes="180x180" href="/iconos/apple-touch-icon.png?v=2">
 
+    <!-- Chart.js para analytics -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <!-- SortableJS para drag & drop -->
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
+
     <!-- Solo CSS del admin -->
     <link rel="stylesheet" href="css/styles.css?v=13">
-    <link rel="stylesheet" href="css/admin.css?v=4">
+    <link rel="stylesheet" href="css/admin.css?v=5">
 
     <style>
     /* Reset de página para admin puro */
@@ -69,7 +74,17 @@
         <div class="admin-panel-content">
             <div class="admin-header">
                 <h2>⚙️ Panel de Administración</h2>
-                <button data-action="cerrarAdminPanel" aria-label="Cerrar panel de administración" type="button" class="close-btn">✕</button>
+                <div class="admin-header-actions">
+                    <button type="button" class="admin-cmdk-btn" id="btnCmdk" title="Buscar (Ctrl+K)" aria-label="Buscar">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+                        <span class="admin-cmdk-hint">Ctrl+K</span>
+                    </button>
+                    <button type="button" class="admin-theme-btn" id="btnThemeToggle" aria-label="Cambiar tema">
+                        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/></svg>
+                        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+                    </button>
+                    <button data-action="cerrarAdminPanel" aria-label="Cerrar panel de administración" type="button" class="close-btn">✕</button>
+                </div>
             </div>
             <!-- TABS: visibles solo en desktop -->
             <div class="admin-tabs admin-tabs-desktop">
@@ -211,25 +226,63 @@
                             <label>Descripción:</label>
                             <textarea id="productDescription" required rows="4" maxlength="2000"></textarea>
                         </div>
-                        <div class="form-group">
-                            <label>Categoría:</label>
-                            <select id="productCategory" required>
-                                <option value="General">General</option>
-                            </select>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Categoría:</label>
+                                <select id="productCategory" required>
+                                    <option value="General">General</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Subcategoría:</label>
+                                <select id="productSubcategoria">
+                                    <option value="">— Sin subcategoría —</option>
+                                </select>
+                            </div>
                         </div>
                         <div class="form-group">
+                            <label>Etiquetas:</label>
+                            <div class="admin-chips-row">
+                                <label class="admin-chip-label">
+                                    <input type="checkbox" id="productMasVendidoChk" name="masVendido">
+                                    <span>⭐ Más Vendido</span>
+                                </label>
+                                <label class="admin-chip-label">
+                                    <input type="checkbox" id="productNuevoChk" name="nuevo">
+                                    <span>🔥 Nuevo</span>
+                                </label>
+                                <label class="admin-chip-label">
+                                    <input type="checkbox" id="productDevolucionChk" name="devolucion">
+                                    <span>✅ Devolución</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group" style="display:none">
                             <label>¿Mostrar en "Más Vendidos"?</label>
                             <select id="productMasVendido">
                                 <option value="false">No</option>
                                 <option value="true">Sí — Destacar en la página principal</option>
                             </select>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group" style="display:none">
                             <label>
                                 <input type="checkbox" id="productUsado">
                                 ✨ Este es un producto usado/refurbished
                             </label>
                             <small>Marca esta opción si el producto es de segunda mano o ha sido restaurado</small>
+                        </div>
+                        <div class="form-group">
+                            <label>¿Producto usado/refurbished?</label>
+                            <div class="admin-chips-row">
+                                <label class="admin-chip-label">
+                                    <input type="checkbox" id="productUsadoChk" name="usado">
+                                    <span>♻️ Usado / Refurbished</span>
+                                </label>
+                                <label class="admin-chip-label">
+                                    <input type="checkbox" id="productDevolucionChk2" name="devolucion2">
+                                    <span>🛡️ Garantía</span>
+                                </label>
+                            </div>
                         </div>
                         <div class="form-group">
                             <label>Foto principal del Producto:</label>
@@ -244,11 +297,13 @@
                         <div class="form-row">
                             <div class="form-group">
                                 <label>Precio (USD):</label>
-                                <input type="number" id="productPriceActual" required placeholder="70" step="0.01" min="0">
+                                <input type="number" id="productPriceActual" required placeholder="70" step="0.01" min="0" oninput="tmUpdateMN(this,'tmMnHint1')">
+                                <span class="admin-mn-hint" id="tmMnHint1">≈ 0 MN</span>
                             </div>
                             <div class="form-group">
-                                <label>Precio Original (antes de rebaja):</label>
-                                <input type="number" id="productPrecioOriginal" placeholder="Ej: 300" step="0.01" min="0"><small style="color:rgba(255,255,255,0.35)">Solo si tiene rebaja. Ej: antes $300, ahora $280</small>
+                                <label>Precio Original (rebaja):</label>
+                                <input type="number" id="productPrecioOriginal" placeholder="Ej: 300" step="0.01" min="0">
+                                <small>Solo si tiene descuento activo</small>
                             </div>
                         </div>
                         <div class="form-row">
@@ -275,15 +330,21 @@
                         <button type="submit" class="btn btn-primary">✅ Agregar Producto</button>
                     </form>
 
-                    <!-- Preview card -->
-                    <div id="tmAdminPreview" style="margin-top:24px;display:none">
-                        <p style="font-size:11px;font-weight:700;color:#666;letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px">Vista previa</p>
-                        <div id="tmPreviewCard" style="background:#1a1a1a;border:1px solid #2a2a2a;border-radius:16px;overflow:hidden;max-width:180px">
-                            <div id="tmPreviewImgWrap" style="width:100%;aspect-ratio:4/3;background:linear-gradient(135deg,#1e1e1e,#252525);display:flex;align-items:center;justify-content:center;font-size:32px;color:#444">📷</div>
-                            <div style="padding:10px 12px 12px">
-                                <div id="tmPreviewNombre" style="font-size:12px;font-weight:700;color:#fff;line-height:1.3;min-height:30px;margin-bottom:6px">Nombre del producto</div>
-                                <div id="tmPreviewPrecio" style="font-size:15px;font-weight:900;color:#FF6B35">$0.00 USD</div>
-                                <div id="tmPreviewCat" style="font-size:10px;color:#666;margin-top:3px">Categoría</div>
+                    <!-- Preview card mejorada -->
+                    <div id="tmAdminPreview" class="tm-preview-wrap" style="display:none">
+                        <p class="tm-preview-label">Vista previa en vivo</p>
+                        <div class="tm-preview-card" id="tmPreviewCard">
+                            <div class="tm-preview-img" id="tmPreviewImgWrap">
+                                <span class="tm-preview-img-ph">📷</span>
+                            </div>
+                            <div class="tm-preview-body">
+                                <div class="tm-preview-cat" id="tmPreviewCat">Sin categoría</div>
+                                <div class="tm-preview-nombre" id="tmPreviewNombre">Nombre del producto</div>
+                                <div class="tm-preview-pricing">
+                                    <span class="tm-preview-precio" id="tmPreviewPrecio">$0.00</span>
+                                    <span class="tm-preview-mn" id="tmPreviewMN">≈ 0 MN</span>
+                                </div>
+                                <div class="tm-preview-stock" id="tmPreviewStock">● En stock</div>
                             </div>
                         </div>
                     </div>
@@ -339,13 +400,23 @@
                 </div>
 
                 <!-- Tab: Gestionar Productos -->
-                <!-- Tab: Gestionar Productos (por categorías) -->
                 <div id="manage-products" class="admin-tab">
-                    <div class="admin-row-flex">
-                        <input type="text" id="searchProductos" placeholder="🔍 Buscar producto..." oninput="actualizarListaProductos()" style="flex:1;min-width:180px;padding:10px 14px;border-radius:10px;border:1.5px solid var(--border-color);font-size:14px;background:var(--cream);">
-                        <select id="filtroCategoria" onchange="actualizarListaProductos()" style="padding:10px 14px;border-radius:10px;border:1.5px solid var(--border-color);font-size:14px;background:var(--cream);">
+                    <div class="admin-toolbar">
+                        <div class="admin-search-wrap">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+                            <input type="text" id="searchProductos" placeholder="Buscar producto…" oninput="actualizarListaProductos()">
+                        </div>
+                        <select id="filtroCategoria" onchange="actualizarListaProductos()" class="admin-filter-select">
                             <option value="">Todas las categorías</option>
                         </select>
+                    </div>
+                    <!-- Filter chips -->
+                    <div class="admin-filter-chips" id="filterChips">
+                        <button type="button" class="admin-fchip active" data-filter="todos" onclick="setFilterChip(this,'todos')">Todos</button>
+                        <button type="button" class="admin-fchip" data-filter="activos" onclick="setFilterChip(this,'activos')">🟢 Activos</button>
+                        <button type="button" class="admin-fchip" data-filter="stock-bajo" onclick="setFilterChip(this,'stock-bajo')">🟡 Stock bajo</button>
+                        <button type="button" class="admin-fchip" data-filter="agotados" onclick="setFilterChip(this,'agotados')">⚫ Agotados</button>
+                        <button type="button" class="admin-fchip" data-filter="destacados" onclick="setFilterChip(this,'destacados')">⭐ Destacados</button>
                     </div>
                     <div id="productsList" class="products-list">
                         <p class="no-products">No hay productos aún</p>
@@ -689,7 +760,8 @@ Ej:
                 <div class="form-row">
                     <div class="form-group">
                         <label>Precio (USD):</label>
-                        <input type="number" id="editProductPriceActual" required placeholder="70" step="0.01" min="0">
+                        <input type="number" id="editProductPriceActual" required placeholder="70" step="0.01" min="0" oninput="tmUpdateMN(this,'tmMnHintEdit')">
+                        <span class="admin-mn-hint" id="tmMnHintEdit">≈ 0 MN</span>
                     </div>
                     <div class="form-group">
                         <label>Precio Original:</label>
@@ -721,6 +793,61 @@ Ej:
                     <button data-action="cerrarEditModal" type="button" class="btn btn-secondary" style="flex:1;min-width:180px;">Cancelar</button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <!-- Toast container -->
+    <div id="tmToastWrap" class="tm-toast-wrap" aria-live="polite"></div>
+
+    <!-- Command palette overlay -->
+    <div class="tm-cmdk-overlay" id="tmCmdkOverlay" onclick="if(event.target===this)tmCloseCmdk()">
+        <div class="tm-cmdk">
+            <div class="tm-cmdk-search">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="17" height="17"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+                <input type="text" id="tmCmdkInput" class="tm-cmdk-input" placeholder="Buscar producto, acción o configuración…" oninput="tmFilterCmdk()" autocomplete="off">
+                <span class="tm-cmdk-esc">Esc</span>
+            </div>
+            <div class="tm-cmdk-list" id="tmCmdkList">
+                <div class="tm-cmdk-group-label">Acciones rápidas</div>
+                <div class="tm-cmdk-item" onclick="switchTab && switchTab('add-products');tmCloseCmdk()">
+                    <span class="tm-cmdk-icon">➕</span>
+                    <span class="tm-cmdk-text"><b>Agregar producto</b><small>Crear un nuevo producto</small></span>
+                </div>
+                <div class="tm-cmdk-item" onclick="switchTab && switchTab('manage-products');tmCloseCmdk()">
+                    <span class="tm-cmdk-icon">📋</span>
+                    <span class="tm-cmdk-text"><b>Gestionar productos</b><small>Editar, eliminar, destacar</small></span>
+                </div>
+                <div class="tm-cmdk-item" onclick="switchTab && switchTab('ventas');tmCloseCmdk()">
+                    <span class="tm-cmdk-icon">💰</span>
+                    <span class="tm-cmdk-text"><b>Ventas</b><small>Control de ganancias</small></span>
+                </div>
+                <div class="tm-cmdk-item" onclick="switchTab && switchTab('analytics');tmCloseCmdk()">
+                    <span class="tm-cmdk-icon">📊</span>
+                    <span class="tm-cmdk-text"><b>Analytics</b><small>Estadísticas de la tienda</small></span>
+                </div>
+                <div class="tm-cmdk-item" onclick="switchTab && switchTab('apariencia');tmCloseCmdk()">
+                    <span class="tm-cmdk-icon">🎨</span>
+                    <span class="tm-cmdk-text"><b>Apariencia</b><small>Banners, hero, countdown</small></span>
+                </div>
+                <div class="tm-cmdk-item" onclick="switchTab && switchTab('configuracion');tmCloseCmdk()">
+                    <span class="tm-cmdk-icon">⚙️</span>
+                    <span class="tm-cmdk-text"><b>Configuración</b><small>GitHub, WhatsApp, tasa</small></span>
+                </div>
+                <div class="tm-cmdk-item" onclick="switchTab && switchTab('oferta-dia');tmCloseCmdk()">
+                    <span class="tm-cmdk-icon">🏷️</span>
+                    <span class="tm-cmdk-text"><b>Oferta del Día</b><small>Badge especial y FOMO</small></span>
+                </div>
+                <div class="tm-cmdk-item" onclick="switchTab && switchTab('publicar-ahora');tmCloseCmdk()">
+                    <span class="tm-cmdk-icon">🚀</span>
+                    <span class="tm-cmdk-text"><b>Publicar</b><small>Revolico, Facebook</small></span>
+                </div>
+                <div class="tm-cmdk-item" onclick="typeof sincronizarTodoConGitHub==='function'&&sincronizarTodoConGitHub();tmCloseCmdk()">
+                    <span class="tm-cmdk-icon">🔄</span>
+                    <span class="tm-cmdk-text"><b>Actualizar tienda</b><small>Subir cambios a GitHub ahora</small></span>
+                </div>
+                <div class="tm-cmdk-group-label" id="tmCmdkProdLabel" style="display:none">Productos</div>
+                <div id="tmCmdkProds"></div>
+            </div>
         </div>
     </div>
 
@@ -877,21 +1004,41 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 })();
 
-// Preview en tiempo real
+// ═══ Preview en tiempo real (mejorada) ═══
 (function() {
+    function getTasa() {
+        try {
+            var cfg = JSON.parse(localStorage.getItem('tiendamax_config') || '{}');
+            return (cfg.tasaMN || 350) + 10;
+        } catch(e) { return 360; }
+    }
+
     function updatePreview() {
         var nombre = (document.getElementById('productName') || {}).value || '';
-        var precio = parseFloat((document.getElementById('productPriceActual') || {}).value) || 0;
+        var precio  = parseFloat((document.getElementById('productPriceActual') || {}).value) || 0;
+        var stock   = parseInt((document.getElementById('productStock') || {}).value);
         var cat = ((document.getElementById('productCategory') || {}).selectedOptions || [{}])[0].text || '';
         var preview = document.getElementById('tmAdminPreview');
         if (!preview) return;
-        preview.style.display = nombre || precio ? 'block' : 'none';
+        preview.style.display = (nombre || precio) ? 'block' : 'none';
         var n = document.getElementById('tmPreviewNombre');
         var p = document.getElementById('tmPreviewPrecio');
+        var m = document.getElementById('tmPreviewMN');
         var c = document.getElementById('tmPreviewCat');
+        var s = document.getElementById('tmPreviewStock');
         if (n) n.textContent = nombre || 'Nombre del producto';
-        if (p) p.textContent = precio ? ('$' + precio.toFixed(2) + ' USD') : '$0.00 USD';
-        if (c) c.textContent = cat;
+        if (p) p.textContent = precio ? ('$' + precio.toFixed(2)) : '$0.00';
+        if (m) m.textContent = precio ? ('≈ ' + Math.round(precio * getTasa()).toLocaleString() + ' MN') : '';
+        if (c) c.textContent = cat || 'Sin categoría';
+        if (s) {
+            if (!isNaN(stock) && stock === 0) {
+                s.textContent = '● Agotado';
+                s.style.color = '#e74c3c';
+            } else {
+                s.textContent = '● En stock';
+                s.style.color = '#2ecc71';
+            }
+        }
     }
 
     function updatePreviewImg(e) {
@@ -901,25 +1048,227 @@ document.addEventListener('DOMContentLoaded', () => {
         if (file) {
             var reader = new FileReader();
             reader.onload = function(ev) {
-                wrap.innerHTML = '';
+                var ph = wrap.querySelector('.tm-preview-img-ph');
+                if (ph) ph.style.display = 'none';
+                var existing = wrap.querySelector('img');
+                if (existing) { existing.src = ev.target.result; return; }
                 var img = document.createElement('img');
                 img.src = ev.target.result;
-                img.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block';
+                img.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block;border-radius:10px 10px 0 0';
                 wrap.appendChild(img);
             };
             reader.readAsDataURL(file);
         } else {
-            wrap.innerHTML = '📷';
+            var ph = wrap.querySelector('.tm-preview-img-ph');
+            if (ph) ph.style.display = '';
+            var existing = wrap.querySelector('img');
+            if (existing) existing.remove();
         }
     }
 
     document.addEventListener('DOMContentLoaded', function() {
-        ['productName','productPriceActual','productCategory'].forEach(function(id) {
+        ['productName','productPriceActual','productCategory','productStock'].forEach(function(id) {
             var el = document.getElementById(id);
             if (el) el.addEventListener('input', updatePreview);
+            if (el && el.tagName === 'SELECT') el.addEventListener('change', updatePreview);
         });
         var imgInput = document.getElementById('productImage');
         if (imgInput) imgInput.addEventListener('change', updatePreviewImg);
+
+        // Sincronizar chips visuales con checkboxes ocultos (compatibilidad con script.js)
+        var chkMasVendido = document.getElementById('productMasVendidoChk');
+        var chkHidden = document.getElementById('productMasVendido');
+        if (chkMasVendido && chkHidden) {
+            chkMasVendido.addEventListener('change', function() { chkHidden.value = this.checked ? 'true' : 'false'; });
+        }
+        var chkUsado = document.getElementById('productUsadoChk');
+        var chkUsadoH = document.getElementById('productUsado');
+        if (chkUsado && chkUsadoH) {
+            chkUsado.addEventListener('change', function() { chkUsadoH.checked = this.checked; });
+        }
+        var chkDev = document.getElementById('productDevolucionChk');
+        var chkDev2 = document.getElementById('productDevolucionChk2');
+        var chkDevH = document.getElementById('productDevolucion');
+        if ((chkDev || chkDev2) && chkDevH) {
+            var syncDev = function() { chkDevH.checked = (chkDev && chkDev.checked) || (chkDev2 && chkDev2.checked); };
+            if (chkDev) chkDev.addEventListener('change', syncDev);
+            if (chkDev2) chkDev2.addEventListener('change', syncDev);
+        }
+
+        // Poblar subcategorías cuando cambia la categoría
+        var catSel = document.getElementById('productCategory');
+        var subSel = document.getElementById('productSubcategoria');
+        if (catSel && subSel) {
+            catSel.addEventListener('change', function() {
+                var cat = this.value;
+                subSel.innerHTML = '<option value="">— Sin subcategoría —</option>';
+                try {
+                    var subs = JSON.parse(localStorage.getItem('tiendamax_subcategorias') || '{}');
+                    var arr = subs[cat] || [];
+                    arr.forEach(function(s) {
+                        var o = document.createElement('option');
+                        o.value = s; o.textContent = s;
+                        subSel.appendChild(o);
+                    });
+                } catch(e) {}
+            });
+        }
+    });
+})();
+
+// ═══ Conversión MN en tiempo real ═══
+function tmUpdateMN(input, hintId) {
+    var hint = document.getElementById(hintId);
+    if (!hint) return;
+    var val = parseFloat(input.value);
+    if (!val || val <= 0) { hint.textContent = '≈ 0 MN'; hint.style.color = ''; return; }
+    try {
+        var cfg = JSON.parse(localStorage.getItem('tiendamax_config') || '{}');
+        var tasa = (cfg.tasaMN || 350) + 10;
+        var mn = Math.round(val * tasa);
+        hint.textContent = '≈ ' + mn.toLocaleString() + ' MN (tasa ' + tasa + ')';
+        hint.style.color = '#C9A96E';
+    } catch(e) { hint.textContent = '≈ 0 MN'; }
+}
+
+// ═══ Sistema de Toasts ═══
+window.tmToast = function(type, title, msg, duration) {
+    var wrap = document.getElementById('tmToastWrap');
+    if (!wrap) return;
+    var icons = { success:'✅', error:'❌', warning:'⚠️', info:'ℹ️' };
+    var t = document.createElement('div');
+    t.className = 'tm-toast tm-toast-' + (type || 'info');
+    t.innerHTML = '<span class="tm-toast-icon">' + (icons[type] || icons.info) + '</span>' +
+        '<div class="tm-toast-body">' +
+        (title ? '<b>' + title + '</b>' : '') +
+        (msg ? '<small>' + msg + '</small>' : '') +
+        '</div>' +
+        '<button class="tm-toast-close" onclick="this.closest(\'.tm-toast\').remove()">✕</button>';
+    wrap.appendChild(t);
+    setTimeout(function() {
+        t.classList.add('tm-toast-out');
+        setTimeout(function() { t.remove(); }, 300);
+    }, duration || 3500);
+};
+
+// ═══ Filtro de chips en Gestionar Productos ═══
+window._tmActiveFilter = 'todos';
+window.setFilterChip = function(btn, filter) {
+    document.querySelectorAll('#filterChips .admin-fchip').forEach(function(b) { b.classList.remove('active'); });
+    btn.classList.add('active');
+    window._tmActiveFilter = filter;
+    if (typeof actualizarListaProductos === 'function') actualizarListaProductos();
+};
+
+// Hook: aplicar filtro visual a items del productsList
+(function() {
+    var orig = null;
+    var interval = setInterval(function() {
+        if (typeof actualizarListaProductos === 'function' && !orig) {
+            orig = actualizarListaProductos;
+            window.actualizarListaProductos = function() {
+                orig.apply(this, arguments);
+                setTimeout(tmApplyFilter, 80);
+            };
+            clearInterval(interval);
+        }
+    }, 500);
+})();
+
+function tmApplyFilter() {
+    var f = window._tmActiveFilter || 'todos';
+    if (f === 'todos') return;
+    var items = document.querySelectorAll('#productsList .product-item');
+    items.forEach(function(item) {
+        var stockEl = item.querySelector('[data-stock]') || item;
+        var stock = parseInt(stockEl.getAttribute('data-stock') || stockEl.dataset.stock || '-1');
+        var isMasVendido = item.dataset.masVendido === 'true' || item.classList.contains('mas-vendido');
+        var show = true;
+        if (f === 'agotados') show = stock === 0;
+        else if (f === 'stock-bajo') show = stock > 0 && stock <= 3;
+        else if (f === 'activos') show = stock > 0;
+        else if (f === 'destacados') show = isMasVendido;
+        item.style.display = show ? '' : 'none';
+    });
+}
+
+// ═══ Command Palette ═══
+window.tmOpenCmdk = function() {
+    var overlay = document.getElementById('tmCmdkOverlay');
+    var input = document.getElementById('tmCmdkInput');
+    if (!overlay) return;
+    overlay.classList.add('show');
+    if (input) { input.value = ''; input.focus(); }
+    tmFilterCmdk();
+};
+window.tmCloseCmdk = function() {
+    var overlay = document.getElementById('tmCmdkOverlay');
+    if (overlay) overlay.classList.remove('show');
+};
+window.tmFilterCmdk = function() {
+    var q = (document.getElementById('tmCmdkInput') || {}).value || '';
+    q = q.toLowerCase().trim();
+    var items = document.querySelectorAll('#tmCmdkList .tm-cmdk-item:not(#tmCmdkProds .tm-cmdk-item)');
+    items.forEach(function(it) {
+        var text = it.textContent.toLowerCase();
+        it.style.display = (!q || text.includes(q)) ? '' : 'none';
+    });
+    // Buscar en productos
+    var prodLabel = document.getElementById('tmCmdkProdLabel');
+    var prodContainer = document.getElementById('tmCmdkProds');
+    if (!prodContainer) return;
+    prodContainer.innerHTML = '';
+    if (q.length < 2) { if(prodLabel) prodLabel.style.display = 'none'; return; }
+    try {
+        var prods = JSON.parse(localStorage.getItem('tiendamax_productos') || '[]');
+        var matches = prods.filter(function(p) {
+            return p.nombre && p.nombre.toLowerCase().includes(q);
+        }).slice(0, 5);
+        if (matches.length && prodLabel) prodLabel.style.display = '';
+        matches.forEach(function(p) {
+            var div = document.createElement('div');
+            div.className = 'tm-cmdk-item';
+            div.innerHTML = '<span class="tm-cmdk-icon">🏷️</span>' +
+                '<span class="tm-cmdk-text"><b>' + (p.nombre||'') + '</b>' +
+                '<small>$' + (p.precio||'0') + ' · ' + (p.categoria||'') + '</small></span>';
+            div.onclick = function() {
+                switchTab && switchTab('manage-products');
+                var s = document.getElementById('searchProductos');
+                if (s) { s.value = p.nombre; s.dispatchEvent(new Event('input')); }
+                tmCloseCmdk();
+            };
+            prodContainer.appendChild(div);
+        });
+    } catch(e) {}
+};
+
+// ═══ Tema dark / light ═══
+(function() {
+    document.addEventListener('DOMContentLoaded', function() {
+        var saved = localStorage.getItem('tm_admin_theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', saved);
+
+        var btn = document.getElementById('btnThemeToggle');
+        if (btn) btn.addEventListener('click', function() {
+            var cur = document.documentElement.getAttribute('data-theme');
+            var next = cur === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', next);
+            localStorage.setItem('tm_admin_theme', next);
+        });
+
+        var cmdkBtn = document.getElementById('btnCmdk');
+        if (cmdkBtn) cmdkBtn.addEventListener('click', tmOpenCmdk);
+
+        // Keyboard shortcut Ctrl+K / Cmd+K
+        document.addEventListener('keydown', function(e) {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                e.preventDefault();
+                var overlay = document.getElementById('tmCmdkOverlay');
+                if (overlay && overlay.classList.contains('show')) tmCloseCmdk();
+                else tmOpenCmdk();
+            }
+            if (e.key === 'Escape') tmCloseCmdk();
+        });
     });
 })();
 </script>
