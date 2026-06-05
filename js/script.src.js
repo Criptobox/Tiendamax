@@ -2390,13 +2390,25 @@ function abrirDetalleProducto(id) {
     // Precio en modal con tachado real
 const _detailPrecioEl = document.getElementById('detailPriceActual');
 const _detailPrecioOldEl = document.getElementById('detailPriceOriginal');
-if (_detailPrecioEl) _detailPrecioEl.textContent = typeof formatPrecio === 'function' ? formatPrecio(p.precioActual) : `$${p.precioActual.toFixed(2)} USD`;
+const _detailPrecioMNEl = document.getElementById('detailPriceMN');
+// USD siempre visible en el modal
+if (_detailPrecioEl) _detailPrecioEl.textContent = `$${p.precioActual.toFixed(2)} USD`;
 if (_detailPrecioOldEl) {
     if (p.precioOriginal > 0 && parseFloat(p.precioOriginal) > parseFloat(p.precioActual)) {
         _detailPrecioOldEl.textContent = `$${parseFloat(p.precioOriginal).toFixed(2)} USD`;
         _detailPrecioOldEl.style.display = 'inline';
     } else {
         _detailPrecioOldEl.style.display = 'none';
+    }
+}
+// Equivalente MN dinámico
+if (_detailPrecioMNEl) {
+    const _tasaModal = typeof getTasaMN === 'function' ? getTasaMN() : 0;
+    if (_tasaModal > 0) {
+        _detailPrecioMNEl.textContent = `≈ ${Math.round(p.precioActual * _tasaModal).toLocaleString('es-CU')} MN`;
+        _detailPrecioMNEl.style.display = 'block';
+    } else {
+        _detailPrecioMNEl.style.display = 'none';
     }
 }
 
@@ -2452,21 +2464,27 @@ if (_detailPrecioOldEl) {
     }
     buyBtn.onclick = () => contactarProducto(p.nombre);
 
-    // Productos relacionados (misma categoría, excluir actual)
+    // Productos relacionados (misma categoría, con stock primero, excluir actual)
     const relacionados = productos
         .filter(x => x.id !== p.id && x.categoria === p.categoria)
+        .sort((a, b) => (b.stock > 0 ? 1 : 0) - (a.stock > 0 ? 1 : 0))
         .slice(0, 4);
     const relSection = document.getElementById('detailRelacionados');
     const relGrid    = document.getElementById('detailRelacionadosGrid');
     if (relacionados.length > 0) {
-        relGrid.innerHTML = relacionados.map(r => `
-            <div class="rel-card" onclick="abrirDetalleProducto(${safeNum(r.id)})">
-                <img src="${escapeAttr(r.imagen)}" alt="${escapeHtml(r.nombre)}" loading="lazy" onerror="this.style.display='none'"
-                     onerror="this.style.display='none'">
+        const _tasaRel = typeof getTasaMN === 'function' ? getTasaMN() : 0;
+        relGrid.innerHTML = relacionados.map(r => {
+            const _mnRel = _tasaRel > 0
+                ? `<span class="rel-card-price-mn">≈ ${Math.round(Number(r.precioActual) * _tasaRel).toLocaleString('es-CU')} MN</span>`
+                : '';
+            return `
+            <div class="rel-card" onclick="abrirDetalleProducto(${safeNum(r.id)})"${r.stock === 0 ? ' style="opacity:0.5"' : ''}>
+                <img src="${escapeAttr(r.imagen)}" alt="${escapeHtml(r.nombre)}" loading="lazy" onerror="this.style.display='none'">
                 <div class="rel-card-name">${escapeHtml(r.nombre)}</div>
-                <div class="rel-card-price">$${Number(r.precioActual).toFixed(2)}</div>
+                <div class="rel-card-price">$${Number(r.precioActual).toFixed(2)} USD${_mnRel}</div>
             </div>
-        `).join('');
+            `;
+        }).join('');
         relSection.style.display = 'block';
     } else {
         relSection.style.display = 'none';
@@ -6303,6 +6321,19 @@ function actualizarPreciosMostrados() {
                 el.textContent = formatPrecio(usd);
             }
         });
+    }
+    // Actualizar precio MN en modal de detalle si está abierto
+    const _mnEl = document.getElementById('detailPriceMN');
+    if (_mnEl) {
+        const _tasa = typeof getTasaMN === 'function' ? getTasaMN() : 0;
+        const _usdEl = document.getElementById('detailPriceActual');
+        const _usd = _usdEl ? parseFloat(_usdEl.textContent.replace(/[^0-9.]/g, '')) : 0;
+        if (_tasa > 0 && _usd > 0) {
+            _mnEl.textContent = `≈ ${Math.round(_usd * _tasa).toLocaleString('es-CU')} MN`;
+            _mnEl.style.display = 'block';
+        } else {
+            _mnEl.style.display = 'none';
+        }
     }
 }
 

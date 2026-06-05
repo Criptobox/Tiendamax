@@ -442,6 +442,29 @@ async function renderizarAnalyticsFirebase() {
             </div>
         </div>
 
+        <!-- Reponer pronto: stock bajo con contexto de demanda -->
+        ${stockBajo.length > 0 ? (() => {
+            const urgentes = stockBajo
+                .map(p => ({ p, v: vistas[String(p.id)] || 0, wa: whatsapp[String(p.id)] || 0 }))
+                .sort((a, b) => b.v - a.v);
+            return `<div style="${_cardStyle()}padding:14px;margin-bottom:16px;">
+                <div style="font-size:13px;font-weight:700;color:#f39c12;margin-bottom:10px;">⚠️ Reponer pronto — stock ≤ 3</div>
+                ${urgentes.map(({p, v, wa}) => {
+                    const col = p.stock === 1 ? '#e74c3c' : '#f39c12';
+                    return `<div style="display:flex;align-items:center;gap:10px;padding:7px 0;border-top:1px solid rgba(255,255,255,0.05);">
+                        <div style="width:32px;height:32px;border-radius:6px;overflow:hidden;flex-shrink:0;background:#111;">
+                            <img src="${p.imagen || ''}" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display='none'" loading="lazy">
+                        </div>
+                        <div style="flex:1;min-width:0;">
+                            <div style="font-size:11px;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${p.nombre}</div>
+                            <div style="font-size:10px;color:#888;">👁 ${v}v · 💬 ${wa}wa · $${Number(p.precioActual).toFixed(0)} USD</div>
+                        </div>
+                        <div style="font-size:22px;font-weight:800;color:${col};flex-shrink:0;min-width:20px;text-align:right;">${p.stock}</div>
+                    </div>`;
+                }).join('')}
+            </div>`;
+        })() : ''}
+
         <!-- Demanda de reposición: agotados con "avísame" -->
         ${(() => {
             const esperando = sinStockList

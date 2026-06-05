@@ -133,7 +133,7 @@
 
     <!-- CSS unido + minificado (generado por scripts/build_css.py vía GitHub Action).
          Para editar estilos, edita los CSS fuente en /css y la Action regenera este bundle. -->
-    <link rel="stylesheet" href="css/bundle.css?v=169">
+    <link rel="stylesheet" href="css/bundle.css?v=170">
 
 
     <!-- Estilos para "Vistos Recientemente" -->
@@ -854,6 +854,7 @@
                     💬 Pedir por WhatsApp
                 </button>
                 <button data-action="limpiarCarrito" aria-label="Vaciar carrito" type="button" class="carrito-btn-limpiar">🗑️ Vaciar carrito</button>
+                <button onclick="compartirCarrito()" aria-label="Compartir carrito" type="button" class="btn-compartir-carrito">🔗 Compartir carrito</button>
             </div>
         </div>
     </div>
@@ -887,6 +888,7 @@
                             <span id="detailPriceOriginal" class="detail-price-old"></span>
                             <span id="detailPriceActual" class="detail-price-main"></span>
                             <span id="detailAhorroBadge" class="detail-ahorro" style="display:none;"></span>
+                            <span id="detailPriceMN" class="detail-price-mn" style="display:none;"></span>
                         </div>
 
                         <!-- Stock -->
@@ -1049,6 +1051,7 @@
     <script src="js/revolico_integration.js?v=10" defer></script>
     <script src="js/event-delegation.js?v=2" defer></script>
     <script src="js/tienda-plus.js?v=5" defer></script>
+    <script src="js/cart-share.js?v=1" defer></script>
     <script>
     function abrirMenuMovil() {
         document.getElementById('mobileMenuOverlay').classList.add('open');

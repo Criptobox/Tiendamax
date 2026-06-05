@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════════════════
-// TiendaMax — Service Worker v159
+// TiendaMax — Service Worker v170
 // v155: estilos hero inline — independientes del bundle, botones iguales garantizados.
 // v154: hero centrado completo + botones iguales + bundle incluido.
 // v150: borde dorado + acento naranja en tarjetas Más Vendidos (móvil).
@@ -37,7 +37,7 @@
 //      usan el mismo helper _mensajeOrdenWA con formato premium.
 // ═══════════════════════════════════════════════════════
 
-const CACHE_NAME = 'tiendamax-v169';
+const CACHE_NAME = 'tiendamax-v170';
 
 const STATIC_ASSETS = [
   '/',
@@ -60,6 +60,7 @@ const STATIC_ASSETS = [
   '/js/biometric-auth.js',
   '/js/event-delegation.js',
   '/js/tienda-plus.js',
+  '/js/cart-share.js',
   '/css/tienda-plus.css',
   '/css/hero-efectos.css',
   '/js/hero-efectos.js',

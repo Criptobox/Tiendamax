@@ -143,3 +143,10 @@ html body .hero-banner-slide img{object-fit:cover !important;object-position:cen
 /* Tarjetas del grid: misma altura en cada fila aunque tengan precio tachado o badges extra */
 html body .productos-grid{align-items:stretch !important}
 html body .productos-grid .producto-card{height:100% !important;align-self:stretch !important;box-sizing:border-box !important}
+/* Precio MN en modal de detalle */
+html body #detailPriceMN{display:none;font-size:0.82em;color:#C9A96E;font-weight:600;letter-spacing:.3px;margin-top:3px}
+/* Precio MN en tarjetas de relacionados */
+html body .rel-card-price-mn{display:block;font-size:10px;color:#C9A96E;margin-top:1px;font-weight:600}
+/* Botón compartir carrito */
+html body .btn-compartir-carrito{display:block;width:100%;background:rgba(255,255,255,0.06);color:#aaa;border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:10px 14px;font-size:13px;cursor:pointer;margin-top:8px;text-align:center;transition:background .2s,color .2s}
+html body .btn-compartir-carrito:hover,html body .btn-compartir-carrito:active{background:rgba(255,255,255,0.12);color:#fff}
