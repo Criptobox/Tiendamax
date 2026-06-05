@@ -400,11 +400,12 @@ function previsualizarRevolico(productoId) {
 
     document.body.appendChild(modal);
 
-    document.getElementById('revTituloTA').addEventListener('input', function() {
-        document.getElementById('revTituloCount').textContent = `${this.value.length}/70`;
+    document.getElementById('revTituloTA')?.addEventListener('input', function() {
+        const count = document.getElementById('revTituloCount');
+        if (count) count.textContent = `${this.value.length}/70`;
     });
 
-    document.getElementById('btnAbrirRev').addEventListener('click', async function() {
+    document.getElementById('btnAbrirRev')?.addEventListener('click', async function() {
         const desc = document.getElementById('revDescTA').value;
         await _copiar(desc);
         mostrarNotificacion('✅ Descripción copiada — pégala en Revolico', 'success');

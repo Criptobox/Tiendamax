@@ -305,7 +305,7 @@
                 av.className = 'tmplus-aviso-wrap';
                 av.innerHTML = botonAvisoHTML(id);
                 card.appendChild(av);
-                av.querySelector('.tmplus-aviso-btn').addEventListener('click', function (e) {
+                av.querySelector('.tmplus-aviso-btn')?.addEventListener('click', function (e) {
                     e.stopPropagation();
                     pedirAviso(id);
                 });
