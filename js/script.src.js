@@ -6781,6 +6781,13 @@ async function enviarPushManualAdmin() {
 
 window.tmMonedaActual = () => _monedaActual;
 
+// Expuesto para biometric-auth.js: otorga acceso sin re-prompt de contraseña
+window.tmGrantAdminAccess = function () {
+    usuarioAutenticado = true;
+    cerrarLoginModal();
+    abrirAdminPanel();
+};
+
 // Cargar tasa actualizada desde GitHub al iniciar
 cargarTasaDesdeGitHub();
 

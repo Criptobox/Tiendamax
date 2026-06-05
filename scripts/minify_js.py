@@ -56,6 +56,7 @@ RESERVED = [
     'mostrarNotificacion', 'abrirAdminPanel', 'loginConBiometria',
     # ── exports explícitos en window.* ──
     'guardarCarrito', 'tmFormatPrecio', 'tmRegistrarTokenFCMSiPermitido', 'tmMonedaActual',
+    'tmGrantAdminAccess',
 ]
 
 
