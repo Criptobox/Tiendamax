@@ -45,7 +45,8 @@
             img.src = url;
             img.alt = 'Banner TiendaMax';
             img.loading = 'lazy';
-            img.style.cssText = 'width:100%;height:100%;object-fit:cover;object-position:center;display:block;pointer-events:none;';
+            img.style.cssText = 'width:100%;height:100%;object-fit:contain;object-position:center;display:block;pointer-events:none;';
+            slide.style.background = '#0d0d0d';
             img.onerror = function() { slide.style.background = '#1a1a1a'; };
             slide.appendChild(img);
 

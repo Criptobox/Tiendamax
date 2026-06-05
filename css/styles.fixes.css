@@ -137,8 +137,9 @@ html body .banners-patrocinados-section .hero-image{margin:0 16px 8px;border-rad
 html body #heroImageContainer{max-width:960px !important;margin:0 auto 24px !important;height:clamp(180px,37.5vw,360px) !important;min-height:unset !important}
 html body #heroBannerSlider,html body #heroImageContainer .hero-banner-slider{position:absolute !important;top:0 !important;left:0 !important;width:100% !important;height:100% !important}
 @media (max-width:768px){html body #heroImageContainer{margin:0 12px 16px !important;height:clamp(160px,65vw,280px) !important}}
-/* cover: imagen llena el contenedor sin espacios negros */
-html body .hero-banner-slide img{object-fit:cover !important;object-position:center center !important;background:none !important}
+/* contain: imagen completa sin recortes; fondo oscuro oculta las barras */
+html body .hero-banner-slide{background:#0d0d0d !important}
+html body .hero-banner-slide img{object-fit:contain !important;object-position:center center !important;background:none !important}
 /* Tarjetas del grid: misma altura en cada fila aunque tengan precio tachado o badges extra */
 html body .productos-grid{align-items:stretch !important}
 html body .productos-grid .producto-card{height:100% !important;align-self:stretch !important;box-sizing:border-box !important}
