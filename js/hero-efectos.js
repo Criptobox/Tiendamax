@@ -11,7 +11,7 @@
 
     /* ── EFECTO MÁQUINA DE ESCRIBIR EN EL TÍTULO ─────── */
     function initTypewriter() {
-        var h1 = document.querySelector('.hero-content h1, .hero-content-full h1');
+        var h1 = document.querySelector('.hero-content h1');
         if (!h1 || h1.dataset.tmxTyped) return;
         h1.dataset.tmxTyped = '1';
 
