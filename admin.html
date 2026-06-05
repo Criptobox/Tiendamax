@@ -303,4 +303,18 @@ async function tmAdminRefreshSubscribers(){
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',bind); else bind();
 })();
 </script>
+
+<script id="tm-mobile-rescue-v6">
+(function(){
+  function visibleActive(){
+    const active=document.querySelector('.admin-tab.active');
+    if(!active && typeof switchTab==='function') switchTab('inicio');
+    const panel=document.getElementById('adminPanel');
+    if(panel && !panel.classList.contains('hidden')) document.body.classList.add('admin-mode');
+  }
+  window.addEventListener('resize', visibleActive);
+  document.addEventListener('DOMContentLoaded',()=>setTimeout(visibleActive,500));
+  document.addEventListener('click',e=>{ if(e.target.closest('.tab-btn')) setTimeout(()=>{try{document.querySelector('.tm-main')?.scrollTo({top:0,behavior:'smooth'});}catch(_){}},50); });
+})();
+</script>
 </body></html>

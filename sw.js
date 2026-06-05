@@ -1,5 +1,6 @@
 // ═══════════════════════════════════════════════════════
-// TiendaMax — Service Worker v174 — Topbar clean
+// TiendaMax — Service Worker v175 — Mobile rescue
+// v175: mobile rescue — layout móvil robusto y visible.
 // v174: topbar clean — deja solo campana de suscriptores y limpia marca.
 // v173: topbar search/sync/theme/bell/subscribers funcional.
 // v172: polish publicar/config analytics subscribers + cache refresh.
@@ -41,7 +42,7 @@
 //      usan el mismo helper _mensajeOrdenWA con formato premium.
 // ═══════════════════════════════════════════════════════
 
-const CACHE_NAME = 'tiendamax-admin-final-20260605-04';
+const CACHE_NAME = 'tiendamax-admin-final-20260605-05';
 
 const STATIC_ASSETS = [
   '/',
