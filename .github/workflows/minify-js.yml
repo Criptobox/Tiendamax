@@ -36,14 +36,25 @@ jobs:
       - name: Minificar js/script.src.js → js/script.js
         run: python scripts/minify_js.py
 
+      - name: Bump SW cache version
+        run: |
+          VERSION="tiendamax-$(date -u +%Y%m%d%H%M)"
+          sed -i "s/const CACHE_NAME = 'tiendamax-[^']*'/const CACHE_NAME = '$VERSION'/" sw.js
+          echo "SW version: $VERSION"
+
       - name: Commit y push si hubo cambios
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add js/script.js
+          git add js/script.js sw.js
           if git diff --cached --quiet; then
-            echo "Sin cambios en js/script.js — nada que subir."
+            echo "Sin cambios — nada que subir."
             exit 0
           fi
           git commit -m "chore: minificar js/script.js [skip ci]"
-          git push
+          for i in 1 2 3 4 5; do
+            if git push; then exit 0; fi
+            git pull --rebase origin main || git rebase --abort 2>/dev/null
+            sleep 2
+          done
+          exit 1
