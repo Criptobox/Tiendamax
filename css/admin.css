@@ -2125,3 +2125,17 @@ body:not(.dark-mode) .admin-inventory-strip span {
 @media(max-width:900px){.tm-an-head{flex-direction:column}.tm-an-actions{width:100%}.tm-an-btn{flex:1}.tm-an-layout{grid-template-columns:1fr}.tm-an-bar-row{grid-template-columns:1fr;gap:5px}.tm-an-donut{width:150px;height:150px}.tm-an-donut:after{width:88px;height:88px;font-size:12px}.tm-an-kpi b{font-size:23px}}
 
 /* === TIENDAMAX ADMIN FINAL FUSION END === */
+
+
+/* === TIENDAMAX ADMIN PATCH v2: publicar/config/analytics polish === */
+#listaRevolicoConfig{max-height:68vh;overflow:auto;padding-right:6px;display:flex;flex-direction:column;gap:10px}
+#listaRevolicoConfig>div,.revolico-item{background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.018))!important;border:1px solid rgba(255,255,255,.09)!important;border-radius:14px!important;padding:12px!important;color:var(--txt)!important;box-shadow:none!important;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+#listaRevolicoConfig img,.revolico-item img{width:54px!important;height:54px!important;object-fit:cover!important;border-radius:11px!important;background:#111!important;border:1px solid rgba(255,255,255,.08)!important;flex:0 0 auto}
+#listaRevolicoConfig select,.revolico-item select{background:#171717!important;color:#fff!important;border:1px solid rgba(255,255,255,.12)!important;border-radius:11px!important;min-height:46px!important;flex:1 1 210px!important}
+#listaRevolicoConfig option{background:#171717!important;color:#fff!important}.cat-name,.group-name{color:var(--txt)!important}.cat-meta,.group-meta{color:var(--muted)!important}
+#listaGruposFB{display:flex;flex-direction:column;gap:10px}#listaGruposFB>p{background:rgba(201,169,110,.06);border:1px dashed rgba(201,169,110,.24);border-radius:14px;color:var(--muted)!important;padding:18px!important}
+#listaGruposFB [id^="grupoFB_"],.group-item{background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.018))!important;border:1px solid rgba(255,255,255,.09)!important;border-radius:14px!important;color:var(--txt)!important}
+#listaGruposFB input,#listaGruposFB select{background:#171717!important;color:#fff!important;border:1px solid rgba(255,255,255,.12)!important}#listaGruposFB label,#listaGruposFB span{color:var(--txt)!important}
+.tm-config-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}.tm-config-actions .btn{flex:1;min-width:180px}.tm-subs-box{margin-top:14px;padding:14px;border-radius:14px;border:1px solid rgba(201,169,110,.25);background:rgba(201,169,110,.07)}.tm-subs-num{font-size:34px;color:var(--gold);font-weight:950;line-height:1}.tm-subs-box small{color:var(--muted);display:block;margin-top:4px}
+@media(max-width:760px){#listaRevolicoConfig{max-height:none;overflow:visible}#listaRevolicoConfig>div,.revolico-item{display:grid;grid-template-columns:54px 1fr}.revolico-item select,#listaRevolicoConfig select{grid-column:1/-1;width:100%!important}.tm-config-actions .btn{width:100%;flex:auto}}
+/* === END PATCH v2 === */
