@@ -259,7 +259,9 @@ def regenerate_sitemap(products: list[dict]) -> bool:
     for p in products:
         pid = p.get("id")
         if pid:
-            urls.append((f"{SITE}/p/producto-{pid}.html", "weekly", "0.8"))
+            stock = int(p.get("stock") or 0)
+            prio = "0.8" if stock > 0 else "0.5"
+            urls.append((f"{SITE}/p/producto-{pid}.html", "weekly", prio))
 
     xml = ['<?xml version="1.0" encoding="UTF-8"?>',
            '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']

@@ -1957,6 +1957,12 @@ function abrirAdminPanel() {
     panel.style.removeProperty('display');
     document.body.classList.add('admin-mode');
 
+    if (!document.querySelector('script[src*="revolico_integration"]')) {
+        const _rs = document.createElement('script');
+        _rs.src = 'js/revolico_integration.js?v=11';
+        document.head.appendChild(_rs);
+    }
+
     actualizarListaProductos();
     actualizarSelectCategorias();
     actualizarListaCategorias();
@@ -4272,18 +4278,18 @@ function renderizarVentas(pagina) {
             <!-- Select oculto para mantener compatibilidad con registrarVentaDesdeForm -->
             <select id="ventaProductoSelect" class="admin-hidden">
                 <option value="">— Selecciona producto —</option>
-                ${productos.map(p => `<option value="${p.id}">${p.nombre}</option>`).join('')}
+                ${productos.map(p => `<option value="${p.id}">${escapeHtml(p.nombre)}</option>`).join('')}
             </select>
 
             <!-- Lista de productos filtrados -->
             <div id="ventaProductosLista" class="admin-product-list">
                 ${productos.filter(p => p.stock > 0).map(p => `
-                <div class="venta-prod-item admin-product-list-item" data-id="${p.id}" data-nombre="${p.nombre.toLowerCase()}" data-cat="${p.categoria||''}"
+                <div class="venta-prod-item admin-product-list-item" data-id="${p.id}" data-nombre="${escapeHtml(p.nombre.toLowerCase())}" data-cat="${escapeHtml(p.categoria||'')}"
                     onclick="seleccionarProductoVenta(${p.id})">
                     ${p.imagen ? `<img src="${p.imagen}" class="thumb" onerror="this.style.display='none'">` : '<div class="thumb-placeholder">📦</div>'}
                     <div class="info">
-                        <div class="name">${p.nombre}</div>
-                        <div class="meta">${p.categoria||''} · Stock: ${p.stock}${p.comision ? ` · 💰$${p.comision}` : ''}</div>
+                        <div class="name">${escapeHtml(p.nombre)}</div>
+                        <div class="meta">${escapeHtml(p.categoria||'')} · Stock: ${p.stock}${p.comision ? ` · 💰$${p.comision}` : ''}</div>
                     </div>
                     <div class="price">$${p.precioActual}</div>
                 </div>`).join('')}
