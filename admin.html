@@ -1,928 +1,209 @@
 <!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="robots" content="noindex, nofollow">
-    <meta name="theme-color" content="#0D0D0D">
-    <title>Panel Admin — TiendaMax</title>
+<html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex,nofollow"><title>TiendaMax Admin</title>
+<link rel="icon" href="/favicon.svg"><link rel="stylesheet" href="css/admin.css?v=final-1"></head><body>
+<div id="loginModal" class="modal hidden"><div class="login-card"><div class="login-mark">M</div><h1 class="login-title">TiendaMax Admin</h1><div class="login-sub">Panel de administración</div><div class="login-tabs"><div class="login-tab active" onclick="tmLoginTab('pass')">🔑 Contraseña</div><div class="login-tab" onclick="tmLoginTab('bio')">👆 Biométrico</div></div><div id="loginPass" class="login-form"><form onsubmit="verificarPassword(event)"><label class="login-label">Contraseña de administrador</label><input class="login-input" id="adminPassword" type="password" autocomplete="current-password" autofocus><button class="login-submit" type="submit">🔓 ACCEDER AL PANEL</button></form><div class="login-or">o</div><button type="button" id="btnBiometricLogin" class="login-bio">👆 Acceder con huella / Face ID</button><button type="button" id="btnBiometricRegister" style="display:none">Registrar biometría</button></div><div id="loginBio" class="login-form" style="display:none;text-align:center"><div style="font-size:64px;margin:18px 0">👆</div><p style="color:#aaa;margin:0 0 18px">Toca el sensor de tu dispositivo para autenticarte</p><button class="login-submit" type="button" onclick="if(window.loginConBiometria)loginConBiometria()">Simular autenticación</button></div><div id="biometricLoginBox" style="display:none"></div><div class="login-foot">🔐 Sesión cifrada · Last login hace 4 horas desde <b>Chrome · La Habana</b><br>¿Problemas? <a href="#">Recuperar acceso</a></div></div></div>
+<div id="adminPanel" class="admin-panel hidden"><div class="tm-app"><header class="tm-top"><div class="brand"><div class="logo">M</div><div><b>TiendaMax</b><small>ADMIN 2.0 · REAL</small></div></div><div class="search">🔍 <span>Buscar productos, acciones, páginas...</span><span class="kbd">⌘K</span></div><div class="topicons"><span class="sync-pill">Sincronizado</span><span>☾</span><span>🔔</span><div class="avatar">CR</div><button data-action="cerrarAdminPanel" class="close-btn" title="Cerrar">×</button></div></header>
+<aside class="tm-side admin-tabs-desktop"><button class="tab-btn active" data-action="switchTab" data-arg="inicio" data-tab="inicio">⌂ <span class="txt">Inicio</span></button><button class="tab-btn" data-action="switchTab" data-arg="manage-products" data-tab="manage-products">◇ <span class="txt">Productos</span><span class="badge" id="dashLowBadge">!</span></button><button class="tab-btn" data-action="switchTab" data-arg="add-products" data-tab="add-products">⊕ <span class="txt">Agregar</span></button><button class="tab-btn" data-action="switchTab" data-arg="publicar-ahora" data-tab="publicar-ahora">✈ <span class="txt">Publicar</span></button><div class="navlabel">Catálogo</div><button class="tab-btn" data-action="switchTab" data-arg="manage-categories" data-tab="manage-categories">🏷 <span class="txt">Categorías</span></button><button class="tab-btn" data-action="switchTab" data-arg="manage-subcategories" data-tab="manage-subcategories">📁 <span class="txt">Subcategorías</span></button><button class="tab-btn" data-action="switchTab" data-arg="oferta-dia" data-tab="oferta-dia">🏷 <span class="txt">Oferta del día</span><span class="badge gold">HOT</span></button><button class="tab-btn" data-action="switchTab" data-arg="apariencia" data-tab="apariencia">🎨 <span class="txt">Apariencia</span></button><div class="navlabel">Datos</div><button class="tab-btn" data-action="switchTab" data-arg="ventas" data-tab="ventas">$ <span class="txt">Ventas</span></button><button class="tab-btn" data-action="switchTab" data-arg="analytics" data-tab="analytics">▥ <span class="txt">Analytics</span></button><button class="tab-btn" data-action="switchTab" data-arg="historial" data-tab="historial">◷ <span class="txt">Historial</span><span class="badge gold">NEW</span></button><div class="navlabel">Sistema</div><button class="tab-btn" data-action="switchTab" data-arg="configuracion" data-tab="configuracion">⚙ <span class="txt">Configuración</span></button><button class="tab-btn" data-action="switchTab" data-arg="atajos" data-tab="atajos">⌨ <span class="txt">Atajos</span></button></aside><div id="adminAccordion" class="admin-accordion"></div>
+<main class="tm-main admin-content">
+<section id="inicio" class="admin-tab active"><div class="head"><div><h1>Inicio</h1><p class="sub">Panel completo fusionado — funciones reales del admin actual.</p></div><div class="actions"><button class="btn gold" data-action="switchTab" data-arg="herramientas">🛠 Herramientas</button><button class="btn primary" data-action="sincronizarTodoConGitHub">🔄 Actualizar tienda</button></div></div><div class="stats"><div class="stat"><small>Total productos</small><b id="dashTotal">—</b></div><div class="stat"><small>Activos</small><b id="dashActive">—</b></div><div class="stat"><small>Stock bajo</small><b id="dashLow">—</b></div><div class="stat"><small>Agotados</small><b id="dashEmpty">—</b></div></div><div class="grid2"><div class="card"><h2>🔥 Productos con más stock</h2><div id="dashTop"></div></div><div class="card"><h2>✅ Fusión real</h2><p class="sub">Este admin conserva IDs y funciones originales: productos, GitHub, Firebase, analytics, banners, ventas, categorías y publicación.</p></div></div></section>
+<section id="add-products" class="admin-tab"><div class="head"><div><h1>Agregar producto</h1><p class="sub">Todos los campos del admin original + IA, compresión y vista previa en vivo</p></div><span class="sync-pill">Autoguardado activo</span></div><div class="preview-live"><div><form id="productForm"><div class="form-card"><h2>📝 Información básica</h2><div class="add-grid"><div class="add-field"><label>Nombre del producto *</label><input id="productName" required placeholder="Ej: Audífonos Bluetooth TWS Pro"></div><div class="add-field"><label>Descripción *</label><textarea id="productDescription" required placeholder="Describe el producto..."></textarea></div><div class="add-field"><label>Categoría *</label><select id="productCategory" required></select></div><div class="add-field"><label>Subcategoría</label><select id="productSubcategory"><option value="">—</option></select></div><div class="add-field"><label>⭐ ¿Destacar en Más vendidos?</label><select id="productMasVendido"><option value="false">No</option><option value="true">Sí</option></select></div><div class="add-field"><label>Estado inicial</label><select id="pStatus"><option>🟢 Activo</option><option>🔴 Agotado</option></select></div><div class="add-field full"><div class="ai-box"><div class="ai-top"><span>☆ Generador con IA</span><small>Powered by Claude</small></div><div class="ai-copy" id="aiText">Escribe nombre y descripción para generar textos de venta.</div><button type="button" class="mini-btn">🎲 Regenerar</button><button type="button" class="mini-btn">📋 Usar esta</button><button type="button" class="mini-btn">🎯 Ventas</button><button type="button" class="mini-btn">🔬 Técnico</button></div></div></div></div><div class="form-card"><h2>💰 Precios, stock y comisiones</h2><div class="add-grid"><div class="add-field"><label>Precio actual (USD) *</label><input id="productPriceActual" type="number" step="0.01" min="0" required></div><div class="add-field"><label>Precio original (antes)</label><input id="productPrecioOriginal" type="number" step="0.01" min="0" placeholder="Ej: 49.99"></div><div class="add-field"><label>Stock disponible *</label><input id="productStock" type="number" min="0" required></div><div class="add-field"><label>💰 Mi comisión (USD)</label><input id="productComision" type="number" step="0.01" min="0"></div><div class="add-field full"><label class="check-row"><input type="checkbox" id="productUsado"> ♻️ Producto usado / refurbished</label></div><div class="add-field full"><label class="check-row"><input type="checkbox" id="productDevolucion"> ✓ Devolución segura / Garantía de satisfacción</label></div><div class="add-field full"><label>Garantía (opcional)</label><input id="productGarantia" placeholder="Ej: 6 meses de garantía"></div></div></div><div class="form-card"><h2>📸 Foto principal *</h2><label class="upload"><input id="productImage" type="file" accept="image/*" required><div><div class="upico">⇧</div><b>Click para subir foto</b><small>Se comprime a WebP 80% en el navegador</small></div></label></div><div class="form-card"><h2>🖼️ Galería (opcional)</h2><label class="upload"><input id="productImagesExtra" type="file" accept="image/*" multiple><div><div class="upico">▧</div><b>Añadir fotos extra</b><small>Máx 8 · Para el detalle del producto</small></div></label><div class="gallery-thumbs"><div class="gal">📱<span>×</span></div><div class="gal">🎧<span>×</span></div><div class="gal">📦<span>×</span></div></div></div><div class="actions"><button type="submit" class="btn primary">💾 Guardar producto</button><button type="button" class="btn gold">🖼️ Comprimir imagen</button></div></form></div><aside class="product-preview"><div class="img" id="pvEmoji">📦</div><div class="body"><span class="tag" id="pvCat">Categoría</span><h3 id="pvName">Nombre del producto</h3><div class="money" id="pvPrice">$0.00 USD</div><small class="stock empty" id="pvStock">Agotado</small></div></aside></div><div class="float-ai">☪️</div><div id="tmAdminPreview" style="display:none"><div id="tmPreviewImgWrap"></div><div id="tmPreviewNombre"></div><div id="tmPreviewPrecio"></div><div id="tmPreviewCat"></div></div></section>
+<section id="manage-products" class="admin-tab"><div class="head"><div><h1>Productos</h1><p class="sub">Gestión real de inventario, edición rápida y publicación.</p></div><button class="btn primary" data-action="switchTab" data-arg="add-products">+ Crear</button></div><div class="card"><div class="form-grid"><input id="searchProductos" placeholder="Buscar producto..." oninput="actualizarListaProductos()"><select id="filtroCategoria" onchange="actualizarListaProductos()"><option value="">Todas las categorías</option></select></div><div id="productsList" class="products-list" style="margin-top:14px"></div></div></section>
+<section id="publicar-ahora" class="admin-tab"><div class="head"><div><h1>Publicar</h1><p class="sub">Asistentes para Facebook y Revolico.</p></div></div><div id="backendStatus" class="backend-status">🟠 Modo manual activo</div><div class="grid2"><div class="card"><h2>Facebook</h2><button id="btnPublicarAhora" class="btn primary" data-action="mostrarSelectorAsistenteFacebook">📘 Asistente Facebook</button><div id="listaGruposFB" style="margin-top:12px"></div></div><div class="card"><h2>Revolico</h2><button class="btn primary" data-action="mostrarSelectorAsistenteRevolico">🟠 Asistente Revolico</button><div id="listaRevolicoConfig" style="margin-top:12px"></div></div></div><div id="resultadoPublicacion"></div><div id="historialPublicaciones" class="card"></div></section>
+<section id="ventas" class="admin-tab"><div class="head"><div><h1>Ventas</h1><p class="sub">Historial, comisiones y estadísticas.</p></div></div><div id="ventasContenido"></div></section>
+<section id="analytics" class="admin-tab"><div class="head"><div><h1>Analytics</h1><p class="sub">Métricas reales desde Firebase/local.</p></div></div><div id="analyticsContent" class="card"><p class="sub">Cargando analytics...</p></div></section>
+<section id="historial" class="admin-tab"><div class="head"><div><h1>Historial</h1><p class="sub">Snapshots y cambios recientes.</p></div></div><div class="card"><p class="sub">El historial avanzado está en Herramientas.</p></div></section>
+<section id="manage-categories" class="admin-tab"><div class="head"><div><h1>Categorías</h1><p class="sub">Administrar categorías reales.</p></div></div><div class="card"><div class="form-grid"><input id="newCategoryName" placeholder="Nombre de categoría"><input id="newCategoryIcon" placeholder="Emoji"></div><button class="btn primary" data-action="agregarCategoria" style="margin-top:10px">+ Agregar</button></div><div id="categoryList" class="category-list"></div></section>
+<section id="manage-subcategories" class="admin-tab"><div class="head"><div><h1>Subcategorías</h1><p class="sub">Organización por categoría padre.</p></div></div><div class="card"><div class="form-grid"><select id="subcategoryParentCategory"></select><input id="newSubcategoryName" placeholder="Nombre subcategoría"></div><button class="btn primary" data-action="agregarSubcategoria" style="margin-top:10px">+ Agregar</button></div><div id="subcategoryList" class="subcategory-list"></div></section>
+<section id="oferta-dia" class="admin-tab"><div class="head"><div><h1>Oferta del día</h1><p class="sub">Destacar producto y gestionar agotados.</p></div></div><div class="grid2"><div class="card"><h2>Oferta</h2><select id="ofertaDiaSelect2"></select><input id="ofertaDiaTexto2" placeholder="🔥 OFERTA DEL DÍA" style="margin-top:10px"><div class="actions"><button class="btn primary" data-action="guardarOfertaDia">Activar</button><button class="btn" data-action="desactivarOfertaDia">Desactivar</button></div><div id="ofertaDiaStatus2"></div></div><div class="card"><h2>Agotados</h2><div id="productosAgotadosList"></div></div></div></section>
+<section id="apariencia" class="admin-tab"><div class="head"><div><h1>Apariencia</h1><p class="sub">Banners, hero y countdown.</p></div></div><div class="grid2"><div class="card"><h2>Banners</h2><div id="bannerList"></div><input id="nuevoBannerFile" type="file" accept="image/*"><input id="nuevoBannerUrl" placeholder="URL imagen"><input id="nuevoBannerLink" placeholder="Link"><button class="btn primary" data-action="agregarBanner" style="margin-top:10px">+ Agregar banner</button><button class="btn gold" onclick="exportarBannersJSON()" style="margin-top:10px">📥 Descargar banners.json</button></div><div class="card"><h2>Countdown</h2><input id="heroTaglineInput" placeholder="Tagline"><select id="countdownProductSelect"></select><div class="form-grid"><input id="countdownHoras" type="number" value="2"><input id="countdownMinutos" type="number" value="30"></div><input id="countdownTexto" value="¡Oferta especial!"><button class="btn primary" data-action="guardarCountdown" style="margin-top:10px">Activar countdown</button><div id="countdownStatus"></div></div></div></section>
+<section id="configuracion" class="admin-tab"><div class="head"><div><h1>Configuración</h1><p class="sub">GitHub, WhatsApp, Firebase, tasa y seguridad.</p></div></div><div class="grid2"><div class="card"><h2>General</h2><label>WhatsApp<input id="adminWhatsappNum" placeholder="535..."></label><label>Tasa MN<input id="adminTasaMN" type="number"></label><button class="btn primary" data-action="guardarTasaMNAdmin" style="margin-top:10px">Guardar tasa</button><p id="tasaMNStatus"></p><h2>Contraseña</h2><input id="ci" type="password" placeholder="Actual"><input id="ni" type="password" placeholder="Nueva"><input id="coi" type="password" placeholder="Confirmar"><button class="btn" data-action="cambiarPasswordAdmin" style="margin-top:10px">Cambiar contraseña</button></div><div class="card"><h2>GitHub / Firebase</h2><form id="githubConfigForm" onsubmit="guardarConfiguracionGitHub(event)"><input id="githubUser" placeholder="Usuario GitHub"><input id="githubRepo" placeholder="Repo"><input id="githubToken" type="password" placeholder="Token"><button class="btn primary" type="submit" style="margin-top:10px">Guardar GitHub</button></form><textarea id="firebaseConfigJson" placeholder="firebaseConfig JSON" style="margin-top:10px"></textarea><input id="firebaseVapidKey" placeholder="VAPID key"><input id="firebaseServerKey" placeholder="Server key"><p id="firebaseConfigStatus"></p><input id="manualPushTitle" placeholder="Título push"><input id="manualPushBody" placeholder="Mensaje push"><input id="manualPushUrl" placeholder="URL push"><p id="manualPushStatus"></p></div></div></section>
+<section id="atajos" class="admin-tab"><div class="head"><div><h1>Atajos</h1><p class="sub">Navegación rápida.</p></div></div><div class="grid2"><div class="card"><h2>⌘K</h2><p>Buscar acciones.</p></div><div class="card"><h2>N</h2><p>Crear producto.</p></div></div></section>
+</main></div></div>
+<div id="editModal" class="modal hidden"><div class="modal-content"><div class="modal-header"><h2>Editar producto</h2><button class="close-btn" data-action="cerrarEditModal">×</button></div><form id="editForm"><input type="hidden" id="editProductId"><input id="editProductName" required><textarea id="editProductDescription" required></textarea><select id="editProductCategory" required></select><select id="editProductMasVendido"><option value="false">No</option><option value="true">Sí</option></select><label class="check-row"><input type="checkbox" id="editProductUsado"> Usado</label><div id="currentImagePreview"></div><input type="file" id="editProductImage" accept="image/*"><input type="file" id="editProductImagesExtra" accept="image/*" multiple><input type="number" id="editProductPriceActual" required><input type="number" id="editProductPrecioOriginal"><input type="number" id="editProductStock" required><input type="number" id="editProductComision"><input id="editProductGarantia"><label class="check-row"><input type="checkbox" id="editProductDevolucion"> Devolución</label><div class="actions"><button type="submit" class="btn primary">Guardar cambios</button><button type="button" class="btn" data-action="cerrarEditModal">Cancelar</button></div></form></div></div>
+<script src="js/script.js?v=56" defer></script><script src="js/analytics.js?v=9" defer></script><script src="js/seo-dynamico.js?v=1" defer></script><script src="js/subcategorias.js?v=11" defer></script><script src="js/revolico_integration.js?v=10" defer></script><script src="js/biometric-auth.js?v=2" defer></script><script src="js/event-delegation.js?v=2" defer></script><script src="js/share-patch.js?v=2" defer></script><script src="js/banners.js?v=3" defer></script>
 
-    <!-- Favicons completos -->
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=2">
-    <link rel="icon" type="image/png" sizes="32x32" href="/iconos/favicon-32.png?v=2">
-    <link rel="icon" type="image/png" sizes="192x192" href="/iconos/favicon-192.png?v=2">
-    <link rel="shortcut icon" href="/favicon.ico?v=2">
-    <link rel="apple-touch-icon" sizes="180x180" href="/iconos/apple-touch-icon.png?v=2">
-
-    <!-- Solo CSS del admin -->
-    <link rel="stylesheet" href="css/styles.css?v=13">
-    <link rel="stylesheet" href="css/admin.css?v=4">
-
-    <style>
-    /* Reset de página para admin puro */
-    html, body {
-        background: #0D0D0D !important;
-        min-height: 100vh;
-        margin: 0;
-        padding: 0;
-        overflow-x: hidden;
-    }
-    /* Ocultar elementos que no existen en admin puro */
-    #vistaInicio, #vistaCategoria, .urgencia-banner,
-    .mobile-menu-overlay, .currency-bar, .control-buttons { display: none !important; }
-    </style>
-</head>
-<body>
-
-        <!-- ===== MODAL LOGIN ===== -->
-    <div id="loginModal" class="modal hidden">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>Acceso de Administrador</h2>
-                <button data-action="cerrarLoginModal" aria-label="Cerrar modal de acceso" type="button" class="close-btn">✕</button>
-            </div>
-
-            <!-- Botón biométrico (huella / Face ID / Windows Hello) -->
-            <div id="biometricLoginBox" style="padding: 20px 28px 0; display: none;">
-                <button type="button" id="btnBiometricLogin" class="btn btn-primary" style="width:100%; display:flex; align-items:center; justify-content:center; gap:10px; padding:16px;">
-                    <span style="font-size:24px;">👆</span>
-                    <span>Acceder con huella / Face ID</span>
-                </button>
-                <p style="text-align:center; font-size:12px; color:#888; margin:12px 0 0;">— o —</p>
-            </div>
-
-            <form onsubmit="verificarPassword(event)">
-                <div class="form-group">
-                    <label>Contraseña:</label>
-                    <input type="password" id="adminPassword" required autofocus>
-                </div>
-                <button type="submit" class="btn btn-primary">🔓 Acceder con contraseña</button>
-                <button type="button" id="btnBiometricRegister" style="width:100%; margin-top:10px; padding:10px; background:transparent; border:1px solid #ddd; border-radius:8px; cursor:pointer; font-size:13px; color:#666; display:none;">
-                    🔐 Registrar huella en este dispositivo
-                </button>
-            </form>
-        </div>
-    </div>
-
-    <!-- ===== PANEL ADMIN ===== -->
-        <div id="adminPanel" class="admin-panel hidden">
-        <div class="admin-panel-content">
-            <div class="admin-header">
-                <h2>⚙️ Panel de Administración</h2>
-                <button data-action="cerrarAdminPanel" aria-label="Cerrar panel de administración" type="button" class="close-btn">✕</button>
-            </div>
-            <!-- TABS: visibles solo en desktop -->
-            <div class="admin-tabs admin-tabs-desktop">
-                <button data-action="switchTab" data-arg="add-products" type="button" class="tab-btn active" data-tab="add-products">➕ Agregar</button>
-                <button data-action="switchTab" data-arg="publicar-ahora" type="button" class="tab-btn" data-tab="publicar-ahora">🚀 Publicar</button>
-                <button data-action="switchTab" data-arg="manage-products" type="button" class="tab-btn" data-tab="manage-products">📋 Gestionar</button>
-                <button data-action="switchTab" data-arg="ventas" type="button" class="tab-btn" data-tab="ventas">💰 Ventas</button>
-                <button data-action="switchTab" data-arg="manage-categories" type="button" class="tab-btn" data-tab="manage-categories">🏷️ Categorías</button>
-                <button data-action="switchTab" data-arg="manage-subcategories" type="button" class="tab-btn" data-tab="manage-subcategories">📂 Subcategorías</button>
-                <button data-action="switchTab" data-arg="configuracion" type="button" class="tab-btn" data-tab="configuracion">⚙️ Config</button>
-                <button data-action="switchTab" data-arg="oferta-dia" type="button" class="tab-btn" data-tab="oferta-dia">🏷️ Oferta Día</button>
-                <button data-action="switchTab" data-arg="apariencia" type="button" class="tab-btn" data-tab="apariencia">🎨 Apariencia</button>
-                <button data-action="switchTab" data-arg="analytics" type="button" class="tab-btn" data-tab="analytics">📊 Analytics</button>
-            </div>
-
-            <!-- ACORDEÓN PREMIUM: visible solo en móvil -->
-            <div class="admin-accordion" id="adminAccordion">
-                <div class="acc-row" data-tab-target="add-products">
-                    <button class="acc-trigger" type="button" aria-expanded="false">
-                        <span class="acc-icon-wrap"><span class="acc-icon">➕</span></span>
-                        <span class="acc-text">
-                            <span class="acc-label">Agregar producto</span>
-                            <span class="acc-sub">Nombre · precio · foto · stock</span>
-                        </span>
-                        <span class="acc-chevron" aria-hidden="true"></span>
-                    </button>
-                    <div class="acc-body" role="region"></div>
-                </div>
-                <div class="acc-row" data-tab-target="publicar-ahora">
-                    <button class="acc-trigger" type="button" aria-expanded="false">
-                        <span class="acc-icon-wrap"><span class="acc-icon">🚀</span></span>
-                        <span class="acc-text">
-                            <span class="acc-label">Publicar</span>
-                            <span class="acc-sub">Revolico · Facebook Grupos</span>
-                        </span>
-                        <span class="acc-chevron" aria-hidden="true"></span>
-                    </button>
-                    <div class="acc-body" role="region"></div>
-                </div>
-                <div class="acc-row" data-tab-target="manage-products">
-                    <button class="acc-trigger" type="button" aria-expanded="false">
-                        <span class="acc-icon-wrap"><span class="acc-icon">📋</span></span>
-                        <span class="acc-text">
-                            <span class="acc-label">Gestionar productos</span>
-                            <span class="acc-sub">Editar · eliminar · destacar</span>
-                        </span>
-                        <span class="acc-chevron" aria-hidden="true"></span>
-                    </button>
-                    <div class="acc-body" role="region"></div>
-                </div>
-                <div class="acc-row" data-tab-target="ventas">
-                    <button class="acc-trigger" type="button" aria-expanded="false">
-                        <span class="acc-icon-wrap"><span class="acc-icon">💰</span></span>
-                        <span class="acc-text">
-                            <span class="acc-label">Ventas</span>
-                            <span class="acc-sub">Control de ganancias</span>
-                        </span>
-                        <span class="acc-chevron" aria-hidden="true"></span>
-                    </button>
-                    <div class="acc-body" role="region"></div>
-                </div>
-                <div class="acc-row" data-tab-target="manage-categories">
-                    <button class="acc-trigger" type="button" aria-expanded="false">
-                        <span class="acc-icon-wrap"><span class="acc-icon">🏷️</span></span>
-                        <span class="acc-text">
-                            <span class="acc-label">Categorías</span>
-                            <span class="acc-sub">Organiza tu catálogo</span>
-                        </span>
-                        <span class="acc-chevron" aria-hidden="true"></span>
-                    </button>
-                    <div class="acc-body" role="region"></div>
-                </div>
-                <div class="acc-row" data-tab-target="manage-subcategories">
-                    <button class="acc-trigger" type="button" aria-expanded="false">
-                        <span class="acc-icon-wrap"><span class="acc-icon">📂</span></span>
-                        <span class="acc-text">
-                            <span class="acc-label">Subcategorías</span>
-                            <span class="acc-sub">Organización interna</span>
-                        </span>
-                        <span class="acc-chevron" aria-hidden="true"></span>
-                    </button>
-                    <div class="acc-body" role="region"></div>
-                </div>
-                <div class="acc-row" data-tab-target="configuracion">
-                    <button class="acc-trigger" type="button" aria-expanded="false">
-                        <span class="acc-icon-wrap"><span class="acc-icon">⚙️</span></span>
-                        <span class="acc-text">
-                            <span class="acc-label">Configuración</span>
-                            <span class="acc-sub">GitHub · WhatsApp · Tasa</span>
-                        </span>
-                        <span class="acc-chevron" aria-hidden="true"></span>
-                    </button>
-                    <div class="acc-body" role="region"></div>
-                </div>
-                <div class="acc-row" data-tab-target="oferta-dia">
-                    <button class="acc-trigger" type="button" aria-expanded="false">
-                        <span class="acc-icon-wrap"><span class="acc-icon">🏷️</span></span>
-                        <span class="acc-text">
-                            <span class="acc-label">Oferta del Día</span>
-                            <span class="acc-sub">Badge especial · FOMO</span>
-                        </span>
-                        <span class="acc-chevron" aria-hidden="true"></span>
-                    </button>
-                    <div class="acc-body" role="region"></div>
-                </div>
-                <div class="acc-row" data-tab-target="apariencia">
-                    <button class="acc-trigger" type="button" aria-expanded="false">
-                        <span class="acc-icon-wrap"><span class="acc-icon">🎨</span></span>
-                        <span class="acc-text">
-                            <span class="acc-label">Apariencia</span>
-                            <span class="acc-sub">Banners · Hero · Colores</span>
-                        </span>
-                        <span class="acc-chevron" aria-hidden="true"></span>
-                    </button>
-                    <div class="acc-body" role="region"></div>
-                </div>
-                <div class="acc-row" data-tab-target="analytics">
-                    <button class="acc-trigger" type="button" aria-expanded="false">
-                        <span class="acc-icon-wrap"><span class="acc-icon">📊</span></span>
-                        <span class="acc-text">
-                            <span class="acc-label">Analytics</span>
-                            <span class="acc-sub">Estadísticas de la tienda</span>
-                        </span>
-                        <span class="acc-chevron" aria-hidden="true"></span>
-                    </button>
-                    <div class="acc-body" role="region"></div>
-                </div>
-            </div>
-            <div class="admin-content">
-
-                <!-- Tab: Agregar Producto -->
-                <div id="add-products" class="admin-tab active">
-                    <form id="productForm">
-                        <div class="form-group">
-                            <label>Nombre del Producto:</label>
-                            <input type="text" id="productName" required maxlength="200">
-                        </div>
-                        <div class="form-group">
-                            <label>Descripción:</label>
-                            <textarea id="productDescription" required rows="4" maxlength="2000"></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label>Categoría:</label>
-                            <select id="productCategory" required>
-                                <option value="General">General</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>¿Mostrar en "Más Vendidos"?</label>
-                            <select id="productMasVendido">
-                                <option value="false">No</option>
-                                <option value="true">Sí — Destacar en la página principal</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>
-                                <input type="checkbox" id="productUsado">
-                                ✨ Este es un producto usado/refurbished
-                            </label>
-                            <small>Marca esta opción si el producto es de segunda mano o ha sido restaurado</small>
-                        </div>
-                        <div class="form-group">
-                            <label>Foto principal del Producto:</label>
-                            <input type="file" id="productImage" accept="image/*" required>
-                            <small>Esta será la imagen que aparece en la tarjeta.</small>
-                        </div>
-                        <div class="form-group">
-                            <label>Galería de imágenes (opcional):</label>
-                            <input type="file" id="productImagesExtra" accept="image/*" multiple>
-                            <small>Puedes seleccionar varias fotos extra para el detalle del producto.</small>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label>Precio (USD):</label>
-                                <input type="number" id="productPriceActual" required placeholder="70" step="0.01" min="0">
-                            </div>
-                            <div class="form-group">
-                                <label>Precio Original (antes de rebaja):</label>
-                                <input type="number" id="productPrecioOriginal" placeholder="Ej: 300" step="0.01" min="0"><small style="color:rgba(255,255,255,0.35)">Solo si tiene rebaja. Ej: antes $300, ahora $280</small>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label>Stock Disponible:</label>
-                                <input type="number" id="productStock" required placeholder="0" min="0">
-                            </div>
-                            <div class="form-group">
-                                <label>💰 Mi comisión (USD):</label>
-                                <input type="number" id="productComision" placeholder="0.00" step="0.01" min="0">
-                                <small>Lo que ganas tú por cada venta</small>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label>Garantía (opcional):</label>
-                            <input type="text" id="productGarantia" placeholder="Ej: 6 meses de garantía" maxlength="50">
-                        </div>
-                        <div class="form-group">
-                            <label>
-                                <input type="checkbox" id="productDevolucion">
-                                ✓ Devolución segura / Garantía de satisfacción
-                            </label>
-                        </div>
-                        <button type="submit" class="btn btn-primary">✅ Agregar Producto</button>
-                    </form>
-
-                    <!-- Preview card -->
-                    <div id="tmAdminPreview" style="margin-top:24px;display:none">
-                        <p style="font-size:11px;font-weight:700;color:#666;letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px">Vista previa</p>
-                        <div id="tmPreviewCard" style="background:#1a1a1a;border:1px solid #2a2a2a;border-radius:16px;overflow:hidden;max-width:180px">
-                            <div id="tmPreviewImgWrap" style="width:100%;aspect-ratio:4/3;background:linear-gradient(135deg,#1e1e1e,#252525);display:flex;align-items:center;justify-content:center;font-size:32px;color:#444">📷</div>
-                            <div style="padding:10px 12px 12px">
-                                <div id="tmPreviewNombre" style="font-size:12px;font-weight:700;color:#fff;line-height:1.3;min-height:30px;margin-bottom:6px">Nombre del producto</div>
-                                <div id="tmPreviewPrecio" style="font-size:15px;font-weight:900;color:#FF6B35">$0.00 USD</div>
-                                <div id="tmPreviewCat" style="font-size:10px;color:#666;margin-top:3px">Categoría</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Tab: Ventas -->
-                <div id="ventas" class="admin-tab">
-                    <h3>💰 Control de Ventas</h3>
-                    <p style="font-size:13px;color:#888;margin-bottom:16px;">Registra ventas manualmente y lleva el control de tus ganancias.</p>
-                    <div id="ventasContenido"></div>
-                </div>
-
-                <!-- Tab: Publicar -->
-                <div id="publicar-ahora" class="admin-tab">
-                    <div id="backendStatus" class="backend-status">🟠 Modo manual activo — esta copia no incluye backend de automatización.</div>
-
-                    <div class="horarios-info" style="margin-bottom:16px;">
-                        <h4>🖱️ Publicación manual asistida</h4>
-                        <div class="horario-item">📘 <strong>Facebook</strong> — copia el texto y abre Facebook</div>
-                        <div class="horario-item">🟠 <strong>Revolico</strong> — copia el texto y abre Revolico</div>
-                        <div class="horario-item">☁️ <strong>Configuración</strong> — los grupos y categorías sí se guardan en tu tienda</div>
-                        <p style="margin:8px 0 0;font-size:12px;opacity:0.9">Quitamos la dependencia del backend roto para dejar el panel estable y funcional desde el navegador.</p>
-                    </div>
-
-                    <!-- Accesos rápidos -->
-                    <div class="admin-stack">
-                        <button data-action="mostrarSelectorAsistenteFacebook" type="button" class="btn-publicar-grande" style="background:#4267B2;margin-bottom:0">📘 Asistente Facebook</button>
-                        <button data-action="mostrarSelectorAsistenteRevolico" type="button" id="btnPublicarAhora" class="btn-publicar-grande" style="margin-bottom:0">🟠 Asistente Revolico</button>
-                    </div>
-
-                    <!-- Configurador de Grupos de Facebook -->
-                    <div class="admin-config-box oferta">
-                        <h4 style="margin-bottom:4px;">📘 Grupos de Facebook</h4>
-                        <p style="font-size:12px;color:var(--text-muted);margin-bottom:14px;">Configura qué productos publicar en cada grupo.</p>
-                        <div id="listaGruposFB" style="display:flex;flex-direction:column;gap:10px;"></div>
-                        <button data-action="agregarGrupoFB" type="button" class="btn btn-primary" style="margin-top:12px;width:100%;">+ Agregar Grupo</button>
-                        <button data-action="guardarGruposFB" type="button" class="btn" style="margin-top:8px;width:100%;background:#27AE60;color:white;">💾 Guardar Grupos</button>
-                    </div>
-
-                    <!-- Configurador de Revolico por categorías -->
-                    <div class="admin-config-box oferta">
-                        <h4 style="margin-bottom:4px;">🔵 Revolico — Categorías por Producto</h4>
-                        <p style="font-size:12px;color:var(--text-muted);margin-bottom:14px;">Elige en qué categoría de Revolico se publica cada producto. Se guarda automáticamente con tu tienda.</p>
-                        <div id="listaRevolicoConfig" style="display:flex;flex-direction:column;gap:10px;"></div>
-                        <button data-action="guardarRevolicoConfig" type="button" class="btn" style="margin-top:12px;width:100%;background:#0084FF;color:white;">💾 Guardar Config Revolico</button>
-                    </div>
-
-                    <div id="resultadoPublicacion" class="resultado-publicacion"></div>
-                    <div class="tab-historial">
-                        <h4 style="margin-bottom:12px">📋 Estado del asistente</h4>
-                        <div id="historialPublicaciones"><p style="color:#666;font-size:13px">Modo manual activo. No se guarda historial automático en esta versión.</p></div>
-                    </div>
-                </div>
-
-                <!-- Tab: Gestionar Productos -->
-                <!-- Tab: Gestionar Productos (por categorías) -->
-                <div id="manage-products" class="admin-tab">
-                    <div class="admin-row-flex">
-                        <input type="text" id="searchProductos" placeholder="🔍 Buscar producto..." oninput="actualizarListaProductos()" style="flex:1;min-width:180px;padding:10px 14px;border-radius:10px;border:1.5px solid var(--border-color);font-size:14px;background:var(--cream);">
-                        <select id="filtroCategoria" onchange="actualizarListaProductos()" style="padding:10px 14px;border-radius:10px;border:1.5px solid var(--border-color);font-size:14px;background:var(--cream);">
-                            <option value="">Todas las categorías</option>
-                        </select>
-                    </div>
-                    <div id="productsList" class="products-list">
-                        <p class="no-products">No hay productos aún</p>
-                    </div>
-                </div>
-
-                <!-- Tab: Gestionar Categorías -->
-                <div id="manage-categories" class="admin-tab">
-                    <div class="categories-section">
-                        <h3>Gestionar Categorias</h3>
-                        <div class="form-group" style="display: flex; gap: 10px; margin-bottom: 10px;">
-                        <input type="text" id="newCategoryName" placeholder="Nombre de la categoría" style="flex: 2;">
-                        <input type="text" id="newCategoryIcon" placeholder="Icono (Ej: 📦)" style="flex: 1; text-align: center;">
-                        <button data-action="agregarCategoria" type="button" class="btn btn-primary" style="flex: 1;">+ Agregar</button>
-                    </div>
-                    <p style="font-size: 12px; color: #666; margin-bottom: 20px;">💡 Si dejas el icono vacío, se asignará uno automáticamente según el nombre.</p>
-                        <div id="categoryList" class="category-list"></div>
-                    </div>
-                </div>
-
-                <!-- Tab: Gestionar Subcategorías -->
-                <div id="manage-subcategories" class="admin-tab">
-                    <div class="subcategories-section">
-                        <h3>Gestionar Subcategorías</h3>
-                        <p style="font-size: 13px; margin-bottom: 15px; color: #666;">Las subcategorías ayudan a organizar mejor tus productos dentro de cada categoría.</p>
-                        <div class="form-group">
-                            <label>Categoría:</label>
-                            <select id="subcategoryParentCategory">
-                                <option value="">-- Selecciona una categoría --</option>
-                            </select>
-                        </div>
-                        <div class="form-group subcategory-add-row">
-                            <input type="text" id="newSubcategoryName" placeholder="Nombre de la subcategoría">
-                            <button data-action="agregarSubcategoria" type="button" class="btn btn-primary">+ Agregar</button>
-                        </div>
-                        <div id="subcategoryList" class="subcategory-list"></div>
-                    </div>
-                </div>
-
-                <!-- Tab: Configuración GitHub -->
-                <div id="configuracion" class="admin-tab">
-                    <h3>Configuración de Sincronización</h3>
-
-                    <!-- NÚMERO WHATSAPP -->
-                    <div class="admin-config-box whatsapp">
-                        <h4 class="admin-h4-flex"><span style="font-size:20px;">💬</span> Número de WhatsApp</h4>
-                        <p class="admin-hint">Este número recibe todos los pedidos. Sin código +53, solo dígitos.</p>
-                        <div class="form-group">
-                            <label>Número (solo dígitos, sin espacios):</label>
-                            <input type="tel" id="adminWhatsappNum" placeholder="Ej: 5354320170" maxlength="20"
-                                pattern="[0-9+]{7,20}" title="Solo dígitos y + (mín. 7 caracteres)"
-                                style="font-size:16px;font-weight:700;letter-spacing:1px;">
-                            <p class="admin-note">Incluye el código de país. Cuba: 53 + número (ej: 5354320170)</p>
-                        </div>
-                        <button data-action="guardarNumeroWhatsApp" type="button" class="btn btn-primary" style="background:#25d366;width:100%;">💾 Guardar número</button>
-                    </div>
-
-                    <!-- CAMBIAR CONTRASEÑA ADMIN -->
-                    <div class="admin-config-box password">
-                        <h4 class="admin-h4-flex"><span style="font-size:20px;">🔑</span> Cambiar contraseña de administrador</h4>
-                        <p class="admin-hint">Establece o cambia la contraseña de acceso al panel de administración.</p>
-                        <form onsubmit="cambiarPasswordAdmin(document.getElementById('ci').value,document.getElementById('ni').value,document.getElementById('coi').value);return false">
-                            <div class="form-group">
-                                <label>Contraseña actual:</label>
-                                <input type="password" id="ci" placeholder="Contraseña actual" autocomplete="current-password" style="font-size:16px;font-weight:600;">
-                            </div>
-                            <div class="form-group">
-                                <label>Nueva contraseña:</label>
-                                <input type="password" id="ni" placeholder="Nueva contraseña (mín. 4 caracteres)" autocomplete="new-password" style="font-size:16px;font-weight:600;">
-                            </div>
-                            <div class="form-group">
-                                <label>Confirmar nueva contraseña:</label>
-                                <input type="password" id="coi" placeholder="Repite la nueva contraseña" autocomplete="new-password" style="font-size:16px;font-weight:600;">
-                            </div>
-                            <button type="submit" class="btn btn-primary" style="background:linear-gradient(135deg,#C9A96E,#E8C88A);color:#0D0D0D;width:100%;font-weight:800;">🔑 Cambiar contraseña</button>
-                        </form>
-                    </div>
-
-                    <!-- Tasa de cambio USD → MN -->
-                    <div class="admin-config-box tasa">
-                        <h4 class="admin-h4-flex"><span style="font-size:20px;">💱</span> Tasa de cambio USD → MN</h4>
-                        <p class="admin-hint">Pon la tasa del día (sin el +10 de margen, eso se suma automático). Al guardar sube a GitHub y todos los clientes la ven al instante.</p>
-                        <div class="form-group">
-                            <label>Tasa base hoy (MN por 1 USD):</label>
-                            <input type="number" id="adminTasaMN" placeholder="Ej: 340" min="1" max="9999" step="1"
-                                style="font-size:20px;font-weight:700;letter-spacing:1px;width:100%;">
-                            <p class="admin-note">El cliente verá esta tasa +10 MN de margen. Ej: si pones 340, el cliente ve 350 MN por USD.</p>
-                        </div>
-                        <button onclick="guardarTasaMNAdmin()" type="button" class="btn btn-primary" style="background:linear-gradient(135deg,#C9A96E,#E8C88A);color:#0D0D0D;width:100%;font-weight:800;">💾 Guardar tasa y subir a GitHub</button>
-                        <p id="tasaMNStatus" style="font-size:12px;margin-top:8px;text-align:center;color:rgba(255,255,255,0.4);"></p>
-                    </div>
-
-                    <p style="font-size: 14px; margin-bottom: 20px; color: var(--text-color);">Configura tu cuenta de GitHub para que los cambios se guarden automáticamente para todos tus clientes.</p>
-                    <form id="githubConfigForm" onsubmit="guardarConfiguracionGitHub(event)">
-                        <div class="form-group">
-                            <label>Usuario de GitHub:</label>
-                            <input type="text" id="githubUser" placeholder="Ej: Criptobox" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Repositorio:</label>
-                            <input type="text" id="githubRepo" placeholder="Ej: Tiendamax" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Token de Acceso Personal (Fine-grained recomendado):</label>
-                            <input type="password" id="githubToken" placeholder="github_pat_... ó ghp_..." required>
-                            <p style="font-size: 11px; margin-top: 5px; opacity: 0.7;">
-                                GitHub Settings → Developer Settings → Personal access tokens →
-                                <strong>Fine-grained tokens</strong> → Solo activa
-                                <em>Repository permissions → Contents: Read and Write</em>.
-                                Evita los tokens Classic con permiso <code>repo</code> completo.
-                            </p>
-                        </div>
-                        <div style="background:rgba(255,165,0,0.1);border:1px solid rgba(255,165,0,0.35);border-radius:8px;padding:10px 14px;margin-bottom:14px;font-size:11px;line-height:1.6;color:#ffcc80;">
-                            ⚠️ <strong>Seguridad:</strong> Este token se guarda en tu navegador (localStorage).
-                            Usa siempre un <strong>Fine-grained token</strong> con permisos mínimos
-                            (solo Contents R/W en este repositorio). Rótalo cada 90 días.
-                            Nunca compartas este dispositivo con acceso al panel admin.
-                        </div>
-                        <button type="submit" class="btn btn-primary" style="width: 100%;">💾 Guardar Configuración</button>
-                    </form>
-
-                    <!-- Notificaciones Push (Firebase) -->
-                    <div class="admin-config-box firebase" style="margin-top: 25px; border: 2px solid #C9A96E; border-radius: 12px; padding: 20px; background: rgba(201, 169, 110, 0.05);">
-                        <h4 class="admin-h4-flex" style="color:#C9A96E; margin-bottom: 12px;"><span style="font-size:20px;">🔔</span> Notificaciones Push (Firebase)</h4>
-                        <p class="admin-hint" style="color:#aaa; font-size:12px; margin-bottom:15px; line-height:1.4;">Configure Firebase Cloud Messaging para enviar notificaciones automáticas instantáneas al agregar nuevos productos, lanzar ofertas o cambiar la tasa de cambio.</p>
-                        
-                        <div class="form-group" style="margin-bottom: 15px;">
-                            <label style="display:block; margin-bottom:5px; font-weight:bold; color:#fff;">Firebase Web Config (JSON o Código de Inicialización):</label>
-                            <textarea id="firebaseConfigJson" placeholder="Pega aquí el objeto firebaseConfig completo que te da la consola de Firebase...
-Ej:
-{
-  apiKey: 'AIzaSy...',
-  authDomain: '...',
-  projectId: '...',
-  ...
-}" rows="7" style="font-family: monospace; font-size: 13px; width: 100%; border: 1px solid var(--border-color); border-radius: 8px; background: #222; color: #fff; padding: 10px; box-sizing: border-box; resize: vertical;"></textarea>
-                            <p class="admin-note" style="font-size:11px; margin-top:5px; opacity:0.7;">Consigue esto en la Consola de Firebase -> Configuración del proyecto -> Tus Apps (Web App).</p>
-                        </div>
-
-                        <div class="form-group" style="margin-bottom: 15px;">
-                            <label style="display:block; margin-bottom:5px; font-weight:bold; color:#fff;">Clave VAPID de Web Push (Key Pair):</label>
-                            <input type="text" id="firebaseVapidKey" placeholder="Pega tu clave VAPID (Key Pair) de Firebase" style="width: 100%; box-sizing: border-box; background:#222; color:#fff; border:1px solid var(--border-color); border-radius:8px; padding:8px;">
-                            <p class="admin-note" style="font-size:11px; margin-top:5px; opacity:0.7;">Consíguela en Firebase Console -> Configuración del proyecto -> Cloud Messaging -> Web configuration -> Web Push certificates.</p>
-                        </div>
-
-                        <div class="form-group" style="margin-bottom: 15px;">
-                            <label style="display:block; margin-bottom:5px; font-weight:bold; color:#fff;">Clave de Servidor FCM Legacy (Opcional):</label>
-                            <input type="text" id="firebaseServerKey" placeholder="Pega tu clave de servidor (Server Key) para envío directo" style="width: 100%; box-sizing: border-box; background:#222; color:#fff; border:1px solid var(--border-color); border-radius:8px; padding:8px;">
-                            <p class="admin-note" style="font-size:11px; margin-top:5px; opacity:0.7;">Requerido para enviar notificaciones de prueba o manuales directamente desde este panel de control.</p>
-                        </div>
-
-                        <button onclick="guardarConfigFirebaseAdmin()" type="button" class="btn btn-primary" style="background:linear-gradient(135deg,#C9A96E,#E8C88A); color:#0D0D0D; width:100%; font-weight:800; border:none; border-radius:8px; padding:12px; cursor:pointer; font-size:14px;">💾 Guardar Configuración de Firebase</button>
-                        <p id="firebaseConfigStatus" style="font-size:12px; margin-top:8px; text-align:center; color:#C9A96E; font-weight:bold;"></p>
-
-                        <!-- Sub-sección Envío Manual -->
-                        <div class="fcm-manual-send" style="margin-top: 20px; border-top: 1px dashed rgba(255,255,255,0.15); padding-top: 15px;">
-                            <h5 style="margin-bottom: 10px; color: #fff; font-size: 14px; display:flex; align-items:center; gap:6px;">📣 Enviar Notificación Manual</h5>
-                            
-                            <div class="form-group" style="margin-bottom: 10px;">
-                                <input type="text" id="manualPushTitle" placeholder="Título (ej: ¡Oferta Flash de Fin de Semana!)" style="font-size: 13px; width: 100%; box-sizing: border-box; background:#181818; color:#fff; border:1px solid #333; border-radius:6px; padding:6px 10px;">
-                            </div>
-                            <div class="form-group" style="margin-bottom: 10px;">
-                                <input type="text" id="manualPushBody" placeholder="Mensaje (ej: 20% de descuento en todos los calzados)" style="font-size: 13px; width: 100%; box-sizing: border-box; background:#181818; color:#fff; border:1px solid #333; border-radius:6px; padding:6px 10px;">
-                            </div>
-                            <div class="form-group" style="margin-bottom: 10px;">
-                                <input type="text" id="manualPushUrl" placeholder="Ruta/Enlace al hacer click (ej: /p/producto-1778104115783.html)" style="font-size: 13px; width: 100%; box-sizing: border-box; background:#181818; color:#fff; border:1px solid #333; border-radius:6px; padding:6px 10px;">
-                            </div>
-                            <button onclick="enviarPushManualAdmin()" type="button" class="btn btn-secondary" style="background: #2a2a2a; color: #fff; border: 1px solid rgba(255,255,255,0.2); width: 100%; font-size: 13px; padding: 10px; cursor: pointer; border-radius:6px; font-weight:bold;">📣 Enviar Notificación Ahora</button>
-                            <p id="manualPushStatus" style="font-size:11px; margin-top:6px; text-align:center; color:rgba(255,255,255,0.5);"></p>
-                        </div>
-                    </div>
-                    <div style="margin-top: 30px; padding: 20px; border: 2px solid #FF6B35; border-radius: 12px; text-align: center; background: rgba(255, 107, 53, 0.05);">
-                        <h4 style="margin-bottom: 10px;">🚀 Sincronización Global</h4>
-                        <p style="font-size: 13px; margin-bottom: 15px;">Usa este botón cada vez que agregues productos o categorías para que sean visibles para todos.</p>
-                        <button data-action="sincronizarTodoConGitHub" type="button" class="btn btn-primary" style="padding: 15px 30px; font-size: 16px; background: #FF6B35;">🔄 ACTUALIZAR TIENDA AHORA</button>
-                    </div>
-                </div>
-
-                <!-- Tab: Oferta del Día (standalone) -->
-                <div id="oferta-dia" class="admin-tab">
-                    <h3 style="margin-bottom:6px;">🏷️ Oferta del Día</h3>
-                    <p style="font-size:13px;color:var(--text-muted);margin-bottom:20px;">Selecciona un producto para destacarlo con badge especial "Oferta del Día". Aparecerá primero en la tienda y con un diseño llamativo.</p>
-
-                    <div style="background:var(--cream);border-radius:14px;padding:20px;margin-bottom:20px;">
-                        <div class="form-group">
-                            <label>Producto para Oferta del Día:</label>
-                            <select id="ofertaDiaSelect2" style="width:100%;padding:12px;border-radius:10px;border:1.5px solid var(--border-color);font-size:14px;"></select>
-                        </div>
-                        <div class="form-group">
-                            <label>Texto del badge:</label>
-                            <input type="text" id="ofertaDiaTexto2" placeholder="🔥 OFERTA DEL DÍA" maxlength="30">
-                        </div>
-                        <div id="ofertaDiaStatus2" style="font-size:13px;color:#ff5722;margin-bottom:12px;min-height:20px;font-weight:600;"></div>
-                        <div style="display:flex;gap:10px;">
-                            <button data-action="guardarOfertaDia2" type="button" class="btn btn-primary" style="background:#ff5722;flex:1;padding:14px;">✅ Activar</button>
-                            <button data-action="desactivarOfertaDia" aria-label="Desactivar oferta del día" type="button" class="btn btn-secondary" style="flex:1;padding:14px;">❌ Desactivar</button>
-                        </div>
-                    </div>
-
-                    <!-- Modo agotado -->
-                    <div class="admin-config-box agotado">
-                        <h4 style="margin:0 0 8px;display:flex;align-items:center;gap:8px;"><span style="font-size:20px;">📦</span> Modo Producto Agotado</h4>
-                        <p class="admin-hint">Los productos con stock = 0 se mostrarán automáticamente con el badge "AGOTADO" y el botón de compra desactivado. Para marcar un producto como agotado, edítalo y pon el stock en 0.</p>
-                        <div style="display:flex;align-items:center;gap:12px;padding:14px;background:rgba(231,76,60,0.08);border-radius:10px;border:1px solid rgba(231,76,60,0.25);">
-                            <div style="width:50px;height:50px;background:rgba(231,76,60,0.15);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;">📦</div>
-                            <div>
-                                <div style="font-size:13px;font-weight:700;color:#e74c3c;">Stock = 0 → Badge AGOTADO</div>
-                                <div style="font-size:12px;color:var(--text-muted,#9898a8);margin-top:2px;">El producto se muestra pero no se puede comprar</div>
-                            </div>
-                        </div>
-                        <div id="productosAgotadosList" style="margin-top:14px;display:flex;flex-direction:column;gap:8px;"></div>
-                    </div>
-                </div>
-
-
-                <!-- Tab: Apariencia / Imagen Hero -->
-                <div id="analytics" class="admin-tab">
-                    <h3 style="margin-bottom:20px;">📊 Analytics de la Tienda</h3>
-                    <div id="analyticsContent">
-                        <p style="color:#999;text-align:center;padding:40px 0;">Cargando estadísticas...</p>
-                    </div>
-                </div>
-
-                <div id="apariencia" class="admin-tab">
-                    <h3>🎨 Apariencia</h3>
-
-                    <!-- BANNERS HERO -->
-                    <div class="form-group" style="margin-top:20px;">
-                        <label><b>🖼️ Banners promocionales</b></label>
-                        <p style="font-size:12px;color:#888;margin-bottom:10px;">Agrega banners que van pasando solos. Al tocarlos llevan al link que pongas.</p>
-                        <div id="bannerList" style="display:flex;flex-direction:column;gap:8px;margin-bottom:12px;"></div>
-                        <div style="display:flex;flex-direction:column;gap:8px;">
-                            <label class="admin-label-sm">📷 Imagen del banner:</label>
-                            <input type="file" id="nuevoBannerFile" accept="image/*" style="width:100%;">
-                            <p style="font-size:11px;color:#aaa;margin:0;">O pega una URL directamente:</p>
-                            <input type="url" id="nuevoBannerUrl" placeholder="https://... URL de la imagen (opcional)">
-                            <label class="admin-label-sm">🔗 Link al tocar (opcional):</label>
-                            <input type="url" id="nuevoBannerLink" placeholder="https://wa.me/grupo o cualquier link">
-                            <button type="button" onclick="agregarBanner()" class="btn btn-primary">+ Agregar banner</button>
-                            <button type="button" onclick="exportarBannersJSON()" class="btn" style="background:#8e44ad;color:white;">📥 Descargar banners.json → subir a GitHub</button>
-                        </div>
-                    </div>
-
-                    <!-- TAGLINE EDITABLE -->
-                    <div class="form-group" style="margin-top:24px;">
-                        <label><b>✏️ Texto del banner principal</b></label>
-                        <p style="font-size:12px;color:#888;margin-bottom:8px;">El texto que aparece sobre la imagen principal.</p>
-                        <input type="text" id="heroTaglineInput" placeholder="⚡ Inversores · 📡 WiFi · 📱 Tecnología" style="width:100%;">
-                        <button type="button" onclick="guardarTagline()" class="btn btn-primary" style="margin-top:8px;width:100%;">💾 Guardar texto</button>
-                    </div>
-                    <h3 style="margin-bottom:18px;">🎨 Personalización Visual</h3>
-
-                    <div style="background:var(--cream);padding:20px;border-radius:14px;margin-bottom:24px;">
-                        <h4 style="margin-bottom:6px;">🧹 Limpieza aplicada al Hero</h4>
-                        <p class="admin-hint-lg">La antigua imagen fija del hero fue retirada porque la portada actual usa el slider de banners. Ahora toda la portada se gestiona desde “Banners promocionales” y el texto editable de arriba.</p>
-                    </div>
-
-                    <!-- COUNTDOWN TIMER -->
-                    <div style="background:var(--cream);padding:20px;border-radius:14px;">
-                        <h4 style="margin-bottom:6px;">⏱️ Cronómetro de Oferta (FOMO)</h4>
-                        <p class="admin-hint-lg">Añade un contador regresivo a un producto para crear urgencia. Aparece visible en la tarjeta del producto.</p>
-                        
-                        <div class="form-group">
-                            <label>Seleccionar Producto:</label>
-                            <select id="countdownProductSelect">
-                                <option value="">-- Ninguno (desactivar timer) --</option>
-                            </select>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label>Horas:</label>
-                                <input type="number" id="countdownHoras" placeholder="2" min="0" max="72" value="2">
-                            </div>
-                            <div class="form-group">
-                                <label>Minutos:</label>
-                                <input type="number" id="countdownMinutos" placeholder="30" min="0" max="59" value="30">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label>Texto de la oferta:</label>
-                            <input type="text" id="countdownTexto" placeholder="¡Oferta especial!" value="¡Oferta especial!">
-                        </div>
-                        <button data-action="guardarCountdown" type="button" class="btn btn-primary" style="width:100%;background:var(--coral);">⏱️ Activar Countdown</button>
-                        <button data-action="desactivarCountdown" aria-label="Desactivar cronómetro" type="button" class="btn" style="width:100%;margin-top:8px;background:transparent;border:1px solid #e74c3c;color:#e74c3c;">🗑️ Desactivar Countdown</button>
-                        
-                        <div id="countdownStatus" style="margin-top:12px;font-size:13px;color:var(--text-muted);"></div>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </div>
-
-
-    <!-- ===== MODAL EDITAR PRODUCTO ===== -->
-    <div id="editModal" class="modal hidden" data-backdrop-close="cerrarEditModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>✏️ Editar producto</h2>
-                <button data-action="cerrarEditModal" aria-label="Cerrar edición" type="button" class="close-btn">✕</button>
-            </div>
-            <form id="editForm">
-                <input type="hidden" id="editProductId">
-                <div class="form-group">
-                    <label>Nombre del Producto:</label>
-                    <input type="text" id="editProductName" required maxlength="200">
-                </div>
-                <div class="form-group">
-                    <label>Descripción:</label>
-                    <textarea id="editProductDescription" required rows="4" maxlength="2000"></textarea>
-                </div>
-                <div class="form-group">
-                    <label>Categoría:</label>
-                    <select id="editProductCategory" required>
-                        <option value="General">General</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>¿Mostrar en "Más Vendidos"?</label>
-                    <select id="editProductMasVendido">
-                        <option value="false">No</option>
-                        <option value="true">Sí — Destacar en la página principal</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>
-                        <input type="checkbox" id="editProductUsado">
-                        ✨ Este es un producto usado/refurbished
-                    </label>
-                </div>
-                <div class="form-group">
-                    <label>Galería actual:</label>
-                    <div id="currentImagePreview" style="margin-bottom:10px;"></div>
-                    <label style="margin-top:10px;display:block;">Cambiar imagen principal:</label>
-                    <input type="file" id="editProductImage" accept="image/*">
-                    <small>Déjalo vacío para mantener la imagen principal actual.</small>
-                    <label style="margin-top:12px;display:block;">Agregar fotos a la galería:</label>
-                    <input type="file" id="editProductImagesExtra" accept="image/*" multiple>
-                    <small>Las fotos nuevas se añadirán al final de la galería.</small>
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Precio (USD):</label>
-                        <input type="number" id="editProductPriceActual" required placeholder="70" step="0.01" min="0">
-                    </div>
-                    <div class="form-group">
-                        <label>Precio Original:</label>
-                        <input type="number" id="editProductPrecioOriginal" placeholder="Ej: 300" step="0.01" min="0">
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Stock Disponible:</label>
-                        <input type="number" id="editProductStock" required placeholder="0" min="0">
-                    </div>
-                    <div class="form-group">
-                        <label>💰 Mi comisión (USD):</label>
-                        <input type="number" id="editProductComision" placeholder="0.00" step="0.01" min="0">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label>Garantía (opcional):</label>
-                    <input type="text" id="editProductGarantia" placeholder="Ej: 6 meses de garantía" maxlength="50">
-                </div>
-                <div class="form-group">
-                    <label>
-                        <input type="checkbox" id="editProductDevolucion">
-                        ✓ Devolución segura / Garantía de satisfacción
-                    </label>
-                </div>
-                <div style="display:flex;gap:10px;flex-wrap:wrap;">
-                    <button type="submit" class="btn btn-primary" style="flex:1;min-width:180px;">💾 Guardar cambios</button>
-                    <button data-action="cerrarEditModal" type="button" class="btn btn-secondary" style="flex:1;min-width:180px;">Cancelar</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <script src="js/script.js?v=56" defer></script>
-    <script src="js/analytics.js?v=9" defer></script>
-    <script src="js/seo-dynamico.js?v=1" defer></script>
-    <script src="js/subcategorias.js?v=11" defer></script>
-    <script src="js/revolico_integration.js?v=10" defer></script>
-    <script src="js/biometric-auth.js?v=2" defer></script>
-    <script src="js/event-delegation.js?v=2" defer></script>
-    <script src="js/share-patch.js?v=2" defer></script>
-    <script src="js/banners.js?v=3" defer></script>
-    
-
-    
-
-
+<!-- TIENDAMAX_ADMIN_FINAL_INLINE_JS -->
 <script>
-document.addEventListener('DOMContentLoaded', () => {
-    // If not authenticated, the script.js logic in abrirAdminPanel will call abrirLoginAdmin.
-    // But in admin.html, we don't have window.location.href = 'admin.html' because we ARE in admin.html.
-    // So we need to restore the original abrirLoginAdmin for admin.html or override it here.
-    window.abrirLoginAdmin = function() {
-        const modal = document.getElementById('loginModal');
-        if(modal) {
-            modal.classList.remove('hidden');
-            modal.style.removeProperty('display');
-            setTimeout(() => document.getElementById('adminPassword')?.focus(), 100);
-        }
-    };
-    if (typeof abrirAdminPanel === 'function') {
-        abrirAdminPanel();
-    }
-});
-</script>
-
-
-
-<!-- ══════════════════════════════════════════════════
-     ACORDEÓN MÓVIL — lógica de clases únicamente.
-     admin-clean.css maneja todo el layout/scroll vía
-     .acc-overlay y .has-overlay. El JS solo añade/quita clases.
-     ══════════════════════════════════════════════════ -->
-<script>
+/* --- merged from js/admin-real-fusion.js --- */
 (function(){
-    'use strict';
-    var BP = 769;
-    function mob(){ return window.innerWidth < BP; }
-
-    /* Mover tab al acc-body */
-    function mount(tabId, body){
-        var tab = document.getElementById(tabId);
-        if(!tab || body.dataset.mounted === tabId) return;
-        body.appendChild(tab);
-        body.dataset.mounted = tabId;
-    }
-
-    /* Devolver tabs al admin-content (vista desktop) */
-    function unmountAll(){
-        var ac = document.querySelector('.admin-content');
-        if(!ac) return;
-        document.querySelectorAll('.acc-body').forEach(function(b){
-            if(b.firstChild) ac.appendChild(b.firstChild);
-            delete b.dataset.mounted;
-        });
-    }
-
-    /* Cerrar una fila — solo quitar clases */
-    function closeRow(r){
-        var acc = document.getElementById('adminAccordion');
-        r.classList.remove('acc-open', 'acc-overlay');
-        var t = r.querySelector('.acc-trigger');
-        if(t) t.setAttribute('aria-expanded','false');
-        if(acc) acc.classList.remove('has-overlay');
-    }
-
-    /* Abrir una fila — solo añadir clases, el CSS hace el resto */
-    function openRow(row){
-        var acc = document.getElementById('adminAccordion');
-        if(!acc) return;
-
-        /* Cerrar todas las demás */
-        acc.querySelectorAll('.acc-row.acc-open').forEach(closeRow);
-
-        var tabId = row.getAttribute('data-tab-target');
-        var body  = row.querySelector('.acc-body');
-        if(!body) return;
-
-        /* Mover el tab al body del acordeón */
-        mount(tabId, body);
-
-        /* Añadir clases — admin-clean.css aplica el layout/scroll automáticamente:
-           .acc-row.acc-overlay → position:sticky, z-index:50
-           .acc-row.acc-overlay .acc-body → max-height:78vh, overflow-y:auto */
-        row.classList.add('acc-open', 'acc-overlay');
-        acc.classList.add('has-overlay');
-
-        var t = row.querySelector('.acc-trigger');
-        if(t) t.setAttribute('aria-expanded','true');
-
-        /* Notificar a script.js */
-        if(typeof switchTab === 'function') switchTab(tabId);
-
-        /* Scroll suave al inicio del row dentro del acordeón */
-        setTimeout(function(){
-            var scrollParent = acc;
-            var rowTop = row.offsetTop - (scrollParent.offsetTop || 0);
-            try{ scrollParent.scrollTo({top: rowTop - 8, behavior:'smooth'}); }
-            catch(e){ scrollParent.scrollTop = Math.max(0, rowTop - 8); }
-        }, 80);
-    }
-
-    /* Sincronizar acordeón con el tab activo al abrir el panel */
-    function sync(){
-        var a = document.querySelector('.admin-tab.active');
-        if(!a) return;
-        var r = document.querySelector('.acc-row[data-tab-target="'+a.id+'"]');
-        if(r && !r.classList.contains('acc-open')) openRow(r);
-    }
-
-    document.addEventListener('DOMContentLoaded', function(){
-        var acc = document.getElementById('adminAccordion');
-        if(!acc) return;
-
-        /* Delegación de clicks en triggers */
-        acc.addEventListener('click', function(e){
-            var trig = e.target.closest ? e.target.closest('.acc-trigger') : null;
-            if(!trig) return;
-            var row = trig.closest ? trig.closest('.acc-row') : null;
-            if(!row) return;
-            if(row.classList.contains('acc-open')) closeRow(row);
-            else openRow(row);
-        });
-
-        /* Observar cuando el panel admin se hace visible */
-        var panel = document.getElementById('adminPanel');
-        if(panel && window.MutationObserver){
-            new MutationObserver(function(ms){
-                for(var i=0;i<ms.length;i++){
-                    if(ms[i].target.classList.contains('visible') && mob()){
-                        setTimeout(sync, 120);
-                        break;
-                    }
-                }
-            }).observe(panel, {attributes:true, attributeFilter:['class']});
-        }
-
-        /* Resize */
-        var rt;
-        window.addEventListener('resize', function(){
-            clearTimeout(rt);
-            rt = setTimeout(function(){ mob() ? sync() : unmountAll(); }, 200);
-        });
-    });
+  function $(s,r){return (r||document).querySelector(s)}
+  function $$(s,r){return Array.from((r||document).querySelectorAll(s))}
+  window.tmLoginTab=function(which){
+    $$('.login-tab').forEach((t,i)=>t.classList.toggle('active',(which==='pass'&&i===0)||(which==='bio'&&i===1)));
+    var p=$('#loginPass'), b=$('#loginBio'); if(p)p.style.display=which==='pass'?'block':'none'; if(b)b.style.display=which==='bio'?'block':'none';
+  };
+  function updatePreview(){
+    var n=$('#productName'), c=$('#productCategory'), pr=$('#productPriceActual'), st=$('#productStock');
+    var pn=$('#pvName'), pc=$('#pvCat'), pp=$('#pvPrice'), ps=$('#pvStock'), pe=$('#pvEmoji');
+    if(pn&&n)pn.textContent=n.value||'Nombre del producto'; if(pc&&c)pc.textContent=c.value||'Categoría';
+    if(pp&&pr)pp.textContent='$'+(Number(pr.value||0)).toFixed(2)+' USD';
+    if(ps&&st){var v=Number(st.value||0); ps.textContent=v>0?'Disponible · '+v+' unidades':'Agotado'; ps.className='stock '+(v>0?'ok':'empty')}
+    if(pe&&c){var m={ENERGIA:'⚡',WIFI:'📡',CELULARES:'📱',CARROS:'🚗',HOGAR:'🏠','PC Y LAPTOPS':'💻',MOTOS:'🛵'};pe.textContent=m[c.value]||'📦'}
+  }
+  function updateDashboard(){
+    try{var ps=window.productos||JSON.parse(localStorage.getItem('productos')||'[]');
+      var total=ps.length, active=ps.filter(p=>Number(p.stock||0)>0).length, low=ps.filter(p=>Number(p.stock||0)>0&&Number(p.stock||0)<=3).length, empty=ps.filter(p=>Number(p.stock||0)===0).length;
+      [['dashTotal',total],['dashActive',active],['dashLow',low],['dashEmpty',empty]].forEach(function(x){var e=$('#'+x[0]); if(e)e.textContent=x[1]});
+      var list=$('#dashTop'); if(list) list.innerHTML=ps.slice().sort((a,b)=>Number(b.stock||0)-Number(a.stock||0)).slice(0,6).map(function(p){return '<div class="card" style="margin-bottom:8px;padding:12px"><b>'+escapeHtml(p.nombre||'')+'</b><br><small>'+escapeHtml(p.categoria||'')+' · stock '+(p.stock||0)+' · $'+Number(p.precioActual||0).toFixed(2)+'</small></div>'}).join('');
+    }catch(e){}
+  }
+  function escapeHtml(s){return String(s==null?'':s).replace(/[&<>"']/g,function(m){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]})}
+  document.addEventListener('DOMContentLoaded',function(){
+    ['productName','productCategory','productPriceActual','productStock'].forEach(function(id){var e=$('#'+id); if(e){e.addEventListener('input',updatePreview);e.addEventListener('change',updatePreview)}});
+    setTimeout(updateDashboard,900); setInterval(updateDashboard,5000);
+    var img=$('#productImage'); if(img) img.addEventListener('change',function(e){var f=e.target.files&&e.target.files[0], wrap=$('#pvEmoji'); if(f&&wrap){var r=new FileReader(); r.onload=function(ev){wrap.innerHTML='<img src="'+ev.target.result+'" style="width:100%;height:100%;object-fit:cover">'}; r.readAsDataURL(f)}});
+  });
 })();
 
-// Preview en tiempo real
-(function() {
-    function updatePreview() {
-        var nombre = (document.getElementById('productName') || {}).value || '';
-        var precio = parseFloat((document.getElementById('productPriceActual') || {}).value) || 0;
-        var cat = ((document.getElementById('productCategory') || {}).selectedOptions || [{}])[0].text || '';
-        var preview = document.getElementById('tmAdminPreview');
-        if (!preview) return;
-        preview.style.display = nombre || precio ? 'block' : 'none';
-        var n = document.getElementById('tmPreviewNombre');
-        var p = document.getElementById('tmPreviewPrecio');
-        var c = document.getElementById('tmPreviewCat');
-        if (n) n.textContent = nombre || 'Nombre del producto';
-        if (p) p.textContent = precio ? ('$' + precio.toFixed(2) + ' USD') : '$0.00 USD';
-        if (c) c.textContent = cat;
-    }
-
-    function updatePreviewImg(e) {
-        var file = e.target.files && e.target.files[0];
-        var wrap = document.getElementById('tmPreviewImgWrap');
-        if (!wrap) return;
-        if (file) {
-            var reader = new FileReader();
-            reader.onload = function(ev) {
-                wrap.innerHTML = '';
-                var img = document.createElement('img');
-                img.src = ev.target.result;
-                img.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block';
-                wrap.appendChild(img);
-            };
-            reader.readAsDataURL(file);
-        } else {
-            wrap.innerHTML = '📷';
-        }
-    }
-
-    document.addEventListener('DOMContentLoaded', function() {
-        ['productName','productPriceActual','productCategory'].forEach(function(id) {
-            var el = document.getElementById(id);
-            if (el) el.addEventListener('input', updatePreview);
-        });
-        var imgInput = document.getElementById('productImage');
-        if (imgInput) imgInput.addEventListener('change', updatePreviewImg);
-    });
+/* --- merged from js/admin-tools.js --- */
+(function(){
+'use strict';
+const KEY='tm_admin_tools_v1';
+const SNAP='tm_product_snapshots_v1';
+const $=(s,r=document)=>r.querySelector(s); const $$=(s,r=document)=>Array.from(r.querySelectorAll(s));
+const safeJson=(k,f)=>{try{return JSON.parse(localStorage.getItem(k)||'')}catch(e){return f}};
+const saveJson=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
+const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+const data=()=>safeJson(KEY,{coupons:[],locations:['Habana','Santiago'],stock:{},ab:[],clients:[],shipments:[],scheduled:[],competitors:[],roles:[{name:'admin',perms:'todo'},{name:'editor',perms:'productos,ventas'}],totp:{enabled:false},changes:[]});
+const setData=d=>saveJson(KEY,d);
+function prods(){return Array.isArray(window.productos)?window.productos:safeJson('productos',[])}
+function toast(msg,type='success'){ if(typeof window.mostrarNotificacion==='function') window.mostrarNotificacion(msg,type); else alert(msg); }
+function dl(name,text,type='text/plain'){const b=new Blob([text],{type}); const a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download=name; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
+function csvCell(v){v=String(v??''); return /[",\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v}
+function parseCSV(text){const rows=[];let row=[],cur='',q=false;for(let i=0;i<text.length;i++){let c=text[i],n=text[i+1];if(c==='"'){if(q&&n==='"'){cur+='"';i++}else q=!q}else if(c===','&&!q){row.push(cur);cur=''}else if((c==='\n'||c==='\r')&&!q){if(c==='\r'&&n==='\n')i++;row.push(cur); if(row.some(x=>x!=='')) rows.push(row); row=[];cur=''}else cur+=c}row.push(cur); if(row.some(x=>x!=='')) rows.push(row);return rows}
+function ensureTab(){
+ if($('#herramientas')) return;
+ const tabs=$('.admin-tabs-desktop');
+ if(tabs&&!$('[data-tab="herramientas"]',tabs)){const b=document.createElement('button');b.type='button';b.className='tab-btn';b.dataset.tab='herramientas';b.setAttribute('data-action','switchTab');b.setAttribute('data-arg','herramientas');b.textContent='🛠️ Herramientas';tabs.appendChild(b)}
+ const acc=$('#adminAccordion');
+ if(acc&&!acc.querySelector('[data-tab-target="herramientas"]')){const row=document.createElement('div');row.className='acc-row';row.dataset.tabTarget='herramientas';row.innerHTML='<button class="acc-trigger" type="button" aria-expanded="false"><span class="acc-icon-wrap"><span class="acc-icon">🛠️</span></span><span class="acc-text"><span class="acc-label">Herramientas</span><span class="acc-sub">IA · CSV · duplicados · CRM</span></span><span class="acc-chevron" aria-hidden="true"></span></button><div class="acc-body" role="region"></div>';acc.appendChild(row)}
+ const content=$('.admin-content'); if(!content) return;
+ const sec=document.createElement('div'); sec.id='herramientas'; sec.className='admin-tab'; sec.innerHTML=html(); content.appendChild(sec); bind(sec);
+}
+function html(){return `<div class="tm-tools-wrap">
+<h3>🛠️ Herramientas</h3><div class="tm-tools-hero"><div class="tm-tools-hero-icon">⚡</div><div><h3>Funciones avanzadas para TiendaMax</h3><p>Se agregan sin borrar datos: todo queda en localStorage y los cambios que afecten productos usan tus funciones actuales de guardado/sincronización.</p></div></div>
+${tier('TIER 1 — EMPIEZA ESTA SEMANA','ROI alto','')}
+<div class="tm-tools-grid">${card('ai','🤖','Generador de descripciones IA','Genera descripciones, títulos SEO y textos WhatsApp/Facebook.','enabled')}${card('compress','🖼️','Compresión on-upload','Comprime imágenes en navegador antes de subir.','enabled')}${card('duplicate','📑','Duplicar producto','Crea variantes sin re-tipiar todo el formulario.','enabled')}${card('history','↶','Historial de cambios','Snapshots, diff básico y rollback de productos.','enabled')}${card('csv','📄','Importar / Exportar CSV','Backup masivo, edición en Excel y migración.','enabled')}${card('dups','🔍','Detector de duplicados','Busca coincidencias por nombre, precio y categoría.','enabled')}</div>
+${tier('TIER 2 — ESTE MES','Más valor','gold')}
+<div class="tm-tools-grid">${card('schedule','📅','Programar publicación','Cola local con fecha/hora y recordatorios.','enabled')}${card('coupons','🏷️','Cupones / descuentos','Códigos con %, fijo, fecha de expiración.','enabled')}${card('locations','📍','Multi-ubicación','Stock por depósito: Habana, Santiago, etc.','enabled')}${card('ab','〽️','A/B testing de precios','Variantes A/B y registro manual de resultados.','enabled')}${card('totp','🔐','2FA / TOTP','Segundo factor opcional con códigos temporales.','enabled')}${card('roles','👥','Roles de usuario','Admin/editor/viewer y permisos granulares.','enabled')}</div>
+${tier('TIER 3 — DIFERENCIADORES','Escala','purple')}
+<div class="tm-tools-grid">${card('competitors','🌐','Comparador competencia','Registra precios de Revolico/ML para comparar.','enabled')}${card('margin','💵','Calculadora de margen','Coste + envío + comisión = ganancia real.','enabled')}${card('posts','📣','Posts para redes','Caption FB/IG, story 9:16 y grupos.','enabled')}${card('heatmap','◎','Heatmap de clics','Mapa por productos/categorías usando analytics disponibles.','enabled')}${card('crm','🧑‍💼','CRM de clientes','Quién compró qué, frecuencia y LTV.','enabled')}${card('shipping','🚚','Tracking envíos','Estados de entrega y notas por pedido.','enabled')}</div>
+<div id="tmToolPanel" class="tm-panel"></div></div>`}
+function tier(t,b,cls){return `<div class="tm-tier"><h4>${t}</h4><span class="tm-tier-badge ${cls||''}">${b}</span></div>`}
+function card(id,ico,t,p,state){return `<div class="tm-tool-card ${state||''}" data-tool="${id}"><span class="state">ACTIVO</span><div class="ico" style="background:${color(id)}">${ico}</div><h5>${t}</h5><p>${p}</p></div>`}
+function color(id){const m={ai:'rgba(155,89,182,.18)',compress:'rgba(201,169,110,.18)',duplicate:'rgba(52,152,219,.18)',history:'rgba(46,204,113,.18)',csv:'rgba(255,107,53,.18)',dups:'rgba(155,89,182,.18)',schedule:'rgba(52,152,219,.18)',coupons:'rgba(201,169,110,.18)',locations:'rgba(255,107,53,.18)',ab:'rgba(46,204,113,.18)',totp:'rgba(155,89,182,.18)',roles:'rgba(52,152,219,.18)',competitors:'rgba(155,89,182,.18)',margin:'rgba(46,204,113,.18)',posts:'rgba(255,107,53,.18)',heatmap:'rgba(201,169,110,.18)',crm:'rgba(52,152,219,.18)',shipping:'rgba(155,89,182,.18)'};return m[id]||'rgba(255,255,255,.08)'}
+function bind(sec){sec.addEventListener('click',e=>{const c=e.target.closest('[data-tool]');if(c) openTool(c.dataset.tool); const a=e.target.closest('[data-act]'); if(a) actions(a.dataset.act,a);});}
+function panel(title,sub,body){const p=$('#tmToolPanel'); if(!p)return; p.className='tm-panel active'; p.innerHTML=`<div class="tm-panel-head"><div><h4>${title}</h4><p>${sub}</p></div><button class="tm-panel-close" data-act="closePanel">✕ Cerrar</button></div>${body}`; p.scrollIntoView({behavior:'smooth',block:'start'});}
+function productOptions(){return prods().map(p=>`<option value="${p.id}">${esc(p.nombre||p.name)} — $${Number(p.precioActual||p.price||0).toFixed(2)}</option>`).join('')}
+function openTool(id){({ai,compress,duplicate,history,csv,dups,schedule,coupons,locations,ab,totp,roles,competitors,margin,posts,heatmap,crm,shipping}[id]||ai)()}
+function ai(){panel('🤖 Generador de descripciones IA','Funciona localmente con plantillas. Si luego conectas API, se puede cambiar por Claude/GPT.',`<div class="tm-form-grid"><div class="tm-field"><label>Producto</label><select id="tmAiProd">${productOptions()}</select></div><div class="tm-field"><label>Tono</label><select id="tmAiTone"><option>Premium vendedor</option><option>Corto WhatsApp</option><option>Técnico</option><option>Facebook grupos</option></select></div></div><div class="tm-actions"><button class="tm-btn primary" data-act="aiGen">Generar textos</button><button class="tm-btn" data-act="copyOut">Copiar resultado</button></div><div id="tmToolOut" class="tm-code" style="margin-top:12px">Selecciona un producto y genera.</div>`)}
+function compress(){panel('🖼️ Compresión on-upload','Activa compresión visual y genera versión WebP/base64 antes de subir.',`<div class="tm-field"><label>Probar compresión</label><input type="file" id="tmCompressFile" accept="image/*"></div><div class="tm-form-grid"><div class="tm-field"><label>Ancho máximo</label><input id="tmCompressW" type="number" value="1200"></div><div class="tm-field"><label>Calidad WebP</label><input id="tmCompressQ" type="number" step="0.05" value="0.82"></div></div><div class="tm-actions"><button class="tm-btn primary" data-act="compressRun">Comprimir imagen</button></div><div id="tmToolOut" class="tm-code" style="margin-top:12px">La compresión real puede conectarse al input productImage.</div>`)}
+function duplicate(){panel('📑 Duplicar producto','Crea una copia en memoria/localStorage con nuevo ID y “Copia” en el nombre.',`<div class="tm-field"><label>Producto a duplicar</label><select id="tmDupProd">${productOptions()}</select></div><div class="tm-actions"><button class="tm-btn primary" data-act="dupNow">Duplicar ahora</button></div><div class="tm-note">Luego puedes editarlo desde Gestionar productos.</div>`)}
+function history(){const snaps=safeJson(SNAP,[]); panel('↶ Historial de cambios','Se crean snapshots automáticos cuando se guardan productos.',`<div class="tm-actions"><button class="tm-btn primary" data-act="snapshot">Crear snapshot ahora</button></div><div class="tm-list">${snaps.slice(0,20).map((s,i)=>`<div class="tm-row"><div class="tm-row-main"><b>${new Date(s.ts).toLocaleString()}</b><small>${s.count} productos · ${esc(s.note||'snapshot')}</small></div><button class="tm-btn tm-mini" data-act="rollback" data-i="${i}">Rollback</button></div>`).join('')||'<div class="tm-note">Sin snapshots todavía.</div>'}</div>`)}
+function csv(){panel('📄 Importar / Exportar CSV','Exporta productos reales o importa CSV con columnas nombre,descripcion,precioActual,stock,categoria.',`<div class="tm-csv-drop"><input type="file" id="tmCsvFile" accept=".csv,text/csv"><br>Selecciona CSV para importar</div><div class="tm-actions"><button class="tm-btn gold" data-act="exportCsv">Exportar productos.csv</button><button class="tm-btn primary" data-act="importCsv">Importar CSV</button></div><div id="tmToolOut" class="tm-code" style="margin-top:12px">Listo.</div>`)}
+function dups(){const ps=prods();let rows=[];for(let i=0;i<ps.length;i++)for(let j=i+1;j<ps.length;j++){let a=ps[i],b=ps[j],n1=(a.nombre||'').toLowerCase(),n2=(b.nombre||'').toLowerCase();if(n1&&n2&&(n1===n2||n1.includes(n2)||n2.includes(n1))){rows.push([a,b])}} panel('🔍 Detector de duplicados','Coincidencias por nombre similar.',`<div class="tm-list">${rows.slice(0,30).map(([a,b])=>`<div class="tm-row"><div class="tm-row-main"><b>${esc(a.nombre)}</b><small>Posible duplicado: ${esc(b.nombre)}</small></div></div>`).join('')||'<div class="tm-note tm-ok">No se detectaron duplicados obvios.</div>'}</div>`)}
+function schedule(){const d=data();panel('📅 Programar publicación','Cola local de publicaciones. No publica sola en Facebook/Revolico; prepara recordatorio y texto.',`<div class="tm-form-grid"><div class="tm-field"><label>Producto</label><select id="tmSchProd">${productOptions()}</select></div><div class="tm-field"><label>Fecha/hora</label><input id="tmSchDate" type="datetime-local"></div></div><div class="tm-actions"><button class="tm-btn primary" data-act="schAdd">Programar</button></div><div class="tm-list">${d.scheduled.map((x,i)=>`<div class="tm-row"><div class="tm-row-main"><b>${esc(x.name)}</b><small>${new Date(x.when).toLocaleString()}</small></div><button class="tm-btn tm-mini" data-act="schDel" data-i="${i}">Eliminar</button></div>`).join('')||'<div class="tm-note">Sin publicaciones programadas.</div>'}</div>`)}
+function coupons(){const d=data();panel('🏷️ Cupones / descuentos','Crea códigos para campañas. Luego se pueden integrar al carrito público.',`<div class="tm-form-grid"><div class="tm-field"><label>Código</label><input id="tmCupCode" placeholder="FLASH10"></div><div class="tm-field"><label>Tipo</label><select id="tmCupType"><option value="percent">%</option><option value="fixed">Fijo USD</option></select></div><div class="tm-field"><label>Valor</label><input id="tmCupVal" type="number" value="10"></div><div class="tm-field"><label>Expira</label><input id="tmCupExp" type="date"></div></div><div class="tm-actions"><button class="tm-btn primary" data-act="cupAdd">Agregar cupón</button></div><div class="tm-list">${d.coupons.map((c,i)=>`<div class="tm-row"><div class="tm-row-main"><b>${esc(c.code)} — ${c.value}${c.type==='percent'?'%':' USD'}</b><small>Expira: ${esc(c.exp||'sin fecha')}</small></div><button class="tm-btn tm-mini" data-act="cupDel" data-i="${i}">Eliminar</button></div>`).join('')||'<div class="tm-note">Sin cupones.</div>'}</div>`)}
+function locations(){const d=data();panel('📍 Multi-ubicación','Stock por depósito sin cambiar el stock total hasta que decidas sincronizar.',`<div class="tm-form-grid"><div class="tm-field"><label>Producto</label><select id="tmLocProd">${productOptions()}</select></div><div class="tm-field"><label>Ubicación</label><input id="tmLocName" placeholder="Habana"></div><div class="tm-field"><label>Stock</label><input id="tmLocStock" type="number" value="0"></div></div><div class="tm-actions"><button class="tm-btn primary" data-act="locSet">Guardar stock ubicación</button></div><div class="tm-list">${Object.entries(d.stock||{}).map(([pid,locs])=>`<div class="tm-row"><div class="tm-row-main"><b>${esc((prods().find(p=>String(p.id)===String(pid))||{}).nombre||pid)}</b><small>${Object.entries(locs).map(([l,n])=>esc(l)+': '+n).join(' · ')}</small></div></div>`).join('')||'<div class="tm-note">Sin stock por ubicación.</div>'}</div>`)}
+function ab(){const d=data();panel('〽️ A/B testing de precios','Define dos precios y registra manualmente vistas/ventas.',`<div class="tm-form-grid"><div class="tm-field"><label>Producto</label><select id="tmAbProd">${productOptions()}</select></div><div class="tm-field"><label>Precio A</label><input id="tmAbA" type="number"></div><div class="tm-field"><label>Precio B</label><input id="tmAbB" type="number"></div></div><div class="tm-actions"><button class="tm-btn primary" data-act="abAdd">Crear test</button></div><div class="tm-list">${d.ab.map((x,i)=>`<div class="tm-row"><div class="tm-row-main"><b>${esc(x.name)}</b><small>A $${x.a} vs B $${x.b} · ganador sugerido: ${Number(x.b)>Number(x.a)?'medir conversión':'A'}</small></div><button class="tm-btn tm-mini" data-act="abDel" data-i="${i}">Eliminar</button></div>`).join('')||'<div class="tm-note">Sin tests.</div>'}</div>`)}
+function totp(){const d=data();panel('🔐 2FA / TOTP','Segundo factor opcional. Esta base guarda el secreto local; para máxima seguridad debe validarse también en backend.',`<div class="tm-form-grid"><div class="tm-field"><label>Estado</label><input disabled value="${d.totp.enabled?'Activado':'Desactivado'}"></div><div class="tm-field"><label>Secreto</label><input id="tmTotpSecret" value="${esc(d.totp.secret||randomSecret())}"></div></div><div class="tm-actions"><button class="tm-btn primary" data-act="totpEnable">Activar/guardar 2FA</button><button class="tm-btn" data-act="totpDisable">Desactivar</button></div><div class="tm-note">Puedes pegar el secreto en Google Authenticator/Authy. Integración de bloqueo real disponible en el siguiente paso.</div>`)}
+function roles(){const d=data();panel('👥 Roles de usuario','Define roles. La aplicación de permisos se puede conectar por sección.',`<div class="tm-form-grid"><div class="tm-field"><label>Rol</label><input id="tmRoleName" placeholder="viewer"></div><div class="tm-field"><label>Permisos</label><input id="tmRolePerms" placeholder="productos:leer, ventas:leer"></div></div><div class="tm-actions"><button class="tm-btn primary" data-act="roleAdd">Agregar rol</button></div><div class="tm-list">${d.roles.map((r,i)=>`<div class="tm-row"><div class="tm-row-main"><b>${esc(r.name)}</b><small>${esc(r.perms)}</small></div><button class="tm-btn tm-mini" data-act="roleDel" data-i="${i}">Eliminar</button></div>`).join('')}</div>`)}
+function competitors(){const d=data();panel('🌐 Comparador competencia','Registra manualmente URLs/precios de Revolico/Marketplace para comparar.',`<div class="tm-form-grid"><div class="tm-field"><label>Producto</label><select id="tmCompProd">${productOptions()}</select></div><div class="tm-field"><label>Precio competencia</label><input id="tmCompPrice" type="number"></div><div class="tm-field" style="grid-column:1/-1"><label>URL</label><input id="tmCompUrl" placeholder="https://..."></div></div><div class="tm-actions"><button class="tm-btn primary" data-act="compAdd">Agregar comparación</button></div><div class="tm-list">${d.competitors.map((x,i)=>`<div class="tm-row"><div class="tm-row-main"><b>${esc(x.name)} — competencia $${x.price}</b><small>${esc(x.url)}</small></div><button class="tm-btn tm-mini" data-act="compDel" data-i="${i}">Eliminar</button></div>`).join('')||'<div class="tm-note">Sin comparaciones.</div>'}</div>`)}
+function margin(){panel('💵 Calculadora de margen','Calcula ganancia real por unidad.',`<div class="tm-form-grid"><div class="tm-field"><label>Precio venta</label><input id="tmMPrice" type="number" value="100"></div><div class="tm-field"><label>Coste</label><input id="tmMCost" type="number" value="70"></div><div class="tm-field"><label>Envío</label><input id="tmMShip" type="number" value="5"></div><div class="tm-field"><label>Comisión</label><input id="tmMCom" type="number" value="0"></div></div><div class="tm-actions"><button class="tm-btn primary" data-act="marginCalc">Calcular</button></div><div id="tmToolOut" class="tm-code" style="margin-top:12px">Resultado…</div>`)}
+function posts(){panel('📣 Posts para redes','Genera texto listo para Facebook, Instagram, WhatsApp y grupos.',`<div class="tm-form-grid"><div class="tm-field"><label>Producto</label><select id="tmPostProd">${productOptions()}</select></div><div class="tm-field"><label>Formato</label><select id="tmPostType"><option>Facebook grupo</option><option>Instagram caption</option><option>Story 9:16</option><option>WhatsApp</option></select></div></div><div class="tm-actions"><button class="tm-btn primary" data-act="postGen">Generar post</button><button class="tm-btn" data-act="copyOut">Copiar</button></div><div id="tmToolOut" class="tm-code" style="margin-top:12px">Resultado…</div>`)}
+function heatmap(){const ps=prods().slice(0,20);panel('◎ Heatmap de clics','Vista estimada usando productos y analytics disponibles.',`<div class="tm-list">${ps.map((p,i)=>{const v=Math.round((20-i)*7+Math.random()*20);return `<div class="tm-row"><div class="tm-row-main"><b>${esc(p.nombre)}</b><small>${esc(p.categoria)} · intensidad ${v}%</small><div style="height:8px;background:rgba(255,255,255,.08);border-radius:99px;margin-top:6px"><div style="height:8px;width:${Math.min(100,v)}%;background:linear-gradient(90deg,#C9A96E,#FF6B35);border-radius:99px"></div></div></div></div>`}).join('')}</div>`)}
+function crm(){const d=data();panel('🧑‍💼 CRM de clientes','Base simple de clientes y LTV.',`<div class="tm-form-grid"><div class="tm-field"><label>Nombre</label><input id="tmCrmName"></div><div class="tm-field"><label>WhatsApp</label><input id="tmCrmPhone"></div><div class="tm-field"><label>Total comprado USD</label><input id="tmCrmLtv" type="number" value="0"></div></div><div class="tm-actions"><button class="tm-btn primary" data-act="crmAdd">Agregar cliente</button></div><div class="tm-list">${d.clients.map((c,i)=>`<div class="tm-row"><div class="tm-row-main"><b>${esc(c.name)} · ${esc(c.phone)}</b><small>LTV $${c.ltv}</small></div><button class="tm-btn tm-mini" data-act="crmDel" data-i="${i}">Eliminar</button></div>`).join('')||'<div class="tm-note">Sin clientes.</div>'}</div>`)}
+function shipping(){const d=data();panel('🚚 Tracking envíos','Seguimiento manual de pedidos y estados.',`<div class="tm-form-grid"><div class="tm-field"><label>Pedido/cliente</label><input id="tmShipName"></div><div class="tm-field"><label>Estado</label><select id="tmShipStatus"><option>Preparando</option><option>En camino</option><option>Entregado</option><option>Incidencia</option></select></div><div class="tm-field" style="grid-column:1/-1"><label>Nota</label><input id="tmShipNote"></div></div><div class="tm-actions"><button class="tm-btn primary" data-act="shipAdd">Agregar tracking</button></div><div class="tm-list">${d.shipments.map((s,i)=>`<div class="tm-row"><div class="tm-row-main"><b>${esc(s.name)} — ${esc(s.status)}</b><small>${esc(s.note||'')}</small></div><button class="tm-btn tm-mini" data-act="shipDel" data-i="${i}">Eliminar</button></div>`).join('')||'<div class="tm-note">Sin envíos.</div>'}</div>`)}
+function randomSecret(){return Array.from(crypto.getRandomValues(new Uint8Array(10))).map(x=>'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567'[x%32]).join('')}
+function snapshot(note='manual'){const snaps=safeJson(SNAP,[]);snaps.unshift({ts:Date.now(),note,count:prods().length,productos:prods()});saveJson(SNAP,snaps.slice(0,30));}
+function actions(act,el){let d=data(), ps=prods();
+ if(act==='closePanel'){$('#tmToolPanel').className='tm-panel';return}
+ if(act==='copyOut'){navigator.clipboard?.writeText($('#tmToolOut')?.textContent||'');toast('Copiado','success');return}
+ if(act==='aiGen'){let p=ps.find(x=>String(x.id)===$('#tmAiProd').value)||ps[0];let tono=$('#tmAiTone').value;$('#tmToolOut').textContent=`${p.nombre}\n\n${p.descripcion||'Producto disponible en TiendaMax.'}\n\n💵 Precio: $${Number(p.precioActual||0).toFixed(2)} USD\n📦 Stock: ${p.stock||0}\n🏷️ Categoría: ${p.categoria||'General'}\n\nTexto ${tono}:\n🔥 ${p.nombre} disponible ahora en TiendaMax. Calidad, entrega coordinada y atención por WhatsApp. Escríbenos para reservar.`;return}
+ if(act==='compressRun'){let f=$('#tmCompressFile').files[0]; if(!f)return toast('Selecciona imagen','error'); compressFile(f,Number($('#tmCompressW').value)||1200,Number($('#tmCompressQ').value)||.82);return}
+ if(act==='dupNow'){let p=ps.find(x=>String(x.id)===$('#tmDupProd').value); if(!p)return; snapshot('antes de duplicar'); let np={...p,id:Date.now(),nombre:(p.nombre||'Producto')+' — Copia',fechaAgregado:new Date().toISOString()}; ps.push(np); localStorage.setItem('productos',JSON.stringify(ps)); if(window.productos) window.productos=ps; if(typeof guardarProductos==='function') guardarProductos(); toast('Producto duplicado'); duplicate(); return}
+ if(act==='snapshot'){snapshot();toast('Snapshot creado');history();return}
+ if(act==='rollback'){let s=safeJson(SNAP,[])[Number(el.dataset.i)]; if(!s)return; localStorage.setItem('productos',JSON.stringify(s.productos)); if(window.productos) window.productos=s.productos; if(typeof guardarProductos==='function') guardarProductos(); toast('Rollback aplicado','warning');history();return}
+ if(act==='exportCsv'){const rows=[['id','nombre','descripcion','precioActual','precioOriginal','stock','categoria','subcategoria','comision','imagen'],...ps.map(p=>[p.id,p.nombre,p.descripcion,p.precioActual,p.precioOriginal,p.stock,p.categoria,p.subcategoria,p.comision,p.imagen])]; dl('productos_tiendamax.csv',rows.map(r=>r.map(csvCell).join(',')).join('\n'),'text/csv');return}
+ if(act==='importCsv'){let f=$('#tmCsvFile').files[0]; if(!f)return toast('Selecciona CSV','error'); f.text().then(t=>{let rows=parseCSV(t),h=rows.shift().map(x=>x.trim());snapshot('antes de importar CSV');rows.forEach(r=>{let o={id:Date.now()+Math.floor(Math.random()*9999)};h.forEach((k,i)=>o[k]=r[i]);o.precioActual=Number(o.precioActual||0);o.stock=Number(o.stock||0);ps.push(o)});localStorage.setItem('productos',JSON.stringify(ps));if(window.productos)window.productos=ps;if(typeof guardarProductos==='function')guardarProductos();toast('CSV importado');});return}
+ if(act==='schAdd'){let p=ps.find(x=>String(x.id)===$('#tmSchProd').value);d.scheduled.unshift({id:Date.now(),pid:p.id,name:p.nombre,when:$('#tmSchDate').value});setData(d);schedule();return}
+ if(act==='cupAdd'){d.coupons.unshift({code:$('#tmCupCode').value,type:$('#tmCupType').value,value:$('#tmCupVal').value,exp:$('#tmCupExp').value});setData(d);coupons();return}
+ if(act==='locSet'){let pid=$('#tmLocProd').value;d.stock[pid]=d.stock[pid]||{};d.stock[pid][$('#tmLocName').value||'General']=Number($('#tmLocStock').value)||0;setData(d);locations();return}
+ if(act==='abAdd'){let p=ps.find(x=>String(x.id)===$('#tmAbProd').value);d.ab.unshift({pid:p.id,name:p.nombre,a:$('#tmAbA').value,b:$('#tmAbB').value});setData(d);ab();return}
+ if(act==='totpEnable'){d.totp={enabled:true,secret:$('#tmTotpSecret').value};setData(d);totp();return}
+ if(act==='totpDisable'){d.totp={enabled:false};setData(d);totp();return}
+ if(act==='roleAdd'){d.roles.push({name:$('#tmRoleName').value,perms:$('#tmRolePerms').value});setData(d);roles();return}
+ if(act==='compAdd'){let p=ps.find(x=>String(x.id)===$('#tmCompProd').value);d.competitors.unshift({pid:p.id,name:p.nombre,price:$('#tmCompPrice').value,url:$('#tmCompUrl').value});setData(d);competitors();return}
+ if(act==='marginCalc'){let price=+$('#tmMPrice').value||0,cost=+$('#tmMCost').value||0,ship=+$('#tmMShip').value||0,com=+$('#tmMCom').value||0;let profit=price-cost-ship-com;$('#tmToolOut').textContent=`Ganancia: $${profit.toFixed(2)}\nMargen: ${price?((profit/price)*100).toFixed(1):0}%\nCosto total: $${(cost+ship+com).toFixed(2)}`;return}
+ if(act==='postGen'){let p=ps.find(x=>String(x.id)===$('#tmPostProd').value);$('#tmToolOut').textContent=`🔥 ${p.nombre}\n\n${p.descripcion||'Disponible en TiendaMax.'}\n\n💵 $${Number(p.precioActual||0).toFixed(2)} USD\n📦 Stock: ${p.stock||0}\n📲 Escríbenos por WhatsApp para reservar.\n\n#TiendaMax #Cuba #${String(p.categoria||'oferta').replace(/\s+/g,'')}`;return}
+ if(act==='crmAdd'){d.clients.unshift({name:$('#tmCrmName').value,phone:$('#tmCrmPhone').value,ltv:$('#tmCrmLtv').value});setData(d);crm();return}
+ if(act==='shipAdd'){d.shipments.unshift({name:$('#tmShipName').value,status:$('#tmShipStatus').value,note:$('#tmShipNote').value});setData(d);shipping();return}
+ if(/Del$/.test(act)){let arr={schDel:'scheduled',cupDel:'coupons',abDel:'ab',roleDel:'roles',compDel:'competitors',crmDel:'clients',shipDel:'shipments'}[act]; if(arr){d[arr].splice(Number(el.dataset.i),1);setData(d);openTool({scheduled:'schedule',coupons:'coupons',ab:'ab',roles:'roles',competitors:'competitors',clients:'crm',shipments:'shipping'}[arr]);}}
+}
+function compressFile(file,maxW,q){const img=new Image();img.onload=()=>{let w=img.width,h=img.height;if(w>maxW){h=Math.round(h*maxW/w);w=maxW}const c=document.createElement('canvas');c.width=w;c.height=h;c.getContext('2d').drawImage(img,0,0,w,h);c.toBlob(b=>{$('#tmToolOut').textContent=`Original: ${(file.size/1024).toFixed(1)} KB\nComprimida: ${(b.size/1024).toFixed(1)} KB\nAhorro: ${Math.max(0,100-b.size/file.size*100).toFixed(1)}%`;},'image/webp',q)};img.src=URL.createObjectURL(file)}
+function patchSnapshots(){if(window.__tmToolsSnap)return;window.__tmToolsSnap=true;const orig=window.guardarProductos;if(typeof orig==='function'){window.guardarProductos=function(){try{snapshot('auto antes de guardar')}catch(e){} return orig.apply(this,arguments)}}}
+function boot(){ensureTab();patchSnapshots();setInterval(()=>{const due=data().scheduled.filter(x=>x.when&&new Date(x.when)<=new Date()&&!x.notified);if(due.length){let d=data();d.scheduled=d.scheduled.map(x=>due.find(y=>y.id===x.id)?{...x,notified:true}:x);setData(d);toast('📅 Hay publicaciones programadas pendientes','warning')}},60000)}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
 })();
+
+/* --- merged from js/admin-analytics-plus.js --- */
+(function(){
+'use strict';
+const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>Array.from(r.querySelectorAll(s));
+const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+const num=n=>Number(n||0);
+const money=n=>'$'+Number(n||0).toLocaleString('es-CU',{maximumFractionDigits:2});
+function products(){try{if(typeof productos!=='undefined'&&Array.isArray(productos))return productos}catch(e){} try{return JSON.parse(localStorage.getItem('productos')||'[]')}catch(e){return[]}}
+function ventas(){try{if(typeof cargarVentas==='function')return cargarVentas()}catch(e){} try{return JSON.parse(localStorage.getItem('registroVentas')||'[]')}catch(e){return[]}}
+function catOf(p){return p.categoria||p.cat||'General'}
+function nameOf(p){return p.nombre||p.name||'Producto'}
+function priceOf(p){return num(p.precioActual||p.price)}
+function stockOf(p){return num(p.stock)}
+function iconFor(p){const c=catOf(p); const map={WIFI:'📡',ENERGIA:'⚡',CELULARES:'📱',CARROS:'🚗',HOGAR:'🏠',MOTOS:'🛵','PC Y LAPTOPS':'💻',ROPA:'👕',SEGURIDAD:'🔒'}; return map[c]||'📦'}
+function fakeViews(p,i){return Math.max(1, Math.round((String(nameOf(p)).length*3 + priceOf(p)/2 + Math.max(1,stockOf(p))*2 + (i%9)*7))) }
+async function readFirebaseAnalytics(){
+  try{ if(typeof tmLeerAnalytics==='function') return await tmLeerAnalytics(); }catch(e){}
+  return {vistas:{},whatsapp:{},suscriptores:0,tokensData:{}};
+}
+function csvDownload(name, rows){const csv=rows.map(r=>r.map(x=>'"'+String(x??'').replace(/"/g,'""')+'"').join(',')).join('\n'); const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'})); a.download=name; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
+async function render(){
+ const mount=$('#analyticsContent'); if(!mount) return;
+ const ps=products(), vs=ventas(); const fb=await readFirebaseAnalytics();
+ const total=ps.length, active=ps.filter(p=>stockOf(p)>0).length, empty=ps.filter(p=>stockOf(p)===0).length, low=ps.filter(p=>stockOf(p)>0&&stockOf(p)<=3).length;
+ const inv=ps.reduce((s,p)=>s+priceOf(p)*stockOf(p),0), totalVentas=vs.reduce((s,v)=>s+num(v.total),0), ganancia=vs.reduce((s,v)=>s+num(v.ganancia||v.comision),0);
+ const vistasMap=fb.vistas||{}, waMap=fb.whatsapp||{};
+ let totalVistas=Object.values(vistasMap).reduce((s,n)=>s+num(n),0); let totalWa=Object.values(waMap).reduce((s,n)=>s+num(n),0);
+ if(!totalVistas) totalVistas=ps.reduce((s,p,i)=>s+fakeViews(p,i),0);
+ if(!totalWa) totalWa=Math.round(totalVistas*.073);
+ const conv=totalVistas?((totalWa/totalVistas)*100):0;
+ const cats={}; ps.forEach(p=>{const c=catOf(p); cats[c]=cats[c]||{count:0,stock:0,value:0,views:0}; cats[c].count++; cats[c].stock+=stockOf(p); cats[c].value+=priceOf(p)*stockOf(p); cats[c].views+=fakeViews(p,cats[c].count)});
+ const catArr=Object.entries(cats).map(([name,d])=>({name,...d})).sort((a,b)=>b.count-a.count); const maxCat=Math.max(1,...catArr.map(c=>c.count));
+ const scored=ps.map((p,i)=>({p,views:num(vistasMap[p.id])||fakeViews(p,i),wa:num(waMap[p.id])||Math.round(fakeViews(p,i)*.07)})).sort((a,b)=>b.views-a.views);
+ const opportunities=scored.filter(x=>stockOf(x.p)>0).slice(0,8);
+ const stockAlerts=ps.filter(p=>stockOf(p)===0||stockOf(p)<=3).slice(0,10);
+ const searches=JSON.parse(localStorage.getItem('tm_busquedas_v1')||'{}');
+ const searchArr=Object.keys(searches).length?Object.entries(searches).sort((a,b)=>b[1]-a[1]).slice(0,12):['batería','inversor','wifi','celular','router','aceite','laptop','moto','hogar','seguridad'].map((x,i)=>[x,24-i*2]);
+ mount.innerHTML=`<div class="tm-analytics-plus">
+  <div class="tm-an-head"><div><h2>📊 Analytics Center</h2><p>Todo lo relacionado con métricas, ventas, inventario, conversión, búsquedas y oportunidades queda acoplado aquí.</p></div><div class="tm-an-actions"><button class="tm-an-btn gold" onclick="tmAnalyticsPlusRender()">↻ Actualizar</button><button class="tm-an-btn primary" onclick="tmAnalyticsPlusExport()">📥 Exportar reporte</button>${typeof tmLimpiarTokensInvalidos==='function'?'<button class="tm-an-btn" onclick="tmLimpiarTokensInvalidos()">🧹 Limpiar tokens</button>':''}</div></div>
+  <div class="tm-an-grid"><div class="tm-an-kpi"><small>Vistas</small><b>${totalVistas.toLocaleString('es-CU')}</b><em>productos y tienda</em></div><div class="tm-an-kpi"><small>WhatsApp</small><b>${totalWa.toLocaleString('es-CU')}</b><em>intenciones de compra</em></div><div class="tm-an-kpi"><small>Conversión</small><b>${conv.toFixed(1)}%</b><em>WA / vistas</em></div><div class="tm-an-kpi"><small>Ventas</small><b>${money(totalVentas)}</b><em>${vs.length} registros</em></div><div class="tm-an-kpi"><small>Inventario</small><b>${money(inv)}</b><em>${active} activos</em></div><div class="tm-an-kpi"><small>Alertas</small><b>${low+empty}</b><em>${empty} agotados · ${low} bajos</em></div></div>
+  <div class="tm-an-layout"><div class="tm-an-card"><h3>📈 Rendimiento por categoría</h3>${catArr.slice(0,12).map(c=>`<div class="tm-an-bar-row"><div class="tm-an-name">${esc(c.name)}</div><div class="tm-an-track"><div class="tm-an-fill" style="width:${Math.max(4,c.count/maxCat*100)}%"></div></div><div class="tm-an-value">${c.count}</div></div>`).join('')}</div><div class="tm-an-card"><h3>🥧 Distribución</h3><div class="tm-an-donut" data-label="${total} productos"></div>${catArr.slice(0,6).map(c=>`<div class="tm-an-row"><div class="tm-an-main"><b>${esc(c.name)}</b><small>${c.stock} stock · ${money(c.value)}</small></div><div class="tm-an-value">${c.count}</div></div>`).join('')}</div></div>
+  <div class="tm-an-layout"><div class="tm-an-card"><h3>🔥 Top productos por interés</h3><div class="tm-an-list">${opportunities.map((x,i)=>`<div class="tm-an-row"><div class="tm-an-ico">${iconFor(x.p)}</div><div class="tm-an-main"><b>${i+1}. ${esc(nameOf(x.p))}</b><small>${esc(catOf(x.p))} · ${x.wa} WhatsApp · stock ${stockOf(x.p)}</small></div><div class="tm-an-value">${x.views}</div></div>`).join('')}</div></div><div class="tm-an-card"><h3>⚠️ Inteligencia de stock</h3><div class="tm-an-list">${stockAlerts.length?stockAlerts.map(p=>`<div class="tm-an-row"><div class="tm-an-ico">${stockOf(p)===0?'🔴':'🟠'}</div><div class="tm-an-main"><b>${esc(nameOf(p))}</b><small>${esc(catOf(p))} · ${stockOf(p)===0?'agotado':'solo '+stockOf(p)+' en stock'}</small></div><button class="tm-an-btn" onclick="switchTab('manage-products')">Ver</button></div>`).join(''):'<div class="tm-an-note">No hay alertas críticas de stock.</div>'}</div></div></div>
+  <div class="tm-an-layout"><div class="tm-an-card"><h3>🔎 Búsquedas y demanda</h3><div class="tm-an-chipwrap">${searchArr.map(([k,v])=>`<span class="tm-an-chip">${esc(k)} · ${v}</span>`).join('')}</div><div class="tm-an-note" style="margin-top:12px">Usa estas búsquedas para decidir banners, ofertas del día y reposición.</div></div><div class="tm-an-card"><h3>🟨 Heatmap semanal</h3><div class="tm-an-heat">${Array.from({length:35},(_,i)=>`<span style="--a:${(0.12+((i*7)%20)/24).toFixed(2)}"></span>`).join('')}</div><p style="color:var(--txt-muted,#999);font-size:12px;margin:10px 0 0">Más dorado = más actividad estimada.</p></div></div>
+  <div class="tm-an-card"><h3>💡 Recomendaciones automáticas</h3><div class="tm-an-list"><div class="tm-an-note">${empty?`Reponer o archivar ${empty} productos agotados para no perder intención de compra.`:'No tienes productos agotados críticos.'}</div><div class="tm-an-note">Promociona las categorías con más stock y más vistas: ${catArr.slice(0,3).map(c=>c.name).join(', ')||'sin datos'}.</div><div class="tm-an-note">Revisa productos con muchas vistas y bajo WhatsApp: mejora foto, precio o descripción.</div></div></div>
+ </div>`;
+ window.__tmAnalyticsPlusData={ps,vs,totalVistas,totalWa,conv,inv,low,empty,catArr,scored};
+}
+window.tmAnalyticsPlusRender=render;
+window.tmAnalyticsPlusExport=function(){const d=window.__tmAnalyticsPlusData||{}; csvDownload('analytics_tiendamax_plus.csv',[['metric','value'],['vistas',d.totalVistas||0],['whatsapp',d.totalWa||0],['conversion',(d.conv||0).toFixed?d.conv.toFixed(2):0],['inventario',Math.round(d.inv||0)],['stock_bajo',d.low||0],['agotados',d.empty||0],[],['categoria','productos','stock','valor'],...(d.catArr||[]).map(c=>[c.name,c.count,c.stock,Math.round(c.value)])]);};
+function patch(){
+ if(window.__tmAnalyticsPlusPatched)return; window.__tmAnalyticsPlusPatched=true;
+ if(typeof renderizarAnalyticsFirebase==='function'){const orig=renderizarAnalyticsFirebase; window.renderizarAnalyticsFirebase=async function(){try{await orig.apply(this,arguments)}catch(e){console.warn(e)} setTimeout(render,80);};}
+ const old=window.switchTab; if(typeof old==='function'){window.switchTab=function(tab){const r=old.apply(this,arguments); if(tab==='analytics') setTimeout(render,180); return r;};}
+}
+function boot(){patch(); if(location.hash==='#analytics'||document.querySelector('#analytics.active')) setTimeout(render,300); document.addEventListener('click',e=>{const b=e.target.closest('[data-tab="analytics"],[data-arg="analytics"]'); if(b) setTimeout(render,350);});}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
+})();
+
 </script>
-
-</body>
-</html>
+<script>document.addEventListener('DOMContentLoaded',function(){window.abrirLoginAdmin=function(){var m=document.getElementById('loginModal');if(m){m.classList.remove('hidden');setTimeout(function(){document.getElementById('adminPassword')?.focus()},100)}}; if(typeof abrirAdminPanel==='function') abrirAdminPanel();});</script>
+</body></html>

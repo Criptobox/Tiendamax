@@ -1,5 +1,6 @@
 // ═══════════════════════════════════════════════════════
-// TiendaMax — Service Worker v170
+// TiendaMax — Service Worker v171 — Admin final fusion
+// v171: admin final fusion — refresca admin.html y css/admin.css en todos los clientes.
 // v155: estilos hero inline — independientes del bundle, botones iguales garantizados.
 // v154: hero centrado completo + botones iguales + bundle incluido.
 // v150: borde dorado + acento naranja en tarjetas Más Vendidos (móvil).
@@ -37,11 +38,12 @@
 //      usan el mismo helper _mensajeOrdenWA con formato premium.
 // ═══════════════════════════════════════════════════════
 
-const CACHE_NAME = 'tiendamax-202606050530';
+const CACHE_NAME = 'tiendamax-admin-final-20260605-01';
 
 const STATIC_ASSETS = [
   '/',
   '/index.html',
+  '/admin.html',
   '/css/styles.css',
   '/css/animations.css',
   '/css/styles.banner.fix.css',
