@@ -1,5 +1,6 @@
 // ═══════════════════════════════════════════════════════
-// TiendaMax — Service Worker v175 — Mobile rescue
+// TiendaMax — Service Worker v176 — Add product IA order
+// v176: add product IA order debajo de descripción y oculta flotante en móvil.
 // v175: mobile rescue — layout móvil robusto y visible.
 // v174: topbar clean — deja solo campana de suscriptores y limpia marca.
 // v173: topbar search/sync/theme/bell/subscribers funcional.
@@ -42,7 +43,7 @@
 //      usan el mismo helper _mensajeOrdenWA con formato premium.
 // ═══════════════════════════════════════════════════════
 
-const CACHE_NAME = 'tiendamax-admin-final-20260605-05';
+const CACHE_NAME = 'tiendamax-admin-final-20260605-06';
 
 const STATIC_ASSETS = [
   '/',
