@@ -38,7 +38,7 @@ RESERVED = [
     # ── data-action en admin.html ──
     'agregarCategoria', 'agregarGrupoFB', 'agregarSubcategoria', 'cerrarAdminPanel',
     'cerrarEditModal', 'cerrarLoginModal', 'desactivarCountdown', 'desactivarOfertaDia',
-    'guardarCountdown', 'guardarGruposFB', 'guardarNumeroWhatsApp', 'guardarOfertaDia2',
+    'guardarCountdown', 'guardarGruposFB', 'guardarNumeroWhatsApp', 'guardarOfertaDia', 'guardarOfertaDia2',
     'guardarRevolicoConfig', 'mostrarSelectorAsistenteFacebook', 'mostrarSelectorAsistenteRevolico',
     'sincronizarTodoConGitHub', 'switchTab',
     # ── onclick inline index.html ──

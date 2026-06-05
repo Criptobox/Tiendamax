@@ -2056,6 +2056,7 @@ async function agregarProductoForm(event) {
             descuento: 0,
             stock: parseInt(document.getElementById('productStock').value) || 0,
             comision: parseFloat(document.getElementById('productComision')?.value) || 0,
+            comisionMoneda: document.getElementById('productComisionMoneda')?.value || 'USD',
             categoria: document.getElementById('productCategory').value,
             subcategoria: (document.getElementById('productSubcategory') && document.getElementById('productSubcategory').value) ? document.getElementById('productSubcategory').value : '',
             masVendido: masVendidoVal ? masVendidoVal.value === 'true' : false,
@@ -2076,6 +2077,10 @@ async function agregarProductoForm(event) {
         marcarProductoModificado(producto.id);
         sincronizarConGitHub();
         document.getElementById('productForm').reset();
+        const _mon1 = document.getElementById('productComisionMoneda');
+        if (_mon1) _mon1.value = 'USD';
+        const _tog1 = document.getElementById('tmMonedaToggle1');
+        if (_tog1) _tog1.querySelectorAll('.tm-moneda-btn').forEach(b => b.classList.toggle('active', b.dataset.moneda === 'USD'));
         mostrarNotificacion('✅ ¡Producto agregado exitosamente!');
         if (window.TiendaMaxPush) {
             window.TiendaMaxPush.nuevoProducto(producto.nombre, producto.precioActual, producto.id, producto.imagen);
@@ -3069,6 +3074,11 @@ function abrirEditModal(id) {
     if (document.getElementById('editProductGarantia')) document.getElementById('editProductGarantia').value = p.garantia || '';
     if (document.getElementById('editProductDevolucion')) document.getElementById('editProductDevolucion').checked = p.devolucion || false;
     if (document.getElementById('editProductComision')) document.getElementById('editProductComision').value = p.comision || '';
+    const _editComMon = p.comisionMoneda || 'USD';
+    const _editHidMon = document.getElementById('editProductComisionMoneda');
+    if (_editHidMon) _editHidMon.value = _editComMon;
+    const _editToggle = document.getElementById('tmMonedaToggleEdit');
+    if (_editToggle) _editToggle.querySelectorAll('.tm-moneda-btn').forEach(b => b.classList.toggle('active', b.dataset.moneda === _editComMon));
 
     const masVendidoSel = document.getElementById('editProductMasVendido');
     if (masVendidoSel) masVendidoSel.value = p.masVendido ? 'true' : 'false';
@@ -3135,7 +3145,8 @@ async function guardarProductoEditado(event) {
             usado: document.getElementById('editProductUsado') ? document.getElementById('editProductUsado').checked : productos[index].usado,
             garantia: document.getElementById('editProductGarantia') ? document.getElementById('editProductGarantia').value.trim() : productos[index].garantia,
             devolucion: document.getElementById('editProductDevolucion') ? document.getElementById('editProductDevolucion').checked : productos[index].devolucion,
-            comision: document.getElementById('editProductComision') ? parseFloat(document.getElementById('editProductComision').value) || 0 : productos[index].comision || 0
+            comision: document.getElementById('editProductComision') ? parseFloat(document.getElementById('editProductComision').value) || 0 : productos[index].comision || 0,
+            comisionMoneda: document.getElementById('editProductComisionMoneda')?.value || productos[index].comisionMoneda || 'USD'
         };
 
         const errores = validarProducto(productoActualizado);
@@ -3998,7 +4009,7 @@ function actualizarListaProductos() {
                     <div class="tm-prod-info">
                         <div class="tm-prod-name">${_nm}${producto.masVendido ? ' 🔥' : ''}</div>
                         <div class="tm-prod-meta">$${Number(producto.precioActual).toFixed(2)} USD${producto.descuento > 0 ? ' · <span style="color:#e74c3c;">−'+safeNum(producto.descuento)+'%</span>' : ''}</div>
-                        ${producto.comision > 0 ? `<div class="tm-prod-commission">💰 Comisión: $${Number(producto.comision).toFixed(2)}</div>` : ''}
+                        ${producto.comision > 0 ? `<div class="tm-prod-commission">💰 Comisión: ${producto.comisionMoneda === 'MN' ? '' : '$'}${Number(producto.comision).toFixed(2)} ${producto.comisionMoneda || 'USD'}</div>` : ''}
                     </div>
                     <button type="button" class="tm-prod-icon-btn edit" onclick="abrirEditModal(${_id})" title="Editar">✏️</button>
                     <button type="button" class="tm-prod-icon-btn del" onclick="eliminarProducto(${_id})" title="Eliminar">🗑️</button>
@@ -4215,6 +4226,7 @@ function registrarVenta(productoId, cantidad) {
         cantidad: cantidad || 1,
         precio: p.precioActual,
         comision: p.comision || 0,
+        comisionMoneda: p.comisionMoneda || 'USD',
         total: p.precioActual * (cantidad || 1),
         ganancia: (p.comision || 0) * (cantidad || 1)
     };
@@ -4762,6 +4774,7 @@ function guardarOfertaDia2() {
     const textoEl = document.getElementById('ofertaDiaTexto2');
     _guardarOfertaDiaDesde(sel, textoEl);
 }
+var guardarOfertaDia = guardarOfertaDia2;
 function _guardarOfertaDiaDesde(sel, textoEl) {
     if (!sel || !sel.value) { mostrarNotificacion('⚠️ Selecciona un producto', 'error'); return; }
     const texto = textoEl ? (textoEl.value.trim() || '🔥 OFERTA DEL DÍA') : '🔥 OFERTA DEL DÍA';
@@ -7772,4 +7785,37 @@ window.addEventListener('popstate', function() {
         deferredPrompt = null;
         try { localStorage.removeItem(DISMISS_KEY); } catch (e) {}
     });
+})();
+
+// ── Gallery preview para Agregar producto ───────────────────────
+(function () {
+    function initGalleryPreview() {
+        var inp = document.getElementById('productImagesExtra');
+        var container = document.getElementById('galleryThumbsPreview');
+        if (!inp || !container) return;
+        inp.addEventListener('change', function () {
+            container.innerHTML = '';
+            Array.from(this.files).slice(0, 8).forEach(function (file) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    var wrap = document.createElement('div');
+                    wrap.className = 'gal';
+                    var img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.style.cssText = 'width:100%;height:100%;object-fit:cover;border-radius:6px;';
+                    var x = document.createElement('span');
+                    x.textContent = '×';
+                    x.onclick = function () { wrap.remove(); };
+                    wrap.appendChild(img);
+                    wrap.appendChild(x);
+                    container.appendChild(wrap);
+                };
+                reader.readAsDataURL(file);
+            });
+        });
+        // Reset gallery on form reset
+        var form = document.getElementById('productForm');
+        if (form) form.addEventListener('reset', function () { container.innerHTML = ''; });
+    }
+    document.addEventListener('DOMContentLoaded', initGalleryPreview);
 })();
