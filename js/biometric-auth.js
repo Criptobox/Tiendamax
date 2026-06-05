@@ -1,7 +1,6 @@
 /* TiendaMax — Biometric Auth (WebAuthn / Passkeys)
- * Usa la API Platform Authenticator del navegador:
- * Touch ID, Face ID, Windows Hello, huella Android.
- * Requiere HTTPS en producción (ya configurado en tiendamax.org).
+ * Touch ID · Face ID · Windows Hello · Huella Android
+ * Requiere HTTPS — ok en tiendamax.org (GitHub Pages).
  */
 (function () {
   'use strict';
@@ -9,11 +8,9 @@
   var LS_KEY = 'tm_bio_cred';
 
   function notify(msg, type) {
-    if (typeof window.mostrarNotificacion === 'function') {
+    if (typeof window.mostrarNotificacion === 'function')
       window.mostrarNotificacion(msg, type || 'info');
-    } else {
-      alert(msg);
-    }
+    else alert(msg);
   }
 
   function supported() {
@@ -35,7 +32,7 @@
     return u8.buffer;
   }
 
-  /* ── Registro (desde Configuración del panel) ── */
+  /* ── Registro ── */
   window.tmRegistrarHuella = async function () {
     if (!supported()) {
       notify('Tu navegador no soporta autenticación biométrica.', 'error');
@@ -52,7 +49,7 @@
             displayName: 'Administrador TiendaMax'
           },
           pubKeyCredParams: [
-            { alg: -7,   type: 'public-key' },
+            { alg: -7, type: 'public-key' },
             { alg: -257, type: 'public-key' }
           ],
           authenticatorSelection: {
@@ -70,11 +67,14 @@
         rawId: bufToB64(cred.rawId)
       }));
       notify('✅ Huella registrada. Ya puedes entrar sin contraseña.', 'success');
-      refreshUI();
+      refreshAll();
     } catch (e) {
-      if (e.name === 'NotAllowedError') notify('Registro cancelado.', 'info');
-      else if (e.name === 'InvalidStateError') notify('Credencial ya registrada en este dispositivo.', 'warning');
-      else notify('Error al registrar: ' + e.message, 'error');
+      if (e.name === 'NotAllowedError')
+        notify('Registro cancelado por el usuario.', 'info');
+      else if (e.name === 'InvalidStateError')
+        notify('Esta huella ya está registrada en este dispositivo.', 'warning');
+      else
+        notify('Error al registrar: ' + e.message, 'error');
     }
   };
 
@@ -82,7 +82,7 @@
   window.tmEliminarHuella = function () {
     localStorage.removeItem(LS_KEY);
     notify('Huella eliminada. Usa contraseña para acceder.', 'info');
-    refreshUI();
+    refreshAll();
   };
 
   /* ── Login con huella ── */
@@ -93,14 +93,18 @@
     }
     var cred = storedCred();
     if (!cred) {
-      notify('No hay huella registrada. Entra con contraseña y regístrala en Configuración → Seguridad.', 'info');
+      notify('Sin huella registrada. Entra con contraseña y ve a Configuración → Seguridad biométrica.', 'info');
       return;
     }
     try {
       var assertion = await navigator.credentials.get({
         publicKey: {
           challenge: crypto.getRandomValues(new Uint8Array(32)),
-          allowCredentials: [{ type: 'public-key', id: b64ToBuf(cred.rawId), transports: ['internal'] }],
+          allowCredentials: [{
+            type: 'public-key',
+            id: b64ToBuf(cred.rawId),
+            transports: ['internal']
+          }],
           userVerification: 'required',
           timeout: 60000
         }
@@ -116,19 +120,44 @@
         }
       }
     } catch (e) {
-      if (e.name === 'NotAllowedError') notify('Autenticación cancelada o huella no reconocida.', 'info');
-      else notify('Error al autenticar: ' + e.message, 'error');
+      if (e.name === 'NotAllowedError')
+        notify('Huella no reconocida o cancelada.', 'info');
+      else
+        notify('Error: ' + e.message, 'error');
     }
   };
 
-  /* ── Actualizar botón de login en la pantalla de acceso ── */
-  function updateLoginBtn() {
-    var btn = document.getElementById('btnBiometricLogin');
-    if (!btn) return;
-    btn.style.display = (supported() && !!storedCred()) ? '' : 'none';
+  /* ── Tab Biométrico en login: contenido dinámico ── */
+  function updateLoginTab() {
+    var box = document.getElementById('loginBioContent');
+    if (!box) return;
+    var hasCred = !!storedCred();
+    var sup = supported();
+
+    if (!sup) {
+      box.innerHTML =
+        '<div style="font-size:48px;margin:16px 0">🔐</div>' +
+        '<p style="color:#888;font-size:14px;margin:0">Tu navegador no soporta biometría WebAuthn.</p>';
+      return;
+    }
+
+    if (hasCred) {
+      box.innerHTML =
+        '<div style="font-size:56px;margin:16px 0">👆</div>' +
+        '<p style="color:#aaa;margin:0 0 22px;font-size:15px">Toca el sensor de tu dispositivo</p>' +
+        '<button id="tmBioTabBtn" class="login-submit" type="button">👆 Entrar con huella / Face ID</button>';
+      var btn = document.getElementById('tmBioTabBtn');
+      if (btn) btn.addEventListener('click', function () { window.loginConBiometria(); });
+    } else {
+      box.innerHTML =
+        '<div style="font-size:48px;margin:16px 0">🔐</div>' +
+        '<p style="color:#aaa;font-size:14px;margin:0 0 14px">Aún no hay huella registrada.</p>' +
+        '<p style="color:#C9A96E;font-size:13px;line-height:1.5;margin:0">Accede con contraseña y ve a<br>' +
+        '<b>Configuración → Seguridad biométrica</b><br>para registrar tu huella.</p>';
+    }
   }
 
-  /* ── Actualizar sección dentro del panel (Configuración → Seguridad) ── */
+  /* ── Sección dentro del panel (Configuración) ── */
   function updateBioSection() {
     var el = document.getElementById('tmBioSection');
     if (!el) return;
@@ -144,19 +173,23 @@
         '<button type="button" onclick="window.tmRegistrarHuella()" style="padding:7px 14px;background:rgba(201,169,110,.14);border:1px solid rgba(201,169,110,.3);border-radius:8px;color:#C9A96E;cursor:pointer;font-size:13px">👆 Registrar huella / Face ID</button>';
   }
 
-  function refreshUI() {
-    updateLoginBtn();
+  function refreshAll() {
+    updateLoginTab();
     updateBioSection();
   }
 
   /* ── Init ── */
   document.addEventListener('DOMContentLoaded', function () {
-    refreshUI();
-    var loginBtn = document.getElementById('btnBiometricLogin');
-    if (loginBtn) loginBtn.addEventListener('click', function (e) { e.preventDefault(); window.loginConBiometria(); });
+    refreshAll();
   });
 
-  /* Refrescar sección cuando el panel admin se abre */
+  /* Actualizar tab biométrico al cambiar a él */
+  document.addEventListener('click', function (e) {
+    var tab = e.target.closest('[onclick*="bio"]');
+    if (tab) setTimeout(updateLoginTab, 50);
+  });
+
+  /* Actualizar sección de config cuando el panel se abre */
   var obs = new MutationObserver(function (muts) {
     muts.forEach(function (m) {
       if (m.type === 'attributes' && m.attributeName === 'class') {
