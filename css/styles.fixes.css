@@ -150,3 +150,6 @@ html body .rel-card-price-mn{display:block;font-size:10px;color:#C9A96E;margin-t
 /* Botón compartir carrito */
 html body .btn-compartir-carrito{display:block;width:100%;background:rgba(255,255,255,0.06);color:#aaa;border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:10px 14px;font-size:13px;cursor:pointer;margin-top:8px;text-align:center;transition:background .2s,color .2s}
 html body .btn-compartir-carrito:hover,html body .btn-compartir-carrito:active{background:rgba(255,255,255,0.12);color:#fff}
+/* Badges en cards: columna vertical en esquina superior izquierda */
+html body .tm-badges-col{position:absolute;top:8px;left:8px;z-index:5;display:flex;flex-direction:column;align-items:flex-start;gap:4px}
+html body .tm-badges-col .badge-vendido,html body .tm-badges-col .badge-agotado,html body .tm-badges-col .badge-oferta-dia,html body .tm-badges-col .badge-rebajado,html body .tm-badges-col .badge-stock-urgente,html body .tm-badges-col .badge-nuevo{position:static !important;top:auto !important;left:auto !important;right:auto !important;bottom:auto !important}

@@ -6912,6 +6912,22 @@ async function guardarTasaMNAdmin() {
                     imgWrap.appendChild(b);
                 }
             }
+
+            // Agrupar todos los badges de la esquina izquierda en columna vertical
+            if (!card.querySelector('.tm-badges-col')) {
+                const leftBadges = Array.from(card.querySelectorAll(
+                    '.badge-vendido,.badge-agotado,.badge-oferta-dia,.badge-rebajado,.badge-stock-urgente,.badge-nuevo'
+                ));
+                if (leftBadges.length > 0) {
+                    const col = document.createElement('div');
+                    col.className = 'tm-badges-col';
+                    card.appendChild(col);
+                    leftBadges.forEach(function(b) {
+                        b.style.cssText = '';
+                        col.appendChild(b);
+                    });
+                }
+            }
         });
 
         // Separador visual entre disponibles y agotados
