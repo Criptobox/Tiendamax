@@ -197,8 +197,8 @@ window.tmAnalyticsPlusRender=render;
 window.tmAnalyticsPlusExport=function(){const d=window.__tmAnalyticsPlusData||{}; csvDownload('analytics_tiendamax_plus.csv',[['metric','value'],['vistas',d.totalVistas||0],['whatsapp',d.totalWa||0],['conversion',(d.conv||0).toFixed?d.conv.toFixed(2):0],['inventario',Math.round(d.inv||0)],['stock_bajo',d.low||0],['agotados',d.empty||0],[],['categoria','productos','stock','valor'],...(d.catArr||[]).map(c=>[c.name,c.count,c.stock,Math.round(c.value)])]);};
 function patch(){
  if(window.__tmAnalyticsPlusPatched)return; window.__tmAnalyticsPlusPatched=true;
- if(typeof renderizarAnalyticsFirebase==='function'){const orig=renderizarAnalyticsFirebase; window.renderizarAnalyticsFirebase=async function(){try{await orig.apply(this,arguments)}catch(e){console.warn(e)} setTimeout(render,80);};}
- const old=window.switchTab; if(typeof old==='function'){window.switchTab=function(tab){const r=old.apply(this,arguments); if(tab==='analytics') setTimeout(render,180); return r;};}
+ if(typeof renderizarAnalyticsFirebase==='function'){window.renderizarAnalyticsFirebase=render;}
+ const old=window.switchTab; if(typeof old==='function'){window.switchTab=function(tab){const r=old.apply(this,arguments); if(tab==='analytics') render(); return r;};}
 }
 function boot(){patch(); if(location.hash==='#analytics'||document.querySelector('#analytics.active')) setTimeout(render,300); document.addEventListener('click',e=>{const b=e.target.closest('[data-tab="analytics"],[data-arg="analytics"]'); if(b) setTimeout(render,350);});}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
