@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta name="tiendamax-admin-final-version" content="admin-final-20260605-02">
-<script>window.TIENDAMAX_ADMIN_FINAL_VERSION="admin-final-20260605-02";</script>
+<meta name="tiendamax-admin-final-version" content="admin-final-20260605-03">
+<script>window.TIENDAMAX_ADMIN_FINAL_VERSION="admin-final-20260605-03";</script>
     <meta charset="UTF-8">
     <script>
     // Aplicar tema guardado lo antes posible para evitar parpadeo
@@ -1076,7 +1076,7 @@
     // Service Worker con auto-actualización y reload cuando hay versión nueva
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-            navigator.serviceWorker.register('/sw.js?v=admin-final-20260605-02', { updateViaCache: 'none' }).then(reg => {
+            navigator.serviceWorker.register('/sw.js?v=admin-final-20260605-03', { updateViaCache: 'none' }).then(reg => {
                 // Si hay un SW esperando, decirle que tome el control YA
                 if (reg.waiting) reg.waiting.postMessage('SKIP_WAITING');
 
@@ -1460,7 +1460,7 @@ html body.light-mode .notif-modal-footer { color: #888 !important; }
         if (count >= 3) {
             count = 0;
             if (typeof abrirLoginAdmin === 'function') abrirLoginAdmin();
-            else window.location.href = 'admin.html?v=admin-final-20260605-02';
+            else window.location.href = 'admin.html?v=admin-final-20260605-03';
             return;
         }
         timer = setTimeout(function() { count = 0; }, 1000);

@@ -2,7 +2,7 @@
 <html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex,nofollow"><title>TiendaMax Admin</title>
 <link rel="icon" href="/favicon.svg"><link rel="stylesheet" href="css/admin.css?v=final-1"></head><body>
 <div id="loginModal" class="modal hidden"><div class="login-card"><div class="login-mark">M</div><h1 class="login-title">TiendaMax Admin</h1><div class="login-sub">Panel de administración</div><div class="login-tabs"><div class="login-tab active" onclick="tmLoginTab('pass')">🔑 Contraseña</div><div class="login-tab" onclick="tmLoginTab('bio')">👆 Biométrico</div></div><div id="loginPass" class="login-form"><form onsubmit="verificarPassword(event)"><label class="login-label">Contraseña de administrador</label><input class="login-input" id="adminPassword" type="password" autocomplete="current-password" autofocus><button class="login-submit" type="submit">🔓 ACCEDER AL PANEL</button></form><div class="login-or">o</div><button type="button" id="btnBiometricLogin" class="login-bio">👆 Acceder con huella / Face ID</button><button type="button" id="btnBiometricRegister" style="display:none">Registrar biometría</button></div><div id="loginBio" class="login-form" style="display:none;text-align:center"><div style="font-size:64px;margin:18px 0">👆</div><p style="color:#aaa;margin:0 0 18px">Toca el sensor de tu dispositivo para autenticarte</p><button class="login-submit" type="button" onclick="if(window.loginConBiometria)loginConBiometria()">Simular autenticación</button></div><div id="biometricLoginBox" style="display:none"></div><div class="login-foot">🔐 Sesión cifrada · Last login hace 4 horas desde <b>Chrome · La Habana</b><br>¿Problemas? <a href="#">Recuperar acceso</a></div></div></div>
-<div id="adminPanel" class="admin-panel hidden"><div class="tm-app"><header class="tm-top"><div class="brand"><div class="logo">M</div><div><b>TiendaMax</b><small>ADMIN 2.0 · REAL</small></div></div><div class="search">🔍 <span>Buscar productos, acciones, páginas...</span><span class="kbd">⌘K</span></div><div class="topicons"><span class="sync-pill">Sincronizado</span><span>☾</span><span>🔔</span><div class="avatar">CR</div><button data-action="cerrarAdminPanel" class="close-btn" title="Cerrar">×</button></div></header>
+<div id="adminPanel" class="admin-panel hidden"><div class="tm-app"><header class="tm-top"><div class="brand"><div class="logo">M</div><div><b>TiendaMax</b><small>ADMIN 2.0 · REAL</small></div></div><div class="search tm-top-search-wrap">🔍 <input id="tmTopSearch" class="tm-top-search" placeholder="Buscar productos, acciones, páginas..." autocomplete="off"><span class="kbd">⌘K</span><div id="tmSearchResults" class="tm-search-results"></div></div><div class="topicons"><button type="button" id="tmTopSync" class="sync-pill tm-top-btn">Sincronizado</button><button type="button" id="tmTopTheme" class="tm-icon-btn" title="Cambiar tema">☾</button><button type="button" id="tmTopBell" class="tm-icon-btn" title="Notificaciones">🔔</button><button type="button" id="tmTopSubs" class="tm-subs-pill" title="Suscriptores push">🔔 <b>—</b></button><div class="avatar">CR</div><button data-action="cerrarAdminPanel" class="close-btn" title="Cerrar">×</button></div></header>
 <aside class="tm-side admin-tabs-desktop"><button class="tab-btn active" data-action="switchTab" data-arg="inicio" data-tab="inicio">⌂ <span class="txt">Inicio</span></button><button class="tab-btn" data-action="switchTab" data-arg="manage-products" data-tab="manage-products">◇ <span class="txt">Productos</span><span class="badge" id="dashLowBadge">!</span></button><button class="tab-btn" data-action="switchTab" data-arg="add-products" data-tab="add-products">⊕ <span class="txt">Agregar</span></button><button class="tab-btn" data-action="switchTab" data-arg="publicar-ahora" data-tab="publicar-ahora">✈ <span class="txt">Publicar</span></button><div class="navlabel">Catálogo</div><button class="tab-btn" data-action="switchTab" data-arg="manage-categories" data-tab="manage-categories">🏷 <span class="txt">Categorías</span></button><button class="tab-btn" data-action="switchTab" data-arg="manage-subcategories" data-tab="manage-subcategories">📁 <span class="txt">Subcategorías</span></button><button class="tab-btn" data-action="switchTab" data-arg="oferta-dia" data-tab="oferta-dia">🏷 <span class="txt">Oferta del día</span><span class="badge gold">HOT</span></button><button class="tab-btn" data-action="switchTab" data-arg="apariencia" data-tab="apariencia">🎨 <span class="txt">Apariencia</span></button><div class="navlabel">Datos</div><button class="tab-btn" data-action="switchTab" data-arg="ventas" data-tab="ventas">$ <span class="txt">Ventas</span></button><button class="tab-btn" data-action="switchTab" data-arg="analytics" data-tab="analytics">▥ <span class="txt">Analytics</span></button><button class="tab-btn" data-action="switchTab" data-arg="historial" data-tab="historial">◷ <span class="txt">Historial</span><span class="badge gold">NEW</span></button><div class="navlabel">Sistema</div><button class="tab-btn" data-action="switchTab" data-arg="configuracion" data-tab="configuracion">⚙ <span class="txt">Configuración</span></button><button class="tab-btn" data-action="switchTab" data-arg="atajos" data-tab="atajos">⌨ <span class="txt">Atajos</span></button></aside><div id="adminAccordion" class="admin-accordion"></div>
 <main class="tm-main admin-content">
 <section id="inicio" class="admin-tab active"><div class="head"><div><h1>Inicio</h1><p class="sub">Panel completo fusionado — funciones reales del admin actual.</p></div><div class="actions"><button class="btn gold" data-action="switchTab" data-arg="herramientas">🛠 Herramientas</button><button class="btn primary" data-action="sincronizarTodoConGitHub">🔄 Actualizar tienda</button></div></div><div class="stats"><div class="stat"><small>Total productos</small><b id="dashTotal">—</b></div><div class="stat"><small>Activos</small><b id="dashActive">—</b></div><div class="stat"><small>Stock bajo</small><b id="dashLow">—</b></div><div class="stat"><small>Agotados</small><b id="dashEmpty">—</b></div></div><div class="grid2"><div class="card"><h2>🔥 Productos con más stock</h2><div id="dashTop"></div></div><div class="card"><h2>✅ Fusión real</h2><p class="sub">Este admin conserva IDs y funciones originales: productos, GitHub, Firebase, analytics, banners, ventas, categorías y publicación.</p></div></div></section>
@@ -236,6 +236,71 @@ async function tmAdminRefreshSubscribers(){
     window.switchTab=function(tab){ const r=old.apply(this,arguments); if(tab==='publicar-ahora') setTimeout(enhancePublicar,250); if(tab==='configuracion') setTimeout(tmAdminRefreshSubscribers,250); return r; };
   }
   document.addEventListener('DOMContentLoaded',()=>{setTimeout(enhancePublicar,1000);setTimeout(tmAdminRefreshSubscribers,1500);});
+})();
+</script>
+
+<script id="tm-topbar-actions-v3">
+(function(){
+  const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>Array.from(r.querySelectorAll(s));
+  function notify(msg,type){ if(typeof mostrarNotificacion==='function') mostrarNotificacion(msg,type||'info'); else console.log(msg); }
+  function products(){ try{ if(Array.isArray(window.productos)) return window.productos; }catch(e){} try{return JSON.parse(localStorage.getItem('productos')||'[]')}catch(e){return[]} }
+  function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
+  async function getFirebaseConfig(){
+    try{ const raw=localStorage.getItem('firebaseConfig'); if(raw){ const c=JSON.parse(raw); if(c&&c.databaseURL) return c; } }catch(e){}
+    try{ const r=await fetch('config.json?_='+Date.now(),{cache:'no-store'}); if(r.ok){ const j=await r.json(); if(j.firebaseConfig){ try{localStorage.setItem('firebaseConfig',JSON.stringify(j.firebaseConfig));}catch(e){} return j.firebaseConfig; } } }catch(e){}
+    return null;
+  }
+  window.tmAdminRefreshSubscribers = async function(){
+    const targets=[$('#tmSubscriberCount'), $('#tmTopSubs b')].filter(Boolean);
+    targets.forEach(e=>e.textContent='…');
+    let n=Number(localStorage.getItem('tm_subscriber_count')||0);
+    try{
+      if(typeof tmLeerAnalytics==='function'){
+        const d=await tmLeerAnalytics();
+        if(d && typeof d.suscriptores==='number') n=d.suscriptores;
+      }
+      if(!n){
+        const cfg=await getFirebaseConfig();
+        if(cfg && cfg.databaseURL){
+          const r=await fetch(cfg.databaseURL.replace(/\/$/,'')+'/tokens.json?_='+Date.now(),{cache:'no-store'});
+          if(r.ok){ const data=await r.json()||{}; n=Object.values(data).filter(x=>x&&x.token).length; }
+        }
+      }
+    }catch(e){ console.warn('[tm subscribers]',e); }
+    try{localStorage.setItem('tm_subscriber_count',String(n));}catch(e){}
+    targets.forEach(e=>e.textContent=String(n));
+    return n;
+  };
+  function renderSearch(q){
+    const box=$('#tmSearchResults'); if(!box) return;
+    q=(q||'').trim().toLowerCase();
+    if(!q){box.classList.remove('show'); box.innerHTML=''; return;}
+    const actions=[['Agregar producto','add-products','⊕'],['Productos','manage-products','◇'],['Publicar','publicar-ahora','✈'],['Analytics','analytics','▥'],['Configuración','configuracion','⚙'],['Herramientas','herramientas','🛠'],['Apariencia','apariencia','🎨'],['Ventas','ventas','$']]
+      .filter(a=>a[0].toLowerCase().includes(q));
+    const ps=products().filter(p=>(p.nombre||'').toLowerCase().includes(q)||(p.categoria||'').toLowerCase().includes(q)).slice(0,6);
+    box.innerHTML=[...actions.map(a=>`<button type="button" data-tab-go="${a[1]}"><span>${a[2]}</span><b>${a[0]}</b><small>Ir a sección</small></button>`),...ps.map(p=>`<button type="button" data-product-go="${p.id}"><span>📦</span><b>${esc(p.nombre)}</b><small>${esc(p.categoria||'')} · $${Number(p.precioActual||0).toFixed(2)}</small></button>`)].join('') || '<div class="tm-nores">Sin resultados</div>';
+    box.classList.add('show');
+  }
+  function bind(){
+    const search=$('#tmTopSearch');
+    if(search && !search.dataset.bound){
+      search.dataset.bound='1';
+      search.addEventListener('input',e=>renderSearch(e.target.value));
+      search.addEventListener('keydown',e=>{ if(e.key==='Enter'){ const first=$('#tmSearchResults button'); if(first) first.click(); else if(typeof switchTab==='function') switchTab('manage-products'); } if(e.key==='Escape') renderSearch(''); });
+    }
+    document.addEventListener('click',e=>{
+      const tab=e.target.closest('[data-tab-go]'); if(tab){ renderSearch(''); if(typeof switchTab==='function') switchTab(tab.dataset.tabGo); return; }
+      const prod=e.target.closest('[data-product-go]'); if(prod){ renderSearch(''); if(typeof switchTab==='function') switchTab('manage-products'); setTimeout(()=>{const s=$('#searchProductos'); if(s){ const p=products().find(x=>String(x.id)===String(prod.dataset.productGo)); s.value=p?(p.nombre||''):''; if(typeof actualizarListaProductos==='function') actualizarListaProductos();}},200); return; }
+      if(!e.target.closest('.tm-top-search-wrap')) renderSearch('');
+    });
+    const sync=$('#tmTopSync'); if(sync && !sync.dataset.bound){ sync.dataset.bound='1'; sync.addEventListener('click',()=>{ if(typeof sincronizarTodoConGitHub==='function') sincronizarTodoConGitHub(); else notify('Configura GitHub para actualizar la tienda','warning'); }); }
+    const theme=$('#tmTopTheme'); if(theme && !theme.dataset.bound){ theme.dataset.bound='1'; theme.addEventListener('click',()=>{ document.body.classList.toggle('light-mode'); localStorage.setItem('theme',document.body.classList.contains('light-mode')?'light':'dark'); notify('Tema cambiado'); }); }
+    const bell=$('#tmTopBell'); if(bell && !bell.dataset.bound){ bell.dataset.bound='1'; bell.addEventListener('click',()=>{ if(typeof abrirModalNotificaciones==='function') abrirModalNotificaciones(); else if(typeof tmRegistrarTokenFCMSiPermitido==='function') tmRegistrarTokenFCMSiPermitido(); else if(typeof switchTab==='function') switchTab('configuracion'); }); }
+    const subs=$('#tmTopSubs'); if(subs && !subs.dataset.bound){ subs.dataset.bound='1'; subs.addEventListener('click',()=>{ if(typeof switchTab==='function') switchTab('configuracion'); setTimeout(window.tmAdminRefreshSubscribers,250); }); }
+    document.addEventListener('keydown',e=>{ if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){ e.preventDefault(); $('#tmTopSearch')?.focus(); }});
+    setTimeout(window.tmAdminRefreshSubscribers,1000);
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',bind); else bind();
 })();
 </script>
 </body></html>

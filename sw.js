@@ -1,5 +1,6 @@
 // ═══════════════════════════════════════════════════════
-// TiendaMax — Service Worker v172 — Admin final fusion polish
+// TiendaMax — Service Worker v173 — Topbar actions
+// v173: topbar search/sync/theme/bell/subscribers funcional.
 // v172: polish publicar/config analytics subscribers + cache refresh.
 // v171: admin final fusion — refresca admin.html y css/admin.css en todos los clientes.
 // v155: estilos hero inline — independientes del bundle, botones iguales garantizados.
@@ -39,7 +40,7 @@
 //      usan el mismo helper _mensajeOrdenWA con formato premium.
 // ═══════════════════════════════════════════════════════
 
-const CACHE_NAME = 'tiendamax-admin-final-20260605-02';
+const CACHE_NAME = 'tiendamax-admin-final-20260605-03';
 
 const STATIC_ASSETS = [
   '/',
