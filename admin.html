@@ -1398,73 +1398,76 @@ function tmUpdateComisionHint(inputId, monedaId, hintId) {
     });
 })();
 
-// ═══ Ventas: mostrar ganancia en MN en el KPI y en el historial ═══
+// ═══ Ventas: separar ganancia USD / MN sin convertir ═══
 (function() {
-    function getTasa() {
-        try {
-            var cfg = JSON.parse(localStorage.getItem('tiendamax_config') || '{}');
-            return (cfg.tasaMN || 350) + 10;
-        } catch(e) { return 360; }
+
+    function getProds() {
+        try { return JSON.parse(localStorage.getItem('tiendamax_productos') || '[]'); } catch(e) { return []; }
     }
 
-    function patchGananciaMN() {
-        var tasa = getTasa();
+    function patchVentas() {
+        var prods = getProds();
 
-        // ── 1. KPI "Mi ganancia" ─────────────────────────────────────────
-        // El card gold tiene: admin-stat-value con el total en $, admin-stat-label "Mi ganancia"
+        // ── 1. KPI "Mi ganancia": reemplazar por dos líneas separadas ──────
         var kpiCards = document.querySelectorAll('.admin-stat-card');
         kpiCards.forEach(function(card) {
             var label = card.querySelector('.admin-stat-label');
             if (!label || label.textContent.trim() !== 'Mi ganancia') return;
-            if (card.querySelector('.tm-kpi-mn')) return; // ya parcheado
+            if (card.dataset.tmPatched) return;
+            card.dataset.tmPatched = '1';
 
+            // Calcular totales separados leyendo el historial de ventas
+            var ventas = [];
+            try { ventas = JSON.parse(localStorage.getItem('tiendamax_ventas') || '[]'); } catch(e) {}
+
+            var totalUSD = 0, totalMN = 0;
+            ventas.forEach(function(v) {
+                var gan = Number(v.ganancia || 0);
+                if (!gan) return;
+                // buscar moneda del producto por ID o nombre
+                var prod = prods.find(function(p) {
+                    return p.id == v.productoId || p.nombre === v.producto;
+                });
+                var moneda = (prod && prod.comisionMoneda) || 'USD';
+                if (moneda === 'MN') totalMN += gan;
+                else totalUSD += gan;
+            });
+
+            // Reemplazar valor del KPI con desglose
             var valueEl = card.querySelector('.admin-stat-value');
-            if (!valueEl) return;
-            var usdText = valueEl.textContent.trim().replace('$', '');
-            var usdVal  = parseFloat(usdText);
-            if (isNaN(usdVal)) return;
-
-            var mn = Math.round(usdVal * tasa);
-            var mnDiv = document.createElement('div');
-            mnDiv.className = 'tm-kpi-mn admin-stat-sub';
-            mnDiv.style.cssText = 'color:#C9A96E;font-weight:700;font-size:11px;margin-top:2px;';
-            mnDiv.textContent = '≈ ' + mn.toLocaleString() + ' MN';
-            card.appendChild(mnDiv);
+            if (valueEl) {
+                var html = '';
+                if (totalUSD > 0) html += '<span class="tm-kpi-usd">$' + totalUSD.toFixed(2) + ' <small>USD</small></span>';
+                if (totalMN  > 0) html += '<span class="tm-kpi-mn-val">' + Math.round(totalMN).toLocaleString() + ' <small>MN</small></span>';
+                if (!totalUSD && !totalMN) html = '<span>$0</span>';
+                valueEl.innerHTML = html;
+            }
+            // Limpiar el sub-label de "% margen" si hay MN mezclado
+            if (totalMN > 0 && totalUSD > 0) {
+                var sub = card.querySelector('.admin-stat-sub');
+                if (sub) sub.textContent = 'USD + MN separados';
+            }
         });
 
-        // ── 2. Items del historial de ventas ─────────────────────────────
-        var gainDivs = document.querySelectorAll('.admin-history-item .gain');
-        gainDivs.forEach(function(div) {
-            if (div.querySelector('.tm-gain-mn')) return; // ya parcheado
+        // ── 2. Historial: mostrar la divisa correcta sin convertir ─────────
+        var items = document.querySelectorAll('.admin-history-item');
+        items.forEach(function(item) {
+            var gainDiv = item.querySelector('.gain');
+            if (!gainDiv || gainDiv.dataset.tmPatched) return;
+            gainDiv.dataset.tmPatched = '1';
 
-            var text   = div.textContent.trim();
-            var match  = text.match(/\$([0-9.]+)/);
-            if (!match) return;
-            var usdVal = parseFloat(match[1]);
-            if (!usdVal) return;
-
-            // Verificar si la comisión de este producto es MN
-            var histItem = div.closest('.admin-history-item');
-            var prodName = histItem && (histItem.querySelector('.title') || {}).textContent;
-            var prods    = [];
-            try { prods = JSON.parse(localStorage.getItem('tiendamax_productos') || '[]'); } catch(e) {}
+            var titleEl = item.querySelector('.title');
+            var prodName = titleEl ? titleEl.textContent.trim() : '';
             var prod = prods.find(function(p) { return p.nombre === prodName; });
             var moneda = (prod && prod.comisionMoneda) || 'USD';
-
-            var span = document.createElement('span');
-            span.className = 'tm-gain-mn';
-            span.style.cssText = 'display:block;font-size:10px;color:#C9A96E;font-weight:700;margin-top:1px;';
+            var val    = Number(gainDiv.textContent.replace(/[^0-9.]/g, '')) || 0;
+            if (!val) return;
 
             if (moneda === 'MN') {
-                // ganancia ya está en MN, mostrar equivalente USD
-                span.textContent = '≈ $' + (usdVal / tasa).toFixed(2) + ' USD';
-                div.innerHTML = 'Comisión: ' + usdVal.toLocaleString() + ' MN';
-                div.appendChild(span);
+                gainDiv.innerHTML = 'Comisión: <strong>' + Math.round(val).toLocaleString() + ' MN</strong>';
+                gainDiv.classList.add('tm-gain-mn-label');
             } else {
-                // ganancia en USD, mostrar MN
-                var mn = Math.round(usdVal * tasa);
-                span.textContent = '≈ ' + mn.toLocaleString() + ' MN';
-                div.appendChild(span);
+                gainDiv.innerHTML = 'Comisión: <strong>$' + val.toFixed(2) + ' USD</strong>';
             }
         });
     }
@@ -1474,7 +1477,7 @@ function tmUpdateComisionHint(inputId, monedaId, hintId) {
         var cont = document.getElementById('ventasContenido');
         if (!cont) return;
         var obs = new MutationObserver(function() {
-            setTimeout(patchGananciaMN, 60);
+            setTimeout(patchVentas, 80);
         });
         obs.observe(cont, { childList: true, subtree: true });
     });

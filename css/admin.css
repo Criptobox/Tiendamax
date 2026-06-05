@@ -2543,3 +2543,28 @@ html[data-theme="light"] .tm-moneda-btn {
 html[data-theme="light"] .tm-moneda-btn:first-child { border-right-color: #ddd; }
 html[data-theme="light"] .tm-moneda-btn:hover { background: #eee; color: #444; }
 html[data-theme="light"] .tm-moneda-btn.active { background: rgba(201,169,110,.15); color: #8B6914; }
+
+/* ── KPI ganancia separada USD / MN ── */
+.admin-stat-value .tm-kpi-usd,
+.admin-stat-value .tm-kpi-mn-val {
+    display: block;
+    font-size: inherit;
+    font-weight: inherit;
+    line-height: 1.15;
+}
+.admin-stat-value .tm-kpi-usd small,
+.admin-stat-value .tm-kpi-mn-val small {
+    font-size: 11px !important;
+    font-weight: 600;
+    opacity: .7;
+    color: inherit !important;
+    margin-left: 2px;
+}
+.admin-stat-value .tm-kpi-mn-val {
+    color: #C9A96E;
+    font-size: 85%;
+    margin-top: 2px;
+}
+
+/* Historial: etiqueta MN en naranja dorado */
+.gain.tm-gain-mn-label strong { color: #C9A96E; }
