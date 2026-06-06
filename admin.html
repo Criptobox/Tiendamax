@@ -785,6 +785,142 @@ async function tmAdminRefreshSubscribers(){
 })();
 </script>
 
+<script id="tm-deepseek-tools-v2">
+(function(){
+  const $=(s,r=document)=>r.querySelector(s);
+  const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  function notify(msg,type){ if(typeof mostrarNotificacion==='function') mostrarNotificacion(msg,type||'info'); else console.log(msg); }
+  function products(){ try{ if(Array.isArray(window.productos)) return window.productos; }catch(e){} try{return JSON.parse(localStorage.getItem('productos')||'[]')}catch(e){return[]} }
+  function productOptions(){return products().map(p=>`<option value="${esc(p.id)}">${esc(p.nombre||p.name||'Producto')} — $${Number(p.precioActual||p.price||0).toFixed(2)}</option>`).join('') || '<option value="">Sin productos</option>';}
+  function bySelect(id){ const val=$('#'+id)?.value; return products().find(p=>String(p.id)===String(val)) || products()[0] || {}; }
+  function productUrl(p){ return p && p.id ? `/p/producto-${p.id}.html` : '/'; }
+  function prodInfo(p){
+    return [
+      'Nombre: '+(p.nombre||p.name||'Producto'),
+      'Descripción: '+(p.descripcion||'Sin descripción'),
+      'Categoría: '+(p.categoria||'General'),
+      'Subcategoría: '+(p.subcategoria||''),
+      'Precio: $'+Number(p.precioActual||p.price||0).toFixed(2)+' USD',
+      'Stock: '+Number(p.stock||0),
+      p.garantia?('Garantía: '+p.garantia):'',
+      p.usado?'Producto usado/refurbished':'',
+      p.devolucion?'Tiene devolución segura/garantía de satisfacción':''
+    ].filter(Boolean).join('\n');
+  }
+  async function deepseek(prompt, max_tokens=750){
+    const key=localStorage.getItem('anthropicApiKey')||'';
+    const provider=localStorage.getItem('anthropicApiProvider')||'';
+    if(!key || !(provider==='deepseek' || key.startsWith('sk-'))) throw new Error('DeepSeek no configurado en Configuración');
+    const resp=await fetch('https://api.deepseek.com/v1/chat/completions',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},
+      body:JSON.stringify({
+        model:'deepseek-chat', temperature:0.7, max_tokens,
+        messages:[
+          {role:'system',content:'Eres asistente comercial de TiendaMax, tienda online en Cuba. Escribe español natural, claro, vendedor y breve. No inventes datos técnicos ni promesas de envío/garantía si no aparecen.'},
+          {role:'user',content:prompt}
+        ]
+      })
+    });
+    if(!resp.ok){ let t=''; try{t=await resp.text()}catch(e){}; throw new Error('DeepSeek HTTP '+resp.status+(t?': '+t.slice(0,160):'')); }
+    const data=await resp.json();
+    return (data.choices?.[0]?.message?.content||'').trim();
+  }
+  function panel(title,sub,body){
+    const p=$('#tmToolPanel'); if(!p) return;
+    p.className='tm-panel active';
+    p.innerHTML=`<div class="tm-panel-head"><div><h4>${title}</h4><p>${sub}</p></div><button class="tm-panel-close" data-act="closePanel">✕ Cerrar</button></div>${body}`;
+    p.scrollIntoView({behavior:'smooth',block:'start'});
+  }
+  function addCards(){
+    const wrap=$('#herramientas .tm-tools-wrap'); if(!wrap || $('#tmDeepSeekExtraCards')) return;
+    const div=document.createElement('div');
+    div.id='tmDeepSeekExtraCards';
+    div.innerHTML=`
+      <div class="tm-tier"><h4>DEEPSEEK — SIGUIENTES PASOS</h4><span class="tm-tier-badge purple">IA conectada</span></div>
+      <div class="tm-tools-grid">
+        <div class="tm-tool-card enabled" data-tool="pushai"><span class="state">IA</span><div class="ico" style="background:rgba(245,158,11,.18)">🔔</div><h5>Push con IA</h5><p>Genera título, mensaje y URL de notificación desde un producto.</p></div>
+        <div class="tm-tool-card enabled" data-tool="waai"><span class="state">IA</span><div class="ico" style="background:rgba(37,211,102,.18)">💬</div><h5>Respuesta WhatsApp</h5><p>Responde preguntas de clientes con tono vendedor y natural.</p></div>
+      </div>`;
+    const panel=$('#tmToolPanel');
+    if(panel) wrap.insertBefore(div,panel); else wrap.appendChild(div);
+  }
+  function openPushAI(){
+    panel('🔔 Generador IA de notificaciones push','DeepSeek crea un título y mensaje corto listo para enviar.',`
+      <div class="tm-form-grid">
+        <div class="tm-field"><label>Producto</label><select id="tmPushAiProd">${productOptions()}</select></div>
+        <div class="tm-field"><label>Tipo</label><select id="tmPushAiTone"><option>Producto nuevo</option><option>Oferta elegante</option><option>Urgencia suave</option><option>Últimas unidades</option><option>Vuelve a estar disponible</option></select></div>
+      </div>
+      <div class="tm-actions"><button class="tm-btn primary" data-ds-act="pushGen">Generar push</button><button class="tm-btn gold" data-ds-act="pushApply">Aplicar en Configuración</button><button class="tm-btn" data-ds-act="copyOut">Copiar</button></div>
+      <div id="tmToolOut" class="tm-code" style="margin-top:12px">Genera una notificación para rellenar Título, Mensaje y URL.</div>`);
+  }
+  function openWaAI(){
+    panel('💬 Respuestas WhatsApp con IA','Escribe la pregunta del cliente y DeepSeek genera una respuesta lista para copiar.',`
+      <div class="tm-form-grid">
+        <div class="tm-field"><label>Producto relacionado</label><select id="tmWaAiProd">${productOptions()}</select></div>
+        <div class="tm-field"><label>Tono</label><select id="tmWaAiTone"><option>Amable vendedor</option><option>Corto y directo</option><option>Cierre de venta</option><option>Técnico sencillo</option><option>Negociación educada</option></select></div>
+      </div>
+      <div class="tm-field"><label>Pregunta del cliente</label><textarea id="tmWaAiQ" style="min-height:90px" placeholder="Ej: ¿Tiene garantía? ¿Me lo puedes reservar? ¿Sirve para...? "></textarea></div>
+      <div class="tm-actions"><button class="tm-btn primary" data-ds-act="waGen">Generar respuesta</button><button class="tm-btn" data-ds-act="copyOut">Copiar</button></div>
+      <div id="tmToolOut" class="tm-code" style="margin-top:12px">La respuesta aparecerá aquí.</div>`);
+  }
+  async function genPush(){
+    const out=$('#tmToolOut'); if(!out) return;
+    const p=bySelect('tmPushAiProd'); const tipo=$('#tmPushAiTone')?.value||'Producto nuevo';
+    out.textContent='⏳ Generando push con DeepSeek...';
+    const prompt=`Crea una notificación push para TiendaMax.\n\nProducto:\n${prodInfo(p)}\nURL sugerida: ${productUrl(p)}\nTipo: ${tipo}\n\nResponde SOLO con JSON válido:\n{"titulo":"máximo 38 caracteres","mensaje":"máximo 95 caracteres","url":"${productUrl(p)}"}\n\nNo uses comillas fuera del JSON.`;
+    try{
+      const text=await deepseek(prompt,350);
+      const m=text.match(/\{[\s\S]*\}/); if(!m) throw new Error('La IA no devolvió JSON');
+      const j=JSON.parse(m[0]);
+      out.dataset.pushTitle=j.titulo||''; out.dataset.pushBody=j.mensaje||''; out.dataset.pushUrl=j.url||productUrl(p);
+      out.textContent=`Título: ${j.titulo}\nMensaje: ${j.mensaje}\nURL: ${j.url||productUrl(p)}`;
+      notify('✅ Push generado','success');
+    }catch(e){
+      const title='🔥 '+(p.nombre||'Nuevo producto').slice(0,28);
+      const body=`Disponible en TiendaMax. ${Number(p.stock||0)>0?'Stock limitado. ':' '}Escríbenos para reservar.`.slice(0,95);
+      out.dataset.pushTitle=title; out.dataset.pushBody=body; out.dataset.pushUrl=productUrl(p);
+      out.textContent=`Título: ${title}\nMensaje: ${body}\nURL: ${productUrl(p)}\n\n⚠️ ${e.message}`;
+      notify('Push generado con plantilla local','warning');
+    }
+  }
+  function applyPush(){
+    const out=$('#tmToolOut'); if(!out) return;
+    const title=out.dataset.pushTitle||''; const body=out.dataset.pushBody||''; const url=out.dataset.pushUrl||'';
+    if(!title||!body){ notify('Primero genera el push','warning'); return; }
+    if(typeof switchTab==='function') switchTab('configuracion');
+    setTimeout(()=>{
+      const t=$('#manualPushTitle'), b=$('#manualPushBody'), u=$('#manualPushUrl');
+      if(t) t.value=title; if(b) b.value=body; if(u) u.value=url;
+      notify('✅ Push aplicado en Configuración','success');
+      t?.focus();
+    },250);
+  }
+  async function genWa(){
+    const out=$('#tmToolOut'); if(!out) return;
+    const p=bySelect('tmWaAiProd'); const tono=$('#tmWaAiTone')?.value||'Amable vendedor'; const q=$('#tmWaAiQ')?.value.trim()||'El cliente pide información del producto.';
+    out.textContent='⏳ Generando respuesta con DeepSeek...';
+    const prompt=`Genera una respuesta de WhatsApp para un cliente.\n\nProducto:\n${prodInfo(p)}\n\nPregunta del cliente:\n${q}\n\nTono: ${tono}.\n\nReglas: respuesta breve, natural, con cierre para reservar/comprar. No inventes garantía/envío. Si falta un dato, pide confirmarlo.`;
+    try{ out.textContent=await deepseek(prompt,600); notify('✅ Respuesta generada','success'); }
+    catch(e){ out.textContent=`Hola 👋 Sí, te comento sobre ${p.nombre||'ese producto'}.\n\n${p.descripcion||'Está disponible en TiendaMax.'}\n\n💵 Precio: $${Number(p.precioActual||0).toFixed(2)} USD\n📦 Stock: ${Number(p.stock||0)}\n\nSi quieres, te lo puedo reservar y coordinamos por aquí.\n\n⚠️ ${e.message}`; notify('Respuesta con plantilla local','warning'); }
+  }
+  document.addEventListener('click',function(e){
+    const tool=e.target.closest('[data-tool="pushai"],[data-tool="waai"]');
+    if(tool){ e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation&&e.stopImmediatePropagation(); tool.dataset.tool==='pushai'?openPushAI():openWaAI(); return; }
+    const a=e.target.closest('[data-ds-act]'); if(!a) return;
+    e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation&&e.stopImmediatePropagation();
+    const act=a.dataset.dsAct;
+    if(act==='pushGen') genPush();
+    if(act==='pushApply') applyPush();
+    if(act==='waGen') genWa();
+    if(act==='copyOut'){ navigator.clipboard?.writeText($('#tmToolOut')?.textContent||''); notify('Copiado','success'); }
+  },true);
+  function boot(){ addCards(); }
+  document.addEventListener('DOMContentLoaded',()=>setTimeout(boot,900));
+  document.addEventListener('click',e=>{ if(e.target.closest('[data-arg="herramientas"],[data-tab="herramientas"]')) setTimeout(boot,300); });
+})();
+</script>
+
 <script id="tm-comision-ventas-v1">
 (function(){
   /* ── Toggle USD/MN en comisión ── */
