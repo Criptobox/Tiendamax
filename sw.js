@@ -1,5 +1,6 @@
 // ═══════════════════════════════════════════════════════
-// TiendaMax — Service Worker v181 — DeepSeek texto-only fallback (no visión, usa nombre de archivo)
+// TiendaMax — Service Worker v182 — suscriptores únicos + refresco cache JS
+// v182: fuerza actualización de script/analytics/push-fix para no duplicar suscriptores.
 // v177: AI generator functional + password/compress safety fixes.
 // v176: add product IA order debajo de descripción y oculta flotante en móvil.
 // v175: mobile rescue — layout móvil robusto y visible.
@@ -44,7 +45,7 @@
 //      usan el mismo helper _mensajeOrdenWA con formato premium.
 // ═══════════════════════════════════════════════════════
 
-const CACHE_NAME = 'tiendamax-202606060242';
+const CACHE_NAME = 'tiendamax-202606060255';
 
 const STATIC_ASSETS = [
   '/',

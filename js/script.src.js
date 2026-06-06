@@ -6605,6 +6605,19 @@ async function tmRegistrarTokenFCMSiPermitido() {
 }
 window.tmRegistrarTokenFCMSiPermitido = tmRegistrarTokenFCMSiPermitido;
 
+function tmPushDeviceFingerprint() {
+    const parts = [
+        navigator.userAgent || '',
+        ((screen && screen.width) || 0) + 'x' + ((screen && screen.height) || 0),
+        navigator.language || '',
+        (typeof Intl !== 'undefined' ? Intl.DateTimeFormat().resolvedOptions().timeZone : '') || ''
+    ].join('|');
+    let h = 0;
+    for (let i = 0; i < parts.length; i++) h = ((h << 5) - h + parts.charCodeAt(i)) | 0;
+    return 'fp_' + (h >>> 0).toString(36);
+}
+window.tmPushDeviceFingerprint = tmPushDeviceFingerprint;
+
 async function solicitarYRegistrarTokenFCM(messaging, config, fcmReg) {
     try {
         const vapidKey = config.vapidKey || localStorage.getItem('firebaseVapidKey');
@@ -6622,9 +6635,31 @@ async function solicitarYRegistrarTokenFCM(messaging, config, fcmReg) {
             // Guardar en localStorage
             localStorage.setItem('fcmToken', token);
             
-            // Registrar token en Firebase Realtime Database
-            const tokenId = btoa(token).replace(/=/g, '').replace(/\+/g, '-').replace(/\//g, '_');
+            // Registrar token en Firebase Realtime Database.
+            // ID por fingerprint: evita sumar otro suscriptor si el mismo dispositivo
+            // borra datos del navegador y vuelve a activar notificaciones.
+            const fingerprint = (typeof tmPushDeviceFingerprint === 'function') ? tmPushDeviceFingerprint() : btoa(navigator.userAgent).slice(0,40);
+            const tokenId = fingerprint;
+            const legacyTokenId = btoa(token).replace(/=/g, '').replace(/\+/g, '-').replace(/\//g, '_');
             const rtdbUrl = config.databaseURL || `https://${config.projectId}-default-rtdb.firebaseio.com`;
+
+            // Limpia entradas anteriores del mismo dispositivo/token antes de guardar.
+            try {
+                const allRes = await fetch(`${rtdbUrl}/tokens.json?_=${Date.now()}`, { cache: 'no-store' });
+                if (allRes.ok) {
+                    const allData = await allRes.json();
+                    if (allData && typeof allData === 'object') {
+                        const deletes = [];
+                        Object.keys(allData).forEach(k => {
+                            const t = allData[k];
+                            if (k !== tokenId && (k === legacyTokenId || (t && (t.fingerprint === fingerprint || t.token === token)))) {
+                                deletes.push(fetch(`${rtdbUrl}/tokens/${k}.json`, { method: 'DELETE' }).catch(() => null));
+                            }
+                        });
+                        if (deletes.length) await Promise.allSettled(deletes);
+                    }
+                }
+            } catch(e) {}
             
             await fetch(`${rtdbUrl}/tokens/${tokenId}.json`, {
                 method: 'PUT',
@@ -6632,9 +6667,11 @@ async function solicitarYRegistrarTokenFCM(messaging, config, fcmReg) {
                 body: JSON.stringify({
                     token: token,
                     timestamp: Date.now(),
-                    userAgent: navigator.userAgent
+                    userAgent: navigator.userAgent,
+                    fingerprint: fingerprint
                 })
             });
+            if (typeof tmRegistrarSuscriptor === 'function') tmRegistrarSuscriptor();
             
         } else {
             console.warn('[FCM] No se pudo obtener el token de Firebase.');
@@ -7592,9 +7629,10 @@ window.addEventListener('popstate', function() {
                     if (r.ok) fbConfig = (await r.json()).firebaseConfig;
                 }
                 if (fbConfig && fbConfig.databaseURL) {
-                    const tokenId = btoa(tokenLocal).replace(/=/g,'').replace(/\+/g,'-').replace(/\//g,'_');
-                    const url = fbConfig.databaseURL + '/tokens/' + tokenId + '.json';
-                    await fetch(url, { method: 'DELETE' });
+                    const legacyTokenId = btoa(tokenLocal).replace(/=/g,'').replace(/\+/g,'-').replace(/\//g,'_');
+                    const fingerprint = (typeof tmPushDeviceFingerprint === 'function') ? tmPushDeviceFingerprint() : null;
+                    const ids = [legacyTokenId, fingerprint].filter(Boolean);
+                    await Promise.allSettled(ids.map(id => fetch(fbConfig.databaseURL + '/tokens/' + id + '.json', { method: 'DELETE' })));
                     console.log('[notif] Token borrado de Firebase RTDB');
                 }
             } catch(e) {

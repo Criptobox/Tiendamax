@@ -98,18 +98,18 @@ function tmTrackVista(productoId)    { tmTrackEventoV2('vistas', productoId); }
 function tmTrackWhatsApp(productoId) { tmTrackEventoV2('whatsapp', productoId); }
 
 // ── Contador de suscriptores (caché local) ──────────────
-function tmRegistrarSuscriptor() {
-    try {
-        let c = parseInt(localStorage.getItem('tm_subscriber_count') || '0');
-        localStorage.setItem('tm_subscriber_count', String(c + 1));
-    } catch(e) {}
+function tmRefrescarConteoSuscriptores() {
+    // No incrementar/decrementar “a ciegas”: el contador real es la cantidad
+    // de dispositivos únicos guardados en Firebase. Así borrar datos del navegador
+    // y volver a activar no infla el número local.
+    setTimeout(() => {
+        tmLeerAnalytics()
+            .then(d => localStorage.setItem('tm_subscriber_count', String(d.suscriptores || 0)))
+            .catch(() => null);
+    }, 800);
 }
-function tmDesregistrarSuscriptor() {
-    try {
-        let c = parseInt(localStorage.getItem('tm_subscriber_count') || '0');
-        localStorage.setItem('tm_subscriber_count', String(Math.max(0, c - 1)));
-    } catch(e) {}
-}
+function tmRegistrarSuscriptor() { tmRefrescarConteoSuscriptores(); }
+function tmDesregistrarSuscriptor() { tmRefrescarConteoSuscriptores(); }
 
 // ── Fetch con timeout ───────────────────────────────────
 function _tmFetch(url, ms = 6000) {
@@ -179,8 +179,19 @@ async function tmLeerAnalytics() {
         whatsappCont[id] = (typeof v === 'object' ? v.count : v) || 0;
     });
 
-    // Suscriptores: Firebase como fuente de verdad
-    const suscriptores = Object.keys(tokensData).length;
+    // Suscriptores: Firebase como fuente de verdad, contando dispositivos únicos
+    // y no cada reactivación. Si el usuario borra datos y vuelve a activar,
+    // FCM puede generar otro token; fingerprint/userAgent evita inflar el total.
+    const valsTokens = Object.values(tokensData).filter(t => t && t.token);
+    const uasConFingerprint = new Set(valsTokens.filter(t => t.fingerprint && t.userAgent).map(t => t.userAgent));
+    const clavesUnicas = new Set();
+    valsTokens.forEach(t => {
+        const key = (t.userAgent && uasConFingerprint.has(t.userAgent))
+            ? 'ua:' + t.userAgent
+            : (t.fingerprint ? 'fp:' + t.fingerprint : 'tk:' + t.token);
+        clavesUnicas.add(key);
+    });
+    const suscriptores = clavesUnicas.size;
     // Sincronizar caché local con el valor real
     try { localStorage.setItem('tm_subscriber_count', String(suscriptores)); } catch(e) {}
 

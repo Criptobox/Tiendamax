@@ -1,5 +1,6 @@
 // ════════════════════════════════════════════════════════════════
-//  TiendaMax — Firebase Messaging Service Worker v5
+//  TiendaMax — Firebase Messaging Service Worker v6
+//  v6: bump para refrescar SW junto con fix de suscriptores únicos.
 //  v5: [FIX] bloquea re-registro automático de token cuando el
 //      usuario se desuscribió manualmente (tm_push_desuscrito).
 //      Usa IndexedDB para leer el flag (localStorage no disponible en SW).
@@ -65,21 +66,21 @@ self.addEventListener('message', (event) => {
   if (event.data.type === 'TM_SET_DESUSCRITO') {
     // El usuario desactivó las notificaciones
     idbSet('tm_push_desuscrito', '1').then(() => {
-      console.log('[SW v5] Flag desuscrito guardado en IndexedDB');
+      console.log('[SW v6] Flag desuscrito guardado en IndexedDB');
     });
   }
 
   if (event.data.type === 'TM_CLEAR_DESUSCRITO') {
     // El usuario activó las notificaciones
     idbSet('tm_push_desuscrito', '0').then(() => {
-      console.log('[SW v5] Flag desuscrito borrado de IndexedDB');
+      console.log('[SW v6] Flag desuscrito borrado de IndexedDB');
     });
   }
 });
 
 // ── Función auxiliar para construir y mostrar notificación ──
 function mostrarNotificacionTM(payload) {
-  console.log('[firebase-messaging-sw v5] Payload recibido:', payload);
+  console.log('[firebase-messaging-sw v6] Payload recibido:', payload);
 
   const notif = payload.notification || {};
   const data  = payload.data || {};
@@ -123,7 +124,7 @@ messaging.onBackgroundMessage(async (payload) => {
   // [FIX] No mostrar notificación si el usuario se desuscribió manualmente
   const desuscrito = await idbGet('tm_push_desuscrito');
   if (desuscrito === '1') {
-    console.log('[SW v5] Usuario desuscrito, notificación bloqueada.');
+    console.log('[SW v6] Usuario desuscrito, notificación bloqueada.');
     return;
   }
   return mostrarNotificacionTM(payload);
@@ -136,7 +137,7 @@ self.addEventListener('push', async (event) => {
   // [FIX] Bloquear si está desuscrito
   const desuscrito = await idbGet('tm_push_desuscrito');
   if (desuscrito === '1') {
-    console.log('[SW v5] Usuario desuscrito, push bloqueado.');
+    console.log('[SW v6] Usuario desuscrito, push bloqueado.');
     return;
   }
 
@@ -180,4 +181,4 @@ self.addEventListener('notificationclick', (event) => {
   );
 });
 
-console.log('[firebase-messaging-sw v5] Cargado correctamente');
+console.log('[firebase-messaging-sw v6] Cargado correctamente');
