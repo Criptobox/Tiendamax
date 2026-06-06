@@ -1567,6 +1567,94 @@ async function tmAdminRefreshSubscribers(){
 })();
 </script>
 
+<script id="tm-deepseek-tools-v10">
+(function(){
+  const KEY='tm_campaigns_v1';
+  const $=(s,r=document)=>r.querySelector(s);
+  const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  function notify(msg,type){ if(typeof mostrarNotificacion==='function') mostrarNotificacion(msg,type||'info'); else console.log(msg); }
+  function campaigns(){ try{return JSON.parse(localStorage.getItem(KEY)||'[]')}catch(e){return[]} }
+  function saveCampaigns(v){ localStorage.setItem(KEY,JSON.stringify(v.slice(0,150))); }
+  function ventas(){ try{ if(typeof cargarVentas==='function') return cargarVentas()||[]; }catch(e){} try{return JSON.parse(localStorage.getItem('registroVentas')||'[]')}catch(e){return[]} }
+  function products(){ try{ if(Array.isArray(window.productos)) return window.productos; }catch(e){} try{return JSON.parse(localStorage.getItem('productos')||'[]')}catch(e){return[]} }
+  function money(n){return '$'+Number(n||0).toFixed(2)}
+  function panel(title,sub,body){const p=$('#tmToolPanel'); if(!p)return; p.className='tm-panel active'; p.innerHTML=`<div class="tm-panel-head"><div><h4>${title}</h4><p>${sub}</p></div><button class="tm-panel-close" data-act="closePanel">✕ Cerrar</button></div>${body}`; p.scrollIntoView({behavior:'smooth',block:'start'});}
+  function addCards(){
+    const wrap=$('#herramientas .tm-tools-wrap'); if(!wrap || $('#tmDeepSeekCampaignDashCards')) return;
+    const div=document.createElement('div'); div.id='tmDeepSeekCampaignDashCards';
+    div.innerHTML=`<div class="tm-tier"><h4>MARKETING — MÉTRICAS</h4><span class="tm-tier-badge purple">Dashboard</span></div>
+    <div class="tm-tools-grid"><div class="tm-tool-card enabled" data-tool="campdash"><span class="state">PRO</span><div class="ico" style="background:rgba(52,152,219,.18)">📈</div><h5>Dashboard campañas</h5><p>Mide campañas publicadas, pendientes, canales y posibles ventas posteriores.</p></div></div>`;
+    const panelEl=$('#tmToolPanel'); if(panelEl) wrap.insertBefore(div,panelEl); else wrap.appendChild(div);
+  }
+  function campaignStats(){
+    const cs=campaigns(); const vs=ventas(); const now=Date.now(); const week=7*86400000;
+    const thisWeek=cs.filter(c=>now-new Date(c.ts).getTime()<=week);
+    const pending=cs.filter(c=>c.followUpAt && new Date(c.followUpAt).getTime()<=now && !/hecho|cerrad|complet/i.test(c.status||''));
+    const channels={}; cs.forEach(c=>(c.channels||[]).forEach(ch=>channels[ch]=(channels[ch]||0)+1));
+    const prodCount={}; cs.forEach(c=>{ if(c.productName) prodCount[c.productName]=(prodCount[c.productName]||0)+1; });
+    const salesAfter=cs.map(c=>{
+      const ts=new Date(c.ts).getTime(); const until=ts+48*3600000;
+      const related=vs.filter(v=>{
+        const vt=Number(v.id||Date.parse(v.fecha)||0); const byTime=vt>=ts&&vt<=until;
+        const byProd=c.productId?String(v.productoId)===String(c.productId):(c.productName&&String(v.producto||'').toLowerCase().includes(String(c.productName).toLowerCase().slice(0,12)));
+        return byTime && byProd;
+      });
+      return {id:c.id,title:c.title,productName:c.productName,count:related.length,total:related.reduce((s,v)=>s+Number(v.total||0),0)};
+    }).filter(x=>x.count>0);
+    return {cs,vs,total:cs.length,thisWeek,pending,channels,prodCount,salesAfter};
+  }
+  function barRows(obj){
+    const arr=Object.entries(obj||{}).sort((a,b)=>b[1]-a[1]).slice(0,8); const max=Math.max(1,...arr.map(x=>x[1]));
+    return arr.map(([k,v])=>`<div class="tm-row"><div class="tm-row-main"><b>${esc(k)}</b><small>${v} campaña${v!==1?'s':''}</small><div style="height:7px;background:rgba(255,255,255,.08);border-radius:99px;margin-top:6px"><div style="height:7px;width:${Math.max(5,v/max*100)}%;background:linear-gradient(90deg,#C9A96E,#FF6B35);border-radius:99px"></div></div></div></div>`).join('')||'<div class="tm-note">Sin datos todavía.</div>';
+  }
+  function openDash(){
+    const st=campaignStats();
+    panel('📈 Dashboard de campañas','Seguimiento de campañas guardadas y señales de rendimiento.',`
+      <div class="tm-an-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:14px">
+        <div class="tm-an-kpi"><small>Total campañas</small><b>${st.total}</b><em>historial local</em></div>
+        <div class="tm-an-kpi"><small>Esta semana</small><b>${st.thisWeek.length}</b><em>últimos 7 días</em></div>
+        <div class="tm-an-kpi"><small>Pendientes</small><b>${st.pending.length}</b><em>seguimiento vencido</em></div>
+        <div class="tm-an-kpi"><small>Ventas post-campaña</small><b>${st.salesAfter.length}</b><em>señales 48h</em></div>
+      </div>
+      <div class="tm-actions"><button class="tm-btn primary" data-ds10-act="pending">Ver pendientes</button><button class="tm-btn gold" data-ds10-act="report">Reporte</button><button class="tm-btn" data-ds10-act="export">Exportar CSV</button></div>
+      <div class="tm-form-grid" style="margin-top:12px">
+        <div class="tm-panel active" style="padding:14px"><h4>Canales más usados</h4>${barRows(st.channels)}</div>
+        <div class="tm-panel active" style="padding:14px"><h4>Productos más publicados</h4>${barRows(st.prodCount)}</div>
+      </div>
+      <div class="tm-panel active" style="padding:14px;margin-top:12px"><h4>Últimas campañas</h4><div class="tm-list">${st.cs.slice(0,10).map((c,i)=>`<div class="tm-row"><div class="tm-row-main"><b>${esc(c.title)}</b><small>${new Date(c.ts).toLocaleString('es-CU')} · ${esc(c.productName||'Sin producto')} · ${esc((c.channels||[]).join(', '))} · ${esc(c.status||'')}</small></div><button class="tm-btn tm-mini" data-ds10-act="copy" data-i="${i}">Copiar</button><button class="tm-btn tm-mini" data-ds10-act="republish" data-i="${i}">Republicar</button></div>`).join('')||'<div class="tm-note">Sin campañas guardadas.</div>'}</div></div>
+      <div id="tmToolOut" class="tm-code" style="margin-top:12px">Dashboard listo.</div>`);
+  }
+  function showPending(){
+    const st=campaignStats(); const out=$('#tmToolOut'); if(!out)return;
+    out.textContent=st.pending.length?('PENDIENTES DE SEGUIMIENTO\n\n'+st.pending.map(c=>`• ${c.title} — ${c.productName||'Sin producto'} — ${new Date(c.followUpAt).toLocaleString('es-CU')}`).join('\n')):'No hay seguimientos pendientes.';
+  }
+  function report(){
+    const st=campaignStats(); const out=$('#tmToolOut'); if(!out)return;
+    const topCh=Object.entries(st.channels).sort((a,b)=>b[1]-a[1])[0]; const topProd=Object.entries(st.prodCount).sort((a,b)=>b[1]-a[1])[0];
+    out.textContent=`REPORTE CAMPAÑAS TIENDAMAX\n\nTotal campañas: ${st.total}\nEsta semana: ${st.thisWeek.length}\nPendientes de seguimiento: ${st.pending.length}\nCanal más usado: ${topCh?topCh[0]+' ('+topCh[1]+')':'—'}\nProducto más publicado: ${topProd?topProd[0]+' ('+topProd[1]+')':'—'}\nVentas detectadas 48h post-campaña: ${st.salesAfter.length}\n\nSeñales de venta:\n${st.salesAfter.map(x=>`• ${x.title}: ${x.count} venta(s), ${money(x.total)}`).join('\n')||'• Sin señales detectadas'}\n\nRecomendación:\n${st.pending.length?'Revisa pendientes y marca seguimiento hecho.':''}\n${topProd?'Evita saturar siempre el mismo producto; alterna categorías con buen stock.':'Guarda campañas para empezar a medir.'}`;
+  }
+  function exportCsv(){
+    const rows=[['fecha','titulo','producto','canales','estado','seguimiento'],...campaigns().map(c=>[c.ts,c.title,c.productName,(c.channels||[]).join('|'),c.status,c.followUpAt])];
+    const csv=rows.map(r=>r.map(x=>'"'+String(x??'').replace(/"/g,'""')+'"').join(',')).join('\n');
+    const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'})); a.download='dashboard_campanas_tiendamax.csv'; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+  }
+  function republish(i){
+    const c=campaigns()[Number(i)]; if(!c)return;
+    localStorage.setItem('tm_last_campaign_text',c.text||'');
+    notify('Campaña cargada para republicar','success');
+    const card=document.querySelector('[data-tool="publisherai"]'); if(card) card.click();
+  }
+  document.addEventListener('click',function(e){
+    const tool=e.target.closest('[data-tool="campdash"]'); if(tool){e.preventDefault();e.stopPropagation();e.stopImmediatePropagation&&e.stopImmediatePropagation();openDash();return;}
+    const a=e.target.closest('[data-ds10-act]'); if(!a)return; e.preventDefault();e.stopPropagation();e.stopImmediatePropagation&&e.stopImmediatePropagation();
+    const act=a.dataset.ds10Act; if(act==='pending')showPending(); if(act==='report')report(); if(act==='export')exportCsv(); if(act==='copy'){const c=campaigns()[Number(a.dataset.i)]; if(c){navigator.clipboard?.writeText(c.text||''); $('#tmToolOut')&&($('#tmToolOut').textContent=c.text||''); notify('Copiado','success');}} if(act==='republish')republish(a.dataset.i);
+  },true);
+  function boot(){addCards();}
+  document.addEventListener('DOMContentLoaded',()=>setTimeout(boot,1700));
+  document.addEventListener('click',e=>{if(e.target.closest('[data-arg="herramientas"],[data-tab="herramientas"]')) setTimeout(boot,300);});
+})();
+</script>
+
 <script id="tm-comision-ventas-v1">
 (function(){
   /* ── Toggle USD/MN en comisión ── */

@@ -1,5 +1,6 @@
 // ═══════════════════════════════════════════════════════
-// TiendaMax — Service Worker v193 — Publicador asistido
+// TiendaMax — Service Worker v194 — Dashboard campañas
+// v194: añade dashboard de campañas y métricas de marketing.
 // v193: añade publicador asistido e historial de campañas.
 // v192: añade generador de campañas completas multicanal.
 // v191: añade chat IA del admin con contexto de tienda.
@@ -56,7 +57,7 @@
 //      usan el mismo helper _mensajeOrdenWA con formato premium.
 // ═══════════════════════════════════════════════════════
 
-const CACHE_NAME = 'tiendamax-202606060445';
+const CACHE_NAME = 'tiendamax-202606060455';
 
 const STATIC_ASSETS = [
   '/',
