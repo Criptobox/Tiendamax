@@ -1,5 +1,6 @@
 // ═══════════════════════════════════════════════════════
-// TiendaMax — Service Worker v208 — elTOQUE API oficial
+// TiendaMax — Service Worker v209 — elTOQUE cada 30 min
+// v209: workflow tasa elTOQUE corre cada 30 minutos en horario activo.
 // v208: workflow tasa soporta API oficial elTOQUE por secret.
 // v207: añade Gemini/Groq como fallback gratuito para herramientas IA.
 // v206: usa openrouter/free como router automático de modelos gratuitos.
@@ -71,7 +72,7 @@
 //      usan el mismo helper _mensajeOrdenWA con formato premium.
 // ═══════════════════════════════════════════════════════
 
-const CACHE_NAME = 'tiendamax-202606060715';
+const CACHE_NAME = 'tiendamax-202606060725';
 
 const STATIC_ASSETS = [
   '/',
