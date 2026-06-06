@@ -16,7 +16,7 @@
 <section id="manage-subcategories" class="admin-tab"><div class="head"><div><h1>Subcategorías</h1><p class="sub">Organización por categoría padre.</p></div></div><div class="card"><div class="form-grid"><select id="subcategoryParentCategory"></select><input id="newSubcategoryName" placeholder="Nombre subcategoría"></div><button class="btn primary" data-action="agregarSubcategoria" style="margin-top:10px">+ Agregar</button></div><div id="subcategoryList" class="subcategory-list"></div></section>
 <section id="oferta-dia" class="admin-tab"><div class="head"><div><h1>Oferta del día</h1><p class="sub">Destacar producto y gestionar agotados.</p></div></div><div class="grid2"><div class="card"><h2>Oferta</h2><select id="ofertaDiaSelect2"></select><input id="ofertaDiaTexto2" placeholder="🔥 OFERTA DEL DÍA" style="margin-top:10px"><div class="actions"><button class="btn primary" data-action="guardarOfertaDia">Activar</button><button class="btn" data-action="desactivarOfertaDia">Desactivar</button></div><div id="ofertaDiaStatus2"></div></div><div class="card"><h2>Agotados</h2><div id="productosAgotadosList"></div></div></div></section>
 <section id="apariencia" class="admin-tab"><div class="head"><div><h1>Apariencia</h1><p class="sub">Banners, hero y countdown.</p></div></div><div class="grid2"><div class="card"><h2>Banners</h2><div id="bannerList"></div><input id="nuevoBannerFile" type="file" accept="image/*"><input id="nuevoBannerUrl" placeholder="URL imagen"><input id="nuevoBannerLink" placeholder="Link"><button class="btn primary" data-action="agregarBanner" style="margin-top:10px">+ Agregar banner</button><button class="btn gold" onclick="exportarBannersJSON()" style="margin-top:10px">📥 Descargar banners.json</button></div><div class="card"><h2>Countdown</h2><input id="heroTaglineInput" placeholder="Tagline"><select id="countdownProductSelect"></select><div class="form-grid"><input id="countdownHoras" type="number" value="2"><input id="countdownMinutos" type="number" value="30"></div><input id="countdownTexto" value="¡Oferta especial!"><button class="btn primary" data-action="guardarCountdown" style="margin-top:10px">Activar countdown</button><div id="countdownStatus"></div></div></div></section>
-<section id="configuracion" class="admin-tab"><div class="head"><div><h1>Configuración</h1><p class="sub">GitHub, WhatsApp, Firebase, tasa y seguridad.</p></div></div><div class="grid2"><div class="card"><h2>General</h2><label>WhatsApp<input id="adminWhatsappNum" placeholder="535..."></label><label>Tasa MN<input id="adminTasaMN" type="number"></label><button class="btn primary" data-action="guardarTasaMNAdmin" style="margin-top:10px">Guardar tasa</button><p id="tasaMNStatus"></p><h2>Contraseña</h2><input id="ci" type="password" placeholder="Actual"><input id="ni" type="password" placeholder="Nueva"><input id="coi" type="password" placeholder="Confirmar"><button class="btn" type="button" onclick="tmCambiarPasswordFromInputs()" style="margin-top:10px">Cambiar contraseña</button><h2 style="margin-top:20px">🤖 IA con foto</h2><label>API Key Anthropic<input id="anthropicApiKey" type="password" placeholder="sk-ant-..." autocomplete="off"></label><button class="btn" type="button" onclick="tmGuardarAnthropicKey()" style="margin-top:8px">Guardar API Key</button><p id="anthropicKeyStatus" style="font-size:12px;color:#888;margin-top:6px"></p><h2 style="margin-top:20px">👆 Seguridad biométrica</h2><div id="tmBioSection"><p style="color:#888;font-size:13px;margin:0">Cargando…</p></div></div><div class="card"><h2>GitHub / Firebase</h2><form id="githubConfigForm" onsubmit="guardarConfiguracionGitHub(event)"><input id="githubUser" placeholder="Usuario GitHub"><input id="githubRepo" placeholder="Repo"><input id="githubToken" type="password" placeholder="Token"><button class="btn primary" type="submit" style="margin-top:10px">Guardar GitHub</button></form><textarea id="firebaseConfigJson" placeholder="firebaseConfig JSON" style="margin-top:10px"></textarea><input id="firebaseVapidKey" placeholder="VAPID key"><input id="firebaseServerKey" placeholder="Server key"><p id="firebaseConfigStatus"></p><input id="manualPushTitle" placeholder="Título push"><input id="manualPushBody" placeholder="Mensaje push"><input id="manualPushUrl" placeholder="URL push"><p id="manualPushStatus"></p><div class="tm-subs-box"><div class="tm-subs-num" id="tmSubscriberCount">—</div><small>Suscriptores push registrados</small><div class="actions" style="margin-top:10px"><button type="button" class="btn" onclick="tmAdminRefreshSubscribers()">↻ Actualizar suscriptores</button></div></div><div class="tm-config-actions"><button type="button" class="btn primary" data-action="sincronizarTodoConGitHub">🔄 ACTUALIZAR TIENDA AHORA</button><button type="button" class="btn gold" onclick="if(typeof descargarProductosJSON==='function')descargarProductosJSON()">📥 Backup productos</button></div></div></div></section>
+<section id="configuracion" class="admin-tab"><div class="head"><div><h1>Configuración</h1><p class="sub">GitHub, WhatsApp, Firebase, tasa y seguridad.</p></div></div><div class="grid2"><div class="card"><h2>General</h2><label>WhatsApp<input id="adminWhatsappNum" placeholder="535..."></label><label>Tasa MN<input id="adminTasaMN" type="number"></label><button class="btn primary" data-action="guardarTasaMNAdmin" style="margin-top:10px">Guardar tasa</button><p id="tasaMNStatus"></p><h2>Contraseña</h2><input id="ci" type="password" placeholder="Actual"><input id="ni" type="password" placeholder="Nueva"><input id="coi" type="password" placeholder="Confirmar"><button class="btn" type="button" onclick="tmCambiarPasswordFromInputs()" style="margin-top:10px">Cambiar contraseña</button><h2 style="margin-top:20px">🤖 IA con foto</h2><p style="font-size:11px;color:#888;margin:4px 0 8px">Usa Google AI (gratis, 1500/día) o Anthropic (pago). Pega tu clave y se detecta sola.</p><label>API Key — Google AI Studio o Anthropic<input id="anthropicApiKey" type="password" placeholder="AIza... (Google gratis) o sk-ant-..." autocomplete="off"></label><button class="btn" type="button" onclick="tmGuardarAnthropicKey()" style="margin-top:8px">Guardar API Key</button><p id="anthropicKeyStatus" style="font-size:12px;color:#888;margin-top:6px"></p><h2 style="margin-top:20px">👆 Seguridad biométrica</h2><div id="tmBioSection"><p style="color:#888;font-size:13px;margin:0">Cargando…</p></div></div><div class="card"><h2>GitHub / Firebase</h2><form id="githubConfigForm" onsubmit="guardarConfiguracionGitHub(event)"><input id="githubUser" placeholder="Usuario GitHub"><input id="githubRepo" placeholder="Repo"><input id="githubToken" type="password" placeholder="Token"><button class="btn primary" type="submit" style="margin-top:10px">Guardar GitHub</button></form><textarea id="firebaseConfigJson" placeholder="firebaseConfig JSON" style="margin-top:10px"></textarea><input id="firebaseVapidKey" placeholder="VAPID key"><input id="firebaseServerKey" placeholder="Server key"><p id="firebaseConfigStatus"></p><input id="manualPushTitle" placeholder="Título push"><input id="manualPushBody" placeholder="Mensaje push"><input id="manualPushUrl" placeholder="URL push"><p id="manualPushStatus"></p><div class="tm-subs-box"><div class="tm-subs-num" id="tmSubscriberCount">—</div><small>Suscriptores push registrados</small><div class="actions" style="margin-top:10px"><button type="button" class="btn" onclick="tmAdminRefreshSubscribers()">↻ Actualizar suscriptores</button></div></div><div class="tm-config-actions"><button type="button" class="btn primary" data-action="sincronizarTodoConGitHub">🔄 ACTUALIZAR TIENDA AHORA</button><button type="button" class="btn gold" onclick="if(typeof descargarProductosJSON==='function')descargarProductosJSON()">📥 Backup productos</button></div></div></div></section>
 <section id="atajos" class="admin-tab"><div class="head"><div><h1>Atajos</h1><p class="sub">Navegación rápida.</p></div></div><div class="grid2"><div class="card"><h2>⌘K</h2><p>Buscar acciones.</p></div><div class="card"><h2>N</h2><p>Crear producto.</p></div></div></section>
 </main></div></div>
 <div id="editModal" class="modal hidden"><div class="modal-content"><div class="modal-header"><h2>Editar producto</h2><button class="close-btn" data-action="cerrarEditModal">×</button></div><form id="editForm"><input type="hidden" id="editProductId"><input id="editProductName" required><textarea id="editProductDescription" required></textarea><select id="editProductCategory" required></select><select id="editProductMasVendido"><option value="false">No</option><option value="true">Sí</option></select><label class="check-row"><input type="checkbox" id="editProductUsado"> Usado</label><div id="currentImagePreview"></div><input type="file" id="editProductImage" accept="image/*"><input type="file" id="editProductImagesExtra" accept="image/*" multiple><input type="number" id="editProductPriceActual" required><input type="number" id="editProductPrecioOriginal"><input type="number" id="editProductStock" required><div class="tm-comision-row"><input type="number" id="editProductComision" step="0.01" min="0" placeholder="0.00" oninput="tmUpdateComisionHint(this,'tmComisionHintEdit','tmMonedaToggleEdit')"><div class="tm-moneda-toggle" id="tmMonedaToggleEdit"><button type="button" class="tm-moneda-btn active" data-moneda="USD" onclick="tmSetMoneda('tmMonedaToggleEdit','editProductComisionMoneda','USD',this)">USD</button><button type="button" class="tm-moneda-btn" data-moneda="MN" onclick="tmSetMoneda('tmMonedaToggleEdit','editProductComisionMoneda','MN',this)">MN</button></div></div><input type="hidden" id="editProductComisionMoneda" value="USD"><span class="admin-mn-hint" id="tmComisionHintEdit">Lo que ganas por cada venta</span><input id="editProductGarantia"><label class="check-row"><input type="checkbox" id="editProductDevolucion"> Devolución</label><div class="actions"><button type="submit" class="btn primary">Guardar cambios</button><button type="button" class="btn" data-action="cerrarEditModal">Cancelar</button></div></form></div></div>
@@ -499,9 +499,12 @@ async function tmAdminRefreshSubscribers(){
     const v=document.getElementById('anthropicApiKey')?.value.trim();
     const st=document.getElementById('anthropicKeyStatus');
     if(!v||v.length<20){if(st){st.textContent='❌ La clave parece inválida (muy corta)';st.style.color='#e74c3c';} return;}
+    // Detectar si es Google o Anthropic por el prefijo
+    const esGoogle=v.startsWith('AIza');
     localStorage.setItem('anthropicApiKey',v);
-    if(st){st.textContent='✅ API Key guardada. Ahora selecciona una foto para analizar.';st.style.color='#25d366';}
-    notify('✅ API Key de Anthropic guardada','success');
+    localStorage.setItem('anthropicApiProvider', esGoogle?'google':'anthropic');
+    if(st){st.textContent='✅ API Key '+(esGoogle?'de Google':'de Anthropic')+' guardada.';st.style.color='#25d366';}
+    notify('✅ API Key guardada','success');
     const btn=document.getElementById('btnAnalizarFoto');
     if(btn)btn.style.display='';
   };
@@ -564,56 +567,61 @@ async function tmAdminRefreshSubscribers(){
       if(aiBox) aiBox.textContent='⏳ Consultando IA...';
       const cat=document.getElementById('productCategory')?.value||'';
       const price=document.getElementById('productPriceActual')?.value||'';
-      const resp=await fetch('https://api.anthropic.com/v1/messages',{
-        method:'POST',
-        headers:{
-          'Content-Type':'application/json',
-          'x-api-key':key,
-          'anthropic-version':'2023-06-01',
-          'anthropic-dangerous-direct-browser-access':'true'
-        },
-        body:JSON.stringify({
-          model:'claude-3-haiku-20240307',
-          max_tokens:512,
-          messages:[{role:'user',content:[
-            {type:'image',source:{type:'base64',media_type:'image/jpeg',data:base64}},
-            {type:'text',text:'Eres asistente de una tienda online en Cuba. Analiza esta foto y responde SOLO con JSON válido exactamente así:\n{"nombre":"<nombre del producto, max 55 chars>","descripcion":"<descripción atractiva para venta en 2-3 oraciones, español de Cuba>","categoria_sugerida":"<una de: CELULARES, PC Y LAPTOPS, WIFI, ENERGIA, CARROS, MOTOS, HOGAR, ROPA, SEGURIDAD, o General>"}\n'+(cat?'Categoría actual: '+cat+'. ':'')+( price?'Precio: $'+price+' USD. ':'')}
-          ]}]
-        })
-      });
-      if(!resp.ok){
-        const errTxt=await resp.text().catch(()=>'');
-        let errMsg='HTTP '+resp.status;
-        try{const j=JSON.parse(errTxt); errMsg=j.error?.message||errMsg;}catch(ex){}
-        throw new Error(errMsg);
+      const prompt='Eres asistente de una tienda online en Cuba. Analiza esta foto y responde SOLO con JSON válido exactamente así:\n{"nombre":"<nombre del producto, max 55 chars>","descripcion":"<descripción atractiva para venta en 2-3 oraciones, español de Cuba>","categoria_sugerida":"<una de: CELULARES, PC Y LAPTOPS, WIFI, ENERGIA, CARROS, MOTOS, HOGAR, ROPA, SEGURIDAD, o General>"}\n'+(cat?'Categoría actual: '+cat+'. ':'')+( price?'Precio: $'+price+' USD. ':'');
+      const provider=localStorage.getItem('anthropicApiProvider')||( key.startsWith('AIza')?'google':'anthropic');
+      let text='';
+      if(provider==='google'){
+        // Google Gemini API — gratis 1500 req/día
+        const resp=await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key='+encodeURIComponent(key),{
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({contents:[{parts:[{inline_data:{mime_type:'image/jpeg',data:base64}},{text:prompt}]}]})
+        });
+        if(!resp.ok){
+          const errTxt=await resp.text().catch(()=>'');
+          let errMsg='HTTP '+resp.status;
+          try{const j=JSON.parse(errTxt); errMsg=j.error?.message||errMsg;}catch(ex){}
+          throw new Error(errMsg);
+        }
+        const data=await resp.json();
+        text=data.candidates?.[0]?.content?.parts?.[0]?.text||'';
+      } else {
+        // Anthropic Claude
+        const resp=await fetch('https://api.anthropic.com/v1/messages',{
+          method:'POST',
+          headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+          body:JSON.stringify({model:'claude-3-haiku-20240307',max_tokens:512,messages:[{role:'user',content:[{type:'image',source:{type:'base64',media_type:'image/jpeg',data:base64}},{type:'text',text:prompt}]}]})
+        });
+        if(!resp.ok){
+          const errTxt=await resp.text().catch(()=>'');
+          let errMsg='HTTP '+resp.status;
+          try{const j=JSON.parse(errTxt); errMsg=j.error?.message||errMsg;}catch(ex){}
+          throw new Error(errMsg);
+        }
+        const data=await resp.json();
+        text=data.content?.[0]?.text||'';
       }
-      const data=await resp.json();
-      const text=data.content?.[0]?.text||'';
       const match=text.match(/\{[\s\S]*?\}/);
       if(!match) throw new Error('La IA no devolvió JSON válido. Intenta de nuevo.');
       const result=JSON.parse(match[0]);
       if(result.nombre){const el=document.getElementById('productName'); if(el&&!el.value){el.value=result.nombre; el.dispatchEvent(new Event('input',{bubbles:true}));}}
       if(result.descripcion){const el=document.getElementById('productDescription'); if(el){el.value=result.descripcion; el.dispatchEvent(new Event('input',{bubbles:true}));}}
       if(result.categoria_sugerida&&result.categoria_sugerida!=='General'){const el=document.getElementById('productCategory'); if(el){const opt=Array.from(el.options).find(o=>o.value.toUpperCase()===result.categoria_sugerida.toUpperCase()); if(opt){el.value=opt.value; el.dispatchEvent(new Event('change',{bubbles:true}));}}}
-      if(aiBox) aiBox.textContent='✅ '+( result.descripcion||'Descripción generada');
+      if(aiBox) aiBox.textContent='✅ '+(result.descripcion||'Descripción generada');
       notify('✅ Foto analizada — nombre y descripción completados','success');
     }catch(e){
       const msg=e.message||String(e);
       console.error('[IA foto]',msg);
-      const esBilling=/credit|billing|402|balance/i.test(msg);
-      const esAuth=/401|invalid.*key|api.key|authentication|unauthorized/i.test(msg);
-      const esCors=/fetch|network|failed to fetch/i.test(msg);
+      const esBilling=/credit|billing|402|balance|quota/i.test(msg);
+      const esAuth=/401|invalid.*key|api.key|authentication|unauthorized|api_key/i.test(msg);
       if(esBilling){
-        if(aiBox) aiBox.textContent='❌ Sin créditos. Recarga en platform.claude.com → Facturación.';
-        notify('❌ Sin créditos en Anthropic — agrega fondos en platform.claude.com','error');
+        if(aiBox) aiBox.textContent='❌ Sin créditos o cuota agotada.';
+        notify('❌ Sin créditos — recarga tu cuenta o usa la key de Google (gratis)','error');
       }else if(esAuth){
-        if(aiBox) aiBox.textContent='❌ API Key inválida. Ve a Configuración y guarda la clave correcta.';
-        notify('❌ API Key rechazada — cópiala de platform.claude.com → Administrar → API Keys','error');
-      }else if(esCors){
-        if(aiBox) aiBox.textContent='❌ Error de red. Verifica tu conexión a internet.';
-        notify('❌ Error de conexión con la API de Anthropic','error');
+        if(aiBox) aiBox.textContent='❌ API Key inválida. Guarda la clave correcta en Configuración.';
+        notify('❌ API Key inválida','error');
       }else{
-        if(aiBox) aiBox.textContent='❌ Error: '+msg;
+        if(aiBox) aiBox.textContent='❌ '+msg;
         notify('❌ IA: '+msg,'error');
       }
     }finally{
