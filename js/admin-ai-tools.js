@@ -26,35 +26,53 @@ function tmAIProviderInfo() {
   return { key, provider };
 }
 function tmOpenRouterModel() {
-  return localStorage.getItem('tmOpenRouterModel') || 'deepseek/deepseek-chat-v3-0324:free';
+  return localStorage.getItem('tmOpenRouterModel') || localStorage.getItem('tmOpenRouterModelWorking') || 'deepseek/deepseek-r1:free';
 }
 async function tmAIChat(prompt, opts = {}) {
   const { key, provider } = tmAIProviderInfo();
   const max_tokens = opts.max_tokens || 900;
   if (!key) throw new Error('No hay API Key configurada en Configuración → IA.');
   if (provider === 'openrouter' || key.startsWith('sk-or-')) {
-    const model = tmOpenRouterModel();
-    const resp = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + key,
-        'HTTP-Referer': location.origin || 'https://tiendamax.org',
-        'X-Title': 'TiendaMax Admin'
-      },
-      body: JSON.stringify({
-        model,
-        temperature: opts.temperature ?? 0.65,
-        max_tokens,
-        messages: [
-          { role: 'system', content: opts.system || 'Eres asistente ecommerce de TiendaMax en Cuba. Responde en español, claro, útil y sin inventar datos.' },
-          { role: 'user', content: prompt }
-        ]
-      })
-    });
-    if (!resp.ok) { let t=''; try{t=await resp.text()}catch(e){}; throw new Error(tmDeepSeekFriendlyError(resp.status,t).replace('DeepSeek','OpenRouter')); }
-    const data = await resp.json();
-    return (data.choices?.[0]?.message?.content || '').trim();
+    const configured = tmOpenRouterModel();
+    const fallbackModels = [
+      configured,
+      'deepseek/deepseek-r1:free',
+      'deepseek/deepseek-chat-v3:free',
+      'qwen/qwen3-235b-a22b:free',
+      'qwen/qwen3-30b-a3b:free',
+      'google/gemini-2.0-flash-exp:free'
+    ].filter((m, i, a) => m && a.indexOf(m) === i);
+    let lastErr = '';
+    for (const model of fallbackModels) {
+      const resp = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + key,
+          'HTTP-Referer': location.origin || 'https://tiendamax.org',
+          'X-Title': 'TiendaMax Admin'
+        },
+        body: JSON.stringify({
+          model,
+          temperature: opts.temperature ?? 0.65,
+          max_tokens,
+          messages: [
+            { role: 'system', content: opts.system || 'Eres asistente ecommerce de TiendaMax en Cuba. Responde en español, claro, útil y sin inventar datos.' },
+            { role: 'user', content: prompt }
+          ]
+        })
+      });
+      if (resp.ok) {
+        const data = await resp.json();
+        try { localStorage.setItem('tmOpenRouterModelWorking', model); localStorage.setItem('tmOpenRouterLastModel', model); } catch(e) {}
+        return (data.choices?.[0]?.message?.content || '').trim();
+      }
+      let t=''; try{t=await resp.text()}catch(e){}
+      lastErr = tmDeepSeekFriendlyError(resp.status,t).replace('DeepSeek','OpenRouter') + ' [modelo: ' + model + ']';
+      // Si el modelo no existe/no tiene endpoints, probar otro gratis automáticamente.
+      if (!(resp.status === 404 || /no endpoints|not found|model/i.test(t))) break;
+    }
+    throw new Error(lastErr || 'OpenRouter: no se pudo usar ningún modelo gratuito configurado.');
   }
   if (provider === 'deepseek' || key.startsWith('sk-')) {
     const resp = await fetch('https://api.deepseek.com/v1/chat/completions', {
@@ -1406,9 +1424,9 @@ window.tmOpenRouterModel = tmOpenRouterModel;
     keyInput.placeholder='sk-or-... (OpenRouter) / sk-... (DeepSeek) / AIza... / gsk_...';
     const wrap=document.createElement('div');
     wrap.className='tm-openrouter-config';
-    wrap.innerHTML='<label style="display:block;margin-top:10px">Modelo OpenRouter gratuito/preferido<input id="tmOpenRouterModel" type="text" placeholder="deepseek/deepseek-chat-v3-0324:free" style="font-family:monospace;font-size:12px"></label><p style="font-size:11px;color:#888;margin-top:4px">Ejemplos: deepseek/deepseek-chat-v3-0324:free, deepseek/deepseek-r1-0528:free, qwen/qwen3-235b-a22b:free. Depende de disponibilidad de OpenRouter.</p>';
+    wrap.innerHTML='<label style="display:block;margin-top:10px">Modelo OpenRouter gratuito/preferido<input id="tmOpenRouterModel" type="text" placeholder="deepseek/deepseek-r1:free" style="font-family:monospace;font-size:12px"></label><p style="font-size:11px;color:#888;margin-top:4px">Ejemplos: deepseek/deepseek-chat-v3-0324:free, deepseek/deepseek-r1-0528:free, qwen/qwen3-235b-a22b:free. Depende de disponibilidad de OpenRouter.</p>';
     keyInput.closest('label')?.insertAdjacentElement('afterend',wrap);
-    const inp=document.getElementById('tmOpenRouterModel'); if(inp){inp.value=localStorage.getItem('tmOpenRouterModel')||'deepseek/deepseek-chat-v3-0324:free'; inp.addEventListener('input',()=>localStorage.setItem('tmOpenRouterModel',inp.value.trim()||'deepseek/deepseek-chat-v3-0324:free'));}
+    const inp=document.getElementById('tmOpenRouterModel'); if(inp){inp.value=localStorage.getItem('tmOpenRouterModel')||'deepseek/deepseek-r1:free'; inp.addEventListener('input',()=>localStorage.setItem('tmOpenRouterModel',inp.value.trim()||'deepseek/deepseek-r1:free'));}
   }
   document.addEventListener('DOMContentLoaded',()=>setTimeout(addOpenRouterConfig,1200));
   document.addEventListener('click',e=>{if(e.target.closest('[data-arg="configuracion"],[data-tab="configuracion"]')) setTimeout(addOpenRouterConfig,300);});

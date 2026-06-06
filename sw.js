@@ -1,5 +1,6 @@
 // ═══════════════════════════════════════════════════════
-// TiendaMax — Service Worker v204 — OpenRouter IA gratis
+// TiendaMax — Service Worker v205 — OpenRouter fallback modelos
+// v205: OpenRouter prueba modelos gratis alternativos si uno no tiene endpoint.
 // v204: añade soporte OpenRouter sk-or- y modelos :free para IA admin.
 // v203: muestra error amigable cuando DeepSeek no tiene saldo.
 // v202: añade herramienta Diagnóstico total de funciones y Firebase.
@@ -67,7 +68,7 @@
 //      usan el mismo helper _mensajeOrdenWA con formato premium.
 // ═══════════════════════════════════════════════════════
 
-const CACHE_NAME = 'tiendamax-202606060635';
+const CACHE_NAME = 'tiendamax-202606060645';
 
 const STATIC_ASSETS = [
   '/',
