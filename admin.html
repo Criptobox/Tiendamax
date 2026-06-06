@@ -1929,6 +1929,115 @@ async function tmAdminRefreshSubscribers(){
 })();
 </script>
 
+<script id="tm-deepseek-tools-v14">
+(function(){
+  const AUTO='tm_autopilot_state_v1', CAMP='tm_campaigns_v1', BACK='tm_full_backups_v1';
+  const $=(s,r=document)=>r.querySelector(s);
+  const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#39;'}[m]));
+  function notify(msg,type){ if(typeof mostrarNotificacion==='function') mostrarNotificacion(msg,type||'info'); else console.log(msg); }
+  function products(){ try{ if(Array.isArray(window.productos)) return window.productos; }catch(e){} try{return JSON.parse(localStorage.getItem('productos')||'[]')}catch(e){return[]} }
+  function ventas(){ try{ if(typeof cargarVentas==='function') return cargarVentas()||[]; }catch(e){} try{return JSON.parse(localStorage.getItem('registroVentas')||'[]')}catch(e){return[]} }
+  async function analytics(){ try{ if(typeof tmLeerAnalytics==='function') return await tmLeerAnalytics(); }catch(e){} return {vistas:{},whatsapp:{},suscriptores:Number(localStorage.getItem('tm_subscriber_count')||0)}; }
+  function campaigns(){ try{return JSON.parse(localStorage.getItem(CAMP)||'[]')}catch(e){return[]} }
+  function saveCampaigns(v){ localStorage.setItem(CAMP,JSON.stringify(v.slice(0,150))); }
+  function state(){ try{return JSON.parse(localStorage.getItem(AUTO)||'{}')}catch(e){return{}} }
+  function setState(s){ localStorage.setItem(AUTO,JSON.stringify({...s,date:new Date().toISOString().slice(0,10)})); }
+  function todayName(){ return ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'][new Date().getDay()]; }
+  function money(n){return '$'+Number(n||0).toFixed(2)}
+  function productUrl(p){return p&&p.id?`/p/producto-${p.id}.html`:'/';}
+  function panel(title,sub,body){const p=$('#tmToolPanel'); if(!p)return; p.className='tm-panel active'; p.innerHTML=`<div class="tm-panel-head"><div><h4>${title}</h4><p>${sub}</p></div><button class="tm-panel-close" data-act="closePanel">✕ Cerrar</button></div>${body}`; p.scrollIntoView({behavior:'smooth',block:'start'});}
+  function addCards(){
+    const wrap=$('#herramientas .tm-tools-wrap'); if(!wrap || $('#tmAutopilotCards')) return;
+    const div=document.createElement('div'); div.id='tmAutopilotCards';
+    div.innerHTML=`<div class="tm-tier"><h4>ADMIN — PILOTO AUTOMÁTICO</h4><span class="tm-tier-badge purple">Guiado</span></div>
+    <div class="tm-tools-grid"><div class="tm-tool-card enabled" data-tool="autopilot"><span class="state">SAFE</span><div class="ico" style="background:rgba(155,89,182,.18)">🤖</div><h5>Piloto automático seguro</h5><p>Rutina diaria guiada: backup, tareas, campaña, push y registro.</p></div></div>`;
+    const panelEl=$('#tmToolPanel'); if(panelEl) wrap.insertBefore(div,panelEl); else wrap.appendChild(div);
+  }
+  function stepLine(done,label,desc){return `<div class="tm-row"><div class="tm-row-main"><b>${done?'✅':'⬜'} ${esc(label)}</b><small>${esc(desc||'')}</small></div></div>`;}
+  function openAuto(){
+    const s=state(); const today=new Date().toISOString().slice(0,10); if(s.date!==today){setState({});}
+    const st=state();
+    panel('🤖 Piloto automático seguro','Rutina diaria con confirmación en cada paso. Nada peligroso se ejecuta solo.',`
+      <div class="tm-note">Flujo recomendado: backup → tareas → campaña → aplicar push → guardar campaña → resumen final.</div>
+      <div class="tm-actions"><button class="tm-btn primary" data-ds14-act="runNext">Ejecutar siguiente paso</button><button class="tm-btn" data-ds14-act="reset">Reiniciar rutina</button></div>
+      <div class="tm-list" style="margin-top:12px">
+        ${stepLine(st.backup,'1. Crear backup/snapshot','Protege datos antes de cambios.')}
+        ${stepLine(st.tasks,'2. Analizar tareas de hoy','Stock, campañas, plan semanal y pendientes.')}
+        ${stepLine(st.campaign,'3. Generar campaña recomendada','DeepSeek si está configurado; fallback local si no.')}
+        ${stepLine(st.push,'4. Aplicar push','Rellena campos de Configuración, no envía automáticamente.')}
+        ${stepLine(st.saved,'5. Guardar campaña','Registra en historial y marca producto publicado.')}
+        ${stepLine(st.final,'6. Resumen final','Checklist listo para ejecutar.')}
+      </div>
+      <div class="tm-actions"><button class="tm-btn" data-ds14-act="backup">1 Backup</button><button class="tm-btn" data-ds14-act="tasks">2 Tareas</button><button class="tm-btn" data-ds14-act="campaign">3 Campaña</button><button class="tm-btn" data-ds14-act="push">4 Aplicar push</button><button class="tm-btn" data-ds14-act="save">5 Guardar</button><button class="tm-btn gold" data-ds14-act="final">6 Final</button></div>
+      <div id="tmToolOut" class="tm-code" style="margin-top:12px">Piloto listo. Pulsa “Ejecutar siguiente paso”.</div>`);
+  }
+  function collectBackup(){
+    const keys=['productos','categorias','subcategorias','heroBanners','gruposFB','revolicoConfig','registroVentas','tm_campaigns_v1','tm_week_plan_v1','tm_tools_data_v1','tm_subscriber_count','tasaMN','whatsappNumber'];
+    const data={meta:{createdAt:new Date().toISOString(),type:'autopilot-snapshot'},localStorage:{}};
+    keys.forEach(k=>{const v=localStorage.getItem(k); if(v!==null){try{data.localStorage[k]=JSON.parse(v)}catch(e){data.localStorage[k]=v}}});
+    return data;
+  }
+  function doBackup(){
+    const arr=(()=>{try{return JSON.parse(localStorage.getItem(BACK)||'[]')}catch(e){return[]}})();
+    const b=collectBackup(); arr.unshift({id:Date.now(),ts:new Date().toISOString(),size:new Blob([JSON.stringify(b)]).size,data:b}); localStorage.setItem(BACK,JSON.stringify(arr.slice(0,20)));
+    const s=state(); s.backup=true; setState(s); $('#tmToolOut').textContent='✅ Backup/snapshot local creado antes de la rutina.'; notify('Backup creado','success'); openAuto();
+  }
+  function collectTasks(){
+    const ps=products(), vs=ventas(); const tasks=[];
+    ps.filter(p=>Number(p.stock||0)>0&&Number(p.stock||0)<=3).slice(0,8).forEach(p=>tasks.push('Stock bajo: '+p.nombre+' ('+p.stock+')'));
+    ps.filter(p=>Number(p.stock||0)<=0).slice(0,6).forEach(p=>tasks.push('Agotado: '+p.nombre));
+    ps.filter(p=>!p.seoTitle&&!p.seoDescription).slice(0,6).forEach(p=>tasks.push('Sin SEO: '+p.nombre));
+    ps.filter(p=>!Array.isArray(p.recomendados)||!p.recomendados.length).slice(0,6).forEach(p=>tasks.push('Sin recomendaciones: '+p.nombre));
+    const today0=new Date(); today0.setHours(0,0,0,0); const vh=vs.filter(v=>Number(v.id||0)>=today0.getTime()); if(vh.length) tasks.unshift('Ventas de hoy: '+vh.length+' ('+money(vh.reduce((s,v)=>s+Number(v.total||0),0))+')');
+    return tasks;
+  }
+  function doTasks(){
+    const t=collectTasks(); const s=state(); s.tasks=true; s.taskSummary=t; setState(s); openAuto(); const out=$('#tmToolOut'); if(out) out.textContent='TAREAS DETECTADAS\n\n'+(t.map(x=>'• '+x).join('\n')||'No hay tareas críticas.'); notify('Tareas analizadas','success');
+  }
+  async function deepseek(prompt){
+    const key=localStorage.getItem('anthropicApiKey')||'', provider=localStorage.getItem('anthropicApiProvider')||'';
+    if(!key || !(provider==='deepseek'||key.startsWith('sk-'))) throw new Error('DeepSeek no configurado');
+    const resp=await fetch('https://api.deepseek.com/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},body:JSON.stringify({model:'deepseek-chat',temperature:0.7,max_tokens:1200,messages:[{role:'system',content:'Eres copiloto diario de TiendaMax. Crea una campaña accionable y breve usando datos reales.'},{role:'user',content:prompt}]})});
+    if(!resp.ok) throw new Error('DeepSeek HTTP '+resp.status); const data=await resp.json(); return (data.choices?.[0]?.message?.content||'').trim();
+  }
+  async function doCampaign(){
+    openAuto(); const out=$('#tmToolOut'); if(out) out.textContent='⏳ Generando campaña recomendada...';
+    const ps=products(), an=await analytics(), st=state();
+    const pool=ps.filter(p=>Number(p.stock||0)>0).map(p=>({p,score:Number(p.stock||0)+Number(an.vistas?.[String(p.id)]||0)*2+Number(an.whatsapp?.[String(p.id)]||0)*4})).sort((a,b)=>b.score-a.score);
+    const p=(pool[0]||{}).p||ps[0]||{};
+    const ctx={producto:{id:p.id,nombre:p.nombre,descripcion:p.descripcion,categoria:p.categoria,precio:p.precioActual,stock:p.stock,url:productUrl(p)},suscriptores:an.suscriptores||0,tareas:st.taskSummary||collectTasks()};
+    let text='';
+    try{text=await deepseek('Crea una campaña diaria para hoy con estos datos:\n'+JSON.stringify(ctx,null,2)+'\nIncluye FACEBOOK, WHATSAPP, PUSH con Título/Mensaje/URL, STORY y PLAN de 3 pasos.');}
+    catch(e){text=`CAMPAÑA DIARIA LOCAL\n\nProducto: ${p.nombre}\n\nFACEBOOK:\n🔥 ${p.nombre}\n\n${p.descripcion||'Disponible en TiendaMax.'}\n\n💵 ${money(p.precioActual)} USD\n📦 Stock: ${p.stock||0}\n📲 Escríbenos por WhatsApp para reservar.\n\nWHATSAPP:\nHola 👋 Tenemos ${p.nombre} disponible en ${money(p.precioActual)} USD. Si te interesa, te lo puedo reservar.\n\nPUSH:\nTítulo: 🔥 ${String(p.nombre||'Oferta').slice(0,30)}\nMensaje: Disponible en TiendaMax por ${money(p.precioActual)}. Reserva por WhatsApp.\nURL: ${productUrl(p)}\n\nSTORY:\n${p.nombre} · ${money(p.precioActual)} USD\n\nPLAN:\n1) Publicar Facebook.\n2) Aplicar push.\n3) Guardar campaña y revisar mañana.\n\n⚠️ ${e.message}`;}
+    const s=state(); s.campaign=true; s.campaignText=text; s.productId=p.id; s.productName=p.nombre; setState(s); openAuto(); const out2=$('#tmToolOut'); if(out2) out2.textContent=text; localStorage.setItem('tm_last_campaign_text',text); notify('Campaña lista','success');
+  }
+  function parsePush(text,p){return {title:(text.match(/T[ií]tulo\s*:\s*(.+)/i)||[])[1]?.trim()||('🔥 '+String(p||'TiendaMax').slice(0,30)),body:(text.match(/Mensaje\s*:\s*(.+)/i)||[])[1]?.trim()||'Disponible en TiendaMax. Reserva por WhatsApp.',url:(text.match(/URL\s*:\s*(\S+)/i)||[])[1]?.trim()||'/'};}
+  function doPush(){
+    const s=state(); if(!s.campaignText){notify('Primero genera campaña','warning'); return;}
+    const pu=parsePush(s.campaignText,s.productName); s.push=true; setState(s);
+    if(typeof switchTab==='function') switchTab('configuracion');
+    setTimeout(()=>{const t=$('#manualPushTitle'), b=$('#manualPushBody'), u=$('#manualPushUrl'); if(t)t.value=pu.title.slice(0,55); if(b)b.value=pu.body.slice(0,120); if(u)u.value=pu.url; notify('Push aplicado; revísalo antes de enviar','success');},250);
+  }
+  function doSave(){
+    const s=state(); if(!s.campaignText){notify('Primero genera campaña','warning');return;}
+    const arr=campaigns(); arr.unshift({id:Date.now(),ts:new Date().toISOString(),title:'Autopiloto '+new Date().toLocaleDateString('es-CU'),productId:s.productId||null,productName:s.productName||'',channels:['Facebook','WhatsApp','Push','Story'],text:s.campaignText,status:'publicada desde autopiloto',followUpAt:new Date(Date.now()+24*3600000).toISOString(),result:''}); saveCampaigns(arr);
+    s.saved=true; setState(s); openAuto(); $('#tmToolOut').textContent='✅ Campaña guardada en historial. Revisa mañana el seguimiento.'; notify('Campaña guardada','success');
+  }
+  function doFinal(){
+    const s=state(); s.final=true; setState(s); openAuto(); const out=$('#tmToolOut'); if(out) out.textContent=`CHECKLIST FINAL\n\n${s.backup?'✅':'⬜'} Backup creado\n${s.tasks?'✅':'⬜'} Tareas revisadas\n${s.campaign?'✅':'⬜'} Campaña generada\n${s.push?'✅':'⬜'} Push aplicado en formulario\n${s.saved?'✅':'⬜'} Campaña guardada\n\nSiguiente: si el push está correcto, envíalo desde Configuración. Luego marca seguimiento mañana.`;
+  }
+  async function next(){const s=state(); if(!s.backup)return doBackup(); if(!s.tasks)return doTasks(); if(!s.campaign)return doCampaign(); if(!s.push)return doPush(); if(!s.saved)return doSave(); return doFinal();}
+  document.addEventListener('click',function(e){
+    const tool=e.target.closest('[data-tool="autopilot"]'); if(tool){e.preventDefault();e.stopPropagation();e.stopImmediatePropagation&&e.stopImmediatePropagation();openAuto();return;}
+    const a=e.target.closest('[data-ds14-act]'); if(!a)return; e.preventDefault();e.stopPropagation();e.stopImmediatePropagation&&e.stopImmediatePropagation();
+    const act=a.dataset.ds14Act; if(act==='runNext')next(); if(act==='backup')doBackup(); if(act==='tasks')doTasks(); if(act==='campaign')doCampaign(); if(act==='push')doPush(); if(act==='save')doSave(); if(act==='final')doFinal(); if(act==='reset'){localStorage.removeItem(AUTO); openAuto();}
+  },true);
+  function boot(){addCards();}
+  document.addEventListener('DOMContentLoaded',()=>setTimeout(boot,2100));
+  document.addEventListener('click',e=>{if(e.target.closest('[data-arg="herramientas"],[data-tab="herramientas"]')) setTimeout(boot,300);});
+})();
+</script>
+
 <script id="tm-comision-ventas-v1">
 (function(){
   /* ── Toggle USD/MN en comisión ── */

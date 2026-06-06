@@ -1,5 +1,6 @@
 // ═══════════════════════════════════════════════════════
-// TiendaMax — Service Worker v197 — Backup inteligente
+// TiendaMax — Service Worker v198 — Piloto automatico seguro
+// v198: añade rutina guiada de piloto automático seguro.
 // v197: añade backup/restauración inteligente.
 // v196: añade centro de tareas diario para admin.
 // v195: añade planificador semanal IA de publicaciones.
@@ -60,7 +61,7 @@
 //      usan el mismo helper _mensajeOrdenWA con formato premium.
 // ═══════════════════════════════════════════════════════
 
-const CACHE_NAME = 'tiendamax-202606060525';
+const CACHE_NAME = 'tiendamax-202606060535';
 
 const STATIC_ASSETS = [
   '/',
