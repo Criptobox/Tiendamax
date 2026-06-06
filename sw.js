@@ -1,5 +1,7 @@
 // ═══════════════════════════════════════════════════════
-// TiendaMax — Service Worker v202 — Diagnostico total admin
+// TiendaMax — Service Worker v204 — OpenRouter IA gratis
+// v204: añade soporte OpenRouter sk-or- y modelos :free para IA admin.
+// v203: muestra error amigable cuando DeepSeek no tiene saldo.
 // v202: añade herramienta Diagnóstico total de funciones y Firebase.
 // v201: mejora iconos/emojis del menú admin y refresca css/admin.css.
 // v200: carga js/admin-ai-tools.min.js y mantiene módulo fuente.
@@ -65,7 +67,7 @@
 //      usan el mismo helper _mensajeOrdenWA con formato premium.
 // ═══════════════════════════════════════════════════════
 
-const CACHE_NAME = 'tiendamax-202606060615';
+const CACHE_NAME = 'tiendamax-202606060635';
 
 const STATIC_ASSETS = [
   '/',

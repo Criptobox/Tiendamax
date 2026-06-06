@@ -4,6 +4,81 @@
 // Cada módulo está encapsulado en su propio IIFE.
 // ═══════════════════════════════════════════════════════
 
+function tmDeepSeekFriendlyError(status, text='') {
+  let msg = '';
+  try { msg = JSON.parse(text).error?.message || text; } catch(e) { msg = text || ''; }
+  if (status === 402 || /insufficient\s*balance|balance|credit|billing|quota/i.test(msg)) {
+    return 'DeepSeek: saldo/créditos insuficientes. Recarga tu cuenta de DeepSeek o cambia a modo local; no es un error de TiendaMax.';
+  }
+  if (status === 401 || status === 403 || /invalid.*key|unauthorized|forbidden|api[_ ]?key/i.test(msg)) {
+    return 'DeepSeek: API Key inválida o sin permiso. Revisa la clave guardada en Configuración.';
+  }
+  if (status === 429 || /rate limit|too many/i.test(msg)) {
+    return 'DeepSeek: límite de uso temporal alcanzado. Espera un poco e intenta de nuevo.';
+  }
+  return 'DeepSeek HTTP ' + status + (msg ? ': ' + String(msg).slice(0, 140) : '');
+}
+
+
+function tmAIProviderInfo() {
+  const key = localStorage.getItem('anthropicApiKey') || '';
+  const provider = localStorage.getItem('anthropicApiProvider') || (key.startsWith('sk-or-') ? 'openrouter' : key.startsWith('sk-') ? 'deepseek' : '');
+  return { key, provider };
+}
+function tmOpenRouterModel() {
+  return localStorage.getItem('tmOpenRouterModel') || 'deepseek/deepseek-chat-v3-0324:free';
+}
+async function tmAIChat(prompt, opts = {}) {
+  const { key, provider } = tmAIProviderInfo();
+  const max_tokens = opts.max_tokens || 900;
+  if (!key) throw new Error('No hay API Key configurada en Configuración → IA.');
+  if (provider === 'openrouter' || key.startsWith('sk-or-')) {
+    const model = tmOpenRouterModel();
+    const resp = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + key,
+        'HTTP-Referer': location.origin || 'https://tiendamax.org',
+        'X-Title': 'TiendaMax Admin'
+      },
+      body: JSON.stringify({
+        model,
+        temperature: opts.temperature ?? 0.65,
+        max_tokens,
+        messages: [
+          { role: 'system', content: opts.system || 'Eres asistente ecommerce de TiendaMax en Cuba. Responde en español, claro, útil y sin inventar datos.' },
+          { role: 'user', content: prompt }
+        ]
+      })
+    });
+    if (!resp.ok) { let t=''; try{t=await resp.text()}catch(e){}; throw new Error(tmDeepSeekFriendlyError(resp.status,t).replace('DeepSeek','OpenRouter')); }
+    const data = await resp.json();
+    return (data.choices?.[0]?.message?.content || '').trim();
+  }
+  if (provider === 'deepseek' || key.startsWith('sk-')) {
+    const resp = await fetch('https://api.deepseek.com/v1/chat/completions', {
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},
+      body: JSON.stringify({
+        model:'deepseek-chat',
+        temperature: opts.temperature ?? 0.65,
+        max_tokens,
+        messages:[
+          {role:'system',content: opts.system || 'Eres asistente ecommerce de TiendaMax en Cuba. Responde en español, claro, útil y sin inventar datos.'},
+          {role:'user',content:prompt}
+        ]
+      })
+    });
+    if(!resp.ok){let t='';try{t=await resp.text()}catch(e){};throw new Error(tmDeepSeekFriendlyError(resp.status,t));}
+    const data=await resp.json();
+    return (data.choices?.[0]?.message?.content||'').trim();
+  }
+  throw new Error('Proveedor IA no soportado todavía para esta herramienta. Usa OpenRouter (sk-or-) o DeepSeek (sk-).');
+}
+window.tmAIChat = tmAIChat;
+window.tmOpenRouterModel = tmOpenRouterModel;
+
 // ── tm-deepseek-tools-v1 ─────────────────────────────────────────
 (function(){
   const $=(s,r=document)=>r.querySelector(s);
@@ -32,25 +107,7 @@
     return `${name}\n\n${desc}\n\n💵 Precio: $${price} USD\n📦 Stock: ${stock}\n🏷️ Categoría: ${p.categoria||'General'}\n\nTexto vendedor:\n🔥 ${name} disponible ahora en TiendaMax. Ideal para quien busca calidad, utilidad y entrega coordinada. Escríbenos para reservar.`;
   }
   async function callDeepSeek(prompt){
-    const key=localStorage.getItem('anthropicApiKey')||'';
-    const provider=localStorage.getItem('anthropicApiProvider')||'';
-    if(!key || !(provider==='deepseek' || key.startsWith('sk-'))) throw new Error('DeepSeek no configurado');
-    const resp=await fetch('https://api.deepseek.com/v1/chat/completions',{
-      method:'POST',
-      headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},
-      body:JSON.stringify({
-        model:'deepseek-chat',
-        temperature:0.75,
-        max_tokens:850,
-        messages:[
-          {role:'system',content:'Eres un copywriter experto para TiendaMax, tienda online en Cuba. Escribe en español natural, vendedor, claro y sin inventar datos técnicos. Si faltan datos, usa frases prudentes.'},
-          {role:'user',content:prompt}
-        ]
-      })
-    });
-    if(!resp.ok){ let t=''; try{t=await resp.text()}catch(e){}; throw new Error('DeepSeek HTTP '+resp.status+(t?': '+t.slice(0,180):'')); }
-    const data=await resp.json();
-    return (data.choices?.[0]?.message?.content||'').trim();
+    return tmAIChat(prompt, { max_tokens: 850 });
   }
   async function genAI(){
     const out=$('#tmToolOut'); if(!out) return;
@@ -104,23 +161,7 @@
     ].filter(Boolean).join('\n');
   }
   async function deepseek(prompt, max_tokens=750){
-    const key=localStorage.getItem('anthropicApiKey')||'';
-    const provider=localStorage.getItem('anthropicApiProvider')||'';
-    if(!key || !(provider==='deepseek' || key.startsWith('sk-'))) throw new Error('DeepSeek no configurado en Configuración');
-    const resp=await fetch('https://api.deepseek.com/v1/chat/completions',{
-      method:'POST',
-      headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},
-      body:JSON.stringify({
-        model:'deepseek-chat', temperature:0.7, max_tokens,
-        messages:[
-          {role:'system',content:'Eres asistente comercial de TiendaMax, tienda online en Cuba. Escribe español natural, claro, vendedor y breve. No inventes datos técnicos ni promesas de envío/garantía si no aparecen.'},
-          {role:'user',content:prompt}
-        ]
-      })
-    });
-    if(!resp.ok){ let t=''; try{t=await resp.text()}catch(e){}; throw new Error('DeepSeek HTTP '+resp.status+(t?': '+t.slice(0,160):'')); }
-    const data=await resp.json();
-    return (data.choices?.[0]?.message?.content||'').trim();
+    return tmAIChat(prompt, { max_tokens: (typeof max_tokens !== 'undefined' ? max_tokens : 900) });
   }
   function panel(title,sub,body){
     const p=$('#tmToolPanel'); if(!p) return;
@@ -243,23 +284,7 @@
     ].join('\n');
   }
   async function deepseek(prompt, max_tokens=1000){
-    const key=localStorage.getItem('anthropicApiKey')||'';
-    const provider=localStorage.getItem('anthropicApiProvider')||'';
-    if(!key || !(provider==='deepseek' || key.startsWith('sk-'))) throw new Error('DeepSeek no configurado en Configuración');
-    const resp=await fetch('https://api.deepseek.com/v1/chat/completions',{
-      method:'POST',
-      headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},
-      body:JSON.stringify({
-        model:'deepseek-chat', temperature:0.55, max_tokens,
-        messages:[
-          {role:'system',content:'Eres consultor ecommerce para TiendaMax, tienda online en Cuba. Analiza datos reales, sé concreto, práctico y no inventes datos. Da recomendaciones accionables.'},
-          {role:'user',content:prompt}
-        ]
-      })
-    });
-    if(!resp.ok){ let t=''; try{t=await resp.text()}catch(e){}; throw new Error('DeepSeek HTTP '+resp.status+(t?': '+t.slice(0,180):'')); }
-    const data=await resp.json();
-    return (data.choices?.[0]?.message?.content||'').trim();
+    return tmAIChat(prompt, { max_tokens: (typeof max_tokens !== 'undefined' ? max_tokens : 900) });
   }
   function panel(title,sub,body){
     const p=$('#tmToolPanel'); if(!p) return;
@@ -363,18 +388,7 @@
   function slugify(s){ return String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,70); }
   function prodInfo(p){return `Nombre: ${p.nombre||p.name||''}\nDescripción: ${p.descripcion||''}\nCategoría: ${p.categoria||'General'}\nSubcategoría: ${p.subcategoria||''}\nPrecio: $${Number(p.precioActual||p.price||0).toFixed(2)} USD\nStock: ${Number(p.stock||0)}\nGarantía: ${p.garantia||'no indicada'}`;}
   async function deepseek(prompt){
-    const key=localStorage.getItem('anthropicApiKey')||'';
-    const provider=localStorage.getItem('anthropicApiProvider')||'';
-    if(!key || !(provider==='deepseek' || key.startsWith('sk-'))) throw new Error('DeepSeek no configurado en Configuración');
-    const resp=await fetch('https://api.deepseek.com/v1/chat/completions',{
-      method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},
-      body:JSON.stringify({model:'deepseek-chat',temperature:0.45,max_tokens:650,messages:[
-        {role:'system',content:'Eres especialista SEO ecommerce para TiendaMax en Cuba. Genera metadatos claros, vendibles y sin inventar especificaciones.'},
-        {role:'user',content:prompt}
-      ]})
-    });
-    if(!resp.ok){let t='';try{t=await resp.text()}catch(e){};throw new Error('DeepSeek HTTP '+resp.status+(t?': '+t.slice(0,160):''));}
-    const data=await resp.json(); return (data.choices?.[0]?.message?.content||'').trim();
+    return tmAIChat(prompt, { max_tokens: (typeof max_tokens !== 'undefined' ? max_tokens : 900) });
   }
   function panel(title,sub,body){const p=$('#tmToolPanel'); if(!p)return; p.className='tm-panel active'; p.innerHTML=`<div class="tm-panel-head"><div><h4>${title}</h4><p>${sub}</p></div><button class="tm-panel-close" data-act="closePanel">✕ Cerrar</button></div>${body}`; p.scrollIntoView({behavior:'smooth',block:'start'});}
   function addCards(){
@@ -434,11 +448,7 @@
   function bySelect(id){ const val=$('#'+id)?.value; return products().find(p=>String(p.id)===String(val)) || products()[0] || {}; }
   function info(p){return `ID: ${p.id}\nNombre: ${p.nombre||''}\nDescripción: ${p.descripcion||''}\nCategoría: ${p.categoria||'General'}\nSubcategoría: ${p.subcategoria||''}\nPrecio: $${Number(p.precioActual||0).toFixed(2)} USD\nStock: ${Number(p.stock||0)}`;}
   async function deepseek(prompt){
-    const key=localStorage.getItem('anthropicApiKey')||''; const provider=localStorage.getItem('anthropicApiProvider')||'';
-    if(!key || !(provider==='deepseek' || key.startsWith('sk-'))) throw new Error('DeepSeek no configurado en Configuración');
-    const resp=await fetch('https://api.deepseek.com/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},body:JSON.stringify({model:'deepseek-chat',temperature:0.55,max_tokens:850,messages:[{role:'system',content:'Eres especialista en ecommerce y cross-selling para TiendaMax en Cuba. Recomienda productos complementarios reales usando solo IDs de la lista.'},{role:'user',content:prompt}]})});
-    if(!resp.ok){let t='';try{t=await resp.text()}catch(e){};throw new Error('DeepSeek HTTP '+resp.status+(t?': '+t.slice(0,160):''));}
-    const data=await resp.json(); return (data.choices?.[0]?.message?.content||'').trim();
+    return tmAIChat(prompt, { max_tokens: (typeof max_tokens !== 'undefined' ? max_tokens : 900) });
   }
   function panel(title,sub,body){const p=$('#tmToolPanel'); if(!p)return; p.className='tm-panel active'; p.innerHTML=`<div class="tm-panel-head"><div><h4>${title}</h4><p>${sub}</p></div><button class="tm-panel-close" data-act="closePanel">✕ Cerrar</button></div>${body}`; p.scrollIntoView({behavior:'smooth',block:'start'});}
   function addCards(){
@@ -506,11 +516,7 @@
   function localSEO(p){const name=p.nombre||'Producto TiendaMax', cat=p.categoria||'General', price=Number(p.precioActual||0);return {seoTitle:`${name} en TiendaMax`.slice(0,60),seoDescription:`Compra ${name} en TiendaMax. ${cat}${price?' desde $'+price.toFixed(2)+' USD':''}. Consulta disponibilidad por WhatsApp.`.slice(0,155),seoKeywords:[name,cat,'TiendaMax','Cuba','comprar online'].filter(Boolean),slug:slugify(name),shareText:`🔥 ${name}\n${price?'💵 $'+price.toFixed(2)+' USD\n':''}Disponible en TiendaMax. Escríbenos para reservar.`};}
   function localRecs(target, ps){const same=ps.filter(p=>p.id!==target.id&&p.categoria===target.categoria&&Number(p.stock||0)>0).slice(0,4);const other=ps.filter(p=>p.id!==target.id&&p.categoria!==target.categoria&&Number(p.stock||0)>0).slice(0,2);const recs=[...same,...other].slice(0,4);return {recomendados:recs.map(p=>p.id),bundleText:`Combina ${target.nombre||'este producto'} con productos relacionados para aprovechar mejor tu compra.`,upsellText:'También puedes revisar estas opciones complementarias antes de reservar.',whatsappUpsell:`Si quieres, también te puedo mostrar opciones relacionadas con ${target.nombre||'ese producto'}.`};}
   async function deepseek(prompt,max_tokens=650){
-    const key=localStorage.getItem('anthropicApiKey')||'', provider=localStorage.getItem('anthropicApiProvider')||'';
-    if(!key || !(provider==='deepseek'||key.startsWith('sk-'))) throw new Error('DeepSeek no configurado');
-    const resp=await fetch('https://api.deepseek.com/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},body:JSON.stringify({model:'deepseek-chat',temperature:0.45,max_tokens,messages:[{role:'system',content:'Eres asistente ecommerce de TiendaMax en Cuba. Responde exactamente lo pedido, sin inventar datos.'},{role:'user',content:prompt}]})});
-    if(!resp.ok){let t='';try{t=await resp.text()}catch(e){};throw new Error('DeepSeek HTTP '+resp.status+(t?': '+t.slice(0,120):''));}
-    const data=await resp.json(); return (data.choices?.[0]?.message?.content||'').trim();
+    return tmAIChat(prompt, { max_tokens: (typeof max_tokens !== 'undefined' ? max_tokens : 900) });
   }
   function panel(title,sub,body){const p=$('#tmToolPanel'); if(!p)return; p.className='tm-panel active'; p.innerHTML=`<div class="tm-panel-head"><div><h4>${title}</h4><p>${sub}</p></div><button class="tm-panel-close" data-act="closePanel">✕ Cerrar</button></div>${body}`; p.scrollIntoView({behavior:'smooth',block:'start'});}
   function addCards(){
@@ -616,11 +622,7 @@
     return {fecha:new Date().toLocaleString('es-CU'),productos:ps.length,ventas:vs.length,totalVendido:vs.reduce((s,v)=>s+Number(v.total||0),0),suscriptores:an.suscriptores||0,categorias:cats,topStock,agotados,bajos,ventasRecientes:recientes,topVistas:vistas,topWhatsApp:wa};
   }
   async function deepseek(prompt){
-    const key=localStorage.getItem('anthropicApiKey')||'', provider=localStorage.getItem('anthropicApiProvider')||'';
-    if(!key || !(provider==='deepseek'||key.startsWith('sk-'))) throw new Error('DeepSeek no configurado en Configuración');
-    const resp=await fetch('https://api.deepseek.com/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},body:JSON.stringify({model:'deepseek-chat',temperature:0.65,max_tokens:1100,messages:[{role:'system',content:'Eres el copiloto interno de TiendaMax, tienda online en Cuba. Responde como asesor de negocio, ventas, inventario y marketing. Sé concreto, útil y accionable. No inventes datos; si faltan, dilo.'},{role:'user',content:prompt}]})});
-    if(!resp.ok){let t='';try{t=await resp.text()}catch(e){};throw new Error('DeepSeek HTTP '+resp.status+(t?': '+t.slice(0,160):''));}
-    const data=await resp.json(); return (data.choices?.[0]?.message?.content||'').trim();
+    return tmAIChat(prompt, { max_tokens: (typeof max_tokens !== 'undefined' ? max_tokens : 900) });
   }
   function panel(title,sub,body){const p=$('#tmToolPanel'); if(!p)return; p.className='tm-panel active'; p.innerHTML=`<div class="tm-panel-head"><div><h4>${title}</h4><p>${sub}</p></div><button class="tm-panel-close" data-act="closePanel">✕ Cerrar</button></div>${body}`; p.scrollIntoView({behavior:'smooth',block:'start'});}
   function addCards(){
@@ -695,11 +697,7 @@
     return {producto:{id:p.id,nombre:p.nombre,descripcion:p.descripcion,categoria:p.categoria,subcategoria:p.subcategoria,precio:p.precioActual,stock:p.stock,garantia:p.garantia,seoTitle:p.seoTitle,upsellText:p.upsellText,url:productUrl(p)},recomendados:recs,stats:{ventasRegistradas:vs.length,totalVendido:vs.reduce((s,v)=>s+Number(v.total||0),0),suscriptores:an.suscriptores||0,vistasProducto:an.vistas?.[String(p.id)]||0,whatsappProducto:an.whatsapp?.[String(p.id)]||0}};
   }
   async function deepseek(prompt){
-    const key=localStorage.getItem('anthropicApiKey')||'', provider=localStorage.getItem('anthropicApiProvider')||'';
-    if(!key || !(provider==='deepseek'||key.startsWith('sk-'))) throw new Error('DeepSeek no configurado en Configuración');
-    const resp=await fetch('https://api.deepseek.com/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},body:JSON.stringify({model:'deepseek-chat',temperature:0.72,max_tokens:1500,messages:[{role:'system',content:'Eres estratega de marketing para TiendaMax, tienda online en Cuba. Genera campañas completas, concretas y listas para copiar. No inventes datos técnicos, envíos ni garantías.'},{role:'user',content:prompt}]})});
-    if(!resp.ok){let t='';try{t=await resp.text()}catch(e){};throw new Error('DeepSeek HTTP '+resp.status+(t?': '+t.slice(0,160):''));}
-    const data=await resp.json(); return (data.choices?.[0]?.message?.content||'').trim();
+    return tmAIChat(prompt, { max_tokens: (typeof max_tokens !== 'undefined' ? max_tokens : 900) });
   }
   function panel(title,sub,body){const p=$('#tmToolPanel'); if(!p)return; p.className='tm-panel active'; p.innerHTML=`<div class="tm-panel-head"><div><h4>${title}</h4><p>${sub}</p></div><button class="tm-panel-close" data-act="closePanel">✕ Cerrar</button></div>${body}`; p.scrollIntoView({behavior:'smooth',block:'start'});}
   function addCards(){
@@ -965,11 +963,7 @@
     return {fecha:new Date().toLocaleDateString('es-CU'),categoria:cat||'Todas',productosDisponibles:pool.length,topProductos:scored,stockBajo:bajos,agotados,ventasRegistradas:vs.length,totalVendido:vs.reduce((s,v)=>s+Number(v.total||0),0),suscriptores:an.suscriptores||0};
   }
   async function deepseek(prompt){
-    const key=localStorage.getItem('anthropicApiKey')||'', provider=localStorage.getItem('anthropicApiProvider')||'';
-    if(!key || !(provider==='deepseek'||key.startsWith('sk-'))) throw new Error('DeepSeek no configurado en Configuración');
-    const resp=await fetch('https://api.deepseek.com/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},body:JSON.stringify({model:'deepseek-chat',temperature:0.65,max_tokens:1600,messages:[{role:'system',content:'Eres planificador de marketing ecommerce para TiendaMax en Cuba. Crea calendarios realistas y accionables. Usa solo productos/datos dados.'},{role:'user',content:prompt}]})});
-    if(!resp.ok){let t='';try{t=await resp.text()}catch(e){};throw new Error('DeepSeek HTTP '+resp.status+(t?': '+t.slice(0,160):''));}
-    const data=await resp.json(); return (data.choices?.[0]?.message?.content||'').trim();
+    return tmAIChat(prompt, { max_tokens: (typeof max_tokens !== 'undefined' ? max_tokens : 900) });
   }
   function panel(title,sub,body){const p=$('#tmToolPanel'); if(!p)return; p.className='tm-panel active'; p.innerHTML=`<div class="tm-panel-head"><div><h4>${title}</h4><p>${sub}</p></div><button class="tm-panel-close" data-act="closePanel">✕ Cerrar</button></div>${body}`; p.scrollIntoView({behavior:'smooth',block:'start'});}
   function addCards(){
@@ -1279,10 +1273,7 @@
     const t=collectTasks(); const s=state(); s.tasks=true; s.taskSummary=t; setState(s); openAuto(); const out=$('#tmToolOut'); if(out) out.textContent='TAREAS DETECTADAS\n\n'+(t.map(x=>'• '+x).join('\n')||'No hay tareas críticas.'); notify('Tareas analizadas','success');
   }
   async function deepseek(prompt){
-    const key=localStorage.getItem('anthropicApiKey')||'', provider=localStorage.getItem('anthropicApiProvider')||'';
-    if(!key || !(provider==='deepseek'||key.startsWith('sk-'))) throw new Error('DeepSeek no configurado');
-    const resp=await fetch('https://api.deepseek.com/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},body:JSON.stringify({model:'deepseek-chat',temperature:0.7,max_tokens:1200,messages:[{role:'system',content:'Eres copiloto diario de TiendaMax. Crea una campaña accionable y breve usando datos reales.'},{role:'user',content:prompt}]})});
-    if(!resp.ok) throw new Error('DeepSeek HTTP '+resp.status); const data=await resp.json(); return (data.choices?.[0]?.message?.content||'').trim();
+    return tmAIChat(prompt, { max_tokens: (typeof max_tokens !== 'undefined' ? max_tokens : 900) });
   }
   async function doCampaign(){
     openAuto(); const out=$('#tmToolOut'); if(out) out.textContent='⏳ Generando campaña recomendada...';
@@ -1406,3 +1397,20 @@
   document.addEventListener('DOMContentLoaded',()=>setTimeout(boot,2200));
   document.addEventListener('click',e=>{if(e.target.closest('[data-arg="herramientas"],[data-tab="herramientas"]')) setTimeout(boot,300);});
 })();
+
+
+// ── OpenRouter config helper ─────────────────────────────────────
+(function(){
+  function addOpenRouterConfig(){
+    const keyInput=document.getElementById('anthropicApiKey'); if(!keyInput || document.getElementById('tmOpenRouterModel')) return;
+    keyInput.placeholder='sk-or-... (OpenRouter) / sk-... (DeepSeek) / AIza... / gsk_...';
+    const wrap=document.createElement('div');
+    wrap.className='tm-openrouter-config';
+    wrap.innerHTML='<label style="display:block;margin-top:10px">Modelo OpenRouter gratuito/preferido<input id="tmOpenRouterModel" type="text" placeholder="deepseek/deepseek-chat-v3-0324:free" style="font-family:monospace;font-size:12px"></label><p style="font-size:11px;color:#888;margin-top:4px">Ejemplos: deepseek/deepseek-chat-v3-0324:free, deepseek/deepseek-r1-0528:free, qwen/qwen3-235b-a22b:free. Depende de disponibilidad de OpenRouter.</p>';
+    keyInput.closest('label')?.insertAdjacentElement('afterend',wrap);
+    const inp=document.getElementById('tmOpenRouterModel'); if(inp){inp.value=localStorage.getItem('tmOpenRouterModel')||'deepseek/deepseek-chat-v3-0324:free'; inp.addEventListener('input',()=>localStorage.setItem('tmOpenRouterModel',inp.value.trim()||'deepseek/deepseek-chat-v3-0324:free'));}
+  }
+  document.addEventListener('DOMContentLoaded',()=>setTimeout(addOpenRouterConfig,1200));
+  document.addEventListener('click',e=>{if(e.target.closest('[data-arg="configuracion"],[data-tab="configuracion"]')) setTimeout(addOpenRouterConfig,300);});
+})();
+
