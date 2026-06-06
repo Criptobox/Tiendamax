@@ -2037,3 +2037,13 @@ body:not(.dark-mode) .admin-inventory-strip span {
     .tm-moneda-toggle { flex-shrink: 0; }
     .tm-comision-row { flex-wrap: nowrap; }
 }
+
+/* v200 nav emoji visibility — iconos legibles en sidebar admin */
+.tm-side .tab-btn{font-size:15px!important;color:#c8c8c8!important;gap:12px!important;}
+.tm-side .tab-btn .nav-emoji{width:28px;height:28px;min-width:28px;display:inline-grid!important;place-items:center;border-radius:10px;background:rgba(255,255,255,.055);font-size:19px;line-height:1;filter:saturate(1.18);box-shadow:inset 0 0 0 1px rgba(255,255,255,.05);}
+.tm-side .tab-btn .txt{color:#aeb4bb!important;font-weight:850!important;letter-spacing:.01em;}
+.tm-side .tab-btn:hover .nav-emoji{background:rgba(255,107,53,.14);transform:scale(1.04);}
+.tm-side .tab-btn:hover .txt{color:#fff!important;}
+.tm-side .tab-btn.active .nav-emoji{background:linear-gradient(135deg,rgba(255,107,53,.28),rgba(201,169,110,.22));box-shadow:0 0 0 1px rgba(201,169,110,.35),0 6px 16px rgba(255,107,53,.16);}
+.tm-side .tab-btn.active .txt{color:#fff!important;text-shadow:0 0 14px rgba(201,169,110,.22);}
+@media(max-width:760px){.tm-side .tab-btn{font-size:18px!important;gap:4px!important}.tm-side .tab-btn .nav-emoji{width:26px;height:26px;min-width:26px;font-size:18px;background:rgba(255,255,255,.075)}.tm-side .tab-btn .txt{font-size:10px!important;color:#cfd3d7!important}}
