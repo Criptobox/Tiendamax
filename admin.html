@@ -1747,6 +1747,103 @@ async function tmAdminRefreshSubscribers(){
 })();
 </script>
 
+<script id="tm-deepseek-tools-v12">
+(function(){
+  const CAMP='tm_campaigns_v1', PLAN='tm_week_plan_v1';
+  const $=(s,r=document)=>r.querySelector(s);
+  const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  function notify(msg,type){ if(typeof mostrarNotificacion==='function') mostrarNotificacion(msg,type||'info'); else console.log(msg); }
+  function products(){ try{ if(Array.isArray(window.productos)) return window.productos; }catch(e){} try{return JSON.parse(localStorage.getItem('productos')||'[]')}catch(e){return[]} }
+  function ventas(){ try{ if(typeof cargarVentas==='function') return cargarVentas()||[]; }catch(e){} try{return JSON.parse(localStorage.getItem('registroVentas')||'[]')}catch(e){return[]} }
+  function campaigns(){ try{return JSON.parse(localStorage.getItem(CAMP)||'[]')}catch(e){return[]} }
+  function plans(){ try{return JSON.parse(localStorage.getItem(PLAN)||'[]')}catch(e){return[]} }
+  function saveCampaigns(v){ localStorage.setItem(CAMP,JSON.stringify(v.slice(0,150))); }
+  function savePlans(v){ localStorage.setItem(PLAN,JSON.stringify(v.slice(0,20))); }
+  function todayName(){ return ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'][new Date().getDay()]; }
+  function money(n){return '$'+Number(n||0).toFixed(2)}
+  function panel(title,sub,body){const p=$('#tmToolPanel'); if(!p)return; p.className='tm-panel active'; p.innerHTML=`<div class="tm-panel-head"><div><h4>${title}</h4><p>${sub}</p></div><button class="tm-panel-close" data-act="closePanel">✕ Cerrar</button></div>${body}`; p.scrollIntoView({behavior:'smooth',block:'start'});}
+  function addCards(){
+    const wrap=$('#herramientas .tm-tools-wrap'); if(!wrap || $('#tmAdminTasksCards')) return;
+    const div=document.createElement('div'); div.id='tmAdminTasksCards';
+    div.innerHTML=`<div class="tm-tier"><h4>ADMIN — ACCIÓN DIARIA</h4><span class="tm-tier-badge gold">Hoy</span></div>
+    <div class="tm-tools-grid"><div class="tm-tool-card enabled" data-tool="taskcenter"><span class="state">HOY</span><div class="ico" style="background:rgba(231,76,60,.16)">✅</div><h5>Centro de tareas</h5><p>Lista automática de pendientes: campañas, plan semanal, stock, SEO y limpieza.</p></div></div>`;
+    const panelEl=$('#tmToolPanel'); if(panelEl) wrap.insertBefore(div,panelEl); else wrap.appendChild(div);
+  }
+  function collectTasks(){
+    const ps=products(), vs=ventas(), cs=campaigns(), pls=plans();
+    const now=Date.now(); const tasks=[];
+    cs.filter(c=>c.followUpAt && new Date(c.followUpAt).getTime()<=now && !/hecho|cerrad|complet/i.test(c.status||'')).slice(0,8).forEach(c=>tasks.push({type:'campaign',prio:1,title:'Seguimiento de campaña vencido',detail:`${c.title} · ${c.productName||'Sin producto'}`,id:c.id,action:'Marcar seguimiento hecho'}));
+    const day=todayName();
+    pls.slice(0,3).forEach(p=>{ if(!(p.done&&p.done[day])) tasks.push({type:'plan',prio:2,title:`Ejecutar plan de hoy (${day})`,detail:p.title+' · '+(p.goal||''),id:p.id,day,action:'Marcar día hecho'}); });
+    ps.filter(p=>Number(p.stock||0)>0&&Number(p.stock||0)<=3).slice(0,10).forEach(p=>tasks.push({type:'stocklow',prio:3,title:'Stock bajo',detail:`${p.nombre} · quedan ${p.stock}`,id:p.id,action:'Ver producto'}));
+    ps.filter(p=>Number(p.stock||0)<=0).slice(0,8).forEach(p=>tasks.push({type:'empty',prio:4,title:'Producto agotado',detail:`${p.nombre} · ${p.categoria||'General'}`,id:p.id,action:'Archivar/reponer'}));
+    ps.filter(p=>!p.seoTitle&&!p.seoDescription).slice(0,8).forEach(p=>tasks.push({type:'seo',prio:5,title:'Producto sin SEO',detail:p.nombre,id:p.id,action:'Abrir IA masiva'}));
+    ps.filter(p=>!Array.isArray(p.recomendados)||!p.recomendados.length).slice(0,8).forEach(p=>tasks.push({type:'recs',prio:6,title:'Sin recomendaciones IA',detail:p.nombre,id:p.id,action:'Abrir recomendador'}));
+    const today0=new Date(); today0.setHours(0,0,0,0);
+    const ventasHoy=vs.filter(v=>Number(v.id||0)>=today0.getTime());
+    if(ventasHoy.length) tasks.push({type:'sales',prio:7,title:'Revisar ventas de hoy',detail:`${ventasHoy.length} venta(s) · ${money(ventasHoy.reduce((s,v)=>s+Number(v.total||0),0))}`,action:'Abrir ventas'});
+    const subs=Number(localStorage.getItem('tm_subscriber_count')||0);
+    if(subs>0) tasks.push({type:'push',prio:8,title:'Enviar push/campaña',detail:`${subs} suscriptor(es) disponibles`,action:'Abrir campañas'});
+    return tasks.sort((a,b)=>a.prio-b.prio).slice(0,35);
+  }
+  function counts(tasks){return tasks.reduce((m,t)=>{m[t.type]=(m[t.type]||0)+1;return m;},{});}
+  function openTasks(){
+    const tasks=collectTasks(), c=counts(tasks);
+    panel('✅ Centro de tareas del admin','Qué conviene hacer hoy según campañas, stock, SEO, plan semanal y ventas.',`
+      <div class="tm-an-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(135px,1fr));gap:12px;margin-bottom:14px">
+        <div class="tm-an-kpi"><small>Total tareas</small><b>${tasks.length}</b><em>pendientes</em></div>
+        <div class="tm-an-kpi"><small>Campañas</small><b>${c.campaign||0}</b><em>seguimiento</em></div>
+        <div class="tm-an-kpi"><small>Stock</small><b>${(c.stocklow||0)+(c.empty||0)}</b><em>bajo/agotado</em></div>
+        <div class="tm-an-kpi"><small>SEO/Recs</small><b>${(c.seo||0)+(c.recs||0)}</b><em>por completar</em></div>
+      </div>
+      <div class="tm-actions"><button class="tm-btn primary" data-ds12-act="brief">Resumen de hoy</button><button class="tm-btn gold" data-ds12-act="doTop">Resolver primera tarea</button><button class="tm-btn" data-ds12-act="export">Exportar tareas</button><button class="tm-btn" data-ds12-act="refresh">Actualizar</button></div>
+      <div class="tm-list" style="margin-top:12px">${tasks.map((t,i)=>row(t,i)).join('')||'<div class="tm-note tm-ok">🎉 No hay tareas críticas. Puedes generar una campaña o revisar analytics.</div>'}</div>
+      <div id="tmToolOut" class="tm-code" style="margin-top:12px">Centro listo. Hoy es ${todayName()}.</div>`);
+  }
+  function icon(t){return {campaign:'📌',plan:'🗓️',stocklow:'🟠',empty:'🔴',seo:'🔎',recs:'🧲',sales:'💰',push:'🔔'}[t]||'✅';}
+  function row(t,i){return `<div class="tm-row"><div class="tm-row-main"><b>${icon(t.type)} ${esc(t.title)}</b><small>${esc(t.detail||'')}<br>Acción: ${esc(t.action||'')}</small></div><button class="tm-btn tm-mini" data-ds12-act="go" data-i="${i}">Ir</button><button class="tm-btn tm-mini" data-ds12-act="done" data-i="${i}">Hecho</button></div>`;}
+  function goTask(t){
+    if(!t) return;
+    if(t.type==='campaign'){ const card=document.querySelector('[data-tool="campdash"]'); if(card) card.click(); return; }
+    if(t.type==='plan'){ const card=document.querySelector('[data-tool="weekplanner"]'); if(card) card.click(); return; }
+    if(t.type==='seo'){ const card=document.querySelector('[data-tool="bulkai"]'); if(card) card.click(); return; }
+    if(t.type==='recs'){ const card=document.querySelector('[data-tool="recsai"]'); if(card) card.click(); return; }
+    if(t.type==='sales'){ if(typeof switchTab==='function') switchTab('ventas'); return; }
+    if(t.type==='push'){ const card=document.querySelector('[data-tool="campaignai"]'); if(card) card.click(); return; }
+    if(t.id){ if(typeof switchTab==='function') switchTab('manage-products'); setTimeout(()=>{const s=$('#searchProductos'); const p=products().find(x=>String(x.id)===String(t.id)); if(s&&p){s.value=p.nombre||''; if(typeof actualizarListaProductos==='function') actualizarListaProductos();}},250); }
+  }
+  function doneTask(t){
+    if(!t) return;
+    if(t.type==='campaign'){
+      const arr=campaigns(); const c=arr.find(x=>String(x.id)===String(t.id)); if(c){c.status='seguimiento hecho'; c.result='Marcado desde Centro de tareas '+new Date().toLocaleString('es-CU'); saveCampaigns(arr);}
+    }else if(t.type==='plan'){
+      const arr=plans(); const p=arr.find(x=>String(x.id)===String(t.id)); if(p){p.done=p.done||{}; p.done[t.day||todayName()]=new Date().toISOString(); savePlans(arr);}
+    }else{
+      const key='tm_tasks_done_'+new Date().toISOString().slice(0,10); let done=[]; try{done=JSON.parse(localStorage.getItem(key)||'[]')}catch(e){} done.push({ts:Date.now(),type:t.type,id:t.id,title:t.title}); localStorage.setItem(key,JSON.stringify(done));
+    }
+    notify('✅ Tarea marcada','success'); openTasks();
+  }
+  function brief(){
+    const tasks=collectTasks(); const c=counts(tasks); const out=$('#tmToolOut'); if(!out)return;
+    out.textContent=`RESUMEN DE HOY — ${todayName()}\n\nTareas totales: ${tasks.length}\nCampañas pendientes: ${c.campaign||0}\nPlan semanal pendiente: ${c.plan||0}\nStock bajo/agotado: ${(c.stocklow||0)+(c.empty||0)}\nSEO/Recomendaciones pendientes: ${(c.seo||0)+(c.recs||0)}\n\nPrioridad sugerida:\n1) Seguimientos vencidos de campañas.\n2) Ejecutar acción del plan semanal.\n3) Revisar stock bajo/agotados.\n4) Completar SEO/recomendaciones con IA masiva.\n5) Si hay suscriptores, preparar campaña push.`;
+  }
+  function exportTasks(){
+    const tasks=collectTasks(); const rows=[['tipo','titulo','detalle','accion'],...tasks.map(t=>[t.type,t.title,t.detail,t.action])];
+    const csv=rows.map(r=>r.map(x=>'"'+String(x??'').replace(/"/g,'""')+'"').join(',')).join('\n');
+    const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'})); a.download='tareas_admin_tiendamax.csv'; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+  }
+  document.addEventListener('click',function(e){
+    const tool=e.target.closest('[data-tool="taskcenter"]'); if(tool){e.preventDefault();e.stopPropagation();e.stopImmediatePropagation&&e.stopImmediatePropagation();openTasks();return;}
+    const a=e.target.closest('[data-ds12-act]'); if(!a)return; e.preventDefault();e.stopPropagation();e.stopImmediatePropagation&&e.stopImmediatePropagation();
+    const tasks=collectTasks(); const act=a.dataset.ds12Act;
+    if(act==='refresh')openTasks(); if(act==='brief')brief(); if(act==='export')exportTasks(); if(act==='doTop')goTask(tasks[0]); if(act==='go')goTask(tasks[Number(a.dataset.i)]); if(act==='done')doneTask(tasks[Number(a.dataset.i)]);
+  },true);
+  function boot(){addCards();}
+  document.addEventListener('DOMContentLoaded',()=>setTimeout(boot,1900));
+  document.addEventListener('click',e=>{if(e.target.closest('[data-arg="herramientas"],[data-tab="herramientas"]')) setTimeout(boot,300);});
+})();
+</script>
+
 <script id="tm-comision-ventas-v1">
 (function(){
   /* ── Toggle USD/MN en comisión ── */

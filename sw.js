@@ -1,5 +1,6 @@
 // ═══════════════════════════════════════════════════════
-// TiendaMax — Service Worker v195 — Plan semanal IA
+// TiendaMax — Service Worker v196 — Centro de tareas admin
+// v196: añade centro de tareas diario para admin.
 // v195: añade planificador semanal IA de publicaciones.
 // v194: añade dashboard de campañas y métricas de marketing.
 // v193: añade publicador asistido e historial de campañas.
@@ -58,7 +59,7 @@
 //      usan el mismo helper _mensajeOrdenWA con formato premium.
 // ═══════════════════════════════════════════════════════
 
-const CACHE_NAME = 'tiendamax-202606060505';
+const CACHE_NAME = 'tiendamax-202606060515';
 
 const STATIC_ASSETS = [
   '/',
