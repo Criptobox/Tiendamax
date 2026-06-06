@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════════════════
-// TiendaMax — Service Worker v178 — Gemini key validation + better error msgs
+// TiendaMax — Service Worker v179 — Groq AI vision support (free, no billing)
 // v177: AI generator functional + password/compress safety fixes.
 // v176: add product IA order debajo de descripción y oculta flotante en móvil.
 // v175: mobile rescue — layout móvil robusto y visible.
@@ -44,7 +44,7 @@
 //      usan el mismo helper _mensajeOrdenWA con formato premium.
 // ═══════════════════════════════════════════════════════
 
-const CACHE_NAME = 'tiendamax-202606070200';
+const CACHE_NAME = 'tiendamax-202606070230';
 
 const STATIC_ASSETS = [
   '/',
