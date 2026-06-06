@@ -37,6 +37,7 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{title}</title>
 <meta name="description" content="{og_desc}">
+<meta name="keywords" content="{keywords}">
 <meta name="robots" content="index, follow">
 
 <!-- ═══ Open Graph (WhatsApp, Facebook, Instagram) ═══ -->
@@ -195,16 +196,22 @@ def regenerate_pages(products: list[dict]) -> tuple[int, list[str]]:
         if not pid:
             continue
         name  = (p.get("nombre") or "").strip()
-        desc  = desc_short(p.get("descripcion") or "")
+        desc  = desc_short(p.get("seoDescription") or p.get("descripcion") or "", 155 if p.get("seoDescription") else 200)
         price = f"{float(p.get('precioActual') or 0):.2f}"
         img   = p.get("imagen") or f"{SITE}/og-image.svg"
         stock = int(p.get("stock") or 0)
+        seo_title_raw = (p.get("seoTitle") or f"{name} — ${price} USD").strip()
+        seo_keywords = p.get("seoKeywords") or []
+        if isinstance(seo_keywords, str):
+            seo_keywords = [x.strip() for x in seo_keywords.split(",") if x.strip()]
+        keywords_raw = ", ".join(dict.fromkeys([*seo_keywords, name, p.get("categoria") or "", "TiendaMax", "Cuba"]))
 
         # Sanitización: HTML escape para todo lo inyectado en HTML
         html_name = escape(name)
-        og_title  = escape(f"{name} — ${price} USD")
+        og_title  = escape(seo_title_raw)
         og_desc   = escape(desc)
         image     = escape(img, quote=True)
+        keywords  = escape(keywords_raw, quote=True)
 
         # JSON-LD: json.dumps produce strings correctamente escapadas para JSON
         json_name = json.dumps(name)
@@ -219,7 +226,7 @@ def regenerate_pages(products: list[dict]) -> tuple[int, list[str]]:
         page_url  = f"{SITE}/p/producto-{pid}.html"
         app_url   = f"{SITE}/#producto-{pid}"
         app_url_js = app_url.replace("'", "\\'")
-        title = escape(f"{name} — ${price} USD | TiendaMax")
+        title = escape(p.get("seoTitle") or f"{name} — ${price} USD | TiendaMax")
 
         html = PAGE_TEMPLATE.format(
             title=title,
@@ -227,6 +234,7 @@ def regenerate_pages(products: list[dict]) -> tuple[int, list[str]]:
             og_title=og_title,
             og_desc=og_desc,
             image=image,
+            keywords=keywords,
             page_url=page_url,
             app_url=app_url,
             app_url_js=app_url_js,
