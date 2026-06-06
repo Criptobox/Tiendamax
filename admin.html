@@ -1655,6 +1655,98 @@ async function tmAdminRefreshSubscribers(){
 })();
 </script>
 
+<script id="tm-deepseek-tools-v11">
+(function(){
+  const KEY='tm_week_plan_v1';
+  const $=(s,r=document)=>r.querySelector(s);
+  const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  function notify(msg,type){ if(typeof mostrarNotificacion==='function') mostrarNotificacion(msg,type||'info'); else console.log(msg); }
+  function products(){ try{ if(Array.isArray(window.productos)) return window.productos; }catch(e){} try{return JSON.parse(localStorage.getItem('productos')||'[]')}catch(e){return[]} }
+  function ventas(){ try{ if(typeof cargarVentas==='function') return cargarVentas()||[]; }catch(e){} try{return JSON.parse(localStorage.getItem('registroVentas')||'[]')}catch(e){return[]} }
+  async function analytics(){ try{ if(typeof tmLeerAnalytics==='function') return await tmLeerAnalytics(); }catch(e){} return {vistas:{},whatsapp:{},suscriptores:Number(localStorage.getItem('tm_subscriber_count')||0)}; }
+  function plans(){ try{return JSON.parse(localStorage.getItem(KEY)||'[]')}catch(e){return[]} }
+  function savePlans(v){ localStorage.setItem(KEY,JSON.stringify(v.slice(0,20))); }
+  function cats(){ return [...new Set(products().map(p=>p.categoria||'General').filter(Boolean))].sort(); }
+  function catOptions(){ return '<option value="">Automático / todas</option>'+cats().map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join(''); }
+  function money(n){return '$'+Number(n||0).toFixed(2)}
+  function productUrl(p){return p&&p.id?`/p/producto-${p.id}.html`:'/';}
+  function summarize(ps,vs,an,cat){
+    const pool=ps.filter(p=>Number(p.stock||0)>0 && (!cat||(p.categoria||'General')===cat));
+    const scored=pool.map(p=>({id:p.id,nombre:p.nombre,categoria:p.categoria,precio:p.precioActual,stock:p.stock,url:productUrl(p),score:Number(p.stock||0)+Number(an.vistas?.[String(p.id)]||0)*2+Number(an.whatsapp?.[String(p.id)]||0)*4+(p.recomendados?.length?3:0)})).sort((a,b)=>b.score-a.score).slice(0,18);
+    const bajos=ps.filter(p=>Number(p.stock||0)>0&&Number(p.stock||0)<=3).slice(0,10).map(p=>({id:p.id,nombre:p.nombre,stock:p.stock,categoria:p.categoria}));
+    const agotados=ps.filter(p=>Number(p.stock||0)<=0).slice(0,10).map(p=>({id:p.id,nombre:p.nombre,categoria:p.categoria}));
+    return {fecha:new Date().toLocaleDateString('es-CU'),categoria:cat||'Todas',productosDisponibles:pool.length,topProductos:scored,stockBajo:bajos,agotados,ventasRegistradas:vs.length,totalVendido:vs.reduce((s,v)=>s+Number(v.total||0),0),suscriptores:an.suscriptores||0};
+  }
+  async function deepseek(prompt){
+    const key=localStorage.getItem('anthropicApiKey')||'', provider=localStorage.getItem('anthropicApiProvider')||'';
+    if(!key || !(provider==='deepseek'||key.startsWith('sk-'))) throw new Error('DeepSeek no configurado en Configuración');
+    const resp=await fetch('https://api.deepseek.com/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},body:JSON.stringify({model:'deepseek-chat',temperature:0.65,max_tokens:1600,messages:[{role:'system',content:'Eres planificador de marketing ecommerce para TiendaMax en Cuba. Crea calendarios realistas y accionables. Usa solo productos/datos dados.'},{role:'user',content:prompt}]})});
+    if(!resp.ok){let t='';try{t=await resp.text()}catch(e){};throw new Error('DeepSeek HTTP '+resp.status+(t?': '+t.slice(0,160):''));}
+    const data=await resp.json(); return (data.choices?.[0]?.message?.content||'').trim();
+  }
+  function panel(title,sub,body){const p=$('#tmToolPanel'); if(!p)return; p.className='tm-panel active'; p.innerHTML=`<div class="tm-panel-head"><div><h4>${title}</h4><p>${sub}</p></div><button class="tm-panel-close" data-act="closePanel">✕ Cerrar</button></div>${body}`; p.scrollIntoView({behavior:'smooth',block:'start'});}
+  function addCards(){
+    const wrap=$('#herramientas .tm-tools-wrap'); if(!wrap || $('#tmDeepSeekPlannerCards')) return;
+    const div=document.createElement('div'); div.id='tmDeepSeekPlannerCards';
+    div.innerHTML=`<div class="tm-tier"><h4>MARKETING — PLANIFICACIÓN</h4><span class="tm-tier-badge gold">Semana</span></div>
+    <div class="tm-tools-grid"><div class="tm-tool-card enabled" data-tool="weekplanner"><span class="state">PRO</span><div class="ico" style="background:rgba(201,169,110,.18)">🗓️</div><h5>Plan semanal IA</h5><p>Genera calendario de publicaciones, push, WhatsApp y seguimiento.</p></div></div>`;
+    const panelEl=$('#tmToolPanel'); if(panelEl) wrap.insertBefore(div,panelEl); else wrap.appendChild(div);
+  }
+  function openPlanner(){
+    panel('🗓️ Planificador automático semanal','Crea un calendario de acciones de marketing y márcalo como hecho.',`
+      <div class="tm-form-grid">
+        <div class="tm-field"><label>Categoría foco</label><select id="tmPlanCat">${catOptions()}</select></div>
+        <div class="tm-field"><label>Objetivo</label><select id="tmPlanGoal"><option>Vender más esta semana</option><option>Mover stock alto</option><option>Reactivar interesados</option><option>Fin de semana fuerte</option><option>Reponer/ordenar catálogo</option></select></div>
+      </div>
+      <div class="tm-actions"><button class="tm-btn primary" data-ds11-act="genPlan">Generar plan</button><button class="tm-btn gold" data-ds11-act="savePlan">Guardar plan</button><button class="tm-btn" data-ds11-act="listPlans">Planes guardados</button><button class="tm-btn" data-ds11-act="copyOut">Copiar</button></div>
+      <div id="tmToolOut" class="tm-code" style="margin-top:12px">Genera un plan semanal con acciones por día.</div>`);
+  }
+  function localPlan(summary,goal){
+    const top=summary.topProductos.slice(0,7);
+    const days=['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'];
+    return `PLAN SEMANAL LOCAL — ${goal}\n\n`+days.map((d,i)=>{const p=top[i%Math.max(1,top.length)]||{}; const action=i===0?'Post Facebook + WhatsApp':i===1?'Push corto':i===2?'Repost en grupos':i===3?'Story/estado':i===4?'Campaña fin de semana':i===5?'WhatsApp a interesados': 'Revisión de stock y resultados'; return `${d}\nProducto: ${p.nombre||'Producto con stock'}\nAcción: ${action}\nTexto: ${p.nombre?`🔥 ${p.nombre} disponible en TiendaMax por ${money(p.precio)}. Escríbenos para reservar.`:'Publicar producto destacado con stock.'}\nURL: ${p.url||'/'}\n`;}).join('\n')+`\nPrioridades:\n• Revisar stock bajo: ${summary.stockBajo.length}\n• Agotados a reponer/archivar: ${summary.agotados.length}\n• Suscriptores para push: ${summary.suscriptores}`;
+  }
+  async function genPlan(){
+    const out=$('#tmToolOut'); if(!out)return;
+    out.textContent='⏳ Leyendo datos y generando plan semanal...';
+    const cat=$('#tmPlanCat')?.value||'', goal=$('#tmPlanGoal')?.value||'Vender más esta semana';
+    const an=await analytics(), s=summarize(products(),ventas(),an,cat);
+    const prompt=`Crea un plan semanal de marketing para TiendaMax.\n\nObjetivo: ${goal}\nDatos:\n${JSON.stringify(s,null,2)}\n\nEntrega un calendario de Lunes a Domingo. Cada día debe tener:\n- Producto o categoría foco\n- Canal: Facebook/WhatsApp/Push/Story/Grupos/Revisión\n- Texto breve listo para copiar\n- URL si aplica\n- Objetivo del día\n\nIncluye al final: prioridades de stock, productos a evitar si stock bajo, y seguimiento recomendado. No inventes productos fuera de la lista.`;
+    try{ out.textContent=await deepseek(prompt); notify('✅ Plan semanal generado','success'); }
+    catch(e){ out.textContent=localPlan(s,goal)+'\n\n⚠️ '+e.message; notify('Plan local generado','warning'); }
+  }
+  function savePlan(){
+    const text=$('#tmToolOut')?.textContent||''; if(text.length<40){notify('Primero genera un plan','warning');return;}
+    const item={id:Date.now(),ts:new Date().toISOString(),title:'Plan semanal '+new Date().toLocaleDateString('es-CU'),categoria:$('#tmPlanCat')?.value||'Todas',goal:$('#tmPlanGoal')?.value||'',text,done:{}};
+    const arr=plans(); arr.unshift(item); savePlans(arr); notify('✅ Plan guardado','success'); $('#tmToolOut').textContent+='\n\n✅ Guardado en planes.';
+  }
+  function listPlans(){
+    const arr=plans();
+    panel('🗓️ Planes semanales guardados','Marca días como hechos o reutiliza planes.',`<div class="tm-actions"><button class="tm-btn" data-ds11-act="openPlanner">+ Nuevo plan</button><button class="tm-btn" data-ds11-act="exportPlans">Exportar CSV</button></div><div class="tm-list">${arr.map((p,i)=>`<div class="tm-row"><div class="tm-row-main"><b>${esc(p.title)}</b><small>${new Date(p.ts).toLocaleString('es-CU')} · ${esc(p.categoria)} · ${esc(p.goal)} · Hechos: ${Object.keys(p.done||{}).length}/7</small></div><button class="tm-btn tm-mini" data-ds11-act="viewPlan" data-i="${i}">Ver</button><button class="tm-btn tm-mini" data-ds11-act="delPlan" data-i="${i}">Eliminar</button></div>`).join('')||'<div class="tm-note">No hay planes guardados.</div>'}</div><div id="tmToolOut" class="tm-code" style="margin-top:12px">Selecciona un plan.</div>`);
+  }
+  function viewPlan(i){
+    const p=plans()[Number(i)]; if(!p)return;
+    const days=['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'];
+    const controls=days.map(d=>`<button class="tm-btn tm-mini" data-ds11-act="toggleDay" data-i="${i}" data-day="${d}">${p.done&&p.done[d]?'✅':'⬜'} ${d}</button>`).join('');
+    const out=$('#tmToolOut'); if(out) out.innerHTML=`<div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px">${controls}</div><pre style="white-space:pre-wrap;margin:0">${esc(p.text)}</pre>`;
+  }
+  function toggleDay(i,d){const arr=plans(); const p=arr[Number(i)]; if(!p)return; p.done=p.done||{}; p.done[d]?delete p.done[d]:p.done[d]=new Date().toISOString(); savePlans(arr); viewPlan(i);}
+  function exportPlans(){
+    const rows=[['fecha','titulo','categoria','objetivo','hechos','plan'],...plans().map(p=>[p.ts,p.title,p.categoria,p.goal,Object.keys(p.done||{}).join('|'),p.text])];
+    const csv=rows.map(r=>r.map(x=>'"'+String(x??'').replace(/"/g,'""')+'"').join(',')).join('\n');
+    const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'})); a.download='planes_semanales_tiendamax.csv'; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+  }
+  document.addEventListener('click',function(e){
+    const tool=e.target.closest('[data-tool="weekplanner"]'); if(tool){e.preventDefault();e.stopPropagation();e.stopImmediatePropagation&&e.stopImmediatePropagation();openPlanner();return;}
+    const a=e.target.closest('[data-ds11-act]'); if(!a)return; e.preventDefault();e.stopPropagation();e.stopImmediatePropagation&&e.stopImmediatePropagation();
+    const act=a.dataset.ds11Act; if(act==='openPlanner')openPlanner(); if(act==='genPlan')genPlan(); if(act==='savePlan')savePlan(); if(act==='listPlans')listPlans(); if(act==='viewPlan')viewPlan(a.dataset.i); if(act==='toggleDay')toggleDay(a.dataset.i,a.dataset.day); if(act==='delPlan'){const arr=plans();arr.splice(Number(a.dataset.i),1);savePlans(arr);listPlans();} if(act==='exportPlans')exportPlans(); if(act==='copyOut'){navigator.clipboard?.writeText($('#tmToolOut')?.textContent||'');notify('Copiado','success');}
+  },true);
+  function boot(){addCards();}
+  document.addEventListener('DOMContentLoaded',()=>setTimeout(boot,1800));
+  document.addEventListener('click',e=>{if(e.target.closest('[data-arg="herramientas"],[data-tab="herramientas"]')) setTimeout(boot,300);});
+})();
+</script>
+
 <script id="tm-comision-ventas-v1">
 (function(){
   /* ── Toggle USD/MN en comisión ── */
