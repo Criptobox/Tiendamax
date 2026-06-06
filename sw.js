@@ -1,5 +1,6 @@
 // ═══════════════════════════════════════════════════════
-// TiendaMax — Service Worker v192 — DeepSeek campañas completas
+// TiendaMax — Service Worker v193 — Publicador asistido
+// v193: añade publicador asistido e historial de campañas.
 // v192: añade generador de campañas completas multicanal.
 // v191: añade chat IA del admin con contexto de tienda.
 // v190: añade herramienta IA masiva para SEO/recs/auditoría por lotes.
@@ -55,7 +56,7 @@
 //      usan el mismo helper _mensajeOrdenWA con formato premium.
 // ═══════════════════════════════════════════════════════
 
-const CACHE_NAME = 'tiendamax-202606060435';
+const CACHE_NAME = 'tiendamax-202606060445';
 
 const STATIC_ASSETS = [
   '/',

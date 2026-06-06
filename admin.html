@@ -1472,6 +1472,101 @@ async function tmAdminRefreshSubscribers(){
 })();
 </script>
 
+<script id="tm-deepseek-tools-v9">
+(function(){
+  const KEY='tm_campaigns_v1';
+  const LAST='tm_last_campaign_text';
+  const $=(s,r=document)=>r.querySelector(s);
+  const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  function notify(msg,type){ if(typeof mostrarNotificacion==='function') mostrarNotificacion(msg,type||'info'); else console.log(msg); }
+  function products(){ try{ if(Array.isArray(window.productos)) return window.productos; }catch(e){} try{return JSON.parse(localStorage.getItem('productos')||'[]')}catch(e){return[]} }
+  function saveProducts(ps){ localStorage.setItem('productos',JSON.stringify(ps)); if(Array.isArray(window.productos)) window.productos=ps; if(typeof guardarProductos==='function') guardarProductos(); }
+  function list(){ try{return JSON.parse(localStorage.getItem(KEY)||'[]')}catch(e){return[]} }
+  function setList(v){ localStorage.setItem(KEY,JSON.stringify(v.slice(0,100))); }
+  function productOptions(){return '<option value="">Sin producto específico</option>'+products().map(p=>`<option value="${esc(p.id)}">${esc(p.nombre||'Producto')} — ${esc(p.categoria||'General')}</option>`).join('');}
+  function byId(id){return products().find(p=>String(p.id)===String(id))||null;}
+  function productUrl(p){return p&&p.id?`/p/producto-${p.id}.html`:'/';}
+  function panel(title,sub,body){const p=$('#tmToolPanel'); if(!p)return; p.className='tm-panel active'; p.innerHTML=`<div class="tm-panel-head"><div><h4>${title}</h4><p>${sub}</p></div><button class="tm-panel-close" data-act="closePanel">✕ Cerrar</button></div>${body}`; p.scrollIntoView({behavior:'smooth',block:'start'});}
+  function addCards(){
+    const wrap=$('#herramientas .tm-tools-wrap'); if(!wrap || $('#tmDeepSeekPublisherCards')) return;
+    const div=document.createElement('div'); div.id='tmDeepSeekPublisherCards';
+    div.innerHTML=`<div class="tm-tier"><h4>DEEPSEEK — EJECUCIÓN</h4><span class="tm-tier-badge gold">Publicar</span></div>
+    <div class="tm-tools-grid"><div class="tm-tool-card enabled" data-tool="publisherai"><span class="state">PRO</span><div class="ico" style="background:rgba(37,211,102,.18)">📌</div><h5>Publicador asistido</h5><p>Guarda campaña, copia canales, aplica push y crea seguimiento.</p></div></div>`;
+    const panelEl=$('#tmToolPanel'); if(panelEl) wrap.insertBefore(div,panelEl); else wrap.appendChild(div);
+  }
+  function parseSection(text, name){
+    const re=new RegExp(name+'\\s*:?\\s*([\\s\\S]*?)(?:\\n\\s*(?:FACEBOOK|WHATSAPP|PUSH|STORY|HASHTAGS|PLAN|HORARIO|RECOMENDADOS|$))','i');
+    const m=text.match(re); return (m&&m[1]?m[1].trim():text.trim());
+  }
+  function parsePush(text,p){
+    const title=(text.match(/T[ií]tulo\s*:\s*(.+)/i)||[])[1]?.trim() || ('🔥 '+(p?.nombre||'TiendaMax').slice(0,30));
+    const body=(text.match(/Mensaje\s*:\s*(.+)/i)||[])[1]?.trim() || ((p?.nombre||'Producto disponible')+' en TiendaMax. Escríbenos para reservar.').slice(0,100);
+    const url=(text.match(/URL\s*:\s*(\S+)/i)||[])[1]?.trim() || productUrl(p);
+    return {title:title.slice(0,55),body:body.slice(0,120),url};
+  }
+  function openPub(){
+    const last=localStorage.getItem(LAST)||'';
+    panel('📌 Publicador asistido','Convierte una campaña en acciones: copiar, push, historial y seguimiento.',`
+      <div class="tm-form-grid">
+        <div class="tm-field"><label>Título interno</label><input id="tmPubTitle" placeholder="Ej: Campaña WIFI sábado" value="Campaña ${new Date().toLocaleDateString('es-CU')}"></div>
+        <div class="tm-field"><label>Producto</label><select id="tmPubProd">${productOptions()}</select></div>
+      </div>
+      <div class="tm-field"><label>Texto de campaña</label><textarea id="tmPubText" style="min-height:180px" placeholder="Pega aquí la campaña generada...">${esc(last)}</textarea></div>
+      <div class="tm-actions"><button class="tm-btn primary" data-ds9-act="savePub">Guardar como publicada</button><button class="tm-btn gold" data-ds9-act="applyPush">Aplicar push</button><button class="tm-btn" data-ds9-act="copyFacebook">Copiar Facebook</button><button class="tm-btn" data-ds9-act="copyWhatsApp">Copiar WhatsApp</button><button class="tm-btn" data-ds9-act="history">Historial</button></div>
+      <div class="tm-note">Tip: genera una campaña IA, luego abre esta herramienta. Si fue detectada, aparecerá aquí automáticamente.</div>
+      <div id="tmToolOut" class="tm-code" style="margin-top:12px">Listo para publicar.</div>`);
+  }
+  function savePub(){
+    const text=$('#tmPubText')?.value.trim()||''; if(!text){notify('Pega o genera una campaña primero','warning');return;}
+    const pid=$('#tmPubProd')?.value||''; const p=byId(pid); const channels=[];
+    if(/facebook/i.test(text)) channels.push('Facebook'); if(/whatsapp/i.test(text)) channels.push('WhatsApp'); if(/push|título|mensaje/i.test(text)) channels.push('Push'); if(/story|estado/i.test(text)) channels.push('Story');
+    const item={id:Date.now(),ts:new Date().toISOString(),title:$('#tmPubTitle')?.value.trim()||'Campaña',productId:pid||null,productName:p?.nombre||'',channels:[...new Set(channels)],text,status:'publicada',followUpAt:new Date(Date.now()+24*3600*1000).toISOString(),result:''};
+    const arr=list(); arr.unshift(item); setList(arr);
+    if(p){const ps=products(); const idx=ps.findIndex(x=>String(x.id)===String(p.id)); if(idx>=0){ps[idx].ultimaPublicacion=new Date().toISOString(); ps[idx].campanasPublicadas=Number(ps[idx].campanasPublicadas||0)+1; saveProducts(ps); try{if(typeof marcarProductoModificado==='function') marcarProductoModificado(ps[idx].id);}catch(e){}}}
+    localStorage.setItem(LAST,text);
+    $('#tmToolOut').textContent=`✅ Campaña guardada\nTítulo: ${item.title}\nProducto: ${item.productName||'—'}\nCanales: ${item.channels.join(', ')||'—'}\nSeguimiento: mañana`;
+    notify('✅ Campaña guardada en historial','success');
+  }
+  function applyPush(){
+    const text=$('#tmPubText')?.value||localStorage.getItem(LAST)||''; const p=byId($('#tmPubProd')?.value); const pu=parsePush(text,p);
+    if(typeof switchTab==='function') switchTab('configuracion');
+    setTimeout(()=>{const t=$('#manualPushTitle'), b=$('#manualPushBody'), u=$('#manualPushUrl'); if(t)t.value=pu.title; if(b)b.value=pu.body; if(u)u.value=pu.url; notify('✅ Push aplicado en Configuración','success');},250);
+  }
+  function copyPart(type){
+    const text=$('#tmPubText')?.value||''; let out=text;
+    if(type==='Facebook') out=parseSection(text,'FACEBOOK');
+    if(type==='WhatsApp') out=parseSection(text,'WHATSAPP');
+    navigator.clipboard?.writeText(out); notify('Copiado '+type,'success');
+    const box=$('#tmToolOut'); if(box) box.textContent=out;
+  }
+  function history(){
+    const arr=list();
+    panel('📌 Historial de campañas','Campañas guardadas y seguimiento.',`<div class="tm-actions"><button class="tm-btn" data-ds9-act="openPub">+ Nueva campaña</button><button class="tm-btn" data-ds9-act="exportCsv">Exportar CSV</button></div><div class="tm-list">${arr.map((c,i)=>`<div class="tm-row"><div class="tm-row-main"><b>${esc(c.title)}</b><small>${new Date(c.ts).toLocaleString('es-CU')} · ${esc(c.productName||'Sin producto')} · ${esc((c.channels||[]).join(', '))}<br>Seguimiento: ${c.followUpAt?new Date(c.followUpAt).toLocaleDateString('es-CU'):'—'} · Estado: ${esc(c.status||'')}</small></div><button class="tm-btn tm-mini" data-ds9-act="copyHist" data-i="${i}">Copiar</button><button class="tm-btn tm-mini" data-ds9-act="doneHist" data-i="${i}">Hecho</button><button class="tm-btn tm-mini" data-ds9-act="delHist" data-i="${i}">Eliminar</button></div>`).join('')||'<div class="tm-note">No hay campañas guardadas.</div>'}</div><div id="tmToolOut" class="tm-code" style="margin-top:12px">Selecciona una campaña.</div>`);
+  }
+  function exportCsv(){
+    const rows=[['fecha','titulo','producto','canales','estado','seguimiento'],...list().map(c=>[c.ts,c.title,c.productName,(c.channels||[]).join('|'),c.status,c.followUpAt])];
+    const csv=rows.map(r=>r.map(x=>'"'+String(x??'').replace(/"/g,'""')+'"').join(',')).join('\n');
+    const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'})); a.download='campanas_tiendamax.csv'; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+  }
+  function captureLast(){
+    const out=$('#tmToolOut'); if(!out) return; const txt=out.textContent||'';
+    if(txt.length>100 && /(FACEBOOK|WHATSAPP|PUSH|CAMPAÑA|HASHTAGS)/i.test(txt)) localStorage.setItem(LAST,txt);
+  }
+  const mo=new MutationObserver(()=>captureLast());
+  document.addEventListener('DOMContentLoaded',()=>{try{mo.observe(document.body,{childList:true,subtree:true,characterData:true});}catch(e){} setTimeout(addCards,1600);});
+  document.addEventListener('click',function(e){
+    const tool=e.target.closest('[data-tool="publisherai"]'); if(tool){e.preventDefault();e.stopPropagation();e.stopImmediatePropagation&&e.stopImmediatePropagation();openPub();return;}
+    const a=e.target.closest('[data-ds9-act]'); if(!a)return; e.preventDefault();e.stopPropagation();e.stopImmediatePropagation&&e.stopImmediatePropagation();
+    const act=a.dataset.ds9Act;
+    if(act==='openPub') openPub(); if(act==='savePub') savePub(); if(act==='applyPush') applyPush(); if(act==='copyFacebook') copyPart('Facebook'); if(act==='copyWhatsApp') copyPart('WhatsApp'); if(act==='history') history(); if(act==='exportCsv') exportCsv();
+    if(act==='copyHist'){const c=list()[Number(a.dataset.i)]; if(c){navigator.clipboard?.writeText(c.text); $('#tmToolOut')&&($('#tmToolOut').textContent=c.text); notify('Campaña copiada','success');}}
+    if(act==='doneHist'){const arr=list(); const c=arr[Number(a.dataset.i)]; if(c){c.status='seguimiento hecho'; c.result='Revisado '+new Date().toLocaleString('es-CU'); setList(arr); history();}}
+    if(act==='delHist'){const arr=list(); arr.splice(Number(a.dataset.i),1); setList(arr); history();}
+  },true);
+  document.addEventListener('click',e=>{if(e.target.closest('[data-arg="herramientas"],[data-tab="herramientas"]')) setTimeout(addCards,300);});
+})();
+</script>
+
 <script id="tm-comision-ventas-v1">
 (function(){
   /* ── Toggle USD/MN en comisión ── */
