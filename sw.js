@@ -1,5 +1,6 @@
 // ═══════════════════════════════════════════════════════
-// TiendaMax — Service Worker v198 — Piloto automatico seguro
+// TiendaMax — Service Worker v199 — Admin AI tools modular
+// v199: mueve herramientas DeepSeek a js/admin-ai-tools.js para aligerar admin.
 // v198: añade rutina guiada de piloto automático seguro.
 // v197: añade backup/restauración inteligente.
 // v196: añade centro de tareas diario para admin.
@@ -61,7 +62,7 @@
 //      usan el mismo helper _mensajeOrdenWA con formato premium.
 // ═══════════════════════════════════════════════════════
 
-const CACHE_NAME = 'tiendamax-202606060535';
+const CACHE_NAME = 'tiendamax-202606060545';
 
 const STATIC_ASSETS = [
   '/',
@@ -76,6 +77,7 @@ const STATIC_ASSETS = [
   '/css/admin.css',
   '/js/script.js',
   '/js/analytics.js',
+  '/js/admin-ai-tools.js',
   '/js/seo-dynamico.js',
   '/js/share-patch.js',
   '/js/push-fix.js',
