@@ -271,12 +271,46 @@ async function tmAdminRefreshSubscribers(){
       rev.parentNode.insertBefore(help, rev);
     }
   }
+  async function sincVentasSiVacio(){
+    try{
+      var v=[];try{v=JSON.parse(localStorage.getItem('registroVentas')||'[]');}catch(e){}
+      if(v.length>0)return; // ya hay datos locales, no hace falta
+      if(typeof _fbSincronizarVentasAlIniciar==='function'){
+        await _fbSincronizarVentasAlIniciar();
+      } else {
+        // fallback directo si la función no está disponible
+        var cfg={}; try{cfg=JSON.parse(localStorage.getItem('firebaseConfig')||'{}');}catch(e){}
+        var base=cfg.databaseURL||(cfg.projectId?'https://'+cfg.projectId+'-default-rtdb.firebaseio.com':null);
+        if(!base)return;
+        var r=await fetch(base+'/ventas.json?_='+Date.now(),{cache:'no-store'});
+        if(!r.ok)return;
+        var raw=await r.json();
+        if(!raw||typeof raw!=='object')return;
+        var arr=Object.values(raw).filter(Boolean).sort(function(a,b){return b.id-a.id;});
+        if(!arr.length)return;
+        localStorage.setItem('registroVentas',JSON.stringify(arr.slice(0,500)));
+        if(typeof renderizarVentas==='function') renderizarVentas();
+      }
+    }catch(e){console.warn('[sincVentas]',e);}
+  }
   const old=window.switchTab;
   if(typeof old==='function' && !window.__tmPolishSwitch){
     window.__tmPolishSwitch=true;
-    window.switchTab=function(tab){ const r=old.apply(this,arguments); if(tab==='publicar-ahora') setTimeout(enhancePublicar,250); if(tab==='configuracion') setTimeout(tmAdminRefreshSubscribers,250); return r; };
+    window.switchTab=function(tab){
+      const r=old.apply(this,arguments);
+      if(tab==='publicar-ahora') setTimeout(enhancePublicar,250);
+      if(tab==='configuracion') setTimeout(tmAdminRefreshSubscribers,250);
+      if(tab==='ventas') sincVentasSiVacio();
+      if(tab==='analytics') sincVentasSiVacio();
+      return r;
+    };
   }
-  document.addEventListener('DOMContentLoaded',()=>{setTimeout(enhancePublicar,1000);setTimeout(tmAdminRefreshSubscribers,1500);});
+  document.addEventListener('DOMContentLoaded',()=>{
+    setTimeout(enhancePublicar,1000);
+    setTimeout(tmAdminRefreshSubscribers,1500);
+    // Sync ventas en background al abrir el panel
+    setTimeout(sincVentasSiVacio, 800);
+  });
 })();
 </script>
 
