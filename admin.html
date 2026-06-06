@@ -499,11 +499,11 @@ async function tmAdminRefreshSubscribers(){
     const v=document.getElementById('anthropicApiKey')?.value.trim();
     const st=document.getElementById('anthropicKeyStatus');
     if(!v||v.length<20){if(st){st.textContent='❌ La clave parece inválida (muy corta)';st.style.color='#e74c3c';} return;}
-    // Detectar si es Google o Anthropic por el prefijo
-    const esGoogle=v.startsWith('AIza');
+    // Anthropic keys empiezan con sk-ant-, todo lo demás se trata como Google
+    const esAnthropic=v.startsWith('sk-ant-')||v.startsWith('sk-');
     localStorage.setItem('anthropicApiKey',v);
-    localStorage.setItem('anthropicApiProvider', esGoogle?'google':'anthropic');
-    if(st){st.textContent='✅ API Key '+(esGoogle?'de Google':'de Anthropic')+' guardada.';st.style.color='#25d366';}
+    localStorage.setItem('anthropicApiProvider', esAnthropic?'anthropic':'google');
+    if(st){st.textContent='✅ API Key '+(esAnthropic?'de Anthropic':'de Google')+' guardada.';st.style.color='#25d366';}
     notify('✅ API Key guardada','success');
     const btn=document.getElementById('btnAnalizarFoto');
     if(btn)btn.style.display='';
@@ -568,7 +568,7 @@ async function tmAdminRefreshSubscribers(){
       const cat=document.getElementById('productCategory')?.value||'';
       const price=document.getElementById('productPriceActual')?.value||'';
       const prompt='Eres asistente de una tienda online en Cuba. Analiza esta foto y responde SOLO con JSON válido exactamente así:\n{"nombre":"<nombre del producto, max 55 chars>","descripcion":"<descripción atractiva para venta en 2-3 oraciones, español de Cuba>","categoria_sugerida":"<una de: CELULARES, PC Y LAPTOPS, WIFI, ENERGIA, CARROS, MOTOS, HOGAR, ROPA, SEGURIDAD, o General>"}\n'+(cat?'Categoría actual: '+cat+'. ':'')+( price?'Precio: $'+price+' USD. ':'');
-      const provider=localStorage.getItem('anthropicApiProvider')||( key.startsWith('AIza')?'google':'anthropic');
+      const provider=localStorage.getItem('anthropicApiProvider')||(key.startsWith('sk-')?'anthropic':'google');
       let text='';
       if(provider==='google'){
         // Google Gemini API — gratis 1500 req/día
