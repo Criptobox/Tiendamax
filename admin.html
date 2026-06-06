@@ -921,6 +921,142 @@ async function tmAdminRefreshSubscribers(){
 })();
 </script>
 
+<script id="tm-deepseek-tools-v3">
+(function(){
+  const $=(s,r=document)=>r.querySelector(s);
+  const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  function notify(msg,type){ if(typeof mostrarNotificacion==='function') mostrarNotificacion(msg,type||'info'); else console.log(msg); }
+  function products(){ try{ if(Array.isArray(window.productos)) return window.productos; }catch(e){} try{return JSON.parse(localStorage.getItem('productos')||'[]')}catch(e){return[]} }
+  function ventas(){ try{ if(typeof cargarVentas==='function') return cargarVentas()||[]; }catch(e){} try{return JSON.parse(localStorage.getItem('registroVentas')||'[]')}catch(e){return[]} }
+  function productOptions(){return products().map(p=>`<option value="${esc(p.id)}">${esc(p.nombre||p.name||'Producto')} — stock ${Number(p.stock||0)} — $${Number(p.precioActual||p.price||0).toFixed(2)}</option>`).join('') || '<option value="">Sin productos</option>';}
+  function bySelect(id){ const val=$('#'+id)?.value; return products().find(p=>String(p.id)===String(val)) || products()[0] || {}; }
+  function prodInfo(p){
+    return [
+      'ID: '+(p.id||''),
+      'Nombre: '+(p.nombre||p.name||'Producto'),
+      'Descripción: '+(p.descripcion||'Sin descripción'),
+      'Categoría: '+(p.categoria||'General'),
+      'Subcategoría: '+(p.subcategoria||''),
+      'Precio actual: '+Number(p.precioActual||p.price||0).toFixed(2)+' USD',
+      'Precio original: '+(p.precioOriginal||''),
+      'Stock: '+Number(p.stock||0),
+      'Imagen: '+(p.imagen?'sí':'no'),
+      'Galería: '+((p.imagenes&&p.imagenes.length)||0),
+      p.garantia?('Garantía: '+p.garantia):'Garantía: no indicada',
+      p.usado?'Usado/refurbished: sí':'Usado/refurbished: no',
+      p.devolucion?'Devolución segura: sí':'Devolución segura: no'
+    ].join('\n');
+  }
+  async function deepseek(prompt, max_tokens=1000){
+    const key=localStorage.getItem('anthropicApiKey')||'';
+    const provider=localStorage.getItem('anthropicApiProvider')||'';
+    if(!key || !(provider==='deepseek' || key.startsWith('sk-'))) throw new Error('DeepSeek no configurado en Configuración');
+    const resp=await fetch('https://api.deepseek.com/v1/chat/completions',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},
+      body:JSON.stringify({
+        model:'deepseek-chat', temperature:0.55, max_tokens,
+        messages:[
+          {role:'system',content:'Eres consultor ecommerce para TiendaMax, tienda online en Cuba. Analiza datos reales, sé concreto, práctico y no inventes datos. Da recomendaciones accionables.'},
+          {role:'user',content:prompt}
+        ]
+      })
+    });
+    if(!resp.ok){ let t=''; try{t=await resp.text()}catch(e){}; throw new Error('DeepSeek HTTP '+resp.status+(t?': '+t.slice(0,180):'')); }
+    const data=await resp.json();
+    return (data.choices?.[0]?.message?.content||'').trim();
+  }
+  function panel(title,sub,body){
+    const p=$('#tmToolPanel'); if(!p) return;
+    p.className='tm-panel active';
+    p.innerHTML=`<div class="tm-panel-head"><div><h4>${title}</h4><p>${sub}</p></div><button class="tm-panel-close" data-act="closePanel">✕ Cerrar</button></div>${body}`;
+    p.scrollIntoView({behavior:'smooth',block:'start'});
+  }
+  function addCards(){
+    const wrap=$('#herramientas .tm-tools-wrap'); if(!wrap || $('#tmDeepSeekAuditCards')) return;
+    const div=document.createElement('div'); div.id='tmDeepSeekAuditCards';
+    div.innerHTML=`
+      <div class="tm-tier"><h4>DEEPSEEK — OPTIMIZACIÓN</h4><span class="tm-tier-badge gold">Auditoría</span></div>
+      <div class="tm-tools-grid">
+        <div class="tm-tool-card enabled" data-tool="auditai"><span class="state">IA</span><div class="ico" style="background:rgba(231,76,60,.16)">🕵️</div><h5>Auditor IA de producto</h5><p>Detecta errores, datos faltantes y oportunidades de mejora antes de publicar.</p></div>
+        <div class="tm-tool-card enabled" data-tool="insightsai"><span class="state">IA</span><div class="ico" style="background:rgba(52,152,219,.18)">📊</div><h5>Resumen IA de ventas</h5><p>Analiza ventas, stock y analytics para recomendar qué publicar hoy.</p></div>
+      </div>`;
+    const panelEl=$('#tmToolPanel'); if(panelEl) wrap.insertBefore(div,panelEl); else wrap.appendChild(div);
+  }
+  function openAudit(){
+    panel('🕵️ Auditor IA de producto','Revisa un producto y te dice qué arreglar para vender mejor.',`
+      <div class="tm-field"><label>Producto a revisar</label><select id="tmAuditProd">${productOptions()}</select></div>
+      <div class="tm-actions"><button class="tm-btn primary" data-ds3-act="auditRun">Auditar producto</button><button class="tm-btn" data-ds3-act="copyOut">Copiar</button></div>
+      <div id="tmToolOut" class="tm-code" style="margin-top:12px">Selecciona un producto y ejecuta la auditoría.</div>`);
+  }
+  function openInsights(){
+    panel('📊 Resumen inteligente de ventas y analytics','DeepSeek analiza datos locales/Firebase y propone acciones concretas.',`
+      <div class="tm-actions"><button class="tm-btn primary" data-ds3-act="insightsRun">Generar resumen IA</button><button class="tm-btn gold" data-ds3-act="insightsPush">Crear idea de push</button><button class="tm-btn" data-ds3-act="copyOut">Copiar</button></div>
+      <div id="tmToolOut" class="tm-code" style="margin-top:12px">Pulsa generar para analizar productos, ventas, stock y métricas disponibles.</div>`);
+  }
+  function localAudit(p){
+    const issues=[];
+    if(!(p.nombre||'').trim() || (p.nombre||'').length<8) issues.push('Nombre muy corto o poco descriptivo.');
+    if(!(p.descripcion||'').trim() || (p.descripcion||'').length<60) issues.push('Descripción débil: agrega beneficios, uso y condición.');
+    if(!Number(p.precioActual||0)) issues.push('Falta precio actual.');
+    if(!p.categoria) issues.push('Falta categoría.');
+    if(!p.imagen) issues.push('Falta imagen principal.');
+    if(Number(p.stock||0)<=0) issues.push('Stock en cero: revisar si debe estar agotado o reponer.');
+    if(!p.garantia) issues.push('Garantía no indicada: si aplica, agrégala para generar confianza.');
+    return `Auditoría local para: ${p.nombre||'Producto'}\n\nProblemas detectados:\n${issues.length?issues.map(x=>'• '+x).join('\n'):'• No veo problemas críticos.'}\n\nMejoras sugeridas:\n• Título claro con tipo/modelo/beneficio.\n• Descripción en 2-4 oraciones con uso real.\n• Añade foto limpia y datos de garantía si aplica.\n• Publica en redes si tiene stock disponible.`;
+  }
+  async function runAudit(){
+    const out=$('#tmToolOut'); if(!out) return; const p=bySelect('tmAuditProd');
+    out.textContent='⏳ Auditando con DeepSeek...';
+    const prompt=`Audita este producto antes de publicarlo.\n\n${prodInfo(p)}\n\nEntrega en secciones:\n1) Estado general: Bueno/Regular/Crítico.\n2) Problemas o riesgos detectados.\n3) Datos que faltan.\n4) Descripción mejorada sugerida.\n5) Categoría/subcategoría sugerida si ves inconsistencia.\n6) Acción recomendada hoy: publicar, corregir, reponer o archivar.\n\nSé directo y práctico.`;
+    try{ out.textContent=await deepseek(prompt,1000); notify('✅ Auditoría generada','success'); }
+    catch(e){ out.textContent=localAudit(p)+'\n\n⚠️ '+e.message; notify('Auditoría local: configura DeepSeek para análisis avanzado','warning'); }
+  }
+  async function collectAnalytics(){
+    let fb={vistas:{},whatsapp:{},suscriptores:0};
+    try{ if(typeof tmLeerAnalytics==='function') fb=await tmLeerAnalytics(); }catch(e){}
+    return fb;
+  }
+  function buildSummaryPayload(fb){
+    const ps=products(); const vs=ventas();
+    const low=ps.filter(p=>Number(p.stock||0)>0&&Number(p.stock||0)<=3).slice(0,10).map(p=>`${p.nombre} (${p.stock})`);
+    const empty=ps.filter(p=>Number(p.stock||0)<=0).slice(0,10).map(p=>p.nombre);
+    const topStock=ps.slice().sort((a,b)=>Number(b.stock||0)-Number(a.stock||0)).slice(0,8).map(p=>`${p.nombre}: stock ${p.stock}, $${Number(p.precioActual||0).toFixed(2)}`);
+    const recent=vs.slice(0,12).map(v=>`${v.fecha||v.id}: ${v.producto} x${v.cantidad||1} total $${Number(v.total||0).toFixed(2)}`);
+    const vistas=Object.entries(fb.vistas||{}).sort((a,b)=>Number(b[1])-Number(a[1])).slice(0,10).map(([id,n])=>{const p=ps.find(x=>String(x.id)===String(id)); return `${p?p.nombre:id}: ${n} vistas`;});
+    const wa=Object.entries(fb.whatsapp||{}).sort((a,b)=>Number(b[1])-Number(a[1])).slice(0,10).map(([id,n])=>{const p=ps.find(x=>String(x.id)===String(id)); return `${p?p.nombre:id}: ${n} WhatsApp`;});
+    return {totalProductos:ps.length,ventasCount:vs.length,totalVentas:vs.reduce((s,v)=>s+Number(v.total||0),0),suscriptores:fb.suscriptores||0,stockBajo:low,agotados:empty,topStock,ventasRecientes:recent,topVistas:vistas,topWhatsApp:wa};
+  }
+  async function runInsights(pushOnly=false){
+    const out=$('#tmToolOut'); if(!out) return;
+    out.textContent='⏳ Leyendo datos y consultando DeepSeek...';
+    const fb=await collectAnalytics(); const payload=buildSummaryPayload(fb);
+    const prompt=pushOnly?
+      `Con estos datos de TiendaMax, propone UNA campaña push para hoy.\n\n${JSON.stringify(payload,null,2)}\n\nEntrega SOLO:\nTítulo:\nMensaje:\nProducto recomendado:\nMotivo:`:
+      `Analiza estos datos de TiendaMax y genera un resumen ejecutivo.\n\n${JSON.stringify(payload,null,2)}\n\nEntrega:\n1) Resumen de situación.\n2) 5 acciones recomendadas para hoy.\n3) Productos que conviene publicar.\n4) Productos a reponer/archivar.\n5) Ideas de oferta o push.\n6) Riesgos detectados.\nSé concreto.`;
+    try{ out.textContent=await deepseek(prompt,1200); notify('✅ Resumen IA generado','success'); }
+    catch(e){
+      out.textContent=`Resumen local\n\nProductos: ${payload.totalProductos}\nVentas registradas: ${payload.ventasCount}\nTotal vendido: $${payload.totalVentas.toFixed(2)}\nSuscriptores: ${payload.suscriptores}\n\nStock bajo:\n${payload.stockBajo.map(x=>'• '+x).join('\n')||'• Sin alertas'}\n\nAgotados:\n${payload.agotados.map(x=>'• '+x).join('\n')||'• Sin agotados'}\n\nRecomendación: publica productos con buen stock, repón agotados y usa push para productos con visitas/WhatsApp.\n\n⚠️ ${e.message}`;
+      notify('Resumen local: configura DeepSeek para recomendaciones avanzadas','warning');
+    }
+  }
+  document.addEventListener('click',function(e){
+    const tool=e.target.closest('[data-tool="auditai"],[data-tool="insightsai"]');
+    if(tool){ e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation&&e.stopImmediatePropagation(); tool.dataset.tool==='auditai'?openAudit():openInsights(); return; }
+    const a=e.target.closest('[data-ds3-act]'); if(!a) return;
+    e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation&&e.stopImmediatePropagation();
+    const act=a.dataset.ds3Act;
+    if(act==='auditRun') runAudit();
+    if(act==='insightsRun') runInsights(false);
+    if(act==='insightsPush') runInsights(true);
+    if(act==='copyOut'){ navigator.clipboard?.writeText($('#tmToolOut')?.textContent||''); notify('Copiado','success'); }
+  },true);
+  function boot(){ addCards(); }
+  document.addEventListener('DOMContentLoaded',()=>setTimeout(boot,1000));
+  document.addEventListener('click',e=>{ if(e.target.closest('[data-arg="herramientas"],[data-tab="herramientas"]')) setTimeout(boot,300); });
+})();
+</script>
+
 <script id="tm-comision-ventas-v1">
 (function(){
   /* ── Toggle USD/MN en comisión ── */

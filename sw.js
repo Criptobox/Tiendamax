@@ -1,5 +1,6 @@
 // ═══════════════════════════════════════════════════════
-// TiendaMax — Service Worker v186 — fix contador push invertido
+// TiendaMax — Service Worker v187 — DeepSeek auditor e insights
+// v187: añade auditor IA de producto y resumen inteligente.
 // v186: refresca fix de tokens legacy para contador suscriptores.
 // v185: añade DeepSeek para push y respuestas WhatsApp.
 // v184: refresca admin.html con DeepSeek en Herramientas IA.
@@ -49,7 +50,7 @@
 //      usan el mismo helper _mensajeOrdenWA con formato premium.
 // ═══════════════════════════════════════════════════════
 
-const CACHE_NAME = 'tiendamax-202606060325';
+const CACHE_NAME = 'tiendamax-202606060345';
 
 const STATIC_ASSETS = [
   '/',
