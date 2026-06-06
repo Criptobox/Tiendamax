@@ -6652,7 +6652,7 @@ async function solicitarYRegistrarTokenFCM(messaging, config, fcmReg) {
                         const deletes = [];
                         Object.keys(allData).forEach(k => {
                             const t = allData[k];
-                            if (k !== tokenId && (k === legacyTokenId || (t && (t.fingerprint === fingerprint || t.token === token)))) {
+                            if (k !== tokenId && (k === legacyTokenId || (t && (t.fingerprint === fingerprint || t.token === token || t.userAgent === navigator.userAgent)))) {
                                 deletes.push(fetch(`${rtdbUrl}/tokens/${k}.json`, { method: 'DELETE' }).catch(() => null));
                             }
                         });
@@ -7633,8 +7633,23 @@ window.addEventListener('popstate', function() {
                 if (fbConfig && fbConfig.databaseURL) {
                     const legacyTokenId = btoa(tokenLocal).replace(/=/g,'').replace(/\+/g,'-').replace(/\//g,'_');
                     const fingerprint = (typeof tmPushDeviceFingerprint === 'function') ? tmPushDeviceFingerprint() : null;
-                    const ids = [legacyTokenId, fingerprint].filter(Boolean);
-                    await Promise.allSettled(ids.map(id => fetch(fbConfig.databaseURL + '/tokens/' + id + '.json', { method: 'DELETE' })));
+                    const ids = new Set([legacyTokenId, fingerprint].filter(Boolean));
+                    // Borrar también tokens viejos/legacy del mismo navegador. Si no,
+                    // al desactivar se elimina el registro nuevo con fingerprint pero queda
+                    // uno viejo sin fingerprint y el contador parece subir en vez de bajar.
+                    try {
+                        const allRes = await fetch(fbConfig.databaseURL + '/tokens.json?_=' + Date.now(), { cache: 'no-store' });
+                        if (allRes.ok) {
+                            const allData = await allRes.json();
+                            if (allData && typeof allData === 'object') {
+                                Object.keys(allData).forEach(k => {
+                                    const t = allData[k];
+                                    if (t && (t.fingerprint === fingerprint || t.token === tokenLocal || t.userAgent === navigator.userAgent)) ids.add(k);
+                                });
+                            }
+                        }
+                    } catch(e) {}
+                    await Promise.allSettled(Array.from(ids).map(id => fetch(fbConfig.databaseURL + '/tokens/' + id + '.json', { method: 'DELETE' })));
                     console.log('[notif] Token borrado de Firebase RTDB');
                 }
             } catch(e) {

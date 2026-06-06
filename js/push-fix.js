@@ -1,5 +1,6 @@
 // ════════════════════════════════════════════════════════════════
-//  TiendaMax — push-fix.js  v5
+//  TiendaMax — push-fix.js  v6
+//  v6: al activar limpia tokens legacy del mismo userAgent para evitar contador invertido.
 //  v5: no infla suscriptores; guarda por fingerprint de dispositivo.
 //  v4: separar getToken de escritura RTDB — si la red falla sólo
 //      al escribir en Firebase, el token se guarda local y se reintenta
@@ -73,7 +74,7 @@
           var deletes = [];
           Object.keys(allData).forEach(function(k) {
             var t = allData[k];
-            if (k !== id && t && (t.fingerprint === fp || t.token === localStorage.getItem("fcmToken"))) {
+            if (k !== id && t && (t.fingerprint === fp || t.token === localStorage.getItem("fcmToken") || t.userAgent === navigator.userAgent)) {
               deletes.push(fetch(dbURL + "/tokens/" + k + ".json", { method: "DELETE" }).catch(function() {}));
             }
           });
@@ -165,10 +166,10 @@
     } catch (e) {
       // El token FCM está activo — recibirá notificaciones. Solo falló guardar en la base.
       try { localStorage.setItem(LS_PENDING, JSON.stringify({ token: token, cfg: cfg, ts: Date.now() })); } catch (e2) {}
-      console.warn("[push-fix v5] Token FCM OK, RTDB pendiente:", e.message);
+      console.warn("[push-fix v6] Token FCM OK, RTDB pendiente:", e.message);
     }
 
-    console.log("[push-fix v5] Suscriptor registrado.");
+    console.log("[push-fix v6] Suscriptor registrado.");
     return true;
   }
 
@@ -185,9 +186,9 @@
     }
     try {
       await escribirTokenRTDB(pending.cfg, pending.token);
-      console.log("[push-fix v5] Token pendiente guardado en RTDB.");
+      console.log("[push-fix v6] Token pendiente guardado en RTDB.");
     } catch (e) {
-      console.warn("[push-fix v5] Reintento fallido:", e.message);
+      console.warn("[push-fix v6] Reintento fallido:", e.message);
     }
   }
 
@@ -199,7 +200,7 @@
       if (ok) _notif("✅ Notificaciones activadas correctamente.", "success");
       return ok;
     }).catch(function (e) {
-      console.error("[push-fix v5] Error:", e.message);
+      console.error("[push-fix v6] Error:", e.message);
       _notif("⚠️ No se pudo activar las notificaciones. Intenta de nuevo.", "error");
       return false;
     });
@@ -217,7 +218,7 @@
       setTimeout(function () { reintentarPendiente().catch(function () {}); }, 5000);
       if (localStorage.getItem("fcmToken")) return;
       setTimeout(function () {
-        registrarTokenRobusto().catch(function (e) { console.warn("[push-fix v5] auto-recuperación:", e.message); });
+        registrarTokenRobusto().catch(function (e) { console.warn("[push-fix v6] auto-recuperación:", e.message); });
       }, 3000);
     } catch (e) {}
   }
