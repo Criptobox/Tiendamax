@@ -606,8 +606,8 @@ window.tmOpenRouterModel = tmOpenRouterModel;
         <div class="tm-field"><label>Límite por tanda</label><input id="tmBulkLimit" type="number" min="1" max="20" value="5"></div>
         <div class="tm-field"><label>Modo</label><select id="tmBulkMode"><option value="deepseek">DeepSeek si está configurado</option><option value="local">Solo local / sin API</option></select></div>
       </div>
-      <div class="tm-actions"><button class="tm-btn primary" data-ds6-act="bulkPreview">Vista previa</button><button class="tm-btn gold" data-ds6-act="bulkRun">Ejecutar lote</button><button class="tm-btn" data-ds6-act="copyOut">Copiar log</button></div>
-      <div class="tm-note">Consejo: empieza con límite 5. Después revisa y pulsa “Actualizar tienda”.</div>
+      <div class="tm-actions"><button class="tm-btn primary" data-ds6-act="bulkPreview">Vista previa</button><button class="tm-btn gold" data-ds6-act="bulkRun">Ejecutar lote</button><button class="tm-btn gold" data-ds6-act="bulkRunAll">Auto 5 en 5</button><button class="tm-btn" data-ds6-act="copyOut">Copiar log</button></div>
+      <div class="tm-note">Consejo: ‘Auto 5 en 5’ procesa todas las tandas pendientes y al final solo tienes que pulsar “Actualizar tienda”.</div>
       <div id="tmToolOut" class="tm-code" style="margin-top:12px">Elige tarea y pulsa Vista previa.</div>`);
   }
   function selectTargets(){
@@ -636,16 +636,10 @@ window.tmOpenRouterModel = tmOpenRouterModel;
     const j=JSON.parse(m[0]); const valid=new Set(candidates.map(c=>String(c.id))); j.recomendados=(j.recomendados||[]).map(String).filter(id=>valid.has(id)).slice(0,4).map(id=>isNaN(Number(id))?id:Number(id)); return j;
   }
   function auditLine(p){const issues=[]; if(!(p.nombre||'').trim()||(p.nombre||'').length<8)issues.push('nombre flojo'); if(!(p.descripcion||'').trim()||(p.descripcion||'').length<80)issues.push('descripción corta'); if(!p.imagen)issues.push('sin imagen'); if(!Number(p.precioActual||0))issues.push('sin precio'); if(Number(p.stock||0)<=0)issues.push('sin stock'); if(!p.garantia)issues.push('sin garantía indicada'); return `${p.nombre}: ${issues.length?issues.join(', '):'OK'}`;}
-  async function run(){
-    const out=$('#tmToolOut'); if(!out)return; const task=$('#tmBulkTask')?.value||'seo_missing'; const mode=$('#tmBulkMode')?.value||'deepseek'; const useAI=mode==='deepseek';
-    const targets=selectTargets(); if(!targets.length){out.textContent='No hay productos para procesar.'; return;}
-    let ps=products(); const log=[]; out.textContent='⏳ Iniciando lote...';
-    if(task==='audit_report'){
-      out.textContent='REPORTE DE AUDITORÍA\n\n'+targets.map(auditLine).join('\n'); notify('Reporte generado','success'); return;
-    }
+  async function processTargets(targets, ps, task, useAI, out, log, offset=0){
     for(let i=0;i<targets.length;i++){
       const p=targets[i]; const idx=ps.findIndex(x=>String(x.id)===String(p.id)); if(idx<0) continue;
-      out.textContent=`⏳ Procesando ${i+1}/${targets.length}: ${p.nombre}\n\n`+log.join('\n');
+      out.textContent=`⏳ Procesando ${offset+i+1}: ${p.nombre}\n\n`+log.slice(-18).join('\n');
       try{
         if(task==='seo_missing'||task==='seo_all'){
           const seo=await genSEO(ps[idx],useAI); ps[idx]={...ps[idx],seoTitle:seo.seoTitle||'',seoDescription:seo.seoDescription||'',seoKeywords:seo.seoKeywords||[],slug:seo.slug||slugify(ps[idx].nombre),shareText:seo.shareText||''};
@@ -662,12 +656,46 @@ window.tmOpenRouterModel = tmOpenRouterModel;
         if(task==='recs_missing'){const r=localRecs(ps[idx],ps); ps[idx]={...ps[idx],...r};}
       }
     }
+    return ps;
+  }
+  async function run(){
+    const out=$('#tmToolOut'); if(!out)return; const task=$('#tmBulkTask')?.value||'seo_missing'; const mode=$('#tmBulkMode')?.value||'deepseek'; const useAI=mode==='deepseek';
+    const targets=selectTargets(); if(!targets.length){out.textContent='No hay productos para procesar.'; return;}
+    let ps=products(); const log=[]; out.textContent='⏳ Iniciando lote...';
+    if(task==='audit_report'){
+      out.textContent='REPORTE DE AUDITORÍA\n\n'+targets.map(auditLine).join('\n'); notify('Reporte generado','success'); return;
+    }
+    ps=await processTargets(targets,ps,task,useAI,out,log,0);
     saveProducts(ps); out.textContent=`✅ Lote terminado. Productos procesados: ${targets.length}\n\n${log.join('\n')}\n\nAhora pulsa “Actualizar tienda” para subir productos.json.`; notify('✅ Lote IA terminado','success');
+  }
+  async function runAll(){
+    const out=$('#tmToolOut'); if(!out)return; const task=$('#tmBulkTask')?.value||'seo_missing'; const mode=$('#tmBulkMode')?.value||'deepseek'; const useAI=mode==='deepseek';
+    if(task==='seo_all' || task==='audit_report'){
+      notify('Auto 5 en 5 solo aplica para pendientes: SEO sin SEO o Recomendaciones sin configurar.','warning');
+      return run();
+    }
+    if(!confirm('¿Procesar automáticamente todas las tandas pendientes? Se guardará localmente y al final debes pulsar “Actualizar tienda”.')) return;
+    let total=0, batch=0, log=[];
+    while(true){
+      const targets=selectTargets();
+      if(!targets.length) break;
+      batch++;
+      let ps=products();
+      out.textContent=`⏳ Tanda ${batch} — ${targets.length} producto(s). Procesados hasta ahora: ${total}\n\n`+log.slice(-18).join('\n');
+      ps=await processTargets(targets,ps,task,useAI,out,log,total);
+      total += targets.length;
+      saveProducts(ps);
+      out.textContent=`✅ Tanda ${batch} guardada localmente. Total procesados: ${total}\n\n`+log.slice(-24).join('\n');
+      if(useAI) await sleep(1200);
+      if(batch>60){ log.push('⚠️ Corte de seguridad: demasiadas tandas.'); break; }
+    }
+    out.textContent=`✅ Proceso automático terminado. Total procesados: ${total}\n\n${log.join('\n')}\n\nAhora sí: pulsa “Actualizar tienda” UNA SOLA VEZ para subir productos.json.`;
+    notify(`✅ Auto 5 en 5 terminado: ${total} productos`, 'success');
   }
   document.addEventListener('click',function(e){
     const tool=e.target.closest('[data-tool="bulkai"]'); if(tool){e.preventDefault();e.stopPropagation();e.stopImmediatePropagation&&e.stopImmediatePropagation();openBulk();return;}
     const a=e.target.closest('[data-ds6-act]'); if(!a)return; e.preventDefault();e.stopPropagation();e.stopImmediatePropagation&&e.stopImmediatePropagation();
-    const act=a.dataset.ds6Act; if(act==='bulkPreview') preview(); if(act==='bulkRun') run(); if(act==='copyOut'){navigator.clipboard?.writeText($('#tmToolOut')?.textContent||'');notify('Copiado','success');}
+    const act=a.dataset.ds6Act; if(act==='bulkPreview') preview(); if(act==='bulkRun') run(); if(act==='bulkRunAll') runAll(); if(act==='copyOut'){navigator.clipboard?.writeText($('#tmToolOut')?.textContent||'');notify('Copiado','success');}
   },true);
   function boot(){addCards();}
   document.addEventListener('DOMContentLoaded',()=>setTimeout(boot,1300));
