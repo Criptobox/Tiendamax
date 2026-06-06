@@ -1321,3 +1321,88 @@
   document.addEventListener('click',e=>{if(e.target.closest('[data-arg="herramientas"],[data-tab="herramientas"]')) setTimeout(boot,300);});
 })();
 
+
+// ── tm-deepseek-tools-v15 / Diagnóstico total ─────────────────────────
+(function(){
+  const $=(s,r=document)=>r.querySelector(s);
+  const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  function notify(msg,type){ if(typeof mostrarNotificacion==='function') mostrarNotificacion(msg,type||'info'); else console.log(msg); }
+  function products(){ try{ if(Array.isArray(window.productos)) return window.productos; }catch(e){} try{return JSON.parse(localStorage.getItem('productos')||'[]')}catch(e){return[]} }
+  function panel(title,sub,body){const p=$('#tmToolPanel'); if(!p)return; p.className='tm-panel active'; p.innerHTML=`<div class="tm-panel-head"><div><h4>${title}</h4><p>${sub}</p></div><button class="tm-panel-close" data-act="closePanel">✕ Cerrar</button></div>${body}`; p.scrollIntoView({behavior:'smooth',block:'start'});}
+  function addCards(){
+    const wrap=$('#herramientas .tm-tools-wrap'); if(!wrap || $('#tmDiagnosticCards')) return;
+    const div=document.createElement('div'); div.id='tmDiagnosticCards';
+    div.innerHTML=`<div class="tm-tier"><h4>SISTEMA — DIAGNÓSTICO</h4><span class="tm-tier-badge gold">Health</span></div>
+    <div class="tm-tools-grid"><div class="tm-tool-card enabled" data-tool="diagall"><span class="state">TEST</span><div class="ico" style="background:rgba(79,195,247,.18)">🧪</div><h5>Diagnóstico total</h5><p>Revisa funciones, Firebase, Service Worker, datos, IA y archivos críticos.</p></div></div>`;
+    const panelEl=$('#tmToolPanel'); if(panelEl) wrap.insertBefore(div,panelEl); else wrap.appendChild(div);
+  }
+  function openDiag(){
+    panel('🧪 Diagnóstico total TiendaMax','Prueba rápida de módulos críticos y genera reporte para depurar.',`
+      <div class="tm-actions"><button class="tm-btn primary" data-ds15-act="runDiag">Ejecutar diagnóstico</button><button class="tm-btn" data-ds15-act="copyDiag">Copiar reporte</button><button class="tm-btn" data-ds15-act="exportDiag">Exportar JSON</button><a class="tm-btn" href="tests/health-check.html" target="_blank">Health Check avanzado</a></div>
+      <div id="tmDiagSummary" class="tm-an-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin:12px 0"></div>
+      <div id="tmToolOut" class="tm-code" style="margin-top:12px">Pulsa “Ejecutar diagnóstico”.</div>`);
+  }
+  async function fetchOk(url, timeout=7000){
+    const ctrl=new AbortController(); const t=setTimeout(()=>ctrl.abort(),timeout);
+    try{const r=await fetch(url+(url.includes('?')?'&':'?')+'_='+Date.now(),{cache:'no-store',signal:ctrl.signal}); return {ok:r.ok,status:r.status};}
+    catch(e){return {ok:false,status:0,error:e.message};} finally{clearTimeout(t);}
+  }
+  async function firebaseCfg(){
+    try{const raw=localStorage.getItem('firebaseConfig'); if(raw){const c=JSON.parse(raw); if(c&&c.databaseURL) return c;}}catch(e){}
+    try{const r=await fetchOk('config.json'); if(!r.ok) return null; const j=await (await fetch('config.json?_='+Date.now(),{cache:'no-store'})).json(); if(j.firebaseConfig){localStorage.setItem('firebaseConfig',JSON.stringify(j.firebaseConfig)); return j.firebaseConfig;}}catch(e){}
+    return null;
+  }
+  function add(res,level,name,msg,extra){res.push({level,name,msg,extra:extra||null});}
+  async function runDiag(){
+    const out=$('#tmToolOut'), sum=$('#tmDiagSummary'); if(out) out.textContent='⏳ Ejecutando diagnóstico...';
+    const res=[];
+    // DOM
+    ['adminPanel','inicio','add-products','manage-products','ventas','analytics','configuracion','herramientas','tmToolPanel'].forEach(id=>add(res,document.getElementById(id)?'pass':'fail','DOM #'+id,document.getElementById(id)?'Existe':'No encontrado'));
+    // Funciones globales
+    ['switchTab','sincronizarTodoConGitHub','cargarVentas','renderizarVentas','tmLeerAnalytics','tmRegistrarTokenFCMSiPermitido','tmLimpiarTokensInvalidos','mostrarNotificacion'].forEach(fn=>add(res,typeof window[fn]==='function'?'pass':'warn','Función '+fn,typeof window[fn]==='function'?'Disponible':'No disponible ahora'));
+    // Storage
+    try{localStorage.setItem('_tm_diag','1'); add(res,localStorage.getItem('_tm_diag')==='1'?'pass':'fail','localStorage','Lectura/escritura'); localStorage.removeItem('_tm_diag');}catch(e){add(res,'fail','localStorage',e.message);}
+    const ps=products(); add(res,ps.length?'pass':'fail','Productos',ps.length+' productos cargados');
+    const ids=ps.map(p=>String(p.id)); const dup=ids.filter((x,i)=>ids.indexOf(x)!==i); add(res,dup.length?'warn':'pass','IDs productos',dup.length?('Duplicados: '+[...new Set(dup)].slice(0,5).join(', ')):'Sin duplicados');
+    const noImg=ps.filter(p=>!p.imagen).length; add(res,noImg?'warn':'pass','Imágenes productos',noImg?noImg+' sin imagen principal':'Todas con imagen');
+    const noSeo=ps.filter(p=>!p.seoTitle&&!p.seoDescription).length; add(res,noSeo?'warn':'pass','SEO productos',noSeo?noSeo+' sin SEO':'SEO completo');
+    const noRecs=ps.filter(p=>!Array.isArray(p.recomendados)||!p.recomendados.length).length; add(res,noRecs?'warn':'pass','Recomendaciones IA',noRecs?noRecs+' sin recomendaciones':'Completas');
+    // Archivos críticos
+    for(const f of ['admin.html','index.html','css/admin.css','js/script.js','js/analytics.js','js/push-fix.js','js/admin-ai-tools.min.js','js/seo-dynamico.js','sw.js','firebase-messaging-sw.js','config.json','productos.json']){const r=await fetchOk(f); add(res,r.ok?'pass':'fail','Archivo '+f,r.ok?'OK HTTP '+r.status:'Fallo HTTP '+r.status+(r.error?' '+r.error:''));}
+    // Firebase
+    const cfg=await firebaseCfg(); add(res,cfg&&cfg.databaseURL?'pass':'fail','Firebase config',cfg&&cfg.databaseURL?cfg.databaseURL:'No configurado');
+    if(cfg&&cfg.databaseURL){
+      const base=cfg.databaseURL.replace(/\/$/,'');
+      const vr=await fetchOk(base+'/ventas.json'); add(res,vr.ok?'pass':'fail','Firebase /ventas read',vr.ok?'Lectura OK':'HTTP '+vr.status+' — revisa reglas .read');
+      const tr=await fetchOk(base+'/tokens.json'); add(res,tr.ok?'pass':'warn','Firebase /tokens read',tr.ok?'Lectura OK':'HTTP '+tr.status);
+      const ar=await fetchOk(base+'/analytics/vistas.json'); add(res,ar.ok?'pass':'warn','Firebase analytics read',ar.ok?'Lectura OK':'HTTP '+ar.status);
+    }
+    // SW / push
+    add(res,'serviceWorker'in navigator?'pass':'fail','Service Worker soporte','serviceWorker' in navigator?'Soportado':'No soportado');
+    try{const reg=await navigator.serviceWorker?.getRegistration?.('/'); add(res,reg?'pass':'warn','SW registro /',reg?('Activo: '+!!reg.active):'No registrado aún');}catch(e){add(res,'warn','SW registro',e.message);}
+    add(res,'Notification'in window?'pass':'warn','Notificaciones soporte','Notification' in window?Notification.permission:'No soportado');
+    // DeepSeek / herramientas
+    const key=localStorage.getItem('anthropicApiKey'); add(res,key?'pass':'warn','DeepSeek/API key',key?'Key guardada ('+key.slice(0,6)+'…)':'No configurada');
+    add(res,document.querySelector('script[src*="admin-ai-tools.min.js"]')?'pass':'fail','Admin AI tools','Script minificado cargado en admin.html');
+    // Campañas/planes/backups
+    ['tm_campaigns_v1','tm_week_plan_v1','tm_full_backups_v1'].forEach(k=>{let n=0;try{n=JSON.parse(localStorage.getItem(k)||'[]').length}catch(e){} add(res,'pass','Datos '+k,n+' registros');});
+    window.__tmLastDiag=res;
+    render(res);
+  }
+  function render(res){
+    const out=$('#tmToolOut'), sum=$('#tmDiagSummary'); const counts={pass:0,warn:0,fail:0}; res.forEach(r=>counts[r.level]++);
+    if(sum) sum.innerHTML=`<div class="tm-an-kpi"><small>OK</small><b style="color:#2ECC71">${counts.pass}</b><em>pasaron</em></div><div class="tm-an-kpi"><small>Alertas</small><b style="color:#f39c12">${counts.warn}</b><em>revisar</em></div><div class="tm-an-kpi"><small>Fallos</small><b style="color:#e74c3c">${counts.fail}</b><em>críticos</em></div>`;
+    if(out) out.innerHTML=res.map(r=>`${r.level==='pass'?'✅':r.level==='warn'?'⚠️':'❌'} <b>${esc(r.name)}</b> — ${esc(r.msg)}`).join('<br>')+`<br><br>Resultado: ${counts.fail?'hay fallos que corregir':'sin fallos críticos'}.`;
+    notify(counts.fail?'Diagnóstico con fallos':'Diagnóstico completado',counts.fail?'error':'success');
+  }
+  function copy(){const res=window.__tmLastDiag||[]; navigator.clipboard?.writeText(res.map(r=>`${r.level.toUpperCase()} | ${r.name} | ${r.msg}`).join('\n')); notify('Reporte copiado','success');}
+  function exportJson(){const res=window.__tmLastDiag||[]; const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([JSON.stringify({date:new Date().toISOString(),results:res},null,2)],{type:'application/json'})); a.download='diagnostico_tiendamax.json'; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),1000);}
+  document.addEventListener('click',function(e){
+    const tool=e.target.closest('[data-tool="diagall"]'); if(tool){e.preventDefault();e.stopPropagation();e.stopImmediatePropagation&&e.stopImmediatePropagation();openDiag();return;}
+    const a=e.target.closest('[data-ds15-act]'); if(!a)return; e.preventDefault();e.stopPropagation();e.stopImmediatePropagation&&e.stopImmediatePropagation();
+    if(a.dataset.ds15Act==='runDiag')runDiag(); if(a.dataset.ds15Act==='copyDiag')copy(); if(a.dataset.ds15Act==='exportDiag')exportJson();
+  },true);
+  function boot(){addCards();}
+  document.addEventListener('DOMContentLoaded',()=>setTimeout(boot,2200));
+  document.addEventListener('click',e=>{if(e.target.closest('[data-arg="herramientas"],[data-tab="herramientas"]')) setTimeout(boot,300);});
+})();

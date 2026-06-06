@@ -1,5 +1,6 @@
 // ═══════════════════════════════════════════════════════
-// TiendaMax — Service Worker v201 — Sidebar emojis visibles
+// TiendaMax — Service Worker v202 — Diagnostico total admin
+// v202: añade herramienta Diagnóstico total de funciones y Firebase.
 // v201: mejora iconos/emojis del menú admin y refresca css/admin.css.
 // v200: carga js/admin-ai-tools.min.js y mantiene módulo fuente.
 // v199: mueve herramientas DeepSeek a js/admin-ai-tools.js para aligerar admin.
@@ -64,7 +65,7 @@
 //      usan el mismo helper _mensajeOrdenWA con formato premium.
 // ═══════════════════════════════════════════════════════
 
-const CACHE_NAME = 'tiendamax-202606060605';
+const CACHE_NAME = 'tiendamax-202606060615';
 
 const STATIC_ASSETS = [
   '/',
