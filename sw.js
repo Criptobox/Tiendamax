@@ -1,5 +1,6 @@
 // ═══════════════════════════════════════════════════════
-// TiendaMax — Service Worker v210 — IA masiva auto 5 en 5
+// TiendaMax — Service Worker v211 — Herramientas compactas
+// v211: mejora diseño compacto de Herramientas y botones.
 // v210: IA masiva puede procesar automáticamente en tandas de 5.
 // v209: workflow tasa elTOQUE corre cada 30 minutos en horario activo.
 // v208: workflow tasa soporta API oficial elTOQUE por secret.
@@ -73,7 +74,7 @@
 //      usan el mismo helper _mensajeOrdenWA con formato premium.
 // ═══════════════════════════════════════════════════════
 
-const CACHE_NAME = 'tiendamax-202606061355';
+const CACHE_NAME = 'tiendamax-202606061430';
 
 const STATIC_ASSETS = [
   '/',
