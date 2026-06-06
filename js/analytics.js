@@ -177,6 +177,25 @@ async function renderizarAnalyticsFirebase() {
     // Datos de Firebase
     const { vistas, whatsapp, suscriptores, tokensData } = await tmLeerAnalytics();
 
+    // Ventas: localStorage primero, luego Firebase RTDB como fallback o si tiene más registros
+    let _ventasGrafica = (typeof cargarVentas === 'function') ? cargarVentas() : [];
+    try {
+        const _vbase = _tmRtdbUrl();
+        if (_vbase) {
+            const _vr = await _tmFetch(`${_vbase}/ventas.json`);
+            if (_vr.ok) {
+                const _vraw = await _vr.json();
+                if (_vraw && typeof _vraw === 'object') {
+                    const _vfb = Object.values(_vraw).filter(Boolean).sort((a, b) => b.id - a.id);
+                    if (_vfb.length > _ventasGrafica.length) {
+                        _ventasGrafica = _vfb;
+                        try { localStorage.setItem('registroVentas', JSON.stringify(_vfb.slice(0, 500))); } catch(e) {}
+                    }
+                }
+            }
+        }
+    } catch(e) {}
+
     // Demanda de restock: cuántos "avísame" tiene cada producto
     let avisosCount = {};
     try {
@@ -291,7 +310,7 @@ async function renderizarAnalyticsFirebase() {
 
         <!-- Gráfica mensual de ventas -->
         ${(() => {
-            const ventas = (typeof cargarVentas === 'function') ? cargarVentas() : [];
+            const ventas = _ventasGrafica;
             if (ventas.length === 0) return '';
             const meses = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
             const totalesMes = Array(12).fill(0);
@@ -622,9 +641,15 @@ async function tmLimpiarTokensInvalidos() {
     const info   = document.getElementById(infoId);
     const notify = (msg, t = 'info') => {
         if (typeof window.mostrarNotificacion === 'function') window.mostrarNotificacion(msg, t);
-        if (info) info.innerHTML = `<span style="color:${t==='success'?'#25d366':t==='error'?'#e74c3c':'#f39c12'}">${msg}</span>`;
+        if (info) {
+            const col = t === 'success' ? '#25d366' : t === 'error' ? '#e74c3c' : '#f39c12';
+            info.innerHTML = `<span style="color:${col}">${msg}</span>`;
+        }
     };
-    const setInfo = notify;
+    const setInfo = (msg, col) => {
+        if (typeof window.mostrarNotificacion === 'function') window.mostrarNotificacion(msg, 'info');
+        if (info) info.innerHTML = `<span style="color:${col||'#888'}">${msg}</span>`;
+    };
 
     const serverKey = localStorage.getItem('fcmServerKey');
     if (!serverKey) {
