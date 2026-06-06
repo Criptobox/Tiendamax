@@ -1,5 +1,6 @@
 // ═══════════════════════════════════════════════════════
-// TiendaMax — Service Worker v187 — DeepSeek auditor e insights
+// TiendaMax — Service Worker v188 — DeepSeek SEO automatico
+// v188: añade SEO automático DeepSeek y refresca seo-dinamico.
 // v187: añade auditor IA de producto y resumen inteligente.
 // v186: refresca fix de tokens legacy para contador suscriptores.
 // v185: añade DeepSeek para push y respuestas WhatsApp.
@@ -50,7 +51,7 @@
 //      usan el mismo helper _mensajeOrdenWA con formato premium.
 // ═══════════════════════════════════════════════════════
 
-const CACHE_NAME = 'tiendamax-202606060345';
+const CACHE_NAME = 'tiendamax-202606060355';
 
 const STATIC_ASSETS = [
   '/',

@@ -21,22 +21,30 @@ function actualizarSEOPorProducto(producto) {
     const ogImage = document.querySelector('meta[property="og:image"]');
     const ogUrl = document.querySelector('meta[property="og:url"]');
     
-    if (ogTitle) ogTitle.content = `${producto.nombre} — TiendaMax`;
-    if (ogDesc) ogDesc.content = `${producto.descripcion.substring(0, 150)}... | $${producto.precioActual}`;
-    if (ogImage) ogImage.content = producto.imagen;
+    const seoTitle = producto.seoTitle || `${producto.nombre} — TiendaMax`;
+    const seoDesc = producto.seoDescription || `${String(producto.descripcion || '').substring(0, 150)}... | $${producto.precioActual}`;
+    const seoImage = producto.imagen;
+
+    if (ogTitle) ogTitle.content = seoTitle;
+    if (ogDesc) ogDesc.content = seoDesc;
+    if (ogImage) ogImage.content = seoImage;
     if (ogUrl) ogUrl.content = productoUrl;
     
     // Actualizar Twitter Card
     const twTitle = document.querySelector('meta[name="twitter:title"]');
     const twDesc = document.querySelector('meta[name="twitter:description"]');
     const twImage = document.querySelector('meta[name="twitter:image"]');
+    const metaDesc = document.querySelector('meta[name="description"]');
+    const metaKeywords = document.querySelector('meta[name="keywords"]');
     
-    if (twTitle) twTitle.content = `${producto.nombre} — TiendaMax`;
-    if (twDesc) twDesc.content = `${producto.descripcion.substring(0, 150)}... | $${producto.precioActual}`;
-    if (twImage) twImage.content = producto.imagen;
+    if (twTitle) twTitle.content = seoTitle;
+    if (twDesc) twDesc.content = seoDesc;
+    if (twImage) twImage.content = seoImage;
+    if (metaDesc) metaDesc.content = seoDesc;
+    if (metaKeywords && Array.isArray(producto.seoKeywords)) metaKeywords.content = producto.seoKeywords.join(', ');
     
     // Actualizar title de la página
-    document.title = `${producto.nombre} | TiendaMax`;
+    document.title = producto.seoTitle || `${producto.nombre} | TiendaMax`;
 }
 
 // Restaurar meta tags originales cuando se cierra el producto
