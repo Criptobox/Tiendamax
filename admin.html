@@ -20,7 +20,7 @@
 <section id="atajos" class="admin-tab"><div class="head"><div><h1>Atajos</h1><p class="sub">Navegación rápida.</p></div></div><div class="grid2"><div class="card"><h2>⌘K</h2><p>Buscar acciones.</p></div><div class="card"><h2>N</h2><p>Crear producto.</p></div></div></section>
 </main></div></div>
 <div id="editModal" class="modal hidden"><div class="modal-content"><div class="modal-header"><h2>Editar producto</h2><button class="close-btn" data-action="cerrarEditModal">×</button></div><form id="editForm"><input type="hidden" id="editProductId"><input id="editProductName" required><textarea id="editProductDescription" required></textarea><select id="editProductCategory" required></select><select id="editProductMasVendido"><option value="false">No</option><option value="true">Sí</option></select><label class="check-row"><input type="checkbox" id="editProductUsado"> Usado</label><div id="currentImagePreview"></div><input type="file" id="editProductImage" accept="image/*"><input type="file" id="editProductImagesExtra" accept="image/*" multiple><input type="number" id="editProductPriceActual" required><input type="number" id="editProductPrecioOriginal"><input type="number" id="editProductStock" required><div class="tm-comision-row"><input type="number" id="editProductComision" step="0.01" min="0" placeholder="0.00" oninput="tmUpdateComisionHint(this,'tmComisionHintEdit','tmMonedaToggleEdit')"><div class="tm-moneda-toggle" id="tmMonedaToggleEdit"><button type="button" class="tm-moneda-btn active" data-moneda="USD" onclick="tmSetMoneda('tmMonedaToggleEdit','editProductComisionMoneda','USD',this)">USD</button><button type="button" class="tm-moneda-btn" data-moneda="MN" onclick="tmSetMoneda('tmMonedaToggleEdit','editProductComisionMoneda','MN',this)">MN</button></div></div><input type="hidden" id="editProductComisionMoneda" value="USD"><span class="admin-mn-hint" id="tmComisionHintEdit">Lo que ganas por cada venta</span><input id="editProductGarantia"><label class="check-row"><input type="checkbox" id="editProductDevolucion"> Devolución</label><div class="actions"><button type="submit" class="btn primary">Guardar cambios</button><button type="button" class="btn" data-action="cerrarEditModal">Cancelar</button></div></form></div></div>
-<script src="js/script.js?v=60" defer></script><script src="js/analytics.js?v=12" defer></script><script src="js/seo-dynamico.js?v=2" defer></script><script src="js/subcategorias.js?v=11" defer></script><script src="js/revolico_integration.js?v=10" defer></script><script src="js/biometric-auth.js?v=3" defer></script><script src="js/event-delegation.js?v=2" defer></script><script src="js/share-patch.js?v=2" defer></script><script src="js/banners.js?v=3" defer></script>
+<script src="js/script.js?v=61" defer></script><script src="js/analytics.js?v=12" defer></script><script src="js/seo-dynamico.js?v=2" defer></script><script src="js/subcategorias.js?v=11" defer></script><script src="js/revolico_integration.js?v=10" defer></script><script src="js/biometric-auth.js?v=3" defer></script><script src="js/event-delegation.js?v=2" defer></script><script src="js/share-patch.js?v=2" defer></script><script src="js/banners.js?v=3" defer></script>
 
 <!-- TIENDAMAX_ADMIN_FINAL_INLINE_JS -->
 <script>
@@ -1127,6 +1127,75 @@ async function tmAdminRefreshSubscribers(){
   function boot(){addCards();}
   document.addEventListener('DOMContentLoaded',()=>setTimeout(boot,1100));
   document.addEventListener('click',e=>{ if(e.target.closest('[data-arg="herramientas"],[data-tab="herramientas"]')) setTimeout(boot,300); });
+})();
+</script>
+
+<script id="tm-deepseek-tools-v5">
+(function(){
+  const $=(s,r=document)=>r.querySelector(s);
+  const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  function notify(msg,type){ if(typeof mostrarNotificacion==='function') mostrarNotificacion(msg,type||'info'); else console.log(msg); }
+  function products(){ try{ if(Array.isArray(window.productos)) return window.productos; }catch(e){} try{return JSON.parse(localStorage.getItem('productos')||'[]')}catch(e){return[]} }
+  function saveProducts(ps){ localStorage.setItem('productos',JSON.stringify(ps)); if(Array.isArray(window.productos)) window.productos=ps; if(typeof guardarProductos==='function') guardarProductos(); }
+  function productOptions(){return products().map(p=>`<option value="${esc(p.id)}">${esc(p.nombre||p.name||'Producto')} — ${esc(p.categoria||'General')} — $${Number(p.precioActual||0).toFixed(2)}</option>`).join('') || '<option value="">Sin productos</option>';}
+  function bySelect(id){ const val=$('#'+id)?.value; return products().find(p=>String(p.id)===String(val)) || products()[0] || {}; }
+  function info(p){return `ID: ${p.id}\nNombre: ${p.nombre||''}\nDescripción: ${p.descripcion||''}\nCategoría: ${p.categoria||'General'}\nSubcategoría: ${p.subcategoria||''}\nPrecio: $${Number(p.precioActual||0).toFixed(2)} USD\nStock: ${Number(p.stock||0)}`;}
+  async function deepseek(prompt){
+    const key=localStorage.getItem('anthropicApiKey')||''; const provider=localStorage.getItem('anthropicApiProvider')||'';
+    if(!key || !(provider==='deepseek' || key.startsWith('sk-'))) throw new Error('DeepSeek no configurado en Configuración');
+    const resp=await fetch('https://api.deepseek.com/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},body:JSON.stringify({model:'deepseek-chat',temperature:0.55,max_tokens:850,messages:[{role:'system',content:'Eres especialista en ecommerce y cross-selling para TiendaMax en Cuba. Recomienda productos complementarios reales usando solo IDs de la lista.'},{role:'user',content:prompt}]})});
+    if(!resp.ok){let t='';try{t=await resp.text()}catch(e){};throw new Error('DeepSeek HTTP '+resp.status+(t?': '+t.slice(0,160):''));}
+    const data=await resp.json(); return (data.choices?.[0]?.message?.content||'').trim();
+  }
+  function panel(title,sub,body){const p=$('#tmToolPanel'); if(!p)return; p.className='tm-panel active'; p.innerHTML=`<div class="tm-panel-head"><div><h4>${title}</h4><p>${sub}</p></div><button class="tm-panel-close" data-act="closePanel">✕ Cerrar</button></div>${body}`; p.scrollIntoView({behavior:'smooth',block:'start'});}
+  function addCards(){
+    const wrap=$('#herramientas .tm-tools-wrap'); if(!wrap || $('#tmDeepSeekRecCards')) return;
+    const div=document.createElement('div'); div.id='tmDeepSeekRecCards';
+    div.innerHTML=`<div class="tm-tier"><h4>DEEPSEEK — VENTAS CRUZADAS</h4><span class="tm-tier-badge purple">Upsell</span></div>
+    <div class="tm-tools-grid"><div class="tm-tool-card enabled" data-tool="recsai"><span class="state">IA</span><div class="ico" style="background:rgba(255,107,53,.18)">🧲</div><h5>Recomendador IA</h5><p>Elige productos relacionados, bundles y texto de upsell para aumentar ventas.</p></div></div>`;
+    const panelEl=$('#tmToolPanel'); if(panelEl) wrap.insertBefore(div,panelEl); else wrap.appendChild(div);
+  }
+  function openRecs(){
+    panel('🧲 Recomendador IA de productos','Guarda productos complementarios para mostrarlos en detalle y carrito.',`
+      <div class="tm-field"><label>Producto principal</label><select id="tmRecProd">${productOptions()}</select></div>
+      <div class="tm-actions"><button class="tm-btn primary" data-ds5-act="recGen">Generar recomendaciones</button><button class="tm-btn gold" data-ds5-act="recApply">Guardar en producto</button><button class="tm-btn" data-ds5-act="copyOut">Copiar</button></div>
+      <div id="tmToolOut" class="tm-code" style="margin-top:12px">Genera recomendaciones. Se guardarán como recomendados, bundleText y upsellText.</div>`);
+  }
+  function localRecs(target){
+    const ps=products();
+    const same=ps.filter(p=>p.id!==target.id&&p.categoria===target.categoria&&Number(p.stock||0)>0).slice(0,4);
+    const other=ps.filter(p=>p.id!==target.id&&p.categoria!==target.categoria&&Number(p.stock||0)>0).slice(0,2);
+    const recs=[...same,...other].slice(0,4);
+    return {recomendados:recs.map(p=>p.id),bundleText:`Combina ${target.nombre||'este producto'} con accesorios o productos relacionados para aprovechar mejor tu compra.`,upsellText:'También puedes revisar estos productos complementarios antes de reservar.',whatsappUpsell:`Si quieres, también te puedo mostrar opciones relacionadas con ${target.nombre||'ese producto'} para que elijas mejor.`};
+  }
+  async function genRecs(){
+    const out=$('#tmToolOut'); if(!out)return; const target=bySelect('tmRecProd'); out.textContent='⏳ Generando recomendaciones con DeepSeek...';
+    const candidates=products().filter(p=>p.id!==target.id&&Number(p.stock||0)>0).slice(0,60).map(p=>({id:p.id,nombre:p.nombre,categoria:p.categoria,precio:p.precioActual,stock:p.stock,descripcion:String(p.descripcion||'').slice(0,140)}));
+    const prompt=`Producto principal:\n${info(target)}\n\nCandidatos disponibles en JSON:\n${JSON.stringify(candidates,null,2)}\n\nElige hasta 4 productos complementarios reales. Responde SOLO JSON válido:\n{"recomendados":[ids reales],"bundleText":"frase corta para sección relacionados","upsellText":"frase corta visible en detalle","whatsappUpsell":"mensaje breve para ofrecer productos relacionados por WhatsApp"}\n\nReglas: usa solo IDs de candidatos, prioriza utilidad complementaria y stock disponible. No recomiendes el mismo producto.`;
+    try{
+      const text=await deepseek(prompt); const m=text.match(/\{[\s\S]*\}/); if(!m) throw new Error('La IA no devolvió JSON');
+      const j=JSON.parse(m[0]);
+      const valid=new Set(candidates.map(c=>String(c.id)));
+      j.recomendados=(j.recomendados||[]).map(String).filter(id=>valid.has(id)).slice(0,4);
+      out.dataset.recs=JSON.stringify(j); out.textContent=JSON.stringify(j,null,2); notify('✅ Recomendaciones generadas','success');
+    }catch(e){ const j=localRecs(target); out.dataset.recs=JSON.stringify(j); out.textContent=JSON.stringify(j,null,2)+'\n\n⚠️ '+e.message; notify('Recomendaciones locales generadas','warning'); }
+  }
+  function applyRecs(){
+    const out=$('#tmToolOut'); if(!out||!out.dataset.recs){notify('Primero genera recomendaciones','warning');return;}
+    const val=$('#tmRecProd')?.value; const ps=products(); const idx=ps.findIndex(p=>String(p.id)===String(val)); if(idx<0){notify('Producto no encontrado','error');return;}
+    let j; try{j=JSON.parse(out.dataset.recs)}catch(e){notify('JSON inválido','error');return;}
+    ps[idx]={...ps[idx],recomendados:(j.recomendados||[]).map(x=>isNaN(Number(x))?x:Number(x)),bundleText:j.bundleText||'',upsellText:j.upsellText||'',whatsappUpsell:j.whatsappUpsell||''};
+    saveProducts(ps); try{ if(typeof marcarProductoModificado==='function') marcarProductoModificado(ps[idx].id); }catch(e){}
+    notify('✅ Recomendaciones guardadas. Pulsa Actualizar tienda para subirlas.','success');
+  }
+  document.addEventListener('click',function(e){
+    const tool=e.target.closest('[data-tool="recsai"]'); if(tool){e.preventDefault();e.stopPropagation();e.stopImmediatePropagation&&e.stopImmediatePropagation();openRecs();return;}
+    const a=e.target.closest('[data-ds5-act]'); if(!a)return; e.preventDefault();e.stopPropagation();e.stopImmediatePropagation&&e.stopImmediatePropagation();
+    const act=a.dataset.ds5Act; if(act==='recGen') genRecs(); if(act==='recApply') applyRecs(); if(act==='copyOut'){navigator.clipboard?.writeText($('#tmToolOut')?.textContent||'');notify('Copiado','success');}
+  },true);
+  function boot(){addCards();}
+  document.addEventListener('DOMContentLoaded',()=>setTimeout(boot,1200));
+  document.addEventListener('click',e=>{if(e.target.closest('[data-arg="herramientas"],[data-tab="herramientas"]')) setTimeout(boot,300);});
 })();
 </script>
 

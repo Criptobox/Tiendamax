@@ -325,16 +325,25 @@ function renderizarSimilaresCarrito() {
 
     const idsEnCarrito = new Set(carrito.map(i => i.id));
 
-    // Similares: misma categoría, no en carrito, disponibles, máx 3 aleatorios
-    const similares = productos
+    // Similares: primero recomendaciones IA de los productos del carrito, luego misma categoría.
+    const recIdsCarrito = [];
+    carrito.forEach(i => {
+        const p = productos.find(x => x.id === i.id);
+        if (p && Array.isArray(p.recomendados)) recIdsCarrito.push(...p.recomendados.map(String));
+    });
+    const recIA = [...new Set(recIdsCarrito)]
+        .map(id => productos.find(p => String(p.id) === id))
+        .filter(p => p && !idsEnCarrito.has(p.id) && p.precioActual > 0 && p.agotado !== true);
+    const fallbackSim = productos
         .filter(p =>
             !idsEnCarrito.has(p.id) &&
+            !recIdsCarrito.includes(String(p.id)) &&
             categoriasCarrito.includes(p.categoria || '') &&
             p.precioActual > 0 &&
             p.agotado !== true
         )
-        .sort(() => Math.random() - 0.5)
-        .slice(0, 3);
+        .sort(() => Math.random() - 0.5);
+    const similares = [...recIA, ...fallbackSim].slice(0, 3);
 
     if (similares.length === 0) { secEl.style.display = 'none'; return; }
 
@@ -2475,16 +2484,21 @@ if (_detailPrecioMNEl) {
     }
     buyBtn.onclick = () => contactarProducto(p.nombre);
 
-    // Productos relacionados (misma categoría, con stock primero, excluir actual)
-    const relacionados = productos
-        .filter(x => x.id !== p.id && x.categoria === p.categoria)
-        .sort((a, b) => (b.stock > 0 ? 1 : 0) - (a.stock > 0 ? 1 : 0))
-        .slice(0, 4);
+    // Productos relacionados: primero recomendaciones IA guardadas, luego misma categoría.
+    const recIds = Array.isArray(p.recomendados) ? p.recomendados.map(String) : [];
+    const recIA = recIds
+        .map(id => productos.find(x => String(x.id) === id))
+        .filter(x => x && x.id !== p.id);
+    const fallbackRel = productos
+        .filter(x => x.id !== p.id && x.categoria === p.categoria && !recIds.includes(String(x.id)))
+        .sort((a, b) => (b.stock > 0 ? 1 : 0) - (a.stock > 0 ? 1 : 0));
+    const relacionados = [...recIA, ...fallbackRel].slice(0, 4);
     const relSection = document.getElementById('detailRelacionados');
     const relGrid    = document.getElementById('detailRelacionadosGrid');
     if (relacionados.length > 0) {
         const _tasaRel = typeof getTasaMN === 'function' ? getTasaMN() : 0;
-        relGrid.innerHTML = relacionados.map(r => {
+        const upsellNote = p.upsellText ? `<div class="rel-upsell-note" style="grid-column:1/-1;font-size:12px;color:#C9A96E;background:rgba(201,169,110,.08);border:1px solid rgba(201,169,110,.18);border-radius:10px;padding:10px 12px;margin-bottom:4px;">💡 ${escapeHtml(p.upsellText)}</div>` : '';
+        relGrid.innerHTML = upsellNote + relacionados.map(r => {
             const _mnRel = _tasaRel > 0
                 ? `<span class="rel-card-price-mn">≈ ${Math.round(Number(r.precioActual) * _tasaRel).toLocaleString('es-CU')} MN</span>`
                 : '';
