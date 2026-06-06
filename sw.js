@@ -1,5 +1,6 @@
 // ═══════════════════════════════════════════════════════
-// TiendaMax — Service Worker v183 — conteo único suscriptores refinado
+// TiendaMax — Service Worker v184 — DeepSeek herramientas admin
+// v184: refresca admin.html con DeepSeek en Herramientas IA.
 // v183: refresca script/analytics con conteo único refinado.
 // v182: fuerza actualización de script/analytics/push-fix para no duplicar suscriptores.
 // v177: AI generator functional + password/compress safety fixes.
@@ -46,7 +47,7 @@
 //      usan el mismo helper _mensajeOrdenWA con formato premium.
 // ═══════════════════════════════════════════════════════
 
-const CACHE_NAME = 'tiendamax-202606060304';
+const CACHE_NAME = 'tiendamax-202606060315';
 
 const STATIC_ASSETS = [
   '/',

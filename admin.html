@@ -706,6 +706,85 @@ async function tmAdminRefreshSubscribers(){
   };
 })();
 </script>
+
+<script id="tm-deepseek-tools-v1">
+(function(){
+  const $=(s,r=document)=>r.querySelector(s);
+  const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  function notify(msg,type){ if(typeof mostrarNotificacion==='function') mostrarNotificacion(msg,type||'info'); else console.log(msg); }
+  function products(){ try{ if(Array.isArray(window.productos)) return window.productos; }catch(e){} try{return JSON.parse(localStorage.getItem('productos')||'[]')}catch(e){return[]} }
+  function prodBySelect(id){ const val=$('#'+id)?.value; return products().find(p=>String(p.id)===String(val)) || products()[0] || {}; }
+  function prodInfo(p){
+    return [
+      'Nombre: '+(p.nombre||p.name||'Producto'),
+      'Descripción actual: '+(p.descripcion||'Sin descripción'),
+      'Categoría: '+(p.categoria||'General'),
+      'Subcategoría: '+(p.subcategoria||''),
+      'Precio: $'+Number(p.precioActual||p.price||0).toFixed(2)+' USD',
+      'Stock: '+Number(p.stock||0),
+      p.garantia?('Garantía: '+p.garantia):'',
+      p.comision?('Comisión: '+p.comision+' '+(p.comisionMoneda||'USD')):''
+    ].filter(Boolean).join('\n');
+  }
+  function fallback(p, tipo){
+    const name=p.nombre||p.name||'Producto TiendaMax';
+    const desc=p.descripcion||'Disponible en TiendaMax.';
+    const price=Number(p.precioActual||p.price||0).toFixed(2);
+    const stock=Number(p.stock||0);
+    if(tipo==='post') return `🔥 ${name}\n\n${desc}\n\n💵 $${price} USD\n📦 Stock: ${stock}\n📲 Escríbenos por WhatsApp para reservar.\n\n#TiendaMax #Cuba #${String(p.categoria||'oferta').replace(/\s+/g,'')}`;
+    return `${name}\n\n${desc}\n\n💵 Precio: $${price} USD\n📦 Stock: ${stock}\n🏷️ Categoría: ${p.categoria||'General'}\n\nTexto vendedor:\n🔥 ${name} disponible ahora en TiendaMax. Ideal para quien busca calidad, utilidad y entrega coordinada. Escríbenos para reservar.`;
+  }
+  async function callDeepSeek(prompt){
+    const key=localStorage.getItem('anthropicApiKey')||'';
+    const provider=localStorage.getItem('anthropicApiProvider')||'';
+    if(!key || !(provider==='deepseek' || key.startsWith('sk-'))) throw new Error('DeepSeek no configurado');
+    const resp=await fetch('https://api.deepseek.com/v1/chat/completions',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},
+      body:JSON.stringify({
+        model:'deepseek-chat',
+        temperature:0.75,
+        max_tokens:850,
+        messages:[
+          {role:'system',content:'Eres un copywriter experto para TiendaMax, tienda online en Cuba. Escribe en español natural, vendedor, claro y sin inventar datos técnicos. Si faltan datos, usa frases prudentes.'},
+          {role:'user',content:prompt}
+        ]
+      })
+    });
+    if(!resp.ok){ let t=''; try{t=await resp.text()}catch(e){}; throw new Error('DeepSeek HTTP '+resp.status+(t?': '+t.slice(0,180):'')); }
+    const data=await resp.json();
+    return (data.choices?.[0]?.message?.content||'').trim();
+  }
+  async function genAI(){
+    const out=$('#tmToolOut'); if(!out) return;
+    const p=prodBySelect('tmAiProd');
+    const tono=$('#tmAiTone')?.value||'Premium vendedor';
+    out.textContent='⏳ Generando con DeepSeek...';
+    const prompt=`Crea textos para este producto de TiendaMax.\n\n${prodInfo(p)}\n\nTono/Formato: ${tono}.\n\nEntrega:\n1) Título mejorado corto.\n2) Descripción lista para la ficha del producto, 2-4 oraciones.\n3) Texto corto para WhatsApp.\n4) 5 beneficios en bullets.\n5) Hashtags útiles.\n\nNo inventes especificaciones no dadas.`;
+    try{ out.textContent=await callDeepSeek(prompt); notify('✅ Texto generado con DeepSeek','success'); }
+    catch(e){ out.textContent=fallback(p,'ai')+'\n\n⚠️ Nota: '+e.message+'. Usé plantilla local.'; notify('Plantilla local: configura DeepSeek en Configuración','warning'); }
+  }
+  async function genPost(){
+    const out=$('#tmToolOut'); if(!out) return;
+    const p=prodBySelect('tmPostProd');
+    const formato=$('#tmPostType')?.value||'Facebook grupo';
+    out.textContent='⏳ Generando post con DeepSeek...';
+    const prompt=`Genera una publicación lista para copiar.\n\nProducto:\n${prodInfo(p)}\n\nFormato: ${formato}.\n\nReglas:\n- Español natural para Cuba.\n- Usa emojis con moderación.\n- Incluye precio y stock si están disponibles.\n- Cierra con llamada a WhatsApp/reserva.\n- No prometas envíos ni garantía si no está indicado.\n- Si es Facebook grupo, hazlo corto y directo.`;
+    try{ out.textContent=await callDeepSeek(prompt); notify('✅ Post generado con DeepSeek','success'); }
+    catch(e){ out.textContent=fallback(p,'post')+'\n\n⚠️ Nota: '+e.message+'. Usé plantilla local.'; notify('Plantilla local: configura DeepSeek en Configuración','warning'); }
+  }
+  document.addEventListener('click',function(e){
+    const btn=e.target.closest('[data-act]'); if(!btn) return;
+    if(!btn.closest('#herramientas')) return;
+    const act=btn.dataset.act;
+    if(act==='aiGen' || act==='postGen'){
+      e.preventDefault(); e.stopPropagation(); if(e.stopImmediatePropagation) e.stopImmediatePropagation();
+      if(act==='aiGen') genAI(); else genPost();
+    }
+  },true);
+})();
+</script>
+
 <script id="tm-comision-ventas-v1">
 (function(){
   /* ── Toggle USD/MN en comisión ── */
