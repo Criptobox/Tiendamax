@@ -499,12 +499,19 @@ async function tmAdminRefreshSubscribers(){
     const v=document.getElementById('anthropicApiKey')?.value.trim();
     const st=document.getElementById('anthropicKeyStatus');
     if(!v||v.length<20){if(st){st.textContent='❌ La clave parece inválida (muy corta)';st.style.color='#e74c3c';} return;}
-    // Anthropic keys empiezan con sk-ant-, todo lo demás se trata como Google
+    // Anthropic keys empiezan con sk-, todo lo demás se trata como Google
     const esAnthropic=v.startsWith('sk-ant-')||v.startsWith('sk-');
+    const esGoogle=!esAnthropic;
+    // Advertir si una clave Google no tiene el formato estándar AIza...
+    if(esGoogle&&!v.startsWith('AIza')){
+      if(st){st.textContent='⚠️ Clave guardada, pero las claves de Google AI Studio suelen empezar con "AIza". Verifica que copiaste bien.';st.style.color='#e67e22';}
+      notify('⚠️ Clave guardada — verifica que sea de aistudio.google.com','warning');
+    } else {
+      if(st){st.textContent='✅ API Key '+(esAnthropic?'de Anthropic':'de Google')+' guardada.';st.style.color='#25d366';}
+      notify('✅ API Key guardada','success');
+    }
     localStorage.setItem('anthropicApiKey',v);
     localStorage.setItem('anthropicApiProvider', esAnthropic?'anthropic':'google');
-    if(st){st.textContent='✅ API Key '+(esAnthropic?'de Anthropic':'de Google')+' guardada.';st.style.color='#25d366';}
-    notify('✅ API Key guardada','success');
     const btn=document.getElementById('btnAnalizarFoto');
     if(btn)btn.style.display='';
   };
@@ -572,15 +579,27 @@ async function tmAdminRefreshSubscribers(){
       let text='';
       if(provider==='google'){
         // Google Gemini API — gratis, prueba modelos en orden
-        const geminiModels=['gemini-2.0-flash','gemini-1.5-flash-latest','gemini-1.5-flash','gemini-pro-vision'];
+        const geminiModels=['gemini-2.0-flash','gemini-1.5-flash-latest','gemini-1.5-flash','gemini-1.0-pro-vision-latest'];
         let geminiOk=false;
+        let lastErrMsg='';
         for(const model of geminiModels){
           const resp=await fetch('https://generativelanguage.googleapis.com/v1beta/models/'+model+':generateContent?key='+encodeURIComponent(key),{
             method:'POST',
             headers:{'Content-Type':'application/json'},
             body:JSON.stringify({contents:[{parts:[{inline_data:{mime_type:'image/jpeg',data:base64}},{text:prompt}]}]})
           });
-          if(resp.status===404||resp.status===400){continue;} // modelo no disponible, prueba el siguiente
+          if(resp.status===404){continue;} // modelo no disponible, prueba el siguiente
+          if(resp.status===400||resp.status===401||resp.status===403){
+            const errTxt=await resp.text().catch(()=>'');
+            let j={}; try{j=JSON.parse(errTxt);}catch(ex){}
+            const em=j.error?.message||'';
+            // Si el error menciona la clave o auth, no tiene sentido seguir probando modelos
+            if(/api.key|invalid|not valid|api key not valid|unauthorized|permission|forbidden/i.test(em)){
+              throw new Error('API Key inválida: '+em);
+            }
+            lastErrMsg=em||('HTTP '+resp.status+' en '+model);
+            continue; // podría ser problema del modelo, intenta el siguiente
+          }
           if(!resp.ok){
             const errTxt=await resp.text().catch(()=>'');
             let errMsg='HTTP '+resp.status;
@@ -591,7 +610,10 @@ async function tmAdminRefreshSubscribers(){
           text=data.candidates?.[0]?.content?.parts?.[0]?.text||'';
           geminiOk=true; break;
         }
-        if(!geminiOk&&!text) throw new Error('Ningún modelo de Gemini disponible con esta key. Verifica que sea de Google AI Studio (aistudio.google.com).');
+        if(!geminiOk&&!text){
+          const hint=lastErrMsg?(' Detalle: '+lastErrMsg):'';
+          throw new Error('No se pudo usar Gemini con esta key.'+hint+' Asegúrate de copiar la clave desde aistudio.google.com (empieza con AIza...).');
+        }
       } else {
         // Anthropic Claude
         const resp=await fetch('https://api.anthropic.com/v1/messages',{
