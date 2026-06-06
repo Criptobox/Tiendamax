@@ -26,7 +26,7 @@ function tmAIProviderInfo() {
   return { key, provider };
 }
 function tmOpenRouterModel() {
-  return localStorage.getItem('tmOpenRouterModel') || localStorage.getItem('tmOpenRouterModelWorking') || 'deepseek/deepseek-r1:free';
+  return localStorage.getItem('tmOpenRouterModel') || localStorage.getItem('tmOpenRouterModelWorking') || 'openrouter/free';
 }
 async function tmAIChat(prompt, opts = {}) {
   const { key, provider } = tmAIProviderInfo();
@@ -36,11 +36,13 @@ async function tmAIChat(prompt, opts = {}) {
     const configured = tmOpenRouterModel();
     const fallbackModels = [
       configured,
+      'openrouter/free',
       'deepseek/deepseek-r1:free',
       'deepseek/deepseek-chat-v3:free',
       'qwen/qwen3-235b-a22b:free',
       'qwen/qwen3-30b-a3b:free',
-      'google/gemini-2.0-flash-exp:free'
+      'google/gemini-2.0-flash-exp:free',
+      'meta-llama/llama-3.3-70b-instruct:free'
     ].filter((m, i, a) => m && a.indexOf(m) === i);
     let lastErr = '';
     for (const model of fallbackModels) {
@@ -1424,9 +1426,9 @@ window.tmOpenRouterModel = tmOpenRouterModel;
     keyInput.placeholder='sk-or-... (OpenRouter) / sk-... (DeepSeek) / AIza... / gsk_...';
     const wrap=document.createElement('div');
     wrap.className='tm-openrouter-config';
-    wrap.innerHTML='<label style="display:block;margin-top:10px">Modelo OpenRouter gratuito/preferido<input id="tmOpenRouterModel" type="text" placeholder="deepseek/deepseek-r1:free" style="font-family:monospace;font-size:12px"></label><p style="font-size:11px;color:#888;margin-top:4px">Ejemplos: deepseek/deepseek-chat-v3-0324:free, deepseek/deepseek-r1-0528:free, qwen/qwen3-235b-a22b:free. Depende de disponibilidad de OpenRouter.</p>';
+    wrap.innerHTML='<label style="display:block;margin-top:10px">Modelo OpenRouter gratuito/preferido<input id="tmOpenRouterModel" type="text" placeholder="openrouter/free" style="font-family:monospace;font-size:12px"></label><p style="font-size:11px;color:#888;margin-top:4px">Ejemplos: openrouter/free, deepseek/deepseek-r1:free, qwen/qwen3-235b-a22b:free. Depende de disponibilidad de OpenRouter.</p>';
     keyInput.closest('label')?.insertAdjacentElement('afterend',wrap);
-    const inp=document.getElementById('tmOpenRouterModel'); if(inp){inp.value=localStorage.getItem('tmOpenRouterModel')||'deepseek/deepseek-r1:free'; inp.addEventListener('input',()=>localStorage.setItem('tmOpenRouterModel',inp.value.trim()||'deepseek/deepseek-r1:free'));}
+    const inp=document.getElementById('tmOpenRouterModel'); if(inp){inp.value=localStorage.getItem('tmOpenRouterModel')||'openrouter/free'; inp.addEventListener('input',()=>localStorage.setItem('tmOpenRouterModel',inp.value.trim()||'openrouter/free'));}
   }
   document.addEventListener('DOMContentLoaded',()=>setTimeout(addOpenRouterConfig,1200));
   document.addEventListener('click',e=>{if(e.target.closest('[data-arg="configuracion"],[data-tab="configuracion"]')) setTimeout(addOpenRouterConfig,300);});

@@ -501,7 +501,7 @@ async function tmAdminRefreshSubscribers(){
     const st=document.getElementById('anthropicKeyStatus');
     if(!v||v.length<20){if(st){st.textContent='❌ La clave parece inválida (muy corta)';st.style.color='#e74c3c';} return;}
     let provider,providerName;
-    if(v.startsWith('sk-or-')){provider='openrouter';providerName='OpenRouter'; if(!localStorage.getItem('tmOpenRouterModel')) localStorage.setItem('tmOpenRouterModel','deepseek/deepseek-r1:free');}
+    if(v.startsWith('sk-or-')){provider='openrouter';providerName='OpenRouter'; if(!localStorage.getItem('tmOpenRouterModel')) localStorage.setItem('tmOpenRouterModel','openrouter/free');}
     else if(v.startsWith('gsk_')){provider='groq';providerName='Groq';}
     else if(v.startsWith('sk-ant-')){provider='anthropic';providerName='Anthropic';}
     else if(v.startsWith('sk-')){provider='deepseek';providerName='DeepSeek';}
@@ -612,7 +612,7 @@ async function tmAdminRefreshSubscribers(){
         const dsPrompt='Eres asistente de una tienda online en Cuba. Genera información de producto basándote en estos datos:\n- Nombre/pista: "'+textHint+'"\n- Categoría: '+(cat||'no especificada')+'\n- Precio: '+(price?'$'+price+' USD':'no especificado')+'\n\nResponde SOLO con JSON válido exactamente así:\n{"nombre":"<nombre del producto, max 55 chars>","descripcion":"<descripción atractiva para venta en 2-3 oraciones, español de Cuba>","categoria_sugerida":"<una de: CELULARES, PC Y LAPTOPS, WIFI, ENERGIA, CARROS, MOTOS, HOGAR, ROPA, SEGURIDAD, o General>"}';
         notify('📝 '+(provider==='openrouter'?'OpenRouter':'DeepSeek')+' no ve fotos aquí — usando nombre de archivo y categoría','info');
         if(aiBox) aiBox.textContent='⏳ '+(provider==='openrouter'?'OpenRouter':'DeepSeek')+' generando desde contexto...';
-        const orModel=localStorage.getItem('tmOpenRouterModel')||localStorage.getItem('tmOpenRouterModelWorking')||'deepseek/deepseek-r1:free';
+        const orModel=localStorage.getItem('tmOpenRouterModel')||localStorage.getItem('tmOpenRouterModelWorking')||'openrouter/free';
         const resp=await fetch(provider==='openrouter'?'https://openrouter.ai/api/v1/chat/completions':'https://api.deepseek.com/v1/chat/completions',{
           method:'POST',
           headers: provider==='openrouter'?{'Content-Type':'application/json','Authorization':'Bearer '+key,'HTTP-Referer':location.origin||'https://tiendamax.org','X-Title':'TiendaMax Admin'}:{'Content-Type':'application/json','Authorization':'Bearer '+key},
@@ -722,7 +722,7 @@ async function tmAdminRefreshSubscribers(){
 
 
 
-<script src="js/admin-ai-tools.min.js?v=5" defer></script>
+<script src="js/admin-ai-tools.min.js?v=6" defer></script>
 <script id="tm-comision-ventas-v1">
 (function(){
   /* ── Toggle USD/MN en comisión ── */
