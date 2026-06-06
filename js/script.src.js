@@ -6833,7 +6833,10 @@ async function enviarPushManualAdmin() {
             return;
         }
         
-        const tokens = Object.values(tokensData).map(t => t.token).filter(Boolean);
+        // Mantener token y clave alineados para poder borrar exactamente el inválido.
+        const tokenEntries = Object.entries(tokensData).filter(([k, t]) => t && t.token);
+        const tokens = tokenEntries.map(([, t]) => t.token);
+        const tokenKeys = tokenEntries.map(([k]) => k);
         if (tokens.length === 0) {
             if (status) status.textContent = '⚠️ No se encontraron tokens válidos.';
             return;
@@ -6867,12 +6870,11 @@ async function enviarPushManualAdmin() {
             
             // Limpiar tokens obsoletos
             if (resData.results) {
-                const keysToDelete = Object.keys(tokensData);
                 for (let i = 0; i < resData.results.length; i++) {
                     const result = resData.results[i];
                     if (result.error === 'NotRegistered' || result.error === 'InvalidRegistration') {
-                        const tokenKey = keysToDelete[i];
-                        fetch(`${rtdbUrl}/tokens/${tokenKey}.json`, { method: 'DELETE' }).catch(() => null);
+                        const tokenKey = tokenKeys[i];
+                        if (tokenKey) fetch(`${rtdbUrl}/tokens/${tokenKey}.json`, { method: 'DELETE' }).catch(() => null);
                     }
                 }
             }

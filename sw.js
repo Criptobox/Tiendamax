@@ -1,5 +1,6 @@
 // ═══════════════════════════════════════════════════════
-// TiendaMax — Service Worker v182 — suscriptores únicos + refresco cache JS
+// TiendaMax — Service Worker v183 — conteo único suscriptores refinado
+// v183: refresca script/analytics con conteo único refinado.
 // v182: fuerza actualización de script/analytics/push-fix para no duplicar suscriptores.
 // v177: AI generator functional + password/compress safety fixes.
 // v176: add product IA order debajo de descripción y oculta flotante en móvil.
@@ -45,7 +46,7 @@
 //      usan el mismo helper _mensajeOrdenWA con formato premium.
 // ═══════════════════════════════════════════════════════
 
-const CACHE_NAME = 'tiendamax-202606060257';
+const CACHE_NAME = 'tiendamax-202606060305';
 
 const STATIC_ASSETS = [
   '/',

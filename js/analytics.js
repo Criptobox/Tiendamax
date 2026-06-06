@@ -146,6 +146,27 @@ function _tmRelTime(ts) {
     return `hace ${meses} mes${meses > 1 ? 'es' : ''}`;
 }
 
+// Cuenta suscriptores únicos sin inflar por reactivaciones del mismo dispositivo.
+// Prioridad: fingerprint; legacy sin fingerprint se cuenta por token, salvo que sea
+// claramente una copia vieja del mismo userAgent que ya tiene fingerprint.
+function tmContarSuscriptoresUnicos(tokensData = {}) {
+    const vals = Object.values(tokensData).filter(t => t && t.token);
+    const uasConFingerprint = new Set(vals.filter(t => t.fingerprint && t.userAgent).map(t => t.userAgent));
+    const claves = new Set();
+    vals.forEach(t => {
+        if (t.fingerprint) {
+            claves.add('fp:' + t.fingerprint);
+        } else if (t.userAgent && uasConFingerprint.has(t.userAgent)) {
+            // Entrada vieja duplicada de un dispositivo que ya se re-registró con fingerprint.
+            return;
+        } else {
+            claves.add('tk:' + t.token);
+        }
+    });
+    return claves.size;
+}
+window.tmContarSuscriptoresUnicos = tmContarSuscriptoresUnicos;
+
 // ── Leer todos los datos de analytics ───────────────────
 async function tmLeerAnalytics() {
     await _tmEnsureFirebaseConfig();
@@ -180,18 +201,7 @@ async function tmLeerAnalytics() {
     });
 
     // Suscriptores: Firebase como fuente de verdad, contando dispositivos únicos
-    // y no cada reactivación. Si el usuario borra datos y vuelve a activar,
-    // FCM puede generar otro token; fingerprint/userAgent evita inflar el total.
-    const valsTokens = Object.values(tokensData).filter(t => t && t.token);
-    const uasConFingerprint = new Set(valsTokens.filter(t => t.fingerprint && t.userAgent).map(t => t.userAgent));
-    const clavesUnicas = new Set();
-    valsTokens.forEach(t => {
-        const key = (t.userAgent && uasConFingerprint.has(t.userAgent))
-            ? 'ua:' + t.userAgent
-            : (t.fingerprint ? 'fp:' + t.fingerprint : 'tk:' + t.token);
-        clavesUnicas.add(key);
-    });
-    const suscriptores = clavesUnicas.size;
+    const suscriptores = tmContarSuscriptoresUnicos(tokensData);
     // Sincronizar caché local con el valor real
     try { localStorage.setItem('tm_subscriber_count', String(suscriptores)); } catch(e) {}
 
@@ -808,13 +818,21 @@ async function tmLimpiarTokensInvalidos() {
                         // Si FCM devuelve un token de reemplazo, actualizarlo
                         if (r.registration_id) {
                             const newToken = r.registration_id;
-                            const newId = btoa(newToken).replace(/=/g,'').replace(/\+/g,'-').replace(/\//g,'_');
-                            fetch(`${base}/tokens/${newId}.json`, {
+                            const oldData = tokensData[batchKeys[idx]] || {};
+                            const keyToUse = oldData.fingerprint || batchKeys[idx];
+                            fetch(`${base}/tokens/${keyToUse}.json`, {
                                 method: 'PUT',
                                 headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({ token: newToken, timestamp: Date.now(), userAgent: tokensData[batchKeys[idx]]?.userAgent || '' })
+                                body: JSON.stringify({
+                                    token: newToken,
+                                    timestamp: Date.now(),
+                                    userAgent: oldData.userAgent || '',
+                                    fingerprint: oldData.fingerprint || keyToUse
+                                })
                             }).catch(() => null);
-                            fetch(`${base}/tokens/${batchKeys[idx]}.json`, { method: 'DELETE' }).catch(() => null);
+                            if (keyToUse !== batchKeys[idx]) {
+                                fetch(`${base}/tokens/${batchKeys[idx]}.json`, { method: 'DELETE' }).catch(() => null);
+                            }
                         }
                     }
                 });
