@@ -464,13 +464,44 @@ async function tmAdminRefreshSubscribers(){
   window.tmGuardarAnthropicKey=function(){
     const v=document.getElementById('anthropicApiKey')?.value.trim();
     const st=document.getElementById('anthropicKeyStatus');
-    if(!v||!v.startsWith('sk-ant-')){if(st)st.textContent='❌ La clave debe comenzar con sk-ant-'; return;}
+    if(!v||v.length<20){if(st){st.textContent='❌ La clave parece inválida (muy corta)';st.style.color='#e74c3c';} return;}
     localStorage.setItem('anthropicApiKey',v);
-    if(st)st.textContent='✅ API Key guardada. El generador con foto está activo.';
-    // Reveal photo button if on add-products tab
+    if(st){st.textContent='✅ API Key guardada. Ahora selecciona una foto para analizar.';st.style.color='#25d366';}
+    notify('✅ API Key de Anthropic guardada','success');
     const btn=document.getElementById('btnAnalizarFoto');
     if(btn)btn.style.display='';
   };
+  // Cargar API key guardada al abrir tab Config
+  (function(){
+    const old=window.switchTab;
+    if(typeof old==='function'&&!window.__tmAiKeyTabHook){
+      window.__tmAiKeyTabHook=true;
+      window.switchTab=function(tab){
+        const r=old.apply(this,arguments);
+        if(tab==='configuracion'){
+          const saved=localStorage.getItem('anthropicApiKey');
+          const inp=document.getElementById('anthropicApiKey');
+          const st=document.getElementById('anthropicKeyStatus');
+          if(saved&&inp&&!inp.value){
+            inp.placeholder='sk-ant-... (guardada)';
+            if(st){st.textContent='✅ API Key activa ('+saved.slice(0,8)+'…)';st.style.color='#25d366';}
+          }
+        }
+        return r;
+      };
+    }
+    document.addEventListener('DOMContentLoaded',function(){
+      setTimeout(function(){
+        const saved=localStorage.getItem('anthropicApiKey');
+        if(saved){
+          const inp=document.getElementById('anthropicApiKey');
+          const st=document.getElementById('anthropicKeyStatus');
+          if(inp)inp.placeholder='sk-ant-... (guardada)';
+          if(st&&!st.textContent){st.textContent='✅ API Key activa ('+saved.slice(0,8)+'…)';st.style.color='#25d366';}
+        }
+      },1200);
+    });
+  })();
   window.tmAnalizarFotoConIA=async function(){
     const key=localStorage.getItem('anthropicApiKey');
     if(!key){notify('Configura tu API Key de Anthropic en ⚙️ Configuración → IA con foto','error'); return;}
@@ -510,8 +541,19 @@ async function tmAdminRefreshSubscribers(){
       if(aiBox) aiBox.textContent=result.descripcion||'Descripción generada';
       notify('✅ Descripción generada desde la foto','success');
     }catch(e){
-      if(aiBox) aiBox.textContent='Error al analizar. Revisa tu API Key en Configuración.';
-      notify('❌ IA: '+e.message,'error');
+      const msg=e.message||'';
+      const esBilling=msg.toLowerCase().includes('credit')||msg.includes('402')||msg.toLowerCase().includes('billing');
+      const esAuth=msg.includes('401')||msg.toLowerCase().includes('invalid x-api-key')||msg.toLowerCase().includes('authentication');
+      if(esBilling){
+        if(aiBox) aiBox.textContent='Sin créditos en Anthropic. Recarga tu cuenta en platform.claude.com → Facturación.';
+        notify('❌ Sin créditos en Anthropic. Ve a platform.claude.com → Facturación','error');
+      } else if(esAuth){
+        if(aiBox) aiBox.textContent='API Key inválida. Ve a Configuración → IA con foto y guarda la clave correcta.';
+        notify('❌ API Key inválida — cópiala de platform.claude.com → Administrar → API Keys','error');
+      } else {
+        if(aiBox) aiBox.textContent='Error: '+msg;
+        notify('❌ IA: '+msg,'error');
+      }
     }finally{
       if(btn){btn.disabled=false; btn.textContent='📷 Analizar foto';}
     }
