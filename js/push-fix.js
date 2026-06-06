@@ -42,13 +42,46 @@
     return cfg;
   }
 
+  // Huella estable del dispositivo — sobrevive borrado de localStorage
+  function deviceFingerprint() {
+    var parts = [
+      navigator.userAgent || '',
+      (screen.width || 0) + 'x' + (screen.height || 0),
+      navigator.language || '',
+      (typeof Intl !== 'undefined' ? Intl.DateTimeFormat().resolvedOptions().timeZone : '') || ''
+    ].join('|');
+    var h = 0;
+    for (var i = 0; i < parts.length; i++) { h = ((h << 5) - h + parts.charCodeAt(i)) | 0; }
+    return 'fp_' + (h >>> 0).toString(36);
+  }
+
   // Escribe token en Firebase RTDB. Si falla por red, guarda en LS para reintento.
   async function escribirTokenRTDB(cfg, token) {
     var dbURL = cfg.databaseURL || ("https://" + cfg.projectId + "-default-rtdb.firebaseio.com");
     var id = btoa(token).replace(/=/g, "").replace(/\+/g, "-").replace(/\//g, "_");
+    var fp = deviceFingerprint();
+
+    // Eliminar tokens previos del mismo dispositivo antes de guardar el nuevo
+    try {
+      var allRes = await fetch(dbURL + "/tokens.json?_=" + Date.now(), { cache: "no-store" });
+      if (allRes.ok) {
+        var allData = await allRes.json();
+        if (allData && typeof allData === "object") {
+          var deletes = [];
+          Object.keys(allData).forEach(function(k) {
+            var t = allData[k];
+            if (k !== id && t && (t.fingerprint === fp || t.token === localStorage.getItem("fcmToken"))) {
+              deletes.push(fetch(dbURL + "/tokens/" + k + ".json", { method: "DELETE" }).catch(function() {}));
+            }
+          });
+          if (deletes.length) await Promise.allSettled(deletes);
+        }
+      }
+    } catch (e) {}
+
     var resp = await fetch(dbURL + "/tokens/" + id + ".json", {
       method: "PUT", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ token: token, timestamp: Date.now(), userAgent: navigator.userAgent })
+      body: JSON.stringify({ token: token, timestamp: Date.now(), userAgent: navigator.userAgent, fingerprint: fp })
     });
     if (!resp.ok) {
       var t = ""; try { t = await resp.text(); } catch (e) {}

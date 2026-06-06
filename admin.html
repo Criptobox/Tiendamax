@@ -152,6 +152,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>Array.from(r.querySelectorAll(s));
 const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 const num=n=>Number(n||0);
+function _rtdbBase(){try{var c=JSON.parse(localStorage.getItem('firebaseConfig')||'{}');return c.databaseURL||(c.projectId?'https://'+c.projectId+'-default-rtdb.firebaseio.com':null);}catch(e){return null;}}
 const money=n=>'$'+Number(n||0).toLocaleString('es-CU',{maximumFractionDigits:2});
 function products(){try{if(typeof productos!=='undefined'&&Array.isArray(productos))return productos}catch(e){} try{return JSON.parse(localStorage.getItem('productos')||'[]')}catch(e){return[]}}
 function ventas(){try{if(typeof cargarVentas==='function')return cargarVentas()}catch(e){} try{return JSON.parse(localStorage.getItem('registroVentas')||'[]')}catch(e){return[]}}
@@ -168,7 +169,8 @@ async function readFirebaseAnalytics(){
 function csvDownload(name, rows){const csv=rows.map(r=>r.map(x=>'"'+String(x??'').replace(/"/g,'""')+'"').join(',')).join('\n'); const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'})); a.download=name; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
 async function render(){
  const mount=$('#analyticsContent'); if(!mount) return;
- const ps=products(), vs=ventas(); const fb=await readFirebaseAnalytics();
+ const ps=products(); let vs=ventas(); const fb=await readFirebaseAnalytics();
+ if(vs.length===0){try{const base=_rtdbBase();if(base){const r=await fetch(base+'/ventas.json?_='+Date.now(),{cache:'no-store'});if(r.ok){const raw=await r.json();if(raw&&typeof raw==='object')vs=Object.values(raw).filter(Boolean).sort((a,b)=>b.id-a.id);}}}catch(e){}}
  const total=ps.length, active=ps.filter(p=>stockOf(p)>0).length, empty=ps.filter(p=>stockOf(p)===0).length, low=ps.filter(p=>stockOf(p)>0&&stockOf(p)<=3).length;
  const inv=ps.reduce((s,p)=>s+priceOf(p)*stockOf(p),0), totalVentas=vs.reduce((s,v)=>s+num(v.total),0), ganancia=vs.reduce((s,v)=>s+num(v.ganancia||v.comision),0);
  const vistasMap=fb.vistas||{}, waMap=fb.whatsapp||{};

@@ -620,11 +620,41 @@ async function tmLimpiarTokensInvalidos() {
     const infoId = 'tm-limpiar-info';
     const btn    = document.getElementById(btnId);
     const info   = document.getElementById(infoId);
-    const setInfo = (msg, color = '#888') => { if (info) info.innerHTML = `<span style="color:${color}">${msg}</span>`; };
+    const notify = (msg, t = 'info') => {
+        if (typeof window.mostrarNotificacion === 'function') window.mostrarNotificacion(msg, t);
+        if (info) info.innerHTML = `<span style="color:${t==='success'?'#25d366':t==='error'?'#e74c3c':'#f39c12'}">${msg}</span>`;
+    };
+    const setInfo = notify;
 
     const serverKey = localStorage.getItem('fcmServerKey');
     if (!serverKey) {
-        setInfo('⚠️ Necesitas la Clave de Servidor FCM (guardada en ⚙️ Config → Firebase). Sin ella no puedo validar tokens.', '#f39c12');
+        // Sin Server Key: eliminar tokens con más de 45 días de antigüedad
+        const base = _tmRtdbUrl();
+        if (!base) { notify('⚠️ Firebase no configurado.', 'warning'); return; }
+        if (btn) { btn.disabled = true; btn.textContent = '⏳ Limpiando…'; }
+        try {
+            const res = await _tmFetch(`${base}/tokens.json`);
+            if (!res.ok) throw new Error('No se pudo leer la base de datos');
+            const tokensData = await res.json();
+            if (!tokensData) { notify('✅ No hay tokens que limpiar.', 'success'); return; }
+            const DIAS_45 = 45 * 24 * 60 * 60 * 1000;
+            const cutoff = Date.now() - DIAS_45;
+            const viejos = Object.keys(tokensData).filter(k => {
+                const t = tokensData[k];
+                return t && t.timestamp && t.timestamp < cutoff;
+            });
+            if (viejos.length === 0) {
+                notify('✅ No hay tokens viejos (>45 días). Todo limpio.', 'success');
+            } else {
+                await Promise.allSettled(viejos.map(k => fetch(`${base}/tokens/${k}.json`, { method: 'DELETE' })));
+                notify(`✅ ${viejos.length} token${viejos.length>1?'s':''} eliminado${viejos.length>1?'s':''} (>45 días).`, 'success');
+                setTimeout(() => renderizarAnalyticsFirebase(), 1200);
+            }
+        } catch(e) {
+            notify('❌ Error: ' + e.message, 'error');
+        } finally {
+            if (btn) { btn.disabled = false; btn.textContent = '🧹 Limpiar tokens inválidos'; }
+        }
         return;
     }
 
