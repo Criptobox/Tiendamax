@@ -1199,6 +1199,112 @@ async function tmAdminRefreshSubscribers(){
 })();
 </script>
 
+<script id="tm-deepseek-tools-v6">
+(function(){
+  const $=(s,r=document)=>r.querySelector(s);
+  const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+  function notify(msg,type){ if(typeof mostrarNotificacion==='function') mostrarNotificacion(msg,type||'info'); else console.log(msg); }
+  function products(){ try{ if(Array.isArray(window.productos)) return window.productos; }catch(e){} try{return JSON.parse(localStorage.getItem('productos')||'[]')}catch(e){return[]} }
+  function saveProducts(ps){ localStorage.setItem('productos',JSON.stringify(ps)); if(Array.isArray(window.productos)) window.productos=ps; if(typeof guardarProductos==='function') guardarProductos(); }
+  function cats(){ return [...new Set(products().map(p=>p.categoria||'General').filter(Boolean))].sort(); }
+  function catOptions(){ return '<option value="">Todas</option>'+cats().map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join(''); }
+  function slugify(s){ return String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,70); }
+  function prodInfo(p){return `ID: ${p.id}\nNombre: ${p.nombre||''}\nDescripción: ${p.descripcion||''}\nCategoría: ${p.categoria||'General'}\nSubcategoría: ${p.subcategoria||''}\nPrecio: $${Number(p.precioActual||0).toFixed(2)} USD\nStock: ${Number(p.stock||0)}\nGarantía: ${p.garantia||'no indicada'}`;}
+  function localSEO(p){const name=p.nombre||'Producto TiendaMax', cat=p.categoria||'General', price=Number(p.precioActual||0);return {seoTitle:`${name} en TiendaMax`.slice(0,60),seoDescription:`Compra ${name} en TiendaMax. ${cat}${price?' desde $'+price.toFixed(2)+' USD':''}. Consulta disponibilidad por WhatsApp.`.slice(0,155),seoKeywords:[name,cat,'TiendaMax','Cuba','comprar online'].filter(Boolean),slug:slugify(name),shareText:`🔥 ${name}\n${price?'💵 $'+price.toFixed(2)+' USD\n':''}Disponible en TiendaMax. Escríbenos para reservar.`};}
+  function localRecs(target, ps){const same=ps.filter(p=>p.id!==target.id&&p.categoria===target.categoria&&Number(p.stock||0)>0).slice(0,4);const other=ps.filter(p=>p.id!==target.id&&p.categoria!==target.categoria&&Number(p.stock||0)>0).slice(0,2);const recs=[...same,...other].slice(0,4);return {recomendados:recs.map(p=>p.id),bundleText:`Combina ${target.nombre||'este producto'} con productos relacionados para aprovechar mejor tu compra.`,upsellText:'También puedes revisar estas opciones complementarias antes de reservar.',whatsappUpsell:`Si quieres, también te puedo mostrar opciones relacionadas con ${target.nombre||'ese producto'}.`};}
+  async function deepseek(prompt,max_tokens=650){
+    const key=localStorage.getItem('anthropicApiKey')||'', provider=localStorage.getItem('anthropicApiProvider')||'';
+    if(!key || !(provider==='deepseek'||key.startsWith('sk-'))) throw new Error('DeepSeek no configurado');
+    const resp=await fetch('https://api.deepseek.com/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},body:JSON.stringify({model:'deepseek-chat',temperature:0.45,max_tokens,messages:[{role:'system',content:'Eres asistente ecommerce de TiendaMax en Cuba. Responde exactamente lo pedido, sin inventar datos.'},{role:'user',content:prompt}]})});
+    if(!resp.ok){let t='';try{t=await resp.text()}catch(e){};throw new Error('DeepSeek HTTP '+resp.status+(t?': '+t.slice(0,120):''));}
+    const data=await resp.json(); return (data.choices?.[0]?.message?.content||'').trim();
+  }
+  function panel(title,sub,body){const p=$('#tmToolPanel'); if(!p)return; p.className='tm-panel active'; p.innerHTML=`<div class="tm-panel-head"><div><h4>${title}</h4><p>${sub}</p></div><button class="tm-panel-close" data-act="closePanel">✕ Cerrar</button></div>${body}`; p.scrollIntoView({behavior:'smooth',block:'start'});}
+  function addCards(){
+    const wrap=$('#herramientas .tm-tools-wrap'); if(!wrap || $('#tmDeepSeekBulkCards')) return;
+    const div=document.createElement('div'); div.id='tmDeepSeekBulkCards';
+    div.innerHTML=`<div class="tm-tier"><h4>DEEPSEEK — AUTOMATIZACIÓN MASIVA</h4><span class="tm-tier-badge gold">Batch</span></div>
+    <div class="tm-tools-grid"><div class="tm-tool-card enabled" data-tool="bulkai"><span class="state">IA</span><div class="ico" style="background:rgba(155,89,182,.18)">⚙️</div><h5>IA masiva</h5><p>Aplica SEO, auditoría o recomendaciones a varios productos en lote controlado.</p></div></div>`;
+    const panelEl=$('#tmToolPanel'); if(panelEl) wrap.insertBefore(div,panelEl); else wrap.appendChild(div);
+  }
+  function openBulk(){
+    panel('⚙️ IA masiva por lotes','Procesa pocos productos por tanda para controlar costo y revisar resultados.',`
+      <div class="tm-form-grid">
+        <div class="tm-field"><label>Tarea</label><select id="tmBulkTask"><option value="seo_missing">SEO a productos sin SEO</option><option value="seo_all">Regenerar SEO</option><option value="recs_missing">Recomendaciones sin configurar</option><option value="audit_report">Reporte de auditoría</option></select></div>
+        <div class="tm-field"><label>Categoría</label><select id="tmBulkCat">${catOptions()}</select></div>
+        <div class="tm-field"><label>Límite por tanda</label><input id="tmBulkLimit" type="number" min="1" max="20" value="5"></div>
+        <div class="tm-field"><label>Modo</label><select id="tmBulkMode"><option value="deepseek">DeepSeek si está configurado</option><option value="local">Solo local / sin API</option></select></div>
+      </div>
+      <div class="tm-actions"><button class="tm-btn primary" data-ds6-act="bulkPreview">Vista previa</button><button class="tm-btn gold" data-ds6-act="bulkRun">Ejecutar lote</button><button class="tm-btn" data-ds6-act="copyOut">Copiar log</button></div>
+      <div class="tm-note">Consejo: empieza con límite 5. Después revisa y pulsa “Actualizar tienda”.</div>
+      <div id="tmToolOut" class="tm-code" style="margin-top:12px">Elige tarea y pulsa Vista previa.</div>`);
+  }
+  function selectTargets(){
+    const ps=products(); const task=$('#tmBulkTask')?.value||'seo_missing'; const cat=$('#tmBulkCat')?.value||''; const limit=Math.max(1,Math.min(20,Number($('#tmBulkLimit')?.value)||5));
+    let arr=ps.filter(p=>!cat || (p.categoria||'General')===cat);
+    if(task==='seo_missing') arr=arr.filter(p=>!p.seoTitle && !p.seoDescription);
+    if(task==='recs_missing') arr=arr.filter(p=>!Array.isArray(p.recomendados)||!p.recomendados.length);
+    if(task==='audit_report') arr=arr.filter(p=>!(p.descripcion||'').trim() || (p.descripcion||'').length<80 || !p.imagen || !Number(p.precioActual||0) || Number(p.stock||0)<=0);
+    return arr.slice(0,limit);
+  }
+  function preview(){
+    const out=$('#tmToolOut'), targets=selectTargets(); if(!out)return;
+    out.textContent=`Productos seleccionados: ${targets.length}\n\n`+targets.map((p,i)=>`${i+1}. ${p.nombre} · ${p.categoria||'General'} · stock ${p.stock||0}`).join('\n')+(targets.length?'':'No hay productos pendientes para esta tarea.');
+  }
+  async function genSEO(p,useAI){
+    if(!useAI) return localSEO(p);
+    const prompt=`Genera SEO para este producto.\n\n${prodInfo(p)}\n\nResponde SOLO JSON válido:\n{"seoTitle":"máximo 60 caracteres","seoDescription":"máximo 155 caracteres","seoKeywords":["5 a 8 keywords"],"slug":"url-amigable-sin-acentos","shareText":"texto corto para compartir"}`;
+    const text=await deepseek(prompt,550); const m=text.match(/\{[\s\S]*\}/); if(!m) throw new Error('JSON SEO no encontrado');
+    const j=JSON.parse(m[0]); j.slug=slugify(j.slug||p.nombre); if(!Array.isArray(j.seoKeywords)) j.seoKeywords=String(j.seoKeywords||'').split(',').map(x=>x.trim()).filter(Boolean); return j;
+  }
+  async function genRecs(p,ps,useAI){
+    if(!useAI) return localRecs(p,ps);
+    const candidates=ps.filter(x=>x.id!==p.id&&Number(x.stock||0)>0).slice(0,50).map(x=>({id:x.id,nombre:x.nombre,categoria:x.categoria,precio:x.precioActual,stock:x.stock,descripcion:String(x.descripcion||'').slice(0,100)}));
+    const prompt=`Producto principal:\n${prodInfo(p)}\n\nCandidatos:\n${JSON.stringify(candidates)}\n\nElige hasta 4 complementarios. Responde SOLO JSON:\n{"recomendados":[ids reales],"bundleText":"frase corta","upsellText":"frase corta","whatsappUpsell":"mensaje breve"}`;
+    const text=await deepseek(prompt,700); const m=text.match(/\{[\s\S]*\}/); if(!m) throw new Error('JSON recomendaciones no encontrado');
+    const j=JSON.parse(m[0]); const valid=new Set(candidates.map(c=>String(c.id))); j.recomendados=(j.recomendados||[]).map(String).filter(id=>valid.has(id)).slice(0,4).map(id=>isNaN(Number(id))?id:Number(id)); return j;
+  }
+  function auditLine(p){const issues=[]; if(!(p.nombre||'').trim()||(p.nombre||'').length<8)issues.push('nombre flojo'); if(!(p.descripcion||'').trim()||(p.descripcion||'').length<80)issues.push('descripción corta'); if(!p.imagen)issues.push('sin imagen'); if(!Number(p.precioActual||0))issues.push('sin precio'); if(Number(p.stock||0)<=0)issues.push('sin stock'); if(!p.garantia)issues.push('sin garantía indicada'); return `${p.nombre}: ${issues.length?issues.join(', '):'OK'}`;}
+  async function run(){
+    const out=$('#tmToolOut'); if(!out)return; const task=$('#tmBulkTask')?.value||'seo_missing'; const mode=$('#tmBulkMode')?.value||'deepseek'; const useAI=mode==='deepseek';
+    const targets=selectTargets(); if(!targets.length){out.textContent='No hay productos para procesar.'; return;}
+    let ps=products(); const log=[]; out.textContent='⏳ Iniciando lote...';
+    if(task==='audit_report'){
+      out.textContent='REPORTE DE AUDITORÍA\n\n'+targets.map(auditLine).join('\n'); notify('Reporte generado','success'); return;
+    }
+    for(let i=0;i<targets.length;i++){
+      const p=targets[i]; const idx=ps.findIndex(x=>String(x.id)===String(p.id)); if(idx<0) continue;
+      out.textContent=`⏳ Procesando ${i+1}/${targets.length}: ${p.nombre}\n\n`+log.join('\n');
+      try{
+        if(task==='seo_missing'||task==='seo_all'){
+          const seo=await genSEO(ps[idx],useAI); ps[idx]={...ps[idx],seoTitle:seo.seoTitle||'',seoDescription:seo.seoDescription||'',seoKeywords:seo.seoKeywords||[],slug:seo.slug||slugify(ps[idx].nombre),shareText:seo.shareText||''};
+          log.push(`✅ SEO: ${p.nombre}`);
+        }else if(task==='recs_missing'){
+          const r=await genRecs(ps[idx],ps,useAI); ps[idx]={...ps[idx],recomendados:r.recomendados||[],bundleText:r.bundleText||'',upsellText:r.upsellText||'',whatsappUpsell:r.whatsappUpsell||''};
+          log.push(`✅ Recs: ${p.nombre}`);
+        }
+        try{ if(typeof marcarProductoModificado==='function') marcarProductoModificado(ps[idx].id); }catch(e){}
+        if(useAI) await sleep(450);
+      }catch(e){
+        log.push(`⚠️ ${p.nombre}: ${e.message} — usando local`);
+        if(task==='seo_missing'||task==='seo_all'){const seo=localSEO(ps[idx]); ps[idx]={...ps[idx],...seo};}
+        if(task==='recs_missing'){const r=localRecs(ps[idx],ps); ps[idx]={...ps[idx],...r};}
+      }
+    }
+    saveProducts(ps); out.textContent=`✅ Lote terminado. Productos procesados: ${targets.length}\n\n${log.join('\n')}\n\nAhora pulsa “Actualizar tienda” para subir productos.json.`; notify('✅ Lote IA terminado','success');
+  }
+  document.addEventListener('click',function(e){
+    const tool=e.target.closest('[data-tool="bulkai"]'); if(tool){e.preventDefault();e.stopPropagation();e.stopImmediatePropagation&&e.stopImmediatePropagation();openBulk();return;}
+    const a=e.target.closest('[data-ds6-act]'); if(!a)return; e.preventDefault();e.stopPropagation();e.stopImmediatePropagation&&e.stopImmediatePropagation();
+    const act=a.dataset.ds6Act; if(act==='bulkPreview') preview(); if(act==='bulkRun') run(); if(act==='copyOut'){navigator.clipboard?.writeText($('#tmToolOut')?.textContent||'');notify('Copiado','success');}
+  },true);
+  function boot(){addCards();}
+  document.addEventListener('DOMContentLoaded',()=>setTimeout(boot,1300));
+  document.addEventListener('click',e=>{if(e.target.closest('[data-arg="herramientas"],[data-tab="herramientas"]')) setTimeout(boot,300);});
+})();
+</script>
+
 <script id="tm-comision-ventas-v1">
 (function(){
   /* ── Toggle USD/MN en comisión ── */
