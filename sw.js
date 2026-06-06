@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════════════════
-// TiendaMax — Service Worker v180 — DeepSeek AI support (empresa china, accesible Cuba)
+// TiendaMax — Service Worker v181 — DeepSeek texto-only fallback (no visión, usa nombre de archivo)
 // v177: AI generator functional + password/compress safety fixes.
 // v176: add product IA order debajo de descripción y oculta flotante en móvil.
 // v175: mobile rescue — layout móvil robusto y visible.
@@ -44,7 +44,7 @@
 //      usan el mismo helper _mensajeOrdenWA con formato premium.
 // ═══════════════════════════════════════════════════════
 
-const CACHE_NAME = 'tiendamax-202606070300';
+const CACHE_NAME = 'tiendamax-202606070330';
 
 const STATIC_ASSETS = [
   '/',

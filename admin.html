@@ -602,35 +602,27 @@ async function tmAdminRefreshSubscribers(){
         }
         if(!groqOk&&!text) throw new Error('No se pudo usar Groq. Verifica que la clave empiece con gsk_ y sea de console.groq.com.');
       } else if(provider==='deepseek'){
-        // DeepSeek API — empresa china, accesible desde Cuba
-        const dsModels=['deepseek-chat','deepseek-vl2'];
-        let dsOk=false;
-        let dsLastErr='';
-        for(const model of dsModels){
-          const resp=await fetch('https://api.deepseek.com/v1/chat/completions',{
-            method:'POST',
-            headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},
-            body:JSON.stringify({model,max_tokens:512,messages:[{role:'user',content:[{type:'image_url',image_url:{url:'data:image/jpeg;base64,'+base64}},{type:'text',text:prompt}]}]})
-          });
-          if(resp.status===404||resp.status===422){continue;}
-          if(resp.status===400){
-            const errTxt=await resp.text().catch(()=>'');
-            let j={}; try{j=JSON.parse(errTxt);}catch(ex){}
-            const em=j.error?.message||'';
-            if(/image|vision|multimodal|not support/i.test(em)){dsLastErr=em; continue;}
-            throw new Error(em||'HTTP 400');
-          }
-          if(!resp.ok){
-            const errTxt=await resp.text().catch(()=>'');
-            let errMsg='HTTP '+resp.status;
-            try{const j=JSON.parse(errTxt);errMsg=j.error?.message||errMsg;}catch(ex){}
-            throw new Error(errMsg);
-          }
-          const data=await resp.json();
-          text=data.choices?.[0]?.message?.content||'';
-          dsOk=true; break;
+        // DeepSeek API — solo texto, empresa china, accesible desde Cuba
+        // No soporta imágenes, pero genera descripción con contexto de texto
+        const existingName=document.getElementById('productName')?.value||'';
+        const fileName=file.name.replace(/\.[^.]+$/,'').replace(/[-_]/g,' ');
+        const textHint=existingName||fileName;
+        const dsPrompt='Eres asistente de una tienda online en Cuba. Genera información de producto basándote en estos datos:\n- Nombre/pista: "'+textHint+'"\n- Categoría: '+(cat||'no especificada')+'\n- Precio: '+(price?'$'+price+' USD':'no especificado')+'\n\nResponde SOLO con JSON válido exactamente así:\n{"nombre":"<nombre del producto, max 55 chars>","descripcion":"<descripción atractiva para venta en 2-3 oraciones, español de Cuba>","categoria_sugerida":"<una de: CELULARES, PC Y LAPTOPS, WIFI, ENERGIA, CARROS, MOTOS, HOGAR, ROPA, SEGURIDAD, o General>"}';
+        notify('📝 DeepSeek no ve fotos — usando nombre de archivo y categoría','info');
+        if(aiBox) aiBox.textContent='⏳ DeepSeek generando desde contexto...';
+        const resp=await fetch('https://api.deepseek.com/v1/chat/completions',{
+          method:'POST',
+          headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},
+          body:JSON.stringify({model:'deepseek-chat',max_tokens:512,messages:[{role:'user',content:dsPrompt}]})
+        });
+        if(!resp.ok){
+          const errTxt=await resp.text().catch(()=>'');
+          let errMsg='HTTP '+resp.status;
+          try{const j=JSON.parse(errTxt);errMsg=j.error?.message||errMsg;}catch(ex){}
+          throw new Error(errMsg);
         }
-        if(!dsOk&&!text) throw new Error('DeepSeek no soporta análisis de fotos en su API actual.'+(dsLastErr?' ('+dsLastErr+')':''));
+        const dsData=await resp.json();
+        text=dsData.choices?.[0]?.message?.content||'';
       } else if(provider==='google'){
         // Google Gemini API — gratis, prueba modelos en orden
         const geminiModels=['gemini-2.0-flash','gemini-1.5-flash-latest','gemini-1.5-flash','gemini-1.0-pro-vision-latest'];
