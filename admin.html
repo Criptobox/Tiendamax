@@ -1844,6 +1844,91 @@ async function tmAdminRefreshSubscribers(){
 })();
 </script>
 
+<script id="tm-deepseek-tools-v13">
+(function(){
+  const SNAP='tm_full_backups_v1';
+  const $=(s,r=document)=>r.querySelector(s);
+  const KEYS=['productos','categorias','subcategorias','iconosPersonalizados','heroBanners','gruposFB','revolicoConfig','registroVentas','tm_campaigns_v1','tm_week_plan_v1','tm_tools_data_v1','tm_tools_snapshots_v1','tm_subscriber_count','tasaMN','whatsappNumber','ofertaDiaId','ofertaDiaTexto'];
+  const SECRET_KEYS=['githubToken','anthropicApiKey','firebaseConfig','firebaseVapidKey','fcmServerKey','adminPasswordHash','adminPassword'];
+  const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  function notify(msg,type){ if(typeof mostrarNotificacion==='function') mostrarNotificacion(msg,type||'info'); else console.log(msg); }
+  function readLS(k){ try{return localStorage.getItem(k)}catch(e){return null} }
+  function writeLS(k,v){ try{ if(v===null||typeof v==='undefined') localStorage.removeItem(k); else localStorage.setItem(k,String(v)); }catch(e){} }
+  function parseMaybe(v){ if(v==null) return null; try{return JSON.parse(v)}catch(e){return v} }
+  function panel(title,sub,body){const p=$('#tmToolPanel'); if(!p)return; p.className='tm-panel active'; p.innerHTML=`<div class="tm-panel-head"><div><h4>${title}</h4><p>${sub}</p></div><button class="tm-panel-close" data-act="closePanel">✕ Cerrar</button></div>${body}`; p.scrollIntoView({behavior:'smooth',block:'start'});}
+  function addCards(){
+    const wrap=$('#herramientas .tm-tools-wrap'); if(!wrap || $('#tmBackupCards')) return;
+    const div=document.createElement('div'); div.id='tmBackupCards';
+    div.innerHTML=`<div class="tm-tier"><h4>SEGURIDAD — BACKUP</h4><span class="tm-tier-badge gold">Protección</span></div>
+    <div class="tm-tools-grid"><div class="tm-tool-card enabled" data-tool="backupai"><span class="state">SAFE</span><div class="ico" style="background:rgba(46,204,113,.18)">🛡️</div><h5>Backup inteligente</h5><p>Respalda, compara y restaura productos, campañas, planes y configuración.</p></div></div>`;
+    const panelEl=$('#tmToolPanel'); if(panelEl) wrap.insertBefore(div,panelEl); else wrap.appendChild(div);
+  }
+  function collect(includeSecrets=false){
+    const keys=[...KEYS]; if(includeSecrets) keys.push(...SECRET_KEYS);
+    const data={meta:{app:'TiendaMax',version:'backup-v1',createdAt:new Date().toISOString(),includeSecrets,origin:location.origin},localStorage:{}};
+    keys.forEach(k=>{ const v=readLS(k); if(v!==null) data.localStorage[k]=parseMaybe(v); });
+    try{ if(Array.isArray(window.productos)) data.runtime={productos:window.productos}; }catch(e){}
+    return data;
+  }
+  function sizeOf(obj){ return new Blob([JSON.stringify(obj)]).size; }
+  function dl(name,text,type='application/json'){ const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([text],{type})); a.download=name; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),1000); }
+  function snapshots(){ try{return JSON.parse(localStorage.getItem(SNAP)||'[]')}catch(e){return[]} }
+  function saveSnapshots(v){ localStorage.setItem(SNAP,JSON.stringify(v.slice(0,20))); }
+  function openBackup(){
+    const b=collect(false); const snaps=snapshots();
+    panel('🛡️ Backup inteligente','Crea respaldos antes de usar IA masiva o cambios grandes. Por defecto NO incluye claves secretas.',`
+      <div class="tm-an-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:14px">
+        <div class="tm-an-kpi"><small>Tamaño estimado</small><b>${(sizeOf(b)/1024).toFixed(1)} KB</b><em>sin secretos</em></div>
+        <div class="tm-an-kpi"><small>Claves incluidas</small><b>${Object.keys(b.localStorage).length}</b><em>localStorage</em></div>
+        <div class="tm-an-kpi"><small>Snapshots</small><b>${snaps.length}</b><em>guardados</em></div>
+      </div>
+      <div class="tm-actions"><button class="tm-btn primary" data-ds13-act="download">Descargar backup</button><button class="tm-btn gold" data-ds13-act="snapshot">Crear snapshot local</button><button class="tm-btn" data-ds13-act="list">Snapshots</button></div>
+      <div class="tm-note">No se incluyen tokens/API keys por seguridad. Si necesitas migrar credenciales, usa “Backup con secretos” solo para uso personal.</div>
+      <div class="tm-actions"><button class="tm-btn" data-ds13-act="downloadSecrets">Backup con secretos</button></div>
+      <div class="tm-field"><label>Restaurar/comparar backup JSON</label><input type="file" id="tmBackupFile" accept="application/json,.json"></div>
+      <div class="tm-actions"><button class="tm-btn" data-ds13-act="compare">Comparar</button><button class="tm-btn" data-ds13-act="restore">Restaurar seleccionado</button></div>
+      <div id="tmToolOut" class="tm-code" style="margin-top:12px">Listo. Recomendado: descarga un backup antes de ejecutar IA masiva.</div>`);
+  }
+  function download(includeSecrets=false){ const b=collect(includeSecrets); dl(`tiendamax_backup_${new Date().toISOString().slice(0,10)}${includeSecrets?'_con_secretos':''}.json`,JSON.stringify(b,null,2)); notify('Backup descargado','success'); }
+  function createSnapshot(){ const arr=snapshots(); const b=collect(false); arr.unshift({id:Date.now(),ts:new Date().toISOString(),size:sizeOf(b),data:b}); saveSnapshots(arr); notify('✅ Snapshot local creado','success'); const out=$('#tmToolOut'); if(out) out.textContent='Snapshot creado: '+new Date().toLocaleString('es-CU'); }
+  function readFile(){
+    const f=$('#tmBackupFile')?.files?.[0];
+    return new Promise((res,rej)=>{ if(!f) return rej(new Error('Selecciona un archivo JSON')); const r=new FileReader(); r.onload=()=>{try{res(JSON.parse(r.result))}catch(e){rej(new Error('JSON inválido'))}}; r.onerror=()=>rej(new Error('No se pudo leer archivo')); r.readAsText(f); });
+  }
+  function diffBackup(b){
+    const cur=collect(true); const keys=new Set([...Object.keys(cur.localStorage||{}),...Object.keys(b.localStorage||{})]); const rows=[];
+    keys.forEach(k=>{ const a=JSON.stringify(cur.localStorage[k]); const c=JSON.stringify(b.localStorage[k]); if(a!==c) rows.push({key:k,current:a?JSON.parse(a).length||a.length:0,backup:c?JSON.parse(c).length||c.length:0,missingCurrent:!(k in cur.localStorage),missingBackup:!(k in b.localStorage)}); });
+    return rows;
+  }
+  async function compare(){ try{ const b=await readFile(); const rows=diffBackup(b); const out=$('#tmToolOut'); if(out) out.textContent=`Comparación\nBackup: ${b.meta?.createdAt||'sin fecha'}\nDiferencias: ${rows.length}\n\n`+rows.slice(0,80).map(r=>`• ${r.key}${r.missingCurrent?' (no existe actual)':''}${r.missingBackup?' (no existe en backup)':''}`).join('\n'); }catch(e){notify(e.message,'error');} }
+  async function restore(){
+    try{
+      const b=await readFile(); if(!b.localStorage) throw new Error('Backup sin localStorage');
+      if(!confirm('¿Restaurar este backup? Se creará snapshot local antes.')) return;
+      createSnapshot();
+      Object.entries(b.localStorage).forEach(([k,v])=>writeLS(k, typeof v==='string'?v:JSON.stringify(v)));
+      if(b.runtime&&Array.isArray(b.runtime.productos)){ writeLS('productos',JSON.stringify(b.runtime.productos)); window.productos=b.runtime.productos; }
+      notify('✅ Backup restaurado. Recarga el admin.','success'); const out=$('#tmToolOut'); if(out) out.textContent='Restaurado. Recarga la página para aplicar todo.';
+    }catch(e){notify(e.message,'error');}
+  }
+  function listSnapshots(){
+    const arr=snapshots();
+    panel('🛡️ Snapshots locales','Restauraciones rápidas guardadas en este navegador.',`<div class="tm-actions"><button class="tm-btn" data-ds13-act="open">Volver</button><button class="tm-btn" data-ds13-act="snapshot">Crear snapshot</button></div><div class="tm-list">${arr.map((s,i)=>`<div class="tm-row"><div class="tm-row-main"><b>${new Date(s.ts).toLocaleString('es-CU')}</b><small>${(Number(s.size||0)/1024).toFixed(1)} KB · ${Object.keys(s.data?.localStorage||{}).length} claves</small></div><button class="tm-btn tm-mini" data-ds13-act="downloadSnap" data-i="${i}">Descargar</button><button class="tm-btn tm-mini" data-ds13-act="restoreSnap" data-i="${i}">Restaurar</button><button class="tm-btn tm-mini" data-ds13-act="delSnap" data-i="${i}">Eliminar</button></div>`).join('')||'<div class="tm-note">Sin snapshots.</div>'}</div><div id="tmToolOut" class="tm-code" style="margin-top:12px">Selecciona snapshot.</div>`);
+  }
+  function restoreSnap(i){ const arr=snapshots(); const s=arr[Number(i)]; if(!s)return; if(!confirm('¿Restaurar snapshot local?'))return; Object.entries(s.data.localStorage||{}).forEach(([k,v])=>writeLS(k,typeof v==='string'?v:JSON.stringify(v))); notify('Snapshot restaurado. Recarga el admin.','success'); }
+  document.addEventListener('click',function(e){
+    const tool=e.target.closest('[data-tool="backupai"]'); if(tool){e.preventDefault();e.stopPropagation();e.stopImmediatePropagation&&e.stopImmediatePropagation();openBackup();return;}
+    const a=e.target.closest('[data-ds13-act]'); if(!a)return; e.preventDefault();e.stopPropagation();e.stopImmediatePropagation&&e.stopImmediatePropagation();
+    const act=a.dataset.ds13Act; if(act==='open')openBackup(); if(act==='download')download(false); if(act==='downloadSecrets')download(true); if(act==='snapshot')createSnapshot(); if(act==='compare')compare(); if(act==='restore')restore(); if(act==='list')listSnapshots();
+    if(act==='downloadSnap'){const s=snapshots()[Number(a.dataset.i)]; if(s) dl(`tiendamax_snapshot_${String(s.ts).slice(0,10)}.json`,JSON.stringify(s.data,null,2));}
+    if(act==='restoreSnap')restoreSnap(a.dataset.i); if(act==='delSnap'){const arr=snapshots(); arr.splice(Number(a.dataset.i),1); saveSnapshots(arr); listSnapshots();}
+  },true);
+  function boot(){addCards();}
+  document.addEventListener('DOMContentLoaded',()=>setTimeout(boot,2000));
+  document.addEventListener('click',e=>{if(e.target.closest('[data-arg="herramientas"],[data-tab="herramientas"]')) setTimeout(boot,300);});
+})();
+</script>
+
 <script id="tm-comision-ventas-v1">
 (function(){
   /* ── Toggle USD/MN en comisión ── */
