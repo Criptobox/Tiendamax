@@ -1,5 +1,7 @@
 // ═══════════════════════════════════════════════════════
-// TiendaMax — Service Worker v206 — OpenRouter free router
+// TiendaMax — Service Worker v208 — elTOQUE API oficial
+// v208: workflow tasa soporta API oficial elTOQUE por secret.
+// v207: añade Gemini/Groq como fallback gratuito para herramientas IA.
 // v206: usa openrouter/free como router automático de modelos gratuitos.
 // v205: OpenRouter prueba modelos gratis alternativos si uno no tiene endpoint.
 // v204: añade soporte OpenRouter sk-or- y modelos :free para IA admin.
@@ -69,7 +71,7 @@
 //      usan el mismo helper _mensajeOrdenWA con formato premium.
 // ═══════════════════════════════════════════════════════
 
-const CACHE_NAME = 'tiendamax-202606060655';
+const CACHE_NAME = 'tiendamax-202606060715';
 
 const STATIC_ASSETS = [
   '/',

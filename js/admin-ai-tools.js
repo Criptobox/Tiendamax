@@ -76,6 +76,58 @@ async function tmAIChat(prompt, opts = {}) {
     }
     throw new Error(lastErr || 'OpenRouter: no se pudo usar ningún modelo gratuito configurado.');
   }
+  if (provider === 'google' || key.startsWith('AIza')) {
+    const models = ['gemini-2.5-flash-lite','gemini-2.5-flash','gemini-2.0-flash','gemini-1.5-flash-latest','gemini-1.5-flash'];
+    let lastErr = '';
+    for (const model of models) {
+      const resp = await fetch('https://generativelanguage.googleapis.com/v1beta/models/' + model + ':generateContent?key=' + encodeURIComponent(key), {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({
+          generationConfig: { temperature: opts.temperature ?? 0.65, maxOutputTokens: max_tokens },
+          contents: [{ role: 'user', parts: [
+            { text: (opts.system ? opts.system + '\n\n' : '') + prompt }
+          ] }]
+        })
+      });
+      if (resp.ok) {
+        const data = await resp.json();
+        try { localStorage.setItem('tmGoogleLastModel', model); } catch(e) {}
+        return (data.candidates?.[0]?.content?.parts || []).map(p => p.text || '').join('').trim();
+      }
+      let t=''; try{t=await resp.text()}catch(e){}
+      lastErr = 'Gemini HTTP ' + resp.status + (t ? ': ' + t.slice(0,140) : '') + ' [modelo: ' + model + ']';
+      if (!(resp.status === 404 || resp.status === 400)) break;
+    }
+    throw new Error(lastErr || 'Gemini: no se pudo usar ningún modelo gratuito.');
+  }
+  if (provider === 'groq' || key.startsWith('gsk_')) {
+    const models = ['llama-3.1-8b-instant','llama-3.3-70b-versatile','gemma2-9b-it'];
+    let lastErr = '';
+    for (const model of models) {
+      const resp = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+        method: 'POST',
+        headers: {'Content-Type':'application/json','Authorization':'Bearer '+key},
+        body: JSON.stringify({
+          model, temperature: opts.temperature ?? 0.65, max_tokens,
+          messages: [
+            { role:'system', content: opts.system || 'Eres asistente ecommerce de TiendaMax en Cuba. Responde en español, claro, útil y sin inventar datos.' },
+            { role:'user', content: prompt }
+          ]
+        })
+      });
+      if (resp.ok) {
+        const data = await resp.json();
+        try { localStorage.setItem('tmGroqLastModel', model); } catch(e) {}
+        return (data.choices?.[0]?.message?.content || '').trim();
+      }
+      let t=''; try{t=await resp.text()}catch(e){}
+      lastErr = 'Groq HTTP ' + resp.status + (t ? ': ' + t.slice(0,140) : '') + ' [modelo: ' + model + ']';
+      if (!(resp.status === 404 || resp.status === 400)) break;
+    }
+    throw new Error(lastErr || 'Groq: no se pudo usar ningún modelo.');
+  }
+
   if (provider === 'deepseek' || key.startsWith('sk-')) {
     const resp = await fetch('https://api.deepseek.com/v1/chat/completions', {
       method:'POST',
@@ -94,7 +146,7 @@ async function tmAIChat(prompt, opts = {}) {
     const data=await resp.json();
     return (data.choices?.[0]?.message?.content||'').trim();
   }
-  throw new Error('Proveedor IA no soportado todavía para esta herramienta. Usa OpenRouter (sk-or-) o DeepSeek (sk-).');
+  throw new Error('Proveedor IA no soportado. Usa OpenRouter (sk-or-), Gemini (AIza), Groq (gsk_) o DeepSeek (sk-).');
 }
 window.tmAIChat = tmAIChat;
 window.tmOpenRouterModel = tmOpenRouterModel;

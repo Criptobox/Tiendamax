@@ -1,20 +1,22 @@
 #!/usr/bin/env python3
 """
-Actualiza config.json usando la tasa informal USD→CUP publicada por elTOQUE.
+Actualiza config.json usando la tasa informal USD→CUP de elTOQUE.
 
-Regla importante del proyecto:
+Soporta dos modos:
+  1) API oficial de elTOQUE si configuras ELTOQUE_API_KEY en GitHub Secrets.
+     Opcional: ELTOQUE_API_URL si el endpoint que te enviaron es distinto.
+  2) Fallback por scraping del sitio público si no hay API key o falla la API.
+
+Regla del proyecto:
 - config.json guarda la TASA BASE de elTOQUE.
 - el frontend suma +10 MN al mostrarla al cliente.
-
-Cambios v2:
-- Validación de cordura: solo acepta tasas en un rango razonable.
-- Si la tasa NO cambió, no se reescribe la metadata: así no se dispara
-  el workflow de push notifications todos los días.
 """
 
 from __future__ import annotations
 
 import json
+import os
+import re
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -23,23 +25,160 @@ from typing import Any
 import requests
 from bs4 import BeautifulSoup
 
-ROOT        = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[1]
 CONFIG_PATH = ROOT / "config.json"
-URL         = "https://eltoque.com/tasas-de-cambio-cuba"
-USER_AGENT  = (
+WEB_URL = "https://eltoque.com/tasas-de-cambio-cuba"
+
+# Si elTOQUE te dio un endpoint distinto, ponlo en GitHub Secrets/Variables como ELTOQUE_API_URL.
+# El script es flexible: prueba este valor y también varias formas de autenticación.
+DEFAULT_API_URL = "https://tasas.eltoque.com/v1/trmi"
+
+USER_AGENT = (
     "Mozilla/5.0 (X11; Linux x86_64) "
     "AppleWebKit/537.36 (KHTML, like Gecko) "
     "Chrome/136.0.0.0 Safari/537.36"
 )
 
-# Rango aceptable para la tasa USD→CUP (informal).
-# Si elTOQUE devuelve algo fuera de aquí, se considera roto y abortamos.
 MIN_TASA = 100.0
 MAX_TASA = 2000.0
 
 
 class RateUpdateError(RuntimeError):
     pass
+
+
+def _reasonable(rate: float) -> bool:
+    return MIN_TASA < rate < MAX_TASA
+
+
+def _as_float(v: Any) -> float | None:
+    if v is None:
+        return None
+    if isinstance(v, (int, float)):
+        return float(v)
+    if isinstance(v, str):
+        m = re.search(r"\d+(?:[.,]\d+)?", v.replace(" ", ""))
+        if m:
+            try:
+                return float(m.group(0).replace(",", "."))
+            except ValueError:
+                return None
+    return None
+
+
+def _extract_updated_at(data: Any) -> str:
+    """Busca una fecha plausible en respuestas JSON con estructuras variadas."""
+    keys = {"date", "updated_at", "updatedAt", "created_at", "createdAt", "time", "timestamp"}
+    if isinstance(data, dict):
+        for k, v in data.items():
+            if k in keys and isinstance(v, (str, int, float)):
+                return str(v)
+        for v in data.values():
+            found = _extract_updated_at(v)
+            if found:
+                return found
+    elif isinstance(data, list):
+        for v in data:
+            found = _extract_updated_at(v)
+            if found:
+                return found
+    return ""
+
+
+def _extract_usd_rate(data: Any) -> float | None:
+    """Extrae USD de respuestas posibles de la API oficial o proxies.
+
+    Soporta estructuras como:
+      {"tasas":{"USD":442}}
+      {"rates":{"USD":442}}
+      {"USD":{"median":442}}
+      [{"currency":"USD","rate":442}]
+      {"trmiExchange":{"data":{"api":{"statistics":{"USD":{"median":442}}}}}}
+    """
+    preferred = ("median", "rate", "value", "tasa", "sell", "sell_rate", "exchange", "ema_value", "price")
+
+    if isinstance(data, dict):
+        # Caso directo: USD: 442 o USD: {median: 442}
+        for key in ("USD", "usd", "DOLLAR", "dollar"):
+            if key in data:
+                node = data[key]
+                val = _as_float(node)
+                if val and _reasonable(val):
+                    return val
+                if isinstance(node, dict):
+                    for pk in preferred:
+                        val = _as_float(node.get(pk))
+                        if val and _reasonable(val):
+                            return val
+
+        # Caso: {tasas/rates/data: {USD: ...}}
+        for container in ("tasas", "rates", "data", "statistics", "api", "trmiExchange", "result"):
+            if container in data:
+                val = _extract_usd_rate(data[container])
+                if val and _reasonable(val):
+                    return val
+
+        # Caso fila: {currency: USD, rate: 442}
+        currency = str(data.get("currency") or data.get("code") or data.get("moneda") or data.get("name") or "").upper()
+        if currency in {"USD", "DOLAR", "DÓLAR"}:
+            for pk in preferred:
+                val = _as_float(data.get(pk))
+                if val and _reasonable(val):
+                    return val
+
+        # Búsqueda recursiva final
+        for v in data.values():
+            val = _extract_usd_rate(v)
+            if val and _reasonable(val):
+                return val
+
+    elif isinstance(data, list):
+        for item in data:
+            val = _extract_usd_rate(item)
+            if val and _reasonable(val):
+                return val
+    return None
+
+
+def _candidate_api_requests(api_url: str, api_key: str) -> list[tuple[str, dict[str, str], dict[str, str] | None]]:
+    base_headers = {"Accept": "application/json", "User-Agent": USER_AGENT}
+    return [
+        (api_url, {**base_headers, "Authorization": f"Bearer {api_key}"}, None),
+        (api_url, {**base_headers, "X-API-Key": api_key}, None),
+        (api_url, {**base_headers, "x-api-key": api_key}, None),
+        (api_url, {**base_headers, "apikey": api_key}, None),
+        (api_url, base_headers, {"api_key": api_key}),
+        (api_url, base_headers, {"token": api_key}),
+        (api_url, base_headers, {"key": api_key}),
+    ]
+
+
+def fetch_eltoque_rate_api() -> tuple[float, str]:
+    api_key = os.getenv("ELTOQUE_API_KEY", "").strip()
+    if not api_key:
+        raise RateUpdateError("ELTOQUE_API_KEY no configurada")
+
+    api_url = os.getenv("ELTOQUE_API_URL", DEFAULT_API_URL).strip() or DEFAULT_API_URL
+    errors: list[str] = []
+
+    for url, headers, params in _candidate_api_requests(api_url, api_key):
+        try:
+            response = requests.get(url, headers=headers, params=params, timeout=30)
+            if response.status_code in (401, 403):
+                errors.append(f"{response.status_code} con headers {list(headers.keys())} params {list((params or {}).keys())}")
+                continue
+            response.raise_for_status()
+            data = response.json()
+            rate = _extract_usd_rate(data)
+            if rate and _reasonable(rate):
+                updated_at = _extract_updated_at(data) or datetime.now(timezone.utc).isoformat()
+                print(f"Fuente de tasa: API elTOQUE ({url}) = {rate}")
+                return round(rate, 2), updated_at
+            errors.append("JSON sin USD reconocible")
+        except Exception as exc:  # noqa: BLE001
+            errors.append(str(exc))
+
+    raise RateUpdateError("No se pudo leer USD desde API elTOQUE: " + " | ".join(errors[:4]))
 
 
 def load_next_data(html: str) -> dict[str, Any]:
@@ -53,8 +192,8 @@ def load_next_data(html: str) -> dict[str, Any]:
         raise RateUpdateError("No se pudo parsear __NEXT_DATA__") from exc
 
 
-def fetch_eltoque_rate() -> tuple[float, str]:
-    response = requests.get(URL, headers={"User-Agent": USER_AGENT}, timeout=30)
+def fetch_eltoque_rate_web() -> tuple[float, str]:
+    response = requests.get(WEB_URL, headers={"User-Agent": USER_AGENT}, timeout=30)
     response.raise_for_status()
 
     data = load_next_data(response.text)
@@ -64,7 +203,6 @@ def fetch_eltoque_rate() -> tuple[float, str]:
     if not usd:
         raise RateUpdateError("No se encontró la estadística USD en elTOQUE")
 
-    # Preferimos la mediana porque coincide mejor con la referencia mostrada en el sitio.
     raw_rate = usd.get("median")
     source = "median"
     if raw_rate is None:
@@ -73,21 +211,25 @@ def fetch_eltoque_rate() -> tuple[float, str]:
     if raw_rate is None:
         raise RateUpdateError("USD no trae median ni ema_value")
 
-    print(f"Fuente de tasa: {source} = {raw_rate}")
+    print(f"Fuente de tasa: scraping web {source} = {raw_rate}")
 
-    try:
-        rate = float(raw_rate)
-    except (TypeError, ValueError) as exc:
-        raise RateUpdateError(f"Valor USD inválido en elTOQUE: {raw_rate!r}") from exc
-
-    if not (MIN_TASA < rate < MAX_TASA):
-        raise RateUpdateError(
-            f"Tasa fuera de rango razonable ({MIN_TASA}–{MAX_TASA}): {rate}. "
-            "Abortando para no publicar un valor erróneo."
-        )
+    rate = _as_float(raw_rate)
+    if rate is None or not _reasonable(rate):
+        raise RateUpdateError(f"Tasa fuera de rango razonable ({MIN_TASA}–{MAX_TASA}): {raw_rate}")
 
     updated_at = trmi.get("date") or datetime.now(timezone.utc).isoformat()
-    return rate, updated_at
+    return round(rate, 2), updated_at
+
+
+def fetch_eltoque_rate() -> tuple[float, str, str]:
+    try:
+        rate, updated_at = fetch_eltoque_rate_api()
+        return rate, updated_at, "elTOQUE API"
+    except Exception as api_exc:  # noqa: BLE001
+        print(f"⚠️ API elTOQUE no disponible o no reconocida: {api_exc}", file=sys.stderr)
+        print("↪ Usando fallback web público de elTOQUE...", file=sys.stderr)
+        rate, updated_at = fetch_eltoque_rate_web()
+        return rate, updated_at, "elTOQUE Web"
 
 
 def load_config() -> dict[str, Any]:
@@ -109,26 +251,24 @@ def save_config(config: dict[str, Any]) -> None:
 
 def main() -> int:
     try:
-        rate, updated_at = fetch_eltoque_rate()
-        config   = load_config()
+        rate, updated_at, source_name = fetch_eltoque_rate()
+        config = load_config()
         previous = config.get("tasaMN")
 
         nueva = round(rate, 2)
         anterior = float(previous) if previous is not None else None
 
-        # Si la tasa es exactamente la misma, NO reescribimos el archivo.
-        # Así no se dispara el workflow de notificaciones por nada.
         if anterior is not None and abs(anterior - nueva) < 0.01:
             print(f"Tasa sin cambios ({nueva}). No se modifica config.json.")
             return 0
 
-        config["tasaMN"]           = nueva
-        config["tasaFuente"]       = "elTOQUE"
-        config["tasaActualizada"]  = updated_at
-        config["actualizado"]      = datetime.now(timezone.utc).isoformat()
+        config["tasaMN"] = nueva
+        config["tasaFuente"] = source_name
+        config["tasaActualizada"] = updated_at
+        config["actualizado"] = datetime.now(timezone.utc).isoformat()
         save_config(config)
 
-        print(f"Tasa base obtenida de elTOQUE: {nueva}")
+        print(f"Tasa base obtenida de {source_name}: {nueva}")
         print(f"Frontend mostrará: {nueva + 10} MN (margen +10)")
         if anterior is None:
             print(f"Primera escritura de tasaMN: {nueva}")
