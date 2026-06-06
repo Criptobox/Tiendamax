@@ -151,6 +151,32 @@ async function tmAIChat(prompt, opts = {}) {
 window.tmAIChat = tmAIChat;
 window.tmOpenRouterModel = tmOpenRouterModel;
 
+
+function tmExtractJsonObject(text) {
+  text = String(text || '').trim();
+  text = text.replace(/^```(?:json)?\s*/i, '').replace(/```$/,'').trim();
+  // Busca objeto balanceado para tolerar texto antes/después del JSON.
+  const start = text.indexOf('{');
+  if (start < 0) return null;
+  let depth = 0, inStr = false, esc = false;
+  for (let i = start; i < text.length; i++) {
+    const ch = text[i];
+    if (inStr) {
+      if (esc) esc = false;
+      else if (ch === '\\') esc = true;
+      else if (ch === '"') inStr = false;
+    } else {
+      if (ch === '"') inStr = true;
+      else if (ch === '{') depth++;
+      else if (ch === '}') {
+        depth--;
+        if (depth === 0) return text.slice(start, i + 1);
+      }
+    }
+  }
+  return null;
+}
+
 // ── tm-deepseek-tools-v1 ─────────────────────────────────────────
 (function(){
   const $=(s,r=document)=>r.querySelector(s);
@@ -277,11 +303,11 @@ window.tmOpenRouterModel = tmOpenRouterModel;
     const out=$('#tmToolOut'); if(!out) return;
     const p=bySelect('tmPushAiProd'); const tipo=$('#tmPushAiTone')?.value||'Producto nuevo';
     out.textContent='⏳ Generando push con DeepSeek...';
-    const prompt=`Crea una notificación push para TiendaMax.\n\nProducto:\n${prodInfo(p)}\nURL sugerida: ${productUrl(p)}\nTipo: ${tipo}\n\nResponde SOLO con JSON válido:\n{"titulo":"máximo 38 caracteres","mensaje":"máximo 95 caracteres","url":"${productUrl(p)}"}\n\nNo uses comillas fuera del JSON.`;
+    const prompt=`Crea una notificación push para TiendaMax.\n\nProducto:\n${prodInfo(p)}\nURL sugerida: ${productUrl(p)}\nTipo: ${tipo}\n\nResponde SOLO con JSON válido, sin markdown ni explicación:\n{"titulo":"máximo 38 caracteres","mensaje":"máximo 95 caracteres","url":"${productUrl(p)}"}\n\nNo uses comillas fuera del JSON.`;
     try{
       const text=await deepseek(prompt,350);
-      const m=text.match(/\{[\s\S]*\}/); if(!m) throw new Error('La IA no devolvió JSON');
-      const j=JSON.parse(m[0]);
+      const m=tmExtractJsonObject(text); if(!m) throw new Error('La IA no devolvió JSON limpio');
+      const j=JSON.parse(m);
       out.dataset.pushTitle=j.titulo||''; out.dataset.pushBody=j.mensaje||''; out.dataset.pushUrl=j.url||productUrl(p);
       out.textContent=`Título: ${j.titulo}\nMensaje: ${j.mensaje}\nURL: ${j.url||productUrl(p)}`;
       notify('✅ Push generado','success');
@@ -454,7 +480,7 @@ window.tmOpenRouterModel = tmOpenRouterModel;
   const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
   function notify(msg,type){ if(typeof mostrarNotificacion==='function') mostrarNotificacion(msg,type||'info'); else console.log(msg); }
   function products(){ try{ if(Array.isArray(window.productos)) return window.productos; }catch(e){} try{return JSON.parse(localStorage.getItem('productos')||'[]')}catch(e){return[]} }
-  function saveProducts(ps){ localStorage.setItem('productos',JSON.stringify(ps)); if(Array.isArray(window.productos)) window.productos=ps; if(typeof guardarProductos==='function') guardarProductos(); }
+  function saveProducts(ps){ try{ if(typeof productos!=='undefined'&&Array.isArray(productos)) productos=ps; }catch(e){} if(Array.isArray(window.productos)) window.productos=ps; try{ if(typeof guardarProductos==='function') guardarProductos(); }catch(e){} localStorage.setItem('productos',JSON.stringify(ps)); }
   function productOptions(){return products().map(p=>`<option value="${esc(p.id)}">${esc(p.nombre||p.name||'Producto')} — ${esc(p.categoria||'General')}</option>`).join('') || '<option value="">Sin productos</option>';}
   function bySelect(id){ const val=$('#'+id)?.value; return products().find(p=>String(p.id)===String(val)) || products()[0] || {}; }
   function slugify(s){ return String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,70); }
@@ -484,10 +510,10 @@ window.tmOpenRouterModel = tmOpenRouterModel;
   }
   async function genSEO(){
     const out=$('#tmToolOut'); if(!out) return; const p=bySelect('tmSeoProd'); out.textContent='⏳ Generando SEO con DeepSeek...';
-    const prompt=`Genera SEO para este producto.\n\n${prodInfo(p)}\n\nResponde SOLO JSON válido con esta forma exacta:\n{"seoTitle":"máximo 60 caracteres","seoDescription":"máximo 155 caracteres","seoKeywords":["5 a 8 keywords"],"slug":"url-amigable-sin-acentos","shareText":"texto corto para compartir por WhatsApp/Facebook"}\n\nNo inventes especificaciones.`;
+    const prompt=`Genera SEO para este producto.\n\n${prodInfo(p)}\n\nResponde SOLO JSON válido con esta forma exacta, sin markdown ni explicación:\n{"seoTitle":"máximo 60 caracteres","seoDescription":"máximo 155 caracteres","seoKeywords":["5 a 8 keywords"],"slug":"url-amigable-sin-acentos","shareText":"texto corto para compartir por WhatsApp/Facebook"}\n\nNo inventes especificaciones.`;
     try{
-      const text=await deepseek(prompt); const m=text.match(/\{[\s\S]*\}/); if(!m) throw new Error('La IA no devolvió JSON');
-      const j=JSON.parse(m[0]); j.slug=slugify(j.slug||p.nombre); if(!Array.isArray(j.seoKeywords)) j.seoKeywords=String(j.seoKeywords||'').split(',').map(x=>x.trim()).filter(Boolean);
+      const text=await deepseek(prompt); const m=tmExtractJsonObject(text); if(!m) throw new Error('La IA no devolvió JSON limpio');
+      const j=JSON.parse(m); j.slug=slugify(j.slug||p.nombre); if(!Array.isArray(j.seoKeywords)) j.seoKeywords=String(j.seoKeywords||'').split(',').map(x=>x.trim()).filter(Boolean);
       out.dataset.seo=JSON.stringify(j); out.textContent=JSON.stringify(j,null,2); notify('✅ SEO generado','success');
     }catch(e){ const j=localSEO(p); out.dataset.seo=JSON.stringify(j); out.textContent=JSON.stringify(j,null,2)+'\n\n⚠️ '+e.message; notify('SEO local generado','warning'); }
   }
@@ -515,7 +541,7 @@ window.tmOpenRouterModel = tmOpenRouterModel;
   const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
   function notify(msg,type){ if(typeof mostrarNotificacion==='function') mostrarNotificacion(msg,type||'info'); else console.log(msg); }
   function products(){ try{ if(Array.isArray(window.productos)) return window.productos; }catch(e){} try{return JSON.parse(localStorage.getItem('productos')||'[]')}catch(e){return[]} }
-  function saveProducts(ps){ localStorage.setItem('productos',JSON.stringify(ps)); if(Array.isArray(window.productos)) window.productos=ps; if(typeof guardarProductos==='function') guardarProductos(); }
+  function saveProducts(ps){ try{ if(typeof productos!=='undefined'&&Array.isArray(productos)) productos=ps; }catch(e){} if(Array.isArray(window.productos)) window.productos=ps; try{ if(typeof guardarProductos==='function') guardarProductos(); }catch(e){} localStorage.setItem('productos',JSON.stringify(ps)); }
   function productOptions(){return products().map(p=>`<option value="${esc(p.id)}">${esc(p.nombre||p.name||'Producto')} — ${esc(p.categoria||'General')} — $${Number(p.precioActual||0).toFixed(2)}</option>`).join('') || '<option value="">Sin productos</option>';}
   function bySelect(id){ const val=$('#'+id)?.value; return products().find(p=>String(p.id)===String(val)) || products()[0] || {}; }
   function info(p){return `ID: ${p.id}\nNombre: ${p.nombre||''}\nDescripción: ${p.descripcion||''}\nCategoría: ${p.categoria||'General'}\nSubcategoría: ${p.subcategoria||''}\nPrecio: $${Number(p.precioActual||0).toFixed(2)} USD\nStock: ${Number(p.stock||0)}`;}
@@ -546,10 +572,10 @@ window.tmOpenRouterModel = tmOpenRouterModel;
   async function genRecs(){
     const out=$('#tmToolOut'); if(!out)return; const target=bySelect('tmRecProd'); out.textContent='⏳ Generando recomendaciones con DeepSeek...';
     const candidates=products().filter(p=>p.id!==target.id&&Number(p.stock||0)>0).slice(0,60).map(p=>({id:p.id,nombre:p.nombre,categoria:p.categoria,precio:p.precioActual,stock:p.stock,descripcion:String(p.descripcion||'').slice(0,140)}));
-    const prompt=`Producto principal:\n${info(target)}\n\nCandidatos disponibles en JSON:\n${JSON.stringify(candidates,null,2)}\n\nElige hasta 4 productos complementarios reales. Responde SOLO JSON válido:\n{"recomendados":[ids reales],"bundleText":"frase corta para sección relacionados","upsellText":"frase corta visible en detalle","whatsappUpsell":"mensaje breve para ofrecer productos relacionados por WhatsApp"}\n\nReglas: usa solo IDs de candidatos, prioriza utilidad complementaria y stock disponible. No recomiendes el mismo producto.`;
+    const prompt=`Producto principal:\n${info(target)}\n\nCandidatos disponibles en JSON:\n${JSON.stringify(candidates,null,2)}\n\nElige hasta 4 productos complementarios reales. Responde SOLO JSON válido, sin markdown, sin explicación:\n{"recomendados":[ids reales],"bundleText":"frase corta para sección relacionados","upsellText":"frase corta visible en detalle","whatsappUpsell":"mensaje breve para ofrecer productos relacionados por WhatsApp"}\n\nReglas: usa solo IDs de candidatos, prioriza utilidad complementaria y stock disponible. No recomiendes el mismo producto.`;
     try{
-      const text=await deepseek(prompt); const m=text.match(/\{[\s\S]*\}/); if(!m) throw new Error('La IA no devolvió JSON');
-      const j=JSON.parse(m[0]);
+      const text=await deepseek(prompt); const m=tmExtractJsonObject(text); if(!m) throw new Error('La IA no devolvió JSON limpio');
+      const j=JSON.parse(m);
       const valid=new Set(candidates.map(c=>String(c.id)));
       j.recomendados=(j.recomendados||[]).map(String).filter(id=>valid.has(id)).slice(0,4);
       out.dataset.recs=JSON.stringify(j); out.textContent=JSON.stringify(j,null,2); notify('✅ Recomendaciones generadas','success');
@@ -580,7 +606,7 @@ window.tmOpenRouterModel = tmOpenRouterModel;
   const sleep=ms=>new Promise(r=>setTimeout(r,ms));
   function notify(msg,type){ if(typeof mostrarNotificacion==='function') mostrarNotificacion(msg,type||'info'); else console.log(msg); }
   function products(){ try{ if(Array.isArray(window.productos)) return window.productos; }catch(e){} try{return JSON.parse(localStorage.getItem('productos')||'[]')}catch(e){return[]} }
-  function saveProducts(ps){ localStorage.setItem('productos',JSON.stringify(ps)); if(Array.isArray(window.productos)) window.productos=ps; if(typeof guardarProductos==='function') guardarProductos(); }
+  function saveProducts(ps){ try{ if(typeof productos!=='undefined'&&Array.isArray(productos)) productos=ps; }catch(e){} if(Array.isArray(window.productos)) window.productos=ps; try{ if(typeof guardarProductos==='function') guardarProductos(); }catch(e){} localStorage.setItem('productos',JSON.stringify(ps)); }
   function cats(){ return [...new Set(products().map(p=>p.categoria||'General').filter(Boolean))].sort(); }
   function catOptions(){ return '<option value="">Todas</option>'+cats().map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join(''); }
   function slugify(s){ return String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,70); }
@@ -610,9 +636,9 @@ window.tmOpenRouterModel = tmOpenRouterModel;
       <div class="tm-note">Consejo: ‘Auto 5 en 5’ procesa todas las tandas pendientes y al final solo tienes que pulsar “Actualizar tienda”.</div>
       <div id="tmToolOut" class="tm-code" style="margin-top:12px">Elige tarea y pulsa Vista previa.</div>`);
   }
-  function selectTargets(){
+  function selectTargets(excludeSet=new Set()){
     const ps=products(); const task=$('#tmBulkTask')?.value||'seo_missing'; const cat=$('#tmBulkCat')?.value||''; const limit=Math.max(1,Math.min(20,Number($('#tmBulkLimit')?.value)||5));
-    let arr=ps.filter(p=>!cat || (p.categoria||'General')===cat);
+    let arr=ps.filter(p=>(!cat || (p.categoria||'General')===cat) && !excludeSet.has(String(p.id)));
     if(task==='seo_missing') arr=arr.filter(p=>!p.seoTitle && !p.seoDescription);
     if(task==='recs_missing') arr=arr.filter(p=>!Array.isArray(p.recomendados)||!p.recomendados.length);
     if(task==='audit_report') arr=arr.filter(p=>!(p.descripcion||'').trim() || (p.descripcion||'').length<80 || !p.imagen || !Number(p.precioActual||0) || Number(p.stock||0)<=0);
@@ -624,16 +650,16 @@ window.tmOpenRouterModel = tmOpenRouterModel;
   }
   async function genSEO(p,useAI){
     if(!useAI) return localSEO(p);
-    const prompt=`Genera SEO para este producto.\n\n${prodInfo(p)}\n\nResponde SOLO JSON válido:\n{"seoTitle":"máximo 60 caracteres","seoDescription":"máximo 155 caracteres","seoKeywords":["5 a 8 keywords"],"slug":"url-amigable-sin-acentos","shareText":"texto corto para compartir"}`;
-    const text=await deepseek(prompt,550); const m=text.match(/\{[\s\S]*\}/); if(!m) throw new Error('JSON SEO no encontrado');
-    const j=JSON.parse(m[0]); j.slug=slugify(j.slug||p.nombre); if(!Array.isArray(j.seoKeywords)) j.seoKeywords=String(j.seoKeywords||'').split(',').map(x=>x.trim()).filter(Boolean); return j;
+    const prompt=`Genera SEO para este producto.\n\n${prodInfo(p)}\n\nResponde SOLO JSON válido, sin markdown, sin explicación:\n{"seoTitle":"máximo 60 caracteres","seoDescription":"máximo 155 caracteres","seoKeywords":["5 a 8 keywords"],"slug":"url-amigable-sin-acentos","shareText":"texto corto para compartir"}`;
+    const text=await deepseek(prompt,550); const m=tmExtractJsonObject(text); if(!m) throw new Error('JSON SEO no encontrado');
+    const j=JSON.parse(m); j.slug=slugify(j.slug||p.nombre); if(!Array.isArray(j.seoKeywords)) j.seoKeywords=String(j.seoKeywords||'').split(',').map(x=>x.trim()).filter(Boolean); return j;
   }
   async function genRecs(p,ps,useAI){
     if(!useAI) return localRecs(p,ps);
     const candidates=ps.filter(x=>x.id!==p.id&&Number(x.stock||0)>0).slice(0,50).map(x=>({id:x.id,nombre:x.nombre,categoria:x.categoria,precio:x.precioActual,stock:x.stock,descripcion:String(x.descripcion||'').slice(0,100)}));
     const prompt=`Producto principal:\n${prodInfo(p)}\n\nCandidatos:\n${JSON.stringify(candidates)}\n\nElige hasta 4 complementarios. Responde SOLO JSON:\n{"recomendados":[ids reales],"bundleText":"frase corta","upsellText":"frase corta","whatsappUpsell":"mensaje breve"}`;
-    const text=await deepseek(prompt,700); const m=text.match(/\{[\s\S]*\}/); if(!m) throw new Error('JSON recomendaciones no encontrado');
-    const j=JSON.parse(m[0]); const valid=new Set(candidates.map(c=>String(c.id))); j.recomendados=(j.recomendados||[]).map(String).filter(id=>valid.has(id)).slice(0,4).map(id=>isNaN(Number(id))?id:Number(id)); return j;
+    const text=await deepseek(prompt,700); const m=tmExtractJsonObject(text); if(!m) throw new Error('JSON recomendaciones no encontrado');
+    const j=JSON.parse(m); const valid=new Set(candidates.map(c=>String(c.id))); j.recomendados=(j.recomendados||[]).map(String).filter(id=>valid.has(id)).slice(0,4).map(id=>isNaN(Number(id))?id:Number(id)); return j;
   }
   function auditLine(p){const issues=[]; if(!(p.nombre||'').trim()||(p.nombre||'').length<8)issues.push('nombre flojo'); if(!(p.descripcion||'').trim()||(p.descripcion||'').length<80)issues.push('descripción corta'); if(!p.imagen)issues.push('sin imagen'); if(!Number(p.precioActual||0))issues.push('sin precio'); if(Number(p.stock||0)<=0)issues.push('sin stock'); if(!p.garantia)issues.push('sin garantía indicada'); return `${p.nombre}: ${issues.length?issues.join(', '):'OK'}`;}
   async function processTargets(targets, ps, task, useAI, out, log, offset=0){
@@ -651,7 +677,7 @@ window.tmOpenRouterModel = tmOpenRouterModel;
         try{ if(typeof marcarProductoModificado==='function') marcarProductoModificado(ps[idx].id); }catch(e){}
         if(useAI) await sleep(450);
       }catch(e){
-        log.push(`⚠️ ${p.nombre}: ${e.message} — usando local`);
+        log.push(`🟡 ${p.nombre}: la IA no entregó JSON limpio — usando local`);
         if(task==='seo_missing'||task==='seo_all'){const seo=localSEO(ps[idx]); ps[idx]={...ps[idx],...seo};}
         if(task==='recs_missing'){const r=localRecs(ps[idx],ps); ps[idx]={...ps[idx],...r};}
       }
@@ -676,13 +702,15 @@ window.tmOpenRouterModel = tmOpenRouterModel;
     }
     if(!confirm('¿Procesar automáticamente todas las tandas pendientes? Se guardará localmente y al final debes pulsar “Actualizar tienda”.')) return;
     let total=0, batch=0, log=[];
+    const processedIds = new Set();
     while(true){
-      const targets=selectTargets();
+      const targets=selectTargets(processedIds);
       if(!targets.length) break;
       batch++;
       let ps=products();
       out.textContent=`⏳ Tanda ${batch} — ${targets.length} producto(s). Procesados hasta ahora: ${total}\n\n`+log.slice(-18).join('\n');
       ps=await processTargets(targets,ps,task,useAI,out,log,total);
+      targets.forEach(p=>processedIds.add(String(p.id)));
       total += targets.length;
       saveProducts(ps);
       out.textContent=`✅ Tanda ${batch} guardada localmente. Total procesados: ${total}\n\n`+log.slice(-24).join('\n');
@@ -867,7 +895,7 @@ window.tmOpenRouterModel = tmOpenRouterModel;
   const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
   function notify(msg,type){ if(typeof mostrarNotificacion==='function') mostrarNotificacion(msg,type||'info'); else console.log(msg); }
   function products(){ try{ if(Array.isArray(window.productos)) return window.productos; }catch(e){} try{return JSON.parse(localStorage.getItem('productos')||'[]')}catch(e){return[]} }
-  function saveProducts(ps){ localStorage.setItem('productos',JSON.stringify(ps)); if(Array.isArray(window.productos)) window.productos=ps; if(typeof guardarProductos==='function') guardarProductos(); }
+  function saveProducts(ps){ try{ if(typeof productos!=='undefined'&&Array.isArray(productos)) productos=ps; }catch(e){} if(Array.isArray(window.productos)) window.productos=ps; try{ if(typeof guardarProductos==='function') guardarProductos(); }catch(e){} localStorage.setItem('productos',JSON.stringify(ps)); }
   function list(){ try{return JSON.parse(localStorage.getItem(KEY)||'[]')}catch(e){return[]} }
   function setList(v){ localStorage.setItem(KEY,JSON.stringify(v.slice(0,100))); }
   function productOptions(){return '<option value="">Sin producto específico</option>'+products().map(p=>`<option value="${esc(p.id)}">${esc(p.nombre||'Producto')} — ${esc(p.categoria||'General')}</option>`).join('');}
