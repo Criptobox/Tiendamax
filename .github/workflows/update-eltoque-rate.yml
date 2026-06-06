@@ -28,6 +28,9 @@ jobs:
           pip install requests beautifulsoup4
 
       - name: Actualizar tasa base desde elTOQUE
+        env:
+          ELTOQUE_API_KEY: ${{ secrets.ELTOQUE_API_KEY }}
+          ELTOQUE_API_URL: ${{ secrets.ELTOQUE_API_URL }}
         run: python scripts/update_rate_from_eltoque.py
 
       - name: Commit y push si hubo cambios
