@@ -1,5 +1,6 @@
 // ═══════════════════════════════════════════════════════
-// TiendaMax — Service Worker v190 — DeepSeek IA masiva
+// TiendaMax — Service Worker v191 — DeepSeek chat admin
+// v191: añade chat IA del admin con contexto de tienda.
 // v190: añade herramienta IA masiva para SEO/recs/auditoría por lotes.
 // v189: añade recomendador IA y relaciones en detalle/carrito.
 // v188: añade SEO automático DeepSeek y refresca seo-dinamico.
@@ -53,7 +54,7 @@
 //      usan el mismo helper _mensajeOrdenWA con formato premium.
 // ═══════════════════════════════════════════════════════
 
-const CACHE_NAME = 'tiendamax-202606060415';
+const CACHE_NAME = 'tiendamax-202606060425';
 
 const STATIC_ASSETS = [
   '/',

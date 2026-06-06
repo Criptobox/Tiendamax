@@ -1305,6 +1305,79 @@ async function tmAdminRefreshSubscribers(){
 })();
 </script>
 
+<script id="tm-deepseek-tools-v7">
+(function(){
+  const $=(s,r=document)=>r.querySelector(s);
+  const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  function notify(msg,type){ if(typeof mostrarNotificacion==='function') mostrarNotificacion(msg,type||'info'); else console.log(msg); }
+  function products(){ try{ if(Array.isArray(window.productos)) return window.productos; }catch(e){} try{return JSON.parse(localStorage.getItem('productos')||'[]')}catch(e){return[]} }
+  function ventas(){ try{ if(typeof cargarVentas==='function') return cargarVentas()||[]; }catch(e){} try{return JSON.parse(localStorage.getItem('registroVentas')||'[]')}catch(e){return[]} }
+  async function analytics(){ try{ if(typeof tmLeerAnalytics==='function') return await tmLeerAnalytics(); }catch(e){} return {vistas:{},whatsapp:{},suscriptores:Number(localStorage.getItem('tm_subscriber_count')||0)}; }
+  function money(n){ return '$'+Number(n||0).toFixed(2); }
+  function summarize(ps,vs,an){
+    const topStock=ps.slice().sort((a,b)=>Number(b.stock||0)-Number(a.stock||0)).slice(0,8).map(p=>({id:p.id,nombre:p.nombre,categoria:p.categoria,precio:p.precioActual,stock:p.stock}));
+    const agotados=ps.filter(p=>Number(p.stock||0)<=0).slice(0,12).map(p=>({id:p.id,nombre:p.nombre,categoria:p.categoria}));
+    const bajos=ps.filter(p=>Number(p.stock||0)>0&&Number(p.stock||0)<=3).slice(0,12).map(p=>({id:p.id,nombre:p.nombre,stock:p.stock,categoria:p.categoria}));
+    const recientes=vs.slice(0,15).map(v=>({producto:v.producto,cantidad:v.cantidad,total:v.total,fecha:v.fecha||v.id}));
+    const vistas=Object.entries(an.vistas||{}).sort((a,b)=>Number(b[1])-Number(a[1])).slice(0,10).map(([id,n])=>{const p=ps.find(x=>String(x.id)===String(id));return {id,nombre:p?p.nombre:id,vistas:n};});
+    const wa=Object.entries(an.whatsapp||{}).sort((a,b)=>Number(b[1])-Number(a[1])).slice(0,10).map(([id,n])=>{const p=ps.find(x=>String(x.id)===String(id));return {id,nombre:p?p.nombre:id,whatsapp:n};});
+    const cats={}; ps.forEach(p=>{const c=p.categoria||'General'; cats[c]=cats[c]||{productos:0,stock:0,valor:0}; cats[c].productos++; cats[c].stock+=Number(p.stock||0); cats[c].valor+=Number(p.stock||0)*Number(p.precioActual||0);});
+    return {fecha:new Date().toLocaleString('es-CU'),productos:ps.length,ventas:vs.length,totalVendido:vs.reduce((s,v)=>s+Number(v.total||0),0),suscriptores:an.suscriptores||0,categorias:cats,topStock,agotados,bajos,ventasRecientes:recientes,topVistas:vistas,topWhatsApp:wa};
+  }
+  async function deepseek(prompt){
+    const key=localStorage.getItem('anthropicApiKey')||'', provider=localStorage.getItem('anthropicApiProvider')||'';
+    if(!key || !(provider==='deepseek'||key.startsWith('sk-'))) throw new Error('DeepSeek no configurado en Configuración');
+    const resp=await fetch('https://api.deepseek.com/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},body:JSON.stringify({model:'deepseek-chat',temperature:0.65,max_tokens:1100,messages:[{role:'system',content:'Eres el copiloto interno de TiendaMax, tienda online en Cuba. Responde como asesor de negocio, ventas, inventario y marketing. Sé concreto, útil y accionable. No inventes datos; si faltan, dilo.'},{role:'user',content:prompt}]})});
+    if(!resp.ok){let t='';try{t=await resp.text()}catch(e){};throw new Error('DeepSeek HTTP '+resp.status+(t?': '+t.slice(0,160):''));}
+    const data=await resp.json(); return (data.choices?.[0]?.message?.content||'').trim();
+  }
+  function panel(title,sub,body){const p=$('#tmToolPanel'); if(!p)return; p.className='tm-panel active'; p.innerHTML=`<div class="tm-panel-head"><div><h4>${title}</h4><p>${sub}</p></div><button class="tm-panel-close" data-act="closePanel">✕ Cerrar</button></div>${body}`; p.scrollIntoView({behavior:'smooth',block:'start'});}
+  function addCards(){
+    const wrap=$('#herramientas .tm-tools-wrap'); if(!wrap || $('#tmDeepSeekChatCards')) return;
+    const div=document.createElement('div'); div.id='tmDeepSeekChatCards';
+    div.innerHTML=`<div class="tm-tier"><h4>DEEPSEEK — COPILOTO ADMIN</h4><span class="tm-tier-badge purple">Chat</span></div>
+    <div class="tm-tools-grid"><div class="tm-tool-card enabled" data-tool="chatai"><span class="state">IA</span><div class="ico" style="background:rgba(79,195,247,.18)">🧠</div><h5>Chat IA del admin</h5><p>Pregunta qué publicar, qué reponer, ofertas, campañas y mejoras.</p></div></div>`;
+    const panelEl=$('#tmToolPanel'); if(panelEl) wrap.insertBefore(div,panelEl); else wrap.appendChild(div);
+  }
+  function openChat(){
+    const suggestions=['¿Qué producto publico hoy?','Dame 3 ideas de oferta con stock disponible','¿Qué productos debo reponer o archivar?','Hazme una campaña para WhatsApp de los productos más fuertes','¿Qué categoría parece más interesante?'];
+    panel('🧠 Chat IA del admin','Haz preguntas sobre productos, ventas, stock, analytics y campañas.',`
+      <div class="tm-note">El chat usa un resumen de productos, ventas y analytics. No envía imágenes ni claves; solo datos comerciales resumidos.</div>
+      <div class="tm-chipwrap" style="display:flex;flex-wrap:wrap;gap:8px;margin:12px 0;">${suggestions.map(q=>`<button type="button" class="tm-btn tm-mini" data-ds7-q="${esc(q)}">${esc(q)}</button>`).join('')}</div>
+      <div class="tm-field"><label>Pregunta</label><textarea id="tmChatQuestion" style="min-height:95px" placeholder="Ej: qué publico hoy, qué oferta hago, qué producto está flojo..."></textarea></div>
+      <div class="tm-actions"><button class="tm-btn primary" data-ds7-act="ask">Preguntar a DeepSeek</button><button class="tm-btn gold" data-ds7-act="brief">Resumen rápido</button><button class="tm-btn" data-ds7-act="copyOut">Copiar</button></div>
+      <div id="tmToolOut" class="tm-code" style="margin-top:12px">Escribe una pregunta o toca una sugerencia.</div>`);
+  }
+  function localAnswer(q,s){
+    const bajos=(s.bajos||[]).map(x=>`• ${x.nombre} (${x.stock})`).join('\n')||'• Sin stock bajo crítico';
+    const agot=(s.agotados||[]).slice(0,5).map(x=>`• ${x.nombre}`).join('\n')||'• Sin agotados destacados';
+    const top=(s.topStock||[]).slice(0,5).map(x=>`• ${x.nombre} — stock ${x.stock} — ${money(x.precio)}`).join('\n')||'• Sin productos';
+    return `Resumen local TiendaMax\n\nProductos: ${s.productos}\nVentas registradas: ${s.ventas}\nTotal vendido: ${money(s.totalVendido)}\nSuscriptores: ${s.suscriptores}\n\nPara publicar hoy, prioriza productos con buen stock:\n${top}\n\nStock bajo:\n${bajos}\n\nAgotados a revisar:\n${agot}\n\nPregunta: ${q}\n\nRecomendación: crea una publicación corta con precio, stock y llamada a WhatsApp. Si tienes DeepSeek configurado, el chat dará una estrategia más completa.`;
+  }
+  async function ask(questionOverride){
+    const out=$('#tmToolOut'); if(!out)return;
+    const q=(questionOverride||$('#tmChatQuestion')?.value||'Dame un resumen rápido y acciones para hoy').trim();
+    if(!q){notify('Escribe una pregunta','warning');return;}
+    if($('#tmChatQuestion')) $('#tmChatQuestion').value=q;
+    out.textContent='⏳ Analizando tienda y preguntando a DeepSeek...';
+    const ps=products(), vs=ventas(), an=await analytics(), s=summarize(ps,vs,an);
+    const prompt=`Pregunta del admin:\n${q}\n\nDatos resumidos de TiendaMax:\n${JSON.stringify(s,null,2)}\n\nResponde en español, con bullets y acciones concretas. Si recomiendas publicar, incluye texto breve de campaña o idea de push. Si recomiendas reponer, di cuáles. No inventes datos fuera del resumen.`;
+    try{ out.textContent=await deepseek(prompt); notify('✅ Respuesta IA lista','success'); }
+    catch(e){ out.textContent=localAnswer(q,s)+'\n\n⚠️ '+e.message; notify('Respuesta local: configura DeepSeek para chat avanzado','warning'); }
+  }
+  async function brief(){ await ask('Dame un resumen rápido de la tienda y 5 acciones prioritarias para hoy.'); }
+  document.addEventListener('click',function(e){
+    const tool=e.target.closest('[data-tool="chatai"]'); if(tool){e.preventDefault();e.stopPropagation();e.stopImmediatePropagation&&e.stopImmediatePropagation();openChat();return;}
+    const qbtn=e.target.closest('[data-ds7-q]'); if(qbtn){e.preventDefault();e.stopPropagation();e.stopImmediatePropagation&&e.stopImmediatePropagation(); ask(qbtn.dataset.ds7Q); return;}
+    const a=e.target.closest('[data-ds7-act]'); if(!a)return; e.preventDefault();e.stopPropagation();e.stopImmediatePropagation&&e.stopImmediatePropagation();
+    const act=a.dataset.ds7Act; if(act==='ask') ask(); if(act==='brief') brief(); if(act==='copyOut'){navigator.clipboard?.writeText($('#tmToolOut')?.textContent||'');notify('Copiado','success');}
+  },true);
+  function boot(){addCards();}
+  document.addEventListener('DOMContentLoaded',()=>setTimeout(boot,1400));
+  document.addEventListener('click',e=>{if(e.target.closest('[data-arg="herramientas"],[data-tab="herramientas"]')) setTimeout(boot,300);});
+})();
+</script>
+
 <script id="tm-comision-ventas-v1">
 (function(){
   /* ── Toggle USD/MN en comisión ── */
