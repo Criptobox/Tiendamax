@@ -4089,6 +4089,40 @@ function ajustarStock(id, cantidad, desdeVenta = false) {
 
 // ── VENTAS — registro de ventas ─────────────────────
 
+// Helper: obtiene/carga la configuración Firebase para RTDB.
+// Antes solo leía localStorage; en una sesión nueva del admin eso podía estar vacío
+// y por eso las ventas de Firebase no cargaban hasta tocar otra sección.
+let _fbConfigPromise = null;
+async function _fbEnsureConfig() {
+    try {
+        const raw = localStorage.getItem('firebaseConfig');
+        if (raw) {
+            const cfg = JSON.parse(raw);
+            if (cfg && (cfg.databaseURL || cfg.projectId)) return cfg;
+        }
+    } catch(e) {}
+    if (_fbConfigPromise) return _fbConfigPromise;
+    _fbConfigPromise = (async () => {
+        try {
+            const res = await fetch('config.json?_=' + Date.now(), { cache: 'no-store' });
+            if (!res.ok) return null;
+            const data = await res.json();
+            const cfg = data && data.firebaseConfig;
+            if (cfg && (cfg.databaseURL || cfg.projectId)) {
+                localStorage.setItem('firebaseConfig', JSON.stringify(cfg));
+                if (cfg.vapidKey) localStorage.setItem('firebaseVapidKey', cfg.vapidKey);
+                return cfg;
+            }
+        } catch(e) {
+            console.warn('⚠️ Firebase config load:', e.message);
+        } finally {
+            setTimeout(() => { _fbConfigPromise = null; }, 1000);
+        }
+        return null;
+    })();
+    return _fbConfigPromise;
+}
+
 // Helper: obtiene la URL base de Firebase RTDB desde config guardada
 function _fbRtdbUrl() {
     try {
@@ -4101,29 +4135,36 @@ function _fbRtdbUrl() {
 
 // Escribe una venta en Firebase RTDB (sin bloquear — fire & forget)
 function _fbGuardarVenta(venta) {
-    const url = _fbRtdbUrl();
-    if (!url) return;
-    fetch(`${url}/ventas/${venta.id}.json`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(venta)
-    }).catch(e => console.warn('⚠️ Firebase ventas write:', e.message));
+    (async () => {
+        await _fbEnsureConfig();
+        const url = _fbRtdbUrl();
+        if (!url) return;
+        await fetch(`${url}/ventas/${venta.id}.json`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(venta)
+        });
+    })().catch(e => console.warn('⚠️ Firebase ventas write:', e.message));
 }
 
 // Elimina una venta de Firebase RTDB
 function _fbEliminarVenta(id) {
-    const url = _fbRtdbUrl();
-    if (!url) return;
-    fetch(`${url}/ventas/${id}.json`, { method: 'DELETE' })
-        .catch(e => console.warn('⚠️ Firebase ventas delete:', e.message));
+    (async () => {
+        await _fbEnsureConfig();
+        const url = _fbRtdbUrl();
+        if (!url) return;
+        await fetch(`${url}/ventas/${id}.json`, { method: 'DELETE' });
+    })().catch(e => console.warn('⚠️ Firebase ventas delete:', e.message));
 }
 
 // Borra todo el nodo ventas en Firebase RTDB
 function _fbBorrarTodasVentas() {
-    const url = _fbRtdbUrl();
-    if (!url) return;
-    fetch(`${url}/ventas.json`, { method: 'DELETE' })
-        .catch(e => console.warn('⚠️ Firebase ventas clear:', e.message));
+    (async () => {
+        await _fbEnsureConfig();
+        const url = _fbRtdbUrl();
+        if (!url) return;
+        await fetch(`${url}/ventas.json`, { method: 'DELETE' });
+    })().catch(e => console.warn('⚠️ Firebase ventas clear:', e.message));
 }
 
 // Migra ventas guardadas accidentalmente en la raíz de Firebase (0,1,2,3...) a /ventas/{id}
@@ -4155,6 +4196,7 @@ async function _fbMigrarVentasRaiz(url) {
 
 // Carga ventas desde Firebase y hace merge con localStorage (en background al iniciar)
 async function _fbSincronizarVentasAlIniciar() {
+    await _fbEnsureConfig();
     const url = _fbRtdbUrl();
     if (!url) return;
     try {
@@ -4186,7 +4228,13 @@ async function _fbSincronizarVentasAlIniciar() {
 }
 
 function cargarVentas() {
-    return JSON.parse(localStorage.getItem('registroVentas') || '[]');
+    try {
+        const v = JSON.parse(localStorage.getItem('registroVentas') || '[]');
+        return Array.isArray(v) ? v : [];
+    } catch(e) {
+        localStorage.removeItem('registroVentas');
+        return [];
+    }
 }
 
 function guardarVenta(venta) {
@@ -4244,7 +4292,15 @@ const _VENTAS_POR_PAGINA = 20;
 function renderizarVentas(pagina) {
     const cont = document.getElementById('ventasContenido');
     if (!cont) return;
-    const ventas = cargarVentas();
+    let ventas = cargarVentas();
+    // Si aún no hay ventas locales, dispara una lectura real de Firebase.
+    // Esto evita que el admin muestre “No hay ventas” en sesiones nuevas.
+    if (!ventas.length && !window.__tmVentasSyncing) {
+        window.__tmVentasSyncing = true;
+        _fbSincronizarVentasAlIniciar()
+            .catch(() => null)
+            .finally(() => { window.__tmVentasSyncing = false; });
+    }
     if (typeof pagina === 'number') _ventasPagina = pagina;
     // Asegurar que la página sea válida
     const totalPaginas = Math.max(1, Math.ceil(ventas.length / _VENTAS_POR_PAGINA));

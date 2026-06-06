@@ -14,7 +14,37 @@ function _escH(s) {
 }
 function _escA(s) { return _escH(s); }
 
-// ── Utilidad: obtener la URL base de Firebase RTDB ──────
+// ── Utilidad: obtener/cargar la URL base de Firebase RTDB ──────
+let _tmFbConfigPromise = null;
+async function _tmEnsureFirebaseConfig() {
+    try {
+        const raw = localStorage.getItem('firebaseConfig');
+        if (raw) {
+            const cfg = JSON.parse(raw);
+            if (cfg && (cfg.databaseURL || cfg.projectId)) return cfg;
+        }
+    } catch(e) {}
+    if (_tmFbConfigPromise) return _tmFbConfigPromise;
+    _tmFbConfigPromise = (async () => {
+        try {
+            const res = await fetch('config.json?_=' + Date.now(), { cache: 'no-store' });
+            if (!res.ok) return null;
+            const data = await res.json();
+            const cfg = data && data.firebaseConfig;
+            if (cfg && (cfg.databaseURL || cfg.projectId)) {
+                localStorage.setItem('firebaseConfig', JSON.stringify(cfg));
+                if (cfg.vapidKey) localStorage.setItem('firebaseVapidKey', cfg.vapidKey);
+                return cfg;
+            }
+        } catch(e) {
+            console.warn('[analytics] No se pudo cargar config.json:', e.message);
+        } finally {
+            setTimeout(() => { _tmFbConfigPromise = null; }, 1000);
+        }
+        return null;
+    })();
+    return _tmFbConfigPromise;
+}
 function _tmRtdbUrl() {
     try {
         const cfg = JSON.parse(localStorage.getItem('firebaseConfig') || '{}');
@@ -23,6 +53,8 @@ function _tmRtdbUrl() {
     } catch(e) {}
     return null;
 }
+// Precargar para que Analytics/limpiador estén listos al abrir el admin.
+_tmEnsureFirebaseConfig().catch(() => null);
 
 // ── Rate limiting para prevenir abuso ──────────────────
 const _tmAnalyticsSessions = {};
@@ -42,6 +74,7 @@ function _tmCanTrack(tipo, id) {
 
 // ── Registrar un evento (fire-and-forget) ───────────────
 async function tmTrackEventoV2(tipo, id) {
+    await _tmEnsureFirebaseConfig();
     const base = _tmRtdbUrl();
     if (!base || !id) return;
     if (!_tmCanTrack(tipo, id)) return;
@@ -115,6 +148,7 @@ function _tmRelTime(ts) {
 
 // ── Leer todos los datos de analytics ───────────────────
 async function tmLeerAnalytics() {
+    await _tmEnsureFirebaseConfig();
     const base = _tmRtdbUrl();
     if (!base) return { vistas: {}, whatsapp: {}, suscriptores: 0, tokensData: {} };
 
@@ -635,6 +669,7 @@ function _statCard(icon, label, value, color) {
 // Usa dry_run=true: FCM valida los tokens sin enviar nada.
 // Borra los que devuelven NotRegistered o InvalidRegistration.
 async function tmLimpiarTokensInvalidos() {
+    await _tmEnsureFirebaseConfig();
     const btnId  = 'tm-btn-limpiar';
     const infoId = 'tm-limpiar-info';
     const btn    = document.getElementById(btnId);
@@ -701,8 +736,12 @@ async function tmLimpiarTokensInvalidos() {
             return;
         }
 
-        const keys   = Object.keys(tokensData);
-        const tokens = keys.map(k => tokensData[k].token).filter(Boolean);
+        // Mantener claves y tokens alineados. Antes se filtraban solo los tokens,
+        // pero no las claves, y el limpiador podía intentar borrar la entrada incorrecta
+        // o aparentar que “no hacía nada” si había registros incompletos.
+        const entries = Object.entries(tokensData).filter(([k, v]) => v && v.token);
+        const keys    = entries.map(([k]) => k);
+        const tokens  = entries.map(([, v]) => v.token);
 
         if (tokens.length === 0) {
             setInfo('✅ Sin tokens válidos que revisar.', '#25d366');

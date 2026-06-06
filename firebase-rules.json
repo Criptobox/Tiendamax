@@ -77,7 +77,7 @@
       }
     },
     "ventas": {
-      ".read": false,
+      ".read": true,
       ".write": false,
       "$ventaId": {
         ".write": true,
