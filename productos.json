@@ -2166,5 +2166,27 @@
     "garantia": "",
     "devolucion": false,
     "fechaAgregado": "2026-06-07T23:07:18.628Z"
+  },
+  {
+    "id": 1780873821409,
+    "nombre": "FENVI AC1200",
+    "descripcion": "✨ Producto TiendaMax\n\nFENVI AC1200 enrutador wifi inteligente de señal fuerte especificaciones:\n\n ✅Diseño de 4 antenas externa, señal fuerte.\n✅La luz indicadora entiende intuitivamente el estado del equipo. \n✅Muchos orificios de enfriamiento, buena disipación de calor.\n✅Banda de frecuencia dual de 2,4 y 5,8 GHz, fuerte antiinterferencias.\n✅Acceso rápido por Internet compatible con una velocidad de 1200 Mbps.\n ✅Adaptador de corriente: DC12V/1A; 1*10/1000M Puerto WAN Ethernet RJ45; Puerto LAN Ethernet RJ45 de 3*10/1000M; Compatible con cifrado inalámbrico WPA-PSK, WPA2-PSK.\n\nUna opción pensado para mejorar conexión, cobertura y estabilidad de internet en casa, negocio u oficina. Disponible ahora para entrega coordinada.",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1780873818246.jpg",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1780873818246.jpg"
+    ],
+    "precioActual": 80,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 5,
+    "comision": 10,
+    "comisionMoneda": "USD",
+    "categoria": "WIFI",
+    "subcategoria": "",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "fechaAgregado": "2026-06-07T23:10:21.409Z"
   }
 ]
