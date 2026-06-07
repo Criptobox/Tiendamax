@@ -2144,5 +2144,27 @@
     "slug": "audifonos-ergonomicos-cancelacion-ruido",
     "shareText": "Conecta tu música con 40h de batería y cancelación de ruido. Audífonos ergonómicos, compatibles y elegantes.",
     "nombreNormalizadoAt": "2026-06-07T02:01:39.402Z"
+  },
+  {
+    "id": 1780873638627,
+    "nombre": "ROUTER FENVI AX3000 Wi-Fi 6",
+    "descripcion": "✨ ROUTER FENVI AX3000 Wi-Fi 6\n\nEl router FENVI AX3000 Wi-Fi 6 Mesh es un dispositivo de doble banda. Soporta 574 mbps por la 2.4 GHz y 2402 mbps por la 5.8 GHz. Esta diseñado para mejorar la cobertura doméstica con velocidades de hasta 3000mbps. Tiene 3 puertos LAN y 1 puerto WAN. Equipado con 4 antenas de alta ganancia y puerto Gigabit que le permite una conexión rápida y estable.\n\nUna opción pensado para mejorar conexión, cobertura y estabilidad de internet en casa, negocio u oficina. Disponible ahora para entrega coordinada.",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1780873635709.jpg",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1780873635709.jpg"
+    ],
+    "precioActual": 110,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 6,
+    "comision": 10,
+    "comisionMoneda": "USD",
+    "categoria": "WIFI",
+    "subcategoria": "",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "fechaAgregado": "2026-06-07T23:07:18.628Z"
   }
 ]
