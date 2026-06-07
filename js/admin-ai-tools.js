@@ -1547,7 +1547,7 @@ function tmExtractJsonObject(text) {
 (function(){
   const CAT_LABELS={basicas:'🧰 Básicas',gestion:'📋 Gestión',datos:'📊 Datos/Ventas',ia:'🤖 IA',marketing:'📣 Marketing',sistema:'🛡️ Sistema'};
   const TOOL_CAT={
-    quickedit:'gestion',catalogqa:'sistema',namesfix:'basicas',ai:'ia',posts:'marketing',pushai:'ia',waai:'ia',auditai:'ia',insightsai:'ia',seoai:'ia',recsai:'ia',bulkai:'ia',chatai:'ia',
+    bulkadjust:'gestion',quickedit:'gestion',catalogqa:'sistema',namesfix:'basicas',ai:'ia',posts:'marketing',pushai:'ia',waai:'ia',auditai:'ia',insightsai:'ia',seoai:'ia',recsai:'ia',bulkai:'ia',chatai:'ia',
     campaignai:'marketing',publisherai:'marketing',campdash:'marketing',weekplanner:'marketing',taskcenter:'marketing',autopilot:'marketing',
     compress:'basicas',duplicate:'basicas',history:'basicas',csv:'basicas',dups:'basicas',
     schedule:'gestion',coupons:'gestion',locations:'gestion',ab:'gestion',totp:'gestion',roles:'gestion',
@@ -1803,5 +1803,75 @@ function tmExtractJsonObject(text) {
   },true);
   function boot(){addCard();}
   document.addEventListener('DOMContentLoaded',()=>setTimeout(boot,2500));
+  document.addEventListener('click',e=>{if(e.target.closest('[data-arg="herramientas"],[data-tab="herramientas"]')) setTimeout(boot,300);});
+})();
+
+// ── tm-deepseek-tools-v19 / Ajustes masivos stock-precio ────────────────
+(function(){
+  const $=(s,r=document)=>r.querySelector(s);
+  const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  function notify(msg,type){ if(typeof mostrarNotificacion==='function') mostrarNotificacion(msg,type||'info'); else console.log(msg); }
+  function products(){ try{ if(Array.isArray(window.productos)) return window.productos; }catch(e){} try{return JSON.parse(localStorage.getItem('productos')||'[]')}catch(e){return[]} }
+  function saveProducts(ps){ try{ if(typeof productos!=='undefined'&&Array.isArray(productos)) productos=ps; }catch(e){} if(Array.isArray(window.productos)) window.productos=ps; try{ if(typeof guardarProductos==='function') guardarProductos(); }catch(e){} localStorage.setItem('productos',JSON.stringify(ps)); }
+  function cats(){return [...new Set(products().map(p=>p.categoria||'General').filter(Boolean))].sort();}
+  function panel(title,sub,body){const p=$('#tmToolPanel'); if(!p)return; p.className='tm-panel active'; p.innerHTML=`<div class="tm-panel-head"><div><h4>${title}</h4><p>${sub}</p></div><button class="tm-panel-close" data-act="closePanel">✕ Cerrar</button></div>${body}`; p.scrollIntoView({behavior:'smooth',block:'start'});}
+  function addCard(){
+    const wrap=$('#herramientas .tm-tools-wrap'); const panelEl=$('#tmToolPanel'); if(!wrap||!panelEl||document.querySelector('[data-tool="bulkadjust"]')) return;
+    const div=document.createElement('div'); div.className='tm-tools-grid'; div.innerHTML='<div class="tm-tool-card enabled" data-tool="bulkadjust"><span class="state">BULK</span><div class="ico" style="background:rgba(245,158,11,.18)">🧮</div><h5>Ajustes masivos</h5><p>Cambia precios, stock, comisión o garantía por categoría.</p></div>';
+    wrap.insertBefore(div,panelEl);
+    if(typeof window.tmOrganizeTools==='function') setTimeout(window.tmOrganizeTools,80);
+  }
+  function openTool(){
+    panel('🧮 Ajustes masivos','Aplica cambios controlados por categoría o búsqueda. Usa vista previa antes de aplicar.',`
+      <div class="tm-form-grid">
+        <div class="tm-field"><label>Categoría</label><select id="tmAdjCat"><option value="">Todas</option>${cats().map(c=>`<option>${esc(c)}</option>`).join('')}</select></div>
+        <div class="tm-field"><label>Buscar en nombre</label><input id="tmAdjSearch" placeholder="Ej: router, cargador, aceite..."></div>
+        <div class="tm-field"><label>Acción</label><select id="tmAdjAction"><option value="price_pct">Precio: subir/bajar %</option><option value="price_add">Precio: sumar/restar USD</option><option value="stock_add">Stock: sumar/restar</option><option value="stock_set">Stock: fijar cantidad</option><option value="commission_set">Comisión: fijar</option><option value="warranty_set">Garantía: fijar texto</option></select></div>
+        <div class="tm-field"><label>Valor</label><input id="tmAdjValue" placeholder="Ej: 5, -10, 3, 6 meses"></div>
+      </div>
+      <div class="tm-note">Ejemplos: Precio +5% usa valor 5. Bajar precio 10% usa -10. Stock +3 usa 3. Siempre revisa Vista previa.</div>
+      <div class="tm-actions"><button class="tm-btn primary" data-ds19-act="preview">Vista previa</button><button class="tm-btn gold" data-ds19-act="apply">Aplicar cambios</button><button class="tm-btn" data-ds19-act="copyOut">Copiar reporte</button></div>
+      <div id="tmToolOut" class="tm-code" style="margin-top:12px">Configura una acción y pulsa Vista previa.</div>`);
+  }
+  function targets(){
+    const cat=$('#tmAdjCat')?.value||''; const q=String($('#tmAdjSearch')?.value||'').toLowerCase().trim();
+    return products().filter(p=>(!cat||(p.categoria||'General')===cat)&&(!q||String(p.nombre||'').toLowerCase().includes(q)));
+  }
+  function calc(p){
+    const action=$('#tmAdjAction')?.value||'price_pct'; const raw=$('#tmAdjValue')?.value??''; const n=parseFloat(raw);
+    const before={precioActual:Number(p.precioActual||0),stock:Number(p.stock||0),comision:Number(p.comision||0),garantia:p.garantia||''};
+    const after={...before};
+    if(action==='price_pct'){ if(isNaN(n)) throw new Error('Valor % inválido'); after.precioActual=Math.max(0,Number((before.precioActual*(1+n/100)).toFixed(2))); }
+    if(action==='price_add'){ if(isNaN(n)) throw new Error('Valor USD inválido'); after.precioActual=Math.max(0,Number((before.precioActual+n).toFixed(2))); }
+    if(action==='stock_add'){ if(isNaN(n)) throw new Error('Valor stock inválido'); after.stock=Math.max(0,Math.round(before.stock+n)); }
+    if(action==='stock_set'){ if(isNaN(n)) throw new Error('Valor stock inválido'); after.stock=Math.max(0,Math.round(n)); }
+    if(action==='commission_set'){ if(isNaN(n)) throw new Error('Valor comisión inválido'); after.comision=Math.max(0,Number(n.toFixed(2))); }
+    if(action==='warranty_set'){ after.garantia=String(raw).trim(); }
+    return {before,after,action};
+  }
+  function preview(){
+    const out=$('#tmToolOut'); if(!out)return; let arr=targets(); if(!arr.length){out.textContent='No hay productos que coincidan.';return;}
+    try{
+      const lines=arr.slice(0,80).map((p,i)=>{const c=calc(p); return `${i+1}. ${p.nombre}\n   Precio: $${c.before.precioActual} → $${c.after.precioActual} | Stock: ${c.before.stock} → ${c.after.stock} | Comisión: ${c.before.comision} → ${c.after.comision}${c.before.garantia!==c.after.garantia?` | Garantía: ${c.before.garantia||'—'} → ${c.after.garantia||'—'}`:''}`;});
+      out.textContent=`Productos afectados: ${arr.length}\n\n${lines.join('\n\n')}${arr.length>80?'\n\n... y más':''}`;
+    }catch(e){out.textContent='❌ '+e.message;}
+  }
+  function apply(){
+    const arr=targets(); if(!arr.length){notify('No hay productos que coincidan','warning');return;}
+    let changes=[]; try{changes=arr.map(p=>({p,c:calc(p)}));}catch(e){notify(e.message,'error');return;}
+    if(!confirm(`¿Aplicar ajuste masivo a ${changes.length} producto(s)?`)) return;
+    const map=new Map(changes.map(x=>[String(x.p.id),x.c]));
+    const ps=products().map(p=>{const c=map.get(String(p.id)); if(!c)return p; const np={...p,precioActual:c.after.precioActual,stock:c.after.stock,comision:c.after.comision,garantia:c.after.garantia,ajusteMasivoAt:new Date().toISOString()}; try{if(typeof marcarProductoModificado==='function') marcarProductoModificado(np.id);}catch(e){} return np;});
+    saveProducts(ps); try{if(typeof actualizarListaProductos==='function')actualizarListaProductos();}catch(e){} try{if(typeof renderizarProductos==='function')renderizarProductos();}catch(e){}
+    const out=$('#tmToolOut'); if(out) out.textContent=`✅ Ajuste aplicado a ${changes.length} producto(s).\n\nAhora pulsa “Actualizar tienda” para publicar productos.json.`;
+    notify('✅ Ajuste masivo aplicado','success');
+  }
+  document.addEventListener('click',function(e){
+    const tool=e.target.closest('[data-tool="bulkadjust"]'); if(tool){e.preventDefault();e.stopPropagation();e.stopImmediatePropagation&&e.stopImmediatePropagation();openTool();return;}
+    const a=e.target.closest('[data-ds19-act]'); if(!a)return; e.preventDefault();e.stopPropagation();e.stopImmediatePropagation&&e.stopImmediatePropagation();
+    if(a.dataset.ds19Act==='preview')preview(); if(a.dataset.ds19Act==='apply')apply(); if(a.dataset.ds19Act==='copyOut'){navigator.clipboard?.writeText($('#tmToolOut')?.textContent||'');notify('Copiado','success');}
+  },true);
+  function boot(){addCard();}
+  document.addEventListener('DOMContentLoaded',()=>setTimeout(boot,2600));
   document.addEventListener('click',e=>{if(e.target.closest('[data-arg="herramientas"],[data-tab="herramientas"]')) setTimeout(boot,300);});
 })();
