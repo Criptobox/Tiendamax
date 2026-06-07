@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════════════════
-// TiendaMax — Service Worker v226 — fix ventas $0 sync siempre + totalVentas campo correcto
+// TiendaMax — Service Worker v227 — motor de urgencia: badge stock, personas viendo, carrito abandonado
 // v225: agente guía con botones Ejecutar/Abrir/Hecho y lectura por voz.
 // v211: mejora diseño compacto de Herramientas y botones.
 // v217: barra flotante visible al actualizar tienda con GitHub.
@@ -89,7 +89,7 @@
 //      usan el mismo helper _mensajeOrdenWA con formato premium.
 // ═══════════════════════════════════════════════════════
 
-const CACHE_NAME = 'tiendamax-202606070500';
+const CACHE_NAME = 'tiendamax-202606070600';
 
 const STATIC_ASSETS = [
   '/',
@@ -119,6 +119,8 @@ const STATIC_ASSETS = [
   '/css/tienda-plus.css',
   '/css/hero-efectos.css',
   '/js/hero-efectos.js',
+  '/js/urgencia-ventas.js',
+  '/css/urgencia-ventas.css',
   '/og-image.png',
   '/manifest.json',
   '/iconos/icon-192.png',

@@ -1,0 +1,70 @@
+/* urgencia-ventas.css — Estilos del motor de urgencia TiendaMax */
+
+/* ── Badge "¡Solo N!" en tarjetas ───────────────────────── */
+.tm-urg-badge {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.2px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  pointer-events: none;
+  z-index: 10;
+  box-shadow: 0 2px 8px rgba(231,76,60,.55);
+  animation: tm-urg-pulse 1.7s ease-in-out infinite;
+  white-space: nowrap;
+}
+
+@keyframes tm-urg-pulse {
+  0%,100% { transform: scale(1);    box-shadow: 0 2px 8px  rgba(231,76,60,.55); }
+  50%      { transform: scale(1.07); box-shadow: 0 4px 14px rgba(231,76,60,.80); }
+}
+
+/* ── "N personas ven esto ahora" en modal de detalle ─────── */
+.tm-viendo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #e67e22;
+  background: rgba(230,126,34,.1);
+  border: 1px solid rgba(230,126,34,.25);
+  border-radius: 20px;
+  padding: 5px 13px;
+  width: fit-content;
+  margin: 10px 0 6px;
+  line-height: 1;
+}
+
+.tm-viendo-dot {
+  width: 7px;
+  height: 7px;
+  background: #27ae60;
+  border-radius: 50%;
+  display: inline-block;
+  flex-shrink: 0;
+  animation: tm-dot-blink 1.1s ease-in-out infinite;
+}
+
+@keyframes tm-dot-blink {
+  0%,100% { opacity: 1;    transform: scale(1); }
+  50%      { opacity: 0.25; transform: scale(0.85); }
+}
+
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+  .tm-viendo {
+    background: rgba(230,126,34,.12);
+    border-color: rgba(230,126,34,.3);
+  }
+}
+.dark-mode .tm-viendo,
+[data-theme="dark"] .tm-viendo {
+  background: rgba(230,126,34,.12);
+  border-color: rgba(230,126,34,.3);
+}
