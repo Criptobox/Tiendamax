@@ -1,7 +1,8 @@
 // ═══════════════════════════════════════════════════════
-// TiendaMax — Service Worker v225 — Agente guia admin
+// TiendaMax — Service Worker v226 — Agente guia ejecuta
 // v211: mejora diseño compacto de Herramientas y botones.
 // v217: barra flotante visible al actualizar tienda con GitHub.
+// v226: agente guía con botones Ejecutar/Abrir/Hecho y lectura por voz.
 // v225: añade agente guía para ordenar tareas del admin.
 // v224: herramientas usan nombre IA genérico y timeout anti-bloqueo.
 // v223: añade paquete herramientas 05-12 y organización completa.
@@ -88,7 +89,7 @@
 //      usan el mismo helper _mensajeOrdenWA con formato premium.
 // ═══════════════════════════════════════════════════════
 
-const CACHE_NAME = 'tiendamax-202606062230';
+const CACHE_NAME = 'tiendamax-202606062300';
 
 const STATIC_ASSETS = [
   '/',

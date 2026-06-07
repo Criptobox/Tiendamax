@@ -2100,22 +2100,52 @@ function tmExtractJsonObject(text) {
         <div class="tm-an-kpi"><small>Sin SEO</small><b>${s.noSeo}</b><em>por lote</em></div>
         <div class="tm-an-kpi"><small>Sin Recs</small><b>${s.noRecs}</b><em>upsell</em></div>
       </div>
-      <div class="tm-actions"><button class="tm-btn primary" data-ds22-act="refresh">Analizar ahora</button><button class="tm-btn gold" data-ds22-act="next">Abrir recomendado</button><button class="tm-btn" data-ds22-act="done">Marcar primero hecho</button><button class="tm-btn" data-ds22-act="copyOut">Copiar plan</button></div>
+      <div class="tm-actions"><button class="tm-btn primary" data-ds22-act="refresh">Analizar ahora</button><button class="tm-btn gold" data-ds22-act="next">Abrir recomendado</button><button class="tm-btn" data-ds22-act="done">Marcar primero hecho</button><button class="tm-btn" data-ds22-act="speak">🔊 Leer tareas</button><button class="tm-btn" data-ds22-act="copyOut">Copiar plan</button></div>
       <div class="tm-list" style="margin-top:12px">${steps.map((x,i)=>row(x,i)).join('')}</div>
       <div id="tmToolOut" class="tm-code" style="margin-top:12px">${textPlan(steps)}</div>`);
     window.__tmGuideSteps=steps;
   }
-  function row(x,i){return `<div class="tm-row"><div class="tm-row-main"><b>${i+1}. ${esc(x.title)}</b><small>${esc(x.why)}</small></div><button class="tm-btn tm-mini" data-ds22-act="go" data-i="${i}">Abrir</button><button class="tm-btn tm-mini" data-ds22-act="mark" data-i="${i}">Hecho</button></div>`;}
+  function row(x,i){return `<div class="tm-row"><div class="tm-row-main"><b>${i+1}. ${esc(x.title)}</b><small>${esc(x.why)}</small></div><button class="tm-btn tm-mini gold" data-ds22-act="exec" data-i="${i}">Ejecutar</button><button class="tm-btn tm-mini" data-ds22-act="go" data-i="${i}">Abrir</button><button class="tm-btn tm-mini" data-ds22-act="mark" data-i="${i}">Hecho</button></div>`;}
   function textPlan(steps){return steps.map((x,i)=>`${i+1}. ${x.title}\n   ${x.why}`).join('\n\n');}
   function go(step){ if(!step) return; if(step.tool){const c=document.querySelector(`[data-tool="${step.tool}"]`); if(c){c.click(); return;}} if(step.action&&typeof switchTab==='function') switchTab(step.action); else notify('No encontré destino para esta tarea','warning'); }
+  function makeGuideBackup(){
+    const keys=['productos','categorias','subcategorias','heroBanners','registroVentas','tm_campaigns_v1','tm_week_plan_v1','tm_tools_data_v1'];
+    const data={meta:{createdAt:new Date().toISOString(),type:'guide-agent'},localStorage:{}};
+    keys.forEach(k=>{const v=localStorage.getItem(k); if(v!==null){try{data.localStorage[k]=JSON.parse(v)}catch(e){data.localStorage[k]=v}}});
+    let arr=[]; try{arr=JSON.parse(localStorage.getItem('tm_full_backups_v1')||'[]')}catch(e){}
+    arr.unshift({id:Date.now(),ts:new Date().toISOString(),size:new Blob([JSON.stringify(data)]).size,data}); localStorage.setItem('tm_full_backups_v1',JSON.stringify(arr.slice(0,20)));
+  }
+  function setBulkAndRun(task){
+    const c=document.querySelector('[data-tool="bulkai"]'); if(c) c.click();
+    setTimeout(()=>{ const sel=document.getElementById('tmBulkTask'); const lim=document.getElementById('tmBulkLimit'); if(sel) sel.value=task; if(lim) lim.value='5'; const btn=document.querySelector('[data-ds6-act="bulkRun"]'); if(btn) btn.click(); },450);
+  }
+  function executeStep(step){
+    if(!step) return;
+    if(step.id==='backup'){ makeGuideBackup(); setDone(step.id); notify('✅ Backup creado por el agente','success'); openGuide(); return; }
+    if(step.id==='seo'){ notify('Ejecutando SEO a 5 productos','info'); setBulkAndRun('seo_missing'); return; }
+    if(step.id==='recs'){ notify('Ejecutando recomendaciones a 5 productos','info'); setBulkAndRun('recs_missing'); return; }
+    if(step.id==='preflight'){ go(step); setTimeout(()=>document.querySelector('[data-ds21-act="preflightRun"],[data-pack-act="preflightRun"]')?.click(),450); return; }
+    if(step.id==='campaign'){ go(step); setTimeout(()=>document.querySelector('[data-ds8-act="campGen"]')?.click(),500); return; }
+    if(step.id==='push'){ go(step); return; }
+    if(step.id==='plan'){ go(step); return; }
+    if(step.id==='stock'||step.id==='qa-critical'||step.id==='ia'||step.id==='github'||step.id==='diag'){ go(step); return; }
+    go(step);
+  }
+  function speakSteps(steps){
+    const text='Tienes '+steps.length+' tareas. '+steps.slice(0,6).map((s,i)=>`Número ${i+1}: ${s.title}. ${s.why}`).join('. ');
+    if(!('speechSynthesis' in window)){notify('Tu navegador no soporta voz','warning');return;}
+    speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(text); u.lang='es-ES'; u.rate=.95; speechSynthesis.speak(u);
+  }
   document.addEventListener('click',function(e){
     const tool=e.target.closest('[data-tool="guideagent"]'); if(tool){e.preventDefault();e.stopPropagation();e.stopImmediatePropagation&&e.stopImmediatePropagation();openGuide();return;}
     const a=e.target.closest('[data-ds22-act]'); if(!a)return; e.preventDefault();e.stopPropagation();e.stopImmediatePropagation&&e.stopImmediatePropagation();
     const steps=window.__tmGuideSteps||buildPlan(); const act=a.dataset.ds22Act;
     if(act==='refresh') openGuide();
     if(act==='next') go(steps[0]);
+    if(act==='exec') executeStep(steps[Number(a.dataset.i)]);
     if(act==='go') go(steps[Number(a.dataset.i)]);
     if(act==='mark'||act==='done'){const st=steps[Number(a.dataset.i)||0]; if(st){setDone(st.id); notify('Marcado como hecho por hoy','success'); openGuide();}}
+    if(act==='speak') speakSteps(steps);
     if(act==='copyOut'){navigator.clipboard?.writeText(textPlan(steps)); notify('Plan copiado','success');}
   },true);
   function boot(){addCard();}
