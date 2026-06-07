@@ -438,9 +438,52 @@ function comprarCarrito() {
     // Historial del cliente + analytics antes de abrir WhatsApp
     guardarPedidoCliente(carrito.slice());
     if (typeof tmTrackWhatsApp === 'function') carrito.forEach(i => tmTrackWhatsApp(i.id));
+    carrito.forEach(i => tmRegistrarInteresWhatsApp(i.id, 'carrito'));
     const msg = _mensajeOrdenWA(carrito);
     window.open('https://wa.me/' + getNumeroWhatsApp() + '?text=' + msg, '_blank', 'noopener,noreferrer');
 }
+
+// ── Interesados WhatsApp: registra intención de compra para seguimiento admin ──
+function tmRegistrarInteresWhatsApp(producto, origen = 'whatsapp') {
+    try {
+        const p = (typeof producto === 'object' && producto)
+            ? producto
+            : (Array.isArray(productos) ? productos.find(x => String(x.id) === String(producto)) : null);
+        if (!p || !p.id) return;
+        const item = {
+            id: Date.now() + '_' + Math.random().toString(36).slice(2, 8),
+            ts: Date.now(),
+            fecha: new Date().toISOString(),
+            productoId: p.id,
+            producto: p.nombre || 'Producto',
+            precio: Number(p.precioActual || p.precio || 0),
+            stock: Number(p.stock || 0),
+            categoria: p.categoria || 'General',
+            origen,
+            url: '/p/producto-' + p.id + '.html'
+        };
+        // Local fallback
+        try {
+            const arr = JSON.parse(localStorage.getItem('tm_interesados_whatsapp') || '[]');
+            arr.unshift(item);
+            localStorage.setItem('tm_interesados_whatsapp', JSON.stringify(arr.slice(0, 500)));
+        } catch(e) {}
+        // Firebase RTDB si hay config. Fire & forget.
+        (async () => {
+            try {
+                if (typeof _fbEnsureConfig === 'function') await _fbEnsureConfig();
+                const base = (typeof _fbRtdbUrl === 'function') ? _fbRtdbUrl() : null;
+                if (!base) return;
+                await fetch(`${base}/interesados/${p.id}/${item.ts}.json`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(item)
+                });
+            } catch(e) { console.warn('[interesados]', e.message); }
+        })();
+    } catch(e) { console.warn('[interesados]', e); }
+}
+window.tmRegistrarInteresWhatsApp = tmRegistrarInteresWhatsApp;
 
 // Actualiza el estado visual de los botones "Agregar al carrito" en los cards
 function actualizarBotonesCarrito() {
@@ -2779,6 +2822,7 @@ function contactarProducto(nombre) {
     const item = p
         ? { id: p.id, nombre: p.nombre, precio: parseFloat(p.precioActual) || 0, cantidad: 1 }
         : { nombre: nombre || 'Producto', precio: 0, cantidad: 1 };
+    if (p) tmRegistrarInteresWhatsApp(p, 'detalle');
     const msg = _mensajeOrdenWA([item]);
     window.open(`https://wa.me/${getNumeroWhatsApp()}?text=${msg}`, '_blank', 'noopener,noreferrer');
 }
@@ -5265,6 +5309,7 @@ function tmComprar(event, id, nombre) {
     if (btn) requestAnimationFrame(() => flyToCart(btn));
     // 📊 Analytics: registrar click de WhatsApp
     if (typeof tmTrackWhatsApp === 'function') tmTrackWhatsApp(id);
+    if (typeof tmRegistrarInteresWhatsApp === 'function') tmRegistrarInteresWhatsApp(id, 'tarjeta');
     // Buscar producto para tener el precio en el mensaje
     const _prod = productos.find(p => p.id === id || p.id === Number(id));
     const item = _prod
@@ -5971,10 +6016,23 @@ function repetirPedido(pedidoId) {
 //  DEEP LINKS — Abrir producto directo desde URL compartida
 //  Ejemplo: tiendamax.org/#producto-1777923552923
 // ══════════════════════════════════════════════════════════════
+function _tmGetDeepLinkProductId() {
+    const hash = window.location.hash || '';
+    if (hash.startsWith('#producto-')) {
+        const id = parseInt(hash.replace('#producto-', ''), 10);
+        if (id) return id;
+    }
+    try {
+        const u = new URL(window.location.href);
+        const q = u.searchParams.get('producto') || u.searchParams.get('p');
+        const id = parseInt(q || '', 10);
+        if (id) return id;
+    } catch(e) {}
+    return 0;
+}
+
 function _procesarDeepLink() {
-    const hash = window.location.hash;
-    if (!hash.startsWith('#producto-')) return;
-    const id = parseInt(hash.replace('#producto-', ''), 10);
+    const id = _tmGetDeepLinkProductId();
     if (!id) return;
 
     const abrir = () => {
@@ -5984,35 +6042,52 @@ function _procesarDeepLink() {
             if (p) { abrirDetalleProducto(p.id); return true; }
         }
         // Fallback: localStorage
-        const local = JSON.parse(localStorage.getItem('productos') || '[]');
+        let local = [];
+        try { local = JSON.parse(localStorage.getItem('productos') || '[]'); } catch(e) {}
         const pLocal = local.find(x => x.id === id || String(x.id) === String(id));
         if (pLocal) {
-            // Inyectar en el array global si está vacío y abrir
-            if (typeof productos !== 'undefined' && productos.length === 0) {
-                productos.push(...local);
-            }
+            if (typeof productos !== 'undefined' && productos.length === 0) productos.push(...local);
             abrirDetalleProducto(pLocal.id);
             return true;
         }
         return false;
     };
 
-    // Reintentar con polling cada 300ms hasta 8s
+    const fetchYabrir = async () => {
+        try {
+            const r = await fetch('productos.json?_=' + Date.now(), { cache: 'no-store' });
+            if (!r.ok) return false;
+            const data = await r.json();
+            if (!Array.isArray(data)) return false;
+            try { localStorage.setItem('productos', JSON.stringify(data)); } catch(e) {}
+            if (typeof productos !== 'undefined') { productos.length = 0; productos.push(...data); }
+            return abrir();
+        } catch(e) { return false; }
+    };
+
+    // Reintentar hasta 30s para conexiones lentas / Facebook in-app browser.
     if (!abrir()) {
-        let intentos = 0;
-        const intervalo = setInterval(() => {
-            intentos++;
-            if (abrir() || intentos >= 26) clearInterval(intervalo);
-        }, 300);
+        fetchYabrir().then(ok => {
+            if (ok) return;
+            let intentos = 0;
+            const intervalo = setInterval(async () => {
+                intentos++;
+                if (abrir() || intentos >= 100) {
+                    clearInterval(intervalo);
+                    return;
+                }
+                if (intentos === 10 || intentos === 30 || intentos === 60) {
+                    if (await fetchYabrir()) clearInterval(intervalo);
+                }
+            }, 300);
+        });
     }
 }
 
 window.addEventListener('hashchange', _procesarDeepLink);
+window.addEventListener('popstate', _procesarDeepLink);
 document.addEventListener('DOMContentLoaded', () => {
-    if (window.location.hash.startsWith('#producto-')) {
-        // Intentar inmediatamente con localStorage, y seguir reintentando
-        setTimeout(_procesarDeepLink, 100);
-    }
+    if (_tmGetDeepLinkProductId()) setTimeout(_procesarDeepLink, 100);
 });
 
 // ══════════════════════════════════════════════════════════════

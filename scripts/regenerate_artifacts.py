@@ -130,7 +130,8 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
   <a href="{app_url}">Abrir en TiendaMax</a>
 </div>
 <script>
-  window.location.replace('{app_url_js}');
+  // Espera breve: los crawlers alcanzan a leer OpenGraph antes de redirigir.
+  setTimeout(function(){{ window.location.replace('{app_url_js}'); }}, 900);
 </script>
 </body>
 </html>
@@ -224,7 +225,8 @@ def regenerate_pages(products: list[dict]) -> tuple[int, list[str]]:
         )
 
         page_url  = f"{SITE}/p/producto-{pid}.html"
-        app_url   = f"{SITE}/#producto-{pid}"
+        # Query + hash: query ayuda a navegadores in-app; hash mantiene compatibilidad SPA.
+        app_url   = f"{SITE}/?producto={pid}#producto-{pid}"
         app_url_js = app_url.replace("'", "\\'")
         title = escape(p.get("seoTitle") or f"{name} — ${price} USD | TiendaMax")
 

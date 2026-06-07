@@ -28,7 +28,7 @@
 <meta name="twitter:image:alt" content="Ventilador para carro — $35.00 USD">
 
 <!-- ═══ Redireccionar al usuario a la app (1s da tiempo al crawler) ═══ -->
-<meta http-equiv="refresh" content="1;url=https://tiendamax.org/#producto-1778384769262">
+<meta http-equiv="refresh" content="1;url=https://tiendamax.org/?producto=1778384769262#producto-1778384769262">
 <link rel="canonical" href="https://tiendamax.org/p/producto-1778384769262.html">
 
 <!-- ═══ JSON-LD para Google ═══ -->
@@ -95,10 +95,11 @@
   <h2>Ventilador para carro</h2>
   <p class="price">$35.00 USD</p>
   <p class="desc">Ventilador para carro de 3 cabezales, se conecta a la cigarrera del carro.</p>
-  <a href="https://tiendamax.org/#producto-1778384769262">Abrir en TiendaMax</a>
+  <a href="https://tiendamax.org/?producto=1778384769262#producto-1778384769262">Abrir en TiendaMax</a>
 </div>
 <script>
-  window.location.replace('https://tiendamax.org/#producto-1778384769262');
+  // Espera breve: los crawlers alcanzan a leer OpenGraph antes de redirigir.
+  setTimeout(function(){ window.location.replace('https://tiendamax.org/?producto=1778384769262#producto-1778384769262'); }, 900);
 </script>
 </body>
 </html>

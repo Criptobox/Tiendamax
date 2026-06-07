@@ -1,5 +1,7 @@
 // ═══════════════════════════════════════════════════════
-// TiendaMax — Service Worker v227 — motor de urgencia: badge stock, personas viendo, carrito abandonado
+// TiendaMax — Service Worker v228 — Deep links productos y OG
+// v227: registra y muestra interesados por WhatsApp para seguimiento.
+// v228: mejora enlaces directos de productos y preview Facebook.
 // v225: agente guía con botones Ejecutar/Abrir/Hecho y lectura por voz.
 // v211: mejora diseño compacto de Herramientas y botones.
 // v217: barra flotante visible al actualizar tienda con GitHub.
@@ -89,7 +91,7 @@
 //      usan el mismo helper _mensajeOrdenWA con formato premium.
 // ═══════════════════════════════════════════════════════
 
-const CACHE_NAME = 'tiendamax-202606070600';
+const CACHE_NAME = 'tiendamax-202606071930';
 
 const STATIC_ASSETS = [
   '/',
@@ -119,8 +121,6 @@ const STATIC_ASSETS = [
   '/css/tienda-plus.css',
   '/css/hero-efectos.css',
   '/js/hero-efectos.js',
-  '/js/urgencia-ventas.js',
-  '/css/urgencia-ventas.css',
   '/og-image.png',
   '/manifest.json',
   '/iconos/icon-192.png',

@@ -28,7 +28,7 @@
 <meta name="twitter:image:alt" content="Casa de campaña ligera — $100.00 USD">
 
 <!-- ═══ Redireccionar al usuario a la app (1s da tiempo al crawler) ═══ -->
-<meta http-equiv="refresh" content="1;url=https://tiendamax.org/#producto-1778820912552">
+<meta http-equiv="refresh" content="1;url=https://tiendamax.org/?producto=1778820912552#producto-1778820912552">
 <link rel="canonical" href="https://tiendamax.org/p/producto-1778820912552.html">
 
 <!-- ═══ JSON-LD para Google ═══ -->
@@ -95,10 +95,11 @@
   <h2>Casa de campaña ligera</h2>
   <p class="price">$100.00 USD</p>
   <p class="desc">Casa de campaña ligera Portatil, impermeable con mosquiteros en las 2 puertas y las 2 ventanas. Capacidad para 3 o 4 personas. Mide 2 metros de ancho, 2 metros de largo y 1.30 metros de altura, facil…</p>
-  <a href="https://tiendamax.org/#producto-1778820912552">Abrir en TiendaMax</a>
+  <a href="https://tiendamax.org/?producto=1778820912552#producto-1778820912552">Abrir en TiendaMax</a>
 </div>
 <script>
-  window.location.replace('https://tiendamax.org/#producto-1778820912552');
+  // Espera breve: los crawlers alcanzan a leer OpenGraph antes de redirigir.
+  setTimeout(function(){ window.location.replace('https://tiendamax.org/?producto=1778820912552#producto-1778820912552'); }, 900);
 </script>
 </body>
 </html>

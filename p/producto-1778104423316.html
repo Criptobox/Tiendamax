@@ -28,7 +28,7 @@
 <meta name="twitter:image:alt" content="CARGADOR 10 AMPERES — $50.00 USD">
 
 <!-- ═══ Redireccionar al usuario a la app (1s da tiempo al crawler) ═══ -->
-<meta http-equiv="refresh" content="1;url=https://tiendamax.org/#producto-1778104423316">
+<meta http-equiv="refresh" content="1;url=https://tiendamax.org/?producto=1778104423316#producto-1778104423316">
 <link rel="canonical" href="https://tiendamax.org/p/producto-1778104423316.html">
 
 <!-- ═══ JSON-LD para Google ═══ -->
@@ -95,10 +95,11 @@
   <h2>CARGADOR 10 AMPERES</h2>
   <p class="price">$50.00 USD</p>
   <p class="desc">Cargador/ reparador Inteligente de Batería de 12V y 24V a 10Amperios , auto voltaje (110 y 220). Aplicable para Baterías Plomo-Ácido, calcio, gel, Litio y LiFePO4.</p>
-  <a href="https://tiendamax.org/#producto-1778104423316">Abrir en TiendaMax</a>
+  <a href="https://tiendamax.org/?producto=1778104423316#producto-1778104423316">Abrir en TiendaMax</a>
 </div>
 <script>
-  window.location.replace('https://tiendamax.org/#producto-1778104423316');
+  // Espera breve: los crawlers alcanzan a leer OpenGraph antes de redirigir.
+  setTimeout(function(){ window.location.replace('https://tiendamax.org/?producto=1778104423316#producto-1778104423316'); }, 900);
 </script>
 </body>
 </html>

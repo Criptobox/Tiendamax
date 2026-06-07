@@ -28,7 +28,7 @@
 <meta name="twitter:image:alt" content="Linterna de cabeza — $30.00 USD">
 
 <!-- ═══ Redireccionar al usuario a la app (1s da tiempo al crawler) ═══ -->
-<meta http-equiv="refresh" content="1;url=https://tiendamax.org/#producto-1778384507302">
+<meta http-equiv="refresh" content="1;url=https://tiendamax.org/?producto=1778384507302#producto-1778384507302">
 <link rel="canonical" href="https://tiendamax.org/p/producto-1778384507302.html">
 
 <!-- ═══ JSON-LD para Google ═══ -->
@@ -95,10 +95,11 @@
   <h2>Linterna de cabeza</h2>
   <p class="price">$30.00 USD</p>
   <p class="desc">Linterna de cabeza : * Largo alcance * Luz blanca superbrillante de 30w de potencia. * Viene con 3 baterias de litio recargables. * Angulo de iluminación ajustable. * Carga con cable tipo c y funcion…</p>
-  <a href="https://tiendamax.org/#producto-1778384507302">Abrir en TiendaMax</a>
+  <a href="https://tiendamax.org/?producto=1778384507302#producto-1778384507302">Abrir en TiendaMax</a>
 </div>
 <script>
-  window.location.replace('https://tiendamax.org/#producto-1778384507302');
+  // Espera breve: los crawlers alcanzan a leer OpenGraph antes de redirigir.
+  setTimeout(function(){ window.location.replace('https://tiendamax.org/?producto=1778384507302#producto-1778384507302'); }, 900);
 </script>
 </body>
 </html>

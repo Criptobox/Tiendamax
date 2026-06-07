@@ -28,7 +28,7 @@
 <meta name="twitter:image:alt" content="Cargador portátil solar — $35.00 USD">
 
 <!-- ═══ Redireccionar al usuario a la app (1s da tiempo al crawler) ═══ -->
-<meta http-equiv="refresh" content="1;url=https://tiendamax.org/#producto-1778384976624">
+<meta http-equiv="refresh" content="1;url=https://tiendamax.org/?producto=1778384976624#producto-1778384976624">
 <link rel="canonical" href="https://tiendamax.org/p/producto-1778384976624.html">
 
 <!-- ═══ JSON-LD para Google ═══ -->
@@ -95,10 +95,11 @@
   <h2>Cargador portátil solar</h2>
   <p class="price">$35.00 USD</p>
   <p class="desc">Cargador portátil solar de 30 000mAh, doble puerto USB para todos los teléfonos celulares y dispositivos electrónicos - Duradero. Carga inalámbrica y cables de carga usb, tipo c, lighting y v8 inclui…</p>
-  <a href="https://tiendamax.org/#producto-1778384976624">Abrir en TiendaMax</a>
+  <a href="https://tiendamax.org/?producto=1778384976624#producto-1778384976624">Abrir en TiendaMax</a>
 </div>
 <script>
-  window.location.replace('https://tiendamax.org/#producto-1778384976624');
+  // Espera breve: los crawlers alcanzan a leer OpenGraph antes de redirigir.
+  setTimeout(function(){ window.location.replace('https://tiendamax.org/?producto=1778384976624#producto-1778384976624'); }, 900);
 </script>
 </body>
 </html>

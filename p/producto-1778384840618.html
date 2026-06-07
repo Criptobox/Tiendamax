@@ -28,7 +28,7 @@
 <meta name="twitter:image:alt" content="Protege tu hogar — $30.00 USD">
 
 <!-- ═══ Redireccionar al usuario a la app (1s da tiempo al crawler) ═══ -->
-<meta http-equiv="refresh" content="1;url=https://tiendamax.org/#producto-1778384840618">
+<meta http-equiv="refresh" content="1;url=https://tiendamax.org/?producto=1778384840618#producto-1778384840618">
 <link rel="canonical" href="https://tiendamax.org/p/producto-1778384840618.html">
 
 <!-- ═══ JSON-LD para Google ═══ -->
@@ -95,10 +95,11 @@
   <h2>Protege tu hogar</h2>
   <p class="price">$30.00 USD</p>
   <p class="desc">*Protege tu hogar y mira quién toca tu puerta desde tu celular( si tienes internet en tu casa, puedes ver quien toca a tu puerta desde cualquier parte) *Recibe alertas en tu teléfono cuando alguien l…</p>
-  <a href="https://tiendamax.org/#producto-1778384840618">Abrir en TiendaMax</a>
+  <a href="https://tiendamax.org/?producto=1778384840618#producto-1778384840618">Abrir en TiendaMax</a>
 </div>
 <script>
-  window.location.replace('https://tiendamax.org/#producto-1778384840618');
+  // Espera breve: los crawlers alcanzan a leer OpenGraph antes de redirigir.
+  setTimeout(function(){ window.location.replace('https://tiendamax.org/?producto=1778384840618#producto-1778384840618'); }, 900);
 </script>
 </body>
 </html>
