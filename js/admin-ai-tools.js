@@ -1,22 +1,22 @@
 // ═══════════════════════════════════════════════════════
-// TiendaMax Admin AI Tools — DeepSeek modules v1-v14
+// TiendaMax Admin AI Tools — IA modules v1-v14
 // Extraído de admin.html para reducir peso y facilitar mantenimiento.
 // Cada módulo está encapsulado en su propio IIFE.
 // ═══════════════════════════════════════════════════════
 
-function tmDeepSeekFriendlyError(status, text='') {
+function tmIAFriendlyError(status, text='') {
   let msg = '';
   try { msg = JSON.parse(text).error?.message || text; } catch(e) { msg = text || ''; }
   if (status === 402 || /insufficient\s*balance|balance|credit|billing|quota/i.test(msg)) {
-    return 'DeepSeek: saldo/créditos insuficientes. Recarga tu cuenta de DeepSeek o cambia a modo local; no es un error de TiendaMax.';
+    return 'IA: saldo/créditos insuficientes. Recarga tu cuenta de IA o cambia a modo local; no es un error de TiendaMax.';
   }
   if (status === 401 || status === 403 || /invalid.*key|unauthorized|forbidden|api[_ ]?key/i.test(msg)) {
-    return 'DeepSeek: API Key inválida o sin permiso. Revisa la clave guardada en Configuración.';
+    return 'IA: API Key inválida o sin permiso. Revisa la clave guardada en Configuración.';
   }
   if (status === 429 || /rate limit|too many/i.test(msg)) {
-    return 'DeepSeek: límite de uso temporal alcanzado. Espera un poco e intenta de nuevo.';
+    return 'IA: límite de uso temporal alcanzado. Espera un poco e intenta de nuevo.';
   }
-  return 'DeepSeek HTTP ' + status + (msg ? ': ' + String(msg).slice(0, 140) : '');
+  return 'IA HTTP ' + status + (msg ? ': ' + String(msg).slice(0, 140) : '');
 }
 
 
@@ -27,6 +27,20 @@ function tmAIProviderInfo() {
 }
 function tmOpenRouterModel() {
   return localStorage.getItem('tmOpenRouterModel') || localStorage.getItem('tmOpenRouterModelWorking') || 'openrouter/free';
+}
+async function tmFetchAI(url, options = {}, ms = 45000) {
+  const ctrl = new AbortController();
+  const t = setTimeout(() => ctrl.abort(), ms);
+  try {
+    return await fetch(url, { ...options, signal: ctrl.signal });
+  } catch (e) {
+    if (e && (e.name === 'AbortError' || /abort/i.test(e.message || ''))) {
+      throw new Error('La IA tardó demasiado en responder. Prueba de nuevo o usa otro proveedor/modelo.');
+    }
+    throw e;
+  } finally {
+    clearTimeout(t);
+  }
 }
 async function tmAIChat(prompt, opts = {}) {
   const { key, provider } = tmAIProviderInfo();
@@ -46,7 +60,7 @@ async function tmAIChat(prompt, opts = {}) {
     ].filter((m, i, a) => m && a.indexOf(m) === i);
     let lastErr = '';
     for (const model of fallbackModels) {
-      const resp = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+      const resp = await tmFetchAI('https://openrouter.ai/api/v1/chat/completions', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -70,7 +84,7 @@ async function tmAIChat(prompt, opts = {}) {
         return (data.choices?.[0]?.message?.content || '').trim();
       }
       let t=''; try{t=await resp.text()}catch(e){}
-      lastErr = tmDeepSeekFriendlyError(resp.status,t).replace('DeepSeek','OpenRouter') + ' [modelo: ' + model + ']';
+      lastErr = tmIAFriendlyError(resp.status,t).replace('IA','OpenRouter') + ' [modelo: ' + model + ']';
       // Si el modelo no existe/no tiene endpoints, probar otro gratis automáticamente.
       if (!(resp.status === 404 || /no endpoints|not found|model/i.test(t))) break;
     }
@@ -80,7 +94,7 @@ async function tmAIChat(prompt, opts = {}) {
     const models = ['gemini-2.5-flash-lite','gemini-2.5-flash','gemini-2.0-flash','gemini-1.5-flash-latest','gemini-1.5-flash'];
     let lastErr = '';
     for (const model of models) {
-      const resp = await fetch('https://generativelanguage.googleapis.com/v1beta/models/' + model + ':generateContent?key=' + encodeURIComponent(key), {
+      const resp = await tmFetchAI('https://generativelanguage.googleapis.com/v1beta/models/' + model + ':generateContent?key=' + encodeURIComponent(key), {
         method: 'POST',
         headers: {'Content-Type':'application/json'},
         body: JSON.stringify({
@@ -105,7 +119,7 @@ async function tmAIChat(prompt, opts = {}) {
     const models = ['llama-3.1-8b-instant','llama-3.3-70b-versatile','gemma2-9b-it'];
     let lastErr = '';
     for (const model of models) {
-      const resp = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+      const resp = await tmFetchAI('https://api.groq.com/openai/v1/chat/completions', {
         method: 'POST',
         headers: {'Content-Type':'application/json','Authorization':'Bearer '+key},
         body: JSON.stringify({
@@ -129,7 +143,7 @@ async function tmAIChat(prompt, opts = {}) {
   }
 
   if (provider === 'deepseek' || key.startsWith('sk-')) {
-    const resp = await fetch('https://api.deepseek.com/v1/chat/completions', {
+    const resp = await tmFetchAI('https://api.deepseek.com/v1/chat/completions', {
       method:'POST',
       headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},
       body: JSON.stringify({
@@ -142,11 +156,11 @@ async function tmAIChat(prompt, opts = {}) {
         ]
       })
     });
-    if(!resp.ok){let t='';try{t=await resp.text()}catch(e){};throw new Error(tmDeepSeekFriendlyError(resp.status,t));}
+    if(!resp.ok){let t='';try{t=await resp.text()}catch(e){};throw new Error(tmIAFriendlyError(resp.status,t));}
     const data=await resp.json();
     return (data.choices?.[0]?.message?.content||'').trim();
   }
-  throw new Error('Proveedor IA no soportado. Usa OpenRouter (sk-or-), Gemini (AIza), Groq (gsk_) o DeepSeek (sk-).');
+  throw new Error('Proveedor IA no soportado. Usa OpenRouter (sk-or-), Gemini (AIza), Groq (gsk_) o IA (sk-).');
 }
 window.tmAIChat = tmAIChat;
 window.tmOpenRouterModel = tmOpenRouterModel;
@@ -204,26 +218,26 @@ function tmExtractJsonObject(text) {
     if(tipo==='post') return `🔥 ${name}\n\n${desc}\n\n💵 $${price} USD\n📦 Stock: ${stock}\n📲 Escríbenos por WhatsApp para reservar.\n\n#TiendaMax #Cuba #${String(p.categoria||'oferta').replace(/\s+/g,'')}`;
     return `${name}\n\n${desc}\n\n💵 Precio: $${price} USD\n📦 Stock: ${stock}\n🏷️ Categoría: ${p.categoria||'General'}\n\nTexto vendedor:\n🔥 ${name} disponible ahora en TiendaMax. Ideal para quien busca calidad, utilidad y entrega coordinada. Escríbenos para reservar.`;
   }
-  async function callDeepSeek(prompt){
+  async function callIA(prompt){
     return tmAIChat(prompt, { max_tokens: 850 });
   }
   async function genAI(){
     const out=$('#tmToolOut'); if(!out) return;
     const p=prodBySelect('tmAiProd');
     const tono=$('#tmAiTone')?.value||'Premium vendedor';
-    out.textContent='⏳ Generando con DeepSeek...';
+    out.textContent='⏳ Generando con IA...';
     const prompt=`Crea textos para este producto de TiendaMax.\n\n${prodInfo(p)}\n\nTono/Formato: ${tono}.\n\nEntrega:\n1) Título mejorado corto.\n2) Descripción lista para la ficha del producto, 2-4 oraciones.\n3) Texto corto para WhatsApp.\n4) 5 beneficios en bullets.\n5) Hashtags útiles.\n\nNo inventes especificaciones no dadas.`;
-    try{ out.textContent=await callDeepSeek(prompt); notify('✅ Texto generado con DeepSeek','success'); }
-    catch(e){ out.textContent=fallback(p,'ai')+'\n\n⚠️ Nota: '+e.message+'. Usé plantilla local.'; notify('Plantilla local: configura DeepSeek en Configuración','warning'); }
+    try{ out.textContent=await callIA(prompt); notify('✅ Texto generado con IA','success'); }
+    catch(e){ out.textContent=fallback(p,'ai')+'\n\n⚠️ Nota: '+e.message+'. Usé plantilla local.'; notify('Plantilla local: configura la IA en Configuración','warning'); }
   }
   async function genPost(){
     const out=$('#tmToolOut'); if(!out) return;
     const p=prodBySelect('tmPostProd');
     const formato=$('#tmPostType')?.value||'Facebook grupo';
-    out.textContent='⏳ Generando post con DeepSeek...';
+    out.textContent='⏳ Generando post con IA...';
     const prompt=`Genera una publicación lista para copiar.\n\nProducto:\n${prodInfo(p)}\n\nFormato: ${formato}.\n\nReglas:\n- Español natural para Cuba.\n- Usa emojis con moderación.\n- Incluye precio y stock si están disponibles.\n- Cierra con llamada a WhatsApp/reserva.\n- No prometas envíos ni garantía si no está indicado.\n- Si es Facebook grupo, hazlo corto y directo.`;
-    try{ out.textContent=await callDeepSeek(prompt); notify('✅ Post generado con DeepSeek','success'); }
-    catch(e){ out.textContent=fallback(p,'post')+'\n\n⚠️ Nota: '+e.message+'. Usé plantilla local.'; notify('Plantilla local: configura DeepSeek en Configuración','warning'); }
+    try{ out.textContent=await callIA(prompt); notify('✅ Post generado con IA','success'); }
+    catch(e){ out.textContent=fallback(p,'post')+'\n\n⚠️ Nota: '+e.message+'. Usé plantilla local.'; notify('Plantilla local: configura la IA en Configuración','warning'); }
   }
   document.addEventListener('click',function(e){
     const btn=e.target.closest('[data-act]'); if(!btn) return;
@@ -268,11 +282,11 @@ function tmExtractJsonObject(text) {
     p.scrollIntoView({behavior:'smooth',block:'start'});
   }
   function addCards(){
-    const wrap=$('#herramientas .tm-tools-wrap'); if(!wrap || $('#tmDeepSeekExtraCards')) return;
+    const wrap=$('#herramientas .tm-tools-wrap'); if(!wrap || $('#tmIAExtraCards')) return;
     const div=document.createElement('div');
-    div.id='tmDeepSeekExtraCards';
+    div.id='tmIAExtraCards';
     div.innerHTML=`
-      <div class="tm-tier"><h4>DEEPSEEK — SIGUIENTES PASOS</h4><span class="tm-tier-badge purple">IA conectada</span></div>
+      <div class="tm-tier"><h4>IA — SIGUIENTES PASOS</h4><span class="tm-tier-badge purple">IA conectada</span></div>
       <div class="tm-tools-grid">
         <div class="tm-tool-card enabled" data-tool="pushai"><span class="state">IA</span><div class="ico" style="background:rgba(245,158,11,.18)">🔔</div><h5>Push con IA</h5><p>Genera título, mensaje y URL de notificación desde un producto.</p></div>
         <div class="tm-tool-card enabled" data-tool="waai"><span class="state">IA</span><div class="ico" style="background:rgba(37,211,102,.18)">💬</div><h5>Respuesta WhatsApp</h5><p>Responde preguntas de clientes con tono vendedor y natural.</p></div>
@@ -281,7 +295,7 @@ function tmExtractJsonObject(text) {
     if(panel) wrap.insertBefore(div,panel); else wrap.appendChild(div);
   }
   function openPushAI(){
-    panel('🔔 Generador IA de notificaciones push','DeepSeek crea un título y mensaje corto listo para enviar.',`
+    panel('🔔 Generador IA de notificaciones push','IA crea un título y mensaje corto listo para enviar.',`
       <div class="tm-form-grid">
         <div class="tm-field"><label>Producto</label><select id="tmPushAiProd">${productOptions()}</select></div>
         <div class="tm-field"><label>Tipo</label><select id="tmPushAiTone"><option>Producto nuevo</option><option>Oferta elegante</option><option>Urgencia suave</option><option>Últimas unidades</option><option>Vuelve a estar disponible</option></select></div>
@@ -290,7 +304,7 @@ function tmExtractJsonObject(text) {
       <div id="tmToolOut" class="tm-code" style="margin-top:12px">Genera una notificación para rellenar Título, Mensaje y URL.</div>`);
   }
   function openWaAI(){
-    panel('💬 Respuestas WhatsApp con IA','Escribe la pregunta del cliente y DeepSeek genera una respuesta lista para copiar.',`
+    panel('💬 Respuestas WhatsApp con IA','Escribe la pregunta del cliente y IA genera una respuesta lista para copiar.',`
       <div class="tm-form-grid">
         <div class="tm-field"><label>Producto relacionado</label><select id="tmWaAiProd">${productOptions()}</select></div>
         <div class="tm-field"><label>Tono</label><select id="tmWaAiTone"><option>Amable vendedor</option><option>Corto y directo</option><option>Cierre de venta</option><option>Técnico sencillo</option><option>Negociación educada</option></select></div>
@@ -302,7 +316,7 @@ function tmExtractJsonObject(text) {
   async function genPush(){
     const out=$('#tmToolOut'); if(!out) return;
     const p=bySelect('tmPushAiProd'); const tipo=$('#tmPushAiTone')?.value||'Producto nuevo';
-    out.textContent='⏳ Generando push con DeepSeek...';
+    out.textContent='⏳ Generando push con IA...';
     const prompt=`Crea una notificación push para TiendaMax.\n\nProducto:\n${prodInfo(p)}\nURL sugerida: ${productUrl(p)}\nTipo: ${tipo}\n\nResponde SOLO con JSON válido, sin markdown ni explicación:\n{"titulo":"máximo 38 caracteres","mensaje":"máximo 95 caracteres","url":"${productUrl(p)}"}\n\nNo uses comillas fuera del JSON.`;
     try{
       const text=await deepseek(prompt,350);
@@ -334,7 +348,7 @@ function tmExtractJsonObject(text) {
   async function genWa(){
     const out=$('#tmToolOut'); if(!out) return;
     const p=bySelect('tmWaAiProd'); const tono=$('#tmWaAiTone')?.value||'Amable vendedor'; const q=$('#tmWaAiQ')?.value.trim()||'El cliente pide información del producto.';
-    out.textContent='⏳ Generando respuesta con DeepSeek...';
+    out.textContent='⏳ Generando respuesta con IA...';
     const prompt=`Genera una respuesta de WhatsApp para un cliente.\n\nProducto:\n${prodInfo(p)}\n\nPregunta del cliente:\n${q}\n\nTono: ${tono}.\n\nReglas: respuesta breve, natural, con cierre para reservar/comprar. No inventes garantía/envío. Si falta un dato, pide confirmarlo.`;
     try{ out.textContent=await deepseek(prompt,600); notify('✅ Respuesta generada','success'); }
     catch(e){ out.textContent=`Hola 👋 Sí, te comento sobre ${p.nombre||'ese producto'}.\n\n${p.descripcion||'Está disponible en TiendaMax.'}\n\n💵 Precio: $${Number(p.precioActual||0).toFixed(2)} USD\n📦 Stock: ${Number(p.stock||0)}\n\nSi quieres, te lo puedo reservar y coordinamos por aquí.\n\n⚠️ ${e.message}`; notify('Respuesta con plantilla local','warning'); }
@@ -391,10 +405,10 @@ function tmExtractJsonObject(text) {
     p.scrollIntoView({behavior:'smooth',block:'start'});
   }
   function addCards(){
-    const wrap=$('#herramientas .tm-tools-wrap'); if(!wrap || $('#tmDeepSeekAuditCards')) return;
-    const div=document.createElement('div'); div.id='tmDeepSeekAuditCards';
+    const wrap=$('#herramientas .tm-tools-wrap'); if(!wrap || $('#tmIAAuditCards')) return;
+    const div=document.createElement('div'); div.id='tmIAAuditCards';
     div.innerHTML=`
-      <div class="tm-tier"><h4>DEEPSEEK — OPTIMIZACIÓN</h4><span class="tm-tier-badge gold">Auditoría</span></div>
+      <div class="tm-tier"><h4>IA — OPTIMIZACIÓN</h4><span class="tm-tier-badge gold">Auditoría</span></div>
       <div class="tm-tools-grid">
         <div class="tm-tool-card enabled" data-tool="auditai"><span class="state">IA</span><div class="ico" style="background:rgba(231,76,60,.16)">🕵️</div><h5>Auditor IA de producto</h5><p>Detecta errores, datos faltantes y oportunidades de mejora antes de publicar.</p></div>
         <div class="tm-tool-card enabled" data-tool="insightsai"><span class="state">IA</span><div class="ico" style="background:rgba(52,152,219,.18)">📊</div><h5>Resumen IA de ventas</h5><p>Analiza ventas, stock y analytics para recomendar qué publicar hoy.</p></div>
@@ -408,7 +422,7 @@ function tmExtractJsonObject(text) {
       <div id="tmToolOut" class="tm-code" style="margin-top:12px">Selecciona un producto y ejecuta la auditoría.</div>`);
   }
   function openInsights(){
-    panel('📊 Resumen inteligente de ventas y analytics','DeepSeek analiza datos locales/Firebase y propone acciones concretas.',`
+    panel('📊 Resumen inteligente de ventas y analytics','IA analiza datos locales/Firebase y propone acciones concretas.',`
       <div class="tm-actions"><button class="tm-btn primary" data-ds3-act="insightsRun">Generar resumen IA</button><button class="tm-btn gold" data-ds3-act="insightsPush">Crear idea de push</button><button class="tm-btn" data-ds3-act="copyOut">Copiar</button></div>
       <div id="tmToolOut" class="tm-code" style="margin-top:12px">Pulsa generar para analizar productos, ventas, stock y métricas disponibles.</div>`);
   }
@@ -425,10 +439,10 @@ function tmExtractJsonObject(text) {
   }
   async function runAudit(){
     const out=$('#tmToolOut'); if(!out) return; const p=bySelect('tmAuditProd');
-    out.textContent='⏳ Auditando con DeepSeek...';
+    out.textContent='⏳ Auditando con IA...';
     const prompt=`Audita este producto antes de publicarlo.\n\n${prodInfo(p)}\n\nEntrega en secciones:\n1) Estado general: Bueno/Regular/Crítico.\n2) Problemas o riesgos detectados.\n3) Datos que faltan.\n4) Descripción mejorada sugerida.\n5) Categoría/subcategoría sugerida si ves inconsistencia.\n6) Acción recomendada hoy: publicar, corregir, reponer o archivar.\n\nSé directo y práctico.`;
     try{ out.textContent=await deepseek(prompt,1000); notify('✅ Auditoría generada','success'); }
-    catch(e){ out.textContent=localAudit(p)+'\n\n⚠️ '+e.message; notify('Auditoría local: configura DeepSeek para análisis avanzado','warning'); }
+    catch(e){ out.textContent=localAudit(p)+'\n\n⚠️ '+e.message; notify('Auditoría local: configura la IA para análisis avanzado','warning'); }
   }
   async function collectAnalytics(){
     let fb={vistas:{},whatsapp:{},suscriptores:0};
@@ -447,7 +461,7 @@ function tmExtractJsonObject(text) {
   }
   async function runInsights(pushOnly=false){
     const out=$('#tmToolOut'); if(!out) return;
-    out.textContent='⏳ Leyendo datos y consultando DeepSeek...';
+    out.textContent='⏳ Leyendo datos y consultando IA...';
     const fb=await collectAnalytics(); const payload=buildSummaryPayload(fb);
     const prompt=pushOnly?
       `Con estos datos de TiendaMax, propone UNA campaña push para hoy.\n\n${JSON.stringify(payload,null,2)}\n\nEntrega SOLO:\nTítulo:\nMensaje:\nProducto recomendado:\nMotivo:`:
@@ -455,7 +469,7 @@ function tmExtractJsonObject(text) {
     try{ out.textContent=await deepseek(prompt,1200); notify('✅ Resumen IA generado','success'); }
     catch(e){
       out.textContent=`Resumen local\n\nProductos: ${payload.totalProductos}\nVentas registradas: ${payload.ventasCount}\nTotal vendido: $${payload.totalVentas.toFixed(2)}\nSuscriptores: ${payload.suscriptores}\n\nStock bajo:\n${payload.stockBajo.map(x=>'• '+x).join('\n')||'• Sin alertas'}\n\nAgotados:\n${payload.agotados.map(x=>'• '+x).join('\n')||'• Sin agotados'}\n\nRecomendación: publica productos con buen stock, repón agotados y usa push para productos con visitas/WhatsApp.\n\n⚠️ ${e.message}`;
-      notify('Resumen local: configura DeepSeek para recomendaciones avanzadas','warning');
+      notify('Resumen local: configura la IA para recomendaciones avanzadas','warning');
     }
   }
   document.addEventListener('click',function(e){
@@ -490,16 +504,16 @@ function tmExtractJsonObject(text) {
   }
   function panel(title,sub,body){const p=$('#tmToolPanel'); if(!p)return; p.className='tm-panel active'; p.innerHTML=`<div class="tm-panel-head"><div><h4>${title}</h4><p>${sub}</p></div><button class="tm-panel-close" data-act="closePanel">✕ Cerrar</button></div>${body}`; p.scrollIntoView({behavior:'smooth',block:'start'});}
   function addCards(){
-    const wrap=$('#herramientas .tm-tools-wrap'); if(!wrap || $('#tmDeepSeekSeoCards')) return;
-    const div=document.createElement('div'); div.id='tmDeepSeekSeoCards';
-    div.innerHTML=`<div class="tm-tier"><h4>DEEPSEEK — SEO Y COMPARTIR</h4><span class="tm-tier-badge">Visibilidad</span></div>
+    const wrap=$('#herramientas .tm-tools-wrap'); if(!wrap || $('#tmIASeoCards')) return;
+    const div=document.createElement('div'); div.id='tmIASeoCards';
+    div.innerHTML=`<div class="tm-tier"><h4>IA — SEO Y COMPARTIR</h4><span class="tm-tier-badge">Visibilidad</span></div>
     <div class="tm-tools-grid">
       <div class="tm-tool-card enabled" data-tool="seoai"><span class="state">IA</span><div class="ico" style="background:rgba(46,204,113,.18)">🔎</div><h5>SEO automático</h5><p>Genera meta title, description, keywords, slug y texto para compartir.</p></div>
     </div>`;
     const panelEl=$('#tmToolPanel'); if(panelEl) wrap.insertBefore(div,panelEl); else wrap.appendChild(div);
   }
   function openSEO(){
-    panel('🔎 SEO automático con DeepSeek','Genera y guarda metadatos para mejorar cómo se comparte cada producto.',`
+    panel('🔎 SEO automático con IA','Genera y guarda metadatos para mejorar cómo se comparte cada producto.',`
       <div class="tm-field"><label>Producto</label><select id="tmSeoProd">${productOptions()}</select></div>
       <div class="tm-actions"><button class="tm-btn primary" data-ds4-act="seoGen">Generar SEO</button><button class="tm-btn gold" data-ds4-act="seoApply">Guardar en producto</button><button class="tm-btn" data-ds4-act="copyOut">Copiar</button></div>
       <div id="tmToolOut" class="tm-code" style="margin-top:12px">Genera SEO para ver el resultado. Se guardará dentro del producto como campos seoTitle, seoDescription, seoKeywords, slug y shareText.</div>`);
@@ -509,7 +523,7 @@ function tmExtractJsonObject(text) {
     return {seoTitle:`${name} en TiendaMax`,seoDescription:`Compra ${name} en TiendaMax. ${cat}${price?' desde $'+price.toFixed(2)+' USD':''}. Consulta disponibilidad y reserva por WhatsApp.`,seoKeywords:[name,cat,'TiendaMax','Cuba','comprar online'].filter(Boolean),slug:slugify(name),shareText:`🔥 ${name}\n${price?'💵 $'+price.toFixed(2)+' USD\n':''}Disponible en TiendaMax. Escríbenos para reservar.`};
   }
   async function genSEO(){
-    const out=$('#tmToolOut'); if(!out) return; const p=bySelect('tmSeoProd'); out.textContent='⏳ Generando SEO con DeepSeek...';
+    const out=$('#tmToolOut'); if(!out) return; const p=bySelect('tmSeoProd'); out.textContent='⏳ Generando SEO con IA...';
     const prompt=`Genera SEO para este producto.\n\n${prodInfo(p)}\n\nResponde SOLO JSON válido con esta forma exacta, sin markdown ni explicación:\n{"seoTitle":"máximo 60 caracteres","seoDescription":"máximo 155 caracteres","seoKeywords":["5 a 8 keywords"],"slug":"url-amigable-sin-acentos","shareText":"texto corto para compartir por WhatsApp/Facebook"}\n\nNo inventes especificaciones.`;
     try{
       const text=await deepseek(prompt); const m=tmExtractJsonObject(text); if(!m) throw new Error('La IA no devolvió JSON limpio');
@@ -550,9 +564,9 @@ function tmExtractJsonObject(text) {
   }
   function panel(title,sub,body){const p=$('#tmToolPanel'); if(!p)return; p.className='tm-panel active'; p.innerHTML=`<div class="tm-panel-head"><div><h4>${title}</h4><p>${sub}</p></div><button class="tm-panel-close" data-act="closePanel">✕ Cerrar</button></div>${body}`; p.scrollIntoView({behavior:'smooth',block:'start'});}
   function addCards(){
-    const wrap=$('#herramientas .tm-tools-wrap'); if(!wrap || $('#tmDeepSeekRecCards')) return;
-    const div=document.createElement('div'); div.id='tmDeepSeekRecCards';
-    div.innerHTML=`<div class="tm-tier"><h4>DEEPSEEK — VENTAS CRUZADAS</h4><span class="tm-tier-badge purple">Upsell</span></div>
+    const wrap=$('#herramientas .tm-tools-wrap'); if(!wrap || $('#tmIARecCards')) return;
+    const div=document.createElement('div'); div.id='tmIARecCards';
+    div.innerHTML=`<div class="tm-tier"><h4>IA — VENTAS CRUZADAS</h4><span class="tm-tier-badge purple">Upsell</span></div>
     <div class="tm-tools-grid"><div class="tm-tool-card enabled" data-tool="recsai"><span class="state">IA</span><div class="ico" style="background:rgba(255,107,53,.18)">🧲</div><h5>Recomendador IA</h5><p>Elige productos relacionados, bundles y texto de upsell para aumentar ventas.</p></div></div>`;
     const panelEl=$('#tmToolPanel'); if(panelEl) wrap.insertBefore(div,panelEl); else wrap.appendChild(div);
   }
@@ -570,7 +584,7 @@ function tmExtractJsonObject(text) {
     return {recomendados:recs.map(p=>p.id),bundleText:`Combina ${target.nombre||'este producto'} con accesorios o productos relacionados para aprovechar mejor tu compra.`,upsellText:'También puedes revisar estos productos complementarios antes de reservar.',whatsappUpsell:`Si quieres, también te puedo mostrar opciones relacionadas con ${target.nombre||'ese producto'} para que elijas mejor.`};
   }
   async function genRecs(){
-    const out=$('#tmToolOut'); if(!out)return; const target=bySelect('tmRecProd'); out.textContent='⏳ Generando recomendaciones con DeepSeek...';
+    const out=$('#tmToolOut'); if(!out)return; const target=bySelect('tmRecProd'); out.textContent='⏳ Generando recomendaciones con IA...';
     const candidates=products().filter(p=>p.id!==target.id&&Number(p.stock||0)>0).slice(0,60).map(p=>({id:p.id,nombre:p.nombre,categoria:p.categoria,precio:p.precioActual,stock:p.stock,descripcion:String(p.descripcion||'').slice(0,140)}));
     const prompt=`Producto principal:\n${info(target)}\n\nCandidatos disponibles en JSON:\n${JSON.stringify(candidates,null,2)}\n\nElige hasta 4 productos complementarios reales. Responde SOLO JSON válido, sin markdown, sin explicación:\n{"recomendados":[ids reales],"bundleText":"frase corta para sección relacionados","upsellText":"frase corta visible en detalle","whatsappUpsell":"mensaje breve para ofrecer productos relacionados por WhatsApp"}\n\nReglas: usa solo IDs de candidatos, prioriza utilidad complementaria y stock disponible. No recomiendes el mismo producto.`;
     try{
@@ -618,9 +632,9 @@ function tmExtractJsonObject(text) {
   }
   function panel(title,sub,body){const p=$('#tmToolPanel'); if(!p)return; p.className='tm-panel active'; p.innerHTML=`<div class="tm-panel-head"><div><h4>${title}</h4><p>${sub}</p></div><button class="tm-panel-close" data-act="closePanel">✕ Cerrar</button></div>${body}`; p.scrollIntoView({behavior:'smooth',block:'start'});}
   function addCards(){
-    const wrap=$('#herramientas .tm-tools-wrap'); if(!wrap || $('#tmDeepSeekBulkCards')) return;
-    const div=document.createElement('div'); div.id='tmDeepSeekBulkCards';
-    div.innerHTML=`<div class="tm-tier"><h4>DEEPSEEK — AUTOMATIZACIÓN MASIVA</h4><span class="tm-tier-badge gold">Batch</span></div>
+    const wrap=$('#herramientas .tm-tools-wrap'); if(!wrap || $('#tmIABulkCards')) return;
+    const div=document.createElement('div'); div.id='tmIABulkCards';
+    div.innerHTML=`<div class="tm-tier"><h4>IA — AUTOMATIZACIÓN MASIVA</h4><span class="tm-tier-badge gold">Batch</span></div>
     <div class="tm-tools-grid"><div class="tm-tool-card enabled" data-tool="bulkai"><span class="state">IA</span><div class="ico" style="background:rgba(155,89,182,.18)">⚙️</div><h5>IA masiva</h5><p>Aplica SEO, auditoría o recomendaciones a varios productos en lote controlado.</p></div></div>`;
     const panelEl=$('#tmToolPanel'); if(panelEl) wrap.insertBefore(div,panelEl); else wrap.appendChild(div);
   }
@@ -630,7 +644,7 @@ function tmExtractJsonObject(text) {
         <div class="tm-field"><label>Tarea</label><select id="tmBulkTask"><option value="seo_missing">SEO a productos sin SEO</option><option value="seo_all">Regenerar SEO</option><option value="recs_missing">Recomendaciones sin configurar</option><option value="audit_report">Reporte de auditoría</option></select></div>
         <div class="tm-field"><label>Categoría</label><select id="tmBulkCat">${catOptions()}</select></div>
         <div class="tm-field"><label>Límite por tanda</label><input id="tmBulkLimit" type="number" min="1" max="20" value="5"></div>
-        <div class="tm-field"><label>Modo</label><select id="tmBulkMode"><option value="deepseek">DeepSeek si está configurado</option><option value="local">Solo local / sin API</option></select></div>
+        <div class="tm-field"><label>Modo</label><select id="tmBulkMode"><option value="deepseek">IA si está configurada</option><option value="local">Solo local / sin API</option></select></div>
       </div>
       <div class="tm-actions"><button class="tm-btn primary" data-ds6-act="bulkPreview">Vista previa</button><button class="tm-btn gold" data-ds6-act="bulkRun">Ejecutar lote</button><button class="tm-btn gold" data-ds6-act="bulkRunAll">Auto 5 en 5</button><button class="tm-btn" data-ds6-act="copyOut">Copiar log</button></div>
       <div class="tm-note">Consejo: ‘Auto 5 en 5’ procesa todas las tandas pendientes y al final solo tienes que pulsar “Actualizar tienda”.</div>
@@ -754,9 +768,9 @@ function tmExtractJsonObject(text) {
   }
   function panel(title,sub,body){const p=$('#tmToolPanel'); if(!p)return; p.className='tm-panel active'; p.innerHTML=`<div class="tm-panel-head"><div><h4>${title}</h4><p>${sub}</p></div><button class="tm-panel-close" data-act="closePanel">✕ Cerrar</button></div>${body}`; p.scrollIntoView({behavior:'smooth',block:'start'});}
   function addCards(){
-    const wrap=$('#herramientas .tm-tools-wrap'); if(!wrap || $('#tmDeepSeekChatCards')) return;
-    const div=document.createElement('div'); div.id='tmDeepSeekChatCards';
-    div.innerHTML=`<div class="tm-tier"><h4>DEEPSEEK — COPILOTO ADMIN</h4><span class="tm-tier-badge purple">Chat</span></div>
+    const wrap=$('#herramientas .tm-tools-wrap'); if(!wrap || $('#tmIAChatCards')) return;
+    const div=document.createElement('div'); div.id='tmIAChatCards';
+    div.innerHTML=`<div class="tm-tier"><h4>IA — COPILOTO ADMIN</h4><span class="tm-tier-badge purple">Chat</span></div>
     <div class="tm-tools-grid"><div class="tm-tool-card enabled" data-tool="chatai"><span class="state">IA</span><div class="ico" style="background:rgba(79,195,247,.18)">🧠</div><h5>Chat IA del admin</h5><p>Pregunta qué publicar, qué reponer, ofertas, campañas y mejoras.</p></div></div>`;
     const panelEl=$('#tmToolPanel'); if(panelEl) wrap.insertBefore(div,panelEl); else wrap.appendChild(div);
   }
@@ -766,25 +780,25 @@ function tmExtractJsonObject(text) {
       <div class="tm-note">El chat usa un resumen de productos, ventas y analytics. No envía imágenes ni claves; solo datos comerciales resumidos.</div>
       <div class="tm-chipwrap" style="display:flex;flex-wrap:wrap;gap:8px;margin:12px 0;">${suggestions.map(q=>`<button type="button" class="tm-btn tm-mini" data-ds7-q="${esc(q)}">${esc(q)}</button>`).join('')}</div>
       <div class="tm-field"><label>Pregunta</label><textarea id="tmChatQuestion" style="min-height:95px" placeholder="Ej: qué publico hoy, qué oferta hago, qué producto está flojo..."></textarea></div>
-      <div class="tm-actions"><button class="tm-btn primary" data-ds7-act="ask">Preguntar a DeepSeek</button><button class="tm-btn gold" data-ds7-act="brief">Resumen rápido</button><button class="tm-btn" data-ds7-act="copyOut">Copiar</button></div>
+      <div class="tm-actions"><button class="tm-btn primary" data-ds7-act="ask">Preguntar a IA</button><button class="tm-btn gold" data-ds7-act="brief">Resumen rápido</button><button class="tm-btn" data-ds7-act="copyOut">Copiar</button></div>
       <div id="tmToolOut" class="tm-code" style="margin-top:12px">Escribe una pregunta o toca una sugerencia.</div>`);
   }
   function localAnswer(q,s){
     const bajos=(s.bajos||[]).map(x=>`• ${x.nombre} (${x.stock})`).join('\n')||'• Sin stock bajo crítico';
     const agot=(s.agotados||[]).slice(0,5).map(x=>`• ${x.nombre}`).join('\n')||'• Sin agotados destacados';
     const top=(s.topStock||[]).slice(0,5).map(x=>`• ${x.nombre} — stock ${x.stock} — ${money(x.precio)}`).join('\n')||'• Sin productos';
-    return `Resumen local TiendaMax\n\nProductos: ${s.productos}\nVentas registradas: ${s.ventas}\nTotal vendido: ${money(s.totalVendido)}\nSuscriptores: ${s.suscriptores}\n\nPara publicar hoy, prioriza productos con buen stock:\n${top}\n\nStock bajo:\n${bajos}\n\nAgotados a revisar:\n${agot}\n\nPregunta: ${q}\n\nRecomendación: crea una publicación corta con precio, stock y llamada a WhatsApp. Si tienes DeepSeek configurado, el chat dará una estrategia más completa.`;
+    return `Resumen local TiendaMax\n\nProductos: ${s.productos}\nVentas registradas: ${s.ventas}\nTotal vendido: ${money(s.totalVendido)}\nSuscriptores: ${s.suscriptores}\n\nPara publicar hoy, prioriza productos con buen stock:\n${top}\n\nStock bajo:\n${bajos}\n\nAgotados a revisar:\n${agot}\n\nPregunta: ${q}\n\nRecomendación: crea una publicación corta con precio, stock y llamada a WhatsApp. Si tienes IA configurada, el chat dará una estrategia más completa.`;
   }
   async function ask(questionOverride){
     const out=$('#tmToolOut'); if(!out)return;
     const q=(questionOverride||$('#tmChatQuestion')?.value||'Dame un resumen rápido y acciones para hoy').trim();
     if(!q){notify('Escribe una pregunta','warning');return;}
     if($('#tmChatQuestion')) $('#tmChatQuestion').value=q;
-    out.textContent='⏳ Analizando tienda y preguntando a DeepSeek...';
+    out.textContent='⏳ Analizando tienda y preguntando a IA...';
     const ps=products(), vs=ventas(), an=await analytics(), s=summarize(ps,vs,an);
     const prompt=`Pregunta del admin:\n${q}\n\nDatos resumidos de TiendaMax:\n${JSON.stringify(s,null,2)}\n\nResponde en español, con bullets y acciones concretas. Si recomiendas publicar, incluye texto breve de campaña o idea de push. Si recomiendas reponer, di cuáles. No inventes datos fuera del resumen.`;
     try{ out.textContent=await deepseek(prompt); notify('✅ Respuesta IA lista','success'); }
-    catch(e){ out.textContent=localAnswer(q,s)+'\n\n⚠️ '+e.message; notify('Respuesta local: configura DeepSeek para chat avanzado','warning'); }
+    catch(e){ out.textContent=localAnswer(q,s)+'\n\n⚠️ '+e.message; notify('Respuesta local: configura la IA para chat avanzado','warning'); }
   }
   async function brief(){ await ask('Dame un resumen rápido de la tienda y 5 acciones prioritarias para hoy.'); }
   document.addEventListener('click',function(e){
@@ -829,9 +843,9 @@ function tmExtractJsonObject(text) {
   }
   function panel(title,sub,body){const p=$('#tmToolPanel'); if(!p)return; p.className='tm-panel active'; p.innerHTML=`<div class="tm-panel-head"><div><h4>${title}</h4><p>${sub}</p></div><button class="tm-panel-close" data-act="closePanel">✕ Cerrar</button></div>${body}`; p.scrollIntoView({behavior:'smooth',block:'start'});}
   function addCards(){
-    const wrap=$('#herramientas .tm-tools-wrap'); if(!wrap || $('#tmDeepSeekCampaignCards')) return;
-    const div=document.createElement('div'); div.id='tmDeepSeekCampaignCards';
-    div.innerHTML=`<div class="tm-tier"><h4>DEEPSEEK — CAMPAÑAS</h4><span class="tm-tier-badge gold">Marketing</span></div>
+    const wrap=$('#herramientas .tm-tools-wrap'); if(!wrap || $('#tmIACampaignCards')) return;
+    const div=document.createElement('div'); div.id='tmIACampaignCards';
+    div.innerHTML=`<div class="tm-tier"><h4>IA — CAMPAÑAS</h4><span class="tm-tier-badge gold">Marketing</span></div>
     <div class="tm-tools-grid"><div class="tm-tool-card enabled" data-tool="campaignai"><span class="state">IA</span><div class="ico" style="background:rgba(245,158,11,.18)">🚀</div><h5>Campaña IA completa</h5><p>Genera Facebook, WhatsApp, push, story, hashtags y plan para publicar.</p></div></div>`;
     const panelEl=$('#tmToolPanel'); if(panelEl) wrap.insertBefore(div,panelEl); else wrap.appendChild(div);
   }
@@ -903,9 +917,9 @@ function tmExtractJsonObject(text) {
   function productUrl(p){return p&&p.id?`/p/producto-${p.id}.html`:'/';}
   function panel(title,sub,body){const p=$('#tmToolPanel'); if(!p)return; p.className='tm-panel active'; p.innerHTML=`<div class="tm-panel-head"><div><h4>${title}</h4><p>${sub}</p></div><button class="tm-panel-close" data-act="closePanel">✕ Cerrar</button></div>${body}`; p.scrollIntoView({behavior:'smooth',block:'start'});}
   function addCards(){
-    const wrap=$('#herramientas .tm-tools-wrap'); if(!wrap || $('#tmDeepSeekPublisherCards')) return;
-    const div=document.createElement('div'); div.id='tmDeepSeekPublisherCards';
-    div.innerHTML=`<div class="tm-tier"><h4>DEEPSEEK — EJECUCIÓN</h4><span class="tm-tier-badge gold">Publicar</span></div>
+    const wrap=$('#herramientas .tm-tools-wrap'); if(!wrap || $('#tmIAPublisherCards')) return;
+    const div=document.createElement('div'); div.id='tmIAPublisherCards';
+    div.innerHTML=`<div class="tm-tier"><h4>IA — EJECUCIÓN</h4><span class="tm-tier-badge gold">Publicar</span></div>
     <div class="tm-tools-grid"><div class="tm-tool-card enabled" data-tool="publisherai"><span class="state">PRO</span><div class="ico" style="background:rgba(37,211,102,.18)">📌</div><h5>Publicador asistido</h5><p>Guarda campaña, copia canales, aplica push y crea seguimiento.</p></div></div>`;
     const panelEl=$('#tmToolPanel'); if(panelEl) wrap.insertBefore(div,panelEl); else wrap.appendChild(div);
   }
@@ -994,8 +1008,8 @@ function tmExtractJsonObject(text) {
   function money(n){return '$'+Number(n||0).toFixed(2)}
   function panel(title,sub,body){const p=$('#tmToolPanel'); if(!p)return; p.className='tm-panel active'; p.innerHTML=`<div class="tm-panel-head"><div><h4>${title}</h4><p>${sub}</p></div><button class="tm-panel-close" data-act="closePanel">✕ Cerrar</button></div>${body}`; p.scrollIntoView({behavior:'smooth',block:'start'});}
   function addCards(){
-    const wrap=$('#herramientas .tm-tools-wrap'); if(!wrap || $('#tmDeepSeekCampaignDashCards')) return;
-    const div=document.createElement('div'); div.id='tmDeepSeekCampaignDashCards';
+    const wrap=$('#herramientas .tm-tools-wrap'); if(!wrap || $('#tmIACampaignDashCards')) return;
+    const div=document.createElement('div'); div.id='tmIACampaignDashCards';
     div.innerHTML=`<div class="tm-tier"><h4>MARKETING — MÉTRICAS</h4><span class="tm-tier-badge purple">Dashboard</span></div>
     <div class="tm-tools-grid"><div class="tm-tool-card enabled" data-tool="campdash"><span class="state">PRO</span><div class="ico" style="background:rgba(52,152,219,.18)">📈</div><h5>Dashboard campañas</h5><p>Mide campañas publicadas, pendientes, canales y posibles ventas posteriores.</p></div></div>`;
     const panelEl=$('#tmToolPanel'); if(panelEl) wrap.insertBefore(div,panelEl); else wrap.appendChild(div);
@@ -1095,8 +1109,8 @@ function tmExtractJsonObject(text) {
   }
   function panel(title,sub,body){const p=$('#tmToolPanel'); if(!p)return; p.className='tm-panel active'; p.innerHTML=`<div class="tm-panel-head"><div><h4>${title}</h4><p>${sub}</p></div><button class="tm-panel-close" data-act="closePanel">✕ Cerrar</button></div>${body}`; p.scrollIntoView({behavior:'smooth',block:'start'});}
   function addCards(){
-    const wrap=$('#herramientas .tm-tools-wrap'); if(!wrap || $('#tmDeepSeekPlannerCards')) return;
-    const div=document.createElement('div'); div.id='tmDeepSeekPlannerCards';
+    const wrap=$('#herramientas .tm-tools-wrap'); if(!wrap || $('#tmIAPlannerCards')) return;
+    const div=document.createElement('div'); div.id='tmIAPlannerCards';
     div.innerHTML=`<div class="tm-tier"><h4>MARKETING — PLANIFICACIÓN</h4><span class="tm-tier-badge gold">Semana</span></div>
     <div class="tm-tools-grid"><div class="tm-tool-card enabled" data-tool="weekplanner"><span class="state">PRO</span><div class="ico" style="background:rgba(201,169,110,.18)">🗓️</div><h5>Plan semanal IA</h5><p>Genera calendario de publicaciones, push, WhatsApp y seguimiento.</p></div></div>`;
     const panelEl=$('#tmToolPanel'); if(panelEl) wrap.insertBefore(div,panelEl); else wrap.appendChild(div);
@@ -1369,7 +1383,7 @@ function tmExtractJsonObject(text) {
       <div class="tm-list" style="margin-top:12px">
         ${stepLine(st.backup,'1. Crear backup/snapshot','Protege datos antes de cambios.')}
         ${stepLine(st.tasks,'2. Analizar tareas de hoy','Stock, campañas, plan semanal y pendientes.')}
-        ${stepLine(st.campaign,'3. Generar campaña recomendada','DeepSeek si está configurado; fallback local si no.')}
+        ${stepLine(st.campaign,'3. Generar campaña recomendada','IA si está configurada; fallback local si no.')}
         ${stepLine(st.push,'4. Aplicar push','Rellena campos de Configuración, no envía automáticamente.')}
         ${stepLine(st.saved,'5. Guardar campaña','Registra en historial y marca producto publicado.')}
         ${stepLine(st.final,'6. Resumen final','Checklist listo para ejecutar.')}
@@ -1500,8 +1514,8 @@ function tmExtractJsonObject(text) {
     add(res,'serviceWorker'in navigator?'pass':'fail','Service Worker soporte','serviceWorker' in navigator?'Soportado':'No soportado');
     try{const reg=await navigator.serviceWorker?.getRegistration?.('/'); add(res,reg?'pass':'warn','SW registro /',reg?('Activo: '+!!reg.active):'No registrado aún');}catch(e){add(res,'warn','SW registro',e.message);}
     add(res,'Notification'in window?'pass':'warn','Notificaciones soporte','Notification' in window?Notification.permission:'No soportado');
-    // DeepSeek / herramientas
-    const key=localStorage.getItem('anthropicApiKey'); add(res,key?'pass':'warn','DeepSeek/API key',key?'Key guardada ('+key.slice(0,6)+'…)':'No configurada');
+    // IA / herramientas
+    const key=localStorage.getItem('anthropicApiKey'); add(res,key?'pass':'warn','IA/API key',key?'Key guardada ('+key.slice(0,6)+'…)':'No configurada');
     add(res,document.querySelector('script[src*="admin-ai-tools.min.js"]')?'pass':'fail','Admin AI tools','Script minificado cargado en admin.html');
     // Campañas/planes/backups
     ['tm_campaigns_v1','tm_week_plan_v1','tm_full_backups_v1'].forEach(k=>{let n=0;try{n=JSON.parse(localStorage.getItem(k)||'[]').length}catch(e){} add(res,'pass','Datos '+k,n+' registros');});
@@ -1531,7 +1545,7 @@ function tmExtractJsonObject(text) {
 (function(){
   function addOpenRouterConfig(){
     const keyInput=document.getElementById('anthropicApiKey'); if(!keyInput || document.getElementById('tmOpenRouterModel')) return;
-    keyInput.placeholder='sk-or-... (OpenRouter) / sk-... (DeepSeek) / AIza... / gsk_...';
+    keyInput.placeholder='sk-or-... (OpenRouter) / sk-... (IA) / AIza... / gsk_...';
     const wrap=document.createElement('div');
     wrap.className='tm-openrouter-config';
     wrap.innerHTML='<label style="display:block;margin-top:10px">Modelo OpenRouter gratuito/preferido<input id="tmOpenRouterModel" type="text" placeholder="openrouter/free" style="font-family:monospace;font-size:12px"></label><p style="font-size:11px;color:#888;margin-top:4px">Ejemplos: openrouter/free, deepseek/deepseek-r1:free, qwen/qwen3-235b-a22b:free. Depende de disponibilidad de OpenRouter.</p>';
@@ -1588,7 +1602,7 @@ function tmExtractJsonObject(text) {
     // Ocultar contenedores originales que quedaron vacíos para que no se vea regado.
     Array.from(wrap.children).forEach(ch=>{
       if(ch.id==='tmToolsOrganizer'||ch.id==='tmToolPanel'||ch.classList.contains('tm-tools-hero')||ch.tagName==='H3') return;
-      if(ch.classList.contains('tm-tier')||ch.classList.contains('tm-tools-grid')||(/^tmDeepSeek|^tmAdmin|^tmBackup|^tmAutopilot|^tmDiagnostic|^tmTools/.test(ch.id||''))){
+      if(ch.classList.contains('tm-tier')||ch.classList.contains('tm-tools-grid')||(/^tmIA|^tmAdmin|^tmBackup|^tmAutopilot|^tmDiagnostic|^tmTools/.test(ch.id||''))){
         if(!ch.querySelector('.tm-tool-card')) ch.style.display='none';
       }
     });

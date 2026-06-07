@@ -1,7 +1,8 @@
 // ═══════════════════════════════════════════════════════
-// TiendaMax — Service Worker v223 — Pack herramientas completo
+// TiendaMax — Service Worker v224 — IA generica timeout
 // v211: mejora diseño compacto de Herramientas y botones.
 // v217: barra flotante visible al actualizar tienda con GitHub.
+// v224: herramientas usan nombre IA genérico y timeout anti-bloqueo.
 // v223: añade paquete herramientas 05-12 y organización completa.
 // v222: añade estado de GitHub Actions/automatizaciones.
 // v221: añade ajustes masivos de precio/stock/comisión/garantía.
@@ -86,7 +87,7 @@
 //      usan el mismo helper _mensajeOrdenWA con formato premium.
 // ═══════════════════════════════════════════════════════
 
-const CACHE_NAME = 'tiendamax-202606062130';
+const CACHE_NAME = 'tiendamax-202606062200';
 
 const STATIC_ASSETS = [
   '/',
