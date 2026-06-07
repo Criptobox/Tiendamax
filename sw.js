@@ -1,7 +1,8 @@
 // ═══════════════════════════════════════════════════════
-// TiendaMax — Service Worker v217 — Progreso actualizar visible
+// TiendaMax — Service Worker v218 — Normalizador refresca vistas
 // v211: mejora diseño compacto de Herramientas y botones.
 // v217: barra flotante visible al actualizar tienda con GitHub.
+// v218: normalizador actualiza vistas del admin inmediatamente.
 // v216: añade herramienta para normalizar nombres de productos.
 // v215: tarjetas de herramientas más pequeñas tipo accesos rápidos.
 // v214: organiza todas las tarjetas de Herramientas por categorías/filtros.
@@ -80,7 +81,7 @@
 //      usan el mismo helper _mensajeOrdenWA con formato premium.
 // ═══════════════════════════════════════════════════════
 
-const CACHE_NAME = 'tiendamax-202606070158';
+const CACHE_NAME = 'tiendamax-202606061820';
 
 const STATIC_ASSETS = [
   '/',
