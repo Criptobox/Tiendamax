@@ -1,6 +1,9 @@
 // ═══════════════════════════════════════════════════════
-// TiendaMax — Service Worker v213 — IA masiva sin repetir
+// TiendaMax — Service Worker v216 — Normalizador nombres
 // v211: mejora diseño compacto de Herramientas y botones.
+// v216: añade herramienta para normalizar nombres de productos.
+// v215: tarjetas de herramientas más pequeñas tipo accesos rápidos.
+// v214: organiza todas las tarjetas de Herramientas por categorías/filtros.
 // v213: IA masiva auto evita repetir productos y guarda productos correctamente.
 // v212: parser JSON IA más robusto y mensajes de fallback más claros.
 // v210: IA masiva puede procesar automáticamente en tandas de 5.
@@ -76,7 +79,7 @@
 //      usan el mismo helper _mensajeOrdenWA con formato premium.
 // ═══════════════════════════════════════════════════════
 
-const CACHE_NAME = 'tiendamax-202606061535';
+const CACHE_NAME = 'tiendamax-202606061735';
 
 const STATIC_ASSETS = [
   '/',

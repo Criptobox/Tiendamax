@@ -1542,3 +1542,118 @@ function tmExtractJsonObject(text) {
   document.addEventListener('click',e=>{if(e.target.closest('[data-arg="configuracion"],[data-tab="configuracion"]')) setTimeout(addOpenRouterConfig,300);});
 })();
 
+
+// ── tm-tools-organizer-v1 / Organizador visual de Herramientas ─────────────
+(function(){
+  const CAT_LABELS={basicas:'🧰 Básicas',gestion:'📋 Gestión',datos:'📊 Datos/Ventas',ia:'🤖 IA',marketing:'📣 Marketing',sistema:'🛡️ Sistema'};
+  const TOOL_CAT={
+    namesfix:'basicas',ai:'ia',posts:'marketing',pushai:'ia',waai:'ia',auditai:'ia',insightsai:'ia',seoai:'ia',recsai:'ia',bulkai:'ia',chatai:'ia',
+    campaignai:'marketing',publisherai:'marketing',campdash:'marketing',weekplanner:'marketing',taskcenter:'marketing',autopilot:'marketing',
+    compress:'basicas',duplicate:'basicas',history:'basicas',csv:'basicas',dups:'basicas',
+    schedule:'gestion',coupons:'gestion',locations:'gestion',ab:'gestion',totp:'gestion',roles:'gestion',
+    competitors:'datos',margin:'datos',heatmap:'datos',crm:'datos',shipping:'datos',
+    backupai:'sistema',diagall:'sistema'
+  };
+  function $(s,r=document){return r.querySelector(s)}
+  function organizeTools(){
+    const wrap=document.querySelector('#herramientas .tm-tools-wrap'); const panel=document.getElementById('tmToolPanel');
+    if(!wrap||!panel) return;
+    let org=document.getElementById('tmToolsOrganizer');
+    if(!org){
+      org=document.createElement('div'); org.id='tmToolsOrganizer'; org.className='tm-tools-organizer';
+      org.innerHTML=`<div class="tm-tools-org-head"><div><b>Panel de herramientas</b><small>Todo organizado por categoría</small></div><div class="tm-tools-filter"><button class="tm-org-chip active" data-filter="all">Todas</button>${Object.entries(CAT_LABELS).map(([k,v])=>`<button class="tm-org-chip" data-filter="${k}">${v}</button>`).join('')}</div></div><div class="tm-tools-groups"></div>`;
+      wrap.insertBefore(org,panel);
+      org.addEventListener('click',e=>{
+        const chip=e.target.closest('.tm-org-chip'); if(!chip) return;
+        org.querySelectorAll('.tm-org-chip').forEach(b=>b.classList.toggle('active',b===chip));
+        const f=chip.dataset.filter;
+        org.querySelectorAll('.tm-tool-group').forEach(g=>{g.style.display=(f==='all'||g.dataset.cat===f)?'block':'none';});
+      });
+    }
+    const groups=org.querySelector('.tm-tools-groups');
+    Object.entries(CAT_LABELS).forEach(([cat,label])=>{
+      if(!groups.querySelector(`[data-cat="${cat}"]`)){
+        const g=document.createElement('section'); g.className='tm-tool-group'; g.dataset.cat=cat;
+        g.innerHTML=`<div class="tm-tool-group-title">${label}</div><div class="tm-tools-grid tm-tools-grid-org"></div>`;
+        groups.appendChild(g);
+      }
+    });
+    const cards=Array.from(wrap.querySelectorAll('.tm-tool-card[data-tool]')).filter(c=>!c.closest('#tmToolsOrganizer'));
+    cards.forEach(card=>{
+      const tool=card.dataset.tool; const cat=TOOL_CAT[tool]||'basicas';
+      card.dataset.toolCat=cat;
+      const grid=groups.querySelector(`[data-cat="${cat}"] .tm-tools-grid-org`);
+      if(grid) grid.appendChild(card);
+    });
+    // Ocultar contenedores originales que quedaron vacíos para que no se vea regado.
+    Array.from(wrap.children).forEach(ch=>{
+      if(ch.id==='tmToolsOrganizer'||ch.id==='tmToolPanel'||ch.classList.contains('tm-tools-hero')||ch.tagName==='H3') return;
+      if(ch.classList.contains('tm-tier')||ch.classList.contains('tm-tools-grid')||(/^tmDeepSeek|^tmAdmin|^tmBackup|^tmAutopilot|^tmDiagnostic|^tmTools/.test(ch.id||''))){
+        if(!ch.querySelector('.tm-tool-card')) ch.style.display='none';
+      }
+    });
+    // Ocultar grupos vacíos.
+    groups.querySelectorAll('.tm-tool-group').forEach(g=>{g.style.display=g.querySelector('.tm-tool-card')?'block':'none';});
+    const active=org.querySelector('.tm-org-chip.active')?.dataset.filter||'all';
+    if(active!=='all') groups.querySelectorAll('.tm-tool-group').forEach(g=>{g.style.display=(g.dataset.cat===active&&g.querySelector('.tm-tool-card'))?'block':'none';});
+  }
+  function boot(){ organizeTools(); setTimeout(organizeTools,600); setTimeout(organizeTools,1400); setTimeout(organizeTools,2600); }
+  document.addEventListener('DOMContentLoaded',boot);
+  document.addEventListener('click',e=>{ if(e.target.closest('[data-arg="herramientas"],[data-tab="herramientas"]')) setTimeout(boot,250); });
+  window.tmOrganizeTools=organizeTools;
+})();
+
+// ── tm-deepseek-tools-v16 / Normalizador de nombres ─────────────────────
+(function(){
+  const $=(s,r=document)=>r.querySelector(s);
+  const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  function notify(msg,type){ if(typeof mostrarNotificacion==='function') mostrarNotificacion(msg,type||'info'); else console.log(msg); }
+  function products(){ try{ if(Array.isArray(window.productos)) return window.productos; }catch(e){} try{return JSON.parse(localStorage.getItem('productos')||'[]')}catch(e){return[]} }
+  function saveProducts(ps){ try{ if(typeof productos!=='undefined'&&Array.isArray(productos)) productos=ps; }catch(e){} if(Array.isArray(window.productos)) window.productos=ps; try{ if(typeof guardarProductos==='function') guardarProductos(); }catch(e){} localStorage.setItem('productos',JSON.stringify(ps)); }
+  function panel(title,sub,body){const p=$('#tmToolPanel'); if(!p)return; p.className='tm-panel active'; p.innerHTML=`<div class="tm-panel-head"><div><h4>${title}</h4><p>${sub}</p></div><button class="tm-panel-close" data-act="closePanel">✕ Cerrar</button></div>${body}`; p.scrollIntoView({behavior:'smooth',block:'start'});}
+  const fixes=[
+    [/\bbateria\b/gi,'batería'],[/\bbaterias\b/gi,'baterías'],[/\belectrico\b/gi,'eléctrico'],[/\belectrica\b/gi,'eléctrica'],[/\binalambrico\b/gi,'inalámbrico'],[/\binalambrica\b/gi,'inalámbrica'],[/\bportatil\b/gi,'portátil'],[/\blampara\b/gi,'lámpara'],[/\bcamara\b/gi,'cámara'],[/\btelefono\b/gi,'teléfono'],[/\baudifonos\b/gi,'audífonos'],[/\bmicrofono\b/gi,'micrófono'],[/\bautomatico\b/gi,'automático'],[/\bautomatica\b/gi,'automática'],[/\bbascula\b/gi,'báscula'],[/\bplastico\b/gi,'plástico'],[/\bclasico\b/gi,'clásico'],[/\bclasica\b/gi,'clásica'],[/\btactil\b/gi,'táctil'],[/\bmovil\b/gi,'móvil'],[/\brefrigeracion\b/gi,'refrigeración'],[/\bliquida\b/gi,'líquida'],[/\bliquido\b/gi,'líquido'],[/\bsolido\b/gi,'sólido'],[/\bvehiculo\b/gi,'vehículo'],[/\bsintetico\b/gi,'sintético'],[/\bsemisintetico\b/gi,'semisintético'],[/\benergia\b/gi,'energía'],[/\bproteccion\b/gi,'protección'],[/\bconexion\b/gi,'conexión'],[/\bextension\b/gi,'extensión'],[/\bconversion\b/gi,'conversión'],[/\badaptador\b/gi,'adaptador'],[/\brouter\b/gi,'router'],[/\bwi[\s-]?fi\b/gi,'wifi'],[/\bbluetooh\b/gi,'bluetooth'],[/\bbluetooth\b/gi,'bluetooth'],[/\blifepo\s*4\b/gi,'LiFePO4'],[/\bmah\b/gi,'mAh'],[/\bgb\b/gi,'GB'],[/\btb\b/gi,'TB'],[/\busb\b/gi,'USB'],[/\bled\b/gi,'LED'],[/\bhdmi\b/gi,'HDMI']
+  ];
+  function normalizeName(name){
+    let s=String(name||'').replace(/[“”]/g,'"').replace(/[‘’]/g,"'").replace(/[–—]/g,'-').replace(/\s+/g,' ').trim();
+    fixes.forEach(([re,val])=>{s=s.replace(re,val);});
+    s=s.replace(/\s*\/\s*/g,' / ').replace(/\s*-\s*/g,' - ').replace(/\s+/g,' ').trim();
+    return s.toLocaleUpperCase('es-CU');
+  }
+  function changes(){return products().map(p=>({id:p.id,old:p.nombre||'',neu:normalizeName(p.nombre||'')})).filter(x=>x.old!==x.neu);}
+  function addCard(){
+    const wrap=$('#herramientas .tm-tools-wrap'); const panelEl=$('#tmToolPanel'); if(!wrap||!panelEl||document.querySelector('[data-tool="namesfix"]')) return;
+    const div=document.createElement('div'); div.className='tm-tools-grid'; div.innerHTML='<div class="tm-tool-card enabled" data-tool="namesfix"><span class="state">CLEAN</span><div class="ico" style="background:rgba(201,169,110,.18)">🔠</div><h5>Normalizar nombres</h5><p>Pasa productos a MAYÚSCULAS y corrige faltas comunes.</p></div>';
+    wrap.insertBefore(div,panelEl);
+    if(typeof window.tmOrganizeTools==='function') setTimeout(window.tmOrganizeTools,80);
+  }
+  function openTool(){
+    const ch=changes();
+    panel('🔠 Normalizar nombres de productos','Pasa todos los nombres a MAYÚSCULAS, corrige acentos comunes y deja el catálogo parejo.',`
+      <div class="tm-note">No toca precios, stock, imágenes ni descripciones. Crea un cambio local; después pulsa “Actualizar tienda”.</div>
+      <div class="tm-actions"><button class="tm-btn primary" data-ds16-act="preview">Vista previa</button><button class="tm-btn gold" data-ds16-act="apply">Aplicar cambios</button><button class="tm-btn" data-ds16-act="copyOut">Copiar lista</button></div>
+      <div id="tmToolOut" class="tm-code" style="margin-top:12px">${ch.length?`Hay ${ch.length} nombre(s) por normalizar. Pulsa Vista previa.`:'Todos los nombres parecen estar normalizados.'}</div>`);
+  }
+  function preview(){
+    const out=$('#tmToolOut'), ch=changes(); if(!out)return;
+    out.textContent=ch.length?`Cambios detectados: ${ch.length}\n\n`+ch.slice(0,120).map((x,i)=>`${i+1}. ${x.old}\n   → ${x.neu}`).join('\n\n'):'No hay cambios pendientes.';
+  }
+  function apply(){
+    const ch=changes(); if(!ch.length){notify('No hay nombres por cambiar','info');return;}
+    if(!confirm(`¿Aplicar normalización a ${ch.length} producto(s)?`)) return;
+    const map=new Map(ch.map(x=>[String(x.id),x.neu]));
+    const ps=products().map(p=>map.has(String(p.id))?{...p,nombre:map.get(String(p.id)),nombreNormalizadoAt:new Date().toISOString()}:p);
+    saveProducts(ps); ps.forEach(p=>{if(map.has(String(p.id))){try{if(typeof marcarProductoModificado==='function') marcarProductoModificado(p.id);}catch(e){}}});
+    const out=$('#tmToolOut'); if(out) out.textContent=`✅ Normalizados ${ch.length} producto(s).\n\nAhora pulsa “Actualizar tienda” para subir productos.json.`;
+    notify('✅ Nombres normalizados','success');
+    if(typeof actualizarListaProductos==='function') setTimeout(actualizarListaProductos,200);
+  }
+  document.addEventListener('click',function(e){
+    const tool=e.target.closest('[data-tool="namesfix"]'); if(tool){e.preventDefault();e.stopPropagation();e.stopImmediatePropagation&&e.stopImmediatePropagation();openTool();return;}
+    const a=e.target.closest('[data-ds16-act]'); if(!a)return; e.preventDefault();e.stopPropagation();e.stopImmediatePropagation&&e.stopImmediatePropagation();
+    if(a.dataset.ds16Act==='preview')preview(); if(a.dataset.ds16Act==='apply')apply(); if(a.dataset.ds16Act==='copyOut'){navigator.clipboard?.writeText($('#tmToolOut')?.textContent||'');notify('Copiado','success');}
+  },true);
+  function boot(){addCard();}
+  document.addEventListener('DOMContentLoaded',()=>setTimeout(boot,2300));
+  document.addEventListener('click',e=>{if(e.target.closest('[data-arg="herramientas"],[data-tab="herramientas"]')) setTimeout(boot,300);});
+})();
