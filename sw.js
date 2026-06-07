@@ -1,6 +1,7 @@
 // ═══════════════════════════════════════════════════════
-// TiendaMax — Service Worker v228 — Deep links productos y OG
+// TiendaMax — Service Worker v229 — Share productos p pages
 // v227: registra y muestra interesados por WhatsApp para seguimiento.
+// v229: botones compartir/copiar usan /p/producto-ID.html para Facebook.
 // v228: mejora enlaces directos de productos y preview Facebook.
 // v225: agente guía con botones Ejecutar/Abrir/Hecho y lectura por voz.
 // v211: mejora diseño compacto de Herramientas y botones.
@@ -91,7 +92,7 @@
 //      usan el mismo helper _mensajeOrdenWA con formato premium.
 // ═══════════════════════════════════════════════════════
 
-const CACHE_NAME = 'tiendamax-202606072326';
+const CACHE_NAME = 'tiendamax-202606071945';
 
 const STATIC_ASSETS = [
   '/',

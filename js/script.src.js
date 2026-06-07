@@ -2747,7 +2747,7 @@ function abrirPanelCompartir() {
 function _getShareData() {
     const p = _detalleProductoActual;
     if (!p) return null;
-    const url = 'https://tiendamax.org/#producto-' + p.id;
+    const url = 'https://tiendamax.org/p/producto-' + p.id + '.html';
     return {
         nombre: p.nombre,
         precio: p.precioActual.toFixed(2),
@@ -2784,7 +2784,7 @@ function compartirNativo() {
     const p = _detalleProductoActual;
     if (!p) return;
     const texto = `🛍️ ${p.nombre} — $${p.precioActual.toFixed(2)} USD\n📦 Stock disponible\n👉 tiendamax.org`;
-    const urlProducto = 'https://tiendamax.org/#producto-' + p.id;
+    const urlProducto = 'https://tiendamax.org/p/producto-' + p.id + '.html';
     if (navigator.share) {
         navigator.share({ title: p.nombre, text: texto, url: urlProducto }).catch(() => {});
     } else {
@@ -2799,7 +2799,7 @@ function compartirProducto() {
 function copiarLinkProducto() {
     const p = _detalleProductoActual;
     const url = p
-        ? 'https://tiendamax.org/#producto-' + p.id
+        ? 'https://tiendamax.org/p/producto-' + p.id + '.html'
         : 'https://tiendamax.org';
     navigator.clipboard.writeText(url).then(() =>
         mostrarNotificacion('🔗 Enlace copiado — ¡listo para compartir!')
