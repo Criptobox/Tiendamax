@@ -1561,7 +1561,7 @@ function tmExtractJsonObject(text) {
 (function(){
   const CAT_LABELS={basicas:'🧰 Básicas',gestion:'📋 Gestión',datos:'📊 Datos/Ventas',ia:'🤖 IA',marketing:'📣 Marketing',sistema:'🛡️ Sistema'};
   const TOOL_CAT={
-    preflight:'sistema',pushmanager:'marketing',artifacts:'sistema',cleaner:'sistema',dormant:'datos',restock:'datos',templates:'marketing',calendar:'marketing',actionsstatus:'sistema',bulkadjust:'gestion',quickedit:'gestion',catalogqa:'sistema',namesfix:'basicas',ai:'ia',posts:'marketing',pushai:'ia',waai:'ia',auditai:'ia',insightsai:'ia',seoai:'ia',recsai:'ia',bulkai:'ia',chatai:'ia',
+    guideagent:'sistema',preflight:'sistema',pushmanager:'marketing',artifacts:'sistema',cleaner:'sistema',dormant:'datos',restock:'datos',templates:'marketing',calendar:'marketing',actionsstatus:'sistema',bulkadjust:'gestion',quickedit:'gestion',catalogqa:'sistema',namesfix:'basicas',ai:'ia',posts:'marketing',pushai:'ia',waai:'ia',auditai:'ia',insightsai:'ia',seoai:'ia',recsai:'ia',bulkai:'ia',chatai:'ia',
     campaignai:'marketing',publisherai:'marketing',campdash:'marketing',weekplanner:'marketing',taskcenter:'marketing',autopilot:'marketing',
     compress:'basicas',duplicate:'basicas',history:'basicas',csv:'basicas',dups:'basicas',
     schedule:'gestion',coupons:'gestion',locations:'gestion',ab:'gestion',totp:'gestion',roles:'gestion',
@@ -2032,5 +2032,93 @@ function tmExtractJsonObject(text) {
   document.addEventListener('click',function(e){const tool=e.target.closest('[data-tool]'); if(tool){const m={preflight:openPreflight,pushmanager:openPushManager,artifacts:openArtifacts,cleaner:openCleaner,dormant:openDormant,restock:openRestock,templates:openTemplates,calendar:openCalendar}[tool.dataset.tool]; if(m){e.preventDefault();e.stopPropagation();e.stopImmediatePropagation&&e.stopImmediatePropagation();m();return;}} const a=e.target.closest('[data-pack-act]'); if(!a)return; e.preventDefault();e.stopPropagation();e.stopImmediatePropagation&&e.stopImmediatePropagation(); const act=a.dataset.packAct; if(act==='preflightRun')openPreflight(); if(act==='preflightSync')doSync(); if(act==='pmFill')pmFill(); if(act==='pmApply')pmApply(); if(act==='pmHistory')pmHistory(); if(act==='artRun')artRun(); if(act==='artOpen')artOpen(); if(act==='cleanPreview')cleanPreview(); if(act==='cleanRun')cleanRun(); if(act==='tplRender')tplRender(); if(act==='tplAdd')tplAdd(); if(act==='tplSave')tplSave(); if(act==='dormCampaign'){const c=document.querySelector('[data-tool="campaignai"]'); if(c)c.click();} if(act==='copyOut'){navigator.clipboard?.writeText($('#tmToolOut')?.textContent||'');notify('Copiado','success');}},true);
   function boot(){addCards();}
   document.addEventListener('DOMContentLoaded',()=>setTimeout(boot,2800));
+  document.addEventListener('click',e=>{if(e.target.closest('[data-arg="herramientas"],[data-tab="herramientas"]')) setTimeout(boot,300);});
+})();
+
+// ── tm-tools-v22 / Agente guía del admin ────────────────────────────────
+(function(){
+  const DONE_KEY='tm_guide_done_v1';
+  const $=(s,r=document)=>r.querySelector(s);
+  const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  function notify(msg,type){ if(typeof mostrarNotificacion==='function') mostrarNotificacion(msg,type||'info'); else console.log(msg); }
+  function products(){ try{ if(Array.isArray(window.productos)) return window.productos; }catch(e){} try{return JSON.parse(localStorage.getItem('productos')||'[]')}catch(e){return[]} }
+  function ventas(){ try{ if(typeof cargarVentas==='function') return cargarVentas()||[]; }catch(e){} try{return JSON.parse(localStorage.getItem('registroVentas')||'[]')}catch(e){return[]} }
+  function arr(k){ try{return JSON.parse(localStorage.getItem(k)||'[]')}catch(e){return[]} }
+  function today(){return new Date().toISOString().slice(0,10)}
+  function done(){try{return JSON.parse(localStorage.getItem(DONE_KEY)||'{}')}catch(e){return{}}}
+  function setDone(id){const d=done(); d[today()]=d[today()]||{}; d[today()][id]=new Date().toISOString(); localStorage.setItem(DONE_KEY,JSON.stringify(d));}
+  function isDone(id){return !!(done()[today()]||{})[id];}
+  function panel(title,sub,body){const p=$('#tmToolPanel'); if(!p)return; p.className='tm-panel active'; p.innerHTML=`<div class="tm-panel-head"><div><h4>${title}</h4><p>${sub}</p></div><button class="tm-panel-close" data-act="closePanel">✕ Cerrar</button></div>${body}`; p.scrollIntoView({behavior:'smooth',block:'start'});}
+  function addCard(){
+    const wrap=$('#herramientas .tm-tools-wrap'); const panelEl=$('#tmToolPanel'); if(!wrap||!panelEl||document.querySelector('[data-tool="guideagent"]')) return;
+    const div=document.createElement('div'); div.className='tm-tools-grid';
+    div.innerHTML='<div class="tm-tool-card enabled" data-tool="guideagent"><span class="state">GUÍA</span><div class="ico" style="background:rgba(201,169,110,.18)">🧭</div><h5>Agente guía</h5><p>Te dice qué hacer ahora y abre la herramienta correcta.</p></div>';
+    wrap.insertBefore(div,panelEl);
+    if(typeof window.tmOrganizeTools==='function') setTimeout(window.tmOrganizeTools,80);
+  }
+  function stats(){
+    const ps=products(), vs=ventas(), mods=arr('productosModificados'), camps=arr('tm_campaigns_v1'), plans=arr('tm_week_plan_v1');
+    const today0=new Date(); today0.setHours(0,0,0,0);
+    const ventasHoy=vs.filter(v=>Number(v.id||0)>=today0.getTime());
+    const noSeo=ps.filter(p=>!p.seoTitle&&!p.seoDescription).length;
+    const noRecs=ps.filter(p=>!Array.isArray(p.recomendados)||!p.recomendados.length).length;
+    const noImg=ps.filter(p=>!p.imagen).length;
+    const price0=ps.filter(p=>!Number(p.precioActual||0)).length;
+    const low=ps.filter(p=>Number(p.stock||0)>0&&Number(p.stock||0)<=3).length;
+    const empty=ps.filter(p=>Number(p.stock||0)<=0).length;
+    const campsToday=camps.filter(c=>String(c.ts||'').slice(0,10)===today()).length;
+    const planActive=plans.length>0;
+    const ghOk=!!(localStorage.getItem('githubUser')&&localStorage.getItem('githubRepo')&&localStorage.getItem('githubToken'));
+    const iaOk=!!localStorage.getItem('anthropicApiKey');
+    const backupToday=arr('tm_full_backups_v1').some(b=>String(b.ts||'').slice(0,10)===today());
+    return {ps,mods,camps,plans,ventasHoy,noSeo,noRecs,noImg,price0,low,empty,campsToday,planActive,ghOk,iaOk,backupToday,subs:Number(localStorage.getItem('tm_subscriber_count')||0)};
+  }
+  function buildPlan(mode='hoy'){
+    const s=stats(); const steps=[];
+    function add(id,prio,title,why,tool,action){ if(!isDone(id)) steps.push({id,prio,title,why,tool,action}); }
+    if(!s.ghOk) add('github',1,'Configurar GitHub','Sin GitHub no podrás publicar cambios.',null,'configuracion');
+    if(!s.backupToday) add('backup',2,'Crear backup antes de tocar productos','Protege productos/campañas antes de cambios masivos.','backupai');
+    if(s.noImg||s.price0) add('qa-critical',3,'Revisar errores críticos del catálogo',`${s.noImg} sin imagen · ${s.price0} con precio 0.`,'catalogqa');
+    if(s.mods.length) add('preflight',4,'Validar y subir cambios pendientes',`${s.mods.length} producto(s) modificado(s) esperando Actualizar tienda.`,'preflight');
+    if(!s.iaOk) add('ia',5,'Configurar API de IA','Para SEO/campañas automáticas necesitas OpenRouter/Gemini/Groq.',null,'configuracion');
+    if(s.noSeo) add('seo',6,'Generar SEO por lotes',`${s.noSeo} producto(s) sin SEO. Usa IA masiva Auto 5 en 5.`,'bulkai');
+    if(s.noRecs) add('recs',7,'Generar recomendaciones IA',`${s.noRecs} producto(s) sin relacionados/upsell.`,'bulkai');
+    if(s.low||s.empty) add('stock',8,'Revisar stock y reposición',`${s.low} bajo stock · ${s.empty} agotados.`,'restock');
+    if(!s.planActive) add('plan',9,'Crear plan semanal','Te organiza publicaciones de lunes a domingo.','weekplanner');
+    if(!s.campsToday) add('campaign',10,'Crear campaña de hoy','Genera Facebook/WhatsApp/Push y guárdala.','campaignai');
+    if(s.subs>0) add('push',11,'Preparar push para suscriptores',`${s.subs} suscriptor(es) disponibles.`,'pushmanager');
+    if(mode==='ventas' && s.ventasHoy.length) add('ventas',12,'Revisar ventas de hoy',`${s.ventasHoy.length} venta(s) registradas hoy.`,null,'ventas');
+    if(!steps.length) add('diag',99,'Ejecutar diagnóstico total','Todo parece bien; confirma salud del sistema.','diagall');
+    return steps.sort((a,b)=>a.prio-b.prio);
+  }
+  function openGuide(){
+    const s=stats(); const steps=buildPlan();
+    panel('🧭 Agente guía del admin','Te ordena las tareas y abre la herramienta correcta para no perderte.',`
+      <div class="tm-an-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:12px">
+        <div class="tm-an-kpi"><small>Productos</small><b>${s.ps.length}</b><em>catálogo</em></div>
+        <div class="tm-an-kpi"><small>Pendientes</small><b>${steps.length}</b><em>pasos sugeridos</em></div>
+        <div class="tm-an-kpi"><small>Sin SEO</small><b>${s.noSeo}</b><em>por lote</em></div>
+        <div class="tm-an-kpi"><small>Sin Recs</small><b>${s.noRecs}</b><em>upsell</em></div>
+      </div>
+      <div class="tm-actions"><button class="tm-btn primary" data-ds22-act="refresh">Analizar ahora</button><button class="tm-btn gold" data-ds22-act="next">Abrir recomendado</button><button class="tm-btn" data-ds22-act="done">Marcar primero hecho</button><button class="tm-btn" data-ds22-act="copyOut">Copiar plan</button></div>
+      <div class="tm-list" style="margin-top:12px">${steps.map((x,i)=>row(x,i)).join('')}</div>
+      <div id="tmToolOut" class="tm-code" style="margin-top:12px">${textPlan(steps)}</div>`);
+    window.__tmGuideSteps=steps;
+  }
+  function row(x,i){return `<div class="tm-row"><div class="tm-row-main"><b>${i+1}. ${esc(x.title)}</b><small>${esc(x.why)}</small></div><button class="tm-btn tm-mini" data-ds22-act="go" data-i="${i}">Abrir</button><button class="tm-btn tm-mini" data-ds22-act="mark" data-i="${i}">Hecho</button></div>`;}
+  function textPlan(steps){return steps.map((x,i)=>`${i+1}. ${x.title}\n   ${x.why}`).join('\n\n');}
+  function go(step){ if(!step) return; if(step.tool){const c=document.querySelector(`[data-tool="${step.tool}"]`); if(c){c.click(); return;}} if(step.action&&typeof switchTab==='function') switchTab(step.action); else notify('No encontré destino para esta tarea','warning'); }
+  document.addEventListener('click',function(e){
+    const tool=e.target.closest('[data-tool="guideagent"]'); if(tool){e.preventDefault();e.stopPropagation();e.stopImmediatePropagation&&e.stopImmediatePropagation();openGuide();return;}
+    const a=e.target.closest('[data-ds22-act]'); if(!a)return; e.preventDefault();e.stopPropagation();e.stopImmediatePropagation&&e.stopImmediatePropagation();
+    const steps=window.__tmGuideSteps||buildPlan(); const act=a.dataset.ds22Act;
+    if(act==='refresh') openGuide();
+    if(act==='next') go(steps[0]);
+    if(act==='go') go(steps[Number(a.dataset.i)]);
+    if(act==='mark'||act==='done'){const st=steps[Number(a.dataset.i)||0]; if(st){setDone(st.id); notify('Marcado como hecho por hoy','success'); openGuide();}}
+    if(act==='copyOut'){navigator.clipboard?.writeText(textPlan(steps)); notify('Plan copiado','success');}
+  },true);
+  function boot(){addCard();}
+  document.addEventListener('DOMContentLoaded',()=>setTimeout(boot,2900));
   document.addEventListener('click',e=>{if(e.target.closest('[data-arg="herramientas"],[data-tab="herramientas"]')) setTimeout(boot,300);});
 })();
