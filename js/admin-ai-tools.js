@@ -1547,7 +1547,7 @@ function tmExtractJsonObject(text) {
 (function(){
   const CAT_LABELS={basicas:'🧰 Básicas',gestion:'📋 Gestión',datos:'📊 Datos/Ventas',ia:'🤖 IA',marketing:'📣 Marketing',sistema:'🛡️ Sistema'};
   const TOOL_CAT={
-    catalogqa:'sistema',namesfix:'basicas',ai:'ia',posts:'marketing',pushai:'ia',waai:'ia',auditai:'ia',insightsai:'ia',seoai:'ia',recsai:'ia',bulkai:'ia',chatai:'ia',
+    quickedit:'gestion',catalogqa:'sistema',namesfix:'basicas',ai:'ia',posts:'marketing',pushai:'ia',waai:'ia',auditai:'ia',insightsai:'ia',seoai:'ia',recsai:'ia',bulkai:'ia',chatai:'ia',
     campaignai:'marketing',publisherai:'marketing',campdash:'marketing',weekplanner:'marketing',taskcenter:'marketing',autopilot:'marketing',
     compress:'basicas',duplicate:'basicas',history:'basicas',csv:'basicas',dups:'basicas',
     schedule:'gestion',coupons:'gestion',locations:'gestion',ab:'gestion',totp:'gestion',roles:'gestion',
@@ -1745,5 +1745,63 @@ function tmExtractJsonObject(text) {
   },true);
   function boot(){addCard();}
   document.addEventListener('DOMContentLoaded',()=>setTimeout(boot,2400));
+  document.addEventListener('click',e=>{if(e.target.closest('[data-arg="herramientas"],[data-tab="herramientas"]')) setTimeout(boot,300);});
+})();
+
+// ── tm-deepseek-tools-v18 / Editor rápido tipo tabla ─────────────────────
+(function(){
+  const $=(s,r=document)=>r.querySelector(s);
+  const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  function notify(msg,type){ if(typeof mostrarNotificacion==='function') mostrarNotificacion(msg,type||'info'); else console.log(msg); }
+  function products(){ try{ if(Array.isArray(window.productos)) return window.productos; }catch(e){} try{return JSON.parse(localStorage.getItem('productos')||'[]')}catch(e){return[]} }
+  function saveProducts(ps){ try{ if(typeof productos!=='undefined'&&Array.isArray(productos)) productos=ps; }catch(e){} if(Array.isArray(window.productos)) window.productos=ps; try{ if(typeof guardarProductos==='function') guardarProductos(); }catch(e){} localStorage.setItem('productos',JSON.stringify(ps)); }
+  function cats(){return [...new Set(products().map(p=>p.categoria||'General').filter(Boolean))].sort();}
+  function subs(){return [...new Set(products().map(p=>p.subcategoria||'').filter(Boolean))].sort();}
+  function panel(title,sub,body){const p=$('#tmToolPanel'); if(!p)return; p.className='tm-panel active'; p.innerHTML=`<div class="tm-panel-head"><div><h4>${title}</h4><p>${sub}</p></div><button class="tm-panel-close" data-act="closePanel">✕ Cerrar</button></div>${body}`; p.scrollIntoView({behavior:'smooth',block:'start'});}
+  function addCard(){
+    const wrap=$('#herramientas .tm-tools-wrap'); const panelEl=$('#tmToolPanel'); if(!wrap||!panelEl||document.querySelector('[data-tool="quickedit"]')) return;
+    const div=document.createElement('div'); div.className='tm-tools-grid'; div.innerHTML='<div class="tm-tool-card enabled" data-tool="quickedit"><span class="state">FAST</span><div class="ico" style="background:rgba(52,152,219,.18)">📋</div><h5>Editor rápido</h5><p>Edita precio, stock, categoría, comisión y garantía en tabla.</p></div>';
+    wrap.insertBefore(div,panelEl);
+    if(typeof window.tmOrganizeTools==='function') setTimeout(window.tmOrganizeTools,80);
+  }
+  function openTool(){
+    panel('📋 Editor rápido de productos','Edita campos clave en tabla sin abrir producto por producto.',`
+      <style>
+      .tm-qe-wrap{overflow:auto;border:1px solid rgba(255,255,255,.08);border-radius:12px;margin-top:10px;max-height:520px}.tm-qe-table{width:100%;border-collapse:separate;border-spacing:0;min-width:980px}.tm-qe-table th{position:sticky;top:0;background:#171717;color:#c9a96e;font-size:10px;text-transform:uppercase;letter-spacing:.08em;text-align:left;padding:8px;z-index:1}.tm-qe-table td{border-top:1px solid rgba(255,255,255,.06);padding:6px 8px;vertical-align:middle}.tm-qe-table input,.tm-qe-table select{min-height:34px!important;padding:7px 8px!important;border-radius:8px!important;font-size:12px!important}.tm-qe-name{min-width:260px}.tm-qe-small{width:86px}.tm-qe-med{width:150px}.tm-qe-row.changed{background:rgba(201,169,110,.07)}.tm-qe-thumb{width:34px;height:34px;border-radius:8px;object-fit:cover;background:#222}.tm-qe-top{display:grid;grid-template-columns:1fr 180px 120px;gap:8px;margin:8px 0}@media(max-width:760px){.tm-qe-top{grid-template-columns:1fr}.tm-qe-wrap{max-height:430px}.tm-qe-table{min-width:900px}}
+      </style>
+      <div class="tm-qe-top"><input id="tmQeSearch" placeholder="Buscar producto..."><select id="tmQeCat"><option value="">Todas las categorías</option>${cats().map(c=>`<option>${esc(c)}</option>`).join('')}</select><input id="tmQeLimit" type="number" value="30" min="5" max="200" title="Límite"></div>
+      <div class="tm-actions"><button class="tm-btn primary" data-ds18-act="render">Buscar/Refrescar</button><button class="tm-btn gold" data-ds18-act="save">Guardar cambios</button><button class="tm-btn" data-ds18-act="stock0">Ver agotados</button><button class="tm-btn" data-ds18-act="low">Ver bajo stock</button></div>
+      <div class="tm-note">Tip: cambia varios campos y pulsa “Guardar cambios”. Al final pulsa “Actualizar tienda”.</div>
+      <div id="tmQeTable" class="tm-qe-wrap"></div>
+      <div id="tmToolOut" class="tm-code" style="margin-top:12px">Listo.</div>`);
+    setTimeout(renderTable,50);
+  }
+  function filtered(mode){
+    const q=String($('#tmQeSearch')?.value||'').toLowerCase().trim(); const cat=$('#tmQeCat')?.value||''; const limit=Math.max(5,Math.min(200,Number($('#tmQeLimit')?.value)||30));
+    let arr=products().filter(p=>(!cat||(p.categoria||'General')===cat));
+    if(q) arr=arr.filter(p=>String(p.nombre||'').toLowerCase().includes(q)||String(p.categoria||'').toLowerCase().includes(q)||String(p.subcategoria||'').toLowerCase().includes(q));
+    if(mode==='stock0') arr=arr.filter(p=>Number(p.stock||0)<=0);
+    if(mode==='low') arr=arr.filter(p=>Number(p.stock||0)>0&&Number(p.stock||0)<=3);
+    return arr.slice(0,limit);
+  }
+  function renderTable(mode){
+    const box=$('#tmQeTable'); if(!box)return; const arr=filtered(mode); const catOpts=cats().map(c=>`<option>${esc(c)}</option>`).join(''); const subOpts=subs().map(c=>`<option>${esc(c)}</option>`).join('');
+    box.innerHTML=`<table class="tm-qe-table"><thead><tr><th>Foto</th><th>Nombre</th><th>Precio</th><th>Stock</th><th>Categoría</th><th>Subcat.</th><th>Comisión</th><th>Moneda</th><th>Garantía</th></tr></thead><tbody>${arr.map(p=>`<tr class="tm-qe-row" data-id="${esc(p.id)}"><td><img class="tm-qe-thumb" src="${esc(p.imagen||'')}" onerror="this.style.display='none'"></td><td><input class="tm-qe-name" data-k="nombre" value="${esc(p.nombre||'')}"></td><td><input class="tm-qe-small" data-k="precioActual" type="number" step="0.01" value="${Number(p.precioActual||0)}"></td><td><input class="tm-qe-small" data-k="stock" type="number" step="1" value="${Number(p.stock||0)}"></td><td><select class="tm-qe-med" data-k="categoria"><option>${esc(p.categoria||'General')}</option>${catOpts}</select></td><td><select class="tm-qe-med" data-k="subcategoria"><option value="${esc(p.subcategoria||'')}">${esc(p.subcategoria||'')}</option>${subOpts}</select></td><td><input class="tm-qe-small" data-k="comision" type="number" step="0.01" value="${Number(p.comision||0)}"></td><td><select data-k="comisionMoneda"><option ${p.comisionMoneda==='MN'?'':'selected'}>USD</option><option ${p.comisionMoneda==='MN'?'selected':''}>MN</option></select></td><td><input class="tm-qe-med" data-k="garantia" value="${esc(p.garantia||'')}"></td></tr>`).join('')}</tbody></table>`;
+    box.querySelectorAll('input,select').forEach(el=>el.addEventListener('input',()=>el.closest('tr')?.classList.add('changed')));
+    const out=$('#tmToolOut'); if(out) out.textContent=`Mostrando ${arr.length} producto(s).`;
+  }
+  function save(){
+    const rows=Array.from(document.querySelectorAll('#tmQeTable tr.tm-qe-row.changed')); if(!rows.length){notify('No hay cambios','info');return;}
+    const ps=products(); let count=0;
+    rows.forEach(r=>{const id=r.dataset.id; const idx=ps.findIndex(p=>String(p.id)===String(id)); if(idx<0)return; const p={...ps[idx]}; r.querySelectorAll('[data-k]').forEach(el=>{const k=el.dataset.k; let v=el.value; if(['precioActual','comision'].includes(k)) v=parseFloat(v)||0; if(k==='stock') v=parseInt(v)||0; p[k]=v;}); p.editadoRapidoAt=new Date().toISOString(); ps[idx]=p; count++; try{if(typeof marcarProductoModificado==='function') marcarProductoModificado(p.id);}catch(e){};});
+    saveProducts(ps); try{if(typeof actualizarListaProductos==='function')actualizarListaProductos();}catch(e){} try{if(typeof renderizarProductos==='function')renderizarProductos();}catch(e){}
+    rows.forEach(r=>r.classList.remove('changed')); const out=$('#tmToolOut'); if(out) out.textContent=`✅ Guardados ${count} producto(s). Ahora pulsa “Actualizar tienda”.`; notify('✅ Cambios guardados localmente','success');
+  }
+  document.addEventListener('click',function(e){
+    const tool=e.target.closest('[data-tool="quickedit"]'); if(tool){e.preventDefault();e.stopPropagation();e.stopImmediatePropagation&&e.stopImmediatePropagation();openTool();return;}
+    const a=e.target.closest('[data-ds18-act]'); if(!a)return; e.preventDefault();e.stopPropagation();e.stopImmediatePropagation&&e.stopImmediatePropagation(); const act=a.dataset.ds18Act; if(act==='render')renderTable(); if(act==='save')save(); if(act==='stock0')renderTable('stock0'); if(act==='low')renderTable('low');
+  },true);
+  function boot(){addCard();}
+  document.addEventListener('DOMContentLoaded',()=>setTimeout(boot,2500));
   document.addEventListener('click',e=>{if(e.target.closest('[data-arg="herramientas"],[data-tab="herramientas"]')) setTimeout(boot,300);});
 })();

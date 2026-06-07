@@ -1,7 +1,8 @@
 // ═══════════════════════════════════════════════════════
-// TiendaMax — Service Worker v219 — Calidad catalogo
+// TiendaMax — Service Worker v220 — Editor rapido tabla
 // v211: mejora diseño compacto de Herramientas y botones.
 // v217: barra flotante visible al actualizar tienda con GitHub.
+// v220: añade editor rápido tipo tabla para productos.
 // v219: añade control de calidad del catálogo.
 // v218: normalizador actualiza vistas del admin inmediatamente.
 // v216: añade herramienta para normalizar nombres de productos.
@@ -82,7 +83,7 @@
 //      usan el mismo helper _mensajeOrdenWA con formato premium.
 // ═══════════════════════════════════════════════════════
 
-const CACHE_NAME = 'tiendamax-202606061900';
+const CACHE_NAME = 'tiendamax-202606061940';
 
 const STATIC_ASSETS = [
   '/',
