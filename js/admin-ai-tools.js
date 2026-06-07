@@ -1547,7 +1547,7 @@ function tmExtractJsonObject(text) {
 (function(){
   const CAT_LABELS={basicas:'🧰 Básicas',gestion:'📋 Gestión',datos:'📊 Datos/Ventas',ia:'🤖 IA',marketing:'📣 Marketing',sistema:'🛡️ Sistema'};
   const TOOL_CAT={
-    bulkadjust:'gestion',quickedit:'gestion',catalogqa:'sistema',namesfix:'basicas',ai:'ia',posts:'marketing',pushai:'ia',waai:'ia',auditai:'ia',insightsai:'ia',seoai:'ia',recsai:'ia',bulkai:'ia',chatai:'ia',
+    preflight:'sistema',pushmanager:'marketing',artifacts:'sistema',cleaner:'sistema',dormant:'datos',restock:'datos',templates:'marketing',calendar:'marketing',actionsstatus:'sistema',bulkadjust:'gestion',quickedit:'gestion',catalogqa:'sistema',namesfix:'basicas',ai:'ia',posts:'marketing',pushai:'ia',waai:'ia',auditai:'ia',insightsai:'ia',seoai:'ia',recsai:'ia',bulkai:'ia',chatai:'ia',
     campaignai:'marketing',publisherai:'marketing',campdash:'marketing',weekplanner:'marketing',taskcenter:'marketing',autopilot:'marketing',
     compress:'basicas',duplicate:'basicas',history:'basicas',csv:'basicas',dups:'basicas',
     schedule:'gestion',coupons:'gestion',locations:'gestion',ab:'gestion',totp:'gestion',roles:'gestion',
@@ -1873,5 +1873,150 @@ function tmExtractJsonObject(text) {
   },true);
   function boot(){addCard();}
   document.addEventListener('DOMContentLoaded',()=>setTimeout(boot,2600));
+  document.addEventListener('click',e=>{if(e.target.closest('[data-arg="herramientas"],[data-tab="herramientas"]')) setTimeout(boot,300);});
+})();
+
+// ── tm-tools-v20 / Estado de automatizaciones GitHub ───────────────────
+(function(){
+  const WORKFLOWS=[
+    ['update-eltoque-rate.yml','💱 Tasa elTOQUE'],
+    ['regenerate-artifacts.yml','🧱 Artefactos /p + sitemap'],
+    ['send-push-notifications.yml','🔔 Push notifications'],
+    ['optimize-images.yml','🖼️ Optimizar imágenes'],
+    ['minify-js.yml','📦 Minificar JS'],
+    ['build-css.yml','🎨 Build CSS'],
+    ['run-tests.yml','🧪 Tests']
+  ];
+  const $=(s,r=document)=>r.querySelector(s);
+  const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  function notify(msg,type){ if(typeof mostrarNotificacion==='function') mostrarNotificacion(msg,type||'info'); else console.log(msg); }
+  function gh(){return {user:localStorage.getItem('githubUser')||'',repo:localStorage.getItem('githubRepo')||'',token:localStorage.getItem('githubToken')||''};}
+  function panel(title,sub,body){const p=$('#tmToolPanel'); if(!p)return; p.className='tm-panel active'; p.innerHTML=`<div class="tm-panel-head"><div><h4>${title}</h4><p>${sub}</p></div><button class="tm-panel-close" data-act="closePanel">✕ Cerrar</button></div>${body}`; p.scrollIntoView({behavior:'smooth',block:'start'});}
+  function addCard(){
+    const wrap=$('#herramientas .tm-tools-wrap'); const panelEl=$('#tmToolPanel'); if(!wrap||!panelEl||document.querySelector('[data-tool="actionsstatus"]')) return;
+    const div=document.createElement('div'); div.className='tm-tools-grid'; div.innerHTML='<div class="tm-tool-card enabled" data-tool="actionsstatus"><span class="state">LIVE</span><div class="ico" style="background:rgba(79,195,247,.18)">⚙️</div><h5>Automatizaciones</h5><p>Revisa GitHub Actions: tasa, artefactos, push, imágenes y tests.</p></div>';
+    wrap.insertBefore(div,panelEl);
+    if(typeof window.tmOrganizeTools==='function') setTimeout(window.tmOrganizeTools,80);
+  }
+  function openTool(){
+    const g=gh();
+    panel('⚙️ Estado de automatizaciones','Revisa workflows de GitHub Actions y abre ejecuciones recientes.',`
+      <div class="tm-note">Usa tu configuración GitHub del admin. Si el repo es privado, requiere token guardado.</div>
+      <div class="tm-actions"><button class="tm-btn primary" data-ds20-act="load">Cargar estado</button><button class="tm-btn gold" data-ds20-act="openActions">Abrir Actions</button><button class="tm-btn" data-ds20-act="copyOut">Copiar reporte</button></div>
+      <div id="tmToolOut" class="tm-code" style="margin-top:12px">Repo: ${esc(g.user||'—')}/${esc(g.repo||'—')}\nPulsa “Cargar estado”.</div>`);
+  }
+  async function fetchRuns(file){
+    const g=gh(); if(!g.user||!g.repo) throw new Error('Configura GitHub user/repo en Configuración');
+    const headers={'Accept':'application/vnd.github+json'}; if(g.token) headers.Authorization='token '+g.token;
+    const url=`https://api.github.com/repos/${encodeURIComponent(g.user)}/${encodeURIComponent(g.repo)}/actions/workflows/${encodeURIComponent(file)}/runs?per_page=3`;
+    const r=await fetch(url,{headers});
+    if(r.status===404) return {missing:true,file};
+    if(!r.ok){let t='';try{t=await r.text()}catch(e){};throw new Error(`${file}: GitHub HTTP ${r.status} ${t.slice(0,120)}`);}
+    return await r.json();
+  }
+  function fmtRun(run){
+    if(!run) return 'Sin ejecuciones';
+    const icon=run.conclusion==='success'?'✅':run.conclusion==='failure'?'❌':run.status==='in_progress'?'⏳':'⚪';
+    const when=run.created_at?new Date(run.created_at).toLocaleString('es-CU'):'—';
+    return `${icon} ${run.status}${run.conclusion?'/'+run.conclusion:''} · ${when}`;
+  }
+  async function load(){
+    const out=$('#tmToolOut'); if(!out)return; const g=gh();
+    out.textContent='⏳ Consultando GitHub Actions...';
+    const lines=[`Repo: ${g.user}/${g.repo}`,''];
+    for(const [file,label] of WORKFLOWS){
+      try{
+        const data=await fetchRuns(file);
+        if(data.missing){lines.push(`⚪ ${label} (${file}) — no existe en este repo`); continue;}
+        const run=(data.workflow_runs||[])[0];
+        lines.push(`${label} — ${fmtRun(run)}`);
+        if(run&&run.html_url) lines.push(`   ${run.html_url}`);
+      }catch(e){lines.push(`⚠️ ${label} — ${e.message}`);}
+    }
+    lines.push('','Tip: si la tasa no cambia, el workflow puede terminar sin commit y eso está bien.');
+    out.textContent=lines.join('\n');
+  }
+  function openActions(){
+    const g=gh(); if(!g.user||!g.repo){notify('Configura GitHub primero','warning');return;}
+    window.open(`https://github.com/${encodeURIComponent(g.user)}/${encodeURIComponent(g.repo)}/actions`,'_blank');
+  }
+  document.addEventListener('click',function(e){
+    const tool=e.target.closest('[data-tool="actionsstatus"]'); if(tool){e.preventDefault();e.stopPropagation();e.stopImmediatePropagation&&e.stopImmediatePropagation();openTool();return;}
+    const a=e.target.closest('[data-ds20-act]'); if(!a)return; e.preventDefault();e.stopPropagation();e.stopImmediatePropagation&&e.stopImmediatePropagation();
+    if(a.dataset.ds20Act==='load')load(); if(a.dataset.ds20Act==='openActions')openActions(); if(a.dataset.ds20Act==='copyOut'){navigator.clipboard?.writeText($('#tmToolOut')?.textContent||'');notify('Copiado','success');}
+  },true);
+  function boot(){addCard();}
+  document.addEventListener('DOMContentLoaded',()=>setTimeout(boot,2700));
+  document.addEventListener('click',e=>{if(e.target.closest('[data-arg="herramientas"],[data-tab="herramientas"]')) setTimeout(boot,300);});
+})();
+
+// ── tm-tools-pack-v21 / Herramientas extra 05-12 ─────────────────────────
+(function(){
+  const $=(s,r=document)=>r.querySelector(s);
+  const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  function notify(msg,type){ if(typeof mostrarNotificacion==='function') mostrarNotificacion(msg,type||'info'); else console.log(msg); }
+  function products(){ try{ if(Array.isArray(window.productos)) return window.productos; }catch(e){} try{return JSON.parse(localStorage.getItem('productos')||'[]')}catch(e){return[]} }
+  function ventas(){ try{ if(typeof cargarVentas==='function') return cargarVentas()||[]; }catch(e){} try{return JSON.parse(localStorage.getItem('registroVentas')||'[]')}catch(e){return[]} }
+  function ls(k,d){try{return JSON.parse(localStorage.getItem(k)||JSON.stringify(d))}catch(e){return d}}
+  function set(k,v){localStorage.setItem(k,JSON.stringify(v));}
+  function gh(){return {user:localStorage.getItem('githubUser')||'',repo:localStorage.getItem('githubRepo')||'',token:localStorage.getItem('githubToken')||''};}
+  function money(n){return '$'+Number(n||0).toFixed(2)}
+  function panel(title,sub,body){const p=$('#tmToolPanel'); if(!p)return; p.className='tm-panel active'; p.innerHTML=`<div class="tm-panel-head"><div><h4>${title}</h4><p>${sub}</p></div><button class="tm-panel-close" data-act="closePanel">✕ Cerrar</button></div>${body}`; p.scrollIntoView({behavior:'smooth',block:'start'});}
+  function addCards(){
+    const wrap=$('#herramientas .tm-tools-wrap'), panelEl=$('#tmToolPanel'); if(!wrap||!panelEl||document.getElementById('tmToolsPackExtraCards')) return;
+    const div=document.createElement('div'); div.id='tmToolsPackExtraCards'; div.className='tm-tools-grid';
+    div.innerHTML=`
+      <div class="tm-tool-card enabled" data-tool="preflight"><span class="state">SAFE</span><div class="ico" style="background:rgba(231,76,60,.16)">🚦</div><h5>Validar antes de subir</h5><p>Revisa riesgos antes de Actualizar tienda.</p></div>
+      <div class="tm-tool-card enabled" data-tool="pushmanager"><span class="state">PRO</span><div class="ico" style="background:rgba(245,158,11,.18)">🔔</div><h5>Gestor de push</h5><p>Plantillas, historial y push por producto/categoría.</p></div>
+      <div class="tm-tool-card enabled" data-tool="artifacts"><span class="state">SEO</span><div class="ico" style="background:rgba(79,195,247,.18)">🧱</div><h5>Artefactos SEO</h5><p>Regenera páginas /p, sitemap y subcategorías.</p></div>
+      <div class="tm-tool-card enabled" data-tool="cleaner"><span class="state">CLEAN</span><div class="ico" style="background:rgba(46,204,113,.18)">🧹</div><h5>Limpiador admin</h5><p>Limpia snapshots, logs y cachés viejas.</p></div>
+      <div class="tm-tool-card enabled" data-tool="dormant"><span class="state">DATA</span><div class="ico" style="background:rgba(155,89,182,.18)">😴</div><h5>Productos dormidos</h5><p>Stock con poco movimiento o sin interés.</p></div>
+      <div class="tm-tool-card enabled" data-tool="restock"><span class="state">DATA</span><div class="ico" style="background:rgba(255,107,53,.18)">📦</div><h5>Reposición inteligente</h5><p>Qué reponer, archivar o promocionar.</p></div>
+      <div class="tm-tool-card enabled" data-tool="templates"><span class="state">COPY</span><div class="ico" style="background:rgba(201,169,110,.18)">🧩</div><h5>Plantillas</h5><p>Facebook, WhatsApp, Push y Story con variables.</p></div>
+      <div class="tm-tool-card enabled" data-tool="calendar"><span class="state">WEEK</span><div class="ico" style="background:rgba(52,152,219,.18)">📅</div><h5>Calendario visual</h5><p>Planes, campañas y seguimientos por semana.</p></div>`;
+    wrap.insertBefore(div,panelEl);
+    if(typeof window.tmOrganizeTools==='function') setTimeout(window.tmOrganizeTools,80);
+  }
+  function productUrl(p){return p&&p.id?`/p/producto-${p.id}.html`:'/';}
+  function preflightIssues(){
+    const ps=products(); const mods=ls('productosModificados',[]); const issues=[];
+    if(!localStorage.getItem('githubUser')||!localStorage.getItem('githubRepo')||!localStorage.getItem('githubToken')) issues.push(['fail','GitHub no configurado']);
+    if(mods.length>25) issues.push(['warn',`${mods.length} productos modificados: revisión recomendada`]);
+    ps.filter(p=>!p.imagen).slice(0,10).forEach(p=>issues.push(['fail',`Sin imagen: ${p.nombre}`]));
+    ps.filter(p=>!Number(p.precioActual||0)).slice(0,10).forEach(p=>issues.push(['fail',`Precio 0: ${p.nombre}`]));
+    ps.filter(p=>Number(p.stock||0)<0).forEach(p=>issues.push(['fail',`Stock negativo: ${p.nombre}`]));
+    ps.filter(p=>!p.seoTitle&&!p.seoDescription).slice(0,8).forEach(p=>issues.push(['warn',`Sin SEO: ${p.nombre}`]));
+    ps.filter(p=>!Array.isArray(p.recomendados)||!p.recomendados.length).slice(0,8).forEach(p=>issues.push(['warn',`Sin recomendaciones: ${p.nombre}`]));
+    return {mods,issues};
+  }
+  function openPreflight(){const r=preflightIssues(); panel('🚦 Validar antes de actualizar','Chequeo rápido antes de subir cambios a GitHub.',`<div class="tm-actions"><button class="tm-btn primary" data-pack-act="preflightRun">Revisar</button><button class="tm-btn gold" data-pack-act="preflightSync">Actualizar tienda</button><button class="tm-btn" data-pack-act="copyOut">Copiar</button></div><div id="tmToolOut" class="tm-code" style="margin-top:12px">${renderPreflight(r)}</div>`);}
+  function renderPreflight(r){return `Productos modificados: ${r.mods.length}\n\n`+(r.issues.length?r.issues.map(x=>(x[0]==='fail'?'❌':x[0]==='warn'?'⚠️':'ℹ️')+' '+x[1]).join('\n'):'✅ Sin riesgos críticos detectados.');}
+  function doSync(){const r=preflightIssues(); const fails=r.issues.filter(x=>x[0]==='fail'); if(fails.length&&!confirm('Hay fallos críticos. ¿Subir de todas formas?')) return; if(typeof sincronizarTodoConGitHub==='function') sincronizarTodoConGitHub(); else notify('No encuentro la función de actualizar','error');}
+  function pushTemplates(){return ls('tm_push_templates_v1',[{name:'Oferta',title:'🔥 Oferta en TiendaMax',body:'Disponible por tiempo limitado. Escríbenos para reservar.',url:'/'},{name:'Nuevo producto',title:'🆕 Nuevo producto',body:'Llegó algo nuevo a TiendaMax. Mira disponibilidad.',url:'/'}]);}
+  function savePushTemplates(v){set('tm_push_templates_v1',v)}
+  function pushHist(){return ls('tm_push_history_v1',[])}
+  function savePushHist(v){set('tm_push_history_v1',v.slice(0,100))}
+  function openPushManager(){const ps=products().filter(p=>Number(p.stock||0)>0).slice(0,200); const tpl=pushTemplates(); panel('🔔 Gestor avanzado de push','Plantillas, historial y preparación rápida de notificaciones.',`<div class="tm-form-grid"><div class="tm-field"><label>Producto</label><select id="tmPmProd"><option value="">Manual</option>${ps.map(p=>`<option value="${p.id}">${esc(p.nombre)} · ${money(p.precioActual)}</option>`).join('')}</select></div><div class="tm-field"><label>Plantilla</label><select id="tmPmTpl">${tpl.map((t,i)=>`<option value="${i}">${esc(t.name)}</option>`).join('')}</select></div><div class="tm-field"><label>Título</label><input id="tmPmTitle"></div><div class="tm-field"><label>URL</label><input id="tmPmUrl" value="/"></div></div><div class="tm-field"><label>Mensaje</label><textarea id="tmPmBody" style="min-height:74px"></textarea></div><div class="tm-actions"><button class="tm-btn primary" data-pack-act="pmFill">Rellenar</button><button class="tm-btn gold" data-pack-act="pmApply">Aplicar push</button><button class="tm-btn" data-pack-act="pmHistory">Historial</button></div><div id="tmToolOut" class="tm-code" style="margin-top:12px">Listo.</div>`);}
+  function pmFill(){const ps=products(); const p=ps.find(x=>String(x.id)===$('#tmPmProd')?.value); const t=pushTemplates()[Number($('#tmPmTpl')?.value)||0]||{}; $('#tmPmTitle').value=p?`🔥 ${String(p.nombre).slice(0,35)}`:(t.title||''); $('#tmPmBody').value=p?`${p.nombre} disponible por ${money(p.precioActual)}. Stock: ${p.stock}. Reserva por WhatsApp.`:(t.body||''); $('#tmPmUrl').value=p?productUrl(p):(t.url||'/');}
+  function pmApply(){const title=$('#tmPmTitle')?.value||'', body=$('#tmPmBody')?.value||'', url=$('#tmPmUrl')?.value||'/'; if(!title||!body){notify('Completa título y mensaje','warning');return;} const h=pushHist(); h.unshift({ts:new Date().toISOString(),title,body,url}); savePushHist(h); if(typeof switchTab==='function') switchTab('configuracion'); setTimeout(()=>{if($('#manualPushTitle'))$('#manualPushTitle').value=title;if($('#manualPushBody'))$('#manualPushBody').value=body;if($('#manualPushUrl'))$('#manualPushUrl').value=url;notify('Push aplicado en Configuración','success');},250);}
+  function pmHistory(){const h=pushHist(); const out=$('#tmToolOut'); if(out) out.textContent=h.length?h.map((x,i)=>`${i+1}. ${new Date(x.ts).toLocaleString('es-CU')}\nTítulo: ${x.title}\nMensaje: ${x.body}\nURL: ${x.url}`).join('\n\n'):'Sin historial push.';}
+  async function dispatchWorkflow(file){const g=gh(); if(!g.user||!g.repo||!g.token) throw new Error('Configura GitHub y token'); const r=await fetch(`https://api.github.com/repos/${g.user}/${g.repo}/actions/workflows/${file}/dispatches`,{method:'POST',headers:{'Accept':'application/vnd.github+json','Authorization':'token '+g.token,'Content-Type':'application/json'},body:JSON.stringify({ref:'main'})}); if(!r.ok&&r.status!==204){let t=await r.text().catch(()=>r.statusText); throw new Error('GitHub '+r.status+': '+t.slice(0,120));}}
+  function openArtifacts(){panel('🧱 Artefactos SEO','Regenera páginas /p, sitemap y subcategorías después de SEO/productos.',`<div class="tm-note">Ejecuta esto después de generar SEO o cambiar productos. Si falla por rama main/master, abre Actions y ejecútalo manual.</div><div class="tm-actions"><button class="tm-btn primary" data-pack-act="artRun">Disparar workflow</button><button class="tm-btn" data-pack-act="artOpen">Abrir Actions</button></div><div id="tmToolOut" class="tm-code" style="margin-top:12px">Workflow esperado: regenerate-artifacts.yml</div>`);}
+  async function artRun(){const out=$('#tmToolOut'); try{out.textContent='⏳ Disparando workflow...'; await dispatchWorkflow('regenerate-artifacts.yml'); out.textContent='✅ Workflow solicitado. Revisa GitHub Actions.'; notify('Workflow solicitado','success');}catch(e){out.textContent='⚠️ '+e.message; notify('No se pudo disparar','warning');}}
+  function artOpen(){const g=gh(); window.open(g.user&&g.repo?`https://github.com/${g.user}/${g.repo}/actions`:'https://github.com/','_blank');}
+  function openCleaner(){panel('🧹 Limpiador del admin','Limpia datos locales viejos sin tocar productos.',`<div class="tm-actions"><button class="tm-btn primary" data-pack-act="cleanPreview">Vista previa</button><button class="tm-btn gold" data-pack-act="cleanRun">Limpiar seguro</button><button class="tm-btn" data-pack-act="copyOut">Copiar</button></div><div id="tmToolOut" class="tm-code" style="margin-top:12px">Pulsa vista previa.</div>`);}
+  function cleanPreview(){const keys=['tm_tools_snapshots_v1','tm_full_backups_v1','tm_campaigns_v1','tm_week_plan_v1','productosModificados','tm_push_history_v1']; const out=$('#tmToolOut'); out.textContent=keys.map(k=>{let n=0;try{const v=JSON.parse(localStorage.getItem(k)||'[]');n=Array.isArray(v)?v.length:Object.keys(v).length}catch(e){} return `${k}: ${n}`;}).join('\n');}
+  function cleanRun(){['tm_tools_snapshots_v1','tm_full_backups_v1','tm_campaigns_v1','tm_week_plan_v1','tm_push_history_v1'].forEach(k=>{try{let v=JSON.parse(localStorage.getItem(k)||'[]'); if(Array.isArray(v)&&v.length>20)localStorage.setItem(k,JSON.stringify(v.slice(0,20)));}catch(e){}}); localStorage.removeItem('productosModificados'); cleanPreview(); notify('Limpieza segura completada','success');}
+  function activityMaps(){const vs=ventas(); const sold={}; vs.forEach(v=>{sold[String(v.productoId||'')]=(sold[String(v.productoId||'')]||0)+Number(v.cantidad||1);}); let an={vistas:{},whatsapp:{}}; try{an=window.__tmAnalyticsPlusData||an}catch(e){} return {sold,views:an.vistas||{},wa:an.whatsapp||{}};}
+  function openDormant(){const {sold,views,wa}=activityMaps(); const arr=products().filter(p=>Number(p.stock||0)>0).map(p=>({p,score:Number(sold[String(p.id)]||0)+Number(views[String(p.id)]||0)+Number(wa[String(p.id)]||0)*2})).filter(x=>x.score===0).slice(0,80); panel('😴 Productos dormidos','Productos con stock sin señales de venta/vistas/WhatsApp locales.',`<div class="tm-actions"><button class="tm-btn primary" data-pack-act="copyOut">Copiar</button><button class="tm-btn gold" data-pack-act="dormCampaign">Crear campaña</button></div><div id="tmToolOut" class="tm-code" style="margin-top:12px">${arr.length?arr.map(x=>`• ${x.p.nombre} · stock ${x.p.stock} · ${money(x.p.precioActual)}`).join('\n'):'No se detectan dormidos con datos actuales.'}</div>`);}
+  function openRestock(){const vs=ventas(); const sold={}; vs.forEach(v=>{sold[String(v.productoId||'')]=(sold[String(v.productoId||'')]||0)+Number(v.cantidad||1);}); const ps=products(); const low=ps.filter(p=>Number(p.stock||0)<=3).map(p=>({p,s:sold[String(p.id)]||0})).sort((a,b)=>b.s-a.s).slice(0,80); panel('📦 Reposición inteligente','Qué reponer, archivar o promocionar según stock y ventas locales.',`<div class="tm-actions"><button class="tm-btn" data-pack-act="copyOut">Copiar</button></div><div id="tmToolOut" class="tm-code" style="margin-top:12px">${low.map(x=>`${x.s?'🔥':'⚠️'} ${x.p.nombre} · stock ${x.p.stock||0} · vendido ${x.s} · ${x.s?'Reponer':'Revisar/archivar'}`).join('\n')||'Sin productos críticos.'}</div>`);}
+  function openTemplates(){const t=ls('tm_templates_v1',[{name:'Facebook oferta',body:'🔥 {nombre}\n\n💵 {precio}\n📦 Stock: {stock}\n📲 Escríbenos para reservar.\n{url}'},{name:'WhatsApp corto',body:'Hola 👋 Tenemos {nombre} disponible en {precio}. Stock: {stock}. ¿Te lo reservo?'},{name:'Push',body:'Título: 🔥 {nombre}\nMensaje: Disponible en TiendaMax por {precio}. Reserva por WhatsApp.\nURL: {url}'}]); panel('🧩 Biblioteca de plantillas','Plantillas reutilizables con variables {nombre}, {precio}, {stock}, {url}, {categoria}.',`<div class="tm-actions"><button class="tm-btn primary" data-pack-act="tplAdd">Agregar plantilla</button><button class="tm-btn gold" data-pack-act="tplSave">Guardar edición</button><button class="tm-btn" data-pack-act="copyOut">Copiar salida</button></div><div class="tm-form-grid"><div class="tm-field"><label>Plantilla</label><select id="tmTplSel">${t.map((x,i)=>`<option value="${i}">${esc(x.name)}</option>`).join('')}</select></div><div class="tm-field"><label>Producto</label><select id="tmTplProd">${products().slice(0,200).map(p=>`<option value="${p.id}">${esc(p.nombre)}</option>`).join('')}</select></div></div><div class="tm-field"><label>Texto</label><textarea id="tmTplText" style="min-height:120px">${esc(t[0]?.body||'')}</textarea></div><div class="tm-actions"><button class="tm-btn primary" data-pack-act="tplRender">Renderizar</button></div><div id="tmToolOut" class="tm-code" style="margin-top:12px">Listo.</div>`); $('#tmTplSel')?.addEventListener('change',e=>{$('#tmTplText').value=t[Number(e.target.value)]?.body||'';});}
+  function tplRender(){const p=products().find(x=>String(x.id)===$('#tmTplProd')?.value)||products()[0]||{}; let txt=$('#tmTplText')?.value||''; txt=txt.replaceAll('{nombre}',p.nombre||'').replaceAll('{precio}',money(p.precioActual)).replaceAll('{stock}',String(p.stock||0)).replaceAll('{url}',productUrl(p)).replaceAll('{categoria}',p.categoria||''); $('#tmToolOut').textContent=txt;}
+  function tplAdd(){const t=ls('tm_templates_v1',[]); t.unshift({name:'Nueva plantilla',body:'{nombre}\n{precio}\n{url}'}); set('tm_templates_v1',t); openTemplates();}
+  function tplSave(){const t=ls('tm_templates_v1',[]); const i=Number($('#tmTplSel')?.value)||0; if(t[i]){t[i].body=$('#tmTplText')?.value||''; set('tm_templates_v1',t); notify('Plantilla guardada','success');}}
+  function openCalendar(){const plans=ls('tm_week_plan_v1',[]), cs=ls('tm_campaigns_v1',[]); const days=['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo']; panel('📅 Calendario visual','Planes, campañas y seguimientos de la semana.',`<div class="tm-form-grid">${days.map(d=>`<div class="tm-panel active" style="padding:12px"><h4>${d}</h4><div class="tm-note">${plans.filter(p=>!(p.done&&p.done[d])).slice(0,2).map(p=>'🗓️ '+esc(p.title)).join('<br>')||'Sin plan pendiente'}<br>${cs.filter(c=>c.followUpAt&&new Date(c.followUpAt).toLocaleDateString('es-CU')===new Date().toLocaleDateString('es-CU')).slice(0,2).map(c=>'📌 '+esc(c.title)).join('<br>')}</div></div>`).join('')}</div><div id="tmToolOut" class="tm-code" style="margin-top:12px">Calendario generado con planes/campañas locales.</div>`);}
+  document.addEventListener('click',function(e){const tool=e.target.closest('[data-tool]'); if(tool){const m={preflight:openPreflight,pushmanager:openPushManager,artifacts:openArtifacts,cleaner:openCleaner,dormant:openDormant,restock:openRestock,templates:openTemplates,calendar:openCalendar}[tool.dataset.tool]; if(m){e.preventDefault();e.stopPropagation();e.stopImmediatePropagation&&e.stopImmediatePropagation();m();return;}} const a=e.target.closest('[data-pack-act]'); if(!a)return; e.preventDefault();e.stopPropagation();e.stopImmediatePropagation&&e.stopImmediatePropagation(); const act=a.dataset.packAct; if(act==='preflightRun')openPreflight(); if(act==='preflightSync')doSync(); if(act==='pmFill')pmFill(); if(act==='pmApply')pmApply(); if(act==='pmHistory')pmHistory(); if(act==='artRun')artRun(); if(act==='artOpen')artOpen(); if(act==='cleanPreview')cleanPreview(); if(act==='cleanRun')cleanRun(); if(act==='tplRender')tplRender(); if(act==='tplAdd')tplAdd(); if(act==='tplSave')tplSave(); if(act==='dormCampaign'){const c=document.querySelector('[data-tool="campaignai"]'); if(c)c.click();} if(act==='copyOut'){navigator.clipboard?.writeText($('#tmToolOut')?.textContent||'');notify('Copiado','success');}},true);
+  function boot(){addCards();}
+  document.addEventListener('DOMContentLoaded',()=>setTimeout(boot,2800));
   document.addEventListener('click',e=>{if(e.target.closest('[data-arg="herramientas"],[data-tab="herramientas"]')) setTimeout(boot,300);});
 })();
