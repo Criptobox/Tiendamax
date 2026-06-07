@@ -1547,7 +1547,7 @@ function tmExtractJsonObject(text) {
 (function(){
   const CAT_LABELS={basicas:'🧰 Básicas',gestion:'📋 Gestión',datos:'📊 Datos/Ventas',ia:'🤖 IA',marketing:'📣 Marketing',sistema:'🛡️ Sistema'};
   const TOOL_CAT={
-    namesfix:'basicas',ai:'ia',posts:'marketing',pushai:'ia',waai:'ia',auditai:'ia',insightsai:'ia',seoai:'ia',recsai:'ia',bulkai:'ia',chatai:'ia',
+    catalogqa:'sistema',namesfix:'basicas',ai:'ia',posts:'marketing',pushai:'ia',waai:'ia',auditai:'ia',insightsai:'ia',seoai:'ia',recsai:'ia',bulkai:'ia',chatai:'ia',
     campaignai:'marketing',publisherai:'marketing',campdash:'marketing',weekplanner:'marketing',taskcenter:'marketing',autopilot:'marketing',
     compress:'basicas',duplicate:'basicas',history:'basicas',csv:'basicas',dups:'basicas',
     schedule:'gestion',coupons:'gestion',locations:'gestion',ab:'gestion',totp:'gestion',roles:'gestion',
@@ -1660,5 +1660,90 @@ function tmExtractJsonObject(text) {
   },true);
   function boot(){addCard();}
   document.addEventListener('DOMContentLoaded',()=>setTimeout(boot,2300));
+  document.addEventListener('click',e=>{if(e.target.closest('[data-arg="herramientas"],[data-tab="herramientas"]')) setTimeout(boot,300);});
+})();
+
+// ── tm-deepseek-tools-v17 / Control de calidad de catálogo ───────────────
+(function(){
+  const $=(s,r=document)=>r.querySelector(s);
+  const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  function notify(msg,type){ if(typeof mostrarNotificacion==='function') mostrarNotificacion(msg,type||'info'); else console.log(msg); }
+  function products(){ try{ if(Array.isArray(window.productos)) return window.productos; }catch(e){} try{return JSON.parse(localStorage.getItem('productos')||'[]')}catch(e){return[]} }
+  function panel(title,sub,body){const p=$('#tmToolPanel'); if(!p)return; p.className='tm-panel active'; p.innerHTML=`<div class="tm-panel-head"><div><h4>${title}</h4><p>${sub}</p></div><button class="tm-panel-close" data-act="closePanel">✕ Cerrar</button></div>${body}`; p.scrollIntoView({behavior:'smooth',block:'start'});}
+  function norm(s){return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,' ').trim();}
+  function addCard(){
+    const wrap=$('#herramientas .tm-tools-wrap'); const panelEl=$('#tmToolPanel'); if(!wrap||!panelEl||document.querySelector('[data-tool="catalogqa"]')) return;
+    const div=document.createElement('div'); div.className='tm-tools-grid'; div.innerHTML='<div class="tm-tool-card enabled" data-tool="catalogqa"><span class="state">QA</span><div class="ico" style="background:rgba(79,195,247,.18)">🧾</div><h5>Calidad catálogo</h5><p>Detecta errores de productos: precio, imagen, SEO, stock y duplicados.</p></div>';
+    wrap.insertBefore(div,panelEl);
+    if(typeof window.tmOrganizeTools==='function') setTimeout(window.tmOrganizeTools,80);
+  }
+  function scan(){
+    const ps=products(); const issues=[]; const seen={};
+    ps.forEach(p=>{ const k=norm(p.nombre); if(k){seen[k]=seen[k]||[]; seen[k].push(p);} });
+    Object.values(seen).filter(a=>a.length>1).forEach(arr=>arr.forEach(p=>issues.push({level:'warn',type:'Duplicado',id:p.id,name:p.nombre,msg:'Nombre parecido/repetido en catálogo'})));
+    ps.forEach(p=>{
+      const name=String(p.nombre||'').trim(); const desc=String(p.descripcion||'').trim(); const price=Number(p.precioActual||0); const stock=Number(p.stock||0);
+      if(!name) issues.push({level:'fail',type:'Nombre',id:p.id,name:'(sin nombre)',msg:'Producto sin nombre'});
+      else {
+        if(name.length<6) issues.push({level:'warn',type:'Nombre',id:p.id,name,msg:'Nombre demasiado corto'});
+        if(name.length>85) issues.push({level:'warn',type:'Nombre',id:p.id,name,msg:'Nombre demasiado largo para tarjeta'});
+        if(/[a-záéíóúñ]/.test(name)) issues.push({level:'info',type:'Nombre',id:p.id,name,msg:'Nombre no está completamente en mayúsculas'});
+      }
+      if(!desc) issues.push({level:'warn',type:'Descripción',id:p.id,name,msg:'Sin descripción'});
+      else if(desc.length<80) issues.push({level:'warn',type:'Descripción',id:p.id,name,msg:'Descripción corta (<80 caracteres)'});
+      if(!price || price<=0) issues.push({level:'fail',type:'Precio',id:p.id,name,msg:'Precio actual vacío o 0'});
+      if(stock<0) issues.push({level:'fail',type:'Stock',id:p.id,name,msg:'Stock negativo'});
+      if(stock===0) issues.push({level:'info',type:'Stock',id:p.id,name,msg:'Agotado / stock 0'});
+      if(stock>0 && stock<=3) issues.push({level:'warn',type:'Stock',id:p.id,name,msg:'Stock bajo (≤3)'});
+      if(!p.categoria) issues.push({level:'fail',type:'Categoría',id:p.id,name,msg:'Sin categoría'});
+      if(!p.subcategoria) issues.push({level:'info',type:'Subcategoría',id:p.id,name,msg:'Sin subcategoría'});
+      if(!p.imagen) issues.push({level:'fail',type:'Imagen',id:p.id,name,msg:'Sin imagen principal'});
+      if(!p.seoTitle&&!p.seoDescription) issues.push({level:'warn',type:'SEO',id:p.id,name,msg:'Sin SEO generado'});
+      if(!Array.isArray(p.recomendados)||!p.recomendados.length) issues.push({level:'warn',type:'Recomendaciones',id:p.id,name,msg:'Sin recomendaciones IA'});
+      if(!p.garantia) issues.push({level:'info',type:'Garantía',id:p.id,name,msg:'Garantía no indicada'});
+    });
+    return issues;
+  }
+  function counts(issues){return issues.reduce((m,x)=>{m[x.level]=(m[x.level]||0)+1;m[x.type]=(m[x.type]||0)+1;return m;},{});}
+  function openTool(){
+    const issues=scan(); const c=counts(issues); window.__tmCatalogQA=issues;
+    panel('🧾 Control de calidad del catálogo','Revisa errores antes de publicar o ejecutar cambios masivos.',`
+      <div class="tm-an-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-bottom:12px">
+        <div class="tm-an-kpi"><small>Productos</small><b>${products().length}</b><em>total</em></div>
+        <div class="tm-an-kpi"><small>Críticos</small><b style="color:#e74c3c">${c.fail||0}</b><em>corregir</em></div>
+        <div class="tm-an-kpi"><small>Alertas</small><b style="color:#f39c12">${c.warn||0}</b><em>mejorar</em></div>
+        <div class="tm-an-kpi"><small>Info</small><b style="color:#4fc3f7">${c.info||0}</b><em>opcional</em></div>
+      </div>
+      <div class="tm-actions"><button class="tm-btn primary" data-ds17-act="rescan">Revisar de nuevo</button><button class="tm-btn gold" data-ds17-act="images">Probar imágenes</button><button class="tm-btn" data-ds17-act="csv">Exportar CSV</button><button class="tm-btn" data-ds17-act="copy">Copiar reporte</button><button class="tm-btn" data-ds17-act="bulk">Abrir IA masiva</button></div>
+      <div id="tmToolOut" class="tm-code" style="margin-top:12px">${renderReport(issues)}</div>`);
+  }
+  function renderReport(issues){
+    if(!issues.length) return '✅ Catálogo sin problemas detectados.';
+    const order={fail:0,warn:1,info:2};
+    return issues.slice().sort((a,b)=>(order[a.level]-order[b.level])||String(a.type).localeCompare(b.type)).slice(0,220).map(x=>`${x.level==='fail'?'❌':x.level==='warn'?'⚠️':'ℹ️'} ${x.type}: ${x.name||x.id} — ${x.msg}`).join('\n')+(issues.length>220?`\n... ${issues.length-220} más`: '');
+  }
+  function exportCsv(){
+    const issues=window.__tmCatalogQA||scan();
+    const rows=[['nivel','tipo','id','producto','mensaje'],...issues.map(x=>[x.level,x.type,x.id,x.name,x.msg])];
+    const csv=rows.map(r=>r.map(v=>'"'+String(v??'').replace(/"/g,'""')+'"').join(',')).join('\n');
+    const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'})); a.download='calidad_catalogo_tiendamax.csv'; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+  }
+  function copyReport(){navigator.clipboard?.writeText(renderReport(window.__tmCatalogQA||scan())); notify('Reporte copiado','success');}
+  function openBulk(){const card=document.querySelector('[data-tool="bulkai"]'); if(card) card.click(); else notify('IA masiva no encontrada','warning');}
+  function testImage(url){return new Promise(res=>{if(!url)return res(false); const img=new Image(); const t=setTimeout(()=>{img.onload=img.onerror=null;res(false);},6000); img.onload=()=>{clearTimeout(t);res(true)}; img.onerror=()=>{clearTimeout(t);res(false)}; img.src=url+(url.includes('?')?'&':'?')+'_qa='+Date.now();});}
+  async function testImages(){
+    const out=$('#tmToolOut'); if(out) out.textContent='⏳ Probando imágenes principales...';
+    const ps=products().filter(p=>p.imagen).slice(0,120); const broken=[];
+    for(let i=0;i<ps.length;i++){ if(out) out.textContent=`⏳ Imagen ${i+1}/${ps.length}: ${ps[i].nombre}`; const ok=await testImage(ps[i].imagen); if(!ok) broken.push(ps[i]); }
+    if(out) out.textContent=broken.length?('❌ Imágenes rotas/no cargan:\n\n'+broken.map(p=>`• ${p.nombre} — ${p.imagen}`).join('\n')):`✅ ${ps.length} imágenes principales cargan correctamente.`;
+    notify(broken.length?'Imágenes con problemas':'Imágenes OK',broken.length?'warning':'success');
+  }
+  document.addEventListener('click',function(e){
+    const tool=e.target.closest('[data-tool="catalogqa"]'); if(tool){e.preventDefault();e.stopPropagation();e.stopImmediatePropagation&&e.stopImmediatePropagation();openTool();return;}
+    const a=e.target.closest('[data-ds17-act]'); if(!a)return; e.preventDefault();e.stopPropagation();e.stopImmediatePropagation&&e.stopImmediatePropagation();
+    const act=a.dataset.ds17Act; if(act==='rescan')openTool(); if(act==='images')testImages(); if(act==='csv')exportCsv(); if(act==='copy')copyReport(); if(act==='bulk')openBulk();
+  },true);
+  function boot(){addCard();}
+  document.addEventListener('DOMContentLoaded',()=>setTimeout(boot,2400));
   document.addEventListener('click',e=>{if(e.target.closest('[data-arg="herramientas"],[data-tab="herramientas"]')) setTimeout(boot,300);});
 })();
