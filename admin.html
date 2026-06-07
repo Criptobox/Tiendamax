@@ -207,7 +207,9 @@ async function render(){
  const ps=products(); let vs=ventas(); const fb=await readFirebaseAnalytics();
  try{const base=_rtdbBase();if(base){const r=await fetch(base+'/ventas.json?_='+Date.now(),{cache:'no-store'});if(r.ok){const raw=await r.json();if(raw&&typeof raw==='object'){const fbVs=Object.values(raw).filter(Boolean).sort((a,b)=>b.id-a.id);if(fbVs.length>vs.length)vs=fbVs;}}}}catch(e){}
  const total=ps.length, active=ps.filter(p=>stockOf(p)>0).length, empty=ps.filter(p=>stockOf(p)===0).length, low=ps.filter(p=>stockOf(p)>0&&stockOf(p)<=3).length;
- const inv=ps.reduce((s,p)=>s+priceOf(p)*stockOf(p),0), totalVentas=vs.reduce((s,v)=>s+num(v.total),0);
+ const inv=ps.reduce((s,p)=>s+priceOf(p)*stockOf(p),0);
+ // v.total puede no existir; fallback a ganancia/comision × cantidad (igual que pestaña Ventas)
+ const totalVentas=vs.reduce((s,v)=>s+num(v.total||(num(v.ganancia||v.comision)*num(v.cantidad||1))),0);
  // Usar String(p.id) porque Firebase guarda las claves como string
  const vistasMap=fb.vistas||{}, waMap=fb.whatsapp||{};
  const totalVistas=Object.values(vistasMap).reduce((s,n)=>s+num(n),0);
@@ -273,13 +275,15 @@ async function tmAdminRefreshSubscribers(){
     }
   }
   async function sincVentasSiVacio(){
+    // Throttle: no sincronizar más de una vez cada 20s para no saturar Firebase
+    if(window.__lastVentasSync && Date.now()-window.__lastVentasSync<20000) return;
+    window.__lastVentasSync=Date.now();
     try{
-      var v=[];try{v=JSON.parse(localStorage.getItem('registroVentas')||'[]');}catch(e){}
-      if(v.length>0)return; // ya hay datos locales, no hace falta
+      var updated=false;
       if(typeof _fbSincronizarVentasAlIniciar==='function'){
         await _fbSincronizarVentasAlIniciar();
+        updated=true;
       } else {
-        // fallback directo si la función no está disponible
         var cfg={}; try{cfg=JSON.parse(localStorage.getItem('firebaseConfig')||'{}');}catch(e){}
         var base=cfg.databaseURL||(cfg.projectId?'https://'+cfg.projectId+'-default-rtdb.firebaseio.com':null);
         if(!base)return;
@@ -288,9 +292,13 @@ async function tmAdminRefreshSubscribers(){
         var raw=await r.json();
         if(!raw||typeof raw!=='object')return;
         var arr=Object.values(raw).filter(Boolean).sort(function(a,b){return b.id-a.id;});
-        if(!arr.length)return;
-        localStorage.setItem('registroVentas',JSON.stringify(arr.slice(0,500)));
-        if(typeof renderizarVentas==='function') renderizarVentas();
+        if(arr.length){ localStorage.setItem('registroVentas',JSON.stringify(arr.slice(0,500))); updated=true; }
+      }
+      if(updated){
+        // Resetear flag patched para que patchVentas re-calcule el KPI
+        var kpi=document.querySelector('#ventasContenido .admin-stat-value');
+        if(kpi) kpi.dataset.patched='';
+        if(typeof renderizarVentas==='function') setTimeout(renderizarVentas,100);
       }
     }catch(e){console.warn('[sincVentas]',e);}
   }

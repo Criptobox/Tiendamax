@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════════════════
-// TiendaMax — Service Worker v225 — Agente guia ejecuta
+// TiendaMax — Service Worker v226 — fix ventas $0 sync siempre + totalVentas campo correcto
 // v225: agente guía con botones Ejecutar/Abrir/Hecho y lectura por voz.
 // v211: mejora diseño compacto de Herramientas y botones.
 // v217: barra flotante visible al actualizar tienda con GitHub.
@@ -89,7 +89,7 @@
 //      usan el mismo helper _mensajeOrdenWA con formato premium.
 // ═══════════════════════════════════════════════════════
 
-const CACHE_NAME = 'tiendamax-202606062300';
+const CACHE_NAME = 'tiendamax-202606070500';
 
 const STATIC_ASSETS = [
   '/',
