@@ -1,7 +1,7 @@
 [
   {
     "id": 1778104115783,
-    "nombre": "BATERIA MUST tipo LiFePO4",
+    "nombre": "BATERÍA MUST TIPO LIFEPO4",
     "descripcion": "Batería tipo LiFePO4 (litio hierro fosfato).\n* Mas segura y con mayor vida útil que las tradicionales.\n* Capacidad de 12.8V y 100Ah (1280Wh), ideal para sistemas solares, inversores y respaldo eléctrico.\n* Alta corriente de descarga hasta 100A, permite alimentar equipos de consumo medio-alto.\n* Corriente máxima de carga de 50A, lo que permite recargas relativamente rápidas.\n* Larga durabilidad (3000 ciclos) y funcionamiento en temperaturas de 0°C a 45°C.",
     "imagen": "https://tiendamax.org/imagenes/img_1778104115783.webp",
     "precioActual": 270,
@@ -25,11 +25,12 @@
       "alta descarga"
     ],
     "slug": "bateria-lifepo4-12-8v-100ah",
-    "shareText": "Potencia tu energía solar con la batería LiFePO4 12.8V 100Ah de alta durabilidad."
+    "shareText": "Potencia tu energía solar con la batería LiFePO4 12.8V 100Ah de alta durabilidad.",
+    "nombreNormalizadoAt": "2026-06-07T02:01:39.401Z"
   },
   {
     "id": 1777923552923,
-    "nombre": "Cargador inteligente 20A",
+    "nombre": "CARGADOR INTELIGENTE 20A",
     "descripcion": "Cargador inteligente de 20 A\n 12V y 24V.\n\n* Corriente ajustable de 5A, 10A y hasta 20A.\n* Permite elegir entre carga lenta, media o rápida según la necesidad.\n* Compatible con baterías de plomo-ácido, calcio, Lifepo4 y\n     baterías AGM, GEL.\n* Reconoce si la batería es de 12V o 24V sin intervención manual.\n* Sistema de carga en múltiples etapas.\n* Optimiza el proceso para proteger y alargar la vida de la batería.\n* Función de reparación por pulsos.\n* Ayuda a recuperar baterías sulfatadas o con bajo rendimiento.\n* Pantalla digital integrada.\n* Muestra datos en tiempo real como voltaje, amperaje y estado.\n* Protección contra sobrecarga y cortocircuitos.\n* Brinda mayor seguridad durante todo el proceso de carga.\n* Modo de mantenimiento o carga flotante.\n* Mantiene la batería cargada sin dañarla cuando no está en uso.",
     "imagen": "https://tiendamax.org/imagenes/img_1779206111811.webp",
     "precioOriginal": 0,
@@ -53,7 +54,8 @@
       "comprar online"
     ],
     "slug": "cargador-inteligente-20a",
-    "shareText": "🔥 Cargador inteligente 20A\n💵 $80.00 USD\nDisponible en TiendaMax. Escríbenos para reservar."
+    "shareText": "🔥 Cargador inteligente 20A\n💵 $80.00 USD\nDisponible en TiendaMax. Escríbenos para reservar.",
+    "nombreNormalizadoAt": "2026-06-07T02:01:39.401Z"
   },
   {
     "id": 1777924118004,
@@ -85,7 +87,7 @@
   },
   {
     "id": 1777924173211,
-    "nombre": "Router WiFi 6",
+    "nombre": "ROUTER WIFI 6",
     "descripcion": "Router WiFi 6 para juegos, AX3000, router inalámbrico Gigabit de doble banda para el hogar\n\n✅Cobertura de largo alcance con 5 antenas de alta ganancia de 6dBi.\n✅Router de alta velocidad con 4 puertos Gigabit, compatible con WPA3, VPN.\n✅Un sistema de procesamiento potente con un CPU Broadcom Quad-Core de 1.7GHz que mejora las velocidades de Wi-Fi (hasta 2976Mbps) y garantiza una red confiable.\n✅El enrutador Tenda WiFi 6 RX12 Pro es compatible tanto con servidor VPN como con cliente VPN (PPTP/L2TP). \n✅Las bandas de 2.4 GHz y 5 GHz se han\nactualizado a la última generación, perfectas para juegos en línea, streaming en 4K y descargas rápidas.\n✅Cuatro amplificadores de señal de alto rendimiento y cinco antenas externas de 6dBi colaboran para ofrecer una conexión Wi-Fi sólida y confiable.\n✅Diagnóstico Inteligente con un solo clic realiza autoevaluaciones y solucionará los problemas de red.",
     "imagen": "https://tiendamax.org/imagenes/img_1778712717491.webp",
     "precioOriginal": 0,
@@ -109,11 +111,12 @@
       "comprar online"
     ],
     "slug": "router-wifi-6",
-    "shareText": "🔥 Router WiFi 6\n💵 $130.00 USD\nDisponible en TiendaMax. Escríbenos para reservar."
+    "shareText": "🔥 Router WiFi 6\n💵 $130.00 USD\nDisponible en TiendaMax. Escríbenos para reservar.",
+    "nombreNormalizadoAt": "2026-06-07T02:01:39.401Z"
   },
   {
     "id": 1777924248270,
-    "nombre": "Enrutador WiFi WAVLINK AC1200",
+    "nombre": "ENRUTADOR WIFI WAVLINK AC1200",
     "descripcion": "Enrutador WiFi WAVLINK AC1200 de doble banda 5 GHz + 2.4 GHz, enrutador inalámbrico para hogar y juegos con puertos Ethernet Gigabit WAN/LAN, 4 antenas de alta ganancia de 5 dBi, compatible con modo enrutador/AP/WISP",
     "imagen": "https://tiendamax.org/imagenes/img_1777924248270.webp",
     "precioOriginal": 0,
@@ -139,11 +142,12 @@
       "modo WISP"
     ],
     "slug": "enrutador-wifi-wavlink-ac1200-doble-banda",
-    "shareText": "Potencia tu red con el enrutador WAVLINK AC1200: doble banda, 4 antenas y puertos Gigabit. ¡Ideal para gaming y hogar!"
+    "shareText": "Potencia tu red con el enrutador WAVLINK AC1200: doble banda, 4 antenas y puertos Gigabit. ¡Ideal para gaming y hogar!",
+    "nombreNormalizadoAt": "2026-06-07T02:01:39.401Z"
   },
   {
     "id": 1777924315386,
-    "nombre": "Repetidor wifi 5",
+    "nombre": "REPETIDOR WIFI 5",
     "descripcion": "Repetidor wifi 5 de doble banda 2.4G y 5G, de 1200 mbps.",
     "imagen": "https://tiendamax.org/imagenes/img_1777924315386.webp",
     "precioOriginal": 0,
@@ -169,11 +173,12 @@
       "repetidor inalámbrico"
     ],
     "slug": "repetidor-wifi-5-doble-banda-1200mbps",
-    "shareText": "¡Amplía tu señal WiFi con nuestro repetidor de 1200Mbps, doble banda 2.4G/5G! Disponible por solo $25.00 USD."
+    "shareText": "¡Amplía tu señal WiFi con nuestro repetidor de 1200Mbps, doble banda 2.4G/5G! Disponible por solo $25.00 USD.",
+    "nombreNormalizadoAt": "2026-06-07T02:01:39.401Z"
   },
   {
     "id": 1778102214012,
-    "nombre": "Switch de 8 puertos",
+    "nombre": "SWITCH DE 8 PUERTOS",
     "descripcion": "Switch de 8 puertos ethernet de 1 gigabite.",
     "imagen": "https://tiendamax.org/imagenes/img_1780510811569.webp",
     "precioActual": 30,
@@ -200,11 +205,12 @@
       "switch de red"
     ],
     "slug": "switch-8-puertos-ethernet-1gbps",
-    "shareText": "¡Nuevo Switch 8 puertos 1Gbps en TiendaMax! Conecta todo tu hogar o oficina con velocidad y estabilidad. Precio especial: $30.00 USD."
+    "shareText": "¡Nuevo Switch 8 puertos 1Gbps en TiendaMax! Conecta todo tu hogar o oficina con velocidad y estabilidad. Precio especial: $30.00 USD.",
+    "nombreNormalizadoAt": "2026-06-07T02:01:39.401Z"
   },
   {
     "id": 1778102507659,
-    "nombre": "Pesa/ Báscula inteligente digital.",
+    "nombre": "PESA / BÁSCULA INTELIGENTE DIGITAL.",
     "descripcion": "Pesa/ Báscula inteligente digital.\n\n• Funciona con  2 baterias AAA(no incluidas)\n•Cinta metrica incluida.\n• Se conecta con el teléfono mediante una app que brinda datos a cerca del control de su peso corporal.\n•Diseño elegante con cristal templado de 27cm x 27cm.\n•Soporta hasta 180kg",
     "imagen": "https://tiendamax.org/imagenes/img_1778102507659.webp",
     "precioActual": 25,
@@ -227,11 +233,12 @@
       "comprar online"
     ],
     "slug": "pesa-bascula-inteligente-digital",
-    "shareText": "🔥 Pesa/ Báscula inteligente digital.\n💵 $25.00 USD\nDisponible en TiendaMax. Escríbenos para reservar."
+    "shareText": "🔥 Pesa/ Báscula inteligente digital.\n💵 $25.00 USD\nDisponible en TiendaMax. Escríbenos para reservar.",
+    "nombreNormalizadoAt": "2026-06-07T02:01:39.401Z"
   },
   {
     "id": 1778102582909,
-    "nombre": "Antorcha para soldadura TIG:",
+    "nombre": "ANTORCHA PARA SOLDADURA TIG:",
     "descripcion": "Antorcha para soldadura TIG:\n\n* Utilizada para trabajos de soldadura de alta precisión en metales como acero inoxidable, aluminio y hierro.\n*  Ideal para talleres, herrería y trabajos profesionales donde se requiere un acabado limpio y detallado.\n\nCaracterísticas principales:\n\n* Permite soldaduras finas y de alta calidad.\n* Incluye boquillas cerámicas de diferentes tamaños.\n* Cuenta con electrodos y accesorios intercambiables.\n* Cable flexible y resistente para mejor manejo.\n* Diseño ergonómico para mayor comodidad durante el uso.",
     "imagen": "https://tiendamax.org/imagenes/img_1778102582909.webp",
     "precioActual": 90,
@@ -256,11 +263,12 @@
       "herramientas de soldadura"
     ],
     "slug": "antorcha-tig-alta-precision",
-    "shareText": "Descubre la antorcha TIG de alta precisión para soldaduras perfectas."
+    "shareText": "Descubre la antorcha TIG de alta precisión para soldaduras perfectas.",
+    "nombreNormalizadoAt": "2026-06-07T02:01:39.401Z"
   },
   {
     "id": 1778103783319,
-    "nombre": "Las  nuevas Baterias españolas  LUBRIM",
+    "nombre": "LAS NUEVAS BATERÍAS ESPAÑOLAS LUBRIM",
     "descripcion": "🛑Las  nuevas Baterias españolas  LUBRIM usan  Tecnología Ca/Ca que consiste en la utilización de placas de calcio (Ca) en su  construcción, lo que mejora su rendimiento y proporcionan una mayor potencia de arranque y una vida útil más prolongada en comparación con las tecnologías más antiguas, éstas baterias no requieren mantenimiento alguno, proporcionando una tranquilidad absoluta para nosotros y para nuestros clientes. Es llegar y montar!👌🏼\n\n⭕12v,  60 amperes ...... 70 USD\n \n⭕12v,  75 amperes ...... 85 USD\n\n⭕Un mes de garantía absoluta! 🫡",
     "imagen": "https://tiendamax.org/imagenes/img_1778103783319.webp",
     "precioActual": 85,
@@ -284,11 +292,12 @@
       "batería alta potencia"
     ],
     "slug": "baterias-lubrim-12v",
-    "shareText": "Descubre las nuevas baterías LUBRIM 12V con tecnología Ca/Ca, potencia y sin mantenimiento. ¡Solo $85!"
+    "shareText": "Descubre las nuevas baterías LUBRIM 12V con tecnología Ca/Ca, potencia y sin mantenimiento. ¡Solo $85!",
+    "nombreNormalizadoAt": "2026-06-07T02:01:39.401Z"
   },
   {
     "id": 1778103856933,
-    "nombre": "Pistola de masaje Recargable:",
+    "nombre": "PISTOLA DE MASAJE RECARGABLE:",
     "descripcion": "Pistola de masaje Recargable:\n\n- Bateria de litio 18650 (3000 miliamperes)\n- 4 cabezales multifuncionales intercambiables.\n- Fácil para operar con una mano, 1,5lb\n- Diseño compacto y elegante\n- 3 horas de durabilidad de la bateria.\n•   Controles de encendido y velocidades por boton tracero.",
     "imagen": "https://tiendamax.org/imagenes/img_1778103856933.webp",
     "precioActual": 25,
@@ -312,11 +321,12 @@
       "dispositivo de masaje"
     ],
     "slug": "pistola-de-masaje-recargable",
-    "shareText": "Alivia tensiones con nuestra pistola de masaje recargable, ligera y potente."
+    "shareText": "Alivia tensiones con nuestra pistola de masaje recargable, ligera y potente.",
+    "nombreNormalizadoAt": "2026-06-07T02:01:39.401Z"
   },
   {
     "id": 1778104191957,
-    "nombre": "Cargador inteligente de 15 AMPERES:",
+    "nombre": "CARGADOR INTELIGENTE DE 15 AMPERES:",
     "descripcion": "Cargador inteligente de 15 AMPERES:\n•Carga y repara las baterias de acido plomo, calcio, gel, húmedas, lifepo4, AGM, entre otras.\n• Trabaja con 110 y 220 volts.\n•Ideal para cargar baterías de 12v(200A) y 24v(100A)\n•Las baterias  de 12v las carga a 15A y las de 24v a 8A.\n•Pantalla led iluminada de azúl.",
     "imagen": "https://tiendamax.org/imagenes/img_1780510718915.webp",
     "precioActual": 65,
@@ -343,11 +353,12 @@
       "cargador inteligente"
     ],
     "slug": "cargador-inteligente-15a-110-220v",
-    "shareText": "Conoce nuestro cargador inteligente 15A, compatible con todas las baterías y con pantalla LED azul. ¡Disponible ahora en TiendaMax!"
+    "shareText": "Conoce nuestro cargador inteligente 15A, compatible con todas las baterías y con pantalla LED azul. ¡Disponible ahora en TiendaMax!",
+    "nombreNormalizadoAt": "2026-06-07T02:01:39.401Z"
   },
   {
     "id": 1778104287395,
-    "nombre": "El enrutador WiFi de 1.150Mbps",
+    "nombre": "EL ENRUTADOR WIFI DE 1.150MBPS",
     "descripcion": "El enrutador WiFi de 1.150Mbps es un enrutador 4G CPE para exteriores con una antena externa de alta ganancia de 2 piezas para lograr la amplificación de la señal 4G LTE:\n\n✅Antenas desmontables\n✅Está diseñado con una carcasa a prueba de agua y rayos que ayuda a que la unidad se use bien en exteriores sin banda ancha. ✅Distancia WiFi al aire libre: 10-50M.\n✅Admite máximo 10 usuarios.\n✅Viene con un cable ethernet, un cargador para la corriente y manual de instrucciones.",
     "imagen": "https://tiendamax.org/imagenes/img_1778104287395.webp",
     "precioActual": 130,
@@ -372,7 +383,8 @@
       "soporta 10 usuarios"
     ],
     "slug": "enrutador-wifi-1150mbps-4g-cpe-exterior",
-    "shareText": "Descubre el enrutador WiFi 1.150Mbps 4G para exteriores, señal potente y resistente al agua. ¡Ideal para hasta 10 usuarios!"
+    "shareText": "Descubre el enrutador WiFi 1.150Mbps 4G para exteriores, señal potente y resistente al agua. ¡Ideal para hasta 10 usuarios!",
+    "nombreNormalizadoAt": "2026-06-07T02:01:39.401Z"
   },
   {
     "id": 1778104423316,
@@ -403,7 +415,7 @@
   },
   {
     "id": 1778104512761,
-    "nombre": "♻️CONTROLADOR SOLAR POWMR M100 PRO -MPPT DE 100 AMP♻️",
+    "nombre": "♻️CONTROLADOR SOLAR POWMR M100 PRO - MPPT DE 100 AMP♻️",
     "descripcion": "♻️CONTROLADOR SOLAR POWMR M100 PRO -MPPT DE 100 AMP♻️\n\nEspecificaciones Eléctricas Clave:\n* *Voltaje Máximo del Sistema (PV):* 100V DC. Esto permite conectar paneles en serie para reducir la caída de voltaje en cables largos.\n* Corriente de Carga Máxima: 100 Amperios.\n* *Voltaje de la Batería:* Compatible con baterías de 12V, 24V y 48V. El sistema detecta y se configura automáticamente.\n* *Corriente de Carga Máxima en Diferentes Voltajes:*\n* *100A @ 12V*\n* *50A @ 24V*\n* *25A @ 48V*\n* *Autoconsumo:* < 15mA (muy bajo, lo que preserva la batería cuando no hay sol)\n\n*7. Otras Características Destacadas:*\n* *Reconexión Automática:* Tras una falla o protección, se reconecta automáticamente cuando las condiciones vuelven a la normalidad.\n* *Detección Automática de Voltaje del Sistema:* No necesita configuración manual para 12V/24V/48V.\n* *Capacidad de Registro de Datos:* Almacena datos históricos de generación",
     "imagen": "https://tiendamax.org/imagenes/img_1778104512761.webp",
     "precioActual": 260,
@@ -426,11 +438,12 @@
       "comprar online"
     ],
     "slug": "controlador-solar-powmr-m100-pro-mppt-de-100-amp",
-    "shareText": "🔥 ♻️CONTROLADOR SOLAR POWMR M100 PRO -MPPT DE 100 AMP♻️\n💵 $260.00 USD\nDisponible en TiendaMax. Escríbenos para reservar."
+    "shareText": "🔥 ♻️CONTROLADOR SOLAR POWMR M100 PRO -MPPT DE 100 AMP♻️\n💵 $260.00 USD\nDisponible en TiendaMax. Escríbenos para reservar.",
+    "nombreNormalizadoAt": "2026-06-07T02:01:39.401Z"
   },
   {
     "id": 1778104599386,
-    "nombre": "Inversor solar hibrido inteligente MPPT de 3.6kW",
+    "nombre": "INVERSOR SOLAR HIBRIDO INTELIGENTE MPPT DE 3.6KW",
     "descripcion": "Inversor solar hibrido inteligente MPPT de 3.6kW, carga baterias de 24v DC hasta 120 A con 110V AC de salida.\n\n\n✔️Onda sinusoidal pura: Proporciona energía estable y segura para equipos electrónicos sensibles.\n✔️Voltaje configurable (LCD): Permite ajustar el rango de entrada según el tipo de equipo conectado.\n✔️Corriente de carga configurable: Regula la carga de la batería según la aplicación para cuidarla.\n✔️Prioridad CA/Solar: Define si el inversor usa primero la red eléctrica o la energía solar.\n✔️Compatible con red o generador: Puede operar con la red pública o con un generador eléctrico.\n✔️Reinicio automático: El inversor se enciende solo cuando regresa la energía de CA.\n✔️Protecciones integradas: Evita daños por sobrecarga, sobretemperatura y cortocircuitos.\n✔️Cargador inteligente: Optimiza la carga para prolongar la vida útil de la batería.",
     "imagen": "https://tiendamax.org/imagenes/img_1778104599386.webp",
     "precioActual": 550,
@@ -455,11 +468,12 @@
       "cargador inteligente"
     ],
     "slug": "inversor-solar-hibrido-inteligente-mppt-3-6kw",
-    "shareText": "Descubre el inversor solar híbrido inteligente MPPT 3.6kW con carga 24V/120A y protección total."
+    "shareText": "Descubre el inversor solar híbrido inteligente MPPT 3.6kW con carga 24V/120A y protección total.",
+    "nombreNormalizadoAt": "2026-06-07T02:01:39.401Z"
   },
   {
     "id": 1778104662477,
-    "nombre": "Inversor de onda sinusoidal pura fuera de la red",
+    "nombre": "INVERSOR DE ONDA SINUSOIDAL PURA FUERA DE LA RED",
     "descripcion": "1. Inversor de onda sinusoidal pura fuera de la red.\n2.El máximo número de conexiones paralelas es 6.\n3.Potencia de salida más alta hasta 500OW.\n4.Salida de CA 120/208/240 V CA. (solo puede lograr en el sistema paralelo).\n5.Admite dispositivos monofásicos/divididos/trifásicos. (Solo en paralelo)\n6.Tiempo de conmutación rápida de 10 ms.\n7.Compatible con batería de iones de litio y plomo de 48 V, compatible con definición de usuario.\n8.Máx. Corriente de carga fotovoltaica hasta 100A, máx corriente de carga CA hasta 40A y máx corriente de carga híbrida hasta 100A.\n9.Gama de voltaje de entrada de CA de 90 ~ 140 V CA.\n10.Amplio rango de voltaje de 120~500 V CC para acceso fotovoltaico.\n11.Corriente CC de entrada superior de hasta 22 A en un solo circuito.\n12.Función de modo de ahorro de energía para reducir los pérdidas de energía sin carga.\n13.Acabado duradero con alta anticorrosión.",
     "imagen": "https://tiendamax.org/imagenes/img_1778104662477.webp",
     "precioActual": 900,
@@ -484,11 +498,12 @@
       "tiendaMax"
     ],
     "slug": "inversor-onda-sinusoidal-pura-off-grid-500w",
-    "shareText": "Potencia estable y eficiente con nuestro inversor off‑grid de 500W. ¡Ideal para sistemas solares y baterías!"
+    "shareText": "Potencia estable y eficiente con nuestro inversor off‑grid de 500W. ¡Ideal para sistemas solares y baterías!",
+    "nombreNormalizadoAt": "2026-06-07T02:01:39.401Z"
   },
   {
     "id": 1778104735789,
-    "nombre": "Este router KuWFi ofrece una velocidad de transmisión WiFi de 150 Mbps",
+    "nombre": "ESTE ROUTER KUWFI OFRECE UNA VELOCIDAD DE TRANSMISIÓN WIFI DE 150 MBPS",
     "descripcion": "Este router KuWFi ofrece una velocidad de transmisión WiFi de 150 Mbps, proporcionando una conexión rápida y estable para todos sus dispositivos:\n\n✅Resistente al agua, lo que lo hace ideal para uso en exteriores. \n✅Soporte para 64 usuarios.\n✅Tiene función de firewall, por lo cual protege su red contra ataques y intrusiones, manteniendo su información segura y privada.\n✅Viene con un cable ethernet, cargador más cable para la corriente y manual de instrucciones.",
     "imagen": "https://tiendamax.org/imagenes/img_1778104735789.webp",
     "precioActual": 130,
@@ -511,11 +526,12 @@
       "comprar online"
     ],
     "slug": "este-router-kuwfi-ofrece-una-velocidad-de-transmision-wifi-de-150-mbps",
-    "shareText": "🔥 Este router KuWFi ofrece una velocidad de transmisión WiFi de 150 Mbps\n💵 $130.00 USD\nDisponible en TiendaMax. Escríbenos para reservar."
+    "shareText": "🔥 Este router KuWFi ofrece una velocidad de transmisión WiFi de 150 Mbps\n💵 $130.00 USD\nDisponible en TiendaMax. Escríbenos para reservar.",
+    "nombreNormalizadoAt": "2026-06-07T02:01:39.401Z"
   },
   {
     "id": 1778104850733,
-    "nombre": "✅️Controlador de Carga Solar MPPT - 100A",
+    "nombre": "✅️CONTROLADOR DE CARGA SOLAR MPPT - 100A",
     "descripcion": "✅️Controlador de Carga Solar MPPT - 100A\n-Alta eficiencia y compatibilidad automática con sistemas de 12/24/36/48V. \n-Ideal para sistemas solares en casas, fincas, o instalaciones industriales.\n-Tecnología MPPT (Seguimiento del Punto de Máxima Potencia)\n-Pantalla digital LCD con datos en tiempo real\n-Conexión fácil para panel solar, batería y carga.\n-Diseño robusto y con disipador térmico.\n\n\nColores negro y azul",
     "imagen": "https://tiendamax.org/imagenes/img_1778104850733.webp",
     "precioActual": 70,
@@ -539,11 +555,12 @@
       "controlador mppt industrial"
     ],
     "slug": "controlador-carga-solar-mppt-100a",
-    "shareText": "Controlador MPPT 100A: alta eficiencia y compatibilidad 12-48V para tu sistema solar."
+    "shareText": "Controlador MPPT 100A: alta eficiencia y compatibilidad 12-48V para tu sistema solar.",
+    "nombreNormalizadoAt": "2026-06-07T02:01:39.401Z"
   },
   {
     "id": 1778104924836,
-    "nombre": "Estacion de carga portátil",
+    "nombre": "ESTACION DE CARGA PORTÁTIL",
     "descripcion": "Estacion de carga portátil \nBLUETTI AC 180.\n🔹 Potencia de salida de 1800W continuos (pico de hasta 2700W). \nBLUETTI-US\n🔹 Capacidad de batería de 1152Wh, ideal para respaldo y uso portátil. \nBLUETTI-US\n🔹 Batería LiFePO₄ (litio hierro fosfato), más segura y duradera. \nBLUETTI-US\n🔹 Más de 3500 ciclos de vida útil hasta el 80% de capacidad. \nBLUETTI-US\n🔹 Carga rápida: hasta 80% en aproximadamente 45 minutos.\n🔹 Entrada solar de hasta 500W, compatible con paneles solares. \nBLUETTI-US\n🔹 Múltiples salidas: AC, USB-A, USB-C (100W), 12V y carga inalámbrica. \nBLUETTI-US\n🔹 Inversor de onda sinusoidal pura, seguro para equipos sensibles. \nBLUETTI-US\n🔹 4 formas de recarga: enchufe, panel solar, vehículo o generador.\n🔹 Sistema de protección (BMS + MPPT) para mayor seguridad y eficiencia.",
     "imagen": "https://tiendamax.org/imagenes/img_1778104924836.webp",
     "precioActual": 665,
@@ -566,7 +583,8 @@
       "comprar online"
     ],
     "slug": "estacion-de-carga-portatil",
-    "shareText": "🔥 Estacion de carga portátil\n💵 $665.00 USD\nDisponible en TiendaMax. Escríbenos para reservar."
+    "shareText": "🔥 Estacion de carga portátil\n💵 $665.00 USD\nDisponible en TiendaMax. Escríbenos para reservar.",
+    "nombreNormalizadoAt": "2026-06-07T02:01:39.401Z"
   },
   {
     "id": 1778104985977,
@@ -623,7 +641,7 @@
   },
   {
     "id": 1778212384991,
-    "nombre": "MANNOL Antifreeze AG13+ (-40 °C) Advanced 4014.  5L",
+    "nombre": "MANNOL ANTIFREEZE AG13+ ( - 40 °C) ADVANCED 4014. 5L",
     "descripcion": "Refrigerante listo para usar es una solución híbrida (HOAT- Tecnología de ácido orgánico híbrido) de alta tecnología lista para usar protege el sistema de refrigeración del vehículo desde (-40 °С hasta +125°С).  Con excelentes características de funcionamiento pensada para todo el año uso en cualquier sistema de refrigeración moderno para el que se recomiende el uso de anticongelante a base de monoetilenglicol. Garantiza una protección fiable de cualquier sistema de refrigeración.\n\nPremezclado 50/50\n\nVida útil: 3 años o 150 000km\n\nColor: Amarillo\n\nEspecificación\n\nApproval\n\nRecomendación\n\nSAE J1034\n\nAFNOR FRANCE NF R15-601\n\nASTM USA D3306\n\nASTM USA D4340\n\nASTM USA D4985\n\nBSI GB BS 6580:2010\n\nNATO S-759\n\nBMW GS 94000\n\nCHRYSLER MS-7170\n\nFORD ESE-M978B4H-A\n\nFORD AF Plus\n\nGM 1825 M\n\nGM 1899 M\n\nGM SATURN\n\nJAGUAR\n\nJOHN DEERE\n\nMAN 324 NF\n\nMB 325.0\n\nMINI GS 94000\n\nMTU MTL 5048\n\nOPEL GME L1301\n\nOPEL GM QL130100\n\nVAUXHALL GME L1301",
     "imagen": "https://tiendamax.org/imagenes/img_1778212384991.webp",
     "precioActual": 15,
@@ -645,11 +663,12 @@
       "comprar online"
     ],
     "slug": "mannol-antifreeze-ag13-40-c-advanced-4014-5l",
-    "shareText": "🔥 MANNOL Antifreeze AG13+ (-40 °C) Advanced 4014.  5L\n💵 $15.00 USD\nDisponible en TiendaMax. Escríbenos para reservar."
+    "shareText": "🔥 MANNOL Antifreeze AG13+ (-40 °C) Advanced 4014.  5L\n💵 $15.00 USD\nDisponible en TiendaMax. Escríbenos para reservar.",
+    "nombreNormalizadoAt": "2026-06-07T02:01:39.401Z"
   },
   {
     "id": 1778212462723,
-    "nombre": "MANNOL Antifreeze AG13 (-40 °C) Hightec 4013. 5L",
+    "nombre": "MANNOL ANTIFREEZE AG13 ( - 40 °C) HIGHTEC 4013. 5L",
     "descripcion": "Refrigerante listo para usar es una solución híbrida (HOAT- Tecnología de ácido orgánico híbrido) de alta tecnología lista para usar, protege el sistema de refrigeración del vehículo desde (-40 °С hasta +125°С). con excelentes características de funcionamiento pensada para todo el año uso en cualquier sistema de refrigeración moderno para el que se recomiende el uso de anticongelante a base de monoetilenglicol. Garantiza una protección fiable de cualquier sistema de refrigeración.\n\nPremezclado 50/50\n\nVida útil: 3 años o 150 000km.\n\nColor: Verde\n\nEspecificación\n\nApproval\n\nRecomendación\n\nSAE J1034\n\nAFNOR FRANCE NF R15-601\n\nASTM USA D3306\n\nASTM USA D4340\n\nASTM USA D4985\n\nBSI GB BS 6580:2010\n\nNATO S-759\n\nBMW GS 94000\n\nCHRYSLER MS-7170\n\nFORD ESE-M978B4H-A\n\nFORD AF Plus\n\nGM 1825 M\n\nGM 1899 M\n\nGM SATURN\n\nJAGUAR\n\nJOHN DEERE\n\nMAN 324 Typ NF\n\nMB 325.0\n\nMINI GS 94000\n\nMTU MTL 5048\n\nOPEL GME L1301\n\nOPEL GM QL130100\n\nVAUXHALL GME L1301",
     "imagen": "https://tiendamax.org/imagenes/img_1778212462723.webp",
     "precioActual": 15,
@@ -673,11 +692,12 @@
       "5L"
     ],
     "slug": "mannol-antifreeze-ag13-hightec-4013-5l",
-    "shareText": "MANNOL Antifreeze AG13 5L, protección total de -40°C a +125°C."
+    "shareText": "MANNOL Antifreeze AG13 5L, protección total de -40°C a +125°C.",
+    "nombreNormalizadoAt": "2026-06-07T02:01:39.401Z"
   },
   {
     "id": 1778212537706,
-    "nombre": "MANNOL Antifreeze AG11 (-40 °C) Longterm 4011.  5L",
+    "nombre": "MANNOL ANTIFREEZE AG11 ( - 40 °C) LONGTERM 4011. 5L",
     "descripcion": "Refrigerante listo para usar a base de inhibidores minerales – IAT (Tecnología de ácidos inorgánicos) protege el sistema de refrigeración del vehículo desde (-40 °С hasta +125°С). Diseñado para uso durante todo el año en cualquier sistema de refrigeración moderno que contenga componentes de cobre, latón y aluminio para los que se recomienda el uso de un anticongelante a base de etilenglicol.\n\nPremezclado 50/50\n\nColor: azul.\n\nVida útil: 3 años o 150 000km.​\n\n\nEspecificación\n\nAFNOR FRANCE NF R15-601\n\nASTM USA D3306\n\nBSI GB BS 6580:2010\n\nVOLKSWAGEN TL 774 C\n\nBMW GS 94000\n\nCHRYSLER MS-7170\n\nMAN 324 Typ NF\n\nMINI GS 94000\n\nMTU MTL 5048\n\nOPEL GME L1301\n\nVAUXHALL GME L1301\n\nApproval\n\nRecomendación\n\nTESLA",
     "imagen": "https://tiendamax.org/imagenes/img_1778212537706.webp",
     "precioActual": 15,
@@ -699,11 +719,12 @@
       "comprar online"
     ],
     "slug": "mannol-antifreeze-ag11-40-c-longterm-4011-5l",
-    "shareText": "🔥 MANNOL Antifreeze AG11 (-40 °C) Longterm 4011.  5L\n💵 $15.00 USD\nDisponible en TiendaMax. Escríbenos para reservar."
+    "shareText": "🔥 MANNOL Antifreeze AG11 (-40 °C) Longterm 4011.  5L\n💵 $15.00 USD\nDisponible en TiendaMax. Escríbenos para reservar.",
+    "nombreNormalizadoAt": "2026-06-07T02:01:39.401Z"
   },
   {
     "id": 1778213413973,
-    "nombre": "Forros de asientos de lujo para autos",
+    "nombre": "FORROS DE ASIENTOS DE LUJO PARA AUTOS",
     "descripcion": "Forros de asientos de lujo para autos:\n\n•Alta calidad y acabado exquisito.\n•Color: negro\n•Material de la superficie: Cuero napa de 0,6 mm.\n•Durabilidad: 3 veces más duraderas que el PU estándar, con resistencia a temperaturas elevadas de 45 grados.\n•Comodidad: 20-30% más suave y transpirable, adaptándose al cuerpo.\n•Relleno: Acolchonado y con apoyo lumbar ergonómico \n•Tipo: Ajuste universal  para 5 asientos, 2 delanteros y 3 traseros.",
     "imagen": "https://tiendamax.org/imagenes/img_1778213413973.webp",
     "precioActual": 150,
@@ -726,11 +747,12 @@
       "TiendaMax Cuba"
     ],
     "slug": "forros-asientos-lujo-negro",
-    "shareText": "Descubre nuestros forros de asiento de lujo: cuero napa, 3x más duraderos, ajuste universal. ¡Compra ahora en TiendaMax!"
+    "shareText": "Descubre nuestros forros de asiento de lujo: cuero napa, 3x más duraderos, ajuste universal. ¡Compra ahora en TiendaMax!",
+    "nombreNormalizadoAt": "2026-06-07T02:01:39.401Z"
   },
   {
     "id": 1778213940333,
-    "nombre": "MANNOL Safari 20W-50 7404  5L",
+    "nombre": "MANNOL SAFARI 20W - 50 7404 5L",
     "descripcion": "Aceite de motor universal semisintético, con una mezcla de componentes sintéticos y una base mineral de alta pureza, para motores modernos de gasolina y diésel altamente acelerados con y sin turbocompresor utilizados en condiciones de funcionamiento difíciles y motores con un kilometraje muy alto utilizado en diversas operaciones. condiciones. Diseñado para la máxima protección de los motores modernos de gasolina y diésel de una amplia flota de automóviles (automóviles de pasajeros, SUV ligeros, minibuses y camiones ligeros) de fabricantes rusos, asiáticos, americanos, europeos, etc.\n\nSAE 20W-50\n\nApproval\n\nRecommendation\n\nAPI SN/CH-4",
     "imagen": "https://tiendamax.org/imagenes/img_1778213940333.webp",
     "precioActual": 25,
@@ -753,11 +775,12 @@
       "aceite para SUV"
     ],
     "slug": "mannol-safari-20w-50-5l-aceite-motor",
-    "shareText": "Descubre MANNOL Safari 20W-50 5L, el aceite semisintético que protege tu motor en cualquier condición."
+    "shareText": "Descubre MANNOL Safari 20W-50 5L, el aceite semisintético que protege tu motor en cualquier condición.",
+    "nombreNormalizadoAt": "2026-06-07T02:01:39.401Z"
   },
   {
     "id": 1778214089400,
-    "nombre": "MANNOL Special Plus 10W-30 7512.  5L",
+    "nombre": "MANNOL SPECIAL PLUS 10W - 30 7512. 5L",
     "descripcion": "Aceite de motor universal de sintesis HC, diseñado para cumplir con los requisitos de Volkswagen, Mercedes Benz. Diseñado para motores de gasolina y diésel en una amplia flota de automóviles (automóviles, vehículos utilitarios ligeros, furgonetas y camiones ligeros) de fabricantes europeos, asiáticos.\nEspecificaciones\n\nSAE 10W-30\n\nApproval\n\nRecomendación\n\nAPI SN\n\nACEA A3/B4\n\nVOLKSWAGEN 505 00\n\nVOLKSWAGEN 501 01\n\nMB 229.1\n\nISUZU\n\nKIA\n\nHYUNDAI",
     "imagen": "https://tiendamax.org/imagenes/img_1778214089400.webp",
     "precioActual": 30,
@@ -779,11 +802,12 @@
       "comprar online"
     ],
     "slug": "mannol-special-plus-10w-30-7512-5l",
-    "shareText": "🔥 MANNOL Special Plus 10W-30 7512.  5L\n💵 $30.00 USD\nDisponible en TiendaMax. Escríbenos para reservar."
+    "shareText": "🔥 MANNOL Special Plus 10W-30 7512.  5L\n💵 $30.00 USD\nDisponible en TiendaMax. Escríbenos para reservar.",
+    "nombreNormalizadoAt": "2026-06-07T02:01:39.402Z"
   },
   {
     "id": 1778214214360,
-    "nombre": "MANNOL 4-Takt Motorbike 10W-40 7812.  1L",
+    "nombre": "MANNOL 4 - TAKT MOTORBIKE 10W - 40 7812. 1L",
     "descripcion": "Especiación\n\nSAE 10W-40\n\nAPI SL\n\nJASO MA/MA2\n\nApproval\n\nRecomendación\n\nHONDA\n\nHUSABERG\n\nKAWASAKI\n\nSUZUKI\n\nYAMAHA",
     "imagen": "https://tiendamax.org/imagenes/img_1778214214360.webp",
     "precioActual": 10,
@@ -805,11 +829,12 @@
       "comprar online"
     ],
     "slug": "mannol-4-takt-motorbike-10w-40-7812-1l",
-    "shareText": "🔥 MANNOL 4-Takt Motorbike 10W-40 7812.  1L\n💵 $10.00 USD\nDisponible en TiendaMax. Escríbenos para reservar."
+    "shareText": "🔥 MANNOL 4-Takt Motorbike 10W-40 7812.  1L\n💵 $10.00 USD\nDisponible en TiendaMax. Escríbenos para reservar.",
+    "nombreNormalizadoAt": "2026-06-07T02:01:39.402Z"
   },
   {
     "id": 1778336613589,
-    "nombre": "Pistola de masaje PROFESIONAL",
+    "nombre": "PISTOLA DE MASAJE PROFESIONAL",
     "descripcion": "Pistola de masaje PROFESIONAL inalámbrica:\n•Diseño ergonómico con agarre triangular, que facilita el manejo y reduce la fatiga en la muñeca.\n\n•Incluye múltiples accesorios intercambiables (bola, horquilla, plano, punta, doble cabezal, etc.) para trabajar distintas zonas del cuerpo.\n•Sistema de percusión profunda, ideal para aliviar contracturas y acelerar la recuperación muscular.\n•Indicador luminoso  LED para  mostrar nivel de intensidad/ velocidad  del masaje\n•Construcción robusta y moderna, con acabado antideslizante.\n•Uso versátil, adecuada para espalda, piernas, cuello, hombros y brazos.\n•Pensada para recuperación deportiva y relajación muscular diaria.\n• Bateria de litio interna recargable por puerto usb tipo C.",
     "imagen": "https://tiendamax.org/imagenes/img_1778336613589.webp",
     "precioActual": 35,
@@ -834,11 +859,12 @@
       "masaje deportivo"
     ],
     "slug": "pistola-masaje-profesional-inalambrica",
-    "shareText": "Nueva pistola de masaje profesional: alta intensidad, accesorios intercambiables y batería USB‑C. ¡Recupérate rápido!"
+    "shareText": "Nueva pistola de masaje profesional: alta intensidad, accesorios intercambiables y batería USB‑C. ¡Recupérate rápido!",
+    "nombreNormalizadoAt": "2026-06-07T02:01:39.402Z"
   },
   {
     "id": 1778336689684,
-    "nombre": "Switch de 5 puertos",
+    "nombre": "SWITCH DE 5 PUERTOS",
     "descripcion": "Switch de 5 puertos ethernet de 1 gigabite.",
     "imagen": "https://tiendamax.org/imagenes/img_1780510827238.webp",
     "precioActual": 20,
@@ -865,7 +891,8 @@
       "comprar online"
     ],
     "slug": "switch-de-5-puertos",
-    "shareText": "🔥 Switch de 5 puertos\n💵 $20.00 USD\nDisponible en TiendaMax. Escríbenos para reservar."
+    "shareText": "🔥 Switch de 5 puertos\n💵 $20.00 USD\nDisponible en TiendaMax. Escríbenos para reservar.",
+    "nombreNormalizadoAt": "2026-06-07T02:01:39.402Z"
   },
   {
     "id": 1778336789459,
@@ -896,7 +923,7 @@
   },
   {
     "id": 1778336859697,
-    "nombre": "Toldo para sombra",
+    "nombre": "TOLDO PARA SOMBRA",
     "descripcion": "•Toldo para sombra tipo malla color beige  con argollas para fijar. \n•Medida 3m de  largo x 2m de ancho.",
     "imagen": "https://tiendamax.org/imagenes/img_1778336859697.webp",
     "precioActual": 20,
@@ -920,11 +947,12 @@
       "sombra exterior"
     ],
     "slug": "toldo-para-sombra-malla-beige-3x2",
-    "shareText": "Protege tu espacio del sol con este toldo de malla beige 3x2 m. ¡Solo $20 USD en TiendaMax!"
+    "shareText": "Protege tu espacio del sol con este toldo de malla beige 3x2 m. ¡Solo $20 USD en TiendaMax!",
+    "nombreNormalizadoAt": "2026-06-07T02:01:39.402Z"
   },
   {
     "id": 1778383966832,
-    "nombre": "Sistema de alarma",
+    "nombre": "SISTEMA DE ALARMA",
     "descripcion": "Sistema de alarma, posee:\n\n🔸4 sensores de movimiento\n🔸8 sensores de contacto \n🔸3 llaveros \n🔸1 sirena\n🔸3 mandos para su control\n🔸1 botón de emergencia SOS\n🔸1 panel de control de 2.4 pulgadas\n\n✅Recordatorio de puertas y ventanas sin cerrar, recordatorio de alarma de bajo voltaje.\n✅5 juegos de llamadas de alarma preestablecidas.\n✅Batería integrada.",
     "imagen": "https://tiendamax.org/imagenes/img_1778383966832_ext.webp",
     "precioActual": 170,
@@ -947,11 +975,12 @@
       "comprar online"
     ],
     "slug": "sistema-de-alarma",
-    "shareText": "🔥 Sistema de alarma\n💵 $170.00 USD\nDisponible en TiendaMax. Escríbenos para reservar."
+    "shareText": "🔥 Sistema de alarma\n💵 $170.00 USD\nDisponible en TiendaMax. Escríbenos para reservar.",
+    "nombreNormalizadoAt": "2026-06-07T02:01:39.402Z"
   },
   {
     "id": 1778384078432,
-    "nombre": "Cámaras de seguridad (V380 Pro )",
+    "nombre": "CÁMARAS DE SEGURIDAD (V380 PRO )",
     "descripcion": "Cámaras de seguridad (V380 Pro )\nDetalles :\n✴️Se usa con una aplicación en el teléfono 📲\n✴️Rotación 360°\n✴️Visión nocturna\n✴️Sensor de seguimiento\n✴️Luz LED por sensor\n✴️Alarma \n✴️Graba en SD o en el teléfono\n✴️Modo Guardián (vigilancia de áreas por tiempo determinado por usted)",
     "imagen": "https://tiendamax.org/imagenes/img_1778384078432_ext.webp",
     "precioActual": 25,
@@ -974,11 +1003,12 @@
       "comprar online"
     ],
     "slug": "camaras-de-seguridad-v380-pro",
-    "shareText": "🔥 Cámaras de seguridad (V380 Pro )\n💵 $25.00 USD\nDisponible en TiendaMax. Escríbenos para reservar."
+    "shareText": "🔥 Cámaras de seguridad (V380 Pro )\n💵 $25.00 USD\nDisponible en TiendaMax. Escríbenos para reservar.",
+    "nombreNormalizadoAt": "2026-06-07T02:01:39.402Z"
   },
   {
     "id": 1778384158283,
-    "nombre": "Cerradura inteligente",
+    "nombre": "CERRADURA INTELIGENTE",
     "descripcion": "Cerradura inteligente con forma de manija Viladepot, huella dactilar,control por aplicación, código de acceso, desbloqueo, teclado electrónico con pantalla táctil para interiores.",
     "imagen": "https://tiendamax.org/imagenes/img_1778384158283_ext.webp",
     "precioActual": 60,
@@ -1001,11 +1031,12 @@
       "teclado electrónico"
     ],
     "slug": "cerradura-inteligente-viladepot",
-    "shareText": "Descubre la cerradura inteligente Viladepot: huella, código y app en un solo dispositivo. ¡Seguridad total para tu hogar!"
+    "shareText": "Descubre la cerradura inteligente Viladepot: huella, código y app en un solo dispositivo. ¡Seguridad total para tu hogar!",
+    "nombreNormalizadoAt": "2026-06-07T02:01:39.402Z"
   },
   {
     "id": 1778384314795,
-    "nombre": "Kit de 4 cámaras Zosi NUEVO EN CAJA",
+    "nombre": "KIT DE 4 CÁMARAS ZOSI NUEVO EN CAJA",
     "descripcion": "Kit de 4 cámaras Zosi NUEVO EN CAJA‼️\n\n• DVR 8 Canales.\n• 5MP Lite DVR.\n• Soporta cámara analógica, HD-TVI, CVI y AHD.\n• Tecnología de compresión H.265+.\n• Salida de vídeo: HDMI / VGA / CVBS.\n• Detección de movimiento avanzada y personalizable.\n• Grabación continua o configurable a la detección de movimiento.\n• Reciclado automático de grabación.\n• Resistente al agua.\n• Para interior o exterior.\n\n🏠 Visualización local: No necesita red, simplemente conecte el sistema a un monitor a través del puerto HDMI/VGA y disfrute de varias vistas en una pantalla.\n💻 Visualización remota: Conecte Internet al DVR. Descargue la aplicación ZOSI Smart en su smartphone (iOS o Android), o descargue el cliente AVSS PC en PC.\n\n🚨VIENEN CON TODOS SUS ACCESORIOS (sin el disco duro incluido)",
     "imagen": "https://tiendamax.org/imagenes/img_1778384314795_ext.webp",
     "precioActual": 230,
@@ -1028,11 +1059,12 @@
       "comprar online"
     ],
     "slug": "kit-de-4-camaras-zosi-nuevo-en-caja",
-    "shareText": "🔥 Kit de 4 cámaras Zosi NUEVO EN CAJA\n💵 $230.00 USD\nDisponible en TiendaMax. Escríbenos para reservar."
+    "shareText": "🔥 Kit de 4 cámaras Zosi NUEVO EN CAJA\n💵 $230.00 USD\nDisponible en TiendaMax. Escríbenos para reservar.",
+    "nombreNormalizadoAt": "2026-06-07T02:01:39.402Z"
   },
   {
     "id": 1778384428890,
-    "nombre": "Portacelulares",
+    "nombre": "PORTACELULARES",
     "descripcion": "Portacelulares impermeables para bicicletas con bolsos a cada lado. \nConfeccion fuerte y duradera, de facil instalacion y resistente a lluvia",
     "imagen": "https://tiendamax.org/imagenes/img_1778384428890_ext.webp",
     "precioActual": 15,
@@ -1055,11 +1087,12 @@
       "comprar online"
     ],
     "slug": "portacelulares",
-    "shareText": "🔥 Portacelulares\n💵 $15.00 USD\nDisponible en TiendaMax. Escríbenos para reservar."
+    "shareText": "🔥 Portacelulares\n💵 $15.00 USD\nDisponible en TiendaMax. Escríbenos para reservar.",
+    "nombreNormalizadoAt": "2026-06-07T02:01:39.402Z"
   },
   {
     "id": 1778384507302,
-    "nombre": "Linterna de cabeza",
+    "nombre": "LINTERNA DE CABEZA",
     "descripcion": "Linterna de cabeza :\n* Largo alcance\n* Luz blanca superbrillante de 30w de potencia.\n* Viene con 3 baterias de litio recargables.\n* Angulo de iluminación ajustable. \n* Carga con cable tipo c y funcion powerbank.\n* Cuenta con luz tracera opcional parpadeante  para que te vean en la obscuridad.\n* Autonomia maxima de 5 a 12 horas segun el uso.",
     "imagen": "https://tiendamax.org/imagenes/img_1778384507302_ext.webp",
     "precioActual": 30,
@@ -1082,11 +1115,12 @@
       "comprar online"
     ],
     "slug": "linterna-de-cabeza",
-    "shareText": "🔥 Linterna de cabeza\n💵 $30.00 USD\nDisponible en TiendaMax. Escríbenos para reservar."
+    "shareText": "🔥 Linterna de cabeza\n💵 $30.00 USD\nDisponible en TiendaMax. Escríbenos para reservar.",
+    "nombreNormalizadoAt": "2026-06-07T02:01:39.402Z"
   },
   {
     "id": 1778384646214,
-    "nombre": "Adaptador PoE UBIQUITI",
+    "nombre": "ADAPTADOR POE UBIQUITI",
     "descripcion": "Adaptador PoE UBIQUITI de 24V.\n\n✅ 0.3A",
     "imagen": "https://tiendamax.org/imagenes/img_1778384646214_ext.webp",
     "precioActual": 20,
@@ -1109,11 +1143,12 @@
       "comprar online"
     ],
     "slug": "adaptador-poe-ubiquiti",
-    "shareText": "🔥 Adaptador PoE UBIQUITI\n💵 $20.00 USD\nDisponible en TiendaMax. Escríbenos para reservar."
+    "shareText": "🔥 Adaptador PoE UBIQUITI\n💵 $20.00 USD\nDisponible en TiendaMax. Escríbenos para reservar.",
+    "nombreNormalizadoAt": "2026-06-07T02:01:39.402Z"
   },
   {
     "id": 1778384769262,
-    "nombre": "Ventilador para carro",
+    "nombre": "VENTILADOR PARA CARRO",
     "descripcion": "Ventilador para carro de 3 cabezales, se conecta a la cigarrera del carro.",
     "imagen": "https://tiendamax.org/imagenes/img_1778384769262_ext.webp",
     "precioActual": 35,
@@ -1137,11 +1172,12 @@
       "tiendamax"
     ],
     "slug": "ventilador-para-carro-3-cabezales",
-    "shareText": "Ventilador de 3 cabezales para tu coche, fácil de conectar a la cigarrera. ¡Solo $35 en TiendaMax!"
+    "shareText": "Ventilador de 3 cabezales para tu coche, fácil de conectar a la cigarrera. ¡Solo $35 en TiendaMax!",
+    "nombreNormalizadoAt": "2026-06-07T02:01:39.402Z"
   },
   {
     "id": 1778384840618,
-    "nombre": "Protege tu hogar",
+    "nombre": "PROTEGE TU HOGAR",
     "descripcion": "*Protege tu hogar y mira quién toca tu puerta desde tu celular( si tienes internet en tu casa, puedes ver quien toca a tu puerta desde cualquier parte)\n*Recibe alertas en tu teléfono cuando alguien llegue a tu puerta.\n*Habla con tus visitas aunque no estés en casa.\n*Fácil de instalar, inalámbrico y con visión nocturna.\n*Bateria integrada recargable sin necesidad de cableado. *Largo alcance de 50 metros aproximadamente \n*Vision nocturna y sensor de movimiento intergrado\n*Color negro.\n*Captura de imagenes y audio bidireccional",
     "imagen": "https://tiendamax.org/imagenes/img_1778384840618_ext.webp",
     "precioActual": 30,
@@ -1166,11 +1202,12 @@
       "batería recargable"
     ],
     "slug": "camara-seguridad-protege-tu-hogar",
-    "shareText": "Controla tu puerta desde el móvil con la cámara Protege tu hogar. ¡Instálala fácil y sin cables!"
+    "shareText": "Controla tu puerta desde el móvil con la cámara Protege tu hogar. ¡Instálala fácil y sin cables!",
+    "nombreNormalizadoAt": "2026-06-07T02:01:39.402Z"
   },
   {
     "id": 1778384976624,
-    "nombre": "Cargador portátil solar",
+    "nombre": "CARGADOR PORTÁTIL SOLAR",
     "descripcion": "Cargador portátil solar de \n30 000mAh,  doble puerto USB para todos los teléfonos celulares y dispositivos electrónicos - Duradero. Carga inalámbrica y cables de carga usb, tipo c, lighting y v8 incluidos.",
     "imagen": "https://tiendamax.org/imagenes/img_1778384976624_ext.webp",
     "precioActual": 35,
@@ -1194,11 +1231,12 @@
       "accesorios móviles"
     ],
     "slug": "cargador-portatil-solar-30000mah",
-    "shareText": "Lleva energía donde vayas con nuestro cargador solar 30,000mAh de TiendaMax."
+    "shareText": "Lleva energía donde vayas con nuestro cargador solar 30,000mAh de TiendaMax.",
+    "nombreNormalizadoAt": "2026-06-07T02:01:39.402Z"
   },
   {
     "id": 1778546645170,
-    "nombre": "Juego de llantas R14",
+    "nombre": "JUEGO DE LLANTAS R14",
     "descripcion": "Juego de llantas R14 centro 4x100 y 4x114.3 \n\nSe dan con las válvulas y los clanes",
     "imagen": "https://tiendamax.org/imagenes/img_1778546645170_ext.webp",
     "precioActual": 550,
@@ -1223,11 +1261,12 @@
       "carros"
     ],
     "slug": "juego-llantas-r14-centro-4x100-4x114-3",
-    "shareText": "¡Nuevo juego de llantas R14 con válvulas y clanes! Disponible en TiendaMax, 20 unidades, $550.00 USD."
+    "shareText": "¡Nuevo juego de llantas R14 con válvulas y clanes! Disponible en TiendaMax, 20 unidades, $550.00 USD.",
+    "nombreNormalizadoAt": "2026-06-07T02:01:39.402Z"
   },
   {
     "id": 1778546731028,
-    "nombre": "Juego de llantas R14",
+    "nombre": "JUEGO DE LLANTAS R14",
     "descripcion": "Juego de llantas R14 centro 4x100 y 4x114.3\n\nSe dan con las válvulas y los clanes",
     "imagen": "https://tiendamax.org/imagenes/img_1778546731028_ext.webp",
     "precioActual": 550,
@@ -1251,11 +1290,12 @@
       "pieza auto"
     ],
     "slug": "juego-llantas-r14-4x100-4x114-3",
-    "shareText": "Nuevo juego de llantas R14 con válvulas y clanes, 4x100 y 4x114.3. ¡Stock limitado!"
+    "shareText": "Nuevo juego de llantas R14 con válvulas y clanes, 4x100 y 4x114.3. ¡Stock limitado!",
+    "nombreNormalizadoAt": "2026-06-07T02:01:39.402Z"
   },
   {
     "id": 1778546857180,
-    "nombre": "Juego de llantas R15",
+    "nombre": "JUEGO DE LLANTAS R15",
     "descripcion": "Juego de llantas R15 centro 4x100 y 4x114.3 \n\nSe dan con las válvulas y los clanes",
     "imagen": "https://tiendamax.org/imagenes/img_1778546857180_ext.webp",
     "precioActual": 600,
@@ -1279,11 +1319,12 @@
       "llantas con válvulas"
     ],
     "slug": "juego-llantas-r15-centro-4x100-4x114-3",
-    "shareText": "¡Consigue tu juego de llantas R15 con centro 4x100/4x114.3 y válvulas incluidas en TiendaMax!"
+    "shareText": "¡Consigue tu juego de llantas R15 con centro 4x100/4x114.3 y válvulas incluidas en TiendaMax!",
+    "nombreNormalizadoAt": "2026-06-07T02:01:39.402Z"
   },
   {
     "id": 1778546922840,
-    "nombre": "Juego de llantas R15",
+    "nombre": "JUEGO DE LLANTAS R15",
     "descripcion": "Juego de llantas R15  centro 4x100 y 4x114.3 \n\n\nSe dan con las válvulas y los clanes",
     "imagen": "https://tiendamax.org/imagenes/img_1778546922840_ext.webp",
     "precioActual": 500,
@@ -1306,11 +1347,12 @@
       "comprar online"
     ],
     "slug": "juego-de-llantas-r15",
-    "shareText": "🔥 Juego de llantas R15\n💵 $500.00 USD\nDisponible en TiendaMax. Escríbenos para reservar."
+    "shareText": "🔥 Juego de llantas R15\n💵 $500.00 USD\nDisponible en TiendaMax. Escríbenos para reservar.",
+    "nombreNormalizadoAt": "2026-06-07T02:01:39.402Z"
   },
   {
     "id": 1778547214210,
-    "nombre": "GameSir X5 Lite",
+    "nombre": "GAMESIR X5 LITE",
     "descripcion": "🎮 GameSir X5 Lite – Mando de Juego para Móvil \n✔️ Compatible con teléfonos iOS y Android\n✔️ Palancas de efecto Hall para mayor precisión y durabilidad, ideal para juegos FPS y MOBA\n✔️ Ultra ligero (solo 135 g) para jugar cómodamente por horas\n✔️ Botones Turbo para una respuesta más rápida y mejor rendimiento\n✔️ Carga pasante, juega mientras cargas tu dispositivo\n✔️ Diseño ergonómico y fácil de instalar\nPerfecto para gamers que buscan mejor control, comodidad y ventaja en cada partida.",
     "imagen": "https://tiendamax.org/imagenes/img_1778547214210_ext.webp",
     "precioActual": 70,
@@ -1333,11 +1375,12 @@
       "comprar online"
     ],
     "slug": "gamesir-x5-lite",
-    "shareText": "🔥 GameSir X5 Lite\n💵 $70.00 USD\nDisponible en TiendaMax. Escríbenos para reservar."
+    "shareText": "🔥 GameSir X5 Lite\n💵 $70.00 USD\nDisponible en TiendaMax. Escríbenos para reservar.",
+    "nombreNormalizadoAt": "2026-06-07T02:01:39.402Z"
   },
   {
     "id": 1778547461235,
-    "nombre": "MANNOL TS-4 SHPD 15W-40 7104. 5L",
+    "nombre": "MANNOL TS - 4 SHPD 15W - 40 7104. 5L",
     "descripcion": "Especificación\n\nSAE 15W-40\n\nAPI CI-4 Plus\n\nAPI CI-4/CH-4/SL\n\nACEA E7\n\nACEA A3/B4\n\nJASO DH-1\n\nGLOBAL DHD-1\n\nApproval\n\nRecomendación\n\nCATERPILLAR ECF-2\n\nCATERPILLAR ECF-1-a\n\nCUMMINS CES 20076\n\nCUMMINS CES 20077\n\nCUMMINS CES 20078\n\nDETROIT DIESEL 93K215\n\nMACK EO-N\n\nMACK EO-M Plus\n\nMAN M 3275-1\n\nMB 228.1\n\nMB 228.3\n\nMTU Type 2\n\nRENAULT RLD-2\n\nVOLVO VDS-3",
     "imagen": "https://tiendamax.org/imagenes/img_1778547461235_ext.webp",
     "precioActual": 30,
@@ -1359,11 +1402,12 @@
       "comprar online"
     ],
     "slug": "mannol-ts-4-shpd-15w-40-7104-5l",
-    "shareText": "🔥 MANNOL TS-4 SHPD 15W-40 7104. 5L\n💵 $30.00 USD\nDisponible en TiendaMax. Escríbenos para reservar."
+    "shareText": "🔥 MANNOL TS-4 SHPD 15W-40 7104. 5L\n💵 $30.00 USD\nDisponible en TiendaMax. Escríbenos para reservar.",
+    "nombreNormalizadoAt": "2026-06-07T02:01:39.402Z"
   },
   {
     "id": 1778547753925,
-    "nombre": "MANNOL Defender 10W-40 7507.   5L",
+    "nombre": "MANNOL DEFENDER 10W - 40 7507. 5L",
     "descripcion": "Aceite de motor universal innovador con éster, de base hidrosintética, para motores de gasolina y diésel, tanto de marcas nuevas como antiguas, y con un alto kilometraje. Desarrollado según los requisitos de los fabricantes europeos.\nPara motores turboalimentados con inyección directa, una formulación de aceite única reduce a cero el efecto de la ignición prematura de la mezcla de combustible LSPI (Low Speed ​​Pre-Ignition).\nPropiedades del producto:\n- La tecnología de éster y la base hidrosintética de última generación con un rango extendido de propiedades de viscosidad-temperatura aseguran un funcionamiento eficiente del motor en todos los modos de funcionamiento: arranque en frío, modo urbano, modo autopista, así como bajo cargas elevadas (al conducir fuera de carretera, cuesta arriba, con remolque, carga máxima) y a altas temperaturas ambiente;\n- Perfecto para una conducción activa y no pierde sus propiedades al usar combustible de calidad variable (con un contenido de azufre de hasta 500 ppm) debido a una gran reserva del número base (TBN);\n- La base hidrosintética con éster, combinada con el paquete de aditivos más reciente, conserva los parámetros de potencia del motor durante todo el intervalo de cambio;\n- La exclusiva tecnología de reducción del desgaste, en combinación con componentes éster, proporciona excelentes propiedades antidesgaste y antifricción gracias a la excepcional resistencia de la película de aceite, que, junto con una buena bombeabilidad, aumenta significativamente la vida útil del motor incluso en modos de conducción Start-Stop y durante el arranque en frío.\n- Gracias a sus excelentes propiedades de dispersión de detergentes y a su máxima estabilidad termooxidativa, combate eficazmente todo tipo de depósitos y mantiene las piezas del motor limpias durante todo el intervalo de cambio.\n\nEstá diseñado para motores de gasolina y diésel de una amplia gama de vehículos (turismos, SUV ligeros, minibuses y camiones ligeros) de fabricantes europeos y de otras nacionalidades.\nSe recomienda su uso en motores de vehículos Daimler y VW que tengan requisitos adicionales para aceites de motor (según las especificaciones anteriores). ¡\nEste aceite no es apto para camiones pesados ​​ni vehículos similares!",
     "imagen": "https://tiendamax.org/imagenes/img_1778547753925_ext.webp",
     "precioActual": 30,
@@ -1386,11 +1430,12 @@
       "lubricante universal"
     ],
     "slug": "mannol-defender-10w-40-5l-aceite-motor-universal",
-    "shareText": "Descubre MANNOL Defender 10W-40 5L, el aceite de motor universal perfecto para gasolina y diésel. Calidad europea en Cuba."
+    "shareText": "Descubre MANNOL Defender 10W-40 5L, el aceite de motor universal perfecto para gasolina y diésel. Calidad europea en Cuba.",
+    "nombreNormalizadoAt": "2026-06-07T02:01:39.402Z"
   },
   {
     "id": 1778601482845,
-    "nombre": "MANNOL 4-Takt Motorbike 10W-40 7812  1L",
+    "nombre": "MANNOL 4 - TAKT MOTORBIKE 10W - 40 7812 1L",
     "descripcion": "Specifications\nSAE 10W-40\nAPI SP\nJASO MA/MA2",
     "imagen": "https://tiendamax.org/imagenes/img_1778601479670.webp",
     "precioActual": 10,
@@ -1412,11 +1457,12 @@
       "comprar online"
     ],
     "slug": "mannol-4-takt-motorbike-10w-40-7812-1l",
-    "shareText": "🔥 MANNOL 4-Takt Motorbike 10W-40 7812  1L\n💵 $10.00 USD\nDisponible en TiendaMax. Escríbenos para reservar."
+    "shareText": "🔥 MANNOL 4-Takt Motorbike 10W-40 7812  1L\n💵 $10.00 USD\nDisponible en TiendaMax. Escríbenos para reservar.",
+    "nombreNormalizadoAt": "2026-06-07T02:01:39.402Z"
   },
   {
     "id": 1778601740203,
-    "nombre": "20W50 S-4T ACEITE DE MOTOR MINERAL FF6208 1L",
+    "nombre": "20W50 S - 4T ACEITE DE MOTOR MINERAL FF6208 1L",
     "descripcion": "SAE 20W–50\n\nAPI SN\n\nJASO MAS/MAS2",
     "imagen": "https://tiendamax.org/imagenes/img_1778601683067.webp",
     "precioActual": 10,
@@ -1440,7 +1486,8 @@
       "TiendaMax"
     ],
     "slug": "aceite-motor-20w50-s4t-mineral-1l",
-    "shareText": "Descubre el aceite 20W50 S-4T de 1L para tu moto, solo $10 en TiendaMax."
+    "shareText": "Descubre el aceite 20W50 S-4T de 1L para tu moto, solo $10 en TiendaMax.",
+    "nombreNormalizadoAt": "2026-06-07T02:01:39.402Z"
   },
   {
     "id": 1778602314518,
@@ -1499,7 +1546,7 @@
   },
   {
     "id": 1778636088295,
-    "nombre": "Kit de 4 cámaras Zosi ( con su disco duro )",
+    "nombre": "KIT DE 4 CÁMARAS ZOSI ( CON SU DISCO DURO )",
     "descripcion": "Kit de 4 cámaras Zosi NUEVO EN CAJA‼️\n\n• DVR 8 Canales.\n• 5MP Lite DVR.\n• Soporta cámara analógica, HD-TVI, CVI y AHD.\n• Tecnología de compresión H.265+.\n• Salida de vídeo: HDMI / VGA / CVBS.\n• Detección de movimiento avanzada y personalizable.\n• Grabación continua o configurable a la detección de movimiento.\n• Reciclado automático de grabación.\n• Resistente al agua.\n• Para interior o exterior.\n\n🏠 Visualización local: No necesita red, simplemente conecte el sistema a un monitor a través del puerto HDMI/VGA y disfrute de varias vistas en una pantalla.\n💻 Visualización remota: Conecte Internet al DVR. Descargue la aplicación ZOSI Smart en su smartphone (iOS o Android), o descargue el cliente AVSS PC en PC.\n\n🚨VIENEN CON TODOS SUS ACCESORIOS (con el disco duro incluido)",
     "imagen": "https://tiendamax.org/imagenes/img_1778636080144.webp",
     "precioActual": 280,
@@ -1522,11 +1569,12 @@
       "detección de movimiento"
     ],
     "slug": "kit-4-camaras-zosi-con-disco-duro",
-    "shareText": "Kit 4 Cámaras Zosi + Disco Duro: alta definición, detección de movimiento y grabación continua. ¡Protege tu hogar!"
+    "shareText": "Kit 4 Cámaras Zosi + Disco Duro: alta definición, detección de movimiento y grabación continua. ¡Protege tu hogar!",
+    "nombreNormalizadoAt": "2026-06-07T02:01:39.402Z"
   },
   {
     "id": 1778717147247,
-    "nombre": "Short de nylon",
+    "nombre": "SHORT DE NYLON",
     "descripcion": "Short ideal para el verano \nTalla M\nColores : negro , blanco ,gris y verde",
     "imagen": "https://tiendamax.org/imagenes/img_1778717147247_ext.webp",
     "precioActual": 5,
@@ -1549,11 +1597,12 @@
       "comprar online"
     ],
     "slug": "short-de-nylon",
-    "shareText": "🔥 Short de nylon\n💵 $5.00 USD\nDisponible en TiendaMax. Escríbenos para reservar."
+    "shareText": "🔥 Short de nylon\n💵 $5.00 USD\nDisponible en TiendaMax. Escríbenos para reservar.",
+    "nombreNormalizadoAt": "2026-06-07T02:01:39.402Z"
   },
   {
     "id": 1778820912552,
-    "nombre": "Casa de campaña ligera",
+    "nombre": "CASA DE CAMPAÑA LIGERA",
     "descripcion": "Casa de campaña ligera\nPortatil, impermeable con mosquiteros  en las  2 puertas y las  2 ventanas. Capacidad para 3 o 4 personas. Mide 2 metros de ancho, 2 metros de largo y 1.30 metros de altura, facil de armar y desarmar. Repele el agua y los rayos del sol. \nTu compañera de aventuras perfecto para playas, campismos y excursiones!",
     "imagen": "https://tiendamax.org/imagenes/img_1778820912552_ext.webp",
     "precioActual": 100,
@@ -1576,11 +1625,12 @@
       "camping"
     ],
     "slug": "casa-de-campana-ligera-impermeable",
-    "shareText": "¡Conoce la casa de campaña ligera, perfecta para tus aventuras al aire libre!"
+    "shareText": "¡Conoce la casa de campaña ligera, perfecta para tus aventuras al aire libre!",
+    "nombreNormalizadoAt": "2026-06-07T02:01:39.402Z"
   },
   {
     "id": 1778820983383,
-    "nombre": "Linterna marca registrada \"HeCloud\"",
+    "nombre": "LINTERNA MARCA REGISTRADA \"HECLOUD\"",
     "descripcion": "🛑Linterna marca registrada \"HeCloud\" de buceo, pesca submarina y exploración en aguas profundas.\n\n• Ideal para uso nocturno gracias a su haz LED de alta intensidad.\n\n• Potencia aproximada de 3000 lúmenes con iluminación clara y de largo alcance.\n•Resistente a  presión y filtraciones gracias a sus sellos y juntas( trae 2 de respuestos). \n\n• Cuenta con 3 modos de iluminación: alto, medio y bajo.\n\n• Fabricada en aleación de aluminio resistente a golpes y corrosión marina.\n\n• Incluye batería recargable tipo 21700 de  4000 miliamperes y cargador de la misma. (Puede usarse tambien con  batería 18650 tambien).\n• Sistema de encendido lateral magnetico fácil de usar.\n\n• Diseño ergonómico, compacto y manuable para buen agarre bajo el agua y buscar peces entre las rocas.\n\n• Incluye correa de seguridad para sujetarla a la muñeca o equipo de buceo.\n\n• Su LED tiene larga vida útil de más de 50,000 horas.",
     "imagen": "https://tiendamax.org/imagenes/img_1778820983383_ext.webp",
     "precioActual": 35,
@@ -1604,11 +1654,12 @@
       "equipamiento buceo"
     ],
     "slug": "linterna-hecloud-buceo-pesca-submarina",
-    "shareText": "Descubre la linterna HeCloud de 3000 lúmenes, perfecta para buceo y pesca submarina."
+    "shareText": "Descubre la linterna HeCloud de 3000 lúmenes, perfecta para buceo y pesca submarina.",
+    "nombreNormalizadoAt": "2026-06-07T02:01:39.402Z"
   },
   {
     "id": 1778906281677,
-    "nombre": "Cargador Inteligente de Alta Potencia 84V 10A",
+    "nombre": "CARGADOR INTELIGENTE DE ALTA POTENCIA 84V 10A",
     "descripcion": "Moto Eléctrica | Carga Rápida 110V\n​📝 Descripción del Producto\n​Lleva la carga de tu vehículo eléctrico al siguiente nivel con el cargador inteligente de alta potencia de 84V y 10A. Diseñado para quienes no tienen tiempo que perder, este cargador premium reduce drásticamente el tiempo de espera gracias a su potente salida de 10 amperios, garantizando una carga rápida, eficiente y, sobre todo, segura para la batería de tu moto o scooter eléctrico.",
     "imagen": "https://tiendamax.org/imagenes/img_1778906279220.webp",
     "precioActual": 100,
@@ -1632,11 +1683,12 @@
       "cargador alta potencia"
     ],
     "slug": "cargador-inteligente-84v-10a",
-    "shareText": "Acelera la carga de tu moto eléctrica con nuestro cargador inteligente 84V 10A. ¡Rápido y seguro!"
+    "shareText": "Acelera la carga de tu moto eléctrica con nuestro cargador inteligente 84V 10A. ¡Rápido y seguro!",
+    "nombreNormalizadoAt": "2026-06-07T02:01:39.402Z"
   },
   {
     "id": 1778906455757,
-    "nombre": "Cargador de Batería de Litio BIEN 72V 5A (Salida 84V) | Conector US PIN",
+    "nombre": "CARGADOR DE BATERÍA DE LITIO BIEN 72V 5A (SALIDA 84V) | CONECTOR US PIN",
     "descripcion": "Mantén tu moto eléctrica siempre lista para rodar con la máxima seguridad que te ofrece el cargador de baterías de litio de la marca BIEN. Este equipo está diseñado específicamente para sistemas de 72V, entregando un voltaje de corte preciso de 84.0V para asegurar que tus celdas de litio se carguen al 100% de su capacidad de manera óptima, cuidando y prolongando la vida útil de tu inversión.",
     "imagen": "https://tiendamax.org/imagenes/img_1778906453441.webp",
     "precioActual": 40,
@@ -1659,11 +1711,12 @@
       "comprar online"
     ],
     "slug": "cargador-de-bateria-de-litio-bien-72v-5a-salida-84v-conector-us-pin",
-    "shareText": "🔥 Cargador de Batería de Litio BIEN 72V 5A (Salida 84V) | Conector US PIN\n💵 $40.00 USD\nDisponible en TiendaMax. Escríbenos para reservar."
+    "shareText": "🔥 Cargador de Batería de Litio BIEN 72V 5A (Salida 84V) | Conector US PIN\n💵 $40.00 USD\nDisponible en TiendaMax. Escríbenos para reservar.",
+    "nombreNormalizadoAt": "2026-06-07T02:01:39.402Z"
   },
   {
     "id": 1778906733513,
-    "nombre": "Espejos Retrovisores Deportivos SHENAO Stealth Winglet",
+    "nombre": "ESPEJOS RETROVISORES DEPORTIVOS SHENAO STEALTH WINGLET",
     "descripcion": "Transforma radicalmente la estética de tu moto con los espejos retrovisores premium SHENAO de diseño aerodinámico Stealth. Diseñados para los motociclistas que exigen un balance perfecto entre estilo agresivo y funcionalidad, estos espejos se inspiran en la tecnología de alta competencia para ofrecer un accesorio 2 en 1: un alerón aerodinámico de perfil bajo cuando están cerrados y un sistema de visión trasera claro al desplegarlos.",
     "imagen": "https://tiendamax.org/imagenes/img_1778906731600.webp",
     "precioActual": 20,
@@ -1687,11 +1740,12 @@
       "piezas moto"
     ],
     "slug": "espejos-retrovisores-shenao-stealth-winglet",
-    "shareText": "Mejora el estilo y aerodinámica de tu moto con los espejos SHENAO Stealth Winglet."
+    "shareText": "Mejora el estilo y aerodinámica de tu moto con los espejos SHENAO Stealth Winglet.",
+    "nombreNormalizadoAt": "2026-06-07T02:01:39.402Z"
   },
   {
     "id": 1778906905279,
-    "nombre": "Espejos Retrovisores Deportivos Alerón Tipo Stealth | Acabado Fibra de Carbón Premium",
+    "nombre": "ESPEJOS RETROVISORES DEPORTIVOS ALERÓN TIPO STEALTH | ACABADO FIBRA DE CARBÓN PREMIUM",
     "descripcion": "Lleva la estética de tu moto al nivel de las pistas de carreras con los espejos retrovisores tipo Alerón (Stealth) en acabado de Fibra de Carbón. Este accesorio es la definición perfecta de lujo y aerodinámica: un componente diseñado para transformar radicalmente el aspecto visual de tu moto, dándole una línea agresiva, moderna y puramente deportiva sin perder la funcionalidad en carretera.",
     "imagen": "https://tiendamax.org/imagenes/img_1778906902845.webp",
     "precioActual": 25,
@@ -1714,11 +1768,12 @@
       "piezas de moto"
     ],
     "slug": "espejos-deportivos-aleron-stealth-fibra-carbono",
-    "shareText": "¡Dale a tu moto un look de pista con los espejos Stealth de fibra de carbono!"
+    "shareText": "¡Dale a tu moto un look de pista con los espejos Stealth de fibra de carbono!",
+    "nombreNormalizadoAt": "2026-06-07T02:01:39.402Z"
   },
   {
     "id": 1778907072353,
-    "nombre": "Espejos Alerón Deportivos Stealth Poligonales | Diseño Aerodinámico Premium",
+    "nombre": "ESPEJOS ALERÓN DEPORTIVOS STEALTH POLIGONALES | DISEÑO AERODINÁMICO PREMIUM",
     "descripcion": "Dale a tu moto una presencia imponente en la carretera con los espejos retrovisores tipo Alerón de diseño Poligonal. Esta evolución del clásico espejo Stealth rompe los esquemas tradicionales con líneas angulares más marcadas y un reverso esculpido con relieves aerodinámicos. Es el accesorio de gama alta definitivo para quienes buscan un aspecto robusto, futurista y de pura competición.",
     "imagen": "https://tiendamax.org/imagenes/img_1778907067761.webp",
     "precioActual": 25,
@@ -1742,7 +1797,8 @@
       "espejos deportivos"
     ],
     "slug": "espejos-aleron-deportivos-stealth-poligonal",
-    "shareText": "¡Mejora tu moto con los nuevos espejos Alerón Stealth Poligonal! Diseño aerodinámico y futurista."
+    "shareText": "¡Mejora tu moto con los nuevos espejos Alerón Stealth Poligonal! Diseño aerodinámico y futurista.",
+    "nombreNormalizadoAt": "2026-06-07T02:01:39.402Z"
   },
   {
     "id": 1778907260915,
@@ -1773,7 +1829,7 @@
   },
   {
     "id": 1779205929131,
-    "nombre": "Cargadores inteligentes de 25A",
+    "nombre": "CARGADORES INTELIGENTES DE 25A",
     "descripcion": "Cargadores inteligentes de 25A autovolt a12V y 24v\n\n* Amperaje ajustable para carga lenta, media o rápida segun su preferencia.\n* Compatible con baterías de plomo-ácido, calcio, Lifepo4, baterías AGM, GEL Entre otras.\n* Sistema de carga inteligente de 7 etapas.\n* Optimiza el proceso para proteger y alargar la vida de la batería.\n* Función de reparación por pulsos.\n* Ayuda a recuperar baterías sulfatadas o con bajo rendimiento.\n* Pantalla digital integrada.\n* Muestra datos en tiempo real como voltaje, amperaje y estado.\n* Protección contra sobrecarga y cortocircuitos.\n* Brinda mayor seguridad durante todo el proceso de carga.\n* Modo de mantenimiento o carga flotante.\n* Mantiene la batería cargada sin dañarla cuando no está en uso.",
     "imagen": "https://tiendamax.org/imagenes/img_1779205927276.webp",
     "precioActual": 90,
@@ -1796,7 +1852,8 @@
       "comprar online"
     ],
     "slug": "cargadores-inteligentes-de-25a",
-    "shareText": "🔥 Cargadores inteligentes de 25A\n💵 $90.00 USD\nDisponible en TiendaMax. Escríbenos para reservar."
+    "shareText": "🔥 Cargadores inteligentes de 25A\n💵 $90.00 USD\nDisponible en TiendaMax. Escríbenos para reservar.",
+    "nombreNormalizadoAt": "2026-06-07T02:01:39.402Z"
   },
   {
     "id": 1779208523952,
@@ -1833,7 +1890,7 @@
   },
   {
     "id": 1779562612951,
-    "nombre": "CONTROLADOR SOLAR POWMR M100 PRO -MPPT DE 80 AMP",
+    "nombre": "CONTROLADOR SOLAR POWMR M100 PRO - MPPT DE 80 AMP",
     "descripcion": "♻️CONTROLADOR SOLAR POWMR M100 PRO -MPPT DE 80 AMP♻️\n\nEspecificaciones Eléctricas Clave:\n* *Voltaje Máximo del Sistema (PV):* 100V DC. Esto permite conectar paneles en serie para reducir la caída de voltaje en cables largos.\n* Corriente de Carga Máxima: 80 Amperios.\n* *Voltaje de la Batería:* Compatible con baterías de 12V, 24V y 48V. El sistema detecta y se configura automáticamente.\n* *Corriente de Carga Máxima en Diferentes Voltajes:*\n* *100A @ 12V*\n* *50A @ 24V*\n* *25A @ 48V*\n* *Autoconsumo:* < 15mA (muy bajo, lo que preserva la batería cuando no hay sol)\n\n*7. Otras Características Destacadas:*\n* *Reconexión Automática:* Tras una falla o protección, se reconecta automáticamente cuando las condiciones vuelven a la normalidad.\n* *Detección Automática de Voltaje del Sistema:* No necesita configuración manual para 12V/24V/48V.\n* *Capacidad de Registro de Datos:* Almacena datos históricos de generación",
     "imagen": "data:image/webp;base64,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",
     "precioActual": 220,
@@ -1857,11 +1914,12 @@
       "comprar online"
     ],
     "slug": "controlador-solar-powmr-m100-pro-mppt-de-80-amp",
-    "shareText": "🔥 CONTROLADOR SOLAR POWMR M100 PRO -MPPT DE 80 AMP\n💵 $220.00 USD\nDisponible en TiendaMax. Escríbenos para reservar."
+    "shareText": "🔥 CONTROLADOR SOLAR POWMR M100 PRO -MPPT DE 80 AMP\n💵 $220.00 USD\nDisponible en TiendaMax. Escríbenos para reservar.",
+    "nombreNormalizadoAt": "2026-06-07T02:01:39.402Z"
   },
   {
     "id": 1780017975657,
-    "nombre": "Xiaomi Sound Outdoor 30W",
+    "nombre": "XIAOMI SOUND OUTDOOR 30W",
     "descripcion": "(Nuevo en caja)\n​¡Potencia y portabilidad en un solo altavoz! Perfecto para exteriores, playa o reuniones.\n​⚡ Lo mejor de este altavoz:\n​Potencia de 30W: Sonido fuerte, nítido y con excelentes graves.\n​Batería de 12 horas: Música para todo el día.\n​Resistencia IP67: Soportar agua y polvo sin problemas.\n​Conexión TWS: Puedes conectarlo con otro igual para sonido estéreo.\n​Diseño cómodo: Incluye su correa naranja para llevarlo a todos lados.",
     "imagen": "data:image/webp;base64,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",
     "precioActual": 75,
@@ -1887,11 +1945,12 @@
       "altavoz exterior"
     ],
     "slug": "xiaomi-sound-outdoor-30w",
-    "shareText": "Disfruta de sonido potente y resistente con el Xiaomi Sound Outdoor 30W, perfecto para cualquier aventura al aire libre."
+    "shareText": "Disfruta de sonido potente y resistente con el Xiaomi Sound Outdoor 30W, perfecto para cualquier aventura al aire libre.",
+    "nombreNormalizadoAt": "2026-06-07T02:01:39.402Z"
   },
   {
     "id": 1780079294429,
-    "nombre": "Raqueta Eléctrica Mata Mosquitos",
+    "nombre": "RAQUETA ELÉCTRICA MATA MOSQUITOS",
     "descripcion": "​¡Diles adiós a los molestos mosquitos y moscas de forma rápida y efectiva! El accesorio infaltable para mantener tu casa tranquila.\n​🔋 Lo mejor de esta raqueta:\n​Alta potencia: Descarga fulminante que elimina mosquitos, moscas y jejenes al instante.\n​Recargable: Olvídate de gastar en baterías, se conecta directo a la corriente (trae su enchufe integrado en el mango).\n​Malla de seguridad: Triple capa de protección para evitar descargas accidentales al tocarla por los lados.\n​Indicador LED: Luz roja que te avisa cuando está activa y lista para usar.",
     "imagen": "data:image/webp;base64,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",
     "precioActual": 10,
@@ -1917,11 +1976,12 @@
       "control de plagas"
     ],
     "slug": "raqueta-electrica-mata-mosquitos",
-    "shareText": "¡Adiós mosquitos! Compra la raqueta eléctrica recargable por $10 en TiendaMax."
+    "shareText": "¡Adiós mosquitos! Compra la raqueta eléctrica recargable por $10 en TiendaMax.",
+    "nombreNormalizadoAt": "2026-06-07T02:01:39.402Z"
   },
   {
     "id": 1780083017984,
-    "nombre": "PC Gaming Setup Premium",
+    "nombre": "PC GAMING SETUP PREMIUM",
     "descripcion": "PC Gaming Setup Premium (Estilo Acuario / White)\n​Se vende potente PC Gamer con estética full blanca, refrigeración líquida y excelente rendimiento para juegos y diseño.\n​💎 Componentes y Precios:\n​Kit Base ($350): Motherboard Aorus B560 + Procesador i7-10700 + 16GB RAM RGB (Bus 3600MHz).\n​Gráfica ($200): NVIDIA RTX 2070 Super 8GB.\n​Chasis ($220): Sama de cristal templado (tipo acuario) + 7 ventiladores ARGB incluidos.\n​Refrigeración ($130): Líquida Thermalright 360 ARGB.\n​Almacenamiento ($100): SSD de 2TB.\n​Fuente ($80): 650W certificación 80 Plus Gold.\n​🌟 Nota: Todo en perfecto estado, estético y funcional. Se puede valorar venta por piezas.",
     "imagen": "https://tiendamax.org/imagenes/img_1780083016341.webp",
     "precioActual": 1000,
@@ -1948,11 +2008,12 @@
       "gaming pc"
     ],
     "slug": "pc-gaming-setup-premium-white",
-    "shareText": "Potente PC Gaming blanco con RTX 2070 Super y refrigeración líquida. ¡Rendimiento y estilo por $1000!"
+    "shareText": "Potente PC Gaming blanco con RTX 2070 Super y refrigeración líquida. ¡Rendimiento y estilo por $1000!",
+    "nombreNormalizadoAt": "2026-06-07T02:01:39.402Z"
   },
   {
     "id": 1780344659047,
-    "nombre": "ZOSl-camara de sequridad CCTV",
+    "nombre": "ZOSL - CÁMARA DE SEQURIDAD CCTV",
     "descripcion": "ZOSl-camara de sequridad CCTV impermeable para exteriores e interiores, Kit de sistema DVR 108OP 2MP.TVI.AHD.CVBS.IR CUT. Visión nocturna",
     "imagen": "https://tiendamax.org/imagenes/img_1780344655996.webp",
     "imagenes": [
@@ -1979,11 +2040,12 @@
       "comprar online"
     ],
     "slug": "zosl-camara-de-sequridad-cctv",
-    "shareText": "🔥 ZOSl-camara de sequridad CCTV\n💵 $45.00 USD\nDisponible en TiendaMax. Escríbenos para reservar."
+    "shareText": "🔥 ZOSl-camara de sequridad CCTV\n💵 $45.00 USD\nDisponible en TiendaMax. Escríbenos para reservar.",
+    "nombreNormalizadoAt": "2026-06-07T02:01:39.402Z"
   },
   {
     "id": 1780510681519,
-    "nombre": "Router Tenda RX2 Pro – Wi-Fi 6 Dual-Band Gigabit",
+    "nombre": "ROUTER TENDA RX2 PRO - WIFI 6 DUAL - BAND GIGABIT",
     "descripcion": "​Tecnología Wi-Fi 6 de Última Generación: Mayor velocidad de transmisión, más capacidad de dispositivos conectados y una latencia extremadamente baja.\n​Doble Banda Gigabit (Dual-Band): Optimiza de forma inteligente el tráfico de tu red para darte la máxima velocidad disponible tanto en 2.4 GHz como en 5 GHz.\n​Adiós a las Zonas Muertas: Equipado con 5 antenas externas de alta ganancia (6dBi) y un módulo de mejora de señal de alto rendimiento, garantizando cobertura total incluso en casas grandes.\n​Puertos Totalmente Gigabit: Puertos cableados de alta velocidad (hasta 1000 Mbps) para exprimir al máximo tu plan de internet y asegurar estabilidad en consolas o PCs.\n​Seguridad Avanzada: Compatible con el último protocolo de seguridad WPA3 para proteger tu red contra accesos no deseados.\n​Listo para el Futuro: Soporte nativo para IPv6 y gestión sencilla desde la comodidad de una App móvil.",
     "imagen": "https://tiendamax.org/imagenes/img_1780510677267.webp",
     "imagenes": [
@@ -2012,11 +2074,12 @@
       "IPv6 soporte"
     ],
     "slug": "router-tenda-rx2-pro-wifi-6",
-    "shareText": "¡Conecta tu hogar con el Router Tenda RX2 Pro, Wi‑Fi 6 dual‑band y cobertura total!"
+    "shareText": "¡Conecta tu hogar con el Router Tenda RX2 Pro, Wi‑Fi 6 dual‑band y cobertura total!",
+    "nombreNormalizadoAt": "2026-06-07T02:01:39.402Z"
   },
   {
     "id": 1780542909435,
-    "nombre": "Sistema de Seguridad ZOSI para el Hogar – 8 Canales",
+    "nombre": "SISTEMA DE SEGURIDAD ZOSI PARA EL HOGAR - 8 CANALES",
     "descripcion": "**Sistema de Seguridad ZOSI para el Hogar – 8 Canales, 2MP HD, DVR Lite 5MP, 1TB, Grabación 24/7**  \nEste kit incluye:  \n\n- **8 canales** compatibles con cámaras ZOSI \n- **Resolución HD de 2MP (1080p)** para imágenes nítidas y detalladas.  \n- **DVR Lite con capacidad de 5MP**, permitiendo una grabación superior.  \n- **Almacenamiento de 1TB** para guardar horas de grabación continua.  \n- **Grabación 24/7** con detección de movimiento para mayor seguridad.  \n- **Alimentación por USB**, facilitando la instalación y el uso.  \n- Compatibilidad con **cámaras ZOSI** para una integración perfecta.\n- *8 cámaras Zosi*",
     "imagen": "https://tiendamax.org/imagenes/img_1780542905916.webp",
     "imagenes": [
@@ -2046,11 +2109,12 @@
       "8 canales"
     ],
     "slug": "sistema-seguridad-zosi-8-canales-2mp-hd-1tb",
-    "shareText": "Protege tu hogar con el sistema ZOSI de 8 canales, 2MP HD y 1TB de almacenamiento. ¡Instalación fácil y grabación 24/7!"
+    "shareText": "Protege tu hogar con el sistema ZOSI de 8 canales, 2MP HD y 1TB de almacenamiento. ¡Instalación fácil y grabación 24/7!",
+    "nombreNormalizadoAt": "2026-06-07T02:01:39.402Z"
   },
   {
     "id": 1780543090267,
-    "nombre": "Audífonos ergonómicos",
+    "nombre": "AUDÍFONOS ERGONÓMICOS",
     "descripcion": "Audífonos ergonómicos, elegantes, táctiles, con 40 horas de bateria, alta calidad de sonido, cancelacion de ruido de ambiente en llamadas, haciendo la voz mas clara y legible en las mismas. Buena calidad de musica y buenos  bajos. Diseño similar a los de  iPhone. Son compactos  y compatibles con todo tipo de telefonos. Se cargan con cable lighting de iphone (incluído en la caja).",
     "imagen": "https://tiendamax.org/imagenes/img_1780543081597.webp",
     "imagenes": [
@@ -2078,6 +2142,7 @@
       "audio de calidad"
     ],
     "slug": "audifonos-ergonomicos-cancelacion-ruido",
-    "shareText": "Conecta tu música con 40h de batería y cancelación de ruido. Audífonos ergonómicos, compatibles y elegantes."
+    "shareText": "Conecta tu música con 40h de batería y cancelación de ruido. Audífonos ergonómicos, compatibles y elegantes.",
+    "nombreNormalizadoAt": "2026-06-07T02:01:39.402Z"
   }
 ]
