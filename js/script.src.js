@@ -3279,13 +3279,42 @@ async function sincronizarTodoConGitHub() {
     barraContenedor.style.display = 'block';
     const barra   = document.getElementById('syncProgressBarra');
     const textoEl = document.getElementById('syncProgressTexto');
+
+    // Barra flotante global: visible aunque el botón esté en otra pestaña o fuera de pantalla.
+    let barraFloat = document.getElementById('tmSyncFloat');
+    if (!barraFloat) {
+        barraFloat = document.createElement('div');
+        barraFloat.id = 'tmSyncFloat';
+        barraFloat.innerHTML = `
+          <div class="tm-sync-float-card">
+            <div class="tm-sync-float-top"><b>🔄 Actualizando tienda</b><span id="tmSyncFloatPct">0%</span></div>
+            <div class="tm-sync-float-track"><div id="tmSyncFloatBar"></div></div>
+            <div id="tmSyncFloatText">Preparando...</div>
+          </div>`;
+        const st = document.createElement('style');
+        st.id = 'tmSyncFloatStyle';
+        st.textContent = `#tmSyncFloat{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 18px);transform:translateX(-50%);z-index:99999;width:min(92vw,460px);pointer-events:none}.tm-sync-float-card{background:rgba(15,15,15,.96);border:1px solid rgba(201,169,110,.35);box-shadow:0 18px 50px rgba(0,0,0,.55),0 0 0 1px rgba(255,255,255,.04) inset;border-radius:16px;padding:13px 14px;color:#fff;font-family:system-ui,-apple-system,Segoe UI,sans-serif}.tm-sync-float-top{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:13px;margin-bottom:9px}.tm-sync-float-top b{color:#fff}.tm-sync-float-top span{color:#C9A96E;font-weight:900}.tm-sync-float-track{height:11px;background:#272727;border-radius:999px;overflow:hidden}.tm-sync-float-track>div{height:100%;width:0%;background:linear-gradient(90deg,#FF6B35,#C9A96E);border-radius:999px;transition:width .35s ease}#tmSyncFloatText{font-size:11px;color:#bbb;margin-top:7px;text-align:center}`;
+        document.head.appendChild(st);
+        document.body.appendChild(barraFloat);
+    }
+    barraFloat.style.display = 'block';
+    const barraFloatBar = document.getElementById('tmSyncFloatBar');
+    const barraFloatPct = document.getElementById('tmSyncFloatPct');
+    const barraFloatText = document.getElementById('tmSyncFloatText');
+
     if (barra)   barra.style.width = '0%';
     if (textoEl) textoEl.textContent = 'Preparando...';
+    if (barraFloatBar) barraFloatBar.style.width = '0%';
+    if (barraFloatPct) barraFloatPct.textContent = '0%';
+    if (barraFloatText) barraFloatText.textContent = 'Preparando...';
 
     function actualizarBarra(paso, total, mensaje) {
         const pct = Math.round((paso / total) * 100);
         if (barra)   barra.style.width = pct + '%';
         if (textoEl) textoEl.textContent = mensaje;
+        if (barraFloatBar) barraFloatBar.style.width = pct + '%';
+        if (barraFloatPct) barraFloatPct.textContent = pct + '%';
+        if (barraFloatText) barraFloatText.textContent = mensaje;
     }
     // -------------------------
 
@@ -3350,6 +3379,8 @@ async function sincronizarTodoConGitHub() {
     // Ocultar barra después de 4 segundos
     setTimeout(() => {
         if (barraContenedor) barraContenedor.style.display = 'none';
+        const f = document.getElementById('tmSyncFloat');
+        if (f) f.style.display = 'none';
     }, 4000);
 
     if (errors.length === 0) {
