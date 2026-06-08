@@ -2119,17 +2119,17 @@
   },
   {
     "id": 1780543090267,
-    "nombre": "AUDÍFONOS ERGONÓMICOS",
+    "nombre": "AUDÍFONOS INALÁMBRICOS",
     "descripcion": "Audífonos ergonómicos, elegantes, táctiles, con 40 horas de bateria, alta calidad de sonido, cancelacion de ruido de ambiente en llamadas, haciendo la voz mas clara y legible en las mismas. Buena calidad de musica y buenos  bajos. Diseño similar a los de  iPhone. Son compactos  y compatibles con todo tipo de telefonos. Se cargan con cable lighting de iphone (incluído en la caja).",
-    "imagen": "https://tiendamax.org/imagenes/img_1780543081597.webp",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1780889333515.jpg",
     "imagenes": [
-      "https://tiendamax.org/imagenes/img_1780543081597.webp"
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1780889333515.jpg"
     ],
     "precioActual": 15,
     "precioOriginal": 20,
     "descuento": 25,
     "stock": 20,
-    "comision": 1.8,
+    "comision": 1000,
     "categoria": "CELULARES",
     "subcategoria": "",
     "masVendido": false,
@@ -2148,7 +2148,8 @@
     ],
     "slug": "audifonos-ergonomicos-cancelacion-ruido",
     "shareText": "Conecta tu música con 40h de batería y cancelación de ruido. Audífonos ergonómicos, compatibles y elegantes.",
-    "nombreNormalizadoAt": "2026-06-07T02:01:39.402Z"
+    "nombreNormalizadoAt": "2026-06-07T02:01:39.402Z",
+    "comisionMoneda": "MN"
   },
   {
     "id": 1780873638627,
