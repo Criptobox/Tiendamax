@@ -1,5 +1,8 @@
 // ════════════════════════════════════════════════════════════════
-//  TiendaMax — push-fix.js  v4
+//  TiendaMax — push-fix.js  v7
+//  v7: fingerprint-based dedup + mejor feedback cuando RTDB falla.
+//  v6: al activar limpia tokens legacy del mismo userAgent.
+//  v5: no infla suscriptores; guarda por fingerprint de dispositivo.
 //  v4: separar getToken de escritura RTDB — si la red falla sólo
 //      al escribir en Firebase, el token se guarda local y se reintenta
 //      en background sin mostrar error al usuario. Mensajes en español.
@@ -42,13 +45,49 @@
     return cfg;
   }
 
+  // Huella estable del dispositivo — sobrevive borrado de localStorage
+  function deviceFingerprint() {
+    var parts = [
+      navigator.userAgent || '',
+      (screen.width || 0) + 'x' + (screen.height || 0),
+      navigator.language || '',
+      (typeof Intl !== 'undefined' ? Intl.DateTimeFormat().resolvedOptions().timeZone : '') || ''
+    ].join('|');
+    var h = 0;
+    for (var i = 0; i < parts.length; i++) { h = ((h << 5) - h + parts.charCodeAt(i)) | 0; }
+    return 'fp_' + (h >>> 0).toString(36);
+  }
+
+  // Expone la función para que analytics.js la pueda usar en conteo
+  window.tmPushDeviceFingerprint = deviceFingerprint;
+
   // Escribe token en Firebase RTDB. Si falla por red, guarda en LS para reintento.
   async function escribirTokenRTDB(cfg, token) {
     var dbURL = cfg.databaseURL || ("https://" + cfg.projectId + "-default-rtdb.firebaseio.com");
-    var id = btoa(token).replace(/=/g, "").replace(/\+/g, "-").replace(/\//g, "_");
+    var fp = deviceFingerprint();
+    var id = fp; // fingerprint como clave — evita duplicar mismo dispositivo
+
+    // Eliminar tokens previos del mismo dispositivo antes de guardar el nuevo
+    try {
+      var allRes = await fetch(dbURL + "/tokens.json?_=" + Date.now(), { cache: "no-store" });
+      if (allRes.ok) {
+        var allData = await allRes.json();
+        if (allData && typeof allData === "object") {
+          var deletes = [];
+          Object.keys(allData).forEach(function(k) {
+            var t = allData[k];
+            if (k !== id && t && (t.fingerprint === fp || t.token === localStorage.getItem("fcmToken") || t.userAgent === navigator.userAgent)) {
+              deletes.push(fetch(dbURL + "/tokens/" + k + ".json", { method: "DELETE" }).catch(function() {}));
+            }
+          });
+          if (deletes.length) await Promise.allSettled(deletes);
+        }
+      }
+    } catch (e) {}
+
     var resp = await fetch(dbURL + "/tokens/" + id + ".json", {
       method: "PUT", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ token: token, timestamp: Date.now(), userAgent: navigator.userAgent })
+      body: JSON.stringify({ token: token, timestamp: Date.now(), userAgent: navigator.userAgent, fingerprint: fp })
     });
     if (!resp.ok) {
       var t = ""; try { t = await resp.text(); } catch (e) {}
@@ -122,19 +161,21 @@
 
     localStorage.setItem("fcmToken", token);
     try { localStorage.removeItem("tm_push_desuscrito"); } catch (e) {}
-    if (typeof window.tmRegistrarSuscriptor === "function") { try { window.tmRegistrarSuscriptor(); } catch (e) {} }
 
     // Escribir en RTDB — si falla por red, el token ya está en FCM; se reintenta después.
+    var rtdbOk = false;
     try {
       await escribirTokenRTDB(cfg, token);
+      rtdbOk = true;
+      if (typeof window.tmRegistrarSuscriptor === "function") { try { window.tmRegistrarSuscriptor(); } catch (e) {} }
     } catch (e) {
       // El token FCM está activo — recibirá notificaciones. Solo falló guardar en la base.
       try { localStorage.setItem(LS_PENDING, JSON.stringify({ token: token, cfg: cfg, ts: Date.now() })); } catch (e2) {}
-      console.warn("[push-fix v4] Token FCM OK, RTDB pendiente:", e.message);
+      console.warn("[push-fix v7] Token FCM OK, RTDB pendiente:", e.message);
     }
 
-    console.log("[push-fix v4] Suscriptor registrado.");
-    return true;
+    console.log("[push-fix v7] Suscriptor registrado. RTDB:", rtdbOk ? "OK" : "pendiente");
+    return rtdbOk ? true : 'pending';
   }
 
   // Reintento silencioso en background de tokens pendientes de escribir en RTDB.
@@ -150,9 +191,10 @@
     }
     try {
       await escribirTokenRTDB(pending.cfg, pending.token);
-      console.log("[push-fix v4] Token pendiente guardado en RTDB.");
+      if (typeof window.tmRegistrarSuscriptor === "function") { try { window.tmRegistrarSuscriptor(); } catch (e) {} }
+      console.log("[push-fix v7] Token pendiente guardado en RTDB.");
     } catch (e) {
-      console.warn("[push-fix v4] Reintento fallido:", e.message);
+      console.warn("[push-fix v7] Reintento fallido:", e.message);
     }
   }
 
@@ -161,11 +203,15 @@
   }
   function _wrap(cfgArg) {
     return registrarTokenRobusto(cfgArg).then(function (ok) {
-      if (ok) _notif("✅ Notificaciones activadas correctamente.", "success");
-      return ok;
+      if (ok === true) {
+        _notif("✅ Notificaciones activadas correctamente.", "success");
+      } else if (ok === 'pending') {
+        _notif("🔔 Suscripción activa. Si no recibes notificaciones, vuelve a intentarlo.", "warning");
+      }
+      return !!ok;
     }).catch(function (e) {
-      console.error("[push-fix v4] Error:", e.message);
-      _notif("⚠️ No se pudo activar las notificaciones. Intenta de nuevo.", "error");
+      console.error("[push-fix v7] Error:", e.message);
+      _notif("⚠️ No se pudo activar las notificaciones: " + e.message, "error");
       return false;
     });
   }
@@ -182,7 +228,7 @@
       setTimeout(function () { reintentarPendiente().catch(function () {}); }, 5000);
       if (localStorage.getItem("fcmToken")) return;
       setTimeout(function () {
-        registrarTokenRobusto().catch(function (e) { console.warn("[push-fix v4] auto-recuperación:", e.message); });
+        registrarTokenRobusto().catch(function (e) { console.warn("[push-fix v7] auto-recuperación:", e.message); });
       }, 3000);
     } catch (e) {}
   }

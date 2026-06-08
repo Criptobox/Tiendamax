@@ -113,6 +113,18 @@ function _tmRelTime(ts) {
     return `hace ${meses} mes${meses > 1 ? 'es' : ''}`;
 }
 
+// ── Contar dispositivos únicos sin inflar por re-suscripciones ──
+function tmContarSuscriptoresUnicos(tokensData = {}) {
+    const vals = Object.values(tokensData).filter(t => t && t.token);
+    const seen = new Set();
+    vals.forEach(t => {
+        if (t.fingerprint) seen.add('fp:' + t.fingerprint);
+        else seen.add('tk:' + t.token);
+    });
+    return seen.size;
+}
+window.tmContarSuscriptoresUnicos = tmContarSuscriptoresUnicos;
+
 // ── Leer todos los datos de analytics ───────────────────
 async function tmLeerAnalytics() {
     const base = _tmRtdbUrl();
@@ -145,8 +157,8 @@ async function tmLeerAnalytics() {
         whatsappCont[id] = (typeof v === 'object' ? v.count : v) || 0;
     });
 
-    // Suscriptores: Firebase como fuente de verdad
-    const suscriptores = Object.keys(tokensData).length;
+    // Suscriptores: contar dispositivos únicos (fingerprint si existe, si no por token)
+    const suscriptores = tmContarSuscriptoresUnicos(tokensData);
     // Sincronizar caché local con el valor real
     try { localStorage.setItem('tm_subscriber_count', String(suscriptores)); } catch(e) {}
 
