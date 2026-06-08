@@ -1,9 +1,9 @@
 // ═══════════════════════════════════════════════════════
-// 📊 TIENDAMAX ANALYTICS — analytics.js v6
-// v6: borrar suscriptor por dispositivo + limpiar duplicados
-//     (antes borrar una entrada de Firebase no bajaba el contador
-//     si el mismo dispositivo tenía más de una entrada legacy)
-// v5: panel rediseñado nivel superior + fix contador suscriptores
+// 📊 TIENDAMAX ANALYTICS — analytics.js v7
+// v7: carnet de identidad (deviceId) — cuenta y borra por dispositivo
+//     real. Botón "Borrar todos" para reiniciar lista de suscriptores.
+// v6: borrar suscriptor individual + limpiar duplicados
+// v5: panel rediseñado + fix contador suscriptores
 // ═══════════════════════════════════════════════════════
 
 // ── Sanitización HTML para el panel (anti-XSS) ──────────
@@ -146,18 +146,19 @@ function _tmRelTime(ts) {
     return `hace ${meses} mes${meses > 1 ? 'es' : ''}`;
 }
 
-// Cuenta suscriptores únicos sin inflar por reactivaciones del mismo dispositivo.
-// Prioridad: fingerprint; legacy sin fingerprint se cuenta por token, salvo que sea
-// claramente una copia vieja del mismo userAgent que ya tiene fingerprint.
+// Cuenta suscriptores únicos. Prioridad: deviceId (carnet) > fingerprint > token.
+// Las entradas legacy sin deviceId ni fingerprint cuentan por token string.
 function tmContarSuscriptoresUnicos(tokensData = {}) {
     const vals = Object.values(tokensData).filter(t => t && t.token);
-    const uasConFingerprint = new Set(vals.filter(t => t.fingerprint && t.userAgent).map(t => t.userAgent));
+    const uasConFp = new Set(vals.filter(t => t.fingerprint && t.userAgent).map(t => t.userAgent));
     const claves = new Set();
     vals.forEach(t => {
-        if (t.fingerprint) {
+        if (t.deviceId) {
+            claves.add('did:' + t.deviceId);
+        } else if (t.fingerprint) {
             claves.add('fp:' + t.fingerprint);
-        } else if (t.userAgent && uasConFingerprint.has(t.userAgent)) {
-            // Entrada vieja duplicada de un dispositivo que ya se re-registró con fingerprint.
+        } else if (t.userAgent && uasConFp.has(t.userAgent)) {
+            // legacy: mismo dispositivo ya re-registrado con fingerprint, no contar doble
             return;
         } else {
             claves.add('tk:' + t.token);
@@ -584,7 +585,8 @@ async function renderizarAnalyticsFirebase() {
                 <div style="font-size:13px;font-weight:700;color:#fff;">🔔 Suscriptores push <span style="background:rgba(79,195,247,0.2);color:#4fc3f7;border-radius:20px;padding:2px 10px;font-size:12px;margin-left:6px;">${suscriptores}</span></div>
                 <div style="display:flex;gap:6px;flex-wrap:wrap;">
                 <button id="tm-btn-dedup" onclick="tmLimpiarDuplicados()" style="font-size:11px;padding:5px 12px;border-radius:8px;background:rgba(79,195,247,0.12);border:1px solid rgba(79,195,247,0.3);color:#4fc3f7;cursor:pointer;">🔁 Limpiar duplicados</button>
-                <button id="tm-btn-limpiar" onclick="tmLimpiarTokensInvalidos()" style="font-size:11px;padding:5px 12px;border-radius:8px;background:rgba(231,76,60,0.12);border:1px solid rgba(231,76,60,0.3);color:#e74c3c;cursor:pointer;">🧹 Limpiar tokens inválidos</button>
+                <button id="tm-btn-limpiar" onclick="tmLimpiarTokensInvalidos()" style="font-size:11px;padding:5px 12px;border-radius:8px;background:rgba(231,76,60,0.12);border:1px solid rgba(231,76,60,0.3);color:#e74c3c;cursor:pointer;">🧹 Tokens inválidos</button>
+                <button id="tm-btn-borrar-todos" onclick="tmBorrarTodosSuscriptores()" style="font-size:11px;padding:5px 12px;border-radius:8px;background:rgba(180,0,0,0.18);border:1px solid rgba(180,0,0,0.4);color:#ff6b6b;cursor:pointer;">🗑 Borrar todos</button>
                 </div>
             </div>
             <div id="tm-limpiar-info" style="font-size:12px;margin-bottom:10px;min-height:16px;"></div>
@@ -604,9 +606,9 @@ async function renderizarAnalyticsFirebase() {
                     const { tipo, icon } = _tmParseDevice(t.userAgent || '');
                     const fechaCorta = t.timestamp ? new Date(t.timestamp).toLocaleDateString('es-ES', {day:'2-digit', month:'short'}) : '';
                     const browser = /Chrome/i.test(t.userAgent||'') ? 'Chrome' : /Firefox/i.test(t.userAgent||'') ? 'Firefox' : /Safari/i.test(t.userAgent||'') ? 'Safari' : /Edge/i.test(t.userAgent||'') ? 'Edge' : '';
-                    const fp  = _escA(t.fingerprint || '');
-                    const tok = _escA(t.token || '');
-                    const ua  = _escA(t.userAgent || '');
+                    const fbKey = _escA(t._fbKey || '');
+                    const fp    = _escA(t.fingerprint || '');
+                    const tok   = _escA(t.token || '');
                     return `<div style="display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid rgba(255,255,255,0.04);">
                         <div style="width:34px;height:34px;background:rgba(79,195,247,0.1);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">${icon}</div>
                         <div style="flex:1;min-width:0;">
@@ -614,7 +616,7 @@ async function renderizarAnalyticsFirebase() {
                             <div style="font-size:10px;color:#666;">${_tmRelTime(t.timestamp)}</div>
                         </div>
                         ${fechaCorta ? `<div style="font-size:10px;color:#555;flex-shrink:0;">${fechaCorta}</div>` : ''}
-                        <button onclick="tmBorrarSuscriptor('${fp}','${tok}','${ua}')" title="Borrar este suscriptor" style="background:rgba(231,76,60,0.15);border:1px solid rgba(231,76,60,0.35);color:#e74c3c;border-radius:6px;padding:3px 8px;font-size:11px;cursor:pointer;flex-shrink:0;">🗑</button>
+                        <button onclick="tmBorrarSuscriptor('${fbKey}','${fp}','${tok}')" title="Borrar este suscriptor" style="background:rgba(231,76,60,0.15);border:1px solid rgba(231,76,60,0.35);color:#e74c3c;border-radius:6px;padding:3px 8px;font-size:11px;cursor:pointer;flex-shrink:0;">🗑</button>
                     </div>`;
                 }).join('')}
             `}
@@ -874,17 +876,19 @@ async function tmLimpiarTokensInvalidos() {
 window.tmLimpiarTokensInvalidos = tmLimpiarTokensInvalidos;
 
 // ── Borrar todas las entradas de un dispositivo específico ─
-async function tmBorrarSuscriptor(fingerprint, token, userAgent) {
+// fbKey: clave Firebase del registro principal (más seguro)
+// fingerprint y token: para encontrar duplicados del mismo dispositivo
+async function tmBorrarSuscriptor(fbKey, fingerprint, token) {
     const base = _tmRtdbUrl();
     if (!base) return;
     const res = await fetch(`${base}/tokens.json?_=${Date.now()}`, { cache: 'no-store' });
     if (!res.ok) return;
     const tokensData = await res.json() || {};
-    const toDelete = Object.entries(tokensData).filter(([, t]) => {
+    const toDelete = Object.entries(tokensData).filter(([k, t]) => {
         if (!t || !t.token) return false;
+        if (fbKey && k === fbKey) return true;
         if (fingerprint && t.fingerprint === fingerprint) return true;
         if (token && t.token === token) return true;
-        if (userAgent && !t.fingerprint && t.userAgent === userAgent) return true;
         return false;
     }).map(([k]) => k);
     await Promise.allSettled(toDelete.map(k =>
@@ -896,6 +900,37 @@ async function tmBorrarSuscriptor(fingerprint, token, userAgent) {
     setTimeout(() => { if (typeof renderizarAnalyticsFirebase === 'function') renderizarAnalyticsFirebase(); }, 800);
 }
 window.tmBorrarSuscriptor = tmBorrarSuscriptor;
+
+// ── Borrar TODOS los suscriptores (reinicio completo) ──────
+async function tmBorrarTodosSuscriptores() {
+    if (!window.confirm('¿Borrar TODOS los suscriptores? Esta acción no se puede deshacer.\n\nLos clientes que vuelvan a activar notificaciones se registrarán de nuevo automáticamente.')) return;
+    const base = _tmRtdbUrl();
+    if (!base) { if (typeof window.mostrarNotificacion === 'function') window.mostrarNotificacion('⚠️ Firebase no configurado.', 'warning'); return; }
+    const btn = document.getElementById('tm-btn-borrar-todos');
+    if (btn) { btn.disabled = true; btn.textContent = '⏳ Borrando…'; }
+    try {
+        const res = await fetch(`${base}/tokens.json?_=${Date.now()}`, { cache: 'no-store' });
+        if (!res.ok) throw new Error('No se pudo leer la base de datos');
+        const tokensData = await res.json() || {};
+        const keys = Object.keys(tokensData);
+        if (keys.length === 0) {
+            if (typeof window.mostrarNotificacion === 'function') window.mostrarNotificacion('✅ Ya no hay suscriptores.', 'success');
+            return;
+        }
+        await Promise.allSettled(keys.map(k =>
+            fetch(`${base}/tokens/${k}.json`, { method: 'DELETE' })
+        ));
+        if (typeof window.mostrarNotificacion === 'function')
+            window.mostrarNotificacion(`✅ ${keys.length} suscriptor${keys.length > 1 ? 'es' : ''} eliminado${keys.length > 1 ? 's' : ''}. Lista reiniciada.`, 'success');
+        if (typeof window.tmAdminRefreshSubscribers === 'function') window.tmAdminRefreshSubscribers();
+        setTimeout(() => { if (typeof renderizarAnalyticsFirebase === 'function') renderizarAnalyticsFirebase(); }, 800);
+    } catch(e) {
+        if (typeof window.mostrarNotificacion === 'function') window.mostrarNotificacion('❌ Error: ' + e.message, 'error');
+    } finally {
+        if (btn) { btn.disabled = false; btn.textContent = '🗑 Borrar todos'; }
+    }
+}
+window.tmBorrarTodosSuscriptores = tmBorrarTodosSuscriptores;
 
 // ── Fusionar entradas duplicadas (mismo dispositivo, varias claves) ─
 async function tmLimpiarDuplicados() {
@@ -912,7 +947,7 @@ async function tmLimpiarDuplicados() {
         // Por cada dispositivo, quedarse con la entrada más reciente
         const bestByDevice = {};
         entries.forEach(([k, t]) => {
-            const dk = t.fingerprint ? 'fp:' + t.fingerprint : 'tk:' + t.token;
+            const dk = t.deviceId ? 'did:' + t.deviceId : t.fingerprint ? 'fp:' + t.fingerprint : 'tk:' + t.token;
             if (!bestByDevice[dk] || (t.timestamp || 0) > (bestByDevice[dk].ts || 0)) {
                 bestByDevice[dk] = { key: k, ts: t.timestamp || 0 };
             }

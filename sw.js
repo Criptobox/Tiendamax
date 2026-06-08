@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════════════════
-// TiendaMax — Service Worker v236 — borrar suscriptor individual + limpiar duplicados
+// TiendaMax — Service Worker v237 — carnet identidad dispositivo + borrar todos suscriptores
 // v227: registra y muestra interesados por WhatsApp para seguimiento.
 // v229: botones compartir/copiar usan /p/producto-ID.html para Facebook.
 // v228: mejora enlaces directos de productos y preview Facebook.
@@ -97,7 +97,7 @@
 //      usan el mismo helper _mensajeOrdenWA con formato premium.
 // ═══════════════════════════════════════════════════════
 
-const CACHE_NAME = 'tiendamax-202606082100';
+const CACHE_NAME = 'tiendamax-202606082300';
 
 const STATIC_ASSETS = [
   '/',

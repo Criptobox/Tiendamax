@@ -45,6 +45,9 @@
         },
         "fingerprint": {
           ".validate": "newData.isString()"
+        },
+        "deviceId": {
+          ".validate": "newData.isString()"
         }
       },
       ".read": true,
