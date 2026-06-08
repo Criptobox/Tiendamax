@@ -637,27 +637,48 @@ async function tmAdminRefreshSubscribers(){
           groqOk=true; break;
         }
         if(!groqOk&&!text) throw new Error('No se pudo usar Groq. Verifica que la clave empiece con gsk_ y sea de console.groq.com.');
-      } else if(provider==='deepseek'||provider==='openrouter'){
-        // DeepSeek/OpenRouter — solo texto. No soporta imágenes aquí, usa nombre de archivo/categoría
-        // No soporta imágenes, pero genera descripción con contexto de texto
+      } else if(provider==='openrouter'){
+        // OpenRouter — prueba modelos vision gratuitos en orden, fallback a texto
+        const orVisionModels=['google/gemini-2.0-flash-exp:free','meta-llama/llama-4-scout:free','qwen/qwen2.5-vl-72b-instruct:free','meta-llama/llama-4-maverick:free'];
+        let orOk=false;
+        if(aiBox) aiBox.textContent='⏳ OpenRouter analizando imagen...';
+        for(const model of orVisionModels){
+          const resp=await fetch('https://openrouter.ai/api/v1/chat/completions',{
+            method:'POST',
+            headers:{'Content-Type':'application/json','Authorization':'Bearer '+key,'HTTP-Referer':location.origin||'https://tiendamax.org','X-Title':'TiendaMax Admin'},
+            body:JSON.stringify({model,max_tokens:512,messages:[{role:'user',content:[{type:'image_url',image_url:{url:'data:image/jpeg;base64,'+base64}},{type:'text',text:prompt}]}]})
+          });
+          if(resp.status===404||resp.status===422||resp.status===429){continue;}
+          if(resp.status===401||resp.status===403){const et=await resp.text().catch(()=>'');let em='HTTP '+resp.status;try{em=JSON.parse(et).error?.message||em;}catch(ex){}throw new Error(em);}
+          if(!resp.ok){continue;}
+          const d=await resp.json();
+          text=d.choices?.[0]?.message?.content||'';
+          if(text){orOk=true; break;}
+        }
+        if(!orOk){
+          // Fallback texto: usa nombre de archivo/categoría
+          notify('📝 OpenRouter: visión no disponible — generando desde nombre y categoría','info');
+          if(aiBox) aiBox.textContent='⏳ OpenRouter generando desde contexto...';
+          const existingName=document.getElementById('productName')?.value||'';
+          const fileName=file.name.replace(/\.[^.]+$/,'').replace(/[-_]/g,' ');
+          const textHint=existingName||fileName;
+          const fbPrompt='Eres asistente de una tienda online en Cuba. Genera información de producto basándote en estos datos:\n- Nombre/pista: "'+textHint+'"\n- Categoría: '+(cat||'no especificada')+'\n- Precio: '+(price?'$'+price+' USD':'no especificado')+'\n\nResponde SOLO con JSON válido exactamente así:\n{"nombre":"<nombre del producto, max 55 chars>","descripcion":"<descripción atractiva para venta en 2-3 oraciones, español de Cuba>","categoria_sugerida":"<una de: CELULARES, PC Y LAPTOPS, WIFI, ENERGIA, CARROS, MOTOS, HOGAR, ROPA, SEGURIDAD, o General>"}';
+          const orModel=localStorage.getItem('tmOpenRouterModel')||localStorage.getItem('tmOpenRouterModelWorking')||'openrouter/free';
+          const resp2=await fetch('https://openrouter.ai/api/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+key,'HTTP-Referer':location.origin||'https://tiendamax.org','X-Title':'TiendaMax Admin'},body:JSON.stringify({model:orModel,max_tokens:512,messages:[{role:'user',content:fbPrompt}]})});
+          if(!resp2.ok){const et=await resp2.text().catch(()=>'');let em='HTTP '+resp2.status;try{em=JSON.parse(et).error?.message||em;}catch(ex){}throw new Error(em);}
+          const d2=await resp2.json();
+          text=d2.choices?.[0]?.message?.content||'';
+        }
+      } else if(provider==='deepseek'){
+        // DeepSeek — texto solamente, usa nombre/categoría como contexto
         const existingName=document.getElementById('productName')?.value||'';
         const fileName=file.name.replace(/\.[^.]+$/,'').replace(/[-_]/g,' ');
         const textHint=existingName||fileName;
         const dsPrompt='Eres asistente de una tienda online en Cuba. Genera información de producto basándote en estos datos:\n- Nombre/pista: "'+textHint+'"\n- Categoría: '+(cat||'no especificada')+'\n- Precio: '+(price?'$'+price+' USD':'no especificado')+'\n\nResponde SOLO con JSON válido exactamente así:\n{"nombre":"<nombre del producto, max 55 chars>","descripcion":"<descripción atractiva para venta en 2-3 oraciones, español de Cuba>","categoria_sugerida":"<una de: CELULARES, PC Y LAPTOPS, WIFI, ENERGIA, CARROS, MOTOS, HOGAR, ROPA, SEGURIDAD, o General>"}';
-        notify('📝 '+(provider==='openrouter'?'OpenRouter':'DeepSeek')+' no ve fotos aquí — usando nombre de archivo y categoría','info');
-        if(aiBox) aiBox.textContent='⏳ '+(provider==='openrouter'?'OpenRouter':'DeepSeek')+' generando desde contexto...';
-        const orModel=localStorage.getItem('tmOpenRouterModel')||localStorage.getItem('tmOpenRouterModelWorking')||'openrouter/free';
-        const resp=await fetch(provider==='openrouter'?'https://openrouter.ai/api/v1/chat/completions':'https://api.deepseek.com/v1/chat/completions',{
-          method:'POST',
-          headers: provider==='openrouter'?{'Content-Type':'application/json','Authorization':'Bearer '+key,'HTTP-Referer':location.origin||'https://tiendamax.org','X-Title':'TiendaMax Admin'}:{'Content-Type':'application/json','Authorization':'Bearer '+key},
-          body:JSON.stringify({model:provider==='openrouter'?orModel:'deepseek-chat',max_tokens:512,messages:[{role:'user',content:dsPrompt}]})
-        });
-        if(!resp.ok){
-          const errTxt=await resp.text().catch(()=>'');
-          let errMsg='HTTP '+resp.status;
-          try{const j=JSON.parse(errTxt);errMsg=j.error?.message||errMsg;}catch(ex){}
-          throw new Error(errMsg);
-        }
+        notify('📝 DeepSeek no ve fotos — usando nombre de archivo y categoría','info');
+        if(aiBox) aiBox.textContent='⏳ DeepSeek generando desde contexto...';
+        const resp=await fetch('https://api.deepseek.com/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},body:JSON.stringify({model:'deepseek-chat',max_tokens:512,messages:[{role:'user',content:dsPrompt}]})});
+        if(!resp.ok){const et=await resp.text().catch(()=>'');let em='HTTP '+resp.status;try{em=JSON.parse(et).error?.message||em;}catch(ex){}throw new Error(em);}
         const dsData=await resp.json();
         text=dsData.choices?.[0]?.message?.content||'';
       } else if(provider==='google'){

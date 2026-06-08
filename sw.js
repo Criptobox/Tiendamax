@@ -1,5 +1,7 @@
 // ═══════════════════════════════════════════════════════
-// TiendaMax — Service Worker v240 — soporte clave Gemini con prefijo AQ
+// TiendaMax — Service Worker v242 — OpenRouter analiza fotos con modelos vision
+// v241: continúa al siguiente modelo Gemini si hay cuota 429
+// v240: soporte clave Gemini con prefijo AQ
 // v239: productos nuevos primero por categoría
 // v227: registra y muestra interesados por WhatsApp para seguimiento.
 // v229: botones compartir/copiar usan /p/producto-ID.html para Facebook.
@@ -98,7 +100,7 @@
 //      usan el mismo helper _mensajeOrdenWA con formato premium.
 // ═══════════════════════════════════════════════════════
 
-const CACHE_NAME = 'tiendamax-202606090800';
+const CACHE_NAME = 'tiendamax-202606091200';
 
 const STATIC_ASSETS = [
   '/',
