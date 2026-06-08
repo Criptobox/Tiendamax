@@ -1,5 +1,6 @@
 // ═══════════════════════════════════════════════════════
-// TiendaMax — Service Worker v239 — productos nuevos primero por categoría
+// TiendaMax — Service Worker v240 — soporte clave Gemini con prefijo AQ
+// v239: productos nuevos primero por categoría
 // v227: registra y muestra interesados por WhatsApp para seguimiento.
 // v229: botones compartir/copiar usan /p/producto-ID.html para Facebook.
 // v228: mejora enlaces directos de productos y preview Facebook.
@@ -97,7 +98,7 @@
 //      usan el mismo helper _mensajeOrdenWA con formato premium.
 // ═══════════════════════════════════════════════════════
 
-const CACHE_NAME = 'tiendamax-202606090200';
+const CACHE_NAME = 'tiendamax-202606090800';
 
 const STATIC_ASSETS = [
   '/',

@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════════════════
-// TiendaMax Admin AI Tools — IA modules v1-v14
+// TiendaMax Admin AI Tools — IA modules v1-v15 — AQ prefix for Gemini
 // Extraído de admin.html para reducir peso y facilitar mantenimiento.
 // Cada módulo está encapsulado en su propio IIFE.
 // ═══════════════════════════════════════════════════════
@@ -90,7 +90,7 @@ async function tmAIChat(prompt, opts = {}) {
     }
     throw new Error(lastErr || 'OpenRouter: no se pudo usar ningún modelo gratuito configurado.');
   }
-  if (provider === 'google' || key.startsWith('AIza')) {
+  if (provider === 'google' || key.startsWith('AIza') || key.startsWith('AQ')) {
     const models = ['gemini-2.5-flash-lite','gemini-2.5-flash','gemini-2.0-flash','gemini-1.5-flash-latest','gemini-1.5-flash'];
     let lastErr = '';
     for (const model of models) {
