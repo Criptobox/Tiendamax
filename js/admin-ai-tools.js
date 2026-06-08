@@ -111,7 +111,7 @@ async function tmAIChat(prompt, opts = {}) {
       }
       let t=''; try{t=await resp.text()}catch(e){}
       lastErr = 'Gemini HTTP ' + resp.status + (t ? ': ' + t.slice(0,140) : '') + ' [modelo: ' + model + ']';
-      if (!(resp.status === 404 || resp.status === 400)) break;
+      if (!(resp.status === 404 || resp.status === 400 || resp.status === 429)) break;
     }
     throw new Error(lastErr || 'Gemini: no se pudo usar ningún modelo gratuito.');
   }
