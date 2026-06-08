@@ -595,17 +595,17 @@ async function tmAdminRefreshSubscribers(){
     if(aiBox) aiBox.textContent='⏳ Preparando imagen...';
     if(btn){btn.disabled=true; btn.textContent='⏳ Analizando...';}
     try{
-      // Comprimir a max 1024px JPEG 75% antes de enviar
+      // Comprimir a max 600px JPEG 65% (más pequeño para conexiones lentas/VPN)
       const base64=await new Promise((res,rej)=>{
         const img=new Image();
         const objUrl=URL.createObjectURL(file);
         img.onload=function(){
-          let w=img.width,h=img.height,max=1024;
+          let w=img.width,h=img.height,max=600;
           if(w>max||h>max){if(w>h){h=Math.round(h*max/w);w=max;}else{w=Math.round(w*max/h);h=max;}}
           const cv=document.createElement('canvas'); cv.width=w; cv.height=h;
           cv.getContext('2d').drawImage(img,0,0,w,h);
           URL.revokeObjectURL(objUrl);
-          res(cv.toDataURL('image/jpeg',0.75).split(',')[1]);
+          res(cv.toDataURL('image/jpeg',0.65).split(',')[1]);
         };
         img.onerror=rej; img.src=objUrl;
       });
@@ -638,7 +638,7 @@ async function tmAdminRefreshSubscribers(){
         }
         if(!groqOk&&!text) throw new Error('No se pudo usar Groq. Verifica que la clave empiece con gsk_ y sea de console.groq.com.');
       } else if(provider==='openrouter'){
-        // OpenRouter — prueba modelos vision gratuitos en orden, fallback a texto
+        // OpenRouter — prueba modelos vision gratuitos en orden
         const orVisionModels=[
           'meta-llama/llama-3.2-11b-vision-instruct:free',
           'meta-llama/llama-4-scout:free',
@@ -650,25 +650,32 @@ async function tmAdminRefreshSubscribers(){
         let visionErrs=[];
         for(const model of orVisionModels){
           const mShort=model.split('/')[1].replace(':free','');
-          if(aiBox) aiBox.textContent='⏳ Probando '+mShort+'...';
+          if(aiBox) aiBox.textContent='⏳ [v244] Probando '+mShort+'...';
           let resp;
           try{
             resp=await fetch('https://openrouter.ai/api/v1/chat/completions',{
               method:'POST',
               headers:{'Content-Type':'application/json','Authorization':'Bearer '+key,'HTTP-Referer':location.origin||'https://tiendamax.org','X-Title':'TiendaMax Admin'},
-              body:JSON.stringify({model,max_tokens:512,messages:[{role:'user',content:[{type:'image_url',image_url:{url:'data:image/jpeg;base64,'+base64,detail:'low'}},{type:'text',text:prompt}]}]})
+              body:JSON.stringify({model,max_tokens:400,messages:[{role:'user',content:[{type:'image_url',image_url:{url:'data:image/jpeg;base64,'+base64,detail:'low'}},{type:'text',text:prompt}]}]})
             });
-          }catch(fetchErr){visionErrs.push(mShort+': red'); continue;}
-          if(resp.status===401||resp.status===403){const et=await resp.text().catch(()=>'');let em='HTTP '+resp.status;try{em=JSON.parse(et).error?.message||em;}catch(ex){}throw new Error('OpenRouter: '+em);}
-          if(!resp.ok){const et=await resp.text().catch(()=>'');let em=''+resp.status;try{const j=JSON.parse(et);em=resp.status+(j.error?.message?' '+j.error.message.slice(0,60):'');}catch(ex){}visionErrs.push(mShort+': '+em); continue;}
+          }catch(fetchErr){visionErrs.push(mShort+': red('+fetchErr.message.slice(0,30)+')'); continue;}
+          if(resp.status===401||resp.status===403){const et=await resp.text().catch(()=>'');let em=''+resp.status;try{em=resp.status+' '+JSON.parse(et).error?.message?.slice(0,60);}catch(ex){}throw new Error('OpenRouter auth: '+em);}
+          if(!resp.ok){
+            const et=await resp.text().catch(()=>'');
+            let em=''+resp.status;
+            try{const j=JSON.parse(et);em=resp.status+(j.error?.message?' '+j.error.message.slice(0,60):'');}catch(ex){}
+            visionErrs.push(mShort+': '+em); continue;
+          }
           const d=await resp.json();
           text=d.choices?.[0]?.message?.content||'';
           if(text){orOk=true; break;}
           visionErrs.push(mShort+': vacío');
         }
         if(!orOk){
-          const errHint=visionErrs.length?' ('+visionErrs.join(', ')+')\nSi son errores 400/422 prueba registrarte en openrouter.ai/credits':'';
-          notify('📝 OpenRouter vision falló'+errHint+'. Usando nombre de archivo.','warning');
+          // Mostrar errores en el cuadro (quedan visibles, no toast)
+          const errLines=visionErrs.join('\n');
+          if(aiBox) aiBox.textContent='❌ OpenRouter vision falló:\n'+errLines+'\n\n(Usando texto como fallback...)';
+          await new Promise(r=>setTimeout(r,3500));
           if(aiBox) aiBox.textContent='⏳ Generando desde contexto (sin imagen)...';
           const existingName=document.getElementById('productName')?.value||'';
           const fileName=file.name.replace(/\.[^.]+$/,'').replace(/[-_]/g,' ');
