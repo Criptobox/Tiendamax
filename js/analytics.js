@@ -1,9 +1,9 @@
 // ═══════════════════════════════════════════════════════
-// 📊 TIENDAMAX ANALYTICS — analytics.js v5
-// Registra vistas y clicks de WhatsApp en Firebase RTDB.
+// 📊 TIENDAMAX ANALYTICS — analytics.js v6
+// v6: borrar suscriptor por dispositivo + limpiar duplicados
+//     (antes borrar una entrada de Firebase no bajaba el contador
+//     si el mismo dispositivo tenía más de una entrada legacy)
 // v5: panel rediseñado nivel superior + fix contador suscriptores
-//     (incrementa Y decrementa correctamente con Firebase como fuente
-//     de verdad, localStorage solo como caché de respaldo)
 // ═══════════════════════════════════════════════════════
 
 // ── Sanitización HTML para el panel (anti-XSS) ──────────
@@ -339,11 +339,18 @@ async function renderizarAnalyticsFirebase() {
     });
     const deviceArr = Object.entries(deviceCount).sort((a,b) => b[1].count - a[1].count);
 
-    // Suscriptores recientes (últimos 5 ordenados por timestamp desc)
-    const recientes = Object.values(tokensData)
-        .filter(t => t.timestamp)
-        .sort((a,b) => b.timestamp - a.timestamp)
-        .slice(0,5);
+    // Suscriptores únicos ordenados por timestamp desc (un registro por dispositivo)
+    const _devSeen = new Set();
+    const recientes = Object.entries(tokensData)
+        .filter(([, t]) => t && t.token)
+        .sort(([, a], [, b]) => (b.timestamp || 0) - (a.timestamp || 0))
+        .filter(([, t]) => {
+            const dk = t.fingerprint ? 'fp:' + t.fingerprint : 'tk:' + t.token;
+            if (_devSeen.has(dk)) return false;
+            _devSeen.add(dk);
+            return true;
+        })
+        .map(([k, t]) => ({ ...t, _fbKey: k }));
 
     const noFirebase = !_tmRtdbUrl();
 
@@ -575,7 +582,10 @@ async function renderizarAnalyticsFirebase() {
         <div style="${_cardStyle()}padding:14px;margin-bottom:16px;">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px;">
                 <div style="font-size:13px;font-weight:700;color:#fff;">🔔 Suscriptores push <span style="background:rgba(79,195,247,0.2);color:#4fc3f7;border-radius:20px;padding:2px 10px;font-size:12px;margin-left:6px;">${suscriptores}</span></div>
+                <div style="display:flex;gap:6px;flex-wrap:wrap;">
+                <button id="tm-btn-dedup" onclick="tmLimpiarDuplicados()" style="font-size:11px;padding:5px 12px;border-radius:8px;background:rgba(79,195,247,0.12);border:1px solid rgba(79,195,247,0.3);color:#4fc3f7;cursor:pointer;">🔁 Limpiar duplicados</button>
                 <button id="tm-btn-limpiar" onclick="tmLimpiarTokensInvalidos()" style="font-size:11px;padding:5px 12px;border-radius:8px;background:rgba(231,76,60,0.12);border:1px solid rgba(231,76,60,0.3);color:#e74c3c;cursor:pointer;">🧹 Limpiar tokens inválidos</button>
+                </div>
             </div>
             <div id="tm-limpiar-info" style="font-size:12px;margin-bottom:10px;min-height:16px;"></div>
             ${suscriptores === 0 ? `<div style="font-size:12px;color:#888;text-align:center;padding:12px 0;">Ningún suscriptor aún. Los clientes se suscriben desde la campana 🔔 del sitio.</div>` : `
@@ -594,6 +604,9 @@ async function renderizarAnalyticsFirebase() {
                     const { tipo, icon } = _tmParseDevice(t.userAgent || '');
                     const fechaCorta = t.timestamp ? new Date(t.timestamp).toLocaleDateString('es-ES', {day:'2-digit', month:'short'}) : '';
                     const browser = /Chrome/i.test(t.userAgent||'') ? 'Chrome' : /Firefox/i.test(t.userAgent||'') ? 'Firefox' : /Safari/i.test(t.userAgent||'') ? 'Safari' : /Edge/i.test(t.userAgent||'') ? 'Edge' : '';
+                    const fp  = _escA(t.fingerprint || '');
+                    const tok = _escA(t.token || '');
+                    const ua  = _escA(t.userAgent || '');
                     return `<div style="display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid rgba(255,255,255,0.04);">
                         <div style="width:34px;height:34px;background:rgba(79,195,247,0.1);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">${icon}</div>
                         <div style="flex:1;min-width:0;">
@@ -601,6 +614,7 @@ async function renderizarAnalyticsFirebase() {
                             <div style="font-size:10px;color:#666;">${_tmRelTime(t.timestamp)}</div>
                         </div>
                         ${fechaCorta ? `<div style="font-size:10px;color:#555;flex-shrink:0;">${fechaCorta}</div>` : ''}
+                        <button onclick="tmBorrarSuscriptor('${fp}','${tok}','${ua}')" title="Borrar este suscriptor" style="background:rgba(231,76,60,0.15);border:1px solid rgba(231,76,60,0.35);color:#e74c3c;border-radius:6px;padding:3px 8px;font-size:11px;cursor:pointer;flex-shrink:0;">🗑</button>
                     </div>`;
                 }).join('')}
             `}
@@ -858,3 +872,68 @@ async function tmLimpiarTokensInvalidos() {
     }
 }
 window.tmLimpiarTokensInvalidos = tmLimpiarTokensInvalidos;
+
+// ── Borrar todas las entradas de un dispositivo específico ─
+async function tmBorrarSuscriptor(fingerprint, token, userAgent) {
+    const base = _tmRtdbUrl();
+    if (!base) return;
+    const res = await fetch(`${base}/tokens.json?_=${Date.now()}`, { cache: 'no-store' });
+    if (!res.ok) return;
+    const tokensData = await res.json() || {};
+    const toDelete = Object.entries(tokensData).filter(([, t]) => {
+        if (!t || !t.token) return false;
+        if (fingerprint && t.fingerprint === fingerprint) return true;
+        if (token && t.token === token) return true;
+        if (userAgent && !t.fingerprint && t.userAgent === userAgent) return true;
+        return false;
+    }).map(([k]) => k);
+    await Promise.allSettled(toDelete.map(k =>
+        fetch(`${base}/tokens/${k}.json`, { method: 'DELETE' })
+    ));
+    if (typeof window.mostrarNotificacion === 'function')
+        window.mostrarNotificacion('✅ Suscriptor eliminado.', 'success');
+    if (typeof window.tmAdminRefreshSubscribers === 'function') window.tmAdminRefreshSubscribers();
+    setTimeout(() => { if (typeof renderizarAnalyticsFirebase === 'function') renderizarAnalyticsFirebase(); }, 800);
+}
+window.tmBorrarSuscriptor = tmBorrarSuscriptor;
+
+// ── Fusionar entradas duplicadas (mismo dispositivo, varias claves) ─
+async function tmLimpiarDuplicados() {
+    await _tmEnsureFirebaseConfig();
+    const base = _tmRtdbUrl();
+    if (!base) { if (typeof window.mostrarNotificacion === 'function') window.mostrarNotificacion('⚠️ Firebase no configurado.', 'warning'); return; }
+    const btnDedup = document.getElementById('tm-btn-dedup');
+    if (btnDedup) { btnDedup.disabled = true; btnDedup.textContent = '⏳ Limpiando…'; }
+    try {
+        const res = await fetch(`${base}/tokens.json?_=${Date.now()}`, { cache: 'no-store' });
+        if (!res.ok) throw new Error('No se pudo leer la base de datos');
+        const tokensData = await res.json() || {};
+        const entries = Object.entries(tokensData).filter(([, t]) => t && t.token);
+        // Por cada dispositivo, quedarse con la entrada más reciente
+        const bestByDevice = {};
+        entries.forEach(([k, t]) => {
+            const dk = t.fingerprint ? 'fp:' + t.fingerprint : 'tk:' + t.token;
+            if (!bestByDevice[dk] || (t.timestamp || 0) > (bestByDevice[dk].ts || 0)) {
+                bestByDevice[dk] = { key: k, ts: t.timestamp || 0 };
+            }
+        });
+        const keepKeys = new Set(Object.values(bestByDevice).map(d => d.key));
+        const deleteKeys = entries.filter(([k]) => !keepKeys.has(k)).map(([k]) => k);
+        if (deleteKeys.length === 0) {
+            if (typeof window.mostrarNotificacion === 'function') window.mostrarNotificacion('✅ Sin duplicados. Todo limpio.', 'success');
+        } else {
+            await Promise.allSettled(deleteKeys.map(k =>
+                fetch(`${base}/tokens/${k}.json`, { method: 'DELETE' })
+            ));
+            if (typeof window.mostrarNotificacion === 'function')
+                window.mostrarNotificacion(`✅ ${deleteKeys.length} entradas duplicadas eliminadas. Ahora cada suscriptor tiene exactamente 1 entrada.`, 'success');
+        }
+        if (typeof window.tmAdminRefreshSubscribers === 'function') window.tmAdminRefreshSubscribers();
+        setTimeout(() => { if (typeof renderizarAnalyticsFirebase === 'function') renderizarAnalyticsFirebase(); }, 800);
+    } catch(e) {
+        if (typeof window.mostrarNotificacion === 'function') window.mostrarNotificacion('❌ Error: ' + e.message, 'error');
+    } finally {
+        if (btnDedup) { btnDedup.disabled = false; btnDedup.textContent = '🔁 Limpiar duplicados'; }
+    }
+}
+window.tmLimpiarDuplicados = tmLimpiarDuplicados;
