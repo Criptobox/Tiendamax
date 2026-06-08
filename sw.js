@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════════════════
-// TiendaMax — Service Worker v246 — OpenRouter vision prueba modelos pagos también
+// TiendaMax — Service Worker v247 — botones Regenerar/Ventas/Técnico usan IA real
 // v241: continúa al siguiente modelo Gemini si hay cuota 429
 // v240: soporte clave Gemini con prefijo AQ
 // v239: productos nuevos primero por categoría
@@ -100,7 +100,7 @@
 //      usan el mismo helper _mensajeOrdenWA con formato premium.
 // ═══════════════════════════════════════════════════════
 
-const CACHE_NAME = 'tiendamax-202606100200';
+const CACHE_NAME = 'tiendamax-202606100800';
 
 const STATIC_ASSETS = [
   '/',

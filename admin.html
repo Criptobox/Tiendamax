@@ -446,26 +446,37 @@ async function tmAdminRefreshSubscribers(){
     };
     return m[cat]||'seleccionado por su utilidad, buena relación calidad-precio y disponibilidad inmediata';
   }
-  window.tmGenerateAIProductText=function(tone){
-    const name=(val('productName')||'Producto TiendaMax').trim();
+  window.tmGenerateAIProductText=async function(tone){
+    const name=(val('productName')||'').trim();
     const rawDesc=(val('productDescription')||'').trim();
     const cat=(val('productCategory')||'General').trim();
     const price=Number(val('productPriceActual')||0);
     const stock=Number(val('productStock')||0);
     const garantia=(val('productGarantia')||'').trim();
     tone=tone||document.querySelector('.ai-box')?.dataset.tone||'ventas';
-    const benefit=catBenefits(cat);
-    let text='';
-    if(tone==='tecnico'){
-      text=`${name}\n\nDescripción técnica:\n${rawDesc || 'Producto disponible en TiendaMax con revisión visual y listo para entrega coordinada.'}\n\nCategoría: ${cat}\nPrecio: ${price?('$'+price.toFixed(2)+' USD'):'Consultar'}\nStock: ${stock>0?stock+' unidad(es) disponible(s)':'Agotado temporalmente'}${garantia?'\nGarantía: '+garantia:''}\n\nRecomendado para: ${benefit}.`;
-    }else if(tone==='whatsapp'){
-      text=`🔥 ${name}\n\n${rawDesc || 'Disponible en TiendaMax.'}\n\n💵 ${price?('$'+price.toFixed(2)+' USD'):'Precio a consultar'}\n📦 ${stock>0?('Disponible: '+stock):'Agotado por el momento'}\n🏷️ ${cat}\n\nEscríbenos para reservar o coordinar entrega.`;
-    }else{
-      text=`✨ ${name}\n\n${rawDesc || 'Producto disponible en TiendaMax.'}\n\nUna opción ${benefit}. ${stock>0?'Disponible ahora para entrega coordinada.':'Puedes consultarnos cuándo vuelve a estar disponible.'}\n\n💵 ${price?('$'+price.toFixed(2)+' USD'):''}${garantia?'\n🛡️ '+garantia:''}`;
-    }
-    const box=$('#aiText'); if(box) box.textContent=text;
+    const box=$('#aiText');
     const ai=$('.ai-box'); if(ai) ai.dataset.tone=tone;
-    return text;
+    if(!name){if(box) box.textContent='Escribe el nombre del producto primero.'; return;}
+    const key=localStorage.getItem('anthropicApiKey');
+    if(!key){if(box) box.textContent='Configura tu API Key en ⚙️ Config → IA con foto para usar la IA.'; return;}
+    if(box) box.textContent='⏳ Generando descripción con IA...';
+    const ctx='Producto: "'+name+'"'+(cat&&cat!=='General'?'\nCategoría: '+cat:'')+(price?'\nPrecio: $'+price.toFixed(2)+' USD':'')+(stock>0?'\nStock disponible: '+stock+' unidades':'\n⚠️ Agotado')+(garantia?'\nGarantía: '+garantia:'')+(rawDesc?'\nInfo previa: '+rawDesc:'');
+    let prompt='';
+    if(tone==='tecnico'){
+      prompt='Eres experto técnico de una tienda online en Cuba. Escribe una descripción técnica concisa y útil para este producto:\n'+ctx+'\n\nEscribe 3-4 oraciones con especificaciones, características principales y uso. Lenguaje profesional y claro. Sin asteriscos ni markdown, solo texto listo para copiar.';
+    }else if(tone==='ventas'){
+      prompt='Eres experto en ventas de una tienda online en Cuba. Escribe una descripción de ventas atractiva y persuasiva para este producto:\n'+ctx+'\n\nEscribe 3-4 oraciones que destaquen el beneficio principal, creen deseo de compra y mencionen disponibilidad.'+(stock>0&&stock<=3?' Crea urgencia: solo quedan '+stock+' unidades.':'')+' Lenguaje cubano natural. Sin asteriscos ni markdown, solo texto listo para copiar.';
+    }else{
+      prompt='Eres redactor de una tienda online en Cuba. Escribe una descripción completa y atractiva para este producto:\n'+ctx+'\n\nEscribe 4-5 oraciones equilibradas entre beneficios y datos técnicos. Lenguaje cubano natural, persuasivo y claro. Sin asteriscos ni markdown.';
+    }
+    try{
+      const result=await tmAIChat(prompt,{max_tokens:300,temperature:0.7});
+      if(box) box.textContent=result;
+      return result;
+    }catch(e){
+      if(box) box.textContent='❌ '+( e.message||'Error al generar. Verifica la API Key en Configuración.');
+      return '';
+    }
   };
   window.tmUseAIProductText=function(){
     const box=$('#aiText'), desc=$('#productDescription'); if(!box||!desc) return;
