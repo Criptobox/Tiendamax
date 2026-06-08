@@ -638,19 +638,24 @@ async function tmAdminRefreshSubscribers(){
         }
         if(!groqOk&&!text) throw new Error('No se pudo usar Groq. Verifica que la clave empiece con gsk_ y sea de console.groq.com.');
       } else if(provider==='openrouter'){
-        // OpenRouter — prueba modelos vision, si todos fallan muestra instrucciones Groq
+        // OpenRouter — prueba gratuitos primero, luego pagos (requiere créditos)
         const orVisionModels=[
+          // Gratuitos (pueden no estar disponibles)
           'qwen/qwen2-vl-7b-instruct:free',
           'qwen/qvq-72b-preview:free',
           'mistralai/pixtral-12b:free',
           'google/gemma-3-12b-it:free',
-          'meta-llama/llama-3.2-90b-vision-instruct:free'
+          // Pagos pero muy baratos (~$0.0001/imagen) — funcionan con créditos
+          'meta-llama/llama-3.2-11b-vision-instruct',
+          'google/gemini-2.0-flash-001',
+          'meta-llama/llama-4-scout',
+          'google/gemini-flash-1.5'
         ];
         let orOk=false;
         let visionErrs=[];
         for(const model of orVisionModels){
-          const mShort=model.split('/')[1].replace(':free','');
-          if(aiBox) aiBox.textContent='⏳ [v245] Probando '+mShort+'...';
+          const mShort=model.split('/')[1];
+          if(aiBox) aiBox.textContent='⏳ [v246] Probando '+mShort+'...';
           let resp;
           try{
             resp=await fetch('https://openrouter.ai/api/v1/chat/completions',{
@@ -672,14 +677,14 @@ async function tmAdminRefreshSubscribers(){
           visionErrs.push(mShort+': vacío');
         }
         if(!orOk){
-          if(aiBox) aiBox.textContent='❌ OpenRouter no tiene modelos vision gratuitos disponibles.\n\nPara analizar fotos GRATIS usa Groq:\n1. Ve a console.groq.com\n2. Crea cuenta (gratis, sin tarjeta)\n3. Crea API Key (empieza con gsk_)\n4. Guárdala en ⚙️ Config → IA con foto\n\nO usa OpenRouter con créditos ($5) para desbloquear visión.';
-          await new Promise(r=>setTimeout(r,6000));
+          if(aiBox) aiBox.textContent='❌ Vision no disponible.\n\nPara activarla agrega créditos a tu cuenta de OpenRouter:\n1. Ve a openrouter.ai/credits\n2. Agrega mínimo $5 (dura miles de análisis de fotos)\n3. Vuelve a intentarlo — funcionará automáticamente.\n\nPor ahora generando descripción solo por nombre...';
+          await new Promise(r=>setTimeout(r,5000));
           if(aiBox) aiBox.textContent='⏳ Generando descripción solo por nombre...';
           const existingName=document.getElementById('productName')?.value||'';
           const fbPrompt=existingName
             ?'Eres asistente de una tienda online en Cuba. Genera descripción para vender este producto:\n"'+existingName+'"\nCategoría: '+(cat||'no especificada')+'. Precio: '+(price?'$'+price+' USD':'no especificado')+'.\n\nResponde SOLO con JSON:\n{"nombre":"'+existingName+'","descripcion":"<descripción atractiva 2-3 oraciones>","categoria_sugerida":"<CELULARES/PC Y LAPTOPS/WIFI/ENERGIA/CARROS/MOTOS/HOGAR/ROPA/SEGURIDAD/General>"}'
-            :'{"nombre":"Producto sin nombre","descripcion":"Escribe el nombre del producto y pulsa Regenerar para generar descripción.","categoria_sugerida":"General"}';
-          if(!existingName){text=fbPrompt; const m=text.match(/\{[\s\S]*?\}/); if(m)text=m[0]; }
+            :'{"nombre":"Escribe el nombre del producto","descripcion":"Escribe el nombre del producto arriba y pulsa Regenerar para generar descripción.","categoria_sugerida":"General"}';
+          if(!existingName){const m=fbPrompt.match(/\{[\s\S]*?\}/); text=m?m[0]:'{}';}
           else{
             const orModel=localStorage.getItem('tmOpenRouterModel')||'openrouter/free';
             const resp2=await fetch('https://openrouter.ai/api/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+key,'HTTP-Referer':location.origin||'https://tiendamax.org','X-Title':'TiendaMax Admin'},body:JSON.stringify({model:orModel,max_tokens:512,messages:[{role:'user',content:fbPrompt}]})});

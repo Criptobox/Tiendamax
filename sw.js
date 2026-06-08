@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════════════════
-// TiendaMax — Service Worker v245 — instrucciones Groq cuando OpenRouter vision falla
+// TiendaMax — Service Worker v246 — OpenRouter vision prueba modelos pagos también
 // v241: continúa al siguiente modelo Gemini si hay cuota 429
 // v240: soporte clave Gemini con prefijo AQ
 // v239: productos nuevos primero por categoría
@@ -100,7 +100,7 @@
 //      usan el mismo helper _mensajeOrdenWA con formato premium.
 // ═══════════════════════════════════════════════════════
 
-const CACHE_NAME = 'tiendamax-202606092200';
+const CACHE_NAME = 'tiendamax-202606100200';
 
 const STATIC_ASSETS = [
   '/',
