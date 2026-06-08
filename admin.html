@@ -638,19 +638,19 @@ async function tmAdminRefreshSubscribers(){
         }
         if(!groqOk&&!text) throw new Error('No se pudo usar Groq. Verifica que la clave empiece con gsk_ y sea de console.groq.com.');
       } else if(provider==='openrouter'){
-        // OpenRouter — prueba modelos vision gratuitos en orden
+        // OpenRouter — prueba modelos vision, si todos fallan muestra instrucciones Groq
         const orVisionModels=[
-          'meta-llama/llama-3.2-11b-vision-instruct:free',
-          'meta-llama/llama-4-scout:free',
-          'qwen/qwen2.5-vl-7b-instruct:free',
-          'google/gemini-flash-1.5:free',
-          'google/gemini-2.0-flash-exp:free'
+          'qwen/qwen2-vl-7b-instruct:free',
+          'qwen/qvq-72b-preview:free',
+          'mistralai/pixtral-12b:free',
+          'google/gemma-3-12b-it:free',
+          'meta-llama/llama-3.2-90b-vision-instruct:free'
         ];
         let orOk=false;
         let visionErrs=[];
         for(const model of orVisionModels){
           const mShort=model.split('/')[1].replace(':free','');
-          if(aiBox) aiBox.textContent='⏳ [v244] Probando '+mShort+'...';
+          if(aiBox) aiBox.textContent='⏳ [v245] Probando '+mShort+'...';
           let resp;
           try{
             resp=await fetch('https://openrouter.ai/api/v1/chat/completions',{
@@ -658,12 +658,12 @@ async function tmAdminRefreshSubscribers(){
               headers:{'Content-Type':'application/json','Authorization':'Bearer '+key,'HTTP-Referer':location.origin||'https://tiendamax.org','X-Title':'TiendaMax Admin'},
               body:JSON.stringify({model,max_tokens:400,messages:[{role:'user',content:[{type:'image_url',image_url:{url:'data:image/jpeg;base64,'+base64,detail:'low'}},{type:'text',text:prompt}]}]})
             });
-          }catch(fetchErr){visionErrs.push(mShort+': red('+fetchErr.message.slice(0,30)+')'); continue;}
+          }catch(fetchErr){visionErrs.push(mShort+': red'); continue;}
           if(resp.status===401||resp.status===403){const et=await resp.text().catch(()=>'');let em=''+resp.status;try{em=resp.status+' '+JSON.parse(et).error?.message?.slice(0,60);}catch(ex){}throw new Error('OpenRouter auth: '+em);}
           if(!resp.ok){
             const et=await resp.text().catch(()=>'');
             let em=''+resp.status;
-            try{const j=JSON.parse(et);em=resp.status+(j.error?.message?' '+j.error.message.slice(0,60):'');}catch(ex){}
+            try{const j=JSON.parse(et);em=resp.status+(j.error?.message?' '+j.error.message.slice(0,50):'');}catch(ex){}
             visionErrs.push(mShort+': '+em); continue;
           }
           const d=await resp.json();
@@ -672,20 +672,21 @@ async function tmAdminRefreshSubscribers(){
           visionErrs.push(mShort+': vacío');
         }
         if(!orOk){
-          // Mostrar errores en el cuadro (quedan visibles, no toast)
-          const errLines=visionErrs.join('\n');
-          if(aiBox) aiBox.textContent='❌ OpenRouter vision falló:\n'+errLines+'\n\n(Usando texto como fallback...)';
-          await new Promise(r=>setTimeout(r,3500));
-          if(aiBox) aiBox.textContent='⏳ Generando desde contexto (sin imagen)...';
+          if(aiBox) aiBox.textContent='❌ OpenRouter no tiene modelos vision gratuitos disponibles.\n\nPara analizar fotos GRATIS usa Groq:\n1. Ve a console.groq.com\n2. Crea cuenta (gratis, sin tarjeta)\n3. Crea API Key (empieza con gsk_)\n4. Guárdala en ⚙️ Config → IA con foto\n\nO usa OpenRouter con créditos ($5) para desbloquear visión.';
+          await new Promise(r=>setTimeout(r,6000));
+          if(aiBox) aiBox.textContent='⏳ Generando descripción solo por nombre...';
           const existingName=document.getElementById('productName')?.value||'';
-          const fileName=file.name.replace(/\.[^.]+$/,'').replace(/[-_]/g,' ');
-          const textHint=existingName||fileName;
-          const fbPrompt='Eres asistente de una tienda online en Cuba. Genera información de producto basándote en estos datos:\n- Nombre/pista: "'+textHint+'"\n- Categoría: '+(cat||'no especificada')+'\n- Precio: '+(price?'$'+price+' USD':'no especificado')+'\n\nResponde SOLO con JSON válido exactamente así:\n{"nombre":"<nombre del producto, max 55 chars>","descripcion":"<descripción atractiva para venta en 2-3 oraciones, español de Cuba>","categoria_sugerida":"<una de: CELULARES, PC Y LAPTOPS, WIFI, ENERGIA, CARROS, MOTOS, HOGAR, ROPA, SEGURIDAD, o General>"}';
-          const orModel=localStorage.getItem('tmOpenRouterModel')||localStorage.getItem('tmOpenRouterModelWorking')||'openrouter/free';
-          const resp2=await fetch('https://openrouter.ai/api/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+key,'HTTP-Referer':location.origin||'https://tiendamax.org','X-Title':'TiendaMax Admin'},body:JSON.stringify({model:orModel,max_tokens:512,messages:[{role:'user',content:fbPrompt}]})});
-          if(!resp2.ok){const et=await resp2.text().catch(()=>'');let em='HTTP '+resp2.status;try{em=JSON.parse(et).error?.message||em;}catch(ex){}throw new Error(em);}
-          const d2=await resp2.json();
-          text=d2.choices?.[0]?.message?.content||'';
+          const fbPrompt=existingName
+            ?'Eres asistente de una tienda online en Cuba. Genera descripción para vender este producto:\n"'+existingName+'"\nCategoría: '+(cat||'no especificada')+'. Precio: '+(price?'$'+price+' USD':'no especificado')+'.\n\nResponde SOLO con JSON:\n{"nombre":"'+existingName+'","descripcion":"<descripción atractiva 2-3 oraciones>","categoria_sugerida":"<CELULARES/PC Y LAPTOPS/WIFI/ENERGIA/CARROS/MOTOS/HOGAR/ROPA/SEGURIDAD/General>"}'
+            :'{"nombre":"Producto sin nombre","descripcion":"Escribe el nombre del producto y pulsa Regenerar para generar descripción.","categoria_sugerida":"General"}';
+          if(!existingName){text=fbPrompt; const m=text.match(/\{[\s\S]*?\}/); if(m)text=m[0]; }
+          else{
+            const orModel=localStorage.getItem('tmOpenRouterModel')||'openrouter/free';
+            const resp2=await fetch('https://openrouter.ai/api/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+key,'HTTP-Referer':location.origin||'https://tiendamax.org','X-Title':'TiendaMax Admin'},body:JSON.stringify({model:orModel,max_tokens:512,messages:[{role:'user',content:fbPrompt}]})});
+            if(!resp2.ok){const et=await resp2.text().catch(()=>'');let em='HTTP '+resp2.status;try{em=JSON.parse(et).error?.message||em;}catch(ex){}throw new Error(em);}
+            const d2=await resp2.json();
+            text=d2.choices?.[0]?.message?.content||'';
+          }
         }
       } else if(provider==='deepseek'){
         // DeepSeek — texto solamente, usa nombre/categoría como contexto
