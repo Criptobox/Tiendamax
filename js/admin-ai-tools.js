@@ -349,7 +349,8 @@ function tmExtractJsonObject(text) {
     const out=$('#tmToolOut'); if(!out) return;
     const p=bySelect('tmWaAiProd'); const tono=$('#tmWaAiTone')?.value||'Amable vendedor'; const q=$('#tmWaAiQ')?.value.trim()||'El cliente pide información del producto.';
     out.textContent='⏳ Generando respuesta con IA...';
-    const prompt=`Genera una respuesta de WhatsApp para un cliente.\n\nProducto:\n${prodInfo(p)}\n\nPregunta del cliente:\n${q}\n\nTono: ${tono}.\n\nReglas: respuesta breve, natural, con cierre para reservar/comprar. No inventes garantía/envío. Si falta un dato, pide confirmarlo.`;
+    const link=`https://tiendamax.org/p/${p.id}.html`;
+    const prompt=`Genera una respuesta de WhatsApp para un cliente.\n\nProducto:\n${prodInfo(p)}\nEnlace directo: ${link}\n\nPregunta del cliente:\n${q}\n\nTono: ${tono}.\n\nReglas: respuesta breve y natural, incluye el enlace al final, cierra invitando a reservar. No inventes garantía ni envío. Si falta un dato, pide confirmación.`;
     try{ out.textContent=await deepseek(prompt,600); notify('✅ Respuesta generada','success'); }
     catch(e){ out.textContent=`Hola 👋 Sí, te comento sobre ${p.nombre||'ese producto'}.\n\n${p.descripcion||'Está disponible en TiendaMax.'}\n\n💵 Precio: $${Number(p.precioActual||0).toFixed(2)} USD\n📦 Stock: ${Number(p.stock||0)}\n\nSi quieres, te lo puedo reservar y coordinamos por aquí.\n\n⚠️ ${e.message}`; notify('Respuesta con plantilla local','warning'); }
   }
@@ -2374,4 +2375,96 @@ function tmExtractJsonObject(text) {
   function boot(){ensure(); setTimeout(render,500);}
   document.addEventListener('DOMContentLoaded',()=>setTimeout(boot,1200));
   document.addEventListener('click',e=>{if(e.target.closest('[data-arg="publicar-ahora"],[data-tab="publicar-ahora"]')) setTimeout(boot,350);});
+})();
+
+// ── tm-mejora-descripciones-v1 ───────────────────────────────────
+(function(){
+  const $=(s,r=document)=>r.querySelector(s);
+  function notify(msg,t){if(typeof mostrarNotificacion==='function')mostrarNotificacion(msg,t||'info');}
+  function products(){try{if(Array.isArray(window.productos))return window.productos;}catch(e){}try{return JSON.parse(localStorage.getItem('productos')||'[]');}catch(e){return[];}}
+  function saveProducts(ps){
+    try{if(typeof productos!=='undefined'&&Array.isArray(productos))productos=ps;}catch(e){}
+    if(Array.isArray(window.productos))window.productos=ps;
+    try{if(typeof guardarProductos==='function')guardarProductos();}catch(e){}
+    localStorage.setItem('productos',JSON.stringify(ps));
+  }
+  function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
+  function panel(title,sub,body){
+    const p=$('#tmToolPanel');if(!p)return;
+    p.className='tm-panel active';
+    p.innerHTML=`<div class="tm-panel-head"><div><h4>${title}</h4><p>${sub}</p></div><button class="tm-panel-close" data-act="closePanel">✕ Cerrar</button></div>${body}`;
+    p.scrollIntoView({behavior:'smooth',block:'start'});
+  }
+  function addCards(){
+    const wrap=$('#herramientas .tm-tools-wrap');if(!wrap||$('#tmMejoraDescCards'))return;
+    const div=document.createElement('div');div.id='tmMejoraDescCards';
+    div.innerHTML=`
+      <div class="tm-tier"><h4>IA — CATÁLOGO</h4><span class="tm-tier-badge purple">Masivo</span></div>
+      <div class="tm-tools-grid">
+        <div class="tm-tool-card enabled" data-tool="improvedesc">
+          <span class="state">IA</span>
+          <div class="ico" style="background:rgba(46,204,113,.18)">✍️</div>
+          <h5>Mejorar descripciones</h5>
+          <p>Genera descripciones atractivas para todos los productos sin descripción o con texto corto.</p>
+        </div>
+      </div>`;
+    const panelEl=$('#tmToolPanel');
+    if(panelEl)wrap.insertBefore(div,panelEl);else wrap.appendChild(div);
+  }
+  function openImproveDesc(){
+    const ps=products();
+    const needs=ps.filter(p=>!p.descripcion||(p.descripcion||'').trim().length<80);
+    const total=needs.length;
+    panel('✍️ Mejorar descripciones con IA',total+' productos necesitan descripción',`
+      <div class="tm-panel-body" style="padding:16px">
+        <p style="color:#aaa;font-size:13px;margin-bottom:12px">La IA generará descripciones atractivas y persuasivas para los <b style="color:#fff">${total}</b> productos que tienen menos de 80 caracteres o ninguna descripción. Se procesa de a 5 por vez.</p>
+        ${total===0?'<p style="color:#25d366">✅ Todos los productos ya tienen buena descripción.</p>':`
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px">
+          <button class="tm-btn primary" data-ds-act="runImproveDesc">🚀 Mejorar ${Math.min(total,100)} productos</button>
+        </div>`}
+        <div id="tmImproveDescOut" class="tm-code" style="min-height:60px;white-space:pre-wrap"></div>
+      </div>`);
+  }
+  async function runImproveDesc(){
+    const ps=products();
+    const needs=ps.filter(p=>!p.descripcion||(p.descripcion||'').trim().length<80).slice(0,100);
+    const out=$('#tmImproveDescOut');
+    if(!out)return;
+    let log=[],improved=0;
+    for(let i=0;i<needs.length;i++){
+      const p=needs[i];
+      const idx=ps.findIndex(x=>String(x.id)===String(p.id));
+      if(idx<0)continue;
+      out.textContent=`⏳ ${i+1}/${needs.length}: ${p.nombre}\n\n`+log.slice(-14).join('\n');
+      const price=Number(p.precioActual||0);
+      const prompt=`Eres experto en ventas de una tienda online en Cuba. Escribe una descripción para vender este producto:\n- Nombre: "${p.nombre}"\n- Categoría: ${p.categoria||'General'}${price?'\n- Precio: $'+price.toFixed(2)+' USD':''}${p.garantia?'\n- Garantía: '+p.garantia:''}\n\nEscribe exactamente 3 oraciones persuasivas que destaquen el beneficio principal y creen deseo de compra. Lenguaje cubano natural. Sin asteriscos ni emojis ni markdown.`;
+      try{
+        const desc=await tmAIChat(prompt,{max_tokens:180,temperature:0.75});
+        if(desc&&desc.trim().length>20){
+          ps[idx]={...ps[idx],descripcion:desc.trim()};
+          improved++;
+          log.push(`✅ ${p.nombre}`);
+        }else{
+          log.push(`⚠️ ${p.nombre}: vacío`);
+        }
+        await sleep(500);
+      }catch(e){
+        log.push(`❌ ${p.nombre}: ${(e.message||'').slice(0,50)}`);
+        await sleep(300);
+      }
+      // Guardar cada 5 para no perder progreso
+      if((i+1)%5===0)saveProducts(ps);
+    }
+    saveProducts(ps);
+    out.textContent=`✅ Listo — ${improved} descripciones mejoradas de ${needs.length} procesadas.\n\n`+log.join('\n');
+    notify(`✅ ${improved} descripciones mejoradas`,'success');
+  }
+  document.addEventListener('click',function(e){
+    if(e.target.closest('[data-tool="improvedesc"]')){e.preventDefault();e.stopPropagation();openImproveDesc();return;}
+    const a=e.target.closest('[data-ds-act="runImproveDesc"]');if(!a)return;
+    e.preventDefault();e.stopPropagation();runImproveDesc();
+  },true);
+  function boot(){addCards();}
+  document.addEventListener('DOMContentLoaded',()=>setTimeout(boot,1100));
+  document.addEventListener('click',e=>{if(e.target.closest('[data-arg="herramientas"],[data-tab="herramientas"]'))setTimeout(boot,300);});
 })();
