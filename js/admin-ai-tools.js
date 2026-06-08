@@ -1561,7 +1561,7 @@ function tmExtractJsonObject(text) {
 (function(){
   const CAT_LABELS={basicas:'🧰 Básicas',gestion:'📋 Gestión',datos:'📊 Datos/Ventas',ia:'🤖 IA',marketing:'📣 Marketing',sistema:'🛡️ Sistema'};
   const TOOL_CAT={
-    guideagent:'sistema',preflight:'sistema',pushmanager:'marketing',artifacts:'sistema',cleaner:'sistema',dormant:'datos',restock:'datos',templates:'marketing',calendar:'marketing',actionsstatus:'sistema',bulkadjust:'gestion',quickedit:'gestion',catalogqa:'sistema',namesfix:'basicas',ai:'ia',posts:'marketing',pushai:'ia',waai:'ia',auditai:'ia',insightsai:'ia',seoai:'ia',recsai:'ia',bulkai:'ia',chatai:'ia',
+    guideagent:'sistema',interesados:'datos',statusshare:'marketing',preflight:'sistema',pushmanager:'marketing',artifacts:'sistema',cleaner:'sistema',dormant:'datos',restock:'datos',statusshare:'marketing',templates:'marketing',calendar:'marketing',actionsstatus:'sistema',bulkadjust:'gestion',quickedit:'gestion',catalogqa:'sistema',namesfix:'basicas',ai:'ia',posts:'marketing',pushai:'ia',waai:'ia',auditai:'ia',insightsai:'ia',seoai:'ia',recsai:'ia',bulkai:'ia',chatai:'ia',
     campaignai:'marketing',publisherai:'marketing',campdash:'marketing',weekplanner:'marketing',taskcenter:'marketing',autopilot:'marketing',
     compress:'basicas',duplicate:'basicas',history:'basicas',csv:'basicas',dups:'basicas',
     schedule:'gestion',coupons:'gestion',locations:'gestion',ab:'gestion',totp:'gestion',roles:'gestion',
@@ -2151,4 +2151,181 @@ function tmExtractJsonObject(text) {
   function boot(){addCard();}
   document.addEventListener('DOMContentLoaded',()=>setTimeout(boot,2900));
   document.addEventListener('click',e=>{if(e.target.closest('[data-arg="herramientas"],[data-tab="herramientas"]')) setTimeout(boot,300);});
+})();
+
+// ── tm-sales-v23 / Interesados WhatsApp ───────────────────────────────
+(function(){
+  const $=(s,r=document)=>r.querySelector(s);
+  const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  function notify(msg,type){ if(typeof mostrarNotificacion==='function') mostrarNotificacion(msg,type||'info'); else console.log(msg); }
+  function products(){ try{ if(Array.isArray(window.productos)) return window.productos; }catch(e){} try{return JSON.parse(localStorage.getItem('productos')||'[]')}catch(e){return[]} }
+  function ventas(){ try{ if(typeof cargarVentas==='function') return cargarVentas()||[]; }catch(e){} try{return JSON.parse(localStorage.getItem('registroVentas')||'[]')}catch(e){return[]} }
+  function money(n){return '$'+Number(n||0).toFixed(2)}
+  function panel(title,sub,body){const p=$('#tmToolPanel'); if(!p)return; p.className='tm-panel active'; p.innerHTML=`<div class="tm-panel-head"><div><h4>${title}</h4><p>${sub}</p></div><button class="tm-panel-close" data-act="closePanel">✕ Cerrar</button></div>${body}`; p.scrollIntoView({behavior:'smooth',block:'start'});}
+  function addCard(){
+    const wrap=$('#herramientas .tm-tools-wrap'); const panelEl=$('#tmToolPanel'); if(!wrap||!panelEl||document.querySelector('[data-tool="interesados"]')) return;
+    const div=document.createElement('div'); div.className='tm-tools-grid'; div.innerHTML='<div class="tm-tool-card enabled" data-tool="interesados"><span class="state">VENTA</span><div class="ico" style="background:rgba(37,211,102,.18)">🔥</div><h5>Interesados WhatsApp</h5><p>Detecta clics a WhatsApp, seguimiento y conversión por producto.</p></div>';
+    wrap.insertBefore(div,panelEl);
+    if(typeof window.tmOrganizeTools==='function') setTimeout(window.tmOrganizeTools,80);
+  }
+  async function getFirebaseConfig(){
+    try{const raw=localStorage.getItem('firebaseConfig'); if(raw){const c=JSON.parse(raw); if(c&&c.databaseURL)return c;}}catch(e){}
+    try{const r=await fetch('config.json?_='+Date.now(),{cache:'no-store'}); if(r.ok){const j=await r.json(); if(j.firebaseConfig){localStorage.setItem('firebaseConfig',JSON.stringify(j.firebaseConfig)); return j.firebaseConfig;}}}catch(e){}
+    return null;
+  }
+  function flattenInteresados(raw){
+    const arr=[]; if(!raw||typeof raw!=='object')return arr;
+    Object.values(raw).forEach(node=>{ if(node&&typeof node==='object') Object.values(node).forEach(v=>{ if(v&&v.productoId)arr.push(v); }); });
+    return arr.sort((a,b)=>Number(b.ts||0)-Number(a.ts||0));
+  }
+  async function loadData(){
+    let arr=[];
+    try{arr=JSON.parse(localStorage.getItem('tm_interesados_whatsapp')||'[]');}catch(e){}
+    try{
+      const cfg=await getFirebaseConfig();
+      if(cfg&&cfg.databaseURL){
+        const r=await fetch(cfg.databaseURL.replace(/\/$/,'')+'/interesados.json?_='+Date.now(),{cache:'no-store'});
+        if(r.ok){const fb=flattenInteresados(await r.json()); if(fb.length) arr=fb;}
+      }
+    }catch(e){console.warn('[interesados admin]',e);}
+    return arr;
+  }
+  function summarize(arr){
+    const vs=ventas(); const by={}; arr.forEach(x=>{const id=String(x.productoId); by[id]=by[id]||{count:0,producto:x.producto,precio:x.precio,categoria:x.categoria,stock:x.stock,last:x.ts||0}; by[id].count++; by[id].last=Math.max(by[id].last,Number(x.ts||0));});
+    const sold={}; vs.forEach(v=>{if(v.productoId)sold[String(v.productoId)]=(sold[String(v.productoId)]||0)+Number(v.cantidad||1);});
+    return Object.entries(by).map(([id,d])=>({...d,id,ventas:sold[id]||0,conv:d.count?Math.round((sold[id]||0)/d.count*100):0})).sort((a,b)=>b.count-a.count);
+  }
+  function openTool(){
+    panel('🔥 Interesados por WhatsApp','Seguimiento de intención de compra: clics a WhatsApp, productos calientes y conversión.',`<div class="tm-actions"><button class="tm-btn primary" data-ds23-act="load">Cargar interesados</button><button class="tm-btn gold" data-ds23-act="campaign">Campaña del top</button><button class="tm-btn" data-ds23-act="copyOut">Copiar reporte</button><button class="tm-btn" data-ds23-act="csv">Exportar CSV</button></div><div id="tmToolOut" class="tm-code" style="margin-top:12px">Pulsa Cargar interesados.</div>`);
+  }
+  async function render(){
+    const out=$('#tmToolOut'); if(out)out.textContent='⏳ Cargando interesados...';
+    const arr=await loadData(); window.__tmInteresados=arr; const sum=summarize(arr); window.__tmInteresadosSummary=sum;
+    const hoy=new Date(); hoy.setHours(0,0,0,0); const today=arr.filter(x=>Number(x.ts||0)>=hoy.getTime()).length;
+    if(out) out.textContent=`Interesados total: ${arr.length}\nInteresados hoy: ${today}\nProductos con interés: ${sum.length}\n\nTOP PRODUCTOS\n`+sum.slice(0,20).map((x,i)=>`${i+1}. ${x.producto} · ${x.count} interés(es) · ventas ${x.ventas} · conv ${x.conv}% · ${money(x.precio)} · stock ${x.stock}`).join('\n')+`\n\nSEGUIMIENTO SUGERIDO\n`+sum.filter(x=>x.count>0&&x.ventas===0).slice(0,8).map(x=>`• ${x.producto}: tiene interés pero sin venta registrada. Crear seguimiento/oferta.`).join('\n');
+  }
+  function campaignTop(){
+    const top=(window.__tmInteresadosSummary||[])[0]; if(!top){notify('Primero carga interesados','warning');return;}
+    const p=products().find(x=>String(x.id)===String(top.id));
+    localStorage.setItem('tm_last_campaign_text',`Campaña sugerida por interesados\n\nProducto: ${top.producto}\nInteresados: ${top.count}\nVentas: ${top.ventas}\n\nFACEBOOK:\n🔥 ${top.producto}\n\nVarios clientes están preguntando por este producto. Disponible en TiendaMax por ${money(top.precio)}.\n📦 Stock: ${top.stock}\n📲 Escríbenos para reservar.\n\nWHATSAPP:\nHola 👋 Tenemos disponible ${top.producto}. Si te interesa, te lo puedo reservar por aquí.\n\nPUSH:\nTítulo: 🔥 ${String(top.producto).slice(0,32)}\nMensaje: Producto con alta demanda. Stock disponible. Reserva por WhatsApp.\nURL: /p/producto-${top.id}.html`);
+    const c=document.querySelector('[data-tool="publisherai"],[data-tool="campaignai"]'); if(c)c.click(); else notify('Campaña copiada a última campaña','success');
+  }
+  function csv(){const arr=window.__tmInteresados||[]; const rows=[['fecha','productoId','producto','precio','stock','categoria','origen'],...arr.map(x=>[x.fecha||x.ts,x.productoId,x.producto,x.precio,x.stock,x.categoria,x.origen])]; const text=rows.map(r=>r.map(v=>'"'+String(v??'').replace(/"/g,'""')+'"').join(',')).join('\n'); const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([text],{type:'text/csv'})); a.download='interesados_whatsapp.csv'; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),1000);}
+  document.addEventListener('click',function(e){
+    const tool=e.target.closest('[data-tool="interesados"]'); if(tool){e.preventDefault();e.stopPropagation();e.stopImmediatePropagation&&e.stopImmediatePropagation();openTool();return;}
+    const a=e.target.closest('[data-ds23-act]'); if(!a)return; e.preventDefault();e.stopPropagation();e.stopImmediatePropagation&&e.stopImmediatePropagation();
+    if(a.dataset.ds23Act==='load')render(); if(a.dataset.ds23Act==='campaign')campaignTop(); if(a.dataset.ds23Act==='csv')csv(); if(a.dataset.ds23Act==='copyOut'){navigator.clipboard?.writeText($('#tmToolOut')?.textContent||'');notify('Copiado','success');}
+  },true);
+  function boot(){addCard();}
+  document.addEventListener('DOMContentLoaded',()=>setTimeout(boot,3000));
+  document.addEventListener('click',e=>{if(e.target.closest('[data-arg="herramientas"],[data-tab="herramientas"]')) setTimeout(boot,300);});
+})();
+
+// ── tm-marketing-v24 / Compartir estado WhatsApp ───────────────────────
+(function(){
+  const $=(s,r=document)=>r.querySelector(s);
+  const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  function notify(msg,type){ if(typeof mostrarNotificacion==='function') mostrarNotificacion(msg,type||'info'); else console.log(msg); }
+  function products(){ try{ if(Array.isArray(window.productos)) return window.productos; }catch(e){} try{return JSON.parse(localStorage.getItem('productos')||'[]')}catch(e){return[]} }
+  function panel(title,sub,body){const p=$('#tmToolPanel'); if(!p)return; p.className='tm-panel active'; p.innerHTML=`<div class="tm-panel-head"><div><h4>${title}</h4><p>${sub}</p></div><button class="tm-panel-close" data-act="closePanel">✕ Cerrar</button></div>${body}`; p.scrollIntoView({behavior:'smooth',block:'start'});}
+  function addCard(){
+    const wrap=$('#herramientas .tm-tools-wrap'); const panelEl=$('#tmToolPanel'); if(!wrap||!panelEl||document.querySelector('[data-tool="statusshare"]')) return;
+    const div=document.createElement('div'); div.className='tm-tools-grid';
+    div.innerHTML='<div class="tm-tool-card enabled" data-tool="statusshare"><span class="state">WA</span><div class="ico" style="background:rgba(37,211,102,.18)">🟢</div><h5>Estado WhatsApp</h5><p>Comparte la tienda o un producto en estados/chats de WhatsApp.</p></div>';
+    wrap.insertBefore(div,panelEl);
+    if(typeof window.tmOrganizeTools==='function') setTimeout(window.tmOrganizeTools,80);
+  }
+  function productOptions(){return '<option value="">Tienda completa</option>'+products().filter(p=>Number(p.stock||0)>0).slice(0,200).map(p=>`<option value="${esc(p.id)}">${esc(p.nombre||'Producto')} · $${Number(p.precioActual||0).toFixed(2)}</option>`).join('');}
+  function defaultText(p){
+    if(p) return `🔥 ${p.nombre}\n\n💵 $${Number(p.precioActual||0).toFixed(2)} USD\n📦 Stock: ${Number(p.stock||0)}\n\nPídelo directo por WhatsApp en TiendaMax:\nhttps://tiendamax.org/p/producto-${p.id}.html`;
+    return `🚀 TiendaMax online\n\nCatálogo con productos disponibles, fotos, precios y pedido directo por WhatsApp.\n\n⚡ Energía · 📶 WiFi · 🚗 Carros · 🏍️ Motos · 🔐 Seguridad\n\n👉 https://tiendamax.org`;
+  }
+  function openTool(){
+    panel('🟢 Compartir en estados de WhatsApp','Prepara texto/enlace para estado de WhatsApp. En móvil usa Compartir y elige WhatsApp/Estado.',`
+      <div class="tm-field"><label>Qué compartir</label><select id="tmStatusProd">${productOptions()}</select></div>
+      <div class="tm-field"><label>Texto para estado</label><textarea id="tmStatusText" style="min-height:150px">${esc(defaultText(null))}</textarea></div>
+      <div class="tm-actions"><button class="tm-btn primary" data-ds24-act="native">📲 Compartir estado</button><button class="tm-btn gold" data-ds24-act="wa">Abrir WhatsApp</button><button class="tm-btn" data-ds24-act="copy">Copiar texto</button></div>
+      <div class="tm-note">Nota: los navegadores no pueden publicar estados automáticamente. El botón “Compartir estado” abre el menú del teléfono para que elijas WhatsApp/Estado. En PC se copia o abre WhatsApp Web.</div>
+      <div id="tmToolOut" class="tm-code" style="margin-top:12px">Listo para compartir.</div>`);
+    setTimeout(()=>{
+      const sel=$('#tmStatusProd');
+      if(sel) sel.addEventListener('change',()=>{
+        const p=products().find(x=>String(x.id)===String(sel.value));
+        const t=$('#tmStatusText'); if(t) t.value=defaultText(p||null);
+      });
+    },50);
+  }
+  async function nativeShare(){
+    const text=$('#tmStatusText')?.value||defaultText(null);
+    const p=products().find(x=>String(x.id)===String($('#tmStatusProd')?.value||''));
+    const url=p?`https://tiendamax.org/p/producto-${p.id}.html`:'https://tiendamax.org';
+    try{
+      if(navigator.share){ await navigator.share({title:p?(p.nombre||'TiendaMax'):'TiendaMax',text,url}); notify('Compartir abierto','success'); }
+      else { await navigator.clipboard?.writeText(text); notify('Tu navegador no tiene compartir nativo. Texto copiado.','info'); }
+    }catch(e){ if(!/abort/i.test(e.message||'')) notify('No se pudo compartir: '+e.message,'warning'); }
+  }
+  function openWhatsApp(){
+    const text=encodeURIComponent($('#tmStatusText')?.value||defaultText(null));
+    window.open('https://wa.me/?text='+text,'_blank','noopener,noreferrer');
+  }
+  function copy(){navigator.clipboard?.writeText($('#tmStatusText')?.value||''); notify('Texto copiado','success');}
+  document.addEventListener('click',function(e){
+    const tool=e.target.closest('[data-tool="statusshare"]'); if(tool){e.preventDefault();e.stopPropagation();e.stopImmediatePropagation&&e.stopImmediatePropagation();openTool();return;}
+    const a=e.target.closest('[data-ds24-act]'); if(!a)return; e.preventDefault();e.stopPropagation();e.stopImmediatePropagation&&e.stopImmediatePropagation();
+    if(a.dataset.ds24Act==='native')nativeShare(); if(a.dataset.ds24Act==='wa')openWhatsApp(); if(a.dataset.ds24Act==='copy')copy();
+  },true);
+  function boot(){addCard();}
+  document.addEventListener('DOMContentLoaded',()=>setTimeout(boot,3100));
+  document.addEventListener('click',e=>{if(e.target.closest('[data-arg="herramientas"],[data-tab="herramientas"]')) setTimeout(boot,300);});
+})();
+
+// ── tm-publicar-v25 / Compartir por producto en Publicar ───────────────
+(function(){
+  const $=(s,r=document)=>r.querySelector(s);
+  const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  function notify(msg,type){ if(typeof mostrarNotificacion==='function') mostrarNotificacion(msg,type||'info'); else console.log(msg); }
+  function products(){ try{ if(Array.isArray(window.productos)) return window.productos; }catch(e){} try{return JSON.parse(localStorage.getItem('productos')||'[]')}catch(e){return[]} }
+  function url(p){return `https://tiendamax.org/p/producto-${p.id}.html`;}
+  function txt(p){return `🔥 ${p.nombre}\n\n${p.descripcion?String(p.descripcion).slice(0,160)+'\n\n':''}💵 $${Number(p.precioActual||0).toFixed(2)} USD\n📦 Stock: ${Number(p.stock||0)}\n🏷️ ${p.categoria||'TiendaMax'}\n\nPídelo directo por WhatsApp en TiendaMax:\n${url(p)}`;}
+  function cats(){return [...new Set(products().map(p=>p.categoria||'General').filter(Boolean))].sort();}
+  function ensure(){
+    const tab=document.getElementById('publicar-ahora'); if(!tab||document.getElementById('tmShareProductsCard')) return;
+    const card=document.createElement('div'); card.id='tmShareProductsCard'; card.className='card';
+    card.innerHTML=`<div style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap"><div><h2>📲 Compartir productos</h2><p class="sub">Botones rápidos por producto: Estado/WhatsApp, Facebook y copiar enlace.</p></div><button type="button" class="btn gold" id="tmShareRefresh">↻ Actualizar lista</button></div>
+      <div class="form-grid" style="margin-top:12px"><input id="tmShareSearch" placeholder="Buscar producto..."><select id="tmShareCat"><option value="">Todas las categorías</option>${cats().map(c=>`<option>${esc(c)}</option>`).join('')}</select></div>
+      <div id="tmShareProductsList" style="display:flex;flex-direction:column;gap:10px;margin-top:14px;max-height:520px;overflow:auto"></div>`;
+    const ref=document.getElementById('resultadoPublicacion')||tab.querySelector('#historialPublicaciones')||tab.lastElementChild;
+    if(ref&&ref.parentNode) ref.parentNode.insertBefore(card,ref); else tab.appendChild(card);
+    card.addEventListener('input',e=>{if(e.target.id==='tmShareSearch') render();});
+    card.addEventListener('change',e=>{if(e.target.id==='tmShareCat') render();});
+    $('#tmShareRefresh',card)?.addEventListener('click',render);
+    card.addEventListener('click',handle);
+    render();
+  }
+  function filtered(){
+    const q=String($('#tmShareSearch')?.value||'').toLowerCase().trim(); const cat=$('#tmShareCat')?.value||'';
+    return products().filter(p=>Number(p.stock||0)>0).filter(p=>(!cat||(p.categoria||'General')===cat)&&(!q||String(p.nombre||'').toLowerCase().includes(q)||String(p.categoria||'').toLowerCase().includes(q))).slice(0,120);
+  }
+  function render(){
+    const box=$('#tmShareProductsList'); if(!box)return; const arr=filtered();
+    box.innerHTML=arr.length?arr.map(p=>`<div class="tm-share-row" data-id="${esc(p.id)}" style="display:grid;grid-template-columns:58px 1fr auto;gap:12px;align-items:center;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:10px"><img src="${esc(p.imagen||'')}" onerror="this.style.display='none'" style="width:58px;height:58px;object-fit:cover;border-radius:10px;background:#222"><div style="min-width:0"><b style="display:block;color:#fff;font-size:14px;line-height:1.2">${esc(p.nombre||'Producto')}</b><small style="color:#aaa">${esc(p.categoria||'General')} · $${Number(p.precioActual||0).toFixed(2)} · stock ${Number(p.stock||0)}</small></div><div class="tm-share-actions" style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end"><button type="button" class="tm-btn primary tm-mini" data-act="wa">📲 Estado</button><button type="button" class="tm-btn tm-mini" data-act="fb">📘 Facebook</button><button type="button" class="tm-btn tm-mini" data-act="copy">🔗 Copiar</button></div></div>`).join(''):'<div class="tm-note">No hay productos con stock para compartir.</div>';
+  }
+  async function handle(e){
+    const btn=e.target.closest('[data-act]'); if(!btn)return; const row=btn.closest('[data-id]'); if(!row)return; const p=products().find(x=>String(x.id)===String(row.dataset.id)); if(!p)return;
+    const action=btn.dataset.act; const text=txt(p); const link=url(p);
+    if(action==='wa'){
+      if(navigator.share){ try{await navigator.share({title:p.nombre,text, url:link}); notify('Compartir abierto','success'); return;}catch(err){ if(/abort/i.test(err.message||'')) return; }}
+      window.open('https://wa.me/?text='+encodeURIComponent(text),'_blank','noopener,noreferrer');
+      return;
+    }
+    if(action==='fb'){
+      window.open('https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(link)+'&quote='+encodeURIComponent(text),'_blank','noopener,noreferrer'); return;
+    }
+    if(action==='copy'){
+      try{await navigator.clipboard.writeText(text); notify('Texto y enlace copiados','success');}catch(err){notify('No se pudo copiar','error');}
+    }
+  }
+  function boot(){ensure(); setTimeout(render,500);}
+  document.addEventListener('DOMContentLoaded',()=>setTimeout(boot,1200));
+  document.addEventListener('click',e=>{if(e.target.closest('[data-arg="publicar-ahora"],[data-tab="publicar-ahora"]')) setTimeout(boot,350);});
 })();
