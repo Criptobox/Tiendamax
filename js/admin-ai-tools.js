@@ -2308,13 +2308,51 @@ function tmExtractJsonObject(text) {
   }
   function render(){
     const box=$('#tmShareProductsList'); if(!box)return; const arr=filtered();
-    box.innerHTML=arr.length?arr.map(p=>`<div class="tm-share-row" data-id="${esc(p.id)}" style="display:grid;grid-template-columns:58px 1fr auto;gap:12px;align-items:center;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:10px"><img src="${esc(p.imagen||'')}" onerror="this.style.display='none'" style="width:58px;height:58px;object-fit:cover;border-radius:10px;background:#222"><div style="min-width:0"><b style="display:block;color:#fff;font-size:14px;line-height:1.2">${esc(p.nombre||'Producto')}</b><small style="color:#aaa">${esc(p.categoria||'General')} · $${Number(p.precioActual||0).toFixed(2)} · stock ${Number(p.stock||0)}</small></div><div class="tm-share-actions" style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end"><button type="button" class="tm-btn primary tm-mini" data-act="wa">📲 Estado</button><button type="button" class="tm-btn tm-mini" data-act="fb">📘 Facebook</button><button type="button" class="tm-btn tm-mini" data-act="copy">🔗 Copiar</button></div></div>`).join(''):'<div class="tm-note">No hay productos con stock para compartir.</div>';
+    box.innerHTML=arr.length?arr.map(p=>`<div class="tm-share-row" data-id="${esc(p.id)}" style="display:grid;grid-template-columns:58px 1fr auto;gap:12px;align-items:center;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:10px"><img src="${esc(p.imagen||'')}" onerror="this.style.display='none'" style="width:58px;height:58px;object-fit:cover;border-radius:10px;background:#222"><div style="min-width:0"><b style="display:block;color:#fff;font-size:14px;line-height:1.2">${esc(p.nombre||'Producto')}</b><small style="color:#aaa">${esc(p.categoria||'General')} · $${Number(p.precioActual||0).toFixed(2)} · stock ${Number(p.stock||0)}</small></div><div class="tm-share-actions" style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end"><button type="button" class="tm-btn primary tm-mini" data-act="story">🖼️ Estado</button><button type="button" class="tm-btn tm-mini" data-act="wa">💬 Chat</button><button type="button" class="tm-btn tm-mini" data-act="fb">📘 Facebook</button><button type="button" class="tm-btn tm-mini" data-act="copy">🔗 Copiar</button></div></div>`).join(''):'<div class="tm-note">No hay productos con stock para compartir.</div>';
   }
+  function loadImg(src){return new Promise(res=>{const im=new Image(); im.crossOrigin='anonymous'; im.onload=()=>res(im); im.onerror=()=>res(null); im.src=src;});}
+  function wrapText(ctx,text,x,y,maxWidth,lineHeight,maxLines){
+    const words=String(text||'').split(/\s+/); let line='', lines=0;
+    for(let n=0;n<words.length;n++){
+      const test=line+words[n]+' ';
+      if(ctx.measureText(test).width>maxWidth && n>0){ctx.fillText(line.trim(),x,y); line=words[n]+' '; y+=lineHeight; lines++; if(lines>=maxLines)return y;}
+      else line=test;
+    }
+    if(line&&lines<maxLines){ctx.fillText(line.trim(),x,y); y+=lineHeight;}
+    return y;
+  }
+  async function shareStory(p){
+    const W=1080,H=1920, c=document.createElement('canvas'); c.width=W; c.height=H; const ctx=c.getContext('2d');
+    const grad=ctx.createLinearGradient(0,0,W,H); grad.addColorStop(0,'#0d0d0d'); grad.addColorStop(.55,'#2b160c'); grad.addColorStop(1,'#ff6b35'); ctx.fillStyle=grad; ctx.fillRect(0,0,W,H);
+    ctx.fillStyle='rgba(0,0,0,.30)'; ctx.fillRect(0,0,W,H);
+    ctx.strokeStyle='rgba(201,169,110,.75)'; ctx.lineWidth=8; roundRect(ctx,44,44,W-88,H-88,42); ctx.stroke();
+    const im=await loadImg(p.imagen||'');
+    if(im){
+      const boxX=120,boxY=170,boxW=840,boxH=650; ctx.save(); roundRect(ctx,boxX,boxY,boxW,boxH,36); ctx.clip();
+      const r=Math.max(boxW/im.width,boxH/im.height), iw=im.width*r, ih=im.height*r; ctx.drawImage(im,boxX+(boxW-iw)/2,boxY+(boxH-ih)/2,iw,ih); ctx.restore();
+    } else { ctx.fillStyle='rgba(255,255,255,.08)'; roundRect(ctx,120,170,840,650,36); ctx.fill(); ctx.font='160px serif'; ctx.fillStyle='#ff6b35'; ctx.fillText('M',470,550); }
+    ctx.textAlign='center'; ctx.fillStyle='#fff'; ctx.font='bold 66px system-ui,Arial'; let y=920; y=wrapText(ctx,p.nombre,110,y,860,78,3);
+    ctx.fillStyle='#ff6b35'; ctx.font='bold 82px system-ui,Arial'; ctx.fillText('$'+Number(p.precioActual||0).toFixed(2)+' USD',W/2,y+28); y+=130;
+    ctx.fillStyle='#f0e0c5'; ctx.font='bold 42px system-ui,Arial'; ctx.fillText('📦 Stock: '+Number(p.stock||0)+'   🏷️ '+(p.categoria||'TiendaMax'),W/2,y); y+=95;
+    ctx.fillStyle='#fff'; ctx.font='42px system-ui,Arial'; y=wrapText(ctx,'Pídelo directo por WhatsApp en TiendaMax',120,y,840,54,2);
+    ctx.fillStyle='#c9a96e'; ctx.font='bold 48px system-ui,Arial'; ctx.fillText('tiendamax.org',W/2,H-245);
+    ctx.fillStyle='rgba(255,255,255,.92)'; ctx.font='32px system-ui,Arial'; ctx.fillText('Toca “Pedir” en la tienda para reservar',W/2,H-185);
+    const blob=await new Promise(res=>c.toBlob(res,'image/png',.95));
+    const file=new File([blob],'tiendamax-estado-'+p.id+'.png',{type:'image/png'});
+    const text='🔥 '+p.nombre+'\n'+url(p);
+    if(navigator.canShare&&navigator.canShare({files:[file]})&&navigator.share){
+      try{await navigator.share({files:[file],title:p.nombre,text}); notify('Elige WhatsApp → Estado para publicar','success'); return;}catch(e){if(/abort/i.test(e.message||''))return;}
+    }
+    const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=file.name; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+    try{await navigator.clipboard.writeText(text);}catch(e){}
+    notify('Imagen de estado descargada. Súbela manualmente a WhatsApp Estado.','info');
+  }
+  function roundRect(ctx,x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
   async function handle(e){
     const btn=e.target.closest('[data-act]'); if(!btn)return; const row=btn.closest('[data-id]'); if(!row)return; const p=products().find(x=>String(x.id)===String(row.dataset.id)); if(!p)return;
     const action=btn.dataset.act; const text=txt(p); const link=url(p);
+    if(action==='story'){ await shareStory(p); return; }
     if(action==='wa'){
-      if(navigator.share){ try{await navigator.share({title:p.nombre,text, url:link}); notify('Compartir abierto','success'); return;}catch(err){ if(/abort/i.test(err.message||'')) return; }}
       window.open('https://wa.me/?text='+encodeURIComponent(text),'_blank','noopener,noreferrer');
       return;
     }

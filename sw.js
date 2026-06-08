@@ -1,8 +1,9 @@
 // ═══════════════════════════════════════════════════════
-// TiendaMax — Service Worker v231 — Compartir productos publicar
+// TiendaMax — Service Worker v232 — Estado WhatsApp imagen
 // v227: registra y muestra interesados por WhatsApp para seguimiento.
 // v229: botones compartir/copiar usan /p/producto-ID.html para Facebook.
 // v228: mejora enlaces directos de productos y preview Facebook.
+// v232: Estado WhatsApp genera imagen story para compartir.
 // v231: agrega botones por producto para compartir en Publicar.
 // v230: añade herramienta para compartir tienda/productos en estados WhatsApp.
 // v225: agente guía con botones Ejecutar/Abrir/Hecho y lectura por voz.
@@ -94,7 +95,7 @@
 //      usan el mismo helper _mensajeOrdenWA con formato premium.
 // ═══════════════════════════════════════════════════════
 
-const CACHE_NAME = 'tiendamax-202606072010';
+const CACHE_NAME = 'tiendamax-202606072025';
 
 const STATIC_ASSETS = [
   '/',
