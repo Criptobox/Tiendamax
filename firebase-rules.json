@@ -33,7 +33,7 @@
       "$tokenId": {
         ".read": false,
         ".write": true,
-        ".validate": "newData.hasChildren(['token', 'timestamp']) && newData.child('timestamp').val() >= now - 300000 && newData.child('timestamp').val() <= now + 300000",
+        ".validate": "newData.hasChildren(['token', 'timestamp']) && newData.child('timestamp').val() >= now - 900000 && newData.child('timestamp').val() <= now + 900000",
         "token": {
           ".validate": "newData.isString() && newData.val().length > 50 && newData.val().length < 500"
         },
@@ -42,9 +42,25 @@
         },
         "userAgent": {
           ".validate": "newData.isString()"
+        },
+        "fingerprint": {
+          ".validate": "newData.isString()"
         }
       },
       ".read": true,
+      ".write": false
+    },
+    "viewers": {
+      "$productId": {
+        "$sessionId": {
+          ".read": false,
+          ".write": true,
+          ".validate": "newData.isNumber()"
+        },
+        ".read": true,
+        ".write": false
+      },
+      ".read": false,
       ".write": false
     },
     ".read": false,
