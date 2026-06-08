@@ -2331,10 +2331,10 @@ function tmExtractJsonObject(text) {
       const boxX=120,boxY=170,boxW=840,boxH=650; ctx.save(); roundRect(ctx,boxX,boxY,boxW,boxH,36); ctx.clip();
       const r=Math.max(boxW/im.width,boxH/im.height), iw=im.width*r, ih=im.height*r; ctx.drawImage(im,boxX+(boxW-iw)/2,boxY+(boxH-ih)/2,iw,ih); ctx.restore();
     } else { ctx.fillStyle='rgba(255,255,255,.08)'; roundRect(ctx,120,170,840,650,36); ctx.fill(); ctx.font='160px serif'; ctx.fillStyle='#ff6b35'; ctx.fillText('M',470,550); }
-    ctx.textAlign='center'; ctx.fillStyle='#fff'; ctx.font='bold 66px system-ui,Arial'; let y=920; y=wrapText(ctx,p.nombre,110,y,860,78,3);
+    ctx.textAlign='center'; ctx.fillStyle='#fff'; ctx.font='bold 66px system-ui,Arial'; let y=920; y=wrapText(ctx,p.nombre,W/2,y,860,78,3);
     ctx.fillStyle='#ff6b35'; ctx.font='bold 82px system-ui,Arial'; ctx.fillText('$'+Number(p.precioActual||0).toFixed(2)+' USD',W/2,y+28); y+=130;
     ctx.fillStyle='#f0e0c5'; ctx.font='bold 42px system-ui,Arial'; ctx.fillText('📦 Stock: '+Number(p.stock||0)+'   🏷️ '+(p.categoria||'TiendaMax'),W/2,y); y+=95;
-    ctx.fillStyle='#fff'; ctx.font='42px system-ui,Arial'; y=wrapText(ctx,'Pídelo directo por WhatsApp en TiendaMax',120,y,840,54,2);
+    ctx.fillStyle='#fff'; ctx.font='42px system-ui,Arial'; y=wrapText(ctx,'Pídelo directo por WhatsApp en TiendaMax',W/2,y,840,54,2);
     ctx.fillStyle='#c9a96e'; ctx.font='bold 48px system-ui,Arial'; ctx.fillText('tiendamax.org',W/2,H-245);
     ctx.fillStyle='rgba(255,255,255,.92)'; ctx.font='32px system-ui,Arial'; ctx.fillText('Toca “Pedir” en la tienda para reservar',W/2,H-185);
     const blob=await new Promise(res=>c.toBlob(res,'image/png',.95));

@@ -45,6 +45,10 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
 <meta property="og:title" content="{og_title}">
 <meta property="og:description" content="{og_desc}">
 <meta property="og:image" content="{image}">
+<meta property="og:image:secure_url" content="{image}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:type" content="image/jpeg">
 <meta property="og:image:alt" content="{og_title}">
 <meta property="og:url" content="{page_url}">
 <meta property="og:site_name" content="TiendaMax">
@@ -199,7 +203,10 @@ def regenerate_pages(products: list[dict]) -> tuple[int, list[str]]:
         name  = (p.get("nombre") or "").strip()
         desc  = desc_short(p.get("seoDescription") or p.get("descripcion") or "", 155 if p.get("seoDescription") else 200)
         price = f"{float(p.get('precioActual') or 0):.2f}"
-        img   = p.get("imagen") or f"{SITE}/og-image.svg"
+        raw_img = p.get("imagen") or f"{SITE}/og-image.jpg"
+        # WhatsApp/Facebook cargan más fiable JPG/PNG que WEBP en og:image.
+        # Si el producto está en WEBP, usar imagen general JPG para que al menos haya preview.
+        img   = f"{SITE}/og-image.jpg" if str(raw_img).lower().endswith('.webp') else raw_img
         stock = int(p.get("stock") or 0)
         seo_title_raw = (p.get("seoTitle") or f"{name} — ${price} USD").strip()
         seo_keywords = p.get("seoKeywords") or []
