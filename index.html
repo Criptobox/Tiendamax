@@ -704,19 +704,21 @@
     <div id="vistaCategoria">
         <section class="productos-categoria">
             <div class="container">
+                <!-- Fila de navegación: ← Volver + barra de categorías deslizable -->
+                <div class="nav-cat-row">
+                    <button data-action="volverAlInicio" type="button" class="btn-volver">← Volver</button>
+                    <div class="categoria-filtro" id="categoriaFiltro">
+                        <button data-action="filtrarPorCategoria" data-arg="Todas" type="button" class="categoria-btn active">Todas</button>
+                    </div>
+                </div>
                 <div class="categoria-header">
                     <div class="categoria-header-left">
-                        <button data-action="volverAlInicio" type="button" class="btn-volver">← Volver</button>
                         <h2 id="tituloCategoriaActual">Productos</h2>
                     </div>
                     <div id="categoriaStats" class="categoria-stats"></div>
                 </div>
                 <!-- Pestañas de subcategorías (solo aparece si hay subcategorías) -->
                 <div id="subcategoriaTabs" class="subcategoria-tabs" style="display:none;"></div>
-                <!-- Filtro de categorías (vista global "Todas") -->
-                <div class="categoria-filtro" id="categoriaFiltro" style="display:none;">
-                    <button data-action="filtrarPorCategoria" data-arg="Todas" type="button" class="categoria-btn active">Todas</button>
-                </div>
                 <div class="productos-grid" id="productosGrid"></div>
                 <div id="productoVacio" class="producto-vacio" style="display:none;"><p>No hay productos en esta categoría aún.</p></div>
             </div>

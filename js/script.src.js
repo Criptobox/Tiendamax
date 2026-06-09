@@ -1661,18 +1661,13 @@ function mostrarVistaCategoria(categoria) {
 
 function renderizarSubcategoriaTabs() {
     const tabsContainer = document.getElementById('subcategoriaTabs');
-    const filtroContainer = document.getElementById('categoriaFiltro');
     if (!tabsContainer) return;
 
-    // Si es "Todas", mostrar el filtro de categorías y ocultar tabs
+    // Cuando es "Todas" no hay subcategoría tabs
     if (categoriaSeleccionada === 'Todas') {
         tabsContainer.style.display = 'none';
-        if (filtroContainer) filtroContainer.style.display = 'flex';
         return;
     }
-
-    // Ocultar filtro de todas las categorías
-    if (filtroContainer) filtroContainer.style.display = 'none';
 
     // Obtener subcategorías de la categoría actual
     const subcats = (typeof subcategorias !== 'undefined' && subcategorias[categoriaSeleccionada]) 
