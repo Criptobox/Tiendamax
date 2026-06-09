@@ -98,12 +98,7 @@ function actualizarListaSubcategorias() {
     const list = document.getElementById('subcategoryList');
     if (!list) return;
 
-    list.innerHTML = `
-        <div style="margin-bottom: 20px; padding: 15px; background: rgba(155, 89, 182, 0.1); border: 1px dashed #9B59B6; border-radius: 10px; text-align: center;">
-            <p style="font-size: 13px; margin-bottom: 10px;">Organiza tus productos con subcategorías para una mejor experiencia de compra.</p>
-            <button class="btn btn-primary" style="background:#9B59B6" onclick="sincronizarSubcategoriasConGitHub()">☁️ Guardar subcategorías en GitHub</button>
-        </div>
-    `;
+    list.innerHTML = '';
 
     let hasSubcategories = false;
     if (typeof categorias !== 'undefined') {
