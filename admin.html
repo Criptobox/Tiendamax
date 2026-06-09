@@ -930,9 +930,14 @@ async function tmAdminRefreshSubscribers(){
       if(!_tokReady||!m.data)return;
       showNotif('🔔 Nuevo suscriptor','Alguien se suscribió a notificaciones');
     });
+    _esTok.addEventListener('patch',function(e){
+      var m;try{m=JSON.parse(e.data);}catch(err){return;}
+      if(!_tokReady||!m.data)return;
+      showNotif('🔔 Nuevo suscriptor','Alguien se suscribió a notificaciones');
+    });
     setStatus('✅ Alertas activas — recibirás notificaciones en tiempo real',true);
     var btn=document.getElementById('btnActivarAlertaAdmin');
-    if(btn){btn.textContent='✅ Activado';btn.style.background='rgba(46,204,113,.2)';}
+    if(btn){btn.disabled=false;btn.textContent='✅ Activado';btn.style.background='rgba(46,204,113,.2)';}
     localStorage.setItem('tmAdminAlertasActivas','1');
   }
 
