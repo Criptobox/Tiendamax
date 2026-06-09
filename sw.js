@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════════════════
-// TiendaMax — Service Worker v248 — gemini-2.0 primero en visión + mejorar descripciones masivo + respuesta WhatsApp con enlace
+// TiendaMax — Service Worker v249 — publicaciones Facebook y Revolico con IA
 // v241: continúa al siguiente modelo Gemini si hay cuota 429
 // v240: soporte clave Gemini con prefijo AQ
 // v239: productos nuevos primero por categoría
@@ -100,7 +100,7 @@
 //      usan el mismo helper _mensajeOrdenWA con formato premium.
 // ═══════════════════════════════════════════════════════
 
-const CACHE_NAME = 'tiendamax-202606101400';
+const CACHE_NAME = 'tiendamax-202606091500';
 
 const STATIC_ASSETS = [
   '/',

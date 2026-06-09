@@ -44,6 +44,56 @@ function _hashtagsCategoria(categoria) {
     return `${base} ${mapa[categoria] || '#tecnologia'}`;
 }
 
+// ── AI helpers ──────────────────────────────────────────────────────────────
+
+async function _generarTextoFacebookAI(producto) {
+    if (typeof tmAIChat !== 'function') throw new Error('Módulo IA no cargado');
+    const whatsapp = localStorage.getItem('whatsappNumero') || '5354320170';
+    const url = `https://tiendamax.org/p/producto-${producto.id}.html`;
+    const tasa = _getTasa();
+    const mn = _precioMN(producto.precioActual);
+    const info = [
+        `Producto: ${producto.nombre}`,
+        `Precio: $${producto.precioActual} USD${mn}`,
+        producto.descripcion && `Descripción: ${producto.descripcion}`,
+        producto.garantia && `Garantía: ${producto.garantia}`,
+        producto.stock === 0 ? 'AGOTADO (consultar restock)' : `Disponibilidad: ${producto.stock} unidades`,
+        producto.usado && 'Producto usado/refurbished',
+        tasa > 0 && `Tasa: 1 USD = ${tasa} MN`,
+    ].filter(Boolean).join('\n');
+    const prompt = `Escribe una publicación atractiva y variada para un grupo de ventas de Facebook en Cuba (español cubano). Usa emojis creativos. Incluye precio en USD y en MN si hay tasa. Termina con WhatsApp wa.me/${whatsapp} y el enlace ${url}. Responde SOLO con el texto listo para pegar, sin explicaciones.\n\n${info}`;
+    return await tmAIChat(prompt, { max_tokens: 550, temperature: 0.85 });
+}
+
+async function _generarTextoRevolicoAI(producto) {
+    if (typeof tmAIChat !== 'function') throw new Error('Módulo IA no cargado');
+    const whatsapp = localStorage.getItem('whatsappNumero') || '5354320170';
+    const url = `https://tiendamax.org/p/producto-${producto.id}.html`;
+    const tasa = _getTasa();
+    const mn = _precioMN(producto.precioActual);
+    const info = [
+        `Nombre: ${producto.nombre}`,
+        `Precio: $${producto.precioActual} USD${mn}`,
+        producto.descripcion && `Descripción: ${producto.descripcion}`,
+        producto.garantia && `Garantía: ${producto.garantia}`,
+        producto.stock === 0 ? 'AGOTADO' : `Stock: ${producto.stock} unidades`,
+        producto.usado && 'Usado/refurbished',
+        tasa > 0 && `Tasa: 1 USD = ${tasa} MN`,
+    ].filter(Boolean).join('\n');
+    const prompt = `Crea un anuncio optimizado para Revolico.com (clasificados Cuba). Devuelve JSON sin markdown:\n{"titulo":"máx 70 caracteres con nombre y precio","descripcion":"texto plano 200-350 chars con especificaciones, precio, WhatsApp ${whatsapp} y enlace ${url}"}\n\nDATOS:\n${info}`;
+    const raw = await tmAIChat(prompt, { max_tokens: 600, temperature: 0.6 });
+    const m = raw.match(/\{[\s\S]*\}/);
+    if (m) {
+        try {
+            const parsed = JSON.parse(m[0]);
+            if (parsed.titulo || parsed.descripcion) return { titulo: String(parsed.titulo || '').slice(0, 70), descripcion: parsed.descripcion || '' };
+        } catch (_) {}
+    }
+    return { titulo: '', descripcion: raw };
+}
+
+// ── end AI helpers ───────────────────────────────────────────────────────────
+
 async function _copiar(texto) {
     try {
         await navigator.clipboard.writeText(texto);
@@ -104,6 +154,84 @@ async function copiarYAbrirFacebook(productoId, grupoUrl) {
     await _copiar(_textoFacebook(producto));
     mostrarNotificacion('✅ Texto copiado — pégalo en Facebook', 'success');
     window.open(grupoUrl || 'https://www.facebook.com', '_blank', 'noopener,noreferrer');
+}
+
+function previsualizarFacebook(productoId, grupoUrl) {
+    const producto = (typeof productos !== 'undefined') && productos.find(p => p.id === productoId);
+    if (!producto) return;
+
+    const existing = document.getElementById('fbPreviewModal');
+    if (existing) document.body.removeChild(existing);
+
+    const modal = document.createElement('div');
+    modal.id = 'fbPreviewModal';
+    modal.className = 'modal';
+    modal.style.display = 'flex';
+    const imgSrc = producto.imagen || '';
+    const fbUrl = grupoUrl || 'https://www.facebook.com';
+    const sBtnBase = 'border:none;padding:4px 12px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;';
+
+    modal.innerHTML = `
+      <div class="modal-content" style="max-width:540px;max-height:92vh;display:flex;flex-direction:column;">
+        <div class="modal-header">
+          <h2>📘 Vista previa — Facebook</h2>
+          <button class="close-btn" onclick="cerrarFbPreview()" type="button">✕</button>
+        </div>
+        <div style="flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:14px;">
+          ${imgSrc ? `<img src="${imgSrc}" alt="" style="width:100%;max-height:160px;object-fit:contain;border-radius:10px;background:rgba(255,255,255,.05);">` : ''}
+          <div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+              <label for="fbPostTA" style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;opacity:.6;">Texto del post</label>
+              <div style="display:flex;gap:6px;">
+                <button id="btnFbAI" type="button" style="${sBtnBase}background:rgba(139,92,246,.2);border:1px solid rgba(139,92,246,.4);color:#c4b5fd;">✨ Mejorar con IA</button>
+                <button id="btnCopyFbPost" type="button" style="${sBtnBase}background:rgba(59,89,152,.15);border:1px solid rgba(59,89,152,.35);color:#93c5fd;">📋 Copiar</button>
+              </div>
+            </div>
+            <textarea id="fbPostTA" rows="13"
+              style="width:100%;padding:10px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:8px;color:inherit;font-size:12px;resize:vertical;outline:none;font-family:inherit;box-sizing:border-box;"></textarea>
+          </div>
+          <button type="button" id="btnAbrirFb"
+            style="width:100%;padding:14px;background:linear-gradient(135deg,#3B5998,#4267B2);color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:800;cursor:pointer;letter-spacing:.3px;box-sizing:border-box;">
+            📘 Copiar y Abrir Facebook →
+          </button>
+        </div>
+      </div>`;
+
+    document.body.appendChild(modal);
+    document.getElementById('fbPostTA').value = _textoFacebook(producto);
+
+    document.getElementById('btnFbAI')?.addEventListener('click', async function() {
+        this.textContent = '⏳ Generando...';
+        this.disabled = true;
+        try {
+            const texto = await _generarTextoFacebookAI(producto);
+            document.getElementById('fbPostTA').value = texto;
+            mostrarNotificacion('✅ Post mejorado con IA', 'success');
+        } catch(e) {
+            mostrarNotificacion('❌ ' + (e.message || 'Error IA'), 'error');
+        } finally {
+            this.textContent = '✨ Mejorar con IA';
+            this.disabled = false;
+        }
+    });
+
+    document.getElementById('btnCopyFbPost')?.addEventListener('click', async function() {
+        await _copiar(document.getElementById('fbPostTA').value);
+        this.textContent = '✅ Copiado';
+        setTimeout(() => { this.textContent = '📋 Copiar'; }, 2000);
+    });
+
+    document.getElementById('btnAbrirFb')?.addEventListener('click', async function() {
+        await _copiar(document.getElementById('fbPostTA').value);
+        mostrarNotificacion('✅ Texto copiado — pégalo en Facebook', 'success');
+        window.open(fbUrl, '_blank', 'noopener,noreferrer');
+        cerrarFbPreview();
+    });
+}
+
+function cerrarFbPreview() {
+    const m = document.getElementById('fbPreviewModal');
+    if (m) { m.classList.add('hidden'); m.style.display = 'none'; }
 }
 
 function mostrarSelectorAsistenteFacebook() {
@@ -172,9 +300,9 @@ function mostrarSelectorAsistenteFacebook() {
             info.appendChild(meta);
             const btn = document.createElement('button');
             btn.type = 'button';
-            btn.textContent = 'Copiar y Abrir';
+            btn.textContent = 'Vista previa';
             btn.style.cssText = 'background:#3B5998;color:#fff;border:none;padding:5px 14px;border-radius:6px;font-size:12px;cursor:pointer;flex-shrink:0;';
-            btn.addEventListener('click', () => { copiarYAbrirFacebook(p.id, null); cerrarFbSelector(); });
+            btn.addEventListener('click', () => { cerrarFbSelector(); previsualizarFacebook(p.id, null); });
             row.appendChild(info);
             row.appendChild(btn);
             list.appendChild(row);
@@ -379,8 +507,12 @@ function previsualizarRevolico(productoId) {
           <div>
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
               <label for="revDescTA" style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;opacity:.6;">Descripción</label>
-              <button id="btnCopyDesc" type="button" onclick="copiarRevDesc()"
-                style="${sBtnBase}background:rgba(255,107,53,.15);border:1px solid rgba(255,107,53,.35);color:#FF6B35;">📋 Copiar descripción</button>
+              <div style="display:flex;gap:6px;">
+                <button id="btnRevAI" type="button"
+                  style="${sBtnBase}background:rgba(139,92,246,.2);border:1px solid rgba(139,92,246,.4);color:#c4b5fd;">✨ IA</button>
+                <button id="btnCopyDesc" type="button" onclick="copiarRevDesc()"
+                  style="${sBtnBase}background:rgba(255,107,53,.15);border:1px solid rgba(255,107,53,.35);color:#FF6B35;">📋 Copiar</button>
+              </div>
             </div>
             <textarea id="revDescTA" rows="8"
               style="width:100%;padding:10px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:8px;color:inherit;font-size:12px;resize:vertical;outline:none;font-family:inherit;box-sizing:border-box;">${descripcion}</textarea>
@@ -403,6 +535,30 @@ function previsualizarRevolico(productoId) {
     document.getElementById('revTituloTA')?.addEventListener('input', function() {
         const count = document.getElementById('revTituloCount');
         if (count) count.textContent = `${this.value.length}/70`;
+    });
+
+    document.getElementById('btnRevAI')?.addEventListener('click', async function() {
+        this.textContent = '⏳...';
+        this.disabled = true;
+        try {
+            const result = await _generarTextoRevolicoAI(producto);
+            if (result.titulo) {
+                const ta = document.getElementById('revTituloTA');
+                if (ta) { ta.value = result.titulo; }
+                const count = document.getElementById('revTituloCount');
+                if (count) count.textContent = `${result.titulo.length}/70`;
+            }
+            if (result.descripcion) {
+                const da = document.getElementById('revDescTA');
+                if (da) da.value = result.descripcion;
+            }
+            mostrarNotificacion('✅ Anuncio mejorado con IA', 'success');
+        } catch(e) {
+            mostrarNotificacion('❌ ' + (e.message || 'Error IA'), 'error');
+        } finally {
+            this.textContent = '✨ IA';
+            this.disabled = false;
+        }
     });
 
     document.getElementById('btnAbrirRev')?.addEventListener('click', async function() {
