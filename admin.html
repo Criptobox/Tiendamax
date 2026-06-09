@@ -862,7 +862,8 @@ async function tmAdminRefreshSubscribers(){
       });
       items.sort(function(a,b){return b.ts-a.ts;});
       var lastSeen=Number(localStorage.getItem(LAST_KEY)||0);
-      var newCount=items.filter(function(x){return x.ts>lastSeen;}).length;
+      var _atendidos=JSON.parse(localStorage.getItem('tm_int_atendidos')||'[]');
+      var newCount=items.filter(function(x){return x.ts>lastSeen&&!_atendidos.includes(x.ts);}).length;
       render(items,newCount);
     }catch(err){if(box)box.innerHTML='<div style="color:#e74c3c;font-size:12px;text-align:center;padding:14px">Error: '+esc(err.message)+'</div>';}
   }

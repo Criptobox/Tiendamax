@@ -200,27 +200,6 @@
       throw new Error("Firebase rechazó el token (HTTP " + resp.status + ")" + (t ? ": " + t : ""));
     }
     try { localStorage.removeItem(LS_PENDING); } catch (e) {}
-    // Notificar al admin si tiene alertas activadas
-    try {
-      var adm = await fetch(dbURL + "/adminConfig.json", { cache: "no-store" });
-      if (!adm.ok) throw new Error();
-      var acfg = await adm.json();
-      if (acfg && acfg.pushToken && acfg.serverKey) {
-        fetch("https://fcm.googleapis.com/fcm/send", {
-          method: "POST",
-          headers: { "Content-Type": "application/json", "Authorization": "key=" + acfg.serverKey },
-          body: JSON.stringify({
-            to: acfg.pushToken,
-            notification: {
-              title: "🔔 Nuevo suscriptor",
-              body: "Alguien se suscribió a las notificaciones de TiendaMax",
-              icon: "/iconos/icon-192.png"
-            },
-            data: { url: "/admin.html" }
-          })
-        });
-      }
-    } catch (e) {}
     return true;
   }
 
