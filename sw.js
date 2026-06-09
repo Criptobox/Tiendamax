@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════════════════
-// TiendaMax — Service Worker v259 — quita tab Atajos vacío
+// TiendaMax — Service Worker v260 — badge stock bajo + widget interesados en dashboard
 // v241: continúa al siguiente modelo Gemini si hay cuota 429
 // v240: soporte clave Gemini con prefijo AQ
 // v239: productos nuevos primero por categoría
@@ -100,7 +100,7 @@
 //      usan el mismo helper _mensajeOrdenWA con formato premium.
 // ═══════════════════════════════════════════════════════
 
-const CACHE_NAME = 'tiendamax-202606092400';
+const CACHE_NAME = 'tiendamax-202606092500';
 
 const STATIC_ASSETS = [
   '/',
