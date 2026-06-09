@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════════════════
-// TiendaMax — Service Worker v263 — alertas admin via RTDB EventSource, sin server key
+// TiendaMax — Service Worker v264 — duplicar producto, inline price/stock, interesados atendidos
 // v241: continúa al siguiente modelo Gemini si hay cuota 429
 // v240: soporte clave Gemini con prefijo AQ
 // v239: productos nuevos primero por categoría
@@ -100,7 +100,7 @@
 //      usan el mismo helper _mensajeOrdenWA con formato premium.
 // ═══════════════════════════════════════════════════════
 
-const CACHE_NAME = 'tiendamax-202606092701';
+const CACHE_NAME = 'tiendamax-202606092702';
 
 const STATIC_ASSETS = [
   '/',
