@@ -2958,12 +2958,7 @@ function actualizarListaCategorias() {
     const list = document.getElementById('categoryList');
     if (!list) return;
 
-    list.innerHTML = `
-        <div style="margin-bottom: 20px; padding: 15px; background: rgba(52, 152, 219, 0.1); border: 1px dashed #3498DB; border-radius: 10px; text-align: center;">
-            <p style="font-size: 13px; margin-bottom: 10px;">Para guardar tus categorías permanentemente, descarga este archivo y súbelo a GitHub.</p>
-            <button class="btn btn-primary" style="background:#3498DB" onclick="descargarCategoriasJSON()">📥 Descargar categorias.json</button>
-        </div>
-    `;
+    list.innerHTML = '';
 
     categorias.forEach((cat, index) => {
         const item = document.createElement('div');
