@@ -69,27 +69,30 @@ async function _generarTextoRevolicoAI(producto) {
     if (typeof tmAIChat !== 'function') throw new Error('Módulo IA no cargado');
     const whatsapp = localStorage.getItem('whatsappNumero') || '5354320170';
     const url = `https://tiendamax.org/p/producto-${producto.id}.html`;
-    const tasa = _getTasa();
-    const mn = _precioMN(producto.precioActual);
     const info = [
         `Nombre: ${producto.nombre}`,
-        `Precio: $${producto.precioActual} USD${mn}`,
+        `Precio: $${producto.precioActual} USD`,
         producto.descripcion && `Descripción: ${producto.descripcion}`,
         producto.garantia && `Garantía: ${producto.garantia}`,
         producto.stock === 0 ? 'AGOTADO' : `Stock: ${producto.stock} unidades`,
         producto.usado && 'Usado/refurbished',
-        tasa > 0 && `Tasa: 1 USD = ${tasa} MN`,
     ].filter(Boolean).join('\n');
-    const prompt = `Crea un anuncio optimizado para Revolico.com (clasificados Cuba). Devuelve JSON sin markdown:\n{"titulo":"máx 70 caracteres con nombre y precio","descripcion":"texto plano 200-350 chars con especificaciones, precio, WhatsApp ${whatsapp} y enlace ${url}"}\n\nDATOS:\n${info}`;
-    const raw = await tmAIChat(prompt, { max_tokens: 600, temperature: 0.6 });
-    const m = raw.match(/\{[\s\S]*\}/);
+    const prompt = `Crea un anuncio para Revolico.com (clasificados Cuba). Responde SOLO con JSON válido, sin markdown ni bloques de código:\n{"titulo":"solo nombre del producto, máx 70 chars, sin precio","descripcion":"descripción persuasiva en texto plano, 200-350 chars, menciona especificaciones clave, disponibilidad, WhatsApp ${whatsapp} y enlace ${url}. NO incluir precio aquí."}\n\nDATOS DEL PRODUCTO:\n${info}`;
+    const raw = await tmAIChat(prompt, { max_tokens: 700, temperature: 0.65 });
+    // Extraer JSON — intenta con y sin bloque de código
+    const clean = raw.replace(/```(?:json)?/gi, '').replace(/```/g, '').trim();
+    const m = clean.match(/\{[\s\S]*\}/);
     if (m) {
         try {
             const parsed = JSON.parse(m[0]);
-            if (parsed.titulo || parsed.descripcion) return { titulo: String(parsed.titulo || '').slice(0, 70), descripcion: parsed.descripcion || '' };
+            return {
+                titulo: String(parsed.titulo || producto.nombre).slice(0, 70),
+                descripcion: String(parsed.descripcion || raw)
+            };
         } catch (_) {}
     }
-    return { titulo: '', descripcion: raw };
+    // Fallback: usar respuesta como descripción
+    return { titulo: producto.nombre.slice(0, 70), descripcion: clean.slice(0, 500) };
 }
 
 // ── Canvas helpers para imagen de anuncio ────────────────────────────────────
@@ -518,11 +521,9 @@ function _textoRevolico(producto) {
     const whatsapp = localStorage.getItem('whatsappNumero') || '5354320170';
     const url      = `https://tiendamax.org/p/producto-${producto.id}.html`;
     const precio   = producto.precioActual;
-    const mn       = _precioMN(precio);
-    const tasa     = _getTasa();
 
+    // Título: solo nombre, sin precio (Revolico tiene campo de precio separado)
     let titulo = producto.nombre;
-    if (precio) titulo += ` — $${precio} USD${mn}`;
     if (titulo.length > 70) titulo = titulo.substring(0, 67) + '...';
 
     let desc = '';
@@ -531,11 +532,6 @@ function _textoRevolico(producto) {
     if (producto.garantia)    desc += `Garantía: ${producto.garantia}\n`;
     if (producto.devolucion)  desc += `Devolución segura garantizada\n`;
 
-    desc += `\nPrecio: $${precio} USD${mn}\n`;
-    if (tasa > 0) desc += `Tasa: 1 USD = ${tasa} MN\n`;
-    if (producto.precioOriginal > 0 && producto.precioOriginal > precio)
-        desc += `Precio anterior: $${producto.precioOriginal} USD\n`;
-
     if (producto.stock === 0) {
         desc += '\n⚠️ AGOTADO — Consultar disponibilidad\n';
     } else if (producto.stock <= 5) {
@@ -543,7 +539,7 @@ function _textoRevolico(producto) {
     }
 
     desc += `\nContacto WhatsApp: ${whatsapp}\nMás info: ${url}`;
-    return { titulo, descripcion: desc };
+    return { titulo, descripcion: desc.trim() };
 }
 
 function previsualizarRevolico(productoId) {
@@ -595,6 +591,16 @@ function previsualizarRevolico(productoId) {
             </div>
             <textarea id="revTituloTA" maxlength="70" rows="2"
               style="width:100%;padding:10px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:8px;color:inherit;font-size:13px;resize:none;outline:none;font-family:inherit;box-sizing:border-box;">${titulo}</textarea>
+          </div>
+
+          <div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+              <label for="revPrecioInp" style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;opacity:.6;">Precio (USD)</label>
+              <button id="btnCopyPrecio" type="button"
+                style="${sBtnBase}background:rgba(255,107,53,.15);border:1px solid rgba(255,107,53,.35);color:#FF6B35;">📋 Copiar precio</button>
+            </div>
+            <input id="revPrecioInp" type="text" value="${Number(producto.precioActual || 0)}"
+              style="width:100%;padding:10px;background:rgba(255,255,255,.07);border:1px solid rgba(255,107,53,.18);border-radius:8px;color:#FF6B35;font-size:15px;font-weight:700;outline:none;font-family:inherit;box-sizing:border-box;">
           </div>
 
           <div>
@@ -658,6 +664,13 @@ function previsualizarRevolico(productoId) {
     document.getElementById('revTituloTA')?.addEventListener('input', function() {
         const count = document.getElementById('revTituloCount');
         if (count) count.textContent = `${this.value.length}/70`;
+    });
+
+    document.getElementById('btnCopyPrecio')?.addEventListener('click', async function() {
+        const val = document.getElementById('revPrecioInp')?.value || '';
+        await _copiar(val);
+        this.textContent = '✅ Copiado';
+        setTimeout(() => { this.textContent = '📋 Copiar precio'; }, 2000);
     });
 
     document.getElementById('btnRevAI')?.addEventListener('click', async function() {
