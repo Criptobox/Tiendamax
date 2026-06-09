@@ -67,8 +67,8 @@ async function _generarTextoFacebookAI(producto) {
 
 async function _generarTextoRevolicoAI(producto) {
     if (typeof tmAIChat !== 'function') throw new Error('Módulo IA no cargado');
-    const whatsapp = localStorage.getItem('whatsappNumero') || '5354320170';
-    const url = `https://tiendamax.org/p/producto-${producto.id}.html`;
+    const url  = `https://tiendamax.org/p/producto-${producto.id}.html`;
+    const tags = _hashtagsCategoria(producto.categoria);
     const info = [
         `Nombre: ${producto.nombre}`,
         `Precio: $${producto.precioActual} USD`,
@@ -77,7 +77,7 @@ async function _generarTextoRevolicoAI(producto) {
         producto.stock === 0 ? 'AGOTADO' : `Stock: ${producto.stock} unidades`,
         producto.usado && 'Usado/refurbished',
     ].filter(Boolean).join('\n');
-    const prompt = `Crea un anuncio para Revolico.com (clasificados Cuba). Responde SOLO con JSON válido, sin markdown ni bloques de código:\n{"titulo":"solo nombre del producto, máx 70 chars, sin precio","descripcion":"descripción persuasiva en texto plano, 200-350 chars, menciona especificaciones clave, disponibilidad, WhatsApp ${whatsapp} y enlace ${url}. NO incluir precio aquí."}\n\nDATOS DEL PRODUCTO:\n${info}`;
+    const prompt = `Crea un anuncio para Revolico.com (clasificados Cuba). Responde SOLO con JSON válido, sin markdown ni bloques de código:\n{"titulo":"solo nombre del producto, máx 70 chars, sin precio","descripcion":"descripción persuasiva en texto plano, 150-280 chars, menciona especificaciones clave y disponibilidad. NO incluir precio ni número de WhatsApp (Revolico los muestra automáticamente). Terminar con enlace ${url} y los hashtags: ${tags}"}\n\nDATOS DEL PRODUCTO:\n${info}`;
     const raw = await tmAIChat(prompt, { max_tokens: 700, temperature: 0.65 });
     // Extraer JSON — intenta con y sin bloque de código
     const clean = raw.replace(/```(?:json)?/gi, '').replace(/```/g, '').trim();
@@ -518,9 +518,8 @@ const _REVOLICO_CATS = {
 const _REVOLICO_DEFAULT = { label: 'Electrónica', url: 'https://www.revolico.com/anuncios/nuevo/?c=9' };
 
 function _textoRevolico(producto) {
-    const whatsapp = localStorage.getItem('whatsappNumero') || '5354320170';
-    const url      = `https://tiendamax.org/p/producto-${producto.id}.html`;
-    const precio   = producto.precioActual;
+    const url   = `https://tiendamax.org/p/producto-${producto.id}.html`;
+    const tags  = _hashtagsCategoria(producto.categoria);
 
     // Título: solo nombre, sin precio (Revolico tiene campo de precio separado)
     let titulo = producto.nombre;
@@ -538,7 +537,7 @@ function _textoRevolico(producto) {
         desc += `\nDisponibilidad: ${producto.stock} unidad${producto.stock !== 1 ? 'es' : ''}\n`;
     }
 
-    desc += `\nContacto WhatsApp: ${whatsapp}\nMás info: ${url}`;
+    desc += `\nMás info: ${url}\n\n${tags}`;
     return { titulo, descripcion: desc.trim() };
 }
 

@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════════════════
-// TiendaMax — Service Worker v256 — dashTop con fotos compactas, quita botones Rev/FB de Gestionar
+// TiendaMax — Service Worker v257 — descripción Revolico sin WhatsApp, con hashtags por categoría
 // v241: continúa al siguiente modelo Gemini si hay cuota 429
 // v240: soporte clave Gemini con prefijo AQ
 // v239: productos nuevos primero por categoría
@@ -100,7 +100,7 @@
 //      usan el mismo helper _mensajeOrdenWA con formato premium.
 // ═══════════════════════════════════════════════════════
 
-const CACHE_NAME = 'tiendamax-202606092200';
+const CACHE_NAME = 'tiendamax-202606092300';
 
 const STATIC_ASSETS = [
   '/',
