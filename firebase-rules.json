@@ -103,6 +103,16 @@
         ".validate": "newData.hasChildren(['producto', 'precio', 'cantidad', 'total', 'fecha']) && newData.child('precio').isNumber() && newData.child('cantidad').isNumber() && newData.child('total').isNumber()"
       }
     },
+    "lista_espera": {
+      ".read": true,
+      ".write": false,
+      "$productoId": {
+        "$entradaId": {
+          ".write": true,
+          ".validate": "newData.hasChildren(['tel','productoId','ts']) && newData.child('tel').isString() && newData.child('tel').val().length >= 6 && newData.child('tel').val().length <= 25 && newData.child('ts').isNumber()"
+        }
+      }
+    },
     "interesados": {
       ".read": true,
       ".write": false,

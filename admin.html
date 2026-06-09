@@ -14,6 +14,23 @@
 <section id="historial" class="admin-tab"><div class="head"><div><h1>Historial</h1><p class="sub">Snapshots y cambios recientes.</p></div></div><div class="card"><p class="sub">El historial avanzado está en Herramientas.</p></div></section>
 <section id="manage-categories" class="admin-tab"><div class="head"><div><h1>Categorías</h1><p class="sub">Administrar categorías reales.</p></div></div><div class="card"><div class="form-grid"><input id="newCategoryName" placeholder="Nombre de categoría"><input id="newCategoryIcon" placeholder="Emoji"></div><div style="display:flex;gap:8px;margin-top:10px"><button class="btn primary" data-action="agregarCategoria" style="flex:1">+ Agregar</button><button class="btn" onclick="if(typeof descargarCategoriasJSON==='function')descargarCategoriasJSON()" title="Descargar categorias.json" style="width:42px;height:42px;padding:0;font-size:18px;flex-shrink:0">📥</button></div></div><div id="categoryList" class="category-list"></div></section>
 <section id="manage-subcategories" class="admin-tab"><div class="head"><div><h1>Subcategorías</h1><p class="sub">Organización por categoría padre.</p></div></div><div class="card"><div class="form-grid"><select id="subcategoryParentCategory"></select><input id="newSubcategoryName" placeholder="Nombre subcategoría"></div><div style="display:flex;gap:8px;margin-top:10px"><button class="btn primary" data-action="agregarSubcategoria" style="flex:1">+ Agregar</button><button class="btn" onclick="if(typeof sincronizarSubcategoriasConGitHub==='function')sincronizarSubcategoriasConGitHub()" title="Guardar subcategorías en GitHub" style="width:42px;height:42px;padding:0;font-size:18px;flex-shrink:0">☁️</button></div></div><div id="subcategoryList" class="subcategory-list"></div></section>
+<section id="lista-espera" class="admin-tab"><style>
+.le-prod-card{background:rgba(255,255,255,.04);border-radius:14px;padding:14px 16px;margin-bottom:12px;border:1px solid rgba(255,255,255,.07)}
+.le-prod-head{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.le-prod-name{flex:1;font-size:14px;font-weight:700;color:#e0e0e0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.le-count{background:rgba(255,107,53,.18);color:#FF6B35;border:1px solid rgba(255,107,53,.35);border-radius:20px;padding:3px 10px;font-size:11px;font-weight:800;white-space:nowrap}
+.le-stock-ok{background:rgba(46,204,113,.15);color:#2ecc71;border:1px solid rgba(46,204,113,.3);border-radius:20px;padding:3px 10px;font-size:11px;font-weight:700}
+.le-stock-0{background:rgba(231,76,60,.15);color:#e74c3c;border:1px solid rgba(231,76,60,.3);border-radius:20px;padding:3px 10px;font-size:11px;font-weight:700}
+.le-cliente{display:flex;align-items:center;gap:8px;padding:7px 10px;background:rgba(255,255,255,.03);border-radius:10px;margin-bottom:5px}
+.le-cliente-info{flex:1;min-width:0}
+.le-cliente-nombre{font-size:12px;font-weight:700;color:#e0e0e0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.le-cliente-tel{font-size:11px;color:#888}
+.le-wa-btn{background:#25D366;border:none;border-radius:8px;padding:6px 12px;font-size:11px;font-weight:700;color:#fff;cursor:pointer;white-space:nowrap;flex-shrink:0}
+.le-del-btn{background:rgba(231,76,60,.12);border:1px solid rgba(231,76,60,.25);border-radius:8px;padding:6px 8px;font-size:11px;color:#e74c3c;cursor:pointer;flex-shrink:0}
+</style>
+<div class="head"><div><h1>🔔 Lista de espera</h1><p class="sub">Clientes que quieren ser avisados cuando un producto vuelva a estar disponible.</p></div><button class="btn" onclick="leCargar()" style="flex-shrink:0">🔄 Actualizar</button></div>
+<div id="leContenido"><div class="card" style="text-align:center;padding:32px;color:#555">Cargando…</div></div>
+</section>
 <section id="organizar-subcategorias" class="admin-tab"><style>.tmorg-tabs{display:flex;gap:6px;margin-bottom:16px}.tmorg-tab{padding:8px 18px;border-radius:30px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);color:#888;font-size:13px;font-weight:600;cursor:pointer;transition:.18s}.tmorg-tab.active{background:#FF6B35;border-color:#FF6B35;color:#fff}.tmorg-rule-row{display:flex;align-items:center;gap:8px;padding:7px 10px;background:rgba(255,255,255,.03);border-radius:8px;margin-bottom:5px;font-size:12px}.tmorg-rule-kw{flex:1;color:#e0e0e0;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.tmorg-rule-sub{color:#FF6B35;font-size:11px;white-space:nowrap}.tmorg-prod-row{display:flex;align-items:center;gap:10px;padding:8px 10px;background:rgba(255,255,255,.03);border-radius:10px;margin-bottom:5px}.tmorg-prod-name{flex:1;font-size:12px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#e0e0e0}.tmorg-prod-cat{font-size:10px;color:#888;display:block;margin-top:1px}.tmorg-prod-sel{background:#12121f;border:1px solid rgba(255,255,255,.12);color:#ccc;border-radius:8px;padding:5px 8px;font-size:11px;cursor:pointer;max-width:190px;min-width:120px}.tmorg-unassigned{border-left:3px solid rgba(231,76,60,.6)!important}.tmorg-badge-ok{background:rgba(46,204,113,.15);color:#2ecc71;border:1px solid rgba(46,204,113,.3);border-radius:20px;padding:3px 9px;font-size:11px;font-weight:700;white-space:nowrap}.tmorg-badge-warn{background:rgba(231,76,60,.15);color:#e74c3c;border:1px solid rgba(231,76,60,.3);border-radius:20px;padding:3px 9px;font-size:11px;font-weight:700;white-space:nowrap}</style><div class="head"><div><h1>🗂 Organizar</h1><p class="sub">Clasifica productos en subcategorías automáticamente o de forma manual.</p></div><button class="btn primary" id="btnOrgGH" onclick="tmOrgGitHub()">☁️ Guardar en GitHub</button></div><div class="tmorg-tabs"><button class="tmorg-tab active" onclick="tmOrgSwitchTab('auto',this)">⚡ Auto-clasificar</button><button class="tmorg-tab" onclick="tmOrgSwitchTab('manual',this)">✏️ Revisión manual</button></div><div id="tmOrgBodyAuto"><div class="card"><h2 style="margin-bottom:8px">Reglas por categoría</h2><p class="sub" style="margin-bottom:12px">Cada regla busca la palabra clave en el nombre del producto (sin distinguir mayúsculas) y asigna la subcategoría indicada. Se aplican en orden — la primera que coincida gana.</p><div class="form-grid" style="margin-bottom:12px"><select id="tmOrgCat" onchange="tmOrgRenderRules()"><option value="">— Selecciona categoría —</option></select></div><div id="tmOrgRulesList"><p style="color:#555;font-size:12px;text-align:center;padding:14px">Selecciona una categoría para ver sus reglas.</p></div><div class="form-grid" style="margin-top:10px"><input id="tmOrgKw" placeholder="Palabra clave (ej: llanta)"><select id="tmOrgSub"><option value="">— Subcategoría —</option></select><button class="btn primary" onclick="tmOrgAddRule()">+ Regla</button></div></div><div class="card" style="margin-top:12px"><button class="btn primary" style="width:100%;padding:12px;font-size:14px" onclick="tmOrgAplicar()">⚡ Clasificar todos los productos ahora</button><div id="tmOrgResultado" style="margin-top:12px"></div></div></div><div id="tmOrgBodyManual" style="display:none"><div class="card"><div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px"><select id="tmOrgManualCat" onchange="tmOrgRenderGrid()" style="flex:1;min-width:160px"><option value="">Todas las categorías</option></select><span id="tmOrgManualStats" style="font-size:12px;color:#888"></span></div><div id="tmOrgGrid"></div></div></div></section>
 <section id="oferta-dia" class="admin-tab"><div class="head"><div><h1>Oferta del día</h1><p class="sub">Destacar producto y gestionar agotados.</p></div></div><div class="grid2"><div class="card"><h2>Oferta</h2><select id="ofertaDiaSelect2"></select><input id="ofertaDiaTexto2" placeholder="🔥 OFERTA DEL DÍA" style="margin-top:10px"><div class="actions"><button class="btn primary" data-action="guardarOfertaDia">Activar</button><button class="btn" data-action="desactivarOfertaDia">Desactivar</button></div><div id="ofertaDiaStatus2"></div></div><div class="card"><h2>Agotados</h2><div id="productosAgotadosList"></div></div></div></section>
 <section id="apariencia" class="admin-tab"><div class="head"><div><h1>Apariencia</h1><p class="sub">Banners, hero y countdown.</p></div></div><div class="grid2"><div class="card"><h2>Banners</h2><div id="bannerList"></div><input id="nuevoBannerFile" type="file" accept="image/*"><input id="nuevoBannerUrl" placeholder="URL imagen"><input id="nuevoBannerLink" placeholder="Link"><button class="btn primary" data-action="agregarBanner" style="margin-top:10px">+ Agregar banner</button><button class="btn gold" onclick="exportarBannersJSON()" style="margin-top:10px">📥 Descargar banners.json</button></div><div class="card"><h2>Countdown</h2><input id="heroTaglineInput" placeholder="Tagline"><select id="countdownProductSelect"></select><div class="form-grid"><input id="countdownHoras" type="number" value="2"><input id="countdownMinutos" type="number" value="30"></div><input id="countdownTexto" value="¡Oferta especial!"><button class="btn primary" data-action="guardarCountdown" style="margin-top:10px">Activar countdown</button><div id="countdownStatus"></div></div></div></section>
@@ -1034,6 +1051,145 @@ async function tmAdminRefreshSubscribers(){
   obs.observe(document.body,{childList:true,subtree:true});
   document.addEventListener('click',function(e){if(e.target.closest('[data-action="editarProducto"],[data-action*="edit"]'))setTimeout(restoreEditToggle,300);});
   document.addEventListener('DOMContentLoaded',function(){setTimeout(function(){patchVentas();restoreEditToggle();},800);});
+})();
+</script>
+<script>
+/* ════════════════════════════════════════════════════════════════════
+   🔔 Lista de espera — admin module
+   ════════════════════════════════════════════════════════════════════ */
+(function(){
+'use strict';
+function rtdb(){try{var c=JSON.parse(localStorage.getItem('firebaseConfig')||'{}');return c.databaseURL||(c.projectId?'https://'+c.projectId+'-default-rtdb.firebaseio.com':null);}catch(e){return null;}}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function waTel(tel){return tel.replace(/[^0-9+]/g,'');}
+
+window.leCargar=async function(){
+  var base=rtdb(),box=document.getElementById('leContenido');
+  if(!box)return;
+  if(!base){box.innerHTML='<div class="card" style="color:#e74c3c;text-align:center;padding:24px">Configura Firebase en <b>Configuración</b> primero.</div>';return;}
+  box.innerHTML='<div class="card" style="text-align:center;padding:32px;color:#555">Cargando…</div>';
+  try{
+    var res=await fetch(base+'/lista_espera.json?_='+Date.now(),{cache:'no-store'});
+    if(!res.ok)throw new Error('HTTP '+res.status);
+    var data=await res.json();
+    if(!data||!Object.keys(data).length){box.innerHTML='<div class="card" style="text-align:center;padding:32px"><div style="font-size:40px;margin-bottom:10px">🔔</div><p style="color:#888;font-size:13px">Ningún cliente en lista de espera aún.</p></div>';return;}
+    var prods=typeof productos!=='undefined'?productos:[];
+    var html='',total=0;
+    Object.keys(data).forEach(function(pid){
+      var entradas=data[pid];if(!entradas||typeof entradas!=='object')return;
+      var clientes=Object.keys(entradas).map(function(k){return Object.assign({_key:k},entradas[k]);});
+      clientes.sort(function(a,b){return(b.ts||0)-(a.ts||0);});
+      var prod=prods.find(function(p){return String(p.id)===String(pid);});
+      var nombre=(prod&&prod.nombre)||clientes[0].producto||'Producto '+pid;
+      var stock=prod?Number(prod.stock||0):-1;
+      var stockBadge=stock<0?'':(stock>0?'<span class="le-stock-ok">✅ '+stock+' en stock</span>':'<span class="le-stock-0">❌ Agotado</span>');
+      total+=clientes.length;
+      html+='<div class="le-prod-card"><div class="le-prod-head"><div class="le-prod-name">'+esc(nombre.slice(0,55))+'</div><span class="le-count">'+clientes.length+' esperando</span>'+stockBadge+'</div>';
+      clientes.forEach(function(c){
+        var fecha=c.ts?new Date(c.ts).toLocaleDateString('es-CU',{day:'2-digit',month:'short'}):'';
+        var tel=waTel(c.tel||'');
+        var waMsg='¡Hola '+(c.nombre||'')+'! 🎉 El producto "'+nombre+'" que esperabas ya está disponible en TiendaMax. 👉 https://tiendamax.org';
+        var waUrl='https://wa.me/'+tel+'?text='+encodeURIComponent(waMsg);
+        html+='<div class="le-cliente"><div style="width:30px;height:30px;border-radius:50%;background:#1e1e2a;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0">👤</div><div class="le-cliente-info"><div class="le-cliente-nombre">'+esc(c.nombre||'(sin nombre)')+'</div><div class="le-cliente-tel">📱 '+esc(c.tel||'—')+(fecha?' · '+fecha:'')+'</div></div>'+(tel?'<button class="le-wa-btn" onclick="window.open(\''+waUrl.replace(/'/g,"\\'")+'\')" >WhatsApp</button>':'')+'<button class="le-del-btn" onclick="leEliminar(\''+esc(pid)+'\',\''+esc(c._key)+'\',this)">🗑️</button></div>';
+      });
+      html+='</div>';
+    });
+    box.innerHTML='<p style="font-size:13px;color:#888;margin-bottom:14px">'+total+' cliente'+(total!==1?'s':'')+' en lista de espera</p>'+html;
+  }catch(e){box.innerHTML='<div class="card" style="color:#e74c3c;padding:16px">Error: '+esc(e.message)+'</div>';}
+};
+
+window.leEliminar=async function(pid,key,btn){
+  var base=rtdb();if(!base)return;
+  if(btn){btn.disabled=true;btn.textContent='⏳';}
+  try{
+    await fetch(base+'/lista_espera/'+encodeURIComponent(pid)+'/'+encodeURIComponent(key)+'.json',{method:'DELETE'});
+    var row=btn?btn.closest('.le-cliente'):null;
+    if(row){row.style.opacity='0';row.style.transition='opacity .3s';setTimeout(function(){row.remove();},320);}
+    if(typeof mostrarNotificacion==='function')mostrarNotificacion('🗑️ Entrada eliminada','success');
+  }catch(e){if(btn){btn.disabled=false;btn.textContent='🗑️';}}
+};
+
+window.tmCheckListaEspera=async function(productoId,productoNombre,stockNuevo){
+  if(!stockNuevo||stockNuevo<=0)return;
+  var base=rtdb();if(!base)return;
+  try{
+    var res=await fetch(base+'/lista_espera/'+String(productoId)+'.json?_='+Date.now(),{cache:'no-store'});
+    if(!res.ok)return;
+    var data=await res.json();
+    if(!data||typeof data!=='object')return;
+    var clientes=Object.values(data).filter(function(c){return c&&c.tel;});
+    if(!clientes.length)return;
+    var old=document.getElementById('tmRestockAlert');if(old)old.remove();
+    var box=document.createElement('div');
+    box.id='tmRestockAlert';
+    box.style.cssText='position:fixed;top:20px;right:20px;z-index:9998;background:#1a1a2e;border:1px solid rgba(255,107,53,.4);border-radius:16px;padding:16px 18px;max-width:300px;box-shadow:0 8px 32px rgba(0,0,0,.6)';
+    box.innerHTML='<div style="display:flex;gap:10px;align-items:flex-start"><span style="font-size:22px">🔔</span><div style="flex:1;min-width:0"><b style="font-size:13px;color:#FF6B35">'+clientes.length+' cliente'+(clientes.length!==1?'s':'')+' esperan este producto</b><p style="font-size:11px;color:#aaa;margin:4px 0 10px;line-height:1.4"><b style="color:#ddd">'+esc((productoNombre||'').slice(0,38))+'</b> volvió al stock.</p><div style="display:flex;gap:8px"><button onclick="if(typeof switchTab===\'function\')switchTab(\'lista-espera\');document.getElementById(\'tmRestockAlert\').remove()" style="flex:1;background:#FF6B35;border:none;border-radius:8px;padding:8px;font-size:11px;font-weight:700;color:#fff;cursor:pointer">Ver lista</button><button onclick="document.getElementById(\'tmRestockAlert\').remove()" style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:8px 10px;font-size:11px;color:#888;cursor:pointer">✕</button></div></div></div>';
+    document.body.appendChild(box);
+    setTimeout(function(){var a=document.getElementById('tmRestockAlert');if(a)a.remove();},15000);
+  }catch(e){}
+};
+
+/* Hook sobre guardarProductoEditado para detectar reposición de stock */
+(function(){
+  function patch(){
+    if(typeof guardarProductoEditado!=='function')return false;
+    var _orig=guardarProductoEditado;
+    guardarProductoEditado=function(event){
+      var idEl=document.getElementById('editProductId'),stockEl=document.getElementById('editProductStock');
+      var anteriorStock=-1,prodId=null,prodNombre='';
+      if(idEl&&stockEl){
+        prodId=parseInt(idEl.value);
+        var prods=typeof productos!=='undefined'?productos:[];
+        var prev=prods.find(function(p){return p.id===prodId;});
+        anteriorStock=prev?Number(prev.stock||0):-1;
+        prodNombre=prev?(prev.nombre||''):'';
+      }
+      var stockNuevo=stockEl?parseInt(stockEl.value)||0:0;
+      var result=_orig.apply(this,arguments);
+      if(prodId!==null&&anteriorStock===0&&stockNuevo>0)setTimeout(function(){tmCheckListaEspera(prodId,prodNombre,stockNuevo);},900);
+      return result;
+    };
+    return true;
+  }
+  if(!patch()){var t=0,iv=setInterval(function(){t++;if(patch()||t>60)clearInterval(iv);},200);}
+})();
+
+/* Nav button + badge */
+(function(){
+  function addNav(){
+    var tabs=document.querySelector('.admin-tabs-desktop');
+    if(!tabs||tabs.querySelector('[data-tab="lista-espera"]'))return;
+    var after=tabs.querySelector('[data-arg="manage-subcategories"]');
+    var b=document.createElement('button');
+    b.type='button';b.className='tab-btn';b.dataset.tab='lista-espera';
+    b.setAttribute('data-action','switchTab');b.setAttribute('data-arg','lista-espera');
+    b.innerHTML='<span class="nav-emoji">🔔</span><span class="txt">Lista espera</span><span class="badge" id="leBadge" style="display:none;background:#FF6B35">0</span>';
+    if(after&&after.nextSibling)tabs.insertBefore(b,after.nextSibling);else tabs.appendChild(b);
+  }
+  async function updateBadge(){
+    var base=rtdb();if(!base)return;
+    try{
+      var res=await fetch(base+'/lista_espera.json?shallow=true&_='+Date.now(),{cache:'no-store'});
+      if(!res.ok)return;
+      var data=await res.json();
+      var prods=typeof productos!=='undefined'?productos:[];
+      /* Contar entradas totales */
+      var count=0;
+      if(data&&typeof data==='object'){
+        Object.keys(data).forEach(function(pid){
+          var e=data[pid];
+          if(e&&typeof e==='object')count+=Object.keys(e).length;
+        });
+      }
+      var badge=document.getElementById('leBadge');
+      if(badge){badge.textContent=count>9?'9+':count;badge.style.display=count>0?'':'none';}
+    }catch(e){}
+  }
+  document.addEventListener('click',function(e){if(e.target.closest('[data-arg="lista-espera"]'))setTimeout(leCargar,150);});
+  if(document.readyState==='complete'||document.readyState==='interactive'){addNav();setTimeout(updateBadge,5000);}
+  else document.addEventListener('DOMContentLoaded',function(){addNav();setTimeout(updateBadge,5000);});
+})();
+
 })();
 </script>
 <script>
