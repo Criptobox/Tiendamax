@@ -229,7 +229,8 @@ function _textoFacebook(producto) {
 }
 
 async function copiarYAbrirFacebook(productoId, grupoUrl) {
-    const producto = (typeof productos !== 'undefined') && productos.find(p => p.id === productoId);
+    const _allProds = (() => { try { if (Array.isArray(window.productos)) return window.productos; } catch(e){} try { return JSON.parse(localStorage.getItem('productos')||'[]'); } catch(e){ return []; } })();
+    const producto = _allProds.find(p => String(p.id) === String(productoId));
     if (!producto) return;
     await _copiar(_textoFacebook(producto));
     mostrarNotificacion('✅ Texto copiado — pégalo en Facebook', 'success');
@@ -237,7 +238,8 @@ async function copiarYAbrirFacebook(productoId, grupoUrl) {
 }
 
 function previsualizarFacebook(productoId, grupoUrl) {
-    const producto = (typeof productos !== 'undefined') && productos.find(p => p.id === productoId);
+    const _allProds = (() => { try { if (Array.isArray(window.productos)) return window.productos; } catch(e){} try { return JSON.parse(localStorage.getItem('productos')||'[]'); } catch(e){ return []; } })();
+    const producto = _allProds.find(p => String(p.id) === String(productoId));
     if (!producto) return;
 
     const existing = document.getElementById('fbPreviewModal');
@@ -545,7 +547,8 @@ function _textoRevolico(producto) {
 }
 
 function previsualizarRevolico(productoId) {
-    const producto = (typeof productos !== 'undefined') && productos.find(p => p.id === productoId);
+    const _allProds = (() => { try { if (Array.isArray(window.productos)) return window.productos; } catch(e){} try { return JSON.parse(localStorage.getItem('productos')||'[]'); } catch(e){ return []; } })();
+    const producto = _allProds.find(p => String(p.id) === String(productoId));
     if (!producto) return;
 
     const catInfo = _REVOLICO_CATS[producto.categoria] || _REVOLICO_DEFAULT;

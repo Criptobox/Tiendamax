@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════════════════
-// TiendaMax — Service Worker v252 — nueva pestaña Publicar con acordeón por producto
+// TiendaMax — Service Worker v253 — fix vieja sección Publicar oculta, fix botón Revolico
 // v241: continúa al siguiente modelo Gemini si hay cuota 429
 // v240: soporte clave Gemini con prefijo AQ
 // v239: productos nuevos primero por categoría
@@ -100,7 +100,7 @@
 //      usan el mismo helper _mensajeOrdenWA con formato premium.
 // ═══════════════════════════════════════════════════════
 
-const CACHE_NAME = 'tiendamax-202606091800';
+const CACHE_NAME = 'tiendamax-202606091900';
 
 const STATIC_ASSETS = [
   '/',

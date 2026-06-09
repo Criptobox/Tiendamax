@@ -2291,6 +2291,8 @@ function tmExtractJsonObject(text) {
   function cats(){return [...new Set(products().map(p=>p.categoria||'General').filter(Boolean))].sort();}
   function ensure(){
     const tab=document.getElementById('publicar-ahora'); if(!tab) return;
+    // La nueva pestaña Publicar reemplaza esta sección; no inyectar si está activa
+    if(document.getElementById('tmPublicarRoot')) return;
     let card=document.getElementById('tmShareProductsCard');
     if(!card){
       card=document.createElement('div'); card.id='tmShareProductsCard'; card.className='card tm-share-products-card';
