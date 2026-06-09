@@ -202,7 +202,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1780510718915.webp",
     "precioActual": 65,
     "descuento": 0,
-    "stock": 47,
+    "stock": 0,
     "categoria": "ENERGIA",
     "masVendido": false,
     "usado": false,
@@ -1092,7 +1092,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1779205927276.webp",
     "precioActual": 90,
     "descuento": 0,
-    "stock": 0,
+    "stock": 6,
     "comision": 5,
     "categoria": "ENERGIA",
     "subcategoria": "CARGADORES",
@@ -1100,7 +1100,12 @@
     "usado": false,
     "garantia": "",
     "devolucion": false,
-    "nombreNormalizadoAt": "2026-06-09T19:34:37.031Z"
+    "nombreNormalizadoAt": "2026-06-09T19:34:37.031Z",
+    "precioOriginal": 0,
+    "imagenes": [
+      "https://tiendamax.org/imagenes/img_1779205927276.webp"
+    ],
+    "comisionMoneda": "USD"
   },
   {
     "id": 1779208523952,
