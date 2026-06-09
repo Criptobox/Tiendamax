@@ -671,3 +671,49 @@ function cerrarRevSelector() {
     const m = document.getElementById('revSelectorModal');
     if (m) { m.classList.add('hidden'); m.style.display = 'none'; }
 }
+
+// ── Botones "Publicar" directos en la lista de configuración de Revolico ─────
+(function() {
+    const BTN_STYLE = 'background:#e67e22;color:#fff;border:none;padding:6px 14px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0;margin-left:4px;';
+
+    function _addPublishButtons() {
+        const lista = document.getElementById('listaRevolicoConfig');
+        if (!lista || typeof productos === 'undefined') return;
+        lista.querySelectorAll(':scope > div').forEach(row => {
+            if (row.querySelector('.rev-pub-direct')) return;
+            if (!row.querySelector('select')) return; // agotado rows have no select
+            const nameEl = row.querySelector('span');
+            if (!nameEl) return;
+            const nombre = nameEl.textContent.trim();
+            const prod = productos.find(p => p.nombre === nombre);
+            if (!prod) return;
+            const btn = document.createElement('button');
+            btn.className = 'rev-pub-direct';
+            btn.type = 'button';
+            btn.textContent = '🟠 Publicar';
+            btn.style.cssText = BTN_STYLE;
+            btn.addEventListener('click', () => previsualizarRevolico(prod.id));
+            row.appendChild(btn);
+        });
+    }
+
+    // Patch renderizarRevolicoConfig so buttons are added every time the list re-renders
+    function _patchIfReady() {
+        if (typeof window.renderizarRevolicoConfig !== 'function') {
+            setTimeout(_patchIfReady, 200);
+            return;
+        }
+        const _orig = window.renderizarRevolicoConfig;
+        window.renderizarRevolicoConfig = function() {
+            _orig.apply(this, arguments);
+            setTimeout(_addPublishButtons, 0);
+        };
+        _addPublishButtons(); // run once for already-rendered list
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', _patchIfReady);
+    } else {
+        _patchIfReady();
+    }
+})();
