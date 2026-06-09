@@ -827,6 +827,7 @@ async function tmAdminRefreshSubscribers(){
     var atendidos=JSON.parse(localStorage.getItem('tm_int_atendidos')||'[]');
     var pendientes=items.filter(function(x){return!atendidos.includes(x.ts);});
     var atendidosCount=items.length-pendientes.length;
+    if(!pendientes.length){box.innerHTML='<div style="color:#2ecc71;font-size:12px;text-align:center;padding:14px">✅ Todo atendido</div>'+(atendidosCount>0?'<div style="text-align:center;padding:2px 0 4px;font-size:11px;color:#555">'+atendidosCount+' atendidos</div>':'');setBadge(0);return;}
     var lastSeen=Number(localStorage.getItem(LAST_KEY)||0);
     box.innerHTML=pendientes.slice(0,15).map(function(x){
       var isNew=x.ts>lastSeen;
@@ -909,6 +910,7 @@ async function tmAdminRefreshSubscribers(){
     if(_esInt){try{_esInt.close();}catch(e){}}
     _intReady=false;
     _esInt=new EventSource(base+'/interesados.json');
+    _esInt.onerror=function(){if(!_intReady)setStatus('⚠️ Error conectando alertas — revisa Firebase',false);};
     _esInt.addEventListener('put',function(e){
       var m;try{m=JSON.parse(e.data);}catch(err){return;}
       if(m.path==='/'){_intReady=true;return;}

@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════════════════
-// TiendaMax — Service Worker v266 — fix btn.disabled, patch listener tokens, precioActual undefined
+// TiendaMax — Service Worker v267 — fix estado vacío atendidos y onerror EventSource
 // v241: continúa al siguiente modelo Gemini si hay cuota 429
 // v240: soporte clave Gemini con prefijo AQ
 // v239: productos nuevos primero por categoría
@@ -100,7 +100,7 @@
 //      usan el mismo helper _mensajeOrdenWA con formato premium.
 // ═══════════════════════════════════════════════════════
 
-const CACHE_NAME = 'tiendamax-202606092704';
+const CACHE_NAME = 'tiendamax-202606092705';
 
 const STATIC_ASSETS = [
   '/',
