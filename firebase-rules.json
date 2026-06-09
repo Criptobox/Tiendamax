@@ -103,6 +103,16 @@
         ".validate": "newData.hasChildren(['producto', 'precio', 'cantidad', 'total', 'fecha']) && newData.child('precio').isNumber() && newData.child('cantidad').isNumber() && newData.child('total').isNumber()"
       }
     },
+    "interesados": {
+      ".read": true,
+      ".write": false,
+      "$productoId": {
+        "$ts": {
+          ".write": true,
+          ".validate": "newData.hasChildren(['ts','producto','productoId']) && newData.child('ts').isNumber() && newData.child('producto').isString()"
+        }
+      }
+    },
     "config": {
       "version": {
         ".read": true,
