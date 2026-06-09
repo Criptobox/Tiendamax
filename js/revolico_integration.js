@@ -92,7 +92,87 @@ async function _generarTextoRevolicoAI(producto) {
     return { titulo: '', descripcion: raw };
 }
 
-// ── end AI helpers ───────────────────────────────────────────────────────────
+// ── Canvas helpers para imagen de anuncio ────────────────────────────────────
+
+function _revRoundRect(ctx, x, y, w, h, r) {
+    ctx.beginPath();
+    ctx.moveTo(x+r, y); ctx.arcTo(x+w, y, x+w, y+h, r);
+    ctx.arcTo(x+w, y+h, x, y+h, r); ctx.arcTo(x, y+h, x, y, r);
+    ctx.arcTo(x, y, x+w, y, r); ctx.closePath();
+}
+
+async function _revLoadImg(src) {
+    if (!src) return null;
+    return new Promise(res => {
+        const img = new Image(); img.crossOrigin = 'anonymous';
+        img.onload = () => res(img); img.onerror = () => res(null);
+        img.src = src;
+    });
+}
+
+function _revWrapText(ctx, text, x, y, maxW, lineH, maxLines) {
+    const words = text.split(' ');
+    let line = '', lines = 0;
+    for (const w of words) {
+        const test = line ? line + ' ' + w : w;
+        if (ctx.measureText(test).width > maxW && line) {
+            if (lines < maxLines) { ctx.fillText(line.trim(), x, y); y += lineH; lines++; }
+            line = w;
+        } else { line = test; }
+    }
+    if (line && lines < maxLines) { ctx.fillText(line.trim(), x, y); }
+    return y + lineH;
+}
+
+async function _dibujarImagenAnuncio(canvas, producto) {
+    const W = 1080, H = 1080;
+    canvas.width = W; canvas.height = H;
+    const ctx = canvas.getContext('2d');
+
+    // Fondo degradado de marca
+    const bg = ctx.createLinearGradient(0, 0, W, H);
+    bg.addColorStop(0, '#0d0d0d'); bg.addColorStop(.6, '#2b160c'); bg.addColorStop(1, '#c0390a');
+    ctx.fillStyle = bg; ctx.fillRect(0, 0, W, H);
+
+    // Borde dorado
+    ctx.strokeStyle = 'rgba(201,169,110,.8)'; ctx.lineWidth = 9;
+    _revRoundRect(ctx, 38, 38, W-76, H-76, 46); ctx.stroke();
+
+    // Foto del producto
+    const im = await _revLoadImg(producto.imagen || '');
+    const px = 76, py = 76, pw = W-152, ph = H - 76 - 200;
+    if (im) {
+        ctx.save(); _revRoundRect(ctx, px, py, pw, ph, 32); ctx.clip();
+        const r = Math.max(pw/im.width, ph/im.height);
+        ctx.drawImage(im, px+(pw-im.width*r)/2, py+(ph-im.height*r)/2, im.width*r, im.height*r);
+        ctx.restore();
+    } else {
+        ctx.save(); _revRoundRect(ctx, px, py, pw, ph, 32); ctx.clip();
+        const ph2 = ctx.createLinearGradient(px, py, px+pw, py+ph);
+        ph2.addColorStop(0, '#1e3a5c'); ph2.addColorStop(1, '#0a1828');
+        ctx.fillStyle = ph2; ctx.fillRect(px, py, pw, ph);
+        ctx.font = '200px serif'; ctx.fillStyle = 'rgba(255,107,53,.2)';
+        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillText('📷', px+pw/2, py+ph/2);
+        ctx.restore();
+    }
+
+    // Franja de marca abajo
+    const barY = H - 200;
+    const barGrad = ctx.createLinearGradient(0, barY, 0, H);
+    barGrad.addColorStop(0, 'rgba(8,6,4,0)');
+    barGrad.addColorStop(.35, 'rgba(8,6,4,.88)');
+    barGrad.addColorStop(1, 'rgba(8,6,4,.97)');
+    ctx.fillStyle = barGrad; ctx.fillRect(0, barY, W, H - barY);
+
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.font = 'bold 68px system-ui,Arial'; ctx.fillStyle = '#FF6B35';
+    ctx.fillText('TiendaMax', W/2, H - 112);
+    ctx.font = '36px system-ui,Arial'; ctx.fillStyle = 'rgba(255,255,255,.4)';
+    ctx.fillText('tiendamax.org', W/2, H - 58);
+}
+
+// ── end canvas helpers ────────────────────────────────────────────────────────
 
 async function _copiar(texto) {
     try {
@@ -490,7 +570,17 @@ function previsualizarRevolico(productoId) {
           <button class="close-btn" onclick="cerrarRevPreview()" type="button">✕</button>
         </div>
         <div style="flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:14px;">
-          ${imgSrc ? `<img src="${imgSrc}" alt="" style="width:100%;max-height:160px;object-fit:contain;border-radius:10px;background:rgba(255,255,255,.05);">` : ''}
+
+          <!-- Imagen de anuncio con branding -->
+          <div>
+            <canvas id="revImgCanvas" style="width:100%;border-radius:12px;display:block;background:#111;"></canvas>
+            <div style="display:flex;gap:8px;margin-top:8px;">
+              <button id="btnCopyRevImg" type="button"
+                style="${sBtnBase}flex:1;padding:8px 12px;background:rgba(255,107,53,.15);border:1px solid rgba(255,107,53,.35);color:#FF6B35;">📋 Copiar imagen</button>
+              <button id="btnDlRevImg" type="button"
+                style="${sBtnBase}flex:1;padding:8px 12px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);color:#ccc;">⬇️ Descargar</button>
+            </div>
+          </div>
 
           <div>
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
@@ -531,6 +621,36 @@ function previsualizarRevolico(productoId) {
       </div>`;
 
     document.body.appendChild(modal);
+
+    // Generar imagen de anuncio con branding
+    const revCanvas = document.getElementById('revImgCanvas');
+    if (revCanvas) {
+        _dibujarImagenAnuncio(revCanvas, producto).catch(() => {
+            revCanvas.style.display = 'none';
+        });
+    }
+
+    document.getElementById('btnCopyRevImg')?.addEventListener('click', async function() {
+        const cv = document.getElementById('revImgCanvas');
+        if (!cv) return;
+        cv.toBlob(async blob => {
+            try {
+                await navigator.clipboard.write([new ClipboardItem({'image/png': blob})]);
+                mostrarNotificacion('✅ Imagen copiada — pégala en el campo de foto de Revolico', 'success');
+            } catch(e) {
+                mostrarNotificacion('❌ No se pudo copiar — usa ⬇️ Descargar', 'error');
+            }
+        }, 'image/png', .95);
+    });
+
+    document.getElementById('btnDlRevImg')?.addEventListener('click', function() {
+        const cv = document.getElementById('revImgCanvas');
+        if (!cv) return;
+        const a = document.createElement('a');
+        a.download = `anuncio-${producto.id}.png`;
+        a.href = cv.toDataURL('image/png', .95);
+        a.click();
+    });
 
     document.getElementById('revTituloTA')?.addEventListener('input', function() {
         const count = document.getElementById('revTituloCount');

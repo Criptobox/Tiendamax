@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════════════════
-// TiendaMax — Service Worker v250 — botón Publicar directo en lista Revolico
+// TiendaMax — Service Worker v251 — imagen de anuncio con branding en modal Revolico
 // v241: continúa al siguiente modelo Gemini si hay cuota 429
 // v240: soporte clave Gemini con prefijo AQ
 // v239: productos nuevos primero por categoría
@@ -100,7 +100,7 @@
 //      usan el mismo helper _mensajeOrdenWA con formato premium.
 // ═══════════════════════════════════════════════════════
 
-const CACHE_NAME = 'tiendamax-202606091600';
+const CACHE_NAME = 'tiendamax-202606091700';
 
 const STATIC_ASSETS = [
   '/',
