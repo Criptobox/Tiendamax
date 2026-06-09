@@ -1,13 +1,27 @@
 {
   "General": [],
-  "WIFI": [],
-  "ENERGIA": [],
-  "CELULARES": [],
+  "WIFI": [
+    "ROUTERS",
+    "SWITCHES",
+    "ACCESORIOS"
+  ],
+  "ENERGIA": [
+    "BATERÍAS",
+    "INVERSORES",
+    "CARGADORES",
+    "CONTROLADORES SOLARES"
+  ],
+  "CELULARES": [
+    "AUDIO",
+    "ACCESORIOS"
+  ],
   "UTILES": [],
   "CARROS": [
-    "FILTROS",
-    "LUBRICANTES",
+    "ACEITES Y LUBRICANTES",
     "REFRIGERANTES",
+    "LLANTAS",
+    "ACCESORIOS",
+    "FILTROS",
     "PIEZAS Y OTROS"
   ],
   "ROPA": [
@@ -15,14 +29,20 @@
     "MUJER"
   ],
   "LENCERIA": [],
-  "SEGURIDAD": [],
+  "SEGURIDAD": [
+    "CÁMARAS",
+    "ALARMAS",
+    "CERRADURAS"
+  ],
   "HOGAR": [
     "DECORACION",
     "ELECTRODOMÉSTICOS"
   ],
   "JUEGOS": [],
   "MOTOS": [
-    "LUBRICANTES",
+    "ACEITES Y LUBRICANTES",
+    "CARGADORES",
+    "ACCESORIOS",
     "PARTES Y PIEZAS"
   ],
   "PC Y LAPTOPS": []
