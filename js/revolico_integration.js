@@ -837,3 +837,471 @@ function cerrarRevSelector() {
         _patchIfReady();
     }
 })();
+
+// ══════════════════════════════════════════════════════════════
+//  NUEVO TAB PUBLICAR — lista de productos con botones directos
+// ══════════════════════════════════════════════════════════════
+(function () {
+
+    // ── helpers localStorage ──────────────────────────────────
+    function _getGrupos() { try { return JSON.parse(localStorage.getItem('gruposFB') || '[]'); } catch (e) { return []; } }
+    function _setGrupos(g) { localStorage.setItem('gruposFB', JSON.stringify(g)); }
+    function _getGrupoProd(id) { try { return JSON.parse(localStorage.getItem('tm_prod_grupo') || '{}')[id] ?? null; } catch (e) { return null; } }
+    function _setGrupoProd(id, idx) { const m = JSON.parse(localStorage.getItem('tm_prod_grupo') || '{}'); m[id] = idx; localStorage.setItem('tm_prod_grupo', JSON.stringify(m)); }
+    function _getLastPub(id) { try { return JSON.parse(localStorage.getItem('tm_last_pub') || '{}')[id] || null; } catch (e) { return null; } }
+    function _setLastPub(id) { const m = JSON.parse(localStorage.getItem('tm_last_pub') || '{}'); m[id] = Date.now(); localStorage.setItem('tm_last_pub', JSON.stringify(m)); }
+
+    // ── estado interno ────────────────────────────────────────
+    let _filtroCat = '', _filtroTxt = '';
+
+    function _prods() {
+        try { if (Array.isArray(window.productos)) return window.productos; } catch (e) { }
+        try { return JSON.parse(localStorage.getItem('productos') || '[]'); } catch (e) { return []; }
+    }
+
+    // ── render completo del tab ───────────────────────────────
+    function renderTabPublicar() {
+        const root = document.getElementById('tmPublicarRoot');
+        if (!root) return;
+
+        const todos = _prods();
+        if (!todos.length) {
+            root.innerHTML = '<div style="padding:24px;text-align:center;color:#555;font-size:13px;">No hay productos cargados.</div>';
+            return;
+        }
+
+        const cats = [...new Set(todos.map(p => p.categoria).filter(Boolean))].sort();
+
+        // Stats
+        const pubHoy = todos.filter(p => { const t = _getLastPub(p.id); return t && Date.now() - t < 86400000; }).length;
+        const sinPub = todos.filter(p => !_getLastPub(p.id) && p.stock > 0).length;
+        const pubSem = todos.filter(p => { const t = _getLastPub(p.id); return t && Date.now() - t < 604800000; }).length;
+
+        root.innerHTML = `
+<style>
+.tm-pub-stats{display:flex;gap:8px;margin-bottom:14px}
+.tm-pub-stat{flex:1;background:#1a1a23;border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:10px;text-align:center}
+.tm-pub-stat .v{font-size:20px;font-weight:800;color:#FF6B35}
+.tm-pub-stat .l{font-size:10px;color:#555;margin-top:2px}
+.tm-pub-cats{display:flex;gap:7px;flex-wrap:nowrap;overflow-x:auto;padding-bottom:6px;scrollbar-width:none;margin-bottom:10px}
+.tm-pub-cats::-webkit-scrollbar{display:none}
+.tm-pub-chip{border:1px solid #333;border-radius:20px;padding:5px 13px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;background:#1a1a25;color:#888;flex-shrink:0;transition:all .15s}
+.tm-pub-chip.on{background:#FF6B35;border-color:#FF6B35;color:#fff}
+.tm-pub-search{position:relative;margin-bottom:10px}
+.tm-pub-search input{width:100%;background:#1a1a25;border:1px solid rgba(255,255,255,.08);border-radius:10px;color:#f0f0f0;font-size:13px;padding:10px 14px 10px 36px;outline:none}
+.tm-pub-search input::placeholder{color:#444}
+.tm-pub-search .si{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:#444;font-size:14px;pointer-events:none}
+.tm-pub-acc{background:#1a1a23;border:1px solid rgba(255,255,255,.08);border-radius:14px;margin-bottom:10px;overflow:hidden}
+.tm-pub-acc-btn{width:100%;background:none;border:none;color:#f0f0f0;padding:13px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;font-size:14px;font-weight:700;gap:10px}
+.tm-pub-acc-btn:hover{background:rgba(255,255,255,.03)}
+.tm-pub-acc-left{display:flex;align-items:center;gap:10px}
+.tm-pub-badge{font-size:11px;font-weight:800;padding:2px 9px;border-radius:20px}
+.tm-pub-badge.s{background:rgba(255,107,53,.15);color:#FF6B35}
+.tm-pub-badge.a{background:rgba(231,76,60,.12);color:#e74c3c}
+.tm-pub-acc-arrow{font-size:12px;color:#555;transition:transform .2s}
+.tm-pub-acc-btn.open .tm-pub-acc-arrow{transform:rotate(180deg)}
+.tm-pub-acc-body{display:none;border-top:1px solid rgba(255,255,255,.07)}
+.tm-pub-acc-body.open{display:block}
+.tm-pub-row{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,.04);transition:background .15s}
+.tm-pub-row:last-child{border-bottom:none}
+.tm-pub-row:hover{background:rgba(255,255,255,.02)}
+.tm-pub-thumb{width:50px;height:50px;border-radius:10px;background:#252535;flex-shrink:0;object-fit:cover;display:flex;align-items:center;justify-content:center;font-size:22px}
+.tm-pub-info{flex:1;min-width:0}
+.tm-pub-nom{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tm-pub-meta{display:flex;align-items:center;gap:6px;margin-top:4px;flex-wrap:wrap}
+.tm-pub-cat{font-size:10px;background:#1f2535;border:1px solid #3a4a6a;color:#7da4d8;padding:1px 7px;border-radius:10px;white-space:nowrap}
+.tm-pub-precio{font-size:10px;color:#666}
+.tm-pub-last{font-size:9px;color:#3a3a50;margin-top:2px}
+.tm-pub-last.r{color:#e67e22}
+.tm-pub-btns{display:flex;gap:5px;flex-shrink:0;flex-direction:column;align-items:flex-end}
+.tm-pub-btnrow{display:flex;gap:5px}
+.sh-b{border:none;border-radius:7px;font-size:10px;font-weight:700;cursor:pointer;padding:6px 9px;white-space:nowrap;transition:transform .1s}
+.sh-b:active{transform:scale(.92)}
+.sh-b.wa{background:rgba(37,211,102,.15);border:1px solid rgba(37,211,102,.3);color:#4ade80}
+.sh-b.fb{background:rgba(59,89,152,.2);border:1px solid rgba(59,89,152,.4);color:#93c5fd}
+.sh-b.fb.sg{background:rgba(96,165,250,.15);border:1px solid rgba(96,165,250,.4);color:#60a5fa;max-width:100px;overflow:hidden;text-overflow:ellipsis}
+.sh-b.fg{background:#111;border:1px solid #333;color:#555;font-size:9px}
+.sh-b.rv{background:rgba(230,126,34,.15);border:1px solid rgba(230,126,34,.35);color:#fb923c}
+</style>
+
+<div class="tm-pub-stats">
+  <div class="tm-pub-stat"><div class="v">${pubHoy}</div><div class="l">Hoy</div></div>
+  <div class="tm-pub-stat"><div class="v">${sinPub}</div><div class="l">Sin publicar</div></div>
+  <div class="tm-pub-stat"><div class="v">${pubSem}</div><div class="l">Esta semana</div></div>
+</div>
+
+<div class="tm-pub-cats" id="tmPubCats">
+  <div class="tm-pub-chip on" onclick="tmPubFiltrarCat(this,'')">Todas</div>
+  ${cats.map(c => `<div class="tm-pub-chip" onclick="tmPubFiltrarCat(this,'${_escH(c)}')">${_escH(c)}</div>`).join('')}
+</div>
+
+<div class="tm-pub-search">
+  <span class="si">🔍</span>
+  <input type="text" placeholder="Buscar producto…" oninput="tmPubBuscar(this.value)" autocomplete="off">
+</div>
+
+<div id="tmPubListaStock"></div>
+<div id="tmPubListaAgo"></div>`;
+
+        _renderListas();
+    }
+
+    function _renderListas() {
+        const todos = _prods();
+        const filtra = arr => arr.filter(p => {
+            const cOk = !_filtroCat || p.categoria === _filtroCat;
+            const tOk = !_filtroTxt || (p.nombre || '').toLowerCase().includes(_filtroTxt.toLowerCase());
+            return cOk && tOk;
+        });
+
+        const stock = filtra(todos.filter(p => Number(p.stock || 0) > 0));
+        const ago   = filtra(todos.filter(p => Number(p.stock || 0) <= 0));
+
+        const bs = document.getElementById('tmPubListaStock');
+        const ba = document.getElementById('tmPubListaAgo');
+        if (!bs || !ba) return;
+
+        bs.innerHTML = _accHtml('tmAccStock', '📦 Con stock', 's', stock, false, true);
+        ba.innerHTML = _accHtml('tmAccAgo',   '🚫 Agotados',  'a', ago,   true,  false);
+
+        // wire open toggles
+        ['tmAccStock', 'tmAccAgo'].forEach(id => {
+            const btn = document.getElementById(id + 'Btn');
+            if (btn) btn.onclick = () => {
+                const body = document.getElementById(id + 'Body');
+                const open = body.classList.contains('open');
+                body.classList.toggle('open', !open);
+                btn.classList.toggle('open', !open);
+            };
+        });
+    }
+
+    function _accHtml(id, label, badgeCls, prods, agotado, defaultOpen) {
+        const rows = prods.map(p => _rowHtml(p, agotado)).join('');
+        const empty = `<div style="padding:16px;text-align:center;font-size:12px;color:#555;">Sin productos.</div>`;
+        return `
+<div class="tm-pub-acc">
+  <button class="tm-pub-acc-btn${defaultOpen ? ' open' : ''}" id="${id}Btn">
+    <div class="tm-pub-acc-left">
+      <span>${label}</span>
+      <span class="tm-pub-badge ${badgeCls}">${prods.length}</span>
+    </div>
+    <span class="tm-pub-acc-arrow">▾</span>
+  </button>
+  <div class="tm-pub-acc-body${defaultOpen ? ' open' : ''}" id="${id}Body">
+    ${rows || empty}
+  </div>
+</div>`;
+    }
+
+    function _rowHtml(p, agotado) {
+        const grpIdx = _getGrupoProd(p.id);
+        const grupos = _getGrupos();
+        const grp    = grpIdx != null && grupos[grpIdx] ? grupos[grpIdx] : null;
+        const fbLbl  = grp ? '📘 ' + (grp.nombre.length > 12 ? grp.nombre.slice(0, 11) + '…' : grp.nombre) : '📘 FB';
+        const fbCls  = grp ? 'sh-b fb sg' : 'sh-b fb';
+        const addBtn = grp ? '' : `<button class="sh-b fg" onclick="tmPubFBAgregar('${p.id}')">+grp</button>`;
+
+        const lastT = _getLastPub(p.id);
+        let lastTxt = 'Sin publicar', recentCls = '';
+        if (lastT) {
+            const h = Math.round((Date.now() - lastT) / 3600000);
+            lastTxt = h < 24 ? `Publicado hace ${h}h` : `Publicado hace ${Math.round(h / 24)}d`;
+            recentCls = (Date.now() - lastT) < 86400000 * 2 ? 'r' : '';
+        }
+
+        const precioStr = agotado
+            ? '<span style="color:#e74c3c">Agotado</span>'
+            : `$${Number(p.precioActual || 0)} USD · ${p.stock} uds`;
+
+        const imgEl = p.imagen
+            ? `<img class="tm-pub-thumb" src="${_escH(p.imagen)}" onerror="this.outerHTML='<div class=tm-pub-thumb>📦</div>'">`
+            : `<div class="tm-pub-thumb">${p.categoria === 'WiFi' ? '📡' : p.categoria === 'Celulares' ? '📱' : p.categoria === 'Energía' ? '🔋' : p.categoria === 'Laptops' || p.categoria === 'PC y Laptops' ? '💻' : p.categoria === 'Seguridad' ? '📷' : p.categoria === 'Audio' ? '🎵' : '📦'}</div>`;
+
+        return `
+<div class="tm-pub-row" style="opacity:${agotado ? '.5' : '1'}">
+  ${imgEl}
+  <div class="tm-pub-info">
+    <div class="tm-pub-nom">${_escH(p.nombre || '')}</div>
+    <div class="tm-pub-meta">
+      <span class="tm-pub-cat">${_escH(p.categoria || '')}</span>
+      <span class="tm-pub-precio">${precioStr}</span>
+    </div>
+    <div class="tm-pub-last ${recentCls}">${lastTxt}</div>
+  </div>
+  <div class="tm-pub-btns">
+    <div class="tm-pub-btnrow">
+      <button class="sh-b wa" onclick="tmPubAbrirWA('${p.id}')">🟢 Estado</button>
+      <button class="${fbCls}" onclick="tmPubAbrirFB('${p.id}')">${fbLbl}</button>
+      ${addBtn}
+    </div>
+    <div class="tm-pub-btnrow">
+      <button class="sh-b rv" onclick="tmPubAbrirRev('${p.id}')">🟠 Revolico</button>
+    </div>
+  </div>
+</div>`;
+    }
+
+    // ── Filtros ───────────────────────────────────────────────
+    window.tmPubFiltrarCat = function (chip, cat) {
+        document.querySelectorAll('.tm-pub-chip').forEach(c => c.classList.remove('on'));
+        chip.classList.add('on');
+        _filtroCat = cat;
+        _renderListas();
+    };
+    window.tmPubBuscar = function (v) {
+        _filtroTxt = v;
+        _renderListas();
+    };
+
+    // ── Abrir Estado WA ───────────────────────────────────────
+    window.tmPubAbrirWA = function (id) {
+        const p = _prods().find(x => String(x.id) === String(id));
+        if (!p) return;
+        // Reutiliza shareStory del módulo de marketing si está disponible
+        const shareBtn = document.querySelector(`.tm-share-row[data-id="${id}"] [data-act="story"]`);
+        if (shareBtn) { shareBtn.click(); return; }
+        // Fallback: generar imagen con nuestro código
+        _abrirModalWA(p);
+    };
+
+    function _abrirModalWA(p) {
+        const ex = document.getElementById('tmPubWAModal');
+        if (ex) ex.remove();
+        const m = document.createElement('div');
+        m.id = 'tmPubWAModal';
+        m.className = 'modal';
+        m.style.cssText = 'display:flex;align-items:flex-end;';
+        m.innerHTML = `
+<div class="modal-content" style="max-width:520px;max-height:92vh;display:flex;flex-direction:column;">
+  <div class="modal-header"><h2>🟢 Estado WhatsApp — ${_escH(p.nombre)}</h2>
+  <button class="close-btn" onclick="document.getElementById('tmPubWAModal').remove()" type="button">✕</button></div>
+  <div style="padding:16px;display:flex;flex-direction:column;gap:12px;overflow-y:auto;">
+    <canvas id="tmPubWACanvas" style="width:100%;border-radius:12px;background:#111;display:block;"></canvas>
+    <div style="display:flex;gap:8px;">
+      <button type="button" onclick="tmPubCopyCanvas('tmPubWACanvas')"
+        style="flex:1;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:10px;color:#ccc;font-size:13px;font-weight:700;cursor:pointer;padding:11px;">📋 Copiar</button>
+      <button type="button" onclick="tmPubDlCanvas('tmPubWACanvas','estado-${p.id}')"
+        style="flex:1;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:10px;color:#ccc;font-size:13px;font-weight:700;cursor:pointer;padding:11px;">⬇️ Descargar</button>
+    </div>
+    <button type="button" onclick="tmPubCompartirWA('${p.id}')"
+      style="width:100%;padding:14px;background:linear-gradient(135deg,#25d366,#128c7e);color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:800;cursor:pointer;">
+      🟢 Compartir como Estado →
+    </button>
+    <p style="font-size:11px;color:#555;text-align:center;">En móvil: Compartir → WhatsApp → Estado</p>
+  </div>
+</div>`;
+        document.body.appendChild(m);
+        m.addEventListener('click', e => { if (e.target === m) m.remove(); });
+        // draw story canvas
+        const cv = document.getElementById('tmPubWACanvas');
+        _drawStoryCanvas(cv, p);
+    }
+
+    async function _drawStoryCanvas(canvas, p) {
+        const W = 1080, H = 1920;
+        canvas.width = W; canvas.height = H;
+        const ctx = canvas.getContext('2d');
+        const grad = ctx.createLinearGradient(0, 0, W, H);
+        grad.addColorStop(0, '#0d0d0d'); grad.addColorStop(.55, '#2b160c'); grad.addColorStop(1, '#ff6b35');
+        ctx.fillStyle = grad; ctx.fillRect(0, 0, W, H);
+        ctx.fillStyle = 'rgba(0,0,0,.30)'; ctx.fillRect(0, 0, W, H);
+        ctx.strokeStyle = 'rgba(201,169,110,.75)'; ctx.lineWidth = 8;
+        _revRoundRect(ctx, 44, 44, W - 88, H - 88, 42); ctx.stroke();
+        const im = await _revLoadImg(p.imagen || '');
+        if (im) {
+            ctx.save(); _revRoundRect(ctx, 120, 170, 840, 650, 36); ctx.clip();
+            const r = Math.max(840 / im.width, 650 / im.height);
+            ctx.drawImage(im, 120 + (840 - im.width * r) / 2, 170 + (650 - im.height * r) / 2, im.width * r, im.height * r);
+            ctx.restore();
+        } else {
+            ctx.save(); _revRoundRect(ctx, 120, 170, 840, 650, 36); ctx.clip();
+            const pg = ctx.createLinearGradient(120, 170, 960, 820);
+            pg.addColorStop(0, '#1a3a5c'); pg.addColorStop(1, '#060e1a');
+            ctx.fillStyle = pg; ctx.fillRect(120, 170, 840, 650);
+            ctx.font = '160px serif'; ctx.fillStyle = 'rgba(255,107,53,.2)';
+            ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+            ctx.fillText('📦', 540, 495); ctx.restore();
+        }
+        ctx.textAlign = 'center'; ctx.fillStyle = '#fff';
+        ctx.font = 'bold 66px system-ui,Arial';
+        let y = 940;
+        const words = (p.nombre || '').split(' '); let line = '';
+        for (const w of words) {
+            const t = line ? line + ' ' + w : w;
+            if (ctx.measureText(t).width > 860 && line) { ctx.fillText(line, W / 2, y); y += 78; line = w; } else line = t;
+        }
+        if (line) { ctx.fillText(line, W / 2, y); y += 78; }
+        ctx.fillStyle = '#ff6b35'; ctx.font = 'bold 82px system-ui,Arial';
+        ctx.fillText('$' + Number(p.precioActual || 0).toFixed(2) + ' USD', W / 2, y + 28); y += 130;
+        ctx.fillStyle = '#f0e0c5'; ctx.font = 'bold 42px system-ui,Arial';
+        ctx.fillText('📦 Stock: ' + Number(p.stock || 0) + '   🏷️ ' + (p.categoria || 'TiendaMax'), W / 2, y); y += 95;
+        ctx.fillStyle = '#fff'; ctx.font = '42px system-ui,Arial';
+        ctx.fillText('Pídelo directo por WhatsApp en TiendaMax', W / 2, y);
+        ctx.fillStyle = '#c9a96e'; ctx.font = 'bold 48px system-ui,Arial';
+        ctx.fillText('tiendamax.org', W / 2, H - 245);
+        ctx.fillStyle = 'rgba(255,255,255,.92)'; ctx.font = '32px system-ui,Arial';
+        ctx.fillText('Toca "Pedir" en la tienda para reservar', W / 2, H - 185);
+    }
+
+    window.tmPubCopyCanvas = function (cvId) {
+        const cv = document.getElementById(cvId);
+        if (!cv) return;
+        cv.toBlob(async blob => {
+            try {
+                await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
+                mostrarNotificacion('✅ Imagen copiada', 'success');
+            } catch (e) { mostrarNotificacion('Descargá la imagen y adjuntala', 'error'); }
+        }, 'image/png', .95);
+    };
+    window.tmPubDlCanvas = function (cvId, name) {
+        const cv = document.getElementById(cvId);
+        if (!cv) return;
+        const a = document.createElement('a'); a.download = name + '.png';
+        a.href = cv.toDataURL('image/png', .95); a.click();
+    };
+    window.tmPubCompartirWA = async function (id) {
+        const cv = document.getElementById('tmPubWACanvas');
+        if (!cv) return;
+        cv.toBlob(async blob => {
+            const file = new File([blob], 'estado-tiendamax.png', { type: 'image/png' });
+            if (navigator.canShare && navigator.canShare({ files: [file] }) && navigator.share) {
+                try { await navigator.share({ files: [file] }); return; } catch (e) { if (/abort/i.test(e.message || '')) return; }
+            }
+            window.tmPubDlCanvas('tmPubWACanvas', 'estado-' + id);
+            mostrarNotificacion('Imagen descargada — súbela como estado', 'info');
+        });
+        document.getElementById('tmPubWAModal')?.remove();
+    };
+
+    // ── Abrir Facebook ────────────────────────────────────────
+    window.tmPubAbrirFB = function (id) {
+        const p = _prods().find(x => String(x.id) === String(id));
+        if (!p) return;
+        const grpIdx = _getGrupoProd(id);
+        const grupos = _getGrupos();
+        const grp = grpIdx != null && grupos[grpIdx] ? grupos[grpIdx] : null;
+        if (grp) {
+            _abrirFBConGrupo(p, grp);
+        } else {
+            _abrirFBSelectorGrupo(p);
+        }
+    };
+    window.tmPubFBAgregar = function (id) {
+        const p = _prods().find(x => String(x.id) === String(id));
+        if (p) _abrirFBSelectorGrupo(p);
+    };
+
+    function _abrirFBSelectorGrupo(p) {
+        const grupos = _getGrupos();
+        const ex = document.getElementById('tmPubFBModal');
+        if (ex) ex.remove();
+        const m = document.createElement('div');
+        m.id = 'tmPubFBModal';
+        m.className = 'modal';
+        m.style.cssText = 'display:flex;align-items:flex-end;';
+        const gruposHtml = grupos.length
+            ? grupos.map((g, i) => `<div style="display:flex;align-items:center;gap:8px;padding:9px 12px;background:rgba(59,89,152,.12);border:1px solid rgba(59,89,152,.25);border-radius:10px;">
+                <span style="flex:1;font-size:13px;">📘 ${_escH(g.nombre)}</span>
+                <button type="button" onclick="tmPubUsarGrupo('${p.id}',${i})"
+                  style="background:#3B5998;color:#fff;border:none;padding:6px 14px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">
+                  Publicar aquí</button></div>`).join('')
+            : '<p style="font-size:12px;color:#555;text-align:center;">Aún no hay grupos guardados.</p>';
+        m.innerHTML = `
+<div class="modal-content" style="max-width:500px;max-height:88vh;display:flex;flex-direction:column;">
+  <div class="modal-header">
+    <h2>📘 ¿Dónde publicar?</h2>
+    <button class="close-btn" onclick="document.getElementById('tmPubFBModal').remove()" type="button">✕</button>
+  </div>
+  <div style="padding:16px;display:flex;flex-direction:column;gap:10px;overflow-y:auto;">
+    <p style="font-size:12px;color:#888;">Selecciona el grupo o agrega uno nuevo. Quedará guardado para este producto.</p>
+    ${gruposHtml}
+    <div style="border-top:1px solid rgba(255,255,255,.07);padding-top:12px;display:flex;flex-direction:column;gap:8px;">
+      <label style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;opacity:.5;">Nuevo grupo</label>
+      <input id="tmPubFBNom" type="text" placeholder="Nombre del grupo (ej: TiendaMax Ofertas)"
+        style="width:100%;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:9px;color:#f0f0f0;font-size:13px;padding:9px 12px;outline:none;">
+      <input id="tmPubFBUrl" type="text" placeholder="URL del grupo (opcional)"
+        style="width:100%;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:9px;color:#f0f0f0;font-size:13px;padding:9px 12px;outline:none;">
+      <button type="button" onclick="tmPubGuardarGrupo('${p.id}')"
+        style="width:100%;padding:13px;background:linear-gradient(135deg,#3B5998,#4267B2);color:#fff;border:none;border-radius:12px;font-size:14px;font-weight:800;cursor:pointer;">
+        💾 Guardar y Publicar</button>
+    </div>
+  </div>
+</div>`;
+        document.body.appendChild(m);
+        m.addEventListener('click', e => { if (e.target === m) m.remove(); });
+    }
+
+    window.tmPubGuardarGrupo = function (id) {
+        const nom = document.getElementById('tmPubFBNom')?.value.trim();
+        const url = document.getElementById('tmPubFBUrl')?.value.trim();
+        if (!nom) { mostrarNotificacion('❌ Escribe el nombre del grupo', 'error'); return; }
+        const grupos = _getGrupos();
+        const idx = grupos.length;
+        grupos.push({ nombre: nom, url: url || 'https://www.facebook.com' });
+        _setGrupos(grupos);
+        _setGrupoProd(id, idx);
+        document.getElementById('tmPubFBModal')?.remove();
+        const p = _prods().find(x => String(x.id) === String(id));
+        if (p) _abrirFBConGrupo(p, { nombre: nom, url: url || 'https://www.facebook.com' });
+        _renderListas();
+    };
+
+    window.tmPubUsarGrupo = function (id, idx) {
+        _setGrupoProd(id, idx);
+        document.getElementById('tmPubFBModal')?.remove();
+        const p = _prods().find(x => String(x.id) === String(id));
+        const grp = _getGrupos()[idx];
+        if (p && grp) _abrirFBConGrupo(p, grp);
+        _renderListas();
+    };
+
+    function _abrirFBConGrupo(p, grp) {
+        // Reutiliza el modal de previsualizarFacebook con la URL del grupo
+        previsualizarFacebook(p.id, grp.url);
+        // Marcamos publicado al cerrar / al abrir
+        const orig = window.cerrarFbPreview;
+        window.cerrarFbPreview = function () {
+            _setLastPub(p.id);
+            _renderListas();
+            window.cerrarFbPreview = orig;
+            if (typeof orig === 'function') orig();
+        };
+    }
+
+    // ── Abrir Revolico ────────────────────────────────────────
+    window.tmPubAbrirRev = function (id) {
+        previsualizarRevolico(id);
+        // Marcar como publicado al abrir
+        _setLastPub(id);
+        setTimeout(_renderListas, 300);
+    };
+
+    // ── Hook al tab switch ────────────────────────────────────
+    function _hookTab() {
+        const orig = window.switchTab;
+        if (typeof orig !== 'function') { setTimeout(_hookTab, 300); return; }
+        if (window.__tmPubHooked) return;
+        window.__tmPubHooked = true;
+        const _prev = window.switchTab;
+        window.switchTab = function (tab) {
+            const r = _prev.apply(this, arguments);
+            if (tab === 'publicar-ahora') setTimeout(renderTabPublicar, 200);
+            return r;
+        };
+    }
+
+    window.renderTabPublicar = renderTabPublicar;
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', _hookTab);
+    } else {
+        _hookTab();
+    }
+    // También renderizar si el tab ya está activo al cargar
+    setTimeout(() => {
+        if (document.getElementById('publicar-ahora')?.classList.contains('active')) {
+            renderTabPublicar();
+        }
+    }, 1200);
+})();
