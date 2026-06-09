@@ -16,7 +16,7 @@
 <section id="manage-subcategories" class="admin-tab"><div class="head"><div><h1>Subcategorías</h1><p class="sub">Organización por categoría padre.</p></div></div><div class="card"><div class="form-grid"><select id="subcategoryParentCategory"></select><input id="newSubcategoryName" placeholder="Nombre subcategoría"></div><button class="btn primary" data-action="agregarSubcategoria" style="margin-top:10px">+ Agregar</button></div><div id="subcategoryList" class="subcategory-list"></div></section>
 <section id="oferta-dia" class="admin-tab"><div class="head"><div><h1>Oferta del día</h1><p class="sub">Destacar producto y gestionar agotados.</p></div></div><div class="grid2"><div class="card"><h2>Oferta</h2><select id="ofertaDiaSelect2"></select><input id="ofertaDiaTexto2" placeholder="🔥 OFERTA DEL DÍA" style="margin-top:10px"><div class="actions"><button class="btn primary" data-action="guardarOfertaDia">Activar</button><button class="btn" data-action="desactivarOfertaDia">Desactivar</button></div><div id="ofertaDiaStatus2"></div></div><div class="card"><h2>Agotados</h2><div id="productosAgotadosList"></div></div></div></section>
 <section id="apariencia" class="admin-tab"><div class="head"><div><h1>Apariencia</h1><p class="sub">Banners, hero y countdown.</p></div></div><div class="grid2"><div class="card"><h2>Banners</h2><div id="bannerList"></div><input id="nuevoBannerFile" type="file" accept="image/*"><input id="nuevoBannerUrl" placeholder="URL imagen"><input id="nuevoBannerLink" placeholder="Link"><button class="btn primary" data-action="agregarBanner" style="margin-top:10px">+ Agregar banner</button><button class="btn gold" onclick="exportarBannersJSON()" style="margin-top:10px">📥 Descargar banners.json</button></div><div class="card"><h2>Countdown</h2><input id="heroTaglineInput" placeholder="Tagline"><select id="countdownProductSelect"></select><div class="form-grid"><input id="countdownHoras" type="number" value="2"><input id="countdownMinutos" type="number" value="30"></div><input id="countdownTexto" value="¡Oferta especial!"><button class="btn primary" data-action="guardarCountdown" style="margin-top:10px">Activar countdown</button><div id="countdownStatus"></div></div></div></section>
-<section id="configuracion" class="admin-tab"><div class="head"><div><h1>Configuración</h1><p class="sub">GitHub, WhatsApp, Firebase, tasa y seguridad.</p></div></div><div class="grid2"><div class="card"><h2>General</h2><label>WhatsApp<input id="adminWhatsappNum" placeholder="535..."></label><label>Tasa MN<input id="adminTasaMN" type="number"></label><button class="btn primary" data-action="guardarTasaMNAdmin" style="margin-top:10px">Guardar tasa</button><p id="tasaMNStatus"></p><h2>Contraseña</h2><input id="ci" type="password" placeholder="Actual"><input id="ni" type="password" placeholder="Nueva"><input id="coi" type="password" placeholder="Confirmar"><button class="btn" type="button" onclick="tmCambiarPasswordFromInputs()" style="margin-top:10px">Cambiar contraseña</button><h2 style="margin-top:20px">🤖 IA con foto</h2><p style="font-size:11px;color:#888;margin:4px 0 8px">Recomendado estable gratis: <b>Gemini</b> (AIza o AQ). Alternativas: OpenRouter (sk-or-) con openrouter/free, Groq (gsk_) o IA directa/DeepSeek (sk-).</p><label>API Key — OpenRouter / Gemini / Groq / DeepSeek<input id="anthropicApiKey" type="text" placeholder="AIza.../AQ... (Gemini) o sk-or-... (OpenRouter) o gsk_... (Groq) o sk-... (DeepSeek)" autocomplete="off" style="font-family:monospace;font-size:12px"></label><div style="display:flex;gap:8px;margin-top:8px"><button class="btn" type="button" onclick="tmGuardarAnthropicKey()">Guardar API Key</button><button class="btn" type="button" onclick="localStorage.removeItem('anthropicApiKey');localStorage.removeItem('anthropicApiProvider');document.getElementById('anthropicApiKey').value='';var s=document.getElementById('anthropicKeyStatus');if(s){s.textContent='Key borrada';s.style.color='#888';}var b=document.getElementById('btnAnalizarFoto');if(b)b.style.display='none';" style="background:rgba(231,76,60,0.15);border-color:rgba(231,76,60,0.4);color:#e74c3c">🗑 Borrar</button></div><p id="anthropicKeyStatus" style="font-size:12px;color:#888;margin-top:6px"></p><h2 style="margin-top:20px">👆 Seguridad biométrica</h2><div id="tmBioSection"><p style="color:#888;font-size:13px;margin:0">Cargando…</p></div></div><div class="card"><h2>GitHub / Firebase</h2><form id="githubConfigForm" onsubmit="guardarConfiguracionGitHub(event)"><input id="githubUser" placeholder="Usuario GitHub"><input id="githubRepo" placeholder="Repo"><input id="githubToken" type="password" placeholder="Token"><button class="btn primary" type="submit" style="margin-top:10px">Guardar GitHub</button></form><textarea id="firebaseConfigJson" placeholder="firebaseConfig JSON" style="margin-top:10px"></textarea><input id="firebaseVapidKey" placeholder="VAPID key"><input id="firebaseServerKey" placeholder="Server key"><p id="firebaseConfigStatus"></p><input id="manualPushTitle" placeholder="Título push"><input id="manualPushBody" placeholder="Mensaje push"><input id="manualPushUrl" placeholder="URL push"><p id="manualPushStatus"></p></div><div class="tm-config-actions"><button type="button" class="btn primary" data-action="sincronizarTodoConGitHub">🔄 ACTUALIZAR TIENDA AHORA</button><button type="button" class="btn gold" onclick="if(typeof descargarProductosJSON==='function')descargarProductosJSON()">📥 Backup productos</button></div></div></div></section>
+<section id="configuracion" class="admin-tab"><div class="head"><div><h1>Configuración</h1><p class="sub">GitHub, WhatsApp, Firebase, tasa y seguridad.</p></div></div><div class="grid2"><div class="card"><h2>General</h2><label>WhatsApp<input id="adminWhatsappNum" placeholder="535..."></label><label>Tasa MN<input id="adminTasaMN" type="number"></label><button class="btn primary" data-action="guardarTasaMNAdmin" style="margin-top:10px">Guardar tasa</button><p id="tasaMNStatus"></p><h2>Contraseña</h2><input id="ci" type="password" placeholder="Actual"><input id="ni" type="password" placeholder="Nueva"><input id="coi" type="password" placeholder="Confirmar"><button class="btn" type="button" onclick="tmCambiarPasswordFromInputs()" style="margin-top:10px">Cambiar contraseña</button><h2 style="margin-top:20px">🤖 IA con foto</h2><p style="font-size:11px;color:#888;margin:4px 0 8px">Recomendado estable gratis: <b>Gemini</b> (AIza o AQ). Alternativas: OpenRouter (sk-or-) con openrouter/free, Groq (gsk_) o IA directa/DeepSeek (sk-).</p><label>API Key — OpenRouter / Gemini / Groq / DeepSeek<input id="anthropicApiKey" type="text" placeholder="AIza.../AQ... (Gemini) o sk-or-... (OpenRouter) o gsk_... (Groq) o sk-... (DeepSeek)" autocomplete="off" style="font-family:monospace;font-size:12px"></label><div style="display:flex;gap:8px;margin-top:8px"><button class="btn" type="button" onclick="tmGuardarAnthropicKey()">Guardar API Key</button><button class="btn" type="button" onclick="localStorage.removeItem('anthropicApiKey');localStorage.removeItem('anthropicApiProvider');document.getElementById('anthropicApiKey').value='';var s=document.getElementById('anthropicKeyStatus');if(s){s.textContent='Key borrada';s.style.color='#888';}var b=document.getElementById('btnAnalizarFoto');if(b)b.style.display='none';" style="background:rgba(231,76,60,0.15);border-color:rgba(231,76,60,0.4);color:#e74c3c">🗑 Borrar</button></div><p id="anthropicKeyStatus" style="font-size:12px;color:#888;margin-top:6px"></p><h2 style="margin-top:20px">👆 Seguridad biométrica</h2><div id="tmBioSection"><p style="color:#888;font-size:13px;margin:0">Cargando…</p></div></div><div class="card"><h2>GitHub / Firebase</h2><form id="githubConfigForm" onsubmit="guardarConfiguracionGitHub(event)"><input id="githubUser" placeholder="Usuario GitHub"><input id="githubRepo" placeholder="Repo"><input id="githubToken" type="password" placeholder="Token"><button class="btn primary" type="submit" style="margin-top:10px">Guardar GitHub</button></form><textarea id="firebaseConfigJson" placeholder="firebaseConfig JSON" style="margin-top:10px"></textarea><input id="firebaseVapidKey" placeholder="VAPID key"><input id="firebaseServerKey" placeholder="Server key"><p id="firebaseConfigStatus"></p><input id="manualPushTitle" placeholder="Título push"><input id="manualPushBody" placeholder="Mensaje push"><input id="manualPushUrl" placeholder="URL push"><p id="manualPushStatus"></p></div><h2 style="margin-top:20px">🔔 Alertas de pedidos</h2><p style="font-size:11px;color:#888;margin:4px 0 10px">Recibe una notificación push <b>solo en este dispositivo</b> cada vez que alguien toca "Pedir" en la tienda.</p><button type="button" id="btnActivarAlertaAdmin" class="btn" onclick="tmActivarAlertaAdmin()" style="width:100%">🔔 Activar en este dispositivo</button><p id="alertaAdminStatus" style="font-size:12px;color:#888;margin-top:8px"></p><div class="tm-config-actions"><button type="button" class="btn primary" data-action="sincronizarTodoConGitHub">🔄 ACTUALIZAR TIENDA AHORA</button><button type="button" class="btn gold" onclick="if(typeof descargarProductosJSON==='function')descargarProductosJSON()">📥 Backup productos</button></div></div></div></section>
 
 </main></div></div>
 <div id="editModal" class="modal hidden"><div class="modal-content"><div class="modal-header"><h2>Editar producto</h2><button class="close-btn" data-action="cerrarEditModal">×</button></div><form id="editForm"><input type="hidden" id="editProductId"><input id="editProductName" required><textarea id="editProductDescription" required></textarea><select id="editProductCategory" required></select><select id="editProductMasVendido"><option value="false">No</option><option value="true">Sí</option></select><label class="check-row"><input type="checkbox" id="editProductUsado"> Usado</label><div id="currentImagePreview"></div><input type="file" id="editProductImage" accept="image/*"><input type="file" id="editProductImagesExtra" accept="image/*" multiple><input type="number" id="editProductPriceActual" required><input type="number" id="editProductPrecioOriginal"><input type="number" id="editProductStock" required><div class="tm-comision-row"><input type="number" id="editProductComision" step="0.01" min="0" placeholder="0.00" oninput="tmUpdateComisionHint(this,'tmComisionHintEdit','tmMonedaToggleEdit')"><div class="tm-moneda-toggle" id="tmMonedaToggleEdit"><button type="button" class="tm-moneda-btn active" data-moneda="USD" onclick="tmSetMoneda('tmMonedaToggleEdit','editProductComisionMoneda','USD',this)">USD</button><button type="button" class="tm-moneda-btn" data-moneda="MN" onclick="tmSetMoneda('tmMonedaToggleEdit','editProductComisionMoneda','MN',this)">MN</button></div></div><input type="hidden" id="editProductComisionMoneda" value="USD"><span class="admin-mn-hint" id="tmComisionHintEdit">Lo que ganas por cada venta</span><input id="editProductGarantia"><label class="check-row"><input type="checkbox" id="editProductDevolucion"> Devolución</label><div class="actions"><button type="submit" class="btn primary">Guardar cambios</button><button type="button" class="btn" data-action="cerrarEditModal">Cancelar</button></div></form></div></div>
@@ -819,86 +819,115 @@ async function tmAdminRefreshSubscribers(){
   var LAST_KEY='tm_dash_int_seen';
   function fbBase(){try{var c=JSON.parse(localStorage.getItem('firebaseConfig')||'{}');return c.databaseURL||(c.projectId?'https://'+c.projectId+'-default-rtdb.firebaseio.com':null);}catch(e){return null;}}
   function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(m){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m];});}
-  function timeAgo(ts){
-    var d=Date.now()-ts, m=Math.floor(d/60000), h=Math.floor(d/3600000);
-    if(d<60000) return 'hace un momento';
-    if(m<60) return 'hace '+m+'min';
-    if(h<24) return 'hace '+h+'h';
-    return 'hace '+Math.floor(h/24)+'d';
-  }
-  function setBadge(n){
-    var b=document.getElementById('dashAlertBadge');
-    if(!b) return;
-    if(n>0){b.textContent=n>99?'99+':n; b.style.display='';}
-    else b.style.display='none';
-  }
-  function render(items, newCount){
-    var box=document.getElementById('dashInteresadosList'); if(!box) return;
-    if(!items.length){box.innerHTML='<div style="color:#555;font-size:12px;text-align:center;padding:14px">Sin interesados aún.</div>'; return;}
-    box.innerHTML=items.slice(0,12).map(function(x){
-      var isNew=(Date.now()-x.ts)<(24*3600000*2) && x.ts>Number(localStorage.getItem(LAST_KEY)||0);
-      return '<div style="display:flex;align-items:center;gap:10px;padding:7px 10px;background:rgba(255,255,255,.03)'+(isNew?';border-left:2px solid #FF6B35':'')+'border-radius:10px">'
-        +(x.img?'<img src="'+esc(x.img)+'" style="width:38px;height:38px;border-radius:8px;object-fit:cover;flex-shrink:0" onerror="this.style.display=\'none\'">':'<div style="width:38px;height:38px;border-radius:8px;background:#1a1a2e;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:16px">📦</div>')
-        +'<div style="flex:1;min-width:0"><div style="font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#e0e0e0">'+esc(x.nombre||'Producto')+'</div>'
-        +'<div style="font-size:10px;color:#666;margin-top:1px">'+esc(x.origen||'tienda')+' · '+timeAgo(x.ts)+'</div></div>'
+  function ago(ts){var d=Date.now()-ts,m=Math.floor(d/60000),h=Math.floor(d/3600000);if(d<120000)return 'hace un momento';if(m<60)return 'hace '+m+'min';if(h<24)return 'hace '+h+'h';return 'hace '+Math.floor(h/24)+'d';}
+  function setBadge(n){var b=document.getElementById('dashAlertBadge');if(!b)return;if(n>0){b.textContent=n>99?'99+':n;b.style.display='';}else b.style.display='none';}
+  function render(items,newCount){
+    var box=document.getElementById('dashInteresadosList');if(!box)return;
+    if(!items.length){box.innerHTML='<div style="color:#555;font-size:12px;text-align:center;padding:14px">Nadie ha pedido todavía.</div>';return;}
+    var lastSeen=Number(localStorage.getItem(LAST_KEY)||0);
+    box.innerHTML=items.slice(0,15).map(function(x){
+      var isNew=x.ts>lastSeen;
+      return '<div style="display:flex;align-items:center;gap:10px;padding:7px 10px;background:rgba(255,255,255,.03);border-radius:10px'+(isNew?';border-left:3px solid #FF6B35':'')+'">'
+        +(x.img?'<img src="'+esc(x.img)+'" style="width:38px;height:38px;border-radius:8px;object-fit:cover;flex-shrink:0" onerror="this.style.display='none'">':'<div style="width:38px;height:38px;border-radius:8px;background:#1a1a2e;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:16px">📦</div>')
+        +'<div style="flex:1;min-width:0"><div style="font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#e0e0e0">'+esc(x.nombre)+'</div>'
+        +'<div style="font-size:10px;color:#666;margin-top:1px">'+esc(x.origen||'tienda')+' · '+ago(x.ts)+(x.precio?' · $'+x.precio+' USD':'')+'</div></div>'
         +(isNew?'<div style="width:7px;height:7px;border-radius:50%;background:#FF6B35;flex-shrink:0"></div>':'')
         +'</div>';
     }).join('');
     setBadge(newCount);
   }
   async function cargar(){
-    var base=fbBase(); if(!base){document.getElementById('dashInteresadosList').innerHTML='<div style="color:#555;font-size:12px;text-align:center;padding:14px">Firebase no configurado.</div>'; return;}
+    var base=fbBase();
+    var box=document.getElementById('dashInteresadosList');
+    if(!base){if(box)box.innerHTML='<div style="color:#555;font-size:12px;text-align:center;padding:14px">Firebase no configurado.</div>';return;}
     try{
-      var prods=[]; try{prods=window.productos||JSON.parse(localStorage.getItem('productos')||'[]');}catch(e){}
-      var r=await fetch(base+'/interesados.json?shallow=true&_='+Date.now(),{cache:'no-store'});
-      if(!r.ok) throw new Error('HTTP '+r.status);
-      var keys=await r.json();
-      if(!keys){render([],0); return;}
+      var prods=[];try{prods=window.productos||JSON.parse(localStorage.getItem('productos')||'[]');}catch(e){}
+      var r=await fetch(base+'/interesados.json?_='+Date.now(),{cache:'no-store'});
+      if(!r.ok)throw new Error('HTTP '+r.status);
+      var tree=await r.json();
+      if(!tree){render([],0);return;}
       var items=[];
-      var prodIds=Object.keys(keys).slice(-20); // last 20 product IDs
-      for(var i=0;i<prodIds.length;i++){
-        var pid=prodIds[i];
-        var r2=await fetch(base+'/interesados/'+pid+'.json?orderBy="$key"&limitToLast=1&_='+Date.now(),{cache:'no-store'});
-        if(!r2.ok) continue;
-        var entries=await r2.json(); if(!entries) continue;
-        var lastKey=Object.keys(entries)[0];
-        var entry=entries[lastKey]||{};
-        var prod=prods.find(function(p){return String(p.id)===String(pid);})||{};
-        items.push({ts:entry.ts||Number(lastKey)||0, nombre:entry.producto||prod.nombre||pid, img:prod.imagen||'', origen:entry.origen||'tienda'});
-      }
+      Object.keys(tree).forEach(function(pid){
+        var entries=tree[pid]||{};
+        Object.keys(entries).forEach(function(ts){
+          var e=entries[ts]||{};
+          var prod=prods.find(function(p){return String(p.id)===String(pid);})||{};
+          items.push({ts:Number(e.ts||ts)||0,nombre:e.producto||prod.nombre||pid,img:prod.imagen||'',origen:e.origen||'tienda',precio:e.precio||0});
+        });
+      });
       items.sort(function(a,b){return b.ts-a.ts;});
       var lastSeen=Number(localStorage.getItem(LAST_KEY)||0);
       var newCount=items.filter(function(x){return x.ts>lastSeen;}).length;
-      render(items, newCount);
-    }catch(err){document.getElementById('dashInteresadosList').innerHTML='<div style="color:#555;font-size:12px;text-align:center;padding:14px">No se pudo cargar ('+esc(err.message)+').</div>';}
+      render(items,newCount);
+    }catch(err){if(box)box.innerHTML='<div style="color:#e74c3c;font-size:12px;text-align:center;padding:14px">Error: '+esc(err.message)+'</div>';}
   }
-  document.addEventListener('DOMContentLoaded', function(){
-    // Mark as read button
-    document.addEventListener('click', function(e){
+  document.addEventListener('DOMContentLoaded',function(){
+    document.addEventListener('click',function(e){
       if(e.target.id==='dashIntMarkRead'){
-        localStorage.setItem(LAST_KEY, String(Date.now()));
-        setBadge(0);
-        document.querySelectorAll('#dashInteresadosList [style*="border-left"]').forEach(function(el){el.style.borderLeft='';});
-        document.querySelectorAll('#dashInteresadosList [style*="background:#FF6B35"]').forEach(function(el){el.remove();});
+        localStorage.setItem(LAST_KEY,String(Date.now()));
+        setBadge(0);cargar();
       }
     });
-    // Load on open
-    setTimeout(cargar, 2000);
-    // Reload every 2 min when Inicio is active
-    setInterval(function(){
-      if(document.getElementById('inicio')&&document.getElementById('inicio').classList.contains('active')) cargar();
-    }, 120000);
+    setTimeout(cargar,2000);
+    setInterval(function(){if(document.getElementById('inicio')&&document.getElementById('inicio').classList.contains('active'))cargar();},90000);
   });
-  // Also reload when switching to Inicio
   var _origSW=window.switchTab;
   function _hookInt(){
     if(typeof window.switchTab!=='function'){setTimeout(_hookInt,300);return;}
-    if(window.__tmIntHooked) return;
+    if(window.__tmIntHooked)return;
     window.__tmIntHooked=true;
     var prev=window.switchTab;
-    window.switchTab=function(tab){var r=prev.apply(this,arguments); if(tab==='inicio') setTimeout(cargar,300); return r;};
+    window.switchTab=function(tab){var r=prev.apply(this,arguments);if(tab==='inicio')setTimeout(cargar,300);return r;};
   }
-  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',_hookInt); else _hookInt();
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',_hookInt);else _hookInt();
+})();
+</script>
+<script id="tm-admin-push-setup">
+(function(){
+  function fbBase(){try{var c=JSON.parse(localStorage.getItem('firebaseConfig')||'{}');return c.databaseURL||(c.projectId?'https://'+c.projectId+'-default-rtdb.firebaseio.com':null);}catch(e){return null;}}
+  function setStatus(msg,ok){var el=document.getElementById('alertaAdminStatus');if(el){el.textContent=msg;el.style.color=ok===false?'#e74c3c':ok?'#2ecc71':'#888';}}
+
+  window.tmActivarAlertaAdmin = async function(){
+    var btn=document.getElementById('btnActivarAlertaAdmin');
+    if(btn){btn.disabled=true;btn.textContent='⏳ Activando…';}
+    try{
+      // 1. Get FCM token
+      var token=localStorage.getItem('fcmToken');
+      if(!token) throw new Error('Primero activa las notificaciones push (botón campana en la tienda).');
+
+      // 2. Get server key
+      var sk=document.getElementById('firebaseServerKey')?.value||localStorage.getItem('firebaseServerKey')||'';
+      if(!sk) throw new Error('Ingresa el Server Key de Firebase en el campo de arriba.');
+      localStorage.setItem('firebaseServerKey',sk);
+
+      // 3. Save to RTDB
+      var base=fbBase();
+      if(!base) throw new Error('Firebase no configurado.');
+      await fetch(base+'/adminConfig.json',{method:'PATCH',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({pushToken:token, serverKey:sk, activadoEn:new Date().toISOString()})});
+
+      setStatus('✅ Alertas activadas — recibirás push cuando alguien pida',true);
+      if(btn){btn.textContent='✅ Activado';btn.style.background='rgba(46,204,113,.2)';}
+    }catch(err){
+      setStatus('❌ '+err.message,false);
+      if(btn){btn.disabled=false;btn.textContent='🔔 Activar en este dispositivo';}
+    }
+  };
+
+  // On load: check if already activated
+  document.addEventListener('DOMContentLoaded',function(){
+    var base=fbBase();
+    if(!base) return;
+    var token=localStorage.getItem('fcmToken');
+    if(!token) return;
+    fetch(base+'/adminConfig/pushToken.json',{cache:'no-store'}).then(function(r){return r.json();}).then(function(saved){
+      if(saved===token){
+        setStatus('✅ Alertas activas en este dispositivo',true);
+        var btn=document.getElementById('btnActivarAlertaAdmin');
+        if(btn){btn.textContent='✅ Activado';btn.style.background='rgba(46,204,113,.2)';}
+      }
+    }).catch(function(){});
+  });
 })();
 </script>
 <script id="tm-comision-ventas-v1">
