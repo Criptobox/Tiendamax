@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════════════════
-// TiendaMax — Service Worker v257 — descripción Revolico sin WhatsApp, con hashtags por categoría
+// TiendaMax — Service Worker v258 — fix tarjetas Gestionar rotas por div colgado
 // v241: continúa al siguiente modelo Gemini si hay cuota 429
 // v240: soporte clave Gemini con prefijo AQ
 // v239: productos nuevos primero por categoría
@@ -100,7 +100,7 @@
 //      usan el mismo helper _mensajeOrdenWA con formato premium.
 // ═══════════════════════════════════════════════════════
 
-const CACHE_NAME = 'tiendamax-202606092300';
+const CACHE_NAME = 'tiendamax-202606092330';
 
 const STATIC_ASSETS = [
   '/',
