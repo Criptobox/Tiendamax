@@ -135,7 +135,7 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
 </div>
 <script>
   // Espera breve: los crawlers alcanzan a leer OpenGraph antes de redirigir.
-  setTimeout(function(){{ window.location.replace('{app_url_js}'); }}, 900);
+  setTimeout(function(){{ window.location.replace('{app_url_js}'); }}, 50);
 </script>
 </body>
 </html>

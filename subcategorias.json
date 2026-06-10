@@ -15,7 +15,14 @@
     "AUDIO",
     "ACCESORIOS"
   ],
-  "UTILES": [],
+  "UTILES": [
+    "HERRAMIENTAS",
+    "SALUD Y BIENESTAR",
+    "DEPORTES",
+    "HOGAR",
+    "ILUMINACIÓN",
+    "OTROS"
+  ],
   "CARROS": [
     "ACEITES Y LUBRICANTES",
     "REFRIGERANTES",
@@ -38,12 +45,21 @@
     "DECORACION",
     "ELECTRODOMÉSTICOS"
   ],
-  "JUEGOS": [],
+  "JUEGOS": [
+    "MANDOS",
+    "CONSOLAS",
+    "ACCESORIOS"
+  ],
   "MOTOS": [
     "ACEITES Y LUBRICANTES",
     "CARGADORES",
     "ACCESORIOS",
     "PARTES Y PIEZAS"
   ],
-  "PC Y LAPTOPS": []
+  "PC Y LAPTOPS": [
+    "COMPUTADORAS",
+    "LAPTOPS",
+    "GAMING",
+    "ACCESORIOS"
+  ]
 }
