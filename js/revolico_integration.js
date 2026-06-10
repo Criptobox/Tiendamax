@@ -643,20 +643,20 @@ function previsualizarRevolico(productoId) {
         if (!cv) return;
         cv.toBlob(async blob => {
             try {
-                await navigator.clipboard.write([new ClipboardItem({'image/png': blob})]);
+                await navigator.clipboard.write([new ClipboardItem({'image/jpeg': blob})]);
                 mostrarNotificacion('✅ Imagen copiada — pégala en el campo de foto de Revolico', 'success');
             } catch(e) {
                 mostrarNotificacion('❌ No se pudo copiar — usa ⬇️ Descargar', 'error');
             }
-        }, 'image/png', .95);
+        }, 'image/jpeg', 0.85);
     });
 
     document.getElementById('btnDlRevImg')?.addEventListener('click', function() {
         const cv = document.getElementById('revImgCanvas');
         if (!cv) return;
         const a = document.createElement('a');
-        a.download = `anuncio-${producto.id}.png`;
-        a.href = cv.toDataURL('image/png', .95);
+        a.download = `anuncio-${producto.id}.jpg`;
+        a.href = cv.toDataURL('image/jpeg', 0.85);
         a.click();
     });
 
