@@ -49,14 +49,16 @@ def main() -> int:
     if not db:
         return 1
 
-    meta_ref = db.reference("admin_meta")
-    meta     = meta_ref.get() or {}
+    meta_ref  = db.reference("admin_meta")
+    meta      = meta_ref.get() or {}
     first_run = "last_alert_ts" not in meta
     last_ts   = meta.get("last_alert_ts", 0)
+    last_count = meta.get("last_token_count")  # None si nunca se guardó
     now_ts    = int(datetime.now().timestamp() * 1000)
 
     try:
         tokens = db.reference("tokens").get() or {}
+        total  = len(tokens) if isinstance(tokens, dict) else 0
         nuevos = [
             v for v in tokens.values()
             if isinstance(v, dict) and int(v.get("timestamp", 0)) > last_ts
@@ -65,25 +67,39 @@ def main() -> int:
         print(f"❌ Error leyendo tokens: {e}", file=sys.stderr)
         return 1
 
-    if not first_run and nuevos:
-        total = len(tokens)
-        n = len(nuevos)
-        texto = (
-            f"🔔 *{n} nuevo{'s' if n > 1 else ''} suscriptor{'es' if n > 1 else ''}*\n"
-            f"Total en lista push: *{total}*"
-        )
+    alertas: list[str] = []
+
+    if not first_run:
+        # Nuevos suscriptores
+        if nuevos:
+            n = len(nuevos)
+            alertas.append(
+                f"🔔 *{n} nuevo{'s' if n > 1 else ''} suscriptor{'es' if n > 1 else ''}*\n"
+                f"Total en lista push: *{total}*"
+            )
+
+        # Suscriptores perdidos
+        if last_count is not None and total < last_count:
+            perdidos = last_count - total
+            alertas.append(
+                f"📉 *{perdidos} suscriptor{'es' if perdidos > 1 else ''} canceló{'aron' if perdidos > 1 else ''} las notificaciones*\n"
+                f"Total en lista push: *{total}*"
+            )
+
+    if first_run:
+        print("Primera ejecución: estado inicializado.")
+    elif alertas:
         try:
-            send_telegram(texto)
-            print(f"✅ Alerta enviada: {n} nuevo(s) suscriptor(es).")
+            send_telegram("\n\n".join(alertas))
+            print(f"✅ {len(alertas)} alerta(s) enviada(s).")
         except Exception as e:
             print(f"❌ Error Telegram: {e}", file=sys.stderr)
             return 1
-    elif first_run:
-        print("Primera ejecución: estado inicializado.")
     else:
-        print("Sin nuevos suscriptores.")
+        print("Sin cambios en suscriptores.")
 
-    meta["last_alert_ts"] = now_ts
+    meta["last_alert_ts"]    = now_ts
+    meta["last_token_count"] = total
     meta_ref.set(meta)
     return 0
 
