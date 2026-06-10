@@ -1732,21 +1732,27 @@ function renderizarCategoriasHome() {
     cardTodas.className = 'categoria-card';
     const totalProductos = productos.length;
     cardTodas.innerHTML = `
-        <span class="cat-icon">🛍️</span>
+        <span class="cat-wm">🛍️</span><span class="cat-icon">🛍️</span>
         <span class="cat-name">Todos</span>
         <span class="cat-count">${safeNum(totalProductos)} producto${totalProductos !== 1 ? 's' : ''}</span>
+        <span class="cat-cta">→ Explorar</span>
     `;
     cardTodas.onclick = () => mostrarVistaCategoria('Todas');
     grid.appendChild(cardTodas);
 
+    const maxCount = categorias.length ? Math.max(...categorias.map(cat => productos.filter(p => p.categoria === cat).length)) : 0;
     categorias.forEach(cat => {
         const count = productos.filter(p => p.categoria === cat).length;
         const card = document.createElement('div');
         card.className = 'categoria-card' + (count === 0 ? ' proximamente' : '');
+        const icon = escapeHtml(obtenerIconoCategoria(cat));
+        const badge = (count > 0 && count === maxCount) ? '<span class="cat-badge">🔥 Popular</span>' : '';
+        const cta = count > 0 ? '<span class="cat-cta">→ Explorar</span>' : '';
         card.innerHTML = `
-            <span class="cat-icon">${escapeHtml(obtenerIconoCategoria(cat))}</span>
+            ${badge}<span class="cat-wm">${icon}</span><span class="cat-icon">${icon}</span>
             <span class="cat-name">${escapeHtml(cat)}</span>
             <span class="cat-count">${count === 0 ? '🕐 Próximamente' : safeNum(count) + ' producto' + (count !== 1 ? 's' : '')}</span>
+            ${cta}
         `;
         card.onclick = () => mostrarVistaCategoria(cat);
         grid.appendChild(card);
