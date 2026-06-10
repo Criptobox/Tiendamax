@@ -28,7 +28,16 @@
 .le-wa-btn{background:#25D366;border:none;border-radius:8px;padding:6px 12px;font-size:11px;font-weight:700;color:#fff;cursor:pointer;white-space:nowrap;flex-shrink:0}
 .le-del-btn{background:rgba(231,76,60,.12);border:1px solid rgba(231,76,60,.25);border-radius:8px;padding:6px 8px;font-size:11px;color:#e74c3c;cursor:pointer;flex-shrink:0}
 </style>
-<div class="head"><div><h1>🔔 Lista de espera</h1><p class="sub">Clientes que quieren ser avisados cuando un producto vuelva a estar disponible.</p></div><button class="btn" onclick="leCargar()" style="flex-shrink:0">🔄 Actualizar</button></div>
+<div class="head"><div><h1>🔔 Lista de espera</h1><p class="sub">Clientes que quieren ser avisados cuando un producto vuelva a estar disponible.</p></div><div style="display:flex;gap:8px;flex-shrink:0"><button class="btn primary" onclick="leAbrirFormManual()">➕ Agregar</button><button class="btn" onclick="leCargar()">🔄 Actualizar</button></div></div>
+<div id="leFormManual" style="display:none;background:rgba(255,255,255,.04);border-radius:14px;padding:16px;margin-bottom:14px;border:1px solid rgba(255,107,53,.25)">
+  <h3 style="font-size:13px;font-weight:700;color:#e0e0e0;margin:0 0 12px">➕ Agregar cliente manualmente</h3>
+  <div style="display:flex;flex-direction:column;gap:10px">
+    <select id="leManualProd" style="background:#12121f;border:1px solid rgba(255,255,255,.12);color:#ccc;border-radius:10px;padding:10px 12px;font-size:12px;outline:none"><option value="">— Selecciona producto —</option></select>
+    <input id="leManualTel" type="tel" placeholder="Número WhatsApp (ej: 53512345)" autocomplete="tel" style="background:#12121f;border:1px solid rgba(255,255,255,.12);color:#fff;border-radius:10px;padding:10px 12px;font-size:12px;outline:none">
+    <input id="leManualNombre" type="text" placeholder="Nombre del cliente (opcional)" style="background:#12121f;border:1px solid rgba(255,255,255,.12);color:#fff;border-radius:10px;padding:10px 12px;font-size:12px;outline:none">
+    <div style="display:flex;gap:8px"><button id="leManualBtn" class="btn primary" style="flex:1" onclick="leAgregarManual()">✅ Agregar a la lista</button><button class="btn" onclick="document.getElementById('leFormManual').style.display='none'">Cancelar</button></div>
+  </div>
+</div>
 <div id="leContenido"><div class="card" style="text-align:center;padding:32px;color:#555">Cargando…</div></div>
 </section>
 <section id="organizar-subcategorias" class="admin-tab"><style>.tmorg-tabs{display:flex;gap:6px;margin-bottom:16px}.tmorg-tab{padding:8px 18px;border-radius:30px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);color:#888;font-size:13px;font-weight:600;cursor:pointer;transition:.18s}.tmorg-tab.active{background:#FF6B35;border-color:#FF6B35;color:#fff}.tmorg-rule-row{display:flex;align-items:center;gap:8px;padding:7px 10px;background:rgba(255,255,255,.03);border-radius:8px;margin-bottom:5px;font-size:12px}.tmorg-rule-kw{flex:1;color:#e0e0e0;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.tmorg-rule-sub{color:#FF6B35;font-size:11px;white-space:nowrap}.tmorg-prod-row{display:flex;align-items:center;gap:10px;padding:8px 10px;background:rgba(255,255,255,.03);border-radius:10px;margin-bottom:5px}.tmorg-prod-name{flex:1;font-size:12px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#e0e0e0}.tmorg-prod-cat{font-size:10px;color:#888;display:block;margin-top:1px}.tmorg-prod-sel{background:#12121f;border:1px solid rgba(255,255,255,.12);color:#ccc;border-radius:8px;padding:5px 8px;font-size:11px;cursor:pointer;max-width:190px;min-width:120px}.tmorg-unassigned{border-left:3px solid rgba(231,76,60,.6)!important}.tmorg-badge-ok{background:rgba(46,204,113,.15);color:#2ecc71;border:1px solid rgba(46,204,113,.3);border-radius:20px;padding:3px 9px;font-size:11px;font-weight:700;white-space:nowrap}.tmorg-badge-warn{background:rgba(231,76,60,.15);color:#e74c3c;border:1px solid rgba(231,76,60,.3);border-radius:20px;padding:3px 9px;font-size:11px;font-weight:700;white-space:nowrap}</style><div class="head"><div><h1>🗂 Organizar</h1><p class="sub">Clasifica productos en subcategorías automáticamente o de forma manual.</p></div><button class="btn primary" id="btnOrgGH" onclick="tmOrgGitHub()">☁️ Guardar en GitHub</button></div><div class="tmorg-tabs"><button class="tmorg-tab active" onclick="tmOrgSwitchTab('auto',this)">⚡ Auto-clasificar</button><button class="tmorg-tab" onclick="tmOrgSwitchTab('manual',this)">✏️ Revisión manual</button></div><div id="tmOrgBodyAuto"><div class="card"><h2 style="margin-bottom:8px">Reglas por categoría</h2><p class="sub" style="margin-bottom:12px">Cada regla busca la palabra clave en el nombre del producto (sin distinguir mayúsculas) y asigna la subcategoría indicada. Se aplican en orden — la primera que coincida gana.</p><div class="form-grid" style="margin-bottom:12px"><select id="tmOrgCat" onchange="tmOrgRenderRules()"><option value="">— Selecciona categoría —</option></select></div><div id="tmOrgRulesList"><p style="color:#555;font-size:12px;text-align:center;padding:14px">Selecciona una categoría para ver sus reglas.</p></div><div class="form-grid" style="margin-top:10px"><input id="tmOrgKw" placeholder="Palabra clave (ej: llanta)"><select id="tmOrgSub"><option value="">— Subcategoría —</option></select><button class="btn primary" onclick="tmOrgAddRule()">+ Regla</button></div></div><div class="card" style="margin-top:12px"><button class="btn primary" style="width:100%;padding:12px;font-size:14px" onclick="tmOrgAplicar()">⚡ Clasificar todos los productos ahora</button><div id="tmOrgResultado" style="margin-top:12px"></div></div></div><div id="tmOrgBodyManual" style="display:none"><div class="card"><div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px"><select id="tmOrgManualCat" onchange="tmOrgRenderGrid()" style="flex:1;min-width:160px"><option value="">Todas las categorías</option></select><span id="tmOrgManualStats" style="font-size:12px;color:#888"></span></div><div id="tmOrgGrid"></div></div></div></section>
@@ -1096,6 +1105,59 @@ window.leCargar=async function(){
     });
     box.innerHTML='<p style="font-size:13px;color:#888;margin-bottom:14px">'+total+' cliente'+(total!==1?'s':'')+' en lista de espera</p>'+html;
   }catch(e){box.innerHTML='<div class="card" style="color:#e74c3c;padding:16px">Error: '+esc(e.message)+'</div>';}
+};
+
+window.leAbrirFormManual=function(){
+  var form=document.getElementById('leFormManual');
+  if(!form)return;
+  if(form.style.display!=='none'){form.style.display='none';return;}
+  var sel=document.getElementById('leManualProd');
+  if(sel){
+    var prods=typeof productos!=='undefined'?productos:[];
+    sel.innerHTML='<option value="">— Selecciona producto —</option>'+
+      prods.slice().sort(function(a,b){return(a.nombre||'').localeCompare(b.nombre||'');}).map(function(p){
+        var label=(p.nombre||'Producto '+p.id).slice(0,50)+(Number(p.stock||0)===0?' ❌':'');
+        return '<option value="'+esc(String(p.id))+'">'+esc(label)+'</option>';
+      }).join('');
+  }
+  form.style.display='';
+  var t=document.getElementById('leManualTel');
+  if(t)setTimeout(function(){t.focus();},60);
+};
+
+window.leAgregarManual=async function(){
+  var base=rtdb();if(!base)return;
+  var sel=document.getElementById('leManualProd');
+  var telInput=document.getElementById('leManualTel');
+  var nomInput=document.getElementById('leManualNombre');
+  var btn=document.getElementById('leManualBtn');
+  var pid=sel?sel.value.trim():'';
+  var tel=telInput?telInput.value.trim().replace(/\s+/g,''):'';
+  var nombre=nomInput?nomInput.value.trim():'';
+  if(!pid){if(sel){sel.style.borderColor='#e74c3c';sel.focus();}return;}
+  if(!tel||tel.length<6){if(telInput){telInput.style.borderColor='#e74c3c';telInput.focus();}return;}
+  var prods=typeof productos!=='undefined'?productos:[];
+  var prod=prods.find(function(p){return String(p.id)===String(pid);});
+  var productoNombre=prod?(prod.nombre||''):'';
+  if(btn){btn.disabled=true;btn.textContent='⏳ Guardando…';}
+  try{
+    var entradaId=Date.now()+'_'+Math.random().toString(36).slice(2,7)+'_adm';
+    var res=await fetch(base+'/lista_espera/'+encodeURIComponent(pid)+'/'+entradaId+'.json',{
+      method:'PUT',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({tel:tel,nombre:nombre,productoId:String(pid),producto:productoNombre,ts:Date.now()})
+    });
+    if(!res.ok)throw new Error('HTTP '+res.status);
+    if(sel){sel.value='';sel.style.borderColor='';}
+    if(telInput){telInput.value='';telInput.style.borderColor='';}
+    if(nomInput)nomInput.value='';
+    document.getElementById('leFormManual').style.display='none';
+    if(typeof mostrarNotificacion==='function')mostrarNotificacion('✅ Cliente agregado a la lista de espera','success');
+    leCargar();
+  }catch(e){
+    if(typeof mostrarNotificacion==='function')mostrarNotificacion('⚠️ Error: '+e.message,'error');
+  }finally{
+    if(btn){btn.disabled=false;btn.textContent='✅ Agregar a la lista';}
+  }
 };
 
 window.leEliminar=async function(pid,key,btn){
