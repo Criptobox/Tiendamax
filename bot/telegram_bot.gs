@@ -1,6 +1,7 @@
 /*******************************************************
- * TiendaMax Telegram Bot — Apps Script v3
+ * TiendaMax Telegram Bot — Apps Script v4
  * Sin spam · privado · resumen · stock · interesados
+ * Teclado persistente de botones
  *******************************************************/
 
 const PROPS = PropertiesService.getScriptProperties();
@@ -20,6 +21,23 @@ function productosUrl_() {
     'PRODUCTOS_URL',
     'https://raw.githubusercontent.com/Criptobox/Tiendamax/main/productos.json'
   );
+}
+
+/*******************************************************
+ * Teclado principal — siempre visible en el chat
+ *******************************************************/
+
+function mainKeyboard_() {
+  return {
+    keyboard: [
+      [{ text: '📊 Resumen' },     { text: '📦 Stock' }],
+      [{ text: '🔥 Interesados' }, { text: '📣 Campaña' }],
+      [{ text: '🛍️ Productos' },   { text: '✅ Tareas' }],
+      [{ text: '💰 Venta manual' }]
+    ],
+    resize_keyboard: true,
+    persistent: true
+  };
 }
 
 /*******************************************************
@@ -111,21 +129,27 @@ function handleMessage_(msg) {
     return;
   }
 
-  // Comandos — todos tienen return propio, no pasan por anti-duplicado de texto
+  // Comandos y botones del teclado — no pasan por anti-duplicado de texto
   if (text.startsWith('/start') || text.startsWith('/ayuda') || text.startsWith('/help')) {
     cmdStart_(chatId); return;
   }
-  if (text.startsWith('/resumen'))  { cmdResumen_(chatId); return; }
-  if (text.startsWith('/stock'))    { cmdStock_(chatId); return; }
-  if (text.startsWith('/interesados')) { cmdInteresados_(chatId); return; }
-  if (text.startsWith('/campana') || text.startsWith('/campaña')) {
+  if (text.startsWith('/resumen')  || text === '📊 Resumen')     { cmdResumen_(chatId); return; }
+  if (text.startsWith('/stock')    || text === '📦 Stock')        { cmdStock_(chatId); return; }
+  if (text.startsWith('/interesados') || text === '🔥 Interesados') { cmdInteresados_(chatId); return; }
+  if (text.startsWith('/campana')  || text.startsWith('/campaña') || text === '📣 Campaña') {
     cmdCampana_(chatId); return;
   }
-  if (text.startsWith('/productos')) {
-    cmdProductos_(chatId, text.replace('/productos', '').trim()); return;
+  if (text.startsWith('/productos') || text === '🛍️ Productos') {
+    cmdProductos_(chatId, text.replace('/productos', '').replace('🛍️ Productos', '').trim()); return;
   }
-  if (text.startsWith('/tareas'))   { cmdTareas_(chatId); return; }
-  if (text.startsWith('/venta'))    { cmdVentaManual_(chatId, text); return; }
+  if (text.startsWith('/tareas')   || text === '✅ Tareas')       { cmdTareas_(chatId); return; }
+  if (text.startsWith('/venta')    || text === '💰 Venta manual') {
+    if (text === '💰 Venta manual') {
+      sendMessage_(chatId, 'Escribe: /venta Nombre x2 $50\nEjemplo: /venta Router WiFi x1 $25');
+      return;
+    }
+    cmdVentaManual_(chatId, text); return;
+  }
 
   // Anti-spam solo para texto libre / órdenes pegadas
   if (isDuplicateText_(text)) {
@@ -201,15 +225,12 @@ function handleCallback_(q) {
 function cmdStart_(chatId) {
   sendMessage_(chatId,
     '👋 TiendaMax Bot listo.\n\n' +
-    'Comandos:\n' +
-    '/resumen — ventas e interesados del día\n' +
-    '/stock — stock bajo y agotados\n' +
-    '/interesados — productos con más clics WhatsApp\n' +
-    '/campana — campaña sugerida\n' +
-    '/productos texto — buscar productos\n' +
-    '/tareas — qué hacer hoy\n' +
-    '/venta Nombre x2 $50 — registrar venta manual\n\n' +
-    'También puedes pegar una orden de WhatsApp.'
+    'Usa los botones de abajo o escribe:\n' +
+    '/resumen · /stock · /interesados\n' +
+    '/campana · /productos · /tareas\n' +
+    '/venta Nombre x2 $50\n\n' +
+    'También puedes pegar una orden de WhatsApp.',
+    { reply_markup: mainKeyboard_() }
   );
 }
 
