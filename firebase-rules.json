@@ -50,7 +50,7 @@
           ".validate": "newData.isString()"
         }
       },
-      ".read": true,
+      ".read": false,
       ".write": false
     },
     "viewers": {
@@ -126,7 +126,7 @@
     "config": {
       "version": {
         ".read": true,
-        ".write": true,
+        ".write": "auth != null",
         ".validate": "newData.isNumber()"
       }
     },

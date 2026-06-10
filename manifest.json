@@ -43,7 +43,22 @@
             "name": "Panel Admin",
             "short_name": "Admin",
             "description": "Abrir panel de administración",
-            "url": "/?admin=1"
+            "url": "/?admin=1",
+            "icons": [
+                {
+                    "src": "/iconos/icon-192.png",
+                    "sizes": "192x192"
+                }
+            ]
+        }
+    ],
+    "screenshots": [
+        {
+            "src": "/og-image.jpg",
+            "sizes": "1200x630",
+            "type": "image/jpeg",
+            "form_factor": "wide",
+            "label": "TiendaMax — Tecnología y electrónica"
         }
     ]
 }

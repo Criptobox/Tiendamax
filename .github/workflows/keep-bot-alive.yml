@@ -6,7 +6,7 @@ name: Keep Bot Alive
 
 on:
   schedule:
-    - cron: '*/14 * * * *'
+    - cron: '*/30 * * * *'
   workflow_dispatch:
 
 jobs:

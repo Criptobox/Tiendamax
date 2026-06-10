@@ -109,7 +109,8 @@ const STATIC_ASSETS = [
   '/',
   '/index.html',
   '/admin.html',
-  '/css/styles.css',
+  '/css/fonts.css',
+  '/css/bundle.css',
   '/css/animations.css',
   '/css/styles.banner.fix.css',
   '/css/styles.fixes.css',
@@ -133,7 +134,7 @@ const STATIC_ASSETS = [
   '/css/tienda-plus.css',
   '/css/hero-efectos.css',
   '/js/hero-efectos.js',
-  '/og-image.png',
+  '/og-image.jpg',
   '/manifest.json',
   '/iconos/icon-192.png',
   '/iconos/icon-512.png'
