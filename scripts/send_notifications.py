@@ -43,15 +43,27 @@ ROOT = Path(__file__).resolve().parents[1]
 
 def get_previous_json(filepath: str):
     try:
+        # Busca los 2 commits más recientes que tocaron este archivo específico.
+        # Usar HEAD~1 es incorrecto si hubo commits intermedios que no tocaron el archivo.
+        log_res = subprocess.run(
+            ["git", "log", "--format=%H", "--", filepath],
+            capture_output=True, text=True, check=False
+        )
+        if log_res.returncode != 0 or not log_res.stdout.strip():
+            return None
+        commits = [c.strip() for c in log_res.stdout.strip().split('\n') if c.strip()]
+        if len(commits) < 2:
+            return None  # Solo un commit ha tocado este archivo — sin histórico anterior
+        prev_commit = commits[1]
         res = subprocess.run(
-            ["git", "show", f"HEAD~1:{filepath}"],
+            ["git", "show", f"{prev_commit}:{filepath}"],
             capture_output=True, text=True, check=False
         )
         if res.returncode != 0:
-            return None  # Primer commit o archivo nuevo — sin historial previo
+            return None
         return json.loads(res.stdout)
     except json.JSONDecodeError as e:
-        print(f"⚠️ JSON malformado en HEAD~1:{filepath}: {e}", file=sys.stderr)
+        print(f"⚠️ JSON malformado en historial:{filepath}: {e}", file=sys.stderr)
         return None
     except Exception as e:
         print(f"⚠️ Error leyendo historial git de {filepath}: {e}", file=sys.stderr)
@@ -78,6 +90,19 @@ def init_firebase():
         print(f"❌ Error Firebase: {e}")
         return None, None
 
+def _fb_to_list(v) -> list:
+    """Firebase convierte arrays a dicts {"0":..,"1":..} en algunos casos. Normaliza."""
+    if v is None:
+        return []
+    if isinstance(v, list):
+        return v
+    if isinstance(v, dict):
+        try:
+            return [v[k] for k in sorted(v.keys(), key=lambda x: int(x))]
+        except (ValueError, TypeError):
+            return list(v.values())
+    return []
+
 def cargar_cola(database) -> dict:
     ref = database.reference("notification_queue")
     data = ref.get()
@@ -89,10 +114,12 @@ def cargar_cola(database) -> dict:
             "ultimo_push": {},
             "ultimo_lote_fecha": ""
         }
-    # Asegurar listas
-    data.setdefault("nuevos_pendientes", [])
-    data.setdefault("rebajas_pendientes", [])
-    data.setdefault("tasa_pendiente", None)
+    # Normalizar siempre — Firebase puede devolver arrays como dicts
+    data["nuevos_pendientes"] = _fb_to_list(data.get("nuevos_pendientes"))
+    data["rebajas_pendientes"] = _fb_to_list(data.get("rebajas_pendientes"))
+    # tasa_pendiente puede ser None o [ta, tp]
+    tp = data.get("tasa_pendiente")
+    data["tasa_pendiente"] = _fb_to_list(tp) if isinstance(tp, dict) else tp
     data.setdefault("ultimo_push", {})
     data.setdefault("ultimo_lote_fecha", "")
     return data
@@ -278,7 +305,8 @@ def main():
     # 1. Tasa (Inmediato si diurno)
     if cola["tasa_pendiente"] and diurno:
         ta, tp = cola["tasa_pendiente"]
-        txt = f"¡Bajó el dólar! 1 USD = {ta} MN" if ta < tp else f"Nueva tasa: 1 USD = {ta} MN"
+        display = int(ta) + 10  # la tienda muestra tasaMN + 10 MN
+        txt = f"¡Bajó el dólar! 1 USD = {display} MN" if ta < tp else f"Nueva tasa: 1 USD = {display} MN"
         avisos.append({"tipo": "tasa", "title": "💱 Cambio de Tasa", "body": txt, "link": "/", "imagen": None})
 
     # 2. Rebajas (Inmediato si diurno)

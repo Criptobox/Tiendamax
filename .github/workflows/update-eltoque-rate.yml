@@ -47,4 +47,9 @@ jobs:
           fi
 
           git commit -m "chore: actualizar tasa base desde elTOQUE"
+          for i in 1 2 3 4; do
+            if git push; then exit 0; fi
+            sleep $((i * 3))
+            git pull --rebase origin main || git rebase --abort 2>/dev/null
+          done
           git push
