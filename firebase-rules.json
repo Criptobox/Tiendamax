@@ -130,6 +130,10 @@
         ".validate": "newData.isNumber()"
       }
     },
+    "admin_meta": {
+      ".read": false,
+      ".write": false
+    },
     "avisos_count": {
       "$productId": {
         "count": {
