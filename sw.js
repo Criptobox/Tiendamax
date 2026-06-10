@@ -102,7 +102,7 @@
 
 
 
-const CACHE_NAME = 'tiendamax-202606093400';
+const CACHE_NAME = 'tiendamax-202606093500';
 
 
 const STATIC_ASSETS = [
