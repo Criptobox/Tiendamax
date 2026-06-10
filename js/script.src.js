@@ -3908,15 +3908,19 @@ function renderizarCategoriasHomeInstant() {
     grid.innerHTML = '';
     const cardTodas = document.createElement('div');
     cardTodas.className = 'categoria-card';
-    cardTodas.innerHTML = `<span class="cat-icon">🛍️</span><span class="cat-name">Todos</span><span class="cat-count">${localProds.length} producto${localProds.length !== 1 ? 's' : ''}</span>`;
+    cardTodas.innerHTML = `<span class="cat-wm">🛍️</span><span class="cat-icon">🛍️</span><span class="cat-name">Todos</span><span class="cat-count">${localProds.length} producto${localProds.length !== 1 ? 's' : ''}</span><span class="cat-cta">→ Explorar</span>`;
     cardTodas.onclick = () => mostrarVistaCategoria('Todas');
     grid.appendChild(cardTodas);
 
+    const maxCount = localCats.length ? Math.max(...localCats.map(cat => localProds.filter(p => p.categoria === cat).length)) : 0;
     localCats.forEach(cat => {
         const count = localProds.filter(p => p.categoria === cat).length;
         const card = document.createElement('div');
         card.className = 'categoria-card' + (count === 0 ? ' proximamente' : '');
-        card.innerHTML = `<span class="cat-icon">${obtenerIconoCategoria(cat)}</span><span class="cat-name">${cat}</span><span class="cat-count">${count === 0 ? '🕐 Próximamente' : count + ' producto' + (count !== 1 ? 's' : '')}</span>`;
+        const icon = obtenerIconoCategoria(cat);
+        const badge = (count > 0 && count === maxCount) ? '<span class="cat-badge">🔥 Popular</span>' : '';
+        const cta = count > 0 ? '<span class="cat-cta">→ Explorar</span>' : '';
+        card.innerHTML = `${badge}<span class="cat-wm">${icon}</span><span class="cat-icon">${icon}</span><span class="cat-name">${cat}</span><span class="cat-count">${count === 0 ? '🕐 Próximamente' : count + ' producto' + (count !== 1 ? 's' : '')}</span>${cta}`;
         card.onclick = () => mostrarVistaCategoria(cat);
         grid.appendChild(card);
     });
