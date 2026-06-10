@@ -582,8 +582,8 @@
                 <!-- Banner Slider -->
                 <div id="heroBannerSlider" class="hero-banner-slider">
                     <div class="hero-banner-track" id="heroBannerTrack"></div>
-                    <button class="hero-banner-prev" onclick="moverBanner(-1)" type="button">&#8249;</button>
-                    <button class="hero-banner-next" onclick="moverBanner(1)" type="button">&#8250;</button>
+                    <button class="hero-banner-prev" onclick="moverBanner(-1)" type="button" aria-label="Imagen anterior">&#8249;</button>
+                    <button class="hero-banner-next" onclick="moverBanner(1)" type="button" aria-label="Imagen siguiente">&#8250;</button>
                     <div class="hero-banner-dots" id="heroBannerDots"></div>
                 </div>
                 <div id="heroFallback" class="image-placeholder" style="display:none;">✦ TiendaMax ✦</div>
@@ -978,8 +978,12 @@
                             <span data-action="setEstrellas" data-arg="4" class="estrella-btn">★</span>
                             <span data-action="setEstrellas" data-arg="5" class="estrella-btn">★</span>
                         </div>
-                        <input type="text" id="resenaAutor" placeholder="Tu nombre" class="resena-input" maxlength="30">
-                        <textarea id="resenaTexto" placeholder="Cuenta tu experiencia con este producto..." class="resena-textarea" maxlength="300" rows="3"></textarea>
+                        <input type="text" id="resenaAutor" placeholder="Tu nombre" aria-label="Tu nombre" class="resena-input" maxlength="30">
+                        <textarea id="resenaTexto" placeholder="Cuenta tu experiencia con este producto..." aria-label="Cuenta tu experiencia con este producto" class="resena-textarea" maxlength="300" rows="3"></textarea>
+                        <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:#aaa;margin:8px 0;cursor:pointer;">
+                            <input type="checkbox" id="resenaComprador" style="accent-color:#FF6B35;width:16px;height:16px;">
+                            Compré este producto
+                        </label>
                         <button data-action="guardarResena" type="button" class="btn btn-primary" style="width:100%;">Publicar reseña</button>
                     </div>
                     <div id="listaResenas" class="lista-resenas"></div>

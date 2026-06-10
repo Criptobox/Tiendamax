@@ -520,6 +520,8 @@ function mostrarFormResena() {
     const textoEl = document.getElementById('resenaTexto');
     if (autorEl) autorEl.value = '';
     if (textoEl) textoEl.value = '';
+    const compradorEl = document.getElementById('resenaComprador');
+    if (compradorEl) compradorEl.checked = false;
 }
 
 function setEstrellas(n) {
@@ -547,7 +549,8 @@ function guardarResena() {
         estrellas: _estrellasSeleccionadas,
         fecha: new Date().toLocaleDateString('es-ES', { day:'numeric', month:'short', year:'numeric' }),
         productoId: pid,
-        productoNombre: _detalleProductoActual.nombre || ''
+        productoNombre: _detalleProductoActual.nombre || '',
+        comprador: !!(document.getElementById('resenaComprador')?.checked)
     };
 
     mostrarFormResena();
@@ -630,7 +633,10 @@ async function renderizarResenas(productoId) {
             const e = Math.max(0, Math.min(5, parseInt(r.estrellas, 10) || 0));
             return '<div class="resena-item">' +
                 '<div class="resena-top">' +
-                    '<span class="resena-autor">' + escapeHtml(r.autor) + '</span>' +
+                    '<div style="display:flex;align-items:center;gap:6px;">' +
+                        '<span class="resena-autor">' + escapeHtml(r.autor) + '</span>' +
+                        (r.comprador ? '<span style="font-size:10px;background:#1a3a1a;color:#4caf50;border:1px solid #4caf50;border-radius:4px;padding:1px 5px;">✓ Comprador</span>' : '') +
+                    '</div>' +
                     '<div style="display:flex;align-items:center;gap:6px;">' +
                         '<span class="resena-estrellas">' + '★'.repeat(e) + '☆'.repeat(5 - e) + '</span>' +
                         '<span class="resena-fecha">' + escapeHtml(r.fecha) + '</span>' +
@@ -3960,7 +3966,6 @@ async function cargarSubcategoriasDesdeGitHub() {
             }
         }
     } catch(e) {
-        console.log('Subcategorias: usando datos locales');
     }
 }
 
@@ -4242,7 +4247,6 @@ async function _fbMigrarVentasRaiz(url) {
             }
         } catch(e) {}
     }
-    if (ventasMigradas.length) console.log(`✅ Migradas ${ventasMigradas.length} ventas de raíz a /ventas/`);
     return ventasMigradas;
 }
 
@@ -6110,7 +6114,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
                 localStorage.setItem(KEY_SENT, '1');
             } catch(err) {
-                console.log('Notificación carrito:', err);
             }
         }, DELAY_MS);
     }
@@ -6253,7 +6256,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const dias = PUSH_RECHAZO_DELAY_DAYS[Math.min(rechazos - 1, PUSH_RECHAZO_DELAY_DAYS.length - 1)];
             const ms = dias * 24 * 60 * 60 * 1000;
             localStorage.setItem('tm_push_pospuesto', String(Date.now() + ms));
-            console.log('[push] Rechazo #' + rechazos + ' — re-preguntará en ' + dias + ' días');
         };
     }
 
@@ -6261,7 +6263,6 @@ document.addEventListener('DOMContentLoaded', () => {
     function _maybeMostrarPushBanner(razon) {
         if (_bannerYaMostrado) return;
         if (!('Notification' in window) || Notification.permission === 'granted') return;
-        console.log('[push] Trigger:', razon);
         _mostrarBannerPushAhora();
     }
 
@@ -6414,7 +6415,6 @@ async function cargarTasaDesdeGitHub() {
                 localStorage.setItem('tasaMN', String(cfg.tasaMN));
                 if (_monedaActual === 'MN') actualizarPreciosMostrados();
                 if (typeof actualizarBurbujaTasa === 'function') actualizarBurbujaTasa();
-                console.log(`✅ Tasa MN cargada desde GitHub: ${cfg.tasaMN} MN/USD`);
             }
             // Cargar oferta del día
             if (cfg.ofertaDiaId) {
@@ -7733,7 +7733,6 @@ window.addEventListener('popstate', function() {
                         }
                     } catch(e) {}
                     await Promise.allSettled(Array.from(ids).map(id => fetch(fbConfig.databaseURL + '/tokens/' + id + '.json', { method: 'DELETE' })));
-                    console.log('[notif] Token borrado de Firebase RTDB');
                 }
             } catch(e) {
                 console.warn('[notif] Error borrando token de RTDB:', e);

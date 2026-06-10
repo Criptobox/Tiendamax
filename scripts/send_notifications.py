@@ -306,7 +306,8 @@ def main():
     if cola["tasa_pendiente"] and diurno:
         ta, tp = cola["tasa_pendiente"]
         txt = f"¡Bajó el dólar! 1 USD = {ta} MN" if ta < tp else f"Nueva tasa: 1 USD = {ta} MN"
-        avisos.append({"tipo": "tasa", "title": "💱 Cambio de Tasa", "body": txt, "link": "/", "imagen": None})
+        title = "💱 ¡Bajó el Dólar!" if ta < tp else "💱 Cambio de Tasa"
+        avisos.append({"tipo": "tasa", "title": title, "body": txt, "link": "/", "imagen": None})
 
     # 2. Rebajas (Inmediato si diurno)
     if cola["rebajas_pendientes"] and diurno:
