@@ -10,6 +10,7 @@ Comandos disponibles:
 """
 import asyncio
 import os
+import sys
 import json
 import re
 import logging
