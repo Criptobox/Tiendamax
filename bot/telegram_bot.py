@@ -22,10 +22,14 @@ from aiohttp import web
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import (
     Application, CommandHandler, MessageHandler,
-    filters, ContextTypes, CallbackQueryHandler, PicklePersistence,
+    filters, ContextTypes, CallbackQueryHandler,
 )
 
-logging.basicConfig(format="%(asctime)s %(levelname)s %(message)s", level=logging.INFO)
+logging.basicConfig(
+    format="%(asctime)s %(levelname)s %(message)s",
+    level=logging.INFO,
+    stream=sys.stdout,
+)
 log = logging.getLogger(__name__)
 
 # ── Config ─────────────────────────────────────────────────────
@@ -323,6 +327,22 @@ async def generar_reporte(periodo: str = "hoy") -> str:
 
 
 # ══════════════════════════════════════════════════════════════
+#  ERROR HANDLER — notifica al admin y sigue corriendo
+# ══════════════════════════════════════════════════════════════
+
+async def error_handler(update: object, context: ContextTypes.DEFAULT_TYPE) -> None:
+    log.error("Excepción no capturada:", exc_info=context.error)
+    try:
+        await context.bot.send_message(
+            chat_id=ADMIN_ID,
+            text=f"⚠️ *Error en bot:*\n`{type(context.error).__name__}: {context.error}`",
+            parse_mode="Markdown",
+        )
+    except Exception:
+        pass
+
+
+# ══════════════════════════════════════════════════════════════
 #  DECORADOR — solo admin
 # ══════════════════════════════════════════════════════════════
 
@@ -562,6 +582,10 @@ async def _run(app):
         await app.updater.start_polling(allowed_updates=Update.ALL_TYPES)
         log.info("TiendaMax Bot iniciado (long-polling)…")
         try:
+            await app.bot.send_message(chat_id=ADMIN_ID, text="🤖 Bot iniciado y listo.")
+        except Exception:
+            pass
+        try:
             await asyncio.sleep(float("inf"))
         except (asyncio.CancelledError, KeyboardInterrupt):
             pass
@@ -574,9 +598,7 @@ async def _run(app):
 
 
 def main():
-    # PicklePersistence guarda user_data en disco para sobrevivir reinicios del proceso
-    persistence = PicklePersistence(filepath="bot_data.pkl")
-    app = Application.builder().token(BOT_TOKEN).persistence(persistence).build()
+    app = Application.builder().token(BOT_TOKEN).build()
 
     app.add_handler(CommandHandler("start",     cmd_start))
     app.add_handler(CommandHandler("ayuda",     cmd_ayuda))
@@ -586,6 +608,7 @@ def main():
     app.add_handler(CommandHandler("venta",     cmd_venta_manual))
     app.add_handler(CallbackQueryHandler(handle_callback))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_texto))
+    app.add_error_handler(error_handler)
 
     asyncio.run(_run(app))
 
