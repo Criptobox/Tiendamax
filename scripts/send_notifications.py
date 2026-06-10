@@ -133,12 +133,21 @@ def guardar_cola(database, cola: dict):
 def detectar_cambios(config_actual, config_anterior, prod_actual, prod_anterior):
     res = {"tasa": None, "nuevos": [], "rebajas": [], "restock": []}
     
-    # Tasa
-    if isinstance(config_anterior, dict) and "tasaMN" in config_actual and "tasaMN" in config_anterior:
+    # Tasa — tasaMNAnterior (escrito por update_rate_from_eltoque.py) es la fuente
+    # más confiable: no depende de cuántos commits intermedios haya en config.json.
+    if "tasaMN" in config_actual:
         try:
-            ta, tp = float(config_actual["tasaMN"]), float(config_anterior["tasaMN"])
-            if abs(ta - tp) >= 0.01: res["tasa"] = (ta, tp)
-        except: pass
+            ta = float(config_actual["tasaMN"])
+            if "tasaMNAnterior" in config_actual:
+                tp = float(config_actual["tasaMNAnterior"])
+                if abs(ta - tp) >= 0.01:
+                    res["tasa"] = (ta, tp)
+            elif isinstance(config_anterior, dict) and "tasaMN" in config_anterior:
+                tp = float(config_anterior["tasaMN"])
+                if abs(ta - tp) >= 0.01:
+                    res["tasa"] = (ta, tp)
+        except:
+            pass
 
     # Productos
     if isinstance(prod_anterior, list):

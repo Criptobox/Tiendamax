@@ -262,6 +262,8 @@ def main() -> int:
             print(f"Tasa sin cambios ({nueva}). No se modifica config.json.")
             return 0
 
+        if anterior is not None:
+            config["tasaMNAnterior"] = anterior
         config["tasaMN"] = nueva
         config["tasaFuente"] = source_name
         config["tasaActualizada"] = updated_at
