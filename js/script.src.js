@@ -829,12 +829,6 @@ async function _hashSha256(password) {
     return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
 }
 
-// Hashes SHA-256 legacy (se aceptan durante migración, tras primer login se actualizan)
-const _OLD_HASHES = [
-    'a338781ef2610e22bde9dae45f2d8aaa6a8a8c4584158f18cd91089b9192bc62',
-    '90035f586903f0259868846c2459740b957630712759861619894101e405187e'
-];
-
 let productos = JSON.parse(localStorage.getItem('productos')) || [];
 let categorias = JSON.parse(localStorage.getItem('categorias')) || ['General'];
 let usuarioAutenticado = false;
@@ -915,12 +909,13 @@ function actualizarSliderPrecio() {}
 // Búsqueda local rápida
 function busquedaLocal(q) {
     if (!q) return productos.slice(0, 6);
-    const ql = q.toLowerCase();
+    const norm = s => (s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+    const ql = norm(q);
     return productos.filter(p =>
-        p.nombre.toLowerCase().includes(ql) ||
-        (p.descripcion||'').toLowerCase().includes(ql) ||
-        (p.categoria||'').toLowerCase().includes(ql) ||
-        (p.subcategoria||'').toLowerCase().includes(ql)
+        norm(p.nombre).includes(ql) ||
+        norm(p.descripcion).includes(ql) ||
+        norm(p.categoria).includes(ql) ||
+        norm(p.subcategoria).includes(ql)
     ).slice(0, 6);
 }
 
@@ -1829,38 +1824,6 @@ async function verificarPassword(event) {
                 usuarioAutenticado = true;
                 cerrarLoginModal();
                 abrirAdminPanel();
-                return;
-            }
-        } else {
-            // 2c. No hay auth configurado → migración SHA-256 legacy
-            const inputSha = await _hashSha256(passwordInput);
-            if (_OLD_HASHES.includes(inputSha)) {
-                const ns = _generarSal();
-                const nh = await hashPassword(passwordInput, ns);
-                try { localStorage.setItem(AUTH_SALT_KEY, ns); } catch(e) {}
-                try { localStorage.setItem(AUTH_HASH_KEY, nh); } catch(e) {}
-                if (ghUser && ghRepo) {
-                    const ghToken = localStorage.getItem('githubToken');
-                    if (ghToken) {
-                        try {
-                            const authData = { hash: nh, salt: ns, iterations: AUTH_ITERATIONS };
-                            const jsonStr = JSON.stringify(authData);
-                            const content = btoa(Array.from(new TextEncoder().encode(jsonStr), b => String.fromCharCode(b)).join(''));
-                            await fetch(`https://api.github.com/repos/${ghUser}/${ghRepo}/contents/.admin-auth.json`, {
-                                method: 'PUT',
-                                headers: { 'Authorization': `token ${ghToken}`, 'Content-Type': 'application/json' },
-                                body: JSON.stringify({ message: 'Migrar contraseña admin', content })
-                            });
-                        } catch(e) {
-                            console.warn('Migración: no se pudo subir a GitHub, guardado local:', e);
-                        }
-                    }
-                }
-                localStorage.removeItem('admin_rl');
-                usuarioAutenticado = true;
-                cerrarLoginModal();
-                abrirAdminPanel();
-                mostrarNotificacion('✅ Contraseña migrada al nuevo sistema. Cámbiala desde Configuración.', 'success');
                 return;
             }
         }
@@ -6439,17 +6402,17 @@ async function inicializarFirebaseFCMClient(config) {
     // Cargar SDK dinámicamente de forma ordenada (App -> Messaging)
     const scriptApp = document.createElement('script');
     scriptApp.src = 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js';
+    scriptApp.onerror = () => { /* FCM no disponible (sin red o bloqueado) */ };
     scriptApp.onload = () => {
         const scriptMsg = document.createElement('script');
         scriptMsg.src = 'https://www.gstatic.com/firebasejs/10.8.0/firebase-messaging-compat.js';
+        scriptMsg.onerror = () => { /* FCM messaging SDK no disponible */ };
         scriptMsg.onload = () => {
             if (!firebase.apps.length) {
                 firebase.initializeApp(config);
             }
             if (firebase.messaging.isSupported()) {
                 ejecutarInitFCM(config);
-            } else {
-                console.warn('[FCM] Este navegador no soporta Firebase Cloud Messaging.');
             }
         };
         document.head.appendChild(scriptMsg);
