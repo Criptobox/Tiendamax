@@ -1114,11 +1114,13 @@ window.leAbrirFormManual=function(){
   var sel=document.getElementById('leManualProd');
   if(sel){
     var prods=typeof productos!=='undefined'?productos:[];
-    sel.innerHTML='<option value="">— Selecciona producto —</option>'+
-      prods.slice().sort(function(a,b){return(a.nombre||'').localeCompare(b.nombre||'');}).map(function(p){
-        var label=(p.nombre||'Producto '+p.id).slice(0,50)+(Number(p.stock||0)===0?' ❌':'');
+    var agotados=prods.filter(function(p){return Number(p.stock||0)===0;}).sort(function(a,b){return(a.nombre||'').localeCompare(b.nombre||'');});
+    sel.innerHTML='<option value="">— Selecciona producto agotado —</option>'+
+      agotados.map(function(p){
+        var label=(p.nombre||'Producto '+p.id).slice(0,50);
         return '<option value="'+esc(String(p.id))+'">'+esc(label)+'</option>';
-      }).join('');
+      }).join('')+
+      (agotados.length===0?'<option disabled>No hay productos agotados</option>':'');
   }
   form.style.display='';
   var t=document.getElementById('leManualTel');
