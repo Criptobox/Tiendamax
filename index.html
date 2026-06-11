@@ -568,23 +568,26 @@
                     </div>
                     <div class="nd-hero-right">
                         <div class="nd-stack-wrap">
-                            <div class="nd-card3d">
+                            <!-- Tarjeta 3D = galería rotativa de productos reales (la puebla renderHeroGaleria()) -->
+                            <div class="nd-card3d" id="ndHeroCard3d" role="button" tabindex="0" aria-label="Producto destacado">
                                 <div class="nd-cl nd-cl3"></div>
                                 <div class="nd-cl nd-cl2"></div>
                                 <div class="nd-cl nd-cl1">
-                                    <div class="nd-card-img nd-pbg-warm">📱</div>
-                                    <div class="nd-card-body">
-                                        <span class="nd-cpill">Celulares</span>
-                                        <div class="nd-ctitle">Smartphone Android 5G</div>
-                                        <div class="nd-crate"><span class="nd-stars">★★★★★</span><span class="nd-rtext">4.9 · 200+ pedidos</span></div>
+                                    <div class="nd-card-img nd-pbg-warm" id="ndHeroImg">📱</div>
+                                    <div class="nd-card-body" id="ndHeroBody">
+                                        <span class="nd-cpill" id="ndHeroCat">Celulares</span>
+                                        <div class="nd-ctitle" id="ndHeroTitle">Smartphone Android 5G</div>
+                                        <div class="nd-crate"><span class="nd-stars">★★★★★</span><span class="nd-rtext" id="ndHeroRate">4.9 · Top ventas</span></div>
                                         <div class="nd-cpr">
-                                            <div><span class="nd-price">$180</span><span class="nd-usd">USD</span></div>
-                                            <button data-action="contactarWhatsApp" type="button" class="nd-btn-pedir">💬 Pedir</button>
+                                            <div><span class="nd-price" id="ndHeroPrice">$180</span><span class="nd-usd" id="ndHeroUsd">USD</span></div>
+                                            <button type="button" class="nd-btn-pedir" id="ndHeroBtn">💬 Pedir</button>
                                         </div>
                                     </div>
                                 </div>
+                                <!-- Puntos indicadores de la galería -->
+                                <div class="nd-hero-dots" id="ndHeroDots" aria-hidden="true"></div>
                             </div>
-                            <div class="nd-fbadge nd-fb1"><span class="nd-bi">🚚</span><div><strong>Envío Rápido</strong><span class="nd-bs">A toda Cuba</span></div></div>
+                            <div class="nd-fbadge nd-fb1"><span class="nd-bi">🚚</span><div><strong>Envío Rápido</strong></div></div>
                             <div class="nd-fbadge nd-fb2"><span class="nd-bi">⭐</span><div><strong>4.9 / 5.0</strong><span class="nd-bs">500+ clientes</span></div></div>
                             <div class="nd-fbadge nd-fb3"><span class="nd-bi">🔒</span><div><strong>100% Seguro</strong><span class="nd-bs">Compra protegida</span></div></div>
                         </div>

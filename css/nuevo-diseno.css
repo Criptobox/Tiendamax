@@ -41,6 +41,16 @@ body.light-mode .nd-o4{background:radial-gradient(circle,rgba(255,159,67,0.14),t
 /* 3D card stack */
 .nd-hero-right{display:flex;justify-content:center;align-items:center}
 .nd-stack-wrap{position:relative}
+/* Galería rotativa: transición suave al cambiar de producto */
+.nd-card3d{cursor:pointer}
+#ndHeroBody,#ndHeroImg{transition:opacity .26s ease}
+#ndHeroImg img{display:block}
+/* Puntos indicadores de la galería */
+.nd-hero-dots{position:absolute;bottom:-22px;left:0;right:0;display:flex;justify-content:center;gap:6px;z-index:11}
+.nd-hero-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.28);transition:all .3s ease}
+.nd-hero-dot.active{width:18px;border-radius:100px;background:linear-gradient(90deg,#FF6B35,#FF9F43)}
+body.light-mode .nd-hero-dot{background:rgba(0,0,0,.18)}
+body.light-mode .nd-hero-dot.active{background:linear-gradient(90deg,#FF6B35,#FF9F43)}
 .nd-card3d{position:relative;width:340px;height:440px;transform:perspective(1200px) rotateY(-10deg) rotateX(6deg);transform-style:preserve-3d;transition:transform .5s ease}
 .nd-card3d:hover{transform:perspective(1200px) rotateY(-5deg) rotateX(3deg) translateY(-10px)}
 .nd-cl{position:absolute;border-radius:28px}
