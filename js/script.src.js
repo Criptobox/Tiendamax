@@ -1396,9 +1396,10 @@ async function cargarDatosDesdeGitHub() {
         
     } catch (e) {
         console.warn('⚠️ Error en cargarDatosDesdeGitHub:', e && e.message);
-        
+
         renderizarCategoriasHome();
         renderizarMasVendidos();
+        setTimeout(cargarTestimoniosFirebase, 1500);
         verificarOfertasYMostrarBanner();
         // También re-render si estamos en vista categoría
         const vCat = document.getElementById('vistaCategoria');
