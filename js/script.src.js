@@ -1260,28 +1260,40 @@ async function cargarDatosDesdeGitHub() {
         : null;
 
     // Función helper: intenta raw primero, luego relativo
+    // cache:'no-cache' = GET condicional (304 si no cambió → sin re-descarga)
     async function fetchJSON(filename) {
+        const opts = { cache: 'no-cache' };
         if (baseUrl) {
             try {
-                const res = await fetch(`${baseUrl}/${filename}?_=${Date.now()}`);
+                const res = await fetch(`${baseUrl}/${filename}`, opts);
                 if (res.ok) return await res.json();
             } catch(e) {}
         }
         // Fallback: ruta relativa (funciona en GitHub Pages)
-        const res = await fetch(`${filename}?_=${Date.now()}`);
-        if (res.ok) return await res.json();
+        try {
+            const res = await fetch(filename, opts);
+            if (res.ok) return await res.json();
+        } catch(e) {}
         return null;
     }
 
     try {
-        // ── PASO 1: Cargar archivos pequeños y configuración primero (rápido) ──
-        // categorias.json es solo ~300 bytes → aparece instantáneamente
-        const [dataCat, dataComisiones, dataG, dataR] = await Promise.all([
+        // ── PASO 1: Solo categorias.json (pequeño) — config no crítica se carga después ──
+        const [dataCat, dataComisiones] = await Promise.all([
             fetchJSON('categorias.json').catch(() => null),
             Promise.resolve(null), // comisiones consolidadas en productos.json
-            fetchJSON('grupos_facebook_config.json').catch(() => null),
-            fetchJSON('revolico_config.json').catch(() => null),
         ]);
+        // Config no crítica: se carga en background sin bloquear la UI
+        setTimeout(async () => {
+            try {
+                const [dataG, dataR] = await Promise.all([
+                    fetchJSON('grupos_facebook_config.json').catch(() => null),
+                    fetchJSON('revolico_config.json').catch(() => null),
+                ]);
+                if (dataG && dataG.grupos) localStorage.setItem('gruposFB', JSON.stringify(dataG.grupos));
+                if (dataR && Object.keys(dataR).length > 0) localStorage.setItem('revolicoConfig', JSON.stringify(dataR));
+            } catch(e) {}
+        }, 4000);
 
         // Aplicar categorías de inmediato para que el grid aparezca rápido
         if (dataCat) {
@@ -1299,18 +1311,7 @@ async function cargarDatosDesdeGitHub() {
         }
 
         // comisiones consolidadas en productos.json — no se usa archivo separado
-
-        // Aplicar config grupos FB
-        if (dataG && dataG.grupos) {
-            localStorage.setItem('gruposFB', JSON.stringify(dataG.grupos));
-            
-        }
-
-        // Aplicar config Revolico
-        if (dataR && Object.keys(dataR).length > 0) {
-            localStorage.setItem('revolicoConfig', JSON.stringify(dataR));
-            
-        }
+        // grupos FB y revolico config se cargan en background (setTimeout arriba)
 
         // Ventas migradas a Firebase — sync en background tras cargar productos
         setTimeout(_fbSincronizarVentasAlIniciar, 2000);
@@ -3667,8 +3668,17 @@ function inicializarTienda() {
     // Restaurar badges inmediatamente al cargar
     actualizarContadorCarrito();
     actualizarBadgeCorazon();
-    
-    cargarDatosDesdeGitHub();
+
+    // Renderizar desde caché local ANTES de ir a la red
+    // → el usuario ve productos al instante en visitas repetidas
+    if (productos.length > 0) {
+        renderizarCategoriasHomeInstant();
+        renderizarCategoriasHome();
+        renderizarMasVendidos();
+        renderizarProductos();
+    }
+
+    cargarDatosDesdeGitHub(); // actualiza en background
 
     const productForm = document.getElementById('productForm');
     if (productForm) {
