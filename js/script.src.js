@@ -4153,11 +4153,11 @@ function renderHeroGaleria() {
         _ndHeroIdx = (_ndHeroIdx + 1) % lista.length;
         _ndDesintegrarYTransicion(_ndHeroIdx);
     };
-    if (lista.length > 1) _ndHeroTimer = setInterval(avanzar, 4000);
+    if (lista.length > 1) _ndHeroTimer = setInterval(avanzar, 7000);
 
     // Pausa al pasar el mouse / tocar
     card.onmouseenter = () => { if (_ndHeroTimer) { clearInterval(_ndHeroTimer); _ndHeroTimer = null; } };
-    card.onmouseleave = () => { if (lista.length > 1 && !_ndHeroTimer) _ndHeroTimer = setInterval(avanzar, 4000); };
+    card.onmouseleave = () => { if (lista.length > 1 && !_ndHeroTimer) _ndHeroTimer = setInterval(avanzar, 7000); };
 }
 
 function getActiveCountdown() {
