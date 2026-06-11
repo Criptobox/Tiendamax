@@ -840,3 +840,8 @@ body.light-mode .nd-card-story {
    y el contenedor del banner lleva margin lateral inline → 100% + 32px se sale.
    width:auto deja que los márgenes definan el ancho real. */
 #heroImageContainer.hero-image{width:auto !important;max-width:none !important}
+
+/* ================================================================
+   SECCIÓN MÁS VENDIDOS — oculta (los productos ya rotan en el hero)
+   ================================================================ */
+#mas-vendidos{display:none !important}
