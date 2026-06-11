@@ -500,7 +500,7 @@ async function registrarVenta(items, env) {
 
 async function handleMessage(msg, env) {
   const chatId  = String(msg.chat.id);
-  const text    = msg.text || '';
+  const text    = msg.text || msg.caption || '';
   const token   = env.BOT_TOKEN;
   const adminId = String(env.ADMIN_CHAT_ID);
 
@@ -509,7 +509,7 @@ async function handleMessage(msg, env) {
   // Flujo de venta activo — interceptar texto como cantidad
   const ventaState = await kvGet(env.KV, 'VENTA_STATE_' + chatId);
   if (ventaState === 'waiting_qty') {
-    const isCmd = text.startsWith('/') || /^[📊📦🔥📣🛍✅💰]/.test(text);
+    const isCmd = text.startsWith('/') || /^[📊📦🔥📣🛍✅💰]/.test(text) || !text;
     if (isCmd) await kvClearVenta(env.KV, chatId);
     else { await handleVentaQuantity(token, chatId, text, env); return; }
   }
