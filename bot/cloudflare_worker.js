@@ -313,11 +313,12 @@ async function cmdStart(token, chatId) {
 }
 
 async function cmdResumen(token, chatId, env) {
-  const [ventas, interesadosRaw, vistas, wa] = await Promise.all([
+  const [ventas, interesadosRaw, vistas, wa, productos] = await Promise.all([
     getFirebase(env.FIREBASE_URL, 'ventas'),
     getFirebase(env.FIREBASE_URL, 'interesados'),
     getFirebase(env.FIREBASE_URL, 'analytics/vistas'),
     getFirebase(env.FIREBASE_URL, 'analytics/whatsapp'),
+    getProductos(env.PRODUCTOS_URL || DEFAULT_PRODS),
   ]);
 
   const ventasArr      = objectValues(ventas || {});
@@ -343,6 +344,18 @@ async function cmdResumen(token, chatId, env) {
     lines.push('', '🔥 Más interés:');
     top.slice(0, 5).forEach(x => lines.push('• ' + x.producto + ' — ' + x.count));
   }
+
+  // Tareas pendientes
+  const noSeo  = productos.filter(p => !p.seoTitle && !p.seoDescription).length;
+  const noRecs = productos.filter(p => !p.recomendados || !p.recomendados.length).length;
+  const bajos  = productos.filter(p => { const s = Number(p.stock || 0); return s > 0 && s <= 3; }).length;
+  const agot   = productos.filter(p => Number(p.stock || 0) <= 0).length;
+  lines.push('', '✅ Tareas pendientes:');
+  if (bajos || agot) lines.push('• Stock: ' + bajos + ' bajos, ' + agot + ' agotados.');
+  if (noSeo)         lines.push('• SEO pendiente en ' + noSeo + ' productos.');
+  if (noRecs)        lines.push('• Sin recomendados: ' + noRecs + ' productos.');
+  lines.push('• Crear campaña del día.');
+
   await sendMessage(token, chatId, lines.join('\n'));
 }
 
