@@ -1803,7 +1803,7 @@ function renderizarMasVendidos() {
             card.innerHTML = `
 	            <div class="badge-vendido">🔥 Más Vendido</div>
 	            <div class="producto-image">
-	                <img src="${_img}" alt="${_nombre}" loading="lazy" onerror="this.src='/iconos/favicon-192.png';this.style.objectFit='contain';this.style.opacity='0.3'">
+	                <img src="${_img}" alt="${_nombre}" loading="lazy" onerror="this.src='/iconos/favicon-192.png';this.style.objectFit='cover';this.style.opacity='0.3'">
 	                ${(producto.precioOriginal > 0 && producto.precioOriginal > producto.precioActual) ? `<div class="badge">-$${(producto.precioOriginal - producto.precioActual).toFixed(0)}</div>` : ''}
 	            </div>
 	            <h3>${_nombre}</h3>
@@ -3902,10 +3902,155 @@ function abrirOfertaDelDia() {
     if (ofId && typeof abrirDetalleProducto === 'function') abrirDetalleProducto(ofId);
 }
 
-// ===== GALERÍA ROTATIVA DEL HERO (tarjeta 3D) =====
+// ===== GALERÍA ROTATIVA DEL HERO (tarjeta 3D) con efecto de desintegración =====
 let _ndHeroTimer = null;
 let _ndHeroIdx = 0;
 let _ndHeroProds = [];
+let _ndEfectoActivo = false; // bloquea doble transición
+
+// ── Canvas de partículas para el efecto de desintegración ──
+function _ndCrearCanvasParticulas() {
+    const card = document.getElementById('ndHeroCard3d');
+    if (!card) return null;
+    let canvas = card.querySelector('.nd-particulas-canvas');
+    if (canvas) return canvas;
+    canvas = document.createElement('canvas');
+    canvas.className = 'nd-particulas-canvas';
+    canvas.style.cssText = 'position:absolute;inset:0;z-index:50;pointer-events:none;border-radius:28px;width:100%;height:100%';
+    card.appendChild(canvas);
+    canvas.width = card.offsetWidth || 340;
+    canvas.height = card.offsetHeight || 440;
+    return canvas;
+}
+
+function _ndDesintegrarYTransicion(idxSiguiente) {
+    const card = document.getElementById('ndHeroCard3d');
+    if (!card || _ndEfectoActivo) return;
+    _ndEfectoActivo = true;
+
+    const canvas = _ndCrearCanvasParticulas();
+    if (!canvas) { _ndEfectoActivo = false; return; }
+    const ctx = canvas.getContext('2d');
+
+    // Actualizar tamaño del canvas
+    canvas.width = card.offsetWidth || 340;
+    canvas.height = card.offsetHeight || 440;
+    const W = canvas.width;
+    const H = canvas.height;
+
+    // Crear partículas a partir de la imagen actual de la tarjeta
+    const particulas = [];
+    const cols = 16;
+    const rows = 20;
+    const pw = W / cols;
+    const ph = H / rows;
+
+    const body = document.getElementById('ndHeroBody');
+    const imgWrap = document.getElementById('ndHeroImg');
+
+    // Paleta de colores del tema de la tarjeta
+    const colores = ['#FF6B35', '#FF9F43', '#E8501E', '#C9A96E', '#FFFFFF', '#FFD4C2', '#FFE8D6', '#1A1A1A', '#2A2A2A', '#E8C88A', '#F0EDE8', '#FAF8F5'];
+
+    for (let row = 0; row < rows; row++) {
+        for (let col = 0; col < cols; col++) {
+            particulas.push({
+                x: col * pw + pw / 2,
+                y: row * ph + ph / 2,
+                vx: (Math.random() - 0.5) * 3.5,
+                vy: (Math.random() - 0.8) * 4 - 1.5,
+                size: Math.random() * (pw * 0.7) + 2,
+                life: 1,
+                decay: Math.random() * 0.025 + 0.015,
+                color: colores[Math.floor(Math.random() * colores.length)],
+                rotation: Math.random() * Math.PI * 2,
+                rotSpeed: (Math.random() - 0.5) * 0.15
+            });
+        }
+    }
+
+    // Ocultar contenido original inmediatamente
+    if (body) body.style.opacity = '0';
+    if (imgWrap) imgWrap.style.opacity = '0';
+
+    // Preparar el nuevo contenido (pero aún invisible)
+    const p = _ndHeroProds[idxSiguiente];
+    if (p) {
+        const setTxt = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+        setTxt('ndHeroCat', p.categoria || 'Producto');
+        setTxt('ndHeroTitle', p.nombre || '');
+        const hayDesc = p.precioOriginal > 0 && p.precioOriginal > p.precioActual;
+        setTxt('ndHeroRate', hayDesc
+            ? '⚡ Oferta · ' + safeNum(p.stock) + ' disp.'
+            : '4.9 · ' + (safeNum(p.stock) > 0 ? safeNum(p.stock) + ' disponibles' : 'Top ventas'));
+
+        const precioEl = document.getElementById('ndHeroPrice');
+        const usdEl = document.getElementById('ndHeroUsd');
+        const esMN = (typeof tmMonedaActual === 'function' && tmMonedaActual() === 'MN');
+        if (precioEl) {
+            if (esMN && typeof getTasaMN === 'function' && getTasaMN() > 0) {
+                precioEl.textContent = '$' + Math.round(p.precioActual * getTasaMN()).toLocaleString();
+                if (usdEl) usdEl.textContent = 'MN';
+            } else {
+                precioEl.textContent = '$' + Number(p.precioActual).toFixed(0);
+                if (usdEl) usdEl.textContent = 'USD';
+            }
+        }
+        if (imgWrap) {
+            const fallback = (typeof obtenerIconoCategoria === 'function') ? obtenerIconoCategoria(p.categoria) : '📦';
+            if (p.imagen) {
+                imgWrap.innerHTML = '<img src="' + escapeAttr(p.imagen) + '" alt="' + escapeAttr(p.nombre) + '" loading="lazy" style="width:100%;height:100%;object-fit:cover" onerror="this.parentNode.textContent=\'' + fallback + '\'">';
+            } else {
+                imgWrap.textContent = fallback;
+            }
+        }
+    }
+
+    // Animar partículas
+    let animId;
+    const animar = () => {
+        ctx.clearRect(0, 0, W, H);
+
+        let todasMuertas = true;
+        particulas.forEach(part => {
+            if (part.life <= 0) return;
+            todasMuertas = false;
+
+            part.x += part.vx;
+            part.y += part.vy;
+            part.vy += 0.03; // gravedad
+            part.vx *= 0.995;
+            part.rotation += part.rotSpeed;
+            part.life -= part.decay;
+
+            const alpha = Math.max(0, part.life);
+            const scale = 0.5 + part.life * 0.5;
+
+            ctx.save();
+            ctx.translate(part.x, part.y);
+            ctx.rotate(part.rotation);
+            ctx.globalAlpha = alpha;
+            ctx.fillStyle = part.color;
+            ctx.fillRect(-part.size * scale / 2, -part.size * scale / 2, part.size * scale, part.size * scale);
+            ctx.restore();
+        });
+
+        if (todasMuertas) {
+            cancelAnimationFrame(animId);
+            // Revelar nuevo contenido
+            if (body) { body.style.opacity = '1'; body.style.transition = 'opacity 0.35s ease'; }
+            if (imgWrap) { imgWrap.style.opacity = '1'; imgWrap.style.transition = 'opacity 0.35s ease'; }
+            // Limpiar canvas
+            ctx.clearRect(0, 0, W, H);
+            _ndEfectoActivo = false;
+            // Actualizar dots
+            const dots = document.getElementById('ndHeroDots');
+            if (dots) dots.querySelectorAll('.nd-hero-dot').forEach((d, i) => d.classList.toggle('active', i === idxSiguiente));
+            return;
+        }
+        animId = requestAnimationFrame(animar);
+    };
+    animId = requestAnimationFrame(animar);
+}
 
 function renderHeroGaleria() {
     const card = document.getElementById('ndHeroCard3d');
@@ -3925,58 +4070,55 @@ function renderHeroGaleria() {
 
     if (_ndHeroTimer) { clearInterval(_ndHeroTimer); _ndHeroTimer = null; }
     _ndHeroIdx = 0;
+    _ndEfectoActivo = false;
 
     // Puntos indicadores
     const dots = document.getElementById('ndHeroDots');
-    if (dots) dots.innerHTML = lista.map((_, i) => `<span class="nd-hero-dot${i === 0 ? ' active' : ''}"></span>`).join('');
+    if (dots) dots.innerHTML = lista.map((_, i) => '<span class="nd-hero-dot' + (i === 0 ? ' active' : '') + '"></span>').join('');
 
-    const pintar = (idx) => {
+    // Pintar el primer producto directamente (sin desintegración)
+    const pintarDirecto = (idx) => {
         const p = lista[idx];
         if (!p) return;
         const body = document.getElementById('ndHeroBody');
         const imgWrap = document.getElementById('ndHeroImg');
-        if (body) body.style.opacity = '0';
-        if (imgWrap) imgWrap.style.opacity = '0';
-        setTimeout(() => {
-            const setTxt = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
-            setTxt('ndHeroCat', p.categoria || 'Producto');
-            setTxt('ndHeroTitle', p.nombre || '');
-            const hayDesc = p.precioOriginal > 0 && p.precioOriginal > p.precioActual;
-            setTxt('ndHeroRate', hayDesc
-                ? '⚡ Oferta · ' + safeNum(p.stock) + ' disp.'
-                : '4.9 · ' + (safeNum(p.stock) > 0 ? safeNum(p.stock) + ' disponibles' : 'Top ventas'));
 
-            // Precio (número grande + moneda pequeña, respetando USD/MN)
-            const precioEl = document.getElementById('ndHeroPrice');
-            const usdEl = document.getElementById('ndHeroUsd');
-            const esMN = (typeof tmMonedaActual === 'function' && tmMonedaActual() === 'MN');
-            if (precioEl) {
-                if (esMN && typeof getTasaMN === 'function' && getTasaMN() > 0) {
-                    precioEl.textContent = '$' + Math.round(p.precioActual * getTasaMN()).toLocaleString();
-                    if (usdEl) usdEl.textContent = 'MN';
-                } else {
-                    precioEl.textContent = '$' + Number(p.precioActual).toFixed(0);
-                    if (usdEl) usdEl.textContent = 'USD';
-                }
+        const setTxt = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+        setTxt('ndHeroCat', p.categoria || 'Producto');
+        setTxt('ndHeroTitle', p.nombre || '');
+        const hayDesc = p.precioOriginal > 0 && p.precioOriginal > p.precioActual;
+        setTxt('ndHeroRate', hayDesc
+            ? '⚡ Oferta · ' + safeNum(p.stock) + ' disp.'
+            : '4.9 · ' + (safeNum(p.stock) > 0 ? safeNum(p.stock) + ' disponibles' : 'Top ventas'));
+
+        const precioEl = document.getElementById('ndHeroPrice');
+        const usdEl = document.getElementById('ndHeroUsd');
+        const esMN = (typeof tmMonedaActual === 'function' && tmMonedaActual() === 'MN');
+        if (precioEl) {
+            if (esMN && typeof getTasaMN === 'function' && getTasaMN() > 0) {
+                precioEl.textContent = '$' + Math.round(p.precioActual * getTasaMN()).toLocaleString();
+                if (usdEl) usdEl.textContent = 'MN';
+            } else {
+                precioEl.textContent = '$' + Number(p.precioActual).toFixed(0);
+                if (usdEl) usdEl.textContent = 'USD';
             }
+        }
 
-            // Imagen real (o emoji por categoría como fallback)
-            if (imgWrap) {
-                const fallback = (typeof obtenerIconoCategoria === 'function') ? obtenerIconoCategoria(p.categoria) : '📦';
-                if (p.imagen) {
-                    imgWrap.innerHTML = `<img src="${escapeAttr(p.imagen)}" alt="${escapeAttr(p.nombre)}" loading="lazy" style="width:100%;height:100%;object-fit:contain" onerror="this.parentNode.textContent='${fallback}'">`;
-                } else {
-                    imgWrap.textContent = fallback;
-                }
+        if (imgWrap) {
+            const fallback = (typeof obtenerIconoCategoria === 'function') ? obtenerIconoCategoria(p.categoria) : '📦';
+            if (p.imagen) {
+                imgWrap.innerHTML = '<img src="' + escapeAttr(p.imagen) + '" alt="' + escapeAttr(p.nombre) + '" loading="lazy" style="width:100%;height:100%;object-fit:cover" onerror="this.parentNode.textContent=\'' + fallback + '\'">';
+            } else {
+                imgWrap.textContent = fallback;
             }
+        }
 
-            if (body) body.style.opacity = '1';
-            if (imgWrap) imgWrap.style.opacity = '1';
-            if (dots) dots.querySelectorAll('.nd-hero-dot').forEach((d, i) => d.classList.toggle('active', i === idx));
-        }, 260);
+        if (body) body.style.opacity = '1';
+        if (imgWrap) imgWrap.style.opacity = '1';
+        if (dots) dots.querySelectorAll('.nd-hero-dot').forEach((d, i) => d.classList.toggle('active', i === idx));
     };
 
-    pintar(0);
+    pintarDirecto(0);
 
     // Tocar la tarjeta abre el detalle del producto actual
     card.onclick = () => { const p = _ndHeroProds[_ndHeroIdx]; if (p && typeof abrirDetalleProducto === 'function') abrirDetalleProducto(p.id); };
@@ -3989,8 +4131,12 @@ function renderHeroGaleria() {
         else if (typeof contactarWhatsApp === 'function') contactarWhatsApp();
     };
 
-    // Auto-rotación cada 4s (solo si hay más de un producto)
-    const avanzar = () => { _ndHeroIdx = (_ndHeroIdx + 1) % lista.length; pintar(_ndHeroIdx); };
+    // Auto-rotación cada 4s con efecto de desintegración
+    const avanzar = () => {
+        if (_ndEfectoActivo) return;
+        _ndHeroIdx = (_ndHeroIdx + 1) % lista.length;
+        _ndDesintegrarYTransicion(_ndHeroIdx);
+    };
     if (lista.length > 1) _ndHeroTimer = setInterval(avanzar, 4000);
 
     // Pausa al pasar el mouse / tocar
@@ -4287,6 +4433,7 @@ function actualizarListaProductos() {
                         ${producto.comision > 0 ? `<div class="tm-prod-commission">💰 Comisión: ${producto.comisionMoneda === 'MN' ? '' : '$'}${Number(producto.comision).toFixed(2)} ${producto.comisionMoneda || 'USD'}</div>` : ''}
                     </div>
                     <button type="button" class="tm-prod-icon-btn edit" onclick="abrirEditModal(${_id})" title="Editar">✏️</button>
+                    <button type="button" class="tm-prod-icon-btn star${producto.masVendido ? ' active' : ''}" onclick="tmToggleMasVendido(${_id},event)" title="${producto.masVendido ? 'Quitar de Más Vendidos' : 'Destacar en Más Vendidos'}">⭐</button>
                     <button type="button" class="tm-prod-icon-btn del" onclick="eliminarProducto(${_id})" title="Eliminar">🗑️</button>
                 </div>
                 <div class="tm-prod-stock-row">
@@ -4321,6 +4468,21 @@ function fijarStockCero(id) {
 }
 
 // desdeVenta=true cuando lo llama registrarVenta (omite notificación de stock para no duplicar)
+
+// ── Toggle rápido de Más Vendido desde la lista de productos ──
+function tmToggleMasVendido(id, e) {
+    if (e) { e.stopPropagation(); e.preventDefault(); }
+    const p = productos.find(x => x.id === id);
+    if (!p) return;
+    p.masVendido = !p.masVendido;
+    guardarProductos();
+    marcarProductoModificado(id);
+    actualizarListaProductos();
+    renderizarMasVendidos();
+    if (typeof renderHeroGaleria === 'function') renderHeroGaleria();
+    mostrarNotificacion(p.masVendido ? '⭐ ' + p.nombre + ': destacado en Más Vendidos' : ' ' + p.nombre + ': quitado de Más Vendidos');
+}
+
 function ajustarStock(id, cantidad, desdeVenta = false) {
     const p = productos.find(p => p.id === id);
     if (!p) return;
