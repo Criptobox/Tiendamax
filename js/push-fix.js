@@ -1,21 +1,10 @@
 // ════════════════════════════════════════════════════════════════
-<<<<<<< HEAD
 //  TiendaMax — push-fix.js  v8
 //  v8: carnet de identidad por dispositivo — persiste en localStorage,
 //      IndexedDB y cookie de 1 año. Aunque el usuario borre datos del
 //      navegador, desactive/active notificaciones, o el token FCM cambie,
 //      siempre se usa la misma entrada en Firebase (mismo "carnet").
 //      Al re-suscribirse limpia automáticamente entradas duplicadas viejas.
-=======
-//  TiendaMax — push-fix.js  v7
-//  v7: fingerprint-based dedup + mejor feedback cuando RTDB falla.
-//  v6: al activar limpia tokens legacy del mismo userAgent.
-//  v5: no infla suscriptores; guarda por fingerprint de dispositivo.
-//  v4: separar getToken de escritura RTDB — si la red falla sólo
-//      al escribir en Firebase, el token se guarda local y se reintenta
-//      en background sin mostrar error al usuario. Mensajes en español.
-//  v3: suscripción 1 toque + respeta baja.
->>>>>>> claude/panel-improvement-integration-FIPEW
 // ════════════════════════════════════════════════════════════════
 (function () {
   "use strict";
@@ -58,11 +47,7 @@
     return cfg;
   }
 
-<<<<<<< HEAD
   // ── Huella de dispositivo (fallback si todo el storage se borra) ──
-=======
-  // Huella estable del dispositivo — sobrevive borrado de localStorage
->>>>>>> claude/panel-improvement-integration-FIPEW
   function deviceFingerprint() {
     var parts = [
       navigator.userAgent || '',
@@ -75,7 +60,6 @@
     return 'fp_' + (h >>> 0).toString(36);
   }
 
-<<<<<<< HEAD
   // ── IndexedDB helpers ────────────────────────────────────────
   function _idbOpen() {
     return new Promise(function (resolve, reject) {
@@ -85,38 +69,6 @@
         req.onsuccess = function (e) { resolve(e.target.result); };
         req.onerror   = function () { reject(); };
       } catch (e) { reject(); }
-=======
-  // Expone la función para que analytics.js la pueda usar en conteo
-  window.tmPushDeviceFingerprint = deviceFingerprint;
-
-  // Escribe token en Firebase RTDB. Si falla por red, guarda en LS para reintento.
-  async function escribirTokenRTDB(cfg, token) {
-    var dbURL = cfg.databaseURL || ("https://" + cfg.projectId + "-default-rtdb.firebaseio.com");
-    var fp = deviceFingerprint();
-    var id = fp; // fingerprint como clave — evita duplicar mismo dispositivo
-
-    // Eliminar tokens previos del mismo dispositivo antes de guardar el nuevo
-    try {
-      var allRes = await fetch(dbURL + "/tokens.json?_=" + Date.now(), { cache: "no-store" });
-      if (allRes.ok) {
-        var allData = await allRes.json();
-        if (allData && typeof allData === "object") {
-          var deletes = [];
-          Object.keys(allData).forEach(function(k) {
-            var t = allData[k];
-            if (k !== id && t && (t.fingerprint === fp || t.token === localStorage.getItem("fcmToken") || t.userAgent === navigator.userAgent)) {
-              deletes.push(fetch(dbURL + "/tokens/" + k + ".json", { method: "DELETE" }).catch(function() {}));
-            }
-          });
-          if (deletes.length) await Promise.allSettled(deletes);
-        }
-      }
-    } catch (e) {}
-
-    var resp = await fetch(dbURL + "/tokens/" + id + ".json", {
-      method: "PUT", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ token: token, timestamp: Date.now(), userAgent: navigator.userAgent, fingerprint: fp })
->>>>>>> claude/panel-improvement-integration-FIPEW
     });
   }
 
@@ -306,33 +258,17 @@
     try { localStorage.setItem("fcmToken", token); } catch (e) {}
     try { localStorage.removeItem("tm_push_desuscrito"); } catch (e) {}
 
-<<<<<<< HEAD
     try {
       await escribirTokenRTDB(cfg, token);
-=======
-    // Escribir en RTDB — si falla por red, el token ya está en FCM; se reintenta después.
-    var rtdbOk = false;
-    try {
-      await escribirTokenRTDB(cfg, token);
-      rtdbOk = true;
->>>>>>> claude/panel-improvement-integration-FIPEW
       if (typeof window.tmRegistrarSuscriptor === "function") { try { window.tmRegistrarSuscriptor(); } catch (e) {} }
     } catch (e) {
       try { localStorage.setItem(LS_PENDING, JSON.stringify({ token: token, cfg: cfg, ts: Date.now() })); } catch (e2) {}
-<<<<<<< HEAD
       console.warn("[push-fix v8] Token FCM OK, RTDB pendiente:", e.message);
     }
 
     var did = await getDeviceId();
     console.log("[push-fix v8] Registrado. Carnet:", did);
     return true;
-=======
-      console.warn("[push-fix v7] Token FCM OK, RTDB pendiente:", e.message);
-    }
-
-    console.log("[push-fix v7] Suscriptor registrado. RTDB:", rtdbOk ? "OK" : "pendiente");
-    return rtdbOk ? true : 'pending';
->>>>>>> claude/panel-improvement-integration-FIPEW
   }
 
   async function reintentarPendiente() {
@@ -347,16 +283,9 @@
     }
     try {
       await escribirTokenRTDB(pending.cfg, pending.token);
-<<<<<<< HEAD
       console.log("[push-fix v8] Pendiente guardado en RTDB.");
     } catch (e) {
       console.warn("[push-fix v8] Reintento fallido:", e.message);
-=======
-      if (typeof window.tmRegistrarSuscriptor === "function") { try { window.tmRegistrarSuscriptor(); } catch (e) {} }
-      console.log("[push-fix v7] Token pendiente guardado en RTDB.");
-    } catch (e) {
-      console.warn("[push-fix v7] Reintento fallido:", e.message);
->>>>>>> claude/panel-improvement-integration-FIPEW
     }
   }
 
@@ -372,13 +301,8 @@
       }
       return !!ok;
     }).catch(function (e) {
-<<<<<<< HEAD
       console.error("[push-fix v8]", e.message);
       _notif("⚠️ No se pudo activar las notificaciones. Intenta de nuevo.", "error");
-=======
-      console.error("[push-fix v7] Error:", e.message);
-      _notif("⚠️ No se pudo activar las notificaciones: " + e.message, "error");
->>>>>>> claude/panel-improvement-integration-FIPEW
       return false;
     });
   }
@@ -393,11 +317,7 @@
       setTimeout(function () { reintentarPendiente().catch(function () {}); }, 5000);
       if (localStorage.getItem("fcmToken")) return;
       setTimeout(function () {
-<<<<<<< HEAD
         registrarTokenRobusto().catch(function (e) { console.warn("[push-fix v8] auto-recuperación:", e.message); });
-=======
-        registrarTokenRobusto().catch(function (e) { console.warn("[push-fix v7] auto-recuperación:", e.message); });
->>>>>>> claude/panel-improvement-integration-FIPEW
       }, 3000);
     } catch (e) {}
   }

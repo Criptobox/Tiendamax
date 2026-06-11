@@ -146,7 +146,6 @@ function _tmRelTime(ts) {
     return `hace ${meses} mes${meses > 1 ? 'es' : ''}`;
 }
 
-<<<<<<< HEAD
 // Cuenta suscriptores únicos. Prioridad: deviceId (carnet) > fingerprint > token.
 // Las entradas legacy sin deviceId ni fingerprint cuentan por token string.
 function tmContarSuscriptoresUnicos(tokensData = {}) {
@@ -166,17 +165,6 @@ function tmContarSuscriptoresUnicos(tokensData = {}) {
         }
     });
     return claves.size;
-=======
-// ── Contar dispositivos únicos sin inflar por re-suscripciones ──
-function tmContarSuscriptoresUnicos(tokensData = {}) {
-    const vals = Object.values(tokensData).filter(t => t && t.token);
-    const seen = new Set();
-    vals.forEach(t => {
-        if (t.fingerprint) seen.add('fp:' + t.fingerprint);
-        else seen.add('tk:' + t.token);
-    });
-    return seen.size;
->>>>>>> claude/panel-improvement-integration-FIPEW
 }
 window.tmContarSuscriptoresUnicos = tmContarSuscriptoresUnicos;
 
@@ -213,11 +201,7 @@ async function tmLeerAnalytics() {
         whatsappCont[id] = (typeof v === 'object' ? v.count : v) || 0;
     });
 
-<<<<<<< HEAD
     // Suscriptores: Firebase como fuente de verdad, contando dispositivos únicos
-=======
-    // Suscriptores: contar dispositivos únicos (fingerprint si existe, si no por token)
->>>>>>> claude/panel-improvement-integration-FIPEW
     const suscriptores = tmContarSuscriptoresUnicos(tokensData);
     // Sincronizar caché local con el valor real
     try { localStorage.setItem('tm_subscriber_count', String(suscriptores)); } catch(e) {}
