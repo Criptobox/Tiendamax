@@ -548,7 +548,15 @@ async function handleMessage(msg, env) {
     });
   }
 
-  await sendMessage(token, chatId, 'No reconocí ese mensaje. Usa /ayuda para ver comandos.');
+  // DEBUG TEMPORAL — borrar después
+  const _u = text.toUpperCase();
+  await sendMessage(token, chatId,
+    '❓ No reconocí ese mensaje.\n\n' +
+    `len=${text.length} ` +
+    `nuevaOrden=${_u.includes('NUEVA ORDEN')} ` +
+    `tiendamax=${_u.includes('TIENDAMAX')} ` +
+    `items=${parseOrden(text) ? parseOrden(text).length : 'null'}`
+  );
 }
 
 // ── Router de callbacks ───────────────────────────────────────────────────────
