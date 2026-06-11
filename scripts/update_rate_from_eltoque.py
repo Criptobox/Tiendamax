@@ -66,6 +66,34 @@ def _as_float(v: Any) -> float | None:
     return None
 
 
+def _normalize_date(value: Any) -> str:
+    """Normaliza una fecha/timestamp variada a 'YYYY-MM-DD'.
+
+    Acepta ISO 8601 ('2026-06-11T15:53:44Z'), epoch en segundos o ms,
+    o ya 'YYYY-MM-DD'. Si no se puede interpretar, usa la fecha UTC de hoy.
+    """
+    if value is None or value == "":
+        return datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    # Epoch numérico (segundos o milisegundos)
+    if isinstance(value, (int, float)) or (isinstance(value, str) and value.strip().isdigit()):
+        try:
+            ts = float(value)
+            if ts > 1e11:  # parece milisegundos
+                ts /= 1000.0
+            return datetime.fromtimestamp(ts, tz=timezone.utc).strftime("%Y-%m-%d")
+        except (ValueError, OverflowError, OSError):
+            pass
+    s = str(value).strip()
+    # ISO 8601: tomar solo la parte de la fecha
+    m = re.match(r"(\d{4})-(\d{2})-(\d{2})", s)
+    if m:
+        return f"{m.group(1)}-{m.group(2)}-{m.group(3)}"
+    try:
+        return datetime.fromisoformat(s.replace("Z", "+00:00")).strftime("%Y-%m-%d")
+    except ValueError:
+        return datetime.now(timezone.utc).strftime("%Y-%m-%d")
+
+
 def _extract_updated_at(data: Any) -> str:
     """Busca una fecha plausible en respuestas JSON con estructuras variadas."""
     keys = {"date", "updated_at", "updatedAt", "created_at", "createdAt", "time", "timestamp"}
@@ -266,7 +294,7 @@ def main() -> int:
             config["tasaMNAnterior"] = anterior
         config["tasaMN"] = nueva
         config["tasaFuente"] = source_name
-        config["tasaActualizada"] = updated_at
+        config["tasaActualizada"] = _normalize_date(updated_at)
         config["actualizado"] = datetime.now(timezone.utc).isoformat()
         save_config(config)
 
