@@ -402,82 +402,84 @@
     }
     html body .hsb-wrap-top .hsb-search .hsb-pill { width: 100% !important; max-width: none !important; }
 
-    /* ── Selector de moneda — pill que combina con el buscador ── */
+    /* ── Selector de moneda — segmented control glass (combina con el diseño) ──
+       El pill exterior es el glass; los botones USD/MN son los segmentos.
+       Importante: anular min-width:520px y .cur-btn min-width:126px de bundle. */
     html body .currency-bar {
         position: static !important;
-        display: flex !important;
+        display: inline-flex !important;
         align-items: center !important;
-        gap: 8px !important;
+        justify-content: center !important;
+        gap: 3px !important;
         flex: 0 0 auto !important;
         width: auto !important;
+        min-width: 0 !important;
         max-width: none !important;
         margin: 0 !important;
-        padding: 6px 7px 6px 14px !important;
+        padding: 4px !important;
         border-radius: 999px !important;
         z-index: auto !important;
-        /* Mismo recipe que el buscador en oscuro (styles.fixes) */
-        background: rgba(0,0,0,.45) !important;
-        border: 1px solid rgba(255,106,0,.32) !important;
-        box-shadow: 0 0 0 1px rgba(255,106,0,.08), 0 4px 18px rgba(0,0,0,.35) !important;
-        backdrop-filter: none !important;
-        -webkit-backdrop-filter: none !important;
+        /* Glass — mismo lenguaje que el header y las tarjetas del diseño */
+        background: linear-gradient(145deg,rgba(255,255,255,.10),rgba(255,255,255,.04)) !important;
+        backdrop-filter: blur(20px) saturate(160%) !important;
+        -webkit-backdrop-filter: blur(20px) saturate(160%) !important;
+        border: 1px solid rgba(255,255,255,.12) !important;
+        border-top-color: rgba(255,255,255,.20) !important;
+        box-shadow: 0 6px 22px rgba(0,0,0,.30), 0 1px 3px rgba(0,0,0,.2) !important;
     }
     body.light-mode .currency-bar {
-        background: #ffffff !important;
-        border: 1px solid rgba(255,106,0,.30) !important;
-        box-shadow: 0 2px 8px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.04) !important;
+        background: rgba(255,255,255,.72) !important;
+        border: 1px solid rgba(0,0,0,.07) !important;
+        border-top-color: rgba(0,0,0,.07) !important;
+        box-shadow: 0 4px 16px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.04) !important;
     }
-    .currency-bar .tasa-info-prefix {
-        font-size: 13px;
-        color: rgba(255,255,255,.7);
-        font-weight: 700;
-        line-height: 1;
-        white-space: nowrap;
-    }
-    body.light-mode .currency-bar .tasa-info-prefix { color: rgba(0,0,0,.55); }
+    /* El emoji 💱 desentonaba con la paleta → fuera */
+    .currency-bar .tasa-info-prefix,
+    .currency-bar .tasa-info { display: none !important; }
+    /* Sin caja interna: el glass exterior es el contenedor */
     html body .currency-bar .currency-toggle {
-        background: rgba(0,0,0,.30) !important;
-        border: 1px solid rgba(255,106,0,.20) !important;
+        background: transparent !important;
+        border: none !important;
         border-radius: 999px !important;
-        padding: 3px !important;
+        padding: 0 !important;
         display: flex !important;
-        gap: 2px !important;
-    }
-    body.light-mode .currency-bar .currency-toggle {
-        background: rgba(0,0,0,.04) !important;
-        border-color: rgba(255,106,0,.22) !important;
+        gap: 3px !important;
+        min-width: 0 !important;
     }
     html body .currency-bar .cur-btn {
         border-radius: 999px !important;
-        padding: 6px 14px !important;
+        padding: 7px 16px !important;
+        min-width: 0 !important;
         font-size: 12px !important;
         font-weight: 800 !important;
-        letter-spacing: .4px !important;
-        color: rgba(255,255,255,.68) !important;
+        letter-spacing: .3px !important;
+        color: rgba(255,255,255,.6) !important;
         transition: all .2s !important;
         border: none !important;
         background: transparent !important;
         cursor: pointer !important;
         white-space: nowrap !important;
     }
+    html body .currency-bar .cur-btn:hover { color: rgba(255,255,255,.9) !important; }
     body.light-mode .currency-bar .cur-btn { color: rgba(0,0,0,.5) !important; }
+    body.light-mode .currency-bar .cur-btn:hover { color: rgba(0,0,0,.85) !important; }
+    /* Segmento activo: gradiente naranja de marca */
     html body .currency-bar .cur-btn.active {
-        background: linear-gradient(135deg,#ff6a00,#ff3d00) !important;
+        background: linear-gradient(135deg,#FF6B35,#E8501E) !important;
         color: #fff !important;
-        box-shadow: 0 2px 10px rgba(255,106,0,.5) !important;
+        box-shadow: 0 2px 10px rgba(255,107,53,.45) !important;
     }
-    .currency-bar .tasa-info { display: none !important; }
 
     @media (max-width: 768px) {
         html body .hsb-wrap-top .hsb-toprow { gap: 8px !important; }
-        html body .currency-bar { padding: 5px 5px 5px 8px !important; gap: 6px !important; }
-        .currency-bar .tasa-info-prefix { display: none !important; }
-        html body .currency-bar .cur-btn { padding: 6px 10px !important; font-size: 11px !important; }
+        html body .currency-bar { padding: 4px !important; gap: 3px !important; }
+        html body .currency-bar .cur-btn { padding: 7px 12px !important; font-size: 11px !important; min-width: 0 !important; }
     }
     @media (max-width: 460px) {
         html body .hsb-wrap-top .hsb-toprow { flex-wrap: wrap !important; }
         html body .hsb-wrap-top .hsb-search { flex: 1 1 100% !important; max-width: 620px !important; }
         html body .currency-bar { margin: 2px auto 0 !important; }
+        html body .currency-bar .cur-btn { min-width: 0 !important; }
     }
     </style>
 </header>
