@@ -1,7 +1,6 @@
 /* ========================================================
    TiendaMax — Nuevo Diseño v1
-   Hero + mesh background + estilos de página completa.
-   Prefijo: nd-  (nuevo-diseno)
+   Hero + mesh + rediseño visual completo de página.
    Dark mode: default (body sin clase)
    Light mode: body.light-mode
    ======================================================== */
@@ -9,19 +8,14 @@
 /* ── MESH BACKGROUND ── */
 .nd-mesh{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
 .nd-orb{position:absolute;border-radius:50%;filter:blur(100px)}
-
-/* Dark orbs */
 .nd-o1{width:700px;height:700px;background:radial-gradient(circle,rgba(255,107,53,0.28),transparent 70%);top:-250px;left:-150px;animation:nd-od1 22s ease-in-out infinite}
 .nd-o2{width:500px;height:500px;background:radial-gradient(circle,rgba(255,159,67,0.20),transparent 70%);top:100px;right:-150px;animation:nd-od2 26s ease-in-out infinite}
 .nd-o3{width:450px;height:450px;background:radial-gradient(circle,rgba(167,139,250,0.15),transparent 70%);bottom:25%;left:35%;animation:nd-od3 19s ease-in-out infinite}
 .nd-o4{width:380px;height:380px;background:radial-gradient(circle,rgba(232,80,30,0.18),transparent 70%);bottom:80px;right:80px;animation:nd-od4 24s ease-in-out infinite}
-
-/* Light orbs */
 body.light-mode .nd-o1{background:radial-gradient(circle,rgba(255,180,140,0.22),transparent 70%)}
 body.light-mode .nd-o2{background:radial-gradient(circle,rgba(255,200,140,0.18),transparent 70%)}
 body.light-mode .nd-o3{background:radial-gradient(circle,rgba(196,181,253,0.16),transparent 70%)}
 body.light-mode .nd-o4{background:radial-gradient(circle,rgba(255,159,67,0.14),transparent 70%)}
-
 @keyframes nd-od1{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(80px,60px) scale(1.1)}66%{transform:translate(-40px,80px) scale(0.95)}}
 @keyframes nd-od2{0%,100%{transform:translate(0,0) scale(1)}40%{transform:translate(-70px,50px) scale(1.08)}70%{transform:translate(50px,-60px) scale(0.9)}}
 @keyframes nd-od3{0%,100%{transform:translate(0,0) scale(1)}30%{transform:translate(60px,-50px) scale(1.15)}65%{transform:translate(-80px,70px) scale(0.92)}}
@@ -31,49 +25,34 @@ body.light-mode .nd-o4{background:radial-gradient(circle,rgba(255,159,67,0.14),t
 .nd-wrap{max-width:1200px;margin:0 auto;padding:0 24px;position:relative;z-index:1}
 .nd-hero{display:block !important;padding:40px 0 48px !important;min-height:unset !important;text-align:left !important;background:none !important;border:none !important}
 .nd-hero-grid{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center}
-
-/* Eyebrow */
 .nd-eyebrow{display:inline-flex;align-items:center;gap:8px;background:rgba(255,107,53,0.12);border:1px solid rgba(255,107,53,0.25);border-radius:100px;padding:6px 16px;font-size:13px;font-weight:600;color:#FF6B35;margin-bottom:24px}
 .nd-edot{width:6px;height:6px;border-radius:50%;background:#FF6B35;animation:nd-dot 2s ease-in-out infinite;flex-shrink:0}
 @keyframes nd-dot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
-
-/* Heading */
 .nd-h1{font-size:clamp(36px,4.5vw,58px) !important;font-weight:900 !important;line-height:1.08 !important;letter-spacing:-2px !important;margin-bottom:20px !important;text-align:left !important}
 .nd-grad{background:linear-gradient(135deg,#FF6B35 0%,#FF9F43 50%,#E8501E 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .nd-sub{font-size:17px;line-height:1.6;margin-bottom:36px;max-width:440px;opacity:0.75}
-
-/* Buttons */
 .nd-hero-btns{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
 .nd-btn-primary{background:linear-gradient(135deg,#FF6B35 0%,#FF9F43 50%,#E8501E 100%);background-size:200% auto;color:#fff !important;border:none;border-radius:100px;padding:16px 32px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;box-shadow:0 8px 28px rgba(255,107,53,0.45);transition:transform .2s,box-shadow .2s,background-position .4s;display:inline-flex;align-items:center;gap:8px}
 .nd-btn-primary:hover{transform:translateY(-3px) scale(1.02);box-shadow:0 14px 40px rgba(255,107,53,.55);background-position:right center}
 .nd-btn-wa{background:none;border:none;color:#25D366 !important;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:6px;padding:8px 14px;opacity:0.9;transition:opacity .2s}
 .nd-btn-wa:hover{opacity:1}
 
-/* ── 3D CARD STACK ── */
+/* 3D card stack */
 .nd-hero-right{display:flex;justify-content:center;align-items:center}
 .nd-stack-wrap{position:relative}
 .nd-card3d{position:relative;width:340px;height:440px;transform:perspective(1200px) rotateY(-10deg) rotateX(6deg);transform-style:preserve-3d;transition:transform .5s ease}
 .nd-card3d:hover{transform:perspective(1200px) rotateY(-5deg) rotateX(3deg) translateY(-10px)}
 .nd-cl{position:absolute;border-radius:28px}
-.nd-cl3{inset:0;transform:translate(28px,28px)}
-.nd-cl2{inset:0;transform:translate(14px,14px)}
-.nd-cl1{inset:0;overflow:hidden}
-
-/* Dark card layers */
-.nd-cl3{background:linear-gradient(135deg,rgba(255,107,53,0.35),rgba(255,159,67,0.25));border:1px solid rgba(255,107,53,0.2)}
-.nd-cl2{background:linear-gradient(135deg,rgba(255,107,53,0.55),rgba(232,80,30,0.45));border:1px solid rgba(255,107,53,0.3)}
-.nd-cl1{background:linear-gradient(145deg,rgba(255,255,255,0.10),rgba(255,255,255,0.04));backdrop-filter:blur(24px) saturate(160%);border:1px solid rgba(255,255,255,0.14);border-top-color:rgba(255,255,255,0.22);box-shadow:0 20px 60px rgba(0,0,0,.5),0 4px 12px rgba(0,0,0,.3)}
-
-/* Light card layers */
+.nd-cl3{inset:0;transform:translate(28px,28px);background:linear-gradient(135deg,rgba(255,107,53,0.35),rgba(255,159,67,0.25));border:1px solid rgba(255,107,53,0.2)}
+.nd-cl2{inset:0;transform:translate(14px,14px);background:linear-gradient(135deg,rgba(255,107,53,0.55),rgba(232,80,30,0.45));border:1px solid rgba(255,107,53,0.3)}
+.nd-cl1{inset:0;overflow:hidden;background:linear-gradient(145deg,rgba(255,255,255,0.10),rgba(255,255,255,0.04));backdrop-filter:blur(24px) saturate(160%);border:1px solid rgba(255,255,255,0.14);border-top-color:rgba(255,255,255,0.22);box-shadow:0 20px 60px rgba(0,0,0,.5),0 4px 12px rgba(0,0,0,.3)}
 body.light-mode .nd-cl3{background:linear-gradient(135deg,#FFD4C2,#FF9F43);opacity:0.45;border:none}
 body.light-mode .nd-cl2{background:linear-gradient(135deg,#FF9F43,#FF6B35);opacity:0.6;border:none}
 body.light-mode .nd-cl1{background:#fff;backdrop-filter:none;border:none;box-shadow:0 20px 60px rgba(0,0,0,.15),0 4px 12px rgba(0,0,0,.08)}
-
 .nd-card-img{width:100%;height:220px;display:flex;align-items:center;justify-content:center;font-size:90px;position:relative;overflow:hidden}
 .nd-card-img::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 30% 30%,rgba(255,107,53,.12),transparent 60%)}
 .nd-pbg-warm{background:linear-gradient(145deg,rgba(255,107,53,0.12),rgba(255,159,67,0.07))}
 body.light-mode .nd-pbg-warm{background:linear-gradient(145deg,#FFF5EF,#FFE8D6)}
-
 .nd-card-body{padding:18px 22px}
 .nd-cpill{display:inline-block;background:rgba(255,107,53,.15);color:#FF6B35;border:1px solid rgba(255,107,53,.2);border-radius:100px;padding:3px 12px;font-size:12px;font-weight:600;margin-bottom:8px}
 .nd-ctitle{font-size:17px;font-weight:700;margin-bottom:6px}
@@ -85,8 +64,6 @@ body.light-mode .nd-pbg-warm{background:linear-gradient(145deg,#FFF5EF,#FFE8D6)}
 .nd-usd{font-size:12px;opacity:.6;margin-left:2px}
 .nd-btn-pedir{background:linear-gradient(135deg,#25D366,#128C7E);color:#fff !important;border:none;border-radius:100px;padding:10px 16px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;transition:transform .2s}
 .nd-btn-pedir:hover{transform:scale(1.05)}
-
-/* Floating badges */
 .nd-fbadge{position:absolute;border-radius:14px;padding:9px 14px;display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600;white-space:nowrap;z-index:10;background:linear-gradient(145deg,rgba(255,255,255,0.10),rgba(255,255,255,0.04));backdrop-filter:blur(20px) saturate(140%);border:1px solid rgba(255,255,255,0.14);border-top-color:rgba(255,255,255,0.22);box-shadow:0 8px 24px rgba(0,0,0,.3),0 2px 6px rgba(0,0,0,.2)}
 body.light-mode .nd-fbadge{background:#fff;backdrop-filter:none;border:none;box-shadow:0 8px 28px rgba(0,0,0,.12),0 2px 8px rgba(0,0,0,.06)}
 .nd-bi{font-size:18px}
@@ -98,7 +75,6 @@ body.light-mode .nd-fbadge{background:#fff;backdrop-filter:none;border:none;box-
 @keyframes nd-fl2{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
 @keyframes nd-fl3{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
 
-/* ── RESPONSIVE ── */
 @media(max-width:900px){
   .nd-hero-grid{grid-template-columns:1fr;gap:48px}
   .nd-hero-right{order:-1}
@@ -117,91 +93,258 @@ body.light-mode .nd-fbadge{background:#fff;backdrop-filter:none;border:none;box-
 }
 
 /* ================================================================
-   DARK MODE: PÁGINA COMPLETA
-   Aplica cuando body NO tiene la clase .light-mode
+   DARK MODE: REDISEÑO VISUAL COMPLETO DE PÁGINA
    ================================================================ */
 
-/* ── Global body dark ── */
+/* ── Global ── */
 body:not(.light-mode){background:#0C0806;color:#F5EDE8}
 
-/* ── Secciones: fondo transparente para que el mesh se vea ── */
-body:not(.light-mode) .mas-vendidos{background:transparent}
-body:not(.light-mode) .categorias-home{background:transparent}
-body:not(.light-mode) .beneficios{background:transparent}
-body:not(.light-mode) .testimonios{background:transparent}
-body:not(.light-mode) .cta-final{background:transparent}
-body:not(.light-mode) .prueba-social-strip{background:linear-gradient(145deg,rgba(255,255,255,.06),rgba(255,255,255,.02));border-top-color:rgba(255,255,255,.07);border-bottom-color:rgba(255,255,255,.07)}
+/* ── Todas las secciones: transparentes para mostrar el mesh ── */
+body:not(.light-mode) .mas-vendidos,
+body:not(.light-mode) .categorias-home,
+body:not(.light-mode) .categorias-home-inner,
+body:not(.light-mode) .beneficios,
+body:not(.light-mode) .testimonios,
+body:not(.light-mode) .cta-final{background:transparent !important}
 
-/* ── Textos de cabeceras de sección en dark ── */
+body:not(.light-mode) .prueba-social-strip{
+  background:linear-gradient(145deg,rgba(255,255,255,.06),rgba(255,255,255,.02)) !important;
+  border-top-color:rgba(255,255,255,.07) !important;
+  border-bottom-color:rgba(255,255,255,.07) !important;
+}
+body:not(.light-mode) .prueba-num{color:#F5EDE8 !important}
+body:not(.light-mode) .prueba-label{color:rgba(245,237,232,.55) !important}
+body:not(.light-mode) .mini-review-item{color:rgba(245,237,232,.5) !important}
+
+/* ── Cabeceras de sección ── */
+body:not(.light-mode) .section-title,
 body:not(.light-mode) .categorias-home .section-title,
-body:not(.light-mode) .categorias-home h2{color:#F5EDE8 !important}
-body:not(.light-mode) .categorias-home .section-subtitle{color:rgba(245,237,232,.55) !important}
-body:not(.light-mode) .beneficios h2{color:#F5EDE8 !important}
+body:not(.light-mode) .categorias-home h2,
+body:not(.light-mode) .beneficios h2,
 body:not(.light-mode) .testimonios h2{color:#F5EDE8 !important}
-body:not(.light-mode) .prueba-num{color:#F5EDE8}
-body:not(.light-mode) .prueba-label{color:rgba(245,237,232,.55)}
-body:not(.light-mode) .mini-review-item{color:rgba(245,237,232,.55)}
+body:not(.light-mode) .section-subtitle,
+body:not(.light-mode) .categorias-home .section-subtitle{color:rgba(245,237,232,.55) !important}
+body:not(.light-mode) .mas-vendidos .section-header h2{color:#F5EDE8 !important}
+body:not(.light-mode) .mas-vendidos .section-header p{color:rgba(245,237,232,.5) !important}
 
-/* ── Categoria cards: glassmorphism upgrade ── */
+/* ================================================================
+   CATEGORÍAS — BENTO GRID
+   ================================================================ */
+body:not(.light-mode) .categorias-grid{
+  display:grid !important;
+  grid-template-columns:repeat(4,1fr) !important;
+  grid-template-rows:repeat(2,170px) !important;
+  grid-auto-rows:170px !important;
+  gap:16px !important;
+  max-width:100% !important;
+}
+
 body:not(.light-mode) .categoria-card{
-  background:linear-gradient(145deg,rgba(255,255,255,.08),rgba(255,255,255,.03)) !important;
-  backdrop-filter:blur(24px) saturate(160%);
-  -webkit-backdrop-filter:blur(24px) saturate(160%);
-  border:1px solid rgba(255,255,255,.09) !important;
-  border-top-color:rgba(255,255,255,.17) !important;
-  box-shadow:0 4px 8px rgba(0,0,0,.4),0 16px 32px rgba(0,0,0,.5),0 0 0 0 transparent !important
+  border-radius:24px !important;
+  padding:20px !important;
+  text-align:left !important;
+  display:flex !important;
+  flex-direction:column !important;
+  justify-content:flex-end !important;
+  align-items:flex-start !important;
+  position:relative !important;
+  overflow:hidden !important;
+  cursor:pointer !important;
+  box-shadow:0 2px 8px rgba(0,0,0,.5),0 8px 24px rgba(0,0,0,.4) !important;
+  transition:transform .3s ease,box-shadow .3s ease !important;
+  border:none !important;
 }
+body:not(.light-mode) .categoria-card::after{display:none !important}
 body:not(.light-mode) .categoria-card:hover{
-  border-color:rgba(255,107,53,.35) !important;
-  box-shadow:0 8px 16px rgba(0,0,0,.5),0 24px 48px rgba(0,0,0,.6),0 0 0 1px rgba(255,107,53,.2) !important;
-  transform:translateY(-6px)
+  transform:translateY(-6px) scale(1.01) !important;
+  box-shadow:0 10px 28px rgba(0,0,0,.6),0 24px 56px rgba(0,0,0,.5) !important;
 }
 
-/* ── Producto cards en más vendidos: glassmorphism ── */
+body:not(.light-mode) .categoria-card .cat-icon{
+  position:absolute !important;
+  top:16px !important;
+  right:16px !important;
+  font-size:48px !important;
+  opacity:.8 !important;
+  margin:0 !important;
+  display:block !important;
+  transition:transform .3s !important;
+  filter:none !important;
+}
+body:not(.light-mode) .categoria-card:hover .cat-icon{
+  transform:scale(1.15) rotate(-5deg) !important;
+  opacity:1 !important;
+}
+
+body:not(.light-mode) .categoria-card .cat-name{
+  font-size:15px !important;
+  font-weight:700 !important;
+  color:#fff !important;
+  text-transform:none !important;
+  letter-spacing:normal !important;
+  display:block !important;
+  position:relative !important;
+  z-index:1 !important;
+}
+body:not(.light-mode) .categoria-card .cat-count{
+  font-size:12px !important;
+  color:rgba(255,255,255,.65) !important;
+  margin-top:4px !important;
+  display:block !important;
+  font-weight:400 !important;
+  position:relative !important;
+  z-index:1 !important;
+}
+
+/* Colores bento + spans */
+body:not(.light-mode) .categoria-card:nth-child(1){
+  background:linear-gradient(135deg,rgba(255,107,53,.92),rgba(232,80,30,.85)) !important;
+  grid-column:span 2;
+}
+body:not(.light-mode) .categoria-card:nth-child(2){
+  background:linear-gradient(135deg,rgba(217,119,6,.88),rgba(245,158,11,.82)) !important;
+  grid-row:span 2;
+}
+body:not(.light-mode) .categoria-card:nth-child(3){
+  background:linear-gradient(135deg,rgba(29,78,216,.88),rgba(37,99,235,.82)) !important;
+}
+body:not(.light-mode) .categoria-card:nth-child(4){
+  background:linear-gradient(135deg,rgba(4,120,87,.88),rgba(5,150,105,.82)) !important;
+}
+body:not(.light-mode) .categoria-card:nth-child(5){
+  background:linear-gradient(135deg,rgba(185,28,28,.88),rgba(220,38,38,.82)) !important;
+}
+body:not(.light-mode) .categoria-card:nth-child(6){
+  background:linear-gradient(135deg,rgba(124,58,237,.88),rgba(147,51,234,.82)) !important;
+}
+body:not(.light-mode) .categoria-card:nth-child(n+7){
+  background:linear-gradient(135deg,rgba(14,116,144,.88),rgba(8,145,178,.82)) !important;
+}
+
+/* Skeleton loaders en categorias: dark */
+body:not(.light-mode) .categorias-grid .skeleton-card{
+  border-radius:24px !important;
+  background:rgba(255,255,255,.05) !important;
+  border:1px solid rgba(255,255,255,.07) !important;
+  height:170px !important;
+}
+
+/* ================================================================
+   PRODUCTOS MÁS VENDIDOS
+   ================================================================ */
 body:not(.light-mode) .mas-vendidos .producto-card{
   background:linear-gradient(145deg,rgba(255,255,255,.08),rgba(255,255,255,.03)) !important;
   backdrop-filter:blur(24px) saturate(160%);
   -webkit-backdrop-filter:blur(24px) saturate(160%);
   border:1px solid rgba(255,255,255,.10) !important;
   border-top-color:rgba(255,255,255,.18) !important;
-  box-shadow:0 4px 8px rgba(0,0,0,.4),0 16px 32px rgba(0,0,0,.5),0 40px 80px rgba(0,0,0,.4) !important
+  border-bottom-color:rgba(0,0,0,.2) !important;
+  box-shadow:0 4px 8px rgba(0,0,0,.4),0 16px 32px rgba(0,0,0,.5),0 40px 80px rgba(0,0,0,.35) !important;
 }
 body:not(.light-mode) .mas-vendidos .producto-card:hover{
   border-color:rgba(255,107,53,.35) !important;
-  transform:translateY(-10px) scale(1.01)
+  transform:translateY(-10px) scale(1.01) !important;
+  box-shadow:0 8px 16px rgba(0,0,0,.5),0 24px 48px rgba(0,0,0,.6),0 0 0 1px rgba(255,107,53,.2) !important;
+}
+body:not(.light-mode) .mas-vendidos .producto-image{
+  background:linear-gradient(145deg,rgba(255,107,53,.12),rgba(255,159,67,.07)) !important;
+}
+body:not(.light-mode) .mas-vendidos .badge-vendido{
+  background:linear-gradient(135deg,#FF6B35,#E8501E) !important;
+  color:#fff !important;
+  font-size:11px !important;
+  font-weight:700 !important;
+  border-radius:100px !important;
+  padding:4px 12px !important;
+  top:12px !important;
+  left:12px !important;
+}
+body:not(.light-mode) .mas-vendidos .producto-card h3{color:#F5EDE8 !important;font-size:15px !important;font-weight:700 !important}
+body:not(.light-mode) .mas-vendidos .producto-description{color:rgba(245,237,232,.6) !important}
+body:not(.light-mode) .mas-vendidos .precio-actual{color:#F5EDE8 !important;font-size:20px !important;font-weight:800 !important}
+body:not(.light-mode) .mas-vendidos .precio-tachado{color:rgba(245,237,232,.35) !important}
+body:not(.light-mode) .mas-vendidos .precio-ahorro{
+  background:rgba(37,211,102,.18) !important;
+  color:#25D366 !important;
+  border-radius:100px !important;
+  padding:2px 8px !important;
+  font-size:11px !important;
+}
+body:not(.light-mode) .mas-vendidos .stock{color:rgba(255,107,53,.85) !important}
+body:not(.light-mode) .mas-vendidos .stock-count{color:rgba(245,237,232,.45) !important;font-size:12px !important}
+body:not(.light-mode) .mas-vendidos .stock-bar{background:rgba(255,255,255,.08) !important;border-radius:100px !important}
+body:not(.light-mode) .mas-vendidos .stock-bar-fill{background:linear-gradient(90deg,#FF6B35,#FF9F43) !important}
+body:not(.light-mode) .mas-vendidos .btn-pedir-card{
+  background:linear-gradient(135deg,#25D366,#128C7E) !important;
+  color:#fff !important;
+  border:none !important;
+  border-radius:100px !important;
+  font-size:13px !important;
+  font-weight:600 !important;
+  padding:11px 16px !important;
+  width:100% !important;
+  box-shadow:0 4px 16px rgba(37,211,102,.25) !important;
+  transition:transform .2s,box-shadow .2s !important;
+}
+body:not(.light-mode) .mas-vendidos .btn-pedir-card:hover{
+  transform:translateY(-2px) !important;
+  box-shadow:0 8px 24px rgba(37,211,102,.35) !important;
 }
 
-/* ── Beneficio cards: dark glassmorphism ── */
+/* ================================================================
+   BENEFICIOS
+   ================================================================ */
 body:not(.light-mode) .beneficio-card{
   background:linear-gradient(145deg,rgba(255,255,255,.07),rgba(255,255,255,.03)) !important;
   backdrop-filter:blur(24px) saturate(160%);
   -webkit-backdrop-filter:blur(24px) saturate(160%);
   border:1px solid rgba(255,255,255,.09) !important;
   border-top-color:rgba(255,255,255,.16) !important;
-  box-shadow:0 4px 8px rgba(0,0,0,.3),0 16px 32px rgba(0,0,0,.4) !important
+  box-shadow:0 4px 8px rgba(0,0,0,.3),0 16px 32px rgba(0,0,0,.4) !important;
+}
+body:not(.light-mode) .beneficio-card:hover{
+  border-color:rgba(255,107,53,.3) !important;
+  transform:translateY(-6px) !important;
+  box-shadow:0 8px 16px rgba(0,0,0,.4),0 24px 48px rgba(0,0,0,.5) !important;
+}
+body:not(.light-mode) .beneficio-card .icon{
+  width:48px !important;
+  height:48px !important;
+  border-radius:14px !important;
+  background:rgba(255,107,53,.15) !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  font-size:24px !important;
+  margin:0 auto 18px !important;
 }
 body:not(.light-mode) .beneficio-card h3{color:#F5EDE8 !important}
 body:not(.light-mode) .beneficio-card p{color:rgba(245,237,232,.55) !important}
-body:not(.light-mode) .beneficio-card:hover{
-  border-color:rgba(255,107,53,.3) !important;
-  transform:translateY(-6px)
-}
+body:not(.light-mode) .beneficio-card::before{opacity:.4}
 
-/* ── Testimonio cards: glassmorphism upgrade ── */
+/* ================================================================
+   TESTIMONIOS
+   ================================================================ */
 body:not(.light-mode) .testimonio-card{
   background:linear-gradient(145deg,rgba(255,255,255,.07),rgba(255,255,255,.03)) !important;
   backdrop-filter:blur(24px) saturate(160%);
   -webkit-backdrop-filter:blur(24px) saturate(160%);
   border:1px solid rgba(255,255,255,.09) !important;
   border-top-color:rgba(255,255,255,.16) !important;
-  box-shadow:0 4px 8px rgba(0,0,0,.3),0 16px 32px rgba(0,0,0,.4)
+  box-shadow:0 4px 8px rgba(0,0,0,.3),0 16px 32px rgba(0,0,0,.4) !important;
 }
 body:not(.light-mode) .testimonio-card:hover{
   border-color:rgba(255,107,53,.3) !important;
-  box-shadow:0 8px 16px rgba(0,0,0,.4),0 24px 48px rgba(0,0,0,.5) !important
+  transform:translateY(-6px) !important;
+  box-shadow:0 8px 16px rgba(0,0,0,.4),0 24px 48px rgba(0,0,0,.5) !important;
 }
+body:not(.light-mode) .testimonio-card .stars{color:#FF9F43 !important;font-size:18px !important}
+body:not(.light-mode) .testimonio-card p{color:rgba(245,237,232,.7) !important}
+body:not(.light-mode) .testimonio-card .autor{color:#FF9F43 !important}
 
-/* ── CTA Final: card verde WhatsApp ── */
+/* ================================================================
+   CTA FINAL — card WhatsApp green
+   ================================================================ */
 body:not(.light-mode) .cta-final .container{
   background:linear-gradient(145deg,rgba(37,211,102,.10),rgba(18,140,126,.06));
   backdrop-filter:blur(24px) saturate(160%);
@@ -209,62 +352,116 @@ body:not(.light-mode) .cta-final .container{
   border:1px solid rgba(37,211,102,.2);
   border-radius:32px;
   padding-top:60px;
-  padding-bottom:60px
+  padding-bottom:60px;
+  position:relative;
+  overflow:hidden;
+}
+body:not(.light-mode) .cta-final .container::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:radial-gradient(circle at 50% 0%,rgba(37,211,102,.1),transparent 60%);
+  pointer-events:none;
 }
 body:not(.light-mode) .cta-final h2{color:#F5EDE8 !important}
 body:not(.light-mode) .cta-final p{color:rgba(245,237,232,.65) !important}
 body:not(.light-mode) .cta-final .btn-large{
   background:linear-gradient(135deg,#25D366,#128C7E) !important;
   color:#fff !important;
-  box-shadow:0 8px 32px rgba(37,211,102,.3) !important
+  box-shadow:0 8px 32px rgba(37,211,102,.3) !important;
 }
 body:not(.light-mode) .cta-final .btn-large:hover{
   box-shadow:0 14px 48px rgba(37,211,102,.45) !important;
-  transform:translateY(-3px)
+  transform:translateY(-3px) !important;
 }
 
 /* ================================================================
-   LIGHT MODE: restaurar estilos originales
+   RESPONSIVE DARK MODE
    ================================================================ */
-body.light-mode .categorias-home{background:var(--cream,#FAF8F5)}
-body.light-mode .beneficios{background:#fff}
-body.light-mode .mas-vendidos{background:var(--obsidian,#0D0D0D)}
-body.light-mode .testimonios{background:var(--charcoal,#161616)}
-body.light-mode .cta-final{background:var(--obsidian,#0D0D0D)}
-body.light-mode .prueba-social-strip{background:var(--obsidian,#0D0D0D)}
+@media(max-width:1024px){
+  body:not(.light-mode) .categorias-grid{
+    grid-template-columns:repeat(2,1fr) !important;
+    grid-template-rows:auto !important;
+  }
+  body:not(.light-mode) .categoria-card:nth-child(1){grid-column:span 2}
+  body:not(.light-mode) .categoria-card:nth-child(2){grid-row:span 1}
+}
+@media(max-width:600px){
+  body:not(.light-mode) .categorias-grid{
+    grid-template-columns:repeat(2,1fr) !important;
+  }
+  body:not(.light-mode) .categoria-card:nth-child(1){grid-column:span 2}
+  body:not(.light-mode) .categoria-card:nth-child(2){grid-row:span 1}
+}
 
+/* ================================================================
+   LIGHT MODE — restaurar estilos originales de bundle.css
+   ================================================================ */
+body.light-mode .categorias-home{background:var(--cream,#FAF8F5) !important}
+body.light-mode .categorias-home-inner{background:transparent !important}
+body.light-mode .beneficios{background:#fff !important}
+body.light-mode .mas-vendidos{background:var(--obsidian,#0D0D0D) !important}
+body.light-mode .testimonios{background:var(--charcoal,#161616) !important}
+body.light-mode .cta-final{background:var(--obsidian,#0D0D0D) !important}
+body.light-mode .prueba-social-strip{background:var(--obsidian,#0D0D0D) !important}
+
+body.light-mode .categorias-grid{
+  grid-template-columns:repeat(auto-fit,minmax(150px,1fr)) !important;
+  grid-template-rows:auto !important;
+  grid-auto-rows:auto !important;
+}
+body.light-mode .categoria-card{
+  background:#1a1a1a !important;
+  display:flex !important;
+  flex-direction:column !important;
+  justify-content:center !important;
+  align-items:center !important;
+  text-align:center !important;
+  padding:28px 16px 22px !important;
+  border-radius:20px !important;
+  height:auto !important;
+  grid-column:span 1 !important;
+  grid-row:span 1 !important;
+  backdrop-filter:none !important;
+  -webkit-backdrop-filter:none !important;
+}
+body.light-mode .categoria-card .cat-icon{
+  position:static !important;
+  font-size:52px !important;
+  opacity:1 !important;
+  margin-bottom:14px !important;
+}
+body.light-mode .categoria-card .cat-name{
+  color:#fff !important;
+  text-transform:uppercase !important;
+  letter-spacing:.5px !important;
+  font-size:13px !important;
+}
 body.light-mode .cta-final .container{
-  background:transparent;
-  border:none;
-  border-radius:0;
-  backdrop-filter:none;
-  -webkit-backdrop-filter:none;
-  padding-top:0;
-  padding-bottom:0
+  background:transparent !important;
+  border:none !important;
+  border-radius:0 !important;
+  backdrop-filter:none !important;
+  -webkit-backdrop-filter:none !important;
+  padding-top:0 !important;
+  padding-bottom:0 !important;
 }
 body.light-mode .beneficio-card{
   background:var(--cream,#FAF8F5) !important;
-  backdrop-filter:none;
-  -webkit-backdrop-filter:none;
-  border:1px solid transparent !important
+  backdrop-filter:none !important;
+  -webkit-backdrop-filter:none !important;
+  border:1px solid transparent !important;
 }
 body.light-mode .beneficio-card h3{color:var(--text-primary,#1A1A1A) !important}
 body.light-mode .beneficio-card p{color:var(--text-muted,#777) !important}
-body.light-mode .categoria-card{
-  background:#1a1a1a !important;
-  backdrop-filter:none;
-  -webkit-backdrop-filter:none;
-  border:1px solid rgba(255,255,255,.07) !important
-}
 body.light-mode .testimonio-card{
   background:rgba(255,255,255,.04) !important;
-  backdrop-filter:none;
-  -webkit-backdrop-filter:none;
-  border:1px solid rgba(255,255,255,.07) !important
+  backdrop-filter:none !important;
+  -webkit-backdrop-filter:none !important;
+  border:1px solid rgba(255,255,255,.07) !important;
 }
 body.light-mode .mas-vendidos .producto-card{
   background:linear-gradient(160deg,#2d2d2d 0%,#222222 100%) !important;
-  backdrop-filter:none;
-  -webkit-backdrop-filter:none;
-  border-color:rgba(255,255,255,.07) !important
+  backdrop-filter:none !important;
+  -webkit-backdrop-filter:none !important;
 }
