@@ -1756,6 +1756,9 @@ function renderizarMasVendidos() {
         grid.appendChild(card);
         if (window._tmAnimObs) window._tmAnimObs.observe(card);
     });
+
+    // Poblar la sección "Oferta del día" (se oculta sola si no hay ofertaDiaId)
+    if (typeof renderOfertaDelDia === 'function') renderOfertaDelDia();
 }
 
 // ===== AUTENTICACIÓN =====
@@ -3676,6 +3679,106 @@ function desactivarCountdown() {
     const status = document.getElementById('countdownStatus');
     if (status) status.innerHTML = 'Countdown desactivado.';
     mostrarNotificacion('🗑️ Countdown desactivado');
+}
+
+// ═══════════════════════════════════════════════════════
+//  ⚡ OFERTA DEL DÍA (sección del home)
+//  Se puebla con el producto configurado en `ofertaDiaId`.
+//  Si no hay ninguno, la sección queda oculta. Reusa el
+//  countdown activo (activeCountdown) con timer propio.
+// ═══════════════════════════════════════════════════════
+let _ndDealTimer = null;
+function renderOfertaDelDia() {
+    const sec = document.getElementById('ofertaDelDia');
+    if (!sec) return;
+
+    // Limpiar timer previo siempre (evita duplicados al re-render)
+    if (_ndDealTimer) { clearInterval(_ndDealTimer); _ndDealTimer = null; }
+
+    let ofId = null;
+    try { ofId = localStorage.getItem('ofertaDiaId'); } catch (e) {}
+    const prod = ofId ? productos.find(p => String(p.id) === String(ofId)) : null;
+
+    if (!prod) { sec.style.display = 'none'; return; }
+
+    let texto = '⚡ Oferta del día';
+    try { texto = localStorage.getItem('ofertaDiaTexto') || texto; } catch (e) {}
+
+    // Textos y producto
+    const setTxt = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+    const setHtml = (id, val) => { const el = document.getElementById(id); if (el) el.innerHTML = val; };
+    setTxt('ndDealBadge', texto);
+    setTxt('ndDealTitle', prod.nombre);
+    setTxt('ndDealSub', prod.descripcion ? String(prod.descripcion).replace(/<[^>]*>/g, '').slice(0, 110) : 'Aprovecha este precio por tiempo limitado.');
+    setTxt('ndDealName', prod.nombre);
+    setTxt('ndDealPrice', (typeof formatPrecio === 'function') ? formatPrecio(prod.precioActual) : ('$' + prod.precioActual + ' USD'));
+
+    // Imagen real del producto (o emoji por categoría como fallback)
+    const card = document.getElementById('nd-deal-card');
+    const emojiEl = document.getElementById('ndDealEmoji');
+    if (card) {
+        const old = card.querySelector('.nd-dpc-img');
+        if (old) old.remove();
+        if (prod.imagen) {
+            const img = document.createElement('img');
+            img.className = 'nd-dpc-img';
+            img.src = prod.imagen;
+            img.alt = prod.nombre;
+            img.loading = 'lazy';
+            img.onerror = function () { this.remove(); if (emojiEl) emojiEl.style.display = 'block'; };
+            card.insertBefore(img, card.firstChild);
+            if (emojiEl) emojiEl.style.display = 'none';
+        } else {
+            if (emojiEl) {
+                emojiEl.style.display = 'block';
+                emojiEl.textContent = (typeof obtenerIconoCategoria === 'function') ? obtenerIconoCategoria(prod.categoria) : '⚡';
+            }
+        }
+    }
+
+    // Precio original tachado + % descuento
+    const oldEl = document.getElementById('ndDealOld');
+    const discEl = document.getElementById('ndDealDisc');
+    const hayDesc = prod.precioOriginal > 0 && prod.precioOriginal > prod.precioActual;
+    if (oldEl) {
+        if (hayDesc) { oldEl.style.display = 'block'; oldEl.textContent = '$' + Number(prod.precioOriginal).toFixed(0) + ' USD'; }
+        else oldEl.style.display = 'none';
+    }
+    if (discEl) {
+        if (hayDesc) {
+            const pct = Math.round((1 - prod.precioActual / prod.precioOriginal) * 100);
+            setTxt('ndDealDiscPct', pct + '%');
+            discEl.style.display = 'flex';
+        } else discEl.style.display = 'none';
+    }
+
+    // Timer: solo si hay countdown activo para este producto
+    const timerWrap = document.getElementById('ndDealTimer');
+    const cd = (typeof getActiveCountdown === 'function') ? getActiveCountdown() : null;
+    if (cd && String(cd.productId) === String(prod.id) && timerWrap) {
+        timerWrap.style.display = 'flex';
+        const pad = n => String(n).padStart(2, '0');
+        const tick = () => {
+            const rem = Math.max(0, cd.endTime - Date.now());
+            setTxt('nd-deal-h', pad(Math.floor(rem / 3600000)));
+            setTxt('nd-deal-m', pad(Math.floor((rem % 3600000) / 60000)));
+            setTxt('nd-deal-s', pad(Math.floor((rem % 60000) / 1000)));
+            if (rem <= 0 && _ndDealTimer) { clearInterval(_ndDealTimer); _ndDealTimer = null; }
+        };
+        tick();
+        _ndDealTimer = setInterval(tick, 1000);
+    } else if (timerWrap) {
+        timerWrap.style.display = 'none';
+    }
+
+    sec.style.display = 'block';
+}
+
+// Abre el detalle del producto de la oferta del día
+function abrirOfertaDelDia() {
+    let ofId = null;
+    try { ofId = localStorage.getItem('ofertaDiaId'); } catch (e) {}
+    if (ofId && typeof abrirDetalleProducto === 'function') abrirDetalleProducto(ofId);
 }
 
 function getActiveCountdown() {

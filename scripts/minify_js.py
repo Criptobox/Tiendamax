@@ -52,6 +52,8 @@ RESERVED = [
     # ── onclick inline generado en JS (buildHTML) ──
     'toggleMeGusta', 'cambiarCantidad', 'quitarDelCarrito', 'agregarAlCarrito',
     'seleccionarSugerencia', 'renderizarCarrito', 'abrirDetalleProducto',
+    # ── Oferta del día (sección home) ──
+    'abrirOfertaDelDia', 'renderOfertaDelDia',
     # ── llamadas desde banners.js / biometric-auth.js / event-delegation.js ──
     'mostrarNotificacion', 'abrirAdminPanel', 'loginConBiometria',
     # ── exports explícitos en window.* ──
