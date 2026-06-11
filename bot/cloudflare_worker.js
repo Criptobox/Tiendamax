@@ -1,61 +1,38 @@
 /*
  * TiendaMax Telegram Bot — Cloudflare Worker
-<<<<<<< HEAD
-=======
- * Equivalente de telegram_bot.gs, sin Google Apps Script.
->>>>>>> claude/panel-improvement-integration-FIPEW
  *
  * Variables de entorno requeridas (Worker Settings → Variables):
  *   BOT_TOKEN       — token del bot de Telegram
  *   ADMIN_CHAT_ID   — tu chat_id de Telegram
  *   FIREBASE_URL    — ej: https://tu-proyecto-default-rtdb.firebaseio.com
-<<<<<<< HEAD
  *   GITHUB_TOKEN    — Personal Access Token con Contents read+write en el repo
-=======
->>>>>>> claude/panel-improvement-integration-FIPEW
  *
  * Variables opcionales:
  *   SITE_URL        — defecto: https://tiendamax.org
  *   PRODUCTOS_URL   — defecto: GitHub raw productos.json
  *
-<<<<<<< HEAD
  * KV Namespace (Worker Settings → Bindings → KV namespace):
  *   Nombre de variable: KV  →  namespace: TIENDAMAX_BOT
-=======
- * KV Namespace (Worker Settings → KV Namespace Bindings):
- *   Nombre de variable: KV
- *   (Crea un namespace llamado TIENDAMAX_BOT en Workers KV)
->>>>>>> claude/panel-improvement-integration-FIPEW
  */
 
 const CUBA_TZ        = 'America/Havana';
 const DEFAULT_SITE   = 'https://tiendamax.org';
 const DEFAULT_PRODS  = 'https://raw.githubusercontent.com/Criptobox/Tiendamax/main/productos.json';
-<<<<<<< HEAD
 const GITHUB_API     = 'https://api.github.com/repos/Criptobox/Tiendamax/contents/productos.json';
 const PRODS_PER_PAGE = 8;
-=======
->>>>>>> claude/panel-improvement-integration-FIPEW
 
 // ── Fecha ─────────────────────────────────────────────────────────────────────
 
 function cubaDate(date = new Date()) {
   const parts = new Intl.DateTimeFormat('en-US', {
     timeZone: CUBA_TZ,
-<<<<<<< HEAD
     day: '2-digit', month: '2-digit', year: 'numeric',
-=======
-    day:   '2-digit',
-    month: '2-digit',
-    year:  'numeric',
->>>>>>> claude/panel-improvement-integration-FIPEW
   }).formatToParts(date);
   const d = {};
   for (const p of parts) d[p.type] = p.value;
   return `${d.day}/${d.month}/${d.year}`;
 }
 
-<<<<<<< HEAD
 // ── Base64 (soporta unicode) ──────────────────────────────────────────────────
 
 function toBase64(str) {
@@ -72,8 +49,6 @@ function fromBase64(b64) {
   return new TextDecoder().decode(bytes);
 }
 
-=======
->>>>>>> claude/panel-improvement-integration-FIPEW
 // ── Telegram ──────────────────────────────────────────────────────────────────
 
 async function tgPost(token, method, body) {
@@ -85,20 +60,11 @@ async function tgPost(token, method, body) {
 }
 
 async function sendMessage(token, chatId, text, opts = {}) {
-<<<<<<< HEAD
   const payload = { chat_id: chatId, text: String(text).slice(0, 3900), disable_web_page_preview: true };
-=======
-  const payload = {
-    chat_id: chatId,
-    text: String(text).slice(0, 3900),
-    disable_web_page_preview: true,
-  };
->>>>>>> claude/panel-improvement-integration-FIPEW
   if (opts.reply_markup) payload.reply_markup = opts.reply_markup;
   await tgPost(token, 'sendMessage', payload);
 }
 
-<<<<<<< HEAD
 async function sendLongMessage(token, chatId, text) {
   const MAX   = 3800;
   const lines = String(text).split('\n');
@@ -117,15 +83,6 @@ async function sendLongMessage(token, chatId, text) {
 
 async function editMessage(token, chatId, messageId, text, opts = {}) {
   const payload = { chat_id: chatId, message_id: messageId, text: String(text).slice(0, 3900), disable_web_page_preview: true };
-=======
-async function editMessage(token, chatId, messageId, text, opts = {}) {
-  const payload = {
-    chat_id: chatId,
-    message_id: messageId,
-    text: String(text).slice(0, 3900),
-    disable_web_page_preview: true,
-  };
->>>>>>> claude/panel-improvement-integration-FIPEW
   if (opts.reply_markup) payload.reply_markup = opts.reply_markup;
   await tgPost(token, 'editMessageText', payload);
 }
@@ -142,12 +99,8 @@ function mainKeyboard() {
       [{ text: '📊 Resumen' },     { text: '📦 Stock' }],
       [{ text: '🔥 Interesados' }, { text: '📣 Campaña' }],
       [{ text: '🛍️ Productos' },   { text: '✅ Tareas' }],
-<<<<<<< HEAD
       [{ text: '💰 Venta manual' }, { text: '📥 Entrada' }],
       [{ text: '📋 Precios' },      { text: '🤖 SEO auto' }],
-=======
-      [{ text: '💰 Venta manual' }],
->>>>>>> claude/panel-improvement-integration-FIPEW
     ],
     resize_keyboard: true,
     persistent: true,
@@ -161,13 +114,7 @@ async function getFirebase(firebaseUrl, path) {
     const res = await fetch(`${firebaseUrl}/${path}.json`);
     if (!res.ok) return null;
     return await res.json();
-<<<<<<< HEAD
   } catch { return null; }
-=======
-  } catch {
-    return null;
-  }
->>>>>>> claude/panel-improvement-integration-FIPEW
 }
 
 async function putFirebase(firebaseUrl, path, data) {
@@ -178,7 +125,6 @@ async function putFirebase(firebaseUrl, path, data) {
   });
 }
 
-<<<<<<< HEAD
 // ── Productos (GitHub raw) ────────────────────────────────────────────────────
 
 async function getProductos(productosUrl) {
@@ -397,34 +343,6 @@ async function kvClearSeo(kv, chatId) {
     kvDel(kv, 'SEO_PRODUCT_' + chatId),
     kvDel(kv, 'SEO_DATA_'    + chatId),
   ]);
-=======
-// ── Productos ─────────────────────────────────────────────────────────────────
-
-async function getProductos(productosUrl) {
-  try {
-    const res = await fetch(productosUrl);
-    if (!res.ok) return [];
-    const data = await res.json();
-    return Array.isArray(data) ? data : [];
-  } catch {
-    return [];
-  }
-}
-
-// ── KV (estado inline keyboard) ───────────────────────────────────────────────
-
-async function kvGet(kv, key) {
-  if (!kv) return null;
-  try { return await kv.get(key); } catch { return null; }
-}
-async function kvPut(kv, key, value) {
-  if (!kv) return;
-  try { await kv.put(key, value, { expirationTtl: 600 }); } catch {}
-}
-async function kvDel(kv, key) {
-  if (!kv) return;
-  try { await kv.delete(key); } catch {}
->>>>>>> claude/panel-improvement-integration-FIPEW
 }
 
 // ── Utilidades ────────────────────────────────────────────────────────────────
@@ -465,7 +383,6 @@ function topInteresados(arr) {
   return Object.values(map).sort((a, b) => b.count - a.count);
 }
 
-<<<<<<< HEAD
 // ── Funnel de venta ───────────────────────────────────────────────────────────
 
 function buildVentaKeyboard(productos, page) {
@@ -524,8 +441,6 @@ async function showEntradaPage(token, chatId, messageId, productos, page) {
   else           await sendMessage(token, chatId, text, { reply_markup: markup });
 }
 
-=======
->>>>>>> claude/panel-improvement-integration-FIPEW
 // ── Comandos ──────────────────────────────────────────────────────────────────
 
 async function cmdStart(token, chatId) {
@@ -534,27 +449,18 @@ async function cmdStart(token, chatId) {
     'Usa los botones de abajo o escribe:\n' +
     '/resumen · /stock · /interesados\n' +
     '/campana · /productos · /tareas\n' +
-<<<<<<< HEAD
     '/venta  (flujo guiado)\n\n' +
-=======
-    '/venta Nombre x2 $50\n\n' +
->>>>>>> claude/panel-improvement-integration-FIPEW
     'También puedes pegar una orden de WhatsApp.',
     { reply_markup: mainKeyboard() }
   );
 }
 
 async function cmdResumen(token, chatId, env) {
-<<<<<<< HEAD
   const [ventas, interesadosRaw, vistas, wa, productos] = await Promise.all([
-=======
-  const [ventas, interesadosRaw, vistas, wa] = await Promise.all([
->>>>>>> claude/panel-improvement-integration-FIPEW
     getFirebase(env.FIREBASE_URL, 'ventas'),
     getFirebase(env.FIREBASE_URL, 'interesados'),
     getFirebase(env.FIREBASE_URL, 'analytics/vistas'),
     getFirebase(env.FIREBASE_URL, 'analytics/whatsapp'),
-<<<<<<< HEAD
     getProductos(env.PRODUCTOS_URL || DEFAULT_PRODS),
   ]);
 
@@ -573,25 +479,6 @@ async function cmdResumen(token, chatId, env) {
     '📦 Ventas total: ' + ventasArr.length,
     '👁️ Vistas: '      + sumCounters(vistas || {}),
     '💬 WhatsApp: '     + sumCounters(wa || {}),
-=======
-  ]);
-
-  const ventasArr    = objectValues(ventas || {});
-  const hoy          = cubaDate();
-  const ventasHoy    = ventasArr.filter(v => v.fecha === hoy);
-  const totalHoy     = ventasHoy.reduce((s, v) => s + Number(v.total || 0), 0);
-  const interesados  = flattenInteresados(interesadosRaw || {});
-  const interesadosHoy = interesados.filter(x =>
-    x.ts && cubaDate(new Date(Number(x.ts))) === hoy
-  );
-
-  const lines = [
-    '📊 TiendaMax — ' + hoy, '',
-    '🛒 Ventas hoy: ' + ventasHoy.length + ' · $' + totalHoy.toFixed(2),
-    '📦 Ventas total: ' + ventasArr.length,
-    '👁️ Vistas: ' + sumCounters(vistas || {}),
-    '💬 WhatsApp: ' + sumCounters(wa || {}),
->>>>>>> claude/panel-improvement-integration-FIPEW
     '🔥 Interesados hoy: ' + interesadosHoy.length,
   ];
 
@@ -601,7 +488,6 @@ async function cmdResumen(token, chatId, env) {
     top.slice(0, 5).forEach(x => lines.push('• ' + x.producto + ' — ' + x.count));
   }
 
-<<<<<<< HEAD
   // Tareas pendientes
   const noSeo  = productos.filter(p => !p.seoTitle && !p.seoDescription).length;
   const noRecs = productos.filter(p => !p.recomendados || !p.recomendados.length).length;
@@ -613,14 +499,11 @@ async function cmdResumen(token, chatId, env) {
   if (noRecs)        lines.push('• Sin recomendados: ' + noRecs + ' productos.');
   lines.push('• Crear campaña del día.');
 
-=======
->>>>>>> claude/panel-improvement-integration-FIPEW
   await sendMessage(token, chatId, lines.join('\n'));
 }
 
 async function cmdStock(token, chatId, env) {
   const productos = await getProductos(env.PRODUCTOS_URL || DEFAULT_PRODS);
-<<<<<<< HEAD
   const bajos    = productos.filter(p => { const s = Number(p.stock || 0); return s > 0 && s <= 3; });
   const agotados = productos.filter(p => Number(p.stock || 0) <= 0);
 
@@ -651,46 +534,14 @@ async function cmdStock(token, chatId, env) {
   }
 
   await sendLongMessage(token, chatId, lines.join('\n'));
-=======
-  const bajos     = productos.filter(p => { const s = Number(p.stock || 0); return s > 0 && s <= 3; });
-  const agotados  = productos.filter(p => Number(p.stock || 0) <= 0);
-
-  const lines = [
-    '📦 Stock TiendaMax',
-    'Productos: ' + productos.length,
-    '⚠️ Bajos: '   + bajos.length,
-    '🚫 Agotados: ' + agotados.length,
-  ];
-  if (bajos.length) {
-    lines.push('', '⚠️ Stock bajo:');
-    bajos.slice(0, 12).forEach(p => lines.push('• ' + p.nombre + ' (' + p.stock + ')'));
-  }
-  if (agotados.length) {
-    lines.push('', '🚫 Agotados:');
-    agotados.slice(0, 12).forEach(p => lines.push('• ' + p.nombre));
-  }
-  await sendMessage(token, chatId, lines.join('\n'));
->>>>>>> claude/panel-improvement-integration-FIPEW
 }
 
 async function cmdInteresados(token, chatId, env) {
   const raw = await getFirebase(env.FIREBASE_URL, 'interesados') || {};
   const top = topInteresados(flattenInteresados(raw));
-<<<<<<< HEAD
   if (!top.length) { await sendMessage(token, chatId, 'Aún no hay interesados registrados.'); return; }
   const lines = ['🔥 Interesados WhatsApp', ''];
   top.slice(0, 10).forEach((x, i) => lines.push((i + 1) + '. ' + x.producto + ' — ' + x.count + ' interés(es)'));
-=======
-
-  if (!top.length) {
-    await sendMessage(token, chatId, 'Aún no hay interesados registrados.');
-    return;
-  }
-  const lines = ['🔥 Interesados WhatsApp', ''];
-  top.slice(0, 10).forEach((x, i) =>
-    lines.push((i + 1) + '. ' + x.producto + ' — ' + x.count + ' interés(es)')
-  );
->>>>>>> claude/panel-improvement-integration-FIPEW
   await sendMessage(token, chatId, lines.join('\n'));
 }
 
@@ -700,53 +551,23 @@ async function cmdCampana(token, chatId, env) {
     getProductos(env.PRODUCTOS_URL || DEFAULT_PRODS),
   ]);
   const top = topInteresados(flattenInteresados(raw || {}));
-<<<<<<< HEAD
   let producto = top.length ? productos.find(p => String(p.id) === String(top[0].productoId)) : null;
   if (!producto) producto = productos.filter(p => Number(p.stock || 0) > 0).sort((a, b) => Number(b.stock || 0) - Number(a.stock || 0))[0];
   if (!producto) { await sendMessage(token, chatId, 'No encontré producto para campaña.'); return; }
 
   const precio  = Number(producto.precioActual || 0).toFixed(2);
   const siteUrl = env.SITE_URL || DEFAULT_SITE;
-=======
-  let producto = top.length
-    ? productos.find(p => String(p.id) === String(top[0].productoId))
-    : null;
-  if (!producto) {
-    producto = productos
-      .filter(p => Number(p.stock || 0) > 0)
-      .sort((a, b) => Number(b.stock || 0) - Number(a.stock || 0))[0];
-  }
-  if (!producto) {
-    await sendMessage(token, chatId, 'No encontré producto para campaña.');
-    return;
-  }
-  const precio  = Number(producto.precioActual || 0).toFixed(2);
-  const siteUrl = env.SITE_URL || DEFAULT_SITE;
-  const url     = siteUrl + '/p/producto-' + producto.id + '.html';
-
->>>>>>> claude/panel-improvement-integration-FIPEW
   await sendMessage(token, chatId,
     '📣 Campaña sugerida\n\n' +
     'Producto: ' + producto.nombre + '\n' +
     'Precio: $' + precio + '\n' +
     'Stock: ' + (producto.stock || 0) + '\n\n' +
     'Facebook / WhatsApp:\n' +
-<<<<<<< HEAD
     '🔥 ' + producto.nombre + '\n\nDisponible en TiendaMax por $' + precio + ' USD.\n' +
     '📦 Stock: ' + (producto.stock || 0) + '\n📲 Escríbenos para reservar.\n\n' +
     'Push:\nTítulo: 🔥 ' + String(producto.nombre).slice(0, 34) + '\n' +
     'Mensaje: Disponible por $' + precio + '. Reserva por WhatsApp.\n' +
     'URL: ' + siteUrl + '/p/producto-' + producto.id + '.html'
-=======
-    '🔥 ' + producto.nombre + '\n\n' +
-    'Disponible en TiendaMax por $' + precio + ' USD.\n' +
-    '📦 Stock: ' + (producto.stock || 0) + '\n' +
-    '📲 Escríbenos para reservar.\n\n' +
-    'Push:\n' +
-    'Título: 🔥 ' + String(producto.nombre).slice(0, 34) + '\n' +
-    'Mensaje: Disponible por $' + precio + '. Reserva por WhatsApp.\n' +
-    'URL: ' + url
->>>>>>> claude/panel-improvement-integration-FIPEW
   );
 }
 
@@ -759,23 +580,11 @@ async function cmdProductos(token, chatId, env, q) {
       String(p.categoria || '').toLowerCase().includes(qq)
     );
   }
-<<<<<<< HEAD
   if (!productos.length) { await sendMessage(token, chatId, 'No encontré productos.'); return; }
   const lines = ['🛍️ Productos (' + productos.length + ')', ''];
   productos.slice(0, 60).forEach(p => {
     const s = Number(p.stock || 0);
     lines.push((s <= 0 ? '🚫' : s <= 3 ? '⚠️' : '✅') + ' ' + p.nombre + ' — $' + Number(p.precioActual || 0).toFixed(2) + ' · stock ' + s);
-=======
-  if (!productos.length) {
-    await sendMessage(token, chatId, 'No encontré productos.');
-    return;
-  }
-  const lines = ['🛍️ Productos (' + productos.length + ')', ''];
-  productos.slice(0, 60).forEach(p => {
-    const stock = Number(p.stock || 0);
-    const icon  = stock <= 0 ? '🚫' : (stock <= 3 ? '⚠️' : '✅');
-    lines.push(icon + ' ' + p.nombre + ' — $' + Number(p.precioActual || 0).toFixed(2) + ' · stock ' + stock);
->>>>>>> claude/panel-improvement-integration-FIPEW
   });
   await sendMessage(token, chatId, lines.join('\n'));
 }
@@ -795,7 +604,6 @@ async function cmdTareas(token, chatId, env) {
   await sendMessage(token, chatId, lines.join('\n'));
 }
 
-<<<<<<< HEAD
 async function cmdVenta(token, chatId, env) {
   const productos   = await getProductos(env.PRODUCTOS_URL || DEFAULT_PRODS);
   const disponibles = productos.filter(p => Number(p.stock || 0) > 0);
@@ -863,34 +671,12 @@ async function cmdSeo(token, chatId, env) {
         inline_keyboard: [[
           { text: '✅ Aplicar', callback_data: 'seo_ok' },
           { text: '❌ Cancelar', callback_data: 'seo_cancel' },
-=======
-async function cmdVentaManual(token, chatId, text, env) {
-  const body = text.replace('/venta', '').trim();
-  const m    = body.match(/^(.+?)\s+x(\d+)\s+\$([0-9]+(?:\.[0-9]+)?)$/i);
-  if (!m) {
-    await sendMessage(token, chatId, 'Uso: /venta Nombre x2 $50');
-    return;
-  }
-  const item = { nombre: m[1].trim(), cantidad: Number(m[2]), precio: Number(m[3]) };
-  await kvPut(env.KV, 'PENDING_' + chatId, JSON.stringify([item]));
-
-  await sendMessage(token, chatId,
-    '¿Registrar venta?\n\n' + item.nombre +
-    '\nCantidad: ' + item.cantidad +
-    '\nTotal: $' + (item.cantidad * item.precio).toFixed(2),
-    {
-      reply_markup: {
-        inline_keyboard: [[
-          { text: '✅ Registrar venta', callback_data: 'venta_ok' },
-          { text: '❌ Cancelar',        callback_data: 'venta_cancel' },
->>>>>>> claude/panel-improvement-integration-FIPEW
         ]],
       },
     }
   );
 }
 
-<<<<<<< HEAD
 async function sendWeeklyReport(env) {
   const token  = env.BOT_TOKEN;
   const chatId = env.ADMIN_CHAT_ID;
@@ -1009,15 +795,11 @@ async function handleEntradaQuantity(token, chatId, text, env) {
 }
 
 // ── Parser de orden WhatsApp ──────────────────────────────────────────────────
-=======
-// ── Venta / Orden WhatsApp ────────────────────────────────────────────────────
->>>>>>> claude/panel-improvement-integration-FIPEW
 
 function parseOrden(text) {
   const upper = String(text).toUpperCase();
   if (!upper.includes('NUEVA ORDEN') || !upper.includes('TIENDAMAX')) return null;
 
-<<<<<<< HEAD
   // Extraer ID del producto desde la URL (órdenes de botón único)
   const urlMatch      = text.match(/producto-(\d+)\.html/);
   const singleProdId  = urlMatch ? urlMatch[1] : null;
@@ -1032,15 +814,6 @@ function parseOrden(text) {
     let cantidad = 1, precio = 0;
     const nombre = m[1].replace(/\*/g, '').trim();
 
-=======
-  const items = [];
-  const lines = text.split('\n');
-  for (let i = 0; i < lines.length; i++) {
-    const m = lines[i].match(/\*?\d+\.\*?\s+(.+)/);
-    if (!m) continue;
-    let cantidad = 1, precio = 0;
-    const nombre = m[1].replace(/\*/g, '').trim();
->>>>>>> claude/panel-improvement-integration-FIPEW
     for (let j = i + 1; j < Math.min(i + 5, lines.length); j++) {
       const cm = lines[j].match(/Cant[.:\s]*\*?(\d+)\*?/i);
       const pm = lines[j].match(/\$\s*([0-9]+(?:\.[0-9]+)?)\s*USD/i);
@@ -1049,7 +822,6 @@ function parseOrden(text) {
     }
     items.push({ nombre, cantidad, precio });
   }
-<<<<<<< HEAD
 
   // Para órdenes de producto único, asignar el ID desde la URL
   if (singleProdId && items.length === 1) {
@@ -1157,71 +929,6 @@ async function handleMessage(msg, env) {
   if (text.startsWith('/entrada')  || text === '📥 Entrada')       return cmdEntrada(token, chatId, env);
   if (text.startsWith('/precios')  || text === '📋 Precios')       return cmdPrecios(token, chatId, env);
   if (text.startsWith('/seo')      || text === '🤖 SEO auto')      return cmdSeo(token, chatId, env);
-=======
-  return items.length ? items : null;
-}
-
-async function registrarVenta(items, firebaseUrl) {
-  const msgs = [];
-  for (const item of items) {
-    const id    = Date.now();
-    const total = Number(item.precio || 0) * Number(item.cantidad || 1);
-    await putFirebase(firebaseUrl, 'ventas/' + id, {
-      id, productoId: 0,
-      producto: item.nombre,
-      precio:   Number(item.precio || 0),
-      cantidad: Number(item.cantidad || 1),
-      total, ganancia: 0,
-      fecha:   cubaDate(),
-      fuente:  'telegram_worker',
-    });
-    msgs.push('✅ ' + item.nombre + ' x' + item.cantidad + ' · $' + total.toFixed(2));
-  }
-  return '🎉 Venta registrada\n\n' + msgs.join('\n');
-}
-
-// ── Router ────────────────────────────────────────────────────────────────────
-
-async function handleMessage(msg, env) {
-  const chatId  = String(msg.chat.id);
-  const text    = msg.text || '';
-  const token   = env.BOT_TOKEN;
-  const adminId = String(env.ADMIN_CHAT_ID);
-
-  if (chatId !== adminId) {
-    await sendMessage(token, chatId, '⛔ No autorizado.');
-    return;
-  }
-
-  if (text.startsWith('/start') || text.startsWith('/ayuda') || text.startsWith('/help')) {
-    return cmdStart(token, chatId);
-  }
-  if (text.startsWith('/resumen') || text === '📊 Resumen') {
-    return cmdResumen(token, chatId, env);
-  }
-  if (text.startsWith('/stock') || text === '📦 Stock') {
-    return cmdStock(token, chatId, env);
-  }
-  if (text.startsWith('/interesados') || text === '🔥 Interesados') {
-    return cmdInteresados(token, chatId, env);
-  }
-  if (text.startsWith('/campana') || text.startsWith('/campaña') || text === '📣 Campaña') {
-    return cmdCampana(token, chatId, env);
-  }
-  if (text.startsWith('/productos') || text === '🛍️ Productos') {
-    const q = text.replace('/productos', '').replace('🛍️ Productos', '').trim();
-    return cmdProductos(token, chatId, env, q);
-  }
-  if (text.startsWith('/tareas') || text === '✅ Tareas') {
-    return cmdTareas(token, chatId, env);
-  }
-  if (text.startsWith('/venta') || text === '💰 Venta manual') {
-    if (text === '💰 Venta manual') {
-      return sendMessage(token, chatId, 'Escribe: /venta Nombre x2 $50\nEjemplo: /venta Router WiFi x1 $25');
-    }
-    return cmdVentaManual(token, chatId, text, env);
-  }
->>>>>>> claude/panel-improvement-integration-FIPEW
 
   // Orden de WhatsApp pegada
   const items = parseOrden(text);
@@ -1231,25 +938,17 @@ async function handleMessage(msg, env) {
     const lines = ['🛒 Orden detectada:', ''];
     items.forEach(it => lines.push('• ' + it.nombre + ' x' + it.cantidad + ' = $' + (it.precio * it.cantidad).toFixed(2)));
     lines.push('', 'Total: $' + total.toFixed(2));
-<<<<<<< HEAD
     if (items.some(it => it.productoId)) lines.push('📦 Stock se actualizará al confirmar.');
     return sendMessage(token, chatId, lines.join('\n'), {
       reply_markup: {
         inline_keyboard: [[
           { text: '✅ Confirmar venta', callback_data: 'venta_ok' },
-=======
-    return sendMessage(token, chatId, lines.join('\n'), {
-      reply_markup: {
-        inline_keyboard: [[
-          { text: '✅ Registrar venta', callback_data: 'venta_ok' },
->>>>>>> claude/panel-improvement-integration-FIPEW
           { text: '❌ Cancelar',        callback_data: 'venta_cancel' },
         ]],
       },
     });
   }
 
-<<<<<<< HEAD
   // Búsqueda rápida de producto
   const q = text.toLowerCase().trim();
   if (q.length >= 3) {
@@ -1284,16 +983,10 @@ async function handleMessage(msg, env) {
 
 // ── Router de callbacks ───────────────────────────────────────────────────────
 
-=======
-  await sendMessage(token, chatId, 'No reconocí ese mensaje. Usa /ayuda para ver comandos.');
-}
-
->>>>>>> claude/panel-improvement-integration-FIPEW
 async function handleCallback(q, env) {
   const chatId    = String(q.message.chat.id);
   const messageId = q.message.message_id;
   const token     = env.BOT_TOKEN;
-<<<<<<< HEAD
 
   if (chatId !== String(env.ADMIN_CHAT_ID)) { await answerCallback(token, q.id, 'No autorizado'); return; }
   await answerCallback(token, q.id);
@@ -1430,29 +1123,6 @@ async function handleCallback(q, env) {
     const items = JSON.parse(raw);
     await kvDel(env.KV, 'PENDING_' + chatId);
     const result = await registrarVenta(items, env);
-=======
-  const adminId   = String(env.ADMIN_CHAT_ID);
-
-  if (chatId !== adminId) {
-    await answerCallback(token, q.id, 'No autorizado');
-    return;
-  }
-  await answerCallback(token, q.id);
-
-  if (q.data === 'venta_cancel') {
-    await kvDel(env.KV, 'PENDING_' + chatId);
-    return editMessage(token, chatId, messageId, '❌ Cancelado.');
-  }
-
-  if (q.data === 'venta_ok') {
-    const raw = await kvGet(env.KV, 'PENDING_' + chatId);
-    if (!raw) {
-      return editMessage(token, chatId, messageId, '⚠️ No hay venta pendiente. Repite el comando.');
-    }
-    const items = JSON.parse(raw);
-    await kvDel(env.KV, 'PENDING_' + chatId);
-    const result = await registrarVenta(items, env.FIREBASE_URL);
->>>>>>> claude/panel-improvement-integration-FIPEW
     return editMessage(token, chatId, messageId, result);
   }
 }
@@ -1461,35 +1131,20 @@ async function handleCallback(q, env) {
 
 export default {
   async fetch(request, env) {
-<<<<<<< HEAD
     if (request.method === 'GET')  return new Response('TiendaMax Bot OK');
-=======
-    if (request.method === 'GET') {
-      return new Response('TiendaMax Bot OK');
-    }
->>>>>>> claude/panel-improvement-integration-FIPEW
     if (request.method === 'POST') {
       try {
         const update = await request.json();
         if (update.message)        await handleMessage(update.message, env);
         if (update.callback_query) await handleCallback(update.callback_query, env);
-<<<<<<< HEAD
       } catch (e) { console.error('Worker error:', e); }
-=======
-      } catch (e) {
-        console.error('Worker error:', e);
-      }
->>>>>>> claude/panel-improvement-integration-FIPEW
       return new Response('OK');
     }
     return new Response('Method not allowed', { status: 405 });
   },
-<<<<<<< HEAD
 
   // Reporte semanal automático — lunes 9 AM Cuba (13:00 UTC)
   async scheduled(event, env, ctx) {
     ctx.waitUntil(sendWeeklyReport(env));
   },
-=======
->>>>>>> claude/panel-improvement-integration-FIPEW
 };
