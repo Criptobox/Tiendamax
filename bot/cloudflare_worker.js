@@ -122,7 +122,7 @@ async function getProductos(productosUrl) {
 // ── Rebaje de stock vía GitHub API ────────────────────────────────────────────
 
 async function reduceStock(items, env) {
-  if (!env.GITHUB_TOKEN) return;
+  if (!env.GITHUB_TOKEN) return '⚠️ GITHUB_TOKEN no configurado en el Worker.';
 
   const headers = {
     'Authorization': 'Bearer ' + env.GITHUB_TOKEN,
@@ -133,7 +133,10 @@ async function reduceStock(items, env) {
 
   try {
     const fileRes = await fetch(GITHUB_API, { headers });
-    if (!fileRes.ok) return;
+    if (!fileRes.ok) {
+      const errBody = await fileRes.text().catch(() => '');
+      return '⚠️ GitHub API error ' + fileRes.status + (errBody ? ': ' + errBody.slice(0, 120) : '');
+    }
     const fileData = await fileRes.json();
 
     const productos = JSON.parse(fromBase64(fileData.content));
@@ -142,12 +145,10 @@ async function reduceStock(items, env) {
     for (const item of items) {
       let idx = -1;
 
-      // 1) Buscar por ID exacto si está disponible
       if (item.productoId) {
         idx = productos.findIndex(p => String(p.id) === String(item.productoId));
       }
 
-      // 2) Si no hay ID, buscar por nombre (coincidencia parcial)
       if (idx === -1) {
         const q = String(item.nombre || '').toLowerCase().trim();
         idx = productos.findIndex(p =>
@@ -163,9 +164,9 @@ async function reduceStock(items, env) {
       }
     }
 
-    if (!changed) return;
+    if (!changed) return '⚠️ Producto no encontrado en productos.json.';
 
-    await fetch(GITHUB_API, {
+    const putRes = await fetch(GITHUB_API, {
       method: 'PUT',
       headers,
       body: JSON.stringify({
@@ -174,8 +175,13 @@ async function reduceStock(items, env) {
         sha:     fileData.sha,
       }),
     });
+    if (!putRes.ok) {
+      const errBody = await putRes.text().catch(() => '');
+      return '⚠️ GitHub PUT error ' + putRes.status + (errBody ? ': ' + errBody.slice(0, 120) : '');
+    }
+    return null; // éxito
   } catch (e) {
-    console.error('reduceStock error:', e);
+    return '⚠️ reduceStock excepción: ' + String(e).slice(0, 120);
   }
 }
 
@@ -489,11 +495,10 @@ async function registrarVenta(items, env) {
     msgs.push('✅ ' + item.nombre + ' x' + item.cantidad + ' · $' + total.toFixed(2));
   }
 
-  // Rebajar stock en productos.json (async, no bloquea la respuesta)
-  reduceStock(items, env).catch(e => console.error('reduceStock:', e));
+  const stockErr = await reduceStock(items, env);
 
   return '🎉 Venta registrada\n\n' + msgs.join('\n') +
-    (env.GITHUB_TOKEN ? '\n\n📦 Stock actualizado.' : '');
+    (stockErr ? '\n\n' + stockErr : '\n\n📦 Stock actualizado.');
 }
 
 // ── Router de mensajes ────────────────────────────────────────────────────────
