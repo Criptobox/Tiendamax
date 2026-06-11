@@ -373,12 +373,18 @@ body:not(.light-mode) .cta-final .btn-large:hover{box-shadow:0 14px 48px rgba(37
    v3 — HEADER GLASS, ENCABEZADOS, FOOTER, WA FLOTANTE, PERF MÓVIL
    ================================================================ */
 
-/* ── Header glassmorphism (solo oscuro; el claro lo maneja light-mode.css) ── */
+/* ── Header glassmorphism — MISMO tratamiento en ambos modos ── */
 body:not(.light-mode) .header{
   background:rgba(12,8,6,.72) !important;
-  backdrop-filter:blur(20px) saturate(160%);
-  -webkit-backdrop-filter:blur(20px) saturate(160%);
+  backdrop-filter:blur(20px) saturate(160%) !important;
+  -webkit-backdrop-filter:blur(20px) saturate(160%) !important;
   border-bottom:1px solid rgba(255,255,255,.08) !important;
+}
+html body.light-mode .header{
+  background:rgba(255,255,255,.72) !important;
+  backdrop-filter:blur(20px) saturate(160%) !important;
+  -webkit-backdrop-filter:blur(20px) saturate(160%) !important;
+  border-bottom:1px solid rgba(0,0,0,.07) !important;
 }
 
 /* ── Encabezados de sección unificados ── */
