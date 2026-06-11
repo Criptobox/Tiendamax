@@ -1856,48 +1856,45 @@ async function verificarPassword(event) {
     const passwordInput = document.getElementById('adminPassword').value.trim();
     if (!passwordInput) { mostrarNotificacion('❌ Escribe la contraseña', 'error'); return; }
 
-    // 1. Intentar auth global desde GitHub .admin-auth.json
     const ghUser = localStorage.getItem('githubUser');
     const ghRepo = localStorage.getItem('githubRepo');
+
+    // 1. PRIORIDAD: localStorage (refleja cambios inmediatos de contraseña)
+    const lsHash = localStorage.getItem(AUTH_HASH_KEY);
+    const lsSalt = localStorage.getItem(AUTH_SALT_KEY);
+    if (lsHash && lsSalt) {
+        const inputHash = await hashPassword(passwordInput, lsSalt);
+        if (inputHash === lsHash) {
+            localStorage.removeItem('admin_rl');
+            usuarioAutenticado = true;
+            cerrarLoginModal();
+            abrirAdminPanel();
+            return;
+        }
+    }
+
+    // 2. FALLBACK: .admin-auth.json en GitHub (solo si localStorage vacío o no coincide)
     let ghHash = null, ghSalt = null;
     if (ghUser && ghRepo) {
         try {
             const cfgRes = await fetch(`https://raw.githubusercontent.com/${ghUser}/${ghRepo}/main/.admin-auth.json?_=${Date.now()}`);
             if (cfgRes.ok) {
                 const cfg = await cfgRes.json();
-                if (cfg.hash && cfg.salt) {
-                    ghHash = cfg.hash;
-                    ghSalt = cfg.salt;
-                }
+                if (cfg.hash && cfg.salt) { ghHash = cfg.hash; ghSalt = cfg.salt; }
             }
         } catch(e) {}
     }
-    // 2. Auth según disponibilidad: GitHub primero, luego local, luego migración
     if (ghHash && ghSalt) {
-        // 2a. Auth global desde GitHub
         const inputHash = await hashPassword(passwordInput, ghSalt);
         if (inputHash === ghHash) {
             localStorage.removeItem('admin_rl');
+            // Sincronizar al localStorage para que próximos logins sean offline
             try { localStorage.setItem(AUTH_SALT_KEY, ghSalt); } catch(e) {}
             try { localStorage.setItem(AUTH_HASH_KEY, ghHash); } catch(e) {}
             usuarioAutenticado = true;
             cerrarLoginModal();
             abrirAdminPanel();
             return;
-        }
-    } else {
-        const lsHash = localStorage.getItem(AUTH_HASH_KEY);
-        const lsSalt = localStorage.getItem(AUTH_SALT_KEY);
-        if (lsHash && lsSalt) {
-            // 2b. Auth local (per-browser backup)
-            const inputHash = await hashPassword(passwordInput, lsSalt);
-            if (inputHash === lsHash) {
-                localStorage.removeItem('admin_rl');
-                usuarioAutenticado = true;
-                cerrarLoginModal();
-                abrirAdminPanel();
-                return;
-            }
         }
     }
 
@@ -1957,7 +1954,9 @@ async function cambiarPasswordAdmin(ci, ni, coi) {
     // Subir a GitHub — obtener SHA actual antes del PUT para no fallar en updates
     if (ghUser && ghRepo) {
         const ghToken = localStorage.getItem('githubToken');
-        if (ghToken) {
+        if (!ghToken) {
+            mostrarNotificacion('✅ Contraseña cambiada. Para que persista en todos los dispositivos, configura el Token de GitHub en Configuración.', 'warning');
+        } else {
             try {
                 const authData = { hash: nh, salt: ns, iterations: AUTH_ITERATIONS };
                 const jsonStr = JSON.stringify(authData);
@@ -1989,7 +1988,6 @@ async function cambiarPasswordAdmin(ci, ni, coi) {
             }
         }
     }
-
     mostrarNotificacion('✅ Contraseña cambiada con éxito', 'success');
     document.getElementById('ci').value = '';
     document.getElementById('ni').value = '';
