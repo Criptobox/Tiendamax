@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>Transiciones del Hero — TiendaMax</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{background:#0C0806;color:#F5EDE8;font-family:system-ui,-apple-system,sans-serif;padding:16px;min-height:100vh}
+h1{font-size:16px;font-weight:800;color:#FF9F43;text-align:center;margin-bottom:4px}
+.subtitle{font-size:12px;color:rgba(245,237,232,.45);text-align:center;margin-bottom:24px}
+.tabs{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;margin-bottom:24px;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex-shrink:0;padding:9px 18px;border-radius:100px;font-size:12px;font-weight:700;border:1px solid rgba(255,255,255,.12);background:transparent;color:rgba(245,237,232,.5);cursor:pointer;transition:all .2s;white-space:nowrap}
+.tab.active{background:#FF6B35;border-color:#FF6B35;color:#fff}
+.scene{display:none;flex-direction:column;align-items:center;gap:16px}
+.scene.active{display:flex}
+.desc{font-size:12px;color:rgba(245,237,232,.5);text-align:center;max-width:280px;line-height:1.5}
+.hcard{width:260px;height:340px;border-radius:24px;position:relative;background:linear-gradient(145deg,#1A1209,#2A1F14);border:1px solid rgba(201,169,110,.25);box-shadow:0 20px 50px rgba(0,0,0,.7),inset 0 1px 0 rgba(255,255,255,.08);overflow:hidden;cursor:pointer;user-select:none}
+.hcard-img{position:absolute;top:14px;right:14px;width:100px;height:100px;border-radius:18px;background:#1E1309;display:flex;align-items:center;justify-content:center;font-size:38px}
+.hcard-body{position:absolute;bottom:0;left:0;right:0;padding:16px}
+.hcard-cat{font-size:10px;color:#FF9F43;text-transform:uppercase;letter-spacing:.8px;font-weight:700}
+.hcard-name{font-size:16px;font-weight:800;color:#F5EDE8;margin:4px 0 6px;line-height:1.2}
+.hcard-price{font-size:23px;font-weight:900;color:#FF9F43}
+.hcard-sub{font-size:11px;color:rgba(245,237,232,.4);margin-top:3px}
+.hcard-btn{margin-top:11px;width:100%;border:none;border-radius:12px;padding:10px;background:linear-gradient(135deg,#25D366,#128C7E);color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:6px}
+.dots{display:flex;gap:7px;justify-content:center}
+.dot{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.2);transition:all .3s}
+.dot.active{background:#FF9F43;width:20px;border-radius:4px}
+.play-btn{width:240px;padding:14px;border-radius:14px;background:rgba(255,107,53,.12);border:1px solid rgba(255,107,53,.3);color:#FF6B35;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px}
+.play-btn:active{background:rgba(255,107,53,.28)}
+.hint{font-size:10px;color:rgba(245,237,232,.3);text-align:center}
+/* T1 canvas */
+#t1cvs{position:absolute;inset:0;z-index:50;pointer-events:none;border-radius:24px;width:100%;height:100%}
+/* T2 fade layers */
+.t2l{position:absolute;inset:0;transition:opacity .65s ease}
+/* T3 slide */
+.t3t{position:absolute;inset:0;overflow:hidden;border-radius:24px}
+.t3i{display:flex;width:200%;height:100%;transition:transform .55s cubic-bezier(.77,0,.175,1)}
+.t3p{width:50%;height:100%;flex-shrink:0;padding:16px;display:flex;flex-direction:column;justify-content:flex-end;position:relative}
+/* T4 flip */
+.t4s{width:260px;height:340px;perspective:900px}
+.t4f{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform .75s cubic-bezier(.455,.03,.515,.955)}
+.t4f.on{transform:rotateY(180deg)}
+.t4fc{position:absolute;inset:0;backface-visibility:hidden;border-radius:24px;background:linear-gradient(145deg,#1A1209,#2A1F14);border:1px solid rgba(201,169,110,.25);box-shadow:0 20px 50px rgba(0,0,0,.7);overflow:hidden;padding:16px;display:flex;flex-direction:column;justify-content:flex-end}
+.t4fc.bk{transform:rotateY(180deg)}
+.t4im{position:absolute;top:14px;right:14px;width:100px;height:100px;border-radius:18px;background:#1E1309;display:flex;align-items:center;justify-content:center;font-size:38px}
+/* T5 sweep */
+.t5sw{position:absolute;top:0;left:-70%;width:60%;height:100%;z-index:60;pointer-events:none;background:linear-gradient(105deg,transparent 20%,rgba(255,210,160,.55) 50%,transparent 80%)}
+.t5sw.go{animation:t5a .5s ease-in forwards}
+@keyframes t5a{from{left:-70%}to{left:120%}}
+.t5ct{position:absolute;inset:0;transition:opacity .25s ease}
+/* WA icon */
+.wi{flex-shrink:0}
+</style>
+</head>
+<body>
+<h1>🎨 Transiciones del Hero</h1>
+<p class="subtitle">Toca la tarjeta o el botón para ver la animación en vivo</p>
+
+<div class="tabs">
+  <button class="tab active" onclick="show(0)">① Partículas</button>
+  <button class="tab" onclick="show(1)">② Fundido</button>
+  <button class="tab" onclick="show(2)">③ Slide</button>
+  <button class="tab" onclick="show(3)">④ Volteo 3D</button>
+  <button class="tab" onclick="show(4)">⑤ Destello</button>
+</div>
+
+<!-- T1 -->
+<div class="scene active" id="s0">
+  <p class="desc">La que tienes ahora — el contenido se desintegra en cuadros que salen volando</p>
+  <div class="hcard" id="t1c" onclick="t1()">
+    <canvas id="t1cvs"></canvas>
+    <div class="hcard-img" id="t1im"><span id="t1em">📦</span></div>
+    <div class="hcard-body" id="t1bd">
+      <div class="hcard-cat" id="t1ca">Electrónica</div>
+      <div class="hcard-name" id="t1nm">Cargador 20A</div>
+      <div class="hcard-price" id="t1pr">$80 USD</div>
+      <div class="hcard-sub">★★★★★ · 5 disponibles</div>
+      <button class="hcard-btn" onclick="event.stopPropagation()"><svg class="wi" width="15" height="15" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2 22l4.875-1.418A9.956 9.956 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2z"/></svg> Pedir</button>
+    </div>
+  </div>
+  <div class="dots" id="d0"><div class="dot active"></div><div class="dot"></div><div class="dot"></div></div>
+  <button class="play-btn" onclick="t1()">▶ Cambiar producto</button>
+  <p class="hint">También puedes tocar la tarjeta directamente</p>
+</div>
+
+<!-- T2 -->
+<div class="scene" id="s1">
+  <p class="desc">El producto actual se disuelve suavemente y aparece el siguiente. Limpio y elegante</p>
+  <div class="hcard" onclick="t2()" style="position:relative">
+    <div class="t2l" id="t2a" style="opacity:1;z-index:2;position:absolute;inset:0">
+      <div class="hcard-img"><span>📦</span></div>
+      <div class="hcard-body">
+        <div class="hcard-cat">Electrónica</div><div class="hcard-name">Cargador 20A</div>
+        <div class="hcard-price">$80 USD</div><div class="hcard-sub">★★★★★ · 5 disp.</div>
+        <button class="hcard-btn" onclick="event.stopPropagation()"><svg class="wi" width="15" height="15" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2 22l4.875-1.418A9.956 9.956 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2z"/></svg> Pedir</button>
+      </div>
+    </div>
+    <div class="t2l" id="t2b" style="opacity:0;z-index:1;position:absolute;inset:0">
+      <div class="hcard-img"><span id="t2bem">🔋</span></div>
+      <div class="hcard-body">
+        <div class="hcard-cat" id="t2bca"></div><div class="hcard-name" id="t2bnm"></div>
+        <div class="hcard-price" id="t2bpr"></div><div class="hcard-sub" id="t2bsb"></div>
+        <button class="hcard-btn" onclick="event.stopPropagation()"><svg class="wi" width="15" height="15" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2 22l4.875-1.418A9.956 9.956 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2z"/></svg> Pedir</button>
+      </div>
+    </div>
+  </div>
+  <div class="dots" id="d1"><div class="dot active"></div><div class="dot"></div><div class="dot"></div></div>
+  <button class="play-btn" onclick="t2()">▶ Cambiar producto</button>
+</div>
+
+<!-- T3 -->
+<div class="scene" id="s2">
+  <p class="desc">El siguiente producto entra deslizándose desde la derecha, como un carrusel</p>
+  <div class="hcard" onclick="t3()" style="overflow:hidden">
+    <div class="t3t"><div class="t3i" id="t3i">
+      <div class="t3p">
+        <div class="hcard-img" style="position:absolute;top:14px;right:14px"><span id="t3e0">📦</span></div>
+        <div class="hcard-cat" id="t3c0">Electrónica</div><div class="hcard-name" id="t3n0">Cargador 20A</div>
+        <div class="hcard-price" id="t3p0">$80 USD</div><div class="hcard-sub">★★★★★ · 5 disp.</div>
+        <button class="hcard-btn" style="margin-top:10px" onclick="event.stopPropagation()"><svg class="wi" width="15" height="15" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2 22l4.875-1.418A9.956 9.956 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2z"/></svg> Pedir</button>
+      </div>
+      <div class="t3p">
+        <div class="hcard-img" style="position:absolute;top:14px;right:14px"><span id="t3e1">🔋</span></div>
+        <div class="hcard-cat" id="t3c1">Baterías</div><div class="hcard-name" id="t3n1">Batería 100Ah</div>
+        <div class="hcard-price" id="t3p1">$170 USD</div><div class="hcard-sub">⚡ Oferta · 3 disp.</div>
+        <button class="hcard-btn" style="margin-top:10px" onclick="event.stopPropagation()"><svg class="wi" width="15" height="15" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2 22l4.875-1.418A9.956 9.956 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2z"/></svg> Pedir</button>
+      </div>
+    </div></div>
+  </div>
+  <div class="dots" id="d2"><div class="dot active"></div><div class="dot"></div><div class="dot"></div></div>
+  <button class="play-btn" onclick="t3()">▶ Cambiar producto</button>
+</div>
+
+<!-- T4 -->
+<div class="scene" id="s3">
+  <p class="desc">La tarjeta da vuelta en 3D y aparece el nuevo producto en el reverso. Premium</p>
+  <div class="t4s" onclick="t4()">
+    <div class="t4f" id="t4f">
+      <div class="t4fc">
+        <div class="t4im"><span>📦</span></div>
+        <div class="hcard-cat">Electrónica</div><div class="hcard-name">Cargador 20A</div>
+        <div class="hcard-price">$80 USD</div><div class="hcard-sub">★★★★★ · 5 disp.</div>
+        <button class="hcard-btn" onclick="event.stopPropagation()"><svg class="wi" width="15" height="15" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2 22l4.875-1.418A9.956 9.956 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2z"/></svg> Pedir</button>
+      </div>
+      <div class="t4fc bk" id="t4bk">
+        <div class="t4im"><span id="t4bem">🔋</span></div>
+        <div class="hcard-cat" id="t4bca"></div><div class="hcard-name" id="t4bnm"></div>
+        <div class="hcard-price" id="t4bpr"></div><div class="hcard-sub" id="t4bsb"></div>
+        <button class="hcard-btn" onclick="event.stopPropagation()"><svg class="wi" width="15" height="15" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2 22l4.875-1.418A9.956 9.956 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2z"/></svg> Pedir</button>
+      </div>
+    </div>
+  </div>
+  <div class="dots" id="d3"><div class="dot active"></div><div class="dot"></div><div class="dot"></div></div>
+  <button class="play-btn" onclick="t4()">▶ Cambiar producto</button>
+</div>
+
+<!-- T5 -->
+<div class="scene" id="s4">
+  <p class="desc">Un destello de luz barre la tarjeta mientras el contenido cambia instantáneamente</p>
+  <div class="hcard" onclick="t5()" style="position:relative;overflow:hidden">
+    <div class="t5sw" id="t5sw"></div>
+    <div class="t5ct" id="t5ct">
+      <div class="hcard-img"><span id="t5em">📦</span></div>
+      <div class="hcard-body">
+        <div class="hcard-cat" id="t5ca">Electrónica</div><div class="hcard-name" id="t5nm">Cargador 20A</div>
+        <div class="hcard-price" id="t5pr">$80 USD</div><div class="hcard-sub">★★★★★ · 5 disp.</div>
+        <button class="hcard-btn" onclick="event.stopPropagation()"><svg class="wi" width="15" height="15" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2 22l4.875-1.418A9.956 9.956 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2z"/></svg> Pedir</button>
+      </div>
+    </div>
+  </div>
+  <div class="dots" id="d4"><div class="dot active"></div><div class="dot"></div><div class="dot"></div></div>
+  <button class="play-btn" onclick="t5()">▶ Cambiar producto</button>
+</div>
+
+<script>
+const P=[
+  {em:'📦',cat:'Electrónica',nm:'Cargador Inteligente 20A',pr:'$80 USD',sb:'★★★★★ · 5 disponibles'},
+  {em:'⚡',cat:'Inversores',nm:'Inversor 3000W',pr:'$220 USD',sb:'⚡ Oferta · 2 disponibles'},
+  {em:'🔋',cat:'Baterías',nm:'Batería Lubrim 100Ah',pr:'$85 USD',sb:'★★★★☆ · 8 disponibles'},
+];
+const N=P.length,ni=i=>(i+1)%N;
+function dts(id,i){document.querySelectorAll('#'+id+' .dot').forEach((d,j)=>d.classList.toggle('active',j===i));}
+
+// T1 — Partículas
+let i1=0;
+function t1(){
+  const card=document.getElementById('t1c');
+  const cvs=document.getElementById('t1cvs');
+  const body=document.getElementById('t1bd');
+  const img=document.getElementById('t1im');
+  cvs.width=card.offsetWidth||260; cvs.height=card.offsetHeight||340;
+  const ctx=cvs.getContext('2d');
+  const W=cvs.width,H=cvs.height,cols=14,rows=18,pw=W/cols,ph=H/rows;
+  const pal=['#FF6B35','#FF9F43','#C9A96E','#FFF','#FFD4C2','#2A1F14','#E8C88A'];
+  const ps=Array.from({length:cols*rows},(_,k)=>({
+    x:(k%cols)*pw+pw/2, y:Math.floor(k/cols)*ph+ph/2,
+    vx:(Math.random()-.5)*5, vy:(Math.random()-.9)*5.5-1.5,
+    sz:Math.random()*(pw*.8)+2, life:1, dec:Math.random()*.026+.014,
+    col:pal[0|Math.random()*pal.length], rot:Math.random()*Math.PI*2, rs:(Math.random()-.5)*.22
+  }));
+  body.style.opacity='0'; img.style.opacity='0';
+  const n=ni(i1),p=P[n];
+  ['t1em','t1ca','t1nm','t1pr'].forEach((id,j)=>{
+    document.getElementById(id).textContent=[p.em,p.cat,p.nm,p.pr][j];
+  });
+  let aid;
+  (function go(){
+    ctx.clearRect(0,0,W,H); let dead=true;
+    ps.forEach(pt=>{
+      if(pt.life<=0)return; dead=false;
+      pt.x+=pt.vx; pt.y+=pt.vy; pt.vy+=.045; pt.vx*=.993;
+      pt.rot+=pt.rs; pt.life-=pt.dec;
+      const a=Math.max(0,pt.life),sc=.5+pt.life*.5;
+      ctx.save();ctx.translate(pt.x,pt.y);ctx.rotate(pt.rot);
+      ctx.globalAlpha=a;ctx.fillStyle=pt.col;
+      ctx.fillRect(-pt.sz*sc/2,-pt.sz*sc/2,pt.sz*sc,pt.sz*sc);
+      ctx.restore();
+    });
+    if(dead){
+      cancelAnimationFrame(aid);
+      body.style.cssText+='opacity:1;transition:opacity .35s';
+      img.style.cssText+='opacity:1;transition:opacity .35s';
+      ctx.clearRect(0,0,W,H); i1=n; dts('d0',i1); return;
+    }
+    aid=requestAnimationFrame(go);
+  })();
+}
+
+// T2 — Fundido
+let i2=0,b2=false;
+function t2(){
+  if(b2)return; b2=true;
+  const n=ni(i2),p=P[n];
+  const a=document.getElementById('t2a'),b=document.getElementById('t2b');
+  const top=i2%2===0?a:b,bot=i2%2===0?b:a;
+  ['t2bem','t2bca','t2bnm','t2bpr','t2bsb'].forEach((id,j)=>{
+    const el=document.getElementById(id); if(el) el.textContent=[p.em,p.cat,p.nm,p.pr,p.sb][j];
+  });
+  bot.style.zIndex='1'; top.style.zIndex='2';
+  requestAnimationFrame(()=>{top.style.opacity='0'; bot.style.opacity='1';});
+  setTimeout(()=>{i2=n; b2=false; dts('d1',i2);},700);
+}
+
+// T3 — Slide
+let i3=0,b3=false,s3=false;
+function t3(){
+  if(b3)return; b3=true;
+  const n=ni(i3),p=P[n];
+  const inn=document.getElementById('t3i');
+  const idx=s3?0:1;
+  document.getElementById('t3e'+idx).textContent=p.em;
+  document.getElementById('t3c'+idx).textContent=p.cat;
+  document.getElementById('t3n'+idx).textContent=p.nm;
+  document.getElementById('t3p'+idx).textContent=p.pr;
+  if(!s3){
+    inn.style.transition='transform .55s cubic-bezier(.77,0,.175,1)';
+    inn.style.transform='translateX(-50%)';
+  } else {
+    inn.style.transition='none'; inn.style.transform='translateX(-100%)';
+    requestAnimationFrame(()=>requestAnimationFrame(()=>{
+      inn.style.transition='transform .55s cubic-bezier(.77,0,.175,1)';
+      inn.style.transform='translateX(-50%)';
+    }));
+  }
+  s3=!s3;
+  setTimeout(()=>{i3=n; b3=false; dts('d2',i3);},580);
+}
+
+// T4 — Flip 3D
+let i4=0,b4=false,s4=false;
+function t4(){
+  if(b4)return; b4=true;
+  const n=ni(i4),p=P[n];
+  const fl=document.getElementById('t4f');
+  if(!s4){
+    ['t4bem','t4bca','t4bnm','t4bpr','t4bsb'].forEach((id,j)=>{
+      const el=document.getElementById(id); if(el) el.textContent=[p.em,p.cat,p.nm,p.pr,p.sb][j];
+    });
+    fl.classList.add('on');
+  } else {
+    const fr=fl.querySelector('.t4fc:not(.bk)');
+    fr.querySelector('.t4im span').textContent=p.em;
+    fr.querySelector('.hcard-cat').textContent=p.cat;
+    fr.querySelector('.hcard-name').textContent=p.nm;
+    fr.querySelector('.hcard-price').textContent=p.pr;
+    fl.classList.remove('on');
+  }
+  s4=!s4;
+  setTimeout(()=>{i4=n; b4=false; dts('d3',i4);},780);
+}
+
+// T5 — Destello
+let i5=0,b5=false;
+function t5(){
+  if(b5)return; b5=true;
+  const n=ni(i5),p=P[n];
+  const sw=document.getElementById('t5sw'),ct=document.getElementById('t5ct');
+  sw.classList.remove('go'); void sw.offsetWidth; sw.classList.add('go');
+  setTimeout(()=>{
+    ct.style.opacity='0';
+    ['t5em','t5ca','t5nm','t5pr'].forEach((id,j)=>{
+      document.getElementById(id).textContent=[p.em,p.cat,p.nm,p.pr][j];
+    });
+    ct.style.transition='opacity .28s'; ct.style.opacity='1';
+  },230);
+  setTimeout(()=>{sw.classList.remove('go'); i5=n; b5=false; dts('d4',i5);},560);
+}
+
+function show(i){
+  document.querySelectorAll('.tab').forEach((t,j)=>t.classList.toggle('active',j===i));
+  document.querySelectorAll('.scene').forEach((s,j)=>s.classList.toggle('active',j===i));
+}
+</script>
+</body>
+</html>
