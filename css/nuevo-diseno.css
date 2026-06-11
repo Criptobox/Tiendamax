@@ -104,7 +104,7 @@ body.light-mode .nd-fbadge{background:#fff;backdrop-filter:none;border:none;box-
 /* Heading color per mode */
 .nd-h1{color:inherit}
 
-/* ── RESPONSIVE ── */
+/* ── RESPONSIVE HERO ── */
 @media(max-width:900px){
   .nd-hero-grid{grid-template-columns:1fr;gap:48px}
   .nd-hero-right{order:-1}
@@ -120,4 +120,272 @@ body.light-mode .nd-fbadge{background:#fff;backdrop-filter:none;border:none;box-
   .nd-card3d{width:250px;height:320px}
   .nd-hero-btns{flex-direction:column;align-items:stretch}
   .nd-btn-primary{justify-content:center}
+}
+
+/* ========================================================
+   PÁGINA COMPLETA — overrides de secciones existentes
+   ======================================================== */
+
+/* ── BASE — body y z-index stack ── */
+body{position:relative}
+body.light-mode{background:#FFF8F5 !important}
+#vistaInicio,#vistaCategoria{position:relative;z-index:1}
+
+/* ── HEADER glass ── */
+.header{
+  background:rgba(13,8,5,0.80) !important;
+  backdrop-filter:blur(24px) saturate(140%) !important;
+  -webkit-backdrop-filter:blur(24px) saturate(140%) !important;
+  border-bottom:1px solid rgba(255,255,255,0.07) !important;
+  box-shadow:0 2px 20px rgba(0,0,0,0.3),0 0 0 0.5px rgba(255,107,53,0.08) !important;
+}
+body.light-mode .header{
+  background:rgba(255,255,255,0.88) !important;
+  border-bottom:1px solid rgba(0,0,0,0.06) !important;
+  box-shadow:0 2px 20px rgba(255,107,53,0.07),0 1px 3px rgba(0,0,0,0.05) !important;
+}
+
+/* ── SEARCH BAR ── */
+.hsb-pill{
+  background:linear-gradient(145deg,rgba(255,255,255,0.08),rgba(255,255,255,0.04)) !important;
+  backdrop-filter:blur(20px) saturate(140%) !important;
+  -webkit-backdrop-filter:blur(20px) saturate(140%) !important;
+  border:1px solid rgba(255,255,255,0.12) !important;
+  box-shadow:0 4px 20px rgba(0,0,0,0.2) !important;
+}
+body.light-mode .hsb-pill{
+  background:rgba(255,255,255,0.92) !important;
+  border:1px solid rgba(0,0,0,0.08) !important;
+  box-shadow:0 4px 20px rgba(255,107,53,0.06),0 1px 3px rgba(0,0,0,0.04) !important;
+}
+
+/* ── SECTION CONTAINERS — transparentes para que el mesh se vea ── */
+.categorias-home{background:transparent !important}
+.categorias-home-inner{background:transparent !important}
+.mas-vendidos{background:transparent !important}
+.banners-patrocinados-section{background:transparent !important}
+.beneficios{background:transparent !important}
+.testimonios{background:transparent !important}
+.recientes-section{background:transparent !important}
+
+/* ── SECTION EYEBROWS / TITLES ── */
+.section-eyebrow{
+  font-size:12px !important;font-weight:700 !important;
+  letter-spacing:2px !important;text-transform:uppercase !important;
+  color:#FF6B35 !important;
+}
+.section-title{
+  font-size:clamp(26px,3.5vw,42px) !important;
+  font-weight:800 !important;letter-spacing:-1.5px !important;line-height:1.12 !important;
+}
+.section-header h2{
+  font-size:clamp(22px,3vw,34px) !important;
+  font-weight:800 !important;letter-spacing:-1px !important;
+}
+
+/* ── CATEGORY CARDS ── */
+.categorias-grid{gap:14px !important}
+.categoria-card{
+  border-radius:20px !important;
+  overflow:hidden !important;
+  box-shadow:0 4px 16px rgba(0,0,0,0.28),0 2px 4px rgba(0,0,0,0.18) !important;
+  transition:transform 0.3s ease,box-shadow 0.3s ease !important;
+  border:none !important;
+}
+.categoria-card:hover{
+  transform:translateY(-6px) scale(1.02) !important;
+  box-shadow:0 12px 32px rgba(0,0,0,0.38),0 4px 8px rgba(0,0,0,0.2) !important;
+}
+.categoria-card:nth-child(1){background:linear-gradient(135deg,#FF6B35,#E8501E) !important}
+.categoria-card:nth-child(2){background:linear-gradient(135deg,#F59E0B,#D97706) !important}
+.categoria-card:nth-child(3){background:linear-gradient(135deg,#1D4ED8,#3B82F6) !important}
+.categoria-card:nth-child(4){background:linear-gradient(135deg,#059669,#10B981) !important}
+.categoria-card:nth-child(5){background:linear-gradient(135deg,#7C3AED,#A78BFA) !important}
+.categoria-card:nth-child(6){background:linear-gradient(135deg,#DC2626,#EF4444) !important}
+.categoria-card:nth-child(7){background:linear-gradient(135deg,#0891B2,#22D3EE) !important}
+.categoria-card:nth-child(8){background:linear-gradient(135deg,#DB2777,#EC4899) !important}
+.categoria-card:nth-child(9){background:linear-gradient(135deg,#92400E,#B45309) !important}
+.categoria-card:nth-child(10){background:linear-gradient(135deg,#065F46,#059669) !important}
+.cat-icon{filter:drop-shadow(0 2px 4px rgba(0,0,0,0.2))}
+.cat-name{color:#fff !important;font-weight:700 !important;text-shadow:0 1px 3px rgba(0,0,0,0.2)}
+.cat-count{color:rgba(255,255,255,0.8) !important}
+
+/* ── PRODUCT CARDS — dark glass ── */
+.productos-grid{gap:18px !important}
+.producto-card{
+  background:linear-gradient(145deg,rgba(255,255,255,0.09),rgba(255,255,255,0.03)) !important;
+  backdrop-filter:blur(20px) saturate(140%) !important;
+  -webkit-backdrop-filter:blur(20px) saturate(140%) !important;
+  border:1px solid rgba(255,255,255,0.10) !important;
+  border-top-color:rgba(255,255,255,0.20) !important;
+  border-radius:20px !important;
+  box-shadow:0 2px 4px rgba(0,0,0,0.25),0 8px 20px rgba(0,0,0,0.28) !important;
+  transition:transform 0.3s ease,box-shadow 0.3s ease,border-color 0.3s ease !important;
+  overflow:hidden !important;
+}
+.producto-card:hover{
+  transform:translateY(-8px) scale(1.01) !important;
+  box-shadow:0 4px 8px rgba(0,0,0,0.3),0 16px 40px rgba(0,0,0,0.35) !important;
+  border-color:rgba(255,107,53,0.3) !important;
+}
+/* light mode product cards */
+body.light-mode .producto-card{
+  background:#fff !important;
+  backdrop-filter:none !important;
+  -webkit-backdrop-filter:none !important;
+  border:1px solid rgba(0,0,0,0.05) !important;
+  border-top-color:rgba(0,0,0,0.05) !important;
+  box-shadow:0 2px 4px rgba(0,0,0,0.04),0 8px 18px rgba(0,0,0,0.07),0 20px 40px rgba(0,0,0,0.06) !important;
+}
+body.light-mode .producto-card:hover{
+  transform:translateY(-10px) scale(1.01) !important;
+  box-shadow:0 4px 8px rgba(0,0,0,0.06),0 16px 32px rgba(0,0,0,0.11),0 40px 80px rgba(0,0,0,0.09) !important;
+  border-color:rgba(255,107,53,0.12) !important;
+}
+
+/* WhatsApp pedir button */
+.btn-pedir-card{
+  background:linear-gradient(135deg,#25D366,#128C7E) !important;
+  border-radius:100px !important;
+  font-weight:700 !important;
+  box-shadow:0 4px 14px rgba(37,211,102,0.3) !important;
+  transition:transform 0.2s ease,box-shadow 0.2s ease !important;
+  border:none !important;
+}
+.btn-pedir-card:hover{
+  transform:scale(1.06) !important;
+  box-shadow:0 6px 20px rgba(37,211,102,0.45) !important;
+}
+
+/* ── PRUEBA SOCIAL STRIP ── */
+.prueba-social-strip{
+  background:linear-gradient(145deg,rgba(255,255,255,0.07),rgba(255,255,255,0.02)) !important;
+  backdrop-filter:blur(20px) saturate(140%) !important;
+  -webkit-backdrop-filter:blur(20px) saturate(140%) !important;
+  border:1px solid rgba(255,255,255,0.10) !important;
+  border-radius:20px !important;
+  box-shadow:0 4px 20px rgba(0,0,0,0.2) !important;
+}
+body.light-mode .prueba-social-strip{
+  background:#fff !important;
+  backdrop-filter:none !important;
+  border:1px solid rgba(0,0,0,0.05) !important;
+  box-shadow:0 2px 4px rgba(0,0,0,0.04),0 8px 20px rgba(0,0,0,0.06) !important;
+}
+.prueba-num{font-size:28px !important;font-weight:900 !important;letter-spacing:-1px !important}
+
+/* ── BENEFICIO CARDS ── */
+.beneficios-grid{gap:16px !important}
+.beneficio-card{
+  background:linear-gradient(145deg,rgba(255,255,255,0.07),rgba(255,255,255,0.02)) !important;
+  backdrop-filter:blur(20px) saturate(140%) !important;
+  -webkit-backdrop-filter:blur(20px) saturate(140%) !important;
+  border:1px solid rgba(255,255,255,0.10) !important;
+  border-top-color:rgba(255,255,255,0.18) !important;
+  border-radius:20px !important;
+  transition:transform 0.3s ease,box-shadow 0.3s ease,border-color 0.3s ease !important;
+}
+.beneficio-card:hover{
+  transform:translateY(-6px) !important;
+  border-color:rgba(255,107,53,0.25) !important;
+  box-shadow:0 8px 32px rgba(255,107,53,0.12) !important;
+}
+body.light-mode .beneficio-card{
+  background:#fff !important;
+  backdrop-filter:none !important;
+  border:1px solid rgba(0,0,0,0.05) !important;
+  box-shadow:0 2px 4px rgba(0,0,0,0.04),0 8px 20px rgba(0,0,0,0.06) !important;
+}
+body.light-mode .beneficio-card:hover{
+  box-shadow:0 4px 8px rgba(0,0,0,0.06),0 16px 32px rgba(0,0,0,0.10) !important;
+  border-color:rgba(255,107,53,0.10) !important;
+}
+
+/* ── TESTIMONIO CARDS ── */
+.testimonios-grid{gap:16px !important}
+.testimonio-card{
+  background:linear-gradient(145deg,rgba(255,255,255,0.07),rgba(255,255,255,0.02)) !important;
+  backdrop-filter:blur(20px) saturate(140%) !important;
+  -webkit-backdrop-filter:blur(20px) saturate(140%) !important;
+  border:1px solid rgba(255,255,255,0.10) !important;
+  border-top-color:rgba(255,255,255,0.18) !important;
+  border-radius:20px !important;
+  transition:transform 0.3s ease,border-color 0.3s ease !important;
+}
+.testimonio-card:hover{
+  transform:translateY(-4px) !important;
+  border-color:rgba(255,107,53,0.2) !important;
+}
+body.light-mode .testimonio-card{
+  background:#fff !important;
+  backdrop-filter:none !important;
+  border:1px solid rgba(0,0,0,0.05) !important;
+  box-shadow:0 2px 4px rgba(0,0,0,0.04),0 8px 20px rgba(0,0,0,0.06) !important;
+}
+
+/* ── CTA FINAL ── */
+.cta-final{
+  background:linear-gradient(135deg,#FF6B35 0%,#FF9F43 45%,#E8501E 100%) !important;
+  border-radius:28px !important;
+  margin:0 24px 60px !important;
+  position:relative;overflow:hidden;
+}
+.cta-final::before{
+  content:'';position:absolute;
+  width:500px;height:500px;border-radius:50%;
+  background:rgba(255,255,255,0.07);
+  top:-200px;right:-100px;pointer-events:none;
+}
+.cta-final h2,.cta-final p{color:#fff !important}
+.cta-final .btn,.cta-final .btn-large{
+  background:#fff !important;
+  color:#E8501E !important;
+  border-radius:100px !important;
+  font-weight:700 !important;
+  box-shadow:0 8px 28px rgba(0,0,0,0.15) !important;
+  transition:transform 0.2s ease,box-shadow 0.2s ease !important;
+  border:none !important;
+}
+.cta-final .btn:hover,.cta-final .btn-large:hover{
+  transform:translateY(-2px) !important;
+  box-shadow:0 12px 36px rgba(0,0,0,0.2) !important;
+}
+
+/* ── FOOTER ── */
+.footer-premium{
+  background:transparent !important;
+  border-top:1px solid rgba(255,255,255,0.07) !important;
+}
+body.light-mode .footer-premium{
+  border-top:1px solid rgba(0,0,0,0.08) !important;
+}
+
+/* ── VISTOS RECIENTEMENTE ── */
+.rec-card{
+  background:linear-gradient(145deg,rgba(255,255,255,0.08),rgba(255,255,255,0.03)) !important;
+  backdrop-filter:blur(16px) !important;
+  -webkit-backdrop-filter:blur(16px) !important;
+  border:1px solid rgba(255,255,255,0.10) !important;
+  border-radius:14px !important;
+}
+.rec-card:hover{
+  transform:translateY(-4px) !important;
+  border-color:rgba(255,107,53,0.25) !important;
+}
+body.light-mode .rec-card{
+  background:#fff !important;
+  backdrop-filter:none !important;
+  border:1px solid rgba(0,0,0,0.05) !important;
+  box-shadow:0 2px 8px rgba(0,0,0,0.06) !important;
+}
+
+/* ── HERO BANNER SLIDER (patrocinados) ── */
+#heroBannerSlider{border-radius:20px !important;overflow:hidden}
+
+/* ── HERO DIVIDER ── */
+.hero-divider{display:none}
+
+/* ── RESPONSIVE FULL PAGE ── */
+@media(max-width:768px){
+  .cta-final{margin:0 12px 40px !important;border-radius:20px !important}
 }
