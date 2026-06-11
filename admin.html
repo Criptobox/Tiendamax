@@ -301,8 +301,7 @@ async function tmAdminRefreshSubscribers(){
   }
   async function sincVentasSiVacio(){
     try{
-      var v=[];try{v=JSON.parse(localStorage.getItem('registroVentas')||'[]');}catch(e){}
-      if(v.length>0)return; // ya hay datos locales, no hace falta
+      // Siempre sincroniza desde Firebase para que las ventas del bot aparezcan
       if(typeof _fbSincronizarVentasAlIniciar==='function'){
         await _fbSincronizarVentasAlIniciar();
       } else {
@@ -314,9 +313,13 @@ async function tmAdminRefreshSubscribers(){
         if(!r.ok)return;
         var raw=await r.json();
         if(!raw||typeof raw!=='object')return;
-        var arr=Object.values(raw).filter(Boolean).sort(function(a,b){return b.id-a.id;});
-        if(!arr.length)return;
-        localStorage.setItem('registroVentas',JSON.stringify(arr.slice(0,500)));
+        var v=[];try{v=JSON.parse(localStorage.getItem('registroVentas')||'[]');}catch(e){}
+        var fbArr=Object.values(raw).filter(Boolean);
+        var fbIds=new Set(fbArr.map(function(x){return x.id;}));
+        var soloLocal=v.filter(function(x){return !fbIds.has(x.id);});
+        var merged=fbArr.concat(soloLocal).sort(function(a,b){return b.id-a.id;}).slice(0,500);
+        if(!merged.length)return;
+        localStorage.setItem('registroVentas',JSON.stringify(merged));
         if(typeof renderizarVentas==='function') renderizarVentas();
       }
     }catch(e){console.warn('[sincVentas]',e);}

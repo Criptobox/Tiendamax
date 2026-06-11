@@ -477,22 +477,44 @@ function parseOrden(text) {
 // ── Registrar venta + rebajar stock ──────────────────────────────────────────
 
 async function registrarVenta(items, env) {
+  // Si algún item no trae comision, buscarla en productos.json
+  const needsLookup = items.some(i => i.comision === undefined || i.comision === null);
+  const catalogo = needsLookup ? await getProductos(env.PRODUCTOS_URL || DEFAULT_PRODS) : [];
+
   const msgs = [];
   for (const item of items) {
-    const id    = Date.now();
-    const total = Number(item.precio || 0) * Number(item.cantidad || 1);
+    let comision = Number(item.comision ?? 0);
+    if (comision === 0 && catalogo.length) {
+      const p = item.productoId
+        ? catalogo.find(p => String(p.id) === String(item.productoId))
+        : catalogo.find(p =>
+            String(p.nombre || '').toLowerCase().includes(String(item.nombre || '').toLowerCase()) ||
+            String(item.nombre || '').toLowerCase().includes(String(p.nombre || '').toLowerCase())
+          );
+      if (p) comision = Number(p.comision || 0);
+    }
+
+    const id      = Date.now();
+    const cant    = Number(item.cantidad || 1);
+    const precio  = Number(item.precio || 0);
+    const total   = precio * cant;
+    const ganancia = comision * cant;
+
     await putFirebase(env.FIREBASE_URL, 'ventas/' + id, {
       id,
-      productoId: item.productoId || 0,
-      producto:   item.nombre,
-      precio:     Number(item.precio || 0),
-      cantidad:   Number(item.cantidad || 1),
+      productoId:     item.productoId || 0,
+      producto:       item.nombre,
+      precio,
+      cantidad:       cant,
+      comision,
+      comisionMoneda: item.comisionMoneda || 'USD',
       total,
-      ganancia:   0,
-      fecha:      cubaDate(),
-      fuente:     'telegram_worker',
+      ganancia,
+      fecha:          cubaDate(),
+      fuente:         'telegram_worker',
     });
-    msgs.push('✅ ' + item.nombre + ' x' + item.cantidad + ' · $' + total.toFixed(2));
+    msgs.push('✅ ' + item.nombre + ' x' + cant + ' · $' + total.toFixed(2) +
+      (ganancia > 0 ? ' (ganancia $' + ganancia.toFixed(2) + ')' : ''));
   }
 
   const stockErr = await reduceStock(items, env);
@@ -613,10 +635,12 @@ async function handleCallback(q, env) {
       const qty      = parseInt(qtyStr, 10);
       await kvClearVenta(env.KV, chatId);
       const result = await registrarVenta([{
-        nombre:     producto.nombre,
-        cantidad:   qty,
-        precio:     Number(producto.precioActual || 0),
-        productoId: producto.id,
+        nombre:         producto.nombre,
+        cantidad:       qty,
+        precio:         Number(producto.precioActual || 0),
+        productoId:     producto.id,
+        comision:       Number(producto.comision || 0),
+        comisionMoneda: producto.comisionMoneda || 'USD',
       }], env);
       return editMessage(token, chatId, messageId, result);
     }
