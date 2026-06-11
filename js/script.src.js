@@ -1954,7 +1954,7 @@ async function cambiarPasswordAdmin(ci, ni, coi) {
     try { localStorage.setItem(AUTH_SALT_KEY, ns); } catch(e) {}
     try { localStorage.setItem(AUTH_HASH_KEY, nh); } catch(e) {}
 
-    // Subir a GitHub (PUT directo para evitar bugs de subirArchivoAGitHub)
+    // Subir a GitHub — obtener SHA actual antes del PUT para no fallar en updates
     if (ghUser && ghRepo) {
         const ghToken = localStorage.getItem('githubToken');
         if (ghToken) {
@@ -1962,10 +1962,23 @@ async function cambiarPasswordAdmin(ci, ni, coi) {
                 const authData = { hash: nh, salt: ns, iterations: AUTH_ITERATIONS };
                 const jsonStr = JSON.stringify(authData);
                 const content = btoa(Array.from(new TextEncoder().encode(jsonStr), b => String.fromCharCode(b)).join(''));
+                // Obtener SHA del archivo actual (necesario si ya existe)
+                let fileSha = null;
+                try {
+                    const getRes = await fetch(`https://api.github.com/repos/${ghUser}/${ghRepo}/contents/.admin-auth.json`, {
+                        headers: { 'Authorization': `token ${ghToken}` }
+                    });
+                    if (getRes.ok) {
+                        const getJson = await getRes.json();
+                        fileSha = getJson.sha || null;
+                    }
+                } catch(e2) {}
+                const putBody = { message: 'Actualizar contraseña admin', content };
+                if (fileSha) putBody.sha = fileSha;
                 const ghRes = await fetch(`https://api.github.com/repos/${ghUser}/${ghRepo}/contents/.admin-auth.json`, {
                     method: 'PUT',
                     headers: { 'Authorization': `token ${ghToken}`, 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ message: 'Actualizar contraseña admin', content })
+                    body: JSON.stringify(putBody)
                 });
                 if (!ghRes.ok) {
                     const err = await ghRes.json().catch(() => ({}));
@@ -3981,7 +3994,7 @@ function _ndDesintegrarYTransicion(idxSiguiente) {
         const hayDesc = p.precioOriginal > 0 && p.precioOriginal > p.precioActual;
         setTxt('ndHeroRate', hayDesc
             ? '⚡ Oferta · ' + safeNum(p.stock) + ' disp.'
-            : '4.9 · ' + (safeNum(p.stock) > 0 ? safeNum(p.stock) + ' disponibles' : 'Top ventas'));
+            : '★★★★★ · ' + (safeNum(p.stock) > 0 ? safeNum(p.stock) + ' disponibles' : 'Top ventas'));
 
         const precioEl = document.getElementById('ndHeroPrice');
         const usdEl = document.getElementById('ndHeroUsd');
@@ -4089,7 +4102,7 @@ function renderHeroGaleria() {
         const hayDesc = p.precioOriginal > 0 && p.precioOriginal > p.precioActual;
         setTxt('ndHeroRate', hayDesc
             ? '⚡ Oferta · ' + safeNum(p.stock) + ' disp.'
-            : '4.9 · ' + (safeNum(p.stock) > 0 ? safeNum(p.stock) + ' disponibles' : 'Top ventas'));
+            : '★★★★★ · ' + (safeNum(p.stock) > 0 ? safeNum(p.stock) + ' disponibles' : 'Top ventas'));
 
         const precioEl = document.getElementById('ndHeroPrice');
         const usdEl = document.getElementById('ndHeroUsd');
