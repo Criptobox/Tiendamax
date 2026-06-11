@@ -37,7 +37,7 @@ body.light-mode .nd-o4{background:radial-gradient(circle,rgba(255,159,67,0.14),t
 .nd-hero-search .hsb-search{flex:1 1 auto;min-width:0;position:relative;display:flex}
 html body .nd-hero-search .hsb-search .hsb-pill{width:100% !important;max-width:none !important}
 /* Sección más vendidos — oculta (los productos ya rotan en el hero) */
-#mas-vendidos{display:none !important}
+#mas-vendidos{display:block !important}
 .nd-hero-btns{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
 .nd-btn-primary{background:linear-gradient(135deg,#FF6B35 0%,#FF9F43 50%,#E8501E 100%);background-size:200% auto;color:#fff !important;border:none;border-radius:100px;padding:16px 32px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;box-shadow:0 8px 28px rgba(255,107,53,0.45);transition:transform .2s,box-shadow .2s,background-position .4s;display:inline-flex;align-items:center;gap:8px}
 .nd-btn-primary:hover{transform:translateY(-3px) scale(1.02);box-shadow:0 14px 40px rgba(255,107,53,.55);background-position:right center}
@@ -66,7 +66,7 @@ body.light-mode .nd-hero-dot.active{background:linear-gradient(90deg,#FF6B35,#FF
 body.light-mode .nd-cl3{background:linear-gradient(135deg,#FFD4C2,#FF9F43);opacity:0.45;border:none}
 body.light-mode .nd-cl2{background:linear-gradient(135deg,#FF9F43,#FF6B35);opacity:0.6;border:none}
 body.light-mode .nd-cl1{background:#fff;backdrop-filter:none;-webkit-backdrop-filter:none;border:none;box-shadow:0 20px 60px rgba(0,0,0,.15),0 4px 12px rgba(0,0,0,.08)}
-.nd-card-img{width:100%;height:220px;display:flex;align-items:center;justify-content:center;font-size:90px;position:relative;overflow:hidden}
+.nd-card-img{width:100%;height:220px;display:flex;align-items:center;justify-content:center;font-size:90px;position:relative;overflow:hidden}.nd-card-img img{width:100%;height:100%;object-fit:cover;object-position:center}
 .nd-card-img::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 30% 30%,rgba(255,107,53,.12),transparent 60%)}
 .nd-pbg-warm{background:linear-gradient(145deg,rgba(255,107,53,0.12),rgba(255,159,67,0.07))}
 body.light-mode .nd-pbg-warm{background:linear-gradient(145deg,#FFF5EF,#FFE8D6)}
@@ -544,6 +544,17 @@ body:not(.light-mode) .cta-final .btn-large:hover{box-shadow:0 14px 48px rgba(37
 /* ================================================================
    RESPONSIVE
    ================================================================ */
+
+/* ── Canvas de partículas para el efecto de desintegración ── */
+.nd-particulas-canvas {
+    position: absolute !important;
+    inset: 0 !important;
+    z-index: 50 !important;
+    pointer-events: none !important;
+    border-radius: 28px !important;
+    width: 100% !important;
+    height: 100% !important;
+}
 @media(max-width:900px){
   .nd-hero-grid{grid-template-columns:1fr;gap:48px}
   .nd-hero-right{order:-1}
