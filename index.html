@@ -134,6 +134,7 @@
     <!-- CSS unido + minificado (generado por scripts/build_css.py vía GitHub Action).
          Para editar estilos, edita los CSS fuente en /css y la Action regenera este bundle. -->
     <link rel="stylesheet" href="css/bundle.css?v=175">
+    <link rel="stylesheet" href="css/nuevo-diseno.css?v=1">
 
 
     <!-- Estilos para "Vistos Recientemente" -->
@@ -226,6 +227,7 @@
     </style>
 </head>
 <body class="tm-no-oferta-banner">
+<div class="nd-mesh" aria-hidden="true"><div class="nd-orb nd-o1"></div><div class="nd-orb nd-o2"></div><div class="nd-orb nd-o3"></div><div class="nd-orb nd-o4"></div></div>
 <a class="skip-link" href="#vistaInicio">Saltar al contenido</a>
 
     <!-- Banner de Urgencia -->
@@ -522,17 +524,48 @@
             </div>
         </div>
 
-        <!-- Hero — propuesta de valor sin banner compitiendo -->
-        <section class="hero hero-sin-imagen" style="display:block;min-height:unset;padding:36px 20px 32px;text-align:center;">
-            <div class="hero-content hero-content-full" style="padding:0;max-width:560px;margin:0 auto;display:flex;flex-direction:column;align-items:center;">
-                <h1 style="text-align:center;font-size:clamp(26px,7vw,48px);line-height:1.1;margin-bottom:12px;">Todo lo que necesitas<br><span>a un mensaje</span><br>de distancia.</h1>
-                <p class="description" style="text-align:center;max-width:400px;margin:0 auto 24px;">Envío rápido. Pide hoy y recibe antes de que se agoten las unidades.</p>
-                <div style="display:flex;flex-direction:row;gap:12px;justify-content:center;width:100%;max-width:380px;margin:0 auto;">
-                    <button data-action="scrollToProductos" type="button" style="flex:1;border-radius:50px;margin:0;padding:14px 16px;background:linear-gradient(135deg,#FF6B35,#E8501E);color:#fff;border:none;display:inline-flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;letter-spacing:0.3px;box-shadow:0 4px 18px rgba(255,107,53,0.4);">Ver Categorías →</button>
-                    <button data-action="contactarWhatsApp" type="button" style="flex:1;border-radius:50px;margin:0;padding:14px 16px;background:#25D366;color:#fff;border:none;display:inline-flex;align-items:center;justify-content:center;gap:6px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;letter-spacing:0.3px;box-shadow:0 4px 18px rgba(37,211,102,0.4);">
-                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" style="flex-shrink:0"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-                        WhatsApp
-                    </button>
+        <!-- Hero rediseñado — propuesta de valor con 3D card stack -->
+        <section class="hero nd-hero">
+            <div class="nd-wrap">
+                <div class="nd-hero-grid">
+                    <div class="nd-hero-left">
+                        <div class="nd-eyebrow"><span class="nd-edot"></span>Catálogo actualizado · Pedido por WhatsApp</div>
+                        <h1 class="nd-h1">Todo lo que<br>necesitas, <span class="nd-grad">a un mensaje</span><br><span class="nd-grad">de distancia</span></h1>
+                        <p class="nd-sub">Celulares, energía, WiFi, motos y más. Precios increíbles, envío rápido y atención personalizada.</p>
+                        <div class="nd-hero-btns">
+                            <button data-action="scrollToProductos" type="button" class="nd-btn-primary">
+                                Ver productos
+                                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                            </button>
+                            <button data-action="contactarWhatsApp" type="button" class="nd-btn-wa">
+                                <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" style="flex-shrink:0"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                                Contactar por WhatsApp
+                            </button>
+                        </div>
+                    </div>
+                    <div class="nd-hero-right">
+                        <div class="nd-stack-wrap">
+                            <div class="nd-card3d">
+                                <div class="nd-cl nd-cl3"></div>
+                                <div class="nd-cl nd-cl2"></div>
+                                <div class="nd-cl nd-cl1">
+                                    <div class="nd-card-img nd-pbg-warm">📱</div>
+                                    <div class="nd-card-body">
+                                        <span class="nd-cpill">Celulares</span>
+                                        <div class="nd-ctitle">Smartphone Android 5G</div>
+                                        <div class="nd-crate"><span class="nd-stars">★★★★★</span><span class="nd-rtext">4.9 · 200+ pedidos</span></div>
+                                        <div class="nd-cpr">
+                                            <div><span class="nd-price">$180</span><span class="nd-usd">USD</span></div>
+                                            <button data-action="contactarWhatsApp" type="button" class="nd-btn-pedir">💬 Pedir</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="nd-fbadge nd-fb1"><span class="nd-bi">🚚</span><div><strong>Envío Rápido</strong><span class="nd-bs">A toda Cuba</span></div></div>
+                            <div class="nd-fbadge nd-fb2"><span class="nd-bi">⭐</span><div><strong>4.9 / 5.0</strong><span class="nd-bs">500+ clientes</span></div></div>
+                            <div class="nd-fbadge nd-fb3"><span class="nd-bi">🔒</span><div><strong>100% Seguro</strong><span class="nd-bs">Compra protegida</span></div></div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>

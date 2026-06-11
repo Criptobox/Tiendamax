@@ -1,0 +1,123 @@
+/* ========================================================
+   TiendaMax — Nuevo Diseño v1
+   Dark mode: default (sin clase)
+   Light mode: body.light-mode
+   Prefijo: nd-  (nuevo-diseno)
+   ======================================================== */
+
+/* ── MESH BACKGROUND ── */
+.nd-mesh{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.nd-orb{position:absolute;border-radius:50%;filter:blur(100px)}
+
+/* Dark orbs */
+.nd-o1{width:700px;height:700px;background:radial-gradient(circle,rgba(255,107,53,0.28),transparent 70%);top:-250px;left:-150px;animation:nd-od1 22s ease-in-out infinite}
+.nd-o2{width:500px;height:500px;background:radial-gradient(circle,rgba(255,159,67,0.20),transparent 70%);top:100px;right:-150px;animation:nd-od2 26s ease-in-out infinite}
+.nd-o3{width:450px;height:450px;background:radial-gradient(circle,rgba(167,139,250,0.15),transparent 70%);bottom:25%;left:35%;animation:nd-od3 19s ease-in-out infinite}
+.nd-o4{width:380px;height:380px;background:radial-gradient(circle,rgba(232,80,30,0.18),transparent 70%);bottom:80px;right:80px;animation:nd-od4 24s ease-in-out infinite}
+
+/* Light orbs override */
+body.light-mode .nd-o1{background:radial-gradient(circle,rgba(255,180,140,0.30),transparent 70%)}
+body.light-mode .nd-o2{background:radial-gradient(circle,rgba(255,200,140,0.25),transparent 70%)}
+body.light-mode .nd-o3{background:radial-gradient(circle,rgba(196,181,253,0.22),transparent 70%)}
+body.light-mode .nd-o4{background:radial-gradient(circle,rgba(255,159,67,0.20),transparent 70%)}
+
+@keyframes nd-od1{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(80px,60px) scale(1.1)}66%{transform:translate(-40px,80px) scale(0.95)}}
+@keyframes nd-od2{0%,100%{transform:translate(0,0) scale(1)}40%{transform:translate(-70px,50px) scale(1.08)}70%{transform:translate(50px,-60px) scale(0.9)}}
+@keyframes nd-od3{0%,100%{transform:translate(0,0) scale(1)}30%{transform:translate(60px,-50px) scale(1.15)}65%{transform:translate(-80px,70px) scale(0.92)}}
+@keyframes nd-od4{0%,100%{transform:translate(0,0) scale(1)}45%{transform:translate(-50px,-40px) scale(1.1)}75%{transform:translate(70px,50px) scale(0.95)}}
+
+/* ── HERO ── */
+.nd-wrap{max-width:1200px;margin:0 auto;padding:0 24px;position:relative;z-index:1}
+.nd-hero{display:block !important;padding:40px 0 48px !important;min-height:unset !important;text-align:left !important;background:none !important;border:none !important}
+.nd-hero-grid{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center}
+
+/* Eyebrow pill */
+.nd-eyebrow{display:inline-flex;align-items:center;gap:8px;background:rgba(255,107,53,0.12);border:1px solid rgba(255,107,53,0.25);border-radius:100px;padding:6px 16px;font-size:13px;font-weight:600;color:#FF6B35;margin-bottom:24px}
+.nd-edot{width:6px;height:6px;border-radius:50%;background:#FF6B35;animation:nd-dot 2s ease-in-out infinite;flex-shrink:0}
+@keyframes nd-dot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
+
+/* Heading */
+.nd-h1{font-size:clamp(36px,4.5vw,58px) !important;font-weight:900 !important;line-height:1.08 !important;letter-spacing:-2px !important;margin-bottom:20px !important;text-align:left !important}
+.nd-grad{background:linear-gradient(135deg,#FF6B35 0%,#FF9F43 50%,#E8501E 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.nd-sub{font-size:17px;line-height:1.6;margin-bottom:36px;max-width:440px;opacity:0.75}
+
+/* Buttons */
+.nd-hero-btns{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.nd-btn-primary{background:linear-gradient(135deg,#FF6B35 0%,#FF9F43 50%,#E8501E 100%);background-size:200% auto;color:#fff !important;border:none;border-radius:100px;padding:16px 32px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;box-shadow:0 8px 28px rgba(255,107,53,0.45);transition:transform .2s,box-shadow .2s,background-position .4s;display:inline-flex;align-items:center;gap:8px}
+.nd-btn-primary:hover{transform:translateY(-3px) scale(1.02);box-shadow:0 14px 40px rgba(255,107,53,.55);background-position:right center}
+.nd-btn-wa{background:none;border:none;color:#25D366 !important;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:6px;padding:8px 14px;opacity:0.9;transition:opacity .2s}
+.nd-btn-wa:hover{opacity:1}
+
+/* ── 3D CARD STACK ── */
+.nd-hero-right{display:flex;justify-content:center;align-items:center}
+.nd-stack-wrap{position:relative}
+.nd-card3d{position:relative;width:340px;height:440px;transform:perspective(1200px) rotateY(-10deg) rotateX(6deg);transform-style:preserve-3d;transition:transform .5s ease}
+.nd-card3d:hover{transform:perspective(1200px) rotateY(-5deg) rotateX(3deg) translateY(-10px)}
+.nd-cl{position:absolute;border-radius:28px}
+.nd-cl3{inset:0;transform:translate(28px,28px);border-radius:28px}
+.nd-cl2{inset:0;transform:translate(14px,14px);border-radius:28px}
+.nd-cl1{inset:0;border-radius:28px;overflow:hidden}
+
+/* Dark card layers */
+.nd-cl3{background:linear-gradient(135deg,rgba(255,107,53,0.35),rgba(255,159,67,0.25));border:1px solid rgba(255,107,53,0.2)}
+.nd-cl2{background:linear-gradient(135deg,rgba(255,107,53,0.55),rgba(232,80,30,0.45));border:1px solid rgba(255,107,53,0.3)}
+.nd-cl1{background:linear-gradient(145deg,rgba(255,255,255,0.10),rgba(255,255,255,0.04));backdrop-filter:blur(24px) saturate(160%);border:1px solid rgba(255,255,255,0.14);border-top-color:rgba(255,255,255,0.22);box-shadow:0 20px 60px rgba(0,0,0,.5),0 4px 12px rgba(0,0,0,.3)}
+
+/* Light card layers */
+body.light-mode .nd-cl3{background:linear-gradient(135deg,#FFD4C2,#FF9F43);opacity:0.45;border:none}
+body.light-mode .nd-cl2{background:linear-gradient(135deg,#FF9F43,#FF6B35);opacity:0.6;border:none}
+body.light-mode .nd-cl1{background:#fff;backdrop-filter:none;border:none;border-top:none;box-shadow:0 20px 60px rgba(0,0,0,.15),0 4px 12px rgba(0,0,0,.08)}
+
+.nd-card-img{width:100%;height:220px;display:flex;align-items:center;justify-content:center;font-size:90px;position:relative;overflow:hidden}
+.nd-card-img::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 30% 30%,rgba(255,107,53,.12),transparent 60%)}
+.nd-pbg-warm{background:linear-gradient(145deg,rgba(255,107,53,0.12),rgba(255,159,67,0.07))}
+body.light-mode .nd-pbg-warm{background:linear-gradient(145deg,#FFF5EF,#FFE8D6)}
+
+.nd-card-body{padding:18px 22px}
+.nd-cpill{display:inline-block;background:rgba(255,107,53,.15);color:#FF6B35;border:1px solid rgba(255,107,53,.2);border-radius:100px;padding:3px 12px;font-size:12px;font-weight:600;margin-bottom:8px}
+.nd-ctitle{font-size:17px;font-weight:700;margin-bottom:6px}
+.nd-crate{display:flex;align-items:center;gap:6px;margin-bottom:14px}
+.nd-stars{color:#FF9F43;font-size:13px}
+.nd-rtext{font-size:12px;opacity:.65}
+.nd-cpr{display:flex;align-items:center;justify-content:space-between}
+.nd-price{font-size:24px;font-weight:800}
+.nd-usd{font-size:12px;opacity:.6;margin-left:2px}
+.nd-btn-pedir{background:linear-gradient(135deg,#25D366,#128C7E);color:#fff !important;border:none;border-radius:100px;padding:10px 16px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;transition:transform .2s}
+.nd-btn-pedir:hover{transform:scale(1.05)}
+
+/* Floating badges */
+.nd-fbadge{position:absolute;border-radius:14px;padding:9px 14px;display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600;white-space:nowrap;z-index:10}
+.nd-bi{font-size:18px}
+.nd-bs{font-size:10px;font-weight:400;display:block;opacity:.7}
+.nd-fb1{top:-18px;left:-90px;animation:nd-fl1 4s ease-in-out infinite}
+.nd-fb2{bottom:60px;right:-100px;animation:nd-fl2 5s ease-in-out infinite}
+.nd-fb3{bottom:-16px;left:-70px;animation:nd-fl3 4.5s ease-in-out infinite}
+@keyframes nd-fl1{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+@keyframes nd-fl2{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes nd-fl3{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+
+/* Dark badges */
+.nd-fbadge{background:linear-gradient(145deg,rgba(255,255,255,0.10),rgba(255,255,255,0.04));backdrop-filter:blur(20px) saturate(140%);border:1px solid rgba(255,255,255,0.14);border-top-color:rgba(255,255,255,0.22);box-shadow:0 8px 24px rgba(0,0,0,.3),0 2px 6px rgba(0,0,0,.2)}
+/* Light badges */
+body.light-mode .nd-fbadge{background:#fff;backdrop-filter:none;border:none;box-shadow:0 8px 28px rgba(0,0,0,.12),0 2px 8px rgba(0,0,0,.06)}
+
+/* Heading color per mode */
+.nd-h1{color:inherit}
+
+/* ── RESPONSIVE ── */
+@media(max-width:900px){
+  .nd-hero-grid{grid-template-columns:1fr;gap:48px}
+  .nd-hero-right{order:-1}
+  .nd-card3d{width:280px;height:360px}
+  .nd-fb1,.nd-fb2,.nd-fb3{display:none}
+  .nd-h1{text-align:center !important}
+  .nd-sub{text-align:center}
+  .nd-eyebrow{margin-left:auto;margin-right:auto}
+  .nd-hero-btns{justify-content:center}
+}
+@media(max-width:600px){
+  .nd-hero{padding:24px 0 36px !important}
+  .nd-card3d{width:250px;height:320px}
+  .nd-hero-btns{flex-direction:column;align-items:stretch}
+  .nd-btn-primary{justify-content:center}
+}
