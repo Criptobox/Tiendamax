@@ -62,8 +62,8 @@ function actualizarContadorCarrito() {
 function _tmCartBump() {
     const btn = document.querySelector('.cart-icon-btn');
     const count = document.getElementById('cartCount');
-    if (btn) { btn.classList.remove('tm-cart-bump'); void btn.offsetWidth; btn.classList.add('tm-cart-bump'); setTimeout(() => btn.classList.remove('tm-cart-bump'), 450); }
-    if (count) { count.classList.remove('tm-count-pop'); void count.offsetWidth; count.classList.add('tm-count-pop'); setTimeout(() => count.classList.remove('tm-count-pop'), 350); }
+    if (btn) { btn.classList.remove('tm-cart-bump'); btn.getBoundingClientRect(); btn.classList.add('tm-cart-bump'); setTimeout(() => btn.classList.remove('tm-cart-bump'), 450); }
+    if (count) { count.classList.remove('tm-count-pop'); count.getBoundingClientRect(); count.classList.add('tm-count-pop'); setTimeout(() => count.classList.remove('tm-count-pop'), 350); }
 }
 
 
@@ -97,7 +97,7 @@ function toggleMeGusta(id, e) {
         btn.setAttribute('aria-label', wishlist.includes(id) ? 'Quitar me gusta' : 'Me gusta');
         // Animación del corazón en el botón
         btn.classList.remove('heart-pop');
-        void btn.offsetWidth;
+        btn.getBoundingClientRect();
         btn.classList.add('heart-pop');
     });
 
@@ -171,7 +171,7 @@ function flyToHeart(e) {
         fly.remove();
         if (heartBtn) {
             heartBtn.classList.remove('heart-land');
-            void heartBtn.offsetWidth;
+            heartBtn.getBoundingClientRect();
             heartBtn.classList.add('heart-land');
         }
     }, 560);
@@ -1781,7 +1781,7 @@ function renderizarMasVendidos() {
     if (!grid) return;
 
     const masVendidos = productos.filter(p => (p.masVendido === true || p.masVendido === 'true') && p.stock > 0);
-    const productosAMostrar = masVendidos.length > 0 ? masVendidos : productos.filter(p => p.stock > 0).slice(0, 3);
+    const productosAMostrar = masVendidos.length > 0 ? masVendidos : [...productos].filter(p => p.precioActual > 0 && p.stock > 0).sort((a, b) => b.stock - a.stock).slice(0, 6);
 
     grid.innerHTML = '';
 
@@ -5546,7 +5546,7 @@ renderizarProductos = function() {
 
         // Forzar reflow para reiniciar animación
         t.classList.remove('show', 'hide');
-        void t.offsetWidth;
+        t.getBoundingClientRect();
         t.classList.add('show');
 
         hideTimer = setTimeout(() => {
@@ -5638,7 +5638,7 @@ function flyToCart(originEl) {
             particle.remove();
             // Bounce del carrito
             cartBtn.classList.remove('bounce');
-            void cartBtn.offsetWidth; // reflow
+            cartBtn.getBoundingClientRect(); // reflow
             cartBtn.classList.add('bounce');
             setTimeout(() => cartBtn.classList.remove('bounce'), 560);
         }
