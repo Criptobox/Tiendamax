@@ -507,10 +507,12 @@ async function handleMessage(msg, env) {
   if (chatId !== adminId) { await sendMessage(token, chatId, '⛔ No autorizado.'); return; }
 
   // Flujo de venta activo — interceptar texto como cantidad
+  // (las órdenes de WhatsApp tienen prioridad y cancelan el flujo abierto)
   const ventaState = await kvGet(env.KV, 'VENTA_STATE_' + chatId);
   if (ventaState === 'waiting_qty') {
-    const isCmd = text.startsWith('/') || /^[📊📦🔥📣🛍✅💰]/.test(text) || !text;
-    if (isCmd) await kvClearVenta(env.KV, chatId);
+    const isCmd   = text.startsWith('/') || /^[📊📦🔥📣🛍✅💰]/.test(text) || !text;
+    const isOrder = parseOrden(text) !== null;
+    if (isCmd || isOrder) await kvClearVenta(env.KV, chatId);
     else { await handleVentaQuantity(token, chatId, text, env); return; }
   }
 
