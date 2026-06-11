@@ -1687,11 +1687,23 @@ function renderizarCategoriasHome() {
     cardTodas.onclick = () => mostrarVistaCategoria('Todas');
     grid.appendChild(cardTodas);
 
+    // Contar masVendidos por categoría para el badge + POPULAR
+    const mvPorCat = {};
+    productos.forEach(p => {
+        if ((p.masVendido === true || p.masVendido === 'true') && p.stock > 0) {
+            mvPorCat[p.categoria] = (mvPorCat[p.categoria] || 0) + 1;
+        }
+    });
+    const maxMV = Math.max(...Object.values(mvPorCat), 0);
+
     categorias.forEach(cat => {
         const count = productos.filter(p => p.categoria === cat).length;
+        const mv = mvPorCat[cat] || 0;
+        const isPopular = mv > 0 && (mv === maxMV || mv >= 2);
         const card = document.createElement('div');
-        card.className = 'categoria-card' + (count === 0 ? ' proximamente' : '');
+        card.className = 'categoria-card' + (count === 0 ? ' proximamente' : '') + (isPopular ? ' cat-popular' : '');
         card.innerHTML = `
+            <span class="cat-popular-badge">+ Popular</span>
             <span class="cat-icon">${escapeHtml(obtenerIconoCategoria(cat))}</span>
             <span class="cat-name">${escapeHtml(cat)}</span>
             <span class="cat-count">${count === 0 ? '🕐 Próximamente' : safeNum(count) + ' producto' + (count !== 1 ? 's' : '')}</span>

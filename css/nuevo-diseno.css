@@ -138,6 +138,33 @@ body.light-mode .nd-tt span{color:#777}
 /* ================================================================
    CATEGORÍAS — BENTO GRID (ambos modos; calcado de .bento/.bc)
    ================================================================ */
+
+/* Fondo de la sección: dot-grid + glow naranja desde esquina superior derecha */
+.categorias-home{position:relative;overflow:hidden}
+.categorias-home-inner{
+  position:relative;
+  background-image:radial-gradient(rgba(255,255,255,.055) 1px,transparent 1px);
+  background-size:24px 24px;
+}
+body.light-mode .categorias-home-inner{
+  background-image:radial-gradient(rgba(0,0,0,.06) 1px,transparent 1px);
+}
+/* Iluminación cálida desde arriba-derecha (afecta especialmente a ENERGÍA) */
+.categorias-home::after{
+  content:'';position:absolute;top:-120px;right:-60px;
+  width:520px;height:520px;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,140,30,.16) 0%,transparent 68%);
+  pointer-events:none;z-index:0;
+}
+
+/* Título con subrayado naranja parcial */
+.categorias-home .section-title{position:relative;display:inline-block}
+.categorias-home .section-title::after{
+  content:'';position:absolute;bottom:-6px;left:0;
+  width:55%;height:3px;border-radius:2px;
+  background:linear-gradient(90deg,#FF6B35,#FF9F43,transparent);
+}
+
 /* Prefijo `html body` para ganar a la regla base
    `html body .categorias-grid .categoria-card` (especificidad 0,2,2). */
 html body .categorias-home .categorias-grid{
@@ -168,8 +195,7 @@ html body .categorias-home .categorias-grid .categoria-card{
   max-width:none !important;   /* anula el calc(25% - 10px) del layout flex antiguo */
   margin:0 !important;
 }
-html body .categorias-home .categorias-grid .categoria-card::after{display:none !important}
-/* ::before = blob de color interno en esquina superior-derecha (como en la referencia) */
+/* ::before = blob de color interno (esquina superior-derecha) */
 html body .categorias-home .categorias-grid .categoria-card::before{
   content:'' !important;display:block !important;
   position:absolute !important;top:-30px !important;right:-30px !important;
@@ -177,11 +203,34 @@ html body .categorias-home .categorias-grid .categoria-card::before{
   pointer-events:none !important;z-index:0 !important;
   opacity:.55 !important;transition:opacity .3s !important;
 }
+/* ::after = reflejo/shimmer interno desde esquina superior-izquierda */
+html body .categorias-home .categorias-grid .categoria-card::after{
+  content:'' !important;display:block !important;
+  position:absolute !important;inset:0 !important;
+  border-radius:24px !important;
+  background:linear-gradient(135deg,rgba(255,255,255,.09) 0%,transparent 52%) !important;
+  pointer-events:none !important;z-index:2 !important;
+}
+html body .categorias-home .categorias-grid .categoria-card{
+  /* Añadir borde highlight top-left para efecto premium */
+  border-top:1px solid rgba(255,255,255,.14) !important;
+  border-left:1px solid rgba(255,255,255,.10) !important;
+  border-right:1px solid rgba(0,0,0,.15) !important;
+  border-bottom:1px solid rgba(0,0,0,.20) !important;
+}
 html body .categorias-home .categorias-grid .categoria-card:hover{
   transform:translateY(-6px) scale(1.01) !important;
   box-shadow:0 14px 36px rgba(0,0,0,.55),0 28px 60px rgba(0,0,0,.4) !important;
 }
 html body .categorias-home .categorias-grid .categoria-card:hover::before{opacity:.75 !important}
+/* ENERGÍA (3ª tile) — glow naranja cálido externo e interno */
+html body .categorias-home .categorias-grid .categoria-card:nth-child(3){
+  box-shadow:
+    0 2px 8px rgba(0,0,0,.35),
+    0 12px 28px rgba(0,0,0,.28),
+    0 0 48px rgba(232,140,20,.22),
+    inset 0 0 32px rgba(255,191,36,.07) !important;
+}
 html body .categorias-home .categorias-grid .categoria-card .cat-icon{
   position:absolute !important;
   top:16px !important;right:16px !important;left:auto !important;
@@ -204,14 +253,18 @@ html body .categorias-home .categorias-grid .categoria-card .cat-count{
   position:relative !important;z-index:2 !important;
 }
 html body .categorias-home .categorias-grid .categoria-card.proximamente .cat-count{color:rgba(255,255,255,.5) !important}
-/* Badge "popular" — se activa con clase .cat-popular en el JS */
-html body .categorias-home .categorias-grid .categoria-card.cat-popular::after{
-  content:'● Popular' !important;display:inline-block !important;
-  position:absolute !important;top:14px !important;left:14px !important;
-  background:rgba(255,107,53,.85) !important;color:#fff !important;
-  font-size:10px !important;font-weight:700 !important;letter-spacing:.6px !important;
-  padding:3px 9px !important;border-radius:100px !important;z-index:3 !important;
-  backdrop-filter:blur(8px) !important;text-transform:uppercase !important;
+/* Badge "+ POPULAR" — se activa con clase .cat-popular en el JS */
+html body .categorias-home .categorias-grid .categoria-card.cat-popular .cat-popular-badge{
+  display:inline-flex !important;align-items:center !important;gap:4px !important;
+  position:absolute !important;top:12px !important;left:12px !important;
+  background:linear-gradient(135deg,#FF6B35,#E8501E) !important;color:#fff !important;
+  font-size:9px !important;font-weight:800 !important;letter-spacing:.8px !important;
+  padding:3px 8px !important;border-radius:100px !important;z-index:5 !important;
+  text-transform:uppercase !important;
+  box-shadow:0 2px 8px rgba(255,107,53,.45) !important;
+}
+html body .categorias-home .categorias-grid .categoria-card:not(.cat-popular) .cat-popular-badge{
+  display:none !important;
 }
 
 /* Bento: 1ª ALTA (col izquierda), 2ª ANCHA (fila central), 3ª ALTA (col derecha) */
