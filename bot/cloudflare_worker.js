@@ -65,6 +65,22 @@ async function sendMessage(token, chatId, text, opts = {}) {
   await tgPost(token, 'sendMessage', payload);
 }
 
+async function sendLongMessage(token, chatId, text) {
+  const MAX   = 3800;
+  const lines = String(text).split('\n');
+  let chunk   = '';
+  for (const line of lines) {
+    const next = chunk ? chunk + '\n' + line : line;
+    if (next.length > MAX) {
+      await sendMessage(token, chatId, chunk);
+      chunk = line;
+    } else {
+      chunk = next;
+    }
+  }
+  if (chunk) await sendMessage(token, chatId, chunk);
+}
+
 async function editMessage(token, chatId, messageId, text, opts = {}) {
   const payload = { chat_id: chatId, message_id: messageId, text: String(text).slice(0, 3900), disable_web_page_preview: true };
   if (opts.reply_markup) payload.reply_markup = opts.reply_markup;
@@ -164,7 +180,7 @@ async function reduceStock(items, env) {
       }
     }
 
-    if (!changed) return '⚠️ Producto no encontrado en productos.json.';
+    if (!changed) return { error: '⚠️ Producto no encontrado en productos.json.', lowStock: [] };
 
     const putRes = await fetch(GITHUB_API, {
       method: 'PUT',
@@ -177,11 +193,27 @@ async function reduceStock(items, env) {
     });
     if (!putRes.ok) {
       const errBody = await putRes.text().catch(() => '');
-      return '⚠️ GitHub PUT error ' + putRes.status + (errBody ? ': ' + errBody.slice(0, 120) : '');
+      return { error: '⚠️ GitHub PUT error ' + putRes.status + (errBody ? ': ' + errBody.slice(0, 120) : ''), lowStock: [] };
     }
-    return null; // éxito
+
+    // Detectar productos que quedaron con stock bajo tras la venta
+    const lowStock = [];
+    for (const item of items) {
+      const idx2 = item.productoId
+        ? productos.findIndex(p => String(p.id) === String(item.productoId))
+        : productos.findIndex(p => {
+            const q = String(item.nombre || '').toLowerCase().trim();
+            return String(p.nombre || '').toLowerCase().includes(q) || q.includes(String(p.nombre || '').toLowerCase());
+          });
+      if (idx2 !== -1) {
+        const s = Number(productos[idx2].stock || 0);
+        if (s <= 2) lowStock.push({ nombre: productos[idx2].nombre, stock: s });
+      }
+    }
+
+    return { error: null, lowStock };
   } catch (e) {
-    return '⚠️ reduceStock excepción: ' + String(e).slice(0, 120);
+    return { error: '⚠️ reduceStock excepción: ' + String(e).slice(0, 120), lowStock: [] };
   }
 }
 
@@ -291,13 +323,15 @@ async function cmdResumen(token, chatId, env) {
   const ventasArr      = objectValues(ventas || {});
   const hoy            = cubaDate();
   const ventasHoy      = ventasArr.filter(v => v.fecha === hoy);
-  const totalHoy       = ventasHoy.reduce((s, v) => s + Number(v.total || 0), 0);
+  const totalHoy       = ventasHoy.reduce((s, v) => s + Number(v.total    || 0), 0);
+  const gananciaHoy    = ventasHoy.reduce((s, v) => s + Number(v.ganancia || 0), 0);
   const interesados    = flattenInteresados(interesadosRaw || {});
   const interesadosHoy = interesados.filter(x => x.ts && cubaDate(new Date(Number(x.ts))) === hoy);
 
   const lines = [
     '📊 TiendaMax — ' + hoy, '',
     '🛒 Ventas hoy: '   + ventasHoy.length + ' · $' + totalHoy.toFixed(2),
+    '💵 Ganancia hoy: $' + gananciaHoy.toFixed(2),
     '📦 Ventas total: ' + ventasArr.length,
     '👁️ Vistas: '      + sumCounters(vistas || {}),
     '💬 WhatsApp: '     + sumCounters(wa || {}),
@@ -314,13 +348,36 @@ async function cmdResumen(token, chatId, env) {
 
 async function cmdStock(token, chatId, env) {
   const productos = await getProductos(env.PRODUCTOS_URL || DEFAULT_PRODS);
-  const bajos     = productos.filter(p => { const s = Number(p.stock || 0); return s > 0 && s <= 3; });
-  const agotados  = productos.filter(p => Number(p.stock || 0) <= 0);
+  const bajos    = productos.filter(p => { const s = Number(p.stock || 0); return s > 0 && s <= 3; });
+  const agotados = productos.filter(p => Number(p.stock || 0) <= 0);
 
-  const lines = ['📦 Stock TiendaMax', 'Productos: ' + productos.length, '⚠️ Bajos: ' + bajos.length, '🚫 Agotados: ' + agotados.length];
-  if (bajos.length)   { lines.push('', '⚠️ Stock bajo:');  bajos.slice(0, 12).forEach(p => lines.push('• ' + p.nombre + ' (' + p.stock + ')')); }
-  if (agotados.length){ lines.push('', '🚫 Agotados:');    agotados.slice(0, 12).forEach(p => lines.push('• ' + p.nombre)); }
-  await sendMessage(token, chatId, lines.join('\n'));
+  // Agrupar por categoría
+  const cats = {};
+  for (const p of productos) {
+    const cat = p.categoria || 'General';
+    if (!cats[cat]) cats[cat] = [];
+    cats[cat].push(p);
+  }
+
+  const lines = [
+    '📦 Stock TiendaMax',
+    'Total: ' + productos.length + ' · ⚠️ ' + bajos.length + ' bajos · 🚫 ' + agotados.length + ' agotados',
+  ];
+
+  for (const cat of Object.keys(cats).sort()) {
+    const prods   = cats[cat];
+    const nAgot   = prods.filter(p => Number(p.stock || 0) <= 0).length;
+    const nBajos  = prods.filter(p => { const s = Number(p.stock || 0); return s > 0 && s <= 3; }).length;
+    const catIcon = nAgot ? '🚫' : nBajos ? '⚠️' : '✅';
+    lines.push('', catIcon + ' ' + cat + ' (' + prods.length + ')');
+    for (const p of prods) {
+      const s    = Number(p.stock || 0);
+      const icon = s <= 0 ? '🚫' : s <= 3 ? '⚠️' : '✅';
+      lines.push('  ' + icon + ' ' + p.nombre + ' · ' + s);
+    }
+  }
+
+  await sendLongMessage(token, chatId, lines.join('\n'));
 }
 
 async function cmdInteresados(token, chatId, env) {
@@ -517,7 +574,16 @@ async function registrarVenta(items, env) {
       (ganancia > 0 ? ' (ganancia $' + ganancia.toFixed(2) + ')' : ''));
   }
 
-  const stockErr = await reduceStock(items, env);
+  const { error: stockErr, lowStock } = await reduceStock(items, env);
+
+  // Alerta de stock bajo (fire-and-forget)
+  if (lowStock && lowStock.length && env.BOT_TOKEN && env.ADMIN_CHAT_ID) {
+    const alertLines = ['⚠️ Alerta de stock:'];
+    lowStock.forEach(p => alertLines.push(
+      p.stock <= 0 ? '🚫 ' + p.nombre + ' — AGOTADO' : '⚠️ ' + p.nombre + ' — solo ' + p.stock + ' und.'
+    ));
+    sendMessage(env.BOT_TOKEN, env.ADMIN_CHAT_ID, alertLines.join('\n')).catch(() => {});
+  }
 
   return '🎉 Venta registrada\n\n' + msgs.join('\n') +
     (stockErr ? '\n\n' + stockErr : '\n\n📦 Stock actualizado.');
