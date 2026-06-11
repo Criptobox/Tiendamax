@@ -3947,48 +3947,36 @@ function _ndDesintegrarYTransicion(idxSiguiente) {
     const canvas = _ndCrearCanvasParticulas();
     if (!canvas) { _ndEfectoActivo = false; return; }
     const ctx = canvas.getContext('2d');
-
-    // Actualizar tamaño del canvas
     canvas.width = card.offsetWidth || 340;
     canvas.height = card.offsetHeight || 440;
-    const W = canvas.width;
-    const H = canvas.height;
-
-    // Crear partículas a partir de la imagen actual de la tarjeta
-    const particulas = [];
-    const cols = 16;
-    const rows = 20;
-    const pw = W / cols;
-    const ph = H / rows;
+    const W = canvas.width, H = canvas.height;
+    const cx = W / 2, cy = H / 2;
 
     const body = document.getElementById('ndHeroBody');
     const imgWrap = document.getElementById('ndHeroImg');
 
-    // Paleta de colores del tema de la tarjeta
-    const colores = ['#FF6B35', '#FF9F43', '#E8501E', '#C9A96E', '#FFFFFF', '#FFD4C2', '#FFE8D6', '#1A1A1A', '#2A2A2A', '#E8C88A', '#F0EDE8', '#FAF8F5'];
-
-    for (let row = 0; row < rows; row++) {
-        for (let col = 0; col < cols; col++) {
-            particulas.push({
-                x: col * pw + pw / 2,
-                y: row * ph + ph / 2,
-                vx: (Math.random() - 0.5) * 3.5,
-                vy: (Math.random() - 0.8) * 4 - 1.5,
-                size: Math.random() * (pw * 0.7) + 2,
-                life: 1,
-                decay: Math.random() * 0.025 + 0.015,
-                color: colores[Math.floor(Math.random() * colores.length)],
-                rotation: Math.random() * Math.PI * 2,
-                rotSpeed: (Math.random() - 0.5) * 0.15
-            });
+    // ── Fase 1: el contenido actual explota hacia afuera (zoom+blur+fade) ──
+    [body, imgWrap].forEach(el => {
+        if (!el) return;
+        el.style.transition = 'none';
+        el.style.transform = 'scale(1)';
+        el.style.filter = 'none';
+    });
+    requestAnimationFrame(() => {
+        if (body) {
+            body.style.transition = 'transform 0.38s ease-in, opacity 0.38s ease-in, filter 0.38s ease-in';
+            body.style.transform = 'scale(1.4)';
+            body.style.opacity = '0';
+            body.style.filter = 'blur(10px)';
         }
-    }
+        if (imgWrap) {
+            imgWrap.style.transition = 'transform 0.38s 0.04s ease-in, opacity 0.38s 0.04s ease-in';
+            imgWrap.style.transform = 'scale(1.4)';
+            imgWrap.style.opacity = '0';
+        }
+    });
 
-    // Ocultar contenido original inmediatamente
-    if (body) body.style.opacity = '0';
-    if (imgWrap) imgWrap.style.opacity = '0';
-
-    // Preparar el nuevo contenido (pero aún invisible)
+    // ── Preparar el nuevo contenido (aún invisible) ──
     const p = _ndHeroProds[idxSiguiente];
     if (p) {
         const setTxt = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
@@ -3998,7 +3986,6 @@ function _ndDesintegrarYTransicion(idxSiguiente) {
         setTxt('ndHeroRate', hayDesc
             ? '⚡ Oferta · ' + safeNum(p.stock) + ' disp.'
             : '★★★★★ · ' + (safeNum(p.stock) > 0 ? safeNum(p.stock) + ' disponibles' : 'Top ventas'));
-
         const precioEl = document.getElementById('ndHeroPrice');
         const usdEl = document.getElementById('ndHeroUsd');
         const esMN = (typeof tmMonedaActual === 'function' && tmMonedaActual() === 'MN');
@@ -4021,51 +4008,116 @@ function _ndDesintegrarYTransicion(idxSiguiente) {
         }
     }
 
-    // Animar partículas
-    let animId;
-    const animar = () => {
+    // ── Fase 2: partículas nacen del centro y se ensamblan formando la tarjeta ──
+    const cols = 18, rows = 22;
+    const pw = W / cols, ph = H / rows;
+    const maxDist = Math.sqrt(cx * cx + cy * cy);
+    const colores = ['#FF6B35', '#FF9F43', '#E8501E', '#C9A96E', '#FFFFFF', '#FFD4C2', '#E8C88A', '#2A1F14', '#3A2A1A', '#FF8C42'];
+
+    const particulas = [];
+    for (let row = 0; row < rows; row++) {
+        for (let col = 0; col < cols; col++) {
+            const tx = col * pw + pw / 2;
+            const ty = row * ph + ph / 2;
+            const dist = Math.sqrt((tx - cx) * (tx - cx) + (ty - cy) * (ty - cy));
+            // Las más alejadas del centro salen un poco después (propagación radial)
+            const delay = Math.floor((dist / maxDist) * 16);
+            particulas.push({
+                x: cx + (Math.random() - 0.5) * 6,
+                y: cy + (Math.random() - 0.5) * 6,
+                tx, ty,
+                size: 1,
+                targetSize: pw * (0.6 + Math.random() * 0.4),
+                color: colores[Math.floor(Math.random() * colores.length)],
+                alpha: 0,
+                rot: Math.random() * Math.PI * 2,
+                rotSpeed: (Math.random() - 0.5) * 0.14,
+                delay,
+                frame: 0
+            });
+        }
+    }
+
+    let frameNum = 0, animId;
+
+    const ensamblar = () => {
         ctx.clearRect(0, 0, W, H);
+        let todosLlegaron = true;
 
-        let todasMuertas = true;
-        particulas.forEach(part => {
-            if (part.life <= 0) return;
-            todasMuertas = false;
+        particulas.forEach(pt => {
+            if (frameNum < pt.delay) { todosLlegaron = false; return; }
+            pt.frame++;
 
-            part.x += part.vx;
-            part.y += part.vy;
-            part.vy += 0.03; // gravedad
-            part.vx *= 0.995;
-            part.rotation += part.rotSpeed;
-            part.life -= part.decay;
+            // Lerp suave hacia destino con frenado exponencial
+            pt.x += (pt.tx - pt.x) * 0.12;
+            pt.y += (pt.ty - pt.y) * 0.12;
+            pt.size += (pt.targetSize - pt.size) * 0.12;
+            pt.alpha = Math.min(1, pt.alpha + 0.09);
+            pt.rot += pt.rotSpeed;
+            pt.rotSpeed *= 0.90; // giro frena al aterrizar
 
-            const alpha = Math.max(0, part.life);
-            const scale = 0.5 + part.life * 0.5;
+            const distLeft = Math.abs(pt.tx - pt.x) + Math.abs(pt.ty - pt.y);
+            if (distLeft > 0.8 || pt.size < pt.targetSize * 0.97) todosLlegaron = false;
 
             ctx.save();
-            ctx.translate(part.x, part.y);
-            ctx.rotate(part.rotation);
-            ctx.globalAlpha = alpha;
-            ctx.fillStyle = part.color;
-            ctx.fillRect(-part.size * scale / 2, -part.size * scale / 2, part.size * scale, part.size * scale);
+            ctx.translate(pt.x, pt.y);
+            ctx.rotate(pt.rot);
+            ctx.globalAlpha = pt.alpha;
+            ctx.fillStyle = pt.color;
+            const s = pt.size;
+            ctx.fillRect(-s / 2, -s / 2, s, s);
             ctx.restore();
         });
 
-        if (todasMuertas) {
+        frameNum++;
+
+        if (todosLlegaron || frameNum > 70) {
             cancelAnimationFrame(animId);
-            // Revelar nuevo contenido
-            if (body) { body.style.opacity = '1'; body.style.transition = 'opacity 0.35s ease'; }
-            if (imgWrap) { imgWrap.style.opacity = '1'; imgWrap.style.transition = 'opacity 0.35s ease'; }
-            // Limpiar canvas
-            ctx.clearRect(0, 0, W, H);
-            _ndEfectoActivo = false;
-            // Actualizar dots
-            const dots = document.getElementById('ndHeroDots');
-            if (dots) dots.querySelectorAll('.nd-hero-dot').forEach((d, i) => d.classList.toggle('active', i === idxSiguiente));
+
+            // ── Fase 3: canvas se disuelve, tarjeta aparece con spring ──
+            let dissolveA = 1;
+            const dissolve = () => {
+                dissolveA -= 0.06;
+                ctx.clearRect(0, 0, W, H);
+                if (dissolveA > 0) {
+                    ctx.globalAlpha = dissolveA;
+                    particulas.forEach(pt => {
+                        ctx.save();
+                        ctx.translate(pt.tx, pt.ty);
+                        ctx.fillStyle = pt.color;
+                        const s = pt.size;
+                        ctx.fillRect(-s / 2, -s / 2, s, s);
+                        ctx.restore();
+                    });
+                    ctx.globalAlpha = 1;
+                    requestAnimationFrame(dissolve);
+                } else {
+                    ctx.clearRect(0, 0, W, H);
+                    ctx.globalAlpha = 1;
+                    if (body) {
+                        body.style.transition = 'transform 0.45s cubic-bezier(.175,.885,.32,1.275), opacity 0.35s ease-out, filter 0.35s ease-out';
+                        body.style.transform = 'scale(1)';
+                        body.style.opacity = '1';
+                        body.style.filter = 'none';
+                    }
+                    if (imgWrap) {
+                        imgWrap.style.transition = 'transform 0.45s 0.05s cubic-bezier(.175,.885,.32,1.275), opacity 0.35s 0.05s ease-out';
+                        imgWrap.style.transform = 'scale(1)';
+                        imgWrap.style.opacity = '1';
+                    }
+                    _ndEfectoActivo = false;
+                    const dots = document.getElementById('ndHeroDots');
+                    if (dots) dots.querySelectorAll('.nd-hero-dot').forEach((d, i) => d.classList.toggle('active', i === idxSiguiente));
+                }
+            };
+            requestAnimationFrame(dissolve);
             return;
         }
-        animId = requestAnimationFrame(animar);
+        animId = requestAnimationFrame(ensamblar);
     };
-    animId = requestAnimationFrame(animar);
+
+    // Arrancar el ensamblado tras la animación de salida (~340ms)
+    setTimeout(() => { animId = requestAnimationFrame(ensamblar); }, 340);
 }
 
 function renderHeroGaleria() {
