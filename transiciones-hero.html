@@ -8,14 +8,15 @@
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 body{background:#0C0806;color:#F5EDE8;font-family:system-ui,-apple-system,sans-serif;padding:16px;min-height:100vh}
 h1{font-size:16px;font-weight:800;color:#FF9F43;text-align:center;margin-bottom:4px}
-.subtitle{font-size:12px;color:rgba(245,237,232,.45);text-align:center;margin-bottom:24px}
+.subtitle{font-size:12px;color:rgba(245,237,232,.45);text-align:center;margin-bottom:20px}
 .tabs{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;margin-bottom:24px;scrollbar-width:none}
 .tabs::-webkit-scrollbar{display:none}
-.tab{flex-shrink:0;padding:9px 18px;border-radius:100px;font-size:12px;font-weight:700;border:1px solid rgba(255,255,255,.12);background:transparent;color:rgba(245,237,232,.5);cursor:pointer;transition:all .2s;white-space:nowrap}
+.tab{flex-shrink:0;padding:9px 16px;border-radius:100px;font-size:11px;font-weight:700;border:1px solid rgba(255,255,255,.12);background:transparent;color:rgba(245,237,232,.5);cursor:pointer;transition:all .2s;white-space:nowrap}
 .tab.active{background:#FF6B35;border-color:#FF6B35;color:#fff}
 .scene{display:none;flex-direction:column;align-items:center;gap:16px}
 .scene.active{display:flex}
 .desc{font-size:12px;color:rgba(245,237,232,.5);text-align:center;max-width:280px;line-height:1.5}
+/* ── Tarjeta base ── */
 .hcard{width:260px;height:340px;border-radius:24px;position:relative;background:linear-gradient(145deg,#1A1209,#2A1F14);border:1px solid rgba(201,169,110,.25);box-shadow:0 20px 50px rgba(0,0,0,.7),inset 0 1px 0 rgba(255,255,255,.08);overflow:hidden;cursor:pointer;user-select:none}
 .hcard-img{position:absolute;top:14px;right:14px;width:100px;height:100px;border-radius:18px;background:#1E1309;display:flex;align-items:center;justify-content:center;font-size:38px}
 .hcard-body{position:absolute;bottom:0;left:0;right:0;padding:16px}
@@ -29,46 +30,86 @@ h1{font-size:16px;font-weight:800;color:#FF9F43;text-align:center;margin-bottom:
 .dot.active{background:#FF9F43;width:20px;border-radius:4px}
 .play-btn{width:240px;padding:14px;border-radius:14px;background:rgba(255,107,53,.12);border:1px solid rgba(255,107,53,.3);color:#FF6B35;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px}
 .play-btn:active{background:rgba(255,107,53,.28)}
-.hint{font-size:10px;color:rgba(245,237,232,.3);text-align:center}
-/* T1 canvas */
+.hint{font-size:10px;color:rgba(245,237,232,.25);text-align:center}
+
+/* ══ T1 Partículas ══ */
 #t1cvs{position:absolute;inset:0;z-index:50;pointer-events:none;border-radius:24px;width:100%;height:100%}
-/* T2 fade layers */
+
+/* ══ T2 Fundido ══ */
 .t2l{position:absolute;inset:0;transition:opacity .65s ease}
-/* T3 slide */
+
+/* ══ T3 Slide ══ */
 .t3t{position:absolute;inset:0;overflow:hidden;border-radius:24px}
 .t3i{display:flex;width:200%;height:100%;transition:transform .55s cubic-bezier(.77,0,.175,1)}
 .t3p{width:50%;height:100%;flex-shrink:0;padding:16px;display:flex;flex-direction:column;justify-content:flex-end;position:relative}
-/* T4 flip */
+
+/* ══ T4 Flip 3D ══ */
 .t4s{width:260px;height:340px;perspective:900px}
 .t4f{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform .75s cubic-bezier(.455,.03,.515,.955)}
 .t4f.on{transform:rotateY(180deg)}
 .t4fc{position:absolute;inset:0;backface-visibility:hidden;border-radius:24px;background:linear-gradient(145deg,#1A1209,#2A1F14);border:1px solid rgba(201,169,110,.25);box-shadow:0 20px 50px rgba(0,0,0,.7);overflow:hidden;padding:16px;display:flex;flex-direction:column;justify-content:flex-end}
 .t4fc.bk{transform:rotateY(180deg)}
 .t4im{position:absolute;top:14px;right:14px;width:100px;height:100px;border-radius:18px;background:#1E1309;display:flex;align-items:center;justify-content:center;font-size:38px}
-/* T5 sweep */
+
+/* ══ T5 Destello ══ */
 .t5sw{position:absolute;top:0;left:-70%;width:60%;height:100%;z-index:60;pointer-events:none;background:linear-gradient(105deg,transparent 20%,rgba(255,210,160,.55) 50%,transparent 80%)}
 .t5sw.go{animation:t5a .5s ease-in forwards}
 @keyframes t5a{from{left:-70%}to{left:120%}}
 .t5ct{position:absolute;inset:0;transition:opacity .25s ease}
-/* WA icon */
-.wi{flex-shrink:0}
+
+/* ══ T6 Cubo 3D ══ */
+.t6s{width:260px;height:340px;perspective:700px}
+.t6f{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform .8s cubic-bezier(.645,.045,.355,1)}
+.t6f.on{transform:rotateY(-90deg)}
+.t6fc{position:absolute;inset:0;backface-visibility:hidden;border-radius:24px;background:linear-gradient(145deg,#1A1209,#2A1F14);border:1px solid rgba(201,169,110,.25);box-shadow:0 20px 50px rgba(0,0,0,.7);overflow:hidden;padding:16px;display:flex;flex-direction:column;justify-content:flex-end;transform-origin:right center}
+.t6fc.bk{transform:rotateY(90deg) translateX(100%);transform-origin:left center}
+.t6im{position:absolute;top:14px;right:14px;width:100px;height:100px;border-radius:18px;background:#1E1309;display:flex;align-items:center;justify-content:center;font-size:38px}
+
+/* ══ T7 Glitch ══ */
+#t7cvs{position:absolute;inset:0;z-index:50;pointer-events:none;border-radius:24px;width:100%;height:100%}
+
+/* ══ T8 Cortina ══ */
+.t8wrap{width:260px;height:340px;position:relative;overflow:hidden;border-radius:24px}
+.t8card{position:absolute;inset:0;background:linear-gradient(145deg,#1A1209,#2A1F14);border-radius:24px;overflow:hidden;padding:16px;display:flex;flex-direction:column;justify-content:flex-end}
+.t8im{position:absolute;top:14px;right:14px;width:100px;height:100px;border-radius:18px;background:#1E1309;display:flex;align-items:center;justify-content:center;font-size:38px}
+.t8L,.t8R{position:absolute;top:0;bottom:0;width:50%;background:linear-gradient(145deg,#1A1209,#2A1F14);z-index:30;transition:transform .6s cubic-bezier(.77,0,.175,1)}
+.t8L{left:0;transform-origin:left center}
+.t8R{right:0;transform-origin:right center}
+.t8L.open{transform:translateX(-100%)}
+.t8R.open{transform:translateX(100%)}
+
+/* ══ T9 Zoom explosión ══ */
+.t9wrap{width:260px;height:340px;position:relative;overflow:hidden;border-radius:24px;cursor:pointer}
+.t9card{position:absolute;inset:0;background:linear-gradient(145deg,#1A1209,#2A1F14);border-radius:24px;overflow:hidden;padding:16px;display:flex;flex-direction:column;justify-content:flex-end;transition:transform .45s cubic-bezier(.55,.055,.675,.19),opacity .45s ease,filter .45s ease}
+.t9card.out{transform:scale(1.5);opacity:0;filter:blur(12px)}
+.t9card.in-start{transform:scale(.5);opacity:0;filter:blur(12px);transition:none}
+.t9card.in{transform:scale(1);opacity:1;filter:blur(0)}
+.t9im{position:absolute;top:14px;right:14px;width:100px;height:100px;border-radius:18px;background:#1E1309;display:flex;align-items:center;justify-content:center;font-size:38px}
+
+/* ══ T10 Ondas ══ */
+#t10cvs{position:absolute;inset:0;z-index:50;pointer-events:none;border-radius:24px;width:100%;height:100%}
 </style>
 </head>
 <body>
 <h1>🎨 Transiciones del Hero</h1>
-<p class="subtitle">Toca la tarjeta o el botón para ver la animación en vivo</p>
+<p class="subtitle">10 opciones — toca la tarjeta o el botón para ver la animación</p>
 
 <div class="tabs">
   <button class="tab active" onclick="show(0)">① Partículas</button>
   <button class="tab" onclick="show(1)">② Fundido</button>
   <button class="tab" onclick="show(2)">③ Slide</button>
-  <button class="tab" onclick="show(3)">④ Volteo 3D</button>
+  <button class="tab" onclick="show(3)">④ Volteo</button>
   <button class="tab" onclick="show(4)">⑤ Destello</button>
+  <button class="tab" onclick="show(5)">⑥ Cubo 3D</button>
+  <button class="tab" onclick="show(6)">⑦ Glitch</button>
+  <button class="tab" onclick="show(7)">⑧ Cortina</button>
+  <button class="tab" onclick="show(8)">⑨ Zoom</button>
+  <button class="tab" onclick="show(9)">⑩ Ondas</button>
 </div>
 
-<!-- T1 -->
+<!-- ══ T1 PARTÍCULAS ══ -->
 <div class="scene active" id="s0">
-  <p class="desc">La que tienes ahora — el contenido se desintegra en cuadros que salen volando</p>
+  <p class="desc">Cuadros que se desintegran y salen volando — la que tienes ahora</p>
   <div class="hcard" id="t1c" onclick="t1()">
     <canvas id="t1cvs"></canvas>
     <div class="hcard-img" id="t1im"><span id="t1em">📦</span></div>
@@ -77,101 +118,159 @@ h1{font-size:16px;font-weight:800;color:#FF9F43;text-align:center;margin-bottom:
       <div class="hcard-name" id="t1nm">Cargador 20A</div>
       <div class="hcard-price" id="t1pr">$80 USD</div>
       <div class="hcard-sub">★★★★★ · 5 disponibles</div>
-      <button class="hcard-btn" onclick="event.stopPropagation()"><svg class="wi" width="15" height="15" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2 22l4.875-1.418A9.956 9.956 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2z"/></svg> Pedir</button>
+      <button class="hcard-btn" onclick="event.stopPropagation()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2 22l4.875-1.418A9.956 9.956 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2z"/></svg>
+        Pedir
+      </button>
     </div>
   </div>
   <div class="dots" id="d0"><div class="dot active"></div><div class="dot"></div><div class="dot"></div></div>
   <button class="play-btn" onclick="t1()">▶ Cambiar producto</button>
-  <p class="hint">También puedes tocar la tarjeta directamente</p>
+  <p class="hint">También puedes tocar la tarjeta</p>
 </div>
 
-<!-- T2 -->
+<!-- ══ T2 FUNDIDO ══ -->
 <div class="scene" id="s1">
-  <p class="desc">El producto actual se disuelve suavemente y aparece el siguiente. Limpio y elegante</p>
+  <p class="desc">Dissolve suave entre productos. Limpio y sin distracciones</p>
   <div class="hcard" onclick="t2()" style="position:relative">
     <div class="t2l" id="t2a" style="opacity:1;z-index:2;position:absolute;inset:0">
       <div class="hcard-img"><span>📦</span></div>
-      <div class="hcard-body">
-        <div class="hcard-cat">Electrónica</div><div class="hcard-name">Cargador 20A</div>
-        <div class="hcard-price">$80 USD</div><div class="hcard-sub">★★★★★ · 5 disp.</div>
-        <button class="hcard-btn" onclick="event.stopPropagation()"><svg class="wi" width="15" height="15" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2 22l4.875-1.418A9.956 9.956 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2z"/></svg> Pedir</button>
-      </div>
+      <div class="hcard-body"><div class="hcard-cat">Electrónica</div><div class="hcard-name">Cargador 20A</div><div class="hcard-price">$80 USD</div><div class="hcard-sub">★★★★★ · 5 disp.</div><button class="hcard-btn" onclick="event.stopPropagation()"><svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2 22l4.875-1.418A9.956 9.956 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2z"/></svg> Pedir</button></div>
     </div>
     <div class="t2l" id="t2b" style="opacity:0;z-index:1;position:absolute;inset:0">
-      <div class="hcard-img"><span id="t2bem">🔋</span></div>
-      <div class="hcard-body">
-        <div class="hcard-cat" id="t2bca"></div><div class="hcard-name" id="t2bnm"></div>
-        <div class="hcard-price" id="t2bpr"></div><div class="hcard-sub" id="t2bsb"></div>
-        <button class="hcard-btn" onclick="event.stopPropagation()"><svg class="wi" width="15" height="15" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2 22l4.875-1.418A9.956 9.956 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2z"/></svg> Pedir</button>
-      </div>
+      <div class="hcard-img"><span id="t2bem">⚡</span></div>
+      <div class="hcard-body"><div class="hcard-cat" id="t2bca"></div><div class="hcard-name" id="t2bnm"></div><div class="hcard-price" id="t2bpr"></div><div class="hcard-sub" id="t2bsb"></div><button class="hcard-btn" onclick="event.stopPropagation()"><svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2 22l4.875-1.418A9.956 9.956 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2z"/></svg> Pedir</button></div>
     </div>
   </div>
   <div class="dots" id="d1"><div class="dot active"></div><div class="dot"></div><div class="dot"></div></div>
   <button class="play-btn" onclick="t2()">▶ Cambiar producto</button>
 </div>
 
-<!-- T3 -->
+<!-- ══ T3 SLIDE ══ -->
 <div class="scene" id="s2">
-  <p class="desc">El siguiente producto entra deslizándose desde la derecha, como un carrusel</p>
+  <p class="desc">Carrusel horizontal — el siguiente producto entra desde la derecha</p>
   <div class="hcard" onclick="t3()" style="overflow:hidden">
     <div class="t3t"><div class="t3i" id="t3i">
-      <div class="t3p">
-        <div class="hcard-img" style="position:absolute;top:14px;right:14px"><span id="t3e0">📦</span></div>
-        <div class="hcard-cat" id="t3c0">Electrónica</div><div class="hcard-name" id="t3n0">Cargador 20A</div>
-        <div class="hcard-price" id="t3p0">$80 USD</div><div class="hcard-sub">★★★★★ · 5 disp.</div>
-        <button class="hcard-btn" style="margin-top:10px" onclick="event.stopPropagation()"><svg class="wi" width="15" height="15" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2 22l4.875-1.418A9.956 9.956 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2z"/></svg> Pedir</button>
-      </div>
-      <div class="t3p">
-        <div class="hcard-img" style="position:absolute;top:14px;right:14px"><span id="t3e1">🔋</span></div>
-        <div class="hcard-cat" id="t3c1">Baterías</div><div class="hcard-name" id="t3n1">Batería 100Ah</div>
-        <div class="hcard-price" id="t3p1">$170 USD</div><div class="hcard-sub">⚡ Oferta · 3 disp.</div>
-        <button class="hcard-btn" style="margin-top:10px" onclick="event.stopPropagation()"><svg class="wi" width="15" height="15" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2 22l4.875-1.418A9.956 9.956 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2z"/></svg> Pedir</button>
-      </div>
+      <div class="t3p"><div class="hcard-img" style="position:absolute;top:14px;right:14px"><span id="t3e0">📦</span></div><div class="hcard-cat" id="t3c0">Electrónica</div><div class="hcard-name" id="t3n0">Cargador 20A</div><div class="hcard-price" id="t3p0">$80 USD</div><div class="hcard-sub">★★★★★ · 5 disp.</div><button class="hcard-btn" style="margin-top:10px" onclick="event.stopPropagation()"><svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2 22l4.875-1.418A9.956 9.956 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2z"/></svg> Pedir</button></div>
+      <div class="t3p"><div class="hcard-img" style="position:absolute;top:14px;right:14px"><span id="t3e1">⚡</span></div><div class="hcard-cat" id="t3c1">Inversores</div><div class="hcard-name" id="t3n1">Inversor 3000W</div><div class="hcard-price" id="t3p1">$220 USD</div><div class="hcard-sub">⚡ Oferta · 2 disp.</div><button class="hcard-btn" style="margin-top:10px" onclick="event.stopPropagation()"><svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2 22l4.875-1.418A9.956 9.956 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2z"/></svg> Pedir</button></div>
     </div></div>
   </div>
   <div class="dots" id="d2"><div class="dot active"></div><div class="dot"></div><div class="dot"></div></div>
   <button class="play-btn" onclick="t3()">▶ Cambiar producto</button>
 </div>
 
-<!-- T4 -->
+<!-- ══ T4 VOLTEO ══ -->
 <div class="scene" id="s3">
-  <p class="desc">La tarjeta da vuelta en 3D y aparece el nuevo producto en el reverso. Premium</p>
+  <p class="desc">La tarjeta voltea en 3D mostrando el reverso con el nuevo producto</p>
   <div class="t4s" onclick="t4()">
     <div class="t4f" id="t4f">
-      <div class="t4fc">
-        <div class="t4im"><span>📦</span></div>
-        <div class="hcard-cat">Electrónica</div><div class="hcard-name">Cargador 20A</div>
-        <div class="hcard-price">$80 USD</div><div class="hcard-sub">★★★★★ · 5 disp.</div>
-        <button class="hcard-btn" onclick="event.stopPropagation()"><svg class="wi" width="15" height="15" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2 22l4.875-1.418A9.956 9.956 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2z"/></svg> Pedir</button>
-      </div>
-      <div class="t4fc bk" id="t4bk">
-        <div class="t4im"><span id="t4bem">🔋</span></div>
-        <div class="hcard-cat" id="t4bca"></div><div class="hcard-name" id="t4bnm"></div>
-        <div class="hcard-price" id="t4bpr"></div><div class="hcard-sub" id="t4bsb"></div>
-        <button class="hcard-btn" onclick="event.stopPropagation()"><svg class="wi" width="15" height="15" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2 22l4.875-1.418A9.956 9.956 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2z"/></svg> Pedir</button>
-      </div>
+      <div class="t4fc"><div class="t4im"><span>📦</span></div><div class="hcard-cat">Electrónica</div><div class="hcard-name">Cargador 20A</div><div class="hcard-price">$80 USD</div><div class="hcard-sub">★★★★★ · 5 disp.</div><button class="hcard-btn" onclick="event.stopPropagation()"><svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2 22l4.875-1.418A9.956 9.956 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2z"/></svg> Pedir</button></div>
+      <div class="t4fc bk" id="t4bk"><div class="t4im"><span id="t4bem">⚡</span></div><div class="hcard-cat" id="t4bca"></div><div class="hcard-name" id="t4bnm"></div><div class="hcard-price" id="t4bpr"></div><div class="hcard-sub" id="t4bsb"></div><button class="hcard-btn" onclick="event.stopPropagation()"><svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2 22l4.875-1.418A9.956 9.956 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2z"/></svg> Pedir</button></div>
     </div>
   </div>
   <div class="dots" id="d3"><div class="dot active"></div><div class="dot"></div><div class="dot"></div></div>
   <button class="play-btn" onclick="t4()">▶ Cambiar producto</button>
 </div>
 
-<!-- T5 -->
+<!-- ══ T5 DESTELLO ══ -->
 <div class="scene" id="s4">
-  <p class="desc">Un destello de luz barre la tarjeta mientras el contenido cambia instantáneamente</p>
+  <p class="desc">Un rayo de luz barre la tarjeta mientras el contenido cambia al instante</p>
   <div class="hcard" onclick="t5()" style="position:relative;overflow:hidden">
     <div class="t5sw" id="t5sw"></div>
     <div class="t5ct" id="t5ct">
       <div class="hcard-img"><span id="t5em">📦</span></div>
-      <div class="hcard-body">
-        <div class="hcard-cat" id="t5ca">Electrónica</div><div class="hcard-name" id="t5nm">Cargador 20A</div>
-        <div class="hcard-price" id="t5pr">$80 USD</div><div class="hcard-sub">★★★★★ · 5 disp.</div>
-        <button class="hcard-btn" onclick="event.stopPropagation()"><svg class="wi" width="15" height="15" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2 22l4.875-1.418A9.956 9.956 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2z"/></svg> Pedir</button>
-      </div>
+      <div class="hcard-body"><div class="hcard-cat" id="t5ca">Electrónica</div><div class="hcard-name" id="t5nm">Cargador 20A</div><div class="hcard-price" id="t5pr">$80 USD</div><div class="hcard-sub">★★★★★ · 5 disp.</div><button class="hcard-btn" onclick="event.stopPropagation()"><svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2 22l4.875-1.418A9.956 9.956 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2z"/></svg> Pedir</button></div>
     </div>
   </div>
   <div class="dots" id="d4"><div class="dot active"></div><div class="dot"></div><div class="dot"></div></div>
   <button class="play-btn" onclick="t5()">▶ Cambiar producto</button>
+</div>
+
+<!-- ══ T6 CUBO 3D ══ -->
+<div class="scene" id="s5">
+  <p class="desc">La tarjeta gira como cara de un cubo 3D — el siguiente producto aparece por el lado</p>
+  <div class="t6s" onclick="t6()">
+    <div class="t6f" id="t6f">
+      <div class="t6fc"><div class="t6im"><span>📦</span></div><div class="hcard-cat">Electrónica</div><div class="hcard-name">Cargador 20A</div><div class="hcard-price">$80 USD</div><div class="hcard-sub">★★★★★ · 5 disp.</div><button class="hcard-btn" onclick="event.stopPropagation()"><svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2 22l4.875-1.418A9.956 9.956 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2z"/></svg> Pedir</button></div>
+      <div class="t6fc bk" id="t6bk"><div class="t6im"><span id="t6bem">⚡</span></div><div class="hcard-cat" id="t6bca"></div><div class="hcard-name" id="t6bnm"></div><div class="hcard-price" id="t6bpr"></div><div class="hcard-sub" id="t6bsb"></div><button class="hcard-btn" onclick="event.stopPropagation()"><svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2 22l4.875-1.418A9.956 9.956 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2z"/></svg> Pedir</button></div>
+    </div>
+  </div>
+  <div class="dots" id="d5"><div class="dot active"></div><div class="dot"></div><div class="dot"></div></div>
+  <button class="play-btn" onclick="t6()">▶ Cambiar producto</button>
+</div>
+
+<!-- ══ T7 GLITCH ══ -->
+<div class="scene" id="s6">
+  <p class="desc">Efecto glitch digital — la pantalla se rompe en franjas con desplazamiento RGB</p>
+  <div class="hcard" id="t7c" onclick="t7()">
+    <canvas id="t7cvs"></canvas>
+    <div class="hcard-img" id="t7im"><span id="t7em">📦</span></div>
+    <div class="hcard-body" id="t7bd">
+      <div class="hcard-cat" id="t7ca">Electrónica</div>
+      <div class="hcard-name" id="t7nm">Cargador 20A</div>
+      <div class="hcard-price" id="t7pr">$80 USD</div>
+      <div class="hcard-sub">★★★★★ · 5 disp.</div>
+      <button class="hcard-btn" onclick="event.stopPropagation()"><svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2 22l4.875-1.418A9.956 9.956 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2z"/></svg> Pedir</button>
+    </div>
+  </div>
+  <div class="dots" id="d6"><div class="dot active"></div><div class="dot"></div><div class="dot"></div></div>
+  <button class="play-btn" onclick="t7()">▶ Cambiar producto</button>
+</div>
+
+<!-- ══ T8 CORTINA ══ -->
+<div class="scene" id="s7">
+  <p class="desc">Las dos mitades de la tarjeta se abren como una cortina revelando el siguiente producto</p>
+  <div onclick="t8()">
+    <div class="t8wrap" id="t8w">
+      <div class="t8card" id="t8card">
+        <div class="t8im"><span id="t8em">📦</span></div>
+        <div class="hcard-cat" id="t8ca">Electrónica</div>
+        <div class="hcard-name" id="t8nm">Cargador 20A</div>
+        <div class="hcard-price" id="t8pr">$80 USD</div>
+        <div class="hcard-sub">★★★★★ · 5 disp.</div>
+        <button class="hcard-btn" style="margin-top:11px" onclick="event.stopPropagation()"><svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2 22l4.875-1.418A9.956 9.956 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2z"/></svg> Pedir</button>
+      </div>
+      <div class="t8L" id="t8L" style="background:linear-gradient(145deg,#1A1209,#2A1F14)"></div>
+      <div class="t8R" id="t8R" style="background:linear-gradient(145deg,#2A1F14,#1A1209)"></div>
+    </div>
+  </div>
+  <div class="dots" id="d7"><div class="dot active"></div><div class="dot"></div><div class="dot"></div></div>
+  <button class="play-btn" onclick="t8()">▶ Cambiar producto</button>
+</div>
+
+<!-- ══ T9 ZOOM ══ -->
+<div class="scene" id="s8">
+  <p class="desc">El producto actual explota hacia afuera desapareciendo, el nuevo entra desde el centro</p>
+  <div class="t9wrap" id="t9w" onclick="t9()">
+    <div class="t9card" id="t9card">
+      <div class="t9im"><span id="t9em">📦</span></div>
+      <div class="hcard-cat" id="t9ca">Electrónica</div>
+      <div class="hcard-name" id="t9nm">Cargador 20A</div>
+      <div class="hcard-price" id="t9pr">$80 USD</div>
+      <div class="hcard-sub">★★★★★ · 5 disp.</div>
+      <button class="hcard-btn" style="margin-top:11px" onclick="event.stopPropagation()"><svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2 22l4.875-1.418A9.956 9.956 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2z"/></svg> Pedir</button>
+    </div>
+  </div>
+  <div class="dots" id="d8"><div class="dot active"></div><div class="dot"></div><div class="dot"></div></div>
+  <button class="play-btn" onclick="t9()">▶ Cambiar producto</button>
+</div>
+
+<!-- ══ T10 ONDAS ══ -->
+<div class="scene" id="s9">
+  <p class="desc">Efecto de ondas de agua que distorsionan la imagen al cambiar de producto</p>
+  <div class="hcard" id="t10c" onclick="t10()">
+    <canvas id="t10cvs"></canvas>
+    <div class="hcard-img" id="t10im"><span id="t10em">📦</span></div>
+    <div class="hcard-body" id="t10bd">
+      <div class="hcard-cat" id="t10ca">Electrónica</div>
+      <div class="hcard-name" id="t10nm">Cargador 20A</div>
+      <div class="hcard-price" id="t10pr">$80 USD</div>
+      <div class="hcard-sub">★★★★★ · 5 disp.</div>
+      <button class="hcard-btn" onclick="event.stopPropagation()"><svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2 22l4.875-1.418A9.956 9.956 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2z"/></svg> Pedir</button>
+    </div>
+  </div>
+  <div class="dots" id="d9"><div class="dot active"></div><div class="dot"></div><div class="dot"></div></div>
+  <button class="play-btn" onclick="t10()">▶ Cambiar producto</button>
 </div>
 
 <script>
@@ -182,130 +281,179 @@ const P=[
 ];
 const N=P.length,ni=i=>(i+1)%N;
 function dts(id,i){document.querySelectorAll('#'+id+' .dot').forEach((d,j)=>d.classList.toggle('active',j===i));}
+function set(ids,vals){ids.forEach((id,j)=>{const e=document.getElementById(id);if(e)e.textContent=vals[j];});}
 
 // T1 — Partículas
 let i1=0;
 function t1(){
-  const card=document.getElementById('t1c');
-  const cvs=document.getElementById('t1cvs');
-  const body=document.getElementById('t1bd');
-  const img=document.getElementById('t1im');
+  const card=document.getElementById('t1c'),cvs=document.getElementById('t1cvs');
+  const body=document.getElementById('t1bd'),img=document.getElementById('t1im');
   cvs.width=card.offsetWidth||260; cvs.height=card.offsetHeight||340;
-  const ctx=cvs.getContext('2d');
-  const W=cvs.width,H=cvs.height,cols=14,rows=18,pw=W/cols,ph=H/rows;
+  const ctx=cvs.getContext('2d'),W=cvs.width,H=cvs.height,cols=14,rows=18,pw=W/cols,ph=H/rows;
   const pal=['#FF6B35','#FF9F43','#C9A96E','#FFF','#FFD4C2','#2A1F14','#E8C88A'];
-  const ps=Array.from({length:cols*rows},(_,k)=>({
-    x:(k%cols)*pw+pw/2, y:Math.floor(k/cols)*ph+ph/2,
-    vx:(Math.random()-.5)*5, vy:(Math.random()-.9)*5.5-1.5,
-    sz:Math.random()*(pw*.8)+2, life:1, dec:Math.random()*.026+.014,
-    col:pal[0|Math.random()*pal.length], rot:Math.random()*Math.PI*2, rs:(Math.random()-.5)*.22
-  }));
+  const ps=Array.from({length:cols*rows},(_,k)=>({x:(k%cols)*pw+pw/2,y:Math.floor(k/cols)*ph+ph/2,vx:(Math.random()-.5)*5,vy:(Math.random()-.9)*5.5-1.5,sz:Math.random()*(pw*.8)+2,life:1,dec:Math.random()*.026+.014,col:pal[0|Math.random()*pal.length],rot:Math.random()*Math.PI*2,rs:(Math.random()-.5)*.22}));
   body.style.opacity='0'; img.style.opacity='0';
   const n=ni(i1),p=P[n];
-  ['t1em','t1ca','t1nm','t1pr'].forEach((id,j)=>{
-    document.getElementById(id).textContent=[p.em,p.cat,p.nm,p.pr][j];
-  });
-  let aid;
-  (function go(){
-    ctx.clearRect(0,0,W,H); let dead=true;
-    ps.forEach(pt=>{
-      if(pt.life<=0)return; dead=false;
-      pt.x+=pt.vx; pt.y+=pt.vy; pt.vy+=.045; pt.vx*=.993;
-      pt.rot+=pt.rs; pt.life-=pt.dec;
-      const a=Math.max(0,pt.life),sc=.5+pt.life*.5;
-      ctx.save();ctx.translate(pt.x,pt.y);ctx.rotate(pt.rot);
-      ctx.globalAlpha=a;ctx.fillStyle=pt.col;
-      ctx.fillRect(-pt.sz*sc/2,-pt.sz*sc/2,pt.sz*sc,pt.sz*sc);
-      ctx.restore();
-    });
-    if(dead){
-      cancelAnimationFrame(aid);
-      body.style.cssText+='opacity:1;transition:opacity .35s';
-      img.style.cssText+='opacity:1;transition:opacity .35s';
-      ctx.clearRect(0,0,W,H); i1=n; dts('d0',i1); return;
-    }
-    aid=requestAnimationFrame(go);
-  })();
+  set(['t1em','t1ca','t1nm','t1pr'],[p.em,p.cat,p.nm,p.pr]);
+  let aid;(function go(){ctx.clearRect(0,0,W,H);let dead=true;ps.forEach(pt=>{if(pt.life<=0)return;dead=false;pt.x+=pt.vx;pt.y+=pt.vy;pt.vy+=.045;pt.vx*=.993;pt.rot+=pt.rs;pt.life-=pt.dec;const a=Math.max(0,pt.life),sc=.5+pt.life*.5;ctx.save();ctx.translate(pt.x,pt.y);ctx.rotate(pt.rot);ctx.globalAlpha=a;ctx.fillStyle=pt.col;ctx.fillRect(-pt.sz*sc/2,-pt.sz*sc/2,pt.sz*sc,pt.sz*sc);ctx.restore();});if(dead){cancelAnimationFrame(aid);body.style.cssText+='opacity:1;transition:opacity .35s';img.style.cssText+='opacity:1;transition:opacity .35s';ctx.clearRect(0,0,W,H);i1=n;dts('d0',i1);return;}aid=requestAnimationFrame(go);})();
 }
 
 // T2 — Fundido
 let i2=0,b2=false;
 function t2(){
-  if(b2)return; b2=true;
-  const n=ni(i2),p=P[n];
+  if(b2)return;b2=true;const n=ni(i2),p=P[n];
   const a=document.getElementById('t2a'),b=document.getElementById('t2b');
   const top=i2%2===0?a:b,bot=i2%2===0?b:a;
-  ['t2bem','t2bca','t2bnm','t2bpr','t2bsb'].forEach((id,j)=>{
-    const el=document.getElementById(id); if(el) el.textContent=[p.em,p.cat,p.nm,p.pr,p.sb][j];
-  });
-  bot.style.zIndex='1'; top.style.zIndex='2';
-  requestAnimationFrame(()=>{top.style.opacity='0'; bot.style.opacity='1';});
-  setTimeout(()=>{i2=n; b2=false; dts('d1',i2);},700);
+  set(['t2bem','t2bca','t2bnm','t2bpr','t2bsb'],[p.em,p.cat,p.nm,p.pr,p.sb]);
+  bot.style.zIndex='1';top.style.zIndex='2';
+  requestAnimationFrame(()=>{top.style.opacity='0';bot.style.opacity='1';});
+  setTimeout(()=>{i2=n;b2=false;dts('d1',i2);},700);
 }
 
 // T3 — Slide
 let i3=0,b3=false,s3=false;
 function t3(){
-  if(b3)return; b3=true;
-  const n=ni(i3),p=P[n];
-  const inn=document.getElementById('t3i');
-  const idx=s3?0:1;
-  document.getElementById('t3e'+idx).textContent=p.em;
-  document.getElementById('t3c'+idx).textContent=p.cat;
-  document.getElementById('t3n'+idx).textContent=p.nm;
-  document.getElementById('t3p'+idx).textContent=p.pr;
-  if(!s3){
-    inn.style.transition='transform .55s cubic-bezier(.77,0,.175,1)';
-    inn.style.transform='translateX(-50%)';
-  } else {
-    inn.style.transition='none'; inn.style.transform='translateX(-100%)';
-    requestAnimationFrame(()=>requestAnimationFrame(()=>{
-      inn.style.transition='transform .55s cubic-bezier(.77,0,.175,1)';
-      inn.style.transform='translateX(-50%)';
-    }));
-  }
-  s3=!s3;
-  setTimeout(()=>{i3=n; b3=false; dts('d2',i3);},580);
+  if(b3)return;b3=true;const n=ni(i3),p=P[n];
+  const inn=document.getElementById('t3i'),idx=s3?0:1;
+  set(['t3e'+idx,'t3c'+idx,'t3n'+idx,'t3p'+idx],[p.em,p.cat,p.nm,p.pr]);
+  if(!s3){inn.style.transition='transform .55s cubic-bezier(.77,0,.175,1)';inn.style.transform='translateX(-50%)';}
+  else{inn.style.transition='none';inn.style.transform='translateX(-100%)';requestAnimationFrame(()=>requestAnimationFrame(()=>{inn.style.transition='transform .55s cubic-bezier(.77,0,.175,1)';inn.style.transform='translateX(-50%)';}))}
+  s3=!s3;setTimeout(()=>{i3=n;b3=false;dts('d2',i3);},580);
 }
 
-// T4 — Flip 3D
+// T4 — Flip
 let i4=0,b4=false,s4=false;
 function t4(){
-  if(b4)return; b4=true;
-  const n=ni(i4),p=P[n];
-  const fl=document.getElementById('t4f');
-  if(!s4){
-    ['t4bem','t4bca','t4bnm','t4bpr','t4bsb'].forEach((id,j)=>{
-      const el=document.getElementById(id); if(el) el.textContent=[p.em,p.cat,p.nm,p.pr,p.sb][j];
-    });
-    fl.classList.add('on');
-  } else {
-    const fr=fl.querySelector('.t4fc:not(.bk)');
-    fr.querySelector('.t4im span').textContent=p.em;
-    fr.querySelector('.hcard-cat').textContent=p.cat;
-    fr.querySelector('.hcard-name').textContent=p.nm;
-    fr.querySelector('.hcard-price').textContent=p.pr;
-    fl.classList.remove('on');
-  }
-  s4=!s4;
-  setTimeout(()=>{i4=n; b4=false; dts('d3',i4);},780);
+  if(b4)return;b4=true;const n=ni(i4),p=P[n];const fl=document.getElementById('t4f');
+  if(!s4){set(['t4bem','t4bca','t4bnm','t4bpr','t4bsb'],[p.em,p.cat,p.nm,p.pr,p.sb]);fl.classList.add('on');}
+  else{const fr=fl.querySelector('.t4fc:not(.bk)');fr.querySelector('.t4im span').textContent=p.em;fr.querySelector('.hcard-cat').textContent=p.cat;fr.querySelector('.hcard-name').textContent=p.nm;fr.querySelector('.hcard-price').textContent=p.pr;fl.classList.remove('on');}
+  s4=!s4;setTimeout(()=>{i4=n;b4=false;dts('d3',i4);},780);
 }
 
 // T5 — Destello
 let i5=0,b5=false;
 function t5(){
-  if(b5)return; b5=true;
-  const n=ni(i5),p=P[n];
+  if(b5)return;b5=true;const n=ni(i5),p=P[n];
   const sw=document.getElementById('t5sw'),ct=document.getElementById('t5ct');
-  sw.classList.remove('go'); void sw.offsetWidth; sw.classList.add('go');
-  setTimeout(()=>{
-    ct.style.opacity='0';
-    ['t5em','t5ca','t5nm','t5pr'].forEach((id,j)=>{
-      document.getElementById(id).textContent=[p.em,p.cat,p.nm,p.pr][j];
+  sw.classList.remove('go');void sw.offsetWidth;sw.classList.add('go');
+  setTimeout(()=>{ct.style.opacity='0';set(['t5em','t5ca','t5nm','t5pr'],[p.em,p.cat,p.nm,p.pr]);ct.style.transition='opacity .28s';ct.style.opacity='1';},230);
+  setTimeout(()=>{sw.classList.remove('go');i5=n;b5=false;dts('d4',i5);},560);
+}
+
+// T6 — Cubo 3D
+let i6=0,b6=false,s6=false;
+function t6(){
+  if(b6)return;b6=true;const n=ni(i6),p=P[n];const fl=document.getElementById('t6f');
+  if(!s6){set(['t6bem','t6bca','t6bnm','t6bpr','t6bsb'],[p.em,p.cat,p.nm,p.pr,p.sb]);fl.classList.add('on');}
+  else{const fr=fl.querySelector('.t6fc:not(.bk)');fr.querySelector('.t6im span').textContent=p.em;fr.querySelector('.hcard-cat').textContent=p.cat;fr.querySelector('.hcard-name').textContent=p.nm;fr.querySelector('.hcard-price').textContent=p.pr;fl.classList.remove('on');}
+  s6=!s6;setTimeout(()=>{i6=n;b6=false;dts('d5',i6);},820);
+}
+
+// T7 — Glitch digital
+let i7=0,b7=false;
+function t7(){
+  if(b7)return;b7=true;
+  const card=document.getElementById('t7c'),cvs=document.getElementById('t7cvs');
+  const body=document.getElementById('t7bd'),img=document.getElementById('t7im');
+  cvs.width=card.offsetWidth||260;cvs.height=card.offsetHeight||340;
+  const ctx=cvs.getContext('2d'),W=cvs.width,H=cvs.height;
+  const n=ni(i7),p=P[n];
+  let t=0,aid;
+  const slices=Array.from({length:20},()=>({y:Math.random()*H,h:Math.random()*30+5,dx:0,alpha:0}));
+  (function go(){
+    t++;ctx.clearRect(0,0,W,H);
+    const prog=t/30;
+    slices.forEach(sl=>{
+      if(Math.random()<.4){sl.dx=(Math.random()-.5)*40;sl.alpha=Math.random()*.9+.1;}
+      else{sl.dx*=.85;sl.alpha*=.8;}
+      if(sl.alpha<.05)return;
+      // R channel
+      ctx.fillStyle=`rgba(255,0,50,${sl.alpha*.6})`;
+      ctx.fillRect(sl.dx-4,sl.y,W,sl.h);
+      // B channel
+      ctx.fillStyle=`rgba(0,100,255,${sl.alpha*.6})`;
+      ctx.fillRect(sl.dx+4,sl.y,W,sl.h);
+      // scanline
+      ctx.fillStyle=`rgba(255,255,255,${sl.alpha*.3})`;
+      ctx.fillRect(sl.dx,sl.y,W,2);
     });
-    ct.style.transition='opacity .28s'; ct.style.opacity='1';
-  },230);
-  setTimeout(()=>{sw.classList.remove('go'); i5=n; b5=false; dts('d4',i5);},560);
+    // noise overlay
+    if(t<15){
+      ctx.fillStyle=`rgba(255,200,100,${(1-t/15)*.15})`;
+      ctx.fillRect(0,0,W,H);
+    }
+    if(t>=20&&t<22){body.style.opacity='0';img.style.opacity='0';set(['t7em','t7ca','t7nm','t7pr'],[p.em,p.cat,p.nm,p.pr]);}
+    if(t>=25){body.style.cssText+='opacity:1;transition:opacity .25s';img.style.cssText+='opacity:1;transition:opacity .25s';}
+    if(t>40){cancelAnimationFrame(aid);ctx.clearRect(0,0,W,H);i7=n;b7=false;dts('d6',i7);return;}
+    aid=requestAnimationFrame(go);
+  })();
+}
+
+// T8 — Cortina
+let i8=0,b8=false;
+function t8(){
+  if(b8)return;b8=true;const n=ni(i8),p=P[n];
+  const L=document.getElementById('t8L'),R=document.getElementById('t8R');
+  // Abrir cortinas
+  L.classList.add('open');R.classList.add('open');
+  setTimeout(()=>{
+    set(['t8em','t8ca','t8nm','t8pr'],[p.em,p.cat,p.nm,p.pr]);
+    setTimeout(()=>{L.classList.remove('open');R.classList.remove('open');setTimeout(()=>{i8=n;b8=false;dts('d7',i8);},620);},200);
+  },620);
+}
+
+// T9 — Zoom explosión
+let i9=0,b9=false;
+function t9(){
+  if(b9)return;b9=true;const n=ni(i9),p=P[n];
+  const card=document.getElementById('t9card');
+  card.classList.add('out');
+  setTimeout(()=>{
+    set(['t9em','t9ca','t9nm','t9pr'],[p.em,p.cat,p.nm,p.pr]);
+    card.classList.remove('out');card.classList.add('in-start');
+    requestAnimationFrame(()=>requestAnimationFrame(()=>{
+      card.classList.remove('in-start');card.classList.add('in');
+      card.style.transition='transform .5s cubic-bezier(.175,.885,.32,1.275),opacity .4s ease,filter .4s ease';
+      setTimeout(()=>{card.style.transition='';card.classList.remove('in');i9=n;b9=false;dts('d8',i9);},520);
+    }));
+  },460);
+}
+
+// T10 — Ondas de agua
+let i10=0,b10=false;
+function t10(){
+  if(b10)return;b10=true;
+  const card=document.getElementById('t10c'),cvs=document.getElementById('t10cvs');
+  const body=document.getElementById('t10bd'),img=document.getElementById('t10im');
+  cvs.width=card.offsetWidth||260;cvs.height=card.offsetHeight||340;
+  const ctx=cvs.getContext('2d'),W=cvs.width,H=cvs.height;
+  const n=ni(i10),p=P[n];
+  const cx=W/2,cy=H/2;
+  let t=0,changed=false,aid;
+  const totalFrames=50;
+  (function go(){
+    t++;ctx.clearRect(0,0,W,H);
+    const maxR=Math.sqrt(cx*cx+cy*cy)*1.2;
+    const waves=3;
+    for(let w=0;w<waves;w++){
+      const r=((t/totalFrames)+w/waves)*maxR;
+      const alpha=Math.max(0,.6-r/maxR-.1*w);
+      ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);
+      ctx.strokeStyle=`rgba(255,159,67,${alpha})`;
+      ctx.lineWidth=4-w;ctx.stroke();
+    }
+    // Distorsión de la imagen en el punto medio
+    if(t===Math.floor(totalFrames*.45)&&!changed){
+      changed=true;body.style.opacity='0';img.style.opacity='0';
+      set(['t10em','t10ca','t10nm','t10pr'],[p.em,p.cat,p.nm,p.pr]);
+    }
+    if(t===Math.floor(totalFrames*.55)){
+      body.style.cssText+='opacity:1;transition:opacity .3s';
+      img.style.cssText+='opacity:1;transition:opacity .3s';
+    }
+    if(t>=totalFrames){cancelAnimationFrame(aid);ctx.clearRect(0,0,W,H);i10=n;b10=false;dts('d9',i10);return;}
+    aid=requestAnimationFrame(go);
+  })();
 }
 
 function show(i){
