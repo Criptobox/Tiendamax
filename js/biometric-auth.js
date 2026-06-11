@@ -202,21 +202,4 @@
     var p = document.getElementById('adminPanel');
     if (p) obs.observe(p, { attributes: true });
   });
-
-  // Actualizar sección cuando el panel admin se hace visible
-  var panelObserver = new MutationObserver(function (mutations) {
-    mutations.forEach(function (m) {
-      if (m.type === 'attributes' && m.attributeName === 'class') {
-        var p = document.getElementById('adminPanel');
-        if (p && !p.classList.contains('hidden')) {
-          setTimeout(updateBioSection, 400);
-        }
-      }
-    });
-  });
-
-  document.addEventListener('DOMContentLoaded', function () {
-    var p = document.getElementById('adminPanel');
-    if (p) panelObserver.observe(p, { attributes: true });
-  });
 })();

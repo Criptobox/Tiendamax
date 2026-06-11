@@ -294,12 +294,8 @@
   }
   function _wrap(cfgArg) {
     return registrarTokenRobusto(cfgArg).then(function (ok) {
-      if (ok === true) {
-        _notif("✅ Notificaciones activadas correctamente.", "success");
-      } else if (ok === 'pending') {
-        _notif("🔔 Suscripción activa. Si no recibes notificaciones, vuelve a intentarlo.", "warning");
-      }
-      return !!ok;
+      if (ok) _notif("✅ Notificaciones activadas correctamente.", "success");
+      return ok;
     }).catch(function (e) {
       console.error("[push-fix v8]", e.message);
       _notif("⚠️ No se pudo activar las notificaciones. Intenta de nuevo.", "error");
