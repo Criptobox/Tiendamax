@@ -414,81 +414,87 @@
     </script>
 
     <style>
-    /* ── Barra de moneda premium ── */
+    /* ── Badge flotante de moneda — glass pill, posición fija bajo el header ── */
     .currency-bar {
-        background: linear-gradient(90deg,rgba(18,18,26,.98),rgba(28,28,40,.98)) !important;
-        border-bottom: 1px solid rgba(255,106,0,.22) !important;
-        padding: 7px 16px !important;
+        position: fixed !important;
+        top: calc(var(--tm-safe-top, 0px) + var(--tm-urgencia-h, 0px) + var(--tm-header-h, 70px) + 10px) !important;
+        right: 16px !important;
+        left: auto !important;
+        width: auto !important;
+        max-width: fit-content !important;
+        z-index: 1001 !important;
+        border-radius: 100px !important;
+        padding: 5px 5px 5px 14px !important;
+        gap: 10px !important;
         display: flex !important;
         align-items: center !important;
         justify-content: center !important;
-        gap: 12px !important;
-        position: sticky !important;
-        top: calc(var(--tm-safe-top, 0px) + var(--tm-urgencia-h, 0px) + var(--tm-header-h, 70px)) !important;
-        z-index: 1002 !important;
-        box-shadow: 0 2px 14px rgba(0,0,0,.4) !important;
         flex-wrap: nowrap !important;
-        width: 100% !important;
-        max-width: 100% !important;
         margin: 0 !important;
-        border-radius: 0 !important;
+        /* glass oscuro — mismo tratamiento que el header */
+        background: rgba(12,8,6,.78) !important;
+        backdrop-filter: blur(20px) saturate(160%) !important;
+        -webkit-backdrop-filter: blur(20px) saturate(160%) !important;
+        border: 1px solid rgba(255,255,255,.12) !important;
+        box-shadow: 0 4px 20px rgba(0,0,0,.35), 0 1px 4px rgba(0,0,0,.2) !important;
+    }
+    body.light-mode .currency-bar {
+        background: rgba(255,255,255,.82) !important;
+        border-color: rgba(0,0,0,.08) !important;
+        box-shadow: 0 4px 20px rgba(0,0,0,.10), 0 1px 4px rgba(0,0,0,.06) !important;
     }
     .tasa-info-prefix {
-        font-size: 12px;
-        color: rgba(255,255,255,.75);
+        font-size: 11px;
+        color: rgba(255,255,255,.65);
         font-weight: 700;
         letter-spacing: .3px;
         white-space: nowrap;
     }
+    body.light-mode .tasa-info-prefix { color: rgba(0,0,0,.5); }
     .currency-bar .currency-toggle {
-        background: rgba(0,0,0,.45) !important;
+        background: rgba(0,0,0,.28) !important;
         border: 1px solid rgba(255,106,0,.18) !important;
-        border-radius: 10px !important;
+        border-radius: 100px !important;
         padding: 3px !important;
         display: flex !important;
         gap: 2px !important;
     }
+    body.light-mode .currency-bar .currency-toggle {
+        background: rgba(0,0,0,.05) !important;
+        border-color: rgba(255,106,0,.22) !important;
+    }
     .currency-bar .cur-btn {
-        border-radius: 8px !important;
-        padding: 4px 16px !important;
-        font-size: 13px !important;
+        border-radius: 100px !important;
+        padding: 5px 14px !important;
+        font-size: 12px !important;
         font-weight: 800 !important;
         letter-spacing: .4px !important;
-        color: rgba(255,255,255,.75) !important;
+        color: rgba(255,255,255,.65) !important;
         transition: all .2s !important;
         border: none !important;
         background: transparent !important;
         cursor: pointer !important;
         white-space: nowrap !important;
     }
+    body.light-mode .currency-bar .cur-btn { color: rgba(0,0,0,.5) !important; }
     .currency-bar .cur-btn.active {
         background: linear-gradient(135deg,#ff6a00,#ff3d00) !important;
         color: #fff !important;
         box-shadow: 0 2px 10px rgba(255,106,0,.5) !important;
     }
-    .currency-bar .tasa-info {
-        font-size: 11px !important;
-        font-weight: 700 !important;
-        color: #ff9d63 !important;
-        background: rgba(255,106,0,.1) !important;
-        border: 1px solid rgba(255,106,0,.22) !important;
-        border-radius: 20px !important;
-        padding: 2px 10px !important;
-        white-space: nowrap !important;
-    }
+    .currency-bar .tasa-info { display: none !important; }
 
     @media (max-width: 768px) {
         .currency-bar {
-            justify-content: center !important;
-            padding: 7px 10px !important;
-            gap: 8px !important;
+            top: calc(var(--tm-safe-top, 0px) + var(--tm-urgencia-h, 0px) + var(--tm-header-h, 70px) + 8px) !important;
+            right: 10px !important;
+            padding: 4px 4px 4px 10px !important;
+            gap: 6px !important;
         }
-        .tasa-info-prefix {
-            font-size: 11px;
-        }
+        .tasa-info-prefix { display: none; }
         .currency-bar .cur-btn {
-            padding: 5px 12px !important;
-            font-size: 12px !important;
+            padding: 5px 10px !important;
+            font-size: 11px !important;
         }
     }
     </style>
