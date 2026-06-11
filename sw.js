@@ -100,7 +100,7 @@
 //      usan el mismo helper _mensajeOrdenWA con formato premium.
 // ═══════════════════════════════════════════════════════
 
-const CACHE_NAME = 'tiendamax-202606111931';
+const CACHE_NAME = 'tiendamax-202606112000';
 
 const STATIC_ASSETS = [
   '/',
@@ -122,6 +122,7 @@ const STATIC_ASSETS = [
   '/js/seo-dynamico.js',
   '/js/share-patch.js',
   '/js/push-fix.js',
+  '/js/urgencia-ventas.js',
   '/js/banners.js',
   '/js/subcategorias.js',
   '/js/revolico_integration.js',
