@@ -380,31 +380,8 @@
 
     <style>
     /* ════════════════════════════════════════════════════════════
-       FILA DE BÚSQUEDA + MONEDA — buscador y selector USD/MN juntos
+       SELECTOR USD/MN — segmented control glass integrado en el hero
        ════════════════════════════════════════════════════════════ */
-    html body .hsb-wrap-top .hsb-toprow {
-        display: flex !important;
-        align-items: stretch !important;   /* misma altura para buscador y moneda */
-        justify-content: center !important;
-        gap: 12px !important;
-        width: 100% !important;
-        max-width: 800px !important;
-        margin: 0 auto !important;
-        flex-wrap: nowrap !important;
-    }
-    /* El buscador conserva su panel desplegable (position:relative propio) */
-    html body .hsb-wrap-top .hsb-search {
-        position: relative !important;
-        flex: 1 1 auto !important;
-        min-width: 0 !important;
-        max-width: 620px !important;
-        display: flex !important;
-    }
-    html body .hsb-wrap-top .hsb-search .hsb-pill { width: 100% !important; max-width: none !important; }
-
-    /* ── Selector de moneda — segmented control glass (combina con el diseño) ──
-       El pill exterior es el glass; los botones USD/MN son los segmentos.
-       Importante: anular min-width:520px y .cur-btn min-width:126px de bundle. */
     html body .currency-bar {
         position: static !important;
         display: inline-flex !important;
@@ -419,7 +396,6 @@
         padding: 4px !important;
         border-radius: 999px !important;
         z-index: auto !important;
-        /* Glass — mismo lenguaje que el header y las tarjetas del diseño */
         background: linear-gradient(145deg,rgba(255,255,255,.10),rgba(255,255,255,.04)) !important;
         backdrop-filter: blur(20px) saturate(160%) !important;
         -webkit-backdrop-filter: blur(20px) saturate(160%) !important;
@@ -433,121 +409,35 @@
         border-top-color: rgba(0,0,0,.07) !important;
         box-shadow: 0 4px 16px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.04) !important;
     }
-    /* El emoji 💱 desentonaba con la paleta → fuera */
     .currency-bar .tasa-info-prefix,
     .currency-bar .tasa-info { display: none !important; }
-    /* Sin caja interna: el glass exterior es el contenedor */
     html body .currency-bar .currency-toggle {
-        background: transparent !important;
-        border: none !important;
-        border-radius: 999px !important;
-        padding: 0 !important;
-        display: flex !important;
-        gap: 3px !important;
-        min-width: 0 !important;
+        background: transparent !important; border: none !important;
+        border-radius: 999px !important; padding: 0 !important;
+        display: flex !important; gap: 3px !important; min-width: 0 !important;
     }
     html body .currency-bar .cur-btn {
-        border-radius: 999px !important;
-        padding: 7px 16px !important;
-        min-width: 0 !important;
-        font-size: 12px !important;
-        font-weight: 800 !important;
-        letter-spacing: .3px !important;
-        color: rgba(255,255,255,.6) !important;
-        transition: all .2s !important;
-        border: none !important;
-        background: transparent !important;
-        cursor: pointer !important;
-        white-space: nowrap !important;
+        border-radius: 999px !important; padding: 7px 16px !important;
+        min-width: 0 !important; font-size: 12px !important; font-weight: 800 !important;
+        letter-spacing: .3px !important; color: rgba(255,255,255,.6) !important;
+        transition: all .2s !important; border: none !important;
+        background: transparent !important; cursor: pointer !important; white-space: nowrap !important;
     }
     html body .currency-bar .cur-btn:hover { color: rgba(255,255,255,.9) !important; }
     body.light-mode .currency-bar .cur-btn { color: rgba(0,0,0,.5) !important; }
     body.light-mode .currency-bar .cur-btn:hover { color: rgba(0,0,0,.85) !important; }
-    /* Segmento activo: gradiente naranja de marca */
     html body .currency-bar .cur-btn.active {
         background: linear-gradient(135deg,#FF6B35,#E8501E) !important;
-        color: #fff !important;
-        box-shadow: 0 2px 10px rgba(255,107,53,.45) !important;
+        color: #fff !important; box-shadow: 0 2px 10px rgba(255,107,53,.45) !important;
     }
-
     @media (max-width: 768px) {
-        html body .hsb-wrap-top .hsb-toprow { gap: 8px !important; }
-        html body .currency-bar { padding: 4px !important; gap: 3px !important; }
-        html body .currency-bar .cur-btn { padding: 7px 12px !important; font-size: 11px !important; min-width: 0 !important; }
-    }
-    @media (max-width: 460px) {
-        html body .hsb-wrap-top .hsb-toprow { flex-wrap: wrap !important; }
-        html body .hsb-wrap-top .hsb-search { flex: 1 1 100% !important; max-width: 620px !important; }
-        html body .currency-bar { margin: 2px auto 0 !important; }
-        html body .currency-bar .cur-btn { min-width: 0 !important; }
+        html body .currency-bar .cur-btn { padding: 7px 12px !important; font-size: 11px !important; }
     }
     </style>
 </header>
 
     <!-- ===== VISTA INICIO ===== -->
     <div id="vistaInicio">
-
-        <!-- ══ BÚSQUEDA + MONEDA — primera fila interactiva tras el header ══ -->
-        <div class="hsb-wrap hsb-wrap-top">
-            <div class="hsb-toprow">
-                <div class="hsb-search">
-                    <div data-action="abrirPanelBusqueda" class="hsb-pill" id="heroSearchBar">
-                        <svg class="hsb-icon" viewBox="0 0 24 24" fill="none" stroke="#f5a623" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="20" height="20">
-                            <circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="22" y2="22"/>
-                        </svg>
-                        <input
-                            type="text"
-                            id="heroSearchInput"
-                            class="hsb-input"
-                            placeholder="Buscar productos..."
-                            aria-label="Buscar productos en TiendaMax"
-                            oninput="buscarDesdeHero(this.value)"
-                            onkeydown="if(event.key==='Enter') aplicarBusquedaHero()"
-                            onfocus="abrirPanelBusqueda()"
-                            autocomplete="off"
-                            data-stop-propagation="true"
-                        >
-                    </div>
-                    <!-- Panel expandido -->
-                    <div class="hsb-panel" id="heroSearchPanel">
-                        <div id="hsb-ai-label" style="display:none;font-size:11px;color:#9b59b6;font-weight:600;margin-bottom:8px;letter-spacing:0.3px;">🤖 Búsqueda inteligente activa</div>
-                        <div id="heroSearchSuggestions" class="hsb-suggestions"></div>
-                        <button data-action="aplicarBusquedaHero" aria-label="Aplicar búsqueda" type="button" class="hsb-apply-btn">Buscar →</button>
-                    </div>
-                </div>
-
-                <!-- ── Selector de moneda (USD / MN) integrado en la fila del buscador ── -->
-                <div class="currency-bar" id="currencyBar">
-                    <span class="tasa-info-prefix">💱</span>
-                    <div class="currency-toggle">
-                        <button type="button" class="cur-btn active" id="curUSD" onclick="setCurrency('USD')">💵 USD</button>
-                        <button type="button" class="cur-btn" id="curMN" onclick="setCurrency('MN')">-- MN</button>
-                    </div>
-                    <span class="tasa-info" id="tasaLabel" style="display:none !important;"></span>
-                </div>
-            </div>
-            <!-- Inicializa la tasa y la moneda guardada desde localStorage -->
-            <script>
-            (function(){
-                try {
-                    var base = parseFloat(localStorage.getItem('tasaMN') || '0');
-                    var tasa = base > 0 ? base + 10 : 0;
-                    var btn = document.getElementById('curMN');
-                    var lbl = document.getElementById('tasaLabel');
-                    if (tasa > 0) {
-                        if (btn) btn.textContent = tasa + ' MN';
-                        if (lbl) { lbl.textContent = ''; lbl.style.display = 'none'; }
-                    }
-                    var mon = localStorage.getItem('monedaActual') || 'USD';
-                    if (mon === 'MN') {
-                        var usd = document.getElementById('curUSD');
-                        if (usd) usd.classList.remove('active');
-                        if (btn) btn.classList.add('active');
-                    }
-                } catch(e) {}
-            })();
-            </script>
-        </div>
 
         <!-- Hero rediseñado — propuesta de valor con 3D card stack -->
         <section class="hero nd-hero">
@@ -557,6 +447,46 @@
                         <div class="nd-eyebrow"><span class="nd-edot"></span>Catálogo actualizado · Pedido por WhatsApp</div>
                         <h1 class="nd-h1">Todo lo que<br>necesitas, <span class="nd-grad">a un mensaje</span><br><span class="nd-grad">de distancia</span></h1>
                         <p class="nd-sub">Celulares, energía, WiFi, motos y más. Precios increíbles, envío rápido y atención personalizada.</p>
+                        <!-- Buscador + selector de moneda, integrados en el hero -->
+                        <div class="nd-hero-search">
+                            <div class="hsb-search">
+                                <div data-action="abrirPanelBusqueda" class="hsb-pill" id="heroSearchBar">
+                                    <svg class="hsb-icon" viewBox="0 0 24 24" fill="none" stroke="#f5a623" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="20" height="20">
+                                        <circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="22" y2="22"/>
+                                    </svg>
+                                    <input type="text" id="heroSearchInput" class="hsb-input" placeholder="Buscar productos..." aria-label="Buscar productos en TiendaMax" oninput="buscarDesdeHero(this.value)" onkeydown="if(event.key==='Enter') aplicarBusquedaHero()" onfocus="abrirPanelBusqueda()" autocomplete="off" data-stop-propagation="true">
+                                </div>
+                                <div class="hsb-panel" id="heroSearchPanel">
+                                    <div id="hsb-ai-label" style="display:none;font-size:11px;color:#9b59b6;font-weight:600;margin-bottom:8px;letter-spacing:0.3px;">🤖 Búsqueda inteligente activa</div>
+                                    <div id="heroSearchSuggestions" class="hsb-suggestions"></div>
+                                    <button data-action="aplicarBusquedaHero" aria-label="Aplicar búsqueda" type="button" class="hsb-apply-btn">Buscar →</button>
+                                </div>
+                            </div>
+                            <div class="currency-bar" id="currencyBar">
+                                <span class="tasa-info-prefix">💱</span>
+                                <div class="currency-toggle">
+                                    <button type="button" class="cur-btn active" id="curUSD" onclick="setCurrency('USD')">💵 USD</button>
+                                    <button type="button" class="cur-btn" id="curMN" onclick="setCurrency('MN')">-- MN</button>
+                                </div>
+                                <span class="tasa-info" id="tasaLabel" style="display:none !important;"></span>
+                            </div>
+                        </div>
+                        <script>
+                        (function(){
+                            try {
+                                var base = parseFloat(localStorage.getItem('tasaMN') || '0');
+                                var tasa = base > 0 ? base + 10 : 0;
+                                var btn = document.getElementById('curMN');
+                                if (tasa > 0 && btn) btn.textContent = tasa + ' MN';
+                                var mon = localStorage.getItem('monedaActual') || 'USD';
+                                if (mon === 'MN') {
+                                    var usd = document.getElementById('curUSD');
+                                    if (usd) usd.classList.remove('active');
+                                    if (btn) btn.classList.add('active');
+                                }
+                            } catch(e) {}
+                        })();
+                        </script>
                         <div class="nd-hero-btns">
                             <button data-action="scrollToProductos" type="button" class="nd-btn-primary">
                                 Ver productos

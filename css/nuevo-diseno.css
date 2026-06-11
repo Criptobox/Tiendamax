@@ -31,7 +31,13 @@ body.light-mode .nd-o4{background:radial-gradient(circle,rgba(255,159,67,0.14),t
 @keyframes nd-dot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
 .nd-h1{font-size:clamp(36px,4.5vw,58px) !important;font-weight:900 !important;line-height:1.08 !important;letter-spacing:-2px !important;margin-bottom:20px !important;text-align:left !important}
 .nd-grad{background:linear-gradient(135deg,#FF6B35 0%,#FF9F43 50%,#E8501E 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.nd-sub{font-size:17px;line-height:1.6;margin-bottom:36px;max-width:440px;opacity:0.75}
+.nd-sub{font-size:17px;line-height:1.6;margin-bottom:20px;max-width:440px;opacity:0.75}
+/* Buscador + moneda integrados dentro del hero-left */
+.nd-hero-search{display:flex;align-items:stretch;gap:10px;width:100%;max-width:500px;margin:0 0 28px}
+.nd-hero-search .hsb-search{flex:1 1 auto;min-width:0;position:relative;display:flex}
+html body .nd-hero-search .hsb-search .hsb-pill{width:100% !important;max-width:none !important}
+/* Sección más vendidos — oculta (los productos ya rotan en el hero) */
+#mas-vendidos{display:none !important}
 .nd-hero-btns{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
 .nd-btn-primary{background:linear-gradient(135deg,#FF6B35 0%,#FF9F43 50%,#E8501E 100%);background-size:200% auto;color:#fff !important;border:none;border-radius:100px;padding:16px 32px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;box-shadow:0 8px 28px rgba(255,107,53,0.45);transition:transform .2s,box-shadow .2s,background-position .4s;display:inline-flex;align-items:center;gap:8px}
 .nd-btn-primary:hover{transform:translateY(-3px) scale(1.02);box-shadow:0 14px 40px rgba(255,107,53,.55);background-position:right center}
@@ -361,6 +367,7 @@ body:not(.light-mode) .cta-final .btn-large:hover{box-shadow:0 14px 48px rgba(37
   .nd-eyebrow{margin-left:auto;margin-right:auto}
   .nd-hero-btns{justify-content:center}
   .nd-titems{gap:20px 28px}
+  .nd-hero-search{max-width:none;margin:0 auto 28px}
 }
 @media(max-width:1024px){
   .categorias-home .categorias-grid{grid-template-columns:repeat(2,1fr) !important;grid-auto-rows:150px !important}
@@ -374,6 +381,8 @@ body:not(.light-mode) .cta-final .btn-large:hover{box-shadow:0 14px 48px rgba(37
   .nd-card3d{width:250px;height:320px}
   .nd-hero-btns{flex-direction:column;align-items:stretch}
   .nd-btn-primary{justify-content:center}
+  .nd-hero-search{flex-wrap:wrap}
+  .nd-hero-search .currency-bar{margin:0 auto !important}
   .categorias-home .categoria-card .cat-icon{font-size:38px !important;top:14px !important;right:14px !important}
   .nd-dtimer{justify-content:flex-start;flex-wrap:wrap}
   .nd-tblk{width:64px}
