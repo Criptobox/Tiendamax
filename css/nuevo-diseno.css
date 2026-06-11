@@ -368,3 +368,94 @@ body:not(.light-mode) .cta-final .btn-large:hover{box-shadow:0 14px 48px rgba(37
   .nd-dtimer{justify-content:flex-start;flex-wrap:wrap}
   .nd-tblk{width:64px}
 }
+
+/* ================================================================
+   v3 — HEADER GLASS, ENCABEZADOS, FOOTER, WA FLOTANTE, PERF MÓVIL
+   ================================================================ */
+
+/* ── Header glassmorphism (solo oscuro; el claro lo maneja light-mode.css) ── */
+body:not(.light-mode) .header{
+  background:rgba(12,8,6,.72) !important;
+  backdrop-filter:blur(20px) saturate(160%);
+  -webkit-backdrop-filter:blur(20px) saturate(160%);
+  border-bottom:1px solid rgba(255,255,255,.08) !important;
+}
+
+/* ── Encabezados de sección unificados ── */
+.mas-vendidos .section-header,
+.beneficios .container > .section-eyebrow + h2,
+.testimonios .container > .section-eyebrow + h2{ /* anclas para contexto */ }
+.section-eyebrow{
+  text-align:center;font-size:12px;font-weight:700;letter-spacing:2px;
+  text-transform:uppercase;margin-bottom:12px;
+}
+body:not(.light-mode) .section-eyebrow{color:#FF9F43 !important}
+.beneficios .section-eyebrow,
+.testimonios .section-eyebrow{display:block}
+/* Igualar tamaños de los títulos de sección */
+.beneficios h2,.testimonios h2,.mas-vendidos .section-header h2,
+.categorias-home .section-title{
+  font-size:clamp(28px,3.4vw,40px) !important;letter-spacing:-1px !important;margin-bottom:10px !important;
+}
+.mas-vendidos .section-header,.beneficios .container,.testimonios .container{position:relative}
+
+/* ── Footer al estilo del diseño (oscuro) ── */
+body:not(.light-mode) .footer-premium{
+  background:transparent !important;
+  border-top:1px solid rgba(255,255,255,.08) !important;
+}
+body:not(.light-mode) .footer-premium .footer-brand h3,
+body:not(.light-mode) .footer-premium .footer-mobile-brand h3{color:#F5EDE8 !important}
+body:not(.light-mode) .footer-premium .footer-brand p,
+body:not(.light-mode) .footer-premium .footer-mobile-brand p{color:rgba(245,237,232,.5) !important}
+body:not(.light-mode) .footer-premium .footer-col h4{color:#F5EDE8 !important}
+body:not(.light-mode) .footer-premium .footer-col a,
+body:not(.light-mode) .footer-premium .footer-mobile-links a{color:rgba(245,237,232,.55) !important;transition:color .2s}
+body:not(.light-mode) .footer-premium .footer-col a:hover,
+body:not(.light-mode) .footer-premium .footer-mobile-links a:hover{color:#FF9F43 !important}
+body:not(.light-mode) .footer-premium .footer-gold-line{
+  background:linear-gradient(90deg,#FF6B35,#FF9F43) !important;
+}
+body:not(.light-mode) .footer-premium .footer-bottom{border-top-color:rgba(255,255,255,.07) !important}
+
+/* ── Botón flotante de WhatsApp (dentro de .control-buttons) ── */
+.nd-wa-float{
+  width:52px;height:52px;border-radius:50%;padding:0;
+  background:linear-gradient(135deg,#25D366,#128C7E);border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 6px 24px rgba(37,211,102,.45);position:relative;transition:transform .2s;
+}
+.nd-wa-float svg{width:26px;height:26px;position:relative;z-index:1}
+.nd-wa-float:hover{transform:scale(1.08)}
+.nd-wa-float::before{
+  content:'';position:absolute;inset:-6px;border-radius:50%;
+  border:2px solid rgba(37,211,102,.45);animation:nd-waring 2s ease-in-out infinite;pointer-events:none;
+}
+@keyframes nd-waring{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.18);opacity:0}}
+
+/* ================================================================
+   RENDIMIENTO EN MÓVIL — menos blur y menos orbes (gama baja)
+   ================================================================ */
+@media(max-width:768px){
+  .nd-o3,.nd-o4{display:none}
+  .nd-orb{filter:blur(70px)}
+  /* Blur de tarjetas reducido (8px en vez de 24px) — mucho más liviano */
+  body:not(.light-mode) .mas-vendidos .producto-card,
+  body:not(.light-mode) #productosGrid .producto-card,
+  body:not(.light-mode) .beneficio-card,
+  body:not(.light-mode) .testimonio-card,
+  body:not(.light-mode) .prueba-social-strip .prueba-social-inner,
+  body:not(.light-mode) .header{
+    backdrop-filter:blur(8px) saturate(140%) !important;
+    -webkit-backdrop-filter:blur(8px) saturate(140%) !important;
+  }
+  /* Tarjetas glass del hero también más livianas */
+  .nd-cl1,.nd-fbadge{backdrop-filter:blur(10px) saturate(140%);-webkit-backdrop-filter:blur(10px) saturate(140%)}
+  .nd-wa-float{width:50px;height:50px}
+  .nd-wa-float svg{width:24px;height:24px}
+}
+
+/* Respeta usuarios con movimiento reducido */
+@media(prefers-reduced-motion:reduce){
+  .nd-orb,.nd-edot,.nd-fb1,.nd-fb2,.nd-fb3,.nd-wa-float::before{animation:none !important}
+}
