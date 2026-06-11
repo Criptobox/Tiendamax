@@ -160,6 +160,7 @@ class TestPageTemplate(unittest.TestCase):
             og_title=escape("Producto Test — $9.99 USD"),
             og_desc=escape("Descripción de prueba del producto"),
             image=escape("https://tiendamax.org/og-image.png", quote=True),
+            keywords=escape("Producto Test, TiendaMax, Cuba", quote=True),
             page_url="https://tiendamax.org/p/producto-1.html",
             app_url="https://tiendamax.org/#producto-1",
             app_url_js="https://tiendamax.org/#producto-1",
