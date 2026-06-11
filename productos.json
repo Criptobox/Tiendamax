@@ -175,12 +175,8 @@
     "garantia": "",
     "devolucion": false,
     "subcategoria": "BATERÍAS",
-<<<<<<< HEAD
     "comision": 5,
     "nombreNormalizadoAt": "2026-06-09T19:34:37.031Z"
-=======
-    "comision": 5
->>>>>>> claude/panel-improvement-integration-FIPEW
   },
   {
     "id": 1778103856933,
@@ -234,12 +230,8 @@
     "garantia": "",
     "devolucion": false,
     "subcategoria": "ROUTERS",
-<<<<<<< HEAD
     "comision": 10,
     "nombreNormalizadoAt": "2026-06-09T19:34:37.031Z"
-=======
-    "comision": 10
->>>>>>> claude/panel-improvement-integration-FIPEW
   },
   {
     "id": 1778104423316,
@@ -271,12 +263,8 @@
     "garantia": "",
     "devolucion": false,
     "subcategoria": "CONTROLADORES SOLARES",
-<<<<<<< HEAD
     "comision": 10,
     "nombreNormalizadoAt": "2026-06-09T19:34:37.031Z"
-=======
-    "comision": 10
->>>>>>> claude/panel-improvement-integration-FIPEW
   },
   {
     "id": 1778104599386,
@@ -292,12 +280,8 @@
     "garantia": "",
     "devolucion": false,
     "subcategoria": "INVERSORES",
-<<<<<<< HEAD
     "comision": 25,
     "nombreNormalizadoAt": "2026-06-09T19:34:37.031Z"
-=======
-    "comision": 25
->>>>>>> claude/panel-improvement-integration-FIPEW
   },
   {
     "id": 1778104662477,
@@ -313,12 +297,8 @@
     "garantia": "",
     "devolucion": false,
     "subcategoria": "INVERSORES",
-<<<<<<< HEAD
     "comision": 35,
     "nombreNormalizadoAt": "2026-06-09T19:34:37.031Z"
-=======
-    "comision": 35
->>>>>>> claude/panel-improvement-integration-FIPEW
   },
   {
     "id": 1778104735789,
@@ -334,12 +314,8 @@
     "garantia": "",
     "devolucion": false,
     "subcategoria": "ROUTERS",
-<<<<<<< HEAD
     "comision": 10,
     "nombreNormalizadoAt": "2026-06-09T19:34:37.031Z"
-=======
-    "comision": 10
->>>>>>> claude/panel-improvement-integration-FIPEW
   },
   {
     "id": 1778104850733,
@@ -355,12 +331,8 @@
     "garantia": "",
     "devolucion": false,
     "subcategoria": "CONTROLADORES SOLARES",
-<<<<<<< HEAD
     "comision": 5,
     "nombreNormalizadoAt": "2026-06-09T19:34:37.031Z"
-=======
-    "comision": 5
->>>>>>> claude/panel-improvement-integration-FIPEW
   },
   {
     "id": 1778104924836,
@@ -376,12 +348,8 @@
     "garantia": "",
     "devolucion": false,
     "subcategoria": "BATERÍAS",
-<<<<<<< HEAD
     "comision": 20,
     "nombreNormalizadoAt": "2026-06-09T19:34:37.031Z"
-=======
-    "comision": 20
->>>>>>> claude/panel-improvement-integration-FIPEW
   },
   {
     "id": 1778104985977,
