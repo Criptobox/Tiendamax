@@ -1,0 +1,722 @@
+/* ========================================================
+   TiendaMax — Nuevo Diseño v2 (calcado del mock dark)
+   Hero + mesh + rediseño visual completo de la página.
+   Dark mode: default (body sin clase) → body:not(.light-mode)
+   Light mode: body.light-mode
+   Prefijo de clases nuevas: nd-
+   ======================================================== */
+
+/* ── MESH BACKGROUND ── */
+.nd-mesh{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.nd-orb{position:absolute;border-radius:50%;filter:blur(100px)}
+.nd-o1{width:700px;height:700px;background:radial-gradient(circle,rgba(255,107,53,0.28),transparent 70%);top:-250px;left:-150px;animation:nd-od1 22s ease-in-out infinite}
+.nd-o2{width:500px;height:500px;background:radial-gradient(circle,rgba(255,159,67,0.20),transparent 70%);top:100px;right:-150px;animation:nd-od2 26s ease-in-out infinite}
+.nd-o3{width:450px;height:450px;background:radial-gradient(circle,rgba(167,139,250,0.15),transparent 70%);bottom:25%;left:35%;animation:nd-od3 19s ease-in-out infinite}
+.nd-o4{width:380px;height:380px;background:radial-gradient(circle,rgba(232,80,30,0.18),transparent 70%);bottom:80px;right:80px;animation:nd-od4 24s ease-in-out infinite}
+body.light-mode .nd-o1{background:radial-gradient(circle,rgba(255,180,140,0.22),transparent 70%)}
+body.light-mode .nd-o2{background:radial-gradient(circle,rgba(255,200,140,0.18),transparent 70%)}
+body.light-mode .nd-o3{background:radial-gradient(circle,rgba(196,181,253,0.16),transparent 70%)}
+body.light-mode .nd-o4{background:radial-gradient(circle,rgba(255,159,67,0.14),transparent 70%)}
+@keyframes nd-od1{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(80px,60px) scale(1.1)}66%{transform:translate(-40px,80px) scale(0.95)}}
+@keyframes nd-od2{0%,100%{transform:translate(0,0) scale(1)}40%{transform:translate(-70px,50px) scale(1.08)}70%{transform:translate(50px,-60px) scale(0.9)}}
+@keyframes nd-od3{0%,100%{transform:translate(0,0) scale(1)}30%{transform:translate(60px,-50px) scale(1.15)}65%{transform:translate(-80px,70px) scale(0.92)}}
+@keyframes nd-od4{0%,100%{transform:translate(0,0) scale(1)}45%{transform:translate(-50px,-40px) scale(1.1)}75%{transform:translate(70px,50px) scale(0.95)}}
+
+/* ── HERO ── */
+.nd-wrap{max-width:1200px;margin:0 auto;padding:0 24px;position:relative;z-index:1}
+.nd-hero{display:block !important;padding:28px 0 48px !important;min-height:unset !important;text-align:left !important;background:none !important;border:none !important}
+.nd-hero-grid{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center}
+.nd-eyebrow{display:inline-flex;align-items:center;gap:8px;background:rgba(255,107,53,0.12);border:1px solid rgba(255,107,53,0.25);border-radius:100px;padding:6px 16px;font-size:13px;font-weight:600;color:#FF6B35;margin-bottom:24px}
+.nd-edot{width:6px;height:6px;border-radius:50%;background:#FF6B35;animation:nd-dot 2s ease-in-out infinite;flex-shrink:0}
+@keyframes nd-dot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
+.nd-h1{font-size:clamp(36px,4.5vw,58px) !important;font-weight:900 !important;line-height:1.08 !important;letter-spacing:-2px !important;margin-bottom:20px !important;text-align:left !important}
+.nd-grad{background:linear-gradient(135deg,#FF6B35 0%,#FF9F43 50%,#E8501E 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.nd-sub{font-size:17px;line-height:1.6;margin-bottom:20px;max-width:440px;opacity:0.75}
+/* Buscador + moneda integrados dentro del hero-left */
+.nd-hero-search{display:flex;align-items:stretch;gap:10px;width:100%;max-width:500px;margin:0 0 28px}
+.nd-hero-search .hsb-search{flex:1 1 auto;min-width:0;position:relative;display:flex}
+html body .nd-hero-search .hsb-search .hsb-pill{width:100% !important;max-width:none !important}
+/* Sección más vendidos — oculta (los productos ya rotan en el hero) */
+#mas-vendidos{display:none !important}
+.nd-hero-btns{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.nd-btn-primary{background:linear-gradient(135deg,#FF6B35 0%,#FF9F43 50%,#E8501E 100%);background-size:200% auto;color:#fff !important;border:none;border-radius:100px;padding:16px 32px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;box-shadow:0 8px 28px rgba(255,107,53,0.45);transition:transform .2s,box-shadow .2s,background-position .4s;display:inline-flex;align-items:center;gap:8px}
+.nd-btn-primary:hover{transform:translateY(-3px) scale(1.02);box-shadow:0 14px 40px rgba(255,107,53,.55);background-position:right center}
+.nd-btn-wa{background:none;border:none;color:#25D366 !important;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:6px;padding:8px 14px;opacity:0.9;transition:opacity .2s}
+.nd-btn-wa:hover{opacity:1}
+
+/* 3D card stack */
+.nd-hero-right{display:flex;justify-content:center;align-items:center}
+.nd-stack-wrap{position:relative}
+/* Galería rotativa: transición suave al cambiar de producto */
+.nd-card3d{cursor:pointer}
+#ndHeroBody,#ndHeroImg{transition:opacity .26s ease}
+#ndHeroImg img{display:block}
+/* Puntos indicadores de la galería */
+.nd-hero-dots{position:absolute;bottom:-22px;left:0;right:0;display:flex;justify-content:center;gap:6px;z-index:11}
+.nd-hero-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.28);transition:all .3s ease}
+.nd-hero-dot.active{width:18px;border-radius:100px;background:linear-gradient(90deg,#FF6B35,#FF9F43)}
+body.light-mode .nd-hero-dot{background:rgba(0,0,0,.18)}
+body.light-mode .nd-hero-dot.active{background:linear-gradient(90deg,#FF6B35,#FF9F43)}
+.nd-card3d{position:relative;width:340px;height:440px;transform:perspective(1200px) rotateY(-10deg) rotateX(6deg);transform-style:preserve-3d;transition:transform .5s ease}
+.nd-card3d:hover{transform:perspective(1200px) rotateY(-5deg) rotateX(3deg) translateY(-10px)}
+.nd-cl{position:absolute;border-radius:28px}
+.nd-cl3{inset:0;transform:translate(28px,28px);background:linear-gradient(135deg,rgba(255,107,53,0.35),rgba(255,159,67,0.25));border:1px solid rgba(255,107,53,0.2)}
+.nd-cl2{inset:0;transform:translate(14px,14px);background:linear-gradient(135deg,rgba(255,107,53,0.55),rgba(232,80,30,0.45));border:1px solid rgba(255,107,53,0.3)}
+.nd-cl1{inset:0;overflow:hidden;background:linear-gradient(145deg,rgba(255,255,255,0.10),rgba(255,255,255,0.04));backdrop-filter:blur(24px) saturate(160%);-webkit-backdrop-filter:blur(24px) saturate(160%);border:1px solid rgba(255,255,255,0.14);border-top-color:rgba(255,255,255,0.22);box-shadow:0 20px 60px rgba(0,0,0,.5),0 4px 12px rgba(0,0,0,.3)}
+body.light-mode .nd-cl3{background:linear-gradient(135deg,#FFD4C2,#FF9F43);opacity:0.45;border:none}
+body.light-mode .nd-cl2{background:linear-gradient(135deg,#FF9F43,#FF6B35);opacity:0.6;border:none}
+body.light-mode .nd-cl1{background:#fff;backdrop-filter:none;-webkit-backdrop-filter:none;border:none;box-shadow:0 20px 60px rgba(0,0,0,.15),0 4px 12px rgba(0,0,0,.08)}
+.nd-card-img{width:100%;height:220px;display:flex;align-items:center;justify-content:center;font-size:90px;position:relative;overflow:hidden}
+.nd-card-img::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 30% 30%,rgba(255,107,53,.12),transparent 60%)}
+.nd-pbg-warm{background:linear-gradient(145deg,rgba(255,107,53,0.12),rgba(255,159,67,0.07))}
+body.light-mode .nd-pbg-warm{background:linear-gradient(145deg,#FFF5EF,#FFE8D6)}
+.nd-card-body{padding:18px 22px}
+.nd-cpill{display:inline-block;background:rgba(255,107,53,.15);color:#FF6B35;border:1px solid rgba(255,107,53,.2);border-radius:100px;padding:3px 12px;font-size:12px;font-weight:600;margin-bottom:8px}
+.nd-ctitle{font-size:17px;font-weight:700;margin-bottom:6px}
+.nd-crate{display:flex;align-items:center;gap:6px;margin-bottom:14px}
+.nd-stars{color:#FF9F43;font-size:13px}
+.nd-rtext{font-size:12px;opacity:.65}
+.nd-cpr{display:flex;align-items:center;justify-content:space-between}
+.nd-price{font-size:24px;font-weight:800}
+.nd-usd{font-size:12px;opacity:.6;margin-left:2px}
+.nd-btn-pedir{background:linear-gradient(135deg,#25D366,#128C7E);color:#fff !important;border:none;border-radius:100px;padding:10px 16px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;transition:transform .2s}
+.nd-btn-pedir:hover{transform:scale(1.05)}
+.nd-fbadge{position:absolute;border-radius:14px;padding:9px 14px;display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600;white-space:nowrap;z-index:10;background:linear-gradient(145deg,rgba(255,255,255,0.10),rgba(255,255,255,0.04));backdrop-filter:blur(20px) saturate(140%);-webkit-backdrop-filter:blur(20px) saturate(140%);border:1px solid rgba(255,255,255,0.14);border-top-color:rgba(255,255,255,0.22);box-shadow:0 8px 24px rgba(0,0,0,.3),0 2px 6px rgba(0,0,0,.2)}
+body.light-mode .nd-fbadge{background:#fff;backdrop-filter:none;-webkit-backdrop-filter:none;border:none;box-shadow:0 8px 28px rgba(0,0,0,.12),0 2px 8px rgba(0,0,0,.06)}
+.nd-bi{font-size:18px}
+.nd-bs{font-size:10px;font-weight:400;display:block;opacity:.7}
+.nd-fb1{top:-18px;left:-90px;animation:nd-fl1 4s ease-in-out infinite}
+.nd-fb2{bottom:60px;right:-100px;animation:nd-fl2 5s ease-in-out infinite}
+.nd-fb3{bottom:-16px;left:-70px;animation:nd-fl3 4.5s ease-in-out infinite}
+@keyframes nd-fl1{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+@keyframes nd-fl2{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes nd-fl3{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+
+/* ================================================================
+   COLOR DE FONDO GLOBAL Y SECCIONES TRANSPARENTES (mesh visible)
+   ================================================================ */
+body:not(.light-mode){background:#0C0806;color:#F5EDE8}
+body:not(.light-mode) .mas-vendidos,
+body:not(.light-mode) .categorias-home,
+body:not(.light-mode) .categorias-home-inner,
+body:not(.light-mode) .beneficios,
+body:not(.light-mode) .testimonios,
+body:not(.light-mode) .cta-final,
+body:not(.light-mode) .nd-deal-section{background:transparent !important}
+body:not(.light-mode) .mas-vendidos::before,
+body:not(.light-mode) .testimonios::before{display:none !important}
+
+/* Cabeceras de sección en oscuro */
+body:not(.light-mode) .section-title,
+body:not(.light-mode) .categorias-home .section-title,
+body:not(.light-mode) .categorias-home h2,
+body:not(.light-mode) .beneficios h2,
+body:not(.light-mode) .testimonios h2,
+body:not(.light-mode) .mas-vendidos .section-header h2{color:#F5EDE8 !important}
+body:not(.light-mode) .section-subtitle,
+body:not(.light-mode) .categorias-home .section-subtitle,
+body:not(.light-mode) .mas-vendidos .section-header p{color:rgba(245,237,232,.55) !important}
+body:not(.light-mode) .section-eyebrow{color:#FF9F43 !important}
+
+/* ================================================================
+   TRUST BAR (tras el hero) — calcado de .tbar del mock
+   ================================================================ */
+.nd-tbar{border-top:1px solid rgba(255,255,255,0.10);border-bottom:1px solid rgba(255,255,255,0.10);padding:22px 0;position:relative;z-index:1}
+body.light-mode .nd-tbar{border-top-color:rgba(0,0,0,0.08);border-bottom-color:rgba(0,0,0,0.08)}
+.nd-titems{display:flex;align-items:center;justify-content:center;gap:48px;flex-wrap:wrap}
+.nd-titem{display:flex;align-items:center;gap:10px}
+.nd-tico{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.nd-tc{background:rgba(255,107,53,.15)}
+.nd-tv{background:rgba(167,139,250,.15)}
+.nd-tm{background:rgba(52,211,153,.15)}
+.nd-to{background:rgba(255,159,67,.15)}
+.nd-tt strong{display:block;font-size:14px;font-weight:700;color:#F5EDE8}
+.nd-tt span{font-size:12px;color:rgba(245,237,232,.55)}
+body.light-mode .nd-tt strong{color:#1A1A1A}
+body.light-mode .nd-tt span{color:#777}
+
+/* ================================================================
+   CATEGORÍAS — BENTO GRID (ambos modos; calcado de .bento/.bc)
+   ================================================================ */
+
+/* Fondo de la sección: dot-grid + glow naranja desde esquina superior derecha */
+.categorias-home{position:relative;overflow:hidden}
+.categorias-home-inner{
+  position:relative;
+  background-image:radial-gradient(rgba(255,255,255,.055) 1px,transparent 1px);
+  background-size:24px 24px;
+}
+body.light-mode .categorias-home-inner{
+  background-image:radial-gradient(rgba(0,0,0,.06) 1px,transparent 1px);
+}
+/* Iluminación cálida desde arriba-derecha (afecta especialmente a ENERGÍA) */
+.categorias-home::after{
+  content:'';position:absolute;top:-120px;right:-60px;
+  width:520px;height:520px;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,140,30,.16) 0%,transparent 68%);
+  pointer-events:none;z-index:0;
+}
+
+/* Título con subrayado naranja parcial */
+.categorias-home .section-title{position:relative;display:inline-block}
+.categorias-home .section-title::after{
+  content:'';position:absolute;bottom:-6px;left:0;
+  width:55%;height:3px;border-radius:2px;
+  background:linear-gradient(90deg,#FF6B35,#FF9F43,transparent);
+}
+
+/* Prefijo `html body` para ganar a la regla base
+   `html body .categorias-grid .categoria-card` (especificidad 0,2,2). */
+html body .categorias-home .categorias-grid{
+  display:grid !important;
+  grid-template-columns:repeat(6,1fr) !important;
+  grid-auto-rows:78px !important;
+  grid-auto-flow:row dense !important;
+  gap:14px !important;
+  max-width:100% !important;
+  margin-top:30px !important;   /* espacio para los íconos que sobresalen */
+}
+html body .categorias-home .categorias-grid .categoria-card{
+  border-radius:24px !important;
+  padding:20px !important;
+  text-align:left !important;
+  display:flex !important;
+  flex-direction:column !important;
+  justify-content:flex-end !important;
+  align-items:flex-start !important;
+  position:relative !important;
+  overflow:hidden !important;
+  cursor:pointer !important;
+  border:none !important;
+  box-shadow:0 2px 8px rgba(0,0,0,.35),0 12px 28px rgba(0,0,0,.28) !important;
+  transition:transform .3s ease,box-shadow .3s ease !important;
+  height:auto !important;
+  flex:none !important;
+  width:auto !important;
+  min-width:0 !important;
+  max-width:none !important;   /* anula el calc(25% - 10px) del layout flex antiguo */
+  margin:0 !important;
+}
+/* ::before = blob de color interno (esquina superior-derecha) */
+html body .categorias-home .categorias-grid .categoria-card::before{
+  content:'' !important;display:block !important;
+  position:absolute !important;top:-30px !important;right:-30px !important;
+  width:180px !important;height:180px !important;border-radius:50% !important;
+  pointer-events:none !important;z-index:0 !important;
+  opacity:.55 !important;transition:opacity .3s !important;
+}
+/* ::after = reflejo/shimmer interno desde esquina superior-izquierda */
+html body .categorias-home .categorias-grid .categoria-card::after{
+  content:'' !important;display:block !important;
+  position:absolute !important;inset:0 !important;
+  border-radius:inherit !important;
+  background:linear-gradient(135deg,rgba(255,255,255,.09) 0%,transparent 52%) !important;
+  pointer-events:none !important;z-index:2 !important;
+}
+html body .categorias-home .categorias-grid .categoria-card{
+  /* Añadir borde highlight top-left para efecto premium */
+  border-top:1px solid rgba(255,255,255,.14) !important;
+  border-left:1px solid rgba(255,255,255,.10) !important;
+  border-right:1px solid rgba(0,0,0,.15) !important;
+  border-bottom:1px solid rgba(0,0,0,.20) !important;
+}
+html body .categorias-home .categorias-grid .categoria-card:hover{
+  transform:translateY(-6px) scale(1.01) !important;
+  box-shadow:0 14px 36px rgba(0,0,0,.55),0 28px 60px rgba(0,0,0,.4) !important;
+}
+html body .categorias-home .categorias-grid .categoria-card:hover::before{opacity:.75 !important}
+/* ENERGÍA (3ª tile) — glow naranja cálido externo e interno */
+html body .categorias-home .categorias-grid .categoria-card:nth-child(3){
+  box-shadow:
+    0 2px 8px rgba(0,0,0,.35),
+    0 12px 28px rgba(0,0,0,.28),
+    0 0 48px rgba(232,140,20,.22),
+    inset 0 0 32px rgba(255,191,36,.07) !important;
+}
+html body .categorias-home .categorias-grid .categoria-card .cat-icon{
+  position:absolute !important;
+  top:16px !important;right:16px !important;left:auto !important;
+  font-size:60px !important;
+  opacity:.9 !important;margin:0 !important;
+  display:block !important;filter:drop-shadow(0 4px 12px rgba(0,0,0,.35)) !important;
+  width:auto !important;height:auto !important;
+  transition:transform .35s ease !important;z-index:1 !important;
+}
+html body .categorias-home .categorias-grid .categoria-card:hover .cat-icon{transform:scale(1.18) rotate(-6deg) !important;opacity:1 !important}
+html body .categorias-home .categorias-grid .categoria-card .cat-name{
+  font-size:16px !important;font-weight:800 !important;color:#fff !important;
+  text-transform:none !important;letter-spacing:-.3px !important;
+  display:block !important;position:relative !important;z-index:2 !important;
+  text-shadow:0 2px 8px rgba(0,0,0,.35) !important;line-height:1.2 !important;
+}
+html body .categorias-home .categorias-grid .categoria-card .cat-count{
+  font-size:12px !important;color:rgba(255,255,255,.65) !important;
+  margin-top:5px !important;display:block !important;font-weight:500 !important;
+  position:relative !important;z-index:2 !important;
+}
+html body .categorias-home .categorias-grid .categoria-card.proximamente .cat-count{color:rgba(255,255,255,.5) !important}
+/* Badge "+ POPULAR" — se activa con clase .cat-popular en el JS */
+html body .categorias-home .categorias-grid .categoria-card.cat-popular .cat-popular-badge{
+  display:inline-flex !important;align-items:center !important;gap:4px !important;
+  position:absolute !important;top:12px !important;left:12px !important;
+  background:linear-gradient(135deg,#FF6B35,#E8501E) !important;color:#fff !important;
+  font-size:9px !important;font-weight:800 !important;letter-spacing:.8px !important;
+  padding:3px 8px !important;border-radius:100px !important;z-index:5 !important;
+  text-transform:uppercase !important;
+  box-shadow:0 2px 8px rgba(255,107,53,.45) !important;
+}
+html body .categorias-home .categorias-grid .categoria-card:not(.cat-popular) .cat-popular-badge{
+  display:none !important;
+}
+
+/* ── Bento calcado de la referencia: 3 tiles grandes arriba, medianas al
+   centro, pequeñas abajo (grilla 6 col × filas 78px, flujo denso) ── */
+html body .categorias-home .categorias-grid .categoria-card:nth-child(-n+4){grid-column:span 2 !important;grid-row:span 3 !important}
+html body .categorias-home .categorias-grid .categoria-card:nth-child(5){grid-column:span 2 !important;grid-row:span 2 !important}
+html body .categorias-home .categorias-grid .categoria-card:nth-child(6){grid-column:span 2 !important;grid-row:span 3 !important}
+html body .categorias-home .categorias-grid .categoria-card:nth-child(7){grid-column:span 2 !important;grid-row:span 2 !important}
+/* Tiles pequeñas (8 en adelante) */
+html body .categorias-home .categorias-grid .categoria-card:nth-child(8){grid-column:span 1 !important;grid-row:span 2 !important}
+html body .categorias-home .categorias-grid .categoria-card:nth-child(n+9){grid-column:span 1 !important;grid-row:span 1 !important}
+html body .categorias-home .categorias-grid .categoria-card:nth-child(n+8){
+  padding:13px !important;border-radius:20px !important;
+}
+html body .categorias-home .categorias-grid .categoria-card:nth-child(n+8) .cat-icon{font-size:30px !important;top:10px !important;right:10px !important}
+html body .categorias-home .categorias-grid .categoria-card:nth-child(n+8) .cat-name{font-size:12.5px !important}
+html body .categorias-home .categorias-grid .categoria-card:nth-child(n+8) .cat-count{font-size:10.5px !important;margin-top:3px !important}
+html body .categorias-home .categorias-grid .categoria-card:nth-child(n+8)::before{width:100px !important;height:100px !important;top:-20px !important;right:-20px !important}
+
+/* ── Tile 1 «Todos»: sin ícono, solo gradiente con brillo y texto grande ── */
+html body .categorias-home .categorias-grid .categoria-card:nth-child(1) .cat-icon{display:none !important}
+html body .categorias-home .categorias-grid .categoria-card:nth-child(1) .cat-name{font-size:25px !important}
+html body .categorias-home .categorias-grid .categoria-card:nth-child(1) .cat-count{font-size:13px !important}
+
+/* ── Tile 2 «WiFi»: ícono grande arriba-derecha dentro de la tarjeta ── */
+html body .categorias-home .categorias-grid .categoria-card:nth-child(2) .cat-icon{font-size:84px !important;top:16px !important;right:16px !important}
+
+/* ── Tile 3 «Energía»: ícono en chip de cristal flotante que sobresale ── */
+html body .categorias-home .categorias-grid .categoria-card:nth-child(3){overflow:visible !important;z-index:3 !important}
+html body .categorias-home .categorias-grid .categoria-card:nth-child(3)::before{display:none !important}
+html body .categorias-home .categorias-grid .categoria-card:nth-child(3) .cat-icon{
+  top:-30px !important;right:-10px !important;
+  width:102px !important;height:102px !important;
+  font-size:56px !important;
+  display:flex !important;align-items:center !important;justify-content:center !important;
+  background:linear-gradient(145deg,rgba(70,50,20,.78),rgba(40,28,12,.85)) !important;
+  backdrop-filter:blur(14px) saturate(150%) !important;
+  -webkit-backdrop-filter:blur(14px) saturate(150%) !important;
+  border:1px solid rgba(255,255,255,.16) !important;
+  border-top-color:rgba(255,255,255,.26) !important;
+  border-radius:26px !important;
+  box-shadow:0 16px 38px rgba(0,0,0,.5),0 0 30px rgba(255,180,40,.18) !important;
+  opacity:1 !important;
+}
+
+/* ── Tile 4 «Celulares»: el ícono asoma por el borde superior ── */
+html body .categorias-home .categorias-grid .categoria-card:nth-child(4){overflow:visible !important;z-index:2 !important}
+html body .categorias-home .categorias-grid .categoria-card:nth-child(4)::before{display:none !important}
+html body .categorias-home .categorias-grid .categoria-card:nth-child(4){
+  box-shadow:0 2px 8px rgba(0,0,0,.35),0 12px 28px rgba(0,0,0,.28),inset 0 0 36px rgba(167,139,250,.06) !important;
+}
+html body .categorias-home .categorias-grid .categoria-card:nth-child(4) .cat-icon{
+  font-size:76px !important;top:-32px !important;right:22px !important;
+  filter:drop-shadow(0 10px 18px rgba(0,0,0,.5)) !important;
+}
+
+/* ── Tile 5 «Útiles»: ícono mediano a la derecha ── */
+html body .categorias-home .categorias-grid .categoria-card:nth-child(5) .cat-icon{font-size:64px !important;top:24px !important;right:18px !important}
+
+/* ── Tile 6 «Motos»: ícono grande dominante centrado a la derecha ── */
+html body .categorias-home .categorias-grid .categoria-card:nth-child(6) .cat-icon{font-size:96px !important;top:48px !important;right:6px !important}
+
+/* Paleta oscura y atmosférica — inspirada en la imagen de referencia.
+   Cada tile tiene fondo oscuro tintado + blob de color en ::before. */
+html body .categorias-home .categorias-grid .categoria-card:nth-child(6n+1){
+  background:linear-gradient(145deg,#1a3a28 0%,#0d2018 100%) !important}
+html body .categorias-home .categorias-grid .categoria-card:nth-child(6n+1)::before{
+  background:radial-gradient(circle,rgba(34,197,94,.6),transparent 65%) !important}
+html body .categorias-home .categorias-grid .categoria-card:nth-child(6n+2){
+  background:linear-gradient(145deg,#1a2648 0%,#0d1530 100%) !important}
+html body .categorias-home .categorias-grid .categoria-card:nth-child(6n+2)::before{
+  background:radial-gradient(circle,rgba(59,130,246,.65),transparent 65%) !important}
+html body .categorias-home .categorias-grid .categoria-card:nth-child(6n+3){
+  background:linear-gradient(145deg,#b85e0c 0%,#8a4208 100%) !important}
+html body .categorias-home .categorias-grid .categoria-card:nth-child(6n+3)::before{
+  background:radial-gradient(circle,rgba(251,191,36,.7),transparent 65%) !important}
+html body .categorias-home .categorias-grid .categoria-card:nth-child(6n+4){
+  background:linear-gradient(145deg,#2d1854 0%,#1a0e38 100%) !important}
+html body .categorias-home .categorias-grid .categoria-card:nth-child(6n+4)::before{
+  background:radial-gradient(circle,rgba(167,139,250,.6),transparent 65%) !important}
+html body .categorias-home .categorias-grid .categoria-card:nth-child(6n+5){
+  background:linear-gradient(145deg,#23262e 0%,#15171d 100%) !important}
+html body .categorias-home .categorias-grid .categoria-card:nth-child(6n+5)::before{
+  background:radial-gradient(circle,rgba(148,163,184,.5),transparent 65%) !important}
+html body .categorias-home .categorias-grid .categoria-card:nth-child(6n+6){
+  background:linear-gradient(145deg,#3d2010 0%,#281508 100%) !important}
+html body .categorias-home .categorias-grid .categoria-card:nth-child(6n+6)::before{
+  background:radial-gradient(circle,rgba(251,146,60,.6),transparent 65%) !important}
+/* En modo claro los tiles conservan color sólido pero más saturado */
+body.light-mode .categorias-home .categorias-grid .categoria-card:nth-child(6n+1){background:linear-gradient(145deg,#1e5c38,#0d3020) !important}
+body.light-mode .categorias-home .categorias-grid .categoria-card:nth-child(6n+2){background:linear-gradient(145deg,#1e3a70,#0d2050) !important}
+body.light-mode .categorias-home .categorias-grid .categoria-card:nth-child(6n+3){background:linear-gradient(145deg,#d4760f,#a85508) !important}
+body.light-mode .categorias-home .categorias-grid .categoria-card:nth-child(6n+4){background:linear-gradient(145deg,#3d2470,#281558) !important}
+body.light-mode .categorias-home .categorias-grid .categoria-card:nth-child(6n+5){background:linear-gradient(145deg,#2a2e38,#1a1d24) !important}
+body.light-mode .categorias-home .categorias-grid .categoria-card:nth-child(6n+6){background:linear-gradient(145deg,#5a3018,#3a1e08) !important}
+
+/* ── Posiciones 7-12: colores propios (como la referencia), ganan al ciclo 6n
+   también en modo claro (selector dual, declarado después del bloque light) ── */
+html body .categorias-home .categorias-grid .categoria-card:nth-child(7),
+body.light-mode .categorias-home .categorias-grid .categoria-card:nth-child(7){
+  background:linear-gradient(145deg,#2d1b4e 0%,#1c1034 100%) !important}
+html body .categorias-home .categorias-grid .categoria-card:nth-child(7)::before{
+  background:radial-gradient(circle,rgba(167,139,250,.55),transparent 65%) !important}
+html body .categorias-home .categorias-grid .categoria-card:nth-child(8),
+body.light-mode .categorias-home .categorias-grid .categoria-card:nth-child(8){
+  background:linear-gradient(145deg,#3d1a24 0%,#28101a 100%) !important}
+html body .categorias-home .categorias-grid .categoria-card:nth-child(8)::before{
+  background:radial-gradient(circle,rgba(244,114,114,.5),transparent 65%) !important}
+html body .categorias-home .categorias-grid .categoria-card:nth-child(9),
+body.light-mode .categorias-home .categorias-grid .categoria-card:nth-child(9){
+  background:linear-gradient(145deg,#3a2230 0%,#261520 100%) !important}
+html body .categorias-home .categorias-grid .categoria-card:nth-child(9)::before{
+  background:radial-gradient(circle,rgba(232,121,180,.45),transparent 65%) !important}
+html body .categorias-home .categorias-grid .categoria-card:nth-child(10),
+body.light-mode .categorias-home .categorias-grid .categoria-card:nth-child(10){
+  background:linear-gradient(145deg,#15301f 0%,#0c2014 100%) !important}
+html body .categorias-home .categorias-grid .categoria-card:nth-child(10)::before{
+  background:radial-gradient(circle,rgba(74,222,128,.45),transparent 65%) !important}
+html body .categorias-home .categorias-grid .categoria-card:nth-child(11),
+body.light-mode .categorias-home .categorias-grid .categoria-card:nth-child(11){
+  background:linear-gradient(145deg,#26262c 0%,#18181d 100%) !important}
+html body .categorias-home .categorias-grid .categoria-card:nth-child(11)::before{
+  background:radial-gradient(circle,rgba(156,163,175,.4),transparent 65%) !important}
+html body .categorias-home .categorias-grid .categoria-card:nth-child(12),
+body.light-mode .categorias-home .categorias-grid .categoria-card:nth-child(12){
+  background:linear-gradient(145deg,#2b251a 0%,#1c1810 100%) !important}
+html body .categorias-home .categorias-grid .categoria-card:nth-child(12)::before{
+  background:radial-gradient(circle,rgba(251,191,36,.4),transparent 65%) !important}
+
+/* Skeleton loaders adaptados al bento */
+html body .categorias-home .categorias-grid .skeleton-card{
+  border-radius:24px !important;height:auto !important;max-width:none !important;width:auto !important;flex:none !important;
+  background:rgba(255,255,255,.05) !important;border:1px solid rgba(255,255,255,.07) !important;
+}
+html body .categorias-home .categorias-grid .skeleton-card{grid-column:span 2 !important;grid-row:span 3 !important}
+body.light-mode .categorias-home .categorias-grid .skeleton-card{background:rgba(0,0,0,.04) !important;border-color:rgba(0,0,0,.06) !important}
+
+/* ================================================================
+   PRODUCTOS — tarjetas glass (Más Vendidos + grid de categoría)
+   ================================================================ */
+body:not(.light-mode) .mas-vendidos .producto-card,
+body:not(.light-mode) #productosGrid .producto-card{
+  background:linear-gradient(145deg,rgba(255,255,255,.08),rgba(255,255,255,.03)) !important;
+  backdrop-filter:blur(24px) saturate(160%);-webkit-backdrop-filter:blur(24px) saturate(160%);
+  border:1px solid rgba(255,255,255,.10) !important;border-top-color:rgba(255,255,255,.18) !important;
+  border-bottom-color:rgba(0,0,0,.2) !important;
+  box-shadow:0 4px 8px rgba(0,0,0,.4),0 16px 32px rgba(0,0,0,.5),0 40px 80px rgba(0,0,0,.35) !important;
+}
+body:not(.light-mode) .mas-vendidos .producto-card:hover,
+body:not(.light-mode) #productosGrid .producto-card:hover{
+  border-color:rgba(255,107,53,.35) !important;transform:translateY(-10px) scale(1.01) !important;
+  box-shadow:0 8px 16px rgba(0,0,0,.5),0 24px 48px rgba(0,0,0,.6),0 0 0 1px rgba(255,107,53,.2) !important;
+}
+body:not(.light-mode) .mas-vendidos .producto-image,
+body:not(.light-mode) #productosGrid .producto-image{background:linear-gradient(145deg,rgba(255,107,53,.10),rgba(255,159,67,.05)) !important}
+body:not(.light-mode) .producto-card h3{color:#F5EDE8 !important}
+body:not(.light-mode) .producto-card .producto-description{color:rgba(245,237,232,.6) !important}
+body:not(.light-mode) .producto-card .precio-actual{color:#F5EDE8 !important}
+body:not(.light-mode) .producto-card .precio-tachado{color:rgba(245,237,232,.35) !important}
+body:not(.light-mode) .producto-card .stock,
+body:not(.light-mode) .producto-card .stock-count{color:rgba(245,237,232,.5) !important}
+
+/* Badge "Más Vendido" tipo pill (ambos modos) */
+.producto-card .badge-vendido{
+  background:linear-gradient(135deg,#FF6B35,#E8501E) !important;color:#fff !important;
+  border-radius:100px !important;font-size:11px !important;font-weight:700 !important;padding:4px 12px !important;
+}
+.producto-card .precio-ahorro{
+  background:rgba(37,211,102,.18) !important;color:#25D366 !important;
+  border-radius:100px !important;padding:2px 8px !important;font-size:11px !important;font-weight:700 !important;
+}
+body:not(.light-mode) .producto-card .stock-bar{background:rgba(255,255,255,.08) !important;border-radius:100px !important;overflow:hidden}
+.producto-card .stock-bar-fill{background:linear-gradient(90deg,#FF6B35,#FF9F43) !important}
+.producto-card .btn-pedir-card{
+  background:linear-gradient(135deg,#25D366,#128C7E) !important;color:#fff !important;border:none !important;
+  border-radius:100px !important;font-size:13px !important;font-weight:700 !important;padding:11px 16px !important;
+  box-shadow:0 4px 16px rgba(37,211,102,.25) !important;transition:transform .2s,box-shadow .2s !important;
+}
+.producto-card .btn-pedir-card:hover{transform:translateY(-2px) !important;box-shadow:0 8px 24px rgba(37,211,102,.35) !important}
+
+/* ================================================================
+   SOCIAL PROOF STRIP — caja glass (calcado de .proof-strip)
+   ================================================================ */
+body:not(.light-mode) .prueba-social-strip{
+  background:transparent !important;border:none !important;padding:0 0 40px !important;
+}
+body:not(.light-mode) .prueba-social-strip .prueba-social-inner{
+  background:linear-gradient(145deg,rgba(255,255,255,.07),rgba(255,255,255,.03));
+  backdrop-filter:blur(24px) saturate(160%);-webkit-backdrop-filter:blur(24px) saturate(160%);
+  border:1px solid rgba(255,255,255,.10);border-radius:20px;padding:24px 40px;
+}
+body:not(.light-mode) .prueba-num{color:#F5EDE8 !important}
+body:not(.light-mode) .prueba-label{color:rgba(245,237,232,.55) !important}
+body:not(.light-mode) .prueba-sep{color:rgba(255,255,255,.12) !important}
+body:not(.light-mode) .mini-review-item{color:rgba(245,237,232,.55) !important}
+
+/* ================================================================
+   OFERTA DEL DÍA — sección naranja con timer (calcado de .deal)
+   ================================================================ */
+.nd-deal-section{padding:0 0 90px;position:relative;z-index:1}
+.nd-deal{
+  background:linear-gradient(135deg,rgba(255,107,53,0.92) 0%,rgba(255,159,67,0.88) 40%,rgba(232,80,30,0.92) 100%);
+  border-radius:32px;padding:56px;display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center;
+  overflow:hidden;position:relative;box-shadow:0 20px 60px rgba(232,80,30,.3);
+}
+.nd-deal::before{content:'';position:absolute;width:500px;height:500px;border-radius:50%;background:rgba(0,0,0,.13);top:-200px;right:-100px}
+.nd-deal::after{content:'';position:absolute;width:300px;height:300px;border-radius:50%;background:rgba(0,0,0,.10);bottom:-100px;left:200px}
+.nd-deal-left{position:relative;z-index:1}
+.nd-dbadge{display:inline-block;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.3);border-radius:100px;padding:6px 18px;font-size:12px;font-weight:700;color:#fff;letter-spacing:1px;text-transform:uppercase;margin-bottom:20px}
+.nd-dtitle{font-size:clamp(26px,3vw,38px);font-weight:900;color:#fff;line-height:1.1;letter-spacing:-1.5px;margin-bottom:14px}
+.nd-dsub{font-size:16px;color:rgba(255,255,255,.88);margin-bottom:28px;line-height:1.5}
+.nd-dtimer{display:flex;gap:14px;margin-bottom:30px}
+.nd-tblk{background:rgba(0,0,0,.2);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.2);border-radius:16px;width:74px;padding:14px 0;text-align:center}
+.nd-tnum{font-size:30px;font-weight:900;color:#fff;line-height:1;display:block}
+.nd-tlbl{font-size:11px;color:rgba(255,255,255,.78);text-transform:uppercase;letter-spacing:.5px;margin-top:4px;display:block}
+.nd-btn-deal{display:inline-flex;align-items:center;gap:8px;background:#fff;color:#E8501E !important;border:none;border-radius:100px;padding:15px 32px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;box-shadow:0 8px 32px rgba(0,0,0,.2);transition:transform .2s}
+.nd-btn-deal:hover{transform:translateY(-2px)}
+.nd-deal-vis{position:relative;display:flex;justify-content:center;z-index:1}
+.nd-dpc{background:rgba(0,0,0,.2);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.25);border-radius:24px;padding:24px;width:280px;text-align:center}
+.nd-dpc-img{width:100%;height:150px;border-radius:16px;object-fit:cover;margin-bottom:14px;background:rgba(255,255,255,.08)}
+.nd-dpe{font-size:84px;display:block;margin-bottom:12px}
+.nd-dpn{font-size:16px;font-weight:700;color:#fff;line-height:1.3}
+.nd-dpp{font-size:26px;font-weight:900;color:#fff;margin-top:10px}
+.nd-dpo{font-size:15px;color:rgba(255,255,255,.6);text-decoration:line-through;margin-top:2px}
+.nd-ddc{position:absolute;top:-16px;right:-16px;width:64px;height:64px;border-radius:50%;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(0,0,0,.3)}
+.nd-ddp{font-size:18px;font-weight:900;color:#E8501E;line-height:1}
+.nd-ddo{font-size:10px;font-weight:700;color:#E8501E}
+
+/* ================================================================
+   BENEFICIOS — glass (oscuro)
+   ================================================================ */
+body:not(.light-mode) .beneficio-card{
+  background:linear-gradient(145deg,rgba(255,255,255,.07),rgba(255,255,255,.03)) !important;
+  backdrop-filter:blur(24px) saturate(160%);-webkit-backdrop-filter:blur(24px) saturate(160%);
+  border:1px solid rgba(255,255,255,.09) !important;border-top-color:rgba(255,255,255,.16) !important;
+  box-shadow:0 4px 8px rgba(0,0,0,.3),0 16px 32px rgba(0,0,0,.4) !important;
+}
+body:not(.light-mode) .beneficio-card:hover{border-color:rgba(255,107,53,.3) !important;transform:translateY(-6px) !important}
+body:not(.light-mode) .beneficio-card .icon{
+  width:48px !important;height:48px !important;border-radius:14px !important;background:rgba(255,107,53,.15) !important;
+  display:flex !important;align-items:center !important;justify-content:center !important;font-size:24px !important;margin:0 auto 18px !important;
+}
+body:not(.light-mode) .beneficio-card h3{color:#F5EDE8 !important}
+body:not(.light-mode) .beneficio-card p{color:rgba(245,237,232,.55) !important}
+
+/* ================================================================
+   TESTIMONIOS — glass (oscuro)
+   ================================================================ */
+body:not(.light-mode) .testimonio-card{
+  background:linear-gradient(145deg,rgba(255,255,255,.07),rgba(255,255,255,.03)) !important;
+  backdrop-filter:blur(24px) saturate(160%);-webkit-backdrop-filter:blur(24px) saturate(160%);
+  border:1px solid rgba(255,255,255,.09) !important;border-top-color:rgba(255,255,255,.16) !important;
+  box-shadow:0 4px 8px rgba(0,0,0,.3),0 16px 32px rgba(0,0,0,.4) !important;
+}
+body:not(.light-mode) .testimonio-card:hover{border-color:rgba(255,107,53,.3) !important;transform:translateY(-6px) !important}
+body:not(.light-mode) .testimonio-card .stars{color:#FF9F43 !important}
+body:not(.light-mode) .testimonio-card p{color:rgba(245,237,232,.7) !important}
+body:not(.light-mode) .testimonio-card .autor{color:#FF9F43 !important}
+
+/* ================================================================
+   CTA FINAL — caja verde WhatsApp con glow
+   ================================================================ */
+body:not(.light-mode) .cta-final .container{
+  background:linear-gradient(145deg,rgba(37,211,102,.10),rgba(18,140,126,.06));
+  backdrop-filter:blur(24px) saturate(160%);-webkit-backdrop-filter:blur(24px) saturate(160%);
+  border:1px solid rgba(37,211,102,.2);border-radius:32px;padding-top:60px;padding-bottom:60px;
+  position:relative;overflow:hidden;
+}
+body:not(.light-mode) .cta-final .container::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 0%,rgba(37,211,102,.1),transparent 60%);pointer-events:none}
+body:not(.light-mode) .cta-final h2{color:#F5EDE8 !important}
+body:not(.light-mode) .cta-final p{color:rgba(245,237,232,.65) !important}
+body:not(.light-mode) .cta-final .btn-large{background:linear-gradient(135deg,#25D366,#128C7E) !important;color:#fff !important;box-shadow:0 8px 32px rgba(37,211,102,.3) !important}
+body:not(.light-mode) .cta-final .btn-large:hover{box-shadow:0 14px 48px rgba(37,211,102,.45) !important;transform:translateY(-3px) !important}
+
+/* ================================================================
+   RESPONSIVE
+   ================================================================ */
+@media(max-width:900px){
+  .nd-hero-grid{grid-template-columns:1fr;gap:48px}
+  .nd-hero-right{order:-1}
+  .nd-card3d{width:280px;height:360px}
+  .nd-fb1,.nd-fb2,.nd-fb3{display:none}
+  .nd-h1{text-align:center !important}
+  .nd-sub{text-align:center}
+  .nd-eyebrow{margin-left:auto;margin-right:auto}
+  .nd-hero-btns{justify-content:center}
+  .nd-titems{gap:20px 28px}
+  .nd-hero-search{max-width:none;margin:0 auto 28px}
+}
+@media(max-width:1024px){
+  /* Tablet: 4 columnas — tiles grandes a 2 por fila, pequeñas a 4 por fila */
+  html body .categorias-home .categorias-grid{grid-template-columns:repeat(4,1fr) !important;grid-auto-rows:70px !important}
+  html body .categorias-home .categorias-grid .categoria-card:nth-child(-n+7){grid-column:span 2 !important;grid-row:span 3 !important}
+  html body .categorias-home .categorias-grid .categoria-card:nth-child(8){grid-column:span 1 !important;grid-row:span 2 !important}
+  html body .categorias-home .categorias-grid .categoria-card:nth-child(n+9){grid-column:span 1 !important;grid-row:span 2 !important}
+  html body .categorias-home .categorias-grid .categoria-card:nth-child(2) .cat-icon{font-size:64px !important}
+  html body .categorias-home .categorias-grid .categoria-card:nth-child(6) .cat-icon{font-size:72px !important;top:36px !important}
+  .nd-deal{grid-template-columns:1fr;gap:36px;padding:36px}
+  .nd-deal-vis{justify-self:center}
+}
+@media(max-width:600px){
+  .nd-hero{padding:24px 0 36px !important}
+  .nd-card3d{width:250px;height:320px}
+  .nd-hero-btns{flex-direction:column;align-items:stretch}
+  .nd-btn-primary{justify-content:center}
+  .nd-hero-search{flex-wrap:wrap}
+  .nd-hero-search .currency-bar{margin:0 auto !important}
+  /* Móvil: 2 columnas — «Todos» ancha, el resto a 2 por fila, pequeñas igual */
+  html body .categorias-home .categorias-grid{grid-template-columns:repeat(2,1fr) !important;grid-auto-rows:58px !important;gap:11px !important}
+  html body .categorias-home .categorias-grid .categoria-card:nth-child(1){grid-column:span 2 !important;grid-row:span 2 !important}
+  html body .categorias-home .categorias-grid .categoria-card:nth-child(n+2){grid-column:span 1 !important;grid-row:span 3 !important}
+  html body .categorias-home .categorias-grid .categoria-card:nth-child(n+8){grid-column:span 1 !important;grid-row:span 2 !important}
+  html body .categorias-home .categorias-grid .categoria-card{padding:16px !important}
+  html body .categorias-home .categorias-grid .categoria-card .cat-icon{font-size:46px !important;top:12px !important;right:12px !important}
+  html body .categorias-home .categorias-grid .categoria-card:nth-child(1) .cat-name{font-size:20px !important}
+  html body .categorias-home .categorias-grid .categoria-card:nth-child(3) .cat-icon{
+    width:64px !important;height:64px !important;font-size:34px !important;
+    top:-18px !important;right:-6px !important;border-radius:18px !important;
+  }
+  html body .categorias-home .categorias-grid .categoria-card:nth-child(4) .cat-icon{font-size:50px !important;top:-20px !important;right:14px !important}
+  html body .categorias-home .categorias-grid .categoria-card:nth-child(6) .cat-icon{font-size:54px !important;top:auto !important;bottom:48px !important}
+  html body .categorias-home .categorias-grid .categoria-card:nth-child(n+8) .cat-icon{font-size:26px !important;top:8px !important;right:8px !important}
+  html body .categorias-home .categorias-grid .skeleton-card{grid-column:span 1 !important;grid-row:span 3 !important}
+  html body .categorias-home .categorias-grid .skeleton-card:nth-child(1){grid-column:span 2 !important;grid-row:span 2 !important}
+  .nd-dtimer{justify-content:flex-start;flex-wrap:wrap}
+  .nd-tblk{width:64px}
+}
+
+/* ================================================================
+   v3 — HEADER GLASS, ENCABEZADOS, FOOTER, WA FLOTANTE, PERF MÓVIL
+   ================================================================ */
+
+/* ── Header glassmorphism — fluye sin corte hacia el hero ── */
+body:not(.light-mode) .header{
+  background:rgba(12,8,6,.72) !important;
+  backdrop-filter:blur(20px) saturate(160%) !important;
+  -webkit-backdrop-filter:blur(20px) saturate(160%) !important;
+  /* Gradiente fade en vez de línea dura → conecta visualmente con el hero */
+  border-bottom:none !important;
+  box-shadow:0 1px 0 rgba(255,255,255,.05), 0 4px 24px rgba(0,0,0,.18) !important;
+}
+html body.light-mode .header{
+  background:rgba(255,255,255,.82) !important;
+  backdrop-filter:blur(20px) saturate(160%) !important;
+  -webkit-backdrop-filter:blur(20px) saturate(160%) !important;
+  border-bottom:1px solid rgba(0,0,0,.07) !important;
+  box-shadow:0 1px 0 rgba(0,0,0,.06), 0 4px 20px rgba(0,0,0,.06) !important;
+}
+
+/* ── Buscador hero — glass consistente con el resto del diseño ── */
+html body .nd-hero-search .hsb-pill{
+  background:linear-gradient(145deg,rgba(255,255,255,.09),rgba(255,255,255,.03)) !important;
+  backdrop-filter:blur(20px) saturate(160%) !important;
+  -webkit-backdrop-filter:blur(20px) saturate(160%) !important;
+  border:1px solid rgba(255,255,255,.11) !important;
+  border-top-color:rgba(255,255,255,.18) !important;
+  box-shadow:0 4px 18px rgba(0,0,0,.22), 0 1px 3px rgba(0,0,0,.15) !important;
+}
+html body .nd-hero-search .hsb-pill:focus-within{
+  border-color:rgba(255,107,53,.45) !important;
+  box-shadow:0 4px 22px rgba(255,107,53,.18), 0 1px 3px rgba(0,0,0,.15) !important;
+}
+html body .nd-hero-search .hsb-input{
+  background:transparent !important;
+  color:rgba(255,255,255,.85) !important;
+}
+html body .nd-hero-search .hsb-input::placeholder{color:rgba(255,255,255,.35) !important}
+html body.light-mode .nd-hero-search .hsb-pill{
+  background:rgba(255,255,255,.72) !important;
+  border:1px solid rgba(0,0,0,.07) !important;
+  box-shadow:0 4px 16px rgba(0,0,0,.08) !important;
+}
+html body.light-mode .nd-hero-search .hsb-input{color:rgba(0,0,0,.8) !important}
+html body.light-mode .nd-hero-search .hsb-input::placeholder{color:rgba(0,0,0,.35) !important}
+
+/* ── Encabezados de sección unificados ── */
+.mas-vendidos .section-header,
+.beneficios .container > .section-eyebrow + h2,
+.testimonios .container > .section-eyebrow + h2{ /* anclas para contexto */ }
+.section-eyebrow{
+  text-align:center;font-size:12px;font-weight:700;letter-spacing:2px;
+  text-transform:uppercase;margin-bottom:12px;
+}
+body:not(.light-mode) .section-eyebrow{color:#FF9F43 !important}
+.beneficios .section-eyebrow,
+.testimonios .section-eyebrow{display:block}
+/* Igualar tamaños de los títulos de sección */
+.beneficios h2,.testimonios h2,.mas-vendidos .section-header h2,
+.categorias-home .section-title{
+  font-size:clamp(28px,3.4vw,40px) !important;letter-spacing:-1px !important;margin-bottom:10px !important;
+}
+.mas-vendidos .section-header,.beneficios .container,.testimonios .container{position:relative}
+
+/* ── Footer al estilo del diseño (oscuro) ── */
+body:not(.light-mode) .footer-premium{
+  background:transparent !important;
+  border-top:1px solid rgba(255,255,255,.08) !important;
+}
+body:not(.light-mode) .footer-premium .footer-brand h3,
+body:not(.light-mode) .footer-premium .footer-mobile-brand h3{color:#F5EDE8 !important}
+body:not(.light-mode) .footer-premium .footer-brand p,
+body:not(.light-mode) .footer-premium .footer-mobile-brand p{color:rgba(245,237,232,.5) !important}
+body:not(.light-mode) .footer-premium .footer-col h4{color:#F5EDE8 !important}
+body:not(.light-mode) .footer-premium .footer-col a,
+body:not(.light-mode) .footer-premium .footer-mobile-links a{color:rgba(245,237,232,.55) !important;transition:color .2s}
+body:not(.light-mode) .footer-premium .footer-col a:hover,
+body:not(.light-mode) .footer-premium .footer-mobile-links a:hover{color:#FF9F43 !important}
+body:not(.light-mode) .footer-premium .footer-gold-line{
+  background:linear-gradient(90deg,#FF6B35,#FF9F43) !important;
+}
+body:not(.light-mode) .footer-premium .footer-bottom{border-top-color:rgba(255,255,255,.07) !important}
+
+/* ── Botón flotante de WhatsApp (dentro de .control-buttons) ── */
+.nd-wa-float{
+  width:52px;height:52px;border-radius:50%;padding:0;
+  background:linear-gradient(135deg,#25D366,#128C7E);border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 6px 24px rgba(37,211,102,.45);position:relative;transition:transform .2s;
+}
+.nd-wa-float svg{width:26px;height:26px;position:relative;z-index:1}
+.nd-wa-float:hover{transform:scale(1.08)}
+.nd-wa-float::before{
+  content:'';position:absolute;inset:-6px;border-radius:50%;
+  border:2px solid rgba(37,211,102,.45);animation:nd-waring 2s ease-in-out infinite;pointer-events:none;
+}
+@keyframes nd-waring{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.18);opacity:0}}
+
+/* ================================================================
+   RENDIMIENTO EN MÓVIL — menos blur y menos orbes (gama baja)
+   ================================================================ */
+@media(max-width:768px){
+  .nd-o3,.nd-o4{display:none}
+  .nd-orb{filter:blur(70px)}
+  /* Blur de tarjetas reducido (8px en vez de 24px) — mucho más liviano */
+  body:not(.light-mode) .mas-vendidos .producto-card,
+  body:not(.light-mode) #productosGrid .producto-card,
+  body:not(.light-mode) .beneficio-card,
+  body:not(.light-mode) .testimonio-card,
+  body:not(.light-mode) .prueba-social-strip .prueba-social-inner,
+  body:not(.light-mode) .header{
+    backdrop-filter:blur(8px) saturate(140%) !important;
+    -webkit-backdrop-filter:blur(8px) saturate(140%) !important;
+  }
+  /* Tarjetas glass del hero también más livianas */
+  .nd-cl1,.nd-fbadge{backdrop-filter:blur(10px) saturate(140%);-webkit-backdrop-filter:blur(10px) saturate(140%)}
+  .nd-wa-float{width:50px;height:50px}
+  .nd-wa-float svg{width:24px;height:24px}
+}
+
+/* Respeta usuarios con movimiento reducido */
+@media(prefers-reduced-motion:reduce){
+  .nd-orb,.nd-edot,.nd-fb1,.nd-fb2,.nd-fb3,.nd-wa-float::before{animation:none !important}
+}

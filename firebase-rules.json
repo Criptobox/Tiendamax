@@ -45,12 +45,28 @@
         },
         "fingerprint": {
           ".validate": "newData.isString()"
+<<<<<<< HEAD
         },
         "deviceId": {
           ".validate": "newData.isString()"
+=======
+>>>>>>> claude/panel-improvement-integration-FIPEW
         }
       },
-      ".read": true,
+      ".read": false,
+      ".write": false
+    },
+    "viewers": {
+      "$productId": {
+        "$sessionId": {
+          ".read": false,
+          ".write": true,
+          ".validate": "newData.isNumber()"
+        },
+        ".read": true,
+        ".write": false
+      },
+      ".read": false,
       ".write": false
     },
     "viewers": {

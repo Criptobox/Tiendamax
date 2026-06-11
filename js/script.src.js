@@ -1734,27 +1734,33 @@ function renderizarCategoriasHome() {
     cardTodas.className = 'categoria-card';
     const totalProductos = productos.length;
     cardTodas.innerHTML = `
-        <span class="cat-wm">🛍️</span><span class="cat-icon">🛍️</span>
+        <span class="cat-icon">🛍️</span>
         <span class="cat-name">Todos</span>
         <span class="cat-count">${safeNum(totalProductos)} producto${totalProductos !== 1 ? 's' : ''}</span>
-        <span class="cat-cta">→ Explorar</span>
     `;
     cardTodas.onclick = () => mostrarVistaCategoria('Todas');
     grid.appendChild(cardTodas);
 
-    const maxCount = categorias.length ? Math.max(...categorias.map(cat => productos.filter(p => p.categoria === cat).length)) : 0;
+    // Contar masVendidos por categoría para el badge + POPULAR
+    const mvPorCat = {};
+    productos.forEach(p => {
+        if ((p.masVendido === true || p.masVendido === 'true') && p.stock > 0) {
+            mvPorCat[p.categoria] = (mvPorCat[p.categoria] || 0) + 1;
+        }
+    });
+    const maxMV = Math.max(...Object.values(mvPorCat), 0);
+
     categorias.forEach(cat => {
         const count = productos.filter(p => p.categoria === cat).length;
+        const mv = mvPorCat[cat] || 0;
+        const isPopular = mv > 0 && (mv === maxMV || mv >= 2);
         const card = document.createElement('div');
-        card.className = 'categoria-card' + (count === 0 ? ' proximamente' : '');
-        const icon = escapeHtml(obtenerIconoCategoria(cat));
-        const badge = (count > 0 && count === maxCount) ? '<span class="cat-badge">🔥 Popular</span>' : '';
-        const cta = count > 0 ? '<span class="cat-cta">→ Explorar</span>' : '';
+        card.className = 'categoria-card' + (count === 0 ? ' proximamente' : '') + (isPopular ? ' cat-popular' : '');
         card.innerHTML = `
-            ${badge}<span class="cat-wm">${icon}</span><span class="cat-icon">${icon}</span>
+            <span class="cat-popular-badge">+ Popular</span>
+            <span class="cat-icon">${escapeHtml(obtenerIconoCategoria(cat))}</span>
             <span class="cat-name">${escapeHtml(cat)}</span>
             <span class="cat-count">${count === 0 ? '🕐 Próximamente' : safeNum(count) + ' producto' + (count !== 1 ? 's' : '')}</span>
-            ${cta}
         `;
         card.onclick = () => mostrarVistaCategoria(cat);
         grid.appendChild(card);
@@ -1816,6 +1822,11 @@ function renderizarMasVendidos() {
         grid.appendChild(card);
         if (window._tmAnimObs) window._tmAnimObs.observe(card);
     });
+
+    // Poblar la sección "Oferta del día" (se oculta sola si no hay ofertaDiaId)
+    if (typeof renderOfertaDelDia === 'function') renderOfertaDelDia();
+    // Poblar la galería rotativa del hero con productos reales
+    if (typeof renderHeroGaleria === 'function') renderHeroGaleria();
 }
 
 // ===== AUTENTICACIÓN =====
@@ -3788,6 +3799,202 @@ function desactivarCountdown() {
     const status = document.getElementById('countdownStatus');
     if (status) status.innerHTML = 'Countdown desactivado.';
     mostrarNotificacion('🗑️ Countdown desactivado');
+}
+
+// ═══════════════════════════════════════════════════════
+//  ⚡ OFERTA DEL DÍA (sección del home)
+//  Se puebla con el producto configurado en `ofertaDiaId`.
+//  Si no hay ninguno, la sección queda oculta. Reusa el
+//  countdown activo (activeCountdown) con timer propio.
+// ═══════════════════════════════════════════════════════
+let _ndDealTimer = null;
+function renderOfertaDelDia() {
+    const sec = document.getElementById('ofertaDelDia');
+    if (!sec) return;
+
+    // Limpiar timer previo siempre (evita duplicados al re-render)
+    if (_ndDealTimer) { clearInterval(_ndDealTimer); _ndDealTimer = null; }
+
+    let ofId = null;
+    try { ofId = localStorage.getItem('ofertaDiaId'); } catch (e) {}
+    const prod = ofId ? productos.find(p => String(p.id) === String(ofId)) : null;
+
+    if (!prod) { sec.style.display = 'none'; return; }
+
+    let texto = '⚡ Oferta del día';
+    try { texto = localStorage.getItem('ofertaDiaTexto') || texto; } catch (e) {}
+
+    // Textos y producto
+    const setTxt = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+    const setHtml = (id, val) => { const el = document.getElementById(id); if (el) el.innerHTML = val; };
+    setTxt('ndDealBadge', texto);
+    setTxt('ndDealTitle', prod.nombre);
+    setTxt('ndDealSub', prod.descripcion ? String(prod.descripcion).replace(/<[^>]*>/g, '').slice(0, 110) : 'Aprovecha este precio por tiempo limitado.');
+    setTxt('ndDealName', prod.nombre);
+    setTxt('ndDealPrice', (typeof formatPrecio === 'function') ? formatPrecio(prod.precioActual) : ('$' + prod.precioActual + ' USD'));
+
+    // Imagen real del producto (o emoji por categoría como fallback)
+    const card = document.getElementById('nd-deal-card');
+    const emojiEl = document.getElementById('ndDealEmoji');
+    if (card) {
+        const old = card.querySelector('.nd-dpc-img');
+        if (old) old.remove();
+        if (prod.imagen) {
+            const img = document.createElement('img');
+            img.className = 'nd-dpc-img';
+            img.src = prod.imagen;
+            img.alt = prod.nombre;
+            img.loading = 'lazy';
+            img.onerror = function () { this.remove(); if (emojiEl) emojiEl.style.display = 'block'; };
+            card.insertBefore(img, card.firstChild);
+            if (emojiEl) emojiEl.style.display = 'none';
+        } else {
+            if (emojiEl) {
+                emojiEl.style.display = 'block';
+                emojiEl.textContent = (typeof obtenerIconoCategoria === 'function') ? obtenerIconoCategoria(prod.categoria) : '⚡';
+            }
+        }
+    }
+
+    // Precio original tachado + % descuento
+    const oldEl = document.getElementById('ndDealOld');
+    const discEl = document.getElementById('ndDealDisc');
+    const hayDesc = prod.precioOriginal > 0 && prod.precioOriginal > prod.precioActual;
+    if (oldEl) {
+        if (hayDesc) { oldEl.style.display = 'block'; oldEl.textContent = '$' + Number(prod.precioOriginal).toFixed(0) + ' USD'; }
+        else oldEl.style.display = 'none';
+    }
+    if (discEl) {
+        if (hayDesc) {
+            const pct = Math.round((1 - prod.precioActual / prod.precioOriginal) * 100);
+            setTxt('ndDealDiscPct', pct + '%');
+            discEl.style.display = 'flex';
+        } else discEl.style.display = 'none';
+    }
+
+    // Timer: solo si hay countdown activo para este producto
+    const timerWrap = document.getElementById('ndDealTimer');
+    const cd = (typeof getActiveCountdown === 'function') ? getActiveCountdown() : null;
+    if (cd && String(cd.productId) === String(prod.id) && timerWrap) {
+        timerWrap.style.display = 'flex';
+        const pad = n => String(n).padStart(2, '0');
+        const tick = () => {
+            const rem = Math.max(0, cd.endTime - Date.now());
+            setTxt('nd-deal-h', pad(Math.floor(rem / 3600000)));
+            setTxt('nd-deal-m', pad(Math.floor((rem % 3600000) / 60000)));
+            setTxt('nd-deal-s', pad(Math.floor((rem % 60000) / 1000)));
+            if (rem <= 0 && _ndDealTimer) { clearInterval(_ndDealTimer); _ndDealTimer = null; }
+        };
+        tick();
+        _ndDealTimer = setInterval(tick, 1000);
+    } else if (timerWrap) {
+        timerWrap.style.display = 'none';
+    }
+
+    sec.style.display = 'block';
+}
+
+// Abre el detalle del producto de la oferta del día
+function abrirOfertaDelDia() {
+    let ofId = null;
+    try { ofId = localStorage.getItem('ofertaDiaId'); } catch (e) {}
+    if (ofId && typeof abrirDetalleProducto === 'function') abrirDetalleProducto(ofId);
+}
+
+// ===== GALERÍA ROTATIVA DEL HERO (tarjeta 3D) =====
+let _ndHeroTimer = null;
+let _ndHeroIdx = 0;
+let _ndHeroProds = [];
+
+function renderHeroGaleria() {
+    const card = document.getElementById('ndHeroCard3d');
+    if (!card || typeof productos === 'undefined' || !Array.isArray(productos)) return;
+
+    // Productos: más vendidos con stock; si no hay, los primeros con stock
+    const masVendidos = productos.filter(p => (p.masVendido === true || p.masVendido === 'true') && p.stock > 0);
+    const lista = (masVendidos.length > 0 ? masVendidos : productos.filter(p => p.stock > 0)).slice(0, 6);
+    _ndHeroProds = lista;
+
+    // Sin productos → deja el contenido estático y un fallback en el botón
+    if (lista.length === 0) {
+        const btn0 = document.getElementById('ndHeroBtn');
+        if (btn0 && typeof contactarWhatsApp === 'function') btn0.onclick = (e) => { e.stopPropagation(); contactarWhatsApp(); };
+        return;
+    }
+
+    if (_ndHeroTimer) { clearInterval(_ndHeroTimer); _ndHeroTimer = null; }
+    _ndHeroIdx = 0;
+
+    // Puntos indicadores
+    const dots = document.getElementById('ndHeroDots');
+    if (dots) dots.innerHTML = lista.map((_, i) => `<span class="nd-hero-dot${i === 0 ? ' active' : ''}"></span>`).join('');
+
+    const pintar = (idx) => {
+        const p = lista[idx];
+        if (!p) return;
+        const body = document.getElementById('ndHeroBody');
+        const imgWrap = document.getElementById('ndHeroImg');
+        if (body) body.style.opacity = '0';
+        if (imgWrap) imgWrap.style.opacity = '0';
+        setTimeout(() => {
+            const setTxt = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+            setTxt('ndHeroCat', p.categoria || 'Producto');
+            setTxt('ndHeroTitle', p.nombre || '');
+            const hayDesc = p.precioOriginal > 0 && p.precioOriginal > p.precioActual;
+            setTxt('ndHeroRate', hayDesc
+                ? '⚡ Oferta · ' + safeNum(p.stock) + ' disp.'
+                : '4.9 · ' + (safeNum(p.stock) > 0 ? safeNum(p.stock) + ' disponibles' : 'Top ventas'));
+
+            // Precio (número grande + moneda pequeña, respetando USD/MN)
+            const precioEl = document.getElementById('ndHeroPrice');
+            const usdEl = document.getElementById('ndHeroUsd');
+            const esMN = (typeof tmMonedaActual === 'function' && tmMonedaActual() === 'MN');
+            if (precioEl) {
+                if (esMN && typeof getTasaMN === 'function' && getTasaMN() > 0) {
+                    precioEl.textContent = '$' + Math.round(p.precioActual * getTasaMN()).toLocaleString();
+                    if (usdEl) usdEl.textContent = 'MN';
+                } else {
+                    precioEl.textContent = '$' + Number(p.precioActual).toFixed(0);
+                    if (usdEl) usdEl.textContent = 'USD';
+                }
+            }
+
+            // Imagen real (o emoji por categoría como fallback)
+            if (imgWrap) {
+                const fallback = (typeof obtenerIconoCategoria === 'function') ? obtenerIconoCategoria(p.categoria) : '📦';
+                if (p.imagen) {
+                    imgWrap.innerHTML = `<img src="${escapeAttr(p.imagen)}" alt="${escapeAttr(p.nombre)}" loading="lazy" style="width:100%;height:100%;object-fit:contain" onerror="this.parentNode.textContent='${fallback}'">`;
+                } else {
+                    imgWrap.textContent = fallback;
+                }
+            }
+
+            if (body) body.style.opacity = '1';
+            if (imgWrap) imgWrap.style.opacity = '1';
+            if (dots) dots.querySelectorAll('.nd-hero-dot').forEach((d, i) => d.classList.toggle('active', i === idx));
+        }, 260);
+    };
+
+    pintar(0);
+
+    // Tocar la tarjeta abre el detalle del producto actual
+    card.onclick = () => { const p = _ndHeroProds[_ndHeroIdx]; if (p && typeof abrirDetalleProducto === 'function') abrirDetalleProducto(p.id); };
+    // Botón "Pedir" → WhatsApp con el producto actual
+    const btn = document.getElementById('ndHeroBtn');
+    if (btn) btn.onclick = (e) => {
+        e.stopPropagation();
+        const p = _ndHeroProds[_ndHeroIdx];
+        if (p && typeof tmComprar === 'function') tmComprar(e, p.id, p.nombre);
+        else if (typeof contactarWhatsApp === 'function') contactarWhatsApp();
+    };
+
+    // Auto-rotación cada 4s (solo si hay más de un producto)
+    const avanzar = () => { _ndHeroIdx = (_ndHeroIdx + 1) % lista.length; pintar(_ndHeroIdx); };
+    if (lista.length > 1) _ndHeroTimer = setInterval(avanzar, 4000);
+
+    // Pausa al pasar el mouse / tocar
+    card.onmouseenter = () => { if (_ndHeroTimer) { clearInterval(_ndHeroTimer); _ndHeroTimer = null; } };
+    card.onmouseleave = () => { if (lista.length > 1 && !_ndHeroTimer) _ndHeroTimer = setInterval(avanzar, 4000); };
 }
 
 function getActiveCountdown() {

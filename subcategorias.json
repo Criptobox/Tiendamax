@@ -15,6 +15,7 @@
     "AUDIO",
     "ACCESORIOS"
   ],
+<<<<<<< HEAD
   "UTILES": [
     "HERRAMIENTAS",
     "SALUD Y BIENESTAR",
@@ -23,6 +24,9 @@
     "ILUMINACIÓN",
     "OTROS"
   ],
+=======
+  "UTILES": [],
+>>>>>>> claude/panel-improvement-integration-FIPEW
   "CARROS": [
     "ACEITES Y LUBRICANTES",
     "REFRIGERANTES",
