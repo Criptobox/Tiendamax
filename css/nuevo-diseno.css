@@ -169,10 +169,12 @@ body.light-mode .categorias-home-inner{
    `html body .categorias-grid .categoria-card` (especificidad 0,2,2). */
 html body .categorias-home .categorias-grid{
   display:grid !important;
-  grid-template-columns:repeat(4,1fr) !important;
-  grid-auto-rows:185px !important;
+  grid-template-columns:repeat(6,1fr) !important;
+  grid-auto-rows:78px !important;
+  grid-auto-flow:row dense !important;
   gap:14px !important;
   max-width:100% !important;
+  margin-top:30px !important;   /* espacio para los íconos que sobresalen */
 }
 html body .categorias-home .categorias-grid .categoria-card{
   border-radius:24px !important;
@@ -207,7 +209,7 @@ html body .categorias-home .categorias-grid .categoria-card::before{
 html body .categorias-home .categorias-grid .categoria-card::after{
   content:'' !important;display:block !important;
   position:absolute !important;inset:0 !important;
-  border-radius:24px !important;
+  border-radius:inherit !important;
   background:linear-gradient(135deg,rgba(255,255,255,.09) 0%,transparent 52%) !important;
   pointer-events:none !important;z-index:2 !important;
 }
@@ -267,15 +269,65 @@ html body .categorias-home .categorias-grid .categoria-card:not(.cat-popular) .c
   display:none !important;
 }
 
-/* Bento: 1ª ALTA (col izquierda), 2ª ANCHA (fila central), 3ª ALTA (col derecha) */
-html body .categorias-home .categorias-grid .categoria-card:nth-child(1){grid-row:span 2 !important}
-html body .categorias-home .categorias-grid .categoria-card:nth-child(2){grid-column:span 2 !important}
-html body .categorias-home .categorias-grid .categoria-card:nth-child(3){grid-row:span 2 !important}
-/* Íconos más grandes en las tiles altas */
-html body .categorias-home .categorias-grid .categoria-card:nth-child(1) .cat-icon,
-html body .categorias-home .categorias-grid .categoria-card:nth-child(3) .cat-icon{font-size:90px !important;top:20px !important;right:14px !important}
-/* Tile 2 (ancha): ícono grande centrado-derecha */
-html body .categorias-home .categorias-grid .categoria-card:nth-child(2) .cat-icon{font-size:80px !important;top:18px !important;right:18px !important}
+/* ── Bento calcado de la referencia: 3 tiles grandes arriba, medianas al
+   centro, pequeñas abajo (grilla 6 col × filas 78px, flujo denso) ── */
+html body .categorias-home .categorias-grid .categoria-card:nth-child(-n+4){grid-column:span 2 !important;grid-row:span 3 !important}
+html body .categorias-home .categorias-grid .categoria-card:nth-child(5){grid-column:span 2 !important;grid-row:span 2 !important}
+html body .categorias-home .categorias-grid .categoria-card:nth-child(6){grid-column:span 2 !important;grid-row:span 3 !important}
+html body .categorias-home .categorias-grid .categoria-card:nth-child(7){grid-column:span 2 !important;grid-row:span 2 !important}
+/* Tiles pequeñas (8 en adelante) */
+html body .categorias-home .categorias-grid .categoria-card:nth-child(8){grid-column:span 1 !important;grid-row:span 2 !important}
+html body .categorias-home .categorias-grid .categoria-card:nth-child(n+9){grid-column:span 1 !important;grid-row:span 1 !important}
+html body .categorias-home .categorias-grid .categoria-card:nth-child(n+8){
+  padding:13px !important;border-radius:20px !important;
+}
+html body .categorias-home .categorias-grid .categoria-card:nth-child(n+8) .cat-icon{font-size:30px !important;top:10px !important;right:10px !important}
+html body .categorias-home .categorias-grid .categoria-card:nth-child(n+8) .cat-name{font-size:12.5px !important}
+html body .categorias-home .categorias-grid .categoria-card:nth-child(n+8) .cat-count{font-size:10.5px !important;margin-top:3px !important}
+html body .categorias-home .categorias-grid .categoria-card:nth-child(n+8)::before{width:100px !important;height:100px !important;top:-20px !important;right:-20px !important}
+
+/* ── Tile 1 «Todos»: sin ícono, solo gradiente con brillo y texto grande ── */
+html body .categorias-home .categorias-grid .categoria-card:nth-child(1) .cat-icon{display:none !important}
+html body .categorias-home .categorias-grid .categoria-card:nth-child(1) .cat-name{font-size:25px !important}
+html body .categorias-home .categorias-grid .categoria-card:nth-child(1) .cat-count{font-size:13px !important}
+
+/* ── Tile 2 «WiFi»: ícono grande arriba-derecha dentro de la tarjeta ── */
+html body .categorias-home .categorias-grid .categoria-card:nth-child(2) .cat-icon{font-size:84px !important;top:16px !important;right:16px !important}
+
+/* ── Tile 3 «Energía»: ícono en chip de cristal flotante que sobresale ── */
+html body .categorias-home .categorias-grid .categoria-card:nth-child(3){overflow:visible !important;z-index:3 !important}
+html body .categorias-home .categorias-grid .categoria-card:nth-child(3)::before{display:none !important}
+html body .categorias-home .categorias-grid .categoria-card:nth-child(3) .cat-icon{
+  top:-30px !important;right:-10px !important;
+  width:102px !important;height:102px !important;
+  font-size:56px !important;
+  display:flex !important;align-items:center !important;justify-content:center !important;
+  background:linear-gradient(145deg,rgba(70,50,20,.78),rgba(40,28,12,.85)) !important;
+  backdrop-filter:blur(14px) saturate(150%) !important;
+  -webkit-backdrop-filter:blur(14px) saturate(150%) !important;
+  border:1px solid rgba(255,255,255,.16) !important;
+  border-top-color:rgba(255,255,255,.26) !important;
+  border-radius:26px !important;
+  box-shadow:0 16px 38px rgba(0,0,0,.5),0 0 30px rgba(255,180,40,.18) !important;
+  opacity:1 !important;
+}
+
+/* ── Tile 4 «Celulares»: el ícono asoma por el borde superior ── */
+html body .categorias-home .categorias-grid .categoria-card:nth-child(4){overflow:visible !important;z-index:2 !important}
+html body .categorias-home .categorias-grid .categoria-card:nth-child(4)::before{display:none !important}
+html body .categorias-home .categorias-grid .categoria-card:nth-child(4){
+  box-shadow:0 2px 8px rgba(0,0,0,.35),0 12px 28px rgba(0,0,0,.28),inset 0 0 36px rgba(167,139,250,.06) !important;
+}
+html body .categorias-home .categorias-grid .categoria-card:nth-child(4) .cat-icon{
+  font-size:76px !important;top:-32px !important;right:22px !important;
+  filter:drop-shadow(0 10px 18px rgba(0,0,0,.5)) !important;
+}
+
+/* ── Tile 5 «Útiles»: ícono mediano a la derecha ── */
+html body .categorias-home .categorias-grid .categoria-card:nth-child(5) .cat-icon{font-size:64px !important;top:24px !important;right:18px !important}
+
+/* ── Tile 6 «Motos»: ícono grande dominante centrado a la derecha ── */
+html body .categorias-home .categorias-grid .categoria-card:nth-child(6) .cat-icon{font-size:96px !important;top:48px !important;right:6px !important}
 
 /* Paleta oscura y atmosférica — inspirada en la imagen de referencia.
    Cada tile tiene fondo oscuro tintado + blob de color en ::before. */
@@ -296,9 +348,9 @@ html body .categorias-home .categorias-grid .categoria-card:nth-child(6n+4){
 html body .categorias-home .categorias-grid .categoria-card:nth-child(6n+4)::before{
   background:radial-gradient(circle,rgba(167,139,250,.6),transparent 65%) !important}
 html body .categorias-home .categorias-grid .categoria-card:nth-child(6n+5){
-  background:linear-gradient(145deg,#0d2e32 0%,#071c20 100%) !important}
+  background:linear-gradient(145deg,#23262e 0%,#15171d 100%) !important}
 html body .categorias-home .categorias-grid .categoria-card:nth-child(6n+5)::before{
-  background:radial-gradient(circle,rgba(20,184,166,.6),transparent 65%) !important}
+  background:radial-gradient(circle,rgba(148,163,184,.5),transparent 65%) !important}
 html body .categorias-home .categorias-grid .categoria-card:nth-child(6n+6){
   background:linear-gradient(145deg,#3d2010 0%,#281508 100%) !important}
 html body .categorias-home .categorias-grid .categoria-card:nth-child(6n+6)::before{
@@ -308,17 +360,48 @@ body.light-mode .categorias-home .categorias-grid .categoria-card:nth-child(6n+1
 body.light-mode .categorias-home .categorias-grid .categoria-card:nth-child(6n+2){background:linear-gradient(145deg,#1e3a70,#0d2050) !important}
 body.light-mode .categorias-home .categorias-grid .categoria-card:nth-child(6n+3){background:linear-gradient(145deg,#d4760f,#a85508) !important}
 body.light-mode .categorias-home .categorias-grid .categoria-card:nth-child(6n+4){background:linear-gradient(145deg,#3d2470,#281558) !important}
-body.light-mode .categorias-home .categorias-grid .categoria-card:nth-child(6n+5){background:linear-gradient(145deg,#103e42,#072830) !important}
+body.light-mode .categorias-home .categorias-grid .categoria-card:nth-child(6n+5){background:linear-gradient(145deg,#2a2e38,#1a1d24) !important}
 body.light-mode .categorias-home .categorias-grid .categoria-card:nth-child(6n+6){background:linear-gradient(145deg,#5a3018,#3a1e08) !important}
+
+/* ── Posiciones 7-12: colores propios (como la referencia), ganan al ciclo 6n
+   también en modo claro (selector dual, declarado después del bloque light) ── */
+html body .categorias-home .categorias-grid .categoria-card:nth-child(7),
+body.light-mode .categorias-home .categorias-grid .categoria-card:nth-child(7){
+  background:linear-gradient(145deg,#2d1b4e 0%,#1c1034 100%) !important}
+html body .categorias-home .categorias-grid .categoria-card:nth-child(7)::before{
+  background:radial-gradient(circle,rgba(167,139,250,.55),transparent 65%) !important}
+html body .categorias-home .categorias-grid .categoria-card:nth-child(8),
+body.light-mode .categorias-home .categorias-grid .categoria-card:nth-child(8){
+  background:linear-gradient(145deg,#3d1a24 0%,#28101a 100%) !important}
+html body .categorias-home .categorias-grid .categoria-card:nth-child(8)::before{
+  background:radial-gradient(circle,rgba(244,114,114,.5),transparent 65%) !important}
+html body .categorias-home .categorias-grid .categoria-card:nth-child(9),
+body.light-mode .categorias-home .categorias-grid .categoria-card:nth-child(9){
+  background:linear-gradient(145deg,#3a2230 0%,#261520 100%) !important}
+html body .categorias-home .categorias-grid .categoria-card:nth-child(9)::before{
+  background:radial-gradient(circle,rgba(232,121,180,.45),transparent 65%) !important}
+html body .categorias-home .categorias-grid .categoria-card:nth-child(10),
+body.light-mode .categorias-home .categorias-grid .categoria-card:nth-child(10){
+  background:linear-gradient(145deg,#15301f 0%,#0c2014 100%) !important}
+html body .categorias-home .categorias-grid .categoria-card:nth-child(10)::before{
+  background:radial-gradient(circle,rgba(74,222,128,.45),transparent 65%) !important}
+html body .categorias-home .categorias-grid .categoria-card:nth-child(11),
+body.light-mode .categorias-home .categorias-grid .categoria-card:nth-child(11){
+  background:linear-gradient(145deg,#26262c 0%,#18181d 100%) !important}
+html body .categorias-home .categorias-grid .categoria-card:nth-child(11)::before{
+  background:radial-gradient(circle,rgba(156,163,175,.4),transparent 65%) !important}
+html body .categorias-home .categorias-grid .categoria-card:nth-child(12),
+body.light-mode .categorias-home .categorias-grid .categoria-card:nth-child(12){
+  background:linear-gradient(145deg,#2b251a 0%,#1c1810 100%) !important}
+html body .categorias-home .categorias-grid .categoria-card:nth-child(12)::before{
+  background:radial-gradient(circle,rgba(251,191,36,.4),transparent 65%) !important}
 
 /* Skeleton loaders adaptados al bento */
 html body .categorias-home .categorias-grid .skeleton-card{
   border-radius:24px !important;height:auto !important;max-width:none !important;width:auto !important;flex:none !important;
   background:rgba(255,255,255,.05) !important;border:1px solid rgba(255,255,255,.07) !important;
 }
-html body .categorias-home .categorias-grid .skeleton-card:nth-child(1){grid-row:span 2 !important}
-html body .categorias-home .categorias-grid .skeleton-card:nth-child(2){grid-column:span 2 !important}
-html body .categorias-home .categorias-grid .skeleton-card:nth-child(3){grid-row:span 2 !important}
+html body .categorias-home .categorias-grid .skeleton-card{grid-column:span 2 !important;grid-row:span 3 !important}
 body.light-mode .categorias-home .categorias-grid .skeleton-card{background:rgba(0,0,0,.04) !important;border-color:rgba(0,0,0,.06) !important}
 
 /* ================================================================
@@ -474,13 +557,13 @@ body:not(.light-mode) .cta-final .btn-large:hover{box-shadow:0 14px 48px rgba(37
   .nd-hero-search{max-width:none;margin:0 auto 28px}
 }
 @media(max-width:1024px){
-  .categorias-home .categorias-grid{grid-template-columns:repeat(2,1fr) !important;grid-auto-rows:160px !important}
-  /* En tablet: 1ª ancha, 2ª y 3ª normales */
-  .categorias-home .categoria-card:nth-child(1){grid-row:span 1 !important;grid-column:span 2 !important}
-  .categorias-home .categoria-card:nth-child(2){grid-column:span 1 !important;grid-row:span 1 !important}
-  .categorias-home .categoria-card:nth-child(3){grid-row:span 1 !important;grid-column:span 1 !important}
-  .categorias-home .categoria-card:nth-child(1) .cat-icon,
-  .categorias-home .categoria-card:nth-child(3) .cat-icon{font-size:60px !important}
+  /* Tablet: 4 columnas — tiles grandes a 2 por fila, pequeñas a 4 por fila */
+  html body .categorias-home .categorias-grid{grid-template-columns:repeat(4,1fr) !important;grid-auto-rows:70px !important}
+  html body .categorias-home .categorias-grid .categoria-card:nth-child(-n+7){grid-column:span 2 !important;grid-row:span 3 !important}
+  html body .categorias-home .categorias-grid .categoria-card:nth-child(8){grid-column:span 1 !important;grid-row:span 2 !important}
+  html body .categorias-home .categorias-grid .categoria-card:nth-child(n+9){grid-column:span 1 !important;grid-row:span 2 !important}
+  html body .categorias-home .categorias-grid .categoria-card:nth-child(2) .cat-icon{font-size:64px !important}
+  html body .categorias-home .categorias-grid .categoria-card:nth-child(6) .cat-icon{font-size:72px !important;top:36px !important}
   .nd-deal{grid-template-columns:1fr;gap:36px;padding:36px}
   .nd-deal-vis{justify-self:center}
 }
@@ -491,7 +574,23 @@ body:not(.light-mode) .cta-final .btn-large:hover{box-shadow:0 14px 48px rgba(37
   .nd-btn-primary{justify-content:center}
   .nd-hero-search{flex-wrap:wrap}
   .nd-hero-search .currency-bar{margin:0 auto !important}
-  .categorias-home .categoria-card .cat-icon{font-size:44px !important;top:12px !important;right:12px !important}
+  /* Móvil: 2 columnas — «Todos» ancha, el resto a 2 por fila, pequeñas igual */
+  html body .categorias-home .categorias-grid{grid-template-columns:repeat(2,1fr) !important;grid-auto-rows:58px !important;gap:11px !important}
+  html body .categorias-home .categorias-grid .categoria-card:nth-child(1){grid-column:span 2 !important;grid-row:span 2 !important}
+  html body .categorias-home .categorias-grid .categoria-card:nth-child(n+2){grid-column:span 1 !important;grid-row:span 3 !important}
+  html body .categorias-home .categorias-grid .categoria-card:nth-child(n+8){grid-column:span 1 !important;grid-row:span 2 !important}
+  html body .categorias-home .categorias-grid .categoria-card{padding:16px !important}
+  html body .categorias-home .categorias-grid .categoria-card .cat-icon{font-size:46px !important;top:12px !important;right:12px !important}
+  html body .categorias-home .categorias-grid .categoria-card:nth-child(1) .cat-name{font-size:20px !important}
+  html body .categorias-home .categorias-grid .categoria-card:nth-child(3) .cat-icon{
+    width:64px !important;height:64px !important;font-size:34px !important;
+    top:-18px !important;right:-6px !important;border-radius:18px !important;
+  }
+  html body .categorias-home .categorias-grid .categoria-card:nth-child(4) .cat-icon{font-size:50px !important;top:-20px !important;right:14px !important}
+  html body .categorias-home .categorias-grid .categoria-card:nth-child(6) .cat-icon{font-size:54px !important;top:auto !important;bottom:48px !important}
+  html body .categorias-home .categorias-grid .categoria-card:nth-child(n+8) .cat-icon{font-size:26px !important;top:8px !important;right:8px !important}
+  html body .categorias-home .categorias-grid .skeleton-card{grid-column:span 1 !important;grid-row:span 3 !important}
+  html body .categorias-home .categorias-grid .skeleton-card:nth-child(1){grid-column:span 2 !important;grid-row:span 2 !important}
   .nd-dtimer{justify-content:flex-start;flex-wrap:wrap}
   .nd-tblk{width:64px}
 }
