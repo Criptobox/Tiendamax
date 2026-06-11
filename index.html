@@ -129,9 +129,9 @@
 
     <!-- CSS unido + minificado (generado por scripts/build_css.py vía GitHub Action).
          Para editar estilos, edita los CSS fuente en /css y la Action regenera este bundle. -->
-    <link rel="stylesheet" href="css/bundle.css?v=d9692a69">
-    <link rel="stylesheet" href="css/nuevo-diseno.css?v=cdd3d9b9">
-    <link rel="stylesheet" href="css/styles.fixes.css?v=ebccb527">
+    <link rel="stylesheet" href="css/bundle.css?v=b2ca0e0a">
+    <link rel="stylesheet" href="css/nuevo-diseno.css?v=cda3e976">
+    <link rel="stylesheet" href="css/styles.fixes.css?v=202606111836">
 
 
     <!-- Estilos para "Vistos Recientemente" -->
@@ -498,20 +498,24 @@
                     <div class="nd-hero-right">
                         <div class="nd-stack-wrap">
                             <!-- Tarjeta 3D = galería rotativa de productos reales (la puebla renderHeroGaleria()) -->
-                            <div class="nd-wa-card" id="ndHeroCard3d" role="button" tabindex="0" aria-label="Producto destacado">
-                                <div class="nd-wa-img" id="ndHeroImg">
-                                    <span style="font-size:90px;line-height:1">📱</span>
-                                </div>
-                                <div class="nd-wa-overlay">
-                                    <span class="nd-wa-cat" id="ndHeroCat">Celulares</span>
-                                    <div class="nd-wa-name" id="ndHeroTitle">Smartphone Android 5G</div>
-                                    <div class="nd-wa-rate" id="ndHeroRate">★★★★★ · Top ventas</div>
-                                    <div class="nd-wa-bottom">
-                                        <div class="nd-wa-price">
-                                            <span id="ndHeroPrice">$180</span>
-                                            <span class="nd-wa-cur" id="ndHeroUsd">USD</span>
+                            <div class="nd-card3d" id="ndHeroCard3d" role="button" tabindex="0" aria-label="Producto destacado">
+                                <div class="nd-cl nd-cl3"></div>
+                                <div class="nd-cl nd-cl2"></div>
+                                <div class="nd-cl nd-cl1">
+                                    <!-- Imagen full-cover estilo story WA -->
+                                    <div class="nd-card-img nd-card-story" id="ndHeroImg">📱</div>
+                                    <!-- Overlay con datos superpuestos -->
+                                    <div class="nd-story-overlay" id="ndHeroBody">
+                                        <span class="nd-wa-cat" id="ndHeroCat">Celulares</span>
+                                        <div class="nd-story-name" id="ndHeroTitle">Smartphone Android 5G</div>
+                                        <div class="nd-story-rate" id="ndHeroRate">★★★★★ · Top ventas</div>
+                                        <div class="nd-story-bottom">
+                                            <div class="nd-story-price">
+                                                <span id="ndHeroPrice">$180</span>
+                                                <span class="nd-story-cur" id="ndHeroUsd">USD</span>
+                                            </div>
+                                            <button type="button" class="nd-btn-pedir" id="ndHeroBtn">💬 Pedir</button>
                                         </div>
-                                        <button type="button" class="nd-wa-pedir" id="ndHeroBtn">💬 Pedir</button>
                                     </div>
                                 </div>
                                 <div class="nd-hero-dots" id="ndHeroDots" aria-hidden="true"></div>
@@ -1087,7 +1091,7 @@
     </script>
     <script src="js/analytics.js?v=9d585bc5" defer></script>
     <script src="js/seo-dynamico.js?v=ea7e25bb" defer></script>
-    <script src="js/script.js?v=98ce017a" defer></script>
+    <script src="js/script.js?v=202606111836" defer></script>
     <script src="js/push-fix.js?v=76c43651" defer></script>
     <script src="js/subcategorias.js?v=56dd618e" defer></script>
     <script src="js/share-patch.js?v=1e3ed8b5" defer></script>
@@ -1203,7 +1207,7 @@
     })();
     </script>
 <!-- ===== BANNER SLIDER + TAGLINE (movido a archivo externo para reuso en admin) ===== -->
-    <script src="js/urgencia-ventas.js?v=5c828568" defer></script>
+    <script src="js/urgencia-ventas.js?v=202606111836" defer></script>
     <script src="js/banners.js?v=9d22f82e" defer></script>
     <script src="js/hero-efectos.js?v=85781674" defer></script>
 <script>
