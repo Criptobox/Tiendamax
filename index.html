@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta name="tiendamax-admin-final-version" content="admin-final-20260605-07">
-<script>window.TIENDAMAX_ADMIN_FINAL_VERSION="admin-final-20260605-07";</script>
+<meta name="tiendamax-admin-final-version" content="admin-final-202606111836">
+<script>window.TIENDAMAX_ADMIN_FINAL_VERSION="admin-final-202606111836";</script>
     <meta charset="UTF-8">
     <script>
     // Aplicar tema guardado lo antes posible para evitar parpadeo
@@ -129,8 +129,8 @@
 
     <!-- CSS unido + minificado (generado por scripts/build_css.py vía GitHub Action).
          Para editar estilos, edita los CSS fuente en /css y la Action regenera este bundle. -->
-    <link rel="stylesheet" href="css/bundle.css?v=d9692a69">
-    <link rel="stylesheet" href="css/nuevo-diseno.css?v=3d44bfbb">
+    <link rel="stylesheet" href="css/bundle.css?v=b2ca0e0a">
+    <link rel="stylesheet" href="css/nuevo-diseno.css?v=cda3e976">
 
 
     <!-- Estilos para "Vistos Recientemente" -->
@@ -1086,7 +1086,7 @@
     </script>
     <script src="js/analytics.js?v=9d585bc5" defer></script>
     <script src="js/seo-dynamico.js?v=ea7e25bb" defer></script>
-    <script src="js/script.js?v=267e4fa3" defer></script>
+    <script src="js/script.js?v=dd11066e" defer></script>
     <script src="js/push-fix.js?v=76c43651" defer></script>
     <script src="js/subcategorias.js?v=56dd618e" defer></script>
     <script src="js/share-patch.js?v=1e3ed8b5" defer></script>
@@ -1116,7 +1116,7 @@
     // Service Worker con auto-actualización y reload cuando hay versión nueva
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-            navigator.serviceWorker.register('/sw.js?v=admin-final-20260605-07', { updateViaCache: 'none' }).then(reg => {
+            navigator.serviceWorker.register('/sw.js?v=admin-final-202606111836', { updateViaCache: 'none' }).then(reg => {
                 // Si hay un SW esperando, decirle que tome el control YA
                 if (reg.waiting) reg.waiting.postMessage('SKIP_WAITING');
 
@@ -1500,7 +1500,7 @@ html body.light-mode .notif-modal-footer { color: #888 !important; }
         if (count >= 3) {
             count = 0;
             if (typeof abrirLoginAdmin === 'function') abrirLoginAdmin();
-            else window.location.href = 'admin.html?v=admin-final-20260605-07';
+            else window.location.href = 'admin.html?v=admin-final-202606111836';
             return;
         }
         timer = setTimeout(function() { count = 0; }, 1000);
