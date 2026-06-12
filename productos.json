@@ -457,7 +457,7 @@
     "stock": 53,
     "categoria": "CARROS",
     "subcategoria": "ACEITES Y LUBRICANTES",
-    "masVendido": true,
+    "masVendido": false,
     "usado": false,
     "garantia": "",
     "devolucion": false,
