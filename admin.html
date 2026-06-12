@@ -961,20 +961,32 @@ async function tmAdminRefreshSubscribers(){
       if(!_intReady||!m.data)return;
       showNotif('🛒 Pedido nuevo','Alguien quiere comprar en TiendaMax');
     });
-    // Suscriptores
+    // Suscriptores — solo notificar si es una clave NUEVA (no una actualización de existente)
     if(_esTok){try{_esTok.close();}catch(e){}}
     _tokReady=false;
+    var _knownTokKeys=new Set();
     _esTok=new EventSource(base+'/tokens.json');
     _esTok.addEventListener('put',function(e){
       var m;try{m=JSON.parse(e.data);}catch(err){return;}
-      if(m.path==='/'){_tokReady=true;return;}
+      if(m.path==='/'){
+        _tokReady=true;
+        // Cargar todas las claves existentes al inicio — no notificar por estas
+        if(m.data&&typeof m.data==='object') Object.keys(m.data).forEach(function(k){_knownTokKeys.add(k);});
+        return;
+      }
       if(!_tokReady||!m.data)return;
+      var key=(m.path||'').replace(/^\//,'').split('/')[0];
+      if(!key||_knownTokKeys.has(key))return; // suscriptor ya conocido, skip
+      _knownTokKeys.add(key);
       showNotif('🔔 Nuevo suscriptor','Alguien se suscribió a notificaciones');
     });
     _esTok.addEventListener('patch',function(e){
       var m;try{m=JSON.parse(e.data);}catch(err){return;}
       if(!_tokReady||!m.data)return;
-      showNotif('🔔 Nuevo suscriptor','Alguien se suscribió a notificaciones');
+      // patch en la raíz = múltiples claves nuevas posibles
+      var nuevos=Object.keys(m.data).filter(function(k){return !_knownTokKeys.has(k);});
+      nuevos.forEach(function(k){_knownTokKeys.add(k);});
+      if(nuevos.length) showNotif('🔔 Nuevo suscriptor','Alguien se suscribió a notificaciones');
     });
     setStatus('✅ Alertas activas — recibirás notificaciones en tiempo real',true);
     var btn=document.getElementById('btnActivarAlertaAdmin');

@@ -7163,11 +7163,16 @@ async function solicitarYRegistrarTokenFCM(messaging, config, fcmReg) {
             const rtdbUrl = config.databaseURL || `https://${config.projectId}-default-rtdb.firebaseio.com`;
 
             // Limpia entradas anteriores del mismo dispositivo/token antes de guardar.
+            let alreadyStored = false;
             try {
                 const allRes = await fetch(`${rtdbUrl}/tokens.json?_=${Date.now()}`, { cache: 'no-store' });
                 if (allRes.ok) {
                     const allData = await allRes.json();
                     if (allData && typeof allData === 'object') {
+                        // Si el token ya está guardado con la misma clave y valor, no escribir de nuevo.
+                        if (allData[tokenId] && allData[tokenId].token === token) {
+                            alreadyStored = true;
+                        }
                         const deletes = [];
                         Object.keys(allData).forEach(k => {
                             const t = allData[k];
@@ -7179,7 +7184,10 @@ async function solicitarYRegistrarTokenFCM(messaging, config, fcmReg) {
                     }
                 }
             } catch(e) {}
-            
+
+            // Evitar escribir si el token ya está registrado correctamente (previene spam al admin)
+            if (alreadyStored) return;
+
             await fetch(`${rtdbUrl}/tokens/${tokenId}.json`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },

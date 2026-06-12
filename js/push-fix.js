@@ -160,11 +160,14 @@
     var fp       = deviceFingerprint();
 
     // Limpiar entradas anteriores del mismo dispositivo
+    var _alreadyStored = false;
     try {
       var allRes = await fetch(dbURL + "/tokens.json?_=" + Date.now(), { cache: "no-store" });
       if (allRes.ok) {
         var allData = await allRes.json();
         if (allData && typeof allData === "object") {
+          // Si el token ya existe con la misma clave y valor, no volver a escribir
+          if (allData[deviceId] && allData[deviceId].token === token) { _alreadyStored = true; }
           var deletes = [];
           Object.keys(allData).forEach(function (k) {
             if (k === deviceId) return; // es la entrada actual, no tocar
@@ -182,6 +185,8 @@
         }
       }
     } catch (e) {}
+
+    if (_alreadyStored) return true; // ya registrado, no escribir de nuevo
 
     var resp = await fetch(dbURL + "/tokens/" + deviceId + ".json", {
       method: "PUT",
