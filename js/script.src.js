@@ -3841,6 +3841,10 @@ function renderOfertaDelDia() {
 
     if (!prod) { sec.style.display = 'none'; return; }
 
+    // Solo mostrar si hay countdown activo para este producto
+    const cdGate = (typeof getActiveCountdown === 'function') ? getActiveCountdown() : null;
+    if (!cdGate || String(cdGate.productId) !== String(prod.id)) { sec.style.display = 'none'; return; }
+
     let texto = '⚡ Oferta del día';
     try { texto = localStorage.getItem('ofertaDiaTexto') || texto; } catch (e) {}
 
