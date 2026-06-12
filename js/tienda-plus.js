@@ -136,7 +136,13 @@
                     '<option value="vendidos">Más vendidos</option>' +
                 '</select>' +
             '</div>' +
-            '<label class="tmplus-check"><input type="checkbox" id="tmSoloStock"> Solo disponibles</label>';
+            '<label class="tmplus-check" for="tmSoloStock">' +
+                '<span class="tmplus-toggle-wrap">' +
+                    '<input type="checkbox" id="tmSoloStock" class="tmplus-toggle-input">' +
+                    '<span class="tmplus-toggle-thumb"></span>' +
+                '</span>' +
+                ' Solo disponibles' +
+            '</label>';
         grid.parentNode.insertBefore(bar, grid);
         $('tmOrden').addEventListener('change', function() {
             ordenActual = this.value;

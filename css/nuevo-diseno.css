@@ -962,3 +962,94 @@ body.light-mode .nd-deal{box-shadow:0 20px 60px rgba(232,80,30,.22) !important}
 @media(max-width:600px){
   .mas-vendidos{padding:48px 0}
 }
+
+/* ════════════════════════════════════════════════════════
+   MEJORAS VISTA CATÁLOGO
+   ════════════════════════════════════════════════════════ */
+
+/* 1. Título de categoría — tipografía de impacto */
+#tituloCategoriaActual{
+  font-family:'Playfair Display',serif !important;
+  font-size:clamp(24px,6vw,34px) !important;
+  font-weight:800 !important;
+  line-height:1.15 !important;
+  letter-spacing:-.5px !important;
+  background:linear-gradient(135deg,#fff 20%,#FF6B35 100%) !important;
+  -webkit-background-clip:text !important;
+  -webkit-text-fill-color:transparent !important;
+  background-clip:text !important;
+}
+body.light-mode #tituloCategoriaActual{
+  background:linear-gradient(135deg,#1a1008 20%,#FF6B35 100%) !important;
+  -webkit-background-clip:text !important;
+  -webkit-text-fill-color:transparent !important;
+  background-clip:text !important;
+}
+
+/* 2. Barra de filtros — glass naranja en lugar de gold/graphite */
+.tmplus-bar{
+  border-radius:16px !important;
+  border-left:3px solid #FF6B35 !important;
+}
+body:not(.light-mode) .tmplus-bar{
+  background:linear-gradient(135deg,rgba(255,107,53,.10),rgba(255,160,50,.06)) !important;
+  backdrop-filter:blur(16px) saturate(150%) !important;
+  -webkit-backdrop-filter:blur(16px) saturate(150%) !important;
+  border:1px solid rgba(255,107,53,.28) !important;
+  border-left:3px solid #FF6B35 !important;
+  box-shadow:0 4px 20px rgba(255,107,53,.12) !important;
+}
+body.light-mode .tmplus-bar{
+  background:#fff !important;
+  border:1px solid rgba(255,107,53,.22) !important;
+  border-left:3px solid #FF6B35 !important;
+  box-shadow:0 2px 12px rgba(255,107,53,.10) !important;
+}
+.tmplus-label{color:#FF6B35 !important}
+body:not(.light-mode) .tmplus-select{
+  background:rgba(255,255,255,.07) !important;
+  border-color:rgba(255,107,53,.3) !important;
+  color:#fff !important;
+}
+body:not(.light-mode) .tmplus-select:focus{
+  border-color:#FF6B35 !important;
+  box-shadow:0 0 0 3px rgba(255,107,53,.18) !important;
+}
+body:not(.light-mode) .tmplus-check{color:rgba(255,255,255,.75) !important}
+
+/* 3. Toggle switch — reemplaza el checkbox nativo */
+.tmplus-check{align-items:center !important;gap:10px !important}
+.tmplus-toggle-wrap{
+  position:relative;display:inline-block;
+  width:44px;height:24px;flex-shrink:0;
+}
+.tmplus-toggle-input{
+  opacity:0;width:0;height:0;position:absolute;
+}
+.tmplus-toggle-thumb{
+  position:absolute;inset:0;
+  background:rgba(255,255,255,.18);
+  border-radius:12px;
+  transition:background .22s;
+  cursor:pointer;
+}
+body.light-mode .tmplus-toggle-thumb{background:rgba(0,0,0,.15)}
+.tmplus-toggle-thumb::before{
+  content:'';position:absolute;
+  left:3px;top:3px;
+  width:18px;height:18px;
+  background:#fff;
+  border-radius:50%;
+  transition:transform .22s,box-shadow .22s;
+  box-shadow:0 1px 4px rgba(0,0,0,.25);
+}
+.tmplus-toggle-input:checked + .tmplus-toggle-thumb{background:#FF6B35 !important;box-shadow:0 0 10px rgba(255,107,53,.45)}
+.tmplus-toggle-input:checked + .tmplus-toggle-thumb::before{transform:translateX(20px)}
+
+/* 4. Badge oferta del día — evitar desbordamiento de texto */
+.badge-oferta-dia{
+  max-width:calc(100% - 48px) !important;
+  overflow:hidden !important;
+  text-overflow:ellipsis !important;
+  white-space:nowrap !important;
+}
