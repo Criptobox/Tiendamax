@@ -1,1 +1,5 @@
-{"hash":"d2cd86c35cc5feb2da2c320531f241bcf734d7ba9ab2906d288916b7b969c7a9","salt":"bb4e2fe68dda8eee0728fd4385680287","iterations":310000}
+{
+  "hash": "d2cd86c35cc5feb2da2c320531f241bcf734d7ba9ab2906d288916b7b969c7a9",
+  "salt": "bb4e2fe68dda8eee0728fd4385680287",
+  "iterations": 310000
+}
