@@ -36,6 +36,26 @@
             }
         });
 
+        // Para .nd-h1 (que contiene spans .nd-grad con gradient text),
+        // la reconstrucción del DOM rompe background-clip:text.
+        // Usamos reveal CSS para preservar los spans originales intactos,
+        // y aplicamos el gradient inline para garantizar que funcione
+        // aunque alguna regla CSS de bundle lo esté sobreescribiendo.
+        if (h1.classList.contains('nd-h1')) {
+            // Forzar gradient en los spans .nd-grad vía inline styles
+            h1.querySelectorAll('.nd-grad').forEach(function (sp) {
+                sp.style.cssText = 'background:linear-gradient(135deg,#FF6B35 0%,#FF9F43 50%,#E8501E 100%) !important;-webkit-background-clip:text !important;background-clip:text !important;-webkit-text-fill-color:transparent !important;color:transparent !important';
+            });
+            h1.style.opacity = '0';
+            h1.style.transform = 'translateY(12px)';
+            setTimeout(function () {
+                h1.style.transition = 'opacity 0.7s ease-out, transform 0.7s ease-out';
+                h1.style.opacity = '1';
+                h1.style.transform = 'none';
+            }, reduceMotion ? 0 : 200);
+            return;
+        }
+
         if (reduceMotion) return; // deja el título tal cual, sin animar
 
         // Texto plano total para escribir caracter a caracter

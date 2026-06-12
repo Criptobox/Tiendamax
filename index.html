@@ -130,7 +130,8 @@
     <!-- CSS unido + minificado (generado por scripts/build_css.py vía GitHub Action).
          Para editar estilos, edita los CSS fuente en /css y la Action regenera este bundle. -->
     <link rel="stylesheet" href="css/bundle.css?v=d9692a69">
-    <link rel="stylesheet" href="css/nuevo-diseno.css?v=82c72752">
+    <link rel="stylesheet" href="css/nuevo-diseno.css?v=cta-green2">
+
     <link rel="stylesheet" href="css/styles.fixes.css?v=ebccb527">
 
 
@@ -393,18 +394,18 @@
         padding: 4px !important;
         border-radius: 999px !important;
         z-index: auto !important;
-        background: linear-gradient(145deg,rgba(255,255,255,.10),rgba(255,255,255,.04)) !important;
-        backdrop-filter: blur(20px) saturate(160%) !important;
-        -webkit-backdrop-filter: blur(20px) saturate(160%) !important;
-        border: 1px solid rgba(255,255,255,.12) !important;
-        border-top-color: rgba(255,255,255,.20) !important;
-        box-shadow: 0 6px 22px rgba(0,0,0,.30), 0 1px 3px rgba(0,0,0,.2) !important;
+        background: linear-gradient(145deg,rgba(255,160,50,.22),rgba(255,107,53,.14)) !important;
+        backdrop-filter: blur(20px) saturate(180%) !important;
+        -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+        border: 1.5px solid rgba(255,160,50,.45) !important;
+        border-top-color: rgba(255,185,80,.55) !important;
+        box-shadow: 0 0 20px rgba(255,107,53,.22), 0 6px 24px rgba(0,0,0,.40), 0 1px 3px rgba(0,0,0,.2) !important;
     }
     body.light-mode .currency-bar {
-        background: rgba(255,255,255,.72) !important;
-        border: 1px solid rgba(0,0,0,.07) !important;
-        border-top-color: rgba(0,0,0,.07) !important;
-        box-shadow: 0 4px 16px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.04) !important;
+        background: rgba(255,255,255,.90) !important;
+        border: 1.5px solid rgba(255,107,53,.30) !important;
+        border-top-color: rgba(255,107,53,.30) !important;
+        box-shadow: 0 4px 18px rgba(255,107,53,.12), 0 1px 2px rgba(0,0,0,.06) !important;
     }
     .currency-bar .tasa-info-prefix,
     .currency-bar .tasa-info { display: none !important; }
@@ -415,17 +416,20 @@
     }
     html body .currency-bar .cur-btn {
         border-radius: 999px !important; padding: 14px 16px !important; min-height: 44px !important;
-        min-width: 0 !important; font-size: 12px !important; font-weight: 800 !important;
-        letter-spacing: .3px !important; color: rgba(255,255,255,.6) !important;
+        min-width: 0 !important; font-size: 14px !important; font-weight: 900 !important;
+        letter-spacing: .4px !important; color: rgba(255,255,255,.92) !important;
+        text-shadow: 0 0 1px rgba(255,255,255,.4) !important;
+
         transition: all .2s !important; border: none !important;
         background: transparent !important; cursor: pointer !important; white-space: nowrap !important;
     }
-    html body .currency-bar .cur-btn:hover { color: rgba(255,255,255,.9) !important; }
-    body.light-mode .currency-bar .cur-btn { color: rgba(0,0,0,.5) !important; }
-    body.light-mode .currency-bar .cur-btn:hover { color: rgba(0,0,0,.85) !important; }
+    html body .currency-bar .cur-btn:hover { color: #fff !important; background: rgba(255,255,255,.12) !important; }
+    body.light-mode .currency-bar .cur-btn { color: rgba(0,0,0,.72) !important; text-shadow: none !important; }
+    body.light-mode .currency-bar .cur-btn:hover { color: rgba(0,0,0,.92) !important; background: rgba(255,107,53,.08) !important; }
     html body .currency-bar .cur-btn.active {
         background: linear-gradient(135deg,#FF6B35,#E8501E) !important;
-        color: #fff !important; box-shadow: 0 2px 10px rgba(255,107,53,.45) !important;
+        color: #fff !important; box-shadow: 0 2px 12px rgba(255,107,53,.55) !important;
+        text-shadow: 0 1px 3px rgba(0,0,0,.25) !important;
     }
     @media (max-width: 768px) {
         html body .currency-bar .cur-btn { padding: 14px 12px !important; font-size: 11px !important; min-height: 44px !important; }
@@ -520,7 +524,7 @@
                                 </div>
                                 <div class="nd-hero-dots" id="ndHeroDots" aria-hidden="true"></div>
                             </div>
-                            <div class="nd-fbadge nd-fb1"><span class="nd-bi">🚚</span><div><strong>Envío Rápido</strong></div></div>
+                            <div class="nd-fbadge nd-fb1"><span class="nd-bi">🚚</span><div><strong>Envío Rápido</strong><span class="nd-bs">A domicilio</span></div></div>
                             <div class="nd-fbadge nd-fb2"><span class="nd-bi">⭐</span><div><strong>4.9 / 5.0</strong><span class="nd-bs">500+ clientes</span></div></div>
                             <div class="nd-fbadge nd-fb3"><span class="nd-bi">🔒</span><div><strong>100% Seguro</strong><span class="nd-bs">Compra protegida</span></div></div>
                         </div>
@@ -632,7 +636,7 @@
                     <div class="beneficio-card"><div class="icon">🏆</div><h3>Calidad Garantizada</h3><p>Productos seleccionados cuidadosamente para tu satisfacción</p></div>
                     <div class="beneficio-card"><div class="icon">💰</div><h3>Mejores Precios</h3><p>Competencia directa con ofertas exclusivas para ti</p></div>
                     <div class="beneficio-card"><div class="icon">🚚</div><h3>Envío Rápido</h3><p>Recibe tu compra en el menor tiempo posible</p></div>
-                    <div class="beneficio-card"><div class="icon">🛡️</div><h3>Compra Segura</h3><p>Proteccion total en todas tus transacciones</p></div>
+                    <div class="beneficio-card"><div class="icon">🛡️</div><h3>Compra Segura</h3><p>Protección total en todas tus transacciones</p></div>
                     <div class="beneficio-card"><div class="icon">📞</div><h3>Soporte 24/7</h3><p>Estamos aquí para ayudarte en cualquier momento</p></div>
                     <div class="beneficio-card"><div class="icon">⭐</div><h3>Clientes Felices</h3><p>Miles de reseñas positivas de clientes satisfechos</p></div>
                 </div>
@@ -1032,7 +1036,8 @@
     </script>
     <script src="js/analytics.js?v=9d585bc5" defer></script>
     <script src="js/seo-dynamico.js?v=ea7e25bb" defer></script>
-    <script src="js/script.js?v=bc6917ff" defer></script>
+    <script src="js/script.js?v=fcm-fix1" defer></script>
+
     <script src="js/push-fix.js?v=00f53794" defer></script>
     <script src="js/subcategorias.js?v=56dd618e" defer></script>
     <script src="js/share-patch.js?v=1e3ed8b5" defer></script>
@@ -1150,7 +1155,8 @@
 <!-- ===== BANNER SLIDER + TAGLINE (movido a archivo externo para reuso en admin) ===== -->
     <script src="js/urgencia-ventas.js?v=5c828568" defer></script>
     <script src="js/banners.js?v=9d22f82e" defer></script>
-    <script src="js/hero-efectos.js?v=aded8eec" defer></script>
+    <script src="js/hero-efectos.js?v=grad-inline1" defer></script>
+
 <script>
 // ── WhatsApp dinámico — lee el número guardado en admin ──
 (function actualizarEnlacesWhatsApp() {

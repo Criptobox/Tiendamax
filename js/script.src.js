@@ -7314,91 +7314,66 @@ async function guardarConfigFirebaseAdmin() {
 
 async function enviarPushManualAdmin() {
     const title = document.getElementById('manualPushTitle').value.trim();
-    const body = document.getElementById('manualPushBody').value.trim();
-    const url = document.getElementById('manualPushUrl').value.trim();
+    const body  = document.getElementById('manualPushBody').value.trim();
+    const url   = document.getElementById('manualPushUrl').value.trim() || '/';
     const status = document.getElementById('manualPushStatus');
-    
+
     if (!title || !body) {
         if (status) status.textContent = '⚠️ Título y cuerpo son requeridos.';
         return;
     }
-    
-    const serverKey = localStorage.getItem('fcmServerKey');
+
     const fbConfigRaw = localStorage.getItem('firebaseConfig');
-    if (!serverKey || !fbConfigRaw) {
-        if (status) status.textContent = '⚠️ Configura Firebase y guarda la Clave de Servidor primero.';
+    if (!fbConfigRaw) {
+        if (status) status.textContent = '⚠️ Configura Firebase primero.';
         return;
     }
-    
+
     const fbConfig = JSON.parse(fbConfigRaw);
-    const rtdbUrl = fbConfig.databaseURL || `https://${fbConfig.projectId}-default-rtdb.firebaseio.com`;
-    
-    if (status) status.textContent = '⏳ Buscando suscriptores en Firebase...';
-    
+    const rtdbUrl  = fbConfig.databaseURL || `https://${fbConfig.projectId}-default-rtdb.firebaseio.com`;
+
+    if (status) status.textContent = '⏳ Encolando notificación...';
+
     try {
-        const res = await fetch(`${rtdbUrl}/tokens.json`);
-        if (!res.ok) {
-            if (status) status.textContent = '❌ No se pudo conectar a Realtime Database.';
-            return;
-        }
-        
-        const tokensData = await res.json();
-        if (!tokensData) {
-            if (status) status.textContent = '⚠️ No hay ningún suscriptor registrado todavía.';
-            return;
-        }
-        
-        // Mantener token y clave alineados para poder borrar exactamente el inválido.
-        const tokenEntries = Object.entries(tokensData).filter(([k, t]) => t && t.token);
-        const tokens = tokenEntries.map(([, t]) => t.token);
-        const tokenKeys = tokenEntries.map(([k]) => k);
-        if (tokens.length === 0) {
-            if (status) status.textContent = '⚠️ No se encontraron tokens válidos.';
-            return;
-        }
-        
-        if (status) status.textContent = `⏳ Enviando a ${tokens.length} suscriptores...`;
-        
-        const response = await fetch('https://fcm.googleapis.com/fcm/send', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `key=${serverKey}`
-            },
-            body: JSON.stringify({
-                registration_ids: tokens,
-                notification: {
-                    title: title,
-                    body: body,
-                    icon: '/iconos/icon-192.png',
-                    click_action: window.location.origin + (url || '/')
-                },
-                data: {
-                    url: url || '/'
-                }
-            })
+        // Escribir la solicitud en admin_push_requests (procesada por el script Python)
+        const reqId  = 'req_' + Date.now();
+        const reqRes = await fetch(`${rtdbUrl}/admin_push_requests/${reqId}.json`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ title, body, url, ts: Date.now() })
         });
-        
-        if (response.ok) {
-            const resData = await response.json();
-            if (status) status.textContent = `✅ Enviado. Éxitos: ${resData.success || 0}, Fallos: ${resData.failure || 0}`;
-            
-            // Limpiar tokens obsoletos
-            if (resData.results) {
-                for (let i = 0; i < resData.results.length; i++) {
-                    const result = resData.results[i];
-                    if (result.error === 'NotRegistered' || result.error === 'InvalidRegistration') {
-                        const tokenKey = tokenKeys[i];
-                        if (tokenKey) fetch(`${rtdbUrl}/tokens/${tokenKey}.json`, { method: 'DELETE' }).catch(() => null);
+        if (!reqRes.ok) {
+            if (status) status.textContent = `❌ Error guardando en Firebase: ${reqRes.status}`;
+            return;
+        }
+
+        // Disparar el workflow flush-push-queue.yml para envío inmediato
+        const ghUser  = localStorage.getItem('githubUser');
+        const ghRepo  = localStorage.getItem('githubRepo') || 'Tiendamax';
+        const ghToken = localStorage.getItem('githubToken');
+        let dispatched = false;
+        if (ghUser && ghToken) {
+            try {
+                const dispRes = await fetch(
+                    `https://api.github.com/repos/${ghUser}/${ghRepo}/actions/workflows/flush-push-queue.yml/dispatches`,
+                    {
+                        method: 'POST',
+                        headers: { 'Authorization': `token ${ghToken}`, 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ ref: 'main' })
                     }
-                }
-            }
+                );
+                dispatched = dispRes.ok || dispRes.status === 204;
+            } catch (_) {}
+        }
+
+        if (dispatched) {
+            if (status) status.textContent = '✅ Notificación encolada y workflow disparado — llegará en ~1 minuto.';
         } else {
-            if (status) status.textContent = `❌ Error en el envío FCM: ${response.status} ${response.statusText}`;
+            if (status) status.textContent = '✅ Notificación encolada — se enviará en el próximo ciclo automático (máx 30 min). Configura GitHub Token para envío inmediato.';
         }
     } catch (e) {
         console.error(e);
-        if (status) status.textContent = '❌ Error de conexión o credenciales inválidas.';
+        if (status) status.textContent = '❌ Error de conexión.';
     }
 }
 

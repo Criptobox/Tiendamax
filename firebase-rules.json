@@ -117,6 +117,14 @@
         ".validate": "newData.isNumber()"
       }
     },
+    "admin_push_requests": {
+      "$reqId": {
+        ".write": true,
+        ".validate": "newData.hasChildren(['title','body','ts']) && newData.child('title').isString() && newData.child('title').val().length >= 1 && newData.child('title').val().length <= 100 && newData.child('body').isString() && newData.child('body').val().length >= 1 && newData.child('body').val().length <= 300 && newData.child('ts').isNumber()"
+      },
+      ".read": false,
+      ".write": false
+    },
     "admin_meta": {
       ".read": false,
       ".write": false
