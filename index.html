@@ -296,16 +296,26 @@
             } catch(e) {}
         }
 
+        // Devuelve true si el producto de oferta tiene stock > 0 (usa caché localStorage)
+        function productoOfertaEnStock(id) {
+            try {
+                var prods = JSON.parse(localStorage.getItem('productos') || '[]');
+                var prod  = prods.find(function(p){ return String(p.id) === String(id); });
+                if (!prod) return true; // sin datos = no ocultar todavía
+                return Number(prod.stock) > 0 && prod.agotado !== true;
+            } catch(e) { return true; }
+        }
+
         // 1. Intentar desde localStorage (carga instantánea en sesiones siguientes)
         try {
             var sid = localStorage.getItem('ofertaDiaId');
             var stx = localStorage.getItem('ofertaDiaTexto');
-            if (sid) mostrarBannerOferta(sid, stx);
+            if (sid && productoOfertaEnStock(sid)) mostrarBannerOferta(sid, stx);
         } catch(e) {}
 
         // 2. Leer config.json: es la fuente de verdad.
-        //    - Si HAY oferta → mostrar/actualizar banner y guardar en localStorage.
-        //    - Si NO hay oferta → ocultar banner y limpiar localStorage obsoleto.
+        //    - Si HAY oferta y producto en stock → mostrar banner.
+        //    - Si NO hay oferta o está agotado → ocultar y limpiar localStorage.
         fetch('config.json?_=' + Date.now())
             .then(function(r){ return r.ok ? r.json() : null; })
             .then(function(cfg){
@@ -317,6 +327,10 @@
                     localStorage.setItem('ofertaDiaId', String(cfg.ofertaDiaId));
                     if (cfg.ofertaDiaTexto) localStorage.setItem('ofertaDiaTexto', cfg.ofertaDiaTexto);
                 } catch(e) {}
+                if (!productoOfertaEnStock(cfg.ofertaDiaId)) {
+                    ocultarBannerOferta();
+                    return;
+                }
                 mostrarBannerOferta(cfg.ofertaDiaId, cfg.ofertaDiaTexto);
             })
             .catch(function(){});
