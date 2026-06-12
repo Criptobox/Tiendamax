@@ -734,7 +734,10 @@
                         <button onclick="cerrarVistaMeGusta()" type="button" class="btn-volver">← Volver</button>
                         <h2>❤️ Mis Me Gusta</h2>
                     </div>
-                    <div id="meGustaStats" class="categoria-stats" style="font-size:13px;color:#aaa;"></div>
+                    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+                        <div id="meGustaStats" class="categoria-stats" style="font-size:13px;color:#aaa;"></div>
+                        <button id="btnCompartirWishlist" type="button" onclick="compartirWishlistWhatsApp()" style="display:none;padding:7px 14px;background:rgba(37,211,102,.15);border:1px solid rgba(37,211,102,.4);color:#25D366;border-radius:20px;font-size:13px;font-weight:700;cursor:pointer">📤 Compartir</button>
+                    </div>
                 </div>
                 <div class="productos-grid" id="meGustaGrid"></div>
                 <div id="meGustaVacio" style="display:none;text-align:center;padding:60px 20px;">
@@ -1051,7 +1054,7 @@
     </script>
     <script src="js/analytics.js?v=9d585bc5" defer></script>
     <script src="js/seo-dynamico.js?v=ea7e25bb" defer></script>
-    <script src="js/script.js?v=04e211e3" defer></script>
+    <script src="js/script.js?v=165164c9" defer></script>
 
     <script src="js/push-fix.js?v=d36f3d04" defer></script>
     <script src="js/subcategorias.js?v=56dd618e" defer></script>

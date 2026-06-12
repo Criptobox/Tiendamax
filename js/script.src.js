@@ -3183,6 +3183,21 @@ function _renderEditGallery(p) {
     preview.appendChild(wrap);
 }
 
+function _renderEditRecomendados(p) {
+    const container = document.getElementById('editRecomendadosList');
+    if (!container) return;
+    const currentIds = new Set((p.recomendados || []).map(String));
+    const others = productos.filter(x => String(x.id) !== String(p.id));
+    if (others.length === 0) { container.innerHTML = '<span style="font-size:12px;color:#666">No hay otros productos</span>'; return; }
+    container.innerHTML = others.map(x => {
+        const checked = currentIds.has(String(x.id));
+        return '<label style="display:flex;align-items:center;gap:6px;padding:4px 8px;background:rgba(255,255,255,.06);border-radius:8px;font-size:12px;cursor:pointer;white-space:nowrap">' +
+            '<input type="checkbox" class="tm-rec-check" value="' + safeNum(x.id) + '"' + (checked ? ' checked' : '') + '> ' +
+            escapeHtml((x.nombre || '').slice(0, 35)) +
+        '</label>';
+    }).join('');
+}
+
 function abrirEditModal(id) {
     const p = productos.find(prod => prod.id === id);
     if (!p) return;
@@ -3227,6 +3242,7 @@ function abrirEditModal(id) {
     const _fi2 = document.getElementById('editProductImagesExtra');
     if (_fi2) _fi2.value = '';
     _renderEditGallery(p);
+    _renderEditRecomendados(p);
 
     const modal = document.getElementById('editModal');
     modal.classList.remove('hidden');
@@ -3282,7 +3298,8 @@ async function guardarProductoEditado(event) {
             garantia: document.getElementById('editProductGarantia') ? document.getElementById('editProductGarantia').value.trim() : productos[index].garantia,
             devolucion: document.getElementById('editProductDevolucion') ? document.getElementById('editProductDevolucion').checked : productos[index].devolucion,
             comision: document.getElementById('editProductComision') ? parseFloat(document.getElementById('editProductComision').value) || 0 : productos[index].comision || 0,
-            comisionMoneda: document.getElementById('editProductComisionMoneda')?.value || productos[index].comisionMoneda || 'USD'
+            comisionMoneda: document.getElementById('editProductComisionMoneda')?.value || productos[index].comisionMoneda || 'USD',
+            recomendados: Array.from(document.querySelectorAll('#editRecomendadosList .tm-rec-check:checked')).map(cb => parseInt(cb.value))
         };
 
         const errores = validarProducto(productoActualizado);
@@ -4517,6 +4534,73 @@ function tmToggleFiltroFavoritos() {
     actualizarListaProductos();
 }
 
+let _tmBulkSelected = new Set();
+
+function tmBulkToggle(id, checked) {
+    if (checked) _tmBulkSelected.add(id);
+    else _tmBulkSelected.delete(id);
+    const tb = document.getElementById('tmBulkToolbar');
+    const cnt = document.getElementById('tmBulkCount');
+    if (tb) tb.style.display = _tmBulkSelected.size > 0 ? 'flex' : 'none';
+    if (cnt) cnt.textContent = _tmBulkSelected.size + ' seleccionado' + (_tmBulkSelected.size !== 1 ? 's' : '');
+}
+function tmBulkClear() {
+    _tmBulkSelected.clear();
+    document.querySelectorAll('.tm-bulk-check').forEach(cb => { cb.checked = false; });
+    const tb = document.getElementById('tmBulkToolbar');
+    if (tb) tb.style.display = 'none';
+}
+function tmBulkSetPrecio() {
+    if (_tmBulkSelected.size === 0) return;
+    const val = prompt('Nuevo precio (USD) para los ' + _tmBulkSelected.size + ' productos seleccionados:');
+    if (val === null) return;
+    const precio = parseFloat(val);
+    if (isNaN(precio) || precio < 0) { mostrarNotificacion('⚠️ Precio inválido', 'error'); return; }
+    _tmBulkSelected.forEach(id => {
+        const p = productos.find(x => x.id === id);
+        if (p) p.precioActual = precio;
+    });
+    const nPrecio = _tmBulkSelected.size;
+    guardarProductos();
+    _tmBulkSelected.forEach(id => marcarProductoModificado(id));
+    sincronizarConGitHub();
+    tmBulkClear();
+    actualizarListaProductos();
+    mostrarNotificacion('✅ Precio actualizado en ' + nPrecio + ' productos');
+}
+function tmBulkSetStock() {
+    if (_tmBulkSelected.size === 0) return;
+    const val = prompt('Nuevo stock para los ' + _tmBulkSelected.size + ' productos seleccionados:');
+    if (val === null) return;
+    const stock = parseInt(val);
+    if (isNaN(stock) || stock < 0) { mostrarNotificacion('⚠️ Stock inválido', 'error'); return; }
+    _tmBulkSelected.forEach(id => {
+        const p = productos.find(x => x.id === id);
+        if (p) p.stock = stock;
+    });
+    guardarProductos();
+    _tmBulkSelected.forEach(id => marcarProductoModificado(id));
+    sincronizarConGitHub();
+    const n = _tmBulkSelected.size;
+    tmBulkClear();
+    actualizarListaProductos();
+    mostrarNotificacion('✅ Stock actualizado en ' + n + ' productos');
+}
+function tmBulkEliminar() {
+    if (_tmBulkSelected.size === 0) return;
+    if (!confirm('¿Eliminar ' + _tmBulkSelected.size + ' producto(s) seleccionados? Esta acción no se puede deshacer.')) return;
+    _tmBulkSelected.forEach(id => {
+        const idx = productos.findIndex(x => x.id === id);
+        if (idx !== -1) productos.splice(idx, 1);
+    });
+    guardarProductos();
+    sincronizarConGitHub();
+    const n = _tmBulkSelected.size;
+    tmBulkClear();
+    actualizarListaProductos();
+    mostrarNotificacion('🗑️ ' + n + ' producto(s) eliminados');
+}
+
 function actualizarListaProductos() {
     const productsList = document.getElementById('productsList');
     if (!productsList) return;
@@ -4555,7 +4639,15 @@ function actualizarListaProductos() {
     });
     Object.values(porCategoria).forEach(arr => arr.sort((a, b) => (a.stock > 0 ? 0 : 1) - (b.stock > 0 ? 0 : 1)));
 
-    let html = `<div style="margin-bottom:14px;padding:12px 16px;background:rgba(39,174,96,0.1);border:1px dashed #27AE60;border-radius:10px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
+    const _bulkCount = _tmBulkSelected.size;
+    let html = `<div id="tmBulkToolbar" style="display:${_bulkCount > 0 ? 'flex' : 'none'};position:sticky;top:0;z-index:10;padding:10px 14px;background:rgba(10,10,10,0.97);border:1px solid rgba(201,169,110,.4);border-radius:10px;margin-bottom:10px;align-items:center;gap:8px;flex-wrap:wrap">
+        <span id="tmBulkCount" style="font-size:13px;font-weight:700;color:#c9a96e;flex:1">${_bulkCount} seleccionado${_bulkCount !== 1 ? 's' : ''}</span>
+        <button type="button" onclick="tmBulkSetPrecio()" style="padding:6px 12px;background:rgba(52,152,219,.2);border:1px solid rgba(52,152,219,.4);color:#3498db;border-radius:8px;font-size:12px;cursor:pointer">💰 Precio</button>
+        <button type="button" onclick="tmBulkSetStock()" style="padding:6px 12px;background:rgba(39,174,96,.2);border:1px solid rgba(39,174,96,.4);color:#27ae60;border-radius:8px;font-size:12px;cursor:pointer">📦 Stock</button>
+        <button type="button" onclick="tmBulkEliminar()" style="padding:6px 12px;background:rgba(231,76,60,.2);border:1px solid rgba(231,76,60,.4);color:#e74c3c;border-radius:8px;font-size:12px;cursor:pointer">🗑️ Eliminar</button>
+        <button type="button" onclick="tmBulkClear()" style="padding:6px 12px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);color:#aaa;border-radius:8px;font-size:12px;cursor:pointer">✕ Cancelar</button>
+    </div>
+    <div style="margin-bottom:14px;padding:12px 16px;background:rgba(39,174,96,0.1);border:1px dashed #27AE60;border-radius:10px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
         <span style="font-size:13px;">📦 <strong>${safeNum(filtrados.length)}</strong> productos${filtroCat ? ` en <strong>${escapeHtml(filtroCat)}</strong>` : ''}</span>
         <button class="btn btn-primary" onclick="descargarProductosJSON()" style="font-size:12px;padding:8px 14px;">📥 Descargar productos.json</button>
     </div>`;
@@ -4577,6 +4669,7 @@ function actualizarListaProductos() {
             const stockLabel = stock === 0 ? 'Agotado' : stock + ' uds';
             html += `<div class="tm-prod-card">
                 <div class="tm-prod-card-header">
+                    <input type="checkbox" class="tm-bulk-check" data-id="${_id}" onchange="tmBulkToggle(${_id},this.checked)" ${_tmBulkSelected.has(_id) ? 'checked' : ''} style="width:16px;height:16px;accent-color:#c9a96e;cursor:pointer;flex-shrink:0;margin-right:4px">
                     <img src="${_im}" alt="" class="tm-prod-thumb" onerror="this.src='/iconos/favicon-192.png';this.style.opacity='0.3'">
                     <div class="tm-prod-info">
                         <div class="tm-prod-name">${_nm}${producto.masVendido ? ' 🔥' : ''}</div>
@@ -4642,6 +4735,40 @@ function tmToggleMasVendido(id, e) {
     mostrarNotificacion(p.masVendido ? '⭐ ' + p.nombre + ': destacado en Más Vendidos' : ' ' + p.nombre + ': quitado de Más Vendidos');
 }
 
+async function _procesarAvisosStock(productId, nombre) {
+    try {
+        const fbCfgRaw = localStorage.getItem('firebaseConfig');
+        if (!fbCfgRaw) return;
+        const fbCfg = JSON.parse(fbCfgRaw);
+        const rtdbUrl = fbCfg.databaseURL || ('https://' + fbCfg.projectId + '-default-rtdb.firebaseio.com');
+        const res = await fetch(rtdbUrl + '/avisos_stock/' + productId + '.json');
+        if (!res.ok) return;
+        const avisos = await res.json();
+        if (!avisos || typeof avisos !== 'object') return;
+        const n = Object.keys(avisos).length;
+        if (n === 0) return;
+        const reqId = 'req_aviso_' + Date.now();
+        const putRes = await fetch(rtdbUrl + '/admin_push_requests/' + reqId + '.json', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ title: '✅ ¡' + nombre + ' está de vuelta!', body: 'El producto que querías ya está disponible. ¡No te quedes sin él!', url: '/', ts: Date.now() })
+        });
+        if (!putRes.ok) return;
+        await fetch(rtdbUrl + '/avisos_stock/' + productId + '.json', { method: 'DELETE' });
+        const ghUser  = localStorage.getItem('githubUser');
+        const ghRepo  = localStorage.getItem('githubRepo') || 'Tiendamax';
+        const ghToken = localStorage.getItem('githubToken');
+        if (ghUser && ghToken) {
+            fetch('https://api.github.com/repos/' + ghUser + '/' + ghRepo + '/actions/workflows/flush-push-queue.yml/dispatches', {
+                method: 'POST',
+                headers: { 'Authorization': 'token ' + ghToken, 'Content-Type': 'application/json' },
+                body: JSON.stringify({ ref: 'main' })
+            }).catch(() => {});
+        }
+        mostrarNotificacion('📣 ' + n + ' aviso' + (n > 1 ? 's' : '') + ' enviado' + (n > 1 ? 's' : '') + ': ' + nombre + ' vuelve al stock', 'success');
+    } catch(e) { console.warn('[_procesarAvisosStock]', e); }
+}
+
 function ajustarStock(id, cantidad, desdeVenta = false) {
     const p = productos.find(p => p.id === id);
     if (!p) return;
@@ -4657,6 +4784,7 @@ function ajustarStock(id, cantidad, desdeVenta = false) {
         else if (p.stock <= 2) mostrarNotificacion(`⚠️ ${p.nombre}: solo ${p.stock} unidad(es)`, 'warning');
     }
     if (p.stock === 0) _quitarOfertaSiAgotado(id);
+    if (antes === 0 && p.stock > 0) _procesarAvisosStock(id, p.nombre);
 }
 
 // ── ANIMACIONES DE SCROLL ─────────────────────────────
@@ -5427,6 +5555,35 @@ function guardarOfertaDia2() {
     _guardarOfertaDiaDesde(sel, textoEl);
 }
 var guardarOfertaDia = guardarOfertaDia2;
+async function _enviarPushOfertaActivada(ofId, ofTxt) {
+    try {
+        const fbCfgRaw = localStorage.getItem('firebaseConfig');
+        if (!fbCfgRaw) return;
+        const fbCfg = JSON.parse(fbCfgRaw);
+        const rtdbUrl = fbCfg.databaseURL || ('https://' + fbCfg.projectId + '-default-rtdb.firebaseio.com');
+        const prod = (typeof productos !== 'undefined' ? productos : []).find(p => String(p.id) === String(ofId));
+        const prodNombre = prod ? prod.nombre : 'Oferta del Día';
+        const reqId = 'req_oferta_' + Date.now();
+        const putRes = await fetch(rtdbUrl + '/admin_push_requests/' + reqId + '.json', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ title: '🔥 ' + ofTxt, body: '¡' + prodNombre + ' con oferta especial! Solo por tiempo limitado.', url: '/?oferta=1', ts: Date.now() })
+        });
+        if (!putRes.ok) return;
+        const ghUser  = localStorage.getItem('githubUser');
+        const ghRepo  = localStorage.getItem('githubRepo') || 'Tiendamax';
+        const ghToken = localStorage.getItem('githubToken');
+        if (ghUser && ghToken) {
+            fetch('https://api.github.com/repos/' + ghUser + '/' + ghRepo + '/actions/workflows/flush-push-queue.yml/dispatches', {
+                method: 'POST',
+                headers: { 'Authorization': 'token ' + ghToken, 'Content-Type': 'application/json' },
+                body: JSON.stringify({ ref: 'main' })
+            }).catch(() => {});
+        }
+        mostrarNotificacion('📲 Push de oferta enviado a suscriptores', 'success');
+    } catch(e) { console.warn('[_enviarPushOfertaActivada]', e); }
+}
+
 function _guardarOfertaDiaDesde(sel, textoEl) {
     if (!sel || !sel.value) { mostrarNotificacion('⚠️ Selecciona un producto', 'error'); return; }
     const texto = textoEl ? (textoEl.value.trim() || '🔥 OFERTA DEL DÍA') : '🔥 OFERTA DEL DÍA';
@@ -5455,6 +5612,7 @@ function _guardarOfertaDiaDesde(sel, textoEl) {
             existing.ofertaDiaActualizado = new Date().toISOString();
             await subirArchivoAGitHub(_u, _r, _t, 'config.json', existing);
             mostrarNotificacion('☁️ Oferta subida a GitHub — todos la verán', 'success');
+            _enviarPushOfertaActivada(_ofId, _ofTxt);
         } catch(e) {
             mostrarNotificacion('⚠️ Error al sincronizar con GitHub: ' + e.message, 'error');
         }
@@ -6067,6 +6225,9 @@ function renderizarDashboardVentas(contenedor) {
     const ventas7d  = ventas.filter(v => Number(v.id || 0) >= ahora - 7 * 24 * 60 * 60 * 1000);
     const totalHoy  = ventasHoy.reduce((s, v) => s + Number(v.total || 0), 0);
     const total7d   = ventas7d.reduce((s, v) => s + Number(v.total || 0), 0);
+    const ventas7d_prev = ventas.filter(v => { const ts = Number(v.id || 0); return ts >= ahora - 14*86400000 && ts < ahora - 7*86400000; });
+    const total7d_prev = ventas7d_prev.reduce((s, v) => s + Number(v.total || 0), 0);
+    const cambio7d_pct = total7d_prev > 0 ? ((total7d - total7d_prev) / total7d_prev * 100) : (total7d > 0 ? 100 : 0);
 
     const stockBajo = prods.filter(p => Number(p.stock || 0) > 0 && Number(p.stock || 0) <= 3)
         .sort((a, b) => Number(a.stock || 0) - Number(b.stock || 0));
@@ -6177,6 +6338,23 @@ function renderizarDashboardVentas(contenedor) {
             <span class="admin-top-value gold">$${Number(v.total || 0).toFixed(0)}</span>
         </div>`).join('') : '';
 
+    const semanasHtml = `<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px">
+        <div style="flex:1;min-width:90px;padding:10px;background:rgba(39,174,96,.12);border:1px solid rgba(39,174,96,.25);border-radius:10px;text-align:center">
+            <div style="font-size:18px;font-weight:700;color:#27ae60">$${total7d.toFixed(0)}</div>
+            <div style="font-size:11px;color:#888;margin-top:3px">Esta semana</div>
+            <div style="font-size:10px;color:#666">${ventas7d.length} venta${ventas7d.length !== 1 ? 's' : ''}</div>
+        </div>
+        <div style="flex:1;min-width:90px;padding:10px;background:rgba(52,152,219,.12);border:1px solid rgba(52,152,219,.25);border-radius:10px;text-align:center">
+            <div style="font-size:18px;font-weight:700;color:#3498db">$${total7d_prev.toFixed(0)}</div>
+            <div style="font-size:11px;color:#888;margin-top:3px">Semana anterior</div>
+            <div style="font-size:10px;color:#666">${ventas7d_prev.length} venta${ventas7d_prev.length !== 1 ? 's' : ''}</div>
+        </div>
+        <div style="flex:1;min-width:70px;padding:10px;background:rgba(${cambio7d_pct >= 0 ? '39,174,96' : '231,76,60'},.12);border:1px solid rgba(${cambio7d_pct >= 0 ? '39,174,96' : '231,76,60'},.25);border-radius:10px;text-align:center">
+            <div style="font-size:18px;font-weight:700;color:${cambio7d_pct >= 0 ? '#27ae60' : '#e74c3c'}">${cambio7d_pct >= 0 ? '+' : ''}${cambio7d_pct.toFixed(0)}%</div>
+            <div style="font-size:11px;color:#888;margin-top:3px">Variación</div>
+        </div>
+    </div>`;
+
     return `
     <div class="tm-dashboard-ventas-inner">
         <div class="admin-dash-header">
@@ -6191,7 +6369,7 @@ function renderizarDashboardVentas(contenedor) {
             ${kpiCard('gold', '$' + totalGanancia.toFixed(0), 'Mi ganancia', margenPct.toFixed(1) + '% margen')}
             ${kpiCard('blue', String(totalUnidades), 'Unidades', '$' + ticketProm.toFixed(0) + ' ticket prom.')}
             ${kpiCard('purple', '$' + totalHoy.toFixed(0), 'Hoy', ventasHoy.length + ' venta' + (ventasHoy.length !== 1 ? 's' : ''))}
-            ${kpiCard('dark', '$' + total7d.toFixed(0), 'Últimos 7 días', ventas7d.length + ' venta' + (ventas7d.length !== 1 ? 's' : ''))}
+            ${kpiCard('dark', '$' + total7d.toFixed(0), 'Últimos 7 días', ventas7d.length + ' venta' + (ventas7d.length !== 1 ? 's' : '') + (total7d_prev > 0 ? ' · ' + (cambio7d_pct >= 0 ? '▲' : '▼') + Math.abs(cambio7d_pct).toFixed(0) + '%' : ''))}
             ${kpiCard('red', String(agotados.length), 'Agotados', stockBajo.length + ' con stock bajo')}
         </div>
 
@@ -6218,6 +6396,7 @@ function renderizarDashboardVentas(contenedor) {
                 ${miniSection('⚠️ Reponer primero', reponerHtml)}
                 ${miniSection('👁️ Más vistos', vistosHtml)}
                 ${miniSection('🧾 Ventas recientes', recientesHtml)}
+                ${miniSection('📅 Esta semana vs anterior', semanasHtml)}
             </div>
         </div>
     </div>`;
@@ -6383,6 +6562,9 @@ function mostrarVistaMeGusta() {
 
     if (statsEl) statsEl.textContent = prods.length + ' producto' + (prods.length !== 1 ? 's' : '') + ' guardado' + (prods.length !== 1 ? 's' : '');
 
+    const btnShare = document.getElementById('btnCompartirWishlist');
+    if (btnShare) btnShare.style.display = prods.length > 0 ? '' : 'none';
+
     if (prods.length === 0) {
         grid.style.display  = 'none';
         if (vacioEl) vacioEl.style.display = 'block';
@@ -6432,6 +6614,22 @@ function mostrarVistaMeGusta() {
         });
     }
     window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function compartirWishlistWhatsApp() {
+    const cat = (typeof productos !== 'undefined' && productos.length > 0)
+        ? productos
+        : JSON.parse(localStorage.getItem('productos') || '[]');
+    const prods = (typeof wishlist !== 'undefined' ? wishlist : [])
+        .map(wid => cat.find(p => String(p.id) === String(wid)))
+        .filter(Boolean);
+    if (prods.length === 0) return;
+    let msg = '❤️ Mis productos favoritos:\n\n';
+    prods.forEach((p, i) => {
+        msg += (i + 1) + '. ' + p.nombre + ' — $' + Number(p.precioActual).toFixed(2) + ' USD\n';
+    });
+    msg += '\n¡Míralo todo en ' + window.location.origin + '!';
+    window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
 }
 
 function cerrarVistaMeGusta() {
