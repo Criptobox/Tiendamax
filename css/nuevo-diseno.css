@@ -557,8 +557,10 @@ body:not(.light-mode) .cta-final .btn-large:hover{box-shadow:0 14px 48px rgba(37
 @media(max-width:900px){
   .nd-hero-grid{grid-template-columns:1fr;gap:48px}
   .nd-hero-right{order:-1}
-  .nd-card3d{width:280px;height:360px}
-  .nd-fb1,.nd-fb2,.nd-fb3{display:none}
+  .nd-card3d{width:280px;height:360px;flex:0 0 100%}
+  .nd-stack-wrap{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:12px 8px}
+  .nd-fb1,.nd-fb2,.nd-fb3{position:static !important;animation:none !important;font-size:11px !important;padding:6px 11px !important;gap:6px !important}
+  .nd-bi{font-size:15px !important}
   .nd-h1{text-align:center !important}
   .nd-sub{text-align:center}
   .nd-eyebrow{margin-left:auto;margin-right:auto}
