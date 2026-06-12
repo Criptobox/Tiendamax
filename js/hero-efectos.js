@@ -32,7 +32,7 @@
             } else if (node.nodeName === 'BR') {
                 segments.push({ type: 'br' });
             } else if (node.nodeName === 'SPAN') {
-                segments.push({ type: 'span', text: node.textContent });
+                segments.push({ type: 'span', text: node.textContent, cls: node.className });
             }
         });
 
@@ -60,6 +60,7 @@
                 h1.appendChild(document.createElement('br'));
             } else if (seg.type === 'span') {
                 var sp = document.createElement('span');
+                if (seg.cls) sp.className = seg.cls;
                 holders[si] = sp;
                 h1.appendChild(sp);
             } else {
