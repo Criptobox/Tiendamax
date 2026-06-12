@@ -584,6 +584,7 @@ body:not(.light-mode) .cta-final .btn-large:hover{box-shadow:0 14px 48px rgba(37
   .nd-card3d{width:250px;height:320px}
   .nd-hero-btns{flex-direction:column;align-items:stretch}
   .nd-btn-primary{justify-content:center}
+  .nd-btn-wa{justify-content:center}
   .nd-hero-search{flex-wrap:wrap}
   .nd-hero-search .currency-bar{margin:0 auto !important}
   /* Móvil: 2 columnas — «Todos» ancha, el resto a 2 por fila, pequeñas igual */
