@@ -541,8 +541,8 @@ body:not(.light-mode) .cta-final h2{color:#F5EDE8 !important}
 body:not(.light-mode) .cta-final p{color:rgba(245,237,232,.65) !important}
 body:not(.light-mode) .cta-final .btn-large{background:linear-gradient(135deg,#25D366,#128C7E) !important;color:#fff !important;box-shadow:0 8px 32px rgba(37,211,102,.3) !important}
 body:not(.light-mode) .cta-final .btn-large:hover{box-shadow:0 14px 48px rgba(37,211,102,.45) !important;transform:translateY(-3px) !important}
-body.light-mode .cta-final .btn-large{background:linear-gradient(135deg,#25D366,#128C7E) !important;color:#fff !important;box-shadow:0 8px 32px rgba(37,211,102,.3) !important}
-body.light-mode .cta-final .btn-large:hover{box-shadow:0 14px 48px rgba(37,211,102,.45) !important;transform:translateY(-3px) !important}
+html body.light-mode .cta-final .btn-large,html body.light-mode .cta-final .btn-large:not(:hover){background:linear-gradient(135deg,#25D366,#128C7E) !important;color:#fff !important;box-shadow:0 8px 32px rgba(37,211,102,.3) !important;border-color:transparent !important}
+html body.light-mode .cta-final .btn-large:hover{background:linear-gradient(135deg,#20c45d,#0e7a6e) !important;box-shadow:0 14px 48px rgba(37,211,102,.45) !important;transform:translateY(-3px) !important}
 
 /* ================================================================
    RESPONSIVE
