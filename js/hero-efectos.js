@@ -61,6 +61,12 @@
             } else if (seg.type === 'span') {
                 var sp = document.createElement('span');
                 if (seg.cls) sp.className = seg.cls;
+                if (seg.cls && seg.cls.indexOf('nd-grad') !== -1) {
+                    sp.style.background = 'linear-gradient(135deg,#FF6B35 0%,#FF9F43 50%,#E8501E 100%)';
+                    sp.style.webkitBackgroundClip = 'text';
+                    sp.style.webkitTextFillColor = 'transparent';
+                    sp.style.backgroundClip = 'text';
+                }
                 holders[si] = sp;
                 h1.appendChild(sp);
             } else {
