@@ -1872,6 +1872,7 @@ async function verificarPassword(event) {
             usuarioAutenticado = true;
             cerrarLoginModal();
             abrirAdminPanel();
+            _checkPasswordSync();
             return;
         }
     }
@@ -1995,6 +1996,66 @@ async function cambiarPasswordAdmin(ci, ni, coi) {
     document.getElementById('ci').value = '';
     document.getElementById('ni').value = '';
     document.getElementById('coi').value = '';
+    // Intentar sincronizar automáticamente con GitHub tras cambiar contraseña
+    setTimeout(sincronizarPasswordAGitHub, 300);
+}
+
+// Sincroniza el hash LOCAL → GitHub (recuperación si se borran datos del navegador)
+async function sincronizarPasswordAGitHub() {
+    const ghUser = localStorage.getItem('githubUser');
+    const ghRepo = localStorage.getItem('githubRepo');
+    const ghToken = localStorage.getItem('githubToken');
+    if (!ghToken) {
+        mostrarNotificacion('❌ Configura el Token de GitHub en Configuración → GitHub / Firebase para proteger tu contraseña', 'error');
+        return;
+    }
+    const localHash = localStorage.getItem(AUTH_HASH_KEY);
+    const localSalt = localStorage.getItem(AUTH_SALT_KEY);
+    if (!localHash || !localSalt) {
+        mostrarNotificacion('❌ No hay contraseña guardada en este dispositivo', 'error');
+        return;
+    }
+    try {
+        const authData = { hash: localHash, salt: localSalt, iterations: AUTH_ITERATIONS };
+        const jsonStr = JSON.stringify(authData, null, 2);
+        const content = btoa(Array.from(new TextEncoder().encode(jsonStr), b => String.fromCharCode(b)).join(''));
+        let fileSha = null;
+        try {
+            const getRes = await fetch(`https://api.github.com/repos/${ghUser}/${ghRepo}/contents/.admin-auth.json`, {
+                headers: { 'Authorization': `token ${ghToken}` }
+            });
+            if (getRes.ok) fileSha = (await getRes.json()).sha || null;
+        } catch(e2) {}
+        const putBody = { message: 'Sincronizar contraseña admin', content };
+        if (fileSha) putBody.sha = fileSha;
+        const res = await fetch(`https://api.github.com/repos/${ghUser}/${ghRepo}/contents/.admin-auth.json`, {
+            method: 'PUT',
+            headers: { 'Authorization': `token ${ghToken}`, 'Content-Type': 'application/json' },
+            body: JSON.stringify(putBody)
+        });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        mostrarNotificacion('✅ Contraseña sincronizada con GitHub. Puedes borrar datos del navegador de forma segura.', 'success');
+    } catch(e) {
+        mostrarNotificacion(`❌ Error al sincronizar con GitHub: ${e.message}`, 'error');
+    }
+}
+
+// Verifica al abrir el admin si la contraseña local coincide con la de GitHub
+async function _checkPasswordSync() {
+    const ghUser = localStorage.getItem('githubUser');
+    const ghRepo = localStorage.getItem('githubRepo');
+    const localHash = localStorage.getItem(AUTH_HASH_KEY);
+    if (!localHash || !ghUser || !ghRepo) return;
+    try {
+        const res = await fetch(`https://raw.githubusercontent.com/${ghUser}/${ghRepo}/main/.admin-auth.json?_=${Date.now()}`);
+        if (!res.ok) return;
+        const cfg = await res.json();
+        if (cfg.hash && cfg.hash !== localHash) {
+            setTimeout(() => {
+                mostrarNotificacion('⚠️ Contraseña no sincronizada con GitHub. Si borras datos del navegador perderás el acceso. Ve a Configuración → "Sincronizar contraseña".', 'error');
+            }, 1500);
+        }
+    } catch(e) {}
 }
 
 function abrirAdminPanel() {
