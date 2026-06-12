@@ -3956,28 +3956,93 @@ function _ndDesintegrarYTransicion(idxSiguiente) {
     const body = document.getElementById('ndHeroBody');
     const imgWrap = document.getElementById('ndHeroImg');
 
-    // ── Fase 1: el contenido actual explota hacia afuera (zoom+blur+fade) ──
+    // Ocultar contenido real — el canvas toma el relevo visual
     [body, imgWrap].forEach(el => {
         if (!el) return;
         el.style.transition = 'none';
+        el.style.opacity = '0';
         el.style.transform = 'scale(1)';
         el.style.filter = 'none';
     });
-    requestAnimationFrame(() => {
-        if (body) {
-            body.style.transition = 'transform 0.38s ease-in, opacity 0.38s ease-in, filter 0.38s ease-in';
-            body.style.transform = 'scale(1.4)';
-            body.style.opacity = '0';
-            body.style.filter = 'blur(10px)';
+
+    // ── Fase 1: fragmentos de la tarjeta salen volando hacia afuera ──
+    const cols = 9, rows = 12;
+    const pw = W / cols, ph = H / rows;
+    const paleta = ['#FF6B35','#FF9F43','#E8501E','#C9A96E','#FFFFFF','#FFD4C2','#E8C88A','#2A1F14','#3A2A1A','#FF8C42','#F0C070','#D4845A'];
+
+    const fragmentos = [];
+    for (let row = 0; row < rows; row++) {
+        for (let col = 0; col < cols; col++) {
+            const sx = col * pw + pw / 2;
+            const sy = row * ph + ph / 2;
+            const dx = sx - cx;
+            const dy = sy - cy;
+            const dist = Math.sqrt(dx * dx + dy * dy) || 1;
+            const speed = 3.5 + Math.random() * 7;
+            // delay pequeño: piezas del borde salen un poco antes (efecto desintegración)
+            const delay = Math.floor((1 - dist / Math.sqrt(cx*cx + cy*cy)) * 5);
+            fragmentos.push({
+                x: sx, y: sy,
+                vx: (dx / dist) * speed + (Math.random() - 0.5) * 4,
+                vy: (dy / dist) * speed * 0.9 + (Math.random() - 0.5) * 3,
+                w: pw * 0.85, h: ph * 0.85,
+                rot: 0,
+                rotSpeed: (Math.random() - 0.5) * 0.18,
+                alpha: 1,
+                color: paleta[Math.floor(Math.random() * paleta.length)],
+                delay, frame: 0
+            });
         }
-        if (imgWrap) {
-            imgWrap.style.transition = 'transform 0.38s 0.04s ease-in, opacity 0.38s 0.04s ease-in';
-            imgWrap.style.transform = 'scale(1.4)';
-            imgWrap.style.opacity = '0';
-        }
+    }
+
+    // Dibujar estado inicial (snapshot de la tarjeta en fragmentos)
+    fragmentos.forEach(f => {
+        ctx.save();
+        ctx.globalAlpha = 1;
+        ctx.translate(f.x, f.y);
+        ctx.fillStyle = f.color;
+        ctx.fillRect(-f.w / 2, -f.h / 2, f.w, f.h);
+        ctx.restore();
     });
 
-    // ── Preparar el nuevo contenido (aún invisible) ──
+    let frameNum = 0;
+    const SCATTER_FRAMES = 36; // ~600ms
+
+    const scatter = () => {
+        ctx.clearRect(0, 0, W, H);
+        let alguno = false;
+
+        fragmentos.forEach(f => {
+            if (frameNum < f.delay) { alguno = true; return; }
+            f.x += f.vx;
+            f.y += f.vy;
+            f.vy += 0.35; // gravedad suave
+            f.rot += f.rotSpeed;
+            f.alpha -= 0.026;
+            if (f.alpha <= 0) return;
+            alguno = true;
+            ctx.save();
+            ctx.globalAlpha = Math.max(0, f.alpha);
+            ctx.translate(f.x, f.y);
+            ctx.rotate(f.rot);
+            ctx.fillStyle = f.color;
+            ctx.fillRect(-f.w / 2, -f.h / 2, f.w, f.h);
+            ctx.restore();
+        });
+
+        frameNum++;
+        if (alguno && frameNum < SCATTER_FRAMES + 8) {
+            requestAnimationFrame(scatter);
+        } else {
+            ctx.clearRect(0, 0, W, H);
+            canvas.remove();
+            _mostrarNuevoProductoHero(idxSiguiente, body, imgWrap);
+        }
+    };
+
+    requestAnimationFrame(scatter);
+
+    // ── Fase 2: preparar nuevo contenido mientras vuelan los fragmentos ──
     const p = _ndHeroProds[idxSiguiente];
     if (p) {
         const setTxt = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
@@ -4008,117 +4073,32 @@ function _ndDesintegrarYTransicion(idxSiguiente) {
             }
         }
     }
+}
 
-    // ── Fase 2: partículas nacen del centro y se ensamblan formando la tarjeta ──
-    const cols = 18, rows = 22;
-    const pw = W / cols, ph = H / rows;
-    const maxDist = Math.sqrt(cx * cx + cy * cy);
-    const colores = ['#FF6B35', '#FF9F43', '#E8501E', '#C9A96E', '#FFFFFF', '#FFD4C2', '#E8C88A', '#2A1F14', '#3A2A1A', '#FF8C42'];
-
-    const particulas = [];
-    for (let row = 0; row < rows; row++) {
-        for (let col = 0; col < cols; col++) {
-            const tx = col * pw + pw / 2;
-            const ty = row * ph + ph / 2;
-            const dist = Math.sqrt((tx - cx) * (tx - cx) + (ty - cy) * (ty - cy));
-            // Las más alejadas del centro salen un poco después (propagación radial)
-            const delay = Math.floor((dist / maxDist) * 16);
-            particulas.push({
-                x: cx + (Math.random() - 0.5) * 6,
-                y: cy + (Math.random() - 0.5) * 6,
-                tx, ty,
-                size: 1,
-                targetSize: pw * (0.6 + Math.random() * 0.4),
-                color: colores[Math.floor(Math.random() * colores.length)],
-                alpha: 0,
-                rot: Math.random() * Math.PI * 2,
-                rotSpeed: (Math.random() - 0.5) * 0.14,
-                delay,
-                frame: 0
-            });
+function _mostrarNuevoProductoHero(idxSiguiente, body, imgWrap) {
+    // Entrada con spring: escala desde 0.88 a 1 + fade
+    [body, imgWrap].forEach(el => {
+        if (!el) return;
+        el.style.transition = 'none';
+        el.style.opacity = '0';
+        el.style.transform = 'scale(0.88)';
+        el.style.filter = 'none';
+    });
+    requestAnimationFrame(() => {
+        if (body) {
+            body.style.transition = 'transform 0.42s cubic-bezier(.175,.885,.32,1.275), opacity 0.32s ease-out';
+            body.style.opacity = '1';
+            body.style.transform = 'scale(1)';
         }
-    }
-
-    let frameNum = 0, animId;
-
-    const ensamblar = () => {
-        ctx.clearRect(0, 0, W, H);
-        let todosLlegaron = true;
-
-        particulas.forEach(pt => {
-            if (frameNum < pt.delay) { todosLlegaron = false; return; }
-            pt.frame++;
-
-            // Lerp suave hacia destino con frenado exponencial
-            pt.x += (pt.tx - pt.x) * 0.12;
-            pt.y += (pt.ty - pt.y) * 0.12;
-            pt.size += (pt.targetSize - pt.size) * 0.12;
-            pt.alpha = Math.min(1, pt.alpha + 0.09);
-            pt.rot += pt.rotSpeed;
-            pt.rotSpeed *= 0.90; // giro frena al aterrizar
-
-            const distLeft = Math.abs(pt.tx - pt.x) + Math.abs(pt.ty - pt.y);
-            if (distLeft > 0.8 || pt.size < pt.targetSize * 0.97) todosLlegaron = false;
-
-            ctx.save();
-            ctx.translate(pt.x, pt.y);
-            ctx.rotate(pt.rot);
-            ctx.globalAlpha = pt.alpha;
-            ctx.fillStyle = pt.color;
-            const s = pt.size;
-            ctx.fillRect(-s / 2, -s / 2, s, s);
-            ctx.restore();
-        });
-
-        frameNum++;
-
-        if (todosLlegaron || frameNum > 70) {
-            cancelAnimationFrame(animId);
-
-            // ── Fase 3: canvas se disuelve, tarjeta aparece con spring ──
-            let dissolveA = 1;
-            const dissolve = () => {
-                dissolveA -= 0.06;
-                ctx.clearRect(0, 0, W, H);
-                if (dissolveA > 0) {
-                    ctx.globalAlpha = dissolveA;
-                    particulas.forEach(pt => {
-                        ctx.save();
-                        ctx.translate(pt.tx, pt.ty);
-                        ctx.fillStyle = pt.color;
-                        const s = pt.size;
-                        ctx.fillRect(-s / 2, -s / 2, s, s);
-                        ctx.restore();
-                    });
-                    ctx.globalAlpha = 1;
-                    requestAnimationFrame(dissolve);
-                } else {
-                    ctx.clearRect(0, 0, W, H);
-                    ctx.globalAlpha = 1;
-                    if (body) {
-                        body.style.transition = 'transform 0.45s cubic-bezier(.175,.885,.32,1.275), opacity 0.35s ease-out, filter 0.35s ease-out';
-                        body.style.transform = 'scale(1)';
-                        body.style.opacity = '1';
-                        body.style.filter = 'none';
-                    }
-                    if (imgWrap) {
-                        imgWrap.style.transition = 'transform 0.45s 0.05s cubic-bezier(.175,.885,.32,1.275), opacity 0.35s 0.05s ease-out';
-                        imgWrap.style.transform = 'scale(1)';
-                        imgWrap.style.opacity = '1';
-                    }
-                    _ndEfectoActivo = false;
-                    const dots = document.getElementById('ndHeroDots');
-                    if (dots) dots.querySelectorAll('.nd-hero-dot').forEach((d, i) => d.classList.toggle('active', i === idxSiguiente));
-                }
-            };
-            requestAnimationFrame(dissolve);
-            return;
+        if (imgWrap) {
+            imgWrap.style.transition = 'transform 0.42s 0.06s cubic-bezier(.175,.885,.32,1.275), opacity 0.32s 0.06s ease-out';
+            imgWrap.style.opacity = '1';
+            imgWrap.style.transform = 'scale(1)';
         }
-        animId = requestAnimationFrame(ensamblar);
-    };
-
-    // Arrancar el ensamblado tras la animación de salida (~340ms)
-    setTimeout(() => { animId = requestAnimationFrame(ensamblar); }, 340);
+        _ndEfectoActivo = false;
+        const dots = document.getElementById('ndHeroDots');
+        if (dots) dots.querySelectorAll('.nd-hero-dot').forEach((d, i) => d.classList.toggle('active', i === idxSiguiente));
+    });
 }
 
 function renderHeroGaleria() {
