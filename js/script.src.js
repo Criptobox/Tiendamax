@@ -4908,24 +4908,22 @@ function _fbBorrarTodasVentas() {
 // Migra ventas guardadas accidentalmente en la raíz de Firebase (0,1,2,3...) a /ventas/{id}
 async function _fbMigrarVentasRaiz(url) {
     const ventasMigradas = [];
-    // Probar nodos 0-19 individualmente (no requiere leer la raíz)
+    const _elimSet = new Set(JSON.parse(localStorage.getItem('_tmVentasElim') || '[]'));
     for (let k = 0; k < 20; k++) {
         try {
             const r = await fetch(`${url}/${k}.json`);
             if (!r.ok) continue;
             const v = await r.json();
             if (!v || typeof v !== 'object' || !v.id || !v.producto) continue;
-            // Copiar a /ventas/{id}
+            // Siempre intentar borrar del root, aunque la venta haya sido eliminada
+            await fetch(`${url}/${k}.json`, { method: 'DELETE' }).catch(() => {});
+            if (_elimSet.has(v.id)) continue; // Fue eliminada por el admin, no reimportar
             const putRes = await fetch(`${url}/ventas/${v.id}.json`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(v)
             });
-            if (putRes.ok) {
-                // Borrar del root (puede fallar si no hay permisos, no es crítico)
-                await fetch(`${url}/${k}.json`, { method: 'DELETE' }).catch(() => {});
-                ventasMigradas.push(v);
-            }
+            if (putRes.ok) ventasMigradas.push(v);
         } catch(e) {}
     }
     return ventasMigradas;
@@ -4943,7 +4941,10 @@ async function _fbSincronizarVentasAlIniciar() {
         const res = await fetch(`${url}/ventas.json`);
         if (!res.ok) return;
         const data = await res.json();
-        const ventasFB = data && typeof data === 'object' ? Object.values(data).filter(Boolean) : [];
+        const _elimSet = new Set(JSON.parse(localStorage.getItem('_tmVentasElim') || '[]'));
+        const ventasFB = data && typeof data === 'object'
+            ? Object.values(data).filter(v => v && !_elimSet.has(v.id))
+            : [];
 
         // Combinar migradas + las ya en /ventas/
         const todasFB = [...ventasFB, ...migradas.filter(m => !ventasFB.find(v => v.id === m.id))];
@@ -5177,6 +5178,10 @@ function registrarVentaDesdeForm() {
 function eliminarVenta(id) {
     const ventas = cargarVentas().filter(v => v.id !== id);
     localStorage.setItem('registroVentas', JSON.stringify(ventas));
+    // Registrar como eliminada para que el sync de Firebase no la reimporte
+    const elim = JSON.parse(localStorage.getItem('_tmVentasElim') || '[]');
+    if (!elim.includes(id)) { elim.push(id); if (elim.length > 300) elim.splice(0, elim.length - 300); }
+    localStorage.setItem('_tmVentasElim', JSON.stringify(elim));
     renderizarVentas();
     _fbEliminarVenta(id);
 }
@@ -5184,6 +5189,7 @@ function eliminarVenta(id) {
 function borrarHistorialVentas() {
     if (!confirm('¿Borrar todo el historial de ventas?')) return;
     localStorage.removeItem('registroVentas');
+    localStorage.removeItem('_tmVentasElim');
     renderizarVentas();
     mostrarNotificacion('🗑️ Historial borrado');
     _fbBorrarTodasVentas();
