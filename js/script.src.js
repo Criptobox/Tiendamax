@@ -1725,6 +1725,24 @@ function volverAlInicio() {
 
 // ===== RENDERIZAR CATEGORÍAS EN LA HOME =====
 
+// Oculta el banner de oferta si el producto está agotado
+function verificarStockOfertaBanner() {
+    try {
+        const id = localStorage.getItem('ofertaDiaId');
+        if (!id) return;
+        const prod = productos.find(p => String(p.id) === String(id));
+        if (!prod) return;
+        const agotado = prod.stock === 0 || prod.agotado === true || Number(prod.stock) <= 0;
+        const banner = document.getElementById('urgenciaBanner');
+        if (!banner) return;
+        if (agotado) {
+            banner.style.setProperty('display', 'none', 'important');
+            banner.onclick = null;
+            if (document.body) document.body.classList.add('tm-no-oferta-banner');
+        }
+    } catch(e) {}
+}
+
 function renderizarCategoriasHome() {
     const grid = document.getElementById('categoriasGrid');
     if (!grid) return;
@@ -1831,6 +1849,8 @@ function renderizarMasVendidos() {
 
     // Poblar la sección "Oferta del día" (se oculta sola si no hay ofertaDiaId)
     if (typeof renderOfertaDelDia === 'function') renderOfertaDelDia();
+    // Ocultar banner de urgencia si el producto de oferta está agotado
+    verificarStockOfertaBanner();
 }
 
 // ===== AUTENTICACIÓN =====
