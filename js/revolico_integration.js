@@ -699,9 +699,10 @@ function previsualizarRevolico(productoId) {
     document.getElementById('btnAbrirRev')?.addEventListener('click', async function() {
         const desc = document.getElementById('revDescTA').value;
         await _copiar(desc);
-        mostrarNotificacion('✅ Descripción copiada — pégala en Revolico', 'success');
+        mostrarNotificacion('✅ Descripción copiada — regresa aquí para copiar más campos', 'success');
+        sessionStorage.setItem('_tmRevActive', String(productoId));
         window.open(revUrl, '_blank', 'noopener,noreferrer');
-        cerrarRevPreview();
+        // No cerrar el modal — el usuario regresa a esta pantalla para seguir copiando
     });
 }
 
@@ -722,6 +723,7 @@ async function copiarRevDesc() {
 }
 
 function cerrarRevPreview() {
+    sessionStorage.removeItem('_tmRevActive');
     const m = document.getElementById('revPreviewModal');
     if (m) { m.classList.add('hidden'); m.style.display = 'none'; }
 }
@@ -1320,3 +1322,18 @@ function cerrarRevSelector() {
         }
     }, 1200);
 })();
+
+// Restaurar vista previa de Revolico si el usuario vuelve después de ir a otra app
+window.addEventListener('pageshow', function() {
+    const savedId = sessionStorage.getItem('_tmRevActive');
+    if (!savedId) return;
+    if (document.getElementById('revPreviewModal')?.style.display !== 'none') return;
+    // Esperar a que los productos estén disponibles antes de reabrir
+    const tryReopen = (attempts) => {
+        const prods = (typeof productos !== 'undefined' && Array.isArray(productos) ? productos : null)
+            || (() => { try { return JSON.parse(localStorage.getItem('productos') || '[]'); } catch(e) { return []; } })();
+        if (prods.length) { previsualizarRevolico(savedId); return; }
+        if (attempts > 0) setTimeout(() => tryReopen(attempts - 1), 600);
+    };
+    setTimeout(() => tryReopen(5), 400);
+});
