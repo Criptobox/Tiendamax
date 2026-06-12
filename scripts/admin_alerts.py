@@ -2,7 +2,7 @@
 """
 TiendaMax — Alerta admin: nuevos suscriptores push
 Corre cada 30 min via GitHub Actions (admin-alerts.yml).
-Solo notifica si alguien nuevo aceptó las notificaciones push.
+Solo notifica si aparece un deviceId que nunca se había visto.
 """
 import json
 import os
@@ -49,20 +49,17 @@ def main() -> int:
     if not db:
         return 1
 
-    meta_ref  = db.reference("admin_meta")
-    meta      = meta_ref.get() or {}
-    first_run = "last_alert_ts" not in meta
-    last_ts   = meta.get("last_alert_ts", 0)
-    last_count = meta.get("last_token_count")  # None si nunca se guardó
-    now_ts    = int(datetime.now().timestamp() * 1000)
+    meta_ref = db.reference("admin_meta")
+    meta     = meta_ref.get() or {}
+
+    # Conjunto de IDs conocidos (claves de /tokens que ya notificamos)
+    known_ids: set = set(meta.get("known_token_ids") or [])
+    first_run = not known_ids and "known_token_ids" not in meta
 
     try:
         tokens = db.reference("tokens").get() or {}
-        total  = len(tokens) if isinstance(tokens, dict) else 0
-        nuevos = [
-            v for v in tokens.values()
-            if isinstance(v, dict) and int(v.get("timestamp", 0)) > last_ts
-        ]
+        current_ids: set = set(tokens.keys()) if isinstance(tokens, dict) else set()
+        total = len(current_ids)
     except Exception as e:
         print(f"❌ Error leyendo tokens: {e}", file=sys.stderr)
         return 1
@@ -70,24 +67,25 @@ def main() -> int:
     alertas: list[str] = []
 
     if not first_run:
-        # Nuevos suscriptores
-        if nuevos:
-            n = len(nuevos)
+        nuevos_ids  = current_ids - known_ids   # IDs que no habíamos visto
+        perdidos_ids = known_ids - current_ids   # IDs que desaparecieron
+
+        if nuevos_ids:
+            n = len(nuevos_ids)
             alertas.append(
                 f"🔔 *{n} nuevo{'s' if n > 1 else ''} suscriptor{'es' if n > 1 else ''}*\n"
                 f"Total en lista push: *{total}*"
             )
 
-        # Suscriptores perdidos
-        if last_count is not None and total < last_count:
-            perdidos = last_count - total
+        if perdidos_ids:
+            p = len(perdidos_ids)
             alertas.append(
-                f"📉 *{perdidos} suscriptor{'es' if perdidos > 1 else ''} canceló{'aron' if perdidos > 1 else ''} las notificaciones*\n"
+                f"📉 *{p} suscriptor{'es' if p > 1 else ''} canceló{'aron' if p > 1 else ''} las notificaciones*\n"
                 f"Total en lista push: *{total}*"
             )
 
     if first_run:
-        print("Primera ejecución: estado inicializado.")
+        print(f"Primera ejecución: {total} suscriptores registrados como conocidos.")
     elif alertas:
         try:
             send_telegram("\n\n".join(alertas))
@@ -98,8 +96,8 @@ def main() -> int:
     else:
         print("Sin cambios en suscriptores.")
 
-    meta["last_alert_ts"]    = now_ts
-    meta["last_token_count"] = total
+    # Guardar el conjunto actualizado de IDs conocidos
+    meta["known_token_ids"] = list(current_ids)
     meta_ref.set(meta)
     return 0
 
