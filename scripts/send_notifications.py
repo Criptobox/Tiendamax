@@ -276,6 +276,35 @@ def procesar_restock(messaging_api, database, restock_items):
         print(f"🔔 Restock notificado a {len(tokens)} interesados en {item.get('nombre')}")
 
 # ============================================================
+# SOLICITUDES MANUALES DEL ADMIN
+# ============================================================
+def procesar_admin_requests(messaging_api, database):
+    """Lee admin_push_requests de RTDB y envía cada solicitud pendiente."""
+    ref = database.reference("admin_push_requests")
+    requests_data = ref.get()
+    if not requests_data:
+        return
+    tokens_ref = database.reference("tokens")
+    tokens_data = tokens_ref.get() or {}
+    tokens = [v["token"] for v in tokens_data.values() if isinstance(v, dict) and v.get("token")]
+    if not tokens:
+        print("⚠️ No hay tokens para enviar solicitudes admin.")
+        ref.set(None)
+        return
+    for req_id, req in requests_data.items():
+        if not isinstance(req, dict):
+            continue
+        title = str(req.get("title", "")).strip()
+        body  = str(req.get("body",  "")).strip()
+        link  = str(req.get("url",   "/")).strip() or "/"
+        imagen = req.get("imagen") or None
+        if not title or not body:
+            continue
+        print(f"📨 Solicitud admin: '{title}'")
+        enviar_push_fcm(messaging_api, database, tokens, [], title, body, link, imagen, tag="admin-push")
+    ref.set(None)  # limpiar todas las solicitudes procesadas
+
+# ============================================================
 # MAIN
 # ============================================================
 def main():
@@ -284,6 +313,12 @@ def main():
 
     cola = cargar_cola(db_api)
     solo_flush = os.environ.get("SOLO_FLUSH") == "1"
+
+    # Solicitudes manuales del admin — siempre procesadas primero, sin restricción horaria
+    try:
+        procesar_admin_requests(msg_api, db_api)
+    except Exception as e:
+        print(f"⚠️ Error procesando solicitudes admin: {e}", file=sys.stderr)
 
     if not solo_flush:
         try:
