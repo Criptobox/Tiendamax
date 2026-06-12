@@ -284,8 +284,8 @@ html body .categorias-home .categorias-grid .categoria-card:nth-child(n+8) .cat-
 html body .categorias-home .categorias-grid .categoria-card:nth-child(n+8) .cat-count{font-size:10.5px !important;margin-top:3px !important}
 html body .categorias-home .categorias-grid .categoria-card:nth-child(n+8)::before{width:100px !important;height:100px !important;top:-20px !important;right:-20px !important}
 
-/* ── Tile 1 «Todos»: ícono 🛍️ grande arriba-derecha ── */
-html body .categorias-home .categorias-grid .categoria-card:nth-child(1) .cat-icon{display:block !important;font-size:80px !important;top:14px !important;right:18px !important;opacity:.9 !important}
+/* ── Tile 1 «Todos»: ícono 🛍️ centrado horizontalmente ── */
+html body .categorias-home .categorias-grid .categoria-card:nth-child(1) .cat-icon{display:block !important;font-size:80px !important;top:14px !important;left:50% !important;right:auto !important;transform:translateX(-50%) !important;opacity:.9 !important}
 html body .categorias-home .categorias-grid .categoria-card:nth-child(1) .cat-name{font-size:25px !important}
 html body .categorias-home .categorias-grid .categoria-card:nth-child(1) .cat-count{font-size:13px !important}
 
