@@ -286,6 +286,7 @@ html body .categorias-home .categorias-grid .categoria-card:nth-child(n+8)::befo
 
 /* ── Tile 1 «Todos»: ícono 🛍️ centrado horizontalmente ── */
 html body .categorias-home .categorias-grid .categoria-card:nth-child(1) .cat-icon{display:block !important;font-size:80px !important;top:14px !important;left:50% !important;right:auto !important;transform:translateX(-50%) !important;opacity:.9 !important}
+html body .categorias-home .categorias-grid .categoria-card:nth-child(1):hover .cat-icon{transform:translateX(-50%) scale(1.18) rotate(-6deg) !important}
 html body .categorias-home .categorias-grid .categoria-card:nth-child(1) .cat-name{font-size:25px !important}
 html body .categorias-home .categorias-grid .categoria-card:nth-child(1) .cat-count{font-size:13px !important}
 
@@ -688,20 +689,6 @@ body:not(.light-mode) .footer-premium .footer-gold-line{
 }
 body:not(.light-mode) .footer-premium .footer-bottom{border-top-color:rgba(255,255,255,.07) !important}
 
-/* ── Botón flotante de WhatsApp (dentro de .control-buttons) ── */
-.nd-wa-float{
-  width:52px;height:52px;border-radius:50%;padding:0;
-  background:linear-gradient(135deg,#25D366,#128C7E);border:none;cursor:pointer;
-  display:flex;align-items:center;justify-content:center;
-  box-shadow:0 6px 24px rgba(37,211,102,.45);position:relative;transition:transform .2s;
-}
-.nd-wa-float svg{width:26px;height:26px;position:relative;z-index:1}
-.nd-wa-float:hover{transform:scale(1.08)}
-.nd-wa-float::before{
-  content:'';position:absolute;inset:-6px;border-radius:50%;
-  border:2px solid rgba(37,211,102,.45);animation:nd-waring 2s ease-in-out infinite;pointer-events:none;
-}
-@keyframes nd-waring{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.18);opacity:0}}
 
 /* ================================================================
    RENDIMIENTO EN MÓVIL — menos blur y menos orbes (gama baja)
