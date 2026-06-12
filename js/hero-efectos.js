@@ -36,6 +36,20 @@
             }
         });
 
+        // Para .nd-h1 (que contiene spans .nd-grad con gradient text),
+        // la reconstrucción del DOM rompe background-clip:text.
+        // Usamos reveal CSS para preservar los spans originales intactos.
+        if (h1.classList.contains('nd-h1')) {
+            h1.style.opacity = '0';
+            h1.style.transform = 'translateY(12px)';
+            setTimeout(function () {
+                h1.style.transition = 'opacity 0.7s ease-out, transform 0.7s ease-out';
+                h1.style.opacity = '1';
+                h1.style.transform = 'none';
+            }, reduceMotion ? 0 : 200);
+            return;
+        }
+
         if (reduceMotion) return; // deja el título tal cual, sin animar
 
         // Texto plano total para escribir caracter a caracter
