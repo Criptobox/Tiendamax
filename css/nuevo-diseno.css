@@ -837,3 +837,116 @@ body.light-mode .nd-card-story {
    y el contenedor del banner lleva margin lateral inline → 100% + 32px se sale.
    width:auto deja que los márgenes definan el ancho real. */
 #heroImageContainer.hero-image{width:auto !important;max-width:none !important}
+
+/* ================================================================
+   v4 — MODO CLARO COMPLETO + MEJORAS VISUALES
+   Más vendidos · beneficios · testimonios · productos · CTA
+   ================================================================ */
+
+/* ── Sección Más Vendidos ── */
+.mas-vendidos{padding:80px 0;position:relative;z-index:1}
+body:not(.light-mode) .mas-vendidos{background:transparent}
+body.light-mode .mas-vendidos{background:#F8F4F1}
+.mas-vendidos .section-title{position:relative;display:inline-block}
+.mas-vendidos .section-title::after{
+  content:'';position:absolute;bottom:-6px;left:0;
+  width:55%;height:3px;border-radius:2px;
+  background:linear-gradient(90deg,#25D366,#128C7E,transparent)
+}
+
+/* ── Light mode — productos (más vendidos + categoría) ── */
+body.light-mode .mas-vendidos .producto-card,
+body.light-mode #productosGrid .producto-card{
+  background:#fff !important;
+  border:1px solid rgba(0,0,0,.08) !important;
+  border-top-color:rgba(0,0,0,.06) !important;
+  box-shadow:0 2px 8px rgba(0,0,0,.07),0 8px 28px rgba(0,0,0,.05) !important;
+}
+body.light-mode .mas-vendidos .producto-card:hover,
+body.light-mode #productosGrid .producto-card:hover{
+  border-color:rgba(255,107,53,.30) !important;
+  transform:translateY(-8px) scale(1.01) !important;
+  box-shadow:0 12px 32px rgba(0,0,0,.12),0 0 0 1px rgba(255,107,53,.15) !important;
+}
+body.light-mode .producto-card h3{color:#1a1008 !important}
+body.light-mode .producto-card .producto-description{color:rgba(0,0,0,.55) !important}
+body.light-mode .producto-card .precio-actual{color:#1a1008 !important}
+body.light-mode .producto-card .precio-tachado{color:rgba(0,0,0,.35) !important}
+body.light-mode .producto-card .stock-count,
+body.light-mode .producto-card .stock{color:rgba(0,0,0,.5) !important}
+body.light-mode .producto-card .producto-image{background:linear-gradient(145deg,rgba(255,107,53,.06),rgba(255,159,67,.03)) !important}
+body.light-mode .producto-card .stock-bar{background:rgba(0,0,0,.06) !important}
+
+/* ── Light mode — prueba social strip ── */
+body.light-mode .prueba-social-strip{background:transparent !important;border:none !important;padding:0 0 40px !important}
+body.light-mode .prueba-social-strip .prueba-social-inner{
+  background:#fff !important;border:1px solid rgba(0,0,0,.08) !important;
+  border-radius:20px;padding:24px 40px;box-shadow:0 2px 12px rgba(0,0,0,.06) !important
+}
+body.light-mode .prueba-num{color:#1a1008 !important}
+body.light-mode .prueba-label{color:rgba(0,0,0,.55) !important}
+body.light-mode .prueba-sep{color:rgba(0,0,0,.12) !important}
+body.light-mode .mini-review-item{color:rgba(0,0,0,.55) !important}
+
+/* ── Beneficios — ícono naranja (ambos modos) ── */
+.beneficio-card .icon{
+  width:52px !important;height:52px !important;border-radius:14px !important;
+  display:flex !important;align-items:center !important;justify-content:center !important;
+  font-size:26px !important;margin:0 auto 20px !important
+}
+body:not(.light-mode) .beneficio-card .icon{background:rgba(255,107,53,.14) !important}
+
+/* ── Beneficios — modo claro ── */
+body.light-mode .beneficios{background:#F8F4F1 !important}
+body.light-mode .beneficio-card{
+  background:#fff !important;border:1px solid rgba(0,0,0,.07) !important;
+  box-shadow:0 2px 8px rgba(0,0,0,.06),0 8px 24px rgba(0,0,0,.04) !important
+}
+body.light-mode .beneficio-card:hover{
+  border-color:rgba(255,107,53,.25) !important;
+  transform:translateY(-6px) !important;
+  box-shadow:0 8px 24px rgba(0,0,0,.10) !important
+}
+body.light-mode .beneficio-card .icon{background:rgba(255,107,53,.10) !important}
+body.light-mode .beneficio-card h3{color:#1a1008 !important}
+body.light-mode .beneficio-card p{color:rgba(0,0,0,.55) !important}
+
+/* ── Testimonios — mejora visual (ambos modos) ── */
+.testimonio-card .stars{
+  font-size:18px !important;letter-spacing:3px !important;
+  display:block !important;margin-bottom:12px !important
+}
+.testimonio-card>p{font-size:15px !important;line-height:1.7 !important;font-style:italic !important}
+.testimonio-card .autor{
+  font-size:13px !important;font-weight:700 !important;
+  display:block !important;margin-top:16px !important;letter-spacing:.3px !important
+}
+
+/* ── Testimonios — modo claro ── */
+body.light-mode .testimonios{background:#fff !important}
+body.light-mode .testimonio-card{
+  background:#fff !important;border:1px solid rgba(0,0,0,.07) !important;
+  box-shadow:0 2px 8px rgba(0,0,0,.06),0 8px 24px rgba(0,0,0,.04) !important
+}
+body.light-mode .testimonio-card:hover{
+  border-color:rgba(255,107,53,.25) !important;transform:translateY(-6px) !important
+}
+body.light-mode .testimonio-card .stars{color:#FF9F43 !important}
+body.light-mode .testimonio-card>p{color:rgba(0,0,0,.68) !important}
+body.light-mode .testimonio-card .autor{color:#FF6B35 !important}
+
+/* ── CTA final — modo claro ── */
+body.light-mode .cta-final{background:linear-gradient(145deg,#f0faf4,#e8f5ee) !important}
+body.light-mode .cta-final .container{
+  background:rgba(37,211,102,.08) !important;border:1px solid rgba(37,211,102,.2) !important
+}
+body.light-mode .cta-final h2{color:#0d3320 !important}
+body.light-mode .cta-final p{color:rgba(0,50,25,.65) !important}
+
+/* ── Oferta del día — modo claro (el gradiente naranja mantiene contraste) ── */
+body.light-mode .nd-deal{box-shadow:0 20px 60px rgba(232,80,30,.22) !important}
+
+/* ── Responsive más vendidos ── */
+@media(max-width:600px){
+  .mas-vendidos{padding:48px 0}
+}
