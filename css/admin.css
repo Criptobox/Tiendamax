@@ -1880,18 +1880,22 @@ body:not(.dark-mode) .admin-inventory-strip span {
   .tm-an-head h2{font-size:20px}
   .tm-an-head p{font-size:12px}
   .tm-an-actions{flex-wrap:wrap}
-  .tm-an-btn{font-size:12px;padding:8px 10px}
   .tm-an-grid{grid-template-columns:repeat(2,1fr);gap:8px}
   .tm-an-kpi{padding:10px 12px}
   .tm-an-kpi b{font-size:20px}
   .tm-an-kpi em{font-size:11px}
   .tm-an-card{padding:12px}
   .tm-an-card h3{font-size:15px;margin-bottom:10px}
-  .tm-an-bar-row{grid-template-columns:1fr auto;grid-template-rows:auto auto;gap:5px 8px}
-  .tm-an-bar-row .tm-an-track{grid-column:1/-1}
-  .tm-an-row{padding:8px}
-  .tm-an-ico{width:34px;height:34px;border-radius:9px}
+  /* Barras de categoría: 3 columnas compactas (nombre|barra|número) en una sola línea */
+  .tm-an-bar-row{grid-template-columns:76px 1fr 28px;gap:6px 8px;margin:6px 0}
+  .tm-an-name{font-size:11px}
+  .tm-an-value{font-size:11px;text-align:right}
+  /* Filas de stock: icono más pequeño, botón Ver compacto */
+  .tm-an-row{padding:7px 8px;gap:7px}
+  .tm-an-ico{width:30px;height:30px;border-radius:8px;font-size:14px}
   .tm-an-main b{font-size:12px}
+  .tm-an-main small{font-size:10px}
+  .tm-an-list .tm-an-btn{padding:5px 10px;font-size:11px;white-space:nowrap;min-width:44px}
   .tm-an-donut{width:130px;height:130px}
   .tm-an-donut:after{width:76px;height:76px;font-size:11px}
 }
