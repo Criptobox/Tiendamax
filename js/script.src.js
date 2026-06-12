@@ -1776,6 +1776,9 @@ function renderizarCategoriasHome() {
 // ===== RENDERIZAR MÁS VENDIDOS =====
 
 function renderizarMasVendidos() {
+    // Siempre actualizar el hero galería, independiente de si el grid existe
+    if (typeof renderHeroGaleria === 'function') renderHeroGaleria();
+
     const grid = document.getElementById('masVendidosGrid');
     const vacio = document.getElementById('masVendidosVacio');
     if (!grid) return;
@@ -1826,8 +1829,6 @@ function renderizarMasVendidos() {
 
     // Poblar la sección "Oferta del día" (se oculta sola si no hay ofertaDiaId)
     if (typeof renderOfertaDelDia === 'function') renderOfertaDelDia();
-    // Poblar la galería rotativa del hero con productos reales
-    if (typeof renderHeroGaleria === 'function') renderHeroGaleria();
 }
 
 // ===== AUTENTICACIÓN =====
