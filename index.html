@@ -415,17 +415,19 @@
     }
     html body .currency-bar .cur-btn {
         border-radius: 999px !important; padding: 14px 16px !important; min-height: 44px !important;
-        min-width: 0 !important; font-size: 12px !important; font-weight: 800 !important;
-        letter-spacing: .3px !important; color: rgba(255,255,255,.88) !important;
+        min-width: 0 !important; font-size: 14px !important; font-weight: 900 !important;
+        letter-spacing: .4px !important; color: rgba(255,255,255,.92) !important;
+        text-shadow: 0 0 1px rgba(255,255,255,.4) !important;
         transition: all .2s !important; border: none !important;
         background: transparent !important; cursor: pointer !important; white-space: nowrap !important;
     }
     html body .currency-bar .cur-btn:hover { color: #fff !important; background: rgba(255,255,255,.12) !important; }
-    body.light-mode .currency-bar .cur-btn { color: rgba(0,0,0,.65) !important; }
-    body.light-mode .currency-bar .cur-btn:hover { color: rgba(0,0,0,.90) !important; background: rgba(255,107,53,.08) !important; }
+    body.light-mode .currency-bar .cur-btn { color: rgba(0,0,0,.72) !important; text-shadow: none !important; }
+    body.light-mode .currency-bar .cur-btn:hover { color: rgba(0,0,0,.92) !important; background: rgba(255,107,53,.08) !important; }
     html body .currency-bar .cur-btn.active {
         background: linear-gradient(135deg,#FF6B35,#E8501E) !important;
         color: #fff !important; box-shadow: 0 2px 12px rgba(255,107,53,.55) !important;
+        text-shadow: 0 1px 3px rgba(0,0,0,.25) !important;
     }
     @media (max-width: 768px) {
         html body .currency-bar .cur-btn { padding: 14px 12px !important; font-size: 11px !important; min-height: 44px !important; }
