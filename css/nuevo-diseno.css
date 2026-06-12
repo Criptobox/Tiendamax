@@ -1087,3 +1087,59 @@ body:not(.light-mode) #productosGrid .producto-card:hover{
 body.light-mode #productosGrid .producto-card .precio-actual{
   color:#E8501E !important;
 }
+
+/* ════════════════════════════════════════════════════════
+   OPTIMIZACIÓN PERFORMANCE + TOUCH TARGETS
+   ════════════════════════════════════════════════════════ */
+
+/* will-change en elementos con transiciones activas */
+body:not(.light-mode) #productosGrid .producto-card,
+body:not(.light-mode) .mas-vendidos .producto-card{
+  will-change:transform;
+  contain:layout style;
+}
+.nd-card3d{will-change:transform}
+.nd-orb{will-change:transform,opacity}
+
+/* Touch targets mínimo 44px */
+.btn-pedir-card{min-height:44px !important}
+.categoria-btn,.nav-cat-row .categoria-btn{min-height:44px !important;display:inline-flex !important;align-items:center !important}
+
+/* btn-megusta: área táctil ampliada vía pseudo-element (no altera visual) */
+.btn-megusta{position:relative !important}
+.btn-megusta::after{
+  content:'';position:absolute;
+  top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  width:44px;height:44px;
+  border-radius:50%;
+}
+
+/* Fluidity móvil: desactivar backdrop-filter en pantallas ≤480px
+   (dispositivos de gama baja — blur es el mayor cuello de botella) */
+@media(max-width:480px){
+  body:not(.light-mode) .mas-vendidos .producto-card,
+  body:not(.light-mode) #productosGrid .producto-card{
+    backdrop-filter:none !important;
+    -webkit-backdrop-filter:none !important;
+    background:linear-gradient(145deg,rgba(255,255,255,.11),rgba(255,255,255,.05)) !important;
+  }
+}
+
+/* Contención del hero para evitar repaints por orbes */
+.nd-hero{contain:layout}
+.nd-mesh{contain:strict}
+
+/* Extender prefers-reduced-motion a todas las animaciones */
+@media(prefers-reduced-motion:reduce){
+  .nd-orb,.nd-edot,.nd-fb1,.nd-fb2,.nd-fb3,
+  .nd-wa-float::before,.nd-card3d,
+  .nd-hero-dot,
+  #productosGrid .producto-card,
+  .categoria-card,
+  .tmplus-toggle-thumb::before{
+    animation:none !important;
+    transition:none !important;
+  }
+  .nd-card3d{transform:perspective(1200px) rotateY(-10deg) rotateX(6deg) !important}
+}
