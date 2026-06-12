@@ -1795,6 +1795,8 @@ function renderizarMasVendidos() {
         return;
     }
     if (vacio) vacio.style.display = 'none';
+    const sec = document.getElementById('masVendidosSection');
+    if (sec) sec.style.display = '';
 
     productosAMostrar.forEach(producto => {
         const card = document.createElement('div');
