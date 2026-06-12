@@ -4484,6 +4484,19 @@ if (typeof mostrarVistaCategoria === 'function') {
 
 // ── Gestión de productos por categorías ──────────────
 
+let _filtroFavoritos = false;
+
+function tmToggleFiltroFavoritos() {
+    _filtroFavoritos = !_filtroFavoritos;
+    const btn = document.getElementById('btnFiltroFavoritos');
+    if (btn) {
+        btn.style.background = _filtroFavoritos ? 'rgba(201,169,110,.55)' : 'rgba(201,169,110,.12)';
+        btn.style.color      = _filtroFavoritos ? '#fff' : '#c9a96e';
+        btn.style.borderColor= _filtroFavoritos ? '#c9a96e' : 'rgba(201,169,110,.3)';
+    }
+    actualizarListaProductos();
+}
+
 function actualizarListaProductos() {
     const productsList = document.getElementById('productsList');
     if (!productsList) return;
@@ -4504,7 +4517,8 @@ function actualizarListaProductos() {
     let filtrados = productos.filter(p => {
         const matchBusq = !busqueda || p.nombre.toLowerCase().includes(busqueda) || (p.descripcion||'').toLowerCase().includes(busqueda);
         const matchCat  = !filtroCat || p.categoria === filtroCat;
-        return matchBusq && matchCat;
+        const matchFav  = !_filtroFavoritos || p.masVendido;
+        return matchBusq && matchCat && matchFav;
     });
 
     if (filtrados.length === 0) {
