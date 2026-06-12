@@ -422,7 +422,19 @@ body:not(.light-mode) #productosGrid .producto-card:hover{
   box-shadow:0 8px 16px rgba(0,0,0,.5),0 24px 48px rgba(0,0,0,.6),0 0 0 1px rgba(255,107,53,.2) !important;
 }
 body:not(.light-mode) .mas-vendidos .producto-image,
-body:not(.light-mode) #productosGrid .producto-image{background:linear-gradient(145deg,rgba(255,107,53,.10),rgba(255,159,67,.05)) !important}
+body:not(.light-mode) #productosGrid .producto-image{background:transparent !important}
+/* Restaurar efecto B&W → color en hover — usa filter:grayscale en vez de
+   mix-blend-mode porque backdrop-filter crea stacking context y rompe blend */
+.mas-vendidos .producto-image img,
+#productosGrid .producto-image img{
+  filter:grayscale(1) brightness(.9) !important;
+  transition:filter .4s ease,opacity .4s ease !important;
+  mix-blend-mode:normal !important;
+}
+.mas-vendidos .producto-card:hover .producto-image img,
+#productosGrid .producto-card:hover .producto-image img{
+  filter:grayscale(0) brightness(1) !important;
+}
 body:not(.light-mode) .producto-card h3{color:#F5EDE8 !important}
 body:not(.light-mode) .producto-card .producto-description{color:rgba(245,237,232,.6) !important}
 body:not(.light-mode) .producto-card .precio-actual{color:#F5EDE8 !important}
