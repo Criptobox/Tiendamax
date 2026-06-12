@@ -393,18 +393,18 @@
         padding: 4px !important;
         border-radius: 999px !important;
         z-index: auto !important;
-        background: linear-gradient(145deg,rgba(255,255,255,.10),rgba(255,255,255,.04)) !important;
-        backdrop-filter: blur(20px) saturate(160%) !important;
-        -webkit-backdrop-filter: blur(20px) saturate(160%) !important;
-        border: 1px solid rgba(255,255,255,.12) !important;
-        border-top-color: rgba(255,255,255,.20) !important;
-        box-shadow: 0 6px 22px rgba(0,0,0,.30), 0 1px 3px rgba(0,0,0,.2) !important;
+        background: linear-gradient(145deg,rgba(255,160,50,.22),rgba(255,107,53,.14)) !important;
+        backdrop-filter: blur(20px) saturate(180%) !important;
+        -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+        border: 1.5px solid rgba(255,160,50,.45) !important;
+        border-top-color: rgba(255,185,80,.55) !important;
+        box-shadow: 0 0 20px rgba(255,107,53,.22), 0 6px 24px rgba(0,0,0,.40), 0 1px 3px rgba(0,0,0,.2) !important;
     }
     body.light-mode .currency-bar {
-        background: rgba(255,255,255,.72) !important;
-        border: 1px solid rgba(0,0,0,.07) !important;
-        border-top-color: rgba(0,0,0,.07) !important;
-        box-shadow: 0 4px 16px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.04) !important;
+        background: rgba(255,255,255,.90) !important;
+        border: 1.5px solid rgba(255,107,53,.30) !important;
+        border-top-color: rgba(255,107,53,.30) !important;
+        box-shadow: 0 4px 18px rgba(255,107,53,.12), 0 1px 2px rgba(0,0,0,.06) !important;
     }
     .currency-bar .tasa-info-prefix,
     .currency-bar .tasa-info { display: none !important; }
@@ -416,16 +416,16 @@
     html body .currency-bar .cur-btn {
         border-radius: 999px !important; padding: 14px 16px !important; min-height: 44px !important;
         min-width: 0 !important; font-size: 12px !important; font-weight: 800 !important;
-        letter-spacing: .3px !important; color: rgba(255,255,255,.6) !important;
+        letter-spacing: .3px !important; color: rgba(255,255,255,.88) !important;
         transition: all .2s !important; border: none !important;
         background: transparent !important; cursor: pointer !important; white-space: nowrap !important;
     }
-    html body .currency-bar .cur-btn:hover { color: rgba(255,255,255,.9) !important; }
-    body.light-mode .currency-bar .cur-btn { color: rgba(0,0,0,.5) !important; }
-    body.light-mode .currency-bar .cur-btn:hover { color: rgba(0,0,0,.85) !important; }
+    html body .currency-bar .cur-btn:hover { color: #fff !important; background: rgba(255,255,255,.12) !important; }
+    body.light-mode .currency-bar .cur-btn { color: rgba(0,0,0,.65) !important; }
+    body.light-mode .currency-bar .cur-btn:hover { color: rgba(0,0,0,.90) !important; background: rgba(255,107,53,.08) !important; }
     html body .currency-bar .cur-btn.active {
         background: linear-gradient(135deg,#FF6B35,#E8501E) !important;
-        color: #fff !important; box-shadow: 0 2px 10px rgba(255,107,53,.45) !important;
+        color: #fff !important; box-shadow: 0 2px 12px rgba(255,107,53,.55) !important;
     }
     @media (max-width: 768px) {
         html body .currency-bar .cur-btn { padding: 14px 12px !important; font-size: 11px !important; min-height: 44px !important; }
