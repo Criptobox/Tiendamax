@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="es"><head><meta charset="UTF-8"><meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' data:; connect-src 'self' https://*.googleapis.com https://*.firebaseio.com https://*.firebasedatabase.app https://fcm.googleapis.com https://www.gstatic.com https://raw.githubusercontent.com https://api.github.com https://openrouter.ai https://api.deepseek.com https://api.groq.com https://api.anthropic.com https://generativelanguage.googleapis.com; object-src 'none'; base-uri 'self'; frame-ancestors 'self'"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex,nofollow"><title>TiendaMax Admin</title>
-<link rel="icon" href="/favicon.svg"><link rel="stylesheet" href="css/admin.css?v=c924b58d"></head><script>
+<link rel="icon" href="/favicon.svg"><link rel="stylesheet" href="css/admin.css?v=4d55f2d5"></head><script>
 (function() {
   if (!localStorage.getItem("githubUser")) localStorage.setItem("githubUser", "Criptobox");
   if (!localStorage.getItem("githubRepo")) localStorage.setItem("githubRepo", "Tiendamax");
@@ -238,6 +238,35 @@ function buildHeatmap(vs){
   const totalVentas=vs.length;
   return `<div style="font-size:11px;color:#888;margin-bottom:10px;">${totalVentas} venta${totalVentas!==1?'s':''} en ${totalDias} día${totalDias!==1?'s':''} (últimas 12 semanas)</div><div style="display:flex;gap:3px;align-items:flex-start;overflow-x:auto;padding-bottom:4px;"><div style="display:flex;flex-direction:column;gap:2px;margin-top:13px;">${dayLabels}</div>${cols}</div><div style="display:flex;align-items:center;gap:6px;margin-top:8px;"><span style="font-size:10px;color:#555;">Menos</span><div style="width:11px;height:11px;border-radius:2px;background:rgba(255,255,255,0.05);"></div><div style="width:11px;height:11px;border-radius:2px;background:rgba(201,169,110,0.25);"></div><div style="width:11px;height:11px;border-radius:2px;background:rgba(201,169,110,0.55);"></div><div style="width:11px;height:11px;border-radius:2px;background:rgba(201,169,110,0.85);"></div><span style="font-size:10px;color:#555;">Más</span></div>`;
 }
+function buildRevenueChart(vs){
+  if(!vs.length) return '<div class="tm-an-note" style="text-align:center;padding:16px 0;color:#555;">Sin ventas registradas — aquí verás los ingresos diarios.</div>';
+  const DAY=86400000,DAYS=30;
+  const today=new Date(); today.setHours(23,59,59,999);
+  const slots={};
+  for(let i=0;i<DAYS;i++){const d=new Date(today.getTime()-(DAYS-1-i)*DAY); slots[d.toISOString().slice(0,10)]=0;}
+  vs.forEach(v=>{const ts=v.id||v.fecha; if(!ts) return; const d=new Date(typeof ts==='number'?ts:Date.parse(ts)); if(isNaN(d.getTime())) return; const k=d.toISOString().slice(0,10); if(k in slots) slots[k]+=num(v.total);});
+  const vals=Object.values(slots),maxV=Math.max(1,...vals);
+  const totalP=vals.reduce((s,v)=>s+v,0),actD=vals.filter(v=>v>0).length;
+  const todayKey=new Date().toISOString().slice(0,10);
+  const bars=Object.entries(slots).map(([date,total])=>{
+    const pct=Math.max(0,(total/maxV)*100);
+    const isToday=date===todayKey;
+    const lbl=date.slice(8)+'/'+date.slice(5,7);
+    const bg=isToday?'rgba(37,211,102,0.9)':total>0?'rgba(201,169,110,0.85)':'rgba(255,255,255,0.06)';
+    return `<div class="tm-an-rccol" title="${date}: $${total.toFixed(2)}"><div class="tm-an-rcbar" style="height:${pct}%;background:${bg}"></div><div class="tm-an-rclbl${isToday?' tm-today':''}">${isToday?'Hoy':lbl}</div></div>`;
+  }).join('');
+  return `<div class="tm-an-rcmeta">$${totalP.toFixed(0)} ingresado · ${actD} día${actD!==1?'s':''} con ventas (últimos 30 días)</div><div class="tm-an-rcwrap">${bars}</div>`;
+}
+function buildTopVentasProd(vs){
+  if(!vs.length) return '<div class="tm-an-note">Sin ventas registradas aún.</div>';
+  const map={};
+  vs.forEach(v=>{const k=v.producto||'?'; if(!map[k]) map[k]={total:0,qty:0}; map[k].total+=num(v.total); map[k].qty+=num(v.cantidad||1);});
+  const top=Object.entries(map).sort((a,b)=>b[1].total-a[1].total).slice(0,8);
+  if(!top.length) return '<div class="tm-an-note">Sin ventas registradas aún.</div>';
+  const maxT=Math.max(1,top[0][1].total);
+  const m=['🥇','🥈','🥉'];
+  return top.map(([name,d],i)=>`<div class="tm-an-bar-row"><div class="tm-an-name">${m[i]||i+1+'.'} ${esc(name.slice(0,28))}</div><div class="tm-an-track"><div class="tm-an-fill" style="width:${Math.max(4,d.total/maxT*100)}%"></div></div><div class="tm-an-value">$${d.total.toFixed(0)}</div></div>`).join('');
+}
 async function render(){
  const mount=$('#analyticsContent'); if(!mount) return;
  const ps=products(); let vs=ventas(); const fb=await readFirebaseAnalytics();
@@ -263,8 +292,10 @@ async function render(){
   <div id="tm-limpiar-info" class="tm-an-note" style="display:block;margin:0 0 12px 0;min-height:18px;"></div>
   <div class="tm-an-grid"><div class="tm-an-kpi"><small>Vistas</small><b>${totalVistas.toLocaleString('es-CU')}</b><em>en Firebase</em></div><div class="tm-an-kpi"><small>WhatsApp</small><b>${totalWa.toLocaleString('es-CU')}</b><em>clicks registrados</em></div><div class="tm-an-kpi"><small>Conversión</small><b>${totalVistas?conv.toFixed(1)+'%':'—'}</b><em>WA / vistas</em></div><div class="tm-an-kpi"><small>Ventas</small><b>${money(totalVentas)}</b><em>${vs.length} registros</em></div><div class="tm-an-kpi"><small>Inventario</small><b>${money(inv)}</b><em>${active} activos</em></div><div class="tm-an-kpi"><small>Alertas</small><b>${low+empty}</b><em>${empty} agotados · ${low} bajos</em></div></div>
   ${!hasFbData?`<div class="tm-an-note" style="background:rgba(201,169,110,.08);border:1px solid rgba(201,169,110,.2);border-radius:10px;padding:12px 16px;margin-bottom:14px;">📡 Firebase aún no tiene datos de vistas. Los contadores se irán acumulando conforme los clientes visiten la tienda.</div>`:''}
+  <div class="tm-an-card"><h3>💰 Ingresos por día</h3>${buildRevenueChart(vs)}</div>
   <div class="tm-an-layout"><div class="tm-an-card"><h3>📈 Inventario por categoría</h3>${catArr.slice(0,12).map(c=>`<div class="tm-an-bar-row"><div class="tm-an-name">${esc(c.name)}</div><div class="tm-an-track"><div class="tm-an-fill" style="width:${Math.max(4,c.count/maxCat*100)}%"></div></div><div class="tm-an-value">${c.count}</div></div>`).join('')}</div><div class="tm-an-card"><h3>🥧 Distribución</h3><div class="tm-an-donut" data-label="${total} productos"></div>${catArr.slice(0,6).map(c=>`<div class="tm-an-row"><div class="tm-an-main"><b>${esc(c.name)}</b><small>${c.stock} stock · ${money(c.value)}</small></div><div class="tm-an-value">${c.count}</div></div>`).join('')}</div></div>
-  <div class="tm-an-layout"><div class="tm-an-card"><h3>🔥 Top productos por vistas reales</h3><div class="tm-an-list">${scored.length?scored.slice(0,8).map((x,i)=>`<div class="tm-an-row"><div class="tm-an-ico">${iconFor(x.p)}</div><div class="tm-an-main"><b>${i+1}. ${esc(nameOf(x.p))}</b><small>${esc(catOf(x.p))} · ${x.wa} WhatsApp · stock ${stockOf(x.p)}</small></div><div class="tm-an-value">${x.views}</div></div>`).join(''):'<div class="tm-an-note">Sin datos de vistas aún. Aparecerán aquí cuando los clientes visiten los productos.</div>'}</div></div><div class="tm-an-card"><h3>⚠️ Inteligencia de stock</h3><div class="tm-an-list">${stockAlerts.length?stockAlerts.map(p=>`<div class="tm-an-row"><div class="tm-an-ico">${stockOf(p)===0?'🔴':'🟠'}</div><div class="tm-an-main"><b>${esc(nameOf(p))}</b><small>${esc(catOf(p))} · ${stockOf(p)===0?'agotado':'solo '+stockOf(p)+' en stock'}</small></div><button class="tm-an-btn" onclick="switchTab('manage-products')">Ver</button></div>`).join(''):'<div class="tm-an-note">No hay alertas críticas de stock.</div>'}</div></div></div>
+  <div class="tm-an-layout"><div class="tm-an-card"><h3>🔥 Top productos por vistas reales</h3><div class="tm-an-list">${scored.length?scored.slice(0,8).map((x,i)=>`<div class="tm-an-row"><div class="tm-an-ico">${iconFor(x.p)}</div><div class="tm-an-main"><b>${i+1}. ${esc(nameOf(x.p))}</b><small>${esc(catOf(x.p))} · ${x.wa} WhatsApp · stock ${stockOf(x.p)}</small></div><div class="tm-an-value">${x.views}</div></div>`).join(''):'<div class="tm-an-note">Sin datos de vistas aún. Aparecerán aquí cuando los clientes visiten los productos.</div>'}</div></div><div class="tm-an-card"><h3>🏆 Top por ingresos</h3>${buildTopVentasProd(vs)}</div></div>
+  <div class="tm-an-card"><h3>⚠️ Inteligencia de stock</h3><div class="tm-an-list">${stockAlerts.length?stockAlerts.map(p=>`<div class="tm-an-row"><div class="tm-an-ico">${stockOf(p)===0?'🔴':'🟠'}</div><div class="tm-an-main"><b>${esc(nameOf(p))}</b><small>${esc(catOf(p))} · ${stockOf(p)===0?'agotado':'solo '+stockOf(p)+' en stock'}</small></div><button class="tm-an-btn" onclick="switchTab('manage-products')">Ver</button></div>`).join(''):'<div class="tm-an-note">No hay alertas críticas de stock.</div>'}</div></div>
   ${searchArr.length?`<div class="tm-an-card"><h3>🔎 Búsquedas reales</h3><div class="tm-an-chipwrap">${searchArr.map(([k,v])=>`<span class="tm-an-chip">${esc(k)} · ${v}</span>`).join('')}</div></div>`:''}
   <div class="tm-an-card"><h3>📅 Actividad de ventas</h3>${buildHeatmap(vs)}</div>
   <div class="tm-an-card"><h3>💡 Recomendaciones</h3><div class="tm-an-list"><div class="tm-an-note">${empty?`Reponer o archivar ${empty} productos agotados para no perder clientes.`:'✅ Sin productos agotados críticos.'}</div>${scored.filter(x=>x.views>=3&&x.wa===0).slice(0,3).map(x=>`<div class="tm-an-note">💬 "${esc(nameOf(x.p))}" tuvo ${x.views} vistas pero 0 WhatsApp — revisa precio o foto.</div>`).join('')}</div></div>
