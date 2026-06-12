@@ -648,6 +648,35 @@ async function renderizarResenas(productoId) {
 }
 
 // ── TESTIMONIOS DINÁMICOS DESDE FIREBASE ────────────────
+let _tmAllResenas = [];
+
+function _renderTestimoniosPage(show) {
+    const grid = document.getElementById('testimoniosGrid');
+    if (!grid || !_tmAllResenas.length) return;
+    const stars = n => '⭐'.repeat(Math.min(5, Math.max(1, n)));
+    grid.innerHTML = _tmAllResenas.slice(0, show).map(r =>
+        '<div class="testimonio-card">' +
+            '<div class="stars">' + stars(r.estrellas) + '</div>' +
+            '<p>"' + escapeHtml(r.texto.substring(0, 200)) + '"</p>' +
+            '<p class="autor">— ' + escapeHtml(r.autor) +
+            (r.productoNombre ? ' <span style="font-size:10px;opacity:0.5;font-weight:400;">· ' + escapeHtml(r.productoNombre.substring(0, 30)) + '</span>' : '') +
+            '</p></div>'
+    ).join('');
+    const remaining = _tmAllResenas.length - show;
+    let btn = document.getElementById('nd-resenas-mas');
+    if (remaining > 0) {
+        if (!btn) {
+            btn = document.createElement('div');
+            btn.id = 'nd-resenas-mas';
+            btn.style.cssText = 'text-align:center;margin-top:20px;';
+            grid.insertAdjacentElement('afterend', btn);
+        }
+        btn.innerHTML = '<button onclick="_renderTestimoniosPage(' + (show + 3) + ')" style="padding:10px 28px;border-radius:20px;border:1px solid currentColor;opacity:0.65;background:transparent;color:inherit;cursor:pointer;font-size:14px;font-weight:600;transition:opacity .2s" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.65">Ver ' + remaining + ' reseña' + (remaining === 1 ? '' : 's') + ' más ↓</button>';
+    } else if (btn) {
+        btn.remove();
+    }
+}
+
 async function cargarTestimoniosFirebase() {
     const grid = document.getElementById('testimoniosGrid');
     const cta  = document.getElementById('testimoniosCTA');
@@ -663,8 +692,7 @@ async function cargarTestimoniosFirebase() {
         const productIds = await r.json();
         if (!productIds || typeof productIds !== 'object') throw new Error('empty');
 
-        // Buscar reseñas de cada producto en paralelo (máx 6 para no saturar)
-        const pids = Object.keys(productIds).slice(0, 6);
+        const pids = Object.keys(productIds).slice(0, 20);
         const allResenas = [];
         await Promise.all(pids.map(async pid => {
             try {
@@ -682,70 +710,17 @@ async function cargarTestimoniosFirebase() {
         // Ordenar por más recientes y tomar las mejores con 4-5 estrellas
         const mejores = allResenas
             .filter(r => r.estrellas >= 4 && r.texto && r.texto.length > 15)
-            .sort((a, b) => b.id - a.id)
-            .slice(0, 6);
+            .sort((a, b) => b.id - a.id);
 
         if (mejores.length === 0) throw new Error('no good resenas');
 
-        const stars = n => '⭐'.repeat(Math.min(5, Math.max(1, n)));
-
-        grid.innerHTML = mejores.map(r =>
-            '<div class="testimonio-card">' +
-                '<div class="stars">' + stars(r.estrellas) + '</div>' +
-                '<p>"' + escapeHtml(r.texto.substring(0, 200)) + '"</p>' +
-                '<p class="autor">— ' + escapeHtml(r.autor) +
-                (r.productoNombre ? ' <span style="font-size:10px;opacity:0.5;font-weight:400;">· ' + escapeHtml(r.productoNombre.substring(0, 30)) + '</span>' : '') +
-                '</p>' +
-            '</div>'
-        ).join('');
-
+        _tmAllResenas = mejores;
+        _renderTestimoniosPage(3);
         if (cta) cta.style.display = 'block';
 
     } catch(e) {
-        // Sin reseñas reales — mostrar banco de reseñas de muestra realistas
-        const _fallbackResenas = [
-            {estrellas:5,texto:'Excelente servicio, el producto llegó en perfectas condiciones y más rápido de lo esperado. Muy recomendado.',autor:'Carlos M.'},
-            {estrellas:5,texto:'Super satisfecha con mi compra. La calidad es muy buena y el precio justo. Ya les compré dos veces.',autor:'Yanelis R.'},
-            {estrellas:5,texto:'Todo perfecto. Me comunicaron rápido, coordinaron la entrega sin problema. 10 de 10.',autor:'Roberto A.'},
-            {estrellas:4,texto:'Buen producto en general, aunque tardó un par de días más de lo esperado. Igual lo recomiendo.',autor:'Lisandra V.'},
-            {estrellas:5,texto:'El producto es tal y como lo describen, sin sorpresas. Atención al cliente excelente.',autor:'Michel G.'},
-            {estrellas:5,texto:'Primera vez comprando aquí y quedé muy contenta. El proceso fue sencillo y sin complicaciones.',autor:'Dayami P.'},
-            {estrellas:5,texto:'Calidad increíble para el precio. Funciona perfecto desde el primer día. Muy satisfecho.',autor:'Ernesto L.'},
-            {estrellas:3,texto:'El producto está bien pero la descripción podría ser más detallada. Al final quedé conforme.',autor:'Yasnier O.'},
-            {estrellas:5,texto:'Respondieron mis preguntas enseguida por WhatsApp. Eso vale mucho. Compra sin miedo.',autor:'Marisol F.'},
-            {estrellas:5,texto:'Increíble relación calidad-precio. Ya lo recomendé a varios amigos y familia.',autor:'Ileana B.'},
-            {estrellas:5,texto:'Todo excelente desde el primer mensaje. Se nota que son serios y formales. Volvería a comprar.',autor:'Reinaldo C.'},
-            {estrellas:4,texto:'Buen producto, cumple su función. El empaque podría mejorar un poco pero el artículo llegó bien.',autor:'Giselle T.'},
-            {estrellas:5,texto:'Compré para regalo y fue un éxito total. La persona quedó encantada. Muchas gracias.',autor:'Osmani N.'},
-            {estrellas:5,texto:'Muy profesionales. Me explicaron todo bien antes de comprar. Sin letras pequeñas, todo claro.',autor:'Yolanda E.'},
-            {estrellas:5,texto:'Producto de primera. Se nota la diferencia con las copias baratas. Vale cada centavo.',autor:'Ariel S.'},
-            {estrellas:5,texto:'Excelente tienda. Rápidos, honestos y el producto es justo lo que buscaba. Compra segura.',autor:'Tamara H.'},
-            {estrellas:5,texto:'La comunicación fue impecable en todo momento. Sabía exactamente cuándo iba a recibir mi pedido.',autor:'Lázaro Q.'},
-            {estrellas:4,texto:'Buen servicio en general. El producto tardó un poco más pero el resultado final fue satisfactorio.',autor:'Nilda J.'},
-            {estrellas:5,texto:'Llevo meses con este producto y sigue funcionando perfecto. Excelente calidad y durabilidad.',autor:'Frank D.'},
-            {estrellas:5,texto:'Compré con algo de duda por ser la primera vez pero me sorprendieron muy positivamente.',autor:'Xiomara U.'},
-            {estrellas:5,texto:'Atención personalizada, te tratan como un cliente de verdad. Eso ya no se ve mucho hoy en día.',autor:'Raúl K.'},
-            {estrellas:5,texto:'Súper recomendados. Honestos, puntuales y el producto superó mis expectativas.',autor:'Bárbara Z.'},
-            {estrellas:3,texto:'No es perfecto pero hace lo que promete. El soporte respondió mis dudas aunque tardó un poco.',autor:'Yoan I.'},
-            {estrellas:5,texto:'Ya van tres compras y siempre igual de bien. Tienda confiable al 100%.',autor:'Miriam W.'},
-            {estrellas:5,texto:'El producto es exactamente como en las fotos. Sin engaños. Entrega rápida. Muy contento.',autor:'Alexis X.'},
-            {estrellas:5,texto:'Compra muy sencilla por WhatsApp. En menos de un día ya estaba coordinando la entrega.',autor:'Yunia M.'},
-            {estrellas:5,texto:'Calidad garantizada. Lo recomendé ya a cuatro personas y todas quedaron satisfechas también.',autor:'Danilo R.'},
-            {estrellas:4,texto:'Buen producto y buen servicio. La única queja menor es que podrían ampliar las opciones de pago.',autor:'Caridad L.'},
-            {estrellas:5,texto:'Sin dudas la mejor tienda online que he encontrado. Seriedad, calidad y precio justo.',autor:'Héctor V.'},
-            {estrellas:5,texto:'Todo perfecto desde el principio hasta el final. Definitivamente volvería a comprar aquí.',autor:'Susana F.'}
-        ];
-        // Mostrar 6 reseñas aleatorias mezcladas del banco
-        const shuffled = _fallbackResenas.slice().sort(() => Math.random() - 0.5).slice(0, 6);
-        const stars = n => '⭐'.repeat(Math.min(5, Math.max(1, n)));
-        grid.innerHTML = shuffled.map(r =>
-            '<div class="testimonio-card">' +
-                '<div class="stars">' + stars(r.estrellas) + '</div>' +
-                '<p>"' + escapeHtml(r.texto) + '"</p>' +
-                '<p class="autor">— ' + escapeHtml(r.autor) + '</p>' +
-            '</div>'
-        ).join('');
-        if (cta) cta.style.display = 'block';
+        grid.innerHTML = '';
+        if (cta) cta.style.display = 'none';
     }
 }
 
