@@ -56,7 +56,8 @@ def main() -> int:
     # Inicio del día en ms para comparar timestamps de cliente
     hoy_inicio_ms = int(now.replace(hour=0, minute=0, second=0, microsecond=0).timestamp() * 1000)
 
-    lines = [f"📊 *Reporte TiendaMax — {hoy_str}*", ""]
+    hora_str = now.strftime("%H:%M")
+    lines = [f"📊 *Reporte TiendaMax — {hoy_str} · {hora_str} (Cuba)*", ""]
 
     # ── 1. Ventas del día ──────────────────────────────────────────────────
     try:
