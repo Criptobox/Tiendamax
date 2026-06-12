@@ -1053,3 +1053,37 @@ body.light-mode .tmplus-toggle-thumb{background:rgba(0,0,0,.15)}
   text-overflow:ellipsis !important;
   white-space:nowrap !important;
 }
+
+/* ════════════════════════════════════════════════════════
+   MEJORAS TARJETAS DE PRODUCTO — CATÁLOGO
+   ════════════════════════════════════════════════════════ */
+
+/* 1. Borde naranja arriba + sombra más profunda para que destaquen */
+body:not(.light-mode) #productosGrid .producto-card{
+  border-top:2px solid rgba(255,107,53,.55) !important;
+  box-shadow:0 2px 4px rgba(0,0,0,.5),0 12px 28px rgba(0,0,0,.65),0 0 50px rgba(255,107,53,.06) !important;
+}
+body:not(.light-mode) #productosGrid .producto-card:hover{
+  border-top-color:rgba(255,107,53,.9) !important;
+  box-shadow:0 8px 16px rgba(0,0,0,.6),0 24px 48px rgba(0,0,0,.7),0 0 60px rgba(255,107,53,.18) !important;
+}
+
+/* 2. Nombre — máximo 2 líneas en todas las tarjetas */
+#productosGrid .producto-card h3{
+  display:-webkit-box !important;
+  -webkit-line-clamp:2 !important;
+  -webkit-box-orient:vertical !important;
+  overflow:hidden !important;
+  min-height:2.6em !important;
+}
+
+/* 3. Precio — número más grande y "USD" más pequeño */
+#productosGrid .producto-card .precio-actual{
+  font-size:22px !important;
+  font-weight:800 !important;
+  color:#FF6B35 !important;
+  letter-spacing:-.3px !important;
+}
+body.light-mode #productosGrid .producto-card .precio-actual{
+  color:#E8501E !important;
+}
