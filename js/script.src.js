@@ -1751,16 +1751,18 @@ function renderizarCategoriasHome() {
     });
     const maxMV = Math.max(...Object.values(mvPorCat), 0);
 
+    const _catDisplayNames = { 'WIFI': 'REDES' };
     categorias.forEach(cat => {
         const count = productos.filter(p => p.categoria === cat).length;
         const mv = mvPorCat[cat] || 0;
         const isPopular = mv > 0 && (mv === maxMV || mv >= 2);
         const card = document.createElement('div');
         card.className = 'categoria-card' + (count === 0 ? ' proximamente' : '') + (isPopular ? ' cat-popular' : '');
+        const displayCat = _catDisplayNames[cat] || cat;
         card.innerHTML = `
             <span class="cat-popular-badge">+ Popular</span>
             <span class="cat-icon">${escapeHtml(obtenerIconoCategoria(cat))}</span>
-            <span class="cat-name">${escapeHtml(cat)}</span>
+            <span class="cat-name">${escapeHtml(displayCat)}</span>
             <span class="cat-count">${count === 0 ? '🕐 Próximamente' : safeNum(count) + ' producto' + (count !== 1 ? 's' : '')}</span>
         `;
         card.onclick = () => mostrarVistaCategoria(cat);
@@ -4308,7 +4310,8 @@ function renderizarCategoriasHomeInstant() {
         const icon = obtenerIconoCategoria(cat);
         const badge = (count > 0 && count === maxCount) ? '<span class="cat-badge">🔥 Popular</span>' : '';
         const cta = count > 0 ? '<span class="cat-cta">→ Explorar</span>' : '';
-        card.innerHTML = `${badge}<span class="cat-wm">${icon}</span><span class="cat-icon">${icon}</span><span class="cat-name">${cat}</span><span class="cat-count">${count === 0 ? '🕐 Próximamente' : count + ' producto' + (count !== 1 ? 's' : '')}</span>${cta}`;
+        const _dn = { 'WIFI': 'REDES' };
+        card.innerHTML = `${badge}<span class="cat-wm">${icon}</span><span class="cat-icon">${icon}</span><span class="cat-name">${_dn[cat] || cat}</span><span class="cat-count">${count === 0 ? '🕐 Próximamente' : count + ' producto' + (count !== 1 ? 's' : '')}</span>${cta}`;
         card.onclick = () => mostrarVistaCategoria(cat);
         grid.appendChild(card);
     });
