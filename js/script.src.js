@@ -4604,6 +4604,17 @@ function actualizarListaProductos() {
 }
 
 // ── Ajustar stock desde gestionar ──────────────────
+// Si el producto que se agota es el de la Oferta del Día, la desactiva automáticamente
+function _quitarOfertaSiAgotado(id) {
+    try {
+        const ofId = localStorage.getItem('ofertaDiaId');
+        if (ofId && String(ofId) === String(id) && typeof desactivarOfertaDia === 'function') {
+            desactivarOfertaDia();
+            mostrarNotificacion('🔕 Oferta del Día desactivada automáticamente (producto agotado)', 'info');
+        }
+    } catch(e) {}
+}
+
 function fijarStockCero(id) {
     const p = productos.find(p => p.id === id);
     if (!p || p.stock === 0) return;
@@ -4612,6 +4623,7 @@ function fijarStockCero(id) {
     marcarProductoModificado(id);
     actualizarListaProductos();
     mostrarNotificacion(`🔴 ${p.nombre}: marcado como agotado`, 'warning');
+    _quitarOfertaSiAgotado(id);
 }
 
 // desdeVenta=true cuando lo llama registrarVenta (omite notificación de stock para no duplicar)
@@ -4644,6 +4656,7 @@ function ajustarStock(id, cantidad, desdeVenta = false) {
         if (p.stock === 0) mostrarNotificacion(`🔴 ¡${p.nombre} agotado!`, 'error');
         else if (p.stock <= 2) mostrarNotificacion(`⚠️ ${p.nombre}: solo ${p.stock} unidad(es)`, 'warning');
     }
+    if (p.stock === 0) _quitarOfertaSiAgotado(id);
 }
 
 // ── ANIMACIONES DE SCROLL ─────────────────────────────
