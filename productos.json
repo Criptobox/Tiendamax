@@ -1494,5 +1494,27 @@
     "garantia": "",
     "devolucion": false,
     "fechaAgregado": "2026-06-13T15:33:41.854Z"
+  },
+  {
+    "id": 1781365019871,
+    "nombre": "Probador/ tester  digital de baterías",
+    "descripcion": "Probador/ tester  digital de baterías: \n * Diseñado para diagnosticar el estado y rendimiento de baterías automotrices.\n\n*Permite realizar pruebas de batería para conocer su capacidad, voltaje y estado *general.\nIncluye función Load Test para verificar el comportamiento de la batería bajo carga.\n*Realiza pruebas del sistema de arranque (Start Test) para evaluar el motor de arranque.\n*Cuenta con función Charge  Test para analizar el funcionamiento del sistema de carga del vehículo.\n*Pantalla a color que muestra los resultados de forma clara y fácil de interpretar.\n*Navegación sencilla mediante botones direccionales y tecla de confirmación (OK).\n*Compatible con baterías de 12 V utilizadas en automóviles, motocicletas y algunos sistemas auxiliares.\n*Incorpora pinzas de conexión robustas para una lectura segura y precisa de la batería.\n*Equipo portátil y ligero, ideal para talleres mecánicos, técnicos automotrices y uso doméstico.",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1781365018400.jpg",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1781365018400.jpg"
+    ],
+    "precioActual": 25,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 18,
+    "comision": 1000,
+    "comisionMoneda": "MN",
+    "categoria": "UTILES",
+    "subcategoria": "HERRAMIENTAS",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "fechaAgregado": "2026-06-13T15:36:59.871Z"
   }
 ]
