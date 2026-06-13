@@ -11,7 +11,8 @@
     "HOGAR",
     "JUEGOS",
     "MOTOS",
-    "PC Y LAPTOPS"
+    "PC Y LAPTOPS",
+    "GYM"
   ],
   "iconos": {
     "LENCERIA": "👙",
@@ -20,6 +21,7 @@
     "JUEGOS": "🎮",
     "MOTOS": "🛵",
     "LENCERÍA": "👙",
-    "PC Y LAPTOPS": "💻"
+    "PC Y LAPTOPS": "💻",
+    "GYM": "🏋️"
   }
 }
