@@ -100,7 +100,7 @@
 //      usan el mismo helper _mensajeOrdenWA con formato premium.
 // ═══════════════════════════════════════════════════════
 
-const CACHE_NAME = 'tiendamax-202606122306';
+const CACHE_NAME = 'tiendamax-202606130001';
 
 const STATIC_ASSETS = [
   '/',
@@ -134,6 +134,7 @@ const STATIC_ASSETS = [
   '/css/hero-efectos.css',
   '/js/hero-efectos.js',
   '/og-image.jpg',
+  '/offline.html',
   '/manifest.json',
   '/iconos/icon-192.png',
   '/iconos/icon-512.png'
@@ -222,14 +223,15 @@ self.addEventListener('fetch', e => {
                     }
                     return res;
                 })
-                .catch(() => caches.match(e.request).then(c => c || caches.match('/index.html')))
+                .catch(() => caches.match(e.request).then(c => c || caches.match('/offline.html')))
         );
         return;
     }
 
     // Estrategia Cache-First para Assets estáticos (JS, CSS, imágenes, iconos)
+    // ignoreSearch:true → /script.js?v=abc coincide con /script.js en caché
     e.respondWith(
-        caches.match(e.request).then(cached => {
+        caches.match(e.request, { ignoreSearch: true }).then(cached => {
             return cached || fetch(e.request).then(res => {
                 if (res.ok) {
                     const clone = res.clone();
@@ -237,7 +239,7 @@ self.addEventListener('fetch', e => {
                 }
                 return res;
             });
-        }).catch(() => caches.match('/index.html'))
+        }).catch(() => caches.match('/offline.html'))
     );
 });
 
