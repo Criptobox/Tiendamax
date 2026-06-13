@@ -1327,6 +1327,32 @@ async function cargarDatosDesdeGitHub() {
         // Ventas migradas a Firebase — sync en background tras cargar productos
         setTimeout(_fbSincronizarVentasAlIniciar, 2000);
 
+        // Categorías desde Firebase RTDB — más recientes que categorias.json (admin las actualiza ahí)
+        setTimeout(async () => {
+            try {
+                const base = _fbRtdbUrl();
+                if (!base) return;
+                const r = await fetch(base + '/configuracion/categorias.json');
+                if (!r.ok) return;
+                const fbCat = await r.json();
+                if (!fbCat || !Array.isArray(fbCat.nombres) || fbCat.nombres.length === 0) return;
+                // Solo aplicar si Firebase tiene datos más recientes que categorias.json
+                const mismas = fbCat.nombres.length === categorias.length && fbCat.nombres.every(c => categorias.includes(c));
+                if (!mismas) {
+                    categorias = fbCat.nombres;
+                    localStorage.setItem('categorias', JSON.stringify(categorias));
+                    if (fbCat.iconos) {
+                        Object.assign(iconosPersonalizados, fbCat.iconos);
+                        localStorage.setItem('iconosPersonalizados', JSON.stringify(iconosPersonalizados));
+                    }
+                    renderizarCategoriasHome();
+                    actualizarSelectCategorias();
+                    actualizarBotonesCategorias();
+                    actualizarListaCategorias();
+                }
+            } catch(e) {}
+        }, 1500);
+
         // Renderizar categorías YA (con datos frescos, sin esperar archivos pesados)
         renderizarCategoriasHomeInstant(); // actualiza el grid visual inmediatamente
         renderizarCategoriasHome();
@@ -3032,6 +3058,15 @@ function agregarCategoria() {
 function guardarCategorias() {
     localStorage.setItem('categorias', JSON.stringify(categorias));
     localStorage.setItem('iconosPersonalizados', JSON.stringify(iconosPersonalizados));
+    // Persistir en Firebase RTDB para que sobreviva recargas y otros dispositivos
+    const base = _fbRtdbUrl();
+    if (base) {
+        fetch(base + '/configuracion/categorias.json', {
+            method: 'PUT',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({nombres: categorias, iconos: iconosPersonalizados, ts: Date.now()})
+        }).catch(() => {});
+    }
 }
 
 function eliminarCategoria(index) {
