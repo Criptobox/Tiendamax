@@ -4964,25 +4964,98 @@ async function tmSeedResenas() {
         return;
     }
 
-    const autores = ['Rosa M.', 'Miguel A.', 'Yoandra', 'Carlos R.', 'Liudmis', 'Pedro J.', 'Dayami', 'Roberto', 'Yanet L.', 'Ernesto C.', 'Yanela', 'Osmani'];
-    const resenasPool = [
-        { texto: 'Llegó bien empacado y funciona perfecto desde el primer día. Muy contento con la compra.', estrellas: 5 },
-        { texto: 'Excelente calidad y el envío fue rápido. Cumple con todo lo que dicen. Lo recomiendo.', estrellas: 5 },
-        { texto: 'Muy bueno, mejor de lo que esperaba. El precio está muy bien para lo que es.', estrellas: 5 },
-        { texto: 'Buena calidad, funciona como debe. El vendedor atiende bien y responde rápido.', estrellas: 4 },
-        { texto: 'Me llegó en buen estado y funciona correctamente. Quedé satisfecho con la compra.', estrellas: 4 },
-        { texto: 'Buen producto, cumple su función. La atención fue buena y el envío sin problemas.', estrellas: 4 },
-        { texto: 'Llegó rápido y en perfectas condiciones. Es de buena calidad, vale lo que cuesta.', estrellas: 5 },
-        { texto: 'Funciona muy bien, estoy satisfecho. Lo recomiendo a quien lo necesite.', estrellas: 4 },
-        { texto: 'Producto de buena calidad. El vendedor muy atento y resolvió todas mis dudas.', estrellas: 5 },
-        { texto: 'Buen producto aunque tardó un poco en llegar. En general quedé contento con todo.', estrellas: 3 },
-        { texto: 'Funciona bien, aunque le falta algún detalle menor. En general cumple su función.', estrellas: 3 },
-        { texto: 'Bien por el precio. No es perfecto pero cumple con lo básico. Aceptable.', estrellas: 3 },
-    ];
+    // Detecta el tipo de producto por palabras clave en el nombre y devuelve reseñas específicas
+    function _resenasParaProducto(nombre) {
+        const n = nombre.toUpperCase();
+        if (/ROUTER|ENRUTADOR|WIFI|WI-FI|REPETIDOR|KUWFI|WAVLINK/.test(n)) return [
+            { texto: 'La señal WiFi cubre toda la casa sin problemas. Antes tenía zonas muertas y ahora se conecta todo perfectamente.', estrellas: 5 },
+            { texto: 'La velocidad de internet mejoró bastante con este router. La configuración fue sencilla y la señal llega a todos los cuartos.', estrellas: 5 },
+            { texto: 'Buen router, la cobertura WiFi es estable y no se cae la conexión. Mejor de lo que esperaba por el precio.', estrellas: 4 },
+            { texto: 'El WiFi llega bien a toda la vivienda. Solo me costó un poco configurarlo pero ya funciona excelente.', estrellas: 4 },
+            { texto: 'Cubre bien el área, aunque en los extremos de la casa la señal baja un poco. En general cumple su función.', estrellas: 3 },
+        ];
+        if (/BATERÍA|BATERIA|LIFEPO|LUBRIM/.test(n)) return [
+            { texto: 'La batería aguanta muy bien las cargas. Ya lleva varios ciclos y mantiene la misma capacidad. Muy satisfecho.', estrellas: 5 },
+            { texto: 'Excelente batería, carga rápido y dura bastante tiempo. Vale cada centavo que cuesta.', estrellas: 5 },
+            { texto: 'Buena batería, cumple con la capacidad anunciada. La instalé en el sistema solar y funciona perfecto.', estrellas: 4 },
+            { texto: 'Lleva meses funcionando sin problemas. La capacidad se mantiene bien y no se calienta.', estrellas: 4 },
+            { texto: 'Funciona bien aunque me tardó en llegar. La capacidad es la correcta y la instalación fue fácil.', estrellas: 3 },
+        ];
+        if (/INVERSOR|INVERTER/.test(n)) return [
+            { texto: 'El inversor convierte perfectamente, la onda sinusoidal es limpia y no afecta los electrodomésticos. Muy bueno.', estrellas: 5 },
+            { texto: 'Lleva tiempo trabajando con el inversor y no ha dado problemas. El voltaje sale estable y no calienta en exceso.', estrellas: 5 },
+            { texto: 'Buen inversor, soporta bien la carga que le pongo. La instalación fue sencilla siguiendo el manual.', estrellas: 4 },
+            { texto: 'Funciona correctamente, la onda es limpia y los equipos trabajan bien conectados. Lo recomiendo.', estrellas: 4 },
+            { texto: 'Cumple su función aunque el ventilador hace algo de ruido. En potencia y voltaje no hay queja.', estrellas: 3 },
+        ];
+        if (/CONTROLADOR|MPPT|SOLAR/.test(n)) return [
+            { texto: 'El controlador MPPT aprovecha muy bien la energía solar. Los paneles cargan más rápido que con el anterior.', estrellas: 5 },
+            { texto: 'Excelente controlador, la pantalla muestra todo el estado del sistema. La carga de las baterías es eficiente.', estrellas: 5 },
+            { texto: 'Buen regulador solar, la configuración fue sencilla y ya lleva meses funcionando sin fallos.', estrellas: 4 },
+            { texto: 'Funciona bien con mis paneles solares. La carga es estable y protege bien las baterías.', estrellas: 4 },
+            { texto: 'Cumple con su función. La pantalla es pequeña pero muestra los datos necesarios.', estrellas: 3 },
+        ];
+        if (/CARGADOR/.test(n)) return [
+            { texto: 'El cargador funciona perfecto, carga rápido y tiene protección contra sobrecarga. Muy contento.', estrellas: 5 },
+            { texto: 'Excelente cargador inteligente, detecta el estado de la batería y ajusta la carga automáticamente.', estrellas: 5 },
+            { texto: 'Buen cargador, hace su trabajo sin complicaciones. Llegó bien empacado y en perfectas condiciones.', estrellas: 4 },
+            { texto: 'Carga bien las baterías y tiene indicador de estado. Cumple con lo que promete.', estrellas: 4 },
+            { texto: 'Funciona correctamente. La carga es algo lenta pero es segura y protege las baterías.', estrellas: 3 },
+        ];
+        if (/SWITCH|PUERTO/.test(n)) return [
+            { texto: 'El switch funciona perfecto, velocidad gigabit real y sin pérdida de paquetes. Lo recomiendo.', estrellas: 5 },
+            { texto: 'Excelente switch, todos los puertos funcionan bien y la transferencia de datos es rápida y estable.', estrellas: 5 },
+            { texto: 'Buen switch para el precio. Sin complicaciones, se conecta y funciona al instante.', estrellas: 4 },
+            { texto: 'Funciona bien, los 8 puertos operan correctamente. Sin problemas de conexión.', estrellas: 4 },
+            { texto: 'Cumple su función aunque la carcasa es algo básica. En conectividad no hay queja.', estrellas: 3 },
+        ];
+        if (/PESA|BÁSCULA|BASCULA|BALANZA/.test(n)) return [
+            { texto: 'La báscula es muy precisa, he comparado con otras y da el mismo peso exacto. Muy práctica para el hogar.', estrellas: 5 },
+            { texto: 'Excelente báscula, conecta bien con el celular y registra el historial de peso. Muy útil.', estrellas: 5 },
+            { texto: 'Buena pesa, funciona bien y la pantalla se lee fácilmente. El diseño es compacto y moderno.', estrellas: 4 },
+            { texto: 'Pesa con precisión, fácil de usar. La app del teléfono funciona bien con ella.', estrellas: 4 },
+            { texto: 'Funciona bien aunque a veces tarda un poco en estabilizar la lectura. En general cumple.', estrellas: 3 },
+        ];
+        if (/MASAJE|PISTOLA/.test(n)) return [
+            { texto: 'Excelente pistola de masaje, relaja muy bien los músculos después del ejercicio. La batería dura bastante.', estrellas: 5 },
+            { texto: 'Me encanta, tiene varios niveles de intensidad y alivia el dolor muscular de verdad. Vale la pena.', estrellas: 5 },
+            { texto: 'Buena pistola de masaje, los cabezales intercambiables son prácticos. Funciona bien y no hace mucho ruido.', estrellas: 4 },
+            { texto: 'Funciona bien para aliviar tensión muscular. La carga dura varias sesiones.', estrellas: 4 },
+            { texto: 'Cumple su función, aunque en el nivel más alto vibra bastante. Para uso moderado está bien.', estrellas: 3 },
+        ];
+        if (/SOLDADURA|ANTORCHA|TIG/.test(n)) return [
+            { texto: 'Excelente antorcha, el arco es estable y la calidad de la soldadura es muy buena. Muy satisfecho.', estrellas: 5 },
+            { texto: 'Buena antorcha TIG, se conecta bien al equipo y el enfriamiento funciona correctamente.', estrellas: 4 },
+            { texto: 'Cumple bien su función en trabajos de soldadura. Los accesorios incluidos son de buena calidad.', estrellas: 4 },
+            { texto: 'Funciona correctamente para soldadura TIG. La manguera es flexible y la punta llega bien.', estrellas: 3 },
+        ];
+        if (/MANNOL|ACEITE|ANTIFREEZE|LUBRICANTE|5W|10W/.test(n)) return [
+            { texto: 'Excelente aceite, el motor trabaja más suave y el consumo bajó un poco. Lo seguiré usando.', estrellas: 5 },
+            { texto: 'Muy buen lubricante, protege bien el motor. Ya llevo varios cambios con Mannol y no he tenido problemas.', estrellas: 5 },
+            { texto: 'Buen aceite de motor, la viscosidad es correcta y el motor arranca bien incluso de mañana temprano.', estrellas: 4 },
+            { texto: 'El antifreeze funciona bien, mantiene la temperatura del motor estable. No ha habido fugas.', estrellas: 4 },
+            { texto: 'Cumple su función, el motor trabaja normal. No noto gran diferencia con otras marcas pero hace su trabajo.', estrellas: 3 },
+        ];
+        if (/ESTACIÓN|ESTACION|PORTÁTIL|PORTATIL|CARGA/.test(n)) return [
+            { texto: 'La estación de carga es tremenda, alimenta varios equipos a la vez y la batería dura bastante. Muy útil en los apagones.', estrellas: 5 },
+            { texto: 'Excelente estación portátil, carga celulares, laptops y hasta el ventilador. La inversión valió la pena.', estrellas: 5 },
+            { texto: 'Buena estación de energía, tiene varias salidas y la carga solar funciona bien. Recomendada.', estrellas: 4 },
+            { texto: 'Funciona muy bien para los apagones. La capacidad es la anunciada y recarga rápido con el panel solar.', estrellas: 4 },
+            { texto: 'Cumple bien, aunque es algo pesada para cargarla. En potencia y autonomía no hay queja.', estrellas: 3 },
+        ];
+        // Genérico si no coincide ninguna categoría
+        return [
+            { texto: 'Llegó en perfectas condiciones y funciona exactamente como se describe. Muy contento con la compra.', estrellas: 5 },
+            { texto: 'Buena calidad para el precio. El vendedor atendió rápido y el envío fue sin problemas.', estrellas: 4 },
+            { texto: 'Cumple su función correctamente. No tuve ningún problema desde que lo recibí.', estrellas: 4 },
+            { texto: 'Buen producto, aunque le falta algún detalle. En general estoy satisfecho con la compra.', estrellas: 3 },
+        ];
+    }
 
     // Elegir 10 productos al azar (sin repetir)
     const shuffled = [...prods].sort(() => Math.random() - 0.5).slice(0, Math.min(10, prods.length));
-    const meses = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
+    const autores = ['Rosa M.', 'Miguel A.', 'Yoandra', 'Carlos R.', 'Liudmis', 'Pedro J.', 'Dayami', 'Roberto', 'Yanet L.', 'Ernesto C.', 'Yanela', 'Osmani'];
+    const meses = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep'];
 
     let ok = 0, fail = 0;
     mostrarNotificacion('⏳ Publicando reseñas en Firebase…', 'info');
@@ -4990,9 +5063,10 @@ async function tmSeedResenas() {
     for (let i = 0; i < shuffled.length; i++) {
         const prod = shuffled[i];
         const pid  = String(prod.id);
-        const ts   = Date.now() - (shuffled.length - i) * 86400000 * Math.ceil(Math.random() * 10);
-        const r    = resenasPool[i % resenasPool.length];
-        const fecha = `${Math.floor(Math.random() * 20 + 1)} ${meses[Math.floor(Math.random() * 6)]} 2025`;
+        const ts   = Date.now() - (shuffled.length - i) * 86400000 * (Math.floor(Math.random() * 10) + 1);
+        const pool = _resenasParaProducto(prod.nombre);
+        const r    = pool[i % pool.length];
+        const fecha = `${Math.floor(Math.random() * 20 + 1)} ${meses[Math.floor(Math.random() * meses.length)]} 2025`;
         const resena = {
             id: ts,
             autor: autores[i % autores.length],
@@ -5011,7 +5085,7 @@ async function tmSeedResenas() {
             });
             if (res.ok) ok++; else fail++;
         } catch(e) { fail++; }
-        await new Promise(r => setTimeout(r, 200)); // pausa entre requests
+        await new Promise(r => setTimeout(r, 200));
     }
 
     if (ok > 0) {
