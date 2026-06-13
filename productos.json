@@ -1516,5 +1516,27 @@
     "garantia": "",
     "devolucion": false,
     "fechaAgregado": "2026-06-13T15:36:59.871Z"
+  },
+  {
+    "id": 1781365135486,
+    "nombre": "Ventilador de techo",
+    "descripcion": "Ventilador de techo:\n\n-Tiene medio metro de envergadura, \n-Tiene 3 velocidades.\n-Las luces las puedes cambiar de blanco a amarillito calido y regular la intensidad como desees.\n-Memoriza la última configuración al encender y apagar el interruptor.\n-Trae su mando para ajustarlo desde tu asiento.",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1781365133963.jpg",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1781365133963.jpg"
+    ],
+    "precioActual": 35,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 24,
+    "comision": 1000,
+    "comisionMoneda": "MN",
+    "categoria": "HOGAR",
+    "subcategoria": "",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "fechaAgregado": "2026-06-13T15:38:55.486Z"
   }
 ]
