@@ -716,7 +716,7 @@ async function cargarTestimoniosFirebase() {
         if (mejores.length === 0) throw new Error('no good resenas');
 
         _tmAllResenas = mejores;
-        _renderTestimoniosPage(3);
+        _renderTestimoniosPage(4);
         if (cta) cta.style.display = 'block';
 
     } catch(e) {
