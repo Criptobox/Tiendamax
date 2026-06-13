@@ -7,6 +7,7 @@ import json
 import os
 import sys
 import time
+from html import escape as he
 import requests
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -26,34 +27,37 @@ DELAY      = 2  # segundos entre mensajes para no saturar
 def send_card_bytes(card_bytes: bytes, caption: str) -> int | None:
     r = requests.post(
         f"https://api.telegram.org/bot{BOT_TOKEN}/sendPhoto",
-        data={"chat_id": CHANNEL, "caption": caption, "parse_mode": "Markdown"},
+        data={"chat_id": CHANNEL, "caption": caption, "parse_mode": "HTML"},
         files={"photo": ("card.jpg", card_bytes, "image/jpeg")},
         timeout=30,
     )
     if r.status_code == 200:
         return r.json()["result"]["message_id"]
+    print(f"    send_card_bytes error {r.status_code}: {r.text[:200]}", file=sys.stderr)
     return None
 
 
 def send_photo(photo_url: str, caption: str) -> int | None:
     r = requests.post(
         f"https://api.telegram.org/bot{BOT_TOKEN}/sendPhoto",
-        json={"chat_id": CHANNEL, "photo": photo_url, "caption": caption, "parse_mode": "Markdown"},
+        json={"chat_id": CHANNEL, "photo": photo_url, "caption": caption, "parse_mode": "HTML"},
         timeout=15,
     )
     if r.status_code == 200:
         return r.json()["result"]["message_id"]
+    print(f"    send_photo error {r.status_code}: {r.text[:200]}", file=sys.stderr)
     return None
 
 
 def send_text(text: str) -> int | None:
     r = requests.post(
         f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage",
-        json={"chat_id": CHANNEL, "text": text, "parse_mode": "Markdown"},
+        json={"chat_id": CHANNEL, "text": text, "parse_mode": "HTML"},
         timeout=15,
     )
     if r.status_code == 200:
         return r.json()["result"]["message_id"]
+    print(f"    send_text error {r.status_code}: {r.text[:200]}", file=sys.stderr)
     return None
 
 
@@ -63,14 +67,6 @@ def enviar(texto: str, imagen: str = "") -> int | None:
         if mid:
             return mid
     return send_text(texto)
-
-
-def precio_fmt(v) -> str:
-    try:
-        p = float(v)
-        return f"${p:.2f} USD" if p > 0 else ""
-    except Exception:
-        return str(v) if v else ""
 
 
 def main() -> int:
@@ -94,17 +90,18 @@ def main() -> int:
 
     publicados = 0
     for p in activos:
-        pid      = str(p.get("id", ""))
-        nombre   = p.get("nombre", "Producto")
+        pid       = str(p.get("id", ""))
+        nombre    = p.get("nombre", "Producto")
         categoria = p.get("categoria", "")
-        img      = p.get("imagen") or p.get("foto") or ""
-        link     = f"{TIENDA_URL}/p/producto-{pid}.html"
+        img       = p.get("imagen") or p.get("foto") or ""
+        link      = f"{TIENDA_URL}/p/producto-{pid}.html"
 
+        # HTML parse_mode — escape para evitar errores con caracteres especiales
         lines = [
-            f"🛍️ *{nombre}*",
-            f"📦 _{categoria}_" if categoria else "",
+            f"🛍️ <b>{he(nombre)}</b>",
+            f"📦 <i>{he(categoria)}</i>" if categoria else "",
             "",
-            f"👉 [Ver precio en tiendamax.org]({link})",
+            f'👉 <a href="{link}">Ver precio en tiendamax.org</a>',
         ]
         caption = "\n".join(l for l in lines if l is not None)
 
@@ -114,8 +111,8 @@ def main() -> int:
                 card_bytes = generate_card(nombre, categoria, img, link)
                 if card_bytes:
                     mid = send_card_bytes(card_bytes, caption)
-            except Exception:
-                pass
+            except Exception as ex:
+                print(f"    card error: {ex}", file=sys.stderr)
         if not mid:
             mid = enviar(caption, img)
         if mid:
@@ -131,7 +128,7 @@ def main() -> int:
         json.dump(msg_ids, f, indent=2)
 
     print(f"\n✅ {publicados}/{len(activos)} productos publicados.")
-    return 0
+    return 0 if publicados > 0 else 1
 
 
 if __name__ == "__main__":

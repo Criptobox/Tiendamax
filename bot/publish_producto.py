@@ -12,6 +12,7 @@ import os
 import subprocess
 import sys
 from datetime import datetime
+from html import escape as he
 from zoneinfo import ZoneInfo
 import requests
 
@@ -56,34 +57,37 @@ def delete_message(message_id: int) -> bool:
 def send_card_bytes(card_bytes: bytes, caption: str) -> int | None:
     r = requests.post(
         f"https://api.telegram.org/bot{BOT_TOKEN}/sendPhoto",
-        data={"chat_id": CHANNEL, "caption": caption, "parse_mode": "Markdown"},
+        data={"chat_id": CHANNEL, "caption": caption, "parse_mode": "HTML"},
         files={"photo": ("card.jpg", card_bytes, "image/jpeg")},
         timeout=30,
     )
     if r.status_code == 200:
         return r.json()["result"]["message_id"]
+    print(f"    send_card_bytes error {r.status_code}: {r.text[:200]}", file=sys.stderr)
     return None
 
 
 def send_photo(photo_url: str, caption: str) -> int | None:
     r = requests.post(
         f"https://api.telegram.org/bot{BOT_TOKEN}/sendPhoto",
-        json={"chat_id": CHANNEL, "photo": photo_url, "caption": caption, "parse_mode": "Markdown"},
+        json={"chat_id": CHANNEL, "photo": photo_url, "caption": caption, "parse_mode": "HTML"},
         timeout=15,
     )
     if r.status_code == 200:
         return r.json()["result"]["message_id"]
+    print(f"    send_photo error {r.status_code}: {r.text[:200]}", file=sys.stderr)
     return None
 
 
 def send_text(text: str) -> int | None:
     r = requests.post(
         f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage",
-        json={"chat_id": CHANNEL, "text": text, "parse_mode": "Markdown"},
+        json={"chat_id": CHANNEL, "text": text, "parse_mode": "HTML"},
         timeout=15,
     )
     if r.status_code == 200:
         return r.json()["result"]["message_id"]
+    print(f"    send_text error {r.status_code}: {r.text[:200]}", file=sys.stderr)
     return None
 
 
@@ -170,11 +174,11 @@ def caption_card(p: dict, badge: str) -> str:
     cat    = p.get("categoria", "")
     link   = link_producto(p)
     lines  = [
-        f"{badge}",
-        f"🛍️ *{nombre}*",
-        f"📦 _{cat}_" if cat else "",
+        badge,
+        f"🛍️ <b>{he(nombre)}</b>",
+        f"📦 <i>{he(cat)}</i>" if cat else "",
         "",
-        f"👉 [Ver precio en tiendamax.org]({link})",
+        f'👉 <a href="{link}">Ver precio en tiendamax.org</a>',
     ]
     return "\n".join(l for l in lines if l is not None)
 
@@ -279,7 +283,7 @@ def main() -> int:
     # ── 1. Productos nuevos ──────────────────────────────────────────────────
     nuevos = [p for pid, p in curr_dict.items() if pid not in prev_dict]
     for p in nuevos[:3]:
-        cap    = caption_card(p, "🆕 *Nuevo producto disponible*")
+        cap    = caption_card(p, "🆕 <b>Nuevo producto disponible</b>")
         mid    = enviar_card(p, cap)
         pid    = str(p.get("id"))
         nombre = p.get("nombre", pid)
@@ -301,7 +305,7 @@ def main() -> int:
             pa_prev = float(p_prev.get("precioActual") or 0)
             if pa_prev > 0 and pa_curr > 0 and pa_curr < pa_prev:
                 pct = descuento_pct(pa_curr, pa_prev)
-                badge = f"🔥 *¡Bajó el precio!*{f' (-{pct}%)' if pct >= 1 else ''}"
+                badge = f"🔥 <b>¡Bajó el precio!{f' (-{pct}%)' if pct >= 1 else ''}</b>"
                 cap  = caption_card(p_curr, badge)
                 mid  = enviar_card(p_curr, cap)
                 nombre = p_curr.get("nombre", pid)
@@ -322,7 +326,7 @@ def main() -> int:
         p = curr_dict.get(oferta_id_curr)
         if p:
             texto_oferta = curr_config.get("ofertaDiaTexto") or "Oferta especial por tiempo limitado"
-            cap  = caption_card(p, f"🔥 *¡OFERTA DEL DÍA!*\n_{texto_oferta}_")
+            cap  = caption_card(p, f"🔥 <b>¡OFERTA DEL DÍA!</b>\n<i>{he(texto_oferta)}</i>")
             mid  = enviar_card(p, cap)
             nombre = p.get("nombre", oferta_id_curr)
             if mid:
