@@ -1538,5 +1538,27 @@
     "garantia": "",
     "devolucion": false,
     "fechaAgregado": "2026-06-13T15:38:55.486Z"
+  },
+  {
+    "id": 1781377153903,
+    "nombre": "Guantes Deportivos Premium (Multiuso)",
+    "descripcion": "​🌟 Ideales para:\n​Ciclismo / Ciclismo de montaña 🚴‍♂️\n​Gimnasio, Fitness y Calistenia 🏋️‍♂️\n​Running y atletismo 🏃‍♂️\n​Tiro deportivo / Airsoft 🎯\n​Senderismo y Escalada 🧗‍♂️\n​✨ Características del producto:\n​Diseño Ergonómico: Se ajustan perfectamente a la forma de la mano para garantizar total libertad de movimiento.\n​Agarre Antideslizante: Palma optimizada para evitar resbalones y mejorar el control (ideal para manubrios, pesas o herramientas).\n​Protección Integrada: Cuenta con refuerzos en las zonas de mayor impacto y fricción para prevenir ampollas y callos.\n​Material Transpirable: Mantiene tus manos frescas y secas incluso en las sesiones más intensas.\n​Cierre Seguro: Ajuste firme en la muñeca para evitar que se muevan durante la actividad.",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1781377152095.jpg",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1781377152095.jpg"
+    ],
+    "precioActual": 5,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 20,
+    "comision": 500,
+    "comisionMoneda": "MN",
+    "categoria": "GYM",
+    "subcategoria": "",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "fechaAgregado": "2026-06-13T18:59:13.903Z"
   }
 ]
