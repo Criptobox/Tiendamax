@@ -100,7 +100,7 @@
 //      usan el mismo helper _mensajeOrdenWA con formato premium.
 // ═══════════════════════════════════════════════════════
 
-const CACHE_NAME = 'tiendamax-202606131553';
+const CACHE_NAME = 'tiendamax-202606131602';
 
 const STATIC_ASSETS = [
   '/',
