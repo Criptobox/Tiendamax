@@ -1605,7 +1605,7 @@ function mostrarNotificacion(mensaje, tipo = 'success') {
         box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     `;
     document.body.appendChild(notif);
-    setTimeout(() => notif.remove(), 4000);
+    setTimeout(() => notif.remove(), tipo === 'error' ? 8000 : 4000);
 }
 
 function _tmToastProducto(p) {
@@ -3572,27 +3572,35 @@ async function sincronizarTodoConGitHub() {
             errors.push(`${path}: ${e.message}`);
         }
     }
-    actualizarBarra(total, total, errors.length === 0 ? '✅ ¡Todo subido correctamente!' : '⚠️ Completado con errores');
-
-    if (btn) { btn.disabled = false; btn.textContent = '🔄 ACTUALIZAR TIENDA AHORA'; }
-
-    // Ocultar barra después de 4 segundos
-    setTimeout(() => {
-        if (barraContenedor) barraContenedor.style.display = 'none';
-        const f = document.getElementById('tmSyncFloat');
-        if (f) f.style.display = 'none';
-    }, 4000);
-
     if (errors.length === 0) {
+        actualizarBarra(total, total, '✅ ¡Todo subido correctamente!');
+        if (btn) { btn.disabled = false; btn.textContent = '🔄 ACTUALIZAR TIENDA AHORA'; }
+        setTimeout(() => {
+            if (barraContenedor) barraContenedor.style.display = 'none';
+            const f = document.getElementById('tmSyncFloat');
+            if (f) f.style.display = 'none';
+        }, 4000);
         limpiarProductosModificados();
-        _tmPublicarVersionFirebase(); // señal para forzar actualización en todos los clientes
+        _tmPublicarVersionFirebase();
         const info = hayDelta ? `${idsModificados.length} producto(s) actualizado(s)` : `${ok} archivos`;
         mostrarNotificacion(`✅ Tienda actualizada (${info}). Visible en ~30 segundos.`);
     } else {
-        // Mostrar solo el primer error con mensaje claro (suelen tener la misma causa)
         const primerError = errors[0];
         const causa = primerError.includes(': ') ? primerError.split(': ').slice(1).join(': ').trim() : primerError;
-        mostrarNotificacion(`❌ ${causa}`, 'error');
+        // Mostrar error en la barra flotante en rojo y mantenerla visible
+        actualizarBarra(total, total, '❌ ' + causa);
+        const floatText = document.getElementById('tmSyncFloatText');
+        const floatBar  = document.getElementById('tmSyncFloatBar');
+        if (floatText) { floatText.style.color = '#FF6B35'; floatText.textContent = '❌ ' + causa; }
+        if (floatBar)  floatBar.style.background = '#FF6B35';
+        if (btn) { btn.disabled = false; btn.textContent = '🔄 ACTUALIZAR TIENDA AHORA'; }
+        // Ocultar barra local tras 8s pero no la flotante (hasta que el usuario la vea)
+        setTimeout(() => { if (barraContenedor) barraContenedor.style.display = 'none'; }, 8000);
+        setTimeout(() => {
+            const f = document.getElementById('tmSyncFloat');
+            if (f) f.style.display = 'none';
+        }, 12000);
+        mostrarNotificacion(`❌ Error al subir: ${causa}`, 'error');
         console.error('Errores de sincronización:', errors);
     }
 }
