@@ -60,6 +60,13 @@ jobs:
           git push
           echo "changed=true" >> $GITHUB_OUTPUT
 
+      - name: Publicar tasa del día en canal Telegram
+        if: steps.commit.outputs.changed == 'true'
+        env:
+          BOT_TOKEN:        ${{ secrets.BOT_TOKEN }}
+          TELEGRAM_CHANNEL: ${{ secrets.TELEGRAM_CHANNEL }}
+        run: python bot/canal_tasa.py
+
       - name: Disparar notificaciones push si cambió la tasa
         if: steps.commit.outputs.changed == 'true'
         env:
