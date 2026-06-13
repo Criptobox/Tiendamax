@@ -15,6 +15,13 @@ from datetime import datetime
 from zoneinfo import ZoneInfo
 import requests
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+try:
+    from card_generator import generate_card
+    _CARD_ENABLED = True
+except Exception:
+    _CARD_ENABLED = False
+
 BOT_TOKEN   = os.environ["BOT_TOKEN"]
 CHANNEL     = os.environ.get("TELEGRAM_CHANNEL", "@TiendaMaxWeb")
 TIENDA_URL  = "https://tiendamax.org"
@@ -46,6 +53,18 @@ def delete_message(message_id: int) -> bool:
     return r.status_code == 200
 
 
+def send_card_bytes(card_bytes: bytes, caption: str) -> int | None:
+    r = requests.post(
+        f"https://api.telegram.org/bot{BOT_TOKEN}/sendPhoto",
+        data={"chat_id": CHANNEL, "caption": caption, "parse_mode": "Markdown"},
+        files={"photo": ("card.png", card_bytes, "image/png")},
+        timeout=30,
+    )
+    if r.status_code == 200:
+        return r.json()["result"]["message_id"]
+    return None
+
+
 def send_photo(photo_url: str, caption: str) -> int | None:
     r = requests.post(
         f"https://api.telegram.org/bot{BOT_TOKEN}/sendPhoto",
@@ -74,6 +93,25 @@ def enviar(texto: str, imagen: str = "") -> int | None:
         if mid:
             return mid
     return send_text(texto)
+
+
+def enviar_card(p: dict, caption: str) -> int | None:
+    """Generate branded card image and send; falls back to plain photo/text."""
+    if _CARD_ENABLED:
+        nombre   = p.get("nombre", "")
+        categoria = p.get("categoria", "")
+        img_url  = p.get("imagen") or p.get("foto") or ""
+        link     = link_producto(p)
+        try:
+            card_bytes = generate_card(nombre, categoria, img_url, link)
+            if card_bytes:
+                mid = send_card_bytes(card_bytes, caption)
+                if mid:
+                    return mid
+        except Exception:
+            pass
+    # fallback
+    return enviar(caption, p.get("imagen") or p.get("foto") or "")
 
 
 # ── Helpers de datos ─────────────────────────────────────────────────────────
@@ -123,6 +161,22 @@ def productos_dict(data) -> dict:
     if isinstance(data, list):
         return {str(p.get("id")): p for p in data if isinstance(p, dict)}
     return {}
+
+
+# ── Caption minimalista para tarjetas (sin precio, fuerza visita a la tienda) ─
+
+def caption_card(p: dict, badge: str) -> str:
+    nombre = p.get("nombre", "Producto")
+    cat    = p.get("categoria", "")
+    link   = link_producto(p)
+    lines  = [
+        f"{badge}",
+        f"🛍️ *{nombre}*",
+        f"📦 _{cat}_" if cat else "",
+        "",
+        f"👉 [Ver precio en tiendamax.org]({link})",
+    ]
+    return "\n".join(l for l in lines if l is not None)
 
 
 # ── Mensajes por tipo de evento ──────────────────────────────────────────────
@@ -225,9 +279,8 @@ def main() -> int:
     # ── 1. Productos nuevos ──────────────────────────────────────────────────
     nuevos = [p for pid, p in curr_dict.items() if pid not in prev_dict]
     for p in nuevos[:3]:
-        img    = p.get("imagen") or p.get("foto") or ""
-        text   = msg_nuevo(p)
-        mid    = enviar(text, img)
+        cap    = caption_card(p, "🆕 *Nuevo producto disponible*")
+        mid    = enviar_card(p, cap)
         pid    = str(p.get("id"))
         nombre = p.get("nombre", pid)
         if mid:
@@ -247,8 +300,10 @@ def main() -> int:
             pa_curr = float(p_curr.get("precioActual") or 0)
             pa_prev = float(p_prev.get("precioActual") or 0)
             if pa_prev > 0 and pa_curr > 0 and pa_curr < pa_prev:
-                text, img = msg_rebaja(p_curr, pa_prev)
-                mid    = enviar(text, img)
+                pct = descuento_pct(pa_curr, pa_prev)
+                badge = f"🔥 *¡Bajó el precio!*{f' (-{pct}%)' if pct >= 1 else ''}"
+                cap  = caption_card(p_curr, badge)
+                mid  = enviar_card(p_curr, cap)
                 nombre = p_curr.get("nombre", pid)
                 if mid:
                     msg_ids[pid] = mid
@@ -266,10 +321,10 @@ def main() -> int:
     if oferta_id_curr and oferta_id_curr != oferta_id_prev:
         p = curr_dict.get(oferta_id_curr)
         if p:
-            texto_oferta = curr_config.get("ofertaDiaTexto") or ""
-            text, img    = msg_oferta_dia(p, texto_oferta)
-            mid          = enviar(text, img)
-            nombre       = p.get("nombre", oferta_id_curr)
+            texto_oferta = curr_config.get("ofertaDiaTexto") or "Oferta especial por tiempo limitado"
+            cap  = caption_card(p, f"🔥 *¡OFERTA DEL DÍA!*\n_{texto_oferta}_")
+            mid  = enviar_card(p, cap)
+            nombre = p.get("nombre", oferta_id_curr)
             if mid:
                 msg_ids[oferta_id_curr] = mid
                 print(f"  ✅ Oferta del día: {nombre}")

@@ -22,7 +22,7 @@ jobs:
           python-version: '3.12'
 
       - name: Instalar dependencias
-        run: pip install requests
+        run: pip install requests pillow
 
       - name: Publicar en Telegram y gestionar mensajes
         run: python bot/publish_producto.py

@@ -9,11 +9,30 @@ import sys
 import time
 import requests
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+try:
+    from card_generator import generate_card
+    _CARD_ENABLED = True
+except Exception:
+    _CARD_ENABLED = False
+
 BOT_TOKEN  = os.environ["BOT_TOKEN"]
 CHANNEL    = os.environ.get("TELEGRAM_CHANNEL", "@TiendaMaxWeb")
 TIENDA_URL = "https://tiendamax.org"
 MSG_FILE   = "bot/telegram_messages.json"
 DELAY      = 2  # segundos entre mensajes para no saturar
+
+
+def send_card_bytes(card_bytes: bytes, caption: str) -> int | None:
+    r = requests.post(
+        f"https://api.telegram.org/bot{BOT_TOKEN}/sendPhoto",
+        data={"chat_id": CHANNEL, "caption": caption, "parse_mode": "Markdown"},
+        files={"photo": ("card.png", card_bytes, "image/png")},
+        timeout=30,
+    )
+    if r.status_code == 200:
+        return r.json()["result"]["message_id"]
+    return None
 
 
 def send_photo(photo_url: str, caption: str) -> int | None:
@@ -75,31 +94,30 @@ def main() -> int:
 
     publicados = 0
     for p in activos:
-        pid     = str(p.get("id", ""))
-        nombre  = p.get("nombre", "Producto")
-        precio  = precio_fmt(p.get("precioActual") or p.get("precio"))
-        cat     = p.get("categoria", "")
-        img     = p.get("imagen") or p.get("foto") or ""
-        link    = f"{TIENDA_URL}/p/producto-{pid}.html"
-
-        try:
-            pa = float(p.get("precioActual") or 0)
-            po = float(p.get("precioOriginal") or 0)
-            pct = round((po-pa)/po*100) if po > pa > 0 else 0
-        except Exception:
-            pct = 0
+        pid      = str(p.get("id", ""))
+        nombre   = p.get("nombre", "Producto")
+        categoria = p.get("categoria", "")
+        img      = p.get("imagen") or p.get("foto") or ""
+        link     = f"{TIENDA_URL}/p/producto-{pid}.html"
 
         lines = [
             f"🛍️ *{nombre}*",
-            f"💰 *{precio}*" if precio else "",
-            f"🏷️ *-{pct}% descuento*" if pct >= 5 else "",
-            f"📦 _{cat}_" if cat else "",
+            f"📦 _{categoria}_" if categoria else "",
             "",
-            f"👉 [Ver en tienda]({link})",
+            f"👉 [Ver precio en tiendamax.org]({link})",
         ]
-        texto = "\n".join(l for l in lines if l is not None)
+        caption = "\n".join(l for l in lines if l is not None)
 
-        mid = enviar(texto, img)
+        mid = None
+        if _CARD_ENABLED:
+            try:
+                card_bytes = generate_card(nombre, categoria, img, link)
+                if card_bytes:
+                    mid = send_card_bytes(card_bytes, caption)
+            except Exception:
+                pass
+        if not mid:
+            mid = enviar(caption, img)
         if mid:
             msg_ids[pid] = mid
             print(f"  ✅ {nombre}")
