@@ -6,6 +6,7 @@ on:
     paths:
       - 'products.json'
       - 'data.json'
+      - 'config.json'
   workflow_dispatch:
 
 jobs:
