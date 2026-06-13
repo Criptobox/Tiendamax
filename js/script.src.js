@@ -653,12 +653,13 @@ let _tmAllResenas = [];
 
 function _renderTestimoniosPage(show) {
     const grid = document.getElementById('testimoniosGrid');
+    const cta  = document.getElementById('testimoniosCTA');
     if (!grid || !_tmAllResenas.length) return;
     const stars = n => '⭐'.repeat(Math.min(5, Math.max(1, n)));
     grid.innerHTML = _tmAllResenas.slice(0, show).map(r =>
         '<div class="testimonio-card">' +
             '<div class="stars">' + stars(r.estrellas) + '</div>' +
-            '<p>"' + escapeHtml(r.texto.substring(0, 200)) + '"</p>' +
+            '<p>"' + escapeHtml(r.texto.substring(0, 180)) + '"</p>' +
             '<p class="autor">— ' + escapeHtml(r.autor) +
             (r.productoNombre ? ' <span style="font-size:10px;opacity:0.5;font-weight:400;">· ' + escapeHtml(r.productoNombre.substring(0, 30)) + '</span>' : '') +
             '</p></div>'
@@ -669,12 +670,19 @@ function _renderTestimoniosPage(show) {
         if (!btn) {
             btn = document.createElement('div');
             btn.id = 'nd-resenas-mas';
-            btn.style.cssText = 'text-align:center;margin-top:20px;';
+            btn.style.cssText = 'text-align:center;margin-top:16px;';
             grid.insertAdjacentElement('afterend', btn);
         }
-        btn.innerHTML = '<button onclick="_renderTestimoniosPage(' + (show + 3) + ')" style="padding:10px 28px;border-radius:20px;border:1px solid currentColor;opacity:0.65;background:transparent;color:inherit;cursor:pointer;font-size:14px;font-weight:600;transition:opacity .2s" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.65">Ver ' + remaining + ' reseña' + (remaining === 1 ? '' : 's') + ' más ↓</button>';
-    } else if (btn) {
-        btn.remove();
+        btn.innerHTML = '<button onclick="_renderTestimoniosPage(' + (show + 4) + ')">Ver ' + remaining + ' reseña' + (remaining === 1 ? '' : 's') + ' más ↓</button>';
+    } else {
+        if (btn) btn.remove();
+        // Mostrar CTA "deja tu reseña" cuando ya no hay más
+        if (cta) {
+            cta.style.display = 'block';
+            if (!cta.querySelector('#tm-cta-link')) {
+                cta.innerHTML = '<button id="tm-cta-link" onclick="document.querySelector(\'.productos-grid,.producto-card\')?.scrollIntoView({behavior:\'smooth\'})">✍️ Deja tu reseña en cualquier producto →</button>';
+            }
+        }
     }
 }
 
