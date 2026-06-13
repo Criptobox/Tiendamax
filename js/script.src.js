@@ -4941,8 +4941,18 @@ async function _fbEnsureConfig() {
 
 // Semilla de reseñas reales en Firebase — solo para arrancar la tienda
 async function tmSeedResenas() {
+    const btn = document.querySelector('[onclick="tmSeedResenas()"]');
+    const setBtnState = (txt, disabled) => { if (btn) { btn.textContent = txt; btn.disabled = disabled; } };
+
+    setBtnState('⏳ Publicando reseñas…', true);
+    mostrarNotificacion('⏳ Conectando con Firebase…', 'info');
+
     const base = _fbRtdbUrl();
-    if (!base) { mostrarNotificacion('❌ Firebase no configurado', 'error'); return; }
+    if (!base) {
+        mostrarNotificacion('❌ Firebase no configurado. Guarda tu firebaseConfig primero.', 'error');
+        setBtnState('⭐ Publicar reseñas iniciales (10)', false);
+        return;
+    }
 
     // Verificar si ya hay reseñas para no duplicar
     try {
@@ -4951,6 +4961,7 @@ async function tmSeedResenas() {
             const existing = await check.json();
             if (existing && Object.keys(existing).length >= 5) {
                 mostrarNotificacion('⚠️ Ya hay reseñas en Firebase. Bórralas primero si quieres regenerar.', 'info');
+                setBtnState('⭐ Publicar reseñas iniciales (10)', false);
                 return;
             }
         }
@@ -4961,8 +4972,11 @@ async function tmSeedResenas() {
 
     if (prods.length < 3) {
         mostrarNotificacion('❌ No hay suficientes productos con stock para generar reseñas', 'error');
+        setBtnState('⭐ Publicar reseñas iniciales (10)', false);
         return;
     }
+
+    mostrarNotificacion(`⏳ Publicando reseñas en ${Math.min(10, prods.length)} productos…`, 'info');
 
     // Detecta el tipo de producto por palabras clave en el nombre y devuelve reseñas específicas
     function _resenasParaProducto(nombre) {
@@ -5088,6 +5102,7 @@ async function tmSeedResenas() {
         await new Promise(r => setTimeout(r, 200));
     }
 
+    setBtnState('⭐ Publicar reseñas iniciales (10)', false);
     if (ok > 0) {
         mostrarNotificacion(`✅ ${ok} reseña(s) publicadas en Firebase. Recarga el inicio para verlas.`, 'success');
     } else {
