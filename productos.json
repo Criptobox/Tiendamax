@@ -1484,7 +1484,7 @@
     "precioActual": 170,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 2,
+    "stock": 0,
     "comision": 10,
     "comisionMoneda": "USD",
     "categoria": "ENERGIA",
@@ -1565,9 +1565,9 @@
     "id": 1781378157011,
     "nombre": "Creatina Monohidratada Luckycare® (5000 mg)",
     "descripcion": "​🌟 Beneficios Clave (Respaldados en el empaque):\n​Aumento de Masa Muscular Magra: Estimula el crecimiento muscular limpio y la densidad.\n​Mejora del Rendimiento Atlético: Eleva tus niveles de energía y potencia en entrenamientos de alta intensidad.\n​Recuperación Muscular Optimizada: Reduce el tiempo de fatiga y acelera la reconstrucción de las fibras musculares.\n​Función Cerebral Óptima: Apoya la claridad mental y el enfoque durante tus actividades diarias y entrenamientos.\n​✨ Especificaciones del producto:\n​Marca: Luckycare®\n​Dosis por Servicio: 5000 mg (5g) de pura creatina monohidratada por porción.\n​Formato: Polvo Micronizado (Micronized Powder), ideal para mezclar fácilmente con agua, jugo o tu batido de proteína sin dejar grumos.\n​Contenido Neto: 500g (¡Rinde para 100 servicios de 5g!).",
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1781378155059.jpg",
+    "imagen": "https://tiendamax.org/imagenes/img_1781378155059.jpg",
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1781378155059.jpg"
+      "https://tiendamax.org/imagenes/img_1781378155059.jpg"
     ],
     "precioActual": 30,
     "precioOriginal": 0,
