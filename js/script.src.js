@@ -439,6 +439,7 @@ function comprarCarrito() {
     guardarPedidoCliente(carrito.slice());
     if (typeof tmTrackWhatsApp === 'function') carrito.forEach(i => tmTrackWhatsApp(i.id));
     carrito.forEach(i => tmRegistrarInteresWhatsApp(i.id, 'carrito'));
+    _gaEvent('purchase', { method: 'whatsapp_cart', items: carrito.length });
     const msg = _mensajeOrdenWA(carrito);
     window.open('https://wa.me/' + getNumeroWhatsApp() + '?text=' + msg, '_blank', 'noopener,noreferrer');
 }
@@ -1486,7 +1487,11 @@ function cargarNumeroWhatsApp() {
     if (input && saved) input.value = saved;
 }
 
+function _gaEvent(name, params) {
+    try { if (typeof gtag === 'function') gtag('event', name, params || {}); } catch(e) {}
+}
 function contactarWhatsApp() {
+    _gaEvent('contact', { method: 'whatsapp_general' });
     const numeroWhatsApp = getNumeroWhatsApp();
     const mensaje = encodeURIComponent('Hola, me interesa conocer más sobre tus productos. ¿Puedes ayudarme?');
     window.open(`https://wa.me/${numeroWhatsApp}?text=${mensaje}`, '_blank', 'noopener,noreferrer');
@@ -5999,6 +6004,7 @@ function tmComprar(event, id, nombre) {
     const item = _prod
         ? { id: _prod.id, nombre: _prod.nombre, precio: parseFloat(_prod.precioActual) || 0, cantidad: 1 }
         : { id: id, nombre: nombre || 'Producto', precio: 0, cantidad: 1 };
+    _gaEvent('contact', { method: 'whatsapp_product', item_name: item.nombre, value: item.precio });
     const msg = _mensajeOrdenWA([item]);
     window.open(`https://wa.me/${getNumeroWhatsApp()}?text=${msg}`, '_blank', 'noopener,noreferrer');
 }

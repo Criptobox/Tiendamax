@@ -27,7 +27,7 @@
     <!-- ===== Cabeceras de seguridad ===== -->
     <meta http-equiv="Content-Security-Policy" content="
         default-src 'self';
-        script-src  'self' 'unsafe-inline' https://www.gstatic.com;
+        script-src  'self' 'unsafe-inline' https://www.gstatic.com https://www.googletagmanager.com;
         style-src   'self' 'unsafe-inline';
         font-src    'self' data:;
         img-src     'self' data: blob: https: ;
@@ -43,7 +43,10 @@
                     https://*.firebaseapp.com
                     https://firebaseinstallations.googleapis.com
                     https://identitytoolkit.googleapis.com
-                    https://firebase.googleapis.com;
+                    https://firebase.googleapis.com
+                    https://www.google-analytics.com
+                    https://analytics.google.com
+                    https://stats.g.doubleclick.net;
         frame-ancestors 'none';
         form-action 'self' https://wa.me https://api.whatsapp.com;
         base-uri    'self';
@@ -223,6 +226,14 @@
         letter-spacing: 0.3px;
     }
     </style>
+    <!-- Google Analytics 4 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-KG43FHTCDF"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-KG43FHTCDF');
+    </script>
 </head>
 <body class="tm-no-oferta-banner">
 <div class="nd-mesh" aria-hidden="true"><div class="nd-orb nd-o1"></div><div class="nd-orb nd-o2"></div><div class="nd-orb nd-o3"></div><div class="nd-orb nd-o4"></div></div>
@@ -1054,7 +1065,7 @@
     </script>
     <script src="js/analytics.js?v=9d585bc5" defer></script>
     <script src="js/seo-dynamico.js?v=ea7e25bb" defer></script>
-    <script src="js/script.js?v=ce1004b9" defer></script>
+    <script src="js/script.js?v=2458681e" defer></script>
 
     <script src="js/push-fix.js?v=d36f3d04" defer></script>
     <script src="js/subcategorias.js?v=56dd618e" defer></script>
