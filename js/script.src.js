@@ -697,7 +697,7 @@ async function cargarTestimoniosFirebase() {
 
         // Leer todas las reseñas de todos los productos
         const r = await fetch(base + '/resenas.json?shallow=true');
-        if (!r.ok) throw new Error('fetch failed');
+        if (!r.ok) throw new Error('fetch failed ' + r.status);
         const productIds = await r.json();
         if (!productIds || typeof productIds !== 'object') throw new Error('empty');
 
@@ -716,10 +716,16 @@ async function cargarTestimoniosFirebase() {
 
         if (allResenas.length === 0) throw new Error('no resenas');
 
-        // Ordenar por más recientes y tomar las mejores con 4-5 estrellas
-        const mejores = allResenas
+        // Preferir 4+ estrellas, pero si no hay suficientes, incluir todas
+        let mejores = allResenas
             .filter(r => r.estrellas >= 4 && r.texto && r.texto.length > 15)
             .sort((a, b) => b.id - a.id);
+
+        if (mejores.length === 0) {
+            mejores = allResenas
+                .filter(r => r.texto && r.texto.length > 15)
+                .sort((a, b) => b.id - a.id);
+        }
 
         if (mejores.length === 0) throw new Error('no good resenas');
 
@@ -728,8 +734,18 @@ async function cargarTestimoniosFirebase() {
         if (cta) cta.style.display = 'block';
 
     } catch(e) {
-        grid.innerHTML = '';
-        if (cta) cta.style.display = 'none';
+        // Solo limpiar si hay error de "vacío real" (Firebase configurado pero sin reseñas)
+        // Si es error de conexión/config, dejar los skeletons
+        const esVacio = e.message === 'no resenas' || e.message === 'no good resenas' || e.message === 'empty';
+        if (esVacio) {
+            grid.innerHTML = '';
+            if (cta) {
+                cta.style.display = 'block';
+                cta.innerHTML = '<p style="color:rgba(255,255,255,0.4);font-size:14px;margin-bottom:12px;">Sé el primero en dejar una reseña</p>';
+            }
+        }
+        // Si es error de red/config: los skeletons siguen visibles (sin hacer nada)
+        console.warn('cargarTestimoniosFirebase:', e.message);
     }
 }
 
