@@ -110,6 +110,17 @@
         }
       }
     },
+    "configuracion": {
+      ".read": true,
+      ".write": false,
+      "categorias": {
+        ".write": false
+      },
+      "version": {
+        ".read": true,
+        ".write": false
+      }
+    },
     "config": {
       "version": {
         ".read": true,
