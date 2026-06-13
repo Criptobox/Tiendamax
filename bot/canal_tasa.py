@@ -42,8 +42,7 @@ def main() -> int:
 
     mensaje = (
         f"📈 *Tasa del día — {hoy}*\n\n"
-        f"💵 *1 USD = {tasa_cliente:.0f} CUP*\n"
-        f"_(Fuente: elTOQUE · actualizado hoy)_\n\n"
+        f"elTOQUE: {tasa_base:.0f} + 10 = *{tasa_cliente:.0f} CUP por USD*\n\n"
         f"🛍️ Visita nuestra tienda: tiendamax.org"
     )
 
