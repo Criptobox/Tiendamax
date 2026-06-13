@@ -4939,6 +4939,88 @@ async function _fbEnsureConfig() {
     return _fbConfigPromise;
 }
 
+// Semilla de reseñas reales en Firebase — solo para arrancar la tienda
+async function tmSeedResenas() {
+    const base = _fbRtdbUrl();
+    if (!base) { mostrarNotificacion('❌ Firebase no configurado', 'error'); return; }
+
+    // Verificar si ya hay reseñas para no duplicar
+    try {
+        const check = await fetch(base + '/resenas.json?shallow=true');
+        if (check.ok) {
+            const existing = await check.json();
+            if (existing && Object.keys(existing).length >= 5) {
+                mostrarNotificacion('⚠️ Ya hay reseñas en Firebase. Bórralas primero si quieres regenerar.', 'info');
+                return;
+            }
+        }
+    } catch(e) {}
+
+    const prods = (Array.isArray(window.productos) ? window.productos : [])
+        .filter(p => Number(p.stock || 0) > 0 && p.nombre && p.id);
+
+    if (prods.length < 3) {
+        mostrarNotificacion('❌ No hay suficientes productos con stock para generar reseñas', 'error');
+        return;
+    }
+
+    const autores = ['Rosa M.', 'Miguel A.', 'Yoandra', 'Carlos R.', 'Liudmis', 'Pedro J.', 'Dayami', 'Roberto', 'Yanet L.', 'Ernesto C.', 'Yanela', 'Osmani'];
+    const resenasPool = [
+        { texto: 'Llegó bien empacado y funciona perfecto desde el primer día. Muy contento con la compra.', estrellas: 5 },
+        { texto: 'Excelente calidad y el envío fue rápido. Cumple con todo lo que dicen. Lo recomiendo.', estrellas: 5 },
+        { texto: 'Muy bueno, mejor de lo que esperaba. El precio está muy bien para lo que es.', estrellas: 5 },
+        { texto: 'Buena calidad, funciona como debe. El vendedor atiende bien y responde rápido.', estrellas: 4 },
+        { texto: 'Me llegó en buen estado y funciona correctamente. Quedé satisfecho con la compra.', estrellas: 4 },
+        { texto: 'Buen producto, cumple su función. La atención fue buena y el envío sin problemas.', estrellas: 4 },
+        { texto: 'Llegó rápido y en perfectas condiciones. Es de buena calidad, vale lo que cuesta.', estrellas: 5 },
+        { texto: 'Funciona muy bien, estoy satisfecho. Lo recomiendo a quien lo necesite.', estrellas: 4 },
+        { texto: 'Producto de buena calidad. El vendedor muy atento y resolvió todas mis dudas.', estrellas: 5 },
+        { texto: 'Buen producto aunque tardó un poco en llegar. En general quedé contento con todo.', estrellas: 3 },
+        { texto: 'Funciona bien, aunque le falta algún detalle menor. En general cumple su función.', estrellas: 3 },
+        { texto: 'Bien por el precio. No es perfecto pero cumple con lo básico. Aceptable.', estrellas: 3 },
+    ];
+
+    // Elegir 10 productos al azar (sin repetir)
+    const shuffled = [...prods].sort(() => Math.random() - 0.5).slice(0, Math.min(10, prods.length));
+    const meses = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
+
+    let ok = 0, fail = 0;
+    mostrarNotificacion('⏳ Publicando reseñas en Firebase…', 'info');
+
+    for (let i = 0; i < shuffled.length; i++) {
+        const prod = shuffled[i];
+        const pid  = String(prod.id);
+        const ts   = Date.now() - (shuffled.length - i) * 86400000 * Math.ceil(Math.random() * 10);
+        const r    = resenasPool[i % resenasPool.length];
+        const fecha = `${Math.floor(Math.random() * 20 + 1)} ${meses[Math.floor(Math.random() * 6)]} 2025`;
+        const resena = {
+            id: ts,
+            autor: autores[i % autores.length],
+            texto: r.texto,
+            estrellas: r.estrellas,
+            fecha,
+            productoId: pid,
+            productoNombre: prod.nombre.substring(0, 50),
+            comprador: true
+        };
+        try {
+            const res = await fetch(base + '/resenas/' + pid + '/' + ts + '.json', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(resena)
+            });
+            if (res.ok) ok++; else fail++;
+        } catch(e) { fail++; }
+        await new Promise(r => setTimeout(r, 200)); // pausa entre requests
+    }
+
+    if (ok > 0) {
+        mostrarNotificacion(`✅ ${ok} reseña(s) publicadas en Firebase. Recarga el inicio para verlas.`, 'success');
+    } else {
+        mostrarNotificacion(`❌ No se pudo publicar ninguna reseña (${fail} errores). Revisa las reglas Firebase.`, 'error');
+    }
+}
+
 // Diagnóstico Firebase RTDB — llamado desde el botón en admin Configuración
 async function tmDiagnosticarFirebase() {
     const box  = document.getElementById('fbDiagResult');
