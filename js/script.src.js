@@ -746,6 +746,10 @@ async function cargarTestimoniosFirebase() {
         }
         // Si es error de red/config: los skeletons siguen visibles (sin hacer nada)
         console.warn('cargarTestimoniosFirebase:', e.message);
+        // Diagnóstico visible en admin (solo si la consola no es accesible)
+        if (window._tmAdminMode && e.message !== 'no resenas' && e.message !== 'no good resenas' && e.message !== 'empty') {
+            mostrarNotificacion('⚠️ Reseñas Firebase: ' + e.message, 'info');
+        }
     }
 }
 
@@ -4933,6 +4937,64 @@ async function _fbEnsureConfig() {
         return null;
     })();
     return _fbConfigPromise;
+}
+
+// Diagnóstico Firebase RTDB — llamado desde el botón en admin Configuración
+async function tmDiagnosticarFirebase() {
+    const box    = document.getElementById('fbDiagResult');
+    const hint   = document.getElementById('fbRulesHint');
+    if (!box) return;
+    box.style.display = 'block';
+    box.innerHTML = '⏳ Probando conexión…';
+    if (hint) hint.style.display = 'none';
+
+    const base = _fbRtdbUrl();
+    if (!base) {
+        box.innerHTML = '❌ No hay Firebase configurado. Pega el firebaseConfig JSON arriba y guarda.';
+        return;
+    }
+    box.innerHTML = `📡 URL: <b>${base}</b>\n\n`;
+
+    const rutas = [
+        { path: '/resenas.json?shallow=true', label: 'Reseñas (/resenas)' },
+        { path: '/interesados.json?shallow=true', label: 'Alertas (/interesados)' },
+        { path: '/configuracion/categorias.json', label: 'Categorías (/configuracion/categorias)' },
+        { path: '/configuracion/version.json', label: 'Versión (/configuracion/version)' },
+    ];
+
+    let hayBloqueados = false;
+    for (const { path, label } of rutas) {
+        try {
+            const r = await fetch(base + path);
+            if (r.ok) {
+                box.innerHTML += `✅ ${label}: OK (${r.status})\n`;
+            } else if (r.status === 401 || r.status === 403) {
+                box.innerHTML += `🔴 ${label}: BLOQUEADO (${r.status} — falta permiso de lectura)\n`;
+                hayBloqueados = true;
+            } else {
+                box.innerHTML += `⚠️ ${label}: Error ${r.status}\n`;
+            }
+        } catch(e) {
+            box.innerHTML += `⚠️ ${label}: Sin red (${e.message})\n`;
+        }
+    }
+
+    if (hayBloqueados && hint) {
+        hint.style.display = 'block';
+        hint.innerHTML = `<b style="color:#FF6B35">🔧 Reglas de Firebase RTDB bloqueando lecturas</b><br><br>
+Ve a <b>console.firebase.google.com</b> → tu proyecto → <b>Realtime Database → Rules</b> y pega esto:<br><br>
+<pre style="background:rgba(0,0,0,.4);border-radius:6px;padding:8px;overflow-x:auto;color:#C9A96E;font-size:10px">{
+  "rules": {
+    "resenas": { ".read": true, ".write": true },
+    "interesados": { ".read": true, ".write": true },
+    "configuracion": { ".read": true, ".write": false },
+    "version": { ".read": true, ".write": false },
+    ".read": false,
+    ".write": false
+  }
+}</pre>
+Después haz clic en <b>Publicar</b> y recarga el admin.`;
+    }
 }
 
 // Helper: obtiene la URL base de Firebase RTDB desde config guardada
