@@ -57,7 +57,7 @@ def send_card_bytes(card_bytes: bytes, caption: str) -> int | None:
     r = requests.post(
         f"https://api.telegram.org/bot{BOT_TOKEN}/sendPhoto",
         data={"chat_id": CHANNEL, "caption": caption, "parse_mode": "Markdown"},
-        files={"photo": ("card.png", card_bytes, "image/png")},
+        files={"photo": ("card.jpg", card_bytes, "image/jpeg")},
         timeout=30,
     )
     if r.status_code == 200:
