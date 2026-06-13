@@ -3161,7 +3161,9 @@ function guardarCategorias() {
             method: 'PUT',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({nombres: categorias, iconos: iconosPersonalizados, ts: Date.now()})
-        }).catch(() => {});
+        }).catch(() => {
+            mostrarNotificacion('⚠️ Categoría guardada localmente. Sin conexión Firebase — haz clic en Actualizar Tienda para hacerla permanente.', 'info');
+        });
     }
 }
 
@@ -3552,10 +3554,10 @@ async function sincronizarTodoConGitHub() {
         { path: 'config.json',                 data: _configSync },
     ];
 
-    // Si hay productos modificados: subir solo productos.json + config.json + grupos
+    // Si hay productos modificados: subir productos + config + grupos + categorias (siempre)
     // Si no hay delta: subir todo
     const archivosFiltrados = hayDelta
-        ? archivos.filter(a => ['productos.json', 'config.json', 'grupos_facebook_config.json'].includes(a.path))
+        ? archivos.filter(a => ['productos.json', 'config.json', 'grupos_facebook_config.json', 'categorias.json'].includes(a.path))
         : archivos;
 
     let ok = 0, errors = [];
