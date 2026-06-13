@@ -586,6 +586,7 @@ body.light-mode #nd-resenas-mas button{color:#FF6B35 !important;border-color:rgb
 #tm-cta-link:hover{border-color:#FF9F43;opacity:1}
 body.light-mode #tm-cta-link{color:#FF6B35}
 
+/* Oscuro */
 body:not(.light-mode) .testimonio-card{
   background:linear-gradient(145deg,rgba(255,255,255,.07),rgba(255,255,255,.03)) !important;
   backdrop-filter:blur(24px) saturate(160%);-webkit-backdrop-filter:blur(24px) saturate(160%);
@@ -594,8 +595,18 @@ body:not(.light-mode) .testimonio-card{
 }
 body:not(.light-mode) .testimonio-card:hover{border-color:rgba(255,107,53,.3) !important;transform:translateY(-6px) !important}
 body:not(.light-mode) .testimonio-card .stars{color:#FF9F43 !important}
-body:not(.light-mode) .testimonio-card p{color:rgba(245,237,232,.7) !important}
+body:not(.light-mode) .testimonio-card p{color:rgba(245,237,232,.7) !important;font-style:italic !important}
 body:not(.light-mode) .testimonio-card .autor{color:#FF9F43 !important}
+/* Claro */
+body.light-mode .testimonios{background:transparent !important}
+body.light-mode .testimonio-card{
+  background:#fff !important;border:1px solid rgba(0,0,0,.07) !important;
+  box-shadow:0 2px 8px rgba(0,0,0,.06),0 8px 24px rgba(0,0,0,.04) !important;
+}
+body.light-mode .testimonio-card:hover{border-color:rgba(255,107,53,.25) !important;transform:translateY(-6px) !important}
+body.light-mode .testimonio-card .stars{color:#FF9F43 !important}
+body.light-mode .testimonio-card p{color:rgba(0,0,0,.68) !important;font-style:italic !important}
+body.light-mode .testimonio-card .autor{color:#FF6B35 !important;border-top-color:rgba(0,0,0,.07) !important}
 
 /* ================================================================
    CTA FINAL — caja verde WhatsApp con glow
@@ -980,19 +991,6 @@ body.light-mode .beneficio-card:hover{
 body.light-mode .beneficio-card .icon{background:rgba(255,107,53,.10) !important}
 body.light-mode .beneficio-card h3{color:#1a1008 !important}
 body.light-mode .beneficio-card p{color:rgba(0,0,0,.55) !important}
-
-/* ── Testimonios — modo claro ── */
-body.light-mode .testimonios{background:#fff !important}
-body.light-mode .testimonio-card{
-  background:#fff !important;border:1px solid rgba(0,0,0,.07) !important;
-  box-shadow:0 2px 8px rgba(0,0,0,.06),0 8px 24px rgba(0,0,0,.04) !important
-}
-body.light-mode .testimonio-card:hover{
-  border-color:rgba(255,107,53,.25) !important;transform:translateY(-6px) !important
-}
-body.light-mode .testimonio-card .stars{color:#FF9F43 !important}
-body.light-mode .testimonio-card>p{color:rgba(0,0,0,.68) !important;font-style:italic !important}
-body.light-mode .testimonio-card .autor{color:#FF6B35 !important}
 
 /* ── CTA final — modo claro ── */
 body.light-mode .cta-final{background:linear-gradient(145deg,#f0faf4,#e8f5ee) !important}
