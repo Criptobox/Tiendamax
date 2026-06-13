@@ -4941,25 +4941,28 @@ async function _fbEnsureConfig() {
 
 // Diagnóstico Firebase RTDB — llamado desde el botón en admin Configuración
 async function tmDiagnosticarFirebase() {
-    const box    = document.getElementById('fbDiagResult');
-    const hint   = document.getElementById('fbRulesHint');
-    if (!box) return;
-    box.style.display = 'block';
-    box.innerHTML = '⏳ Probando conexión…';
+    const box  = document.getElementById('fbDiagResult');
+    const hint = document.getElementById('fbRulesHint');
+
+    // append helper — funciona con o sin el div
+    let log = '';
+    const add = (line) => {
+        log += line + '\n';
+        if (box) { box.style.display = 'block'; box.innerHTML = log; }
+        else mostrarNotificacion(line.replace(/<[^>]+>/g,'').substring(0,120), 'info');
+    };
+
     if (hint) hint.style.display = 'none';
+    add('⏳ Probando conexión Firebase…');
 
     const base = _fbRtdbUrl();
-    if (!base) {
-        box.innerHTML = '❌ No hay Firebase configurado. Pega el firebaseConfig JSON arriba y guarda.';
-        return;
-    }
-    box.innerHTML = `📡 URL: <b>${base}</b>\n\n`;
+    if (!base) { add('❌ No hay Firebase configurado. Pega el firebaseConfig JSON y guarda.'); return; }
+    add('📡 URL: ' + base);
 
     const rutas = [
         { path: '/resenas.json?shallow=true', label: 'Reseñas (/resenas)' },
         { path: '/interesados.json?shallow=true', label: 'Alertas (/interesados)' },
         { path: '/configuracion/categorias.json', label: 'Categorías (/configuracion/categorias)' },
-        { path: '/configuracion/version.json', label: 'Versión (/configuracion/version)' },
     ];
 
     let hayBloqueados = false;
@@ -4970,28 +4973,28 @@ async function tmDiagnosticarFirebase() {
                 const data = await r.json();
                 if (path.includes('resenas') && data && typeof data === 'object') {
                     const n = Object.keys(data).length;
-                    box.innerHTML += `✅ ${label}: OK — ${n > 0 ? n + ' producto(s) con reseñas' : '⚠️ SIN DATOS — nadie ha dejado reseña aún o se guardaron solo en el dispositivo'}\n`;
+                    add(`✅ ${label}: OK — ${n > 0 ? n + ' producto(s) con reseñas en Firebase' : '⚠️ SIN DATOS (se guardaron solo en el dispositivo o nadie ha reseñado)'}`);
                 } else {
-                    box.innerHTML += `✅ ${label}: OK (${r.status})\n`;
+                    add(`✅ ${label}: OK`);
                 }
             } else if (r.status === 401 || r.status === 403) {
-                box.innerHTML += `🔴 ${label}: BLOQUEADO (${r.status} — falta permiso de lectura)\n`;
+                add(`🔴 ${label}: BLOQUEADO (${r.status})`);
                 hayBloqueados = true;
             } else if (r.status === 404) {
-                box.innerHTML += `⚠️ ${label}: No existe aún (${r.status})\n`;
+                add(`⚠️ ${label}: Vacío/no existe aún`);
             } else {
-                box.innerHTML += `⚠️ ${label}: Error ${r.status}\n`;
+                add(`⚠️ ${label}: Error ${r.status}`);
             }
         } catch(e) {
-            box.innerHTML += `⚠️ ${label}: Sin red (${e.message})\n`;
+            add(`⚠️ ${label}: Sin red`);
         }
     }
 
-    // Contar reseñas en localStorage como referencia
-    const lsResenas = Object.keys(localStorage).filter(k => k.startsWith('resenas_'));
-    if (lsResenas.length > 0) {
-        const total = lsResenas.reduce((s, k) => s + (JSON.parse(localStorage.getItem(k) || '[]').length), 0);
-        box.innerHTML += `\n💾 LocalStorage: ${total} reseña(s) en ${lsResenas.length} producto(s) — SOLO visibles en ESTE dispositivo, no en Firebase`;
+    // Reseñas en localStorage
+    const lsKeys = Object.keys(localStorage).filter(k => k.startsWith('resenas_'));
+    if (lsKeys.length > 0) {
+        const total = lsKeys.reduce((s,k) => s + (JSON.parse(localStorage.getItem(k)||'[]').length), 0);
+        add(`💾 LocalStorage: ${total} reseña(s) — SOLO en ESTE dispositivo`);
     }
 
     if (hayBloqueados && hint) {
