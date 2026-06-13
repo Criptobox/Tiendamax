@@ -4967,16 +4967,31 @@ async function tmDiagnosticarFirebase() {
         try {
             const r = await fetch(base + path);
             if (r.ok) {
-                box.innerHTML += `✅ ${label}: OK (${r.status})\n`;
+                const data = await r.json();
+                if (path.includes('resenas') && data && typeof data === 'object') {
+                    const n = Object.keys(data).length;
+                    box.innerHTML += `✅ ${label}: OK — ${n > 0 ? n + ' producto(s) con reseñas' : '⚠️ SIN DATOS — nadie ha dejado reseña aún o se guardaron solo en el dispositivo'}\n`;
+                } else {
+                    box.innerHTML += `✅ ${label}: OK (${r.status})\n`;
+                }
             } else if (r.status === 401 || r.status === 403) {
                 box.innerHTML += `🔴 ${label}: BLOQUEADO (${r.status} — falta permiso de lectura)\n`;
                 hayBloqueados = true;
+            } else if (r.status === 404) {
+                box.innerHTML += `⚠️ ${label}: No existe aún (${r.status})\n`;
             } else {
                 box.innerHTML += `⚠️ ${label}: Error ${r.status}\n`;
             }
         } catch(e) {
             box.innerHTML += `⚠️ ${label}: Sin red (${e.message})\n`;
         }
+    }
+
+    // Contar reseñas en localStorage como referencia
+    const lsResenas = Object.keys(localStorage).filter(k => k.startsWith('resenas_'));
+    if (lsResenas.length > 0) {
+        const total = lsResenas.reduce((s, k) => s + (JSON.parse(localStorage.getItem(k) || '[]').length), 0);
+        box.innerHTML += `\n💾 LocalStorage: ${total} reseña(s) en ${lsResenas.length} producto(s) — SOLO visibles en ESTE dispositivo, no en Firebase`;
     }
 
     if (hayBloqueados && hint) {
