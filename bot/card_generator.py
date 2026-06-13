@@ -101,7 +101,7 @@ def generate_card(nombre: str, categoria: str, imagen_url: str, link: str) -> by
 
     # ── Link / CTA ──────────────────────────────────────────────────────────
     cta_font = _font(26)
-    draw.text((22, SIZE - 80), "👉 Ver precio en tiendamax.org",
+    draw.text((22, SIZE - 80), ">> Ver precio en tiendamax.org",
               font=cta_font, fill=GOLD)
 
     # ── Borde naranja inferior ──────────────────────────────────────────────
