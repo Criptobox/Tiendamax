@@ -60,7 +60,10 @@
   /* Botón descargar */
   .dl-btn{margin-top:4px;background:linear-gradient(135deg,#FF6B35,#FF9F43);color:#fff;border:none;border-radius:100px;padding:14px 36px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;box-shadow:0 8px 28px rgba(255,107,53,.4);transition:transform .15s,box-shadow .15s}
   .dl-btn:hover{transform:translateY(-2px);box-shadow:0 12px 36px rgba(255,107,53,.5)}
-  .hint{color:rgba(255,255,255,.3);font-size:12px;text-align:center}
+  .copy-btn{background:rgba(255,255,255,.08);color:#fff;border:1px solid rgba(255,255,255,.15);border-radius:100px;padding:12px 28px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;transition:background .2s;display:flex;align-items:center;gap:8px}
+  .copy-btn:hover{background:rgba(255,255,255,.14)}
+  .copy-btn.copiado{border-color:#25D366;color:#25D366;background:rgba(37,211,102,.1)}
+  .caption-box{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:14px 18px;font-size:13px;color:rgba(255,255,255,.6);line-height:1.6;max-width:360px;text-align:left;white-space:pre-line}
 </style>
 </head>
 <body>
@@ -111,10 +114,41 @@
 </div>
 
 <button class="dl-btn" onclick="descargar()">⬇ Descargar imagen</button>
-<p class="hint">Descarga → comparte como estado de WhatsApp</p>
+
+<div class="caption-box" id="captionBox">🔥 ¿Ya eres miembro de nuestro canal de Telegram?
+
+Ofertas exclusivas, productos nuevos y descuentos antes que nadie 👇
+
+👉 t.me/TiendaMaxWeb
+
+¡Únete gratis y no te pierdas nada! 🛍️</div>
+
+<button class="copy-btn" onclick="copiarCaption(this)">
+  📋 Copiar texto para el estado
+</button>
+<p class="hint">Pégalo como descripción al subir la imagen a WhatsApp</p>
 
 <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 <script>
+function copiarCaption(btn) {
+  const texto = document.getElementById('captionBox').innerText;
+  navigator.clipboard.writeText(texto).then(() => {
+    btn.innerHTML = '✅ ¡Copiado!';
+    btn.classList.add('copiado');
+    setTimeout(() => { btn.innerHTML = '📋 Copiar texto para el estado'; btn.classList.remove('copiado'); }, 2500);
+  }).catch(() => {
+    const ta = document.createElement('textarea');
+    ta.value = texto;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    ta.remove();
+    btn.innerHTML = '✅ ¡Copiado!';
+    btn.classList.add('copiado');
+    setTimeout(() => { btn.innerHTML = '📋 Copiar texto para el estado'; btn.classList.remove('copiado'); }, 2500);
+  });
+}
+
 async function descargar() {
   const btn = document.querySelector('.dl-btn');
   btn.textContent = 'Generando...';
