@@ -198,34 +198,33 @@ function _textoFacebook(producto) {
     const whatsapp = localStorage.getItem('whatsappNumero') || '5354320170';
     const url      = `https://tiendamax.org/p/producto-${producto.id}.html`;
     const precio   = producto.precioActual;
-    const mn       = _precioMN(precio);
-    const tasa     = _getTasa();
     const hashtags = _hashtagsCategoria(producto.categoria);
 
-    let t = `🛍️ ${producto.nombre}\n`;
-    t += '─'.repeat(32) + '\n\n';
+    let t = `✨ ${producto.nombre}\n\n`;
 
-    if (producto.usado) t += '♻️ PRODUCTO USADO / REFURBISHED\n\n';
+    if (producto.usado) t += '♻️ Producto usado / refurbished\n\n';
     if (producto.descripcion) t += `${producto.descripcion}\n\n`;
-    if (producto.garantia)   t += `🛡️ Garantía: ${producto.garantia}\n`;
-    if (producto.devolucion) t += `✅ Devolución segura garantizada\n`;
 
-    t += `\n💰 Precio: $${precio} USD${mn}\n`;
+    t += '━━━━━━━━━━━━━━━━━━━━━\n';
 
     if (producto.precioOriginal > 0 && producto.precioOriginal > precio) {
         const ahorro = (producto.precioOriginal - precio).toFixed(0);
-        t += `🏷️ Antes: $${producto.precioOriginal} USD — Ahorras $${ahorro}\n`;
+        t += `~~$${producto.precioOriginal} USD~~   👉  💰 $${precio} USD\n`;
+        t += `🎉 Ahorras $${ahorro} USD\n`;
+    } else {
+        t += `💰 Precio: $${precio} USD\n`;
     }
-    if (tasa > 0) t += `📈 Tasa: 1 USD = ${tasa} MN\n`;
+
+    if (producto.garantia)   t += `🛡️ Garantía: ${producto.garantia}\n`;
+    if (producto.devolucion) t += `✅ Devolución segura garantizada\n`;
 
     if (producto.stock === 0) {
-        t += '\n⚠️ PRODUCTO AGOTADO — Escríbenos para restock\n';
-    } else if (producto.stock <= 3) {
-        t += `\n🔥 ¡Solo quedan ${producto.stock} unidades!\n`;
+        t += '\n⚠️ Agotado — Escríbenos para restock\n';
     }
 
-    t += `\n📲 Pedir por WhatsApp: wa.me/${whatsapp}\n`;
-    t += `🔗 Ver producto: ${url}\n\n`;
+    t += '\n━━━━━━━━━━━━━━━━━━━━━\n';
+    t += `📲 Pedir ahora → wa.me/${whatsapp}\n`;
+    t += `🔗 ${url}\n\n`;
     t += hashtags;
 
     return t;
