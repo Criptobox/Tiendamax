@@ -1,0 +1,30 @@
+name: 📢 Publicar producto nuevo en Telegram
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'products.json'
+      - 'data.json'
+  workflow_dispatch:
+
+jobs:
+  publicar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2   # necesita el commit anterior para detectar productos nuevos
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Instalar dependencias
+        run: pip install requests
+
+      - name: Publicar productos nuevos en Telegram
+        run: python bot/publish_producto.py
+        env:
+          BOT_TOKEN:        ${{ secrets.BOT_TOKEN }}
+          TELEGRAM_CHANNEL: ${{ secrets.TELEGRAM_CHANNEL }}
