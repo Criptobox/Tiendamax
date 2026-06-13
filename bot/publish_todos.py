@@ -75,12 +75,12 @@ def precio_fmt(v) -> str:
 
 def main() -> int:
     try:
-        with open("products.json") as f:
+        with open("productos.json") as f:
             productos = json.load(f)
         if not isinstance(productos, list):
             productos = []
     except Exception as e:
-        print(f"❌ No se pudo leer products.json: {e}", file=sys.stderr)
+        print(f"❌ No se pudo leer productos.json: {e}", file=sys.stderr)
         return 1
 
     try:

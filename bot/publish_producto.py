@@ -246,10 +246,10 @@ def msg_oferta_dia(p: dict, texto_oferta: str = "") -> str:
 # ── Lógica principal ─────────────────────────────────────────────────────────
 
 def main() -> int:
-    prev_prods_raw  = git_show("products.json")
+    prev_prods_raw  = git_show("productos.json")
     prev_config_raw = git_show("config.json")
 
-    curr_prods  = cargar_json_file("products.json")
+    curr_prods  = cargar_json_file("productos.json")
     curr_config = cargar_json_file("config.json")
 
     curr_dict = productos_dict(curr_prods)

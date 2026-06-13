@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
     paths:
-      - 'products.json'
+      - 'productos.json'
       - 'data.json'
       - 'config.json'
   workflow_dispatch:
