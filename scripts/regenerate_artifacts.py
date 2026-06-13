@@ -15,6 +15,7 @@ import json
 import os
 import re
 import sys
+import urllib.parse
 from datetime import date
 from html import escape
 from pathlib import Path
@@ -39,6 +40,7 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
 <meta name="description" content="{og_desc}">
 <meta name="keywords" content="{keywords}">
 <meta name="robots" content="index, follow">
+<link rel="canonical" href="{page_url}">
 
 <!-- ═══ Open Graph (WhatsApp, Facebook, Instagram) ═══ -->
 <meta property="og:type" content="product">
@@ -63,10 +65,6 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
 <meta name="twitter:image" content="{image}">
 <meta name="twitter:image:alt" content="{og_title}">
 
-<!-- ═══ Redireccionar al usuario a la app (1s da tiempo al crawler) ═══ -->
-<meta http-equiv="refresh" content="1;url={app_url}">
-<link rel="canonical" href="{page_url}">
-
 <!-- ═══ JSON-LD para Google ═══ -->
 <script type="application/ld+json">
 {{
@@ -89,54 +87,69 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
 </script>
 
 <style>
-  * {{ margin: 0; padding: 0; box-sizing: border-box; }}
-  body {{
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    background: #0D0D0D;
-    color: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-    text-align: center;
-  }}
-  .loader {{ padding: 40px; max-width: 420px; }}
-  .loader h2 {{ color: #C9A96E; font-size: 18px; margin-bottom: 8px; }}
-  .price  {{ color: #FF6B35; font-size: 22px; font-weight: 700; margin-bottom: 8px; }}
-  .desc   {{ color: #888; font-size: 13px; line-height: 1.5; margin-bottom: 20px; }}
-  .loader a  {{
-    display: inline-block;
-    background: linear-gradient(135deg, #FF6B35, #E8501E);
-    color: #fff;
-    text-decoration: none;
-    padding: 12px 28px;
-    border-radius: 50px;
-    font-weight: 600;
-    font-size: 14px;
-  }}
-  .spinner {{
-    width: 36px; height: 36px;
-    border: 3px solid rgba(201,169,110,0.2);
-    border-top-color: #C9A96E;
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-    margin: 0 auto 20px;
-  }}
-  @keyframes spin {{ to {{ transform: rotate(360deg); }} }}
+  *{{margin:0;padding:0;box-sizing:border-box}}
+  body{{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#0C0806;color:#fff;min-height:100vh}}
+  a{{color:inherit;text-decoration:none}}
+  .tm-hdr{{display:flex;align-items:center;padding:14px 20px;background:#0D0806;border-bottom:1px solid rgba(201,169,110,.15)}}
+  .tm-logo{{font-size:20px;font-weight:800;letter-spacing:-.5px}}
+  .tm-logo .t{{color:#C9A96E}}.tm-logo .m{{color:#FF6B35}}
+  .tm-back{{margin-left:auto;font-size:13px;color:#C9A96E;border:1px solid rgba(201,169,110,.3);padding:6px 14px;border-radius:20px;white-space:nowrap}}
+  .tm-wrap{{max-width:900px;margin:0 auto;padding:28px 16px 60px;display:grid;grid-template-columns:1fr 1fr;gap:36px;align-items:start}}
+  @media(max-width:640px){{.tm-wrap{{grid-template-columns:1fr;gap:20px}}}}
+  .tm-img{{border-radius:16px;overflow:hidden;background:#1a1410;aspect-ratio:1/1}}
+  .tm-img img{{width:100%;height:100%;object-fit:cover;display:block}}
+  .tm-cat{{display:inline-block;background:#FF6B35;color:#fff;font-size:11px;font-weight:700;letter-spacing:.5px;padding:4px 12px;border-radius:20px;margin-bottom:14px;text-transform:uppercase}}
+  h1{{font-size:clamp(20px,4vw,26px);font-weight:800;line-height:1.25;margin-bottom:18px}}
+  .tm-prices{{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:18px}}
+  .tm-price{{font-size:30px;font-weight:800;color:#FF6B35}}
+  .tm-orig{{font-size:17px;color:#666;text-decoration:line-through}}
+  .tm-badge{{background:rgba(255,107,53,.15);color:#FF6B35;border:1px solid rgba(255,107,53,.3);font-size:12px;font-weight:700;padding:3px 10px;border-radius:20px}}
+  .tm-desc{{font-size:14px;line-height:1.75;color:#a09080;margin-bottom:22px;white-space:pre-line}}
+  .tm-stok-y{{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:#4ade80;margin-bottom:22px}}
+  .tm-stok-y::before{{content:'';width:8px;height:8px;border-radius:50%;background:#4ade80;flex-shrink:0}}
+  .tm-stok-n{{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:#888;margin-bottom:22px}}
+  .tm-stok-n::before{{content:'';width:8px;height:8px;border-radius:50%;background:#666;flex-shrink:0}}
+  .tm-actions{{display:flex;flex-direction:column;gap:12px}}
+  .tm-btn{{display:flex;align-items:center;justify-content:center;gap:8px;padding:14px 20px;border-radius:12px;font-size:15px;font-weight:700;transition:opacity .2s}}
+  .tm-btn:hover{{opacity:.85}}
+  .tm-btn-p{{background:linear-gradient(135deg,#FF6B35,#E8501E);color:#fff}}
+  .tm-btn-w{{background:#25D366;color:#fff}}
+  .tm-ftr{{text-align:center;padding:24px 16px;color:#555;font-size:12px;border-top:1px solid rgba(255,255,255,.06)}}
+  .tm-ftr a{{color:#C9A96E}}
 </style>
 </head>
 <body>
-<div class="loader">
-  <div class="spinner"></div>
-  <h2>{html_name}</h2>
-  <p class="price">${price} USD</p>
-  <p class="desc">{og_desc}</p>
-  <a href="{app_url}">Abrir en TiendaMax</a>
+
+<header class="tm-hdr">
+  <a href="https://tiendamax.org" class="tm-logo"><span class="t">TIENDA</span><span class="m">MAX</span></a>
+  <a href="https://tiendamax.org" class="tm-back">← Ver catálogo</a>
+</header>
+
+<div class="tm-wrap">
+  <div class="tm-img">
+    <img src="{image}" alt="{html_name}" loading="lazy">
+  </div>
+  <div>
+    {cat_html}
+    <h1>{html_name}</h1>
+    <div class="tm-prices">
+      <span class="tm-price">${price} USD</span>
+      {precio_orig_html}
+      {pct_desc_html}
+    </div>
+    <p class="tm-desc">{desc_full}</p>
+    {stock_html}
+    <div class="tm-actions">
+      <a href="{app_url}" class="tm-btn tm-btn-p">🛍️ Ver en TiendaMax</a>
+      <a href="{wa_link}" class="tm-btn tm-btn-w" target="_blank" rel="noopener noreferrer">💬 Pedir por WhatsApp</a>
+    </div>
+  </div>
 </div>
-<script>
-  // Espera breve: los crawlers alcanzan a leer OpenGraph antes de redirigir.
-  setTimeout(function(){{ window.location.replace('{app_url_js}'); }}, 50);
-</script>
+
+<footer class="tm-ftr">
+  <a href="https://tiendamax.org">tiendamax.org</a> &middot; Todos los derechos reservados
+</footer>
+
 </body>
 </html>
 """
@@ -190,7 +203,7 @@ def desc_short(s: str, n: int = 200) -> str:
     return s
 
 
-def regenerate_pages(products: list[dict]) -> tuple[int, list[str]]:
+def regenerate_pages(products: list[dict], wa_num: str = "5354320170") -> tuple[int, list[str]]:
     """Crea/actualiza páginas /p/ y borra las huérfanas."""
     P_DIR.mkdir(exist_ok=True)
     written = 0
@@ -221,7 +234,7 @@ def regenerate_pages(products: list[dict]) -> tuple[int, list[str]]:
 
         # JSON-LD: json.dumps produce strings correctamente escapadas para JSON
         json_name = json.dumps(name)
-        json_desc = json.dumps(desc)
+        json_desc = json.dumps(desc_short(p.get("descripcion") or "", 500))
         json_img  = json.dumps(img)
         availability = (
             "https://schema.org/InStock"
@@ -229,11 +242,34 @@ def regenerate_pages(products: list[dict]) -> tuple[int, list[str]]:
             else "https://schema.org/OutOfStock"
         )
 
-        page_url  = f"{SITE}/p/producto-{pid}.html"
-        # Query + hash: query ayuda a navegadores in-app; hash mantiene compatibilidad SPA.
-        app_url   = f"{SITE}/?producto={pid}#producto-{pid}"
-        app_url_js = app_url.replace("'", "\\'")
-        title = escape(p.get("seoTitle") or f"{name} — ${price} USD | TiendaMax")
+        page_url = f"{SITE}/p/producto-{pid}.html"
+        app_url  = f"{SITE}/?producto={pid}#producto-{pid}"
+        title    = escape(p.get("seoTitle") or f"{name} — ${price} USD | TiendaMax")
+
+        # ── Variables nuevas para la página de producto real ────────────────
+        cat = (p.get("categoria") or "").strip()
+        cat_html = f'<span class="tm-cat">{escape(cat)}</span>' if cat else ""
+
+        desc_raw  = (p.get("descripcion") or "").strip()
+        desc_full = escape(desc_raw)
+
+        precio_act  = float(p.get("precioActual") or 0)
+        precio_orig = float(p.get("precioOriginal") or 0)
+        if precio_orig > precio_act > 0:
+            pct = round((precio_orig - precio_act) / precio_orig * 100)
+            precio_orig_html = f'<span class="tm-orig">${precio_orig:.2f} USD</span>'
+            pct_desc_html    = f'<span class="tm-badge">-{pct}%</span>'
+        else:
+            precio_orig_html = ""
+            pct_desc_html    = ""
+
+        if stock > 0:
+            stock_html = f'<div class="tm-stok-y">En stock ({stock} disponible{"s" if stock != 1 else ""})</div>'
+        else:
+            stock_html = '<div class="tm-stok-n">Agotado</div>'
+
+        wa_msg  = urllib.parse.quote(f"Hola, me interesa: {name}. {page_url}")
+        wa_link = f"https://wa.me/{wa_num}?text={wa_msg}"
 
         html = PAGE_TEMPLATE.format(
             title=title,
@@ -244,12 +280,17 @@ def regenerate_pages(products: list[dict]) -> tuple[int, list[str]]:
             keywords=keywords,
             page_url=page_url,
             app_url=app_url,
-            app_url_js=app_url_js,
             price=price,
             json_name=json_name,
             json_desc=json_desc,
             json_img=json_img,
             availability=availability,
+            cat_html=cat_html,
+            desc_full=desc_full,
+            precio_orig_html=precio_orig_html,
+            pct_desc_html=pct_desc_html,
+            stock_html=stock_html,
+            wa_link=wa_link,
         )
 
         fp = P_DIR / f"producto-{pid}.html"
@@ -337,7 +378,13 @@ def main() -> int:
 
     print(f"📦 {len(products)} productos cargados")
 
-    n_written, removed = regenerate_pages(products)
+    config = read_json(CONF, {})
+    wa_num = str(
+        config.get("whatsapp") or config.get("telefono") or
+        config.get("numeroWhatsApp") or "5354320170"
+    ).replace("+", "").replace(" ", "").replace("-", "")
+
+    n_written, removed = regenerate_pages(products, wa_num)
     print(f"   Páginas /p/ actualizadas: {n_written}, borradas: {len(removed)}")
 
     if regenerate_sitemap(products):
