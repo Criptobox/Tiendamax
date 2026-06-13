@@ -981,17 +981,6 @@ body.light-mode .beneficio-card .icon{background:rgba(255,107,53,.10) !important
 body.light-mode .beneficio-card h3{color:#1a1008 !important}
 body.light-mode .beneficio-card p{color:rgba(0,0,0,.55) !important}
 
-/* ── Testimonios — mejora visual (ambos modos) ── */
-.testimonio-card .stars{
-  font-size:18px !important;letter-spacing:3px !important;
-  display:block !important;margin-bottom:12px !important
-}
-.testimonio-card>p{font-size:15px !important;line-height:1.7 !important;font-style:italic !important}
-.testimonio-card .autor{
-  font-size:13px !important;font-weight:700 !important;
-  display:block !important;margin-top:16px !important;letter-spacing:.3px !important
-}
-
 /* ── Testimonios — modo claro ── */
 body.light-mode .testimonios{background:#fff !important}
 body.light-mode .testimonio-card{
@@ -1002,7 +991,7 @@ body.light-mode .testimonio-card:hover{
   border-color:rgba(255,107,53,.25) !important;transform:translateY(-6px) !important
 }
 body.light-mode .testimonio-card .stars{color:#FF9F43 !important}
-body.light-mode .testimonio-card>p{color:rgba(0,0,0,.68) !important}
+body.light-mode .testimonio-card>p{color:rgba(0,0,0,.68) !important;font-style:italic !important}
 body.light-mode .testimonio-card .autor{color:#FF6B35 !important}
 
 /* ── CTA final — modo claro ── */
