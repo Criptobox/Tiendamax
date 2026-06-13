@@ -514,8 +514,42 @@ body:not(.light-mode) .beneficio-card h3{color:#F5EDE8 !important}
 body:not(.light-mode) .beneficio-card p{color:rgba(245,237,232,.55) !important}
 
 /* ================================================================
-   TESTIMONIOS — glass (oscuro)
+   TESTIMONIOS — grid compacto + glass (oscuro)
    ================================================================ */
+/* Grid: 4 columnas compactas en desktop, 2 en tablet, 1 en móvil */
+.testimonios-grid{
+  grid-template-columns:repeat(4,1fr) !important;
+  gap:14px !important;
+}
+@media(max-width:900px){
+  .testimonios-grid{grid-template-columns:repeat(2,1fr) !important}
+}
+@media(max-width:480px){
+  .testimonios-grid{grid-template-columns:1fr !important}
+}
+/* Tarjetas más compactas */
+.testimonio-card{
+  padding:18px !important;
+  border-radius:16px !important;
+  transition:transform .2s,border-color .2s;
+}
+.testimonio-card .stars{font-size:13px !important;margin-bottom:8px}
+.testimonio-card p{font-size:13px !important;line-height:1.5 !important;margin-bottom:0 !important}
+.testimonio-card .autor{font-size:12px !important;margin-top:10px !important;display:block}
+/* Card oculta para "ver más" */
+.testimonio-card.tm-hidden{display:none}
+/* Botón ver más */
+#tm-ver-mas{
+  display:inline-flex;align-items:center;gap:6px;
+  background:none;border:1px solid rgba(255,107,53,.35);
+  border-radius:100px;padding:10px 22px;
+  font-size:13px;font-weight:600;color:#FF9F43;
+  cursor:pointer;font-family:inherit;transition:border-color .2s,color .2s;
+  margin-top:20px;
+}
+#tm-ver-mas:hover{border-color:#FF9F43;color:#FF6B35}
+body.light-mode #tm-ver-mas{color:#FF6B35;border-color:rgba(255,107,53,.4)}
+
 body:not(.light-mode) .testimonio-card{
   background:linear-gradient(145deg,rgba(255,255,255,.07),rgba(255,255,255,.03)) !important;
   backdrop-filter:blur(24px) saturate(160%);-webkit-backdrop-filter:blur(24px) saturate(160%);

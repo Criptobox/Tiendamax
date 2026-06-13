@@ -663,8 +663,8 @@ async function cargarTestimoniosFirebase() {
         const productIds = await r.json();
         if (!productIds || typeof productIds !== 'object') throw new Error('empty');
 
-        // Buscar reseñas de cada producto en paralelo (máx 6 para no saturar)
-        const pids = Object.keys(productIds).slice(0, 6);
+        // Buscar reseñas de cada producto en paralelo (máx 15 para encontrar suficientes)
+        const pids = Object.keys(productIds).slice(0, 15);
         const allResenas = [];
         await Promise.all(pids.map(async pid => {
             try {
@@ -683,23 +683,34 @@ async function cargarTestimoniosFirebase() {
         const mejores = allResenas
             .filter(r => r.estrellas >= 4 && r.texto && r.texto.length > 15)
             .sort((a, b) => b.id - a.id)
-            .slice(0, 6);
+            .slice(0, 12);
 
         if (mejores.length === 0) throw new Error('no good resenas');
 
         const stars = n => '⭐'.repeat(Math.min(5, Math.max(1, n)));
+        const VISIBLE = 4;
 
-        grid.innerHTML = mejores.map(r =>
-            '<div class="testimonio-card">' +
+        grid.innerHTML = mejores.map((r, i) =>
+            '<div class="testimonio-card' + (i >= VISIBLE ? ' tm-hidden' : '') + '">' +
                 '<div class="stars">' + stars(r.estrellas) + '</div>' +
-                '<p>"' + escapeHtml(r.texto.substring(0, 200)) + '"</p>' +
+                '<p>"' + escapeHtml(r.texto.substring(0, 180)) + '"</p>' +
                 '<p class="autor">— ' + escapeHtml(r.autor) +
                 (r.productoNombre ? ' <span style="font-size:10px;opacity:0.5;font-weight:400;">· ' + escapeHtml(r.productoNombre.substring(0, 30)) + '</span>' : '') +
                 '</p>' +
             '</div>'
         ).join('');
 
-        if (cta) cta.style.display = 'block';
+        // Botón ver más si hay más de VISIBLE reseñas
+        if (cta) {
+            cta.style.display = 'block';
+            if (mejores.length > VISIBLE) {
+                cta.innerHTML = '<button id="tm-ver-mas" type="button">Ver más reseñas ↓</button>';
+                document.getElementById('tm-ver-mas').addEventListener('click', function() {
+                    grid.querySelectorAll('.tm-hidden').forEach(c => c.classList.remove('tm-hidden'));
+                    this.closest('#testimoniosCTA').style.display = 'none';
+                });
+            }
+        }
 
     } catch(e) {
         // Sin reseñas reales aún — mostrar mensaje invitando a dejar una
