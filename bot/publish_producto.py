@@ -19,33 +19,60 @@ BOT_TOKEN   = os.environ["BOT_TOKEN"]
 CHANNEL     = os.environ.get("TELEGRAM_CHANNEL", "@TiendaMaxWeb")
 TIENDA_URL  = "https://tiendamax.org"
 TZ          = ZoneInfo("America/Havana")
+MSG_FILE    = "bot/telegram_messages.json"
 
 
 # ── Helpers de Telegram ─────────────────────────────────────────────────────
 
-def send_photo(photo_url: str, caption: str) -> bool:
+def load_msg_ids() -> dict:
+    try:
+        with open(MSG_FILE) as f:
+            return json.load(f)
+    except Exception:
+        return {}
+
+
+def save_msg_ids(ids: dict):
+    with open(MSG_FILE, "w") as f:
+        json.dump(ids, f, indent=2)
+
+
+def delete_message(message_id: int) -> bool:
+    r = requests.post(
+        f"https://api.telegram.org/bot{BOT_TOKEN}/deleteMessage",
+        json={"chat_id": CHANNEL, "message_id": message_id},
+        timeout=10,
+    )
+    return r.status_code == 200
+
+
+def send_photo(photo_url: str, caption: str) -> int | None:
     r = requests.post(
         f"https://api.telegram.org/bot{BOT_TOKEN}/sendPhoto",
         json={"chat_id": CHANNEL, "photo": photo_url, "caption": caption, "parse_mode": "Markdown"},
         timeout=15,
     )
-    return r.status_code == 200
+    if r.status_code == 200:
+        return r.json()["result"]["message_id"]
+    return None
 
 
-def send_text(text: str) -> bool:
+def send_text(text: str) -> int | None:
     r = requests.post(
         f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage",
         json={"chat_id": CHANNEL, "text": text, "parse_mode": "Markdown"},
         timeout=15,
     )
-    return r.status_code == 200
+    if r.status_code == 200:
+        return r.json()["result"]["message_id"]
+    return None
 
 
-def enviar(texto: str, imagen: str = "") -> bool:
+def enviar(texto: str, imagen: str = "") -> int | None:
     if imagen and imagen.startswith("http"):
-        ok = send_photo(imagen, texto)
-        if ok:
-            return True
+        mid = send_photo(imagen, texto)
+        if mid:
+            return mid
     return send_text(texto)
 
 
@@ -173,20 +200,38 @@ def main() -> int:
 
     curr_dict = productos_dict(curr_prods)
     prev_dict = productos_dict(json.loads(prev_prods_raw) if prev_prods_raw else [])
+    prev_cfg  = json.loads(prev_config_raw) if prev_config_raw else {}
 
-    prev_cfg = json.loads(prev_config_raw) if prev_config_raw else {}
-
+    msg_ids   = load_msg_ids()
     publicados = 0
     errores    = 0
+
+    # ── 0. Productos agotados → eliminar mensaje del canal ───────────────────
+    for pid, p_prev in prev_dict.items():
+        p_curr = curr_dict.get(pid)
+        if not p_curr:
+            continue
+        prev_stock = int(p_prev.get("stock", 1))
+        curr_stock = int(p_curr.get("stock", 1))
+        if prev_stock > 0 and curr_stock == 0 and pid in msg_ids:
+            deleted = delete_message(msg_ids[pid])
+            nombre  = p_curr.get("nombre", pid)
+            if deleted:
+                print(f"  🗑️ Eliminado (agotado): {nombre}")
+                del msg_ids[pid]
+            else:
+                print(f"  ⚠️ No se pudo eliminar mensaje de: {nombre}")
 
     # ── 1. Productos nuevos ──────────────────────────────────────────────────
     nuevos = [p for pid, p in curr_dict.items() if pid not in prev_dict]
     for p in nuevos[:3]:
-        img  = p.get("imagen") or p.get("foto") or ""
-        text = msg_nuevo(p)
-        ok   = enviar(text, img)
-        nombre = p.get("nombre", str(p.get("id")))
-        if ok:
+        img    = p.get("imagen") or p.get("foto") or ""
+        text   = msg_nuevo(p)
+        mid    = enviar(text, img)
+        pid    = str(p.get("id"))
+        nombre = p.get("nombre", pid)
+        if mid:
+            msg_ids[pid] = mid
             print(f"  ✅ Nuevo: {nombre}")
             publicados += 1
         else:
@@ -196,16 +241,17 @@ def main() -> int:
     # ── 2. Rebajas de precio ─────────────────────────────────────────────────
     for pid, p_curr in curr_dict.items():
         if pid not in prev_dict:
-            continue  # ya tratado como nuevo
+            continue
         p_prev = prev_dict[pid]
         try:
             pa_curr = float(p_curr.get("precioActual") or 0)
             pa_prev = float(p_prev.get("precioActual") or 0)
             if pa_prev > 0 and pa_curr > 0 and pa_curr < pa_prev:
                 text, img = msg_rebaja(p_curr, pa_prev)
-                ok = enviar(text, img)
+                mid    = enviar(text, img)
                 nombre = p_curr.get("nombre", pid)
-                if ok:
+                if mid:
+                    msg_ids[pid] = mid
                     print(f"  ✅ Rebaja: {nombre} ({pa_prev}→{pa_curr})")
                     publicados += 1
                 else:
@@ -221,15 +267,18 @@ def main() -> int:
         p = curr_dict.get(oferta_id_curr)
         if p:
             texto_oferta = curr_config.get("ofertaDiaTexto") or ""
-            text, img = msg_oferta_dia(p, texto_oferta)
-            ok = enviar(text, img)
-            nombre = p.get("nombre", oferta_id_curr)
-            if ok:
+            text, img    = msg_oferta_dia(p, texto_oferta)
+            mid          = enviar(text, img)
+            nombre       = p.get("nombre", oferta_id_curr)
+            if mid:
+                msg_ids[oferta_id_curr] = mid
                 print(f"  ✅ Oferta del día: {nombre}")
                 publicados += 1
             else:
                 print(f"  ❌ Error publicando oferta del día", file=sys.stderr)
                 errores += 1
+
+    save_msg_ids(msg_ids)
 
     if publicados == 0 and errores == 0:
         print("ℹ️  Sin eventos nuevos para publicar en el canal.")
