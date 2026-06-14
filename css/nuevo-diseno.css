@@ -454,11 +454,11 @@ body:not(.light-mode) .producto-card .stock-count{color:rgba(245,237,232,.5) !im
 body:not(.light-mode) .producto-card .stock-bar{background:rgba(255,255,255,.08) !important;border-radius:100px !important;overflow:hidden}
 .producto-card .stock-bar-fill{background:linear-gradient(90deg,#FF6B35,#FF9F43) !important}
 .producto-card .btn-pedir-card{
-  background:linear-gradient(135deg,#25D366,#128C7E) !important;color:#fff !important;border:none !important;
+  background:linear-gradient(135deg,#FF6B35,#E8501E) !important;color:#fff !important;border:none !important;
   border-radius:100px !important;font-size:13px !important;font-weight:700 !important;padding:11px 16px !important;
-  box-shadow:0 4px 16px rgba(37,211,102,.25) !important;transition:transform .2s,box-shadow .2s !important;
+  box-shadow:0 4px 16px rgba(255,107,53,.35) !important;transition:transform .2s,box-shadow .2s !important;
 }
-.producto-card .btn-pedir-card:hover{transform:translateY(-2px) !important;box-shadow:0 8px 24px rgba(37,211,102,.35) !important}
+.producto-card .btn-pedir-card:hover{transform:translateY(-2px) !important;box-shadow:0 8px 24px rgba(255,107,53,.45) !important}
 
 /* ================================================================
    SOCIAL PROOF STRIP — caja glass (calcado de .proof-strip)
@@ -1152,6 +1152,9 @@ body:not(.light-mode) .mas-vendidos .producto-card{
 
 /* btn-megusta: área táctil ampliada vía pseudo-element (no altera visual) */
 .btn-megusta{position:relative !important}
+/* Favorito en modo claro: fondo blanco en vez de negro */
+body.light-mode .btn-megusta{background:rgba(255,255,255,0.88) !important;border:1px solid rgba(0,0,0,0.08) !important;color:rgba(0,0,0,0.45) !important;box-shadow:0 2px 8px rgba(0,0,0,0.12) !important;backdrop-filter:blur(8px) !important;-webkit-backdrop-filter:blur(8px) !important}
+body.light-mode .btn-megusta.liked{background:rgba(231,76,60,0.1) !important;color:#e74c3c !important;border-color:rgba(231,76,60,0.2) !important}
 .btn-megusta::after{
   content:'';position:absolute;
   top:50%;left:50%;
