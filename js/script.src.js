@@ -980,11 +980,14 @@ function obtenerIconoCategoria(nombre) {
 // ═══════════════════════════════════════════════════════
 //  BÚSQUEDA HERO — con IA (Claude API)
 // ═══════════════════════════════════════════════════════
-let _heroSearchActivo = '';
-let _heroPrecioMin    = 0;
-let _heroPrecioMax    = Infinity;
-let _heroSearchTimer  = null;
-let _aiSearchTimer    = null;
+let _heroSearchActivo  = '';
+let _heroPrecioMin     = 0;
+let _heroPrecioMax     = Infinity;
+let _heroSoloConStock  = false;
+let _heroOrden         = '';
+let _heroSearchTimer   = null;
+let _aiSearchTimer     = null;
+let _dataSaverMode     = (() => { try { return !!localStorage.getItem('tm_data_saver'); } catch(e) { return false; } })();
 
 function abrirPanelBusqueda() {
     const panel = document.getElementById('heroSearchPanel');
@@ -1158,6 +1161,11 @@ function _tmRegistrarBusqueda(q) {
 function aplicarBusquedaHero() {
     const q = (document.getElementById('heroSearchInput')?.value || '').trim().toLowerCase();
     _heroSearchActivo = q;
+    // Leer filtros del panel de búsqueda
+    _heroPrecioMin    = parseFloat(document.getElementById('hsbPrecioMin')?.value || '0') || 0;
+    _heroPrecioMax    = parseFloat(document.getElementById('hsbPrecioMax')?.value || '') || Infinity;
+    _heroSoloConStock = !!(document.getElementById('hsbSoloStock')?.checked);
+    _heroOrden        = document.getElementById('hsbOrden')?.value || '';
     if (q.length >= 2) {
         try {
             const _bs = JSON.parse(localStorage.getItem('tm_busquedas_v1') || '{}');
@@ -1166,10 +1174,36 @@ function aplicarBusquedaHero() {
             _tmRegistrarBusqueda(q);
         } catch(e) {}
     }
-    _heroPrecioMin = 0;
-    _heroPrecioMax = Infinity;
     cerrarPanelBusqueda();
     mostrarVistaCategoria('Todas');
+}
+
+function toggleDataSaver() {
+    _dataSaverMode = !_dataSaverMode;
+    try {
+        if (_dataSaverMode) localStorage.setItem('tm_data_saver', '1');
+        else localStorage.removeItem('tm_data_saver');
+    } catch(e) {}
+    const statusEl = document.getElementById('dataSaverStatus');
+    if (statusEl) statusEl.textContent = _dataSaverMode ? 'ON' : 'OFF';
+    document.body.classList.toggle('data-saver-mode', _dataSaverMode);
+    mostrarNotificacion(_dataSaverMode ? '⚡ Ahorro de datos ON — IA y autoplay desactivados' : '⚡ Ahorro de datos OFF');
+}
+
+function exportarBackupCompleto() {
+    const claves = ['heroBanners','heroTagline','monedaActual','tasaMN','tiendaNombre',
+        'carrito_v2','wishlist_v1','activeCountdown','ofertaDiaId','ofertaDiaTexto',
+        'revolico_config','tm_busquedas_v1'];
+    const datos = {};
+    claves.forEach(k => { try { datos[k] = localStorage.getItem(k); } catch(e) {} });
+    const backup = { fecha: new Date().toISOString(), version: '2.0', localStorage: datos };
+    const blob = new Blob([JSON.stringify(backup, null, 2)], {type: 'application/json'});
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href = url; a.download = 'tiendamax-backup-' + new Date().toISOString().slice(0,10) + '.json';
+    document.body.appendChild(a); a.click(); a.remove();
+    URL.revokeObjectURL(url);
+    mostrarNotificacion('✅ Backup descargado');
 }
 
 function seleccionarSugerencia(id) {
@@ -1717,6 +1751,8 @@ function mostrarVistaCategoria(categoria) {
         _heroSearchActivo = '';
         _heroPrecioMin = 0;
         _heroPrecioMax = Infinity;
+        _heroSoloConStock = false;
+        _heroOrden = '';
         const heroInput = document.getElementById('heroSearchInput');
         if (heroInput) heroInput.value = '';
     }
@@ -2394,7 +2430,7 @@ function renderizarProductos(isLoadMore = false) {
         productosFiltrados = productosFiltrados.filter(p => p.subcategoria === subcategoriaSeleccionada);
     }
 
-    // Filtro de búsqueda hero y precio
+    // Filtro de búsqueda hero, precio, stock y orden
     if (_heroSearchActivo || _heroPrecioMin > 0 || _heroPrecioMax < Infinity) {
         const q = _heroSearchActivo;
         productosFiltrados = productosFiltrados.filter(p => {
@@ -2405,6 +2441,10 @@ function renderizarProductos(isLoadMore = false) {
             return matchQ && matchP;
         });
     }
+    if (_heroSoloConStock) productosFiltrados = productosFiltrados.filter(p => safeNum(p.stock) > 0);
+    if (_heroOrden === 'precio_asc')  productosFiltrados.sort((a,b) => safeNum(a.precioActual) - safeNum(b.precioActual));
+    else if (_heroOrden === 'precio_desc') productosFiltrados.sort((a,b) => safeNum(b.precioActual) - safeNum(a.precioActual));
+    else if (_heroOrden === 'az')     productosFiltrados.sort((a,b) => (a.nombre||'').localeCompare(b.nombre||''));
 
     productosGrid.innerHTML = '';
 
@@ -6069,11 +6109,15 @@ renderizarProductos = function() {
             const matchQ = !q || p.nombre.toLowerCase().includes(q) ||
                 (p.descripcion||'').toLowerCase().includes(q) ||
                 (p.categoria||'').toLowerCase().includes(q);
-            return matchQ;
+            const precio = safeNum(p.precioActual);
+            const matchP = precio >= _heroPrecioMin && precio <= _heroPrecioMax;
+            return matchQ && matchP;
         });
-        
     }
-    
+    if (_heroSoloConStock) productosFiltrados = productosFiltrados.filter(p => safeNum(p.stock) > 0);
+    if (_heroOrden === 'precio_asc')  productosFiltrados.sort((a,b) => safeNum(a.precioActual) - safeNum(b.precioActual));
+    else if (_heroOrden === 'precio_desc') productosFiltrados.sort((a,b) => safeNum(b.precioActual) - safeNum(a.precioActual));
+    else if (_heroOrden === 'az')     productosFiltrados.sort((a,b) => (a.nombre||'').localeCompare(b.nombre||''));
 
     // Ordenar: oferta del día primero
     const ofertaId = getOfertaDiaId();
@@ -7141,6 +7185,14 @@ window.addEventListener('hashchange', _procesarDeepLink);
 window.addEventListener('popstate', _procesarDeepLink);
 document.addEventListener('DOMContentLoaded', () => {
     if (_tmGetDeepLinkProductId()) setTimeout(_procesarDeepLink, 100);
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+    if (_dataSaverMode) {
+        document.body.classList.add('data-saver-mode');
+        const statusEl = document.getElementById('dataSaverStatus');
+        if (statusEl) statusEl.textContent = 'ON';
+    }
 });
 
 // ══════════════════════════════════════════════════════════════

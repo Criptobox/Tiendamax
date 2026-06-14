@@ -1247,3 +1247,25 @@ body.light-mode .currency-bar .cur-btn.active {
     object-fit:contain !important;object-position:center !important;display:block !important;
   }
 }
+
+/* ── Filtros de búsqueda avanzada ── */
+.hsb-filtros{display:flex;flex-direction:column;gap:10px;margin-bottom:14px;padding:12px;background:rgba(255,255,255,.05);border-radius:12px;border:1px solid rgba(255,255,255,.08);}
+body.light-mode .hsb-filtros{background:rgba(0,0,0,.04);border-color:rgba(0,0,0,.08);}
+.hsb-filtro-grupo{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.hsb-fi-ico{font-size:16px;flex-shrink:0;}
+.hsb-fi-num{width:90px;padding:7px 10px;border-radius:8px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.08);color:inherit;font-size:13px;}
+body.light-mode .hsb-fi-num{border-color:rgba(0,0,0,.15);background:#fff;color:#222;}
+.hsb-fi-num:focus{outline:none;border-color:#FF6B35;box-shadow:0 0 0 2px rgba(255,107,53,.2);}
+.hsb-fi-sep{color:#888;font-size:13px;}
+.hsb-fi-sel{padding:7px 10px;border-radius:8px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.08);color:inherit;font-size:13px;cursor:pointer;}
+body.light-mode .hsb-fi-sel{border-color:rgba(0,0,0,.15);background:#fff;color:#222;}
+.hsb-fi-sel:focus{outline:none;border-color:#FF6B35;}
+.hsb-fi-check{display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer;user-select:none;}
+.hsb-fi-check input[type=checkbox]{accent-color:#FF6B35;width:15px;height:15px;cursor:pointer;}
+
+/* ── Modo ahorro de datos ── */
+.nav-mobile-link#dataSaverBtn{border-top:1px solid rgba(255,255,255,.08);color:#C9A96E;}
+body.light-mode .nav-mobile-link#dataSaverBtn{border-top-color:rgba(0,0,0,.08);}
+body.data-saver-mode .banners-patrocinados-section{display:none !important;}
+body.data-saver-mode .nd-hero-card3d{display:none !important;}
+body.data-saver-mode .nd-orb{display:none !important;}

@@ -133,7 +133,7 @@
     <!-- CSS unido + minificado (generado por scripts/build_css.py vía GitHub Action).
          Para editar estilos, edita los CSS fuente en /css y la Action regenera este bundle. -->
     <link rel="stylesheet" href="css/bundle.css?v=d9692a69">
-    <link rel="stylesheet" href="css/nuevo-diseno.css?v=e2ef1748">
+    <link rel="stylesheet" href="css/nuevo-diseno.css?v=22462781">
     <link rel="stylesheet" href="css/styles.fixes.css?v=ceffd170">
 
 
@@ -359,6 +359,7 @@
         <a data-action="cerrarMenuMovil" href="#contacto">Contacto</a>
         <button type="button" class="nav-mobile-link" onclick="cerrarMenuMovil();mostrarVistaMeGusta()">❤️ Mis Me Gusta</button>
         <button type="button" class="nav-mobile-link" onclick="cerrarMenuMovil();mostrarVistaPedidos()">📋 Mis Pedidos</button>
+        <button type="button" class="nav-mobile-link" id="dataSaverBtn" onclick="toggleDataSaver()">⚡ Ahorro de datos: <span id="dataSaverStatus">OFF</span></button>
         <div class="mobile-menu-actions">
             <a href="https://t.me/TiendaMaxWeb" class="mobile-action-grupo" target="_blank" rel="noopener">Canal Telegram</a>
             <a href="https://wa.me/5354320170?text=Hola,%20necesito%20ayuda%20con%20un%20producto" class="mobile-action-ayuda" target="_blank" rel="noopener">🎧 Ayuda</a>
@@ -491,6 +492,27 @@
                                 <div class="hsb-panel" id="heroSearchPanel">
                                     <div id="hsb-ai-label" style="display:none;font-size:11px;color:#9b59b6;font-weight:600;margin-bottom:8px;letter-spacing:0.3px;">🤖 Búsqueda inteligente activa</div>
                                     <div id="heroSearchSuggestions" class="hsb-suggestions"></div>
+                                    <!-- Filtros rápidos de búsqueda -->
+                                    <div class="hsb-filtros">
+                                        <div class="hsb-filtro-grupo">
+                                            <span class="hsb-fi-ico">💰</span>
+                                            <input type="number" id="hsbPrecioMin" class="hsb-fi-num" placeholder="$ Mín" min="0" step="0.01" aria-label="Precio mínimo">
+                                            <span class="hsb-fi-sep">–</span>
+                                            <input type="number" id="hsbPrecioMax" class="hsb-fi-num" placeholder="$ Máx" min="0" step="0.01" aria-label="Precio máximo">
+                                        </div>
+                                        <div class="hsb-filtro-grupo">
+                                            <label class="hsb-fi-check" for="hsbSoloStock">
+                                                <input type="checkbox" id="hsbSoloStock">
+                                                <span>Con stock</span>
+                                            </label>
+                                            <select id="hsbOrden" class="hsb-fi-sel" aria-label="Ordenar resultados">
+                                                <option value="">↕ Ordenar</option>
+                                                <option value="precio_asc">↑ Menor precio</option>
+                                                <option value="precio_desc">↓ Mayor precio</option>
+                                                <option value="az">A–Z Nombre</option>
+                                            </select>
+                                        </div>
+                                    </div>
                                     <button data-action="aplicarBusquedaHero" aria-label="Aplicar búsqueda" type="button" class="hsb-apply-btn">Buscar →</button>
                                 </div>
                             </div>
@@ -1070,7 +1092,7 @@
     </script>
     <script src="js/analytics.js?v=9d585bc5" defer></script>
     <script src="js/seo-dynamico.js?v=ea7e25bb" defer></script>
-    <script src="js/script.js?v=2829b875" defer></script>
+    <script src="js/script.js?v=27c5f7b8" defer></script>
 
     <script src="js/push-fix.js?v=d36f3d04" defer></script>
     <script src="js/subcategorias.js?v=56dd618e" defer></script>

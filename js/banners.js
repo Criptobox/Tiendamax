@@ -1,13 +1,16 @@
 /* banners.js - Slider de banners y gestion desde admin. Expone: irBanner, moverBanner, agregarBanner, editarBanner, cancelarEdicionBanner, guardarEdicionBanner, eliminarBanner, guardarTagline, recargarBanners, exportarBannersJSON */
 
 (function() {
+    function _lsGet(key) { try { return localStorage.getItem(key); } catch(e) { return null; } }
+    function _lsSet(key, val) { try { localStorage.setItem(key, val); } catch(e) {} }
+
     var DEFAULT_BANNERS = [
         "https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=900&q=80&auto=format&fit=crop",
         "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=900&q=80&auto=format&fit=crop",
         "https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=900&q=80&auto=format&fit=crop"
     ];
 
-    var bannersGuardados = JSON.parse(localStorage.getItem('heroBanners') || 'null');
+    var bannersGuardados = JSON.parse(_lsGet('heroBanners') || 'null');
     var banners = bannersGuardados || [];
     var sliderListo = !!bannersGuardados;
     var current = 0;
@@ -94,7 +97,7 @@
 
     function startAutoPlay() {
         clearInterval(timer);
-        if (banners.length > 1) {
+        if (banners.length > 1 && !window._dataSaverMode) {
             timer = setInterval(function() { irBanner(current + 1); }, 8000);
         }
     }
@@ -105,7 +108,7 @@
     }
 
     function cargarTagline() {
-        var t = localStorage.getItem('heroTagline');
+        var t = _lsGet('heroTagline');
         if (t && !t.includes('Inversores') && !t.includes('WiFi') && !t.includes('Tecnología')) {
             var el = document.getElementById('heroTaglineText');
             if (el) el.textContent = t;
@@ -115,7 +118,7 @@
     window.guardarTagline = function() {
         var val = document.getElementById('heroTaglineInput').value.trim();
         if (!val) return;
-        localStorage.setItem('heroTagline', val);
+        _lsSet('heroTagline', val);
         var el = document.getElementById('heroTaglineText');
         if (el) el.textContent = val;
         if (typeof mostrarNotificacion === 'function') mostrarNotificacion('✅ Texto guardado');
@@ -128,7 +131,7 @@
 
         function guardarYRenderizar(url) {
             banners.unshift({ url: url, link: link });
-            localStorage.setItem('heroBanners', JSON.stringify(banners));
+            _lsSet('heroBanners', JSON.stringify(banners));
             fileInput.value = '';
             urlInput.value = '';
             document.getElementById('nuevoBannerLink').value = '';
@@ -173,7 +176,7 @@
             if (typeof banners[idx] === 'string') banners[idx] = { url: banners[idx], link: '' };
             if (newUrl) banners[idx].url = newUrl;
             banners[idx].link = newLink;
-            localStorage.setItem('heroBanners', JSON.stringify(banners));
+            _lsSet('heroBanners', JSON.stringify(banners));
             renderSlider();
             renderAdminBannerList();
             if (typeof mostrarNotificacion === 'function') mostrarNotificacion('✅ Banner actualizado');
@@ -196,7 +199,7 @@
 
     window.eliminarBanner = function(idx) {
         banners.splice(idx, 1);
-        localStorage.setItem('heroBanners', JSON.stringify(banners));
+        _lsSet('heroBanners', JSON.stringify(banners));
         renderSlider();
         renderAdminBannerList();
     };
@@ -237,7 +240,7 @@
 
         var taglineInput = document.getElementById('heroTaglineInput');
         if (taglineInput) {
-            var saved = localStorage.getItem('heroTagline');
+            var saved = _lsGet('heroTagline');
             if (saved) taglineInput.value = saved;
         }
     }
@@ -245,7 +248,7 @@
     window.recargarBanners = function(nuevos) {
         if (nuevos && nuevos.length > 0) {
             banners = nuevos;
-            localStorage.setItem('heroBanners', JSON.stringify(banners));
+            _lsSet('heroBanners', JSON.stringify(banners));
         } else if (banners.length === 0) {
             banners = DEFAULT_BANNERS;
         }
