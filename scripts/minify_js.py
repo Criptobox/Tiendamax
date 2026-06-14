@@ -60,6 +60,8 @@ RESERVED = [
     'mostrarNotificacion', 'abrirAdminPanel', 'loginConBiometria',
     # ── onclick inline nuevas funciones ──
     'exportarBackupCompleto',
+    # ── sincronización contraseña ──
+    'sincronizarPasswordAFirebase',
     # ── exports explícitos en window.* ──
     'guardarCarrito', 'tmFormatPrecio', 'tmRegistrarTokenFCMSiPermitido', 'tmMonedaActual',
     'tmGrantAdminAccess',

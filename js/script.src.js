@@ -1993,7 +1993,37 @@ async function verificarPassword(event) {
         }
     }
 
-    // 2. FALLBACK: .admin-auth.json en GitHub (solo si localStorage vacío o no coincide)
+    // 2. Firebase RTDB (cloud-synced — disponible en cualquier dispositivo sin token GitHub)
+    let fbHash = null, fbSalt = null;
+    try {
+        const fbCfg = await _fbEnsureConfig();
+        if (fbCfg) {
+            const rtdbUrl = fbCfg.databaseURL || ('https://' + fbCfg.projectId + '-default-rtdb.firebaseio.com');
+            const _fbCtrl = new AbortController();
+            const _fbTid = setTimeout(() => _fbCtrl.abort(), 6000);
+            const fbRes = await fetch(rtdbUrl + '/admin_auth.json?_=' + Date.now(), { signal: _fbCtrl.signal });
+            clearTimeout(_fbTid);
+            if (fbRes.ok) {
+                const fbAuth = await fbRes.json();
+                if (fbAuth && fbAuth.hash && fbAuth.salt) { fbHash = fbAuth.hash; fbSalt = fbAuth.salt; }
+            }
+        }
+    } catch(e) {}
+    if (fbHash && fbSalt) {
+        const inputHash = await hashPassword(passwordInput, fbSalt);
+        if (inputHash === fbHash) {
+            localStorage.removeItem('admin_rl');
+            try { localStorage.setItem(AUTH_SALT_KEY, fbSalt); } catch(e) {}
+            try { localStorage.setItem(AUTH_HASH_KEY, fbHash); } catch(e) {}
+            usuarioAutenticado = true;
+            cerrarLoginModal();
+            abrirAdminPanel();
+            _checkPasswordSync();
+            return;
+        }
+    }
+
+    // 3. FALLBACK: .admin-auth.json en GitHub (solo si localStorage vacío o no coincide)
     let ghHash = null, ghSalt = null;
     if (ghUser && ghRepo) {
         try {
@@ -2039,21 +2069,33 @@ async function cambiarPasswordAdmin(ci, ni, coi) {
         return;
     }
 
-    // Detectar sal vigente: GitHub primero, luego localStorage
+    // Detectar sal vigente: Firebase → GitHub → localStorage
     const ghUser = localStorage.getItem('githubUser');
     const ghRepo = localStorage.getItem('githubRepo');
     let ch = null, cs = null;
-    if (ghUser && ghRepo) {
-        try {
-            const r = await fetch(`https://raw.githubusercontent.com/${ghUser}/${ghRepo}/main/.admin-auth.json?_=${Date.now()}`);
+    // Firebase RTDB (fuente más confiable entre dispositivos)
+    try {
+        const fbCfg = await _fbEnsureConfig();
+        if (fbCfg) {
+            const rtdbUrl = fbCfg.databaseURL || ('https://' + fbCfg.projectId + '-default-rtdb.firebaseio.com');
+            const r = await fetch(rtdbUrl + '/admin_auth.json?_=' + Date.now());
             if (r.ok) {
-                const cfg = await r.json();
-                if (cfg.hash && cfg.salt) {
-                    ch = cfg.hash;
-                    cs = cfg.salt;
-                }
+                const fbAuth = await r.json();
+                if (fbAuth && fbAuth.hash && fbAuth.salt) { ch = fbAuth.hash; cs = fbAuth.salt; }
             }
-        } catch(e) {}
+        }
+    } catch(e) {}
+    // GitHub fallback
+    if (!ch || !cs) {
+        if (ghUser && ghRepo) {
+            try {
+                const r = await fetch(`https://raw.githubusercontent.com/${ghUser}/${ghRepo}/main/.admin-auth.json?_=${Date.now()}`);
+                if (r.ok) {
+                    const cfg = await r.json();
+                    if (cfg.hash && cfg.salt) { ch = cfg.hash; cs = cfg.salt; }
+                }
+            } catch(e) {}
+        }
     }
     if (!ch || !cs) {
         ch = localStorage.getItem(AUTH_HASH_KEY);
@@ -2115,8 +2157,36 @@ async function cambiarPasswordAdmin(ci, ni, coi) {
     document.getElementById('ci').value = '';
     document.getElementById('ni').value = '';
     document.getElementById('coi').value = '';
-    // Intentar sincronizar automáticamente con GitHub tras cambiar contraseña
-    setTimeout(sincronizarPasswordAGitHub, 300);
+    // Sincronizar automáticamente con Firebase y GitHub tras cambiar contraseña
+    setTimeout(sincronizarPasswordAFirebase, 300);
+    setTimeout(sincronizarPasswordAGitHub, 600);
+}
+
+// Sincroniza el hash LOCAL → Firebase RTDB (accesible desde cualquier dispositivo)
+async function sincronizarPasswordAFirebase() {
+    const localHash = localStorage.getItem(AUTH_HASH_KEY);
+    const localSalt = localStorage.getItem(AUTH_SALT_KEY);
+    if (!localHash || !localSalt) {
+        mostrarNotificacion('❌ No hay contraseña guardada en este dispositivo', 'error');
+        return;
+    }
+    const fbCfg = await _fbEnsureConfig();
+    if (!fbCfg) {
+        mostrarNotificacion('❌ Firebase no configurado. Guarda tu firebaseConfig primero.', 'error');
+        return;
+    }
+    const rtdbUrl = fbCfg.databaseURL || ('https://' + fbCfg.projectId + '-default-rtdb.firebaseio.com');
+    try {
+        const res = await fetch(rtdbUrl + '/admin_auth.json', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ hash: localHash, salt: localSalt, iterations: AUTH_ITERATIONS })
+        });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        mostrarNotificacion('✅ Contraseña sincronizada con Firebase. Puedes acceder desde cualquier dispositivo.', 'success');
+    } catch(e) {
+        mostrarNotificacion(`❌ Error al sincronizar con Firebase: ${e.message}`, 'error');
+    }
 }
 
 // Sincroniza el hash LOCAL → GitHub (recuperación si se borran datos del navegador)
@@ -5209,6 +5279,7 @@ Ve a <b>console.firebase.google.com</b> → tu proyecto → <b>Realtime Database
     "interesados": { ".read": true, ".write": true },
     "configuracion": { ".read": true, ".write": false },
     "version": { ".read": true, ".write": false },
+    "admin_auth": { ".read": true, ".write": true },
     ".read": false,
     ".write": false
   }
