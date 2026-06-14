@@ -41,11 +41,17 @@
                 });
             }
 
+            // Fondo borroso: misma imagen borrosa rellena las barras laterales
+            var bgBlur = document.createElement('div');
+            bgBlur.setAttribute('aria-hidden', 'true');
+            bgBlur.style.cssText = 'position:absolute;inset:-5%;background-image:url("' + url.replace(/"/g,'%22') + '");background-size:cover;background-position:center;filter:blur(14px) brightness(0.6);z-index:0;pointer-events:none;';
+            slide.appendChild(bgBlur);
+
             var img = document.createElement('img');
             img.src = url;
             img.alt = 'Banner TiendaMax';
             img.loading = 'lazy';
-            img.style.cssText = 'width:100%;height:100%;object-fit:cover;object-position:center;display:block;pointer-events:none;';
+            img.style.cssText = 'position:relative;z-index:1;width:100%;height:100%;object-fit:contain;object-position:center;display:block;pointer-events:none;';
             img.onerror = function() { slide.style.background = '#1a1a1a'; };
             slide.appendChild(img);
 
