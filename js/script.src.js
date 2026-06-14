@@ -1185,8 +1185,8 @@ function toggleDataSaver() {
         else localStorage.removeItem('tm_data_saver');
     } catch(e) {}
     document.body.classList.toggle('data-saver-mode', _dataSaverMode);
-    const btn = document.getElementById('dataSaverBtn');
-    if (btn) btn.title = _dataSaverMode ? 'Ahorro de datos: ON (toca para desactivar)' : 'Ahorro de datos: OFF (toca para activar)';
+    const statusEl = document.getElementById('dataSaverStatus');
+    if (statusEl) statusEl.textContent = _dataSaverMode ? 'ON' : 'OFF';
     mostrarNotificacion(_dataSaverMode ? '⚡ Ahorro de datos ON — autoplay y efectos desactivados' : '⚡ Ahorro de datos OFF');
 }
 
@@ -7190,8 +7190,8 @@ document.addEventListener('DOMContentLoaded', () => {
 document.addEventListener('DOMContentLoaded', () => {
     if (_dataSaverMode) {
         document.body.classList.add('data-saver-mode');
-        const btn = document.getElementById('dataSaverBtn');
-        if (btn) btn.title = 'Ahorro de datos: ON (toca para desactivar)';
+        const statusEl = document.getElementById('dataSaverStatus');
+        if (statusEl) statusEl.textContent = 'ON';
     }
 });
 
