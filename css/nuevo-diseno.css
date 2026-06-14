@@ -87,7 +87,7 @@ body.light-mode .nd-fbadge{background:#fff;backdrop-filter:none;-webkit-backdrop
 .nd-bs{font-size:10px;font-weight:400;display:block;opacity:.7}
 .nd-fb1{top:-18px;left:-90px;animation:nd-fl1 4s ease-in-out infinite}
 .nd-fb2{bottom:60px;right:-100px;animation:nd-fl2 5s ease-in-out infinite}
-.nd-fb3{bottom:-16px;left:-70px;animation:nd-fl3 4.5s ease-in-out infinite}
+.nd-fb3{top:-18px;right:-100px;animation:nd-fl3 4.5s ease-in-out infinite}
 @keyframes nd-fl1{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
 @keyframes nd-fl2{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
 @keyframes nd-fl3{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
