@@ -2500,6 +2500,67 @@ async function _tmMostrarAgenda() {
         }
     }
 
+    // ── 14. Productos con cambios sin publicar ───────────────────────────────
+    try {
+        const mods = JSON.parse(localStorage.getItem('productosModificados') || '[]');
+        if (mods.length) {
+            tareas.push({
+                icon: '🔄', urgencia: 3,
+                titulo: `${mods.length} producto${mods.length > 1 ? 's' : ''} con cambios sin publicar`,
+                detalle: 'Ejecuta "Actualizar tienda" para que los cambios sean visibles',
+                accion: 'Publicar', tab: 'publicar-ahora', cls: ''
+            });
+        }
+    } catch(e) {}
+
+    // ── 15. Productos con precio 0 ───────────────────────────────────────────
+    const sinPrecio = productos.filter(p => p.activo !== false && !Number(p.precioActual || 0));
+    if (sinPrecio.length) {
+        tareas.push({
+            icon: '💲', urgencia: 2,
+            titulo: `${sinPrecio.length} producto${sinPrecio.length > 1 ? 's' : ''} sin precio`,
+            detalle: sinPrecio.slice(0, 3).map(p => p.nombre).join(', ') + (sinPrecio.length > 3 ? '…' : ''),
+            accion: 'Completar', tab: 'manage-products', cls: 'b'
+        });
+    }
+
+    // ── 16. Sin recomendaciones IA (solo si IA configurada) ──────────────────
+    const iaKey = localStorage.getItem('anthropicApiKey');
+    if (iaKey) {
+        const sinRecs = productos.filter(p => p.activo !== false && (!Array.isArray(p.recomendados) || !p.recomendados.length));
+        if (sinRecs.length > 3) {
+            tareas.push({
+                icon: '🧲', urgencia: 1,
+                titulo: `${sinRecs.length} producto${sinRecs.length > 1 ? 's' : ''} sin recomendaciones IA`,
+                detalle: 'Mejora el upsell y cross-sell con el recomendador IA masivo',
+                accion: 'IA masiva', tab: 'herramientas', cls: 'b'
+            });
+        }
+    }
+
+    // ── 17. Sin plan semanal creado ──────────────────────────────────────────
+    try {
+        const plansTodos = JSON.parse(localStorage.getItem('tm_week_plan_v1') || '[]');
+        if (!plansTodos.length && productos.length > 3) {
+            tareas.push({
+                icon: '🗓️', urgencia: 1,
+                titulo: 'Sin plan semanal de publicaciones',
+                detalle: 'El agente IA puede organizar tus publicaciones de lunes a domingo',
+                accion: 'Crear plan', tab: 'herramientas', cls: ''
+            });
+        }
+    } catch(e) {}
+
+    // ── 18. IA no configurada (si hay suficientes productos) ─────────────────
+    if (!localStorage.getItem('anthropicApiKey') && productos.length > 5) {
+        tareas.push({
+            icon: '🤖', urgencia: 1,
+            titulo: 'IA no configurada',
+            detalle: 'Configura OpenRouter/Gemini/Groq para SEO automático, campañas y recomendaciones',
+            accion: 'Configurar', tab: 'configuracion', cls: 'ia'
+        });
+    }
+
     // ── Sin tareas → ocultar ─────────────────────────────────────────────────
     if (!tareas.length) {
         card.style.display = 'none';
