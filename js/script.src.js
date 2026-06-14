@@ -2443,6 +2443,63 @@ async function _tmMostrarAgenda() {
         });
     }
 
+    // ── 10. Campañas con seguimiento vencido (del Centro de tareas IA) ──────
+    try {
+        const camps = JSON.parse(localStorage.getItem('tm_campaigns_v1') || '[]');
+        const vencidas = camps.filter(c => c.followUpAt && new Date(c.followUpAt).getTime() <= Date.now() && !/hecho|cerrad|complet/i.test(c.status || ''));
+        if (vencidas.length) {
+            tareas.push({
+                icon: '📌', urgencia: 3,
+                titulo: `${vencidas.length} campaña${vencidas.length > 1 ? 's' : ''} con seguimiento vencido`,
+                detalle: vencidas.slice(0, 2).map(c => c.title || c.productName || '').filter(Boolean).join(', ') + (vencidas.length > 2 ? '…' : ''),
+                accion: 'Ver campañas', tab: 'herramientas', cls: ''
+            });
+        }
+    } catch(e) {}
+
+    // ── 11. Plan semanal de hoy pendiente (del Centro de tareas IA) ─────────
+    try {
+        const plans = JSON.parse(localStorage.getItem('tm_week_plan_v1') || '[]');
+        const dias = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+        const hoy = dias[new Date().getDay()];
+        const pendPlans = plans.filter(p => !(p.done && p.done[hoy]));
+        if (pendPlans.length) {
+            tareas.push({
+                icon: '🗓️', urgencia: 2,
+                titulo: `Plan de ${hoy} pendiente`,
+                detalle: pendPlans.slice(0, 2).map(p => p.title || '').filter(Boolean).join(' · '),
+                accion: 'Ver plan', tab: 'herramientas', cls: ''
+            });
+        }
+    } catch(e) {}
+
+    // ── 12. Productos sin SEO title/description (del Centro de tareas IA) ───
+    const sinSEO = productos.filter(p => p.activo !== false && !p.seoTitle && !p.seoDescription);
+    if (sinSEO.length) {
+        tareas.push({
+            icon: '🔎', urgencia: 2,
+            titulo: `${sinSEO.length} producto${sinSEO.length > 1 ? 's' : ''} sin SEO configurado`,
+            detalle: sinSEO.slice(0, 3).map(p => p.nombre).join(', ') + (sinSEO.length > 3 ? '…' : ''),
+            accion: 'IA masiva', tab: 'herramientas', cls: 'b'
+        });
+    }
+
+    // ── 13. Suscriptores push sin campaña reciente ────────────────────────────
+    const subs = Number(localStorage.getItem('tm_subscriber_count') || 0);
+    if (subs > 5) {
+        const camps2 = (() => { try { return JSON.parse(localStorage.getItem('tm_campaigns_v1') || '[]'); } catch(e) { return []; } })();
+        const ultimaCamp = camps2.reduce((m, c) => Math.max(m, new Date(c.ts || 0).getTime()), 0);
+        const diasSinCamp = Math.floor((Date.now() - ultimaCamp) / 86400000);
+        if (diasSinCamp >= 3) {
+            tareas.push({
+                icon: '🔔', urgencia: 1,
+                titulo: `${subs} suscriptores esperan noticias`,
+                detalle: diasSinCamp > 365 ? 'Sin campaña enviada aún' : `Última campaña hace ${diasSinCamp} día${diasSinCamp !== 1 ? 's' : ''}`,
+                accion: 'Crear campaña', tab: 'herramientas', cls: ''
+            });
+        }
+    }
+
     // ── Sin tareas → ocultar ─────────────────────────────────────────────────
     if (!tareas.length) {
         card.style.display = 'none';
