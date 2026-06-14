@@ -1546,4 +1546,39 @@ else document.addEventListener('DOMContentLoaded',addNavBtn);
 
 })();
 </script>
+<script>
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js', { updateViaCache: 'none' }).then(reg => {
+            if (reg.waiting) reg.waiting.postMessage('SKIP_WAITING');
+            reg.update().catch(() => {});
+            document.addEventListener('visibilitychange', () => {
+                if (document.visibilityState === 'visible') reg.update().catch(() => {});
+            });
+            setInterval(() => { reg.update().catch(() => {}); }, 45 * 60 * 1000);
+            reg.addEventListener('updatefound', () => {
+                const nw = reg.installing;
+                if (!nw) return;
+                nw.addEventListener('statechange', () => {
+                    if (nw.state === 'installed' && navigator.serviceWorker.controller) {
+                        nw.postMessage('SKIP_WAITING');
+                    }
+                });
+            });
+            let refreshing = false;
+            navigator.serviceWorker.addEventListener('controllerchange', () => {
+                if (refreshing) return;
+                refreshing = true;
+                window.location.reload();
+            });
+            navigator.serviceWorker.addEventListener('message', (event) => {
+                if (event.data && event.data.type === 'SW_UPDATED' && !refreshing) {
+                    refreshing = true;
+                    window.location.reload();
+                }
+            });
+        }).catch(() => {});
+    });
+}
+</script>
 </body></html>
