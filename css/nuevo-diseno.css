@@ -1221,13 +1221,12 @@ body.light-mode .currency-bar .cur-btn.active {
 }
 
 /* ── Banners patrocinados: tamaño controlado en desktop ── */
-/* Imagen determina su propia altura (height:auto), sección limita con max-height */
+/* aspect-ratio en el slider da dimensiones explícitas sin romper la cadena height:100% */
 @media (min-width:769px){
   .banners-patrocinados-section{
     padding:0 0 24px !important;
-    overflow:visible !important;
   }
-  /* Contenedor full-width con margen lateral y borde redondeado */
+  /* Contenedor full-width con margen lateral */
   #heroImageContainer.hero-image,
   .banners-patrocinados-section .hero-image{
     max-width:none !important;
@@ -1237,35 +1236,34 @@ body.light-mode .currency-bar .cur-btn.active {
     overflow:hidden !important;
     border-radius:18px !important;
   }
-  /* Slider: ancho total, altura automática limitada a 260px */
+  /* Slider: aspect-ratio crea dimensiones explícitas (ancho×0.19 ≈ 250px en 1300px) */
   #heroBannerSlider.hero-banner-slider,
   .banners-patrocinados-section #heroBannerSlider,
   .banners-patrocinados-section .hero-banner-slider{
     width:100% !important;
+    aspect-ratio:19/4 !important;
+    max-height:280px !important;
     height:auto !important;
-    max-height:260px !important;
-    aspect-ratio:auto !important;
     overflow:hidden !important;
   }
-  /* Track y slides: alto automático */
+  /* Track llena el slider al 100% */
   .banners-patrocinados-section .hero-banner-track{
-    height:auto !important;
-    align-items:stretch !important;
+    height:100% !important;
   }
+  /* Slides llenan el track al 100% */
   .banners-patrocinados-section .hero-banner-slide{
-    height:auto !important;
-    max-height:260px !important;
+    height:100% !important;
     overflow:hidden !important;
   }
-  /* Imagen: ancho 100%, alto automático — sin recorte forzado */
+  /* Imagen cubre los 4 bordes del slide */
   .banners-patrocinados-section .hero-banner-track img,
   .banners-patrocinados-section .hero-banner-track > div img,
   .banners-patrocinados-section .hero-banner-slide img{
     width:100% !important;
-    height:auto !important;
-    max-height:260px !important;
+    height:100% !important;
+    max-height:none !important;
     object-fit:cover !important;
-    object-position:center top !important;
+    object-position:center !important;
     display:block !important;
   }
 }
