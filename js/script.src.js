@@ -5280,6 +5280,7 @@ Ve a <b>console.firebase.google.com</b> → tu proyecto → <b>Realtime Database
     "configuracion": { ".read": true, ".write": false },
     "version": { ".read": true, ".write": false },
     "admin_auth": { ".read": true, ".write": true },
+    "ventas": { ".read": true, ".write": true },
     ".read": false,
     ".write": false
   }
@@ -5615,8 +5616,12 @@ function eliminarVenta(id) {
 
 function borrarHistorialVentas() {
     if (!confirm('¿Borrar todo el historial de ventas?')) return;
+    // Guardar IDs en _tmVentasElim ANTES de limpiar para que el sync no los reimporte desde Firebase
+    const actuales = cargarVentas();
+    const elim = JSON.parse(localStorage.getItem('_tmVentasElim') || '[]');
+    actuales.forEach(v => { if (v.id && !elim.includes(v.id)) elim.push(v.id); });
+    if (elim.length) localStorage.setItem('_tmVentasElim', JSON.stringify(elim.slice(-300)));
     localStorage.removeItem('registroVentas');
-    localStorage.removeItem('_tmVentasElim');
     renderizarVentas();
     mostrarNotificacion('🗑️ Historial borrado');
     _fbBorrarTodasVentas();
