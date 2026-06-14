@@ -1248,14 +1248,14 @@ body.light-mode .currency-bar .cur-btn.active {
     position:relative !important;
     overflow:hidden !important;
   }
-  /* Imagen absoluta que llena el slide sin depender de herencia de height:100% */
+  /* Imagen con altura fija en px para que object-fit:cover funcione sin herencia */
   .banners-patrocinados-section .hero-banner-track img,
   .banners-patrocinados-section .hero-banner-track > div img,
   .banners-patrocinados-section .hero-banner-slide img{
-    position:absolute !important;
-    inset:0 !important;
+    position:static !important;
     width:100% !important;
-    height:100% !important;
+    height:280px !important;
+    min-height:280px !important;
     object-fit:cover !important;
     object-position:center !important;
     display:block !important;
