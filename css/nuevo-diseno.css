@@ -1264,8 +1264,14 @@ body.light-mode .hsb-fi-sel{border-color:rgba(0,0,0,.15);background:#fff;color:#
 .hsb-fi-check input[type=checkbox]{accent-color:#FF6B35;width:15px;height:15px;cursor:pointer;}
 
 /* ── Modo ahorro de datos ── */
-.nav-mobile-link#dataSaverBtn{border-top:1px solid rgba(255,255,255,.08);color:#C9A96E;}
-body.light-mode .nav-mobile-link#dataSaverBtn{border-top-color:rgba(0,0,0,.08);}
+.data-saver-toggle{opacity:.55;transition:opacity .2s,background .2s,color .2s;}
+.data-saver-toggle:hover{opacity:1;}
+body.data-saver-mode .data-saver-toggle{
+    opacity:1 !important;
+    background:rgba(201,169,110,.22) !important;
+    color:#C9A96E !important;
+    box-shadow:0 0 0 2px rgba(201,169,110,.4) !important;
+}
 body.data-saver-mode .banners-patrocinados-section{display:none !important;}
 body.data-saver-mode .nd-hero-card3d{display:none !important;}
 body.data-saver-mode .nd-orb{display:none !important;}

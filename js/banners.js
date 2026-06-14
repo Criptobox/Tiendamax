@@ -97,7 +97,7 @@
 
     function startAutoPlay() {
         clearInterval(timer);
-        if (banners.length > 1 && !window._dataSaverMode) {
+        if (banners.length > 1 && !document.body.classList.contains('data-saver-mode')) {
             timer = setInterval(function() { irBanner(current + 1); }, 8000);
         }
     }

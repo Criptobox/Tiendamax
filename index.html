@@ -133,7 +133,7 @@
     <!-- CSS unido + minificado (generado por scripts/build_css.py vía GitHub Action).
          Para editar estilos, edita los CSS fuente en /css y la Action regenera este bundle. -->
     <link rel="stylesheet" href="css/bundle.css?v=f127033a">
-    <link rel="stylesheet" href="css/nuevo-diseno.css?v=0a38d4b9">
+    <link rel="stylesheet" href="css/nuevo-diseno.css?v=d09db49c">
     <link rel="stylesheet" href="css/styles.fixes.css?v=fdb617ad">
 
 
@@ -359,7 +359,6 @@
         <a data-action="cerrarMenuMovil" href="#contacto">Contacto</a>
         <button type="button" class="nav-mobile-link" onclick="cerrarMenuMovil();mostrarVistaMeGusta()">❤️ Mis Me Gusta</button>
         <button type="button" class="nav-mobile-link" onclick="cerrarMenuMovil();mostrarVistaPedidos()">📋 Mis Pedidos</button>
-        <button type="button" class="nav-mobile-link" id="dataSaverBtn" onclick="toggleDataSaver()">⚡ Ahorro de datos: <span id="dataSaverStatus">OFF</span></button>
         <div class="mobile-menu-actions">
             <a href="https://t.me/TiendaMaxWeb" class="mobile-action-grupo" target="_blank" rel="noopener">Canal Telegram</a>
             <a href="https://wa.me/5354320170?text=Hola,%20necesito%20ayuda%20con%20un%20producto" class="mobile-action-ayuda" target="_blank" rel="noopener">🎧 Ayuda</a>
@@ -857,6 +856,7 @@
 
     <!-- Botones de control -->
     <div class="control-buttons">
+        <button type="button" id="dataSaverBtn" onclick="toggleDataSaver()" class="theme-toggle data-saver-toggle" aria-label="Ahorro de datos" title="Ahorro de datos: reduce consumo en conexiones lentas">⚡</button>
         <button data-action="toggleDarkMode" aria-label="Activar modo claro" type="button" class="theme-toggle" title="Activar modo claro">☀️</button>
         <!-- Admin toggle movido al navbar -->
     </div>
@@ -1092,7 +1092,7 @@
     </script>
     <script src="js/analytics.js?v=9d585bc5" defer></script>
     <script src="js/seo-dynamico.js?v=ea7e25bb" defer></script>
-    <script src="js/script.js?v=61d3d81d" defer></script>
+    <script src="js/script.js?v=bb2f9ab4" defer></script>
 
     <script src="js/push-fix.js?v=d36f3d04" defer></script>
     <script src="js/subcategorias.js?v=56dd618e" defer></script>
