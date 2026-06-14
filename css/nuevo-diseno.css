@@ -1152,8 +1152,12 @@ body:not(.light-mode) .mas-vendidos .producto-card{
 .btn-pedir-card{min-height:44px !important}
 .categoria-btn,.nav-cat-row .categoria-btn{min-height:44px !important;display:inline-flex !important;align-items:center !important}
 
-/* btn-megusta: área táctil ampliada vía pseudo-element */
-.btn-megusta{position:absolute !important}
+/* btn-megusta: fuera del clipping del card para que no quede cortado */
+@media (max-width:768px){
+  html body .producto-card{overflow:visible !important;}
+  html body .producto-image{border-radius:14px 14px 0 0 !important;overflow:hidden !important;}
+}
+.btn-megusta{position:absolute !important;top:8px !important;right:8px !important;left:auto !important;}
 /* Favorito en modo claro: fondo blanco en vez de negro */
 body.light-mode .btn-megusta{background:rgba(255,255,255,0.88) !important;border:1px solid rgba(0,0,0,0.08) !important;color:rgba(0,0,0,0.45) !important;box-shadow:0 2px 8px rgba(0,0,0,0.12) !important;backdrop-filter:blur(8px) !important;-webkit-backdrop-filter:blur(8px) !important}
 body.light-mode .btn-megusta.liked{background:rgba(231,76,60,0.1) !important;color:#e74c3c !important;border-color:rgba(231,76,60,0.2) !important}
