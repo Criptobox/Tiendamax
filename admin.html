@@ -332,7 +332,7 @@ window.loginConGoogle=async function(){
     var result=await firebase.auth().signInWithPopup(provider);
     var email=result.user.email;
     await firebase.auth().signOut();
-    if(email!=='criptobox92@gmail.com'){
+    if(email!=='vezden24@gmail.com'){
       if(btn){btn.disabled=false;btn.innerHTML=_gBtnHTML;}
       alert('⛔ La cuenta '+email+' no tiene acceso al panel.');
       return;
