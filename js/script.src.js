@@ -2511,6 +2511,14 @@ async function _tmMostrarAgenda() {
 
     const urgColor = u => u >= 3 ? '#e74c3c' : u === 2 ? '#FF6B35' : '#2AABEE';
     const totalCriticas = tareas.filter(t => t.urgencia >= 3).length;
+
+    // Actualizar botón "Pendientes" del grid de acciones rápidas
+    const btnPend = document.getElementById('tmBtnPendientes');
+    if (btnPend) {
+        btnPend.className = 'tm-qc pend' + (totalCriticas ? ' crit' : '');
+        btnPend.innerHTML = `📋 Pendientes<span class="pend-n" style="background:${totalCriticas ? '#e74c3c' : '#FF6B35'}">${tareas.length}</span>`;
+    }
+
     const hd = card.querySelector('.tmag-title');
     if (hd) hd.innerHTML = `📋 Tareas pendientes <span style="background:${totalCriticas ? '#e74c3c' : '#FF6B35'};color:#fff;border-radius:20px;padding:1px 8px;font-size:11px;margin-left:6px">${tareas.length}</span>`;
 
