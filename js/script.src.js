@@ -2281,12 +2281,132 @@ function abrirAdminPanel() {
             renderizarAnalyticsFirebase();
         }
     }, 500);
+    // Briefing de tareas pendientes al entrar
+    setTimeout(_tmMostrarAgenda, 800);
 
     const inputTasa = document.getElementById('adminTasaMN');
     if (inputTasa) {
         const saved = localStorage.getItem('tasaMN');
         if (saved) inputTasa.value = saved;
     }
+}
+
+// Briefing de tareas pendientes — aparece en la tarjeta #tmAgenda al entrar al panel
+async function _tmMostrarAgenda() {
+    const card  = document.getElementById('tmAgenda');
+    const lista = document.getElementById('tmAgendaItems');
+    if (!card || !lista) return;
+
+    const tareas = [];
+
+    // ── 1. Productos agotados ────────────────────────────────────────────────
+    const agotados = productos.filter(p => (p.activo !== false) && safeNum(p.stock) === 0);
+    if (agotados.length) {
+        tareas.push({
+            icon: '🔴', urgencia: 3,
+            titulo: `${agotados.length} producto${agotados.length > 1 ? 's' : ''} agotado${agotados.length > 1 ? 's' : ''}`,
+            detalle: agotados.slice(0, 3).map(p => p.nombre).join(', ') + (agotados.length > 3 ? '…' : ''),
+            accion: 'Gestionar', tab: 'manage-products', cls: ''
+        });
+    }
+
+    // ── 2. Stock bajo (≤ 2 unidades) ────────────────────────────────────────
+    const bajStock = productos.filter(p => (p.activo !== false) && safeNum(p.stock) > 0 && safeNum(p.stock) <= 2);
+    if (bajStock.length) {
+        tareas.push({
+            icon: '⚠️', urgencia: 2,
+            titulo: `${bajStock.length} producto${bajStock.length > 1 ? 's' : ''} con stock bajo (≤2)`,
+            detalle: bajStock.slice(0, 3).map(p => `${p.nombre} (${p.stock})`).join(', ') + (bajStock.length > 3 ? '…' : ''),
+            accion: 'Ver stock', tab: 'manage-products', cls: ''
+        });
+    }
+
+    // ── 3. Productos sin imagen ──────────────────────────────────────────────
+    const sinImg = productos.filter(p => p.activo !== false && !p.imagen);
+    if (sinImg.length) {
+        tareas.push({
+            icon: '🖼️', urgencia: 1,
+            titulo: `${sinImg.length} producto${sinImg.length > 1 ? 's' : ''} sin imagen`,
+            detalle: sinImg.slice(0, 3).map(p => p.nombre).join(', ') + (sinImg.length > 3 ? '…' : ''),
+            accion: 'Agregar fotos', tab: 'manage-products', cls: 'b'
+        });
+    }
+
+    // ── 4. Interesados sin atender ───────────────────────────────────────────
+    try {
+        const atendidos  = JSON.parse(localStorage.getItem('tm_interesados_atendidos') || '[]');
+        const atendSet   = new Set(atendidos);
+        const rtdbUrl    = _fbRtdbUrl();
+        if (rtdbUrl) {
+            const rInt = await fetch(`${rtdbUrl}/interesados.json?limitToLast=30`).catch(() => null);
+            if (rInt && rInt.ok) {
+                const dataInt = await rInt.json();
+                if (dataInt && typeof dataInt === 'object') {
+                    const items = Object.values(dataInt).flatMap(v => typeof v === 'object' && !Array.isArray(v) ? Object.values(v) : [v]);
+                    const noAtendidos = items.filter(x => x && x.ts && !atendSet.has(x.ts));
+                    if (noAtendidos.length) {
+                        tareas.push({
+                            icon: '💬', urgencia: 3,
+                            titulo: `${noAtendidos.length} interesado${noAtendidos.length > 1 ? 's' : ''} sin contactar`,
+                            detalle: [...new Set(noAtendidos.map(x => x.producto))].slice(0, 3).join(', '),
+                            accion: 'Ver', tab: 'inicio', cls: 'g'
+                        });
+                    }
+                }
+            }
+        }
+    } catch(e) {}
+
+    // ── 5. Avisos de stock pendientes (clientes esperando reposición) ────────
+    try {
+        const rtdbUrl = _fbRtdbUrl();
+        if (rtdbUrl) {
+            const rAv = await fetch(`${rtdbUrl}/avisos_stock.json`).catch(() => null);
+            if (rAv && rAv.ok) {
+                const dataAv = await rAv.json();
+                if (dataAv && typeof dataAv === 'object') {
+                    const prods = Object.keys(dataAv);
+                    const total = Object.values(dataAv).reduce((s, v) => s + (v && typeof v === 'object' ? Object.keys(v).length : 0), 0);
+                    if (prods.length) {
+                        tareas.push({
+                            icon: '🔔', urgencia: 2,
+                            titulo: `${total} cliente${total > 1 ? 's' : ''} esperan reposición (${prods.length} producto${prods.length > 1 ? 's' : ''})`,
+                            detalle: 'Repone stock para notificarles automáticamente',
+                            accion: 'Gestionar', tab: 'manage-products', cls: ''
+                        });
+                    }
+                }
+            }
+        }
+    } catch(e) {}
+
+    // ── 6. WhatsApp no configurado ───────────────────────────────────────────
+    if (!localStorage.getItem('adminWhatsapp')) {
+        tareas.push({
+            icon: '📱', urgencia: 2,
+            titulo: 'WhatsApp no configurado',
+            detalle: 'Los clientes no podrán contactarte por WhatsApp',
+            accion: 'Configurar', tab: 'configuracion', cls: 'g'
+        });
+    }
+
+    // ── Sin tareas → ocultar ─────────────────────────────────────────────────
+    if (!tareas.length) {
+        card.style.display = 'none';
+        return;
+    }
+
+    // Ordenar por urgencia descendente
+    tareas.sort((a, b) => b.urgencia - a.urgencia);
+
+    lista.innerHTML = tareas.map(t => `
+        <div class="tmag-item">
+            <span class="tmag-icon">${t.icon}</span>
+            <span class="tmag-txt"><b>${escapeHtml(t.titulo)}</b>${t.detalle ? escapeHtml(t.detalle) : ''}</span>
+            <button class="tmag-btn ${t.cls}" onclick="switchTab('${t.tab}');document.getElementById('tmAgenda').style.display='none'">${t.accion}</button>
+        </div>`).join('');
+
+    card.style.display = 'block';
 }
 
 function cerrarAdminPanel() {
