@@ -1226,7 +1226,7 @@ body.light-mode .currency-bar .cur-btn.active {
   #heroImageContainer.hero-image,
   .banners-patrocinados-section .hero-image{
     max-width:none !important;width:100% !important;height:280px !important;
-    margin:0 0 24px !important;overflow:hidden !important;border-radius:0 !important;
+    margin:0 0 24px !important;overflow:hidden !important;border-radius:18px !important;
   }
   #heroBannerSlider.hero-banner-slider,
   .banners-patrocinados-section #heroBannerSlider,
