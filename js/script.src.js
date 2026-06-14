@@ -1973,6 +1973,11 @@ async function verificarPassword(event) {
     }
 
     const passwordInput = document.getElementById('adminPassword').value.trim();
+
+    // Feedback visual mientras se calcula el hash (PBKDF2 tarda 2-3 s)
+    const btn = document.getElementById('btnLoginSubmit');
+    const txtOriginal = btn ? btn.textContent : '';
+    if (btn) { btn.disabled = true; btn.textContent = '⏳ Verificando…'; }
     if (!passwordInput) { mostrarNotificacion('❌ Escribe la contraseña', 'error'); return; }
 
     const ghUser = localStorage.getItem('githubUser');
@@ -2052,6 +2057,7 @@ async function verificarPassword(event) {
     }
 
     // 3. Todo falló
+    if (btn) { btn.disabled = false; btn.textContent = txtOriginal; }
     const newCount = (rl.count || 0) + 1;
     const lockout = newCount >= 3 ? Date.now() + LOCKOUT_DURATION_MS : rl.until;
     localStorage.setItem('admin_rl', JSON.stringify({ count: newCount, until: lockout }));
