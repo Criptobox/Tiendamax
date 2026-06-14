@@ -1223,13 +1223,18 @@ body.light-mode .currency-bar .cur-btn.active {
 /* ── Banners patrocinados: tamaño controlado en desktop ── */
 @media (min-width:769px){
   .banners-patrocinados-section{padding:0 !important}
+  /* #heroImageContainer.hero-image gana por especificidad sobre la regla móvil de línea 922 */
+  #heroImageContainer.hero-image,
   .banners-patrocinados-section .hero-image{
     max-width:860px !important;
+    width:100% !important;
     margin:0 auto 28px !important;
   }
+  #heroBannerSlider.hero-banner-slider,
   .banners-patrocinados-section #heroBannerSlider,
   .banners-patrocinados-section .hero-banner-slider{
     aspect-ratio:16/7 !important;
     max-height:280px !important;
+    height:280px !important;
   }
 }
