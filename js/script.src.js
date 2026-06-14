@@ -1553,13 +1553,14 @@ function guardarNumeroWhatsApp() {
     const input = document.getElementById('adminWhatsappNum');
     if (!input) return;
     const num = input.value.trim().replace(/\D/g, '');
-    if (!num || num.length < 6) { mostrarNotificacion('⚠️ Número inválido', 'error'); return; }
+    if (!num || num.length < 6) return;
     localStorage.setItem('whatsappNumero', num);
-    mostrarNotificacion('✅ Número de WhatsApp guardado: +' + num);
+    localStorage.setItem('whatsappNumber', num);
+    mostrarNotificacion('✅ WhatsApp guardado: +' + num);
 }
 
 function cargarNumeroWhatsApp() {
-    const saved = localStorage.getItem('whatsappNumero');
+    const saved = localStorage.getItem('whatsappNumero') || localStorage.getItem('whatsappNumber');
     const input = document.getElementById('adminWhatsappNum');
     if (input && saved) input.value = saved;
 }
@@ -2434,7 +2435,8 @@ async function _tmMostrarAgenda() {
     }
 
     // ── 9. WhatsApp no configurado ───────────────────────────────────────────
-    if (!localStorage.getItem('whatsappNumero')) {
+    const waNum = localStorage.getItem('whatsappNumero') || localStorage.getItem('whatsappNumber');
+    if (!waNum) {
         tareas.push({
             icon: '📱', urgencia: 3,
             titulo: 'WhatsApp no configurado',
@@ -8479,6 +8481,16 @@ cargarTasaDesdeGitHub();
 
 // Guardar tasa desde panel admin → localStorage + GitHub
 async function guardarTasaMNAdmin() {
+    // Guardar WhatsApp si el input existe y tiene valor
+    const waInput = document.getElementById('adminWhatsappNum');
+    if (waInput && waInput.value.trim()) {
+        const num = waInput.value.trim().replace(/\D/g, '');
+        if (num && num.length >= 6) {
+            localStorage.setItem('whatsappNumero', num);
+            localStorage.setItem('whatsappNumber', num);
+        }
+    }
+
     const input = document.getElementById('adminTasaMN');
     const status = document.getElementById('tasaMNStatus');
     if (!input) return;
