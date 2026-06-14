@@ -1223,32 +1223,32 @@ body.light-mode .currency-bar .cur-btn.active {
 /* ── Banners patrocinados: tamaño controlado en desktop ── */
 @media (min-width:769px){
   .banners-patrocinados-section{padding:0 !important}
-  /* Anular max-width:500px del bundle y la regla móvil (max-width:none) */
+  /* Contenedor full-width: anula max-width:500px del bundle y la regla móvil */
   #heroImageContainer.hero-image,
   .banners-patrocinados-section .hero-image{
     max-width:none !important;
     width:auto !important;
     margin:0 16px 28px !important;
   }
-  /* Slider: ancho total, altura fija 260px */
+  /* Slider: altura fija 280px, ancho completo del contenedor */
   #heroBannerSlider.hero-banner-slider,
   .banners-patrocinados-section #heroBannerSlider,
   .banners-patrocinados-section .hero-banner-slider{
     width:100% !important;
     aspect-ratio:unset !important;
-    height:260px !important;
-    max-height:260px !important;
+    height:280px !important;
+    max-height:280px !important;
   }
-  /* Track y slides: altura explícita para que la imagen herede bien */
-  .banners-patrocinados-section .hero-banner-track,
-  .banners-patrocinados-section .hero-banner-slide{
-    height:260px !important;
+  /* Track y slide con altura explícita en píxeles (no porcentaje) */
+  .banners-patrocinados-section .hero-banner-track{
+    height:280px !important;
   }
-  /* Imagen posicionada absolute dentro del slide para cubrir 100% sin depender de herencia */
   .banners-patrocinados-section .hero-banner-slide{
+    height:280px !important;
     position:relative !important;
     overflow:hidden !important;
   }
+  /* Imagen absoluta que llena el slide sin depender de herencia de height:100% */
   .banners-patrocinados-section .hero-banner-track img,
   .banners-patrocinados-section .hero-banner-track > div img,
   .banners-patrocinados-section .hero-banner-slide img{
