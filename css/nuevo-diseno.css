@@ -1262,21 +1262,3 @@ body.light-mode .hsb-fi-sel{border-color:rgba(0,0,0,.15);background:#fff;color:#
 .hsb-fi-sel:focus{outline:none;border-color:#FF6B35;}
 .hsb-fi-check{display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer;user-select:none;}
 .hsb-fi-check input[type=checkbox]{accent-color:#FF6B35;width:15px;height:15px;cursor:pointer;}
-
-/* ── Modo ahorro de datos ── */
-.data-saver-toggle{
-    font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;
-    padding:5px 10px;border-radius:20px;border:1px solid rgba(201,169,110,.35);
-    background:rgba(201,169,110,.08);color:rgba(201,169,110,.6);
-    cursor:pointer;transition:all .2s;white-space:nowrap;line-height:1.2;
-}
-.data-saver-toggle:hover{background:rgba(201,169,110,.18);color:#C9A96E;border-color:rgba(201,169,110,.6);}
-body.data-saver-mode .data-saver-toggle{
-    background:rgba(201,169,110,.25) !important;
-    color:#C9A96E !important;
-    border-color:#C9A96E !important;
-    box-shadow:0 0 8px rgba(201,169,110,.3) !important;
-}
-body.data-saver-mode .banners-patrocinados-section{display:none !important;}
-body.data-saver-mode .nd-hero-card3d{display:none !important;}
-body.data-saver-mode .nd-orb{display:none !important;}

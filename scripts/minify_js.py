@@ -59,7 +59,7 @@ RESERVED = [
     # ── llamadas desde banners.js / biometric-auth.js / event-delegation.js ──
     'mostrarNotificacion', 'abrirAdminPanel', 'loginConBiometria',
     # ── onclick inline nuevas funciones ──
-    'toggleDataSaver', 'exportarBackupCompleto',
+    'exportarBackupCompleto',
     # ── exports explícitos en window.* ──
     'guardarCarrito', 'tmFormatPrecio', 'tmRegistrarTokenFCMSiPermitido', 'tmMonedaActual',
     'tmGrantAdminAccess',

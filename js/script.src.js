@@ -987,7 +987,6 @@ let _heroSoloConStock  = false;
 let _heroOrden         = '';
 let _heroSearchTimer   = null;
 let _aiSearchTimer     = null;
-let _dataSaverMode     = (() => { try { return !!localStorage.getItem('tm_data_saver'); } catch(e) { return false; } })();
 
 function abrirPanelBusqueda() {
     const panel = document.getElementById('heroSearchPanel');
@@ -1178,17 +1177,6 @@ function aplicarBusquedaHero() {
     mostrarVistaCategoria('Todas');
 }
 
-function toggleDataSaver() {
-    _dataSaverMode = !_dataSaverMode;
-    try {
-        if (_dataSaverMode) localStorage.setItem('tm_data_saver', '1');
-        else localStorage.removeItem('tm_data_saver');
-    } catch(e) {}
-    document.body.classList.toggle('data-saver-mode', _dataSaverMode);
-    const statusEl = document.getElementById('dataSaverStatus');
-    if (statusEl) statusEl.textContent = _dataSaverMode ? 'ON' : 'OFF';
-    mostrarNotificacion(_dataSaverMode ? '⚡ Ahorro de datos ON — autoplay y efectos desactivados' : '⚡ Ahorro de datos OFF');
-}
 
 function exportarBackupCompleto() {
     const claves = ['heroBanners','heroTagline','monedaActual','tasaMN','tiendaNombre',
@@ -7187,13 +7175,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (_tmGetDeepLinkProductId()) setTimeout(_procesarDeepLink, 100);
 });
 
-document.addEventListener('DOMContentLoaded', () => {
-    if (_dataSaverMode) {
-        document.body.classList.add('data-saver-mode');
-        const statusEl = document.getElementById('dataSaverStatus');
-        if (statusEl) statusEl.textContent = 'ON';
-    }
-});
 
 // ══════════════════════════════════════════════════════════════
 //  NOTIFICACIÓN DE CARRITO ABANDONADO
