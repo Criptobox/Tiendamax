@@ -1233,8 +1233,18 @@ body.light-mode .currency-bar .cur-btn.active {
   #heroBannerSlider.hero-banner-slider,
   .banners-patrocinados-section #heroBannerSlider,
   .banners-patrocinados-section .hero-banner-slider{
-    aspect-ratio:16/7 !important;
-    max-height:280px !important;
-    height:280px !important;
+    width:100% !important;
+    aspect-ratio:unset !important;
+    height:260px !important;
+    max-height:260px !important;
+  }
+  /* Forzar que las imágenes dentro del banner cubran el contenedor */
+  .banners-patrocinados-section .hero-banner-track img,
+  .banners-patrocinados-section .hero-banner-track > a img,
+  .banners-patrocinados-section .hero-banner-track > div img,
+  .banners-patrocinados-section .hero-banner-slide img{
+    width:100% !important;height:100% !important;
+    object-fit:cover !important;object-position:center !important;
+    display:block !important;
   }
 }
