@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════════════════
-// TiendaMax — Service Worker v270 — botón compacto en Subcategorías igual que Categorías
+// TiendaMax — Service Worker v271 — recarga forzada al activarse versión nueva
 // v241: continúa al siguiente modelo Gemini si hay cuota 429
 // v240: soporte clave Gemini con prefijo AQ
 // v239: productos nuevos primero por categoría
@@ -100,7 +100,7 @@
 //      usan el mismo helper _mensajeOrdenWA con formato premium.
 // ═══════════════════════════════════════════════════════
 
-const CACHE_NAME = 'tiendamax-202606141614';
+const CACHE_NAME = 'tiendamax-202606141626';
 
 const STATIC_ASSETS = [
   '/',
@@ -163,10 +163,14 @@ self.addEventListener('activate', e => {
                 keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k))
             );
             await self.clients.claim();
-            // Notificar a los clientes que el SW se ha actualizado
+            // Forzar recarga de todos los clientes abiertos para que carguen los archivos nuevos
             const allClients = await self.clients.matchAll({ type: 'window' });
             for (const client of allClients) {
-                client.postMessage({ type: 'SW_UPDATED', version: CACHE_NAME });
+                try {
+                    await client.navigate(client.url);
+                } catch(e) {
+                    client.postMessage({ type: 'SW_UPDATED', version: CACHE_NAME });
+                }
             }
         })()
     );
