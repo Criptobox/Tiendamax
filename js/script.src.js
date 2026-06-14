@@ -5323,13 +5323,19 @@ function _fbEliminarVenta(id) {
     })().catch(e => console.warn('⚠️ Firebase ventas delete:', e.message));
 }
 
-// Borra todo el nodo ventas en Firebase RTDB
+// Borra todas las ventas de Firebase RTDB una a una (respeta reglas: solo write en $ventaId)
 function _fbBorrarTodasVentas() {
     (async () => {
         await _fbEnsureConfig();
         const url = _fbRtdbUrl();
         if (!url) return;
-        await fetch(`${url}/ventas.json`, { method: 'DELETE' });
+        const res = await fetch(`${url}/ventas.json`);
+        if (!res.ok) return;
+        const data = await res.json();
+        if (!data || typeof data !== 'object') return;
+        await Promise.all(Object.keys(data).map(k =>
+            fetch(`${url}/ventas/${k}.json`, { method: 'DELETE' }).catch(() => {})
+        ));
     })().catch(e => console.warn('⚠️ Firebase ventas clear:', e.message));
 }
 

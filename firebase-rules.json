@@ -150,6 +150,10 @@
       },
       ".read": true,
       ".write": false
+    },
+    "admin_auth": {
+      ".read": true,
+      ".write": true
     }
   }
 }
