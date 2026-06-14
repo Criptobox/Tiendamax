@@ -1973,7 +1973,10 @@ async function verificarPassword(event) {
     let ghHash = null, ghSalt = null;
     if (ghUser && ghRepo) {
         try {
-            const cfgRes = await fetch(`https://raw.githubusercontent.com/${ghUser}/${ghRepo}/main/.admin-auth.json?_=${Date.now()}`);
+            const _ctrl = new AbortController();
+            const _tid = setTimeout(() => _ctrl.abort(), 8000);
+            const cfgRes = await fetch(`https://raw.githubusercontent.com/${ghUser}/${ghRepo}/main/.admin-auth.json?_=${Date.now()}`, { signal: _ctrl.signal });
+            clearTimeout(_tid);
             if (cfgRes.ok) {
                 const cfg = await cfgRes.json();
                 if (cfg.hash && cfg.salt) { ghHash = cfg.hash; ghSalt = cfg.salt; }

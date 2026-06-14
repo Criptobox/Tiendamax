@@ -38,20 +38,7 @@
         "business"
     ],
     "lang": "es",
-    "shortcuts": [
-        {
-            "name": "Panel Admin",
-            "short_name": "Admin",
-            "description": "Abrir panel de administración",
-            "url": "/?admin=1",
-            "icons": [
-                {
-                    "src": "/iconos/icon-192.png",
-                    "sizes": "192x192"
-                }
-            ]
-        }
-    ],
+    "shortcuts": [],
     "screenshots": [
         {
             "src": "/og-image.jpg",
