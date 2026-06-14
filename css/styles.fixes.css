@@ -135,10 +135,10 @@ html body .btn-wa:hover{background:#1db954 !important;transform:translateY(-2px)
 html body .banners-patrocinados-section{padding:8px 0 16px}
 html body .banners-pat-label{display:none !important}
 html body .banners-patrocinados-section .hero-image{margin:0 16px 8px;border-radius:18px;overflow:hidden}
-@media (min-width:769px){html body .banners-patrocinados-section .hero-image{max-width:none;margin:0 0 8px}}
+@media (min-width:769px){html body .banners-patrocinados-section .hero-image{max-width:960px;margin:0 auto 8px}}
 @media (max-width:768px){html body .banners-patrocinados-section .hero-image{margin:0 12px 8px;border-radius:14px}}
-/* ── Banner patrocinado: ancho completo en desktop, altura fija 280px */
-@media (min-width:769px){html body #heroImageContainer{max-width:none !important;width:100% !important;margin:0 0 24px !important;height:280px !important;min-height:unset !important}}
+/* ── Banner patrocinado: centrado max 960px en desktop, altura fija 280px */
+@media (min-width:769px){html body #heroImageContainer{max-width:960px !important;width:auto !important;margin:0 auto 24px !important;height:280px !important;min-height:unset !important}}
 html body #heroBannerSlider,html body #heroImageContainer .hero-banner-slider{position:absolute !important;top:0 !important;left:0 !important;width:100% !important;height:100% !important}
 @media (max-width:768px){html body #heroImageContainer{margin:0 12px 16px !important;height:clamp(160px,56.25vw,280px) !important}}
 /* cover: imagen llena el marco sin barras */
