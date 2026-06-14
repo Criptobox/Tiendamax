@@ -1229,38 +1229,37 @@ body.light-mode .currency-bar .cur-btn.active {
   .banners-patrocinados-section .hero-image{
     max-width:none !important;
     width:auto !important;
-    height:260px !important;
+    height:auto !important;
     margin:0 16px 0 !important;
     overflow:hidden !important;
     border-radius:18px !important;
   }
+  /* Slider: el alto lo determina la imagen (height:auto), máx 320px */
   #heroBannerSlider.hero-banner-slider,
   .banners-patrocinados-section #heroBannerSlider,
   .banners-patrocinados-section .hero-banner-slider{
     width:100% !important;
-    height:260px !important;
-    max-height:260px !important;
+    height:auto !important;
+    max-height:320px !important;
     aspect-ratio:unset !important;
     overflow:hidden !important;
   }
   .banners-patrocinados-section .hero-banner-track{
-    height:260px !important;
+    height:auto !important;
   }
-  /* display:grid hace que la imagen llene el slide sin herencia height:100% */
   .banners-patrocinados-section .hero-banner-slide{
-    display:grid !important;
-    height:260px !important;
+    height:auto !important;
     overflow:hidden !important;
   }
+  /* La imagen determina el alto: width 100%, height auto, SIN object-fit para no recortar */
   .banners-patrocinados-section .hero-banner-track img,
   .banners-patrocinados-section .hero-banner-track > div img,
   .banners-patrocinados-section .hero-banner-slide img{
     width:100% !important;
-    height:260px !important;
-    max-height:none !important;
-    object-fit:cover !important;
+    height:auto !important;
+    max-height:320px !important;
+    object-fit:contain !important;
     object-position:center !important;
     display:block !important;
   }
-}
 }
