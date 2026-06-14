@@ -545,6 +545,7 @@ function guardarResena() {
     const ts  = Date.now();
     const nuevaResena = {
         id: ts,
+        ts: ts,
         autor: autor.substring(0, 50),
         texto: texto.substring(0, 400),
         estrellas: _estrellasSeleccionadas,
@@ -1978,10 +1979,16 @@ async function verificarPassword(event) {
     const btn = document.getElementById('btnLoginSubmit');
     const txtOriginal = btn ? btn.textContent : '';
     if (btn) { btn.disabled = true; btn.textContent = '⏳ Verificando…'; }
-    if (!passwordInput) { mostrarNotificacion('❌ Escribe la contraseña', 'error'); return; }
+    if (!passwordInput) {
+        mostrarNotificacion('❌ Escribe la contraseña', 'error');
+        if (btn) { btn.disabled = false; btn.textContent = txtOriginal; }
+        return;
+    }
 
     const ghUser = localStorage.getItem('githubUser');
     const ghRepo = localStorage.getItem('githubRepo');
+
+    try {
 
     // 1. PRIORIDAD: localStorage (refleja cambios inmediatos de contraseña)
     const lsHash = localStorage.getItem(AUTH_HASH_KEY);
@@ -2066,6 +2073,11 @@ async function verificarPassword(event) {
         : `❌ Contraseña incorrecta (intento ${newCount}/3)`;
     mostrarNotificacion(msg, 'error');
     document.getElementById('adminPassword').value = '';
+
+    } catch(e) {
+        if (btn) { btn.disabled = false; btn.textContent = txtOriginal; }
+        mostrarNotificacion('❌ Error al verificar contraseña. Recarga la página.', 'error');
+    }
 }
 
 // Cambiar contraseña (llamado desde admin.html)
@@ -2845,7 +2857,7 @@ const _detailPrecioEl = document.getElementById('detailPriceActual');
 const _detailPrecioOldEl = document.getElementById('detailPriceOriginal');
 const _detailPrecioMNEl = document.getElementById('detailPriceMN');
 // USD siempre visible en el modal
-if (_detailPrecioEl) _detailPrecioEl.textContent = `$${p.precioActual.toFixed(2)} USD`;
+if (_detailPrecioEl) _detailPrecioEl.textContent = `$${Number(p.precioActual||0).toFixed(2)} USD`;
 if (_detailPrecioOldEl) {
     if (p.precioOriginal > 0 && parseFloat(p.precioOriginal) > parseFloat(p.precioActual)) {
         _detailPrecioOldEl.textContent = `$${parseFloat(p.precioOriginal).toFixed(2)} USD`;
@@ -2868,7 +2880,7 @@ if (_detailPrecioMNEl) {
     // Ahorro
     const ahorroEl = document.getElementById('detailAhorroBadge');
     if (precioOriginal && p.descuento > 0) {
-        const ahorro = (precioOriginal - p.precioActual).toFixed(2);
+        const ahorro = (Number(precioOriginal||0) - Number(p.precioActual||0)).toFixed(2);
         ahorroEl.textContent = `Ahorras $${ahorro}`;
         ahorroEl.style.display = 'inline';
     } else {
@@ -3138,10 +3150,11 @@ function _getShareData() {
     const p = _detalleProductoActual;
     if (!p) return null;
     const url = 'https://tiendamax.org/p/producto-' + p.id + '.html';
+    const _pa = Number(p.precioActual||0).toFixed(2);
     return {
         nombre: p.nombre,
-        precio: p.precioActual.toFixed(2),
-        texto: '🛍️ *' + p.nombre + '* — $' + p.precioActual.toFixed(2) + ' USD\n📦 Stock disponible\n👉 ' + url,
+        precio: _pa,
+        texto: '🛍️ *' + p.nombre + '* — $' + _pa + ' USD\n📦 Stock disponible\n👉 ' + url,
         url: url
     };
 }
@@ -3173,7 +3186,7 @@ function compartirTwitter() {
 function compartirNativo() {
     const p = _detalleProductoActual;
     if (!p) return;
-    const texto = `🛍️ ${p.nombre} — $${p.precioActual.toFixed(2)} USD\n📦 Stock disponible\n👉 tiendamax.org`;
+    const texto = `🛍️ ${p.nombre} — $${Number(p.precioActual||0).toFixed(2)} USD\n📦 Stock disponible\n👉 tiendamax.org`;
     const urlProducto = 'https://tiendamax.org/p/producto-' + p.id + '.html';
     if (navigator.share) {
         navigator.share({ title: p.nombre, text: texto, url: urlProducto }).catch(() => {});
