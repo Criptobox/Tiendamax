@@ -1198,6 +1198,14 @@ body:not(.light-mode) .mas-vendidos .producto-card{
   justify-content: center !important;
   gap: 8px !important;
 }
+/* ── Fix: active currency button en light mode ── */
+body.light-mode .currency-bar .cur-btn.active {
+  background: linear-gradient(135deg,#FF6B35,#E8501E) !important;
+  color: #fff !important;
+  box-shadow: 0 2px 12px rgba(255,107,53,.5) !important;
+  text-shadow: 0 1px 3px rgba(0,0,0,.2) !important;
+}
+
 .mobile-action-grupo::before {
   content: '';
   display: inline-block;
