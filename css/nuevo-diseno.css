@@ -299,8 +299,8 @@ html body .categorias-home .categorias-grid .categoria-card:nth-child(2) .cat-ic
 html body .categorias-home .categorias-grid .categoria-card:nth-child(3){overflow:visible !important;z-index:3 !important}
 html body .categorias-home .categorias-grid .categoria-card:nth-child(3)::before{display:none !important}
 html body .categorias-home .categorias-grid .categoria-card:nth-child(3) .cat-icon{
-  top:-30px !important;right:-10px !important;
-  width:102px !important;height:102px !important;
+  top:10px !important;right:10px !important;
+  width:96px !important;height:96px !important;
   font-size:56px !important;
   display:flex !important;align-items:center !important;justify-content:center !important;
   background:linear-gradient(145deg,rgba(70,50,20,.78),rgba(40,28,12,.85)) !important;
