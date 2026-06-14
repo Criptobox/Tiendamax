@@ -2400,10 +2400,43 @@ async function _tmMostrarAgenda() {
         }
     } catch(e) {}
 
-    // ── 6. WhatsApp no configurado ───────────────────────────────────────────
+    // ── 6. SEO — productos sin descripción ──────────────────────────────────
+    const sinDesc = productos.filter(p => p.activo !== false && (!p.descripcion || p.descripcion.trim().length < 20));
+    if (sinDesc.length) {
+        tareas.push({
+            icon: '📝', urgencia: 2,
+            titulo: `${sinDesc.length} producto${sinDesc.length > 1 ? 's' : ''} sin descripción (SEO)`,
+            detalle: sinDesc.slice(0, 3).map(p => p.nombre).join(', ') + (sinDesc.length > 3 ? '…' : ''),
+            accion: 'Completar', tab: 'manage-products', cls: 'b'
+        });
+    }
+
+    // ── 7. SEO — productos sin categoría ────────────────────────────────────
+    const sinCat = productos.filter(p => p.activo !== false && !p.categoria);
+    if (sinCat.length) {
+        tareas.push({
+            icon: '🏷️', urgencia: 1,
+            titulo: `${sinCat.length} producto${sinCat.length > 1 ? 's' : ''} sin categoría`,
+            detalle: sinCat.slice(0, 3).map(p => p.nombre).join(', ') + (sinCat.length > 3 ? '…' : ''),
+            accion: 'Categorizar', tab: 'manage-products', cls: 'b'
+        });
+    }
+
+    // ── 8. SEO — nombres demasiado cortos o sin palabras clave útiles ────────
+    const nombreCorto = productos.filter(p => p.activo !== false && p.nombre && p.nombre.trim().length < 8);
+    if (nombreCorto.length) {
+        tareas.push({
+            icon: '✍️', urgencia: 1,
+            titulo: `${nombreCorto.length} producto${nombreCorto.length > 1 ? 's' : ''} con nombre muy corto`,
+            detalle: nombreCorto.slice(0, 3).map(p => p.nombre).join(', ') + (nombreCorto.length > 3 ? '…' : ''),
+            accion: 'Mejorar', tab: 'manage-products', cls: 'b'
+        });
+    }
+
+    // ── 9. WhatsApp no configurado ───────────────────────────────────────────
     if (!localStorage.getItem('adminWhatsapp')) {
         tareas.push({
-            icon: '📱', urgencia: 2,
+            icon: '📱', urgencia: 3,
             titulo: 'WhatsApp no configurado',
             detalle: 'Los clientes no podrán contactarte por WhatsApp',
             accion: 'Configurar', tab: 'configuracion', cls: 'g'
@@ -2419,10 +2452,15 @@ async function _tmMostrarAgenda() {
     // Ordenar por urgencia descendente
     tareas.sort((a, b) => b.urgencia - a.urgencia);
 
+    const urgColor = u => u >= 3 ? '#e74c3c' : u === 2 ? '#FF6B35' : '#2AABEE';
+    const totalCriticas = tareas.filter(t => t.urgencia >= 3).length;
+    const hd = card.querySelector('.tmag-title');
+    if (hd) hd.innerHTML = `📋 Tareas pendientes <span style="background:${totalCriticas ? '#e74c3c' : '#FF6B35'};color:#fff;border-radius:20px;padding:1px 8px;font-size:11px;margin-left:6px">${tareas.length}</span>`;
+
     lista.innerHTML = tareas.map(t => `
-        <div class="tmag-item">
+        <div class="tmag-item" style="border-left:3px solid ${urgColor(t.urgencia)}">
             <span class="tmag-icon">${t.icon}</span>
-            <span class="tmag-txt"><b>${escapeHtml(t.titulo)}</b>${t.detalle ? escapeHtml(t.detalle) : ''}</span>
+            <span class="tmag-txt"><b>${escapeHtml(t.titulo)}</b>${t.detalle ? `<span class="tmag-det">${escapeHtml(t.detalle)}</span>` : ''}</span>
             <button class="tmag-btn ${t.cls}" onclick="switchTab('${t.tab}');document.getElementById('tmAgenda').style.display='none'">${t.accion}</button>
         </div>`).join('');
 
