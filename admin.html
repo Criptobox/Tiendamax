@@ -5,9 +5,13 @@
 (function() {
   if (!localStorage.getItem("githubUser")) localStorage.setItem("githubUser", "Criptobox");
   if (!localStorage.getItem("githubRepo")) localStorage.setItem("githubRepo", "Tiendamax");
-  if (!localStorage.getItem("tm_auth_hash_v3")) {
-    localStorage.setItem("tm_auth_salt_v3", "ba731c9c4792267de9022a2346e736f1");
-    localStorage.setItem("tm_auth_hash_v3", "786a79cac0404daccf4cf14a1562d6c84de03c1a141161ef6adc842c3701a992");
+  // Hash actualizado con la contraseña real configurada (sincronizado con .admin-auth.json)
+  var _ch="d2cd86c35cc5feb2da2c320531f241bcf734d7ba9ab2906d288916b7b969c7a9",_cs="bb4e2fe68dda8eee0728fd4385680287";
+  var _lh=localStorage.getItem("tm_auth_hash_v3");
+  // Si no hay hash, o si sigue siendo el hash por defecto antiguo → poner el correcto
+  if (!_lh || _lh==="786a79cac0404daccf4cf14a1562d6c84de03c1a141161ef6adc842c3701a992") {
+    localStorage.setItem("tm_auth_salt_v3", _cs);
+    localStorage.setItem("tm_auth_hash_v3", _ch);
   }
   // Limpiar lockout si ya expiró
   try {
