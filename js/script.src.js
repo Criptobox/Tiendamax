@@ -2434,7 +2434,7 @@ async function _tmMostrarAgenda() {
     }
 
     // ── 9. WhatsApp no configurado ───────────────────────────────────────────
-    if (!localStorage.getItem('adminWhatsapp')) {
+    if (!localStorage.getItem('whatsappNumero')) {
         tareas.push({
             icon: '📱', urgencia: 3,
             titulo: 'WhatsApp no configurado',
