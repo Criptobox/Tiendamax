@@ -153,7 +153,8 @@
     },
     "admin_auth": {
       ".read": true,
-      ".write": true
+      ".write": "!data.exists() || newData.child('proof').val() == data.child('hash').val()",
+      ".validate": "newData.hasChildren(['hash','salt','iterations']) && newData.child('hash').isString() && newData.child('hash').val().length == 64 && newData.child('salt').isString() && newData.child('salt').val().length >= 20 && newData.child('iterations').isNumber() && newData.child('iterations').val() >= 100000"
     }
   }
 }

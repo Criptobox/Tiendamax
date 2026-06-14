@@ -2183,10 +2183,18 @@ async function sincronizarPasswordAFirebase() {
     }
     const rtdbUrl = fbCfg.databaseURL || ('https://' + fbCfg.projectId + '-default-rtdb.firebaseio.com');
     try {
+        // Leer hash actual para incluirlo como proof (regla Firebase requiere proof == hash existente)
+        let currentHash = null;
+        try {
+            const r = await fetch(rtdbUrl + '/admin_auth.json?_=' + Date.now());
+            if (r.ok) { const d = await r.json(); if (d && d.hash) currentHash = d.hash; }
+        } catch(_) {}
+        const body = { hash: localHash, salt: localSalt, iterations: AUTH_ITERATIONS };
+        if (currentHash) body.proof = currentHash;
         const res = await fetch(rtdbUrl + '/admin_auth.json', {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ hash: localHash, salt: localSalt, iterations: AUTH_ITERATIONS })
+            body: JSON.stringify(body)
         });
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         mostrarNotificacion('✅ Contraseña sincronizada con Firebase. Puedes acceder desde cualquier dispositivo.', 'success');
