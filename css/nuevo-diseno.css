@@ -1223,13 +1223,14 @@ body.light-mode .currency-bar .cur-btn.active {
 /* ── Banners patrocinados: tamaño controlado en desktop ── */
 @media (min-width:769px){
   .banners-patrocinados-section{padding:0 !important}
-  /* #heroImageContainer.hero-image gana por especificidad sobre la regla móvil de línea 922 */
+  /* Anular max-width:500px del bundle y la regla móvil (max-width:none) */
   #heroImageContainer.hero-image,
   .banners-patrocinados-section .hero-image{
-    max-width:860px !important;
-    width:100% !important;
-    margin:0 auto 28px !important;
+    max-width:none !important;
+    width:auto !important;
+    margin:0 16px 28px !important;
   }
+  /* Slider: ancho total, altura fija 260px */
   #heroBannerSlider.hero-banner-slider,
   .banners-patrocinados-section #heroBannerSlider,
   .banners-patrocinados-section .hero-banner-slider{
@@ -1238,13 +1239,25 @@ body.light-mode .currency-bar .cur-btn.active {
     height:260px !important;
     max-height:260px !important;
   }
-  /* Forzar que las imágenes dentro del banner cubran el contenedor */
+  /* Track y slides: altura explícita para que la imagen herede bien */
+  .banners-patrocinados-section .hero-banner-track,
+  .banners-patrocinados-section .hero-banner-slide{
+    height:260px !important;
+  }
+  /* Imagen posicionada absolute dentro del slide para cubrir 100% sin depender de herencia */
+  .banners-patrocinados-section .hero-banner-slide{
+    position:relative !important;
+    overflow:hidden !important;
+  }
   .banners-patrocinados-section .hero-banner-track img,
-  .banners-patrocinados-section .hero-banner-track > a img,
   .banners-patrocinados-section .hero-banner-track > div img,
   .banners-patrocinados-section .hero-banner-slide img{
-    width:100% !important;height:100% !important;
-    object-fit:cover !important;object-position:center !important;
+    position:absolute !important;
+    inset:0 !important;
+    width:100% !important;
+    height:100% !important;
+    object-fit:cover !important;
+    object-position:center !important;
     display:block !important;
   }
 }
