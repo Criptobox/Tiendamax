@@ -242,6 +242,10 @@
     .g-badge { background:var(--blue); color:white; border-radius:20px; font-size:9px; font-weight:700; padding:1px 5px; }
     #gestoresList { display:grid; grid-template-columns:repeat(3,1fr); gap:6px; }
     #gestoresList .es { grid-column:1/-1; }
+    #mensajeroSelectorList { display:grid; grid-template-columns:repeat(2,1fr); gap:6px; }
+    #mensajeroSelectorList .es { grid-column:1/-1; }
+    .m-pend-dot { position:absolute; top:0; right:0; width:9px; height:9px; border-radius:50%; background:var(--orange); border:2px solid var(--surface); }
+    .g-avatar-wrap { position:relative; display:inline-flex; }
     /* Vale form hidden until gestor selected */
     #valeFormWrapper { display:none; }
     #layoutGestor.has-gestor #valeFormWrapper { display:block; }
@@ -1187,11 +1191,16 @@ function renderMensajeroSelector() {
   const list=getMensajeros();
   const c=document.getElementById('mensajeroSelectorList');if(!c)return;
   if(!list.length){c.innerHTML='<div class="es"><div class="es-icon">🛵</div><div class="es-text">Sin mensajeros registrados</div></div>';return;}
+  const vales=getVales();
   c.innerHTML=list.map(m=>{
     const act=m.id===activeMensajeroId;
     const ini=m.name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+    const pend=vales.filter(v=>v.mensajeroId===m.id&&v.status==='pending_payment').length;
     return `<div class="g-item m-sel-item ${act?'active':''}" onclick="selectMensajero(${m.id})">
-      <div class="g-avatar" style="background:#059669">${ini}</div>
+      <div class="g-avatar-wrap">
+        <div class="g-avatar" style="background:#059669">${ini}</div>
+        ${pend>0?`<span class="m-pend-dot" title="${pend} cobro${pend>1?'s':''} pendiente${pend>1?'s':''}"></span>`:''}
+      </div>
       <div class="g-name">${m.name}</div>
       ${act?'<span class="g-badge">✓</span>':''}
     </div>`;
@@ -1220,9 +1229,10 @@ function renderMensajeroVales() {
   }
   const porEntregar=getVales().filter(v=>v.mensajeroId===activeMensajeroId&&v.status==='assigned').reverse();
   const entregados=getVales().filter(v=>v.mensajeroId===activeMensajeroId&&v.status==='delivered').reverse();
-  const confirmadosHoy=getVales().filter(v=>v.mensajeroId===activeMensajeroId&&['confirmed','pending_payment'].includes(v.status)&&new Date(v.ts).toDateString()===todayStr()).reverse();
+  const pendCobro=getVales().filter(v=>v.mensajeroId===activeMensajeroId&&v.status==='pending_payment').reverse();
+  const confirmadosHoy=getVales().filter(v=>v.mensajeroId===activeMensajeroId&&v.status==='confirmed'&&new Date(v.ts).toDateString()===todayStr()).reverse();
   let html='';
-  if(!porEntregar.length&&!entregados.length&&!confirmadosHoy.length){
+  if(!porEntregar.length&&!entregados.length&&!pendCobro.length&&!confirmadosHoy.length){
     html='<div class="es"><div class="es-icon">✅</div><div class="es-text">Sin entregas asignadas</div></div>';
   } else {
     if(porEntregar.length){
@@ -1252,13 +1262,25 @@ function renderMensajeroVales() {
         </div>`;
       }).join('');
     }
+    if(pendCobro.length){
+      html+=`<div class="lbl" style="margin-top:16px;color:var(--orange);">⏳ Pendiente de cobro (${pendCobro.length})</div>`;
+      html+=pendCobro.map(v=>{
+        const g=gestorOf(v.gestorId);
+        return `<div class="mv-card" style="border-left:3px solid var(--orange);background:rgba(249,115,22,.05);">
+          <div class="mv-head"><span class="mv-time">${timeStr(v.confirmedTs||v.ts)}</span><span style="color:var(--orange);font-size:9px;font-weight:700;padding:2px 6px;background:rgba(249,115,22,.15);border-radius:4px;">⏳ Pend. cobro</span></div>
+          <div class="mv-info"><b>${v.cliente||'—'}</b> · <span style="font-weight:700;color:var(--orange);">${v.total||'—'}</span></div>
+          ${g?`<div style="font-size:11px;color:var(--gray-400);">Gestor: ${g.name}</div>`:''}
+          <div style="font-size:11px;color:var(--gray-600);margin-top:3px;">📦 ${v.articulo||'—'}</div>
+          <button class="btn btn-green btn-full btn-sm" style="margin-top:8px;" onclick="markAsPaid(${v.id})">💵 Registrar cobro</button>
+        </div>`;
+      }).join('');
+    }
     if(confirmadosHoy.length){
-      html+='<div class="lbl" style="margin-top:16px;">Completados hoy</div>';
+      html+='<div class="lbl" style="margin-top:16px;">Confirmados hoy ✅</div>';
       html+=confirmadosHoy.map(v=>{
         const g=gestorOf(v.gestorId);
-        const isPend=v.status==='pending_payment';
-        return `<div class="mv-card st-${v.status}">
-          <div class="mv-head"><span class="mv-time">${timeStr(v.confirmedTs||v.ts)}</span><span style="color:${isPend?'var(--yellow)':'var(--green)'};font-size:10px;">${isPend?'⏳ Pend. cobro':'✅ Confirmado'}</span></div>
+        return `<div class="mv-card st-confirmed">
+          <div class="mv-head"><span class="mv-time">${timeStr(v.confirmedTs||v.ts)}</span><span style="color:var(--green);font-size:10px;font-weight:700;">✅ Confirmado</span></div>
           <div class="mv-info"><b>${v.cliente||'—'}</b> · ${v.total||'—'}</div>
           ${g?`<div style="font-size:11px;color:var(--gray-400);">Gestor: ${g.name}</div>`:''}
         </div>`;
@@ -1535,7 +1557,7 @@ function confirmSale(id, paymentStatus) {
 function markAsPaid(id) {
   patchVale(id,{status:'confirmed',confirmedTs:new Date().toISOString()});
   renderAdminGestores();renderInbox();renderValeDetail();renderMyVales();
-  renderConfirmados();renderPendienteCobro();renderMensajeroVales();
+  renderConfirmados();renderPendienteCobro();renderMensajeroVales();renderMensajeroSelector();updateMensajeroBadge();
   showToast('Cobro registrado ✅');
 }
 
