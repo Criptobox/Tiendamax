@@ -411,6 +411,12 @@
     /* ── TOAST ── */
     .toast { position:fixed; bottom:20px; left:50%; transform:translateX(-50%) translateY(60px); background:var(--gray-900); color:white; padding:10px 18px; border-radius:8px; font-size:13px; font-weight:600; z-index:300; transition:transform .25s; pointer-events:none; white-space:nowrap; }
     .toast.show { transform:translateX(-50%) translateY(0); }
+
+    /* ── GOAL CELEBRATION ── */
+    @keyframes slideDown { from{transform:translateY(-110%);opacity:0} to{transform:translateY(0);opacity:1} }
+    @keyframes slideUp   { from{transform:translateY(0);opacity:1}    to{transform:translateY(-110%);opacity:0} }
+    #goalBanner { position:fixed;top:54px;left:0;right:0;z-index:500;background:linear-gradient(135deg,#003d52,#00b4d8);color:white;padding:14px 20px;display:flex;align-items:center;gap:14px;box-shadow:0 6px 24px rgba(0,0,0,.35);animation:slideDown .4s cubic-bezier(.22,1,.36,1); }
+    #goalBanner.hide { animation:slideUp .35s ease forwards; }
   </style>
 </head>
 <body>
@@ -1697,6 +1703,7 @@ function confirmSale(id, paymentStatus) {
   renderAdminGestores();renderInbox();renderValeDetail();renderMyVales();
   renderConfirmados();renderPendienteCobro();renderPendingCobroSection();renderMensajeroVales();
   renderProductGrid();renderGestorRanking();renderComisiones();
+  checkGoalReached(v.gestorId);
   maybeAutoSync();
   showToast(paymentStatus==='confirmed'?'Venta confirmada y cobrada ✅':'Venta confirmada — cobro pendiente ⏳');
 }
@@ -1705,7 +1712,9 @@ function markAsPaid(id) {
   patchVale(id,{status:'confirmed',confirmedTs:new Date().toISOString()});
   renderAdminGestores();renderInbox();renderValeDetail();renderMyVales();
   renderConfirmados();renderPendienteCobro();renderPendingCobroSection();renderMensajeroVales();renderMensajeroSelector();updateMensajeroBadge();
-  renderGestorRanking();renderComisiones();maybeAutoSync();
+  renderGestorRanking();renderComisiones();
+  checkGoalReached(getVales().find(x=>x.id===id)?.gestorId);
+  maybeAutoSync();
   showToast('Cobro registrado ✅');
 }
 
@@ -2763,6 +2772,78 @@ function changePassCfg() {
   localStorage.setItem('axon_admin_hash',btoa(np));
   document.getElementById('newPassInputCfg').value='';
   showToast('Contraseña actualizada ✓');
+}
+
+// ══════════════════════════════════════════
+//  GOAL CELEBRATION
+// ══════════════════════════════════════════
+function launchConfetti() {
+  const canvas=document.createElement('canvas');
+  canvas.style.cssText='position:fixed;inset:0;z-index:499;pointer-events:none;';
+  canvas.width=window.innerWidth;canvas.height=window.innerHeight;
+  document.body.appendChild(canvas);
+  const ctx=canvas.getContext('2d');
+  const colors=['#00b4d8','#F59E0B','#10B981','#EF4444','#7C3AED','#F97316','#EC4899','#ffffff'];
+  const particles=Array.from({length:160},()=>({
+    x:Math.random()*canvas.width,
+    y:-20-Math.random()*canvas.height*.6,
+    w:6+Math.random()*10,h:3+Math.random()*5,
+    color:colors[Math.floor(Math.random()*colors.length)],
+    vx:(Math.random()-.5)*4,
+    vy:1.5+Math.random()*4,
+    rot:Math.random()*Math.PI*2,
+    vrot:(Math.random()-.5)*.18,
+    shape:Math.random()>.6?'circle':'rect',
+  }));
+  let frame;const start=Date.now();
+  (function animate(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    const elapsed=Date.now()-start;
+    const alpha=elapsed>2800?Math.max(0,1-(elapsed-2800)/900):1;
+    particles.forEach(p=>{
+      p.x+=p.vx;p.y+=p.vy;p.rot+=p.vrot;p.vy+=.06;
+      ctx.save();ctx.globalAlpha=alpha;
+      ctx.translate(p.x,p.y);ctx.rotate(p.rot);
+      ctx.fillStyle=p.color;
+      if(p.shape==='circle'){ctx.beginPath();ctx.arc(0,0,p.w/2,0,Math.PI*2);ctx.fill();}
+      else{ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);}
+      ctx.restore();
+    });
+    if(elapsed<3700){frame=requestAnimationFrame(animate);}
+    else{canvas.remove();}
+  })();
+  setTimeout(()=>{cancelAnimationFrame(frame);if(canvas.parentNode)canvas.remove();},4200);
+}
+
+function showGoalBanner(g, pts) {
+  const old=document.getElementById('goalBanner');if(old)old.remove();
+  const el=document.createElement('div');el.id='goalBanner';
+  el.innerHTML=`
+    <div style="font-size:32px;flex-shrink:0;">🏆</div>
+    <div style="flex:1;min-width:0;">
+      <div style="font-size:15px;font-weight:900;letter-spacing:.5px;text-shadow:0 1px 4px rgba(0,0,0,.3);">¡META ALCANZADA!</div>
+      <div style="font-size:13px;opacity:.9;margin-top:2px;">${g.name} llegó a <b>${pts} puntos ⭐</b> — ¡Felicidades!</div>
+    </div>
+    <div style="background:${g.color};width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;flex-shrink:0;border:2px solid rgba(255,255,255,.4);">${g.initials}</div>
+    <button onclick="dismissGoalBanner()" style="background:rgba(255,255,255,.18);border:none;color:white;border-radius:50%;width:26px;height:26px;cursor:pointer;font-size:16px;line-height:1;display:flex;align-items:center;justify-content:center;flex-shrink:0;padding:0;">×</button>`;
+  document.body.appendChild(el);
+  setTimeout(()=>dismissGoalBanner(),6000);
+}
+function dismissGoalBanner(){
+  const el=document.getElementById('goalBanner');if(!el)return;
+  el.classList.add('hide');setTimeout(()=>el.remove(),370);
+}
+
+function checkGoalReached(gestorId) {
+  const meta=getConfig().metaPuntos;if(!meta||!gestorId)return;
+  const g=gestorOf(gestorId);if(!g)return;
+  const vales=getVales().filter(v=>v.gestorId===gestorId&&['confirmed','pending_payment'].includes(v.status));
+  const pts=vales.reduce((sum,v)=>sum+(v.valeProductos||[]).reduce((s,p)=>{const pr=productoOf(p.id);return s+(pr?pr.puntos*p.qty:0);},0),0);
+  if(pts>=meta){
+    // Only celebrate if this is the sale that crossed the threshold
+    const prev=vales.slice(0,-1).reduce((sum,v)=>sum+(v.valeProductos||[]).reduce((s,p)=>{const pr=productoOf(p.id);return s+(pr?pr.puntos*p.qty:0);},0),0);
+    if(prev<meta){launchConfetti();showGoalBanner(g,pts);}
+  }
 }
 
 // ══════════════════════════════════════════
