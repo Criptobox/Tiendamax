@@ -783,6 +783,16 @@
           </div>
           <div id="ghSyncStatus" style="margin-top:10px;font-size:11px;min-height:16px;"></div>
         </div>
+        <div class="lbl">🎯 Meta de Puntos</div>
+        <div class="card">
+          <div style="font-size:11px;color:var(--gray-400);line-height:1.6;margin-bottom:10px;">Fija cuántos puntos ⭐ deben acumular los gestores para llegar a la meta. El ranking mostrará el progreso de cada uno hacia ese número.</div>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <input type="number" id="cfg-meta-puntos" placeholder="Ej: 100" min="1" style="font-size:14px;font-weight:700;max-width:120px;">
+            <span style="font-size:12px;color:var(--gray-400);">puntos</span>
+            <button class="btn btn-blue btn-sm" onclick="saveMetaPuntos()">✓ Guardar</button>
+          </div>
+          <div id="metaPuntosStatus" style="font-size:11px;color:var(--gray-400);margin-top:6px;"></div>
+        </div>
         <div class="lbl">💾 Datos locales (exportar / importar)</div>
         <div class="card">
           <div style="font-size:11px;color:var(--gray-400);line-height:1.6;margin-bottom:12px;">Exporta todos los datos como un archivo <code>axontech-data.json</code> para hacer copia de seguridad o moverlos a otro dispositivo. Para restaurar, importa el mismo archivo.</div>
@@ -2543,41 +2553,52 @@ function renderGestorRanking() {
   const c=document.getElementById('rankingList');if(!c)return;
   const gestores=getGestores();
   if(!gestores.length){c.innerHTML='<div class="es" style="padding:6px;"><div class="es-text" style="font-size:12px;">Sin gestores configurados</div></div>';return;}
+  const meta=getConfig().metaPuntos||0;
   const vales=getVales().filter(v=>['confirmed','pending_payment'].includes(v.status));
   const ranked=gestores.map(g=>{
     const pts=vales.filter(v=>v.gestorId===g.id).reduce((sum,v)=>
       sum+(v.valeProductos||[]).reduce((s,p)=>{const pr=productoOf(p.id);return s+(pr?pr.puntos*p.qty:0);},0),0);
-    const total=vales.filter(v=>v.gestorId===g.id).length;
-    return{...g,pts,total};
+    return{...g,pts};
   }).sort((a,b)=>b.pts-a.pts);
-  const max=ranked[0]?.pts||0;
   const medals=['🥇','🥈','🥉'];
-  const barColors=['#F59E0B','#94A3B8','#cd7f32','var(--blue)'];
-  if(ranked.every(g=>g.pts===0)){
-    c.innerHTML=`<div style="text-align:center;padding:10px 0;">
-      <div style="font-size:11px;color:var(--gray-400);">Los puntos se acumulan al confirmar ventas con productos que otorgan ⭐ pts</div>
-      <div style="display:flex;justify-content:center;gap:12px;margin-top:10px;flex-wrap:wrap;">
-        ${ranked.map((g,i)=>`<div style="display:flex;flex-direction:column;align-items:center;gap:3px;">
+  const barColors=['#F59E0B','#94A3B8','#cd7f32','var(--blue)','#6366f1','#ec4899'];
+  const allZero=ranked.every(g=>g.pts===0);
+  // Header: show meta if set
+  const metaHeader=meta>0?`<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+    <span style="font-size:10px;font-weight:700;color:var(--gray-400);text-transform:uppercase;letter-spacing:.5px;">🎯 Meta: ${meta} pts</span>
+    <span style="font-size:10px;color:var(--gray-400);">${ranked.filter(g=>g.pts>=meta).length}/${ranked.length} alcanzaron la meta</span>
+  </div>`:'';
+  if(allZero){
+    c.innerHTML=metaHeader+`<div style="text-align:center;padding:6px 0;">
+      <div style="font-size:11px;color:var(--gray-400);margin-bottom:10px;">Los puntos se acumulan al confirmar ventas</div>
+      <div style="display:flex;justify-content:center;gap:12px;flex-wrap:wrap;">
+        ${ranked.map(g=>`<div style="display:flex;flex-direction:column;align-items:center;gap:3px;">
           <div class="g-avatar" style="background:${g.color};width:30px;height:30px;font-size:10px;">${g.initials}</div>
           <span style="font-size:10px;font-weight:600;">${g.name.split(' ')[0]}</span>
-          <span style="font-size:9px;color:var(--gray-400);">⭐ 0 pts</span>
+          <span style="font-size:9px;color:var(--gray-400);">⭐ 0${meta>0?` / ${meta}`:''}</span>
         </div>`).join('')}
       </div>
     </div>`;
     return;
   }
-  c.innerHTML=ranked.map((g,i)=>{
-    const pct=max>0?Math.round((g.pts/max)*100):0;
-    const bar=barColors[Math.min(i,barColors.length-1)];
+  const maxRef=meta>0?meta:(ranked[0]?.pts||1);
+  c.innerHTML=metaHeader+ranked.map((g,i)=>{
+    const pct=Math.min(100,maxRef>0?Math.round((g.pts/maxRef)*100):0);
+    const reached=meta>0&&g.pts>=meta;
+    const bar=reached?'var(--green)':barColors[Math.min(i,barColors.length-1)];
+    const label=meta>0?`${g.pts}/${meta} pts`:` ${g.pts} pts`;
     return `<div class="rank-row">
-      <div class="rank-medal">${medals[i]||'🏅'}</div>
+      <div class="rank-medal">${reached?'🏆':medals[i]||'🏅'}</div>
       <div style="flex:1;min-width:0;">
         <div style="display:flex;align-items:center;gap:6px;">
           <div class="g-avatar" style="background:${g.color};width:22px;height:22px;font-size:8px;flex-shrink:0;">${g.initials}</div>
           <span class="rank-name">${g.name}</span>
-          <span class="rank-pts">⭐ ${g.pts}</span>
+          <span class="rank-pts" style="${reached?'color:var(--green);':''}">${reached?'✅ ':' ⭐'}${label}</span>
         </div>
-        <div class="rank-bar-wrap"><div class="rank-bar" style="width:${pct}%;background:${bar};"></div></div>
+        <div class="rank-bar-wrap">
+          <div class="rank-bar" style="width:${pct}%;background:${bar};"></div>
+        </div>
+        ${meta>0?`<div style="font-size:9px;color:var(--gray-400);margin-top:1px;text-align:right;">${pct}%${reached?' · ¡Meta alcanzada!':` · faltan ${meta-g.pts} pts`}</div>`:''}
       </div>
     </div>`;
   }).join('');
@@ -2631,6 +2652,15 @@ function importData(input) {
   };
   reader.readAsText(file);
 }
+function saveMetaPuntos() {
+  const val=parseInt(document.getElementById('cfg-meta-puntos').value);
+  if(!val||val<1){showToast('Ingresa un número válido');return;}
+  const cfg=getConfig();cfg.metaPuntos=val;saveConfig(cfg);
+  const s=document.getElementById('metaPuntosStatus');
+  if(s)s.innerHTML=`<span style="color:var(--green);">✓ Meta fijada en ${val} pts</span>`;
+  renderGestorRanking();
+  showToast(`Meta fijada: ${val} puntos ⭐`);
+}
 function saveGhConfig() {
   const cfg=getConfig();
   cfg.ghToken=document.getElementById('gh-token').value.trim();
@@ -2646,10 +2676,14 @@ function loadGhConfigUI() {
   const repo=document.getElementById('gh-repo');
   const path=document.getElementById('gh-path');
   const auto=document.getElementById('gh-autosync');
+  const meta=document.getElementById('cfg-meta-puntos');
+  const metaStatus=document.getElementById('metaPuntosStatus');
   if(tok)tok.value=cfg.ghToken||'';
   if(repo)repo.value=cfg.ghRepo||'';
   if(path)path.value=cfg.ghPath||'data/axontech.json';
   if(auto)auto.checked=!!cfg.ghAutoSync;
+  if(meta)meta.value=cfg.metaPuntos||'';
+  if(metaStatus&&cfg.metaPuntos)metaStatus.innerHTML=`<span style="color:var(--green);">✓ Meta actual: ${cfg.metaPuntos} pts</span>`;
 }
 async function syncToGitHub(silent) {
   const cfg=getConfig();
