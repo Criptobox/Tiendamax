@@ -833,6 +833,12 @@
           </div>
           <div id="metaPuntosStatus" style="font-size:11px;color:var(--gray-400);margin-top:6px;"></div>
         </div>
+        <div class="lbl">🛍️ Sincronizar productos desde TiendaMax</div>
+        <div class="card">
+          <div style="font-size:11px;color:var(--gray-400);line-height:1.6;margin-bottom:12px;">Carga automáticamente los productos, categorías y subcategorías directamente desde los archivos de TiendaMax. Los gestores, mensajeros y vales no se tocan.</div>
+          <button type="button" class="btn btn-blue btn-sm" onclick="syncFromTiendaMax()">🔄 Sincronizar desde TiendaMax</button>
+          <div id="syncTiendaMaxStatus" style="font-size:11px;margin-top:8px;"></div>
+        </div>
         <div class="lbl">💾 Datos locales (exportar / importar)</div>
         <div class="card">
           <div style="font-size:11px;color:var(--gray-400);line-height:1.6;margin-bottom:12px;">Exporta todos los datos como un archivo <code>axontech-data.json</code> para hacer copia de seguridad o moverlos a otro dispositivo. Para restaurar, importa el mismo archivo.</div>
@@ -2884,6 +2890,64 @@ function renderGestorRanking() {
   }).join('');
   c.innerHTML=rankHtml;
   rankingCache={html:rankHtml,ts:Date.now()};
+}
+
+// ══════════════════════════════════════════
+//  SYNC FROM TIENDAMAX FILES
+// ══════════════════════════════════════════
+async function syncFromTiendaMax() {
+  const statusEl = document.getElementById('syncTiendaMaxStatus');
+  statusEl.innerHTML = '<span style="color:var(--blue);">⏳ Cargando archivos...</span>';
+  try {
+    const [prodsRes, catsRes] = await Promise.all([
+      fetch('./productos.json'),
+      fetch('./categorias.json')
+    ]);
+    if (!prodsRes.ok || !catsRes.ok) throw new Error('No se encontraron los archivos');
+    const tmProds = await prodsRes.json();
+    const tmCats  = await catsRes.json();
+
+    // Build categorias
+    const catNames = tmCats.nombres || [];
+    const catMap = {};
+    const categorias = catNames.map((name, i) => {
+      const id = (i + 1) * 10;
+      catMap[name] = id;
+      return { id, name: name.charAt(0) + name.slice(1).toLowerCase() };
+    });
+
+    // Convert productos
+    const productos = tmProds.map(p => {
+      const precio = p.precioActual || 0;
+      const com    = p.comision    || 0;
+      const catId  = catMap[p.categoria] || 10;
+      const subcat = p.subcategoria || '';
+      let desc = p.descripcion || '';
+      if (subcat && !desc.includes(subcat)) desc = `[${subcat}]\n${desc}`;
+      return {
+        id:          p.id,
+        name:        p.nombre,
+        description: desc,
+        precio:      precio ? `$${precio} USD` : '',
+        stock:       p.stock || 0,
+        puntos:      Math.max(1, Math.round(com / 5)),
+        garantia:    p.garantia || '',
+        comision:    com ? `$${com} USD` : '',
+        photo:       p.imagen || '',
+        catId
+      };
+    });
+
+    saveCategorias(categorias);
+    saveProductos(productos);
+    gestoresTabDirty = true; statsTabDirty = true; rankingCache = null;
+    renderStockCategorias(); renderProductGrid();
+    statusEl.innerHTML = `<span style="color:var(--green);">✓ ${productos.length} productos y ${categorias.length} categorías cargados</span>`;
+    showToast(`✓ ${productos.length} productos importados desde TiendaMax`);
+  } catch(e) {
+    statusEl.innerHTML = `<span style="color:var(--red);">✗ ${e.message}</span>`;
+    showToast('Error al leer los archivos de TiendaMax');
+  }
 }
 
 // ══════════════════════════════════════════
