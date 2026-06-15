@@ -2434,18 +2434,7 @@ async function _tmMostrarAgenda() {
         });
     }
 
-    // ── 9. WhatsApp no configurado ───────────────────────────────────────────
-    const waNum = localStorage.getItem('whatsappNumero') || localStorage.getItem('whatsappNumber');
-    if (!waNum) {
-        tareas.push({
-            icon: '📱', urgencia: 3,
-            titulo: 'WhatsApp no configurado',
-            detalle: 'Los clientes no podrán contactarte por WhatsApp',
-            accion: 'Configurar', tab: 'configuracion', cls: 'g'
-        });
-    }
-
-    // ── 10. Campañas con seguimiento vencido (del Centro de tareas IA) ──────
+    // ── 9. Campañas con seguimiento vencido (del Centro de tareas IA) ──────
     try {
         const camps = JSON.parse(localStorage.getItem('tm_campaigns_v1') || '[]');
         const vencidas = camps.filter(c => c.followUpAt && new Date(c.followUpAt).getTime() <= Date.now() && !/hecho|cerrad|complet/i.test(c.status || ''));
