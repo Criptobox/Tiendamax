@@ -2477,7 +2477,7 @@ function tmExtractJsonObject(text) {
   const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
   function notify(msg,t){if(typeof mostrarNotificacion==='function')mostrarNotificacion(msg,t||'info');}
   function products(){try{if(Array.isArray(window.productos))return window.productos;}catch(e){}try{return JSON.parse(localStorage.getItem('productos')||'[]');}catch(e){return[];}}
-  function storeUrl(){const u=localStorage.getItem('githubUser'),r=localStorage.getItem('githubRepo');return u&&r?`https://${u}.github.io/${r}`:'https://tiendamax.org';}
+  function storeUrl(){return'https://tiendamax.org';}
   function cats(){return[...new Set(products().filter(p=>p.activo!==false&&Number(p.stock||0)>0).map(p=>p.categoria||'General').filter(Boolean))].sort();}
   function prodsByCat(cat){return products().filter(p=>p.activo!==false&&Number(p.stock||0)>0&&(p.categoria||'General')===cat);}
   function toTag(s){return String(s||'').normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-zA-Z0-9]/g,'');}
