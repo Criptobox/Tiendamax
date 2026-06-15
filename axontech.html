@@ -4,6 +4,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AXONTECH · Gestión de Ventas</title>
+  <link rel="manifest" href="axontech-manifest.json">
+  <meta name="theme-color" content="#006d8a">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="AXONTECH">
+  <link rel="apple-touch-icon" href="/iconos/icon-192.png">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
@@ -1341,15 +1348,19 @@ function renderMensajeroSelector() {
   c.innerHTML=list.map((m,idx)=>{
     const act=m.id===activeMensajeroId;
     const ini=m.name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+    const assigned=vales.filter(v=>v.mensajeroId===m.id&&v.status==='assigned').length;
     const pend=vales.filter(v=>v.mensajeroId===m.id&&v.status==='pending_payment').length;
+    const active=assigned+pend;
+    const dotColor=pend>0?'var(--orange)':'var(--blue)';
+    const badgeBg=pend>0?'var(--orange)':'var(--blue)';
     const col=GESTOR_COLORS[(idx+4)%GESTOR_COLORS.length];
     return `<div class="m-chip ${act?'active':''}" onclick="selectMensajero(${m.id})">
       <div class="g-avatar-wrap">
         <div class="g-avatar" style="background:${col};width:28px;height:28px;font-size:10px;">${ini}</div>
-        ${pend>0?`<span class="m-pend-dot"></span>`:''}
+        ${active>0?`<span class="m-pend-dot" style="background:${dotColor};"></span>`:''}
       </div>
       <span class="m-chip-name">${m.name}</span>
-      ${pend>0?`<span style="background:var(--orange);color:white;border-radius:8px;font-size:9px;font-weight:700;padding:1px 5px;margin-left:2px;">${pend}</span>`:''}
+      ${active>0?`<span style="background:${badgeBg};color:white;border-radius:8px;font-size:9px;font-weight:700;padding:1px 5px;margin-left:2px;">${active}</span>`:''}
     </div>`;
   }).join('');
 }
@@ -2874,6 +2885,9 @@ function init() {
   updateAdminBadge();updateMensajeroBadge();
   setFilter('all');
   document.getElementById('btnCatalogo').style.display='inline-flex';
+  if('serviceWorker' in navigator){
+    navigator.serviceWorker.register('./axontech-sw.js').catch(()=>{});
+  }
 }
 init();
 </script>
