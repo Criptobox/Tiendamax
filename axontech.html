@@ -242,6 +242,16 @@
     .hi-ok  { color: var(--green); font-size: 11px; font-weight: 600; }
     .add-row { display: flex; gap: 7px; }
     .add-row input { flex: 1; }
+    /* ── PRODUCTO FORM ── */
+    .pfi { padding: 8px 0; border-bottom: 1px solid var(--gray-100); }
+    .pfi:last-child { border-bottom: none; }
+    .pfi-top { display: flex; align-items: center; gap: 9px; cursor: pointer; }
+    .pfi-check { width: 17px; height: 17px; accent-color: var(--blue); cursor: pointer; flex-shrink: 0; }
+    .pfi-name { flex: 1; font-size: 13px; font-weight: 600; color: var(--gray-700); }
+    .pfi-pts-lbl { font-size: 10px; color: var(--blue); font-weight: 700; white-space: nowrap; background: var(--blue-lt); border-radius: 20px; padding: 2px 7px; }
+    .pfi-qty-row { display: flex; align-items: center; gap: 8px; margin-top: 7px; padding-left: 26px; }
+    .pfi-qty-label { font-size: 11px; color: var(--gray-400); font-weight: 600; }
+    .pfi-pts-total { font-size: 12px; color: var(--blue); font-weight: 700; margin-left: auto; }
   </style>
 </head>
 <body>
@@ -289,28 +299,33 @@
       </div>
     </div>
 
-    <div class="lbl" style="margin-top:0;">Agregar al Vale</div>
+    <div class="lbl" style="margin-top:0;">Datos del Cliente</div>
     <div class="card">
-      <div class="field" style="margin-bottom:0;">
-        <label>Busca el producto</label>
-        <div class="ac-wrap">
-          <input type="text" id="searchInput" placeholder="Escribe el nombre del producto…" autocomplete="off">
-          <div class="ac-list" id="acList"></div>
+      <div class="field">
+        <label>Nombre del cliente *</label>
+        <input type="text" id="clienteNombre" placeholder="Nombre completo" oninput="updateValePreview()">
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <div class="field" style="margin-bottom:0;">
+          <label>Teléfono</label>
+          <input type="tel" id="clienteTelefono" placeholder="Número" oninput="updateValePreview()">
+        </div>
+        <div class="field" style="margin-bottom:0;">
+          <label>Dirección / Referencia</label>
+          <input type="text" id="clienteDireccion" placeholder="Calle, número…" oninput="updateValePreview()">
         </div>
       </div>
     </div>
 
-    <div class="lbl">Vale Actual</div>
-    <div class="card">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
-        <span style="font-size:13px;font-weight:700;">Productos</span>
-        <button class="btn btn-ghost btn-sm" onclick="clearVale()">Limpiar</button>
-      </div>
-      <div id="valeItems">
-        <div class="es"><div class="es-icon">🧾</div><div class="es-text">Agrega productos al vale</div></div>
-      </div>
-      <div id="valeTotalRow" style="display:none;">
-        <div class="vale-total">
+    <div class="lbl" style="display:flex;justify-content:space-between;align-items:center;">
+      <span>Productos del Vale</span>
+      <button class="btn btn-ghost btn-sm" onclick="resetForm()" style="font-size:10px;padding:3px 9px;letter-spacing:0;">↺ Limpiar</button>
+    </div>
+    <div class="card" id="productosForm" style="padding:6px 12px;"></div>
+
+    <div id="valeTotalRow" style="display:none;">
+      <div class="card" style="padding:12px 14px;">
+        <div class="vale-total" style="padding:0;border:none;">
           <div><div class="vt-pts" id="totalPts">0 pts</div><div class="vt-lbl">PUNTOS</div></div>
           <div><div class="vt-uds" id="totalUds">0 uds.</div><div class="vt-lbl" style="text-align:right;">UNIDADES</div></div>
         </div>
@@ -722,95 +737,97 @@ function selectGestor(id) {
 }
 
 // ══════════════════════════════════════════
-//  AUTOCOMPLETE
+//  FORMULARIO DE VALE (plantilla fija)
 // ══════════════════════════════════════════
-document.getElementById('searchInput').addEventListener('input', function() {
-  const q = this.value.trim().toLowerCase();
-  const list = document.getElementById('acList');
-  if (!q) { list.style.display='none'; return; }
-  const matches = PRODUCTOS_BASE.filter(p => p.name.toLowerCase().includes(q));
-  if (!matches.length) { list.style.display='none'; return; }
-  list.innerHTML = matches.map(p => {
+function renderProductosForm() {
+  const container = document.getElementById('productosForm');
+  if (!container) return;
+  container.innerHTML = PRODUCTOS_BASE.map(p => {
     const cat = catOf(p.cat);
-    const stock = stockState[p.id];
-    const sLabel = stock===0
-      ? '<span style="color:var(--red)">Sin stock</span>'
-      : `<span style="color:var(--green)">${stock} en stock</span>`;
-    return `<div class="ac-item" onclick="addToVale(${p.id})">
-      <div>
-        <div class="ac-name">${p.name}</div>
-        <div class="ac-meta">${cat?cat.name+' · ':''}${sLabel}</div>
+    return `<div class="pfi" id="pfi-${p.id}">
+      <div class="pfi-top" onclick="toggleProduct(${p.id})">
+        <input class="pfi-check" type="checkbox" id="pcheck-${p.id}" onclick="event.stopPropagation();toggleProduct(${p.id})">
+        <span class="pfi-name">${p.name}</span>
+        <span class="pfi-pts-lbl">+${cat?cat.pts:0}pts/ud</span>
       </div>
-      <div class="ac-pts">+${cat?cat.pts:0} pts</div>
+      <div class="pfi-qty-row" id="pqty-row-${p.id}" style="display:none;">
+        <span class="pfi-qty-label">Cantidad:</span>
+        <button class="qty-btn" onclick="changeFormQty(${p.id},-1)">−</button>
+        <span class="qty-n" id="pqty-n-${p.id}">1</span>
+        <button class="qty-btn" onclick="changeFormQty(${p.id},1)">+</button>
+        <span class="pfi-pts-total" id="pqty-pts-${p.id}">+${cat?cat.pts:0} pts</span>
+      </div>
     </div>`;
   }).join('');
-  list.style.display = 'block';
-});
-
-document.addEventListener('click', e => {
-  if (!e.target.closest('.ac-wrap')) document.getElementById('acList').style.display='none';
-});
-
-// ══════════════════════════════════════════
-//  VALE (Gestor side)
-// ══════════════════════════════════════════
-function addToVale(pid) {
-  if (!activeGestorId) { showToast('Selecciona un gestor primero'); document.getElementById('acList').style.display='none'; return; }
-  const p = PRODUCTOS_BASE.find(x => x.id===pid);
-  if (!p) return;
-  if (stockState[pid]<=0) { showToast('Sin stock disponible'); document.getElementById('acList').style.display='none'; return; }
-  const ex = currentValeItems.find(x => x.product.id===pid);
-  if (ex) {
-    if (ex.qty >= stockState[pid]) { showToast('Stock insuficiente'); }
-    else { ex.qty++; }
-  } else {
-    currentValeItems.push({ product:p, qty:1 });
-  }
-  document.getElementById('searchInput').value='';
-  document.getElementById('acList').style.display='none';
-  renderVale();
 }
 
-function changeQty(pid, d) {
-  const item = currentValeItems.find(x => x.product.id===pid);
-  if (!item) return;
-  item.qty = Math.max(0, item.qty+d);
-  if (item.qty===0) currentValeItems = currentValeItems.filter(x=>x.product.id!==pid);
-  renderVale();
+function toggleProduct(pid) {
+  const cb = document.getElementById('pcheck-'+pid);
+  if (!cb) return;
+  cb.checked = !cb.checked;
+  const qtyRow = document.getElementById('pqty-row-'+pid);
+  if (qtyRow) qtyRow.style.display = cb.checked ? 'flex' : 'none';
+  updateValePreview();
 }
 
-function removeFromVale(pid) {
-  currentValeItems = currentValeItems.filter(x=>x.product.id!==pid);
-  renderVale();
+function changeFormQty(pid, d) {
+  const el = document.getElementById('pqty-n-'+pid);
+  if (!el) return;
+  const newQty = Math.max(1, parseInt(el.textContent) + d);
+  el.textContent = newQty;
+  const cat = catOf(PRODUCTOS_BASE.find(p=>p.id===pid)?.cat);
+  const ptsEl = document.getElementById('pqty-pts-'+pid);
+  if (ptsEl) ptsEl.textContent = `+${(cat?cat.pts:0)*newQty} pts`;
+  updateValePreview();
 }
 
-function clearVale() { currentValeItems=[]; renderVale(); }
+function getFormItems() {
+  return PRODUCTOS_BASE
+    .filter(p => document.getElementById('pcheck-'+p.id)?.checked)
+    .map(p => ({
+      product: p,
+      qty: parseInt(document.getElementById('pqty-n-'+p.id)?.textContent || '1'),
+    }));
+}
 
-function renderVale() {
-  const container = document.getElementById('valeItems');
+function getClienteData() {
+  return {
+    nombre:    (document.getElementById('clienteNombre')?.value || '').trim(),
+    telefono:  (document.getElementById('clienteTelefono')?.value || '').trim(),
+    direccion: (document.getElementById('clienteDireccion')?.value || '').trim(),
+  };
+}
+
+function resetForm() {
+  PRODUCTOS_BASE.forEach(p => {
+    const cb = document.getElementById('pcheck-'+p.id);
+    if (cb) cb.checked = false;
+    const qr = document.getElementById('pqty-row-'+p.id);
+    if (qr) qr.style.display = 'none';
+    const qn = document.getElementById('pqty-n-'+p.id);
+    if (qn) qn.textContent = '1';
+    const qp = document.getElementById('pqty-pts-'+p.id);
+    const cat = catOf(p.cat);
+    if (qp) qp.textContent = `+${cat?cat.pts:0} pts`;
+  });
+  const cn = document.getElementById('clienteNombre');    if (cn) cn.value='';
+  const ct = document.getElementById('clienteTelefono');  if (ct) ct.value='';
+  const cd = document.getElementById('clienteDireccion'); if (cd) cd.value='';
+  updateValePreview();
+}
+
+function updateValePreview() {
+  const items   = getFormItems();
+  const cliente = getClienteData();
   const totalRow  = document.getElementById('valeTotalRow');
   const actCard   = document.getElementById('valeActionsCard');
 
-  if (!currentValeItems.length) {
-    container.innerHTML='<div class="es"><div class="es-icon">🧾</div><div class="es-text">Agrega productos al vale</div></div>';
+  if (!items.length) {
     totalRow.style.display='none'; actCard.style.display='none'; return;
   }
 
   let pts=0, qty=0;
-  container.innerHTML = currentValeItems.map(item => {
-    const p = ptsOf(item.product.cat)*item.qty;
-    pts+=p; qty+=item.qty;
-    return `<div class="vale-item">
-      <div class="vi-name">${item.product.name}</div>
-      <div class="qty-row">
-        <button class="qty-btn" onclick="changeQty(${item.product.id},-1)">−</button>
-        <span class="qty-n">${item.qty}</span>
-        <button class="qty-btn" onclick="changeQty(${item.product.id},1)">+</button>
-      </div>
-      <span class="vi-pts">+${p}pts</span>
-      <button class="vi-del" onclick="removeFromVale(${item.product.id})">×</button>
-    </div>`;
-  }).join('');
+  items.forEach(item => { pts += ptsOf(item.product.cat)*item.qty; qty += item.qty; });
 
   totalRow.style.display='block';
   document.getElementById('totalPts').textContent = pts+' pts';
@@ -818,31 +835,36 @@ function renderVale() {
 
   actCard.style.display='block';
   const g = gestorOf(activeGestorId);
-  document.getElementById('valePreviewText').textContent = buildValeText(g, currentValeItems, pts, qty);
+  document.getElementById('valePreviewText').textContent = buildValeText(g, items, cliente, pts, qty);
 }
 
-function buildValeText(g, items, totalPts, totalQty) {
-  return [
+function buildValeText(g, items, cliente, totalPts, totalQty) {
+  const lines = [
     '══════════════════════════',
     '         AXONTECH',
     '       VALE DE VENTA',
     '══════════════════════════',
-    `Gestor : ${g?g.name:'—'}`,
-    `Fecha  : ${new Date().toLocaleDateString('es-ES')}  ${new Date().toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'})}`,
-    '──────────────────────────',
-    ...items.map(item => {
-      const p = ptsOf(item.product.cat)*item.qty;
-      return `• ${item.product.name}\n  x${item.qty}  →  +${p} pts`;
-    }),
-    '──────────────────────────',
-    `PUNTOS TOTALES : ${totalPts} pts`,
-    `UNIDADES       : ${totalQty}`,
-    '══════════════════════════',
-  ].join('\n');
+    `Gestor   : ${g?g.name:'—'}`,
+    `Fecha    : ${new Date().toLocaleDateString('es-ES')}  ${new Date().toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'})}`,
+  ];
+  if (cliente.nombre)    lines.push(`Cliente  : ${cliente.nombre}`);
+  if (cliente.telefono)  lines.push(`Teléfono : ${cliente.telefono}`);
+  if (cliente.direccion) lines.push(`Dirección: ${cliente.direccion}`);
+  lines.push('──────────────────────────');
+  items.forEach(item => {
+    const p = ptsOf(item.product.cat)*item.qty;
+    lines.push(`• ${item.product.name}\n  x${item.qty}  →  +${p} pts`);
+  });
+  lines.push('──────────────────────────');
+  lines.push(`PUNTOS TOTALES : ${totalPts} pts`);
+  lines.push(`UNIDADES       : ${totalQty}`);
+  lines.push('══════════════════════════');
+  return lines.join('\n');
 }
 
-function buildShareText(g, m, items, totalQty) {
-  return [
+function buildShareText(g, m, v) {
+  const qty = v.items.reduce((s,i)=>s+i.qty,0);
+  const lines = [
     '══════════════════════════',
     '         AXONTECH',
     '       VALE DE ENTREGA',
@@ -850,12 +872,16 @@ function buildShareText(g, m, items, totalQty) {
     `Gestor    : ${g?g.name:'—'}`,
     `Mensajero : ${m?m.name:'—'}`,
     `Fecha     : ${new Date().toLocaleDateString('es-ES')}  ${new Date().toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'})}`,
-    '──────────────────────────',
-    ...items.map(item => `• ${item.name} x${item.qty}`),
-    '──────────────────────────',
-    `TOTAL : ${totalQty} unidad${totalQty!==1?'es':''}`,
-    '══════════════════════════',
-  ].join('\n');
+  ];
+  if (v.cliente?.nombre)    lines.push(`Cliente   : ${v.cliente.nombre}`);
+  if (v.cliente?.telefono)  lines.push(`Teléfono  : ${v.cliente.telefono}`);
+  if (v.cliente?.direccion) lines.push(`Dirección : ${v.cliente.direccion}`);
+  lines.push('──────────────────────────');
+  v.items.forEach(item => lines.push(`• ${item.name} x${item.qty}`));
+  lines.push('──────────────────────────');
+  lines.push(`TOTAL : ${qty} unidad${qty!==1?'es':''}`);
+  lines.push('══════════════════════════');
+  return lines.join('\n');
 }
 
 function copyVale() {
@@ -866,47 +892,45 @@ function copyVale() {
 
 // SEND VALE → Admin inbox
 function sendVale() {
-  if (!currentValeItems.length) { showToast('El vale está vacío'); return; }
-  if (!activeGestorId) { showToast('Selecciona un gestor'); return; }
+  const items   = getFormItems();
+  const cliente = getClienteData();
 
-  const g = gestorOf(activeGestorId);
-  const pts = currentValeItems.reduce((s,i)=>s+ptsOf(i.product.cat)*i.qty, 0);
-  const qty = currentValeItems.reduce((s,i)=>s+i.qty, 0);
+  if (!items.length)      { showToast('Marca al menos un producto'); return; }
+  if (!activeGestorId)    { showToast('Selecciona tu nombre primero'); return; }
+  if (!cliente.nombre)    { showToast('Escribe el nombre del cliente'); document.getElementById('clienteNombre').focus(); return; }
+
+  const g   = gestorOf(activeGestorId);
+  const pts = items.reduce((s,i)=>s+ptsOf(i.product.cat)*i.qty, 0);
+  const qty = items.reduce((s,i)=>s+i.qty, 0);
 
   const vale = {
-    id:       Date.now(),
-    gestorId: activeGestorId,
-    ts:       new Date().toISOString(),
-    items:    currentValeItems.map(i=>({ id:i.product.id, name:i.product.name, cat:i.product.cat, qty:i.qty })),
+    id:         Date.now(),
+    gestorId:   activeGestorId,
+    ts:         new Date().toISOString(),
+    cliente,
+    items:      items.map(i=>({ id:i.product.id, name:i.product.name, cat:i.product.cat, qty:i.qty })),
     pts,
-    valeText: buildValeText(g, currentValeItems, pts, qty),
-    status:   'pending',
+    valeText:   buildValeText(g, items, cliente, pts, qty),
+    status:     'pending',
     mensajeroId: null,
     confirmedTs: null,
-    isNew:    true,
+    isNew:      true,
   };
-
-  // Descontar stock
-  currentValeItems.forEach(item=>{ stockState[item.product.id]-=item.qty; });
-  saveStock();
 
   const all = getVales();
   all.push(vale);
   saveVales(all);
 
-  // Reset
-  clearVale();
+  resetForm();
   renderGestores();
   renderGestorMyVales();
   updateAdminBadge();
   playSound('vale');
-  showToast(`Vale enviado al administrador ✓`);
+  showToast('Vale enviado al administrador ✓');
 
-  // If admin is active, notify
   if (adminActive) {
-    const banner = document.getElementById('notifBanner');
     document.getElementById('notifBannerText').textContent = `${g.name} acaba de enviar un vale`;
-    banner.classList.add('show');
+    document.getElementById('notifBanner').classList.add('show');
     renderInbox();
   }
 }
@@ -1133,8 +1157,7 @@ function updateSharePreview() {
   const g = gestorOf(v.gestorId);
   const mId = parseInt(document.getElementById('mensajeroSelect').value);
   const m = mensajeroOf(mId);
-  const qty = v.items.reduce((s,i)=>s+i.qty,0);
-  document.getElementById('shareValePreview').textContent = buildShareText(g, m, v.items, qty);
+  document.getElementById('shareValePreview').textContent = buildShareText(g, m, v);
 }
 
 function closeShareModal() {
@@ -1345,6 +1368,7 @@ function init() {
   }, 10000);
   renderGestores();
   renderCategorias();
+  renderProductosForm();
   renderGestorMyVales();
   updateAdminBadge();
   setFilter('all');
