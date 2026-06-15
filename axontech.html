@@ -1216,7 +1216,7 @@ function changeMensajero() {
 function renderMensajeroVales() {
   const c=document.getElementById('mensajeroValesList');if(!c)return;
   if(!activeMensajeroId){
-    c.innerHTML='<div class="es"><div class="es-icon">🛵</div><div class="es-text">Selecciona tu nombre para ver tus entregas</div></div>';return;
+    c.innerHTML='<div class="es"><div class="es-icon">🛵</div><div class="es-text">Selecciona un mensajero para ver sus entregas</div></div>';return;
   }
   const porEntregar=getVales().filter(v=>v.mensajeroId===activeMensajeroId&&v.status==='assigned').reverse();
   const entregados=getVales().filter(v=>v.mensajeroId===activeMensajeroId&&v.status==='delivered').reverse();
