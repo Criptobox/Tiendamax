@@ -21,14 +21,7 @@
     .brand-name { font-size: 16px; font-weight: 800; letter-spacing: 3px; }
     .brand-sub  { font-size: 9px; color: rgba(255,255,255,.4); letter-spacing: 2px; }
 
-    .mode-tabs { display: flex; gap: 4px; background: rgba(0,0,0,.25); border-radius: 9px; padding: 3px; margin: 0 auto; }
-    .mode-tab {
-      background: transparent; border: none; color: rgba(255,255,255,.55);
-      padding: 6px 16px; border-radius: 7px; font-size: 13px; font-weight: 600;
-      cursor: pointer; transition: all .15s; display: flex; align-items: center; gap: 7px;
-    }
-    .mode-tab.active { background: white; color: var(--blue-dk); }
-    .mode-tab:hover:not(.active) { background: rgba(255,255,255,.1); color: white; }
+    #btnAdminAccess:hover { background: rgba(255,255,255,.16) !important; color: rgba(255,255,255,.75) !important; }
     .notif-badge {
       background: var(--red); color: white; border-radius: 20px;
       font-size: 10px; font-weight: 800; padding: 1px 6px; min-width: 18px; text-align: center;
@@ -263,18 +256,15 @@
     </div>
   </div>
 
-  <div class="mode-tabs">
-    <button class="mode-tab active" id="tabGestor" onclick="switchMode('gestor')">Gestores</button>
-    <button class="mode-tab" id="tabAdmin" onclick="switchMode('admin')">
-      🔒 Admin
-      <span class="notif-badge" id="adminBadge">0</span>
-    </button>
-  </div>
+  <div id="headerGestorName" style="font-size:13px;color:rgba(255,255,255,.55);margin-left:4px;"></div>
 
   <div class="header-right">
     <span class="admin-session-label" id="adminLabel">● Admin activo</span>
     <button class="btn-logout" id="btnLogout" onclick="logoutAdmin()">Cerrar sesión</button>
     <div class="header-date" id="headerDate"></div>
+    <button id="btnAdminAccess" onclick="switchMode('admin')" title="Acceso administrador" style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.45);border-radius:7px;padding:5px 9px;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:5px;transition:all .15s;">
+      🔒 <span class="notif-badge" id="adminBadge" style="margin:0;">0</span>
+    </button>
   </div>
 </header>
 
@@ -292,10 +282,10 @@
   <!-- Col 2: Vale -->
   <div class="col col-mid">
     <div class="active-banner" id="gestorBanner">
-      <div class="g-avatar" id="bannerAvatar" style="width:38px;height:38px;font-size:13px;">?</div>
+      <div class="g-avatar" id="bannerAvatar" style="width:42px;height:42px;font-size:15px;background:var(--gray-300);">?</div>
       <div class="ab-info">
-        <div class="ab-lbl">GESTOR ACTIVO</div>
-        <div class="ab-name" id="bannerName">Selecciona un gestor →</div>
+        <div class="ab-lbl" id="bannerLbl">Selecciona tu nombre en la lista</div>
+        <div class="ab-name" id="bannerName" style="font-size:16px;">—</div>
       </div>
     </div>
 
@@ -595,16 +585,14 @@ function switchMode(mode) {
   } else {
     document.getElementById('layoutGestor').classList.add('active');
     document.getElementById('layoutAdmin').classList.remove('active');
-    document.getElementById('tabGestor').classList.add('active');
-    document.getElementById('tabAdmin').classList.remove('active');
+    document.getElementById('btnAdminAccess').style.display = 'flex';
   }
 }
 
 function activateAdminMode() {
   document.getElementById('layoutAdmin').classList.add('active');
   document.getElementById('layoutGestor').classList.remove('active');
-  document.getElementById('tabAdmin').classList.add('active');
-  document.getElementById('tabGestor').classList.remove('active');
+  document.getElementById('btnAdminAccess').style.display = 'none';
   renderInbox();
   renderMensajeros();
   renderConfirmados();
@@ -723,9 +711,12 @@ function renderGestorMyVales() {
 function selectGestor(id) {
   activeGestorId = id;
   const g = gestorOf(id);
-  document.getElementById('bannerAvatar').textContent = g.initials;
-  document.getElementById('bannerAvatar').style.background = g.color;
+  const av = document.getElementById('bannerAvatar');
+  av.textContent = g.initials;
+  av.style.background = g.color;
+  document.getElementById('bannerLbl').textContent = 'Hola, estás en tu área';
   document.getElementById('bannerName').textContent = g.name;
+  document.getElementById('headerGestorName').textContent = '· ' + g.name;
   renderGestores();
   renderGestorMyVales();
 }
