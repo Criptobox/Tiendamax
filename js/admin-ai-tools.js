@@ -2484,7 +2484,8 @@ function tmExtractJsonObject(text) {
 
   // Emoji decorator based on product name keywords
   function emojiFor(nombre,cat){
-    const n=String(nombre||'').toLowerCase(), c=String(cat||'').toLowerCase();
+    const norm=s=>String(s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
+    const n=norm(nombre), c=norm(cat);
     if(/wifi|router|enrutador|inalámb|inalamb|répetidor|repetidor/.test(n))return'📡';
     if(/audif|auricular|earphone|headphone|tws|earbuds/.test(n))return'🎧';
     if(/parlant|altavoz|bocina|speaker/.test(n))return'🔊';
