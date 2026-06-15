@@ -783,6 +783,16 @@
           </div>
           <div id="ghSyncStatus" style="margin-top:10px;font-size:11px;min-height:16px;"></div>
         </div>
+        <div class="lbl">💾 Datos locales (exportar / importar)</div>
+        <div class="card">
+          <div style="font-size:11px;color:var(--gray-400);line-height:1.6;margin-bottom:12px;">Exporta todos los datos como un archivo <code>axontech-data.json</code> para hacer copia de seguridad o moverlos a otro dispositivo. Para restaurar, importa el mismo archivo.</div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <button class="btn btn-blue btn-sm" onclick="exportData()">⬇️ Exportar datos</button>
+            <button class="btn btn-ghost btn-sm" onclick="document.getElementById('importFileInput').click()">⬆️ Importar datos</button>
+            <input type="file" id="importFileInput" accept=".json" style="display:none;" onchange="importData(this)">
+          </div>
+          <div style="font-size:10px;color:var(--gray-400);margin-top:8px;">⚠️ Importar sobreescribe todos los datos locales actuales</div>
+        </div>
         <div class="lbl">🔐 Contraseña Administrador</div>
         <div class="card">
           <label class="field-lbl">Nueva contraseña (mín. 4 caracteres)</label>
@@ -2553,6 +2563,51 @@ function renderGestorRanking() {
 // ══════════════════════════════════════════
 //  GITHUB SYNC
 // ══════════════════════════════════════════
+function exportData() {
+  const data={
+    gestores:getGestores(),mensajeros:getMensajeros(),
+    productos:getProductos(),categorias:getCategorias(),
+    vales:getVales(),notifs:getNotifs(),
+    timestamp:new Date().toISOString(),version:1
+  };
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;a.download=`axontech-data-${new Date().toISOString().slice(0,10)}.json`;
+  document.body.appendChild(a);a.click();document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showToast('Datos exportados ✓');
+}
+function importData(input) {
+  const file=input.files[0];if(!file)return;
+  if(!confirm(`¿Importar datos desde "${file.name}"?\nEsto reemplazará todos los datos locales actuales.`)){input.value='';return;}
+  const reader=new FileReader();
+  reader.onload=e=>{
+    try {
+      const data=JSON.parse(e.target.result);
+      if(data.gestores)saveGestores(data.gestores);
+      if(data.mensajeros)saveMensajeros(data.mensajeros);
+      if(data.productos)saveProductos(data.productos);
+      if(data.categorias)saveCategorias(data.categorias);
+      if(data.vales)saveVales(data.vales);
+      if(data.notifs)saveNotifs(data.notifs);
+      // Reload UI
+      activeGestorId=null;activeMensajeroId=null;selectedValeId=null;adminGestorFilter=null;
+      expandedCatalogId=null;activeComisionGestorId=null;
+      renderGestores();renderGestorRanking();renderGestorNotifs();
+      renderAdminGestores();renderInbox();renderValeDetail();
+      renderAdminGestoresList();renderComisiones();
+      renderMensajeros();renderMensajeroSelector();
+      renderStockCategorias();renderProductGrid();
+      updateAdminBadge();updateMensajeroBadge();
+      showToast('Datos importados correctamente ✓');
+    } catch(err) {
+      showToast('Error: archivo JSON inválido');
+    }
+    input.value='';
+  };
+  reader.readAsText(file);
+}
 function saveGhConfig() {
   const cfg=getConfig();
   cfg.ghToken=document.getElementById('gh-token').value.trim();
