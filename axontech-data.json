@@ -1,0 +1,95 @@
+{
+  "version": 1,
+  "timestamp": "2026-06-15T00:00:00.000Z",
+  "categorias": [
+    { "id": 10, "name": "Electrónica" },
+    { "id": 20, "name": "Accesorios" },
+    { "id": 30, "name": "Computación" }
+  ],
+  "productos": [
+    {
+      "id": 100,
+      "name": "iPhone 15 Pro",
+      "description": "Apple 256GB Titanio\n• Chip A17 Pro\n• Cámara 48MP\n• Batería 29h",
+      "precio": "$950 USD",
+      "stock": 5,
+      "puntos": 10,
+      "garantia": "6 meses",
+      "comision": "$15 USD",
+      "photo": "",
+      "catId": 10
+    },
+    {
+      "id": 101,
+      "name": "Samsung Galaxy S24",
+      "description": "Android 256GB\n• Pantalla 6.2\" AMOLED\n• Snapdragon 8 Gen 3",
+      "precio": "$780 USD",
+      "stock": 3,
+      "puntos": 8,
+      "garantia": "6 meses",
+      "comision": "$12 USD",
+      "photo": "",
+      "catId": 10
+    },
+    {
+      "id": 102,
+      "name": "AirPods Pro 2",
+      "description": "Auriculares inalámbricos\n• Cancelación activa de ruido\n• Estuche MagSafe",
+      "precio": "$180 USD",
+      "stock": 12,
+      "puntos": 5,
+      "garantia": "3 meses",
+      "comision": "$5 USD",
+      "photo": "",
+      "catId": 20
+    },
+    {
+      "id": 103,
+      "name": "Funda iPhone 15",
+      "description": "Silicona premium\n• Protección antigolpes\n• Varios colores",
+      "precio": "$15 USD",
+      "stock": 25,
+      "puntos": 1,
+      "garantia": "",
+      "comision": "$1 USD",
+      "photo": "",
+      "catId": 20
+    },
+    {
+      "id": 104,
+      "name": "Laptop HP Victus",
+      "description": "Core i5, 16GB RAM, 512GB SSD\n• Pantalla 15.6\" FHD\n• GPU RTX 3050",
+      "precio": "$680 USD",
+      "stock": 2,
+      "puntos": 15,
+      "garantia": "12 meses",
+      "comision": "$20 USD",
+      "photo": "",
+      "catId": 30
+    },
+    {
+      "id": 105,
+      "name": "Cargador MagSafe 65W",
+      "description": "Original Apple 65W\n• Compatible MagSafe\n• Cable incluido",
+      "precio": "$45 USD",
+      "stock": 0,
+      "puntos": 2,
+      "garantia": "3 meses",
+      "comision": "$2 USD",
+      "photo": "",
+      "catId": 20
+    }
+  ],
+  "gestores": [
+    { "id": 1, "name": "Carlos Mendoza",  "initials": "CM", "color": "#2563EB", "password": "AX4K2P" },
+    { "id": 2, "name": "Ana López",       "initials": "AL", "color": "#7C3AED", "password": "BN7R3Q" },
+    { "id": 3, "name": "Pedro García",    "initials": "PG", "color": "#059669", "password": "CZ5M8V" },
+    { "id": 4, "name": "Laura Torres",    "initials": "LT", "color": "#DC2626", "password": "DW2N6X" }
+  ],
+  "mensajeros": [
+    { "id": 50, "name": "Jorge Ramírez" },
+    { "id": 51, "name": "Luis Herrera"  }
+  ],
+  "vales": [],
+  "notifs": []
+}
