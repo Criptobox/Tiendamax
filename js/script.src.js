@@ -7940,6 +7940,34 @@ async function cargarTasaDesdeGitHub() {
             verificarOfertasYMostrarBanner();
         }
     } catch(e) {}
+
+    // Actualizar UI del panel admin si está abierto
+    const tasa = parseFloat(localStorage.getItem('tasaMN') || '0');
+    const inputA = document.getElementById('adminTasaMN');
+    if (inputA && tasa > 0 && !inputA.matches(':focus')) inputA.value = tasa;
+}
+
+async function tmRefrescarTasaElToque() {
+    const btn = document.getElementById('btnRefrescarTasa');
+    const status = document.getElementById('tasaMNStatus');
+    const fuente = document.getElementById('tasaElToqueFuente');
+    if (btn) { btn.textContent = '⏳ Consultando elTOQUE…'; btn.disabled = true; }
+    const prevTasa = parseFloat(localStorage.getItem('tasaMN') || '0');
+    try {
+        await cargarTasaDesdeGitHub();
+        const newTasa = parseFloat(localStorage.getItem('tasaMN') || '0');
+        if (newTasa > 0) {
+            const cambio = prevTasa > 0 ? (newTasa > prevTasa ? ` ▲ subió ${Math.round(newTasa - prevTasa)}` : newTasa < prevTasa ? ` ▼ bajó ${Math.round(prevTasa - newTasa)}` : ' · sin cambio') : '';
+            if (status) { status.textContent = `✅ Tasa actualizada: ${newTasa} MN/USD${cambio}`; status.style.color = '#2ECC71'; }
+            if (fuente) fuente.textContent = `Fuente: config.json · ${new Date().toLocaleTimeString('es-CU')}`;
+        } else {
+            if (status) { status.textContent = '⚠️ No se pudo obtener la tasa. Revisa la conexión.'; status.style.color = '#e74c3c'; }
+        }
+    } catch(e) {
+        if (status) { status.textContent = '⚠️ Error al consultar. Intenta de nuevo.'; status.style.color = '#e74c3c'; }
+    } finally {
+        if (btn) { btn.textContent = '🔄 Refrescar desde elTOQUE'; btn.disabled = false; }
+    }
 }
 
 function setCurrency(moneda) {
@@ -8467,6 +8495,30 @@ window.tmGrantAdminAccess = function () {
 
 // Cargar tasa actualizada desde GitHub al iniciar
 cargarTasaDesdeGitHub();
+
+// Refrescar tasa cada 20 min y al volver a la pestaña
+(function() {
+    let _lastTasa = parseFloat(localStorage.getItem('tasaMN') || '0');
+    async function _checkTasa() {
+        const prevTasa = parseFloat(localStorage.getItem('tasaMN') || '0');
+        await cargarTasaDesdeGitHub();
+        const newTasa = parseFloat(localStorage.getItem('tasaMN') || '0');
+        if (newTasa > 0 && prevTasa > 0 && Math.abs(newTasa - prevTasa) >= 1) {
+            const subio = newTasa > prevTasa;
+            const diff = Math.round(Math.abs(newTasa - prevTasa));
+            if (typeof mostrarNotificacion === 'function') {
+                mostrarNotificacion(
+                    `💱 Tasa actualizada: 1 USD = ${newTasa} MN (${subio ? '▲' : '▼'} ${diff})`,
+                    subio ? 'warning' : 'info'
+                );
+            }
+        }
+    }
+    setInterval(_checkTasa, 20 * 60 * 1000);
+    document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible') _checkTasa();
+    });
+})();
 
 // Guardar tasa desde panel admin → localStorage + GitHub
 async function guardarTasaMNAdmin() {
