@@ -1146,7 +1146,7 @@ function renderGestorNotifs() {
       const left=parseInt(parts[1]);
       msg=`<b>Se vendió${qty>1?` <span style="color:var(--blue);font-weight:800;">${qty}</span>`:''}</b> ${n.productName}${!isNaN(left)?` — quedan <b style="color:${left===0?'var(--red)':left<=LOW_STOCK_THRESHOLD?'var(--yellow)':'var(--green)'};">${left}</b>`:''}`;
     } else if(n.type==='vale_assigned'){
-      msg=`Tu venta <b>${n.productName}</b> ya está con el mensajero${n.extra?` <b style="color:var(--blue);">${n.extra}</b>`:''}`;
+      msg=`🛵 Tu venta está con el mensajero`;
     } else if(n.type==='vale_confirmed'){
       msg=`<b>¡Venta completada! ✅</b> · ${n.productName}${n.extra?` <span style="color:var(--gray-400);font-size:10px;">(${n.extra})</span>`:''}`;
     } else if(n.type==='out_of_stock'){
