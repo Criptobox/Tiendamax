@@ -2470,3 +2470,118 @@ function tmExtractJsonObject(text) {
   document.addEventListener('DOMContentLoaded',()=>setTimeout(boot,1100));
   document.addEventListener('click',e=>{if(e.target.closest('[data-arg="herramientas"],[data-tab="herramientas"]'))setTimeout(boot,300);});
 })();
+
+// ── tm-publicar-categoria-v1 ─────────────────────────────────────
+(function(){
+  const $=(s,r=document)=>r.querySelector(s);
+  const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  function notify(msg,t){if(typeof mostrarNotificacion==='function')mostrarNotificacion(msg,t||'info');}
+  function products(){try{if(Array.isArray(window.productos))return window.productos;}catch(e){}try{return JSON.parse(localStorage.getItem('productos')||'[]');}catch(e){return[];}}
+  function storeUrl(){const u=localStorage.getItem('githubUser'),r=localStorage.getItem('githubRepo');return u&&r?`https://${u}.github.io/${r}`:'https://tiendamax.org';}
+  function cats(){return[...new Set(products().filter(p=>p.activo!==false&&Number(p.stock||0)>0).map(p=>p.categoria||'General').filter(Boolean))].sort();}
+  function prodsByCat(cat){return products().filter(p=>p.activo!==false&&Number(p.stock||0)>0&&(p.categoria||'General')===cat);}
+  function toTag(s){return String(s||'').normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-zA-Z0-9]/g,'');}
+  function hashtags(cat,prods){
+    const tags=new Set(['TiendaMax','Cuba']);
+    const ct=toTag(cat); if(ct) tags.add(ct);
+    prods.slice(0,15).forEach(p=>{
+      if(p.id) tags.add('prod'+p.id);
+      String(p.nombre||'').split(/\s+/).filter(w=>toTag(w).length>3).slice(0,2).forEach(w=>{const t=toTag(w);if(t.length>3)tags.add(t.charAt(0).toUpperCase()+t.slice(1).toLowerCase());});
+    });
+    return[...tags].map(t=>'#'+t).join(' ');
+  }
+  function buildText(cat){
+    const prods=prodsByCat(cat); if(!prods.length)return '';
+    const sep='━'.repeat(22);
+    const header=`🏪 TIENDAMAX — ${String(cat).toUpperCase()}\n${sep}\n\n`;
+    const lines=prods.map(p=>`✅ ${p.nombre} — $${Number(p.precioActual||0).toFixed(2)} USD`).join('\n');
+    const footer=`\n\n📲 Escríbenos por WhatsApp para pedir\n🔗 ${storeUrl()}\n\n${hashtags(cat,prods)}`;
+    return header+lines+footer;
+  }
+  function roundRect(ctx,x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
+  async function genImg(cat){
+    const prods=prodsByCat(cat); if(!prods.length)return null;
+    const W=1080,H=1080,c=document.createElement('canvas');c.width=W;c.height=H;const ctx=c.getContext('2d');
+    const g=ctx.createLinearGradient(0,0,W,H);g.addColorStop(0,'#0d0a07');g.addColorStop(.5,'#1a0f06');g.addColorStop(1,'#2b160c');
+    ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+    ctx.strokeStyle='rgba(201,169,110,.55)';ctx.lineWidth=6;roundRect(ctx,28,28,W-56,H-56,36);ctx.stroke();
+    ctx.fillStyle='#FF6B35';ctx.fillRect(60,58,W-120,8);
+    ctx.textAlign='center';
+    ctx.fillStyle='#FF6B35';ctx.font='bold 58px system-ui,Arial,sans-serif';ctx.fillText('TIENDAMAX',W/2,148);
+    ctx.fillStyle='#fff';ctx.font='bold 42px system-ui,Arial,sans-serif';ctx.fillText(String(cat).toUpperCase(),W/2,210);
+    ctx.strokeStyle='rgba(255,107,53,.35)';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(80,235);ctx.lineTo(W-80,235);ctx.stroke();
+    const max=Math.min(prods.length,13);const lh=Math.min(58,Math.floor((H-370)/max));
+    let y=280;
+    for(let i=0;i<max;i++){
+      const p=prods[i];const price='$'+Number(p.precioActual||0).toFixed(2)+' USD';
+      const name=String(p.nombre||'').length>38?String(p.nombre).slice(0,37)+'…':p.nombre||'';
+      ctx.textAlign='left';ctx.fillStyle='#4ade80';ctx.font='bold '+(lh-12)+'px system-ui,Arial,sans-serif';ctx.fillText('✅',80,y);
+      ctx.fillStyle='#e8e8e8';ctx.font=(lh-14)+'px system-ui,Arial,sans-serif';ctx.fillText(name,122,y);
+      ctx.fillStyle='#FF6B35';ctx.font='bold '+(lh-12)+'px system-ui,Arial,sans-serif';ctx.textAlign='right';ctx.fillText(price,W-80,y);
+      y+=lh;
+    }
+    if(prods.length>max){ctx.textAlign='left';ctx.fillStyle='#888';ctx.font='italic 22px system-ui,Arial,sans-serif';ctx.fillText(`...y ${prods.length-max} más`,80,y+8);}
+    ctx.strokeStyle='rgba(255,107,53,.35)';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(80,H-138);ctx.lineTo(W-80,H-138);ctx.stroke();
+    ctx.textAlign='center';ctx.fillStyle='#c9a96e';ctx.font='bold 30px system-ui,Arial,sans-serif';ctx.fillText('📲 Escríbenos por WhatsApp para pedir',W/2,H-100);
+    ctx.fillStyle='#777';ctx.font='22px system-ui,Arial,sans-serif';ctx.fillText(storeUrl(),W/2,H-60);
+    ctx.fillStyle='#FF6B35';ctx.fillRect(60,H-36,W-120,8);
+    return new Promise(res=>c.toBlob(res,'image/png',.95));
+  }
+  function updatePreview(){
+    const cat=$('#tmCatPubSel')?.value;
+    const pre=$('#tmCatPubPre'),cnt=$('#tmCatPubCnt');
+    const btns=[...document.querySelectorAll('.tm-cat-pub-btn')];
+    if(!cat){if(pre)pre.style.display='none';if(cnt)cnt.style.display='none';btns.forEach(b=>b.style.display='none');return;}
+    const prods=prodsByCat(cat);
+    if(pre){pre.textContent=buildText(cat);pre.style.display='block';}
+    if(cnt){cnt.textContent=`${prods.length} producto${prods.length!==1?'s':''} con stock`;cnt.style.display='block';}
+    btns.forEach(b=>b.style.display='');
+  }
+  async function onCopy(){const cat=$('#tmCatPubSel')?.value;if(!cat)return;try{await navigator.clipboard.writeText(buildText(cat));notify('Texto copiado','success');}catch(e){notify('Error al copiar','error');}}
+  function onWA(){const cat=$('#tmCatPubSel')?.value;if(!cat)return;window.open('https://wa.me/?text='+encodeURIComponent(buildText(cat)),'_blank','noopener,noreferrer');}
+  async function onImg(){
+    const cat=$('#tmCatPubSel')?.value;if(!cat)return;
+    const btn=$('#tmCatPubImgBtn');if(btn){btn.textContent='⏳ Generando…';btn.disabled=true;}
+    try{
+      const blob=await genImg(cat);if(!blob){notify('Sin productos con stock','warning');return;}
+      const file=new File([blob],'tiendamax-'+toTag(cat)+'.png',{type:'image/png'});
+      const text=buildText(cat);
+      if(navigator.canShare&&navigator.canShare({files:[file]})&&navigator.share){
+        try{await navigator.share({files:[file],title:'TiendaMax — '+cat,text});notify('Imagen lista para compartir','success');return;}
+        catch(e){if(/abort/i.test(e.message||''))return;}
+      }
+      const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=file.name;a.click();
+      setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+      try{await navigator.clipboard.writeText(text);}catch(e){}
+      notify('Imagen descargada · Texto copiado al portapapeles','info');
+    }finally{if(btn){btn.textContent='🖼️ Imagen + Publicar';btn.disabled=false;}}
+  }
+  function build(){
+    const tab=document.getElementById('publicar-ahora');if(!tab)return;
+    if(document.getElementById('tmCatPublishCard'))return;
+    const card=document.createElement('div');card.id='tmCatPublishCard';card.className='card';card.style.marginBottom='16px';
+    const opts=cats().map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join('');
+    card.innerHTML=`<h2 style="margin-bottom:4px">📣 Publicar por categoría</h2>
+<p class="sub" style="margin-bottom:14px">Genera texto con todos los productos, precios y hashtags listos para compartir.</p>
+<select id="tmCatPubSel" style="width:100%;background:#12121f;border:1px solid rgba(255,255,255,.12);color:#ccc;border-radius:10px;padding:10px 12px;font-size:13px;margin-bottom:12px"><option value="">— Selecciona categoría —</option>${opts}</select>
+<pre id="tmCatPubPre" style="display:none;background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:14px;font-size:11.5px;font-family:monospace;color:#ccc;white-space:pre-wrap;max-height:220px;overflow:auto;margin-bottom:10px"></pre>
+<div id="tmCatPubCnt" style="display:none;font-size:12px;color:#888;margin-bottom:12px"></div>
+<div style="display:flex;gap:8px;flex-wrap:wrap">
+  <button type="button" class="btn tm-cat-pub-btn" id="tmCatPubCopyBtn" style="display:none">📋 Copiar texto</button>
+  <button type="button" class="btn tm-cat-pub-btn" style="display:none;background:rgba(37,211,102,.12);border-color:rgba(37,211,102,.35);color:#25D366" id="tmCatPubWABtn">💚 WhatsApp</button>
+  <button type="button" class="btn gold tm-cat-pub-btn" id="tmCatPubImgBtn" style="display:none">🖼️ Imagen + Publicar</button>
+</div>`;
+    const root=document.getElementById('tmPublicarRoot');
+    const backend=document.getElementById('backendStatus');
+    if(root)root.parentNode.insertBefore(card,root);
+    else if(backend)backend.parentNode.insertBefore(card,backend.nextSibling);
+    else tab.insertBefore(card,tab.firstChild);
+    card.querySelector('#tmCatPubSel').addEventListener('change',updatePreview);
+    card.querySelector('#tmCatPubCopyBtn').addEventListener('click',onCopy);
+    card.querySelector('#tmCatPubWABtn').addEventListener('click',onWA);
+    card.querySelector('#tmCatPubImgBtn').addEventListener('click',onImg);
+  }
+  function boot(){build();updatePreview();}
+  document.addEventListener('DOMContentLoaded',()=>setTimeout(boot,1500));
+  document.addEventListener('click',e=>{if(e.target.closest('[data-arg="publicar-ahora"],[data-tab="publicar-ahora"]'))setTimeout(boot,400);});
+})();
