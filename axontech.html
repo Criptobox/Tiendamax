@@ -610,11 +610,11 @@
 
   <!-- Tab nav -->
   <div class="admin-nav">
-    <button class="anav-btn active" id="anav-vales"    onclick="adminTab('vales')">📋 Vales</button>
-    <button class="anav-btn"        id="anav-stock"    onclick="adminTab('stock')">📦 Stock</button>
-    <button class="anav-btn"        id="anav-gestores" onclick="adminTab('gestores')">👥 Gestores</button>
-    <button class="anav-btn"        id="anav-stats"    onclick="adminTab('stats')">📊 Estadísticas</button>
+    <button class="anav-btn active" id="anav-vales"      onclick="adminTab('vales')">📋 Vales</button>
     <button class="anav-btn"        id="anav-mensajeros" onclick="adminTab('mensajeros')" style="position:relative;">🛵 Mensajeros<span id="mensajeroBadge" style="display:none;position:absolute;top:4px;right:4px;background:var(--green);color:white;border-radius:8px;font-size:8px;font-weight:700;min-width:14px;height:14px;line-height:14px;text-align:center;padding:0 3px;">0</span></button>
+    <button class="anav-btn"        id="anav-gestores"   onclick="adminTab('gestores')">👥 Gestores</button>
+    <button class="anav-btn"        id="anav-stats"      onclick="adminTab('stats')">📊 Estadísticas</button>
+    <button class="anav-btn"        id="anav-stock"      onclick="adminTab('stock')">📦 Stock</button>
   </div>
 
   <div class="admin-content">
@@ -1244,7 +1244,7 @@ function renderMensajeroVales() {
           ${g?`<div style="font-size:11px;color:var(--gray-400);">Gestor: ${g.name}</div>`:''}
           <div style="font-size:11px;color:var(--gray-600);margin-top:3px;">📦 ${v.articulo||'—'}</div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-top:8px;">
-            <button class="btn btn-green btn-sm btn-full" style="font-size:11px;" onclick="confirmSale(${v.id},'confirmed')">✅ Ya pagó</button>
+            <button class="btn btn-green btn-sm btn-full" style="font-size:11px;" onclick="confirmSale(${v.id},'confirmed')">✅ Entregado</button>
             <button class="btn btn-sm btn-full" style="background:var(--orange);color:white;font-size:11px;" onclick="confirmSale(${v.id},'pending_payment')">⏳ Pendiente de pago</button>
           </div>
         </div>`;
@@ -1418,7 +1418,7 @@ function renderValeDetail() {
     actHTML=`<button class="btn btn-blue btn-full" onclick="openShareModal(${v.id})" style="margin-bottom:8px;">📤 Compartir con mensajero</button>
     <div style="font-size:10px;color:var(--gray-400);text-align:center;margin-bottom:6px;">— o confirmar directo —</div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
-      <button class="btn btn-green btn-sm btn-full" onclick="confirmSale(${v.id},'confirmed')">✅ Ya pagó</button>
+      <button class="btn btn-green btn-sm btn-full" onclick="confirmSale(${v.id},'confirmed')">✅ Entregado</button>
       <button class="btn btn-sm btn-full" style="background:var(--orange);color:white;" onclick="confirmSale(${v.id},'pending_payment')">⏳ Pendiente cobro</button>
     </div>`;
   } else if(v.status==='assigned'){
@@ -1432,7 +1432,7 @@ function renderValeDetail() {
       <div style="font-weight:700;color:#7C3AED;">Entregado por mensajero</div>
       ${m?`<div style="font-size:12px;color:var(--gray-400);">Mensajero: ${m.name}</div>`:''}
     </div>
-    <button class="btn btn-green btn-full" onclick="confirmSale(${v.id},'confirmed')" style="margin-bottom:8px;">✅ Confirmar venta + Ya pagó</button>
+    <button class="btn btn-green btn-full" onclick="confirmSale(${v.id},'confirmed')" style="margin-bottom:8px;">✅ Confirmar venta + Entregado</button>
     <button class="btn btn-orange btn-full" onclick="confirmSale(${v.id},'pending_payment')">⏳ Confirmar venta + Pendiente de cobro</button>`;
   } else if(v.status==='confirmed'){
     actHTML=`<div style="background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.25);border-radius:8px;padding:14px;text-align:center;">
