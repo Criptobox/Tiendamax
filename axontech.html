@@ -7,68 +7,47 @@
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --blue:    #2563EB; --blue-dk: #1E3A8A; --blue-lt: #EFF6FF; --blue-bd: #BFDBFE;
-      --gray-50: #F9FAFB; --gray-100: #F3F4F6; --gray-200: #E5E7EB; --gray-300: #D1D5DB;
+      --blue: #2563EB; --blue-dk: #1E3A8A; --blue-lt: #EFF6FF; --blue-bd: #BFDBFE;
+      --gray-50: #F9FAFB; --gray-100: #F3F4F6; --gray-200: #E5E7EB;
       --gray-400: #9CA3AF; --gray-600: #4B5563; --gray-700: #374151; --gray-900: #111827;
       --green: #10B981; --yellow: #F59E0B; --red: #EF4444; --orange: #F97316;
     }
     body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--gray-50); color: var(--gray-900); min-height: 100vh; overflow: hidden; }
 
     /* ── HEADER ── */
-    header { background: var(--blue-dk); color: white; padding: 0 20px; height: 54px; display: flex; align-items: center; gap: 16px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,.2); }
+    header { background: var(--blue-dk); color: white; padding: 0 20px; height: 54px; display: flex; align-items: center; gap: 12px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,.22); }
     .brand { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
     .brand-icon { width: 32px; height: 32px; background: var(--blue); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 12px; letter-spacing: 1px; }
     .brand-name { font-size: 16px; font-weight: 800; letter-spacing: 3px; }
     .brand-sub  { font-size: 9px; color: rgba(255,255,255,.4); letter-spacing: 2px; }
-
-    #btnAdminAccess:hover { background: rgba(255,255,255,.16) !important; color: rgba(255,255,255,.75) !important; }
-    .notif-badge {
-      background: var(--red); color: white; border-radius: 20px;
-      font-size: 10px; font-weight: 800; padding: 1px 6px; min-width: 18px; text-align: center;
-      display: none;
-    }
-    .notif-badge.show { display: inline-block; }
-
+    #headerGestorName { font-size: 13px; color: rgba(255,255,255,.5); }
     .header-right { display: flex; align-items: center; gap: 10px; margin-left: auto; }
     .header-date  { font-size: 11px; color: rgba(255,255,255,.5); }
-    .admin-session-label { font-size: 11px; color: rgba(255,255,255,.6); display: none; }
+    .admin-session-label { font-size: 11px; color: #6EE7B7; display: none; font-weight: 600; }
     .btn-logout { background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.2); color: rgba(255,255,255,.7); border-radius: 6px; padding: 4px 10px; font-size: 11px; cursor: pointer; display: none; }
     .btn-logout:hover { background: rgba(255,255,255,.18); }
+    #btnAdminAccess { background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.15); color: rgba(255,255,255,.45); border-radius: 7px; padding: 5px 10px; font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: all .15s; }
+    #btnAdminAccess:hover { background: rgba(255,255,255,.16); color: rgba(255,255,255,.75); }
+    .notif-badge { background: var(--red); color: white; border-radius: 20px; font-size: 10px; font-weight: 800; padding: 1px 6px; min-width: 16px; text-align: center; display: none; }
+    .notif-badge.show { display: inline-block; }
 
-    /* ── LAYOUT ── */
-    .layout { display: grid; grid-template-columns: 230px 1fr 280px; height: calc(100vh - 54px); overflow: hidden; display: none; }
+    /* ── LAYOUTS ── */
+    .layout { display: none; height: calc(100vh - 54px); overflow: hidden; }
     .layout.active { display: grid; }
+    #layoutGestor { grid-template-columns: 210px 1fr 300px; }
+    #layoutAdmin  { grid-template-columns: 220px 1fr 280px; }
     .col { height: 100%; overflow-y: auto; padding: 14px; }
     .col-left  { background: white; border-right: 1px solid var(--gray-200); }
     .col-mid   { background: var(--gray-50); }
     .col-right { background: white; border-left: 1px solid var(--gray-200); }
 
-    /* ── LABELS ── */
+    /* ── SHARED ── */
     .lbl { font-size: 10px; font-weight: 700; letter-spacing: 1.5px; color: var(--gray-400); text-transform: uppercase; margin-bottom: 8px; margin-top: 16px; }
     .lbl:first-child { margin-top: 0; }
-    .lbl-row { display: flex; justify-content: space-between; align-items: center; }
-
-    /* ── CARDS ── */
     .card { background: white; border: 1px solid var(--gray-200); border-radius: 10px; padding: 12px 14px; margin-bottom: 8px; }
-
-    /* ── INPUTS ── */
-    input, select, textarea { width: 100%; border: 1px solid var(--gray-200); border-radius: 8px; padding: 8px 11px; font-size: 13px; color: var(--gray-900); outline: none; background: white; transition: border-color .15s, box-shadow .15s; font-family: inherit; }
-    input:focus, select:focus { border-color: var(--blue); box-shadow: 0 0 0 3px var(--blue-lt); }
-    label { font-size: 11px; font-weight: 700; color: var(--gray-600); display: block; margin-bottom: 4px; }
-    .field { margin-bottom: 10px; }
-
-    /* ── AUTOCOMPLETE ── */
-    .ac-wrap { position: relative; }
-    .ac-list { position: absolute; top: 100%; left: 0; right: 0; background: white; border: 1.5px solid var(--blue); border-top: none; border-radius: 0 0 9px 9px; max-height: 210px; overflow-y: auto; z-index: 50; display: none; box-shadow: 0 6px 16px rgba(0,0,0,.1); }
-    .ac-item { padding: 9px 12px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--gray-100); transition: background .1s; }
-    .ac-item:last-child { border-bottom: none; }
-    .ac-item:hover { background: var(--blue-lt); }
-    .ac-name { font-size: 13px; font-weight: 600; }
-    .ac-meta { font-size: 11px; color: var(--gray-400); margin-top: 1px; }
-    .ac-pts  { font-size: 12px; color: var(--blue); font-weight: 700; white-space: nowrap; }
-
-    /* ── BUTTONS ── */
-    .btn { border: none; border-radius: 8px; padding: 8px 15px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all .15s; display: inline-flex; align-items: center; justify-content: center; gap: 6px; font-family: inherit; }
+    input, select, textarea { width: 100%; border: 1px solid var(--gray-200); border-radius: 8px; padding: 8px 11px; font-size: 13px; color: var(--gray-900); outline: none; background: white; transition: border-color .15s, box-shadow .15s; font-family: inherit; resize: vertical; }
+    input:focus, select:focus, textarea:focus { border-color: var(--blue); box-shadow: 0 0 0 3px var(--blue-lt); }
+    .btn { border: none; border-radius: 8px; padding: 9px 16px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all .15s; display: inline-flex; align-items: center; justify-content: center; gap: 6px; font-family: inherit; }
     .btn-blue   { background: var(--blue); color: white; }
     .btn-blue:hover { background: #1D4ED8; }
     .btn-green  { background: var(--green); color: white; }
@@ -77,181 +56,125 @@
     .btn-orange:hover { background: #EA580C; }
     .btn-ghost  { background: var(--gray-100); color: var(--gray-700); border: 1px solid var(--gray-200); }
     .btn-ghost:hover { background: var(--gray-200); }
-    .btn-danger { background: rgba(239,68,68,.1); color: var(--red); border: 1px solid rgba(239,68,68,.25); }
-    .btn-danger:hover { background: rgba(239,68,68,.2); }
-    .btn-sm   { padding: 5px 11px; font-size: 12px; }
     .btn-full { width: 100%; }
+    .btn-sm   { padding: 5px 11px; font-size: 12px; }
+    .btn:disabled { opacity: .4; cursor: not-allowed; }
+    .es { text-align: center; padding: 18px 10px; color: var(--gray-400); }
+    .es-icon { font-size: 26px; margin-bottom: 5px; }
+    .es-text { font-size: 12px; }
 
-    /* ── GESTORES ── */
-    .gestor-item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 9px; cursor: pointer; transition: all .13s; margin-bottom: 4px; border: 1px solid transparent; }
-    .gestor-item:hover  { background: var(--gray-100); }
-    .gestor-item.active { background: var(--blue-lt); border-color: var(--blue-bd); box-shadow: 0 0 0 1px var(--blue-bd); }
-    .g-avatar { width: 38px; height: 38px; border-radius: 50%; color: white; font-weight: 700; font-size: 13px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-    .g-name { font-size: 14px; font-weight: 600; }
-    .g-pts  { font-size: 11px; color: var(--blue); font-weight: 600; margin-top: 2px; }
-    .g-info { flex: 1; min-width: 0; }
-    .g-badge { background: var(--blue); color: white; border-radius: 20px; font-size: 10px; font-weight: 700; padding: 2px 8px; }
-    /* Vale status cards for gestor view */
-    .my-vale-card { border: 1px solid var(--gray-200); border-radius: 9px; padding: 11px 13px; margin-bottom: 7px; }
-    .my-vale-card.status-pending  { border-left: 3px solid var(--blue); }
-    .my-vale-card.status-assigned { border-left: 3px solid var(--orange); }
-    .my-vale-card.status-confirmed { border-left: 3px solid var(--green); background: rgba(16,185,129,.04); }
-    .my-vale-card.status-pending_payment { border-left: 3px solid var(--yellow); }
-    .mv-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
-    .mv-time { font-size: 11px; color: var(--gray-400); }
-    .mv-products { font-size: 11px; color: var(--gray-600); line-height: 1.4; margin-bottom: 6px; }
-    .mv-foot { display: flex; justify-content: space-between; align-items: center; }
-    .mv-pts { font-size: 13px; font-weight: 800; color: var(--blue); }
+    /* ── GESTORES LIST (selector) ── */
+    .g-item { display: flex; align-items: center; gap: 10px; padding: 10px 11px; border-radius: 9px; cursor: pointer; margin-bottom: 4px; border: 1px solid transparent; transition: all .13s; }
+    .g-item:hover  { background: var(--gray-100); }
+    .g-item.active { background: var(--blue-lt); border-color: var(--blue-bd); }
+    .g-avatar { width: 36px; height: 36px; border-radius: 50%; color: white; font-weight: 700; font-size: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .g-name  { font-size: 13px; font-weight: 600; flex: 1; }
+    .g-badge { background: var(--blue); color: white; border-radius: 20px; font-size: 10px; font-weight: 700; padding: 2px 7px; }
+
+    /* ── VALE FORM ── */
+    .vale-form-header { background: linear-gradient(135deg, var(--blue-dk), var(--blue)); color: white; border-radius: 10px 10px 0 0; padding: 14px 16px; margin-bottom: 0; }
+    .vale-form-header h2 { font-size: 15px; font-weight: 800; letter-spacing: 1px; }
+    .vale-form-header p  { font-size: 11px; color: rgba(255,255,255,.65); margin-top: 2px; }
+    .vale-form-body { background: white; border: 1px solid var(--gray-200); border-top: none; border-radius: 0 0 10px 10px; padding: 12px 14px; margin-bottom: 10px; }
+    .vf-row { display: flex; align-items: flex-start; gap: 8px; margin-bottom: 10px; }
+    .vf-row:last-child { margin-bottom: 0; }
+    .vf-emoji { font-size: 14px; margin-top: 9px; flex-shrink: 0; width: 20px; text-align: center; }
+    .vf-inner { flex: 1; min-width: 0; }
+    .vf-label { font-size: 10px; font-weight: 700; color: var(--gray-600); letter-spacing: .5px; margin-bottom: 3px; display: flex; align-items: center; gap: 5px; }
+    .vf-req { color: var(--red); font-size: 10px; }
+    .vf-auto input { background: var(--blue-lt); border-color: var(--blue-bd); color: var(--blue-dk); font-weight: 700; }
+    .vf-auto input:focus { border-color: var(--blue); }
+    .vf-sep { border: none; border-top: 1px dashed var(--gray-200); margin: 12px 0; }
+    .vf-fixed { background: var(--gray-50); border: 1px solid var(--gray-200); border-radius: 8px; padding: 10px 12px; font-size: 11px; color: var(--gray-600); line-height: 1.7; }
+    .vf-fixed b { color: var(--gray-900); }
+    .send-bar { position: sticky; bottom: 0; background: var(--gray-50); padding: 10px 0 4px; display: flex; gap: 8px; }
+
+    /* ── MY VALES (right col gestor) ── */
+    .mv-card { border: 1px solid var(--gray-200); border-radius: 9px; padding: 10px 12px; margin-bottom: 6px; border-left-width: 3px; }
+    .mv-card.st-pending         { border-left-color: var(--blue); }
+    .mv-card.st-assigned        { border-left-color: var(--orange); }
+    .mv-card.st-confirmed       { border-left-color: var(--green); background: rgba(16,185,129,.03); }
+    .mv-card.st-pending_payment { border-left-color: var(--yellow); }
+    .mv-head  { display: flex; justify-content: space-between; margin-bottom: 4px; }
+    .mv-time  { font-size: 11px; font-weight: 700; }
+    .mv-info  { font-size: 11px; color: var(--gray-600); line-height: 1.4; margin-bottom: 5px; }
+    .mv-foot  { display: flex; justify-content: space-between; align-items: center; }
     .mv-status { font-size: 11px; font-weight: 700; }
 
-    /* ── ACTIVE BANNER ── */
-    .active-banner { background: var(--blue-lt); border: 1px solid var(--blue-bd); border-radius: 10px; padding: 10px 13px; display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
-    .ab-info { flex: 1; }
-    .ab-lbl  { font-size: 10px; color: var(--gray-400); font-weight: 700; letter-spacing: .5px; }
-    .ab-name { font-size: 14px; font-weight: 700; color: var(--blue-dk); margin-top: 1px; }
-
-    /* ── VALE ITEMS ── */
-    .vale-item { display: flex; align-items: center; gap: 7px; padding: 8px 0; border-bottom: 1px solid var(--gray-100); }
-    .vale-item:last-child { border-bottom: none; }
-    .vi-name { flex: 1; font-size: 13px; font-weight: 600; line-height: 1.3; }
-    .qty-row { display: flex; align-items: center; gap: 4px; }
-    .qty-btn { width: 24px; height: 24px; border-radius: 6px; border: 1px solid var(--gray-200); background: var(--gray-100); cursor: pointer; font-size: 14px; font-weight: 700; display: flex; align-items: center; justify-content: center; color: var(--gray-700); }
-    .qty-btn:hover { background: var(--gray-200); }
-    .qty-n  { font-size: 13px; font-weight: 700; min-width: 20px; text-align: center; }
-    .vi-pts { font-size: 11px; color: var(--blue); font-weight: 700; white-space: nowrap; }
-    .vi-del { background: none; border: none; color: var(--gray-300); cursor: pointer; font-size: 17px; padding: 0 3px; }
-    .vi-del:hover { color: var(--red); }
-
-    /* ── VALE TOTAL ── */
-    .vale-total { display: flex; justify-content: space-between; align-items: center; padding: 10px 0 0; border-top: 2px solid var(--gray-100); margin-top: 4px; }
-    .vt-pts { font-size: 21px; font-weight: 800; color: var(--blue); }
-    .vt-lbl { font-size: 10px; color: var(--gray-400); font-weight: 700; letter-spacing: .5px; }
-    .vt-uds { font-size: 19px; font-weight: 700; text-align: right; }
-
-    /* ── VALE PREVIEW ── */
-    .vale-preview { background: var(--gray-50); border: 1px solid var(--gray-200); border-radius: 8px; padding: 11px 13px; font-family: 'Courier New', monospace; font-size: 11.5px; line-height: 1.65; color: var(--gray-700); white-space: pre-wrap; word-break: break-word; }
-    .action-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
+    /* ── ADMIN GESTOR FILTER ── */
+    .ag-item { display: flex; align-items: center; gap: 8px; padding: 9px 10px; border-radius: 8px; cursor: pointer; margin-bottom: 3px; border: 1px solid transparent; transition: all .13s; }
+    .ag-item:hover  { background: var(--gray-100); }
+    .ag-item.active { background: var(--blue-lt); border-color: var(--blue-bd); }
+    .ag-avatar { width: 30px; height: 30px; border-radius: 50%; color: white; font-weight: 700; font-size: 11px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .ag-name  { flex: 1; font-size: 12px; font-weight: 600; }
+    .ag-count { background: var(--red); color: white; border-radius: 20px; font-size: 10px; font-weight: 800; padding: 1px 6px; }
+    .ag-all   { font-size: 12px; font-weight: 700; color: var(--blue); padding: 7px 10px; border-radius: 8px; cursor: pointer; margin-bottom: 4px; display: flex; align-items: center; justify-content: space-between; border: 1px solid transparent; }
+    .ag-all:hover   { background: var(--gray-100); }
+    .ag-all.active  { background: var(--blue-lt); border-color: var(--blue-bd); }
 
     /* ── INBOX CARDS ── */
-    .inbox-card { border: 1px solid var(--gray-200); border-radius: 10px; padding: 11px 13px; margin-bottom: 7px; cursor: pointer; transition: all .15s; position: relative; }
-    .inbox-card:hover { border-color: var(--blue-bd); background: var(--blue-lt); }
-    .inbox-card.selected { border-color: var(--blue); background: var(--blue-lt); box-shadow: 0 0 0 2px var(--blue-bd); }
-    .inbox-card.is-new { border-left: 3px solid var(--blue); }
-    .ic-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
-    .ic-gestor { font-size: 13px; font-weight: 700; }
-    .ic-time   { font-size: 11px; color: var(--gray-400); }
-    .ic-summary { font-size: 12px; color: var(--gray-600); line-height: 1.4; margin-bottom: 6px; }
-    .ic-footer { display: flex; justify-content: space-between; align-items: center; }
-    .new-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--blue); position: absolute; top: 11px; right: 11px; }
+    .ic { border: 1px solid var(--gray-200); border-radius: 10px; padding: 11px 13px; margin-bottom: 7px; cursor: pointer; transition: all .15s; position: relative; }
+    .ic:hover   { border-color: var(--blue-bd); background: var(--blue-lt); }
+    .ic.sel     { border-color: var(--blue); box-shadow: 0 0 0 2px var(--blue-bd); }
+    .ic.is-new  { border-left: 3px solid var(--blue); }
+    .ic-head    { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 5px; }
+    .ic-gestor  { font-size: 12px; font-weight: 700; display: flex; align-items: center; gap: 6px; }
+    .ic-time    { font-size: 11px; color: var(--gray-400); }
+    .ic-cliente { font-size: 12px; color: var(--gray-700); font-weight: 600; margin-bottom: 2px; }
+    .ic-preview { font-size: 11px; color: var(--gray-400); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 6px; }
+    .ic-foot    { display: flex; justify-content: space-between; align-items: center; }
+    .new-dot    { width: 7px; height: 7px; border-radius: 50%; background: var(--blue); position: absolute; top: 10px; right: 10px; }
 
-    /* ── STATUS BADGES ── */
-    .status-pill { display: inline-flex; align-items: center; gap: 5px; border-radius: 20px; padding: 3px 9px; font-size: 11px; font-weight: 700; }
-    .sp-pending  { background: rgba(37,99,235,.12); color: var(--blue); }
-    .sp-assigned { background: rgba(249,115,22,.12); color: var(--orange); }
+    /* ── STATUS PILLS ── */
+    .sp { display: inline-flex; align-items: center; gap: 4px; border-radius: 20px; padding: 3px 9px; font-size: 11px; font-weight: 700; }
+    .sp-pending  { background: rgba(37,99,235,.1);  color: var(--blue); }
+    .sp-assigned { background: rgba(249,115,22,.1); color: var(--orange); }
     .sp-confirmed { background: rgba(16,185,129,.12); color: var(--green); }
-    .sp-pending-pay { background: rgba(245,158,11,.12); color: var(--yellow); }
+    .sp-pending_payment { background: rgba(245,158,11,.12); color: var(--yellow); }
 
-    /* ── VALE DETAIL (admin mid col) ── */
-    .detail-empty { text-align: center; padding: 40px 20px; color: var(--gray-300); }
-    .detail-empty-icon { font-size: 40px; margin-bottom: 10px; }
-    .detail-empty-text { font-size: 13px; }
-    .detail-head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px; }
-    .detail-gestor-row { display: flex; align-items: center; gap: 9px; }
-    .detail-items-list { border: 1px solid var(--gray-200); border-radius: 8px; padding: 2px 0; margin-bottom: 12px; }
-    .di-item { display: flex; justify-content: space-between; padding: 8px 12px; border-bottom: 1px solid var(--gray-100); font-size: 13px; }
-    .di-item:last-child { border-bottom: none; }
-    .di-name { font-weight: 600; }
-    .di-pts  { color: var(--blue); font-weight: 700; font-size: 12px; }
-    .detail-actions { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
-    .mensajero-assigned-row { display: flex; align-items: center; gap: 8px; background: var(--gray-50); border-radius: 8px; padding: 10px 12px; font-size: 13px; font-weight: 600; border: 1px solid var(--gray-200); margin-bottom: 10px; }
+    /* ── VALE DETAIL ── */
+    .det-empty { text-align: center; padding: 50px 20px; color: var(--gray-300); }
+    .det-empty-icon { font-size: 42px; margin-bottom: 10px; }
+    .det-gestor-row { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+    .det-actions { display: flex; flex-direction: column; gap: 8px; }
+    .mensajero-row { display: flex; align-items: center; gap: 8px; background: var(--gray-50); border-radius: 8px; padding: 9px 12px; font-size: 13px; font-weight: 600; border: 1px solid var(--gray-200); margin-bottom: 8px; }
+    .vale-preview { background: var(--gray-50); border: 1px solid var(--gray-200); border-radius: 8px; padding: 12px 14px; font-family: 'Courier New', monospace; font-size: 11.5px; line-height: 1.7; color: var(--gray-700); white-space: pre-wrap; word-break: break-word; }
 
-    /* ── MENSAJEROS ── */
-    .mensajero-item { display: flex; align-items: center; gap: 8px; padding: 8px 10px; background: var(--gray-50); border-radius: 8px; margin-bottom: 5px; border: 1px solid var(--gray-200); }
-    .m-avatar { width: 30px; height: 30px; border-radius: 50%; background: var(--gray-300); color: white; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    /* ── MENSAJEROS / STATUS ── */
+    .m-item  { display: flex; align-items: center; gap: 8px; padding: 8px 10px; background: var(--gray-50); border-radius: 8px; margin-bottom: 5px; border: 1px solid var(--gray-200); }
+    .m-av    { width: 28px; height: 28px; border-radius: 50%; background: var(--gray-300); color: white; font-size: 10px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
     .m-name  { flex: 1; font-size: 13px; font-weight: 600; }
     .m-del   { background: none; border: none; color: var(--gray-300); cursor: pointer; font-size: 15px; padding: 2px 4px; }
     .m-del:hover { color: var(--red); }
+    .sc { border-radius: 9px; padding: 10px 12px; margin-bottom: 6px; border: 1px solid; font-size: 12px; }
+    .sc-ok  { background: rgba(16,185,129,.05);  border-color: rgba(16,185,129,.25); }
+    .sc-pend { background: rgba(245,158,11,.05); border-color: rgba(245,158,11,.25); }
+    .sc-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2px; }
+    .sc-g    { font-weight: 700; font-size: 12px; }
+    .sc-t    { font-size: 10px; color: var(--gray-400); }
+    .sc-m    { font-size: 11px; color: var(--gray-500); margin-top: 2px; }
 
-    /* ── STATUS SECTIONS ── */
-    .status-card { border-radius: 9px; padding: 10px 12px; margin-bottom: 6px; border: 1px solid; font-size: 12px; }
-    .sc-confirmed { background: rgba(16,185,129,.06); border-color: rgba(16,185,129,.25); }
-    .sc-pending-pay { background: rgba(245,158,11,.06); border-color: rgba(245,158,11,.25); }
-    .sc-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px; }
-    .sc-gestor { font-weight: 700; font-size: 12px; }
-    .sc-mensajero { font-size: 11px; color: var(--gray-500); }
-    .sc-pts { font-weight: 700; color: var(--green); }
-    .sc-pts-yellow { font-weight: 700; color: var(--yellow); }
-    .sc-time { font-size: 10px; color: var(--gray-400); }
+    /* ── NOTIF BANNER ── */
+    .notif-banner { display: none; align-items: center; gap: 9px; background: var(--blue); color: white; border-radius: 9px; padding: 9px 13px; margin-bottom: 9px; font-size: 13px; font-weight: 600; }
+    .notif-banner.show { display: flex; }
+    .notif-close { background: none; border: none; color: rgba(255,255,255,.7); cursor: pointer; font-size: 17px; margin-left: auto; }
+    .add-row { display: flex; gap: 7px; }
+    .add-row input { flex: 1; }
 
-    /* ── STOCK ── */
-    .stock-item { display: flex; align-items: center; gap: 7px; padding: 7px 0; border-bottom: 1px solid var(--gray-100); }
-    .stock-item:last-child { border-bottom: none; }
-    .si-info { flex: 1; min-width: 0; }
-    .si-name { font-size: 12px; font-weight: 600; color: var(--gray-700); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .si-cat  { font-size: 10px; color: var(--gray-400); margin-top: 1px; }
-    .si-pts  { background: var(--blue-lt); color: var(--blue); border-radius: 20px; padding: 2px 7px; font-size: 10px; font-weight: 700; flex-shrink: 0; }
-    .si-num  { font-weight: 700; font-size: 13px; min-width: 26px; text-align: right; flex-shrink: 0; }
-    .ok { color: var(--green); } .low { color: var(--yellow); } .empty { color: var(--red); }
-
-    /* ── CAT / RANKING ── */
-    .cat-row { display: flex; justify-content: space-between; align-items: center; padding: 7px 0; border-bottom: 1px solid var(--gray-100); }
-    .cat-row:last-child { border-bottom: none; }
-    .cat-name { font-size: 13px; font-weight: 600; color: var(--gray-700); }
-    .cat-pts-badge { background: var(--blue); color: white; border-radius: 20px; padding: 3px 9px; font-size: 11px; font-weight: 700; }
-    .rank-item { display: flex; align-items: center; gap: 8px; padding: 7px 0; border-bottom: 1px solid var(--gray-100); }
-    .rank-item:last-child { border-bottom: none; }
-    .rank-pos { font-size: 15px; min-width: 22px; }
-    .rank-info { flex: 1; min-width: 0; }
-    .rank-name   { font-size: 12px; font-weight: 600; }
-    .rank-ventas { font-size: 10px; color: var(--gray-400); }
-    .rank-pts    { font-size: 13px; font-weight: 800; color: var(--blue); }
-
-    /* ── EMPTY STATE ── */
-    .es { text-align: center; padding: 20px 10px; color: var(--gray-400); }
-    .es-icon { font-size: 28px; margin-bottom: 6px; }
-    .es-text { font-size: 12px; }
-
-    /* ── MODALS ── */
+    /* ── MODAL ── */
     .modal-bg { position: fixed; inset: 0; background: rgba(0,0,0,.38); display: none; align-items: center; justify-content: center; z-index: 200; }
     .modal-bg.show { display: flex; }
-    .modal { background: white; border-radius: 14px; padding: 22px; width: 360px; max-width: 96vw; box-shadow: 0 20px 60px rgba(0,0,0,.2); }
+    .modal { background: white; border-radius: 14px; padding: 22px; width: 380px; max-width: 96vw; box-shadow: 0 20px 60px rgba(0,0,0,.2); }
     .modal-title { font-size: 17px; font-weight: 800; margin-bottom: 4px; }
     .modal-sub   { font-size: 13px; color: var(--gray-400); margin-bottom: 14px; }
     .modal-btns  { display: flex; gap: 8px; margin-top: 16px; }
     .modal-sep   { border: none; border-top: 1px solid var(--gray-200); margin: 14px 0; }
     .pass-error  { font-size: 12px; color: var(--red); margin-top: 6px; display: none; }
 
-    /* ── NOTIFICATION BANNER ── */
-    .notif-banner { display: none; align-items: center; gap: 10px; background: var(--blue); color: white; border-radius: 10px; padding: 10px 14px; margin-bottom: 10px; font-size: 13px; font-weight: 600; animation: slideIn .3s ease; }
-    .notif-banner.show { display: flex; }
-    @keyframes slideIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
-    .notif-close { background: none; border: none; color: rgba(255,255,255,.7); cursor: pointer; font-size: 17px; margin-left: auto; }
-
     /* ── TOAST ── */
     .toast { position: fixed; bottom: 22px; right: 22px; background: var(--gray-900); color: white; padding: 11px 17px; border-radius: 9px; font-size: 13px; font-weight: 600; z-index: 999; opacity: 0; transform: translateY(8px); transition: all .22s; pointer-events: none; }
     .toast.show { opacity: 1; transform: translateY(0); }
-
-    /* ── SCROLLBAR ── */
     ::-webkit-scrollbar { width: 4px; } ::-webkit-scrollbar-thumb { background: var(--gray-200); border-radius: 4px; }
-    .history-item { border: 1px solid var(--gray-200); border-radius: 9px; padding: 9px 12px; margin-bottom: 5px; font-size: 12px; }
-    .hi-head { display: flex; justify-content: space-between; margin-bottom: 2px; }
-    .hi-g { font-weight: 700; } .hi-t { color: var(--gray-400); font-size: 11px; }
-    .hi-prods { color: var(--gray-600); line-height: 1.4; margin-bottom: 5px; font-size: 11px; }
-    .hi-foot { display: flex; justify-content: space-between; }
-    .hi-pts { color: var(--blue); font-weight: 700; }
-    .hi-ok  { color: var(--green); font-size: 11px; font-weight: 600; }
-    .add-row { display: flex; gap: 7px; }
-    .add-row input { flex: 1; }
-    /* ── PRODUCTO FORM ── */
-    .pfi { padding: 8px 0; border-bottom: 1px solid var(--gray-100); }
-    .pfi:last-child { border-bottom: none; }
-    .pfi-top { display: flex; align-items: center; gap: 9px; cursor: pointer; }
-    .pfi-check { width: 17px; height: 17px; accent-color: var(--blue); cursor: pointer; flex-shrink: 0; }
-    .pfi-name { flex: 1; font-size: 13px; font-weight: 600; color: var(--gray-700); }
-    .pfi-pts-lbl { font-size: 10px; color: var(--blue); font-weight: 700; white-space: nowrap; background: var(--blue-lt); border-radius: 20px; padding: 2px 7px; }
-    .pfi-qty-row { display: flex; align-items: center; gap: 8px; margin-top: 7px; padding-left: 26px; }
-    .pfi-qty-label { font-size: 11px; color: var(--gray-400); font-weight: 600; }
-    .pfi-pts-total { font-size: 12px; color: var(--blue); font-weight: 700; margin-left: auto; }
   </style>
 </head>
 <body>
@@ -265,133 +188,229 @@
       <div class="brand-sub">GESTIÓN DE VENTAS</div>
     </div>
   </div>
-
-  <div id="headerGestorName" style="font-size:13px;color:rgba(255,255,255,.55);margin-left:4px;"></div>
-
+  <span id="headerGestorName"></span>
   <div class="header-right">
-    <span class="admin-session-label" id="adminLabel">● Admin activo</span>
+    <span class="admin-session-label" id="adminLabel">● Admin</span>
     <button class="btn-logout" id="btnLogout" onclick="logoutAdmin()">Cerrar sesión</button>
     <div class="header-date" id="headerDate"></div>
-    <button id="btnAdminAccess" onclick="switchMode('admin')" title="Acceso administrador" style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.45);border-radius:7px;padding:5px 9px;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:5px;transition:all .15s;">
-      🔒 <span class="notif-badge" id="adminBadge" style="margin:0;">0</span>
+    <button id="btnAdminAccess" onclick="switchMode('admin')" title="Acceso administrador">
+      🔒 <span class="notif-badge" id="adminBadge">0</span>
     </button>
   </div>
 </header>
 
-<!-- ══════════════════════════════════════ -->
-<!--  GESTOR MODE                          -->
-<!-- ══════════════════════════════════════ -->
+<!-- ══════════════════════ GESTOR ══════════════════════ -->
 <div class="layout active" id="layoutGestor">
 
   <!-- Col 1: Selector de nombre -->
   <div class="col col-left">
     <div class="lbl">¿Quién eres?</div>
     <div id="gestoresList"></div>
-  </div>
-
-  <!-- Col 2: Vale -->
-  <div class="col col-mid">
-    <div class="active-banner" id="gestorBanner">
-      <div class="g-avatar" id="bannerAvatar" style="width:42px;height:42px;font-size:15px;background:var(--gray-300);">?</div>
-      <div class="ab-info">
-        <div class="ab-lbl" id="bannerLbl">Selecciona tu nombre en la lista</div>
-        <div class="ab-name" id="bannerName" style="font-size:16px;">—</div>
-      </div>
-    </div>
-
-    <div class="lbl" style="margin-top:0;">Datos del Cliente</div>
-    <div class="card">
-      <div class="field">
-        <label>Nombre del cliente *</label>
-        <input type="text" id="clienteNombre" placeholder="Nombre completo" oninput="updateValePreview()">
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-        <div class="field" style="margin-bottom:0;">
-          <label>Teléfono</label>
-          <input type="tel" id="clienteTelefono" placeholder="Número" oninput="updateValePreview()">
-        </div>
-        <div class="field" style="margin-bottom:0;">
-          <label>Dirección / Referencia</label>
-          <input type="text" id="clienteDireccion" placeholder="Calle, número…" oninput="updateValePreview()">
-        </div>
-      </div>
-    </div>
-
-    <div class="lbl" style="display:flex;justify-content:space-between;align-items:center;">
-      <span>Productos del Vale</span>
-      <button class="btn btn-ghost btn-sm" onclick="resetForm()" style="font-size:10px;padding:3px 9px;letter-spacing:0;">↺ Limpiar</button>
-    </div>
-    <div class="card" id="productosForm" style="padding:6px 12px;"></div>
-
-    <div id="valeTotalRow" style="display:none;">
-      <div class="card" style="padding:12px 14px;">
-        <div class="vale-total" style="padding:0;border:none;">
-          <div><div class="vt-pts" id="totalPts">0 pts</div><div class="vt-lbl">PUNTOS</div></div>
-          <div><div class="vt-uds" id="totalUds">0 uds.</div><div class="vt-lbl" style="text-align:right;">UNIDADES</div></div>
-        </div>
-      </div>
-    </div>
-
-    <div id="valeActionsCard" class="card" style="display:none;">
-      <div style="font-size:10px;font-weight:700;color:var(--gray-400);letter-spacing:.5px;text-transform:uppercase;margin-bottom:8px;">Vista previa del vale</div>
-      <div class="vale-preview" id="valePreviewText"></div>
-      <div class="action-row" style="margin-top:10px;">
-        <button class="btn btn-ghost btn-full" onclick="copyVale()">📋 Copiar</button>
-        <button class="btn btn-blue btn-full" onclick="sendVale()">📤 Enviar vale</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Col 3: Puntos + Estado de mis vales -->
-  <div class="col col-right">
-    <div class="lbl">Puntos por Categoría</div>
-    <div class="card" style="padding:10px 14px;"><div id="catList"></div></div>
-
-    <div class="lbl">Mis Vales de Hoy</div>
+    <div class="lbl" style="margin-top:20px;">Mis Vales de Hoy</div>
     <div id="gestorMyVales">
       <div class="es"><div class="es-icon">🧾</div><div class="es-text">Selecciona tu nombre para ver tus vales</div></div>
     </div>
   </div>
 
+  <!-- Col 2: Vale Form -->
+  <div class="col col-mid">
+    <!-- Banner -->
+    <div class="card" id="gestorBanner" style="background:var(--blue-lt);border-color:var(--blue-bd);display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+      <div class="g-avatar" id="bannerAvatar" style="width:40px;height:40px;font-size:14px;background:var(--gray-300);">?</div>
+      <div>
+        <div style="font-size:10px;color:var(--gray-400);font-weight:700;letter-spacing:.5px;" id="bannerLbl">SELECCIONA TU NOMBRE</div>
+        <div style="font-size:15px;font-weight:700;color:var(--blue-dk);" id="bannerName">Selecciona tu nombre →</div>
+      </div>
+    </div>
+
+    <!-- Vale form -->
+    <div class="vale-form-header">
+      <h2>Bienvenido a "AXONTECH" 🔥</h2>
+      <p>VALE DEL GESTOR — completa los campos y envía</p>
+    </div>
+    <div class="vale-form-body">
+
+      <!-- Promotor (auto) -->
+      <div class="vf-row vf-auto">
+        <span class="vf-emoji">🔸</span>
+        <div class="vf-inner">
+          <div class="vf-label">Promotor <span style="color:var(--blue);font-size:9px;">● Auto</span></div>
+          <input type="text" id="vf-promotor" readonly placeholder="Selecciona tu nombre arriba">
+        </div>
+      </div>
+
+      <hr class="vf-sep">
+
+      <!-- Nombre Cliente -->
+      <div class="vf-row">
+        <span class="vf-emoji">🔸</span>
+        <div class="vf-inner">
+          <div class="vf-label">Nombre Cliente <span class="vf-req">*</span></div>
+          <input type="text" id="vf-cliente" placeholder="Nombre completo del cliente" oninput="onFormInput()">
+        </div>
+      </div>
+
+      <!-- Teléfono -->
+      <div class="vf-row">
+        <span class="vf-emoji">🔸</span>
+        <div class="vf-inner">
+          <div class="vf-label">Teléfono Cliente <span class="vf-req">*</span></div>
+          <input type="tel" id="vf-telefono" placeholder="Número de teléfono" oninput="onFormInput()">
+        </div>
+      </div>
+
+      <!-- Dirección -->
+      <div class="vf-row">
+        <span class="vf-emoji">🔸</span>
+        <div class="vf-inner">
+          <div class="vf-label">Dirección Cliente <span class="vf-req">*</span></div>
+          <input type="text" id="vf-direccion" placeholder="Dirección de entrega" oninput="onFormInput()">
+        </div>
+      </div>
+
+      <!-- Mensajería -->
+      <div class="vf-row">
+        <span class="vf-emoji">🔸</span>
+        <div class="vf-inner">
+          <div class="vf-label">Mensajería / costo</div>
+          <input type="text" id="vf-mensajeria" placeholder="Ej: Gratis / $2 USD" oninput="onFormInput()">
+        </div>
+      </div>
+
+      <!-- Artículo y cantidad -->
+      <div class="vf-row">
+        <span class="vf-emoji">🔸</span>
+        <div class="vf-inner">
+          <div class="vf-label">Artículo y cantidad <span class="vf-req">*</span></div>
+          <textarea id="vf-articulo" rows="3" placeholder="Ej: Audífonos Bluetooth x2&#10;Cargador 65W x1" oninput="onFormInput()"></textarea>
+        </div>
+      </div>
+
+      <!-- Precio USD -->
+      <div class="vf-row">
+        <span class="vf-emoji">🔸</span>
+        <div class="vf-inner">
+          <div class="vf-label">Precio USD / Zelle</div>
+          <input type="text" id="vf-precioUSD" placeholder="Ej: $45 USD" oninput="onFormInput()">
+        </div>
+      </div>
+
+      <!-- Precio CUP -->
+      <div class="vf-row">
+        <span class="vf-emoji">🔸</span>
+        <div class="vf-inner">
+          <div class="vf-label">Precio CUP</div>
+          <input type="text" id="vf-precioCUP" placeholder="Ej: 4500 CUP" oninput="onFormInput()">
+        </div>
+      </div>
+
+      <!-- Vuelto -->
+      <div class="vf-row">
+        <span class="vf-emoji">🔸</span>
+        <div class="vf-inner">
+          <div class="vf-label">Vuelto</div>
+          <input type="text" id="vf-vuelto" placeholder="Ej: 500 CUP / 0" oninput="onFormInput()">
+        </div>
+      </div>
+
+      <!-- Total -->
+      <div class="vf-row">
+        <span class="vf-emoji">🔸</span>
+        <div class="vf-inner">
+          <div class="vf-label">Total a pagar <span class="vf-req">*</span></div>
+          <input type="text" id="vf-total" placeholder="Ej: $45 / 4500 CUP" oninput="onFormInput()">
+        </div>
+      </div>
+
+      <hr class="vf-sep">
+
+      <!-- Garantía -->
+      <div class="vf-row">
+        <span class="vf-emoji">★</span>
+        <div class="vf-inner">
+          <div class="vf-label">Garantía</div>
+          <input type="text" id="vf-garantia" placeholder="Ej: 6 meses" oninput="onFormInput()">
+        </div>
+      </div>
+
+      <!-- Fecha/Hora (auto) -->
+      <div class="vf-row vf-auto">
+        <span class="vf-emoji">★</span>
+        <div class="vf-inner">
+          <div class="vf-label">Fecha y hora de Venta <span style="color:var(--blue);font-size:9px;">● Auto</span></div>
+          <input type="text" id="vf-fecha" readonly>
+        </div>
+      </div>
+
+      <hr class="vf-sep">
+
+      <!-- Fijo: dirección + atención -->
+      <div class="vf-fixed">
+        <b>🧭 Dirección de la tienda:</b><br>
+        * Amistad #313% San Rafael y San José, Centro Habana.<br><br>
+        <b>🚨 ATENCIÓN 🚨</b><br>
+        • Horarios de atención: 8:00am - 8:00pm.<br>
+        * Solo aceptamos hasta cinco billetes de 1 USD por compra.<br>
+        * Los pagos en CUP deben ser con denominación de 50 en adelante.<br>
+        * Solo se aceptan billetes en buen estado (ni rotos ni manchados)
+      </div>
+
+    </div><!-- /vale-form-body -->
+
+    <!-- Preview -->
+    <div id="previewCard" class="card" style="display:none;">
+      <div style="font-size:10px;font-weight:700;color:var(--gray-400);letter-spacing:.5px;text-transform:uppercase;margin-bottom:8px;">Vista previa del vale</div>
+      <div class="vale-preview" id="valePreviewText" style="font-size:11px;max-height:200px;overflow-y:auto;"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px;">
+        <button class="btn btn-ghost btn-full" onclick="copyValePreview()">📋 Copiar</button>
+        <button class="btn btn-blue btn-full" id="sendValeBtn" onclick="sendVale()" disabled>📤 Enviar vale</button>
+      </div>
+    </div>
+
+  </div><!-- /col-mid -->
+
+  <!-- Col 3: (vacío o info) - no se usa en gestor, se muestra en admin -->
+  <div class="col col-right" style="display:none;" id="gestorColRight"></div>
+
 </div><!-- /layoutGestor -->
 
-<!-- ══════════════════════════════════════ -->
-<!--  ADMIN MODE                           -->
-<!-- ══════════════════════════════════════ -->
+<!-- ══════════════════════ ADMIN ══════════════════════ -->
 <div class="layout" id="layoutAdmin">
 
-  <!-- Col 1: Inbox -->
+  <!-- Col 1: Gestores filter -->
   <div class="col col-left">
-    <div class="lbl-row lbl" style="margin-bottom:10px;">
-      <span>Bandeja de Entrada</span>
-      <span id="inboxCountBadge" style="background:var(--red);color:white;border-radius:20px;padding:2px 8px;font-size:10px;font-weight:700;display:none;">0</span>
-    </div>
-    <div class="notif-banner" id="notifBanner">
-      <span id="notifBannerText">Nuevo vale recibido</span>
-      <button class="notif-close" onclick="closeNotifBanner()">×</button>
-    </div>
+    <div class="lbl">Gestores</div>
+    <div id="adminGestoresList"></div>
 
-    <!-- Filter tabs -->
-    <div style="display:flex;gap:4px;margin-bottom:10px;background:var(--gray-100);border-radius:8px;padding:3px;">
-      <button class="btn btn-sm" id="filterAll" style="flex:1;border-radius:6px;font-size:11px;background:white;" onclick="setFilter('all')">Todos</button>
-      <button class="btn btn-sm" id="filterPend" style="flex:1;border-radius:6px;font-size:11px;" onclick="setFilter('pending')">Pendientes</button>
-      <button class="btn btn-sm" id="filterDone" style="flex:1;border-radius:6px;font-size:11px;" onclick="setFilter('done')">Cerrados</button>
+    <div style="margin-top:14px;">
+      <div class="notif-banner" id="notifBanner">
+        <span id="notifBannerText">Nuevo vale recibido</span>
+        <button class="notif-close" onclick="document.getElementById('notifBanner').classList.remove('show')">×</button>
+      </div>
+      <div class="lbl" style="display:flex;justify-content:space-between;align-items:center;">
+        <span>Bandeja</span>
+        <span id="inboxCountBadge" style="background:var(--red);color:white;border-radius:20px;padding:2px 8px;font-size:10px;font-weight:700;display:none;">0</span>
+      </div>
+      <div style="display:flex;gap:4px;margin-bottom:8px;background:var(--gray-100);border-radius:8px;padding:3px;">
+        <button class="btn btn-sm" id="fAll"  style="flex:1;border-radius:6px;font-size:10px;background:white;" onclick="setFilter('all')">Todos</button>
+        <button class="btn btn-sm" id="fPend" style="flex:1;border-radius:6px;font-size:10px;" onclick="setFilter('pending')">Pendientes</button>
+        <button class="btn btn-sm" id="fDone" style="flex:1;border-radius:6px;font-size:10px;" onclick="setFilter('done')">Cerrados</button>
+      </div>
+      <div id="inboxList"></div>
     </div>
-
-    <div id="inboxList"></div>
   </div>
 
-  <!-- Col 2: Vale Detail -->
+  <!-- Col 2: Vale detail -->
   <div class="col col-mid">
     <div id="valeDetail">
-      <div class="detail-empty">
-        <div class="detail-empty-icon">📋</div>
-        <div class="detail-empty-text">Selecciona un vale de la bandeja</div>
+      <div class="det-empty">
+        <div class="det-empty-icon">📋</div>
+        <div style="font-size:13px;">Selecciona un vale de la bandeja</div>
       </div>
     </div>
   </div>
 
-  <!-- Col 3: Mensajeros + Status -->
+  <!-- Col 3: Mensajeros + status -->
   <div class="col col-right">
     <div class="lbl">Mensajeros</div>
     <div class="card" style="padding:10px 14px;">
@@ -399,31 +418,25 @@
         <input type="text" id="newMensajeroInput" placeholder="Nombre del mensajero">
         <button class="btn btn-blue btn-sm" onclick="addMensajero()" style="white-space:nowrap;">+ Agregar</button>
       </div>
-      <div id="mensajerosList">
-        <div class="es" style="padding:10px;"><div class="es-text">Sin mensajeros aún</div></div>
-      </div>
+      <div id="mensajerosList"><div class="es" style="padding:8px;"><div class="es-text">Sin mensajeros</div></div></div>
     </div>
 
     <div class="lbl">Confirmados Hoy ✅</div>
-    <div id="confirmadosList">
-      <div class="es"><div class="es-icon">✅</div><div class="es-text">Sin confirmaciones aún</div></div>
-    </div>
+    <div id="confirmadosList"><div class="es"><div class="es-icon">✅</div><div class="es-text">Sin confirmaciones</div></div></div>
 
     <div class="lbl">Pendiente de Cobro ⏳</div>
-    <div id="pendienteCobroList">
-      <div class="es"><div class="es-icon">⏳</div><div class="es-text">Sin pendientes</div></div>
-    </div>
+    <div id="pendienteList"><div class="es"><div class="es-icon">⏳</div><div class="es-text">Sin pendientes</div></div></div>
   </div>
 
 </div><!-- /layoutAdmin -->
 
-<!-- ─── MODAL: Contraseña Admin ─── -->
+<!-- ─── MODAL: Contraseña ─── -->
 <div class="modal-bg" id="passModal">
   <div class="modal">
     <div class="modal-title">🔒 Acceso Administrador</div>
     <div class="modal-sub">Ingresa la contraseña para continuar</div>
-    <div class="field">
-      <label>Contraseña</label>
+    <div style="margin-bottom:4px;">
+      <label style="font-size:11px;font-weight:700;color:var(--gray-600);display:block;margin-bottom:5px;">Contraseña</label>
       <input type="password" id="passInput" placeholder="Contraseña" onkeydown="if(event.key==='Enter')submitPass()">
       <div class="pass-error" id="passError">Contraseña incorrecta</div>
     </div>
@@ -437,15 +450,15 @@
 <!-- ─── MODAL: Compartir Vale ─── -->
 <div class="modal-bg" id="shareModal">
   <div class="modal">
-    <div class="modal-title">📤 Compartir Vale</div>
-    <div class="modal-sub" id="shareModalSub">Selecciona el mensajero para este vale</div>
-    <div class="field">
-      <label>Mensajero</label>
+    <div class="modal-title">📤 Compartir con Mensajero</div>
+    <div class="modal-sub" id="shareModalSub">Selecciona el mensajero</div>
+    <div style="margin-bottom:10px;">
+      <label style="font-size:11px;font-weight:700;color:var(--gray-600);display:block;margin-bottom:5px;">Mensajero</label>
       <select id="mensajeroSelect"></select>
     </div>
     <hr class="modal-sep">
-    <div style="font-size:10px;font-weight:700;color:var(--gray-400);letter-spacing:.5px;text-transform:uppercase;margin-bottom:6px;">Vista previa</div>
-    <div class="vale-preview" id="shareValePreview" style="font-size:11px;max-height:140px;overflow-y:auto;"></div>
+    <div style="font-size:10px;font-weight:700;color:var(--gray-400);letter-spacing:.5px;text-transform:uppercase;margin-bottom:6px;">Vale que se comparte</div>
+    <div class="vale-preview" id="shareValePreview" style="font-size:10.5px;max-height:140px;overflow-y:auto;"></div>
     <div class="modal-btns">
       <button class="btn btn-ghost btn-full" onclick="closeShareModal()">Cancelar</button>
       <button class="btn btn-blue btn-full" onclick="copyAndAssign()">📋 Copiar y Asignar</button>
@@ -457,141 +470,94 @@
 
 <script>
 // ══════════════════════════════════════════
-//  CONSTANTES
+//  DATOS
 // ══════════════════════════════════════════
 const GESTORES = [
-  { id: 1, name: 'Ana García',       initials: 'AG', color: '#2563EB' },
-  { id: 2, name: 'Carlos López',     initials: 'CL', color: '#7C3AED' },
-  { id: 3, name: 'María Rodríguez',  initials: 'MR', color: '#059669' },
-  { id: 4, name: 'Pedro Sánchez',    initials: 'PS', color: '#DC2626' },
-];
-
-const CATEGORIAS = [
-  { id: 'elec',  name: 'Electrónica', pts: 50 },
-  { id: 'ropa',  name: 'Ropa',        pts: 20 },
-  { id: 'hogar', name: 'Hogar',       pts: 30 },
-  { id: 'depo',  name: 'Deportes',    pts: 25 },
-  { id: 'alim',  name: 'Alimentos',   pts: 10 },
-];
-
-const PRODUCTOS_BASE = [
-  { id:1,  name:'Audífonos Bluetooth TWS',    cat:'elec',  stock:12 },
-  { id:2,  name:'Cargador Rápido 65W',         cat:'elec',  stock:8  },
-  { id:3,  name:'Smartwatch Fitness Band',      cat:'elec',  stock:5  },
-  { id:4,  name:'Cable USB-C Trenzado 2m',      cat:'elec',  stock:25 },
-  { id:5,  name:'Power Bank 20000 mAh',         cat:'elec',  stock:6  },
-  { id:6,  name:'Camiseta Deportiva Dry-Fit',   cat:'ropa',  stock:15 },
-  { id:7,  name:'Pantalón Cargo Slim',          cat:'ropa',  stock:7  },
-  { id:8,  name:'Sudadera con Capucha',         cat:'ropa',  stock:10 },
-  { id:9,  name:'Zapatillas Running Pro',       cat:'depo',  stock:4  },
-  { id:10, name:'Pelota de Fútbol Profesional', cat:'depo',  stock:9  },
-  { id:11, name:'Set de Ollas Antiadherentes',  cat:'hogar', stock:3  },
-  { id:12, name:'Organizador de Escritorio',    cat:'hogar', stock:11 },
-  { id:13, name:'Lámpara LED de Escritorio',    cat:'hogar', stock:7  },
-  { id:14, name:'Proteína Whey Chocolate 1kg',  cat:'alim',  stock:6  },
-  { id:15, name:'Barras de Cereal x12 unid.',   cat:'alim',  stock:20 },
+  { id:1, name:'Ana García',       initials:'AG', color:'#2563EB' },
+  { id:2, name:'Carlos López',     initials:'CL', color:'#7C3AED' },
+  { id:3, name:'María Rodríguez',  initials:'MR', color:'#059669' },
+  { id:4, name:'Pedro Sánchez',    initials:'PS', color:'#DC2626' },
 ];
 
 // ══════════════════════════════════════════
 //  ESTADO
 // ══════════════════════════════════════════
-let activeGestorId   = null;
-let currentValeItems = [];
-let adminActive      = false;
-let selectedValeId   = null;
-let inboxFilter      = 'all';
-let shareTargetId    = null; // vale id being shared
-
-let stockState = JSON.parse(localStorage.getItem('axon_stock') || 'null');
-if (!stockState) { stockState = {}; PRODUCTOS_BASE.forEach(p => { stockState[p.id] = p.stock; }); }
+let activeGestorId  = null;
+let adminActive     = false;
+let selectedValeId  = null;
+let inboxFilter     = 'all';
+let adminGestorFilter = null; // null = todos
+let shareTargetId   = null;
 
 // ══════════════════════════════════════════
 //  STORAGE
 // ══════════════════════════════════════════
-const getVales      = () => JSON.parse(localStorage.getItem('axon_vales') || '[]');
+const getVales      = () => JSON.parse(localStorage.getItem('axon_vales')      || '[]');
 const saveVales     = v  => localStorage.setItem('axon_vales', JSON.stringify(v));
 const getMensajeros = () => JSON.parse(localStorage.getItem('axon_mensajeros') || '[]');
 const saveMensajeros= m  => localStorage.setItem('axon_mensajeros', JSON.stringify(m));
-const saveStock     = ()  => localStorage.setItem('axon_stock', JSON.stringify(stockState));
 
 function patchVale(id, changes) {
-  const vales = getVales();
-  const i = vales.findIndex(v => v.id === id);
-  if (i !== -1) { vales[i] = { ...vales[i], ...changes }; saveVales(vales); }
+  const all = getVales();
+  const i = all.findIndex(v => v.id === id);
+  if (i !== -1) { all[i] = { ...all[i], ...changes }; saveVales(all); }
 }
 
 // ══════════════════════════════════════════
 //  ADMIN AUTH
 // ══════════════════════════════════════════
-const DEFAULT_PASS = btoa('axon2024');
-function getPassHash() { return localStorage.getItem('axon_admin_hash') || DEFAULT_PASS; }
-function checkPass(input) { return btoa(input) === getPassHash(); }
+function checkPass(input) {
+  return btoa(input) === (localStorage.getItem('axon_admin_hash') || btoa('axon2024'));
+}
 
 // ══════════════════════════════════════════
 //  HELPERS
 // ══════════════════════════════════════════
-function catOf(id)   { return CATEGORIAS.find(c => c.id === id); }
-function ptsOf(id)   { const c = catOf(id); return c ? c.pts : 0; }
-function gestorOf(id){ return GESTORES.find(g => g.id === id); }
-function mensajeroOf(id){ return getMensajeros().find(m => m.id === id); }
-function todayStr()  { return new Date().toDateString(); }
-function timeStr(ts) { return new Date(ts).toLocaleTimeString('es-ES', { hour:'2-digit', minute:'2-digit' }); }
-function dateStr(ts) { return new Date(ts).toLocaleDateString('es-ES'); }
-
-function todayValesOf(gId) {
-  return getVales().filter(v => v.gestorId === gId && new Date(v.ts).toDateString() === todayStr());
-}
-function todayPtsOf(gId) {
-  return todayValesOf(gId).reduce((s,v) => s + (v.pts||0), 0);
-}
-function pendingCount() {
-  return getVales().filter(v => v.status === 'pending').length;
-}
+function gestorOf(id)    { return GESTORES.find(g => g.id === id); }
+function mensajeroOf(id) { return getMensajeros().find(m => m.id === id); }
+function todayStr()      { return new Date().toDateString(); }
+function timeStr(ts)     { return new Date(ts).toLocaleTimeString('es-ES', { hour:'2-digit', minute:'2-digit' }); }
+function pendingCount()  { return getVales().filter(v => v.status === 'pending').length; }
+function pendingOf(gId)  { return getVales().filter(v => v.gestorId===gId && v.status==='pending').length; }
+function todayValesOf(gId){ return getVales().filter(v=>v.gestorId===gId && new Date(v.ts).toDateString()===todayStr()); }
+function nowDateTime()   { return new Date().toLocaleDateString('es-ES') + '  ' + new Date().toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'}); }
 
 // ══════════════════════════════════════════
 //  SOUND
 // ══════════════════════════════════════════
 function playSound(type) {
   try {
-    const ac = new (window.AudioContext || window.webkitAudioContext)();
-    const gain = ac.createGain();
-    gain.connect(ac.destination);
-    gain.gain.setValueAtTime(0.08, ac.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + 0.8);
-    const tones = {
-      login:   [[880,0],[1100,.15]],
-      vale:    [[660,0],[800,.18]],
-      confirm: [[440,0],[660,.15],[880,.3]],
-    };
-    (tones[type]||[]).forEach(([freq,d]) => {
-      const o = ac.createOscillator();
-      o.connect(gain); o.type='sine'; o.frequency.value=freq;
-      o.start(ac.currentTime+d); o.stop(ac.currentTime+d+.18);
-    });
+    const ac = new (window.AudioContext||window.webkitAudioContext)();
+    const g = ac.createGain(); g.connect(ac.destination);
+    g.gain.setValueAtTime(0.08, ac.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ac.currentTime+0.8);
+    const tones = { login:[[880,0],[1100,.15]], vale:[[660,0],[800,.18]], confirm:[[440,0],[660,.15],[880,.3]] };
+    (tones[type]||[]).forEach(([f,d])=>{ const o=ac.createOscillator(); o.connect(g); o.frequency.value=f; o.start(ac.currentTime+d); o.stop(ac.currentTime+d+.18); });
   } catch(e){}
 }
 
 // ══════════════════════════════════════════
 //  TOAST
 // ══════════════════════════════════════════
-let _toastTimer;
+let _tt;
 function showToast(msg) {
   const t = document.getElementById('toast');
-  t.textContent = msg; t.classList.add('show');
-  clearTimeout(_toastTimer);
-  _toastTimer = setTimeout(() => t.classList.remove('show'), 2800);
+  t.textContent=msg; t.classList.add('show');
+  clearTimeout(_tt); _tt=setTimeout(()=>t.classList.remove('show'), 2800);
 }
 
 // ══════════════════════════════════════════
-//  DATE HEADER
+//  DATE
 // ══════════════════════════════════════════
 function updateDate() {
   document.getElementById('headerDate').textContent =
-    new Date().toLocaleDateString('es-ES', { weekday:'short', day:'numeric', month:'short' });
+    new Date().toLocaleDateString('es-ES',{weekday:'short',day:'numeric',month:'short'});
+  const fEl = document.getElementById('vf-fecha');
+  if (fEl) fEl.value = nowDateTime();
 }
 
 // ══════════════════════════════════════════
-//  MODE SWITCHING
+//  MODE
 // ══════════════════════════════════════════
 function switchMode(mode) {
   if (mode === 'admin') {
@@ -608,6 +574,7 @@ function activateAdminMode() {
   document.getElementById('layoutAdmin').classList.add('active');
   document.getElementById('layoutGestor').classList.remove('active');
   document.getElementById('btnAdminAccess').style.display = 'none';
+  renderAdminGestores();
   renderInbox();
   renderMensajeros();
   renderConfirmados();
@@ -628,97 +595,48 @@ function logoutAdmin() {
 // ══════════════════════════════════════════
 function updateAdminBadge() {
   const n = pendingCount();
-  const badge = document.getElementById('adminBadge');
-  const inbox = document.getElementById('inboxCountBadge');
-  if (n > 0) {
-    badge.textContent = n; badge.classList.add('show');
-    if (inbox) { inbox.textContent = n; inbox.style.display = 'inline-block'; }
-  } else {
-    badge.classList.remove('show');
-    if (inbox) inbox.style.display = 'none';
-  }
+  const b = document.getElementById('adminBadge');
+  const ib = document.getElementById('inboxCountBadge');
+  if (n>0) { b.textContent=n; b.classList.add('show'); if(ib){ib.textContent=n;ib.style.display='inline-block';} }
+  else     { b.classList.remove('show'); if(ib)ib.style.display='none'; }
 }
 
 // ══════════════════════════════════════════
 //  PASSWORD MODAL
 // ══════════════════════════════════════════
 function openPassModal() {
-  document.getElementById('passInput').value = '';
-  document.getElementById('passError').style.display = 'none';
+  document.getElementById('passInput').value='';
+  document.getElementById('passError').style.display='none';
   document.getElementById('passModal').classList.add('show');
-  setTimeout(() => document.getElementById('passInput').focus(), 100);
+  setTimeout(()=>document.getElementById('passInput').focus(),100);
 }
-function closePassModal() {
-  document.getElementById('passModal').classList.remove('show');
-}
+function closePassModal() { document.getElementById('passModal').classList.remove('show'); }
 function submitPass() {
-  const input = document.getElementById('passInput').value;
-  if (checkPass(input)) {
+  const val = document.getElementById('passInput').value;
+  if (checkPass(val)) {
     closePassModal();
-    adminActive = true;
-    document.getElementById('adminLabel').style.display = 'inline';
-    document.getElementById('btnLogout').style.display = 'inline-flex';
+    adminActive=true;
+    document.getElementById('adminLabel').style.display='inline';
+    document.getElementById('btnLogout').style.display='inline-flex';
     playSound('login');
     activateAdminMode();
-    showToast('Bienvenido, Admin');
+    showToast('Bienvenido, Admin ✓');
   } else {
-    document.getElementById('passError').style.display = 'block';
+    document.getElementById('passError').style.display='block';
     document.getElementById('passInput').select();
   }
 }
 
 // ══════════════════════════════════════════
-//  GESTORES
+//  GESTORES (selector mode)
 // ══════════════════════════════════════════
 function renderGestores() {
   document.getElementById('gestoresList').innerHTML = GESTORES.map(g => {
-    const act = g.id === activeGestorId;
-    return `<div class="gestor-item ${act?'active':''}" onclick="selectGestor(${g.id})">
+    const act = g.id===activeGestorId;
+    return `<div class="g-item ${act?'active':''}" onclick="selectGestor(${g.id})">
       <div class="g-avatar" style="background:${g.color}">${g.initials}</div>
-      <div class="g-info">
-        <div class="g-name">${g.name}</div>
-      </div>
-      ${act ? '<span class="g-badge">✓ Tú</span>' : ''}
-    </div>`;
-  }).join('');
-}
-
-function renderGestorMyVales() {
-  const container = document.getElementById('gestorMyVales');
-  if (!container) return;
-  if (!activeGestorId) {
-    container.innerHTML='<div class="es"><div class="es-icon">🧾</div><div class="es-text">Selecciona tu nombre para ver tus vales</div></div>';
-    return;
-  }
-  const myVales = getVales()
-    .filter(v => v.gestorId === activeGestorId && new Date(v.ts).toDateString() === todayStr())
-    .reverse();
-
-  if (!myVales.length) {
-    container.innerHTML='<div class="es"><div class="es-icon">🧾</div><div class="es-text">Aún no has enviado vales hoy</div></div>';
-    return;
-  }
-
-  const statusInfo = {
-    pending:         { label:'Enviado · esperando admin', color:'var(--blue)',   icon:'🔵' },
-    assigned:        { label:'Con mensajero',              color:'var(--orange)', icon:'🛵' },
-    confirmed:       { label:'Entrega confirmada ✅',       color:'var(--green)', icon:'✅' },
-    pending_payment: { label:'Pendiente de cobro',         color:'var(--yellow)',icon:'⏳' },
-  };
-
-  container.innerHTML = myVales.map(v => {
-    const s = statusInfo[v.status] || { label: v.status, color:'var(--gray-400)', icon:'•' };
-    const products = v.items.map(i=>`${i.name} x${i.qty}`).join(', ');
-    return `<div class="my-vale-card status-${v.status}">
-      <div class="mv-head">
-        <span style="font-size:12px;font-weight:700;">${timeStr(v.ts)}</span>
-        <span class="mv-time">${v.items.reduce((s,i)=>s+i.qty,0)} uds.</span>
-      </div>
-      <div class="mv-products">${products}</div>
-      <div class="mv-foot">
-        <span class="mv-pts">+${v.pts} pts</span>
-        <span class="mv-status" style="color:${s.color};">${s.icon} ${s.label}</span>
-      </div>
+      <div class="g-name">${g.name}</div>
+      ${act?'<span class="g-badge">✓ Tú</span>':''}
     </div>`;
   }).join('');
 }
@@ -726,204 +644,126 @@ function renderGestorMyVales() {
 function selectGestor(id) {
   activeGestorId = id;
   const g = gestorOf(id);
-  const av = document.getElementById('bannerAvatar');
-  av.textContent = g.initials;
-  av.style.background = g.color;
-  document.getElementById('bannerLbl').textContent = 'Hola, estás en tu área';
+  document.getElementById('bannerAvatar').textContent = g.initials;
+  document.getElementById('bannerAvatar').style.background = g.color;
+  document.getElementById('bannerLbl').textContent = 'HOLA, ESTÁS EN TU ÁREA';
   document.getElementById('bannerName').textContent = g.name;
   document.getElementById('headerGestorName').textContent = '· ' + g.name;
+  document.getElementById('vf-promotor').value = g.name;
   renderGestores();
-  renderGestorMyVales();
+  renderMyVales();
+  onFormInput();
 }
 
 // ══════════════════════════════════════════
-//  FORMULARIO DE VALE (plantilla fija)
+//  VALE FORM
 // ══════════════════════════════════════════
-function renderProductosForm() {
-  const container = document.getElementById('productosForm');
-  if (!container) return;
-  container.innerHTML = PRODUCTOS_BASE.map(p => {
-    const cat = catOf(p.cat);
-    return `<div class="pfi" id="pfi-${p.id}">
-      <div class="pfi-top" onclick="toggleProduct(${p.id})">
-        <input class="pfi-check" type="checkbox" id="pcheck-${p.id}" onclick="event.stopPropagation();toggleProduct(${p.id})">
-        <span class="pfi-name">${p.name}</span>
-        <span class="pfi-pts-lbl">+${cat?cat.pts:0}pts/ud</span>
-      </div>
-      <div class="pfi-qty-row" id="pqty-row-${p.id}" style="display:none;">
-        <span class="pfi-qty-label">Cantidad:</span>
-        <button class="qty-btn" onclick="changeFormQty(${p.id},-1)">−</button>
-        <span class="qty-n" id="pqty-n-${p.id}">1</span>
-        <button class="qty-btn" onclick="changeFormQty(${p.id},1)">+</button>
-        <span class="pfi-pts-total" id="pqty-pts-${p.id}">+${cat?cat.pts:0} pts</span>
-      </div>
-    </div>`;
-  }).join('');
+const REQUIRED = ['vf-cliente','vf-telefono','vf-direccion','vf-articulo','vf-total'];
+
+function fVal(id) { return (document.getElementById(id)?.value||'').trim(); }
+
+function onFormInput() {
+  const allFilled = !!activeGestorId && REQUIRED.every(id=>fVal(id).length>0);
+  const btn = document.getElementById('sendValeBtn');
+  if (btn) { btn.disabled=!allFilled; }
+
+  // Show preview if gestor selected and at least one field filled
+  const anyFilled = REQUIRED.some(id=>fVal(id).length>0) || ['vf-mensajeria','vf-precioUSD','vf-precioCUP','vf-vuelto','vf-garantia'].some(id=>fVal(id).length>0);
+  const pc = document.getElementById('previewCard');
+  if (pc) {
+    if (activeGestorId && anyFilled) {
+      pc.style.display='block';
+      document.getElementById('valePreviewText').textContent = buildValeText();
+    } else {
+      pc.style.display='none';
+    }
+  }
 }
 
-function toggleProduct(pid) {
-  const cb = document.getElementById('pcheck-'+pid);
-  if (!cb) return;
-  cb.checked = !cb.checked;
-  const qtyRow = document.getElementById('pqty-row-'+pid);
-  if (qtyRow) qtyRow.style.display = cb.checked ? 'flex' : 'none';
-  updateValePreview();
-}
-
-function changeFormQty(pid, d) {
-  const el = document.getElementById('pqty-n-'+pid);
-  if (!el) return;
-  const newQty = Math.max(1, parseInt(el.textContent) + d);
-  el.textContent = newQty;
-  const cat = catOf(PRODUCTOS_BASE.find(p=>p.id===pid)?.cat);
-  const ptsEl = document.getElementById('pqty-pts-'+pid);
-  if (ptsEl) ptsEl.textContent = `+${(cat?cat.pts:0)*newQty} pts`;
-  updateValePreview();
-}
-
-function getFormItems() {
-  return PRODUCTOS_BASE
-    .filter(p => document.getElementById('pcheck-'+p.id)?.checked)
-    .map(p => ({
-      product: p,
-      qty: parseInt(document.getElementById('pqty-n-'+p.id)?.textContent || '1'),
-    }));
-}
-
-function getClienteData() {
-  return {
-    nombre:    (document.getElementById('clienteNombre')?.value || '').trim(),
-    telefono:  (document.getElementById('clienteTelefono')?.value || '').trim(),
-    direccion: (document.getElementById('clienteDireccion')?.value || '').trim(),
-  };
+function buildValeText() {
+  const g = gestorOf(activeGestorId);
+  const lines = [
+    'Bienvenido a "AXONTECH" 🔥',
+    '',
+    'VALE DEL GESTOR:',
+    '',
+    `🔸Promotor: ${g?g.name:''}`,
+    '',
+    `🔸 Nombre Cliente: ${fVal('vf-cliente')}`,
+    `🔸Teléfono Cliente: ${fVal('vf-telefono')}`,
+    `🔸Dirección Cliente: ${fVal('vf-direccion')}`,
+    `🔸Mensajería/ costo: ${fVal('vf-mensajeria')}`,
+    `🔸 Artículo y cantidad: ${fVal('vf-articulo')}`,
+    `🔸Precio USD/ zelle: ${fVal('vf-precioUSD')}`,
+    `🔸Precio CUP: ${fVal('vf-precioCUP')}`,
+    `🔸 Vuelto: ${fVal('vf-vuelto')}`,
+    `🔸 Total a pagar: ${fVal('vf-total')}`,
+    '',
+    `*Garantía: ${fVal('vf-garantia')}`,
+    `*Fecha y hora de Venta: ${fVal('vf-fecha')||nowDateTime()}`,
+    '',
+    '🧭Dirección de la tienda:',
+    '* Amistad #313% San Rafael y San José, Centro Habana.',
+    '',
+    '🚨ATENCIÓN🚨',
+    '•   Horarios de atención al cliente:',
+    '    8:00am - 8:00pm.',
+    '* Solo aceptamos hasta cinco billetes de 1 USD por compra.',
+    '* Los pagos en CUP deben ser con denominación de 50 en adelante.',
+    '* Solo se aceptan billetes en buen estado (ni rotos ni manchados)',
+  ];
+  return lines.join('\n');
 }
 
 function resetForm() {
-  PRODUCTOS_BASE.forEach(p => {
-    const cb = document.getElementById('pcheck-'+p.id);
-    if (cb) cb.checked = false;
-    const qr = document.getElementById('pqty-row-'+p.id);
-    if (qr) qr.style.display = 'none';
-    const qn = document.getElementById('pqty-n-'+p.id);
-    if (qn) qn.textContent = '1';
-    const qp = document.getElementById('pqty-pts-'+p.id);
-    const cat = catOf(p.cat);
-    if (qp) qp.textContent = `+${cat?cat.pts:0} pts`;
+  ['vf-cliente','vf-telefono','vf-direccion','vf-mensajeria','vf-articulo',
+   'vf-precioUSD','vf-precioCUP','vf-vuelto','vf-total','vf-garantia'].forEach(id=>{
+    const el = document.getElementById(id);
+    if (el) el.value='';
   });
-  const cn = document.getElementById('clienteNombre');    if (cn) cn.value='';
-  const ct = document.getElementById('clienteTelefono');  if (ct) ct.value='';
-  const cd = document.getElementById('clienteDireccion'); if (cd) cd.value='';
-  updateValePreview();
+  onFormInput();
 }
 
-function updateValePreview() {
-  const items   = getFormItems();
-  const cliente = getClienteData();
-  const totalRow  = document.getElementById('valeTotalRow');
-  const actCard   = document.getElementById('valeActionsCard');
-
-  if (!items.length) {
-    totalRow.style.display='none'; actCard.style.display='none'; return;
-  }
-
-  let pts=0, qty=0;
-  items.forEach(item => { pts += ptsOf(item.product.cat)*item.qty; qty += item.qty; });
-
-  totalRow.style.display='block';
-  document.getElementById('totalPts').textContent = pts+' pts';
-  document.getElementById('totalUds').textContent = qty+' uds.';
-
-  actCard.style.display='block';
-  const g = gestorOf(activeGestorId);
-  document.getElementById('valePreviewText').textContent = buildValeText(g, items, cliente, pts, qty);
-}
-
-function buildValeText(g, items, cliente, totalPts, totalQty) {
-  const lines = [
-    '══════════════════════════',
-    '         AXONTECH',
-    '       VALE DE VENTA',
-    '══════════════════════════',
-    `Gestor   : ${g?g.name:'—'}`,
-    `Fecha    : ${new Date().toLocaleDateString('es-ES')}  ${new Date().toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'})}`,
-  ];
-  if (cliente.nombre)    lines.push(`Cliente  : ${cliente.nombre}`);
-  if (cliente.telefono)  lines.push(`Teléfono : ${cliente.telefono}`);
-  if (cliente.direccion) lines.push(`Dirección: ${cliente.direccion}`);
-  lines.push('──────────────────────────');
-  items.forEach(item => {
-    const p = ptsOf(item.product.cat)*item.qty;
-    lines.push(`• ${item.product.name}\n  x${item.qty}  →  +${p} pts`);
-  });
-  lines.push('──────────────────────────');
-  lines.push(`PUNTOS TOTALES : ${totalPts} pts`);
-  lines.push(`UNIDADES       : ${totalQty}`);
-  lines.push('══════════════════════════');
-  return lines.join('\n');
-}
-
-function buildShareText(g, m, v) {
-  const qty = v.items.reduce((s,i)=>s+i.qty,0);
-  const lines = [
-    '══════════════════════════',
-    '         AXONTECH',
-    '       VALE DE ENTREGA',
-    '══════════════════════════',
-    `Gestor    : ${g?g.name:'—'}`,
-    `Mensajero : ${m?m.name:'—'}`,
-    `Fecha     : ${new Date().toLocaleDateString('es-ES')}  ${new Date().toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'})}`,
-  ];
-  if (v.cliente?.nombre)    lines.push(`Cliente   : ${v.cliente.nombre}`);
-  if (v.cliente?.telefono)  lines.push(`Teléfono  : ${v.cliente.telefono}`);
-  if (v.cliente?.direccion) lines.push(`Dirección : ${v.cliente.direccion}`);
-  lines.push('──────────────────────────');
-  v.items.forEach(item => lines.push(`• ${item.name} x${item.qty}`));
-  lines.push('──────────────────────────');
-  lines.push(`TOTAL : ${qty} unidad${qty!==1?'es':''}`);
-  lines.push('══════════════════════════');
-  return lines.join('\n');
-}
-
-function copyVale() {
+function copyValePreview() {
   navigator.clipboard.writeText(document.getElementById('valePreviewText').textContent)
-    .then(()=>showToast('Vale copiado ✓'))
-    .catch(()=>showToast('No se pudo copiar'));
+    .then(()=>showToast('Vale copiado ✓')).catch(()=>showToast('No se pudo copiar'));
 }
 
-// SEND VALE → Admin inbox
+// ══════════════════════════════════════════
+//  SEND VALE
+// ══════════════════════════════════════════
 function sendVale() {
-  const items   = getFormItems();
-  const cliente = getClienteData();
+  if (!activeGestorId) { showToast('Selecciona tu nombre primero'); return; }
+  if (REQUIRED.some(id=>!fVal(id))) { showToast('Completa los campos obligatorios (*)'); return; }
 
-  if (!items.length)      { showToast('Marca al menos un producto'); return; }
-  if (!activeGestorId)    { showToast('Selecciona tu nombre primero'); return; }
-  if (!cliente.nombre)    { showToast('Escribe el nombre del cliente'); document.getElementById('clienteNombre').focus(); return; }
-
-  const g   = gestorOf(activeGestorId);
-  const pts = items.reduce((s,i)=>s+ptsOf(i.product.cat)*i.qty, 0);
-  const qty = items.reduce((s,i)=>s+i.qty, 0);
+  const g = gestorOf(activeGestorId);
+  const valeText = buildValeText();
 
   const vale = {
     id:         Date.now(),
     gestorId:   activeGestorId,
     ts:         new Date().toISOString(),
-    cliente,
-    items:      items.map(i=>({ id:i.product.id, name:i.product.name, cat:i.product.cat, qty:i.qty })),
-    pts,
-    valeText:   buildValeText(g, items, cliente, pts, qty),
+    cliente:    fVal('vf-cliente'),
+    telefono:   fVal('vf-telefono'),
+    direccion:  fVal('vf-direccion'),
+    mensajeria: fVal('vf-mensajeria'),
+    articulo:   fVal('vf-articulo'),
+    precioUSD:  fVal('vf-precioUSD'),
+    precioCUP:  fVal('vf-precioCUP'),
+    vuelto:     fVal('vf-vuelto'),
+    total:      fVal('vf-total'),
+    garantia:   fVal('vf-garantia'),
+    valeText,
     status:     'pending',
     mensajeroId: null,
     confirmedTs: null,
-    isNew:      true,
+    isNew:       true,
   };
 
-  const all = getVales();
-  all.push(vale);
-  saveVales(all);
-
+  const all = getVales(); all.push(vale); saveVales(all);
   resetForm();
   renderGestores();
-  renderGestorMyVales();
+  renderMyVales();
   updateAdminBadge();
   playSound('vale');
   showToast('Vale enviado al administrador ✓');
@@ -931,195 +771,217 @@ function sendVale() {
   if (adminActive) {
     document.getElementById('notifBannerText').textContent = `${g.name} acaba de enviar un vale`;
     document.getElementById('notifBanner').classList.add('show');
+    renderAdminGestores();
     renderInbox();
   }
 }
 
 // ══════════════════════════════════════════
-//  GESTOR HISTORY (left col)
+//  MY VALES (gestor right - now in left col bottom)
 // ══════════════════════════════════════════
-function renderGestorHistory() {
-  const container = document.getElementById('gestorHistory');
-  const today = getVales().filter(v=>new Date(v.ts).toDateString()===todayStr()).reverse();
-  if (!today.length) {
-    container.innerHTML='<div class="es"><div class="es-icon">📋</div><div class="es-text">Sin vales enviados hoy</div></div>';
+function renderMyVales() {
+  const container = document.getElementById('gestorMyVales');
+  if (!container||!activeGestorId) return;
+  const mine = todayValesOf(activeGestorId).reverse();
+  if (!mine.length) {
+    container.innerHTML='<div class="es"><div class="es-icon">🧾</div><div class="es-text">Aún no has enviado vales hoy</div></div>';
     return;
   }
-  container.innerHTML = today.map(v=>{
-    const g = gestorOf(v.gestorId);
-    const statusMap = { pending:'🔵 Pendiente', assigned:'🟠 Con mensajero', confirmed:'🟢 Confirmado', pending_payment:'🟡 Pend. cobro' };
-    return `<div class="history-item">
-      <div class="hi-head">
-        <span class="hi-g">${g?g.name:'—'}</span>
-        <span class="hi-t">${timeStr(v.ts)}</span>
+  const sMap = {
+    pending:         { label:'Enviado · admin pendiente', color:'var(--blue)',   icon:'🔵' },
+    assigned:        { label:'Con mensajero',              color:'var(--orange)', icon:'🛵' },
+    confirmed:       { label:'Entrega confirmada',         color:'var(--green)', icon:'✅' },
+    pending_payment: { label:'Pendiente de cobro',         color:'var(--yellow)',icon:'⏳' },
+  };
+  container.innerHTML = mine.map(v=>{
+    const s = sMap[v.status]||{label:v.status,color:'var(--gray-400)',icon:'•'};
+    return `<div class="mv-card st-${v.status}">
+      <div class="mv-head">
+        <span class="mv-time">${timeStr(v.ts)}</span>
       </div>
-      <div class="hi-prods">${v.items.map(i=>`${i.name} x${i.qty}`).join(', ')}</div>
-      <div class="hi-foot">
-        <span class="hi-pts">+${v.pts} pts</span>
-        <span style="font-size:11px;">${statusMap[v.status]||v.status}</span>
+      <div class="mv-info">${v.cliente||'—'} · ${v.articulo||'—'}</div>
+      <div class="mv-foot">
+        <span class="mv-status" style="color:${s.color}">${s.icon} ${s.label}</span>
       </div>
     </div>`;
   }).join('');
+}
+
+// ══════════════════════════════════════════
+//  ADMIN GESTORES FILTER
+// ══════════════════════════════════════════
+function renderAdminGestores() {
+  const totalPend = pendingCount();
+  document.getElementById('adminGestoresList').innerHTML =
+    `<div class="ag-all ${adminGestorFilter===null?'active':''}" onclick="setGestorFilter(null)">
+      <span>Todos los gestores</span>
+      ${totalPend>0?`<span class="ag-count">${totalPend}</span>`:''}
+    </div>` +
+    GESTORES.map(g => {
+      const pend = pendingOf(g.id);
+      const todayN = todayValesOf(g.id).length;
+      return `<div class="ag-item ${adminGestorFilter===g.id?'active':''}" onclick="setGestorFilter(${g.id})">
+        <div class="ag-avatar" style="background:${g.color}">${g.initials}</div>
+        <div>
+          <div class="ag-name">${g.name}</div>
+          <div style="font-size:10px;color:var(--gray-400);">${todayN} vale${todayN!==1?'s':''} hoy</div>
+        </div>
+        ${pend>0?`<span class="ag-count">${pend}</span>`:''}
+      </div>`;
+    }).join('');
+}
+
+function setGestorFilter(gId) {
+  adminGestorFilter = gId;
+  renderAdminGestores();
+  renderInbox();
 }
 
 // ══════════════════════════════════════════
 //  ADMIN INBOX
 // ══════════════════════════════════════════
 function setFilter(f) {
-  inboxFilter = f;
+  inboxFilter=f;
   ['All','Pend','Done'].forEach(x=>{
-    document.getElementById('filter'+x).style.background='';
-    document.getElementById('filter'+x).style.fontWeight='';
+    const el=document.getElementById('f'+x);
+    if(el){el.style.background='';el.style.fontWeight='';}
   });
-  const map = {all:'All', pending:'Pend', done:'Done'};
-  const el = document.getElementById('filter'+map[f]);
-  if (el) { el.style.background='white'; el.style.fontWeight='700'; }
+  const map={all:'All',pending:'Pend',done:'Done'};
+  const el=document.getElementById('f'+map[f]);
+  if(el){el.style.background='white';el.style.fontWeight='700';}
   renderInbox();
 }
 
 function renderInbox() {
-  const all = getVales().reverse();
-  let filtered;
-  if (inboxFilter==='pending') filtered = all.filter(v=>v.status==='pending');
-  else if (inboxFilter==='done') filtered = all.filter(v=>v.status!=='pending');
-  else filtered = all;
+  let all = getVales().reverse();
+  if (adminGestorFilter!==null) all=all.filter(v=>v.gestorId===adminGestorFilter);
+  if (inboxFilter==='pending') all=all.filter(v=>v.status==='pending');
+  else if (inboxFilter==='done') all=all.filter(v=>v.status!=='pending');
 
   const container = document.getElementById('inboxList');
-  if (!filtered.length) {
+  if (!all.length) {
     container.innerHTML='<div class="es"><div class="es-icon">📭</div><div class="es-text">Sin vales aquí</div></div>';
     return;
   }
 
-  const statusMap = {
-    pending:        { label:'Pendiente',    cls:'sp-pending'     },
-    assigned:       { label:'Con mensajero',cls:'sp-assigned'    },
-    confirmed:      { label:'Confirmado',   cls:'sp-confirmed'   },
-    pending_payment:{ label:'Pend. cobro',  cls:'sp-pending-pay' },
+  const sMap = {
+    pending:        { label:'Pendiente',     cls:'sp-pending'        },
+    assigned:       { label:'Con mensajero', cls:'sp-assigned'       },
+    confirmed:      { label:'Confirmado',    cls:'sp-confirmed'      },
+    pending_payment:{ label:'Pend. cobro',   cls:'sp-pending_payment'},
   };
 
-  container.innerHTML = filtered.map(v=>{
+  container.innerHTML = all.map(v=>{
     const g = gestorOf(v.gestorId);
-    const s = statusMap[v.status] || { label:v.status, cls:'' };
-    const summary = v.items.map(i=>`${i.name} x${i.qty}`).join(', ');
-    const sel = v.id===selectedValeId;
+    const s = sMap[v.status]||{label:v.status,cls:''};
     const isNew = v.isNew && v.status==='pending';
-    return `<div class="inbox-card ${sel?'selected':''} ${isNew?'is-new':''}" onclick="selectVale(${v.id})">
+    const sel = v.id===selectedValeId;
+    return `<div class="ic ${sel?'sel':''} ${isNew?'is-new':''}" onclick="selectVale(${v.id})">
       ${isNew?'<div class="new-dot"></div>':''}
       <div class="ic-head">
-        <span class="ic-gestor">${g?g.name:'—'}</span>
+        <span class="ic-gestor">
+          <span style="width:20px;height:20px;border-radius:50%;background:${g?g.color:'#888'};display:inline-flex;align-items:center;justify-content:center;color:white;font-size:9px;font-weight:700;flex-shrink:0;">${g?g.initials:'?'}</span>
+          ${g?g.name:'—'}
+        </span>
         <span class="ic-time">${timeStr(v.ts)}</span>
       </div>
-      <div class="ic-summary">${summary}</div>
-      <div class="ic-footer">
-        <span class="status-pill ${s.cls}">${s.label}</span>
-        <span style="font-size:12px;font-weight:700;color:var(--blue)">+${v.pts} pts</span>
+      <div class="ic-cliente">${v.cliente||'Sin nombre'}</div>
+      <div class="ic-preview">${v.articulo||'Sin artículo'}</div>
+      <div class="ic-foot">
+        <span class="sp ${s.cls}">${s.label}</span>
+        <span style="font-size:11px;color:var(--gray-400);">${v.total||''}</span>
       </div>
     </div>`;
   }).join('');
 }
 
 function selectVale(id) {
-  selectedValeId = id;
-  // Mark as seen
-  patchVale(id, { isNew: false });
+  selectedValeId=id;
+  patchVale(id,{isNew:false});
   updateAdminBadge();
+  renderAdminGestores();
   renderInbox();
   renderValeDetail();
 }
 
 // ══════════════════════════════════════════
-//  VALE DETAIL (admin mid col)
+//  VALE DETAIL
 // ══════════════════════════════════════════
 function renderValeDetail() {
-  const vales = getVales();
-  const v = vales.find(x=>x.id===selectedValeId);
+  const v = getVales().find(x=>x.id===selectedValeId);
   const container = document.getElementById('valeDetail');
   if (!v) {
-    container.innerHTML='<div class="detail-empty"><div class="detail-empty-icon">📋</div><div class="detail-empty-text">Selecciona un vale de la bandeja</div></div>';
+    container.innerHTML='<div class="det-empty"><div class="det-empty-icon">📋</div><div style="font-size:13px;">Selecciona un vale de la bandeja</div></div>';
     return;
   }
-
   const g = gestorOf(v.gestorId);
-  const m = v.mensajeroId ? mensajeroOf(v.mensajeroId) : null;
-  const statusMap = {
-    pending:        { label:'Pendiente',    cls:'sp-pending',     icon:'🔵' },
-    assigned:       { label:'Con mensajero',cls:'sp-assigned',    icon:'🟠' },
-    confirmed:      { label:'Confirmado',   cls:'sp-confirmed',   icon:'✅' },
-    pending_payment:{ label:'Pend. cobro',  cls:'sp-pending-pay', icon:'⏳' },
+  const m = v.mensajeroId?mensajeroOf(v.mensajeroId):null;
+  const sMap={
+    pending:        {label:'Pendiente',    cls:'sp-pending',        icon:'🔵'},
+    assigned:       {label:'Con mensajero',cls:'sp-assigned',       icon:'🛵'},
+    confirmed:      {label:'Confirmado',   cls:'sp-confirmed',      icon:'✅'},
+    pending_payment:{label:'Pend. cobro',  cls:'sp-pending_payment',icon:'⏳'},
   };
-  const s = statusMap[v.status]||{ label:v.status, cls:'', icon:'•' };
+  const s = sMap[v.status]||{label:v.status,cls:'',icon:'•'};
 
-  let actionsHTML = '';
-
-  if (v.status === 'pending') {
-    actionsHTML = `<div class="detail-actions">
-      <button class="btn btn-blue btn-full" onclick="openShareModal(${v.id})">📤 Compartir con mensajero</button>
-    </div>`;
-  } else if (v.status === 'assigned') {
-    actionsHTML = `
-      <div class="mensajero-assigned-row">
-        <span>🛵</span>
-        <span>Mensajero: <b>${m?m.name:'—'}</b></span>
-      </div>
-      <div class="detail-actions">
-        <button class="btn btn-green btn-full" onclick="confirmDelivery(${v.id})">✅ Confirmar entrega</button>
-        <button class="btn btn-orange btn-full" onclick="markPendingPayment(${v.id})">⏳ Pendiente de cobro</button>
-        <button class="btn btn-ghost btn-full btn-sm" onclick="openShareModal(${v.id})">🔄 Reenviar vale</button>
-      </div>`;
-  } else if (v.status === 'confirmed') {
-    actionsHTML = `<div style="background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.25);border-radius:8px;padding:12px;text-align:center;">
-      <div style="font-size:22px;margin-bottom:4px;">✅</div>
+  let actHTML='';
+  if (v.status==='pending') {
+    actHTML=`<button class="btn btn-blue btn-full" onclick="openShareModal(${v.id})">📤 Compartir con mensajero</button>`;
+  } else if (v.status==='assigned') {
+    actHTML=`<div class="mensajero-row">🛵 <b>Mensajero:</b> ${m?m.name:'—'}</div>
+      <button class="btn btn-green btn-full" onclick="confirmDelivery(${v.id})">✅ Confirmar entrega</button>
+      <button class="btn btn-orange btn-full" onclick="markPending(${v.id})" style="margin-top:8px;">⏳ Pendiente de cobro</button>
+      <button class="btn btn-ghost btn-full btn-sm" onclick="openShareModal(${v.id})" style="margin-top:8px;">🔄 Reenviar vale</button>`;
+  } else if (v.status==='confirmed') {
+    actHTML=`<div style="background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.25);border-radius:8px;padding:14px;text-align:center;">
+      <div style="font-size:26px;margin-bottom:4px;">✅</div>
       <div style="font-weight:700;color:var(--green);">Entrega confirmada</div>
-      ${m?`<div style="font-size:12px;color:var(--gray-400);margin-top:3px;">Por ${m.name}</div>`:''}
-      ${v.confirmedTs?`<div style="font-size:11px;color:var(--gray-400);">${dateStr(v.confirmedTs)} ${timeStr(v.confirmedTs)}</div>`:''}
+      ${m?`<div style="font-size:12px;color:var(--gray-400);margin-top:2px;">Por ${m.name}</div>`:''}
+      ${v.confirmedTs?`<div style="font-size:11px;color:var(--gray-400);">${new Date(v.confirmedTs).toLocaleDateString('es-ES')} ${timeStr(v.confirmedTs)}</div>`:''}
     </div>`;
-  } else if (v.status === 'pending_payment') {
-    actionsHTML = `<div style="background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.25);border-radius:8px;padding:12px;text-align:center;margin-bottom:8px;">
-      <div style="font-size:22px;margin-bottom:4px;">⏳</div>
+  } else if (v.status==='pending_payment') {
+    actHTML=`<div style="background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.25);border-radius:8px;padding:14px;text-align:center;margin-bottom:8px;">
+      <div style="font-size:26px;margin-bottom:4px;">⏳</div>
       <div style="font-weight:700;color:var(--yellow);">Pendiente de cobro</div>
-      ${m?`<div style="font-size:12px;color:var(--gray-400);margin-top:3px;">Mensajero: ${m.name}</div>`:''}
+      ${m?`<div style="font-size:12px;color:var(--gray-400);">Mensajero: ${m.name}</div>`:''}
     </div>
     <button class="btn btn-green btn-full" onclick="confirmDelivery(${v.id})">✅ Marcar como cobrado</button>`;
   }
 
-  container.innerHTML = `
+  container.innerHTML=`
     <div class="lbl" style="margin-top:0;">Detalle del Vale</div>
     <div class="card">
-      <div class="detail-head">
-        <div class="detail-gestor-row">
-          <div class="g-avatar" style="background:${g?g.color:'#888'};width:34px;height:34px;font-size:12px;">${g?g.initials:'?'}</div>
-          <div>
-            <div style="font-size:14px;font-weight:700;">${g?g.name:'—'}</div>
-            <div style="font-size:11px;color:var(--gray-400);">${dateStr(v.ts)}  ${timeStr(v.ts)}</div>
-          </div>
+      <div class="det-gestor-row">
+        <div class="g-avatar" style="background:${g?g.color:'#888'};width:34px;height:34px;font-size:12px;">${g?g.initials:'?'}</div>
+        <div style="flex:1;">
+          <div style="font-size:14px;font-weight:700;">${g?g.name:'—'}</div>
+          <div style="font-size:11px;color:var(--gray-400);">${new Date(v.ts).toLocaleDateString('es-ES')}  ${timeStr(v.ts)}</div>
         </div>
-        <span class="status-pill ${s.cls}">${s.icon} ${s.label}</span>
+        <span class="sp ${s.cls}">${s.icon} ${s.label}</span>
       </div>
-
-      <div class="lbl" style="margin-top:0;margin-bottom:6px;">Productos</div>
-      <div class="detail-items-list">
-        ${v.items.map(item=>{
-          const c = catOf(item.cat);
-          const p = (c?c.pts:0)*item.qty;
-          return `<div class="di-item">
-            <span class="di-name">${item.name} <span style="color:var(--gray-400);">x${item.qty}</span></span>
-            <span class="di-pts">+${p} pts</span>
-          </div>`;
-        }).join('')}
-      </div>
-
-      <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-top:2px solid var(--gray-100);">
-        <span style="font-size:12px;font-weight:600;color:var(--gray-600);">TOTAL PUNTOS</span>
-        <span style="font-size:18px;font-weight:800;color:var(--blue);">+${v.pts} pts</span>
-      </div>
+      <table style="width:100%;font-size:12px;border-collapse:collapse;">
+        ${[
+          ['Cliente',    v.cliente],
+          ['Teléfono',   v.telefono],
+          ['Dirección',  v.direccion],
+          ['Artículo',   v.articulo],
+          ['Precio USD', v.precioUSD],
+          ['Precio CUP', v.precioCUP],
+          ['Vuelto',     v.vuelto],
+          ['Total',      v.total],
+          ['Garantía',   v.garantia],
+        ].filter(([,val])=>val).map(([k,val])=>`
+          <tr style="border-bottom:1px solid var(--gray-100);">
+            <td style="padding:6px 0;color:var(--gray-400);font-weight:600;width:80px;">${k}</td>
+            <td style="padding:6px 0;font-weight:600;">${val}</td>
+          </tr>`).join('')}
+      </table>
     </div>
-
-    ${actionsHTML ? `<div class="card">${actionsHTML}</div>` : ''}
-
-    <div class="lbl">Texto del Vale</div>
+    ${actHTML?`<div class="card"><div class="det-actions">${actHTML}</div></div>`:''}
+    <div class="lbl">Vale completo</div>
     <div class="card" style="padding:10px 12px;">
       <div class="vale-preview" style="font-size:11px;">${v.valeText||''}</div>
-      <button class="btn btn-ghost btn-full btn-sm" style="margin-top:8px;" onclick="navigator.clipboard.writeText(document.querySelector('#valeDetail .vale-preview').textContent).then(()=>showToast('Copiado ✓'))">📋 Copiar</button>
+      <button class="btn btn-ghost btn-full btn-sm" style="margin-top:8px;" onclick="navigator.clipboard.writeText(document.querySelector('#valeDetail .vale-preview').textContent).then(()=>showToast('Copiado ✓'))">📋 Copiar vale completo</button>
     </div>`;
 }
 
@@ -1127,253 +989,153 @@ function renderValeDetail() {
 //  SHARE MODAL
 // ══════════════════════════════════════════
 function openShareModal(valeId) {
-  const mensajeros = getMensajeros();
-  if (!mensajeros.length) { showToast('Agrega mensajeros primero (columna derecha)'); return; }
-
-  shareTargetId = valeId;
-  const vales = getVales();
-  const v = vales.find(x=>x.id===valeId);
-  const g = gestorOf(v.gestorId);
-  const qty = v.items.reduce((s,i)=>s+i.qty,0);
-
-  document.getElementById('shareModalSub').textContent = `Vale de ${g?g.name:'—'} · ${qty} producto${qty!==1?'s':''}`;
-
-  const sel = document.getElementById('mensajeroSelect');
-  sel.innerHTML = mensajeros.map(m=>`<option value="${m.id}">${m.name}</option>`).join('');
-
-  // Pre-select current if assigned
-  if (v.mensajeroId) sel.value = v.mensajeroId;
-
+  const mensajeros=getMensajeros();
+  if (!mensajeros.length){showToast('Agrega mensajeros primero');return;}
+  shareTargetId=valeId;
+  const v=getVales().find(x=>x.id===valeId);
+  const g=gestorOf(v.gestorId);
+  document.getElementById('shareModalSub').textContent=`Vale de ${g?g.name:'—'} · ${v.cliente||'cliente'}`;
+  const sel=document.getElementById('mensajeroSelect');
+  sel.innerHTML=mensajeros.map(m=>`<option value="${m.id}">${m.name}</option>`).join('');
+  if (v.mensajeroId) sel.value=v.mensajeroId;
   updateSharePreview();
-  sel.onchange = updateSharePreview;
-
+  sel.onchange=updateSharePreview;
   document.getElementById('shareModal').classList.add('show');
 }
 
 function updateSharePreview() {
-  const vales = getVales();
-  const v = vales.find(x=>x.id===shareTargetId);
+  const v=getVales().find(x=>x.id===shareTargetId);
   if (!v) return;
-  const g = gestorOf(v.gestorId);
-  const mId = parseInt(document.getElementById('mensajeroSelect').value);
-  const m = mensajeroOf(mId);
-  document.getElementById('shareValePreview').textContent = buildShareText(g, m, v);
+  const m=mensajeroOf(parseInt(document.getElementById('mensajeroSelect').value));
+  document.getElementById('shareValePreview').textContent = buildShareText(v,m);
 }
 
-function closeShareModal() {
-  document.getElementById('shareModal').classList.remove('show');
-  shareTargetId = null;
+function buildShareText(v,m) {
+  const g=gestorOf(v.gestorId);
+  const lines=[
+    'Bienvenido a "AXONTECH" 🔥',
+    '',
+    'VALE DE ENTREGA',
+    '',
+    `🔸Promotor: ${g?g.name:'—'}`,
+    `🛵Mensajero: ${m?m.name:'—'}`,
+    '',
+    `🔸 Nombre Cliente: ${v.cliente||''}`,
+    `🔸Teléfono Cliente: ${v.telefono||''}`,
+    `🔸Dirección Cliente: ${v.direccion||''}`,
+    `🔸Mensajería/ costo: ${v.mensajeria||''}`,
+    `🔸 Artículo y cantidad: ${v.articulo||''}`,
+    `🔸 Total a pagar: ${v.total||''}`,
+    '',
+    `*Fecha: ${new Date(v.ts).toLocaleDateString('es-ES')} ${timeStr(v.ts)}`,
+    '',
+    '🧭Amistad #313% San Rafael y San José, Centro Habana.',
+  ];
+  return lines.join('\n');
 }
 
-function copyAndAssign() {
-  if (!shareTargetId) return;
-  const mId = parseInt(document.getElementById('mensajeroSelect').value);
-  const m = mensajeroOf(mId);
-  const text = document.getElementById('shareValePreview').textContent;
+function closeShareModal(){document.getElementById('shareModal').classList.remove('show');shareTargetId=null;}
 
-  navigator.clipboard.writeText(text).catch(()=>{});
-
-  patchVale(shareTargetId, { status:'assigned', mensajeroId: mId });
+function copyAndAssign(){
+  if(!shareTargetId)return;
+  const mId=parseInt(document.getElementById('mensajeroSelect').value);
+  const m=mensajeroOf(mId);
+  navigator.clipboard.writeText(document.getElementById('shareValePreview').textContent).catch(()=>{});
+  patchVale(shareTargetId,{status:'assigned',mensajeroId:mId});
   closeShareModal();
-  selectedValeId = shareTargetId;
+  selectedValeId=shareTargetId;
+  renderAdminGestores();
   renderInbox();
   renderValeDetail();
-  renderGestorMyVales();
+  renderMyVales();
   renderConfirmados();
   renderPendienteCobro();
-  showToast(`Vale asignado a ${m?m.name:'mensajero'} y copiado ✓`);
+  showToast(`Asignado a ${m?m.name:'mensajero'} y copiado ✓`);
 }
 
 // ══════════════════════════════════════════
-//  CONFIRM / PENDING PAYMENT
+//  CONFIRM / PENDING
 // ══════════════════════════════════════════
-function confirmDelivery(valeId) {
-  patchVale(valeId, { status:'confirmed', confirmedTs: new Date().toISOString() });
+function confirmDelivery(id){
+  patchVale(id,{status:'confirmed',confirmedTs:new Date().toISOString()});
   playSound('confirm');
-  renderInbox();
-  renderValeDetail();
-  renderGestorMyVales();
-  renderConfirmados();
-  renderPendienteCobro();
+  renderAdminGestores();renderInbox();renderValeDetail();renderMyVales();
+  renderConfirmados();renderPendienteCobro();
   showToast('Venta confirmada ✅');
 }
-
-function markPendingPayment(valeId) {
-  patchVale(valeId, { status:'pending_payment' });
-  renderInbox();
-  renderValeDetail();
-  renderGestorMyVales();
-  renderConfirmados();
-  renderPendienteCobro();
+function markPending(id){
+  patchVale(id,{status:'pending_payment'});
+  renderAdminGestores();renderInbox();renderValeDetail();renderMyVales();
+  renderConfirmados();renderPendienteCobro();
   showToast('Marcado como pendiente de cobro ⏳');
-}
-
-// ══════════════════════════════════════════
-//  CONFIRMADOS / PENDIENTE COBRO
-// ══════════════════════════════════════════
-function renderConfirmados() {
-  const today = getVales().filter(v=>v.status==='confirmed' && new Date(v.ts).toDateString()===todayStr()).reverse();
-  const container = document.getElementById('confirmadosList');
-  if (!today.length) {
-    container.innerHTML='<div class="es"><div class="es-icon">✅</div><div class="es-text">Sin confirmaciones aún</div></div>';
-    return;
-  }
-  container.innerHTML = today.map(v=>{
-    const g = gestorOf(v.gestorId);
-    const m = v.mensajeroId ? mensajeroOf(v.mensajeroId) : null;
-    return `<div class="status-card sc-confirmed">
-      <div class="sc-head">
-        <span class="sc-gestor">${g?g.name:'—'}</span>
-        <span class="sc-pts">+${v.pts} pts</span>
-      </div>
-      <div class="sc-mensajero">${m?'🛵 '+m.name:'Sin mensajero'}</div>
-      <div class="sc-time">${timeStr(v.confirmedTs||v.ts)}</div>
-    </div>`;
-  }).join('');
-}
-
-function renderPendienteCobro() {
-  const vales = getVales().filter(v=>v.status==='pending_payment').reverse();
-  const container = document.getElementById('pendienteCobroList');
-  if (!vales.length) {
-    container.innerHTML='<div class="es"><div class="es-icon">⏳</div><div class="es-text">Sin pendientes</div></div>';
-    return;
-  }
-  container.innerHTML = vales.map(v=>{
-    const g = gestorOf(v.gestorId);
-    const m = v.mensajeroId ? mensajeroOf(v.mensajeroId) : null;
-    return `<div class="status-card sc-pending-pay">
-      <div class="sc-head">
-        <span class="sc-gestor">${g?g.name:'—'}</span>
-        <span class="sc-pts-yellow">+${v.pts} pts</span>
-      </div>
-      <div class="sc-mensajero">${m?'🛵 '+m.name:'Sin mensajero'}</div>
-      <div style="display:flex;gap:6px;margin-top:8px;">
-        <button class="btn btn-green btn-sm btn-full" onclick="confirmDelivery(${v.id})">✅ Cobrado</button>
-      </div>
-    </div>`;
-  }).join('');
 }
 
 // ══════════════════════════════════════════
 //  MENSAJEROS
 // ══════════════════════════════════════════
-function addMensajero() {
-  const input = document.getElementById('newMensajeroInput');
-  const name = input.value.trim();
-  if (!name) return;
-  const list = getMensajeros();
-  list.push({ id: Date.now(), name });
-  saveMensajeros(list);
-  input.value = '';
-  renderMensajeros();
-  showToast('Mensajero agregado');
+function addMensajero(){
+  const inp=document.getElementById('newMensajeroInput');
+  const name=inp.value.trim();if(!name)return;
+  const list=getMensajeros();list.push({id:Date.now(),name});saveMensajeros(list);
+  inp.value='';renderMensajeros();showToast('Mensajero agregado');
 }
+document.getElementById('newMensajeroInput').addEventListener('keydown',e=>{if(e.key==='Enter')addMensajero();});
 
-document.getElementById('newMensajeroInput').addEventListener('keydown', e => {
-  if (e.key==='Enter') addMensajero();
-});
-
-function removeMensajero(id) {
-  const assigned = getVales().some(v=>v.mensajeroId===id && ['assigned','pending_payment'].includes(v.status));
-  if (assigned) { showToast('No se puede eliminar: tiene vales activos'); return; }
-  saveMensajeros(getMensajeros().filter(m=>m.id!==id));
-  renderMensajeros();
+function removeMensajero(id){
+  if(getVales().some(v=>v.mensajeroId===id&&['assigned','pending_payment'].includes(v.status))){showToast('Tiene vales activos asignados');return;}
+  saveMensajeros(getMensajeros().filter(m=>m.id!==id));renderMensajeros();
 }
-
-function renderMensajeros() {
-  const list = getMensajeros();
-  const container = document.getElementById('mensajerosList');
-  if (!list.length) {
-    container.innerHTML='<div class="es" style="padding:10px;"><div class="es-text">Sin mensajeros aún</div></div>';
-    return;
-  }
-  container.innerHTML = list.map(m=>{
-    const initials = m.name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
-    return `<div class="mensajero-item">
-      <div class="m-avatar">${initials}</div>
-      <div class="m-name">${m.name}</div>
-      <button class="m-del" onclick="removeMensajero(${m.id})" title="Eliminar">×</button>
-    </div>`;
+function renderMensajeros(){
+  const list=getMensajeros();const c=document.getElementById('mensajerosList');
+  if(!list.length){c.innerHTML='<div class="es" style="padding:8px;"><div class="es-text">Sin mensajeros</div></div>';return;}
+  c.innerHTML=list.map(m=>{
+    const ini=m.name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+    return `<div class="m-item"><div class="m-av">${ini}</div><div class="m-name">${m.name}</div><button class="m-del" onclick="removeMensajero(${m.id})" title="Eliminar">×</button></div>`;
   }).join('');
 }
 
 // ══════════════════════════════════════════
-//  NOTIFICATION BANNER
+//  CONFIRMADOS / PENDIENTE COBRO
 // ══════════════════════════════════════════
-function closeNotifBanner() {
-  document.getElementById('notifBanner').classList.remove('show');
-}
-
-// ══════════════════════════════════════════
-//  STOCK
-// ══════════════════════════════════════════
-function renderStock() {
-  const q = document.getElementById('stockSearch').value.toLowerCase();
-  const list = PRODUCTOS_BASE.filter(p=>!q||p.name.toLowerCase().includes(q));
-  document.getElementById('stockList').innerHTML = list.map(p=>{
-    const stock = stockState[p.id];
-    const cat = catOf(p.cat);
-    const cls = stock===0?'empty':stock<=3?'low':'ok';
-    return `<div class="stock-item">
-      <div class="si-info">
-        <div class="si-name">${p.name}</div>
-        <div class="si-cat">${cat?cat.name:''}</div>
-      </div>
-      <span class="si-pts">+${cat?cat.pts:0}pts</span>
-      <span class="si-num ${cls}">${stock}</span>
+function renderConfirmados(){
+  const today=getVales().filter(v=>v.status==='confirmed'&&new Date(v.ts).toDateString()===todayStr()).reverse();
+  const c=document.getElementById('confirmadosList');
+  if(!today.length){c.innerHTML='<div class="es"><div class="es-icon">✅</div><div class="es-text">Sin confirmaciones</div></div>';return;}
+  c.innerHTML=today.map(v=>{
+    const g=gestorOf(v.gestorId);const m=v.mensajeroId?mensajeroOf(v.mensajeroId):null;
+    return `<div class="sc sc-ok">
+      <div class="sc-head"><span class="sc-g">${g?g.name:'—'}</span><span class="sc-t">${timeStr(v.confirmedTs||v.ts)}</span></div>
+      <div>${v.cliente||''}</div>
+      <div class="sc-m">${m?'🛵 '+m.name:''}</div>
     </div>`;
   }).join('');
 }
-
-// ══════════════════════════════════════════
-//  CATEGORÍAS / RANKING
-// ══════════════════════════════════════════
-function renderCategorias() {
-  document.getElementById('catList').innerHTML = CATEGORIAS.map(c=>
-    `<div class="cat-row">
-      <span class="cat-name">${c.name}</span>
-      <span class="cat-pts-badge">+${c.pts} pts</span>
-    </div>`
-  ).join('');
-}
-
-function renderRanking() {
-  const ranked = GESTORES
-    .map(g=>({ g, pts:todayPtsOf(g.id), n:todayValesOf(g.id).length }))
-    .sort((a,b)=>b.pts-a.pts);
-  const medals = ['🥇','🥈','🥉'];
-  document.getElementById('rankingList').innerHTML = ranked.map((r,i)=>
-    `<div class="rank-item">
-      <span class="rank-pos">${medals[i]||'#'+(i+1)}</span>
-      <div class="g-avatar" style="background:${r.g.color};width:28px;height:28px;font-size:10px;">${r.g.initials}</div>
-      <div class="rank-info">
-        <div class="rank-name">${r.g.name}</div>
-        <div class="rank-ventas">${r.n} vale${r.n!==1?'s':''}</div>
-      </div>
-      <span class="rank-pts">${r.pts}</span>
-    </div>`
-  ).join('');
+function renderPendienteCobro(){
+  const pend=getVales().filter(v=>v.status==='pending_payment').reverse();
+  const c=document.getElementById('pendienteList');
+  if(!pend.length){c.innerHTML='<div class="es"><div class="es-icon">⏳</div><div class="es-text">Sin pendientes</div></div>';return;}
+  c.innerHTML=pend.map(v=>{
+    const g=gestorOf(v.gestorId);const m=v.mensajeroId?mensajeroOf(v.mensajeroId):null;
+    return `<div class="sc sc-pend">
+      <div class="sc-head"><span class="sc-g">${g?g.name:'—'}</span><span class="sc-t">${timeStr(v.ts)}</span></div>
+      <div>${v.cliente||''} · ${v.total||''}</div>
+      <div class="sc-m">${m?'🛵 '+m.name:''}</div>
+      <button class="btn btn-green btn-full btn-sm" style="margin-top:7px;" onclick="confirmDelivery(${v.id})">✅ Cobrado</button>
+    </div>`;
+  }).join('');
 }
 
 // ══════════════════════════════════════════
 //  INIT
 // ══════════════════════════════════════════
-function init() {
+function init(){
   updateDate();
-  setInterval(updateDate, 60000);
-  setInterval(() => {
-    updateAdminBadge();
-    renderGestorMyVales();
-  }, 10000);
+  setInterval(updateDate,60000);
+  setInterval(()=>{ updateAdminBadge(); renderMyVales(); },12000);
   renderGestores();
-  renderCategorias();
-  renderProductosForm();
-  renderGestorMyVales();
   updateAdminBadge();
   setFilter('all');
 }
-
 init();
 </script>
 </body>
