@@ -1243,7 +1243,11 @@ function renderMensajeroVales() {
           <div style="font-size:12px;font-weight:700;margin-top:3px;">💰 ${v.total||'—'}${v.vuelto?` · Vuelto: ${v.vuelto}`:''}</div>
           ${g?`<div style="font-size:11px;color:var(--gray-400);">Gestor: ${g.name}</div>`:''}
           <div style="font-size:11px;color:var(--gray-600);margin-top:3px;">📦 ${v.articulo||'—'}</div>
-          <button class="btn btn-green btn-full btn-sm" style="margin-top:8px;" onclick="mensajeroEntrega(${v.id})">✅ Marcar como entregado</button>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-top:8px;">
+            <button class="btn btn-ghost btn-sm btn-full" style="grid-column:1/-1;font-size:11px;" onclick="mensajeroEntrega(${v.id})">📦 Solo entregado</button>
+            <button class="btn btn-green btn-sm btn-full" style="font-size:11px;" onclick="confirmSale(${v.id},'confirmed')">✅ Ya pagó</button>
+            <button class="btn btn-sm btn-full" style="background:var(--orange);color:white;font-size:11px;" onclick="confirmSale(${v.id},'pending_payment')">⏳ Pendiente cobro</button>
+          </div>
         </div>`;
       }).join('');
     }
@@ -1412,7 +1416,12 @@ function renderValeDetail() {
   const pts=(v.valeProductos||[]).reduce((sum,p)=>{const pr=productoOf(p.id);return sum+(pr?pr.puntos*p.qty:0);},0);
   let actHTML='';
   if(v.status==='pending'){
-    actHTML=`<button class="btn btn-blue btn-full" onclick="openShareModal(${v.id})">📤 Compartir con mensajero</button>`;
+    actHTML=`<button class="btn btn-blue btn-full" onclick="openShareModal(${v.id})" style="margin-bottom:8px;">📤 Compartir con mensajero</button>
+    <div style="font-size:10px;color:var(--gray-400);text-align:center;margin-bottom:6px;">— o confirmar directo —</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+      <button class="btn btn-green btn-sm btn-full" onclick="confirmSale(${v.id},'confirmed')">✅ Ya pagó</button>
+      <button class="btn btn-sm btn-full" style="background:var(--orange);color:white;" onclick="confirmSale(${v.id},'pending_payment')">⏳ Pendiente cobro</button>
+    </div>`;
   } else if(v.status==='assigned'){
     actHTML=`<div class="mensajero-row">🛵 <b>Mensajero:</b> ${m?m.name:'—'}</div>
       <div style="font-size:12px;color:var(--gray-400);margin:6px 0 10px;">Esperando que el mensajero confirme la entrega</div>
