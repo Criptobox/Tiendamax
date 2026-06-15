@@ -1001,7 +1001,7 @@ function renderGestorNotifs() {
   const cutoff = Date.now() - 72*60*60*1000;
   const recent = notifs.filter(n => {
     if(new Date(n.ts).getTime() <= cutoff) return false;
-    if(n.type==='vale_confirmed' && n.gestorId && activeGestorId && n.gestorId !== activeGestorId) return false;
+    if((n.type==='vale_confirmed'||n.type==='sale_product') && n.gestorId && activeGestorId && n.gestorId !== activeGestorId) return false;
     return true;
   });
   const sec = document.getElementById('gestorNotifsSection');
@@ -1011,18 +1011,35 @@ function renderGestorNotifs() {
   const unread = recent.filter(n=>!n.read).length;
   const badge = document.getElementById('notifUnreadBadge');
   if(badge){badge.textContent=unread;badge.style.display=unread?'inline-block':'none';}
-  const icons = {new_product:'✨',out_of_stock:'❌',low_stock:'⚠️',restocked:'✅',vale_confirmed:'🎉'};
-  const labels = {new_product:'Nuevo producto',out_of_stock:'Agotado',low_stock:'Stock bajo',restocked:'Repuesto',vale_confirmed:'Venta confirmada'};
+  const icons = {new_product:'✨',out_of_stock:'❌',low_stock:'⚠️',restocked:'✅',vale_confirmed:'🎉',sale_product:'🛒'};
   document.getElementById('gestorNotifsList').innerHTML = recent.map(n=>{
     const icon=icons[n.type]||'📢';
-    const label=labels[n.type]||n.type;
     const age=timeAgo(n.ts);
-    const cls=!n.read?'unread':`type-${n.type==='out_of_stock'?'agotado':n.type==='low_stock'?'low':n.type==='restocked'?'restocked':n.type==='vale_confirmed'?'ok':''}`;
+    const typeClass=n.type==='out_of_stock'?'agotado':n.type==='low_stock'?'low':n.type==='restocked'?'restocked':(n.type==='vale_confirmed'||n.type==='sale_product')?'ok':'';
+    const cls=!n.read?'unread':`type-${typeClass}`;
+    // Build human-readable message per type
+    let msg='';
+    if(n.type==='sale_product'){
+      const parts=(n.extra||'').split('|');
+      const qty=parseInt(parts[0])||1;
+      const left=parseInt(parts[1]);
+      msg=`<b>Se vendió${qty>1?` <span style="color:var(--blue);font-weight:800;">${qty}</span>`:''}</b> ${n.productName}${!isNaN(left)?` — quedan <b style="color:${left===0?'var(--red)':left<=LOW_STOCK_THRESHOLD?'var(--yellow)':'var(--green)'};">${left}</b>`:''}`;
+    } else if(n.type==='vale_confirmed'){
+      msg=`<b>Venta confirmada</b> · ${n.productName}${n.extra?` <span style="color:var(--gray-400);font-size:10px;">(${n.extra})</span>`:''}`;
+    } else if(n.type==='out_of_stock'){
+      msg=`<b>Agotado:</b> ${n.productName}`;
+    } else if(n.type==='low_stock'){
+      msg=`<b>Stock bajo:</b> ${n.productName} <span style="color:var(--yellow);">(${n.extra})</span>`;
+    } else if(n.type==='restocked'){
+      msg=`<b>Repuesto:</b> ${n.productName} <span style="color:var(--green);">(${n.extra})</span>`;
+    } else if(n.type==='new_product'){
+      msg=`<b>Nuevo producto:</b> ${n.productName}${n.extra?` · ${n.extra}`:''}`;
+    } else {
+      msg=`${n.productName}${n.extra?` (${n.extra})`:''}`;
+    }
     return `<div class="gnotif-item ${cls}" onclick="markNotifRead(${n.id})">
       <span class="gnotif-icon">${icon}</span>
-      <div class="gnotif-text">
-        <b>${label}:</b> ${n.productName}${n.extra?` <span style="color:var(--gray-400);">(${n.extra})</span>`:''}
-      </div>
+      <div class="gnotif-text" style="line-height:1.5;">${msg}</div>
       <span class="gnotif-time">${age}</span>
     </div>`;
   }).join('');
@@ -1657,6 +1674,8 @@ function confirmSale(id, paymentStatus) {
     const oldStock=prod.stock||0;
     const newStock=Math.max(0,oldStock-qty);
     patchProducto(pid,{stock:newStock});
+    // Notificación de venta por producto: "Se vendió X nombre, quedan Y"
+    addNotif('sale_product',prod.name,pid,`${qty}|${newStock}`,v.gestorId);
     if(newStock===0&&oldStock>0) addNotif('out_of_stock',prod.name,pid,'stock agotado');
     else if(newStock>0&&newStock<=LOW_STOCK_THRESHOLD&&oldStock>LOW_STOCK_THRESHOLD) addNotif('low_stock',prod.name,pid,`quedan ${newStock}`);
   });
