@@ -1244,9 +1244,8 @@ function renderMensajeroVales() {
           ${g?`<div style="font-size:11px;color:var(--gray-400);">Gestor: ${g.name}</div>`:''}
           <div style="font-size:11px;color:var(--gray-600);margin-top:3px;">📦 ${v.articulo||'—'}</div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-top:8px;">
-            <button class="btn btn-ghost btn-sm btn-full" style="grid-column:1/-1;font-size:11px;" onclick="mensajeroEntrega(${v.id})">📦 Solo entregado</button>
             <button class="btn btn-green btn-sm btn-full" style="font-size:11px;" onclick="confirmSale(${v.id},'confirmed')">✅ Ya pagó</button>
-            <button class="btn btn-sm btn-full" style="background:var(--orange);color:white;font-size:11px;" onclick="confirmSale(${v.id},'pending_payment')">⏳ Pendiente cobro</button>
+            <button class="btn btn-sm btn-full" style="background:var(--orange);color:white;font-size:11px;" onclick="confirmSale(${v.id},'pending_payment')">⏳ Pendiente de pago</button>
           </div>
         </div>`;
       }).join('');
