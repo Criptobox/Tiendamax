@@ -78,6 +78,78 @@
     #btnTheme { background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.15); color:rgba(255,255,255,.6); border-radius:7px; padding:5px 9px; font-size:14px; cursor:pointer; transition:all .15s; line-height:1; }
     #btnTheme:hover { background:rgba(255,255,255,.16); color:white; }
 
+    /* ── GESTOR CHOSEN STATE (desktop: narrow left col) ── */
+    #layoutGestor.has-gestor { grid-template-columns: 190px 1fr; }
+    #layoutGestor.has-gestor .g-item:not(.active) { display:none; }
+    #layoutGestor.has-gestor .g-change { display:flex !important; }
+    .g-change { display:none; align-items:center; gap:6px; font-size:11px; color:var(--gray-400); padding:6px 10px; cursor:pointer; border-radius:7px; margin-bottom:4px; }
+    .g-change:hover { background:var(--gray-100); color:var(--gray-700); }
+
+    /* ── MOBILE BACK BAR (visible only on mobile when gestor chosen) ── */
+    #mobileBackBar { display:none; align-items:center; gap:10px; background:var(--blue-lt); border:1px solid var(--blue-bd); border-radius:9px; padding:8px 12px; margin-bottom:10px; }
+    #mobileBackBar button { background:none; border:none; color:var(--blue); font-size:13px; font-weight:700; cursor:pointer; padding:0; }
+    body.dark #mobileBackBar { background:var(--blue-lt); border-color:var(--blue-bd); }
+
+    /* ── MOBILE ── */
+    @media (max-width: 768px) {
+      body { overflow-y: auto; overflow-x: hidden; }
+      header { padding: 0 10px; gap: 8px; }
+      .brand-sub { display: none; }
+      .brand-name { font-size: 13px; letter-spacing: 2px; }
+      .header-date { display: none; }
+      #headerGestorName { display: none; }
+      .admin-session-label { font-size: 10px; }
+      #btnDemo { display: none; }
+
+      .layout, .layout.active { height: auto; overflow: visible; min-height: calc(100vh - 54px); }
+
+      /* Gestor layout: single col, show selector OR form */
+      #layoutGestor.active { grid-template-columns: 1fr !important; }
+      #layoutGestor .col-left { height: auto; overflow: visible; border-right: none; border-bottom: 1px solid var(--gray-200); }
+      #layoutGestor .col-mid { height: auto; overflow: visible; }
+
+      /* When gestor selected on mobile: hide left col, show back bar */
+      #layoutGestor.has-gestor .col-left { display: none !important; }
+      #layoutGestor.has-gestor .col-mid { grid-column: 1 / -1; }
+      #mobileBackBar { display: flex; }
+
+      /* Admin layout */
+      #layoutAdmin.active { height: auto; overflow: visible; }
+      .admin-nav { gap: 0; padding: 0 6px; overflow-x: auto; }
+      .anav-btn { font-size: 11px; padding: 0 10px; white-space: nowrap; }
+      .admin-content { height: auto; overflow: visible; }
+      .admin-panel-full { height: auto; overflow: visible; }
+
+      /* Vales 3col → single col stack */
+      .admin-panel-3col { grid-template-columns: 1fr !important; height: auto; overflow: visible; }
+      .admin-panel-3col .col-left  { height: auto; overflow: visible; border-right: none; border-bottom: 1px solid var(--gray-200); }
+      .admin-panel-3col .col-mid   { height: auto; overflow: visible; }
+      .admin-panel-3col .col-right { height: auto; overflow: visible; border-left: none; border-top: 1px solid var(--gray-200); }
+
+      /* Stock panel inner grid */
+      .stock-inner-grid { grid-template-columns: 1fr !important; height: auto !important; overflow: visible !important; }
+      .stock-inner-grid .col-left { height: auto; overflow: visible; border-right: none; border-bottom: 1px solid var(--gray-200); }
+      .stock-inner-grid .col-mid  { height: auto; overflow: visible; }
+
+      /* Product picker: single col */
+      #pickerProductGrid { grid-template-columns: 1fr !important; }
+
+      /* Stats */
+      #statsSummaryRow { grid-template-columns: 1fr 1fr !important; }
+      #adminStatsPanel > div > div[style*="grid-template-columns:1fr 1fr"] { grid-template-columns: 1fr !important; }
+
+      /* Gestor panel */
+      .col { padding: 10px; }
+      .card { padding: 10px 12px; }
+      .btn { padding: 10px 14px; font-size: 13px; }
+      .btn-sm { padding: 7px 10px; font-size: 12px; }
+      .vale-form-body { padding: 10px 12px; }
+      .vf-row { gap: 6px; }
+      .modal { padding: 16px; margin: 8px; }
+      .modal-btns { flex-wrap: wrap; }
+      .modal-btns .btn { flex: 1; min-width: 100px; }
+    }
+
     /* ── HEADER ── */
     header { background:var(--blue-dk); color:white; padding:0 20px; height:54px; display:flex; align-items:center; gap:12px; position:sticky; top:0; z-index:100; box-shadow:0 2px 8px rgba(0,0,0,.22); }
     .brand { display:flex; align-items:center; gap:10px; flex-shrink:0; }
@@ -336,6 +408,7 @@
     <div id="gestoresList">
       <div class="es"><div class="es-icon">👤</div><div class="es-text">El admin aún no ha configurado gestores</div></div>
     </div>
+    <div class="g-change" onclick="changeGestor()">← Cambiar gestor</div>
     <!-- Novedades de stock -->
     <div id="gestorNotifsSection">
       <div class="notif-header-row" style="margin-top:20px;">
@@ -353,6 +426,10 @@
 
   <!-- Col 2: Vale form -->
   <div class="col col-mid">
+    <div id="mobileBackBar">
+      <button onclick="changeGestor()">← Volver</button>
+      <span id="mobileBackName" style="font-size:13px;font-weight:700;color:var(--blue-dk);"></span>
+    </div>
     <div class="card" id="gestorBanner" style="background:var(--blue-lt);border-color:var(--blue-bd);display:flex;align-items:center;gap:10px;margin-bottom:14px;">
       <div class="g-avatar" id="bannerAvatar" style="width:40px;height:40px;font-size:14px;background:var(--gray-300);">?</div>
       <div>
@@ -572,7 +649,7 @@
 
     <!-- ── STOCK PANEL ── -->
     <div id="adminStockPanel" class="admin-panel-full" style="display:none;">
-      <div style="display:grid;grid-template-columns:220px 1fr;height:100%;overflow:hidden;">
+      <div class="stock-inner-grid" style="display:grid;grid-template-columns:220px 1fr;height:100%;overflow:hidden;">
         <div class="col col-left">
           <div class="lbl">Categorías</div>
           <div class="add-row" style="margin-bottom:10px;">
@@ -1021,6 +1098,20 @@ function selectGestor(id) {
   document.getElementById('bannerName').textContent=g.name;
   document.getElementById('headerGestorName').textContent='· '+g.name;
   document.getElementById('vf-promotor').value=g.name;
+  document.getElementById('mobileBackName').textContent=g.name;
+  document.getElementById('layoutGestor').classList.add('has-gestor');
+  renderGestores();renderMyVales();onFormInput();renderGestorNotifs();
+}
+function changeGestor() {
+  activeGestorId=null;
+  document.getElementById('layoutGestor').classList.remove('has-gestor');
+  document.getElementById('bannerAvatar').textContent='?';
+  document.getElementById('bannerAvatar').style.background='var(--gray-300)';
+  document.getElementById('bannerLbl').textContent='SELECCIONA TU NOMBRE';
+  document.getElementById('bannerName').textContent='Selecciona tu nombre →';
+  document.getElementById('headerGestorName').textContent='';
+  document.getElementById('vf-promotor').value='';
+  document.getElementById('mobileBackName').textContent='';
   renderGestores();renderMyVales();onFormInput();renderGestorNotifs();
 }
 
