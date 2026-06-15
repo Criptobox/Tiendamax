@@ -2471,7 +2471,7 @@ function tmExtractJsonObject(text) {
   document.addEventListener('click',e=>{if(e.target.closest('[data-arg="herramientas"],[data-tab="herramientas"]'))setTimeout(boot,300);});
 })();
 
-// ── tm-publicar-categoria-v1 ─────────────────────────────────────
+// ── tm-publicar-categoria-v2 ─────────────────────────────────────
 (function(){
   const $=(s,r=document)=>r.querySelector(s);
   const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
@@ -2481,64 +2481,129 @@ function tmExtractJsonObject(text) {
   function cats(){return[...new Set(products().filter(p=>p.activo!==false&&Number(p.stock||0)>0).map(p=>p.categoria||'General').filter(Boolean))].sort();}
   function prodsByCat(cat){return products().filter(p=>p.activo!==false&&Number(p.stock||0)>0&&(p.categoria||'General')===cat);}
   function toTag(s){return String(s||'').normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-zA-Z0-9]/g,'');}
+
+  // Emoji decorator based on product name keywords
+  function emojiFor(nombre,cat){
+    const n=String(nombre||'').toLowerCase(), c=String(cat||'').toLowerCase();
+    if(/wifi|router|enrutador|inalámb|inalamb|répetidor|repetidor/.test(n))return'📡';
+    if(/audif|auricular|earphone|headphone|tws|earbuds/.test(n))return'🎧';
+    if(/parlant|altavoz|bocina|speaker/.test(n))return'🔊';
+    if(/batería|bateria|battery|lifepo|acumulador/.test(n))return'🔋';
+    if(/panel solar|solar/.test(n))return'☀️';
+    if(/inversor|inverter/.test(n))return'⚡';
+    if(/cargador|charger/.test(n))return'🔌';
+    if(/cable|hdmi|usb-c|usbc/.test(n))return'🔌';
+    if(/cámara|camara|camera|webcam/.test(n))return'📷';
+    if(/celular|teléfono|telefono|móvil|movil|smartphone/.test(n))return'📱';
+    if(/laptop|computadora|pc |notebook/.test(n))return'💻';
+    if(/televisor|tv |smart tv|pantalla|monitor/.test(n))return'📺';
+    if(/reloj|watch|smartwatch/.test(n))return'⌚';
+    if(/impresora|printer/.test(n))return'🖨️';
+    if(/memoria|disco|ssd|pendrive|storage/.test(n))return'💾';
+    if(/ventilador|fan |aire acondicionado/.test(n))return'🌀';
+    if(/pistola.*masaje|masaje|massage/.test(n))return'💆';
+    if(/teclado|keyboard/.test(n))return'⌨️';
+    if(/mouse|ratón|raton/.test(n))return'🖱️';
+    if(/gaming|game|joystick|control|mando/.test(n))return'🎮';
+    if(/drone|dron/.test(n))return'🚁';
+    if(/lámpara|lampara|led|luz|foco|bombil/.test(n))return'💡';
+    if(/ropa|camisa|pantalon|vestido|blusa/.test(c+' '+n))return'👗';
+    if(/calzado|zapato|tenis|deportivo/.test(c+' '+n))return'👟';
+    if(/belleza|cosmet|perfume|crema/.test(c+' '+n))return'💄';
+    if(/juguete|toy/.test(c+' '+n))return'🧸';
+    if(/deport|sport/.test(c))return'🏃';
+    if(/hogar|casa/.test(c))return'🏠';
+    if(/aliment|comida/.test(c))return'🍽️';
+    if(/electr/.test(c))return'⚡';
+    return'✨';
+  }
+
   function hashtags(cat,prods){
     const tags=new Set(['TiendaMax','Cuba']);
-    const ct=toTag(cat); if(ct) tags.add(ct);
-    prods.slice(0,15).forEach(p=>{
-      if(p.id) tags.add('prod'+p.id);
-      String(p.nombre||'').split(/\s+/).filter(w=>toTag(w).length>3).slice(0,2).forEach(w=>{const t=toTag(w);if(t.length>3)tags.add(t.charAt(0).toUpperCase()+t.slice(1).toLowerCase());});
+    const ct=toTag(cat);if(ct)tags.add(ct);
+    prods.slice(0,18).forEach(p=>{
+      if(p.id)tags.add('prod'+p.id);
+      String(p.nombre||'').split(/\s+/).map(w=>toTag(w)).filter(t=>t.length>3).slice(0,2).forEach(t=>tags.add(t.charAt(0).toUpperCase()+t.slice(1).toLowerCase()));
     });
     return[...tags].map(t=>'#'+t).join(' ');
   }
+
   function buildText(cat){
-    const prods=prodsByCat(cat); if(!prods.length)return '';
-    const sep='━'.repeat(22);
+    const prods=prodsByCat(cat);if(!prods.length)return '';
+    const sep='━'.repeat(24);
     const header=`🏪 TIENDAMAX — ${String(cat).toUpperCase()}\n${sep}\n\n`;
-    const lines=prods.map(p=>`✅ ${p.nombre} — $${Number(p.precioActual||0).toFixed(2)} USD`).join('\n');
-    const footer=`\n\n📲 Escríbenos por WhatsApp para pedir\n🔗 ${storeUrl()}\n\n${hashtags(cat,prods)}`;
+    const lines=prods.map(p=>`${emojiFor(p.nombre,cat)} ${p.nombre} — $${Number(p.precioActual||0).toFixed(2)} USD`).join('\n');
+    const footer=`\n\n📲 Escríbenos para reservar tu pedido\n🔗 ${storeUrl()}\n\n${hashtags(cat,prods)}`;
     return header+lines+footer;
   }
+
   function roundRect(ctx,x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
+
   async function genImg(cat){
-    const prods=prodsByCat(cat); if(!prods.length)return null;
-    const W=1080,H=1080,c=document.createElement('canvas');c.width=W;c.height=H;const ctx=c.getContext('2d');
-    const g=ctx.createLinearGradient(0,0,W,H);g.addColorStop(0,'#0d0a07');g.addColorStop(.5,'#1a0f06');g.addColorStop(1,'#2b160c');
+    const prods=prodsByCat(cat);if(!prods.length)return null;
+    const W=1080,H=1080,cv=document.createElement('canvas');cv.width=W;cv.height=H;const ctx=cv.getContext('2d');
+    // Background
+    const g=ctx.createLinearGradient(0,0,W,H);g.addColorStop(0,'#0a0805');g.addColorStop(.45,'#1c0e06');g.addColorStop(1,'#2d1a08');
     ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
-    ctx.strokeStyle='rgba(201,169,110,.55)';ctx.lineWidth=6;roundRect(ctx,28,28,W-56,H-56,36);ctx.stroke();
-    ctx.fillStyle='#FF6B35';ctx.fillRect(60,58,W-120,8);
-    ctx.textAlign='center';
-    ctx.fillStyle='#FF6B35';ctx.font='bold 58px system-ui,Arial,sans-serif';ctx.fillText('TIENDAMAX',W/2,148);
-    ctx.fillStyle='#fff';ctx.font='bold 42px system-ui,Arial,sans-serif';ctx.fillText(String(cat).toUpperCase(),W/2,210);
-    ctx.strokeStyle='rgba(255,107,53,.35)';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(80,235);ctx.lineTo(W-80,235);ctx.stroke();
-    const max=Math.min(prods.length,13);const lh=Math.min(58,Math.floor((H-370)/max));
-    let y=280;
+    // Gold border
+    ctx.strokeStyle='rgba(201,169,110,.6)';ctx.lineWidth=7;roundRect(ctx,26,26,W-52,H-52,38);ctx.stroke();
+    // Top accent bar
+    const gb=ctx.createLinearGradient(60,0,W-60,0);gb.addColorStop(0,'#c9a96e');gb.addColorStop(.5,'#FF6B35');gb.addColorStop(1,'#c9a96e');
+    ctx.fillStyle=gb;ctx.fillRect(60,55,W-120,9);
+    // Store name
+    ctx.textAlign='center';ctx.fillStyle='#FF6B35';ctx.font='bold 62px system-ui,Arial,sans-serif';ctx.fillText('TIENDAMAX',W/2,152);
+    // Category
+    ctx.fillStyle='#f5e6d0';ctx.font='bold 40px system-ui,Arial,sans-serif';ctx.fillText(String(cat).toUpperCase(),W/2,210);
+    // Divider
+    ctx.strokeStyle='rgba(255,107,53,.3)';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(80,232);ctx.lineTo(W-80,232);ctx.stroke();
+    // Products
+    const max=Math.min(prods.length,13);const lh=Math.min(60,Math.floor((H-390)/max));
+    let y=268+lh;
+    ctx.textAlign='left';
     for(let i=0;i<max;i++){
-      const p=prods[i];const price='$'+Number(p.precioActual||0).toFixed(2)+' USD';
-      const name=String(p.nombre||'').length>38?String(p.nombre).slice(0,37)+'…':p.nombre||'';
-      ctx.textAlign='left';ctx.fillStyle='#4ade80';ctx.font='bold '+(lh-12)+'px system-ui,Arial,sans-serif';ctx.fillText('✅',80,y);
-      ctx.fillStyle='#e8e8e8';ctx.font=(lh-14)+'px system-ui,Arial,sans-serif';ctx.fillText(name,122,y);
-      ctx.fillStyle='#FF6B35';ctx.font='bold '+(lh-12)+'px system-ui,Arial,sans-serif';ctx.textAlign='right';ctx.fillText(price,W-80,y);
+      const p=prods[i];
+      const em=emojiFor(p.nombre,cat);
+      const name=String(p.nombre||'').length>36?String(p.nombre).slice(0,35)+'…':p.nombre||'';
+      const price='$'+Number(p.precioActual||0).toFixed(2);
+      const fs=lh-14;
+      ctx.fillStyle='#e8dcc8';ctx.font=`${fs}px system-ui,Arial,sans-serif`;ctx.fillText(em+' '+name,80,y);
+      ctx.fillStyle='#FF6B35';ctx.font=`bold ${fs}px system-ui,Arial,sans-serif`;ctx.textAlign='right';ctx.fillText(price,W-75,y);
+      ctx.textAlign='left';
+      // Subtle row separator
+      if(i<max-1){ctx.strokeStyle='rgba(255,255,255,.05)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(80,y+12);ctx.lineTo(W-80,y+12);ctx.stroke();}
       y+=lh;
     }
-    if(prods.length>max){ctx.textAlign='left';ctx.fillStyle='#888';ctx.font='italic 22px system-ui,Arial,sans-serif';ctx.fillText(`...y ${prods.length-max} más`,80,y+8);}
-    ctx.strokeStyle='rgba(255,107,53,.35)';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(80,H-138);ctx.lineTo(W-80,H-138);ctx.stroke();
-    ctx.textAlign='center';ctx.fillStyle='#c9a96e';ctx.font='bold 30px system-ui,Arial,sans-serif';ctx.fillText('📲 Escríbenos por WhatsApp para pedir',W/2,H-100);
-    ctx.fillStyle='#777';ctx.font='22px system-ui,Arial,sans-serif';ctx.fillText(storeUrl(),W/2,H-60);
-    ctx.fillStyle='#FF6B35';ctx.fillRect(60,H-36,W-120,8);
-    return new Promise(res=>c.toBlob(res,'image/png',.95));
+    if(prods.length>max){ctx.fillStyle='#666';ctx.font='italic 21px system-ui,Arial,sans-serif';ctx.fillText(`+ ${prods.length-max} productos más en la tienda`,80,y+10);}
+    // Footer divider
+    ctx.strokeStyle='rgba(255,107,53,.3)';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(80,H-148);ctx.lineTo(W-80,H-148);ctx.stroke();
+    // Footer text
+    ctx.textAlign='center';ctx.fillStyle='#f5e6d0';ctx.font='bold 28px system-ui,Arial,sans-serif';ctx.fillText('📲 Escríbenos para reservar tu pedido',W/2,H-108);
+    ctx.fillStyle='#c9a96e';ctx.font='22px system-ui,Arial,sans-serif';ctx.fillText(storeUrl(),W/2,H-70);
+    // Bottom accent bar
+    ctx.fillStyle=gb;ctx.fillRect(60,H-43,W-120,9);
+    return new Promise(res=>cv.toBlob(res,'image/png',.95));
   }
+
   function updatePreview(){
     const cat=$('#tmCatPubSel')?.value;
-    const pre=$('#tmCatPubPre'),cnt=$('#tmCatPubCnt');
-    const btns=[...document.querySelectorAll('.tm-cat-pub-btn')];
-    if(!cat){if(pre)pre.style.display='none';if(cnt)cnt.style.display='none';btns.forEach(b=>b.style.display='none');return;}
+    const pre=$('#tmCatPubPre'),cnt=$('#tmCatPubCnt'),acts=$('#tmCatPubActions');
+    if(!cat){
+      if(pre)pre.style.display='none';
+      if(cnt)cnt.style.display='none';
+      if(acts)acts.style.display='none';
+      return;
+    }
     const prods=prodsByCat(cat);
     if(pre){pre.textContent=buildText(cat);pre.style.display='block';}
-    if(cnt){cnt.textContent=`${prods.length} producto${prods.length!==1?'s':''} con stock`;cnt.style.display='block';}
-    btns.forEach(b=>b.style.display='');
+    if(cnt){cnt.innerHTML=`<span style="color:#FF6B35;font-weight:700">${prods.length}</span> producto${prods.length!==1?'s':''} disponibles en esta categoría`;cnt.style.display='block';}
+    if(acts)acts.style.display='flex';
   }
-  async function onCopy(){const cat=$('#tmCatPubSel')?.value;if(!cat)return;try{await navigator.clipboard.writeText(buildText(cat));notify('Texto copiado','success');}catch(e){notify('Error al copiar','error');}}
+
+  async function onCopy(){const cat=$('#tmCatPubSel')?.value;if(!cat)return;try{await navigator.clipboard.writeText(buildText(cat));notify('📋 Texto copiado — pégalo donde quieras','success');}catch(e){notify('No se pudo copiar','error');}}
   function onWA(){const cat=$('#tmCatPubSel')?.value;if(!cat)return;window.open('https://wa.me/?text='+encodeURIComponent(buildText(cat)),'_blank','noopener,noreferrer');}
+  function onFB(){const cat=$('#tmCatPubSel')?.value;if(!cat)return;onCopy();window.open('https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(storeUrl()),'_blank','noopener,noreferrer');notify('Texto copiado — pégalo en el post de Facebook','info');}
+  function onTG(){const cat=$('#tmCatPubSel')?.value;if(!cat)return;window.open('https://t.me/share/url?url='+encodeURIComponent(storeUrl())+'&text='+encodeURIComponent(buildText(cat)),'_blank','noopener,noreferrer');}
+
   async function onImg(){
     const cat=$('#tmCatPubSel')?.value;if(!cat)return;
     const btn=$('#tmCatPubImgBtn');if(btn){btn.textContent='⏳ Generando…';btn.disabled=true;}
@@ -2547,29 +2612,39 @@ function tmExtractJsonObject(text) {
       const file=new File([blob],'tiendamax-'+toTag(cat)+'.png',{type:'image/png'});
       const text=buildText(cat);
       if(navigator.canShare&&navigator.canShare({files:[file]})&&navigator.share){
-        try{await navigator.share({files:[file],title:'TiendaMax — '+cat,text});notify('Imagen lista para compartir','success');return;}
+        try{await navigator.share({files:[file],title:'TiendaMax — '+cat,text});notify('¡Listo para compartir!','success');return;}
         catch(e){if(/abort/i.test(e.message||''))return;}
       }
       const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=file.name;a.click();
       setTimeout(()=>URL.revokeObjectURL(a.href),1000);
       try{await navigator.clipboard.writeText(text);}catch(e){}
-      notify('Imagen descargada · Texto copiado al portapapeles','info');
-    }finally{if(btn){btn.textContent='🖼️ Imagen + Publicar';btn.disabled=false;}}
+      notify('Imagen descargada · Texto copiado','info');
+    }finally{if(btn){btn.textContent='🖼️ Imagen';btn.disabled=false;}}
   }
+
   function build(){
     const tab=document.getElementById('publicar-ahora');if(!tab)return;
     if(document.getElementById('tmCatPublishCard'))return;
-    const card=document.createElement('div');card.id='tmCatPublishCard';card.className='card';card.style.marginBottom='16px';
+    const card=document.createElement('div');card.id='tmCatPublishCard';
+    card.style.cssText='background:linear-gradient(135deg,rgba(255,107,53,.08),rgba(201,169,110,.06));border:1px solid rgba(255,107,53,.25);border-radius:16px;padding:18px 16px 16px;margin-bottom:18px';
     const opts=cats().map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join('');
-    card.innerHTML=`<h2 style="margin-bottom:4px">📣 Publicar por categoría</h2>
-<p class="sub" style="margin-bottom:14px">Genera texto con todos los productos, precios y hashtags listos para compartir.</p>
-<select id="tmCatPubSel" style="width:100%;background:#12121f;border:1px solid rgba(255,255,255,.12);color:#ccc;border-radius:10px;padding:10px 12px;font-size:13px;margin-bottom:12px"><option value="">— Selecciona categoría —</option>${opts}</select>
-<pre id="tmCatPubPre" style="display:none;background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:14px;font-size:11.5px;font-family:monospace;color:#ccc;white-space:pre-wrap;max-height:220px;overflow:auto;margin-bottom:10px"></pre>
-<div id="tmCatPubCnt" style="display:none;font-size:12px;color:#888;margin-bottom:12px"></div>
-<div style="display:flex;gap:8px;flex-wrap:wrap">
-  <button type="button" class="btn tm-cat-pub-btn" id="tmCatPubCopyBtn" style="display:none">📋 Copiar texto</button>
-  <button type="button" class="btn tm-cat-pub-btn" style="display:none;background:rgba(37,211,102,.12);border-color:rgba(37,211,102,.35);color:#25D366" id="tmCatPubWABtn">💚 WhatsApp</button>
-  <button type="button" class="btn gold tm-cat-pub-btn" id="tmCatPubImgBtn" style="display:none">🖼️ Imagen + Publicar</button>
+    card.innerHTML=`
+<div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+  <span style="font-size:22px">📣</span>
+  <div><h2 style="margin:0;font-size:15px;color:#FF6B35">Publicar por categoría</h2>
+  <p style="margin:2px 0 0;font-size:11px;color:#888">Texto listo con emojis, precios e imagen para todas las plataformas</p></div>
+</div>
+<select id="tmCatPubSel" style="width:100%;background:#0e0b08;border:1px solid rgba(255,107,53,.35);color:#e0d0c0;border-radius:10px;padding:11px 14px;font-size:13px;margin-bottom:14px;outline:none">
+  <option value="">— Elige una categoría —</option>${opts}
+</select>
+<pre id="tmCatPubPre" style="display:none;background:rgba(0,0,0,.5);border:1px solid rgba(255,107,53,.15);border-radius:12px;padding:14px 16px;font-size:11.5px;font-family:monospace;color:#c8b89a;white-space:pre-wrap;max-height:240px;overflow:auto;margin-bottom:10px;line-height:1.6"></pre>
+<div id="tmCatPubCnt" style="display:none;font-size:12px;color:#888;margin-bottom:14px"></div>
+<div id="tmCatPubActions" style="display:none;gap:8px;flex-wrap:wrap">
+  <button type="button" id="tmCatPubCopyBtn" style="flex:1;min-width:110px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);color:#e0d0c0;border-radius:10px;padding:10px 6px;font-size:12px;font-weight:700;cursor:pointer">📋 Copiar</button>
+  <button type="button" id="tmCatPubWABtn" style="flex:1;min-width:110px;background:rgba(37,211,102,.12);border:1px solid rgba(37,211,102,.35);color:#25D366;border-radius:10px;padding:10px 6px;font-size:12px;font-weight:700;cursor:pointer">💚 WhatsApp</button>
+  <button type="button" id="tmCatPubFBBtn" style="flex:1;min-width:110px;background:rgba(66,103,178,.15);border:1px solid rgba(66,103,178,.4);color:#7b9ee8;border-radius:10px;padding:10px 6px;font-size:12px;font-weight:700;cursor:pointer">📘 Facebook</button>
+  <button type="button" id="tmCatPubTGBtn" style="flex:1;min-width:110px;background:rgba(42,171,238,.12);border:1px solid rgba(42,171,238,.35);color:#2AABEE;border-radius:10px;padding:10px 6px;font-size:12px;font-weight:700;cursor:pointer">✈️ Telegram</button>
+  <button type="button" id="tmCatPubImgBtn" style="width:100%;background:linear-gradient(135deg,#FF6B35,#c9a96e);border:none;color:#fff;border-radius:10px;padding:12px;font-size:13px;font-weight:700;cursor:pointer;margin-top:4px">🖼️ Generar imagen para compartir</button>
 </div>`;
     const root=document.getElementById('tmPublicarRoot');
     const backend=document.getElementById('backendStatus');
@@ -2579,6 +2654,8 @@ function tmExtractJsonObject(text) {
     card.querySelector('#tmCatPubSel').addEventListener('change',updatePreview);
     card.querySelector('#tmCatPubCopyBtn').addEventListener('click',onCopy);
     card.querySelector('#tmCatPubWABtn').addEventListener('click',onWA);
+    card.querySelector('#tmCatPubFBBtn').addEventListener('click',onFB);
+    card.querySelector('#tmCatPubTGBtn').addEventListener('click',onTG);
     card.querySelector('#tmCatPubImgBtn').addEventListener('click',onImg);
   }
   function boot(){build();updatePreview();}
