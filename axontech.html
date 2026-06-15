@@ -90,14 +90,26 @@
     .btn-full { width: 100%; }
 
     /* ── GESTORES ── */
-    .gestor-item { display: flex; align-items: center; gap: 9px; padding: 9px 10px; border-radius: 9px; cursor: pointer; transition: background .13s; margin-bottom: 3px; border: 1px solid transparent; }
+    .gestor-item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 9px; cursor: pointer; transition: all .13s; margin-bottom: 4px; border: 1px solid transparent; }
     .gestor-item:hover  { background: var(--gray-100); }
-    .gestor-item.active { background: var(--blue-lt); border-color: var(--blue-bd); }
-    .g-avatar { width: 36px; height: 36px; border-radius: 50%; color: white; font-weight: 700; font-size: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-    .g-name { font-size: 13px; font-weight: 600; }
-    .g-pts  { font-size: 11px; color: var(--blue); font-weight: 600; margin-top: 1px; }
+    .gestor-item.active { background: var(--blue-lt); border-color: var(--blue-bd); box-shadow: 0 0 0 1px var(--blue-bd); }
+    .g-avatar { width: 38px; height: 38px; border-radius: 50%; color: white; font-weight: 700; font-size: 13px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .g-name { font-size: 14px; font-weight: 600; }
+    .g-pts  { font-size: 11px; color: var(--blue); font-weight: 600; margin-top: 2px; }
     .g-info { flex: 1; min-width: 0; }
-    .g-badge { background: var(--blue); color: white; border-radius: 20px; font-size: 10px; font-weight: 700; padding: 2px 7px; }
+    .g-badge { background: var(--blue); color: white; border-radius: 20px; font-size: 10px; font-weight: 700; padding: 2px 8px; }
+    /* Vale status cards for gestor view */
+    .my-vale-card { border: 1px solid var(--gray-200); border-radius: 9px; padding: 11px 13px; margin-bottom: 7px; }
+    .my-vale-card.status-pending  { border-left: 3px solid var(--blue); }
+    .my-vale-card.status-assigned { border-left: 3px solid var(--orange); }
+    .my-vale-card.status-confirmed { border-left: 3px solid var(--green); background: rgba(16,185,129,.04); }
+    .my-vale-card.status-pending_payment { border-left: 3px solid var(--yellow); }
+    .mv-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
+    .mv-time { font-size: 11px; color: var(--gray-400); }
+    .mv-products { font-size: 11px; color: var(--gray-600); line-height: 1.4; margin-bottom: 6px; }
+    .mv-foot { display: flex; justify-content: space-between; align-items: center; }
+    .mv-pts { font-size: 13px; font-weight: 800; color: var(--blue); }
+    .mv-status { font-size: 11px; font-weight: 700; }
 
     /* ── ACTIVE BANNER ── */
     .active-banner { background: var(--blue-lt); border: 1px solid var(--blue-bd); border-radius: 10px; padding: 10px 13px; display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
@@ -271,12 +283,10 @@
 <!-- ══════════════════════════════════════ -->
 <div class="layout active" id="layoutGestor">
 
-  <!-- Col 1: Gestores -->
+  <!-- Col 1: Selector de nombre -->
   <div class="col col-left">
-    <div class="lbl">Gestores de Venta</div>
+    <div class="lbl">¿Quién eres?</div>
     <div id="gestoresList"></div>
-    <div class="lbl" style="margin-top:18px;">Vales Enviados Hoy</div>
-    <div id="gestorHistory"></div>
   </div>
 
   <!-- Col 2: Vale -->
@@ -327,18 +337,14 @@
     </div>
   </div>
 
-  <!-- Col 3: Stock / Pts / Ranking -->
+  <!-- Col 3: Puntos + Estado de mis vales -->
   <div class="col col-right">
     <div class="lbl">Puntos por Categoría</div>
     <div class="card" style="padding:10px 14px;"><div id="catList"></div></div>
 
-    <div class="lbl">Ranking Hoy</div>
-    <div class="card" style="padding:10px 14px;"><div id="rankingList"></div></div>
-
-    <div class="lbl">Stock de Productos</div>
-    <div class="card" style="padding:10px 14px;">
-      <input type="text" id="stockSearch" placeholder="Filtrar…" style="margin-bottom:8px;" oninput="renderStock()">
-      <div id="stockList"></div>
+    <div class="lbl">Mis Vales de Hoy</div>
+    <div id="gestorMyVales">
+      <div class="es"><div class="es-icon">🧾</div><div class="es-text">Selecciona tu nombre para ver tus vales</div></div>
     </div>
   </div>
 
@@ -663,15 +669,53 @@ function submitPass() {
 // ══════════════════════════════════════════
 function renderGestores() {
   document.getElementById('gestoresList').innerHTML = GESTORES.map(g => {
-    const pts = todayPtsOf(g.id);
     const act = g.id === activeGestorId;
     return `<div class="gestor-item ${act?'active':''}" onclick="selectGestor(${g.id})">
       <div class="g-avatar" style="background:${g.color}">${g.initials}</div>
       <div class="g-info">
         <div class="g-name">${g.name}</div>
-        <div class="g-pts">${pts} pts hoy</div>
       </div>
-      ${act ? '<span class="g-badge">Activo</span>' : ''}
+      ${act ? '<span class="g-badge">✓ Tú</span>' : ''}
+    </div>`;
+  }).join('');
+}
+
+function renderGestorMyVales() {
+  const container = document.getElementById('gestorMyVales');
+  if (!container) return;
+  if (!activeGestorId) {
+    container.innerHTML='<div class="es"><div class="es-icon">🧾</div><div class="es-text">Selecciona tu nombre para ver tus vales</div></div>';
+    return;
+  }
+  const myVales = getVales()
+    .filter(v => v.gestorId === activeGestorId && new Date(v.ts).toDateString() === todayStr())
+    .reverse();
+
+  if (!myVales.length) {
+    container.innerHTML='<div class="es"><div class="es-icon">🧾</div><div class="es-text">Aún no has enviado vales hoy</div></div>';
+    return;
+  }
+
+  const statusInfo = {
+    pending:         { label:'Enviado · esperando admin', color:'var(--blue)',   icon:'🔵' },
+    assigned:        { label:'Con mensajero',              color:'var(--orange)', icon:'🛵' },
+    confirmed:       { label:'Entrega confirmada ✅',       color:'var(--green)', icon:'✅' },
+    pending_payment: { label:'Pendiente de cobro',         color:'var(--yellow)',icon:'⏳' },
+  };
+
+  container.innerHTML = myVales.map(v => {
+    const s = statusInfo[v.status] || { label: v.status, color:'var(--gray-400)', icon:'•' };
+    const products = v.items.map(i=>`${i.name} x${i.qty}`).join(', ');
+    return `<div class="my-vale-card status-${v.status}">
+      <div class="mv-head">
+        <span style="font-size:12px;font-weight:700;">${timeStr(v.ts)}</span>
+        <span class="mv-time">${v.items.reduce((s,i)=>s+i.qty,0)} uds.</span>
+      </div>
+      <div class="mv-products">${products}</div>
+      <div class="mv-foot">
+        <span class="mv-pts">+${v.pts} pts</span>
+        <span class="mv-status" style="color:${s.color};">${s.icon} ${s.label}</span>
+      </div>
     </div>`;
   }).join('');
 }
@@ -683,6 +727,7 @@ function selectGestor(id) {
   document.getElementById('bannerAvatar').style.background = g.color;
   document.getElementById('bannerName').textContent = g.name;
   renderGestores();
+  renderGestorMyVales();
 }
 
 // ══════════════════════════════════════════
@@ -861,8 +906,7 @@ function sendVale() {
   // Reset
   clearVale();
   renderGestores();
-  renderStock();
-  renderGestorHistory();
+  renderGestorMyVales();
   updateAdminBadge();
   playSound('vale');
   showToast(`Vale enviado al administrador ✓`);
@@ -1120,6 +1164,7 @@ function copyAndAssign() {
   selectedValeId = shareTargetId;
   renderInbox();
   renderValeDetail();
+  renderGestorMyVales();
   renderConfirmados();
   renderPendienteCobro();
   showToast(`Vale asignado a ${m?m.name:'mensajero'} y copiado ✓`);
@@ -1133,10 +1178,9 @@ function confirmDelivery(valeId) {
   playSound('confirm');
   renderInbox();
   renderValeDetail();
-  renderGestorHistory();
+  renderGestorMyVales();
   renderConfirmados();
   renderPendienteCobro();
-  renderGestores();
   showToast('Venta confirmada ✅');
 }
 
@@ -1144,6 +1188,7 @@ function markPendingPayment(valeId) {
   patchVale(valeId, { status:'pending_payment' });
   renderInbox();
   renderValeDetail();
+  renderGestorMyVales();
   renderConfirmados();
   renderPendienteCobro();
   showToast('Marcado como pendiente de cobro ⏳');
@@ -1304,16 +1349,13 @@ function init() {
   updateDate();
   setInterval(updateDate, 60000);
   setInterval(() => {
-    renderRanking();
     updateAdminBadge();
+    renderGestorMyVales();
   }, 10000);
   renderGestores();
   renderCategorias();
-  renderStock();
-  renderRanking();
-  renderGestorHistory();
+  renderGestorMyVales();
   updateAdminBadge();
-  // Init filter highlight
   setFilter('all');
 }
 
