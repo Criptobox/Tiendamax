@@ -65,6 +65,7 @@
     body.dark .mv-card { border-color:var(--border); }
     body.dark .sp-pending { background:#1e3a5f; color:#93c5fd; }
     body.dark .sp-assigned { background:#3d2500; color:#fdba74; }
+    body.dark .sp-delivered { background:#2d1b6b; color:#c4b5fd; }
     body.dark .sp-confirmed { background:#0d2e20; color:#6ee7b7; }
     body.dark .sp-pending_payment { background:#3d2f00; color:#fcd34d; }
     body.dark .vale-preview { color:var(--text); }
@@ -111,7 +112,7 @@
       /* When gestor selected on mobile: hide left col, show back bar */
       #layoutGestor.has-gestor .col-left { display: none !important; }
       #layoutGestor.has-gestor .col-mid { grid-column: 1 / -1; }
-      #mobileBackBar { display: flex; }
+      #layoutGestor.has-gestor #mobileBackBar { display: flex; }
 
       /* Mensajero layout mobile */
       #layoutMensajero.active { grid-template-columns: 1fr !important; }
@@ -279,6 +280,7 @@
     .mv-card { border:1px solid var(--gray-200); border-radius:9px; padding:10px 12px; margin-bottom:6px; border-left-width:3px; }
     .mv-card.st-pending         { border-left-color:var(--blue); }
     .mv-card.st-assigned        { border-left-color:var(--orange); }
+    .mv-card.st-delivered       { border-left-color:#7C3AED; }
     .mv-card.st-confirmed       { border-left-color:var(--green); }
     .mv-card.st-pending_payment { border-left-color:var(--yellow); }
     .mv-head  { display:flex; justify-content:space-between; margin-bottom:4px; }
@@ -316,6 +318,7 @@
     .sp { font-size:10px; font-weight:700; padding:2px 7px; border-radius:20px; }
     .sp-pending        { background:#EFF6FF; color:var(--blue); }
     .sp-assigned       { background:#FFF7ED; color:var(--orange); }
+    .sp-delivered      { background:#F5F3FF; color:#7C3AED; }
     .sp-confirmed      { background:#ECFDF5; color:var(--green); }
     .sp-pending_payment{ background:#FFFBEB; color:var(--yellow); }
 
@@ -892,10 +895,9 @@ function patchProducto(id, changes) {
 // ══════════════════════════════════════════
 const LOW_STOCK_THRESHOLD = 3;
 
-function addNotif(type, productName, productId, extra) {
+function addNotif(type, productName, productId, extra, gestorId) {
   const notifs = getNotifs();
-  notifs.unshift({ id:Date.now(), type, productName, productId, ts:new Date().toISOString(), read:false, extra:extra||'' });
-  // Keep last 50
+  notifs.unshift({ id:Date.now(), type, productName, productId, ts:new Date().toISOString(), read:false, extra:extra||'', gestorId:gestorId||null });
   if (notifs.length > 50) notifs.splice(50);
   saveNotifs(notifs);
   renderGestorNotifs();
@@ -903,23 +905,26 @@ function addNotif(type, productName, productId, extra) {
 
 function renderGestorNotifs() {
   const notifs = getNotifs();
-  // Show section only if there are notifs from last 72h
   const cutoff = Date.now() - 72*60*60*1000;
-  const recent = notifs.filter(n => new Date(n.ts).getTime() > cutoff);
+  const recent = notifs.filter(n => {
+    if(new Date(n.ts).getTime() <= cutoff) return false;
+    if(n.type==='vale_confirmed' && n.gestorId && activeGestorId && n.gestorId !== activeGestorId) return false;
+    return true;
+  });
   const sec = document.getElementById('gestorNotifsSection');
-  if (!sec) return;
-  if (!recent.length) { sec.style.display='none'; return; }
+  if(!sec) return;
+  if(!recent.length){sec.style.display='none';return;}
   sec.style.display='block';
   const unread = recent.filter(n=>!n.read).length;
   const badge = document.getElementById('notifUnreadBadge');
-  if (badge) { badge.textContent=unread; badge.style.display=unread?'inline-block':'none'; }
-  const icons = { new_product:'✨', out_of_stock:'❌', low_stock:'⚠️', restocked:'✅' };
-  const labels = { new_product:'Nuevo producto', out_of_stock:'Agotado', low_stock:'Stock bajo', restocked:'Repuesto' };
+  if(badge){badge.textContent=unread;badge.style.display=unread?'inline-block':'none';}
+  const icons = {new_product:'✨',out_of_stock:'❌',low_stock:'⚠️',restocked:'✅',vale_confirmed:'🎉'};
+  const labels = {new_product:'Nuevo producto',out_of_stock:'Agotado',low_stock:'Stock bajo',restocked:'Repuesto',vale_confirmed:'Venta confirmada'};
   document.getElementById('gestorNotifsList').innerHTML = recent.map(n=>{
-    const icon = icons[n.type]||'📢';
-    const label = labels[n.type]||n.type;
-    const age = timeAgo(n.ts);
-    const cls = !n.read?'unread':`type-${n.type==='out_of_stock'?'agotado':n.type==='low_stock'?'low':n.type==='restocked'?'restocked':''}`;
+    const icon=icons[n.type]||'📢';
+    const label=labels[n.type]||n.type;
+    const age=timeAgo(n.ts);
+    const cls=!n.read?'unread':`type-${n.type==='out_of_stock'?'agotado':n.type==='low_stock'?'low':n.type==='restocked'?'restocked':n.type==='vale_confirmed'?'ok':''}`;
     return `<div class="gnotif-item ${cls}" onclick="markNotifRead(${n.id})">
       <span class="gnotif-icon">${icon}</span>
       <div class="gnotif-text">
@@ -1215,46 +1220,47 @@ function renderMensajeroVales() {
   if(!activeMensajeroId){
     c.innerHTML='<div class="es"><div class="es-icon">🛵</div><div class="es-text">Selecciona tu nombre para ver tus entregas</div></div>';return;
   }
-  const activos=getVales().filter(v=>v.mensajeroId===activeMensajeroId&&['assigned','pending_payment'].includes(v.status)).reverse();
-  const confirmadosHoy=getVales().filter(v=>v.mensajeroId===activeMensajeroId&&v.status==='confirmed'&&new Date(v.ts).toDateString()===todayStr()).reverse();
-  const sMap={assigned:'🛵 Asignado',pending_payment:'⏳ Pend. cobro'};
+  const porEntregar=getVales().filter(v=>v.mensajeroId===activeMensajeroId&&v.status==='assigned').reverse();
+  const entregados=getVales().filter(v=>v.mensajeroId===activeMensajeroId&&v.status==='delivered').reverse();
+  const confirmadosHoy=getVales().filter(v=>v.mensajeroId===activeMensajeroId&&['confirmed','pending_payment'].includes(v.status)&&new Date(v.ts).toDateString()===todayStr()).reverse();
   let html='';
-  if(!activos.length&&!confirmadosHoy.length){
-    html='<div class="es"><div class="es-icon">✅</div><div class="es-text">Sin entregas pendientes — ¡bien hecho!</div></div>';
+  if(!porEntregar.length&&!entregados.length&&!confirmadosHoy.length){
+    html='<div class="es"><div class="es-icon">✅</div><div class="es-text">Sin entregas asignadas</div></div>';
   } else {
-    if(activos.length){
-      html+='<div class="lbl" style="margin-top:0;">Pendientes de entrega</div>';
-      html+=activos.map(v=>{
+    if(porEntregar.length){
+      html+='<div class="lbl" style="margin-top:0;">Por entregar</div>';
+      html+=porEntregar.map(v=>{
         const g=gestorOf(v.gestorId);
-        let actions='';
-        if(v.status==='assigned'){
-          actions=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px;">
-            <button class="btn btn-green btn-full btn-sm" onclick="confirmDelivery(${v.id})">✅ Entregado</button>
-            <button class="btn btn-orange btn-full btn-sm" onclick="markPending(${v.id})">⏳ Pend. cobro</button>
-          </div>`;
-        } else if(v.status==='pending_payment'){
-          actions=`<button class="btn btn-green btn-full btn-sm" style="margin-top:8px;" onclick="confirmDelivery(${v.id})">✅ Cobrado — Confirmar</button>`;
-        }
-        return `<div class="mv-card st-${v.status}">
-          <div class="mv-head">
-            <span class="mv-time">${timeStr(v.ts)}</span>
-            <span class="sp-${v.status}" style="font-size:9px;padding:2px 6px;">${sMap[v.status]||v.status}</span>
-          </div>
+        return `<div class="mv-card st-assigned">
+          <div class="mv-head"><span class="mv-time">${timeStr(v.ts)}</span><span class="sp-assigned" style="font-size:9px;padding:2px 6px;">🛵 Asignado</span></div>
           <div class="mv-info"><b>${v.cliente||'—'}</b> · ${v.telefono||'—'}</div>
           <div style="font-size:11px;color:var(--gray-400);">📍 ${v.direccion||'Sin dirección'}</div>
           <div style="font-size:12px;font-weight:700;margin-top:3px;">💰 ${v.total||'—'}${v.vuelto?` · Vuelto: ${v.vuelto}`:''}</div>
           ${g?`<div style="font-size:11px;color:var(--gray-400);">Gestor: ${g.name}</div>`:''}
           <div style="font-size:11px;color:var(--gray-600);margin-top:3px;">📦 ${v.articulo||'—'}</div>
-          ${actions}
+          <button class="btn btn-green btn-full btn-sm" style="margin-top:8px;" onclick="mensajeroEntrega(${v.id})">✅ Marcar como entregado</button>
+        </div>`;
+      }).join('');
+    }
+    if(entregados.length){
+      html+='<div class="lbl" style="margin-top:16px;">Entregados · esperando confirmación admin</div>';
+      html+=entregados.map(v=>{
+        const g=gestorOf(v.gestorId);
+        return `<div class="mv-card st-delivered">
+          <div class="mv-head"><span class="mv-time">${timeStr(v.deliveredTs||v.ts)}</span><span class="sp-delivered" style="font-size:9px;padding:2px 6px;">📦 Entregado</span></div>
+          <div class="mv-info"><b>${v.cliente||'—'}</b> · ${v.total||'—'}</div>
+          ${g?`<div style="font-size:11px;color:var(--gray-400);">Gestor: ${g.name}</div>`:''}
+          <div style="font-size:11px;color:#7C3AED;margin-top:4px;">⏳ Admin aún no confirmó la venta</div>
         </div>`;
       }).join('');
     }
     if(confirmadosHoy.length){
-      html+='<div class="lbl" style="margin-top:16px;">Confirmados hoy</div>';
+      html+='<div class="lbl" style="margin-top:16px;">Completados hoy</div>';
       html+=confirmadosHoy.map(v=>{
         const g=gestorOf(v.gestorId);
-        return `<div class="mv-card st-confirmed">
-          <div class="mv-head"><span class="mv-time">${timeStr(v.confirmedTs||v.ts)}</span><span style="color:var(--green);font-size:10px;">✅ Confirmado</span></div>
+        const isPend=v.status==='pending_payment';
+        return `<div class="mv-card st-${v.status}">
+          <div class="mv-head"><span class="mv-time">${timeStr(v.confirmedTs||v.ts)}</span><span style="color:${isPend?'var(--yellow)':'var(--green)'};font-size:10px;">${isPend?'⏳ Pend. cobro':'✅ Confirmado'}</span></div>
           <div class="mv-info"><b>${v.cliente||'—'}</b> · ${v.total||'—'}</div>
           ${g?`<div style="font-size:11px;color:var(--gray-400);">Gestor: ${g.name}</div>`:''}
         </div>`;
@@ -1342,6 +1348,7 @@ function renderInbox() {
   if(!all.length){c.innerHTML='<div class="es"><div class="es-icon">📭</div><div class="es-text">Sin vales aquí</div></div>';return;}
   const sMap={
     pending:{label:'Pendiente',cls:'sp-pending'},assigned:{label:'Con mensajero',cls:'sp-assigned'},
+    delivered:{label:'Entregado',cls:'sp-delivered'},
     confirmed:{label:'Confirmado',cls:'sp-confirmed'},pending_payment:{label:'Pend. cobro',cls:'sp-pending_payment'},
   };
   c.innerHTML=all.map(v=>{
@@ -1391,14 +1398,21 @@ function renderValeDetail() {
     actHTML=`<button class="btn btn-blue btn-full" onclick="openShareModal(${v.id})">📤 Compartir con mensajero</button>`;
   } else if(v.status==='assigned'){
     actHTML=`<div class="mensajero-row">🛵 <b>Mensajero:</b> ${m?m.name:'—'}</div>
-      <button class="btn btn-green btn-full" onclick="confirmDelivery(${v.id})">✅ Confirmar entrega</button>
-      <button class="btn btn-orange btn-full" onclick="markPending(${v.id})" style="margin-top:8px;">⏳ Pendiente de cobro</button>
-      <button class="btn btn-ghost btn-full btn-sm" onclick="openShareModal(${v.id})" style="margin-top:8px;">🔄 Reenviar vale</button>`;
+      <div style="font-size:12px;color:var(--gray-400);margin:6px 0 10px;">Esperando que el mensajero confirme la entrega</div>
+      <button class="btn btn-ghost btn-full btn-sm" onclick="openShareModal(${v.id})">🔄 Reenviar vale</button>`;
+  } else if(v.status==='delivered'){
+    actHTML=`<div style="background:rgba(124,58,237,.08);border:1px solid rgba(124,58,237,.3);border-radius:8px;padding:12px;text-align:center;margin-bottom:10px;">
+      <div style="font-size:24px;margin-bottom:4px;">🛵</div>
+      <div style="font-weight:700;color:#7C3AED;">Entregado por mensajero</div>
+      ${m?`<div style="font-size:12px;color:var(--gray-400);">Mensajero: ${m.name}</div>`:''}
+    </div>
+    <button class="btn btn-green btn-full" onclick="confirmSale(${v.id},'confirmed')" style="margin-bottom:8px;">✅ Confirmar venta + Ya pagó</button>
+    <button class="btn btn-orange btn-full" onclick="confirmSale(${v.id},'pending_payment')">⏳ Confirmar venta + Pendiente de cobro</button>`;
   } else if(v.status==='confirmed'){
     actHTML=`<div style="background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.25);border-radius:8px;padding:14px;text-align:center;">
       <div style="font-size:26px;margin-bottom:4px;">✅</div>
-      <div style="font-weight:700;color:var(--green);">Entrega confirmada</div>
-      ${m?`<div style="font-size:12px;color:var(--gray-400);margin-top:2px;">Por ${m.name}</div>`:''}
+      <div style="font-weight:700;color:var(--green);">Venta confirmada y cobrada</div>
+      ${m?`<div style="font-size:12px;color:var(--gray-400);margin-top:2px;">Mensajero: ${m.name}</div>`:''}
       ${v.confirmedTs?`<div style="font-size:11px;color:var(--gray-400);">${new Date(v.confirmedTs).toLocaleDateString('es-ES')} ${timeStr(v.confirmedTs)}</div>`:''}
     </div>`;
   } else if(v.status==='pending_payment'){
@@ -1407,7 +1421,7 @@ function renderValeDetail() {
       <div style="font-weight:700;color:var(--yellow);">Pendiente de cobro</div>
       ${m?`<div style="font-size:12px;color:var(--gray-400);">Mensajero: ${m.name}</div>`:''}
     </div>
-    <button class="btn btn-green btn-full" onclick="confirmDelivery(${v.id})">✅ Marcar como cobrado</button>`;
+    <button class="btn btn-green btn-full" onclick="markAsPaid(${v.id})">✅ Cobrado — Registrar pago</button>`;
   }
   c.innerHTML=`
     <div class="lbl" style="margin-top:0;">Detalle del Vale</div>
@@ -1490,7 +1504,16 @@ function copyAndAssign() {
 // ══════════════════════════════════════════
 //  CONFIRM / PENDING
 // ══════════════════════════════════════════
-function confirmDelivery(id) {
+// Mensajero marca entrega física — sin tocar stock
+function mensajeroEntrega(id) {
+  patchVale(id,{status:'delivered',deliveredTs:new Date().toISOString()});
+  renderAdminGestores();renderInbox();renderValeDetail();renderMyVales();
+  renderPendienteCobro();renderMensajeroVales();
+  updateAdminBadge();
+  showToast('Marcado como entregado 🛵');
+}
+// Admin confirma venta: descuenta stock + notifica gestor + fija estado de cobro
+function confirmSale(id, paymentStatus) {
   const v=getVales().find(x=>x.id===id);if(!v)return;
   (v.valeProductos||[]).forEach(({id:pid,qty})=>{
     const prod=productoOf(pid);if(!prod)return;
@@ -1500,18 +1523,20 @@ function confirmDelivery(id) {
     if(newStock===0&&oldStock>0) addNotif('out_of_stock',prod.name,pid,'stock agotado');
     else if(newStock>0&&newStock<=LOW_STOCK_THRESHOLD&&oldStock>LOW_STOCK_THRESHOLD) addNotif('low_stock',prod.name,pid,`quedan ${newStock}`);
   });
-  patchVale(id,{status:'confirmed',confirmedTs:new Date().toISOString()});
+  addNotif('vale_confirmed',v.cliente||'Cliente',null,`Total: ${v.total||''}`,v.gestorId);
+  patchVale(id,{status:paymentStatus,confirmedTs:new Date().toISOString()});
   playSound('confirm');
   renderAdminGestores();renderInbox();renderValeDetail();renderMyVales();
   renderConfirmados();renderPendienteCobro();renderMensajeroVales();
   if(adminActive&&currentAdminTab==='stock')renderProductGrid();
-  showToast('Venta confirmada ✅');
+  showToast(paymentStatus==='confirmed'?'Venta confirmada y cobrada ✅':'Venta confirmada — cobro pendiente ⏳');
 }
-function markPending(id) {
-  patchVale(id,{status:'pending_payment'});
+// Admin registra cobro recibido — sin tocar stock (ya se descontó al confirmar)
+function markAsPaid(id) {
+  patchVale(id,{status:'confirmed',confirmedTs:new Date().toISOString()});
   renderAdminGestores();renderInbox();renderValeDetail();renderMyVales();
   renderConfirmados();renderPendienteCobro();renderMensajeroVales();
-  showToast('Marcado como pendiente de cobro ⏳');
+  showToast('Cobro registrado ✅');
 }
 
 // ══════════════════════════════════════════
@@ -1555,7 +1580,7 @@ function renderPendienteCobro() {
   if(!pend.length){c.innerHTML='<div class="es"><div class="es-icon">⏳</div><div class="es-text">Sin pendientes</div></div>';return;}
   c.innerHTML=pend.map(v=>{
     const g=gestorOf(v.gestorId);const m=v.mensajeroId?mensajeroOf(v.mensajeroId):null;
-    return `<div class="sc sc-pend"><div class="sc-head"><span class="sc-g">${g?g.name:'—'}</span><span class="sc-t">${timeStr(v.ts)}</span></div><div>${v.cliente||''} · ${v.total||''}</div><div class="sc-m">${m?'🛵 '+m.name:''}</div><button class="btn btn-green btn-full btn-sm" style="margin-top:7px;" onclick="confirmDelivery(${v.id})">✅ Cobrado</button></div>`;
+    return `<div class="sc sc-pend"><div class="sc-head"><span class="sc-g">${g?g.name:'—'}</span><span class="sc-t">${timeStr(v.ts)}</span></div><div>${v.cliente||''} · ${v.total||''}</div><div class="sc-m">${m?'🛵 '+m.name:''}</div><button class="btn btn-green btn-full btn-sm" style="margin-top:7px;" onclick="markAsPaid(${v.id})">✅ Cobrado</button></div>`;
   }).join('');
 }
 
@@ -1570,7 +1595,8 @@ function renderMyVales() {
   const sMap={
     pending:{label:'Enviado · admin pendiente',color:'var(--blue)',icon:'🔵'},
     assigned:{label:'Con mensajero',color:'var(--orange)',icon:'🛵'},
-    confirmed:{label:'Entrega confirmada',color:'var(--green)',icon:'✅'},
+    delivered:{label:'Entregado · esperando confirmación admin',color:'#7C3AED',icon:'📦'},
+    confirmed:{label:'Venta confirmada ✅',color:'var(--green)',icon:'✅'},
     pending_payment:{label:'Pendiente de cobro',color:'var(--yellow)',icon:'⏳'},
   };
   c.innerHTML=mine.map(v=>{
@@ -2023,7 +2049,8 @@ function loadDemo() {
 
   saveVales([
     { id:2001, gestorId:1, ts:h(0.5),  cliente:'Roberto Silva',   telefono:'55551234', direccion:'Calle 23 #456, Vedado',       mensajeria:'$2 USD',  articulo:'iPhone 15 Pro x1',    precioUSD:'$950 USD', precioCUP:'',        vuelto:'',      total:'$950 USD',  garantia:'6 meses', valeProductos:[{id:100,name:'iPhone 15 Pro',qty:1}],    valeText:'', status:'pending',         mensajeroId:null, confirmedTs:null,  isNew:true  },
-    { id:2002, gestorId:2, ts:h(1.2),  cliente:'María Torres',    telefono:'55559876', direccion:'Av 5ta #88 e/8 y 10',         mensajeria:'Gratis',  articulo:'AirPods Pro 2 x2',    precioUSD:'$360 USD', precioCUP:'',        vuelto:'',      total:'$360 USD',  garantia:'3 meses', valeProductos:[{id:102,name:'AirPods Pro 2',qty:2}],    valeText:'', status:'assigned',        mensajeroId:50,   confirmedTs:null,  isNew:false },
+    { id:2002, gestorId:2, ts:h(1.2),  cliente:'María Torres',    telefono:'55559876', direccion:'Av 5ta #88 e/8 y 10',         mensajeria:'Gratis',  articulo:'AirPods Pro 2 x2',    precioUSD:'$360 USD', precioCUP:'',        vuelto:'',      total:'$360 USD',  garantia:'3 meses', valeProductos:[{id:102,name:'AirPods Pro 2',qty:2}],    valeText:'', status:'assigned',        mensajeroId:50,   confirmedTs:null,  deliveredTs:null,  isNew:false },
+    { id:2007, gestorId:3, ts:h(1.8),  cliente:'Diana Vázquez',   telefono:'55552468', direccion:'Neptuno #89, Centro Habana',   mensajeria:'$2 USD',  articulo:'Laptop HP Victus x1', precioUSD:'$680 USD', precioCUP:'',        vuelto:'',      total:'$680 USD',  garantia:'12 meses',valeProductos:[{id:104,name:'Laptop HP Victus',qty:1}],  valeText:'', status:'delivered',       mensajeroId:51,   confirmedTs:null,  deliveredTs:h(0.3),isNew:false },
     { id:2003, gestorId:1, ts:h(2.0),  cliente:'Luis Pérez',      telefono:'55554321', direccion:'Obispo #12, Habana Vieja',    mensajeria:'$1 USD',  articulo:'Funda iPhone 15 x3',  precioUSD:'$45 USD',  precioCUP:'4050 CUP',vuelto:'0',     total:'$45 USD',   garantia:'',         valeProductos:[{id:103,name:'Funda iPhone 15',qty:3}],  valeText:'', status:'confirmed',       mensajeroId:51,   confirmedTs:h(0.8),isNew:false },
     { id:2004, gestorId:3, ts:h(3.1),  cliente:'Carmen Díaz',     telefono:'55557890', direccion:'23 y 12 #234, Vedado',        mensajeria:'$2 USD',  articulo:'Samsung Galaxy S24 x1',precioUSD:'$780 USD',precioCUP:'',        vuelto:'',      total:'$780 USD',  garantia:'6 meses', valeProductos:[{id:101,name:'Samsung Galaxy S24',qty:1}],valeText:'', status:'pending_payment', mensajeroId:50,   confirmedTs:null,  isNew:false },
     { id:2005, gestorId:4, ts:h(4.5),  cliente:'Oscar Fernández', telefono:'55553456', direccion:'Línea #78 esq L',             mensajeria:'$3 USD',  articulo:'Laptop HP Victus x1', precioUSD:'$680 USD', precioCUP:'',        vuelto:'',      total:'$680 USD',  garantia:'12 meses',valeProductos:[{id:104,name:'Laptop HP Victus',qty:1}],  valeText:'', status:'pending',         mensajeroId:null, confirmedTs:null,  isNew:true  },
@@ -2043,6 +2070,8 @@ function loadDemo() {
   adminGestorFilter=null; inboxFilter='all'; selectedProductsUI=[]; currentValeProductos=[];
   document.getElementById('layoutAdmin').classList.remove('active');
   document.getElementById('layoutMensajero').classList.remove('active');
+  document.getElementById('layoutMensajero').classList.remove('has-mensajero');
+  document.getElementById('layoutGestor').classList.remove('has-gestor');
   document.getElementById('layoutGestor').classList.add('active');
   document.getElementById('btnAdminAccess').style.display='flex';
   document.getElementById('btnMensajeroAccess').style.display='flex';
