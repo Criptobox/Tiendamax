@@ -660,8 +660,6 @@
         </div>
         <div class="lbl">Confirmados Hoy ✅</div>
         <div id="confirmadosList"><div class="es"><div class="es-icon">✅</div><div class="es-text">Sin confirmaciones</div></div></div>
-        <div class="lbl">Pendiente de Cobro ⏳</div>
-        <div id="pendienteList"><div class="es"><div class="es-icon">⏳</div><div class="es-text">Sin pendientes</div></div></div>
         <div class="lbl" style="margin-top:20px;">Configuración</div>
         <div class="card" style="padding:10px 14px;">
           <label class="field-lbl">📱 WhatsApp Admin (para compartir)</label>
@@ -753,6 +751,7 @@
         </div>
       </div>
       <div id="mensajeroValesWrap">
+        <div id="pendingCobroSection"></div>
         <div id="mensajeroValesList">
           <div class="es"><div class="es-icon">🛵</div><div class="es-text">Selecciona un mensajero para ver sus entregas</div></div>
         </div>
@@ -1106,7 +1105,7 @@ function adminTab(tab) {
   if(tab==='stock'){renderStockCategorias();renderProductGrid();}
   if(tab==='gestores'){renderAdminGestoresList();}
   if(tab==='stats'){renderStats();}
-  if(tab==='mensajeros'){renderMensajeroSelector();renderMensajeroVales();}
+  if(tab==='mensajeros'){renderMensajeroSelector();renderPendingCobroSection();renderMensajeroVales();}
 }
 
 // ══════════════════════════════════════════
@@ -1554,7 +1553,7 @@ function confirmSale(id, paymentStatus) {
   patchVale(id,{status:paymentStatus,confirmedTs:new Date().toISOString()});
   playSound('confirm');
   renderAdminGestores();renderInbox();renderValeDetail();renderMyVales();
-  renderConfirmados();renderPendienteCobro();renderMensajeroVales();
+  renderConfirmados();renderPendienteCobro();renderPendingCobroSection();renderMensajeroVales();
   renderProductGrid();
   showToast(paymentStatus==='confirmed'?'Venta confirmada y cobrada ✅':'Venta confirmada — cobro pendiente ⏳');
 }
@@ -1562,7 +1561,7 @@ function confirmSale(id, paymentStatus) {
 function markAsPaid(id) {
   patchVale(id,{status:'confirmed',confirmedTs:new Date().toISOString()});
   renderAdminGestores();renderInbox();renderValeDetail();renderMyVales();
-  renderConfirmados();renderPendienteCobro();renderMensajeroVales();renderMensajeroSelector();updateMensajeroBadge();
+  renderConfirmados();renderPendienteCobro();renderPendingCobroSection();renderMensajeroVales();renderMensajeroSelector();updateMensajeroBadge();
   showToast('Cobro registrado ✅');
 }
 
@@ -1602,13 +1601,39 @@ function renderConfirmados() {
   }).join('');
 }
 function renderPendienteCobro() {
-  const pend=getVales().filter(v=>v.status==='pending_payment').reverse();
   const c=document.getElementById('pendienteList');
+  if(!c)return;
+  const pend=getVales().filter(v=>v.status==='pending_payment').reverse();
   if(!pend.length){c.innerHTML='<div class="es"><div class="es-icon">⏳</div><div class="es-text">Sin pendientes</div></div>';return;}
   c.innerHTML=pend.map(v=>{
     const g=gestorOf(v.gestorId);const m=v.mensajeroId?mensajeroOf(v.mensajeroId):null;
     return `<div class="sc sc-pend"><div class="sc-head"><span class="sc-g">${g?g.name:'—'}</span><span class="sc-t">${timeStr(v.ts)}</span></div><div>${v.cliente||''} · ${v.total||''}</div><div class="sc-m">${m?'🛵 '+m.name:''}</div><button class="btn btn-green btn-full btn-sm" style="margin-top:7px;" onclick="markAsPaid(${v.id})">✅ Cobrado</button></div>`;
   }).join('');
+}
+let pendingCobroExpanded=false;
+function togglePendingCobro(){pendingCobroExpanded=!pendingCobroExpanded;renderPendingCobroSection();}
+function renderPendingCobroSection() {
+  const c=document.getElementById('pendingCobroSection');if(!c)return;
+  const pend=getVales().filter(v=>v.status==='pending_payment').reverse();
+  if(!pend.length){c.innerHTML='';return;}
+  const body=pendingCobroExpanded?`<div style="margin-top:8px;">${pend.map(v=>{
+    const g=gestorOf(v.gestorId);const m=v.mensajeroId?mensajeroOf(v.mensajeroId):null;
+    return `<div class="mv-card" style="border-left:3px solid var(--red);background:rgba(239,68,68,.05);margin-bottom:6px;">
+      <div class="mv-head"><span class="mv-time">${timeStr(v.confirmedTs||v.ts)}</span><span style="color:var(--red);font-size:9px;font-weight:700;padding:2px 6px;background:rgba(239,68,68,.12);border-radius:4px;">⏳ Pend. cobro</span></div>
+      <div class="mv-info"><b>${v.cliente||'—'}</b> · <span style="color:var(--red);font-weight:700;">${v.total||'—'}</span></div>
+      ${g?`<div style="font-size:11px;color:var(--gray-400);">Gestor: ${g.name}</div>`:''}
+      ${m?`<div style="font-size:11px;color:var(--gray-400);">🛵 ${m.name}</div>`:''}
+      <button class="btn btn-green btn-full btn-sm" style="margin-top:8px;" onclick="markAsPaid(${v.id})">💵 Registrar cobro</button>
+    </div>`;
+  }).join('')}</div>`:'' ;
+  c.innerHTML=`<div onclick="togglePendingCobro()" style="display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:rgba(239,68,68,.08);border:1.5px solid rgba(239,68,68,.3);border-radius:9px;cursor:pointer;margin-bottom:${pendingCobroExpanded?'0':'12px'};">
+    <div style="display:flex;align-items:center;gap:8px;">
+      <span style="font-size:16px;">⏳</span>
+      <span style="font-weight:700;font-size:13px;color:var(--red);">Pendientes de cobro</span>
+      <span style="background:var(--red);color:white;border-radius:10px;font-size:10px;font-weight:700;padding:1px 7px;">${pend.length}</span>
+    </div>
+    <span style="color:var(--red);font-size:14px;">${pendingCobroExpanded?'▲':'▼'}</span>
+  </div>${body}`;
 }
 
 // ══════════════════════════════════════════
@@ -2165,11 +2190,19 @@ function buildDemoVale(v) {
 //  MENSAJERO BADGE
 // ══════════════════════════════════════════
 function updateMensajeroBadge() {
-  const n=getVales().filter(v=>v.status==='assigned').length;
+  const pend=getVales().filter(v=>v.status==='pending_payment').length;
+  const asgn=getVales().filter(v=>v.status==='assigned').length;
   const b=document.getElementById('mensajeroBadge');
   if(!b)return;
-  if(n>0){b.textContent=n;b.style.display='inline-block';}
-  else{b.style.display='none';}
+  if(pend>0){
+    b.textContent=pend;b.style.display='inline-block';
+    b.style.background='var(--red)';
+  } else if(asgn>0){
+    b.textContent=asgn;b.style.display='inline-block';
+    b.style.background='var(--green)';
+  } else {
+    b.style.display='none';
+  }
 }
 
 // ══════════════════════════════════════════
