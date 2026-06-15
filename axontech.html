@@ -114,14 +114,6 @@
       #layoutGestor.has-gestor .col-mid { grid-column: 1 / -1; }
       #layoutGestor.has-gestor #mobileBackBar { display: flex; }
 
-      /* Mensajero layout mobile */
-      #layoutMensajero.active { grid-template-columns: 1fr !important; }
-      #layoutMensajero .col-left { height: auto; overflow: visible; border-right: none; border-bottom: 1px solid var(--gray-200); }
-      #layoutMensajero .col-mid { height: auto; overflow: visible; }
-      #layoutMensajero.has-mensajero .col-left { display: none !important; }
-      #layoutMensajero.has-mensajero .col-mid { grid-column: 1 / -1; }
-      #layoutMensajero.has-mensajero #mensajeroBackBar { display: flex; }
-
       /* Admin layout */
       #layoutAdmin.active { height: auto; overflow: visible; }
       .admin-nav { gap: 0; padding: 0 6px; overflow-x: auto; }
@@ -180,13 +172,6 @@
     .layout { display:none; height:calc(100vh - 54px); overflow:hidden; }
     .layout.active { display:flex; flex-direction:column; }
     #layoutGestor.active { display:grid; grid-template-columns:210px 1fr; }
-    #layoutMensajero.active { display:grid; grid-template-columns:210px 1fr; }
-    #layoutMensajero.has-mensajero { grid-template-columns:190px 1fr; }
-    #layoutMensajero.has-mensajero .m-sel-item:not(.active) { display:none; }
-    #layoutMensajero.has-mensajero .g-change { display:flex !important; }
-    #mensajeroBackBar { display:none; align-items:center; gap:10px; background:rgba(5,150,105,.1); border:1px solid rgba(5,150,105,.3); border-radius:9px; padding:8px 12px; margin-bottom:10px; }
-    #mensajeroBackBar button { background:none; border:none; color:var(--green); font-size:13px; font-weight:700; cursor:pointer; padding:0; }
-
     .col { height:100%; overflow-y:auto; padding:14px; }
     .col-left  { background:white; border-right:1px solid var(--gray-200); }
     .col-mid   { background:var(--gray-50); }
@@ -425,7 +410,6 @@
     <div class="header-date" id="headerDate"></div>
     <button id="btnTheme" onclick="toggleTheme()" title="Cambiar tema">🌙</button>
     <button id="btnDemo" onclick="loadDemo()" title="Cargar datos de prueba" style="background:rgba(245,158,11,.18);border:1px solid rgba(245,158,11,.4);color:#FCD34D;border-radius:7px;padding:5px 10px;font-size:11px;font-weight:700;cursor:pointer;letter-spacing:.5px;">🎮 DEMO</button>
-    <button id="btnMensajeroAccess" onclick="switchMode('mensajero')" title="Panel mensajero" style="font-size:17px;background:none;border:none;cursor:pointer;padding:4px 6px;border-radius:7px;color:var(--green);position:relative;">🛵<span class="notif-badge" id="mensajeroBadge" style="display:none;position:absolute;top:0;right:0;">0</span></button>
     <button id="btnAdminAccess" onclick="switchMode('admin')" title="Acceso administrador">
       🔒 <span class="notif-badge" id="adminBadge">0</span>
     </button>
@@ -610,37 +594,6 @@
   </div>
 </div><!-- /layoutGestor -->
 
-<!-- ══════════ MENSAJERO LAYOUT ══════════ -->
-<div class="layout" id="layoutMensajero">
-
-  <!-- Col 1: Selector -->
-  <div class="col col-left">
-    <div class="lbl">¿Qué mensajero eres?</div>
-    <div id="mensajeroSelectorList">
-      <div class="es"><div class="es-icon">🛵</div><div class="es-text">Sin mensajeros registrados</div></div>
-    </div>
-    <div class="g-change" onclick="changeMensajero()">← Cambiar mensajero</div>
-  </div>
-
-  <!-- Col 2: Entregas -->
-  <div class="col col-mid">
-    <div id="mensajeroBackBar">
-      <button onclick="changeMensajero()">← Volver</button>
-      <span id="mensajeroBackName" style="font-size:13px;font-weight:700;color:#059669;"></span>
-    </div>
-    <div class="card" id="mensajeroBanner" style="background:rgba(5,150,105,.08);border-color:rgba(5,150,105,.3);display:flex;align-items:center;gap:10px;margin-bottom:14px;">
-      <div class="g-avatar" id="mensajeroBannerAv" style="width:40px;height:40px;font-size:14px;background:var(--gray-300);">🛵</div>
-      <div>
-        <div style="font-size:10px;color:var(--gray-400);font-weight:700;letter-spacing:.5px;" id="mensajeroBannerLbl">PANEL MENSAJERO</div>
-        <div style="font-size:15px;font-weight:700;color:#059669;" id="mensajeroBannerName">Selecciona tu nombre →</div>
-      </div>
-    </div>
-    <div id="mensajeroValesList">
-      <div class="es"><div class="es-icon">🛵</div><div class="es-text">Selecciona tu nombre para ver tus entregas</div></div>
-    </div>
-  </div>
-</div><!-- /layoutMensajero -->
-
 <!-- ══════════ ADMIN LAYOUT ══════════ -->
 <div class="layout" id="layoutAdmin">
 
@@ -650,6 +603,7 @@
     <button class="anav-btn"        id="anav-stock"    onclick="adminTab('stock')">📦 Stock</button>
     <button class="anav-btn"        id="anav-gestores" onclick="adminTab('gestores')">👥 Gestores</button>
     <button class="anav-btn"        id="anav-stats"    onclick="adminTab('stats')">📊 Estadísticas</button>
+    <button class="anav-btn"        id="anav-mensajeros" onclick="adminTab('mensajeros')" style="position:relative;">🛵 Mensajeros<span id="mensajeroBadge" style="display:none;position:absolute;top:4px;right:4px;background:var(--green);color:white;border-radius:8px;font-size:8px;font-weight:700;min-width:14px;height:14px;line-height:14px;text-align:center;padding:0 3px;">0</span></button>
   </div>
 
   <div class="admin-content">
@@ -771,6 +725,30 @@
           <div>
             <div class="lbl">Productos más vendidos</div>
             <div id="statsProductList"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── MENSAJEROS PANEL ── -->
+    <div id="adminMensajerosPanel" class="admin-panel-full" style="display:none;">
+      <div style="display:grid;grid-template-columns:200px 1fr;height:100%;overflow:hidden;">
+        <div class="col col-left">
+          <div class="lbl">Mensajeros</div>
+          <div id="mensajeroSelectorList">
+            <div class="es"><div class="es-icon">🛵</div><div class="es-text">Sin mensajeros registrados</div></div>
+          </div>
+        </div>
+        <div class="col col-mid">
+          <div class="card" id="mensajeroBanner" style="background:rgba(5,150,105,.08);border-color:rgba(5,150,105,.3);display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+            <div class="g-avatar" id="mensajeroBannerAv" style="width:40px;height:40px;font-size:14px;background:var(--gray-300);">🛵</div>
+            <div>
+              <div style="font-size:10px;color:var(--gray-400);font-weight:700;letter-spacing:.5px;" id="mensajeroBannerLbl">PANEL MENSAJERO</div>
+              <div style="font-size:15px;font-weight:700;color:#059669;" id="mensajeroBannerName">Selecciona un mensajero →</div>
+            </div>
+          </div>
+          <div id="mensajeroValesList">
+            <div class="es"><div class="es-icon">🛵</div><div class="es-text">Selecciona un mensajero para ver sus entregas</div></div>
           </div>
         </div>
       </div>
@@ -1083,26 +1061,15 @@ function sendBrowserNotif(title,body) {
 function switchMode(mode) {
   if(mode==='admin'){if(!adminActive){openPassModal();return;}activateAdminMode();return;}
   const lg=document.getElementById('layoutGestor');
-  const lm=document.getElementById('layoutMensajero');
   const la=document.getElementById('layoutAdmin');
-  [lg,lm,la].forEach(el=>el.classList.remove('active'));
-  if(mode==='mensajero'){
-    lm.classList.add('active');
-    document.getElementById('btnMensajeroAccess').style.display='none';
-    document.getElementById('btnAdminAccess').style.display='flex';
-    renderMensajeroSelector();renderMensajeroVales();
-  } else {
-    lg.classList.add('active');
-    document.getElementById('btnAdminAccess').style.display='flex';
-    document.getElementById('btnMensajeroAccess').style.display='flex';
-  }
+  [lg,la].forEach(el=>el.classList.remove('active'));
+  lg.classList.add('active');
+  document.getElementById('btnAdminAccess').style.display='flex';
 }
 function activateAdminMode() {
   document.getElementById('layoutAdmin').classList.add('active');
   document.getElementById('layoutGestor').classList.remove('active');
-  document.getElementById('layoutMensajero').classList.remove('active');
   document.getElementById('btnAdminAccess').style.display='none';
-  document.getElementById('btnMensajeroAccess').style.display='flex';
   const cfg=getConfig();
   if(cfg.adminPhone)document.getElementById('adminPhoneInput').value=cfg.adminPhone;
   const today=new Date().toISOString().slice(0,10);
@@ -1124,7 +1091,7 @@ function logoutAdmin() {
 // ══════════════════════════════════════════
 function adminTab(tab) {
   currentAdminTab=tab;
-  ['vales','stock','gestores','stats'].forEach(t=>{
+  ['vales','stock','gestores','stats','mensajeros'].forEach(t=>{
     document.getElementById('anav-'+t).classList.toggle('active',t===tab);
     const pid='admin'+t.charAt(0).toUpperCase()+t.slice(1)+'Panel';
     const el=document.getElementById(pid);
@@ -1134,6 +1101,7 @@ function adminTab(tab) {
   if(tab==='stock'){renderStockCategorias();renderProductGrid();}
   if(tab==='gestores'){renderAdminGestoresList();}
   if(tab==='stats'){renderStats();}
+  if(tab==='mensajeros'){renderMensajeroSelector();renderMensajeroVales();}
 }
 
 // ══════════════════════════════════════════
@@ -1234,19 +1202,15 @@ function selectMensajero(id) {
   const m=mensajeroOf(id);if(!m)return;
   const ini=m.name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
   document.getElementById('mensajeroBannerAv').textContent=ini;
-  document.getElementById('mensajeroBannerLbl').textContent='HOLA, ESTÁS EN TU ÁREA';
+  document.getElementById('mensajeroBannerLbl').textContent='ENTREGAS ASIGNADAS';
   document.getElementById('mensajeroBannerName').textContent=m.name;
-  document.getElementById('mensajeroBackName').textContent=m.name;
-  document.getElementById('layoutMensajero').classList.add('has-mensajero');
   renderMensajeroSelector();renderMensajeroVales();
 }
 function changeMensajero() {
   activeMensajeroId=null;
-  document.getElementById('layoutMensajero').classList.remove('has-mensajero');
   document.getElementById('mensajeroBannerAv').textContent='🛵';
   document.getElementById('mensajeroBannerLbl').textContent='PANEL MENSAJERO';
-  document.getElementById('mensajeroBannerName').textContent='Selecciona tu nombre →';
-  document.getElementById('mensajeroBackName').textContent='';
+  document.getElementById('mensajeroBannerName').textContent='Selecciona un mensajero →';
   renderMensajeroSelector();renderMensajeroVales();
 }
 function renderMensajeroVales() {
@@ -2140,12 +2104,9 @@ function loadDemo() {
   activeGestorId=null; activeMensajeroId=null; adminActive=false; selectedValeId=null;
   adminGestorFilter=null; inboxFilter='all'; selectedProductsUI=[]; currentValeProductos=[];
   document.getElementById('layoutAdmin').classList.remove('active');
-  document.getElementById('layoutMensajero').classList.remove('active');
-  document.getElementById('layoutMensajero').classList.remove('has-mensajero');
   document.getElementById('layoutGestor').classList.remove('has-gestor');
   document.getElementById('layoutGestor').classList.add('active');
   document.getElementById('btnAdminAccess').style.display='flex';
-  document.getElementById('btnMensajeroAccess').style.display='flex';
   document.getElementById('adminLabel').style.display='none';
   document.getElementById('btnLogout').style.display='none';
   document.getElementById('headerGestorName').textContent='';
