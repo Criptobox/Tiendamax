@@ -242,10 +242,16 @@
     .g-badge { background:var(--blue); color:white; border-radius:20px; font-size:9px; font-weight:700; padding:1px 5px; }
     #gestoresList { display:grid; grid-template-columns:repeat(3,1fr); gap:6px; }
     #gestoresList .es { grid-column:1/-1; }
-    #mensajeroSelectorList { display:grid; grid-template-columns:repeat(2,1fr); gap:6px; }
-    #mensajeroSelectorList .es { grid-column:1/-1; }
     .m-pend-dot { position:absolute; top:0; right:0; width:9px; height:9px; border-radius:50%; background:var(--orange); border:2px solid var(--surface); }
     .g-avatar-wrap { position:relative; display:inline-flex; }
+    .m-chip { display:inline-flex;align-items:center;gap:6px;padding:5px 10px 5px 5px;border:1.5px solid var(--gray-200);border-radius:20px;cursor:pointer;background:var(--surface);transition:all .13s; }
+    .m-chip:hover { border-color:var(--gray-400); }
+    .m-chip.active { border-color:var(--blue);background:var(--blue-lt); }
+    .m-chip .g-avatar { width:28px;height:28px;font-size:10px; }
+    .m-chip-name { font-size:12px;font-weight:600;color:var(--text);white-space:nowrap; }
+    #adminMensajerosPanel { display:flex;flex-direction:column;overflow:hidden; }
+    #mensajeroTopBar { padding:10px 14px 0;border-bottom:1px solid var(--border);flex-shrink:0; }
+    #mensajeroValesWrap { flex:1;overflow-y:auto;padding:14px; }
     /* Vale form hidden until gestor selected */
     #valeFormWrapper { display:none; }
     #layoutGestor.has-gestor #valeFormWrapper { display:block; }
@@ -736,24 +742,15 @@
 
     <!-- ── MENSAJEROS PANEL ── -->
     <div id="adminMensajerosPanel" class="admin-panel-full" style="display:none;">
-      <div style="display:grid;grid-template-columns:200px 1fr;height:100%;overflow:hidden;">
-        <div class="col col-left">
-          <div class="lbl">Mensajeros</div>
-          <div id="mensajeroSelectorList">
-            <div class="es"><div class="es-icon">🛵</div><div class="es-text">Sin mensajeros registrados</div></div>
-          </div>
+      <div id="mensajeroTopBar">
+        <div class="lbl" style="margin:0 0 8px;">Mensajeros</div>
+        <div id="mensajeroSelectorList" style="display:flex;flex-wrap:wrap;gap:6px;padding-bottom:10px;">
+          <div class="es" style="width:100%;padding:4px 0;"><div class="es-text" style="font-size:12px;">Sin mensajeros registrados</div></div>
         </div>
-        <div class="col col-mid">
-          <div class="card" id="mensajeroBanner" style="background:rgba(5,150,105,.08);border-color:rgba(5,150,105,.3);display:flex;align-items:center;gap:10px;margin-bottom:14px;">
-            <div class="g-avatar" id="mensajeroBannerAv" style="width:40px;height:40px;font-size:14px;background:var(--gray-300);">🛵</div>
-            <div>
-              <div style="font-size:10px;color:var(--gray-400);font-weight:700;letter-spacing:.5px;" id="mensajeroBannerLbl">PANEL MENSAJERO</div>
-              <div style="font-size:15px;font-weight:700;color:#059669;" id="mensajeroBannerName">Selecciona un mensajero →</div>
-            </div>
-          </div>
-          <div id="mensajeroValesList">
-            <div class="es"><div class="es-icon">🛵</div><div class="es-text">Selecciona un mensajero para ver sus entregas</div></div>
-          </div>
+      </div>
+      <div id="mensajeroValesWrap">
+        <div id="mensajeroValesList">
+          <div class="es"><div class="es-icon">🛵</div><div class="es-text">Selecciona un mensajero para ver sus entregas</div></div>
         </div>
       </div>
     </div>
@@ -1190,36 +1187,28 @@ function changeGestor() {
 function renderMensajeroSelector() {
   const list=getMensajeros();
   const c=document.getElementById('mensajeroSelectorList');if(!c)return;
-  if(!list.length){c.innerHTML='<div class="es"><div class="es-icon">🛵</div><div class="es-text">Sin mensajeros registrados</div></div>';return;}
+  if(!list.length){c.innerHTML='<div style="color:var(--gray-400);font-size:12px;padding:4px 0;">Sin mensajeros registrados</div>';return;}
   const vales=getVales();
   c.innerHTML=list.map(m=>{
     const act=m.id===activeMensajeroId;
     const ini=m.name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
     const pend=vales.filter(v=>v.mensajeroId===m.id&&v.status==='pending_payment').length;
-    return `<div class="g-item m-sel-item ${act?'active':''}" onclick="selectMensajero(${m.id})">
+    return `<div class="m-chip ${act?'active':''}" onclick="selectMensajero(${m.id})">
       <div class="g-avatar-wrap">
-        <div class="g-avatar" style="background:#059669">${ini}</div>
-        ${pend>0?`<span class="m-pend-dot" title="${pend} cobro${pend>1?'s':''} pendiente${pend>1?'s':''}"></span>`:''}
+        <div class="g-avatar" style="background:#059669;width:28px;height:28px;font-size:10px;">${ini}</div>
+        ${pend>0?`<span class="m-pend-dot"></span>`:''}
       </div>
-      <div class="g-name">${m.name}</div>
-      ${act?'<span class="g-badge">✓</span>':''}
+      <span class="m-chip-name">${m.name}</span>
+      ${pend>0?`<span style="background:var(--orange);color:white;border-radius:8px;font-size:9px;font-weight:700;padding:1px 5px;margin-left:2px;">${pend}</span>`:''}
     </div>`;
   }).join('');
 }
 function selectMensajero(id) {
   activeMensajeroId=id;
-  const m=mensajeroOf(id);if(!m)return;
-  const ini=m.name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
-  document.getElementById('mensajeroBannerAv').textContent=ini;
-  document.getElementById('mensajeroBannerLbl').textContent='ENTREGAS ASIGNADAS';
-  document.getElementById('mensajeroBannerName').textContent=m.name;
   renderMensajeroSelector();renderMensajeroVales();
 }
 function changeMensajero() {
   activeMensajeroId=null;
-  document.getElementById('mensajeroBannerAv').textContent='🛵';
-  document.getElementById('mensajeroBannerLbl').textContent='PANEL MENSAJERO';
-  document.getElementById('mensajeroBannerName').textContent='Selecciona un mensajero →';
   renderMensajeroSelector();renderMensajeroVales();
 }
 function renderMensajeroVales() {
