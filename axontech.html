@@ -1274,7 +1274,9 @@ function submitGestorPass() {
   const val=document.getElementById('gestorPassInput').value;
   const g=gestorOf(pendingGestorId);if(!g)return;
   if(val===g.password){
-    closeGestorPassModal();doSelectGestor(pendingGestorId);
+    const id=pendingGestorId;   // save before closeGestorPassModal sets it to null
+    closeGestorPassModal();
+    doSelectGestor(id);
   } else {
     document.getElementById('gestorPassError').style.display='block';
     document.getElementById('gestorPassInput').select();
