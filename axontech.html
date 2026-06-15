@@ -57,6 +57,7 @@
     body.dark .picker-card.selected { background:var(--blue-lt); border-color:var(--blue-bd); }
     body.dark .stat-card { background:var(--surface); border-color:var(--border); }
     body.dark .gp-card { background:var(--surface); border-color:var(--border); }
+    body.dark #adminComisionesList .card { background:var(--surface); border-color:var(--border); }
     body.dark .gnotif-item { background:var(--surface); border-color:var(--border); }
     body.dark .gnotif-item.unread { background:var(--blue-lt); }
     body.dark .gnotif-item.type-agotado { background:#3d1515; }
@@ -718,7 +719,7 @@
 
     <!-- ── GESTORES PANEL ── -->
     <div id="adminGestoresPanel" class="admin-panel-full" style="display:none;">
-      <div style="max-width:600px;margin:0 auto;padding:20px;">
+      <div style="max-width:640px;margin:0 auto;padding:20px;">
         <div class="lbl" style="margin-top:0;">Agregar Gestor</div>
         <div class="card">
           <div class="add-row">
@@ -728,6 +729,8 @@
         </div>
         <div class="lbl">Gestores activos</div>
         <div id="adminGestoresPanel-list"></div>
+        <div class="lbl" style="margin-top:28px;">💰 Comisiones por Gestor</div>
+        <div id="adminComisionesList"></div>
       </div>
     </div>
 
@@ -1054,7 +1057,8 @@ let catalogCatFilter  = null;
 let expandedCatalogId = null;
 let selectedProductsUI= [];   // [{id,name,qty}] for current vale form
 let currentValeProductos = []; // saved on sendVale
-let pendingGestorId   = null;  // for gestor pass modal
+let pendingGestorId      = null;  // for gestor pass modal
+let activeComisionGestorId = null; // for commissions panel
 
 // ══════════════════════════════════════════
 //  HELPERS
@@ -1170,7 +1174,7 @@ function adminTab(tab) {
   });
   if(tab==='vales'){renderAdminGestores();renderInbox();renderMensajeros();renderConfirmados();renderPendienteCobro();}
   if(tab==='stock'){renderStockCategorias();renderProductGrid();}
-  if(tab==='gestores'){renderAdminGestoresList();}
+  if(tab==='gestores'){renderAdminGestoresList();renderComisiones();}
   if(tab==='stats'){renderStats();}
   if(tab==='mensajeros'){renderMensajeroSelector();renderPendingCobroSection();renderMensajeroVales();}
   if(tab==='config'){loadGhConfigUI();}
@@ -1649,7 +1653,7 @@ function confirmSale(id, paymentStatus) {
   playSound('confirm');
   renderAdminGestores();renderInbox();renderValeDetail();renderMyVales();
   renderConfirmados();renderPendienteCobro();renderPendingCobroSection();renderMensajeroVales();
-  renderProductGrid();renderGestorRanking();
+  renderProductGrid();renderGestorRanking();renderComisiones();
   maybeAutoSync();
   showToast(paymentStatus==='confirmed'?'Venta confirmada y cobrada ✅':'Venta confirmada — cobro pendiente ⏳');
 }
@@ -1658,7 +1662,7 @@ function markAsPaid(id) {
   patchVale(id,{status:'confirmed',confirmedTs:new Date().toISOString()});
   renderAdminGestores();renderInbox();renderValeDetail();renderMyVales();
   renderConfirmados();renderPendienteCobro();renderPendingCobroSection();renderMensajeroVales();renderMensajeroSelector();updateMensajeroBadge();
-  renderGestorRanking();maybeAutoSync();
+  renderGestorRanking();renderComisiones();maybeAutoSync();
   showToast('Cobro registrado ✅');
 }
 
@@ -2351,6 +2355,152 @@ function renderGestorCatalog() {
       </div>`:''}
     </div>`;
   }).join('');
+}
+
+// ══════════════════════════════════════════
+//  COMISIONES
+// ══════════════════════════════════════════
+function toggleComisionGestor(id) {
+  activeComisionGestorId=activeComisionGestorId===id?null:id;
+  renderComisiones();
+}
+function getValeCommissionParts(v) {
+  const items=v.valeProductos||[];
+  const parts=[];let total=0;let currency='USD';let computable=true;
+  items.forEach(({id,qty})=>{
+    const p=productoOf(id);if(!p)return;
+    const com=p.comision||'';
+    if(!com)return;
+    const label=`${p.name}${qty>1?` ×${qty}`:''}`;
+    // Try to parse fixed amount
+    const isPct=com.includes('%');
+    if(isPct){
+      // percentage: try to compute from precio
+      const pct=parseFloat(com.replace(/[^0-9.]/g,''));
+      const priceNum=parsePrecioNum(p.precio||'');
+      if(!isNaN(pct)&&priceNum>0){
+        const amt=Math.round(priceNum*(pct/100)*qty*100)/100;
+        total+=amt;
+        parts.push({label,com:`${pct}% = $${amt.toFixed(2)}`});
+        if((p.precio||'').includes('CUP'))currency='CUP';
+      } else {
+        parts.push({label,com});computable=false;
+      }
+    } else {
+      const num=parsePrecioNum(com);
+      if(num>0){total+=num*qty;parts.push({label,com:`${com}${qty>1?` ×${qty}`:''}`});}
+      else{parts.push({label,com});computable=false;}
+      if(com.includes('CUP'))currency='CUP';
+    }
+  });
+  return{parts,total:computable&&parts.length?total:null,currency};
+}
+function payCommission(valeId,e) {
+  if(e)e.stopPropagation();
+  patchVale(valeId,{commissionPaid:true,commissionPaidTs:new Date().toISOString()});
+  renderComisiones();maybeAutoSync();
+  showToast('Comisión marcada como pagada ✓');
+}
+function payAllCommissions(gestorId,e) {
+  if(e)e.stopPropagation();
+  const ts=new Date().toISOString();
+  getVales().filter(v=>v.gestorId===gestorId&&!v.commissionPaid&&['confirmed','pending_payment'].includes(v.status))
+    .forEach(v=>patchVale(v.id,{commissionPaid:true,commissionPaidTs:ts}));
+  renderComisiones();maybeAutoSync();
+  showToast('Todas las comisiones pagadas ✅');
+}
+function unpayCommission(valeId,e) {
+  if(e)e.stopPropagation();
+  patchVale(valeId,{commissionPaid:false,commissionPaidTs:null});
+  renderComisiones();
+}
+function renderComisiones() {
+  const c=document.getElementById('adminComisionesList');if(!c)return;
+  const gestores=getGestores();
+  if(!gestores.length){c.innerHTML='<div class="es"><div class="es-text">Sin gestores configurados</div></div>';return;}
+  c.innerHTML=gestores.map(g=>{
+    const allVales=getVales().filter(v=>v.gestorId===g.id&&['confirmed','pending_payment'].includes(v.status));
+    const pending=allVales.filter(v=>!v.commissionPaid);
+    const paid=allVales.filter(v=>v.commissionPaid);
+    const isOpen=activeComisionGestorId===g.id;
+    // Compute grand total for pending
+    let grandTotal=null;let grandCur='USD';
+    const allComputed=pending.every(v=>{const r=getValeCommissionParts(v);if(r.total===null)return false;grandTotal=(grandTotal||0)+r.total;grandCur=r.currency;return true;});
+    if(!allComputed)grandTotal=null;
+    return `<div class="card" style="padding:0;overflow:hidden;margin-bottom:8px;border-color:${isOpen?'var(--blue)':'var(--border)'};">
+      <div onclick="toggleComisionGestor(${g.id})" style="display:flex;align-items:center;gap:10px;padding:12px 14px;cursor:pointer;background:${isOpen?'var(--blue-lt)':'var(--surface)'};">
+        <div class="g-avatar" style="background:${g.color};width:34px;height:34px;font-size:11px;flex-shrink:0;">${g.initials}</div>
+        <div style="flex:1;min-width:0;">
+          <div style="font-weight:700;font-size:13px;">${g.name}</div>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:1px;">
+            ${pending.length>0?`<span style="color:var(--orange);font-weight:700;">${pending.length} pendiente${pending.length!==1?'s':''}</span>`:''}
+            ${paid.length>0?`<span style="color:var(--green);">· ${paid.length} pagada${paid.length!==1?'s':''}</span>`:''}
+            ${!pending.length&&!paid.length?'Sin comisiones por cobrar':''}
+          </div>
+        </div>
+        ${grandTotal!==null&&grandTotal>0?`<span style="background:var(--orange);color:white;border-radius:20px;font-size:10px;font-weight:700;padding:3px 9px;white-space:nowrap;">$${grandTotal.toFixed(2)} ${grandCur}</span>`:''}
+        ${pending.length>0&&grandTotal===null?`<span style="background:var(--orange);color:white;border-radius:20px;font-size:10px;font-weight:700;padding:3px 9px;">${pending.length}</span>`:''}
+        <span style="color:var(--gray-400);font-size:13px;flex-shrink:0;">${isOpen?'▲':'▼'}</span>
+      </div>
+      ${isOpen?renderComisionBody(g,pending,paid):''}
+    </div>`;
+  }).join('');
+}
+function renderComisionBody(g,pending,paid) {
+  let html='<div style="border-top:1px solid var(--border);padding:12px 14px;">';
+  if(!pending.length&&!paid.length){
+    html+='<div class="es" style="padding:8px 0;"><div class="es-text">Sin vales confirmados con comisión</div></div>';
+  } else {
+    // ── PENDING ──
+    if(pending.length){
+      // Total summary
+      let sumTotal=0;let sumCur='USD';let canSum=true;
+      pending.forEach(v=>{const r=getValeCommissionParts(v);if(r.total===null){canSum=false;}else{sumTotal+=r.total;sumCur=r.currency;}});
+      html+=`<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;flex-wrap:wrap;gap:6px;">
+        <span style="font-size:11px;font-weight:700;color:var(--orange);text-transform:uppercase;letter-spacing:.5px;">⏳ Por pagar (${pending.length})</span>
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+          ${canSum&&sumTotal>0?`<span style="font-size:13px;font-weight:800;color:var(--green);">💵 $${sumTotal.toFixed(2)} ${sumCur}</span>`:''}
+          ${pending.length>1?`<button class="btn btn-green btn-sm" onclick="payAllCommissions(${g.id},event)">✅ Pagar todas</button>`:''}
+        </div>
+      </div>`;
+      html+=pending.map(v=>{
+        const r=getValeCommissionParts(v);
+        return `<div style="display:flex;align-items:center;gap:8px;padding:8px 10px;background:var(--surface2);border:1px solid var(--border);border-radius:9px;margin-bottom:6px;">
+          <div style="flex:1;min-width:0;">
+            <div style="font-size:12px;font-weight:700;color:var(--text);">${v.cliente||'—'}</div>
+            <div style="font-size:10px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${v.articulo||'—'}</div>
+            <div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:4px;">
+              ${r.parts.length?r.parts.map(p=>`<span style="background:rgba(16,185,129,.12);color:var(--green);border-radius:20px;padding:1px 8px;font-size:10px;font-weight:600;">${p.label}: ${p.com}</span>`).join(''):`<span style="color:var(--gray-400);font-size:10px;">Sin comisión definida</span>`}
+            </div>
+          </div>
+          <button class="btn btn-green btn-sm" style="flex-shrink:0;" onclick="payCommission(${v.id},event)">✓ Pagar</button>
+        </div>`;
+      }).join('');
+    }
+    // ── PAID ──
+    if(paid.length){
+      html+=`<div style="margin-top:${pending.length?'14px':'0'};">
+        <div style="font-size:10px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;">✅ Pagadas (${paid.length})</div>`;
+      html+=paid.map(v=>{
+        const r=getValeCommissionParts(v);
+        const ts=v.commissionPaidTs?new Date(v.commissionPaidTs).toLocaleDateString('es-ES',{day:'2-digit',month:'short'})+' '+timeStr(v.commissionPaidTs):'';
+        return `<div style="display:flex;align-items:center;gap:8px;padding:6px 10px;background:rgba(16,185,129,.05);border:1px solid rgba(16,185,129,.2);border-radius:8px;margin-bottom:4px;opacity:.85;">
+          <div style="flex:1;min-width:0;">
+            <div style="font-size:11px;font-weight:600;color:var(--text-muted);">${v.cliente||'—'}</div>
+            ${r.parts.length?`<div style="display:flex;flex-wrap:wrap;gap:3px;margin-top:2px;">${r.parts.map(p=>`<span style="background:rgba(16,185,129,.1);color:var(--green);border-radius:20px;padding:1px 7px;font-size:9px;font-weight:600;">${p.com}</span>`).join('')}</div>`:''}
+          </div>
+          <div style="text-align:right;flex-shrink:0;">
+            <div style="font-size:9px;color:var(--green);font-weight:700;">✓ Pagado</div>
+            ${ts?`<div style="font-size:9px;color:var(--gray-400);">${ts}</div>`:''}
+            <button style="background:none;border:none;cursor:pointer;font-size:9px;color:var(--gray-400);padding:2px 0;margin-top:2px;" onclick="unpayCommission(${v.id},event)">↩ Revertir</button>
+          </div>
+        </div>`;
+      }).join('');
+      html+='</div>';
+    }
+  }
+  html+='</div>';
+  return html;
 }
 
 // ══════════════════════════════════════════
