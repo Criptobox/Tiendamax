@@ -83,8 +83,17 @@
     #layoutGestor.has-gestor { grid-template-columns: 190px 1fr; }
     #layoutGestor.has-gestor .g-item:not(.active) { display:none; }
     #layoutGestor.has-gestor .g-change { display:flex !important; }
+    #layoutGestor.has-gestor #gestorRankingSection { display:none !important; }
     .g-change { display:none; align-items:center; gap:6px; font-size:11px; color:var(--gray-400); padding:6px 10px; cursor:pointer; border-radius:7px; margin-bottom:4px; }
     .g-change:hover { background:var(--gray-100); color:var(--gray-700); }
+
+    /* ── RANKING ── */
+    .rank-row { display:flex; align-items:center; gap:8px; margin-bottom:8px; }
+    .rank-medal { font-size:16px; width:20px; text-align:center; flex-shrink:0; }
+    .rank-name  { font-size:12px; font-weight:700; flex:1; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .rank-pts   { font-size:11px; font-weight:700; color:var(--blue); white-space:nowrap; }
+    .rank-bar-wrap { background:var(--gray-100); border-radius:20px; height:5px; margin-top:3px; overflow:hidden; }
+    .rank-bar   { height:100%; border-radius:20px; transition:width .5s ease; }
 
     /* ── MOBILE BACK BAR (visible only on mobile when gestor chosen) ── */
     #mobileBackBar { display:none; align-items:center; gap:10px; background:var(--blue-lt); border:1px solid var(--blue-bd); border-radius:9px; padding:8px 12px; margin-bottom:10px; }
@@ -467,6 +476,14 @@
       </div>
     </div>
 
+    <!-- Ranking de gestores (visible solo cuando no hay gestor seleccionado) -->
+    <div id="gestorRankingSection" style="margin-bottom:14px;">
+      <div class="lbl" style="margin-top:0;">🏆 Ranking de Gestores</div>
+      <div class="card" style="padding:12px 14px;">
+        <div id="rankingList"><div class="es" style="padding:6px;"><div class="es-text" style="font-size:12px;">Sin datos aún</div></div></div>
+      </div>
+    </div>
+
     <div id="valeFormWrapper">
     <div class="vale-form-header">
       <h2>Bienvenido a "AXONTECH" 🔥</h2>
@@ -615,6 +632,7 @@
     <button class="anav-btn"        id="anav-gestores"   onclick="adminTab('gestores')">👥 Gestores</button>
     <button class="anav-btn"        id="anav-stats"      onclick="adminTab('stats')">📊 Estadísticas</button>
     <button class="anav-btn"        id="anav-stock"      onclick="adminTab('stock')">📦 Stock</button>
+    <button class="anav-btn"        id="anav-config"     onclick="adminTab('config')">⚙️ Config</button>
   </div>
 
   <div class="admin-content">
@@ -739,6 +757,40 @@
       </div>
     </div>
 
+    <!-- ── CONFIG PANEL ── -->
+    <div id="adminConfigPanel" class="admin-panel-full" style="display:none;">
+      <div style="max-width:600px;margin:0 auto;padding:20px;">
+        <div class="lbl" style="margin-top:0;">🔄 Sincronización con GitHub</div>
+        <div class="card">
+          <div style="font-size:11px;color:var(--gray-400);line-height:1.6;margin-bottom:12px;">Guarda todos los datos (productos, gestores, vales, mensajeros) en un repositorio de GitHub para que sean persistentes y accesibles desde cualquier dispositivo.</div>
+          <label class="field-lbl">Personal Access Token (PAT) <span style="font-size:9px;color:var(--gray-400);">— permiso <code>repo</code></span></label>
+          <input type="password" id="gh-token" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" style="font-family:monospace;font-size:12px;">
+          <label class="field-lbl">Repositorio (usuario/nombre)</label>
+          <input type="text" id="gh-repo" placeholder="usuario/mi-tienda" style="font-family:monospace;font-size:12px;">
+          <label class="field-lbl">Ruta del archivo JSON en el repo</label>
+          <input type="text" id="gh-path" placeholder="data/axontech.json" style="font-family:monospace;font-size:12px;">
+          <div style="display:flex;align-items:center;gap:8px;margin-top:10px;">
+            <input type="checkbox" id="gh-autosync" style="width:auto;cursor:pointer;">
+            <label for="gh-autosync" style="font-size:12px;font-weight:600;cursor:pointer;color:var(--text);">Sincronizar automáticamente al guardar cambios</label>
+          </div>
+          <div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;">
+            <button class="btn btn-blue btn-sm" onclick="saveGhConfig()">💾 Guardar config</button>
+            <button class="btn btn-green btn-sm" onclick="syncToGitHub()">🔄 Sincronizar ahora</button>
+            <button class="btn btn-ghost btn-sm" onclick="loadFromGitHub()">⬇️ Restaurar desde GitHub</button>
+          </div>
+          <div id="ghSyncStatus" style="margin-top:10px;font-size:11px;min-height:16px;"></div>
+        </div>
+        <div class="lbl">🔐 Contraseña Administrador</div>
+        <div class="card">
+          <label class="field-lbl">Nueva contraseña (mín. 4 caracteres)</label>
+          <div class="add-row">
+            <input type="password" id="newPassInputCfg" placeholder="Nueva contraseña" style="font-size:12px;">
+            <button class="btn btn-blue btn-sm" onclick="changePassCfg()">✓</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- ── MENSAJEROS PANEL ── -->
     <div id="adminMensajerosPanel" class="admin-panel-full" style="display:none;">
       <div id="mensajeroTopBar">
@@ -771,6 +823,20 @@
     <div class="modal-btns">
       <button class="btn btn-ghost btn-full" onclick="closePassModal()">Cancelar</button>
       <button class="btn btn-blue btn-full" onclick="submitPass()">Acceder</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── MODAL: Contraseña Gestor ── -->
+<div class="modal-bg" id="gestorPassModal">
+  <div class="modal" style="max-width:340px;">
+    <div class="modal-title">🔐 Acceso Gestor</div>
+    <div class="modal-sub" id="gestorPassModalSub">Ingresa tu contraseña</div>
+    <input type="password" id="gestorPassInput" placeholder="Contraseña" onkeydown="if(event.key==='Enter')submitGestorPass()">
+    <div class="pass-error" id="gestorPassError">Contraseña incorrecta</div>
+    <div class="modal-btns">
+      <button class="btn btn-ghost btn-full" onclick="closeGestorPassModal()">Cancelar</button>
+      <button class="btn btn-blue btn-full" onclick="submitGestorPass()">Entrar</button>
     </div>
   </div>
 </div>
@@ -988,6 +1054,7 @@ let catalogCatFilter  = null;
 let expandedCatalogId = null;
 let selectedProductsUI= [];   // [{id,name,qty}] for current vale form
 let currentValeProductos = []; // saved on sendVale
+let pendingGestorId   = null;  // for gestor pass modal
 
 // ══════════════════════════════════════════
 //  HELPERS
@@ -1095,8 +1162,8 @@ function logoutAdmin() {
 // ══════════════════════════════════════════
 function adminTab(tab) {
   currentAdminTab=tab;
-  ['vales','stock','gestores','stats','mensajeros'].forEach(t=>{
-    document.getElementById('anav-'+t).classList.toggle('active',t===tab);
+  ['vales','stock','gestores','stats','mensajeros','config'].forEach(t=>{
+    const btn=document.getElementById('anav-'+t);if(btn)btn.classList.toggle('active',t===tab);
     const pid='admin'+t.charAt(0).toUpperCase()+t.slice(1)+'Panel';
     const el=document.getElementById(pid);
     if(el){el.style.display=t===tab?(t==='vales'?'grid':'block'):'none';}
@@ -1106,6 +1173,7 @@ function adminTab(tab) {
   if(tab==='gestores'){renderAdminGestoresList();}
   if(tab==='stats'){renderStats();}
   if(tab==='mensajeros'){renderMensajeroSelector();renderPendingCobroSection();renderMensajeroVales();}
+  if(tab==='config'){loadGhConfigUI();}
 }
 
 // ══════════════════════════════════════════
@@ -1160,6 +1228,19 @@ function renderGestores() {
   }).join('');
 }
 function selectGestor(id) {
+  const g=gestorOf(id);if(!g)return;
+  if(g.password){
+    pendingGestorId=id;
+    document.getElementById('gestorPassInput').value='';
+    document.getElementById('gestorPassError').style.display='none';
+    document.getElementById('gestorPassModalSub').textContent=`${g.name} — ingresa tu contraseña`;
+    document.getElementById('gestorPassModal').classList.add('show');
+    setTimeout(()=>document.getElementById('gestorPassInput').focus(),100);
+  } else {
+    doSelectGestor(id);
+  }
+}
+function doSelectGestor(id) {
   activeGestorId=id;const g=gestorOf(id);
   document.getElementById('bannerAvatar').textContent=g.initials;
   document.getElementById('bannerAvatar').style.background=g.color;
@@ -1170,6 +1251,20 @@ function selectGestor(id) {
   document.getElementById('mobileBackName').textContent=g.name;
   document.getElementById('layoutGestor').classList.add('has-gestor');
   renderGestores();renderMyVales();onFormInput();renderGestorNotifs();
+}
+function closeGestorPassModal(){
+  document.getElementById('gestorPassModal').classList.remove('show');
+  pendingGestorId=null;
+}
+function submitGestorPass() {
+  const val=document.getElementById('gestorPassInput').value;
+  const g=gestorOf(pendingGestorId);if(!g)return;
+  if(val===g.password){
+    closeGestorPassModal();doSelectGestor(pendingGestorId);
+  } else {
+    document.getElementById('gestorPassError').style.display='block';
+    document.getElementById('gestorPassInput').select();
+  }
 }
 function changeGestor() {
   activeGestorId=null;
@@ -1276,6 +1371,10 @@ function renderMensajeroVales() {
 // ══════════════════════════════════════════
 //  ADMIN GESTORES MANAGEMENT
 // ══════════════════════════════════════════
+function genPassword() {
+  const chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  return Array.from({length:6},()=>chars[Math.floor(Math.random()*chars.length)]).join('');
+}
 function addGestor() {
   const inp=document.getElementById('newGestorInput');
   const name=inp.value.trim();if(!name)return;
@@ -1283,10 +1382,16 @@ function addGestor() {
   const list=getGestores();
   if(list.some(g=>g.name.toLowerCase()===name.toLowerCase())){showToast('Ya existe ese gestor');return;}
   const color=GESTOR_COLORS[list.length%GESTOR_COLORS.length];
-  list.push({id:Date.now(),name,initials,color});
+  const password=genPassword();
+  list.push({id:Date.now(),name,initials,color,password});
   saveGestores(list);inp.value='';
-  renderAdminGestoresList();renderGestores();renderAdminGestores();
-  showToast('Gestor agregado ✓');
+  renderAdminGestoresList();renderGestores();renderAdminGestores();renderGestorRanking();
+  showToast(`Gestor agregado ✓ · Clave: ${password}`);
+}
+function resetGestorPass(id) {
+  const list=getGestores();const i=list.findIndex(g=>g.id===id);if(i===-1)return;
+  const np=genPassword();list[i].password=np;saveGestores(list);
+  renderAdminGestoresList();showToast(`Nueva clave: ${np}`);
 }
 function removeGestor(id) {
   if(getVales().some(v=>v.gestorId===id)){showToast('Tiene vales registrados');return;}
@@ -1300,13 +1405,19 @@ function renderAdminGestoresList() {
   c.innerHTML=list.map(g=>{
     const vales=getVales().filter(v=>v.gestorId===g.id);
     const today=vales.filter(v=>new Date(v.ts).toDateString()===todayStr()).length;
-    return `<div class="gp-card">
-      <div class="g-avatar" style="background:${g.color};width:40px;height:40px;font-size:13px;">${g.initials}</div>
-      <div style="flex:1;">
+    const pts=vales.filter(v=>['confirmed','pending_payment'].includes(v.status))
+      .reduce((s,v)=>s+(v.valeProductos||[]).reduce((ss,p)=>{const pr=productoOf(p.id);return ss+(pr?pr.puntos*p.qty:0);},0),0);
+    return `<div class="gp-card" style="flex-wrap:wrap;">
+      <div class="g-avatar" style="background:${g.color};width:40px;height:40px;font-size:13px;flex-shrink:0;">${g.initials}</div>
+      <div style="flex:1;min-width:120px;">
         <div style="font-weight:700;font-size:14px;">${g.name}</div>
-        <div style="font-size:11px;color:var(--gray-400);">${vales.length} vales totales · ${today} hoy</div>
+        <div style="font-size:11px;color:var(--gray-400);">${vales.length} vales · ${today} hoy · ⭐ ${pts} pts</div>
+        <div style="display:flex;align-items:center;gap:6px;margin-top:5px;">
+          <span style="background:var(--gray-100);border-radius:6px;padding:3px 9px;font-family:monospace;font-weight:700;font-size:12px;letter-spacing:1.5px;color:var(--gray-700);">🔑 ${g.password||'—'}</span>
+          <button style="background:none;border:none;cursor:pointer;font-size:10px;color:var(--blue);padding:2px 5px;border:1px solid var(--blue);border-radius:4px;" onclick="resetGestorPass(${g.id})">↺ Resetear</button>
+        </div>
       </div>
-      <button class="btn btn-ghost btn-sm" style="color:var(--red);" onclick="removeGestor(${g.id})">Eliminar</button>
+      <button class="btn btn-ghost btn-sm" style="color:var(--red);align-self:flex-start;" onclick="removeGestor(${g.id})">Eliminar</button>
     </div>`;
   }).join('');
 }
@@ -1538,7 +1649,8 @@ function confirmSale(id, paymentStatus) {
   playSound('confirm');
   renderAdminGestores();renderInbox();renderValeDetail();renderMyVales();
   renderConfirmados();renderPendienteCobro();renderPendingCobroSection();renderMensajeroVales();
-  renderProductGrid();
+  renderProductGrid();renderGestorRanking();
+  maybeAutoSync();
   showToast(paymentStatus==='confirmed'?'Venta confirmada y cobrada ✅':'Venta confirmada — cobro pendiente ⏳');
 }
 // Admin registra cobro recibido — sin tocar stock (ya se descontó al confirmar)
@@ -1546,6 +1658,7 @@ function markAsPaid(id) {
   patchVale(id,{status:'confirmed',confirmedTs:new Date().toISOString()});
   renderAdminGestores();renderInbox();renderValeDetail();renderMyVales();
   renderConfirmados();renderPendienteCobro();renderPendingCobroSection();renderMensajeroVales();renderMensajeroSelector();updateMensajeroBadge();
+  renderGestorRanking();maybeAutoSync();
   showToast('Cobro registrado ✅');
 }
 
@@ -1722,7 +1835,7 @@ function sendVale() {
   };
   const all=getVales();all.push(vale);saveVales(all);
   resetForm();renderGestores();renderMyVales();updateAdminBadge();
-  playSound('vale');
+  playSound('vale');maybeAutoSync();
   sendBrowserNotif('AXONTECH – Nuevo vale',`${g.name} envió un vale para ${vale.cliente}`);
   showToast('Vale enviado al administrador ✓');
   if(adminActive){
@@ -2153,6 +2266,7 @@ function loadDemo() {
   resetForm();
   renderGestores();
   renderGestorNotifs();
+  renderGestorRanking();
   updateAdminBadge();updateMensajeroBadge();
   showToast('🎮 Datos de demo cargados ✓ — contraseña admin: axon2024');
 }
@@ -2240,6 +2354,156 @@ function renderGestorCatalog() {
 }
 
 // ══════════════════════════════════════════
+//  GESTOR RANKING
+// ══════════════════════════════════════════
+function renderGestorRanking() {
+  const c=document.getElementById('rankingList');if(!c)return;
+  const gestores=getGestores();
+  if(!gestores.length){c.innerHTML='<div class="es" style="padding:6px;"><div class="es-text" style="font-size:12px;">Sin gestores configurados</div></div>';return;}
+  const vales=getVales().filter(v=>['confirmed','pending_payment'].includes(v.status));
+  const ranked=gestores.map(g=>{
+    const pts=vales.filter(v=>v.gestorId===g.id).reduce((sum,v)=>
+      sum+(v.valeProductos||[]).reduce((s,p)=>{const pr=productoOf(p.id);return s+(pr?pr.puntos*p.qty:0);},0),0);
+    const total=vales.filter(v=>v.gestorId===g.id).length;
+    return{...g,pts,total};
+  }).sort((a,b)=>b.pts-a.pts);
+  const max=ranked[0]?.pts||0;
+  const medals=['🥇','🥈','🥉'];
+  const barColors=['#F59E0B','#94A3B8','#cd7f32','var(--blue)'];
+  if(ranked.every(g=>g.pts===0)){
+    c.innerHTML=`<div style="text-align:center;padding:10px 0;">
+      <div style="font-size:11px;color:var(--gray-400);">Los puntos se acumulan al confirmar ventas con productos que otorgan ⭐ pts</div>
+      <div style="display:flex;justify-content:center;gap:12px;margin-top:10px;flex-wrap:wrap;">
+        ${ranked.map((g,i)=>`<div style="display:flex;flex-direction:column;align-items:center;gap:3px;">
+          <div class="g-avatar" style="background:${g.color};width:30px;height:30px;font-size:10px;">${g.initials}</div>
+          <span style="font-size:10px;font-weight:600;">${g.name.split(' ')[0]}</span>
+          <span style="font-size:9px;color:var(--gray-400);">⭐ 0 pts</span>
+        </div>`).join('')}
+      </div>
+    </div>`;
+    return;
+  }
+  c.innerHTML=ranked.map((g,i)=>{
+    const pct=max>0?Math.round((g.pts/max)*100):0;
+    const bar=barColors[Math.min(i,barColors.length-1)];
+    return `<div class="rank-row">
+      <div class="rank-medal">${medals[i]||'🏅'}</div>
+      <div style="flex:1;min-width:0;">
+        <div style="display:flex;align-items:center;gap:6px;">
+          <div class="g-avatar" style="background:${g.color};width:22px;height:22px;font-size:8px;flex-shrink:0;">${g.initials}</div>
+          <span class="rank-name">${g.name}</span>
+          <span class="rank-pts">⭐ ${g.pts}</span>
+        </div>
+        <div class="rank-bar-wrap"><div class="rank-bar" style="width:${pct}%;background:${bar};"></div></div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ══════════════════════════════════════════
+//  GITHUB SYNC
+// ══════════════════════════════════════════
+function saveGhConfig() {
+  const cfg=getConfig();
+  cfg.ghToken=document.getElementById('gh-token').value.trim();
+  cfg.ghRepo=document.getElementById('gh-repo').value.trim();
+  cfg.ghPath=document.getElementById('gh-path').value.trim()||'data/axontech.json';
+  cfg.ghAutoSync=document.getElementById('gh-autosync').checked;
+  saveConfig(cfg);
+  showToast('Configuración GitHub guardada ✓');
+}
+function loadGhConfigUI() {
+  const cfg=getConfig();
+  const tok=document.getElementById('gh-token');
+  const repo=document.getElementById('gh-repo');
+  const path=document.getElementById('gh-path');
+  const auto=document.getElementById('gh-autosync');
+  if(tok)tok.value=cfg.ghToken||'';
+  if(repo)repo.value=cfg.ghRepo||'';
+  if(path)path.value=cfg.ghPath||'data/axontech.json';
+  if(auto)auto.checked=!!cfg.ghAutoSync;
+}
+async function syncToGitHub(silent) {
+  const cfg=getConfig();
+  if(!cfg.ghToken||!cfg.ghRepo||!cfg.ghPath){if(!silent)showToast('Configura GitHub primero en ⚙️ Config');return;}
+  const statusEl=document.getElementById('ghSyncStatus');
+  if(statusEl&&!silent)statusEl.innerHTML='<span style="color:var(--blue);">⟳ Sincronizando...</span>';
+  try {
+    const data={
+      gestores:getGestores(),mensajeros:getMensajeros(),
+      productos:getProductos(),categorias:getCategorias(),
+      vales:getVales(),timestamp:new Date().toISOString()
+    };
+    const json=JSON.stringify(data,null,2);
+    const content=btoa(unescape(encodeURIComponent(json)));
+    const parts=cfg.ghRepo.split('/');const owner=parts[0];const repo=parts.slice(1).join('/');
+    const url=`https://api.github.com/repos/${owner}/${repo}/contents/${cfg.ghPath}`;
+    const headers={Authorization:`token ${cfg.ghToken}`,Accept:'application/vnd.github.v3+json','Content-Type':'application/json'};
+    let sha;
+    try{const r=await fetch(url,{headers});if(r.ok){const j=await r.json();sha=j.sha;}}catch(e){}
+    const body={message:`AXONTECH sync ${new Date().toLocaleString('es-ES')}`,content};
+    if(sha)body.sha=sha;
+    const res=await fetch(url,{method:'PUT',headers,body:JSON.stringify(body)});
+    if(res.ok){
+      const ts=new Date().toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'});
+      if(statusEl)statusEl.innerHTML=`<span style="color:var(--green);">✓ Sincronizado ${ts}</span>`;
+      if(!silent)showToast('Guardado en GitHub ✓');
+    } else {
+      const err=await res.json().catch(()=>({}));
+      if(statusEl)statusEl.innerHTML=`<span style="color:var(--red);">✗ Error ${res.status}: ${err.message||''}</span>`;
+      if(!silent)showToast(`Error al sincronizar (${res.status})`);
+    }
+  } catch(e) {
+    if(statusEl)statusEl.innerHTML=`<span style="color:var(--red);">✗ ${e.message}</span>`;
+    if(!silent)showToast('Error de conexión con GitHub');
+  }
+}
+async function loadFromGitHub() {
+  const cfg=getConfig();
+  if(!cfg.ghToken||!cfg.ghRepo||!cfg.ghPath){showToast('Configura GitHub primero');return;}
+  if(!confirm('¿Restaurar datos desde GitHub?\nEsto reemplazará todos los datos locales.'))return;
+  const statusEl=document.getElementById('ghSyncStatus');
+  if(statusEl)statusEl.innerHTML='<span style="color:var(--blue);">⟳ Cargando desde GitHub...</span>';
+  try {
+    const parts=cfg.ghRepo.split('/');const owner=parts[0];const repo=parts.slice(1).join('/');
+    const url=`https://api.github.com/repos/${owner}/${repo}/contents/${cfg.ghPath}`;
+    const res=await fetch(url,{headers:{Authorization:`token ${cfg.ghToken}`,Accept:'application/vnd.github.v3+json'}});
+    if(!res.ok){if(statusEl)statusEl.innerHTML=`<span style="color:var(--red);">✗ Error ${res.status}</span>`;showToast(`Error al cargar (${res.status})`);return;}
+    const j=await res.json();
+    const text=decodeURIComponent(escape(atob(j.content.replace(/\n/g,''))));
+    const data=JSON.parse(text);
+    if(data.gestores)saveGestores(data.gestores);
+    if(data.mensajeros)saveMensajeros(data.mensajeros);
+    if(data.productos)saveProductos(data.productos);
+    if(data.categorias)saveCategorias(data.categorias);
+    if(data.vales)saveVales(data.vales);
+    if(statusEl)statusEl.innerHTML='<span style="color:var(--green);">✓ Datos restaurados desde GitHub</span>';
+    activeGestorId=null;activeMensajeroId=null;selectedValeId=null;adminGestorFilter=null;
+    renderGestores();renderGestorRanking();renderAdminGestores();renderInbox();
+    renderAdminGestoresList();renderMensajeros();renderMensajeroSelector();
+    renderStockCategorias();renderProductGrid();
+    updateAdminBadge();updateMensajeroBadge();
+    showToast('Datos restaurados desde GitHub ✓');
+  } catch(e) {
+    if(statusEl)statusEl.innerHTML=`<span style="color:var(--red);">✗ ${e.message}</span>`;
+    showToast('Error al restaurar datos');
+  }
+}
+async function maybeAutoSync() {
+  const cfg=getConfig();
+  if(cfg.ghAutoSync&&cfg.ghToken&&cfg.ghRepo&&cfg.ghPath){
+    try{await syncToGitHub(true);}catch(e){}
+  }
+}
+function changePassCfg() {
+  const np=document.getElementById('newPassInputCfg').value.trim();
+  if(!np||np.length<4){showToast('Mínimo 4 caracteres');return;}
+  localStorage.setItem('axon_admin_hash',btoa(np));
+  document.getElementById('newPassInputCfg').value='';
+  showToast('Contraseña actualizada ✓');
+}
+
+// ══════════════════════════════════════════
 //  THEME
 // ══════════════════════════════════════════
 function applyTheme(dark) {
@@ -2256,13 +2520,13 @@ function toggleTheme() {
 //  INIT
 // ══════════════════════════════════════════
 function init() {
-  // Restore theme
   applyTheme(localStorage.getItem('axon_theme')==='dark');
   updateDate();
   setInterval(updateDate,60000);
   setInterval(()=>{updateAdminBadge();renderMyVales();renderGestorNotifs();},12000);
   renderGestores();
   renderGestorNotifs();
+  renderGestorRanking();
   updateAdminBadge();updateMensajeroBadge();
   setFilter('all');
 }
