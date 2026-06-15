@@ -1225,10 +1225,9 @@ function renderMensajeroVales() {
   }
   const porEntregar=getVales().filter(v=>v.mensajeroId===activeMensajeroId&&v.status==='assigned').reverse();
   const entregados=getVales().filter(v=>v.mensajeroId===activeMensajeroId&&v.status==='delivered').reverse();
-  const pendCobro=getVales().filter(v=>v.mensajeroId===activeMensajeroId&&v.status==='pending_payment').reverse();
-  const confirmadosHoy=getVales().filter(v=>v.mensajeroId===activeMensajeroId&&v.status==='confirmed'&&new Date(v.ts).toDateString()===todayStr()).reverse();
+  const confirmadosHoy=getVales().filter(v=>v.mensajeroId===activeMensajeroId&&['confirmed','pending_payment'].includes(v.status)&&new Date(v.ts).toDateString()===todayStr()).reverse();
   let html='';
-  if(!porEntregar.length&&!entregados.length&&!pendCobro.length&&!confirmadosHoy.length){
+  if(!porEntregar.length&&!entregados.length&&!confirmadosHoy.length){
     html='<div class="es"><div class="es-icon">✅</div><div class="es-text">Sin entregas asignadas</div></div>';
   } else {
     if(porEntregar.length){
@@ -1242,10 +1241,7 @@ function renderMensajeroVales() {
           <div style="font-size:12px;font-weight:700;margin-top:3px;">💰 ${v.total||'—'}${v.vuelto?` · Vuelto: ${v.vuelto}`:''}</div>
           ${g?`<div style="font-size:11px;color:var(--gray-400);">Gestor: ${g.name}</div>`:''}
           <div style="font-size:11px;color:var(--gray-600);margin-top:3px;">📦 ${v.articulo||'—'}</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-top:8px;">
-            <button class="btn btn-green btn-sm btn-full" style="font-size:11px;" onclick="confirmSale(${v.id},'confirmed')">✅ Entregado</button>
-            <button class="btn btn-sm btn-full" style="background:var(--orange);color:white;font-size:11px;" onclick="confirmSale(${v.id},'pending_payment')">⏳ Pendiente de pago</button>
-          </div>
+          <button class="btn btn-green btn-full btn-sm" style="margin-top:8px;" onclick="mensajeroEntrega(${v.id})">📦 Marcar como entregado</button>
         </div>`;
       }).join('');
     }
@@ -1261,25 +1257,13 @@ function renderMensajeroVales() {
         </div>`;
       }).join('');
     }
-    if(pendCobro.length){
-      html+=`<div class="lbl" style="margin-top:16px;color:var(--orange);">⏳ Pendiente de cobro (${pendCobro.length})</div>`;
-      html+=pendCobro.map(v=>{
-        const g=gestorOf(v.gestorId);
-        return `<div class="mv-card" style="border-left:3px solid var(--orange);background:rgba(249,115,22,.05);">
-          <div class="mv-head"><span class="mv-time">${timeStr(v.confirmedTs||v.ts)}</span><span style="color:var(--orange);font-size:9px;font-weight:700;padding:2px 6px;background:rgba(249,115,22,.15);border-radius:4px;">⏳ Pend. cobro</span></div>
-          <div class="mv-info"><b>${v.cliente||'—'}</b> · <span style="font-weight:700;color:var(--orange);">${v.total||'—'}</span></div>
-          ${g?`<div style="font-size:11px;color:var(--gray-400);">Gestor: ${g.name}</div>`:''}
-          <div style="font-size:11px;color:var(--gray-600);margin-top:3px;">📦 ${v.articulo||'—'}</div>
-          <button class="btn btn-green btn-full btn-sm" style="margin-top:8px;" onclick="markAsPaid(${v.id})">💵 Registrar cobro</button>
-        </div>`;
-      }).join('');
-    }
     if(confirmadosHoy.length){
-      html+='<div class="lbl" style="margin-top:16px;">Confirmados hoy ✅</div>';
+      html+='<div class="lbl" style="margin-top:16px;">Resumen hoy</div>';
       html+=confirmadosHoy.map(v=>{
         const g=gestorOf(v.gestorId);
-        return `<div class="mv-card st-confirmed">
-          <div class="mv-head"><span class="mv-time">${timeStr(v.confirmedTs||v.ts)}</span><span style="color:var(--green);font-size:10px;font-weight:700;">✅ Confirmado</span></div>
+        const isPend=v.status==='pending_payment';
+        return `<div class="mv-card st-${isPend?'pending_payment':'confirmed'}">
+          <div class="mv-head"><span class="mv-time">${timeStr(v.confirmedTs||v.ts)}</span><span style="color:${isPend?'var(--orange)':'var(--green)'};font-size:10px;font-weight:700;">${isPend?'⏳ Pend. cobro':'✅ Confirmado'}</span></div>
           <div class="mv-info"><b>${v.cliente||'—'}</b> · ${v.total||'—'}</div>
           ${g?`<div style="font-size:11px;color:var(--gray-400);">Gestor: ${g.name}</div>`:''}
         </div>`;
