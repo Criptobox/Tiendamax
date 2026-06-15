@@ -463,9 +463,9 @@
       <div id="gestorNotifsList"></div>
     </div>
 
-    <div class="lbl" style="margin-top:20px;">Mis Vales de Hoy</div>
-    <div id="gestorMyVales">
-      <div class="es"><div class="es-icon">🧾</div><div class="es-text">Selecciona tu nombre</div></div>
+    <div id="gestorMyValesSection" style="display:none;">
+      <div class="lbl" style="margin-top:20px;">Mis Vales de Hoy</div>
+      <div id="gestorMyVales"></div>
     </div>
   </div>
 
@@ -475,7 +475,7 @@
       <button onclick="changeGestor()">← Volver</button>
       <span id="mobileBackName" style="font-size:13px;font-weight:700;color:var(--blue-dk);"></span>
     </div>
-    <div class="card" id="gestorBanner" style="background:var(--blue-lt);border-color:var(--blue-bd);display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+    <div class="card" id="gestorBanner" style="background:var(--blue-lt);border-color:var(--blue-bd);display:none;align-items:center;gap:10px;margin-bottom:14px;">
       <div class="g-avatar" id="bannerAvatar" style="width:40px;height:40px;font-size:14px;background:var(--gray-300);">?</div>
       <div>
         <div style="font-size:10px;color:var(--gray-400);font-weight:700;letter-spacing:.5px;" id="bannerLbl">SELECCIONA TU NOMBRE</div>
@@ -1298,6 +1298,8 @@ function doSelectGestor(id) {
   document.getElementById('headerGestorName').textContent='· '+g.name;
   document.getElementById('vf-promotor').value=g.name;
   document.getElementById('mobileBackName').textContent=g.name;
+  document.getElementById('gestorBanner').style.display='flex';
+  document.getElementById('gestorMyValesSection').style.display='block';
   document.getElementById('layoutGestor').classList.add('has-gestor');
   renderGestores();renderMyVales();onFormInput();renderGestorNotifs();
 }
@@ -1320,10 +1322,8 @@ function submitGestorPass() {
 function changeGestor() {
   activeGestorId=null;
   document.getElementById('layoutGestor').classList.remove('has-gestor');
-  document.getElementById('bannerAvatar').textContent='?';
-  document.getElementById('bannerAvatar').style.background='var(--gray-300)';
-  document.getElementById('bannerLbl').textContent='SELECCIONA TU NOMBRE';
-  document.getElementById('bannerName').textContent='Selecciona tu nombre →';
+  document.getElementById('gestorBanner').style.display='none';
+  document.getElementById('gestorMyValesSection').style.display='none';
   document.getElementById('headerGestorName').textContent='';
   document.getElementById('vf-promotor').value='';
   document.getElementById('mobileBackName').textContent='';
