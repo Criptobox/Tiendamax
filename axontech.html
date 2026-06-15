@@ -320,6 +320,7 @@
     <button class="btn-logout" id="btnLogout" onclick="logoutAdmin()">Cerrar sesión</button>
     <div class="header-date" id="headerDate"></div>
     <button id="btnTheme" onclick="toggleTheme()" title="Cambiar tema">🌙</button>
+    <button id="btnDemo" onclick="loadDemo()" title="Cargar datos de prueba" style="background:rgba(245,158,11,.18);border:1px solid rgba(245,158,11,.4);color:#FCD34D;border-radius:7px;padding:5px 10px;font-size:11px;font-weight:700;cursor:pointer;letter-spacing:.5px;">🎮 DEMO</button>
     <button id="btnAdminAccess" onclick="switchMode('admin')" title="Acceso administrador">
       🔒 <span class="notif-badge" id="adminBadge">0</span>
     </button>
@@ -1735,6 +1736,99 @@ function renderStats() {
       </div>`;
     }).join('') :
     '<div class="es"><div class="es-text">Sin datos de productos en el período</div></div>';
+}
+
+// ══════════════════════════════════════════
+//  DEMO MODE
+// ══════════════════════════════════════════
+function loadDemo() {
+  if (!confirm('¿Cargar datos de demostración?\nEsto reemplazará los datos actuales.')) return;
+
+  // Gestores
+  saveGestores([
+    {id:1, name:'Carlos Mendoza',  initials:'CM', color:'#2563EB'},
+    {id:2, name:'Ana López',       initials:'AL', color:'#7C3AED'},
+    {id:3, name:'Pedro García',    initials:'PG', color:'#059669'},
+    {id:4, name:'Laura Torres',    initials:'LT', color:'#DC2626'},
+  ]);
+
+  // Categorías
+  saveCategorias([
+    {id:10, name:'Electrónica'},
+    {id:20, name:'Accesorios'},
+    {id:30, name:'Computación'},
+  ]);
+
+  // Productos
+  saveProductos([
+    {id:100, name:'iPhone 15 Pro',     description:'Apple 256GB Titanio',      precio:'$950 USD',  stock:5,  puntos:10, garantia:'6 meses',  comision:'$15 USD', photo:'', catId:10},
+    {id:101, name:'Samsung Galaxy S24',description:'Android 256GB',            precio:'$780 USD',  stock:3,  puntos:8,  garantia:'6 meses',  comision:'$12 USD', photo:'', catId:10},
+    {id:102, name:'AirPods Pro 2',     description:'Auriculares inalámbricos', precio:'$180 USD',  stock:12, puntos:5,  garantia:'3 meses',  comision:'$5 USD',  photo:'', catId:20},
+    {id:103, name:'Funda iPhone 15',   description:'Silicona premium',         precio:'$15 USD',   stock:25, puntos:1,  garantia:'',         comision:'$1 USD',  photo:'', catId:20},
+    {id:104, name:'Laptop HP Victus',  description:'Core i5, 16GB RAM, 512GB', precio:'$680 USD',  stock:2,  puntos:15, garantia:'12 meses', comision:'$20 USD', photo:'', catId:30},
+    {id:105, name:'Cargador MagSafe',  description:'65W Original',             precio:'$45 USD',   stock:0,  puntos:2,  garantia:'3 meses',  comision:'$2 USD',  photo:'', catId:20},
+    {id:106, name:'Teclado Mecánico',  description:'RGB inalámbrico',          precio:'$95 USD',   stock:0,  puntos:4,  garantia:'6 meses',  comision:'$4 USD',  photo:'', catId:30},
+  ]);
+
+  // Mensajeros
+  saveMensajeros([
+    {id:50, name:'Jorge Ramírez'},
+    {id:51, name:'Luis Herrera'},
+  ]);
+
+  // Vales en todos los estados
+  const now   = new Date();
+  const h     = (n) => new Date(now.getTime() - n*60*60*1000).toISOString();
+  const vt    = (v) => buildDemoVale(v);
+
+  saveVales([
+    { id:2001, gestorId:1, ts:h(0.5),  cliente:'Roberto Silva',   telefono:'55551234', direccion:'Calle 23 #456, Vedado',       mensajeria:'$2 USD',  articulo:'iPhone 15 Pro x1',    precioUSD:'$950 USD', precioCUP:'',        vuelto:'',      total:'$950 USD',  garantia:'6 meses', valeProductos:[{id:100,name:'iPhone 15 Pro',qty:1}],    valeText:'', status:'pending',         mensajeroId:null, confirmedTs:null,  isNew:true  },
+    { id:2002, gestorId:2, ts:h(1.2),  cliente:'María Torres',    telefono:'55559876', direccion:'Av 5ta #88 e/8 y 10',         mensajeria:'Gratis',  articulo:'AirPods Pro 2 x2',    precioUSD:'$360 USD', precioCUP:'',        vuelto:'',      total:'$360 USD',  garantia:'3 meses', valeProductos:[{id:102,name:'AirPods Pro 2',qty:2}],    valeText:'', status:'assigned',        mensajeroId:50,   confirmedTs:null,  isNew:false },
+    { id:2003, gestorId:1, ts:h(2.0),  cliente:'Luis Pérez',      telefono:'55554321', direccion:'Obispo #12, Habana Vieja',    mensajeria:'$1 USD',  articulo:'Funda iPhone 15 x3',  precioUSD:'$45 USD',  precioCUP:'4050 CUP',vuelto:'0',     total:'$45 USD',   garantia:'',         valeProductos:[{id:103,name:'Funda iPhone 15',qty:3}],  valeText:'', status:'confirmed',       mensajeroId:51,   confirmedTs:h(0.8),isNew:false },
+    { id:2004, gestorId:3, ts:h(3.1),  cliente:'Carmen Díaz',     telefono:'55557890', direccion:'23 y 12 #234, Vedado',        mensajeria:'$2 USD',  articulo:'Samsung Galaxy S24 x1',precioUSD:'$780 USD',precioCUP:'',        vuelto:'',      total:'$780 USD',  garantia:'6 meses', valeProductos:[{id:101,name:'Samsung Galaxy S24',qty:1}],valeText:'', status:'pending_payment', mensajeroId:50,   confirmedTs:null,  isNew:false },
+    { id:2005, gestorId:4, ts:h(4.5),  cliente:'Oscar Fernández', telefono:'55553456', direccion:'Línea #78 esq L',             mensajeria:'$3 USD',  articulo:'Laptop HP Victus x1', precioUSD:'$680 USD', precioCUP:'',        vuelto:'',      total:'$680 USD',  garantia:'12 meses',valeProductos:[{id:104,name:'Laptop HP Victus',qty:1}],  valeText:'', status:'pending',         mensajeroId:null, confirmedTs:null,  isNew:true  },
+    { id:2006, gestorId:2, ts:h(5.0),  cliente:'Yolanda Cruz',    telefono:'55558765', direccion:'Reina #302, Centro Habana',   mensajeria:'Gratis',  articulo:'iPhone 15 Pro x1',    precioUSD:'$950 USD', precioCUP:'',        vuelto:'',      total:'$950 USD',  garantia:'6 meses', valeProductos:[{id:100,name:'iPhone 15 Pro',qty:1}],    valeText:'', status:'confirmed',       mensajeroId:51,   confirmedTs:h(3.0),isNew:false },
+  ]);
+
+  // Notificaciones de ejemplo
+  saveNotifs([
+    {id:3001, type:'new_product',  productName:'iPhone 15 Pro',   productId:100, ts:h(0.2), read:false, extra:'$950 USD'},
+    {id:3002, type:'low_stock',    productName:'Laptop HP Victus', productId:104, ts:h(1.0), read:false, extra:'quedan 2'},
+    {id:3003, type:'out_of_stock', productName:'Cargador MagSafe', productId:105, ts:h(2.5), read:false, extra:'stock agotado'},
+    {id:3004, type:'restocked',    productName:'Samsung Galaxy S24',productId:101,ts:h(4.0), read:true,  extra:'stock: 3'},
+  ]);
+
+  // Reload everything
+  activeGestorId=null; adminActive=false; selectedValeId=null;
+  adminGestorFilter=null; inboxFilter='all'; selectedProductsUI=[]; currentValeProductos=[];
+  document.getElementById('layoutAdmin').classList.remove('active');
+  document.getElementById('layoutGestor').classList.add('active');
+  document.getElementById('btnAdminAccess').style.display='flex';
+  document.getElementById('adminLabel').style.display='none';
+  document.getElementById('btnLogout').style.display='none';
+  document.getElementById('headerGestorName').textContent='';
+  document.getElementById('bannerAvatar').textContent='?';
+  document.getElementById('bannerAvatar').style.background='var(--gray-300)';
+  document.getElementById('bannerLbl').textContent='SELECCIONA TU NOMBRE';
+  document.getElementById('bannerName').textContent='Selecciona tu nombre →';
+  resetForm();
+  renderGestores();
+  renderGestorNotifs();
+  updateAdminBadge();
+  showToast('🎮 Datos de demo cargados ✓ — contraseña admin: axon2024');
+}
+
+function buildDemoVale(v) {
+  const g=gestorOf(v.gestorId);
+  return ['Bienvenido a "AXONTECH" 🔥','','VALE DEL GESTOR:','',
+    `🔸Promotor: ${g?g.name:''}`, '',
+    `🔸 Nombre Cliente: ${v.cliente}`,`🔸Teléfono Cliente: ${v.telefono}`,
+    `🔸Dirección Cliente: ${v.direccion}`,`🔸Mensajería/ costo: ${v.mensajeria}`,
+    `🔸 Artículo y cantidad: ${v.articulo}`,`🔸Precio USD/ zelle: ${v.precioUSD}`,
+    `🔸Precio CUP: ${v.precioCUP}`,`🔸 Vuelto: ${v.vuelto}`,`🔸 Total a pagar: ${v.total}`,'',
+    `*Garantía: ${v.garantia}`,`*Fecha y hora de Venta: ${new Date(v.ts).toLocaleString('es-ES')}`,'',
+    '🧭Dirección de la tienda:','* Amistad #313% San Rafael y San José, Centro Habana.','',
+    '🚨ATENCIÓN🚨','•   Horarios de atención: 8:00am - 8:00pm.'].join('\n');
 }
 
 // ══════════════════════════════════════════
