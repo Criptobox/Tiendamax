@@ -429,6 +429,7 @@
     <span class="admin-session-label" id="adminLabel">● Admin</span>
     <button class="btn-logout" id="btnLogout" onclick="logoutAdmin()">Cerrar sesión</button>
     <div class="header-date" id="headerDate"></div>
+    <button id="btnCatalogo" onclick="openGestorCatalog()" title="Ver catálogo de productos" style="display:none;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.7);border-radius:7px;padding:5px 10px;font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;white-space:nowrap;">📦 Stock</button>
     <button id="btnTheme" onclick="toggleTheme()" title="Cambiar tema">🌙</button>
     <button id="btnDemo" onclick="loadDemo()" title="Cargar datos de prueba" style="background:rgba(245,158,11,.18);border:1px solid rgba(245,158,11,.4);color:#FCD34D;border-radius:7px;padding:5px 10px;font-size:11px;font-weight:700;cursor:pointer;letter-spacing:.5px;">🎮 DEMO</button>
     <button id="btnAdminAccess" onclick="switchMode('admin')" title="Acceso administrador">
@@ -460,7 +461,6 @@
     <div id="gestorMyVales">
       <div class="es"><div class="es-icon">🧾</div><div class="es-text">Selecciona tu nombre</div></div>
     </div>
-    <button class="btn btn-ghost btn-full btn-sm" style="margin-top:14px;" onclick="openGestorCatalog()">📦 Ver Catálogo</button>
   </div>
 
   <!-- Col 2: Vale form -->
@@ -1167,11 +1167,13 @@ function switchMode(mode) {
   [lg,la].forEach(el=>el.classList.remove('active'));
   lg.classList.add('active');
   document.getElementById('btnAdminAccess').style.display='flex';
+  document.getElementById('btnCatalogo').style.display='inline-flex';
 }
 function activateAdminMode() {
   document.getElementById('layoutAdmin').classList.add('active');
   document.getElementById('layoutGestor').classList.remove('active');
   document.getElementById('btnAdminAccess').style.display='none';
+  document.getElementById('btnCatalogo').style.display='none';
   const cfg=getConfig();
   if(cfg.adminPhone)document.getElementById('adminPhoneInput').value=cfg.adminPhone;
   const today=new Date().toISOString().slice(0,10);
@@ -2755,6 +2757,7 @@ function init() {
   renderGestorRanking();
   updateAdminBadge();updateMensajeroBadge();
   setFilter('all');
+  document.getElementById('btnCatalogo').style.display='inline-flex';
 }
 init();
 </script>
