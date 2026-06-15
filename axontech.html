@@ -249,12 +249,27 @@
     .prod-card.agotado .prod-name { color:var(--gray-600); }
 
     /* ── GESTOR LIST ── */
-    .g-item { display:flex; align-items:center; gap:10px; padding:10px 11px; border-radius:9px; cursor:pointer; margin-bottom:4px; border:1px solid transparent; transition:all .13s; }
+    .g-item { display:flex; flex-direction:column; align-items:center; gap:4px; padding:8px 4px; border-radius:9px; cursor:pointer; border:1px solid transparent; transition:all .13s; text-align:center; }
     .g-item:hover  { background:var(--gray-100); }
     .g-item.active { background:var(--blue-lt); border-color:var(--blue-bd); }
     .g-avatar { width:36px; height:36px; border-radius:50%; color:white; font-weight:700; font-size:12px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
-    .g-name  { font-size:13px; font-weight:600; flex:1; }
-    .g-badge { background:var(--blue); color:white; border-radius:20px; font-size:10px; font-weight:700; padding:2px 7px; }
+    .g-name  { font-size:10px; font-weight:600; line-height:1.2; word-break:break-word; }
+    .g-badge { background:var(--blue); color:white; border-radius:20px; font-size:9px; font-weight:700; padding:1px 5px; }
+    #gestoresList { display:grid; grid-template-columns:repeat(3,1fr); gap:6px; }
+    #gestoresList .es { grid-column:1/-1; }
+    /* Vale form hidden until gestor selected */
+    #valeFormWrapper { display:none; }
+    #layoutGestor.has-gestor #valeFormWrapper { display:block; }
+    /* Picker pills */
+    .picker-pill { display:flex; align-items:center; gap:8px; padding:6px 10px; border:1px solid var(--gray-200); border-radius:20px; background:var(--surface); transition:border-color .1s,background .1s; }
+    .picker-pill.selected { border-color:var(--blue); background:var(--blue-lt); }
+    .picker-pill-info { flex:1; min-width:0; }
+    .picker-pill-name { font-size:12px; font-weight:600; color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .picker-pill-price { font-size:10px; color:var(--blue); font-weight:600; }
+    .picker-pill-qty { display:flex; align-items:center; gap:3px; flex-shrink:0; }
+    .picker-pill-qty button { width:22px; height:22px; border-radius:50%; border:1px solid var(--gray-300); background:var(--surface); cursor:pointer; font-size:14px; font-weight:700; display:flex; align-items:center; justify-content:center; padding:0; line-height:1; transition:background .1s; }
+    .picker-pill-qty button:active { background:var(--blue); color:white; border-color:var(--blue); }
+    .picker-pill-qty span { font-size:12px; font-weight:700; min-width:16px; text-align:center; color:var(--text); }
 
     /* ── VALE FORM ── */
     .vale-form-header { background:linear-gradient(135deg,var(--blue-dk),var(--blue)); color:white; border-radius:10px 10px 0 0; padding:14px 16px; }
@@ -410,7 +425,7 @@
     <div class="header-date" id="headerDate"></div>
     <button id="btnTheme" onclick="toggleTheme()" title="Cambiar tema">🌙</button>
     <button id="btnDemo" onclick="loadDemo()" title="Cargar datos de prueba" style="background:rgba(245,158,11,.18);border:1px solid rgba(245,158,11,.4);color:#FCD34D;border-radius:7px;padding:5px 10px;font-size:11px;font-weight:700;cursor:pointer;letter-spacing:.5px;">🎮 DEMO</button>
-    <button id="btnMensajeroAccess" onclick="switchMode('mensajero')" title="Panel mensajero" style="font-size:17px;background:none;border:none;cursor:pointer;padding:4px 6px;border-radius:7px;color:var(--green);">🛵</button>
+    <button id="btnMensajeroAccess" onclick="switchMode('mensajero')" title="Panel mensajero" style="font-size:17px;background:none;border:none;cursor:pointer;padding:4px 6px;border-radius:7px;color:var(--green);position:relative;">🛵<span class="notif-badge" id="mensajeroBadge" style="display:none;position:absolute;top:0;right:0;">0</span></button>
     <button id="btnAdminAccess" onclick="switchMode('admin')" title="Acceso administrador">
       🔒 <span class="notif-badge" id="adminBadge">0</span>
     </button>
@@ -440,6 +455,7 @@
     <div id="gestorMyVales">
       <div class="es"><div class="es-icon">🧾</div><div class="es-text">Selecciona tu nombre</div></div>
     </div>
+    <button class="btn btn-ghost btn-full btn-sm" style="margin-top:14px;" onclick="openGestorCatalog()">📦 Ver Catálogo</button>
   </div>
 
   <!-- Col 2: Vale form -->
@@ -456,6 +472,7 @@
       </div>
     </div>
 
+    <div id="valeFormWrapper">
     <div class="vale-form-header">
       <h2>Bienvenido a "AXONTECH" 🔥</h2>
       <p>VALE DEL GESTOR — completa los campos y envía</p>
@@ -589,6 +606,7 @@
         <button class="btn btn-blue btn-full btn-sm" id="sendValeBtn" onclick="sendVale()" disabled>📤 Enviar</button>
       </div>
     </div>
+    </div><!-- /valeFormWrapper -->
   </div>
 </div><!-- /layoutGestor -->
 
@@ -831,8 +849,9 @@
         <select id="pm-cat"></select>
       </div>
       <div style="grid-column:1/-1;">
-        <label class="field-lbl">URL de foto</label>
-        <input type="url" id="pm-foto" placeholder="https://...">
+        <label class="field-lbl">Foto del producto</label>
+        <input type="file" id="pm-foto-file" accept="image/*" onchange="handleProductPhoto(this)" style="display:block;width:100%;padding:5px;border:1px solid var(--gray-200);border-radius:8px;font-size:12px;cursor:pointer;">
+        <input type="hidden" id="pm-foto">
         <div id="pm-fotoPreview" style="margin-top:6px;"></div>
       </div>
     </div>
@@ -849,13 +868,26 @@
     <div class="modal-title">📦 Catálogo de Productos</div>
     <input type="search" id="pickerSearch" placeholder="Buscar producto..." oninput="renderPickerProducts()" style="margin-bottom:10px;">
     <div id="pickerCatTabs" style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:10px;"></div>
-    <div id="pickerProductGrid" style="max-height:280px;overflow-y:auto;display:grid;grid-template-columns:1fr 1fr;gap:8px;"></div>
+    <div id="pickerProductGrid" style="max-height:280px;overflow-y:auto;display:flex;flex-wrap:wrap;gap:6px;padding:2px;"></div>
     <hr class="modal-sep">
     <div style="font-size:11px;font-weight:700;color:var(--gray-600);margin-bottom:6px;">Seleccionados:</div>
     <div id="pickerSelectedList" style="min-height:28px;"></div>
     <div class="modal-btns">
       <button class="btn btn-ghost btn-full" onclick="closeProductPicker()">Cancelar</button>
       <button class="btn btn-blue btn-full" onclick="confirmPickerSelection()">Agregar al vale ✓</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── MODAL: Catálogo Gestor (solo lectura) ── -->
+<div class="modal-bg" id="gestorCatalogModal">
+  <div class="modal" style="max-width:500px;width:94%;">
+    <div class="modal-title">📦 Catálogo de Productos</div>
+    <input type="search" id="catalogSearch" placeholder="Buscar producto..." oninput="renderGestorCatalog()" style="margin-bottom:8px;">
+    <div id="catalogCatTabs" style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:10px;"></div>
+    <div id="gestorCatalogList" style="max-height:360px;overflow-y:auto;"></div>
+    <div class="modal-btns" style="margin-top:10px;">
+      <button class="btn btn-blue btn-full" onclick="document.getElementById('gestorCatalogModal').classList.remove('show')">Cerrar</button>
     </div>
   </div>
 </div>
@@ -970,6 +1002,7 @@ let stockCatFilter    = null;
 let editingProductId  = null;
 let pickerSelected    = {};   // {productId: qty}
 let pickerCatFilter   = null;
+let catalogCatFilter  = null;
 let selectedProductsUI= [];   // [{id,name,qty}] for current vale form
 let currentValeProductos = []; // saved on sendVale
 
@@ -1399,6 +1432,7 @@ function renderValeDetail() {
   } else if(v.status==='assigned'){
     actHTML=`<div class="mensajero-row">🛵 <b>Mensajero:</b> ${m?m.name:'—'}</div>
       <div style="font-size:12px;color:var(--gray-400);margin:6px 0 10px;">Esperando que el mensajero confirme la entrega</div>
+      <button class="btn btn-ghost btn-full btn-sm" onclick="mensajeroEntrega(${v.id})" style="margin-bottom:6px;">📦 Marcar entregado (admin)</button>
       <button class="btn btn-ghost btn-full btn-sm" onclick="openShareModal(${v.id})">🔄 Reenviar vale</button>`;
   } else if(v.status==='delivered'){
     actHTML=`<div style="background:rgba(124,58,237,.08);border:1px solid rgba(124,58,237,.3);border-radius:8px;padding:12px;text-align:center;margin-bottom:10px;">
@@ -1498,6 +1532,7 @@ function copyAndAssign() {
   closeShareModal();selectedValeId=shareTargetId;
   renderAdminGestores();renderInbox();renderValeDetail();renderMyVales();
   renderConfirmados();renderPendienteCobro();
+  updateMensajeroBadge();
   showToast(`Asignado a ${m?m.name:'mensajero'} y copiado ✓`);
 }
 
@@ -1509,7 +1544,7 @@ function mensajeroEntrega(id) {
   patchVale(id,{status:'delivered',deliveredTs:new Date().toISOString()});
   renderAdminGestores();renderInbox();renderValeDetail();renderMyVales();
   renderPendienteCobro();renderMensajeroVales();
-  updateAdminBadge();
+  updateAdminBadge();updateMensajeroBadge();
   showToast('Marcado como entregado 🛵');
 }
 // Admin confirma venta: descuenta stock + notifica gestor + fija estado de cobro
@@ -1718,25 +1753,22 @@ function renderPickerCatTabs() {
 function setPickerCat(id){pickerCatFilter=id;renderPickerCatTabs();renderPickerProducts();}
 function renderPickerProducts() {
   const search=document.getElementById('pickerSearch').value.toLowerCase();
-  let prods=getProductos().filter(p=>(p.stock||0)>0); // solo con stock
+  let prods=getProductos().filter(p=>(p.stock||0)>0);
   if(pickerCatFilter!==null)prods=prods.filter(p=>p.catId===pickerCatFilter);
   if(search)prods=prods.filter(p=>p.name.toLowerCase().includes(search)||(p.description||'').toLowerCase().includes(search));
   const c=document.getElementById('pickerProductGrid');
-  if(!prods.length){c.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:20px;color:var(--gray-400);">Sin productos disponibles</div>';return;}
+  if(!prods.length){c.innerHTML='<div style="width:100%;text-align:center;padding:20px;color:var(--gray-400);">Sin productos disponibles</div>';return;}
   c.innerHTML=prods.map(p=>{
-    const qty=pickerSelected[p.id]||0;const stockOk=(p.stock||0)>0;
-    return `<div class="picker-card ${qty>0?'selected':''}">
-      ${p.photo?`<img src="${p.photo}" alt="" style="width:100%;height:70px;object-fit:cover;border-radius:6px;margin-bottom:6px;" onerror="this.style.display='none'">`:''}
-      <div style="font-size:12px;font-weight:700;margin-bottom:2px;">${p.name}</div>
-      ${p.precio?`<div style="font-size:11px;color:var(--blue);font-weight:600;">${p.precio}</div>`:''}
-      <div style="font-size:10px;color:var(--gray-400);">
-        Stock: <b style="color:${stockOk?'var(--green)':'var(--red)'};">${p.stock||0}</b>
-        ${p.puntos?` · ⭐ ${p.puntos} pts`:''}
+    const qty=pickerSelected[p.id]||0;
+    return `<div class="picker-pill ${qty>0?'selected':''}">
+      <div class="picker-pill-info">
+        <div class="picker-pill-name">${p.name}</div>
+        ${p.precio?`<div class="picker-pill-price">${p.precio}</div>`:''}
       </div>
-      <div style="display:flex;align-items:center;gap:6px;margin-top:6px;">
-        <button class="btn btn-ghost btn-sm" style="padding:3px 8px;" onclick="pickerAdj(${p.id},-1)">−</button>
-        <span style="font-size:13px;font-weight:700;min-width:20px;text-align:center;">${qty}</span>
-        <button class="btn btn-blue btn-sm" style="padding:3px 8px;" onclick="pickerAdj(${p.id},1)" ${!stockOk&&qty===0?'disabled':''}>+</button>
+      <div class="picker-pill-qty">
+        <button onclick="pickerAdj(${p.id},-1)">−</button>
+        <span>${qty}</span>
+        <button onclick="pickerAdj(${p.id},1)">+</button>
       </div>
     </div>`;
   }).join('');
@@ -1881,9 +1913,9 @@ function openAddProductModal() {
   document.getElementById('productModalTitle').textContent='📦 Nuevo Producto';
   ['pm-name','pm-desc','pm-precio','pm-foto','pm-garantia','pm-comision'].forEach(id=>{document.getElementById(id).value='';});
   document.getElementById('pm-stock').value='0';document.getElementById('pm-puntos').value='0';
+  document.getElementById('pm-foto-file').value='';
   document.getElementById('pm-fotoPreview').innerHTML='';
   populateCatSelect(null);document.getElementById('productModal').classList.add('show');
-  document.getElementById('pm-foto').oninput=previewPhoto;
 }
 function openEditProductModal(id) {
   const p=productoOf(id);if(!p)return;
@@ -1897,14 +1929,20 @@ function openEditProductModal(id) {
   document.getElementById('pm-garantia').value=p.garantia||'';
   document.getElementById('pm-comision').value=p.comision||'';
   document.getElementById('pm-foto').value=p.photo||'';
+  document.getElementById('pm-foto-file').value='';
   populateCatSelect(p.catId);
   document.getElementById('pm-fotoPreview').innerHTML=p.photo?`<img src="${p.photo}" style="width:100%;height:80px;object-fit:cover;border-radius:6px;" onerror="this.style.display='none'">`:'';
   document.getElementById('productModal').classList.add('show');
-  document.getElementById('pm-foto').oninput=previewPhoto;
 }
-function previewPhoto() {
-  const url=this.value.trim();
-  document.getElementById('pm-fotoPreview').innerHTML=url?`<img src="${url}" style="width:100%;height:80px;object-fit:cover;border-radius:6px;" onerror="this.style.display='none'">`:'';}
+function handleProductPhoto(input) {
+  const file=input.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    document.getElementById('pm-foto').value=e.target.result;
+    document.getElementById('pm-fotoPreview').innerHTML=`<img src="${e.target.result}" style="width:100%;height:80px;object-fit:cover;border-radius:6px;">`;
+  };
+  reader.readAsDataURL(file);
+}
 function closeProductModal(){document.getElementById('productModal').classList.remove('show');editingProductId=null;}
 function saveProduct() {
   const name=document.getElementById('pm-name').value.trim();if(!name){showToast('El nombre es obligatorio');return;}
@@ -2085,7 +2123,7 @@ function loadDemo() {
   resetForm();
   renderGestores();
   renderGestorNotifs();
-  updateAdminBadge();
+  updateAdminBadge();updateMensajeroBadge();
   showToast('🎮 Datos de demo cargados ✓ — contraseña admin: axon2024');
 }
 
@@ -2100,6 +2138,59 @@ function buildDemoVale(v) {
     `*Garantía: ${v.garantia}`,`*Fecha y hora de Venta: ${new Date(v.ts).toLocaleString('es-ES')}`,'',
     '🧭Dirección de la tienda:','* Amistad #313% San Rafael y San José, Centro Habana.','',
     '🚨ATENCIÓN🚨','•   Horarios de atención: 8:00am - 8:00pm.'].join('\n');
+}
+
+// ══════════════════════════════════════════
+//  MENSAJERO BADGE
+// ══════════════════════════════════════════
+function updateMensajeroBadge() {
+  const n=getVales().filter(v=>v.status==='assigned').length;
+  const b=document.getElementById('mensajeroBadge');
+  if(!b)return;
+  if(n>0){b.textContent=n;b.style.display='inline-block';}
+  else{b.style.display='none';}
+}
+
+// ══════════════════════════════════════════
+//  GESTOR CATALOG
+// ══════════════════════════════════════════
+function openGestorCatalog() {
+  const prods=getProductos().filter(p=>(p.stock||0)>0);
+  if(!prods.length){showToast('No hay productos disponibles');return;}
+  catalogCatFilter=null;
+  document.getElementById('catalogSearch').value='';
+  renderCatalogCatTabs();renderGestorCatalog();
+  document.getElementById('gestorCatalogModal').classList.add('show');
+}
+function renderCatalogCatTabs() {
+  const cats=getCategorias();
+  document.getElementById('catalogCatTabs').innerHTML=
+    `<button class="pcat-tab ${catalogCatFilter===null?'active':''}" onclick="setCatalogCat(null)">Todos</button>`+
+    cats.map(c=>`<button class="pcat-tab ${catalogCatFilter===c.id?'active':''}" onclick="setCatalogCat(${c.id})">${c.name}</button>`).join('');
+}
+function setCatalogCat(id){catalogCatFilter=id;renderCatalogCatTabs();renderGestorCatalog();}
+function renderGestorCatalog() {
+  const search=document.getElementById('catalogSearch').value.toLowerCase();
+  let prods=getProductos().filter(p=>(p.stock||0)>0);
+  if(catalogCatFilter!==null)prods=prods.filter(p=>p.catId===catalogCatFilter);
+  if(search)prods=prods.filter(p=>p.name.toLowerCase().includes(search));
+  const c=document.getElementById('gestorCatalogList');
+  if(!prods.length){c.innerHTML='<div class="es"><div class="es-icon">📦</div><div class="es-text">Sin productos</div></div>';return;}
+  c.innerHTML=prods.map(p=>`
+    <div style="display:flex;align-items:center;gap:10px;padding:8px;border:1px solid var(--gray-200);border-radius:8px;margin-bottom:6px;">
+      ${p.photo?`<img src="${p.photo}" style="width:48px;height:48px;object-fit:cover;border-radius:6px;flex-shrink:0;" onerror="this.style.display='none'">` : `<div style="width:48px;height:48px;border-radius:6px;background:var(--gray-100);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">📦</div>`}
+      <div style="flex:1;min-width:0;">
+        <div style="font-weight:700;font-size:13px;">${p.name}</div>
+        ${p.description?`<div style="font-size:11px;color:var(--gray-400);">${p.description}</div>`:''}
+        <div style="font-size:12px;margin-top:2px;">
+          ${p.precio?`<span style="color:var(--blue);font-weight:700;">${p.precio}</span>`:''}
+          ${p.garantia?` · <span style="color:var(--gray-400);">${p.garantia}</span>`:''}
+          ${p.comision?` · <span style="color:var(--green);">Comisión: ${p.comision}</span>`:''}
+          ${p.puntos?` · <span style="color:var(--blue);">⭐ ${p.puntos} pts</span>`:''}
+        </div>
+      </div>
+      <div style="font-size:11px;color:var(--green);font-weight:700;flex-shrink:0;">Stock: ${p.stock}</div>
+    </div>`).join('');
 }
 
 // ══════════════════════════════════════════
@@ -2126,7 +2217,7 @@ function init() {
   setInterval(()=>{updateAdminBadge();renderMyVales();renderGestorNotifs();},12000);
   renderGestores();
   renderGestorNotifs();
-  updateAdminBadge();
+  updateAdminBadge();updateMensajeroBadge();
   setFilter('all');
 }
 init();
