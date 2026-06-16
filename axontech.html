@@ -968,7 +968,14 @@
       </div>
       <div>
         <label class="field-lbl">Comisión gestor</label>
-        <input type="text" id="pm-comision" placeholder="5% / $2 USD">
+        <div style="display:flex;gap:6px;">
+          <input type="number" id="pm-comision-amount" placeholder="0" min="0" step="0.01" style="flex:1;min-width:0;">
+          <select id="pm-comision-currency" style="width:80px;flex-shrink:0;">
+            <option value="USD">USD</option>
+            <option value="CUP">CUP</option>
+          </select>
+        </div>
+        <input type="hidden" id="pm-comision">
       </div>
       <div>
         <label class="field-lbl">Categoría</label>
@@ -2374,6 +2381,8 @@ function openAddProductModal() {
   editingProductId=null;
   document.getElementById('productModalTitle').textContent='📦 Nuevo Producto';
   ['pm-name','pm-desc','pm-precio','pm-foto','pm-garantia','pm-comision'].forEach(id=>{document.getElementById(id).value='';});
+  document.getElementById('pm-comision-amount').value='';
+  document.getElementById('pm-comision-currency').value='USD';
   document.getElementById('pm-stock').value='0';document.getElementById('pm-puntos').value='0';
   document.getElementById('pm-foto-file').value='';
   document.getElementById('pm-fotoPreview').innerHTML='';
@@ -2390,6 +2399,12 @@ function openEditProductModal(id) {
   document.getElementById('pm-puntos').value=p.puntos||0;
   document.getElementById('pm-garantia').value=p.garantia||'';
   document.getElementById('pm-comision').value=p.comision||'';
+  // Parse comision into amount + currency fields
+  {const com=p.comision||'';
+   const isCUP=com.toUpperCase().includes('CUP');
+   const num=parseFloat(com.replace(/[^0-9.]/g,''))||'';
+   document.getElementById('pm-comision-amount').value=num;
+   document.getElementById('pm-comision-currency').value=isCUP?'CUP':'USD';}
   document.getElementById('pm-foto').value=p.photo||'';
   document.getElementById('pm-foto-file').value='';
   populateCatSelect(p.catId);
@@ -2430,7 +2445,7 @@ function saveProduct() {
     stock:parseInt(document.getElementById('pm-stock').value)||0,
     puntos:parseInt(document.getElementById('pm-puntos').value)||0,
     garantia:document.getElementById('pm-garantia').value.trim(),
-    comision:document.getElementById('pm-comision').value.trim(),
+    comision:(()=>{const amt=parseFloat(document.getElementById('pm-comision-amount').value);const cur=document.getElementById('pm-comision-currency').value;return amt>0?(cur==='CUP'?`${amt} CUP`:`$${amt} USD`):''})(),
     photo:document.getElementById('pm-foto').value.trim(),
     catId:catVal?parseInt(catVal):null,
   };
@@ -2822,10 +2837,11 @@ function renderComisiones() {
     const pending=allVales.filter(v=>!v.commissionPaid);
     const paid=allVales.filter(v=>v.commissionPaid);
     const isOpen=activeComisionGestorId===g.id;
-    // Compute grand total for pending
-    let grandTotal=null;let grandCur='USD';
-    const allComputed=pending.every(v=>{const r=getValeCommissionParts(v);if(r.total===null)return false;grandTotal=(grandTotal||0)+r.total;grandCur=r.currency;return true;});
-    if(!allComputed)grandTotal=null;
+    // Compute grand total for pending split by currency
+    let gtUSD=0,gtCUP=0,gtAllComputed=true;
+    pending.forEach(v=>{const r=getValeCommissionParts(v);if(r.total===null){gtAllComputed=false;}else{if(r.currency==='CUP')gtCUP+=r.total;else gtUSD+=r.total;}});
+    const gtBadgeParts=[];if(gtUSD>0)gtBadgeParts.push(`$${gtUSD.toFixed(2)} USD`);if(gtCUP>0)gtBadgeParts.push(`${Math.round(gtCUP)} CUP`);
+    const gtBadge=gtAllComputed&&gtBadgeParts.length?gtBadgeParts.join(' + '):null;
     return `<div class="card" style="padding:0;overflow:hidden;margin-bottom:8px;border-color:${isOpen?'var(--blue)':'var(--border)'};">
       <div onclick="toggleComisionGestor(${g.id})" style="display:flex;align-items:center;gap:10px;padding:12px 14px;cursor:pointer;background:${isOpen?'var(--blue-lt)':'var(--surface)'};">
         <div class="g-avatar" style="background:${g.color};width:34px;height:34px;font-size:11px;flex-shrink:0;">${g.initials}</div>
@@ -2837,8 +2853,8 @@ function renderComisiones() {
             ${!pending.length&&!paid.length?'Sin comisiones por cobrar':''}
           </div>
         </div>
-        ${grandTotal!==null&&grandTotal>0?`<span style="background:var(--orange);color:white;border-radius:20px;font-size:10px;font-weight:700;padding:3px 9px;white-space:nowrap;">$${grandTotal.toFixed(2)} ${grandCur}</span>`:''}
-        ${pending.length>0&&grandTotal===null?`<span style="background:var(--orange);color:white;border-radius:20px;font-size:10px;font-weight:700;padding:3px 9px;">${pending.length}</span>`:''}
+        ${gtBadge?`<span style="background:var(--orange);color:white;border-radius:20px;font-size:10px;font-weight:700;padding:3px 9px;white-space:nowrap;">${gtBadge}</span>`:''}
+        ${pending.length>0&&!gtBadge?`<span style="background:var(--orange);color:white;border-radius:20px;font-size:10px;font-weight:700;padding:3px 9px;">${pending.length}</span>`:''}
         <span style="color:var(--gray-400);font-size:13px;flex-shrink:0;">${isOpen?'▲':'▼'}</span>
       </div>
       ${isOpen?renderComisionBody(g,pending,paid):''}
@@ -2853,12 +2869,13 @@ function renderComisionBody(g,pending,paid) {
     // ── PENDING ──
     if(pending.length){
       // Total summary
-      let sumTotal=0;let sumCur='USD';let canSum=true;
-      pending.forEach(v=>{const r=getValeCommissionParts(v);if(r.total===null){canSum=false;}else{sumTotal+=r.total;sumCur=r.currency;}});
+      let sumUSD=0,sumCUP=0,canSum=true;
+      pending.forEach(v=>{const r=getValeCommissionParts(v);if(r.total===null){canSum=false;}else{if(r.currency==='CUP')sumCUP+=r.total;else sumUSD+=r.total;}});
+      const sumParts=[];if(sumUSD>0)sumParts.push(`$${sumUSD.toFixed(2)} USD`);if(sumCUP>0)sumParts.push(`${Math.round(sumCUP)} CUP`);
       html+=`<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;flex-wrap:wrap;gap:6px;">
         <span style="font-size:11px;font-weight:700;color:var(--orange);text-transform:uppercase;letter-spacing:.5px;">⏳ Por pagar (${pending.length})</span>
         <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
-          ${canSum&&sumTotal>0?`<span style="font-size:13px;font-weight:800;color:var(--green);">💵 $${sumTotal.toFixed(2)} ${sumCur}</span>`:''}
+          ${canSum&&sumParts.length?`<span style="font-size:13px;font-weight:800;color:var(--green);">💵 ${sumParts.join(' + ')}</span>`:''}
           ${pending.length>1?`<button class="btn btn-green btn-sm" onclick="payAllCommissions(${g.id},event)">✅ Pagar todas</button>`:''}
         </div>
       </div>`;
