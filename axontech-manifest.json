@@ -2,7 +2,7 @@
   "name": "AXONTECH · Gestión de Ventas",
   "short_name": "AXONTECH",
   "description": "Sistema de gestión de ventas para equipos comerciales.",
-  "start_url": "./axontech.html",
+  "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
   "display_override": ["standalone", "window-controls-overlay"],

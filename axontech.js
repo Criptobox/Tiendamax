@@ -2359,7 +2359,7 @@ function init() {
   setFilter('all');
   document.getElementById('btnCatalogo').style.display='inline-flex';
   if('serviceWorker' in navigator){
-    navigator.serviceWorker.register('./axontech-sw.js').catch(()=>{});
+    navigator.serviceWorker.register('./sw.js').catch(()=>{});
   }
 }
 init();

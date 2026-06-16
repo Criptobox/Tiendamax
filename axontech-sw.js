@@ -1,5 +1,5 @@
 const CACHE = 'axontech-v2';
-const STATIC = ['./axontech.css', './axontech.js', './axontech-manifest.json'];
+const STATIC = ['./app.css', './app.js', './manifest.json'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(STATIC)));
