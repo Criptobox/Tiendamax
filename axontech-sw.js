@@ -1,4 +1,4 @@
-const CACHE = 'axontech-v2';
+const CACHE = 'axontech-v3';
 const STATIC = ['./app.css', './app.js', './manifest.json'];
 
 self.addEventListener('install', e => {
