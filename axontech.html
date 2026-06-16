@@ -714,20 +714,28 @@
 
     <!-- ── STOCK PANEL ── -->
     <div id="adminStockPanel" class="admin-panel-full" style="display:none;">
-      <div style="padding:12px 14px 8px;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:10;background:var(--surface);">
-        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;margin-bottom:8px;">
+      <div style="padding:10px 14px 8px;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:10;background:var(--surface);">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px;">
           <div class="lbl" style="margin:0;" id="stockPanelTitle">Todos los productos</div>
-          <div style="display:flex;gap:6px;">
-            <div class="add-row" style="margin:0;">
-              <input type="text" id="newCatInput" placeholder="Nueva categoría" style="font-size:12px;padding:5px 10px;" onkeydown="if(event.key==='Enter')addCategoria()">
-              <button type="button" class="btn btn-ghost btn-sm" onclick="addCategoria()">+Cat</button>
-            </div>
+          <div style="display:flex;gap:6px;flex-shrink:0;">
+            <button type="button" class="btn btn-ghost btn-sm" onclick="toggleCatManager()" id="catManagerToggle" title="Gestionar categorías">🗂️</button>
             <button class="btn btn-blue btn-sm" onclick="openAddProductModal()">+ Producto</button>
           </div>
         </div>
+        <!-- Filtro de categorías (solo navegación, sin borrar) -->
         <div id="categoriasList" style="display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none;-webkit-overflow-scrolling:touch;"></div>
+        <!-- Gestión de categorías (colapsable) -->
+        <div id="catManagerPanel" style="display:none;margin-top:8px;padding:10px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;">
+          <div class="field-lbl" style="margin-bottom:6px;">Agregar categoría</div>
+          <div class="add-row" style="margin-bottom:8px;">
+            <input type="text" id="newCatInput" placeholder="Nombre de categoría" style="font-size:12px;padding:5px 10px;" onkeydown="if(event.key==='Enter')addCategoria()">
+            <button type="button" class="btn btn-ghost btn-sm" onclick="addCategoria()">+ Agregar</button>
+          </div>
+          <div class="field-lbl" style="margin-bottom:6px;">Categorías existentes</div>
+          <div id="catManagerList"></div>
+        </div>
       </div>
-      <div style="padding:14px;" id="productGrid"></div>
+      <div style="padding:12px 14px;" id="productGrid"></div>
     </div>
 
     <!-- ── GESTORES PANEL ── -->
@@ -2275,18 +2283,35 @@ function renderSelectedProductsUI() {
 // ══════════════════════════════════════════
 function renderStockCategorias() {
   const cats=getCategorias();
+  const prods=getProductos();
   const c=document.getElementById('categoriasList');
   c.innerHTML=
     `<button type="button" class="pcat-tab ${stockCatFilter===null?'active':''}" onclick="setStockCat(null)" style="flex-shrink:0;">
-      📦 Todos <span style="opacity:.7;">(${getProductos().length})</span>
+      📦 Todos <span style="opacity:.7;">(${prods.length})</span>
     </button>`+
     cats.map(cat=>{
-      const count=getProductos().filter(p=>p.catId===cat.id).length;
-      return `<button type="button" class="pcat-tab ${stockCatFilter===cat.id?'active':''}" onclick="setStockCat(${cat.id})" style="flex-shrink:0;display:inline-flex;align-items:center;gap:5px;">
-        ${cat.name} <span style="opacity:.7;">(${count})</span>
-        <span onclick="removeCategoria(${cat.id},event)" style="font-size:13px;opacity:.55;margin-left:1px;line-height:1;">×</span>
-      </button>`;
+      const count=prods.filter(p=>p.catId===cat.id).length;
+      return `<button type="button" class="pcat-tab ${stockCatFilter===cat.id?'active':''}" onclick="setStockCat(${cat.id})" style="flex-shrink:0;">${cat.name} <span style="opacity:.7;">(${count})</span></button>`;
     }).join('');
+  // Render cat manager list if visible
+  const mgr=document.getElementById('catManagerList');
+  if(mgr){
+    mgr.innerHTML=cats.length?cats.map(cat=>{
+      const count=prods.filter(p=>p.catId===cat.id).length;
+      return `<div style="display:flex;align-items:center;justify-content:space-between;padding:7px 10px;background:var(--surface);border:1px solid var(--border);border-radius:8px;margin-bottom:5px;">
+        <span style="font-size:12px;font-weight:600;">${cat.name} <span style="font-size:10px;color:var(--text-muted);">(${count} producto${count!==1?'s':''})</span></span>
+        <button type="button" class="btn btn-sm" style="background:rgba(239,68,68,.1);color:var(--red);border:none;font-size:11px;padding:3px 9px;" onclick="removeCategoria(${cat.id})">🗑️ Borrar</button>
+      </div>`;
+    }).join(''):'<div style="font-size:12px;color:var(--text-muted);padding:6px 0;">Sin categorías creadas.</div>';
+  }
+}
+let catManagerOpen=false;
+function toggleCatManager(){
+  catManagerOpen=!catManagerOpen;
+  document.getElementById('catManagerPanel').style.display=catManagerOpen?'block':'none';
+  document.getElementById('catManagerToggle').style.background=catManagerOpen?'var(--blue-lt)':'';
+  document.getElementById('catManagerToggle').style.color=catManagerOpen?'var(--blue)':'';
+  if(catManagerOpen)renderStockCategorias();
 }
 function setStockCat(id) {
   stockCatFilter=id;renderStockCategorias();renderProductGrid();
@@ -2299,48 +2324,46 @@ function addCategoria() {
   if(list.some(c=>c.name.toLowerCase()===name.toLowerCase())){showToast('Ya existe');return;}
   list.push({id:Date.now(),name});saveCategorias(list);inp.value='';renderStockCategorias();showToast('Categoría agregada');
 }
-function removeCategoria(id,e) {
-  e.stopPropagation();
-  if(getProductos().some(p=>p.catId===id)){showToast('Tiene productos asignados');return;}
+function removeCategoria(id) {
+  if(getProductos().some(p=>p.catId===id)){showToast('Primero mueve o elimina los productos de esta categoría');return;}
+  if(!confirm('¿Eliminar esta categoría?'))return;
   saveCategorias(getCategorias().filter(c=>c.id!==id));
   if(stockCatFilter===id)stockCatFilter=null;
   renderStockCategorias();renderProductGrid();
+  showToast('Categoría eliminada');
 }
 function buildProdCard(p, cats, isAgotado) {
   const cat=cats.find(c=>c.id===p.catId);
   const stockOk=(p.stock||0)>0;
   const isLow=stockOk&&(p.stock||0)<=LOW_STOCK_THRESHOLD;
-  return `<div class="prod-card${isAgotado?' agotado':''}">
-    <div style="display:flex;gap:10px;margin-bottom:8px;">
-      <div style="width:66px;height:66px;border-radius:8px;overflow:hidden;background:var(--gray-100);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-        ${p.photo
-          ?`<img src="${p.photo}" alt="" style="width:100%;height:100%;object-fit:cover;" onerror="this.parentElement.innerHTML='<span style=font-size:28px>📦</span>'">`
-          :`<span style="font-size:28px;">📦</span>`}
+  const stockColor=isAgotado?'var(--red)':isLow?'var(--yellow)':'var(--green)';
+  return `<div class="prod-card${isAgotado?' agotado':''}" style="display:flex;align-items:center;gap:10px;padding:10px 12px;">
+    <div style="width:52px;height:52px;border-radius:8px;overflow:hidden;background:var(--gray-100);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+      ${p.photo
+        ?`<img src="${p.photo}" alt="" style="width:100%;height:100%;object-fit:cover;" onerror="this.parentElement.innerHTML='<span style=font-size:22px>📦</span>'">`
+        :`<span style="font-size:22px;">📦</span>`}
+    </div>
+    <div style="flex:1;min-width:0;">
+      <div style="display:flex;align-items:baseline;gap:5px;flex-wrap:wrap;">
+        <span class="prod-name" style="margin:0;font-size:13px;">${p.name}</span>
+        ${cat?`<span class="prod-cat-tag" style="font-size:9px;">${cat.name}</span>`:''}
       </div>
-      <div style="flex:1;min-width:0;">
-        <div style="margin-bottom:2px;">
-          ${cat?`<span class="prod-cat-tag">${cat.name}</span>`:''}
-          ${isAgotado?'<span class="agotado-badge" style="margin-left:4px;">❌ Agotado</span>':''}
-          ${isLow?`<span class="agotado-badge" style="background:#FFFBEB;color:var(--yellow);margin-left:4px;">⚠️ Bajo</span>`:''}
-        </div>
-        <div class="prod-name" style="margin-top:0;">${p.name}</div>
-        ${p.description?`<div class="prod-desc">${p.description.split('\n')[0]}</div>`:''}
-        ${p.precio?`<div class="prod-price">${p.precio}</div>`:''}
+      <div style="display:flex;align-items:center;gap:8px;margin-top:2px;flex-wrap:wrap;">
+        ${p.precio?`<span class="prod-price" style="margin:0;font-size:11px;">${p.precio}</span>`:''}
+        ${p.comision?`<span style="font-size:10px;color:var(--green);font-weight:600;">💰 ${p.comision}</span>`:''}
+        ${p.garantia?`<span style="font-size:10px;color:var(--gray-400);">🛡️ ${p.garantia}</span>`:''}
       </div>
     </div>
-    <div class="prod-meta">
-      <span class="stock-badge ${stockOk?isLow?'stock-low':'':'stock-low'}">Stock: ${p.stock||0}</span>
-      ${p.puntos?`<span style="font-size:10px;color:var(--blue);">⭐ ${p.puntos} pts</span>`:''}
-    </div>
-    ${p.garantia?`<div style="font-size:10px;color:var(--gray-400);margin-top:3px;">🛡️ ${p.garantia}</div>`:''}
-    ${p.comision?`<div style="font-size:10px;color:var(--gray-400);">💰 Comisión: ${p.comision}</div>`:''}
-    <div style="display:flex;gap:6px;margin-top:8px;">
-      ${isAgotado
-        ? `<button class="btn btn-green btn-sm btn-full" onclick="adjustStock(${p.id})">📥 Reponer stock</button>`
-        : `<button class="btn btn-ghost btn-sm" style="flex:1;" onclick="openEditProductModal(${p.id})">✏️ Editar</button>
-           <button class="btn btn-ghost btn-sm" onclick="adjustStock(${p.id})" title="Ajustar stock">📥</button>`
-      }
-      <button class="btn btn-ghost btn-sm" style="color:var(--red);" onclick="removeProducto(${p.id})">🗑️</button>
+    <div style="flex-shrink:0;display:flex;flex-direction:column;align-items:flex-end;gap:5px;">
+      <span style="font-size:11px;font-weight:700;color:${stockColor};">Stock: ${p.stock||0}</span>
+      <div style="display:flex;gap:4px;">
+        ${isAgotado
+          ? `<button class="btn btn-green btn-sm" onclick="adjustStock(${p.id})" style="font-size:10px;padding:3px 7px;">📥 Reponer</button>`
+          : `<button class="btn btn-ghost btn-sm" onclick="openEditProductModal(${p.id})" style="font-size:10px;padding:3px 7px;">✏️</button>
+             <button class="btn btn-ghost btn-sm" onclick="adjustStock(${p.id})" style="font-size:10px;padding:3px 7px;">📥</button>`
+        }
+        <button class="btn btn-ghost btn-sm" style="color:var(--red);font-size:10px;padding:3px 7px;" onclick="removeProducto(${p.id})">🗑️</button>
+      </div>
     </div>
   </div>`;
 }
@@ -2355,7 +2378,7 @@ function renderProductGrid() {
   }
   const activos=prods.filter(p=>(p.stock||0)>0);
   const agotados=prods.filter(p=>(p.stock||0)===0);
-  const grid = s => `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;">${s}</div>`;
+  const grid = s => `<div style="display:flex;flex-direction:column;gap:8px;">${s}</div>`;
   let html='';
   if(activos.length){
     html+=`<div class="stock-section-header">En stock <span style="background:var(--gray-100);border-radius:20px;font-size:9px;padding:2px 7px;">${activos.length}</span></div>`;
