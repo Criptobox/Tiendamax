@@ -144,11 +144,6 @@
       .admin-panel-3col .col-mid   { height: auto; overflow: visible; }
       .admin-panel-3col .col-right { height: auto; overflow: visible; border-left: none; border-top: 1px solid var(--gray-200); }
 
-      /* Stock panel inner grid */
-      .stock-inner-grid { grid-template-columns: 1fr !important; height: auto !important; overflow: visible !important; }
-      .stock-inner-grid .col-left { height: auto; overflow: visible; border-right: none; border-bottom: 1px solid var(--gray-200); }
-      .stock-inner-grid .col-mid  { height: auto; overflow: visible; }
-
       /* Product picker: single col */
       #pickerProductGrid { grid-template-columns: 1fr !important; }
 
@@ -719,23 +714,20 @@
 
     <!-- ── STOCK PANEL ── -->
     <div id="adminStockPanel" class="admin-panel-full" style="display:none;">
-      <div class="stock-inner-grid" style="display:grid;grid-template-columns:220px 1fr;height:100%;overflow:hidden;">
-        <div class="col col-left">
-          <div class="lbl">Categorías</div>
-          <div class="add-row" style="margin-bottom:10px;">
-            <input type="text" id="newCatInput" placeholder="Nueva categoría" onkeydown="if(event.key==='Enter')addCategoria()">
-            <button class="btn btn-blue btn-sm" onclick="addCategoria()">+</button>
+      <div style="padding:12px 14px 8px;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:10;background:var(--surface);">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;margin-bottom:8px;">
+          <div class="lbl" style="margin:0;" id="stockPanelTitle">Todos los productos</div>
+          <div style="display:flex;gap:6px;">
+            <div class="add-row" style="margin:0;">
+              <input type="text" id="newCatInput" placeholder="Nueva categoría" style="font-size:12px;padding:5px 10px;" onkeydown="if(event.key==='Enter')addCategoria()">
+              <button type="button" class="btn btn-ghost btn-sm" onclick="addCategoria()">+Cat</button>
+            </div>
+            <button class="btn btn-blue btn-sm" onclick="openAddProductModal()">+ Producto</button>
           </div>
-          <div id="categoriasList"></div>
         </div>
-        <div class="col col-mid" style="position:relative;">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
-            <div class="lbl" style="margin:0;" id="stockPanelTitle">Todos los productos</div>
-            <button class="btn btn-blue btn-sm" onclick="openAddProductModal()">+ Nuevo producto</button>
-          </div>
-          <div id="productGrid"></div>
-        </div>
+        <div id="categoriasList" style="display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none;-webkit-overflow-scrolling:touch;"></div>
       </div>
+      <div style="padding:14px;" id="productGrid"></div>
     </div>
 
     <!-- ── GESTORES PANEL ── -->
@@ -2261,18 +2253,15 @@ function renderStockCategorias() {
   const cats=getCategorias();
   const c=document.getElementById('categoriasList');
   c.innerHTML=
-    `<div class="cat-item ${stockCatFilter===null?'active':''}" onclick="setStockCat(null)">
-      📦 Todos <span style="margin-left:auto;font-size:10px;color:var(--gray-400);">${getProductos().length}</span>
-    </div>`+
+    `<button type="button" class="pcat-tab ${stockCatFilter===null?'active':''}" onclick="setStockCat(null)" style="flex-shrink:0;">
+      📦 Todos <span style="opacity:.7;">(${getProductos().length})</span>
+    </button>`+
     cats.map(cat=>{
       const count=getProductos().filter(p=>p.catId===cat.id).length;
-      return `<div class="cat-item ${stockCatFilter===cat.id?'active':''}" onclick="setStockCat(${cat.id})">
-        <span>${cat.name}</span>
-        <span style="margin-left:auto;display:flex;align-items:center;gap:6px;">
-          <span style="font-size:10px;color:var(--gray-400);">${count}</span>
-          <button style="background:none;border:none;cursor:pointer;color:var(--red);font-size:13px;padding:0;" onclick="removeCategoria(${cat.id},event)">×</button>
-        </span>
-      </div>`;
+      return `<button type="button" class="pcat-tab ${stockCatFilter===cat.id?'active':''}" onclick="setStockCat(${cat.id})" style="flex-shrink:0;display:inline-flex;align-items:center;gap:5px;">
+        ${cat.name} <span style="opacity:.7;">(${count})</span>
+        <span onclick="removeCategoria(${cat.id},event)" style="font-size:13px;opacity:.55;margin-left:1px;line-height:1;">×</span>
+      </button>`;
     }).join('');
 }
 function setStockCat(id) {
