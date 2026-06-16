@@ -2439,12 +2439,12 @@ function saveProduct() {
     addNotif('new_product',prod.name,newId,prod.precio||'');
     showToast('Producto agregado ✓');
   }
-  closeProductModal();renderProductGrid();renderStockCategorias();
+  closeProductModal();renderProductGrid();renderStockCategorias();maybeAutoSync();
 }
 function removeProducto(id) {
   if(!confirm('¿Eliminar este producto?'))return;
   saveProductos(getProductos().filter(p=>p.id!==id));
-  renderProductGrid();renderStockCategorias();showToast('Producto eliminado');
+  renderProductGrid();renderStockCategorias();showToast('Producto eliminado');maybeAutoSync();
 }
 function adjustStock(id) {
   const p=productoOf(id);if(!p)return;
@@ -2456,6 +2456,7 @@ function adjustStock(id) {
   if(oldStock===0&&num>0) addNotif('restocked',p.name,id,`stock: ${num}`);
   else if(num===0&&oldStock>0) addNotif('out_of_stock',p.name,id,'stock agotado');
   else if(num>0&&num<=LOW_STOCK_THRESHOLD&&oldStock>LOW_STOCK_THRESHOLD) addNotif('low_stock',p.name,id,`quedan ${num}`);
+  maybeAutoSync();
   renderProductGrid();showToast('Stock actualizado ✓');
 }
 
@@ -2944,6 +2945,7 @@ async function syncFromTiendaMax() {
     renderStockCategorias(); renderProductGrid();
     statusEl.innerHTML = `<span style="color:var(--green);">✓ ${productos.length} productos y ${categorias.length} categorías cargados</span>`;
     showToast(`✓ ${productos.length} productos importados desde TiendaMax`);
+    maybeAutoSync();
   } catch(e) {
     statusEl.innerHTML = `<span style="color:var(--red);">✗ ${e.message}</span>`;
     showToast('Error al leer los archivos de TiendaMax');
