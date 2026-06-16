@@ -95,7 +95,7 @@
     body.dark #mobileBackBar { background:var(--blue-lt); border-color:var(--blue-bd); }
 
     /* ── MOBILE ── */
-    @media (max-width: 768px) {
+    @media (max-width: 900px) {
       body { overflow-y: auto; overflow-x: hidden; }
       header { padding: 0 10px; gap: 8px; }
       .brand-sub { display: none; }
@@ -105,16 +105,21 @@
       .admin-session-label { font-size: 10px; }
       #btnDemo { display: none; }
 
-      .layout, .layout.active { height: auto; overflow: visible; min-height: calc(100vh - 54px); }
+      .layout, .layout.active { height: auto; overflow: visible; }
 
-      /* Gestor layout: single col, show selector OR form */
-      #layoutGestor.active { grid-template-columns: 1fr !important; }
-      #layoutGestor .col-left { height: auto; overflow: visible; border-right: none; border-bottom: 1px solid var(--gray-200); }
-      #layoutGestor .col-mid { height: auto; overflow: visible; }
+      /* Gestor layout: flex columna única, sin estiramiento */
+      #layoutGestor.active {
+        display: flex !important;
+        flex-direction: column;
+        height: auto !important;
+        min-height: 0 !important;
+      }
+      #layoutGestor .col { height: auto; overflow: visible; padding: 10px; }
+      #layoutGestor .col-left { border-right: none; border-bottom: 1px solid var(--border); background: var(--surface); }
+      #layoutGestor .col-mid  { background: transparent; }
 
-      /* When gestor selected on mobile: hide left col, show back bar */
+      /* Gestor seleccionado: ocultar selector, mostrar formulario full */
       #layoutGestor.has-gestor .col-left { display: none !important; }
-      #layoutGestor.has-gestor .col-mid { grid-column: 1 / -1; }
       #layoutGestor.has-gestor #mobileBackBar { display: flex; }
 
       /* Admin layout */
@@ -124,21 +129,20 @@
       .admin-content { height: auto; overflow: visible; }
       .admin-panel-full { height: auto; overflow: visible; }
 
-      /* Vales 3col → single col stack */
+      /* Vales 3col → columna única */
       .admin-panel-3col { grid-template-columns: 1fr !important; height: auto; overflow: visible; }
-      .admin-panel-3col .col-left  { height: auto; overflow: visible; border-right: none; border-bottom: 1px solid var(--gray-200); }
+      .admin-panel-3col .col-left  { height: auto; overflow: visible; border-right: none; border-bottom: 1px solid var(--border); }
       .admin-panel-3col .col-mid   { height: auto; overflow: visible; }
-      .admin-panel-3col .col-right { height: auto; overflow: visible; border-left: none; border-top: 1px solid var(--gray-200); }
+      .admin-panel-3col .col-right { height: auto; overflow: visible; border-left: none; border-top: 1px solid var(--border); }
 
-      /* Product picker: single col */
+      /* Product picker: una sola columna */
       #pickerProductGrid { grid-template-columns: 1fr !important; }
 
       /* Stats */
       #statsSummaryRow, #statsInventarioRow { grid-template-columns: 1fr 1fr !important; }
       #adminStatsPanel > div > div[style*="grid-template-columns:1fr 1fr"] { grid-template-columns: 1fr !important; }
 
-      /* Gestor panel */
-      .col { padding: 10px; }
+      /* Tarjetas y botones */
       .card { padding: 10px 12px; }
       .btn { padding: 10px 14px; font-size: 13px; }
       .btn-sm { padding: 7px 10px; font-size: 12px; }
@@ -171,6 +175,9 @@
     .layout.active { display:flex; flex-direction:column; }
     #layoutGestor.active { display:grid; grid-template-columns:210px 1fr; }
     .col { height:100%; overflow-y:auto; padding:14px; }
+    /* Desktop: ranking centrado verticalmente cuando no hay gestor */
+    #layoutGestor:not(.has-gestor) .col-mid { display:flex; flex-direction:column; justify-content:center; padding:28px 20px; }
+    #layoutGestor.has-gestor .col-mid { display:block; }
     .col-left  { background:white; border-right:1px solid var(--gray-200); }
     .col-mid   { background:var(--gray-50); }
     .col-right { background:white; border-left:1px solid var(--gray-200); }
