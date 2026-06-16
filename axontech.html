@@ -148,7 +148,7 @@
       #pickerProductGrid { grid-template-columns: 1fr !important; }
 
       /* Stats */
-      #statsSummaryRow { grid-template-columns: 1fr 1fr !important; }
+      #statsSummaryRow, #statsInventarioRow { grid-template-columns: 1fr 1fr !important; }
       #adminStatsPanel > div > div[style*="grid-template-columns:1fr 1fr"] { grid-template-columns: 1fr !important; }
 
       /* Gestor panel */
@@ -770,6 +770,23 @@
             <div id="statsProductList"></div>
           </div>
         </div>
+
+        <!-- ── INVENTARIO ANALYTICS ── -->
+        <div style="margin-top:28px;">
+          <div class="lbl">📦 Inventario</div>
+          <div id="statsInventarioRow" style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px;"></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+            <div>
+              <div class="lbl">Stock por categoría</div>
+              <div id="statsCatList"></div>
+            </div>
+            <div>
+              <div class="lbl">🏆 Más vendidos (total histórico)</div>
+              <div id="statsTopVendidos"></div>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
 
@@ -2501,6 +2518,73 @@ function renderStats() {
       </div>`;
     }).join('') :
     '<div class="es"><div class="es-text">Sin datos de productos en el período</div></div>';
+
+  // ── INVENTARIO ──
+  const prods=getProductos();const cats=getCategorias();
+  const enStock=prods.filter(p=>(p.stock||0)>0).length;
+  const agotados=prods.filter(p=>(p.stock||0)===0).length;
+  const stockBajo=prods.filter(p=>(p.stock||0)>0&&(p.stock||0)<=LOW_STOCK_THRESHOLD).length;
+  let valorTotal=0;
+  prods.forEach(p=>{const n=parsePrecioNum(p.precio||'');if(n>0)valorTotal+=n*(p.stock||0);});
+  const valorStr=valorTotal>0?`$${valorTotal.toLocaleString('es-ES',{maximumFractionDigits:0})} USD`:'—';
+
+  document.getElementById('statsInventarioRow').innerHTML=
+    [{label:'Total productos',val:prods.length,color:'var(--blue)'},
+     {label:'En stock',val:enStock,color:'var(--green)'},
+     {label:'Agotados',val:agotados,color:'var(--red)'},
+     {label:'Stock bajo',val:stockBajo,color:'var(--yellow)'}]
+    .map(({label,val,color})=>
+      `<div class="stat-card"><div class="stat-num" style="color:${color};">${val}</div><div class="stat-lbl">${label}</div></div>`
+    ).join('')+
+    (valorTotal>0?`<div class="stat-card" style="grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;">
+      <div class="stat-lbl">💰 Valor total en inventario</div>
+      <div style="font-size:20px;font-weight:900;color:var(--green);">${valorStr}</div>
+    </div>`:'');
+
+  // ── POR CATEGORÍA ──
+  document.getElementById('statsCatList').innerHTML=cats.length?
+    cats.map(cat=>{
+      const cp=prods.filter(p=>p.catId===cat.id);
+      const cs=cp.filter(p=>(p.stock||0)>0).length;
+      const ca=cp.filter(p=>(p.stock||0)===0).length;
+      const pct=cp.length?Math.round(cs/cp.length*100):0;
+      return `<div class="card" style="padding:10px 14px;margin-bottom:6px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+          <span style="font-size:13px;font-weight:700;">${cat.name}</span>
+          <span style="font-size:11px;color:var(--gray-400);">${cp.length} prods</span>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <div style="flex:1;background:var(--gray-100);border-radius:20px;height:8px;overflow:hidden;">
+            <div style="width:${pct}%;height:100%;background:var(--green);border-radius:20px;transition:width .5s;"></div>
+          </div>
+          <span style="font-size:10px;color:var(--green);font-weight:700;white-space:nowrap;">${cs}✓</span>
+          ${ca?`<span style="font-size:10px;color:var(--red);font-weight:700;white-space:nowrap;">${ca}✗</span>`:''}
+        </div>
+      </div>`;
+    }).join(''):
+    '<div class="es"><div class="es-text">Sin categorías</div></div>';
+
+  // ── TOP VENDIDOS (histórico total) ──
+  const allConf=getVales().filter(v=>['confirmed','pending_payment'].includes(v.status));
+  const soldMap={};
+  allConf.forEach(v=>(v.valeProductos||[]).forEach(({id,qty})=>{soldMap[id]=(soldMap[id]||0)+qty;}));
+  const topSold=Object.entries(soldMap).sort(([,a],[,b])=>b-a).slice(0,7);
+  const maxSold=topSold[0]?.[1]||1;
+  document.getElementById('statsTopVendidos').innerHTML=topSold.length?
+    topSold.map(([id,qty])=>{
+      const p=productoOf(parseInt(id));
+      const pct=Math.round(qty/maxSold*100);
+      return `<div class="card" style="padding:10px 14px;margin-bottom:6px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+          <span style="font-size:12px;font-weight:700;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${p?p.name:`Prod. ${id}`}</span>
+          <span style="font-size:13px;font-weight:800;color:var(--blue);margin-left:8px;white-space:nowrap;">${qty} uds</span>
+        </div>
+        <div style="background:var(--gray-100);border-radius:20px;height:5px;overflow:hidden;">
+          <div style="width:${pct}%;height:100%;background:var(--blue);border-radius:20px;"></div>
+        </div>
+      </div>`;
+    }).join(''):
+    '<div class="es"><div class="es-text">Sin ventas confirmadas aún</div></div>';
 }
 
 // ══════════════════════════════════════════
