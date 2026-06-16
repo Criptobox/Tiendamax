@@ -2109,10 +2109,12 @@ async function syncToGitHub(silent) {
   const statusEl=document.getElementById('ghSyncStatus');
   if(statusEl&&!silent)statusEl.innerHTML='<span style="color:var(--blue);">⟳ Sincronizando...</span>';
   try {
+    const _cfg=getConfig();
+    const cfgBackup={ghRepo:_cfg.ghRepo,ghPath:_cfg.ghPath,ghAutoSync:_cfg.ghAutoSync,metaPuntos:_cfg.metaPuntos};
     const data={
       gestores:getGestores(),mensajeros:getMensajeros(),
       productos:getProductos(),categorias:getCategorias(),
-      vales:getVales(),timestamp:new Date().toISOString()
+      vales:getVales(),config:cfgBackup,timestamp:new Date().toISOString()
     };
     const json=JSON.stringify(data,null,2);
     const content=btoa(unescape(encodeURIComponent(json)));
@@ -2184,14 +2186,45 @@ async function autoLoadFromGitHub() {
     if(data.gestores)  saveGestores(data.gestores);
     if(data.mensajeros)saveMensajeros(data.mensajeros);
     if(data.vales)     saveVales(data.vales);
-    if(data.config)    saveConfig(data.config);
     if(data.notifs)    saveNotifs(data.notifs);
+    if(data.config){ const cur=getConfig(); saveConfig(Object.assign({},data.config,{ghToken:cur.ghToken||data.config.ghToken})); }
     // Productos y categorías: guardar en memoria, aplicar solo cuando el gestor toque Stock
     if(data.productos)  _ghPendingProds=data.productos;
     if(data.categorias) _ghPendingCats=data.categorias;
     // Re-render con datos frescos
     renderGestores();renderGestorRanking();renderGestorNotifs();renderMyVales();updateAdminBadge();
   } catch(e) { /* fallo silencioso — usa datos locales */ }
+}
+async function recoveryRestore() {
+  const token=(document.getElementById('recoveryToken')||{}).value?.trim();
+  const repo=(document.getElementById('recoveryRepo')||{}).value?.trim();
+  const path=(document.getElementById('recoveryPath')||{}).value?.trim();
+  if(!token||!repo||!path){showToast('Rellena todos los campos');return;}
+  const btn=document.getElementById('recoveryBtn');
+  if(btn){btn.disabled=true;btn.textContent='Restaurando...';}
+  try {
+    const parts=repo.split('/');const owner=parts[0];const repoName=parts.slice(1).join('/');
+    const url=`https://api.github.com/repos/${owner}/${repoName}/contents/${path}`;
+    const res=await fetch(url,{headers:{Authorization:`token ${token}`,Accept:'application/vnd.github.v3+json'}});
+    if(!res.ok){showToast(`Error ${res.status} — revisa token y ruta`);if(btn){btn.disabled=false;btn.textContent='Restaurar';}return;}
+    const j=await res.json();
+    const text=decodeURIComponent(escape(atob(j.content.replace(/\n/g,''))));
+    const data=JSON.parse(text);
+    const cfgBackup=data.config||{};
+    saveConfig(Object.assign({},cfgBackup,{ghToken:token,ghRepo:repo,ghPath:path,ghAutoSync:true}));
+    if(data.gestores)saveGestores(data.gestores);
+    if(data.mensajeros)saveMensajeros(data.mensajeros);
+    if(data.vales)saveVales(data.vales);
+    if(data.notifs)saveNotifs(data.notifs);
+    if(data.productos){saveProductos(data.productos);_ghPendingProds=null;}
+    if(data.categorias){saveCategorias(data.categorias);_ghPendingCats=null;}
+    const m=document.getElementById('recoveryModal');if(m)m.classList.remove('show');
+    renderGestores();renderGestorRanking();renderGestorNotifs();renderMyVales();
+    showToast('Datos restaurados desde GitHub ✓');
+  } catch(e) {
+    showToast('Error al conectar con GitHub');
+    if(btn){btn.disabled=false;btn.textContent='Restaurar';}
+  }
 }
 async function maybeAutoSync() {
   const cfg=getConfig();
@@ -2416,6 +2449,10 @@ function initGestorPage() {
   renderGestorNotifs();
   renderGestorRanking();
   autoLoadFromGitHub(); // carga silenciosa: gestores, vales, notifs + productos en memoria
+  // Si no hay gestores ni config, mostrar pantalla de recuperación
+  if(getGestores().length===0 && !getConfig().ghToken) {
+    setTimeout(()=>{ const m=document.getElementById('recoveryModal'); if(m)m.classList.add('show'); }, 800);
+  }
   const bc = document.getElementById('btnCatalogo');
   if (bc) bc.style.display = 'inline-flex';
   // Triple-tap on AX logo → go to admin page

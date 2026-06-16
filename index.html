@@ -276,6 +276,32 @@
   </div>
 </div>
 
+<!-- ── MODAL: Recuperación de datos ── -->
+<div class="modal-bg" id="recoveryModal">
+  <div class="modal" style="max-width:360px;">
+    <div class="modal-title">🔄 Restaurar datos</div>
+    <div class="modal-sub" style="margin-bottom:14px;">No se encontraron datos locales. Si tenías una copia en GitHub, puedes restaurarla aquí.</div>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <div>
+        <label style="font-size:11px;font-weight:700;color:var(--gray-500);display:block;margin-bottom:4px;">Token de GitHub</label>
+        <input type="password" id="recoveryToken" placeholder="ghp_xxxxxxxxxxxx" style="width:100%;box-sizing:border-box;">
+      </div>
+      <div>
+        <label style="font-size:11px;font-weight:700;color:var(--gray-500);display:block;margin-bottom:4px;">Repositorio</label>
+        <input type="text" id="recoveryRepo" value="Criptobox/AXONTECH" style="width:100%;box-sizing:border-box;">
+      </div>
+      <div>
+        <label style="font-size:11px;font-weight:700;color:var(--gray-500);display:block;margin-bottom:4px;">Ruta del archivo</label>
+        <input type="text" id="recoveryPath" value="datos.json" style="width:100%;box-sizing:border-box;">
+      </div>
+    </div>
+    <div class="modal-btns" style="margin-top:16px;">
+      <button type="button" class="btn btn-ghost btn-full" onclick="document.getElementById('recoveryModal').classList.remove('show')">Empezar desde cero</button>
+      <button type="button" class="btn btn-blue btn-full" id="recoveryBtn" onclick="recoveryRestore()">Restaurar</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script src="./app.js"></script>
