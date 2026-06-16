@@ -151,6 +151,9 @@ let statsTabDirty    = true;
 let rankingCache = null; // {data: [...], ts: 0}
 // Confirm action callback
 let confirmActionCb  = null;
+// GitHub auto-load: productos/categorias se guardan en memoria hasta que el gestor toca Stock
+let _ghPendingProds = null;
+let _ghPendingCats  = null;
 
 // ══════════════════════════════════════════
 //  HELPERS
@@ -1132,6 +1135,8 @@ function sendVale() {
 //  PRODUCT PICKER (gestor)
 // ══════════════════════════════════════════
 function openProductPicker() {
+  if(_ghPendingProds){saveProductos(_ghPendingProds);_ghPendingProds=null;}
+  if(_ghPendingCats){saveCategorias(_ghPendingCats);_ghPendingCats=null;}
   if(!getProductos().length){showToast('El admin aún no ha cargado productos');return;}
   pickerSelected={};
   selectedProductsUI.forEach(p=>{pickerSelected[p.id]=p.qty;});
@@ -1693,6 +1698,9 @@ function updateMensajeroBadge() {
 //  GESTOR CATALOG
 // ══════════════════════════════════════════
 function openGestorCatalog() {
+  // Aplica productos descargados en background si hay pendientes
+  if(_ghPendingProds){saveProductos(_ghPendingProds);_ghPendingProds=null;}
+  if(_ghPendingCats){saveCategorias(_ghPendingCats);_ghPendingCats=null;}
   const prods=getProductos().filter(p=>(p.stock||0)>0);
   if(!prods.length){showToast('No hay productos disponibles');return;}
   catalogCatFilter=null;expandedCatalogId=null;
@@ -2161,6 +2169,30 @@ async function loadFromGitHub() {
     showToast('Error al restaurar datos');
   }
 }
+async function autoLoadFromGitHub() {
+  const cfg=getConfig();
+  if(!cfg.ghToken||!cfg.ghRepo||!cfg.ghPath) return;
+  try {
+    const parts=cfg.ghRepo.split('/');const owner=parts[0];const repo=parts.slice(1).join('/');
+    const url=`https://api.github.com/repos/${owner}/${repo}/contents/${cfg.ghPath}`;
+    const res=await fetch(url,{headers:{Authorization:`token ${cfg.ghToken}`,Accept:'application/vnd.github.v3+json'}});
+    if(!res.ok) return;
+    const j=await res.json();
+    const text=decodeURIComponent(escape(atob(j.content.replace(/\n/g,''))));
+    const data=JSON.parse(text);
+    // Aplica datos esenciales inmediatamente
+    if(data.gestores)  saveGestores(data.gestores);
+    if(data.mensajeros)saveMensajeros(data.mensajeros);
+    if(data.vales)     saveVales(data.vales);
+    if(data.config)    saveConfig(data.config);
+    if(data.notifs)    saveNotifs(data.notifs);
+    // Productos y categorías: guardar en memoria, aplicar solo cuando el gestor toque Stock
+    if(data.productos)  _ghPendingProds=data.productos;
+    if(data.categorias) _ghPendingCats=data.categorias;
+    // Re-render con datos frescos
+    renderGestores();renderGestorRanking();renderGestorNotifs();renderMyVales();updateAdminBadge();
+  } catch(e) { /* fallo silencioso — usa datos locales */ }
+}
 async function maybeAutoSync() {
   const cfg=getConfig();
   if(cfg.ghAutoSync&&cfg.ghToken&&cfg.ghRepo&&cfg.ghPath){
@@ -2383,6 +2415,7 @@ function initGestorPage() {
   renderGestores();
   renderGestorNotifs();
   renderGestorRanking();
+  autoLoadFromGitHub(); // carga silenciosa: gestores, vales, notifs + productos en memoria
   const bc = document.getElementById('btnCatalogo');
   if (bc) bc.style.display = 'inline-flex';
   // Triple-tap on AX logo → go to admin page
