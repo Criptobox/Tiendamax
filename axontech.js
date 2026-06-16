@@ -709,7 +709,10 @@ function renderValeDetail() {
       </table>
       ${notesHighlight}
     </div>
-    ${v.status!=='confirmed'?`<div class="card" style="padding:10px 14px;"><button type="button" class="btn btn-ghost btn-full btn-sm" onclick="openEditValeModal(${v.id})">✏️ Editar vale</button></div>`:''}
+    <div class="card" style="padding:10px 14px;display:flex;gap:6px;">
+      ${v.status!=='confirmed'?`<button type="button" class="btn btn-ghost btn-full btn-sm" onclick="openEditValeModal(${v.id})">✏️ Editar vale</button>`:''}
+      <button type="button" class="btn btn-sm btn-full" style="background:rgba(239,68,68,.1);color:var(--red);border:none;" onclick="adminDeleteVale(${v.id})">🗑️ Eliminar vale</button>
+    </div>
     ${actHTML?`<div class="card"><div class="det-actions">${actHTML}</div></div>`:''}
     <div class="card" style="padding:10px 14px;">
       <div style="font-size:10px;font-weight:700;color:var(--gray-400);letter-spacing:.5px;text-transform:uppercase;margin-bottom:6px;">📝 Notas (admin)</div>
@@ -984,12 +987,39 @@ function renderMyVales() {
   c.innerHTML=mine.map(v=>{
     const s=sMap[v.status]||{label:v.status,color:'var(--gray-400)',icon:'•'};
     const pts=(v.valeProductos||[]).reduce((sum,p)=>{const pr=productoOf(p.id);return sum+(pr?pr.puntos*p.qty:0);},0);
+    const canCancel=v.status==='pending';
     return `<div class="mv-card st-${v.status}">
-      <div class="mv-head"><span class="mv-time">${valeNumStr(v)?`<b style="color:var(--blue);">${valeNumStr(v)}</b> `:''}${timeStr(v.ts)}</span>${pts>0?`<span style="font-size:10px;color:var(--blue);font-weight:700;">⭐ ${pts} pts</span>`:''}</div>
+      <div class="mv-head">
+        <span class="mv-time">${valeNumStr(v)?`<b style="color:var(--blue);">${valeNumStr(v)}</b> `:''}${timeStr(v.ts)}</span>
+        <div style="display:flex;align-items:center;gap:6px;">
+          ${pts>0?`<span style="font-size:10px;color:var(--blue);font-weight:700;">⭐ ${pts} pts</span>`:''}
+          ${canCancel?`<button type="button" onclick="cancelVale(${v.id})" style="background:rgba(239,68,68,.12);border:none;color:var(--red);border-radius:6px;padding:2px 8px;font-size:11px;font-weight:700;cursor:pointer;" title="Cancelar vale">✕ Cancelar</button>`:''}
+        </div>
+      </div>
       <div class="mv-info">${v.cliente||'—'} · ${v.articulo||'—'}</div>
       <div class="mv-foot"><span class="mv-status" style="color:${s.color}">${s.icon} ${s.label}</span></div>
     </div>`;
   }).join('');
+}
+function cancelVale(id) {
+  const v=getVales().find(x=>x.id===id);
+  if(!v||v.status!=='pending'){showToast('No se puede cancelar este vale');return;}
+  showConfirmAction('¿Cancelar este vale?',`${v.cliente||''} · ${v.articulo||''}`,'Sí, cancelar','btn-red',()=>{
+    saveVales(getVales().filter(x=>x.id!==id));
+    if(selectedValeId===id)selectedValeId=null;
+    showToast('Vale cancelado');
+    renderAdminGestores();renderInbox();renderValeDetail();renderMyVales();maybeAutoSync();
+  });
+}
+
+function adminDeleteVale(id) {
+  const v=getVales().find(x=>x.id===id);if(!v)return;
+  showConfirmAction('¿Eliminar este vale?',`${v.cliente||''} · ${v.articulo||''}`,'Eliminar','btn-red',()=>{
+    saveVales(getVales().filter(x=>x.id!==id));
+    if(selectedValeId===id)selectedValeId=null;
+    showToast('Vale eliminado');
+    renderAdminGestores();renderInbox();renderValeDetail();renderMyVales();maybeAutoSync();
+  });
 }
 
 // ══════════════════════════════════════════
