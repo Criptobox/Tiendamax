@@ -545,7 +545,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1778336789459.webp",
     "precioActual": 80,
     "descuento": 0,
-    "stock": 0,
+    "stock": 2,
     "categoria": "WIFI",
     "subcategoria": "ROUTERS",
     "masVendido": false,
@@ -1334,7 +1334,7 @@
     "precioActual": 80,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 5,
+    "stock": 0,
     "comision": 10,
     "comisionMoneda": "USD",
     "categoria": "WIFI",
@@ -1587,5 +1587,49 @@
     "garantia": "",
     "devolucion": false,
     "fechaAgregado": "2026-06-13T19:15:57.011Z"
+  },
+  {
+    "id": 1781711154462,
+    "nombre": "Repetidor WiFi de Rango Extendido TP-Link",
+    "descripcion": "✅ Amplía la cobertura de tu red WiFi en el hogar u oficina con este repetidor TP-Link. Mantén una conexión estable y de alta velocidad en todas las áreas.",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1781711152979.jpg",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1781711152979.jpg"
+    ],
+    "precioActual": 30,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 13,
+    "comision": 1000,
+    "comisionMoneda": "MN",
+    "categoria": "WIFI",
+    "subcategoria": "",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "fechaAgregado": "2026-06-17T15:45:54.462Z"
+  },
+  {
+    "id": 1781711424820,
+    "nombre": "Router WiFi inalámbrico D-Link Avanzado de Doble Banda",
+    "descripcion": "Router WiFi D-Link de doble banda con velocidad agregada de hasta 1200 Mbps, distribuidos en 300 Mbps en 2.4 GHz y 900 Mbps en 5 GHz. Incorpora tecnología MU-MIMO para gestionar múltiples dispositivos simultáneamente, cuatro puertos Gigabit Ethernet y soporte para IPv6. Cuenta con seguridad avanzada mediante WPA3, firewall SPI y gestión remota basada en la nube para una configuración eficiente. Es la solución ideal para hogares y pequeñas empresas que requieren estabilidad en streaming 4K, videoconferencias y juegos en línea.",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1781711422926.jpg",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1781711422926.jpg"
+    ],
+    "precioActual": 60,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 4,
+    "comision": 10,
+    "comisionMoneda": "USD",
+    "categoria": "WIFI",
+    "subcategoria": "ROUTERS",
+    "masVendido": false,
+    "usado": true,
+    "garantia": "",
+    "devolucion": false,
+    "fechaAgregado": "2026-06-17T15:50:24.820Z"
   }
 ]
