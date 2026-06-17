@@ -47,20 +47,25 @@
   },
   {
     "id": 1777924118004,
-    "nombre": "INVERSOR",
-    "descripcion": "Ideal para combatir los apagones. Este inversor permitira mantener trabajando electrodomesticos como un refrigerador, ventiladores, televisores y luces de la casa\npor horas (dependiendo del respaldo de baterias), durante un corte de fluido electrico.\n--Este inversor brinda una salida sinusoidal pura de 110 V (corriente alterna) con 2000 watts continuos y 4000 watts maximos.\n-Se puede alimentar\nde una bateria de *24V*.\n-Posee dos salidas universales que sirven para conectores de corriente plano (el que se usa mayoritariamente en Cuba), europeo o chino\n-Un display digital que muestra los voltajes de entrada (DC) y salida (AC) en tiempo real.",
+    "nombre": "INVERSOR 12V",
+    "descripcion": "Ideal para combatir los apagones. Este inversor permitira mantener trabajando electrodomesticos como un refrigerador, ventiladores, televisores y luces de la casa\npor horas (dependiendo del respaldo de baterias), durante un corte de fluido electrico.\n--Este inversor brinda una salida sinusoidal pura de 110 V (corriente alterna) con 2000 watts continuos y 4000 watts maximos.\n-Se puede alimentar\nde una bateria de *12V*.\n-Posee dos salidas universales que sirven para conectores de corriente plano (el que se usa mayoritariamente en Cuba), europeo o chino\n-Un display digital que muestra los voltajes de entrada (DC) y salida (AC) en tiempo real.",
     "imagen": "https://tiendamax.org/imagenes/img_1777924118004.webp",
     "precioOriginal": 0,
     "precioActual": 170,
     "descuento": 0,
-    "stock": 0,
+    "stock": 7,
     "categoria": "ENERGIA",
     "subcategoria": "INVERSORES",
     "masVendido": false,
     "usado": false,
     "garantia": "",
     "devolucion": false,
-    "comision": 10
+    "comision": 10,
+    "imagenes": [
+      "https://tiendamax.org/imagenes/img_1777924118004.webp"
+    ],
+    "comisionMoneda": "USD",
+    "recomendados": []
   },
   {
     "id": 1777924173211,
