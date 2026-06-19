@@ -2663,3 +2663,126 @@ function tmExtractJsonObject(text) {
   document.addEventListener('DOMContentLoaded',()=>setTimeout(boot,1500));
   document.addEventListener('click',e=>{if(e.target.closest('[data-arg="publicar-ahora"],[data-tab="publicar-ahora"]'))setTimeout(boot,400);});
 })();
+// ── tm-deepseek-tools-v16 (Agente Inteligente Autónomo de Tareas) ──
+(function(){
+  const $ = (s, r = document) => r.querySelector(s);
+  
+  // 1. Solicitar permisos de notificación nativa al entrar al panel
+  function solicitarPermisosNotificaciones() {
+    if ('Notification' in window && Notification.permission === 'default') {
+      Notification.requestPermission();
+    }
+  }
+
+  // 2. Lanzar la notificación Push en el dispositivo
+  function lanzarNotificacionPush(titulo, mensaje) {
+    if ('Notification' in window && Notification.permission === 'granted') {
+      new Notification(titulo, {
+        body: mensaje,
+        icon: '/favicon.ico' // Asegúrate de colocar tu ruta correcta de icono
+      });
+    }
+  }
+
+  // 3. El Cerebro del Agente: Analiza el estado y genera planes de acción autónomos
+  async function ejecutarAgenteAutonomo() {
+    console.log('🤖 Agente TiendaMax activado: Analizando estado general...');
+    
+    let fb = { vistas: {}, whatsapp: {}, suscriptores: 0 };
+    try { if (typeof tmLeerAnalytics === 'function') fb = await tmLeerAnalytics(); } catch(e){}
+    
+    // Reutiliza tu payload estructurado del módulo v3
+    let payload = {};
+    try {
+      if (typeof buildSummaryPayload === 'function') {
+        payload = buildSummaryPayload(fb);
+      } else {
+        // Fallback rápido si no está globalizado
+        const ps = window.productos || [];
+        payload = {
+          totalProductos: ps.length,
+          stockBajo: ps.filter(p => Number(p.stock||0) > 0 && Number(p.stock||0) <= 3).map(p => p.nombre),
+          agotados: ps.filter(p => Number(p.stock||0) <= 0).map(p => p.nombre)
+        };
+      }
+    } catch(e) { return; }
+
+    // Prompt de comportamiento "agente analítico"
+    const prompt = `Actúa como el Director General y Agente Inteligente de TiendaMax. 
+    Analiza el siguiente estado de la tienda y genera un JSON con las 3 tareas críticas pendientes que el administrador DEBE ejecutar hoy mismo (ej. mejoras de SEO, corregir fotos, reponer stock o actualizar descripciones).
+    
+    Datos actuales:
+    ${JSON.stringify(payload, null, 2)}
+    
+    Responde ÚNICAMENTE con un objeto JSON estructurado de la siguiente forma (sin explicaciones ni markdown):
+    {
+      "alertaPush": {"titulo": "⚠️ Tarea Crítica", "mensaje": "Breve recordatorio para el teléfono"},
+      "tareas": [
+        {"id": 1, "tipo": "SEO|Stock|Descripcion|Imagen", "descripcion": "Detalle de qué hacer", "prioridad": "Alta"}
+      ]
+    }`;
+
+    try {
+      // Llama a tu función de IA nativa
+      const respuestaIA = await tmAIChat(prompt, { max_tokens: 600, temperature: 0.4 });
+      const jsonLimpio = tmExtractJsonObject(respuestaIA);
+      
+      if (jsonLimpio) {
+        const datosAgente = JSON.parse(jsonLimpio);
+        
+        // Ejecutar notificación Push en tu dispositivo
+        if (datosAgente.alertaPush) {
+          lanzarNotificacionPush(datosAgente.alertaPush.titulo, datosAgente.alertaPush.mensaje);
+        }
+        
+        // Renderizar las tareas sugeridas en la interfaz del panel Admin
+        renderizarConsolaAgente(datosAgente.tareas);
+      }
+    } catch (error) {
+      console.error('Error en el agente autónomo:', error);
+    }
+  }
+
+  // 4. Inyectar visualmente los recordatorios en la interfaz para que no los olvides
+  function renderizarConsolaAgente(tareas) {
+    let panelAgente = $('#tmConsolaAgenteIA');
+    if (!panelAgente) {
+      panelAgente = document.createElement('div');
+      panelAgente.id = 'tmConsolaAgenteIA';
+      panelAgente.style = "background: rgba(255, 255, 255, 0.08); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.15); border-radius: 16px; padding: 16px; margin: 15px 0; color: #fff;";
+      
+      const contenedorFichas = $('#herramientas .tm-tools-wrap') || document.body;
+      contenedorFichas.insertBefore(panelAgente, contenedorFichas.firstChild);
+    }
+
+    let listaTareasHTML = tareas.map(t => `
+      <div style="background: rgba(0,0,0,0.2); padding: 10px; border-left: 4px solid ${t.prioridad === 'Alta' ? '#e74c3c' : '#f1c40f'}; border-radius: 6px; margin-bottom: 8px; font-size: 13px;">
+        <strong>[${t.tipo}]</strong> ${t.descripcion} <span style="float:right; font-size:10px; background:#e74c3c; padding:2px 6px; border-radius:4px;">${t.prioridad}</span>
+      </div>
+    `).join('');
+
+    panelAgente.innerHTML = `
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+        <h4 style="margin:0; color:#c9a96e; font-size:15px;">🤖 Supervisor IA — Tareas Sugeridas</h4>
+        <button id="btnReanalizarAgente" style="background:none; border:1px solid #c9a96e; color:#c9a96e; border-radius:6px; padding:2px 8px; cursor:pointer; font-size:11px;">🔄 Reanalizar</button>
+      </div>
+      <div>${listaTareasHTML}</div>
+    `;
+
+    panelAgente.querySelector('#btnReanalizarAgente').addEventListener('click', ejecutarAgenteAutonomo);
+  }
+
+  // Inicializar al cargar el Panel
+  function bootAgente() {
+    solicitarPermisosNotificaciones();
+    // Esperar unos segundos a que Firebase cargue los productos/vistas para que lea datos reales
+    setTimeout(ejecutarAgenteAutonomo, 3500); 
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', bootAgente);
+  } else {
+    bootAgente();
+  }
+})();
+
