@@ -286,8 +286,10 @@ def main() -> int:
         nueva = round(rate, 2)
         anterior = float(previous) if previous is not None else None
 
-        if anterior is not None and abs(anterior - nueva) < 0.01:
-            print(f"Tasa sin cambios ({nueva}). No se modifica config.json.")
+        # Comparar tasa entera (el bot publica sin decimales con :.0f),
+        # así pequeñas oscilaciones decimales de elTOQUE no disparan notificación
+        if anterior is not None and round(anterior) == round(nueva):
+            print(f"Tasa sin cambios visibles ({anterior} → {nueva}). No se modifica config.json.")
             return 0
 
         if anterior is not None:
