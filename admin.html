@@ -1550,11 +1550,10 @@ else document.addEventListener('DOMContentLoaded',addNavBtn);
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
         navigator.serviceWorker.register('/sw.js', { updateViaCache: 'none' }).then(reg => {
+            // Si había un SW esperando (de una visita anterior), activarlo ahora
             if (reg.waiting) reg.waiting.postMessage('SKIP_WAITING');
-            reg.update().catch(() => {});
-            document.addEventListener('visibilitychange', () => {
-                if (document.visibilityState === 'visible') reg.update().catch(() => {});
-            });
+            // Revisar actualización solo cada 45 min, NO en cada carga ni visibilitychange
+            // para evitar el loop de reload en conexiones lentas
             setInterval(() => { reg.update().catch(() => {}); }, 45 * 60 * 1000);
             reg.addEventListener('updatefound', () => {
                 const nw = reg.installing;
@@ -1565,18 +1564,15 @@ if ('serviceWorker' in navigator) {
                     }
                 });
             });
-            let refreshing = false;
+            // UN SOLO handler de recarga — usa sessionStorage para no loopear
+            const RELOAD_KEY = 'tm_sw_reloaded';
             navigator.serviceWorker.addEventListener('controllerchange', () => {
-                if (refreshing) return;
-                refreshing = true;
+                if (sessionStorage.getItem(RELOAD_KEY)) return;
+                sessionStorage.setItem(RELOAD_KEY, '1');
                 window.location.reload();
             });
-            navigator.serviceWorker.addEventListener('message', (event) => {
-                if (event.data && event.data.type === 'SW_UPDATED' && !refreshing) {
-                    refreshing = true;
-                    window.location.reload();
-                }
-            });
+            // Limpiar el flag al cargar normalmente (sesión fresca)
+            sessionStorage.removeItem(RELOAD_KEY);
         }).catch(() => {});
     });
 }

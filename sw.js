@@ -1,5 +1,6 @@
 // ═══════════════════════════════════════════════════════
-// TiendaMax — Service Worker v271 — recarga forzada al activarse versión nueva
+// TiendaMax — Service Worker v272 — elimina guideagent duplicado; fix reload loop admin
+// v271: recarga forzada al activarse versión nueva
 // v241: continúa al siguiente modelo Gemini si hay cuota 429
 // v240: soporte clave Gemini con prefijo AQ
 // v239: productos nuevos primero por categoría
@@ -100,7 +101,7 @@
 //      usan el mismo helper _mensajeOrdenWA con formato premium.
 // ═══════════════════════════════════════════════════════
 
-const CACHE_NAME = 'tiendamax-202606191501';
+const CACHE_NAME = 'tiendamax-202606191600';
 
 const STATIC_ASSETS = [
   '/',
