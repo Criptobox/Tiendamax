@@ -16,6 +16,7 @@ const LS = {
 const DAY = new Date().toISOString().slice(0,10);
 let state = { tasks: [], hot: [], agents: [], metrics: {}, view: localStorage.getItem(LS.view) || 'hoy', booted: false, loading: false };
 let refreshTimer = null;
+let promoData = { imgEl: null, nombre: '', precio: '', moneda: 'USD', detalle: '', footer: 'Oferta Exclusiva · Solo en tiendamax.org', tema: 'oscuro', _logoEl: null, _drawTimer: null };
 
 const $ = (s,r=document)=>r.querySelector(s);
 const $$ = (s,r=document)=>Array.from(r.querySelectorAll(s));
@@ -207,7 +208,8 @@ function injectStyles(){
   .tm-copilot-task{background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:11px;margin-bottom:9px;border-left:3px solid #ff6b35}.tm-copilot-task.u3{border-left-color:#e74c3c}.tm-copilot-task.u2{border-left-color:#ff6b35}.tm-copilot-task.u1{border-left-color:#2aabee}.tm-copilot-task-top{display:flex;gap:10px}.tm-copilot-ico{width:34px;height:34px;border-radius:13px;background:rgba(255,107,53,.13);display:flex;align-items:center;justify-content:center;font-size:18px;flex:0 0 auto}.tm-copilot-task-main{flex:1;min-width:0}.tm-copilot-task-main b{display:block;font-size:13px;line-height:1.25}.tm-copilot-task-main small{display:block;color:#aaa;font-size:11px;line-height:1.35;margin-top:4px}.tm-copilot-task-actions{display:flex;gap:7px;margin-top:10px}.tm-copilot-task-actions .tm-copilot-btn{padding:8px 9px;flex:1}.tm-copilot-agents{display:flex;gap:8px;overflow:auto;padding-bottom:4px;margin:8px 0 12px}.tm-copilot-agent{min-width:154px;background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:10px}.tm-copilot-agent.crit{border-color:rgba(231,76,60,.35);background:rgba(231,76,60,.08)}.tm-copilot-agent b{display:block;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.tm-copilot-agent small{display:block;color:#999;font-size:10px;margin-top:4px;line-height:1.25}.tm-copilot-agent .st{display:inline-flex;margin-top:7px;border-radius:99px;padding:3px 7px;font-size:9px;font-weight:900;background:rgba(37,211,102,.13);color:#75f0a1}.tm-copilot-agent.crit .st{background:rgba(231,76,60,.16);color:#ff9187}.tm-copilot-hot{display:flex;gap:9px;overflow:auto;padding-bottom:4px;margin:8px 0 12px}.tm-copilot-hot-card{min-width:172px;background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:10px}.tm-copilot-hot-card b{display:block;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.tm-copilot-hot-card small{display:block;color:#999;font-size:10px;margin-top:4px}.tm-copilot-empty{color:#aaa;text-align:center;padding:18px 8px;font-size:13px}.tm-copilot-chip{display:inline-flex;border-radius:999px;padding:3px 7px;background:rgba(255,107,53,.14);color:#ffae8a;font-size:10px;font-weight:900;margin-top:6px}.tm-copilot-toast{position:fixed;left:50%;bottom:calc(86px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(120%);z-index:100000;width:calc(min(560px,100%) - 28px);background:#1a1a22;border:1px solid rgba(37,211,102,.32);border-radius:17px;padding:12px;color:#effff3;box-shadow:0 16px 50px rgba(0,0,0,.45);transition:.22s ease;font-size:13px}.tm-copilot-toast.show{transform:translateX(-50%) translateY(0)}
   @media (min-width: 760px){.tm-copilot-bubble{bottom:24px;right:24px}.tm-copilot-sheet{right:22px;left:auto;bottom:18px;transform:translateY(110%);border-radius:26px;width:430px;max-height:82vh}.tm-copilot-sheet.show{transform:translateY(0)}.tm-copilot-summary{grid-template-columns:repeat(2,1fr)}}@media (max-width:380px){.tm-copilot-summary{grid-template-columns:repeat(2,1fr)}.tm-copilot-actions{grid-template-columns:1fr}.tm-copilot-task-actions{flex-direction:column}}
   html.tm-admin-touch body.admin-mode{overflow-x:hidden!important}html.tm-admin-touch .admin-panel.visible{position:fixed!important;inset:0!important;width:100vw!important;height:100dvh!important;overflow:hidden!important}html.tm-admin-touch .tm-app{display:block!important;width:100vw!important;height:100dvh!important;min-height:100dvh!important;overflow:hidden!important}html.tm-admin-touch .tm-top{position:fixed!important;top:0!important;left:0!important;right:0!important;width:100vw!important;height:62px!important;padding:0 10px!important;gap:8px!important;z-index:999!important;background:rgba(18,18,18,.985)!important}html.tm-admin-touch .tm-top .brand{width:auto!important;min-width:0!important;flex:0 0 auto!important}html.tm-admin-touch .tm-top .brand b{font-size:16px!important}html.tm-admin-touch .tm-top .search,html.tm-admin-touch .tm-top-search-wrap{display:none!important}html.tm-admin-touch .topicons{margin-left:auto!important;gap:6px!important}html.tm-admin-touch .sync-pill{display:none!important}html.tm-admin-touch .tm-side{position:fixed!important;left:0!important;right:0!important;bottom:0!important;top:auto!important;width:100vw!important;height:82px!important;z-index:1000!important;border-right:0!important;border-top:1px solid rgba(255,255,255,.10)!important;display:flex!important;flex-direction:row!important;gap:7px!important;overflow-x:auto!important;overflow-y:hidden!important;padding:9px 10px calc(9px + env(safe-area-inset-bottom,0px))!important;background:rgba(18,18,18,.985)!important;backdrop-filter:blur(14px)!important}html.tm-admin-touch .tm-side::-webkit-scrollbar{display:none!important}html.tm-admin-touch .tm-side .navlabel{display:none!important}html.tm-admin-touch .tm-side .tab-btn{min-width:76px!important;height:58px!important;margin:0!important;flex-direction:column!important;justify-content:center!important;gap:4px!important;padding:6px 8px!important;border-radius:14px!important;font-size:18px!important}html.tm-admin-touch .tm-side .tab-btn .txt{display:block!important;font-size:10px!important;line-height:1!important;max-width:70px!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important}html.tm-admin-touch .tm-side .tab-btn.active{box-shadow:inset 0 -3px 0 var(--gold)!important;background:rgba(201,169,110,.18)!important}html.tm-admin-touch .tm-main,html.tm-admin-touch .admin-content{display:block!important;width:100vw!important;max-width:100vw!important;height:calc(100dvh - 144px)!important;overflow:auto!important;-webkit-overflow-scrolling:touch!important;padding:80px 12px 104px!important;margin:0!important}html.tm-admin-touch .head h1,html.tm-admin-touch .admin-tab>h3{font-size:30px!important}html.tm-admin-touch .stats{grid-template-columns:repeat(2,minmax(0,1fr))!important}html.tm-admin-touch .grid2,html.tm-admin-touch .form-grid,html.tm-admin-touch .add-grid{grid-template-columns:1fr!important}html.tm-admin-touch .tm-copilot-sheet{left:0!important;right:0!important;bottom:0!important;width:100vw!important;max-width:100vw!important;max-height:78dvh!important;transform:translateY(110%)!important;border-radius:24px 24px 0 0!important;padding-bottom:calc(12px + env(safe-area-inset-bottom))!important}html.tm-admin-touch .tm-copilot-sheet.show{transform:translateY(0)!important}html.tm-admin-touch .tm-copilot-bubble{right:14px!important;bottom:calc(92px + env(safe-area-inset-bottom))!important}html.tm-admin-touch .tm-copilot-toast{width:calc(100vw - 28px)!important;max-width:520px!important;bottom:calc(92px + env(safe-area-inset-bottom))!important}html.tm-admin-touch .tm-copilot-actions{grid-template-columns:1fr 1fr!important}html.tm-admin-touch .tm-copilot-summary{grid-template-columns:repeat(2,1fr)!important}
-  body:not(.admin-mode) .tm-copilot-bubble, body:not(.admin-mode) .tm-copilot-sheet, body:not(.admin-mode) .tm-copilot-toast{display:none!important}.tm-copilot-toast:not(.show){opacity:0!important;pointer-events:none!important}`;
+  body:not(.admin-mode) .tm-copilot-bubble, body:not(.admin-mode) .tm-copilot-sheet, body:not(.admin-mode) .tm-copilot-toast{display:none!important}.tm-copilot-toast:not(.show){opacity:0!important;pointer-events:none!important}
+  .tm-promo-field{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);border-radius:12px;padding:10px 12px;color:#fff;font-size:13px;width:100%;box-sizing:border-box;font-family:inherit;outline:none}.tm-promo-field:focus{border-color:rgba(255,107,53,.55)}.tm-promo-field option{background:#1a1a2e;color:#fff}`;
   document.head.appendChild(st);
 }
 
@@ -336,7 +338,7 @@ function updateBubble(){
   if (crit) { b.classList.remove('tm-copilot-pulse'); void b.offsetWidth; b.classList.add('tm-copilot-pulse'); }
 }
 function tabsHtml(view){
-  const tabs=[['hoy','✅ Hoy'],['agentes','🤖 Agentes'],['marketing','📣 Marketing'],['memoria','🧠 Memoria']];
+  const tabs=[['hoy','✅ Hoy'],['agentes','🤖 Agentes'],['marketing','📣 Marketing'],['promo','🎨 Promo'],['memoria','🧠 Memoria']];
   return `<div class="tm-copilot-tabs">${tabs.map(t=>`<button type="button" class="tm-copilot-tab ${view===t[0]?'active':''}" data-cop="view" data-view="${t[0]}">${t[1]}</button>`).join('')}</div>`;
 }
 function renderToday(topTasks){
@@ -362,9 +364,195 @@ function renderMemory(){
   return `<div class="tm-copilot-smart"><h4>🧠 Memoria del agente</h4><ul><li>Estrategias/campañas guardadas: ${num(m.counts&&m.counts.campaign_draft)}</li><li>Producto más impulsado: ${top?esc(top[0])+' ('+top[1]+' veces)':'aún sin datos'}</li><li>Última acción: ${m.last?esc(m.last.type)+' · '+ago(m.last.ts):'sin acciones registradas'}</li></ul></div>
   <div class="tm-copilot-smart"><h4>Historial reciente</h4>${actions.slice(0,8).map(a=>`<div class="tm-copilot-rank-row"><span>${esc(a.type)} ${a.productName?'· '+esc(a.productName):''}</span><em>${ago(a.ts)}</em></div>`).join('')||'<div class="tm-copilot-empty">El agente aprenderá cuando guardes campañas o marques acciones.</div>'}</div>`;
 }
+// ── PROMO ─────────────────────────────────────────────────────────
+function promoWrapText(ctx, text, maxW) {
+  const words = text.split(/\s+/).filter(Boolean);
+  const lines = []; let line = '';
+  for (const w of words) {
+    const test = line ? line + ' ' + w : w;
+    if (ctx.measureText(test).width > maxW && line) { lines.push(line); line = w; }
+    else line = test;
+  }
+  if (line) lines.push(line);
+  return lines;
+}
+function promoRoundRect(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.arcTo(x + w, y, x + w, y + h, r);
+  ctx.arcTo(x + w, y + h, x, y + h, r);
+  ctx.arcTo(x, y + h, x, y, r);
+  ctx.arcTo(x, y, x + w, y, r);
+  ctx.closePath();
+}
+async function promoLoadLogo() {
+  if (promoData._logoEl) return promoData._logoEl;
+  return new Promise(resolve => {
+    const img = new Image(); img.crossOrigin = 'anonymous';
+    img.onload = () => { promoData._logoEl = img; resolve(img); };
+    img.onerror = () => resolve(null);
+    img.src = '/iconos/icon-192.png';
+  });
+}
+async function drawPromo() {
+  const canvas = document.getElementById('tmPromoCanvas'); if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const W = 1080, H = 1920;
+  canvas.width = W; canvas.height = H;
+  const d = promoData, tema = d.tema || 'oscuro';
+  const textColor = tema === 'claro' ? '#1a1a2e' : '#ffffff';
+  const accent = '#f45e1f';
+
+  // Background
+  if (tema === 'oscuro') {
+    const gr = ctx.createLinearGradient(0, 0, 0, H);
+    gr.addColorStop(0, '#0f0f14'); gr.addColorStop(.35, '#1e0d05'); gr.addColorStop(.65, '#2d1208'); gr.addColorStop(1, '#0f0f14');
+    ctx.fillStyle = gr; ctx.fillRect(0, 0, W, H);
+    const glow = ctx.createRadialGradient(W/2, H*.5, 0, W/2, H*.5, W*.75);
+    glow.addColorStop(0, 'rgba(244,94,31,.22)'); glow.addColorStop(1, 'rgba(244,94,31,0)');
+    ctx.fillStyle = glow; ctx.fillRect(0, 0, W, H);
+  } else if (tema === 'naranja') {
+    const gr = ctx.createLinearGradient(0, 0, 0, H);
+    gr.addColorStop(0, '#b83000'); gr.addColorStop(.5, '#f45e1f'); gr.addColorStop(1, '#b83000');
+    ctx.fillStyle = gr; ctx.fillRect(0, 0, W, H);
+  } else {
+    ctx.fillStyle = '#f2f2f2'; ctx.fillRect(0, 0, W, H);
+    const gr2 = ctx.createRadialGradient(W/2, H*.4, 0, W/2, H*.4, W*.7);
+    gr2.addColorStop(0, 'rgba(244,94,31,.06)'); gr2.addColorStop(1, 'transparent');
+    ctx.fillStyle = gr2; ctx.fillRect(0, 0, W, H);
+  }
+
+  // Logo
+  const logo = await promoLoadLogo();
+  const logoSize = 138;
+  if (logo) {
+    ctx.drawImage(logo, (W - logoSize) / 2, 78, logoSize, logoSize);
+  } else {
+    promoRoundRect(ctx, (W-logoSize)/2, 78, logoSize, logoSize, 30);
+    ctx.fillStyle = accent; ctx.fill();
+    ctx.fillStyle = '#fff'; ctx.font = 'bold 80px sans-serif';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText('M', W/2, 78 + logoSize/2); ctx.textBaseline = 'alphabetic';
+  }
+
+  // Top accent line
+  ctx.strokeStyle = accent; ctx.lineWidth = 6;
+  ctx.beginPath(); ctx.moveTo(108, 252); ctx.lineTo(W-108, 252); ctx.stroke();
+
+  // Product title
+  ctx.textAlign = 'center'; ctx.fillStyle = textColor;
+  const nombre = (d.nombre || 'Producto Destacado').toUpperCase();
+  const fs = nombre.length > 40 ? 64 : nombre.length > 24 ? 74 : 84;
+  ctx.font = `bold ${fs}px sans-serif`;
+  const titleLines = promoWrapText(ctx, nombre, W - 120);
+  let titleY = 314;
+  titleLines.slice(0, 3).forEach(line => { ctx.fillText(line, W/2, titleY); titleY += fs * 1.2; });
+
+  // Product image (white rounded box)
+  const imgAreaY = Math.min(titleY + 36, 620);
+  const imgSize = 840, imgX = (W - imgSize) / 2;
+  promoRoundRect(ctx, imgX, imgAreaY, imgSize, imgSize, 44);
+  ctx.fillStyle = '#fff'; ctx.fill();
+
+  if (d.imgEl) {
+    ctx.save();
+    promoRoundRect(ctx, imgX, imgAreaY, imgSize, imgSize, 44);
+    ctx.clip();
+    const sc = Math.min(imgSize * .9 / d.imgEl.naturalWidth, imgSize * .9 / d.imgEl.naturalHeight);
+    ctx.drawImage(d.imgEl, imgX + (imgSize - d.imgEl.naturalWidth * sc)/2, imgAreaY + (imgSize - d.imgEl.naturalHeight * sc)/2, d.imgEl.naturalWidth * sc, d.imgEl.naturalHeight * sc);
+    ctx.restore();
+  } else {
+    ctx.fillStyle = 'rgba(130,130,130,.3)'; ctx.font = '52px sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText('📷  Sube la foto del producto', W/2, imgAreaY + imgSize/2 + 20);
+  }
+
+  // Price badge (overlapping bottom-right of image)
+  const bW = 330, bH = 174, bX = imgX + imgSize - bW + 18, bY = imgAreaY + imgSize - bH + 18;
+  promoRoundRect(ctx, bX, bY, bW, bH, 22);
+  ctx.fillStyle = tema === 'claro' ? '#1a1a2e' : 'rgba(12,12,18,.9)'; ctx.fill();
+  ctx.strokeStyle = accent; ctx.lineWidth = 5;
+  promoRoundRect(ctx, bX, bY, bW, bH, 22); ctx.stroke();
+  ctx.fillStyle = accent; ctx.font = 'bold 88px sans-serif'; ctx.textAlign = 'center';
+  ctx.fillText('$' + (d.precio || '0'), bX + bW/2, bY + 96);
+  ctx.fillStyle = '#bbb'; ctx.font = 'bold 36px sans-serif';
+  ctx.fillText(d.moneda || 'USD', bX + bW/2, bY + 150);
+
+  // Detalle
+  if (d.detalle) {
+    ctx.fillStyle = textColor; ctx.font = '500 46px sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText(d.detalle.toUpperCase(), W/2, imgAreaY + imgSize + 70);
+  }
+
+  // Footer
+  ctx.strokeStyle = accent; ctx.lineWidth = 5;
+  ctx.beginPath(); ctx.moveTo(108, H - 138); ctx.lineTo(W-108, H-138); ctx.stroke();
+  ctx.fillStyle = tema === 'claro' ? '#666' : 'rgba(255,255,255,.78)';
+  ctx.font = '40px sans-serif'; ctx.textAlign = 'center';
+  ctx.fillText(d.footer || 'Oferta Exclusiva · Solo en tiendamax.org', W/2, H - 78);
+}
+function promoScheduleDraw() { clearTimeout(promoData._drawTimer); promoData._drawTimer = setTimeout(drawPromo, 100); }
+function addPromoListeners() {
+  const fields = { tmPromoNombre:'nombre', tmPromoPrecio:'precio', tmPromoMoneda:'moneda', tmPromoDetalle:'detalle', tmPromoFooter:'footer' };
+  Object.entries(fields).forEach(([id, key]) => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('input', () => { promoData[key] = el.value; promoScheduleDraw(); });
+  });
+  const imgInp = document.getElementById('tmPromoImgInput');
+  if (imgInp) imgInp.addEventListener('change', () => {
+    const file = imgInp.files && imgInp.files[0]; if (!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      const img = new Image();
+      img.onload = () => {
+        promoData.imgEl = img; drawPromo();
+        const btn = document.querySelector('[data-cop="promoPickImg"]');
+        if (btn) btn.textContent = '✅ Foto cargada — Cambiar imagen';
+      };
+      img.src = ev.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+function renderPromo() {
+  const d = promoData;
+  return `<div>
+    <div style="display:flex;justify-content:center;margin-bottom:12px">
+      <canvas id="tmPromoCanvas" style="height:320px;width:auto;border-radius:14px;box-shadow:0 8px 32px rgba(0,0,0,.55)" width="1080" height="1920"></canvas>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <input type="file" id="tmPromoImgInput" accept="image/*" style="display:none">
+      <button type="button" class="tm-copilot-btn ${d.imgEl?'green':'blue'}" data-cop="promoPickImg" style="width:100%">${d.imgEl ? '✅ Foto cargada — Cambiar imagen' : '📷 Elegir foto del producto (galería)'}</button>
+      <div><div style="font-size:11px;color:#888;margin-bottom:4px">Nombre del producto</div>
+        <input class="tm-promo-field" id="tmPromoNombre" type="text" placeholder="Ej: Batería LiFePO4 100Ah" value="${esc(d.nombre)}"></div>
+      <div style="display:grid;grid-template-columns:1fr 90px;gap:8px">
+        <div><div style="font-size:11px;color:#888;margin-bottom:4px">Precio</div>
+          <input class="tm-promo-field" id="tmPromoPrecio" type="text" placeholder="300" value="${esc(d.precio)}"></div>
+        <div><div style="font-size:11px;color:#888;margin-bottom:4px">Moneda</div>
+          <select class="tm-promo-field" id="tmPromoMoneda">
+            <option${d.moneda==='USD'?' selected':''}>USD</option>
+            <option${d.moneda==='CUP'?' selected':''}>CUP</option>
+            <option${d.moneda==='MLC'?' selected':''}>MLC</option>
+          </select></div>
+      </div>
+      <div><div style="font-size:11px;color:#888;margin-bottom:4px">Detalle / modelo (opcional)</div>
+        <input class="tm-promo-field" id="tmPromoDetalle" type="text" placeholder="Ej: 100Ah | 12V | LiFePO4" value="${esc(d.detalle)}"></div>
+      <div><div style="font-size:11px;color:#888;margin-bottom:4px">Pie de imagen</div>
+        <input class="tm-promo-field" id="tmPromoFooter" type="text" placeholder="Oferta Exclusiva · Solo en tiendamax.org" value="${esc(d.footer)}"></div>
+      <div><div style="font-size:11px;color:#888;margin-bottom:6px">Tema</div>
+        <div style="display:flex;gap:6px">
+          ${[['oscuro','#141422','#fff'],['naranja','#f45e1f','#fff'],['claro','#ebebeb','#333']].map(([t,bg,fg])=>`<button type="button" class="tm-copilot-btn" data-cop="promoTema" data-tema="${t}" style="background:${bg};color:${fg};flex:1;border:2px solid ${d.tema===t?'rgba(255,255,255,.7)':'rgba(255,255,255,.1)'}">${t.charAt(0).toUpperCase()+t.slice(1)}</button>`).join('')}
+        </div>
+      </div>
+      <button type="button" class="tm-copilot-btn primary" data-cop="promoDownload" style="padding:14px;margin-top:4px">⬇️ Descargar imagen (1080×1920)</button>
+    </div>
+  </div>`;
+}
+// ── FIN PROMO ──────────────────────────────────────────────────────
+
 function renderCopilotView(view, topTasks){
   if(view==='agentes') return renderAgents();
   if(view==='marketing') return renderMarketing();
+  if(view==='promo') return renderPromo();
   if(view==='memoria') return renderMemory();
   return renderToday(topTasks);
 }
@@ -389,6 +577,7 @@ function renderSheet(){
     </div>
     ${tabsHtml(view)}
     ${renderCopilotView(view, topTasks)}`;
+  if (view === 'promo') setTimeout(() => { addPromoListeners(); drawPromo(); }, 50);
 }
 function taskHtml(t){
   return `<div class="tm-copilot-task u${t.urgency}" data-id="${esc(t.id)}">
@@ -452,6 +641,17 @@ function bindEvents(){
     if(act==='task') switchTo(el.dataset.tab || 'inicio');
     if(act==='dismiss') { const set=dismissedSet(); set.add(el.dataset.id); saveDismissed(set); state.tasks = state.tasks.filter(t=>t.id!==el.dataset.id); updateBubble(); renderSheet(); }
     if(act==='pushHot') queuePushForProduct(el.dataset.pid);
+    if(act==='promoPickImg') { const inp = document.getElementById('tmPromoImgInput'); if(inp) inp.click(); }
+    if(act==='promoTema') { promoData.tema = el.dataset.tema; state.view = 'promo'; renderSheet(); }
+    if(act==='promoDownload') {
+      const canvas = document.getElementById('tmPromoCanvas'); if(!canvas) return;
+      const link = document.createElement('a');
+      link.download = 'promo-tiendamax-' + Date.now() + '.jpg';
+      link.href = canvas.toDataURL('image/jpeg', 0.94);
+      link.click();
+      remember('promo_download', { productName: promoData.nombre });
+      toast('Imagen descargada — lista para WhatsApp Estado');
+    }
   });
 }
 function isAdminVisible(){ const p=$('#adminPanel'); return !!(p && !p.classList.contains('hidden')); }
