@@ -2216,23 +2216,129 @@ function tmExtractJsonObject(text) {
     if(line&&lines<maxLines){ctx.fillText(line.trim(),x,y); y+=lineHeight;}
     return y;
   }
+  function slogan(p){
+    const c=String(p.categoria||'').toUpperCase();
+    if(c.includes('ENERG')||c.includes('BATER')||c.includes('INVERSOR')) return 'POTENCIA Y CONFIABILIDAD\nSIN IGUAL';
+    if(c.includes('WIFI')||c.includes('ROUTER')||c.includes('RED')) return 'CONECTIVIDAD RÁPIDA\nY SEGURA';
+    if(c.includes('SEGUR')||c.includes('CAMARA')) return 'PROTECCIÓN TOTAL\nPARA TU HOGAR';
+    if(c.includes('CARRO')||c.includes('MOTO')||c.includes('AUTO')) return 'RENDIMIENTO\nEN CADA KILÓMETRO';
+    if(c.includes('SALUD')||c.includes('SPORT')||c.includes('SUPL')) return 'CALIDAD PREMIUM\nPARA TU BIENESTAR';
+    if(c.includes('HOGAR')) return 'COMODIDAD Y ESTILO\nEN TU HOGAR';
+    return 'CALIDAD GARANTIZADA\nEN TIENDAMAX';
+  }
   async function shareStory(p){
-    const W=1080,H=1920, c=document.createElement('canvas'); c.width=W; c.height=H; const ctx=c.getContext('2d');
-    const grad=ctx.createLinearGradient(0,0,W,H); grad.addColorStop(0,'#0d0d0d'); grad.addColorStop(.55,'#2b160c'); grad.addColorStop(1,'#ff6b35'); ctx.fillStyle=grad; ctx.fillRect(0,0,W,H);
-    ctx.fillStyle='rgba(0,0,0,.30)'; ctx.fillRect(0,0,W,H);
-    ctx.strokeStyle='rgba(201,169,110,.75)'; ctx.lineWidth=8; roundRect(ctx,44,44,W-88,H-88,42); ctx.stroke();
+    const W=1080,H=1920,cv=document.createElement('canvas'); cv.width=W; cv.height=H; const ctx=cv.getContext('2d');
+
+    // Fondo: degradado oscuro tipo publicidad
+    const bg=ctx.createLinearGradient(0,0,W,H);
+    bg.addColorStop(0,'#0e0805'); bg.addColorStop(.45,'#1f0e07'); bg.addColorStop(.8,'#2e1208'); bg.addColorStop(1,'#4a1a0a');
+    ctx.fillStyle=bg; ctx.fillRect(0,0,W,H);
+
+    // Círculos decorativos de fondo
+    const drawCircle=(x,y,r,alpha)=>{const g=ctx.createRadialGradient(x,y,0,x,y,r);g.addColorStop(0,'rgba(255,107,53,'+alpha+')');g.addColorStop(1,'rgba(255,107,53,0)');ctx.fillStyle=g;ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fill();};
+    drawCircle(W,0,600,.18); drawCircle(0,H,700,.12); drawCircle(W*.6,H*.5,400,.08);
+
+    // Overlay sutil para profundidad
+    ctx.fillStyle='rgba(0,0,0,.18)'; ctx.fillRect(0,0,W,H);
+
+    // ── Logo TiendaMax arriba centro ──
+    const logoX=W/2, logoY=180, logoR=90;
+    const logoGrad=ctx.createRadialGradient(logoX-30,logoY-30,10,logoX,logoY,logoR);
+    logoGrad.addColorStop(0,'#ff8c4a'); logoGrad.addColorStop(.6,'#f4602a'); logoGrad.addColorStop(1,'#c03d10');
+    ctx.save(); ctx.shadowColor='rgba(255,107,53,.6)'; ctx.shadowBlur=40;
+    ctx.beginPath(); ctx.arc(logoX,logoY,logoR,0,Math.PI*2); ctx.fillStyle=logoGrad; ctx.fill();
+    ctx.restore();
+    // M del logo
+    ctx.save(); ctx.font='bold 96px system-ui,Arial'; ctx.fillStyle='#fff'; ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.shadowColor='rgba(0,0,0,.5)'; ctx.shadowBlur=8;
+    ctx.fillText('M',logoX,logoY+4); ctx.restore();
+
+    // Línea decorativa bajo el logo
+    ctx.save(); ctx.strokeStyle='rgba(201,169,110,.5)'; ctx.lineWidth=3;
+    ctx.beginPath(); ctx.moveTo(logoX-180,logoY+logoR+28); ctx.lineTo(logoX+180,logoY+logoR+28); ctx.stroke(); ctx.restore();
+
+    // ── Nombre del producto (mayúsculas, grande) ──
+    const nombre=String(p.nombre||'Producto').toUpperCase();
+    ctx.save(); ctx.textAlign='center'; ctx.textBaseline='top';
+    ctx.fillStyle='#ffffff'; ctx.font='bold 76px system-ui,Arial';
+    ctx.shadowColor='rgba(0,0,0,.7)'; ctx.shadowBlur=16;
+    let ny=logoY+logoR+60; ny=wrapText(ctx,nombre,W/2,ny,900,88,3); ctx.restore();
+
+    // ── Slogan ──
+    const sl=slogan(p).split('\n');
+    ctx.save(); ctx.textAlign='center'; ctx.fillStyle='rgba(255,200,160,.9)'; ctx.font='bold 50px system-ui,Arial';
+    ctx.shadowColor='rgba(0,0,0,.5)'; ctx.shadowBlur=10;
+    sl.forEach((line,i)=>ctx.fillText(line,W/2,ny+20+i*58));
+    ctx.restore();
+    const afterText=ny+20+sl.length*58+40;
+
+    // ── Imagen del producto (izquierda, grande, con sombra) ──
     const im=await loadImg(p.imagen||'');
+    const imgArea={x:30,y:afterText,w:700,h:780};
     if(im){
-      const boxX=120,boxY=170,boxW=840,boxH=650; ctx.save(); roundRect(ctx,boxX,boxY,boxW,boxH,36); ctx.clip();
-      const r=Math.max(boxW/im.width,boxH/im.height), iw=im.width*r, ih=im.height*r; ctx.drawImage(im,boxX+(boxW-iw)/2,boxY+(boxH-ih)/2,iw,ih); ctx.restore();
-    } else { ctx.fillStyle='rgba(255,255,255,.08)'; roundRect(ctx,120,170,840,650,36); ctx.fill(); ctx.font='160px serif'; ctx.fillStyle='#ff6b35'; ctx.fillText('M',470,550); }
-    ctx.textAlign='center'; ctx.fillStyle='#fff'; ctx.font='bold 66px system-ui,Arial'; let y=920; y=wrapText(ctx,p.nombre,W/2,y,860,78,3);
-    ctx.fillStyle='#ff6b35'; ctx.font='bold 82px system-ui,Arial'; ctx.fillText('$'+Number(p.precioActual||0).toFixed(2)+' USD',W/2,y+28); y+=130;
-    ctx.fillStyle='#f0e0c5'; ctx.font='bold 42px system-ui,Arial'; ctx.fillText('📦 Stock: '+Number(p.stock||0)+'   🏷️ '+(p.categoria||'TiendaMax'),W/2,y); y+=95;
-    ctx.fillStyle='#fff'; ctx.font='42px system-ui,Arial'; y=wrapText(ctx,'Pídelo directo por WhatsApp en TiendaMax',W/2,y,840,54,2);
-    ctx.fillStyle='#c9a96e'; ctx.font='bold 48px system-ui,Arial'; ctx.fillText('tiendamax.org',W/2,H-245);
-    ctx.fillStyle='rgba(255,255,255,.92)'; ctx.font='32px system-ui,Arial'; ctx.fillText('Toca “Pedir” en la tienda para reservar',W/2,H-185);
-    const blob=await new Promise(res=>c.toBlob(res,'image/png',.95));
+      const r=Math.min(imgArea.w/im.width,imgArea.h/im.height);
+      const iw=im.width*r, ih=im.height*r;
+      const ix=imgArea.x+(imgArea.w-iw)/2, iy=imgArea.y+(imgArea.h-ih)/2;
+      ctx.save();
+      ctx.shadowColor='rgba(0,0,0,.7)'; ctx.shadowBlur=60; ctx.shadowOffsetY=20;
+      ctx.drawImage(im,ix,iy,iw,ih);
+      ctx.restore();
+    } else {
+      ctx.save(); ctx.fillStyle='rgba(255,255,255,.06)'; roundRect(ctx,imgArea.x,imgArea.y,imgArea.w,imgArea.h,36); ctx.fill(); ctx.restore();
+      ctx.font='160px serif'; ctx.fillStyle='rgba(255,107,53,.4)'; ctx.textAlign='center'; ctx.fillText('M',imgArea.x+imgArea.w/2,imgArea.y+imgArea.h/2+60);
+    }
+
+    // ── Badge de precio (derecha, superpuesto) ──
+    const bx=700, by=afterText+60, bw=340, bh=180;
+    ctx.save();
+    const badgeGrad=ctx.createLinearGradient(bx,by,bx+bw,by+bh);
+    badgeGrad.addColorStop(0,'#ff7a35'); badgeGrad.addColorStop(1,'#d44a10');
+    ctx.shadowColor='rgba(255,107,53,.5)'; ctx.shadowBlur=30;
+    roundRect(ctx,bx,by,bw,bh,28); ctx.fillStyle=badgeGrad; ctx.fill();
+    ctx.restore();
+    ctx.save(); ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillStyle='#fff'; ctx.font='bold 76px system-ui,Arial';
+    ctx.shadowColor='rgba(0,0,0,.4)'; ctx.shadowBlur=8;
+    ctx.fillText('$'+Number(p.precioActual||0).toFixed(2),bx+bw/2,by+bh/2-12);
+    ctx.fillStyle='rgba(255,230,210,.9)'; ctx.font='bold 36px system-ui,Arial';
+    ctx.fillText('USD',bx+bw/2,by+bh/2+48);
+    ctx.restore();
+
+    // Info adicional (derecha bajo el badge)
+    const ix2=bx, iy2=by+bh+28;
+    ctx.save(); ctx.textAlign='left'; ctx.fillStyle='rgba(255,220,190,.88)'; ctx.font='bold 36px system-ui,Arial';
+    ctx.shadowColor='rgba(0,0,0,.5)'; ctx.shadowBlur=6;
+    ctx.fillText('UNIDADES LIMITADAS',ix2+14,iy2+42);
+    ctx.fillStyle='rgba(255,255,255,.75)'; ctx.font='32px system-ui,Arial';
+    ctx.fillText(String(p.categoria||'TiendaMax').toUpperCase(),ix2+14,iy2+90);
+    if(Number(p.stock||0)>0){ ctx.fillStyle='rgba(160,255,180,.85)'; ctx.fillText('✓ DISPONIBLE · STOCK '+Number(p.stock||0),ix2+14,iy2+136); }
+    ctx.restore();
+
+    // ── Línea divisora ──
+    const divY=afterText+imgArea.h+30;
+    ctx.save(); const divGrad=ctx.createLinearGradient(60,divY,W-60,divY);
+    divGrad.addColorStop(0,'rgba(201,169,110,0)'); divGrad.addColorStop(.3,'rgba(201,169,110,.6)');
+    divGrad.addColorStop(.7,'rgba(201,169,110,.6)'); divGrad.addColorStop(1,'rgba(201,169,110,0)');
+    ctx.strokeStyle=divGrad; ctx.lineWidth=2;
+    ctx.beginPath(); ctx.moveTo(60,divY); ctx.lineTo(W-60,divY); ctx.stroke(); ctx.restore();
+
+    // ── CTA footer ──
+    ctx.save(); ctx.textAlign='center';
+    ctx.fillStyle='rgba(255,255,255,.7)'; ctx.font='38px system-ui,Arial';
+    ctx.fillText('Oferta Exclusiva · Unidades Limitadas.',W/2,divY+70);
+    ctx.fillStyle='rgba(200,160,120,.8)'; ctx.font='34px system-ui,Arial';
+    ctx.fillText('Solo en nuestra tienda online.',W/2,divY+118);
+    // Dominio grande
+    const domY=H-190;
+    ctx.shadowColor='rgba(255,107,53,.5)'; ctx.shadowBlur=20;
+    ctx.fillStyle='#ff8c4a'; ctx.font='bold 58px system-ui,Arial';
+    ctx.fillText('tiendamax.org',W/2,domY);
+    ctx.shadowBlur=0;
+    ctx.fillStyle='rgba(255,255,255,.55)'; ctx.font='30px system-ui,Arial';
+    ctx.fillText('Toca “Pedir” en la tienda para reservar',W/2,domY+56);
+    ctx.restore();
+
+    const blob=await new Promise(res=>cv.toBlob(res,'image/png',.95));
     const file=new File([blob],'tiendamax-estado-'+p.id+'.png',{type:'image/png'});
     const text='🔥 '+p.nombre+'\n'+url(p);
     if(navigator.canShare&&navigator.canShare({files:[file]})&&navigator.share){
