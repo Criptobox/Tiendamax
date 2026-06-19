@@ -5678,16 +5678,20 @@ async function _fbSincronizarVentasAlIniciar() {
         if (!res.ok) return;
         const data = await res.json();
         const _elimSet = new Set(JSON.parse(localStorage.getItem('_tmVentasElim') || '[]'));
+        const _esPrueba = v => {
+            const n = String(v.producto || '').trim().toLowerCase();
+            return n.length <= 1 || ['a','b','test','prueba','producto a','producto b','aa','bb'].includes(n);
+        };
         const ventasFB = data && typeof data === 'object'
-            ? Object.values(data).filter(v => v && !_elimSet.has(v.id))
+            ? Object.values(data).filter(v => v && !_elimSet.has(v.id) && !_esPrueba(v))
             : [];
 
         // Combinar migradas + las ya en /ventas/
-        const todasFB = [...ventasFB, ...migradas.filter(m => !ventasFB.find(v => v.id === m.id))];
+        const todasFB = [...ventasFB, ...migradas.filter(m => !ventasFB.find(v => v.id === m.id) && !_esPrueba(m))];
 
         const ventasLocales = JSON.parse(localStorage.getItem('registroVentas') || '[]');
         const idsFB = new Set(todasFB.map(v => v.id));
-        const soloLocales = ventasLocales.filter(v => !idsFB.has(v.id));
+        const soloLocales = ventasLocales.filter(v => !idsFB.has(v.id) && !_esPrueba(v));
         soloLocales.forEach(v => _fbGuardarVenta(v));
         const merged = [...todasFB, ...soloLocales]
             .sort((a, b) => b.id - a.id)
@@ -5704,7 +5708,9 @@ async function _fbSincronizarVentasAlIniciar() {
 function cargarVentas() {
     try {
         const v = JSON.parse(localStorage.getItem('registroVentas') || '[]');
-        return Array.isArray(v) ? v : [];
+        if (!Array.isArray(v)) return [];
+        const esPrueba = n => { const s = String(n || '').trim().toLowerCase(); return s.length <= 1 || ['a','b','test','prueba','producto a','producto b'].includes(s); };
+        return v.filter(x => x && !esPrueba(x.producto));
     } catch(e) {
         localStorage.removeItem('registroVentas');
         return [];
