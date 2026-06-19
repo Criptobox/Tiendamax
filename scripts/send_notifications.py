@@ -111,6 +111,7 @@ def cargar_cola(database) -> dict:
             "nuevos_pendientes": [],
             "rebajas_pendientes": [],
             "tasa_pendiente": None,
+            "ultima_tasa_notificada": None,
             "ultimo_push": {},
             "ultimo_lote_fecha": ""
         }
@@ -120,6 +121,7 @@ def cargar_cola(database) -> dict:
     # tasa_pendiente puede ser None o [ta, tp]
     tp = data.get("tasa_pendiente")
     data["tasa_pendiente"] = _fb_to_list(tp) if isinstance(tp, dict) else tp
+    data.setdefault("ultima_tasa_notificada", None)
     data.setdefault("ultimo_push", {})
     data.setdefault("ultimo_lote_fecha", "")
     return data
@@ -329,7 +331,13 @@ def main():
             return 1
         cambios = detectar_cambios(c_act, get_previous_json("config.json"), p_act, get_previous_json("productos.json"))
         
-        if cambios["tasa"]: cola["tasa_pendiente"] = cambios["tasa"]
+        if cambios["tasa"]:
+            ta_nueva = cambios["tasa"][0]
+            # Solo encolar si esta tasa exacta no fue ya notificada antes
+            if cola.get("ultima_tasa_notificada") != ta_nueva:
+                cola["tasa_pendiente"] = cambios["tasa"]
+            else:
+                print(f"ℹ️ Tasa {ta_nueva} ya fue notificada anteriormente. Se omite.")
         cola["nuevos_pendientes"].extend(cambios["nuevos"])
         cola["rebajas_pendientes"].extend(cambios["rebajas"])
 
@@ -381,7 +389,11 @@ def main():
             print(f"🔑 Tokens en base: {len(tokens_data)} | Válidos: {len(tokens)}")
             for a in avisos:
                 enviar_push_fcm(msg_api, db_api, tokens, [], a["title"], a["body"], a["link"], a["imagen"])
-                if a["tipo"] == "tasa": cola["tasa_pendiente"] = None
+                if a["tipo"] == "tasa":
+                    ta_enviada = cola["tasa_pendiente"][0] if cola["tasa_pendiente"] else None
+                    cola["tasa_pendiente"] = None
+                    if ta_enviada is not None:
+                        cola["ultima_tasa_notificada"] = ta_enviada
                 elif a["tipo"] == "rebajas": cola["rebajas_pendientes"] = []
                 elif a["tipo"] == "nuevos": 
                     cola["nuevos_pendientes"] = []
