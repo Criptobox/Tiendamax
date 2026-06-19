@@ -516,8 +516,8 @@ function addPromoListeners() {
 function renderPromo() {
   const d = promoData;
   return `<div>
-    <div style="display:flex;justify-content:center;margin-bottom:12px">
-      <canvas id="tmPromoCanvas" style="height:320px;width:auto;border-radius:14px;box-shadow:0 8px 32px rgba(0,0,0,.55)" width="1080" height="1920"></canvas>
+    <div style="display:flex;justify-content:center;margin-bottom:12px;background:#000;border-radius:16px;overflow:hidden;min-height:200px">
+      <canvas id="tmPromoCanvas" style="width:200px;height:355px;display:block;flex-shrink:0" width="1080" height="1920"></canvas>
     </div>
     <div style="display:flex;flex-direction:column;gap:10px">
       <input type="file" id="tmPromoImgInput" accept="image/*" style="display:none">
@@ -577,7 +577,7 @@ function renderSheet(){
     </div>
     ${tabsHtml(view)}
     ${renderCopilotView(view, topTasks)}`;
-  if (view === 'promo') setTimeout(() => { addPromoListeners(); drawPromo(); }, 50);
+  if (view === 'promo') setTimeout(() => { addPromoListeners(); drawPromo(); }, 120);
 }
 function taskHtml(t){
   return `<div class="tm-copilot-task u${t.urgency}" data-id="${esc(t.id)}">
