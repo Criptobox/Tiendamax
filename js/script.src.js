@@ -2644,6 +2644,9 @@ async function agregarProductoForm(event) {
     const file = fileInput && fileInput.files ? fileInput.files[0] : null;
     if (!file) { mostrarNotificacion('Por favor selecciona una imagen principal', 'error'); return; }
 
+    const submitBtn = event.target ? event.target.querySelector('button[type="submit"]') : null;
+    if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = '⏳ Guardando…'; }
+
     try {
         mostrarNotificacion('⏳ Subiendo imagen principal...', 'info');
         const imagenPrincipal = await subirImagenAGitHub(file);
@@ -2699,6 +2702,8 @@ async function agregarProductoForm(event) {
     } catch (e) {
         console.error('Error subiendo imágenes:', e);
         mostrarNotificacion('❌ Error subiendo imágenes: ' + (e.message || e), 'error');
+    } finally {
+        if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = '💾 Guardar producto'; }
     }
 }
 
