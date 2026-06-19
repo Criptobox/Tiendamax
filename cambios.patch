@@ -1,5 +1,5 @@
 diff --git a/admin.html b/admin.html
-index 4d2fcdd..0667866 100644
+index 4d2fcdd..2cc6fc6 100644
 --- a/admin.html
 +++ b/admin.html
 @@ -66,7 +66,7 @@
@@ -7,7 +7,7 @@ index 4d2fcdd..0667866 100644
  </main></div></div>
  <div id="editModal" class="modal hidden"><div class="modal-content"><div class="modal-header"><h2>Editar producto</h2><button type="button" class="close-btn" data-action="cerrarEditModal">×</button></div><form id="editForm"><input type="hidden" id="editProductId"><input id="editProductName" required><textarea id="editProductDescription" required></textarea><select id="editProductCategory" required></select><select id="editProductMasVendido"><option value="false">No</option><option value="true">Sí</option></select><label class="check-row"><input type="checkbox" id="editProductUsado"> Usado</label><div id="currentImagePreview"></div><input type="file" id="editProductImage" accept="image/*"><input type="file" id="editProductImagesExtra" accept="image/*" multiple><input type="number" id="editProductPriceActual" required><input type="number" id="editProductPrecioOriginal"><input type="number" id="editProductStock" required><div class="tm-comision-row"><input type="number" id="editProductComision" step="0.01" min="0" placeholder="0.00" oninput="tmUpdateComisionHint(this,'tmComisionHintEdit','tmMonedaToggleEdit')"><div class="tm-moneda-toggle" id="tmMonedaToggleEdit"><button type="button" class="tm-moneda-btn active" data-moneda="USD" onclick="tmSetMoneda('tmMonedaToggleEdit','editProductComisionMoneda','USD',this)">USD</button><button type="button" class="tm-moneda-btn" data-moneda="MN" onclick="tmSetMoneda('tmMonedaToggleEdit','editProductComisionMoneda','MN',this)">MN</button></div></div><input type="hidden" id="editProductComisionMoneda" value="USD"><span class="admin-mn-hint" id="tmComisionHintEdit">Lo que ganas por cada venta</span><input id="editProductGarantia"><label class="check-row"><input type="checkbox" id="editProductDevolucion"> Devolución</label><div style="margin:10px 0"><label style="display:block;margin-bottom:6px;font-size:12px;color:#888">🔗 Productos relacionados</label><div id="editRecomendadosList" style="display:flex;flex-wrap:wrap;gap:6px;max-height:110px;overflow-y:auto;padding:4px 0"></div></div><div class="actions"><button type="submit" class="btn primary">Guardar cambios</button><button type="button" class="btn" data-action="cerrarEditModal">Cancelar</button></div></form></div></div>
 -<script src="js/script.js?v=1cf21723" defer></script><script src="js/analytics.js?v=9d585bc5" defer></script><script src="js/seo-dynamico.js?v=ea7e25bb" defer></script><script src="js/subcategorias.js?v=56dd618e" defer></script><script src="js/revolico_integration.js?v=be3cfde2" defer></script><script src="js/biometric-auth.js?v=343cb27b" defer></script><script src="js/event-delegation.js?v=bf5a6e3e" defer></script><script src="js/share-patch.js?v=1e3ed8b5" defer></script><script src="js/banners.js?v=37084a1a" defer></script>
-+<script src="js/script.js?v=1cf21723" defer></script><script src="js/analytics.js?v=9d585bc5" defer></script><script src="js/seo-dynamico.js?v=ea7e25bb" defer></script><script src="js/subcategorias.js?v=56dd618e" defer></script><script src="js/revolico_integration.js?v=be3cfde2" defer></script><script src="js/biometric-auth.js?v=343cb27b" defer></script><script src="js/event-delegation.js?v=bf5a6e3e" defer></script><script src="js/share-patch.js?v=1e3ed8b5" defer></script><script src="js/banners.js?v=37084a1a" defer></script><script src="js/admin-copilot.js?v=b3e7108e" defer></script>
++<script src="js/script.js?v=1cf21723" defer></script><script src="js/analytics.js?v=9d585bc5" defer></script><script src="js/seo-dynamico.js?v=ea7e25bb" defer></script><script src="js/subcategorias.js?v=56dd618e" defer></script><script src="js/revolico_integration.js?v=be3cfde2" defer></script><script src="js/biometric-auth.js?v=343cb27b" defer></script><script src="js/event-delegation.js?v=bf5a6e3e" defer></script><script src="js/share-patch.js?v=1e3ed8b5" defer></script><script src="js/banners.js?v=37084a1a" defer></script><script src="js/admin-copilot.js?v=81baabe7" defer></script>
  
  <!-- TIENDAMAX_ADMIN_FINAL_INLINE_JS -->
  <script>
@@ -357,7 +357,7 @@ index 6b1a869..f18d5c5 100644
      return 0
  
 diff --git a/sw.js b/sw.js
-index e6895d7..2c3c141 100644
+index e6895d7..0316266 100644
 --- a/sw.js
 +++ b/sw.js
 @@ -100,7 +100,7 @@
@@ -365,7 +365,7 @@ index e6895d7..2c3c141 100644
  // ═══════════════════════════════════════════════════════
  
 -const CACHE_NAME = 'tiendamax-202606151527';
-+const CACHE_NAME = 'tiendamax-20260619035730';
++const CACHE_NAME = 'tiendamax-20260619043005';
  
  const STATIC_ASSETS = [
    '/',
