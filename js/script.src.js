@@ -1168,8 +1168,14 @@ function aplicarBusquedaHero() {
     _heroOrden        = document.getElementById('hsbOrden')?.value || '';
     if (q.length >= 2) {
         try {
-            const _bs = JSON.parse(localStorage.getItem('tm_busquedas_v1') || '{}');
+            let _bs = JSON.parse(localStorage.getItem('tm_busquedas_v1') || '{}');
             _bs[q] = (_bs[q] || 0) + 1;
+            // Limitar a 300 búsquedas únicas — eliminar las menos frecuentes
+            const _bsKeys = Object.keys(_bs);
+            if (_bsKeys.length > 300) {
+                const sorted = _bsKeys.sort((a, b) => _bs[a] - _bs[b]);
+                sorted.slice(0, _bsKeys.length - 300).forEach(k => delete _bs[k]);
+            }
             localStorage.setItem('tm_busquedas_v1', JSON.stringify(_bs));
             _tmRegistrarBusqueda(q);
         } catch(e) {}
@@ -2638,6 +2644,9 @@ async function agregarProductoForm(event) {
     const file = fileInput && fileInput.files ? fileInput.files[0] : null;
     if (!file) { mostrarNotificacion('Por favor selecciona una imagen principal', 'error'); return; }
 
+    const submitBtn = event.target ? event.target.querySelector('button[type="submit"]') : null;
+    if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = '⏳ Guardando…'; }
+
     try {
         mostrarNotificacion('⏳ Subiendo imagen principal...', 'info');
         const imagenPrincipal = await subirImagenAGitHub(file);
@@ -2693,6 +2702,8 @@ async function agregarProductoForm(event) {
     } catch (e) {
         console.error('Error subiendo imágenes:', e);
         mostrarNotificacion('❌ Error subiendo imágenes: ' + (e.message || e), 'error');
+    } finally {
+        if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = '💾 Guardar producto'; }
     }
 }
 

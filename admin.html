@@ -96,7 +96,7 @@
   function escapeHtml(s){return String(s==null?'':s).replace(/[&<>"']/g,function(m){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]})}
   document.addEventListener('DOMContentLoaded',function(){
     ['productName','productCategory','productPriceActual','productStock'].forEach(function(id){var e=$('#'+id); if(e){e.addEventListener('input',updatePreview);e.addEventListener('change',updatePreview)}});
-    setTimeout(updateDashboard,900); setInterval(updateDashboard,5000);
+    setTimeout(updateDashboard,900); setInterval(updateDashboard,30000);
     var img=$('#productImage'); if(img) img.addEventListener('change',function(e){var f=e.target.files&&e.target.files[0], wrap=$('#pvEmoji'); if(f&&wrap){var r=new FileReader(); r.onload=function(ev){wrap.innerHTML='<img src="'+ev.target.result+'" style="width:100%;height:100%;object-fit:cover">'}; r.readAsDataURL(f)}});
   });
 })();
@@ -454,7 +454,7 @@ async function tmAdminRefreshSubscribers(){
                 <div style="font-size:12px;color:#ddd;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${os||'Dispositivo'}${br?' · '+br:''}</div>
                 <div style="font-size:10px;color:#666;">${fecha||'Sin fecha'}</div>
               </div>
-              <button type="button" onclick="if(typeof tmBorrarSuscriptor==='function'){tmBorrarSuscriptor('${esc(k)}','${esc(t.fingerprint||'')}','${esc(t.token||'')}')}" style="background:rgba(231,76,60,0.15);border:1px solid rgba(231,76,60,0.35);color:#e74c3c;border-radius:6px;padding:2px 8px;font-size:11px;cursor:pointer;flex-shrink:0;">🗑</button>
+              <button type="button" onclick="if(typeof tmBorrarSuscriptor==='function'&&confirm('¿Eliminar este suscriptor? Esta acción no se puede deshacer.')){tmBorrarSuscriptor('${esc(k)}','${esc(t.fingerprint||'')}','${esc(t.token||'')}')}" style="background:rgba(231,76,60,0.15);border:1px solid rgba(231,76,60,0.35);color:#e74c3c;border-radius:6px;padding:2px 8px;font-size:11px;cursor:pointer;flex-shrink:0;">🗑</button>
             </div>`;
           }).join('');
       }
