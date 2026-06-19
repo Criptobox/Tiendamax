@@ -100,7 +100,7 @@
 //      usan el mismo helper _mensajeOrdenWA con formato premium.
 // ═══════════════════════════════════════════════════════
 
-const CACHE_NAME = 'tiendamax-202606190730';
+const CACHE_NAME = 'tiendamax-202606190800';
 
 const STATIC_ASSETS = [
   '/',
@@ -164,14 +164,11 @@ self.addEventListener('activate', e => {
                 keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k))
             );
             await self.clients.claim();
-            // Forzar recarga de todos los clientes abiertos para que carguen los archivos nuevos
+            // Avisar a las páginas abiertas para que muestren opción de recargar,
+            // sin forzar navigate() que vacía el caché y congela el splash en conexión lenta
             const allClients = await self.clients.matchAll({ type: 'window' });
             for (const client of allClients) {
-                try {
-                    await client.navigate(client.url);
-                } catch(e) {
-                    client.postMessage({ type: 'SW_UPDATED', version: CACHE_NAME });
-                }
+                client.postMessage({ type: 'SW_UPDATED', version: CACHE_NAME });
             }
         })()
     );
