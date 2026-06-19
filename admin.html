@@ -1564,15 +1564,15 @@ if ('serviceWorker' in navigator) {
                     }
                 });
             });
-            // UN SOLO handler de recarga — usa sessionStorage para no loopear
-            const RELOAD_KEY = 'tm_sw_reloaded';
+            // Reload al activarse nuevo SW — throttle 30s para no loopear
+            // si hay varias versiones seguidas (no limpiar el flag en cada carga)
+            const RELOAD_KEY = 'tm_sw_reloaded_ts';
             navigator.serviceWorker.addEventListener('controllerchange', () => {
-                if (sessionStorage.getItem(RELOAD_KEY)) return;
-                sessionStorage.setItem(RELOAD_KEY, '1');
+                const last = Number(sessionStorage.getItem(RELOAD_KEY) || 0);
+                if (Date.now() - last < 30000) return;
+                sessionStorage.setItem(RELOAD_KEY, String(Date.now()));
                 window.location.reload();
             });
-            // Limpiar el flag al cargar normalmente (sesión fresca)
-            sessionStorage.removeItem(RELOAD_KEY);
         }).catch(() => {});
     });
 }
