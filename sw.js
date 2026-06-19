@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════════════════
-// TiendaMax — Service Worker v273 — nueva imagen estado WhatsApp tipo publicidad premium
+// TiendaMax — Service Worker v274 — admin JS en Network-First para que cambios sean inmediatos
 // v271: recarga forzada al activarse versión nueva
 // v241: continúa al siguiente modelo Gemini si hay cuota 429
 // v240: soporte clave Gemini con prefijo AQ
@@ -101,7 +101,7 @@
 //      usan el mismo helper _mensajeOrdenWA con formato premium.
 // ═══════════════════════════════════════════════════════
 
-const CACHE_NAME = 'tiendamax-202606191730';
+const CACHE_NAME = 'tiendamax-202606191800';
 
 const STATIC_ASSETS = [
   '/',
@@ -118,8 +118,6 @@ const STATIC_ASSETS = [
   '/css/admin.css',
   '/js/script.js',
   '/js/analytics.js',
-  '/js/admin-ai-tools.js',
-  '/js/admin-ai-tools.min.js',
   '/js/admin-copilot.js',
   '/js/seo-dynamico.js',
   '/js/share-patch.js',
@@ -227,6 +225,23 @@ self.addEventListener('fetch', e => {
                     return res;
                 })
                 .catch(() => caches.match(e.request).then(c => c || caches.match('/offline.html')))
+        );
+        return;
+    }
+
+    // Admin JS — Network-First para que los cambios se vean de inmediato
+    const esAdminJS = path.startsWith('/js/admin-') || path.startsWith('/js/admin_');
+    if (esAdminJS) {
+        e.respondWith(
+            _fetchWithTimeout(e.request, 6000)
+                .then(res => {
+                    if (res.ok) {
+                        const clone = res.clone();
+                        caches.open(CACHE_NAME).then(c => c.put(e.request, clone)).catch(() => {});
+                    }
+                    return res;
+                })
+                .catch(() => caches.match(e.request, { ignoreSearch: true }).then(c => c || fetch(e.request)))
         );
         return;
     }
