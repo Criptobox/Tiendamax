@@ -40,7 +40,9 @@ jobs:
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add p/ sitemap.xml subcategorias.json comisiones.json || true
+          git add p/ sitemap.xml subcategorias.json comisiones.json 2>/dev/null || true
+          # Asegurar que archivos nuevos en p/ también queden en el índice
+          git ls-files --others --exclude-standard -- p/ | xargs -r git add 2>/dev/null || true
           if git diff --cached --quiet; then
             echo "Sin cambios para subir"
             exit 0
