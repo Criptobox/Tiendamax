@@ -178,8 +178,8 @@ html body .tm-badges-col .badge-vendido,html body .tm-badges-col .badge-agotado,
   html body .nd-hero-search { max-width: 920px !important; margin-left: auto !important; margin-right: auto !important; }
   html body .nd-hero-btns { justify-content: center !important; }
   /* forzar tamaño móvil + badges estáticos cuando el viewport ancho activa este fix */
-  html body .nd-card3d { width: 280px !important; height: 360px !important; }
-  html body .nd-stack-wrap { display: flex !important; flex-wrap: wrap !important; justify-content: center !important; align-items: stretch !important; gap: 12px 8px !important; }
+  html body .nd-card3d { width: 280px !important; height: 360px !important; flex-shrink: 0 !important; }
+  html body .nd-stack-wrap { display: flex !important; flex-wrap: wrap !important; justify-content: center !important; align-items: stretch !important; gap: 12px 8px !important; max-width: 320px !important; margin-left: auto !important; margin-right: auto !important; }
   html body .nd-fb1, html body .nd-fb2, html body .nd-fb3 { position: static !important; animation: none !important; font-size: 11px !important; padding: 8px 14px !important; gap: 6px !important; min-height: 56px !important; align-items: center !important; display: flex !important; }
 }
 @media (pointer: coarse) and (orientation: portrait) and (max-width: 760px) {
