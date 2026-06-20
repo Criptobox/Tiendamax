@@ -645,8 +645,7 @@ html body.light-mode .cta-final .btn-large:hover{background:linear-gradient(135d
   .nd-hero-grid{grid-template-columns:1fr;gap:48px}
   .nd-hero-right{order:-1}
   .nd-card3d{width:280px;height:360px}
-  .nd-stack-wrap{display:flex;flex-wrap:wrap;justify-content:center;align-items:stretch;gap:12px 8px}
-  .nd-fb1,.nd-fb2,.nd-fb3{position:static !important;animation:none !important;font-size:11px !important;padding:8px 14px !important;gap:6px !important;min-height:56px !important;align-items:center !important}
+  .nd-fb1,.nd-fb2,.nd-fb3{display:none !important}
 
   .nd-bi{font-size:15px !important}
   .nd-h1{text-align:center !important}

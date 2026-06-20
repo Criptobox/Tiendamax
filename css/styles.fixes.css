@@ -177,11 +177,9 @@ html body .tm-badges-col .badge-vendido,html body .tm-badges-col .badge-agotado,
   html body .nd-sub { margin-left: auto !important; margin-right: auto !important; max-width: 720px !important; }
   html body .nd-hero-search { max-width: 920px !important; margin-left: auto !important; margin-right: auto !important; }
   html body .nd-hero-btns { justify-content: center !important; }
-  html body .nd-stack-wrap { transform: scale(.92); transform-origin: top center; margin-bottom: -20px; }
 }
 @media (pointer: coarse) and (orientation: portrait) and (max-width: 760px) {
   html body .nd-hero-search { flex-wrap: wrap !important; }
   html body .nd-hero-search .hsb-search { flex-basis: 100% !important; }
   html body .nd-hero-search .currency-bar { margin: 0 auto !important; }
-  html body .nd-stack-wrap { transform: scale(.82); margin-bottom: -48px; }
 }
