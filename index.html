@@ -1122,7 +1122,7 @@
     // Service Worker con auto-actualización y reload cuando hay versión nueva
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-            navigator.serviceWorker.register('/sw.js?v=admin-final-202606111836', { updateViaCache: 'none' }).then(reg => {
+            navigator.serviceWorker.register('/sw.js?v=force-202606201600', { updateViaCache: 'none' }).then(reg => {
                 // Si hay un SW esperando, decirle que tome el control YA
                 if (reg.waiting) reg.waiting.postMessage('SKIP_WAITING');
 
