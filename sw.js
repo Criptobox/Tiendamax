@@ -117,6 +117,7 @@ const STATIC_ASSETS = [
   '/css/light-mode.css',
   '/css/admin.css',
   '/js/script.js',
+  '/js/script-admin.js',
   '/js/analytics.js',
   '/js/admin-copilot.js',
   '/js/seo-dynamico.js',
