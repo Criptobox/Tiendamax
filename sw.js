@@ -103,7 +103,7 @@
 
 
 
-const CACHE_NAME = 'tiendamax-202606202128';
+const CACHE_NAME = 'tiendamax-202606202700';
 
 const STATIC_ASSETS = [
   '/',
@@ -249,9 +249,9 @@ self.addEventListener('fetch', e => {
     }
 
     // Estrategia Cache-First para Assets estáticos (JS, CSS, imágenes, iconos)
-    // ignoreSearch:true → /script.js?v=abc coincide con /script.js en caché
+    // Sin ignoreSearch → ?v=hash diferente = cache miss = descarga la versión nueva
     e.respondWith(
-        caches.match(e.request, { ignoreSearch: true }).then(cached => {
+        caches.match(e.request).then(cached => {
             return cached || fetch(e.request).then(res => {
                 if (res.ok) {
                     const clone = res.clone();
