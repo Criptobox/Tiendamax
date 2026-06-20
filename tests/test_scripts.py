@@ -169,20 +169,14 @@ class TestPageTemplate(unittest.TestCase):
             json_desc=_json.dumps("Descripción de prueba del producto"),
             json_img=_json.dumps("https://tiendamax.org/og-image.png"),
             availability="https://schema.org/InStock",
-            cat_html="",
-            desc_full="Descripción de prueba del producto",
-            precio_orig_html="",
-            pct_desc_html="",
-            stock_html='<div class="tm-stok-y">En stock (5 disponibles)</div>',
-            wa_link="https://wa.me/5355555555?text=Hola",
         )
 
+        self.assertIn("content=\"1;url=", html)           # redirect 1s
         self.assertIn("application/ld+json", html)         # JSON-LD
         self.assertIn("schema.org/InStock", html)           # availability
         self.assertIn("Descripción de prueba", html)        # desc visible
         self.assertIn("$9.99 USD", html)                    # price visible
         self.assertIn("Producto Test", html)                # name visible
-        self.assertIn("og:type", html)                      # Open Graph presente
 
 
 # ═══════════════════════════════════════════════════════════════

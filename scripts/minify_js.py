@@ -107,28 +107,6 @@ def minify(src: Path, dest: Path) -> tuple[int, int]:
     return original_size, dest.stat().st_size
 
 
-ADMIN_SRC  = Path('js/script-admin.src.js')
-ADMIN_DEST = Path('js/script-admin.js')
-
-# Funciones reservadas adicionales para el archivo admin
-RESERVED_ADMIN = RESERVED + [
-    # funciones admin-only llamadas desde onclick generado en JS
-    'abrirEditModal', 'cerrarEditModal', 'eliminarProducto', 'eliminarCategoria',
-    'guardarProductoEditado', 'agregarProductoForm', 'guardarCategorias',
-    'descargarProductosJSON', 'descargarCategoriasJSON',
-    'copiarParaRevolico', 'copiarParaFacebook', 'prepararPublicacionManual',
-    'publicarEnRevolico', 'publicarEnFacebook', 'publicarAhora',
-    'actualizarSelectCategorias', 'actualizarListaCategorias', 'actualizarBotonesCategorias',
-    'marcarProductoModificado', 'limpiarProductosModificados', 'obtenerProductosModificados',
-    'sincronizarTodoConGitHub', 'sincronizarConGitHub', 'sincronizarConBackend',
-    'subirImagenAGitHub', 'subirMultiplesImagenes', 'subirArchivoAGitHub',
-    'comprimirImagen', 'guardarProductos', 'switchTab',
-    'verificarEstadoBackend', 'cargarEstadoPublicacion',
-    'cargarConfiguracionGitHub', 'guardarConfiguracionGitHub',
-    '_tmPublicarVersionFirebase', '_renderEditGallery', '_renderEditRecomendados',
-]
-
-
 def main() -> None:
     print('Minificando JS...\n')
 
@@ -146,33 +124,6 @@ def main() -> None:
     print(f'   Minificado: {fmt(minified)}')
     print(f'   Ahorro:     {savings:,} bytes ({savings_pct:.1f}%)')
     print('=' * 60)
-
-    if ADMIN_SRC.exists():
-        orig_a, min_a = _minify_admin()
-        print(f'[OK] {ADMIN_SRC} → {ADMIN_DEST}')
-        print(f'   Original:   {fmt(orig_a)}')
-        print(f'   Minificado: {fmt(min_a)}')
-        print('=' * 60)
-
-
-def _minify_admin() -> tuple[int, int]:
-    original_size = ADMIN_SRC.stat().st_size
-    reserved_json = '[' + ','.join(f'"{n}"' for n in RESERVED_ADMIN) + ']'
-    result = subprocess.run(
-        [
-            'npx', '--yes', 'terser',
-            str(ADMIN_SRC),
-            '--compress', 'passes=2,drop_console=false,pure_getters=true,unsafe_math=false',
-            '--mangle', f'reserved={reserved_json}',
-            '--output', str(ADMIN_DEST),
-        ],
-        capture_output=True, text=True, timeout=120,
-    )
-    if result.returncode != 0:
-        print(f'\n  ERROR al minificar {ADMIN_SRC}:')
-        print(result.stderr or result.stdout)
-        sys.exit(1)
-    return original_size, ADMIN_DEST.stat().st_size
 
 
 if __name__ == '__main__':
