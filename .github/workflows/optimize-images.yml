@@ -58,11 +58,52 @@ jobs:
           print(f'WebP generados/actualizados: {count}')
           PYEOF
 
+      - name: Actualizar URLs en productos.json a WebP
+        run: |
+          python3 - <<'PYEOF'
+          import json
+          from pathlib import Path
+
+          ROOT = Path('.')
+          path = ROOT / 'productos.json'
+          if not path.exists():
+              print('productos.json no encontrado, saltando')
+              raise SystemExit(0)
+
+          data = json.loads(path.read_text(encoding='utf-8'))
+          changed = 0
+          for p in data:
+              for field in ('imagen', 'galeria', 'imagenes'):
+                  val = p.get(field)
+                  if isinstance(val, str) and 'imagenes/' in val and val.endswith('.jpg'):
+                      webp_path = ROOT / 'imagenes' / (Path(val).stem + '.webp')
+                      if webp_path.exists():
+                          p[field] = val[:-4] + '.webp'
+                          changed += 1
+                  elif isinstance(val, list):
+                      new_list = []
+                      for url in val:
+                          if isinstance(url, str) and 'imagenes/' in url and url.endswith('.jpg'):
+                              webp_path = ROOT / 'imagenes' / (Path(url).stem + '.webp')
+                              if webp_path.exists():
+                                  new_list.append(url[:-4] + '.webp')
+                                  changed += 1
+                                  continue
+                          new_list.append(url)
+                      p[field] = new_list
+
+          if changed:
+              path.write_text(json.dumps(data, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+              print(f'URLs actualizadas a .webp: {changed}')
+          else:
+              print('Sin URLs de JPG que actualizar')
+          PYEOF
+
       - name: Commit changes
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add imagenes/
+          git add imagenes/ productos.json
           git diff --staged --quiet && echo "Sin cambios." || (
             git commit -m "chore: optimize images and generate WebP [skip ci]" &&
             (git push || (git pull --rebase && git push))
