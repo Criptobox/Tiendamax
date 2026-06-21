@@ -8,6 +8,7 @@ on:
       - 'css/styles.css'
       - 'css/animations.css'
       - 'css/styles.banner.fix.css'
+      - 'css/nuevo-diseno.css'
       - 'css/styles.fixes.css'
       - 'css/premium-theme.css'
       - 'css/light-mode.css'

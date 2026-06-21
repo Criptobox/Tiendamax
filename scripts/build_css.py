@@ -15,6 +15,7 @@ ORDEN = [
     "styles.css",
     "animations.css",
     "styles.banner.fix.css",
+    "nuevo-diseno.css",    # diseño principal v2 — antes de fixes para que puedan sobreescribirlo
     "styles.fixes.css",
     "premium-theme.css",   # tema oscuro — va casi al final
     "light-mode.css",      # overrides modo claro — DESPUÉS del premium
