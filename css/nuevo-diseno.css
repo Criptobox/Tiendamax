@@ -243,11 +243,12 @@ html body .categorias-home .categorias-grid .categoria-card .cat-name{
   text-shadow:0 2px 8px rgba(0,0,0,.35) !important;line-height:1.2 !important;
 }
 html body .categorias-home .categorias-grid .categoria-card .cat-count{
-  font-size:12px !important;color:rgba(255,255,255,.65) !important;
-  margin-top:5px !important;display:block !important;font-weight:500 !important;
+  font-size:12px !important;color:rgba(255,255,255,.85) !important;
+  margin-top:5px !important;display:block !important;font-weight:600 !important;
   position:relative !important;z-index:2 !important;
+  text-shadow:0 1px 4px rgba(0,0,0,.35) !important;
 }
-html body .categorias-home .categorias-grid .categoria-card.proximamente .cat-count{color:rgba(255,255,255,.5) !important}
+html body .categorias-home .categorias-grid .categoria-card.proximamente .cat-count{color:rgba(255,255,255,.72) !important}
 /* Badge "+ POPULAR" — se activa con clase .cat-popular en el JS */
 html body .categorias-home .categorias-grid .categoria-card.cat-popular .cat-popular-badge{
   display:inline-flex !important;align-items:center !important;gap:4px !important;
