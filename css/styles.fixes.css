@@ -100,7 +100,7 @@ html body #detailPersonasViendo{margin:8px 0 12px}
   html body #masVendidosGrid .btn-pedir-card{font-size:10px !important;padding:7px 4px !important;margin:auto 6px 8px !important;width:calc(100% - 12px) !important;gap:4px !important}
   html body #masVendidosGrid .btn-pedir-wa-icon-sm{width:16px !important;height:16px !important}
   /* Badge de megusta más pequeño */
-  html body #masVendidosGrid .btn-megusta{width:24px !important;height:24px !important;top:6px !important;right:6px !important}
+  html body #masVendidosGrid .btn-megusta{width:32px !important;height:32px !important;top:6px !important;right:6px !important}
   /* Botón "Ver todos" visible solo en móvil */
   .mv-ver-todos-btn{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;margin-top:12px;padding:10px 16px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:12px;color:rgba(255,255,255,0.7);font-size:13px;font-weight:600;cursor:pointer}
   .mv-ver-todos-btn:active{background:rgba(255,255,255,0.1)}

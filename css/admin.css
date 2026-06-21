@@ -563,7 +563,7 @@
     margin-bottom: 8px;
 }
 
-body.dark-mode .admin-product-item {
+body:not(.light-mode) .admin-product-item {
     background: rgba(255,255,255,0.03);
 }
 
@@ -773,7 +773,7 @@ body.dark-mode .admin-product-item {
     padding: 14px;
     margin-bottom: 16px;
 }
-body.dark-mode .admin-chart-box {
+body:not(.light-mode) .admin-chart-box {
     background: #1a1a1a;
     border-color: #2a2a2a;
 }
@@ -784,7 +784,7 @@ body.dark-mode .admin-chart-box {
     color: #555;
     margin-bottom: 10px;
 }
-body.dark-mode .admin-chart-title { color: #aaa; }
+body:not(.light-mode) .admin-chart-title { color: #aaa; }
 
 .admin-chart-bars {
     display: flex;
@@ -800,7 +800,7 @@ body.dark-mode .admin-chart-title { color: #aaa; }
 }
 .admin-chart-bar:hover { opacity: 0.7; }
 .admin-chart-bar.empty { background: #e8e8e8; }
-body.dark-mode .admin-chart-bar.empty { background: #333; }
+body:not(.light-mode) .admin-chart-bar.empty { background: #333; }
 .admin-chart-bar.filled { background: linear-gradient(180deg, #27ae60, #2ecc71); }
 
 .admin-chart-footer {
@@ -822,7 +822,7 @@ body.dark-mode .admin-chart-bar.empty { background: #333; }
     padding: 6px 0;
     border-bottom: 1px solid #f0f0f0;
 }
-body.dark-mode .admin-top-item { border-color: #2a2a2a; }
+body:not(.light-mode) .admin-top-item { border-color: #2a2a2a; }
 
 .admin-top-rank {
     font-size: 13px;
@@ -849,7 +849,7 @@ body.dark-mode .admin-top-item { border-color: #2a2a2a; }
     font-size: 11px;
     color: #888;
 }
-body.dark-mode .admin-top-meta { color: #777; }
+body:not(.light-mode) .admin-top-meta { color: #777; }
 
 .admin-top-value {
     font-size: 11px;
@@ -878,7 +878,7 @@ body.dark-mode .admin-top-meta { color: #777; }
     background: var(--cream);
     color: var(--text-primary);
 }
-body.dark-mode .admin-search-input {
+body:not(.light-mode) .admin-search-input {
     background: #1e1e1e;
     border-color: #333;
     color: #eee;
@@ -912,7 +912,7 @@ body.dark-mode .admin-search-input {
     cursor: pointer;
     transition: all 0.2s;
 }
-body.dark-mode .admin-chip {
+body:not(.light-mode) .admin-chip {
     background: #1e1e1e;
     border-color: #333;
     color: #aaa;
@@ -935,7 +935,7 @@ body.dark-mode .admin-chip {
     padding: 6px;
     background: #fafafa;
 }
-body.dark-mode .admin-product-list {
+body:not(.light-mode) .admin-product-list {
     background: #141414;
     border-color: #2a2a2a;
 }
@@ -951,7 +951,7 @@ body.dark-mode .admin-product-list {
     transition: all 0.15s;
     background: white;
 }
-body.dark-mode .admin-product-list-item {
+body:not(.light-mode) .admin-product-list-item {
     background: #1e1e1e;
 }
 .admin-product-list-item:hover,
@@ -978,7 +978,7 @@ body.dark-mode .admin-product-list-item {
     justify-content: center;
     font-size: 18px;
 }
-body.dark-mode .admin-product-list-item .thumb-placeholder { background: #2a2a2a; }
+body:not(.light-mode) .admin-product-list-item .thumb-placeholder { background: #2a2a2a; }
 
 .admin-product-list-item .info {
     flex: 1;
@@ -995,7 +995,7 @@ body.dark-mode .admin-product-list-item .thumb-placeholder { background: #2a2a2a
     font-size: 11px;
     color: #888;
 }
-body.dark-mode .admin-product-list-item .meta { color: #777; }
+body:not(.light-mode) .admin-product-list-item .meta { color: #777; }
 
 .admin-product-list-item .price {
     font-weight: 700;
@@ -1035,7 +1035,7 @@ body.dark-mode .admin-product-list-item .meta { color: #777; }
     color: #555;
     margin-top: 2px;
 }
-body.dark-mode .admin-selected-card .meta { color: #aaa; }
+body:not(.light-mode) .admin-selected-card .meta { color: #aaa; }
 
 /* ── Input row (cantidad + botón) ── */
 .admin-input-row {
@@ -1051,7 +1051,7 @@ body.dark-mode .admin-selected-card .meta { color: #aaa; }
     background: var(--cream);
     color: var(--text-primary);
 }
-body.dark-mode .admin-input-row input {
+body:not(.light-mode) .admin-input-row input {
     background: #1e1e1e;
     border-color: #333;
     color: #eee;
@@ -1072,7 +1072,7 @@ body.dark-mode .admin-input-row input {
     gap: 10px;
     flex-wrap: wrap;
 }
-body.dark-mode .admin-history-item {
+body:not(.light-mode) .admin-history-item {
     background: rgba(39,174,96,0.04);
     border-color: rgba(39,174,96,0.15);
 }
@@ -1089,7 +1089,7 @@ body.dark-mode .admin-history-item {
     color: #888;
     margin-top: 2px;
 }
-body.dark-mode .admin-history-item .meta { color: #777; }
+body:not(.light-mode) .admin-history-item .meta { color: #777; }
 
 .admin-history-item .total {
     font-size: 14px;
@@ -1141,12 +1141,12 @@ body.dark-mode .admin-history-item .meta { color: #777; }
     background: #eee;
     cursor: not-allowed;
 }
-body.dark-mode .admin-pagination button {
+body:not(.light-mode) .admin-pagination button {
     background: #1e1e1e;
     border-color: #333;
     color: #eee;
 }
-body.dark-mode .admin-pagination button:disabled {
+body:not(.light-mode) .admin-pagination button:disabled {
     background: #2a2a2a;
     color: #666;
 }
@@ -1162,7 +1162,7 @@ body.dark-mode .admin-pagination button:disabled {
     padding: 14px;
     text-align: center;
 }
-body.dark-mode .admin-analytics-stat {
+body:not(.light-mode) .admin-analytics-stat {
     background: #1e1e1e;
 }
 .admin-analytics-stat .icon {
@@ -1178,7 +1178,7 @@ body.dark-mode .admin-analytics-stat {
     text-transform: uppercase;
     letter-spacing: 0.5px;
 }
-body.dark-mode .admin-analytics-stat .label { color: #777; }
+body:not(.light-mode) .admin-analytics-stat .label { color: #777; }
 
 /* ── Alert box (analytics info) ── */
 .admin-alert-box {
@@ -1205,7 +1205,7 @@ body.dark-mode .admin-analytics-stat .label { color: #777; }
     padding: 16px;
     font-size: 13px;
 }
-body.dark-mode .admin-empty { color: #666; }
+body:not(.light-mode) .admin-empty { color: #666; }
 
 /* ── Hidden selects ── */
 .admin-hidden { display: none !important; }
@@ -1220,7 +1220,7 @@ body.dark-mode .admin-empty { color: #666; }
     background: var(--cream);
     color: var(--text-primary);
 }
-body.dark-mode .admin-qty-input {
+body:not(.light-mode) .admin-qty-input {
     background: #1e1e1e;
     border-color: #333;
     color: #eee;
@@ -1230,7 +1230,7 @@ body.dark-mode .admin-qty-input {
 /* ════════════════════════════════════════════════════════════
    DARK MODE UNIVERSAL — Admin panel
    Aplica dentro del #adminPanel y del #loginModal
-   sin depender de body.dark-mode (que puede no estar activo)
+   sin depender de body:not(.light-mode) (que puede no estar activo)
    ════════════════════════════════════════════════════════════ */
 
 /* ── Login modal ── */
