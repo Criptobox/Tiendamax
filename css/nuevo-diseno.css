@@ -666,6 +666,11 @@ html body.light-mode .cta-final .btn-large:hover{background:linear-gradient(135d
   html body .categorias-home .categorias-grid .categoria-card:nth-child(1){grid-column:span 2 !important;grid-row:span 2 !important}
   html body .categorias-home .categorias-grid .categoria-card:nth-child(n+2){grid-column:span 1 !important;grid-row:span 3 !important}
   html body .categorias-home .categorias-grid .categoria-card:nth-child(n+8){grid-column:span 1 !important;grid-row:span 2 !important}
+  /* Cierra el grid simétrico: si la última tarjeta queda sola en su fila
+     (último hijo en columna izquierda = índice par), que ocupe el ancho completo
+     en vez de dejar un hueco. «Todos» es child 1 a ancho completo, así que las
+     tarjetas de categoría empiezan a emparejarse desde el child 2. */
+  html body .categorias-home .categorias-grid .categoria-card:last-child:nth-child(even){grid-column:span 2 !important}
   html body .categorias-home .categorias-grid .categoria-card{padding:16px !important}
   html body .categorias-home .categorias-grid .categoria-card .cat-icon{font-size:46px !important;top:12px !important;right:12px !important}
   html body .categorias-home .categorias-grid .categoria-card:nth-child(1) .cat-name{font-size:20px !important}
