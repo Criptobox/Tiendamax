@@ -70,7 +70,14 @@
     <meta name="msapplication-TileImage" content="/iconos/favicon-192.png?v=300374f9">
     <link rel="manifest" href="/manifest.json">
 
-
+    <!-- Preconnect a servicios críticos: ahorra DNS + TCP + TLS en primera visita -->
+    <link rel="preconnect" href="https://firebase.googleapis.com" crossorigin>
+    <link rel="preconnect" href="https://www.googletagmanager.com">
+    <link rel="dns-prefetch" href="https://firebaseinstallations.googleapis.com">
+    <link rel="dns-prefetch" href="https://identitytoolkit.googleapis.com">
+    <link rel="dns-prefetch" href="https://fcm.googleapis.com">
+    <link rel="dns-prefetch" href="https://www.google-analytics.com">
+    <link rel="dns-prefetch" href="https://firebaseio.com">
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -129,6 +136,9 @@
     
     <!-- Fuentes locales (evita requests externos a Google Fonts) -->
     <link rel="stylesheet" href="css/fonts.css?v=67235440">
+
+    <!-- Preload del script principal para que el navegador lo descargue sin esperar la línea 1091 -->
+    <link rel="preload" href="js/script.js?v=292b00b1" as="script">
 
     <!-- CSS unido + minificado (generado por scripts/build_css.py vía GitHub Action).
          Para editar estilos, edita los CSS fuente en /css y la Action regenera este bundle. -->
