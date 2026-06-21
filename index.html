@@ -134,7 +134,7 @@
          Para editar estilos, edita los CSS fuente en /css y la Action regenera este bundle. -->
     <link rel="stylesheet" href="css/bundle.css?v=98b5c0cd">
     <link rel="stylesheet" href="css/nuevo-diseno.css?v=251127ee">
-    <link rel="stylesheet" href="css/styles.fixes.css?v=a36efac3">
+    <link rel="stylesheet" href="css/styles.fixes.css?v=632c82b3">
 
 
     <!-- Estilos para "Vistos Recientemente" -->
@@ -610,7 +610,6 @@
 
         <!-- Banners patrocinados — después del fold, no compiten con la propuesta de valor -->
         <section class="banners-patrocinados-section" id="banneresPatrocinadosSection">
-            <div class="container" style="display:none;"></div>
             <div class="hero-image" id="heroImageContainer" style="position:relative;margin:0 16px 24px;border-radius:18px;overflow:hidden;">
                 <!-- Banner Slider -->
                 <div id="heroBannerSlider" class="hero-banner-slider">
@@ -1080,7 +1079,7 @@
             });
         }, { threshold: 0.1, rootMargin: '0px 0px -30px 0px' });
 
-        elements.forEach(function(el, i) {
+        elements.forEach(function(el) {
             el.classList.add('tm-fade');
             var siblings = el.parentNode ? el.parentNode.querySelectorAll('.tm-fade') : [];
             var idx = Array.prototype.indexOf.call(siblings, el);
@@ -1220,12 +1219,6 @@
     a.href = a.href.replace(/wa\.me\/\d+/, 'wa.me/' + num);
   });
 })();
-document.addEventListener('DOMContentLoaded', () => {
-  const num = localStorage.getItem('whatsappNumero') || '5354320170';
-  document.querySelectorAll('a[href*="wa.me/"]').forEach(a => {
-    a.href = a.href.replace(/wa\.me\/\d+/, 'wa.me/' + num);
-  });
-});
 </script>
 
 <!-- ═══════════════════════════════════════════════════════════
