@@ -16,7 +16,7 @@ const LS = {
 const DAY = new Date().toISOString().slice(0,10);
 let state = { tasks: [], hot: [], agents: [], metrics: {}, view: localStorage.getItem(LS.view) || 'hoy', booted: false, loading: false };
 let refreshTimer = null;
-let promoData = { imgEl: null, nombre: '', precio: '', moneda: 'USD', detalle: '', footer: 'Oferta Exclusiva · Solo en tiendamax.org', tema: 'oscuro', _logoEl: null, _drawTimer: null };
+let promoData = { imgEl: null, nombre: '', eslogan: '', precio: '', moneda: 'USD', detalle: '', footer: 'Oferta Exclusiva · Unidades Limitadas.\nSolo en nuestra tienda online.', url: 'tiendamax.org', tema: 'oscuro', _logoEl: null, _drawTimer: null };
 
 const $ = (s,r=document)=>r.querySelector(s);
 const $$ = (s,r=document)=>Array.from(r.querySelectorAll(s));
@@ -394,105 +394,226 @@ async function promoLoadLogo() {
     img.src = '/iconos/icon-192.png';
   });
 }
+function promoDrawBag(ctx, cx, cy, bagW, accent) {
+  const bH = bagW * 1.18;
+  const bx = cx - bagW / 2, by = cy - bH / 2;
+  // Shadow
+  ctx.save();
+  ctx.shadowColor = 'rgba(0,0,0,0.45)';
+  ctx.shadowBlur = 70; ctx.shadowOffsetX = 18; ctx.shadowOffsetY = 32;
+  // Handles (two arched tubes)
+  const hcx1 = bx + bagW * 0.3, hcx2 = bx + bagW * 0.7;
+  const hcy = by + bagW * 0.06, hrx = bagW * 0.11, hry = bagW * 0.22;
+  const hLW = bagW * 0.065;
+  ctx.lineWidth = hLW; ctx.lineCap = 'round';
+  ctx.strokeStyle = '#e8580a';
+  [hcx1, hcx2].forEach(hx => {
+    ctx.beginPath(); ctx.ellipse(hx, hcy, hrx, hry, 0, Math.PI, 0, false); ctx.stroke();
+  });
+  ctx.restore();
+  // Bag body
+  ctx.save();
+  ctx.shadowColor = 'rgba(0,0,0,0.35)';
+  ctx.shadowBlur = 60; ctx.shadowOffsetX = 14; ctx.shadowOffsetY = 26;
+  promoRoundRect(ctx, bx, by + bagW * 0.14, bagW, bH * 0.86, bagW * 0.072);
+  const bodyGr = ctx.createLinearGradient(bx, by, bx + bagW, by + bH);
+  bodyGr.addColorStop(0, '#FFF8F0'); bodyGr.addColorStop(0.45, '#FAF0E4'); bodyGr.addColorStop(1, '#F0E4D0');
+  ctx.fillStyle = bodyGr; ctx.fill();
+  ctx.restore();
+  // Inner rim strip at top of bag body
+  ctx.save();
+  ctx.fillStyle = 'rgba(0,0,0,0.06)';
+  promoRoundRect(ctx, bx + bagW*0.04, by + bagW*0.14, bagW*0.92, bagW*0.07, bagW*0.03);
+  ctx.fill();
+  ctx.restore();
+  // Large "M" inside bag
+  ctx.save();
+  ctx.font = `900 ${bagW * 0.55}px 'Arial Black', Arial, sans-serif`;
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillStyle = accent;
+  ctx.globalAlpha = 0.92;
+  ctx.fillText('M', cx, by + bagW * 0.14 + bH * 0.86 * 0.52);
+  ctx.restore();
+}
 async function drawPromo() {
   const canvas = document.getElementById('tmPromoCanvas'); if (!canvas) return;
   const ctx = canvas.getContext('2d');
   const W = 1080, H = 1920;
   canvas.width = W; canvas.height = H;
   const d = promoData, tema = d.tema || 'oscuro';
-  const textColor = tema === 'claro' ? '#1a1a2e' : '#ffffff';
+  const isDark = tema !== 'claro';
+  const textColor = isDark ? '#ffffff' : '#1a1008';
   const accent = '#f45e1f';
 
-  // Background
+  // ── Background ──
   if (tema === 'oscuro') {
     const gr = ctx.createLinearGradient(0, 0, 0, H);
-    gr.addColorStop(0, '#0f0f14'); gr.addColorStop(.35, '#1e0d05'); gr.addColorStop(.65, '#2d1208'); gr.addColorStop(1, '#0f0f14');
+    gr.addColorStop(0, '#0d0d12'); gr.addColorStop(0.4, '#1c0b04'); gr.addColorStop(0.7, '#260e06'); gr.addColorStop(1, '#0d0d12');
     ctx.fillStyle = gr; ctx.fillRect(0, 0, W, H);
-    const glow = ctx.createRadialGradient(W/2, H*.5, 0, W/2, H*.5, W*.75);
-    glow.addColorStop(0, 'rgba(244,94,31,.22)'); glow.addColorStop(1, 'rgba(244,94,31,0)');
+    const glow = ctx.createRadialGradient(W*0.55, H*0.55, 0, W*0.55, H*0.55, W*0.8);
+    glow.addColorStop(0, 'rgba(244,94,31,.18)'); glow.addColorStop(1, 'rgba(244,94,31,0)');
     ctx.fillStyle = glow; ctx.fillRect(0, 0, W, H);
   } else if (tema === 'naranja') {
     const gr = ctx.createLinearGradient(0, 0, 0, H);
-    gr.addColorStop(0, '#b83000'); gr.addColorStop(.5, '#f45e1f'); gr.addColorStop(1, '#b83000');
+    gr.addColorStop(0, '#8c2200'); gr.addColorStop(0.5, '#c94400'); gr.addColorStop(1, '#8c2200');
     ctx.fillStyle = gr; ctx.fillRect(0, 0, W, H);
+    const grain = ctx.createRadialGradient(W*0.3, H*0.3, 0, W*0.3, H*0.3, W);
+    grain.addColorStop(0, 'rgba(255,180,80,.12)'); grain.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = grain; ctx.fillRect(0, 0, W, H);
   } else {
-    ctx.fillStyle = '#f2f2f2'; ctx.fillRect(0, 0, W, H);
-    const gr2 = ctx.createRadialGradient(W/2, H*.4, 0, W/2, H*.4, W*.7);
-    gr2.addColorStop(0, 'rgba(244,94,31,.06)'); gr2.addColorStop(1, 'transparent');
-    ctx.fillStyle = gr2; ctx.fillRect(0, 0, W, H);
+    const gr = ctx.createLinearGradient(0, 0, 0, H);
+    gr.addColorStop(0, '#f7f3ee'); gr.addColorStop(1, '#ede5d8');
+    ctx.fillStyle = gr; ctx.fillRect(0, 0, W, H);
+    const grain2 = ctx.createRadialGradient(W*0.5, H*0.4, 0, W*0.5, H*0.4, W*0.8);
+    grain2.addColorStop(0, 'rgba(244,94,31,.07)'); grain2.addColorStop(1, 'transparent');
+    ctx.fillStyle = grain2; ctx.fillRect(0, 0, W, H);
   }
 
-  // Logo
+  // ── Logo icon top-center ──
   const logo = await promoLoadLogo();
-  const logoSize = 138;
+  const logoSz = 120;
+  const logoX = (W - logoSz) / 2, logoY = 70;
   if (logo) {
-    ctx.drawImage(logo, (W - logoSize) / 2, 78, logoSize, logoSize);
-  } else {
-    promoRoundRect(ctx, (W-logoSize)/2, 78, logoSize, logoSize, 30);
-    ctx.fillStyle = accent; ctx.fill();
-    ctx.fillStyle = '#fff'; ctx.font = 'bold 80px sans-serif';
-    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-    ctx.fillText('M', W/2, 78 + logoSize/2); ctx.textBaseline = 'alphabetic';
-  }
-
-  // Top accent line
-  ctx.strokeStyle = accent; ctx.lineWidth = 6;
-  ctx.beginPath(); ctx.moveTo(108, 252); ctx.lineTo(W-108, 252); ctx.stroke();
-
-  // Product title
-  ctx.textAlign = 'center'; ctx.fillStyle = textColor;
-  const nombre = (d.nombre || 'Producto Destacado').toUpperCase();
-  const fs = nombre.length > 40 ? 64 : nombre.length > 24 ? 74 : 84;
-  ctx.font = `bold ${fs}px sans-serif`;
-  const titleLines = promoWrapText(ctx, nombre, W - 120);
-  let titleY = 314;
-  titleLines.slice(0, 3).forEach(line => { ctx.fillText(line, W/2, titleY); titleY += fs * 1.2; });
-
-  // Product image (white rounded box)
-  const imgAreaY = Math.min(titleY + 36, 620);
-  const imgSize = 840, imgX = (W - imgSize) / 2;
-  promoRoundRect(ctx, imgX, imgAreaY, imgSize, imgSize, 44);
-  ctx.fillStyle = '#fff'; ctx.fill();
-
-  if (d.imgEl) {
     ctx.save();
-    promoRoundRect(ctx, imgX, imgAreaY, imgSize, imgSize, 44);
-    ctx.clip();
-    const sc = Math.min(imgSize * .9 / d.imgEl.naturalWidth, imgSize * .9 / d.imgEl.naturalHeight);
-    ctx.drawImage(d.imgEl, imgX + (imgSize - d.imgEl.naturalWidth * sc)/2, imgAreaY + (imgSize - d.imgEl.naturalHeight * sc)/2, d.imgEl.naturalWidth * sc, d.imgEl.naturalHeight * sc);
+    promoRoundRect(ctx, logoX, logoY, logoSz, logoSz, 28);
+    ctx.clip(); ctx.drawImage(logo, logoX, logoY, logoSz, logoSz);
     ctx.restore();
   } else {
-    ctx.fillStyle = 'rgba(130,130,130,.3)'; ctx.font = '52px sans-serif'; ctx.textAlign = 'center';
-    ctx.fillText('📷  Sube la foto del producto', W/2, imgAreaY + imgSize/2 + 20);
+    promoRoundRect(ctx, logoX, logoY, logoSz, logoSz, 28);
+    ctx.fillStyle = accent; ctx.fill();
+    ctx.fillStyle = '#fff'; ctx.font = 'bold 72px sans-serif';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText('M', W/2, logoY + logoSz/2); ctx.textBaseline = 'alphabetic';
   }
 
-  // Price badge (overlapping bottom-right of image)
-  const bW = 330, bH = 174, bX = imgX + imgSize - bW + 18, bY = imgAreaY + imgSize - bH + 18;
-  promoRoundRect(ctx, bX, bY, bW, bH, 22);
-  ctx.fillStyle = tema === 'claro' ? '#1a1a2e' : 'rgba(12,12,18,.9)'; ctx.fill();
+  // ── Top separator line ──
   ctx.strokeStyle = accent; ctx.lineWidth = 5;
-  promoRoundRect(ctx, bX, bY, bW, bH, 22); ctx.stroke();
-  ctx.fillStyle = accent; ctx.font = 'bold 88px sans-serif'; ctx.textAlign = 'center';
-  ctx.fillText('$' + (d.precio || '0'), bX + bW/2, bY + 96);
-  ctx.fillStyle = '#bbb'; ctx.font = 'bold 36px sans-serif';
-  ctx.fillText(d.moneda || 'USD', bX + bW/2, bY + 150);
+  ctx.beginPath(); ctx.moveTo(90, logoY + logoSz + 22); ctx.lineTo(W - 90, logoY + logoSz + 22); ctx.stroke();
 
-  // Detalle
+  // ── Title block ──
+  const titleX = 80, titleMaxW = W - 160;
+  let titleY = logoY + logoSz + 80;
+
+  // Orange line: nombre (identifier / first line)
+  const nombre = (d.nombre || 'PRODUCTO DESTACADO').toUpperCase();
+  const fsN = nombre.length > 32 ? 58 : nombre.length > 20 ? 66 : 72;
+  ctx.font = `800 ${fsN}px 'Arial Black', Arial, sans-serif`;
+  ctx.textAlign = 'left'; ctx.fillStyle = accent;
+  const nombreLines = promoWrapText(ctx, nombre, titleMaxW);
+  nombreLines.slice(0, 2).forEach(line => { ctx.fillText(line, titleX, titleY); titleY += fsN * 1.18; });
+
+  // White lines: eslogan (tagline)
+  const eslogan = (d.eslogan || '').toUpperCase();
+  if (eslogan) {
+    const fsE = eslogan.length > 40 ? 66 : eslogan.length > 26 ? 76 : 86;
+    ctx.font = `900 ${fsE}px 'Arial Black', Arial, sans-serif`;
+    ctx.fillStyle = textColor;
+    const esloganLines = promoWrapText(ctx, eslogan, titleMaxW);
+    esloganLines.slice(0, 3).forEach(line => { ctx.fillText(line, titleX, titleY); titleY += fsE * 1.14; });
+  }
+
+  titleY = Math.min(titleY, 620);
+
+  // ── Decorative M bag (left) ──
+  const bagCX = W * 0.34, bagCY = H * 0.565, bagW = 560;
+  promoDrawBag(ctx, bagCX, bagCY, bagW, accent);
+
+  // ── Product photo (right, floating) ──
+  const phX = W * 0.465, phY = titleY + 20;
+  const phW = W - phX - 54, phH = Math.min(phW * 1.05, H * 0.38);
+  if (d.imgEl) {
+    ctx.save();
+    ctx.shadowColor = 'rgba(0,0,0,0.5)';
+    ctx.shadowBlur = 55; ctx.shadowOffsetX = -10; ctx.shadowOffsetY = 22;
+    promoRoundRect(ctx, phX, phY, phW, phH, 34);
+    ctx.clip();
+    const sc = Math.min(phW / d.imgEl.naturalWidth, phH / d.imgEl.naturalHeight);
+    const iw = d.imgEl.naturalWidth * sc, ih = d.imgEl.naturalHeight * sc;
+    ctx.drawImage(d.imgEl, phX + (phW - iw)/2, phY + (phH - ih)/2, iw, ih);
+    ctx.restore();
+  } else {
+    ctx.save();
+    promoRoundRect(ctx, phX, phY, phW, phH, 34);
+    ctx.fillStyle = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)'; ctx.fill();
+    ctx.fillStyle = isDark ? 'rgba(255,255,255,0.25)' : 'rgba(0,0,0,0.2)';
+    ctx.font = '54px sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText('📷', phX + phW/2, phY + phH/2 - 20);
+    ctx.font = `500 34px Arial, sans-serif`; ctx.textBaseline = 'alphabetic';
+    ctx.fillText('Sube la foto', phX + phW/2, phY + phH/2 + 40);
+    ctx.restore();
+  }
+
+  // ── Price badge (overlapping right side below photo) ──
+  const precio = d.precio ? '$' + d.precio : '$0';
+  const priceW = 340, priceH = 190;
+  const priceX = phX + phW - priceW + 16, priceY = phY + phH - 30;
+  ctx.save();
+  ctx.shadowColor = 'rgba(0,0,0,0.5)';
+  ctx.shadowBlur = 40; ctx.shadowOffsetY = 16;
+  promoRoundRect(ctx, priceX, priceY, priceW, priceH, 24);
+  ctx.fillStyle = isDark ? 'rgba(8,8,14,0.94)' : '#1a0800'; ctx.fill();
+  ctx.restore();
+  ctx.strokeStyle = accent; ctx.lineWidth = 5;
+  promoRoundRect(ctx, priceX, priceY, priceW, priceH, 24); ctx.stroke();
+  // Accent bar at top of badge
+  promoRoundRect(ctx, priceX, priceY, priceW, 8, 4);
+  ctx.fillStyle = accent; ctx.fill();
+  ctx.fillStyle = accent; ctx.textAlign = 'center';
+  ctx.font = `900 ${precio.length > 5 ? 74 : 86}px 'Arial Black', Arial, sans-serif`;
+  ctx.fillText(precio, priceX + priceW/2, priceY + 110);
+  ctx.fillStyle = '#aaa'; ctx.font = 'bold 38px Arial, sans-serif';
+  ctx.fillText(d.moneda || 'USD', priceX + priceW/2, priceY + 162);
+
+  // ── Specs box (right side, below price badge) ──
   if (d.detalle) {
-    ctx.fillStyle = textColor; ctx.font = '500 46px sans-serif'; ctx.textAlign = 'center';
-    ctx.fillText(d.detalle.toUpperCase(), W/2, imgAreaY + imgSize + 70);
+    const specX = phX, specY = priceY + priceH + 20;
+    const specW = phW, specMaxH = 260;
+    const specPad = 28;
+    const specLines = d.detalle.split('\n').map(l => l.trim()).filter(Boolean);
+    const specFontSz = specLines.length > 4 ? 34 : 38;
+    ctx.font = `500 ${specFontSz}px Arial, sans-serif`;
+    const wrappedSpec = specLines.flatMap(l => promoWrapText(ctx, l, specW - specPad*2 - 12));
+    const specH = Math.min(specMaxH, wrappedSpec.length * specFontSz * 1.4 + specPad * 2);
+    ctx.save();
+    ctx.shadowColor = 'rgba(0,0,0,0.3)'; ctx.shadowBlur = 20; ctx.shadowOffsetY = 8;
+    promoRoundRect(ctx, specX, specY, specW, specH, 20);
+    ctx.fillStyle = isDark ? 'rgba(12,8,4,0.85)' : 'rgba(20,8,0,0.88)'; ctx.fill();
+    ctx.restore();
+    // Left orange border
+    ctx.fillStyle = accent;
+    promoRoundRect(ctx, specX, specY, 6, specH, 3); ctx.fill();
+    // Spec text
+    ctx.fillStyle = isDark ? 'rgba(255,255,255,0.92)' : '#fff';
+    ctx.textAlign = 'left'; ctx.font = `500 ${specFontSz}px Arial, sans-serif`;
+    let sy = specY + specPad + specFontSz * 0.8;
+    wrappedSpec.slice(0, Math.floor((specH - specPad*2) / (specFontSz*1.4))).forEach(line => {
+      ctx.fillText(line, specX + specPad + 12, sy); sy += specFontSz * 1.4;
+    });
   }
 
-  // Footer
+  // ── Footer ──
+  const footerTopY = H - 310;
   ctx.strokeStyle = accent; ctx.lineWidth = 5;
-  ctx.beginPath(); ctx.moveTo(108, H - 138); ctx.lineTo(W-108, H-138); ctx.stroke();
-  ctx.fillStyle = tema === 'claro' ? '#666' : 'rgba(255,255,255,.78)';
-  ctx.font = '40px sans-serif'; ctx.textAlign = 'center';
-  ctx.fillText(d.footer || 'Oferta Exclusiva · Solo en tiendamax.org', W/2, H - 78);
+  ctx.beginPath(); ctx.moveTo(90, footerTopY); ctx.lineTo(W - 90, footerTopY); ctx.stroke();
+
+  const footerLines = (d.footer || 'Oferta Exclusiva · Unidades Limitadas.\nSolo en nuestra tienda online.').split('\n').map(l=>l.trim()).filter(Boolean);
+  ctx.fillStyle = isDark ? 'rgba(255,255,255,0.75)' : 'rgba(20,8,0,0.65)';
+  ctx.font = '42px Arial, sans-serif'; ctx.textAlign = 'center';
+  let fy = footerTopY + 62;
+  footerLines.forEach(line => { ctx.fillText(line, W/2, fy); fy += 58; });
+
+  // URL line
+  const url = d.url || 'tiendamax.org';
+  ctx.fillStyle = accent;
+  ctx.font = `800 ${url.length > 20 ? 52 : 62}px 'Arial Black', Arial, sans-serif`;
+  ctx.fillText(url, W/2, H - 78);
+
+  ctx.strokeStyle = accent; ctx.lineWidth = 4;
+  ctx.beginPath(); ctx.moveTo(90, H - 44); ctx.lineTo(W - 90, H - 44); ctx.stroke();
 }
 function promoScheduleDraw() { clearTimeout(promoData._drawTimer); promoData._drawTimer = setTimeout(drawPromo, 100); }
 function addPromoListeners() {
-  const fields = { tmPromoNombre:'nombre', tmPromoPrecio:'precio', tmPromoMoneda:'moneda', tmPromoDetalle:'detalle', tmPromoFooter:'footer' };
+  const fields = { tmPromoNombre:'nombre', tmPromoEslogan:'eslogan', tmPromoPrecio:'precio', tmPromoMoneda:'moneda', tmPromoDetalle:'detalle', tmPromoFooter:'footer', tmPromoUrl:'url' };
   Object.entries(fields).forEach(([id, key]) => {
     const el = document.getElementById(id);
     if (el) el.addEventListener('input', () => { promoData[key] = el.value; promoScheduleDraw(); });
@@ -507,6 +628,7 @@ function addPromoListeners() {
         promoData.imgEl = img; drawPromo();
         const btn = document.querySelector('[data-cop="promoPickImg"]');
         if (btn) btn.textContent = '✅ Foto cargada — Cambiar imagen';
+        if (btn) btn.className = btn.className.replace('blue','green');
       };
       img.src = ev.target.result;
     };
@@ -516,14 +638,16 @@ function addPromoListeners() {
 function renderPromo() {
   const d = promoData;
   return `<div>
-    <div style="display:flex;justify-content:center;margin-bottom:12px;background:#000;border-radius:16px;overflow:hidden;min-height:200px">
+    <div style="display:flex;justify-content:center;margin-bottom:12px;background:#111;border-radius:16px;overflow:hidden;min-height:200px">
       <canvas id="tmPromoCanvas" style="width:200px;height:355px;display:block;flex-shrink:0" width="1080" height="1920"></canvas>
     </div>
     <div style="display:flex;flex-direction:column;gap:10px">
       <input type="file" id="tmPromoImgInput" accept="image/*" style="display:none">
       <button type="button" class="tm-copilot-btn ${d.imgEl?'green':'blue'}" data-cop="promoPickImg" style="width:100%">${d.imgEl ? '✅ Foto cargada — Cambiar imagen' : '📷 Elegir foto del producto (galería)'}</button>
-      <div><div style="font-size:11px;color:#888;margin-bottom:4px">Nombre del producto</div>
-        <input class="tm-promo-field" id="tmPromoNombre" type="text" placeholder="Ej: Batería LiFePO4 100Ah" value="${esc(d.nombre)}"></div>
+      <div><div style="font-size:11px;color:#888;margin-bottom:4px">Nombre (línea naranja) <span style="color:#f45e1f">●</span></div>
+        <input class="tm-promo-field" id="tmPromoNombre" type="text" placeholder="Ej: INVERSOR TATALIKEN:" value="${esc(d.nombre)}"></div>
+      <div><div style="font-size:11px;color:#888;margin-bottom:4px">Subtítulo (línea blanca, opcional)</div>
+        <input class="tm-promo-field" id="tmPromoEslogan" type="text" placeholder="Ej: POTENCIA PURA Y CONFIABILIDAD SIN IGUAL" value="${esc(d.eslogan)}"></div>
       <div style="display:grid;grid-template-columns:1fr 90px;gap:8px">
         <div><div style="font-size:11px;color:#888;margin-bottom:4px">Precio</div>
           <input class="tm-promo-field" id="tmPromoPrecio" type="text" placeholder="300" value="${esc(d.precio)}"></div>
@@ -534,13 +658,15 @@ function renderPromo() {
             <option${d.moneda==='MLC'?' selected':''}>MLC</option>
           </select></div>
       </div>
-      <div><div style="font-size:11px;color:#888;margin-bottom:4px">Detalle / modelo (opcional)</div>
-        <input class="tm-promo-field" id="tmPromoDetalle" type="text" placeholder="Ej: 100Ah | 12V | LiFePO4" value="${esc(d.detalle)}"></div>
-      <div><div style="font-size:11px;color:#888;margin-bottom:4px">Pie de imagen</div>
-        <input class="tm-promo-field" id="tmPromoFooter" type="text" placeholder="Oferta Exclusiva · Solo en tiendamax.org" value="${esc(d.footer)}"></div>
+      <div><div style="font-size:11px;color:#888;margin-bottom:4px">Especificaciones (cuadro derecho)</div>
+        <textarea class="tm-promo-field" id="tmPromoDetalle" rows="3" placeholder="Ej: INVERSOR SOLAR MUST&#10;ONDA SENOIDAL PURA 2000W&#10;SISTEMA DE BATERÍAS 24V/48V" style="resize:vertical;line-height:1.4">${esc(d.detalle)}</textarea></div>
+      <div><div style="font-size:11px;color:#888;margin-bottom:4px">Texto pie de imagen</div>
+        <textarea class="tm-promo-field" id="tmPromoFooter" rows="2" placeholder="Oferta Exclusiva · Unidades Limitadas.&#10;Solo en nuestra tienda online." style="resize:vertical;line-height:1.4">${esc(d.footer)}</textarea></div>
+      <div><div style="font-size:11px;color:#888;margin-bottom:4px">URL / dominio</div>
+        <input class="tm-promo-field" id="tmPromoUrl" type="text" placeholder="tiendamax.org" value="${esc(d.url || 'tiendamax.org')}"></div>
       <div><div style="font-size:11px;color:#888;margin-bottom:6px">Tema</div>
         <div style="display:flex;gap:6px">
-          ${[['oscuro','#141422','#fff'],['naranja','#f45e1f','#fff'],['claro','#ebebeb','#333']].map(([t,bg,fg])=>`<button type="button" class="tm-copilot-btn" data-cop="promoTema" data-tema="${t}" style="background:${bg};color:${fg};flex:1;border:2px solid ${d.tema===t?'rgba(255,255,255,.7)':'rgba(255,255,255,.1)'}">${t.charAt(0).toUpperCase()+t.slice(1)}</button>`).join('')}
+          ${[['oscuro','#141422','#fff'],['naranja','#c94400','#fff'],['claro','#ede5d8','#333']].map(([t,bg,fg])=>`<button type="button" class="tm-copilot-btn" data-cop="promoTema" data-tema="${t}" style="background:${bg};color:${fg};flex:1;border:2px solid ${d.tema===t?'rgba(255,255,255,.7)':'rgba(255,255,255,.1)'}">${t.charAt(0).toUpperCase()+t.slice(1)}</button>`).join('')}
         </div>
       </div>
       <button type="button" class="tm-copilot-btn primary" data-cop="promoDownload" style="padding:14px;margin-top:4px">⬇️ Descargar imagen (1080×1920)</button>
