@@ -30,9 +30,9 @@ body.light-mode .nd-o4{background:radial-gradient(circle,rgba(255,159,67,0.14),t
 .nd-edot{width:6px;height:6px;border-radius:50%;background:#FF6B35;animation:nd-dot 2s ease-in-out infinite;flex-shrink:0}
 @keyframes nd-dot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
 .nd-h1{font-size:clamp(36px,4.5vw,58px) !important;font-weight:900 !important;line-height:1.08 !important;letter-spacing:-2px !important;margin-bottom:20px !important;text-align:left !important}
-.nd-grad{background:linear-gradient(135deg,#FF6B35 0%,#FF9F43 50%,#E8501E 100%) !important;-webkit-background-clip:text !important;-webkit-text-fill-color:transparent !important;background-clip:text !important;color:transparent !important}
+.nd-grad{background-image:linear-gradient(135deg,#FF6B35 0%,#FF9F43 50%,#E8501E 100%) !important;-webkit-background-clip:text !important;-webkit-text-fill-color:transparent !important;background-clip:text !important;color:transparent !important}
 /* especificidad (0,2,1) para ganar a h1 span:not(.logo-badge) (0,1,2) de bundle.css */
-h1.nd-h1 span.nd-grad{background:linear-gradient(135deg,#FF6B35 0%,#FF9F43 50%,#E8501E 100%) !important;-webkit-background-clip:text !important;-webkit-text-fill-color:transparent !important;background-clip:text !important;color:transparent !important}
+h1.nd-h1 span.nd-grad{background-image:linear-gradient(135deg,#FF6B35 0%,#FF9F43 50%,#E8501E 100%) !important;-webkit-background-clip:text !important;-webkit-text-fill-color:transparent !important;background-clip:text !important;color:transparent !important}
 .nd-sub{font-size:17px;line-height:1.6;margin-bottom:20px;max-width:440px;opacity:0.75}
 /* Buscador + moneda integrados dentro del hero-left */
 .nd-hero-search{display:flex;align-items:stretch;gap:10px;width:100%;max-width:500px;margin:0 0 28px}
@@ -999,13 +999,16 @@ body.light-mode .nd-deal{box-shadow:0 20px 60px rgba(232,80,30,.22) !important}
   font-weight:800 !important;
   line-height:1.15 !important;
   letter-spacing:-.5px !important;
-  background:linear-gradient(135deg,#fff 20%,#FF6B35 100%) !important;
+  /* background-image (longhand) en vez de background (shorthand): el shorthand
+     resetea background-clip a border-box, y al minificar csso reordena las reglas
+     y rompe el recorte de texto. El longhand no toca background-clip. */
+  background-image:linear-gradient(135deg,#fff 20%,#FF6B35 100%) !important;
   -webkit-background-clip:text !important;
   -webkit-text-fill-color:transparent !important;
   background-clip:text !important;
 }
 body.light-mode #tituloCategoriaActual{
-  background:linear-gradient(135deg,#1a1008 20%,#FF6B35 100%) !important;
+  background-image:linear-gradient(135deg,#1a1008 20%,#FF6B35 100%) !important;
   -webkit-background-clip:text !important;
   -webkit-text-fill-color:transparent !important;
   background-clip:text !important;
