@@ -1526,6 +1526,7 @@ window.addEventListener('storage', (event) => {
     }
     if (event.key === 'activeCountdown' || event.key === 'ofertaDiaId' || event.key === 'ofertaDiaTexto') {
         if (typeof renderOfertaDelDia === 'function') renderOfertaDelDia();
+        if (typeof renderOfertaTiempoLimitado === 'function') renderOfertaTiempoLimitado();
         if (typeof iniciarCountdownsActivos === 'function') iniciarCountdownsActivos();
     }
 });
@@ -1957,6 +1958,8 @@ function renderizarMasVendidos() {
 
     // Poblar la sección "Oferta del día" (se oculta sola si no hay ofertaDiaId)
     if (typeof renderOfertaDelDia === 'function') renderOfertaDelDia();
+    // Poblar la sección "Oferta por tiempo limitado" (independiente de ofertaDiaId)
+    if (typeof renderOfertaTiempoLimitado === 'function') renderOfertaTiempoLimitado();
     // Ocultar banner de urgencia si el producto de oferta está agotado
     verificarStockOfertaBanner();
 }
@@ -4435,6 +4438,7 @@ function guardarCountdown() {
     renderizarMasVendidos();
     renderizarProductos();
     iniciarCountdownsActivos();
+    if (typeof renderOfertaTiempoLimitado === 'function') renderOfertaTiempoLimitado();
 
     mostrarNotificacion(`⏱️ Countdown activado para "${nombre}"`);
 }
@@ -4444,6 +4448,9 @@ function desactivarCountdown() {
     if (!countdownIntervals || typeof countdownIntervals !== 'object') countdownIntervals = {};
     Object.values(countdownIntervals).forEach(clearInterval);
     countdownIntervals = {};
+    if (_flashTimer) { clearInterval(_flashTimer); _flashTimer = null; }
+    const flashSec = document.getElementById('ofertaTiempoLimitado');
+    if (flashSec) flashSec.style.display = 'none';
     renderizarMasVendidos();
     renderizarProductos();
     const status = document.getElementById('countdownStatus');
@@ -4470,10 +4477,6 @@ function renderOfertaDelDia() {
     const prod = ofId ? productos.find(p => String(p.id) === String(ofId)) : null;
 
     if (!prod) { sec.style.display = 'none'; return; }
-
-    // Solo mostrar si hay countdown activo para este producto
-    const cdGate = (typeof getActiveCountdown === 'function') ? getActiveCountdown() : null;
-    if (!cdGate || String(cdGate.productId) !== String(prod.id)) { sec.style.display = 'none'; return; }
 
     let texto = '⚡ Oferta del día';
     try { texto = localStorage.getItem('ofertaDiaTexto') || texto; } catch (e) {}
@@ -4553,6 +4556,95 @@ function abrirOfertaDelDia() {
     let ofId = null;
     try { ofId = localStorage.getItem('ofertaDiaId'); } catch (e) {}
     if (ofId && typeof abrirDetalleProducto === 'function') abrirDetalleProducto(ofId);
+}
+
+// ═══════════════════════════════════════════════════════
+//  ⏱️ OFERTA POR TIEMPO LIMITADO (sección independiente)
+//  Muestra el producto de activeCountdown con su timer.
+//  Completamente independiente de ofertaDiaId.
+// ═══════════════════════════════════════════════════════
+var _flashTimer = null;
+function renderOfertaTiempoLimitado() {
+    const sec = document.getElementById('ofertaTiempoLimitado');
+    if (!sec) return;
+
+    if (_flashTimer) { clearInterval(_flashTimer); _flashTimer = null; }
+
+    const cd = (typeof getActiveCountdown === 'function') ? getActiveCountdown() : null;
+    if (!cd || !cd.productId) { sec.style.display = 'none'; return; }
+
+    const prod = productos.find(p => String(p.id) === String(cd.productId));
+    if (!prod) { sec.style.display = 'none'; return; }
+
+    const setTxt = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+
+    setTxt('flashBadge', cd.texto || '⏱️ Oferta por tiempo limitado');
+    setTxt('flashTitle', prod.nombre);
+    setTxt('flashSub', prod.descripcion ? String(prod.descripcion).replace(/<[^>]*>/g, '').slice(0, 110) : '¡Aprovecha este precio antes de que expire!');
+    setTxt('flashName', prod.nombre);
+    setTxt('flashPrice', (typeof formatPrecio === 'function') ? formatPrecio(prod.precioActual) : ('$' + prod.precioActual + ' USD'));
+
+    const card = document.getElementById('flash-card');
+    const emojiEl = document.getElementById('flashEmoji');
+    if (card) {
+        const old = card.querySelector('.nd-dpc-img');
+        if (old) old.remove();
+        if (prod.imagen) {
+            const img = document.createElement('img');
+            img.className = 'nd-dpc-img';
+            img.src = prod.imagen;
+            img.alt = escapeHtml(prod.nombre);
+            img.loading = 'lazy';
+            img.onerror = function () { this.remove(); if (emojiEl) emojiEl.style.display = 'block'; };
+            card.insertBefore(img, card.firstChild);
+            if (emojiEl) emojiEl.style.display = 'none';
+        } else {
+            if (emojiEl) {
+                emojiEl.style.display = 'block';
+                emojiEl.textContent = (typeof obtenerIconoCategoria === 'function') ? obtenerIconoCategoria(prod.categoria) : '⏱️';
+            }
+        }
+    }
+
+    const oldEl = document.getElementById('flashOld');
+    const discEl = document.getElementById('flashDisc');
+    const hayDesc = prod.precioOriginal > 0 && prod.precioOriginal > prod.precioActual;
+    if (oldEl) {
+        if (hayDesc) { oldEl.style.display = 'block'; oldEl.textContent = '$' + Number(prod.precioOriginal).toFixed(0) + ' USD'; }
+        else oldEl.style.display = 'none';
+    }
+    if (discEl) {
+        if (hayDesc) {
+            const pct = Math.round((1 - prod.precioActual / prod.precioOriginal) * 100);
+            setTxt('flashDiscPct', pct + '%');
+            discEl.style.display = 'flex';
+        } else discEl.style.display = 'none';
+    }
+
+    const timerWrap = document.getElementById('flashTimer');
+    if (timerWrap) {
+        timerWrap.style.display = 'flex';
+        const pad = n => String(n).padStart(2, '0');
+        const tick = () => {
+            const rem = Math.max(0, cd.endTime - Date.now());
+            setTxt('flash-h', pad(Math.floor(rem / 3600000)));
+            setTxt('flash-m', pad(Math.floor((rem % 3600000) / 60000)));
+            setTxt('flash-s', pad(Math.floor((rem % 60000) / 1000)));
+            if (rem <= 0) {
+                if (_flashTimer) { clearInterval(_flashTimer); _flashTimer = null; }
+                sec.style.display = 'none';
+            }
+        };
+        tick();
+        _flashTimer = setInterval(tick, 1000);
+    }
+
+    sec.style.display = 'block';
+}
+
+function abrirProductoFlash() {
+    const cd = (typeof getActiveCountdown === 'function') ? getActiveCountdown() : null;
+    if (cd && cd.productId && typeof abrirDetalleProducto === 'function') abrirDetalleProducto(cd.productId);
 }
 
 // ===== GALERÍA ROTATIVA DEL HERO (tarjeta 3D) con efecto de desintegración =====
