@@ -22,7 +22,6 @@ const PROMO_BADGE_PRESETS = [
   ['🎁','Oferta'],['🆕','Nuevo'],['♻️','Usado'],['📞','Soporte'],['🏆','Calidad'],['','Ninguno'],
 ];
 let promoData = { imgEl: null, nombre: '', subfila: '', eslogan: '', precio: '', precioAnterior: '', moneda: 'USD', detalle: '', stock: '', url: 'tiendamax.org', tema: 'oscuro', badges: [{emoji:'🛡️',label:'Seguro'},{emoji:'🛵',label:'Envío'},{emoji:'✅',label:'Garantía'}], _logoEl: null, _drawTimer: null, _productoId: '' };
-let promoSubTab = 'imagen';
 
 const $ = (s,r=document)=>r.querySelector(s);
 const $$ = (s,r=document)=>Array.from(r.querySelectorAll(s));
@@ -344,7 +343,7 @@ function updateBubble(){
   if (crit) { b.classList.remove('tm-copilot-pulse'); void b.offsetWidth; b.classList.add('tm-copilot-pulse'); }
 }
 function tabsHtml(view){
-  const tabs=[['hoy','✅ Hoy'],['agentes','🤖 Agentes'],['marketing','📣 Marketing'],['promo','🎨 Promo'],['memoria','🧠 Memoria']];
+  const tabs=[['hoy','✅ Hoy'],['agentes','🤖 Agentes'],['marketing','📣 Marketing'],['memoria','🧠 Memoria']];
   return `<div class="tm-copilot-tabs">${tabs.map(t=>`<button type="button" class="tm-copilot-tab ${view===t[0]?'active':''}" data-cop="view" data-view="${t[0]}">${t[1]}</button>`).join('')}</div>`;
 }
 function renderToday(topTasks){
@@ -766,119 +765,18 @@ function renderPromoImagen() {
     </div>
   </div>`;
 }
-function renderPromoOferta() {
-  const prods = products();
-  const currentId = localStorage.getItem('ofertaDiaId') || '';
-  const currentTxt = localStorage.getItem('ofertaDiaTexto') || '🔥 OFERTA DEL DÍA';
-  const cd = (() => { try { return JSON.parse(localStorage.getItem('activeCountdown') || 'null'); } catch(e) { return null; } })();
-  const currentProd = currentId ? prods.find(p => String(p.id) === currentId) : null;
-  let timeLeft = '';
-  if (cd && cd.endTime > Date.now()) {
-    const rem = cd.endTime - Date.now();
-    const h = Math.floor(rem / 3600000), m = Math.floor((rem % 3600000) / 60000);
-    timeLeft = h + 'h ' + m + 'm';
-  }
-  const prodOpts = prods.map(p => `<option value="${esc(String(p.id))}"${currentId===String(p.id)?' selected':''}>${esc(p.nombre||'#'+p.id)}</option>`).join('');
-  const statusHtml = currentProd
-    ? `<div style="background:rgba(244,94,31,.13);border:1px solid rgba(244,94,31,.4);border-radius:12px;padding:12px 14px">
-        <div style="font-size:13px;font-weight:700;color:#f45e1f">🔥 Oferta activa</div>
-        <div style="font-size:12px;color:#ddd;margin-top:3px">${esc(currentProd.nombre)}</div>
-        <div style="font-size:12px;color:#aaa;margin-top:2px">${timeLeft ? '⏱️ Tiempo restante: ' + timeLeft : 'Sin límite de tiempo'}</div>
-      </div>`
-    : `<div style="background:rgba(255,255,255,.04);border-radius:12px;padding:12px;font-size:12px;color:#666;text-align:center">Sin oferta activa en este dispositivo</div>`;
-  return `<div style="display:flex;flex-direction:column;gap:10px">
-    ${statusHtml}
-    <div><div style="font-size:11px;color:#888;margin-bottom:4px">Producto de la oferta</div>
-      <select class="tm-promo-field" id="tmOfertaProductoSel" style="width:100%">
-        <option value="">— Elegir producto —</option>${prodOpts}
-      </select></div>
-    <div><div style="font-size:11px;color:#888;margin-bottom:4px">Texto del banner (arriba de la tienda)</div>
-      <input class="tm-promo-field" id="tmOfertaBannerTxt" type="text" value="${esc(currentTxt)}" placeholder="🔥 OFERTA DEL DÍA"></div>
-    <div><div style="font-size:11px;color:#888;margin-bottom:4px">Duración del countdown (0 h 0 m = sin límite)</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-        <div><input class="tm-promo-field" id="tmOfertaHoras" type="number" min="0" max="72" value="24" placeholder="Horas" style="text-align:center"><div style="font-size:11px;color:#666;text-align:center;margin-top:3px">Horas</div></div>
-        <div><input class="tm-promo-field" id="tmOfertaMinutos" type="number" min="0" max="59" value="0" placeholder="Min" style="text-align:center"><div style="font-size:11px;color:#666;text-align:center;margin-top:3px">Minutos</div></div>
-      </div></div>
-    <button type="button" class="tm-copilot-btn primary" data-cop="ofertaActivar" style="padding:13px">🔥 Activar oferta del día</button>
-    <button type="button" class="tm-copilot-btn gold" data-cop="ofertaActivarCountdown" style="padding:13px">⏱️ Activar con countdown</button>
-    ${(currentProd || cd) ? `<button type="button" class="tm-copilot-btn" data-cop="ofertaDesactivar" style="padding:12px;background:rgba(231,76,60,.12);border-color:rgba(231,76,60,.4);color:#e74c3c">❌ Desactivar todo</button>` : ''}
-  </div>`;
-}
-function renderPromo() {
-  return `<div style="padding:24px 0;text-align:center">
-    <div style="font-size:52px;margin-bottom:14px">🎨</div>
-    <p style="color:#aaa;font-size:13px;margin-bottom:20px;line-height:1.5">El generador de promos, la oferta del día y los banners están ahora en el panel de Publicación.</p>
-    <button type="button" class="tm-copilot-btn primary" style="width:100%;margin-bottom:8px" data-cop="openPubPromo">🎨 Abrir generador de Promo</button>
-    <button type="button" class="tm-copilot-btn" style="width:100%;margin-bottom:8px" data-cop="openPubOferta">🔥 Oferta del día</button>
-    <button type="button" class="tm-copilot-btn" style="width:100%" data-cop="openPubBanners">🖼️ Banners</button>
-  </div>`;
-}
+// Monta el generador de Promo dentro del panel admin de Publicación (sub-tab Promo)
 window.pubMountPromo = function() {
   const root = document.getElementById('tmPromoAdminRoot');
   if (!root || root.querySelector('#tmPromoCanvas')) return;
   root.innerHTML = renderPromoImagen();
   setTimeout(() => { addPromoListeners(); drawPromo(); }, 80);
 };
-function ofertaActivar(withCountdown) {
-  const selEl = document.getElementById('tmOfertaProductoSel');
-  const txtEl = document.getElementById('tmOfertaBannerTxt');
-  if (!selEl || !selEl.value) { toast('Selecciona un producto primero'); return; }
-  const id = selEl.value;
-  const txt = (txtEl && txtEl.value.trim()) || '🔥 OFERTA DEL DÍA';
-  localStorage.setItem('ofertaDiaId', id);
-  localStorage.setItem('ofertaDiaTexto', txt);
-  if (withCountdown) {
-    const h = parseInt(document.getElementById('tmOfertaHoras')?.value || 0);
-    const m = parseInt(document.getElementById('tmOfertaMinutos')?.value || 0);
-    const durMs = (h * 3600 + m * 60) * 1000;
-    if (durMs > 0) {
-      localStorage.setItem('activeCountdown', JSON.stringify({ productId: id, endTime: Date.now() + durMs, texto: txt }));
-    } else {
-      toast('⚠️ Ingresa una duración para el countdown'); return;
-    }
-  } else {
-    localStorage.removeItem('activeCountdown');
-  }
-  if (typeof window.verificarOfertasYMostrarBanner === 'function') window.verificarOfertasYMostrarBanner();
-  if (typeof window.renderizarProductos === 'function') window.renderizarProductos();
-  if (typeof window.renderizarMasVendidos === 'function') window.renderizarMasVendidos();
-  if (typeof window.iniciarCountdownsActivos === 'function') window.iniciarCountdownsActivos();
-  if (typeof window.actualizarStatusOfertaDia === 'function') window.actualizarStatusOfertaDia();
-  toast(withCountdown ? '⏱️ Oferta con countdown activada' : '🔥 Oferta del día activada');
-  (async () => {
-    const u = localStorage.getItem('githubUser');
-    const r = localStorage.getItem('githubRepo') || 'Tiendamax';
-    const t = localStorage.getItem('githubToken');
-    if (!u || !t) { toast('⚠️ Sin token GitHub — visible solo aquí'); renderSheet(); return; }
-    try {
-      if (typeof window._leerConfigActual === 'function' && typeof window.subirArchivoAGitHub === 'function') {
-        const cfg = await window._leerConfigActual();
-        cfg.ofertaDiaId = id; cfg.ofertaDiaTexto = txt; cfg.ofertaDiaActualizado = new Date().toISOString();
-        await window.subirArchivoAGitHub(u, r, t, 'config.json', cfg);
-        toast('☁️ Oferta publicada — todos la verán');
-      }
-    } catch(e) { toast('Error al subir: ' + e.message); }
-    renderSheet();
-  })();
-  renderSheet();
-}
-function ofertaDesactivar() {
-  localStorage.removeItem('ofertaDiaId');
-  localStorage.removeItem('ofertaDiaTexto');
-  localStorage.removeItem('activeCountdown');
-  if (typeof window.verificarOfertasYMostrarBanner === 'function') window.verificarOfertasYMostrarBanner();
-  if (typeof window.desactivarCountdown === 'function') window.desactivarCountdown();
-  if (typeof window.renderizarProductos === 'function') window.renderizarProductos();
-  if (typeof window.renderizarMasVendidos === 'function') window.renderizarMasVendidos();
-  toast('❌ Oferta desactivada');
-  renderSheet();
-}
 // ── FIN PROMO ──────────────────────────────────────────────────────
 
 function renderCopilotView(view, topTasks){
   if(view==='agentes') return renderAgents();
   if(view==='marketing') return renderMarketing();
-  if(view==='promo') return renderPromo();
   if(view==='memoria') return renderMemory();
   return renderToday(topTasks);
 }
@@ -968,9 +866,6 @@ function bindEvents(){
     if(act==='dismiss') { const set=dismissedSet(); set.add(el.dataset.id); saveDismissed(set); state.tasks = state.tasks.filter(t=>t.id!==el.dataset.id); updateBubble(); renderSheet(); }
     if(act==='pushHot') queuePushForProduct(el.dataset.pid);
     if(act==='promoPickImg') { const inp = document.getElementById('tmPromoImgInput'); if(inp) inp.click(); }
-    if(act==='openPubPromo') { closeSheet(); if(typeof window.switchTab==='function'){ window.switchTab('publicacion'); setTimeout(()=>{ if(typeof window.pubSwitchPanel==='function') window.pubSwitchPanel('promo'); },100); } }
-    if(act==='openPubOferta') { closeSheet(); if(typeof window.switchTab==='function'){ window.switchTab('publicacion'); setTimeout(()=>{ if(typeof window.pubSwitchPanel==='function') window.pubSwitchPanel('oferta'); },100); } }
-    if(act==='openPubBanners') { closeSheet(); if(typeof window.switchTab==='function'){ window.switchTab('publicacion'); setTimeout(()=>{ if(typeof window.pubSwitchPanel==='function') window.pubSwitchPanel('banners'); },100); } }
     if(act==='promoTema') { promoData.tema = el.dataset.tema; state.view = 'promo'; renderSheet(); }
     if(act==='promoDownload') {
       const canvas = document.getElementById('tmPromoCanvas'); if(!canvas) return;

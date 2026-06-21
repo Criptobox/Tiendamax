@@ -2174,21 +2174,17 @@ function tmExtractJsonObject(text) {
   function txt(p){return `🔥 ${p.nombre}\n\n${p.descripcion?String(p.descripcion).slice(0,160)+'\n\n':''}💵 $${Number(p.precioActual||0).toFixed(2)} USD\n📦 Stock: ${Number(p.stock||0)}\n🏷️ ${p.categoria||'TiendaMax'}\n\nPídelo directo por WhatsApp en TiendaMax:\n${url(p)}`;}
   function cats(){return [...new Set(products().map(p=>p.categoria||'General').filter(Boolean))].sort();}
   function ensure(){
-    const panel=document.getElementById('pubPanel-publicar')||document.getElementById('publicar-ahora'); if(!panel) return;
+    const host=document.getElementById('tmShareProductsRoot')||document.getElementById('publicar-ahora'); if(!host) return;
     if(document.getElementById('tmShareProductsCard')){ render(); return; }
     const card=document.createElement('div'); card.id='tmShareProductsCard'; card.className='card tm-share-products-card';
-    card.innerHTML=`<div style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap"><div><h2>📲 Compartir productos</h2><p class="sub">Estados de WhatsApp, Facebook y copia rápida por producto.</p></div><button type="button" class="btn gold" id="tmShareRefresh">↻ Actualizar lista</button></div>
+    card.innerHTML=`<div style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap"><div><h2>📲 Compartir por producto</h2><p class="sub">Estado de WhatsApp, Facebook, chat y copia rápida de cada producto.</p></div><button type="button" class="btn gold" id="tmShareRefresh">↻ Actualizar lista</button></div>
       <div class="form-grid" style="margin-top:12px"><input id="tmShareSearch" placeholder="Buscar producto para compartir..."><select id="tmShareCat"><option value="">Todas las categorías</option>${cats().map(c=>`<option>${esc(c)}</option>`).join('')}</select></div>
-      <div class="tm-note">Tip: usa 🖼️ Estado para generar imagen vertical.</div>
-      <div id="tmShareProductsList" style="display:flex;flex-direction:column;gap:10px;margin-top:14px;max-height:360px;overflow:auto"></div>`;
+      <div class="tm-note">Tip: usa 🖼️ Estado para generar imagen vertical lista para WhatsApp Estado.</div>
+      <div id="tmShareProductsList" style="display:flex;flex-direction:column;gap:10px;margin-top:14px"></div>`;
     card.addEventListener('input',e=>{if(e.target.id==='tmShareSearch') render();});
     card.addEventListener('change',e=>{if(e.target.id==='tmShareCat') render();});
     card.addEventListener('click',handle);
-    const root=document.getElementById('tmPublicarRoot');
-    const backend=document.getElementById('backendStatus');
-    if(root&&root.parentNode) root.parentNode.insertBefore(card, root.nextSibling);
-    else if(backend&&backend.parentNode) backend.parentNode.insertBefore(card, backend.nextSibling);
-    else panel.insertBefore(card, panel.firstChild);
+    host.appendChild(card);
     $('#tmShareRefresh',card)?.addEventListener('click',render,{once:true});
     render();
   }
@@ -2255,7 +2251,7 @@ function tmExtractJsonObject(text) {
   }
   function boot(){ensure(); setTimeout(render,500);}
   document.addEventListener('DOMContentLoaded',()=>setTimeout(boot,1200));
-  document.addEventListener('click',e=>{if(e.target.closest('[data-arg="publicar-ahora"],[data-tab="publicar-ahora"],[data-arg="publicacion"],[data-tab="publicacion"]')) setTimeout(boot,350);});
+  document.addEventListener('click',e=>{if(e.target.closest('[data-arg="publicar-ahora"],[data-tab="publicar-ahora"],[data-arg="publicacion"],[data-tab="publicacion"],[data-arg="producto"]')) setTimeout(boot,350);});
 })();
 
 // ── tm-mejora-descripciones-v1 ───────────────────────────────────
