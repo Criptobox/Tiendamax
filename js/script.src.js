@@ -1524,6 +1524,10 @@ window.addEventListener('storage', (event) => {
         renderizarProductos();
         if (typeof actualizarSelectCategoriasPadre === 'function') actualizarSelectCategoriasPadre();
     }
+    if (event.key === 'activeCountdown' || event.key === 'ofertaDiaId' || event.key === 'ofertaDiaTexto') {
+        if (typeof renderOfertaDelDia === 'function') renderOfertaDelDia();
+        if (typeof iniciarCountdownsActivos === 'function') iniciarCountdownsActivos();
+    }
 });
 
 // ===== FUNCIONES DE UTILIDAD =====
@@ -4400,7 +4404,8 @@ if (typeof countdownIntervals !== 'object' || countdownIntervals === null) {
 }
 
 function guardarCountdown() {
-    const productId = document.getElementById('countdownProductSelect').value;
+    const productId = document.getElementById('countdownProductSelect')?.value ||
+                      localStorage.getItem('ofertaDiaId') || '';
     const horas = parseInt(document.getElementById('countdownHoras').value) || 0;
     const minutos = parseInt(document.getElementById('countdownMinutos').value) || 0;
     const texto = document.getElementById('countdownTexto').value.trim() || '¡Oferta especial!';
@@ -6328,6 +6333,11 @@ function poblarSelectOfertaDia() {
         if (saved) sel.value = saved;
         else if (current) sel.value = current;
     });
+    // Also sync the countdown product selector so user doesn't have to pick twice
+    actualizarCountdownProductSelect();
+    const ofId = localStorage.getItem('ofertaDiaId');
+    const cdSel = document.getElementById('countdownProductSelect');
+    if (ofId && cdSel && !cdSel.value) cdSel.value = ofId;
     actualizarStatusOfertaDia();
 }
 

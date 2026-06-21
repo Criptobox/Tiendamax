@@ -555,10 +555,10 @@ async function drawPromo() {
 
   titleY = Math.min(titleY, 620);
 
-  // ── Product photo (full-width, cover-fill) ──
-  const phPad = 60, phX = phPad, phW = W - phPad * 2;
+  // ── Product photo (narrower to reveal bag watermark on sides) ──
+  const phPad = 100, phX = phPad, phW = W - phPad * 2;
   const phY = titleY + 28;
-  const phH = Math.max(300, Math.min(Math.round(phW * 0.78), 700, 1230 - phY));
+  const phH = Math.max(260, Math.min(Math.round(phW * 0.68), 560, 1130 - phY));
 
   if (d.imgEl) {
     ctx.save();
@@ -614,7 +614,8 @@ async function drawPromo() {
     }
   }
 
-  // ── URL ──
+  // ── URL (ensure it stays above the badge strip) ──
+  curY = Math.min(curY, H - 360);
   const url = d.url || 'tiendamax.org';
   ctx.fillStyle = accent;
   ctx.font = `700 ${url.length > 28 ? 44 : url.length > 20 ? 52 : 58}px Arial, sans-serif`;
