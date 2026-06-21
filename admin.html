@@ -380,7 +380,7 @@ async function tmAdminRefreshSubscribers(){
     window.__tmPolishSwitch=true;
     window.switchTab=function(tab){
       const r=old.apply(this,arguments);
-      if(tab==='publicar-ahora') setTimeout(enhancePublicar,250);
+      if(tab==='publicar-ahora'||tab==='publicacion') setTimeout(enhancePublicar,250);
       if(tab==='configuracion') setTimeout(tmAdminRefreshSubscribers,250);
       if(tab==='ventas') sincVentasSiVacio();
       if(tab==='analytics') sincVentasSiVacio();

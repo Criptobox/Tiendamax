@@ -2174,26 +2174,21 @@ function tmExtractJsonObject(text) {
   function txt(p){return `🔥 ${p.nombre}\n\n${p.descripcion?String(p.descripcion).slice(0,160)+'\n\n':''}💵 $${Number(p.precioActual||0).toFixed(2)} USD\n📦 Stock: ${Number(p.stock||0)}\n🏷️ ${p.categoria||'TiendaMax'}\n\nPídelo directo por WhatsApp en TiendaMax:\n${url(p)}`;}
   function cats(){return [...new Set(products().map(p=>p.categoria||'General').filter(Boolean))].sort();}
   function ensure(){
-    const tab=document.getElementById('publicar-ahora'); if(!tab) return;
-    // La nueva pestaña Publicar reemplaza esta sección; no inyectar si está activa
-    if(document.getElementById('tmPublicarRoot')) return;
-    let card=document.getElementById('tmShareProductsCard');
-    if(!card){
-      card=document.createElement('div'); card.id='tmShareProductsCard'; card.className='card tm-share-products-card';
-      card.innerHTML=`<div style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap"><div><h2>📲 Compartir productos</h2><p class="sub">Estados de WhatsApp, Facebook y copia rápida por producto.</p></div><button type="button" class="btn gold" id="tmShareRefresh">↻ Actualizar lista</button></div>
-        <div class="form-grid" style="margin-top:12px"><input id="tmShareSearch" placeholder="Buscar producto para compartir..."><select id="tmShareCat"><option value="">Todas las categorías</option>${cats().map(c=>`<option>${esc(c)}</option>`).join('')}</select></div>
-        <div class="tm-note">Tip: esta sección queda arriba para compartir estados sin bajar hasta Revolico. Usa 🖼️ Estado para generar imagen vertical.</div>
-        <div id="tmShareProductsList" style="display:flex;flex-direction:column;gap:10px;margin-top:14px;max-height:360px;overflow:auto"></div>`;
-      card.addEventListener('input',e=>{if(e.target.id==='tmShareSearch') render();});
-      card.addEventListener('change',e=>{if(e.target.id==='tmShareCat') render();});
-      card.addEventListener('click',handle);
-    }
-    // Siempre mover arriba: justo después del estado backend y antes de Facebook/Revolico.
+    const panel=document.getElementById('pubPanel-publicar')||document.getElementById('publicar-ahora'); if(!panel) return;
+    if(document.getElementById('tmShareProductsCard')){ render(); return; }
+    const card=document.createElement('div'); card.id='tmShareProductsCard'; card.className='card tm-share-products-card';
+    card.innerHTML=`<div style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap"><div><h2>📲 Compartir productos</h2><p class="sub">Estados de WhatsApp, Facebook y copia rápida por producto.</p></div><button type="button" class="btn gold" id="tmShareRefresh">↻ Actualizar lista</button></div>
+      <div class="form-grid" style="margin-top:12px"><input id="tmShareSearch" placeholder="Buscar producto para compartir..."><select id="tmShareCat"><option value="">Todas las categorías</option>${cats().map(c=>`<option>${esc(c)}</option>`).join('')}</select></div>
+      <div class="tm-note">Tip: usa 🖼️ Estado para generar imagen vertical.</div>
+      <div id="tmShareProductsList" style="display:flex;flex-direction:column;gap:10px;margin-top:14px;max-height:360px;overflow:auto"></div>`;
+    card.addEventListener('input',e=>{if(e.target.id==='tmShareSearch') render();});
+    card.addEventListener('change',e=>{if(e.target.id==='tmShareCat') render();});
+    card.addEventListener('click',handle);
+    const root=document.getElementById('tmPublicarRoot');
     const backend=document.getElementById('backendStatus');
-    const grid=tab.querySelector('.grid2');
-    if(backend&&backend.parentNode){ backend.parentNode.insertBefore(card, backend.nextSibling); }
-    else if(grid&&grid.parentNode){ grid.parentNode.insertBefore(card, grid); }
-    else tab.insertBefore(card, tab.firstChild);
+    if(root&&root.parentNode) root.parentNode.insertBefore(card, root.nextSibling);
+    else if(backend&&backend.parentNode) backend.parentNode.insertBefore(card, backend.nextSibling);
+    else panel.insertBefore(card, panel.firstChild);
     $('#tmShareRefresh',card)?.addEventListener('click',render,{once:true});
     render();
   }
@@ -2260,7 +2255,7 @@ function tmExtractJsonObject(text) {
   }
   function boot(){ensure(); setTimeout(render,500);}
   document.addEventListener('DOMContentLoaded',()=>setTimeout(boot,1200));
-  document.addEventListener('click',e=>{if(e.target.closest('[data-arg="publicar-ahora"],[data-tab="publicar-ahora"]')) setTimeout(boot,350);});
+  document.addEventListener('click',e=>{if(e.target.closest('[data-arg="publicar-ahora"],[data-tab="publicar-ahora"],[data-arg="publicacion"],[data-tab="publicacion"]')) setTimeout(boot,350);});
 })();
 
 // ── tm-mejora-descripciones-v1 ───────────────────────────────────
@@ -2508,7 +2503,7 @@ function tmExtractJsonObject(text) {
   }
 
   function build(){
-    const tab=document.getElementById('publicar-ahora');if(!tab)return;
+    const tab=document.getElementById('pubPanel-publicar')||document.getElementById('publicar-ahora');if(!tab)return;
     if(document.getElementById('tmCatPublishCard'))return;
     const card=document.createElement('div');card.id='tmCatPublishCard';
     card.style.cssText='background:linear-gradient(135deg,rgba(255,107,53,.08),rgba(201,169,110,.06));border:1px solid rgba(255,107,53,.25);border-radius:16px;padding:18px 16px 16px;margin-bottom:18px';
@@ -2545,7 +2540,7 @@ function tmExtractJsonObject(text) {
   }
   function boot(){build();updatePreview();}
   document.addEventListener('DOMContentLoaded',()=>setTimeout(boot,1500));
-  document.addEventListener('click',e=>{if(e.target.closest('[data-arg="publicar-ahora"],[data-tab="publicar-ahora"]'))setTimeout(boot,400);});
+  document.addEventListener('click',e=>{if(e.target.closest('[data-arg="publicar-ahora"],[data-tab="publicar-ahora"],[data-arg="publicacion"],[data-tab="publicacion"]'))setTimeout(boot,400);});
 })();
 // ── tm-deepseek-tools-v16 (Agente Inteligente Autónomo de Tareas) ──
 (function(){
