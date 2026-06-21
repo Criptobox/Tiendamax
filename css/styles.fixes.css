@@ -177,3 +177,22 @@ html body .tm-badges-col .badge-vendido,html body .tm-badges-col .badge-agotado,
   html body .nd-hero-search .hsb-search { flex-basis: 100% !important; }
   html body .nd-hero-search .currency-bar { margin: 0 auto !important; }
 }
+/* ── Botón Pedir: verde WhatsApp (igual que tarjetas de producto) ── */
+html body .btn-pedir-whatsapp,
+html body #detailBuyBtn {
+  background: linear-gradient(135deg,#25D366,#128C7E) !important;
+  box-shadow: 0 6px 28px rgba(37,211,102,0.4) !important;
+}
+html body .btn-pedir-whatsapp:hover,
+html body #detailBuyBtn:hover {
+  background: linear-gradient(135deg,#20c45a,#0f7a6e) !important;
+  box-shadow: 0 10px 36px rgba(37,211,102,0.55) !important;
+}
+@keyframes pedir-pulse {
+  0%,100% { box-shadow: 0 6px 28px rgba(37,211,102,0.4); }
+  50% { box-shadow: 0 6px 36px rgba(37,211,102,0.65), 0 0 0 8px rgba(37,211,102,0.1); }
+}
+/* ── Detalle: imagen y datos alineados al tope ── */
+html body .detail-grid {
+  align-items: start !important;
+}
