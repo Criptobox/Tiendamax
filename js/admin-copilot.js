@@ -16,7 +16,12 @@ const LS = {
 const DAY = new Date().toISOString().slice(0,10);
 let state = { tasks: [], hot: [], agents: [], metrics: {}, view: localStorage.getItem(LS.view) || 'hoy', booted: false, loading: false };
 let refreshTimer = null;
-let promoData = { imgEl: null, nombre: '', subfila: '', eslogan: '', precio: '', precioAnterior: '', moneda: 'USD', detalle: '', stock: '', footer: 'Oferta Exclusiva · Unidades Limitadas.\nSolo en nuestra tienda online.', url: 'tiendamax.org', tema: 'oscuro', _logoEl: null, _drawTimer: null, _productoId: '' };
+const PROMO_BADGE_PRESETS = [
+  ['🛡️','Seguro'],['🔒','Pago Seguro'],['🛵','Envío'],['📦','Incluye caja'],
+  ['✅','Garantía'],['✅','Garantía 12m'],['💯','Original'],['⚡','Entrega rápida'],
+  ['🎁','Oferta'],['🆕','Nuevo'],['♻️','Usado'],['📞','Soporte'],['🏆','Calidad'],['','Ninguno'],
+];
+let promoData = { imgEl: null, nombre: '', subfila: '', eslogan: '', precio: '', precioAnterior: '', moneda: 'USD', detalle: '', stock: '', url: 'tiendamax.org', tema: 'oscuro', badges: [{emoji:'🛡️',label:'Seguro'},{emoji:'🛵',label:'Envío'},{emoji:'✅',label:'Garantía'}], _logoEl: null, _drawTimer: null, _productoId: '' };
 
 const $ = (s,r=document)=>r.querySelector(s);
 const $$ = (s,r=document)=>Array.from(r.querySelectorAll(s));
@@ -622,30 +627,25 @@ async function drawPromo() {
   ctx.strokeStyle = accent; ctx.lineWidth = 5;
   ctx.beginPath(); ctx.moveTo(80, sepY); ctx.lineTo(W - 80, sepY); ctx.stroke();
 
-  // ── 3-col footer ──
-  const footerY = sepY + 52;
+  // ── Badge footer (3 configurable slots) ──
+  const badgeY = sepY + 48;
   const colW = (W - 160) / 3;
   const colMids = [80 + colW / 2, W / 2, W - 80 - colW / 2];
-
-  ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic';
-  ctx.fillStyle = accent;
-  ctx.font = `900 64px 'Arial Black', Arial, sans-serif`;
-  ctx.fillText(parseInt(d.stock) > 0 ? d.stock : '—', colMids[0], footerY + 58);
-  ctx.fillStyle = isDark ? 'rgba(255,255,255,0.6)' : 'rgba(0,0,0,0.5)';
-  ctx.font = '500 34px Arial, sans-serif';
-  ctx.fillText('En stock', colMids[0], footerY + 100);
-
-  ctx.fillStyle = isDark ? 'rgba(255,255,255,0.85)' : 'rgba(0,0,0,0.7)';
-  ctx.font = '700 38px Arial, sans-serif';
-  ctx.fillText('🔒 Pago', colMids[1], footerY + 52);
-  ctx.fillText('Seguro', colMids[1], footerY + 98);
-
-  const footerLines = (d.footer || '').split('\n').map(l => l.trim()).filter(Boolean);
-  ctx.fillStyle = isDark ? 'rgba(255,255,255,0.65)' : 'rgba(0,0,0,0.55)';
-  ctx.font = '500 32px Arial, sans-serif';
-  let fy = footerY + 44;
-  footerLines.slice(0, 3).forEach(line => {
-    promoWrapText(ctx, line, colW - 16).slice(0, 2).forEach(wl => { ctx.fillText(wl, colMids[2], fy); fy += 42; });
+  const badges = (d.badges && d.badges.length === 3) ? d.badges
+    : [{emoji:'🛡️',label:'Seguro'},{emoji:'🛵',label:'Envío'},{emoji:'✅',label:'Garantía'}];
+  ctx.textAlign = 'center';
+  badges.forEach((badge, i) => {
+    if (!badge || (!badge.emoji && !badge.label)) return;
+    if (badge.emoji) {
+      ctx.font = '74px sans-serif'; ctx.textBaseline = 'middle';
+      ctx.fillText(badge.emoji, colMids[i], badgeY + 42);
+    }
+    if (badge.label) {
+      ctx.font = `600 ${badge.label.length > 12 ? 32 : 38}px Arial, sans-serif`;
+      ctx.fillStyle = isDark ? 'rgba(255,255,255,0.88)' : 'rgba(0,0,0,0.75)';
+      ctx.textBaseline = 'alphabetic';
+      ctx.fillText(badge.label, colMids[i], badgeY + 106);
+    }
   });
 
   ctx.strokeStyle = accent; ctx.lineWidth = 4;
@@ -656,11 +656,26 @@ function addPromoListeners() {
   const fields = {
     tmPromoNombre:'nombre', tmPromoSubfila:'subfila', tmPromoEslogan:'eslogan',
     tmPromoPrecio:'precio', tmPromoPrecioAnt:'precioAnterior', tmPromoMoneda:'moneda',
-    tmPromoDetalle:'detalle', tmPromoFooter:'footer', tmPromoUrl:'url', tmPromoStock:'stock'
+    tmPromoDetalle:'detalle', tmPromoUrl:'url', tmPromoStock:'stock'
   };
   Object.entries(fields).forEach(([id, key]) => {
     const el = document.getElementById(id);
     if (el) el.addEventListener('input', () => { promoData[key] = el.value; promoScheduleDraw(); });
+  });
+  // Badge selectors
+  [0, 1, 2].forEach(i => {
+    const selEl = document.getElementById('tmPromoBadgeSel' + i);
+    const lblEl = document.getElementById('tmPromoBadgeLbl' + i);
+    if (selEl) selEl.addEventListener('change', () => {
+      const [emoji, ...rest] = selEl.value.split('|');
+      promoData.badges[i] = { emoji, label: rest.join('|') };
+      if (lblEl) lblEl.value = rest.join('|');
+      promoScheduleDraw();
+    });
+    if (lblEl) lblEl.addEventListener('input', () => {
+      promoData.badges[i] = { emoji: promoData.badges[i]?.emoji || '', label: lblEl.value };
+      promoScheduleDraw();
+    });
   });
   const sel = document.getElementById('tmPromoProductoSel');
   if (sel) sel.addEventListener('change', () => { if (sel.value) promoSetProduct(sel.value); });
@@ -727,8 +742,20 @@ function renderPromo() {
         <div><div style="font-size:11px;color:#888;margin-bottom:4px">URL del producto</div>
           <input class="tm-promo-field" id="tmPromoUrl" type="text" placeholder="tiendamax.org/p/producto-1.html" value="${esc(d.url||'tiendamax.org')}"></div>
       </div>
-      <div><div style="font-size:11px;color:#888;margin-bottom:4px">Texto pie de imagen</div>
-        <textarea class="tm-promo-field" id="tmPromoFooter" rows="2" placeholder="Oferta Exclusiva · Unidades Limitadas.&#10;Solo en nuestra tienda online." style="resize:vertical;line-height:1.4">${esc(d.footer)}</textarea></div>
+      <div>
+        <div style="font-size:11px;color:#888;margin-bottom:6px">Badges del pie — ícono + texto</div>
+        ${[0,1,2].map(i => {
+          const b = (d.badges && d.badges[i]) || {emoji:'',label:''};
+          const matchVal = PROMO_BADGE_PRESETS.find(([e,l]) => e===b.emoji && l===b.label);
+          const selVal = matchVal ? matchVal[0]+'|'+matchVal[1] : (b.emoji+'|'+b.label);
+          return `<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:6px">
+            <select class="tm-promo-field" id="tmPromoBadgeSel${i}">
+              ${PROMO_BADGE_PRESETS.map(([e,l]) => `<option value="${esc(e+'|'+l)}"${(e+'|'+l)===selVal?' selected':''}>${e} ${l}</option>`).join('')}
+            </select>
+            <input class="tm-promo-field" id="tmPromoBadgeLbl${i}" type="text" placeholder="Etiqueta" value="${esc(b.label||'')}">
+          </div>`;
+        }).join('')}
+      </div>
       <div><div style="font-size:11px;color:#888;margin-bottom:6px">Tema</div>
         <div style="display:flex;gap:6px">
           ${[['oscuro','#141422','#fff'],['naranja','#c94400','#fff'],['claro','#ede5d8','#333']].map(([t,bg,fg])=>`<button type="button" class="tm-copilot-btn" data-cop="promoTema" data-tema="${t}" style="background:${bg};color:${fg};flex:1;border:2px solid ${d.tema===t?'rgba(255,255,255,.7)':'rgba(255,255,255,.1)'}">${t.charAt(0).toUpperCase()+t.slice(1)}</button>`).join('')}
