@@ -196,6 +196,10 @@ html body #detailBuyBtn:hover {
 html body .detail-grid {
   align-items: start !important;
 }
+/* ── Oferta del día: ya sale en el banner de urgencia arriba, no duplicar en el cuerpo ── */
+html body #ofertaDelDia {
+  display: none !important;
+}
 /* ── Oferta por tiempo limitado: look distinto a oferta del día ── */
 html body #ofertaTiempoLimitado .nd-deal {
   background: linear-gradient(135deg,rgba(12,4,0,.97) 0%,rgba(28,10,0,.97) 50%,rgba(12,4,0,.97) 100%) !important;
