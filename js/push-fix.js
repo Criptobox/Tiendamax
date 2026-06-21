@@ -315,11 +315,13 @@
     try {
       if (!("Notification" in window) || Notification.permission !== "granted") return;
       if (localStorage.getItem("tm_push_desuscrito") === "1") return;
-      setTimeout(function () { reintentarPendiente().catch(function () {}); }, 5000);
-      if (localStorage.getItem("fcmToken")) return;
+      if (localStorage.getItem("fcmToken")) {
+        setTimeout(function () { reintentarPendiente().catch(function () {}); }, 3000);
+        return;
+      }
       setTimeout(function () {
         registrarTokenRobusto().catch(function (e) { console.warn("[push-fix v8] auto-recuperación:", e.message); });
-      }, 3000);
+      }, 5000);
     } catch (e) {}
   }
   if (document.readyState === "complete" || document.readyState === "interactive") autoRecuperar();

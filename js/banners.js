@@ -76,7 +76,7 @@
             dots.appendChild(d);
         });
 
-        irBanner(0);
+        window.irBanner(0);
         startAutoPlay();
     }
 
@@ -91,7 +91,7 @@
     };
 
     window.moverBanner = function(dir) {
-        irBanner(current + dir);
+        window.irBanner(current + dir);
         resetAutoPlay();
     };
 

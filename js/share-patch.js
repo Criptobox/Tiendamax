@@ -34,11 +34,12 @@ function _getShareData() {
   var p = _detalleProductoActual;
   if (!p) return null;
   var url = tmShareURL(p.id);
+  var precio = (p.precioActual != null) ? Number(p.precioActual).toFixed(2) : '0.00';
   return {
     nombre: p.nombre,
-    precio: p.precioActual.toFixed(2),
+    precio: precio,
     imagen: p.imagen,
-    texto: '\uD83D\uDECD\uFE0F *' + p.nombre + '* — $' + p.precioActual.toFixed(2) + ' USD\n\uD83D\uDCE6 Stock disponible\n\uD83D\uDC49 ' + url,
+    texto: '\uD83D\uDECD\uFE0F *' + p.nombre + '* — $' + precio + ' USD\n\uD83D\uDCE6 Stock disponible\n\uD83D\uDC49 ' + url,
     url: url
   };
 }
@@ -66,8 +67,7 @@ function compartirFacebook() {
  */
 function compartirTelegram() {
   var d = _getShareData(); if (!d) return;
-  var msg = encodeURIComponent(d.texto + '\n' + d.url);
-  window.open('https://t.me/share/url?url=' + encodeURIComponent(d.url) + '&text=' + encodeURIComponent(d.texto), '_blank', 'noopener,noreferrer');
+  window.open('https://t.me/share/url?url=' + encodeURIComponent(d.url) + '&text=' + encodeURIComponent(d.texto + '\n' + d.url), '_blank', 'noopener,noreferrer');
 }
 
 /**

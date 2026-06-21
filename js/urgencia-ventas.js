@@ -125,7 +125,7 @@ async function _mostrarContadorViewers(id){
     el.className='tm-viendo';
     // Insertar después del bloque de precio
     const anchor=modal.querySelector('.detail-price-wrap,#detailPriceActual,.detail-price-main');
-    if(anchor) anchor.closest('.detail-price-wrap,p')?.insertAdjacentElement('afterend',el) || anchor.insertAdjacentElement('afterend',el);
+    if(anchor){const wrap=anchor.closest('.detail-price-wrap,p');if(wrap)wrap.insertAdjacentElement('afterend',el);else anchor.insertAdjacentElement('afterend',el);}
     else{
       const info=modal.querySelector('.detail-info,.detail-body');
       if(info) info.prepend(el);
