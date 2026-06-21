@@ -200,21 +200,6 @@ html body .detail-grid {
 html body #ofertaDelDia {
   display: none !important;
 }
-/* ── Oferta por tiempo limitado: look distinto a oferta del día ── */
-html body #ofertaTiempoLimitado .nd-deal {
-  background: linear-gradient(135deg,rgba(12,4,0,.97) 0%,rgba(28,10,0,.97) 50%,rgba(12,4,0,.97) 100%) !important;
-  box-shadow: 0 20px 60px rgba(0,0,0,.7), inset 0 1px 0 rgba(255,107,53,.3) !important;
-  border: 1px solid rgba(255,107,53,.22) !important;
-}
-html body #ofertaTiempoLimitado .nd-dbadge {
-  background: rgba(255,107,53,.18) !important;
-  border-color: rgba(255,107,53,.45) !important;
-  color: #FF9F43 !important;
-}
-html body #ofertaTiempoLimitado .nd-btn-deal {
-  background: linear-gradient(135deg,#FF6B35,#E8501E) !important;
-  color: #fff !important;
-}
 /* ── Secciones nd-deal en móvil: grid 1 col + texto centrado ── */
 @media (max-width: 640px) {
   html body .nd-deal-section .nd-deal {
