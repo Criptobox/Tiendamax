@@ -1481,6 +1481,9 @@ async function cargarDatosDesdeGitHub() {
         const vMG = document.getElementById('vistaMeGusta');
         if (vMG && vMG.style.display !== 'none') mostrarVistaMeGusta();
         verificarProductosNuevos();
+        // Re-render secciones especiales ahora que productos están frescos
+        if (typeof renderOfertaDelDia === 'function') renderOfertaDelDia();
+        if (typeof renderOfertaTiempoLimitado === 'function') renderOfertaTiempoLimitado();
 
         // CRÍTICO: si el usuario YA navegó a una categoría mientras se cargaba,
         // re-renderizar la vista de productos con los datos frescos.
@@ -1498,6 +1501,8 @@ async function cargarDatosDesdeGitHub() {
         renderizarMasVendidos();
         setTimeout(cargarTestimoniosFirebase, 1500);
         verificarOfertasYMostrarBanner();
+        if (typeof renderOfertaDelDia === 'function') renderOfertaDelDia();
+        if (typeof renderOfertaTiempoLimitado === 'function') renderOfertaTiempoLimitado();
         // También re-render si estamos en vista categoría
         const vCat = document.getElementById('vistaCategoria');
         if (vCat && vCat.style.display === 'block' && typeof renderizarProductos === 'function') {
