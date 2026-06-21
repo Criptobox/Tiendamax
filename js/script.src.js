@@ -2599,7 +2599,29 @@ function cerrarAdminPanel() {
     document.body.classList.remove('admin-mode');
 }
 
+function pubSwitchPanel(name) {
+    document.querySelectorAll('.pub-panel').forEach(function(p) { p.classList.remove('active'); });
+    document.querySelectorAll('.pub-nav-btn').forEach(function(b) { b.classList.remove('active'); });
+    const panel = document.getElementById('pubPanel-' + name);
+    const btn = document.querySelector('.pub-nav-btn[data-arg="' + name + '"]');
+    if (panel) panel.classList.add('active');
+    if (btn) btn.classList.add('active');
+    localStorage.setItem('tm_pub_subtab', name);
+    if (name === 'publicar') setTimeout(cargarGruposFB, 100);
+    if (name === 'oferta') {
+        setTimeout(poblarSelectOfertaDia, 100);
+        setTimeout(renderizarListaAgotados, 100);
+    }
+    if (name === 'promo') setTimeout(() => { if (typeof window.pubMountPromo === 'function') window.pubMountPromo(); }, 150);
+}
+window.pubSwitchPanel = pubSwitchPanel;
+
 function switchTab(tabName) {
+    // Redirects to unified Publicación tab
+    if (tabName === 'publicar-ahora') { switchTab('publicacion'); setTimeout(() => pubSwitchPanel('publicar'), 50); return; }
+    if (tabName === 'oferta-dia') { switchTab('publicacion'); setTimeout(() => pubSwitchPanel('oferta'), 50); return; }
+    if (tabName === 'apariencia') { switchTab('publicacion'); setTimeout(() => pubSwitchPanel('banners'), 50); return; }
+
     // Remove active from all tabs (class only — never use inline style on admin-tabs)
     document.querySelectorAll('.admin-tab').forEach(tab => {
         tab.classList.remove('active');
@@ -2614,7 +2636,10 @@ function switchTab(tabName) {
     });
 
     // Tab-specific hooks consolidados
-    if (tabName === 'publicar-ahora') setTimeout(cargarGruposFB, 100);
+    if (tabName === 'publicacion') {
+        const saved = localStorage.getItem('tm_pub_subtab') || 'publicar';
+        setTimeout(() => pubSwitchPanel(saved), 50);
+    }
     if (tabName === 'manage-products') setTimeout(actualizarListaProductos, 100);
     if (tabName === 'ventas') setTimeout(renderizarVentas, 100);
     if (tabName === 'analytics') setTimeout(() => { if (typeof renderizarAnalyticsFirebase === 'function') renderizarAnalyticsFirebase(); }, 150);
@@ -2623,12 +2648,6 @@ function switchTab(tabName) {
             if (typeof actualizarSelectCategoriasPadre === 'function') actualizarSelectCategoriasPadre();
             if (typeof actualizarListaSubcategorias === 'function') actualizarListaSubcategorias();
         }, 50);
-    }
-    if (tabName === 'oferta-dia') {
-        setTimeout(() => {
-            poblarSelectOfertaDia();
-            renderizarListaAgotados();
-        }, 100);
     }
     if (tabName === 'configuracion') {
         setTimeout(cargarNumeroWhatsApp, 100);

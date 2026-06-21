@@ -805,12 +805,20 @@ function renderPromoOferta() {
   </div>`;
 }
 function renderPromo() {
-  const nav = `<div style="display:flex;gap:6px;margin-bottom:12px">
-    <button type="button" class="tm-copilot-btn${promoSubTab==='imagen'?' primary':''}" data-cop="promoSub" data-sub="imagen" style="flex:1">📸 Imagen</button>
-    <button type="button" class="tm-copilot-btn${promoSubTab==='oferta'?' primary':''}" data-cop="promoSub" data-sub="oferta" style="flex:1">🔥 Oferta del día</button>
+  return `<div style="padding:24px 0;text-align:center">
+    <div style="font-size:52px;margin-bottom:14px">🎨</div>
+    <p style="color:#aaa;font-size:13px;margin-bottom:20px;line-height:1.5">El generador de promos, la oferta del día y los banners están ahora en el panel de Publicación.</p>
+    <button type="button" class="tm-copilot-btn primary" style="width:100%;margin-bottom:8px" data-cop="openPubPromo">🎨 Abrir generador de Promo</button>
+    <button type="button" class="tm-copilot-btn" style="width:100%;margin-bottom:8px" data-cop="openPubOferta">🔥 Oferta del día</button>
+    <button type="button" class="tm-copilot-btn" style="width:100%" data-cop="openPubBanners">🖼️ Banners</button>
   </div>`;
-  return nav + (promoSubTab === 'oferta' ? renderPromoOferta() : renderPromoImagen());
 }
+window.pubMountPromo = function() {
+  const root = document.getElementById('tmPromoAdminRoot');
+  if (!root || root.querySelector('#tmPromoCanvas')) return;
+  root.innerHTML = renderPromoImagen();
+  setTimeout(() => { addPromoListeners(); drawPromo(); }, 80);
+};
 function ofertaActivar(withCountdown) {
   const selEl = document.getElementById('tmOfertaProductoSel');
   const txtEl = document.getElementById('tmOfertaBannerTxt');
@@ -895,7 +903,7 @@ function renderSheet(){
     </div>
     ${tabsHtml(view)}
     ${renderCopilotView(view, topTasks)}`;
-  if (view === 'promo') setTimeout(() => { if (promoSubTab === 'imagen') { addPromoListeners(); drawPromo(); } }, 120);
+  // promo canvas is mounted in admin publicacion tab via window.pubMountPromo
 }
 function taskHtml(t){
   return `<div class="tm-copilot-task u${t.urgency}" data-id="${esc(t.id)}">
@@ -960,10 +968,9 @@ function bindEvents(){
     if(act==='dismiss') { const set=dismissedSet(); set.add(el.dataset.id); saveDismissed(set); state.tasks = state.tasks.filter(t=>t.id!==el.dataset.id); updateBubble(); renderSheet(); }
     if(act==='pushHot') queuePushForProduct(el.dataset.pid);
     if(act==='promoPickImg') { const inp = document.getElementById('tmPromoImgInput'); if(inp) inp.click(); }
-    if(act==='promoSub') { promoSubTab = el.dataset.sub; renderSheet(); }
-    if(act==='ofertaActivar') ofertaActivar(false);
-    if(act==='ofertaActivarCountdown') ofertaActivar(true);
-    if(act==='ofertaDesactivar') ofertaDesactivar();
+    if(act==='openPubPromo') { closeSheet(); if(typeof window.switchTab==='function'){ window.switchTab('publicacion'); setTimeout(()=>{ if(typeof window.pubSwitchPanel==='function') window.pubSwitchPanel('promo'); },100); } }
+    if(act==='openPubOferta') { closeSheet(); if(typeof window.switchTab==='function'){ window.switchTab('publicacion'); setTimeout(()=>{ if(typeof window.pubSwitchPanel==='function') window.pubSwitchPanel('oferta'); },100); } }
+    if(act==='openPubBanners') { closeSheet(); if(typeof window.switchTab==='function'){ window.switchTab('publicacion'); setTimeout(()=>{ if(typeof window.pubSwitchPanel==='function') window.pubSwitchPanel('banners'); },100); } }
     if(act==='promoTema') { promoData.tema = el.dataset.tema; state.view = 'promo'; renderSheet(); }
     if(act==='promoDownload') {
       const canvas = document.getElementById('tmPromoCanvas'); if(!canvas) return;
