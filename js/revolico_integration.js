@@ -1302,7 +1302,7 @@ function cerrarRevSelector() {
         const _prev = window.switchTab;
         window.switchTab = function (tab) {
             const r = _prev.apply(this, arguments);
-            if (tab === 'publicar-ahora') setTimeout(renderTabPublicar, 200);
+            if (tab === 'publicar-ahora' || tab === 'publicacion') setTimeout(renderTabPublicar, 400);
             return r;
         };
     }
@@ -1316,7 +1316,8 @@ function cerrarRevSelector() {
     }
     // También renderizar si el tab ya está activo al cargar
     setTimeout(() => {
-        if (document.getElementById('publicar-ahora')?.classList.contains('active')) {
+        if (document.getElementById('publicar-ahora')?.classList.contains('active') ||
+            document.getElementById('publicacion')?.classList.contains('active')) {
             renderTabPublicar();
         }
     }, 1200);

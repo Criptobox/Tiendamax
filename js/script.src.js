@@ -2607,7 +2607,10 @@ function pubSwitchPanel(name) {
     if (panel) panel.classList.add('active');
     if (btn) btn.classList.add('active');
     localStorage.setItem('tm_pub_subtab', name);
-    if (name === 'publicar') setTimeout(cargarGruposFB, 100);
+    if (name === 'publicar') {
+        setTimeout(cargarGruposFB, 100);
+        setTimeout(function() { if (typeof window.renderTabPublicar === 'function') window.renderTabPublicar(); }, 250);
+    }
     if (name === 'oferta') {
         setTimeout(poblarSelectOfertaDia, 100);
         setTimeout(renderizarListaAgotados, 100);

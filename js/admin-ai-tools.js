@@ -2174,7 +2174,7 @@ function tmExtractJsonObject(text) {
   function txt(p){return `🔥 ${p.nombre}\n\n${p.descripcion?String(p.descripcion).slice(0,160)+'\n\n':''}💵 $${Number(p.precioActual||0).toFixed(2)} USD\n📦 Stock: ${Number(p.stock||0)}\n🏷️ ${p.categoria||'TiendaMax'}\n\nPídelo directo por WhatsApp en TiendaMax:\n${url(p)}`;}
   function cats(){return [...new Set(products().map(p=>p.categoria||'General').filter(Boolean))].sort();}
   function ensure(){
-    const host=document.getElementById('tmShareProductsRoot')||document.getElementById('publicar-ahora'); if(!host) return;
+    const host=document.getElementById('tmShareProductsRoot'); if(!host) return;
     if(document.getElementById('tmShareProductsCard')){ render(); return; }
     const card=document.createElement('div'); card.id='tmShareProductsCard'; card.className='card tm-share-products-card';
     card.innerHTML=`<div style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap"><div><h2>📲 Compartir por producto</h2><p class="sub">Estado de WhatsApp, Facebook, chat y copia rápida de cada producto.</p></div><button type="button" class="btn gold" id="tmShareRefresh">↻ Actualizar lista</button></div>
@@ -2251,7 +2251,7 @@ function tmExtractJsonObject(text) {
   }
   function boot(){ensure(); setTimeout(render,500);}
   document.addEventListener('DOMContentLoaded',()=>setTimeout(boot,1200));
-  document.addEventListener('click',e=>{if(e.target.closest('[data-arg="publicar-ahora"],[data-tab="publicar-ahora"],[data-arg="publicacion"],[data-tab="publicacion"],[data-arg="producto"]')) setTimeout(boot,350);});
+  document.addEventListener('click',e=>{if(e.target.closest('[data-arg="publicar-ahora"],[data-tab="publicar-ahora"],[data-arg="publicacion"],[data-tab="publicacion"]')) setTimeout(boot,350);});
 })();
 
 // ── tm-mejora-descripciones-v1 ───────────────────────────────────
