@@ -135,6 +135,8 @@
     </script>
     
     <!-- Fuentes locales (evita requests externos a Google Fonts) -->
+    <!-- Preload de la fuente del cuerpo (Latin): empieza a bajar sin esperar a parsear fonts.css -->
+    <link rel="preload" href="fonts/dmsans-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="css/fonts.css?v=67235440">
 
     <!-- Preload del script principal para que el navegador lo descargue sin esperar la línea 1091 -->
