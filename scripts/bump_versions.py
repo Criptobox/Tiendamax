@@ -39,7 +39,8 @@ def process(html_path: Path, check: bool) -> int:
     def repl(m: re.Match) -> str:
         nonlocal changes
         attr, rel, old = m.group(1), m.group(2), m.group(3)
-        asset = (ROOT / rel).resolve()
+        # Strip leading slash so ROOT / rel works correctly for absolute-URL paths
+        asset = (ROOT / rel.lstrip("/")).resolve()
         if not asset.exists():
             return m.group(0)  # no tocar rutas externas o inexistentes
         new = asset_hash(asset)
