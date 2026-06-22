@@ -1387,6 +1387,24 @@ async function cargarDatosDesdeGitHub() {
         // Ventas migradas a Firebase — sync en background tras cargar productos
         setTimeout(_fbSincronizarVentasAlIniciar, 2000);
 
+        // Countdown desde Firebase — sincroniza a todos los dispositivos de clientes
+        setTimeout(async () => {
+            try {
+                const base = _fbRtdbUrl();
+                if (!base) return;
+                const r = await fetch(base + '/configuracion/activeCountdown.json');
+                if (!r.ok) return;
+                const fbCd = await r.json();
+                if (fbCd && fbCd.productId && fbCd.endTime && fbCd.endTime > Date.now()) {
+                    localStorage.setItem('activeCountdown', JSON.stringify(fbCd));
+                } else {
+                    localStorage.removeItem('activeCountdown');
+                }
+                if (typeof renderOfertaTiempoLimitado === 'function') renderOfertaTiempoLimitado();
+                if (typeof iniciarCountdownsActivos === 'function') iniciarCountdownsActivos();
+            } catch(e) {}
+        }, 800);
+
         // Categorías desde Firebase RTDB — más recientes que categorias.json (admin las actualiza ahí)
         setTimeout(async () => {
             try {
@@ -1481,6 +1499,9 @@ async function cargarDatosDesdeGitHub() {
         const vMG = document.getElementById('vistaMeGusta');
         if (vMG && vMG.style.display !== 'none') mostrarVistaMeGusta();
         verificarProductosNuevos();
+        // Re-render secciones especiales ahora que productos están frescos
+        if (typeof renderOfertaDelDia === 'function') renderOfertaDelDia();
+        if (typeof renderOfertaTiempoLimitado === 'function') renderOfertaTiempoLimitado();
 
         // CRÍTICO: si el usuario YA navegó a una categoría mientras se cargaba,
         // re-renderizar la vista de productos con los datos frescos.
@@ -1498,6 +1519,8 @@ async function cargarDatosDesdeGitHub() {
         renderizarMasVendidos();
         setTimeout(cargarTestimoniosFirebase, 1500);
         verificarOfertasYMostrarBanner();
+        if (typeof renderOfertaDelDia === 'function') renderOfertaDelDia();
+        if (typeof renderOfertaTiempoLimitado === 'function') renderOfertaTiempoLimitado();
         // También re-render si estamos en vista categoría
         const vCat = document.getElementById('vistaCategoria');
         if (vCat && vCat.style.display === 'block' && typeof renderizarProductos === 'function') {
@@ -1523,6 +1546,11 @@ window.addEventListener('storage', (event) => {
         renderizarCategoriasHome();
         renderizarProductos();
         if (typeof actualizarSelectCategoriasPadre === 'function') actualizarSelectCategoriasPadre();
+    }
+    if (event.key === 'activeCountdown' || event.key === 'ofertaDiaId' || event.key === 'ofertaDiaTexto') {
+        if (typeof renderOfertaDelDia === 'function') renderOfertaDelDia();
+        if (typeof renderOfertaTiempoLimitado === 'function') renderOfertaTiempoLimitado();
+        if (typeof iniciarCountdownsActivos === 'function') iniciarCountdownsActivos();
     }
 });
 
@@ -1953,6 +1981,8 @@ function renderizarMasVendidos() {
 
     // Poblar la sección "Oferta del día" (se oculta sola si no hay ofertaDiaId)
     if (typeof renderOfertaDelDia === 'function') renderOfertaDelDia();
+    // Poblar la sección "Oferta por tiempo limitado" (independiente de ofertaDiaId)
+    if (typeof renderOfertaTiempoLimitado === 'function') renderOfertaTiempoLimitado();
     // Ocultar banner de urgencia si el producto de oferta está agotado
     verificarStockOfertaBanner();
 }
@@ -2599,7 +2629,32 @@ function cerrarAdminPanel() {
     document.body.classList.remove('admin-mode');
 }
 
+function pubSwitchPanel(name) {
+    document.querySelectorAll('.pub-panel').forEach(function(p) { p.classList.remove('active'); });
+    document.querySelectorAll('.pub-nav-btn').forEach(function(b) { b.classList.remove('active'); });
+    const panel = document.getElementById('pubPanel-' + name);
+    const btn = document.querySelector('.pub-nav-btn[data-arg="' + name + '"]');
+    if (panel) panel.classList.add('active');
+    if (btn) btn.classList.add('active');
+    localStorage.setItem('tm_pub_subtab', name);
+    if (name === 'publicar') {
+        setTimeout(cargarGruposFB, 100);
+        setTimeout(function() { if (typeof window.renderTabPublicar === 'function') window.renderTabPublicar(); }, 250);
+    }
+    if (name === 'oferta') {
+        setTimeout(poblarSelectOfertaDia, 100);
+        setTimeout(renderizarListaAgotados, 100);
+    }
+    if (name === 'promo') setTimeout(() => { if (typeof window.pubMountPromo === 'function') window.pubMountPromo(); }, 150);
+}
+window.pubSwitchPanel = pubSwitchPanel;
+
 function switchTab(tabName) {
+    // Redirects to unified Publicación tab
+    if (tabName === 'publicar-ahora') { switchTab('publicacion'); setTimeout(() => pubSwitchPanel('publicar'), 50); return; }
+    if (tabName === 'oferta-dia') { switchTab('publicacion'); setTimeout(() => pubSwitchPanel('oferta'), 50); return; }
+    if (tabName === 'apariencia') { switchTab('publicacion'); setTimeout(() => pubSwitchPanel('banners'), 50); return; }
+
     // Remove active from all tabs (class only — never use inline style on admin-tabs)
     document.querySelectorAll('.admin-tab').forEach(tab => {
         tab.classList.remove('active');
@@ -2614,7 +2669,10 @@ function switchTab(tabName) {
     });
 
     // Tab-specific hooks consolidados
-    if (tabName === 'publicar-ahora') setTimeout(cargarGruposFB, 100);
+    if (tabName === 'publicacion') {
+        const saved = localStorage.getItem('tm_pub_subtab') || 'publicar';
+        setTimeout(() => pubSwitchPanel(saved), 50);
+    }
     if (tabName === 'manage-products') setTimeout(actualizarListaProductos, 100);
     if (tabName === 'ventas') setTimeout(renderizarVentas, 100);
     if (tabName === 'analytics') setTimeout(() => { if (typeof renderizarAnalyticsFirebase === 'function') renderizarAnalyticsFirebase(); }, 150);
@@ -2623,12 +2681,6 @@ function switchTab(tabName) {
             if (typeof actualizarSelectCategoriasPadre === 'function') actualizarSelectCategoriasPadre();
             if (typeof actualizarListaSubcategorias === 'function') actualizarListaSubcategorias();
         }, 50);
-    }
-    if (tabName === 'oferta-dia') {
-        setTimeout(() => {
-            poblarSelectOfertaDia();
-            renderizarListaAgotados();
-        }, 100);
     }
     if (tabName === 'configuracion') {
         setTimeout(cargarNumeroWhatsApp, 100);
@@ -4378,7 +4430,8 @@ if (typeof countdownIntervals !== 'object' || countdownIntervals === null) {
 }
 
 function guardarCountdown() {
-    const productId = document.getElementById('countdownProductSelect').value;
+    const productId = document.getElementById('countdownProductSelect')?.value ||
+                      localStorage.getItem('ofertaDiaId') || '';
     const horas = parseInt(document.getElementById('countdownHoras').value) || 0;
     const minutos = parseInt(document.getElementById('countdownMinutos').value) || 0;
     const texto = document.getElementById('countdownTexto').value.trim() || '¡Oferta especial!';
@@ -4398,6 +4451,17 @@ function guardarCountdown() {
     const countdown = { productId, endTime, texto };
     localStorage.setItem('activeCountdown', JSON.stringify(countdown));
 
+    // Sincronizar a Firebase para que todos los clientes lo vean
+    (async () => {
+        try {
+            const base = (typeof _fbRtdbUrl === 'function') ? _fbRtdbUrl() : null;
+            if (base) await fetch(base + '/configuracion/activeCountdown.json', {
+                method: 'PUT', body: JSON.stringify(countdown),
+                headers: { 'Content-Type': 'application/json' }
+            });
+        } catch(e) {}
+    })();
+
     const producto = productos.find(p => p.id == productId);
     const nombre = producto ? producto.nombre : 'Producto';
 
@@ -4408,6 +4472,7 @@ function guardarCountdown() {
     renderizarMasVendidos();
     renderizarProductos();
     iniciarCountdownsActivos();
+    if (typeof renderOfertaTiempoLimitado === 'function') renderOfertaTiempoLimitado();
 
     mostrarNotificacion(`⏱️ Countdown activado para "${nombre}"`);
 }
@@ -4417,11 +4482,22 @@ function desactivarCountdown() {
     if (!countdownIntervals || typeof countdownIntervals !== 'object') countdownIntervals = {};
     Object.values(countdownIntervals).forEach(clearInterval);
     countdownIntervals = {};
+    if (_flashTimer) { clearInterval(_flashTimer); _flashTimer = null; }
+    const flashSec = document.getElementById('ofertaTiempoLimitado');
+    if (flashSec) flashSec.style.display = 'none';
     renderizarMasVendidos();
     renderizarProductos();
     const status = document.getElementById('countdownStatus');
     if (status) status.innerHTML = 'Countdown desactivado.';
     mostrarNotificacion('🗑️ Countdown desactivado');
+
+    // Borrar de Firebase para que todos los clientes dejen de verlo
+    (async () => {
+        try {
+            const base = (typeof _fbRtdbUrl === 'function') ? _fbRtdbUrl() : null;
+            if (base) await fetch(base + '/configuracion/activeCountdown.json', { method: 'DELETE' });
+        } catch(e) {}
+    })();
 }
 
 // ═══════════════════════════════════════════════════════
@@ -4443,10 +4519,6 @@ function renderOfertaDelDia() {
     const prod = ofId ? productos.find(p => String(p.id) === String(ofId)) : null;
 
     if (!prod) { sec.style.display = 'none'; return; }
-
-    // Solo mostrar si hay countdown activo para este producto
-    const cdGate = (typeof getActiveCountdown === 'function') ? getActiveCountdown() : null;
-    if (!cdGate || String(cdGate.productId) !== String(prod.id)) { sec.style.display = 'none'; return; }
 
     let texto = '⚡ Oferta del día';
     try { texto = localStorage.getItem('ofertaDiaTexto') || texto; } catch (e) {}
@@ -4526,6 +4598,95 @@ function abrirOfertaDelDia() {
     let ofId = null;
     try { ofId = localStorage.getItem('ofertaDiaId'); } catch (e) {}
     if (ofId && typeof abrirDetalleProducto === 'function') abrirDetalleProducto(ofId);
+}
+
+// ═══════════════════════════════════════════════════════
+//  ⏱️ OFERTA POR TIEMPO LIMITADO (sección independiente)
+//  Muestra el producto de activeCountdown con su timer.
+//  Completamente independiente de ofertaDiaId.
+// ═══════════════════════════════════════════════════════
+var _flashTimer = null;
+function renderOfertaTiempoLimitado() {
+    const sec = document.getElementById('ofertaTiempoLimitado');
+    if (!sec) return;
+
+    if (_flashTimer) { clearInterval(_flashTimer); _flashTimer = null; }
+
+    const cd = (typeof getActiveCountdown === 'function') ? getActiveCountdown() : null;
+    if (!cd || !cd.productId) { sec.style.display = 'none'; return; }
+
+    const prod = productos.find(p => String(p.id) === String(cd.productId));
+    if (!prod) { sec.style.display = 'none'; return; }
+
+    const setTxt = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+
+    setTxt('flashBadge', cd.texto || '⏱️ Oferta por tiempo limitado');
+    setTxt('flashTitle', prod.nombre);
+    setTxt('flashSub', prod.descripcion ? String(prod.descripcion).replace(/<[^>]*>/g, '').slice(0, 110) : '¡Aprovecha este precio antes de que expire!');
+    setTxt('flashName', prod.nombre);
+    setTxt('flashPrice', (typeof formatPrecio === 'function') ? formatPrecio(prod.precioActual) : ('$' + prod.precioActual + ' USD'));
+
+    const card = document.getElementById('flash-card');
+    const emojiEl = document.getElementById('flashEmoji');
+    if (card) {
+        const old = card.querySelector('.nd-dpc-img');
+        if (old) old.remove();
+        if (prod.imagen) {
+            const img = document.createElement('img');
+            img.className = 'nd-dpc-img';
+            img.src = prod.imagen;
+            img.alt = escapeHtml(prod.nombre);
+            img.loading = 'lazy';
+            img.onerror = function () { this.remove(); if (emojiEl) emojiEl.style.display = 'block'; };
+            card.insertBefore(img, card.firstChild);
+            if (emojiEl) emojiEl.style.display = 'none';
+        } else {
+            if (emojiEl) {
+                emojiEl.style.display = 'block';
+                emojiEl.textContent = (typeof obtenerIconoCategoria === 'function') ? obtenerIconoCategoria(prod.categoria) : '⏱️';
+            }
+        }
+    }
+
+    const oldEl = document.getElementById('flashOld');
+    const discEl = document.getElementById('flashDisc');
+    const hayDesc = prod.precioOriginal > 0 && prod.precioOriginal > prod.precioActual;
+    if (oldEl) {
+        if (hayDesc) { oldEl.style.display = 'block'; oldEl.textContent = '$' + Number(prod.precioOriginal).toFixed(0) + ' USD'; }
+        else oldEl.style.display = 'none';
+    }
+    if (discEl) {
+        if (hayDesc) {
+            const pct = Math.round((1 - prod.precioActual / prod.precioOriginal) * 100);
+            setTxt('flashDiscPct', pct + '%');
+            discEl.style.display = 'flex';
+        } else discEl.style.display = 'none';
+    }
+
+    const timerWrap = document.getElementById('flashTimer');
+    if (timerWrap) {
+        timerWrap.style.display = 'flex';
+        const pad = n => String(n).padStart(2, '0');
+        const tick = () => {
+            const rem = Math.max(0, cd.endTime - Date.now());
+            setTxt('flash-h', pad(Math.floor(rem / 3600000)));
+            setTxt('flash-m', pad(Math.floor((rem % 3600000) / 60000)));
+            setTxt('flash-s', pad(Math.floor((rem % 60000) / 1000)));
+            if (rem <= 0) {
+                if (_flashTimer) { clearInterval(_flashTimer); _flashTimer = null; }
+                sec.style.display = 'none';
+            }
+        };
+        tick();
+        _flashTimer = setInterval(tick, 1000);
+    }
+
+    sec.style.display = 'block';
+}
+
+function abrirProductoFlash() {
+    const cd = (typeof getActiveCountdown === 'function') ? getActiveCountdown() : null;
+    if (cd && cd.productId && typeof abrirDetalleProducto === 'function') abrirDetalleProducto(cd.productId);
 }
 
 // ===== GALERÍA ROTATIVA DEL HERO (tarjeta 3D) con efecto de desintegración =====
@@ -6306,6 +6467,11 @@ function poblarSelectOfertaDia() {
         if (saved) sel.value = saved;
         else if (current) sel.value = current;
     });
+    // Also sync the countdown product selector so user doesn't have to pick twice
+    actualizarCountdownProductSelect();
+    const ofId = localStorage.getItem('ofertaDiaId');
+    const cdSel = document.getElementById('countdownProductSelect');
+    if (ofId && cdSel && !cdSel.value) cdSel.value = ofId;
     actualizarStatusOfertaDia();
 }
 

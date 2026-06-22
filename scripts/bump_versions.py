@@ -24,8 +24,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 HTML_FILES = ["index.html", "admin.html", "404.html"]
 
-# Captura: (atributo)="(ruta .js o .css)?v=(version)"
-PATTERN = re.compile(r'(href|src)="([^"?]+\.(?:js|css))\?v=([^"]*)"')
+# Captura: (atributo)="(ruta .js, .css, .png, .ico, .svg, .webp, .jpg)?v=(version)"
+PATTERN = re.compile(r'(href|src|content)="([^"?]+\.(?:js|css|png|ico|svg|webp|jpe?g))\?v=([^"]*)"')
 
 
 def asset_hash(path: Path) -> str:
@@ -39,7 +39,8 @@ def process(html_path: Path, check: bool) -> int:
     def repl(m: re.Match) -> str:
         nonlocal changes
         attr, rel, old = m.group(1), m.group(2), m.group(3)
-        asset = (ROOT / rel).resolve()
+        # Strip leading slash so ROOT / rel works correctly for absolute-URL paths
+        asset = (ROOT / rel.lstrip("/")).resolve()
         if not asset.exists():
             return m.group(0)  # no tocar rutas externas o inexistentes
         new = asset_hash(asset)

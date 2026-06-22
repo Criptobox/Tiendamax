@@ -1,7 +1,7 @@
 // ===== GESTIÓN DE SUBCATEGORÍAS =====
 // Este módulo extiende la funcionalidad de categorías con soporte para subcategorías
 
-let subcategorias = JSON.parse(localStorage.getItem('subcategorias')) || {};
+let subcategorias = (() => { try { return JSON.parse(localStorage.getItem('subcategorias')) || {}; } catch(e) { return {}; } })();
 
 /**
  * Estructura de subcategorias:
@@ -227,7 +227,7 @@ function agregarSubcategoriaAlEditModal() {
     subcatGroup.className = 'form-group';
     subcatGroup.innerHTML = `
         <label>Subcategoría (opcional):</label>
-        <select id="editProductSubcategory">
+        <select id="editProductSubcategory" onchange="actualizarSelectSubcategorias()">
             <option value="">-- Sin subcategoría --</option>
         </select>
     `;

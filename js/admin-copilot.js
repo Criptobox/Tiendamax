@@ -16,7 +16,12 @@ const LS = {
 const DAY = new Date().toISOString().slice(0,10);
 let state = { tasks: [], hot: [], agents: [], metrics: {}, view: localStorage.getItem(LS.view) || 'hoy', booted: false, loading: false };
 let refreshTimer = null;
-let promoData = { imgEl: null, nombre: '', precio: '', moneda: 'USD', detalle: '', footer: 'Oferta Exclusiva · Solo en tiendamax.org', tema: 'oscuro', _logoEl: null, _drawTimer: null };
+const PROMO_BADGE_PRESETS = [
+  ['🛡️','Seguro'],['🔒','Pago Seguro'],['🛵','Envío'],['📦','Incluye caja'],
+  ['✅','Garantía'],['✅','Garantía 12m'],['💯','Original'],['⚡','Entrega rápida'],
+  ['🎁','Oferta'],['🆕','Nuevo'],['♻️','Usado'],['📞','Soporte'],['🏆','Calidad'],['','Ninguno'],
+];
+let promoData = { imgEl: null, nombre: '', subfila: '', eslogan: '', precio: '', precioAnterior: '', moneda: 'USD', detalle: '', stock: '', url: 'tiendamax.org', tema: 'oscuro', badges: [{emoji:'🛡️',label:'Seguro'},{emoji:'🛵',label:'Envío'},{emoji:'✅',label:'Garantía'}], _logoEl: null, _drawTimer: null, _productoId: '' };
 
 const $ = (s,r=document)=>r.querySelector(s);
 const $$ = (s,r=document)=>Array.from(r.querySelectorAll(s));
@@ -338,7 +343,7 @@ function updateBubble(){
   if (crit) { b.classList.remove('tm-copilot-pulse'); void b.offsetWidth; b.classList.add('tm-copilot-pulse'); }
 }
 function tabsHtml(view){
-  const tabs=[['hoy','✅ Hoy'],['agentes','🤖 Agentes'],['marketing','📣 Marketing'],['promo','🎨 Promo'],['memoria','🧠 Memoria']];
+  const tabs=[['hoy','✅ Hoy'],['agentes','🤖 Agentes'],['marketing','📣 Marketing'],['memoria','🧠 Memoria']];
   return `<div class="tm-copilot-tabs">${tabs.map(t=>`<button type="button" class="tm-copilot-tab ${view===t[0]?'active':''}" data-cop="view" data-view="${t[0]}">${t[1]}</button>`).join('')}</div>`;
 }
 function renderToday(topTasks){
@@ -365,6 +370,35 @@ function renderMemory(){
   <div class="tm-copilot-smart"><h4>Historial reciente</h4>${actions.slice(0,8).map(a=>`<div class="tm-copilot-rank-row"><span>${esc(a.type)} ${a.productName?'· '+esc(a.productName):''}</span><em>${ago(a.ts)}</em></div>`).join('')||'<div class="tm-copilot-empty">El agente aprenderá cuando guardes campañas o marques acciones.</div>'}</div>`;
 }
 // ── PROMO ─────────────────────────────────────────────────────────
+function promoParseChips(text) {
+  return text.split(/[|\n]/).map(s => s.trim()).filter(Boolean).slice(0, 9);
+}
+function promoSetProduct(id) {
+  const p = products().find(x => String(x.id) === String(id));
+  if (!p) return;
+  promoData._productoId = String(id);
+  promoData.nombre = (p.nombre || '').toUpperCase();
+  promoData.subfila = p.garantia ? 'Garantía ' + p.garantia : (p.categoria || '');
+  promoData.eslogan = '';
+  promoData.precio = String(p.precioActual || '');
+  promoData.precioAnterior = (parseFloat(p.precioOriginal) > 0 && parseFloat(p.precioOriginal) > parseFloat(p.precioActual)) ? String(p.precioOriginal) : '';
+  promoData.moneda = 'USD';
+  promoData.stock = String(p.stock || '');
+  promoData.url = 'tiendamax.org/p/producto-' + p.id + '.html';
+  promoData.detalle = (p.descripcion || '');
+  const map = {
+    tmPromoNombre:'nombre', tmPromoSubfila:'subfila', tmPromoEslogan:'eslogan',
+    tmPromoPrecio:'precio', tmPromoPrecioAnt:'precioAnterior',
+    tmPromoDetalle:'detalle', tmPromoUrl:'url', tmPromoStock:'stock'
+  };
+  Object.entries(map).forEach(([elId, key]) => { const el = document.getElementById(elId); if(el) el.value = promoData[key]||''; });
+  if (p.imagen) {
+    const img = new Image(); img.crossOrigin = 'anonymous';
+    img.onload = () => { promoData.imgEl = img; promoScheduleDraw(); };
+    img.onerror = () => promoScheduleDraw();
+    img.src = p.imagen;
+  } else { promoScheduleDraw(); }
+}
 function promoWrapText(ctx, text, maxW) {
   const words = text.split(/\s+/).filter(Boolean);
   const lines = []; let line = '';
@@ -394,109 +428,258 @@ async function promoLoadLogo() {
     img.src = '/iconos/icon-192.png';
   });
 }
+function promoDrawBagBg(ctx, W, H, accent, textColor) {
+  const bagW = W * 0.78, bH = bagW * 1.18;
+  const cx = W * 0.72, cy = H * 0.54;
+  const bx = cx - bagW / 2, by = cy - bH / 2;
+  ctx.save();
+  ctx.globalAlpha = 0.07;
+  const hcx1 = bx + bagW * 0.3, hcx2 = bx + bagW * 0.7;
+  const hcy = by + bagW * 0.06, hrx = bagW * 0.11, hry = bagW * 0.22;
+  ctx.lineWidth = bagW * 0.065; ctx.lineCap = 'round'; ctx.strokeStyle = accent;
+  [hcx1, hcx2].forEach(hx => {
+    ctx.beginPath(); ctx.ellipse(hx, hcy, hrx, hry, 0, Math.PI, 0, false); ctx.stroke();
+  });
+  promoRoundRect(ctx, bx, by + bagW * 0.14, bagW, bH * 0.86, bagW * 0.072);
+  ctx.fillStyle = accent; ctx.fill();
+  ctx.globalAlpha = 0.10;
+  ctx.font = `900 ${bagW * 0.55}px 'Arial Black', Arial, sans-serif`;
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillStyle = textColor;
+  ctx.fillText('M', cx, by + bagW * 0.14 + bH * 0.86 * 0.52);
+  ctx.restore();
+}
+function promoDrawChips(ctx, chips, startX, startY, maxW, accent, isDark) {
+  if (!chips.length) return startY;
+  const fs = 32, padX = 26, padY = 16, chipH = fs + padY * 2, gap = 14;
+  ctx.font = `600 ${fs}px Arial, sans-serif`;
+  let x = startX, y = startY;
+  chips.forEach(chip => {
+    const cw = ctx.measureText(chip).width + padX * 2;
+    if (x + cw > startX + maxW && x > startX) { x = startX; y += chipH + gap; }
+    promoRoundRect(ctx, x, y, cw, chipH, chipH / 2);
+    ctx.fillStyle = isDark ? 'rgba(18,8,2,0.88)' : 'rgba(35,12,0,0.85)'; ctx.fill();
+    promoRoundRect(ctx, x, y, cw, chipH, chipH / 2);
+    ctx.strokeStyle = accent; ctx.lineWidth = 2.5; ctx.stroke();
+    ctx.fillStyle = isDark ? 'rgba(255,255,255,0.92)' : '#fff';
+    ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+    ctx.fillText(chip, x + padX, y + chipH / 2);
+    x += cw + gap;
+  });
+  ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic';
+  return y + chipH;
+}
 async function drawPromo() {
   const canvas = document.getElementById('tmPromoCanvas'); if (!canvas) return;
   const ctx = canvas.getContext('2d');
   const W = 1080, H = 1920;
   canvas.width = W; canvas.height = H;
   const d = promoData, tema = d.tema || 'oscuro';
-  const textColor = tema === 'claro' ? '#1a1a2e' : '#ffffff';
+  const isDark = tema !== 'claro';
+  const textColor = isDark ? '#ffffff' : '#1a1008';
   const accent = '#f45e1f';
 
-  // Background
+  // ── Background ──
   if (tema === 'oscuro') {
     const gr = ctx.createLinearGradient(0, 0, 0, H);
-    gr.addColorStop(0, '#0f0f14'); gr.addColorStop(.35, '#1e0d05'); gr.addColorStop(.65, '#2d1208'); gr.addColorStop(1, '#0f0f14');
+    gr.addColorStop(0, '#0d0d12'); gr.addColorStop(0.4, '#1c0b04'); gr.addColorStop(0.7, '#260e06'); gr.addColorStop(1, '#0d0d12');
     ctx.fillStyle = gr; ctx.fillRect(0, 0, W, H);
-    const glow = ctx.createRadialGradient(W/2, H*.5, 0, W/2, H*.5, W*.75);
-    glow.addColorStop(0, 'rgba(244,94,31,.22)'); glow.addColorStop(1, 'rgba(244,94,31,0)');
+    const glow = ctx.createRadialGradient(W*0.55, H*0.55, 0, W*0.55, H*0.55, W*0.8);
+    glow.addColorStop(0, 'rgba(244,94,31,.18)'); glow.addColorStop(1, 'rgba(244,94,31,0)');
     ctx.fillStyle = glow; ctx.fillRect(0, 0, W, H);
   } else if (tema === 'naranja') {
     const gr = ctx.createLinearGradient(0, 0, 0, H);
-    gr.addColorStop(0, '#b83000'); gr.addColorStop(.5, '#f45e1f'); gr.addColorStop(1, '#b83000');
+    gr.addColorStop(0, '#8c2200'); gr.addColorStop(0.5, '#c94400'); gr.addColorStop(1, '#8c2200');
     ctx.fillStyle = gr; ctx.fillRect(0, 0, W, H);
+    const grain = ctx.createRadialGradient(W*0.3, H*0.3, 0, W*0.3, H*0.3, W);
+    grain.addColorStop(0, 'rgba(255,180,80,.12)'); grain.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = grain; ctx.fillRect(0, 0, W, H);
   } else {
-    ctx.fillStyle = '#f2f2f2'; ctx.fillRect(0, 0, W, H);
-    const gr2 = ctx.createRadialGradient(W/2, H*.4, 0, W/2, H*.4, W*.7);
-    gr2.addColorStop(0, 'rgba(244,94,31,.06)'); gr2.addColorStop(1, 'transparent');
-    ctx.fillStyle = gr2; ctx.fillRect(0, 0, W, H);
+    const gr = ctx.createLinearGradient(0, 0, 0, H);
+    gr.addColorStop(0, '#f7f3ee'); gr.addColorStop(1, '#ede5d8');
+    ctx.fillStyle = gr; ctx.fillRect(0, 0, W, H);
+    const grain2 = ctx.createRadialGradient(W*0.5, H*0.4, 0, W*0.5, H*0.4, W*0.8);
+    grain2.addColorStop(0, 'rgba(244,94,31,.07)'); grain2.addColorStop(1, 'transparent');
+    ctx.fillStyle = grain2; ctx.fillRect(0, 0, W, H);
   }
 
-  // Logo
+  // ── Bag watermark (faint background) ──
+  promoDrawBagBg(ctx, W, H, accent, isDark ? '#ffffff' : '#1a1008');
+
+  // ── Logo top-center ──
   const logo = await promoLoadLogo();
-  const logoSize = 138;
+  const logoSz = 100, logoY = 62;
+  const logoX = (W - logoSz) / 2;
   if (logo) {
-    ctx.drawImage(logo, (W - logoSize) / 2, 78, logoSize, logoSize);
+    ctx.save();
+    promoRoundRect(ctx, logoX, logoY, logoSz, logoSz, 22);
+    ctx.clip(); ctx.drawImage(logo, logoX, logoY, logoSz, logoSz);
+    ctx.restore();
   } else {
-    promoRoundRect(ctx, (W-logoSize)/2, 78, logoSize, logoSize, 30);
+    promoRoundRect(ctx, logoX, logoY, logoSz, logoSz, 22);
     ctx.fillStyle = accent; ctx.fill();
-    ctx.fillStyle = '#fff'; ctx.font = 'bold 80px sans-serif';
+    ctx.fillStyle = '#fff'; ctx.font = 'bold 64px sans-serif';
     ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-    ctx.fillText('M', W/2, 78 + logoSize/2); ctx.textBaseline = 'alphabetic';
+    ctx.fillText('M', W/2, logoY + logoSz/2); ctx.textBaseline = 'alphabetic';
   }
 
-  // Top accent line
-  ctx.strokeStyle = accent; ctx.lineWidth = 6;
-  ctx.beginPath(); ctx.moveTo(108, 252); ctx.lineTo(W-108, 252); ctx.stroke();
+  // ── Top separator ──
+  ctx.strokeStyle = accent; ctx.lineWidth = 5;
+  ctx.beginPath(); ctx.moveTo(80, logoY + logoSz + 28); ctx.lineTo(W - 80, logoY + logoSz + 28); ctx.stroke();
 
-  // Product title
-  ctx.textAlign = 'center'; ctx.fillStyle = textColor;
-  const nombre = (d.nombre || 'Producto Destacado').toUpperCase();
-  const fs = nombre.length > 40 ? 64 : nombre.length > 24 ? 74 : 84;
-  ctx.font = `bold ${fs}px sans-serif`;
-  const titleLines = promoWrapText(ctx, nombre, W - 120);
-  let titleY = 314;
-  titleLines.slice(0, 3).forEach(line => { ctx.fillText(line, W/2, titleY); titleY += fs * 1.2; });
+  // ── Title block ──
+  const titleX = 80, titleMaxW = W - 160;
+  let titleY = logoY + logoSz + 72;
 
-  // Product image (white rounded box)
-  const imgAreaY = Math.min(titleY + 36, 620);
-  const imgSize = 840, imgX = (W - imgSize) / 2;
-  promoRoundRect(ctx, imgX, imgAreaY, imgSize, imgSize, 44);
-  ctx.fillStyle = '#fff'; ctx.fill();
+  const nombre = (d.nombre || 'PRODUCTO DESTACADO').toUpperCase();
+  const fsN = nombre.length > 32 ? 56 : nombre.length > 20 ? 64 : 72;
+  ctx.font = `800 ${fsN}px 'Arial Black', Arial, sans-serif`;
+  ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic'; ctx.fillStyle = accent;
+  promoWrapText(ctx, nombre, titleMaxW).slice(0, 2).forEach(line => { ctx.fillText(line, titleX, titleY); titleY += fsN * 1.18; });
+
+  if (d.subfila) {
+    titleY += 4;
+    ctx.font = '500 44px Arial, sans-serif';
+    ctx.fillStyle = isDark ? 'rgba(255,255,255,0.55)' : 'rgba(0,0,0,0.45)';
+    ctx.fillText(d.subfila, titleX, titleY); titleY += 58;
+  }
+
+  const eslogan = (d.eslogan || '').toUpperCase();
+  if (eslogan) {
+    titleY += 6;
+    const fsE = eslogan.length > 40 ? 62 : eslogan.length > 26 ? 72 : 82;
+    ctx.font = `900 ${fsE}px 'Arial Black', Arial, sans-serif`;
+    ctx.fillStyle = textColor;
+    promoWrapText(ctx, eslogan, titleMaxW).slice(0, 3).forEach(line => { ctx.fillText(line, titleX, titleY); titleY += fsE * 1.14; });
+  }
+
+  titleY = Math.min(titleY, 620);
+
+  // ── Product photo (narrower to reveal bag watermark on sides) ──
+  const phPad = 100, phX = phPad, phW = W - phPad * 2;
+  const phY = titleY + 28;
+  const phH = Math.max(260, Math.min(Math.round(phW * 0.68), 560, 1130 - phY));
 
   if (d.imgEl) {
     ctx.save();
-    promoRoundRect(ctx, imgX, imgAreaY, imgSize, imgSize, 44);
-    ctx.clip();
-    const sc = Math.min(imgSize * .9 / d.imgEl.naturalWidth, imgSize * .9 / d.imgEl.naturalHeight);
-    ctx.drawImage(d.imgEl, imgX + (imgSize - d.imgEl.naturalWidth * sc)/2, imgAreaY + (imgSize - d.imgEl.naturalHeight * sc)/2, d.imgEl.naturalWidth * sc, d.imgEl.naturalHeight * sc);
+    ctx.shadowColor = 'rgba(0,0,0,0.6)'; ctx.shadowBlur = 60; ctx.shadowOffsetY = 24;
+    promoRoundRect(ctx, phX, phY, phW, phH, 40); ctx.clip();
+    const sc = Math.max(phW / d.imgEl.naturalWidth, phH / d.imgEl.naturalHeight);
+    const iw = d.imgEl.naturalWidth * sc, ih = d.imgEl.naturalHeight * sc;
+    ctx.drawImage(d.imgEl, phX + (phW - iw) / 2, phY + (phH - ih) / 2, iw, ih);
     ctx.restore();
   } else {
-    ctx.fillStyle = 'rgba(130,130,130,.3)'; ctx.font = '52px sans-serif'; ctx.textAlign = 'center';
-    ctx.fillText('📷  Sube la foto del producto', W/2, imgAreaY + imgSize/2 + 20);
+    ctx.save();
+    promoRoundRect(ctx, phX, phY, phW, phH, 40);
+    ctx.fillStyle = isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.06)'; ctx.fill();
+    ctx.fillStyle = isDark ? 'rgba(255,255,255,0.22)' : 'rgba(0,0,0,0.2)';
+    ctx.font = '80px sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText('📷', W / 2, phY + phH / 2 - 30);
+    ctx.font = '500 40px Arial, sans-serif'; ctx.textBaseline = 'alphabetic';
+    ctx.fillText('Elige un producto o sube la foto', W / 2, phY + phH / 2 + 50);
+    ctx.restore();
   }
 
-  // Price badge (overlapping bottom-right of image)
-  const bW = 330, bH = 174, bX = imgX + imgSize - bW + 18, bY = imgAreaY + imgSize - bH + 18;
-  promoRoundRect(ctx, bX, bY, bW, bH, 22);
-  ctx.fillStyle = tema === 'claro' ? '#1a1a2e' : 'rgba(12,12,18,.9)'; ctx.fill();
-  ctx.strokeStyle = accent; ctx.lineWidth = 5;
-  promoRoundRect(ctx, bX, bY, bW, bH, 22); ctx.stroke();
-  ctx.fillStyle = accent; ctx.font = 'bold 88px sans-serif'; ctx.textAlign = 'center';
-  ctx.fillText('$' + (d.precio || '0'), bX + bW/2, bY + 96);
-  ctx.fillStyle = '#bbb'; ctx.font = 'bold 36px sans-serif';
-  ctx.fillText(d.moneda || 'USD', bX + bW/2, bY + 150);
+  let curY = phY + phH + 40;
 
-  // Detalle
-  if (d.detalle) {
-    ctx.fillStyle = textColor; ctx.font = '500 46px sans-serif'; ctx.textAlign = 'center';
-    ctx.fillText(d.detalle.toUpperCase(), W/2, imgAreaY + imgSize + 70);
+  // ── Spec chips ──
+  const chips = promoParseChips(d.detalle || '');
+  if (chips.length) curY = promoDrawChips(ctx, chips, phX, curY, phW, accent, isDark) + 36;
+
+  // ── Price ──
+  if (d.precio) {
+    const moneda = d.moneda || 'USD';
+    const precioStr = moneda + ' $' + d.precio;
+    const pFs = precioStr.length > 10 ? 80 : precioStr.length > 7 ? 92 : 108;
+    ctx.font = `900 ${pFs}px 'Arial Black', Arial, sans-serif`;
+    ctx.fillStyle = accent; ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic';
+    const pBaseY = curY + pFs;
+    ctx.fillText(precioStr, W / 2, pBaseY);
+    if (d.precioAnterior) {
+      const antStr = moneda + ' $' + d.precioAnterior;
+      const antFs = 54;
+      ctx.font = `500 ${antFs}px Arial, sans-serif`;
+      ctx.fillStyle = 'rgba(200,200,200,0.65)';
+      const antW2 = ctx.measureText(antStr).width;
+      const antBaseY = pBaseY + antFs + 18;
+      ctx.fillText(antStr, W / 2, antBaseY);
+      ctx.strokeStyle = 'rgba(200,200,200,0.65)'; ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(W / 2 - antW2 / 2, antBaseY - antFs * 0.36);
+      ctx.lineTo(W / 2 + antW2 / 2, antBaseY - antFs * 0.36);
+      ctx.stroke();
+      curY = antBaseY + 36;
+    } else {
+      curY = pBaseY + 36;
+    }
   }
 
-  // Footer
+  // ── URL (ensure it stays above the badge strip) ──
+  curY = Math.min(curY, H - 360);
+  const url = d.url || 'tiendamax.org';
+  ctx.fillStyle = accent;
+  ctx.font = `700 ${url.length > 28 ? 44 : url.length > 20 ? 52 : 58}px Arial, sans-serif`;
+  ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic';
+  ctx.fillText(url, W / 2, curY + 62);
+  curY += 84;
+
+  // ── Bottom separator ──
+  const sepY = Math.max(curY + 16, H - 248);
   ctx.strokeStyle = accent; ctx.lineWidth = 5;
-  ctx.beginPath(); ctx.moveTo(108, H - 138); ctx.lineTo(W-108, H-138); ctx.stroke();
-  ctx.fillStyle = tema === 'claro' ? '#666' : 'rgba(255,255,255,.78)';
-  ctx.font = '40px sans-serif'; ctx.textAlign = 'center';
-  ctx.fillText(d.footer || 'Oferta Exclusiva · Solo en tiendamax.org', W/2, H - 78);
+  ctx.beginPath(); ctx.moveTo(80, sepY); ctx.lineTo(W - 80, sepY); ctx.stroke();
+
+  // ── Badge footer (3 configurable slots) ──
+  const badgeY = sepY + 48;
+  const colW = (W - 160) / 3;
+  const colMids = [80 + colW / 2, W / 2, W - 80 - colW / 2];
+  const badges = (d.badges && d.badges.length === 3) ? d.badges
+    : [{emoji:'🛡️',label:'Seguro'},{emoji:'🛵',label:'Envío'},{emoji:'✅',label:'Garantía'}];
+  ctx.textAlign = 'center';
+  badges.forEach((badge, i) => {
+    if (!badge || (!badge.emoji && !badge.label)) return;
+    if (badge.emoji) {
+      ctx.font = '74px sans-serif'; ctx.textBaseline = 'middle';
+      ctx.fillText(badge.emoji, colMids[i], badgeY + 42);
+    }
+    if (badge.label) {
+      ctx.font = `600 ${badge.label.length > 12 ? 32 : 38}px Arial, sans-serif`;
+      ctx.fillStyle = isDark ? 'rgba(255,255,255,0.88)' : 'rgba(0,0,0,0.75)';
+      ctx.textBaseline = 'alphabetic';
+      ctx.fillText(badge.label, colMids[i], badgeY + 106);
+    }
+  });
+
+  ctx.strokeStyle = accent; ctx.lineWidth = 4;
+  ctx.beginPath(); ctx.moveTo(80, H - 44); ctx.lineTo(W - 80, H - 44); ctx.stroke();
 }
 function promoScheduleDraw() { clearTimeout(promoData._drawTimer); promoData._drawTimer = setTimeout(drawPromo, 100); }
 function addPromoListeners() {
-  const fields = { tmPromoNombre:'nombre', tmPromoPrecio:'precio', tmPromoMoneda:'moneda', tmPromoDetalle:'detalle', tmPromoFooter:'footer' };
+  const fields = {
+    tmPromoNombre:'nombre', tmPromoSubfila:'subfila', tmPromoEslogan:'eslogan',
+    tmPromoPrecio:'precio', tmPromoPrecioAnt:'precioAnterior', tmPromoMoneda:'moneda',
+    tmPromoDetalle:'detalle', tmPromoUrl:'url', tmPromoStock:'stock'
+  };
   Object.entries(fields).forEach(([id, key]) => {
     const el = document.getElementById(id);
     if (el) el.addEventListener('input', () => { promoData[key] = el.value; promoScheduleDraw(); });
   });
+  // Badge selectors
+  [0, 1, 2].forEach(i => {
+    const selEl = document.getElementById('tmPromoBadgeSel' + i);
+    const lblEl = document.getElementById('tmPromoBadgeLbl' + i);
+    if (selEl) selEl.addEventListener('change', () => {
+      const [emoji, ...rest] = selEl.value.split('|');
+      promoData.badges[i] = { emoji, label: rest.join('|') };
+      if (lblEl) lblEl.value = rest.join('|');
+      promoScheduleDraw();
+    });
+    if (lblEl) lblEl.addEventListener('input', () => {
+      promoData.badges[i] = { emoji: promoData.badges[i]?.emoji || '', label: lblEl.value };
+      promoScheduleDraw();
+    });
+  });
+  const sel = document.getElementById('tmPromoProductoSel');
+  if (sel) sel.addEventListener('change', () => { if (sel.value) promoSetProduct(sel.value); });
   const imgInp = document.getElementById('tmPromoImgInput');
   if (imgInp) imgInp.addEventListener('change', () => {
     const file = imgInp.files && imgInp.files[0]; if (!file) return;
@@ -507,25 +690,41 @@ function addPromoListeners() {
         promoData.imgEl = img; drawPromo();
         const btn = document.querySelector('[data-cop="promoPickImg"]');
         if (btn) btn.textContent = '✅ Foto cargada — Cambiar imagen';
+        if (btn) btn.className = btn.className.replace('blue','green');
       };
       img.src = ev.target.result;
     };
     reader.readAsDataURL(file);
   });
 }
-function renderPromo() {
+function renderPromoImagen() {
   const d = promoData;
+  const prods = products();
+  const prodOpts = prods.length
+    ? prods.map(p => `<option value="${esc(String(p.id))}"${d._productoId===String(p.id)?' selected':''}>${esc(p.nombre||'#'+p.id)}</option>`).join('')
+    : '<option value="">— Sin productos —</option>';
   return `<div>
-    <div style="display:flex;justify-content:center;margin-bottom:12px;background:#000;border-radius:16px;overflow:hidden;min-height:200px">
+    <div style="display:flex;justify-content:center;margin-bottom:12px;background:#111;border-radius:16px;overflow:hidden;min-height:200px">
       <canvas id="tmPromoCanvas" style="width:200px;height:355px;display:block;flex-shrink:0" width="1080" height="1920"></canvas>
     </div>
     <div style="display:flex;flex-direction:column;gap:10px">
+      <div><div style="font-size:11px;color:#888;margin-bottom:4px">Producto del catálogo</div>
+        <select class="tm-promo-field" id="tmPromoProductoSel" style="width:100%">
+          <option value="">— Elegir producto —</option>
+          ${prodOpts}
+        </select></div>
       <input type="file" id="tmPromoImgInput" accept="image/*" style="display:none">
-      <button type="button" class="tm-copilot-btn ${d.imgEl?'green':'blue'}" data-cop="promoPickImg" style="width:100%">${d.imgEl ? '✅ Foto cargada — Cambiar imagen' : '📷 Elegir foto del producto (galería)'}</button>
-      <div><div style="font-size:11px;color:#888;margin-bottom:4px">Nombre del producto</div>
-        <input class="tm-promo-field" id="tmPromoNombre" type="text" placeholder="Ej: Batería LiFePO4 100Ah" value="${esc(d.nombre)}"></div>
-      <div style="display:grid;grid-template-columns:1fr 90px;gap:8px">
-        <div><div style="font-size:11px;color:#888;margin-bottom:4px">Precio</div>
+      <button type="button" class="tm-copilot-btn ${d.imgEl?'green':'blue'}" data-cop="promoPickImg" style="width:100%">${d.imgEl ? '✅ Foto cargada — Cambiar imagen' : '📷 Cambiar foto del producto'}</button>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <div><div style="font-size:11px;color:#888;margin-bottom:4px">Nombre <span style="color:#f45e1f">●</span></div>
+          <input class="tm-promo-field" id="tmPromoNombre" type="text" placeholder="INVERSOR SOLAR 2KW" value="${esc(d.nombre)}"></div>
+        <div><div style="font-size:11px;color:#888;margin-bottom:4px">Subfila (garantía / categoría)</div>
+          <input class="tm-promo-field" id="tmPromoSubfila" type="text" placeholder="Garantía 12 meses" value="${esc(d.subfila||'')}"></div>
+      </div>
+      <div><div style="font-size:11px;color:#888;margin-bottom:4px">Eslogan (línea blanca, opcional)</div>
+        <input class="tm-promo-field" id="tmPromoEslogan" type="text" placeholder="POTENCIA PURA Y CONFIABILIDAD SIN IGUAL" value="${esc(d.eslogan)}"></div>
+      <div style="display:grid;grid-template-columns:1fr 80px 1fr;gap:8px">
+        <div><div style="font-size:11px;color:#888;margin-bottom:4px">Precio actual</div>
           <input class="tm-promo-field" id="tmPromoPrecio" type="text" placeholder="300" value="${esc(d.precio)}"></div>
         <div><div style="font-size:11px;color:#888;margin-bottom:4px">Moneda</div>
           <select class="tm-promo-field" id="tmPromoMoneda">
@@ -533,26 +732,52 @@ function renderPromo() {
             <option${d.moneda==='CUP'?' selected':''}>CUP</option>
             <option${d.moneda==='MLC'?' selected':''}>MLC</option>
           </select></div>
+        <div><div style="font-size:11px;color:#888;margin-bottom:4px">Precio anterior</div>
+          <input class="tm-promo-field" id="tmPromoPrecioAnt" type="text" placeholder="350" value="${esc(d.precioAnterior||'')}"></div>
       </div>
-      <div><div style="font-size:11px;color:#888;margin-bottom:4px">Detalle / modelo (opcional)</div>
-        <input class="tm-promo-field" id="tmPromoDetalle" type="text" placeholder="Ej: 100Ah | 12V | LiFePO4" value="${esc(d.detalle)}"></div>
-      <div><div style="font-size:11px;color:#888;margin-bottom:4px">Pie de imagen</div>
-        <input class="tm-promo-field" id="tmPromoFooter" type="text" placeholder="Oferta Exclusiva · Solo en tiendamax.org" value="${esc(d.footer)}"></div>
+      <div><div style="font-size:11px;color:#888;margin-bottom:4px">Especificaciones (separa con | o salto de línea)</div>
+        <textarea class="tm-promo-field" id="tmPromoDetalle" rows="3" placeholder="ONDA SENOIDAL PURA&#10;CARGA 2000W&#10;24V/48V" style="resize:vertical;line-height:1.4">${esc(d.detalle)}</textarea></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <div><div style="font-size:11px;color:#888;margin-bottom:4px">Stock disponible</div>
+          <input class="tm-promo-field" id="tmPromoStock" type="text" placeholder="5" value="${esc(d.stock||'')}"></div>
+        <div><div style="font-size:11px;color:#888;margin-bottom:4px">URL del producto</div>
+          <input class="tm-promo-field" id="tmPromoUrl" type="text" placeholder="tiendamax.org/p/producto-1.html" value="${esc(d.url||'tiendamax.org')}"></div>
+      </div>
+      <div>
+        <div style="font-size:11px;color:#888;margin-bottom:6px">Badges del pie — ícono + texto</div>
+        ${[0,1,2].map(i => {
+          const b = (d.badges && d.badges[i]) || {emoji:'',label:''};
+          const matchVal = PROMO_BADGE_PRESETS.find(([e,l]) => e===b.emoji && l===b.label);
+          const selVal = matchVal ? matchVal[0]+'|'+matchVal[1] : (b.emoji+'|'+b.label);
+          return `<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:6px">
+            <select class="tm-promo-field" id="tmPromoBadgeSel${i}">
+              ${PROMO_BADGE_PRESETS.map(([e,l]) => `<option value="${esc(e+'|'+l)}"${(e+'|'+l)===selVal?' selected':''}>${e} ${l}</option>`).join('')}
+            </select>
+            <input class="tm-promo-field" id="tmPromoBadgeLbl${i}" type="text" placeholder="Etiqueta" value="${esc(b.label||'')}">
+          </div>`;
+        }).join('')}
+      </div>
       <div><div style="font-size:11px;color:#888;margin-bottom:6px">Tema</div>
         <div style="display:flex;gap:6px">
-          ${[['oscuro','#141422','#fff'],['naranja','#f45e1f','#fff'],['claro','#ebebeb','#333']].map(([t,bg,fg])=>`<button type="button" class="tm-copilot-btn" data-cop="promoTema" data-tema="${t}" style="background:${bg};color:${fg};flex:1;border:2px solid ${d.tema===t?'rgba(255,255,255,.7)':'rgba(255,255,255,.1)'}">${t.charAt(0).toUpperCase()+t.slice(1)}</button>`).join('')}
+          ${[['oscuro','#141422','#fff'],['naranja','#c94400','#fff'],['claro','#ede5d8','#333']].map(([t,bg,fg])=>`<button type="button" class="tm-copilot-btn" data-cop="promoTema" data-tema="${t}" style="background:${bg};color:${fg};flex:1;border:2px solid ${d.tema===t?'rgba(255,255,255,.7)':'rgba(255,255,255,.1)'}">${t.charAt(0).toUpperCase()+t.slice(1)}</button>`).join('')}
         </div>
       </div>
       <button type="button" class="tm-copilot-btn primary" data-cop="promoDownload" style="padding:14px;margin-top:4px">⬇️ Descargar imagen (1080×1920)</button>
     </div>
   </div>`;
 }
+// Monta el generador de Promo dentro del panel admin de Publicación (sub-tab Promo)
+window.pubMountPromo = function() {
+  const root = document.getElementById('tmPromoAdminRoot');
+  if (!root || root.querySelector('#tmPromoCanvas')) return;
+  root.innerHTML = renderPromoImagen();
+  setTimeout(() => { addPromoListeners(); drawPromo(); }, 80);
+};
 // ── FIN PROMO ──────────────────────────────────────────────────────
 
 function renderCopilotView(view, topTasks){
   if(view==='agentes') return renderAgents();
   if(view==='marketing') return renderMarketing();
-  if(view==='promo') return renderPromo();
   if(view==='memoria') return renderMemory();
   return renderToday(topTasks);
 }
@@ -577,7 +802,7 @@ function renderSheet(){
     </div>
     ${tabsHtml(view)}
     ${renderCopilotView(view, topTasks)}`;
-  if (view === 'promo') setTimeout(() => { addPromoListeners(); drawPromo(); }, 120);
+  // promo canvas is mounted in admin publicacion tab via window.pubMountPromo
 }
 function taskHtml(t){
   return `<div class="tm-copilot-task u${t.urgency}" data-id="${esc(t.id)}">

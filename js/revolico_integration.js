@@ -888,27 +888,18 @@ function cerrarRevSelector() {
 
         const cats = [...new Set(todos.map(p => p.categoria).filter(Boolean))].sort();
 
-        // Stats
-        const pubHoy = todos.filter(p => { const t = _getLastPub(p.id); return t && Date.now() - t < 86400000; }).length;
-        const sinPub = todos.filter(p => !_getLastPub(p.id) && p.stock > 0).length;
-        const pubSem = todos.filter(p => { const t = _getLastPub(p.id); return t && Date.now() - t < 604800000; }).length;
-
         root.innerHTML = `
 <style>
-.tm-pub-stats{display:flex;gap:8px;margin-bottom:14px}
-.tm-pub-stat{flex:1;background:#1a1a23;border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:10px;text-align:center}
-.tm-pub-stat .v{font-size:20px;font-weight:800;color:#FF6B35}
-.tm-pub-stat .l{font-size:10px;color:#555;margin-top:2px}
-.tm-pub-cats{display:flex;gap:7px;flex-wrap:nowrap;overflow-x:auto;padding-bottom:6px;scrollbar-width:none;margin-bottom:10px}
+.tm-pub-cats{display:flex!important;gap:7px!important;flex-wrap:nowrap!important;overflow-x:auto!important;padding-bottom:6px;scrollbar-width:none;margin-bottom:10px}
 .tm-pub-cats::-webkit-scrollbar{display:none}
-.tm-pub-chip{border:1px solid #333;border-radius:20px;padding:5px 13px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;background:#1a1a25;color:#888;flex-shrink:0;transition:all .15s}
-.tm-pub-chip.on{background:#FF6B35;border-color:#FF6B35;color:#fff}
+.tm-pub-chip{display:inline-block!important;border:1px solid #333!important;border-radius:20px!important;padding:5px 13px!important;font-size:11px!important;font-weight:700!important;cursor:pointer!important;white-space:nowrap!important;background:#1a1a25!important;color:#888!important;flex-shrink:0!important;min-height:auto!important;width:auto!important;transition:all .15s}
+.tm-pub-chip.on{background:#FF6B35!important;border-color:#FF6B35!important;color:#fff!important}
 .tm-pub-search{position:relative;margin-bottom:10px}
-.tm-pub-search input{width:100%;background:#1a1a25;border:1px solid rgba(255,255,255,.08);border-radius:10px;color:#f0f0f0;font-size:13px;padding:10px 14px 10px 36px;outline:none}
+.tm-pub-search input{width:100%!important;min-height:auto!important;height:38px!important;background:#1a1a25;border:1px solid rgba(255,255,255,.08);border-radius:10px;color:#f0f0f0;font-size:13px;padding:8px 14px 8px 36px;outline:none}
 .tm-pub-search input::placeholder{color:#444}
 .tm-pub-search .si{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:#444;font-size:14px;pointer-events:none}
 .tm-pub-acc{background:#1a1a23;border:1px solid rgba(255,255,255,.08);border-radius:14px;margin-bottom:10px;overflow:hidden}
-.tm-pub-acc-btn{width:100%;background:none;border:none;color:#f0f0f0;padding:13px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;font-size:14px;font-weight:700;gap:10px}
+.tm-pub-acc-btn{width:100%;background:none;border:none;min-height:auto;color:#f0f0f0;padding:12px 16px;display:flex!important;align-items:center;justify-content:space-between;cursor:pointer;font-size:14px;font-weight:700;gap:10px}
 .tm-pub-acc-btn:hover{background:rgba(255,255,255,.03)}
 .tm-pub-acc-left{display:flex;align-items:center;gap:10px}
 .tm-pub-badge{font-size:11px;font-weight:800;padding:2px 9px;border-radius:20px}
@@ -918,33 +909,23 @@ function cerrarRevSelector() {
 .tm-pub-acc-btn.open .tm-pub-acc-arrow{transform:rotate(180deg)}
 .tm-pub-acc-body{display:none;border-top:1px solid rgba(255,255,255,.07)}
 .tm-pub-acc-body.open{display:block}
-.tm-pub-row{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,.04);transition:background .15s}
+.tm-pub-row{display:flex!important;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,.04);transition:background .15s}
 .tm-pub-row:last-child{border-bottom:none}
 .tm-pub-row:hover{background:rgba(255,255,255,.02)}
-.tm-pub-thumb{width:50px;height:50px;border-radius:10px;background:#252535;flex-shrink:0;object-fit:cover;display:flex;align-items:center;justify-content:center;font-size:22px}
+.tm-pub-thumb{width:46px;height:46px;border-radius:9px;background:#252535;flex-shrink:0;object-fit:cover;display:flex;align-items:center;justify-content:center;font-size:20px}
 .tm-pub-info{flex:1;min-width:0}
 .tm-pub-nom{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.tm-pub-meta{display:flex;align-items:center;gap:6px;margin-top:4px;flex-wrap:wrap}
-.tm-pub-cat{font-size:10px;background:#1f2535;border:1px solid #3a4a6a;color:#7da4d8;padding:1px 7px;border-radius:10px;white-space:nowrap}
-.tm-pub-precio{font-size:10px;color:#666}
-.tm-pub-last{font-size:9px;color:#3a3a50;margin-top:2px}
-.tm-pub-last.r{color:#e67e22}
-.tm-pub-btns{display:flex;gap:5px;flex-shrink:0;flex-direction:column;align-items:flex-end}
-.tm-pub-btnrow{display:flex;gap:5px}
-.sh-b{border:none;border-radius:7px;font-size:10px;font-weight:700;cursor:pointer;padding:6px 9px;white-space:nowrap;transition:transform .1s}
+.tm-pub-precio{font-size:11px;color:#777;margin-top:2px}
+.tm-pub-btns{display:flex!important;gap:5px;flex-shrink:0;flex-direction:column;align-items:flex-end}
+.tm-pub-btnrow{display:flex!important;gap:5px}
+.sh-b{border:none!important;border-radius:7px!important;font-size:10px!important;font-weight:700!important;cursor:pointer!important;padding:6px 9px!important;white-space:nowrap!important;min-height:auto!important;width:auto!important;transition:transform .1s}
 .sh-b:active{transform:scale(.92)}
-.sh-b.wa{background:rgba(37,211,102,.15);border:1px solid rgba(37,211,102,.3);color:#4ade80}
-.sh-b.fb{background:rgba(59,89,152,.2);border:1px solid rgba(59,89,152,.4);color:#93c5fd}
-.sh-b.fb.sg{background:rgba(96,165,250,.15);border:1px solid rgba(96,165,250,.4);color:#60a5fa;max-width:100px;overflow:hidden;text-overflow:ellipsis}
-.sh-b.fg{background:#111;border:1px solid #333;color:#555;font-size:9px}
-.sh-b.rv{background:rgba(230,126,34,.15);border:1px solid rgba(230,126,34,.35);color:#fb923c}
+.sh-b.wa{background:rgba(37,211,102,.15)!important;border:1px solid rgba(37,211,102,.3)!important;color:#4ade80!important}
+.sh-b.fb{background:rgba(59,89,152,.2)!important;border:1px solid rgba(59,89,152,.4)!important;color:#93c5fd!important}
+.sh-b.fb.sg{background:rgba(96,165,250,.15)!important;border:1px solid rgba(96,165,250,.4)!important;color:#60a5fa!important;max-width:100px;overflow:hidden;text-overflow:ellipsis}
+.sh-b.fg{background:#111!important;border:1px solid #333!important;color:#555!important;font-size:9px!important}
+.sh-b.rv{background:rgba(230,126,34,.15)!important;border:1px solid rgba(230,126,34,.35)!important;color:#fb923c!important}
 </style>
-
-<div class="tm-pub-stats">
-  <div class="tm-pub-stat"><div class="v">${pubHoy}</div><div class="l">Hoy</div></div>
-  <div class="tm-pub-stat"><div class="v">${sinPub}</div><div class="l">Sin publicar</div></div>
-  <div class="tm-pub-stat"><div class="v">${pubSem}</div><div class="l">Esta semana</div></div>
-</div>
 
 <div class="tm-pub-cats" id="tmPubCats">
   <div class="tm-pub-chip on" onclick="tmPubFiltrarCat(this,'')">Todas</div>
@@ -1039,11 +1020,7 @@ function cerrarRevSelector() {
   ${imgEl}
   <div class="tm-pub-info">
     <div class="tm-pub-nom">${_escH(p.nombre || '')}</div>
-    <div class="tm-pub-meta">
-      <span class="tm-pub-cat">${_escH(p.categoria || '')}</span>
-      <span class="tm-pub-precio">${precioStr}</span>
-    </div>
-    <div class="tm-pub-last ${recentCls}">${lastTxt}</div>
+    <div class="tm-pub-precio">${precioStr}</div>
   </div>
   <div class="tm-pub-btns">
     <div class="tm-pub-btnrow">
@@ -1302,7 +1279,7 @@ function cerrarRevSelector() {
         const _prev = window.switchTab;
         window.switchTab = function (tab) {
             const r = _prev.apply(this, arguments);
-            if (tab === 'publicar-ahora') setTimeout(renderTabPublicar, 200);
+            if (tab === 'publicar-ahora' || tab === 'publicacion') setTimeout(renderTabPublicar, 400);
             return r;
         };
     }
@@ -1316,7 +1293,8 @@ function cerrarRevSelector() {
     }
     // También renderizar si el tab ya está activo al cargar
     setTimeout(() => {
-        if (document.getElementById('publicar-ahora')?.classList.contains('active')) {
+        if (document.getElementById('publicar-ahora')?.classList.contains('active') ||
+            document.getElementById('publicacion')?.classList.contains('active')) {
             renderTabPublicar();
         }
     }, 1200);

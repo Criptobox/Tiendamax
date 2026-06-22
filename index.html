@@ -57,20 +57,28 @@
     <meta name="referrer"                          content="strict-origin-when-cross-origin">
     <meta http-equiv="Permissions-Policy"          content="camera=(), microphone=(), geolocation=(), payment=()">
     <!-- Favicons completos para todos los navegadores y plataformas -->
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=5">
-    <link rel="icon" type="image/png" sizes="16x16"  href="/iconos/favicon-16.png?v=5">
-    <link rel="icon" type="image/png" sizes="32x32"  href="/iconos/favicon-32.png?v=5">
-    <link rel="icon" type="image/png" sizes="48x48"  href="/iconos/favicon-48.png?v=5">
-    <link rel="icon" type="image/png" sizes="96x96"  href="/iconos/favicon-96.png?v=5">
-    <link rel="icon" type="image/png" sizes="192x192" href="/iconos/favicon-192.png?v=5">
-    <link rel="icon" type="image/png" sizes="512x512" href="/iconos/favicon-512.png?v=5">
-    <link rel="shortcut icon" href="/favicon.ico?v=5">
-    <link rel="apple-touch-icon" sizes="180x180" href="/iconos/apple-touch-icon.png?v=5">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=2594774e">
+    <link rel="icon" type="image/png" sizes="16x16"  href="/iconos/favicon-16.png?v=b7afaaf2">
+    <link rel="icon" type="image/png" sizes="32x32"  href="/iconos/favicon-32.png?v=2a53b6e2">
+    <link rel="icon" type="image/png" sizes="48x48"  href="/iconos/favicon-48.png?v=fbd08faa">
+    <link rel="icon" type="image/png" sizes="96x96"  href="/iconos/favicon-96.png?v=610c7892">
+    <link rel="icon" type="image/png" sizes="192x192" href="/iconos/favicon-192.png?v=300374f9">
+    <link rel="icon" type="image/png" sizes="512x512" href="/iconos/favicon-512.png?v=712c0370">
+    <link rel="shortcut icon" href="/favicon.ico?v=63828358">
+    <link rel="apple-touch-icon" sizes="180x180" href="/iconos/apple-touch-icon.png?v=14435301">
     <meta name="msapplication-TileColor" content="#0D0D0D">
-    <meta name="msapplication-TileImage" content="/iconos/favicon-192.png?v=5">
+    <meta name="msapplication-TileImage" content="/iconos/favicon-192.png?v=300374f9">
     <link rel="manifest" href="/manifest.json">
 
-
+    <!-- Preconnect a servicios críticos: ahorra DNS + TCP + TLS en primera visita -->
+    <link rel="preconnect" href="https://firebase.googleapis.com" crossorigin>
+    <link rel="preconnect" href="https://www.googletagmanager.com">
+    <link rel="dns-prefetch" href="https://firebaseinstallations.googleapis.com">
+    <link rel="dns-prefetch" href="https://identitytoolkit.googleapis.com">
+    <link rel="dns-prefetch" href="https://fcm.googleapis.com">
+    <link rel="dns-prefetch" href="https://www.google-analytics.com">
+    <link rel="dns-prefetch" href="https://firebaseio.com">
+    <link rel="dns-prefetch" href="https://raw.githubusercontent.com">
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -128,13 +136,17 @@
     </script>
     
     <!-- Fuentes locales (evita requests externos a Google Fonts) -->
-    <link rel="stylesheet" href="css/fonts.css">
+    <!-- Preload de la fuente del cuerpo (Latin): empieza a bajar sin esperar a parsear fonts.css -->
+    <link rel="preload" href="fonts/dmsans-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="css/fonts.css?v=67235440" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="css/fonts.css?v=67235440"></noscript>
+
+    <!-- Preload del script principal para que el navegador lo descargue sin esperar la línea 1091 -->
+    <link rel="preload" href="js/script.js?v=258fbde7" as="script">
 
     <!-- CSS unido + minificado (generado por scripts/build_css.py vía GitHub Action).
          Para editar estilos, edita los CSS fuente en /css y la Action regenera este bundle. -->
-    <link rel="stylesheet" href="css/bundle.css?v=6b362eca">
-    <link rel="stylesheet" href="css/nuevo-diseno.css?v=251127ee">
-    <link rel="stylesheet" href="css/styles.fixes.css?v=b09c090e">
+    <link rel="stylesheet" href="css/bundle.css?v=b34a5395">
 
 
     <!-- Estilos para "Vistos Recientemente" -->
@@ -350,7 +362,7 @@
     <!-- Header -->
     <!-- Menú móvil overlay -->
     <div class="mobile-menu-overlay" id="mobileMenuOverlay">
-        <div class="mobile-menu-logo"><img src="/iconos/icon-192.png" style="width:30px;height:30px;border-radius:8px;vertical-align:middle;"> Tienda<em>Max</em></div>
+        <div class="mobile-menu-logo"><img src="/iconos/icon-192.png" alt="" style="width:30px;height:30px;border-radius:8px;vertical-align:middle;"> Tienda<em>Max</em></div>
         <button data-action="cerrarMenuMovil" aria-label="Cerrar menú" type="button" class="mobile-menu-close">×</button>
         <a href="#" data-action="volverAlInicio,cerrarMenuMovil">Inicio</a>
         <a href="#categorias-home" data-action="volverAlInicio,cerrarMenuMovil">Categorías</a>
@@ -367,7 +379,7 @@
 
     <header class="header">
         <div class="container header-content">
-            <div class="logo"><div data-action="volverAlInicio" class="logo-premium" role="button" tabindex="0" aria-label="Ir a página principal"><img src="/iconos/icon-192.png" id="logoSecretBadge" style="width:30px;height:30px;border-radius:8px;vertical-align:middle;">Tienda<em>Max</em></div></div>
+            <div class="logo"><div data-action="volverAlInicio" class="logo-premium" role="button" tabindex="0" aria-label="Ir a página principal"><img src="/iconos/icon-192.png" id="logoSecretBadge" alt="" style="width:30px;height:30px;border-radius:8px;vertical-align:middle;">Tienda<em>Max</em></div></div>
             <!-- Carrito + Corazón + Hamburguesa -->
             <div class="header-right">
                 <button data-action="abrirCarrito" type="button" class="cart-icon-btn" aria-label="Carrito" title="Ver carrito">
@@ -610,7 +622,6 @@
 
         <!-- Banners patrocinados — después del fold, no compiten con la propuesta de valor -->
         <section class="banners-patrocinados-section" id="banneresPatrocinadosSection">
-            <div class="container" style="display:none;"></div>
             <div class="hero-image" id="heroImageContainer" style="position:relative;margin:0 16px 24px;border-radius:18px;overflow:hidden;">
                 <!-- Banner Slider -->
                 <div id="heroBannerSlider" class="hero-banner-slider">
@@ -674,6 +685,37 @@
                             <div class="nd-dpo" id="ndDealOld" style="display:none;"></div>
                         </div>
                         <div class="nd-ddc" id="ndDealDisc" style="display:none;"><span class="nd-ddp" id="ndDealDiscPct">0%</span><span class="nd-ddo">OFF</span></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Oferta por tiempo limitado — se puebla con renderOfertaTiempoLimitado() si hay activeCountdown -->
+        <section class="nd-deal-section nd-flash-section" id="ofertaTiempoLimitado" style="display:none;">
+            <div class="nd-wrap">
+                <div class="nd-deal">
+                    <div class="nd-deal-left">
+                        <span class="nd-dbadge" id="flashBadge" style="background:linear-gradient(135deg,#e8501e,#c9350a);">⏱️ Oferta por tiempo limitado</span>
+                        <h2 class="nd-dtitle" id="flashTitle">Oferta especial</h2>
+                        <p class="nd-dsub" id="flashSub">¡Aprovecha este precio antes de que expire!</p>
+                        <div class="nd-dtimer" id="flashTimer">
+                            <div class="nd-tblk"><span class="nd-tnum" id="flash-h">--</span><span class="nd-tlbl">Horas</span></div>
+                            <div class="nd-tblk"><span class="nd-tnum" id="flash-m">--</span><span class="nd-tlbl">Min</span></div>
+                            <div class="nd-tblk"><span class="nd-tnum" id="flash-s">--</span><span class="nd-tlbl">Seg</span></div>
+                        </div>
+                        <button data-action="abrirProductoFlash" type="button" class="nd-btn-deal">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="#E8501E" style="flex-shrink:0"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                            Ver oferta
+                        </button>
+                    </div>
+                    <div class="nd-deal-vis">
+                        <div class="nd-dpc" id="flash-card" data-action="abrirProductoFlash" style="cursor:pointer;">
+                            <span class="nd-dpe" id="flashEmoji">⏱️</span>
+                            <div class="nd-dpn" id="flashName">Producto en oferta</div>
+                            <div class="nd-dpp" id="flashPrice">$0 USD</div>
+                            <div class="nd-dpo" id="flashOld" style="display:none;"></div>
+                        </div>
+                        <div class="nd-ddc" id="flashDisc" style="display:none;"><span class="nd-ddp" id="flashDiscPct">0%</span><span class="nd-ddo">OFF</span></div>
                     </div>
                 </div>
             </div>
@@ -1080,7 +1122,7 @@
             });
         }, { threshold: 0.1, rootMargin: '0px 0px -30px 0px' });
 
-        elements.forEach(function(el, i) {
+        elements.forEach(function(el) {
             el.classList.add('tm-fade');
             var siblings = el.parentNode ? el.parentNode.querySelectorAll('.tm-fade') : [];
             var idx = Array.prototype.indexOf.call(siblings, el);
@@ -1091,11 +1133,11 @@
     </script>
     <script src="js/analytics.js?v=9d585bc5" defer></script>
     <script src="js/seo-dynamico.js?v=ea7e25bb" defer></script>
-    <script src="js/script.js?v=d36d8c15" defer></script>
+    <script src="js/script.js?v=258fbde7" defer></script>
 
-    <script src="js/push-fix.js?v=d36f3d04" defer></script>
-    <script src="js/subcategorias.js?v=56dd618e" defer></script>
-    <script src="js/share-patch.js?v=1e3ed8b5" defer></script>
+    <script src="js/push-fix.js?v=70cfa623" defer></script>
+    <script src="js/subcategorias.js?v=0a8fedc8" defer></script>
+    <script src="js/share-patch.js?v=d01164a1" defer></script>
     <script src="js/event-delegation.js?v=bf5a6e3e" defer></script>
     <script src="js/tienda-plus.js?v=ee705128" defer></script>
     <script src="js/cart-share.js?v=fc0a392b" defer></script>
@@ -1122,7 +1164,7 @@
     // Service Worker con auto-actualización y reload cuando hay versión nueva
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-            navigator.serviceWorker.register('/sw.js?v=admin-final-202606111836', { updateViaCache: 'none' }).then(reg => {
+            navigator.serviceWorker.register('/sw.js?v=force-202606201600', { updateViaCache: 'none' }).then(reg => {
                 // Si hay un SW esperando, decirle que tome el control YA
                 if (reg.waiting) reg.waiting.postMessage('SKIP_WAITING');
 
@@ -1208,8 +1250,8 @@
     })();
     </script>
 <!-- ===== BANNER SLIDER + TAGLINE (movido a archivo externo para reuso en admin) ===== -->
-    <script src="js/urgencia-ventas.js?v=5c828568" defer></script>
-    <script src="js/banners.js?v=37084a1a" defer></script>
+    <script src="js/urgencia-ventas.js?v=b782eee3" defer></script>
+    <script src="js/banners.js?v=f4019c76" defer></script>
     <script src="js/hero-efectos.js?v=454a15c2" defer></script>
 
 <script>
@@ -1220,12 +1262,6 @@
     a.href = a.href.replace(/wa\.me\/\d+/, 'wa.me/' + num);
   });
 })();
-document.addEventListener('DOMContentLoaded', () => {
-  const num = localStorage.getItem('whatsappNumero') || '5354320170';
-  document.querySelectorAll('a[href*="wa.me/"]').forEach(a => {
-    a.href = a.href.replace(/wa\.me\/\d+/, 'wa.me/' + num);
-  });
-});
 </script>
 
 <!-- ═══════════════════════════════════════════════════════════
