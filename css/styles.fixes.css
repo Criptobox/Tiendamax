@@ -13,7 +13,7 @@ html body .categoria-card .cat-count{font-size:11px !important;font-weight:600 !
 html body .categoria-card.cat-proximamente{opacity:.3 !important;filter:grayscale(.7) !important;pointer-events:none !important;cursor:default !important}
 .stock-count{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .skip-link{position:absolute;top:-100%;left:0;padding:10px 18px;background:#0d0d0d;color:#fff;font-weight:700;font-size:14px;z-index:10000;border-radius:0 0 8px 0;text-decoration:none;transition:top .15s}.skip-link:focus{top:0}
-@keyframes tm-shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+@keyframes tm-shimmer{0%,100%{opacity:0.5}50%{opacity:1}}
 @keyframes tm-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
 @keyframes tm-dot-pop{to{opacity:1;transform:scale(1.3)}}
 .tm-empty-icon{width:80px;height:80px;background:linear-gradient(135deg,#1e1e1e,#282828);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:36px;margin:0 auto 10px;box-shadow:0 0 0 10px rgba(201,169,110,.06),0 0 0 22px rgba(201,169,110,.03);animation:tm-float 3s ease-in-out infinite}
@@ -21,7 +21,7 @@ html body .categoria-card.cat-proximamente{opacity:.3 !important;filter:grayscal
 .tm-empty-dot{width:6px;height:6px;border-radius:50%;background:#C9A96E;opacity:0;animation:tm-dot-pop .35s ease forwards}
 .tm-empty-dot:nth-child(1){animation-delay:.05s}.tm-empty-dot:nth-child(2){animation-delay:.15s}.tm-empty-dot:nth-child(3){animation-delay:.25s}.tm-empty-dot:nth-child(4){animation-delay:.35s}.tm-empty-dot:nth-child(5){animation-delay:.45s}
 .tm-sk-card{background:#1a1a1a;border-radius:16px;overflow:hidden;border:1px solid #222;display:flex;flex-direction:column}
-.tm-sk{background:linear-gradient(90deg,#1e1e1e 25%,#2c2c2c 50%,#1e1e1e 75%);background-size:200% 100%;animation:tm-shimmer 1.4s infinite;border-radius:8px}
+.tm-sk{background:#252525;animation:tm-shimmer 1.4s ease-in-out infinite;border-radius:8px}
 .tm-sk-img{width:100%;aspect-ratio:4/3;height:auto;border-radius:0;flex-shrink:0}
 .tm-sk-body{padding:12px;display:flex;flex-direction:column;gap:8px}
 .tm-sk-line{height:13px}
@@ -45,7 +45,7 @@ html body .detail-img.zoomed~.detail-zoom-hint{opacity:0 !important}
 html body .detail-image-wrap{overflow:hidden;cursor:zoom-in;border-radius:inherit}
 html body .detail-img{transition:transform .3s cubic-bezier(.4,0,.2,1) !important}
 html body .detail-img.zoomed{transform:scale(2.2) !important;cursor:zoom-out;transform-origin:center center}
-@keyframes nuevo-glow{0%,100%{box-shadow:0 2px 8px rgba(21,196,105,.4)}50%{box-shadow:0 2px 18px rgba(21,196,105,.75),0 0 0 4px rgba(21,196,105,.1)}}
+@keyframes nuevo-glow{50%{transform:scale(1.08)}}
 html body .badge-nuevo{position:absolute !important;top:8px !important;left:8px !important;background:linear-gradient(135deg,#0a7a3e,#15c469) !important;color:#fff !important;font-size:10px !important;font-weight:800 !important;padding:3px 9px !important;border-radius:20px !important;letter-spacing:.04em !important;z-index:3 !important;animation:nuevo-glow 2s ease-in-out infinite !important}
 html body .tm-card-nueva{border-color:rgba(21,196,105,.22) !important}
 @keyframes tm-cart-bump{0%{transform:scale(1)}30%{transform:scale(1.32)}60%{transform:scale(.9)}80%{transform:scale(1.08)}100%{transform:scale(1)}}
@@ -189,8 +189,7 @@ html body #detailBuyBtn:hover {
   box-shadow: 0 10px 36px rgba(37,211,102,0.55) !important;
 }
 @keyframes pedir-pulse {
-  0%,100% { box-shadow: 0 6px 28px rgba(37,211,102,0.4); }
-  50% { box-shadow: 0 6px 36px rgba(37,211,102,0.65), 0 0 0 8px rgba(37,211,102,0.1); }
+  50% { transform: scale(1.02); }
 }
 /* ── Detalle: imagen y datos alineados al tope ── */
 html body .detail-grid {
@@ -213,3 +212,14 @@ html body #ofertaDelDia {
   html body .nd-deal-section .nd-btn-deal { margin: 0 auto !important; }
   html body .nd-deal-section .nd-deal-vis { justify-content: center !important; }
 }
+/* ── Performance: reemplaza animaciones no-compositadas (background-position, box-shadow)
+      con equivalentes basadas en opacity/transform para que el GPU las maneje ── */
+@keyframes skeleton-shimmer{0%,100%{opacity:0.55}50%{opacity:1}}
+@keyframes shimmerBanner{0%,100%{opacity:0.85}50%{opacity:1}}
+@keyframes pillPulse{50%{transform:scale(1.04)}}
+@keyframes nd-shimmer{0%,100%{opacity:0.55}50%{opacity:1}}
+html body .producto-image img:not([src]){background:#1a1a1a}
+html body .skeleton-img,html body .skeleton-line{background:#e8e2da}
+body.light-mode .skeleton-img,body.light-mode .skeleton-line{background:#e8e2da}
+body:not(.light-mode) .skeleton-img,body:not(.light-mode) .skeleton-line{background:#2a2a2a}
+html body .categorias-home .categorias-grid .skeleton-card{background:#1e1e2a !important;background-size:unset !important}

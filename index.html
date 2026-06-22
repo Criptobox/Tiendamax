@@ -78,6 +78,8 @@
     <link rel="dns-prefetch" href="https://fcm.googleapis.com">
     <link rel="dns-prefetch" href="https://www.google-analytics.com">
     <link rel="dns-prefetch" href="https://firebaseio.com">
+    <link rel="preconnect" href="https://raw.githubusercontent.com" crossorigin>
+    <link rel="dns-prefetch" href="https://api.github.com">
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -137,14 +139,15 @@
     <!-- Fuentes locales (evita requests externos a Google Fonts) -->
     <!-- Preload de la fuente del cuerpo (Latin): empieza a bajar sin esperar a parsear fonts.css -->
     <link rel="preload" href="fonts/dmsans-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="stylesheet" href="css/fonts.css?v=67235440">
+    <link rel="preload" href="css/fonts.css?v=67235440" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="css/fonts.css?v=67235440"></noscript>
 
     <!-- Preload del script principal para que el navegador lo descargue sin esperar la línea 1091 -->
     <link rel="preload" href="js/script.js?v=258fbde7" as="script">
 
     <!-- CSS unido + minificado (generado por scripts/build_css.py vía GitHub Action).
          Para editar estilos, edita los CSS fuente en /css y la Action regenera este bundle. -->
-    <link rel="stylesheet" href="css/bundle.css?v=ca89cc18">
+    <link rel="stylesheet" href="css/bundle.css?v=d7157a04">
 
 
     <!-- Estilos para "Vistos Recientemente" -->
