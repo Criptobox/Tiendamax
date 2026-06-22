@@ -216,10 +216,17 @@ html body #ofertaDelDia {
       con equivalentes basadas en opacity/transform para que el GPU las maneje ── */
 @keyframes skeleton-shimmer{0%,100%{opacity:0.55}50%{opacity:1}}
 @keyframes shimmerBanner{0%,100%{opacity:0.85}50%{opacity:1}}
-@keyframes pillPulse{50%{transform:scale(1.04)}}
+@keyframes pillPulse{0%,100%{opacity:1}50%{opacity:0.93}}
 @keyframes nd-shimmer{0%,100%{opacity:0.55}50%{opacity:1}}
 html body .producto-image img:not([src]){background:#1a1a1a}
 html body .skeleton-img,html body .skeleton-line{background:#e8e2da}
 body.light-mode .skeleton-img,body.light-mode .skeleton-line{background:#e8e2da}
 body:not(.light-mode) .skeleton-img,body:not(.light-mode) .skeleton-line{background:#2a2a2a}
 html body .categorias-home .categorias-grid .skeleton-card{background:#1e1e2a !important;background-size:unset !important}
+/* Logo: shimmer de background-position no es compositable; deja el degradado estático */
+html body .logo h1 span,html body .logo h1 em{animation:none !important}
+/* Badge "vendido": igual, degradado estático sin shimmer */
+html body .badge-vendido{animation:none !important}
+/* Botón flotante WhatsApp: box-shadow pulse -> transform scale (compositable) */
+@keyframes pulseWhatsapp{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+html body .whatsapp-btn{will-change:transform}
