@@ -692,18 +692,30 @@ function _observarTestimonios() {
     if (_testimoniosIniciados) return;
     const grid = document.getElementById('testimoniosGrid');
     if (!grid) return;
-    if (!('IntersectionObserver' in window)) {
-        window.addEventListener('load', () => setTimeout(cargarTestimoniosFirebase, 2000), { once: true });
-        return;
-    }
-    const obs = new IntersectionObserver(entries => {
-        if (!entries[0].isIntersecting) return;
-        obs.disconnect();
+
+    function _arrancar() {
         if (_testimoniosIniciados) return;
-        _testimoniosIniciados = true;
-        cargarTestimoniosFirebase();
-    }, { rootMargin: '300px' });
-    obs.observe(grid);
+        if (!('IntersectionObserver' in window)) {
+            _testimoniosIniciados = true;
+            cargarTestimoniosFirebase();
+            return;
+        }
+        const obs = new IntersectionObserver(entries => {
+            if (!entries[0].isIntersecting) return;
+            obs.disconnect();
+            if (_testimoniosIniciados) return;
+            _testimoniosIniciados = true;
+            cargarTestimoniosFirebase();
+        }, { rootMargin: '0px' });
+        obs.observe(grid);
+    }
+
+    // Esperar a que la página esté completamente cargada + 3s de gracia
+    if (document.readyState === 'complete') {
+        setTimeout(_arrancar, 3000);
+    } else {
+        window.addEventListener('load', () => setTimeout(_arrancar, 3000), { once: true });
+    }
 }
 
 async function cargarTestimoniosFirebase() {
