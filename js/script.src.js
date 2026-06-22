@@ -687,6 +687,25 @@ function _renderTestimoniosPage(show) {
     }
 }
 
+let _testimoniosIniciados = false;
+function _observarTestimonios() {
+    if (_testimoniosIniciados) return;
+    const grid = document.getElementById('testimoniosGrid');
+    if (!grid) return;
+    if (!('IntersectionObserver' in window)) {
+        window.addEventListener('load', () => setTimeout(cargarTestimoniosFirebase, 2000), { once: true });
+        return;
+    }
+    const obs = new IntersectionObserver(entries => {
+        if (!entries[0].isIntersecting) return;
+        obs.disconnect();
+        if (_testimoniosIniciados) return;
+        _testimoniosIniciados = true;
+        cargarTestimoniosFirebase();
+    }, { rootMargin: '300px' });
+    obs.observe(grid);
+}
+
 async function cargarTestimoniosFirebase() {
     const grid = document.getElementById('testimoniosGrid');
     const cta  = document.getElementById('testimoniosCTA');
@@ -1482,7 +1501,7 @@ async function cargarDatosDesdeGitHub() {
         renderizarCategoriasHome();
         renderizarMasVendidos();
         renderizarRecientes();  // 👀 Vistos recientemente
-        setTimeout(cargarTestimoniosFirebase, 1500); // 🌟 Testimonios reales
+        _observarTestimonios(); // 🌟 Testimonios reales (lazy: solo cuando el bloque es visible)
         actualizarListaProductos();
         actualizarSelectCategorias();
         actualizarBotonesCategorias();
