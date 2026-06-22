@@ -1387,6 +1387,24 @@ async function cargarDatosDesdeGitHub() {
         // Ventas migradas a Firebase — sync en background tras cargar productos
         setTimeout(_fbSincronizarVentasAlIniciar, 2000);
 
+        // Countdown desde Firebase — sincroniza a todos los dispositivos de clientes
+        setTimeout(async () => {
+            try {
+                const base = _fbRtdbUrl();
+                if (!base) return;
+                const r = await fetch(base + '/configuracion/activeCountdown.json');
+                if (!r.ok) return;
+                const fbCd = await r.json();
+                if (fbCd && fbCd.productId && fbCd.endTime && fbCd.endTime > Date.now()) {
+                    localStorage.setItem('activeCountdown', JSON.stringify(fbCd));
+                } else {
+                    localStorage.removeItem('activeCountdown');
+                }
+                if (typeof renderOfertaTiempoLimitado === 'function') renderOfertaTiempoLimitado();
+                if (typeof iniciarCountdownsActivos === 'function') iniciarCountdownsActivos();
+            } catch(e) {}
+        }, 800);
+
         // Categorías desde Firebase RTDB — más recientes que categorias.json (admin las actualiza ahí)
         setTimeout(async () => {
             try {
@@ -4433,6 +4451,17 @@ function guardarCountdown() {
     const countdown = { productId, endTime, texto };
     localStorage.setItem('activeCountdown', JSON.stringify(countdown));
 
+    // Sincronizar a Firebase para que todos los clientes lo vean
+    (async () => {
+        try {
+            const base = (typeof _fbRtdbUrl === 'function') ? _fbRtdbUrl() : null;
+            if (base) await fetch(base + '/configuracion/activeCountdown.json', {
+                method: 'PUT', body: JSON.stringify(countdown),
+                headers: { 'Content-Type': 'application/json' }
+            });
+        } catch(e) {}
+    })();
+
     const producto = productos.find(p => p.id == productId);
     const nombre = producto ? producto.nombre : 'Producto';
 
@@ -4461,6 +4490,14 @@ function desactivarCountdown() {
     const status = document.getElementById('countdownStatus');
     if (status) status.innerHTML = 'Countdown desactivado.';
     mostrarNotificacion('🗑️ Countdown desactivado');
+
+    // Borrar de Firebase para que todos los clientes dejen de verlo
+    (async () => {
+        try {
+            const base = (typeof _fbRtdbUrl === 'function') ? _fbRtdbUrl() : null;
+            if (base) await fetch(base + '/configuracion/activeCountdown.json', { method: 'DELETE' });
+        } catch(e) {}
+    })();
 }
 
 // ═══════════════════════════════════════════════════════
