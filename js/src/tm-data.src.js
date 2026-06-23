@@ -335,7 +335,7 @@ async function subirImagenAGitHub(fileOrBase64) {
     try {
         const base64data = base64full.includes(',') ? base64full.split(',')[1] : base64full;
         if (!base64data) return base64full; // fallback si el data URL está malformado
-        const filename   = 'img_' + Date.now() + '.jpg';
+        const filename   = 'img_' + Date.now() + '.webp';
         const path       = 'imagenes/' + filename;
         const apiUrl     = 'https://api.github.com/repos/' + user + '/' + repo + '/contents/' + path;
         const headers    = { 'Authorization': 'token ' + token, 'Content-Type': 'application/json' };
