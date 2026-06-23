@@ -664,8 +664,28 @@ async function tmDiagnosticarFirebase() {
         { path: '/resenas.json?shallow=true', label: 'Reseñas (/resenas)' },
         { path: '/interesados.json?shallow=true', label: 'Alertas (/interesados)' },
         { path: '/configuracion/categorias.json', label: 'Categorías (/configuracion/categorias)' },
-        { path: '/tokens.json?shallow=true', label: 'Suscripciones push (/tokens)' },
     ];
+
+    // Verificar /tokens/ con una escritura de prueba (es write-only, leer da 403 a propósito)
+    try {
+        const testId = '_diag_' + Date.now();
+        const testUrl = base + '/tokens/' + testId + '.json';
+        const tw = await fetch(testUrl, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ token: 'diag_test_'.repeat(4), timestamp: Date.now(), userAgent: 'diag', fingerprint: 'diag' })
+        });
+        if (tw.ok) {
+            add('✅ Suscripciones push (/tokens): OK — escritura permitida');
+            await fetch(testUrl, { method: 'DELETE' }).catch(() => {});
+        } else {
+            const et = await tw.text().catch(() => '');
+            add('🔴 Suscripciones push (/tokens): BLOQUEADO (' + tw.status + ') — ' + et.slice(0,80));
+            hayBloqueados = true;
+        }
+    } catch(e) {
+        add('⚠️ Suscripciones push (/tokens): Sin red');
+    }
 
     let hayBloqueados = false;
     for (const { path, label } of rutas) {

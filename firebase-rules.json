@@ -33,9 +33,9 @@
       "$tokenId": {
         ".read": false,
         ".write": true,
-        ".validate": "newData.hasChildren(['token', 'timestamp']) && newData.child('timestamp').val() >= now - 900000 && newData.child('timestamp').val() <= now + 900000",
+        ".validate": "newData.hasChildren(['token', 'timestamp']) && newData.child('timestamp').val() >= now - 86400000 && newData.child('timestamp').val() <= now + 300000",
         "token": {
-          ".validate": "newData.isString() && newData.val().length > 50 && newData.val().length < 500"
+          ".validate": "newData.isString() && newData.val().length > 20 && newData.val().length < 600"
         },
         "timestamp": {
           ".validate": "newData.isNumber()"
