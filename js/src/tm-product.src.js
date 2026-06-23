@@ -189,7 +189,7 @@ function renderizarProductos(isLoadMore = false) {
                 : `<button class="btn-pedir-card" onclick="event.stopPropagation();tmComprar(event,${_id},this.dataset.nombre)" data-nombre="${_nombre}" type="button"><span class="btn-pedir-wa-icon-sm"><svg viewBox="0 0 24 24" width="14" height="14" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg></span> Pedir</button>`}
             <div class="tm-trust-badges" style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;font-size:10px;color:#6B6B7A;align-items:center;">
                 <span style="display:inline-flex;align-items:center;gap:3px;background:rgba(46,204,113,0.10);color:#2ECC71;padding:3px 8px;border-radius:8px;font-weight:600;">🔒 Pago contra entrega</span>
-                <span style="display:inline-flex;align-items:center;gap:3px;background:rgba(232,80,30,0.10);color:#E8501E;padding:3px 8px;border-radius:8px;font-weight:600;">✓ Garantía 7 días</span>
+                ${producto.garantia && String(producto.garantia).trim() ? '<span style="display:inline-flex;align-items:center;gap:3px;background:rgba(232,80,30,0.10);color:#E8501E;padding:3px 8px;border-radius:8px;font-weight:600;">🛡️ Garantía</span>' : ''}
             </div>
         `;
         productosGrid.appendChild(card);
@@ -396,7 +396,9 @@ if (_detailPrecioMNEl) {
     // Badges extra: garantia, devolución, usado
     const extBadges = document.getElementById('detailExtraBadges');
     let badges = '';
-    if (p.garantia) badges += `<span class="detail-badge-tag dtag-garantia">🛡️ Garantía: ${escapeHtml(p.garantia)}</span>`;
+    if (p.garantia) {
+        badges += `<button type="button" class="detail-badge-tag dtag-garantia" style="cursor:pointer;border:none;font-family:inherit;" onclick="var d=this.nextElementSibling;var o=d.style.display==='block';d.style.display=o?'none':'block';this.querySelector('.tg-arr').textContent=o?'▾':'▴';">🛡️ Garantía <span class="tg-arr">▾</span></button><div class="tm-garantia-panel" style="display:none;flex-basis:100%;width:100%;margin-top:6px;padding:10px 12px;background:rgba(41,128,185,0.07);border:1px solid rgba(41,128,185,0.2);border-radius:8px;font-size:12px;color:rgba(255,255,255,0.8);line-height:1.5;">${escapeHtml(p.garantia)}</div>`;
+    }
     if (p.devolucion) badges += `<span class="detail-badge-tag dtag-devolucion">↩️ Devolución aceptada</span>`;
     if (p.usado) badges += `<span class="detail-badge-tag dtag-usado">♻️ Producto usado</span>`;
     extBadges.innerHTML = badges;
@@ -420,7 +422,7 @@ if (_detailPrecioMNEl) {
         let trustHtml = '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;padding:12px;background:rgba(0,0,0,0.03);border-radius:10px;border:1px solid rgba(0,0,0,0.06);">';
         trustHtml += '<span style="display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;padding:5px 10px;border-radius:8px;background:rgba(46,204,113,0.10);color:#2ECC71;">🔒 Pago contra entrega</span>';
         if (p.garantia && String(p.garantia).trim()) {
-            trustHtml += `<span style="display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;padding:5px 10px;border-radius:8px;background:rgba(232,80,30,0.10);color:#E8501E;">🛡️ Garantía ${escapeHtml(p.garantia)}</span>`;
+            trustHtml += `<span style="display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;padding:5px 10px;border-radius:8px;background:rgba(232,80,30,0.10);color:#E8501E;cursor:pointer;" onclick="var d=document.querySelector('.tm-garantia-panel');if(d){var o=d.style.display==='block';d.style.display=o?'none':'block';}">🛡️ Garantía</span>`;
         }
         if (p.devolucion === true) {
             trustHtml += '<span style="display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;padding:5px 10px;border-radius:8px;background:rgba(52,152,219,0.10);color:#3498DB;">↩️ Devolución aceptada</span>';

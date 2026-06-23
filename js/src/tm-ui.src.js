@@ -1728,7 +1728,7 @@ renderizarProductos = function() {
         let _trustBadgesHtml = '<div class="tm-trust-badges" style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;font-size:10px;color:#6B6B7A;align-items:center;">';
         _trustBadgesHtml += '<span style="display:inline-flex;align-items:center;gap:3px;background:rgba(46,204,113,0.10);color:#2ECC71;padding:3px 8px;border-radius:8px;font-weight:600;">🔒 Pago contra entrega</span>';
         if (_tieneGarantia) {
-            _trustBadgesHtml += '<span style="display:inline-flex;align-items:center;gap:3px;background:rgba(232,80,30,0.10);color:#E8501E;padding:3px 8px;border-radius:8px;font-weight:600;">🛡️ Garantía ' + escapeHtml(producto.garantia) + '</span>';
+            _trustBadgesHtml += '<span style="display:inline-flex;align-items:center;gap:3px;background:rgba(232,80,30,0.10);color:#E8501E;padding:3px 8px;border-radius:8px;font-weight:600;">🛡️ Garantía</span>';
         }
         if (_tieneDevolucion) {
             _trustBadgesHtml += '<span style="display:inline-flex;align-items:center;gap:3px;background:rgba(52,152,219,0.10);color:#3498DB;padding:3px 8px;border-radius:8px;font-weight:600;">↩️ Devolución</span>';
