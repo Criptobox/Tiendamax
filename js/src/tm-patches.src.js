@@ -183,7 +183,7 @@ function limpiarBuscadorVenta() {
 
 // ── 1. VISTAS POR PRODUCTO ─────────────────────────────────────────
 function _cargarVistas() {
-    return tmParse(localStorage.getItem('vistasProd'), {}) || {};
+    return tmParseObject(localStorage.getItem('vistasProd'));
 }
 function _guardarVistas(v) {
     localStorage.setItem('vistasProd', JSON.stringify(v));
@@ -570,7 +570,7 @@ function mostrarVistaMeGusta() {
     // Usar siempre el array global productos (más confiable que localStorage)
     const cat = (typeof productos !== 'undefined' && productos.length > 0)
         ? productos
-        : tmParse(localStorage.getItem('productos'), []) || [];
+        : tmParseArray(localStorage.getItem('productos'));
 
     // Si aún no hay catálogo, esperar hasta 5 segundos
     if (cat.length === 0 && wishlist.length > 0) {
@@ -653,7 +653,7 @@ function mostrarVistaMeGusta() {
 function compartirWishlistWhatsApp() {
     const cat = (typeof productos !== 'undefined' && productos.length > 0)
         ? productos
-        : tmParse(localStorage.getItem('productos'), []) || [];
+        : tmParseArray(localStorage.getItem('productos'));
     const prods = (typeof wishlist !== 'undefined' ? wishlist : [])
         .map(wid => cat.find(p => String(p.id) === String(wid)))
         .filter(Boolean);
@@ -676,7 +676,7 @@ function cerrarVistaMeGusta() {
 //  VISTA: MIS PEDIDOS (historial del cliente)
 // ══════════════════════════════════════════════════════════════
 function guardarPedidoCliente(itemsCarrito) {
-    const pedidos = tmParse(localStorage.getItem('pedidos_cliente_v1'), []) || [];
+    const pedidos = tmParseArray(localStorage.getItem('pedidos_cliente_v1'));
     const total   = itemsCarrito.reduce((s, i) => s + i.precio * i.cantidad, 0);
     pedidos.unshift({
         id:     Date.now(),
@@ -698,7 +698,7 @@ function mostrarVistaPedidos() {
     vistaEl.style.display = 'block';
     actualizarVisibilidadBannerOferta(false);
 
-    const pedidos   = tmParse(localStorage.getItem('pedidos_cliente_v1'), []) || [];
+    const pedidos   = tmParseArray(localStorage.getItem('pedidos_cliente_v1'));
     const statsEl   = document.getElementById('pedidosStats');
     const listaEl   = document.getElementById('pedidosLista');
     const vacioEl   = document.getElementById('pedidosVacio');
@@ -739,7 +739,7 @@ function cerrarVistaPedidos() {
 }
 
 function repetirPedido(pedidoId) {
-    const pedidos = tmParse(localStorage.getItem('pedidos_cliente_v1'), []) || [];
+    const pedidos = tmParseArray(localStorage.getItem('pedidos_cliente_v1'));
     const pedido  = pedidos.find(p => p.id === pedidoId);
     if (!pedido) return;
     pedido.items.forEach(item => {
@@ -782,7 +782,7 @@ function _procesarDeepLink() {
         }
         // Fallback: localStorage
         let local = [];
-        try { local = tmParse(localStorage.getItem('productos'), []) || []; } catch(e) {}
+        try { local = tmParseArray(localStorage.getItem('productos')); } catch(e) {}
         const pLocal = local.find(x => x.id === id || String(x.id) === String(id));
         if (pLocal) {
             if (typeof productos !== 'undefined' && productos.length === 0) productos.push(...local);

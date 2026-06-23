@@ -30,6 +30,19 @@ function tmParse(jsonStr, fallback) {
 }
 // Alias global por si otros scripts lo necesitan
 window.tmParse = tmParse;
+// Helper adicional: parsear JSON de localStorage garantizando tipo array.
+// Uso: tmParseArray(localStorage.getItem('productos'))  →  siempre devuelve []
+function tmParseArray(jsonStr) {
+    var v = tmParse(jsonStr, []);
+    return Array.isArray(v) ? v : [];
+}
+window.tmParseArray = tmParseArray;
+// Helper adicional: parsear JSON de localStorage garantizando tipo objeto.
+function tmParseObject(jsonStr) {
+    var v = tmParse(jsonStr, {});
+    return (v && typeof v === 'object' && !Array.isArray(v)) ? v : {};
+}
+window.tmParseObject = tmParseObject;
 
 // ===== CONSTANTES DE CONFIGURACIÓN =====
 const LOCKOUT_DURATION_MS = 5 * 60 * 1000; // 5 minutos de bloqueo tras intentos fallidos
@@ -493,7 +506,7 @@ function tmRegistrarInteresWhatsApp(producto, origen = 'whatsapp') {
         };
         // Local fallback
         try {
-            const arr = tmParse(localStorage.getItem('tm_interesados_whatsapp'), []) || [];
+            const arr = tmParseArray(localStorage.getItem('tm_interesados_whatsapp'));
             arr.unshift(item);
             localStorage.setItem('tm_interesados_whatsapp', JSON.stringify(arr.slice(0, 500)));
         } catch(e) {}
@@ -606,7 +619,7 @@ function guardarResena() {
         } catch(e) {}
         // Fallback local
         const key = 'resenas_' + pid;
-        const resenas = tmParse(localStorage.getItem(key), []) || [];
+        const resenas = tmParseArray(localStorage.getItem(key));
         resenas.unshift(nuevaResena);
         localStorage.setItem(key, JSON.stringify(resenas.slice(0, 20)));
         mostrarNotificacion('💾 Reseña guardada localmente');
@@ -644,7 +657,7 @@ async function renderizarResenas(productoId) {
             resenas = prodEnMemoria.resenas;
         } else {
             const key = 'resenas_' + pid;
-            resenas = tmParse(localStorage.getItem(key), []) || [];
+            resenas = tmParseArray(localStorage.getItem(key));
         }
     }
 

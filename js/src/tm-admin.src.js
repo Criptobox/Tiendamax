@@ -409,7 +409,7 @@ async function _tmMostrarAgenda() {
 
     // ── 4. Interesados sin atender ───────────────────────────────────────────
     try {
-        const atendidos  = tmParse(localStorage.getItem('tm_interesados_atendidos'), []) || [];
+        const atendidos  = tmParseArray(localStorage.getItem('tm_interesados_atendidos'));
         const atendSet   = new Set(atendidos);
         const rtdbUrl    = _fbRtdbUrl();
         if (rtdbUrl) {
@@ -490,7 +490,7 @@ async function _tmMostrarAgenda() {
 
     // ── 9. Campañas con seguimiento vencido (del Centro de tareas IA) ──────
     try {
-        const camps = tmParse(localStorage.getItem('tm_campaigns_v1'), []) || [];
+        const camps = tmParseArray(localStorage.getItem('tm_campaigns_v1'));
         const vencidas = camps.filter(c => c.followUpAt && new Date(c.followUpAt).getTime() <= Date.now() && !/hecho|cerrad|complet/i.test(c.status || ''));
         if (vencidas.length) {
             tareas.push({
@@ -504,7 +504,7 @@ async function _tmMostrarAgenda() {
 
     // ── 11. Plan semanal de hoy pendiente (del Centro de tareas IA) ─────────
     try {
-        const plans = tmParse(localStorage.getItem('tm_week_plan_v1'), []) || [];
+        const plans = tmParseArray(localStorage.getItem('tm_week_plan_v1'));
         const dias = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
         const hoy = dias[new Date().getDay()];
         const pendPlans = plans.filter(p => !(p.done && p.done[hoy]));
@@ -532,7 +532,7 @@ async function _tmMostrarAgenda() {
     // ── 13. Suscriptores push sin campaña reciente ────────────────────────────
     const subs = Number(localStorage.getItem('tm_subscriber_count') || 0);
     if (subs > 5) {
-        const camps2 = (() => { try { return tmParse(localStorage.getItem('tm_campaigns_v1'), []) || []; } catch(e) { return []; } })();
+        const camps2 = (() => { try { return tmParseArray(localStorage.getItem('tm_campaigns_v1')); } catch(e) { return []; } })();
         const ultimaCamp = camps2.reduce((m, c) => Math.max(m, new Date(c.ts || 0).getTime()), 0);
         const diasSinCamp = Math.floor((Date.now() - ultimaCamp) / 86400000);
         if (diasSinCamp >= 3) {
@@ -547,7 +547,7 @@ async function _tmMostrarAgenda() {
 
     // ── 14. Productos con cambios sin publicar ───────────────────────────────
     try {
-        const mods = tmParse(localStorage.getItem('productosModificados'), []) || [];
+        const mods = tmParseArray(localStorage.getItem('productosModificados'));
         if (mods.length) {
             tareas.push({
                 icon: '🔄', urgencia: 3,
@@ -585,7 +585,7 @@ async function _tmMostrarAgenda() {
 
     // ── 17. Sin plan semanal creado ──────────────────────────────────────────
     try {
-        const plansTodos = tmParse(localStorage.getItem('tm_week_plan_v1'), []) || [];
+        const plansTodos = tmParseArray(localStorage.getItem('tm_week_plan_v1'));
         if (!plansTodos.length && productos.length > 3) {
             tareas.push({
                 icon: '🗓️', urgencia: 1,
@@ -742,6 +742,11 @@ async function agregarProductoForm(event) {
             usado: document.getElementById('productUsado').checked,
             garantia: document.getElementById('productGarantia').value.trim(),
             devolucion: document.getElementById('productDevolucion') ? document.getElementById('productDevolucion').checked : false,
+            specs: (() => {
+                const raw = (document.getElementById('productSpecs')?.value || '').trim();
+                if (!raw) return [];
+                return raw.split(',').map(s => s.trim()).filter(Boolean).slice(0, 6);
+            })(),
             fechaAgregado: new Date().toISOString()
         };
 

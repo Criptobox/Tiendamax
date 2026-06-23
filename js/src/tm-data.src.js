@@ -270,7 +270,7 @@ function aplicarBusquedaHero() {
     _heroOrden        = document.getElementById('hsbOrden')?.value || '';
     if (q.length >= 2) {
         try {
-            let _bs = tmParse(localStorage.getItem('tm_busquedas_v1'), {}) || {};
+            let _bs = tmParseObject(localStorage.getItem('tm_busquedas_v1'));
             _bs[q] = (_bs[q] || 0) + 1;
             // Limitar a 300 búsquedas únicas — eliminar las menos frecuentes
             const _bsKeys = Object.keys(_bs);
@@ -335,7 +335,7 @@ async function subirImagenAGitHub(fileOrBase64) {
     try {
         const base64data = base64full.includes(',') ? base64full.split(',')[1] : base64full;
         if (!base64data) return base64full; // fallback si el data URL está malformado
-        const filename   = 'img_' + Date.now() + '.webp';
+        const filename   = 'img_' + Date.now() + '.jpg';
         const path       = 'imagenes/' + filename;
         const apiUrl     = 'https://api.github.com/repos/' + user + '/' + repo + '/contents/' + path;
         const headers    = { 'Authorization': 'token ' + token, 'Content-Type': 'application/json' };

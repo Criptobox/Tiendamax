@@ -211,7 +211,7 @@ function mostrarVistaCategoria(categoria) {
     // pero hay datos en localStorage (caso PWA con cache), recargarlos.
     if ((!Array.isArray(productos) || productos.length === 0)) {
         try {
-            const cached = tmParse(localStorage.getItem('productos'), []) || [];
+            const cached = tmParseArray(localStorage.getItem('productos'));
             if (Array.isArray(cached) && cached.length > 0) {
                 productos = cached;
                 

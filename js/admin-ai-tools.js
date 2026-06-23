@@ -2560,98 +2560,298 @@ function tmExtractJsonObject(text) {
   }
 
   // 3. El Cerebro del Agente: Analiza el estado y genera planes de acción autónomos
+  // MEJORADO v2: incluye ventas, contexto Cuba, acciones ejecutables, historial
+  const _tmAgenteHistorial = (() => {
+    try { return JSON.parse(localStorage.getItem('tm_agente_historial_v1') || '[]'); } catch(e) { return []; }
+  })();
+  function _tmAgenteGuardarHistorial(tarea) {
+    try {
+      _tmAgenteHistorial.unshift({ ts: Date.now(), tarea: tarea.descripcion || '', tipo: tarea.tipo || '' });
+      if (_tmAgenteHistorial.length > 50) _tmAgenteHistorial.length = 50;
+      localStorage.setItem('tm_agente_historial_v1', JSON.stringify(_tmAgenteHistorial));
+    } catch(e) {}
+  }
+
   async function ejecutarAgenteAutonomo() {
-    console.log('🤖 Agente TiendaMax activado: Analizando estado general...');
+    console.log('🤖 Agente TiendaMax v2 activado: Analizando estado con contexto Cuba...');
     
     let fb = { vistas: {}, whatsapp: {}, suscriptores: 0 };
     try { if (typeof tmLeerAnalytics === 'function') fb = await tmLeerAnalytics(); } catch(e){}
     
-    // Reutiliza tu payload estructurado del módulo v3
+    // Construir payload enriquecido con ventas + contexto Cuba
     let payload = {};
     try {
-      if (typeof buildSummaryPayload === 'function') {
-        payload = buildSummaryPayload(fb);
-      } else {
-        // Fallback rápido si no está globalizado
-        const ps = window.productos || [];
-        payload = {
-          totalProductos: ps.length,
-          stockBajo: ps.filter(p => Number(p.stock||0) > 0 && Number(p.stock||0) <= 3).map(p => p.nombre),
-          agotados: ps.filter(p => Number(p.stock||0) <= 0).map(p => p.nombre)
-        };
-      }
-    } catch(e) { return; }
+      const ps = window.productos || [];
+      const ventas = (() => {
+        try { return JSON.parse(localStorage.getItem('registroVentas') || '[]'); } catch(e) { return []; }
+      })();
+      const tasaMN = (() => {
+        try { return parseInt(localStorage.getItem('tasaMN') || '0'); } catch(e) { return 0; }
+      })();
+      
+      // Top productos por vistas
+      const topVistas = Object.entries(fb.vistas || {})
+        .sort((a, b) => (b[1].count || 0) - (a[1].count || 0))
+        .slice(0, 5)
+        .map(([id, data]) => {
+          const p = ps.find(x => String(x.id) === String(id));
+          return { nombre: p ? p.nombre : 'desconocido', vistas: data.count || 0, stock: p ? p.stock : 0, precio: p ? p.precioActual : 0 };
+        });
+      
+      // Top productos por WhatsApp (intención de compra)
+      const topWhatsApp = Object.entries(fb.whatsapp || {})
+        .sort((a, b) => (b[1].count || 0) - (a[1].count || 0))
+        .slice(0, 5)
+        .map(([id, data]) => {
+          const p = ps.find(x => String(x.id) === String(id));
+          return { nombre: p ? p.nombre : 'desconocido', consultas: data.count || 0, stock: p ? p.stock : 0 };
+        });
+      
+      // Ventas recientes (últimos 7 días)
+      const hace7dias = Date.now() - (7 * 24 * 60 * 60 * 1000);
+      const ventasRecientes = ventas.filter(v => v.ts > hace7dias);
+      const totalVentas7d = ventasRecientes.reduce((s, v) => s + (v.total || 0), 0);
+      const productosVendidos = ventasRecientes.reduce((acc, v) => {
+        const nombre = v.producto || v.nombre || '';
+        acc[nombre] = (acc[nombre] || 0) + (v.cantidad || 1);
+        return acc;
+      }, {});
+      const topVendidos = Object.entries(productosVendidos)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 3)
+        .map(([nombre, cant]) => ({ nombre, cantidad: cant }));
 
-    // Prompt de comportamiento "agente analítico"
-    const prompt = `Actúa como el Director General y Agente Inteligente de TiendaMax. 
-    Analiza el siguiente estado de la tienda y genera un JSON con las 3 tareas críticas pendientes que el administrador DEBE ejecutar hoy mismo (ej. mejoras de SEO, corregir fotos, reponer stock o actualizar descripciones).
-    
-    Datos actuales:
-    ${JSON.stringify(payload, null, 2)}
-    
-    Responde ÚNICAMENTE con un objeto JSON estructurado de la siguiente forma (sin explicaciones ni markdown):
+      payload = {
+        // Contexto Cuba
+        contexto: {
+          pais: 'Cuba',
+          moneda: 'USD + MN (tasa: ' + tasaMN + ')',
+          canalVenta: 'WhatsApp (pedidos por chat)',
+          horariosPico: '12:00-14:00 y 19:00-22:00 (hora Cuba)',
+          diasPago: 'fin de mes (quincena 15 y 30)',
+          totalSuscriptores: fb.suscriptores || 0
+        },
+        // Catálogo
+        catalogo: {
+          totalProductos: ps.length,
+          activos: ps.filter(p => p.stock > 0).length,
+          agotados: ps.filter(p => Number(p.stock||0) <= 0).map(p => ({ nombre: p.nombre, categoria: p.categoria })),
+          stockBajo: ps.filter(p => Number(p.stock||0) > 0 && Number(p.stock||0) <= 3).map(p => ({ nombre: p.nombre, stock: p.stock, categoria: p.categoria })),
+          sinSpecs: ps.filter(p => !Array.isArray(p.specs) || p.specs.length === 0).length,
+          sinGarantia: ps.filter(p => !p.garantia).length,
+          sinDescripcion: ps.filter(p => !p.descripcion || p.descripcion.length < 30).length
+        },
+        // Ventas
+        ventas: {
+          totalUltimos7dias: totalVentas7d,
+          cantidadVentas: ventasRecientes.length,
+          topVendidos: topVendidos
+        },
+        // Interés del cliente
+        interes: {
+          topVistas: topVistas,
+          topConsultasWhatsApp: topWhatsApp
+        },
+        // Historial de tareas ya sugeridas (para no repetir)
+        tareasAnteriores: _tmAgenteHistorial.slice(0, 10).map(h => h.tarea)
+      };
+    } catch(e) { console.warn('Error construyendo payload:', e); return; }
+
+    // Prompt mejorado con contexto Cuba + acciones ejecutables
+    const prompt = `Actúa como el Director Comercial de TiendaMax, una tienda online en Cuba que vende por WhatsApp con precios en USD y conversión a MN (moneda nacional).
+
+Analiza el estado de la tienda y genera EXACTAMENTE 3 tareas accionables que el administrador debe ejecutar HOY para aumentar ventas.
+
+CONTEXTO CUBA (importante):
+- Los clientes compran por WhatsApp, no hay pasarela de pago online
+- Pago contra entrega (efectivo USD o MN)
+- Conexiones lentas (3G), imágenes deben ser ligeras
+- Horarios pico: 12-14h y 19-22h (hora Cuba)
+- Días de pago: quincena (15 y 30 de cada mes)
+
+DATOS ACTUALES:
+${JSON.stringify(payload, null, 2)}
+
+PRIORIZA:
+1. Productos con muchas vistas pero pocas ventas (oportunidad de conversión)
+2. Productos agotados o stock bajo que pierden ventas
+3. Productos sin specs/garantía/descripción que reducen conversión
+
+Responde ÚNICAMENTE con JSON (sin markdown):
+{
+  "alertaPush": {"titulo": "string", "mensaje": "string breve"},
+  "tareas": [
     {
-      "alertaPush": {"titulo": "⚠️ Tarea Crítica", "mensaje": "Breve recordatorio para el teléfono"},
-      "tareas": [
-        {"id": 1, "tipo": "SEO|Stock|Descripcion|Imagen", "descripcion": "Detalle de qué hacer", "prioridad": "Alta"}
-      ]
-    }`;
+      "id": 1,
+      "tipo": "Stock|Precio|Descripcion|Specs|Garantia|SEO|Imagen|Venta",
+      "titulo": "título corto (máx 50 chars)",
+      "descripcion": "qué hacer exactamente",
+      "prioridad": "Alta|Media|Baja",
+      "accion": "editar_producto|ver_ventas|publicar|ver_analytics|ninguna",
+      "productoId": "id del producto afectado o null",
+      "impactoEstimado": "qué ganancia o ahorro espera (ej: +$50 USD/semana)"
+    }
+  ]
+}`;
 
     try {
-      // Llama a tu función de IA nativa
-      const respuestaIA = await tmAIChat(prompt, { max_tokens: 600, temperature: 0.4 });
+      // Actualizar panel a "analizando..."
+      const panel = document.getElementById('tmConsolaAgenteIA');
+      if (panel) {
+        const loadingDiv = panel.querySelector('#tmAgenteLoading');
+        if (loadingDiv) loadingDiv.innerHTML = '⏳ Analizando con IA...';
+      }
+
+      const respuestaIA = await tmAIChat(prompt, { max_tokens: 800, temperature: 0.5 });
       const jsonLimpio = tmExtractJsonObject(respuestaIA);
       
       if (jsonLimpio) {
         const datosAgente = JSON.parse(jsonLimpio);
         
-        // Ejecutar notificación Push en tu dispositivo
+        // Notificación push
         if (datosAgente.alertaPush) {
           lanzarNotificacionPush(datosAgente.alertaPush.titulo, datosAgente.alertaPush.mensaje);
         }
         
-        // Renderizar las tareas sugeridas en la interfaz del panel Admin
-        renderizarConsolaAgente(datosAgente.tareas);
+        // Renderizar panel con acciones ejecutables
+        renderizarConsolaAgente(datosAgente.tareas || []);
       }
     } catch (error) {
-      console.error('Error en el agente autónomo:', error);
+      console.error('Error en el agente autónomo v2:', error);
+      // Mostrar error en el panel
+      const panel = document.getElementById('tmConsolaAgenteIA');
+      if (panel) {
+        const loadingDiv = panel.querySelector('#tmAgenteLoading');
+        if (loadingDiv) loadingDiv.innerHTML = '<span style="color:#e74c3c;font-size:12px;">⚠️ Sin API Key. Configúrala en Configuración → IA.</span>';
+      }
     }
   }
 
-  // 4. Inyectar visualmente los recordatorios en la interfaz para que no los olvides
+  // 4. Panel visual mejorado con acciones ejecutables
   function renderizarConsolaAgente(tareas) {
-    let panelAgente = $('#tmConsolaAgenteIA');
+    let panelAgente = document.getElementById('tmConsolaAgenteIA');
     if (!panelAgente) {
       panelAgente = document.createElement('div');
       panelAgente.id = 'tmConsolaAgenteIA';
-      panelAgente.style = "background: rgba(255, 255, 255, 0.08); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.15); border-radius: 16px; padding: 16px; margin: 15px 0; color: #fff;";
+      panelAgente.style.cssText = 'background:linear-gradient(135deg,rgba(139,92,246,0.08),rgba(255,107,53,0.06));backdrop-filter:blur(12px);border:1px solid rgba(139,92,246,0.25);border-radius:16px;padding:18px;margin:15px 0;color:#fff;box-shadow:0 4px 24px rgba(139,92,246,0.10);';
       
-      const contenedorFichas = $('#herramientas .tm-tools-wrap') || document.body;
-      contenedorFichas.insertBefore(panelAgente, contenedorFichas.firstChild);
+      // Insertar al inicio del tab Herramientas o al inicio del main
+      const contenedor = document.querySelector('#herramientas .tm-tools-wrap') || document.querySelector('.tm-main') || document.body;
+      contenedor.insertBefore(panelAgente, contenedor.firstChild);
     }
 
-    let listaTareasHTML = tareas.map(t => `
-      <div style="background: rgba(0,0,0,0.2); padding: 10px; border-left: 4px solid ${t.prioridad === 'Alta' ? '#e74c3c' : '#f1c40f'}; border-radius: 6px; margin-bottom: 8px; font-size: 13px;">
-        <strong>[${t.tipo}]</strong> ${t.descripcion} <span style="float:right; font-size:10px; background:#e74c3c; padding:2px 6px; border-radius:4px;">${t.prioridad}</span>
-      </div>
-    `).join('');
+    const coloresTipo = {
+      'Stock': '#e74c3c',
+      'Precio': '#f39c12',
+      'Descripcion': '#3498db',
+      'Specs': '#9b59b6',
+      'Garantia': '#1abc9c',
+      'SEO': '#2ecc71',
+      'Imagen': '#e67e22',
+      'Venta': '#c9a96e'
+    };
+
+    const accionesLabels = {
+      'editar_producto': '✏️ Editar producto',
+      'ver_ventas': '💰 Ver ventas',
+      'publicar': '📢 Publicar',
+      'ver_analytics': '📊 Ver analytics',
+      'ninguna': '—'
+    };
+
+    const listaTareasHTML = tareas.map((t, i) => {
+      const color = coloresTipo[t.tipo] || '#888';
+      const prioridadColor = t.prioridad === 'Alta' ? '#e74c3c' : (t.prioridad === 'Media' ? '#f39c12' : '#27ae60');
+      const accionLabel = accionesLabels[t.accion] || '—';
+      const tieneAccion = t.accion && t.accion !== 'ninguna';
+      const productoId = t.productoId && t.productoId !== 'null' ? t.productoId : null;
+      
+      return `
+        <div style="background:rgba(0,0,0,0.25);padding:14px;border-left:4px solid ${color};border-radius:10px;margin-bottom:10px;font-size:13px;transition:background .15s;" onmouseover="this.style.background='rgba(0,0,0,0.35)'" onmouseout="this.style.background='rgba(0,0,0,0.25)'">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;gap:10px;">
+            <div style="flex:1;">
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+                <span style="background:${color};color:#fff;padding:2px 8px;border-radius:6px;font-size:10px;font-weight:700;text-transform:uppercase;">${t.tipo || 'Tarea'}</span>
+                <span style="background:${prioridadColor};color:#fff;padding:2px 6px;border-radius:4px;font-size:9px;font-weight:700;">${t.prioridad || 'Media'}</span>
+              </div>
+              <strong style="color:#fff;font-size:14px;display:block;margin-bottom:4px;">${t.titulo || t.descripcion || ''}</strong>
+              <div style="color:#ccc;line-height:1.5;">${t.descripcion || ''}</div>
+              ${t.impactoEstimado ? `<div style="color:#2ecc71;font-size:11px;margin-top:6px;font-weight:600;">📈 ${t.impactoEstimado}</div>` : ''}
+            </div>
+          </div>
+          ${tieneAccion ? `
+            <div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap;">
+              <button onclick="tmAgenteEjecutarAccion('${t.accion}',${productoId ? '\''+productoId+'\'' : 'null'})" style="background:${color};color:#fff;border:0;padding:6px 14px;border-radius:8px;cursor:pointer;font-size:11px;font-weight:700;font-family:inherit;">${accionLabel}</button>
+              <button onclick="this.closest('div[style*=border-left]').style.opacity='0.4';_tmAgenteGuardarHistorial(${JSON.stringify(t).replace(/"/g,'&quot;')})" style="background:rgba(255,255,255,0.08);color:#888;border:1px solid rgba(255,255,255,0.15);padding:6px 14px;border-radius:8px;cursor:pointer;font-size:11px;font-family:inherit;">✓ Hecho</button>
+            </div>
+          ` : ''}
+        </div>
+      `;
+    }).join('');
 
     panelAgente.innerHTML = `
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-        <h4 style="margin:0; color:#c9a96e; font-size:15px;">🤖 Supervisor IA — Tareas Sugeridas</h4>
-        <button id="btnReanalizarAgente" style="background:none; border:1px solid #c9a96e; color:#c9a96e; border-radius:6px; padding:2px 8px; cursor:pointer; font-size:11px;">🔄 Reanalizar</button>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span style="font-size:20px;">🤖</span>
+          <div>
+            <h4 style="margin:0;color:#c4b5fd;font-size:15px;font-weight:700;">Supervisor IA — Tareas para Hoy</h4>
+            <small style="color:#888;font-size:11px;">Análisis con contexto Cuba • ${new Date().toLocaleString('es-CU',{hour:'2-digit',minute:'2-digit',day:'numeric',month:'short'})}</small>
+          </div>
+        </div>
+        <button id="btnReanalizarAgente" style="background:rgba(139,92,246,0.15);border:1px solid rgba(139,92,246,0.4);color:#c4b5fd;border-radius:8px;padding:6px 12px;cursor:pointer;font-size:11px;font-weight:600;font-family:inherit;transition:all .15s;" onmouseover="this.style.background='rgba(139,92,246,0.25)'" onmouseout="this.style.background='rgba(139,92,246,0.15)'">🔄 Reanalizar</button>
       </div>
-      <div>${listaTareasHTML}</div>
+      <div id="tmAgenteLoading" style="display:none;"></div>
+      <div>${listaTareasHTML || '<p style="color:#888;text-align:center;padding:20px;">No hay tareas críticas. ¡Todo en orden! ✅</p>'}</div>
     `;
 
-    panelAgente.querySelector('#btnReanalizarAgente').addEventListener('click', ejecutarAgenteAutonomo);
+    const btnReanalizar = panelAgente.querySelector('#btnReanalizarAgente');
+    if (btnReanalizar) btnReanalizar.addEventListener('click', () => {
+      const loadingDiv = panelAgente.querySelector('#tmAgenteLoading');
+      if (loadingDiv) {
+        loadingDiv.style.display = 'block';
+        loadingDiv.innerHTML = '⏳ Analizando con IA...';
+      }
+      ejecutarAgenteAutonomo();
+    });
   }
+
+  // Función global para ejecutar acciones desde los botones del agente
+  window.tmAgenteEjecutarAccion = function(accion, productoId) {
+    switch(accion) {
+      case 'editar_producto':
+        if (productoId && typeof editarProducto === 'function') {
+          editarProducto(productoId);
+        } else if (typeof switchTab === 'function') {
+          switchTab('manage-products');
+        }
+        break;
+      case 'ver_ventas':
+        if (typeof switchTab === 'function') switchTab('ventas');
+        break;
+      case 'publicar':
+        if (typeof switchTab === 'function') switchTab('publicacion');
+        break;
+      case 'ver_analytics':
+        if (typeof switchTab === 'function') switchTab('analytics');
+        break;
+      default:
+        console.log('Acción no reconocida:', accion);
+    }
+  };
+  window._tmAgenteGuardarHistorial = _tmAgenteGuardarHistorial;
 
   // Inicializar al cargar el Panel
   function bootAgente() {
     solicitarPermisosNotificaciones();
-    // Esperar unos segundos a que Firebase cargue los productos/vistas para que lea datos reales
+    // Esperar a que Firebase cargue los productos/vistas para que lea datos reales
     setTimeout(ejecutarAgenteAutonomo, 3500); 
+    // Monitoreo continuo cada 30 min (mejora v2)
+    setInterval(() => {
+      // Solo reanalizar si el admin está visible y la pestaña activa
+      if (!document.hidden && document.getElementById('tmConsolaAgenteIA')) {
+        ejecutarAgenteAutonomo();
+      }
+    }, 30 * 60 * 1000); // 30 minutos
   }
 
   if (document.readyState === 'loading') {

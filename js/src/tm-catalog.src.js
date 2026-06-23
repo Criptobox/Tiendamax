@@ -327,6 +327,7 @@ function abrirEditModal(id) {
     // Nuevos campos en edición
     if (document.getElementById('editProductUsado')) document.getElementById('editProductUsado').checked = p.usado || false;
     if (document.getElementById('editProductGarantia')) document.getElementById('editProductGarantia').value = p.garantia || '';
+    if (document.getElementById('editProductSpecs')) document.getElementById('editProductSpecs').value = Array.isArray(p.specs) ? p.specs.join(', ') : '';
     if (document.getElementById('editProductDevolucion')) document.getElementById('editProductDevolucion').checked = p.devolucion || false;
     if (document.getElementById('editProductComision')) document.getElementById('editProductComision').value = p.comision || '';
     const _editComMon = p.comisionMoneda || 'USD';
@@ -400,6 +401,11 @@ async function guardarProductoEditado(event) {
             imagenes: imagenes,
             usado: document.getElementById('editProductUsado') ? document.getElementById('editProductUsado').checked : productos[index].usado,
             garantia: document.getElementById('editProductGarantia') ? document.getElementById('editProductGarantia').value.trim() : productos[index].garantia,
+            specs: (() => {
+                const raw = (document.getElementById('editProductSpecs')?.value || '').trim();
+                if (!raw) return [];
+                return raw.split(',').map(s => s.trim()).filter(Boolean).slice(0, 6);
+            })(),
             devolucion: document.getElementById('editProductDevolucion') ? document.getElementById('editProductDevolucion').checked : productos[index].devolucion,
             comision: document.getElementById('editProductComision') ? parseFloat(document.getElementById('editProductComision').value) || 0 : productos[index].comision || 0,
             comisionMoneda: document.getElementById('editProductComisionMoneda')?.value || productos[index].comisionMoneda || 'USD',
@@ -477,7 +483,7 @@ function guardarConfiguracionGitHub(event) {
 // ===== SISTEMA DE DELTA SYNC =====
 // Registra qué productos fueron modificados desde la última sincronización
 function marcarProductoModificado(id) {
-    const modificados = tmParse(localStorage.getItem('productosModificados'), []) || [];
+    const modificados = tmParseArray(localStorage.getItem('productosModificados'));
     if (!modificados.includes(id)) modificados.push(id);
     localStorage.setItem('productosModificados', JSON.stringify(modificados));
     localStorage.setItem('ultimaModificacion', Date.now().toString());
@@ -489,7 +495,7 @@ function limpiarProductosModificados() {
 }
 
 function obtenerProductosModificados() {
-    return tmParse(localStorage.getItem('productosModificados'), []) || [];
+    return tmParseArray(localStorage.getItem('productosModificados'));
 }
 
 async function sincronizarTodoConGitHub() {
@@ -586,10 +592,10 @@ async function sincronizarTodoConGitHub() {
     const archivos = [
         { path: 'productos.json',              data: productos },
         { path: 'categorias.json',             data: { nombres: categorias, iconos: iconosPersonalizados } },
-        { path: 'subcategorias.json',          data: tmParse(localStorage.getItem('subcategorias'), {}) || {} },
-        { path: 'grupos_facebook_config.json', data: { grupos: tmParse(localStorage.getItem('gruposFB'), []) || [], exportado: new Date().toISOString() } },
-        { path: 'revolico_config.json',        data: tmParse(localStorage.getItem('revolicoConfig'), {}) || {} },
-        { path: 'banners.json',                data: tmParse(localStorage.getItem('heroBanners'), []) || [] },
+        { path: 'subcategorias.json',          data: tmParseObject(localStorage.getItem('subcategorias')) },
+        { path: 'grupos_facebook_config.json', data: { grupos: tmParseArray(localStorage.getItem('gruposFB')), exportado: new Date().toISOString() } },
+        { path: 'revolico_config.json',        data: tmParseObject(localStorage.getItem('revolicoConfig')) },
+        { path: 'banners.json',                data: tmParseArray(localStorage.getItem('heroBanners')) },
         // comisiones.json eliminado — consolidado en productos.json
         // ventas_historial.json migrado a Firebase — ya no se sube a GitHub
         { path: 'config.json',                 data: _configSync },

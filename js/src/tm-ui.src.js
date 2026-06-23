@@ -694,7 +694,7 @@ async function tmDiagnosticarFirebase() {
     // Reseñas en localStorage
     const lsKeys = Object.keys(localStorage).filter(k => k.startsWith('resenas_'));
     if (lsKeys.length > 0) {
-        const total = lsKeys.reduce((s,k) => s + (tmParse(localStorage.getItem(k), []) || [].length), 0);
+        const total = lsKeys.reduce((s,k) => s + (tmParseArray(localStorage.getItem(k)).length), 0);
         add(`💾 LocalStorage: ${total} reseña(s) — SOLO en ESTE dispositivo`);
     }
 
@@ -721,7 +721,7 @@ Después haz clic en <b>Publicar</b> y recarga el admin.`;
 // Helper: obtiene la URL base de Firebase RTDB desde config guardada
 function _fbRtdbUrl() {
     try {
-        const cfg = tmParse(localStorage.getItem('firebaseConfig'), {}) || {};
+        const cfg = tmParseObject(localStorage.getItem('firebaseConfig'));
         if (!cfg || typeof cfg !== 'object') return null;
         return cfg.databaseURL ||
                (cfg.projectId ? `https://${cfg.projectId}-default-rtdb.firebaseio.com` : null);
@@ -771,7 +771,7 @@ function _fbBorrarTodasVentas() {
 // Migra ventas guardadas accidentalmente en la raíz de Firebase (0,1,2,3...) a /ventas/{id}
 async function _fbMigrarVentasRaiz(url) {
     const ventasMigradas = [];
-    const _elimSet = new Set(tmParse(localStorage.getItem('_tmVentasElim'), []) || []);
+    const _elimSet = new Set(tmParseArray(localStorage.getItem('_tmVentasElim')));
     for (let k = 0; k < 20; k++) {
         try {
             const r = await fetch(`${url}/${k}.json`);
@@ -804,19 +804,19 @@ async function _fbSincronizarVentasAlIniciar() {
         const res = await fetch(`${url}/ventas.json`);
         if (!res.ok) return;
         const data = await res.json();
-        const _elimSet = new Set(tmParse(localStorage.getItem('_tmVentasElim'), []) || []);
+        const _elimSet = new Set(tmParseArray(localStorage.getItem('_tmVentasElim')));
         const _esPrueba = v => {
             const n = String(v.producto || '').trim().toLowerCase();
             return n.length <= 1 || ['a','b','test','prueba','producto a','producto b','aa','bb'].includes(n);
         };
-        const ventasFB = (data && typeof data === 'object' && !Array.isArray(data))
+        const ventasFB = data && typeof data === 'object'
             ? Object.values(data).filter(v => v && !_elimSet.has(v.id) && !_esPrueba(v))
             : [];
 
         // Combinar migradas + las ya en /ventas/
         const todasFB = [...ventasFB, ...migradas.filter(m => !ventasFB.find(v => v.id === m.id) && !_esPrueba(m))];
 
-        const ventasLocales = Array.isArray(tmParse(localStorage.getItem('registroVentas'), [])) ? tmParse(localStorage.getItem('registroVentas'), []) : [];
+        const ventasLocales = tmParseArray(localStorage.getItem('registroVentas'));
         const idsFB = new Set(todasFB.map(v => v.id));
         const soloLocales = ventasLocales.filter(v => !idsFB.has(v.id) && !_esPrueba(v));
         soloLocales.forEach(v => _fbGuardarVenta(v));
@@ -834,7 +834,7 @@ async function _fbSincronizarVentasAlIniciar() {
 
 function cargarVentas() {
     try {
-        const v = tmParse(localStorage.getItem('registroVentas'), []) || [];
+        const v = tmParseArray(localStorage.getItem('registroVentas'));
         if (!Array.isArray(v)) return [];
         const esPrueba = n => { const s = String(n || '').trim().toLowerCase(); return s.length <= 1 || ['a','b','test','prueba','producto a','producto b'].includes(s); };
         return v.filter(x => x && !esPrueba(x.producto));
@@ -1048,7 +1048,7 @@ function eliminarVenta(id) {
     const ventas = cargarVentas().filter(v => v.id !== id);
     localStorage.setItem('registroVentas', JSON.stringify(ventas));
     // Registrar como eliminada para que el sync de Firebase no la reimporte
-    const elim = tmParse(localStorage.getItem('_tmVentasElim'), []) || [];
+    const elim = tmParseArray(localStorage.getItem('_tmVentasElim'));
     if (!elim.includes(id)) { elim.push(id); if (elim.length > 300) elim.splice(0, elim.length - 300); }
     localStorage.setItem('_tmVentasElim', JSON.stringify(elim));
     renderizarVentas();
@@ -1059,7 +1059,7 @@ function borrarHistorialVentas() {
     if (!confirm('¿Borrar todo el historial de ventas?')) return;
     // Guardar IDs en _tmVentasElim ANTES de limpiar para que el sync no los reimporte desde Firebase
     const actuales = cargarVentas();
-    const elim = tmParse(localStorage.getItem('_tmVentasElim'), []) || [];
+    const elim = tmParseArray(localStorage.getItem('_tmVentasElim'));
     actuales.forEach(v => { if (v.id && !elim.includes(v.id)) elim.push(v.id); });
     if (elim.length) localStorage.setItem('_tmVentasElim', JSON.stringify(elim.slice(-300)));
     localStorage.removeItem('registroVentas');
@@ -1201,27 +1201,27 @@ function renderizarGruposFB(grupos) {
 }
 
 function agregarGrupoFB() {
-    const grupos = tmParse(localStorage.getItem('gruposFB'), []) || [];
+    const grupos = tmParseArray(localStorage.getItem('gruposFB'));
     grupos.push({ url: '', productos: productos.map(p => p.id) }); // Por defecto todos seleccionados
     localStorage.setItem('gruposFB', JSON.stringify(grupos));
     renderizarGruposFB(grupos);
 }
 
 function eliminarGrupoFB(i) {
-    const grupos = tmParse(localStorage.getItem('gruposFB'), []) || [];
+    const grupos = tmParseArray(localStorage.getItem('gruposFB'));
     grupos.splice(i, 1);
     localStorage.setItem('gruposFB', JSON.stringify(grupos));
     renderizarGruposFB(grupos);
 }
 
 function actualizarGrupoFB(i, campo, valor) {
-    const grupos = tmParse(localStorage.getItem('gruposFB'), []) || [];
+    const grupos = tmParseArray(localStorage.getItem('gruposFB'));
     if (grupos[i]) grupos[i][campo] = valor;
     localStorage.setItem('gruposFB', JSON.stringify(grupos));
 }
 
 function toggleProductoEnGrupo(iGrupo, idProducto, checked) {
-    const grupos = tmParse(localStorage.getItem('gruposFB'), []) || [];
+    const grupos = tmParseArray(localStorage.getItem('gruposFB'));
     if (!grupos[iGrupo]) return;
     if (!grupos[iGrupo].productos) grupos[iGrupo].productos = [];
     if (checked) {
@@ -1234,7 +1234,7 @@ function toggleProductoEnGrupo(iGrupo, idProducto, checked) {
 }
 
 async function guardarGruposFB() {
-    const grupos = tmParse(localStorage.getItem('gruposFB'), []) || [];
+    const grupos = tmParseArray(localStorage.getItem('gruposFB'));
     const validos = grupos.filter(g => g.url && g.url.includes('facebook.com'));
 
     localStorage.setItem('gruposFB', JSON.stringify(validos));
@@ -1295,7 +1295,7 @@ function renderizarRevolicoConfig() {
     if (!cont) return;
 
     cont.innerHTML = '';
-    const config = tmParse(localStorage.getItem('revolicoConfig'), {}) || {};
+    const config = tmParseObject(localStorage.getItem('revolicoConfig'));
 
     if (productos.length === 0) {
         const empty = document.createElement('p');
@@ -1361,7 +1361,7 @@ function renderizarRevolicoConfig() {
 }
 
 function actualizarRevolicoCat(idProducto, categoria) {
-    const config = tmParse(localStorage.getItem('revolicoConfig'), {}) || {};
+    const config = tmParseObject(localStorage.getItem('revolicoConfig'));
     if (categoria) {
         config[idProducto] = categoria;
     } else {
@@ -1371,7 +1371,7 @@ function actualizarRevolicoCat(idProducto, categoria) {
 }
 
 function guardarRevolicoConfig() {
-    const config = tmParse(localStorage.getItem('revolicoConfig'), {}) || {};
+    const config = tmParseObject(localStorage.getItem('revolicoConfig'));
     const asignados = Object.keys(config).length;
     mostrarNotificacion(`✅ Config Revolico guardada (${asignados} productos asignados). Haz clic en ACTUALIZAR TIENDA para subir a GitHub.`);
 }
@@ -1379,7 +1379,7 @@ function guardarRevolicoConfig() {
 // ── Grupos FB persistentes (carga al abrir pestaña) ──
 
 function cargarGruposFB() {
-    const grupos = tmParse(localStorage.getItem('gruposFB'), []) || [];
+    const grupos = tmParseArray(localStorage.getItem('gruposFB'));
     renderizarGruposFB(grupos);
     renderizarRevolicoConfig();
 }
@@ -1387,7 +1387,7 @@ function cargarGruposFB() {
 // ── Patch guardarGruposFB para también actualizar localStorage limpio ──
 const _origGuardarGrupos = guardarGruposFB;
 guardarGruposFB = function() {
-    const grupos = tmParse(localStorage.getItem('gruposFB'), []) || [];
+    const grupos = tmParseArray(localStorage.getItem('gruposFB'));
     const validos = grupos.filter(g => g.url && g.url.includes('facebook.com'));
     mostrarNotificacion(`✅ ${validos.length} grupos guardados. Haz clic en ACTUALIZAR TIENDA para que sean permanentes.`);
     // FIX BUG #4: llamar al original para que descargue el JSON
@@ -1595,7 +1595,7 @@ renderizarProductos = function() {
     // RESILIENCIA: si productos está vacío, intentar cargar de localStorage
     if (!Array.isArray(productos) || productos.length === 0) {
         try {
-            const cached = tmParse(localStorage.getItem('productos'), []) || [];
+            const cached = tmParseArray(localStorage.getItem('productos'));
             if (Array.isArray(cached) && cached.length > 0) {
                 productos = cached;
                 
@@ -1648,11 +1648,25 @@ renderizarProductos = function() {
 
     productosGrid.innerHTML = '';
     if (productosFiltrados.length === 0) {
+        // Si los productos aún no cargan, mostrar skeleton cards en vez de texto
+        if (!Array.isArray(productos) || productos.length === 0) {
+            const skeletonHTML = Array(6).fill(0).map(() => 
+                '<div class="producto-card skeleton-card" style="background:#1a1a1a;border:1px solid rgba(255,255,255,0.05);border-radius:20px;overflow:hidden;animation:skeletonPulse 1.5s ease-in-out infinite;">' +
+                '<div style="height:220px;background:linear-gradient(90deg,#222 0%,#2a2a2a 50%,#222 100%);background-size:200% 100%;animation:tm-shimmer 1.5s ease-in-out infinite;"></div>' +
+                '<div style="padding:20px;">' +
+                '<div style="height:16px;background:#2a2a2a;border-radius:4px;margin-bottom:8px;width:80%;animation:tm-shimmer 1.5s ease-in-out infinite;"></div>' +
+                '<div style="height:12px;background:#222;border-radius:4px;margin-bottom:6px;width:100%;animation:tm-shimmer 1.5s ease-in-out infinite;"></div>' +
+                '<div style="height:12px;background:#222;border-radius:4px;margin-bottom:6px;width:90%;animation:tm-shimmer 1.5s ease-in-out infinite;"></div>' +
+                '<div style="height:20px;background:#2a2a2a;border-radius:4px;margin-top:12px;width:50%;animation:tm-shimmer 1.5s ease-in-out infinite;"></div>' +
+                '<div style="height:36px;background:#2a2a2a;border-radius:8px;margin-top:12px;width:100%;animation:tm-shimmer 1.5s ease-in-out infinite;"></div>' +
+                '</div></div>'
+            ).join('');
+            productosGrid.innerHTML = skeletonHTML;
+            return;
+        }
         // Mensaje contextual según la situación real
         let mensaje;
-        if (!Array.isArray(productos) || productos.length === 0) {
-            mensaje = '⏳ Cargando productos... Si esto persiste, recarga la página.';
-        } else if (subcategoriaSeleccionada && subcategoriaSeleccionada !== 'Todas') {
+        if (subcategoriaSeleccionada && subcategoriaSeleccionada !== 'Todas') {
             mensaje = 'No hay productos en esta subcategoría aún.';
         } else if (_heroSearchActivo) {
             mensaje = 'No hay productos que coincidan con tu búsqueda.';
