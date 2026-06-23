@@ -4,8 +4,8 @@
     "nombre": "BATERÍA MUST TIPO LIFEPO4",
     "descripcion": "Batería tipo LiFePO4 (litio hierro fosfato).\n* Mas segura y con mayor vida útil que las tradicionales.\n* Capacidad de 12.8V y 100Ah (1280Wh), ideal para sistemas solares, inversores y respaldo eléctrico.\n* Alta corriente de descarga hasta 100A, permite alimentar equipos de consumo medio-alto.\n* Corriente máxima de carga de 50A, lo que permite recargas relativamente rápidas.\n* Larga durabilidad (3000 ciclos) y funcionamiento en temperaturas de 0°C a 45°C.",
     "imagen": "https://tiendamax.org/imagenes/img_1778104115783.webp",
-    "precioActual": 300,
-    "descuento": 0,
+    "precioActual": 290,
+    "descuento": 3,
     "stock": 20,
     "categoria": "ENERGIA",
     "masVendido": false,
@@ -14,7 +14,7 @@
     "devolucion": false,
     "subcategoria": "BATERÍAS",
     "comision": 10,
-    "precioOriginal": 0,
+    "precioOriginal": 300,
     "nombreNormalizadoAt": "2026-06-09T19:34:37.031Z",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1778104115783.webp"
