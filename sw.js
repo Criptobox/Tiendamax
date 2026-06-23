@@ -105,7 +105,7 @@
 
 
 
-const CACHE_NAME = 'tiendamax-202606231557';
+const CACHE_NAME = 'tiendamax-202606231606';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
@@ -113,7 +113,17 @@ const STATIC_ASSETS = [
   '/css/fonts.css',
   '/css/bundle.css',
   '/css/admin.css',
-  '/js/script.js',
+  '/js/src/tm-config.js',
+  '/js/src/tm-data.js',
+  '/js/src/tm-state.js',
+  '/js/src/tm-admin.js',
+  '/js/src/tm-product.js',
+  '/js/src/tm-catalog.js',
+  '/js/src/tm-init.js',
+  '/js/src/tm-ui.js',
+  '/js/src/tm-toast.js',
+  '/js/src/tm-iife.js',
+  '/js/src/tm-patches.js',
   '/js/analytics.js',
   '/js/admin-copilot.js',
   '/js/seo-dynamico.js',
@@ -137,8 +147,12 @@ const STATIC_ASSETS = [
 self.addEventListener('install', e => {
     self.skipWaiting();
     e.waitUntil(
-        caches.open(CACHE_NAME)
-            .then(cache => cache.addAll(STATIC_ASSETS).catch(err => console.warn('Cache addAll failed:', err)))
+        caches.open(CACHE_NAME).then(cache =>
+            // Cachear uno por uno: si un asset falla (404), no tumba el resto del precache
+            Promise.all(STATIC_ASSETS.map(url =>
+                cache.add(url).catch(err => console.warn('Cache add failed:', url, err))
+            ))
+        )
     );
 });
 
