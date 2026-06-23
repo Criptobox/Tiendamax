@@ -1,0 +1,160 @@
+{
+  "rules": {
+    "analytics": {
+      "vistas": {
+        "$productId": {
+          "count": {
+            ".read": true,
+            ".write": true,
+            ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 1000000"
+          }
+        }
+      },
+      "whatsapp": {
+        "$productId": {
+          "count": {
+            ".read": true,
+            ".write": true,
+            ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 1000000"
+          }
+        }
+      },
+      "busquedas": {
+        "$termino": {
+          ".read": true,
+          ".write": true,
+          ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 10000000"
+        }
+      },
+      ".read": true,
+      ".write": false
+    },
+    "tokens": {
+      "$tokenId": {
+        ".read": false,
+        ".write": true,
+        ".validate": "newData.hasChildren(['token', 'timestamp']) && newData.child('timestamp').val() >= now - 900000 && newData.child('timestamp').val() <= now + 900000",
+        "token": {
+          ".validate": "newData.isString() && newData.val().length > 50 && newData.val().length < 500"
+        },
+        "timestamp": {
+          ".validate": "newData.isNumber()"
+        },
+        "userAgent": {
+          ".validate": "newData.isString()"
+        },
+        "fingerprint": {
+          ".validate": "newData.isString()"
+        },
+        "deviceId": {
+          ".validate": "newData.isString()"
+        }
+      },
+      ".read": false,
+      ".write": false
+    },
+    ".read": false,
+    ".write": false,
+    "avisos_stock": {
+      "$productId": {
+        "$tokenId": {
+          ".write": true,
+          ".validate": "newData.hasChildren(['token','timestamp']) && newData.child('timestamp').val() <= now + 60000",
+          "token": {
+            ".validate": "newData.isString() && newData.val().length > 50 && newData.val().length < 500"
+          },
+          "timestamp": {
+            ".validate": "newData.isNumber()"
+          }
+        },
+        ".read": "auth != null"
+      },
+      ".read": "auth != null",
+      ".write": false
+    },
+    "resenas": {
+      ".read": true,
+      ".write": false,
+      "$productoId": {
+        "$resenaId": {
+          ".write": "!data.exists()",
+          ".validate": "newData.hasChildren(['autor','texto','estrellas','fecha','ts']) && newData.child('estrellas').isNumber() && newData.child('estrellas').val() >= 1 && newData.child('estrellas').val() <= 5 && newData.child('texto').val().length >= 10 && newData.child('texto').val().length <= 400 && newData.child('autor').val().length >= 1 && newData.child('autor').val().length <= 50 && newData.child('ts').isNumber() && newData.child('ts').val() >= now - 300000 && newData.child('ts').val() <= now + 60000"
+        }
+      }
+    },
+    "ventas": {
+      ".read": "auth != null",
+      ".write": false,
+      "$ventaId": {
+        ".write": true,
+        ".validate": "newData.hasChildren(['producto', 'precio', 'cantidad', 'total', 'fecha']) && newData.child('precio').isNumber() && newData.child('cantidad').isNumber() && newData.child('total').isNumber()"
+      }
+    },
+    "lista_espera": {
+      ".read": true,
+      ".write": false,
+      "$productoId": {
+        "$entradaId": {
+          ".write": true,
+          ".validate": "newData.hasChildren(['tel','productoId','ts']) && newData.child('tel').isString() && newData.child('tel').val().length >= 6 && newData.child('tel').val().length <= 25 && newData.child('ts').isNumber()"
+        }
+      }
+    },
+    "interesados": {
+      ".read": true,
+      ".write": false,
+      "$productoId": {
+        "$ts": {
+          ".write": true,
+          ".validate": "newData.hasChildren(['ts','producto','productoId']) && newData.child('ts').isNumber() && newData.child('producto').isString()"
+        }
+      }
+    },
+    "configuracion": {
+      ".read": true,
+      ".write": false,
+      "categorias": {
+        ".write": false
+      },
+      "version": {
+        ".read": true,
+        ".write": false
+      }
+    },
+    "config": {
+      "version": {
+        ".read": true,
+        ".write": "auth != null",
+        ".validate": "newData.isNumber()"
+      }
+    },
+    "admin_push_requests": {
+      "$reqId": {
+        ".write": true,
+        ".validate": "newData.hasChildren(['title','body','ts']) && newData.child('title').isString() && newData.child('title').val().length >= 1 && newData.child('title').val().length <= 100 && newData.child('body').isString() && newData.child('body').val().length >= 1 && newData.child('body').val().length <= 300 && newData.child('ts').isNumber()"
+      },
+      ".read": false,
+      ".write": false
+    },
+    "admin_meta": {
+      ".read": false,
+      ".write": false
+    },
+    "avisos_count": {
+      "$productId": {
+        "count": {
+          ".read": true,
+          ".write": true,
+          ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 1000000"
+        }
+      },
+      ".read": true,
+      ".write": false
+    },
+    "admin_auth": {
+      ".read": "auth != null",
+      ".write": "!data.exists() || newData.child('proof').val() == data.child('hash').val()",
+      ".validate": "newData.hasChildren(['hash','salt','iterations']) && newData.child('hash').isString() && newData.child('hash').val().length == 64 && newData.child('salt').isString() && newData.child('salt').val().length >= 20 && newData.child('iterations').isNumber() && newData.child('iterations').val() >= 100000"
+    }
+  }
+}

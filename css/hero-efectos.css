@@ -1,0 +1,33 @@
+/* ════════════════════════════════════════════════════════
+   TiendaMax · Efectos Premium del Hero
+   - Cursor del efecto máquina de escribir del título
+   ════════════════════════════════════════════════════════ */
+
+/* Cursor parpadeante del efecto de escritura */
+.tmx-type-cursor {
+    display: inline-block;
+    width: 3px;
+    height: 0.85em;
+    background: var(--coral, #FF6B35);
+    margin-left: 3px;
+    vertical-align: text-bottom;
+    border-radius: 1px;
+    animation: tmxBlink 0.8s steps(1) infinite;
+    transform: translateY(-2px);
+}
+.tmx-type-cursor.tmx-done {
+    animation: none;
+    opacity: 0;
+}
+@keyframes tmxBlink { 50% { opacity: 0; } }
+
+/* Evita salto de altura mientras el título se escribe */
+.hero-content h1.tmx-typing {
+    min-height: 1.1em;
+}
+
+/* Respeta usuarios que prefieren menos movimiento */
+@media (prefers-reduced-motion: reduce) {
+    #tmxHeroLines { display: none; }
+    .tmx-type-cursor { animation: none; opacity: 0; }
+}

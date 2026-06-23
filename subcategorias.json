@@ -1,0 +1,66 @@
+{
+  "General": [],
+  "WIFI": [
+    "ROUTERS",
+    "SWITCHES",
+    "ACCESORIOS"
+  ],
+  "ENERGIA": [
+    "BATERÍAS",
+    "INVERSORES",
+    "CARGADORES",
+    "CONTROLADORES SOLARES"
+  ],
+  "CELULARES": [
+    "AUDIO",
+    "ACCESORIOS"
+  ],
+  "UTILES": [
+    "HERRAMIENTAS",
+    "SALUD Y BIENESTAR",
+    "DEPORTES",
+    "HOGAR",
+    "ILUMINACIÓN",
+    "OTROS"
+  ],
+  "CARROS": [
+    "ACEITES Y LUBRICANTES",
+    "REFRIGERANTES",
+    "LLANTAS",
+    "ACCESORIOS",
+    "FILTROS",
+    "PIEZAS Y OTROS"
+  ],
+  "ROPA": [
+    "HOMBRE",
+    "MUJER"
+  ],
+  "LENCERIA": [],
+  "SEGURIDAD": [
+    "CÁMARAS",
+    "ALARMAS",
+    "CERRADURAS"
+  ],
+  "HOGAR": [
+    "DECORACION",
+    "ELECTRODOMÉSTICOS"
+  ],
+  "JUEGOS": [
+    "MANDOS",
+    "CONSOLAS",
+    "ACCESORIOS"
+  ],
+  "MOTOS": [
+    "ACEITES Y LUBRICANTES",
+    "CARGADORES",
+    "ACCESORIOS",
+    "PARTES Y PIEZAS"
+  ],
+  "PC Y LAPTOPS": [
+    "COMPUTADORAS",
+    "LAPTOPS",
+    "GAMING",
+    "ACCESORIOS"
+  ],
+  "GYM": []
+}

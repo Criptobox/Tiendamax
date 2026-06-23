@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Estado WA — Canal Telegram TiendaMax</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:#111;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;font-family:'Segoe UI',system-ui,sans-serif;gap:20px;padding:20px}
+  h1{color:#fff;font-size:15px;opacity:.5;font-weight:400}
+
+  /* ── Story 9:16 ── */
+  .story{
+    width:360px;height:640px;
+    position:relative;overflow:hidden;
+    border-radius:24px;
+    background:linear-gradient(160deg,#0d0d0d 0%,#1a0a00 60%,#0d0d0d 100%);
+    box-shadow:0 24px 80px rgba(0,0,0,.6);
+    flex-shrink:0;
+  }
+
+  /* Orbes de fondo */
+  .orb{position:absolute;border-radius:50%;filter:blur(70px);pointer-events:none}
+  .o1{width:320px;height:320px;background:radial-gradient(circle,rgba(255,107,53,.45),transparent 70%);top:-80px;left:-80px}
+  .o2{width:280px;height:280px;background:radial-gradient(circle,rgba(42,171,238,.3),transparent 70%);bottom:-60px;right:-60px}
+  .o3{width:200px;height:200px;background:radial-gradient(circle,rgba(255,159,67,.2),transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%)}
+
+  /* Contenido */
+  .inner{position:relative;z-index:2;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:36px 28px 40px}
+
+  /* Logo/marca arriba */
+  .top{display:flex;flex-direction:column;align-items:center;gap:10px}
+  .logo-pill{background:rgba(255,107,53,.15);border:1px solid rgba(255,107,53,.3);border-radius:100px;padding:6px 18px;display:flex;align-items:center;gap:8px}
+  .logo-dot{width:8px;height:8px;border-radius:50%;background:#FF6B35;animation:pulse 2s ease-in-out infinite}
+  @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
+  .logo-text{font-size:13px;font-weight:700;color:#FF9F43;letter-spacing:.5px}
+
+  /* Centro — mensaje principal */
+  .mid{display:flex;flex-direction:column;align-items:center;gap:20px;text-align:center}
+  .tg-icon{width:80px;height:80px;background:linear-gradient(135deg,#2AABEE,#1E96D4);border-radius:24px;display:flex;align-items:center;justify-content:center;box-shadow:0 12px 40px rgba(42,171,238,.4)}
+  .tg-icon svg{width:46px;height:46px}
+  .badge-new{background:linear-gradient(135deg,#FF6B35,#FF9F43);border-radius:100px;padding:4px 14px;font-size:11px;font-weight:800;color:#fff;letter-spacing:1px;text-transform:uppercase}
+  .headline{font-size:28px;font-weight:900;color:#fff;line-height:1.15;letter-spacing:-1px}
+  .headline span{background:linear-gradient(135deg,#FF6B35,#FF9F43);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+  .sub{font-size:14px;color:rgba(255,255,255,.6);line-height:1.6;max-width:260px}
+
+  /* Beneficios */
+  .benefits{display:flex;flex-direction:column;gap:10px;width:100%}
+  .ben{display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.09);border-radius:14px;padding:10px 14px}
+  .ben-ico{font-size:20px;flex-shrink:0}
+  .ben-txt{font-size:13px;color:rgba(255,255,255,.8);font-weight:500}
+
+  /* CTA abajo */
+  .bot{display:flex;flex-direction:column;align-items:center;gap:12px;width:100%}
+  .cta-btn{width:100%;background:linear-gradient(135deg,#2AABEE,#1E96D4);border-radius:100px;padding:16px;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 8px 28px rgba(42,171,238,.4)}
+  .cta-btn svg{width:22px;height:22px;flex-shrink:0}
+  .cta-label{font-size:16px;font-weight:800;color:#fff;letter-spacing:.3px}
+  .cta-url{font-size:12px;color:rgba(255,255,255,.45);letter-spacing:.5px}
+
+  /* Botón descargar */
+  .dl-btn{margin-top:4px;background:linear-gradient(135deg,#FF6B35,#FF9F43);color:#fff;border:none;border-radius:100px;padding:14px 36px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;box-shadow:0 8px 28px rgba(255,107,53,.4);transition:transform .15s,box-shadow .15s}
+  .dl-btn:hover{transform:translateY(-2px);box-shadow:0 12px 36px rgba(255,107,53,.5)}
+  .copy-btn{background:rgba(255,255,255,.08);color:#fff;border:1px solid rgba(255,255,255,.15);border-radius:100px;padding:12px 28px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;transition:background .2s;display:flex;align-items:center;gap:8px}
+  .copy-btn:hover{background:rgba(255,255,255,.14)}
+  .copy-btn.copiado{border-color:#25D366;color:#25D366;background:rgba(37,211,102,.1)}
+  .caption-box{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:14px 18px;font-size:13px;color:rgba(255,255,255,.6);line-height:1.6;max-width:360px;text-align:left;white-space:pre-line}
+</style>
+</head>
+<body>
+
+<h1>Vista previa del estado</h1>
+
+<div class="story" id="story">
+  <!-- Fondo -->
+  <div class="orb o1"></div>
+  <div class="orb o2"></div>
+  <div class="orb o3"></div>
+
+  <div class="inner">
+    <!-- Arriba: marca -->
+    <div class="top">
+      <div class="logo-pill">
+        <div class="logo-dot"></div>
+        <span class="logo-text">TIENDAMAX</span>
+      </div>
+    </div>
+
+    <!-- Centro: mensaje -->
+    <div class="mid">
+      <div class="tg-icon">
+        <svg viewBox="0 0 24 24" fill="white"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12l-6.871 4.326-2.962-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.833.941z"/></svg>
+      </div>
+      <div class="badge-new">¡Únete ya!</div>
+      <div class="headline">Ofertas antes<br>que <span>nadie</span></div>
+      <div class="sub">Nuestro canal de Telegram tiene las mejores ofertas, novedades y descuentos exclusivos</div>
+    </div>
+
+    <!-- Beneficios -->
+    <div class="benefits">
+      <div class="ben"><span class="ben-ico">⚡</span><span class="ben-txt">Ofertas exclusivas antes que todos</span></div>
+      <div class="ben"><span class="ben-ico">📦</span><span class="ben-txt">Productos nuevos al instante</span></div>
+      <div class="ben"><span class="ben-ico">🎯</span><span class="ben-txt">Descuentos solo para miembros</span></div>
+    </div>
+
+    <!-- CTA -->
+    <div class="bot">
+      <div class="cta-btn">
+        <svg viewBox="0 0 24 24" fill="white"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12l-6.871 4.326-2.962-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.833.941z"/></svg>
+        <span class="cta-label">Unirse al Canal</span>
+      </div>
+      <span class="cta-url">t.me/TiendaMaxWeb</span>
+    </div>
+  </div>
+</div>
+
+<button class="dl-btn" onclick="descargar()">⬇ Descargar imagen</button>
+
+<div class="caption-box" id="captionBox">🔥 ¿Ya eres miembro de nuestro canal de Telegram?
+
+Ofertas exclusivas, productos nuevos y descuentos antes que nadie 👇
+
+👉 t.me/TiendaMaxWeb
+
+¡Únete gratis y no te pierdas nada! 🛍️</div>
+
+<button class="copy-btn" onclick="copiarCaption(this)">
+  📋 Copiar texto para el estado
+</button>
+<p class="hint">Pégalo como descripción al subir la imagen a WhatsApp</p>
+
+<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+<script>
+function copiarCaption(btn) {
+  const texto = document.getElementById('captionBox').innerText;
+  navigator.clipboard.writeText(texto).then(() => {
+    btn.innerHTML = '✅ ¡Copiado!';
+    btn.classList.add('copiado');
+    setTimeout(() => { btn.innerHTML = '📋 Copiar texto para el estado'; btn.classList.remove('copiado'); }, 2500);
+  }).catch(() => {
+    const ta = document.createElement('textarea');
+    ta.value = texto;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    ta.remove();
+    btn.innerHTML = '✅ ¡Copiado!';
+    btn.classList.add('copiado');
+    setTimeout(() => { btn.innerHTML = '📋 Copiar texto para el estado'; btn.classList.remove('copiado'); }, 2500);
+  });
+}
+
+async function descargar() {
+  const btn = document.querySelector('.dl-btn');
+  btn.textContent = 'Generando...';
+  btn.disabled = true;
+  try {
+    const canvas = await html2canvas(document.getElementById('story'), {
+      scale: 3,
+      useCORS: true,
+      backgroundColor: null,
+      logging: false
+    });
+    const link = document.createElement('a');
+    link.download = 'estado-telegram-tiendamax.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+  } catch(e) {
+    alert('Error al generar imagen. Intenta hacer captura de pantalla del story.');
+  }
+  btn.textContent = '⬇ Descargar imagen';
+  btn.disabled = false;
+}
+</script>
+</body>
+</html>
