@@ -664,6 +664,7 @@ async function tmDiagnosticarFirebase() {
         { path: '/resenas.json?shallow=true', label: 'Reseñas (/resenas)' },
         { path: '/interesados.json?shallow=true', label: 'Alertas (/interesados)' },
         { path: '/configuracion/categorias.json', label: 'Categorías (/configuracion/categorias)' },
+        { path: '/tokens.json?shallow=true', label: 'Suscripciones push (/tokens)' },
     ];
 
     let hayBloqueados = false;
@@ -704,12 +705,13 @@ async function tmDiagnosticarFirebase() {
 Ve a <b>console.firebase.google.com</b> → tu proyecto → <b>Realtime Database → Rules</b> y pega esto:<br><br>
 <pre style="background:rgba(0,0,0,.4);border-radius:6px;padding:8px;overflow-x:auto;color:#C9A96E;font-size:10px">{
   "rules": {
-    "resenas": { ".read": true, ".write": true },
-    "interesados": { ".read": true, ".write": true },
+    "resenas":       { ".read": true, ".write": true },
+    "interesados":   { ".read": true, ".write": true },
+    "tokens":        { ".read": true, ".write": true },
     "configuracion": { ".read": true, ".write": false },
-    "version": { ".read": true, ".write": false },
-    "admin_auth": { ".read": true, ".write": true },
-    "ventas": { ".read": true, ".write": true },
+    "version":       { ".read": true, ".write": false },
+    "admin_auth":    { ".read": true, ".write": true },
+    "ventas":        { ".read": true, ".write": true },
     ".read": false,
     ".write": false
   }
