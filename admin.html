@@ -718,15 +718,16 @@ async function tmAdminRefreshSubscribers(){
       let text='';
       if(provider==='groq'){
         // Groq API — gratis, sin tarjeta, modelos Llama Vision
-        const groqModels=['meta-llama/llama-4-scout-17b-16e-instruct','llama-3.2-11b-vision-preview'];
+        const groqModels=['meta-llama/llama-4-scout-17b-16e-instruct','meta-llama/llama-4-maverick-17b-128e-instruct','llama-3.2-90b-vision-preview','llama-3.2-11b-vision-preview'];
         let groqOk=false;
         for(const model of groqModels){
+          if(aiBox) aiBox.textContent='⏳ Groq: probando '+model.split('/').pop()+'...';
           const resp=await fetch('https://api.groq.com/openai/v1/chat/completions',{
             method:'POST',
             headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},
             body:JSON.stringify({model,max_tokens:512,temperature:0.3,messages:[{role:'user',content:[{type:'image_url',image_url:{url:'data:image/jpeg;base64,'+base64}},{type:'text',text:prompt}]}]})
           });
-          if(resp.status===404||resp.status===422){continue;}
+          if(resp.status===400||resp.status===404||resp.status===422){continue;}
           if(!resp.ok){
             const errTxt=await resp.text().catch(()=>'');
             let errMsg='HTTP '+resp.status;
