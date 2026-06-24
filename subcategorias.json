@@ -1,5 +1,4 @@
 {
-  "General": [],
   "WIFI": [
     "ROUTERS",
     "SWITCHES",
@@ -62,5 +61,6 @@
     "GAMING",
     "ACCESORIOS"
   ],
-  "GYM": []
+  "GYM": [],
+  "General": []
 }
