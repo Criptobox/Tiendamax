@@ -70,18 +70,141 @@ async function sincronizarConBackend() {
 
 // ===== RENDERIZAR PRODUCTOS =====
 
+const BATCH_SIZE = 6;
+let productosVisibleCount = BATCH_SIZE;
+let _productosFiltradosCache = [];
+let _tmScrollObs = null;
 
-let productosVisibleCount = 20;
+function _tmScrollReset() {
+    if (_tmScrollObs) { _tmScrollObs.disconnect(); _tmScrollObs = null; }
+}
+
+function _tmEnsureSpinKF() {
+    if (document.getElementById('_tmSpinStyle')) return;
+    const s = document.createElement('style');
+    s.id = '_tmSpinStyle';
+    s.textContent = '@keyframes tmSpin{to{transform:rotate(360deg)}}' +
+        '.tm-grid-counter{grid-column:1/-1;text-align:center;font-size:12px;letter-spacing:.5px;text-transform:uppercase;padding:12px 0 4px;color:rgba(255,255,255,.35)}' +
+        '.tm-spin-sentinel{grid-column:1/-1;display:flex;justify-content:center;padding:20px 0}';
+    document.head.appendChild(s);
+}
+
+function _crearCardProducto(producto) {
+    const card = document.createElement('div');
+    card.className = 'producto-card';
+    card.onclick = () => abrirDetalleProducto(producto.id);
+    const _nombre = escapeHtml(producto.nombre);
+    const _desc   = escapeHtml(producto.descripcion);
+    const _img    = escapeAttr(producto.imagen);
+    const _id     = safeNum(producto.id);
+    const _stock  = safeNum(producto.stock);
+    const _esAgotado = _stock === 0;
+    card.innerHTML = `
+        ${producto.masVendido ? '<div class="badge-vendido">🔥 Más Vendido</div>' : ''}
+        ${(producto.precioOriginal > 0 && producto.precioOriginal > producto.precioActual) ? '<div class="badge-precio-especial">⭐ Precio Especial</div>' : ''}
+        <div class="producto-image">
+            <img src="${_img}" alt="${_nombre}" loading="lazy" onerror="this.src='/iconos/favicon-192.png';this.style.opacity='0.3'">
+            ${(producto.precioOriginal > 0 && producto.precioOriginal > producto.precioActual) ? `<div class="badge">-${Math.round((1 - producto.precioActual/producto.precioOriginal) * 100)}%</div>` : ''}
+        </div>
+        <h3>${_nombre}</h3>
+        ${(() => {
+            const _specs = [];
+            const _descRaw = producto.descripcion || '';
+            const _matches = _descRaw.match(/\b(\d+(?:\.\d+)?)\s*(W|V|Ah|A|GB|TB|Mbps|GHz|MHz|HP|mAh|KV)\b/gi);
+            if (_matches) {
+                const _seen = new Set();
+                _matches.forEach(m => {
+                    if (!_seen.has(m.toUpperCase()) && _specs.length < 3) {
+                        _seen.add(m.toUpperCase());
+                        _specs.push(m.replace(/\s+/g, ''));
+                    }
+                });
+            }
+            if (producto.subcategoria && producto.subcategoria !== 'Todas' && producto.subcategoria !== 'General') {
+                _specs.unshift(producto.subcategoria);
+            }
+            if (_specs.length === 0) return '';
+            return '<div class="spec-badges">' + _specs.slice(0, 3).map(s => `<span class="spec-badge">${escapeHtml(s)}</span>`).join('') + '</div>';
+        })()}
+        <p class="producto-description">${_desc}</p>
+        ${(producto.precioOriginal > 0 && producto.precioOriginal > producto.precioActual)
+            ? `<div class="precio-mejorado">
+                <span class="precio-actual-mejorado" data-usd="${safeNum(producto.precioActual)}">$${producto.precioActual.toFixed(2)} USD</span>
+                <span class="precio-tachado-mejorado">$${producto.precioOriginal.toFixed(2)} USD</span>
+                <span class="precio-ahorro">ahorras $${(producto.precioOriginal - producto.precioActual).toFixed(0)}</span>
+               </div>`
+            : `<p class="precio">
+                <span class="precio-actual" data-usd="${safeNum(producto.precioActual)}">${typeof formatPrecio === 'function' ? formatPrecio(producto.precioActual) : '$'+producto.precioActual.toFixed(2)+' USD'}</span>
+               </p>`}
+        ${_esAgotado
+            ? '<div class="stock" style="color:#e74c3c;font-weight:700;">❌ Agotado</div>'
+            : `<div class="stock-count"><span>📦 Solo quedan ${_stock} unidades</span></div><div class="stock-bar"><div class="stock-bar-fill" style="width:${Math.min(100,((_stock)/20)*100)}%"></div></div>`}
+        ${typeof renderCountdownHtml === 'function' ? renderCountdownHtml(_id) : ''}
+        ${_esAgotado
+            ? '<button class="btn-pedir-card" disabled style="opacity:0.5;cursor:not-allowed;" type="button">No disponible</button>'
+            : `<button class="btn-pedir-card" onclick="event.stopPropagation();tmComprar(event,${_id},this.dataset.nombre)" data-nombre="${_nombre}" type="button"><span class="btn-pedir-wa-icon-sm"><svg viewBox="0 0 24 24" width="14" height="14" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg></span> Pedir</button>`}
+        <div class="tm-trust-badges" style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;font-size:10px;color:#6B6B7A;align-items:center;">
+            <span style="display:inline-flex;align-items:center;gap:3px;background:rgba(46,204,113,0.10);color:#2ECC71;padding:3px 8px;border-radius:8px;font-weight:600;">🔒 Pago contra entrega</span>
+            ${producto.garantia && String(producto.garantia).trim() ? '<span style="display:inline-flex;align-items:center;gap:3px;background:rgba(232,80,30,0.10);color:#E8501E;padding:3px 8px;border-radius:8px;font-weight:600;">🛡️ Garantía</span>' : ''}
+        </div>
+    `;
+    return card;
+}
+
+function _appendProductoCards(grid, lista) {
+    lista.forEach(producto => {
+        const card = _crearCardProducto(producto);
+        grid.appendChild(card);
+        if (window._tmAnimObs) window._tmAnimObs.observe(card);
+    });
+}
+
+function _renderGridFooter(grid) {
+    grid.querySelectorAll('.tm-grid-counter, .tm-spin-sentinel').forEach(el => el.remove());
+    const total = _productosFiltradosCache.length;
+
+    const counter = document.createElement('p');
+    counter.className = 'tm-grid-counter';
+
+    if (productosVisibleCount >= total) {
+        counter.textContent = `${total} producto${total !== 1 ? 's' : ''}`;
+        counter.style.opacity = '0.5';
+        grid.appendChild(counter);
+        return;
+    }
+
+    counter.textContent = `${productosVisibleCount} de ${total} productos`;
+    grid.appendChild(counter);
+
+    const sentinel = document.createElement('div');
+    sentinel.className = 'tm-spin-sentinel';
+    sentinel.innerHTML = '<div style="width:20px;height:20px;border:2px solid rgba(255,107,53,0.25);border-top-color:#FF6B35;border-radius:50%;animation:tmSpin .8s linear infinite" aria-label="Cargando más productos" role="status"></div>';
+    grid.appendChild(sentinel);
+
+    _tmScrollObs = new IntersectionObserver(entries => {
+        if (!entries[0].isIntersecting) return;
+        _tmScrollObs.disconnect();
+        _tmScrollObs = null;
+        const prevCount = productosVisibleCount;
+        productosVisibleCount = Math.min(prevCount + BATCH_SIZE, total);
+        grid.querySelectorAll('.tm-grid-counter, .tm-spin-sentinel').forEach(el => el.remove());
+        _appendProductoCards(grid, _productosFiltradosCache.slice(prevCount, productosVisibleCount));
+        _renderGridFooter(grid);
+    }, { rootMargin: '200px' });
+
+    _tmScrollObs.observe(sentinel);
+}
 
 function renderizarProductos(isLoadMore = false) {
-    if (!isLoadMore) {
-        productosVisibleCount = 20;
-    }
+    _tmScrollReset();
+    productosVisibleCount = BATCH_SIZE;
+    _tmEnsureSpinKF();
+
     const productosGrid = document.getElementById('productosGrid');
     if (!productosGrid) return;
 
-    let productosFiltrados = (categoriaSeleccionada === 'Todas' 
-        ? productos 
+    let productosFiltrados = (categoriaSeleccionada === 'Todas'
+        ? productos
         : productos.filter(p => p.categoria === categoriaSeleccionada))
         .slice().sort((a, b) => {
             const aAgotado = a.stock === 0 ? 1 : 0;
@@ -89,12 +212,10 @@ function renderizarProductos(isLoadMore = false) {
             return aAgotado - bAgotado;
         });
 
-    // Filtrar por subcategoría si hay una seleccionada (y no es 'Todas')
     if (categoriaSeleccionada !== 'Todas' && subcategoriaSeleccionada && subcategoriaSeleccionada !== 'Todas') {
         productosFiltrados = productosFiltrados.filter(p => p.subcategoria === subcategoriaSeleccionada);
     }
 
-    // Filtro de búsqueda hero, precio, stock y orden
     if (_heroSearchActivo || _heroPrecioMin > 0 || _heroPrecioMax < Infinity) {
         const q = _heroSearchActivo;
         productosFiltrados = productosFiltrados.filter(p => {
@@ -110,10 +231,10 @@ function renderizarProductos(isLoadMore = false) {
     else if (_heroOrden === 'precio_desc') productosFiltrados.sort((a,b) => safeNum(b.precioActual) - safeNum(a.precioActual));
     else if (_heroOrden === 'az')     productosFiltrados.sort((a,b) => (a.nombre||'').localeCompare(b.nombre||''));
 
+    _productosFiltradosCache = productosFiltrados;
     productosGrid.innerHTML = '';
 
     if (productosFiltrados.length === 0) {
-        // Mensaje contextual según la situación real
         let mensaje;
         if (!Array.isArray(productos) || productos.length === 0) {
             mensaje = '⏳ Cargando productos... Si esto persiste, recarga la página.';
@@ -128,91 +249,8 @@ function renderizarProductos(isLoadMore = false) {
         return;
     }
 
-    const productosAMostrar = productosFiltrados.slice(0, productosVisibleCount);
-
-    productosAMostrar.forEach(producto => {
-        const card = document.createElement('div');
-        card.className = 'producto-card';
-        card.onclick = () => abrirDetalleProducto(producto.id);
-        const _nombre = escapeHtml(producto.nombre);
-        const _desc   = escapeHtml(producto.descripcion);
-        const _img    = escapeAttr(producto.imagen);
-        const _id     = safeNum(producto.id);
-        const _stock  = safeNum(producto.stock);
-        const _esAgotado = _stock === 0;
-        card.innerHTML = `
-            ${producto.masVendido ? '<div class="badge-vendido">🔥 Más Vendido</div>' : ''}
-            ${(producto.precioOriginal > 0 && producto.precioOriginal > producto.precioActual) ? '<div class="badge-precio-especial">⭐ Precio Especial</div>' : ''}
-            <div class="producto-image">
-                <img src="${_img}" alt="${_nombre}" loading="lazy" onerror="this.src='/iconos/favicon-192.png';this.style.opacity='0.3'">
-                ${(producto.precioOriginal > 0 && producto.precioOriginal > producto.precioActual) ? `<div class="badge">-${Math.round((1 - producto.precioActual/producto.precioOriginal) * 100)}%</div>` : ''}
-            </div>
-            <h3>${_nombre}</h3>
-            ${(() => {
-                // Extraer specs de la descripción: números + unidad (W, V, Ah, A, GB, Mbps, etc.)
-                const _specs = [];
-                const _descRaw = producto.descripcion || '';
-                // Patrones comunes: 2000W, 12V, 100Ah, 30A, 128GB, 1200Mbps, etc.
-                const _matches = _descRaw.match(/\b(\d+(?:\.\d+)?)\s*(W|V|Ah|A|GB|TB|Mbps|GHz|MHz|HP|mAh|KV)\b/gi);
-                if (_matches) {
-                    const _seen = new Set();
-                    _matches.forEach(m => {
-                        if (!_seen.has(m.toUpperCase()) && _specs.length < 3) {
-                            _seen.add(m.toUpperCase());
-                            _specs.push(m.replace(/\s+/g, ''));
-                        }
-                    });
-                }
-                // Añadir subcategoria como primer spec si hay
-                if (producto.subcategoria && producto.subcategoria !== 'Todas' && producto.subcategoria !== 'General') {
-                    _specs.unshift(producto.subcategoria);
-                }
-                if (_specs.length === 0) return '';
-                return '<div class="spec-badges">' + _specs.slice(0, 3).map(s => `<span class="spec-badge">${escapeHtml(s)}</span>`).join('') + '</div>';
-            })()}
-            <p class="producto-description">${_desc}</p>
-            ${(producto.precioOriginal > 0 && producto.precioOriginal > producto.precioActual)
-                ? `<div class="precio-mejorado">
-                    <span class="precio-actual-mejorado" data-usd="${safeNum(producto.precioActual)}">$${producto.precioActual.toFixed(2)} USD</span>
-                    <span class="precio-tachado-mejorado">$${producto.precioOriginal.toFixed(2)} USD</span>
-                    <span class="precio-ahorro">ahorras $${(producto.precioOriginal - producto.precioActual).toFixed(0)}</span>
-                   </div>`
-                : `<p class="precio">
-                    <span class="precio-actual" data-usd="${safeNum(producto.precioActual)}">${typeof formatPrecio === 'function' ? formatPrecio(producto.precioActual) : '$'+producto.precioActual.toFixed(2)+' USD'}</span>
-                   </p>`}
-            ${_esAgotado
-                ? '<div class="stock" style="color:#e74c3c;font-weight:700;">❌ Agotado</div>'
-                : `<div class="stock-count"><span>📦 Solo quedan ${_stock} unidades</span></div><div class="stock-bar"><div class="stock-bar-fill" style="width:${Math.min(100,((_stock)/20)*100)}%"></div></div>`}
-            ${typeof renderCountdownHtml === 'function' ? renderCountdownHtml(_id) : ''}
-            ${_esAgotado
-                ? '<button class="btn-pedir-card" disabled style="opacity:0.5;cursor:not-allowed;" type="button">No disponible</button>'
-                : `<button class="btn-pedir-card" onclick="event.stopPropagation();tmComprar(event,${_id},this.dataset.nombre)" data-nombre="${_nombre}" type="button"><span class="btn-pedir-wa-icon-sm"><svg viewBox="0 0 24 24" width="14" height="14" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg></span> Pedir</button>`}
-            <div class="tm-trust-badges" style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;font-size:10px;color:#6B6B7A;align-items:center;">
-                <span style="display:inline-flex;align-items:center;gap:3px;background:rgba(46,204,113,0.10);color:#2ECC71;padding:3px 8px;border-radius:8px;font-weight:600;">🔒 Pago contra entrega</span>
-                ${producto.garantia && String(producto.garantia).trim() ? '<span style="display:inline-flex;align-items:center;gap:3px;background:rgba(232,80,30,0.10);color:#E8501E;padding:3px 8px;border-radius:8px;font-weight:600;">🛡️ Garantía</span>' : ''}
-            </div>
-        `;
-        productosGrid.appendChild(card);
-        if (window._tmAnimObs) window._tmAnimObs.observe(card);
-    });
-
-    if (productosFiltrados.length > productosVisibleCount) {
-        const loadMoreBtn = document.createElement('div');
-        loadMoreBtn.style.cssText = 'grid-column:1/-1;display:flex;flex-direction:column;align-items:center;gap:10px;margin-top:28px;padding:0 16px';
-        const restantes = productosFiltrados.length - productosVisibleCount;
-        loadMoreBtn.innerHTML = `
-            <p style="color:rgba(255,255,255,0.35);font-size:12px;letter-spacing:.5px;text-transform:uppercase">
-                Mostrando ${Math.min(productosVisibleCount, productosFiltrados.length)} de ${productosFiltrados.length} productos
-            </p>
-            <button class="btn-seguir-viendo">
-                👁️ Seguir viendo <span style="background:rgba(255,255,255,0.12);padding:2px 8px;border-radius:20px;font-size:11px;margin-left:4px">${restantes} más</span>
-            </button>`;
-        loadMoreBtn.querySelector('.btn-seguir-viendo').onclick = () => {
-            productosVisibleCount += 20;
-            renderizarProductos(true);
-        };
-        productosGrid.appendChild(loadMoreBtn);
-    }
+    _appendProductoCards(productosGrid, productosFiltrados.slice(0, BATCH_SIZE));
+    _renderGridFooter(productosGrid);
 }
 
 
