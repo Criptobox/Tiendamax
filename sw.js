@@ -105,11 +105,12 @@
 
 
 
-const CACHE_NAME = 'tiendamax-202606240010';
+const CACHE_NAME = 'tiendamax-202606240200';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
   '/admin.html',
+  '/config.json',
   '/css/fonts.css',
   '/css/bundle.css',
   '/css/admin.css',
@@ -207,12 +208,14 @@ self.addEventListener('fetch', e => {
             _fetchWithTimeout(e.request, 5000)
                 .then(res => {
                     if (res.ok) {
+                        // Guardar en caché sin query string para que el fallback ignoreSearch la encuentre
+                        const cacheKey = new Request(url.pathname);
                         const clone = res.clone();
-                        caches.open(CACHE_NAME).then(c => c.put(e.request, clone)).catch(() => {});
+                        caches.open(CACHE_NAME).then(c => c.put(cacheKey, clone)).catch(() => {});
                     }
                     return res;
                 })
-                .catch(() => caches.match(e.request))
+                .catch(() => caches.match(e.request, { ignoreSearch: true }))
         );
         return;
     }
