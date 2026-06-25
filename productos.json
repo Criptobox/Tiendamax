@@ -1473,5 +1473,28 @@
     "devolucion": false,
     "specs": [],
     "fechaAgregado": "2026-06-25T18:54:43.464Z"
+  },
+  {
+    "id": 1782413813740,
+    "nombre": "Panel de Pared de Césped y Plantas Artificiales",
+    "descripcion": "🌿 Panel de Pared de Césped y Plantas Artificiales\nRenueva cualquier espacio con un toque natural y elegante gracias a estos paneles decorativos de césped artificial.\n✔️ Seto de boj con acabado realista y color verde intenso\n✔️ Protección UV, ideal para interiores y exteriores\n✔️ Perfecto para decorar paredes, patios, balcones, jardines o negocios\n✔️ Ideal como valla de privacidad o pantalla para patio trasero\n✔️ Excelente opción para bodas, eventos y decoración del hogar\n✔️ Paquete de 10 unidades, cada panel mide 25 cm x 25 cm\n✔️ Fácil de instalar y de bajo mantenimiento\nDale vida a tus espacios con una decoración moderna y siempre verde.",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1782413810632.jpg",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1782413810632.jpg"
+    ],
+    "precioActual": 4,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 70,
+    "comision": 1,
+    "comisionMoneda": "USD",
+    "categoria": "HOGAR",
+    "subcategoria": "DECORACION",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "specs": [],
+    "fechaAgregado": "2026-06-25T18:56:53.740Z"
   }
 ]
