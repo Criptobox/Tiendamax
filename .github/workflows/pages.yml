@@ -24,23 +24,22 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Prepare deploy directory
+        run: |
+          mkdir _site
+          rsync -a --exclude='.claude' --exclude='.git' --exclude='_site' \
+            --exclude='mini-services' --exclude='scripts' \
+            --exclude='wrangler.toml' --exclude='firebase.json' \
+            --exclude='firebase-rules.json' \
+            . _site/
+
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
-      - name: Upload artifact (excluding .claude and dev files)
+      - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: '.'
-          exclude: |
-            .claude/**
-            .git/**
-            mini-services/**
-            scripts/**
-            wrangler.toml
-            firebase.json
-            firebase-rules.json
-            llms.txt
-            robots.txt
+          path: '_site'
 
       - name: Deploy to GitHub Pages
         id: deployment
