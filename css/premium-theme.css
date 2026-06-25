@@ -204,6 +204,37 @@ html body #productosGrid .producto-card .precio-actual {
 html body .badge-vendido{background:linear-gradient(135deg,#FF6B35,#E8501E)!important;border:none!important;color:#FFFFFF!important;box-shadow:0 3px 12px rgba(255,106,0,.4)!important;text-shadow:0 1px 2px rgba(0,0,0,.3)!important;animation:none!important}
 html body .footer-mobile-brand h3 em{color:#ff8a3d!important;-webkit-text-fill-color:#ff8a3d!important;background:none!important}
 
+/* Badge de ahorro (Propuesta B) — columna izquierda sobre imagen */
+.badge-ahorro-card {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: linear-gradient(135deg,#16a34a,#22c55e);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
+  padding: 4px 9px;
+  border-radius: 20px;
+  letter-spacing: .02em;
+  box-shadow: 0 2px 8px rgba(34,197,94,.4);
+}
+
+/* Trust badges — iconos estáticos en la card */
+.tm-ti {
+  width: 28px;
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  font-size: 14px;
+  border: 1px solid;
+  flex-shrink: 0;
+}
+.tm-ti-pago { background: rgba(46,204,113,.12); border-color: rgba(46,204,113,.3); }
+.tm-ti-gar  { background: rgba(232,80,30,.12);  border-color: rgba(232,80,30,.3);  }
+.tm-ti-dev  { background: rgba(52,152,219,.12); border-color: rgba(52,152,219,.3); }
+
 /* Precio con descuento: layout y color para precio actual y tachado */
 .producto-card .precio-mejorado {
   display: flex;

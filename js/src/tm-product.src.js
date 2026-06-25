@@ -396,7 +396,6 @@ if (_detailPrecioMNEl) {
     // Badges extra: garantia, devolución, usado
     const extBadges = document.getElementById('detailExtraBadges');
     let badges = '';
-    if (p.garantia) badges += `<span class="detail-badge-tag dtag-garantia">🛡️ Garantía: ${escapeHtml(p.garantia)}</span>`;
     if (p.devolucion) badges += `<span class="detail-badge-tag dtag-devolucion">↩️ Devolución aceptada</span>`;
     if (p.usado) badges += `<span class="detail-badge-tag dtag-usado">♻️ Producto usado</span>`;
     extBadges.innerHTML = badges;

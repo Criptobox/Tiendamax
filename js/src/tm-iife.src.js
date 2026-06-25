@@ -193,21 +193,10 @@ async function guardarTasaMNAdmin() {
                 card.classList.add('tm-card-nueva');
             }
 
-            if (producto.precioOriginal > 0 && producto.precioOriginal > producto.precioActual && !card.querySelector('.badge-rebajado')) {
-                const pct = Math.round((1 - producto.precioActual / producto.precioOriginal) * 100);
-                const imgWrap = card.querySelector('.producto-image');
-                if (imgWrap) {
-                    const b = document.createElement('div');
-                    b.className = 'badge-rebajado';
-                    b.textContent = '▼ ' + pct + '%';
-                    imgWrap.appendChild(b);
-                }
-            }
-
             // Agrupar todos los badges de la esquina izquierda en columna vertical
             if (!card.querySelector('.tm-badges-col')) {
                 const leftBadges = Array.from(card.querySelectorAll(
-                    '.badge-vendido,.badge-agotado,.badge-oferta-dia,.badge-rebajado,.badge-stock-urgente,.badge-nuevo'
+                    '.badge-vendido,.badge-agotado,.badge-oferta-dia,.badge-rebajado,.badge-stock-urgente,.badge-nuevo,.badge-ahorro-card'
                 ));
                 if (leftBadges.length > 0) {
                     const col = document.createElement('div');
