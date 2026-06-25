@@ -203,3 +203,49 @@ html body #productosGrid .producto-card .precio-actual {
 
 html body .badge-vendido{background:linear-gradient(135deg,#FF6B35,#E8501E)!important;border:none!important;color:#FFFFFF!important;box-shadow:0 3px 12px rgba(255,106,0,.4)!important;text-shadow:0 1px 2px rgba(0,0,0,.3)!important;animation:none!important}
 html body .footer-mobile-brand h3 em{color:#ff8a3d!important;-webkit-text-fill-color:#ff8a3d!important;background:none!important}
+
+/* Garantía: badge compacto + panel expandible */
+.tm-garantia-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(232,80,30,0.10);
+  color: #E8501E;
+  border: none;
+  border-radius: 8px;
+  padding: 3px 8px;
+  font-size: 14px;
+  cursor: pointer;
+  line-height: 1;
+  transition: background 0.15s;
+}
+.tm-garantia-badge:hover,
+.tm-garantia-badge:focus-visible {
+  background: rgba(232,80,30,0.22);
+  outline: none;
+}
+.tm-garantia-panel {
+  display: none;
+  align-items: flex-start;
+  gap: 6px;
+  background: rgba(232,80,30,0.07);
+  border: 1px solid rgba(232,80,30,0.18);
+  border-radius: 8px;
+  padding: 8px 10px;
+  margin-top: 6px;
+  font-size: 12px;
+  color: #c0392b;
+  line-height: 1.5;
+}
+.tm-garantia-panel.open {
+  display: flex;
+}
+.tm-garantia-panel-icon {
+  flex-shrink: 0;
+  font-size: 15px;
+  margin-top: 1px;
+}
+.tm-garantia-panel-text {
+  flex: 1;
+  word-break: break-word;
+}
