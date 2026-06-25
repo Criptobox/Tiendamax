@@ -1,0 +1,46 @@
+name: Deploy Chat Bot (Cloudflare Worker)
+
+# Despliega el Worker del bot "Max" a Cloudflare automáticamente.
+# Requiere estos secrets en el repo (Settings → Secrets and variables → Actions):
+#   CLOUDFLARE_API_TOKEN   — token con permiso "Edit Cloudflare Workers"
+#   CLOUDFLARE_ACCOUNT_ID  — ID de tu cuenta Cloudflare
+#   OPENROUTER_API_KEY     — key de openrouter.ai (modelos :free) — opcional pero recomendado
+#
+# Tras el primer deploy, mira el log: imprime la URL del Worker
+# (https://tiendamax-chat.<tu-subdominio>.workers.dev). Pégala en
+# index.html → <meta name="tm-bot-api" content="...">.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'mini-services/chat-bot/**'
+      - '.github/workflows/deploy-chat-bot.yml'
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Deploy Worker
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: mini-services/chat-bot
+          secrets: |
+            OPENROUTER_API_KEY
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+
+      - name: URL del Worker
+        run: |
+          echo "================================================================"
+          echo " Worker desplegado. Su URL suele ser:"
+          echo "   https://tiendamax-chat.<TU-SUBDOMINIO>.workers.dev"
+          echo " Cópiala del paso 'Deploy Worker' (Published ...) y pégala en"
+          echo " index.html → <meta name=\"tm-bot-api\" content=\"...\">"
+          echo "================================================================"
