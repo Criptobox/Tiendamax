@@ -1807,13 +1807,13 @@ renderizarProductos = function() {
             '<div class="producto-image">' +
                 getMeGustaHTML(_id) +
                 '<img src="' + _img + '" alt="' + _nom + '" loading="lazy" decoding="async" onerror="this.src=\'/iconos/favicon-192.png\';this.style.opacity=\'0.3\'">' +
-                (_hasDescuento ? '<div class="badge">-' + Math.round((1 - producto.precioActual/producto.precioOriginal) * 100) + '%</div>' : '') +
+                (_hasDescuento ? '<div class="badge">ahorra $' + (parseFloat(producto.precioOriginal) - parseFloat(producto.precioActual)).toFixed(0) + '</div>' : '') +
             '</div>' +
             '<h3>' + _nom + '</h3>' +
             (_specs.length ? '<div class="spec-badges">' + _specs.slice(0, 3).map(s => '<span class="spec-badge">' + escapeHtml(s) + '</span>').join('') + '</div>' : '') +
             '<p class="producto-description">' + _des + '</p>' +
             (_hasDescuento
-                ? '<div class="precio-mejorado"><span class="precio-actual-mejorado" data-usd="' + safeNum(producto.precioActual) + '">$' + Number(producto.precioActual).toFixed(2) + ' USD</span><span class="precio-tachado-mejorado">$' + parseFloat(producto.precioOriginal).toFixed(2) + ' USD</span><span class="precio-ahorro">ahorras $' + (parseFloat(producto.precioOriginal) - parseFloat(producto.precioActual)).toFixed(0) + '</span></div>'
+                ? '<div class="precio-mejorado"><span class="precio-actual-mejorado" data-usd="' + safeNum(producto.precioActual) + '">$' + Number(producto.precioActual).toFixed(2) + ' USD</span><span class="precio-tachado-mejorado">$' + parseFloat(producto.precioOriginal).toFixed(2) + ' USD</span></div>'
                 : '<p class="precio"><span class="precio-actual" data-usd="' + safeNum(producto.precioActual) + '">$' + Number(producto.precioActual).toFixed(2) + ' USD</span></p>') +
             (esAgotado
                 ? '<div class="stock" style="color:#e74c3c;font-weight:700;">❌ Agotado</div><button class="btn btn-small" disabled style="background:#555;color:#aaa;cursor:not-allowed;box-shadow:none;">🚫 No disponible</button>'
