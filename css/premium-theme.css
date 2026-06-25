@@ -185,5 +185,21 @@ html body .detail-gallery-thumb:hover {
   }
 }
 
+/* Precio siempre en una línea: evita que la card se ensanche cuando el
+   precio rompe en dos líneas en móvil ("$15.00 / USD" en líneas separadas). */
+html body .producto-card .precio-actual,
+html body #productosGrid .producto-card .precio-actual {
+  white-space: nowrap !important;
+  overflow: hidden !important;
+}
+
+@media (max-width: 768px) {
+  html body .producto-card .precio-actual,
+  html body #productosGrid .producto-card .precio-actual {
+    font-size: clamp(13px, 4.2vw, 17px) !important;
+    letter-spacing: -0.03em !important;
+  }
+}
+
 html body .badge-vendido{background:linear-gradient(135deg,#FF6B35,#E8501E)!important;border:none!important;color:#FFFFFF!important;box-shadow:0 3px 12px rgba(255,106,0,.4)!important;text-shadow:0 1px 2px rgba(0,0,0,.3)!important;animation:none!important}
 html body .footer-mobile-brand h3 em{color:#ff8a3d!important;-webkit-text-fill-color:#ff8a3d!important;background:none!important}
