@@ -204,6 +204,39 @@ html body #productosGrid .producto-card .precio-actual {
 html body .badge-vendido{background:linear-gradient(135deg,#FF6B35,#E8501E)!important;border:none!important;color:#FFFFFF!important;box-shadow:0 3px 12px rgba(255,106,0,.4)!important;text-shadow:0 1px 2px rgba(0,0,0,.3)!important;animation:none!important}
 html body .footer-mobile-brand h3 em{color:#ff8a3d!important;-webkit-text-fill-color:#ff8a3d!important;background:none!important}
 
+/* Precio con descuento: layout y color para precio actual y tachado */
+.producto-card .precio-mejorado {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin: 0;
+  padding: 0;
+}
+.producto-card .precio-actual-mejorado {
+  color: #ff9d63 !important;
+  -webkit-text-fill-color: #ff9d63 !important;
+  font-size: 1.15em !important;
+  font-weight: 900 !important;
+  white-space: nowrap;
+}
+.producto-card .precio-tachado-mejorado {
+  color: rgba(245,237,232,0.4) !important;
+  -webkit-text-fill-color: rgba(245,237,232,0.4) !important;
+  font-size: 0.82em !important;
+  font-weight: 400 !important;
+  text-decoration: line-through !important;
+  white-space: nowrap;
+}
+html body.light-mode .producto-card .precio-actual-mejorado {
+  color: #E8501E !important;
+  -webkit-text-fill-color: #E8501E !important;
+}
+html body.light-mode .producto-card .precio-tachado-mejorado {
+  color: #999 !important;
+  -webkit-text-fill-color: #999 !important;
+}
+
 /* Garantía: badge compacto + panel expandible */
 .tm-garantia-badge {
   display: inline-flex;

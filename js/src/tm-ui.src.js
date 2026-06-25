@@ -1789,16 +1789,15 @@ renderizarProductos = function() {
         const _hasDescuento = producto.precioOriginal > 0 && producto.precioOriginal > producto.precioActual;
         const _tieneGarantia = producto.garantia && String(producto.garantia).trim();
         const _tieneDevolucion = producto.devolucion === true;
-        let _trustBadgesHtml = '<div class="tm-trust-badges" style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;font-size:10px;color:#6B6B7A;align-items:center;">';
-        _trustBadgesHtml += '<span style="display:inline-flex;align-items:center;gap:3px;background:rgba(46,204,113,0.10);color:#2ECC71;padding:3px 8px;border-radius:8px;font-weight:600;">🔒 Pago contra entrega</span>';
-        if (_tieneGarantia) {
-            _trustBadgesHtml += '<button class="tm-garantia-badge" type="button" title="Ver garantía" onclick="event.stopPropagation();this.closest(\'.producto-card\').querySelector(\'.tm-garantia-panel\').classList.toggle(\'open\')">🛡️</button>';
-        }
+        let _trustBadgesHtml = '<div class="tm-trust-badges" style="display:flex;gap:6px;flex-wrap:nowrap;overflow:hidden;margin-top:8px;font-size:10px;color:#6B6B7A;align-items:center;">';
+        _trustBadgesHtml += '<span style="display:inline-flex;align-items:center;gap:3px;background:rgba(46,204,113,0.10);color:#2ECC71;padding:3px 8px;border-radius:8px;font-weight:600;white-space:nowrap;">🔒 Pago contra entrega' +
+            (_tieneGarantia ? '&nbsp;<button class="tm-garantia-badge" type="button" title="Ver garantía" onclick="event.stopPropagation();var p=this.closest(\'.producto-card\').querySelector(\'.tm-garantia-panel\');p.style.display=p.style.display===\'flex\'?\'none\':\'flex\'">🛡️</button>' : '') +
+            '</span>';
         if (_tieneDevolucion) {
-            _trustBadgesHtml += '<span style="display:inline-flex;align-items:center;gap:3px;background:rgba(52,152,219,0.10);color:#3498DB;padding:3px 8px;border-radius:8px;font-weight:600;">↩️ Devolución</span>';
+            _trustBadgesHtml += '<span style="display:inline-flex;align-items:center;gap:3px;background:rgba(52,152,219,0.10);color:#3498DB;padding:3px 8px;border-radius:8px;font-weight:600;white-space:nowrap;">↩️ Devolución</span>';
         }
         _trustBadgesHtml += '</div>';
-        const _garantiaPanel = _tieneGarantia ? '<div class="tm-garantia-panel"><span class="tm-garantia-panel-icon">🛡️</span><span class="tm-garantia-panel-text">Garantía: ' + escapeHtml(String(_tieneGarantia)) + '</span></div>' : '';
+        const _garantiaPanel = _tieneGarantia ? '<div class="tm-garantia-panel" style="display:none"><span class="tm-garantia-panel-icon">🛡️</span><span class="tm-garantia-panel-text">Garantía: ' + escapeHtml(String(_tieneGarantia)) + '</span></div>' : '';
         card.innerHTML =
             (esOfertaDia ? '<div class="badge-oferta-dia">' + _txt + '</div>' :
              esAgotado ? '<div class="badge-agotado">AGOTADO</div>' :
