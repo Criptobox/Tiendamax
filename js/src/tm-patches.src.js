@@ -1174,13 +1174,20 @@ function esProductoNuevo(producto) {
 // ═══════════════════════════════════════════════════════
 //  #1 CONVERTIDOR USD → MN
 //  Tasa se carga desde config.json en GitHub (sube a todos)
-//  + 10 MN de margen sobre la tasa base configurada
+//  Margen configurable (margenMN) sobre la tasa base de elTOQUE.
+//  margenMN = 0  →  el cliente ve la tasa real de elTOQUE, sin nada encima.
+//  Si no está configurado aún, por defecto +10 (comportamiento previo).
 // ═══════════════════════════════════════════════════════
 // _monedaActual ya está declarada al inicio del archivo
 
+function getMargenMN() {
+    const m = parseFloat(localStorage.getItem('margenMN'));
+    return isNaN(m) ? 10 : m;   // 0 se respeta; solo cae a 10 si nunca se configuró
+}
+
 function getTasaMN() {
     const base = parseFloat(localStorage.getItem('tasaMN') || '0');
-    return base > 0 ? base + 10 : 0;
+    return base > 0 ? base + getMargenMN() : 0;
 }
 
 // Guardar tasa en GitHub para que todos la vean
@@ -1195,6 +1202,7 @@ async function guardarTasaEnGitHub(tasaBase) {
             `https://raw.githubusercontent.com/${user}/${repo}/main/config.json?_=${Date.now()}`
         ).then(r => r.ok ? r.json() : {}).catch(() => ({}));
         existing.tasaMN      = tasaBase;
+        existing.margenMN    = getMargenMN();
         existing.actualizado = new Date().toISOString();
         await subirArchivoAGitHub(user, repo, token, 'config.json', existing);
         return true;
@@ -1218,6 +1226,10 @@ async function cargarTasaDesdeGitHub() {
             if (res.ok) cfg = await res.json();
         }
         if (cfg) {
+            // Cargar margen MN (puede ser 0). Solo si viene definido en config.
+            if (cfg.margenMN !== undefined && cfg.margenMN !== null && cfg.margenMN !== '' && !isNaN(parseFloat(cfg.margenMN))) {
+                localStorage.setItem('margenMN', String(parseFloat(cfg.margenMN)));
+            }
             // Cargar tasa MN
             if (cfg.tasaMN && parseFloat(cfg.tasaMN) > 0) {
                 localStorage.setItem('tasaMN', String(cfg.tasaMN));
@@ -1250,6 +1262,8 @@ async function cargarTasaDesdeGitHub() {
     const tasa = parseFloat(localStorage.getItem('tasaMN') || '0');
     const inputA = document.getElementById('adminTasaMN');
     if (inputA && tasa > 0 && !inputA.matches(':focus')) inputA.value = tasa;
+    const inputM = document.getElementById('adminMargenMN');
+    if (inputM && !inputM.matches(':focus')) inputM.value = getMargenMN();
 }
 
 async function tmRefrescarTasaElToque() {

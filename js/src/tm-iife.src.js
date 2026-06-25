@@ -71,13 +71,22 @@ async function guardarTasaMNAdmin() {
         if (status) status.textContent = '⚠️ Ingresa un valor válido';
         return;
     }
+    // Margen configurable (puede ser 0). Si el campo no existe o está vacío, se mantiene el actual.
+    const inputMargen = document.getElementById('adminMargenMN');
+    let margen = (typeof getMargenMN === 'function') ? getMargenMN() : 10;
+    if (inputMargen && inputMargen.value.trim() !== '') {
+        const m = parseFloat(inputMargen.value);
+        if (!isNaN(m) && m >= 0) margen = m;
+    }
     localStorage.setItem('tasaMN', String(val));
+    localStorage.setItem('margenMN', String(margen));
     if (status) status.textContent = '💾 Guardado localmente...';
-    // Subir a GitHub para que todos lo vean
+    // Subir a GitHub para que todos lo vean (guardarTasaEnGitHub incluye margenMN)
     const ok = await guardarTasaEnGitHub(val);
     if (status) {
+        const verCliente = margen === 0 ? `${val} MN/USD (tasa real, sin margen)` : `${val + margen} MN/USD (tasa ${val} + margen ${margen})`;
         status.textContent = ok
-            ? `✅ Tasa ${val} MN/USD subida a GitHub. Clientes verán ${val + 10} MN/USD.`
+            ? `✅ Subido a GitHub. Clientes verán ${verCliente}.`
             : '✅ Guardado local. Configura GitHub para sincronizar con todos.';
         status.style.color = ok ? '#2ECC71' : '#C9A96E';
     }
