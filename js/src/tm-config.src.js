@@ -413,7 +413,7 @@ function renderizarSimilaresCarrito() {
 // Si hay UN solo item con id, el link al final apunta a la página del
 // producto (/p/producto-{id}.html) para que WhatsApp genere la previa
 // con miniatura usando los meta og:image. Si hay varios, link genérico.
-function _mensajeOrdenWA(items) {
+function _mensajeOrdenWA(items, pedidoId) {
     // Emojis como escape ASCII para evitar corrupción de 4-byte UTF-8 en servidor
     const E = {
         cart : '\uD83D\uDED2',  // 🛒
@@ -426,6 +426,7 @@ function _mensajeOrdenWA(items) {
         pray : '\uD83D\uDE4F',  // 🙏
         heart: '\u2764\uFE0F',  // ❤️
         link : '\uD83D\uDD17',  // 🔗
+        pack : '\uD83D\uDCE6',  // 📦
     };
 
     const L = [];
@@ -477,11 +478,11 @@ function _mensajeOrdenWA(items) {
 function comprarCarrito() {
     if (carrito.length === 0) return;
     // Historial del cliente + analytics antes de abrir WhatsApp
-    guardarPedidoCliente(carrito.slice());
+    const pedidoId = guardarPedidoCliente(carrito.slice());
     if (typeof tmTrackWhatsApp === 'function') carrito.forEach(i => tmTrackWhatsApp(i.id));
     carrito.forEach(i => tmRegistrarInteresWhatsApp(i.id, 'carrito'));
     _gaEvent('purchase', { method: 'whatsapp_cart', items: carrito.length });
-    const msg = _mensajeOrdenWA(carrito);
+    const msg = _mensajeOrdenWA(carrito, pedidoId);
     window.open('https://wa.me/' + getNumeroWhatsApp() + '?text=' + msg, '_blank', 'noopener,noreferrer');
 }
 
@@ -737,6 +738,14 @@ function _observarTestimonios() {
         window.addEventListener('load', () => setTimeout(cargarTestimoniosFirebase, 2000), { once: true });
         return;
     }
+    // FIX: si el grid está oculto (dentro de vistaInicio con display:none), el observer
+    // nunca dispara. Fallback: cargar a los 3s sí o sí, además del observer.
+    setTimeout(function() {
+        if (!_testimoniosIniciados) {
+            _testimoniosIniciados = true;
+            cargarTestimoniosFirebase();
+        }
+    }, 3000);
     const obs = new IntersectionObserver(entries => {
         if (!entries[0].isIntersecting) return;
         obs.disconnect();
@@ -916,7 +925,7 @@ function _renderCardRecientes(p) {
     const agotado = p.stock === 0;
     return '<div class="rec-card" onclick="abrirDetalleProducto(' + id + ')">'
         + (agotado ? '<span class="rec-card-agotado">Agotado</span>' : '')
-        + '<img src="' + img + '" alt="' + nombre + '" loading="lazy" onerror="this.style.display=\'none\'">'
+        + '<img src="' + img + '" alt="' + nombre + '" loading="lazy" decoding="async" onerror="this.style.display=\'none\'">'
         + '<div class="rec-card-info">'
         +     '<div class="rec-card-nombre">' + nombre + '</div>'
         +     '<div class="rec-card-precio">$' + precio + '</div>'

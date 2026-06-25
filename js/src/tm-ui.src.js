@@ -460,7 +460,7 @@ async function _fbEnsureConfig() {
                 return cfg;
             }
         } catch(e) {
-            console.warn('⚠️ Firebase config load:', e.message);
+            // OPT 3G: silencioso — Firebase config se cargará en próximo intento
         } finally {
             setTimeout(() => { _fbConfigPromise = null; }, 1000);
         }
@@ -666,27 +666,6 @@ async function tmDiagnosticarFirebase() {
         { path: '/configuracion/categorias.json', label: 'Categorías (/configuracion/categorias)' },
     ];
 
-    // Verificar /tokens/ con una escritura de prueba (es write-only, leer da 403 a propósito)
-    try {
-        const testId = '_diag_' + Date.now();
-        const testUrl = base + '/tokens/' + testId + '.json';
-        const tw = await fetch(testUrl, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ token: 'diag_test_'.repeat(4), timestamp: Date.now(), userAgent: 'diag', fingerprint: 'diag' })
-        });
-        if (tw.ok) {
-            add('✅ Suscripciones push (/tokens): OK — escritura permitida');
-            await fetch(testUrl, { method: 'DELETE' }).catch(() => {});
-        } else {
-            const et = await tw.text().catch(() => '');
-            add('🔴 Suscripciones push (/tokens): BLOQUEADO (' + tw.status + ') — ' + et.slice(0,80));
-            hayBloqueados = true;
-        }
-    } catch(e) {
-        add('⚠️ Suscripciones push (/tokens): Sin red');
-    }
-
     let hayBloqueados = false;
     for (const { path, label } of rutas) {
         try {
@@ -725,13 +704,12 @@ async function tmDiagnosticarFirebase() {
 Ve a <b>console.firebase.google.com</b> → tu proyecto → <b>Realtime Database → Rules</b> y pega esto:<br><br>
 <pre style="background:rgba(0,0,0,.4);border-radius:6px;padding:8px;overflow-x:auto;color:#C9A96E;font-size:10px">{
   "rules": {
-    "resenas":       { ".read": true, ".write": true },
-    "interesados":   { ".read": true, ".write": true },
-    "tokens":        { ".read": true, ".write": true },
+    "resenas": { ".read": true, ".write": true },
+    "interesados": { ".read": true, ".write": true },
     "configuracion": { ".read": true, ".write": false },
-    "version":       { ".read": true, ".write": false },
-    "admin_auth":    { ".read": true, ".write": true },
-    "ventas":        { ".read": true, ".write": true },
+    "version": { ".read": true, ".write": false },
+    "admin_auth": { ".read": true, ".write": true },
+    "ventas": { ".read": true, ".write": true },
     ".read": false,
     ".write": false
   }
@@ -761,7 +739,7 @@ function _fbGuardarVenta(venta) {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(venta)
         });
-    })().catch(e => console.warn('⚠️ Firebase ventas write:', e.message));
+    })().catch(() => {}); // OPT 3G: silencioso
 }
 
 // Elimina una venta de Firebase RTDB
@@ -771,7 +749,7 @@ function _fbEliminarVenta(id) {
         const url = _fbRtdbUrl();
         if (!url) return;
         await fetch(`${url}/ventas/${id}.json`, { method: 'DELETE' });
-    })().catch(e => console.warn('⚠️ Firebase ventas delete:', e.message));
+    })().catch(() => {}); // OPT 3G: silencioso
 }
 
 // Borra todas las ventas de Firebase RTDB una a una (respeta reglas: solo write en $ventaId)
@@ -787,22 +765,30 @@ function _fbBorrarTodasVentas() {
         await Promise.all(Object.keys(data).map(k =>
             fetch(`${url}/ventas/${k}.json`, { method: 'DELETE' }).catch(() => {})
         ));
-    })().catch(e => console.warn('⚠️ Firebase ventas clear:', e.message));
+    })().catch(() => {}); // OPT 3G: silencioso
 }
 
 // Migra ventas guardadas accidentalmente en la raíz de Firebase (0,1,2,3...) a /ventas/{id}
 async function _fbMigrarVentasRaiz(url) {
     const ventasMigradas = [];
     const _elimSet = new Set(tmParseArray(localStorage.getItem('_tmVentasElim')));
+    // OPT 3G: health check primero — si Firebase no responde, NO hacer los 20 fetches
+    // (evita 20 errores ERR_CONNECTION_CLOSED en la consola del usuario en 3G)
+    try {
+        const probe = await fetch(`${url}/0.json`, { cache: 'no-store' });
+        if (!probe.ok && probe.status !== 200) return ventasMigradas;
+    } catch(e) {
+        // Firebase inalcanzable — abortar silenciosamente
+        return ventasMigradas;
+    }
     for (let k = 0; k < 20; k++) {
         try {
             const r = await fetch(`${url}/${k}.json`);
             if (!r.ok) continue;
             const v = await r.json();
             if (!v || typeof v !== 'object' || !v.id || !v.producto) continue;
-            // Siempre intentar borrar del root, aunque la venta haya sido eliminada
             await fetch(`${url}/${k}.json`, { method: 'DELETE' }).catch(() => {});
-            if (_elimSet.has(v.id)) continue; // Fue eliminada por el admin, no reimportar
+            if (_elimSet.has(v.id)) continue;
             const putRes = await fetch(`${url}/ventas/${v.id}.json`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
@@ -815,16 +801,18 @@ async function _fbMigrarVentasRaiz(url) {
 }
 
 // Carga ventas desde Firebase y hace merge con localStorage (en background al iniciar)
+// OPT 3G: silencioso — si Firebase no responde (común en 3G cubano), no spamear la consola.
+let _fbSyncVentasEnCurso = false;
 async function _fbSincronizarVentasAlIniciar() {
+    if (_fbSyncVentasEnCurso) return;
+    _fbSyncVentasEnCurso = true;
     await _fbEnsureConfig();
     const url = _fbRtdbUrl();
-    if (!url) return;
+    if (!url) { _fbSyncVentasEnCurso = false; return; }
     try {
-        // Migrar ventas mal guardadas en la raíz primero
         const migradas = await _fbMigrarVentasRaiz(url);
-
         const res = await fetch(`${url}/ventas.json`);
-        if (!res.ok) return;
+        if (!res.ok) { _fbSyncVentasEnCurso = false; return; }
         const data = await res.json();
         const _elimSet = new Set(tmParseArray(localStorage.getItem('_tmVentasElim')));
         const _esPrueba = v => {
@@ -834,10 +822,7 @@ async function _fbSincronizarVentasAlIniciar() {
         const ventasFB = data && typeof data === 'object'
             ? Object.values(data).filter(v => v && !_elimSet.has(v.id) && !_esPrueba(v))
             : [];
-
-        // Combinar migradas + las ya en /ventas/
         const todasFB = [...ventasFB, ...migradas.filter(m => !ventasFB.find(v => v.id === m.id) && !_esPrueba(m))];
-
         const ventasLocales = tmParseArray(localStorage.getItem('registroVentas'));
         const idsFB = new Set(todasFB.map(v => v.id));
         const soloLocales = ventasLocales.filter(v => !idsFB.has(v.id) && !_esPrueba(v));
@@ -850,7 +835,9 @@ async function _fbSincronizarVentasAlIniciar() {
             renderizarVentas();
         }
     } catch(e) {
-        console.warn('⚠️ No se pudo sincronizar ventas desde Firebase:', e.message);
+        // OPT 3G: silencioso — no logear errores de red de Firebase a la consola
+    } finally {
+        _fbSyncVentasEnCurso = false;
     }
 }
 
@@ -912,6 +899,77 @@ function registrarVenta(productoId, cantidad) {
     renderizarVentas();
     mostrarNotificacion(`✅ Venta registrada: ${p.nombre}`);
     // Ventas ahora se sincronizan con Firebase (ver _fbGuardarVenta)
+
+    // Guardar también como pedido en Firebase para seguimiento del cliente
+    (async () => {
+        try {
+            const base = (typeof _fbRtdbUrl === 'function') ? _fbRtdbUrl() : null;
+            if (!base) return;
+            await fetch(base + '/pedidos/' + venta.id + '.json', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    id: venta.id,
+                    fecha: venta.fecha,
+                    items: [{ id: p.id, nombre: p.nombre, cantidad: venta.cantidad, precio: venta.precio }],
+                    total: venta.total,
+                    estado: 'confirmado',
+                    clienteTs: Date.now(),
+                    actualizado: Date.now()
+                })
+            });
+        } catch(e) {}
+    })();
+}
+
+// Generar ticket de venta para enviar al cliente por WhatsApp (con link de seguimiento)
+function enviarTicketCliente(ventaId) {
+    const ventas = cargarVentas();
+    const venta = ventas.find(v => v.id === ventaId);
+    if (!venta) { mostrarNotificacion('⚠️ Venta no encontrada', 'error'); return; }
+
+    const numCorto = String(venta.id).slice(-6);
+    const tasa = (typeof getTasaMN === 'function') ? getTasaMN() : 0;
+    const totalMN = tasa > 0 ? Math.round(venta.total * tasa).toLocaleString('es-CU') : null;
+
+    const E = {
+        check: '\u2705',  // ✅
+        pack : '\uD83D\uDCE6',  // 📦
+        money: '\uD83D\uDCB0',  // 💰
+        bill : '\uD83D\uDCB5',  // 💵
+        truck: '\uD83D\uDE9A',  // 🚚
+        pray : '\uD83D\uDE4F',  // 🙏
+        heart: '\u2764\uFE0F',  // ❤️
+        link : '\uD83D\uDD17',  // 🔗
+    };
+
+    const L = [];
+    L.push(E.check + E.pack + ' *TICKET DE COMPRA \u2014 TIENDAMAX* ' + E.pack + E.check);
+    L.push('\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501');
+    L.push('');
+    L.push(E.pack + ' *Ticket N\u00ba:* TM-' + numCorto);
+    L.push('\uD83D\uDCC5 *Fecha:* ' + venta.fecha);
+    L.push('');
+    L.push('\uD83D\uDD39 *' + venta.producto + '*');
+    L.push('   \u25b8 Cant: *' + venta.cantidad + '*');
+    L.push('   \u25b8 Precio: *$' + Number(venta.precio).toFixed(2) + ' USD* c/u');
+    L.push('');
+    L.push('\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501');
+    L.push(E.money + ' *Total:* $' + Number(venta.total).toFixed(2) + ' USD');
+    if (totalMN) {
+        L.push(E.bill + ' *Total MN:* ' + totalMN + ' MN');
+    }
+    L.push('');
+    L.push(E.truck + ' _Tu pedido est\u00e1 confirmado. Coordinaremos la entrega por aqu\u00ed._');
+    L.push('');
+    L.push(E.pack + ' *Segu\u00ed tu pedido en tiempo real:*');
+    L.push(E.link + ' https://tiendamax.org/pedido.html?id=' + venta.id);
+    L.push('');
+    L.push(E.pray + ' _\u00a1Gracias por tu compra!_ ' + E.heart);
+
+    const msg = encodeURIComponent(L.join('\n'));
+    window.open('https://wa.me/' + getNumeroWhatsApp() + '?text=' + msg, '_blank', 'noopener,noreferrer');
+    mostrarNotificacion('📤 Ticket enviado al cliente');
 }
 
 // Página actual del historial de ventas
@@ -1032,6 +1090,7 @@ function renderizarVentas(pagina) {
                     <div class="total">$${v.total.toFixed(2)}</div>
                     ${v.ganancia > 0 ? `<div class="gain">Ganancia: $${v.ganancia.toFixed(2)}</div>` : ''}
                 </div>
+                <button onclick="enviarTicketCliente(${v.id})" type="button" title="Enviar ticket al cliente" style="background:linear-gradient(135deg,#25D366,#128C7E);color:white;border:none;border-radius:6px;padding:4px 8px;font-size:11px;cursor:pointer;flex-shrink:0;margin-right:4px;">📤 Ticket</button>
                 <button onclick="eliminarVenta(${v.id})" type="button" style="background:#e74c3c;color:white;border:none;border-radius:6px;padding:4px 8px;font-size:11px;cursor:pointer;flex-shrink:0;">✕</button>
             </div>`;
         });
@@ -1611,68 +1670,77 @@ renderizarProductos = function() {
     const productosGrid = document.getElementById('productosGrid');
     if (!productosGrid) { _origRenderProductosFinal(); return; }
 
-    // Log de diagnóstico (solo en consola, no panel visual)
-    
-
     // RESILIENCIA: si productos está vacío, intentar cargar de localStorage
     if (!Array.isArray(productos) || productos.length === 0) {
         try {
             const cached = tmParseArray(localStorage.getItem('productos'));
             if (Array.isArray(cached) && cached.length > 0) {
                 productos = cached;
-                
             }
         } catch(e) {}
     }
 
-    let productosFiltrados = categoriaSeleccionada === 'Todas'
-        ? productos
-        : productos.filter(p => p.categoria === categoriaSeleccionada);
+    // FIX: desconectar el observer de "load more" previo SIEMPRE al inicio de render,
+    // para que no quede observando un botón que ya no existe (causaba state leak: al cambiar
+    // de categoría después de hacer load-more, mostraba más productos de los debidos).
+    if (window._tmLoadMoreObs) { try { window._tmLoadMoreObs.disconnect(); } catch(e){} window._tmLoadMoreObs = null; }
 
-    
-
-    if (categoriaSeleccionada !== 'Todas' && subcategoriaSeleccionada && subcategoriaSeleccionada !== 'Todas') {
-        productosFiltrados = productosFiltrados.filter(p => p.subcategoria === subcategoriaSeleccionada);
-        
-    }
-    if (_heroSearchActivo || _heroPrecioMin > 0 || _heroPrecioMax < Infinity) {
-        const q = _heroSearchActivo;
-        productosFiltrados = productosFiltrados.filter(p => {
-            const matchQ = !q || p.nombre.toLowerCase().includes(q) ||
-                (p.descripcion||'').toLowerCase().includes(q) ||
-                (p.categoria||'').toLowerCase().includes(q);
-            const precio = safeNum(p.precioActual);
-            const matchP = precio >= _heroPrecioMin && precio <= _heroPrecioMax;
-            return matchQ && matchP;
-        });
-    }
-    if (_heroSoloConStock) productosFiltrados = productosFiltrados.filter(p => safeNum(p.stock) > 0);
-    if (_heroOrden === 'precio_asc')  productosFiltrados.sort((a,b) => safeNum(a.precioActual) - safeNum(b.precioActual));
-    else if (_heroOrden === 'precio_desc') productosFiltrados.sort((a,b) => safeNum(b.precioActual) - safeNum(a.precioActual));
-    else if (_heroOrden === 'az')     productosFiltrados.sort((a,b) => (a.nombre||'').localeCompare(b.nombre||''));
-
-    // Ordenar: oferta del día primero
+    // OPT 3G: caché memoizado del filtrado — si los inputs no cambiaron y el array
+    // de productos es el mismo, reusar el resultado filtrado (evita re-calcular filter+sort)
     const ofertaId = getOfertaDiaId();
-    if (ofertaId) {
-        productosFiltrados = productosFiltrados.sort((a, b) => {
-            if (String(a.id) === String(ofertaId)) return -1;
-            if (String(b.id) === String(ofertaId)) return 1;
-            return 0;
-        });
-    }
+    const _cacheKey = categoriaSeleccionada + '|' + (subcategoriaSeleccionada||'') + '|' +
+                      (_heroSearchActivo||'') + '|' + _heroPrecioMin + '|' + _heroPrecioMax + '|' +
+                      _heroSoloConStock + '|' + _heroOrden + '|' + ofertaId + '|' +
+                      (productos.length) + '|' + (productos[0] && productos[0].id);
+    let productosFiltrados;
+    if (window._tmFiltroCacheKey === _cacheKey && Array.isArray(window._tmFiltroCacheVal)) {
+        productosFiltrados = window._tmFiltroCacheVal;
+    } else {
+        productosFiltrados = categoriaSeleccionada === 'Todas'
+            ? productos
+            : productos.filter(p => p.categoria === categoriaSeleccionada);
 
-    // Siempre: agotados al final (después de cualquier otro sort)
-    productosFiltrados = productosFiltrados.sort((a, b) => {
-        const aAgotado = a.stock === 0 ? 1 : 0;
-        const bAgotado = b.stock === 0 ? 1 : 0;
-        return aAgotado - bAgotado;
-    });
+        if (categoriaSeleccionada !== 'Todas' && subcategoriaSeleccionada && subcategoriaSeleccionada !== 'Todas') {
+            productosFiltrados = productosFiltrados.filter(p => p.subcategoria === subcategoriaSeleccionada);
+        }
+        if (_heroSearchActivo || _heroPrecioMin > 0 || _heroPrecioMax < Infinity) {
+            const q = _heroSearchActivo;
+            productosFiltrados = productosFiltrados.filter(p => {
+                const matchQ = !q || p.nombre.toLowerCase().includes(q) ||
+                    (p.descripcion||'').toLowerCase().includes(q) ||
+                    (p.categoria||'').toLowerCase().includes(q);
+                const precio = safeNum(p.precioActual);
+                const matchP = precio >= _heroPrecioMin && precio <= _heroPrecioMax;
+                return matchQ && matchP;
+            });
+        }
+        if (_heroSoloConStock) productosFiltrados = productosFiltrados.filter(p => safeNum(p.stock) > 0);
+        if (_heroOrden === 'precio_asc')  productosFiltrados.sort((a,b) => safeNum(a.precioActual) - safeNum(b.precioActual));
+        else if (_heroOrden === 'precio_desc') productosFiltrados.sort((a,b) => safeNum(b.precioActual) - safeNum(a.precioActual));
+        else if (_heroOrden === 'az')     productosFiltrados.sort((a,b) => (a.nombre||'').localeCompare(b.nombre||''));
+
+        if (ofertaId) {
+            productosFiltrados = productosFiltrados.sort((a, b) => {
+                if (String(a.id) === String(ofertaId)) return -1;
+                if (String(b.id) === String(ofertaId)) return 1;
+                return 0;
+            });
+        }
+
+        productosFiltrados = productosFiltrados.sort((a, b) => {
+            const aAgotado = a.stock === 0 ? 1 : 0;
+            const bAgotado = b.stock === 0 ? 1 : 0;
+            return aAgotado - bAgotado;
+        });
+
+        window._tmFiltroCacheKey = _cacheKey;
+        window._tmFiltroCacheVal = productosFiltrados.slice();
+    }
 
     productosGrid.innerHTML = '';
     if (productosFiltrados.length === 0) {
-        // Si los productos aún no cargan, mostrar skeleton cards en vez de texto
         if (!Array.isArray(productos) || productos.length === 0) {
-            const skeletonHTML = Array(6).fill(0).map(() => 
+            const skeletonHTML = Array(8).fill(0).map(() =>
                 '<div class="producto-card skeleton-card" style="background:#1a1a1a;border:1px solid rgba(255,255,255,0.05);border-radius:20px;overflow:hidden;animation:skeletonPulse 1.5s ease-in-out infinite;">' +
                 '<div style="height:220px;background:linear-gradient(90deg,#222 0%,#2a2a2a 50%,#222 100%);background-size:200% 100%;animation:tm-shimmer 1.5s ease-in-out infinite;"></div>' +
                 '<div style="padding:20px;">' +
@@ -1686,7 +1754,6 @@ renderizarProductos = function() {
             productosGrid.innerHTML = skeletonHTML;
             return;
         }
-        // Mensaje contextual según la situación real
         let mensaje;
         if (subcategoriaSeleccionada && subcategoriaSeleccionada !== 'Todas') {
             mensaje = 'No hay productos en esta subcategoría aún.';
@@ -1699,7 +1766,12 @@ renderizarProductos = function() {
         return;
     }
 
-    productosFiltrados.forEach(producto => {
+    // ── OPT 3G: Render progresivo real — primeros 8, resto por IO (append, no re-render) ──
+    const _visibleCount = 8;
+    const _tmBatchSize = 8;
+
+    // Helper reutilizable: crea UNA card de producto
+    function _tmCrearCard(producto) {
         const esAgotado = producto.stock === 0;
         const esOfertaDia = String(producto.id) === String(ofertaId);
         const card = document.createElement('div');
@@ -1707,34 +1779,25 @@ renderizarProductos = function() {
         card.onclick = () => abrirDetalleProducto(producto.id);
         card.dataset.productId = String(producto.id);
         card.style.position = 'relative';
-        // Sanitización defensiva (escapeHtml/escapeAttr definidos al inicio del script)
         const _id  = safeNum(producto.id);
         const _nom = escapeHtml(producto.nombre);
         const _des = escapeHtml(producto.descripcion);
         const _img = escapeAttr(producto.imagen);
         const _stk = safeNum(producto.stock);
         const _txt = escapeHtml(getOfertaDiaTexto());
-        // Para el onclick del botón Pedir: necesitamos un string seguro para JS
-        const _nomJS = (producto.nombre || '').replace(/[\\'"<>]/g, '');
-        // Spec badges EDITABLES: lee del campo 'specs' del producto (array de strings).
-        // Si no existe 'specs', no muestra nada (evita errores del regex anterior).
-        // Para añadir specs a un producto, edita productos.json y añade: "specs": ["12V", "2000W", "Onda Pura"]
         const _specs = Array.isArray(producto.specs) ? producto.specs.filter(s => s && String(s).trim()).slice(0, 4) : [];
         const _hasDescuento = producto.precioOriginal > 0 && producto.precioOriginal > producto.precioActual;
-        // Garantía dinámica: solo mostrar si el producto tiene garantía definida
         const _tieneGarantia = producto.garantia && String(producto.garantia).trim();
         const _tieneDevolucion = producto.devolucion === true;
-        // Construir trust badges dinámicamente
         let _trustBadgesHtml = '<div class="tm-trust-badges" style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;font-size:10px;color:#6B6B7A;align-items:center;">';
         _trustBadgesHtml += '<span style="display:inline-flex;align-items:center;gap:3px;background:rgba(46,204,113,0.10);color:#2ECC71;padding:3px 8px;border-radius:8px;font-weight:600;">🔒 Pago contra entrega</span>';
         if (_tieneGarantia) {
-            _trustBadgesHtml += '<span style="display:inline-flex;align-items:center;gap:3px;background:rgba(232,80,30,0.10);color:#E8501E;padding:3px 8px;border-radius:8px;font-weight:600;">🛡️ Garantía</span>';
+            _trustBadgesHtml += '<span style="display:inline-flex;align-items:center;gap:3px;background:rgba(232,80,30,0.10);color:#E8501E;padding:3px 8px;border-radius:8px;font-weight:600;">🛡️ Garantía ' + escapeHtml(producto.garantia) + '</span>';
         }
         if (_tieneDevolucion) {
             _trustBadgesHtml += '<span style="display:inline-flex;align-items:center;gap:3px;background:rgba(52,152,219,0.10);color:#3498DB;padding:3px 8px;border-radius:8px;font-weight:600;">↩️ Devolución</span>';
         }
         _trustBadgesHtml += '</div>';
-
         card.innerHTML =
             (esOfertaDia ? '<div class="badge-oferta-dia">' + _txt + '</div>' :
              esAgotado ? '<div class="badge-agotado">AGOTADO</div>' :
@@ -1742,7 +1805,7 @@ renderizarProductos = function() {
             (_hasDescuento ? '<div class="badge-precio-especial">⭐ Precio Especial</div>' : '') +
             '<div class="producto-image">' +
                 getMeGustaHTML(_id) +
-                '<img src="' + _img + '" alt="' + _nom + '" loading="lazy" onerror="this.src=\'/iconos/favicon-192.png\';this.style.opacity=\'0.3\'">' +
+                '<img src="' + _img + '" alt="' + _nom + '" loading="lazy" decoding="async" onerror="this.src=\'/iconos/favicon-192.png\';this.style.opacity=\'0.3\'">' +
                 (_hasDescuento ? '<div class="badge">-' + Math.round((1 - producto.precioActual/producto.precioOriginal) * 100) + '%</div>' : '') +
             '</div>' +
             '<h3>' + _nom + '</h3>' +
@@ -1757,8 +1820,51 @@ renderizarProductos = function() {
                   (typeof renderCountdownHtml === 'function' ? renderCountdownHtml(_id) : '') +
                   '<button class="btn-pedir-card" data-nombre="' + _nom + '" onclick="event.stopPropagation(); tmComprar(event, ' + _id + ', this.dataset.nombre)" type="button"><span class="btn-pedir-wa-icon-sm"><svg viewBox="0 0 24 24" width="14" height="14" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg></span> Pedir</button>' +
             _trustBadgesHtml);
-        productosGrid.appendChild(card);
-    });
+        return card;
+    }
+
+    // Render inicial en lote con DocumentFragment (1 reflow en vez de N appendChild)
+    const _frag = document.createDocumentFragment();
+    productosFiltrados.slice(0, _visibleCount).forEach(p => _frag.appendChild(_tmCrearCard(p)));
+    productosGrid.appendChild(_frag);
+
+    // Botón "cargar más" + auto-cargar en scroll (APPEND nuevo lote, no re-render completo)
+    if (productosFiltrados.length > _visibleCount) {
+        let _loadedCount = _visibleCount;
+        const loadMoreBtn = document.createElement('div');
+        loadMoreBtn.id = 'tmLoadMoreBtn';
+        loadMoreBtn.style.cssText = 'grid-column:1/-1;display:flex;flex-direction:column;align-items:center;gap:10px;margin-top:28px;padding:0 16px';
+        const _restInit = productosFiltrados.length - _loadedCount;
+        loadMoreBtn.innerHTML = '<p style="color:rgba(255,255,255,0.35);font-size:12px;letter-spacing:.5px;text-transform:uppercase">Mostrando ' + _loadedCount + ' de ' + productosFiltrados.length + ' productos</p><button class="btn-seguir-viendo">👁️ Seguir viendo <span style="background:rgba(255,255,255,0.12);padding:2px 8px;border-radius:20px;font-size:11px;margin-left:4px">' + _restInit + ' más</span></button>';
+
+        const _appendBatch = () => {
+            const next = productosFiltrados.slice(_loadedCount, _loadedCount + _tmBatchSize);
+            if (next.length === 0) { loadMoreBtn.remove(); return; }
+            const f = document.createDocumentFragment();
+            next.forEach(p => f.appendChild(_tmCrearCard(p)));
+            productosGrid.insertBefore(f, loadMoreBtn);
+            _loadedCount += next.length;
+            const restantes = productosFiltrados.length - _loadedCount;
+            const pEl = loadMoreBtn.querySelector('p');
+            const btnEl = loadMoreBtn.querySelector('.btn-seguir-viendo');
+            if (restantes <= 0) {
+                loadMoreBtn.remove();
+                if (window._tmLoadMoreObs) { window._tmLoadMoreObs.disconnect(); window._tmLoadMoreObs = null; }
+            } else {
+                if (pEl) pEl.textContent = 'Mostrando ' + _loadedCount + ' de ' + productosFiltrados.length + ' productos';
+                if (btnEl) btnEl.innerHTML = '👁️ Seguir viendo <span style="background:rgba(255,255,255,0.12);padding:2px 8px;border-radius:20px;font-size:11px;margin-left:4px">' + restantes + ' más</span>';
+            }
+        };
+        loadMoreBtn.querySelector('.btn-seguir-viendo').onclick = _appendBatch;
+
+        const observer = new IntersectionObserver((entries) => {
+            if (entries[0].isIntersecting) _appendBatch();
+        }, { rootMargin: '300px' });
+        observer.observe(loadMoreBtn);
+        window._tmLoadMoreObs = observer;
+
+        productosGrid.appendChild(loadMoreBtn);
+    }
 };
 } // end typeof renderizarProductos guard
 

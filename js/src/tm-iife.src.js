@@ -12,7 +12,20 @@ window.tmGrantAdminAccess = function () {
 };
 
 // Cargar tasa actualizada desde GitHub al iniciar
-cargarTasaDesdeGitHub();
+// FIX: cargarTasaDesdeGitHub se define en tm-patches.src.js que carga DESPUÉS
+// de tm-iife (orden en index.html). Con defer, los scripts se ejecutan en orden
+// del documento, así que al llegar a esta línea la función aún no existe.
+function _tmInitTasaSiLista() {
+    if (typeof cargarTasaDesdeGitHub === 'function') {
+        cargarTasaDesdeGitHub();
+        return true;
+    }
+    return false;
+}
+if (!_tmInitTasaSiLista()) {
+    document.addEventListener('DOMContentLoaded', _tmInitTasaSiLista, { once: true });
+    setTimeout(_tmInitTasaSiLista, 800);
+}
 
 // Refrescar tasa cada 20 min y al volver a la pestaña
 (function() {
@@ -853,10 +866,12 @@ window.addEventListener('popstate', function() {
 })();
 
 // ═══════════════════════════════════════════════════════════
-//  ⬆️ BOTÓN "SUBIR ARRIBA" flotante
-//  Aparece tras hacer scroll hacia abajo. Al pulsar, sube suave.
+//  ⬆️ BOTÓN "SUBIR ARRIBA" flotante — DESHABILITADO
+//  Se quitó para poner el bot Max en esa posición (bottom-left).
+//  El botón de tema (claro/oscuro) vuelve a su posición flotante bottom-right.
+//  Para reactivar: cambiar `false &&` por `true ||` abajo.
 // ═══════════════════════════════════════════════════════════
-(function tmBotonSubirArriba() {
+if (false) (function tmBotonSubirArriba() {
     'use strict';
 
     function crearBoton() {

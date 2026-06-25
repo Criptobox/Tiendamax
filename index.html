@@ -57,25 +57,29 @@
     <meta name="referrer"                          content="strict-origin-when-cross-origin">
     <meta http-equiv="Permissions-Policy"          content="camera=(), microphone=(), geolocation=(), payment=()">
     <!-- Favicons completos para todos los navegadores y plataformas -->
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=67503ccf">
-    <link rel="icon" type="image/png" sizes="16x16"  href="/iconos/favicon-16.png?v=76f52545">
-    <link rel="icon" type="image/png" sizes="32x32"  href="/iconos/favicon-32.png?v=3c94fc99">
-    <link rel="icon" type="image/png" sizes="48x48"  href="/iconos/favicon-48.png?v=d2375d10">
-    <link rel="icon" type="image/png" sizes="96x96"  href="/iconos/favicon-96.png?v=13b1ece8">
-    <link rel="icon" type="image/png" sizes="192x192" href="/iconos/favicon-192.png?v=24136ef2">
-    <link rel="icon" type="image/png" sizes="512x512" href="/iconos/favicon-512.png?v=8d9ab2a4">
-    <link rel="shortcut icon" href="/favicon.ico?v=3745bdbd">
-    <link rel="apple-touch-icon" sizes="180x180" href="/iconos/apple-touch-icon.png?v=978084c9">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=2594774e">
+    <link rel="icon" type="image/png" sizes="16x16"  href="/iconos/favicon-16.png?v=b7afaaf2">
+    <link rel="icon" type="image/png" sizes="32x32"  href="/iconos/favicon-32.png?v=2a53b6e2">
+    <link rel="icon" type="image/png" sizes="48x48"  href="/iconos/favicon-48.png?v=fbd08faa">
+    <link rel="icon" type="image/png" sizes="96x96"  href="/iconos/favicon-96.png?v=610c7892">
+    <link rel="icon" type="image/png" sizes="192x192" href="/iconos/favicon-192.png?v=300374f9">
+    <link rel="icon" type="image/png" sizes="512x512" href="/iconos/favicon-512.png?v=712c0370">
+    <link rel="shortcut icon" href="/favicon.ico?v=63828358">
+    <link rel="apple-touch-icon" sizes="180x180" href="/iconos/apple-touch-icon.png?v=14435301">
     <meta name="msapplication-TileColor" content="#0D0D0D">
-    <meta name="msapplication-TileImage" content="/iconos/favicon-192.png?v=24136ef2">
+    <meta name="msapplication-TileImage" content="/iconos/favicon-192.png?v=300374f9">
     <link rel="manifest" href="/manifest.json">
 
     <!-- Preconnect a servicios críticos: ahorra DNS + TCP + TLS en primera visita -->
     <link rel="preconnect" href="https://firebase.googleapis.com" crossorigin>
+    <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://www.googletagmanager.com">
+    <link rel="preconnect" href="https://tiendamax.org">
+    <link rel="dns-prefetch" href="https://api.github.com">
     <link rel="dns-prefetch" href="https://firebaseinstallations.googleapis.com">
     <link rel="dns-prefetch" href="https://identitytoolkit.googleapis.com">
     <link rel="dns-prefetch" href="https://fcm.googleapis.com">
+    <link rel="dns-prefetch" href="https://fcmregistrations.googleapis.com">
     <link rel="dns-prefetch" href="https://www.google-analytics.com">
     <link rel="dns-prefetch" href="https://firebaseio.com">
     <link rel="dns-prefetch" href="https://raw.githubusercontent.com">
@@ -118,20 +122,114 @@
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@type": "Store",
-      "name": "TiendaMax",
-      "url": "https://tiendamax.org",
-      "description": "TiendaMax — Catálogo online con pedido por WhatsApp. Productos de calidad con envíos rápidos y atención personalizada por WhatsApp.",
-      "image": "https://tiendamax.org/og-image.jpg",
-      "telephone": "+5354320170",
-      "address": {
-        "@type": "PostalAddress",
-        "addressCountry": "CU"
-      },
-      "sameAs": ["https://tiendamax.org"],
-      "priceRange": "$",
-      "currenciesAccepted": "USD",
-      "paymentAccepted": "Cash, Transfer"
+      "@graph": [
+        {
+          "@type": "Store",
+          "@id": "https://tiendamax.org/#store",
+          "name": "TiendaMax",
+          "url": "https://tiendamax.org",
+          "description": "TiendaMax — Catálogo online con pedido por WhatsApp. Tecnología, electrónica, energía, redes, motos, carros y más. Envíos a toda Cuba, pago contra entrega.",
+          "image": "https://tiendamax.org/og-image.jpg",
+          "telephone": "+5354320170",
+          "address": {
+            "@type": "PostalAddress",
+            "addressCountry": "CU"
+          },
+          "sameAs": [
+            "https://t.me/TiendaMaxWeb",
+            "https://tiendamax.org"
+          ],
+          "priceRange": "$$",
+          "currenciesAccepted": "USD, CUP",
+          "paymentAccepted": "Cash, Pago contra entrega",
+          "openingHours": "Mo-Sa 09:00-20:00",
+          "areaServed": {
+            "@type": "Country",
+            "name": "Cuba"
+          }
+        },
+        {
+          "@type": "Organization",
+          "@id": "https://tiendamax.org/#org",
+          "name": "TiendaMax",
+          "url": "https://tiendamax.org",
+          "logo": "https://tiendamax.org/iconos/icon-512.png",
+          "description": "Tienda online cubana de tecnología y electrónica con envío a toda Cuba y pago contra entrega.",
+          "sameAs": [
+            "https://t.me/TiendaMaxWeb"
+          ],
+          "contactPoint": {
+            "@type": "ContactPoint",
+            "telephone": "+5354320170",
+            "contactType": "customer service",
+            "availableLanguage": ["Spanish"],
+            "areaServed": "CU"
+          }
+        },
+        {
+          "@type": "WebSite",
+          "@id": "https://tiendamax.org/#website",
+          "url": "https://tiendamax.org",
+          "name": "TiendaMax",
+          "description": "Catálogo online con pedido por WhatsApp en Cuba",
+          "publisher": { "@id": "https://tiendamax.org/#org" },
+          "potentialAction": {
+            "@type": "SearchAction",
+            "target": {
+              "@type": "EntryPoint",
+              "urlTemplate": "https://tiendamax.org/?q={search_term_string}"
+            },
+            "query-input": "required name=search_term_string"
+          },
+          "inLanguage": "es-CU"
+        },
+        {
+          "@type": "FAQPage",
+          "@id": "https://tiendamax.org/#faq",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "¿Cómo compro en TiendaMax?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Navega el catálogo, toca el botón 'Pedir' en cualquier producto y se abre WhatsApp con tu pedido listo. Coordinas pago contra entrega y envío."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "¿Hacen envíos a toda Cuba?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Sí, hacemos envíos a domicilio en toda Cuba. El costo se coordina por WhatsApp según tu ubicación."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "¿Qué métodos de pago aceptan?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Aceptamos pago contra entrega en USD o MN (pesos cubanos) según la tasa del día."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "¿Los productos tienen garantía?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Sí, todos los productos tienen garantía. Si algo no funciona, escríbenos por WhatsApp y lo resolvemos."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "¿Cuál es la tasa de cambio USD a MN?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "La tasa se actualiza diariamente. Visita tiendamax.org para ver la tasa actual y convertir precios instantáneamente."
+              }
+            }
+          ]
+        }
+      ]
     }
     </script>
     
@@ -142,13 +240,13 @@
     <noscript><link rel="stylesheet" href="css/fonts.css?v=67235440"></noscript>
 
     <!-- Preload de los módulos JS principales (modularizado + minificado) -->
-    <link rel="preload" href="js/src/tm-config.js?v=b43540e4" as="script">
-    <link rel="preload" href="js/src/tm-data.js?v=353a3540" as="script">
-    <link rel="preload" href="js/src/tm-state.js?v=96c7b8ac" as="script">
+    <link rel="preload" href="js/src/tm-config.js?v=202606251200" as="script">
+    <link rel="preload" href="js/src/tm-data.js?v=202606251200" as="script">
+    <link rel="preload" href="js/src/tm-state.js?v=202606251200" as="script">
 
     <!-- CSS unido + minificado (generado por scripts/build_css.py vía GitHub Action).
          Para editar estilos, edita los CSS fuente en /css y la Action regenera este bundle. -->
-    <link rel="stylesheet" href="css/bundle.css?v=cc11dc9b">
+    <link rel="stylesheet" href="css/bundle.css?v=cb0db85d">
 
 
     <!-- Estilos para "Vistos Recientemente" -->
@@ -416,6 +514,28 @@
 
     <style>
     /* ════════════════════════════════════════════════════════════
+       BOTÓN TEMA EN HEADER — compacto, mismo tamaño que carrito/notif
+       ════════════════════════════════════════════════════════════ */
+    .header-theme-btn{width:40px!important;height:40px!important;min-width:40px!important;border-radius:50%!important;background:transparent!important;border:1.5px solid rgba(255,255,255,.15)!important;font-size:18px!important;box-shadow:none!important;color:#fff!important;cursor:pointer;display:flex!important;align-items:center;justify-content:center;transition:background .2s,border-color .2s,transform .15s;padding:0!important;line-height:1;flex-shrink:0;}
+    .header-theme-btn:hover{background:rgba(255,255,255,.08)!important;border-color:var(--gold,#c9a96e)!important;transform:scale(1.05);}
+    .header-theme-btn:active{transform:scale(.95);}
+    /* En modo claro, el header tiene fondo claro → botón oscuro */
+    body.light-mode .header-theme-btn{color:#1a1a1a!important;border-color:rgba(0,0,0,.12)!important;background:transparent!important;}
+    body.light-mode .header-theme-btn:hover{background:rgba(0,0,0,.06)!important;border-color:var(--gold,#c9a96e)!important;}
+    /* MOBILE: ocultar botón tema del header (no cabe sin tapar el logo) — el tema va en el menú hamburguesa */
+    @media (max-width: 768px){.header-theme-btn{display:none!important;}}
+    /* Accesibilidad: focus-visible para navegación con teclado */
+    button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid #E8501E;outline-offset:2px;}
+    /* Unificar CTAs del hero: mismo border-radius, padding, font-size */
+    .nd-btn-wa{border-radius:100px!important;padding:16px 32px!important;font-size:15px!important;gap:8px!important;}
+    /* Botón tema flotante: estilo naranja */
+    .control-buttons .theme-toggle{width:40px!important;height:40px!important;font-size:18px!important;background:linear-gradient(135deg,#E8501E 0%,#ff6b35 100%)!important;border:none!important;box-shadow:0 4px 14px rgba(232,80,30,.45)!important;color:#fff!important;display:flex!important;align-items:center;justify-content:center;border-radius:50%!important;cursor:pointer!important;transition:transform .25s ease,box-shadow .25s ease!important;padding:0!important;}
+    .control-buttons .theme-toggle:hover{transform:scale(1.08) translateY(-2px)!important;box-shadow:0 6px 18px rgba(232,80,30,.6)!important;background:linear-gradient(135deg,#E8501E 0%,#ff6b35 100%)!important;}
+    /* Botón tema en menú móvil */
+    .mobile-theme-btn{display:flex!important;align-items:center;justify-content:flex-start;gap:8px;font-size:14px!important;width:100%;text-align:left;background:transparent;border:none;color:inherit;padding:12px 16px;cursor:pointer;border-radius:10px;transition:background .2s;}
+    .mobile-theme-btn:hover{background:rgba(232,80,30,.08);}
+
+    /* ════════════════════════════════════════════════════════════
        SELECTOR USD/MN — segmented control glass integrado en el hero
        ════════════════════════════════════════════════════════════ */
     html body .currency-bar {
@@ -483,7 +603,7 @@
 </header>
 
     <!-- ===== VISTA INICIO ===== -->
-    <div id="vistaInicio">
+    <main id="vistaInicio">
 
         <!-- Hero rediseñado — propuesta de valor con 3D card stack -->
         <section class="hero nd-hero">
@@ -605,6 +725,7 @@
         <section id="categorias-home" class="categorias-home">
             <div class="categorias-home-inner">
                 <div class="container">
+                    <p class="section-eyebrow">Navega por sección</p>
                     <h2 class="section-title">Explora por Categoría</h2>
                     <p class="section-subtitle">Selecciona una categoría para descubrir todos sus productos</p>
                     <div class="categorias-grid" id="categoriasGrid">
@@ -725,6 +846,7 @@
         <!-- Beneficios -->
         <section id="beneficios" class="beneficios">
             <div class="container">
+                <p class="section-eyebrow">Por qué nosotros</p>
                 <h2>¿Por Qué Elegir Nuestros Productos?</h2>
                 <div class="beneficios-grid">
                     <div class="beneficio-card"><div class="icon">🏆</div><h3>Calidad Garantizada</h3><p>Productos seleccionados cuidadosamente para tu satisfacción</p></div>
@@ -740,6 +862,7 @@
         <!-- Testimonios -->
         <section id="testimonios" class="testimonios">
             <div class="container">
+                <p class="section-eyebrow">Reseñas</p>
                 <h2>Lo Que Dicen Nuestros Clientes</h2>
                 <div id="testimoniosGrid" class="testimonios-grid">
                     <!-- Se cargan dinámicamente desde Firebase -->
@@ -774,7 +897,7 @@
             </div>
         </section>
 
-    </div>
+    </main>
     <!-- FIN VISTA INICIO -->
 
     <!-- ===== VISTA CATEGORÍA (se muestra al seleccionar una categoría) ===== -->
@@ -857,38 +980,63 @@
     <!-- Footer -->
     <footer class="footer-premium">
         <div class="container">
-            <!-- Desktop: 3 columnas -->
+            <!-- Desktop: 4 columnas -->
             <div class="footer-premium-grid">
                 <div class="footer-brand">
                     <div class="footer-gold-line"></div>
                     <h3>Tienda<em>Max</em></h3>
                     <p>Tecnología y electrónica premium con envío rápido. Calidad garantizada en cada producto.</p>
+                    <div class="footer-social" style="display:flex;gap:10px;margin-top:14px;">
+                        <a href="https://wa.me/5354320170" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" style="width:36px;height:36px;border-radius:50%;background:rgba(37,211,102,.15);color:#25D366;display:flex;align-items:center;justify-content:center;font-size:18px;text-decoration:none;">💬</a>
+                        <a href="https://t.me/TiendaMaxWeb" target="_blank" rel="noopener noreferrer" aria-label="Telegram" style="width:36px;height:36px;border-radius:50%;background:rgba(0,136,204,.15);color:#0088cc;display:flex;align-items:center;justify-content:center;font-size:18px;text-decoration:none;">✈️</a>
+                        <a href="https://www.facebook.com/" target="_blank" rel="noopener noreferrer" aria-label="Facebook" style="width:36px;height:36px;border-radius:50%;background:rgba(66,103,178,.15);color:#4267B2;display:flex;align-items:center;justify-content:center;font-size:18px;text-decoration:none;">📘</a>
+                        <a href="https://www.instagram.com/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" style="width:36px;height:36px;border-radius:50%;background:rgba(228,64,95,.15);color:#E4405F;display:flex;align-items:center;justify-content:center;font-size:18px;text-decoration:none;">📸</a>
+                    </div>
                 </div>
                 <div class="footer-col">
                     <h4>Tienda</h4>
                     <a href="#" data-action="mostrarVistaInicio">Inicio</a>
                     <a href="#" data-action="mostrarVistaCategoria" data-arg="Todas">Productos</a>
                     <a href="#" data-action="abrirCarrito">Mi carrito</a>
+                    <a href="#" data-action="mostrarVistaMeGusta">Mis favoritos</a>
+                    <a href="#" data-action="mostrarVistaPedidos">Mis pedidos</a>
                 </div>
                 <div class="footer-col">
                     <h4>Contacto</h4>
-                    <a href="https://wa.me/5354320170" target="_blank" rel="noopener noreferrer">WhatsApp</a>
-                    <a href="https://t.me/TiendaMaxWeb" target="_blank" rel="noopener noreferrer">Canal Telegram</a>
+                    <a href="https://wa.me/5354320170" target="_blank" rel="noopener noreferrer">💬 WhatsApp: 5354320170</a>
+                    <a href="https://t.me/TiendaMaxWeb" target="_blank" rel="noopener noreferrer">✈️ Canal Telegram</a>
+                    <a href="mailto:contacto@tiendamax.org" style="text-transform:none;">✉️ contacto@tiendamax.org</a>
+                    <p style="color:rgba(255,255,255,.5);font-size:12px;margin:8px 0 0;cursor:default;">🕐 Lun-Sáb: 9am - 8pm</p>
+                    <p style="color:rgba(255,255,255,.5);font-size:12px;margin:2px 0 0;cursor:default;">🚚 Envíos a toda Cuba</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Información</h4>
+                    <a href="#" onclick="event.preventDefault();alert('Pago contra entrega en USD o MN (según tasa del día). Coordinar por WhatsApp.');">💵 Métodos de pago</a>
+                    <a href="#" onclick="event.preventDefault();alert('Garantía en todos los productos. Si algo no funciona, nos escribes por WhatsApp y lo resolvemos.');">🛡️ Garantía</a>
+                    <a href="#" onclick="event.preventDefault();alert('Aceptamos devoluciones dentro de 24h si el producto llega dañado o no corresponde.');">↩️ Devoluciones</a>
+                    <a href="#" onclick="event.preventDefault();alert('Términos y condiciones de uso de TiendaMax. Usar el sitio implica aceptarlos.');">📄 Términos</a>
+                    <a href="#" onclick="event.preventDefault();alert('Tu privacidad es importante. No compartimos tus datos con terceros.');">🔒 Privacidad</a>
                 </div>
             </div>
             <!-- Móvil: franja compacta -->
             <div class="footer-mobile-brand">
                 <h3>Tienda<em>Max</em></h3>
                 <p>Tecnología premium · Envío rápido · Garantía</p>
+                <div class="footer-social" style="display:flex;gap:8px;margin-top:10px;justify-content:center;">
+                    <a href="https://wa.me/5354320170" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" style="width:34px;height:34px;border-radius:50%;background:rgba(37,211,102,.15);color:#25D366;display:flex;align-items:center;justify-content:center;font-size:16px;text-decoration:none;">💬</a>
+                    <a href="https://t.me/TiendaMaxWeb" target="_blank" rel="noopener noreferrer" aria-label="Telegram" style="width:34px;height:34px;border-radius:50%;background:rgba(0,136,204,.15);color:#0088cc;display:flex;align-items:center;justify-content:center;font-size:16px;text-decoration:none;">✈️</a>
+                    <a href="https://www.facebook.com/" target="_blank" rel="noopener noreferrer" aria-label="Facebook" style="width:34px;height:34px;border-radius:50%;background:rgba(66,103,178,.15);color:#4267B2;display:flex;align-items:center;justify-content:center;font-size:16px;text-decoration:none;">📘</a>
+                </div>
             </div>
             <div class="footer-mobile-links">
                 <a href="#" data-action="mostrarVistaInicio">Inicio</a>
                 <a href="#" data-action="mostrarVistaCategoria" data-arg="Todas">Productos</a>
                 <a href="https://wa.me/5354320170" target="_blank" rel="noopener noreferrer">WhatsApp</a>
+                <a href="mailto:contacto@tiendamax.org">Email</a>
             </div>
             <div class="footer-bottom">
                 <p>© 2026 TiendaMax · Todos los derechos reservados</p>
-                <p style="color:rgba(255,255,255,0.15);font-size:11px;">tiendamax.org</p>
+                <p style="color:rgba(255,255,255,0.15);font-size:11px;">tiendamax.org · Pago contra entrega · Hecho en Cuba 🇨🇺</p>
             </div>
         </div>
     </footer>
@@ -1132,17 +1280,17 @@
     <script src="js/seo-dynamico.js?v=ea7e25bb" defer></script>
     <!-- ===== TiendaMax modularizado (reemplaza script.js) ===== -->
     <!-- Orden: config → data → state → admin → product → catalog → init → ui → toast → iife → patches -->
-    <script src="js/src/tm-config.js?v=b43540e4" defer></script>
-    <script src="js/src/tm-data.js?v=353a3540" defer></script>
-    <script src="js/src/tm-state.js?v=96c7b8ac" defer></script>
-    <script src="js/src/tm-admin.js?v=6ad3c706" defer></script>
-    <script src="js/src/tm-product.js?v=cb9f25cd" defer></script>
-    <script src="js/src/tm-catalog.js?v=784ee4fa" defer></script>
-    <script src="js/src/tm-init.js?v=da350aed" defer></script>
-    <script src="js/src/tm-ui.js?v=be7c2079" defer></script>
-    <script src="js/src/tm-toast.js?v=fba50e68" defer></script>
-    <script src="js/src/tm-iife.js?v=5cb29de0" defer></script>
-    <script src="js/src/tm-patches.js?v=762b5cb7" defer></script>
+    <script src="js/src/tm-config.js?v=202606251200" defer></script>
+    <script src="js/src/tm-data.js?v=202606251200" defer></script>
+    <script src="js/src/tm-state.js?v=202606251200" defer></script>
+    <script src="js/src/tm-admin.js?v=202606251200" defer></script>
+    <script src="js/src/tm-product.js?v=202606251200" defer></script>
+    <script src="js/src/tm-catalog.js?v=202606251200" defer></script>
+    <script src="js/src/tm-init.js?v=202606251200" defer></script>
+    <script src="js/src/tm-ui.js?v=202606251200" defer></script>
+    <script src="js/src/tm-toast.js?v=202606251200" defer></script>
+    <script src="js/src/tm-iife.js?v=202606251200" defer></script>
+    <script src="js/src/tm-patches.js?v=202606251200" defer></script>
 
     <script src="js/push-fix.js?v=70cfa623" defer></script>
     <script src="js/subcategorias.js?v=0a8fedc8" defer></script>
@@ -1260,8 +1408,12 @@
     </script>
 <!-- ===== BANNER SLIDER + TAGLINE (movido a archivo externo para reuso en admin) ===== -->
     <script src="js/urgencia-ventas.js?v=b782eee3" defer></script>
-    <script src="js/banners.js?v=cda00eb6" defer></script>
+    <script src="js/banners.js?v=f4019c76" defer></script>
     <script src="js/hero-efectos.js?v=454a15c2" defer></script>
+    <script src="js/web-vitals-snippet.js?v=202606250100" defer></script>
+    <!-- BOT DESACTIVADO: backend /api/chat no disponible en GitHub Pages
+    <script src="js/tm-bot.js?v=202606251200" defer></script>
+    -->
 
 <script>
 // ── WhatsApp dinámico — lee el número guardado en admin ──

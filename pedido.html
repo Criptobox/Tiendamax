@@ -2,304 +2,219 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<meta name="theme-color" content="#0a0a0a">
-<link rel="manifest" href="/manifest.json">
-<title>Completar Pedido — Tienda Max</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Seguimiento de Pedido · TiendaMax</title>
+<meta name="theme-color" content="#0D0D0D">
 <style>
-:root{--gold:#c8a96e;--gold-dark:#8b6914;--bg:#0a0a0a;--bg2:#111;--bg3:#181818;--border:#2a2a2a;--border-gold:#c8a96e33;--text:#f0e6d3;--muted:#888;--dim:#555;--green-light:#52b788}
-*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;padding-bottom:50px}
-.hdr{background:#111;border-bottom:1px solid var(--border-gold);padding:16px 18px;text-align:center}
-.logo{width:44px;height:44px;background:linear-gradient(135deg,var(--gold),var(--gold-dark));border-radius:10px;display:inline-flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-weight:900;font-size:20px;color:#0a0a0a;margin-bottom:6px}
-.hdr h1{font-family:'Playfair Display',serif;font-size:18px;color:var(--text)}
-.hdr p{font-size:12px;color:var(--muted);margin-top:2px}
-.main{padding:16px 16px 0;max-width:460px;margin:0 auto}
-.producto-box{background:linear-gradient(135deg,#1a1a10,#111);border:1px solid var(--border-gold);border-radius:14px;padding:16px;margin-bottom:16px;display:none}
-.producto-box.show{display:block}
-.prod-label{font-size:10px;color:var(--gold);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px}
-.prod-nombre{font-size:16px;font-weight:600}
-.prod-precio{font-size:14px;color:var(--gold);margin-top:4px}
-.sec{background:var(--bg2);border:1px solid var(--border);border-radius:14px;margin-bottom:14px;overflow:hidden}
-.sec-hdr{padding:11px 14px;border-bottom:1px solid var(--border);font-size:11px;color:var(--gold);letter-spacing:2px;text-transform:uppercase;font-weight:600;display:flex;align-items:center;gap:8px}
-.dot{width:3px;height:14px;background:var(--gold);border-radius:2px}
-.sec-body{padding:14px}
-.fld{margin-bottom:12px}
-.fld:last-child{margin-bottom:0}
-.lbl{font-size:11px;color:var(--muted);margin-bottom:5px;display:block}
-input,textarea,select{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:15px;padding:12px 13px;outline:none;font-family:'DM Sans',sans-serif;-webkit-appearance:none;transition:border .2s}
-input:focus,textarea:focus,select:focus{border-color:var(--gold)}
-select option{background:#1a1a1a;color:var(--text)}
-textarea{resize:none;line-height:1.5}
-.opciones{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px}
-.opcion{padding:11px;background:var(--bg3);border:1px solid var(--border);border-radius:10px;text-align:center;cursor:pointer;font-size:14px;transition:all .2s;color:var(--muted)}
-.opcion.sel{background:#1a2a1a;border-color:var(--gold);color:var(--gold);font-weight:600}
-.btn-enviar{width:100%;padding:16px;background:linear-gradient(135deg,var(--gold),var(--gold-dark));border:none;border-radius:14px;color:#0a0a0a;font-weight:700;font-size:17px;cursor:pointer;font-family:'Playfair Display',serif;margin-top:4px;display:flex;align-items:center;justify-content:center;gap:10px}
-.btn-enviar:active{opacity:.85}
-.nota{font-size:12px;color:var(--dim);text-align:center;margin-top:12px;line-height:1.6;padding:0 8px}
-.req{color:#c0392b;margin-left:2px}
-.error{border-color:#c0392b!important}
-.err-msg{font-size:11px;color:#c0392b;margin-top:4px;display:none}
-.err-msg.show{display:block}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#0D0D0D;color:#fff;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;}
+body.light-mode,body:has(.light){background:#FAF8F5;color:#1a1a1a;}
+.container{max-width:560px;width:100%;background:linear-gradient(160deg,rgba(255,255,255,.04),rgba(255,255,255,.02));border:1px solid rgba(255,255,255,.08);border-radius:20px;padding:32px 24px;box-shadow:0 8px 40px rgba(0,0,0,.4);}
+body.light-mode .container{background:#fff;border:1px solid rgba(0,0,0,.08);box-shadow:0 8px 40px rgba(0,0,0,.1);}
+.header{text-align:center;margin-bottom:28px;}
+.logo{display:inline-flex;align-items:center;gap:8px;font-size:22px;font-weight:800;margin-bottom:8px;}
+.logo em{color:#E8501E;font-style:normal;}
+.logo img{width:32px;height:32px;border-radius:8px;}
+.subtitle{color:rgba(255,255,255,.5);font-size:14px;}
+body.light-mode .subtitle{color:#666;}
+.estado-card{background:rgba(232,80,30,.1);border:1px solid rgba(232,80,30,.3);border-radius:14px;padding:20px;margin-bottom:24px;text-align:center;}
+.estado-actual{font-size:18px;font-weight:700;color:#E8501E;margin-bottom:6px;}
+.estado-fecha{font-size:12px;color:rgba(255,255,255,.5);}
+body.light-mode .estado-fecha{color:#666;}
+.timeline{margin:24px 0;}
+.timeline-step{display:flex;align-items:flex-start;gap:14px;padding:12px 0;position:relative;}
+.timeline-step:not(:last-child)::before{content:'';position:absolute;left:15px;top:38px;bottom:-12px;width:2px;background:rgba(255,255,255,.1);}
+body.light-mode .timeline-step:not(:last-child)::before{background:rgba(0,0,0,.1);}
+.timeline-step.done::before{background:#2ECC71;}
+.timeline-icon{width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;border:2px solid rgba(255,255,255,.1);}
+body.light-mode .timeline-icon{background:rgba(0,0,0,.05);border-color:rgba(0,0,0,.1);}
+.timeline-step.done .timeline-icon{background:#2ECC71;border-color:#2ECC71;}
+.timeline-step.current .timeline-icon{background:#E8501E;border-color:#E8501E;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(232,80,30,.4);}50%{box-shadow:0 0 0 10px rgba(232,80,30,0);}}
+.timeline-info{flex:1;padding-top:4px;}
+.timeline-titulo{font-weight:600;font-size:15px;margin-bottom:2px;}
+.timeline-desc{font-size:12px;color:rgba(255,255,255,.5);}
+body.light-mode .timeline-desc{color:#666;}
+.items{background:rgba(255,255,255,.03);border-radius:12px;padding:16px;margin:20px 0;}
+body.light-mode .items{background:#f7f5f2;}
+.items h3{font-size:13px;text-transform:uppercase;letter-spacing:.5px;color:rgba(255,255,255,.5);margin-bottom:12px;}
+body.light-mode .items h3{color:#666;}
+.item{display:flex;justify-content:space-between;padding:6px 0;font-size:14px;}
+.item-nombre{flex:1;}
+.item-precio{color:#2ECC71;font-weight:600;}
+.total{display:flex;justify-content:space-between;padding-top:12px;margin-top:8px;border-top:1px solid rgba(255,255,255,.1);font-weight:700;font-size:16px;}
+body.light-mode .total{border-top-color:rgba(0,0,0,.1);}
+.id-pedido{text-align:center;font-size:11px;color:rgba(255,255,255,.3);margin-top:20px;font-family:monospace;}
+body.light-mode .id-pedido{color:#999;}
+.loading{text-align:center;padding:40px 20px;}
+.loading-spinner{width:40px;height:40px;border:3px solid rgba(232,80,30,.2);border-top-color:#E8501E;border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 16px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.error{text-align:center;padding:40px 20px;color:#e74c3c;}
+.btn-wa{display:block;width:100%;background:linear-gradient(135deg,#25D366,#128C7E);color:white;text-align:center;padding:14px;border-radius:12px;text-decoration:none;font-weight:600;margin-top:16px;font-size:15px;}
 </style>
 </head>
 <body>
-
-<div class="hdr">
-  <div class="logo">M</div>
-  <h1>Tienda Max</h1>
-  <p>Completa tu pedido en segundos</p>
+<div class="container" id="container">
+    <div class="loading" id="loading">
+        <div class="loading-spinner"></div>
+        <p>Cargando tu pedido...</p>
+    </div>
 </div>
-
-<div class="main">
-
-  <!-- Producto (si viene por URL) -->
-  <div class="producto-box" id="prodBox">
-    <div class="prod-label">Tu pedido</div>
-    <div class="prod-nombre" id="prodNombre"></div>
-    <div class="prod-precio" id="prodPrecio"></div>
-  </div>
-
-  <!-- DATOS PERSONALES -->
-  <div class="sec">
-    <div class="sec-hdr"><div class="dot"></div>TUS DATOS</div>
-    <div class="sec-body">
-      <div class="fld">
-        <label class="lbl">👤 Nombre completo <span class="req">*</span></label>
-        <input type="text" id="fNombre" placeholder="Tu nombre y apellido" autocomplete="name">
-        <div class="err-msg" id="eNombre">Por favor escribe tu nombre</div>
-      </div>
-      <div class="fld">
-        <label class="lbl">📞 Teléfono <span class="req">*</span></label>
-        <input type="tel" id="fTelefono" placeholder="+53 5XXXXXXX" autocomplete="tel">
-        <div class="err-msg" id="eTelefono">Por favor escribe tu teléfono</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ENTREGA -->
-  <div class="sec">
-    <div class="sec-hdr"><div class="dot"></div>ENTREGA</div>
-    <div class="sec-body">
-      <div class="fld">
-        <label class="lbl">🛵 ¿Cómo recibes tu pedido? <span class="req">*</span></label>
-        <div class="opciones">
-          <div class="opcion" id="oMensajeria" onclick="selEntrega('mensajeria')">🛵 Mensajería</div>
-          <div class="opcion" id="oRecoge" onclick="selEntrega('recoge')">🚶 Recojo yo</div>
-        </div>
-        <div class="err-msg" id="eEntrega">Selecciona una opción</div>
-      </div>
-      <div class="fld" id="campoDir" style="display:none">
-        <label class="lbl">📍 Dirección de entrega <span class="req">*</span></label>
-        <textarea id="fDireccion" rows="2" placeholder="Calle, número, entre calles, municipio"></textarea>
-        <div class="err-msg" id="eDireccion">Por favor escribe tu dirección</div>
-        <button type="button" id="btnUbi" onclick="compartirUbicacion()" style="width:100%;margin-top:8px;background:#1a3a2a;border:1px solid #25D366;color:#25D366;border-radius:10px;padding:11px;font-size:14px;font-weight:600;cursor:pointer">📍 Compartir mi ubicación GPS</button>
-        <div id="ubiOk" style="display:none;margin-top:8px;font-size:13px;color:#52b788;text-align:center"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- PAGO -->
-  <div class="sec">
-    <div class="sec-hdr"><div class="dot"></div>FORMA DE PAGO</div>
-    <div class="sec-body">
-      <div class="fld">
-        <label class="lbl">💵 ¿Cómo vas a pagar? <span class="req">*</span></label>
-        <div class="opciones">
-          <div class="opcion" id="oCUP" onclick="selPago('CUP')">💴 CUP</div>
-          <div class="opcion" id="oUSD" onclick="selPago('USD')">💵 USD / Zelle</div>
-        </div>
-        <div class="err-msg" id="ePago">Selecciona una forma de pago</div>
-      </div>
-      <div class="fld" id="campoVuelto" style="display:none">
-        <label class="lbl">🔄 ¿Necesitas vuelto?</label>
-        <div class="opciones">
-          <div class="opcion" id="oVueltoSi" onclick="selVuelto('si')">✅ Sí</div>
-          <div class="opcion" id="oVueltoNo" onclick="selVuelto('no')">❌ No</div>
-        </div>
-        <div id="campoVueltoMonto" style="display:none;margin-top:10px">
-          <label class="lbl">💸 ¿Cuánto vuelto necesitas?</label>
-          <input type="number" id="fVueltoMonto" placeholder="Ej: 500" inputmode="numeric">
-          <div class="opciones" style="margin-top:8px">
-            <div class="opcion" id="oVMmn" onclick="selVueltoMoneda('MN')">💴 en MN (CUP)</div>
-            <div class="opcion" id="oVMusd" onclick="selVueltoMoneda('USD')">💵 en USD</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- NOTA -->
-  <div class="sec">
-    <div class="sec-hdr"><div class="dot"></div>NOTA (opcional)</div>
-    <div class="sec-body">
-      <textarea id="fNota" rows="2" placeholder="¿Algo más que quieras decirnos?"></textarea>
-    </div>
-  </div>
-
-  <button class="btn-enviar" onclick="enviar()">
-    📲 Enviar pedido por WhatsApp
-  </button>
-
-  <p class="nota">
-    Al tocar el botón se abrirá WhatsApp con tu pedido listo.<br>
-    Solo toca <strong>Enviar</strong> y listo. 🎉
-  </p>
-
-</div>
-
 <script>
-let entrega = '', pago = '', vuelto = '', vueltoMoneda = 'MN';
+(function() {
+    'use strict';
+    // Aplicar tema guardado
+    try {
+        var pref = localStorage.getItem('tm_theme');
+        if (pref === 'light') document.body.classList.add('light-mode');
+    } catch(e) {}
 
-// Leer parámetros de URL
-const params = new URLSearchParams(window.location.search);
-const prod = params.get('p') || '';
-const precio = params.get('precio') || '';
-const wa = params.get('wa') || '5354320170';
-// Normalizar: si viene el número cubano sin código país (8 dígitos), añadir 53
-let waNorm = (/^\d{8}$/.test(wa)) ? '53'+wa : wa;
-// Intentar leer el número de WhatsApp de la config de TiendaMax
-(async function() {
-  try {
-    const r = await fetch('/config.json?t=' + Date.now());
-    if (r.ok) {
-      const cfg = await r.json();
-      // Buscar el número en la config (puede estar en adminWhatsappNum o similar)
-      // Por ahora usamos el parámetro URL o el default
+    var params = new URLSearchParams(window.location.search);
+    var pedidoId = params.get('id');
+    var container = document.getElementById('container');
+
+    if (!pedidoId) {
+        container.innerHTML = '<div class="error"><p style="font-size:48px;margin-bottom:16px;">😕</p><p>Falta el ID del pedido.</p><p style="color:rgba(255,255,255,.5);font-size:13px;margin-top:8px;">Abre el pedido desde "Mis Pedidos" en TiendaMax.</p></div>';
+        return;
     }
-  } catch(e) {}
+
+    // Cargar config para obtener Firebase URL
+    function getFbUrl() {
+        return localStorage.getItem('firebaseConfig') || null;
+    }
+
+    async function cargarFirebaseConfig() {
+        // Intentar de localStorage primero
+        var raw = localStorage.getItem('firebaseConfig');
+        if (raw) {
+            try {
+                var cfg = JSON.parse(raw);
+                if (cfg.databaseURL) return cfg.databaseURL;
+                if (cfg.projectId) return 'https://' + cfg.projectId + '-default-rtdb.firebaseio.com';
+            } catch(e) {}
+        }
+        // Fallback: cargar de config.json
+        try {
+            var res = await fetch('config.json', { cache: 'no-store' });
+            if (res.ok) {
+                var data = await res.json();
+                if (data.firebaseConfig) {
+                    localStorage.setItem('firebaseConfig', JSON.stringify(data.firebaseConfig));
+                    return data.firebaseConfig.databaseURL || ('https://' + data.firebaseConfig.projectId + '-default-rtdb.firebaseio.com');
+                }
+            }
+        } catch(e) {}
+        return null;
+    }
+
+    var ESTADOS = [
+        { key: 'pendiente',    icon: '⏳', titulo: 'Pedido recibido',     desc: 'Recibimos tu pedido. Te contactaremos por WhatsApp pronto.' },
+        { key: 'confirmado',   icon: '✅', titulo: 'Confirmado',          desc: 'El vendedor confirmó tu pedido y el stock disponible.' },
+        { key: 'preparando',   icon: '📦', titulo: 'Preparando',          desc: 'Estamos armando tu pedido para el envío.' },
+        { key: 'en_camino',    icon: '🚚', titulo: 'En camino',           desc: 'Tu pedido salió hacia tu dirección. ¡Prepárate!' },
+        { key: 'entregado',    icon: '🎉', titulo: 'Entregado',           desc: '¡Pedido entregado! Gracias por comprar en TiendaMax.' }
+    ];
+
+    function getEstadoIndex(estado) {
+        for (var i = 0; i < ESTADOS.length; i++) {
+            if (ESTADOS[i].key === estado) return i;
+        }
+        return 0;
+    }
+
+    function renderPedido(pedido) {
+        var estadoIdx = getEstadoIndex(pedido.estado);
+        var estadoActual = ESTADOS[estadoIdx];
+        var fechaStr = pedido.actualizado ? new Date(pedido.actualizado).toLocaleString('es-CU') : pedido.fecha;
+
+        var timelineHtml = ESTADOS.map(function(e, i) {
+            var clases = 'timeline-step';
+            if (i < estadoIdx) clases += ' done';
+            if (i === estadoIdx) clases += ' current';
+            return '<div class="' + clases + '">' +
+                '<div class="timeline-icon">' + (i < estadoIdx ? '✓' : e.icon) + '</div>' +
+                '<div class="timeline-info">' +
+                    '<div class="timeline-titulo">' + e.titulo + '</div>' +
+                    '<div class="timeline-desc">' + (i === estadoIdx ? e.desc : '') + '</div>' +
+                '</div>' +
+            '</div>';
+        }).join('');
+
+        var itemsHtml = (pedido.items || []).map(function(i) {
+            var safeNombre = String(i.nombre||'').replace(/[&<>"']/g, function(c) { return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; });
+            return '<div class="item"><span class="item-nombre">' + safeNombre + ' ×' + i.cantidad + '</span><span class="item-precio">$' + (i.precio * i.cantidad).toFixed(2) + '</span></div>';
+        }).join('');
+
+        var waLink = 'https://wa.me/5354320170?text=' + encodeURIComponent('Hola, consulto por mi pedido #' + pedidoId);
+
+        container.innerHTML =
+            '<div class="header">' +
+                '<div class="logo"><img src="/iconos/icon-192.png" alt="">Tienda<em>Max</em></div>' +
+                '<div class="subtitle">Seguimiento de pedido</div>' +
+            '</div>' +
+            '<div class="estado-card">' +
+                '<div class="estado-actual">' + estadoActual.icon + ' ' + estadoActual.titulo + '</div>' +
+                '<div class="estado-fecha">Actualizado: ' + fechaStr + '</div>' +
+            '</div>' +
+            '<div class="timeline">' + timelineHtml + '</div>' +
+            '<div class="items">' +
+                '<h3>Productos</h3>' +
+                itemsHtml +
+                '<div class="total"><span>Total</span><span>$' + (pedido.total||0).toFixed(2) + ' USD</span></div>' +
+            '</div>' +
+            '<a href="' + waLink + '" target="_blank" class="btn-wa">💬 Consultar por WhatsApp</a>' +
+            '<div class="id-pedido">ID: ' + String(pedidoId).replace(/[&<>"']/g, function(c) { return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }) + '</div>';
+    }
+
+    async function cargarPedido() {
+        var pedido = null;
+        var base = null;
+
+        // 1. Intentar Firebase (si está configurado)
+        try {
+            base = await cargarFirebaseConfig();
+            if (base) {
+                var res = await fetch(base + '/pedidos/' + pedidoId + '.json');
+                if (res.ok) {
+                    pedido = await res.json();
+                }
+            }
+        } catch(e) {
+            // Firebase falló (401, red, etc.) — continuar con fallback
+        }
+
+        // 2. Fallback: leer de localStorage
+        if (!pedido) {
+            try {
+                var local = JSON.parse(localStorage.getItem('pedidos_cliente_v1') || '[]');
+                pedido = local.find(function(p) { return String(p.id) === String(pedidoId); });
+            } catch(e) {}
+        }
+
+        // 3. Si no se encontró en ningún lado
+        if (!pedido) {
+            container.innerHTML = '<div class="error"><p style="font-size:48px;margin-bottom:16px;">🔍</p><p>Pedido no encontrado.</p><p style="color:rgba(255,255,255,.5);font-size:13px;margin-top:8px;">Verifica el enlace o consulta por WhatsApp.</p><a href="https://wa.me/5354320170" target="_blank" class="btn-wa">💬 Consultar por WhatsApp</a></div>';
+            return;
+        }
+
+        renderPedido(pedido);
+
+        // 4. Polling cada 30s para actualizaciones en tiempo real (solo si Firebase está disponible)
+        if (base) {
+            setInterval(async function() {
+                try {
+                    var r = await fetch(base + '/pedidos/' + pedidoId + '.json');
+                    if (r.ok) {
+                        var p = await r.json();
+                        if (p) renderPedido(p);
+                    }
+                } catch(e) {}
+            }, 30000);
+        }
+    }
+
+    cargarPedido();
 })();
-
-if(prod){
-  document.getElementById('prodBox').classList.add('show');
-  document.getElementById('prodNombre').textContent = decodeURIComponent(prod);
-  if(precio) document.getElementById('prodPrecio').textContent = '💰 $' + precio + ' USD';
-}
-
-let ubiCoords = '';
-function compartirUbicacion(){
-  const btn=document.getElementById('btnUbi');
-  const ok=document.getElementById('ubiOk');
-  if(!navigator.geolocation){
-    ok.style.display='block';
-    ok.style.color='#e07b3a';
-    ok.textContent='⚠️ Tu teléfono no permite ubicación. Escribe la dirección.';
-    return;
-  }
-  btn.textContent='📍 Obteniendo ubicación...';
-  btn.disabled=true;
-  navigator.geolocation.getCurrentPosition(
-    (pos)=>{
-      const lat=pos.coords.latitude.toFixed(6);
-      const lng=pos.coords.longitude.toFixed(6);
-      ubiCoords=lat+','+lng;
-      btn.textContent='✅ Ubicación compartida';
-      btn.style.background='#25D366';
-      btn.style.color='#fff';
-      ok.style.display='block';
-      ok.textContent='📍 Tu ubicación se incluirá en el pedido';
-    },
-    (err)=>{
-      btn.textContent='📍 Compartir mi ubicación GPS';
-      btn.disabled=false;
-      ok.style.display='block';
-      ok.style.color='#e07b3a';
-      ok.textContent='⚠️ No se pudo obtener. Activa el GPS o escribe la dirección.';
-    },
-    { enableHighAccuracy:true, timeout:10000 }
-  );
-}
-
-function selEntrega(op){
-  entrega = op;
-  document.getElementById('oMensajeria').classList.toggle('sel', op==='mensajeria');
-  document.getElementById('oRecoge').classList.toggle('sel', op==='recoge');
-  document.getElementById('campoDir').style.display = op==='mensajeria' ? 'block' : 'none';
-  document.getElementById('eEntrega').classList.remove('show');
-}
-
-function selPago(op){
-  pago = op;
-  document.getElementById('oCUP').classList.toggle('sel', op==='CUP');
-  document.getElementById('oUSD').classList.toggle('sel', op==='USD');
-  document.getElementById('campoVuelto').style.display = (op==='CUP' || op==='USD') ? 'block' : 'none';
-  document.getElementById('ePago').classList.remove('show');
-}
-
-function selVuelto(op){
-  vuelto = op;
-  document.getElementById('oVueltoSi').classList.toggle('sel', op==='si');
-  document.getElementById('oVueltoNo').classList.toggle('sel', op==='no');
-  document.getElementById('campoVueltoMonto').style.display = op==='si' ? 'block' : 'none';
-}
-function selVueltoMoneda(m){
-  vueltoMoneda = m;
-  document.getElementById('oVMmn').classList.toggle('sel', m==='MN');
-  document.getElementById('oVMusd').classList.toggle('sel', m==='USD');
-}
-
-function enviar(){
-  let ok = true;
-
-  const nombre = document.getElementById('fNombre').value.trim();
-  const telefono = document.getElementById('fTelefono').value.trim();
-  const direccion = document.getElementById('fDireccion').value.trim();
-  const nota = document.getElementById('fNota').value.trim();
-
-  if(!nombre){ document.getElementById('eNombre').classList.add('show'); document.getElementById('fNombre').classList.add('error'); ok=false; }
-  else{ document.getElementById('eNombre').classList.remove('show'); document.getElementById('fNombre').classList.remove('error'); }
-
-  if(!telefono){ document.getElementById('eTelefono').classList.add('show'); document.getElementById('fTelefono').classList.add('error'); ok=false; }
-  else{ document.getElementById('eTelefono').classList.remove('show'); document.getElementById('fTelefono').classList.remove('error'); }
-
-  if(!entrega){ document.getElementById('eEntrega').classList.add('show'); ok=false; }
-  if(!pago){ document.getElementById('ePago').classList.add('show'); ok=false; }
-
-  if(entrega==='mensajeria' && !direccion){
-    document.getElementById('eDireccion').classList.add('show');
-    document.getElementById('fDireccion').classList.add('error');
-    ok=false;
-  } else {
-    document.getElementById('eDireccion').classList.remove('show');
-    document.getElementById('fDireccion').classList.remove('error');
-  }
-
-  if(!ok){ window.scrollTo({top:0,behavior:'smooth'}); return; }
-
-  const prodTexto = prod ? decodeURIComponent(prod) + (precio ? ' — $'+precio+' USD' : '') : '(ver conversación)';
-  const entregaTexto = entrega==='mensajeria' ? 'Mensajería a: '+direccion : 'Recoge en tienda';
-  const montoVuelto = (document.getElementById('fVueltoMonto').value||'').trim();
-  const vueltoTexto = (pago==='CUP' || pago==='USD')
-    ? (vuelto==='si'
-        ? ('Sí, dar ' + (montoVuelto ? montoVuelto + ' ' + vueltoMoneda : '(no especificó)') + ' de vuelto')
-        : 'No necesita vuelto')
-    : 'N/A';
-
-  const ubiTexto = ubiCoords
-    ? '\n📍 Ubicación GPS: https://maps.google.com/?q=' + ubiCoords
-    : '';
-
-  const msg = `✅ Nuevo pedido — Tienda Max
-
-👤 Nombre: ${nombre}
-📞 Teléfono: ${telefono}
-📦 Producto: ${prodTexto}
-🛵 Entrega: ${entregaTexto}${ubiTexto}
-💵 Pago: ${pago}
-🔄 Vuelto: ${vueltoTexto}${nota ? '\n📝 Nota: '+nota : ''}`;
-
-  const waUrl = 'https://wa.me/'+waNorm+'?text='+encodeURIComponent(msg);
-  try{
-    const a=document.createElement('a');
-    a.href=waUrl; a.target='_blank'; a.rel='noopener';
-    document.body.appendChild(a); a.click(); document.body.removeChild(a);
-  }catch(e){ location.href = waUrl; }
-}
-
-
-  navigator.serviceWorker.register('/sw.js').catch(()=>{});
-}
 </script>
 </body>
 </html>

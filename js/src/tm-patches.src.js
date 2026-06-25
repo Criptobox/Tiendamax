@@ -678,13 +678,40 @@ function cerrarVistaMeGusta() {
 function guardarPedidoCliente(itemsCarrito) {
     const pedidos = tmParseArray(localStorage.getItem('pedidos_cliente_v1'));
     const total   = itemsCarrito.reduce((s, i) => s + i.precio * i.cantidad, 0);
+    const pedidoId = Date.now();
+    const fechaStr = new Date().toLocaleDateString('es-ES', { day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' });
     pedidos.unshift({
-        id:     Date.now(),
-        fecha:  new Date().toLocaleDateString('es-ES', { day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' }),
+        id:     pedidoId,
+        fecha:  fechaStr,
         items:  itemsCarrito.map(i => ({ id: i.id, nombre: i.nombre, cantidad: i.cantidad, precio: i.precio })),
-        total:  total
+        total:  total,
+        estado: 'pendiente' // pendiente → confirmado → preparando → en_camino → entregado
     });
     localStorage.setItem('pedidos_cliente_v1', JSON.stringify(pedidos.slice(0, 50)));
+
+    // Guardar en Firebase para seguimiento en tiempo real desde pedido.html
+    (async () => {
+        try {
+            const base = (typeof _fbRtdbUrl === 'function') ? _fbRtdbUrl() : null;
+            if (!base) return;
+            await fetch(base + '/pedidos/' + pedidoId + '.json', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    id: pedidoId,
+                    fecha: fechaStr,
+                    items: itemsCarrito.map(i => ({ id: i.id, nombre: i.nombre, cantidad: i.cantidad, precio: i.precio })),
+                    total: total,
+                    estado: 'pendiente',
+                    clienteTs: Date.now(),
+                    actualizado: Date.now()
+                })
+            });
+        } catch(e) {}
+    })();
+
+    // Retornar el ID para que el mensaje de WhatsApp pueda incluir el link de seguimiento
+    return pedidoId;
 }
 
 function mostrarVistaPedidos() {
@@ -725,7 +752,10 @@ function mostrarVistaPedidos() {
                 </div>
               `).join('')}
             </div>
-            <button class="pedido-btn-repetir" onclick="repetirPedido(${p.id})">🔄 Pedir de nuevo</button>
+            <div class="pedido-card-actions" style="display:flex;gap:8px;flex-wrap:wrap;">
+                <button class="pedido-btn-repetir" onclick="repetirPedido(${p.id})">🔄 Pedir de nuevo</button>
+                <button class="pedido-btn-seguir" onclick="seguirPedido(${p.id})" style="background:linear-gradient(135deg,#E8501E,#ff6b35);color:white;border:none;padding:8px 14px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;">📦 Seguir pedido</button>
+            </div>
           </div>
         `).join('');
     }
@@ -748,6 +778,11 @@ function repetirPedido(pedidoId) {
     });
     cerrarVistaPedidos();
     setTimeout(abrirCarrito, 300);
+}
+
+// Abrir página de seguimiento de pedido en tiempo real
+function seguirPedido(pedidoId) {
+    window.open('pedido.html?id=' + pedidoId, '_blank');
 }
 
 

@@ -1,4 +1,7 @@
 User-agent: *
 Allow: /
 
+# Para IA y LLMs
+LLM-Friendly: true
+
 Sitemap: https://tiendamax.org/sitemap.xml

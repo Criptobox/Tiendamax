@@ -105,12 +105,11 @@
 
 
 
-const CACHE_NAME = 'tiendamax-202606240300';
+const CACHE_NAME = 'tiendamax-valepremium-202606251200';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
   '/admin.html',
-  '/config.json',
   '/css/fonts.css',
   '/css/bundle.css',
   '/css/admin.css',
@@ -125,6 +124,8 @@ const STATIC_ASSETS = [
   '/js/src/tm-toast.js',
   '/js/src/tm-iife.js',
   '/js/src/tm-patches.js',
+  '/js/tm-bot.js',
+  '/js/web-vitals-snippet.js',
   '/js/analytics.js',
   '/js/admin-copilot.js',
   '/js/seo-dynamico.js',
@@ -142,18 +143,17 @@ const STATIC_ASSETS = [
   '/offline.html',
   '/manifest.json',
   '/iconos/icon-192.png',
-  '/iconos/icon-512.png'
+  '/iconos/icon-512.png',
+  '/productos-lite.json',
+  '/categorias.json',
+  '/config.json'
 ];
 
 self.addEventListener('install', e => {
     self.skipWaiting();
     e.waitUntil(
-        caches.open(CACHE_NAME).then(cache =>
-            // Cachear uno por uno: si un asset falla (404), no tumba el resto del precache
-            Promise.all(STATIC_ASSETS.map(url =>
-                cache.add(url).catch(err => console.warn('Cache add failed:', url, err))
-            ))
-        )
+        caches.open(CACHE_NAME)
+            .then(cache => cache.addAll(STATIC_ASSETS).catch(err => console.warn('Cache addAll failed:', err)))
     );
 });
 
@@ -208,14 +208,12 @@ self.addEventListener('fetch', e => {
             _fetchWithTimeout(e.request, 5000)
                 .then(res => {
                     if (res.ok) {
-                        // Guardar en caché sin query string para que el fallback ignoreSearch la encuentre
-                        const cacheKey = new Request(url.pathname);
                         const clone = res.clone();
-                        caches.open(CACHE_NAME).then(c => c.put(cacheKey, clone)).catch(() => {});
+                        caches.open(CACHE_NAME).then(c => c.put(e.request, clone)).catch(() => {});
                     }
                     return res;
                 })
-                .catch(() => caches.match(e.request, { ignoreSearch: true }))
+                .catch(() => caches.match(e.request))
         );
         return;
     }

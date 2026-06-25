@@ -80,7 +80,13 @@ function aplicarTema(tema) {
     // Actualizar TODOS los botones de tema (puede haber más de uno)
     document.querySelectorAll('.theme-toggle').forEach(btn => {
         // En claro mostramos 🌙 (acción = ir a oscuro). En oscuro mostramos ☀️.
-        btn.textContent = claro ? '🌙' : '☀️';
+        const icon = claro ? '🌙' : '☀️';
+        if (btn.classList.contains('mobile-theme-btn')) {
+            // Botón del menú móvil: muestra texto + icono
+            btn.textContent = icon + ' Tema: ' + (claro ? 'Oscuro' : 'Claro');
+        } else {
+            btn.textContent = icon;
+        }
         btn.setAttribute('aria-label', claro ? 'Activar modo oscuro' : 'Activar modo claro');
         btn.setAttribute('title',      claro ? 'Activar modo oscuro' : 'Activar modo claro');
     });
@@ -407,16 +413,16 @@ function renderizarMasVendidos() {
             const _img    = escapeAttr(producto.imagen);
             const _id     = safeNum(producto.id);
             card.innerHTML = `
-	            <div class="badge-vendido">🔥 Más Vendido</div>
-	            <div class="producto-image">
-	                <img src="${_img}" alt="${_nombre}" loading="lazy" onerror="this.src='/iconos/favicon-192.png';this.style.objectFit='cover';this.style.opacity='0.3'">
-	                ${(producto.precioOriginal > 0 && producto.precioOriginal > producto.precioActual) ? `<div class="badge">-$${(producto.precioOriginal - producto.precioActual).toFixed(0)}</div>` : ''}
-	            </div>
-	            <h3>${_nombre}</h3>
-	            <p class="producto-description">${_desc}</p>
-	            <p class="precio">
-	                ${(producto.precioOriginal > 0 && producto.precioOriginal > producto.precioActual) ? '<span class="precio-tachado">$' + parseFloat(producto.precioOriginal).toFixed(2) + ' USD</span> ' : ''}<span class="precio-actual" data-usd="${safeNum(producto.precioActual)}">${typeof formatPrecio==='function'?formatPrecio(producto.precioActual):'$'+producto.precioActual.toFixed(2)+' USD'}</span>${(producto.precioOriginal > 0 && producto.precioOriginal > producto.precioActual) ? ' <span class="precio-ahorro">-$' + (producto.precioOriginal - producto.precioActual).toFixed(0) + '</span>' : ''}
-	            </p>
+                    <div class="badge-vendido">🔥 Más Vendido</div>
+                    <div class="producto-image">
+                        <img src="${_img}" alt="${_nombre}" loading="lazy" onerror="this.src='/iconos/favicon-192.png';this.style.objectFit='cover';this.style.opacity='0.3'">
+                        ${(producto.precioOriginal > 0 && producto.precioOriginal > producto.precioActual) ? `<div class="badge">-$${(producto.precioOriginal - producto.precioActual).toFixed(0)}</div>` : ''}
+                    </div>
+                    <h3>${_nombre}</h3>
+                    <p class="producto-description">${_desc}</p>
+                    <p class="precio">
+                        ${(producto.precioOriginal > 0 && producto.precioOriginal > producto.precioActual) ? '<span class="precio-tachado">$' + parseFloat(producto.precioOriginal).toFixed(2) + ' USD</span> ' : ''}<span class="precio-actual" data-usd="${safeNum(producto.precioActual)}">${typeof formatPrecio==='function'?formatPrecio(producto.precioActual):'$'+producto.precioActual.toFixed(2)+' USD'}</span>${(producto.precioOriginal > 0 && producto.precioOriginal > producto.precioActual) ? ' <span class="precio-ahorro">-$' + (producto.precioOriginal - producto.precioActual).toFixed(0) + '</span>' : ''}
+                    </p>
             <div class="stock-count">
                 <span>📦 Solo quedan ${safeNum(producto.stock)} unidades</span>
             </div>

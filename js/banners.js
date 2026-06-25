@@ -55,23 +55,7 @@
             img.alt = 'Banner TiendaMax';
             img.loading = 'lazy';
             img.style.cssText = 'position:relative;z-index:1;width:100%;height:100%;object-fit:contain;object-position:center;display:block;pointer-events:none;';
-            img.onerror = function() {
-                this.style.display = 'none';
-                bgBlur.style.backgroundImage = 'none';
-                bgBlur.style.background = 'none';
-                slide.style.background = 'linear-gradient(135deg,#1a1a1a 0%,#2a1408 100%)';
-                var ph = document.createElement('div');
-                ph.style.cssText = 'position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:2;gap:8px;pointer-events:none;';
-                var ico = document.createElement('span');
-                ico.textContent = '🖼️';
-                ico.style.cssText = 'font-size:32px;opacity:.35;';
-                var lbl = document.createElement('span');
-                lbl.textContent = 'Imagen no disponible';
-                lbl.style.cssText = 'font-size:11px;color:rgba(255,255,255,.25);';
-                ph.appendChild(ico);
-                ph.appendChild(lbl);
-                slide.appendChild(ph);
-            };
+            img.onerror = function() { slide.style.background = '#1a1a1a'; };
             slide.appendChild(img);
 
             if (slide.hasAttribute('data-banner-link')) {

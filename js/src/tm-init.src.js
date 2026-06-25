@@ -89,7 +89,8 @@ function _tmInyectarSkeletons() {
             '<div class="tm-sk tm-sk-btn"></div>' +
         '</div></div>';
     const grid = document.getElementById('productosGrid');
-    if (grid && !grid.querySelector('.producto-card')) grid.innerHTML = Array(6).fill(sk).join('');
+    // OPT 3G: 8 skeletons = mismo count que el render progresivo, transición visual sin salto
+    if (grid && !grid.querySelector('.producto-card')) grid.innerHTML = Array(8).fill(sk).join('');
     const mv = document.getElementById('masVendidosGrid');
     if (mv && !mv.querySelector('.producto-card')) mv.innerHTML = Array(2).fill(sk).join('');
 }
@@ -102,11 +103,12 @@ function inicializarTienda() {
 
     // Renderizar desde caché local ANTES de ir a la red
     // → el usuario ve productos al instante en visitas repetidas
+    // FIX: usar typeof guard en vez de try/catch para no generar warnings en consola
     if (productos.length > 0) {
-        try { renderizarCategoriasHomeInstant(); } catch(e) { console.warn('renderizarCategoriasHomeInstant:', e.message); }
-        try { renderizarCategoriasHome(); } catch(e) { console.warn('renderizarCategoriasHome:', e.message); }
-        try { renderizarMasVendidos(); } catch(e) { console.warn('renderizarMasVendidos:', e.message); }
-        try { renderizarProductos(); } catch(e) { console.warn('renderizarProductos:', e.message); }
+        if (typeof renderizarCategoriasHomeInstant === 'function') { try { renderizarCategoriasHomeInstant(); } catch(e) {} }
+        if (typeof renderizarCategoriasHome === 'function') { try { renderizarCategoriasHome(); } catch(e) {} }
+        if (typeof renderizarMasVendidos === 'function') { try { renderizarMasVendidos(); } catch(e) {} }
+        if (typeof renderizarProductos === 'function') { try { renderizarProductos(); } catch(e) {} }
     }
 
     // Fix: asegurar que el hero galería se pueble incluso si renderizarMasVendidos falló

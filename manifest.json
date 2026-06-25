@@ -2,7 +2,6 @@
     "name": "TiendaMax",
     "short_name": "TiendaMax",
     "description": "Tecnología y electrónica. Precios increíbles.",
-    "id": "/",
     "start_url": "/",
     "scope": "/",
     "display": "standalone",

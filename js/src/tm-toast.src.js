@@ -175,7 +175,9 @@ function tmComprar(event, id, nombre) {
         ? { id: _prod.id, nombre: _prod.nombre, precio: parseFloat(_prod.precioActual) || 0, cantidad: 1 }
         : { id: id, nombre: nombre || 'Producto', precio: 0, cantidad: 1 };
     _gaEvent('contact', { method: 'whatsapp_product', item_name: item.nombre, value: item.precio });
-    const msg = _mensajeOrdenWA([item]);
+    // Generar vale/pedido para seguimiento
+    const pedidoId = (typeof guardarPedidoCliente === 'function') ? guardarPedidoCliente([item]) : null;
+    const msg = _mensajeOrdenWA([item], pedidoId);
     window.open(`https://wa.me/${getNumeroWhatsApp()}?text=${msg}`, '_blank', 'noopener,noreferrer');
 }
 // Patch agregarAlCarrito para fly desde modal

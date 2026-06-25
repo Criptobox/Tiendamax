@@ -240,7 +240,7 @@ async function buscarDesdeHero(query) {
                 }
             }, 600);
         }
-    }, 150);
+    }, 250); // OPT 3G: 250ms debounce (era 150) — menos renders en tipeo rápido en 3G
 }
 
 function _tmRegistrarBusqueda(q) {
@@ -540,16 +540,12 @@ async function cargarDatosDesdeGitHub() {
         actualizarBotonesCategorias();
         actualizarListaCategorias();
 
-        // ── PASO 2: Cargar archivos pesados en paralelo (banners + productos) ──
-        const [dataBanners, dataProd] = await Promise.all([
-            fetchJSON('banners.json').catch(() => null),
-            fetchJSON('productos.json').catch(() => null),
-        ]);
-
-        // Aplicar banners
-        if (dataBanners && Array.isArray(dataBanners) && dataBanners.length > 0) {
-            localStorage.setItem('heroBanners', JSON.stringify(dataBanners));
-            if (typeof window.recargarBanners === 'function') window.recargarBanners(dataBanners);
+        // ── PASO 2: Cargar productos PRIMERO (lo que el usuario quiere ver) ──
+        // OPT 3G: cargar productos-lite.json (39KB) en vez de productos.json (148KB).
+        // lite NO tiene descripción (se carga on-demand al abrir el modal de detalle).
+        let dataProd = await fetchJSON('productos-lite.json').catch(() => null);
+        if (!dataProd || !Array.isArray(dataProd) || dataProd.length === 0) {
+            dataProd = await fetchJSON('productos.json').catch(() => null);
         }
 
         // Aplicar productos
@@ -605,15 +601,47 @@ async function cargarDatosDesdeGitHub() {
         if (typeof renderOfertaDelDia === 'function') renderOfertaDelDia();
         if (typeof renderOfertaTiempoLimitado === 'function') renderOfertaTiempoLimitado();
 
+        // ── PASO 3: Banners ON-DEMAND (3G-optimizado) ──
+        // Solo se descarga banners.json (89KB) cuando el hero es visible (IntersectionObserver)
+        // Y el navegador está idle (requestIdleCallback) → no compite con productos por ancho de banda
+        const _cargarBannersOnDemand = async () => {
+            if (window._tmBannersLoaded) return;
+            window._tmBannersLoaded = true;
+            try {
+                const dataBanners = await fetchJSON('banners.json').catch(() => null);
+                if (dataBanners && Array.isArray(dataBanners) && dataBanners.length > 0) {
+                    localStorage.setItem('heroBanners', JSON.stringify(dataBanners));
+                    if (typeof window.recargarBanners === 'function') window.recargarBanners(dataBanners);
+                }
+            } catch(e) {}
+        };
+        const _heroEl = document.querySelector('.hero, .hero-galeria, .hero-seccion, #hero, [class*="hero"]');
+        if (_heroEl && typeof IntersectionObserver !== 'undefined') {
+            const _bannerObs = new IntersectionObserver(function(entries) {
+                if (entries[0] && entries[0].isIntersecting) {
+                    _bannerObs.disconnect();
+                    if (typeof requestIdleCallback === 'function') {
+                        requestIdleCallback(_cargarBannersOnDemand, { timeout: 4000 });
+                    } else {
+                        setTimeout(_cargarBannersOnDemand, 1500);
+                    }
+                }
+            }, { rootMargin: '150px' });
+            _bannerObs.observe(_heroEl);
+            setTimeout(function() { if (!window._tmBannersLoaded) _cargarBannersOnDemand(); }, 6000);
+        } else {
+            setTimeout(_cargarBannersOnDemand, 2500);
+        }
+
         // CRÍTICO: si el usuario YA navegó a una categoría mientras se cargaba,
         // re-renderizar la vista de productos con los datos frescos.
         const vCat = document.getElementById('vistaCategoria');
         if (vCat && vCat.style.display === 'block') {
-            
+
             renderizarProductos();
         }
 
-        
+
     } catch (e) {
         console.warn('⚠️ Error en cargarDatosDesdeGitHub:', e && e.message);
 
