@@ -1,0 +1,24 @@
+# TiendaMax — Bot "Max" (chat) · Cloudflare Worker
+#
+# Deploy:
+#   cd mini-services/chat-bot
+#   npx wrangler deploy
+#   npx wrangler secret put OPENROUTER_API_KEY   # pega tu key de openrouter.ai
+#
+# Tras el deploy, wrangler imprime la URL del worker, ej:
+#   https://tiendamax-chat.TU-SUBDOMINIO.workers.dev
+# Pega esa URL en js/tm-bot.js → window.TM_BOT_API (ver instrucciones abajo).
+
+name = "tiendamax-chat"
+main = "worker.js"
+compatibility_date = "2024-09-01"
+
+# Opcional: historial de conversación por sesión (1h TTL).
+# Reutiliza el namespace KV existente del proyecto.
+kv_namespaces = [
+  { binding = "KV", id = "c7de12bdb92a4e23b24a44874a0702e7" }
+]
+
+[vars]
+SITE_URL = "https://tiendamax.org"
+WHATSAPP = "5354320170"

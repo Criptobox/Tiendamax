@@ -46,7 +46,8 @@
                     https://firebase.googleapis.com
                     https://www.google-analytics.com
                     https://analytics.google.com
-                    https://stats.g.doubleclick.net;
+                    https://stats.g.doubleclick.net
+                    https://*.workers.dev;
         frame-ancestors 'none';
         form-action 'self' https://wa.me https://api.whatsapp.com;
         base-uri    'self';
@@ -56,6 +57,8 @@
     <meta http-equiv="X-Content-Type-Options"     content="nosniff">
     <meta name="referrer"                          content="strict-origin-when-cross-origin">
     <meta http-equiv="Permissions-Policy"          content="camera=(), microphone=(), geolocation=(), payment=()">
+    <!-- Bot "Max": pega aquí la URL del Cloudflare Worker tras desplegarlo (ver mini-services/chat-bot/README.md) -->
+    <meta name="tm-bot-api" content="">
     <!-- Favicons completos para todos los navegadores y plataformas -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=2594774e">
     <link rel="icon" type="image/png" sizes="16x16"  href="/iconos/favicon-16.png?v=b7afaaf2">
@@ -1412,7 +1415,7 @@
     <script src="js/hero-efectos.js?v=454a15c2" defer></script>
     <script src="js/web-vitals-snippet.js?v=202606250100" defer></script>
     <!-- BOT DESACTIVADO: backend /api/chat no disponible en GitHub Pages
-    <script src="js/tm-bot.js?v=202606251200" defer></script>
+    <script src="js/tm-bot.js?v=202606251600" defer></script>
     -->
 
 <script>

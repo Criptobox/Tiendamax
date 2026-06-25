@@ -12,12 +12,25 @@
     if (location.pathname.includes('/admin')) return;
     window._tmBotLoaded = true;
 
-    // API del bot: ruta relativa.
-    // - En el sandbox: Next.js proxy /api/chat → localhost:3030 (evita CORS)
-    // - En producción (GitHub Pages): Caddy gateway enruta /api/chat?XTransformPort=3030 → bot
+    // API del bot:
+    // - Producción (GitHub Pages): Cloudflare Worker. Define la URL en una de estas formas:
+    //     <meta name="tm-bot-api" content="https://tiendamax-chat.TU-SUBDOMINIO.workers.dev">
+    //   o   window.TM_BOT_API = 'https://tiendamax-chat.TU-SUBDOMINIO.workers.dev';
+    // - Sandbox: Next.js proxy /api/chat → localhost:3030 / Caddy XTransformPort.
+    function _botEndpoints() {
+        const meta = document.querySelector('meta[name="tm-bot-api"]');
+        const configured = (window.TM_BOT_API || (meta && meta.content) || '').trim();
+        const list = [];
+        if (configured) {
+            const base = configured.replace(/\/$/, '');
+            list.push(base + '/api/chat', base);
+        }
+        // Fallbacks para el sandbox / rutas same-origin
+        list.push('/api/chat?XTransformPort=3030', '/api/chat');
+        return list;
+    }
     async function callBotAPI(payload) {
-        // Intentar primero con XTransformPort (Caddy), luego sin él (proxy Next)
-        const urls = ['/api/chat?XTransformPort=3030', '/api/chat'];
+        const urls = _botEndpoints();
         let lastErr;
         for (const url of urls) {
             try {
