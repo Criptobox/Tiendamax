@@ -1519,5 +1519,28 @@
     "devolucion": false,
     "specs": [],
     "fechaAgregado": "2026-06-25T19:00:21.253Z"
+  },
+  {
+    "id": 1782414111185,
+    "nombre": "AURICULARES GAMING",
+    "descripcion": "AURICULARES GAMING 3 MODOS\nConectividad: 2.4 GHz (USB), Bluetooth y 3.5 mm\nCompatibilidad: PC, PS4, PS5, móviles y tablets\nBatería: hasta 100 horas\nAudio: drivers 50 mm + sonido envolvente 7.1\nMicrófono: flexible con cancelación de ruido",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1782414109570.jpg",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1782414109570.jpg"
+    ],
+    "precioActual": 50,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 7,
+    "comision": 5,
+    "comisionMoneda": "USD",
+    "categoria": "CELULARES",
+    "subcategoria": "AUDIO",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "specs": [],
+    "fechaAgregado": "2026-06-25T19:01:51.185Z"
   }
 ]
