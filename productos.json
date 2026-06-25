@@ -1496,5 +1496,28 @@
     "devolucion": false,
     "specs": [],
     "fechaAgregado": "2026-06-25T18:56:53.740Z"
+  },
+  {
+    "id": 1782414021253,
+    "nombre": "router de doble banda Archer AX1450",
+    "descripcion": "El router de doble banda Archer AX1450 está equipado con: \n-  Tecnología inalámbrica Wi-Fi 6 para velocidades más rápidas.\n- Mayor capacidad y reducción de la congestión de la red.\n- Logra velocidades de hasta 1.45 Gbps para streaming y juegos 4K/HD sin buffer. \n- Conecta incluso más dispositivos utilizando OFDMA y MU-MIMO, minimizando la congestión y la latencia de la red. \n- Los puertos de gigabit te brindan estabilidad y velocidad por cable en más dispositivos.\n- Es compatible con todos los dispositivos con capacidades WiFi. \n\nPara una configuración y gestión fluidas, descarga la aplicación Tether para configurar tu router en minutos.",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1782414013394.jpg",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1782414013394.jpg"
+    ],
+    "precioActual": 80,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 6,
+    "comision": 10,
+    "comisionMoneda": "USD",
+    "categoria": "WIFI",
+    "subcategoria": "ROUTERS",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "specs": [],
+    "fechaAgregado": "2026-06-25T19:00:21.253Z"
   }
 ]
