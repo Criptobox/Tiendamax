@@ -565,10 +565,12 @@ async function cargarDatosDesdeGitHub() {
 
                 // comision viene directamente del producto en productos.json
                 const local = mapaLocal[p.id];
-                if (local && local.comision !== undefined && p.comision === undefined) {
-                    p.comision = local.comision;
+                if (local) {
+                    if (local.comision !== undefined && p.comision === undefined) p.comision = local.comision;
+                    if (local.resenas && local.resenas.length > 0) p.resenas = local.resenas;
+                    // Si el stock local es MENOR que el de GitHub, hubo ventas locales aún no sincronizadas
+                    if (local.stock !== undefined && local.stock < (p.stock ?? Infinity)) p.stock = local.stock;
                 }
-                if (local && local.resenas && local.resenas.length > 0) p.resenas = local.resenas;
                 return p;
             });
             localStorage.setItem('productos', JSON.stringify(productos));

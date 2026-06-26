@@ -1803,4 +1803,298 @@ async function enviarPushManualAdmin() {
 
 window.tmMonedaActual = () => _monedaActual;
 
+// ══════════════════════════════════════════════════════════════════════
+//  COMISIÓN DEL GESTOR — edición manual en historial de ventas
+// ══════════════════════════════════════════════════════════════════════
+
+function editarComisionGestor(ventaId) {
+    const ventas = cargarVentas ? cargarVentas() : JSON.parse(localStorage.getItem('registroVentas') || '[]');
+    const v = ventas.find(x => x.id === ventaId);
+    if (!v) return;
+    const actual = v.comisionGestor || 0;
+    const nuevo = prompt(`Comisión del gestor para:\n"${v.producto}"\n\nValor actual: $${actual} USD\nIngresa el nuevo monto:`, actual);
+    if (nuevo === null) return;
+    const monto = parseFloat(nuevo);
+    if (isNaN(monto) || monto < 0) { mostrarNotificacion('⚠️ Monto inválido', 'error'); return; }
+    v.comisionGestor = monto;
+    localStorage.setItem('registroVentas', JSON.stringify(ventas));
+    if (typeof _fbGuardarVenta === 'function') _fbGuardarVenta(v);
+    if (typeof renderizarVentas === 'function') renderizarVentas();
+    mostrarNotificacion(`✅ Comisión gestor actualizada: $${monto.toFixed(2)}`);
+}
+window.editarComisionGestor = editarComisionGestor;
+
+// Monkey-patch renderizarVentas para añadir botón de comisión gestor y mostrar el valor
+if (typeof renderizarVentas === 'function') {
+    const _origRV = renderizarVentas;
+    renderizarVentas = function(pagina) {
+        _origRV(pagina);
+        // Post-procesar filas para añadir botón de comisión gestor
+        const ventas = cargarVentas ? cargarVentas() : [];
+        const mapaVentas = {};
+        ventas.forEach(v => { mapaVentas[v.id] = v; });
+        document.querySelectorAll('.admin-history-item').forEach(el => {
+            if (el.dataset.cgPatch) return;
+            el.dataset.cgPatch = '1';
+            // Extraer ID desde onclick del botón eliminar
+            const btnDel = el.querySelector('[onclick^="eliminarVenta"]');
+            if (!btnDel) return;
+            const m = (btnDel.getAttribute('onclick') || '').match(/eliminarVenta\((\d+)\)/);
+            if (!m) return;
+            const vid = parseInt(m[1]);
+            const v = mapaVentas[vid];
+            if (!v) return;
+            // Añadir indicador de comisión gestor si existe
+            const infoDiv = el.querySelector('.info');
+            if (infoDiv && v.comisionGestor > 0) {
+                const cg = document.createElement('div');
+                cg.className = 'meta';
+                cg.style.color = '#C9A96E';
+                cg.textContent = `💼 Gestor: $${v.comisionGestor.toFixed(2)} USD`;
+                infoDiv.appendChild(cg);
+            }
+            // Añadir botón de editar comisión gestor antes del botón eliminar
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.title = 'Comisión del gestor';
+            btn.style.cssText = 'background:rgba(201,169,110,.18);border:1px solid rgba(201,169,110,.4);color:#C9A96E;border-radius:6px;padding:4px 8px;font-size:11px;cursor:pointer;flex-shrink:0;margin-right:4px;';
+            btn.textContent = '💼';
+            btn.onclick = () => editarComisionGestor(vid);
+            btnDel.parentNode.insertBefore(btn, btnDel);
+        });
+    };
+}
+
+// ══════════════════════════════════════════════════════════════════════
+//  PEDIDOS — Panel de gestión de órdenes de clientes
+// ══════════════════════════════════════════════════════════════════════
+
+let _pedidosPollingTimer = null;
+
+async function tmCargarPedidos() {
+    const cont = document.getElementById('pedidosContenido');
+    if (!cont) return;
+    cont.innerHTML = '<div style="text-align:center;padding:32px;color:#888">⏳ Cargando pedidos...</div>';
+
+    const base = (typeof _fbRtdbUrl === 'function') ? _fbRtdbUrl() : null;
+    if (!base) {
+        cont.innerHTML = '<div class="card" style="text-align:center;padding:24px;color:#e74c3c">⚠️ Firebase no configurado.<br><small style="color:#888">Configura Firebase en Configuración para ver los pedidos.</small></div>';
+        return;
+    }
+
+    try {
+        const res = await fetch(base + '/pedidos.json?_=' + Date.now(), { cache: 'no-store' });
+        if (!res.ok) { throw new Error('HTTP ' + res.status); }
+        const data = await res.json();
+        tmRenderizarPedidos(data || {});
+
+        // Actualizar badge del tab
+        const pendientes = data ? Object.values(data).filter(p => p && p.estado === 'pendiente').length : 0;
+        const badge = document.getElementById('pedidosBadge');
+        if (badge) {
+            badge.style.display = pendientes > 0 ? '' : 'none';
+            badge.textContent = pendientes;
+        }
+    } catch(e) {
+        cont.innerHTML = `<div class="card" style="text-align:center;padding:24px;color:#e74c3c">❌ Error al cargar pedidos: ${e.message}<br><button class="btn" onclick="tmCargarPedidos()" style="margin-top:12px">🔄 Reintentar</button></div>`;
+    }
+}
+
+function tmRenderizarPedidos(data) {
+    const cont = document.getElementById('pedidosContenido');
+    if (!cont) return;
+
+    const todos = Object.values(data).filter(Boolean).sort((a, b) => (b.clienteTs || 0) - (a.clienteTs || 0));
+    const pendientes = todos.filter(p => p.estado === 'pendiente');
+    const activos = todos.filter(p => ['confirmado', 'preparando', 'en_camino'].includes(p.estado));
+    const entregados = todos.filter(p => p.estado === 'entregado').slice(0, 10);
+
+    const renderItems = (items) => (items || []).map(i =>
+        `<span style="font-size:12px;color:#bbb">${escapeHtml ? escapeHtml(i.nombre) : i.nombre} ×${i.cantidad} <b style="color:#2ECC71">$${(i.precio * i.cantidad).toFixed(2)}</b></span>`
+    ).join('<br>');
+
+    const estadoLabel = { pendiente: '⏳ Pendiente', confirmado: '✅ Confirmado', preparando: '📦 Preparando', en_camino: '🚚 En camino', entregado: '🎉 Entregado' };
+    const estadoColor = { pendiente: '#e74c3c', confirmado: '#2ECC71', preparando: '#f39c12', en_camino: '#3498db', entregado: '#95a5a6' };
+
+    const renderCard = (p, showActions) => {
+        const idCorto = String(p.id).slice(-6);
+        const color = estadoColor[p.estado] || '#888';
+        const label = estadoLabel[p.estado] || p.estado;
+        return `<div class="tm-pedido-card" id="pc-${p.id}">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+                <span style="font-size:11px;font-family:monospace;color:#888">#${idCorto}</span>
+                <span style="font-size:11px;background:${color}22;color:${color};border:1px solid ${color}44;border-radius:20px;padding:2px 10px;font-weight:700">${label}</span>
+            </div>
+            <div style="font-size:12px;color:#aaa;margin-bottom:6px">📅 ${p.fecha || '—'}</div>
+            <div style="margin-bottom:10px;line-height:1.7">${renderItems(p.items)}</div>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:${showActions ? '12' : '0'}px">
+                <b style="color:#2ECC71;font-size:15px">$${(p.total || 0).toFixed(2)} USD</b>
+                <a href="pedido.html?id=${p.id}" target="_blank" style="font-size:11px;color:#888;text-decoration:none">🔗 Ver</a>
+            </div>
+            ${showActions ? `<div style="display:flex;gap:6px;flex-wrap:wrap">
+                ${p.estado === 'pendiente' ? `<button type="button" class="btn btn-primary" style="flex:1;font-size:12px;padding:8px" onclick="tmConfirmarPedido('${p.id}')">✅ Confirmar</button>` : ''}
+                ${['pendiente','confirmado','preparando'].includes(p.estado) ? `<button type="button" class="btn" style="font-size:12px;padding:8px;background:rgba(52,152,219,.15);border-color:rgba(52,152,219,.4);color:#3498db" onclick="tmCambiarEstadoPedido('${p.id}','en_camino')">🚚 En camino</button>` : ''}
+                ${p.estado !== 'entregado' ? `<button type="button" class="btn" style="font-size:12px;padding:8px;background:rgba(46,204,113,.12);border-color:rgba(46,204,113,.3);color:#2ECC71" onclick="tmCambiarEstadoPedido('${p.id}','entregado')">🎉 Entregado</button>` : ''}
+                <button type="button" class="btn" style="font-size:12px;padding:8px;background:rgba(231,76,60,.1);border-color:rgba(231,76,60,.25);color:#e74c3c" onclick="tmEliminarPedido('${p.id}')">🗑</button>
+            </div>` : ''}
+        </div>`;
+    };
+
+    let html = '';
+    if (todos.length === 0) {
+        html = '<div class="card" style="text-align:center;padding:32px;color:#555"><div style="font-size:48px;margin-bottom:12px">📭</div><p>No hay pedidos aún.</p><p style="font-size:12px;color:#444">Los pedidos de clientes aparecerán aquí cuando alguien compre por WhatsApp o desde la tienda.</p></div>';
+    } else {
+        if (pendientes.length > 0) {
+            html += `<div style="margin-bottom:20px"><h3 style="font-size:14px;font-weight:700;color:#e74c3c;margin-bottom:10px">⏳ Pendientes (${pendientes.length})</h3><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px">${pendientes.map(p => renderCard(p, true)).join('')}</div></div>`;
+        }
+        if (activos.length > 0) {
+            html += `<div style="margin-bottom:20px"><h3 style="font-size:14px;font-weight:700;color:#f39c12;margin-bottom:10px">🔄 En proceso (${activos.length})</h3><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px">${activos.map(p => renderCard(p, true)).join('')}</div></div>`;
+        }
+        if (entregados.length > 0) {
+            html += `<div><h3 style="font-size:14px;font-weight:700;color:#555;margin-bottom:10px">🎉 Entregados recientemente</h3><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px">${entregados.map(p => renderCard(p, false)).join('')}</div></div>`;
+        }
+    }
+
+    cont.innerHTML = html;
+}
+
+async function tmConfirmarPedido(pedidoId) {
+    const base = (typeof _fbRtdbUrl === 'function') ? _fbRtdbUrl() : null;
+    if (!base) { mostrarNotificacion('⚠️ Firebase no configurado', 'error'); return; }
+
+    const card = document.getElementById('pc-' + pedidoId);
+    if (card) card.style.opacity = '0.5';
+
+    try {
+        const res = await fetch(base + '/pedidos/' + pedidoId + '.json');
+        const pedido = res.ok ? await res.json() : null;
+        if (!pedido) { mostrarNotificacion('⚠️ Pedido no encontrado', 'error'); return; }
+
+        // Registrar venta por cada item del pedido
+        (pedido.items || []).forEach(item => {
+            const prod = typeof productos !== 'undefined' ? productos.find(p => p.id === item.id || String(p.id) === String(item.id)) : null;
+            if (prod && typeof registrarVenta === 'function') {
+                registrarVenta(prod.id, item.cantidad || 1);
+            } else if (typeof ajustarStock === 'function') {
+                ajustarStock(item.id, -(item.cantidad || 1), true);
+            }
+        });
+
+        // Cambiar estado en Firebase
+        await fetch(base + '/pedidos/' + pedidoId + '.json', {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ estado: 'confirmado', actualizado: Date.now() })
+        });
+
+        // Notificar al 2do Gestor por WhatsApp
+        const gestorNum = localStorage.getItem('adminWhatsappNum');
+        if (gestorNum && gestorNum.trim()) {
+            const items = (pedido.items || []).map(i => `• ${i.nombre} ×${i.cantidad} — $${(i.precio * i.cantidad).toFixed(2)}`).join('\n');
+            const msg = encodeURIComponent(
+                `✅ *PEDIDO CONFIRMADO — TiendaMax*\n` +
+                `━━━━━━━━━━━━━━━━━━━━\n` +
+                `📦 Pedido #${String(pedidoId).slice(-6)}\n` +
+                `📅 ${pedido.fecha || '—'}\n\n` +
+                `${items}\n\n` +
+                `💰 *Total: $${(pedido.total || 0).toFixed(2)} USD*\n` +
+                `━━━━━━━━━━━━━━━━━━━━\n` +
+                `🔗 https://tiendamax.org/pedido.html?id=${pedidoId}`
+            );
+            window.open(`https://wa.me/${gestorNum.replace(/\D/g, '')}?text=${msg}`, '_blank', 'noopener,noreferrer');
+        }
+
+        mostrarNotificacion('✅ Pedido confirmado y stock descontado');
+        tmCargarPedidos();
+    } catch(e) {
+        mostrarNotificacion('❌ Error: ' + e.message, 'error');
+        if (card) card.style.opacity = '1';
+    }
+}
+
+async function tmCambiarEstadoPedido(pedidoId, nuevoEstado) {
+    const base = (typeof _fbRtdbUrl === 'function') ? _fbRtdbUrl() : null;
+    if (!base) { mostrarNotificacion('⚠️ Firebase no configurado', 'error'); return; }
+    try {
+        await fetch(base + '/pedidos/' + pedidoId + '.json', {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ estado: nuevoEstado, actualizado: Date.now() })
+        });
+        mostrarNotificacion('✅ Estado actualizado');
+        tmCargarPedidos();
+    } catch(e) {
+        mostrarNotificacion('❌ Error: ' + e.message, 'error');
+    }
+}
+
+async function tmEliminarPedido(pedidoId) {
+    if (!confirm('¿Eliminar este pedido?')) return;
+    const base = (typeof _fbRtdbUrl === 'function') ? _fbRtdbUrl() : null;
+    if (!base) { mostrarNotificacion('⚠️ Firebase no configurado', 'error'); return; }
+    try {
+        await fetch(base + '/pedidos/' + pedidoId + '.json', { method: 'DELETE' });
+        mostrarNotificacion('🗑 Pedido eliminado');
+        tmCargarPedidos();
+    } catch(e) {
+        mostrarNotificacion('❌ Error: ' + e.message, 'error');
+    }
+}
+
+// Hook: cargar pedidos al abrir el tab
+document.addEventListener('click', e => {
+    const btn = e.target.closest('[data-tab="pedidos"]');
+    if (btn) setTimeout(tmCargarPedidos, 150);
+});
+
+// Auto-polling cada 60s cuando el tab pedidos está activo
+setInterval(() => {
+    const sec = document.getElementById('pedidos');
+    if (sec && sec.classList.contains('active')) tmCargarPedidos();
+}, 60000);
+
+// ══════════════════════════════════════════════════════════════════════
+//  AUTO-SYNC A GITHUB — dispara sincronizarTodoConGitHub tras cambios admin
+// ══════════════════════════════════════════════════════════════════════
+let _autoSyncTimer = null;
+function _tmTriggerAutoSync() {
+    clearTimeout(_autoSyncTimer);
+    _autoSyncTimer = setTimeout(() => {
+        if (typeof sincronizarTodoConGitHub === 'function') {
+            sincronizarTodoConGitHub();
+        }
+    }, 5000); // 5s tras el último cambio
+}
+
+// Patch guardarProductos para auto-sync en cambios de config
+if (typeof guardarProductos === 'function') {
+    const _origGuardarProductos = guardarProductos;
+    guardarProductos = function() {
+        _origGuardarProductos.apply(this, arguments);
+        // No disparar aquí — sincronizarConGitHub ya se llama desde ajustarStock
+    };
+}
+
+// Patch agregarCategoria / actualizarCategoria para auto-sync de categorías
+['agregarCategoria', 'actualizarCategoria', 'eliminarCategoria'].forEach(fn => {
+    if (typeof window[fn] === 'function') {
+        const orig = window[fn];
+        window[fn] = function() {
+            const result = orig.apply(this, arguments);
+            _tmTriggerAutoSync();
+            return result;
+        };
+    }
+});
+
+// Patch guardarConfig para auto-sync de configuración
+if (typeof guardarConfig === 'function') {
+    const _origGuardarConfig = guardarConfig;
+    guardarConfig = function() {
+        const result = _origGuardarConfig.apply(this, arguments);
+        _tmTriggerAutoSync();
+        return result;
+    };
+}
+
 // Expuesto para biometric-auth.js: otorga acceso sin re-prompt de contraseña

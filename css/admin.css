@@ -2205,3 +2205,51 @@ body:not(.dark-mode) .admin-inventory-strip span {
     background: rgba(255,107,53,0.25);
     color: #FF6B35;
 }
+
+/* ── Pedidos panel ── */
+.tm-pedido-card {
+    background: rgba(255,255,255,.04);
+    border: 1px solid rgba(255,255,255,.08);
+    border-radius: 14px;
+    padding: 16px;
+    transition: opacity .2s, border-color .15s;
+}
+.tm-pedido-card:hover { border-color: rgba(255,255,255,.16); }
+
+/* ── Mobile improvements ── */
+@media (max-width: 760px) {
+    /* Pedidos grid: 1 column on mobile */
+    #pedidosContenido [style*="grid-template-columns"] {
+        display: flex !important;
+        flex-direction: column !important;
+    }
+    .tm-pedido-card { padding: 12px; }
+    /* Ventas history items stacked */
+    .admin-history-item {
+        flex-wrap: wrap;
+        gap: 6px;
+    }
+    .admin-history-item .info { width: 100%; }
+    /* Head: stack vertically */
+    .head { gap: 10px; }
+    /* Quick-grid: 2 cols max on mobile */
+    .tm-qg { grid-template-columns: 1fr 1fr !important; }
+    /* Stats: 2 cols on very small screens */
+    .stats { grid-template-columns: repeat(2, 1fr); }
+    /* Better tap targets */
+    .btn, button.btn { min-height: 44px; }
+    .admin-chip { min-height: 36px; font-size: 13px; }
+    /* List de espera: readable on mobile */
+    .le-prod-card { padding: 12px; }
+    .le-cliente { flex-wrap: wrap; gap: 6px; }
+    /* Edit modal: full width on mobile */
+    .modal-content { width: 96vw !important; max-width: 96vw !important; margin: 12px auto; padding: 16px !important; }
+    /* Tabs bottom nav: tighter text */
+    .tm-side .tab-btn .txt { font-size: 9px !important; }
+}
+
+@media (max-width: 400px) {
+    .tm-qg { grid-template-columns: 1fr !important; }
+    .tm-main { padding: 14px 10px 100px !important; }
+    .admin-history-item { font-size: 13px; }
+}
