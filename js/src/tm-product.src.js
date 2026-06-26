@@ -412,7 +412,6 @@ if (_detailPrecioMNEl) {
     if (trustBadgesEl) {
         let trustHtml = '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;padding:12px;background:rgba(0,0,0,0.03);border-radius:10px;border:1px solid rgba(0,0,0,0.06);">';
         trustHtml += '<span style="display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;padding:5px 10px;border-radius:8px;background:rgba(46,204,113,0.10);color:#2ECC71;">🔒 Pago contra entrega</span>';
-        trustHtml += '<span style="display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;padding:5px 10px;border-radius:8px;background:rgba(46,204,113,0.10);color:#2ECC71;">✅ Revisa tu pedido antes de pagar</span>';
         if (p.garantia && String(p.garantia).trim()) {
             trustHtml += `<span style="display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;padding:5px 10px;border-radius:8px;background:rgba(232,80,30,0.10);color:#E8501E;">🛡️ Garantía ${escapeHtml(p.garantia)}</span>`;
         }
