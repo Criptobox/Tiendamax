@@ -623,9 +623,7 @@ function mostrarVistaMeGusta() {
             const _txt = escapeHtml(getOfertaDiaTexto());
             const stockHTML = esAgotado
                 ? '<div class="stock" style="color:#e74c3c;font-weight:700;">❌ Agotado</div>'
-                : (_stk <= 3
-                    ? '<div class="stock stock-urgente">⚠️ ¡Solo quedan ' + _stk + '!</div>'
-                    : '<div class="stock">📦 Stock: ' + _stk + ' unidades</div>') +
+                : '<div class="stock">📦 Stock: ' + _stk + ' unidades</div>' +
                   '<button class="btn-pedir-card" data-nombre="' + _nom + '" onclick="event.stopPropagation();tmComprar(event,' + _id + ',this.dataset.nombre)">🛒 Pedir</button>';
             card.innerHTML =
                 (esOfertaDia ? '<div class="badge-oferta-dia">' + _txt + '</div>' :
