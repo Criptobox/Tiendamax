@@ -2444,12 +2444,20 @@ function tmExtractJsonObject(text) {
     for(let i=0;i<max;i++){
       const p=prods[i];
       const em=emojiFor(p.nombre,cat);
-      const name=String(p.nombre||'').length>36?String(p.nombre).slice(0,35)+'…':p.nombre||'';
       const price='$'+Number(p.precioActual||0).toFixed(2);
       const fs=lh-14;
-      ctx.fillStyle='#e8dcc8';ctx.font=`${fs}px system-ui,Arial,sans-serif`;ctx.fillText(em+' '+name,80,y);
+      // Precio primero (derecha) para medir su ancho y reservarle espacio
       ctx.fillStyle='#FF6B35';ctx.font=`bold ${fs}px system-ui,Arial,sans-serif`;ctx.textAlign='right';ctx.fillText(price,W-75,y);
-      ctx.textAlign='left';
+      const priceW=ctx.measureText(price).width;
+      // Nombre (izquierda) recortado para NO chocar con el precio
+      ctx.textAlign='left';ctx.fillStyle='#e8dcc8';ctx.font=`${fs}px system-ui,Arial,sans-serif`;
+      const maxNameW=(W-75)-priceW-30-80; // límite derecho del nombre
+      let label=em+' '+String(p.nombre||'');
+      if(ctx.measureText(label).width>maxNameW){
+        while(label.length>2 && ctx.measureText(label+'…').width>maxNameW){label=label.slice(0,-1);}
+        label=label.replace(/\s+$/,'')+'…';
+      }
+      ctx.fillText(label,80,y);
       // Subtle row separator
       if(i<max-1){ctx.strokeStyle='rgba(255,255,255,.05)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(80,y+12);ctx.lineTo(W-80,y+12);ctx.stroke();}
       y+=lh;
