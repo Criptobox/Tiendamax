@@ -243,13 +243,17 @@
     <noscript><link rel="stylesheet" href="css/fonts.css?v=67235440"></noscript>
 
     <!-- Preload de los módulos JS principales (modularizado + minificado) -->
-    <link rel="preload" href="js/src/tm-config.js?v=1b714712" as="script">
+    <link rel="preload" href="js/src/tm-config.js?v=36eb1714" as="script">
     <link rel="preload" href="js/src/tm-data.js?v=4d0db939" as="script">
-    <link rel="preload" href="js/src/tm-state.js?v=47b6e996" as="script">
+    <link rel="preload" href="js/src/tm-state.js?v=b3c5202e" as="script">
 
     <!-- CSS unido + minificado (generado por scripts/build_css.py vía GitHub Action).
          Para editar estilos, edita los CSS fuente en /css y la Action regenera este bundle. -->
-    <link rel="stylesheet" href="css/bundle.css?v=ba6ed535">
+
+
+
+    <link rel="stylesheet" href="css/bundle.css?v=57105a19">
+
 
 
     <!-- Estilos para "Vistos Recientemente" -->
@@ -1014,11 +1018,11 @@
                 </div>
                 <div class="footer-col">
                     <h4>Información</h4>
-                    <a href="#" onclick="event.preventDefault();alert('Pago contra entrega en USD o MN (según tasa del día). Coordinar por WhatsApp.');">💵 Métodos de pago</a>
-                    <a href="#" onclick="event.preventDefault();alert('Garantía en todos los productos. Si algo no funciona, nos escribes por WhatsApp y lo resolvemos.');">🛡️ Garantía</a>
-                    <a href="#" onclick="event.preventDefault();alert('Aceptamos devoluciones dentro de 24h si el producto llega dañado o no corresponde.');">↩️ Devoluciones</a>
-                    <a href="#" onclick="event.preventDefault();alert('Términos y condiciones de uso de TiendaMax. Usar el sitio implica aceptarlos.');">📄 Términos</a>
-                    <a href="#" onclick="event.preventDefault();alert('Tu privacidad es importante. No compartimos tus datos con terceros.');">🔒 Privacidad</a>
+                    <a href="#" onclick="event.preventDefault();openLegalModal('💵 Métodos de pago','<p>Aceptamos <strong>pago contra entrega</strong> en efectivo, en USD o MN según la tasa del día.</p><p>Coordinamos la entrega y el pago directamente por WhatsApp antes de enviar el pedido.</p>');">💵 Métodos de pago</a>
+                    <a href="#" onclick="event.preventDefault();openLegalModal('🛡️ Garantía','<p>Todos nuestros productos tienen <strong>garantía</strong>.</p><p>Si algo no funciona o llega en mal estado, escríbenos por WhatsApp y lo resolvemos sin complicaciones: cambio o reembolso.</p>');">🛡️ Garantía</a>
+                    <a href="#" onclick="event.preventDefault();openLegalModal('↩️ Devoluciones','<p>Aceptamos devoluciones dentro de las <strong>24 horas</strong> siguientes a la entrega.</p><p>El producto debe llegar dañado o no corresponder a lo descrito. Contáctanos por WhatsApp con fotos del problema.</p>');">↩️ Devoluciones</a>
+                    <a href="#" onclick="event.preventDefault();openLegalModal('📄 Términos y condiciones','<p>Al usar este sitio aceptas los <strong>términos y condiciones</strong> de TiendaMax.</p><p>Los precios están en USD y pueden cambiar sin previo aviso. Los pedidos se confirman por WhatsApp. Nos reservamos el derecho de cancelar pedidos con información incorrecta.</p>');">📄 Términos</a>
+                    <a href="#" onclick="event.preventDefault();openLegalModal('🔒 Privacidad','<p>Tu <strong>privacidad</strong> es importante para nosotros.</p><p>No compartimos tus datos personales con terceros. La información que nos brindas (nombre, dirección) se usa únicamente para coordinar tu pedido por WhatsApp.</p>');">🔒 Privacidad</a>
                 </div>
             </div>
             <!-- Móvil: franja compacta -->
@@ -1045,6 +1049,37 @@
     </footer>
 
     <!-- Botones flotantes removidos: reemplazados por banners laterales en sección categorías -->
+
+    <!-- ===== MODAL POLÍTICAS LEGALES ===== -->
+    <div id="legalModalOverlay" class="legal-modal-overlay" style="display:none" onclick="if(event.target===this)closeLegalModal()">
+        <div class="legal-modal-sheet" role="dialog" aria-modal="true" aria-labelledby="legalModalTitle">
+            <div class="legal-modal-handle"></div>
+            <div class="legal-modal-header">
+                <span id="legalModalTitle" class="legal-modal-title"></span>
+                <button type="button" class="legal-modal-close" onclick="closeLegalModal()" aria-label="Cerrar">×</button>
+            </div>
+            <div id="legalModalBody" class="legal-modal-body"></div>
+        </div>
+    </div>
+    <script>
+    function openLegalModal(title, content) {
+        document.getElementById('legalModalTitle').textContent = title;
+        document.getElementById('legalModalBody').innerHTML = content;
+        const overlay = document.getElementById('legalModalOverlay');
+        overlay.style.display = 'flex';
+        requestAnimationFrame(() => overlay.classList.add('legal-modal-open'));
+        document.body.style.overflow = 'hidden';
+    }
+    function closeLegalModal() {
+        const overlay = document.getElementById('legalModalOverlay');
+        overlay.classList.remove('legal-modal-open');
+        overlay.addEventListener('transitionend', function h() {
+            overlay.style.display = 'none';
+            overlay.removeEventListener('transitionend', h);
+        });
+        document.body.style.overflow = '';
+    }
+    </script>
 
     <!-- Botones de control -->
     <div class="control-buttons">
@@ -1283,9 +1318,9 @@
     <script src="js/seo-dynamico.js?v=ea7e25bb" defer></script>
     <!-- ===== TiendaMax modularizado (reemplaza script.js) ===== -->
     <!-- Orden: config → data → state → admin → product → catalog → init → ui → toast → iife → patches -->
-    <script src="js/src/tm-config.js?v=1b714712" defer></script>
+    <script src="js/src/tm-config.js?v=36eb1714" defer></script>
     <script src="js/src/tm-data.js?v=4d0db939" defer></script>
-    <script src="js/src/tm-state.js?v=47b6e996" defer></script>
+    <script src="js/src/tm-state.js?v=b3c5202e" defer></script>
     <script src="js/src/tm-admin.js?v=34c6172d" defer></script>
     <script src="js/src/tm-product.js?v=0509c06c" defer></script>
     <script src="js/src/tm-catalog.js?v=eec2d9e4" defer></script>

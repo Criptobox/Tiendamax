@@ -1246,3 +1246,37 @@ body.light-mode .hsb-fi-sel{border-color:rgba(0,0,0,.15);background:#fff;color:#
 .hsb-fi-sel:focus{outline:none;border-color:#FF6B35;}
 .hsb-fi-check{display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer;user-select:none;}
 .hsb-fi-check input[type=checkbox]{accent-color:#FF6B35;width:15px;height:15px;cursor:pointer;}
+
+/* ── Urgencia en tarjetas de similares del carrito ── */
+.cs-urgencia{font-size:11px;font-weight:700;color:#FF6B35;margin-top:4px;letter-spacing:.2px;}
+body.light-mode .cs-urgencia{color:#C94A1C;}
+
+/* ── Modal políticas legales ── */
+.legal-modal-overlay{position:fixed;inset:0;z-index:9000;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);
+  display:flex;align-items:flex-end;justify-content:center;
+  opacity:0;transition:opacity .25s ease;}
+.legal-modal-overlay.legal-modal-open{opacity:1;}
+.legal-modal-sheet{width:100%;max-width:560px;background:#1a1a2e;border-radius:20px 20px 0 0;
+  padding:0 0 env(safe-area-inset-bottom,0);
+  transform:translateY(100%);transition:transform .3s cubic-bezier(.4,0,.2,1);}
+.legal-modal-overlay.legal-modal-open .legal-modal-sheet{transform:translateY(0);}
+.legal-modal-handle{width:40px;height:4px;background:rgba(255,255,255,.2);border-radius:99px;
+  margin:12px auto 0;}
+.legal-modal-header{display:flex;align-items:center;justify-content:space-between;
+  padding:14px 20px 10px;}
+.legal-modal-title{font-size:17px;font-weight:700;color:#fff;}
+.legal-modal-close{background:none;border:none;color:rgba(255,255,255,.5);font-size:26px;
+  line-height:1;cursor:pointer;padding:0 4px;transition:color .15s;}
+.legal-modal-close:hover{color:#fff;}
+.legal-modal-body{padding:4px 20px 28px;color:rgba(255,255,255,.75);font-size:15px;line-height:1.6;}
+.legal-modal-body p{margin:0 0 10px;}
+.legal-modal-body strong{color:#fff;}
+body.light-mode .legal-modal-sheet{background:#fff;}
+body.light-mode .legal-modal-title{color:#111;}
+body.light-mode .legal-modal-body{color:#444;}
+body.light-mode .legal-modal-body strong{color:#111;}
+body.light-mode .legal-modal-close{color:#999;}
+body.light-mode .legal-modal-close:hover{color:#111;}
+@media(prefers-reduced-motion:reduce){
+  .legal-modal-overlay,.legal-modal-sheet{transition:none;}
+}

@@ -393,11 +393,16 @@ function renderizarSimilaresCarrito() {
         const img    = escapeAttr((p.imagenes && p.imagenes[0]) ? p.imagenes[0] : (p.imagen || ''));
         const nombre = escapeHtml(p.nombre);
         const idSafe = safeNum(p.id);
+        const stock  = parseInt(p.stock, 10);
+        const urgencia = (!isNaN(stock) && stock > 0 && stock <= 3)
+            ? '<div class="cs-urgencia">🔥 ¡Solo quedan ' + stock + '!</div>'
+            : '';
         return '<div class="cs-card" style="cursor:pointer" onclick="if(typeof cerrarCarrito===\'function\')cerrarCarrito();abrirDetalleProducto(' + idSafe + ')">' +
             '<img class="cs-card-img" src="' + img + '" alt="' + nombre + '" loading="lazy" onerror="this.style.display=\'none\'">' +
             '<div class="cs-card-body">' +
                 '<div class="cs-card-nombre">' + nombre + '</div>' +
                 '<div class="cs-card-precio">$' + Number(p.precioActual).toFixed(2) + ' USD</div>' +
+                urgencia +
             '</div>' +
             '<button class="cs-card-btn" onclick="event.stopPropagation();agregarAlCarrito(' + idSafe + ');renderizarCarrito();">🛒 Agregar</button>' +
         '</div>';
