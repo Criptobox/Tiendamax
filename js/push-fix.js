@@ -294,19 +294,11 @@
     }
   }
 
-  function _notif(msg, tipo) {
-    if (typeof window.mostrarNotificacion === "function") { try { window.mostrarNotificacion(msg, tipo); } catch (e) {} }
-  }
   function _wrap(cfgArg) {
-    var priorToken = null;
-    try { priorToken = localStorage.getItem('fcmToken'); } catch (e) {}
     return registrarTokenRobusto(cfgArg).then(function (ok) {
-      // Solo notificar si es la primera vez que se activa (sin token previo)
-      if (ok && !priorToken) _notif("✅ Notificaciones activadas correctamente.", "success");
       return ok;
     }).catch(function (e) {
       console.error("[push-fix v8]", e.message);
-      _notif("⚠️ No se pudo activar las notificaciones. Intenta de nuevo.", "error");
       return false;
     });
   }
