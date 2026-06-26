@@ -1,0 +1,63 @@
+name: 🧹 Diagnóstico y limpieza de cola de push
+
+on:
+  workflow_dispatch:
+    inputs:
+      limpiar:
+        description: "Borrar admin_push_requests (cola pendiente)"
+        type: boolean
+        default: true
+
+jobs:
+  diag:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Instalar firebase-admin
+        run: pip install firebase-admin
+
+      - name: Inspeccionar (y opcionalmente limpiar) la cola de push
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          LIMPIAR: ${{ inputs.limpiar }}
+        run: |
+          python3 - <<'EOF'
+          import json, os, firebase_admin
+          from firebase_admin import credentials, db
+
+          sa = json.loads(os.environ["FIREBASE_SERVICE_ACCOUNT"])
+          cred = credentials.Certificate(sa)
+          firebase_admin.initialize_app(cred, {
+              "databaseURL": "https://tiendamax-8feb5-default-rtdb.firebaseio.com"
+          })
+
+          print("=" * 55)
+          reqs = db.reference("admin_push_requests").get() or {}
+          print(f"SOLICITUDES PENDIENTES (admin_push_requests): {len(reqs) if isinstance(reqs, dict) else 0}")
+          print("=" * 55)
+          if isinstance(reqs, dict):
+              for k, r in reqs.items():
+                  if isinstance(r, dict):
+                      print(f"  • {r.get('title','?')} | url={r.get('url','?')} | "
+                            f"source={r.get('source','?')} | ts={r.get('ts','?')} | reqId={k}")
+                  else:
+                      print(f"  [raw] {k} -> {r}")
+
+          cola = db.reference("notification_queue").get() or {}
+          up = cola.get("ultimo_push", {}) if isinstance(cola, dict) else {}
+          print(f"\nDEDUP SERVIDOR (notification_queue/ultimo_push): {len(up) if isinstance(up, dict) else 0} claves")
+          if isinstance(up, dict):
+              for k, v in up.items():
+                  print(f"  • {k} -> ts={v}")
+
+          if os.environ.get("LIMPIAR") == "true":
+              db.reference("admin_push_requests").set(None)
+              print("\n🧹 admin_push_requests BORRADO. Cola vacía.")
+          else:
+              print("\nℹ️ No se borró nada (limpiar=false).")
+          EOF
