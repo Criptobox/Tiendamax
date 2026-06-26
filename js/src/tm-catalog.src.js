@@ -589,8 +589,10 @@ async function sincronizarTodoConGitHub() {
     // Limpiar claves undefined
     Object.keys(_configSync).forEach(k => _configSync[k] === undefined && delete _configSync[k]);
 
+    const _productosLite = productos.map(p => { const { descripcion, ...r } = p; return r; });
     const archivos = [
         { path: 'productos.json',              data: productos },
+        { path: 'productos-lite.json',         data: _productosLite },
         { path: 'categorias.json',             data: { nombres: categorias, iconos: iconosPersonalizados } },
         { path: 'subcategorias.json',          data: tmParseObject(localStorage.getItem('subcategorias')) },
         { path: 'grupos_facebook_config.json', data: { grupos: tmParseArray(localStorage.getItem('gruposFB')), exportado: new Date().toISOString() } },
@@ -601,10 +603,10 @@ async function sincronizarTodoConGitHub() {
         { path: 'config.json',                 data: _configSync },
     ];
 
-    // Si hay productos modificados: subir productos + config + grupos + categorias (siempre)
+    // Si hay productos modificados: subir productos + lite + config + grupos + categorias (siempre)
     // Si no hay delta: subir todo
     const archivosFiltrados = hayDelta
-        ? archivos.filter(a => ['productos.json', 'config.json', 'grupos_facebook_config.json', 'categorias.json'].includes(a.path))
+        ? archivos.filter(a => ['productos.json', 'productos-lite.json', 'config.json', 'grupos_facebook_config.json', 'categorias.json'].includes(a.path))
         : archivos;
 
     let ok = 0, errors = [];
@@ -663,7 +665,9 @@ async function sincronizarConGitHub() {
         return;
     }
     try {
+        const _lite = productos.map(p => { const { descripcion, ...r } = p; return r; });
         await subirArchivoAGitHub(user, repo, token, 'productos.json', productos);
+        await subirArchivoAGitHub(user, repo, token, 'productos-lite.json', _lite);
         _tmPublicarVersionFirebase();
     } catch (e) {
         console.warn('⚠️ Error al sincronizar automáticamente:', e.message);
