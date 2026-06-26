@@ -42,7 +42,31 @@ def load_msg_ids() -> dict:
 
 def save_msg_ids(ids: dict):
     with open(MSG_FILE, "w") as f:
-        json.dump(ids, f, indent=2)
+        json.dump(ids, f, indent=2, ensure_ascii=False)
+
+
+def ever_published(msg_ids: dict) -> set:
+    """IDs de productos publicados alguna vez (resiste git show vacío)."""
+    raw = msg_ids.get("_ever_pub") or []
+    return set(raw)
+
+
+def mark_published(msg_ids: dict, pid: str):
+    ep = ever_published(msg_ids)
+    ep.add(pid)
+    msg_ids["_ever_pub"] = sorted(ep)
+
+
+def rebaja_cooldown_ok(msg_ids: dict, pid: str, horas: int = 24) -> bool:
+    """True si no se notificó rebaja de este producto en las últimas `horas` horas."""
+    ts = (msg_ids.get("_rebaja_ts") or {}).get(pid, 0)
+    return (datetime.now(TZ).timestamp() - ts) > horas * 3600
+
+
+def mark_rebaja(msg_ids: dict, pid: str):
+    if "_rebaja_ts" not in msg_ids:
+        msg_ids["_rebaja_ts"] = {}
+    msg_ids["_rebaja_ts"][pid] = datetime.now(TZ).timestamp()
 
 
 def delete_message(message_id: int) -> bool:
@@ -260,7 +284,8 @@ def main() -> int:
     prev_dict = productos_dict(json.loads(prev_prods_raw) if prev_prods_raw else [])
     prev_cfg  = json.loads(prev_config_raw) if prev_config_raw else {}
 
-    msg_ids   = load_msg_ids()
+    msg_ids    = load_msg_ids()
+    ep         = ever_published(msg_ids)   # IDs publicados alguna vez
     publicados = 0
     errores    = 0
 
@@ -277,11 +302,19 @@ def main() -> int:
             if deleted:
                 print(f"  🗑️ Eliminado (agotado): {nombre}")
                 del msg_ids[pid]
+                # NO quitamos de _ever_pub: si vuelve a tener stock y se
+                # re-agrega como nuevo producto se podrá publicar de nuevo
             else:
                 print(f"  ⚠️ No se pudo eliminar mensaje de: {nombre}")
 
     # ── 1. Productos nuevos ──────────────────────────────────────────────────
-    nuevos = [p for pid, p in curr_dict.items() if pid not in prev_dict]
+    # Doble guardia: no debe estar en el commit anterior NI haber sido
+    # publicado antes (_ever_pub). Así, si git show falla y prev_dict queda
+    # vacío, los productos ya conocidos no se repiten.
+    nuevos = [
+        p for pid, p in curr_dict.items()
+        if pid not in prev_dict and pid not in ep
+    ]
     for p in nuevos[:3]:
         cap    = caption_card(p, "🆕 <b>Nuevo producto disponible</b>")
         mid    = enviar_card(p, cap)
@@ -289,13 +322,15 @@ def main() -> int:
         nombre = p.get("nombre", pid)
         if mid:
             msg_ids[pid] = mid
+            mark_published(msg_ids, pid)
+            ep.add(pid)
             print(f"  ✅ Nuevo: {nombre}")
             publicados += 1
         else:
             print(f"  ❌ Error publicando nuevo: {nombre}", file=sys.stderr)
             errores += 1
 
-    # ── 2. Rebajas de precio ─────────────────────────────────────────────────
+    # ── 2. Rebajas de precio (cooldown 24 h por producto) ────────────────────
     for pid, p_curr in curr_dict.items():
         if pid not in prev_dict:
             continue
@@ -304,13 +339,18 @@ def main() -> int:
             pa_curr = float(p_curr.get("precioActual") or 0)
             pa_prev = float(p_prev.get("precioActual") or 0)
             if pa_prev > 0 and pa_curr > 0 and pa_curr < pa_prev:
-                pct = descuento_pct(pa_curr, pa_prev)
+                if not rebaja_cooldown_ok(msg_ids, pid, horas=24):
+                    nombre = p_curr.get("nombre", pid)
+                    print(f"  ⏭️  Rebaja omitida (cooldown 24 h): {nombre}")
+                    continue
+                pct   = descuento_pct(pa_curr, pa_prev)
                 badge = f"🔥 <b>¡Bajó el precio!{f' (-{pct}%)' if pct >= 1 else ''}</b>"
-                cap  = caption_card(p_curr, badge)
-                mid  = enviar_card(p_curr, cap)
+                cap   = caption_card(p_curr, badge)
+                mid   = enviar_card(p_curr, cap)
                 nombre = p_curr.get("nombre", pid)
                 if mid:
                     msg_ids[pid] = mid
+                    mark_rebaja(msg_ids, pid)
                     print(f"  ✅ Rebaja: {nombre} ({pa_prev}→{pa_curr})")
                     publicados += 1
                 else:
