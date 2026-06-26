@@ -2061,8 +2061,9 @@ body:not(.dark-mode) .admin-inventory-strip span {
     margin-left: 2px;
 }
 .admin-stat-value .tm-kpi-mn-val {
-    color: #C9A96E;
+    color: #2a1e00;
     font-size: 85%;
+    font-weight: 800;
     margin-top: 2px;
 }
 
