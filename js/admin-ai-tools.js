@@ -2354,6 +2354,8 @@ function tmExtractJsonObject(text) {
   function notify(msg,t){if(typeof mostrarNotificacion==='function')mostrarNotificacion(msg,t||'info');}
   function products(){try{if(Array.isArray(window.productos))return window.productos;}catch(e){}try{return JSON.parse(localStorage.getItem('productos')||'[]');}catch(e){return[];}}
   function storeUrl(){return'https://tiendamax.org';}
+  // Logo (solo la bolsa, fondo transparente) para marca de agua en la imagen
+  const _bagImg=new Image();try{_bagImg.src='/iconos/bag.png';}catch(e){}
   function cats(){return[...new Set(products().filter(p=>p.activo!==false&&Number(p.stock||0)>0).map(p=>p.categoria||'General').filter(Boolean))].sort();}
   function prodsByCat(cat){return products().filter(p=>p.activo!==false&&Number(p.stock||0)>0&&(p.categoria||'General')===cat);}
   function toTag(s){return String(s||'').normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-zA-Z0-9]/g,'');}
@@ -2422,6 +2424,8 @@ function tmExtractJsonObject(text) {
     // Background
     const g=ctx.createLinearGradient(0,0,W,H);g.addColorStop(0,'#0a0805');g.addColorStop(.45,'#1c0e06');g.addColorStop(1,'#2d1a08');
     ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+    // Marca de agua: la bolsa del logo, suave y centrada
+    try{if(_bagImg&&_bagImg.complete&&_bagImg.naturalWidth){const bw=W*0.5,bh=bw;ctx.save();ctx.globalAlpha=0.06;ctx.drawImage(_bagImg,(W-bw)/2,(H-bh)/2,bw,bh);ctx.restore();}}catch(e){}
     // Gold border
     ctx.strokeStyle='rgba(201,169,110,.6)';ctx.lineWidth=7;roundRect(ctx,26,26,W-52,H-52,38);ctx.stroke();
     // Top accent bar
@@ -2461,25 +2465,51 @@ function tmExtractJsonObject(text) {
     return new Promise(res=>cv.toBlob(res,'image/png',.95));
   }
 
-  function updatePreview(){
+  let _pvUrl=null;
+  async function updatePreview(){
     const cat=$('#tmCatPubSel')?.value;
-    const pre=$('#tmCatPubPre'),cnt=$('#tmCatPubCnt'),acts=$('#tmCatPubActions');
-    if(!cat){
-      if(pre)pre.style.display='none';
-      if(cnt)cnt.style.display='none';
-      if(acts)acts.style.display='none';
-      return;
-    }
+    const wrap=$('#tmCatPubPreview'),acts=$('#tmCatPubActions'),cap=$('#tmCatPubCap');
+    document.querySelectorAll('#tmCatPubChips .tmcp-chip').forEach(c=>c.classList.toggle('on',c.dataset.cat===cat));
+    if(!cat){if(wrap)wrap.style.display='none';if(acts)acts.style.display='none';return;}
     const prods=prodsByCat(cat);
-    if(pre){pre.textContent=buildText(cat);pre.style.display='block';}
-    if(cnt){cnt.innerHTML=`<span style="color:#FF6B35;font-weight:700">${prods.length}</span> producto${prods.length!==1?'s':''} disponibles en esta categoría`;cnt.style.display='block';}
-    if(acts)acts.style.display='flex';
+    if(cap){
+      const precios=prods.map(p=>Number(p.precioActual||0)).filter(n=>n>0);
+      const min=precios.length?Math.min(...precios):0;
+      const tags=hashtags(cat,prods).split(' ').slice(0,3).join(' ');
+      cap.innerHTML=`<div class="t">🏪 TiendaMax — ${esc(cat)}</div><div class="d">${prods.length} producto${prods.length!==1?'s':''}${min?' · desde $'+min:''} · <span class="tag">${esc(tags)}</span></div>`;
+    }
+    if(acts)acts.style.display='block';
+    if(wrap)wrap.style.display='block';
+    // Genera la imagen real como vista previa (lo que verá el comprador)
+    try{
+      const blob=await genImg(cat);
+      if(blob){const url=URL.createObjectURL(blob);const img=$('#tmCatPubImg');if(img)img.src=url;if(_pvUrl)URL.revokeObjectURL(_pvUrl);_pvUrl=url;}
+    }catch(e){}
   }
 
   async function onCopy(){const cat=$('#tmCatPubSel')?.value;if(!cat)return;try{await navigator.clipboard.writeText(buildText(cat));notify('📋 Texto copiado — pégalo donde quieras','success');}catch(e){notify('No se pudo copiar','error');}}
   function onWA(){const cat=$('#tmCatPubSel')?.value;if(!cat)return;window.open('https://wa.me/?text='+encodeURIComponent(buildText(cat)),'_blank','noopener,noreferrer');}
   function onFB(){const cat=$('#tmCatPubSel')?.value;if(!cat)return;onCopy();window.open('https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(storeUrl()),'_blank','noopener,noreferrer');notify('Texto copiado — pégalo en el post de Facebook','info');}
-  function onTG(){const cat=$('#tmCatPubSel')?.value;if(!cat)return;window.open('https://t.me/share/url?url='+encodeURIComponent(storeUrl())+'&text='+encodeURIComponent(buildText(cat)),'_blank','noopener,noreferrer');}
+  function onRev(){const cat=$('#tmCatPubSel')?.value;if(!cat)return;onCopy();window.open('https://www.revolico.com/','_blank','noopener,noreferrer');notify('Texto copiado — pégalo al crear tu anuncio en Revolico','info');}
+
+  // Instagram no permite compartir directo desde la web: genera la imagen,
+  // la comparte (móvil) o descarga, y copia el texto para el pie de foto.
+  async function onIG(){
+    const cat=$('#tmCatPubSel')?.value;if(!cat)return;
+    const btn=$('#tmCatPubIGBtn');if(btn){btn.disabled=true;}
+    try{
+      try{await navigator.clipboard.writeText(buildText(cat));}catch(e){}
+      const blob=await genImg(cat);if(!blob){notify('Sin productos con stock','warning');return;}
+      const file=new File([blob],'tiendamax-'+toTag(cat)+'.png',{type:'image/png'});
+      if(navigator.canShare&&navigator.canShare({files:[file]})&&navigator.share){
+        try{await navigator.share({files:[file],title:'TiendaMax — '+cat});notify('Texto copiado — pégalo como pie de foto en Instagram','success');return;}
+        catch(e){if(/abort/i.test(e.message||''))return;}
+      }
+      const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=file.name;a.click();
+      setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+      notify('📸 Imagen descargada y texto copiado — súbelos a Instagram','info');
+    }finally{if(btn){btn.disabled=false;}}
+  }
 
   async function onImg(){
     const cat=$('#tmCatPubSel')?.value;if(!cat)return;
@@ -2499,41 +2529,75 @@ function tmExtractJsonObject(text) {
     }finally{if(btn){btn.textContent='🖼️ Imagen';btn.disabled=false;}}
   }
 
+  function injectStyle(){
+    if(document.getElementById('tmCatPubStyle'))return;
+    const st=document.createElement('style');st.id='tmCatPubStyle';
+    st.textContent=`
+    #tmCatPublishCard{background:linear-gradient(135deg,rgba(255,107,53,.08),rgba(201,169,110,.06));border:1px solid rgba(255,107,53,.25);border-radius:16px;padding:18px 16px 16px;margin-bottom:18px}
+    .tmcp-hd{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+    .tmcp-hd .ic{font-size:22px}
+    .tmcp-hd h2{margin:0;font-size:15px;color:#FF6B35}
+    .tmcp-hd p{margin:2px 0 0;font-size:11px;color:#9b9189}
+    .tmcp-chips{display:flex;gap:6px;overflow-x:auto;padding-bottom:5px;margin-bottom:14px}
+    .tmcp-chips::-webkit-scrollbar{display:none}
+    .tmcp-chip{flex:0 0 auto;background:#1c1813;border:1px solid rgba(255,255,255,.08);color:#9b9189;border-radius:999px;padding:8px 13px;font-size:12px;font-weight:700;white-space:nowrap;cursor:pointer}
+    .tmcp-chip.on{background:rgba(255,107,53,.16);border-color:rgba(255,107,53,.5);color:#FF6B35}
+    .tmcp-chip .n{opacity:.7;font-weight:600;margin-left:5px}
+    .tmcp-pvlabel{font-size:10px;color:#9b9189;text-transform:uppercase;letter-spacing:.08em;margin:0 2px 8px;font-weight:700}
+    .tmcp-preview{background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.08);border-radius:14px;overflow:hidden;margin-bottom:14px}
+    .tmcp-preview img{display:block;width:100%;height:auto}
+    .tmcp-cap{padding:10px 12px 12px}
+    .tmcp-cap .t{font-size:12.5px;font-weight:800;color:#f2ece3;margin-bottom:3px}
+    .tmcp-cap .d{font-size:11px;color:#9b9189;line-height:1.5}
+    .tmcp-cap .tag{color:#C9A96E}
+    .tmcp-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:9px}
+    .tmcp-row{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+    .tmcp-btn{border:0;border-radius:11px;font-weight:700;cursor:pointer;font-size:13px;display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:12px 8px;color:#fff;min-height:44px}
+    .tmcp-wa{background:#25D366;color:#063}.tmcp-fb{background:#1877F2}.tmcp-ig{background:linear-gradient(135deg,#feda75,#d62976 45%,#962fbf 75%,#4f5bd5)}.tmcp-rev{background:#00BFA5;color:#053}
+    .tmcp-ghost{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);color:#f2ece3}
+    .tmcp-cta{background:linear-gradient(135deg,#FF6B35,#C9A96E);color:#1a1006}
+    .tmcp-empty{padding:18px 10px;text-align:center;color:#9b9189;font-size:12px}`;
+    document.head.appendChild(st);
+  }
+
   function build(){
     const tab=document.getElementById('pubPanel-publicar')||document.getElementById('publicar-ahora');if(!tab)return;
     if(document.getElementById('tmCatPublishCard'))return;
+    injectStyle();
     const card=document.createElement('div');card.id='tmCatPublishCard';
-    card.style.cssText='background:linear-gradient(135deg,rgba(255,107,53,.08),rgba(201,169,110,.06));border:1px solid rgba(255,107,53,.25);border-radius:16px;padding:18px 16px 16px;margin-bottom:18px';
-    const opts=cats().map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join('');
+    const cs=cats();
+    const chips=cs.map(c=>`<button type="button" class="tmcp-chip" data-cat="${esc(c)}">${esc(c)}<span class="n">${prodsByCat(c).length}</span></button>`).join('');
     card.innerHTML=`
-<div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
-  <span style="font-size:22px">📣</span>
-  <div><h2 style="margin:0;font-size:15px;color:#FF6B35">Publicar por categoría</h2>
-  <p style="margin:2px 0 0;font-size:11px;color:#888">Texto listo con emojis, precios e imagen para todas las plataformas</p></div>
-</div>
-<select id="tmCatPubSel" style="width:100%;background:#0e0b08;border:1px solid rgba(255,107,53,.35);color:#e0d0c0;border-radius:10px;padding:11px 14px;font-size:13px;margin-bottom:14px;outline:none">
-  <option value="">— Elige una categoría —</option>${opts}
-</select>
-<pre id="tmCatPubPre" style="display:none;background:rgba(0,0,0,.5);border:1px solid rgba(255,107,53,.15);border-radius:12px;padding:14px 16px;font-size:11.5px;font-family:monospace;color:#c8b89a;white-space:pre-wrap;max-height:240px;overflow:auto;margin-bottom:10px;line-height:1.6"></pre>
-<div id="tmCatPubCnt" style="display:none;font-size:12px;color:#888;margin-bottom:14px"></div>
-<div id="tmCatPubActions" style="display:none;gap:8px;flex-wrap:wrap">
-  <button type="button" id="tmCatPubCopyBtn" style="flex:1;min-width:110px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);color:#e0d0c0;border-radius:10px;padding:10px 6px;font-size:12px;font-weight:700;cursor:pointer">📋 Copiar</button>
-  <button type="button" id="tmCatPubWABtn" style="flex:1;min-width:110px;background:rgba(37,211,102,.12);border:1px solid rgba(37,211,102,.35);color:#25D366;border-radius:10px;padding:10px 6px;font-size:12px;font-weight:700;cursor:pointer">💚 WhatsApp</button>
-  <button type="button" id="tmCatPubFBBtn" style="flex:1;min-width:110px;background:rgba(66,103,178,.15);border:1px solid rgba(66,103,178,.4);color:#7b9ee8;border-radius:10px;padding:10px 6px;font-size:12px;font-weight:700;cursor:pointer">📘 Facebook</button>
-  <button type="button" id="tmCatPubTGBtn" style="flex:1;min-width:110px;background:rgba(42,171,238,.12);border:1px solid rgba(42,171,238,.35);color:#2AABEE;border-radius:10px;padding:10px 6px;font-size:12px;font-weight:700;cursor:pointer">✈️ Telegram</button>
-  <button type="button" id="tmCatPubImgBtn" style="width:100%;background:linear-gradient(135deg,#FF6B35,#c9a96e);border:none;color:#fff;border-radius:10px;padding:12px;font-size:13px;font-weight:700;cursor:pointer;margin-top:4px">🖼️ Generar imagen para compartir</button>
-</div>`;
+    <div class="tmcp-hd"><span class="ic">📣</span><div><h2>Compartir categoría</h2><p>Texto + imagen listos para cada red</p></div></div>
+    <div class="tmcp-chips" id="tmCatPubChips">${chips||'<span class="tmcp-empty">No hay categorías con stock</span>'}</div>
+    <input type="hidden" id="tmCatPubSel" value="">
+    <div class="tmcp-pvlabel">Vista previa · así se compartirá</div>
+    <div class="tmcp-preview" id="tmCatPubPreview" style="display:none"><img id="tmCatPubImg" alt="Vista previa de la publicación"><div class="tmcp-cap" id="tmCatPubCap"></div></div>
+    <div id="tmCatPubActions" style="display:none">
+      <div class="tmcp-grid">
+        <button type="button" class="tmcp-btn tmcp-wa" id="tmCatPubWABtn">💚 WhatsApp</button>
+        <button type="button" class="tmcp-btn tmcp-fb" id="tmCatPubFBBtn">📘 Facebook</button>
+        <button type="button" class="tmcp-btn tmcp-ig" id="tmCatPubIGBtn">📸 Instagram</button>
+        <button type="button" class="tmcp-btn tmcp-rev" id="tmCatPubRevBtn">🟢 Revolico</button>
+      </div>
+      <div class="tmcp-row">
+        <button type="button" class="tmcp-btn tmcp-ghost" id="tmCatPubCopyBtn">📋 Copiar texto</button>
+        <button type="button" class="tmcp-btn tmcp-cta" id="tmCatPubImgBtn">🖼️ Imagen</button>
+      </div>
+    </div>`;
     const root=document.getElementById('tmPublicarRoot');
     const backend=document.getElementById('backendStatus');
     if(root)root.parentNode.insertBefore(card,root);
     else if(backend)backend.parentNode.insertBefore(card,backend.nextSibling);
     else tab.insertBefore(card,tab.firstChild);
-    card.querySelector('#tmCatPubSel').addEventListener('change',updatePreview);
+    card.querySelector('#tmCatPubChips').addEventListener('click',e=>{const ch=e.target.closest('.tmcp-chip');if(!ch)return;card.querySelector('#tmCatPubSel').value=ch.dataset.cat;updatePreview();});
     card.querySelector('#tmCatPubCopyBtn').addEventListener('click',onCopy);
     card.querySelector('#tmCatPubWABtn').addEventListener('click',onWA);
     card.querySelector('#tmCatPubFBBtn').addEventListener('click',onFB);
-    card.querySelector('#tmCatPubTGBtn').addEventListener('click',onTG);
+    card.querySelector('#tmCatPubIGBtn').addEventListener('click',onIG);
+    card.querySelector('#tmCatPubRevBtn').addEventListener('click',onRev);
     card.querySelector('#tmCatPubImgBtn').addEventListener('click',onImg);
+    if(cs.length){card.querySelector('#tmCatPubSel').value=cs[0];}
   }
   function boot(){build();updatePreview();}
   document.addEventListener('DOMContentLoaded',()=>setTimeout(boot,1500));
