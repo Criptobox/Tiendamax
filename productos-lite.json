@@ -1438,7 +1438,7 @@
     "precioActual": 80,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 0,
+    "stock": 1,
     "comision": 10,
     "comisionMoneda": "USD",
     "categoria": "WIFI",
