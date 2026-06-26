@@ -60,17 +60,17 @@
     <!-- Bot "Max": pega aquí la URL del Cloudflare Worker tras desplegarlo (ver mini-services/chat-bot/README.md) -->
     <meta name="tm-bot-api" content="">
     <!-- Favicons completos para todos los navegadores y plataformas -->
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=67503ccf">
-    <link rel="icon" type="image/png" sizes="16x16"  href="/iconos/favicon-16.png?v=76f52545">
-    <link rel="icon" type="image/png" sizes="32x32"  href="/iconos/favicon-32.png?v=3c94fc99">
-    <link rel="icon" type="image/png" sizes="48x48"  href="/iconos/favicon-48.png?v=d2375d10">
-    <link rel="icon" type="image/png" sizes="96x96"  href="/iconos/favicon-96.png?v=13b1ece8">
-    <link rel="icon" type="image/png" sizes="192x192" href="/iconos/favicon-192.png?v=24136ef2">
-    <link rel="icon" type="image/png" sizes="512x512" href="/iconos/favicon-512.png?v=8d9ab2a4">
-    <link rel="shortcut icon" href="/favicon.ico?v=3745bdbd">
-    <link rel="apple-touch-icon" sizes="180x180" href="/iconos/apple-touch-icon.png?v=978084c9">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=8ff3574b">
+    <link rel="icon" type="image/png" sizes="16x16"  href="/iconos/favicon-16.png?v=b7afaaf2">
+    <link rel="icon" type="image/png" sizes="32x32"  href="/iconos/favicon-32.png?v=2a53b6e2">
+    <link rel="icon" type="image/png" sizes="48x48"  href="/iconos/favicon-48.png?v=fbd08faa">
+    <link rel="icon" type="image/png" sizes="96x96"  href="/iconos/favicon-96.png?v=610c7892">
+    <link rel="icon" type="image/png" sizes="192x192" href="/iconos/favicon-192.png?v=300374f9">
+    <link rel="icon" type="image/png" sizes="512x512" href="/iconos/favicon-512.png?v=712c0370">
+    <link rel="shortcut icon" href="/favicon.ico?v=63828358">
+    <link rel="apple-touch-icon" sizes="180x180" href="/iconos/apple-touch-icon.png?v=14435301">
     <meta name="msapplication-TileColor" content="#0D0D0D">
-    <meta name="msapplication-TileImage" content="/iconos/favicon-192.png?v=24136ef2">
+    <meta name="msapplication-TileImage" content="/iconos/favicon-192.png?v=300374f9">
     <link rel="manifest" href="/manifest.json">
 
     <!-- Preconnect a servicios críticos: ahorra DNS + TCP + TLS en primera visita -->
@@ -131,7 +131,7 @@
           "@id": "https://tiendamax.org/#store",
           "name": "TiendaMax",
           "url": "https://tiendamax.org",
-          "description": "TiendaMax — Catálogo online con pedido por WhatsApp. Tecnología, electrónica, energía, redes, motos, carros y más. Envíos a toda Cuba, pago contra entrega.",
+          "description": "TiendaMax — Catálogo online con pedido por WhatsApp. Tecnología, electrónica, energía, redes, motos, carros y más. Mensajería a domicilio y pago contra entrega.",
           "image": "https://tiendamax.org/og-image.jpg",
           "telephone": "+5354320170",
           "address": {
@@ -157,7 +157,7 @@
           "name": "TiendaMax",
           "url": "https://tiendamax.org",
           "logo": "https://tiendamax.org/iconos/icon-512.png",
-          "description": "Tienda online cubana de tecnología y electrónica con envío a toda Cuba y pago contra entrega.",
+          "description": "Tienda online cubana de tecnología y electrónica con mensajería a domicilio y pago contra entrega.",
           "sameAs": [
             "https://t.me/TiendaMaxWeb"
           ],
@@ -200,10 +200,10 @@
             },
             {
               "@type": "Question",
-              "name": "¿Hacen envíos a toda Cuba?",
+              "name": "¿Hacen entregas a domicilio?",
               "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "Sí, hacemos envíos a domicilio en toda Cuba. El costo se coordina por WhatsApp según tu ubicación."
+                "text": "Sí, contamos con mensajería. El costo y el tiempo de entrega se coordinan por WhatsApp según tu ubicación."
               }
             },
             {
@@ -243,13 +243,17 @@
     <noscript><link rel="stylesheet" href="css/fonts.css?v=67235440"></noscript>
 
     <!-- Preload de los módulos JS principales (modularizado + minificado) -->
-    <link rel="preload" href="js/src/tm-config.js?v=1b714712" as="script">
+    <link rel="preload" href="js/src/tm-config.js?v=1d89613a" as="script">
     <link rel="preload" href="js/src/tm-data.js?v=4d0db939" as="script">
-    <link rel="preload" href="js/src/tm-state.js?v=47b6e996" as="script">
+    <link rel="preload" href="js/src/tm-state.js?v=b3c5202e" as="script">
 
     <!-- CSS unido + minificado (generado por scripts/build_css.py vía GitHub Action).
          Para editar estilos, edita los CSS fuente en /css y la Action regenera este bundle. -->
-    <link rel="stylesheet" href="css/bundle.css?v=c88a7f1a">
+
+
+
+    <link rel="stylesheet" href="css/bundle.css?v=97374a14">
+
 
 
     <!-- Estilos para "Vistos Recientemente" -->
@@ -713,7 +717,7 @@
                                 </div>
                                 <div class="nd-hero-dots" id="ndHeroDots" aria-hidden="true"></div>
                             </div>
-                            <div class="nd-fbadge nd-fb1"><span class="nd-bi">🚚</span><div><strong>Envío Rápido</strong><span class="nd-bs">A domicilio</span></div></div>
+                            <div class="nd-fbadge nd-fb1"><span class="nd-bi">🛵</span><div><strong>Mensajería</strong><span class="nd-bs">A domicilio</span></div></div>
                             <div class="nd-fbadge nd-fb2"><span class="nd-bi">⭐</span><div><strong>4.9 / 5.0</strong><span class="nd-bs">500+ clientes</span></div></div>
                             <div class="nd-fbadge nd-fb3"><span class="nd-bi">🔒</span><div><strong>100% Seguro</strong><span class="nd-bs">Compra protegida</span></div></div>
                         </div>
@@ -854,7 +858,7 @@
                 <div class="beneficios-grid">
                     <div class="beneficio-card"><div class="icon">🏆</div><h3>Calidad Garantizada</h3><p>Productos seleccionados cuidadosamente para tu satisfacción</p></div>
                     <div class="beneficio-card"><div class="icon">💰</div><h3>Mejores Precios</h3><p>Competencia directa con ofertas exclusivas para ti</p></div>
-                    <div class="beneficio-card"><div class="icon">🚚</div><h3>Envío Rápido</h3><p>Recibe tu compra en el menor tiempo posible</p></div>
+                    <div class="beneficio-card"><div class="icon">🛵</div><h3>Mensajería</h3><p>Coordinamos la entrega a domicilio por WhatsApp</p></div>
                     <div class="beneficio-card"><div class="icon">🛡️</div><h3>Compra Segura</h3><p>Protección total en todas tus transacciones</p></div>
                     <div class="beneficio-card"><div class="icon">📞</div><h3>Soporte 24/7</h3><p>Estamos aquí para ayudarte en cualquier momento</p></div>
                     <div class="beneficio-card"><div class="icon">⭐</div><h3>Clientes Felices</h3><p>Miles de reseñas positivas de clientes satisfechos</p></div>
@@ -1010,21 +1014,22 @@
                     <a href="https://t.me/TiendaMaxWeb" target="_blank" rel="noopener noreferrer">✈️ Canal Telegram</a>
                     <a href="mailto:contacto@tiendamax.org" style="text-transform:none;">✉️ contacto@tiendamax.org</a>
                     <p style="color:rgba(255,255,255,.5);font-size:12px;margin:8px 0 0;cursor:default;">🕐 Lun-Sáb: 9am - 8pm</p>
-                    <p style="color:rgba(255,255,255,.5);font-size:12px;margin:2px 0 0;cursor:default;">🚚 Envíos a toda Cuba</p>
+                    <p style="color:rgba(255,255,255,.5);font-size:12px;margin:2px 0 0;cursor:default;">🛵 Tenemos mensajería</p>
                 </div>
                 <div class="footer-col">
                     <h4>Información</h4>
-                    <a href="#" onclick="event.preventDefault();alert('Pago contra entrega en USD o MN (según tasa del día). Coordinar por WhatsApp.');">💵 Métodos de pago</a>
-                    <a href="#" onclick="event.preventDefault();alert('Garantía en todos los productos. Si algo no funciona, nos escribes por WhatsApp y lo resolvemos.');">🛡️ Garantía</a>
-                    <a href="#" onclick="event.preventDefault();alert('Aceptamos devoluciones dentro de 24h si el producto llega dañado o no corresponde.');">↩️ Devoluciones</a>
-                    <a href="#" onclick="event.preventDefault();alert('Términos y condiciones de uso de TiendaMax. Usar el sitio implica aceptarlos.');">📄 Términos</a>
-                    <a href="#" onclick="event.preventDefault();alert('Tu privacidad es importante. No compartimos tus datos con terceros.');">🔒 Privacidad</a>
+                    <a href="#" onclick="event.preventDefault();openLegalModal('🛒 Cómo comprar','<p>Comprar en TiendaMax es muy fácil:</p><p><strong>1.</strong> Elige tus productos y agrégalos al carrito.</p><p><strong>2.</strong> Coordina por WhatsApp: confirmamos disponibilidad, precio del día y la entrega por mensajería.</p><p><strong>3.</strong> Pagas al recibir (contra entrega), en USD o MN según la tasa del día.</p>');">🛒 Cómo comprar</a>
+                    <a href="#" onclick="event.preventDefault();openLegalModal('💵 Métodos de pago','<p>Aceptamos <strong>pago contra entrega</strong> en efectivo, en USD o MN según la tasa del día.</p><p>Coordinamos la entrega y el pago directamente por WhatsApp antes de enviar el pedido.</p>');">💵 Métodos de pago</a>
+                    <a href="#" onclick="event.preventDefault();openLegalModal('🛡️ Garantía','<p>Todos nuestros productos tienen <strong>garantía</strong>.</p><p>Si algo no funciona o llega en mal estado, escríbenos por WhatsApp y lo resolvemos sin complicaciones: cambio o reembolso.</p>');">🛡️ Garantía</a>
+                    <a href="#" onclick="event.preventDefault();openLegalModal('↩️ Devoluciones','<p>Aceptamos devoluciones dentro de las <strong>24 horas</strong> siguientes a la entrega.</p><p>El producto debe llegar dañado o no corresponder a lo descrito. Contáctanos por WhatsApp con fotos del problema.</p>');">↩️ Devoluciones</a>
+                    <a href="#" onclick="event.preventDefault();openLegalModal('📄 Términos y condiciones','<p>Al usar este sitio aceptas los <strong>términos y condiciones</strong> de TiendaMax.</p><p>Los precios están en USD y pueden cambiar sin previo aviso. Los pedidos se confirman por WhatsApp. Nos reservamos el derecho de cancelar pedidos con información incorrecta.</p>');">📄 Términos</a>
+                    <a href="#" onclick="event.preventDefault();openLegalModal('🔒 Privacidad','<p>Tu <strong>privacidad</strong> es importante para nosotros.</p><p>No compartimos tus datos personales con terceros. La información que nos brindas (nombre, dirección) se usa únicamente para coordinar tu pedido por WhatsApp.</p>');">🔒 Privacidad</a>
                 </div>
             </div>
             <!-- Móvil: franja compacta -->
             <div class="footer-mobile-brand">
                 <h3>Tienda<em>Max</em></h3>
-                <p>Tecnología premium · Envío rápido · Garantía</p>
+                <p>Tecnología premium · Mensajería · Garantía</p>
                 <div class="footer-social" style="display:flex;gap:8px;margin-top:10px;justify-content:center;">
                     <a href="https://wa.me/5354320170" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" style="width:34px;height:34px;border-radius:50%;background:rgba(37,211,102,.15);color:#25D366;display:flex;align-items:center;justify-content:center;font-size:16px;text-decoration:none;">💬</a>
                     <a href="https://t.me/TiendaMaxWeb" target="_blank" rel="noopener noreferrer" aria-label="Telegram" style="width:34px;height:34px;border-radius:50%;background:rgba(0,136,204,.15);color:#0088cc;display:flex;align-items:center;justify-content:center;font-size:16px;text-decoration:none;">✈️</a>
@@ -1045,6 +1050,37 @@
     </footer>
 
     <!-- Botones flotantes removidos: reemplazados por banners laterales en sección categorías -->
+
+    <!-- ===== MODAL POLÍTICAS LEGALES ===== -->
+    <div id="legalModalOverlay" class="legal-modal-overlay" style="display:none" onclick="if(event.target===this)closeLegalModal()">
+        <div class="legal-modal-sheet" role="dialog" aria-modal="true" aria-labelledby="legalModalTitle">
+            <div class="legal-modal-handle"></div>
+            <div class="legal-modal-header">
+                <span id="legalModalTitle" class="legal-modal-title"></span>
+                <button type="button" class="legal-modal-close" onclick="closeLegalModal()" aria-label="Cerrar">×</button>
+            </div>
+            <div id="legalModalBody" class="legal-modal-body"></div>
+        </div>
+    </div>
+    <script>
+    function openLegalModal(title, content) {
+        document.getElementById('legalModalTitle').textContent = title;
+        document.getElementById('legalModalBody').innerHTML = content;
+        const overlay = document.getElementById('legalModalOverlay');
+        overlay.style.display = 'flex';
+        requestAnimationFrame(() => overlay.classList.add('legal-modal-open'));
+        document.body.style.overflow = 'hidden';
+    }
+    function closeLegalModal() {
+        const overlay = document.getElementById('legalModalOverlay');
+        overlay.classList.remove('legal-modal-open');
+        overlay.addEventListener('transitionend', function h() {
+            overlay.style.display = 'none';
+            overlay.removeEventListener('transitionend', h);
+        });
+        document.body.style.overflow = '';
+    }
+    </script>
 
     <!-- Botones de control -->
     <div class="control-buttons">
@@ -1216,6 +1252,11 @@
                             <input type="checkbox" id="resenaComprador" style="accent-color:#FF6B35;width:16px;height:16px;">
                             Compré este producto
                         </label>
+                        <label class="resena-foto-label" style="display:inline-flex;align-items:center;gap:8px;font-size:13px;color:#FF6B35;margin:4px 0 10px;cursor:pointer;font-weight:600;">
+                            📷 Agregar foto (opcional)
+                            <input type="file" id="resenaFoto" accept="image/*" style="display:none;" onchange="previsualizarFotoResena(this)">
+                        </label>
+                        <div id="resenaFotoPreview" style="display:none;align-items:center;gap:10px;margin:0 0 10px;"></div>
                         <button data-action="guardarResena" type="button" class="btn btn-primary" style="width:100%;">Publicar reseña</button>
                     </div>
                     <div id="listaResenas" class="lista-resenas"></div>
@@ -1283,17 +1324,17 @@
     <script src="js/seo-dynamico.js?v=ea7e25bb" defer></script>
     <!-- ===== TiendaMax modularizado (reemplaza script.js) ===== -->
     <!-- Orden: config → data → state → admin → product → catalog → init → ui → toast → iife → patches -->
-    <script src="js/src/tm-config.js?v=1b714712" defer></script>
+    <script src="js/src/tm-config.js?v=1d89613a" defer></script>
     <script src="js/src/tm-data.js?v=4d0db939" defer></script>
-    <script src="js/src/tm-state.js?v=47b6e996" defer></script>
+    <script src="js/src/tm-state.js?v=b3c5202e" defer></script>
     <script src="js/src/tm-admin.js?v=34c6172d" defer></script>
-    <script src="js/src/tm-product.js?v=18e56832" defer></script>
-    <script src="js/src/tm-catalog.js?v=fbd1d1fb" defer></script>
-    <script src="js/src/tm-init.js?v=3b4e04cb" defer></script>
-    <script src="js/src/tm-ui.js?v=11d779d5" defer></script>
+    <script src="js/src/tm-product.js?v=efe68fd5" defer></script>
+    <script src="js/src/tm-catalog.js?v=eec2d9e4" defer></script>
+    <script src="js/src/tm-init.js?v=0e98f1a9" defer></script>
+    <script src="js/src/tm-ui.js?v=ff5af119" defer></script>
     <script src="js/src/tm-toast.js?v=d8cf8d06" defer></script>
-    <script src="js/src/tm-iife.js?v=6c9c73f1" defer></script>
-    <script src="js/src/tm-patches.js?v=552e3b5a" defer></script>
+    <script src="js/src/tm-iife.js?v=95cc633a" defer></script>
+    <script src="js/src/tm-patches.js?v=980cca4d" defer></script>
 
     <script src="js/push-fix.js?v=70cfa623" defer></script>
     <script src="js/subcategorias.js?v=0a8fedc8" defer></script>
@@ -1411,7 +1452,7 @@
     </script>
 <!-- ===== BANNER SLIDER + TAGLINE (movido a archivo externo para reuso en admin) ===== -->
     <script src="js/urgencia-ventas.js?v=b782eee3" defer></script>
-    <script src="js/banners.js?v=d7e09394" defer></script>
+    <script src="js/banners.js?v=f4019c76" defer></script>
     <script src="js/hero-efectos.js?v=454a15c2" defer></script>
     <script src="js/web-vitals-snippet.js?v=70babd1c" defer></script>
     <!-- BOT DESACTIVADO: backend /api/chat no disponible en GitHub Pages

@@ -823,12 +823,26 @@ function switchTo(tab){
 async function queuePushForProduct(pid){
   const ps = products(); const p = ps.find(x=>String(x.id)===String(pid));
   if(!p){ toast('No encontré el producto.'); return; }
+
+  // Deduplicación: evitar enviar push del mismo producto más de 1 vez cada 8 h
+  const COOLDOWN_MS = 8 * 60 * 60 * 1000;
+  const pushLog = JSON.parse(localStorage.getItem('tm_push_sent') || '{}');
+  const lastSent = pushLog[String(pid)] || 0;
+  if (Date.now() - lastSent < COOLDOWN_MS) {
+    const horasRestantes = Math.ceil((COOLDOWN_MS - (Date.now() - lastSent)) / 3600000);
+    toast(`⚠️ Este producto ya fue notificado hace menos de 8 h. Espera ${horasRestantes} h más para evitar spam.`);
+    return;
+  }
+
   const base = await fbBase(); if(!base){ toast('Firebase no configurado.'); return; }
   const reqId = 'req_copilot_' + Date.now();
   const payload = { title: '🔥 Producto destacado en TiendaMax', body: String(p.nombre||'Oferta disponible').slice(0,120), url: '/p/producto-' + p.id + '.html', icon: p.imagen || '/iconos/icon-192.png', image: p.imagen || '', ts: Date.now(), source: 'admin_copilot' };
   try {
     const r = await fetch(base + '/admin_push_requests/' + reqId + '.json', {method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
     if(!r.ok) throw new Error('HTTP '+r.status);
+    // Registrar envío para deduplicación futura
+    pushLog[String(pid)] = Date.now();
+    localStorage.setItem('tm_push_sent', JSON.stringify(pushLog));
     const ghUser=localStorage.getItem('githubUser'), ghRepo=localStorage.getItem('githubRepo')||'Tiendamax', ghToken=localStorage.getItem('githubToken');
     if(ghUser && ghToken){ fetch(`https://api.github.com/repos/${ghUser}/${ghRepo}/actions/workflows/flush-push-queue.yml/dispatches`,{method:'POST',headers:{'Authorization':'token '+ghToken,'Content-Type':'application/json'},body:JSON.stringify({ref:'main'})}).catch(()=>{}); }
     toast('Push agregado a la cola: ' + p.nombre);

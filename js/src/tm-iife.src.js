@@ -203,7 +203,9 @@ async function guardarTasaMNAdmin() {
                     col.className = 'tm-badges-col';
                     card.appendChild(col);
                     leftBadges.forEach(function(b) {
+                        const keepBg = b.classList.contains('badge-stock-urgente') ? b.style.background : '';
                         b.style.cssText = '';
+                        if (keepBg) b.style.background = keepBg;
                         col.appendChild(b);
                     });
                 }

@@ -40,24 +40,8 @@ function _stockDe(card){
   return -1;
 }
 
-function _inyectarBadgesUrgencia(){
-  document.querySelectorAll('.producto-card:not([data-urg])').forEach(card=>{
-    card.dataset.urg = '1';
-    const stock = _stockDe(card);
-    if(stock <= 0 || stock > 3) return;
-    // Insertar dentro de .producto-image para aprovechar su position:relative
-    const wrap = card.querySelector('.producto-image') || card;
-    const badge = document.createElement('div');
-    badge.className = 'tm-urg-badge';
-    badge.textContent = stock === 1 ? '⚡ ¡Última unidad!' : `⚡ ¡Solo ${stock} quedan!`;
-    wrap.appendChild(badge);
-  });
-}
-
-// Reinyectar cuando se añaden tarjetas al DOM (lazy load / filtros)
-new MutationObserver(()=>setTimeout(_inyectarBadgesUrgencia,120))
-  .observe(document.body,{childList:true,subtree:true});
-document.addEventListener('DOMContentLoaded',()=>setTimeout(_inyectarBadgesUrgencia,600));
+// Badge overlay centrado eliminado — la señal de stock bajo queda solo
+// en la pastilla badge-stock-urgente de la esquina superior izquierda.
 
 // ─────────────────────────────────────────────────────────────────────────────
 // 2. "N personas ven esto ahora" — tracking real en Firebase RTDB

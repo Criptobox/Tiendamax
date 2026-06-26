@@ -56,8 +56,20 @@ function _gaEvent(name, params) {
 function contactarWhatsApp() {
     _gaEvent('contact', { method: 'whatsapp_general' });
     const numeroWhatsApp = getNumeroWhatsApp();
-    const mensaje = encodeURIComponent('Hola, me interesa conocer más sobre tus productos. ¿Puedes ayudarme?');
-    window.open(`https://wa.me/${numeroWhatsApp}?text=${mensaje}`, '_blank', 'noopener,noreferrer');
+    let texto = 'Hola, me interesa conocer más sobre tus productos. ¿Puedes ayudarme?';
+    try {
+        // Try to include the featured/highlighted product name for context
+        const ofertaId = localStorage.getItem('ofertaDiaId');
+        const ps = typeof productos !== 'undefined' ? productos : [];
+        let prod = ofertaId ? ps.find(p => String(p.id) === String(ofertaId)) : null;
+        if (!prod) {
+            prod = ps.find(p => (p.masVendido === true || p.masVendido === 'true') && p.stock > 0 && p.precioActual > 0);
+        }
+        if (prod && prod.nombre) {
+            texto = 'Hola, vi el producto "' + prod.nombre + '" en TiendaMax y me interesa. ¿Está disponible?';
+        }
+    } catch(e) {}
+    window.open(`https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(texto)}`, '_blank', 'noopener,noreferrer');
 }
 
 function scrollToProductos() {

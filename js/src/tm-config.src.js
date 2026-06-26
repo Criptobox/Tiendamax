@@ -393,11 +393,16 @@ function renderizarSimilaresCarrito() {
         const img    = escapeAttr((p.imagenes && p.imagenes[0]) ? p.imagenes[0] : (p.imagen || ''));
         const nombre = escapeHtml(p.nombre);
         const idSafe = safeNum(p.id);
+        const stock  = parseInt(p.stock, 10);
+        const urgencia = (!isNaN(stock) && stock > 0 && stock <= 3)
+            ? '<div class="cs-urgencia">🔥 ¡Solo quedan ' + stock + '!</div>'
+            : '';
         return '<div class="cs-card" style="cursor:pointer" onclick="if(typeof cerrarCarrito===\'function\')cerrarCarrito();abrirDetalleProducto(' + idSafe + ')">' +
             '<img class="cs-card-img" src="' + img + '" alt="' + nombre + '" loading="lazy" onerror="this.style.display=\'none\'">' +
             '<div class="cs-card-body">' +
                 '<div class="cs-card-nombre">' + nombre + '</div>' +
                 '<div class="cs-card-precio">$' + Number(p.precioActual).toFixed(2) + ' USD</div>' +
+                urgencia +
             '</div>' +
             '<button class="cs-card-btn" onclick="event.stopPropagation();agregarAlCarrito(' + idSafe + ');renderizarCarrito();">🛒 Agregar</button>' +
         '</div>';
@@ -549,6 +554,7 @@ function actualizarBotonesCarrito() {
 // ═══════════════════════════════════════════════════════
 let _estrellasSeleccionadas = 0;
 let _productoResena = null;
+let _resenaFotoData = null;
 
 function mostrarFormResena() {
     const form = document.getElementById('formResena');
@@ -565,6 +571,34 @@ function mostrarFormResena() {
     if (textoEl) textoEl.value = '';
     const compradorEl = document.getElementById('resenaComprador');
     if (compradorEl) compradorEl.checked = false;
+    quitarFotoResena();
+}
+
+// Comprime la foto al seleccionarla y guarda el data URL para enviarlo con la reseña.
+async function previsualizarFotoResena(input) {
+    const file = input && input.files && input.files[0];
+    const prev = document.getElementById('resenaFotoPreview');
+    if (!file) { quitarFotoResena(); return; }
+    try {
+        _resenaFotoData = await comprimirImagen(file, 35, 700, 700);
+        if (prev) {
+            prev.style.display = 'flex';
+            prev.innerHTML =
+                '<img src="' + escapeAttr(_resenaFotoData) + '" alt="Vista previa" style="width:64px;height:64px;border-radius:8px;object-fit:cover;border:1px solid rgba(255,255,255,.15);">' +
+                '<button type="button" onclick="quitarFotoResena()" style="background:none;border:none;color:#e74c3c;font-size:13px;cursor:pointer;font-weight:600;">✕ Quitar foto</button>';
+        }
+    } catch (e) {
+        _resenaFotoData = null;
+        mostrarNotificacion('⚠️ No se pudo procesar la imagen', 'error');
+    }
+}
+
+function quitarFotoResena() {
+    _resenaFotoData = null;
+    const prev  = document.getElementById('resenaFotoPreview');
+    const input = document.getElementById('resenaFoto');
+    if (prev)  { prev.style.display = 'none'; prev.innerHTML = ''; }
+    if (input) input.value = '';
 }
 
 function setEstrellas(n) {
@@ -596,6 +630,7 @@ function guardarResena() {
         productoNombre: _detalleProductoActual.nombre || '',
         comprador: !!(document.getElementById('resenaComprador')?.checked)
     };
+    if (_resenaFotoData) nuevaResena.imagen = _resenaFotoData;
 
     mostrarFormResena();
     mostrarNotificacion('⏳ Publicando reseña...');
@@ -687,6 +722,9 @@ async function renderizarResenas(productoId) {
                     '</div>' +
                 '</div>' +
                 '<p class="resena-texto">' + escapeHtml(r.texto) + '</p>' +
+                (r.imagen && /^data:image\//.test(String(r.imagen))
+                    ? '<img class="resena-foto" src="' + escapeAttr(r.imagen) + '" alt="Foto de la reseña" loading="lazy">'
+                    : '') +
             '</div>';
         }).join('');
 }
