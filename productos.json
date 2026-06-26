@@ -1519,5 +1519,28 @@
     "devolucion": false,
     "specs": [],
     "fechaAgregado": "2026-06-26T02:05:25.090Z"
+  },
+  {
+    "id": 1782439688529,
+    "nombre": "Transferencia Automática o Manual",
+    "descripcion": "Transfer\nInterruptor de Transferencia Automática o Manual(según su preferencia)de 110v/100A .\nIdeal para sistemas donde se necesita cambiar entre la red eléctrica normal y un generador o inversor, garantizando continuidad del servicio eléctrico sin interrupción y con total seguridad. \nAlta confiabilidad para sistemas residenciales, comerciales e industriales.",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1782439684820.jpg",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1782439684820.jpg"
+    ],
+    "precioActual": 65,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 14,
+    "comision": 5,
+    "comisionMoneda": "USD",
+    "categoria": "ENERGIA",
+    "subcategoria": "",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "specs": [],
+    "fechaAgregado": "2026-06-26T02:08:08.529Z"
   }
 ]
