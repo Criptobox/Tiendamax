@@ -1493,5 +1493,27 @@
     "devolucion": false,
     "specs": [],
     "fechaAgregado": "2026-06-26T02:03:48.159Z"
+  },
+  {
+    "id": 1782439525089,
+    "nombre": "Panel decorativo de hojas artificiales",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1782439522857.jpg",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1782439522857.jpg"
+    ],
+    "precioActual": 4,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 70,
+    "comision": 1,
+    "comisionMoneda": "USD",
+    "categoria": "HOGAR",
+    "subcategoria": "DECORACION",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "specs": [],
+    "fechaAgregado": "2026-06-26T02:05:25.090Z"
   }
 ]
