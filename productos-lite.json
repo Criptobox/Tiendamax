@@ -1449,5 +1449,27 @@
     "devolucion": false,
     "specs": [],
     "fechaAgregado": "2026-06-26T01:55:22.547Z"
+  },
+  {
+    "id": 1782439189958,
+    "nombre": "REPETIDOR WIFI 5",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1782439187376.jpg",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1782439187376.jpg"
+    ],
+    "precioActual": 20,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 8,
+    "comision": 1500,
+    "comisionMoneda": "MN",
+    "categoria": "WIFI",
+    "subcategoria": "",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "specs": [],
+    "fechaAgregado": "2026-06-26T01:59:49.958Z"
   }
 ]
