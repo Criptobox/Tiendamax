@@ -1285,20 +1285,3 @@ body.light-mode .legal-modal-close:hover{color:#111;}
 .resena-foto{display:block;max-width:140px;max-height:140px;width:auto;height:auto;border-radius:10px;
   object-fit:cover;margin-top:8px;border:1px solid rgba(255,255,255,.12);cursor:zoom-in;}
 body.light-mode .resena-foto{border-color:rgba(0,0,0,.12);}
-
-/* ── badge-stock-urgente: píldora roja sólida (mismo look que "Ahorra $X") ── */
-html body .badge-stock-urgente,
-html body.light-mode .badge-stock-urgente {
-  background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%) !important;
-  color: #fff !important;
-  font-size: 11px !important;
-  font-weight: 800 !important;
-  padding: 5px 10px !important;
-  border-radius: 999px !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-  border: none !important;
-  box-shadow: 0 2px 8px rgba(192,57,43,0.55) !important;
-  letter-spacing: 0.2px !important;
-  text-shadow: none !important;
-}
