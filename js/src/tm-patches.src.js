@@ -248,9 +248,14 @@ function renderizarDashboardVentas(contenedor) {
 
     const totalVentas   = ventas.reduce((s, v) => s + Number(v.total || 0), 0);
     const totalGanancia = ventas.reduce((s, v) => s + Number(v.ganancia || 0), 0);
+    // Ganancia separada por moneda de la comisión (USD vs Moneda Nacional)
+    const totalGananciaUSD = ventas.reduce((s, v) => s + (String(v.comisionMoneda || 'USD') === 'MN' ? 0 : Number(v.ganancia || 0)), 0);
+    const totalGananciaMN  = ventas.reduce((s, v) => s + (String(v.comisionMoneda || 'USD') === 'MN' ? Number(v.ganancia || 0) : 0), 0);
     const totalUnidades = ventas.reduce((s, v) => s + Number(v.cantidad || 1), 0);
     const ticketProm    = ventas.length ? totalVentas / ventas.length : 0;
     const margenPct     = totalVentas > 0 ? (totalGanancia / totalVentas) * 100 : 0;
+    // El margen % solo aplica a la ganancia en USD (el total vendido está en USD)
+    const margenPctUSD  = totalVentas > 0 ? (totalGananciaUSD / totalVentas) * 100 : 0;
 
     const ahora = Date.now();
     const inicioHoy = new Date();
@@ -400,7 +405,10 @@ function renderizarDashboardVentas(contenedor) {
 
         <div class="admin-stats-grid admin-stats-grid-compact">
             ${kpiCard('green', '$' + totalVentas.toFixed(0), 'Total vendido', ventas.length + ' venta' + (ventas.length !== 1 ? 's' : ''))}
-            ${kpiCard('gold', '$' + totalGanancia.toFixed(0), 'Mi ganancia', margenPct.toFixed(1) + '% margen')}
+            ${kpiCard('gold',
+                '<span class="tm-kpi-usd">$' + totalGananciaUSD.toFixed(0) + '<small>USD</small></span>' +
+                '<span class="tm-kpi-mn-val">' + totalGananciaMN.toLocaleString('es-CU') + '<small>MN</small></span>',
+                'Mi ganancia', margenPctUSD.toFixed(1) + '% margen')}
             ${kpiCard('blue', String(totalUnidades), 'Unidades', '$' + ticketProm.toFixed(0) + ' ticket prom.')}
             ${kpiCard('purple', '$' + totalHoy.toFixed(0), 'Hoy', ventasHoy.length + ' venta' + (ventasHoy.length !== 1 ? 's' : ''))}
             ${kpiCard('dark', '$' + total7d.toFixed(0), 'Últimos 7 días', ventas7d.length + ' venta' + (ventas7d.length !== 1 ? 's' : '') + (total7d_prev > 0 ? ' · ' + (cambio7d_pct >= 0 ? '▲' : '▼') + Math.abs(cambio7d_pct).toFixed(0) + '%' : ''))}
