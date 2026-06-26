@@ -95,7 +95,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1777924315386.webp",
     "categoria": "WIFI",
     "subcategoria": "ACCESORIOS",
-    "stock": 19,
+    "stock": 0,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -507,7 +507,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1778336789459.webp",
     "categoria": "WIFI",
     "subcategoria": "ROUTERS",
-    "stock": 2,
+    "stock": 0,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -1317,7 +1317,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1781711422926.webp",
     "categoria": "WIFI",
     "subcategoria": "ROUTERS",
-    "stock": 4,
+    "stock": 0,
     "masVendido": false,
     "usado": true,
     "garantia": "",
@@ -1427,5 +1427,27 @@
     "slug": "inversor-12v",
     "comision": 10,
     "comisionMoneda": "USD"
+  },
+  {
+    "id": 1782438922547,
+    "nombre": "router de doble banda Archer AX1450",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1782438920638.jpg",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1782438920638.jpg"
+    ],
+    "precioActual": 80,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 6,
+    "comision": 10,
+    "comisionMoneda": "USD",
+    "categoria": "WIFI",
+    "subcategoria": "ROUTERS",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "specs": [],
+    "fechaAgregado": "2026-06-26T01:55:22.547Z"
   }
 ]
