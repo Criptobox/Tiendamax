@@ -1431,9 +1431,9 @@
   {
     "id": 1782438922547,
     "nombre": "router de doble banda Archer AX1450",
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1782438920638.jpg",
+    "imagen": "https://tiendamax.org/imagenes/img_1782438920638.jpg",
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1782438920638.jpg"
+      "https://tiendamax.org/imagenes/img_1782438920638.jpg"
     ],
     "precioActual": 80,
     "precioOriginal": 0,
@@ -1453,14 +1453,14 @@
   {
     "id": 1782439189958,
     "nombre": "REPETIDOR WIFI 5",
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1782439187376.jpg",
+    "imagen": "https://tiendamax.org/imagenes/img_1782439187376.jpg",
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1782439187376.jpg"
+      "https://tiendamax.org/imagenes/img_1782439187376.jpg"
     ],
     "precioActual": 20,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 8,
+    "stock": 7,
     "comision": 1500,
     "comisionMoneda": "MN",
     "categoria": "WIFI",
@@ -1475,9 +1475,9 @@
   {
     "id": 1782439428159,
     "nombre": "Auriculares Gaming Inalámbrico Nubwo",
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1782439424609.jpg",
+    "imagen": "https://tiendamax.org/imagenes/img_1782439424609.jpg",
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1782439424609.jpg"
+      "https://tiendamax.org/imagenes/img_1782439424609.jpg"
     ],
     "precioActual": 50,
     "precioOriginal": 0,
@@ -1497,9 +1497,9 @@
   {
     "id": 1782439525089,
     "nombre": "Panel decorativo de hojas artificiales",
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1782439522857.jpg",
+    "imagen": "https://tiendamax.org/imagenes/img_1782439522857.jpg",
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1782439522857.jpg"
+      "https://tiendamax.org/imagenes/img_1782439522857.jpg"
     ],
     "precioActual": 4,
     "precioOriginal": 0,
@@ -1519,9 +1519,9 @@
   {
     "id": 1782439688529,
     "nombre": "Transferencia Automática o Manual",
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1782439684820.jpg",
+    "imagen": "https://tiendamax.org/imagenes/img_1782439684820.jpg",
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1782439684820.jpg"
+      "https://tiendamax.org/imagenes/img_1782439684820.jpg"
     ],
     "precioActual": 65,
     "precioOriginal": 0,
