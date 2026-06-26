@@ -3,6 +3,14 @@
 (function() {
     function _lsGet(key) { try { return localStorage.getItem(key); } catch(e) { return null; } }
     function _lsSet(key, val) { try { localStorage.setItem(key, val); } catch(e) {} }
+    function _syncBannersGH() {
+        var user = localStorage.getItem('githubUser');
+        var repo = localStorage.getItem('githubRepo');
+        var token = localStorage.getItem('githubToken');
+        if (!user || !repo || !token) return;
+        if (typeof subirArchivoAGitHub !== 'function') return;
+        subirArchivoAGitHub(user, repo, token, 'banners.json', banners).catch(function() {});
+    }
 
     var DEFAULT_BANNERS = [
         "https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=900&q=80&auto=format&fit=crop",
@@ -137,6 +145,7 @@
             document.getElementById('nuevoBannerLink').value = '';
             renderSlider();
             renderAdminBannerList();
+            _syncBannersGH();
             if (typeof mostrarNotificacion === 'function') mostrarNotificacion('✅ Banner agregado');
         }
 
@@ -179,6 +188,7 @@
             _lsSet('heroBanners', JSON.stringify(banners));
             renderSlider();
             renderAdminBannerList();
+            _syncBannersGH();
             if (typeof mostrarNotificacion === 'function') mostrarNotificacion('✅ Banner actualizado');
         }
 
@@ -202,6 +212,7 @@
         _lsSet('heroBanners', JSON.stringify(banners));
         renderSlider();
         renderAdminBannerList();
+        _syncBannersGH();
     };
 
     function renderAdminBannerList() {

@@ -1660,13 +1660,14 @@ function tmExtractJsonObject(text) {
     const ps=products().map(p=>map.has(String(p.id))?{...p,nombre:map.get(String(p.id)),nombreNormalizadoAt:new Date().toISOString()}:p);
     ps.forEach(p=>{if(map.has(String(p.id))){try{if(typeof marcarProductoModificado==='function') marcarProductoModificado(p.id);}catch(e){}}});
     saveProducts(ps);
+    try{ if(typeof sincronizarConGitHub==='function') sincronizarConGitHub(); }catch(e){}
     try{ if(typeof renderizarProductos==='function') renderizarProductos(); }catch(e){}
     try{ if(typeof renderizarMasVendidos==='function') renderizarMasVendidos(); }catch(e){}
     try{ if(typeof renderizarCategoriasHome==='function') renderizarCategoriasHome(); }catch(e){}
     try{ if(typeof actualizarListaProductos==='function') actualizarListaProductos(); }catch(e){}
     try{ if(typeof actualizarDashboard==='function') actualizarDashboard(); }catch(e){}
-    const out=$('#tmToolOut'); if(out) out.textContent=`✅ Normalizados ${ch.length} producto(s).\n\nYa se actualizó en este admin. Ahora pulsa “Actualizar tienda” para subir productos.json y que se vea para todos.`;
-    notify('✅ Nombres normalizados. Ahora pulsa Actualizar tienda.','success');
+    const out=$('#tmToolOut'); if(out) out.textContent=`✅ Normalizados ${ch.length} producto(s). Sincronizando con GitHub automáticamente…`;
+    notify('✅ Nombres normalizados y sincronizando con GitHub…','success');
   }
   document.addEventListener('click',function(e){
     const tool=e.target.closest('[data-tool="namesfix"]'); if(tool){e.preventDefault();e.stopPropagation();e.stopImmediatePropagation&&e.stopImmediatePropagation();openTool();return;}

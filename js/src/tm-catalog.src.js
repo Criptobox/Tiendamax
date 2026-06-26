@@ -192,6 +192,7 @@ function agregarCategoria() {
     mostrarNotificacion('✅ Categoría agregada');
 }
 
+let _guardarCategoriasTimer = null;
 function guardarCategorias() {
     localStorage.setItem('categorias', JSON.stringify(categorias));
     localStorage.setItem('iconosPersonalizados', JSON.stringify(iconosPersonalizados));
@@ -202,10 +203,18 @@ function guardarCategorias() {
             method: 'PUT',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({nombres: categorias, iconos: iconosPersonalizados, ts: Date.now()})
-        }).catch(() => {
-            mostrarNotificacion('⚠️ Categoría guardada localmente. Sin conexión Firebase — haz clic en Actualizar Tienda para hacerla permanente.', 'info');
-        });
+        }).catch(() => {});
     }
+    // Auto-sync a GitHub (debounced)
+    clearTimeout(_guardarCategoriasTimer);
+    _guardarCategoriasTimer = setTimeout(() => {
+        const user = localStorage.getItem('githubUser');
+        const repo = localStorage.getItem('githubRepo');
+        const token = localStorage.getItem('githubToken');
+        if (!user || !repo || !token) return;
+        subirArchivoAGitHub(user, repo, token, 'categorias.json', { nombres: categorias, iconos: iconosPersonalizados }).catch(() => {});
+        subirArchivoAGitHub(user, repo, token, 'subcategorias.json', tmParseObject(localStorage.getItem('subcategorias'))).catch(() => {});
+    }, 2000);
 }
 
 function eliminarCategoria(index) {
