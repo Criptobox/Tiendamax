@@ -835,18 +835,25 @@ async function queuePushForProduct(pid){
   }
 
   const base = await fbBase(); if(!base){ toast('Firebase no configurado.'); return; }
+
+  // Marcar como enviado ANTES del fetch para que un doble click no encole dos veces.
+  pushLog[String(pid)] = Date.now();
+  localStorage.setItem('tm_push_sent', JSON.stringify(pushLog));
+
   const reqId = 'req_copilot_' + Date.now();
   const payload = { title: '🔥 Producto destacado en TiendaMax', body: String(p.nombre||'Oferta disponible').slice(0,120), url: '/p/producto-' + p.id + '.html', icon: p.imagen || '/iconos/icon-192.png', image: p.imagen || '', ts: Date.now(), source: 'admin_copilot' };
   try {
     const r = await fetch(base + '/admin_push_requests/' + reqId + '.json', {method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
     if(!r.ok) throw new Error('HTTP '+r.status);
-    // Registrar envío para deduplicación futura
-    pushLog[String(pid)] = Date.now();
-    localStorage.setItem('tm_push_sent', JSON.stringify(pushLog));
     const ghUser=localStorage.getItem('githubUser'), ghRepo=localStorage.getItem('githubRepo')||'Tiendamax', ghToken=localStorage.getItem('githubToken');
     if(ghUser && ghToken){ fetch(`https://api.github.com/repos/${ghUser}/${ghRepo}/actions/workflows/flush-push-queue.yml/dispatches`,{method:'POST',headers:{'Authorization':'token '+ghToken,'Content-Type':'application/json'},body:JSON.stringify({ref:'main'})}).catch(()=>{}); }
     toast('Push agregado a la cola: ' + p.nombre);
-  } catch(e) { toast('No se pudo crear el push: '+e.message); }
+  } catch(e) {
+    // Si falló, revertir la marca para permitir reintentar
+    delete pushLog[String(pid)];
+    localStorage.setItem('tm_push_sent', JSON.stringify(pushLog));
+    toast('No se pudo crear el push: '+e.message);
+  }
 }
 function maybeBrowserNotify(){
   if (!('Notification' in window) || Notification.permission !== 'granted') return;

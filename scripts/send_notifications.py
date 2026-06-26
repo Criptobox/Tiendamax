@@ -8,8 +8,10 @@ usando Firebase Realtime Database para evitar conflictos de Git.
 
 import json
 import os
+import re
 import subprocess
 import sys
+import time
 from datetime import datetime
 from pathlib import Path
 from typing import Any
@@ -280,8 +282,13 @@ def procesar_restock(messaging_api, database, restock_items):
 # ============================================================
 # SOLICITUDES MANUALES DEL ADMIN
 # ============================================================
-def procesar_admin_requests(messaging_api, database):
-    """Lee admin_push_requests de RTDB y envía cada solicitud pendiente."""
+def procesar_admin_requests(messaging_api, database, cola):
+    """Lee admin_push_requests de RTDB y envía cada solicitud pendiente.
+
+    Deduplica del lado del servidor: una misma URL de destino no se notifica
+    más de 1 vez cada ADMIN_PUSH_COOLDOWN_H horas, sin importar cuántas veces
+    se encole (doble click, carrera entre workflows, etc.).
+    """
     ref = database.reference("admin_push_requests")
     requests_data = ref.get()
     if not requests_data:
@@ -293,6 +300,11 @@ def procesar_admin_requests(messaging_api, database):
         print("⚠️ No hay tokens para enviar solicitudes admin.")
         ref.set(None)
         return
+
+    ADMIN_PUSH_COOLDOWN_S = 8 * 3600  # mismo cooldown que el frontend (8 h)
+    ahora = time.time()
+    ultimo_push = cola.setdefault("ultimo_push", {})
+
     for req_id, req in requests_data.items():
         if not isinstance(req, dict):
             continue
@@ -302,8 +314,18 @@ def procesar_admin_requests(messaging_api, database):
         imagen = req.get("imagen") or None
         if not title or not body:
             continue
+        # Clave de dedup: id del producto extraído de la URL (única por producto).
+        # No usamos la URL cruda porque '/' y '.' son ilegales como claves en RTDB.
+        m = re.search(r"producto-([\w-]+)\.html", link)
+        dedup_key = ("p_" + m.group(1)) if m else re.sub(r"[.#$\[\]/]+", "_", link).strip("_") or "_"
+        ultimo = ultimo_push.get(dedup_key, 0)
+        if isinstance(ultimo, (int, float)) and (ahora - ultimo) < ADMIN_PUSH_COOLDOWN_S:
+            horas = int((ADMIN_PUSH_COOLDOWN_S - (ahora - ultimo)) / 3600) + 1
+            print(f"⏭️ Saltando (dedup, faltan ~{horas} h): '{title}'")
+            continue
         print(f"📨 Solicitud admin: '{title}'")
         enviar_push_fcm(messaging_api, database, tokens, [], title, body, link, imagen, tag="admin-push")
+        ultimo_push[dedup_key] = ahora
     ref.set(None)  # limpiar todas las solicitudes procesadas
 
 # ============================================================
@@ -318,7 +340,7 @@ def main():
 
     # Solicitudes manuales del admin — siempre procesadas primero, sin restricción horaria
     try:
-        procesar_admin_requests(msg_api, db_api)
+        procesar_admin_requests(msg_api, db_api, cola)
     except Exception as e:
         print(f"⚠️ Error procesando solicitudes admin: {e}", file=sys.stderr)
 
