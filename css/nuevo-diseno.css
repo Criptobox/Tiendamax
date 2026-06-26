@@ -442,6 +442,26 @@ body:not(.light-mode) .producto-card .precio-tachado{color:rgba(245,237,232,.35)
 body:not(.light-mode) .producto-card .stock,
 body:not(.light-mode) .producto-card .stock-count{color:rgba(245,237,232,.5) !important}
 
+/* Badge "Ahorra $X" — ribbon en esquina superior-izquierda, absoluto para no desacoplar el grid */
+.producto-card .badge-ahorra-card {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  background: linear-gradient(135deg, #E8501E, #FF6B35) !important;
+  color: #fff !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  padding: 5px 11px 5px 10px !important;
+  border-radius: 0 0 12px 0 !important;
+  z-index: 3;
+  line-height: 1.2;
+  pointer-events: none;
+  letter-spacing: 0.2px;
+}
+body.light-mode .producto-card .badge-ahorra-card {
+  background: linear-gradient(135deg, #E8501E, #FF6B35) !important;
+}
+
 /* Badge "Más Vendido" tipo pill (ambos modos) */
 .producto-card .badge-vendido{
   background:linear-gradient(135deg,#FF6B35,#E8501E) !important;color:#fff !important;

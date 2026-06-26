@@ -1816,9 +1816,7 @@ renderizarProductos = function() {
             '<h3>' + _nom + '</h3>' +
             (_specs.length ? '<div class="spec-badges">' + _specs.slice(0, 3).map(s => '<span class="spec-badge">' + escapeHtml(s) + '</span>').join('') + '</div>' : '') +
             '<p class="producto-description">' + _des + '</p>' +
-            (_hasDescuento
-                ? '<div class="precio-mejorado"><span class="precio-actual-mejorado" data-usd="' + safeNum(producto.precioActual) + '">$' + Number(producto.precioActual).toFixed(2) + ' USD</span><span class="precio-tachado-mejorado">$' + parseFloat(producto.precioOriginal).toFixed(2) + ' USD</span></div>'
-                : '<p class="precio"><span class="precio-actual" data-usd="' + safeNum(producto.precioActual) + '">$' + Number(producto.precioActual).toFixed(2) + ' USD</span></p>') +
+            '<p class="precio"><span class="precio-actual" data-usd="' + safeNum(producto.precioActual) + '">$' + Number(producto.precioActual).toFixed(2) + ' USD</span></p>' +
             (esAgotado
                 ? '<div class="stock" style="color:#e74c3c;font-weight:700;">❌ Agotado</div><button class="btn btn-small" disabled style="background:#555;color:#aaa;cursor:not-allowed;box-shadow:none;">🚫 No disponible</button>'
                 : (_stk <= 3 && _stk > 0 ? '<div class="stock stock-urgente">⚠️ ¡Solo quedan ' + _stk + '!</div>' : '<div class="stock">📦 Stock: ' + _stk + ' unidades</div>') +

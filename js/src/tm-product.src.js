@@ -171,15 +171,9 @@ function renderizarProductos(isLoadMore = false) {
                 return '<div class="spec-badges">' + _specs.slice(0, 3).map(s => `<span class="spec-badge">${escapeHtml(s)}</span>`).join('') + '</div>';
             })()}
             <p class="producto-description">${_desc}</p>
-            ${(producto.precioOriginal > 0 && producto.precioOriginal > producto.precioActual)
-                ? `<div class="precio-mejorado">
-                    <span class="precio-actual-mejorado" data-usd="${safeNum(producto.precioActual)}">$${producto.precioActual.toFixed(2)} USD</span>
-                    <span class="precio-tachado-mejorado">$${producto.precioOriginal.toFixed(2)} USD</span>
-                    <span class="precio-ahorro">ahorras $${(producto.precioOriginal - producto.precioActual).toFixed(0)}</span>
-                   </div>`
-                : `<p class="precio">
+            <p class="precio">
                     <span class="precio-actual" data-usd="${safeNum(producto.precioActual)}">${typeof formatPrecio === 'function' ? formatPrecio(producto.precioActual) : '$'+producto.precioActual.toFixed(2)+' USD'}</span>
-                   </p>`}
+                   </p>
             ${_esAgotado
                 ? '<div class="stock" style="color:#e74c3c;font-weight:700;">❌ Agotado</div>'
                 : `<div class="stock-count"><span>📦 Solo quedan ${_stock} unidades</span></div><div class="stock-bar"><div class="stock-bar-fill" style="width:${Math.min(100,((_stock)/20)*100)}%"></div></div>`}
