@@ -1471,5 +1471,27 @@
     "devolucion": false,
     "specs": [],
     "fechaAgregado": "2026-06-26T01:59:49.958Z"
+  },
+  {
+    "id": 1782439428159,
+    "nombre": "Auriculares Gaming Inalámbrico Nubwo",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1782439424609.jpg",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1782439424609.jpg"
+    ],
+    "precioActual": 50,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 5,
+    "comision": 5,
+    "comisionMoneda": "USD",
+    "categoria": "CELULARES",
+    "subcategoria": "AUDIO",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "specs": [],
+    "fechaAgregado": "2026-06-26T02:03:48.159Z"
   }
 ]
