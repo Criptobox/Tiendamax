@@ -335,6 +335,7 @@ function fijarStockCero(id) {
     p.stock = 0;
     guardarProductos();
     marcarProductoModificado(id);
+    sincronizarConGitHub();
     actualizarListaProductos();
     mostrarNotificacion(`🔴 ${p.nombre}: marcado como agotado`, 'warning');
     _quitarOfertaSiAgotado(id);
@@ -350,6 +351,7 @@ function tmToggleMasVendido(id, e) {
     p.masVendido = !p.masVendido;
     guardarProductos();
     marcarProductoModificado(id);
+    sincronizarConGitHub();
     actualizarListaProductos();
     renderizarMasVendidos();
     if (typeof renderHeroGaleria === 'function') renderHeroGaleria();
@@ -390,6 +392,7 @@ async function _procesarAvisosStock(productId, nombre) {
     } catch(e) { console.warn('[_procesarAvisosStock]', e); }
 }
 
+let _ajustarStockSyncTimer = null;
 function ajustarStock(id, cantidad, desdeVenta = false) {
     const p = productos.find(p => p.id === id);
     if (!p) return;
@@ -397,6 +400,9 @@ function ajustarStock(id, cantidad, desdeVenta = false) {
     p.stock = Math.max(0, (p.stock || 0) + cantidad);
     guardarProductos();
     marcarProductoModificado(id);
+    // Debounce: espera 2s tras el último clic para no disparar múltiples syncs
+    clearTimeout(_ajustarStockSyncTimer);
+    _ajustarStockSyncTimer = setTimeout(() => sincronizarConGitHub(), 2000);
     actualizarListaProductos();
     // Solo mostrar notificación de stock cuando se ajusta desde Gestionar (no desde una venta)
     if (!desdeVenta) {

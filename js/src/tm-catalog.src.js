@@ -238,7 +238,7 @@ function eliminarProducto(id) {
     // Una eliminación requiere sincronizar todos los productos
     localStorage.setItem('productosModificados', JSON.stringify(productos.map(p => p.id)));
     localStorage.setItem('ultimaModificacion', Date.now().toString());
-    sincronizarConBackend();
+    sincronizarConGitHub();
     renderizarCategoriasHome();
     renderizarMasVendidos();
     renderizarProductos();
