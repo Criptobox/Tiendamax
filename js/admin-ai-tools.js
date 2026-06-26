@@ -2418,57 +2418,75 @@ function tmExtractJsonObject(text) {
 
   function roundRect(ctx,x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
 
+  // Parte un nombre en hasta maxLines líneas que entren en maxW; pone … si sobra
+  function wrapName(ctx,text,maxW,maxLines){
+    const words=String(text).split(/\s+/).filter(Boolean);
+    const lines=[];let cur='';let truncated=false;
+    for(let i=0;i<words.length;i++){
+      const w=words[i];const test=cur?cur+' '+w:w;
+      if(!cur||ctx.measureText(test).width<=maxW){cur=test;}
+      else{lines.push(cur);cur=w;if(lines.length===maxLines){truncated=true;break;}}
+    }
+    if(lines.length<maxLines&&cur)lines.push(cur);
+    for(let j=0;j<lines.length;j++){
+      if(ctx.measureText(lines[j]).width>maxW){
+        let s=lines[j];while(s.length>1&&ctx.measureText(s+'…').width>maxW)s=s.slice(0,-1);
+        lines[j]=s.replace(/\s+$/,'')+'…';truncated=true;
+      }
+    }
+    if(truncated){const L=lines.length-1;if(L>=0&&!/…$/.test(lines[L])){
+      let s=lines[L];while(s.length>1&&ctx.measureText(s+'…').width>maxW)s=s.slice(0,-1);
+      lines[L]=s.replace(/\s+$/,'')+'…';}}
+    return lines;
+  }
+
   async function genImg(cat){
     const prods=prodsByCat(cat);if(!prods.length)return null;
-    const W=1080,H=1080,cv=document.createElement('canvas');cv.width=W;cv.height=H;const ctx=cv.getContext('2d');
-    // Background
+    const W=1080;
+    const NF='40px system-ui,Arial,sans-serif', PF='bold 40px system-ui,Arial,sans-serif';
+    const contentTop=268, footerH=178, lineH=50, rowPad=22;
+    const cv=document.createElement('canvas');cv.width=W;cv.height=10;let ctx=cv.getContext('2d');
+    // PASO 1 — medir filas (nombre en hasta 2 líneas, precio reservado a la derecha)
+    const maxItems=Math.min(prods.length,14);
+    const rows=[];
+    for(let i=0;i<maxItems;i++){
+      const p=prods[i];
+      const price='$'+Number(p.precioActual||0).toFixed(2);
+      ctx.font=PF;const priceW=ctx.measureText(price).width;
+      ctx.font=NF;
+      const maxNameW=(W-75)-priceW-30-80;
+      const lines=wrapName(ctx,emojiFor(p.nombre,cat)+' '+String(p.nombre||''),maxNameW,2);
+      rows.push({lines,price,rowH:lines.length*lineH+rowPad});
+    }
+    const moreCount=prods.length-maxItems;
+    const contentH=rows.reduce((s,r)=>s+r.rowH,0)+(moreCount>0?48:0);
+    const H=Math.max(900,Math.round(contentTop+contentH+footerH));
+    // PASO 2 — dibujar con el alto final
+    cv.height=H;ctx=cv.getContext('2d');
     const g=ctx.createLinearGradient(0,0,W,H);g.addColorStop(0,'#0a0805');g.addColorStop(.45,'#1c0e06');g.addColorStop(1,'#2d1a08');
     ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
-    // Marca de agua: la bolsa del logo, suave y centrada
     try{if(_bagImg&&_bagImg.complete&&_bagImg.naturalWidth){const bw=W*0.5,bh=bw;ctx.save();ctx.globalAlpha=0.06;ctx.drawImage(_bagImg,(W-bw)/2,(H-bh)/2,bw,bh);ctx.restore();}}catch(e){}
-    // Gold border
     ctx.strokeStyle='rgba(201,169,110,.6)';ctx.lineWidth=7;roundRect(ctx,26,26,W-52,H-52,38);ctx.stroke();
-    // Top accent bar
     const gb=ctx.createLinearGradient(60,0,W-60,0);gb.addColorStop(0,'#c9a96e');gb.addColorStop(.5,'#FF6B35');gb.addColorStop(1,'#c9a96e');
     ctx.fillStyle=gb;ctx.fillRect(60,55,W-120,9);
-    // Store name
     ctx.textAlign='center';ctx.fillStyle='#FF6B35';ctx.font='bold 62px system-ui,Arial,sans-serif';ctx.fillText('TIENDAMAX',W/2,152);
-    // Category
     ctx.fillStyle='#f5e6d0';ctx.font='bold 40px system-ui,Arial,sans-serif';ctx.fillText(String(cat).toUpperCase(),W/2,210);
-    // Divider
     ctx.strokeStyle='rgba(255,107,53,.3)';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(80,232);ctx.lineTo(W-80,232);ctx.stroke();
-    // Products
-    const max=Math.min(prods.length,13);const lh=Math.min(60,Math.floor((H-390)/max));
-    let y=268+lh;
-    ctx.textAlign='left';
-    for(let i=0;i<max;i++){
-      const p=prods[i];
-      const em=emojiFor(p.nombre,cat);
-      const price='$'+Number(p.precioActual||0).toFixed(2);
-      const fs=lh-14;
-      // Precio primero (derecha) para medir su ancho y reservarle espacio
-      ctx.fillStyle='#FF6B35';ctx.font=`bold ${fs}px system-ui,Arial,sans-serif`;ctx.textAlign='right';ctx.fillText(price,W-75,y);
-      const priceW=ctx.measureText(price).width;
-      // Nombre (izquierda) recortado para NO chocar con el precio
-      ctx.textAlign='left';ctx.fillStyle='#e8dcc8';ctx.font=`${fs}px system-ui,Arial,sans-serif`;
-      const maxNameW=(W-75)-priceW-30-80; // límite derecho del nombre
-      let label=em+' '+String(p.nombre||'');
-      if(ctx.measureText(label).width>maxNameW){
-        while(label.length>2 && ctx.measureText(label+'…').width>maxNameW){label=label.slice(0,-1);}
-        label=label.replace(/\s+$/,'')+'…';
-      }
-      ctx.fillText(label,80,y);
-      // Subtle row separator
-      if(i<max-1){ctx.strokeStyle='rgba(255,255,255,.05)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(80,y+12);ctx.lineTo(W-80,y+12);ctx.stroke();}
-      y+=lh;
+    // Filas de productos
+    let y=contentTop+44;
+    for(let i=0;i<rows.length;i++){
+      const r=rows[i];
+      ctx.fillStyle='#FF6B35';ctx.font=PF;ctx.textAlign='right';ctx.fillText(r.price,W-75,y);
+      ctx.textAlign='left';ctx.fillStyle='#e8dcc8';ctx.font=NF;
+      r.lines.forEach((ln,k)=>ctx.fillText(ln,80,y+k*lineH));
+      if(i<rows.length-1){const sy=y+(r.lines.length-1)*lineH+18;ctx.strokeStyle='rgba(255,255,255,.05)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(80,sy);ctx.lineTo(W-80,sy);ctx.stroke();}
+      y+=r.rowH;
     }
-    if(prods.length>max){ctx.fillStyle='#666';ctx.font='italic 21px system-ui,Arial,sans-serif';ctx.fillText(`+ ${prods.length-max} productos más en la tienda`,80,y+10);}
-    // Footer divider
+    if(moreCount>0){ctx.textAlign='left';ctx.fillStyle='#9b9189';ctx.font='italic 24px system-ui,Arial,sans-serif';ctx.fillText(`+ ${moreCount} productos más en la tienda`,80,y+8);}
+    // Footer
     ctx.strokeStyle='rgba(255,107,53,.3)';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(80,H-148);ctx.lineTo(W-80,H-148);ctx.stroke();
-    // Footer text
     ctx.textAlign='center';ctx.fillStyle='#f5e6d0';ctx.font='bold 28px system-ui,Arial,sans-serif';ctx.fillText('📲 Escríbenos para reservar tu pedido',W/2,H-108);
     ctx.fillStyle='#c9a96e';ctx.font='22px system-ui,Arial,sans-serif';ctx.fillText(storeUrl(),W/2,H-70);
-    // Bottom accent bar
     ctx.fillStyle=gb;ctx.fillRect(60,H-43,W-120,9);
     return new Promise(res=>cv.toBlob(res,'image/png',.95));
   }
