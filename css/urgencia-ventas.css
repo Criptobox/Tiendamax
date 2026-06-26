@@ -1,29 +1,5 @@
 /* urgencia-ventas.css — Estilos del motor de urgencia TiendaMax */
 
-/* ── Badge "¡Solo N!" en tarjetas ───────────────────────── */
-.tm-urg-badge {
-  position: absolute;
-  bottom: 10px;
-  right: 10px;
-  background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
-  color: #fff;
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: 0.2px;
-  padding: 4px 10px;
-  border-radius: 20px;
-  pointer-events: none;
-  z-index: 10;
-  box-shadow: 0 2px 8px rgba(231,76,60,.55);
-  animation: tm-urg-pulse 1.7s ease-in-out infinite;
-  white-space: nowrap;
-}
-
-@keyframes tm-urg-pulse {
-  0%,100% { transform: scale(1);    box-shadow: 0 2px 8px  rgba(231,76,60,.55); }
-  50%      { transform: scale(1.07); box-shadow: 0 4px 14px rgba(231,76,60,.80); }
-}
-
 /* ── "N personas ven esto ahora" en modal de detalle ─────── */
 .tm-viendo {
   display: flex;
