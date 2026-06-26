@@ -52,6 +52,17 @@ jobs:
                   if isinstance(v, dict) and v.get("producto"):
                       print(f"  • raíz[{k}] -> {v.get('producto')} | ${v.get('precio')} | id={v.get('id')}")
 
+          # Volcado JSON completo de ventas REALES (excluye pruebas A/B/test)
+          PRUEBA = {"a", "b", "test", "prueba", "producto a", "producto b"}
+          reales = [v for v in (ventas.values() if isinstance(ventas, dict) else ventas)
+                    if isinstance(v, dict)
+                    and str(v.get("producto", "")).strip().lower() not in PRUEBA
+                    and len(str(v.get("producto", "")).strip()) > 1]
+          reales.sort(key=lambda v: v.get("id", 0))
+          print("\n===JSON_VENTAS_REALES_INICIO===")
+          print(json.dumps(reales, ensure_ascii=True))
+          print("===JSON_VENTAS_REALES_FIN===")
+
           # Revisar pedidos (espejo de cada venta confirmada)
           pedidos = db.reference("pedidos").get() or {}
           print(f"\nPEDIDOS EN RESPALDO (/pedidos): {len(pedidos) if isinstance(pedidos, dict) else 0}")
