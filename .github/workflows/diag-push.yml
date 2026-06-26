@@ -56,7 +56,7 @@ jobs:
                   print(f"  • {k} -> ts={v}")
 
           if os.environ.get("LIMPIAR") == "true":
-              db.reference("admin_push_requests").set(None)
+              db.reference("admin_push_requests").delete()
               print("\n🧹 admin_push_requests BORRADO. Cola vacía.")
           else:
               print("\nℹ️ No se borró nada (limpiar=false).")

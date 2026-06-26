@@ -298,7 +298,7 @@ def procesar_admin_requests(messaging_api, database, cola):
     tokens = [v["token"] for v in tokens_data.values() if isinstance(v, dict) and v.get("token")]
     if not tokens:
         print("⚠️ No hay tokens para enviar solicitudes admin.")
-        ref.set(None)
+        ref.delete()
         return
 
     ADMIN_PUSH_COOLDOWN_S = 8 * 3600  # mismo cooldown que el frontend (8 h)
@@ -326,7 +326,7 @@ def procesar_admin_requests(messaging_api, database, cola):
         print(f"📨 Solicitud admin: '{title}'")
         enviar_push_fcm(messaging_api, database, tokens, [], title, body, link, imagen, tag="admin-push")
         ultimo_push[dedup_key] = ahora
-    ref.set(None)  # limpiar todas las solicitudes procesadas
+    ref.delete()  # limpiar todas las solicitudes procesadas (firebase_admin: delete, no set(None))
 
 # ============================================================
 # MAIN
