@@ -275,6 +275,14 @@ function renderOfertaDelDia() {
 
     if (!prod) { sec.style.display = 'none'; return; }
 
+    // Evitar duplicado visual: si hay una "Oferta por tiempo limitado" activa para
+    // el mismo producto, no mostramos también la "Oferta del día" (sería dos
+    // cuentas regresivas seguidas del mismo producto = se ve como spam).
+    try {
+        const cd = (typeof getActiveCountdown === 'function') ? getActiveCountdown() : null;
+        if (cd && cd.productId && String(cd.productId) === String(ofId)) { sec.style.display = 'none'; return; }
+    } catch (e) {}
+
     let texto = '⚡ Oferta del día';
     try { texto = localStorage.getItem('ofertaDiaTexto') || texto; } catch (e) {}
 
