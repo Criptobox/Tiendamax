@@ -1473,5 +1473,28 @@
     "devolucion": false,
     "specs": [],
     "fechaAgregado": "2026-06-26T01:59:49.958Z"
+  },
+  {
+    "id": 1782439428159,
+    "nombre": "Auriculares Gaming Inalámbrico Nubwo",
+    "descripcion": "AURICULARES GAMING 3 MODOS\nConectividad: 2.4 GHz (USB), Bluetooth y 3.5 mm\nCompatibilidad: PC, PS4, PS5, móviles y tablets\nBatería: hasta 100 horas\nAudio: drivers 50 mm + sonido envolvente 7.1\nMicrófono: flexible con cancelación de ruido",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1782439424609.jpg",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1782439424609.jpg"
+    ],
+    "precioActual": 50,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 5,
+    "comision": 5,
+    "comisionMoneda": "USD",
+    "categoria": "CELULARES",
+    "subcategoria": "AUDIO",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "specs": [],
+    "fechaAgregado": "2026-06-26T02:03:48.159Z"
   }
 ]
