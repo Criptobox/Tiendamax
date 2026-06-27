@@ -1654,5 +1654,28 @@
     "devolucion": false,
     "specs": [],
     "fechaAgregado": "2026-06-27T05:03:57.390Z"
+  },
+  {
+    "id": 1782537024284,
+    "nombre": "EXHIBIDOR VERTICAL DE DOBLE PUERTA MILEXUS 20 PIES",
+    "descripcion": "Marca: Milexus original (Garantía de durabilidad).\n​Capacidad: 28 Pies Cúbicos (Unos 800 litros de almacenamiento masivo, ideal para la alta demanda de paladares, cafeterías, minimercados o negocios privados).\n​Copete Iluminado Panorámico: Cartel lumínico superior ideal para destacar la marca o darle un toque profesional y de alta categoría a tu establecimiento.\n​Doble Puerta de Cristal: Cristal templado de alta resistencia con aislamiento térmico que sella el frío a la perfección, no se empaña y ofrece una visibilidad impecable de toda tu mercancía.\n​Iluminación LED Interior: Distribución de luz perfecta que hace que los refrescos, cervezas, lácteos o embutidos luzcan mucho más provocativos.\n​Gran Soporte y Flexibilidad: Parrillas reforzadas, totalmente ajustables para organizar de manera óptima botellas, latas o envases de cualquier tamaño.",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1782537022799.jpg",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1782537022799.jpg"
+    ],
+    "precioActual": 950,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 7,
+    "comision": 15,
+    "comisionMoneda": "USD",
+    "categoria": "HOGAR",
+    "subcategoria": "ELECTRODOMÉSTICOS",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "3 meses",
+    "devolucion": false,
+    "specs": [],
+    "fechaAgregado": "2026-06-27T05:10:24.286Z"
   }
 ]
