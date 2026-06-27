@@ -1559,5 +1559,27 @@
     "devolucion": false,
     "specs": [],
     "fechaAgregado": "2026-06-27T04:46:34.832Z"
+  },
+  {
+    "id": 1782535836192,
+    "nombre": "SMART TV MILEXUS 43\"",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1782535834600.jpg",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1782535834600.jpg"
+    ],
+    "precioActual": 250,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 6,
+    "comision": 5,
+    "comisionMoneda": "USD",
+    "categoria": "HOGAR",
+    "subcategoria": "ELECTRODOMÉSTICOS",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "3 meses",
+    "devolucion": false,
+    "specs": [],
+    "fechaAgregado": "2026-06-27T04:50:36.193Z"
   }
 ]
