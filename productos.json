@@ -8,7 +8,7 @@
     "categoria": "ENERGIA",
     "subcategoria": "BATERÍAS",
     "stock": 20,
-    "masVendido": false,
+    "masVendido": true,
     "usado": false,
     "garantia": "",
     "devolucion": false,
