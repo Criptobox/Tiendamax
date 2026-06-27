@@ -1583,5 +1583,30 @@
     "devolucion": false,
     "specs": [],
     "fechaAgregado": "2026-06-27T04:50:36.193Z"
+  },
+  {
+    "id": 1782536078989,
+    "nombre": "LAVADORA MILEXUS DE DOBLE TINA (9 KG)",
+    "descripcion": "Marca: Milexus original (Modelo ML-WM-9KGS).\n​Capacidad: 9 Kilogramos (Ideal para sábanas, colchas y cargas familiares grandes).\n​Doble Tina: Sistema independiente para lavar y centrifugar al mismo tiempo.\n​Tecnología Air Dry: Centrifugado de alta velocidad con entrada de aire que saca la ropa prácticamente seca, reduciendo el tiempo en el tendedero.\n​Modos de Lavado: Selector para lavado suave (ropa delicada) o normal/fuerte, y temporizador ajustable.\n​Diseño: Tapa elegante en negro brillante, cuerpo gris de alta resistencia y perillas reforzadas.",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1782536075088.jpg",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1782536075088.jpg",
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1782536076725.jpg",
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1782536077803.jpg"
+    ],
+    "precioActual": 210,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 5,
+    "comision": 5,
+    "comisionMoneda": "USD",
+    "categoria": "HOGAR",
+    "subcategoria": "ELECTRODOMÉSTICOS",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "3 meses",
+    "devolucion": false,
+    "specs": [],
+    "fechaAgregado": "2026-06-27T04:54:38.989Z"
   }
 ]
