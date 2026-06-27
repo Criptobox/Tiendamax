@@ -2733,6 +2733,27 @@ function tmExtractJsonObject(text) {
     } catch(e) {}
   }
 
+  // ── Asesor financiero: finanzas reales + memoria para aprender de resultados ──
+  function _tmAsesorFinanzas(){
+    const ps=window.productos||[];
+    let ventas=[];try{ventas=JSON.parse(localStorage.getItem('registroVentas')||'[]');}catch(e){}
+    const tasaMN=(()=>{try{return parseInt(localStorage.getItem('tasaMN')||'0');}catch(e){return 0;}})();
+    const totalVendido=ventas.reduce((s,v)=>s+Number(v.total||0),0);
+    const gananciaUSD=ventas.reduce((s,v)=>s+(String(v.comisionMoneda||'USD')==='MN'?0:Number(v.ganancia||0)),0);
+    const gananciaMN=ventas.reduce((s,v)=>s+(String(v.comisionMoneda||'USD')==='MN'?Number(v.ganancia||0):0),0);
+    const valorInventario=ps.reduce((s,p)=>s+Number(p.precioActual||0)*Number(p.stock||0),0);
+    const margenPct=totalVendido>0?(gananciaUSD/totalVendido*100):0;
+    return {totalVendido:+totalVendido.toFixed(2),gananciaUSD:+gananciaUSD.toFixed(2),gananciaMN:+gananciaMN.toFixed(2),valorInventario:Math.round(valorInventario),margenPct:+margenPct.toFixed(1),nVentas:ventas.length,tasaMN};
+  }
+  function _tmAsesorSnapshots(){try{return JSON.parse(localStorage.getItem('tm_asesor_snaps_v1')||'[]');}catch(e){return[];}}
+  function _tmAsesorGuardarSnapshot(fin,consejos){
+    try{const arr=_tmAsesorSnapshots();arr.unshift({ts:Date.now(),fecha:new Date().toISOString().slice(0,10),fin,consejos:(consejos||[]).slice(0,6)});if(arr.length>30)arr.length=30;localStorage.setItem('tm_asesor_snaps_v1',JSON.stringify(arr));}catch(e){}
+  }
+  function _tmAsesorHoy(){return new Date().toISOString().slice(0,10);}
+  function _tmAsesorRenderUltimo(){
+    try{const d=JSON.parse(localStorage.getItem('tm_asesor_last_render')||'null');if(d)renderizarConsolaAgente(d);}catch(e){}
+  }
+
   async function ejecutarAgenteAutonomo() {
     console.log('🤖 Agente TiendaMax v2 activado: Analizando estado con contexto Cuba...');
     
@@ -2782,6 +2803,22 @@ function tmExtractJsonObject(text) {
         .slice(0, 3)
         .map(([nombre, cant]) => ({ nombre, cantidad: cant }));
 
+      // Finanzas reales + aprendizaje (qué cambió desde el último consejo)
+      const fin = _tmAsesorFinanzas();
+      const _snaps = _tmAsesorSnapshots();
+      const _prev = _snaps[0] || null;
+      const cambiosDesdeUltimoConsejo = _prev ? {
+        desdeFecha: _prev.fecha,
+        ventasNuevas: fin.nVentas - (_prev.fin.nVentas || 0),
+        gananciaUSDdelta: +(fin.gananciaUSD - (_prev.fin.gananciaUSD || 0)).toFixed(2)
+      } : null;
+      // Productos con muchas vistas y CERO ventas (posible precio alto)
+      const _vendidosIds = new Set(ventas.map(v => String(v.productoId || '')));
+      const vistasSinVenta = Object.entries(fb.vistas || {})
+        .filter(([id, d]) => (d.count || 0) >= 8 && !_vendidosIds.has(String(id)))
+        .map(([id, d]) => { const p = ps.find(x => String(x.id) === String(id)); return p ? { nombre: p.nombre, vistas: d.count, precio: p.precioActual, categoria: p.categoria } : null; })
+        .filter(Boolean).slice(0, 5);
+
       payload = {
         // Contexto Cuba
         contexto: {
@@ -2813,47 +2850,63 @@ function tmExtractJsonObject(text) {
           topVistas: topVistas,
           topConsultasWhatsApp: topWhatsApp
         },
+        // Finanzas reales del negocio
+        finanzas: {
+          totalVendidoHistorico: fin.totalVendido,
+          gananciaUSD: fin.gananciaUSD,
+          gananciaMN: fin.gananciaMN,
+          margenPromedioPct: fin.margenPct,
+          valorInventarioUSD: fin.valorInventario,
+          numeroVentas: fin.nVentas
+        },
+        // Oportunidades de precio: mucha vista, ninguna venta
+        oportunidades: { vistasSinVenta },
+        // Aprendizaje: compara con el último consejo dado
+        aprendizaje: {
+          cambiosDesdeUltimoConsejo,
+          consejosPrevios: _prev ? _prev.consejos : []
+        },
         // Historial de tareas ya sugeridas (para no repetir)
         tareasAnteriores: _tmAgenteHistorial.slice(0, 10).map(h => h.tarea)
       };
     } catch(e) { console.warn('Error construyendo payload:', e); return; }
 
     // Prompt mejorado con contexto Cuba + acciones ejecutables
-    const prompt = `Actúa como el Director Comercial de TiendaMax, una tienda online en Cuba que vende por WhatsApp con precios en USD y conversión a MN (moneda nacional).
+    const prompt = `Actúa como el ASESOR FINANCIERO personal de TiendaMax, una tienda online en Cuba que vende por WhatsApp con precios en USD y conversión a MN (moneda nacional). Es una tienda que ESTÁ EMPEZANDO: sé realista y honesto, nada de cifras infladas ni promesas falsas.
 
-Analiza el estado de la tienda y genera EXACTAMENTE 3 tareas accionables que el administrador debe ejecutar HOY para aumentar ventas.
+Tu trabajo: revisar las finanzas reales y darle al dueño un parte breve y accionable para ganar más dinero HOY, y mejorar respecto a tu consejo anterior.
 
-CONTEXTO CUBA (importante):
-- Los clientes compran por WhatsApp, no hay pasarela de pago online
-- Pago contra entrega (efectivo USD o MN)
-- Conexiones lentas (3G), imágenes deben ser ligeras
-- Horarios pico: 12-14h y 19-22h (hora Cuba)
-- Días de pago: quincena (15 y 30 de cada mes)
+CONTEXTO CUBA:
+- Venta por WhatsApp, sin pasarela online, pago contra entrega (USD o MN)
+- Conexiones 3G; horarios pico 12-14h y 19-22h; días de pago quincena (15 y 30)
+- La tasa MN/USD sube seguido: conviene mover inventario antes de que suba
 
-DATOS ACTUALES:
+APRENDIZAJE (usa esto para mejorar): en "aprendizaje" tienes lo que pasó desde tu último consejo y los consejos que ya diste. Si algo funcionó, refuérzalo; si no, cambia de enfoque. Menciónalo en el diagnóstico.
+
+DATOS REALES:
 ${JSON.stringify(payload, null, 2)}
 
-PRIORIZA:
-1. Productos con muchas vistas pero pocas ventas (oportunidad de conversión)
-2. Productos agotados o stock bajo que pierden ventas
-3. Productos sin specs/garantía/descripción que reducen conversión
+REGLAS:
+- Usa SOLO datos reales del payload. No inventes ventas, clientes ni números.
+- "vistasSinVenta" = mucha gente mira pero nadie compra → probablemente el precio está alto o falta info: sugiere bajar precio o mejorar la ficha.
+- Productos más vendidos con stock bajo → sugiere subir precio o reponer.
+- Sé concreto con cifras del payload.
 
 Responde ÚNICAMENTE con JSON (sin markdown):
 {
-  "alertaPush": {"titulo": "string", "mensaje": "string breve"},
+  "alertaPush": {"titulo": "💡 string corto", "mensaje": "el consejo #1 del día, breve"},
+  "diagnostico": "2-3 frases del estado financiero real y qué cambió desde el último consejo",
+  "consejosPrecio": [
+    {"productoId": "id o null", "producto": "nombre", "accion": "subir|bajar|mantener", "de": "$X", "a": "$Y", "motivo": "por qué, con datos"}
+  ],
+  "ideasPublicacion": [
+    {"categoria": "categoría a publicar hoy", "motivo": "por qué hoy (datos)", "gancho": "idea de título para el post"}
+  ],
   "tareas": [
-    {
-      "id": 1,
-      "tipo": "Stock|Precio|Descripcion|Specs|Garantia|SEO|Imagen|Venta",
-      "titulo": "título corto (máx 50 chars)",
-      "descripcion": "qué hacer exactamente",
-      "prioridad": "Alta|Media|Baja",
-      "accion": "editar_producto|ver_ventas|publicar|ver_analytics|ninguna",
-      "productoId": "id del producto afectado o null",
-      "impactoEstimado": "qué ganancia o ahorro espera (ej: +$50 USD/semana)"
-    }
+    {"id": 1, "tipo": "Stock|Precio|Descripcion|Specs|Garantia|SEO|Imagen|Venta", "titulo": "máx 50 chars", "descripcion": "qué hacer", "prioridad": "Alta|Media|Baja", "accion": "editar_producto|ver_ventas|publicar|ver_analytics|ninguna", "productoId": "id o null", "impactoEstimado": "ej: +$30 USD/semana (realista)"}
   ]
-}`;
+}
+Máximo 2 consejosPrecio, 2 ideasPublicacion y 3 tareas.`;
 
     try {
       // Actualizar panel a "analizando..."
@@ -2868,14 +2921,25 @@ Responde ÚNICAMENTE con JSON (sin markdown):
       
       if (jsonLimpio) {
         const datosAgente = JSON.parse(jsonLimpio);
-        
-        // Notificación push
-        if (datosAgente.alertaPush) {
-          lanzarNotificacionPush(datosAgente.alertaPush.titulo, datosAgente.alertaPush.mensaje);
+
+        // Notificación push (parte diario, solo para el admin en su dispositivo)
+        if (datosAgente.alertaPush && datosAgente.alertaPush.titulo) {
+          lanzarNotificacionPush(datosAgente.alertaPush.titulo, datosAgente.alertaPush.mensaje || '');
+        } else if (datosAgente.diagnostico) {
+          lanzarNotificacionPush('💡 Asesor TiendaMax', datosAgente.diagnostico);
         }
-        
-        // Renderizar panel con acciones ejecutables
-        renderizarConsolaAgente(datosAgente.tareas || []);
+
+        // Renderizar panel completo (diagnóstico + precios + publicación + tareas)
+        renderizarConsolaAgente(datosAgente);
+
+        // Memoria para aprender la próxima vez + marcar que ya corrió hoy
+        const consejosTxt = [
+          ...(datosAgente.consejosPrecio || []).map(c => 'Precio ' + (c.producto || '') + ': ' + (c.accion || '') + ' (' + (c.motivo || '') + ')'),
+          ...(datosAgente.ideasPublicacion || []).map(c => 'Publicar ' + (c.categoria || ''))
+        ];
+        _tmAsesorGuardarSnapshot(_tmAsesorFinanzas(), consejosTxt);
+        try { localStorage.setItem('tm_asesor_last_render', JSON.stringify(datosAgente)); } catch(e) {}
+        try { localStorage.setItem('tm_asesor_lastRun', _tmAsesorHoy()); } catch(e) {}
       }
     } catch (error) {
       console.error('Error en el agente autónomo v2:', error);
@@ -2889,7 +2953,13 @@ Responde ÚNICAMENTE con JSON (sin markdown):
   }
 
   // 4. Panel visual mejorado con acciones ejecutables
-  function renderizarConsolaAgente(tareas) {
+  function renderizarConsolaAgente(datos) {
+    const _obj = Array.isArray(datos) ? { tareas: datos } : (datos || {});
+    const tareas = _obj.tareas || [];
+    const _diag = _obj.diagnostico || '';
+    const _precios = _obj.consejosPrecio || [];
+    const _ideas = _obj.ideasPublicacion || [];
+    const _e = s => String(s == null ? '' : s).replace(/[&<>"]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
     let panelAgente = document.getElementById('tmConsolaAgenteIA');
     if (!panelAgente) {
       panelAgente = document.createElement('div');
@@ -2955,14 +3025,24 @@ Responde ÚNICAMENTE con JSON (sin markdown):
         <div style="display:flex;align-items:center;gap:8px;">
           <span style="font-size:20px;">🤖</span>
           <div>
-            <h4 style="margin:0;color:#c4b5fd;font-size:15px;font-weight:700;">Supervisor IA — Tareas para Hoy</h4>
-            <small style="color:#888;font-size:11px;">Análisis con contexto Cuba • ${new Date().toLocaleString('es-CU',{hour:'2-digit',minute:'2-digit',day:'numeric',month:'short'})}</small>
+            <h4 style="margin:0;color:#c4b5fd;font-size:15px;font-weight:700;">💼 Asesor Financiero IA</h4>
+            <small style="color:#888;font-size:11px;">Parte diario • ${new Date().toLocaleString('es-CU',{hour:'2-digit',minute:'2-digit',day:'numeric',month:'short'})}</small>
           </div>
         </div>
         <button id="btnReanalizarAgente" style="background:rgba(139,92,246,0.15);border:1px solid rgba(139,92,246,0.4);color:#c4b5fd;border-radius:8px;padding:6px 12px;cursor:pointer;font-size:11px;font-weight:600;font-family:inherit;transition:all .15s;" onmouseover="this.style.background='rgba(139,92,246,0.25)'" onmouseout="this.style.background='rgba(139,92,246,0.15)'">🔄 Reanalizar</button>
       </div>
       <div id="tmAgenteLoading" style="display:none;"></div>
-      <div>${listaTareasHTML || '<p style="color:#888;text-align:center;padding:20px;">No hay tareas críticas. ¡Todo en orden! ✅</p>'}</div>
+      ${(()=>{const f=_tmAsesorFinanzas();return `<div style="display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px;font-size:11px">
+        <span style="background:rgba(39,174,96,.15);border:1px solid rgba(39,174,96,.3);color:#7fe0a0;padding:5px 9px;border-radius:8px">💵 Ganancia USD: $${f.gananciaUSD}</span>
+        ${f.gananciaMN?`<span style="background:rgba(201,169,110,.15);border:1px solid rgba(201,169,110,.3);color:#d8c08a;padding:5px 9px;border-radius:8px">Ganancia MN: ${f.gananciaMN}</span>`:''}
+        <span style="background:rgba(52,152,219,.15);border:1px solid rgba(52,152,219,.3);color:#8ec5f0;padding:5px 9px;border-radius:8px">📦 Inventario: $${f.valorInventario}</span>
+        <span style="background:rgba(243,156,18,.15);border:1px solid rgba(243,156,18,.3);color:#f0c070;padding:5px 9px;border-radius:8px">Margen: ${f.margenPct}%</span>
+      </div>`;})()}
+      ${_diag?`<div style="background:rgba(139,92,246,.12);border:1px solid rgba(139,92,246,.3);border-radius:10px;padding:12px;margin-bottom:12px;font-size:13px;color:#e8e0ff;line-height:1.5">🧭 ${_e(_diag)}</div>`:''}
+      ${_precios.length?`<div style="margin-bottom:12px"><div style="font-size:11px;color:#f0c070;font-weight:700;margin-bottom:6px;letter-spacing:.04em">💰 CONSEJOS DE PRECIO</div>${_precios.map(c=>`<div style="background:rgba(243,156,18,.08);border:1px solid rgba(243,156,18,.22);border-radius:9px;padding:9px 11px;margin-bottom:6px;font-size:12px"><b style="color:#f0c070">${_e(c.producto)}</b> — ${_e(c.accion)} ${c.de&&c.a?`<span style="color:#fff">${_e(c.de)} → ${_e(c.a)}</span>`:''}<div style="color:#bbb;margin-top:2px">${_e(c.motivo)}</div></div>`).join('')}</div>`:''}
+      ${_ideas.length?`<div style="margin-bottom:12px"><div style="font-size:11px;color:#7fe0a0;font-weight:700;margin-bottom:6px;letter-spacing:.04em">📣 IDEAS DE PUBLICACIÓN</div>${_ideas.map(c=>`<div style="background:rgba(39,174,96,.08);border:1px solid rgba(39,174,96,.22);border-radius:9px;padding:9px 11px;margin-bottom:6px;font-size:12px"><b style="color:#7fe0a0">${_e(c.categoria)}</b> ${c.gancho?`— "${_e(c.gancho)}"`:''}<div style="color:#bbb;margin-top:2px">${_e(c.motivo)}</div></div>`).join('')}</div>`:''}
+      ${tareas.length?'<div style="font-size:11px;color:#c4b5fd;font-weight:700;margin-bottom:6px;letter-spacing:.04em">✅ TAREAS PARA HOY</div>':''}
+      <div>${listaTareasHTML || '<p style="color:#888;text-align:center;padding:14px;">Sin tareas críticas hoy ✅</p>'}</div>
     `;
 
     const btnReanalizar = panelAgente.querySelector('#btnReanalizarAgente');
@@ -3004,15 +3084,17 @@ Responde ÚNICAMENTE con JSON (sin markdown):
   // Inicializar al cargar el Panel
   function bootAgente() {
     solicitarPermisosNotificaciones();
-    // Esperar a que Firebase cargue los productos/vistas para que lea datos reales
-    setTimeout(ejecutarAgenteAutonomo, 3500); 
-    // Monitoreo continuo cada 30 min (mejora v2)
-    setInterval(() => {
-      // Solo reanalizar si el admin está visible y la pestaña activa
-      if (!document.hidden && document.getElementById('tmConsolaAgenteIA')) {
-        ejecutarAgenteAutonomo();
-      }
-    }, 30 * 60 * 1000); // 30 minutos
+    // Asesor financiero: corre 1 vez al día. Si ya corrió hoy, muestra el último parte.
+    setTimeout(() => {
+      try {
+        if (localStorage.getItem('tm_asesor_lastRun') === _tmAsesorHoy()) {
+          _tmAsesorRenderUltimo();
+        } else {
+          ejecutarAgenteAutonomo();
+        }
+      } catch(e) { ejecutarAgenteAutonomo(); }
+    }, 3500);
+    // El botón "Reanalizar" permite forzar un análisis manual cuando quieras.
   }
 
   if (document.readyState === 'loading') {
