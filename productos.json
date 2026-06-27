@@ -1608,5 +1608,28 @@
     "devolucion": false,
     "specs": [],
     "fechaAgregado": "2026-06-27T04:54:38.989Z"
+  },
+  {
+    "id": 1782536259878,
+    "nombre": "SPLIT MILEXUS 1T",
+    "descripcion": "Marca: Milexus original.\n​Tecnología Gold Fin: Recubrimiento anticorrosivo de última generación que protege el equipo contra la humedad y el salitre, asegurando años de climatización perfecta.\n​Eficiencia: Gas ecológico de alto rendimiento y bajo consumo eléctrico.\n​Diseño: Moderno, silencioso y de montaje en pared (Wall-Mounted Type) para estorbar cero en la habitación.",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1782536258457.jpg",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1782536258457.jpg"
+    ],
+    "precioActual": 270,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 6,
+    "comision": 5,
+    "comisionMoneda": "USD",
+    "categoria": "HOGAR",
+    "subcategoria": "ELECTRODOMÉSTICOS",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "3 meses",
+    "devolucion": false,
+    "specs": [],
+    "fechaAgregado": "2026-06-27T04:57:39.878Z"
   }
 ]
