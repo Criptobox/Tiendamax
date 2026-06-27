@@ -59,12 +59,18 @@
       "$productId": {
         "$tokenId": {
           ".write": true,
-          ".validate": "newData.hasChildren(['token','timestamp']) && newData.child('timestamp').val() <= now + 60000",
+          ".validate": "newData.hasChildren(['token','ts'])",
           "token": {
-            ".validate": "newData.isString() && newData.val().length > 50 && newData.val().length < 500"
+            ".validate": "newData.isString() && newData.val().length >= 4 && newData.val().length < 500"
           },
-          "timestamp": {
+          "ts": {
             ".validate": "newData.isNumber()"
+          },
+          "producto": {
+            ".validate": "newData.isString() && newData.val().length < 200"
+          },
+          "tel": {
+            ".validate": "newData.isString() && newData.val().length >= 6 && newData.val().length <= 25"
           }
         },
         ".read": "auth != null"

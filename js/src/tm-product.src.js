@@ -829,7 +829,14 @@ async function suscribirAvisoStock(productId, nombreProducto) {
             }
         }
 
-        // 2. Guardar suscripción en Firebase: /avisos_stock/{productId}/{token} = { ts, nombre }
+        // 1b. Pedir el WhatsApp del cliente para poder avisarle también por mensaje
+        let telCliente = '';
+        try {
+            const ingresado = prompt('📲 Déjanos tu WhatsApp y te avisamos apenas vuelva (opcional, ej: 5XXXXXXX):', '');
+            if (ingresado) telCliente = String(ingresado).replace(/[^0-9+]/g, '').slice(0, 20);
+        } catch(e) {}
+
+        // 2. Guardar suscripción en Firebase: /avisos_stock/{productId}/{token} = { ts, nombre, tel }
         const fbCfgRaw = localStorage.getItem('firebaseConfig');
         if (!fbCfgRaw) {
             mostrarNotificacion('⚠️ No se pudo conectar con el servidor. Intenta más tarde.', 'error');
@@ -840,11 +847,11 @@ async function suscribirAvisoStock(productId, nombreProducto) {
         const res = await fetch(rtdbUrl + '/avisos_stock/' + productId + '/' + encodeURIComponent(fcmToken) + '.json', {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
+            body: JSON.stringify(Object.assign({
                 token: fcmToken,
                 ts: Date.now(),
                 producto: nombreProducto
-            })
+            }, telCliente ? { tel: telCliente } : {}))
         });
 
         if (!res.ok) {
