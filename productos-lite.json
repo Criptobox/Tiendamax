@@ -1105,7 +1105,7 @@
     "categoria": "WIFI",
     "subcategoria": "ROUTERS",
     "stock": 0,
-    "masVendido": true,
+    "masVendido": false,
     "usado": false,
     "garantia": "",
     "devolucion": false,
