@@ -1671,5 +1671,28 @@
     "devolucion": false,
     "specs": [],
     "fechaAgregado": "2026-06-27T05:10:24.286Z"
+  },
+  {
+    "id": 1782537341725,
+    "nombre": "NEVERA HORIZONTAL MILEXUS 7 PIES",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1782537339330.jpg",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1782537339330.jpg",
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1782537340765.jpg"
+    ],
+    "precioActual": 250,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 6,
+    "comision": 5,
+    "comisionMoneda": "USD",
+    "categoria": "HOGAR",
+    "subcategoria": "",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "3 meses",
+    "devolucion": false,
+    "specs": [],
+    "fechaAgregado": "2026-06-27T05:15:41.725Z"
   }
 ]
