@@ -50,6 +50,7 @@
 // v191: añade chat IA del admin con contexto de tienda.
 // v190: añade herramienta IA masiva para SEO/recs/auditoría por lotes.
 // v189: añade recomendador IA y relaciones en detalle/carrito.
+// v189: Vale del Gestor integrado en tiendamax.org/vale.html + botón en el admin.
 // v188: añade SEO automático DeepSeek y refresca seo-dinamico.
 // v187: añade auditor IA de producto y resumen inteligente.
 // v186: refresca fix de tokens legacy para contador suscriptores.
@@ -105,11 +106,12 @@
 
 
 
-const CACHE_NAME = 'tiendamax-202606271300';
+const CACHE_NAME = 'tiendamax-202606271730';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
   '/admin.html',
+  '/vale.html',
   '/css/fonts.css',
   '/css/bundle.css',
   '/css/admin.css',

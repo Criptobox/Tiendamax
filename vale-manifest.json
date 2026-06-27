@@ -1,0 +1,26 @@
+{
+    "name": "Vale del Gestor — TiendaMax",
+    "short_name": "Vale TiendaMax",
+    "description": "Genera el vale del cliente y envíalo a la tienda principal.",
+    "start_url": "/vale.html",
+    "scope": "/vale.html",
+    "display": "standalone",
+    "background_color": "#0a0a0a",
+    "theme_color": "#0a0a0a",
+    "orientation": "portrait-primary",
+    "icons": [
+        {
+            "src": "/iconos/vale-icon-192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "/iconos/vale-icon-512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any"
+        }
+    ],
+    "lang": "es"
+}
