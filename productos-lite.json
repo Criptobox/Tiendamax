@@ -1649,5 +1649,27 @@
     "devolucion": false,
     "specs": [],
     "fechaAgregado": "2026-06-27T05:03:57.390Z"
+  },
+  {
+    "id": 1782537024284,
+    "nombre": "EXHIBIDOR VERTICAL DE DOBLE PUERTA MILEXUS 20 PIES",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1782537022799.jpg",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1782537022799.jpg"
+    ],
+    "precioActual": 950,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 7,
+    "comision": 15,
+    "comisionMoneda": "USD",
+    "categoria": "HOGAR",
+    "subcategoria": "ELECTRODOMÉSTICOS",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "3 meses",
+    "devolucion": false,
+    "specs": [],
+    "fechaAgregado": "2026-06-27T05:10:24.286Z"
   }
 ]
