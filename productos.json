@@ -1631,5 +1631,28 @@
     "devolucion": false,
     "specs": [],
     "fechaAgregado": "2026-06-27T04:57:39.878Z"
+  },
+  {
+    "id": 1782536637390,
+    "nombre": "EXHIBIDOR VERTICAL MILEXUS 13 PIES",
+    "descripcion": "Marca: Milexus original.\n​Diseño: Puerta de cristal templado panorámica de alta resistencia (mantiene el frío a la perfección y no se empaña).\n​Copete Iluminado: Espacio superior ideal para destacar la marca o darle un toque profesional a tu local.\n​Interior Optimizado: Múltiples niveles con parrillas reforzadas y ajustables para organizar botellas, latas o alimentos de cualquier tamaño.\n​Control de Temperatura: Panel digital integrado para monitorear y ajustar el frío exacto fácilmente.",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1782536635721.jpg",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1782536635721.jpg"
+    ],
+    "precioActual": 600,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 5,
+    "comision": 15,
+    "comisionMoneda": "USD",
+    "categoria": "HOGAR",
+    "subcategoria": "ELECTRODOMÉSTICOS",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "3 meses",
+    "devolucion": false,
+    "specs": [],
+    "fechaAgregado": "2026-06-27T05:03:57.390Z"
   }
 ]
