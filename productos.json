@@ -1560,5 +1560,28 @@
     "devolucion": false,
     "specs": [],
     "fechaAgregado": "2026-06-27T04:46:34.832Z"
+  },
+  {
+    "id": 1782535836192,
+    "nombre": "SMART TV MILEXUS 43\"",
+    "descripcion": "Pantalla: 43 Pulgadas LED (Tamaño ideal para la sala o el cuarto).\n​Sistema Operativo: Google TV oficial (Súper fluido, con acceso directo a Netflix, YouTube, Disney+ y miles de aplicaciones).\n​Tecnología de Imagen: HDR 10 (Colores más vivos y negros más profundos) + FHD Ready.\n​Sonido: Dolby Audio (Audio envolvente y nítido, de cine).\n​Conectividad: Bluetooth integrado (para conectar bocinas o audífonos inalámbricos) + puertos HDMI + Google Cast (para transmitir la pantalla de tu celular directo al TV).\n​Televisión Digital: Trae sintonizador integrado (ISDBT), ideal para la señal digital en Cuba.",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1782535834600.jpg",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1782535834600.jpg"
+    ],
+    "precioActual": 250,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 6,
+    "comision": 5,
+    "comisionMoneda": "USD",
+    "categoria": "HOGAR",
+    "subcategoria": "ELECTRODOMÉSTICOS",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "3 meses",
+    "devolucion": false,
+    "specs": [],
+    "fechaAgregado": "2026-06-27T04:50:36.193Z"
   }
 ]
