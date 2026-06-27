@@ -19,7 +19,8 @@
     "specs": [
       "12.8V",
       "100Ah"
-    ]
+    ],
+    "descripcion": "Batería tipo LiFePO4 (litio hierro fosfato). * Mas segura y con mayor vida útil que las tradicionales. * Capacidad de 12.8V y 100Ah (1280Wh), ideal para sistemas solares, inversores y respaldo eléctrico. * Alta corriente de descarga hasta 100A, permite alimentar equipos de consumo medio-alto. * Corriente máxima de carga de 50A, lo que permite recargas relativamente rápidas. * Larga durabilidad (3000 ciclos) y funcionamiento en temperaturas de 0°C a 45°C."
   },
   {
     "id": 1777923552923,
@@ -43,7 +44,8 @@
       "12V",
       "24V",
       "5A"
-    ]
+    ],
+    "descripcion": "Cargador inteligente de 20 A 12V y 24V. * Corriente ajustable de 5A, 10A y hasta 20A. * Permite elegir entre carga lenta, media o rápida según la necesidad. * Compatible con baterías de plomo-ácido, calcio, Lifepo4 y baterías AGM, GEL. * Reconoce si la batería es de 12V o 24V sin intervención manual. * Sistema de carga en múltiples etapas. * Optimiza el proceso para proteger y alargar la vida de la batería. * Función de reparación por pulsos. * Ayuda a recuperar baterías sulfatadas o con bajo r…"
   },
   {
     "id": 1777924118004,
@@ -61,7 +63,8 @@
     "descuento": 0,
     "slug": "inversor-12v",
     "comision": 10,
-    "comisionMoneda": "USD"
+    "comisionMoneda": "USD",
+    "descripcion": "Ideal para combatir los apagones. Este inversor permitira mantener trabajando electrodomesticos como un refrigerador, ventiladores, televisores y luces de la casa por horas (dependiendo del respaldo de baterias), durante un corte de fluido electrico. --Este inversor brinda una salida sinusoidal pura de 110 V (corriente alterna) con 2000 watts continuos y 4000 watts maximos. -Se puede alimentar de una bateria de *24V*. -Posee dos salidas universales que sirven para conectores de corriente plano…"
   },
   {
     "id": 1777924173211,
@@ -78,7 +81,8 @@
     "devolucion": false,
     "descuento": 0,
     "slug": "router-wifi-6",
-    "comision": 10
+    "comision": 10,
+    "descripcion": "Router WiFi 6 para juegos, AX3000, router inalámbrico Gigabit de doble banda para el hogar ✅Cobertura de largo alcance con 5 antenas de alta ganancia de 6dBi. ✅Router de alta velocidad con 4 puertos Gigabit, compatible con WPA3, VPN. ✅Un sistema de procesamiento potente con un CPU Broadcom Quad-Core de 1.7GHz que mejora las velocidades de Wi-Fi (hasta 2976Mbps) y garantiza una red confiable. ✅El enrutador Tenda WiFi 6 RX12 Pro es compatible tanto con servidor VPN como con cliente VPN (PPTP/L2TP…"
   },
   {
     "id": 1777924248270,
@@ -99,7 +103,8 @@
     "specs": [
       "5GHz",
       "2.4GHz"
-    ]
+    ],
+    "descripcion": "Enrutador WiFi WAVLINK AC1200 de doble banda 5 GHz + 2.4 GHz, enrutador inalámbrico para hogar y juegos con puertos Ethernet Gigabit WAN/LAN, 4 antenas de alta ganancia de 5 dBi, compatible con modo enrutador/AP/WISP"
   },
   {
     "id": 1777924315386,
@@ -119,7 +124,8 @@
     "comision": 1.8,
     "specs": [
       "1200mbps"
-    ]
+    ],
+    "descripcion": "Repetidor wifi 5 de doble banda 2.4G y 5G, de 1200 mbps."
   },
   {
     "id": 1778102214012,
@@ -136,7 +142,8 @@
     "devolucion": false,
     "descuento": 0,
     "slug": "switch-8-puertos-ethernet-1gbps",
-    "comision": 1.8
+    "comision": 1.8,
+    "descripcion": "Switch de 8 puertos ethernet de 1 gigabite."
   },
   {
     "id": 1778102507659,
@@ -152,7 +159,8 @@
     "devolucion": false,
     "descuento": 0,
     "slug": "pesa-bascula-inteligente-digital",
-    "comision": 1.8
+    "comision": 1.8,
+    "descripcion": "Pesa/ Báscula inteligente digital. • Funciona con 2 baterias AAA(no incluidas) •Cinta metrica incluida. • Se conecta con el teléfono mediante una app que brinda datos a cerca del control de su peso corporal. •Diseño elegante con cristal templado de 27cm x 27cm. •Soporta hasta 180kg"
   },
   {
     "id": 1778102582909,
@@ -168,7 +176,8 @@
     "devolucion": false,
     "descuento": 0,
     "slug": "antorcha-tig-para-soldadura",
-    "comision": 10
+    "comision": 10,
+    "descripcion": "Antorcha para soldadura TIG: * Utilizada para trabajos de soldadura de alta precisión en metales como acero inoxidable, aluminio y hierro. * Ideal para talleres, herrería y trabajos profesionales donde se requiere un acabado limpio y detallado. Características principales: * Permite soldaduras finas y de alta calidad. * Incluye boquillas cerámicas de diferentes tamaños. * Cuenta con electrodos y accesorios intercambiables. * Cable flexible y resistente para mejor manejo. * Diseño ergonómico par…"
   },
   {
     "id": 1778103783319,
@@ -184,7 +193,8 @@
     "devolucion": false,
     "descuento": 0,
     "slug": "las-nuevas-baterias-espanolas-lubrim",
-    "comision": 5
+    "comision": 5,
+    "descripcion": "🛑Las nuevas Baterias españolas LUBRIM usan Tecnología Ca/Ca que consiste en la utilización de placas de calcio (Ca) en su construcción, lo que mejora su rendimiento y proporcionan una mayor potencia de arranque y una vida útil más prolongada en comparación con las tecnologías más antiguas, éstas baterias no requieren mantenimiento alguno, proporcionando una tranquilidad absoluta para nosotros y para nuestros clientes. Es llegar y montar!👌🏼 ⭕12v, 60 amperes ...... 70 USD ⭕12v, 75 amperes ......…"
   },
   {
     "id": 1778103856933,
@@ -200,7 +210,8 @@
     "devolucion": false,
     "descuento": 0,
     "slug": "pistola-de-masaje-recargable",
-    "comision": 1.8
+    "comision": 1.8,
+    "descripcion": "Pistola de masaje Recargable: - Bateria de litio 18650 (3000 miliamperes) - 4 cabezales multifuncionales intercambiables. - Fácil para operar con una mano, 1,5lb - Diseño compacto y elegante - 3 horas de durabilidad de la bateria. • Controles de encendido y velocidades por boton tracero."
   },
   {
     "id": 1778104191957,
@@ -220,7 +231,8 @@
     "comision": 5,
     "specs": [
       "12v"
-    ]
+    ],
+    "descripcion": "Cargador inteligente de 15 AMPERES: •Carga y repara las baterias de acido plomo, calcio, gel, húmedas, lifepo4, AGM, entre otras. • Trabaja con 110 y 220 volts. •Ideal para cargar baterías de 12v(200A) y 24v(100A) •Las baterias de 12v las carga a 15A y las de 24v a 8A. •Pantalla led iluminada de azúl."
   },
   {
     "id": 1778104287395,
@@ -239,7 +251,8 @@
     "comision": 10,
     "specs": [
       "1.150Mbps"
-    ]
+    ],
+    "descripcion": "El enrutador WiFi de 1.150Mbps es un enrutador 4G CPE para exteriores con una antena externa de alta ganancia de 2 piezas para lograr la amplificación de la señal 4G LTE: ✅Antenas desmontables ✅Está diseñado con una carcasa a prueba de agua y rayos que ayuda a que la unidad se use bien en exteriores sin banda ancha. ✅Distancia WiFi al aire libre: 10-50M. ✅Admite máximo 10 usuarios. ✅Viene con un cable ethernet, un cargador para la corriente y manual de instrucciones."
   },
   {
     "id": 1778104423316,
@@ -259,7 +272,8 @@
     "specs": [
       "12V",
       "24V"
-    ]
+    ],
+    "descripcion": "Cargador/ reparador Inteligente de Batería de 12V y 24V a 10Amperios , auto voltaje (110 y 220). Aplicable para Baterías Plomo-Ácido, calcio, gel, Litio y LiFePO4."
   },
   {
     "id": 1778104512761,
@@ -278,7 +292,8 @@
     "comision": 10,
     "specs": [
       "100V"
-    ]
+    ],
+    "descripcion": "♻️CONTROLADOR SOLAR POWMR M100 PRO -MPPT DE 100 AMP♻️ Especificaciones Eléctricas Clave: * *Voltaje Máximo del Sistema (PV):* 100V DC. Esto permite conectar paneles en serie para reducir la caída de voltaje en cables largos. * Corriente de Carga Máxima: 100 Amperios. * *Voltaje de la Batería:* Compatible con baterías de 12V, 24V y 48V. El sistema detecta y se configura automáticamente. * *Corriente de Carga Máxima en Diferentes Voltajes:* * *100A @ 12V* * *50A @ 24V* * *25A @ 48V* * *Autoconsum…"
   },
   {
     "id": 1778104599386,
@@ -300,7 +315,8 @@
       "24v",
       "120A",
       "110V"
-    ]
+    ],
+    "descripcion": "Inversor solar hibrido inteligente MPPT de 3.6kW, carga baterias de 24v DC hasta 120 A con 110V AC de salida. ✔️Onda sinusoidal pura: Proporciona energía estable y segura para equipos electrónicos sensibles. ✔️Voltaje configurable (LCD): Permite ajustar el rango de entrada según el tipo de equipo conectado. ✔️Corriente de carga configurable: Regula la carga de la batería según la aplicación para cuidarla. ✔️Prioridad CA/Solar: Define si el inversor usa primero la red eléctrica o la energía sola…"
   },
   {
     "id": 1778104662477,
@@ -319,7 +335,8 @@
     "comision": 35,
     "specs": [
       "240V"
-    ]
+    ],
+    "descripcion": "1. Inversor de onda sinusoidal pura fuera de la red. 2.El máximo número de conexiones paralelas es 6. 3.Potencia de salida más alta hasta 500OW. 4.Salida de CA 120/208/240 V CA. (solo puede lograr en el sistema paralelo). 5.Admite dispositivos monofásicos/divididos/trifásicos. (Solo en paralelo) 6.Tiempo de conmutación rápida de 10 ms. 7.Compatible con batería de iones de litio y plomo de 48 V, compatible con definición de usuario. 8.Máx. Corriente de carga fotovoltaica hasta 100A, máx corrient…"
   },
   {
     "id": 1778104735789,
@@ -338,7 +355,8 @@
     "comision": 10,
     "specs": [
       "150Mbps"
-    ]
+    ],
+    "descripcion": "Este router KuWFi ofrece una velocidad de transmisión WiFi de 150 Mbps, proporcionando una conexión rápida y estable para todos sus dispositivos: ✅Resistente al agua, lo que lo hace ideal para uso en exteriores. ✅Soporte para 64 usuarios. ✅Tiene función de firewall, por lo cual protege su red contra ataques y intrusiones, manteniendo su información segura y privada. ✅Viene con un cable ethernet, cargador más cable para la corriente y manual de instrucciones."
   },
   {
     "id": 1778104850733,
@@ -358,7 +376,8 @@
     "specs": [
       "100A",
       "48V"
-    ]
+    ],
+    "descripcion": "✅️Controlador de Carga Solar MPPT - 100A -Alta eficiencia y compatibilidad automática con sistemas de 12/24/36/48V. -Ideal para sistemas solares en casas, fincas, o instalaciones industriales. -Tecnología MPPT (Seguimiento del Punto de Máxima Potencia) -Pantalla digital LCD con datos en tiempo real -Conexión fácil para panel solar, batería y carga. -Diseño robusto y con disipador térmico. Colores negro y azul"
   },
   {
     "id": 1778104924836,
@@ -378,7 +397,8 @@
     "specs": [
       "1800W",
       "2700W"
-    ]
+    ],
+    "descripcion": "Estacion de carga portátil BLUETTI AC 180. 🔹 Potencia de salida de 1800W continuos (pico de hasta 2700W). BLUETTI-US 🔹 Capacidad de batería de 1152Wh, ideal para respaldo y uso portátil. BLUETTI-US 🔹 Batería LiFePO₄ (litio hierro fosfato), más segura y duradera. BLUETTI-US 🔹 Más de 3500 ciclos de vida útil hasta el 80% de capacidad. BLUETTI-US 🔹 Carga rápida: hasta 80% en aproximadamente 45 minutos. 🔹 Entrada solar de hasta 500W, compatible con paneles solares. BLUETTI-US 🔹 Múltiples salidas: A…"
   },
   {
     "id": 1778104985977,
@@ -397,7 +417,8 @@
     "comision": 20,
     "specs": [
       "1,800W"
-    ]
+    ],
+    "descripcion": "\"BLUETTI AC 180P\" 🔹 Capacidad de 1,440 Wh, ideal para alimentar múltiples dispositivos durante horas. 🔹 Potencia continua de 1,800 W, suficiente para electrodomésticos y herramientas. 🔹 Modo Power Lifting hasta 2,700 W para equipos de alto consumo. 🔹 Batería LiFePO4 con más de 3,500 ciclos de vida útil. 🔹 Carga ultrarrápida: 0–80% en aproximadamente 45 minutos. 🔹 Múltiples salidas: AC, USB-A, USB-C, 12V y carga inalámbrica. 🔹 Compatible con paneles solares (MPPT integrado) para recarga ecológic…"
   },
   {
     "id": 1778212195565,
@@ -412,7 +433,8 @@
     "garantia": "",
     "devolucion": false,
     "descuento": 0,
-    "slug": "mannol-5w30-5l"
+    "slug": "mannol-5w30-5l",
+    "descripcion": "Ideal para carros modernos Categoría Norma / Especificación Grado de Viscosidad SAE 5W-30 Estándar API SN / CH-4 Estándar ACEA A3 / B4"
   },
   {
     "id": 1778212384991,
@@ -427,7 +449,8 @@
     "garantia": "",
     "devolucion": false,
     "descuento": 0,
-    "slug": "mannol-antifreeze-ag13-40-c-advanced-4014-5l"
+    "slug": "mannol-antifreeze-ag13-40-c-advanced-4014-5l",
+    "descripcion": "Refrigerante listo para usar es una solución híbrida (HOAT- Tecnología de ácido orgánico híbrido) de alta tecnología lista para usar protege el sistema de refrigeración del vehículo desde (-40 °С hasta +125°С). Con excelentes características de funcionamiento pensada para todo el año uso en cualquier sistema de refrigeración moderno para el que se recomiende el uso de anticongelante a base de monoetilenglicol. Garantiza una protección fiable de cualquier sistema de refrigeración. Premezclado 50…"
   },
   {
     "id": 1778212462723,
@@ -442,7 +465,8 @@
     "garantia": "",
     "devolucion": false,
     "descuento": 0,
-    "slug": "mannol-antifreeze-ag13-40-c-hightec-4013-5l"
+    "slug": "mannol-antifreeze-ag13-40-c-hightec-4013-5l",
+    "descripcion": "Refrigerante listo para usar es una solución híbrida (HOAT- Tecnología de ácido orgánico híbrido) de alta tecnología lista para usar, protege el sistema de refrigeración del vehículo desde (-40 °С hasta +125°С). con excelentes características de funcionamiento pensada para todo el año uso en cualquier sistema de refrigeración moderno para el que se recomiende el uso de anticongelante a base de monoetilenglicol. Garantiza una protección fiable de cualquier sistema de refrigeración. Premezclado 5…"
   },
   {
     "id": 1778212537706,
@@ -457,7 +481,8 @@
     "garantia": "",
     "devolucion": false,
     "descuento": 0,
-    "slug": "mannol-antifreeze-ag11-40-c-longterm-4011-5l"
+    "slug": "mannol-antifreeze-ag11-40-c-longterm-4011-5l",
+    "descripcion": "Refrigerante listo para usar a base de inhibidores minerales – IAT (Tecnología de ácidos inorgánicos) protege el sistema de refrigeración del vehículo desde (-40 °С hasta +125°С). Diseñado para uso durante todo el año en cualquier sistema de refrigeración moderno que contenga componentes de cobre, latón y aluminio para los que se recomienda el uso de un anticongelante a base de etilenglicol. Premezclado 50/50 Color: azul. Vida útil: 3 años o 150 000km.​ Especificación AFNOR FRANCE NF R15-601 AS…"
   },
   {
     "id": 1778213413973,
@@ -473,7 +498,8 @@
     "devolucion": false,
     "descuento": 0,
     "slug": "forros-de-asientos-de-lujo-para-autos",
-    "comision": 10
+    "comision": 10,
+    "descripcion": "Forros de asientos de lujo para autos: •Alta calidad y acabado exquisito. •Color: negro •Material de la superficie: Cuero napa de 0,6 mm. •Durabilidad: 3 veces más duraderas que el PU estándar, con resistencia a temperaturas elevadas de 45 grados. •Comodidad: 20-30% más suave y transpirable, adaptándose al cuerpo. •Relleno: Acolchonado y con apoyo lumbar ergonómico •Tipo: Ajuste universal para 5 asientos, 2 delanteros y 3 traseros."
   },
   {
     "id": 1778213940333,
@@ -488,7 +514,8 @@
     "garantia": "",
     "devolucion": false,
     "descuento": 17,
-    "slug": "mannol-safari-20w-50-7404-5l"
+    "slug": "mannol-safari-20w-50-7404-5l",
+    "descripcion": "Aceite de motor universal semisintético, con una mezcla de componentes sintéticos y una base mineral de alta pureza, para motores modernos de gasolina y diésel altamente acelerados con y sin turbocompresor utilizados en condiciones de funcionamiento difíciles y motores con un kilometraje muy alto utilizado en diversas operaciones. condiciones. Diseñado para la máxima protección de los motores modernos de gasolina y diésel de una amplia flota de automóviles (automóviles de pasajeros, SUV ligeros…"
   },
   {
     "id": 1778214089400,
@@ -503,7 +530,8 @@
     "garantia": "",
     "devolucion": false,
     "descuento": 0,
-    "slug": "mannol-special-plus-10w-30-7512-5l"
+    "slug": "mannol-special-plus-10w-30-7512-5l",
+    "descripcion": "Aceite de motor universal de sintesis HC, diseñado para cumplir con los requisitos de Volkswagen, Mercedes Benz. Diseñado para motores de gasolina y diésel en una amplia flota de automóviles (automóviles, vehículos utilitarios ligeros, furgonetas y camiones ligeros) de fabricantes europeos, asiáticos. Especificaciones SAE 10W-30 Approval Recomendación API SN ACEA A3/B4 VOLKSWAGEN 505 00 VOLKSWAGEN 501 01 MB 229.1 ISUZU KIA HYUNDAI"
   },
   {
     "id": 1778214214360,
@@ -518,7 +546,8 @@
     "garantia": "",
     "devolucion": false,
     "descuento": 0,
-    "slug": "mannol-4-takt-motorbike-10w-40-7812-1l"
+    "slug": "mannol-4-takt-motorbike-10w-40-7812-1l",
+    "descripcion": "Especiación SAE 10W-40 API SL JASO MA/MA2 Approval Recomendación HONDA HUSABERG KAWASAKI SUZUKI YAMAHA"
   },
   {
     "id": 1778336613589,
@@ -534,7 +563,8 @@
     "devolucion": false,
     "descuento": 0,
     "slug": "pistola-de-masaje-profesional",
-    "comision": 1.8
+    "comision": 1.8,
+    "descripcion": "Pistola de masaje PROFESIONAL inalámbrica: •Diseño ergonómico con agarre triangular, que facilita el manejo y reduce la fatiga en la muñeca. •Incluye múltiples accesorios intercambiables (bola, horquilla, plano, punta, doble cabezal, etc.) para trabajar distintas zonas del cuerpo. •Sistema de percusión profunda, ideal para aliviar contracturas y acelerar la recuperación muscular. •Indicador luminoso LED para mostrar nivel de intensidad/ velocidad del masaje •Construcción robusta y moderna, con…"
   },
   {
     "id": 1778336689684,
@@ -551,7 +581,8 @@
     "devolucion": false,
     "descuento": 0,
     "slug": "switch-de-5-puertos",
-    "comision": 1.8
+    "comision": 1.8,
+    "descripcion": "Switch de 5 puertos ethernet de 1 gigabite."
   },
   {
     "id": 1778336789459,
@@ -572,7 +603,8 @@
       "1200Mbps",
       "300mbps",
       "2,4GHz"
-    ]
+    ],
+    "descripcion": "Obtenga conexiones rápidas y relámpago para todos sus dispositivos inalámbricos mediante actualización a la tecnología Wi-Fi de alta velocidad mejorada de 1200 Mbps de Tenda (300 mbps a 2,4 GHz + 867 Mbps a 5 GHz) Enlace hasta 20 dispositivos inalámbricos como el asistente de Google, Alexa y varios dispositivos simultaneamente. ✅4 antenas omnidireccionales con tecnología Beamforming y Mu-Mimo, entrega Internet de alta velocidad en toda su hogar. ✅Gerencia su red desde cualquier lugar con la apl…"
   },
   {
     "id": 1778336859697,
@@ -588,7 +620,8 @@
     "devolucion": false,
     "descuento": 0,
     "slug": "toldo-para-sombra-beige-3x2",
-    "comision": 1.8
+    "comision": 1.8,
+    "descripcion": "•Toldo para sombra tipo malla color beige con argollas para fijar. •Medida 3m de largo x 2m de ancho."
   },
   {
     "id": 1778383966832,
@@ -604,7 +637,8 @@
     "devolucion": false,
     "descuento": 0,
     "slug": "sistema-de-alarma",
-    "comision": 10
+    "comision": 10,
+    "descripcion": "Sistema de alarma, posee: 🔸4 sensores de movimiento 🔸8 sensores de contacto 🔸3 llaveros 🔸1 sirena 🔸3 mandos para su control 🔸1 botón de emergencia SOS 🔸1 panel de control de 2.4 pulgadas ✅Recordatorio de puertas y ventanas sin cerrar, recordatorio de alarma de bajo voltaje. ✅5 juegos de llamadas de alarma preestablecidas. ✅Batería integrada."
   },
   {
     "id": 1778384078432,
@@ -620,7 +654,8 @@
     "devolucion": false,
     "descuento": 0,
     "slug": "camaras-de-seguridad-v380-pro",
-    "comision": 1.8
+    "comision": 1.8,
+    "descripcion": "Cámaras de seguridad (V380 Pro ) Detalles : ✴️Se usa con una aplicación en el teléfono 📲 ✴️Rotación 360° ✴️Visión nocturna ✴️Sensor de seguimiento ✴️Luz LED por sensor ✴️Alarma ✴️Graba en SD o en el teléfono ✴️Modo Guardián (vigilancia de áreas por tiempo determinado por usted)"
   },
   {
     "id": 1778384158283,
@@ -636,7 +671,8 @@
     "devolucion": false,
     "descuento": 0,
     "slug": "cerradura-inteligente",
-    "comision": 5
+    "comision": 5,
+    "descripcion": "Cerradura inteligente con forma de manija Viladepot, huella dactilar,control por aplicación, código de acceso, desbloqueo, teclado electrónico con pantalla táctil para interiores."
   },
   {
     "id": 1778384314795,
@@ -652,7 +688,8 @@
     "devolucion": false,
     "descuento": 0,
     "slug": "kit-de-4-camaras-zosi-nuevo-en-caja",
-    "comision": 20
+    "comision": 20,
+    "descripcion": "Kit de 4 cámaras Zosi NUEVO EN CAJA‼️ • DVR 8 Canales. • 5MP Lite DVR. • Soporta cámara analógica, HD-TVI, CVI y AHD. • Tecnología de compresión H.265+. • Salida de vídeo: HDMI / VGA / CVBS. • Detección de movimiento avanzada y personalizable. • Grabación continua o configurable a la detección de movimiento. • Reciclado automático de grabación. • Resistente al agua. • Para interior o exterior. 🏠 Visualización local: No necesita red, simplemente conecte el sistema a un monitor a través del puert…"
   },
   {
     "id": 1778384428890,
@@ -668,7 +705,8 @@
     "devolucion": false,
     "descuento": 0,
     "slug": "portacelulares",
-    "comision": 1.8
+    "comision": 1.8,
+    "descripcion": "Portacelulares impermeables para bicicletas con bolsos a cada lado. Confeccion fuerte y duradera, de facil instalacion y resistente a lluvia"
   },
   {
     "id": 1778384507302,
@@ -687,7 +725,8 @@
     "comision": 1.8,
     "specs": [
       "30w"
-    ]
+    ],
+    "descripcion": "Linterna de cabeza : * Largo alcance * Luz blanca superbrillante de 30w de potencia. * Viene con 3 baterias de litio recargables. * Angulo de iluminación ajustable. * Carga con cable tipo c y funcion powerbank. * Cuenta con luz tracera opcional parpadeante para que te vean en la obscuridad. * Autonomia maxima de 5 a 12 horas segun el uso."
   },
   {
     "id": 1778384646214,
@@ -707,7 +746,8 @@
     "specs": [
       "24V",
       "0.3A"
-    ]
+    ],
+    "descripcion": "Adaptador PoE UBIQUITI de 24V. ✅ 0.3A"
   },
   {
     "id": 1778384769262,
@@ -723,7 +763,8 @@
     "devolucion": false,
     "descuento": 0,
     "slug": "ventilador-para-carro",
-    "comision": 1.8
+    "comision": 1.8,
+    "descripcion": "Ventilador para carro de 3 cabezales, se conecta a la cigarrera del carro."
   },
   {
     "id": 1778384840618,
@@ -739,7 +780,8 @@
     "devolucion": false,
     "descuento": 0,
     "slug": "protege-tu-hogar-videoportero-wifi",
-    "comision": 1.8
+    "comision": 1.8,
+    "descripcion": "*Protege tu hogar y mira quién toca tu puerta desde tu celular( si tienes internet en tu casa, puedes ver quien toca a tu puerta desde cualquier parte) *Recibe alertas en tu teléfono cuando alguien llegue a tu puerta. *Habla con tus visitas aunque no estés en casa. *Fácil de instalar, inalámbrico y con visión nocturna. *Bateria integrada recargable sin necesidad de cableado. *Largo alcance de 50 metros aproximadamente *Vision nocturna y sensor de movimiento intergrado *Color negro. *Captura de…"
   },
   {
     "id": 1778384976624,
@@ -755,7 +797,8 @@
     "devolucion": false,
     "descuento": 0,
     "slug": "cargador-portatil-solar-30000mah",
-    "comision": 1.8
+    "comision": 1.8,
+    "descripcion": "Cargador portátil solar de 30 000mAh, doble puerto USB para todos los teléfonos celulares y dispositivos electrónicos - Duradero. Carga inalámbrica y cables de carga usb, tipo c, lighting y v8 incluidos."
   },
   {
     "id": 1778546645170,
@@ -771,7 +814,8 @@
     "devolucion": false,
     "descuento": 0,
     "slug": "juego-de-llantas-r14",
-    "comision": 10
+    "comision": 10,
+    "descripcion": "Juego de llantas R14 centro 4x100 y 4x114.3 Se dan con las válvulas y los clanes"
   },
   {
     "id": 1778546857180,
@@ -787,7 +831,8 @@
     "devolucion": false,
     "descuento": 0,
     "slug": "juego-llantas-r15-centro-4x100-4x114-3",
-    "comision": 10
+    "comision": 10,
+    "descripcion": "Juego de llantas R15 centro 4x100 y 4x114.3 Se dan con las válvulas y los clanes"
   },
   {
     "id": 1778547214210,
@@ -803,7 +848,8 @@
     "devolucion": false,
     "descuento": 0,
     "slug": "gamesir-x5-lite",
-    "comision": 5
+    "comision": 5,
+    "descripcion": "🎮 GameSir X5 Lite – Mando de Juego para Móvil ✔️ Compatible con teléfonos iOS y Android ✔️ Palancas de efecto Hall para mayor precisión y durabilidad, ideal para juegos FPS y MOBA ✔️ Ultra ligero (solo 135 g) para jugar cómodamente por horas ✔️ Botones Turbo para una respuesta más rápida y mejor rendimiento ✔️ Carga pasante, juega mientras cargas tu dispositivo ✔️ Diseño ergonómico y fácil de instalar Perfecto para gamers que buscan mejor control, comodidad y ventaja en cada partida."
   },
   {
     "id": 1778547461235,
@@ -818,7 +864,8 @@
     "garantia": "",
     "devolucion": false,
     "descuento": 0,
-    "slug": "mannol-ts-4shpd-15w-40-5l-aceite-diesel"
+    "slug": "mannol-ts-4shpd-15w-40-5l-aceite-diesel",
+    "descripcion": "Especificación SAE 15W-40 API CI-4 Plus API CI-4/CH-4/SL ACEA E7 ACEA A3/B4 JASO DH-1 GLOBAL DHD-1 Approval Recomendación CATERPILLAR ECF-2 CATERPILLAR ECF-1-a CUMMINS CES 20076 CUMMINS CES 20077 CUMMINS CES 20078 DETROIT DIESEL 93K215 MACK EO-N MACK EO-M Plus MAN M 3275-1 MB 228.1 MB 228.3 MTU Type 2 RENAULT RLD-2 VOLVO VDS-3"
   },
   {
     "id": 1778547753925,
@@ -833,7 +880,8 @@
     "garantia": "",
     "devolucion": false,
     "descuento": 0,
-    "slug": "mannol-defender-10w-40-5l"
+    "slug": "mannol-defender-10w-40-5l",
+    "descripcion": "Aceite de motor universal innovador con éster, de base hidrosintética, para motores de gasolina y diésel, tanto de marcas nuevas como antiguas, y con un alto kilometraje. Desarrollado según los requisitos de los fabricantes europeos. Para motores turboalimentados con inyección directa, una formulación de aceite única reduce a cero el efecto de la ignición prematura de la mezcla de combustible LSPI (Low Speed ​​Pre-Ignition). Propiedades del producto: - La tecnología de éster y la base hidrosint…"
   },
   {
     "id": 1778601740203,
@@ -848,7 +896,8 @@
     "garantia": "",
     "devolucion": false,
     "descuento": 0,
-    "slug": "20w50-s-4t-aceite-de-motor-mineral-ff6208-1l"
+    "slug": "20w50-s-4t-aceite-de-motor-mineral-ff6208-1l",
+    "descripcion": "SAE 20W–50 API SN JASO MAS/MAS2"
   },
   {
     "id": 1778602314518,
@@ -863,7 +912,8 @@
     "garantia": "",
     "devolucion": false,
     "descuento": 0,
-    "slug": "fanfaro-2t-1l"
+    "slug": "fanfaro-2t-1l",
+    "descripcion": "ESPECIFICACIONES TÉCNICAS: -Categoría: Aceite para Motores de 2 Tiempos -Viscosidad: SAE 20W(SAE 2T) -Clasificación de Rendimiento: APITC -Especificaciones: JASO FB, - Aplicaciones Recomen- dadas: Cortacéspedesr ART. Motosierras, Cortabordes, Ciclomotores."
   },
   {
     "id": 1778634719053,
@@ -879,7 +929,8 @@
     "devolucion": false,
     "descuento": 0,
     "slug": "capa-para-moto-xl",
-    "comision": 2
+    "comision": 2,
+    "descripcion": "Talla XL ideal para estos tiempos de lluvia 😏"
   },
   {
     "id": 1778636088295,
@@ -895,7 +946,8 @@
     "devolucion": false,
     "descuento": 0,
     "slug": "kit-4-camaras-zosi-con-disco-duro",
-    "comision": 20
+    "comision": 20,
+    "descripcion": "Kit de 4 cámaras Zosi NUEVO EN CAJA‼️ • DVR 8 Canales. • 5MP Lite DVR. • Soporta cámara analógica, HD-TVI, CVI y AHD. • Tecnología de compresión H.265+. • Salida de vídeo: HDMI / VGA / CVBS. • Detección de movimiento avanzada y personalizable. • Grabación continua o configurable a la detección de movimiento. • Reciclado automático de grabación. • Resistente al agua. • Para interior o exterior. 🏠 Visualización local: No necesita red, simplemente conecte el sistema a un monitor a través del puert…"
   },
   {
     "id": 1778717147247,
@@ -911,7 +963,8 @@
     "devolucion": false,
     "descuento": 0,
     "slug": "short-nylon-hombre-m-verano",
-    "comision": 5
+    "comision": 5,
+    "descripcion": "Short ideal para el verano Talla M Colores : negro , blanco ,gris y verde"
   },
   {
     "id": 1778820912552,
@@ -927,7 +980,8 @@
     "devolucion": false,
     "descuento": 0,
     "slug": "casa-de-campana-ligera-portatil",
-    "comision": 5
+    "comision": 5,
+    "descripcion": "Casa de campaña ligera Portatil, impermeable con mosquiteros en las 2 puertas y las 2 ventanas. Capacidad para 3 o 4 personas. Mide 2 metros de ancho, 2 metros de largo y 1.30 metros de altura, facil de armar y desarmar. Repele el agua y los rayos del sol. Tu compañera de aventuras perfecto para playas, campismos y excursiones!"
   },
   {
     "id": 1778820983383,
@@ -943,7 +997,8 @@
     "devolucion": false,
     "descuento": 0,
     "slug": "linterna-marca-registrada-hecloud",
-    "comision": 1.8
+    "comision": 1.8,
+    "descripcion": "🛑Linterna marca registrada \"HeCloud\" de buceo, pesca submarina y exploración en aguas profundas. • Ideal para uso nocturno gracias a su haz LED de alta intensidad. • Potencia aproximada de 3000 lúmenes con iluminación clara y de largo alcance. •Resistente a presión y filtraciones gracias a sus sellos y juntas( trae 2 de respuestos). • Cuenta con 3 modos de iluminación: alto, medio y bajo. • Fabricada en aleación de aluminio resistente a golpes y corrosión marina. • Incluye batería recargable ti…"
   },
   {
     "id": 1778906281677,
@@ -964,7 +1019,8 @@
       "110V",
       "84V",
       "10A"
-    ]
+    ],
+    "descripcion": "Moto Eléctrica | Carga Rápida 110V ​📝 Descripción del Producto ​Lleva la carga de tu vehículo eléctrico al siguiente nivel con el cargador inteligente de alta potencia de 84V y 10A. Diseñado para quienes no tienen tiempo que perder, este cargador premium reduce drásticamente el tiempo de espera gracias a su potente salida de 10 amperios, garantizando una carga rápida, eficiente y, sobre todo, segura para la batería de tu moto o scooter eléctrico."
   },
   {
     "id": 1778906455757,
@@ -980,7 +1036,8 @@
     "devolucion": false,
     "descuento": 0,
     "slug": "cargador-de-bateria-de-litio-bien-72v-5a-salida-84v-conector-us-pin",
-    "comision": 2.8
+    "comision": 2.8,
+    "descripcion": "Mantén tu moto eléctrica siempre lista para rodar con la máxima seguridad que te ofrece el cargador de baterías de litio de la marca BIEN. Este equipo está diseñado específicamente para sistemas de 72V, entregando un voltaje de corte preciso de 84.0V para asegurar que tus celdas de litio se carguen al 100% de su capacidad de manera óptima, cuidando y prolongando la vida útil de tu inversión."
   },
   {
     "id": 1778906733513,
@@ -996,7 +1053,8 @@
     "devolucion": false,
     "descuento": 0,
     "slug": "espejos-retrovisores-deportivos-shenao-stealth-winglet",
-    "comision": 1.8
+    "comision": 1.8,
+    "descripcion": "Transforma radicalmente la estética de tu moto con los espejos retrovisores premium SHENAO de diseño aerodinámico Stealth. Diseñados para los motociclistas que exigen un balance perfecto entre estilo agresivo y funcionalidad, estos espejos se inspiran en la tecnología de alta competencia para ofrecer un accesorio 2 en 1: un alerón aerodinámico de perfil bajo cuando están cerrados y un sistema de visión trasera claro al desplegarlos."
   },
   {
     "id": 1778906905279,
@@ -1012,7 +1070,8 @@
     "devolucion": false,
     "descuento": 0,
     "slug": "espejos-retrovisores-deportivos-aleron-tipo-stealth-acabado-fibra-de-c",
-    "comision": 1.8
+    "comision": 1.8,
+    "descripcion": "Lleva la estética de tu moto al nivel de las pistas de carreras con los espejos retrovisores tipo Alerón (Stealth) en acabado de Fibra de Carbón. Este accesorio es la definición perfecta de lujo y aerodinámica: un componente diseñado para transformar radicalmente el aspecto visual de tu moto, dándole una línea agresiva, moderna y puramente deportiva sin perder la funcionalidad en carretera."
   },
   {
     "id": 1778907072353,
@@ -1028,7 +1087,8 @@
     "devolucion": false,
     "descuento": 0,
     "slug": "espejos-aleron-deportivos-stealth-poligonales",
-    "comision": 1.8
+    "comision": 1.8,
+    "descripcion": "Dale a tu moto una presencia imponente en la carretera con los espejos retrovisores tipo Alerón de diseño Poligonal. Esta evolución del clásico espejo Stealth rompe los esquemas tradicionales con líneas angulares más marcadas y un reverso esculpido con relieves aerodinámicos. Es el accesorio de gama alta definitivo para quienes buscan un aspecto robusto, futurista y de pura competición."
   },
   {
     "id": 1778907260915,
@@ -1044,7 +1104,8 @@
     "devolucion": false,
     "descuento": 0,
     "slug": "calentador-electrico-agua-caliente",
-    "comision": 5
+    "comision": 5,
+    "descripcion": "♨️💦 CALENTADOR ELÉCTRICO – Agua caliente al instante 💦♨️ Confort y seguridad para tu hogar con control digital de temperatura y flujo constante. Incluye todo lo necesario para instalar y usar de inmediato: - 🚿 Ducha de teléfono con soporte - ⚡ Breker con su caja protectora - 📟 Panel digital con indicador de litros/minuto y nivel de potencia - Otros accesorios. Ideal para baño y cocina. Compacto, eficiente y listo con todos sus accesorios para instalar."
   },
   {
     "id": 1779205929131,
@@ -1066,7 +1127,8 @@
     "specs": [
       "25A",
       "24v"
-    ]
+    ],
+    "descripcion": "Cargadores inteligentes de 25A autovolt a12V y 24v * Amperaje ajustable para carga lenta, media o rápida segun su preferencia. * Compatible con baterías de plomo-ácido, calcio, Lifepo4, baterías AGM, GEL Entre otras. * Sistema de carga inteligente de 7 etapas. * Optimiza el proceso para proteger y alargar la vida de la batería. * Función de reparación por pulsos. * Ayuda a recuperar baterías sulfatadas o con bajo rendimiento. * Pantalla digital integrada. * Muestra datos en tiempo real como vol…"
   },
   {
     "id": 1779208523952,
@@ -1089,7 +1151,8 @@
       "24V",
       "36V",
       "48V"
-    ]
+    ],
+    "descripcion": "♻️CONTROLADOR SOLAR DE 60 AMP POWMR M60 ULTRA♻️ 🔴PARA BATERIAS DE 12V,24V,36V,48V🔴 ♻️Características Principales y Técnicas♻️ 1. ♻️Tecnología MPPT Avanzada: * Utiliza el algoritmo *MPPT Ultra que, según el fabricante, mejora la eficiencia de seguimiento del punto de máxima potencia (hasta un *99.8%*), extrayendo la máxima energía posible de los paneles solares, especialmente en días nublados o con condiciones de luz subóptimas. 2 ♻️Amperaje y Voltaje: Corriente de carga:60A (Amperios). Esto sig…"
   },
   {
     "id": 1779562612951,
@@ -1109,7 +1172,8 @@
     "comision": 10,
     "specs": [
       "100V"
-    ]
+    ],
+    "descripcion": "♻️CONTROLADOR SOLAR POWMR M100 PRO -MPPT DE 80 AMP♻️ Especificaciones Eléctricas Clave: * *Voltaje Máximo del Sistema (PV):* 100V DC. Esto permite conectar paneles en serie para reducir la caída de voltaje en cables largos. * Corriente de Carga Máxima: 80 Amperios. * *Voltaje de la Batería:* Compatible con baterías de 12V, 24V y 48V. El sistema detecta y se configura automáticamente. * *Corriente de Carga Máxima en Diferentes Voltajes:* * *100A @ 12V* * *50A @ 24V* * *25A @ 48V* * *Autoconsumo:…"
   },
   {
     "id": 1780017975657,
@@ -1129,7 +1193,8 @@
     "comision": 5,
     "specs": [
       "30W"
-    ]
+    ],
+    "descripcion": "(Nuevo en caja) ​¡Potencia y portabilidad en un solo altavoz! Perfecto para exteriores, playa o reuniones. ​⚡ Lo mejor de este altavoz: ​Potencia de 30W: Sonido fuerte, nítido y con excelentes graves. ​Batería de 12 horas: Música para todo el día. ​Resistencia IP67: Soportar agua y polvo sin problemas. ​Conexión TWS: Puedes conectarlo con otro igual para sonido estéreo. ​Diseño cómodo: Incluye su correa naranja para llevarlo a todos lados."
   },
   {
     "id": 1780079294429,
@@ -1146,7 +1211,8 @@
     "devolucion": false,
     "descuento": 0,
     "slug": "raqueta-electrica-mata-mosquitos",
-    "comision": 2
+    "comision": 2,
+    "descripcion": "​¡Diles adiós a los molestos mosquitos y moscas de forma rápida y efectiva! El accesorio infaltable para mantener tu casa tranquila. ​🔋 Lo mejor de esta raqueta: ​Alta potencia: Descarga fulminante que elimina mosquitos, moscas y jejenes al instante. ​Recargable: Olvídate de gastar en baterías, se conecta directo a la corriente (trae su enchufe integrado en el mango). ​Malla de seguridad: Triple capa de protección para evitar descargas accidentales al tocarla por los lados. ​Indicador LED: Luz…"
   },
   {
     "id": 1780083017984,
@@ -1163,7 +1229,8 @@
     "devolucion": false,
     "descuento": 0,
     "slug": "pc-gaming-setup-premium",
-    "comision": 50
+    "comision": 50,
+    "descripcion": "PC Gaming Setup Premium (Estilo Acuario / White) ​Se vende potente PC Gamer con estética full blanca, refrigeración líquida y excelente rendimiento para juegos y diseño. ​💎 Componentes y Precios: ​Kit Base ($350): Motherboard Aorus B560 + Procesador i7-10700 + 16GB RAM RGB (Bus 3600MHz). ​Gráfica ($200): NVIDIA RTX 2070 Super 8GB. ​Chasis ($220): Sama de cristal templado (tipo acuario) + 7 ventiladores ARGB incluidos. ​Refrigeración ($130): Líquida Thermalright 360 ARGB. ​Almacenamiento ($100):…"
   },
   {
     "id": 1780344659047,
@@ -1180,7 +1247,8 @@
     "devolucion": false,
     "descuento": 0,
     "slug": "zosl-camara-de-sequridad-cctv",
-    "comision": 2.5
+    "comision": 2.5,
+    "descripcion": "ZOSl-camara de sequridad CCTV impermeable para exteriores e interiores, Kit de sistema DVR 108OP 2MP.TVI.AHD.CVBS.IR CUT. Visión nocturna"
   },
   {
     "id": 1780510681519,
@@ -1197,7 +1265,8 @@
     "devolucion": false,
     "descuento": 0,
     "slug": "router-tenda-rx2-pro-wifi-6-dual-band-gigabit",
-    "comision": 10
+    "comision": 10,
+    "descripcion": "​Tecnología Wi-Fi 6 de Última Generación: Mayor velocidad de transmisión, más capacidad de dispositivos conectados y una latencia extremadamente baja. ​Doble Banda Gigabit (Dual-Band): Optimiza de forma inteligente el tráfico de tu red para darte la máxima velocidad disponible tanto en 2.4 GHz como en 5 GHz. ​Adiós a las Zonas Muertas: Equipado con 5 antenas externas de alta ganancia (6dBi) y un módulo de mejora de señal de alto rendimiento, garantizando cobertura total incluso en casas grandes…"
   },
   {
     "id": 1780542909435,
@@ -1217,7 +1286,8 @@
     "comision": 20,
     "specs": [
       "1TB"
-    ]
+    ],
+    "descripcion": "**Sistema de Seguridad ZOSI para el Hogar – 8 Canales, 2MP HD, DVR Lite 5MP, 1TB, Grabación 24/7** Este kit incluye: - **8 canales** compatibles con cámaras ZOSI - **Resolución HD de 2MP (1080p)** para imágenes nítidas y detalladas. - **DVR Lite con capacidad de 5MP**, permitiendo una grabación superior. - **Almacenamiento de 1TB** para guardar horas de grabación continua. - **Grabación 24/7** con detección de movimiento para mayor seguridad. - **Alimentación por USB**, facilitando la instalaci…"
   },
   {
     "id": 1780543090267,
@@ -1234,7 +1304,8 @@
     "devolucion": false,
     "descuento": 25,
     "slug": "audifonos-ergonomicos",
-    "comision": 1.8
+    "comision": 1.8,
+    "descripcion": "Audífonos ergonómicos, elegantes, táctiles, con 40 horas de bateria, alta calidad de sonido, cancelacion de ruido de ambiente en llamadas, haciendo la voz mas clara y legible en las mismas. Buena calidad de musica y buenos bajos. Diseño similar a los de iPhone. Son compactos y compatibles con todo tipo de telefonos. Se cargan con cable lighting de iphone (incluído en la caja)."
   },
   {
     "id": 1780873638627,
@@ -1252,7 +1323,8 @@
     "descuento": 0,
     "slug": "router-fenvi-ax3000-wi-fi-6",
     "comision": 10,
-    "comisionMoneda": "USD"
+    "comisionMoneda": "USD",
+    "descripcion": "✨ ROUTER FENVI AX3000 Wi-Fi 6 El router FENVI AX3000 Wi-Fi 6 Mesh es un dispositivo de doble banda. Soporta 574 mbps por la 2.4 GHz y 2402 mbps por la 5.8 GHz. Esta diseñado para mejorar la cobertura doméstica con velocidades de hasta 3000mbps. Tiene 3 puertos LAN y 1 puerto WAN. Equipado con 4 antenas de alta ganancia y puerto Gigabit que le permite una conexión rápida y estable. Una opción pensado para mejorar conexión, cobertura y estabilidad de internet en casa, negocio u oficina. Disponibl…"
   },
   {
     "id": 1780873821409,
@@ -1274,7 +1346,8 @@
     "specs": [
       "5.8GHz",
       "1200Mbps"
-    ]
+    ],
+    "descripcion": "✨ Producto TiendaMax FENVI AC1200 enrutador wifi inteligente de señal fuerte especificaciones: ✅Diseño de 4 antenas externa, señal fuerte. ✅La luz indicadora entiende intuitivamente el estado del equipo. ✅Muchos orificios de enfriamiento, buena disipación de calor. ✅Banda de frecuencia dual de 2,4 y 5,8 GHz, fuerte antiinterferencias. ✅Acceso rápido por Internet compatible con una velocidad de 1200 Mbps. ✅Adaptador de corriente: DC12V/1A; 1*10/1000M Puerto WAN Ethernet RJ45; Puerto LAN Ethernet…"
   },
   {
     "id": 1780887557334,
@@ -1292,7 +1365,8 @@
     "descuento": 0,
     "slug": "gorro-de-buceo",
     "comision": 1000,
-    "comisionMoneda": "MN"
+    "comisionMoneda": "MN",
+    "descripcion": "Gorro de buseo de neopreno de 3mm. Diferentes tallas."
   },
   {
     "id": 1780887747583,
@@ -1310,7 +1384,8 @@
     "descuento": 0,
     "slug": "altavoz-bluetooth-portatil-rgb",
     "comision": 1000,
-    "comisionMoneda": "MN"
+    "comisionMoneda": "MN",
+    "descripcion": "Altavoz Bluetooth Portátil RGB – Características principales • Sonido estéreo HD de alta calidad con doble altavoz para un audio potente y equilibrado. • Iluminación RGB dinámica que acompaña la música y crea un ambiente atractivo. • Batería recargable de larga duración, con hasta 24 horas de reproducción. • Múltiples opciones de conexión: Bluetooth, memoria USB y tarjeta TF/microSD. • Diseño portátil y resistente con correa integrada para transportarlo fácilmente. • Alcance inalámbrico de hast…"
   },
   {
     "id": 1780887971522,
@@ -1328,7 +1403,8 @@
     "descuento": 0,
     "slug": "beat-boom-f10",
     "comision": 1000,
-    "comisionMoneda": "MN"
+    "comisionMoneda": "MN",
+    "descripcion": "• Potencia de 25W: Sonido estéreo potente y de buena calidad. • Conexión inalámbrica: Compatible con teléfonos, tablets y PC. • Alcance de 30 m: Conexión estable a larga distancia. • Luces RGB dinámicas: Efectos de iluminación al ritmo de la música. • Batería de larga duración: Hasta 24 horas de reproducción. • Función TWS: Empareja dos altavoces para más potencia. • Entrada AUX: Reproduce audio mediante cable. • Carga USB Tipo-C: Recarga rápida y práctica. • Diseño portátil: Fácil de transport…"
   },
   {
     "id": 1781365019871,
@@ -1346,7 +1422,8 @@
     "descuento": 0,
     "slug": "probador-tester-digital-de-baterias",
     "comision": 1000,
-    "comisionMoneda": "MN"
+    "comisionMoneda": "MN",
+    "descripcion": "Probador/ tester digital de baterías: \n * Diseñado para diagnosticar el estado y rendimiento de baterías automotrices.\n\n*Permite realizar pruebas de batería para conocer su capacidad, voltaje y estado *general.\nIncluye función Load Test para verificar el comportamiento de la batería bajo carga.\n*Realiza pruebas del sistema de arranque (Start Test) para evaluar el motor de arranque.\n*Cuenta con función Charge Test para analizar el funcionamiento del sistema de carga del vehículo.\n*Pantalla a co…"
   },
   {
     "id": 1781365135486,
@@ -1364,7 +1441,8 @@
     "descuento": 0,
     "slug": "ventilador-de-techo",
     "comision": 1000,
-    "comisionMoneda": "MN"
+    "comisionMoneda": "MN",
+    "descripcion": "Ventilador de techo:\n\n-Tiene medio metro de envergadura, \n-Tiene 3 velocidades.\n-Las luces las puedes cambiar de blanco a amarillito calido y regular la intensidad como desees.\n-Memoriza la última configuración al encender y apagar el interruptor.\n-Trae su mando para ajustarlo desde tu asiento."
   },
   {
     "id": 1781377297283,
@@ -1382,7 +1460,8 @@
     "descuento": 0,
     "slug": "creatina-monohidratada-luckycare-5000-mg",
     "comision": 1000,
-    "comisionMoneda": "MN"
+    "comisionMoneda": "MN",
+    "descripcion": "​🌟 Beneficios Clave (Respaldados en el empaque):\n​Aumento de Masa Muscular Magra: Estimula el crecimiento muscular limpio y la densidad.\n​Mejora del Rendimiento Atlético: Eleva tus niveles de energía y potencia en entrenamientos de alta intensidad.\n​Recuperación Muscular Optimizada: Reduce el tiempo de fatiga y acelera la reconstrucción de las fibras musculares.\n​Función Cerebral Óptima: Apoya la claridad mental y el enfoque durante tus actividades diarias y entrenamientos.\n​✨ Especificaciones d…"
   },
   {
     "id": 1781711154462,
@@ -1400,7 +1479,8 @@
     "descuento": 0,
     "slug": "repetidor-wifi-de-rango-extendido-tp-link",
     "comision": 1000,
-    "comisionMoneda": "MN"
+    "comisionMoneda": "MN",
+    "descripcion": "✅ Amplía la cobertura de tu red WiFi en el hogar u oficina con este repetidor TP-Link. Mantén una conexión estable y de alta velocidad en todas las áreas."
   },
   {
     "id": 1781711424820,
@@ -1424,7 +1504,8 @@
       "300Mbps",
       "2.4GHz",
       "900Mbps"
-    ]
+    ],
+    "descripcion": "Router WiFi D-Link de doble banda con velocidad agregada de hasta 1200 Mbps, distribuidos en 300 Mbps en 2.4 GHz y 900 Mbps en 5 GHz. Incorpora tecnología MU-MIMO para gestionar múltiples dispositivos simultáneamente, cuatro puertos Gigabit Ethernet y soporte para IPv6. Cuenta con seguridad avanzada mediante WPA3, firewall SPI y gestión remota basada en la nube para una configuración eficiente. Es la solución ideal para hogares y pequeñas empresas que requieren estabilidad en streaming 4K, video…"
   },
   {
     "id": 1781899206341,
@@ -1448,7 +1529,8 @@
       "1500W",
       "24V",
       "120V"
-    ]
+    ],
+    "descripcion": "​⚙️ Especificaciones Técnicas Principales: ​Potencia Nominal: 1500VA / 1500W (Potencia real continua). ​Voltaje del Sistema (Baterías): 24V DC. ​Salida de Corriente Alterna: 120V AC (Ideal para electrodomésticos estándar). ​Cargador Solar Integrado: Tipo MPPT de 40A (Maximiza la eficiencia de tus paneles). ​Potencia Máxima en Paneles: Soporta hasta 1200W en paneles solares. ​Rango de Voltaje MPPT: 30-75V DC (Voltaje máximo de circuito abierto: 105V DC). ​Cargador AC Integrado: Permite cargar la…"
   },
   {
     "id": 1778546731028,
@@ -1464,7 +1546,8 @@
     "devolucion": false,
     "descuento": 0,
     "slug": "juego-llantas-r14-centro-4x100-4x114-3",
-    "comision": 10
+    "comision": 10,
+    "descripcion": "Juego de llantas R14 centro 4x100 y 4x114.3 Se dan con las válvulas y los clanes"
   },
   {
     "id": 1778546922840,
@@ -1480,7 +1563,8 @@
     "devolucion": false,
     "descuento": 0,
     "slug": "juego-llantas-r15-centro-4x100-4x114-3",
-    "comision": 10
+    "comision": 10,
+    "descripcion": "Juego de llantas R15 centro 4x100 y 4x114.3 Se dan con las válvulas y los clanes"
   },
   {
     "id": 1778601482845,
@@ -1495,7 +1579,8 @@
     "garantia": "",
     "devolucion": false,
     "descuento": 0,
-    "slug": "mannol-4-takt-motorbike-10w-40-7812-1l"
+    "slug": "mannol-4-takt-motorbike-10w-40-7812-1l",
+    "descripcion": "Specifications SAE 10W-40 API SP JASO MA/MA2"
   },
   {
     "id": 1781111210796,
@@ -1516,7 +1601,8 @@
     "comisionMoneda": "USD",
     "specs": [
       "30A"
-    ]
+    ],
+    "descripcion": "Cargadores inteligentes de 30A todos autovolt a12V y 24V. * Amperaje ajustable para carga lenta, media o rápida segun su preferencia. * Compatible con baterías de plomo-ácido, calcio, Lifepo4, baterías AGM, GEL Entre otras. * Sistema de carga inteligente de 7 etapas. * Optimiza el proceso para proteger y alargar la vida de la batería. * Función de reparación por pulsos. * Ayuda a recuperar baterías sulfatadas o con bajo rendimiento. * Pantalla digital integrada. * Muestra datos en tiempo real c…"
   },
   {
     "id": 1781364821851,
@@ -1537,7 +1623,8 @@
     "comisionMoneda": "USD",
     "specs": [
       "12V"
-    ]
+    ],
+    "descripcion": "Ideal para combatir los apagones. Este inversor permitira mantener trabajando electrodomesticos como un refrigerador, ventiladores, televisores y luces de la casa por horas (dependiendo del respaldo de baterias), durante un corte de fluido electrico. --Este inversor brinda una salida sinusoidal pura de 110 V (corriente alterna) con 2000 watts continuos y 4000 watts maximos. -Se puede alimentar de una bateria de *12V*. -Posee dos salidas universales que sirven para conectores de corriente plano…"
   },
   {
     "id": 1782438922547,
@@ -1560,7 +1647,8 @@
     "devolucion": false,
     "specs": [],
     "fechaAgregado": "2026-06-26T01:55:22.547Z",
-    "nombreNormalizadoAt": "2026-06-27T12:16:34.731Z"
+    "nombreNormalizadoAt": "2026-06-27T12:16:34.731Z",
+    "descripcion": "El router de doble banda Archer AX1450 está equipado con: - Tecnología inalámbrica Wi-Fi 6 para velocidades más rápidas. - Mayor capacidad y reducción de la congestión de la red. - Logra velocidades de hasta 1.45 Gbps para streaming y juegos 4K/HD sin buffer. - Conecta incluso más dispositivos utilizando OFDMA y MU-MIMO, minimizando la congestión y la latencia de la red. - Los puertos de gigabit te brindan estabilidad y velocidad por cable en más dispositivos. - Es compatible con todos los disp…"
   },
   {
     "id": 1782439189958,
@@ -1582,7 +1670,8 @@
     "garantia": "",
     "devolucion": false,
     "specs": [],
-    "fechaAgregado": "2026-06-26T01:59:49.958Z"
+    "fechaAgregado": "2026-06-26T01:59:49.958Z",
+    "descripcion": "¡Lleva la mejor señal a cualquier rincón de tu casa con el REPETIDOR WIFI 5! Mejora la cobertura sin complicaciones y disfruta de internet rápido y estable en todo momento. 🔥 Tiene los 3 modos 🔥"
   },
   {
     "id": 1782439428159,
@@ -1607,7 +1696,8 @@
       "2.4GHz"
     ],
     "fechaAgregado": "2026-06-26T02:03:48.159Z",
-    "nombreNormalizadoAt": "2026-06-27T12:16:34.731Z"
+    "nombreNormalizadoAt": "2026-06-27T12:16:34.731Z",
+    "descripcion": "AURICULARES GAMING 3 MODOS Conectividad: 2.4 GHz (USB), Bluetooth y 3.5 mm Compatibilidad: PC, PS4, PS5, móviles y tablets Batería: hasta 100 horas Audio: drivers 50 mm + sonido envolvente 7.1 Micrófono: flexible con cancelación de ruido"
   },
   {
     "id": 1782439525089,
@@ -1630,7 +1720,8 @@
     "devolucion": false,
     "specs": [],
     "fechaAgregado": "2026-06-26T02:05:25.090Z",
-    "nombreNormalizadoAt": "2026-06-27T12:16:34.731Z"
+    "nombreNormalizadoAt": "2026-06-27T12:16:34.731Z",
+    "descripcion": "🌿 Panel de Pared de Césped y Plantas Artificiales Renueva cualquier espacio con un toque natural y elegante gracias a estos paneles decorativos de césped artificial. ✔️ Seto de boj con acabado realista y color verde intenso ✔️ Protección UV, ideal para interiores y exteriores ✔️ Perfecto para decorar paredes, patios, balcones, jardines o negocios ✔️ Ideal como valla de privacidad o pantalla para patio trasero ✔️ Excelente opción para bodas, eventos y decoración del hogar ✔️ Paquete de 10 unidad…"
   },
   {
     "id": 1782439688529,
@@ -1656,7 +1747,8 @@
       "100A"
     ],
     "fechaAgregado": "2026-06-26T02:08:08.529Z",
-    "nombreNormalizadoAt": "2026-06-27T12:16:34.731Z"
+    "nombreNormalizadoAt": "2026-06-27T12:16:34.731Z",
+    "descripcion": "Transfer Interruptor de Transferencia Automática o Manual(según su preferencia)de 110v/100A . Ideal para sistemas donde se necesita cambiar entre la red eléctrica normal y un generador o inversor, garantizando continuidad del servicio eléctrico sin interrupción y con total seguridad. Alta confiabilidad para sistemas residenciales, comerciales e industriales."
   },
   {
     "id": 1782535594832,

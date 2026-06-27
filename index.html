@@ -618,7 +618,7 @@
                 <div class="nd-hero-grid">
                     <div class="nd-hero-left">
                         <div class="nd-eyebrow"><span class="nd-edot"></span>Catálogo actualizado · Pedido por WhatsApp</div>
-                        <h1 class="nd-h1">Todo lo que<br>necesitas, <span class="nd-grad">a un mensaje</span><br><span class="nd-grad">de distancia</span></h1>
+                        <h1 class="nd-h1">Todo lo que <br>necesitas, <span class="nd-grad">a un mensaje</span> <br><span class="nd-grad">de distancia</span></h1>
                         <p class="nd-sub">Celulares, energía, red, motos y más. Precios increíbles, envío rápido y atención personalizada.</p>
                         <!-- Buscador + selector de moneda, integrados en el hero -->
                         <div class="nd-hero-search">
@@ -669,7 +669,8 @@
                         (function(){
                             try {
                                 var base = parseFloat(localStorage.getItem('tasaMN') || '0');
-                                var tasa = base > 0 ? base + 10 : 0;
+                                var _m = parseFloat(localStorage.getItem('margenMN')); if (isNaN(_m)) _m = 10;
+                                var tasa = base > 0 ? base + _m : 0;
                                 var btn = document.getElementById('curMN');
                                 if (tasa > 0 && btn) btn.textContent = tasa + ' MN';
                                 var mon = localStorage.getItem('monedaActual') || 'USD';
@@ -705,7 +706,7 @@
                                     <div class="nd-story-overlay" id="ndHeroBody">
                                         <span class="nd-wa-cat" id="ndHeroCat">Celulares</span>
                                         <div class="nd-story-name" id="ndHeroTitle">Smartphone Android 5G</div>
-                                        <div class="nd-story-rate" id="ndHeroRate">★★★★★ · Top ventas</div>
+                                        <div class="nd-story-rate" id="ndHeroRate">🔥 Destacado · Top ventas</div>
                                         <div class="nd-story-bottom">
                                             <div class="nd-story-price">
                                                 <span id="ndHeroPrice">$180</span>
@@ -718,7 +719,7 @@
                                 <div class="nd-hero-dots" id="ndHeroDots" aria-hidden="true"></div>
                             </div>
                             <div class="nd-fbadge nd-fb1"><span class="nd-bi">🛵</span><div><strong>Mensajería</strong><span class="nd-bs">A domicilio</span></div></div>
-                            <div class="nd-fbadge nd-fb2"><span class="nd-bi">⭐</span><div><strong>4.9 / 5.0</strong><span class="nd-bs">500+ clientes</span></div></div>
+                            <div class="nd-fbadge nd-fb2"><span class="nd-bi">🤝</span><div><strong>Atención directa</strong><span class="nd-bs">Te responde el dueño</span></div></div>
                             <div class="nd-fbadge nd-fb3"><span class="nd-bi">🔒</span><div><strong>100% Seguro</strong><span class="nd-bs">Compra protegida</span></div></div>
                         </div>
                     </div>
@@ -1356,7 +1357,7 @@
     <script src="js/src/tm-admin.js?v=34c6172d" defer></script>
     <script src="js/src/tm-product.js?v=d504849f" defer></script>
     <script src="js/src/tm-catalog.js?v=fbd1d1fb" defer></script>
-    <script src="js/src/tm-init.js?v=dd27f993" defer></script>
+    <script src="js/src/tm-init.js?v=10cbb839" defer></script>
     <script src="js/src/tm-ui.js?v=d437324b" defer></script>
     <script src="js/src/tm-toast.js?v=d8cf8d06" defer></script>
     <script src="js/src/tm-iife.js?v=a29f23ad" defer></script>

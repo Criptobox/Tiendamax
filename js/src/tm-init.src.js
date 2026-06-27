@@ -605,7 +605,7 @@ function _ndDesintegrarYTransicion(idxSiguiente) {
         const hayDesc = p.precioOriginal > 0 && p.precioOriginal > p.precioActual;
         setTxt('ndHeroRate', hayDesc
             ? '⚡ Oferta · ' + safeNum(p.stock) + ' disp.'
-            : '★★★★★ · ' + (safeNum(p.stock) > 0 ? safeNum(p.stock) + ' disponibles' : 'Top ventas'));
+            : '🔥 Destacado · ' + (safeNum(p.stock) > 0 ? safeNum(p.stock) + ' disponibles' : 'Top ventas'));
         const precioEl = document.getElementById('ndHeroPrice');
         const usdEl = document.getElementById('ndHeroUsd');
         const esMN = (typeof tmMonedaActual === 'function' && tmMonedaActual() === 'MN');
@@ -692,7 +692,7 @@ function renderHeroGaleria() {
         const hayDesc = p.precioOriginal > 0 && p.precioOriginal > p.precioActual;
         setTxt('ndHeroRate', hayDesc
             ? '⚡ Oferta · ' + safeNum(p.stock) + ' disp.'
-            : '★★★★★ · ' + (safeNum(p.stock) > 0 ? safeNum(p.stock) + ' disponibles' : 'Top ventas'));
+            : '🔥 Destacado · ' + (safeNum(p.stock) > 0 ? safeNum(p.stock) + ' disponibles' : 'Top ventas'));
 
         const precioEl = document.getElementById('ndHeroPrice');
         const usdEl = document.getElementById('ndHeroUsd');

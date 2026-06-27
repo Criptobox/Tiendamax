@@ -50,6 +50,7 @@
 // v191: añade chat IA del admin con contexto de tienda.
 // v190: añade herramienta IA masiva para SEO/recs/auditoría por lotes.
 // v189: añade recomendador IA y relaciones en detalle/carrito.
+// v192: descripciones restauradas, fuera prueba social falsa (4.9/500★), H1 con espacios, hero MN usa margenMN.
 // v191: vale en 3 pasos, formulario.html propio del cliente, acceso al vale desde Inicio, auto-specs.
 // v190: vale.html — margen parejo con la tienda, logo real, enviar imagen por WhatsApp, selector de catálogo.
 // v189: Vale del Gestor integrado en tiendamax.org/vale.html + botón en el admin.
@@ -108,7 +109,7 @@
 
 
 
-const CACHE_NAME = 'tiendamax-202606272100';
+const CACHE_NAME = 'tiendamax-202606272230';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
