@@ -367,7 +367,7 @@
     "precioActual": 15,
     "imagen": "https://tiendamax.org/imagenes/img_1778212384991.webp",
     "categoria": "CARROS",
-    "subcategoria": "REFRIGERANTES",
+    "subcategoria": "ACEITES Y LUBRICANTES",
     "stock": 31,
     "masVendido": false,
     "usado": false,
@@ -382,7 +382,7 @@
     "precioActual": 15,
     "imagen": "https://tiendamax.org/imagenes/img_1778212462723.webp",
     "categoria": "CARROS",
-    "subcategoria": "REFRIGERANTES",
+    "subcategoria": "ACEITES Y LUBRICANTES",
     "stock": 22,
     "masVendido": false,
     "usado": false,
@@ -397,7 +397,7 @@
     "precioActual": 15,
     "imagen": "https://tiendamax.org/imagenes/img_1778212537706.webp",
     "categoria": "CARROS",
-    "subcategoria": "REFRIGERANTES",
+    "subcategoria": "ACEITES Y LUBRICANTES",
     "stock": 25,
     "masVendido": false,
     "usado": false,
@@ -806,7 +806,7 @@
     "precioActual": 12,
     "imagen": "https://tiendamax.org/imagenes/img_1778634712732.webp",
     "categoria": "MOTOS",
-    "subcategoria": "PARTES Y PIEZAS",
+    "subcategoria": "ACCESORIOS",
     "stock": 9,
     "masVendido": false,
     "usado": false,
@@ -918,7 +918,7 @@
     "precioActual": 20,
     "imagen": "https://tiendamax.org/imagenes/img_1778906731600.webp",
     "categoria": "MOTOS",
-    "subcategoria": "PARTES Y PIEZAS",
+    "subcategoria": "ACCESORIOS",
     "stock": 5,
     "masVendido": false,
     "usado": false,
@@ -934,7 +934,7 @@
     "precioActual": 25,
     "imagen": "https://tiendamax.org/imagenes/img_1778906902845.webp",
     "categoria": "MOTOS",
-    "subcategoria": "PARTES Y PIEZAS",
+    "subcategoria": "ACCESORIOS",
     "stock": 6,
     "masVendido": false,
     "usado": false,
@@ -950,7 +950,7 @@
     "precioActual": 25,
     "imagen": "https://tiendamax.org/imagenes/img_1778907067761.webp",
     "categoria": "MOTOS",
-    "subcategoria": "PARTES Y PIEZAS",
+    "subcategoria": "ACCESORIOS",
     "stock": 6,
     "masVendido": false,
     "usado": false,
@@ -1262,7 +1262,7 @@
     "precioOriginal": 0,
     "imagen": "https://tiendamax.org/imagenes/img_1781365133963.webp",
     "categoria": "HOGAR",
-    "subcategoria": "",
+    "subcategoria": "ELECTRODOMÉSTICOS",
     "stock": 24,
     "masVendido": false,
     "usado": false,
@@ -1298,7 +1298,7 @@
     "precioOriginal": 0,
     "imagen": "https://tiendamax.org/imagenes/img_1781711152979.webp",
     "categoria": "WIFI",
-    "subcategoria": "",
+    "subcategoria": "ACCESORIOS",
     "stock": 13,
     "masVendido": false,
     "usado": false,
@@ -1329,7 +1329,7 @@
   },
   {
     "id": 1781899206341,
-    "nombre": "Inversor Solar Híbrido MUST 1500W (24V a 120V)",
+    "nombre": "INVERSOR SOLAR HÍBRIDO MUST 1500W (24V A 120V)",
     "precioActual": 350,
     "precioOriginal": 0,
     "imagen": "data:image/webp;base64,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",
@@ -1343,7 +1343,8 @@
     "descuento": 0,
     "slug": "inversor-solar-hibrido-must-1500w-24v-a-120v",
     "comision": 10,
-    "comisionMoneda": "USD"
+    "comisionMoneda": "USD",
+    "nombreNormalizadoAt": "2026-06-27T12:16:34.731Z"
   },
   {
     "id": 1778546731028,
@@ -1430,7 +1431,7 @@
   },
   {
     "id": 1782438922547,
-    "nombre": "router de doble banda Archer AX1450",
+    "nombre": "ROUTER DE DOBLE BANDA ARCHER AX1450",
     "imagen": "https://tiendamax.org/imagenes/img_1782438920638.jpg",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1782438920638.jpg"
@@ -1448,7 +1449,8 @@
     "garantia": "",
     "devolucion": false,
     "specs": [],
-    "fechaAgregado": "2026-06-26T01:55:22.547Z"
+    "fechaAgregado": "2026-06-26T01:55:22.547Z",
+    "nombreNormalizadoAt": "2026-06-27T12:16:34.731Z"
   },
   {
     "id": 1782439189958,
@@ -1464,7 +1466,7 @@
     "comision": 1500,
     "comisionMoneda": "MN",
     "categoria": "WIFI",
-    "subcategoria": "",
+    "subcategoria": "ACCESORIOS",
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -1474,7 +1476,7 @@
   },
   {
     "id": 1782439428159,
-    "nombre": "Auriculares Gaming Inalámbrico Nubwo",
+    "nombre": "AURICULARES GAMING INALÁMBRICO NUBWO",
     "imagen": "https://tiendamax.org/imagenes/img_1782439424609.jpg",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1782439424609.jpg"
@@ -1492,11 +1494,12 @@
     "garantia": "",
     "devolucion": false,
     "specs": [],
-    "fechaAgregado": "2026-06-26T02:03:48.159Z"
+    "fechaAgregado": "2026-06-26T02:03:48.159Z",
+    "nombreNormalizadoAt": "2026-06-27T12:16:34.731Z"
   },
   {
     "id": 1782439525089,
-    "nombre": "Panel decorativo de hojas artificiales",
+    "nombre": "PANEL DECORATIVO DE HOJAS ARTIFICIALES",
     "imagen": "https://tiendamax.org/imagenes/img_1782439522857.jpg",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1782439522857.jpg"
@@ -1514,11 +1517,12 @@
     "garantia": "",
     "devolucion": false,
     "specs": [],
-    "fechaAgregado": "2026-06-26T02:05:25.090Z"
+    "fechaAgregado": "2026-06-26T02:05:25.090Z",
+    "nombreNormalizadoAt": "2026-06-27T12:16:34.731Z"
   },
   {
     "id": 1782439688529,
-    "nombre": "Transferencia Automática o Manual",
+    "nombre": "TRANSFERENCIA AUTOMÁTICA O MANUAL",
     "imagen": "https://tiendamax.org/imagenes/img_1782439684820.jpg",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1782439684820.jpg"
@@ -1530,20 +1534,21 @@
     "comision": 5,
     "comisionMoneda": "USD",
     "categoria": "ENERGIA",
-    "subcategoria": "",
+    "subcategoria": "CONTROLADORES SOLARES",
     "masVendido": true,
     "usado": false,
     "garantia": "",
     "devolucion": false,
     "specs": [],
-    "fechaAgregado": "2026-06-26T02:08:08.529Z"
+    "fechaAgregado": "2026-06-26T02:08:08.529Z",
+    "nombreNormalizadoAt": "2026-06-27T12:16:34.731Z"
   },
   {
     "id": 1782535594832,
     "nombre": "BATIDORA MILEXUS CRISTAL",
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1782535592928.jpg",
+    "imagen": "https://tiendamax.org/imagenes/img_1782535592928.jpg",
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1782535592928.jpg"
+      "https://tiendamax.org/imagenes/img_1782535592928.jpg"
     ],
     "precioActual": 32,
     "precioOriginal": 0,
@@ -1563,9 +1568,9 @@
   {
     "id": 1782535836192,
     "nombre": "SMART TV MILEXUS 43\"",
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1782535834600.jpg",
+    "imagen": "https://tiendamax.org/imagenes/img_1782535834600.jpg",
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1782535834600.jpg"
+      "https://tiendamax.org/imagenes/img_1782535834600.jpg"
     ],
     "precioActual": 250,
     "precioOriginal": 0,
@@ -1585,11 +1590,11 @@
   {
     "id": 1782536078989,
     "nombre": "LAVADORA MILEXUS DE DOBLE TINA (9 KG)",
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1782536075088.jpg",
+    "imagen": "https://tiendamax.org/imagenes/img_1782536075088.jpg",
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1782536075088.jpg",
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1782536076725.jpg",
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1782536077803.jpg"
+      "https://tiendamax.org/imagenes/img_1782536075088.jpg",
+      "https://tiendamax.org/imagenes/img_1782536076725.jpg",
+      "https://tiendamax.org/imagenes/img_1782536077803.jpg"
     ],
     "precioActual": 210,
     "precioOriginal": 0,
@@ -1609,9 +1614,9 @@
   {
     "id": 1782536259878,
     "nombre": "SPLIT MILEXUS 1T",
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1782536258457.jpg",
+    "imagen": "https://tiendamax.org/imagenes/img_1782536258457.jpg",
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1782536258457.jpg"
+      "https://tiendamax.org/imagenes/img_1782536258457.jpg"
     ],
     "precioActual": 270,
     "precioOriginal": 0,
@@ -1631,9 +1636,9 @@
   {
     "id": 1782536637390,
     "nombre": "EXHIBIDOR VERTICAL MILEXUS 13 PIES",
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1782536635721.jpg",
+    "imagen": "https://tiendamax.org/imagenes/img_1782536635721.jpg",
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1782536635721.jpg"
+      "https://tiendamax.org/imagenes/img_1782536635721.jpg"
     ],
     "precioActual": 600,
     "precioOriginal": 0,
@@ -1653,9 +1658,9 @@
   {
     "id": 1782537024284,
     "nombre": "EXHIBIDOR VERTICAL DE DOBLE PUERTA MILEXUS 20 PIES",
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1782537022799.jpg",
+    "imagen": "https://tiendamax.org/imagenes/img_1782537022799.jpg",
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1782537022799.jpg"
+      "https://tiendamax.org/imagenes/img_1782537022799.jpg"
     ],
     "precioActual": 950,
     "precioOriginal": 0,
@@ -1675,10 +1680,10 @@
   {
     "id": 1782537341725,
     "nombre": "NEVERA HORIZONTAL MILEXUS 7 PIES",
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1782537339330.jpg",
+    "imagen": "https://tiendamax.org/imagenes/img_1782537339330.jpg",
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1782537339330.jpg",
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1782537340765.jpg"
+      "https://tiendamax.org/imagenes/img_1782537339330.jpg",
+      "https://tiendamax.org/imagenes/img_1782537340765.jpg"
     ],
     "precioActual": 250,
     "precioOriginal": 0,
@@ -1687,7 +1692,7 @@
     "comision": 5,
     "comisionMoneda": "USD",
     "categoria": "HOGAR",
-    "subcategoria": "",
+    "subcategoria": "ELECTRODOMÉSTICOS",
     "masVendido": false,
     "usado": false,
     "garantia": "3 meses",
