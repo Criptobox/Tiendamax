@@ -22,6 +22,15 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 .tab.active{background:var(--bg2);color:var(--text);font-weight:600}
 .tab-panel{display:none;padding:0 14px}
 .tab-panel.active{display:block}
+.step-nav{display:flex;gap:6px;margin:14px 0 0}
+.step-btn{flex:1;padding:9px 4px;text-align:center;font-size:10px;font-weight:700;letter-spacing:.04em;border-radius:11px;cursor:pointer;background:var(--bg3);color:var(--dim);border:1px solid var(--border);transition:.18s;text-transform:uppercase}
+.step-btn.active{background:rgba(255,107,53,.16);border-color:#FF6B35;color:#FF6B35}
+.step-btn b{display:block;font-size:17px;margin-bottom:1px;font-family:'Playfair Display',serif}
+.step-panel{display:none}
+.step-panel.active{display:block;animation:fadein .18s ease}
+@keyframes fadein{from{opacity:.4}to{opacity:1}}
+.step-next{width:100%;padding:13px;margin-top:14px;border:none;border-radius:12px;background:linear-gradient(135deg,#FF6B35,#E8501E);color:#fff;font-weight:700;font-size:14px;cursor:pointer;font-family:'DM Sans',sans-serif}
+.step-back{width:100%;padding:11px;margin-top:8px;background:transparent;border:1px solid var(--border);border-radius:12px;color:var(--muted);font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif}
 .sec{background:var(--bg2);border:1px solid var(--border);border-radius:14px;margin-top:14px;overflow:hidden}
 .sec-hdr{padding:11px 14px;border-bottom:1px solid var(--border);font-size:11px;color:var(--gold);letter-spacing:2px;text-transform:uppercase;font-weight:600;display:flex;align-items:center;gap:8px}
 .dot{width:3px;height:14px;background:var(--gold);border-radius:2px}
@@ -112,6 +121,13 @@ hr{border:none;border-top:1px solid var(--border);margin:12px 0}
 
 <div class="tab-panel active" id="tab-nuevo">
 
+  <div class="step-nav">
+    <div class="step-btn active" id="stepBtn1" onclick="goStep(1)"><b>1</b>Formulario</div>
+    <div class="step-btn" id="stepBtn2" onclick="goStep(2)"><b>2</b>Vale</div>
+    <div class="step-btn" id="stepBtn3" onclick="goStep(3)"><b>3</b>Ticket</div>
+  </div>
+
+  <div class="step-panel active" id="step-1">
   <div class="sec">
     <div class="sec-hdr"><div class="dot"></div>PEGAR MENSAJE DEL CLIENTE</div>
     <div class="sec-body">
@@ -144,6 +160,10 @@ hr{border:none;border-top:1px solid var(--border);margin:12px 0}
     </div>
   </div>
 
+  <button class="step-next" onclick="goStep(2)">Siguiente: Vale ▸</button>
+  </div><!-- /step-1 -->
+
+  <div class="step-panel" id="step-2">
   <div class="sec">
     <div class="sec-hdr"><div class="dot"></div>ARTÍCULO</div>
     <div class="sec-body">
@@ -178,6 +198,11 @@ hr{border:none;border-top:1px solid var(--border);margin:12px 0}
     </div>
   </div>
 
+  <button class="step-next" onclick="goStep(3)">Siguiente: Ticket ▸</button>
+  <button class="step-back" onclick="goStep(1)">◂ Volver al formulario</button>
+  </div><!-- /step-2 -->
+
+  <div class="step-panel" id="step-3">
   <!-- ══ VALE VISUAL ══ -->
   <div class="vale-img-sec">
     <div class="vale-img-hdr">
@@ -200,7 +225,9 @@ hr{border:none;border-top:1px solid var(--border);margin:12px 0}
 
   <button class="btn-gold" onclick="copiarVale()">📋 Copiar Vale para WhatsApp</button>
   <button class="btn-gold" style="background:linear-gradient(135deg,#25D366,#1da851);color:#fff" onclick="enviarValeWA()">📱 Enviar Vale por WhatsApp</button>
+  <button class="step-back" onclick="goStep(2)">◂ Volver al vale</button>
   <button class="btn-ghost" onclick="resetForm()">🔄 Nuevo cliente</button>
+  </div><!-- /step-3 -->
 </div>
 
 <div class="tab-panel" id="tab-historial">
@@ -527,7 +554,7 @@ function guardarWaTienda(){
 function construirUrlFormulario(){
   // Link directo (abre en todos los teléfonos, sin bloqueos de acortadores).
   // El número de la tienda va incluido para que el pedido llegue a tu WhatsApp.
-  return 'https://criptobox.github.io/Vale-de-venta-Tiendamax/pedido.html?wa=' + getNumeroTienda();
+  return 'https://tiendamax.org/formulario.html?wa=' + getNumeroTienda();
 }
 function mensajeFormulario(url){
   return '✨ *TIENDA MAX* ✨\n'
@@ -699,6 +726,14 @@ function goTab(name){
   document.getElementById('tab-'+name).classList.add('active');
   if(name==='historial') renderHist();
 }
+function goStep(n){
+  [1,2,3].forEach(i=>{
+    document.getElementById('step-'+i).classList.toggle('active', i===n);
+    document.getElementById('stepBtn'+i).classList.toggle('active', i===n);
+  });
+  if(n===3) scheduleDrawVale();
+  try{ window.scrollTo({top:0,behavior:'smooth'}); }catch(e){}
+}
 function resetForm(){
   ['vCliente','vTelefono','vDireccion','vMensajeria','vArticulo','vGarantia','vUSD','vCUP','vRecibido','vVuelto'].forEach(id=>{
     document.getElementById(id).value='';
@@ -715,6 +750,7 @@ function resetForm(){
   document.getElementById('vFecha').value=fd();
   _ubi=null;
   _valeCodigo=_genCodigo();
+  goStep(1);
   window.scrollTo({top:0,behavior:'smooth'});
   scheduleDrawVale();
 }

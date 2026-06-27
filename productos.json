@@ -15,7 +15,11 @@
     "descuento": 0,
     "slug": "bateria-must-tipo-lifepo4",
     "comision": 10,
-    "comisionMoneda": "USD"
+    "comisionMoneda": "USD",
+    "specs": [
+      "12.8V",
+      "100Ah"
+    ]
   },
   {
     "id": 1777923552923,
@@ -33,7 +37,13 @@
     "descuento": 0,
     "slug": "cargador-inteligente-30a",
     "comision": 5,
-    "comisionMoneda": "USD"
+    "comisionMoneda": "USD",
+    "specs": [
+      "20A",
+      "12V",
+      "24V",
+      "5A"
+    ]
   },
   {
     "id": 1777924118004,
@@ -85,7 +95,11 @@
     "devolucion": false,
     "descuento": 0,
     "slug": "enrutador-wifi-wavlink-ac1200",
-    "comision": 10
+    "comision": 10,
+    "specs": [
+      "5GHz",
+      "2.4GHz"
+    ]
   },
   {
     "id": 1777924315386,
@@ -102,7 +116,10 @@
     "devolucion": false,
     "descuento": 0,
     "slug": "repetidor-wifi-5",
-    "comision": 1.8
+    "comision": 1.8,
+    "specs": [
+      "1200mbps"
+    ]
   },
   {
     "id": 1778102214012,
@@ -200,7 +217,10 @@
     "devolucion": false,
     "descuento": 0,
     "slug": "cargador-inteligente-15a",
-    "comision": 5
+    "comision": 5,
+    "specs": [
+      "12v"
+    ]
   },
   {
     "id": 1778104287395,
@@ -216,7 +236,10 @@
     "devolucion": false,
     "descuento": 0,
     "slug": "el-enrutador-wifi-de-1-150mbps",
-    "comision": 10
+    "comision": 10,
+    "specs": [
+      "1.150Mbps"
+    ]
   },
   {
     "id": 1778104423316,
@@ -232,7 +255,11 @@
     "devolucion": false,
     "descuento": 0,
     "slug": "cargador-10-amperes",
-    "comision": 5
+    "comision": 5,
+    "specs": [
+      "12V",
+      "24V"
+    ]
   },
   {
     "id": 1778104512761,
@@ -248,7 +275,10 @@
     "devolucion": false,
     "descuento": 0,
     "slug": "controlador-solar-powmr-m100-pro-mppt-de-100-amp",
-    "comision": 10
+    "comision": 10,
+    "specs": [
+      "100V"
+    ]
   },
   {
     "id": 1778104599386,
@@ -264,7 +294,13 @@
     "devolucion": false,
     "descuento": 0,
     "slug": "inversor-solar-hibrido-mppt-3-6kw",
-    "comision": 25
+    "comision": 25,
+    "specs": [
+      "3.6kW",
+      "24v",
+      "120A",
+      "110V"
+    ]
   },
   {
     "id": 1778104662477,
@@ -280,7 +316,10 @@
     "devolucion": false,
     "descuento": 0,
     "slug": "inversor-de-onda-sinusoidal-pura-fuera-de-la-red",
-    "comision": 35
+    "comision": 35,
+    "specs": [
+      "240V"
+    ]
   },
   {
     "id": 1778104735789,
@@ -296,7 +335,10 @@
     "devolucion": false,
     "descuento": 0,
     "slug": "este-router-kuwfi-ofrece-una-velocidad-de-transmision-wifi-de-150-mbps",
-    "comision": 10
+    "comision": 10,
+    "specs": [
+      "150Mbps"
+    ]
   },
   {
     "id": 1778104850733,
@@ -312,7 +354,11 @@
     "devolucion": false,
     "descuento": 0,
     "slug": "controlador-carga-solar-mppt-100a",
-    "comision": 5
+    "comision": 5,
+    "specs": [
+      "100A",
+      "48V"
+    ]
   },
   {
     "id": 1778104924836,
@@ -328,7 +374,11 @@
     "devolucion": false,
     "descuento": 0,
     "slug": "estacion-de-carga-portatil",
-    "comision": 20
+    "comision": 20,
+    "specs": [
+      "1800W",
+      "2700W"
+    ]
   },
   {
     "id": 1778104985977,
@@ -344,7 +394,10 @@
     "devolucion": false,
     "descuento": 0,
     "slug": "bluetti-ac-180p",
-    "comision": 20
+    "comision": 20,
+    "specs": [
+      "1,800W"
+    ]
   },
   {
     "id": 1778212195565,
@@ -514,7 +567,12 @@
     "devolucion": false,
     "descuento": 0,
     "slug": "router-tenda-ac1200-wifi-dual-band",
-    "comision": 10
+    "comision": 10,
+    "specs": [
+      "1200Mbps",
+      "300mbps",
+      "2,4GHz"
+    ]
   },
   {
     "id": 1778336859697,
@@ -626,7 +684,10 @@
     "devolucion": false,
     "descuento": 0,
     "slug": "linterna-cabeza-30w-superbrillante",
-    "comision": 1.8
+    "comision": 1.8,
+    "specs": [
+      "30w"
+    ]
   },
   {
     "id": 1778384646214,
@@ -642,7 +703,11 @@
     "devolucion": false,
     "descuento": 0,
     "slug": "adaptador-poe-ubiquiti",
-    "comision": 1.8
+    "comision": 1.8,
+    "specs": [
+      "24V",
+      "0.3A"
+    ]
   },
   {
     "id": 1778384769262,
@@ -894,7 +959,12 @@
     "devolucion": false,
     "descuento": 0,
     "slug": "cargador-inteligente-de-alta-potencia-84v-10a",
-    "comision": 5
+    "comision": 5,
+    "specs": [
+      "110V",
+      "84V",
+      "10A"
+    ]
   },
   {
     "id": 1778906455757,
@@ -992,7 +1062,11 @@
     "descuento": 0,
     "slug": "cargadores-inteligentes-de-25a",
     "comision": 5,
-    "comisionMoneda": "USD"
+    "comisionMoneda": "USD",
+    "specs": [
+      "25A",
+      "24v"
+    ]
   },
   {
     "id": 1779208523952,
@@ -1009,7 +1083,13 @@
     "devolucion": false,
     "descuento": 0,
     "slug": "controlador-solar-60a-mppt-ultra",
-    "comision": 10
+    "comision": 10,
+    "specs": [
+      "12V",
+      "24V",
+      "36V",
+      "48V"
+    ]
   },
   {
     "id": 1779562612951,
@@ -1026,7 +1106,10 @@
     "devolucion": false,
     "descuento": 0,
     "slug": "controlador-solar-powmr-m100-pro-mppt-de-80-amp",
-    "comision": 10
+    "comision": 10,
+    "specs": [
+      "100V"
+    ]
   },
   {
     "id": 1780017975657,
@@ -1043,7 +1126,10 @@
     "devolucion": false,
     "descuento": 0,
     "slug": "xiaomi-sound-outdoor-30w",
-    "comision": 5
+    "comision": 5,
+    "specs": [
+      "30W"
+    ]
   },
   {
     "id": 1780079294429,
@@ -1128,7 +1214,10 @@
     "devolucion": false,
     "descuento": 0,
     "slug": "sistema-de-seguridad-zosi-para-el-hogar-8-canales",
-    "comision": 20
+    "comision": 20,
+    "specs": [
+      "1TB"
+    ]
   },
   {
     "id": 1780543090267,
@@ -1181,7 +1270,11 @@
     "descuento": 0,
     "slug": "fenvi-ac1200-router-wifi",
     "comision": 10,
-    "comisionMoneda": "USD"
+    "comisionMoneda": "USD",
+    "specs": [
+      "5.8GHz",
+      "1200Mbps"
+    ]
   },
   {
     "id": 1780887557334,
@@ -1325,7 +1418,13 @@
     "descuento": 0,
     "slug": "router-wifi-inalambrico-d-link-avanzado-de-doble-banda",
     "comision": 10,
-    "comisionMoneda": "USD"
+    "comisionMoneda": "USD",
+    "specs": [
+      "1200Mbps",
+      "300Mbps",
+      "2.4GHz",
+      "900Mbps"
+    ]
   },
   {
     "id": 1781899206341,
@@ -1344,7 +1443,12 @@
     "slug": "inversor-solar-hibrido-must-1500w-24v-a-120v",
     "comision": 10,
     "comisionMoneda": "USD",
-    "nombreNormalizadoAt": "2026-06-27T12:16:34.731Z"
+    "nombreNormalizadoAt": "2026-06-27T12:16:34.731Z",
+    "specs": [
+      "1500W",
+      "24V",
+      "120V"
+    ]
   },
   {
     "id": 1778546731028,
@@ -1409,7 +1513,10 @@
     "descuento": 0,
     "slug": "cargador-inteligente-30a",
     "comision": 5,
-    "comisionMoneda": "USD"
+    "comisionMoneda": "USD",
+    "specs": [
+      "30A"
+    ]
   },
   {
     "id": 1781364821851,
@@ -1427,7 +1534,10 @@
     "descuento": 0,
     "slug": "inversor-12v",
     "comision": 10,
-    "comisionMoneda": "USD"
+    "comisionMoneda": "USD",
+    "specs": [
+      "12V"
+    ]
   },
   {
     "id": 1782438922547,
@@ -1493,7 +1603,9 @@
     "usado": false,
     "garantia": "",
     "devolucion": false,
-    "specs": [],
+    "specs": [
+      "2.4GHz"
+    ],
     "fechaAgregado": "2026-06-26T02:03:48.159Z",
     "nombreNormalizadoAt": "2026-06-27T12:16:34.731Z"
   },
@@ -1539,7 +1651,10 @@
     "usado": false,
     "garantia": "",
     "devolucion": false,
-    "specs": [],
+    "specs": [
+      "110v",
+      "100A"
+    ],
     "fechaAgregado": "2026-06-26T02:08:08.529Z",
     "nombreNormalizadoAt": "2026-06-27T12:16:34.731Z"
   },
