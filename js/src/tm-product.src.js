@@ -7,7 +7,7 @@
 
 // ===== COMPRESIÓN DE IMÁGENES =====
 // Comprime una imagen (File o base64) a máximo ~40KB manteniendo buena calidad visual
-function comprimirImagen(source, maxKB = 25, maxWidth = 480, maxHeight = 480) {
+function comprimirImagen(source, maxKB = 70, maxWidth = 800, maxHeight = 800) {
     return new Promise((resolve) => {
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d');
@@ -32,7 +32,7 @@ function comprimirImagen(source, maxKB = 25, maxWidth = 480, maxHeight = 480) {
             const fmt = supportsWebP ? 'image/webp' : 'image/jpeg';
             if (!supportsWebP) result = canvas.toDataURL(fmt, quality);
             // Reducir calidad hasta entrar en maxKB
-            while (result.length > maxKB * 1024 * 1.37 && quality > 0.2) {
+            while (result.length > maxKB * 1024 * 1.37 && quality > 0.5) {
                 quality -= 0.06;
                 result = canvas.toDataURL(fmt, quality);
             }
