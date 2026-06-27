@@ -929,53 +929,77 @@ function registrarVenta(productoId, cantidad) {
 }
 
 // Generar ticket de venta para enviar al cliente por WhatsApp (con link de seguimiento)
-function enviarTicketCliente(ventaId) {
-    const ventas = cargarVentas();
-    const venta = ventas.find(v => v.id === ventaId);
-    if (!venta) { mostrarNotificacion('⚠️ Venta no encontrada', 'error'); return; }
-
-    const numCorto = String(venta.id).slice(-6);
+function _valeRR(ctx, x, y, w, h, r) {
+    ctx.beginPath(); ctx.moveTo(x + r, y);
+    ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r);
+    ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath();
+}
+// Genera el vale del cliente como imagen (fondo oscuro a sangre, sin esquinas blancas)
+async function generarValeImagen(venta, cliente) {
+    const W = 1080, H = 1040, M = 64;
+    const cv = document.createElement('canvas'); cv.width = W; cv.height = H;
+    const ctx = cv.getContext('2d');
+    ctx.fillStyle = '#141414'; ctx.fillRect(0, 0, W, H);
+    const logo = await new Promise(res => { const i = new Image(); i.onload = () => res(i); i.onerror = () => res(null); i.src = '/iconos/icon-512.png'; });
+    if (logo) { ctx.save(); _valeRR(ctx, M, 52, 128, 128, 28); ctx.clip(); ctx.drawImage(logo, M, 52, 128, 128); ctx.restore(); }
+    ctx.textAlign = 'left'; ctx.fillStyle = '#ffffff'; ctx.font = '800 66px system-ui,Arial,sans-serif';
+    ctx.fillText('TIENDAMAX', M + 156, 150);
+    ctx.fillStyle = '#FF6B35'; ctx.fillRect(M, 212, W - 2 * M, 6);
+    const boxY = 252, boxH = 150;
+    _valeRR(ctx, M, boxY, W - 2 * M, boxH, 24); ctx.fillStyle = '#1f1f1f'; ctx.fill();
+    ctx.strokeStyle = 'rgba(255,255,255,.05)'; ctx.lineWidth = 1; ctx.stroke();
+    const promotor = (localStorage.getItem('tm_promotor') || 'JULIO');
+    ctx.textAlign = 'left'; ctx.fillStyle = '#8c8c8c'; ctx.font = '700 24px system-ui,Arial,sans-serif'; ctx.fillText('PROMOTOR', M + 30, boxY + 52);
+    ctx.fillStyle = '#FF6B35'; ctx.font = '800 40px system-ui,Arial,sans-serif'; ctx.fillText(promotor, M + 30, boxY + 104);
+    ctx.textAlign = 'right'; ctx.fillStyle = '#8c8c8c'; ctx.font = '700 24px system-ui,Arial,sans-serif'; ctx.fillText('CLIENTE', W - M - 30, boxY + 52);
+    ctx.fillStyle = '#FF6B35'; ctx.font = '800 40px system-ui,Arial,sans-serif'; ctx.fillText((cliente || '—'), W - M - 30, boxY + 104);
+    let y = boxY + boxH + 70;
+    ctx.textAlign = 'left'; ctx.fillStyle = '#8c8c8c'; ctx.font = '700 26px system-ui,Arial,sans-serif'; ctx.fillText('PRODUCTOS A ENTREGAR', M, y);
+    y += 64;
+    const qty = (venta.cantidad || 1) + 'x';
+    ctx.font = '800 30px system-ui,Arial,sans-serif'; const qw = ctx.measureText(qty).width;
+    _valeRR(ctx, M, y - 38, qw + 44, 56, 12); ctx.fillStyle = '#2a2a2a'; ctx.fill();
+    ctx.fillStyle = '#fff'; ctx.textAlign = 'left'; ctx.fillText(qty, M + 22, y);
+    ctx.textAlign = 'right'; ctx.fillStyle = '#f3f0ec'; ctx.font = '600 38px system-ui,Arial,sans-serif';
+    let nm = String(venta.producto || ''); const maxNW = (W - M) - (M + qw + 44 + 30);
+    if (ctx.measureText(nm).width > maxNW) { while (nm.length > 3 && ctx.measureText(nm + '…').width > maxNW) nm = nm.slice(0, -1); nm = nm.replace(/\s+$/, '') + '…'; }
+    ctx.fillText(nm, W - M, y);
+    y += 66;
+    ctx.strokeStyle = 'rgba(255,255,255,.14)'; ctx.lineWidth = 2; ctx.setLineDash([8, 8]); ctx.beginPath(); ctx.moveTo(M, y); ctx.lineTo(W - M, y); ctx.stroke(); ctx.setLineDash([]);
+    y += 78;
     const tasa = (typeof getTasaMN === 'function') ? getTasaMN() : 0;
     const totalMN = tasa > 0 ? Math.round(venta.total * tasa).toLocaleString('es-CU') : null;
+    ctx.textAlign = 'left'; ctx.fillStyle = '#8c8c8c'; ctx.font = '700 34px system-ui,Arial,sans-serif'; ctx.fillText('TOTAL A PAGAR', M, y);
+    ctx.textAlign = 'right'; ctx.fillStyle = '#ffffff'; ctx.font = '800 64px system-ui,Arial,sans-serif'; ctx.fillText('$' + Number(venta.total || 0).toFixed(2), W - M, y + 6);
+    if (totalMN) { y += 42; ctx.fillStyle = '#8c8c8c'; ctx.font = '600 26px system-ui,Arial,sans-serif'; ctx.textAlign = 'right'; ctx.fillText('≈ ' + totalMN + ' MN', W - M, y); }
+    const sy = H - 150;
+    _valeRR(ctx, M, sy, W - 2 * M, 96, 18); ctx.fillStyle = 'rgba(201,169,110,.10)'; ctx.fill(); ctx.strokeStyle = 'rgba(201,169,110,.3)'; ctx.lineWidth = 2; ctx.stroke();
+    ctx.beginPath(); ctx.arc(M + 46, sy + 48, 24, 0, Math.PI * 2); ctx.fillStyle = '#C9A96E'; ctx.fill();
+    ctx.fillStyle = '#1a1006'; ctx.font = '900 26px system-ui,Arial,sans-serif'; ctx.textAlign = 'center'; ctx.fillText('✓', M + 46, sy + 57);
+    ctx.textAlign = 'left'; ctx.fillStyle = '#C9A96E'; ctx.font = '800 26px system-ui,Arial,sans-serif'; ctx.fillText('Vale verificado · TiendaMax', M + 88, sy + 42);
+    ctx.fillStyle = '#8c8c8c'; ctx.font = '400 22px system-ui,Arial,sans-serif'; ctx.fillText('Pago contra entrega · presenta este vale al recibir', M + 88, sy + 72);
+    ctx.textAlign = 'right'; ctx.fillStyle = '#cdbfa6'; ctx.font = '700 24px ui-monospace,Menlo,monospace'; ctx.fillText('#TM-' + String(venta.id).slice(-6).toUpperCase(), W - M - 20, sy + 58);
+    return new Promise(res => cv.toBlob(res, 'image/png', .95));
+}
 
-    const E = {
-        check: '\u2705',  // ✅
-        pack : '\uD83D\uDCE6',  // 📦
-        money: '\uD83D\uDCB0',  // 💰
-        bill : '\uD83D\uDCB5',  // 💵
-        truck: '\uD83D\uDE9A',  // 🚚
-        pray : '\uD83D\uDE4F',  // 🙏
-        heart: '\u2764\uFE0F',  // ❤️
-        link : '\uD83D\uDD17',  // 🔗
-    };
-
-    const L = [];
-    L.push(E.check + E.pack + ' *TICKET DE COMPRA \u2014 TIENDAMAX* ' + E.pack + E.check);
-    L.push('\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501');
-    L.push('');
-    L.push(E.pack + ' *Ticket N\u00ba:* TM-' + numCorto);
-    L.push('\uD83D\uDCC5 *Fecha:* ' + venta.fecha);
-    L.push('');
-    L.push('\uD83D\uDD39 *' + venta.producto + '*');
-    L.push('   \u25b8 Cant: *' + venta.cantidad + '*');
-    L.push('   \u25b8 Precio: *$' + Number(venta.precio).toFixed(2) + ' USD* c/u');
-    L.push('');
-    L.push('\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501');
-    L.push(E.money + ' *Total:* $' + Number(venta.total).toFixed(2) + ' USD');
-    if (totalMN) {
-        L.push(E.bill + ' *Total MN:* ' + totalMN + ' MN');
-    }
-    L.push('');
-    L.push(E.truck + ' _Tu pedido est\u00e1 confirmado. Coordinaremos la entrega por aqu\u00ed._');
-    L.push('');
-    L.push(E.pack + ' *Segu\u00ed tu pedido en tiempo real:*');
-    L.push(E.link + ' https://tiendamax.org/pedido.html?id=' + venta.id);
-    L.push('');
-    L.push(E.pray + ' _\u00a1Gracias por tu compra!_ ' + E.heart);
-
-    const msg = encodeURIComponent(L.join('\n'));
-    window.open('https://wa.me/' + getNumeroWhatsApp() + '?text=' + msg, '_blank', 'noopener,noreferrer');
-    mostrarNotificacion('📤 Ticket enviado al cliente');
+async function enviarTicketCliente(ventaId) {
+    const venta = cargarVentas().find(v => v.id === ventaId);
+    if (!venta) { mostrarNotificacion('⚠️ Venta no encontrada', 'error'); return; }
+    const cliente = (prompt('Nombre del cliente (opcional):', '') || '').trim();
+    try {
+        const blob = await generarValeImagen(venta, cliente);
+        const numCorto = 'TM-' + String(venta.id).slice(-6);
+        const file = new File([blob], 'vale-' + numCorto + '.png', { type: 'image/png' });
+        const texto = '🧾 Vale TiendaMax ' + numCorto + ' — Total $' + Number(venta.total).toFixed(2) + ' USD.\nSigue tu pedido: https://tiendamax.org/pedido.html?id=' + venta.id;
+        if (navigator.canShare && navigator.canShare({ files: [file] }) && navigator.share) {
+            try { await navigator.share({ files: [file], text: texto, title: 'Vale TiendaMax' }); mostrarNotificacion('📤 Vale listo para enviar'); return; }
+            catch (e) { if (/abort/i.test(e.message || '')) return; }
+        }
+        const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = file.name; a.click();
+        setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+        window.open('https://wa.me/?text=' + encodeURIComponent(texto), '_blank', 'noopener,noreferrer');
+        mostrarNotificacion('📥 Vale descargado · adjúntalo en WhatsApp');
+    } catch (e) { mostrarNotificacion('No se pudo generar el vale: ' + e.message, 'error'); }
 }
 
 // Página actual del historial de ventas
