@@ -74,14 +74,19 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
   "description": {json_desc},
   "image": {json_img},
   "url": "{page_url}",
+  "sku": "{sku}",
+  "category": {json_category},
+  "itemCondition": "{condition}",
   "brand": {{"@type": "Brand", "name": "TiendaMax"}},
   "offers": {{
     "@type": "Offer",
     "price": "{price}",
     "priceCurrency": "USD",
     "availability": "{availability}",
+    "itemCondition": "{condition}",
     "url": "{page_url}",
-    "seller": {{"@type": "Organization", "name": "TiendaMax"}}
+    "seller": {{"@type": "Organization", "name": "TiendaMax"}},
+    "areaServed": {{"@type": "Country", "name": "Cuba"}}
   }}
 }}
 </script>
@@ -249,6 +254,8 @@ def regenerate_pages(products: list[dict], wa_num: str = "5354320170") -> tuple[
         # ── Variables nuevas para la página de producto real ────────────────
         cat = (p.get("categoria") or "").strip()
         cat_html = f'<span class="tm-cat">{escape(cat)}</span>' if cat else ""
+        json_category = json.dumps(cat or "General")
+        condition = "https://schema.org/UsedCondition" if p.get("usado") else "https://schema.org/NewCondition"
 
         desc_raw  = (p.get("descripcion") or "").strip()
         desc_full = escape(desc_raw)
@@ -285,6 +292,9 @@ def regenerate_pages(products: list[dict], wa_num: str = "5354320170") -> tuple[
             json_desc=json_desc,
             json_img=json_img,
             availability=availability,
+            sku=pid,
+            json_category=json_category,
+            condition=condition,
             cat_html=cat_html,
             desc_full=desc_full,
             precio_orig_html=precio_orig_html,
