@@ -247,6 +247,23 @@ def enviar_push_fcm(messaging_api, database, tokens, keys, title, body, link, im
             print(f"⚠️ Error limpiando tokens: {e}", file=sys.stderr)
 
 
+def _admin_tokens(database):
+    """Tokens FCM de los teléfonos registrados como admin (/admin_tokens)."""
+    data = database.reference("admin_tokens").get() or {}
+    if not isinstance(data, dict):
+        return []
+    return [v["token"] for v in data.values() if isinstance(v, dict) and v.get("token")]
+
+def enviar_push_admin(messaging_api, database, title, body, link="/admin.html", tag="admin-alert"):
+    """Envía una notificación SOLO a los teléfonos del admin."""
+    tokens = _admin_tokens(database)
+    if not tokens:
+        print("ℹ️ Sin teléfonos admin registrados; no se envía aviso admin.")
+        return False
+    enviar_push_fcm(messaging_api, database, tokens, [], title, body, link, None, tag=tag)
+    print(f"📲 Aviso admin enviado a {len(tokens)} dispositivo(s): {title}")
+    return True
+
 def procesar_restock(messaging_api, database, restock_items):
     """
     Para cada producto que volvió al stock, notifica SOLO a los tokens que
@@ -261,15 +278,26 @@ def procesar_restock(messaging_api, database, restock_items):
             continue
         tokens = [v["token"] for v in interesados.values()
                   if isinstance(v, dict) and "token" in v]
-        if not tokens:
+        # Teléfonos de clientes que dejaron su WhatsApp (para que el admin les escriba)
+        tels = [str(v.get("tel")).strip() for v in interesados.values()
+                if isinstance(v, dict) and v.get("tel")]
+        if not tokens and not tels:
             ref.delete()
             continue
 
         title = "🎉 ¡Volvió al stock!"
         body = f"{item.get('nombre', 'Un producto que te interesa')} ya está disponible. ¡Pídelo antes de que se agote!"
         link = f"/p/producto-{pid}.html"
-        enviar_push_fcm(messaging_api, database, tokens, [], title, body, link,
-                        item.get("imagen"), tag=f"restock-{pid}")
+        if tokens:
+            enviar_push_fcm(messaging_api, database, tokens, [], title, body, link,
+                            item.get("imagen"), tag=f"restock-{pid}")
+        # Avisar al ADMIN qué clientes esperan este producto (con su WhatsApp)
+        if tels:
+            lista = ", ".join(dict.fromkeys(tels))
+            enviar_push_admin(messaging_api, database,
+                              f"📦 {item.get('nombre','Producto')} volvió — escríbeles",
+                              f"{len(tels)} cliente(s) lo esperan: {lista}",
+                              link=f"/p/producto-{pid}.html", tag=f"admin-restock-{pid}")
         # Limpiar: ya fueron notificados
         ref.delete()
         # Resetear el contador público de demanda
@@ -334,6 +362,22 @@ def procesar_admin_requests(messaging_api, database, cola):
 def main():
     msg_api, db_api = init_firebase()
     if not msg_api or not db_api: return 1
+
+    # ── Modo recordatorio admin: avisa SOLO al teléfono del admin y termina ──
+    if os.environ.get("SOLO_ADMIN_RECORDATORIO") == "1":
+        try:
+            p_act = json.loads((ROOT / "productos.json").read_text(encoding="utf-8"))
+            agotados = sum(1 for p in p_act if int(p.get("stock") or 0) <= 0)
+            bajos = sum(1 for p in p_act if 0 < int(p.get("stock") or 0) <= 3)
+            pend = []
+            if agotados: pend.append(f"{agotados} agotado(s)")
+            if bajos: pend.append(f"{bajos} con stock bajo")
+            cuerpo = "Comparte una categoría por WhatsApp/Facebook ahora que es horario pico."
+            if pend: cuerpo += " Pendiente: " + ", ".join(pend) + "."
+            enviar_push_admin(msg_api, db_api, "🕐 Hora de publicar — TiendaMax", cuerpo, link="/admin.html", tag="admin-recordatorio")
+        except Exception as e:
+            print(f"⚠️ Error en recordatorio admin: {e}", file=sys.stderr)
+        return 0
 
     cola = cargar_cola(db_api)
     solo_flush = os.environ.get("SOLO_FLUSH") == "1"

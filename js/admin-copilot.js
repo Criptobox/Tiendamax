@@ -864,10 +864,30 @@ function maybeBrowserNotify(){
   localStorage.setItem(LS.notify, String(Date.now()));
   try { new Notification('🤖 Copiloto TiendaMax', {body: crit[0].title + (crit.length>1 ? ` (+${crit.length-1} más)` : ''), icon:'/iconos/icon-192.png', tag:'tm-copilot'}); } catch(e) {}
 }
+async function _sha256hex(s){try{const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(String(s)));return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('');}catch(e){return '';}}
+// Registra ESTE teléfono como admin (recibe avisos del servidor). Protegido con PIN.
+async function tmActivarAlertaAdmin(){
+  try{
+    const cfgRaw=localStorage.getItem('firebaseConfig'); if(!cfgRaw){ toast('Configura Firebase primero.'); return; }
+    const cfg=JSON.parse(cfgRaw); const url=cfg.databaseURL||('https://'+cfg.projectId+'-default-rtdb.firebaseio.com');
+    if('Notification' in window && Notification.permission!=='granted'){ const p=await Notification.requestPermission(); if(p!=='granted'){ toast('Activa las notificaciones para recibir avisos.'); return; } }
+    let token=localStorage.getItem('fcmToken');
+    if((!token||/^anon_/.test(token)) && typeof window.inicializarFirebaseFCMClient==='function'){ try{ await window.inicializarFirebaseFCMClient(cfg); token=localStorage.getItem('fcmToken'); }catch(e){} }
+    if(!token||/^anon_/.test(token)){ toast('No se pudo obtener el token de este teléfono.'); return; }
+    const pin=prompt('🔐 PIN de admin (créalo la 1ª vez; luego úsalo para activar tus teléfonos):','');
+    if(!pin){ return; }
+    const proof=await _sha256hex(pin); if(!proof){ toast('Necesita HTTPS para activarse.'); return; }
+    // Crear el PIN si no existe (set-once); si ya existe, falla en silencio y seguimos
+    try{ await fetch(url+'/admin_meta/pinHash.json',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(proof)}); }catch(e){}
+    // Registrar este teléfono (la regla de Firebase valida el PIN)
+    const r=await fetch(url+'/admin_tokens/'+encodeURIComponent(token)+'.json',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({token:token,ts:Date.now(),proof:proof,label:(navigator.userAgent||'').slice(0,70)})});
+    if(r.ok){ localStorage.setItem('tm_es_admin','1'); toast('✅ Este teléfono recibirá los avisos de administrador.'); }
+    else { toast('❌ PIN incorrecto: no se activó este teléfono.'); }
+  }catch(e){ toast('No se pudo activar: '+e.message); }
+}
+window.tmActivarAlertaAdmin=tmActivarAlertaAdmin;
 function enableAlerts(){
-  if (typeof window.tmActivarAlertaAdmin === 'function') window.tmActivarAlertaAdmin();
-  else if ('Notification' in window) Notification.requestPermission().then(p=>toast(p==='granted'?'Notificaciones activadas':'Permiso no concedido'));
-  toast('Alertas del admin revisadas.');
+  tmActivarAlertaAdmin();
 }
 function bindEvents(){
   document.addEventListener('click', e=>{

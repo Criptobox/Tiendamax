@@ -144,6 +144,22 @@
     },
     "admin_meta": {
       ".read": false,
+      ".write": false,
+      "pinHash": {
+        ".write": "!data.exists()",
+        ".validate": "newData.isString() && newData.val().length == 64"
+      }
+    },
+    "admin_tokens": {
+      "$tokenId": {
+        ".write": "!newData.exists() || (root.child('admin_meta/pinHash').exists() && newData.child('proof').val() === root.child('admin_meta/pinHash').val())",
+        ".validate": "newData.hasChildren(['token','ts','proof'])",
+        "token": { ".validate": "newData.isString() && newData.val().length >= 4 && newData.val().length < 500" },
+        "ts": { ".validate": "newData.isNumber()" },
+        "proof": { ".validate": "newData.isString() && newData.val().length == 64" },
+        "label": { ".validate": "newData.isString() && newData.val().length < 80" }
+      },
+      ".read": false,
       ".write": false
     },
     "avisos_count": {
