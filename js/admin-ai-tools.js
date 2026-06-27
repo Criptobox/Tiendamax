@@ -2449,7 +2449,7 @@ function tmExtractJsonObject(text) {
       if(Number(p.precioOriginal||0)>Number(p.precioActual||0))l+=` (antes $${Number(p.precioOriginal).toFixed(2)})`;
       return l;
     }).join('\n');
-    const cierre=`\n\n⏳ Precios de HOY — mañana suben con la tasa\n✅ Garantía · Pruébalo al recibir · +500 clientes`;
+    const cierre=`\n\n⏳ Precios de HOY — mañana suben con la tasa\n✅ Garantía · Pruébalo al recibir · Atención personalizada`;
     const cta=`\n\n📲 Escribe "QUIERO" por WhatsApp y te lo aparto 24 h\n👉 wa.me/${waNumero()}\n🔗 ${storeUrl()}`;
     return header+lines+cierre+cta+`\n\n${hashtags(cat,prods)}`;
   }
@@ -2487,6 +2487,8 @@ function tmExtractJsonObject(text) {
 
   async function genImg(cat){
     const prods=prodsByCat(cat);if(!prods.length)return null;
+    // Asegurar que la bolsa (marca de agua) esté cargada antes de dibujar
+    try{if(_bagImg&&!_bagImg.complete){await new Promise(r=>{_bagImg.onload=r;_bagImg.onerror=r;setTimeout(r,1500);});}}catch(e){}
     const W=1080;
     const NF='38px system-ui,Arial,sans-serif', PF='bold 42px system-ui,Arial,sans-serif';
     const contentTop=246, footerBlockH=410, lineH=48, rowPad=30, badgeH=46;
@@ -2512,7 +2514,7 @@ function tmExtractJsonObject(text) {
     cv.height=H;ctx=cv.getContext('2d');
     const g=ctx.createLinearGradient(0,0,W,H);g.addColorStop(0,'#0a0805');g.addColorStop(.45,'#1c0e06');g.addColorStop(1,'#2d1a08');
     ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
-    try{if(_bagImg&&_bagImg.complete&&_bagImg.naturalWidth){const bw=W*0.5,bh=bw;ctx.save();ctx.globalAlpha=0.06;ctx.drawImage(_bagImg,(W-bw)/2,(H-bh)/2,bw,bh);ctx.restore();}}catch(e){}
+    try{if(_bagImg&&_bagImg.complete&&_bagImg.naturalWidth){const bw=W*0.56,bh=bw;ctx.save();ctx.globalAlpha=0.12;ctx.drawImage(_bagImg,(W-bw)/2,(H-bh)/2,bw,bh);ctx.restore();}}catch(e){}
     ctx.strokeStyle='rgba(201,169,110,.6)';ctx.lineWidth=7;roundRect(ctx,26,26,W-52,H-52,38);ctx.stroke();
     const gb=ctx.createLinearGradient(60,0,W-60,0);gb.addColorStop(0,'#c9a96e');gb.addColorStop(.5,'#FF6B35');gb.addColorStop(1,'#c9a96e');
     ctx.fillStyle=gb;ctx.fillRect(60,50,W-120,9);
@@ -2545,7 +2547,7 @@ function tmExtractJsonObject(text) {
     ctx.textAlign='center';ctx.fillStyle='#ff7a6a';ctx.font='bold 30px system-ui,Arial,sans-serif';ctx.fillText('⏳ Precios de HOY — mañana suben con la tasa',W/2,fy+48);
     fy+=96;
     // Confianza
-    ctx.fillStyle='#9fd8a8';ctx.font='600 26px system-ui,Arial,sans-serif';ctx.fillText('✅ Garantía · Pruébalo al recibir · +500 clientes felices',W/2,fy+26);
+    ctx.fillStyle='#9fd8a8';ctx.font='600 26px system-ui,Arial,sans-serif';ctx.fillText('✅ Garantía · Pruébalo al recibir · Atención personalizada',W/2,fy+26);
     fy+=52;
     // CTA
     const cg=ctx.createLinearGradient(60,0,W-60,0);cg.addColorStop(0,'#FF6B35');cg.addColorStop(1,'#C9A96E');
