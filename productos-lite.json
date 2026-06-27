@@ -1605,5 +1605,27 @@
     "devolucion": false,
     "specs": [],
     "fechaAgregado": "2026-06-27T04:54:38.989Z"
+  },
+  {
+    "id": 1782536259878,
+    "nombre": "SPLIT MILEXUS 1T",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1782536258457.jpg",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1782536258457.jpg"
+    ],
+    "precioActual": 270,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 6,
+    "comision": 5,
+    "comisionMoneda": "USD",
+    "categoria": "HOGAR",
+    "subcategoria": "ELECTRODOMÉSTICOS",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "3 meses",
+    "devolucion": false,
+    "specs": [],
+    "fechaAgregado": "2026-06-27T04:57:39.878Z"
   }
 ]
