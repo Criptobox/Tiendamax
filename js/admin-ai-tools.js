@@ -2407,13 +2407,51 @@ function tmExtractJsonObject(text) {
     return[...tags].map(t=>'#'+t).join(' ');
   }
 
+  // Número de WhatsApp de la tienda (config) con respaldo
+  function waNumero(){
+    let n='';try{n=localStorage.getItem('whatsappNumero')||localStorage.getItem('whatsappNumber')||'';}catch(e){}
+    n=String(n).replace(/\D/g,'');
+    if(!n)n='5354320170';
+    if(n.length===8)n='53'+n; // número cubano sin prefijo de país
+    return n;
+  }
+  function waDisplay(){const local=waNumero().replace(/^53/,'');return '+53 '+local.replace(/(\d{4})(\d{4})/,'$1 $2');}
+  // Gancho (dolor/beneficio) según la categoría
+  function ganchoFor(cat){
+    const c=String(cat||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
+    if(/energ|solar|inversor|bater|apag/.test(c))return'⚡ NO TE QUEDES A OSCURAS';
+    if(/wifi|router|internet|red/.test(c))return'📡 INTERNET SIN CORTES';
+    if(/audio|sonido|parlante|bocina/.test(c))return'🔊 SUENA COMO QUIERES';
+    if(/celular|telefono|movil|phone/.test(c))return'📱 ESTRENA YA TU EQUIPO';
+    if(/hogar|casa|cocina|electrodom/.test(c))return'🏠 TU CASA, MEJOR';
+    if(/carro|auto|moto|vehic/.test(c))return'🚗 LISTO PARA LA CALLE';
+    if(/belleza|salud|cuidado/.test(c))return'✨ LO QUE TE MERECES';
+    return'🔥 APROVECHA ANTES QUE SE ACABE';
+  }
+  // Badge de venta para un producto (escasez/prueba social reales) o null
+  function badgeFor(p){
+    const stock=Number(p.stock||0);
+    if(p.masVendido)return{t:'⭐ EL MÁS VENDIDO',bg:'#C9A96E',fg:'#1a1006'};
+    if(stock>0&&stock<=2)return{t:stock===1?'🔥 QUEDA 1':'🔥 ÚLTIMAS '+stock,bg:'#e74c3c',fg:'#ffffff'};
+    try{const an=window.__tmCampaignAnalytics;const v=an&&an.vistas&&an.vistas[String(p.id)]&&Number(an.vistas[String(p.id)].count||0);if(v&&v>=10)return{t:'👀 '+v+' lo vieron',bg:'rgba(52,152,219,.92)',fg:'#ffffff'};}catch(e){}
+    return null;
+  }
+
   function buildText(cat){
     const prods=prodsByCat(cat);if(!prods.length)return '';
-    const sep='━'.repeat(24);
-    const header=`🏪 TIENDAMAX — ${String(cat).toUpperCase()}\n${sep}\n\n`;
-    const lines=prods.map(p=>`${emojiFor(p.nombre,cat)} ${p.nombre} — $${Number(p.precioActual||0).toFixed(2)} USD`).join('\n');
-    const footer=`\n\n📲 Escríbenos para reservar tu pedido\n🔗 ${storeUrl()}\n\n${hashtags(cat,prods)}`;
-    return header+lines+footer;
+    const sep='━'.repeat(16);
+    const header=`🏪 TIENDAMAX — ${String(cat).toUpperCase()}\n${ganchoFor(cat)}\n${sep}\n\n`;
+    const lines=prods.map(p=>{
+      let l=`${emojiFor(p.nombre,cat)} ${p.nombre} — $${Number(p.precioActual||0).toFixed(2)} USD`;
+      const st=Number(p.stock||0);
+      if(p.masVendido)l+=' ⭐';
+      else if(st>0&&st<=2)l+=st===1?' 🔥 ¡Queda 1!':` 🔥 ¡Últimas ${st}!`;
+      if(Number(p.precioOriginal||0)>Number(p.precioActual||0))l+=` (antes $${Number(p.precioOriginal).toFixed(2)})`;
+      return l;
+    }).join('\n');
+    const cierre=`\n\n⏳ Precios de HOY — mañana suben con la tasa\n✅ Garantía · Pruébalo al recibir · +500 clientes`;
+    const cta=`\n\n📲 Escribe "QUIERO" por WhatsApp y te lo aparto 24 h\n👉 wa.me/${waNumero()}\n🔗 ${storeUrl()}`;
+    return header+lines+cierre+cta+`\n\n${hashtags(cat,prods)}`;
   }
 
   function roundRect(ctx,x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
@@ -2440,14 +2478,21 @@ function tmExtractJsonObject(text) {
     return lines;
   }
 
+  function drawPill(ctx,x,y,text,bg,fg,fs){
+    ctx.font='bold '+fs+'px system-ui,Arial,sans-serif';
+    const tw=ctx.measureText(text).width,px=15,h=fs+16;
+    roundRect(ctx,x,y,tw+px*2,h,h/2);ctx.fillStyle=bg;ctx.fill();
+    ctx.fillStyle=fg;ctx.textAlign='left';ctx.textBaseline='middle';ctx.fillText(text,x+px,y+h/2+1);ctx.textBaseline='alphabetic';
+  }
+
   async function genImg(cat){
     const prods=prodsByCat(cat);if(!prods.length)return null;
     const W=1080;
-    const NF='40px system-ui,Arial,sans-serif', PF='bold 40px system-ui,Arial,sans-serif';
-    const contentTop=268, footerH=178, lineH=50, rowPad=22;
+    const NF='38px system-ui,Arial,sans-serif', PF='bold 42px system-ui,Arial,sans-serif';
+    const contentTop=246, footerBlockH=410, lineH=48, rowPad=30, badgeH=46;
     const cv=document.createElement('canvas');cv.width=W;cv.height=10;let ctx=cv.getContext('2d');
-    // PASO 1 — medir filas (nombre en hasta 2 líneas, precio reservado a la derecha)
-    const maxItems=Math.min(prods.length,14);
+    // PASO 1 — medir filas (nombre 2 líneas, precio reservado, badge opcional)
+    const maxItems=Math.min(prods.length,12);
     const rows=[];
     for(let i=0;i<maxItems;i++){
       const p=prods[i];
@@ -2456,11 +2501,13 @@ function tmExtractJsonObject(text) {
       ctx.font=NF;
       const maxNameW=(W-75)-priceW-30-80;
       const lines=wrapName(ctx,emojiFor(p.nombre,cat)+' '+String(p.nombre||''),maxNameW,2);
-      rows.push({lines,price,rowH:lines.length*lineH+rowPad});
+      const badge=badgeFor(p);
+      const orig=Number(p.precioOriginal||0)>Number(p.precioActual||0)?Number(p.precioOriginal):0;
+      rows.push({lines,price,badge,orig,rowH:lines.length*lineH+(badge?badgeH:0)+rowPad});
     }
     const moreCount=prods.length-maxItems;
     const contentH=rows.reduce((s,r)=>s+r.rowH,0)+(moreCount>0?48:0);
-    const H=Math.max(900,Math.round(contentTop+contentH+footerH));
+    const H=Math.max(960,Math.round(contentTop+contentH+footerBlockH));
     // PASO 2 — dibujar con el alto final
     cv.height=H;ctx=cv.getContext('2d');
     const g=ctx.createLinearGradient(0,0,W,H);g.addColorStop(0,'#0a0805');g.addColorStop(.45,'#1c0e06');g.addColorStop(1,'#2d1a08');
@@ -2468,25 +2515,46 @@ function tmExtractJsonObject(text) {
     try{if(_bagImg&&_bagImg.complete&&_bagImg.naturalWidth){const bw=W*0.5,bh=bw;ctx.save();ctx.globalAlpha=0.06;ctx.drawImage(_bagImg,(W-bw)/2,(H-bh)/2,bw,bh);ctx.restore();}}catch(e){}
     ctx.strokeStyle='rgba(201,169,110,.6)';ctx.lineWidth=7;roundRect(ctx,26,26,W-52,H-52,38);ctx.stroke();
     const gb=ctx.createLinearGradient(60,0,W-60,0);gb.addColorStop(0,'#c9a96e');gb.addColorStop(.5,'#FF6B35');gb.addColorStop(1,'#c9a96e');
-    ctx.fillStyle=gb;ctx.fillRect(60,55,W-120,9);
-    ctx.textAlign='center';ctx.fillStyle='#FF6B35';ctx.font='bold 62px system-ui,Arial,sans-serif';ctx.fillText('TIENDAMAX',W/2,152);
-    ctx.fillStyle='#f5e6d0';ctx.font='bold 40px system-ui,Arial,sans-serif';ctx.fillText(String(cat).toUpperCase(),W/2,210);
-    ctx.strokeStyle='rgba(255,107,53,.3)';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(80,232);ctx.lineTo(W-80,232);ctx.stroke();
+    ctx.fillStyle=gb;ctx.fillRect(60,50,W-120,9);
+    // Encabezado con gancho de venta
+    ctx.textAlign='center';ctx.fillStyle='#FF6B35';ctx.font='bold 54px system-ui,Arial,sans-serif';ctx.fillText('TIENDAMAX',W/2,124);
+    ctx.fillStyle='#ffffff';ctx.font='bold 46px system-ui,Arial,sans-serif';ctx.fillText(ganchoFor(cat),W/2,186);
+    ctx.fillStyle='#C9A96E';ctx.font='600 24px system-ui,Arial,sans-serif';ctx.fillText(String(cat).toUpperCase(),W/2,224);
+    ctx.strokeStyle='rgba(255,107,53,.3)';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(80,246);ctx.lineTo(W-80,246);ctx.stroke();
     // Filas de productos
-    let y=contentTop+44;
+    let y=contentTop+50;
     for(let i=0;i<rows.length;i++){
       const r=rows[i];
-      ctx.fillStyle='#FF6B35';ctx.font=PF;ctx.textAlign='right';ctx.fillText(r.price,W-75,y);
-      ctx.textAlign='left';ctx.fillStyle='#e8dcc8';ctx.font=NF;
-      r.lines.forEach((ln,k)=>ctx.fillText(ln,80,y+k*lineH));
-      if(i<rows.length-1){const sy=y+(r.lines.length-1)*lineH+18;ctx.strokeStyle='rgba(255,255,255,.05)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(80,sy);ctx.lineTo(W-80,sy);ctx.stroke();}
+      // precio anterior tachado (anclaje)
+      if(r.orig){ctx.textAlign='right';ctx.fillStyle='#8a7f70';ctx.font='27px system-ui,Arial,sans-serif';const ot='$'+r.orig.toFixed(0);const ow=ctx.measureText(ot).width;ctx.fillText(ot,W-75,y-32);ctx.strokeStyle='#8a7f70';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(W-75-ow,y-40);ctx.lineTo(W-75,y-40);ctx.stroke();}
+      // precio actual
+      ctx.fillStyle='#FF6B35';ctx.font=PF;ctx.textAlign='right';ctx.fillText(r.price,W-75,y+8);
+      // nombre
+      ctx.textAlign='left';ctx.fillStyle='#f0e6d6';ctx.font=NF;
+      r.lines.forEach((ln,k)=>ctx.fillText(ln,80,y+8+k*lineH));
+      // badge
+      if(r.badge)drawPill(ctx,80,y+(r.lines.length-1)*lineH+22,r.badge.t,r.badge.bg,r.badge.fg,24);
+      if(i<rows.length-1){const sy=y+r.rowH-32;ctx.strokeStyle='rgba(255,255,255,.06)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(80,sy);ctx.lineTo(W-80,sy);ctx.stroke();}
       y+=r.rowH;
     }
-    if(moreCount>0){ctx.textAlign='left';ctx.fillStyle='#9b9189';ctx.font='italic 24px system-ui,Arial,sans-serif';ctx.fillText(`+ ${moreCount} productos más en la tienda`,80,y+8);}
+    if(moreCount>0){ctx.textAlign='left';ctx.fillStyle='#9b9189';ctx.font='italic 24px system-ui,Arial,sans-serif';ctx.fillText(`+ ${moreCount} productos más en la tienda`,80,y+4);}
+    // ── Bloque de cierre (urgencia + confianza + CTA) ──
+    let fy=H-footerBlockH+16;
+    // Urgencia
+    roundRect(ctx,60,fy,W-120,76,16);ctx.fillStyle='rgba(231,76,60,.14)';ctx.fill();ctx.strokeStyle='rgba(231,76,60,.5)';ctx.lineWidth=2;ctx.stroke();
+    ctx.textAlign='center';ctx.fillStyle='#ff7a6a';ctx.font='bold 30px system-ui,Arial,sans-serif';ctx.fillText('⏳ Precios de HOY — mañana suben con la tasa',W/2,fy+48);
+    fy+=96;
+    // Confianza
+    ctx.fillStyle='#9fd8a8';ctx.font='600 26px system-ui,Arial,sans-serif';ctx.fillText('✅ Garantía · Pruébalo al recibir · +500 clientes felices',W/2,fy+26);
+    fy+=52;
+    // CTA
+    const cg=ctx.createLinearGradient(60,0,W-60,0);cg.addColorStop(0,'#FF6B35');cg.addColorStop(1,'#C9A96E');
+    roundRect(ctx,60,fy,W-120,150,20);ctx.fillStyle=cg;ctx.fill();
+    ctx.fillStyle='#1a1006';ctx.font='bold 40px system-ui,Arial,sans-serif';ctx.fillText('📲 Escribe "QUIERO" por WhatsApp',W/2,fy+62);
+    ctx.fillStyle='#3a2408';ctx.font='600 28px system-ui,Arial,sans-serif';ctx.fillText('y te lo aparto 24 h  ·  '+waDisplay(),W/2,fy+106);
+    fy+=168;
     // Footer
-    ctx.strokeStyle='rgba(255,107,53,.3)';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(80,H-148);ctx.lineTo(W-80,H-148);ctx.stroke();
-    ctx.textAlign='center';ctx.fillStyle='#f5e6d0';ctx.font='bold 28px system-ui,Arial,sans-serif';ctx.fillText('📲 Escríbenos para reservar tu pedido',W/2,H-108);
-    ctx.fillStyle='#c9a96e';ctx.font='22px system-ui,Arial,sans-serif';ctx.fillText(storeUrl(),W/2,H-70);
+    ctx.fillStyle='#c9a96e';ctx.font='22px system-ui,Arial,sans-serif';ctx.fillText(storeUrl().replace(/^https?:\/\//,''),W/2,fy+20);
     ctx.fillStyle=gb;ctx.fillRect(60,H-43,W-120,9);
     return new Promise(res=>cv.toBlob(res,'image/png',.95));
   }
