@@ -1537,5 +1537,27 @@
     "devolucion": false,
     "specs": [],
     "fechaAgregado": "2026-06-26T02:08:08.529Z"
+  },
+  {
+    "id": 1782535594832,
+    "nombre": "BATIDORA MILEXUS CRISTAL",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1782535592928.jpg",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1782535592928.jpg"
+    ],
+    "precioActual": 32,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 10,
+    "comision": 2,
+    "comisionMoneda": "USD",
+    "categoria": "HOGAR",
+    "subcategoria": "ELECTRODOMÉSTICOS",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "1 mes",
+    "devolucion": false,
+    "specs": [],
+    "fechaAgregado": "2026-06-27T04:46:34.832Z"
   }
 ]
