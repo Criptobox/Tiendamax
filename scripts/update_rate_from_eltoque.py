@@ -8,8 +8,8 @@ Soporta dos modos:
   2) Fallback por scraping del sitio público si no hay API key o falla la API.
 
 Regla del proyecto:
-- config.json guarda la TASA BASE de elTOQUE.
-- el frontend suma +10 MN al mostrarla al cliente.
+- config.json guarda la TASA BASE de elTOQUE (tasaMN) y el margen (margenMN).
+- el frontend, el vale y el bot suman margenMN al mostrarla al cliente.
 """
 
 from __future__ import annotations
@@ -300,8 +300,10 @@ def main() -> int:
         config["actualizado"] = datetime.now(timezone.utc).isoformat()
         save_config(config)
 
+        _margen_raw = config.get("margenMN")
+        _margen = float(_margen_raw) if _margen_raw is not None else 10.0
         print(f"Tasa base obtenida de {source_name}: {nueva}")
-        print(f"Frontend mostrará: {nueva + 10} MN (margen +10)")
+        print(f"Frontend mostrará: {nueva + _margen:.0f} MN (margen +{_margen:.0f})")
         if anterior is None:
             print(f"Primera escritura de tasaMN: {nueva}")
         else:

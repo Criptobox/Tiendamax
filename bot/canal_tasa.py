@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """
 TiendaMax — Publica la tasa del día en el canal Telegram.
-Lee tasaMN de config.json y suma +10 para la tasa cliente.
+Lee tasaMN (base elTOQUE) y margenMN de config.json; la tasa cliente es
+tasaMN + margenMN (igual que la tienda y el vale). Si no hay margenMN, usa 10.
 """
 import json
 import os
@@ -37,12 +38,21 @@ def main() -> int:
         print("❌ tasaMN no disponible.", file=sys.stderr)
         return 1
 
-    tasa_cliente = tasa_base + 10
+    # Margen configurable (igual que la tienda/vale). Respeta 0; usa 10 si falta.
+    margen_raw = cfg.get("margenMN")
+    margen = float(margen_raw) if margen_raw is not None else 10.0
+
+    tasa_cliente = tasa_base + margen
     hoy = datetime.now(TZ).strftime("%d/%m/%Y")
+
+    if margen > 0:
+        linea_tasa = f"elTOQUE: {tasa_base:.0f} + {margen:.0f} = *{tasa_cliente:.0f} CUP por USD*"
+    else:
+        linea_tasa = f"elTOQUE: *{tasa_cliente:.0f} CUP por USD*"
 
     mensaje = (
         f"📈 *Tasa del día — {hoy}*\n\n"
-        f"elTOQUE: {tasa_base:.0f} + 10 = *{tasa_cliente:.0f} CUP por USD*\n\n"
+        f"{linea_tasa}\n\n"
         f"🛍️ Visita nuestra tienda: tiendamax.org"
     )
 
