@@ -1071,7 +1071,7 @@
     "categoria": "PC Y LAPTOPS",
     "subcategoria": "GAMING",
     "stock": 1,
-    "masVendido": true,
+    "masVendido": false,
     "usado": false,
     "garantia": "",
     "devolucion": false,
