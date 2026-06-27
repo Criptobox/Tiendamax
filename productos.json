@@ -1677,5 +1677,29 @@
     "devolucion": false,
     "specs": [],
     "fechaAgregado": "2026-06-27T05:10:24.286Z"
+  },
+  {
+    "id": 1782537341725,
+    "nombre": "NEVERA HORIZONTAL MILEXUS 7 PIES",
+    "descripcion": "Marca: Milexus original (Modelo ML-CF-200).\n​Capacidad: 200 Litros / 7 Pies Cúbicos (Espacio óptimo y cómodo con canastillo interior para organizar).\n​Bajo Consumo Eléctrico: Solo 120W de potencia de entrada (Superfácil de mantener y súper ahorrador).\n​Diseño Premium: Acabado gris oscuro moderno con tirador ergonómico central y gomas de alta eficiencia que sellan el frío por completo.\n​Gas Ecológico: Utiliza refrigerante R600a, de alto rendimiento para un congelamiento rápido.\n\n👀 Sin llave 🔑",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1782537339330.jpg",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1782537339330.jpg",
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1782537340765.jpg"
+    ],
+    "precioActual": 250,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 6,
+    "comision": 5,
+    "comisionMoneda": "USD",
+    "categoria": "HOGAR",
+    "subcategoria": "",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "3 meses",
+    "devolucion": false,
+    "specs": [],
+    "fechaAgregado": "2026-06-27T05:15:41.725Z"
   }
 ]
