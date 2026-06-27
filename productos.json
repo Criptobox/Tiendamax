@@ -1531,7 +1531,7 @@
     "comisionMoneda": "USD",
     "categoria": "ENERGIA",
     "subcategoria": "",
-    "masVendido": false,
+    "masVendido": true,
     "usado": false,
     "garantia": "",
     "devolucion": false,
