@@ -258,7 +258,7 @@
     "categoria": "ENERGIA",
     "subcategoria": "INVERSORES",
     "stock": 0,
-    "masVendido": true,
+    "masVendido": false,
     "usado": false,
     "garantia": "",
     "devolucion": false,
