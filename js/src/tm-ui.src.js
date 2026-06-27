@@ -885,28 +885,54 @@ function exportarVentasCSV() {
     mostrarNotificacion('✅ Historial exportado como CSV', 'success');
 }
 
-function registrarVenta(productoId, cantidad) {
-    const p = productos.find(p => p.id === productoId);
-    if (!p) return;
+// Normaliza los productos de una venta (soporta ventas viejas de 1 producto)
+function _ventaItems(venta) {
+    if (venta && Array.isArray(venta.items) && venta.items.length) return venta.items;
+    return [{ producto: venta.producto, productoId: venta.productoId, cantidad: venta.cantidad || 1, precio: venta.precio || 0 }];
+}
+
+// Registra un pedido con uno o varios productos como UNA sola venta (un vale)
+function registrarVentaPedido(items) {
+    items = (items || []).filter(it => it && it.productoId);
+    if (!items.length) { mostrarNotificacion('⚠️ Agrega al menos un producto', 'error'); return; }
+    const detalle = items.map(it => {
+        const p = productos.find(x => x.id === it.productoId) || {};
+        const cant = it.cantidad || 1;
+        const precio = (it.precio != null ? it.precio : p.precioActual) || 0;
+        const comision = (it.comision != null ? it.comision : p.comision) || 0;
+        return {
+            producto: it.producto || p.nombre || 'Producto',
+            productoId: it.productoId,
+            cantidad: cant,
+            precio: precio,
+            comision: comision,
+            comisionMoneda: it.comisionMoneda || p.comisionMoneda || 'USD',
+            total: precio * cant,
+            ganancia: comision * cant
+        };
+    });
+    const total = detalle.reduce((s, d) => s + d.total, 0);
+    const ganancia = detalle.reduce((s, d) => s + d.ganancia, 0);
+    const unidades = detalle.reduce((s, d) => s + d.cantidad, 0);
     const venta = {
         id: Date.now(),
-        fecha: new Date().toLocaleDateString('es-ES', {day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit'}),
-        producto: p.nombre,
-        productoId: p.id,
-        cantidad: cantidad || 1,
-        precio: p.precioActual,
-        comision: p.comision || 0,
-        comisionMoneda: p.comisionMoneda || 'USD',
-        total: p.precioActual * (cantidad || 1),
-        ganancia: (p.comision || 0) * (cantidad || 1)
+        fecha: new Date().toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
+        items: detalle,
+        producto: detalle.length === 1 ? detalle[0].producto : `${detalle[0].producto} +${detalle.length - 1} más`,
+        productoId: detalle[0].productoId,
+        cantidad: unidades,
+        precio: detalle.length === 1 ? detalle[0].precio : total,
+        comision: detalle.length === 1 ? detalle[0].comision : ganancia,
+        comisionMoneda: detalle[0].comisionMoneda,
+        total: total,
+        ganancia: ganancia
     };
     guardarVenta(venta);
-    ajustarStock(productoId, -(cantidad || 1), true); // true = viene de una venta confirmada
+    detalle.forEach(d => ajustarStock(d.productoId, -(d.cantidad), true));
     renderizarVentas();
-    mostrarNotificacion(`✅ Venta registrada: ${p.nombre}`);
-    // Ventas ahora se sincronizan con Firebase (ver _fbGuardarVenta)
+    mostrarNotificacion(`✅ Venta registrada: ${detalle.length} producto${detalle.length > 1 ? 's' : ''}`);
 
-    // Guardar también como pedido en Firebase para seguimiento del cliente
+    // Guardar también como pedido en Firebase para seguimiento del cliente (multi-item)
     (async () => {
         try {
             const base = (typeof _fbRtdbUrl === 'function') ? _fbRtdbUrl() : null;
@@ -917,8 +943,8 @@ function registrarVenta(productoId, cantidad) {
                 body: JSON.stringify({
                     id: venta.id,
                     fecha: venta.fecha,
-                    items: [{ id: p.id, nombre: p.nombre, cantidad: venta.cantidad, precio: venta.precio }],
-                    total: venta.total,
+                    items: detalle.map(d => ({ id: d.productoId, nombre: d.producto, cantidad: d.cantidad, precio: d.precio })),
+                    total: total,
                     estado: 'confirmado',
                     clienteTs: Date.now(),
                     actualizado: Date.now()
@@ -926,6 +952,14 @@ function registrarVenta(productoId, cantidad) {
             });
         } catch(e) {}
     })();
+    return venta;
+}
+
+// Compat: registrar una venta de un solo producto
+function registrarVenta(productoId, cantidad) {
+    const p = productos.find(p => p.id === productoId);
+    if (!p) return;
+    registrarVentaPedido([{ productoId: p.id, producto: p.nombre, cantidad: cantidad || 1, precio: p.precioActual, comision: p.comision || 0, comisionMoneda: p.comisionMoneda || 'USD' }]);
 }
 
 // Generar ticket de venta para enviar al cliente por WhatsApp (con link de seguimiento)
@@ -936,7 +970,15 @@ function _valeRR(ctx, x, y, w, h, r) {
 }
 // Genera el vale del cliente como imagen (fondo oscuro a sangre, sin esquinas blancas)
 async function generarValeImagen(venta, cliente) {
-    const W = 1080, H = 1040, M = 64;
+    const W = 1080, M = 64;
+    const items = _ventaItems(venta);
+    const tasa = (typeof getTasaMN === 'function') ? getTasaMN() : 0;
+    const totalMN = tasa > 0 ? Math.round((venta.total || 0) * tasa).toLocaleString('es-CU') : null;
+    const rowH = 60, firstRow = 536;
+    const dashedY = firstRow + (items.length - 1) * rowH + 36;
+    const totalY = dashedY + 78;
+    const mnExtra = totalMN ? 42 : 0;
+    const H = totalY + mnExtra + 40 + 96 + 54;
     const cv = document.createElement('canvas'); cv.width = W; cv.height = H;
     const ctx = cv.getContext('2d');
     ctx.fillStyle = '#141414'; ctx.fillRect(0, 0, W, H);
@@ -953,25 +995,23 @@ async function generarValeImagen(venta, cliente) {
     ctx.fillStyle = '#FF6B35'; ctx.font = '800 40px system-ui,Arial,sans-serif'; ctx.fillText(promotor, M + 30, boxY + 104);
     ctx.textAlign = 'right'; ctx.fillStyle = '#8c8c8c'; ctx.font = '700 24px system-ui,Arial,sans-serif'; ctx.fillText('CLIENTE', W - M - 30, boxY + 52);
     ctx.fillStyle = '#FF6B35'; ctx.font = '800 40px system-ui,Arial,sans-serif'; ctx.fillText((cliente || '—'), W - M - 30, boxY + 104);
-    let y = boxY + boxH + 70;
-    ctx.textAlign = 'left'; ctx.fillStyle = '#8c8c8c'; ctx.font = '700 26px system-ui,Arial,sans-serif'; ctx.fillText('PRODUCTOS A ENTREGAR', M, y);
-    y += 64;
-    const qty = (venta.cantidad || 1) + 'x';
-    ctx.font = '800 30px system-ui,Arial,sans-serif'; const qw = ctx.measureText(qty).width;
-    _valeRR(ctx, M, y - 38, qw + 44, 56, 12); ctx.fillStyle = '#2a2a2a'; ctx.fill();
-    ctx.fillStyle = '#fff'; ctx.textAlign = 'left'; ctx.fillText(qty, M + 22, y);
-    ctx.textAlign = 'right'; ctx.fillStyle = '#f3f0ec'; ctx.font = '600 38px system-ui,Arial,sans-serif';
-    let nm = String(venta.producto || ''); const maxNW = (W - M) - (M + qw + 44 + 30);
-    if (ctx.measureText(nm).width > maxNW) { while (nm.length > 3 && ctx.measureText(nm + '…').width > maxNW) nm = nm.slice(0, -1); nm = nm.replace(/\s+$/, '') + '…'; }
-    ctx.fillText(nm, W - M, y);
-    y += 66;
-    ctx.strokeStyle = 'rgba(255,255,255,.14)'; ctx.lineWidth = 2; ctx.setLineDash([8, 8]); ctx.beginPath(); ctx.moveTo(M, y); ctx.lineTo(W - M, y); ctx.stroke(); ctx.setLineDash([]);
-    y += 78;
-    const tasa = (typeof getTasaMN === 'function') ? getTasaMN() : 0;
-    const totalMN = tasa > 0 ? Math.round(venta.total * tasa).toLocaleString('es-CU') : null;
-    ctx.textAlign = 'left'; ctx.fillStyle = '#8c8c8c'; ctx.font = '700 34px system-ui,Arial,sans-serif'; ctx.fillText('TOTAL A PAGAR', M, y);
-    ctx.textAlign = 'right'; ctx.fillStyle = '#ffffff'; ctx.font = '800 64px system-ui,Arial,sans-serif'; ctx.fillText('$' + Number(venta.total || 0).toFixed(2), W - M, y + 6);
-    if (totalMN) { y += 42; ctx.fillStyle = '#8c8c8c'; ctx.font = '600 26px system-ui,Arial,sans-serif'; ctx.textAlign = 'right'; ctx.fillText('≈ ' + totalMN + ' MN', W - M, y); }
+    ctx.textAlign = 'left'; ctx.fillStyle = '#8c8c8c'; ctx.font = '700 26px system-ui,Arial,sans-serif'; ctx.fillText('PRODUCTOS A ENTREGAR', M, 472);
+    let y = firstRow;
+    items.forEach(it => {
+        const qty = (it.cantidad || 1) + 'x';
+        ctx.font = '800 30px system-ui,Arial,sans-serif'; const qw = ctx.measureText(qty).width;
+        _valeRR(ctx, M, y - 38, qw + 44, 56, 12); ctx.fillStyle = '#2a2a2a'; ctx.fill();
+        ctx.fillStyle = '#fff'; ctx.textAlign = 'left'; ctx.fillText(qty, M + 22, y);
+        ctx.textAlign = 'right'; ctx.fillStyle = '#f3f0ec'; ctx.font = '600 34px system-ui,Arial,sans-serif';
+        let nm = String(it.producto || ''); const maxNW = (W - M) - (M + qw + 44 + 30);
+        if (ctx.measureText(nm).width > maxNW) { while (nm.length > 3 && ctx.measureText(nm + '…').width > maxNW) nm = nm.slice(0, -1); nm = nm.replace(/\s+$/, '') + '…'; }
+        ctx.fillText(nm, W - M, y);
+        y += rowH;
+    });
+    ctx.strokeStyle = 'rgba(255,255,255,.14)'; ctx.lineWidth = 2; ctx.setLineDash([8, 8]); ctx.beginPath(); ctx.moveTo(M, dashedY); ctx.lineTo(W - M, dashedY); ctx.stroke(); ctx.setLineDash([]);
+    ctx.textAlign = 'left'; ctx.fillStyle = '#8c8c8c'; ctx.font = '700 34px system-ui,Arial,sans-serif'; ctx.fillText('TOTAL A PAGAR', M, totalY);
+    ctx.textAlign = 'right'; ctx.fillStyle = '#ffffff'; ctx.font = '800 64px system-ui,Arial,sans-serif'; ctx.fillText('$' + Number(venta.total || 0).toFixed(2), W - M, totalY + 6);
+    if (totalMN) { ctx.fillStyle = '#8c8c8c'; ctx.font = '600 26px system-ui,Arial,sans-serif'; ctx.textAlign = 'right'; ctx.fillText('≈ ' + totalMN + ' MN', W - M, totalY + mnExtra); }
     const sy = H - 150;
     _valeRR(ctx, M, sy, W - 2 * M, 96, 18); ctx.fillStyle = 'rgba(201,169,110,.10)'; ctx.fill(); ctx.strokeStyle = 'rgba(201,169,110,.3)'; ctx.lineWidth = 2; ctx.stroke();
     ctx.beginPath(); ctx.arc(M + 46, sy + 48, 24, 0, Math.PI * 2); ctx.fillStyle = '#C9A96E'; ctx.fill();
@@ -1093,8 +1133,10 @@ function renderizarVentas(pagina) {
 
             <div class="admin-input-row">
                 <input type="number" id="ventaCantidad" value="1" min="1" placeholder="Cantidad" class="admin-qty-input">
+                <button onclick="agregarAlCarritoVenta()" type="button" class="btn" style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:#eee">➕ Agregar</button>
                 <button onclick="registrarVentaDesdeForm()" type="button" class="btn btn-primary">✅ Registrar venta</button>
             </div>
+            <div id="ventaCarritoBox" style="display:none;margin-top:12px;background:rgba(0,0,0,.25);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:12px 14px"></div>
         </div>
     </div>
 
@@ -1113,8 +1155,8 @@ function renderizarVentas(pagina) {
         ventasPagina.forEach(v => {
             html += `<div class="admin-history-item">
                 <div class="info">
-                    <div class="title">${v.producto}</div>
-                    <div class="meta">${v.fecha} · ${v.cantidad} unidad(es)</div>
+                    <div class="title">${(Array.isArray(v.items) && v.items.length > 1) ? (v.items.length + ' productos · ' + v.cantidad + ' uds') : v.producto}</div>
+                    <div class="meta">${v.fecha}${(Array.isArray(v.items) && v.items.length > 1) ? ' · ' + v.items.map(it => it.cantidad + 'x ' + it.producto).join(', ') : ' · ' + v.cantidad + ' unidad(es)'}</div>
                 </div>
                 <div style="text-align:right;flex-shrink:0;">
                     <div class="total">$${v.total.toFixed(2)}</div>
@@ -1139,20 +1181,60 @@ function renderizarVentas(pagina) {
         </div>`;
     }
     cont.innerHTML = html + paginacion;
+    if (typeof renderCarritoVenta === 'function') renderCarritoVenta();
 }
 
-function registrarVentaDesdeForm() {
+// Carrito del pedido (varios productos en una sola venta)
+let _ventaCarrito = [];
+function _limpiarSeleccionVenta() {
+    if (typeof deseleccionarProductoVenta === 'function') deseleccionarProductoVenta();
+    const b = document.getElementById('ventaBuscador'); if (b) { b.value = ''; if (typeof filtrarProductosVenta === 'function') filtrarProductosVenta(); }
+    const cantEl = document.getElementById('ventaCantidad'); if (cantEl) cantEl.value = '1';
+}
+function agregarAlCarritoVenta() {
     const sel = document.getElementById('ventaProductoSelect');
     const cant = parseInt(document.getElementById('ventaCantidad')?.value) || 1;
     const id = parseInt(sel?.value);
     if (!id) { mostrarNotificacion('⚠️ Selecciona un producto primero', 'error'); return; }
+    const p = productos.find(x => x.id === id); if (!p) return;
+    const ex = _ventaCarrito.find(c => c.productoId === id);
+    if (ex) ex.cantidad += cant;
+    else _ventaCarrito.push({ productoId: id, producto: p.nombre, cantidad: cant, precio: p.precioActual, comision: p.comision || 0, comisionMoneda: p.comisionMoneda || 'USD' });
+    _limpiarSeleccionVenta();
+    renderCarritoVenta();
+    mostrarNotificacion('🛒 Agregado al pedido: ' + p.nombre);
+}
+function quitarDelCarritoVenta(idx) { _ventaCarrito.splice(idx, 1); renderCarritoVenta(); }
+function renderCarritoVenta() {
+    const cont = document.getElementById('ventaCarritoBox');
+    if (!cont) return;
+    if (!_ventaCarrito.length) { cont.style.display = 'none'; cont.innerHTML = ''; return; }
+    cont.style.display = 'block';
+    const total = _ventaCarrito.reduce((s, c) => s + c.precio * c.cantidad, 0);
+    cont.innerHTML = `<div style="font-size:12px;color:#888;font-weight:700;letter-spacing:.06em;margin-bottom:8px">🛒 PEDIDO (${_ventaCarrito.length})</div>` +
+        _ventaCarrito.map((c, i) => `<div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.06)">
+            <span style="background:#2a2a2a;color:#fff;font-weight:700;border-radius:7px;padding:3px 9px;font-size:12px">${c.cantidad}x</span>
+            <span style="flex:1;font-size:13px;color:#eee;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${escapeHtml(c.producto)}</span>
+            <span style="color:#FF6B35;font-weight:700;font-size:13px">$${(c.precio * c.cantidad).toFixed(2)}</span>
+            <button onclick="quitarDelCarritoVenta(${i})" type="button" style="background:none;border:none;color:#e74c3c;cursor:pointer;font-size:16px;line-height:1">✕</button>
+        </div>`).join('') +
+        `<div style="display:flex;justify-content:space-between;margin-top:10px;font-weight:800;font-size:15px"><span style="color:#888">Total pedido</span><span style="color:#fff">$${total.toFixed(2)}</span></div>`;
+}
+function registrarVentaDesdeForm() {
+    // Si hay productos en el carrito, registra todo el pedido como UNA venta (un vale)
+    if (_ventaCarrito.length) {
+        const items = _ventaCarrito.slice();
+        _ventaCarrito = [];
+        registrarVentaPedido(items);
+        return;
+    }
+    // Si no, registra el producto seleccionado (modo simple)
+    const sel = document.getElementById('ventaProductoSelect');
+    const cant = parseInt(document.getElementById('ventaCantidad')?.value) || 1;
+    const id = parseInt(sel?.value);
+    if (!id) { mostrarNotificacion('⚠️ Agrega o selecciona un producto', 'error'); return; }
     registrarVenta(id, cant);
-    // Limpiar buscador y selección tras registrar
-    deseleccionarProductoVenta();
-    const b = document.getElementById('ventaBuscador');
-    if (b) { b.value = ''; filtrarProductosVenta(); }
-    const cantEl = document.getElementById('ventaCantidad');
-    if (cantEl) cantEl.value = '1';
+    _limpiarSeleccionVenta();
 }
 
 function eliminarVenta(id) {
