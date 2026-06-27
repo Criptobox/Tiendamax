@@ -242,7 +242,7 @@
     "categoria": "ENERGIA",
     "subcategoria": "CONTROLADORES SOLARES",
     "stock": 0,
-    "masVendido": true,
+    "masVendido": false,
     "usado": false,
     "garantia": "",
     "devolucion": false,
