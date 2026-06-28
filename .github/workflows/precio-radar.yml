@@ -8,6 +8,7 @@ on:
 
 permissions:
   contents: write
+  actions: write   # para disparar el deploy de Pages (los commits del bot no lo hacen solos)
 
 jobs:
   radar:
@@ -61,3 +62,16 @@ jobs:
           done
           echo "❌ No se pudo subir radar.json tras varios intentos." >&2
           exit 1
+
+      - name: Publicar en GitHub Pages
+        if: success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          echo "Disparando el deploy de Pages (los commits del bot no lo disparan solos)…"
+          curl -sS -X POST \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "https://api.github.com/repos/${{ github.repository }}/actions/workflows/pages.yml/dispatches" \
+            -d '{"ref":"main"}'
