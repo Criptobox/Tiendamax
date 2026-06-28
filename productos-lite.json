@@ -61,7 +61,12 @@
     "descuento": 0,
     "slug": "inversor-12v",
     "comision": 10,
-    "comisionMoneda": "USD"
+    "comisionMoneda": "USD",
+    "imagenes": [
+      "https://tiendamax.org/imagenes/img_1777924118004.webp"
+    ],
+    "specs": [],
+    "recomendados": []
   },
   {
     "id": 1777924173211,
