@@ -43,9 +43,21 @@ jobs:
             exit 0
           fi
           git commit -m "chore: actualizar radar de precios"
-          for i in 1 2 3 4; do
-            if git push; then exit 0; fi
-            sleep $((i * 3))
-            git pull --rebase origin main || git rebase --abort 2>/dev/null
+          for i in 1 2 3 4 5; do
+            if git push origin HEAD:main; then
+              echo "✅ radar.json subido."
+              exit 0
+            fi
+            echo "Push rechazado (rama detrás); reintegrando sobre origin/main…"
+            git fetch origin main
+            # radar.json es un archivo generado: ante conflicto conserva SIEMPRE
+            # nuestra versión recién creada (en rebase, «theirs» = nuestro commit).
+            if ! git rebase -X theirs origin/main; then
+              git checkout --theirs -- radar.json 2>/dev/null || true
+              git add radar.json
+              GIT_EDITOR=true git rebase --continue || git rebase --abort
+            fi
+            sleep $((i * 2))
           done
-          git push
+          echo "❌ No se pudo subir radar.json tras varios intentos." >&2
+          exit 1

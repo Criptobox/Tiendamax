@@ -1748,16 +1748,30 @@ if ('serviceWorker' in navigator) {
   // Detector con cuidado: solo medidas inequívocas de electrónica (no L/ml/KG → evita aceites).
   var SRE=/\b(\d+(?:[.,]\d+)?)\s*(W|V|Ah|A|GB|TB|Mbps|GHz|MHz|HP|mAh|KV|kW|RPM)\b(?![-\d])/gi;
   var INCH=/(\d+(?:[.,]\d+)?)\s*(?:"|''|pulgadas?)/gi;
-  function detect(desc){
+  // Devuelve [{spec, ctx}] — la spec detectada y la frase de la descripción que la respalda.
+  function evidencias(desc){
     if(!desc) return [];
     var out=[], seen={}, m;
+    function add(spec, idx, len){
+      var k=spec.toUpperCase(); if(seen[k] || out.length>=8) return; seen[k]=1;
+      var s=Math.max(0, idx-38), e=Math.min(desc.length, idx+len+38);
+      var ctx=(s>0?'…':'')+desc.slice(s,e).trim()+(e<desc.length?'…':'');
+      out.push({spec:spec, ctx:ctx});
+    }
     SRE.lastIndex=0;
-    while((m=SRE.exec(desc))!==null){ var s=m[0].replace(/\s+/g,''); var k=s.toUpperCase(); if(!seen[k]){seen[k]=1;out.push(s);} if(out.length>=6) break; }
+    while((m=SRE.exec(desc))!==null){ add(m[0].replace(/\s+/g,''), m.index, m[0].length); if(out.length>=8) break; }
     INCH.lastIndex=0;
-    while(out.length<6 && (m=INCH.exec(desc))!==null){ var s2=m[1].replace(/\s+/g,'')+'"'; var k2=s2.toUpperCase(); if(!seen[k2]){seen[k2]=1;out.push(s2);} }
-    var ip=desc.match(/\bIP\d{2}\b/i);
-    if(ip && out.length<6 && !seen[ip[0].toUpperCase()]) out.push(ip[0].toUpperCase());
+    while(out.length<8 && (m=INCH.exec(desc))!==null){ add(m[1].replace(/\s+/g,'')+'"', m.index, m[0].length); }
+    var ip=/\bIP\d{2}\b/i.exec(desc);
+    if(ip) add(ip[0].toUpperCase(), ip.index, ip[0].length);
     return out;
+  }
+  // Resalta en naranja la medida dentro de la frase de evidencia.
+  function resaltarCtx(ctx){
+    var safe=esc(ctx);
+    safe=safe.replace(/(\d+(?:[.,]\d+)?)\s*(W|V|Ah|A|GB|TB|Mbps|GHz|MHz|HP|mAh|KV|kW|RPM)\b/gi,'<b style="color:#FF6B35">$&</b>');
+    safe=safe.replace(/\bIP\d{2}\b/gi,'<b style="color:#FF6B35">$&</b>');
+    return safe;
   }
   function specsDe(p){
     if(Array.isArray(p.specs)) return p.specs.slice();
@@ -1786,11 +1800,12 @@ if ('serviceWorker' in navigator) {
       var nombre=p.nombre||'';
       if(q && nombre.toLowerCase().indexOf(q)<0) return;
       var actuales=specsDe(p);
-      var sug=detect(p.descripcion||'');
+      var evid=evidencias(p.descripcion||'');
+      var sug=evid.map(function(e){return e.spec;});
       var actUp=actuales.map(function(x){return x.toUpperCase();});
       var nuevas=sug.filter(function(s){ return actUp.indexOf(s.toUpperCase())<0; });
       if(soloNuevas && !nuevas.length) return;
-      rows.push({id:p.id,nombre:nombre,actuales:actuales,sug:sug,nuevas:nuevas,prefill:(actuales.length?actuales.join(', '):sug.join(', '))});
+      rows.push({id:p.id,nombre:nombre,actuales:actuales,sug:sug,nuevas:nuevas,evid:evid,prefill:(actuales.length?actuales.join(', '):sug.join(', '))});
       _sugMap[String(p.id)]=sug.join(', ');
     });
     if(!rows.length){ cont.innerHTML='<p class="sub">Sin productos que coincidan.</p>'; return; }
@@ -1801,6 +1816,9 @@ if ('serviceWorker' in navigator) {
         return '<span style="display:inline-block;font-size:11px;font-weight:700;padding:3px 9px;border-radius:14px;margin:2px 5px 2px 0;'+(nuevo?'background:rgba(255,107,53,.14);border:1px solid rgba(255,107,53,.4);color:#FF6B35':'background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);color:#aaa')+'">'+esc(s)+'</span>';
       }).join('') : '<span style="color:#666;font-size:12px">— nada detectado en la descripción —</span>';
       var id=esc(String(r.id));
+      var evidHtml=r.evid.length
+        ? r.evid.map(function(e){ return '<div style="font-size:12px;color:#cfcfcf;margin:4px 0;padding:6px 10px;background:rgba(255,255,255,.04);border-radius:8px;line-height:1.5"><b style="color:#FF6B35">'+esc(e.spec)+'</b> &nbsp;«'+resaltarCtx(e.ctx)+'»</div>'; }).join('')
+        : '<div style="font-size:12px;color:#888">No se encontró evidencia textual en la descripción.</div>';
       return '<div style="padding:11px 12px;border:1px solid rgba(255,255,255,.07);border-radius:12px;background:rgba(0,0,0,.18);margin-bottom:8px">'
         +'<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">'
           +'<input type="checkbox" class="specsChk" data-id="'+id+'" style="width:18px;height:18px;min-height:18px;accent-color:#FF6B35">'
@@ -1811,7 +1829,9 @@ if ('serviceWorker' in navigator) {
         +'<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">'
           +'<input class="specsInput" data-id="'+id+'" value="'+esc(r.prefill)+'" placeholder="ej: 12V, 2000W (separadas por coma)" style="flex:1;min-width:200px">'
           +'<button type="button" class="btn" style="font-size:12px;padding:6px 10px" onclick="tmSpecsUsarSugerencia(\''+id+'\')">↺ usar detectadas</button>'
+          +'<button type="button" class="btn" style="font-size:12px;padding:6px 10px" onclick="tmSpecsVerif(\''+id+'\')">🔍 Verificar</button>'
         +'</div>'
+        +'<div class="specsEvid" data-id="'+id+'" style="display:none;margin-top:8px;border-top:1px solid rgba(255,255,255,.06);padding-top:8px"><div style="font-size:11px;color:#888;margin-bottom:4px">Evidencia: de dónde sale cada especificación en la descripción real del producto.</div>'+evidHtml+'</div>'
       +'</div>';
     }).join('');
     cont.innerHTML=html;
@@ -1824,6 +1844,10 @@ if ('serviceWorker' in navigator) {
     var chk=document.querySelector('.specsChk[data-id="'+id+'"]'); if(chk) chk.checked=true;
   };
   window.tmSpecsMarcarTodos=function(on){ document.querySelectorAll('.specsChk').forEach(function(c){ c.checked=!!on; }); };
+  window.tmSpecsVerif=function(id){
+    var d=document.querySelector('.specsEvid[data-id="'+id+'"]'); if(!d) return;
+    d.style.display = (d.style.display==='none' || !d.style.display) ? 'block' : 'none';
+  };
 
   window.tmSpecsAplicar=function(){
     var chks=document.querySelectorAll('.specsChk:checked');
@@ -1840,8 +1864,16 @@ if ('serviceWorker' in navigator) {
       n++;
     });
     try{ localStorage.setItem('productos', JSON.stringify(ps)); }catch(e){}
-    if(typeof mostrarNotificacion==='function') mostrarNotificacion('✅ '+n+' producto(s) actualizados. Pulsa «Actualizar tienda» para guardar.','success');
     tmSpecsRender();
+    // Auto-actualizar la tienda: sube productos.json sin tener que pulsar nada más.
+    if(typeof sincronizarTodoConGitHub==='function'){
+      if(typeof mostrarNotificacion==='function') mostrarNotificacion('✅ '+n+' producto(s) — actualizando la tienda…','info');
+      Promise.resolve().then(function(){ return sincronizarTodoConGitHub(); })
+        .then(function(){ if(typeof mostrarNotificacion==='function') mostrarNotificacion('🎉 Tienda actualizada con las nuevas especificaciones','success'); })
+        .catch(function(){ if(typeof mostrarNotificacion==='function') mostrarNotificacion('Specs guardadas; revisa la conexión con GitHub','warning'); });
+    } else {
+      if(typeof mostrarNotificacion==='function') mostrarNotificacion('✅ '+n+' producto(s) actualizados. Pulsa «Actualizar tienda» para guardar.','success');
+    }
   };
 
   document.addEventListener('click',function(e){ if(e.target.closest('[data-arg="specs-tool"],[data-tab="specs-tool"]')) setTimeout(function(){ tmSpecsCargar(false); },200); });
