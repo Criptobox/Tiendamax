@@ -1,7 +1,16 @@
 {
-  "actualizado": "",
-  "fecha": "",
-  "fuentes": ["revolico", "porlalivre", "lelespc"],
-  "resumen": { "vigilados": 0, "encimaMercado": 0, "bajadasComp": 0, "sinDatos": 0 },
+  "actualizado": "2026-06-28T12:17:11.778987+00:00",
+  "fecha": "2026-06-28",
+  "fuentes": [
+    "revolico",
+    "porlalivre",
+    "lelespc"
+  ],
+  "resumen": {
+    "vigilados": 0,
+    "encimaMercado": 0,
+    "bajadasComp": 0,
+    "sinDatos": 0
+  },
   "productos": []
 }
