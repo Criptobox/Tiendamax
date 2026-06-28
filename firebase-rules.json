@@ -50,7 +50,7 @@
           ".validate": "newData.isString()"
         }
       },
-      ".read": false,
+      ".read": true,
       ".write": false
     },
     ".read": false,

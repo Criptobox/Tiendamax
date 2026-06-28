@@ -507,6 +507,28 @@ function obtenerProductosModificados() {
     return tmParseArray(localStorage.getItem('productosModificados'));
 }
 
+// Evita que el sync borre descripciones: el admin carga el catálogo lite (sin
+// descripcion), así que antes de subir productos.json recupera descripcion/seoTitle/
+// seoDescription del productos.json del repo para los productos que no las tengan en memoria.
+async function _tmPreservarDescripciones() {
+    try {
+        if (!Array.isArray(productos) || !productos.some(p => !p.descripcion)) return;
+        const res = await fetch('productos.json?_=' + Date.now(), { cache: 'no-store' });
+        if (!res.ok) return;
+        const full = await res.json();
+        if (!Array.isArray(full)) return;
+        const map = {};
+        full.forEach(p => { if (p && p.id != null) map[String(p.id)] = p; });
+        productos.forEach(p => {
+            const fp = map[String(p.id)];
+            if (!fp) return;
+            if (!p.descripcion && fp.descripcion) p.descripcion = fp.descripcion;
+            if (!p.seoTitle && fp.seoTitle) p.seoTitle = fp.seoTitle;
+            if (!p.seoDescription && fp.seoDescription) p.seoDescription = fp.seoDescription;
+        });
+    } catch (e) { console.warn('[preservarDescripciones]', e); }
+}
+
 async function sincronizarTodoConGitHub() {
     const user  = localStorage.getItem('githubUser');
     const repo  = localStorage.getItem('githubRepo');
@@ -598,6 +620,9 @@ async function sincronizarTodoConGitHub() {
     // Limpiar claves undefined
     Object.keys(_configSync).forEach(k => _configSync[k] === undefined && delete _configSync[k]);
 
+    // No perder descripciones al subir (el admin trabaja con el catálogo lite).
+    await _tmPreservarDescripciones();
+
     const _productosLite = productos.map(p => { const { descripcion, ...r } = p; return r; });
     const archivos = [
         { path: 'productos.json',              data: productos },
@@ -674,6 +699,7 @@ async function sincronizarConGitHub() {
         return;
     }
     try {
+        await _tmPreservarDescripciones();
         const _lite = productos.map(p => { const { descripcion, ...r } = p; return r; });
         await subirArchivoAGitHub(user, repo, token, 'productos.json', productos);
         await subirArchivoAGitHub(user, repo, token, 'productos-lite.json', _lite);

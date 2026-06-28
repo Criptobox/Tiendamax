@@ -1880,7 +1880,6 @@ renderizarProductos = function() {
                 '<img src="' + _img + '" alt="' + _nom + '" loading="lazy" decoding="async" onerror="this.src=\'/iconos/favicon-192.png\';this.style.opacity=\'0.3\'">' +
             '</div>' +
             '<h3>' + _nom + '</h3>' +
-            (_specs.length ? '<div class="spec-badges">' + _specs.slice(0, 3).map(s => '<span class="spec-badge">' + escapeHtml(s) + '</span>').join('') + '</div>' : '') +
             '<p class="producto-description">' + _des + '</p>' +
             '<p class="precio"><span class="precio-actual" data-usd="' + safeNum(producto.precioActual) + '">$' + Number(producto.precioActual).toFixed(2) + ' USD</span></p>' +
             (esAgotado

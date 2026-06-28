@@ -148,28 +148,6 @@ function renderizarProductos(isLoadMore = false) {
                 ${(producto.precioOriginal > 0 && producto.precioOriginal > producto.precioActual) ? `<div class="badge">-${Math.round((1 - producto.precioActual/producto.precioOriginal) * 100)}%</div>` : ''}
             </div>
             <h3>${_nombre}</h3>
-            ${(() => {
-                // Extraer specs de la descripción: números + unidad (W, V, Ah, A, GB, Mbps, etc.)
-                const _specs = [];
-                const _descRaw = producto.descripcion || '';
-                // Patrones comunes: 2000W, 12V, 100Ah, 30A, 128GB, 1200Mbps, etc.
-                const _matches = _descRaw.match(/\b(\d+(?:\.\d+)?)\s*(W|V|Ah|A|GB|TB|Mbps|GHz|MHz|HP|mAh|KV)\b/gi);
-                if (_matches) {
-                    const _seen = new Set();
-                    _matches.forEach(m => {
-                        if (!_seen.has(m.toUpperCase()) && _specs.length < 3) {
-                            _seen.add(m.toUpperCase());
-                            _specs.push(m.replace(/\s+/g, ''));
-                        }
-                    });
-                }
-                // Añadir subcategoria como primer spec si hay
-                if (producto.subcategoria && producto.subcategoria !== 'Todas' && producto.subcategoria !== 'General') {
-                    _specs.unshift(producto.subcategoria);
-                }
-                if (_specs.length === 0) return '';
-                return '<div class="spec-badges">' + _specs.slice(0, 3).map(s => `<span class="spec-badge">${escapeHtml(s)}</span>`).join('') + '</div>';
-            })()}
             <p class="producto-description">${_desc}</p>
             <p class="precio">
                     <span class="precio-actual" data-usd="${safeNum(producto.precioActual)}">${typeof formatPrecio === 'function' ? formatPrecio(producto.precioActual) : '$'+producto.precioActual.toFixed(2)+' USD'}</span>

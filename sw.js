@@ -50,6 +50,8 @@
 // v191: añade chat IA del admin con contexto de tienda.
 // v190: añade herramienta IA masiva para SEO/recs/auditoría por lotes.
 // v189: añade recomendador IA y relaciones en detalle/carrito.
+// v277: fix suscriptores (tokens .read), blinda descripciones en sync, chips solo en modal.
+// v276: apartado Radar de precios (compara con Revolico/Porlalivre/lelespc, 1x/dia + push).
 // v275: elimina favicon.svg de 246KB (redundante con los PNGs) — carga más liviana.
 // v192: descripciones restauradas, fuera prueba social falsa (4.9/500★), H1 con espacios, hero MN usa margenMN.
 // v191: vale en 3 pasos, formulario.html propio del cliente, acceso al vale desde Inicio, auto-specs.
@@ -110,7 +112,7 @@
 
 
 
-const CACHE_NAME = 'tiendamax-202606272330';
+const CACHE_NAME = 'tiendamax-202606280130';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
