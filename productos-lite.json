@@ -21,7 +21,8 @@
       "100Ah"
     ],
     "seoTitle": "BATERÍA MUST TIPO LIFEPO4 en Cuba | TiendaMax",
-    "seoDescription": "Batería tipo LiFePO4 (litio hierro fosfato). Mas segura y con mayor vida útil que las tradicionales. Capacidad de 12.8V y 100Ah (1280Wh), ideal para…"
+    "seoDescription": "Batería tipo LiFePO4 (litio hierro fosfato). Mas segura y con mayor vida útil que las tradicionales. Capacidad de 12.8V y 100Ah (1280Wh), ideal para…",
+    "radar": true
   },
   {
     "id": 1777923552923,
@@ -72,7 +73,8 @@
     "specs": [],
     "recomendados": [],
     "seoTitle": "INVERSOR 12V en Cuba | TiendaMax",
-    "seoDescription": "Ideal para combatir los apagones. Este inversor permitira mantener trabajando electrodomesticos como un refrigerador, ventiladores, televisores y luces de…"
+    "seoDescription": "Ideal para combatir los apagones. Este inversor permitira mantener trabajando electrodomesticos como un refrigerador, ventiladores, televisores y luces de…",
+    "radar": true
   },
   {
     "id": 1777924173211,
@@ -155,7 +157,8 @@
     "slug": "switch-8-puertos-ethernet-1gbps",
     "comision": 1.8,
     "seoTitle": "SWITCH DE 8 PUERTOS en Cuba | TiendaMax",
-    "seoDescription": "Switch de 8 puertos ethernet de 1 gigabite."
+    "seoDescription": "Switch de 8 puertos ethernet de 1 gigabite.",
+    "radar": true
   },
   {
     "id": 1778102507659,
@@ -173,7 +176,8 @@
     "slug": "pesa-bascula-inteligente-digital",
     "comision": 1.8,
     "seoTitle": "PESA / BÁSCULA INTELIGENTE DIGITAL. en Cuba | TiendaMax",
-    "seoDescription": "Pesa/ Báscula inteligente digital. Funciona con 2 baterias AAA(no incluidas) Cinta metrica incluida. Se conecta con el teléfono mediante una app que…"
+    "seoDescription": "Pesa/ Báscula inteligente digital. Funciona con 2 baterias AAA(no incluidas) Cinta metrica incluida. Se conecta con el teléfono mediante una app que…",
+    "radar": true
   },
   {
     "id": 1778102582909,
@@ -191,7 +195,8 @@
     "slug": "antorcha-tig-para-soldadura",
     "comision": 10,
     "seoTitle": "ANTORCHA PARA SOLDADURA TIG: en Cuba | TiendaMax",
-    "seoDescription": "Antorcha para soldadura TIG: Utilizada para trabajos de soldadura de alta precisión en metales como acero inoxidable, aluminio y hierro. Ideal para…"
+    "seoDescription": "Antorcha para soldadura TIG: Utilizada para trabajos de soldadura de alta precisión en metales como acero inoxidable, aluminio y hierro. Ideal para…",
+    "radar": true
   },
   {
     "id": 1778103783319,
