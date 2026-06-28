@@ -1,0 +1,51 @@
+name: Radar de precios
+
+on:
+  schedule:
+    # 1×/día — 11:00 UTC ≈ 7:00 AM hora Cuba (horario tranquilo, no agresivo)
+    - cron: '0 11 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  radar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Instalar dependencias
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests beautifulsoup4 firebase-admin
+
+      - name: Ejecutar radar de precios
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: python scripts/precio_radar.py
+
+      - name: Commit y push de radar.json
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add radar.json
+          if git diff --cached --quiet; then
+            echo "Sin cambios en radar.json."
+            exit 0
+          fi
+          git commit -m "chore: actualizar radar de precios"
+          for i in 1 2 3 4; do
+            if git push; then exit 0; fi
+            sleep $((i * 3))
+            git pull --rebase origin main || git rebase --abort 2>/dev/null
+          done
+          git push
