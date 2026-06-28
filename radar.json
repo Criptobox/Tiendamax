@@ -1,5 +1,5 @@
 {
-  "actualizado": "2026-06-28T16:46:12.129226+00:00",
+  "actualizado": "2026-06-28T17:14:12.907495+00:00",
   "fecha": "2026-06-28",
   "fuentes": [
     "revolico",
@@ -7,10 +7,306 @@
     "lelespc"
   ],
   "resumen": {
-    "vigilados": 0,
+    "vigilados": 5,
     "encimaMercado": 0,
     "bajadasComp": 0,
     "sinDatos": 0
   },
-  "productos": []
+  "productos": [
+    {
+      "id": 1778104115783,
+      "nombre": "BATERÍA MUST TIPO LIFEPO4",
+      "tuPrecio": 300.0,
+      "mercado": {
+        "min": 10.0,
+        "mediana": 3950.0,
+        "n": 23
+      },
+      "deltaAyerMediana": null,
+      "estado": "competitivo",
+      "sugerencia": {
+        "texto": "Precio competitivo respecto al mercado"
+      },
+      "historial": [
+        {
+          "fecha": "2026-06-28",
+          "mediana": 3950.0
+        }
+      ],
+      "muestras": [
+        {
+          "fuente": "revolico",
+          "titulo": "Kit Solar Inversor Sako 10kw y Batería Must de 15kw",
+          "precio": 10.0,
+          "url": "https://www.revolico.com/item/kit-solar-inversor-sako-10kw-y-bateria-must-de-15kw-55379172"
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "280 USD Batería tipo LiFePO4 Must 12.8V y 100Ah (1280Wh)_290 USD_Ax",
+          "precio": 280.0,
+          "url": "https://www.revolico.com/item/bateria-tipo-lifepo4-must-128v-y-100ah-1280wh_300-usd_ax-55026844"
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "290 USD Batería tipo LiFePO4, marca must, 12V x 100 ah Precio: 300 USD Ax",
+          "precio": 290.0,
+          "url": "https://www.revolico.com/item/bateria-tipo-lifepo4-marca-must-12v-x-100-ah-55306696"
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "300 USD BATERÍA MUST TIPO LIFEPO4",
+          "precio": 300.0,
+          "url": "https://www.revolico.com/item/bateria-must-tipo-lifepo4-55929974"
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "300 USD Batería Must tipo LiFePO4, ideal para sistemas solares e inversores.",
+          "precio": 300.0,
+          "url": "https://www.revolico.com/item/bateria-tipo-lifepo4-ideal-para-sistemas-solares-e-inversores-55120299"
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "300 USD Batería Must tipo LiFePO4. 12.8V 100Ah, ideal para sistemas solares.",
+          "precio": 300.0,
+          "url": "https://www.revolico.com/item/bateria-tipo-lifepo4-55068003"
+        }
+      ]
+    },
+    {
+      "id": 1777924118004,
+      "nombre": "INVERSOR 12V",
+      "tuPrecio": 170.0,
+      "mercado": {
+        "min": 12.0,
+        "mediana": 157.5,
+        "n": 24
+      },
+      "deltaAyerMediana": null,
+      "estado": "competitivo",
+      "sugerencia": {
+        "texto": "Precio competitivo respecto al mercado"
+      },
+      "historial": [
+        {
+          "fecha": "2026-06-28",
+          "mediana": 157.5
+        }
+      ],
+      "muestras": [
+        {
+          "fuente": "revolico",
+          "titulo": "1 USD COMBO INVERSOR 12V CON BATERÍA",
+          "precio": 12.0,
+          "url": "https://www.revolico.com/item/combo-inversor-12v-con-bateria-55357773"
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "1 USD COMBO 12v INVERSOR 3500w",
+          "precio": 12.0,
+          "url": "https://www.revolico.com/item/combo-12v-inversor-3500w-54804370"
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "1 USD COMBO DE INVERSOR 12V CON BATERÍA",
+          "precio": 12.0,
+          "url": "https://www.revolico.com/item/combo-de-inversor-12v-con-bateria-55357781"
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "35 USD ⚡ Inversor 12V a 110V FSATBTNE 65W Para Carro | Carga Laptop, Teléfono y Más | Comp",
+          "precio": 35.0,
+          "url": "https://www.revolico.com/item/inversor-12v-a-110v-fsatbtne-65w-para-carro-carga-laptop-telefono-y-mas-compacto-y-seguro-envio-garantia-52470528"
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "80 USD Convertidor ,inversor 12v a 110v,1000w,nuevo.",
+          "precio": 80.0,
+          "url": "https://www.revolico.com/item/convertidor-inversor-12v-a-110v1000wnuevo-55703437"
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "85 USD Inversor 12v",
+          "precio": 85.0,
+          "url": "https://www.revolico.com/item/inversor-12v-55196546"
+        }
+      ]
+    },
+    {
+      "id": 1778102214012,
+      "nombre": "SWITCH DE 8 PUERTOS",
+      "tuPrecio": 30.0,
+      "mercado": {
+        "min": 16.0,
+        "mediana": 65.0,
+        "n": 13
+      },
+      "deltaAyerMediana": null,
+      "estado": "competitivo",
+      "sugerencia": {
+        "texto": "Precio competitivo respecto al mercado"
+      },
+      "historial": [
+        {
+          "fecha": "2026-06-28",
+          "mediana": 65.0
+        }
+      ],
+      "muestras": [
+        {
+          "fuente": "revolico",
+          "titulo": "Switch - 16 puertos",
+          "precio": 16.0,
+          "url": "https://www.revolico.com/item/switch-16-puertos-55687736"
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "20 USD Switch 5 Puertos - Switch internet -Red",
+          "precio": 20.0,
+          "url": "https://www.revolico.com/item/switch-5-puertos-switch-internet-red-52438989"
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "20 USD Switch 5 Puertos 1Gb",
+          "precio": 20.0,
+          "url": "https://www.revolico.com/item/switch-5-puertos-1gb-55867607"
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "25 USD Switch 5 puertos a gb $25",
+          "precio": 25.0,
+          "url": "https://www.revolico.com/item/switch-5-puertos-a-gb-25-55821825"
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "50 USD switch 5 puertos",
+          "precio": 50.0,
+          "url": "https://www.revolico.com/item/switch-5-puertos-55910186"
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "50 USD Switch 16 puertos a 100mb",
+          "precio": 50.0,
+          "url": "https://www.revolico.com/item/smith-16-puertos-a-100mb-55463333"
+        }
+      ]
+    },
+    {
+      "id": 1778102507659,
+      "nombre": "PESA / BÁSCULA INTELIGENTE DIGITAL.",
+      "tuPrecio": 25.0,
+      "mercado": {
+        "min": 20.0,
+        "mediana": 25.0,
+        "n": 14
+      },
+      "deltaAyerMediana": null,
+      "estado": "competitivo",
+      "sugerencia": {
+        "texto": "Precio competitivo respecto al mercado"
+      },
+      "historial": [
+        {
+          "fecha": "2026-06-28",
+          "mediana": 25.0
+        }
+      ],
+      "muestras": [
+        {
+          "fuente": "revolico",
+          "titulo": "20 USD Pesa personal o báscula con sensor de temperatura. Peso máximo 366lb",
+          "precio": 20.0,
+          "url": "https://www.revolico.com/item/pesa-personal-o-bascula-con-sensor-de-temperatura-peso-maximo-366lb-55526051"
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "25 USD Pesa/ Báscula inteligente digital",
+          "precio": 25.0,
+          "url": "https://www.revolico.com/item/pesa-bascula-inteligente-digital-55198436"
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "25 USD Pesa/báscula inteligente digital",
+          "precio": 25.0,
+          "url": "https://www.revolico.com/item/pesabascula-inteligente-digital-55069444"
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "25 USD Pesa / Báscula inteligente digital.",
+          "precio": 25.0,
+          "url": "https://www.revolico.com/item/pesa-bascula-inteligente-digital-55017929"
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "25 USD Pesa/ Báscula inteligente digital.",
+          "precio": 25.0,
+          "url": "https://www.revolico.com/item/pesa-bascula-inteligente-digital-54806061"
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "25 USD Pesa/ Báscula inteligente digital.",
+          "precio": 25.0,
+          "url": "https://www.revolico.com/item/pesa-bascula-inteligente-digital-54755599"
+        }
+      ]
+    },
+    {
+      "id": 1778102582909,
+      "nombre": "ANTORCHA PARA SOLDADURA TIG:",
+      "tuPrecio": 90.0,
+      "mercado": {
+        "min": 69.0,
+        "mediana": 90.0,
+        "n": 16
+      },
+      "deltaAyerMediana": null,
+      "estado": "competitivo",
+      "sugerencia": {
+        "texto": "Precio competitivo respecto al mercado"
+      },
+      "historial": [
+        {
+          "fecha": "2026-06-28",
+          "mediana": 90.0
+        }
+      ],
+      "muestras": [
+        {
+          "fuente": "revolico",
+          "titulo": "69 USD Antorcha para soldadura TIG - LOS MEJORES PREGIOS CONMIGO 💥",
+          "precio": 69.0,
+          "url": "https://www.revolico.com/item/antorcha-para-soldadura-tig-los-mejores-pregios-conmigo-55512441"
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "70 USD Antorcha para soldadura TIG:  * Utilizada para trabajos de soldadura de alta precis",
+          "precio": 70.0,
+          "url": "https://www.revolico.com/item/antorcha-para-soldadura-tig-utilizada-para-trabajos-de-soldadura-de-alta-precision-en-metales-como-acero-inoxidable-55159571"
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "70 USD Antorcha para soldadura TIG",
+          "precio": 70.0,
+          "url": "https://www.revolico.com/item/antorcha-para-soldadura-tig-54388265"
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "70 USD Antorcha para soldar TIG - soldadura - soldar - pistola de soldar - pistola para so",
+          "precio": 70.0,
+          "url": "https://www.revolico.com/item/antorcha-para-soldar-tig-soldadura-soldar-pistola-de-soldar-pistola-para-soldar-55384481"
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "70 USD Antorcha para soldadura",
+          "precio": 70.0,
+          "url": "https://www.revolico.com/item/antorcha-para-soldadura-55559580"
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "70 USD Antorcha para soldadura",
+          "precio": 70.0,
+          "url": "https://www.revolico.com/item/antorcha-para-soldadura-55369968"
+        }
+      ]
+    }
+  ]
 }
