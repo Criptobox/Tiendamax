@@ -76,7 +76,7 @@
     <script src="js/src/tm-ui.js?v=eec2e0b0" defer></script>
     <script src="js/src/tm-toast.js?v=d8cf8d06" defer></script>
     <script src="js/src/tm-iife.js?v=a29f23ad" defer></script>
-    <script src="js/src/tm-patches.js?v=8c624d04" defer></script><script src="js/analytics.js?v=9d585bc5" defer></script><script src="js/seo-dynamico.js?v=ea7e25bb" defer></script><script src="js/subcategorias.js?v=0a8fedc8" defer></script><script src="js/revolico_integration.js?v=a222ddf3" defer></script><script src="js/biometric-auth.js?v=343cb27b" defer></script><script src="js/event-delegation.js?v=bf5a6e3e" defer></script><script src="js/share-patch.js?v=d01164a1" defer></script><script src="js/banners.js?v=d7e09394" defer></script><script src="js/admin-copilot.js?v=70e5f7fd" defer></script>
+    <script src="js/src/tm-patches.js?v=8c624d04" defer></script><script src="js/analytics.js?v=9d585bc5" defer></script><script src="js/seo-dynamico.js?v=ea7e25bb" defer></script><script src="js/subcategorias.js?v=0a8fedc8" defer></script><script src="js/revolico_integration.js?v=b517b43a" defer></script><script src="js/biometric-auth.js?v=343cb27b" defer></script><script src="js/event-delegation.js?v=bf5a6e3e" defer></script><script src="js/share-patch.js?v=d01164a1" defer></script><script src="js/banners.js?v=d7e09394" defer></script><script src="js/admin-copilot.js?v=70e5f7fd" defer></script>
 
 <!-- TIENDAMAX_ADMIN_FINAL_INLINE_JS -->
 <script>
@@ -1688,13 +1688,28 @@ if ('serviceWorker' in navigator) {
   }
   window.tmRadarRenderWatch=tmRadarRenderWatch;
 
+  // Auto-guardado: tras marcar/quitar ⭐ sube productos.json solo (debounce para
+  // agrupar varias marcas en una sola subida). Así no hay que pulsar «Actualizar tienda».
+  var _radarSyncTimer=null;
+  function _radarAutoSync(){
+    if(typeof sincronizarTodoConGitHub!=='function') return false;
+    clearTimeout(_radarSyncTimer);
+    _radarSyncTimer=setTimeout(function(){
+      if(typeof mostrarNotificacion==='function') mostrarNotificacion('💾 Guardando vigilados del radar…','info');
+      Promise.resolve().then(function(){ return sincronizarTodoConGitHub(); })
+        .then(function(){ if(typeof mostrarNotificacion==='function') mostrarNotificacion('✅ Radar guardado en la tienda','success'); })
+        .catch(function(){ if(typeof mostrarNotificacion==='function') mostrarNotificacion('Marcas guardadas localmente; revisa la conexión con GitHub','warning'); });
+    }, 2500);
+    return true;
+  }
   window.tmRadarToggle=function(id,on){
     var ps=prods(); var p=ps.find(function(x){return String(x.id)===String(id);}); if(!p) return;
     p.radar=!!on;
     try{ localStorage.setItem('productos', JSON.stringify(ps)); }catch(e){}
     if(typeof marcarProductoModificado==='function') marcarProductoModificado(p.id);
     tmRadarRenderWatch();
-    if(typeof mostrarNotificacion==='function') mostrarNotificacion((on?'⭐ Vigilando: ':'Quitado del radar: ')+p.nombre+' — pulsa «Actualizar tienda» para guardar','info');
+    var auto=_radarAutoSync();
+    if(typeof mostrarNotificacion==='function') mostrarNotificacion((on?'⭐ Vigilando: ':'Quitado del radar: ')+p.nombre+(auto?' — guardando automáticamente…':' — pulsa «Actualizar tienda» para guardar'),'info');
   };
 
   // Cargar al entrar a la pestaña Radar

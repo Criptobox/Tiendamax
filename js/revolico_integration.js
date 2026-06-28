@@ -50,18 +50,14 @@ async function _generarTextoFacebookAI(producto) {
     if (typeof tmAIChat !== 'function') throw new Error('Módulo IA no cargado');
     const whatsapp = localStorage.getItem('whatsappNumero') || '5354320170';
     const url = `https://tiendamax.org/p/producto-${producto.id}.html`;
-    const tasa = _getTasa();
-    const mn = _precioMN(producto.precioActual);
     const info = [
         `Producto: ${producto.nombre}`,
-        `Precio: $${producto.precioActual} USD${mn}`,
+        `Precio: $${producto.precioActual} USD`,
         producto.descripcion && `Descripción: ${producto.descripcion}`,
         producto.garantia && `Garantía: ${producto.garantia}`,
-        producto.stock === 0 ? 'AGOTADO (consultar restock)' : `Disponibilidad: ${producto.stock} unidades`,
         producto.usado && 'Producto usado/refurbished',
-        tasa > 0 && `Tasa: 1 USD = ${tasa} MN`,
     ].filter(Boolean).join('\n');
-    const prompt = `Escribe una publicación atractiva y variada para un grupo de ventas de Facebook en Cuba (español cubano). Usa emojis creativos. Incluye precio en USD y en MN si hay tasa. Termina con WhatsApp wa.me/${whatsapp} y el enlace ${url}. Responde SOLO con el texto listo para pegar, sin explicaciones.\n\n${info}`;
+    const prompt = `Escribe una publicación atractiva y variada para un grupo de ventas de Facebook en Cuba (español cubano). Usa emojis creativos. Muestra el precio SOLO en USD (no menciones precio en MN/CUP ni la cantidad en stock). Termina con WhatsApp wa.me/${whatsapp} y el enlace ${url}. Responde SOLO con el texto listo para pegar, sin explicaciones.\n\n${info}`;
     return await tmAIChat(prompt, { max_tokens: 550, temperature: 0.85 });
 }
 
@@ -218,10 +214,6 @@ function _textoFacebook(producto) {
     if (producto.garantia)   t += `🛡️ Garantía: ${producto.garantia}\n`;
     if (producto.devolucion) t += `✅ Devolución segura garantizada\n`;
 
-    if (producto.stock === 0) {
-        t += '\n⚠️ Agotado — Escríbenos para restock\n';
-    }
-
     t += '\n━━━━━━━━━━━━━━━━━━━━━\n';
     t += `📲 Pedir ahora → wa.me/${whatsapp}\n`;
     t += `🔗 ${url}\n\n`;
@@ -243,6 +235,8 @@ function previsualizarFacebook(productoId, grupoUrl) {
     const _allProds = (() => { try { if (Array.isArray(window.productos)) return window.productos; } catch(e){} try { return JSON.parse(localStorage.getItem('productos')||'[]'); } catch(e){ return []; } })();
     const producto = _allProds.find(p => String(p.id) === String(productoId));
     if (!producto) return;
+
+    const _grupos = (() => { try { return JSON.parse(localStorage.getItem('gruposFB') || '[]').filter(g => g && g.url && g.url.includes('facebook.com')); } catch(e) { return []; } })();
 
     const existing = document.getElementById('fbPreviewModal');
     if (existing) document.body.removeChild(existing);
@@ -274,15 +268,32 @@ function previsualizarFacebook(productoId, grupoUrl) {
             <textarea id="fbPostTA" rows="13"
               style="width:100%;padding:10px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:8px;color:inherit;font-size:12px;resize:vertical;outline:none;font-family:inherit;box-sizing:border-box;"></textarea>
           </div>
+          ${_grupos.length ? `<button type="button" id="btnFbAllGroups"
+            style="width:100%;padding:14px;background:linear-gradient(135deg,#FF6B35,#C9A96E);color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:800;cursor:pointer;letter-spacing:.3px;box-sizing:border-box;">
+            📢 Abrir en todos mis grupos (${_grupos.length})
+          </button>` : ''}
           <button type="button" id="btnAbrirFb"
             style="width:100%;padding:14px;background:linear-gradient(135deg,#3B5998,#4267B2);color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:800;cursor:pointer;letter-spacing:.3px;box-sizing:border-box;">
-            📘 Copiar y Abrir Facebook →
+            📘 Copiar y Abrir ${_grupos.length ? 'un grupo' : 'Facebook'} →
           </button>
         </div>
       </div>`;
 
     document.body.appendChild(modal);
     document.getElementById('fbPostTA').value = _textoFacebook(producto);
+
+    // Abrir TODOS los grupos a la vez: abre las pestañas (síncrono, para que el
+    // navegador no bloquee los pop-ups) y luego copia el texto. Pegas en cada una.
+    document.getElementById('btnFbAllGroups')?.addEventListener('click', function() {
+        let abiertos = 0;
+        _grupos.forEach(g => { try { const w = window.open(g.url, '_blank', 'noopener,noreferrer'); if (w) abiertos++; } catch(e) {} });
+        _copiar(document.getElementById('fbPostTA').value);
+        if (abiertos >= _grupos.length) {
+            mostrarNotificacion(`✅ Texto copiado · abrí ${abiertos} grupo(s). Pega (Ctrl/Cmd+V) y publica en cada pestaña.`, 'success');
+        } else {
+            mostrarNotificacion(`⚠️ El navegador bloqueó algunas ventanas (abrí ${abiertos}/${_grupos.length}). Permite las ventanas emergentes para este sitio y vuelve a intentar.`, 'warning');
+        }
+    });
 
     document.getElementById('btnFbAI')?.addEventListener('click', async function() {
         this.textContent = '⏳ Generando...';
@@ -379,7 +390,7 @@ function mostrarSelectorAsistenteFacebook() {
             nombre.textContent = p.nombre;
             const meta = document.createElement('span');
             meta.style.cssText = 'font-size:11px;opacity:.6;';
-            meta.textContent = `$${p.precioActual} USD · ${agotado ? '🚫 Agotado' : `📦 ${p.stock} uds`}`;
+            meta.textContent = `$${p.precioActual} USD${agotado ? ' · 🚫 Agotado' : ''}`;
             info.appendChild(nombre);
             info.appendChild(meta);
             const btn = document.createElement('button');
@@ -459,7 +470,7 @@ function publicarEnGrupoFB(iGrupo) {
         nombre.textContent = p.nombre;
         const meta = document.createElement('div');
         meta.style.cssText = 'font-size:11px;opacity:.6;margin-top:2px;';
-        meta.textContent = `$${p.precioActual} · ${agotado ? '🚫 Agotado' : `📦 ${p.stock} uds`}`;
+        meta.textContent = `$${p.precioActual}${agotado ? ' · 🚫 Agotado' : ''}`;
         info.appendChild(nombre);
         info.appendChild(meta);
         const btn = document.createElement('button');
