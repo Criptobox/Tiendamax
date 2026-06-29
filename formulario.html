@@ -159,9 +159,13 @@ let entrega = '', pago = '', vuelto = '', vueltoMoneda = 'MN';
 const params = new URLSearchParams(window.location.search);
 const prod = params.get('p') || '';
 const precio = params.get('precio') || '';
-const wa = params.get('wa') || '5354320170';
-// Normalizar: si viene el número cubano sin código país (8 dígitos), añadir 53
-const waNorm = (/^\d{8}$/.test(wa)) ? '53'+wa : wa;
+// Número oficial de TiendaMax. Seguridad: NO confiar en el ?wa= del URL para
+// redirigir el pedido (un atacante podría desviarlo a otro número). Solo se
+// acepta el parámetro si coincide con el número oficial; cualquier otro → oficial.
+const NUMERO_TIENDA = '5354320170';
+const _waParam = (params.get('wa') || '').replace(/\D/g, '');
+const _waNorm  = /^\d{8}$/.test(_waParam) ? '53' + _waParam : _waParam;
+const waNorm   = (_waNorm === NUMERO_TIENDA) ? _waNorm : NUMERO_TIENDA;
 
 if(prod){
   document.getElementById('prodBox').classList.add('show');

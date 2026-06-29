@@ -690,14 +690,16 @@ function renderHist(filtro){
   const hist=JSON.parse(localStorage.getItem('valesMax')||'[]');
   const body=document.getElementById('histBody');
   if(!hist.length){body.innerHTML='<div class="hist-empty">Aún no hay vales guardados</div>';return;}
+  // Escapa datos del cliente para evitar inyección de HTML/JS al mostrar el historial
+  const _e=s=>String(s==null?'':s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
   const q=(filtro||'').trim().toLowerCase();
   const lista=q?hist.filter(v=>
     (v.cliente||'').toLowerCase().includes(q) ||
     (v.telefono||'').toLowerCase().includes(q) ||
     (v.articulo||'').toLowerCase().includes(q)
   ):hist;
-  if(!lista.length){body.innerHTML='<div class="hist-empty">Sin resultados para "'+q+'"</div>';return;}
-  body.innerHTML=lista.map(v=>`<div class="hist-item"><div style="display:flex;justify-content:space-between;margin-bottom:3px"><div style="font-size:14px;font-weight:500">${v.cliente}</div><div style="font-size:11px;color:var(--dim)">${v.fecha}</div></div><div style="font-size:12px;color:var(--muted)">${v.telefono&&v.telefono!=='—'?'📞 '+v.telefono+' · ':''}${v.articulo} · <span style="color:var(--green-light)">${v.total}</span></div></div>`).join('');
+  if(!lista.length){body.innerHTML='<div class="hist-empty">Sin resultados para "'+_e(q)+'"</div>';return;}
+  body.innerHTML=lista.map(v=>`<div class="hist-item"><div style="display:flex;justify-content:space-between;margin-bottom:3px"><div style="font-size:14px;font-weight:500">${_e(v.cliente)}</div><div style="font-size:11px;color:var(--dim)">${_e(v.fecha)}</div></div><div style="font-size:12px;color:var(--muted)">${v.telefono&&v.telefono!=='—'?'📞 '+_e(v.telefono)+' · ':''}${_e(v.articulo)} · <span style="color:var(--green-light)">${_e(v.total)}</span></div></div>`).join('');
 }
 function filtrarHist(){
   renderHist(document.getElementById('histBuscar').value);
