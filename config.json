@@ -1,5 +1,5 @@
 {
-  "tasaMN": 610,
+  "tasaMN": 605.0,
   "ofertaDiaId": "1778104115783",
   "ofertaDiaTexto": "🔥🔥🔥TU MEJOR OPCIÓN 🔥🔥🔥",
   "ofertaDiaActualizado": "2026-06-29T15:34:58.398Z",
@@ -13,5 +13,8 @@
     "appId": "1:238891228701:web:d515133e229c48a5adb0f4",
     "vapidKey": "BAXhJOhwCtSkc1jH09b2q04lVg5Cr4QNK3C9dqUcBIjzEJZJ66vkS7MfNLAhopd-eK3jYkpXFMk4zBzQfs8nbhc"
   },
-  "actualizado": "2026-06-29T15:34:58.398Z"
+  "actualizado": "2026-06-29T18:17:20.012267+00:00",
+  "tasaMNAnterior": 610.0,
+  "tasaFuente": "elTOQUE Web",
+  "tasaActualizada": "2026-06-29"
 }
