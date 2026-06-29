@@ -6,7 +6,6 @@
     "UTILES",
     "CARROS",
     "ROPA",
-    "LENCERIA",
     "SEGURIDAD",
     "HOGAR",
     "JUEGOS",
@@ -15,7 +14,6 @@
     "GYM"
   ],
   "iconos": {
-    "LENCERIA": "👙",
     "SEGURIDAD": "🔒",
     "HOGAR": "🏠",
     "JUEGOS": "🎮",
