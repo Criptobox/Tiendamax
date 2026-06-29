@@ -112,16 +112,16 @@
 
 
 
-const CACHE_NAME = 'tiendamax-202606290526';
+const CACHE_NAME = 'tiendamax-202606290530';
+// Solo los recursos que usa la TIENDA. Los del panel de admin
+// (admin.html, vale.html, formulario.html, admin.css, admin-copilot.js,
+// revolico_integration.js, biometric-auth.js) NO se precachean: se cargan
+// bajo demanda al abrir el panel, así el comprador no baja ~125 KB de más.
 const STATIC_ASSETS = [
   '/',
   '/index.html',
-  '/admin.html',
-  '/vale.html',
-  '/formulario.html',
   '/css/fonts.css',
   '/css/bundle.css',
-  '/css/admin.css',
   '/js/src/tm-config.js',
   '/js/src/tm-data.js',
   '/js/src/tm-state.js',
@@ -136,15 +136,12 @@ const STATIC_ASSETS = [
   '/js/tm-bot.js',
   '/js/web-vitals-snippet.js',
   '/js/analytics.js',
-  '/js/admin-copilot.js',
   '/js/seo-dynamico.js',
   '/js/share-patch.js',
   '/js/push-fix.js',
   '/js/urgencia-ventas.js',
   '/js/banners.js',
   '/js/subcategorias.js',
-  '/js/revolico_integration.js',
-  '/js/biometric-auth.js',
   '/js/event-delegation.js',
   '/js/tienda-plus.js',
   '/js/cart-share.js',
