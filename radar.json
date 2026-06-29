@@ -1,6 +1,6 @@
 {
-  "actualizado": "2026-06-28T17:14:12.907495+00:00",
-  "fecha": "2026-06-28",
+  "actualizado": "2026-06-29T14:48:24.242787+00:00",
+  "fecha": "2026-06-29",
   "fuentes": [
     "revolico",
     "porlalivre",
@@ -9,7 +9,7 @@
   "resumen": {
     "vigilados": 5,
     "encimaMercado": 0,
-    "bajadasComp": 0,
+    "bajadasComp": 2,
     "sinDatos": 0
   },
   "productos": [
@@ -18,11 +18,11 @@
       "nombre": "BATERÍA MUST TIPO LIFEPO4",
       "tuPrecio": 300.0,
       "mercado": {
-        "min": 10.0,
-        "mediana": 3950.0,
-        "n": 23
+        "min": 280.0,
+        "mediana": 300.0,
+        "n": 6
       },
-      "deltaAyerMediana": null,
+      "deltaAyerMediana": -3650.0,
       "estado": "competitivo",
       "sugerencia": {
         "texto": "Precio competitivo respecto al mercado"
@@ -31,15 +31,13 @@
         {
           "fecha": "2026-06-28",
           "mediana": 3950.0
+        },
+        {
+          "fecha": "2026-06-29",
+          "mediana": 300.0
         }
       ],
       "muestras": [
-        {
-          "fuente": "revolico",
-          "titulo": "Kit Solar Inversor Sako 10kw y Batería Must de 15kw",
-          "precio": 10.0,
-          "url": "https://www.revolico.com/item/kit-solar-inversor-sako-10kw-y-bateria-must-de-15kw-55379172"
-        },
         {
           "fuente": "revolico",
           "titulo": "280 USD Batería tipo LiFePO4 Must 12.8V y 100Ah (1280Wh)_290 USD_Ax",
@@ -69,6 +67,12 @@
           "titulo": "300 USD Batería Must tipo LiFePO4. 12.8V 100Ah, ideal para sistemas solares.",
           "precio": 300.0,
           "url": "https://www.revolico.com/item/bateria-tipo-lifepo4-55068003"
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "300 USD Batería LiFePO4 (MUST)",
+          "precio": 300.0,
+          "url": "https://www.revolico.com/item/bateria-lifepo4-ofertas-disponibles-si-compra-mas-de-1-54867247"
         }
       ]
     },
@@ -77,11 +81,11 @@
       "nombre": "INVERSOR 12V",
       "tuPrecio": 170.0,
       "mercado": {
-        "min": 12.0,
-        "mediana": 157.5,
-        "n": 24
+        "min": 80.0,
+        "mediana": 170.0,
+        "n": 19
       },
-      "deltaAyerMediana": null,
+      "deltaAyerMediana": 12.5,
       "estado": "competitivo",
       "sugerencia": {
         "texto": "Precio competitivo respecto al mercado"
@@ -90,33 +94,13 @@
         {
           "fecha": "2026-06-28",
           "mediana": 157.5
+        },
+        {
+          "fecha": "2026-06-29",
+          "mediana": 170.0
         }
       ],
       "muestras": [
-        {
-          "fuente": "revolico",
-          "titulo": "1 USD COMBO INVERSOR 12V CON BATERÍA",
-          "precio": 12.0,
-          "url": "https://www.revolico.com/item/combo-inversor-12v-con-bateria-55357773"
-        },
-        {
-          "fuente": "revolico",
-          "titulo": "1 USD COMBO 12v INVERSOR 3500w",
-          "precio": 12.0,
-          "url": "https://www.revolico.com/item/combo-12v-inversor-3500w-54804370"
-        },
-        {
-          "fuente": "revolico",
-          "titulo": "1 USD COMBO DE INVERSOR 12V CON BATERÍA",
-          "precio": 12.0,
-          "url": "https://www.revolico.com/item/combo-de-inversor-12v-con-bateria-55357781"
-        },
-        {
-          "fuente": "revolico",
-          "titulo": "35 USD ⚡ Inversor 12V a 110V FSATBTNE 65W Para Carro | Carga Laptop, Teléfono y Más | Comp",
-          "precio": 35.0,
-          "url": "https://www.revolico.com/item/inversor-12v-a-110v-fsatbtne-65w-para-carro-carga-laptop-telefono-y-mas-compacto-y-seguro-envio-garantia-52470528"
-        },
         {
           "fuente": "revolico",
           "titulo": "80 USD Convertidor ,inversor 12v a 110v,1000w,nuevo.",
@@ -128,6 +112,30 @@
           "titulo": "85 USD Inversor 12v",
           "precio": 85.0,
           "url": "https://www.revolico.com/item/inversor-12v-55196546"
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "100 USD Inversor 12v 2000wde 110v",
+          "precio": 100.0,
+          "url": "https://www.revolico.com/item/inversor-12v-2000wde-110v-55923532"
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "100 USD Inversor 12v 2000 w",
+          "precio": 100.0,
+          "url": "https://www.revolico.com/item/inversor-12v-2000-w-55888110"
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "120 USD Inversor 12v-3000w",
+          "precio": 120.0,
+          "url": "https://www.revolico.com/item/inversor-12v-3000w-55427082"
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "130 USD Inversor 12V/3000W",
+          "precio": 130.0,
+          "url": "https://www.revolico.com/item/inversor-12v3000w-55560687"
         }
       ]
     },
@@ -137,10 +145,10 @@
       "tuPrecio": 30.0,
       "mercado": {
         "min": 16.0,
-        "mediana": 65.0,
-        "n": 13
+        "mediana": 57.5,
+        "n": 12
       },
-      "deltaAyerMediana": null,
+      "deltaAyerMediana": -7.5,
       "estado": "competitivo",
       "sugerencia": {
         "texto": "Precio competitivo respecto al mercado"
@@ -149,6 +157,10 @@
         {
           "fecha": "2026-06-28",
           "mediana": 65.0
+        },
+        {
+          "fecha": "2026-06-29",
+          "mediana": 57.5
         }
       ],
       "muestras": [
@@ -199,7 +211,7 @@
         "mediana": 25.0,
         "n": 14
       },
-      "deltaAyerMediana": null,
+      "deltaAyerMediana": 0.0,
       "estado": "competitivo",
       "sugerencia": {
         "texto": "Precio competitivo respecto al mercado"
@@ -207,6 +219,10 @@
       "historial": [
         {
           "fecha": "2026-06-28",
+          "mediana": 25.0
+        },
+        {
+          "fecha": "2026-06-29",
           "mediana": 25.0
         }
       ],
@@ -258,7 +274,7 @@
         "mediana": 90.0,
         "n": 16
       },
-      "deltaAyerMediana": null,
+      "deltaAyerMediana": 0.0,
       "estado": "competitivo",
       "sugerencia": {
         "texto": "Precio competitivo respecto al mercado"
@@ -266,6 +282,10 @@
       "historial": [
         {
           "fecha": "2026-06-28",
+          "mediana": 90.0
+        },
+        {
+          "fecha": "2026-06-29",
           "mediana": 90.0
         }
       ],
