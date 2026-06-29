@@ -244,7 +244,7 @@
     <noscript><link rel="stylesheet" href="css/fonts.css?v=67235440"></noscript>
 
     <!-- Preload de los módulos JS principales (modularizado + minificado) -->
-    <link rel="preload" href="js/src/tm-config.js?v=80d7d3cd" as="script">
+    <link rel="preload" href="js/src/tm-config.js?v=54132abc" as="script">
     <link rel="preload" href="js/src/tm-data.js?v=4d0db939" as="script">
     <link rel="preload" href="js/src/tm-state.js?v=5591019b" as="script">
 
@@ -1176,6 +1176,9 @@
                         <p id="detailProductCategory" class="detail-category"></p>
                         <p id="detailSubcategoria" class="detail-subcategory" style="display:none;"></p>
 
+                        <!-- Calificación promedio (se rellena desde renderizarResenas; oculto si no hay reseñas) -->
+                        <div id="detailRatingTop" class="detail-rating-top" style="display:none;align-items:center;gap:7px;margin:4px 0 12px;"></div>
+
                         <!-- Precio -->
                         <div class="detail-price-wrap">
                             <span id="detailPriceOriginal" class="detail-price-old"></span>
@@ -1346,7 +1349,7 @@
     <script src="js/seo-dynamico.js?v=ea7e25bb" defer></script>
     <!-- ===== TiendaMax modularizado (reemplaza script.js) ===== -->
     <!-- Orden: config → data → state → admin → product → catalog → init → ui → toast → iife → patches -->
-    <script src="js/src/tm-config.js?v=80d7d3cd" defer></script>
+    <script src="js/src/tm-config.js?v=54132abc" defer></script>
     <script src="js/src/tm-data.js?v=4d0db939" defer></script>
     <script src="js/src/tm-state.js?v=5591019b" defer></script>
     <script src="js/src/tm-admin.js?v=34c6172d" defer></script>

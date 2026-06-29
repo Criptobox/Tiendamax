@@ -668,6 +668,10 @@ async function renderizarResenas(productoId) {
     if (!el) return;
     const pid = String(productoId);
 
+    // Promedio destacado arriba del modal (oculto por defecto; se muestra solo si hay reseñas)
+    const ratingTop = document.getElementById('detailRatingTop');
+    if (ratingTop) { ratingTop.style.display = 'none'; ratingTop.innerHTML = ''; }
+
     el.innerHTML = '<p class="resenas-vacio" style="color:#aaa;font-size:13px;text-align:center;padding:12px;">⏳ Cargando reseñas...</p>';
 
     let resenas = [];
@@ -702,6 +706,14 @@ async function renderizarResenas(productoId) {
         return;
     }
     const promedio = (resenas.reduce((s, r) => s + r.estrellas, 0) / resenas.length).toFixed(1);
+    // Mostrar el promedio arriba del modal (junto al precio)
+    if (ratingTop) {
+        ratingTop.innerHTML =
+            '<span style="color:#f59e0b;font-size:16px;letter-spacing:1px;">' + '★'.repeat(Math.round(parseFloat(promedio))) + '</span>' +
+            '<span style="font-weight:800;font-size:15px;color:#f2f2f5;">' + promedio + '</span>' +
+            '<span style="font-size:12px;color:#9a9aa2;">(' + resenas.length + ' reseña' + (resenas.length !== 1 ? 's' : '') + ')</span>';
+        ratingTop.style.display = 'inline-flex';
+    }
     el.innerHTML =
         '<div style="text-align:center;margin-bottom:14px;">' +
             '<span style="font-size:28px;font-weight:900;color:#f59e0b;">' + promedio + '</span>' +
