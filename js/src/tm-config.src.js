@@ -714,12 +714,8 @@ async function renderizarResenas(productoId) {
             '<span style="font-size:12px;color:#9a9aa2;">(' + resenas.length + ' reseña' + (resenas.length !== 1 ? 's' : '') + ')</span>';
         ratingTop.style.display = 'inline-flex';
     }
+    // El promedio ya se muestra arriba (#detailRatingTop); abajo va directo a la lista.
     el.innerHTML =
-        '<div style="text-align:center;margin-bottom:14px;">' +
-            '<span style="font-size:28px;font-weight:900;color:#f59e0b;">' + promedio + '</span>' +
-            '<span style="color:#f59e0b;font-size:18px;margin-left:6px;">' + '★'.repeat(Math.round(parseFloat(promedio))) + '</span>' +
-            '<div style="font-size:12px;color:#aaa;">' + resenas.length + ' reseña' + (resenas.length !== 1 ? 's' : '') + '</div>' +
-        '</div>' +
         resenas.map(r => {
             const e = Math.max(0, Math.min(5, parseInt(r.estrellas, 10) || 0));
             return '<div class="resena-item">' +

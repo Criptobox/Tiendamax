@@ -112,7 +112,7 @@
 
 
 
-const CACHE_NAME = 'tiendamax-202606290643';
+const CACHE_NAME = 'tiendamax-202606291345';
 // Solo los recursos que usa la TIENDA. Los del panel de admin
 // (admin.html, vale.html, formulario.html, admin.css, admin-copilot.js,
 // revolico_integration.js, biometric-auth.js) NO se precachean: se cargan
