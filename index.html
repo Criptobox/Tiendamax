@@ -1345,7 +1345,8 @@
         });
     })();
     </script>
-    <script src="js/analytics.js?v=9d585bc5" defer></script>
+    <!-- analytics: carga en reposo (no bloquea el primer pintado) — lo inyecta el cargador #tm-lazy-js -->
+    <script type="lazyload" src="js/analytics.js?v=9d585bc5"></script>
     <script src="js/seo-dynamico.js?v=ea7e25bb" defer></script>
     <!-- ===== TiendaMax modularizado (reemplaza script.js) ===== -->
     <!-- Orden: config → data → state → admin → product → catalog → init → ui → toast → iife → patches -->
@@ -1779,6 +1780,25 @@ html body.light-mode .notif-modal-footer { color: #888 !important; }
         }
         timer = setTimeout(function() { count = 0; }, 1000);
     });
+})();
+</script>
+
+<!-- Cargador de scripts NO críticos (analytics, etc.): se inyectan cuando el
+     navegador está en reposo, para no retrasar el primer pintado ni la interacción. -->
+<script id="tm-lazy-js">
+(function(){
+  function cargar(){
+    var ls = document.querySelectorAll('script[type="lazyload"]');
+    for (var i = 0; i < ls.length; i++) {
+      var o = ls[i], s = document.createElement('script');
+      if (o.src) s.src = o.src;
+      s.defer = true;
+      document.body.appendChild(s);
+    }
+  }
+  var idle = window.requestIdleCallback || function(cb){ return setTimeout(cb, 1200); };
+  if (document.readyState === 'complete') idle(cargar);
+  else window.addEventListener('load', function(){ idle(cargar); });
 })();
 </script>
 
