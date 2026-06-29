@@ -10,7 +10,13 @@ rompe la corrida. Los parsers son v1 (best-effort): se afinan tras la 1ª corrid
 viendo qué devuelve cada sitio. Ejecutar en GitHub Actions (allí sí hay internet).
 """
 from __future__ import annotations
-import json, os, re, sys, time, statistics, datetime
+import json, os, re, sys, time, statistics, datetime, unicodedata
+
+
+def _norm(s):
+    """minúsculas y sin acentos, para comparar títulos de anuncios cubanos."""
+    s = unicodedata.normalize("NFD", (s or "").lower())
+    return "".join(c for c in s if unicodedata.category(c) != "Mn")
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = os.path.join(ROOT, "radar.json")
@@ -51,10 +57,14 @@ def query_de(nombre):
 
 
 def coincide(prod_kw, titulo):
-    """True si el título del anuncio comparte >=2 palabras clave (o 1 si solo hay 1)."""
-    t = (titulo or "").lower()
-    hits = sum(1 for k in prod_kw if k in t)
-    return hits >= min(2, max(1, len(prod_kw)))
+    """Coincidencia estricta: comparte >=2 palabras clave Y al menos una distintiva
+    (>=5 letras, p. ej. marca/modelo), para no enganchar por palabras genéricas."""
+    t = _norm(titulo)
+    matched = [k for k in prod_kw if _norm(k) in t]
+    if len(prod_kw) <= 1:
+        return len(matched) >= 1
+    distintiva = any(len(_norm(k)) >= 5 for k in matched)
+    return len(matched) >= 2 and distintiva
 
 
 PRECIO_RE = re.compile(r"(\d[\d.,]{1,9})\s*(usd|cup|mn|mlc|\$)?", re.I)
@@ -198,13 +208,41 @@ def buscar(prod, rate):
     return muestras
 
 
+def _mediana_recortada(vals):
+    """Mediana quitando el 20% más alto y más bajo (si hay >=5 datos),
+    para que un anuncio disparatado no la dispare."""
+    vals = sorted(vals)
+    n = len(vals)
+    if n >= 5:
+        k = max(1, int(n * 0.2))
+        recortado = vals[k:n - k]
+        if recortado:
+            vals = recortado
+    return statistics.median(vals)
+
+
+def _filtrar_outliers(precios, tu):
+    """Descarta precios disparatados respecto a tu precio (otro producto colado).
+    Mantiene solo lo que esté entre 30% y 300% de tu precio; si eso deja muy
+    pocos, devuelve los originales (mejor algo que nada)."""
+    if not tu or tu <= 0:
+        return precios
+    lo, hi = tu * 0.3, tu * 3.0
+    dentro = [p for p in precios if lo <= p <= hi]
+    return dentro if len(dentro) >= 3 else (dentro or precios)
+
+
 def analizar(prod, muestras, prev_hist, fecha):
     tu = float(prod.get("precioActual") or 0)
-    precios = sorted(it["precio"] for it in muestras if it.get("precio"))
+    precios_raw = sorted(it["precio"] for it in muestras if it.get("precio"))
+    precios = _filtrar_outliers(precios_raw, tu)
+    # conserva solo las muestras cuyos precios sobrevivieron el filtro
+    _ok = set(precios)
+    muestras = [m for m in muestras if m.get("precio") in _ok] or muestras
     res = {"id": prod.get("id"), "nombre": prod.get("nombre"), "tuPrecio": tu}
     hist = list(prev_hist or [])
     if precios:
-        mn = min(precios); med = round(statistics.median(precios), 2)
+        mn = min(precios); med = round(_mediana_recortada(precios), 2)
         res["mercado"] = {"min": mn, "mediana": med, "n": len(precios)}
         ayer = hist[-1]["mediana"] if hist else None
         res["deltaAyerMediana"] = round(med - ayer, 2) if ayer else None
