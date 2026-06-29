@@ -714,6 +714,20 @@ async function agregarProductoForm(event) {
     const file = fileInput && fileInput.files ? fileInput.files[0] : null;
     if (!file) { mostrarNotificacion('Por favor selecciona una imagen principal', 'error'); return; }
 
+    // Aviso de nombre duplicado (antes de subir la imagen, para no malgastarla).
+    // Evita que dos equipos distintos queden con el mismo nombre y se confundan.
+    const _nombreNuevo = (document.getElementById('productName').value || '').trim();
+    const _norm = s => (s || '').toLowerCase().trim().replace(/\s+/g, ' ');
+    const _dup = (Array.isArray(productos) ? productos : []).find(p => _norm(p.nombre) === _norm(_nombreNuevo));
+    if (_dup) {
+        const ok = confirm(
+            '⚠️ Ya existe un producto llamado:\n\n"' + _dup.nombre + '"  ($' + (_dup.precioActual || 0) + ' USD)\n\n' +
+            'Si es un equipo DISTINTO, ponle un nombre más específico (marca/modelo) ' +
+            'para no confundirlos en la tienda.\n\n¿Agregarlo de todos modos?'
+        );
+        if (!ok) { mostrarNotificacion('Cancelado — ponle un nombre distinto para diferenciarlo', 'info'); return; }
+    }
+
     const submitBtn = event.target ? event.target.querySelector('button[type="submit"]') : null;
     if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = '⏳ Guardando…'; }
 
