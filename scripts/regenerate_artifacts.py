@@ -50,7 +50,7 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
 <meta property="og:image:secure_url" content="{image}">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:type" content="{og_image_type}">
 <meta property="og:image:alt" content="{og_title}">
 <meta property="og:url" content="{page_url}">
 <meta property="og:site_name" content="TiendaMax">
@@ -223,6 +223,12 @@ def regenerate_pages(products: list[dict], wa_num: str = "5354320170") -> tuple[
         price = f"{float(p.get('precioActual') or 0):.2f}"
         raw_img = p.get("imagen") or f"{SITE}/og-image.jpg"
         img   = raw_img
+        # Tipo MIME real de la imagen para og:image:type (antes siempre decía jpeg)
+        _ext = raw_img.split("?", 1)[0].rsplit(".", 1)[-1].lower()
+        og_image_type = {
+            "webp": "image/webp", "png": "image/png", "gif": "image/gif",
+            "jpg": "image/jpeg", "jpeg": "image/jpeg",
+        }.get(_ext, "image/jpeg")
         stock = int(p.get("stock") or 0)
         seo_title_raw = (p.get("seoTitle") or f"{name} — ${price} USD").strip()
         seo_keywords = p.get("seoKeywords") or []
@@ -284,6 +290,7 @@ def regenerate_pages(products: list[dict], wa_num: str = "5354320170") -> tuple[
             og_title=og_title,
             og_desc=og_desc,
             image=image,
+            og_image_type=og_image_type,
             keywords=keywords,
             page_url=page_url,
             app_url=app_url,
