@@ -42,6 +42,14 @@ GH_REPO      = os.environ.get("GITHUB_REPO", "criptobox/tiendamax")
 TZ           = ZoneInfo("America/Havana")
 
 
+def _safe_int(v, default=0):
+    """int() tolerante: si el stock viene como '', 'agotado', None… no rompe."""
+    try:
+        return int(v)
+    except (TypeError, ValueError):
+        return default
+
+
 # ══════════════════════════════════════════════════════════════
 #  HELPERS — Firebase REST API
 # ══════════════════════════════════════════════════════════════
@@ -216,7 +224,7 @@ async def registrar_ventas_y_stock(items: list[dict]) -> list[str]:
                 )
                 continue
 
-            stock_antes = int(prods[idx].get("stock", 0))
+            stock_antes = _safe_int(prods[idx].get("stock"))
             stock_nuevo = max(0, stock_antes - cantidad)
             prods[idx]["stock"] = stock_nuevo
             stock_actualizado = True
@@ -261,8 +269,8 @@ async def registrar_ventas_y_stock(items: list[dict]) -> list[str]:
 # ══════════════════════════════════════════════════════════════
 
 async def generar_reporte(periodo: str = "hoy") -> str:
-    hoy = date.today().strftime("%d/%m/%Y")
     now = datetime.now(TZ)
+    hoy = now.strftime("%d/%m/%Y")   # fecha en hora de Cuba (igual que las ventas)
 
     try:
         ventas_raw  = await fb_get("ventas") or {}
@@ -295,8 +303,8 @@ async def generar_reporte(periodo: str = "hoy") -> str:
     stock_lines = []
     try:
         prods, _ = await get_productos()
-        sin_stock  = [p["nombre"] for p in prods if int(p.get("stock", 0)) == 0]
-        stock_bajo = [p for p in prods if 0 < int(p.get("stock", 0)) <= 3]
+        sin_stock  = [p["nombre"] for p in prods if _safe_int(p.get("stock")) == 0]
+        stock_bajo = [p for p in prods if 0 < _safe_int(p.get("stock")) <= 3]
         if sin_stock:
             stock_lines.append(f"🚫 Sin stock ({len(sin_stock)}): " + ", ".join(sin_stock[:5]) +
                                 (" …" if len(sin_stock) > 5 else ""))
@@ -400,10 +408,10 @@ async def cmd_stock(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text(f"❌ Error cargando productos: {e}")
         return
 
-    sin_stock  = [p for p in prods if int(p.get("stock", 0)) == 0]
-    stock_bajo = sorted([p for p in prods if 0 < int(p.get("stock", 0)) <= 3],
+    sin_stock  = [p for p in prods if _safe_int(p.get("stock")) == 0]
+    stock_bajo = sorted([p for p in prods if 0 < _safe_int(p.get("stock")) <= 3],
                         key=lambda p: p.get("stock", 0))
-    con_stock  = [p for p in prods if int(p.get("stock", 0)) > 3]
+    con_stock  = [p for p in prods if _safe_int(p.get("stock")) > 3]
 
     lines = [
         f"📦 *Stock TiendaMax* ({len(prods)} productos)",
@@ -432,7 +440,7 @@ async def cmd_productos(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
 
     lines = [f"🛍️ *Productos ({len(prods)}):*", ""]
     for p in sorted(prods, key=lambda x: x.get("nombre", "")):
-        stock = int(p.get("stock", 0))
+        stock = _safe_int(p.get("stock"))
         icono = "🚫" if stock == 0 else ("⚠️" if stock <= 3 else "✅")
         lines.append(f"{icono} {p['nombre']} — ${p.get('precioActual', 0):.2f} · {stock} uds")
 
