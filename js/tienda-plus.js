@@ -227,8 +227,59 @@
         return true;
     }
 
+    // ════════════════════════════════════════════════════════════════
+    //  ACCESIBILIDAD — tarjetas de producto operables por teclado
+    //  Render-agnóstico: etiqueta cualquier .producto-card / .rel-card
+    //  (grid, más vendidos, relacionados) sin tocar el render minificado.
+    // ════════════════════════════════════════════════════════════════
+    function inicializarA11yTarjetas() {
+        var SEL = '.producto-card, .rel-card';
+
+        function etiquetar(card) {
+            if (card.getAttribute('data-a11y') === '1') return;
+            card.setAttribute('data-a11y', '1');
+            card.setAttribute('role', 'button');
+            card.setAttribute('tabindex', '0');
+            if (!card.getAttribute('aria-label')) {
+                var t = card.querySelector('h3, .producto-nombre, .rel-card-name, .card-title');
+                var nombre = t ? t.textContent.trim().slice(0, 80) : 'producto';
+                card.setAttribute('aria-label', nombre + ' — ver detalles');
+            }
+        }
+        function etiquetarTodo(root) {
+            try { (root || document).querySelectorAll(SEL).forEach(etiquetar); } catch (e) {}
+        }
+
+        // Enter / Espacio activan la tarjeta SOLO cuando ella misma tiene el
+        // foco (no robamos la tecla a los botones internos: Pedir, ❤️).
+        document.addEventListener('keydown', function (e) {
+            if (e.key !== 'Enter' && e.key !== ' ' && e.key !== 'Spacebar') return;
+            var card = e.target.closest && e.target.closest(SEL);
+            if (!card || e.target !== card) return;
+            e.preventDefault();
+            card.click();
+        }, false);
+
+        // Etiqueta lo que ya exista y lo que se renderice después.
+        etiquetarTodo(document);
+        try {
+            new MutationObserver(function (muts) {
+                for (var i = 0; i < muts.length; i++) {
+                    var added = muts[i].addedNodes;
+                    for (var j = 0; j < added.length; j++) {
+                        var n = added[j];
+                        if (!n || n.nodeType !== 1) continue;
+                        if (n.matches && n.matches(SEL)) etiquetar(n);
+                        else if (n.querySelector && n.querySelector(SEL)) etiquetarTodo(n);
+                    }
+                }
+            }).observe(document.body, { childList: true, subtree: true });
+        } catch (e) {}
+    }
+
     function init() {
         construirBarra();
+        inicializarA11yTarjetas();
         if (!engancharRender()) {
             var tries=0, iv=setInterval(function(){
                 tries++;
