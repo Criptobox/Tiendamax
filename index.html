@@ -367,17 +367,27 @@
     <script>
     (function(){
         function animarBanner(pill) {
+            // Movimiento reducido: sin animación (ahorra batería y respeta preferencia)
+            if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
             var distancia = window.innerWidth >= 768 ? 160 : 28;
-            var inicio = Date.now();
             var duracion = 3000;
+            var st = pill._tmBanner || (pill._tmBanner = { raf: null, inicio: Date.now() });
             function paso() {
-                var t = ((Date.now() - inicio) % duracion) / duracion;
-                var angulo = t * 2 * Math.PI;
-                var x = Math.sin(angulo) * distancia;
-                pill.style.transform = 'translateX(' + x + 'px)';
-                requestAnimationFrame(paso);
+                // Se pausa si la pestaña no se ve o el banner está oculto → no gasta de gancho
+                if (document.hidden || !pill.offsetParent) { st.raf = null; return; }
+                var t = ((Date.now() - st.inicio) % duracion) / duracion;
+                pill.style.transform = 'translateX(' + (Math.sin(t * 2 * Math.PI) * distancia) + 'px)';
+                st.raf = requestAnimationFrame(paso);
             }
-            requestAnimationFrame(paso);
+            st.paso = paso;
+            if (!st.raf) st.raf = requestAnimationFrame(paso);
+            if (!st.visBound) {
+                st.visBound = true;
+                document.addEventListener('visibilitychange', function () {
+                    if (document.hidden) { if (st.raf) { cancelAnimationFrame(st.raf); st.raf = null; } }
+                    else if (!st.raf && pill.offsetParent) { st.inicio = Date.now(); st.raf = requestAnimationFrame(st.paso); }
+                });
+            }
         }
 
         function mostrarBannerOferta(id, texto) {
