@@ -1,6 +1,6 @@
 {
-  "actualizado": "2026-06-29T14:48:24.242787+00:00",
-  "fecha": "2026-06-29",
+  "actualizado": "2026-06-30T13:10:05.396738+00:00",
+  "fecha": "2026-06-30",
   "fuentes": [
     "revolico",
     "porlalivre",
@@ -9,7 +9,7 @@
   "resumen": {
     "vigilados": 5,
     "encimaMercado": 0,
-    "bajadasComp": 2,
+    "bajadasComp": 0,
     "sinDatos": 0
   },
   "productos": [
@@ -22,7 +22,7 @@
         "mediana": 300.0,
         "n": 6
       },
-      "deltaAyerMediana": -3650.0,
+      "deltaAyerMediana": 0.0,
       "estado": "competitivo",
       "sugerencia": {
         "texto": "Precio competitivo respecto al mercado"
@@ -34,6 +34,10 @@
         },
         {
           "fecha": "2026-06-29",
+          "mediana": 300.0
+        },
+        {
+          "fecha": "2026-06-30",
           "mediana": 300.0
         }
       ],
@@ -85,7 +89,7 @@
         "mediana": 170.0,
         "n": 19
       },
-      "deltaAyerMediana": 12.5,
+      "deltaAyerMediana": 0.0,
       "estado": "competitivo",
       "sugerencia": {
         "texto": "Precio competitivo respecto al mercado"
@@ -97,6 +101,10 @@
         },
         {
           "fecha": "2026-06-29",
+          "mediana": 170.0
+        },
+        {
+          "fecha": "2026-06-30",
           "mediana": 170.0
         }
       ],
@@ -148,7 +156,7 @@
         "mediana": 57.5,
         "n": 12
       },
-      "deltaAyerMediana": -7.5,
+      "deltaAyerMediana": 0.0,
       "estado": "competitivo",
       "sugerencia": {
         "texto": "Precio competitivo respecto al mercado"
@@ -160,6 +168,10 @@
         },
         {
           "fecha": "2026-06-29",
+          "mediana": 57.5
+        },
+        {
+          "fecha": "2026-06-30",
           "mediana": 57.5
         }
       ],
@@ -224,6 +236,10 @@
         {
           "fecha": "2026-06-29",
           "mediana": 25.0
+        },
+        {
+          "fecha": "2026-06-30",
+          "mediana": 25.0
         }
       ],
       "muestras": [
@@ -286,6 +302,10 @@
         },
         {
           "fecha": "2026-06-29",
+          "mediana": 90.0
+        },
+        {
+          "fecha": "2026-06-30",
           "mediana": 90.0
         }
       ],
