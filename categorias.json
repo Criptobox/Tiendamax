@@ -11,8 +11,7 @@
     "JUEGOS",
     "MOTOS",
     "PC Y LAPTOPS",
-    "GYM",
-    "COMBOS"
+    "GYM"
   ],
   "iconos": {
     "SEGURIDAD": "🔒",
@@ -22,7 +21,6 @@
     "LENCERÍA": "👙",
     "PC Y LAPTOPS": "💻",
     "GYM": "🏋️",
-    "LENCERIA": "👙",
-    "COMBOS": "📦"
+    "LENCERIA": "👙"
   }
 }
