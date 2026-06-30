@@ -2121,5 +2121,32 @@
     "seoTitle": "NEVERA HORIZONTAL MILEXUS 7 PIES en Cuba | TiendaMax",
     "seoDescription": "​Marca: Milexus (Modelo ML-CF-200). ​Capacidad: 200 Litros / 7 Pies Cúbicos (Espacio óptimo y cómodo con canastillo interior para organizar). ​Bajo…",
     "descripcion": "​Marca: Milexus  (Modelo ML-CF-200).\n​Capacidad: 200 Litros / 7 Pies Cúbicos (Espacio óptimo y cómodo con canastillo interior para organizar).\n​Bajo Consumo Eléctrico: Solo 120W de potencia de entrada (Superfácil de mantener y súper ahorrador).\n​Diseño Premium: Acabado gris oscuro moderno con tirador ergonómico central y gomas de alta eficiencia que sellan el frío por completo.\n​Gas Ecológico: Utiliza refrigerante R600a, de alto rendimiento para un congelamiento rápido."
+  },
+  {
+    "id": 1782791345628,
+    "nombre": "INTERRUPTOR DE TRANSFERENCIA AUTOMÁTICA 220V",
+    "descripcion": "Ficha Técnica del Producto\n​Marca: LSP\n​Modelo: M2R63-110/3\n​Tipo de dispositivo: Interruptor de Transferencia Automática de Doble Potencia (ATS)\n​Número de polos: 3 polos (trifásico o para cortar fase/neutro según configuración)\n​Corriente nominal de funcionamiento (I_e): 63 A\n​Voltaje nominal de funcionamiento (U_e): AC 220 V\n​Voltaje de control: AC 110 V\n​Clase de TSE: PC (capaz de conectar y soportar, pero no diseñado para interrumpir corrientes de cortocircuito)\n​Categoría de uso: AC-31B\n​Tiempo de conmutación automática: \\le 100 ms (transferencia rápida)\n​Modos de operación: Automático y Manual (con palanca selectora física)\n​Certificación: CE",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1782791342848.jpg",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1782791342848.jpg"
+    ],
+    "precioActual": 70,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 5,
+    "comision": 5,
+    "comisionMoneda": "USD",
+    "categoria": "ENERGIA",
+    "subcategoria": "CONTROLADORES SOLARES",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "specs": [
+      "63A",
+      "220V",
+      "110V"
+    ],
+    "fechaAgregado": "2026-06-30T03:49:05.629Z"
   }
 ]
