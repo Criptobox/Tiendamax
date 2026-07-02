@@ -180,6 +180,17 @@
     .grid-2, .grid-3 { grid-template-columns:1fr !important; }
     .topbar h1 small { display:none; }
   }
+
+  /* Formularios (faltaban → inputs salían blancos) */
+  .form-group { display:flex; flex-direction:column; gap:6px; margin-bottom:2px; }
+  .form-label { font-size:11px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:0.5px; }
+  .form-input, .form-select, .form-textarea {
+    width:100%; padding:10px 12px; background:rgba(0,0,0,0.28); border:1px solid var(--border);
+    border-radius:9px; color:#fff; font-size:13px; outline:none; transition:border-color 0.15s;
+  }
+  .form-input::placeholder, .form-textarea::placeholder { color:var(--dim); }
+  .form-input:focus, .form-select:focus, .form-textarea:focus { border-color:var(--o); }
+  .form-textarea { resize:vertical; min-height:80px; }
 </style>
 </head>
 <body>
@@ -204,6 +215,7 @@
       <button class="side-btn active" data-view="inicio" title="Inicio">🏠</button>
       <button class="side-btn" data-view="agregar" title="Agregar producto">➕</button>
       <button class="side-btn" data-view="categorias" title="Categorías y subcategorías">🏷️</button>
+      <button class="side-btn" data-view="combos" title="Combos">🎁</button>
       <button class="side-btn" data-view="correcciones" title="Correcciones IA">🔧<span class="badge" id="badge-corr">0</span></button>
       <button class="side-btn" data-view="agente" title="Agente IA">🤖</button>
       <div class="side-sep"></div>
@@ -291,6 +303,27 @@
         <div class="section"><h3>🧾 Historial de ventas</h3><div id="ventas-lista"></div></div>
       </div>
 
+      <!-- COMBOS (creador) -->
+      <div id="view-combos" class="view">
+        <div class="ph"><div><h2>🎁 Combos</h2><p id="combos-sub">Arma combos con tus productos reales</p></div></div>
+        <div class="banner-info">Elige 2 o más productos, ponle precio de combo y ve el ahorro. Se guarda aquí; publicarlo a la tienda es el siguiente paso.</div>
+        <div class="grid-2">
+          <div class="section">
+            <h3>➕ Nuevo combo</h3>
+            <div class="form-group"><label class="form-label">Nombre del combo</label><input class="form-input" id="combo-nombre" placeholder="Ej: Combo Cámaras + Disco"></div>
+            <div class="form-group" style="margin-top:10px"><label class="form-label">Buscar producto para agregar</label><input class="form-input" id="combo-buscar" placeholder="🔍 Escribe para buscar…" oninput="comboBuscar()"><div id="combo-resultados" style="margin-top:6px;max-height:180px;overflow:auto"></div></div>
+            <div style="margin-top:12px"><label class="form-label">Productos del combo</label><div id="combo-items" style="margin-top:6px"></div></div>
+            <div id="combo-calc" style="margin-top:12px"></div>
+            <div class="form-group" style="margin-top:10px"><label class="form-label">Precio del combo (USD)</label><input class="form-input" id="combo-precio" type="number" placeholder="0.00" oninput="comboCalc()"></div>
+            <button class="btn btn-primary" style="margin-top:12px;width:100%" onclick="comboGuardar()">💾 Guardar combo</button>
+          </div>
+          <div class="section">
+            <h3>🎁 Combos guardados <span class="badge" id="combos-count">0</span></h3>
+            <div id="combos-lista"></div>
+          </div>
+        </div>
+      </div>
+
       <!-- AGENTE IA -->
       <div id="view-agente" class="view">
         <div class="ph"><div><h2>🤖 Agente IA</h2><p>Copiloto y herramientas de IA de tu tienda</p></div></div>
@@ -373,7 +406,68 @@ async function cargarDatos(recargar){
 function renderTodo(){
   renderInicio(); renderCategorias();
   renderCorrecciones(); renderStock(); renderRadar(); renderVentas();
-  renderAnalytics(); renderClientes(); renderAgente();
+  renderAnalytics(); renderClientes(); renderAgente(); renderCombos();
+}
+
+/* ============ COMBOS (creador) ============ */
+let COMBO_SEL = [];
+function lsCombos(){ try{ const c=JSON.parse(localStorage.getItem('combos')||'[]'); return Array.isArray(c)?c:[]; }catch(e){ return []; } }
+function saveCombos(arr){ try{ localStorage.setItem('combos', JSON.stringify(arr)); }catch(e){} }
+function comboBuscar(){
+  const q=norm($('#combo-buscar') && $('#combo-buscar').value);
+  const box=$('#combo-resultados'); if(!box) return;
+  if(!q){ box.innerHTML=''; return; }
+  const res=PRODUCTOS.filter(p=>norm(p.nombre).includes(q)).slice(0,8);
+  box.innerHTML = res.map(p=>`<div style="display:flex;align-items:center;gap:8px;padding:7px 9px;background:rgba(255,255,255,0.03);border-radius:8px;margin-bottom:4px"><div style="flex:1;font-size:12px;color:#fff">${esc(p.nombre)} <b style="color:var(--o)">${money(p.precioActual)}</b></div><button class="btn btn-ghost" style="padding:4px 10px;font-size:12px" onclick="comboAdd('${p.id}')">+ Agregar</button></div>`).join('') || `<div style="font-size:11px;color:var(--gray);padding:6px">Sin resultados</div>`;
+}
+function comboAdd(id){
+  const p=PRODUCTOS.find(x=>String(x.id)===String(id)); if(!p) return;
+  if(COMBO_SEL.some(x=>String(x.id)===String(id))) return;
+  COMBO_SEL.push({id:p.id, nombre:p.nombre, precio:Number(p.precioActual)||0});
+  $('#combo-buscar').value=''; $('#combo-resultados').innerHTML='';
+  comboRenderItems(); comboCalc();
+}
+function comboRemove(id){ COMBO_SEL=COMBO_SEL.filter(x=>String(x.id)!==String(id)); comboRenderItems(); comboCalc(); }
+function comboRenderItems(){
+  const box=$('#combo-items'); if(!box) return;
+  box.innerHTML = COMBO_SEL.length ? COMBO_SEL.map(it=>`<div style="display:flex;align-items:center;gap:8px;padding:8px 10px;background:rgba(255,107,53,0.08);border:1px solid rgba(255,107,53,0.3);border-radius:8px;margin-bottom:5px"><div style="flex:1;font-size:12px;color:#fff">${esc(it.nombre)}</div><span style="font-size:12px;color:var(--o);font-weight:700">${money(it.precio)}</span><button class="btn btn-ghost" style="padding:2px 8px" onclick="comboRemove('${it.id}')">✕</button></div>`).join('') : `<div style="font-size:11px;color:var(--gray);padding:8px">Aún no agregaste productos.</div>`;
+}
+function comboCalc(){
+  const orig=COMBO_SEL.reduce((s,x)=>s+x.precio,0);
+  const precio=Number($('#combo-precio') && $('#combo-precio').value)||0;
+  const ahorro=orig-precio;
+  const box=$('#combo-calc'); if(!box) return;
+  if(!COMBO_SEL.length){ box.innerHTML=''; return; }
+  box.innerHTML = `<div style="display:flex;justify-content:space-between;font-size:13px;padding:6px 0;border-top:1px solid var(--border)"><span style="color:var(--gray)">Precio normal (suma)</span><b style="color:#fff">${money(orig)}</b></div>`
+    + (precio>0?`<div style="display:flex;justify-content:space-between;font-size:13px;padding:6px 0"><span style="color:var(--gray)">Precio combo</span><b style="color:var(--o)">${money(precio)}</b></div><div style="display:flex;justify-content:space-between;font-size:13px;padding:6px 0"><span style="color:var(--gray)">Ahorro cliente</span><b style="color:${ahorro>0?'#2ecc71':'#e74c3c'}">${money(ahorro)}${orig>0?' ('+Math.round(ahorro/orig*100)+'%)':''}</b></div>`:'');
+}
+function comboGuardar(){
+  const nombre=($('#combo-nombre').value||'').trim();
+  const precio=Number($('#combo-precio').value)||0;
+  if(!nombre){ showToast('⚠️ Ponle nombre al combo'); return; }
+  if(COMBO_SEL.length<2){ showToast('⚠️ Agrega al menos 2 productos'); return; }
+  if(precio<=0){ showToast('⚠️ Pon el precio del combo'); return; }
+  const orig=COMBO_SEL.reduce((s,x)=>s+x.precio,0);
+  const combos=lsCombos();
+  combos.push({ id:'combo_'+Date.now(), nombre, precio, precioOriginal:orig, items:COMBO_SEL.map(x=>({id:x.id,nombre:x.nombre,precio:x.precio})), creado:new Date().toISOString() });
+  saveCombos(combos);
+  COMBO_SEL=[]; $('#combo-nombre').value=''; $('#combo-precio').value=''; comboRenderItems(); comboCalc();
+  renderCombos();
+  showToast('✅ Combo guardado', 'Publicarlo a la tienda es el siguiente paso');
+}
+function comboDelete(id){ if(!confirm('¿Borrar este combo?')) return; saveCombos(lsCombos().filter(c=>c.id!==id)); renderCombos(); }
+function renderCombos(){
+  const combos=lsCombos();
+  const cEl=$('#combos-count'); if(cEl) cEl.textContent=combos.length;
+  const box=$('#combos-lista'); if(!box) return;
+  box.innerHTML = combos.length ? combos.map(c=>{
+    const ahorro=(c.precioOriginal||0)-(c.precio||0);
+    return `<div style="background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:12px;padding:13px;margin-bottom:10px">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><b style="flex:1;color:#fff;font-size:14px">${esc(c.nombre)}</b><button class="btn btn-ghost" style="padding:3px 9px" onclick="comboDelete('${c.id}')">🗑</button></div>
+      <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:8px"><span style="font-size:18px;font-weight:900;color:var(--o)">${money(c.precio)}</span><span style="font-size:12px;color:var(--gray);text-decoration:line-through">${money(c.precioOriginal)}</span>${ahorro>0?`<span style="font-size:10px;color:#2ecc71;font-weight:800;background:rgba(46,204,113,0.12);padding:2px 7px;border-radius:10px">ahorra ${money(ahorro)}</span>`:''}</div>
+      <div style="font-size:11px;color:#cfcfd6">${(c.items||[]).map(it=>esc(it.nombre)).join(' + ')}</div>
+    </div>`;
+  }).join('') : `<div class="empty" style="padding:24px"><div class="ico">🎁</div>Aún no creaste combos.<br><small>Arma uno a la izquierda.</small></div>`;
 }
 function renderAgente(){
   var el=document.getElementById('agente-cont'); if(!el) return;
