@@ -1621,15 +1621,45 @@ if ('serviceWorker' in navigator) {
       var rows=arr.map(function(p){
         var e=ESTADO[p.estado]||ESTADO.sin_datos;
         var m=p.mercado||{};
-        var d=p.deltaAyerMediana;
-        var delta = (d==null||isNaN(d))?'' : '<span style="color:'+(d>0?'#e74c3c':(d<0?'#2ECC71':'#888'))+';font-weight:700">'+(d>0?'▲':(d<0?'▼':'•'))+' '+moneda(Math.abs(d))+'</span>';
-        var sug = (p.sugerencia&&p.sugerencia.texto) ? '<div style="font-size:12px;color:#C9A96E;margin-top:3px">💡 '+esc(p.sugerencia.texto)+'</div>' : '';
-        var mercado = (m.n>0) ? (moneda(m.min)+' · med '+moneda(m.mediana)+' <small style="color:#888">('+m.n+' anuncios)</small>') : '<span style="color:#888">sin coincidencias</span>';
-        return '<div style="display:flex;gap:12px;align-items:center;padding:11px 12px;border:1px solid rgba(255,255,255,.07);border-radius:12px;background:rgba(0,0,0,.18);margin-bottom:8px;flex-wrap:wrap">'
-          +'<div style="flex:1;min-width:150px"><div style="font-weight:700">'+esc(p.nombre)+'</div>'
-          +'<div style="font-size:12px;color:#aaa;margin-top:2px">Tu precio: <b style="color:#FF6B35">'+moneda(p.tuPrecio)+'</b> · Mercado: '+mercado+' '+delta+'</div>'+sug+'</div>'
-          +'<div style="text-align:right">'+sparkline(p.historial)+'<div style="display:inline-block;margin-left:8px;font-size:11px;font-weight:700;color:'+e.c+';background:'+e.bg+';border:1px solid '+e.c+'44;border-radius:20px;padding:4px 10px;white-space:nowrap">'+e.t+'</div></div>'
-          +'</div>';
+        var tuP=Number(p.tuPrecio)||0;
+        var muestras=((p.muestras||[]).slice()).sort(function(a,b){return (Number(a.precio)||0)-(Number(b.precio)||0);});
+        // Resumen del mercado, en palabras claras
+        var mercado = (m.n>0)
+          ? ('Más barato <b style="color:#2ECC71">'+moneda(m.min)+'</b> · típico <b>'+moneda(m.mediana)+'</b> <small style="color:#888">('+m.n+' anuncio'+(m.n!==1?'s':'')+')</small>')
+          : '<span style="color:#888">sin anuncios encontrados</span>';
+        // Comparación directa: ¿alguien vende más barato que tú?
+        var comp='';
+        if(m.n>0){
+          var dif=tuP-Number(m.min);
+          if(dif>0.001) comp='<div style="font-size:12px;color:#e74c3c;margin-top:3px">⚠️ Hay uno <b>'+moneda(dif)+' más barato</b> que el tuyo</div>';
+          else if(dif<-0.001) comp='<div style="font-size:12px;color:#2ECC71;margin-top:3px">✅ Tú eres el más barato ('+moneda(Math.abs(dif))+' por debajo)</div>';
+          else comp='<div style="font-size:12px;color:#C9A96E;margin-top:3px">➖ Estás al mismo precio que el más barato</div>';
+        }
+        // Evidencia: los anuncios reales con link (para verificar que no es inventado)
+        var evid='';
+        if(muestras.length){
+          evid='<details style="margin-top:9px"><summary style="cursor:pointer;font-size:12px;color:#5aa0ff;user-select:none;font-weight:600">🔎 Ver los '+muestras.length+' anuncios reales (verificar)</summary>'
+            +'<div style="margin-top:8px;display:flex;flex-direction:column;gap:6px">'
+            + muestras.map(function(s){
+                var pr=Number(s.precio);
+                var barato=(!isNaN(pr) && pr<=tuP);
+                var url=(/^https?:\/\//i.test(s.url||'')) ? String(s.url).replace(/"/g,'%22') : '';
+                return '<div style="display:flex;gap:9px;align-items:center;padding:7px 9px;background:rgba(0,0,0,.28);border:1px solid rgba(255,255,255,.06);border-radius:9px">'
+                  +'<b style="color:'+(barato?'#2ECC71':'#FF6B35')+';font-size:13px;min-width:62px;text-align:right">'+moneda(pr)+'</b>'
+                  +'<div style="flex:1;min-width:0"><div style="font-size:11.5px;color:#ccc;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+esc(s.titulo||'')+'</div>'
+                  +'<div style="font-size:10px;color:#777;text-transform:capitalize">'+esc(s.fuente||'')+'</div></div>'
+                  +(url?'<a href="'+url+'" target="_blank" rel="noopener noreferrer" style="font-size:11px;color:#5aa0ff;white-space:nowrap;text-decoration:none;background:rgba(90,160,255,.12);border:1px solid rgba(90,160,255,.3);border-radius:20px;padding:4px 10px">Ver anuncio →</a>':'')
+                  +'</div>';
+              }).join('')
+            +'</div></details>';
+        }
+        return '<div style="padding:11px 12px;border:1px solid rgba(255,255,255,.07);border-radius:12px;background:rgba(0,0,0,.18);margin-bottom:8px">'
+          +'<div style="display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap">'
+            +'<div style="flex:1;min-width:150px"><div style="font-weight:700">'+esc(p.nombre)+'</div>'
+            +'<div style="font-size:12px;color:#aaa;margin-top:3px">Tu precio: <b style="color:#FF6B35">'+moneda(tuP)+'</b></div>'
+            +'<div style="font-size:12px;color:#aaa;margin-top:2px">Mercado: '+mercado+'</div>'+comp+'</div>'
+            +'<div style="text-align:right">'+sparkline(p.historial)+'<div style="display:inline-block;margin-left:8px;font-size:11px;font-weight:700;color:'+e.c+';background:'+e.bg+';border:1px solid '+e.c+'44;border-radius:20px;padding:4px 10px;white-space:nowrap">'+e.t+'</div></div>'
+          +'</div>'+evid+'</div>';
       }).join('');
       cont.innerHTML=rows;
     }
