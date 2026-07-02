@@ -1,19 +1,24 @@
 #!/usr/bin/env python3
 """
-TiendaMax — genera productos-lite.json (campos esenciales para catálogo público).
-El admin sigue usando productos.json completo; el sitio público carga lite.json
-para ahorrar ~80KB en 3G (148KB → ~39KB).
+TiendaMax — genera productos-lite.json a partir de productos.json.
+
+El admin sigue usando productos.json completo; el sitio público carga lite
+para ahorrar peso en 3G. lite = productos.json SIN el campo 'descripcion'
+(la descripción se carga on-demand al abrir el modal de detalle).
+
+Se ejecuta en CI (regenerate-artifacts.yml) cada vez que cambia productos.json,
+para que el lite NUNCA quede desfasado del full (evita que un producto recién
+agregado no aparezca en la tienda).
 """
 import json, os, sys
 
-SRC = "public/productos.json"
-OUT = "public/productos-lite.json"
+BASE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+SRC = os.path.join(BASE, "productos.json")
+OUT = os.path.join(BASE, "productos-lite.json")
 
-ESSENTIAL = [
-    "id", "nombre", "precioActual", "precioOriginal", "imagen",
-    "categoria", "subcategoria", "stock", "masVendido", "usado",
-    "garantia", "devolucion", "descuento", "specs", "slug", "comision", "comisionMoneda"
-]
+# Único campo que se omite en la versión lite.
+OMIT = {"descripcion"}
+
 
 def main():
     if not os.path.exists(SRC):
@@ -21,19 +26,16 @@ def main():
         sys.exit(1)
     with open(SRC, encoding="utf-8") as f:
         full = json.load(f)
-    lite = []
-    for p in full:
-        item = {}
-        for k in ESSENTIAL:
-            if k in p:
-                item[k] = p[k]
-        lite.append(item)
+    if not isinstance(full, list):
+        full = full.get("productos", [])
+    lite = [{k: v for k, v in p.items() if k not in OMIT} for p in full]
     with open(OUT, "w", encoding="utf-8") as f:
         json.dump(lite, f, ensure_ascii=False, separators=(",", ":"))
     src_size = os.path.getsize(SRC)
     out_size = os.path.getsize(OUT)
     ratio = (out_size / src_size) * 100 if src_size else 0
-    print(f"productos-lite.json: {src_size}B → {out_size}B ({ratio:.0f}%) — {len(lite)} productos")
+    print(f"productos-lite.json: {src_size}B -> {out_size}B ({ratio:.0f}%) - {len(lite)} productos")
+
 
 if __name__ == "__main__":
     main()
