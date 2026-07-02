@@ -25,6 +25,27 @@ FUENTES = ["revolico", "porlalivre", "lelespc"]
 MAX_PROD = 40          # tope de productos vigilados por corrida (respetuoso)
 PAUSA = 1.5            # segundos entre peticiones (no agresivo)
 HIST_DIAS = 14
+MAX_DIAS = 7  # solo anuncios de la última semana
+
+
+def _edad_dias(texto):
+    """Antigüedad del anuncio en días desde texto tipo 'Hace 3 días', 'Hoy', 'Ayer'.
+    Devuelve None si no se puede determinar (en ese caso NO se descarta el anuncio)."""
+    t = (texto or "").lower()
+    if "hoy" in t or re.search(r"hace\s+\d+\s*(min|hora)", t):
+        return 0
+    if "ayer" in t:
+        return 1
+    m = re.search(r"hace\s+(\d+)\s*d[ií]a", t)
+    if m:
+        return int(m.group(1))
+    m = re.search(r"hace\s+(\d+)\s*semana", t)
+    if m:
+        return int(m.group(1)) * 7
+    m = re.search(r"hace\s+(\d+)\s*mes", t)
+    if m:
+        return int(m.group(1)) * 30
+    return None
 
 STOP = {"de","la","el","los","las","con","para","y","o","a","en","un","una","por",
         "del","al","pro","plus","new","nuevo","nueva","original","2","3","4"}
@@ -135,7 +156,8 @@ def scrape_revolico(query, rate):
         if usd:
             href = a.get("href", "")
             url = href if href.startswith("http") else ("https://www.revolico.com" + href)
-            out.append({"fuente": "revolico", "titulo": titulo[:90], "precio": usd, "url": url})
+            dias = _edad_dias(cont.get_text(" ", strip=True)) if cont else None
+            out.append({"fuente": "revolico", "titulo": titulo[:90], "precio": usd, "url": url, "dias": dias})
         if len(out) >= 25:
             break
     return out
@@ -160,7 +182,7 @@ def scrape_porlalivre(query, rate):
             continue
         a = card.find("a", href=True)
         url = a["href"] if a and a["href"].startswith("http") else ("https://www.porlalivre.com" + (a["href"] if a else ""))
-        out.append({"fuente": "porlalivre", "titulo": txt[:90], "precio": usd, "url": url})
+        out.append({"fuente": "porlalivre", "titulo": txt[:90], "precio": usd, "url": url, "dias": _edad_dias(txt)})
         if len(out) >= 25:
             break
     return out
@@ -200,8 +222,13 @@ def buscar(prod, rate):
         try:
             res = SCRAPERS[f](q, rate)
             for it in res:
-                if coincide(kw, it["titulo"]):
-                    muestras.append(it)
+                if not coincide(kw, it["titulo"]):
+                    continue
+                # Solo anuncios de la última semana (si se conoce la fecha).
+                d = it.get("dias")
+                if d is not None and d > MAX_DIAS:
+                    continue
+                muestras.append(it)
             time.sleep(PAUSA)
         except Exception as e:
             print(f"  ⚠ {f} falló para «{q}»: {e}")

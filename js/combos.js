@@ -16,9 +16,9 @@
       var orig = Number(c.precioOriginal) || 0;
       var ahorro = orig - precio;
       var items = (c.items || []);
-      var itemsTxt = items.map(function (it) { return esc(it.nombre); }).join(' + ');
+      var itemsTxt = items.map(function (it) { return (it.cantidad > 1 ? it.cantidad + '× ' : '') + esc(it.nombre); }).join(' + ');
       var msg = 'Hola! Me interesa el combo "' + (c.nombre || '') + '": ' +
-        items.map(function (it) { return it.nombre; }).join(' + ') +
+        items.map(function (it) { return (it.cantidad > 1 ? it.cantidad + 'x ' : '') + it.nombre; }).join(' + ') +
         '. Precio combo: ' + money(precio) + '. ¿Está disponible?';
       var wa = 'https://wa.me/' + WA + '?text=' + encodeURIComponent(msg);
       return '<div class="combo-card">' +

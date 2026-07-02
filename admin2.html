@@ -308,7 +308,8 @@
         <div class="ph"><div><h2>📈 Stock</h2><p>Niveles reales · alertas por umbral</p></div></div>
         <div class="banner-info" id="stock-nota"></div>
         <div class="kpis" id="stock-kpis"></div>
-        <div id="stock-lista"></div>
+        <div class="section"><h3>🔴 Agotados por categoría</h3><div id="stock-agotados"></div></div>
+        <div class="section"><h3>Con stock bajo</h3><div id="stock-lista"></div></div>
       </div>
 
       <!-- RADAR -->
@@ -637,18 +638,19 @@ function comboBuscar(){
 }
 function comboAdd(id){
   const p=PRODUCTOS.find(x=>String(x.id)===String(id)); if(!p) return;
-  if(COMBO_SEL.some(x=>String(x.id)===String(id))) return;
-  COMBO_SEL.push({id:p.id, nombre:p.nombre, precio:Number(p.precioActual)||0});
+  const ex=COMBO_SEL.find(x=>String(x.id)===String(id));
+  if(ex){ ex.cantidad=(ex.cantidad||1)+1; } else { COMBO_SEL.push({id:p.id, nombre:p.nombre, precio:Number(p.precioActual)||0, cantidad:1}); }
   $('#combo-buscar').value=''; $('#combo-resultados').innerHTML='';
   comboRenderItems(); comboCalc();
 }
 function comboRemove(id){ COMBO_SEL=COMBO_SEL.filter(x=>String(x.id)!==String(id)); comboRenderItems(); comboCalc(); }
+function comboQty(id,d){ const it=COMBO_SEL.find(x=>String(x.id)===String(id)); if(it){ it.cantidad=Math.max(1,(it.cantidad||1)+d); } comboRenderItems(); comboCalc(); }
 function comboRenderItems(){
   const box=$('#combo-items'); if(!box) return;
-  box.innerHTML = COMBO_SEL.length ? COMBO_SEL.map(it=>`<div style="display:flex;align-items:center;gap:8px;padding:8px 10px;background:rgba(255,107,53,0.08);border:1px solid rgba(255,107,53,0.3);border-radius:8px;margin-bottom:5px"><div style="flex:1;font-size:12px;color:#fff">${esc(it.nombre)}</div><span style="font-size:12px;color:var(--o);font-weight:700">${money(it.precio)}</span><button class="btn btn-ghost" style="padding:2px 8px" onclick="comboRemove('${it.id}')">✕</button></div>`).join('') : `<div style="font-size:11px;color:var(--gray);padding:8px">Aún no agregaste productos.</div>`;
+  box.innerHTML = COMBO_SEL.length ? COMBO_SEL.map(it=>`<div style="display:flex;align-items:center;gap:8px;padding:8px 10px;background:rgba(255,107,53,0.08);border:1px solid rgba(255,107,53,0.3);border-radius:8px;margin-bottom:5px"><div style="flex:1;font-size:12px;color:#fff">${esc(it.nombre)}<br><span style="color:var(--gray)">${money(it.precio)} c/u</span></div><button class="btn btn-ghost" style="padding:2px 9px" onclick="comboQty('${it.id}',-1)">−</button><span style="min-width:22px;text-align:center;color:#fff;font-weight:700">${it.cantidad||1}</span><button class="btn btn-ghost" style="padding:2px 9px" onclick="comboQty('${it.id}',1)">+</button><button class="btn btn-ghost" style="padding:2px 8px" onclick="comboRemove('${it.id}')">✕</button></div>`).join('') : `<div style="font-size:11px;color:var(--gray);padding:8px">Aún no agregaste productos.</div>`;
 }
 function comboCalc(){
-  const orig=COMBO_SEL.reduce((s,x)=>s+x.precio,0);
+  const orig=COMBO_SEL.reduce((s,x)=>s+x.precio*(x.cantidad||1),0);
   const precio=Number($('#combo-precio') && $('#combo-precio').value)||0;
   const ahorro=orig-precio;
   const box=$('#combo-calc'); if(!box) return;
@@ -662,9 +664,9 @@ function comboGuardar(){
   if(!nombre){ showToast('⚠️ Ponle nombre al combo'); return; }
   if(COMBO_SEL.length<2){ showToast('⚠️ Agrega al menos 2 productos'); return; }
   if(precio<=0){ showToast('⚠️ Pon el precio del combo'); return; }
-  const orig=COMBO_SEL.reduce((s,x)=>s+x.precio,0);
+  const orig=COMBO_SEL.reduce((s,x)=>s+x.precio*(x.cantidad||1),0);
   const combos=lsCombos();
-  combos.push({ id:'combo_'+Date.now(), nombre, precio, precioOriginal:orig, items:COMBO_SEL.map(x=>({id:x.id,nombre:x.nombre,precio:x.precio})), creado:new Date().toISOString() });
+  combos.push({ id:'combo_'+Date.now(), nombre, precio, precioOriginal:orig, items:COMBO_SEL.map(x=>({id:x.id,nombre:x.nombre,precio:x.precio,cantidad:x.cantidad||1})), creado:new Date().toISOString() });
   saveCombos(combos);
   COMBO_SEL=[]; $('#combo-nombre').value=''; $('#combo-precio').value=''; comboRenderItems(); comboCalc();
   renderCombos();
@@ -698,7 +700,7 @@ function renderCombos(){
     return `<div style="background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:12px;padding:13px;margin-bottom:10px">
       <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><b style="flex:1;color:#fff;font-size:14px">${esc(c.nombre)}</b><button class="btn btn-ghost" style="padding:3px 9px" onclick="comboDelete('${c.id}')">🗑</button></div>
       <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:8px"><span style="font-size:18px;font-weight:900;color:var(--o)">${money(c.precio)}</span><span style="font-size:12px;color:var(--gray);text-decoration:line-through">${money(c.precioOriginal)}</span>${ahorro>0?`<span style="font-size:10px;color:#2ecc71;font-weight:800;background:rgba(46,204,113,0.12);padding:2px 7px;border-radius:10px">ahorra ${money(ahorro)}</span>`:''}</div>
-      <div style="font-size:11px;color:#cfcfd6">${(c.items||[]).map(it=>esc(it.nombre)).join(' + ')}</div>
+      <div style="font-size:11px;color:#cfcfd6">${(c.items||[]).map(it=>((it.cantidad>1?it.cantidad+'× ':'')+esc(it.nombre))).join(' + ')}</div>
     </div>`;
   }).join('') : `<div class="empty" style="padding:24px"><div class="ico">🎁</div>Aún no creaste combos.<br><small>Arma uno a la izquierda.</small></div>`;
 }
@@ -782,9 +784,15 @@ function renderCategorias(){
   const subCount = (cat,s) => PRODUCTOS.filter(p=>norm(p.categoria)===norm(cat)&&norm(p.subcategoria)===norm(s)).length;
   let totalSubs=0; Object.keys(subMap).forEach(c=>totalSubs+=(subMap[c]||[]).length);
   $('#cat-count').textContent = cats.length + ' categorías · ' + totalSubs + ' subcategorías';
-  const pills = `<div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap">`
+  const pills = `<div style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap">`
     + `<button class="btn ${CAT_VIEW==='cat'?'btn-primary':'btn-ghost'}" onclick="catSwitch('cat')">🏷️ Categorías (${cats.length})</button>`
     + `<button class="btn ${CAT_VIEW==='sub'?'btn-primary':'btn-ghost'}" onclick="catSwitch('sub')">📁 Subcategorías (${totalSubs})</button></div>`;
+  let addForm;
+  if(CAT_VIEW==='cat'){
+    addForm=`<div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap"><input class="form-input" id="newCategoryName" placeholder="Nueva categoría" style="flex:1;min-width:150px"><input class="form-input" id="newCategoryIcon" placeholder="🏷️ emoji" style="width:110px"><button class="btn btn-primary" onclick="catAgregar()">+ Agregar</button></div>`;
+  } else {
+    addForm=`<div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap"><select class="form-select" id="newSubCat" style="min-width:140px">${cats.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join('')}</select><input class="form-input" id="newSubName" placeholder="Nueva subcategoría" style="flex:1;min-width:150px"><button class="btn btn-primary" onclick="subAgregar()">+ Agregar</button></div>`;
+  }
   let body;
   if(CAT_VIEW==='cat'){
     body = cats.map(nm=>`<div style="display:flex;align-items:center;gap:12px;padding:11px 14px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-bottom:6px"><div style="font-size:22px;width:38px;height:38px;background:rgba(255,255,255,0.05);border-radius:8px;display:flex;align-items:center;justify-content:center">${catIcono(nm)}</div><div style="flex:1;font-size:13px;font-weight:700;color:#fff">${esc(nm)}</div><span style="font-size:10px;padding:3px 8px;border-radius:8px;background:rgba(255,107,53,0.12);color:var(--o);font-weight:700">${countFor(nm)} productos</span></div>`).join('') || `<div class="empty"><div class="ico">🏷️</div>Sin categorías.</div>`;
@@ -796,7 +804,29 @@ function renderCategorias(){
       return `<div style="margin-bottom:14px"><div style="font-size:11px;font-weight:800;color:var(--gold);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">${catIcono(nm)} ${esc(nm)}</div>${subs.map(s=>`<div style="display:flex;align-items:center;gap:12px;padding:9px 14px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-bottom:5px"><div style="flex:1;font-size:13px;color:#fff">${esc(s)}</div><span style="font-size:10px;padding:3px 8px;border-radius:8px;background:rgba(255,107,53,0.12);color:var(--o);font-weight:700">${subCount(nm,s)}</span></div>`).join('')}</div>`;
     }).join('') || `<div class="empty"><div class="ico">📁</div>Sin subcategorías asignadas.</div>`;
   }
-  $('#cat-list').innerHTML = pills + body;
+  $('#cat-list').innerHTML = pills + addForm + body;
+}
+function catAgregar(){
+  if(typeof agregarCategoria!=='function'){ showToast('⚠️ Motor no cargado','Recarga la página'); return; }
+  const inp=$('#newCategoryName'); if(!inp || !inp.value.trim()){ showToast('⚠️ Escribe la categoría'); return; }
+  agregarCategoria();
+  setTimeout(function(){ try{ if(typeof categorias!=='undefined'&&Array.isArray(categorias)) CATEGORIAS={nombres:categorias.slice(), iconos:(typeof iconosPersonalizados!=='undefined'?iconosPersonalizados:((CATEGORIAS&&CATEGORIAS.iconos)||{}))}; }catch(e){} renderCategorias(); showToast('✅ Categoría agregada','Pulsa Actualizar tienda en ⚙️ para publicar'); },120);
+}
+function subAgregar(){
+  const cat=$('#newSubCat') && $('#newSubCat').value;
+  const name=($('#newSubName')&&$('#newSubName').value||'').trim();
+  if(!cat){ showToast('⚠️ Elige categoría'); return; }
+  if(!name){ showToast('⚠️ Escribe la subcategoría'); return; }
+  let map=null; try{ map=JSON.parse(localStorage.getItem('subcategorias')||'null'); }catch(e){}
+  if(!map || typeof map!=='object' || Array.isArray(map)) map = (SUBCATS && !Array.isArray(SUBCATS)) ? JSON.parse(JSON.stringify(SUBCATS)) : {};
+  if(!map[cat]) map[cat]=[];
+  if(map[cat].some(s=>norm(s)===norm(name))){ showToast('Ya existe esa subcategoría'); return; }
+  map[cat].push(name);
+  localStorage.setItem('subcategorias', JSON.stringify(map));
+  SUBCATS=map;
+  if(typeof marcarTodoModificado==='function'){} // sync sube subcategorias.json desde localStorage
+  renderCategorias();
+  showToast('✅ Subcategoría agregada','Pulsa Actualizar tienda en ⚙️ para publicar');
 }
 function renderSubcats(){
   // subcategorias.json = { CATEGORIA: [sub, sub...] }
@@ -863,6 +893,13 @@ function renderStock(){
   const crit = PRODUCTOS.filter(p=>Number(p.stock)>0&&Number(p.stock)<=5).length;
   const bajo = PRODUCTOS.filter(p=>Number(p.stock)>5&&Number(p.stock)<=15).length;
   const agot = PRODUCTOS.filter(p=>Number(p.stock)<=0).length;
+  // Agotados agrupados por categoría (píldora desplegable)
+  const agotList = PRODUCTOS.filter(p=>Number(p.stock)<=0);
+  const porCat={}; agotList.forEach(p=>{ const c=p.categoria||'Sin categoría'; (porCat[c]=porCat[c]||[]).push(p); });
+  const agEl=$('#stock-agotados');
+  if(agEl){ const cats=Object.keys(porCat).sort((a,b)=>porCat[b].length-porCat[a].length);
+    agEl.innerHTML = cats.length ? cats.map(c=>`<details style="background:rgba(231,76,60,0.06);border:1px solid rgba(231,76,60,0.3);border-radius:10px;padding:10px 14px;margin-bottom:8px"><summary style="cursor:pointer;font-weight:700;color:#fff;list-style:none;display:flex;align-items:center;gap:8px">${catIcono(c)} ${esc(c)} <span style="margin-left:auto;font-size:11px;background:rgba(231,76,60,0.2);color:#e74c3c;padding:2px 9px;border-radius:20px">${porCat[c].length} agotados</span></summary><div style="margin-top:8px">${porCat[c].map(p=>`<div style="font-size:12px;color:#cfcfd6;padding:5px 0;border-top:1px solid rgba(255,255,255,0.05)">${esc(p.nombre)} <span style="color:var(--gray)">· ${money(p.precioActual)}</span></div>`).join('')}</div></details>`).join('') : `<div class="empty" style="padding:18px"><div class="ico">✅</div>Ningún producto agotado.</div>`;
+  }
   const ok = PRODUCTOS.filter(p=>Number(p.stock)>15).length;
   $('#stock-kpis').innerHTML = [['success','OK',ok],['warn','Por agotarse',bajo],['danger','Crítico (≤5)',crit],['danger','Agotados',agot]].map(([c,l,v])=>`<div class="kpi ${c}"><div class="lbl">${l}</div><div class="val">${v}</div></div>`).join('');
   $('#badge-stock').textContent = crit+agot;
@@ -957,12 +994,12 @@ cargarDatos();
 // Exponemos al window solo lo que usan los onclick/oninput de la interfaz.
 window.go=go; window.cargarDatos=cargarDatos; window.renderProductos=renderProductos; window.renderCorrecciones=renderCorrecciones;
 window.comboBuscar=comboBuscar; window.comboAdd=comboAdd; window.comboRemove=comboRemove; window.comboCalc=comboCalc;
-window.comboGuardar=comboGuardar; window.comboDelete=comboDelete; window.comboPublicar=comboPublicar;
+window.comboGuardar=comboGuardar; window.comboDelete=comboDelete; window.comboPublicar=comboPublicar; window.comboQty=comboQty;
 window.agregarFillSubcats=agregarFillSubcats; window.fileName=fileName;
 window.ventaBuscar=ventaBuscar; window.ventaAdd=ventaAdd; window.ventaCartRemove=ventaCartRemove; window.ventaCartQty=ventaCartQty; window.ventaRegistrar=ventaRegistrar;
 window.correccionNormalizarMayus=correccionNormalizarMayus;
 window.agenteGuardarKey=agenteGuardarKey; window.agenteBorrarKey=agenteBorrarKey;
-window.catSwitch=catSwitch;
+window.catSwitch=catSwitch; window.catAgregar=catAgregar; window.subAgregar=subAgregar;
 })();
 </script>
 <script>
