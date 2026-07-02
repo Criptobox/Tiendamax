@@ -191,6 +191,14 @@
   .form-input::placeholder, .form-textarea::placeholder { color:var(--dim); }
   .form-input:focus, .form-select:focus, .form-textarea:focus { border-color:var(--o); }
   .form-textarea { resize:vertical; min-height:80px; }
+  /* Selector de foto bonito (oculta el input nativo) */
+  .file-box { display:flex; align-items:center; gap:10px; padding:14px; border:2px dashed var(--border); border-radius:12px; background:rgba(0,0,0,0.28); cursor:pointer; transition:border-color .15s,background .15s; }
+  .file-box:hover { border-color:var(--o); background:rgba(255,107,53,0.06); }
+  .file-box input[type=file] { display:none; }
+  .file-box .fb-ico { font-size:24px; flex-shrink:0; }
+  .file-box .fb-txt { font-size:13px; color:#cfcfd6; font-weight:600; word-break:break-word; }
+  .file-box.has-file { border-style:solid; border-color:rgba(46,204,113,.5); }
+  .file-box.has-file .fb-txt { color:#2ecc71; }
 </style>
 </head>
 <body>
@@ -346,8 +354,45 @@
 
       <!-- AGREGAR (se porta del admin actual) -->
       <div id="view-agregar" class="view">
-        <div class="ph"><div><h2>➕ Agregar producto</h2><p>Se conecta al formulario real del admin</p></div></div>
-        <div class="section"><div class="empty"><div class="ico">🔗</div>El formulario completo (con subida de imagen, IA, guardado y sync a GitHub) ya existe en tu admin actual.<br>En la <b>Fase 2</b> lo porto aquí con este mismo estilo.<br><br><button class="btn btn-primary" onclick="location.href='admin.html'">Abrir admin actual →</button></div></div>
+        <div class="ph"><div><h2>➕ Agregar producto</h2><p>Formulario real · sube la imagen y publica solo</p></div></div>
+        <form id="productForm" onsubmit="agregarProductoForm(event)">
+          <div class="grid-2">
+            <div class="section">
+              <h3>📝 Información</h3>
+              <div class="form-group"><label class="form-label">Nombre del producto *</label><input class="form-input" id="productName" required placeholder="Ej: Router WiFi 6 AX1800"></div>
+              <div class="form-group" style="margin-top:10px"><label class="form-label">Descripción</label><textarea class="form-textarea" id="productDescription" placeholder="Características, materiales, para qué sirve…"></textarea></div>
+              <div class="form-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px">
+                <div class="form-group"><label class="form-label">Categoría *</label><select class="form-select" id="productCategory" required onchange="agregarFillSubcats()"><option value="">Selecciona…</option></select></div>
+                <div class="form-group"><label class="form-label">Subcategoría</label><select class="form-select" id="productSubcategory"><option value="">—</option></select></div>
+              </div>
+              <div class="form-group" style="margin-top:10px"><label class="form-label">Specs (separadas por coma, máx 6)</label><input class="form-input" id="productSpecs" placeholder="1800Mbps, Dual Band, 4 antenas"></div>
+            </div>
+            <div class="section">
+              <h3>💰 Precio y stock</h3>
+              <div class="form-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+                <div class="form-group"><label class="form-label">Precio actual (USD) *</label><input class="form-input" id="productPriceActual" type="number" step="0.01" required placeholder="0.00"></div>
+                <div class="form-group"><label class="form-label">Precio original (tachado)</label><input class="form-input" id="productPrecioOriginal" type="number" step="0.01" placeholder="0.00"></div>
+                <div class="form-group"><label class="form-label">Stock *</label><input class="form-input" id="productStock" type="number" required placeholder="0"></div>
+                <div class="form-group"><label class="form-label">Tu comisión</label><div style="display:flex;gap:8px"><input class="form-input" id="productComision" type="number" step="0.01" placeholder="0.00" style="flex:1"><select class="form-select" id="productComisionMoneda" style="width:90px;flex:none"><option value="USD">USD</option><option value="MN">MN</option></select></div></div>
+                <div class="form-group"><label class="form-label">Destacar</label><select class="form-select" id="productMasVendido"><option value="false">No</option><option value="true">Sí, en "Más vendidos"</option></select></div>
+              </div>
+              <div class="form-group" style="margin-top:10px"><label class="form-label">Garantía</label><input class="form-input" id="productGarantia" placeholder="Ej: 6 meses · devolución 30 días"></div>
+              <div style="display:flex;gap:18px;margin-top:12px;font-size:13px;color:#cfcfd6">
+                <label style="display:flex;align-items:center;gap:6px"><input type="checkbox" id="productUsado"> Usado / refurbished</label>
+                <label style="display:flex;align-items:center;gap:6px"><input type="checkbox" id="productDevolucion"> Garantía de devolución</label>
+              </div>
+            </div>
+          </div>
+          <div class="section">
+            <h3>📸 Fotos</h3>
+            <div class="form-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+              <label class="file-box" for="productImage"><span class="fb-ico">📷</span><span class="fb-txt" id="productImage-name">Elegir foto principal *</span><input type="file" id="productImage" accept="image/*" required onchange="fileName(this,'productImage-name','Elegir foto principal *')"></label>
+              <label class="file-box" for="productImagesExtra"><span class="fb-ico">🖼️</span><span class="fb-txt" id="productImagesExtra-name">Fotos extra (opcional)</span><input type="file" id="productImagesExtra" accept="image/*" multiple onchange="fileName(this,'productImagesExtra-name','Fotos extra (opcional)')"></label>
+            </div>
+            <button type="submit" class="btn btn-primary" style="width:100%;margin-top:14px">💾 Guardar y publicar producto</button>
+            <p style="font-size:11px;color:var(--muted);margin-top:8px;text-align:center">Sube la imagen a GitHub y publica el catálogo automáticamente (usa tu token de Configuración).</p>
+          </div>
+        </form>
       </div>
 
       <!-- SOON -->
@@ -362,7 +407,22 @@
 
 <div class="toast" id="toast"><div class="t" id="toast-t"></div><div class="b" id="toast-b"></div></div>
 
+<!-- Motor real del admin (mismos scripts que admin.html) — expone verificarPassword,
+     agregarProductoForm, sincronizarTodoConGitHub, registrarVenta, etc. -->
+<script src="js/src/tm-config.js"></script>
+<script src="js/src/tm-data.js"></script>
+<script src="js/src/tm-state.js"></script>
+<script src="js/src/tm-admin.js"></script>
+<script src="js/src/tm-product.js"></script>
+<script src="js/src/tm-catalog.js"></script>
+<script src="js/src/tm-init.js"></script>
+<script src="js/src/tm-ui.js"></script>
+<script src="js/src/tm-toast.js"></script>
+<script src="js/src/tm-iife.js"></script>
+<script src="js/src/tm-patches.js"></script>
+
 <script>
+(function(){
 /* ============ Estado ============ */
 let PRODUCTOS = [], CATEGORIAS = [], SUBCATS = [], RADAR = null, VENTAS = [];
 const $ = s => document.querySelector(s);
@@ -408,6 +468,26 @@ function renderTodo(){
   renderInicio(); renderCategorias();
   renderCorrecciones(); renderStock(); renderRadar(); renderVentas();
   renderAnalytics(); renderClientes(); renderAgente(); renderCombos();
+  fillAgregarCategorias();
+}
+function fillAgregarCategorias(){
+  const sel=$('#productCategory'); if(!sel) return;
+  const cats=catNombres();
+  sel.innerHTML='<option value="">Selecciona…</option>'+cats.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join('');
+}
+function fileName(input, spanId, def){
+  const span=document.getElementById(spanId); const box=input.closest('.file-box'); if(!span) return;
+  const f=input.files;
+  if(f && f.length){ span.textContent = f.length>1 ? (f.length+' fotos elegidas') : f[0].name; if(box) box.classList.add('has-file'); }
+  else { span.textContent=def; if(box) box.classList.remove('has-file'); }
+}
+function agregarFillSubcats(){
+  const cat=$('#productCategory') && $('#productCategory').value;
+  const sub=$('#productSubcategory'); if(!sub) return;
+  const map=(SUBCATS && !Array.isArray(SUBCATS))?SUBCATS:{};
+  let subs = map[cat] || map[(cat||'').toUpperCase()] || [];
+  if(!subs.length){ const k=Object.keys(map).find(x=>norm(x)===norm(cat)); if(k) subs=map[k]; }
+  sub.innerHTML='<option value="">—</option>'+(subs||[]).map(s=>`<option value="${esc(s)}">${esc(s)}</option>`).join('');
 }
 
 /* ============ COMBOS (creador) ============ */
@@ -713,6 +793,14 @@ function renderClientes(){
 
 /* ============ Init ============ */
 cargarDatos();
+
+// El script va en IIFE para no chocar con el motor (que también declara $).
+// Exponemos al window solo lo que usan los onclick/oninput de la interfaz.
+window.go=go; window.cargarDatos=cargarDatos; window.renderProductos=renderProductos; window.renderCorrecciones=renderCorrecciones;
+window.comboBuscar=comboBuscar; window.comboAdd=comboAdd; window.comboRemove=comboRemove; window.comboCalc=comboCalc;
+window.comboGuardar=comboGuardar; window.comboDelete=comboDelete; window.comboPublicar=comboPublicar;
+window.agregarFillSubcats=agregarFillSubcats; window.fileName=fileName;
+})();
 </script>
 </body>
 </html>
