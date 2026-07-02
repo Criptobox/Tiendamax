@@ -235,7 +235,7 @@
     <h1>TiendaMax<small>Admin · nuevo diseño (vista previa)</small></h1>
     <div class="tb-actions">
       <button class="icon-btn" onclick="location.href='admin.html'" title="Volver al admin actual">↩️</button>
-      <button class="icon-btn" title="Notificaciones">🔔<span class="dot" id="tb-alertas">0</span></button>
+      <button class="icon-btn" title="Suscriptores push" onclick="go('agente')">🔔<span class="dot" id="tb-subs">0</span></button>
       <button class="icon-btn" title="Recargar datos" onclick="cargarDatos(true)">🔄</button>
     </div>
   </div>
@@ -248,8 +248,7 @@
       <button class="side-btn" data-view="agregar" title="Agregar producto">➕</button>
       <button class="side-btn" data-view="categorias" title="Categorías y subcategorías">🏷️</button>
       <button class="side-btn" data-view="combos" title="Combos">🎁</button>
-      <button class="side-btn" data-view="correcciones" title="Correcciones IA">🔧<span class="badge" id="badge-corr">0</span></button>
-      <button class="side-btn" data-view="agente" title="Agente IA">🤖</button>
+      <button class="side-btn" data-view="agente" title="Agente IA — calidad y correcciones">🤖<span class="badge" id="badge-corr">0</span></button>
       <div class="side-sep"></div>
       <button class="side-btn" data-view="stock" title="Stock">📈<span class="badge" id="badge-stock">0</span></button>
       <button class="side-btn" data-view="radar" title="Radar de precios">📡<span class="new-tag">N</span></button>
@@ -300,16 +299,10 @@
       <!-- CATEGORIAS + SUBCATEGORIAS (combinado) -->
       <div id="view-categorias" class="view">
         <div class="ph"><div><h2>🏷️ Categorías y subcategorías</h2><p id="cat-count">—</p></div></div>
-        <div class="section"><h3>Categorías de tu tienda · con sus subcategorías</h3><div id="cat-list"></div></div>
+        <div class="section"><h3>Categorías y subcategorías</h3><div id="cat-list"></div></div>
       </div>
 
       <!-- CORRECCIONES IA -->
-      <div id="view-correcciones" class="view">
-        <div class="ph"><div><h2>🔧 Correcciones y calidad</h2><p>Análisis real de tu catálogo · nada inventado</p></div><div class="ph-actions"><button class="btn btn-ghost" onclick="renderCorrecciones()">🔄 Re-analizar</button></div></div>
-        <div class="ai-banner"><div style="font-size:28px">🤖</div><div style="flex:1"><div class="t">Análisis del catálogo</div><div class="m" id="corr-resumen">Cargando…</div></div></div>
-        <div id="corr-lista"></div>
-      </div>
-
       <!-- STOCK -->
       <div id="view-stock" class="view">
         <div class="ph"><div><h2>📈 Stock</h2><p>Niveles reales · alertas por umbral</p></div></div>
@@ -367,8 +360,10 @@
 
       <!-- AGENTE IA -->
       <div id="view-agente" class="view">
-        <div class="ph"><div><h2>🤖 Agente IA</h2><p>Copiloto y herramientas de IA de tu tienda</p></div></div>
-        <div id="agente-cont"></div>
+        <div class="ph"><div><h2>🤖 Agente IA</h2><p>Calidad del catálogo · correcciones · suscriptores</p></div><div class="ph-actions"><button class="btn btn-ghost" onclick="renderCorrecciones()">🔄 Re-analizar</button></div></div>
+        <div class="kpis" id="agente-kpis"></div>
+        <div class="ai-banner"><div style="font-size:28px">🤖</div><div style="flex:1"><div class="t">Análisis del catálogo</div><div class="m" id="corr-resumen">Cargando…</div></div></div>
+        <div id="corr-lista"></div>
       </div>
 
       <!-- CONFIGURACIÓN -->
@@ -393,6 +388,12 @@
             <button class="btn btn-primary" style="width:100%;margin-top:12px" onclick="guardarTasaMNAdmin()">💾 Guardar tasa</button>
             <p id="tasaMNStatus" style="font-size:12px;color:var(--muted);margin-top:8px"></p>
           </div>
+        </div>
+        <div class="section">
+          <h3>🔑 API Key de IA (para el Agente)</h3>
+          <div class="form-group"><label class="form-label">API Key (Gemini / OpenRouter / Groq / DeepSeek)</label><input class="form-input" id="ia-key" type="text" placeholder="AIza… / sk-or-… / gsk_… / sk-…"></div>
+          <div style="display:flex;gap:8px;margin-top:10px"><button class="btn btn-primary" onclick="agenteGuardarKey()">💾 Guardar key</button><button class="btn btn-ghost" onclick="agenteBorrarKey()">🗑 Borrar</button></div>
+          <p id="ia-key-status" style="font-size:12px;color:var(--muted);margin-top:8px">Sin key configurada</p>
         </div>
       </div>
 
@@ -524,7 +525,7 @@ async function cargarDatos(recargar){
 function renderTodo(){
   renderInicio(); renderCategorias();
   renderCorrecciones(); renderStock(); renderRadar(); renderVentas();
-  renderAnalytics(); renderClientes(); renderAgente(); renderCombos();
+  renderAnalytics(); renderClientes(); renderCombos();
   fillAgregarCategorias(); fillConfig();
 }
 function fillConfig(){
@@ -535,6 +536,8 @@ function fillConfig(){
   set('adminTasaMN', localStorage.getItem('tasaMN'));
   const m=localStorage.getItem('margenMN'); const mEl=$('#adminMargenMN'); if(mEl && !mEl.value && m!=null) mEl.value=m;
   set('adminWhatsappNum', localStorage.getItem('whatsappNumero')||localStorage.getItem('adminWhatsappNum'));
+  const iaEl=$('#ia-key'); if(iaEl && !iaEl.value) iaEl.value = localStorage.getItem('anthropicApiKey')||'';
+  iaKeyStatus();
 }
 function fillAgregarCategorias(){
   const sel=$('#productCategory'); if(!sel) return;
@@ -616,8 +619,8 @@ function comboCalc(){
   const ahorro=orig-precio;
   const box=$('#combo-calc'); if(!box) return;
   if(!COMBO_SEL.length){ box.innerHTML=''; return; }
-  box.innerHTML = `<div style="display:flex;justify-content:space-between;font-size:13px;padding:6px 0;border-top:1px solid var(--border)"><span style="color:var(--gray)">Precio normal (suma)</span><b style="color:#fff">${money(orig)}</b></div>`
-    + (precio>0?`<div style="display:flex;justify-content:space-between;font-size:13px;padding:6px 0"><span style="color:var(--gray)">Precio combo</span><b style="color:var(--o)">${money(precio)}</b></div><div style="display:flex;justify-content:space-between;font-size:13px;padding:6px 0"><span style="color:var(--gray)">Ahorro cliente</span><b style="color:${ahorro>0?'#2ecc71':'#e74c3c'}">${money(ahorro)}${orig>0?' ('+Math.round(ahorro/orig*100)+'%)':''}</b></div>`:'');
+  box.innerHTML = `<div style="display:flex;justify-content:space-between;font-size:13px;padding:6px 0;border-top:1px solid var(--border)"><span style="color:var(--gray)">Precio oficial (por separado)</span><b style="color:#fff;text-decoration:line-through">${money(orig)}</b></div>`
+    + (precio>0?`<div style="display:flex;justify-content:space-between;font-size:13px;padding:6px 0"><span style="color:var(--gray)">Precio del combo</span><b style="color:var(--o)">${money(precio)}</b></div><div style="display:flex;justify-content:space-between;font-size:15px;padding:8px 0;font-weight:800"><span style="color:var(--gray)">El cliente ahorra</span><b style="color:${ahorro>0?'#2ecc71':'#e74c3c'}">${money(ahorro)}${orig>0?' ('+Math.round(ahorro/orig*100)+'%)':''}</b></div>`:'');
 }
 function comboGuardar(){
   const nombre=($('#combo-nombre').value||'').trim();
@@ -665,19 +668,9 @@ function renderCombos(){
     </div>`;
   }).join('') : `<div class="empty" style="padding:24px"><div class="ico">🎁</div>Aún no creaste combos.<br><small>Arma uno a la izquierda.</small></div>`;
 }
-function renderAgente(){
-  var el=document.getElementById('agente-cont'); if(!el) return;
-  var key=localStorage.getItem('anthropicApiKey')||'';
-  el.innerHTML =
-   '<div class="ai-banner"><div style="font-size:28px">🤖</div><div style="flex:1"><div class="t">Agente IA de tu tienda</div><div class="m">Configura tu API key para generar descripciones y textos SEO. El análisis de calidad del catálogo ya está activo en <b>🔧 Correcciones</b>.</div></div></div>'
-   + '<div class="section"><h3>🔑 API Key de IA</h3>'
-   + '<div class="form-group"><label class="form-label">API Key (Gemini / OpenRouter / Groq / DeepSeek)</label><input class="form-input" id="ia-key" type="text" placeholder="AIza… / sk-or-… / gsk_… / sk-…" value="'+esc(key)+'"></div>'
-   + '<div style="display:flex;gap:8px;margin-top:10px"><button class="btn btn-primary" onclick="agenteGuardarKey()">💾 Guardar key</button><button class="btn btn-ghost" onclick="agenteBorrarKey()">🗑 Borrar</button></div>'
-   + '<p style="font-size:12px;color:var(--muted);margin-top:8px">'+(key?('✅ Key guardada ('+esc(key.slice(0,6))+'…)'):'Sin key configurada')+'</p></div>'
-   + '<div class="section"><h3>✨ Qué hace la IA</h3><div style="font-size:13px;color:#cfcfd6;line-height:1.9">• Genera <b>descripciones y títulos SEO</b> desde el nombre/foto del producto<br>• Analiza tu catálogo y sugiere mejoras (ya activo en 🔧 Correcciones)<br>• Textos para WhatsApp / Facebook</div></div>';
-}
-function agenteGuardarKey(){ var i=$('#ia-key'); var k=(i&&i.value||'').trim(); if(k){ localStorage.setItem('anthropicApiKey',k); showToast('✅ API key guardada'); } renderAgente(); }
-function agenteBorrarKey(){ localStorage.removeItem('anthropicApiKey'); localStorage.removeItem('anthropicApiProvider'); showToast('Key borrada'); renderAgente(); }
+function iaKeyStatus(){ const p=$('#ia-key-status'); if(!p)return; const k=localStorage.getItem('anthropicApiKey')||''; p.textContent = k?('✅ Key guardada ('+k.slice(0,6)+'…)'):'Sin key configurada'; }
+function agenteGuardarKey(){ var i=$('#ia-key'); var k=(i&&i.value||'').trim(); if(k){ localStorage.setItem('anthropicApiKey',k); showToast('✅ API key guardada'); } iaKeyStatus(); }
+function agenteBorrarKey(){ localStorage.removeItem('anthropicApiKey'); localStorage.removeItem('anthropicApiProvider'); const i=$('#ia-key'); if(i)i.value=''; showToast('Key borrada'); iaKeyStatus(); }
 
 /* ============ Helpers ventas ============ */
 function ventaFecha(v){ const ts=v.id||v.fecha; if(!ts) return null; const d=new Date(typeof ts==='number'?ts:Date.parse(ts)); return isNaN(d.getTime())?null:d; }
@@ -725,7 +718,8 @@ function renderInicio(){
   const ult=[...VENTAS].sort((a,b)=>(ventaFecha(b)||0)-(ventaFecha(a)||0)).slice(0,5);
   $('#inicio-actividad').innerHTML = ult.length ? ult.map(v=>{ const d=ventaFecha(v); return `<div style="display:flex;align-items:flex-start;gap:10px;padding:9px 10px;background:rgba(255,255,255,0.03);border-radius:9px;margin-bottom:6px;font-size:12px"><span style="font-size:18px">💰</span><div style="flex:1"><b style="color:#fff">${money(ventaTotal(v))}</b> ${esc(v.cliente||v.nombre||'')}<span style="color:var(--dim);font-size:10px;float:right">${d?d.toLocaleDateString('es-CU'):''}</span></div></div>`; }).join('') : `<div class="empty" style="padding:18px"><div class="ico">🧾</div>Aún no hay ventas registradas.</div>`;
   // Badge alertas topbar
-  $('#tb-alertas').textContent = agotados + stockBajo;
+  const _subs = parseInt(localStorage.getItem('tm_subscriber_count')||'0')||0;
+  const _sb=$('#tb-subs'); if(_sb) _sb.textContent = _subs;
 }
 
 /* ============ PRODUCTOS ============ */
@@ -745,6 +739,8 @@ function renderProductos(){
 /* ============ CATEGORIAS / SUBCATS ============ */
 function catNombres(){ if(Array.isArray(CATEGORIAS)) return CATEGORIAS.map(c=>typeof c==='string'?c:(c.nombre||c.name||'')); return (CATEGORIAS&&CATEGORIAS.nombres)||[]; }
 function catIcono(nm){ const ic=(CATEGORIAS&&CATEGORIAS.iconos)||{}; return ic[nm] || ic[(nm||'').toUpperCase()] || emojiCat(nm); }
+let CAT_VIEW='cat';
+function catSwitch(v){ CAT_VIEW=v; renderCategorias(); }
 function renderCategorias(){
   const cats = catNombres();
   const subMap = (SUBCATS && !Array.isArray(SUBCATS)) ? SUBCATS : {};
@@ -752,16 +748,21 @@ function renderCategorias(){
   const subCount = (cat,s) => PRODUCTOS.filter(p=>norm(p.categoria)===norm(cat)&&norm(p.subcategoria)===norm(s)).length;
   let totalSubs=0; Object.keys(subMap).forEach(c=>totalSubs+=(subMap[c]||[]).length);
   $('#cat-count').textContent = cats.length + ' categorías · ' + totalSubs + ' subcategorías';
-  $('#cat-list').innerHTML = (cats.length?cats:Object.keys(subMap)).map(nm=>{
-    const n=countFor(nm);
-    // subcats de esta categoría (match por clave exacta o normalizada)
-    let subs = subMap[nm] || subMap[(nm||'').toUpperCase()] || [];
-    if(!subs.length){ const k=Object.keys(subMap).find(x=>norm(x)===norm(nm)); if(k) subs=subMap[k]; }
-    const subsHtml = (subs && subs.length)
-      ? `<div style="margin-top:8px;padding-left:50px;display:flex;flex-wrap:wrap;gap:6px">${subs.map(s=>`<span style="font-size:11px;padding:4px 9px;border-radius:20px;background:rgba(255,255,255,0.05);border:1px solid var(--border);color:#cfcfd6">${esc(s)} <b style="color:var(--o)">${subCount(nm,s)}</b></span>`).join('')}</div>`
-      : `<div style="margin-top:6px;padding-left:50px;font-size:11px;color:var(--gray)">Sin subcategorías</div>`;
-    return `<div style="background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-bottom:8px;padding:11px 14px"><div style="display:flex;align-items:center;gap:12px"><div style="font-size:22px;width:38px;height:38px;background:rgba(255,255,255,0.05);border-radius:8px;display:flex;align-items:center;justify-content:center">${catIcono(nm)}</div><div style="flex:1"><div style="font-size:13px;font-weight:700;color:#fff">${esc(nm)}</div></div><span style="font-size:10px;padding:3px 8px;border-radius:8px;background:rgba(255,107,53,0.12);color:var(--o);font-weight:700">${n} productos</span></div>${subsHtml}</div>`;
-  }).join('') || `<div class="empty"><div class="ico">🏷️</div>Sin categorías.</div>`;
+  const pills = `<div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap">`
+    + `<button class="btn ${CAT_VIEW==='cat'?'btn-primary':'btn-ghost'}" onclick="catSwitch('cat')">🏷️ Categorías (${cats.length})</button>`
+    + `<button class="btn ${CAT_VIEW==='sub'?'btn-primary':'btn-ghost'}" onclick="catSwitch('sub')">📁 Subcategorías (${totalSubs})</button></div>`;
+  let body;
+  if(CAT_VIEW==='cat'){
+    body = cats.map(nm=>`<div style="display:flex;align-items:center;gap:12px;padding:11px 14px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-bottom:6px"><div style="font-size:22px;width:38px;height:38px;background:rgba(255,255,255,0.05);border-radius:8px;display:flex;align-items:center;justify-content:center">${catIcono(nm)}</div><div style="flex:1;font-size:13px;font-weight:700;color:#fff">${esc(nm)}</div><span style="font-size:10px;padding:3px 8px;border-radius:8px;background:rgba(255,107,53,0.12);color:var(--o);font-weight:700">${countFor(nm)} productos</span></div>`).join('') || `<div class="empty"><div class="ico">🏷️</div>Sin categorías.</div>`;
+  } else {
+    body = cats.map(nm=>{
+      let subs = subMap[nm] || subMap[(nm||'').toUpperCase()] || [];
+      if(!subs.length){ const k=Object.keys(subMap).find(x=>norm(x)===norm(nm)); if(k) subs=subMap[k]; }
+      if(!subs || !subs.length) return '';
+      return `<div style="margin-bottom:14px"><div style="font-size:11px;font-weight:800;color:var(--gold);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">${catIcono(nm)} ${esc(nm)}</div>${subs.map(s=>`<div style="display:flex;align-items:center;gap:12px;padding:9px 14px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-bottom:5px"><div style="flex:1;font-size:13px;color:#fff">${esc(s)}</div><span style="font-size:10px;padding:3px 8px;border-radius:8px;background:rgba(255,107,53,0.12);color:var(--o);font-weight:700">${subCount(nm,s)}</span></div>`).join('')}</div>`;
+    }).join('') || `<div class="empty"><div class="ico">📁</div>Sin subcategorías asignadas.</div>`;
+  }
+  $('#cat-list').innerHTML = pills + body;
 }
 function renderSubcats(){
   // subcategorias.json = { CATEGORIA: [sub, sub...] }
@@ -803,6 +804,8 @@ function renderCorrecciones(){
   const total=urg+adv+inf;
   $('#corr-resumen').innerHTML = total ? `Analicé tus <b>${PRODUCTOS.length} productos</b>. Detecté <b>${urg} urgentes</b>, ${adv} advertencias y ${inf} de info. Todo calculado de tus datos reales.` : `¡Todo en orden! Analicé tus <b>${PRODUCTOS.length} productos</b> y no encontré problemas.`;
   $('#badge-corr').textContent = total;
+  const subs=parseInt(localStorage.getItem('tm_subscriber_count')||'0')||0;
+  const akp=$('#agente-kpis'); if(akp) akp.innerHTML=[['info','Suscriptores',subs],['danger','Urgentes',urg],['warn','Advertencias',adv],['success','OK',PRODUCTOS.length-new Set([...sinDesc,...agot,...mays,...sinImg].map(p=>p.id)).size]].map(([c,l,v])=>`<div class="kpi ${c}"><div class="lbl">${l}</div><div class="val">${v}</div></div>`).join('');
   $('#corr-lista').innerHTML = cards.map(c=>`<div class="correccion-card ${c.cls}"><div class="correccion-head"><span class="correccion-icon">${c.ico}</span><span class="correccion-titulo">${c.t}</span><span class="correccion-severidad ${c.sev}">${c.sev}</span></div><div class="correccion-lista">${c.items.slice(0,20).map(c.fmt).join('<br>')}${c.items.length>20?`<br><i>…y ${c.items.length-20} más</i>`:''}</div><p class="correccion-razon">${c.razon}</p>${c.accion||''}</div>`).join('') || `<div class="section"><div class="empty"><div class="ico">✅</div><b>Catálogo impecable.</b> No hay correcciones pendientes.</div></div>`;
 }
 function correccionNormalizarMayus(){
@@ -869,15 +872,21 @@ function renderRadar(){
 function renderVentas(){
   const total=VENTAS.reduce((s,v)=>s+ventaTotal(v),0);
   const hoy=hoyKey(); let tHoy=0,nHoy=0; VENTAS.forEach(v=>{const d=ventaFecha(v); if(d&&d.toISOString().slice(0,10)===hoy){tHoy+=ventaTotal(v);nHoy++;}});
-  // comisiones ganadas (de la venta si trae comision/ganancia; si no, del producto)
-  const comisionDe = it => { let c = Number(it.comision||it.ganancia||0); if(!c){ const p=PRODUCTOS.find(x=>norm(x.nombre)===norm(it.nombre||it.nm)); if(p) c=Number(p.comision)||0; } return c*(Number(it.cantidad||it.qty||1)); };
-  let comisTotal=0; const comisPorProd={}; const cont={};
-  VENTAS.forEach(v=>{ let vc=Number(v.comisionTotal||v.ganancia||0); let items=(v.productos||v.items||[]);
-    if(vc){ comisTotal+=vc; }
-    items.forEach(it=>{ const nm=it.nombre||it.nm||''; if(nm){ const q=Number(it.cantidad||it.qty||1); cont[nm]=(cont[nm]||0)+q; if(!vc){ const c=comisionDe(it); comisTotal+=c; comisPorProd[nm]=(comisPorProd[nm]||0)+c; } else { comisPorProd[nm]=(comisPorProd[nm]||0)+0; } } });
+  // ganancias (comisiones) separadas por moneda: USD y MN
+  const moneyMN = n => (Number(n)||0).toLocaleString('es-US',{maximumFractionDigits:0})+' MN';
+  let ganUSD=0, ganMN=0; const comisPorProd={}; const cont={};
+  VENTAS.forEach(v=>{ const items=(v.productos||v.items||[]);
+    items.forEach(it=>{ const nm=it.nombre||it.nm||it.producto||''; const q=Number(it.cantidad||it.qty||1);
+      if(nm) cont[nm]=(cont[nm]||0)+q;
+      const prod=PRODUCTOS.find(x=>norm(x.nombre)===norm(nm))||{};
+      let g=Number(it.ganancia); if(isNaN(g)){ let c=Number(it.comision); if(isNaN(c)) c=Number(prod.comision)||0; g=c*q; }
+      const mon=(it.comisionMoneda||prod.comisionMoneda||'USD');
+      if(mon==='MN') ganMN+=g; else ganUSD+=g;
+      if(nm){ comisPorProd[nm]=(comisPorProd[nm]||0)+g; }
+    });
   });
   $('#ventas-sub').textContent = VENTAS.length+' ventas registradas';
-  $('#ventas-kpis').innerHTML=[['usd','Hoy',money(tHoy),nHoy+' ventas'],['success','Total vendido',money(total),VENTAS.length+' ventas'],['gold','Comisiones ganadas',money(comisTotal),''],['info','Ticket promedio',money(VENTAS.length?total/VENTAS.length:0),'']].map(([c,l,v,s])=>`<div class="kpi ${c}"><div class="lbl">${l}</div><div class="val">${v}</div><div class="sub muted">${s||''}</div></div>`).join('');
+  $('#ventas-kpis').innerHTML=[['usd','Hoy',money(tHoy),nHoy+' ventas'],['success','Total vendido',money(total),VENTAS.length+' ventas'],['gold','Ganancia USD',money(ganUSD),''],['gold','Ganancia MN',moneyMN(ganMN),''],['info','Ticket promedio',money(VENTAS.length?total/VENTAS.length:0),'']].map(([c,l,v,s])=>`<div class="kpi ${c}"><div class="lbl">${l}</div><div class="val">${v}</div><div class="sub muted">${s||''}</div></div>`).join('');
   // top productos vendidos
   const top=Object.entries(cont).sort((a,b)=>b[1]-a[1]).slice(0,8);
   $('#ventas-top').innerHTML = top.length ? top.map(([nm,q],i)=>`<div style="display:flex;align-items:center;gap:10px;padding:8px 10px;background:rgba(255,255,255,0.03);border-radius:9px;margin-bottom:6px"><div style="font-size:18px">${i===0?'🏆':'📦'}</div><div style="flex:1;font-size:13px;color:#fff;font-weight:700">${esc(nm)}</div><span style="font-size:12px;color:var(--o);font-weight:800">${q} uds</span></div>`).join('') : `<div class="empty" style="padding:18px"><div class="ico">📊</div>Sin ventas con detalle aún.</div>`;
@@ -919,13 +928,13 @@ window.agregarFillSubcats=agregarFillSubcats; window.fileName=fileName;
 window.ventaBuscar=ventaBuscar; window.ventaAdd=ventaAdd; window.ventaCartRemove=ventaCartRemove; window.ventaCartQty=ventaCartQty; window.ventaRegistrar=ventaRegistrar;
 window.correccionNormalizarMayus=correccionNormalizarMayus;
 window.agenteGuardarKey=agenteGuardarKey; window.agenteBorrarKey=agenteBorrarKey;
+window.catSwitch=catSwitch;
 })();
 </script>
 <script>
-// Login: evitar que abrirLoginAdmin del motor redirija a admin.html; mostrar nuestro modal.
-window.addEventListener('DOMContentLoaded',function(){
-  window.abrirLoginAdmin=function(){ var m=document.getElementById('loginModal'); if(m){ m.classList.remove('hidden'); var i=document.getElementById('adminPassword'); if(i) setTimeout(function(){ try{i.focus();}catch(e){} },100); } };
-});
+// Login: sobreescribir de UNA (no dentro de DOMContentLoaded) para ganar sobre el
+// abrirLoginAdmin del motor, que redirige a admin.html. Así admin2 nunca se sale.
+window.abrirLoginAdmin=function(){ var m=document.getElementById('loginModal'); if(m){ m.classList.remove('hidden'); var i=document.getElementById('adminPassword'); if(i) setTimeout(function(){ try{i.focus();}catch(e){} },100); } };
 </script>
 </body>
 </html>
