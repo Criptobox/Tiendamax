@@ -607,16 +607,29 @@ async function sincronizarTodoConGitHub() {
         mostrarNotificacion('🚀 Sincronizando tienda completa con GitHub...', 'info');
     }
 
-    // Construir config.json con tasa + oferta del día para que todos los clientes la vean
-    const _configSync = {
-        tasaMN:              parseFloat(localStorage.getItem('tasaMN') || '0') || undefined,
+    // Construir config.json con tasa + oferta del día para que todos los clientes la vean.
+    // IMPORTANTE: partimos del config.json que ya está en GitHub para NO borrar campos
+    // que este sync no gestiona (margenMN, tasaMNAnterior, tasaFuente, tasaActualizada…).
+    // Antes se sobreescribía config.json completo y se perdía el margenMN → el bot de
+    // Telegram y la tienda volvían al margen por defecto (10).
+    let _configBase = {};
+    try {
+        const _r = await fetch(`https://raw.githubusercontent.com/${user}/${repo}/main/config.json?_=${Date.now()}`);
+        if (_r.ok) _configBase = await _r.json();
+    } catch (e) {}
+    const _configSync = Object.assign({}, _configBase, {
+        tasaMN:              parseFloat(localStorage.getItem('tasaMN') || '0') || _configBase.tasaMN || undefined,
         ofertaDiaId:         localStorage.getItem('ofertaDiaId') || undefined,
         ofertaDiaTexto:      localStorage.getItem('ofertaDiaTexto') || undefined,
         ofertaDiaActualizado: localStorage.getItem('ofertaDiaId') ? new Date().toISOString() : undefined,
-        firebaseConfig:      localStorage.getItem('firebaseConfig') ? tmParse(localStorage.getItem('firebaseConfig'), null) : undefined,
-        fcmServerKey:        localStorage.getItem('fcmServerKey') || undefined,
+        firebaseConfig:      localStorage.getItem('firebaseConfig') ? tmParse(localStorage.getItem('firebaseConfig'), null) : _configBase.firebaseConfig,
+        fcmServerKey:        localStorage.getItem('fcmServerKey') || _configBase.fcmServerKey || undefined,
         actualizado:         new Date().toISOString(),
-    };
+    });
+    // Preservar el margen MN configurado (puede ser 0). localStorage manda; si no, se
+    // mantiene el que ya venía en config.json.
+    const _mLS = parseFloat(localStorage.getItem('margenMN'));
+    if (!isNaN(_mLS)) _configSync.margenMN = _mLS;
     // Limpiar claves undefined
     Object.keys(_configSync).forEach(k => _configSync[k] === undefined && delete _configSync[k]);
 

@@ -16,5 +16,6 @@
   "actualizado": "2026-07-01T19:19:09.071409+00:00",
   "tasaMNAnterior": 615.0,
   "tasaFuente": "elTOQUE API",
-  "tasaActualizada": "2026-07-01"
+  "tasaActualizada": "2026-07-01",
+  "margenMN": 20
 }
