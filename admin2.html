@@ -203,10 +203,9 @@
     <aside class="sidebar">
       <button class="side-btn active" data-view="inicio" title="Inicio">🏠</button>
       <button class="side-btn" data-view="agregar" title="Agregar producto">➕</button>
-      <button class="side-btn" data-view="productos" title="Productos">📦</button>
-      <button class="side-btn" data-view="categorias" title="Categorías">🏷️</button>
-      <button class="side-btn" data-view="subcategorias" title="Subcategorías">📁</button>
+      <button class="side-btn" data-view="categorias" title="Categorías y subcategorías">🏷️</button>
       <button class="side-btn" data-view="correcciones" title="Correcciones IA">🔧<span class="badge" id="badge-corr">0</span></button>
+      <button class="side-btn" data-view="agente" title="Agente IA">🤖</button>
       <div class="side-sep"></div>
       <button class="side-btn" data-view="stock" title="Stock">📈<span class="badge" id="badge-stock">0</span></button>
       <button class="side-btn" data-view="radar" title="Radar de precios">📡<span class="new-tag">N</span></button>
@@ -227,7 +226,7 @@
       <div id="view-inicio" class="view active">
         <div class="ph">
           <div><h2>🏠 Inicio</h2><p id="inicio-fecha">Vista general de tu tienda</p></div>
-          <div class="ph-actions"><button class="btn btn-ghost" onclick="go('productos')">📦 Productos</button><button class="btn btn-primary" onclick="go('agregar')">+ Agregar</button></div>
+          <div class="ph-actions"><button class="btn btn-ghost" onclick="go('stock')">📈 Stock</button><button class="btn btn-primary" onclick="go('agregar')">+ Agregar</button></div>
         </div>
         <div class="kpis" id="inicio-kpis"></div>
         <div class="ai-banner">
@@ -253,16 +252,10 @@
         <div class="prod-grid" id="prod-grid"></div>
       </div>
 
-      <!-- CATEGORIAS -->
+      <!-- CATEGORIAS + SUBCATEGORIAS (combinado) -->
       <div id="view-categorias" class="view">
-        <div class="ph"><div><h2>🏷️ Categorías</h2><p id="cat-count">—</p></div></div>
-        <div class="section"><h3>Categorías de tu tienda</h3><div id="cat-list"></div></div>
-      </div>
-
-      <!-- SUBCATEGORIAS -->
-      <div id="view-subcategorias" class="view">
-        <div class="ph"><div><h2>📁 Subcategorías</h2><p id="subcat-count">—</p></div></div>
-        <div class="section"><h3>Subcategorías</h3><div id="subcat-list"></div></div>
+        <div class="ph"><div><h2>🏷️ Categorías y subcategorías</h2><p id="cat-count">—</p></div></div>
+        <div class="section"><h3>Categorías de tu tienda · con sus subcategorías</h3><div id="cat-list"></div></div>
       </div>
 
       <!-- CORRECCIONES IA -->
@@ -291,7 +284,17 @@
       <div id="view-ventas" class="view">
         <div class="ph"><div><h2>💰 Ventas</h2><p id="ventas-sub">Registro real</p></div></div>
         <div class="kpis" id="ventas-kpis"></div>
-        <div class="section"><h3>Historial de ventas</h3><div id="ventas-lista"></div></div>
+        <div class="grid-2">
+          <div class="section"><h3>🏆 Productos más vendidos</h3><div id="ventas-top"></div></div>
+          <div class="section"><h3>💵 Comisiones ganadas</h3><div id="ventas-comis"></div></div>
+        </div>
+        <div class="section"><h3>🧾 Historial de ventas</h3><div id="ventas-lista"></div></div>
+      </div>
+
+      <!-- AGENTE IA -->
+      <div id="view-agente" class="view">
+        <div class="ph"><div><h2>🤖 Agente IA</h2><p>Copiloto y herramientas de IA de tu tienda</p></div></div>
+        <div id="agente-cont"></div>
       </div>
 
       <!-- ANALYTICS -->
@@ -368,9 +371,14 @@ async function cargarDatos(recargar){
 }
 
 function renderTodo(){
-  renderInicio(); renderProductos(); renderCategorias(); renderSubcats();
+  renderInicio(); renderCategorias();
   renderCorrecciones(); renderStock(); renderRadar(); renderVentas();
-  renderAnalytics(); renderClientes();
+  renderAnalytics(); renderClientes(); renderAgente();
+}
+function renderAgente(){
+  var el=document.getElementById('agente-cont'); if(!el) return;
+  el.innerHTML = '<div class="ai-banner"><div style="font-size:28px">🤖</div><div style="flex:1"><div class="t">Copiloto y herramientas de IA</div><div class="m">Tu tienda ya tiene un agente IA (copiloto, generador de textos/SEO, auditoría del catálogo). Aquí lo estoy integrando en una sola tab con este diseño.</div></div></div>'
+    + '<div class="section"><div class="empty"><div class="ico">🔌</div>Esta tab se conecta a tu <b>motor de IA real</b> (copiloto + herramientas). Lo estoy cableando en la etapa del motor — así ejecuta de verdad sin inventar nada.</div></div>';
 }
 
 /* ============ Helpers ventas ============ */
@@ -441,12 +449,20 @@ function catNombres(){ if(Array.isArray(CATEGORIAS)) return CATEGORIAS.map(c=>ty
 function catIcono(nm){ const ic=(CATEGORIAS&&CATEGORIAS.iconos)||{}; return ic[nm] || ic[(nm||'').toUpperCase()] || emojiCat(nm); }
 function renderCategorias(){
   const cats = catNombres();
-  const cont = {}; PRODUCTOS.forEach(p=>{ const c=(p.categoria||'—').toString(); cont[c]=(cont[c]||0)+1; cont[c.toUpperCase()]=cont[c.toUpperCase()]; });
+  const subMap = (SUBCATS && !Array.isArray(SUBCATS)) ? SUBCATS : {};
   const countFor = nm => PRODUCTOS.filter(p=>norm(p.categoria)===norm(nm)).length;
-  $('#cat-count').textContent = cats.length + ' categorías';
-  $('#cat-list').innerHTML = (cats.length?cats:Object.keys(cont)).map(nm=>{
+  const subCount = (cat,s) => PRODUCTOS.filter(p=>norm(p.categoria)===norm(cat)&&norm(p.subcategoria)===norm(s)).length;
+  let totalSubs=0; Object.keys(subMap).forEach(c=>totalSubs+=(subMap[c]||[]).length);
+  $('#cat-count').textContent = cats.length + ' categorías · ' + totalSubs + ' subcategorías';
+  $('#cat-list').innerHTML = (cats.length?cats:Object.keys(subMap)).map(nm=>{
     const n=countFor(nm);
-    return `<div style="display:flex;align-items:center;gap:12px;padding:11px 14px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-bottom:6px"><div style="font-size:22px;width:38px;height:38px;background:rgba(255,255,255,0.05);border-radius:8px;display:flex;align-items:center;justify-content:center">${catIcono(nm)}</div><div style="flex:1"><div style="font-size:13px;font-weight:700;color:#fff">${esc(nm)}</div></div><span style="font-size:10px;padding:3px 8px;border-radius:8px;background:rgba(255,107,53,0.12);color:var(--o);font-weight:700">${n} productos</span></div>`;
+    // subcats de esta categoría (match por clave exacta o normalizada)
+    let subs = subMap[nm] || subMap[(nm||'').toUpperCase()] || [];
+    if(!subs.length){ const k=Object.keys(subMap).find(x=>norm(x)===norm(nm)); if(k) subs=subMap[k]; }
+    const subsHtml = (subs && subs.length)
+      ? `<div style="margin-top:8px;padding-left:50px;display:flex;flex-wrap:wrap;gap:6px">${subs.map(s=>`<span style="font-size:11px;padding:4px 9px;border-radius:20px;background:rgba(255,255,255,0.05);border:1px solid var(--border);color:#cfcfd6">${esc(s)} <b style="color:var(--o)">${subCount(nm,s)}</b></span>`).join('')}</div>`
+      : `<div style="margin-top:6px;padding-left:50px;font-size:11px;color:var(--gray)">Sin subcategorías</div>`;
+    return `<div style="background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-bottom:8px;padding:11px 14px"><div style="display:flex;align-items:center;gap:12px"><div style="font-size:22px;width:38px;height:38px;background:rgba(255,255,255,0.05);border-radius:8px;display:flex;align-items:center;justify-content:center">${catIcono(nm)}</div><div style="flex:1"><div style="font-size:13px;font-weight:700;color:#fff">${esc(nm)}</div></div><span style="font-size:10px;padding:3px 8px;border-radius:8px;background:rgba(255,107,53,0.12);color:var(--o);font-weight:700">${n} productos</span></div>${subsHtml}</div>`;
   }).join('') || `<div class="empty"><div class="ico">🏷️</div>Sin categorías.</div>`;
 }
 function renderSubcats(){
@@ -544,8 +560,21 @@ function renderRadar(){
 function renderVentas(){
   const total=VENTAS.reduce((s,v)=>s+ventaTotal(v),0);
   const hoy=hoyKey(); let tHoy=0,nHoy=0; VENTAS.forEach(v=>{const d=ventaFecha(v); if(d&&d.toISOString().slice(0,10)===hoy){tHoy+=ventaTotal(v);nHoy++;}});
+  // comisiones ganadas (de la venta si trae comision/ganancia; si no, del producto)
+  const comisionDe = it => { let c = Number(it.comision||it.ganancia||0); if(!c){ const p=PRODUCTOS.find(x=>norm(x.nombre)===norm(it.nombre||it.nm)); if(p) c=Number(p.comision)||0; } return c*(Number(it.cantidad||it.qty||1)); };
+  let comisTotal=0; const comisPorProd={}; const cont={};
+  VENTAS.forEach(v=>{ let vc=Number(v.comisionTotal||v.ganancia||0); let items=(v.productos||v.items||[]);
+    if(vc){ comisTotal+=vc; }
+    items.forEach(it=>{ const nm=it.nombre||it.nm||''; if(nm){ const q=Number(it.cantidad||it.qty||1); cont[nm]=(cont[nm]||0)+q; if(!vc){ const c=comisionDe(it); comisTotal+=c; comisPorProd[nm]=(comisPorProd[nm]||0)+c; } else { comisPorProd[nm]=(comisPorProd[nm]||0)+0; } } });
+  });
   $('#ventas-sub').textContent = VENTAS.length+' ventas registradas';
-  $('#ventas-kpis').innerHTML=[['usd','Hoy',money(tHoy),nHoy+' ventas'],['success','Total',money(total),VENTAS.length+' ventas'],['gold','Ticket promedio',money(VENTAS.length?total/VENTAS.length:0),'']].map(([c,l,v,s])=>`<div class="kpi ${c}"><div class="lbl">${l}</div><div class="val">${v}</div><div class="sub muted">${s||''}</div></div>`).join('');
+  $('#ventas-kpis').innerHTML=[['usd','Hoy',money(tHoy),nHoy+' ventas'],['success','Total vendido',money(total),VENTAS.length+' ventas'],['gold','Comisiones ganadas',money(comisTotal),''],['info','Ticket promedio',money(VENTAS.length?total/VENTAS.length:0),'']].map(([c,l,v,s])=>`<div class="kpi ${c}"><div class="lbl">${l}</div><div class="val">${v}</div><div class="sub muted">${s||''}</div></div>`).join('');
+  // top productos vendidos
+  const top=Object.entries(cont).sort((a,b)=>b[1]-a[1]).slice(0,8);
+  $('#ventas-top').innerHTML = top.length ? top.map(([nm,q],i)=>`<div style="display:flex;align-items:center;gap:10px;padding:8px 10px;background:rgba(255,255,255,0.03);border-radius:9px;margin-bottom:6px"><div style="font-size:18px">${i===0?'🏆':'📦'}</div><div style="flex:1;font-size:13px;color:#fff;font-weight:700">${esc(nm)}</div><span style="font-size:12px;color:var(--o);font-weight:800">${q} uds</span></div>`).join('') : `<div class="empty" style="padding:18px"><div class="ico">📊</div>Sin ventas con detalle aún.</div>`;
+  // comisiones por producto
+  const comisArr=Object.entries(comisPorProd).filter(([,c])=>c>0).sort((a,b)=>b[1]-a[1]).slice(0,8);
+  $('#ventas-comis').innerHTML = comisArr.length ? comisArr.map(([nm,c])=>`<div style="display:flex;align-items:center;gap:10px;padding:8px 10px;background:rgba(255,255,255,0.03);border-radius:9px;margin-bottom:6px"><div style="flex:1;font-size:13px;color:#fff;font-weight:700">${esc(nm)}</div><span style="font-size:12px;color:var(--gold);font-weight:800">${money(c)}</span></div>`).join('') : `<div class="empty" style="padding:18px"><div class="ico">💵</div>Las comisiones aparecen cuando tus ventas registran la comisión por producto.</div>`;
   const ult=[...VENTAS].sort((a,b)=>(ventaFecha(b)||0)-(ventaFecha(a)||0)).slice(0,60);
   $('#ventas-lista').innerHTML = ult.length?`<div class="table-wrap"><table><thead><tr><th>Fecha</th><th>Cliente</th><th>Productos</th><th>Total</th></tr></thead><tbody>${ult.map(v=>{const d=ventaFecha(v); const items=(v.productos||v.items||[]).map(it=>esc(it.nombre||it.nm||'')).filter(Boolean).join(', '); return `<tr><td>${d?d.toLocaleDateString('es-CU'):'—'}</td><td class="nm">${esc(v.cliente||v.nombre||'—')}</td><td>${items||'—'}</td><td class="nm">${money(ventaTotal(v))}</td></tr>`;}).join('')}</tbody></table></div>`:`<div class="empty"><div class="ico">🧾</div>Sin ventas registradas en este dispositivo.<br><small>Las ventas se guardan al usar "Registrar venta" en el admin.</small></div>`;
 }
