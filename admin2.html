@@ -863,7 +863,7 @@ function renderCorrecciones(){
   // 6. Precio vs radar (oportunidad)
   if(RADAR && RADAR.productos){
     const opor=[]; RADAR.productos.forEach(r=>{ const med=r.mercado&&r.mercado.mediana; const tuyo=r.tuPrecio; if(med && tuyo && tuyo < med*0.85){ opor.push({nombre:r.nombre, tuyo, med}); } });
-    if(opor.length){ inf++; cards.push({sev:'info',cls:'info',ico:'💡',t:'Oportunidad: puedes subir precio',items:opor,fmt:o=>`<b>${esc(o.nombre)}</b> — tú ${money(o.tuyo)} · mercado ${money(o.med)}`,razon:'Estás bastante por debajo de la mediana del mercado. Hay margen para subir sin perder ventas.'}); }
+    if(opor.length){ inf++; cards.push({sev:'info',cls:'info',ico:'💡',t:'Oportunidad: puedes subir precio',items:opor,fmt:o=>`<b>${esc(o.nombre)}</b> — tú ${money(o.tuyo)} · mercado ${money(o.med)} → subir a ${money(Math.round(o.med*0.85))}`,razon:'Estás bastante por debajo de la mediana del mercado. Hay margen para subir sin perder ventas.',accion:`<button class="btn btn-primary" style="margin-top:10px" onclick="correccionSubirPrecios()">💲 Subir estos ${opor.length} a ~85% del mercado</button>`}); }
   }
   const total=urg+adv+inf;
   $('#corr-resumen').innerHTML = total ? `Analicé tus <b>${PRODUCTOS.length} productos</b>. Detecté <b>${urg} urgentes</b>, ${adv} advertencias y ${inf} de info. Todo calculado de tus datos reales.` : `¡Todo en orden! Analicé tus <b>${PRODUCTOS.length} productos</b> y no encontré problemas.`;
@@ -871,6 +871,17 @@ function renderCorrecciones(){
   const subs=parseInt(localStorage.getItem('tm_subscriber_count')||'0')||0;
   const akp=$('#agente-kpis'); if(akp) akp.innerHTML=[['info','Suscriptores',subs],['danger','Urgentes',urg],['warn','Advertencias',adv],['success','OK',PRODUCTOS.length-new Set([...sinDesc,...agot,...mays,...sinImg].map(p=>p.id)).size]].map(([c,l,v])=>`<div class="kpi ${c}"><div class="lbl">${l}</div><div class="val">${v}</div></div>`).join('');
   $('#corr-lista').innerHTML = cards.map(c=>`<div class="correccion-card ${c.cls}"><div class="correccion-head"><span class="correccion-icon">${c.ico}</span><span class="correccion-titulo">${c.t}</span><span class="correccion-severidad ${c.sev}">${c.sev}</span></div><div class="correccion-lista">${c.items.slice(0,20).map(c.fmt).join('<br>')}${c.items.length>20?`<br><i>…y ${c.items.length-20} más</i>`:''}</div><p class="correccion-razon">${c.razon}</p>${c.accion||''}</div>`).join('') || `<div class="section"><div class="empty"><div class="ico">✅</div><b>Catálogo impecable.</b> No hay correcciones pendientes.</div></div>`;
+}
+function correccionSubirPrecios(){
+  if(typeof productos==='undefined' || !Array.isArray(productos)){ showToast('⚠️ Motor no cargado','Recarga la página'); return; }
+  if(!RADAR || !RADAR.productos){ showToast('Sin datos de radar'); return; }
+  let n=0;
+  RADAR.productos.forEach(r=>{ const med=r.mercado&&r.mercado.mediana, t=r.tuPrecio; if(med&&t&&t<med*0.85){ const nuevo=Math.round(med*0.85); const p=productos.find(x=>norm(x.nombre)===norm(r.nombre)); if(p){ p.precioActual=nuevo; if(typeof marcarProductoModificado==='function') marcarProductoModificado(p.id); n++; } } });
+  if(!n){ showToast('Nada que subir'); return; }
+  if(typeof guardarProductos==='function') guardarProductos();
+  PRODUCTOS = lsProductos() || PRODUCTOS;
+  renderCorrecciones(); renderInicio();
+  showToast('✅ '+n+' precios ajustados','Ve a ⚙️ Configuración → "Actualizar tienda" para publicar');
 }
 function correccionNormalizarMayus(){
   if(typeof productos==='undefined' || !Array.isArray(productos)){ showToast('⚠️ Motor no cargado','Recarga la página'); return; }
@@ -906,7 +917,7 @@ function renderStock(){
   // velocidad por producto (si hay ventas)
   const vel={};
   if(conVentas){ const desde=Date.now()-30*864e5; VENTAS.forEach(v=>{ const d=ventaFecha(v); if(!d||d.getTime()<desde)return; (v.productos||v.items||[]).forEach(it=>{ const k=norm(it.nombre||it.nm); if(k) vel[k]=(vel[k]||0)+Number(it.cantidad||it.qty||1); }); }); }
-  const orden=[...PRODUCTOS].sort((a,b)=>(Number(a.stock)||0)-(Number(b.stock)||0)).filter(p=>Number(p.stock)<=15);
+  const orden=[...PRODUCTOS].sort((a,b)=>(Number(a.stock)||0)-(Number(b.stock)||0)).filter(p=>Number(p.stock)>0&&Number(p.stock)<=15);
   $('#stock-lista').innerHTML = orden.slice(0,40).map(p=>{
     const st=Number(p.stock)||0; let cls='ok',status='ok',lbl='OK';
     if(st<=0){cls='urg';status='urg';lbl='Agotado';} else if(st<=5){cls='urg';status='urg';lbl='Crítico';} else if(st<=15){cls='warn';status='warn';lbl='Bajo';}
@@ -946,14 +957,18 @@ function renderVentas(){
   // ganancias (comisiones) separadas por moneda: USD y MN
   const moneyMN = n => (Number(n)||0).toLocaleString('es-US',{maximumFractionDigits:0})+' MN';
   let ganUSD=0, ganMN=0; const comisPorProd={}; const cont={};
-  VENTAS.forEach(v=>{ const items=(v.productos||v.items||[]);
-    items.forEach(it=>{ const nm=it.nombre||it.nm||it.producto||''; const q=Number(it.cantidad||it.qty||1);
+  const itName = it => it.producto||it.nombre||it.nm||'';
+  VENTAS.forEach(v=>{
+    let items=(v.productos||v.items||[]);
+    if((!items||!items.length) && (v.producto||v.nombre)) items=[{producto:v.producto||v.nombre, cantidad:v.cantidad, comision:v.comision, comisionMoneda:v.comisionMoneda, ganancia:(v.ganancia!=null?v.ganancia:v.comision), productoId:v.productoId}];
+    items.forEach(it=>{ const nm=itName(it); const q=Number(it.cantidad||it.qty||1)||1;
       if(nm) cont[nm]=(cont[nm]||0)+q;
-      const prod=PRODUCTOS.find(x=>norm(x.nombre)===norm(nm))||{};
+      const prod=PRODUCTOS.find(x=>String(x.id)===String(it.productoId))||PRODUCTOS.find(x=>norm(x.nombre)===norm(nm))||{};
       let g=Number(it.ganancia); if(isNaN(g)){ let c=Number(it.comision); if(isNaN(c)) c=Number(prod.comision)||0; g=c*q; }
+      g=g||0;
       const mon=(it.comisionMoneda||prod.comisionMoneda||'USD');
       if(mon==='MN') ganMN+=g; else ganUSD+=g;
-      if(nm){ comisPorProd[nm]=(comisPorProd[nm]||0)+g; }
+      if(nm) comisPorProd[nm]=(comisPorProd[nm]||0)+g;
     });
   });
   $('#ventas-sub').textContent = VENTAS.length+' ventas registradas';
@@ -965,7 +980,7 @@ function renderVentas(){
   const comisArr=Object.entries(comisPorProd).filter(([,c])=>c>0).sort((a,b)=>b[1]-a[1]).slice(0,8);
   $('#ventas-comis').innerHTML = comisArr.length ? comisArr.map(([nm,c])=>`<div style="display:flex;align-items:center;gap:10px;padding:8px 10px;background:rgba(255,255,255,0.03);border-radius:9px;margin-bottom:6px"><div style="flex:1;font-size:13px;color:#fff;font-weight:700">${esc(nm)}</div><span style="font-size:12px;color:var(--gold);font-weight:800">${money(c)}</span></div>`).join('') : `<div class="empty" style="padding:18px"><div class="ico">💵</div>Las comisiones aparecen cuando tus ventas registran la comisión por producto.</div>`;
   const ult=[...VENTAS].sort((a,b)=>(ventaFecha(b)||0)-(ventaFecha(a)||0)).slice(0,60);
-  $('#ventas-lista').innerHTML = ult.length?`<div class="table-wrap"><table><thead><tr><th>Fecha</th><th>Cliente</th><th>Productos</th><th>Total</th></tr></thead><tbody>${ult.map(v=>{const d=ventaFecha(v); const items=(v.productos||v.items||[]).map(it=>esc(it.nombre||it.nm||'')).filter(Boolean).join(', '); return `<tr><td>${d?d.toLocaleDateString('es-CU'):'—'}</td><td class="nm">${esc(v.cliente||v.nombre||'—')}</td><td>${items||'—'}</td><td class="nm">${money(ventaTotal(v))}</td></tr>`;}).join('')}</tbody></table></div>`:`<div class="empty"><div class="ico">🧾</div>Sin ventas registradas en este dispositivo.<br><small>Las ventas se guardan al usar "Registrar venta" en el admin.</small></div>`;
+  $('#ventas-lista').innerHTML = ult.length?`<div class="table-wrap"><table><thead><tr><th>Fecha</th><th>Cliente</th><th>Productos</th><th>Total</th></tr></thead><tbody>${ult.map(v=>{const d=ventaFecha(v); const items=((v.productos||v.items||[]).map(it=>esc(it.producto||it.nombre||it.nm||'')).filter(Boolean).join(', '))||esc(v.producto||v.nombre||'—'); return `<tr><td>${d?d.toLocaleDateString('es-CU'):'—'}</td><td class="nm">${esc(v.cliente||v.nombre||'—')}</td><td>${items||'—'}</td><td class="nm">${money(ventaTotal(v))}</td></tr>`;}).join('')}</tbody></table></div>`:`<div class="empty"><div class="ico">🧾</div>Sin ventas registradas en este dispositivo.<br><small>Las ventas se guardan al usar "Registrar venta" en el admin.</small></div>`;
 }
 
 /* ============ ANALYTICS ============ */
@@ -997,7 +1012,7 @@ window.comboBuscar=comboBuscar; window.comboAdd=comboAdd; window.comboRemove=com
 window.comboGuardar=comboGuardar; window.comboDelete=comboDelete; window.comboPublicar=comboPublicar; window.comboQty=comboQty;
 window.agregarFillSubcats=agregarFillSubcats; window.fileName=fileName;
 window.ventaBuscar=ventaBuscar; window.ventaAdd=ventaAdd; window.ventaCartRemove=ventaCartRemove; window.ventaCartQty=ventaCartQty; window.ventaRegistrar=ventaRegistrar;
-window.correccionNormalizarMayus=correccionNormalizarMayus;
+window.correccionNormalizarMayus=correccionNormalizarMayus; window.correccionSubirPrecios=correccionSubirPrecios;
 window.agenteGuardarKey=agenteGuardarKey; window.agenteBorrarKey=agenteBorrarKey;
 window.catSwitch=catSwitch; window.catAgregar=catAgregar; window.subAgregar=subAgregar;
 })();
