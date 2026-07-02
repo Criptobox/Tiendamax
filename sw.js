@@ -112,7 +112,7 @@
 
 
 
-const CACHE_NAME = 'tiendamax-202607021200';
+const CACHE_NAME = 'tiendamax-202607021600';
 // Solo los recursos que usa la TIENDA. Los del panel de admin
 // (admin.html, vale.html, formulario.html, admin.css, admin-copilot.js,
 // revolico_integration.js, biometric-auth.js) NO se precachean: se cargan
@@ -203,8 +203,11 @@ self.addEventListener('fetch', e => {
 
     const path = url.pathname;
 
+    // no-store: los caminos network-first (HTML, JSON, admin JS) deben saltarse
+    // también el caché HTTP del navegador; si no, GitHub Pages puede servir HTML
+    // viejo hasta ~10 min y los cambios no se ven al instante.
     const _fetchWithTimeout = (req, ms) => Promise.race([
-        fetch(req),
+        fetch(req, { cache: 'no-store' }),
         new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), ms))
     ]);
 
