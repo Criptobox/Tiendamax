@@ -348,7 +348,18 @@
           <div style="display:flex;gap:8px;margin-top:12px"><button class="btn btn-primary" onclick="guardarOfertaDia()">🔥 Activar oferta del día</button><button class="btn btn-ghost" onclick="desactivarOfertaDia()">Desactivar</button></div>
           <p id="ofertaDiaStatus" style="font-size:12px;color:var(--muted);margin-top:8px"></p>
         </div>
-        <div class="banner-info">Y abajo: arma <b>combos</b> con tus productos, ponle precio y ve el ahorro. (La oferta por tiempo limitado con contador la activas por ahora desde el admin actual.)</div>
+        <div class="section">
+          <h3>⏱️ Oferta por tiempo limitado (con contador)</h3>
+          <div class="form-grid" style="display:grid;grid-template-columns:2fr 1fr 1fr;gap:10px">
+            <div class="form-group"><label class="form-label">Producto</label><select class="form-select" id="countdownProductSelect"><option value="">Selecciona…</option></select></div>
+            <div class="form-group"><label class="form-label">Horas</label><input class="form-input" id="countdownHoras" type="number" min="0" placeholder="0"></div>
+            <div class="form-group"><label class="form-label">Minutos</label><input class="form-input" id="countdownMinutos" type="number" min="0" placeholder="0"></div>
+          </div>
+          <div class="form-group" style="margin-top:10px"><label class="form-label">Texto</label><input class="form-input" id="countdownTexto" placeholder="¡Oferta especial!"></div>
+          <div style="display:flex;gap:8px;margin-top:12px"><button class="btn btn-primary" onclick="guardarCountdown()">⏱️ Activar contador</button><button class="btn btn-ghost" onclick="desactivarCountdown()">Desactivar</button></div>
+          <p id="countdownStatus" style="font-size:12px;color:var(--muted);margin-top:8px"></p>
+        </div>
+        <div class="banner-info">Y abajo: arma <b>combos</b> con tus productos, ponle precio y ve el ahorro.</div>
         <div class="grid-2">
           <div class="section">
             <h3>➕ Nuevo combo</h3>
@@ -543,6 +554,13 @@ function fillOfertaDia(){
   sel.innerHTML='<option value="">Selecciona…</option>'+PRODUCTOS.map(p=>`<option value="${esc(p.id)}" ${String(p.id)===String(cur)?'selected':''}>${esc(p.nombre)} — ${money(p.precioActual)}</option>`).join('');
   const txt=$('#ofertaDiaTexto2'); if(txt && !txt.value) txt.value=localStorage.getItem('ofertaDiaTexto')||'';
   const st=$('#ofertaDiaStatus'); if(st){ if(cur){ const p=PRODUCTOS.find(x=>String(x.id)===String(cur)); st.textContent='✅ Activa: '+(p?p.nombre:cur); } else st.textContent='Sin oferta del día activa.'; }
+  // contador tiempo limitado
+  const cs=$('#countdownProductSelect');
+  if(cs){ cs.innerHTML='<option value="">Selecciona…</option>'+PRODUCTOS.map(p=>`<option value="${esc(p.id)}">${esc(p.nombre)} — ${money(p.precioActual)}</option>`).join(''); }
+  const cst=$('#countdownStatus');
+  if(cst){ let cd=null; try{ cd=JSON.parse(localStorage.getItem('activeCountdown')||'null'); }catch(e){}
+    if(cd && cd.endTime>Date.now()){ const p=PRODUCTOS.find(x=>String(x.id)===String(cd.productId)); const mins=Math.round((cd.endTime-Date.now())/60000); cst.textContent='✅ Activo: '+(p?p.nombre:cd.productId)+' · quedan ~'+mins+' min'; if(cs && cd.productId) cs.value=cd.productId; }
+    else cst.textContent='Sin oferta por tiempo limitado activa.'; }
 }
 function fillConfig(){
   const set=(id,v)=>{ const el=$('#'+id); if(el && !el.value) el.value=v||''; };
