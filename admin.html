@@ -2000,120 +2000,111 @@ if ('serviceWorker' in navigator) {
 </script>
 
 <!-- ============================================================ -->
-<!-- MEJORA v6: Búsqueda global + Notificaciones (no toca nada)   -->
+<!-- MEJORA v7: Búsqueda + Notif (IDs únicos, sin conflicto)      -->
 <!-- ============================================================ -->
 <style>
-/* Botones en topbar */
-#tmSearchBtn,#tmNotifBtn{width:38px;height:38px;border-radius:10px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);display:inline-flex;align-items:center;justify-content:center;font-size:15px;color:#bbb;cursor:pointer;transition:.15s;position:relative;vertical-align:middle;margin:0 2px}
-#tmSearchBtn:hover,#tmNotifBtn:hover{background:rgba(255,107,53,.15);border-color:rgba(255,107,53,.3);color:#FF6B35}
-#tmSearchBtn .kbd{position:absolute;bottom:-4px;right:-4px;background:#0a0a0b;border:1px solid rgba(255,255,255,.1);font-size:8px;font-weight:700;padding:1px 4px;border-radius:4px;color:#888}
-#tmNotifBtn .badge{position:absolute;top:-4px;right:-4px;background:#e74c3c;color:#fff;border-radius:10px;min-width:18px;height:18px;font-size:10px;font-weight:900;display:flex;align-items:center;justify-content:center;border:2px solid #0a0a0b}
+#tm6SearchBtn,#tm6NotifBtn{width:38px;height:38px;border-radius:10px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);display:inline-flex;align-items:center;justify-content:center;font-size:15px;color:#bbb;cursor:pointer;transition:.15s;position:relative;vertical-align:middle;margin:0 2px;padding:0}
+#tm6SearchBtn:hover,#tm6NotifBtn:hover{background:rgba(255,107,53,.15);border-color:rgba(255,107,53,.3);color:#FF6B35}
+#tm6SearchBtn .kbd{position:absolute;bottom:-4px;right:-4px;background:#0a0a0b;border:1px solid rgba(255,255,255,.1);font-size:8px;font-weight:700;padding:1px 4px;border-radius:4px;color:#888}
+#tm6NotifBtn .badge{position:absolute;top:-4px;right:-4px;background:#e74c3c;color:#fff;border-radius:10px;min-width:18px;height:18px;font-size:10px;font-weight:900;display:flex;align-items:center;justify-content:center;border:2px solid #0a0a0b}
 
-/* Toast */
-#tmToastWrap{position:fixed;bottom:20px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:8px;pointer-events:none}
-@media(max-width:600px){#tmToastWrap{bottom:80px;right:10px;left:10px}}
-.tm-toast{background:#15151f;border:1px solid rgba(255,255,255,.1);border-left:4px solid #2ecc71;padding:14px 18px;border-radius:10px;box-shadow:0 12px 32px rgba(0,0,0,.4);max-width:340px;color:#e0e0e8;font-size:13px;font-weight:600;opacity:0;transform:translateX(400px);transition:all .3s;pointer-events:auto}
-.tm-toast.show{opacity:1;transform:translateX(0)}
-.tm-toast.warn{border-left-color:#f1c40f}
-.tm-toast.error{border-left-color:#e74c3c}
+#tm6ToastWrap{position:fixed;bottom:20px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:8px;pointer-events:none}
+@media(max-width:600px){#tm6ToastWrap{bottom:80px;right:10px;left:10px}}
+.tm6-toast{background:#15151f;border:1px solid rgba(255,255,255,.1);border-left:4px solid #2ecc71;padding:14px 18px;border-radius:10px;box-shadow:0 12px 32px rgba(0,0,0,.4);max-width:340px;color:#e0e0e8;font-size:13px;font-weight:600;opacity:0;transform:translateX(400px);transition:all .3s;pointer-events:auto}
+.tm6-toast.show{opacity:1;transform:translateX(0)}
+.tm6-toast.warn{border-left-color:#f1c40f}
+.tm6-toast.error{border-left-color:#e74c3c}
 
-/* Search overlay */
-#tmSearchOv{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(4px);z-index:200;display:none;align-items:flex-start;justify-content:center;padding-top:80px}
-#tmSearchOv.open{display:flex}
-.tm-search-box{background:#15151f;border:1px solid rgba(255,255,255,.14);border-radius:16px;width:90%;max-width:560px;padding:16px;box-shadow:0 24px 60px rgba(0,0,0,.5)}
-.tm-search-box input{width:100%;padding:14px 16px;background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.08);border-radius:10px;color:#e0e0e8;font-size:15px;outline:none;font-family:inherit}
-.tm-search-box input:focus{border-color:#FF6B35;box-shadow:0 0 0 3px rgba(255,107,53,.15)}
-.tm-search-results{margin-top:12px;max-height:400px;overflow-y:auto}
-.tm-search-result{padding:10px 12px;border-radius:8px;cursor:pointer;display:flex;align-items:center;gap:10px;transition:.15s}
-.tm-search-result:hover{background:rgba(255,107,53,.1)}
-.tm-search-result .ico{font-size:18px}
-.tm-search-result .info{flex:1;min-width:0}
-.tm-search-result .title{font-size:13px;font-weight:700;color:#fff}
-.tm-search-result .sub{font-size:11px;color:#888}
+#tm6SearchOv{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(4px);z-index:9999;display:none;align-items:flex-start;justify-content:center;padding-top:80px}
+#tm6SearchOv.open{display:flex}
+.tm6-search-box{background:#15151f;border:1px solid rgba(255,255,255,.14);border-radius:16px;width:90%;max-width:560px;padding:16px;box-shadow:0 24px 60px rgba(0,0,0,.5)}
+.tm6-search-box input{width:100%;padding:14px 16px;background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.08);border-radius:10px;color:#e0e0e8;font-size:15px;outline:none;font-family:inherit;box-sizing:border-box}
+.tm6-search-box input:focus{border-color:#FF6B35;box-shadow:0 0 0 3px rgba(255,107,53,.15)}
+.tm6-search-results{margin-top:12px;max-height:400px;overflow-y:auto}
+.tm6-search-result{padding:10px 12px;border-radius:8px;cursor:pointer;display:flex;align-items:center;gap:10px;transition:.15s}
+.tm6-search-result:hover{background:rgba(255,107,53,.1)}
+.tm6-search-result .ico{font-size:18px}
+.tm6-search-result .info{flex:1;min-width:0}
+.tm6-search-result .title{font-size:13px;font-weight:700;color:#fff}
+.tm6-search-result .sub{font-size:11px;color:#888}
 
-/* Notif panel */
-#tmNotifBackdrop{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:150;opacity:0;pointer-events:none;transition:.3s}
-#tmNotifBackdrop.open{opacity:1;pointer-events:auto}
-#tmNotifPanel{position:fixed;top:0;right:0;bottom:0;width:380px;max-width:90vw;background:#15151f;border-left:1px solid rgba(255,255,255,.14);z-index:180;transform:translateX(100%);transition:.3s;display:flex;flex-direction:column;box-shadow:-8px 0 30px rgba(0,0,0,.3)}
-#tmNotifPanel.open{transform:translateX(0)}
-.tm-notif-head{padding:16px;border-bottom:1px solid rgba(255,255,255,.06);display:flex;align-items:center;justify-content:space-between}
-.tm-notif-head h3{font-size:15px;font-weight:800;color:#fff;margin:0}
-.tm-notif-list{flex:1;overflow-y:auto;padding:8px}
-.tm-notif-item{padding:12px;border-radius:10px;margin-bottom:6px;background:rgba(255,255,255,.03);border-left:3px solid #FF6B35;cursor:pointer;transition:.15s}
-.tm-notif-item:hover{background:rgba(255,107,53,.06)}
-.tm-notif-item .nhead{display:flex;align-items:center;gap:6px;margin-bottom:4px}
-.tm-notif-item .nhead .ico{font-size:14px}
-.tm-notif-item .nhead .title{font-size:12.5px;font-weight:800;flex:1;color:#fff}
-.tm-notif-item .nhead .time{font-size:10px;color:#888}
-.tm-notif-item .body{font-size:12px;color:#bbb;line-height:1.5}
-.tm-notif-close{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);color:#aaa;font-size:13px;cursor:pointer;padding:5px 10px;line-height:1.4;border-radius:8px;font-family:inherit}
-.tm-notif-close:hover{background:rgba(255,255,255,.13)}
+#tm6NotifBackdrop{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:150;opacity:0;pointer-events:none;transition:.3s}
+#tm6NotifBackdrop.open{opacity:1;pointer-events:auto}
+#tm6NotifPanel{position:fixed;top:0;right:0;bottom:0;width:380px;max-width:90vw;background:#15151f;border-left:1px solid rgba(255,255,255,.14);z-index:180;transform:translateX(100%);transition:.3s;display:flex;flex-direction:column;box-shadow:-8px 0 30px rgba(0,0,0,.3)}
+#tm6NotifPanel.open{transform:translateX(0)}
+.tm6-notif-head{padding:16px;border-bottom:1px solid rgba(255,255,255,.06);display:flex;align-items:center;justify-content:space-between}
+.tm6-notif-head h3{font-size:15px;font-weight:800;color:#fff;margin:0}
+.tm6-notif-list{flex:1;overflow-y:auto;padding:8px}
+.tm6-notif-item{padding:12px;border-radius:10px;margin-bottom:6px;background:rgba(255,255,255,.03);border-left:3px solid #FF6B35;cursor:pointer;transition:.15s}
+.tm6-notif-item:hover{background:rgba(255,107,53,.06)}
+.tm6-notif-item .nhead{display:flex;align-items:center;gap:6px;margin-bottom:4px}
+.tm6-notif-item .nhead .ico{font-size:14px}
+.tm6-notif-item .nhead .title{font-size:12.5px;font-weight:800;flex:1;color:#fff}
+.tm6-notif-item .nhead .time{font-size:10px;color:#888}
+.tm6-notif-item .body{font-size:12px;color:#bbb;line-height:1.5}
+.tm6-notif-close{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);color:#aaa;font-size:13px;cursor:pointer;padding:5px 10px;line-height:1.4;border-radius:8px;font-family:inherit}
+.tm6-notif-close:hover{background:rgba(255,255,255,.13)}
 
-/* Bottom nav móvil */
-#tmBottomNav{display:none;position:fixed;bottom:0;left:0;right:0;z-index:50;background:rgba(15,15,20,.97);backdrop-filter:blur(12px);border-top:1px solid rgba(255,255,255,.08);padding:6px 4px env(safe-area-inset-bottom,6px);justify-content:space-around;align-items:center}
-.tm-bn-btn{background:transparent;border:none;color:#888;padding:6px 8px;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:9px;font-weight:700;border-radius:8px;transition:.15s;min-width:48px;position:relative;cursor:pointer;font-family:inherit}
-.tm-bn-btn .ico{font-size:18px}
-.tm-bn-btn.active{color:#FF6B35;background:rgba(255,107,53,.12)}
-@media(max-width:760px){#tmBottomNav{display:flex}}
+#tm6BottomNav{display:none;position:fixed;bottom:0;left:0;right:0;z-index:50;background:rgba(15,15,20,.97);backdrop-filter:blur(12px);border-top:1px solid rgba(255,255,255,.08);padding:6px 4px env(safe-area-inset-bottom,6px);justify-content:space-around;align-items:center}
+.tm6-bn-btn{background:transparent;border:none;color:#888;padding:6px 8px;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:9px;font-weight:700;border-radius:8px;transition:.15s;min-width:48px;position:relative;cursor:pointer;font-family:inherit}
+.tm6-bn-btn .ico{font-size:18px}
+.tm6-bn-btn.active{color:#FF6B35;background:rgba(255,107,53,.12)}
+@media(max-width:760px){#tm6BottomNav{display:flex}}
 </style>
 
-<!-- Toast container -->
-<div id="tmToastWrap"></div>
+<div id="tm6ToastWrap"></div>
 
-<!-- Search overlay -->
-<div id="tmSearchOv" onclick="if(event.target===this)tmCloseSearch()">
-  <div class="tm-search-box">
-    <input type="text" id="tmSearchInput" placeholder="🔍 Buscar vistas... (Esc para cerrar)" oninput="tmDoSearch(this.value)">
-    <div class="tm-search-results" id="tmSearchResults">
+<div id="tm6SearchOv" onclick="if(event.target===this)tm6CloseSearch()">
+  <div class="tm6-search-box">
+    <input type="text" id="tm6SearchInput" placeholder="🔍 Buscar vistas... (Esc para cerrar)" oninput="tm6DoSearch(this.value)">
+    <div class="tm6-search-results" id="tm6SearchResults">
       <div style="padding:14px;text-align:center;color:#888;font-size:12px">Escribe para buscar...</div>
     </div>
   </div>
 </div>
 
-<!-- Notif panel -->
-<div id="tmNotifBackdrop" onclick="tmToggleNotif()"></div>
-<div id="tmNotifPanel">
-  <div class="tm-notif-head">
+<div id="tm6NotifBackdrop" onclick="tm6ToggleNotif()"></div>
+<div id="tm6NotifPanel">
+  <div class="tm6-notif-head">
     <h3>🔔 Notificaciones</h3>
     <div style="display:flex;gap:6px">
-      <button class="tm-notif-close" onclick="tmMarkAllRead()">✓ Visto</button>
-      <button class="tm-notif-close" onclick="tmToggleNotif()">✕</button>
+      <button class="tm6-notif-close" onclick="tm6MarkAllRead()">✓ Visto</button>
+      <button class="tm6-notif-close" onclick="tm6ToggleNotif()">✕</button>
     </div>
   </div>
-  <div class="tm-notif-list">
-    <div class="tm-notif-item"><div class="nhead"><span class="ico">💰</span><span class="title">Nueva venta</span><span class="time">hace 4m</span></div><div class="body">María C. compró Combo Gamer por $159.</div></div>
-    <div class="tm-notif-item"><div class="nhead"><span class="ico">🛒</span><span class="title">Carrito abandonado</span><span class="time">hace 8m</span></div><div class="body">Roberto P. dejó $247 en el carrito.</div></div>
-    <div class="tm-notif-item"><div class="nhead"><span class="ico">📦</span><span class="title">Stock crítico</span><span class="time">hace 35m</span></div><div class="body">iPhone 13 queda con 3 unidades.</div></div>
-    <div class="tm-notif-item"><div class="nhead"><span class="ico">⭐</span><span class="title">Nueva reseña 5★</span><span class="time">hace 14m</span></div><div class="body">Power Bank recibió 5 estrellas.</div></div>
-    <div class="tm-notif-item"><div class="nhead"><span class="ico">💬</span><span class="title">Mensaje WhatsApp</span><span class="time">hace 1h</span></div><div class="body">José L. pregunta por el inversor 12V.</div></div>
-    <div class="tm-notif-item"><div class="nhead"><span class="ico">🤖</span><span class="title">IA detectó error</span><span class="time">hace 2h</span></div><div class="body">Audífonos TWS sin descripción SEO.</div></div>
-    <div class="tm-notif-item"><div class="nhead"><span class="ico">🎁</span><span class="title">Combo por expirar</span><span class="time">hace 3h</span></div><div class="body">Combo iPhone Premium expira en 3h.</div></div>
-    <div class="tm-notif-item"><div class="nhead"><span class="ico">📈</span><span class="title">Meta alcanzada</span><span class="time">ayer</span></div><div class="body">Superaste la meta semanal por 23%.</div></div>
+  <div class="tm6-notif-list">
+    <div class="tm6-notif-item"><div class="nhead"><span class="ico">💰</span><span class="title">Nueva venta</span><span class="time">hace 4m</span></div><div class="body">María C. compró Combo Gamer por $159.</div></div>
+    <div class="tm6-notif-item"><div class="nhead"><span class="ico">🛒</span><span class="title">Carrito abandonado</span><span class="time">hace 8m</span></div><div class="body">Roberto P. dejó $247 en el carrito.</div></div>
+    <div class="tm6-notif-item"><div class="nhead"><span class="ico">📦</span><span class="title">Stock crítico</span><span class="time">hace 35m</span></div><div class="body">iPhone 13 queda con 3 unidades.</div></div>
+    <div class="tm6-notif-item"><div class="nhead"><span class="ico">⭐</span><span class="title">Nueva reseña 5★</span><span class="time">hace 14m</span></div><div class="body">Power Bank recibió 5 estrellas.</div></div>
+    <div class="tm6-notif-item"><div class="nhead"><span class="ico">💬</span><span class="title">Mensaje WhatsApp</span><span class="time">hace 1h</span></div><div class="body">José L. pregunta por el inversor 12V.</div></div>
+    <div class="tm6-notif-item"><div class="nhead"><span class="ico">🤖</span><span class="title">IA detectó error</span><span class="time">hace 2h</span></div><div class="body">Audífonos TWS sin descripción SEO.</div></div>
+    <div class="tm6-notif-item"><div class="nhead"><span class="ico">🎁</span><span class="title">Combo por expirar</span><span class="time">hace 3h</span></div><div class="body">Combo iPhone Premium expira en 3h.</div></div>
+    <div class="tm6-notif-item"><div class="nhead"><span class="ico">📈</span><span class="title">Meta alcanzada</span><span class="time">ayer</span></div><div class="body">Superaste la meta semanal por 23%.</div></div>
   </div>
 </div>
 
-<!-- Bottom nav móvil -->
-<div id="tmBottomNav">
-  <button class="tm-bn-btn" data-tm-view="inicio"><span class="ico">🏠</span>Inicio</button>
-  <button class="tm-bn-btn" data-tm-view="manage-products"><span class="ico">📦</span>Prod.</button>
-  <button class="tm-bn-btn" data-tm-view="add-products"><span class="ico">➕</span>Agregar</button>
-  <button class="tm-bn-btn" data-tm-view="ventas"><span class="ico">💰</span>Ventas</button>
-  <button class="tm-bn-btn" data-tm-view="analytics"><span class="ico">📈</span>Stats</button>
-  <button class="tm-bn-btn" data-tm-view="radar"><span class="ico">📡</span>Radar</button>
-  <button class="tm-bn-btn" data-tm-view="configuracion"><span class="ico">⚙️</span>Config</button>
+<div id="tm6BottomNav">
+  <button class="tm6-bn-btn" data-v="inicio"><span class="ico">🏠</span>Inicio</button>
+  <button class="tm6-bn-btn" data-v="manage-products"><span class="ico">📦</span>Prod.</button>
+  <button class="tm6-bn-btn" data-v="add-products"><span class="ico">➕</span>Agregar</button>
+  <button class="tm6-bn-btn" data-v="ventas"><span class="ico">💰</span>Ventas</button>
+  <button class="tm6-bn-btn" data-v="analytics"><span class="ico">📈</span>Stats</button>
+  <button class="tm6-bn-btn" data-v="radar"><span class="ico">📡</span>Radar</button>
+  <button class="tm6-bn-btn" data-v="configuracion"><span class="ico">⚙️</span>Config</button>
 </div>
 
 <script>
 (function(){
   'use strict';
 
-  // ===== TOAST =====
-  window.tmToast = function(msg, type){
+  // TOAST
+  window.tm6Toast = function(msg, type){
     type = type || 'success';
-    var c = document.getElementById('tmToastWrap');
+    var c = document.getElementById('tm6ToastWrap');
     if(!c) return;
     var t = document.createElement('div');
-    t.className = 'tm-toast ' + (type === 'success' ? '' : type);
+    t.className = 'tm6-toast ' + (type === 'success' ? '' : type);
     t.textContent = msg;
     c.appendChild(t);
     setTimeout(function(){ t.classList.add('show'); }, 10);
@@ -2123,7 +2114,7 @@ if ('serviceWorker' in navigator) {
     }, 3000);
   };
 
-  // ===== SEARCH =====
+  // SEARCH — usa IDs únicos con prefijo tm6
   var searchData = [
     {ico:'🏠',title:'Inicio',sub:'Dashboard',view:'inicio'},
     {ico:'📦',title:'Productos',sub:'Inventario',view:'manage-products'},
@@ -2141,104 +2132,140 @@ if ('serviceWorker' in navigator) {
     {ico:'🛠️',title:'Herramientas',sub:'IA, CSV',view:'herramientas'},
   ];
 
-  window.tmOpenSearch = function(){
-    var ov = document.getElementById('tmSearchOv');
-    if(ov){ ov.classList.add('open'); setTimeout(function(){ var i=document.getElementById('tmSearchInput'); if(i) i.focus(); }, 100); }
+  window.tm6OpenSearch = function(){
+    var ov = document.getElementById('tm6SearchOv');
+    if(!ov) return;
+    ov.classList.add('open');
+    setTimeout(function(){ var i = document.getElementById('tm6SearchInput'); if(i) i.focus(); }, 100);
   };
-  window.tmCloseSearch = function(){
-    var ov = document.getElementById('tmSearchOv');
+  window.tm6CloseSearch = function(){
+    var ov = document.getElementById('tm6SearchOv');
     if(ov) ov.classList.remove('open');
   };
-  window.tmDoSearch = function(q){
-    var r = document.getElementById('tmSearchResults');
+  window.tm6DoSearch = function(q){
+    var r = document.getElementById('tm6SearchResults');
     if(!r) return;
-    if(!q || q.length < 1){ r.innerHTML = '<div style="padding:14px;text-align:center;color:#888;font-size:12px">Escribe para buscar...</div>'; return; }
+    if(!q || q.length < 1){
+      r.innerHTML = '<div style="padding:14px;text-align:center;color:#888;font-size:12px">Escribe para buscar...</div>';
+      return;
+    }
     var f = searchData.filter(function(d){
       return d.title.toLowerCase().indexOf(q.toLowerCase()) >= 0 || d.sub.toLowerCase().indexOf(q.toLowerCase()) >= 0;
     });
-    if(!f.length){ r.innerHTML = '<div style="padding:14px;text-align:center;color:#888;font-size:12px">Sin resultados</div>'; return; }
+    if(!f.length){
+      r.innerHTML = '<div style="padding:14px;text-align:center;color:#888;font-size:12px">Sin resultados</div>';
+      return;
+    }
     r.innerHTML = f.map(function(d){
-      return '<div class="tm-search-result" data-v="'+d.view+'"><span class="ico">'+d.ico+'</span><div class="info"><div class="title">'+d.title+'</div><div class="sub">'+d.sub+'</div></div></div>';
+      return '<div class="tm6-search-result" data-v="' + d.view + '"><span class="ico">' + d.ico + '</span><div class="info"><div class="title">' + d.title + '</div><div class="sub">' + d.sub + '</div></div></div>';
     }).join('');
-    r.querySelectorAll('.tm-search-result').forEach(function(el){
-      el.addEventListener('click', function(){
+    // Bind clicks
+    var results = r.querySelectorAll('.tm6-search-result');
+    for(var i = 0; i < results.length; i++){
+      results[i].addEventListener('click', function(){
         var v = this.getAttribute('data-v');
         if(typeof switchTab === 'function'){ switchTab(v); }
-        tmCloseSearch();
+        tm6CloseSearch();
       });
-    });
+    }
   };
 
-  // ===== NOTIFICATIONS =====
-  window.tmToggleNotif = function(){
-    document.getElementById('tmNotifPanel').classList.toggle('open');
-    document.getElementById('tmNotifBackdrop').classList.toggle('open');
+  // NOTIFICATIONS
+  window.tm6ToggleNotif = function(){
+    var p = document.getElementById('tm6NotifPanel');
+    var b = document.getElementById('tm6NotifBackdrop');
+    if(p) p.classList.toggle('open');
+    if(b) b.classList.toggle('open');
   };
-  window.tmMarkAllRead = function(){
-    document.querySelectorAll('.tm-notif-item').forEach(function(i){ i.style.opacity = '.5'; });
-    var b = document.querySelector('#tmNotifBtn .badge');
-    if(b) b.style.display = 'none';
-    tmToast('Notificaciones marcadas como leídas');
+  window.tm6MarkAllRead = function(){
+    var items = document.querySelectorAll('.tm6-notif-item');
+    for(var i = 0; i < items.length; i++){ items[i].style.opacity = '.5'; }
+    var badge = document.querySelector('#tm6NotifBtn .badge');
+    if(badge) badge.style.display = 'none';
+    tm6Toast('Notificaciones marcadas como leídas');
   };
 
-  // ===== AÑADIR BOTONES AL TOPBAR (sin tocar el HTML existente) =====
+  // AÑADIR BOTONES AL TOPBAR
   function addTopbarButtons(){
     var topicons = document.querySelector('.topicons');
-    if(!topicons || document.getElementById('tmSearchBtn')) return;
+    if(!topicons) return;
+    if(document.getElementById('tm6SearchBtn')) return; // ya existen
 
     var notifBtn = document.createElement('button');
-    notifBtn.id = 'tmNotifBtn';
+    notifBtn.id = 'tm6NotifBtn';
     notifBtn.title = 'Notificaciones';
+    notifBtn.type = 'button';
     notifBtn.innerHTML = '🔔<span class="badge">8</span>';
-    notifBtn.addEventListener('click', tmToggleNotif);
+    notifBtn.addEventListener('click', tm6ToggleNotif);
     topicons.insertBefore(notifBtn, topicons.firstChild);
 
     var searchBtn = document.createElement('button');
-    searchBtn.id = 'tmSearchBtn';
+    searchBtn.id = 'tm6SearchBtn';
     searchBtn.title = 'Buscar (Ctrl+K)';
+    searchBtn.type = 'button';
     searchBtn.innerHTML = '🔍<span class="kbd">⌘K</span>';
-    searchBtn.addEventListener('click', tmOpenSearch);
+    searchBtn.addEventListener('click', tm6OpenSearch);
     topicons.insertBefore(searchBtn, notifBtn);
   }
 
-  // ===== BOTTOM NAV =====
+  // BOTTOM NAV
   function setupBottomNav(){
-    var nav = document.getElementById('tmBottomNav');
+    var nav = document.getElementById('tm6BottomNav');
     if(!nav) return;
-    nav.querySelectorAll('.tm-bn-btn').forEach(function(btn){
-      btn.addEventListener('click', function(){
-        var v = this.getAttribute('data-tm-view');
+    var btns = nav.querySelectorAll('.tm6-bn-btn');
+    for(var i = 0; i < btns.length; i++){
+      btns[i].addEventListener('click', function(){
+        var v = this.getAttribute('data-v');
         if(typeof switchTab === 'function'){ switchTab(v); }
       });
-    });
+    }
   }
 
-  // ===== KEYBOARD =====
+  // KEYBOARD
   document.addEventListener('keydown', function(e){
+    // Solo si NO estamos escribiendo en un input
+    var tag = (e.target.tagName || '').toLowerCase();
+    var inInput = (tag === 'input' || tag === 'textarea' || tag === 'select');
+
     if((e.ctrlKey || e.metaKey) && e.key === 'k'){
       e.preventDefault();
-      tmOpenSearch();
+      tm6OpenSearch();
+      return;
     }
     if(e.key === 'Escape'){
-      tmCloseSearch();
-      var p = document.getElementById('tmNotifPanel');
-      var b = document.getElementById('tmNotifBackdrop');
+      tm6CloseSearch();
+      var p = document.getElementById('tm6NotifPanel');
+      var b = document.getElementById('tm6NotifBackdrop');
       if(p) p.classList.remove('open');
       if(b) b.classList.remove('open');
     }
   });
 
-  // ===== INIT =====
+  // INIT — esperar a que el panel admin esté visible
   function init(){
     addTopbarButtons();
     setupBottomNav();
-    setTimeout(function(){ tmToast('💡 Ctrl+K = buscar · Esc = cerrar'); }, 2000);
+    // Toast de bienvenida solo si el panel está visible
+    var panel = document.getElementById('adminPanel');
+    if(panel && !panel.classList.contains('hidden')){
+      setTimeout(function(){ tm6Toast('💡 Ctrl+K = buscar · Esc = cerrar'); }, 2000);
+    }
   }
+
   if(document.readyState === 'loading'){
     document.addEventListener('DOMContentLoaded', init);
   } else {
-    init();
+    // Esperar un poco más por si el login es automático
+    setTimeout(init, 500);
   }
+
+  // Re-intentar añadir botones después de 3s (por si el panel se muestra tarde)
+  setTimeout(function(){
+    if(!document.getElementById('tm6SearchBtn')){
+      addTopbarButtons();
+    }
+  }, 3000);
+
 })();
 </script>
 
