@@ -199,11 +199,35 @@
   .file-box .fb-txt { font-size:13px; color:#cfcfd6; font-weight:600; word-break:break-word; }
   .file-box.has-file { border-style:solid; border-color:rgba(46,204,113,.5); }
   .file-box.has-file .fb-txt { color:#2ecc71; }
+  /* Login */
+  #adminPanel.hidden { display:none !important; }
+  .tm2-login { position:fixed; inset:0; z-index:1000; display:flex; align-items:center; justify-content:center; padding:20px; background:radial-gradient(900px 500px at 50% 0%,rgba(255,107,53,.12),transparent),#0a0a12; }
+  .tm2-login.hidden { display:none; }
+  .tm2-login-card { width:min(430px,92vw); background:#15151f; border:1px solid var(--border); border-radius:22px; padding:34px 30px; text-align:center; box-shadow:0 28px 90px rgba(0,0,0,.55); }
+  .tm2-logo { width:64px; height:64px; margin:0 auto 18px; background:linear-gradient(135deg,var(--o),var(--oo)); border-radius:16px; display:flex; align-items:center; justify-content:center; font-weight:900; font-size:26px; color:#fff; box-shadow:0 10px 30px rgba(255,107,53,.35); }
+  .tm2-login-title { font-size:22px; font-weight:900; color:#fff; margin:0; }
+  .tm2-login-sub { font-size:13px; color:var(--muted); margin:4px 0 22px; }
+  .tm2-login-foot { font-size:11px; color:var(--muted); margin-top:18px; }
 </style>
 </head>
 <body>
 
-<div class="layout">
+<!-- Login (usa verificarPassword del motor real; mismo hash/Firebase que admin.html) -->
+<div id="loginModal" class="tm2-login">
+  <div class="tm2-login-card">
+    <div class="tm2-logo">M</div>
+    <h1 class="tm2-login-title">TiendaMax Admin</h1>
+    <div class="tm2-login-sub">Panel de administración</div>
+    <form onsubmit="verificarPassword(event)">
+      <label class="form-label" style="text-align:left;display:block;margin-bottom:6px">Contraseña de administrador</label>
+      <input class="form-input" id="adminPassword" type="password" autocomplete="current-password" autofocus>
+      <button type="submit" id="btnLoginSubmit" class="btn btn-primary" style="width:100%;margin-top:14px;justify-content:center">🔓 Acceder al panel</button>
+    </form>
+    <div class="tm2-login-foot">🔐 Sesión cifrada · Acceso seguro</div>
+  </div>
+</div>
+
+<div class="layout admin-panel hidden" id="adminPanel">
 
   <!-- Top bar -->
   <div class="topbar">
@@ -303,6 +327,13 @@
       <!-- VENTAS -->
       <div id="view-ventas" class="view">
         <div class="ph"><div><h2>💰 Ventas</h2><p id="ventas-sub">Registro real</p></div></div>
+        <div class="section">
+          <h3>⚡ Registrar venta</h3>
+          <div class="form-group"><label class="form-label">Buscar producto</label><input class="form-input" id="venta-buscar" placeholder="🔍 Escribe para buscar…" oninput="ventaBuscar()"><div id="venta-resultados" style="margin-top:6px;max-height:170px;overflow:auto"></div></div>
+          <div id="venta-cart" style="margin-top:12px"></div>
+          <div id="venta-total" style="margin-top:8px"></div>
+          <button class="btn btn-primary" id="venta-registrar-btn" style="width:100%;margin-top:12px;display:none" onclick="ventaRegistrar()">✅ Registrar venta</button>
+        </div>
         <div class="kpis" id="ventas-kpis"></div>
         <div class="grid-2">
           <div class="section"><h3>🏆 Productos más vendidos</h3><div id="ventas-top"></div></div>
@@ -481,6 +512,37 @@ function fileName(input, spanId, def){
   if(f && f.length){ span.textContent = f.length>1 ? (f.length+' fotos elegidas') : f[0].name; if(box) box.classList.add('has-file'); }
   else { span.textContent=def; if(box) box.classList.remove('has-file'); }
 }
+/* ============ Registrar venta (usa registrarVentaPedido del motor) ============ */
+let VENTA_CART=[];
+function ventaBuscar(){
+  const q=norm($('#venta-buscar')&&$('#venta-buscar').value); const box=$('#venta-resultados'); if(!box)return;
+  if(!q){box.innerHTML='';return;}
+  const res=PRODUCTOS.filter(p=>norm(p.nombre).includes(q)).slice(0,8);
+  box.innerHTML=res.map(p=>`<div style="display:flex;align-items:center;gap:8px;padding:7px 9px;background:rgba(255,255,255,0.03);border-radius:8px;margin-bottom:4px"><div style="flex:1;font-size:12px;color:#fff">${esc(p.nombre)} <b style="color:var(--o)">${money(p.precioActual)}</b> <span style="color:var(--gray)">· stock ${Number(p.stock)||0}</span></div><button class="btn btn-ghost" style="padding:4px 10px;font-size:12px" onclick="ventaAdd('${p.id}')">+ Agregar</button></div>`).join('')||`<div style="font-size:11px;color:var(--gray);padding:6px">Sin resultados</div>`;
+}
+function ventaAdd(id){
+  const p=PRODUCTOS.find(x=>String(x.id)===String(id)); if(!p)return;
+  const ex=VENTA_CART.find(x=>String(x.id)===String(id)); if(ex){ex.cantidad++;} else { VENTA_CART.push({id:p.id,nombre:p.nombre,precio:Number(p.precioActual)||0,comision:Number(p.comision)||0,comisionMoneda:p.comisionMoneda||'USD',cantidad:1}); }
+  if($('#venta-buscar'))$('#venta-buscar').value=''; if($('#venta-resultados'))$('#venta-resultados').innerHTML=''; ventaRenderCart();
+}
+function ventaCartRemove(id){ VENTA_CART=VENTA_CART.filter(x=>String(x.id)!==String(id)); ventaRenderCart(); }
+function ventaCartQty(id,d){ const it=VENTA_CART.find(x=>String(x.id)===String(id)); if(it){it.cantidad=Math.max(1,it.cantidad+d);} ventaRenderCart(); }
+function ventaRenderCart(){
+  const box=$('#venta-cart'), tEl=$('#venta-total'), btn=$('#venta-registrar-btn'); if(!box)return;
+  box.innerHTML=VENTA_CART.map(it=>`<div style="display:flex;align-items:center;gap:8px;padding:8px 10px;background:rgba(255,107,53,0.08);border:1px solid rgba(255,107,53,0.3);border-radius:8px;margin-bottom:5px"><div style="flex:1;font-size:12px;color:#fff">${esc(it.nombre)}<br><span style="color:var(--gray)">${money(it.precio)} c/u</span></div><button class="btn btn-ghost" style="padding:2px 9px" onclick="ventaCartQty('${it.id}',-1)">−</button><span style="min-width:22px;text-align:center;color:#fff;font-weight:700">${it.cantidad}</span><button class="btn btn-ghost" style="padding:2px 9px" onclick="ventaCartQty('${it.id}',1)">+</button><button class="btn btn-ghost" style="padding:2px 8px" onclick="ventaCartRemove('${it.id}')">✕</button></div>`).join('');
+  const total=VENTA_CART.reduce((s,it)=>s+it.precio*it.cantidad,0);
+  if(tEl) tEl.innerHTML=VENTA_CART.length?`<div style="display:flex;justify-content:space-between;font-size:15px;font-weight:800;padding:8px 2px"><span style="color:var(--gray)">Total</span><span style="color:var(--o)">${money(total)}</span></div>`:'';
+  if(btn) btn.style.display=VENTA_CART.length?'block':'none';
+}
+function ventaRegistrar(){
+  if(!VENTA_CART.length)return;
+  if(typeof registrarVentaPedido!=='function'){ showToast('⚠️ Motor no cargado','Recarga la página'); return; }
+  registrarVentaPedido(VENTA_CART.map(it=>({productoId:it.id,producto:it.nombre,cantidad:it.cantidad,precio:it.precio,comision:it.comision,comisionMoneda:it.comisionMoneda})));
+  VENTA_CART=[]; ventaRenderCart();
+  VENTAS = lsVentas(); renderVentas(); renderInicio(); renderClientes();
+  showToast('✅ Venta registrada','Se guardó y se ajustó el stock');
+}
+
 function agregarFillSubcats(){
   const cat=$('#productCategory') && $('#productCategory').value;
   const sub=$('#productSubcategory'); if(!sub) return;
@@ -800,7 +862,14 @@ window.go=go; window.cargarDatos=cargarDatos; window.renderProductos=renderProdu
 window.comboBuscar=comboBuscar; window.comboAdd=comboAdd; window.comboRemove=comboRemove; window.comboCalc=comboCalc;
 window.comboGuardar=comboGuardar; window.comboDelete=comboDelete; window.comboPublicar=comboPublicar;
 window.agregarFillSubcats=agregarFillSubcats; window.fileName=fileName;
+window.ventaBuscar=ventaBuscar; window.ventaAdd=ventaAdd; window.ventaCartRemove=ventaCartRemove; window.ventaCartQty=ventaCartQty; window.ventaRegistrar=ventaRegistrar;
 })();
+</script>
+<script>
+// Login: evitar que abrirLoginAdmin del motor redirija a admin.html; mostrar nuestro modal.
+window.addEventListener('DOMContentLoaded',function(){
+  window.abrirLoginAdmin=function(){ var m=document.getElementById('loginModal'); if(m){ m.classList.remove('hidden'); var i=document.getElementById('adminPassword'); if(i) setTimeout(function(){ try{i.focus();}catch(e){} },100); } };
+});
 </script>
 </body>
 </html>
