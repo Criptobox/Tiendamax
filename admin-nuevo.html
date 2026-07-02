@@ -2108,4 +2108,103 @@ if ('serviceWorker' in navigator) {
   });
 })();
 </script>
+
+<!-- ═══════════ TAB NUEVO: Stock (niveles reales + KPI cards) ═══════════ -->
+<style>
+  #stock-ia .tmk{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:16px}
+  #stock-ia .tmk .kpi{background:#181818;border:1px solid rgba(255,255,255,.09);border-radius:14px;padding:14px;position:relative;overflow:hidden}
+  #stock-ia .tmk .kpi::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:#FF6B35}
+  #stock-ia .tmk .kpi.ok::before{background:#2ECC71}
+  #stock-ia .tmk .kpi.warn::before{background:#f1c40f}
+  #stock-ia .tmk .kpi.danger::before{background:#E74C3C}
+  #stock-ia .tmk .kpi .l{font-size:10px;text-transform:uppercase;color:#9b9b9b;letter-spacing:.5px;font-weight:700;margin-bottom:6px}
+  #stock-ia .tmk .kpi .v{font-size:24px;font-weight:900;color:#fff;line-height:1}
+  #stock-ia .sc{background:#181818;border:1px solid rgba(255,255,255,.09);border-radius:12px;padding:14px;margin-bottom:10px}
+  #stock-ia .sc.urg{border-left:4px solid #E74C3C}
+  #stock-ia .sc.warn{border-left:4px solid #f1c40f}
+  #stock-ia .sc .h{display:flex;align-items:center;gap:12px;margin-bottom:9px}
+  #stock-ia .sc .th{width:38px;height:38px;background:rgba(255,255,255,.05);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;overflow:hidden;flex-shrink:0}
+  #stock-ia .sc .th img{width:100%;height:100%;object-fit:cover}
+  #stock-ia .sc .nm{font-size:13px;font-weight:700;color:#fff}
+  #stock-ia .sc .mt{font-size:10px;color:#9b9b9b}
+  #stock-ia .sc .st{margin-left:auto;padding:3px 9px;border-radius:20px;font-size:10px;font-weight:800;text-transform:uppercase}
+  #stock-ia .sc .st.urg{background:rgba(231,76,60,.2);color:#E74C3C}
+  #stock-ia .sc .st.warn{background:rgba(241,196,15,.18);color:#f1c40f}
+  #stock-ia .sc .bar{height:7px;background:rgba(255,255,255,.06);border-radius:4px;overflow:hidden;margin:8px 0}
+  #stock-ia .sc .bar>div{height:100%;border-radius:4px}
+  #stock-ia .sc .pred{padding:8px 10px;background:rgba(0,0,0,.25);border-radius:8px;font-size:11px;line-height:1.5;color:#ccc}
+</style>
+<script>
+(function(){
+  'use strict';
+  var $ = function(s,c){return (c||document).querySelector(s);};
+  function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(m){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m];});}
+  function norm(s){return (s||'').toString().toLowerCase().trim().replace(/\s+/g,' ');}
+  function prods(){ try{ if(typeof productos!=='undefined' && Array.isArray(productos)) return productos; }catch(e){} try{return JSON.parse(localStorage.getItem('productos')||'[]');}catch(e){return [];} }
+  function ventas(){ try{ var v=JSON.parse(localStorage.getItem('registroVentas')||'null'); if(!Array.isArray(v)||!v.length) v=JSON.parse(localStorage.getItem('ventas')||'null'); return Array.isArray(v)?v:[]; }catch(e){return [];} }
+  function emoji(c){ c=(c||'').toLowerCase(); if(/cel|phone/.test(c))return'📱'; if(/audio|auric/.test(c))return'🎧'; if(/comput|laptop|pc/.test(c))return'💻'; if(/energ|solar|bater/.test(c))return'🔋'; if(/red|wifi|router/.test(c))return'📡'; if(/gam|juego/.test(c))return'🎮'; if(/herram|util/.test(c))return'🔧'; if(/hogar|casa/.test(c))return'🏠'; if(/carro|auto|moto/.test(c))return'🚗'; if(/segur/.test(c))return'🔒'; return'📦'; }
+
+  function inject(){
+    if($('#stock-ia')) return true;
+    var tabs = $('.admin-tabs-desktop');
+    if(tabs && !$('[data-tab="stock-ia"]',tabs)){
+      var b=document.createElement('button'); b.type='button'; b.className='tab-btn';
+      b.dataset.tab='stock-ia'; b.setAttribute('data-action','switchTab'); b.setAttribute('data-arg','stock-ia');
+      b.innerHTML='<span class="nav-emoji">📈</span><span class="txt">Stock</span>';
+      var corr=$('[data-arg="correcciones"]',tabs); if(corr&&corr.parentNode===tabs){ tabs.insertBefore(b,corr.nextSibling); } else { tabs.appendChild(b); }
+    }
+    var acc=$('#adminAccordion');
+    if(acc && !acc.querySelector('[data-tab-target="stock-ia"]')){
+      var row=document.createElement('div'); row.className='acc-row'; row.dataset.tabTarget='stock-ia';
+      row.innerHTML='<button type="button" class="acc-trigger" aria-expanded="false"><span class="acc-icon-wrap"><span class="acc-icon">📈</span></span><span class="acc-text"><span class="acc-label">Stock</span><span class="acc-sub">Niveles reales y alertas</span></span><span class="acc-chevron" aria-hidden="true"></span></button><div class="acc-body" role="region"></div>';
+      acc.appendChild(row);
+    }
+    var content=$('.admin-content'); if(!content) return false;
+    var sec=document.createElement('div'); sec.id='stock-ia'; sec.className='admin-tab';
+    sec.innerHTML=''
+      + '<div class="head"><div><h1>📈 Stock</h1><p class="sub">Niveles reales · alertas por umbral · nada inventado</p></div>'
+      + '<button type="button" class="btn" onclick="window.tmRenderStock&&window.tmRenderStock()">🔄 Actualizar</button></div>'
+      + '<div id="stock-nota" style="background:rgba(52,152,219,.08);border:1px solid rgba(52,152,219,.3);border-radius:10px;padding:11px 14px;font-size:12px;color:#bcdcf5;margin-bottom:14px;line-height:1.5"></div>'
+      + '<div class="tmk" id="stock-kpis"></div>'
+      + '<div id="stock-lista"></div>';
+    content.appendChild(sec);
+    return true;
+  }
+
+  window.tmRenderStock = function(){
+    if(!$('#stock-ia')) inject();
+    var P = prods(); var V = ventas(); var conV = V.length>0;
+    $('#stock-nota').innerHTML = conV
+      ? 'Umbrales: <b>≤5 crítico</b>, ≤15 bajo. La predicción "se agota en X días" usa tu histórico real de ventas.'
+      : 'Umbrales: <b>≤5 crítico</b>, ≤15 bajo. <b>Sin histórico de ventas</b> en este dispositivo → no muestro predicción de días (no invento el ritmo).';
+    var crit=P.filter(function(p){return Number(p.stock)>0&&Number(p.stock)<=5;}).length;
+    var bajo=P.filter(function(p){return Number(p.stock)>5&&Number(p.stock)<=15;}).length;
+    var agot=P.filter(function(p){return Number(p.stock)<=0;}).length;
+    var ok=P.filter(function(p){return Number(p.stock)>15;}).length;
+    $('#stock-kpis').innerHTML = [['ok','OK',ok],['warn','Por agotarse',bajo],['danger','Crítico (≤5)',crit],['danger','Agotados',agot]]
+      .map(function(k){return '<div class="kpi '+k[0]+'"><div class="l">'+k[1]+'</div><div class="v">'+k[2]+'</div></div>';}).join('');
+    // velocidad real (30 días) si hay ventas
+    var vel={}; if(conV){ var desde=Date.now()-30*864e5; V.forEach(function(v){ var ts=v.id||v.fecha; var d=new Date(typeof ts==='number'?ts:Date.parse(ts)); if(isNaN(d)||d.getTime()<desde)return; (v.productos||v.items||[]).forEach(function(it){ var k=norm(it.nombre||it.nm); if(k) vel[k]=(vel[k]||0)+Number(it.cantidad||it.qty||1); }); }); }
+    var orden=P.slice().sort(function(a,b){return (Number(a.stock)||0)-(Number(b.stock)||0);}).filter(function(p){return Number(p.stock)<=15;});
+    $('#stock-lista').innerHTML = orden.slice(0,50).map(function(p){
+      var st=Number(p.stock)||0, cls='warn', lbl='Bajo';
+      if(st<=0){cls='urg';lbl='Agotado';} else if(st<=5){cls='urg';lbl='Crítico';}
+      var pct=Math.min(100,Math.round(st/20*100));
+      var barCol = cls==='urg'?'#E74C3C':(cls==='warn'?'#f1c40f':'#2ECC71');
+      var pred; var vd=vel[norm(p.nombre)];
+      if(conV && vd){ var per=vd/30; var dias=per>0?Math.round(st/per):null; pred='📉 Ritmo real: ~'+per.toFixed(1)+'/día · se agota en <b>~'+dias+' días</b>.'; }
+      else if(st<=0){ pred='⛔ Sin stock. Repón para no perder ventas.'; }
+      else { pred='Quedan <b>'+st+'</b> unidades.'; }
+      var img = p.imagen?('<img src="'+esc(p.imagen)+'" alt="" onerror="this.parentNode.textContent=\''+emoji(p.categoria)+'\'">'):emoji(p.categoria);
+      return '<div class="sc '+cls+'"><div class="h"><div class="th">'+img+'</div><div><div class="nm">'+esc(p.nombre)+'</div><div class="mt">'+esc(p.categoria||'')+'</div></div><span class="st '+cls+'">'+lbl+'</span></div>'
+        + '<div class="bar"><div style="width:'+pct+'%;background:'+barCol+'"></div></div><div class="pred">'+pred+'</div></div>';
+    }).join('') || '<div style="text-align:center;padding:34px;color:#999">✅ <b style="color:#fff">Ningún producto con stock bajo.</b></div>';
+  };
+
+  document.addEventListener('DOMContentLoaded', function(){ setTimeout(inject, 1300); });
+  document.addEventListener('click', function(e){
+    if(e.target.closest('[data-arg="stock-ia"],[data-tab="stock-ia"]')) setTimeout(window.tmRenderStock, 200);
+  });
+})();
+</script>
 </body></html>
