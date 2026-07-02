@@ -1998,4 +1998,248 @@ if ('serviceWorker' in navigator) {
   document.addEventListener('click',function(e){ if(e.target.closest('[data-arg="seo-tool"],[data-tab="seo-tool"]')) setTimeout(function(){ tmSeoCargar(false); },200); });
 })();
 </script>
+
+<!-- ============================================================ -->
+<!-- MEJORA v6: Búsqueda global + Notificaciones (no toca nada)   -->
+<!-- ============================================================ -->
+<style>
+/* Botones en topbar */
+#tmSearchBtn,#tmNotifBtn{width:38px;height:38px;border-radius:10px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);display:inline-flex;align-items:center;justify-content:center;font-size:15px;color:#bbb;cursor:pointer;transition:.15s;position:relative;vertical-align:middle;margin:0 2px}
+#tmSearchBtn:hover,#tmNotifBtn:hover{background:rgba(255,107,53,.15);border-color:rgba(255,107,53,.3);color:#FF6B35}
+#tmSearchBtn .kbd{position:absolute;bottom:-4px;right:-4px;background:#0a0a0b;border:1px solid rgba(255,255,255,.1);font-size:8px;font-weight:700;padding:1px 4px;border-radius:4px;color:#888}
+#tmNotifBtn .badge{position:absolute;top:-4px;right:-4px;background:#e74c3c;color:#fff;border-radius:10px;min-width:18px;height:18px;font-size:10px;font-weight:900;display:flex;align-items:center;justify-content:center;border:2px solid #0a0a0b}
+
+/* Toast */
+#tmToastWrap{position:fixed;bottom:20px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:8px;pointer-events:none}
+@media(max-width:600px){#tmToastWrap{bottom:80px;right:10px;left:10px}}
+.tm-toast{background:#15151f;border:1px solid rgba(255,255,255,.1);border-left:4px solid #2ecc71;padding:14px 18px;border-radius:10px;box-shadow:0 12px 32px rgba(0,0,0,.4);max-width:340px;color:#e0e0e8;font-size:13px;font-weight:600;opacity:0;transform:translateX(400px);transition:all .3s;pointer-events:auto}
+.tm-toast.show{opacity:1;transform:translateX(0)}
+.tm-toast.warn{border-left-color:#f1c40f}
+.tm-toast.error{border-left-color:#e74c3c}
+
+/* Search overlay */
+#tmSearchOv{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(4px);z-index:200;display:none;align-items:flex-start;justify-content:center;padding-top:80px}
+#tmSearchOv.open{display:flex}
+.tm-search-box{background:#15151f;border:1px solid rgba(255,255,255,.14);border-radius:16px;width:90%;max-width:560px;padding:16px;box-shadow:0 24px 60px rgba(0,0,0,.5)}
+.tm-search-box input{width:100%;padding:14px 16px;background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.08);border-radius:10px;color:#e0e0e8;font-size:15px;outline:none;font-family:inherit}
+.tm-search-box input:focus{border-color:#FF6B35;box-shadow:0 0 0 3px rgba(255,107,53,.15)}
+.tm-search-results{margin-top:12px;max-height:400px;overflow-y:auto}
+.tm-search-result{padding:10px 12px;border-radius:8px;cursor:pointer;display:flex;align-items:center;gap:10px;transition:.15s}
+.tm-search-result:hover{background:rgba(255,107,53,.1)}
+.tm-search-result .ico{font-size:18px}
+.tm-search-result .info{flex:1;min-width:0}
+.tm-search-result .title{font-size:13px;font-weight:700;color:#fff}
+.tm-search-result .sub{font-size:11px;color:#888}
+
+/* Notif panel */
+#tmNotifBackdrop{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:150;opacity:0;pointer-events:none;transition:.3s}
+#tmNotifBackdrop.open{opacity:1;pointer-events:auto}
+#tmNotifPanel{position:fixed;top:0;right:0;bottom:0;width:380px;max-width:90vw;background:#15151f;border-left:1px solid rgba(255,255,255,.14);z-index:180;transform:translateX(100%);transition:.3s;display:flex;flex-direction:column;box-shadow:-8px 0 30px rgba(0,0,0,.3)}
+#tmNotifPanel.open{transform:translateX(0)}
+.tm-notif-head{padding:16px;border-bottom:1px solid rgba(255,255,255,.06);display:flex;align-items:center;justify-content:space-between}
+.tm-notif-head h3{font-size:15px;font-weight:800;color:#fff;margin:0}
+.tm-notif-list{flex:1;overflow-y:auto;padding:8px}
+.tm-notif-item{padding:12px;border-radius:10px;margin-bottom:6px;background:rgba(255,255,255,.03);border-left:3px solid #FF6B35;cursor:pointer;transition:.15s}
+.tm-notif-item:hover{background:rgba(255,107,53,.06)}
+.tm-notif-item .nhead{display:flex;align-items:center;gap:6px;margin-bottom:4px}
+.tm-notif-item .nhead .ico{font-size:14px}
+.tm-notif-item .nhead .title{font-size:12.5px;font-weight:800;flex:1;color:#fff}
+.tm-notif-item .nhead .time{font-size:10px;color:#888}
+.tm-notif-item .body{font-size:12px;color:#bbb;line-height:1.5}
+.tm-notif-close{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);color:#aaa;font-size:13px;cursor:pointer;padding:5px 10px;line-height:1.4;border-radius:8px;font-family:inherit}
+.tm-notif-close:hover{background:rgba(255,255,255,.13)}
+
+/* Bottom nav móvil */
+#tmBottomNav{display:none;position:fixed;bottom:0;left:0;right:0;z-index:50;background:rgba(15,15,20,.97);backdrop-filter:blur(12px);border-top:1px solid rgba(255,255,255,.08);padding:6px 4px env(safe-area-inset-bottom,6px);justify-content:space-around;align-items:center}
+.tm-bn-btn{background:transparent;border:none;color:#888;padding:6px 8px;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:9px;font-weight:700;border-radius:8px;transition:.15s;min-width:48px;position:relative;cursor:pointer;font-family:inherit}
+.tm-bn-btn .ico{font-size:18px}
+.tm-bn-btn.active{color:#FF6B35;background:rgba(255,107,53,.12)}
+@media(max-width:760px){#tmBottomNav{display:flex}}
+</style>
+
+<!-- Toast container -->
+<div id="tmToastWrap"></div>
+
+<!-- Search overlay -->
+<div id="tmSearchOv" onclick="if(event.target===this)tmCloseSearch()">
+  <div class="tm-search-box">
+    <input type="text" id="tmSearchInput" placeholder="🔍 Buscar vistas... (Esc para cerrar)" oninput="tmDoSearch(this.value)">
+    <div class="tm-search-results" id="tmSearchResults">
+      <div style="padding:14px;text-align:center;color:#888;font-size:12px">Escribe para buscar...</div>
+    </div>
+  </div>
+</div>
+
+<!-- Notif panel -->
+<div id="tmNotifBackdrop" onclick="tmToggleNotif()"></div>
+<div id="tmNotifPanel">
+  <div class="tm-notif-head">
+    <h3>🔔 Notificaciones</h3>
+    <div style="display:flex;gap:6px">
+      <button class="tm-notif-close" onclick="tmMarkAllRead()">✓ Visto</button>
+      <button class="tm-notif-close" onclick="tmToggleNotif()">✕</button>
+    </div>
+  </div>
+  <div class="tm-notif-list">
+    <div class="tm-notif-item"><div class="nhead"><span class="ico">💰</span><span class="title">Nueva venta</span><span class="time">hace 4m</span></div><div class="body">María C. compró Combo Gamer por $159.</div></div>
+    <div class="tm-notif-item"><div class="nhead"><span class="ico">🛒</span><span class="title">Carrito abandonado</span><span class="time">hace 8m</span></div><div class="body">Roberto P. dejó $247 en el carrito.</div></div>
+    <div class="tm-notif-item"><div class="nhead"><span class="ico">📦</span><span class="title">Stock crítico</span><span class="time">hace 35m</span></div><div class="body">iPhone 13 queda con 3 unidades.</div></div>
+    <div class="tm-notif-item"><div class="nhead"><span class="ico">⭐</span><span class="title">Nueva reseña 5★</span><span class="time">hace 14m</span></div><div class="body">Power Bank recibió 5 estrellas.</div></div>
+    <div class="tm-notif-item"><div class="nhead"><span class="ico">💬</span><span class="title">Mensaje WhatsApp</span><span class="time">hace 1h</span></div><div class="body">José L. pregunta por el inversor 12V.</div></div>
+    <div class="tm-notif-item"><div class="nhead"><span class="ico">🤖</span><span class="title">IA detectó error</span><span class="time">hace 2h</span></div><div class="body">Audífonos TWS sin descripción SEO.</div></div>
+    <div class="tm-notif-item"><div class="nhead"><span class="ico">🎁</span><span class="title">Combo por expirar</span><span class="time">hace 3h</span></div><div class="body">Combo iPhone Premium expira en 3h.</div></div>
+    <div class="tm-notif-item"><div class="nhead"><span class="ico">📈</span><span class="title">Meta alcanzada</span><span class="time">ayer</span></div><div class="body">Superaste la meta semanal por 23%.</div></div>
+  </div>
+</div>
+
+<!-- Bottom nav móvil -->
+<div id="tmBottomNav">
+  <button class="tm-bn-btn" data-tm-view="inicio"><span class="ico">🏠</span>Inicio</button>
+  <button class="tm-bn-btn" data-tm-view="manage-products"><span class="ico">📦</span>Prod.</button>
+  <button class="tm-bn-btn" data-tm-view="add-products"><span class="ico">➕</span>Agregar</button>
+  <button class="tm-bn-btn" data-tm-view="ventas"><span class="ico">💰</span>Ventas</button>
+  <button class="tm-bn-btn" data-tm-view="analytics"><span class="ico">📈</span>Stats</button>
+  <button class="tm-bn-btn" data-tm-view="radar"><span class="ico">📡</span>Radar</button>
+  <button class="tm-bn-btn" data-tm-view="configuracion"><span class="ico">⚙️</span>Config</button>
+</div>
+
+<script>
+(function(){
+  'use strict';
+
+  // ===== TOAST =====
+  window.tmToast = function(msg, type){
+    type = type || 'success';
+    var c = document.getElementById('tmToastWrap');
+    if(!c) return;
+    var t = document.createElement('div');
+    t.className = 'tm-toast ' + (type === 'success' ? '' : type);
+    t.textContent = msg;
+    c.appendChild(t);
+    setTimeout(function(){ t.classList.add('show'); }, 10);
+    setTimeout(function(){
+      t.classList.remove('show');
+      setTimeout(function(){ if(t.parentNode) t.remove(); }, 300);
+    }, 3000);
+  };
+
+  // ===== SEARCH =====
+  var searchData = [
+    {ico:'🏠',title:'Inicio',sub:'Dashboard',view:'inicio'},
+    {ico:'📦',title:'Productos',sub:'Inventario',view:'manage-products'},
+    {ico:'➕',title:'Agregar producto',sub:'Formulario IA',view:'add-products'},
+    {ico:'📢',title:'Publicación',sub:'Ofertas, banners',view:'publicacion'},
+    {ico:'🏷️',title:'Categorías',sub:'8 categorías',view:'manage-categories'},
+    {ico:'📁',title:'Subcategorías',sub:'Organización',view:'manage-subcategories'},
+    {ico:'💰',title:'Ventas',sub:'Historial',view:'ventas'},
+    {ico:'📈',title:'Analytics',sub:'Métricas',view:'analytics'},
+    {ico:'📡',title:'Radar',sub:'Revolico',view:'radar'},
+    {ico:'🔧',title:'Specs',sub:'Especificaciones',view:'specs-tool'},
+    {ico:'🔎',title:'SEO',sub:'Optimización',view:'seo-tool'},
+    {ico:'🕘',title:'Historial',sub:'Cambios',view:'historial'},
+    {ico:'⚙️',title:'Configuración',sub:'GitHub, Firebase',view:'configuracion'},
+    {ico:'🛠️',title:'Herramientas',sub:'IA, CSV',view:'herramientas'},
+  ];
+
+  window.tmOpenSearch = function(){
+    var ov = document.getElementById('tmSearchOv');
+    if(ov){ ov.classList.add('open'); setTimeout(function(){ var i=document.getElementById('tmSearchInput'); if(i) i.focus(); }, 100); }
+  };
+  window.tmCloseSearch = function(){
+    var ov = document.getElementById('tmSearchOv');
+    if(ov) ov.classList.remove('open');
+  };
+  window.tmDoSearch = function(q){
+    var r = document.getElementById('tmSearchResults');
+    if(!r) return;
+    if(!q || q.length < 1){ r.innerHTML = '<div style="padding:14px;text-align:center;color:#888;font-size:12px">Escribe para buscar...</div>'; return; }
+    var f = searchData.filter(function(d){
+      return d.title.toLowerCase().indexOf(q.toLowerCase()) >= 0 || d.sub.toLowerCase().indexOf(q.toLowerCase()) >= 0;
+    });
+    if(!f.length){ r.innerHTML = '<div style="padding:14px;text-align:center;color:#888;font-size:12px">Sin resultados</div>'; return; }
+    r.innerHTML = f.map(function(d){
+      return '<div class="tm-search-result" data-v="'+d.view+'"><span class="ico">'+d.ico+'</span><div class="info"><div class="title">'+d.title+'</div><div class="sub">'+d.sub+'</div></div></div>';
+    }).join('');
+    r.querySelectorAll('.tm-search-result').forEach(function(el){
+      el.addEventListener('click', function(){
+        var v = this.getAttribute('data-v');
+        if(typeof switchTab === 'function'){ switchTab(v); }
+        tmCloseSearch();
+      });
+    });
+  };
+
+  // ===== NOTIFICATIONS =====
+  window.tmToggleNotif = function(){
+    document.getElementById('tmNotifPanel').classList.toggle('open');
+    document.getElementById('tmNotifBackdrop').classList.toggle('open');
+  };
+  window.tmMarkAllRead = function(){
+    document.querySelectorAll('.tm-notif-item').forEach(function(i){ i.style.opacity = '.5'; });
+    var b = document.querySelector('#tmNotifBtn .badge');
+    if(b) b.style.display = 'none';
+    tmToast('Notificaciones marcadas como leídas');
+  };
+
+  // ===== AÑADIR BOTONES AL TOPBAR (sin tocar el HTML existente) =====
+  function addTopbarButtons(){
+    var topicons = document.querySelector('.topicons');
+    if(!topicons || document.getElementById('tmSearchBtn')) return;
+
+    var notifBtn = document.createElement('button');
+    notifBtn.id = 'tmNotifBtn';
+    notifBtn.title = 'Notificaciones';
+    notifBtn.innerHTML = '🔔<span class="badge">8</span>';
+    notifBtn.addEventListener('click', tmToggleNotif);
+    topicons.insertBefore(notifBtn, topicons.firstChild);
+
+    var searchBtn = document.createElement('button');
+    searchBtn.id = 'tmSearchBtn';
+    searchBtn.title = 'Buscar (Ctrl+K)';
+    searchBtn.innerHTML = '🔍<span class="kbd">⌘K</span>';
+    searchBtn.addEventListener('click', tmOpenSearch);
+    topicons.insertBefore(searchBtn, notifBtn);
+  }
+
+  // ===== BOTTOM NAV =====
+  function setupBottomNav(){
+    var nav = document.getElementById('tmBottomNav');
+    if(!nav) return;
+    nav.querySelectorAll('.tm-bn-btn').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var v = this.getAttribute('data-tm-view');
+        if(typeof switchTab === 'function'){ switchTab(v); }
+      });
+    });
+  }
+
+  // ===== KEYBOARD =====
+  document.addEventListener('keydown', function(e){
+    if((e.ctrlKey || e.metaKey) && e.key === 'k'){
+      e.preventDefault();
+      tmOpenSearch();
+    }
+    if(e.key === 'Escape'){
+      tmCloseSearch();
+      var p = document.getElementById('tmNotifPanel');
+      var b = document.getElementById('tmNotifBackdrop');
+      if(p) p.classList.remove('open');
+      if(b) b.classList.remove('open');
+    }
+  });
+
+  // ===== INIT =====
+  function init(){
+    addTopbarButtons();
+    setupBottomNav();
+    setTimeout(function(){ tmToast('💡 Ctrl+K = buscar · Esc = cerrar'); }, 2000);
+  }
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+</script>
+
 </body></html>
