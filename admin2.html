@@ -319,6 +319,7 @@
           </div>
           <div class="section">
             <h3>🎁 Combos guardados <span class="badge" id="combos-count">0</span></h3>
+            <button class="btn btn-primary" id="combo-publicar-btn" style="width:100%;margin-bottom:12px" onclick="comboPublicar()">📤 Publicar combos a la tienda</button>
             <div id="combos-lista"></div>
           </div>
         </div>
@@ -456,6 +457,24 @@ function comboGuardar(){
   showToast('✅ Combo guardado', 'Publicarlo a la tienda es el siguiente paso');
 }
 function comboDelete(id){ if(!confirm('¿Borrar este combo?')) return; saveCombos(lsCombos().filter(c=>c.id!==id)); renderCombos(); }
+async function comboPublicar(){
+  const user=localStorage.getItem('githubUser'), repo=localStorage.getItem('githubRepo'), token=localStorage.getItem('githubToken');
+  if(!user||!repo||!token){ showToast('⚠️ Configura GitHub primero', 'Se toma del admin actual (Configuración)'); return; }
+  const combos=lsCombos();
+  const btn=$('#combo-publicar-btn'); if(btn){ btn.disabled=true; btn.textContent='⏳ Publicando…'; }
+  try{
+    const headers={ 'Authorization':'token '+token, 'Accept':'application/vnd.github.v3+json' };
+    const apiBase='https://api.github.com/repos/'+user+'/'+repo;
+    const jsonStr=JSON.stringify(combos, null, 2);
+    const content=btoa(Array.from(new TextEncoder().encode(jsonStr), b=>String.fromCharCode(b)).join(''));
+    let sha=null; try{ const r=await fetch(apiBase+'/contents/combos.json?_='+Date.now(),{headers}); if(r.ok){ sha=(await r.json()).sha; } }catch(e){}
+    const body={ message:'Actualización de combos.json', content }; if(sha) body.sha=sha;
+    const res=await fetch(apiBase+'/contents/combos.json',{ method:'PUT', headers, body:JSON.stringify(body) });
+    if(res.ok){ showToast('✅ Combos publicados', combos.length+' combo(s) — ya salen en la tienda'); }
+    else { const e=await res.json().catch(()=>({})); showToast('❌ No se pudo publicar', (e&&e.message)||('HTTP '+res.status)); }
+  }catch(e){ showToast('❌ Error', e.message); }
+  if(btn){ btn.disabled=false; btn.textContent='📤 Publicar combos a la tienda'; }
+}
 function renderCombos(){
   const combos=lsCombos();
   const cEl=$('#combos-count'); if(cEl) cEl.textContent=combos.length;
