@@ -254,13 +254,8 @@
       <button class="side-btn" data-view="radar" title="Radar de precios">📡<span class="new-tag">N</span></button>
       <button class="side-btn" data-view="ventas" title="Ventas">💰</button>
       <button class="side-btn" data-view="analytics" title="Analytics">📊</button>
-      <button class="side-btn" data-view="clientes" title="Clientes">👥</button>
+      <button class="side-btn" data-view="clientes" title="Clientes · Reviews · Carritos · WhatsApp">👥</button>
       <button class="side-btn" data-view="config" title="Configuración">⚙️</button>
-      <div class="side-sep"></div>
-      <!-- Sin fuente de datos real (todavía) -->
-      <button class="side-btn soon" data-view="soon" title="Reviews (sin datos aún)">⭐</button>
-      <button class="side-btn soon" data-view="soon" title="Carritos (sin datos aún)">🛒</button>
-      <button class="side-btn soon" data-view="soon" title="WhatsApp (sin datos aún)">💬</button>
     </aside>
 
     <!-- Content -->
@@ -427,7 +422,8 @@
 
       <!-- CLIENTES -->
       <div id="view-clientes" class="view">
-        <div class="ph"><div><h2>👥 Clientes</h2><p id="cli-sub">Derivado de ventas reales</p></div></div>
+        <div class="ph"><div><h2>👥 Clientes y relaciones</h2><p id="cli-sub">Clientes, reviews, carritos y WhatsApp</p></div></div>
+        <div id="cli-pills" style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap"></div>
         <div id="cli-lista"></div>
       </div>
 
@@ -994,12 +990,23 @@ function renderAnalytics(){
 }
 
 /* ============ CLIENTES ============ */
+let CLI_VIEW='clientes';
+function cliSwitch(v){ CLI_VIEW=v; renderClientes(); }
 function renderClientes(){
   const cli={};
   VENTAS.forEach(v=>{ const nm=(v.cliente||v.nombre||'').trim(); if(!nm)return; const k=norm(nm); if(!cli[k]) cli[k]={nombre:nm,compras:0,total:0,tel:v.telefono||v.tel||''}; cli[k].compras++; cli[k].total+=ventaTotal(v); });
   const list=Object.values(cli).sort((a,b)=>b.total-a.total);
-  $('#cli-sub').textContent = list.length+' clientes (de ventas registradas)';
-  $('#cli-lista').innerHTML = list.length?`<div class="table-wrap"><table><thead><tr><th>Cliente</th><th>Compras</th><th>Total</th><th>Teléfono</th></tr></thead><tbody>${list.map(c=>`<tr><td class="nm">${esc(c.nombre)}</td><td>${c.compras}</td><td class="nm">${money(c.total)}</td><td>${esc(c.tel||'—')}</td></tr>`).join('')}</tbody></table></div>`:`<div class="section"><div class="empty"><div class="ico">👥</div>Aún no hay clientes.<br><small>Se generan solos a partir de las ventas que registres.</small></div></div>`;
+  $('#cli-sub').textContent = list.length+' clientes · reviews · carritos · WhatsApp';
+  const P=$('#cli-pills');
+  if(P){ const pill=(v,l)=>`<button class="btn ${CLI_VIEW===v?'btn-primary':'btn-ghost'}" onclick="cliSwitch('${v}')">${l}</button>`;
+    P.innerHTML = pill('clientes','👥 Clientes ('+list.length+')')+pill('reviews','⭐ Reviews')+pill('carritos','🛒 Carritos')+pill('whatsapp','💬 WhatsApp'); }
+  const box=$('#cli-lista'); if(!box) return;
+  if(CLI_VIEW==='clientes'){
+    box.innerHTML = list.length?`<div class="table-wrap"><table><thead><tr><th>Cliente</th><th>Compras</th><th>Total</th><th>Teléfono</th></tr></thead><tbody>${list.map(c=>`<tr><td class="nm">${esc(c.nombre)}</td><td>${c.compras}</td><td class="nm">${money(c.total)}</td><td>${esc(c.tel||'—')}</td></tr>`).join('')}</tbody></table></div>`:`<div class="section"><div class="empty"><div class="ico">👥</div>Aún no hay clientes.<br><small>Se generan solos a partir de las ventas que registres.</small></div></div>`;
+  } else {
+    const info={ reviews:['⭐','Reviews','Las reseñas de clientes se muestran aquí cuando la tienda las guarde (hoy no hay registro de reseñas).'], carritos:['🛒','Carritos abandonados','El sitio es estático y los pedidos van por WhatsApp, así que no hay carritos guardados que mostrar.'], whatsapp:['💬','WhatsApp','Los pedidos entran por WhatsApp (click-to-chat). No hay un buzón de mensajes guardado en la web para listar aquí.'] }[CLI_VIEW];
+    box.innerHTML = `<div class="section"><div class="empty"><div class="ico">${info[0]}</div><b style="color:#fff">${info[1]} — sin datos por ahora</b><br>${info[2]}<br><br><small>Si quieres, en una fase futura montamos el registro real de estos datos y aquí sí aparecen — sin inventar nada.</small></div></div>`;
+  }
 }
 
 /* ============ Init ============ */
@@ -1014,7 +1021,7 @@ window.agregarFillSubcats=agregarFillSubcats; window.fileName=fileName;
 window.ventaBuscar=ventaBuscar; window.ventaAdd=ventaAdd; window.ventaCartRemove=ventaCartRemove; window.ventaCartQty=ventaCartQty; window.ventaRegistrar=ventaRegistrar;
 window.correccionNormalizarMayus=correccionNormalizarMayus; window.correccionSubirPrecios=correccionSubirPrecios;
 window.agenteGuardarKey=agenteGuardarKey; window.agenteBorrarKey=agenteBorrarKey;
-window.catSwitch=catSwitch; window.catAgregar=catAgregar; window.subAgregar=subAgregar;
+window.catSwitch=catSwitch; window.catAgregar=catAgregar; window.subAgregar=subAgregar; window.cliSwitch=cliSwitch;
 })();
 </script>
 <script>
