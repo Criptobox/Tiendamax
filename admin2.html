@@ -256,6 +256,7 @@
       <button class="side-btn" data-view="ventas" title="Ventas">💰</button>
       <button class="side-btn" data-view="analytics" title="Analytics">📊</button>
       <button class="side-btn" data-view="clientes" title="Clientes">👥</button>
+      <button class="side-btn" data-view="config" title="Configuración">⚙️</button>
       <div class="side-sep"></div>
       <!-- Sin fuente de datos real (todavía) -->
       <button class="side-btn soon" data-view="soon" title="Reviews (sin datos aún)">⭐</button>
@@ -368,6 +369,31 @@
       <div id="view-agente" class="view">
         <div class="ph"><div><h2>🤖 Agente IA</h2><p>Copiloto y herramientas de IA de tu tienda</p></div></div>
         <div id="agente-cont"></div>
+      </div>
+
+      <!-- CONFIGURACIÓN -->
+      <div id="view-config" class="view">
+        <div class="ph"><div><h2>⚙️ Configuración</h2><p>GitHub, tasa MN y WhatsApp</p></div></div>
+        <div class="grid-2">
+          <div class="section">
+            <h3>🔗 GitHub</h3>
+            <form id="githubConfigForm" onsubmit="guardarConfiguracionGitHub(event)">
+              <div class="form-group"><label class="form-label">Usuario</label><input class="form-input" id="githubUser" placeholder="usuario"></div>
+              <div class="form-group" style="margin-top:10px"><label class="form-label">Repositorio</label><input class="form-input" id="githubRepo" placeholder="Tiendamax"></div>
+              <div class="form-group" style="margin-top:10px"><label class="form-label">Token</label><input class="form-input" id="githubToken" type="password" placeholder="ghp_…"></div>
+              <button type="submit" class="btn btn-primary" style="width:100%;margin-top:12px">💾 Guardar GitHub</button>
+            </form>
+            <button class="btn btn-success" style="width:100%;margin-top:10px;justify-content:center" onclick="sincronizarTodoConGitHub()">🔄 Actualizar tienda ahora</button>
+          </div>
+          <div class="section">
+            <h3>💱 Tasa MN</h3>
+            <div class="form-group"><label class="form-label">Tasa MN (base elTOQUE)</label><input class="form-input" id="adminTasaMN" type="number"></div>
+            <div class="form-group" style="margin-top:10px"><label class="form-label">Margen MN sobre la tasa (0 = sin margen)</label><input class="form-input" id="adminMargenMN" type="number" min="0" step="1" placeholder="10"></div>
+            <div class="form-group" style="margin-top:10px"><label class="form-label">2do WhatsApp (opcional)</label><input class="form-input" id="adminWhatsappNum" type="tel" placeholder="535…"></div>
+            <button class="btn btn-primary" style="width:100%;margin-top:12px" onclick="guardarTasaMNAdmin()">💾 Guardar tasa</button>
+            <p id="tasaMNStatus" style="font-size:12px;color:var(--muted);margin-top:8px"></p>
+          </div>
+        </div>
       </div>
 
       <!-- ANALYTICS -->
@@ -499,7 +525,16 @@ function renderTodo(){
   renderInicio(); renderCategorias();
   renderCorrecciones(); renderStock(); renderRadar(); renderVentas();
   renderAnalytics(); renderClientes(); renderAgente(); renderCombos();
-  fillAgregarCategorias();
+  fillAgregarCategorias(); fillConfig();
+}
+function fillConfig(){
+  const set=(id,v)=>{ const el=$('#'+id); if(el && !el.value) el.value=v||''; };
+  set('githubUser', localStorage.getItem('githubUser'));
+  set('githubRepo', localStorage.getItem('githubRepo')||'Tiendamax');
+  set('githubToken', localStorage.getItem('githubToken'));
+  set('adminTasaMN', localStorage.getItem('tasaMN'));
+  const m=localStorage.getItem('margenMN'); const mEl=$('#adminMargenMN'); if(mEl && !mEl.value && m!=null) mEl.value=m;
+  set('adminWhatsappNum', localStorage.getItem('whatsappNumero')||localStorage.getItem('adminWhatsappNum'));
 }
 function fillAgregarCategorias(){
   const sel=$('#productCategory'); if(!sel) return;
@@ -632,9 +667,17 @@ function renderCombos(){
 }
 function renderAgente(){
   var el=document.getElementById('agente-cont'); if(!el) return;
-  el.innerHTML = '<div class="ai-banner"><div style="font-size:28px">🤖</div><div style="flex:1"><div class="t">Copiloto y herramientas de IA</div><div class="m">Tu tienda ya tiene un agente IA (copiloto, generador de textos/SEO, auditoría del catálogo). Aquí lo estoy integrando en una sola tab con este diseño.</div></div></div>'
-    + '<div class="section"><div class="empty"><div class="ico">🔌</div>Esta tab se conecta a tu <b>motor de IA real</b> (copiloto + herramientas). Lo estoy cableando en la etapa del motor — así ejecuta de verdad sin inventar nada.</div></div>';
+  var key=localStorage.getItem('anthropicApiKey')||'';
+  el.innerHTML =
+   '<div class="ai-banner"><div style="font-size:28px">🤖</div><div style="flex:1"><div class="t">Agente IA de tu tienda</div><div class="m">Configura tu API key para generar descripciones y textos SEO. El análisis de calidad del catálogo ya está activo en <b>🔧 Correcciones</b>.</div></div></div>'
+   + '<div class="section"><h3>🔑 API Key de IA</h3>'
+   + '<div class="form-group"><label class="form-label">API Key (Gemini / OpenRouter / Groq / DeepSeek)</label><input class="form-input" id="ia-key" type="text" placeholder="AIza… / sk-or-… / gsk_… / sk-…" value="'+esc(key)+'"></div>'
+   + '<div style="display:flex;gap:8px;margin-top:10px"><button class="btn btn-primary" onclick="agenteGuardarKey()">💾 Guardar key</button><button class="btn btn-ghost" onclick="agenteBorrarKey()">🗑 Borrar</button></div>'
+   + '<p style="font-size:12px;color:var(--muted);margin-top:8px">'+(key?('✅ Key guardada ('+esc(key.slice(0,6))+'…)'):'Sin key configurada')+'</p></div>'
+   + '<div class="section"><h3>✨ Qué hace la IA</h3><div style="font-size:13px;color:#cfcfd6;line-height:1.9">• Genera <b>descripciones y títulos SEO</b> desde el nombre/foto del producto<br>• Analiza tu catálogo y sugiere mejoras (ya activo en 🔧 Correcciones)<br>• Textos para WhatsApp / Facebook</div></div>';
 }
+function agenteGuardarKey(){ var i=$('#ia-key'); var k=(i&&i.value||'').trim(); if(k){ localStorage.setItem('anthropicApiKey',k); showToast('✅ API key guardada'); } renderAgente(); }
+function agenteBorrarKey(){ localStorage.removeItem('anthropicApiKey'); localStorage.removeItem('anthropicApiProvider'); showToast('Key borrada'); renderAgente(); }
 
 /* ============ Helpers ventas ============ */
 function ventaFecha(v){ const ts=v.id||v.fecha; if(!ts) return null; const d=new Date(typeof ts==='number'?ts:Date.parse(ts)); return isNaN(d.getTime())?null:d; }
@@ -744,7 +787,7 @@ function renderCorrecciones(){
   if(agot.length){ urg++; cards.push({sev:'urgente',cls:'',ico:'📦',t:'Productos agotados (stock 0)',items:agot,fmt:p=>`<b>${esc(p.nombre)}</b> — ${money(p.precioActual)}`,razon:'Cliente que los ve y no puede comprar = venta perdida. Repón o márcalos como "Avísame cuando vuelva".'}); }
   // 3. Nombres en MAYÚSCULAS inconsistentes
   const mays = PRODUCTOS.filter(p=>{ const n=p.nombre||''; return /[A-ZÁÉÍÓÚ]{5,}/.test(n) && n===n.toUpperCase(); });
-  if(mays.length){ adv++; cards.push({sev:'advertencia',cls:'warn',ico:'🔠',t:'Nombres TODO EN MAYÚSCULAS',items:mays,fmt:p=>`<b>${esc(p.nombre)}</b>`,razon:'Se ve menos profesional y baja la confianza. Mejor "Nombre Tipo Título".'}); }
+  if(mays.length){ adv++; cards.push({sev:'advertencia',cls:'warn',ico:'🔠',t:'Nombres TODO EN MAYÚSCULAS',items:mays,fmt:p=>`<b>${esc(p.nombre)}</b>`,razon:'Se ve menos profesional y baja la confianza. Mejor "Nombre Tipo Título".',accion:`<button class="btn btn-warn" style="margin-top:10px" onclick="correccionNormalizarMayus()">🔠 Normalizar los ${mays.length} a "Título"</button>`}); }
   // 4. Nombres duplicados
   const byName={}; PRODUCTOS.forEach(p=>{ const k=norm(p.nombre); if(!k)return; (byName[k]=byName[k]||[]).push(p); });
   const dups=Object.values(byName).filter(a=>a.length>1);
@@ -760,7 +803,18 @@ function renderCorrecciones(){
   const total=urg+adv+inf;
   $('#corr-resumen').innerHTML = total ? `Analicé tus <b>${PRODUCTOS.length} productos</b>. Detecté <b>${urg} urgentes</b>, ${adv} advertencias y ${inf} de info. Todo calculado de tus datos reales.` : `¡Todo en orden! Analicé tus <b>${PRODUCTOS.length} productos</b> y no encontré problemas.`;
   $('#badge-corr').textContent = total;
-  $('#corr-lista').innerHTML = cards.map(c=>`<div class="correccion-card ${c.cls}"><div class="correccion-head"><span class="correccion-icon">${c.ico}</span><span class="correccion-titulo">${c.t}</span><span class="correccion-severidad ${c.sev}">${c.sev}</span></div><div class="correccion-lista">${c.items.slice(0,20).map(c.fmt).join('<br>')}${c.items.length>20?`<br><i>…y ${c.items.length-20} más</i>`:''}</div><p class="correccion-razon">${c.razon}</p></div>`).join('') || `<div class="section"><div class="empty"><div class="ico">✅</div><b>Catálogo impecable.</b> No hay correcciones pendientes.</div></div>`;
+  $('#corr-lista').innerHTML = cards.map(c=>`<div class="correccion-card ${c.cls}"><div class="correccion-head"><span class="correccion-icon">${c.ico}</span><span class="correccion-titulo">${c.t}</span><span class="correccion-severidad ${c.sev}">${c.sev}</span></div><div class="correccion-lista">${c.items.slice(0,20).map(c.fmt).join('<br>')}${c.items.length>20?`<br><i>…y ${c.items.length-20} más</i>`:''}</div><p class="correccion-razon">${c.razon}</p>${c.accion||''}</div>`).join('') || `<div class="section"><div class="empty"><div class="ico">✅</div><b>Catálogo impecable.</b> No hay correcciones pendientes.</div></div>`;
+}
+function correccionNormalizarMayus(){
+  if(typeof productos==='undefined' || !Array.isArray(productos)){ showToast('⚠️ Motor no cargado','Recarga la página'); return; }
+  const tc = s => s.toLowerCase().replace(/\b[\p{L}]/gu, c=>c.toUpperCase());
+  let n=0;
+  productos.forEach(p=>{ const nm=p.nombre||''; if(/[A-ZÁÉÍÓÚ]{5,}/.test(nm) && nm===nm.toUpperCase()){ p.nombre=tc(nm); if(typeof marcarProductoModificado==='function') marcarProductoModificado(p.id); n++; } });
+  if(!n){ showToast('Nada que normalizar'); return; }
+  if(typeof guardarProductos==='function') guardarProductos();
+  PRODUCTOS = lsProductos() || PRODUCTOS;
+  renderCorrecciones(); renderInicio();
+  showToast('✅ '+n+' nombres normalizados','Ve a ⚙️ Configuración → "Actualizar tienda" para publicar');
 }
 
 /* ============ STOCK ============ */
@@ -863,6 +917,8 @@ window.comboBuscar=comboBuscar; window.comboAdd=comboAdd; window.comboRemove=com
 window.comboGuardar=comboGuardar; window.comboDelete=comboDelete; window.comboPublicar=comboPublicar;
 window.agregarFillSubcats=agregarFillSubcats; window.fileName=fileName;
 window.ventaBuscar=ventaBuscar; window.ventaAdd=ventaAdd; window.ventaCartRemove=ventaCartRemove; window.ventaCartQty=ventaCartQty; window.ventaRegistrar=ventaRegistrar;
+window.correccionNormalizarMayus=correccionNormalizarMayus;
+window.agenteGuardarKey=agenteGuardarKey; window.agenteBorrarKey=agenteBorrarKey;
 })();
 </script>
 <script>
