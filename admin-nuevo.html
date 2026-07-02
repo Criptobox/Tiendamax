@@ -2207,4 +2207,59 @@ if ('serviceWorker' in navigator) {
   });
 })();
 </script>
+
+<!-- ═══════════ Etapa 3: KPI cards en Inicio + toque de rail estilo demo ═══════════ -->
+<style>
+  /* Rail: item activo con degradado coral (estilo demo), en vez del tinte dorado */
+  #adminPanel .tab-btn.active{background:linear-gradient(135deg,#FF6B35,#e0521a)!important;color:#fff!important;box-shadow:0 2px 8px rgba(255,107,53,.3)!important}
+  /* KPI cards de Inicio */
+  #tm-inicio-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin:4px 0 16px}
+  #tm-inicio-kpis .kpi{background:#181818;border:1px solid rgba(255,255,255,.09);border-radius:14px;padding:14px;position:relative;overflow:hidden}
+  #tm-inicio-kpis .kpi::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:#FF6B35}
+  #tm-inicio-kpis .kpi.ok::before{background:#2ECC71}
+  #tm-inicio-kpis .kpi.warn::before{background:#f1c40f}
+  #tm-inicio-kpis .kpi.danger::before{background:#E74C3C}
+  #tm-inicio-kpis .kpi.gold::before{background:#C9A96E}
+  #tm-inicio-kpis .kpi.info::before{background:#3498DB}
+  #tm-inicio-kpis .kpi .l{font-size:10px;text-transform:uppercase;color:#9b9b9b;letter-spacing:.5px;font-weight:700;margin-bottom:6px}
+  #tm-inicio-kpis .kpi .v{font-size:24px;font-weight:900;color:#fff;line-height:1}
+  #tm-inicio-kpis .kpi .s{font-size:11px;color:#9b9b9b;margin-top:6px;font-weight:700}
+</style>
+<script>
+(function(){
+  'use strict';
+  var $ = function(s,c){return (c||document).querySelector(s);};
+  function money(n){return '$'+(Number(n)||0).toLocaleString('es-US',{maximumFractionDigits:2});}
+  function prods(){ try{ if(typeof productos!=='undefined' && Array.isArray(productos)) return productos; }catch(e){} try{return JSON.parse(localStorage.getItem('productos')||'[]');}catch(e){return [];} }
+  function ventas(){ try{ var v=JSON.parse(localStorage.getItem('registroVentas')||'null'); if(!Array.isArray(v)||!v.length) v=JSON.parse(localStorage.getItem('ventas')||'null'); return Array.isArray(v)?v:[]; }catch(e){return [];} }
+  function norm(s){return (s||'').toString().toLowerCase().trim();}
+
+  window.tmRenderInicioKpis = function(){
+    var sec=$('#inicio'); if(!sec) return;
+    var box=$('#tm-inicio-kpis');
+    if(!box){ box=document.createElement('div'); box.id='tm-inicio-kpis'; sec.insertBefore(box, sec.firstChild); }
+    var P=prods(), V=ventas();
+    var agot=P.filter(function(p){return Number(p.stock)<=0;}).length;
+    var bajo=P.filter(function(p){return Number(p.stock)>0&&Number(p.stock)<=5;}).length;
+    var enRadar=P.filter(function(p){return p.radar;}).length;
+    var totalVend=V.reduce(function(s,v){return s+(Number(v.total||v.totalUSD||0)||0);},0);
+    var clientes=(function(){var s={};V.forEach(function(v){var n=norm(v.cliente||v.nombre||'');if(n)s[n]=1;});return Object.keys(s).length;})();
+    var valorInv=P.reduce(function(s,p){return s+(Number(p.precioActual)||0)*(Number(p.stock)||0);},0);
+    var k=[
+      ['','Productos',P.length,(P.filter(function(p){return p.masVendido;}).length)+' destacados'],
+      ['danger','Agotados',agot, bajo+' con stock ≤5'],
+      ['gold','Valor inventario',money(valorInv),''],
+      ['ok','Vendido',money(totalVend),V.length+' ventas'],
+      ['info','Clientes',clientes,'de ventas'],
+      ['warn','En radar',enRadar,'vigilados']
+    ];
+    box.innerHTML=k.map(function(x){return '<div class="kpi '+x[0]+'"><div class="l">'+x[1]+'</div><div class="v">'+x[2]+'</div>'+(x[3]?'<div class="s">'+x[3]+'</div>':'')+'</div>';}).join('');
+  };
+
+  document.addEventListener('DOMContentLoaded', function(){ setTimeout(window.tmRenderInicioKpis, 1400); });
+  document.addEventListener('click', function(e){
+    if(e.target.closest('[data-arg="inicio"],[data-tab="inicio"]')) setTimeout(window.tmRenderInicioKpis, 200);
+  });
+})();
+</script>
 </body></html>
