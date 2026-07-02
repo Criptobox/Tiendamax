@@ -1,6 +1,6 @@
 {
-  "actualizado": "2026-07-01T13:34:29.324394+00:00",
-  "fecha": "2026-07-01",
+  "actualizado": "2026-07-02T12:58:54.089331+00:00",
+  "fecha": "2026-07-02",
   "fuentes": [
     "revolico",
     "porlalivre",
@@ -42,6 +42,10 @@
         },
         {
           "fecha": "2026-07-01",
+          "mediana": 300.0
+        },
+        {
+          "fecha": "2026-07-02",
           "mediana": 300.0
         }
       ],
@@ -91,7 +95,7 @@
       "mercado": {
         "min": 80.0,
         "mediana": 170.0,
-        "n": 18
+        "n": 19
       },
       "deltaAyerMediana": 0.0,
       "estado": "competitivo",
@@ -114,6 +118,10 @@
         {
           "fecha": "2026-07-01",
           "mediana": 170.0
+        },
+        {
+          "fecha": "2026-07-02",
+          "mediana": 170.0
         }
       ],
       "muestras": [
@@ -122,6 +130,12 @@
           "titulo": "80 USD Convertidor ,inversor 12v a 110v,1000w,nuevo.",
           "precio": 80.0,
           "url": "https://www.revolico.com/item/convertidor-inversor-12v-a-110v1000wnuevo-55703437"
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "85 USD Inversor 12v a 120v potencia nominal 500w",
+          "precio": 85.0,
+          "url": "https://www.revolico.com/item/inversor-12v-a-120v-potencia-nominal-500w-56138412"
         },
         {
           "fuente": "revolico",
@@ -146,12 +160,6 @@
           "titulo": "130 USD Inversor 12V/3000W",
           "precio": 130.0,
           "url": "https://www.revolico.com/item/inversor-12v3000w-55560687"
-        },
-        {
-          "fuente": "revolico",
-          "titulo": "150 USD INVERSOR 12V 3000W ONDA PURA",
-          "precio": 150.0,
-          "url": "https://www.revolico.com/item/inversor-12v-3000w-onda-pura-55907054"
         }
       ]
     },
@@ -161,10 +169,10 @@
       "tuPrecio": 30.0,
       "mercado": {
         "min": 16.0,
-        "mediana": 50.0,
+        "mediana": 37.5,
         "n": 10
       },
-      "deltaAyerMediana": -7.5,
+      "deltaAyerMediana": -12.5,
       "estado": "competitivo",
       "sugerencia": {
         "texto": "Precio competitivo respecto al mercado"
@@ -185,6 +193,10 @@
         {
           "fecha": "2026-07-01",
           "mediana": 50.0
+        },
+        {
+          "fecha": "2026-07-02",
+          "mediana": 37.5
         }
       ],
       "muestras": [
@@ -208,6 +220,12 @@
         },
         {
           "fuente": "revolico",
+          "titulo": "25 USD Switch 5 puertos",
+          "precio": 25.0,
+          "url": "https://www.revolico.com/item/switch-5-puertos-56144812"
+        },
+        {
+          "fuente": "revolico",
           "titulo": "25 USD Switch 5 puertos a gb $25",
           "precio": 25.0,
           "url": "https://www.revolico.com/item/switch-5-puertos-a-gb-25-55821825"
@@ -217,12 +235,6 @@
           "titulo": "50 USD Switch 5 puertos 2.5 Gbps. Único en Revolico",
           "precio": 50.0,
           "url": "https://www.revolico.com/item/switch-5-puertos-25-gbps-unico-en-revolico-56123619"
-        },
-        {
-          "fuente": "revolico",
-          "titulo": "50 USD switch 5 puertos",
-          "precio": 50.0,
-          "url": "https://www.revolico.com/item/switch-5-puertos-55910186"
         }
       ]
     },
@@ -255,6 +267,10 @@
         },
         {
           "fecha": "2026-07-01",
+          "mediana": 25.0
+        },
+        {
+          "fecha": "2026-07-02",
           "mediana": 25.0
         }
       ],
@@ -326,6 +342,10 @@
         },
         {
           "fecha": "2026-07-01",
+          "mediana": 90.0
+        },
+        {
+          "fecha": "2026-07-02",
           "mediana": 90.0
         }
       ],
