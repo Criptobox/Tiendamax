@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0a0a12">
+<title>TiendaMax — Admin (nuevo diseño)</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --bg:#0a0a12; --card:#15151f; --card2:#1a1a25; --border:rgba(255,255,255,0.07);
+    --text:#e0e0e8; --muted:#888; --dim:#555; --line:rgba(255,255,255,0.04);
+    --o:#FF6B35; --oo:#e0521a; --gold:#C9A96E; --green:#2ecc71; --red:#e74c3c; --yellow:#f1c40f; --purple:#8b5cf6; --blue:#3498db;
+  }
+  body { font-family:'DM Sans',-apple-system,sans-serif; background:var(--bg); color:var(--text); min-height:100vh; }
+  button { font-family:inherit; cursor:pointer; }
+  input, select, textarea { font-family:inherit; }
+  a { color:inherit; }
+  ::-webkit-scrollbar { width:6px; height:6px; }
+  ::-webkit-scrollbar-thumb { background:#2a2a3e; border-radius:3px; }
+  ::-webkit-scrollbar-track { background:transparent; }
+
+  .layout { display:grid; grid-template-rows:auto 1fr; min-height:100vh; }
+
+  /* Top bar */
+  .topbar { background:rgba(10,10,18,0.92); backdrop-filter:blur(12px); border-bottom:1px solid var(--border); padding:14px 18px; display:flex; align-items:center; gap:12px; position:sticky; top:0; z-index:50; }
+  .logo { width:36px; height:36px; background:linear-gradient(135deg,var(--o),var(--oo)); border-radius:9px; display:flex; align-items:center; justify-content:center; font-weight:900; font-size:16px; color:#fff; flex-shrink:0; box-shadow:0 4px 12px rgba(255,107,53,0.3); }
+  .topbar h1 { font-size:16px; font-weight:800; color:#fff; flex:1; }
+  .topbar h1 small { display:block; font-size:11px; color:var(--muted); font-weight:500; }
+  .tb-actions { display:flex; gap:8px; }
+  .icon-btn { width:36px; height:36px; border-radius:9px; background:rgba(255,255,255,0.05); border:1px solid var(--border); display:flex; align-items:center; justify-content:center; font-size:15px; color:#ccc; position:relative; transition:all 0.15s; }
+  .icon-btn:hover { background:rgba(255,107,53,0.15); border-color:rgba(255,107,53,0.3); color:var(--o); }
+  .icon-btn .dot { position:absolute; top:-3px; right:-3px; background:var(--red); color:#fff; border-radius:10px; min-width:18px; height:18px; font-size:10px; font-weight:900; padding:0 5px; display:flex; align-items:center; justify-content:center; border:2px solid var(--bg); }
+
+  /* Sidebar */
+  .body { display:grid; grid-template-columns:60px 1fr; }
+  .sidebar { background:rgba(10,10,18,0.6); border-right:1px solid var(--border); padding:14px 0; display:flex; flex-direction:column; gap:6px; align-items:center; }
+  .side-btn { width:42px; height:42px; border-radius:9px; background:rgba(255,255,255,0.03); border:1px solid transparent; color:var(--muted); display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.15s; font-size:18px; position:relative; }
+  .side-btn:hover { background:rgba(255,107,53,0.12); color:var(--o); }
+  .side-btn.active { background:linear-gradient(135deg,var(--o),var(--oo)); color:#fff; box-shadow:0 2px 8px rgba(255,107,53,0.3); }
+  .side-btn .badge { position:absolute; top:-4px; right:-4px; background:var(--red); color:#fff; border-radius:10px; min-width:18px; height:18px; font-size:9px; font-weight:900; padding:0 4px; display:flex; align-items:center; justify-content:center; border:2px solid var(--bg); }
+  .side-btn .new-tag { position:absolute; bottom:-6px; right:-6px; background:var(--gold); color:#111; border-radius:10px; padding:0 5px; font-size:8px; font-weight:900; letter-spacing:0.4px; border:2px solid var(--bg); }
+  .side-btn.soon { opacity:0.4; }
+  .side-sep { width:30px; height:1px; background:var(--border); margin:6px 0; }
+
+  /* Content */
+  .content { padding:18px 24px 50px; max-width:1200px; margin:0 auto; width:100%; }
+  .view { display:none; animation:fadeIn 0.3s; }
+  .view.active { display:block; }
+  @keyframes fadeIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
+
+  .ph { display:flex; justify-content:space-between; align-items:flex-end; gap:12px; flex-wrap:wrap; margin-bottom:18px; }
+  .ph h2 { font-size:24px; font-weight:900; color:#fff; line-height:1; margin-bottom:6px; display:flex; align-items:center; gap:10px; }
+  .ph p { font-size:12px; color:var(--muted); }
+  .ph-actions { display:flex; gap:8px; flex-wrap:wrap; }
+
+  .btn { padding:9px 16px; border:none; border-radius:9px; font-size:13px; font-weight:700; cursor:pointer; transition:all 0.15s; display:inline-flex; align-items:center; gap:6px; }
+  .btn-primary { background:var(--o); color:#fff; } .btn-primary:hover { background:var(--oo); transform:translateY(-1px); }
+  .btn-success { background:var(--green); color:#fff; } .btn-success:hover { background:#27ae60; }
+  .btn-warn { background:var(--yellow); color:#111; } .btn-warn:hover { background:#d4ac0d; }
+  .btn-danger { background:var(--red); color:#fff; } .btn-danger:hover { background:#c0392b; }
+  .btn-ghost { background:rgba(255,255,255,0.05); color:#ccc; border:1px solid var(--border); } .btn-ghost:hover { background:rgba(255,255,255,0.1); color:#fff; }
+  .btn-gold { background:linear-gradient(135deg,var(--gold),#E8C88A); color:#111; } .btn-gold:hover { transform:translateY(-1px); }
+
+  .kpis { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:10px; margin-bottom:16px; }
+  .kpi { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:14px; position:relative; overflow:hidden; }
+  .kpi::before { content:''; position:absolute; top:0; left:0; width:3px; height:100%; background:var(--o); }
+  .kpi.success::before { background:var(--green); }
+  .kpi.danger::before { background:var(--red); }
+  .kpi.warn::before { background:var(--yellow); }
+  .kpi.info::before { background:var(--purple); }
+  .kpi.gold::before { background:var(--gold); }
+  .kpi.usd::before { background:var(--blue); }
+  .kpi .lbl { font-size:10px; text-transform:uppercase; color:var(--muted); letter-spacing:0.5px; font-weight:700; margin-bottom:6px; }
+  .kpi .val { font-size:24px; font-weight:900; color:#fff; line-height:1; }
+  .kpi .sub { font-size:11px; color:var(--green); margin-top:6px; font-weight:700; }
+  .kpi .sub.down { color:var(--red); }
+  .kpi .sub.muted { color:var(--muted); }
+  .kpi .currency { font-size:13px; color:var(--muted); font-weight:600; }
+
+  .section { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:18px; margin-bottom:14px; }
+  .section h3 { font-size:13px; font-weight:800; color:var(--gold); text-transform:uppercase; letter-spacing:0.6px; margin-bottom:14px; display:flex; align-items:center; gap:8px; justify-content:space-between; }
+  .section h3 .badge { background:rgba(255,255,255,0.06); color:var(--muted); padding:2px 8px; border-radius:8px; font-size:10px; font-weight:700; letter-spacing:0.4px; }
+
+  .grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  .grid-3 { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
+  @media (max-width:800px) { .grid-2,.grid-3 { grid-template-columns:1fr; } }
+
+  .empty { text-align:center; padding:34px 18px; color:var(--muted); font-size:13px; line-height:1.6; }
+  .empty .ico { font-size:40px; margin-bottom:10px; opacity:0.7; }
+  .empty b { color:#fff; }
+
+  /* Bar chart */
+  .bar-chart { display:flex; align-items:flex-end; gap:5px; height:160px; padding:0 4px; }
+  .bar-chart .bar { flex:1; background:linear-gradient(180deg,var(--o),var(--oo)); border-radius:5px 5px 0 0; position:relative; transition:all 0.3s; cursor:pointer; min-height:2px; }
+  .bar-chart .bar:hover { filter:brightness(1.2); }
+  .bar-chart .bar .lbl { position:absolute; bottom:-20px; left:0; right:0; text-align:center; font-size:10px; color:var(--muted); }
+  .bar-chart .bar .v { position:absolute; top:-18px; left:0; right:0; text-align:center; font-size:10px; font-weight:700; color:#fff; }
+  .bar-chart-wrap { padding:18px 14px 26px; }
+
+  /* Product grid */
+  .prod-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:14px; }
+  .prod-card { background:var(--card); border:1px solid var(--border); border-radius:12px; overflow:hidden; transition:all 0.2s; cursor:pointer; }
+  .prod-card:hover { transform:translateY(-2px); border-color:rgba(255,107,53,0.3); }
+  .prod-img { aspect-ratio:1; background:rgba(255,255,255,0.04); display:flex; align-items:center; justify-content:center; font-size:48px; overflow:hidden; }
+  .prod-img img { width:100%; height:100%; object-fit:cover; }
+  .prod-body { padding:12px; }
+  .prod-cat { font-size:9px; color:var(--muted); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:4px; }
+  .prod-nm { font-size:13px; font-weight:700; color:#fff; margin-bottom:8px; min-height:34px; }
+  .prod-price { font-size:18px; font-weight:900; color:var(--o); margin-bottom:4px; }
+  .prod-stock { font-size:10px; color:var(--green); font-weight:700; }
+  .prod-stock.low { color:var(--yellow); }
+  .prod-stock.out { color:var(--red); }
+
+  /* Stock predictions */
+  .stock-card { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:14px; margin-bottom:10px; position:relative; overflow:hidden; }
+  .stock-card.urg { border-left:4px solid var(--red); background:linear-gradient(90deg,rgba(231,76,60,0.05),var(--card) 25%); }
+  .stock-card.warn { border-left:4px solid var(--yellow); }
+  .stock-card.ok { border-left:4px solid var(--green); }
+  .sp-head { display:flex; align-items:center; gap:12px; margin-bottom:10px; }
+  .sp-thumb { width:38px; height:38px; background:rgba(255,255,255,0.05); border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:18px; overflow:hidden; }
+  .sp-thumb img { width:100%; height:100%; object-fit:cover; }
+  .sp-name { font-size:13px; font-weight:700; color:#fff; }
+  .sp-meta { font-size:10px; color:var(--muted); }
+  .sp-status { padding:3px 9px; border-radius:20px; font-size:10px; font-weight:800; text-transform:uppercase; margin-left:auto; }
+  .sp-status.urg { background:rgba(231,76,60,0.2); color:var(--red); }
+  .sp-status.warn { background:rgba(241,196,15,0.18); color:var(--yellow); }
+  .sp-status.ok { background:rgba(46,204,113,0.18); color:var(--green); }
+  .sp-bar { height:7px; background:rgba(255,255,255,0.06); border-radius:4px; overflow:hidden; margin:8px 0; }
+  .sp-bar > div { height:100%; transition:width 0.4s; background:var(--green); border-radius:4px; }
+  .sp-bar.urg > div { background:var(--red); }
+  .sp-bar.warn > div { background:var(--yellow); }
+  .sp-pred { padding:8px 10px; background:rgba(0,0,0,0.25); border-radius:8px; font-size:11px; line-height:1.5; }
+
+  /* Correcciones IA */
+  .ai-banner { background:linear-gradient(135deg,rgba(139,92,246,0.12),rgba(76,29,149,0.06)); border:1px solid rgba(139,92,246,0.3); border-radius:12px; padding:13px 16px; display:flex; gap:11px; margin-bottom:14px; align-items:center; }
+  .ai-banner .t { font-size:12px; font-weight:800; color:#c4b5fd; margin-bottom:3px; }
+  .ai-banner .m { font-size:11px; color:#b4a5d4; line-height:1.5; }
+  .ai-banner .m b { color:#fff; }
+  .correccion-card { background:rgba(231,76,60,0.04); border:1px solid rgba(231,76,60,0.3); border-radius:12px; padding:14px; margin-bottom:10px; }
+  .correccion-card.warn { background:rgba(241,196,15,0.04); border-color:rgba(241,196,15,0.3); }
+  .correccion-card.info { background:rgba(52,152,219,0.04); border-color:rgba(52,152,219,0.3); }
+  .correccion-head { display:flex; align-items:center; gap:10px; margin-bottom:10px; }
+  .correccion-icon { font-size:22px; }
+  .correccion-titulo { font-size:14px; font-weight:800; color:#fff; flex:1; }
+  .correccion-severidad { font-size:10px; font-weight:800; padding:2px 8px; border-radius:8px; text-transform:uppercase; }
+  .correccion-severidad.urgente { background:rgba(231,76,60,0.2); color:var(--red); }
+  .correccion-severidad.advertencia { background:rgba(241,196,15,0.2); color:var(--yellow); }
+  .correccion-severidad.info { background:rgba(52,152,219,0.2); color:var(--blue); }
+  .correccion-lista { font-size:11px; color:var(--muted); padding:8px 10px; background:rgba(0,0,0,0.25); border-radius:6px; line-height:1.7; max-height:160px; overflow:auto; }
+  .correccion-lista b { color:#fff; }
+  .correccion-razon { font-size:12px; color:var(--muted); line-height:1.5; margin:10px 0 0; }
+
+  /* Radar / tabla */
+  .table-wrap { overflow-x:auto; border-radius:12px; border:1px solid var(--border); }
+  table { width:100%; border-collapse:collapse; font-size:13px; }
+  th { background:rgba(255,255,255,0.04); color:var(--muted); text-transform:uppercase; font-size:10px; font-weight:800; letter-spacing:0.6px; padding:11px 12px; text-align:left; border-bottom:1px solid var(--border); }
+  td { padding:11px 12px; border-bottom:1px solid var(--line); color:#ccc; vertical-align:middle; }
+  tr:last-child td { border-bottom:none; }
+  tr:hover td { background:rgba(255,255,255,0.02); }
+  td .nm { color:#fff; font-weight:700; }
+  td .sub { font-size:10px; color:var(--muted); }
+
+  /* Toast */
+  .toast { position:fixed; bottom:24px; right:24px; z-index:99999; background:var(--card); border-left:4px solid var(--green); border-radius:11px; padding:13px 18px; box-shadow:0 8px 32px rgba(0,0,0,0.5); font-size:13px; opacity:0; transform:translateY(20px); transition:opacity 0.3s,transform 0.3s; max-width:340px; }
+  .toast.show { opacity:1; transform:translateY(0); }
+  .toast .t { font-weight:800; margin-bottom:3px; color:#fff; }
+  .toast .b { color:var(--muted); font-size:12px; }
+
+  .banner-info { background:rgba(52,152,219,0.08); border:1px solid rgba(52,152,219,0.3); border-radius:10px; padding:11px 14px; font-size:12px; color:#bcdcf5; margin-bottom:14px; line-height:1.5; }
+
+  @media (max-width:760px) {
+    .body { grid-template-columns:1fr !important; }
+    .sidebar { position:fixed; bottom:0; left:0; right:0; z-index:80; flex-direction:row !important; overflow-x:auto !important; padding:8px 12px !important; border-right:none !important; border-top:1px solid var(--border); background:rgba(10,10,18,0.95) !important; backdrop-filter:blur(12px) !important; justify-content:flex-start !important; gap:6px !important; }
+    .side-btn { flex-shrink:0; }
+    .side-sep { display:none !important; }
+    .content { padding:14px 12px 80px !important; }
+    .kpis { grid-template-columns:repeat(2,1fr) !important; }
+    .grid-2, .grid-3 { grid-template-columns:1fr !important; }
+    .topbar h1 small { display:none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="layout">
+
+  <!-- Top bar -->
+  <div class="topbar">
+    <div class="logo">M</div>
+    <h1>TiendaMax<small>Admin · nuevo diseño (vista previa)</small></h1>
+    <div class="tb-actions">
+      <button class="icon-btn" onclick="location.href='admin.html'" title="Volver al admin actual">↩️</button>
+      <button class="icon-btn" title="Notificaciones">🔔<span class="dot" id="tb-alertas">0</span></button>
+      <button class="icon-btn" title="Recargar datos" onclick="cargarDatos(true)">🔄</button>
+    </div>
+  </div>
+
+  <div class="body">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <button class="side-btn active" data-view="inicio" title="Inicio">🏠</button>
+      <button class="side-btn" data-view="agregar" title="Agregar producto">➕</button>
+      <button class="side-btn" data-view="productos" title="Productos">📦</button>
+      <button class="side-btn" data-view="categorias" title="Categorías">🏷️</button>
+      <button class="side-btn" data-view="subcategorias" title="Subcategorías">📁</button>
+      <button class="side-btn" data-view="correcciones" title="Correcciones IA">🔧<span class="badge" id="badge-corr">0</span></button>
+      <div class="side-sep"></div>
+      <button class="side-btn" data-view="stock" title="Stock">📈<span class="badge" id="badge-stock">0</span></button>
+      <button class="side-btn" data-view="radar" title="Radar de precios">📡<span class="new-tag">N</span></button>
+      <button class="side-btn" data-view="ventas" title="Ventas">💰</button>
+      <button class="side-btn" data-view="analytics" title="Analytics">📊</button>
+      <button class="side-btn" data-view="clientes" title="Clientes">👥</button>
+      <div class="side-sep"></div>
+      <!-- Sin fuente de datos real (todavía) -->
+      <button class="side-btn soon" data-view="soon" title="Reviews (sin datos aún)">⭐</button>
+      <button class="side-btn soon" data-view="soon" title="Carritos (sin datos aún)">🛒</button>
+      <button class="side-btn soon" data-view="soon" title="WhatsApp (sin datos aún)">💬</button>
+    </aside>
+
+    <!-- Content -->
+    <main class="content">
+
+      <!-- INICIO -->
+      <div id="view-inicio" class="view active">
+        <div class="ph">
+          <div><h2>🏠 Inicio</h2><p id="inicio-fecha">Vista general de tu tienda</p></div>
+          <div class="ph-actions"><button class="btn btn-ghost" onclick="go('productos')">📦 Productos</button><button class="btn btn-primary" onclick="go('agregar')">+ Agregar</button></div>
+        </div>
+        <div class="kpis" id="inicio-kpis"></div>
+        <div class="ai-banner">
+          <div style="font-size:28px">🤖</div>
+          <div style="flex:1"><div class="t">Resumen — datos reales de tu tienda</div><div class="m" id="inicio-resumen">Cargando…</div></div>
+        </div>
+        <div class="section">
+          <h3>📈 Ventas — Últimos 7 días <span class="badge">registro real</span></h3>
+          <div class="bar-chart-wrap"><div class="bar-chart" id="chart-ventas"></div></div>
+        </div>
+        <div class="grid-2">
+          <div class="section"><h3>🏆 Top productos vendidos</h3><div id="inicio-top"></div></div>
+          <div class="section"><h3>📦 Últimas ventas</h3><div id="inicio-actividad"></div></div>
+        </div>
+      </div>
+
+      <!-- PRODUCTOS -->
+      <div id="view-productos" class="view">
+        <div class="ph">
+          <div><h2>📦 Productos</h2><p id="prod-count">—</p></div>
+          <div class="ph-actions"><input class="btn btn-ghost" id="prod-buscar" placeholder="🔍 Buscar…" style="min-width:180px" oninput="renderProductos()"><button class="btn btn-primary" onclick="go('agregar')">+ Agregar</button></div>
+        </div>
+        <div class="prod-grid" id="prod-grid"></div>
+      </div>
+
+      <!-- CATEGORIAS -->
+      <div id="view-categorias" class="view">
+        <div class="ph"><div><h2>🏷️ Categorías</h2><p id="cat-count">—</p></div></div>
+        <div class="section"><h3>Categorías de tu tienda</h3><div id="cat-list"></div></div>
+      </div>
+
+      <!-- SUBCATEGORIAS -->
+      <div id="view-subcategorias" class="view">
+        <div class="ph"><div><h2>📁 Subcategorías</h2><p id="subcat-count">—</p></div></div>
+        <div class="section"><h3>Subcategorías</h3><div id="subcat-list"></div></div>
+      </div>
+
+      <!-- CORRECCIONES IA -->
+      <div id="view-correcciones" class="view">
+        <div class="ph"><div><h2>🔧 Correcciones y calidad</h2><p>Análisis real de tu catálogo · nada inventado</p></div><div class="ph-actions"><button class="btn btn-ghost" onclick="renderCorrecciones()">🔄 Re-analizar</button></div></div>
+        <div class="ai-banner"><div style="font-size:28px">🤖</div><div style="flex:1"><div class="t">Análisis del catálogo</div><div class="m" id="corr-resumen">Cargando…</div></div></div>
+        <div id="corr-lista"></div>
+      </div>
+
+      <!-- STOCK -->
+      <div id="view-stock" class="view">
+        <div class="ph"><div><h2>📈 Stock</h2><p>Niveles reales · alertas por umbral</p></div></div>
+        <div class="banner-info" id="stock-nota"></div>
+        <div class="kpis" id="stock-kpis"></div>
+        <div id="stock-lista"></div>
+      </div>
+
+      <!-- RADAR -->
+      <div id="view-radar" class="view">
+        <div class="ph"><div><h2>📡 Radar de precios</h2><p id="radar-sub">Precios reales de la competencia</p></div></div>
+        <div class="banner-info" id="radar-resumen"></div>
+        <div id="radar-lista"></div>
+      </div>
+
+      <!-- VENTAS -->
+      <div id="view-ventas" class="view">
+        <div class="ph"><div><h2>💰 Ventas</h2><p id="ventas-sub">Registro real</p></div></div>
+        <div class="kpis" id="ventas-kpis"></div>
+        <div class="section"><h3>Historial de ventas</h3><div id="ventas-lista"></div></div>
+      </div>
+
+      <!-- ANALYTICS -->
+      <div id="view-analytics" class="view">
+        <div class="ph"><div><h2>📊 Analytics</h2><p>Métricas reales del catálogo y ventas</p></div></div>
+        <div class="kpis" id="an-kpis"></div>
+        <div class="section"><h3>Ventas por categoría</h3><div id="an-cat"></div></div>
+      </div>
+
+      <!-- CLIENTES -->
+      <div id="view-clientes" class="view">
+        <div class="ph"><div><h2>👥 Clientes</h2><p id="cli-sub">Derivado de ventas reales</p></div></div>
+        <div id="cli-lista"></div>
+      </div>
+
+      <!-- AGREGAR (se porta del admin actual) -->
+      <div id="view-agregar" class="view">
+        <div class="ph"><div><h2>➕ Agregar producto</h2><p>Se conecta al formulario real del admin</p></div></div>
+        <div class="section"><div class="empty"><div class="ico">🔗</div>El formulario completo (con subida de imagen, IA, guardado y sync a GitHub) ya existe en tu admin actual.<br>En la <b>Fase 2</b> lo porto aquí con este mismo estilo.<br><br><button class="btn btn-primary" onclick="location.href='admin.html'">Abrir admin actual →</button></div></div>
+      </div>
+
+      <!-- SOON -->
+      <div id="view-soon" class="view">
+        <div class="ph"><div><h2>🚧 Sin datos todavía</h2><p>Este tab necesita una fuente de datos que la tienda aún no guarda</p></div></div>
+        <div class="section"><div class="empty"><div class="ico">📭</div><b>Reviews, Carritos abandonados y Chat de WhatsApp</b> no tienen datos reales hoy.<br>El sitio es estático y los pedidos van por WhatsApp (click-to-chat), así que no hay carritos ni mensajes guardados.<br><br>Si quieres, en una fase futura montamos el registro real de esos datos y ahí sí los activamos — <b>sin inventar nada</b>.</div></div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<div class="toast" id="toast"><div class="t" id="toast-t"></div><div class="b" id="toast-b"></div></div>
+
+<script>
+/* ============ Estado ============ */
+let PRODUCTOS = [], CATEGORIAS = [], SUBCATS = [], RADAR = null, VENTAS = [];
+const $ = s => document.querySelector(s);
+const money = n => '$' + (Number(n)||0).toLocaleString('es-US',{maximumFractionDigits:2});
+const esc = s => String(s==null?'':s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+const norm = s => (s||'').toString().toLowerCase().trim().replace(/\s+/g,' ');
+
+function showToast(t,b){ $('#toast-t').textContent=t; $('#toast-b').textContent=b||''; const el=$('#toast'); el.classList.add('show'); setTimeout(()=>el.classList.remove('show'),2600); }
+
+/* ============ Navegación ============ */
+function go(view, btn){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  const target = document.getElementById('view-'+view) || document.getElementById('view-soon');
+  target.classList.add('active');
+  document.querySelectorAll('.side-btn').forEach(b=>b.classList.remove('active'));
+  const b = btn || document.querySelector('.side-btn[data-view="'+view+'"]');
+  if(b) b.classList.add('active');
+  window.scrollTo(0,0);
+}
+document.querySelectorAll('.side-btn').forEach(b=>{
+  b.addEventListener('click',()=>go(b.dataset.view, b));
+});
+
+/* ============ Carga de datos reales ============ */
+function lsProductos(){ try{ const p=JSON.parse(localStorage.getItem('productos')||'null'); if(Array.isArray(p)&&p.length) return p; }catch(e){} return null; }
+function lsVentas(){ try{ let v=JSON.parse(localStorage.getItem('registroVentas')||'null'); if(!Array.isArray(v)||!v.length) v=JSON.parse(localStorage.getItem('ventas')||'null'); return Array.isArray(v)?v:[]; }catch(e){ return []; } }
+
+async function jget(url){ try{ const r=await fetch(url,{cache:'no-store'}); if(!r.ok) throw 0; return await r.json(); }catch(e){ return null; } }
+
+async function cargarDatos(recargar){
+  // Productos: localStorage real primero, si no productos.json
+  PRODUCTOS = lsProductos() || await jget('productos.json') || [];
+  if(!Array.isArray(PRODUCTOS)) PRODUCTOS = PRODUCTOS.productos || [];
+  CATEGORIAS = await jget('categorias.json') || [];
+  SUBCATS = await jget('subcategorias.json') || [];
+  RADAR = await jget('radar.json');
+  VENTAS = lsVentas();
+  renderTodo();
+  if(recargar) showToast('🔄 Datos recargados', PRODUCTOS.length+' productos · '+VENTAS.length+' ventas');
+}
+
+function renderTodo(){
+  renderInicio(); renderProductos(); renderCategorias(); renderSubcats();
+  renderCorrecciones(); renderStock(); renderRadar(); renderVentas();
+  renderAnalytics(); renderClientes();
+}
+
+/* ============ Helpers ventas ============ */
+function ventaFecha(v){ const ts=v.id||v.fecha; if(!ts) return null; const d=new Date(typeof ts==='number'?ts:Date.parse(ts)); return isNaN(d.getTime())?null:d; }
+function ventaTotal(v){ return Number(v.total||v.totalUSD||0)||0; }
+function hoyKey(){ return new Date().toISOString().slice(0,10); }
+
+/* ============ INICIO ============ */
+function renderInicio(){
+  $('#inicio-fecha').textContent = new Date().toLocaleDateString('es-CU',{weekday:'long',day:'numeric',month:'long'}) + ' · vista general';
+  const hoy = hoyKey();
+  let ventasHoy=0, nHoy=0;
+  VENTAS.forEach(v=>{ const d=ventaFecha(v); if(d && d.toISOString().slice(0,10)===hoy){ ventasHoy+=ventaTotal(v); nHoy++; } });
+  const stockBajo = PRODUCTOS.filter(p=>Number(p.stock)>0 && Number(p.stock)<=5).length;
+  const agotados = PRODUCTOS.filter(p=>Number(p.stock)<=0).length;
+  const clientes = new Set(VENTAS.map(v=>norm(v.cliente||v.nombre||'')).filter(Boolean)).size;
+  const totalVendido = VENTAS.reduce((s,v)=>s+ventaTotal(v),0);
+  const k = [
+    ['usd','Ventas hoy USD', money(ventasHoy), nHoy+' ventas hoy','muted'],
+    ['success','Vendido total', money(totalVendido), VENTAS.length+' ventas','muted'],
+    ['warn','Stock bajo', stockBajo, agotados+' agotados', stockBajo?'down':'muted'],
+    ['','Productos', PRODUCTOS.length, PRODUCTOS.filter(p=>p.masVendido).length+' destacados','muted'],
+    ['info','Clientes', clientes, 'de ventas registradas','muted'],
+    ['gold','En radar', (PRODUCTOS.filter(p=>p.radar).length), 'vigilados','muted'],
+  ];
+  $('#inicio-kpis').innerHTML = k.map(([c,l,v,s,sc])=>`<div class="kpi ${c}"><div class="lbl">${l}</div><div class="val">${v}</div><div class="sub ${sc}">${s}</div></div>`).join('');
+  // Resumen honesto
+  let msg = `Tienes <b>${PRODUCTOS.length} productos</b>. `;
+  if(agotados) msg += `⚠️ <b>${agotados} agotados</b> y ${stockBajo} con stock bajo. `;
+  else if(stockBajo) msg += `<b>${stockBajo}</b> con stock bajo. `;
+  if(VENTAS.length) msg += `Llevas <b>${money(totalVendido)}</b> en ${VENTAS.length} ventas registradas.`;
+  else msg += `Aún no hay ventas registradas en este dispositivo.`;
+  $('#inicio-resumen').innerHTML = msg;
+  // Chart 7 días (real)
+  const slots={}; const dias=[];
+  for(let i=6;i>=0;i--){ const d=new Date(); d.setDate(d.getDate()-i); const key=d.toISOString().slice(0,10); slots[key]=0; dias.push({key,lbl:['D','L','M','X','J','V','S'][d.getDay()]}); }
+  VENTAS.forEach(v=>{ const d=ventaFecha(v); if(!d) return; const k=d.toISOString().slice(0,10); if(k in slots) slots[k]+=ventaTotal(v); });
+  const max=Math.max(1,...dias.map(d=>slots[d.key]));
+  $('#chart-ventas').innerHTML = dias.map(d=>{ const val=slots[d.key]; const h=Math.round(val/max*100); return `<div class="bar" style="height:${Math.max(2,h)}%">${val?`<span class="v">${Math.round(val)}</span>`:''}<span class="lbl">${d.lbl}</span></div>`; }).join('');
+  // Top productos por ventas reales
+  const cont={};
+  VENTAS.forEach(v=>{ (v.productos||v.items||[]).forEach(it=>{ const nm=it.nombre||it.nm||''; if(!nm) return; cont[nm]=(cont[nm]||0)+(Number(it.cantidad||it.qty||1)); }); });
+  const top=Object.entries(cont).sort((a,b)=>b[1]-a[1]).slice(0,5);
+  $('#inicio-top').innerHTML = top.length ? top.map(([nm,q],i)=>`<div style="display:flex;align-items:center;gap:10px;padding:9px 10px;background:rgba(255,255,255,0.03);border-radius:9px;margin-bottom:6px"><div style="font-size:20px">${i===0?'🏆':'📦'}</div><div style="flex:1"><b style="color:#fff;font-size:13px">${esc(nm)}</b><small style="color:var(--muted);font-size:10px;display:block">${q} vendidos</small></div></div>`).join('') : `<div class="empty" style="padding:18px"><div class="ico">📊</div>Sin ventas con detalle de productos aún.</div>`;
+  // Actividad = últimas ventas
+  const ult=[...VENTAS].sort((a,b)=>(ventaFecha(b)||0)-(ventaFecha(a)||0)).slice(0,5);
+  $('#inicio-actividad').innerHTML = ult.length ? ult.map(v=>{ const d=ventaFecha(v); return `<div style="display:flex;align-items:flex-start;gap:10px;padding:9px 10px;background:rgba(255,255,255,0.03);border-radius:9px;margin-bottom:6px;font-size:12px"><span style="font-size:18px">💰</span><div style="flex:1"><b style="color:#fff">${money(ventaTotal(v))}</b> ${esc(v.cliente||v.nombre||'')}<span style="color:var(--dim);font-size:10px;float:right">${d?d.toLocaleDateString('es-CU'):''}</span></div></div>`; }).join('') : `<div class="empty" style="padding:18px"><div class="ico">🧾</div>Aún no hay ventas registradas.</div>`;
+  // Badge alertas topbar
+  $('#tb-alertas').textContent = agotados + stockBajo;
+}
+
+/* ============ PRODUCTOS ============ */
+const emojiCat = c => { c=(c||'').toLowerCase(); if(/cel|phone|móvil/.test(c))return'📱'; if(/audio|auric/.test(c))return'🎧'; if(/comput|laptop|pc/.test(c))return'💻'; if(/energ|solar|bater/.test(c))return'🔋'; if(/red|wifi|router/.test(c))return'📡'; if(/gam/.test(c))return'🎮'; if(/herram|tool/.test(c))return'🔧'; if(/hogar|casa/.test(c))return'🏠'; if(/carro|auto|moto/.test(c))return'🚗'; return'📦'; };
+function renderProductos(){
+  const q = norm($('#prod-buscar') && $('#prod-buscar').value);
+  let list = PRODUCTOS;
+  if(q) list = PRODUCTOS.filter(p=>norm(p.nombre).includes(q)||norm(p.categoria).includes(q));
+  $('#prod-count').textContent = list.length + ' de ' + PRODUCTOS.length + ' productos';
+  $('#prod-grid').innerHTML = list.slice(0,120).map(p=>{
+    const st=Number(p.stock)||0; const cls=st<=0?'out':(st<=5?'low':'');
+    const img = p.imagen ? `<img src="${esc(p.imagen)}" alt="" loading="lazy" onerror="this.parentNode.textContent='${emojiCat(p.categoria)}'">` : emojiCat(p.categoria);
+    return `<div class="prod-card"><div class="prod-img">${img}</div><div class="prod-body"><div class="prod-cat">${esc(p.categoria||'—')}</div><div class="prod-nm">${esc(p.nombre||'')}</div><div class="prod-price">${money(p.precioActual)}</div><div class="prod-stock ${cls}">${st<=0?'Agotado':(st+' en stock')}</div></div></div>`;
+  }).join('') || `<div class="empty"><div class="ico">🔍</div>Sin resultados.</div>`;
+}
+
+/* ============ CATEGORIAS / SUBCATS ============ */
+function catNombres(){ if(Array.isArray(CATEGORIAS)) return CATEGORIAS.map(c=>typeof c==='string'?c:(c.nombre||c.name||'')); return (CATEGORIAS&&CATEGORIAS.nombres)||[]; }
+function catIcono(nm){ const ic=(CATEGORIAS&&CATEGORIAS.iconos)||{}; return ic[nm] || ic[(nm||'').toUpperCase()] || emojiCat(nm); }
+function renderCategorias(){
+  const cats = catNombres();
+  const cont = {}; PRODUCTOS.forEach(p=>{ const c=(p.categoria||'—').toString(); cont[c]=(cont[c]||0)+1; cont[c.toUpperCase()]=cont[c.toUpperCase()]; });
+  const countFor = nm => PRODUCTOS.filter(p=>norm(p.categoria)===norm(nm)).length;
+  $('#cat-count').textContent = cats.length + ' categorías';
+  $('#cat-list').innerHTML = (cats.length?cats:Object.keys(cont)).map(nm=>{
+    const n=countFor(nm);
+    return `<div style="display:flex;align-items:center;gap:12px;padding:11px 14px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-bottom:6px"><div style="font-size:22px;width:38px;height:38px;background:rgba(255,255,255,0.05);border-radius:8px;display:flex;align-items:center;justify-content:center">${catIcono(nm)}</div><div style="flex:1"><div style="font-size:13px;font-weight:700;color:#fff">${esc(nm)}</div></div><span style="font-size:10px;padding:3px 8px;border-radius:8px;background:rgba(255,107,53,0.12);color:var(--o);font-weight:700">${n} productos</span></div>`;
+  }).join('') || `<div class="empty"><div class="ico">🏷️</div>Sin categorías.</div>`;
+}
+function renderSubcats(){
+  // subcategorias.json = { CATEGORIA: [sub, sub...] }
+  const map = (SUBCATS && !Array.isArray(SUBCATS)) ? SUBCATS : {};
+  const cont={}; PRODUCTOS.forEach(p=>{ if(p.subcategoria){ cont[norm(p.subcategoria)]=(cont[norm(p.subcategoria)]||0)+1; } });
+  const cats = Object.keys(map);
+  let totalSubs=0; cats.forEach(c=>totalSubs+=(map[c]||[]).length);
+  $('#subcat-count').textContent = totalSubs + ' subcategorías en ' + cats.length + ' categorías';
+  $('#subcat-list').innerHTML = cats.length ? cats.map(cat=>{
+    const subs=map[cat]||[];
+    return `<div style="margin-bottom:14px"><div style="font-size:11px;font-weight:800;color:var(--gold);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">${catIcono(cat)} ${esc(cat)}</div>${subs.map(s=>`<div style="display:flex;align-items:center;gap:12px;padding:9px 14px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-bottom:5px"><div style="flex:1;font-size:13px;color:#fff">${esc(s)}</div><span style="font-size:10px;padding:3px 8px;border-radius:8px;background:rgba(255,107,53,0.12);color:var(--o);font-weight:700">${cont[norm(s)]||0}</span></div>`).join('')}</div>`;
+  }).join('') : `<div class="empty"><div class="ico">📁</div>Sin subcategorías.</div>`;
+}
+
+/* ============ CORRECCIONES IA (análisis real) ============ */
+function renderCorrecciones(){
+  const cards=[]; let urg=0, adv=0, inf=0;
+  // 1. Sin descripción / SEO
+  const sinDesc = PRODUCTOS.filter(p=>!p.descripcion || String(p.descripcion).trim().length<40);
+  if(sinDesc.length){ urg++; cards.push({sev:'urgente',cls:'',ico:'🚨',t:'Productos sin descripción (pierdes SEO)',items:sinDesc,fmt:p=>`<b>${esc(p.nombre)}</b> — ${p.descripcion?('solo '+String(p.descripcion).trim().length+' car'):'sin descripción'}`,razon:'Google no indexa bien productos sin descripción. Súbelas para aparecer en búsquedas.'}); }
+  // 2. Agotados
+  const agot = PRODUCTOS.filter(p=>Number(p.stock)<=0);
+  if(agot.length){ urg++; cards.push({sev:'urgente',cls:'',ico:'📦',t:'Productos agotados (stock 0)',items:agot,fmt:p=>`<b>${esc(p.nombre)}</b> — ${money(p.precioActual)}`,razon:'Cliente que los ve y no puede comprar = venta perdida. Repón o márcalos como "Avísame cuando vuelva".'}); }
+  // 3. Nombres en MAYÚSCULAS inconsistentes
+  const mays = PRODUCTOS.filter(p=>{ const n=p.nombre||''; return /[A-ZÁÉÍÓÚ]{5,}/.test(n) && n===n.toUpperCase(); });
+  if(mays.length){ adv++; cards.push({sev:'advertencia',cls:'warn',ico:'🔠',t:'Nombres TODO EN MAYÚSCULAS',items:mays,fmt:p=>`<b>${esc(p.nombre)}</b>`,razon:'Se ve menos profesional y baja la confianza. Mejor "Nombre Tipo Título".'}); }
+  // 4. Nombres duplicados
+  const byName={}; PRODUCTOS.forEach(p=>{ const k=norm(p.nombre); if(!k)return; (byName[k]=byName[k]||[]).push(p); });
+  const dups=Object.values(byName).filter(a=>a.length>1);
+  if(dups.length){ adv++; cards.push({sev:'advertencia',cls:'warn',ico:'👯',t:'Nombres duplicados',items:dups,fmt:a=>`<b>${esc(a[0].nombre)}</b> × ${a.length}`,razon:'Dos productos con el mismo nombre confunden al cliente. Diferéncialos (marca + modelo).'}); }
+  // 5. Sin imagen
+  const sinImg = PRODUCTOS.filter(p=>!p.imagen);
+  if(sinImg.length){ adv++; cards.push({sev:'advertencia',cls:'warn',ico:'🖼️',t:'Productos sin foto',items:sinImg,fmt:p=>`<b>${esc(p.nombre)}</b>`,razon:'Los productos con foto venden hasta 2× más. Súbeles una imagen.'}); }
+  // 6. Precio vs radar (oportunidad)
+  if(RADAR && RADAR.productos){
+    const opor=[]; RADAR.productos.forEach(r=>{ const med=r.mercado&&r.mercado.mediana; const tuyo=r.tuPrecio; if(med && tuyo && tuyo < med*0.85){ opor.push({nombre:r.nombre, tuyo, med}); } });
+    if(opor.length){ inf++; cards.push({sev:'info',cls:'info',ico:'💡',t:'Oportunidad: puedes subir precio',items:opor,fmt:o=>`<b>${esc(o.nombre)}</b> — tú ${money(o.tuyo)} · mercado ${money(o.med)}`,razon:'Estás bastante por debajo de la mediana del mercado. Hay margen para subir sin perder ventas.'}); }
+  }
+  const total=urg+adv+inf;
+  $('#corr-resumen').innerHTML = total ? `Analicé tus <b>${PRODUCTOS.length} productos</b>. Detecté <b>${urg} urgentes</b>, ${adv} advertencias y ${inf} de info. Todo calculado de tus datos reales.` : `¡Todo en orden! Analicé tus <b>${PRODUCTOS.length} productos</b> y no encontré problemas.`;
+  $('#badge-corr').textContent = total;
+  $('#corr-lista').innerHTML = cards.map(c=>`<div class="correccion-card ${c.cls}"><div class="correccion-head"><span class="correccion-icon">${c.ico}</span><span class="correccion-titulo">${c.t}</span><span class="correccion-severidad ${c.sev}">${c.sev}</span></div><div class="correccion-lista">${c.items.slice(0,20).map(c.fmt).join('<br>')}${c.items.length>20?`<br><i>…y ${c.items.length-20} más</i>`:''}</div><p class="correccion-razon">${c.razon}</p></div>`).join('') || `<div class="section"><div class="empty"><div class="ico">✅</div><b>Catálogo impecable.</b> No hay correcciones pendientes.</div></div>`;
+}
+
+/* ============ STOCK ============ */
+function renderStock(){
+  const conVentas = VENTAS.length>0;
+  $('#stock-nota').innerHTML = conVentas
+    ? 'Umbrales: <b>≤5 crítico</b>, ≤15 bajo. La predicción "se agota en X días" usa tu histórico real de ventas.'
+    : 'Umbrales: <b>≤5 crítico</b>, ≤15 bajo. <b>Sin histórico de ventas</b> en este dispositivo, así que no muestro predicción de días (no invento el ritmo).';
+  const crit = PRODUCTOS.filter(p=>Number(p.stock)>0&&Number(p.stock)<=5).length;
+  const bajo = PRODUCTOS.filter(p=>Number(p.stock)>5&&Number(p.stock)<=15).length;
+  const agot = PRODUCTOS.filter(p=>Number(p.stock)<=0).length;
+  const ok = PRODUCTOS.filter(p=>Number(p.stock)>15).length;
+  $('#stock-kpis').innerHTML = [['success','OK',ok],['warn','Por agotarse',bajo],['danger','Crítico (≤5)',crit],['danger','Agotados',agot]].map(([c,l,v])=>`<div class="kpi ${c}"><div class="lbl">${l}</div><div class="val">${v}</div></div>`).join('');
+  $('#badge-stock').textContent = crit+agot;
+  // velocidad por producto (si hay ventas)
+  const vel={};
+  if(conVentas){ const desde=Date.now()-30*864e5; VENTAS.forEach(v=>{ const d=ventaFecha(v); if(!d||d.getTime()<desde)return; (v.productos||v.items||[]).forEach(it=>{ const k=norm(it.nombre||it.nm); if(k) vel[k]=(vel[k]||0)+Number(it.cantidad||it.qty||1); }); }); }
+  const orden=[...PRODUCTOS].sort((a,b)=>(Number(a.stock)||0)-(Number(b.stock)||0)).filter(p=>Number(p.stock)<=15);
+  $('#stock-lista').innerHTML = orden.slice(0,40).map(p=>{
+    const st=Number(p.stock)||0; let cls='ok',status='ok',lbl='OK';
+    if(st<=0){cls='urg';status='urg';lbl='Agotado';} else if(st<=5){cls='urg';status='urg';lbl='Crítico';} else if(st<=15){cls='warn';status='warn';lbl='Bajo';}
+    const pct=Math.min(100,Math.round(st/20*100));
+    let pred='';
+    const vd=vel[norm(p.nombre)];
+    if(conVentas && vd){ const perDay=vd/30; const dias=perDay>0?Math.round(st/perDay):null; pred=`<div class="sp-pred">📉 Ritmo real: ~${(perDay).toFixed(1)}/día · se agota en <b>~${dias} días</b>.</div>`; }
+    else if(st<=0){ pred=`<div class="sp-pred">⛔ Sin stock. Repón para no perder ventas.</div>`; }
+    else { pred=`<div class="sp-pred">Quedan <b>${st}</b> unidades.</div>`; }
+    const img = p.imagen?`<img src="${esc(p.imagen)}" alt="" onerror="this.parentNode.textContent='${emojiCat(p.categoria)}'">`:emojiCat(p.categoria);
+    return `<div class="stock-card ${cls}"><div class="sp-head"><div class="sp-thumb">${img}</div><div><div class="sp-name">${esc(p.nombre)}</div><div class="sp-meta">${esc(p.categoria||'')}</div></div><span class="sp-status ${status}">${lbl}</span></div><div class="sp-bar ${cls}"><div style="width:${pct}%"></div></div>${pred}</div>`;
+  }).join('') || `<div class="section"><div class="empty"><div class="ico">✅</div>Ningún producto con stock bajo.</div></div>`;
+}
+
+/* ============ RADAR (reusa radar.json) ============ */
+function renderRadar(){
+  if(!RADAR || !RADAR.productos || !RADAR.productos.length){ $('#radar-lista').innerHTML=`<div class="section"><div class="empty"><div class="ico">📡</div>Sin datos de radar todavía. Marca productos con ⭐ en el admin y corre la acción del radar.</div></div>`; $('#radar-resumen').textContent=''; return; }
+  $('#radar-sub').textContent = 'Actualizado: '+(RADAR.fecha||RADAR.actualizado||'—');
+  const res = (typeof RADAR.resumen==='string') ? RADAR.resumen : ('Vigilando '+RADAR.productos.length+' productos con precios reales de la competencia (fuentes: '+((RADAR.fuentes||[]).join(', ')||'Revolico')+').');
+  $('#radar-resumen').innerHTML = esc(res);
+  const okUrl = u => /^https?:\/\//i.test(u||'');
+  $('#radar-lista').innerHTML = RADAR.productos.map(r=>{
+    const med=r.mercado&&r.mercado.mediana, min=r.mercado&&r.mercado.min, n=r.mercado&&r.mercado.n;
+    const tuyo=r.tuPrecio;
+    let comp='';
+    if(min!=null && tuyo!=null){ if(min<tuyo) comp=`<span style="color:var(--red);font-weight:700">⚠️ Hay uno ${money(min)} más barato</span>`; else comp=`<span style="color:var(--green);font-weight:700">✅ Tú eres el más barato</span>`; }
+    const muestras=(r.muestras||[]).slice().sort((a,b)=>(a.precio||0)-(b.precio||0));
+    const det = muestras.length?`<details style="margin-top:10px"><summary style="cursor:pointer;color:var(--o);font-size:12px;font-weight:700">🔎 Ver los ${muestras.length} anuncios reales (verificar)</summary><div style="margin-top:8px">${muestras.map(m=>{ const barato=(m.precio!=null&&tuyo!=null&&m.precio<=tuyo); const link=okUrl(m.url)?`<a href="${esc(m.url)}" target="_blank" rel="noopener" style="color:var(--o)">Ver anuncio →</a>`:''; return `<div style="padding:7px 10px;background:rgba(0,0,0,0.25);border-radius:7px;margin-bottom:5px;font-size:12px"><b style="color:${barato?'var(--green)':'#fff'}">${money(m.precio)}</b> · ${esc(m.titulo||'')} <span style="color:var(--muted)">(${esc(m.fuente||'')})</span> ${link}</div>`; }).join('')}</div></details>`:'';
+    return `<div class="section"><h3 style="color:#fff;text-transform:none;font-size:15px">${esc(r.nombre)}</h3><div style="font-size:13px;line-height:1.9"><div>Tu precio: <b style="color:var(--o)">${money(tuyo)}</b></div><div style="color:var(--muted)">Mercado: más barato <b style="color:#fff">${money(min)}</b> · típico <b style="color:#fff">${money(med)}</b> ${n?`(${n} anuncios)`:''}</div><div>${comp}</div></div>${det}</div>`;
+  }).join('');
+}
+
+/* ============ VENTAS ============ */
+function renderVentas(){
+  const total=VENTAS.reduce((s,v)=>s+ventaTotal(v),0);
+  const hoy=hoyKey(); let tHoy=0,nHoy=0; VENTAS.forEach(v=>{const d=ventaFecha(v); if(d&&d.toISOString().slice(0,10)===hoy){tHoy+=ventaTotal(v);nHoy++;}});
+  $('#ventas-sub').textContent = VENTAS.length+' ventas registradas';
+  $('#ventas-kpis').innerHTML=[['usd','Hoy',money(tHoy),nHoy+' ventas'],['success','Total',money(total),VENTAS.length+' ventas'],['gold','Ticket promedio',money(VENTAS.length?total/VENTAS.length:0),'']].map(([c,l,v,s])=>`<div class="kpi ${c}"><div class="lbl">${l}</div><div class="val">${v}</div><div class="sub muted">${s||''}</div></div>`).join('');
+  const ult=[...VENTAS].sort((a,b)=>(ventaFecha(b)||0)-(ventaFecha(a)||0)).slice(0,60);
+  $('#ventas-lista').innerHTML = ult.length?`<div class="table-wrap"><table><thead><tr><th>Fecha</th><th>Cliente</th><th>Productos</th><th>Total</th></tr></thead><tbody>${ult.map(v=>{const d=ventaFecha(v); const items=(v.productos||v.items||[]).map(it=>esc(it.nombre||it.nm||'')).filter(Boolean).join(', '); return `<tr><td>${d?d.toLocaleDateString('es-CU'):'—'}</td><td class="nm">${esc(v.cliente||v.nombre||'—')}</td><td>${items||'—'}</td><td class="nm">${money(ventaTotal(v))}</td></tr>`;}).join('')}</tbody></table></div>`:`<div class="empty"><div class="ico">🧾</div>Sin ventas registradas en este dispositivo.<br><small>Las ventas se guardan al usar "Registrar venta" en el admin.</small></div>`;
+}
+
+/* ============ ANALYTICS ============ */
+function renderAnalytics(){
+  const totalVal=PRODUCTOS.reduce((s,p)=>s+(Number(p.precioActual)||0)*(Number(p.stock)||0),0);
+  const total=VENTAS.reduce((s,v)=>s+ventaTotal(v),0);
+  $('#an-kpis').innerHTML=[['','Productos',PRODUCTOS.length],['gold','Valor inventario',money(totalVal)],['success','Vendido',money(total)],['info','Categorías',new Set(PRODUCTOS.map(p=>p.categoria)).size]].map(([c,l,v])=>`<div class="kpi ${c}"><div class="lbl">${l}</div><div class="val">${v}</div></div>`).join('');
+  const cont={}; PRODUCTOS.forEach(p=>{const c=p.categoria||'—'; cont[c]=(cont[c]||0)+1;});
+  const max=Math.max(1,...Object.values(cont));
+  $('#an-cat').innerHTML=Object.entries(cont).sort((a,b)=>b[1]-a[1]).map(([c,n])=>`<div style="margin-bottom:9px"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span style="color:#fff;font-weight:700">${esc(c)}</span><span style="color:var(--muted)">${n}</span></div><div class="sp-bar"><div style="width:${Math.round(n/max*100)}%;background:var(--o)"></div></div></div>`).join('');
+}
+
+/* ============ CLIENTES ============ */
+function renderClientes(){
+  const cli={};
+  VENTAS.forEach(v=>{ const nm=(v.cliente||v.nombre||'').trim(); if(!nm)return; const k=norm(nm); if(!cli[k]) cli[k]={nombre:nm,compras:0,total:0,tel:v.telefono||v.tel||''}; cli[k].compras++; cli[k].total+=ventaTotal(v); });
+  const list=Object.values(cli).sort((a,b)=>b.total-a.total);
+  $('#cli-sub').textContent = list.length+' clientes (de ventas registradas)';
+  $('#cli-lista').innerHTML = list.length?`<div class="table-wrap"><table><thead><tr><th>Cliente</th><th>Compras</th><th>Total</th><th>Teléfono</th></tr></thead><tbody>${list.map(c=>`<tr><td class="nm">${esc(c.nombre)}</td><td>${c.compras}</td><td class="nm">${money(c.total)}</td><td>${esc(c.tel||'—')}</td></tr>`).join('')}</tbody></table></div>`:`<div class="section"><div class="empty"><div class="ico">👥</div>Aún no hay clientes.<br><small>Se generan solos a partir de las ventas que registres.</small></div></div>`;
+}
+
+/* ============ Init ============ */
+cargarDatos();
+</script>
+</body>
+</html>
