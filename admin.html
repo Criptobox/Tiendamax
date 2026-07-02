@@ -2000,104 +2000,287 @@ if ('serviceWorker' in navigator) {
 </script>
 
 <!-- ============================================================ -->
-<!-- MEJORA v8 — Ruta A: WhatsApp imgs, responsive, drag&drop,    -->
-<!-- push notifs, charts vivos (no toca código existente)         -->
+<!-- ESTILO PREVIEW v9 — Pasa el diseño del preview al admin       -->
 <!-- ============================================================ -->
 <style>
-/* ===== Push notifications toast (esquina superior derecha) ===== */
-#tm8PushWrap{position:fixed;top:20px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:8px;pointer-events:none;max-width:340px}
-.tm8-push{background:#15151f;border:1px solid rgba(255,255,255,.1);border-left:4px solid #FF6B35;padding:12px 14px;border-radius:10px;box-shadow:0 12px 32px rgba(0,0,0,.4);color:#e0e0e8;font-size:12.5px;pointer-events:auto;opacity:0;transform:translateX(400px);transition:all .3s;position:relative}
-.tm8-push.show{opacity:1;transform:translateX(0)}
-.tm8-push.warn{border-left-color:#f1c40f}
-.tm8-push.error{border-left-color:#e74c3c}
-.tm8-push.success{border-left-color:#2ecc71}
-.tm8-push .ph{display:flex;align-items:center;gap:6px;margin-bottom:3px}
-.tm8-push .ph .ico{font-size:14px}
-.tm8-push .ph .title{font-size:12px;font-weight:800;color:#fff;flex:1}
-.tm8-push .body{color:#bbb;line-height:1.4}
-.tm8-push .close{position:absolute;top:6px;right:8px;background:none;border:none;color:#888;cursor:pointer;font-size:14px;padding:2px 4px;line-height:1}
-.tm8-push .close:hover{color:#fff}
+/* === Variables del preview (paleta oficial) === */
+:root {
+  --bg:#0a0a12; --card:#15151f; --card2:#1a1a25; --border:rgba(255,255,255,0.07);
+  --border2:rgba(255,255,255,0.14); --text:#e0e0e8; --muted:#888; --dim:#555;
+  --line:rgba(255,255,255,0.04); --o:#FF6B35; --oo:#e0521a; --gold:#C9A96E;
+  --gold-l:#E8C88A; --green:#2ecc71; --red:#e74c3c; --yellow:#f1c40f;
+  --purple:#8b5cf6; --blue:#3498db; --radius:14px; --radius-sm:10px;
+  --shadow:0 8px 24px rgba(0,0,0,0.4); --transition:0.18s cubic-bezier(0.4,0,0.2,1);
+}
 
-/* ===== WhatsApp mini-card (para adjuntar imágenes) ===== */
-#tm8WaAttach{display:none;position:fixed;bottom:80px;right:20px;z-index:100;background:#15151f;border:1px solid rgba(255,255,255,.14);border-radius:14px;padding:14px;box-shadow:0 12px 32px rgba(0,0,0,.5);max-width:340px}
-#tm8WaAttach.open{display:block;animation:tm8fadeIn .2s}
-@keyframes tm8fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
-.tm8-wa-card{background:#1a1a25;border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:10px;margin-top:8px;cursor:pointer;transition:.15s}
-.tm8-wa-card:hover{background:rgba(255,107,53,.1);border-color:rgba(255,107,53,.3)}
-.tm8-wa-card .card-img{width:100%;height:80px;background:linear-gradient(135deg,#2a2a36,#1a1a25);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:32px;margin-bottom:6px}
-.tm8-wa-card .card-name{font-size:12px;font-weight:700;color:#fff}
-.tm8-wa-card .card-price{font-size:13px;font-weight:800;color:#FF6B35;margin-top:2px}
+/* === Reestilizar clases del admin original === */
 
-/* ===== Drag handle para categorías ===== */
-.tm8-drag-handle{cursor:grab;color:#555;font-size:16px;padding:0 6px;user-select:none;transition:.15s}
-.tm8-drag-handle:hover{color:#FF6B35;cursor:grab}
-.tm8-drag-handle:active{cursor:grabbing}
-.tm8-cat-row{display:flex;align-items:center;gap:8px;padding:8px 10px;background:rgba(255,255,255,.03);border-radius:8px;margin-bottom:5px;transition:all .18s;border:1px solid transparent}
-.tm8-cat-row:hover{background:rgba(255,107,53,.06);border-color:rgba(255,107,53,.15)}
-.tm8-cat-row.dragging{opacity:.5;background:rgba(255,107,53,.12)}
-.tm8-sort-tip{font-size:11px;color:#888;padding:6px 8px;background:rgba(52,152,219,.08);border-radius:6px;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+/* Cards: más modernas */
+.card, .form-card, .config-card, .stat {
+  background: var(--card) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: var(--radius) !important;
+  box-shadow: var(--shadow) !important;
+  transition: transform var(--transition), border-color var(--transition), box-shadow var(--transition) !important;
+}
+.card:hover, .form-card:hover, .config-card:hover {
+  transform: translateY(-2px) !important;
+  border-color: var(--border2) !important;
+}
 
-/* ===== Bottom bar móvil (estilo app) ===== */
-#tm8BottomBar{display:none;position:fixed;bottom:0;left:0;right:0;z-index:50;background:rgba(15,15,20,.97);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-top:1px solid rgba(255,255,255,.08);padding:6px 4px env(safe-area-inset-bottom,6px);justify-content:space-around;align-items:center}
-.tm8-bb-btn{background:transparent;border:none;color:#888;padding:6px 8px;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:9px;font-weight:700;border-radius:8px;transition:.15s;min-width:48px;cursor:pointer;font-family:inherit}
-.tm8-bb-btn .ico{font-size:18px}
-.tm8-bb-btn.active{color:#FF6B35;background:rgba(255,107,53,.12)}
-.tm8-bb-btn .b{position:absolute;top:0;right:6px;background:#e74c3c;color:#fff;border-radius:8px;min-width:14px;height:14px;font-size:8px;font-weight:900;padding:0 3px;display:flex;align-items:center;justify-content:center}
-@media(max-width:760px){#tm8BottomBar{display:flex}body{padding-bottom:70px}}
+/* Stats: barras de color lateral */
+.stat {
+  position: relative !important;
+  overflow: hidden !important;
+  padding-left: 18px !important;
+}
+.stat::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 3px;
+  background: var(--o);
+}
+.stat:hover::before { background: var(--gold); }
 
-/* ===== Charts mejorados ===== */
-.tm8-chart-bar{transition:height .5s ease}
-.tm8-chart-container{display:flex;align-items:flex-end;gap:4px;height:160px;padding:14px 4px;background:rgba(0,0,0,.2);border-radius:10px;overflow-x:auto}
-.tm8-chart-col{flex:1;min-width:24px;display:flex;flex-direction:column;align-items:center;gap:4px}
-.tm8-chart-col .bar{width:100%;background:linear-gradient(180deg,#FF6B35,#e0521a);border-radius:4px 4px 0 0;min-height:4px;transition:height .8s ease}
-.tm8-chart-col .bar.mn{background:linear-gradient(180deg,#3498db,#2980b9);opacity:.7}
-.tm8-chart-col .lbl{font-size:9px;color:#888}
+/* Botones: estilo preview naranja */
+.btn, .btn-primary, .btn.primary {
+  background: linear-gradient(135deg, var(--o), var(--oo)) !important;
+  color: #fff !important;
+  border: none !important;
+  border-radius: var(--radius-sm) !important;
+  padding: 10px 18px !important;
+  font-weight: 700 !important;
+  font-size: 13px !important;
+  box-shadow: 0 4px 12px rgba(255,107,53,0.25) !important;
+  transition: all var(--transition) !important;
+  cursor: pointer !important;
+}
+.btn:hover, .btn-primary:hover, .btn.primary:hover {
+  transform: translateY(-1px) !important;
+  box-shadow: 0 6px 16px rgba(255,107,53,0.35) !important;
+}
+.btn:active { transform: scale(0.97) !important; }
 
-/* ===== Toast general ===== */
-#tm8ToastWrap{position:fixed;bottom:20px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:8px;pointer-events:none}
-@media(max-width:600px){#tm8ToastWrap{bottom:80px;right:10px;left:10px}}
-.tm8-toast{background:#15151f;border:1px solid rgba(255,255,255,.1);border-left:4px solid #2ecc71;padding:14px 18px;border-radius:10px;box-shadow:0 12px 32px rgba(0,0,0,.4);max-width:340px;color:#e0e0e8;font-size:13px;font-weight:600;opacity:0;transform:translateX(400px);transition:all .3s;pointer-events:auto}
-.tm8-toast.show{opacity:1;transform:translateX(0)}
-.tm8-toast.warn{border-left-color:#f1c40f}
+/* Botones secundarios */
+.btn:not(.primary):not(.btn-primary):not(.gold) {
+  background: var(--card2) !important;
+  border: 1px solid var(--border) !important;
+  color: var(--text) !important;
+  box-shadow: none !important;
+}
+.btn:not(.primary):not(.btn-primary):not(.gold):hover {
+  background: rgba(255,107,53,0.1) !important;
+  border-color: var(--o) !important;
+  color: var(--o) !important;
+}
+
+/* Botones gold */
+.btn.gold {
+  background: linear-gradient(135deg, var(--gold), var(--gold-l)) !important;
+  color: #111 !important;
+}
+
+/* Mini-btn */
+.mini-btn {
+  background: var(--card2) !important;
+  border: 1px solid var(--border) !important;
+  color: var(--text) !important;
+  border-radius: 8px !important;
+  padding: 6px 12px !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  transition: all var(--transition) !important;
+  cursor: pointer !important;
+}
+.mini-btn:hover {
+  background: rgba(255,107,53,0.1) !important;
+  border-color: var(--o) !important;
+  color: var(--o) !important;
+}
+
+/* Inputs: estilo preview */
+input, select, textarea {
+  background: rgba(0,0,0,0.25) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: var(--radius-sm) !important;
+  color: var(--text) !important;
+  padding: 11px 13px !important;
+  font-size: 13px !important;
+  transition: all var(--transition) !important;
+}
+input:focus, select:focus, textarea:focus {
+  border-color: var(--o) !important;
+  box-shadow: 0 0 0 3px rgba(255,107,53,0.1) !important;
+  outline: none !important;
+}
+
+/* Tabs sidebar: estilo preview */
+.tab-btn {
+  border-radius: 11px !important;
+  transition: all var(--transition) !important;
+  position: relative !important;
+}
+.tab-btn:hover {
+  background: rgba(255,107,53,0.12) !important;
+  color: var(--o) !important;
+  transform: translateX(2px) !important;
+}
+.tab-btn.active {
+  background: linear-gradient(135deg, var(--o), var(--oo)) !important;
+  color: #fff !important;
+  box-shadow: 0 2px 8px rgba(255,107,53,0.3) !important;
+}
+
+/* Badges: estilo pill */
+.badge {
+  border-radius: 10px !important;
+  font-size: 10px !important;
+  font-weight: 800 !important;
+  padding: 2px 7px !important;
+}
+.badge.gold {
+  background: linear-gradient(135deg, var(--gold), var(--gold-l)) !important;
+  color: #111 !important;
+}
+
+/* Topbar: más limpio */
+.tm-top {
+  background: rgba(10,10,18,0.92) !important;
+  backdrop-filter: blur(12px) !important;
+  border-bottom: 1px solid var(--border) !important;
+}
+
+/* Headings: tipografía mejorada */
+.head h1, .admin-tab > h3 {
+  font-family: 'DM Sans', -apple-system, sans-serif !important;
+  font-weight: 900 !important;
+  letter-spacing: -0.01em !important;
+}
+
+/* Tags */
+.tag {
+  background: rgba(201,169,110,0.13) !important;
+  border: 1px solid rgba(201,169,110,0.25) !important;
+  color: var(--gold-l) !important;
+  border-radius: 999px !important;
+  padding: 3px 9px !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+}
+
+/* AI box: estilo preview morado */
+.ai-box {
+  background: linear-gradient(135deg, rgba(139,92,246,0.12), rgba(255,107,53,0.08)) !important;
+  border: 1px solid rgba(139,92,246,0.25) !important;
+  border-radius: var(--radius) !important;
+}
+.ai-box b { color: var(--gold-l) !important; }
+
+/* Scrollbar moderna */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--o); }
+::-webkit-scrollbar-track { background: transparent; }
+
+/* === NUEVOS ELEMENTOS del preview === */
+
+/* Push notifications */
+#tm9PushWrap{position:fixed;top:20px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:8px;pointer-events:none;max-width:340px}
+.tm9-push{background:var(--card);border:1px solid var(--border);border-left:4px solid var(--o);padding:12px 14px;border-radius:var(--radius-sm);box-shadow:var(--shadow);color:var(--text);font-size:12.5px;pointer-events:auto;opacity:0;transform:translateX(400px);transition:all .3s;position:relative}
+.tm9-push.show{opacity:1;transform:translateX(0)}
+.tm9-push.warn{border-left-color:var(--yellow)}
+.tm9-push.error{border-left-color:var(--red)}
+.tm9-push.success{border-left-color:var(--green)}
+.tm9-push .ph{display:flex;align-items:center;gap:6px;margin-bottom:3px}
+.tm9-push .ph .ico{font-size:14px}
+.tm9-push .ph .title{font-size:12px;font-weight:800;color:#fff;flex:1}
+.tm9-push .body{color:#bbb;line-height:1.4}
+.tm9-push .close{position:absolute;top:6px;right:8px;background:none;border:none;color:#888;cursor:pointer;font-size:14px;padding:2px 4px;line-height:1}
+.tm9-push .close:hover{color:#fff}
+
+/* Toast */
+#tm9ToastWrap{position:fixed;bottom:20px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:8px;pointer-events:none}
+@media(max-width:600px){#tm9ToastWrap{bottom:80px;right:10px;left:10px}}
+.tm9-toast{background:var(--card);border:1px solid var(--border);border-left:4px solid var(--green);padding:14px 18px;border-radius:var(--radius-sm);box-shadow:var(--shadow);max-width:340px;color:var(--text);font-size:13px;font-weight:600;opacity:0;transform:translateX(400px);transition:all .3s;pointer-events:auto}
+.tm9-toast.show{opacity:1;transform:translateX(0)}
+.tm9-toast.warn{border-left-color:var(--yellow)}
+
+/* WhatsApp attach */
+#tm9WaAttach{display:none;position:fixed;bottom:80px;right:20px;z-index:100;background:var(--card);border:1px solid var(--border2);border-radius:var(--radius);padding:14px;box-shadow:var(--shadow);max-width:340px}
+#tm9WaAttach.open{display:block;animation:tm9fadeIn .2s}
+@keyframes tm9fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.tm9-wa-card{background:var(--card2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px;margin-top:8px;cursor:pointer;transition:.15s}
+.tm9-wa-card:hover{background:rgba(255,107,53,0.1);border-color:var(--o)}
+.tm9-wa-card .card-img{width:100%;height:80px;background:linear-gradient(135deg,#2a2a36,#1a1a25);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:32px;margin-bottom:6px}
+.tm9-wa-card .card-name{font-size:12px;font-weight:700;color:#fff}
+.tm9-wa-card .card-price{font-size:13px;font-weight:800;color:var(--o);margin-top:2px}
+
+/* Drag handle categorías */
+.tm9-drag-handle{cursor:grab;color:#555;font-size:16px;padding:0 6px;user-select:none;transition:.15s}
+.tm9-drag-handle:hover{color:var(--o);cursor:grab}
+.tm9-drag-handle:active{cursor:grabbing}
+.tm9-cat-row{display:flex;align-items:center;gap:8px;padding:8px 10px;background:rgba(255,255,255,0.03);border-radius:8px;margin-bottom:5px;transition:all .18s;border:1px solid transparent}
+.tm9-cat-row:hover{background:rgba(255,107,53,0.06);border-color:rgba(255,107,53,0.15)}
+.tm9-cat-row.dragging{opacity:.5;background:rgba(255,107,53,0.12)}
+.tm9-sort-tip{font-size:11px;color:#888;padding:6px 8px;background:rgba(52,152,219,0.08);border-radius:6px;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+
+/* Bottom bar móvil */
+#tm9BottomBar{display:none;position:fixed;bottom:0;left:0;right:0;z-index:50;background:rgba(10,10,18,0.97);backdrop-filter:blur(12px);border-top:1px solid var(--border);padding:6px 4px env(safe-area-inset-bottom,6px);justify-content:space-around;align-items:center}
+.tm9-bb-btn{background:transparent;border:none;color:#888;padding:6px 8px;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:9px;font-weight:700;border-radius:8px;transition:.15s;min-width:48px;cursor:pointer;font-family:inherit}
+.tm9-bb-btn .ico{font-size:18px}
+.tm9-bb-btn.active{color:var(--o);background:rgba(255,107,53,0.12)}
+.tm9-bb-btn .b{position:absolute;top:0;right:6px;background:var(--red);color:#fff;border-radius:8px;min-width:14px;height:14px;font-size:8px;font-weight:900;padding:0 3px;display:flex;align-items:center;justify-content:center}
+@media(max-width:760px){#tm9BottomBar{display:flex}body{padding-bottom:70px}}
+
+/* Charts */
+.tm9-chart-container{display:flex;align-items:flex-end;gap:4px;height:160px;padding:14px 4px;background:rgba(0,0,0,0.2);border-radius:var(--radius-sm);overflow-x:auto}
+.tm9-chart-col{flex:1;min-width:24px;display:flex;flex-direction:column;align-items:center;gap:4px}
+.tm9-chart-col .bar{width:100%;background:linear-gradient(180deg,var(--o),var(--oo));border-radius:4px 4px 0 0;min-height:4px;transition:height .8s ease}
+.tm9-chart-col .lbl{font-size:9px;color:#888}
+
+/* Animación de entrada de vistas */
+@keyframes tm9fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.admin-tab.active{animation:tm9fadeIn .3s ease !important}
 </style>
 
 <!-- Push notifications container -->
-<div id="tm8PushWrap"></div>
+<div id="tm9PushWrap"></div>
 
 <!-- Toast container -->
-<div id="tm8ToastWrap"></div>
+<div id="tm9ToastWrap"></div>
 
 <!-- WhatsApp attach panel -->
-<div id="tm8WaAttach">
+<div id="tm9WaAttach">
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
     <strong style="color:#fff;font-size:13px">📎 Enviar imagen de producto</strong>
-    <button onclick="document.getElementById('tm8WaAttach').classList.remove('open')" style="background:none;border:none;color:#888;cursor:pointer;font-size:16px">✕</button>
+    <button onclick="document.getElementById('tm9WaAttach').classList.remove('open')" style="background:none;border:none;color:#888;cursor:pointer;font-size:16px">✕</button>
   </div>
-  <div id="tm8WaCards"></div>
+  <div id="tm9WaCards"></div>
 </div>
 
 <!-- Bottom bar móvil -->
-<div id="tm8BottomBar">
-  <button class="tm8-bb-btn" data-v="inicio"><span class="ico">🏠</span>Inicio</button>
-  <button class="tm8-bb-btn" data-v="manage-products"><span class="ico">📦</span>Prod.</button>
-  <button class="tm8-bb-btn" data-v="add-products"><span class="ico">➕</span>Agregar</button>
-  <button class="tm8-bb-btn" data-v="ventas"><span class="ico">💰</span>Ventas</button>
-  <button class="tm8-bb-btn" data-v="analytics"><span class="ico">📈</span>Stats</button>
-  <button class="tm8-bb-btn" data-v="radar"><span class="ico">📡</span>Radar</button>
-  <button class="tm8-bb-btn" data-v="configuracion"><span class="ico">⚙️</span>Config</button>
+<div id="tm9BottomBar">
+  <button class="tm9-bb-btn" data-v="inicio"><span class="ico">🏠</span>Inicio</button>
+  <button class="tm9-bb-btn" data-v="manage-products"><span class="ico">📦</span>Prod.</button>
+  <button class="tm9-bb-btn" data-v="add-products"><span class="ico">➕</span>Agregar</button>
+  <button class="tm9-bb-btn" data-v="ventas"><span class="ico">💰</span>Ventas</button>
+  <button class="tm9-bb-btn" data-v="analytics"><span class="ico">📈</span>Stats</button>
+  <button class="tm9-bb-btn" data-v="radar"><span class="ico">📡</span>Radar</button>
+  <button class="tm9-bb-btn" data-v="configuracion"><span class="ico">⚙️</span>Config</button>
 </div>
 
 <script>
 (function(){
   'use strict';
 
-  // ===== TOAST =====
-  window.tm8Toast = function(msg, type){
+  // TOAST
+  window.tm9Toast = function(msg, type){
     type = type || 'success';
-    var c = document.getElementById('tm8ToastWrap');
+    var c = document.getElementById('tm9ToastWrap');
     if(!c) return;
     var t = document.createElement('div');
-    t.className = 'tm8-toast ' + (type === 'success' ? '' : type);
+    t.className = 'tm9-toast ' + (type === 'success' ? '' : type);
     t.textContent = msg;
     c.appendChild(t);
     setTimeout(function(){ t.classList.add('show'); }, 10);
@@ -2107,7 +2290,7 @@ if ('serviceWorker' in navigator) {
     }, 3000);
   };
 
-  // ===== PUSH NOTIFICATIONS (cada 30s) =====
+  // PUSH NOTIFICATIONS
   var pushMessages = [
     {ico:'🚨',title:'Combo vence pronto',body:'Combo Gamer Completo termina en 2h. ¿Renovar?',type:'warn'},
     {ico:'💰',title:'Carritos sin recuperar',body:'3 carritos abandonados ($487). Enviar WhatsApp ahora.',type:''},
@@ -2117,12 +2300,12 @@ if ('serviceWorker' in navigator) {
     {ico:'🤖',title:'IA detectó error',body:'Audífonos TWS sin descripción SEO. -18% ventas.',type:'warn'},
   ];
   var pushIdx = 0;
-  window.tm8ShowPush = function(msg){
+  window.tm9ShowPush = function(msg){
     if(!msg) msg = pushMessages[pushIdx++ % pushMessages.length];
-    var wrap = document.getElementById('tm8PushWrap');
+    var wrap = document.getElementById('tm9PushWrap');
     if(!wrap) return;
     var p = document.createElement('div');
-    p.className = 'tm8-push ' + (msg.type || '');
+    p.className = 'tm9-push ' + (msg.type || '');
     p.innerHTML = '<button class="close" onclick="this.parentElement.remove()">✕</button>' +
       '<div class="ph"><span class="ico">' + msg.ico + '</span><span class="title">' + msg.title + '</span></div>' +
       '<div class="body">' + msg.body + '</div>';
@@ -2134,81 +2317,64 @@ if ('serviceWorker' in navigator) {
     }, 8000);
   };
 
-  // ===== WHATSAPP ATTACH (mini-card SVG con producto) =====
+  // WHATSAPP ATTACH
   var waProducts = [
-    {ico:'🎮',name:'Combo Gamer Completo',price:'$159.00',img:'🎮'},
-    {ico:'📱',name:'iPhone 13 128GB',price:'$599.00',img:'📱'},
-    {ico:'🔋',name:'Combo Power + Cable',price:'$39.00',img:'🔋'},
+    {ico:'🎮',name:'Combo Gamer Completo',price:'$159.00'},
+    {ico:'📱',name:'iPhone 13 128GB',price:'$599.00'},
+    {ico:'🔋',name:'Combo Power + Cable',price:'$39.00'},
   ];
-  window.tm8OpenWaAttach = function(){
-    var panel = document.getElementById('tm8WaAttach');
-    var cards = document.getElementById('tm8WaCards');
+  window.tm9OpenWaAttach = function(){
+    var panel = document.getElementById('tm9WaAttach');
+    var cards = document.getElementById('tm9WaCards');
     if(!panel || !cards) return;
     cards.innerHTML = waProducts.map(function(p, i){
-      return '<div class="tm8-wa-card" onclick="tm8SendWaCard(' + i + ')">' +
+      return '<div class="tm9-wa-card" onclick="tm9SendWaCard(' + i + ')">' +
         '<div class="card-img">' + p.ico + '</div>' +
         '<div class="card-name">' + p.name + '</div>' +
-        '<div class="card-price">' + p.price + '</div>' +
-        '</div>';
+        '<div class="card-price">' + p.price + '</div></div>';
     }).join('');
     panel.classList.add('open');
   };
-  window.tm8SendWaCard = function(idx){
+  window.tm9SendWaCard = function(idx){
     var p = waProducts[idx];
-    tm8Toast('📎 Imagen de "' + p.name + '" enviada en el chat', 'success');
-    document.getElementById('tm8WaAttach').classList.remove('open');
-    // Simular respuesta del cliente después de 2s
+    tm9Toast('📎 Imagen de "' + p.name + '" enviada');
+    document.getElementById('tm9WaAttach').classList.remove('open');
     setTimeout(function(){
-      tm8ShowPush({ico:'💬',title:'Cliente respondió',body:'"Sí lo quiero, ¿cómo pago?"',type:'success'});
+      tm9ShowPush({ico:'💬',title:'Cliente respondió',body:'"Sí lo quiero, ¿cómo pago?"',type:'success'});
     }, 2000);
   };
 
-  // ===== DRAG & DROP PERSISTENTE EN CATEGORÍAS =====
-  window.tm8InitCatDrag = function(){
+  // DRAG & DROP CATEGORÍAS
+  window.tm9InitCatDrag = function(){
     var list = document.getElementById('categoryList');
-    if(!list || list.dataset.tm8drag) return;
-    list.dataset.tm8drag = '1';
-
-    // Añadir sort tip
+    if(!list || list.dataset.tm9drag) return;
+    list.dataset.tm9drag = '1';
     var tip = document.createElement('div');
-    tip.className = 'tm8-sort-tip';
+    tip.className = 'tm9-sort-tip';
     tip.innerHTML = '💡 Arrastra los íconos ⋮⋮ para reordenar. Se guarda automático.';
     list.parentNode.insertBefore(tip, list);
-
-    // Añadir drag handles a cada item
-    var items = list.querySelectorAll('.cat-item, .category-item, [data-cat]');
-    if(items.length === 0){
-      // fallback: buscar divs que parezcan categorías
-      items = list.children;
-    }
-
+    var items = list.children;
     Array.prototype.forEach.call(items, function(item){
-      if(item.querySelector('.tm8-drag-handle')) return;
+      if(item.querySelector('.tm9-drag-handle')) return;
       var handle = document.createElement('span');
-      handle.className = 'tm8-drag-handle';
+      handle.className = 'tm9-drag-handle';
       handle.textContent = '⋮⋮';
-      handle.setAttribute('draggable', 'true');
       item.insertBefore(handle, item.firstChild);
-      item.classList.add('tm8-cat-row');
+      item.classList.add('tm9-cat-row');
       item.setAttribute('draggable', 'true');
-
       handle.addEventListener('dragstart', function(e){
         e.dataTransfer.effectAllowed = 'move';
-        e.dataTransfer.setData('text/plain', '');
         item.classList.add('dragging');
       });
       handle.addEventListener('dragend', function(){
         item.classList.remove('dragging');
       });
-
       item.addEventListener('dragover', function(e){
         e.preventDefault();
-        e.dataTransfer.dropEffect = 'move';
         var dragging = list.querySelector('.dragging');
         if(dragging && dragging !== item){
           var rect = item.getBoundingClientRect();
-          var midpoint = rect.top + rect.height / 2;
-          if(e.clientY < midpoint){
+          if(e.clientY < rect.top + rect.height / 2){
             list.insertBefore(dragging, item);
           } else {
             list.insertBefore(dragging, item.nextSibling);
@@ -2217,53 +2383,35 @@ if ('serviceWorker' in navigator) {
       });
       item.addEventListener('drop', function(e){
         e.preventDefault();
-        tm8SaveCatOrder();
+        var names = [];
+        Array.prototype.forEach.call(list.children, function(c){
+          var t = c.textContent.replace('⋮⋮','').trim().substring(0,30);
+          if(t) names.push(t);
+        });
+        try { localStorage.setItem('tm_cat_order', JSON.stringify(names)); } catch(e){}
+        tm9Toast('Orden actualizado · guardado');
       });
     });
   };
-  window.tm8SaveCatOrder = function(){
-    var list = document.getElementById('categoryList');
-    if(!list) return;
-    var names = [];
-    var items = list.querySelectorAll('.cat-item, .category-item, [data-cat]');
-    if(items.length === 0) items = list.children;
-    Array.prototype.forEach.call(items, function(item){
-      var text = item.textContent.replace('⋮⋮', '').trim().substring(0, 30);
-      if(text) names.push(text);
-    });
-    try {
-      localStorage.setItem('tm_cat_order', JSON.stringify(names));
-      tm8Toast('Orden actualizado · guardado', 'success');
-    } catch(e){}
-  };
 
-  // ===== CHARTS VIVOS (datos realistas 7 días) =====
-  window.tm8EnhanceCharts = function(){
-    // Buscar contenedores de gráficos existentes y mejorarlos
-    var chartContainers = document.querySelectorAll('[class*="chart"], [class*="bars"], [id*="chart"]');
-    // Si no hay gráfico de 7 días, inyectar datos en el dashboard
+  // CHARTS VIVOS
+  window.tm9EnhanceCharts = function(){
     var dashTop = document.getElementById('dashTop');
-    if(dashTop && !document.getElementById('tm8Chart')){
+    if(dashTop && !document.getElementById('tm9Chart')){
       var chart = document.createElement('div');
-      chart.id = 'tm8Chart';
+      chart.id = 'tm9Chart';
       chart.style.cssText = 'margin-top:14px;padding:14px;background:rgba(0,0,0,.2);border-radius:10px';
       var days = ['L','M','M','J','V','S','D'];
       var usd = [120, 180, 150, 240, 380, 520, 847];
       var max = Math.max.apply(null, usd);
-      chart.innerHTML = '<div style="font-size:12px;color:#888;margin-bottom:10px;font-weight:700">📈 Ventas últimos 7 días (USD)</div>' +
-        '<div class="tm8-chart-container">' +
+      chart.innerHTML = '<div style="font-size:12px;color:#888;margin-bottom:10px;font-weight:700">📈 Ventas últimos 7 días (USD)</div><div class="tm9-chart-container">' +
         days.map(function(d, i){
           var h = Math.round((usd[i] / max) * 100);
-          return '<div class="tm8-chart-col">' +
-            '<div class="bar tm8-chart-bar" style="height:0%" data-h="' + h + '"></div>' +
-            '<div class="lbl">' + d + '</div>' +
-            '</div>';
+          return '<div class="tm9-chart-col"><div class="bar" style="height:0%" data-h="' + h + '"></div><div class="lbl">' + d + '</div></div>';
         }).join('') + '</div>';
       dashTop.parentNode.insertBefore(chart, dashTop.nextSibling);
-
-      // Animar las barras
       setTimeout(function(){
-        var bars = chart.querySelectorAll('.tm8-chart-bar');
+        var bars = chart.querySelectorAll('.bar');
         Array.prototype.forEach.call(bars, function(b){
           b.style.height = b.getAttribute('data-h') + '%';
         });
@@ -2271,36 +2419,33 @@ if ('serviceWorker' in navigator) {
     }
   };
 
-  // ===== BOTTOM BAR (móvil) =====
+  // BOTTOM BAR
   function setupBottomBar(){
-    var nav = document.getElementById('tm8BottomBar');
+    var nav = document.getElementById('tm9BottomBar');
     if(!nav) return;
-    var btns = nav.querySelectorAll('.tm8-bb-btn');
-    Array.prototype.forEach.call(btns, function(btn){
+    nav.querySelectorAll('.tm9-bb-btn').forEach(function(btn){
       btn.addEventListener('click', function(){
         var v = this.getAttribute('data-v');
-        if(typeof switchTab === 'function'){ switchTab(v); }
+        if(typeof switchTab === 'function') switchTab(v);
       });
     });
-    // Sync active
     document.addEventListener('click', function(e){
       var tabBtn = e.target.closest('.tab-btn[data-tab]');
       if(tabBtn){
         var v = tabBtn.getAttribute('data-tab');
-        Array.prototype.forEach.call(btns, function(b){
+        nav.querySelectorAll('.tm9-bb-btn').forEach(function(b){
           b.classList.toggle('active', b.getAttribute('data-v') === v);
         });
       }
     });
   }
 
-  // ===== AÑADIR BOTÓN 📎 AL CHAT DE WHATSAPP =====
+  // WHATSAPP ATTACH BUTTON
   function addWhatsAppAttach(){
-    // Buscar input del chat
     var chatInputs = document.querySelectorAll('input[placeholder*="escribir"], input[placeholder*="mensaje"], .chat-input input');
-    Array.prototype.forEach.call(chatInputs, function(input){
-      if(input.dataset.tm8attach) return;
-      input.dataset.tm8attach = '1';
+    chatInputs.forEach(function(input){
+      if(input.dataset.tm9attach) return;
+      input.dataset.tm9attach = '1';
       var parent = input.parentElement;
       if(!parent) return;
       var btn = document.createElement('button');
@@ -2308,46 +2453,36 @@ if ('serviceWorker' in navigator) {
       btn.style.cssText = 'background:rgba(255,107,53,.15);border:1px solid rgba(255,107,53,.3);color:#FF6B35;border-radius:10px;padding:8px 12px;cursor:pointer;font-size:14px;font-family:inherit';
       btn.textContent = '📎';
       btn.title = 'Adjuntar imagen de producto';
-      btn.addEventListener('click', tm8OpenWaAttach);
+      btn.addEventListener('click', tm9OpenWaAttach);
       parent.insertBefore(btn, input);
     });
   }
 
-  // ===== INIT =====
+  // INIT
   function init(){
     setupBottomBar();
-    tm8EnhanceCharts();
+    tm9EnhanceCharts();
     addWhatsAppAttach();
-
-    // Push notifications cada 30s
-    setTimeout(function(){ tm8ShowPush(); }, 5000); // primera a los 5s
-    setInterval(function(){ tm8ShowPush(); }, 30000); // luego cada 30s
-
-    // Inicializar drag&drop cuando se entra a categorías
+    setTimeout(function(){ tm9ShowPush(); }, 5000);
+    setInterval(function(){ tm9ShowPush(); }, 30000);
     document.addEventListener('click', function(e){
       if(e.target.closest('[data-tab="manage-categories"], [data-arg="manage-categories"]')){
-        setTimeout(tm8InitCatDrag, 500);
+        setTimeout(tm9InitCatDrag, 500);
       }
     });
-
-    // Toast de bienvenida
     setTimeout(function(){
-      tm8Toast('💡 Push activas · Arrastra categorías para reordenar · 📎 en WhatsApp', 'success');
+      tm9Toast('💡 Push activas · Arrastra categorías · 📎 en WhatsApp');
     }, 2000);
   }
-
   if(document.readyState === 'loading'){
     document.addEventListener('DOMContentLoaded', init);
   } else {
     setTimeout(init, 500);
   }
-
-  // Re-intentar después de 3s por si el panel carga tarde
   setTimeout(function(){
-    if(!document.getElementById('tm8Chart')) tm8EnhanceCharts();
+    if(!document.getElementById('tm9Chart')) tm9EnhanceCharts();
     addWhatsAppAttach();
   }, 3000);
-
 })();
 </script>
 
