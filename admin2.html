@@ -199,7 +199,7 @@
   .banner-info { background:rgba(52,152,219,0.08); border:1px solid rgba(52,152,219,0.3); border-radius:10px; padding:11px 14px; font-size:12px; color:#bcdcf5; margin-bottom:14px; line-height:1.5; }
 
   @media (max-width:760px) {
-    .body { grid-template-columns:1fr !important; }
+    .body { grid-template-columns:minmax(0,1fr) !important; }
     .sidebar { position:fixed; bottom:0; left:0; right:0; z-index:80; flex-direction:row !important; overflow-x:auto !important; padding:8px 12px !important; border-right:none !important; border-top:1px solid var(--border); background:rgba(10,10,18,0.95) !important; backdrop-filter:blur(12px) !important; justify-content:flex-start !important; gap:6px !important; }
     .side-btn { flex-shrink:0; }
     .side-sep { display:none !important; }
