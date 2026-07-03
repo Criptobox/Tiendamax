@@ -307,7 +307,7 @@
       <div id="view-productos" class="view">
         <div class="ph">
           <div><h2>📦 Productos</h2><p id="prod-count">—</p></div>
-          <div class="ph-actions"><input class="btn btn-ghost" id="prod-buscar" placeholder="🔍 Buscar…" style="min-width:180px" oninput="renderProductos()"><button class="btn btn-ghost" id="prod-filtro-bajo" onclick="apToggleFiltroBajo()" title="Ver solo stock bajo/agotado">⚠️ Stock bajo</button><button class="btn btn-primary" onclick="go('agregar')">+ Agregar</button></div>
+          <div class="ph-actions"><input class="btn btn-ghost" id="prod-buscar" placeholder="🔍 Buscar…" style="min-width:150px" oninput="renderProductos()"><select class="btn btn-ghost" id="prod-cat-filtro" onchange="renderProductos()" style="min-width:150px"><option value="">Todas las categorías</option></select><button class="btn btn-ghost" id="prod-filtro-fav" onclick="apToggleFiltroFav()" title="Ver solo destacados/favoritos">⭐ Favoritos</button><button class="btn btn-ghost" id="prod-filtro-bajo" onclick="apToggleFiltroBajo()" title="Ver solo stock bajo/agotado">⚠️ Stock bajo</button><button class="btn btn-primary" onclick="go('agregar')">+ Agregar</button></div>
         </div>
         <div class="kpis" id="prod-stockbar" style="margin-bottom:14px"></div>
         <div class="prod-grid" id="prod-grid"></div>
@@ -650,18 +650,35 @@ function renderInicio(){
 
 /* ============ PRODUCTOS ============ */
 const emojiCat = c => { c=(c||'').toLowerCase(); if(/cel|phone|móvil/.test(c))return'📱'; if(/audio|auric/.test(c))return'🎧'; if(/comput|laptop|pc/.test(c))return'💻'; if(/energ|solar|bater/.test(c))return'🔋'; if(/red|wifi|router/.test(c))return'📡'; if(/gam/.test(c))return'🎮'; if(/herram|tool/.test(c))return'🔧'; if(/hogar|casa/.test(c))return'🏠'; if(/carro|auto|moto/.test(c))return'🚗'; return'📦'; };
-let _apFiltroBajo = false;
+let _apFiltroBajo = false, _apFiltroFav = false;
 function apToggleFiltroBajo(){
   _apFiltroBajo = !_apFiltroBajo;
   const b = $('#prod-filtro-bajo');
   if(b){ b.style.background = _apFiltroBajo?'rgba(231,76,60,0.2)':''; b.style.color = _apFiltroBajo?'var(--red)':''; b.style.borderColor = _apFiltroBajo?'rgba(231,76,60,0.4)':''; }
   renderProductos();
 }
+function apToggleFiltroFav(){
+  _apFiltroFav = !_apFiltroFav;
+  const b = $('#prod-filtro-fav');
+  if(b){ b.style.background = _apFiltroFav?'rgba(201,169,110,0.25)':''; b.style.color = _apFiltroFav?'var(--gold)':''; b.style.borderColor = _apFiltroFav?'var(--gold)':''; }
+  renderProductos();
+}
+function apLlenarFiltroCategorias(){
+  const sel = $('#prod-cat-filtro'); if(!sel) return;
+  const cur = sel.value;
+  const cats = [...new Set(PRODUCTOS.map(p=>p.categoria).filter(Boolean))].sort((a,b)=>a.localeCompare(b));
+  sel.innerHTML = '<option value="">Todas las categorías</option>' + cats.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join('');
+  if(cats.includes(cur)) sel.value = cur;
+}
 function renderProductos(){
   const grid = $('#prod-grid'); if(!grid) return;
+  apLlenarFiltroCategorias();
   const q = norm($('#prod-buscar') && $('#prod-buscar').value);
+  const catFiltro = ($('#prod-cat-filtro') && $('#prod-cat-filtro').value) || '';
   let list = PRODUCTOS;
   if(q) list = list.filter(p=>norm(p.nombre).includes(q)||norm(p.categoria).includes(q));
+  if(catFiltro) list = list.filter(p=>p.categoria===catFiltro);
+  if(_apFiltroFav) list = list.filter(p=>p.masVendido);
   if(_apFiltroBajo) list = list.filter(p=>Number(p.stock)<=5);
   // KPIs de stock (fusión de la antigua sección Stock) — feature 6
   const crit = PRODUCTOS.filter(p=>Number(p.stock)>0&&Number(p.stock)<=5).length;
