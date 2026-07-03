@@ -63,6 +63,19 @@
   .btn-ghost { background:rgba(255,255,255,0.05); color:#ccc; border:1px solid var(--border); } .btn-ghost:hover { background:rgba(255,255,255,0.1); color:#fff; }
   .btn-gold { background:linear-gradient(135deg,var(--gold),#E8C88A); color:#111; } .btn-gold:hover { transform:translateY(-1px); }
 
+  /* Hero de inventario (Inicio) */
+  .hero-inv { background:linear-gradient(160deg,var(--card2),var(--card)); border:1px solid var(--border); border-radius:18px; padding:20px; margin-bottom:16px; position:relative; overflow:hidden; }
+  .hero-inv::before { content:''; position:absolute; top:0; left:16px; right:16px; height:1px; background:linear-gradient(90deg,transparent,var(--gold),transparent); opacity:.6; }
+  .hero-inv .hi-lbl { font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-bottom:8px; font-weight:700; }
+  .hero-inv .hi-val { font-size:38px; font-weight:900; color:var(--gold); line-height:1; }
+  .hero-inv .hi-val small { font-size:18px; color:#8a6d3a; font-weight:800; margin-right:2px; }
+  .hero-inv .hi-split { display:flex; justify-content:space-between; align-items:flex-end; margin-top:16px; gap:14px; }
+  .hero-inv .hi-sold-l { font-size:10.5px; color:var(--muted); margin-bottom:3px; text-transform:uppercase; letter-spacing:.06em; font-weight:700; }
+  .hero-inv .hi-sold-v { font-size:18px; font-weight:800; color:#fff; }
+  .hero-inv .hi-sold-s { font-size:11px; color:var(--green); margin-top:2px; font-weight:700; }
+  .hero-inv .hi-spark { width:110px; height:40px; flex:none; }
+  @media (max-width:480px) { .hero-inv .hi-val { font-size:30px; } }
+
   .kpis { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:10px; margin-bottom:16px; }
   .kpi { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:14px; position:relative; overflow:hidden; }
   .kpi::before { content:''; position:absolute; top:0; left:0; width:3px; height:100%; background:var(--o); }
@@ -182,6 +195,22 @@
 
   /* Radar / tabla */
   .table-wrap { overflow-x:auto; border-radius:12px; border:1px solid var(--border); }
+  /* Publicar — compartir por producto */
+  .pub-share-card { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:12px; }
+  .pub-share-top { display:flex; gap:12px; align-items:center; margin-bottom:11px; }
+  .pub-share-thumb { width:64px; height:64px; object-fit:cover; border-radius:11px; background:#222; flex-shrink:0; }
+  .pub-share-info { min-width:0; }
+  .pub-share-info b { display:block; color:#fff; font-size:14px; line-height:1.25; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .pub-share-info small { color:var(--muted); font-size:11.5px; }
+  .pub-share-actions { display:grid; grid-template-columns:repeat(4,1fr); gap:6px; }
+  .pub-act { border:none; border-radius:9px; padding:9px 4px; font-size:11px; font-weight:700; cursor:pointer; color:#fff; display:flex; align-items:center; justify-content:center; gap:4px; transition:filter .15s; }
+  .pub-act:hover { filter:brightness(1.12); }
+  .pub-act.wa { background:#25D366; color:#04351d; }
+  .pub-act.fb { background:#1877F2; }
+  .pub-act.estado { background:linear-gradient(135deg,var(--o),var(--gold)); color:#1a1006; }
+  .pub-act.ghost { background:rgba(255,255,255,0.07); border:1px solid var(--border); color:#ccc; }
+  @media (max-width:380px) { .pub-share-actions { grid-template-columns:repeat(2,1fr); } }
+
   table { width:100%; border-collapse:collapse; font-size:13px; }
   th { background:rgba(255,255,255,0.04); color:var(--muted); text-transform:uppercase; font-size:10px; font-weight:800; letter-spacing:0.6px; padding:11px 12px; text-align:left; border-bottom:1px solid var(--border); }
   td { padding:11px 12px; border-bottom:1px solid var(--line); color:#ccc; vertical-align:middle; }
@@ -295,6 +324,18 @@
         <div class="ph">
           <div><h2>🏠 Inicio</h2><p id="inicio-fecha">Vista general de tu tienda</p></div>
           <div class="ph-actions"><button class="btn btn-ghost" onclick="go('stock')">📈 Stock</button><button class="btn btn-primary" onclick="go('agregar')">+ Agregar</button></div>
+        </div>
+        <div class="hero-inv" id="inicio-hero">
+          <div class="hi-lbl">Valor de inventario</div>
+          <div class="hi-val"><small>$</small><span id="hi-val">0</span></div>
+          <div class="hi-split">
+            <div>
+              <div class="hi-sold-l">Vendido · 7 días</div>
+              <div class="hi-sold-v" id="hi-sold-v">$0</div>
+              <div class="hi-sold-s" id="hi-sold-s">—</div>
+            </div>
+            <svg class="hi-spark" id="hi-spark" viewBox="0 0 110 40" fill="none"></svg>
+          </div>
         </div>
         <div class="kpis" id="inicio-kpis"></div>
         <div class="ai-banner">
@@ -801,6 +842,15 @@ function renderInicio(){
   VENTAS.forEach(v=>{ const d=ventaFecha(v); if(!d) return; const k=d.toISOString().slice(0,10); if(k in slots) slots[k]+=ventaTotal(v); });
   const max=Math.max(1,...dias.map(d=>slots[d.key]));
   $('#chart-ventas').innerHTML = dias.map(d=>{ const val=slots[d.key]; const h=Math.round(val/max*100); return `<div class="bar" style="height:${Math.max(2,h)}%">${val?`<span class="v">${Math.round(val)}</span>`:''}<span class="lbl">${d.lbl}</span></div>`; }).join('');
+  // Hero: valor de inventario + vendido 7 días (mismo cálculo del gráfico de arriba)
+  const valorInventario = PRODUCTOS.reduce((s,p)=>s+Number(p.precioActual||0)*Number(p.stock||0),0);
+  const vendido7d = dias.reduce((s,d)=>s+slots[d.key],0);
+  const nVentas7d = VENTAS.reduce((s,v)=>{ const d=ventaFecha(v); return s+(d && (d.toISOString().slice(0,10) in slots)?1:0); },0);
+  $('#hi-val').textContent = Math.round(valorInventario).toLocaleString('en-US');
+  $('#hi-sold-v').textContent = money(vendido7d);
+  $('#hi-sold-s').textContent = nVentas7d ? ('↑ '+nVentas7d+' venta'+(nVentas7d!==1?'s':'')) : 'Sin ventas esta semana';
+  const sparkPts = dias.map((d,i)=>{ const x = i*(110/6); const y = 38 - Math.round((slots[d.key]/max)*34); return x+','+y; }).join(' ');
+  $('#hi-spark').innerHTML = `<polyline points="${sparkPts}" stroke="#C9A96E" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="${110}" cy="${38 - Math.round((slots[dias[6].key]/max)*34)}" r="2.6" fill="#C9A96E"/>`;
   // Top productos por ventas reales
   const cont={};
   VENTAS.forEach(v=>{ (v.productos||v.items||[]).forEach(it=>{ const nm=it.nombre||it.nm||''; if(!nm) return; cont[nm]=(cont[nm]||0)+(Number(it.cantidad||it.qty||1)); }); });
@@ -1155,14 +1205,16 @@ function pubCompartirHTML(){
 }
 function pubRenderShareList(){
   const box=$('#pub-share-list'); if(!box) return; const arr=pubShareFiltered();
-  box.innerHTML = arr.length ? arr.map(p=>`<div style="display:grid;grid-template-columns:58px 1fr auto;gap:12px;align-items:center;background:rgba(255,255,255,0.035);border:1px solid var(--border);border-radius:14px;padding:10px">
-      <img src="${esc(p.imagen||'')}" onerror="this.style.visibility='hidden'" style="width:58px;height:58px;object-fit:cover;border-radius:10px;background:#222">
-      <div style="min-width:0"><b style="display:block;color:#fff;font-size:14px;line-height:1.2;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(p.nombre||'Producto')}</b><small style="color:var(--muted)">${esc(p.categoria||'General')} · $${Number(p.precioActual||0).toFixed(2)} · stock ${Number(p.stock||0)}</small></div>
-      <div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end">
-        <button type="button" class="btn btn-primary" style="padding:6px 10px;font-size:12px" onclick="pubShareAct('${esc(p.id)}','story')">🖼️ Estado</button>
-        <button type="button" class="btn btn-ghost" style="padding:6px 10px;font-size:12px" onclick="pubShareAct('${esc(p.id)}','wa')">💬 Chat</button>
-        <button type="button" class="btn btn-ghost" style="padding:6px 10px;font-size:12px" onclick="pubShareAct('${esc(p.id)}','fb')">📘 Facebook</button>
-        <button type="button" class="btn btn-ghost" style="padding:6px 10px;font-size:12px" onclick="pubShareAct('${esc(p.id)}','copy')">🔗 Copiar</button>
+  box.innerHTML = arr.length ? arr.map(p=>`<div class="pub-share-card">
+      <div class="pub-share-top">
+        <img class="pub-share-thumb" src="${esc(p.imagen||'')}" onerror="this.style.visibility='hidden'">
+        <div class="pub-share-info"><b>${esc(p.nombre||'Producto')}</b><small>${esc(p.categoria||'General')} · $${Number(p.precioActual||0).toFixed(2)} · stock ${Number(p.stock||0)}</small></div>
+      </div>
+      <div class="pub-share-actions">
+        <button type="button" class="pub-act estado" onclick="pubShareAct('${esc(p.id)}','story')">🖼️ Estado</button>
+        <button type="button" class="pub-act wa" onclick="pubShareAct('${esc(p.id)}','wa')">💬 Chat</button>
+        <button type="button" class="pub-act fb" onclick="pubShareAct('${esc(p.id)}','fb')">📘 Facebook</button>
+        <button type="button" class="pub-act ghost" onclick="pubShareAct('${esc(p.id)}','copy')">🔗 Copiar</button>
       </div>
     </div>`).join('') : '<div class="empty" style="padding:20px"><div class="ico">📦</div>No hay productos con stock para compartir.</div>';
 }
