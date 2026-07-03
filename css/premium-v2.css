@@ -1,0 +1,342 @@
+/* ═══════════════════════════════════════════════════════════════
+   PREMIUM V2 — Overlay para admin.html
+   Se carga después de admin.css. No rompe estilos existentes.
+   Agrega: favoritos, inner pills, split MN/USD, Clientes 4 tabs
+   ═══════════════════════════════════════════════════════════════ */
+
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Playfair+Display:wght@600;700;800&display=swap');
+
+:root {
+  --pm-bg: #0B0B0F;
+  --pm-surface: #14141B;
+  --pm-elev: #1C1C25;
+  --pm-line: #26262F;
+  --pm-line-soft: #1E1E27;
+  --pm-gold: #C9A96E;
+  --pm-gold-dim: #8a6d3a;
+  --pm-coral: #FF6B35;
+  --pm-text: #ECEAF2;
+  --pm-muted: #8A879A;
+  --pm-muted-2: #57545f;
+  --pm-ok: #5FBF8F;
+  --pm-red: #e74c3c;
+  --pm-purple: #8b5cf6;
+  --pm-blue: #3498db;
+  --pm-r: 18px;
+}
+
+/* ── Inner Pills (used in Clientes, Ventas) ── */
+.pm-inner-pills {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 16px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  scrollbar-width: none;
+}
+.pm-inner-pills::-webkit-scrollbar { display: none; }
+.pm-ipill {
+  white-space: nowrap;
+  padding: 8px 18px;
+  border-radius: 30px;
+  border: 1px solid var(--pm-line);
+  background: var(--pm-surface);
+  color: var(--pm-muted);
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+.pm-ipill:hover { border-color: var(--pm-muted); color: var(--pm-text); }
+.pm-ipill.on {
+  background: rgba(255, 107, 53, 0.14);
+  border-color: rgba(255, 107, 53, 0.35);
+  color: var(--pm-coral);
+}
+
+/* ── Panel switcher ── */
+.pm-panel { display: none; animation: pmFadeIn 0.2s ease; }
+.pm-panel.active { display: block; }
+@keyframes pmFadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ── Favorito toggle en productos ── */
+.pm-fav-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.55);
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(255,255,255,0.08);
+  color: var(--pm-muted-2);
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  z-index: 5;
+  padding: 0;
+  line-height: 1;
+}
+.pm-fav-btn:hover { background: rgba(0,0,0,0.7); border-color: var(--pm-gold); }
+.pm-fav-btn.active {
+  color: var(--pm-gold);
+  background: rgba(201,169,110,0.18);
+  border-color: rgba(201,169,110,0.35);
+}
+.pm-fav-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 14px;
+  border-radius: 30px;
+  border: 1px solid var(--pm-line);
+  background: var(--pm-surface);
+  color: var(--pm-muted);
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.pm-fav-chip:hover { border-color: var(--pm-gold); color: var(--pm-text); }
+.pm-fav-chip.on {
+  background: rgba(201,169,110,0.12);
+  border-color: rgba(201,169,110,0.3);
+  color: var(--pm-gold);
+}
+
+/* ── Ventas split MN/USD ── */
+.pm-sales-hero {
+  background: var(--pm-surface);
+  border: 1px solid var(--pm-line);
+  border-radius: var(--pm-r);
+  padding: 18px;
+  margin-bottom: 14px;
+  position: relative;
+  overflow: hidden;
+}
+.pm-sales-hero::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  opacity: 0.5;
+}
+.pm-sales-hero.usd { background: linear-gradient(135deg, rgba(95,191,143,.08), rgba(46,204,113,.04)); border-color: rgba(95,191,143,.2); }
+.pm-sales-hero.usd::before { background: linear-gradient(90deg, transparent, var(--pm-ok), transparent); }
+.pm-sales-hero.mn { background: linear-gradient(135deg, rgba(201,169,110,.08), rgba(201,169,110,.04)); border-color: rgba(201,169,110,.2); }
+.pm-sales-hero.mn::before { background: linear-gradient(90deg, transparent, var(--pm-gold), transparent); }
+
+.pm-sh-label { font-size: 11px; letter-spacing: .13em; text-transform: uppercase; color: var(--pm-muted); margin-bottom: 6px; }
+.pm-sh-val { font-family: 'Playfair Display', serif; font-size: 32px; font-weight: 800; line-height: 1; }
+.pm-sh-sub { font-size: 12px; color: var(--pm-muted-2); margin-top: 6px; }
+
+.pm-metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 9px; margin-bottom: 16px; }
+.pm-met { background: var(--pm-surface); border: 1px solid var(--pm-line-soft); border-radius: 14px; padding: 12px 10px; text-align: center; }
+.pm-met .v { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; line-height: 1; color: var(--pm-text); }
+.pm-met .k { font-size: 10px; color: var(--pm-muted-2); margin-top: 5px; letter-spacing: .02em; }
+
+/* ── Clientes: CRM Hero ── */
+.pm-crm-hero {
+  background: linear-gradient(135deg, rgba(37,211,102,.06), rgba(37,211,102,.02));
+  border: 1px solid rgba(37,211,102,.2);
+  border-radius: var(--pm-r);
+  padding: 16px;
+  margin-bottom: 14px;
+}
+
+/* ── Clientes: Chat bubbles ── */
+.pm-chat-bubble {
+  max-width: 80%;
+  padding: 10px 14px;
+  border-radius: 16px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--pm-text);
+  margin-bottom: 6px;
+}
+.pm-chat-bubble.incoming {
+  background: var(--pm-elev);
+  border-bottom-left-radius: 4px;
+  align-self: flex-start;
+}
+.pm-chat-bubble.outgoing {
+  background: rgba(37,211,102,.15);
+  border: 1px solid rgba(37,211,102,.2);
+  border-bottom-right-radius: 4px;
+  align-self: flex-end;
+  margin-left: auto;
+}
+.pm-chat-time { font-size: 9px; color: var(--pm-muted-2); text-align: right; margin-top: 3px; }
+.pm-chat-bar {
+  display: flex;
+  gap: 8px;
+  padding: 10px;
+  background: var(--pm-surface);
+  border: 1px solid var(--pm-line);
+  border-radius: 14px;
+}
+.pm-chat-bar input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--pm-text);
+  font-size: 13px;
+  font-family: 'DM Sans', system-ui, sans-serif;
+}
+.pm-chat-bar button {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: #25D366;
+  border: none;
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+}
+
+/* ── Notificar cards ── */
+.pm-notify-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--pm-surface);
+  border: 1px solid var(--pm-line-soft);
+  border-radius: 14px;
+  padding: 14px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+.pm-notify-card:hover { border-color: var(--pm-line); }
+
+/* ── Reviews: Rating bars ── */
+.pm-rating-bar { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.pm-rb-label { font-size: 11px; color: var(--pm-muted); width: 20px; text-align: right; }
+.pm-rb-track { flex: 1; height: 6px; background: var(--pm-elev); border-radius: 3px; overflow: hidden; }
+.pm-rb-fill { height: 100%; background: var(--pm-gold); border-radius: 3px; transition: width 0.4s; }
+.pm-rb-pct { font-size: 10px; color: var(--pm-muted-2); width: 30px; }
+
+/* ── Register sale modal ── */
+.pm-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(4px);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.pm-modal {
+  background: var(--pm-elev);
+  border: 1px solid var(--pm-line);
+  border-radius: 20px;
+  padding: 24px;
+  width: 100%;
+  max-width: 420px;
+  max-height: 85vh;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+.pm-modal::-webkit-scrollbar { display: none; }
+.pm-modal h2 {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--pm-text);
+  margin-bottom: 16px;
+}
+.pm-modal-close {
+  position: absolute;
+  top: 16px; right: 16px;
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.12);
+  color: var(--pm-muted);
+  font-size: 14px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+}
+.pm-label { display: block; font-size: 11px; font-weight: 600; color: var(--pm-muted); margin-bottom: 6px; letter-spacing: .02em; }
+.pm-input {
+  width: 100%;
+  background: var(--pm-bg);
+  border: 1px solid var(--pm-line);
+  border-radius: 12px;
+  padding: 12px 14px;
+  color: var(--pm-text);
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s;
+  margin-bottom: 12px;
+  box-sizing: border-box;
+}
+.pm-input:focus { border-color: var(--pm-coral); }
+.pm-select {
+  width: 100%;
+  background: var(--pm-bg);
+  border: 1px solid var(--pm-line);
+  border-radius: 12px;
+  padding: 12px 14px;
+  color: var(--pm-text);
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-size: 14px;
+  outline: none;
+  margin-bottom: 12px;
+  box-sizing: border-box;
+  -webkit-appearance: none;
+}
+.pm-row { display: flex; gap: 10px; margin-bottom: 12px; }
+.pm-row > div { flex: 1; }
+.pm-btn {
+  padding: 12px 20px;
+  border-radius: 12px;
+  border: 1px solid var(--pm-line);
+  background: var(--pm-surface);
+  color: var(--pm-text);
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.pm-btn:hover { border-color: var(--pm-muted); }
+.pm-btn-fill {
+  background: linear-gradient(135deg, var(--pm-coral), #e5551f);
+  border-color: transparent;
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(255,107,53,.25);
+}
+.pm-btn-sm { padding: 6px 12px; font-size: 11px; border-radius: 10px; }
+.pm-btn-ghost { background: transparent; }
+.pm-btn-ghost:hover { background: rgba(255,255,255,0.05); }
+
+/* ── Section header ── */
+.pm-sec-h {
+  font-size: 11px;
+  letter-spacing: .13em;
+  text-transform: uppercase;
+  color: var(--pm-muted-2);
+  margin: 16px 0 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.pm-sec-h .line { flex: 1; height: 1px; background: var(--pm-line-soft); }
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .pm-sh-val { font-size: 26px; }
+  .pm-metrics { grid-template-columns: repeat(2, 1fr); }
+}
