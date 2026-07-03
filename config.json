@@ -1,8 +1,6 @@
 {
-  "tasaMN": 640.0,
-  "ofertaDiaId": "1778104115783",
-  "ofertaDiaTexto": "🔥🔥🔥TU MEJOR OPCIÓN 🔥🔥🔥",
-  "ofertaDiaActualizado": "2026-06-29T15:34:58.398Z",
+  "tasaMN": 630,
+  "ofertaDiaActualizado": "2026-07-03T17:03:36.979Z",
   "firebaseConfig": {
     "apiKey": "AIzaSyDlmR0_lwZSf7LcoVaz3FvFU3VvBDnCRcM",
     "authDomain": "tiendamax-8feb5.firebaseapp.com",
@@ -13,9 +11,9 @@
     "appId": "1:238891228701:web:d515133e229c48a5adb0f4",
     "vapidKey": "BAXhJOhwCtSkc1jH09b2q04lVg5Cr4QNK3C9dqUcBIjzEJZJ66vkS7MfNLAhopd-eK3jYkpXFMk4zBzQfs8nbhc"
   },
-  "actualizado": "2026-07-03T16:07:22.916183+00:00",
-  "tasaMNAnterior": 635.0,
+  "actualizado": "2026-07-02T18:15:35.373930+00:00",
+  "tasaMNAnterior": 625.64,
   "tasaFuente": "elTOQUE API",
-  "tasaActualizada": "2026-07-03",
+  "tasaActualizada": "2026-07-02",
   "margenMN": 20
 }
