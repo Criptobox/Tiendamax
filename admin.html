@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="es"><head><meta charset="UTF-8"><meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' data:; connect-src 'self' https://*.googleapis.com https://*.firebaseio.com https://*.firebasedatabase.app https://fcm.googleapis.com https://raw.githubusercontent.com https://api.github.com https://openrouter.ai https://api.deepseek.com https://api.groq.com https://api.anthropic.com https://generativelanguage.googleapis.com; frame-src 'self' https://tiendamax-8feb5.firebaseapp.com https://tiendamax-8feb5.web.app; object-src 'none'; base-uri 'self'; frame-ancestors 'self'"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex,nofollow"><title>TiendaMax Admin</title>
 <link rel="icon" type="image/png" sizes="32x32" href="/iconos/favicon-32.png"><link rel="icon" type="image/png" sizes="192x192" href="/iconos/favicon-192.png"><link rel="stylesheet" href="css/admin.css?v=a3f60e62">
-<link rel="stylesheet" href="css/premium-v2.css?v=1">
+<link rel="stylesheet" href="css/premium-v2.css?v=2">
 </head><script>
 (function() {
   if (!localStorage.getItem("githubUser")) localStorage.setItem("githubUser", "Criptobox");
@@ -208,52 +208,48 @@
   var de=document.getElementById('pGreetDate');
   if(de) de.textContent=dateStr;
 
-  /* Calcular inventario y vendido */
-  var origUpdateDash=window.updateDashboard;
-  if(origUpdateDash){
-    window.updateDashboard=function(){
-      origUpdateDash();
-      try{
-        var ps=window.productos||[];
-        var total=0, sold=0;
-        ps.forEach(function(p){
-          var price=parseFloat(p.precio_actual||p.precio||0)||0;
-          var stock=parseInt(p.stock||0,10);
-          var vendidos=parseInt(p.vendidos||0,10)||0;
-          total+=price*stock;
-          sold+=price*vendidos;
-        });
-        var invEl=document.getElementById('pHeroInventory');
-        if(invEl) invEl.textContent=total.toLocaleString('en-US');
-        var soldEl=document.getElementById('pHeroSold');
-        if(soldEl) soldEl.textContent='$'+sold.toLocaleString('en-US');
-        var soldSubEl=document.getElementById('pHeroSoldSub');
-        if(soldSubEl){
-          var totalVendidos=ps.reduce(function(s,p){return s+(parseInt(p.vendidos||0,10)||0)},0);
-          soldSubEl.textContent='↑ '+totalVendidos+' ventas';
-        }
-        /* Sync notif badge */
-        var sideBadge=document.getElementById('dashAlertBadge');
-        var localBadge=document.getElementById('pInicioNotif');
-        var localBadgeN=document.getElementById('pInicioNotifN');
-        if(sideBadge&&localBadge){
-          var n=parseInt(sideBadge.textContent)||0;
-          if(n>0){localBadge.style.display='';localBadgeN.textContent=n>99?'99+':n;}else{localBadge.style.display='none';}
-        }
-        /* Sync pendientes badge */
-        var pendBtn=document.getElementById('tmBtnPendientes');
-        if(pendBtn){
-          var critClass=pendBtn.classList.contains('crit');
-          var pendN=document.getElementById('pendBadgeN');
-          if(pendN){
-            var sidePend=document.querySelector('#tmAgenda .tmag-item');
-            var count=sidePend?document.querySelectorAll('#tmAgenda .tmag-item').length:0;
-            if(count>0){pendN.style.display='';pendN.textContent=count;}else{pendN.style.display='none';}
-          }
-        }
-      }catch(e){}
-    };
+  /* Calcular inventario y vendido.
+     Nota: updateDashboard() vive dentro de otro <script> IIFE más abajo y nunca se
+     expone en window, así que en vez de parchearla (no se puede) esta sección
+     calcula y refresca sus propios valores de forma independiente. */
+  function refreshHero(){
+    try{
+      var ps=window.productos||[];
+      var total=0, sold=0;
+      ps.forEach(function(p){
+        var price=parseFloat(p.precio_actual||p.precio||0)||0;
+        var stock=parseInt(p.stock||0,10);
+        var vendidos=parseInt(p.vendidos||0,10)||0;
+        total+=price*stock;
+        sold+=price*vendidos;
+      });
+      var invEl=document.getElementById('pHeroInventory');
+      if(invEl) invEl.textContent=total.toLocaleString('en-US');
+      var soldEl=document.getElementById('pHeroSold');
+      if(soldEl) soldEl.textContent='$'+sold.toLocaleString('en-US');
+      var soldSubEl=document.getElementById('pHeroSoldSub');
+      if(soldSubEl){
+        var totalVendidos=ps.reduce(function(s,p){return s+(parseInt(p.vendidos||0,10)||0)},0);
+        soldSubEl.textContent='↑ '+totalVendidos+' ventas';
+      }
+      /* Sync notif badge */
+      var sideBadge=document.getElementById('dashAlertBadge');
+      var localBadge=document.getElementById('pInicioNotif');
+      var localBadgeN=document.getElementById('pInicioNotifN');
+      if(sideBadge&&localBadge){
+        var n=parseInt(sideBadge.textContent)||0;
+        if(n>0){localBadge.style.display='';localBadgeN.textContent=n>99?'99+':n;}else{localBadge.style.display='none';}
+      }
+      /* Sync pendientes badge */
+      var pendN=document.getElementById('pendBadgeN');
+      if(pendN){
+        var count=document.querySelectorAll('#tmAgenda .tmag-item').length;
+        if(count>0){pendN.style.display='';pendN.textContent=count;}else{pendN.style.display='none';}
+      }
+    }catch(e){}
   }
+  refreshHero();
+  setInterval(refreshHero,3000);
 })();
 </script>
 </section>
@@ -2580,5 +2576,5 @@ if ('serviceWorker' in navigator) {
   });
 })();
 </script>
-<script src="js/premium-v2.js?v=1"></script>
+<script src="js/premium-v2.js?v=2"></script>
 </body></html>

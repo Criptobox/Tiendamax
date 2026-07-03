@@ -61,33 +61,19 @@
 .pm-panel.active { display: block; }
 @keyframes pmFadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
 
-/* ── Favorito toggle en productos ── */
+/* ── Guardado toggle en productos (icono dentro de .tm-prod-card-header, junto a editar/destacar/borrar) ── */
 .pm-fav-btn {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: rgba(0,0,0,0.55);
-  backdrop-filter: blur(6px);
-  border: 1px solid rgba(255,255,255,0.08);
-  color: var(--pm-muted-2);
-  font-size: 14px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  color: rgba(255,255,255,.3);
   transition: all 0.2s;
-  z-index: 5;
-  padding: 0;
-  line-height: 1;
 }
-.pm-fav-btn:hover { background: rgba(0,0,0,0.7); border-color: var(--pm-gold); }
-.pm-fav-btn.active {
+.pm-fav-btn:hover {
+  background: rgba(201,169,110,.2);
   color: var(--pm-gold);
-  background: rgba(201,169,110,0.18);
-  border-color: rgba(201,169,110,0.35);
+}
+.pm-fav-btn.active {
+  background: rgba(201,169,110,.2);
+  color: var(--pm-gold);
+  text-shadow: 0 0 8px rgba(201,169,110,.5);
 }
 .pm-fav-chip {
   display: inline-flex;
