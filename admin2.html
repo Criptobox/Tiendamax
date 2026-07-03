@@ -248,6 +248,7 @@
       <button class="side-btn" data-view="agregar" title="Agregar producto">➕</button>
       <button class="side-btn" data-view="categorias" title="Categorías y subcategorías">🏷️</button>
       <button class="side-btn" data-view="combos" title="Combos">🎁</button>
+      <button class="side-btn" data-view="publicar" title="Publicar / Compartir a redes">📣</button>
       <button class="side-btn" data-view="agente" title="Agente IA — calidad y correcciones">🤖<span class="badge" id="badge-corr">0</span></button>
       <div class="side-sep"></div>
       <button class="side-btn" data-view="stock" title="Stock">📈<span class="badge" id="badge-stock">0</span></button>
@@ -372,6 +373,13 @@
             <div id="combos-lista"></div>
           </div>
         </div>
+      </div>
+
+      <!-- PUBLICAR / COMPARTIR -->
+      <div id="view-publicar" class="view">
+        <div class="ph"><div><h2>📣 Publicar</h2><p>Comparte tus productos a redes y administra los banners de la portada</p></div></div>
+        <div id="pub-pills" style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap"></div>
+        <div id="pub-body"></div>
       </div>
 
       <!-- AGENTE IA -->
@@ -542,7 +550,7 @@ async function cargarDatos(recargar){
 function renderTodo(){
   renderInicio(); renderCategorias();
   renderCorrecciones(); renderStock(); renderRadar(); renderVentas();
-  renderAnalytics(); renderClientes(); renderCombos();
+  renderAnalytics(); renderClientes(); renderCombos(); renderPublicar();
   fillAgregarCategorias(); fillConfig(); fillOfertaDia();
 }
 function fillOfertaDia(){
@@ -1008,6 +1016,108 @@ function renderClientes(){
     box.innerHTML = `<div class="section"><div class="empty"><div class="ico">${info[0]}</div><b style="color:#fff">${info[1]} — sin datos por ahora</b><br>${info[2]}<br><br><small>Si quieres, en una fase futura montamos el registro real de estos datos y aquí sí aparecen — sin inventar nada.</small></div></div>`;
   }
 }
+
+/* ============ PUBLICAR / COMPARTIR ============ */
+let PUB_VIEW='compartir', PUB_SHARE_ID='', PUB_BANNERS=null;
+function pubSwitch(v){ PUB_VIEW=v; renderPublicar(); }
+function renderPublicar(){
+  const P=$('#pub-pills');
+  if(P){ const pill=(v,l)=>`<button class="btn ${PUB_VIEW===v?'btn-primary':'btn-ghost'}" onclick="pubSwitch('${v}')">${l}</button>`;
+    P.innerHTML=pill('compartir','📤 Compartir')+pill('banners','🖼️ Banners')+pill('oferta','🔥 Oferta del día'); }
+  const body=$('#pub-body'); if(!body) return;
+  if(PUB_VIEW==='compartir'){ body.innerHTML=pubCompartirHTML(); pubRenderPreview(false); }
+  else if(PUB_VIEW==='banners'){ body.innerHTML='<div class="section"><div class="empty"><div class="ico">🖼️</div>Cargando banners…</div></div>'; pubRenderBanners(); }
+  else { body.innerHTML=`<div class="section"><div class="empty"><div class="ico">🔥</div><b style="color:#fff">Oferta del día y contador por tiempo</b><br>Se manejan en el tab <b>🎁 Combos y ofertas</b> (eliges producto, texto y tiempo).<br><br><button class="btn btn-primary" onclick="go('combos')">Ir a Combos y ofertas →</button></div></div>`; }
+}
+function pubCompartirHTML(){
+  const opts=[...PRODUCTOS].sort((a,b)=>String(a.nombre||'').localeCompare(String(b.nombre||''))).map(p=>`<option value="${esc(p.id)}" ${String(p.id)===String(PUB_SHARE_ID)?'selected':''}>${esc(p.nombre)}</option>`).join('');
+  return `<div class="grid-2">
+    <div class="section">
+      <h3>📤 Compartir producto</h3>
+      <div class="form-group"><label class="form-label">Producto</label><select class="form-select" id="pub-prod" onchange="pubSelect(this.value)"><option value="">Elige un producto…</option>${opts}</select></div>
+      <div class="form-group" style="margin-top:10px"><label class="form-label">Texto de la publicación (editable)</label><textarea class="form-textarea" id="pub-texto" style="min-height:170px"></textarea></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px">
+        <button class="btn btn-ghost" onclick="pubCopiar()">📋 Copiar texto</button>
+        <button class="btn btn-success" onclick="pubShare('whatsapp')">💬 WhatsApp</button>
+        <button class="btn btn-primary" onclick="pubShare('facebook')">📘 Facebook</button>
+        <button class="btn btn-ghost" onclick="pubShare('revolico')">🟢 Revolico</button>
+      </div>
+    </div>
+    <div class="section"><h3>👁 Vista previa</h3><div id="pub-preview"></div></div>
+  </div>`;
+}
+function pubSelect(v){ PUB_SHARE_ID=v; pubRenderPreview(true); }
+function pubSelProd(){ return PRODUCTOS.find(p=>String(p.id)===String(PUB_SHARE_ID)); }
+function pubUrl(p){ return 'https://tiendamax.org/p/producto-'+p.id+'.html'; }
+function pubTextoDe(p){
+  const precio=Number(p.precioActual||0).toFixed(2); let t=`🛍️ ${p.nombre}\n💵 $${precio} USD`;
+  if(Number(p.precioOriginal)>Number(p.precioActual)) t+=` (antes $${Number(p.precioOriginal).toFixed(2)})`;
+  t+=`\n${Number(p.stock)>0?'📦 Disponible ahora':'⛔ Agotado'}`;
+  if(p.descripcion) t+=`\n\n${String(p.descripcion).trim().slice(0,200)}`;
+  t+=`\n\n👉 ${pubUrl(p)}\n🛒 Más en tiendamax.org`;
+  return t;
+}
+function pubRenderPreview(regen){
+  const p=pubSelProd(), ta=$('#pub-texto'), box=$('#pub-preview');
+  if(!p){ if(box) box.innerHTML='<div class="empty" style="padding:24px"><div class="ico">📤</div>Elige un producto para generar el texto y la vista previa.</div>'; return; }
+  if(ta && (regen || !ta.value.trim())) ta.value=pubTextoDe(p);
+  if(box){ const img=p.imagen?`<img src="${esc(p.imagen)}" style="width:100%;border-radius:10px;margin-bottom:10px" onerror="this.style.display='none'">`:''; box.innerHTML=`${img}<div style="font-size:15px;font-weight:800;color:#fff">${esc(p.nombre)}</div><div style="font-size:18px;font-weight:900;color:var(--o);margin:4px 0">${money(p.precioActual)}</div><a href="${pubUrl(p)}" target="_blank" rel="noopener" style="font-size:12px;color:var(--blue);word-break:break-all">${pubUrl(p)}</a>`; }
+}
+function pubShare(ch){
+  const p=pubSelProd(); if(!p){ showToast('⚠️ Elige un producto primero'); return; }
+  const texto=($('#pub-texto')&&$('#pub-texto').value)||pubTextoDe(p); const url=pubUrl(p);
+  if(ch==='whatsapp') window.open('https://wa.me/?text='+encodeURIComponent(texto),'_blank','noopener');
+  else if(ch==='facebook') window.open('https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(url)+'&quote='+encodeURIComponent(texto),'_blank','noopener');
+  else if(ch==='revolico'){ try{ navigator.clipboard.writeText(texto+'\n'+url); }catch(e){} showToast('📋 Texto copiado','Pégalo en tu anuncio de Revolico'); window.open('https://www.revolico.com/','_blank','noopener'); }
+}
+function pubCopiar(){ const t=($('#pub-texto')&&$('#pub-texto').value)||''; if(!t){ showToast('Nada que copiar'); return; } try{ navigator.clipboard.writeText(t); showToast('📋 Copiado','Ya puedes pegarlo'); }catch(e){ showToast('No se pudo copiar'); } }
+async function pubRenderBanners(){
+  if(PUB_BANNERS===null){ PUB_BANNERS = await jget('banners.json') || []; if(!Array.isArray(PUB_BANNERS)) PUB_BANNERS=[]; }
+  const body=$('#pub-body'); if(!body || PUB_VIEW!=='banners') return;
+  const rows = PUB_BANNERS.map((b,i)=>`<div style="display:flex;gap:10px;align-items:center;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;padding:10px;margin-bottom:8px">
+      <img src="${esc(b.url||'')}" style="width:74px;height:46px;object-fit:cover;border-radius:6px;background:rgba(255,255,255,0.05);flex-shrink:0" onerror="this.style.opacity=.3">
+      <div style="flex:1;min-width:0"><input class="form-input" style="font-size:12px" value="${esc(b.link||'')}" placeholder="Enlace al tocar (grupo WhatsApp, categoría…)" onchange="pubBannerLink(${i},this.value)"><div style="font-size:10px;color:var(--muted);margin-top:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(b.url||'')}</div></div>
+      <button class="btn btn-ghost" style="flex-shrink:0" onclick="pubBannerRemove(${i})" title="Quitar banner">🗑️</button>
+    </div>`).join('') || '<div class="empty" style="padding:20px"><div class="ico">🖼️</div>No hay banners todavía. Añade uno abajo.</div>';
+  body.innerHTML = `<div class="section">
+      <h3>🖼️ Banners de la portada <span class="badge">${PUB_BANNERS.length}</span></h3>
+      <div class="banner-info">Los banners rotan en la portada de la tienda. Sube una imagen y ponle el enlace al que va cuando el cliente lo toca.</div>
+      ${rows}
+      <label class="btn btn-ghost" style="margin-top:10px;display:inline-flex;align-items:center"><input type="file" accept="image/*" style="display:none" onchange="pubBannerFile(this)">➕ Añadir banner (subir imagen)</label>
+    </div>
+    <button class="btn btn-primary" style="width:100%;padding:12px" onclick="pubBannersPublicar()">📤 Publicar banners a la tienda</button>`;
+}
+function pubBannerLink(i,val){ if(PUB_BANNERS && PUB_BANNERS[i]) PUB_BANNERS[i].link=(val||'').trim(); }
+function pubBannerRemove(i){ if(!PUB_BANNERS) return; PUB_BANNERS.splice(i,1); pubRenderBanners(); }
+async function pubBannerFile(input){
+  const f=input.files&&input.files[0]; if(!f) return;
+  showToast('⏳ Subiendo banner…');
+  try{
+    let url;
+    if(typeof subirImagenAGitHub==='function'){ url=await subirImagenAGitHub(f); }
+    else { url=await new Promise(r=>{ const rd=new FileReader(); rd.onload=e=>r(e.target.result); rd.readAsDataURL(f); }); }
+    if(!PUB_BANNERS) PUB_BANNERS=[]; PUB_BANNERS.push({url, link:''}); pubRenderBanners(); showToast('✅ Banner añadido','Ponle el enlace y pulsa Publicar');
+  }catch(e){ showToast('❌ No se pudo subir el banner', e&&e.message||''); }
+  input.value='';
+}
+async function pubBannersPublicar(){
+  const user=localStorage.getItem('githubUser'), repo=localStorage.getItem('githubRepo'), token=localStorage.getItem('githubToken');
+  if(!user||!repo||!token){ showToast('⚠️ Configura GitHub primero','En el tab Configuración'); return; }
+  showToast('⏳ Publicando banners…');
+  try{
+    const headers={ 'Authorization':'token '+token, 'Accept':'application/vnd.github.v3+json' };
+    const apiBase='https://api.github.com/repos/'+user+'/'+repo;
+    const jsonStr=JSON.stringify(PUB_BANNERS||[], null, 2);
+    const content=btoa(Array.from(new TextEncoder().encode(jsonStr), b=>String.fromCharCode(b)).join(''));
+    let sha=null; try{ const r=await fetch(apiBase+'/contents/banners.json?_='+Date.now(),{headers}); if(r.ok){ sha=(await r.json()).sha; } }catch(e){}
+    const body={ message:'Actualizar banners.json (admin nuevo)', content }; if(sha) body.sha=sha;
+    const res=await fetch(apiBase+'/contents/banners.json',{ method:'PUT', headers, body:JSON.stringify(body) });
+    if(res.ok) showToast('✅ Banners publicados',(PUB_BANNERS||[]).length+' en la portada de la tienda');
+    else { const e=await res.json().catch(()=>({})); showToast('❌ No se pudo publicar',(e&&e.message)||('HTTP '+res.status)); }
+  }catch(e){ showToast('❌ Error', e&&e.message||''); }
+}
+window.pubSwitch=pubSwitch; window.pubSelect=pubSelect; window.pubShare=pubShare; window.pubCopiar=pubCopiar;
+window.pubBannerLink=pubBannerLink; window.pubBannerRemove=pubBannerRemove; window.pubBannerFile=pubBannerFile; window.pubBannersPublicar=pubBannersPublicar;
 
 /* ============ Init ============ */
 cargarDatos();
