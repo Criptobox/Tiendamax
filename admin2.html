@@ -695,6 +695,18 @@
 <script src="js/src/tm-patches.js"></script>
 <script src="js/biometric-auth.js"></script>
 <script src="js/revolico_integration.js"></script>
+<script>
+  // Puente para código heredado (Copiloto IA) que navega con switchTab('nombre-viejo')
+  // en vez del go('vista') de admin2.
+  window.switchTab = function(tab){
+    var map = { 'manage-products':'productos', 'add-products':'agregar', 'manage-categories':'categorias',
+      'manage-subcategories':'categorias', 'publicacion':'publicar', 'publicar-ahora':'publicar',
+      'oferta-dia':'combos', 'seo-tool':'herramientas', 'specs-tool':'herramientas',
+      'configuracion':'config', 'clientes-ia':'clientes' };
+    if (typeof window.go === 'function') window.go(map[tab] || tab);
+  };
+</script>
+<script src="js/admin-copilot.js"></script>
 
 <script>
 (function(){
