@@ -112,6 +112,34 @@
   .prod-stock { font-size:10px; color:var(--green); font-weight:700; }
   .prod-stock.low { color:var(--yellow); }
   .prod-stock.out { color:var(--red); }
+  /* Tarjeta fila de producto con editar/favorito/stock (fiel al admin viejo) */
+  #prod-grid.rows { display:flex; flex-direction:column; gap:8px; }
+  .pcard { background:rgba(255,255,255,0.03); border:1px solid var(--border); border-radius:11px; padding:10px 12px; }
+  .pcard-h { display:flex; gap:10px; align-items:flex-start; }
+  .pcard-thumb { width:50px; height:50px; object-fit:cover; border-radius:8px; flex-shrink:0; background:rgba(255,255,255,0.05); }
+  .pcard-info { flex:1; min-width:0; }
+  .pcard-nm { font-size:13px; font-weight:700; color:#fff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-bottom:2px; }
+  .pcard-meta { font-size:11px; color:var(--muted); }
+  .pcard-comm { font-size:11px; color:var(--green); margin-top:1px; }
+  .pico { width:34px; height:34px; border-radius:8px; border:1px solid var(--border); background:rgba(255,255,255,0.06); color:#fff; font-size:15px; display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0; padding:0; }
+  .pico:hover { transform:translateY(-1px); }
+  .pico.edit { background:rgba(52,152,219,0.22); border-color:rgba(52,152,219,0.4); }
+  .pico.del { background:rgba(231,76,60,0.18); border-color:rgba(231,76,60,0.35); }
+  .pico.star { filter:grayscale(1) opacity(0.5); }
+  .pico.star.on { filter:none; background:rgba(201,169,110,0.22); border-color:var(--gold); }
+  .pcard-stock { display:flex; align-items:center; gap:6px; margin-top:9px; }
+  .stbtn { width:30px; height:28px; border-radius:7px; border:1px solid var(--border); background:rgba(255,255,255,0.07); color:#fff; font-size:16px; font-weight:800; line-height:1; cursor:pointer; flex-shrink:0; padding:0; }
+  .stbtn.plus { background:rgba(46,204,113,0.22); border-color:rgba(46,204,113,0.4); }
+  .stbtn.minus { background:rgba(231,76,60,0.16); border-color:rgba(231,76,60,0.3); }
+  .stbtn.zero { width:auto; padding:0 8px; font-size:11px; font-weight:800; color:var(--muted); }
+  .stbtn:hover { filter:brightness(1.25); }
+  .st-label { font-size:12px; color:var(--muted); margin-left:4px; }
+  .st-val { font-size:13px; font-weight:800; margin-left:auto; }
+  .st-val.ok { color:var(--green); } .st-val.low { color:var(--yellow); } .st-val.out { color:var(--red); }
+  /* Modal de edición */
+  .pmodal { position:fixed; inset:0; z-index:200; background:rgba(0,0,0,0.6); display:none; align-items:center; justify-content:center; padding:16px; }
+  .pmodal.show { display:flex; }
+  .pmodal-card { width:min(460px,96vw); max-height:92vh; overflow:auto; background:#15151f; border:1px solid var(--border); border-radius:16px; padding:20px; }
 
   /* Stock predictions */
   .stock-card { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:14px; margin-bottom:10px; position:relative; overflow:hidden; }
@@ -287,9 +315,9 @@
       <div id="view-productos" class="view">
         <div class="ph">
           <div><h2>📦 Productos</h2><p id="prod-count">—</p></div>
-          <div class="ph-actions"><input class="btn btn-ghost" id="prod-buscar" placeholder="🔍 Buscar…" style="min-width:180px" oninput="renderProductos()"><button class="btn btn-primary" onclick="go('agregar')">+ Agregar</button></div>
+          <div class="ph-actions"><input class="btn btn-ghost" id="prod-buscar" placeholder="🔍 Buscar…" style="min-width:150px" oninput="renderProductos()"><select class="btn btn-ghost" id="prod-cat-filtro" style="min-width:150px" onchange="renderProductos()"><option value="">Todas las categorías</option></select><button class="btn btn-ghost" id="prod-filtro-fav" onclick="apToggleFiltroFav()" title="Ver solo destacados">⭐ Favoritos</button><button class="btn btn-primary" onclick="go('agregar')">+ Agregar</button></div>
         </div>
-        <div class="prod-grid" id="prod-grid"></div>
+        <div class="prod-grid rows" id="prod-grid"></div>
       </div>
 
       <!-- CATEGORIAS + SUBCATEGORIAS (combinado) -->
@@ -490,6 +518,30 @@
 
 <div class="toast" id="toast"><div class="t" id="toast-t"></div><div class="b" id="toast-b"></div></div>
 
+<!-- Modal de edición de producto (mismos campos que el admin viejo) -->
+<div class="pmodal" id="pedit-modal">
+  <div class="pmodal-card">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px"><h3 style="margin:0">✏️ Editar producto</h3><button class="pico" onclick="apEditClose()">✕</button></div>
+    <input type="hidden" id="pedit-id">
+    <div class="form-group"><label class="form-label">Nombre</label><input class="form-input" id="pedit-nombre"></div>
+    <div class="grid-2" style="margin-top:10px">
+      <div class="form-group"><label class="form-label">Precio actual (USD)</label><input class="form-input" id="pedit-precio" type="number" step="0.01"></div>
+      <div class="form-group"><label class="form-label">Precio original (opcional)</label><input class="form-input" id="pedit-original" type="number" step="0.01"></div>
+    </div>
+    <div class="grid-2" style="margin-top:10px">
+      <div class="form-group"><label class="form-label">Stock</label><input class="form-input" id="pedit-stock" type="number" min="0"></div>
+      <div class="form-group"><label class="form-label">Categoría</label><select class="form-select" id="pedit-cat"></select></div>
+    </div>
+    <div class="grid-2" style="margin-top:10px">
+      <div class="form-group"><label class="form-label">Comisión</label><input class="form-input" id="pedit-comision" type="number" step="0.01"></div>
+      <div class="form-group"><label class="form-label">Moneda comisión</label><select class="form-select" id="pedit-comision-moneda"><option value="USD">USD</option><option value="MN">MN</option></select></div>
+    </div>
+    <div class="form-group" style="margin-top:10px"><label class="form-label">Descripción</label><textarea class="form-textarea" id="pedit-desc" style="min-height:90px"></textarea></div>
+    <label style="display:flex;align-items:center;gap:8px;margin-top:12px;font-size:13px;color:#fff;cursor:pointer"><input type="checkbox" id="pedit-fav" style="width:16px;height:16px;accent-color:var(--gold)">⭐ Destacar en Más Vendidos</label>
+    <div style="display:flex;gap:8px;margin-top:16px"><button class="btn btn-primary" style="flex:1" onclick="apEditSave()">💾 Guardar</button><button class="btn btn-ghost" onclick="apEditClose()">Cancelar</button></div>
+  </div>
+</div>
+
 <!-- Motor real del admin (mismos scripts que admin.html) — expone verificarPassword,
      agregarProductoForm, sincronizarTodoConGitHub, registrarVenta, etc. -->
 <script src="js/src/tm-config.js"></script>
@@ -548,7 +600,7 @@ async function cargarDatos(recargar){
 }
 
 function renderTodo(){
-  renderInicio(); renderCategorias();
+  renderInicio(); renderProductos(); renderCategorias();
   renderCorrecciones(); renderStock(); renderRadar(); renderVentas();
   renderAnalytics(); renderClientes(); renderCombos(); renderPublicar();
   fillAgregarCategorias(); fillConfig(); fillOfertaDia();
@@ -764,16 +816,67 @@ function renderInicio(){
 
 /* ============ PRODUCTOS ============ */
 const emojiCat = c => { c=(c||'').toLowerCase(); if(/cel|phone|móvil/.test(c))return'📱'; if(/audio|auric/.test(c))return'🎧'; if(/comput|laptop|pc/.test(c))return'💻'; if(/energ|solar|bater/.test(c))return'🔋'; if(/red|wifi|router/.test(c))return'📡'; if(/gam/.test(c))return'🎮'; if(/herram|tool/.test(c))return'🔧'; if(/hogar|casa/.test(c))return'🏠'; if(/carro|auto|moto/.test(c))return'🚗'; return'📦'; };
+let _apFiltroFav=false;
+function apToggleFiltroFav(){ _apFiltroFav=!_apFiltroFav; const b=$('#prod-filtro-fav'); if(b){ b.style.background=_apFiltroFav?'rgba(201,169,110,0.25)':''; b.style.color=_apFiltroFav?'var(--gold)':''; b.style.borderColor=_apFiltroFav?'var(--gold)':''; } renderProductos(); }
+function apLlenarFiltroCat(){ const sel=$('#prod-cat-filtro'); if(!sel) return; const cur=sel.value; const cats=[...new Set(PRODUCTOS.map(p=>p.categoria).filter(Boolean))].sort((a,b)=>String(a).localeCompare(String(b))); sel.innerHTML='<option value="">Todas las categorías</option>'+cats.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join(''); if(cats.includes(cur)) sel.value=cur; }
+function apSaveProds(){ try{ localStorage.setItem('productos', JSON.stringify(PRODUCTOS)); }catch(e){} try{ if(Array.isArray(window.productos)){ window.productos.length=0; PRODUCTOS.forEach(p=>window.productos.push(p)); } else { window.productos=PRODUCTOS; } }catch(e){} }
 function renderProductos(){
+  const grid=$('#prod-grid'); if(!grid) return;
+  apLlenarFiltroCat();
   const q = norm($('#prod-buscar') && $('#prod-buscar').value);
+  const catF = ($('#prod-cat-filtro') && $('#prod-cat-filtro').value)||'';
   let list = PRODUCTOS;
-  if(q) list = PRODUCTOS.filter(p=>norm(p.nombre).includes(q)||norm(p.categoria).includes(q));
+  if(q) list = list.filter(p=>norm(p.nombre).includes(q)||norm(p.categoria).includes(q));
+  if(catF) list = list.filter(p=>p.categoria===catF);
+  if(_apFiltroFav) list = list.filter(p=>p.masVendido);
+  list = [...list].sort((a,b)=>(Number(a.stock)||0)-(Number(b.stock)||0));
   $('#prod-count').textContent = list.length + ' de ' + PRODUCTOS.length + ' productos';
-  $('#prod-grid').innerHTML = list.slice(0,120).map(p=>{
-    const st=Number(p.stock)||0; const cls=st<=0?'out':(st<=5?'low':'');
-    const img = p.imagen ? `<img src="${esc(p.imagen)}" alt="" loading="lazy" onerror="this.parentNode.textContent='${emojiCat(p.categoria)}'">` : emojiCat(p.categoria);
-    return `<div class="prod-card"><div class="prod-img">${img}</div><div class="prod-body"><div class="prod-cat">${esc(p.categoria||'—')}</div><div class="prod-nm">${esc(p.nombre||'')}</div><div class="prod-price">${money(p.precioActual)}</div><div class="prod-stock ${cls}">${st<=0?'Agotado':(st+' en stock')}</div></div></div>`;
+  grid.innerHTML = list.slice(0,300).map(p=>{
+    const st=Number(p.stock)||0; const cls=st<=0?'out':(st<=3?'low':'ok');
+    const id=String(p.id);
+    const img = p.imagen ? `<img class="pcard-thumb" src="${esc(p.imagen)}" alt="" loading="lazy" onerror="this.onerror=null;this.src='/iconos/favicon-192.png';this.style.opacity='0.3'">` : `<div class="pcard-thumb" style="display:flex;align-items:center;justify-content:center;font-size:24px">${emojiCat(p.categoria)}</div>`;
+    const off = (Number(p.descuento)>0) ? ` · <span style="color:var(--red)">−${Math.round(p.descuento)}%</span>` : (Number(p.precioOriginal)>Number(p.precioActual) ? ` · <span style="color:var(--red)">−${Math.round((p.precioOriginal-p.precioActual)/p.precioOriginal*100)}%</span>` : '');
+    const comm = Number(p.comision)>0 ? `<div class="pcard-comm">💰 Comisión: ${p.comisionMoneda==='MN'?'':'$'}${Number(p.comision).toFixed(2)} ${p.comisionMoneda||'USD'}</div>` : '';
+    return `<div class="pcard">
+      <div class="pcard-h">
+        ${img}
+        <div class="pcard-info">
+          <div class="pcard-nm">${esc(p.nombre||'')}${p.masVendido?' 🔥':''}</div>
+          <div class="pcard-meta">$${Number(p.precioActual||0).toFixed(2)} USD${off}</div>
+          ${comm}
+        </div>
+        <button type="button" class="pico edit" onclick="apEdit('${id}')" title="Editar">✏️</button>
+        <button type="button" class="pico star${p.masVendido?' on':''}" onclick="apFav('${id}')" title="${p.masVendido?'Quitar de Más Vendidos':'Destacar en Más Vendidos'}">⭐</button>
+        <button type="button" class="pico del" onclick="apDel('${id}')" title="Eliminar">🗑️</button>
+      </div>
+      <div class="pcard-stock">
+        <button type="button" class="stbtn minus" onclick="apStock('${id}',-1)">−</button>
+        <button type="button" class="stbtn plus" onclick="apStock('${id}',1)">+</button>
+        <span class="st-label">Stock:</span>
+        <span class="st-val ${cls}">${st<=0?'Agotado':(st+' uds')}</span>
+        ${st>0?`<button type="button" class="stbtn zero" onclick="apStockZero('${id}')" title="Marcar agotado">→0</button>`:''}
+      </div>
+    </div>`;
   }).join('') || `<div class="empty"><div class="ico">🔍</div>Sin resultados.</div>`;
+}
+function apFind(id){ return PRODUCTOS.find(p=>String(p.id)===String(id)); }
+function apStock(id,d){ const p=apFind(id); if(!p) return; p.stock=Math.max(0,(Number(p.stock)||0)+d); apSaveProds(); renderProductos(); if(typeof renderStock==='function') renderStock(); }
+function apStockZero(id){ const p=apFind(id); if(!p) return; p.stock=0; apSaveProds(); renderProductos(); if(typeof renderStock==='function') renderStock(); }
+function apFav(id){ const p=apFind(id); if(!p) return; p.masVendido=!p.masVendido; apSaveProds(); renderProductos(); showToast(p.masVendido?'⭐ Destacado en Más Vendidos':'Quitado de Más Vendidos'); }
+function apDel(id){ const p=apFind(id); if(!p) return; if(!confirm('¿Eliminar "'+(p.nombre||'')+'"? Esto lo quita del catálogo al sincronizar.')) return; const i=PRODUCTOS.findIndex(x=>String(x.id)===String(id)); if(i>=0) PRODUCTOS.splice(i,1); apSaveProds(); renderProductos(); showToast('🗑️ Eliminado','Sincroniza para publicar el cambio'); }
+function apEdit(id){ const p=apFind(id); if(!p) return; $('#pedit-id').value=id; $('#pedit-nombre').value=p.nombre||''; $('#pedit-precio').value=p.precioActual||''; $('#pedit-original').value=(Number(p.precioOriginal)>0?p.precioOriginal:''); $('#pedit-stock').value=Number(p.stock)||0; $('#pedit-comision').value=(Number(p.comision)>0?p.comision:''); $('#pedit-comision-moneda').value=p.comisionMoneda||'USD'; $('#pedit-desc').value=p.descripcion||''; $('#pedit-fav').checked=!!p.masVendido; const cs=$('#pedit-cat'); if(cs){ const cats=[...new Set(PRODUCTOS.map(x=>x.categoria).filter(Boolean))].sort(); cs.innerHTML=cats.map(c=>`<option value="${esc(c)}" ${c===p.categoria?'selected':''}>${esc(c)}</option>`).join(''); } $('#pedit-modal').classList.add('show'); }
+function apEditClose(){ $('#pedit-modal').classList.remove('show'); }
+function apEditSave(){ const id=$('#pedit-id').value; const p=apFind(id); if(!p) return;
+  p.nombre=$('#pedit-nombre').value.trim()||p.nombre;
+  p.precioActual=Number($('#pedit-precio').value)||0;
+  const orig=Number($('#pedit-original').value)||0; p.precioOriginal=orig>0?orig:0;
+  p.descuento = (orig>p.precioActual) ? Math.round((orig-p.precioActual)/orig*100) : 0;
+  p.stock=Math.max(0,Number($('#pedit-stock').value)||0);
+  p.categoria=$('#pedit-cat').value||p.categoria;
+  p.comision=Number($('#pedit-comision').value)||0; p.comisionMoneda=$('#pedit-comision-moneda').value||'USD';
+  p.descripcion=$('#pedit-desc').value;
+  p.masVendido=$('#pedit-fav').checked;
+  apSaveProds(); apEditClose(); renderProductos(); showToast('💾 Guardado','Sincroniza para publicarlo en la tienda');
 }
 
 /* ============ CATEGORIAS / SUBCATS ============ */
@@ -1159,6 +1262,7 @@ cargarDatos();
 // El script va en IIFE para no chocar con el motor (que también declara $).
 // Exponemos al window solo lo que usan los onclick/oninput de la interfaz.
 window.go=go; window.cargarDatos=cargarDatos; window.renderProductos=renderProductos; window.renderCorrecciones=renderCorrecciones;
+window.apToggleFiltroFav=apToggleFiltroFav; window.apStock=apStock; window.apStockZero=apStockZero; window.apFav=apFav; window.apDel=apDel; window.apEdit=apEdit; window.apEditClose=apEditClose; window.apEditSave=apEditSave;
 window.comboBuscar=comboBuscar; window.comboAdd=comboAdd; window.comboRemove=comboRemove; window.comboCalc=comboCalc;
 window.comboGuardar=comboGuardar; window.comboDelete=comboDelete; window.comboPublicar=comboPublicar; window.comboQty=comboQty;
 window.agregarFillSubcats=agregarFillSubcats; window.fileName=fileName;
