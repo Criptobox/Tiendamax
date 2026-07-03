@@ -192,21 +192,34 @@
   .form-input:focus, .form-select:focus, .form-textarea:focus { border-color:var(--o); }
   .form-textarea { resize:vertical; min-height:80px; }
 
-  /* Product card actions + stock (features 4 y 6) */
-  .prod-card { display:flex; flex-direction:column; }
-  .prod-card .prod-body { flex:1; display:flex; flex-direction:column; }
-  .pc-actions { display:flex; gap:6px; margin-top:auto; padding-top:10px; }
-  .pc-btn { flex:1; padding:7px 0; border:1px solid var(--border); border-radius:8px; background:rgba(255,255,255,0.04); color:#ccc; font-size:13px; font-weight:700; cursor:pointer; transition:all 0.15s; }
-  .pc-btn:hover { background:rgba(255,255,255,0.09); color:#fff; }
-  .pc-btn.edit:hover { background:rgba(52,152,219,0.2); border-color:rgba(52,152,219,0.4); color:var(--blue); }
-  .pc-btn.del:hover { background:rgba(231,76,60,0.2); border-color:rgba(231,76,60,0.4); color:var(--red); }
-  .pc-btn.fav.on { background:rgba(201,169,110,0.2); border-color:var(--gold); color:var(--gold); }
-  .pc-stock { display:flex; align-items:center; gap:6px; margin-top:10px; }
-  .pc-stock button { width:30px; height:30px; border-radius:8px; border:1px solid var(--border); background:rgba(255,255,255,0.05); color:#fff; font-size:16px; font-weight:900; cursor:pointer; line-height:1; }
-  .pc-stock button:hover { background:var(--o); border-color:var(--o); }
-  .pc-stock button.zero:hover { background:var(--red); border-color:var(--red); }
-  .pc-stock input { width:52px; text-align:center; padding:6px 4px; background:rgba(0,0,0,0.3); border:1px solid var(--border); border-radius:8px; color:#fff; font-size:13px; font-weight:800; }
-  .pc-stock .lbl { font-size:10px; color:var(--muted); text-transform:uppercase; letter-spacing:0.4px; margin-left:auto; }
+  /* Lista de productos: fila compacta (como el admin viejo) + control de stock — features 4 y 6 */
+  #prod-grid { display:flex; flex-direction:column; gap:8px; }
+  .pl-card { background:rgba(255,255,255,0.03); border:1px solid var(--border); border-radius:11px; padding:10px 12px; }
+  .pl-head { display:flex; gap:10px; align-items:flex-start; }
+  .pl-thumb { width:50px; height:50px; object-fit:cover; border-radius:8px; flex-shrink:0; }
+  .pl-emoji { display:flex; align-items:center; justify-content:center; font-size:24px; background:rgba(255,255,255,0.05); }
+  .pl-info { flex:1; min-width:0; }
+  .pl-name { font-size:13px; font-weight:700; color:#fff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-bottom:2px; }
+  .pl-meta { font-size:11px; color:var(--muted); }
+  .pl-comm { font-size:11px; color:var(--green); margin-top:1px; }
+  .pl-ico { width:34px; height:34px; border-radius:8px; border:1px solid var(--border); background:rgba(255,255,255,0.06); color:#fff; font-size:15px; display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0; padding:0; transition:all 0.15s; }
+  .pl-ico:hover { transform:translateY(-1px); }
+  .pl-ico.edit { background:rgba(52,152,219,0.22); border-color:rgba(52,152,219,0.4); }
+  .pl-ico.del { background:rgba(231,76,60,0.18); border-color:rgba(231,76,60,0.35); }
+  .pl-ico.star { filter:grayscale(1) opacity(0.55); }
+  .pl-ico.star.on { filter:none; background:rgba(201,169,110,0.22); border-color:var(--gold); }
+  .pl-stock { display:flex; align-items:center; gap:6px; margin-top:9px; }
+  .sb { width:30px; height:28px; border-radius:7px; border:1px solid var(--border); background:rgba(255,255,255,0.07); color:#fff; font-size:16px; font-weight:800; line-height:1; cursor:pointer; flex-shrink:0; padding:0; }
+  .sb.plus { background:rgba(46,204,113,0.22); border-color:rgba(46,204,113,0.4); }
+  .sb.minus { background:rgba(231,76,60,0.16); border-color:rgba(231,76,60,0.3); }
+  .sb.zero { width:auto; padding:0 8px; font-size:11px; font-weight:800; color:var(--muted); }
+  .sb:hover { filter:brightness(1.25); }
+  .pl-slbl { font-size:12px; color:var(--muted); margin-left:4px; }
+  .sv { width:54px; text-align:center; padding:5px 4px; background:rgba(0,0,0,0.3); border:1px solid var(--border); border-radius:7px; color:var(--green); font-size:13px; font-weight:800; outline:none; margin-left:auto; -moz-appearance:textfield; }
+  .sv::-webkit-outer-spin-button, .sv::-webkit-inner-spin-button { -webkit-appearance:none; margin:0; }
+  .sv.out { color:var(--red); border-color:rgba(231,76,60,0.5); } .sv.low { color:var(--yellow); border-color:rgba(241,196,15,0.5); }
+  .pl-suds { font-size:12px; font-weight:700; color:var(--green); }
+  .pl-suds.out { color:var(--red); } .pl-suds.low { color:var(--yellow); }
 
   /* CRM pills (feature 5) */
   .crm-pills { display:flex; gap:8px; margin-bottom:16px; overflow-x:auto; padding-bottom:4px; }
@@ -661,28 +674,31 @@ function renderProductos(){
   // orden: agotados/crítico primero para gestionarlos
   list = [...list].sort((a,b)=>(Number(a.stock)||0)-(Number(b.stock)||0));
   $('#prod-count').textContent = list.length + ' de ' + PRODUCTOS.length + ' productos';
-  grid.innerHTML = list.slice(0,180).map(p=>{
-    const st=Number(p.stock)||0; const cls=st<=0?'out':(st<=5?'low':'');
-    const img = p.imagen ? `<img src="${esc(p.imagen)}" alt="" loading="lazy" onerror="this.parentNode.textContent='${emojiCat(p.categoria)}'">` : emojiCat(p.categoria);
+  grid.innerHTML = list.slice(0,300).map(p=>{
+    const st=Number(p.stock)||0; const cls=st<=0?'out':(st<=5?'low':'ok');
+    const img = p.imagen ? `<img class="pl-thumb" src="${esc(p.imagen)}" alt="" loading="lazy" onerror="this.outerHTML='<div class=\\'pl-thumb pl-emoji\\'>${emojiCat(p.categoria)}</div>'">` : `<div class="pl-thumb pl-emoji">${emojiCat(p.categoria)}</div>`;
     const id = String(p.id);
-    return `<div class="prod-card">
-      <div class="prod-img">${img}</div>
-      <div class="prod-body">
-        <div class="prod-cat">${esc(p.categoria||'—')}</div>
-        <div class="prod-nm">${esc(p.nombre||'')}${p.masVendido?' 🔥':''}</div>
-        <div class="prod-price">${money(p.precioActual)}</div>
-        <div class="prod-stock ${cls}">${st<=0?'Agotado':(st+' en stock')}</div>
-        <div class="pc-stock">
-          <button type="button" onclick="apAjustarStock('${id}',-1)" title="Restar 1">−</button>
-          <input type="number" min="0" value="${st}" onchange="apSetStock('${id}',this.value)" title="Editar stock">
-          <button type="button" onclick="apAjustarStock('${id}',1)" title="Sumar 1">+</button>
-          <button type="button" class="zero" onclick="apSetStock('${id}',0)" title="Marcar agotado">0</button>
+    const off = (Number(p.precioOriginal)>Number(p.precioActual)) ? ` · <span style="color:var(--red)">−${Math.round((p.precioOriginal-p.precioActual)/p.precioOriginal*100)}%</span>` : '';
+    const comm = Number(p.comision)>0 ? `<div class="pl-comm">💰 Comisión: ${p.comisionMoneda==='MN'?'':'$'}${Number(p.comision).toFixed(2)} ${p.comisionMoneda||'USD'}</div>` : '';
+    return `<div class="pl-card">
+      <div class="pl-head">
+        ${img}
+        <div class="pl-info">
+          <div class="pl-name">${esc(p.nombre||'')}${p.masVendido?' 🔥':''}</div>
+          <div class="pl-meta">${money(p.precioActual)} USD${off}</div>
+          ${comm}
         </div>
-        <div class="pc-actions">
-          <button type="button" class="pc-btn edit" onclick="apEditar('${id}')" title="Editar producto">✏️</button>
-          <button type="button" class="pc-btn fav${p.masVendido?' on':''}" onclick="apToggleFav('${id}')" title="Destacar / favorito">⭐</button>
-          <button type="button" class="pc-btn del" onclick="apEliminar('${id}')" title="Eliminar">🗑️</button>
-        </div>
+        <button type="button" class="pl-ico edit" onclick="apEditar('${id}')" title="Editar">✏️</button>
+        <button type="button" class="pl-ico star${p.masVendido?' on':''}" onclick="apToggleFav('${id}')" title="${p.masVendido?'Quitar de destacados':'Destacar'}">⭐</button>
+        <button type="button" class="pl-ico del" onclick="apEliminar('${id}')" title="Eliminar">🗑️</button>
+      </div>
+      <div class="pl-stock">
+        <button type="button" class="sb minus" onclick="apAjustarStock('${id}',-1)">−</button>
+        <button type="button" class="sb plus" onclick="apAjustarStock('${id}',1)">+</button>
+        <span class="pl-slbl">Stock:</span>
+        <input type="number" class="sv ${cls}" min="0" value="${st}" onchange="apSetStock('${id}',this.value)" title="Editar stock">
+        <span class="pl-suds ${cls}">${st<=0?'Agotado':'uds'}</span>
+        ${st>0?`<button type="button" class="sb zero" onclick="apSetStock('${id}',0)" title="Marcar agotado">→0</button>`:''}
       </div>
     </div>`;
   }).join('') || `<div class="empty"><div class="ico">🔍</div>Sin resultados.</div>`;
