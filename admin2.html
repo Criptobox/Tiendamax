@@ -12,7 +12,10 @@
     --bg:#0a0a12; --card:#15151f; --card2:#1a1a25; --border:rgba(255,255,255,0.07);
     --text:#e0e0e8; --muted:#888; --dim:#555; --line:rgba(255,255,255,0.04);
     --o:#FF6B35; --oo:#e0521a; --gold:#C9A96E; --green:#2ecc71; --red:#e74c3c; --yellow:#f1c40f; --purple:#8b5cf6; --blue:#3498db;
+    /* alias para código heredado de admin.html (Revólico/Facebook/etc) que usa estos nombres */
+    --card-bg:var(--card); --border-color:var(--border); --text-muted:var(--muted); --primary:var(--o);
   }
+  .hidden{display:none!important}
   body { font-family:'DM Sans',-apple-system,sans-serif; background:var(--bg); color:var(--text); min-height:100vh; }
   button { font-family:inherit; cursor:pointer; }
   input, select, textarea { font-family:inherit; }
@@ -229,6 +232,17 @@
   .pub-act.estado { background:linear-gradient(135deg,var(--o),var(--gold)); color:#1a1006; }
   .pub-act.ghost { background:rgba(255,255,255,0.07); border:1px solid var(--border); color:#ccc; }
   @media (max-width:380px) { .pub-share-actions { grid-template-columns:repeat(2,1fr); } }
+  .pub-act-wide { width:100%; margin-top:8px; border:none; border-radius:10px; padding:11px; font-size:12.5px; font-weight:800; cursor:pointer; letter-spacing:.2px; }
+  .pub-act-wide.rev { background:linear-gradient(135deg,#e67e22,#d35400); color:#fff; }
+  .pub-act-wide:hover { filter:brightness(1.08); }
+
+  /* Modales dinámicos (Facebook/Revólico) — portado de css/admin.css, con la paleta de admin2 */
+  .modal { position:fixed; inset:0; z-index:9999; display:flex; align-items:center; justify-content:center; padding:20px;
+    background:radial-gradient(900px 650px at 8% 8%,rgba(201,169,110,.14),transparent 55%),radial-gradient(720px 520px at 88% 88%,rgba(255,107,53,.16),transparent 55%),rgba(0,0,0,.7); }
+  .modal-content { width:min(540px,94vw); max-height:90vh; overflow:auto; background:var(--card); border:1px solid var(--border); border-radius:18px; padding:18px; }
+  .modal-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:4px; }
+  .modal-header h2 { font-size:16px; margin:0; }
+  .close-btn { border:1px solid var(--border); background:rgba(255,255,255,.06); color:#fff; border-radius:9px; width:36px; height:36px; font-size:14px; cursor:pointer; flex-shrink:0; }
 
   table { width:100%; border-collapse:collapse; font-size:13px; }
   th { background:rgba(255,255,255,0.04); color:var(--muted); text-transform:uppercase; font-size:10px; font-weight:800; letter-spacing:0.6px; padding:11px 12px; text-align:left; border-bottom:1px solid var(--border); }
@@ -680,6 +694,7 @@
 <script src="js/src/tm-iife.js"></script>
 <script src="js/src/tm-patches.js"></script>
 <script src="js/biometric-auth.js"></script>
+<script src="js/revolico_integration.js"></script>
 
 <script>
 (function(){
@@ -1326,8 +1341,14 @@ function pubShareFiltered(){
 }
 function pubCompartirHTML(){
   return `<div class="section">
+    <h3>📘 Mis grupos de Facebook <span class="badge" id="pub-fb-groups-count">0</span></h3>
+    <p style="font-size:12px;color:var(--muted);margin:-4px 0 12px">Guarda tus grupos una vez — luego "Facebook" en cada producto ya sabe dónde publicar.</p>
+    <div id="listaGruposFB" style="display:flex;flex-direction:column;gap:10px"></div>
+    <button type="button" class="btn btn-ghost" style="width:100%;margin-top:10px;justify-content:center" onclick="agregarGrupoFB()">+ Agregar grupo</button>
+  </div>
+  <div class="section">
     <h3>📲 Compartir por producto</h3>
-    <p style="font-size:12px;color:var(--muted);margin:-4px 0 12px">Estado de WhatsApp (imagen), Facebook, chat y copia rápida — filtra por categoría.</p>
+    <p style="font-size:12px;color:var(--muted);margin:-4px 0 12px">Estado de WhatsApp (imagen), Facebook (con tus grupos), Revólico (con vista previa) y copia rápida — filtra por categoría.</p>
     <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:6px">
       <input class="form-input" id="pub-share-q" placeholder="🔍 Buscar producto…" style="flex:1;min-width:160px" oninput="pubRenderShareList()">
       <select class="form-select" id="pub-share-cat" style="min-width:170px" onchange="pubRenderShareList()"><option value="">Todas las categorías</option>${pubShareCats().map(c=>`<option>${esc(c)}</option>`).join('')}</select>
@@ -1338,6 +1359,8 @@ function pubCompartirHTML(){
 }
 function pubRenderShareList(){
   const box=$('#pub-share-list'); if(!box) return; const arr=pubShareFiltered();
+  try{ renderizarGruposFB(JSON.parse(localStorage.getItem('gruposFB')||'[]')); }catch(e){}
+  const gCount=$('#pub-fb-groups-count'); if(gCount){ try{ gCount.textContent=(JSON.parse(localStorage.getItem('gruposFB')||'[]')).length; }catch(e){} }
   box.innerHTML = arr.length ? arr.map(p=>`<div class="pub-share-card">
       <div class="pub-share-top">
         <img class="pub-share-thumb" src="${esc(p.imagen||'')}" onerror="this.style.visibility='hidden'">
@@ -1349,6 +1372,7 @@ function pubRenderShareList(){
         <button type="button" class="pub-act fb" onclick="pubShareAct('${esc(p.id)}','fb')">📘 Facebook</button>
         <button type="button" class="pub-act ghost" onclick="pubShareAct('${esc(p.id)}','copy')">🔗 Copiar</button>
       </div>
+      <button type="button" class="pub-act-wide rev" onclick="pubShareAct('${esc(p.id)}','rev')">🟠 Publicar en Revólico</button>
     </div>`).join('') : '<div class="empty" style="padding:20px"><div class="ico">📦</div>No hay productos con stock para compartir.</div>';
 }
 function pubLoadImg(src){ return new Promise(res=>{ const im=new Image(); im.crossOrigin='anonymous'; im.onload=()=>res(im); im.onerror=()=>res(null); im.src=src; }); }
@@ -1390,7 +1414,15 @@ async function pubShareAct(id,act){
   const p=PRODUCTOS.find(x=>String(x.id)===String(id)); if(!p) return;
   if(act==='story'){ showToast('⏳ Generando imagen…'); await pubShareStory(p); return; }
   if(act==='wa'){ window.open('https://wa.me/?text='+encodeURIComponent(pubTxt(p)),'_blank','noopener,noreferrer'); return; }
-  if(act==='fb'){ window.open('https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(pubUrl(p))+'&quote='+encodeURIComponent(pubTxt(p)),'_blank','noopener,noreferrer'); return; }
+  if(act==='fb'){
+    if(typeof previsualizarFacebook==='function'){ previsualizarFacebook(p.id, null); return; }
+    window.open('https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(pubUrl(p))+'&quote='+encodeURIComponent(pubTxt(p)),'_blank','noopener,noreferrer'); return;
+  }
+  if(act==='rev'){
+    if(typeof previsualizarRevolico==='function'){ previsualizarRevolico(p.id); return; }
+    try{ await navigator.clipboard.writeText(pubTxt(p)); }catch(e){}
+    showToast('🔗 Texto copiado'); window.open('https://www.revolico.com/anuncios/nuevo/','_blank','noopener,noreferrer'); return;
+  }
   if(act==='copy'){ try{ await navigator.clipboard.writeText(pubTxt(p)); showToast('🔗 Texto y enlace copiados'); }catch(e){ showToast('No se pudo copiar'); } }
 }
 async function pubRenderBanners(){
