@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="es"><head><meta charset="UTF-8"><meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' data:; connect-src 'self' https://*.googleapis.com https://*.firebaseio.com https://*.firebasedatabase.app https://fcm.googleapis.com https://raw.githubusercontent.com https://api.github.com https://openrouter.ai https://api.deepseek.com https://api.groq.com https://api.anthropic.com https://generativelanguage.googleapis.com; frame-src 'self' https://tiendamax-8feb5.firebaseapp.com https://tiendamax-8feb5.web.app; object-src 'none'; base-uri 'self'; frame-ancestors 'self'"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex,nofollow"><title>TiendaMax Admin</title>
 <link rel="icon" type="image/png" sizes="32x32" href="/iconos/favicon-32.png"><link rel="icon" type="image/png" sizes="192x192" href="/iconos/favicon-192.png"><link rel="stylesheet" href="css/admin.css?v=a3f60e62">
+<link rel="stylesheet" href="css/premium-v2.css?v=1">
 </head><script>
 (function() {
   if (!localStorage.getItem("githubUser")) localStorage.setItem("githubUser", "Criptobox");
@@ -24,7 +25,238 @@
 <div id="adminPanel" class="admin-panel hidden"><div class="tm-app"><header class="tm-top"><div class="brand"><img src="/iconos/icon-192.png" style="width:44px;height:44px;border-radius:13px;flex-shrink:0;" alt="TiendaMax"><div><b>TiendaMax</b></div></div><div class="search tm-top-search-wrap">🔍 <input id="tmTopSearch" class="tm-top-search" placeholder="Buscar productos, acciones, páginas..." autocomplete="off"><span class="kbd">⌘K</span><div id="tmSearchResults" class="tm-search-results"></div></div><div class="topicons"><button type="button" id="tmTopSync" class="sync-pill tm-top-btn">Sincronizado</button><button type="button" id="tmTopSubs" class="tm-subs-pill" title="Suscriptores push">🔔 <b>—</b></button><button type="button" data-action="cerrarAdminPanel" class="close-btn" title="Cerrar">×</button></div></header>
 <aside class="tm-side admin-tabs-desktop"><button type="button" class="tab-btn active" data-action="switchTab" data-arg="inicio" data-tab="inicio"><span class="nav-emoji">🏠</span><span class="txt">Inicio</span><span class="badge" id="dashAlertBadge" style="display:none;background:#e74c3c;min-width:16px">0</span></button><button type="button" class="tab-btn" data-action="switchTab" data-arg="manage-products" data-tab="manage-products"><span class="nav-emoji">📦</span><span class="txt">Productos</span><span class="badge" id="dashLowBadge" style="display:none">0</span></button><button type="button" class="tab-btn" data-action="switchTab" data-arg="add-products" data-tab="add-products"><span class="nav-emoji">➕</span><span class="txt">Agregar</span></button><button type="button" class="tab-btn" data-action="switchTab" data-arg="publicacion" data-tab="publicacion"><span class="nav-emoji">📢</span><span class="txt">Publicación</span></button><div class="navlabel">Catálogo</div><button type="button" class="tab-btn" data-action="switchTab" data-arg="manage-categories" data-tab="manage-categories"><span class="nav-emoji">🏷️</span><span class="txt">Categorías</span></button><button type="button" class="tab-btn" data-action="switchTab" data-arg="manage-subcategories" data-tab="manage-subcategories"><span class="nav-emoji">📁</span><span class="txt">Subcategorías</span></button><div class="navlabel">Datos</div><a href="vale.html" class="tab-btn" data-tab="vale" style="text-decoration:none"><span class="nav-emoji">🧾</span><span class="txt">Vale</span><span class="badge gold">NEW</span></a><button type="button" class="tab-btn" data-action="switchTab" data-arg="ventas" data-tab="ventas"><span class="nav-emoji">💰</span><span class="txt">Ventas</span></button><button type="button" class="tab-btn" data-action="switchTab" data-arg="analytics" data-tab="analytics"><span class="nav-emoji">📊</span><span class="txt">Analytics</span></button><button type="button" class="tab-btn" data-action="switchTab" data-arg="radar" data-tab="radar"><span class="nav-emoji">📡</span><span class="txt">Radar</span><span class="badge gold">NEW</span></button><button type="button" class="tab-btn" data-action="switchTab" data-arg="specs-tool" data-tab="specs-tool"><span class="nav-emoji">🔧</span><span class="txt">Specs</span><span class="badge gold">NEW</span></button><button type="button" class="tab-btn" data-action="switchTab" data-arg="seo-tool" data-tab="seo-tool"><span class="nav-emoji">🔎</span><span class="txt">SEO</span><span class="badge gold">NEW</span></button><button type="button" class="tab-btn" data-action="switchTab" data-arg="historial" data-tab="historial"><span class="nav-emoji">🕘</span><span class="txt">Historial</span><span class="badge gold">NEW</span></button><div class="navlabel">Sistema</div><button type="button" class="tab-btn" data-action="switchTab" data-arg="configuracion" data-tab="configuracion"><span class="nav-emoji">⚙️</span><span class="txt">Configuración</span></button></aside><div id="adminAccordion" class="admin-accordion"></div>
 <main class="tm-main admin-content">
-<section id="inicio" class="admin-tab active"><style>.tm-qg{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:14px 0 18px}.tm-qc{border-radius:11px;padding:13px 10px;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;transition:transform .12s,opacity .15s;background:#1e1e2a;border:1px solid rgba(255,255,255,.09);color:#d0d0e0}.tm-qc:active{transform:scale(.93)}.tm-qc:hover{opacity:.82}.tm-qc.p{background:linear-gradient(135deg,#FF6B35,#e0521a);border-color:transparent;color:#fff}.tm-qc.g{background:rgba(201,169,110,.15);border-color:rgba(201,169,110,.35);color:#c9a96e}.tm-qc.ia{background:rgba(139,92,246,.18);border-color:rgba(139,92,246,.4);color:#c4b5fd}#tmAgenda{display:none;background:rgba(15,8,3,.7);border:1px solid rgba(255,107,53,.3);border-radius:16px;padding:14px 14px 10px;margin-bottom:16px;box-shadow:0 4px 24px rgba(0,0,0,.35)}.tmag-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}.tmag-title{font-size:14px;font-weight:700;color:#FF6B35;display:flex;align-items:center;gap:6px}.tmag-close{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);color:#aaa;font-size:13px;cursor:pointer;padding:3px 9px;line-height:1.4;border-radius:8px}.tmag-close:hover{background:rgba(255,255,255,.13)}.tmag-item{display:flex;align-items:flex-start;gap:10px;padding:9px 10px 9px 12px;background:rgba(255,255,255,.04);border-radius:10px;margin-bottom:6px;font-size:12px;transition:background .15s}.tmag-item:last-child{margin-bottom:0}.tmag-item:hover{background:rgba(255,255,255,.07)}.tmag-icon{font-size:17px;flex-shrink:0;margin-top:1px}.tmag-txt{flex:1;line-height:1.4;min-width:0}.tmag-txt b{color:#fff;display:block;font-size:13px;font-weight:700;margin-bottom:2px}.tmag-det{color:#888;font-size:11px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.tmag-btn{background:rgba(255,107,53,.18);border:1px solid rgba(255,107,53,.4);color:#FF6B35;border-radius:8px;padding:5px 10px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0;margin-top:1px}.tmag-btn:hover{background:rgba(255,107,53,.3)}.tmag-btn.g{background:rgba(37,211,102,.12);border-color:rgba(37,211,102,.35);color:#25D366}.tmag-btn.b{background:rgba(42,171,238,.12);border-color:rgba(42,171,238,.35);color:#2AABEE}.tmag-btn.ia{background:rgba(139,92,246,.18);border-color:rgba(139,92,246,.4);color:#c4b5fd}.tm-qc.pend{background:rgba(255,107,53,.14);border-color:rgba(255,107,53,.4);color:#FF6B35;position:relative}.tm-qc.pend.crit{background:rgba(231,76,60,.18);border-color:rgba(231,76,60,.5);color:#e74c3c}.tm-qc.pend .pend-n{display:inline-flex;align-items:center;justify-content:center;background:#e74c3c;color:#fff;border-radius:20px;font-size:10px;font-weight:900;min-width:17px;height:17px;padding:0 5px;margin-left:4px}</style><div id="tmAgenda"><div class="tmag-hd"><span class="tmag-title">📋 Tareas pendientes</span><button class="tmag-close" onclick="document.getElementById('tmAgenda').style.display='none'" title="Cerrar">✕</button></div><div id="tmAgendaItems"></div></div><div class="head"><div><h1>Inicio</h1><p class="sub">Panel TiendaMax</p></div></div><div class="stats"><div class="stat"><small>Total productos</small><b id="dashTotal">—</b></div><div class="stat"><small>Activos</small><b id="dashActive">—</b></div><div class="stat"><small>Stock bajo</small><b id="dashLow">—</b></div><div class="stat"><small>Agotados</small><b id="dashEmpty">—</b></div></div><div class="tm-qg"><button type="button" class="tm-qc p" data-action="switchTab" data-arg="add-products">➕ Agregar</button><button type="button" class="tm-qc p" data-action="sincronizarTodoConGitHub">🔄 Actualizar</button><button type="button" class="tm-qc" data-action="switchTab" data-arg="publicar-ahora">📣 Publicar</button><button type="button" class="tm-qc" data-action="switchTab" data-arg="manage-products">📦 Productos</button><button type="button" class="tm-qc ia" data-action="switchTab" data-arg="herramientas">🛠 IA / Herramientas</button><button type="button" class="tm-qc" onclick="location.href='vale.html'">🧾 Vale</button><button type="button" class="tm-qc" data-action="switchTab" data-arg="ventas">💰 Ventas</button><button type="button" class="tm-qc" data-action="switchTab" data-arg="analytics">📊 Analytics</button><button type="button" class="tm-qc g" data-action="switchTab" data-arg="configuracion">⚙️ Configuración</button><button type="button" id="tmBtnPendientes" class="tm-qc pend" onclick="var a=document.getElementById('tmAgenda');if(a){a.style.display='block';a.scrollIntoView({behavior:'smooth',block:'start'});}">📋 Pendientes</button></div><div class="card"><h2>🔥 Productos con más stock</h2><div id="dashTop"></div></div><div class="card" style="margin-top:12px"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><h2 style="margin:0">🔔 Interesados recientes</h2><button type="button" id="dashIntMarkRead" type="button" style="font-size:11px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:#888;border-radius:8px;padding:4px 10px;cursor:pointer;flex-shrink:0">✓ Visto</button></div><div id="dashInteresadosList" style="display:flex;flex-direction:column;gap:5px"><div style="color:#555;font-size:12px;text-align:center;padding:14px">Cargando…</div></div></div></section>
+<section id="inicio" class="admin-tab active"><style>
+/* ── Premium Inicio v2 ── */
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Playfair+Display:wght@600;700;800&display=swap');
+#inicio{--bg:#0B0B0F;--surface:#14141B;--elev:#1C1C25;--line:#26262F;--line-soft:#1E1E27;--gold:#C9A96E;--gold-dim:#8a6d3a;--coral:#FF6B35;--text:#ECEAF2;--muted:#8A879A;--muted-2:#57545f;--ok:#5FBF8F;--r:18px;overflow-y:auto;overflow-x:hidden;padding:6px 0 100px;scrollbar-width:none;background:var(--bg)}
+#inicio::-webkit-scrollbar{display:none}
+#inicio .p-head{padding:16px 18px 12px;display:flex;align-items:center;justify-content:space-between}
+#inicio .p-logo{display:flex;align-items:center;gap:10px}
+#inicio .p-logo .m{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--coral),#c2491d);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-weight:800;color:#fff;font-size:18px;box-shadow:0 4px 14px rgba(255,107,53,.3)}
+#inicio .p-logo b{font-family:'Playfair Display',serif;font-size:17px;font-weight:700;display:block;line-height:1.1;color:var(--text)}
+#inicio .p-logo small{font-size:11px;color:var(--muted-2)}
+#inicio .p-hicons{display:flex;gap:8px}
+#inicio .ib{width:38px;height:38px;border-radius:11px;background:var(--surface);border:1px solid var(--line);color:var(--muted);display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer;position:relative}
+#inicio .ib .n{position:absolute;top:-3px;right:-3px;background:var(--coral);color:#fff;font-size:9px;font-weight:700;min-width:16px;height:16px;border-radius:999px;display:flex;align-items:center;justify-content:center;border:2px solid var(--bg)}
+#inicio .p-greet{margin:2px 18px 16px}
+#inicio .p-greet h1{font-family:'Playfair Display',serif;font-size:26px;font-weight:700;line-height:1;color:var(--text)}
+#inicio .p-greet p{font-size:12.5px;color:var(--muted-2);margin-top:5px}
+#inicio .p-hero{margin:0 18px 14px;background:radial-gradient(120% 100% at 100% 0%,rgba(201,169,110,.14),transparent 60%),linear-gradient(160deg,var(--elev),var(--surface));border:1px solid var(--line);border-radius:22px;padding:20px;position:relative;overflow:hidden}
+#inicio .p-hero::before{content:"";position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:.55}
+#inicio .p-hero .lbl{font-size:11px;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+#inicio .p-hero .big{font-family:'Playfair Display',serif;font-size:44px;font-weight:800;line-height:.95;letter-spacing:-.5px;color:var(--gold)}
+#inicio .p-hero .big small{font-size:18px;color:var(--gold-dim);font-family:'DM Sans';font-weight:600;margin-right:4px}
+#inicio .p-hero .split{display:flex;justify-content:space-between;align-items:flex-end;margin-top:18px;gap:14px}
+#inicio .p-hero .sold .s-l{font-size:11px;color:var(--muted);margin-bottom:3px}
+#inicio .p-hero .sold .s-v{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--text)}
+#inicio .p-hero .sold .s-sub{font-size:11px;color:var(--ok);margin-top:2px}
+#inicio .spark{width:112px;height:44px;flex:none}
+#inicio .p-metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin:0 18px 22px}
+#inicio .met{background:var(--surface);border:1px solid var(--line-soft);border-radius:14px;padding:12px 10px;text-align:center}
+#inicio .met .v{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;line-height:1;color:var(--text)}
+#inicio .met .k{font-size:10px;color:var(--muted-2);margin-top:5px;letter-spacing:.02em}
+#inicio .met.alert .v{color:var(--coral)}
+#inicio .met.warn .v{color:var(--gold)}
+#inicio .sec-h{font-size:11px;letter-spacing:.13em;text-transform:uppercase;color:var(--muted-2);margin:0 18px 12px;display:flex;align-items:center;gap:8px}
+#inicio .sec-h .line{flex:1;height:1px;background:var(--line-soft)}
+#inicio .p-primary{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin:0 18px 11px}
+#inicio .pbtn{border-radius:15px;padding:16px 12px;font-family:'DM Sans',system-ui,sans-serif;font-size:14.5px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:transform .12s,filter .2s;border:1px solid transparent}
+#inicio .pbtn:active{transform:scale(.98)}
+#inicio .pbtn.fill{background:linear-gradient(135deg,var(--coral),#e5551f);color:#fff;box-shadow:0 6px 18px rgba(255,107,53,.28)}
+#inicio .pbtn.out{background:var(--surface);border-color:var(--gold);color:var(--gold)}
+#inicio .p-sgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:0 18px 24px}
+#inicio .sbtn{background:var(--surface);border:1px solid var(--line-soft);border-radius:14px;padding:14px 8px;color:var(--text);cursor:pointer;font-family:'DM Sans',system-ui,sans-serif;font-size:12px;font-weight:500;display:flex;flex-direction:column;align-items:center;gap:8px;transition:border-color .2s,transform .12s}
+#inicio .sbtn:active{transform:scale(.97)}
+#inicio .sbtn:hover{border-color:var(--line)}
+#inicio .sbtn .ic{font-size:20px}
+#inicio .sbtn.rel{position:relative}
+#inicio .sbtn .sn{position:absolute;top:8px;right:12px;background:var(--coral);color:#fff;font-size:9px;font-weight:700;min-width:15px;height:15px;border-radius:999px;display:flex;align-items:center;justify-content:center;padding:0 3px}
+/* Agenda (heredada) */
+#inicio #tmAgenda{display:none;background:rgba(15,8,3,.7);border:1px solid rgba(255,107,53,.3);border-radius:16px;padding:14px 14px 10px;margin:0 18px 16px;box-shadow:0 4px 24px rgba(0,0,0,.35)}
+#inicio .tmag-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+#inicio .tmag-title{font-size:14px;font-weight:700;color:#FF6B35;display:flex;align-items:center;gap:6px}
+#inicio .tmag-close{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);color:#aaa;font-size:13px;cursor:pointer;padding:3px 9px;line-height:1.4;border-radius:8px}
+#inicio .tmag-close:hover{background:rgba(255,255,255,.13)}
+#inicio .tmag-item{display:flex;align-items:flex-start;gap:10px;padding:9px 10px 9px 12px;background:rgba(255,255,255,.04);border-radius:10px;margin-bottom:6px;font-size:12px;transition:background .15s}
+#inicio .tmag-item:last-child{margin-bottom:0}
+#inicio .tmag-item:hover{background:rgba(255,255,255,.07)}
+#inicio .tmag-icon{font-size:17px;flex-shrink:0;margin-top:1px}
+#inicio .tmag-txt{flex:1;line-height:1.4;min-width:0}
+#inicio .tmag-txt b{color:#fff;display:block;font-size:13px;font-weight:700;margin-bottom:2px}
+#inicio .tmag-det{color:#888;font-size:11px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#inicio .tmag-btn{background:rgba(255,107,53,.18);border:1px solid rgba(255,107,53,.4);color:#FF6B35;border-radius:8px;padding:5px 10px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0;margin-top:1px}
+#inicio .tmag-btn:hover{background:rgba(255,107,53,.3)}
+#inicio .tmag-btn.g{background:rgba(37,211,102,.12);border-color:rgba(37,211,102,.35);color:#25D366}
+#inicio .tmag-btn.b{background:rgba(42,171,238,.12);border-color:rgba(42,171,238,.35);color:#2AABEE}
+#inicio .tmag-btn.ia{background:rgba(139,92,246,.18);border-color:rgba(139,92,246,.4);color:#c4b5fd}
+/* Top stock card */
+#inicio .p-card{background:var(--surface);border:1px solid var(--line-soft);border-radius:var(--r);padding:18px;margin:0 18px 14px}
+#inicio .p-card h2{font-size:14px;font-weight:700;color:var(--gold);margin-bottom:12px}
+/* Interesados card */
+#inicio .p-card-int{background:var(--surface);border:1px solid var(--line-soft);border-radius:var(--r);padding:18px;margin:0 18px 20px}
+#inicio .p-card-int .p-ci-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+#inicio .p-card-int h2{font-size:14px;font-weight:700;color:var(--gold);margin:0}
+#inicio .p-card-int .p-ci-btn{font-size:11px;background:rgba(255,255,255,.06);border:1px solid var(--line);color:var(--muted);border-radius:8px;padding:5px 10px;cursor:pointer;flex-shrink:0;font-family:'DM Sans',system-ui,sans-serif}
+#inicio .p-card-int .p-ci-btn:hover{background:rgba(255,255,255,.1);color:var(--text)}
+/* Empty state */
+#inicio .p-empty{background:var(--surface);border:1px dashed var(--line);border-radius:var(--r);padding:26px 20px;text-align:center}
+#inicio .p-empty .e-ic{font-size:26px;opacity:.6;margin-bottom:8px}
+#inicio .p-empty .e-t{font-size:13.5px;font-weight:600;color:var(--text);margin-bottom:4px}
+#inicio .p-empty .e-s{font-size:12px;color:var(--muted-2);line-height:1.5}
+@media(max-width:480px){#inicio .p-hero .big{font-size:34px}#inicio .p-metrics{grid-template-columns:repeat(2,1fr)}}
+</style>
+
+<!-- Agenda -->
+<div id="tmAgenda"><div class="tmag-hd"><span class="tmag-title">📋 Tareas pendientes</span><button class="tmag-close" onclick="document.getElementById('tmAgenda').style.display='none'" title="Cerrar">✕</button></div><div id="tmAgendaItems"></div></div>
+
+<!-- Header -->
+<div class="p-head">
+  <div class="p-logo">
+    <div class="m">M</div>
+    <div><b>TiendaMax</b><small>Panel de control</small></div>
+  </div>
+  <div class="p-hicons">
+    <div class="ib" data-action="sincronizarTodoConGitHub" title="Actualizar">🔄</div>
+    <div class="ib" id="pInicioNotif" style="display:none">🔔<span class="n" id="pInicioNotifN">0</span></div>
+  </div>
+</div>
+
+<!-- Greeting -->
+<div class="p-greet">
+  <h1 id="pGreetText">Buenas, Criptobox</h1>
+  <p id="pGreetDate">Cargando…</p>
+</div>
+
+<!-- Hero: Inventario -->
+<div class="p-hero">
+  <div class="lbl">Valor de inventario</div>
+  <div class="big"><small>$</small><span id="pHeroInventory">—</span></div>
+  <div class="split">
+    <div class="sold">
+      <div class="s-l">Vendido · 7 días</div>
+      <div class="s-v" id="pHeroSold">$0</div>
+      <div class="s-sub" id="pHeroSoldSub">—</div>
+    </div>
+    <svg class="spark" viewBox="0 0 112 44" fill="none">
+      <polyline points="0,34 16,28 32,32 48,14 64,22 80,10 96,18 112,6" stroke="#C9A96E" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="112" cy="6" r="3" fill="#C9A96E"/>
+    </svg>
+  </div>
+</div>
+
+<!-- Metrics -->
+<div class="p-metrics">
+  <div class="met"><div class="v" id="dashTotal">—</div><div class="k">Productos</div></div>
+  <div class="met"><div class="v" id="dashActive">—</div><div class="k">Activos</div></div>
+  <div class="met warn"><div class="v" id="dashLow">—</div><div class="k">Stock bajo</div></div>
+  <div class="met alert"><div class="v" id="dashEmpty">—</div><div class="k">Agotados</div></div>
+</div>
+
+<!-- Quick Actions -->
+<div class="sec-h">Acciones rápidas <span class="line"></span></div>
+<div class="p-primary">
+  <button type="button" class="pbtn fill" data-action="switchTab" data-arg="add-products">＋ Agregar</button>
+  <button type="button" class="pbtn out" data-action="switchTab" data-arg="publicar-ahora">📣 Publicar</button>
+</div>
+<div class="p-sgrid">
+  <button type="button" class="sbtn" data-action="switchTab" data-arg="manage-products"><span class="ic">📦</span>Productos</button>
+  <button type="button" class="sbtn" data-action="switchTab" data-arg="ventas"><span class="ic">💰</span>Ventas</button>
+  <button type="button" class="sbtn" data-action="switchTab" data-arg="analytics"><span class="ic">📊</span>Analytics</button>
+  <button type="button" class="sbtn" data-action="switchTab" data-arg="herramientas"><span class="ic">🤖</span>IA</button>
+  <button type="button" class="sbtn" data-action="switchTab" data-arg="manage-categories"><span class="ic">🏷️</span>Categorías</button>
+  <button type="button" class="sbtn rel" id="tmBtnPendientes" onclick="var a=document.getElementById('tmAgenda');if(a){a.style.display='block';a.scrollIntoView({behavior:'smooth',block:'start'});}"><span class="ic">📋</span>Pendientes<span class="sn" id="pendBadgeN" style="display:none">0</span></button>
+  <button type="button" class="sbtn" onclick="location.href='vale.html'"><span class="ic">🧾</span>Vale</button>
+  <button type="button" class="sbtn" data-action="switchTab" data-arg="radar"><span class="ic">📡</span>Radar</button>
+  <button type="button" class="sbtn" data-action="switchTab" data-arg="configuracion"><span class="ic">⚙️</span>Config</button>
+</div>
+
+<!-- Top Stock -->
+<div class="p-card">
+  <h2>🔥 Productos con más stock</h2>
+  <div id="dashTop"></div>
+</div>
+
+<!-- Interesados -->
+<div class="p-card-int">
+  <div class="p-ci-head">
+    <h2>🔔 Interesados recientes</h2>
+    <button type="button" id="dashIntMarkRead" class="p-ci-btn">✓ Visto</button>
+  </div>
+  <div id="dashInteresadosList">
+    <div class="p-empty">
+      <div class="e-ic">🔕</div>
+      <div class="e-t">Sin interesados nuevos</div>
+      <div class="e-s">Cuando alguien pida "Avísame" en un producto<br>agotado, aparecerá aquí para notificarle.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  /* Greeting dinámico */
+  var h=new Date().getHours(), g='Buenas';
+  if(h<12) g='Buenos días'; else if(h<19) g='Buenas tardes'; else g='Buenas noches';
+  var user=localStorage.getItem('githubUser')||'Criptobox';
+  var el=document.getElementById('pGreetText');
+  if(el) el.textContent=g+', '+user;
+
+  /* Fecha */
+  var dias=['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+  var meses=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+  var d=new Date();
+  var dateStr=dias[d.getDay()]+' '+d.getDate()+' de '+meses[d.getMonth()]+' · resumen de tu tienda';
+  var de=document.getElementById('pGreetDate');
+  if(de) de.textContent=dateStr;
+
+  /* Calcular inventario y vendido */
+  var origUpdateDash=window.updateDashboard;
+  if(origUpdateDash){
+    window.updateDashboard=function(){
+      origUpdateDash();
+      try{
+        var ps=window.productos||[];
+        var total=0, sold=0;
+        ps.forEach(function(p){
+          var price=parseFloat(p.precio_actual||p.precio||0)||0;
+          var stock=parseInt(p.stock||0,10);
+          var vendidos=parseInt(p.vendidos||0,10)||0;
+          total+=price*stock;
+          sold+=price*vendidos;
+        });
+        var invEl=document.getElementById('pHeroInventory');
+        if(invEl) invEl.textContent=total.toLocaleString('en-US');
+        var soldEl=document.getElementById('pHeroSold');
+        if(soldEl) soldEl.textContent='$'+sold.toLocaleString('en-US');
+        var soldSubEl=document.getElementById('pHeroSoldSub');
+        if(soldSubEl){
+          var totalVendidos=ps.reduce(function(s,p){return s+(parseInt(p.vendidos||0,10)||0)},0);
+          soldSubEl.textContent='↑ '+totalVendidos+' ventas';
+        }
+        /* Sync notif badge */
+        var sideBadge=document.getElementById('dashAlertBadge');
+        var localBadge=document.getElementById('pInicioNotif');
+        var localBadgeN=document.getElementById('pInicioNotifN');
+        if(sideBadge&&localBadge){
+          var n=parseInt(sideBadge.textContent)||0;
+          if(n>0){localBadge.style.display='';localBadgeN.textContent=n>99?'99+':n;}else{localBadge.style.display='none';}
+        }
+        /* Sync pendientes badge */
+        var pendBtn=document.getElementById('tmBtnPendientes');
+        if(pendBtn){
+          var critClass=pendBtn.classList.contains('crit');
+          var pendN=document.getElementById('pendBadgeN');
+          if(pendN){
+            var sidePend=document.querySelector('#tmAgenda .tmag-item');
+            var count=sidePend?document.querySelectorAll('#tmAgenda .tmag-item').length:0;
+            if(count>0){pendN.style.display='';pendN.textContent=count;}else{pendN.style.display='none';}
+          }
+        }
+      }catch(e){}
+    };
+  }
+})();
+</script>
+</section>
 <section id="add-products" class="admin-tab"><div class="head"><div><h1>Agregar producto</h1><p class="sub">Todos los campos del admin original + IA, compresión y vista previa en vivo</p></div><span class="sync-pill">Autoguardado activo</span></div><div class="preview-live"><div><form id="productForm"><div class="form-card"><h2>📝 Información básica</h2><div class="add-grid"><div class="add-field"><label>Nombre del producto *</label><input id="productName" required placeholder="Ej: Audífonos Bluetooth TWS Pro"></div><div class="add-field"><label>Descripción *</label><textarea id="productDescription" required placeholder="Describe el producto..."></textarea></div><div class="add-field full ai-under-description"><div class="ai-box"><div class="ai-top"><span>☆ Generador con IA</span><small>IA integrada</small></div><div class="ai-copy" id="aiText">Escribe nombre y descripción para generar textos de venta.</div><button type="button" class="mini-btn" id="btnAnalizarFoto" style="display:none">📷 Analizar foto</button><button type="button" class="mini-btn">🎲 Regenerar</button><button type="button" class="mini-btn">📋 Usar esta</button><button type="button" class="mini-btn">🎯 Ventas</button><button type="button" class="mini-btn">🔬 Técnico</button></div></div><div class="add-field"><label>Categoría *</label><select id="productCategory" required></select></div><div class="add-field"><label>Subcategoría</label><select id="productSubcategory"><option value="">—</option></select></div><div class="add-field"><label>⭐ ¿Destacar en Más vendidos?</label><select id="productMasVendido"><option value="false">No</option><option value="true">Sí</option></select></div><div class="add-field"><label>Estado inicial</label><select id="pStatus"><option>🟢 Activo</option><option>🔴 Agotado</option></select></div></div></div><div class="form-card"><h2>💰 Precios, stock y comisiones</h2><div class="add-grid"><div class="add-field"><label>Precio actual (USD) *</label><input id="productPriceActual" type="number" step="0.01" min="0" required></div><div class="add-field"><label>Precio original (antes)</label><input id="productPrecioOriginal" type="number" step="0.01" min="0" placeholder="Ej: 49.99"></div><div class="add-field"><label>Stock disponible *</label><input id="productStock" type="number" min="0" required></div><div class="add-field"><label>💰 Mi comisión</label><div class="tm-comision-row"><input id="productComision" type="number" step="0.01" min="0" placeholder="0.00" oninput="tmUpdateComisionHint(this,'tmComisionHint1','tmMonedaToggle1')"><div class="tm-moneda-toggle" id="tmMonedaToggle1"><button type="button" class="tm-moneda-btn active" data-moneda="USD" onclick="tmSetMoneda('tmMonedaToggle1','productComisionMoneda','USD',this)">USD</button><button type="button" class="tm-moneda-btn" data-moneda="MN" onclick="tmSetMoneda('tmMonedaToggle1','productComisionMoneda','MN',this)">MN</button></div></div><input type="hidden" id="productComisionMoneda" value="USD"><span class="admin-mn-hint" id="tmComisionHint1">Lo que ganas por cada venta</span></div><div class="add-field full"><label class="check-row"><input type="checkbox" id="productUsado"> ♻️ Producto usado / refurbished</label></div><div class="add-field full"><label class="check-row"><input type="checkbox" id="productDevolucion"> ✓ Devolución segura / Garantía de satisfacción</label></div><div class="add-field full"><label>Garantía (opcional)</label><input id="productGarantia" placeholder="Ej: 6 meses de garantía"></div><div class="add-field full"><label>⚡ Especificaciones (opcional)</label><input id="productSpecs" placeholder="Ej: 12V, 2000W, Onda Pura, IP65 (separadas por comas)"><div style="display:flex;align-items:center;gap:8px;margin-top:6px;flex-wrap:wrap"><button type="button" class="mini-btn" onclick="tmAutoSpecsDesdeDescripcion(true)" style="margin:0">✨ Auto desde descripción</button><small style="color:#888;font-size:11px">Se autocompletan solas al escribir la descripción · editables · aparecen como badges naranjas solo en el modal del producto.</small></div></div></div></div><div class="form-card"><h2>📸 Foto principal *</h2><label class="upload"><input id="productImage" type="file" accept="image/*" required><div><div class="upico">⇧</div><b>Click para subir foto</b><small>Se comprime sola al guardar — solo súbela</small></div></label></div><div class="form-card"><h2>🖼️ Galería (opcional)</h2><label class="upload"><input id="productImagesExtra" type="file" accept="image/*" multiple><div><div class="upico">▧</div><b>Añadir fotos extra</b><small>Máx 8 · Se comprimen solas al guardar</small></div></label><div class="gallery-thumbs" id="galleryThumbsPreview"></div></div><div class="actions"><button type="submit" class="btn primary">💾 Guardar producto</button></div></form></div><aside class="product-preview"><div class="img" id="pvEmoji">📦</div><div class="body"><span class="tag" id="pvCat">Categoría</span><h3 id="pvName">Nombre del producto</h3><div class="money" id="pvPrice">$0.00 USD</div><small class="stock empty" id="pvStock">Agotado</small></div></aside></div></section>
 <section id="manage-products" class="admin-tab"><div class="head"><div><h1>Productos</h1><p class="sub">Gestión real de inventario, edición rápida y publicación.</p></div><button type="button" class="btn primary" data-action="switchTab" data-arg="add-products">+ Crear</button></div><div class="card"><div class="form-grid"><input id="searchProductos" placeholder="Buscar producto..." oninput="actualizarListaProductos()"><select id="filtroCategoria" onchange="actualizarListaProductos()"><option value="">Todas las categorías</option></select></div><div style="margin-top:10px"><button type="button" id="btnFiltroFavoritos" type="button" onclick="tmToggleFiltroFavoritos()" style="background:rgba(201,169,110,.12);border:1px solid rgba(201,169,110,.3);color:#c9a96e;border-radius:20px;padding:6px 16px;font-size:13px;font-weight:700;cursor:pointer;transition:all .18s">⭐ Favoritos</button></div><div id="productsList" class="products-list" style="margin-top:14px"></div></div></section>
 <section id="publicacion" class="admin-tab"><style>.pub-nav{display:flex;gap:6px;margin-bottom:16px;overflow-x:auto;padding-bottom:4px;-webkit-overflow-scrolling:touch;scrollbar-width:none}.pub-nav::-webkit-scrollbar{display:none}.pub-nav-btn{white-space:nowrap;padding:8px 20px;border-radius:30px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);color:#888;font-size:13px;font-weight:700;cursor:pointer;transition:.18s;flex-shrink:0}.pub-nav-btn.active{background:rgba(255,107,53,.16);border-color:rgba(255,107,53,.35);color:#FF6B35}.pub-panel{display:none}.pub-panel.active{display:block}</style><div class="head"><div><h1>Publicación</h1><p class="sub">Promo, oferta del día, banners y publicar en redes.</p></div></div><div class="pub-nav"><button class="pub-nav-btn active" data-action="pubSwitchPanel" data-arg="publicar">📣 Publicar</button><button class="pub-nav-btn" data-action="pubSwitchPanel" data-arg="oferta">🔥 Oferta del día</button><button class="pub-nav-btn" data-action="pubSwitchPanel" data-arg="promo">🎨 Promo</button><button class="pub-nav-btn" data-action="pubSwitchPanel" data-arg="banners">🖼️ Banners</button></div><div id="pubPanel-publicar" class="pub-panel active"><div id="backendStatus" class="backend-status">🟠 Modo manual activo</div><div id="tmPublicarRoot"></div><div id="listaGruposFB" style="display:none"></div><div id="listaRevolicoConfig" style="display:none"></div><div id="resultadoPublicacion"></div></div><div id="pubPanel-oferta" class="pub-panel"><div class="grid2"><div class="card"><h2>🔥 Oferta del día</h2><select id="ofertaDiaSelect2"></select><input id="ofertaDiaTexto2" placeholder="🔥 OFERTA DEL DÍA" style="margin-top:10px"><div class="actions"><button type="button" class="btn primary" data-action="guardarOfertaDia">Activar</button><button type="button" class="btn" data-action="desactivarOfertaDia">Desactivar</button></div><div id="ofertaDiaStatus2"></div></div><div class="card"><h2>⏱️ Countdown</h2><input id="heroTaglineInput" placeholder="Tagline"><select id="countdownProductSelect"></select><div class="form-grid"><input id="countdownHoras" type="number" value="2"><input id="countdownMinutos" type="number" value="30"></div><input id="countdownTexto" value="¡Oferta especial!"><div class="actions" style="margin-top:10px"><button type="button" class="btn primary" data-action="guardarCountdown">Activar</button><button type="button" class="btn" data-action="desactivarCountdown">Desactivar</button></div><div id="countdownStatus"></div></div></div><div class="card" style="margin-top:12px"><h2>📦 Agotados</h2><div id="productosAgotadosList"></div></div></div><div id="pubPanel-promo" class="pub-panel"><div id="tmPromoAdminRoot"></div></div><div id="pubPanel-banners" class="pub-panel"><div class="card"><h2>🖼️ Banners</h2><div id="bannerList"></div><input id="nuevoBannerFile" type="file" accept="image/*"><input id="nuevoBannerUrl" placeholder="URL imagen"><input id="nuevoBannerLink" placeholder="Link"><button type="button" class="btn primary" data-action="agregarBanner" style="margin-top:10px">+ Agregar banner</button><button type="button" class="btn gold" onclick="exportarBannersJSON()" style="margin-top:10px">📥 Descargar banners.json</button></div></div></section>
@@ -2348,4 +2580,5 @@ if ('serviceWorker' in navigator) {
   });
 })();
 </script>
+<script src="js/premium-v2.js?v=1"></script>
 </body></html>
