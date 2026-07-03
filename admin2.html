@@ -1023,54 +1023,88 @@ function pubSwitch(v){ PUB_VIEW=v; renderPublicar(); }
 function renderPublicar(){
   const P=$('#pub-pills');
   if(P){ const pill=(v,l)=>`<button class="btn ${PUB_VIEW===v?'btn-primary':'btn-ghost'}" onclick="pubSwitch('${v}')">${l}</button>`;
-    P.innerHTML=pill('compartir','📤 Compartir')+pill('banners','🖼️ Banners')+pill('oferta','🔥 Oferta del día'); }
+    P.innerHTML=pill('compartir','📲 Compartir')+pill('banners','🖼️ Banners')+pill('oferta','🔥 Oferta del día'); }
   const body=$('#pub-body'); if(!body) return;
-  if(PUB_VIEW==='compartir'){ body.innerHTML=pubCompartirHTML(); pubRenderPreview(false); }
+  if(PUB_VIEW==='compartir'){ body.innerHTML=pubCompartirHTML(); pubRenderShareList(); }
   else if(PUB_VIEW==='banners'){ body.innerHTML='<div class="section"><div class="empty"><div class="ico">🖼️</div>Cargando banners…</div></div>'; pubRenderBanners(); }
   else { body.innerHTML=`<div class="section"><div class="empty"><div class="ico">🔥</div><b style="color:#fff">Oferta del día y contador por tiempo</b><br>Se manejan en el tab <b>🎁 Combos y ofertas</b> (eliges producto, texto y tiempo).<br><br><button class="btn btn-primary" onclick="go('combos')">Ir a Combos y ofertas →</button></div></div>`; }
 }
+// Compartir por producto (fiel al admin viejo: filtro por categoría + tarjeta 1080x1920)
+function pubUrl(p){ return 'https://tiendamax.org/p/producto-'+p.id+'.html'; }
+function pubTxt(p){ return `🔥 ${p.nombre}\n\n${p.descripcion?String(p.descripcion).slice(0,160)+'\n\n':''}💵 $${Number(p.precioActual||0).toFixed(2)} USD\n📦 Stock: ${Number(p.stock||0)}\n🏷️ ${p.categoria||'TiendaMax'}\n\nPídelo directo por WhatsApp en TiendaMax:\n${pubUrl(p)}`; }
+function pubShareCats(){ return [...new Set(PRODUCTOS.map(p=>p.categoria||'General').filter(Boolean))].sort(); }
+function pubShareFiltered(){
+  const q=String(($('#pub-share-q')&&$('#pub-share-q').value)||'').toLowerCase().trim();
+  const cat=($('#pub-share-cat')&&$('#pub-share-cat').value)||'';
+  return PRODUCTOS.filter(p=>Number(p.stock||0)>0).filter(p=>(!cat||(p.categoria||'General')===cat)&&(!q||String(p.nombre||'').toLowerCase().includes(q)||String(p.categoria||'').toLowerCase().includes(q))).slice(0,120);
+}
 function pubCompartirHTML(){
-  const opts=[...PRODUCTOS].sort((a,b)=>String(a.nombre||'').localeCompare(String(b.nombre||''))).map(p=>`<option value="${esc(p.id)}" ${String(p.id)===String(PUB_SHARE_ID)?'selected':''}>${esc(p.nombre)}</option>`).join('');
-  return `<div class="grid-2">
-    <div class="section">
-      <h3>📤 Compartir producto</h3>
-      <div class="form-group"><label class="form-label">Producto</label><select class="form-select" id="pub-prod" onchange="pubSelect(this.value)"><option value="">Elige un producto…</option>${opts}</select></div>
-      <div class="form-group" style="margin-top:10px"><label class="form-label">Texto de la publicación (editable)</label><textarea class="form-textarea" id="pub-texto" style="min-height:170px"></textarea></div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px">
-        <button class="btn btn-ghost" onclick="pubCopiar()">📋 Copiar texto</button>
-        <button class="btn btn-success" onclick="pubShare('whatsapp')">💬 WhatsApp</button>
-        <button class="btn btn-primary" onclick="pubShare('facebook')">📘 Facebook</button>
-        <button class="btn btn-ghost" onclick="pubShare('revolico')">🟢 Revolico</button>
-      </div>
+  return `<div class="section">
+    <h3>📲 Compartir por producto</h3>
+    <p style="font-size:12px;color:var(--muted);margin:-4px 0 12px">Estado de WhatsApp (imagen), Facebook, chat y copia rápida — filtra por categoría.</p>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:6px">
+      <input class="form-input" id="pub-share-q" placeholder="🔍 Buscar producto…" style="flex:1;min-width:160px" oninput="pubRenderShareList()">
+      <select class="form-select" id="pub-share-cat" style="min-width:170px" onchange="pubRenderShareList()"><option value="">Todas las categorías</option>${pubShareCats().map(c=>`<option>${esc(c)}</option>`).join('')}</select>
     </div>
-    <div class="section"><h3>👁 Vista previa</h3><div id="pub-preview"></div></div>
+    <div class="banner-info">Tip: usa <b>🖼️ Estado</b> para generar una imagen vertical lista para WhatsApp Estado.</div>
+    <div id="pub-share-list" style="display:flex;flex-direction:column;gap:10px;margin-top:12px"></div>
   </div>`;
 }
-function pubSelect(v){ PUB_SHARE_ID=v; pubRenderPreview(true); }
-function pubSelProd(){ return PRODUCTOS.find(p=>String(p.id)===String(PUB_SHARE_ID)); }
-function pubUrl(p){ return 'https://tiendamax.org/p/producto-'+p.id+'.html'; }
-function pubTextoDe(p){
-  const precio=Number(p.precioActual||0).toFixed(2); let t=`🛍️ ${p.nombre}\n💵 $${precio} USD`;
-  if(Number(p.precioOriginal)>Number(p.precioActual)) t+=` (antes $${Number(p.precioOriginal).toFixed(2)})`;
-  t+=`\n${Number(p.stock)>0?'📦 Disponible ahora':'⛔ Agotado'}`;
-  if(p.descripcion) t+=`\n\n${String(p.descripcion).trim().slice(0,200)}`;
-  t+=`\n\n👉 ${pubUrl(p)}\n🛒 Más en tiendamax.org`;
-  return t;
+function pubRenderShareList(){
+  const box=$('#pub-share-list'); if(!box) return; const arr=pubShareFiltered();
+  box.innerHTML = arr.length ? arr.map(p=>`<div style="display:grid;grid-template-columns:58px 1fr auto;gap:12px;align-items:center;background:rgba(255,255,255,0.035);border:1px solid var(--border);border-radius:14px;padding:10px">
+      <img src="${esc(p.imagen||'')}" onerror="this.style.visibility='hidden'" style="width:58px;height:58px;object-fit:cover;border-radius:10px;background:#222">
+      <div style="min-width:0"><b style="display:block;color:#fff;font-size:14px;line-height:1.2;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(p.nombre||'Producto')}</b><small style="color:var(--muted)">${esc(p.categoria||'General')} · $${Number(p.precioActual||0).toFixed(2)} · stock ${Number(p.stock||0)}</small></div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end">
+        <button type="button" class="btn btn-primary" style="padding:6px 10px;font-size:12px" onclick="pubShareAct('${esc(p.id)}','story')">🖼️ Estado</button>
+        <button type="button" class="btn btn-ghost" style="padding:6px 10px;font-size:12px" onclick="pubShareAct('${esc(p.id)}','wa')">💬 Chat</button>
+        <button type="button" class="btn btn-ghost" style="padding:6px 10px;font-size:12px" onclick="pubShareAct('${esc(p.id)}','fb')">📘 Facebook</button>
+        <button type="button" class="btn btn-ghost" style="padding:6px 10px;font-size:12px" onclick="pubShareAct('${esc(p.id)}','copy')">🔗 Copiar</button>
+      </div>
+    </div>`).join('') : '<div class="empty" style="padding:20px"><div class="ico">📦</div>No hay productos con stock para compartir.</div>';
 }
-function pubRenderPreview(regen){
-  const p=pubSelProd(), ta=$('#pub-texto'), box=$('#pub-preview');
-  if(!p){ if(box) box.innerHTML='<div class="empty" style="padding:24px"><div class="ico">📤</div>Elige un producto para generar el texto y la vista previa.</div>'; return; }
-  if(ta && (regen || !ta.value.trim())) ta.value=pubTextoDe(p);
-  if(box){ const img=p.imagen?`<img src="${esc(p.imagen)}" style="width:100%;border-radius:10px;margin-bottom:10px" onerror="this.style.display='none'">`:''; box.innerHTML=`${img}<div style="font-size:15px;font-weight:800;color:#fff">${esc(p.nombre)}</div><div style="font-size:18px;font-weight:900;color:var(--o);margin:4px 0">${money(p.precioActual)}</div><a href="${pubUrl(p)}" target="_blank" rel="noopener" style="font-size:12px;color:var(--blue);word-break:break-all">${pubUrl(p)}</a>`; }
+function pubLoadImg(src){ return new Promise(res=>{ const im=new Image(); im.crossOrigin='anonymous'; im.onload=()=>res(im); im.onerror=()=>res(null); im.src=src; }); }
+function pubRoundRect(ctx,x,y,w,h,r){ ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath(); }
+function pubWrapText(ctx,text,x,y,maxWidth,lineHeight,maxLines){
+  const words=String(text||'').split(/\s+/); let line='', lines=0;
+  for(let n=0;n<words.length;n++){ const test=line+words[n]+' ';
+    if(ctx.measureText(test).width>maxWidth && n>0){ ctx.fillText(line.trim(),x,y); line=words[n]+' '; y+=lineHeight; lines++; if(lines>=maxLines) return y; }
+    else line=test; }
+  if(line&&lines<maxLines){ ctx.fillText(line.trim(),x,y); y+=lineHeight; }
+  return y;
 }
-function pubShare(ch){
-  const p=pubSelProd(); if(!p){ showToast('⚠️ Elige un producto primero'); return; }
-  const texto=($('#pub-texto')&&$('#pub-texto').value)||pubTextoDe(p); const url=pubUrl(p);
-  if(ch==='whatsapp') window.open('https://wa.me/?text='+encodeURIComponent(texto),'_blank','noopener');
-  else if(ch==='facebook') window.open('https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(url)+'&quote='+encodeURIComponent(texto),'_blank','noopener');
-  else if(ch==='revolico'){ try{ navigator.clipboard.writeText(texto+'\n'+url); }catch(e){} showToast('📋 Texto copiado','Pégalo en tu anuncio de Revolico'); window.open('https://www.revolico.com/','_blank','noopener'); }
+async function pubShareStory(p){
+  const W=1080,H=1920,c=document.createElement('canvas'); c.width=W; c.height=H; const ctx=c.getContext('2d');
+  const grad=ctx.createLinearGradient(0,0,W,H); grad.addColorStop(0,'#0d0d0d'); grad.addColorStop(.55,'#2b160c'); grad.addColorStop(1,'#ff6b35'); ctx.fillStyle=grad; ctx.fillRect(0,0,W,H);
+  ctx.fillStyle='rgba(0,0,0,.30)'; ctx.fillRect(0,0,W,H);
+  ctx.strokeStyle='rgba(201,169,110,.75)'; ctx.lineWidth=8; pubRoundRect(ctx,44,44,W-88,H-88,42); ctx.stroke();
+  const im=await pubLoadImg(p.imagen||'');
+  if(im){ const boxX=120,boxY=170,boxW=840,boxH=650; ctx.save(); pubRoundRect(ctx,boxX,boxY,boxW,boxH,36); ctx.clip();
+    const r=Math.max(boxW/im.width,boxH/im.height), iw=im.width*r, ih=im.height*r; ctx.drawImage(im,boxX+(boxW-iw)/2,boxY+(boxH-ih)/2,iw,ih); ctx.restore();
+  } else { ctx.fillStyle='rgba(255,255,255,.08)'; pubRoundRect(ctx,120,170,840,650,36); ctx.fill(); ctx.font='160px serif'; ctx.fillStyle='#ff6b35'; ctx.fillText('M',470,550); }
+  ctx.textAlign='center'; ctx.fillStyle='#fff'; ctx.font='bold 66px system-ui,Arial'; let y=920; y=pubWrapText(ctx,p.nombre,W/2,y,860,78,3);
+  ctx.fillStyle='#ff6b35'; ctx.font='bold 82px system-ui,Arial'; ctx.fillText('$'+Number(p.precioActual||0).toFixed(2)+' USD',W/2,y+28); y+=130;
+  ctx.fillStyle='#f0e0c5'; ctx.font='bold 42px system-ui,Arial'; ctx.fillText('📦 Stock: '+Number(p.stock||0)+'   🏷️ '+(p.categoria||'TiendaMax'),W/2,y); y+=95;
+  ctx.fillStyle='#fff'; ctx.font='42px system-ui,Arial'; y=pubWrapText(ctx,'Pídelo directo por WhatsApp en TiendaMax',W/2,y,840,54,2);
+  ctx.fillStyle='#c9a96e'; ctx.font='bold 48px system-ui,Arial'; ctx.fillText('tiendamax.org',W/2,H-245);
+  ctx.fillStyle='rgba(255,255,255,.92)'; ctx.font='32px system-ui,Arial'; ctx.fillText('Toca "Pedir" en la tienda para reservar',W/2,H-185);
+  const blob=await new Promise(res=>c.toBlob(res,'image/png',.95));
+  const file=new File([blob],'tiendamax-estado-'+p.id+'.png',{type:'image/png'});
+  const text='🔥 '+p.nombre+'\n'+pubUrl(p);
+  if(navigator.canShare&&navigator.canShare({files:[file]})&&navigator.share){
+    try{ await navigator.share({files:[file],title:p.nombre,text}); showToast('✅ Elige WhatsApp → Estado para publicar'); return; }catch(e){ if(/abort/i.test(e.message||'')) return; }
+  }
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=file.name; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+  try{ await navigator.clipboard.writeText(text); }catch(e){}
+  showToast('🖼️ Imagen de estado descargada','Súbela a WhatsApp Estado');
 }
-function pubCopiar(){ const t=($('#pub-texto')&&$('#pub-texto').value)||''; if(!t){ showToast('Nada que copiar'); return; } try{ navigator.clipboard.writeText(t); showToast('📋 Copiado','Ya puedes pegarlo'); }catch(e){ showToast('No se pudo copiar'); } }
+async function pubShareAct(id,act){
+  const p=PRODUCTOS.find(x=>String(x.id)===String(id)); if(!p) return;
+  if(act==='story'){ showToast('⏳ Generando imagen…'); await pubShareStory(p); return; }
+  if(act==='wa'){ window.open('https://wa.me/?text='+encodeURIComponent(pubTxt(p)),'_blank','noopener,noreferrer'); return; }
+  if(act==='fb'){ window.open('https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(pubUrl(p))+'&quote='+encodeURIComponent(pubTxt(p)),'_blank','noopener,noreferrer'); return; }
+  if(act==='copy'){ try{ await navigator.clipboard.writeText(pubTxt(p)); showToast('🔗 Texto y enlace copiados'); }catch(e){ showToast('No se pudo copiar'); } }
+}
 async function pubRenderBanners(){
   if(PUB_BANNERS===null){ PUB_BANNERS = await jget('banners.json') || []; if(!Array.isArray(PUB_BANNERS)) PUB_BANNERS=[]; }
   const body=$('#pub-body'); if(!body || PUB_VIEW!=='banners') return;
@@ -1116,7 +1150,7 @@ async function pubBannersPublicar(){
     else { const e=await res.json().catch(()=>({})); showToast('❌ No se pudo publicar',(e&&e.message)||('HTTP '+res.status)); }
   }catch(e){ showToast('❌ Error', e&&e.message||''); }
 }
-window.pubSwitch=pubSwitch; window.pubSelect=pubSelect; window.pubShare=pubShare; window.pubCopiar=pubCopiar;
+window.pubSwitch=pubSwitch; window.pubRenderShareList=pubRenderShareList; window.pubShareAct=pubShareAct;
 window.pubBannerLink=pubBannerLink; window.pubBannerRemove=pubBannerRemove; window.pubBannerFile=pubBannerFile; window.pubBannersPublicar=pubBannersPublicar;
 
 /* ============ Init ============ */
