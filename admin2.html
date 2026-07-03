@@ -294,14 +294,31 @@
     <div class="tm2-logo">M</div>
     <h1 class="tm2-login-title">TiendaMax Admin</h1>
     <div class="tm2-login-sub">Panel de administración</div>
-    <form onsubmit="verificarPassword(event)">
+    <div style="display:flex;gap:8px;margin-bottom:18px">
+      <button type="button" class="btn btn-primary" id="tm2TabPass" style="flex:1;justify-content:center" onclick="tm2LoginTab('pass')">🔑 Contraseña</button>
+      <button type="button" class="btn btn-ghost" id="tm2TabBio" style="flex:1;justify-content:center" onclick="tm2LoginTab('bio')">👆 Huella</button>
+    </div>
+    <form id="tm2LoginPass" onsubmit="verificarPassword(event)">
       <label class="form-label" style="text-align:left;display:block;margin-bottom:6px">Contraseña de administrador</label>
       <input class="form-input" id="adminPassword" type="password" autocomplete="current-password" autofocus>
       <button type="submit" id="btnLoginSubmit" class="btn btn-primary" style="width:100%;margin-top:14px;justify-content:center">🔓 Acceder al panel</button>
     </form>
+    <div id="tm2LoginBio" style="display:none;text-align:center">
+      <div id="loginBioContent"></div>
+    </div>
     <div class="tm2-login-foot">🔐 Sesión cifrada · Acceso seguro</div>
   </div>
 </div>
+<script>
+  function tm2LoginTab(which){
+    var p=document.getElementById('tm2LoginPass'), b=document.getElementById('tm2LoginBio');
+    var tp=document.getElementById('tm2TabPass'), tb=document.getElementById('tm2TabBio');
+    if(p) p.style.display = which==='pass' ? 'block' : 'none';
+    if(b) b.style.display = which==='bio' ? 'block' : 'none';
+    if(tp) tp.className = 'btn ' + (which==='pass' ? 'btn-primary' : 'btn-ghost');
+    if(tb) tb.className = 'btn ' + (which==='bio' ? 'btn-primary' : 'btn-ghost');
+  }
+</script>
 
 <div class="layout admin-panel hidden" id="adminPanel">
 
@@ -507,6 +524,11 @@
           <div style="display:flex;gap:8px;margin-top:10px"><button class="btn btn-primary" onclick="agenteGuardarKey()">💾 Guardar key</button><button class="btn btn-ghost" onclick="agenteBorrarKey()">🗑 Borrar</button></div>
           <p id="ia-key-status" style="font-size:12px;color:var(--muted);margin-top:8px">Sin key configurada</p>
         </div>
+        <div class="section">
+          <h3>👆 Seguridad biométrica</h3>
+          <p style="font-size:12px;color:var(--muted);margin:-4px 0 12px">Huella o Face ID para entrar al admin sin escribir la contraseña, en este dispositivo.</p>
+          <div id="tmBioSection"></div>
+        </div>
       </div>
 
       <!-- ANALYTICS -->
@@ -615,6 +637,7 @@
 <script src="js/src/tm-toast.js"></script>
 <script src="js/src/tm-iife.js"></script>
 <script src="js/src/tm-patches.js"></script>
+<script src="js/biometric-auth.js"></script>
 
 <script>
 (function(){
