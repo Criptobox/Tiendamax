@@ -24,56 +24,70 @@ function updateAllFavBtns(){
   var favs=getFavs();
   $$('.pm-fav-btn').forEach(function(b){
     var pid=b.dataset.pid;
-    if(pid){b.classList.toggle('active',favs.indexOf(String(pid))>=0);b.textContent=favs.indexOf(String(pid))>=0?'★':'☆';}
+    if(pid){
+      var on=favs.indexOf(String(pid))>=0;
+      b.classList.toggle('active',on);
+      b.title=on?'Quitar de guardados':'Guardar';
+    }
   });
 }
 function updateFavChip(){
   var chip=$('#pmFavChip');
   if(!chip)return;
   var n=getFavs().length;
-  chip.textContent='⭐ Favoritos'+(n>0?' ('+n+')':'');
+  chip.textContent='🔖 Guardados'+(n>0?' ('+n+')':'');
   chip.classList.toggle('on',n>0);
+}
+
+/* Real markup: .tm-prod-card > .tm-prod-card-header (thumb + info + botones ✏️⭐🗑️).
+   El id vive en el checkbox .tm-bulk-check[data-id], no en la tarjeta. */
+function scanFavButtons(){
+  $$('#manage-products .tm-prod-card').forEach(function(card){
+    if(card.querySelector('.pm-fav-btn'))return;
+    var idEl=card.querySelector('[data-id]');
+    var pid=idEl?idEl.dataset.id:'';
+    if(!pid)return;
+    var header=card.querySelector('.tm-prod-card-header')||card;
+    var editBtn=header.querySelector('.tm-prod-icon-btn.edit');
+    var btn=document.createElement('button');
+    btn.type='button';
+    btn.className='tm-prod-icon-btn pm-fav-btn'+(isFav(pid)?' active':'');
+    btn.dataset.pid=pid;
+    btn.textContent='🔖';
+    btn.title=isFav(pid)?'Quitar de guardados':'Guardar';
+    btn.onclick=function(e){e.preventDefault();e.stopPropagation();toggleFav(pid);};
+    if(editBtn)header.insertBefore(btn,editBtn);else header.appendChild(btn);
+  });
 }
 
 function injectFavButtons(){
   var cont=$('#manage-products');
-  if(!cont||cont.dataset.pmv2Fav==='1')return;
-  cont.dataset.pmv2Fav='1';
+  if(!cont)return;
 
-  var observer=new MutationObserver(function(){
-    $$('#manage-products .product-card, #manage-products .tm-prod-row').forEach(function(card){
-      if(card.querySelector('.pm-fav-btn'))return;
-      var pid=card.dataset.id||card.dataset.pid||'';
-      if(!pid)return;
-      var btn=document.createElement('button');
-      btn.type='button';btn.className='pm-fav-btn'+(isFav(pid)?' active':'');
-      btn.dataset.pid=pid;btn.textContent=isFav(pid)?'★':'☆';
-      btn.title='Favorito';
-      btn.onclick=function(e){e.preventDefault();e.stopPropagation();toggleFav(pid);};
-      card.style.position=card.style.position||'relative';
-      card.insertBefore(btn,card.firstChild);
-    });
-  });
-  observer.observe(cont,{childList:true,subtree:true});
-  setTimeout(function(){observer.disconnect();},15000);
+  if(!cont.dataset.pmv2Fav){
+    cont.dataset.pmv2Fav='1';
+    var observer=new MutationObserver(scanFavButtons);
+    observer.observe(cont,{childList:true,subtree:true});
+  }
+  scanFavButtons();
 
-  /* Inject filter chip */
+  /* Inject filter chip (una sola vez) */
   var head=cont.querySelector('.head, h1');
   if(head&&!$('#pmFavChip')){
     var chip=document.createElement('div');
     chip.className='pm-fav-chip';chip.id='pmFavChip';
-    chip.textContent='⭐ Favoritos';
+    chip.textContent='🔖 Guardados';
     chip.style.marginTop='10px';
     chip.onclick=function(){
       var favs=getFavs();
-      if(!favs.length){if(typeof mostrarNotificacion==='function')mostrarNotificacion('No hay favoritos','info');return;}
+      if(!favs.length){if(typeof mostrarNotificacion==='function')mostrarNotificacion('No hay productos guardados','info');return;}
       var prods=window.productos||[];
       var filtered=prods.filter(function(p){return favs.indexOf(String(p.id))>=0;});
       if(typeof switchTab==='function')switchTab('manage-products');
       setTimeout(function(){
         $$('[data-action="editarProducto"],[data-action*="edit"]').forEach(function(b){b.style.display='none';});
         window._pmShowFavsOnly=true;
-        if(typeof mostrarNotificacion==='function')mostrarNotificacion(favs.length+' favoritos filtrados','success');
+        if(typeof mostrarNotificacion==='function')mostrarNotificacion(favs.length+' guardados filtrados','success');
       },300);
     };
     (head.parentNode||cont).insertBefore(chip,head.nextSibling);
