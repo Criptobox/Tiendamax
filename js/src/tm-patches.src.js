@@ -984,6 +984,8 @@ document.addEventListener('DOMContentLoaded', () => {
     function _mostrarBannerPushAhora() {
         if (_bannerYaMostrado) return;
         if (!('Notification' in window)) return;
+        // No mostrar el prompt de "avisos de ofertas" (pensado para clientes) dentro del panel admin
+        if (document.getElementById('adminPanel')) return;
 
         // Si ya tiene permiso concedido, no molestar
         if (Notification.permission === 'granted') return;

@@ -194,6 +194,25 @@
   .correccion-razon { font-size:12px; color:var(--muted); line-height:1.5; margin:10px 0 0; }
 
   /* Radar / tabla */
+  /* Reviews (Clientes › ⭐ Reviews) */
+  .rev-hero { text-align:center; padding:22px 18px; }
+  .rev-hero .big { font-size:36px; font-weight:900; color:var(--gold); line-height:1; }
+  .rev-hero .stars { color:var(--gold); font-size:16px; letter-spacing:2px; margin:8px 0 4px; }
+  .rev-hero .cap { font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:.06em; font-weight:700; }
+  .rev-bars { margin-top:18px; display:flex; flex-direction:column; gap:8px; text-align:left; }
+  .rev-bar-row { display:flex; align-items:center; gap:10px; }
+  .rev-bar-label { width:22px; font-size:11px; color:var(--muted); text-align:right; }
+  .rev-bar-track { flex:1; height:6px; border-radius:3px; background:rgba(255,255,255,.06); overflow:hidden; }
+  .rev-bar-fill { height:100%; background:var(--gold); border-radius:3px; }
+  .rev-bar-pct { width:32px; font-size:10.5px; color:var(--muted); }
+  .rev-card { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:14px; margin-bottom:10px; }
+  .rev-top { display:flex; align-items:center; gap:10px; margin-bottom:8px; }
+  .rev-avatar { width:34px; height:34px; border-radius:50%; background:var(--card2); color:var(--gold); display:flex; align-items:center; justify-content:center; font-weight:800; font-size:12px; flex-shrink:0; }
+  .rev-name { font-size:13px; font-weight:700; color:#fff; }
+  .rev-meta { font-size:10.5px; color:var(--muted); margin-top:2px; }
+  .rev-stars-sm { color:var(--gold); font-size:11px; letter-spacing:1.5px; margin-left:auto; }
+  .rev-text { font-size:12.5px; color:#ccc; line-height:1.6; margin-top:2px; }
+
   .table-wrap { overflow-x:auto; border-radius:12px; border:1px solid var(--border); }
   /* Publicar — compartir por producto */
   .pub-share-card { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:12px; }
@@ -1164,10 +1183,58 @@ function renderClientes(){
   const box=$('#cli-lista'); if(!box) return;
   if(CLI_VIEW==='clientes'){
     box.innerHTML = list.length?`<div class="table-wrap"><table><thead><tr><th>Cliente</th><th>Compras</th><th>Total</th><th>Teléfono</th></tr></thead><tbody>${list.map(c=>`<tr><td class="nm">${esc(c.nombre)}</td><td>${c.compras}</td><td class="nm">${money(c.total)}</td><td>${esc(c.tel||'—')}</td></tr>`).join('')}</tbody></table></div>`:`<div class="section"><div class="empty"><div class="ico">👥</div>Aún no hay clientes.<br><small>Se generan solos a partir de las ventas que registres.</small></div></div>`;
+  } else if(CLI_VIEW==='reviews'){
+    renderReviewsReal(box);
   } else {
-    const info={ reviews:['⭐','Reviews','Las reseñas de clientes se muestran aquí cuando la tienda las guarde (hoy no hay registro de reseñas).'], carritos:['🛒','Carritos abandonados','El sitio es estático y los pedidos van por WhatsApp, así que no hay carritos guardados que mostrar.'], whatsapp:['💬','WhatsApp','Los pedidos entran por WhatsApp (click-to-chat). No hay un buzón de mensajes guardado en la web para listar aquí.'] }[CLI_VIEW];
-    box.innerHTML = `<div class="section"><div class="empty"><div class="ico">${info[0]}</div><b style="color:#fff">${info[1]} — sin datos por ahora</b><br>${info[2]}<br><br><small>Si quieres, en una fase futura montamos el registro real de estos datos y aquí sí aparecen — sin inventar nada.</small></div></div>`;
+    const info={ carritos:['🛒','Carritos abandonados','El sitio es estático y los pedidos van por WhatsApp, así que no hay carrito de servidor que registre cuándo alguien deja productos sin comprar.'], whatsapp:['💬','WhatsApp','Los pedidos entran por WhatsApp (click-to-chat): el mensaje se abre directo en el teléfono del cliente y no pasa por ningún servidor de TiendaMax que lo pueda guardar aquí.'] }[CLI_VIEW];
+    box.innerHTML = `<div class="section"><div class="empty"><div class="ico">${info[0]}</div><b style="color:#fff">${info[1]} — no disponible</b><br>${info[2]}<br><br><small>No es que falte activarlo: hoy no existe ningún registro de esto que se pueda mostrar. Habría que construir un backend nuevo para guardarlo — no es un simple ajuste de este panel.</small></div></div>`;
   }
+}
+/* ── Reviews reales (Firebase /resenas) ── */
+function rtdbBase(){ try{ const c=JSON.parse(localStorage.getItem('firebaseConfig')||'{}'); return c.databaseURL||(c.projectId?'https://'+c.projectId+'-default-rtdb.firebaseio.com':null); }catch(e){ return null; } }
+async function renderReviewsReal(box){
+  if(CLI_VIEW!=='reviews') return;
+  box.innerHTML = '<div class="section"><div class="empty"><div class="ico">⭐</div>Cargando reseñas…</div></div>';
+  const base = rtdbBase();
+  if(!base){ box.innerHTML = `<div class="section"><div class="empty"><div class="ico">⭐</div><b style="color:#fff">Firebase no configurado</b><br>Configura tu proyecto en <b>⚙️ Configuración</b> para ver las reseñas reales de tus clientes.</div></div>`; return; }
+  const data = await jget(base+'/resenas.json?_='+Date.now());
+  if(CLI_VIEW!=='reviews') return;
+  if(!data){ box.innerHTML = `<div class="section"><div class="empty"><div class="ico">⭐</div>Sin reseñas todavía.<br><small>Aparecen aquí en cuanto un cliente califique un producto en la tienda.</small></div></div>`; return; }
+  const all=[];
+  Object.keys(data).forEach(pid=>{
+    const prodResenas=data[pid]; if(!prodResenas||typeof prodResenas!=='object') return;
+    const prod=PRODUCTOS.find(p=>String(p.id)===String(pid));
+    Object.keys(prodResenas).forEach(k=>{ const r0=prodResenas[k]; if(r0&&typeof r0==='object'){ all.push(Object.assign({},r0,{_pid:pid,_prodName:(prod&&prod.nombre)||'Producto'})); } });
+  });
+  if(!all.length){ box.innerHTML = `<div class="section"><div class="empty"><div class="ico">⭐</div>Sin reseñas todavía.<br><small>Aparecen aquí en cuanto un cliente califique un producto en la tienda.</small></div></div>`; return; }
+  all.sort((a,b)=>(b.ts||b.fecha||0)-(a.ts||a.fecha||0));
+  const avg = all.reduce((s,r)=>s+(Number(r.estrellas||r.rating||0)||0),0)/all.length;
+  const roundAvg = Math.round(avg);
+  const dist=[0,0,0,0,0]; all.forEach(r=>{ const s=Number(r.estrellas||r.rating||0)||0; if(s>=1&&s<=5) dist[s-1]++; });
+  let html = `<div class="section rev-hero">
+    <div class="big">${avg.toFixed(1)}</div>
+    <div class="stars">${'★'.repeat(roundAvg)}${'☆'.repeat(5-roundAvg)}</div>
+    <div class="cap">${all.length} reseña${all.length!==1?'s':''}</div>
+    <div class="rev-bars">`;
+  for(let i=5;i>=1;i--){ const pct = Math.round(dist[i-1]/all.length*100); html += `<div class="rev-bar-row"><span class="rev-bar-label">${i}★</span><div class="rev-bar-track"><div class="rev-bar-fill" style="width:${pct}%"></div></div><span class="rev-bar-pct">${pct}%</span></div>`; }
+  html += `</div></div>`;
+  html += all.slice(0,30).map(r=>{
+    const rating = Number(r.estrellas||r.rating||0)||0;
+    const stars = '★'.repeat(rating)+'☆'.repeat(5-rating);
+    const nombre = r.nombre||r.name||'Anónimo';
+    const avatar = nombre.split(' ').map(w=>w[0]||'').join('').slice(0,2).toUpperCase()||'?';
+    const fecha = r.ts?new Date(r.ts).toLocaleDateString('es-CU',{day:'2-digit',month:'short'}):'';
+    const texto = r.texto||r.text||r.comentario||'';
+    return `<div class="rev-card">
+      <div class="rev-top">
+        <div class="rev-avatar">${esc(avatar)}</div>
+        <div><div class="rev-name">${esc(nombre)}</div><div class="rev-meta">${esc(r._prodName||'')}${fecha?' · '+fecha:''}</div></div>
+        <div class="rev-stars-sm">${stars}</div>
+      </div>
+      ${texto?`<div class="rev-text">${esc(texto)}</div>`:''}
+    </div>`;
+  }).join('');
+  box.innerHTML = html;
 }
 
 /* ============ PUBLICAR / COMPARTIR ============ */
