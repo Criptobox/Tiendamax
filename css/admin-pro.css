@@ -34,10 +34,12 @@ html,body{background:var(--pro-bg)!important}
 .sub{color:var(--pro-muted)!important}
 
 /* ---------- KPIs (fila de tarjetas con borde de color) ---------- */
-.stats{display:flex!important;gap:12px!important;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
-.stats::-webkit-scrollbar{display:none}
+/* En Inicio ya hay una fila de KPIs inyectada arriba; la .stats del HTML es
+   redundante -> se oculta para no duplicar. El resto de secciones la conservan. */
+#inicio > .stats{display:none!important}
+.stats{display:grid!important;grid-template-columns:repeat(auto-fit,minmax(150px,1fr))!important;gap:12px!important;overflow:visible!important;padding-bottom:0!important}
 .stat{
-  flex:1 0 158px;min-width:158px;
+  flex:none;min-width:0;
   background:linear-gradient(180deg,var(--pro-card2),var(--pro-card))!important;
   border:1px solid var(--pro-bd)!important;border-left:3px solid var(--pro-blue)!important;
   border-radius:16px!important;padding:15px 16px!important;margin:0!important;
