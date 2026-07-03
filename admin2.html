@@ -191,6 +191,46 @@
   .form-input::placeholder, .form-textarea::placeholder { color:var(--dim); }
   .form-input:focus, .form-select:focus, .form-textarea:focus { border-color:var(--o); }
   .form-textarea { resize:vertical; min-height:80px; }
+
+  /* Product card actions + stock (features 4 y 6) */
+  .prod-card { display:flex; flex-direction:column; }
+  .prod-card .prod-body { flex:1; display:flex; flex-direction:column; }
+  .pc-actions { display:flex; gap:6px; margin-top:auto; padding-top:10px; }
+  .pc-btn { flex:1; padding:7px 0; border:1px solid var(--border); border-radius:8px; background:rgba(255,255,255,0.04); color:#ccc; font-size:13px; font-weight:700; cursor:pointer; transition:all 0.15s; }
+  .pc-btn:hover { background:rgba(255,255,255,0.09); color:#fff; }
+  .pc-btn.edit:hover { background:rgba(52,152,219,0.2); border-color:rgba(52,152,219,0.4); color:var(--blue); }
+  .pc-btn.del:hover { background:rgba(231,76,60,0.2); border-color:rgba(231,76,60,0.4); color:var(--red); }
+  .pc-btn.fav.on { background:rgba(201,169,110,0.2); border-color:var(--gold); color:var(--gold); }
+  .pc-stock { display:flex; align-items:center; gap:6px; margin-top:10px; }
+  .pc-stock button { width:30px; height:30px; border-radius:8px; border:1px solid var(--border); background:rgba(255,255,255,0.05); color:#fff; font-size:16px; font-weight:900; cursor:pointer; line-height:1; }
+  .pc-stock button:hover { background:var(--o); border-color:var(--o); }
+  .pc-stock button.zero:hover { background:var(--red); border-color:var(--red); }
+  .pc-stock input { width:52px; text-align:center; padding:6px 4px; background:rgba(0,0,0,0.3); border:1px solid var(--border); border-radius:8px; color:#fff; font-size:13px; font-weight:800; }
+  .pc-stock .lbl { font-size:10px; color:var(--muted); text-transform:uppercase; letter-spacing:0.4px; margin-left:auto; }
+
+  /* CRM pills (feature 5) */
+  .crm-pills { display:flex; gap:8px; margin-bottom:16px; overflow-x:auto; padding-bottom:4px; }
+  .crm-pill { white-space:nowrap; padding:9px 18px; border-radius:30px; border:1px solid var(--border); background:rgba(255,255,255,0.04); color:var(--muted); font-size:13px; font-weight:700; cursor:pointer; transition:0.18s; flex-shrink:0; }
+  .crm-pill:hover { color:#fff; }
+  .crm-pill.active { background:rgba(255,107,53,0.16); border-color:rgba(255,107,53,0.4); color:var(--o); }
+
+  /* Uploader + galería del formulario (features 1) */
+  .ap-upload { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; padding:20px; border:1.5px dashed var(--border); border-radius:11px; cursor:pointer; text-align:center; transition:0.15s; color:#ccc; }
+  .ap-upload:hover { border-color:var(--o); background:rgba(255,107,53,0.05); }
+  .ap-upload b { color:#fff; font-size:13px; }
+  .ap-upload small { color:var(--muted); font-size:11px; }
+  .ap-upico { font-size:26px; }
+  .ap-gal-thumbs { display:grid; grid-template-columns:repeat(auto-fill,minmax(72px,1fr)); gap:8px; margin-top:10px; }
+  .ap-gal-thumb { position:relative; aspect-ratio:1; border-radius:9px; overflow:hidden; border:1px solid var(--border); background:rgba(255,255,255,0.04); }
+  .ap-gal-thumb img { width:100%; height:100%; object-fit:cover; }
+  .ap-gal-thumb .rm { position:absolute; top:3px; right:3px; width:20px; height:20px; border-radius:50%; background:rgba(0,0,0,0.7); border:none; color:#fff; font-size:12px; font-weight:900; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+  .ap-gal-thumb .rm:hover { background:var(--red); }
+  .ap-foto-main { width:110px; height:110px; border-radius:11px; object-fit:cover; border:1px solid var(--border); }
+
+  /* Modal vista previa cliente (feature 3) */
+  .ap-modal { position:fixed; inset:0; z-index:9999; background:rgba(0,0,0,0.7); display:none; align-items:center; justify-content:center; padding:20px; }
+  .ap-modal.show { display:flex; }
+  .ap-modal-card { background:#fff; color:#111; border-radius:18px; max-width:380px; width:100%; overflow:hidden; box-shadow:0 20px 60px rgba(0,0,0,0.5); max-height:90vh; overflow-y:auto; }
 </style>
 </head>
 <body>
@@ -213,22 +253,17 @@
     <!-- Sidebar -->
     <aside class="sidebar">
       <button class="side-btn active" data-view="inicio" title="Inicio">🏠</button>
+      <button class="side-btn" data-view="productos" title="Productos">📦<span class="badge" id="badge-stock" style="display:none">0</span></button>
       <button class="side-btn" data-view="agregar" title="Agregar producto">➕</button>
       <button class="side-btn" data-view="categorias" title="Categorías y subcategorías">🏷️</button>
       <button class="side-btn" data-view="combos" title="Combos">🎁</button>
       <button class="side-btn" data-view="correcciones" title="Correcciones IA">🔧<span class="badge" id="badge-corr">0</span></button>
       <button class="side-btn" data-view="agente" title="Agente IA">🤖</button>
       <div class="side-sep"></div>
-      <button class="side-btn" data-view="stock" title="Stock">📈<span class="badge" id="badge-stock">0</span></button>
       <button class="side-btn" data-view="radar" title="Radar de precios">📡<span class="new-tag">N</span></button>
       <button class="side-btn" data-view="ventas" title="Ventas">💰</button>
       <button class="side-btn" data-view="analytics" title="Analytics">📊</button>
-      <button class="side-btn" data-view="clientes" title="Clientes">👥</button>
-      <div class="side-sep"></div>
-      <!-- Sin fuente de datos real (todavía) -->
-      <button class="side-btn soon" data-view="soon" title="Reviews (sin datos aún)">⭐</button>
-      <button class="side-btn soon" data-view="soon" title="Carritos (sin datos aún)">🛒</button>
-      <button class="side-btn soon" data-view="soon" title="WhatsApp (sin datos aún)">💬</button>
+      <button class="side-btn" data-view="crm" title="Clientes · Reseñas · Carrito · WhatsApp">👥</button>
     </aside>
 
     <!-- Content -->
@@ -238,7 +273,7 @@
       <div id="view-inicio" class="view active">
         <div class="ph">
           <div><h2>🏠 Inicio</h2><p id="inicio-fecha">Vista general de tu tienda</p></div>
-          <div class="ph-actions"><button class="btn btn-ghost" onclick="go('stock')">📈 Stock</button><button class="btn btn-primary" onclick="go('agregar')">+ Agregar</button></div>
+          <div class="ph-actions"><button class="btn btn-ghost" onclick="go('productos')">📦 Productos</button><button class="btn btn-primary" onclick="go('agregar')">+ Agregar</button></div>
         </div>
         <div class="kpis" id="inicio-kpis"></div>
         <div class="ai-banner">
@@ -259,8 +294,9 @@
       <div id="view-productos" class="view">
         <div class="ph">
           <div><h2>📦 Productos</h2><p id="prod-count">—</p></div>
-          <div class="ph-actions"><input class="btn btn-ghost" id="prod-buscar" placeholder="🔍 Buscar…" style="min-width:180px" oninput="renderProductos()"><button class="btn btn-primary" onclick="go('agregar')">+ Agregar</button></div>
+          <div class="ph-actions"><input class="btn btn-ghost" id="prod-buscar" placeholder="🔍 Buscar…" style="min-width:180px" oninput="renderProductos()"><button class="btn btn-ghost" id="prod-filtro-bajo" onclick="apToggleFiltroBajo()" title="Ver solo stock bajo/agotado">⚠️ Stock bajo</button><button class="btn btn-primary" onclick="go('agregar')">+ Agregar</button></div>
         </div>
+        <div class="kpis" id="prod-stockbar" style="margin-bottom:14px"></div>
         <div class="prod-grid" id="prod-grid"></div>
       </div>
 
@@ -277,13 +313,7 @@
         <div id="corr-lista"></div>
       </div>
 
-      <!-- STOCK -->
-      <div id="view-stock" class="view">
-        <div class="ph"><div><h2>📈 Stock</h2><p>Niveles reales · alertas por umbral</p></div></div>
-        <div class="banner-info" id="stock-nota"></div>
-        <div class="kpis" id="stock-kpis"></div>
-        <div id="stock-lista"></div>
-      </div>
+      <!-- STOCK: fusionado dentro de Productos (KPIs + control ± por producto) -->
 
       <!-- RADAR -->
       <div id="view-radar" class="view">
@@ -338,16 +368,75 @@
         <div class="section"><h3>Ventas por categoría</h3><div id="an-cat"></div></div>
       </div>
 
-      <!-- CLIENTES -->
-      <div id="view-clientes" class="view">
-        <div class="ph"><div><h2>👥 Clientes</h2><p id="cli-sub">Derivado de ventas reales</p></div></div>
-        <div id="cli-lista"></div>
+      <!-- CRM: Cliente · Reseñas · Carrito · WhatsApp (unificado en píldoras) -->
+      <div id="view-crm" class="view">
+        <div class="ph"><div><h2>👥 Clientes 360</h2><p id="crm-sub">Cliente, reseñas, carrito y WhatsApp — todo en un lugar</p></div></div>
+        <div class="crm-pills" id="crm-pills">
+          <button class="crm-pill active" data-pill="cliente" onclick="apCrmPill('cliente',this)">👤 Cliente</button>
+          <button class="crm-pill" data-pill="resenas" onclick="apCrmPill('resenas',this)">⭐ Reseñas</button>
+          <button class="crm-pill" data-pill="carrito" onclick="apCrmPill('carrito',this)">🛒 Carrito</button>
+          <button class="crm-pill" data-pill="whatsapp" onclick="apCrmPill('whatsapp',this)">💬 WhatsApp</button>
+        </div>
+        <div id="crm-panel-cliente" class="crm-panel"><div style="font-size:12px;color:var(--muted);margin-bottom:10px"><span id="cli-sub"></span></div><div id="cli-lista"></div></div>
+        <div id="crm-panel-resenas" class="crm-panel" style="display:none"></div>
+        <div id="crm-panel-carrito" class="crm-panel" style="display:none"></div>
+        <div id="crm-panel-whatsapp" class="crm-panel" style="display:none"></div>
       </div>
 
-      <!-- AGREGAR (se porta del admin actual) -->
+      <!-- AGREGAR / EDITAR producto (formulario real, guarda y sincroniza con GitHub) -->
       <div id="view-agregar" class="view">
-        <div class="ph"><div><h2>➕ Agregar producto</h2><p>Se conecta al formulario real del admin</p></div></div>
-        <div class="section"><div class="empty"><div class="ico">🔗</div>El formulario completo (con subida de imagen, IA, guardado y sync a GitHub) ya existe en tu admin actual.<br>En la <b>Fase 2</b> lo porto aquí con este mismo estilo.<br><br><button class="btn btn-primary" onclick="location.href='admin.html'">Abrir admin actual →</button></div></div>
+        <div class="ph">
+          <div><h2 id="ap-form-title">➕ Agregar producto</h2><p id="ap-form-sub">Se guarda en productos.json y se publica solo a la tienda</p></div>
+          <div class="ph-actions">
+            <button class="btn btn-ghost" type="button" onclick="apVistaPreviaCliente()">👁 Ver como cliente</button>
+            <button class="btn btn-ghost" type="button" id="ap-cancel" onclick="apResetForm();go('productos')" style="display:none">✕ Cancelar edición</button>
+          </div>
+        </div>
+        <form id="ap-form" onsubmit="apGuardarProducto(event)">
+          <input type="hidden" id="ap-id">
+          <div class="grid-2">
+            <div>
+              <div class="section">
+                <h3>📝 Información</h3>
+                <div class="form-group"><label class="form-label">Nombre del producto *</label><input class="form-input" id="ap-nombre" required placeholder="Ej: Audífonos Bluetooth TWS Pro" oninput="apSugerir()"></div>
+                <div class="form-group" style="margin-top:10px"><label class="form-label">Descripción *</label><textarea class="form-textarea" id="ap-desc" required placeholder="Describe el producto…" oninput="apSugerir()"></textarea></div>
+                <div class="grid-2" style="margin-top:10px">
+                  <div class="form-group"><label class="form-label">Categoría * <span id="ap-cat-sug" style="color:var(--o);font-weight:800"></span></label><select class="form-select" id="ap-cat" required onchange="apLlenarSubcats()"></select></div>
+                  <div class="form-group"><label class="form-label">Subcategoría <span id="ap-sub-sug" style="color:var(--o);font-weight:800"></span></label><select class="form-select" id="ap-sub"><option value="">—</option></select></div>
+                </div>
+              </div>
+              <div class="section">
+                <h3>💰 Precio y stock</h3>
+                <div class="grid-2">
+                  <div class="form-group"><label class="form-label">Precio actual (USD) *</label><input class="form-input" id="ap-precio" type="number" step="0.01" min="0" required></div>
+                  <div class="form-group"><label class="form-label">Precio original (antes)</label><input class="form-input" id="ap-precio-orig" type="number" step="0.01" min="0" placeholder="opcional"></div>
+                  <div class="form-group"><label class="form-label">Stock disponible *</label><input class="form-input" id="ap-stock" type="number" min="0" required></div>
+                  <div class="form-group"><label class="form-label">Mi comisión</label>
+                    <div style="display:flex;gap:6px"><input class="form-input" id="ap-comision" type="number" step="0.01" min="0" placeholder="0.00" style="flex:1"><select class="form-select" id="ap-comision-moneda" style="width:80px"><option>USD</option><option>MN</option></select></div>
+                  </div>
+                </div>
+                <div class="form-group" style="margin-top:10px"><label class="form-label">Garantía (opcional)</label><input class="form-input" id="ap-garantia" placeholder="Ej: 6 meses de garantía"></div>
+                <div class="form-group" style="margin-top:10px"><label class="form-label">Especificaciones (separadas por comas)</label><input class="form-input" id="ap-specs" placeholder="Ej: 12V, 2000W, IP65"></div>
+                <label style="display:flex;align-items:center;gap:8px;margin-top:12px;font-size:13px;color:#fff;cursor:pointer"><input type="checkbox" id="ap-masvendido" style="width:16px;height:16px;accent-color:var(--o)"> ⭐ Destacar en “Más vendidos”</label>
+              </div>
+            </div>
+            <div>
+              <div class="section">
+                <h3>📸 Foto principal</h3>
+                <label class="ap-upload" for="ap-foto"><div class="ap-upico">⬆️</div><b>Subir foto principal</b><small>Se comprime sola al guardar</small></label>
+                <input id="ap-foto" type="file" accept="image/*" style="display:none" onchange="apFotoPrincipal(this)">
+                <div id="ap-foto-preview" style="margin-top:10px"></div>
+              </div>
+              <div class="section">
+                <h3>🖼️ Galería <span class="badge" id="ap-gal-count">0</span></h3>
+                <label class="ap-upload" for="ap-galeria"><div class="ap-upico">➕</div><b>Añadir fotos a la galería</b><small>Puedes borrar cualquiera, incluso las ya subidas</small></label>
+                <input id="ap-galeria" type="file" accept="image/*" multiple style="display:none" onchange="apGaleriaAdd(this)">
+                <div class="ap-gal-thumbs" id="ap-gal-thumbs"></div>
+              </div>
+              <button class="btn btn-primary" type="submit" id="ap-guardar" style="width:100%;padding:13px;font-size:14px">💾 Guardar producto</button>
+            </div>
+          </div>
+        </form>
       </div>
 
       <!-- SOON -->
@@ -361,6 +450,9 @@
 </div>
 
 <div class="toast" id="toast"><div class="t" id="toast-t"></div><div class="b" id="toast-b"></div></div>
+
+<!-- Vista previa cliente (feature 3) -->
+<div class="ap-modal" id="ap-modal" onclick="if(event.target===this)apCerrarPreview()"><div class="ap-modal-card" id="ap-modal-card"></div></div>
 
 <script>
 /* ============ Estado ============ */
@@ -405,9 +497,9 @@ async function cargarDatos(recargar){
 }
 
 function renderTodo(){
-  renderInicio(); renderCategorias();
-  renderCorrecciones(); renderStock(); renderRadar(); renderVentas();
-  renderAnalytics(); renderClientes(); renderAgente(); renderCombos();
+  renderInicio(); renderProductos(); renderCategorias(); apLlenarCategorias();
+  renderCorrecciones(); renderRadar(); renderVentas();
+  renderAnalytics(); renderCRM(); renderAgente(); renderCombos();
 }
 
 /* ============ COMBOS (creador) ============ */
@@ -545,15 +637,54 @@ function renderInicio(){
 
 /* ============ PRODUCTOS ============ */
 const emojiCat = c => { c=(c||'').toLowerCase(); if(/cel|phone|móvil/.test(c))return'📱'; if(/audio|auric/.test(c))return'🎧'; if(/comput|laptop|pc/.test(c))return'💻'; if(/energ|solar|bater/.test(c))return'🔋'; if(/red|wifi|router/.test(c))return'📡'; if(/gam/.test(c))return'🎮'; if(/herram|tool/.test(c))return'🔧'; if(/hogar|casa/.test(c))return'🏠'; if(/carro|auto|moto/.test(c))return'🚗'; return'📦'; };
+let _apFiltroBajo = false;
+function apToggleFiltroBajo(){
+  _apFiltroBajo = !_apFiltroBajo;
+  const b = $('#prod-filtro-bajo');
+  if(b){ b.style.background = _apFiltroBajo?'rgba(231,76,60,0.2)':''; b.style.color = _apFiltroBajo?'var(--red)':''; b.style.borderColor = _apFiltroBajo?'rgba(231,76,60,0.4)':''; }
+  renderProductos();
+}
 function renderProductos(){
+  const grid = $('#prod-grid'); if(!grid) return;
   const q = norm($('#prod-buscar') && $('#prod-buscar').value);
   let list = PRODUCTOS;
-  if(q) list = PRODUCTOS.filter(p=>norm(p.nombre).includes(q)||norm(p.categoria).includes(q));
+  if(q) list = list.filter(p=>norm(p.nombre).includes(q)||norm(p.categoria).includes(q));
+  if(_apFiltroBajo) list = list.filter(p=>Number(p.stock)<=5);
+  // KPIs de stock (fusión de la antigua sección Stock) — feature 6
+  const crit = PRODUCTOS.filter(p=>Number(p.stock)>0&&Number(p.stock)<=5).length;
+  const bajo = PRODUCTOS.filter(p=>Number(p.stock)>5&&Number(p.stock)<=15).length;
+  const agot = PRODUCTOS.filter(p=>Number(p.stock)<=0).length;
+  const ok   = PRODUCTOS.filter(p=>Number(p.stock)>15).length;
+  const bar = $('#prod-stockbar');
+  if(bar) bar.innerHTML = [['success','Con stock OK',ok],['warn','Por agotarse (≤15)',bajo],['danger','Crítico (≤5)',crit],['danger','Agotados',agot]].map(([c,l,v])=>`<div class="kpi ${c}"><div class="lbl">${l}</div><div class="val">${v}</div></div>`).join('');
+  const badge = $('#badge-stock'); if(badge){ const n=crit+agot; badge.textContent=n; badge.style.display = n>0?'':'none'; }
+  // orden: agotados/crítico primero para gestionarlos
+  list = [...list].sort((a,b)=>(Number(a.stock)||0)-(Number(b.stock)||0));
   $('#prod-count').textContent = list.length + ' de ' + PRODUCTOS.length + ' productos';
-  $('#prod-grid').innerHTML = list.slice(0,120).map(p=>{
+  grid.innerHTML = list.slice(0,180).map(p=>{
     const st=Number(p.stock)||0; const cls=st<=0?'out':(st<=5?'low':'');
     const img = p.imagen ? `<img src="${esc(p.imagen)}" alt="" loading="lazy" onerror="this.parentNode.textContent='${emojiCat(p.categoria)}'">` : emojiCat(p.categoria);
-    return `<div class="prod-card"><div class="prod-img">${img}</div><div class="prod-body"><div class="prod-cat">${esc(p.categoria||'—')}</div><div class="prod-nm">${esc(p.nombre||'')}</div><div class="prod-price">${money(p.precioActual)}</div><div class="prod-stock ${cls}">${st<=0?'Agotado':(st+' en stock')}</div></div></div>`;
+    const id = String(p.id);
+    return `<div class="prod-card">
+      <div class="prod-img">${img}</div>
+      <div class="prod-body">
+        <div class="prod-cat">${esc(p.categoria||'—')}</div>
+        <div class="prod-nm">${esc(p.nombre||'')}${p.masVendido?' 🔥':''}</div>
+        <div class="prod-price">${money(p.precioActual)}</div>
+        <div class="prod-stock ${cls}">${st<=0?'Agotado':(st+' en stock')}</div>
+        <div class="pc-stock">
+          <button type="button" onclick="apAjustarStock('${id}',-1)" title="Restar 1">−</button>
+          <input type="number" min="0" value="${st}" onchange="apSetStock('${id}',this.value)" title="Editar stock">
+          <button type="button" onclick="apAjustarStock('${id}',1)" title="Sumar 1">+</button>
+          <button type="button" class="zero" onclick="apSetStock('${id}',0)" title="Marcar agotado">0</button>
+        </div>
+        <div class="pc-actions">
+          <button type="button" class="pc-btn edit" onclick="apEditar('${id}')" title="Editar producto">✏️</button>
+          <button type="button" class="pc-btn fav${p.masVendido?' on':''}" onclick="apToggleFav('${id}')" title="Destacar / favorito">⭐</button>
+          <button type="button" class="pc-btn del" onclick="apEliminar('${id}')" title="Eliminar">🗑️</button>
+        </div>
+      </div>
+    </div>`;
   }).join('') || `<div class="empty"><div class="ico">🔍</div>Sin resultados.</div>`;
 }
 
@@ -621,35 +752,7 @@ function renderCorrecciones(){
   $('#corr-lista').innerHTML = cards.map(c=>`<div class="correccion-card ${c.cls}"><div class="correccion-head"><span class="correccion-icon">${c.ico}</span><span class="correccion-titulo">${c.t}</span><span class="correccion-severidad ${c.sev}">${c.sev}</span></div><div class="correccion-lista">${c.items.slice(0,20).map(c.fmt).join('<br>')}${c.items.length>20?`<br><i>…y ${c.items.length-20} más</i>`:''}</div><p class="correccion-razon">${c.razon}</p></div>`).join('') || `<div class="section"><div class="empty"><div class="ico">✅</div><b>Catálogo impecable.</b> No hay correcciones pendientes.</div></div>`;
 }
 
-/* ============ STOCK ============ */
-function renderStock(){
-  const conVentas = VENTAS.length>0;
-  $('#stock-nota').innerHTML = conVentas
-    ? 'Umbrales: <b>≤5 crítico</b>, ≤15 bajo. La predicción "se agota en X días" usa tu histórico real de ventas.'
-    : 'Umbrales: <b>≤5 crítico</b>, ≤15 bajo. <b>Sin histórico de ventas</b> en este dispositivo, así que no muestro predicción de días (no invento el ritmo).';
-  const crit = PRODUCTOS.filter(p=>Number(p.stock)>0&&Number(p.stock)<=5).length;
-  const bajo = PRODUCTOS.filter(p=>Number(p.stock)>5&&Number(p.stock)<=15).length;
-  const agot = PRODUCTOS.filter(p=>Number(p.stock)<=0).length;
-  const ok = PRODUCTOS.filter(p=>Number(p.stock)>15).length;
-  $('#stock-kpis').innerHTML = [['success','OK',ok],['warn','Por agotarse',bajo],['danger','Crítico (≤5)',crit],['danger','Agotados',agot]].map(([c,l,v])=>`<div class="kpi ${c}"><div class="lbl">${l}</div><div class="val">${v}</div></div>`).join('');
-  $('#badge-stock').textContent = crit+agot;
-  // velocidad por producto (si hay ventas)
-  const vel={};
-  if(conVentas){ const desde=Date.now()-30*864e5; VENTAS.forEach(v=>{ const d=ventaFecha(v); if(!d||d.getTime()<desde)return; (v.productos||v.items||[]).forEach(it=>{ const k=norm(it.nombre||it.nm); if(k) vel[k]=(vel[k]||0)+Number(it.cantidad||it.qty||1); }); }); }
-  const orden=[...PRODUCTOS].sort((a,b)=>(Number(a.stock)||0)-(Number(b.stock)||0)).filter(p=>Number(p.stock)<=15);
-  $('#stock-lista').innerHTML = orden.slice(0,40).map(p=>{
-    const st=Number(p.stock)||0; let cls='ok',status='ok',lbl='OK';
-    if(st<=0){cls='urg';status='urg';lbl='Agotado';} else if(st<=5){cls='urg';status='urg';lbl='Crítico';} else if(st<=15){cls='warn';status='warn';lbl='Bajo';}
-    const pct=Math.min(100,Math.round(st/20*100));
-    let pred='';
-    const vd=vel[norm(p.nombre)];
-    if(conVentas && vd){ const perDay=vd/30; const dias=perDay>0?Math.round(st/perDay):null; pred=`<div class="sp-pred">📉 Ritmo real: ~${(perDay).toFixed(1)}/día · se agota en <b>~${dias} días</b>.</div>`; }
-    else if(st<=0){ pred=`<div class="sp-pred">⛔ Sin stock. Repón para no perder ventas.</div>`; }
-    else { pred=`<div class="sp-pred">Quedan <b>${st}</b> unidades.</div>`; }
-    const img = p.imagen?`<img src="${esc(p.imagen)}" alt="" onerror="this.parentNode.textContent='${emojiCat(p.categoria)}'">`:emojiCat(p.categoria);
-    return `<div class="stock-card ${cls}"><div class="sp-head"><div class="sp-thumb">${img}</div><div><div class="sp-name">${esc(p.nombre)}</div><div class="sp-meta">${esc(p.categoria||'')}</div></div><span class="sp-status ${status}">${lbl}</span></div><div class="sp-bar ${cls}"><div style="width:${pct}%"></div></div>${pred}</div>`;
-  }).join('') || `<div class="section"><div class="empty"><div class="ico">✅</div>Ningún producto con stock bajo.</div></div>`;
-}
+/* ============ STOCK: fusionado en Productos (ver renderProductos + apAjustarStock) ============ */
 
 /* ============ RADAR (reusa radar.json) ============ */
 function renderRadar(){
@@ -711,7 +814,198 @@ function renderClientes(){
   $('#cli-lista').innerHTML = list.length?`<div class="table-wrap"><table><thead><tr><th>Cliente</th><th>Compras</th><th>Total</th><th>Teléfono</th></tr></thead><tbody>${list.map(c=>`<tr><td class="nm">${esc(c.nombre)}</td><td>${c.compras}</td><td class="nm">${money(c.total)}</td><td>${esc(c.tel||'—')}</td></tr>`).join('')}</tbody></table></div>`:`<div class="section"><div class="empty"><div class="ico">👥</div>Aún no hay clientes.<br><small>Se generan solos a partir de las ventas que registres.</small></div></div>`;
 }
 
+/* ============ Escritura a GitHub (reusa patrón de comboPublicar) ============ */
+function apToast(t,b){ showToast(t,b||''); }
+function ghCfg(){ const user=localStorage.getItem('githubUser'), repo=localStorage.getItem('githubRepo'), token=localStorage.getItem('githubToken'); if(!user||!repo||!token) return null; return {user,repo,token}; }
+function b64utf8(str){ return btoa(Array.from(new TextEncoder().encode(str), b=>String.fromCharCode(b)).join('')); }
+async function ghPutB64(path, b64content, msg){
+  const cfg=ghCfg(); if(!cfg) return false;
+  const headers={ 'Authorization':'token '+cfg.token, 'Accept':'application/vnd.github.v3+json' };
+  const apiBase='https://api.github.com/repos/'+cfg.user+'/'+cfg.repo;
+  let sha=null; try{ const r=await fetch(apiBase+'/contents/'+path+'?_='+Date.now(),{headers}); if(r.ok){ sha=(await r.json()).sha; } }catch(e){}
+  const body={ message:msg, content:b64content }; if(sha) body.sha=sha;
+  try{ const res=await fetch(apiBase+'/contents/'+path,{ method:'PUT', headers, body:JSON.stringify(body) }); return res.ok; }catch(e){ return false; }
+}
+function ghPutText(path, str, msg){ return ghPutB64(path, b64utf8(str), msg); }
+
+/* Compresión de imagen (calcada de tm-product.src.js) */
+function comprimirImagen(source, maxKB=40, maxW=640, maxH=640){
+  return new Promise(resolve=>{
+    const canvas=document.createElement('canvas'), ctx=canvas.getContext('2d'), img=new Image();
+    img.onload=function(){ let w=img.width,h=img.height;
+      if(w>maxW||h>maxH){ const r=Math.min(maxW/w,maxH/h); w=Math.round(w*r); h=Math.round(h*r); }
+      canvas.width=w; canvas.height=h; ctx.drawImage(img,0,0,w,h);
+      let q=0.82, out=canvas.toDataURL('image/webp',q);
+      const webp=out.startsWith('data:image/webp'); const fmt=webp?'image/webp':'image/jpeg';
+      if(!webp) out=canvas.toDataURL(fmt,q);
+      while(out.length>maxKB*1024*1.37 && q>0.2){ q-=0.06; out=canvas.toDataURL(fmt,q); }
+      resolve(out);
+    };
+    img.onerror=()=>resolve(typeof source==='string'?source:'');
+    if(typeof source==='string'){ img.src=source; }
+    else { const rd=new FileReader(); rd.onload=e=>img.src=e.target.result; rd.readAsDataURL(source); }
+  });
+}
+async function subirImagen(fileOrDataUrl){
+  const dataUrl=await comprimirImagen(fileOrDataUrl);
+  if(!dataUrl) return '';
+  const cfg=ghCfg(); if(!cfg) return dataUrl; // sin GitHub: queda inline
+  const b64=dataUrl.includes(',')?dataUrl.split(',')[1]:dataUrl;
+  const ext=dataUrl.startsWith('data:image/webp')?'webp':(dataUrl.startsWith('data:image/png')?'png':'jpg');
+  const filename='img_'+Date.now()+'_'+Math.random().toString(36).slice(2,6)+'.'+ext;
+  const ok=await ghPutB64('imagenes/'+filename, b64, 'Imagen: '+filename);
+  return ok ? 'https://tiendamax.org/imagenes/'+filename : dataUrl;
+}
+
+/* Persistencia de productos: localStorage + PUT productos.json (la Action regenera lo demás) */
+function apPersistLocal(){ try{ localStorage.setItem('productos', JSON.stringify(PRODUCTOS)); }catch(e){} }
+function apPutProductos(){ return ghPutText('productos.json', JSON.stringify(PRODUCTOS,null,2), 'Actualizar productos (admin nuevo)'); }
+let _apSyncTimer=null;
+function apGuardarProductos(opts){ opts=opts||{}; apPersistLocal(); if(opts.immediate) return apPutProductos(); clearTimeout(_apSyncTimer); _apSyncTimer=setTimeout(()=>apPutProductos(), 2000); }
+
+/* ============ Acciones de producto en la lista (features 4 y 6) ============ */
+function apFind(id){ return PRODUCTOS.find(p=>String(p.id)===String(id)); }
+function apAjustarStock(id,delta){ const p=apFind(id); if(!p)return; p.stock=Math.max(0,(Number(p.stock)||0)+delta); apGuardarProductos(); renderProductos(); apToast('📦 '+p.nombre, 'Stock → '+p.stock+' uds'); }
+function apSetStock(id,val){ const p=apFind(id); if(!p)return; p.stock=Math.max(0,parseInt(val)||0); apGuardarProductos(); renderProductos(); }
+function apToggleFav(id){ const p=apFind(id); if(!p)return; p.masVendido=!p.masVendido; apGuardarProductos(); renderProductos(); apToast(p.masVendido?'⭐ Destacado':'☆ Quitado de destacados', p.nombre); }
+function apEliminar(id){ const p=apFind(id); if(!p)return; if(!confirm('¿Eliminar "'+p.nombre+'"?\nSe quita de la tienda al sincronizar con GitHub.'))return; const i=PRODUCTOS.findIndex(x=>String(x.id)===String(id)); if(i>=0)PRODUCTOS.splice(i,1); apGuardarProductos({immediate:true}); renderProductos(); apToast('🗑️ Eliminado', p.nombre); }
+
+/* ============ Formulario Agregar/Editar (features 1, 2, 3) ============ */
+let _apFotoUrl='', _apFotoFile=null, _apFotoThumb='', _apGaleria=[];
+function apSlug(s){ return (s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,60); }
+function apLlenarCategorias(){ const sel=$('#ap-cat'); if(!sel)return; const cur=sel.value; sel.innerHTML='<option value="">Elige…</option>'+catNombres().map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join(''); sel.value=cur; }
+function apLlenarSubcats(){ const sel=$('#ap-sub'); if(!sel)return; const cat=$('#ap-cat').value; const cur=sel.value; let subs=(SUBCATS&&SUBCATS[cat])||(SUBCATS&&SUBCATS[(cat||'').toUpperCase()])||[]; if(!subs.length && SUBCATS){ const k=Object.keys(SUBCATS).find(x=>norm(x)===norm(cat)); if(k)subs=SUBCATS[k]; } sel.innerHTML='<option value="">—</option>'+subs.map(s=>`<option value="${esc(s)}">${esc(s)}</option>`).join(''); sel.value=cur; }
+function apFotoPrincipal(input){ const f=input.files&&input.files[0]; if(!f)return; _apFotoFile=f; const rd=new FileReader(); rd.onload=e=>{ _apFotoThumb=e.target.result; apRenderFotoPrincipal(); }; rd.readAsDataURL(f); }
+function apRenderFotoPrincipal(){ const box=$('#ap-foto-preview'); if(!box)return; const src=_apFotoThumb||_apFotoUrl; box.innerHTML= src?`<div style="display:flex;align-items:center;gap:10px"><img class="ap-foto-main" src="${esc(src)}"><button type="button" class="btn btn-ghost" style="padding:6px 12px" onclick="apQuitarFoto()">✕ Quitar</button></div>`:''; }
+function apQuitarFoto(){ _apFotoFile=null; _apFotoThumb=''; _apFotoUrl=''; const inp=$('#ap-foto'); if(inp)inp.value=''; apRenderFotoPrincipal(); }
+function apGaleriaAdd(input){ const files=[...(input.files||[])]; let pend=files.length; if(!pend)return; files.forEach(f=>{ const rd=new FileReader(); rd.onload=e=>{ _apGaleria.push({file:f, thumb:e.target.result}); if(--pend===0) apRenderGaleria(); }; rd.readAsDataURL(f); }); input.value=''; }
+function apRenderGaleria(){ const box=$('#ap-gal-thumbs'); if(!box)return; box.innerHTML=_apGaleria.map((g,i)=>`<div class="ap-gal-thumb"><img src="${esc(g.thumb||g.url)}" alt=""><button type="button" class="rm" onclick="apGaleriaRemove(${i})" title="Quitar foto">✕</button></div>`).join(''); const c=$('#ap-gal-count'); if(c)c.textContent=_apGaleria.length; }
+function apGaleriaRemove(i){ _apGaleria.splice(i,1); apRenderGaleria(); }
+/* Sugerencia automática de categoría/subcategoría (feature 2) */
+function apSugerir(){
+  const txt=norm(($('#ap-nombre').value||'')+' '+($('#ap-desc').value||'')); if(!txt.trim())return;
+  const catSel=$('#ap-cat');
+  if(catSel && !catSel.value){
+    let best='';
+    catNombres().forEach(c=>{ if(best)return; const words=norm(c).split(/\s+/).filter(w=>w.length>=3); if(words.some(w=>txt.includes(w))) best=c; });
+    if(!best){ const syn={'audio':/auric|audif|headphone|bocina|parlante|speaker/,'energía':/solar|bater|inversor|panel|power ?bank/,'celulares':/celular|telefono|smartphone|móvil|movil/,'computación':/laptop|comput|pc|monitor|teclado|mouse/,'redes':/router|wifi|red |antena|switch/,'herramientas':/taladro|herramient|destornillador|llave/,'hogar':/cocina|sarten|olla|hogar|casa|lampara/,'gaming':/gamer|gaming|consola|joystick|mando/}; const cats=catNombres(); for(const k in syn){ if(syn[k].test(txt)){ const m=cats.find(c=>norm(c).includes(k)); if(m){ best=m; break; } } } }
+    if(best){ catSel.value=best; apLlenarSubcats(); const h=$('#ap-cat-sug'); if(h)h.textContent='✨ sugerido'; }
+  }
+  const cat=catSel?catSel.value:''; const subSel=$('#ap-sub');
+  if(cat && subSel && !subSel.value){ let subs=(SUBCATS&&SUBCATS[cat])||(SUBCATS&&SUBCATS[(cat||'').toUpperCase()])||[]; if(!subs.length&&SUBCATS){const k=Object.keys(SUBCATS).find(x=>norm(x)===norm(cat)); if(k)subs=SUBCATS[k];} let bs=''; subs.forEach(s=>{ if(!bs && norm(s).length>=3 && txt.includes(norm(s))) bs=s; }); if(bs){ subSel.value=bs; const h=$('#ap-sub-sug'); if(h)h.textContent='✨ sugerido'; } }
+}
+function apResetForm(){ const f=$('#ap-form'); if(f)f.reset(); const idi=$('#ap-id'); if(idi)idi.value=''; _apFotoUrl='';_apFotoFile=null;_apFotoThumb='';_apGaleria=[]; apLlenarCategorias(); apLlenarSubcats(); apRenderFotoPrincipal(); apRenderGaleria(); const cs=$('#ap-cat-sug'),ss=$('#ap-sub-sug'); if(cs)cs.textContent=''; if(ss)ss.textContent=''; const t=$('#ap-form-title'); if(t)t.textContent='➕ Agregar producto'; const sub=$('#ap-form-sub'); if(sub)sub.textContent='Se guarda en productos.json y se publica solo a la tienda'; const c=$('#ap-cancel'); if(c)c.style.display='none'; const g=$('#ap-guardar'); if(g)g.textContent='💾 Guardar producto'; }
+function apEnsureOption(sel, val){ if(!sel||!val)return; if(![...sel.options].some(o=>o.value===val)){ const o=document.createElement('option'); o.value=val; o.textContent=val; sel.appendChild(o); } sel.value=val; }
+function apEditar(id){ const p=apFind(id); if(!p)return; apResetForm(); $('#ap-id').value=p.id; $('#ap-nombre').value=p.nombre||''; $('#ap-desc').value=p.descripcion||''; apLlenarCategorias(); apEnsureOption($('#ap-cat'),p.categoria||''); apLlenarSubcats(); apEnsureOption($('#ap-sub'),p.subcategoria||''); $('#ap-precio').value=p.precioActual!=null?p.precioActual:''; $('#ap-precio-orig').value=p.precioOriginal||''; $('#ap-stock').value=Number(p.stock)||0; $('#ap-comision').value=p.comision||''; $('#ap-comision-moneda').value=p.comisionMoneda||'USD'; $('#ap-garantia').value=p.garantia||''; $('#ap-specs').value=Array.isArray(p.specs)?p.specs.join(', '):(p.specs||''); $('#ap-masvendido').checked=!!p.masVendido; _apFotoUrl=p.imagen||''; _apFotoFile=null; _apFotoThumb=''; apRenderFotoPrincipal(); _apGaleria=(p.imagenes||[]).filter(Boolean).map(u=>({url:u,thumb:u})); apRenderGaleria(); $('#ap-form-title').textContent='✏️ Editar producto'; $('#ap-form-sub').textContent='Editando: '+(p.nombre||''); $('#ap-cancel').style.display=''; $('#ap-guardar').textContent='💾 Guardar cambios'; go('agregar'); }
+async function apGuardarProducto(e){
+  e.preventDefault();
+  const nombre=($('#ap-nombre').value||'').trim(), desc=($('#ap-desc').value||'').trim(), cat=$('#ap-cat').value;
+  const precio=parseFloat($('#ap-precio').value), stock=parseInt($('#ap-stock').value);
+  if(!nombre||!desc||!cat||isNaN(precio)||isNaN(stock)){ apToast('⚠️ Faltan datos', 'Nombre, descripción, categoría, precio y stock son obligatorios'); return; }
+  const btn=$('#ap-guardar'); const orig=btn.textContent; btn.disabled=true;
+  try{
+    let imagen=_apFotoUrl;
+    if(_apFotoFile){ btn.textContent='⏳ Subiendo foto…'; imagen=await subirImagen(_apFotoFile); }
+    const galeria=[];
+    for(let i=0;i<_apGaleria.length;i++){ const g=_apGaleria[i]; if(g.url){ galeria.push(g.url); } else if(g.file){ btn.textContent='⏳ Galería '+(i+1)+'/'+_apGaleria.length+'…'; galeria.push(await subirImagen(g.file)); } }
+    const id=$('#ap-id').value?Number($('#ap-id').value):Date.now();
+    const existing=apFind(id)||{};
+    const precioOrig=parseFloat($('#ap-precio-orig').value)||0;
+    const descuento=(precioOrig>precio)?Math.round((precioOrig-precio)/precioOrig*100):0;
+    const specs=($('#ap-specs').value||'').split(',').map(s=>s.trim()).filter(Boolean);
+    const prod=Object.assign({}, existing, {
+      id, nombre, descripcion:desc, categoria:cat, subcategoria:$('#ap-sub').value||'',
+      precioActual:precio, precioOriginal:precioOrig, descuento,
+      stock, comision:parseFloat($('#ap-comision').value)||0, comisionMoneda:$('#ap-comision-moneda').value||'USD',
+      garantia:($('#ap-garantia').value||'').trim(), specs, masVendido:$('#ap-masvendido').checked,
+      imagen:imagen||existing.imagen||'', imagenes:galeria,
+      slug: existing.slug || apSlug(nombre),
+      usado: existing.usado||false, devolucion: existing.devolucion!=null?existing.devolucion:false,
+      radar: existing.radar||false, seoTitle: existing.seoTitle||'', seoDescription: existing.seoDescription||''
+    });
+    const idx=PRODUCTOS.findIndex(x=>String(x.id)===String(id));
+    if(idx>=0) PRODUCTOS[idx]=prod; else PRODUCTOS.unshift(prod);
+    apPersistLocal();
+    btn.textContent='⏳ Sincronizando…';
+    const ok=await apPutProductos();
+    apResetForm(); renderTodo(); go('productos');
+    showToast(ok?'✅ Producto guardado':'✅ Guardado local', ok?'Publicándose a la tienda vía GitHub':'Configura GitHub en el admin actual para publicar');
+  }catch(err){ showToast('❌ Error al guardar', err&&err.message||''); }
+  btn.disabled=false; btn.textContent=orig;
+}
+/* Vista previa cliente (feature 3) */
+function apVistaPreviaCliente(){
+  const nombre=($('#ap-nombre').value||'').trim()||'Producto sin nombre';
+  const precio=parseFloat($('#ap-precio').value)||0, precioOrig=parseFloat($('#ap-precio-orig').value)||0;
+  const desc=($('#ap-desc').value||'').trim(); const img=_apFotoThumb||_apFotoUrl||'';
+  const specs=($('#ap-specs').value||'').split(',').map(s=>s.trim()).filter(Boolean);
+  const off=precioOrig>precio?Math.round((precioOrig-precio)/precioOrig*100):0;
+  const id=$('#ap-id').value;
+  const imgHtml= img?`<img src="${esc(img)}" style="width:100%;aspect-ratio:1;object-fit:cover">`:`<div style="width:100%;aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:64px;background:#f2f2f2">📦</div>`;
+  $('#ap-modal-card').innerHTML=`
+    <div style="position:relative">${imgHtml}${off>0?`<span style="position:absolute;top:12px;left:12px;background:#e74c3c;color:#fff;font-weight:800;font-size:12px;padding:5px 10px;border-radius:20px">-${off}%</span>`:''}</div>
+    <div style="padding:16px 18px 20px">
+      <div style="font-size:11px;color:#e0521a;font-weight:800;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">${esc($('#ap-cat').value||'Producto')}</div>
+      <h3 style="font-size:19px;font-weight:900;color:#111;margin:0 0 8px">${esc(nombre)}</h3>
+      <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:10px"><span style="font-size:24px;font-weight:900;color:#e0521a">${money(precio)}</span>${precioOrig>precio?`<span style="font-size:15px;color:#999;text-decoration:line-through">${money(precioOrig)}</span>`:''}</div>
+      ${desc?`<p style="font-size:13px;color:#444;line-height:1.6;margin:0 0 12px">${esc(desc).replace(/\\n/g,'<br>')}</p>`:''}
+      ${specs.length?`<div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px">${specs.map(s=>`<span style="font-size:11px;background:#fff3ec;color:#e0521a;font-weight:700;padding:4px 10px;border-radius:20px;border:1px solid #ffd9c4">${esc(s)}</span>`).join('')}</div>`:''}
+      <button style="width:100%;padding:13px;background:#25D366;color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:800;cursor:pointer">💬 Pedir por WhatsApp</button>
+      <div style="text-align:center;margin-top:12px;font-size:11px;color:#999">Vista previa · así lo verá el cliente en la tienda</div>
+      ${id?`<div style="text-align:center;margin-top:8px"><a href="/p/producto-${esc(id)}.html" target="_blank" rel="noopener" style="color:#e0521a;font-size:12px;font-weight:700">Abrir la ficha real publicada →</a></div>`:''}
+      <button class="btn btn-ghost" type="button" onclick="apCerrarPreview()" style="width:100%;margin-top:12px;color:#666;background:#f0f0f0;border-color:#e0e0e0">Cerrar</button>
+    </div>`;
+  $('#ap-modal').classList.add('show');
+}
+function apCerrarPreview(){ $('#ap-modal').classList.remove('show'); }
+
+/* ============ CRM: Cliente · Reseñas · Carrito · WhatsApp (feature 5) ============ */
+function renderCRM(){ renderClientes(); }
+function apCrmPill(which, btn){
+  document.querySelectorAll('.crm-pill').forEach(b=>b.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  document.querySelectorAll('.crm-panel').forEach(p=>p.style.display='none');
+  const panel=document.getElementById('crm-panel-'+which); if(panel)panel.style.display='';
+  if(which==='cliente') renderClientes();
+  if(which==='resenas') apRenderResenas();
+  if(which==='carrito') apRenderCarrito();
+  if(which==='whatsapp') apRenderWhatsapp();
+}
+function apRenderResenas(){
+  const box=$('#crm-panel-resenas'); if(!box)return;
+  const conRes=PRODUCTOS.filter(p=>Array.isArray(p.reseñas)&&p.reseñas.length || Array.isArray(p.reviews)&&p.reviews.length);
+  if(conRes.length){
+    box.innerHTML=`<div class="section"><h3>⭐ Reseñas por producto</h3>${conRes.map(p=>{ const rs=p.reseñas||p.reviews; return `<div style="padding:10px 0;border-bottom:1px solid var(--line)"><b style="color:#fff">${esc(p.nombre)}</b> · ${rs.length} reseña(s)</div>`; }).join('')}</div>`;
+  } else {
+    box.innerHTML=`<div class="section"><div class="empty"><div class="ico">⭐</div><b>Aún no hay reseñas guardadas.</b><br>La tienda es estática y los pedidos van por WhatsApp, así que hoy no se registran reseñas de clientes.<br><small>Cuando montemos el registro real de reseñas, aparecerán aquí — sin inventar nada.</small></div></div>`;
+  }
+}
+function apRenderCarrito(){
+  const box=$('#crm-panel-carrito'); if(!box)return;
+  let carrito=null; try{ carrito=JSON.parse(localStorage.getItem('carrito')||localStorage.getItem('cart')||'null'); }catch(e){}
+  if(Array.isArray(carrito)&&carrito.length){
+    box.innerHTML=`<div class="section"><h3>🛒 Carrito guardado en este dispositivo</h3>${carrito.map(it=>`<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--line)"><span style="color:#fff">${esc(it.nombre||it.nm||'—')}</span><span style="color:var(--o)">${money(it.precio||it.precioActual||0)}</span></div>`).join('')}</div>`;
+  } else {
+    box.innerHTML=`<div class="section"><div class="empty"><div class="ico">🛒</div><b>Sin carritos registrados.</b><br>El sitio es estático y el pedido se arma en WhatsApp (click-to-chat), así que no se guardan carritos abandonados.<br><small>Si quieres, en una fase futura montamos el registro real y aquí verás carritos y abandonos.</small></div></div>`;
+  }
+}
+function apRenderWhatsapp(){
+  const box=$('#crm-panel-whatsapp'); if(!box)return;
+  const num=localStorage.getItem('whatsappNumber')||localStorage.getItem('waNumber')||'5354320170';
+  const waClicks=(VENTAS.length); // proxy honesto: pedidos que se concretaron
+  box.innerHTML=`<div class="section">
+      <h3>💬 WhatsApp</h3>
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
+        <div style="width:44px;height:44px;border-radius:12px;background:#25D366;display:flex;align-items:center;justify-content:center;font-size:22px">💬</div>
+        <div><div style="font-size:15px;font-weight:800;color:#fff">+${esc(num)}</div><div style="font-size:11px;color:var(--muted)">Número de contacto de la tienda</div></div>
+        <a href="https://wa.me/${esc(num)}" target="_blank" rel="noopener" class="btn btn-success" style="margin-left:auto">Abrir chat</a>
+      </div>
+      <div class="banner-info">La tienda usa <b>click-to-chat</b>: cada pedido llega como mensaje directo. No se guarda un historial de chat en el sitio (es estático), así que aquí no invento conversaciones. Las ventas que registras en “Ventas” son la señal real de conversión.</div>
+    </div>`;
+}
+
 /* ============ Init ============ */
+apResetForm();
 cargarDatos();
 </script>
 </body>
