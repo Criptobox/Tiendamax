@@ -402,7 +402,6 @@
       <button class="side-btn" data-view="publicar" title="Publicar / Compartir a redes">📣</button>
       <button class="side-btn" data-view="agente" title="Agente IA — calidad y correcciones">🤖<span class="badge" id="badge-corr">0</span></button>
       <div class="side-sep"></div>
-      <button class="side-btn" data-view="stock" title="Stock">📈<span class="badge" id="badge-stock">0</span></button>
       <button class="side-btn" data-view="radar" title="Radar de precios">📡<span class="new-tag">N</span></button>
       <button class="side-btn" data-view="ventas" title="Ventas">💰</button>
       <button class="side-btn" data-view="analytics" title="Analytics">📊</button>
@@ -417,7 +416,7 @@
       <div id="view-inicio" class="view active">
         <div class="ph">
           <div><h2>🏠 Inicio</h2><p id="inicio-fecha">Vista general de tu tienda</p></div>
-          <div class="ph-actions"><button class="btn btn-ghost" onclick="go('stock')">📈 Stock</button><button class="btn btn-primary" onclick="go('agregar')">+ Agregar</button></div>
+          <div class="ph-actions"><button class="btn btn-primary" onclick="go('agregar')">+ Agregar</button></div>
         </div>
         <div class="hero-inv" id="inicio-hero">
           <div class="hi-lbl">Valor de inventario</div>
@@ -459,16 +458,6 @@
       <div id="view-categorias" class="view">
         <div class="ph"><div><h2>🏷️ Categorías y subcategorías</h2><p id="cat-count">—</p></div></div>
         <div class="section"><h3>Categorías y subcategorías</h3><div id="cat-list"></div></div>
-      </div>
-
-      <!-- CORRECCIONES IA -->
-      <!-- STOCK -->
-      <div id="view-stock" class="view">
-        <div class="ph"><div><h2>📈 Stock</h2><p>Niveles reales · alertas por umbral</p></div></div>
-        <div class="banner-info" id="stock-nota"></div>
-        <div class="kpis" id="stock-kpis"></div>
-        <div class="section"><h3>🔴 Agotados por categoría</h3><div id="stock-agotados"></div></div>
-        <div class="section"><h3>Con stock bajo</h3><div id="stock-lista"></div></div>
       </div>
 
       <!-- RADAR -->
@@ -756,7 +745,7 @@ async function cargarDatos(recargar){
 
 function renderTodo(){
   renderInicio(); renderProductos(); renderCategorias();
-  renderCorrecciones(); renderStock(); renderRadar(); renderVentas();
+  renderCorrecciones(); renderRadar(); renderVentas();
   renderAnalytics(); renderClientes(); renderCombos(); renderPublicar();
   fillAgregarCategorias(); fillConfig(); fillOfertaDia();
 }
@@ -844,15 +833,22 @@ function comboBuscar(){
   const q=norm($('#combo-buscar') && $('#combo-buscar').value);
   const box=$('#combo-resultados'); if(!box) return;
   if(!q){ box.innerHTML=''; return; }
-  const res=PRODUCTOS.filter(p=>norm(p.nombre).includes(q)).slice(0,8);
-  box.innerHTML = res.map(p=>`<div style="display:flex;align-items:center;gap:8px;padding:7px 9px;background:rgba(255,255,255,0.03);border-radius:8px;margin-bottom:4px"><div style="flex:1;font-size:12px;color:#fff">${esc(p.nombre)} <b style="color:var(--o)">${money(p.precioActual)}</b></div><button class="btn btn-ghost" style="padding:4px 10px;font-size:12px" onclick="comboAdd('${p.id}')">+ Agregar</button></div>`).join('') || `<div style="font-size:11px;color:var(--gray);padding:6px">Sin resultados</div>`;
+  const res=PRODUCTOS.filter(p=>norm(p.nombre).includes(q)).slice(0,30);
+  box.innerHTML = res.map(p=>{
+    const en=COMBO_SEL.some(x=>String(x.id)===String(p.id));
+    return `<div style="display:flex;align-items:center;gap:8px;padding:7px 9px;background:rgba(255,255,255,0.03);border-radius:8px;margin-bottom:4px">
+      <div style="flex:1;font-size:12px;color:#fff">${esc(p.nombre)} <b style="color:var(--o)">${money(p.precioActual)}</b></div>
+      ${en
+        ? `<button class="btn btn-ghost" style="padding:4px 10px;font-size:12px;opacity:.7" onclick="comboAdd('${p.id}')">✓ Agregado (+1)</button>`
+        : `<button class="btn btn-ghost" style="padding:4px 10px;font-size:12px" onclick="comboAdd('${p.id}')">+ Agregar</button>`}
+    </div>`;
+  }).join('') || `<div style="font-size:11px;color:var(--gray);padding:6px">Sin resultados</div>`;
 }
 function comboAdd(id){
   const p=PRODUCTOS.find(x=>String(x.id)===String(id)); if(!p) return;
   const ex=COMBO_SEL.find(x=>String(x.id)===String(id));
   if(ex){ ex.cantidad=(ex.cantidad||1)+1; } else { COMBO_SEL.push({id:p.id, nombre:p.nombre, precio:Number(p.precioActual)||0, cantidad:1}); }
-  $('#combo-buscar').value=''; $('#combo-resultados').innerHTML='';
-  comboRenderItems(); comboCalc();
+  comboBuscar(); comboRenderItems(); comboCalc();
 }
 function comboRemove(id){ COMBO_SEL=COMBO_SEL.filter(x=>String(x.id)!==String(id)); comboRenderItems(); comboCalc(); }
 function comboQty(id,d){ const it=COMBO_SEL.find(x=>String(x.id)===String(id)); if(it){ it.cantidad=Math.max(1,(it.cantidad||1)+d); } comboRenderItems(); comboCalc(); }
@@ -1166,43 +1162,6 @@ function correccionNormalizarMayus(){
   showToast('✅ '+n+' nombres normalizados','Ve a ⚙️ Configuración → "Actualizar tienda" para publicar');
 }
 
-/* ============ STOCK ============ */
-function renderStock(){
-  const conVentas = VENTAS.length>0;
-  $('#stock-nota').innerHTML = conVentas
-    ? 'Umbrales: <b>≤5 crítico</b>, ≤15 bajo. La predicción "se agota en X días" usa tu histórico real de ventas.'
-    : 'Umbrales: <b>≤5 crítico</b>, ≤15 bajo. <b>Sin histórico de ventas</b> en este dispositivo, así que no muestro predicción de días (no invento el ritmo).';
-  const crit = PRODUCTOS.filter(p=>Number(p.stock)>0&&Number(p.stock)<=5).length;
-  const bajo = PRODUCTOS.filter(p=>Number(p.stock)>5&&Number(p.stock)<=15).length;
-  const agot = PRODUCTOS.filter(p=>Number(p.stock)<=0).length;
-  // Agotados agrupados por categoría (píldora desplegable)
-  const agotList = PRODUCTOS.filter(p=>Number(p.stock)<=0);
-  const porCat={}; agotList.forEach(p=>{ const c=p.categoria||'Sin categoría'; (porCat[c]=porCat[c]||[]).push(p); });
-  const agEl=$('#stock-agotados');
-  if(agEl){ const cats=Object.keys(porCat).sort((a,b)=>porCat[b].length-porCat[a].length);
-    agEl.innerHTML = cats.length ? cats.map(c=>`<details style="background:rgba(231,76,60,0.06);border:1px solid rgba(231,76,60,0.3);border-radius:10px;padding:10px 14px;margin-bottom:8px"><summary style="cursor:pointer;font-weight:700;color:#fff;list-style:none;display:flex;align-items:center;gap:8px">${catIcono(c)} ${esc(c)} <span style="margin-left:auto;font-size:11px;background:rgba(231,76,60,0.2);color:#e74c3c;padding:2px 9px;border-radius:20px">${porCat[c].length} agotados</span></summary><div style="margin-top:8px">${porCat[c].map(p=>`<div style="font-size:12px;color:#cfcfd6;padding:5px 0;border-top:1px solid rgba(255,255,255,0.05)">${esc(p.nombre)} <span style="color:var(--gray)">· ${money(p.precioActual)}</span></div>`).join('')}</div></details>`).join('') : `<div class="empty" style="padding:18px"><div class="ico">✅</div>Ningún producto agotado.</div>`;
-  }
-  const ok = PRODUCTOS.filter(p=>Number(p.stock)>15).length;
-  $('#stock-kpis').innerHTML = [['success','OK',ok],['warn','Por agotarse',bajo],['danger','Crítico (≤5)',crit],['danger','Agotados',agot]].map(([c,l,v])=>`<div class="kpi ${c}"><div class="lbl">${l}</div><div class="val">${v}</div></div>`).join('');
-  $('#badge-stock').textContent = crit+agot;
-  // velocidad por producto (si hay ventas)
-  const vel={};
-  if(conVentas){ const desde=Date.now()-30*864e5; VENTAS.forEach(v=>{ const d=ventaFecha(v); if(!d||d.getTime()<desde)return; (v.productos||v.items||[]).forEach(it=>{ const k=norm(it.nombre||it.nm); if(k) vel[k]=(vel[k]||0)+Number(it.cantidad||it.qty||1); }); }); }
-  const orden=[...PRODUCTOS].sort((a,b)=>(Number(a.stock)||0)-(Number(b.stock)||0)).filter(p=>Number(p.stock)>0&&Number(p.stock)<=15);
-  $('#stock-lista').innerHTML = orden.slice(0,40).map(p=>{
-    const st=Number(p.stock)||0; let cls='ok',status='ok',lbl='OK';
-    if(st<=0){cls='urg';status='urg';lbl='Agotado';} else if(st<=5){cls='urg';status='urg';lbl='Crítico';} else if(st<=15){cls='warn';status='warn';lbl='Bajo';}
-    const pct=Math.min(100,Math.round(st/20*100));
-    let pred='';
-    const vd=vel[norm(p.nombre)];
-    if(conVentas && vd){ const perDay=vd/30; const dias=perDay>0?Math.round(st/perDay):null; pred=`<div class="sp-pred">📉 Ritmo real: ~${(perDay).toFixed(1)}/día · se agota en <b>~${dias} días</b>.</div>`; }
-    else if(st<=0){ pred=`<div class="sp-pred">⛔ Sin stock. Repón para no perder ventas.</div>`; }
-    else { pred=`<div class="sp-pred">Quedan <b>${st}</b> unidades.</div>`; }
-    const img = p.imagen?`<img src="${esc(p.imagen)}" alt="" onerror="this.parentNode.textContent='${emojiCat(p.categoria)}'">`:emojiCat(p.categoria);
-    return `<div class="stock-card ${cls}"><div class="sp-head"><div class="sp-thumb">${img}</div><div><div class="sp-name">${esc(p.nombre)}</div><div class="sp-meta">${esc(p.categoria||'')}</div></div><span class="sp-status ${status}">${lbl}</span></div><div class="sp-bar ${cls}"><div style="width:${pct}%"></div></div>${pred}</div>`;
-  }).join('') || `<div class="section"><div class="empty"><div class="ico">✅</div>Ningún producto con stock bajo.</div></div>`;
-}
-
 /* ============ RADAR (reusa radar.json) ============ */
 function renderRadar(){
   if(!RADAR || !RADAR.productos || !RADAR.productos.length){ $('#radar-lista').innerHTML=`<div class="section"><div class="empty"><div class="ico">📡</div>Sin datos de radar todavía. Marca productos con ⭐ en el admin y corre la acción del radar.</div></div>`; $('#radar-resumen').textContent=''; return; }
@@ -1338,9 +1297,10 @@ function pubSwitch(v){ PUB_VIEW=v; renderPublicar(); }
 function renderPublicar(){
   const P=$('#pub-pills');
   if(P){ const pill=(v,l)=>`<button class="btn ${PUB_VIEW===v?'btn-primary':'btn-ghost'}" onclick="pubSwitch('${v}')">${l}</button>`;
-    P.innerHTML=pill('compartir','📲 Compartir')+pill('banners','🖼️ Banners')+pill('oferta','🔥 Oferta del día'); }
+    P.innerHTML=pill('compartir','📲 Compartir')+pill('categoria','🏷️ Por categoría')+pill('banners','🖼️ Banners')+pill('oferta','🔥 Oferta del día'); }
   const body=$('#pub-body'); if(!body) return;
   if(PUB_VIEW==='compartir'){ body.innerHTML=pubCompartirHTML(); pubRenderShareList(); }
+  else if(PUB_VIEW==='categoria'){ body.innerHTML=pubCategoriaHTML(); pubCategoriaInit(); }
   else if(PUB_VIEW==='banners'){ body.innerHTML='<div class="section"><div class="empty"><div class="ico">🖼️</div>Cargando banners…</div></div>'; pubRenderBanners(); }
   else { body.innerHTML=`<div class="section"><div class="empty"><div class="ico">🔥</div><b style="color:#fff">Oferta del día y contador por tiempo</b><br>Se manejan en el tab <b>🎁 Combos y ofertas</b> (eliges producto, texto y tiempo).<br><br><button class="btn btn-primary" onclick="go('combos')">Ir a Combos y ofertas →</button></div></div>`; }
 }
@@ -1389,6 +1349,243 @@ function pubRenderShareList(){
       <button type="button" class="pub-act-wide rev" onclick="pubShareAct('${esc(p.id)}','rev')">🟠 Publicar en Revólico</button>
     </div>`).join('') : '<div class="empty" style="padding:20px"><div class="ico">📦</div>No hay productos con stock para compartir.</div>';
 }
+/* ── Publicar por categoría: texto + imagen con todos los productos de una categoría ── */
+const _pubCatBag=new Image(); try{ _pubCatBag.src='/iconos/bag.png'; }catch(e){}
+function pubCatCats(){ return [...new Set(PRODUCTOS.filter(p=>p.activo!==false&&Number(p.stock||0)>0).map(p=>p.categoria||'General').filter(Boolean))].sort(); }
+function pubCatProds(cat){ return PRODUCTOS.filter(p=>p.activo!==false&&Number(p.stock||0)>0&&(p.categoria||'General')===cat); }
+function pubCatEmoji(nombre,cat){
+  const norm2=s=>String(s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
+  const n=norm2(nombre), c=norm2(cat);
+  if(/wifi|router|enrutador|inalámb|inalamb|repetidor/.test(n))return'📡';
+  if(/audif|auricular|earphone|headphone|tws|earbuds/.test(n))return'🎧';
+  if(/parlant|altavoz|bocina|speaker/.test(n))return'🔊';
+  if(/batería|bateria|battery|lifepo|acumulador/.test(n))return'🔋';
+  if(/panel solar|solar/.test(n))return'☀️';
+  if(/inversor|inverter/.test(n))return'⚡';
+  if(/cargador|charger/.test(n))return'🔌';
+  if(/cable|hdmi|usb-c|usbc/.test(n))return'🔌';
+  if(/cámara|camara|camera|webcam/.test(n))return'📷';
+  if(/celular|teléfono|telefono|móvil|movil|smartphone/.test(n))return'📱';
+  if(/laptop|computadora|pc |notebook/.test(n))return'💻';
+  if(/televisor|tv |smart tv|pantalla|monitor/.test(n))return'📺';
+  if(/reloj|watch|smartwatch/.test(n))return'⌚';
+  if(/impresora|printer/.test(n))return'🖨️';
+  if(/memoria|disco|ssd|pendrive|storage/.test(n))return'💾';
+  if(/ventilador|fan |aire acondicionado/.test(n))return'🌀';
+  if(/teclado|keyboard/.test(n))return'⌨️';
+  if(/mouse|ratón|raton/.test(n))return'🖱️';
+  if(/gaming|game|joystick|control|mando/.test(n))return'🎮';
+  if(/drone|dron/.test(n))return'🚁';
+  if(/lámpara|lampara|led|luz|foco|bombil/.test(n))return'💡';
+  if(/ropa|camisa|pantalon|vestido|blusa/.test(c+' '+n))return'👗';
+  if(/calzado|zapato|tenis|deportivo/.test(c+' '+n))return'👟';
+  if(/belleza|cosmet|perfume|crema/.test(c+' '+n))return'💄';
+  if(/juguete|toy/.test(c+' '+n))return'🧸';
+  if(/deport|sport/.test(c))return'🏃';
+  if(/hogar|casa/.test(c))return'🏠';
+  if(/aliment|comida/.test(c))return'🍽️';
+  if(/electr/.test(c))return'⚡';
+  return'✨';
+}
+function pubCatGancho(cat){
+  const c=String(cat||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
+  if(/energ|solar|inversor|bater|apag/.test(c))return'⚡ NO TE QUEDES A OSCURAS';
+  if(/wifi|router|internet|red/.test(c))return'📡 INTERNET SIN CORTES';
+  if(/audio|sonido|parlante|bocina/.test(c))return'🔊 SUENA COMO QUIERES';
+  if(/celular|telefono|movil|phone/.test(c))return'📱 ESTRENA YA TU EQUIPO';
+  if(/hogar|casa|cocina|electrodom/.test(c))return'🏠 TU CASA, MEJOR';
+  if(/carro|auto|moto|vehic/.test(c))return'🚗 LISTO PARA LA CALLE';
+  if(/belleza|salud|cuidado/.test(c))return'✨ LO QUE TE MERECES';
+  return'🔥 APROVECHA ANTES QUE SE ACABE';
+}
+function pubCatBadge(p){
+  const stock=Number(p.stock||0);
+  if(p.masVendido)return{t:'⭐ EL MÁS VENDIDO',bg:'#C9A96E',fg:'#1a1006'};
+  if(stock>0&&stock<=2)return{t:stock===1?'🔥 QUEDA 1':'🔥 ÚLTIMAS '+stock,bg:'#e74c3c',fg:'#ffffff'};
+  return null;
+}
+function pubCatTag(s){ return String(s||'').normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-zA-Z0-9]/g,''); }
+function pubCatHashtags(cat,prods){
+  const tags=new Set(['TiendaMax','Cuba']);
+  const ct=pubCatTag(cat); if(ct) tags.add(ct);
+  prods.slice(0,18).forEach(p=>{
+    String(p.nombre||'').split(/\s+/).map(w=>pubCatTag(w)).filter(t=>t.length>3).slice(0,2).forEach(t=>tags.add(t.charAt(0).toUpperCase()+t.slice(1).toLowerCase()));
+  });
+  return [...tags].map(t=>'#'+t).join(' ');
+}
+function pubCatText(cat){
+  const prods=pubCatProds(cat); if(!prods.length) return '';
+  const sep='━'.repeat(16);
+  const header=`🏪 TIENDAMAX — ${String(cat).toUpperCase()}\n${pubCatGancho(cat)}\n${sep}\n\n`;
+  const lines=prods.map(p=>{
+    let l=`${pubCatEmoji(p.nombre,cat)} ${p.nombre} — $${Number(p.precioActual||0).toFixed(2)} USD`;
+    const st=Number(p.stock||0);
+    if(p.masVendido)l+=' ⭐'; else if(st>0&&st<=2)l+=st===1?' 🔥 ¡Queda 1!':` 🔥 ¡Últimas ${st}!`;
+    if(Number(p.precioOriginal||0)>Number(p.precioActual||0))l+=` (antes $${Number(p.precioOriginal).toFixed(2)})`;
+    return l;
+  }).join('\n');
+  const cierre=`\n\n⏳ Precios de HOY — mañana suben con la tasa\n✅ Garantía · Pruébalo al recibir · Atención personalizada`;
+  const cta=`\n\n📲 Escribe "QUIERO" por WhatsApp y te lo aparto 24 h\n🔗 tiendamax.org`;
+  return header+lines+cierre+cta+`\n\n${pubCatHashtags(cat,prods)}`;
+}
+function pubCatWrapName(ctx,text,maxW,maxLines){
+  const words=String(text).split(/\s+/).filter(Boolean);
+  const lines=[]; let cur='', truncated=false;
+  for(let i=0;i<words.length;i++){
+    const w=words[i], test=cur?cur+' '+w:w;
+    if(!cur||ctx.measureText(test).width<=maxW){ cur=test; }
+    else{ lines.push(cur); cur=w; if(lines.length===maxLines){ truncated=true; break; } }
+  }
+  if(lines.length<maxLines&&cur) lines.push(cur);
+  for(let j=0;j<lines.length;j++){
+    if(ctx.measureText(lines[j]).width>maxW){
+      let s=lines[j]; while(s.length>1&&ctx.measureText(s+'…').width>maxW) s=s.slice(0,-1);
+      lines[j]=s.replace(/\s+$/,'')+'…'; truncated=true;
+    }
+  }
+  if(truncated){ const L=lines.length-1; if(L>=0&&!/…$/.test(lines[L])){
+    let s=lines[L]; while(s.length>1&&ctx.measureText(s+'…').width>maxW) s=s.slice(0,-1);
+    lines[L]=s.replace(/\s+$/,'')+'…'; } }
+  return lines;
+}
+function pubCatDrawPill(ctx,x,y,text,bg,fg,fs){
+  ctx.font='bold '+fs+'px system-ui,Arial,sans-serif';
+  const tw=ctx.measureText(text).width, px=15, h=fs+16;
+  pubRoundRect(ctx,x,y,tw+px*2,h,h/2); ctx.fillStyle=bg; ctx.fill();
+  ctx.fillStyle=fg; ctx.textAlign='left'; ctx.textBaseline='middle'; ctx.fillText(text,x+px,y+h/2+1); ctx.textBaseline='alphabetic';
+}
+async function pubCatGenImg(cat){
+  const prods=pubCatProds(cat); if(!prods.length) return null;
+  try{ if(_pubCatBag&&!_pubCatBag.complete){ await new Promise(r=>{ _pubCatBag.onload=r; _pubCatBag.onerror=r; setTimeout(r,1500); }); } }catch(e){}
+  const W=1080;
+  const NF='38px system-ui,Arial,sans-serif', PF='bold 42px system-ui,Arial,sans-serif';
+  const contentTop=246, footerBlockH=410, lineH=48, rowPad=30, badgeH=46;
+  const cv=document.createElement('canvas'); cv.width=W; cv.height=10; let ctx=cv.getContext('2d');
+  const maxItems=Math.min(prods.length,12);
+  const rows=[];
+  for(let i=0;i<maxItems;i++){
+    const p=prods[i];
+    const price='$'+Number(p.precioActual||0).toFixed(2);
+    ctx.font=PF; const priceW=ctx.measureText(price).width;
+    ctx.font=NF;
+    const maxNameW=(W-75)-priceW-30-80;
+    const lines=pubCatWrapName(ctx,pubCatEmoji(p.nombre,cat)+' '+String(p.nombre||''),maxNameW,2);
+    const badge=pubCatBadge(p);
+    const orig=Number(p.precioOriginal||0)>Number(p.precioActual||0)?Number(p.precioOriginal):0;
+    rows.push({lines,price,badge,orig,rowH:lines.length*lineH+(badge?badgeH:0)+rowPad});
+  }
+  const moreCount=prods.length-maxItems;
+  const contentH=rows.reduce((s,r)=>s+r.rowH,0)+(moreCount>0?48:0);
+  const H=Math.max(960,Math.round(contentTop+contentH+footerBlockH));
+  cv.height=H; ctx=cv.getContext('2d');
+  const g=ctx.createLinearGradient(0,0,W,H); g.addColorStop(0,'#0a0805'); g.addColorStop(.45,'#1c0e06'); g.addColorStop(1,'#2d1a08');
+  ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
+  try{ if(_pubCatBag&&_pubCatBag.complete&&_pubCatBag.naturalWidth){ const bw=W*0.56,bh=bw; ctx.save(); ctx.globalAlpha=0.12; ctx.drawImage(_pubCatBag,(W-bw)/2,(H-bh)/2,bw,bh); ctx.restore(); } }catch(e){}
+  ctx.strokeStyle='rgba(201,169,110,.6)'; ctx.lineWidth=7; pubRoundRect(ctx,26,26,W-52,H-52,38); ctx.stroke();
+  const gb=ctx.createLinearGradient(60,0,W-60,0); gb.addColorStop(0,'#c9a96e'); gb.addColorStop(.5,'#FF6B35'); gb.addColorStop(1,'#c9a96e');
+  ctx.fillStyle=gb; ctx.fillRect(60,50,W-120,9);
+  ctx.textAlign='center'; ctx.fillStyle='#FF6B35'; ctx.font='bold 54px system-ui,Arial,sans-serif'; ctx.fillText('TIENDAMAX',W/2,124);
+  ctx.fillStyle='#ffffff'; ctx.font='bold 46px system-ui,Arial,sans-serif'; ctx.fillText(pubCatGancho(cat),W/2,186);
+  ctx.fillStyle='#C9A96E'; ctx.font='600 24px system-ui,Arial,sans-serif'; ctx.fillText(String(cat).toUpperCase(),W/2,224);
+  ctx.strokeStyle='rgba(255,107,53,.3)'; ctx.lineWidth=1.5; ctx.beginPath(); ctx.moveTo(80,246); ctx.lineTo(W-80,246); ctx.stroke();
+  let y=contentTop+50;
+  for(let i=0;i<rows.length;i++){
+    const r=rows[i];
+    if(r.orig){ ctx.textAlign='right'; ctx.fillStyle='#8a7f70'; ctx.font='27px system-ui,Arial,sans-serif'; const ot='$'+r.orig.toFixed(0); const ow=ctx.measureText(ot).width; ctx.fillText(ot,W-75,y-32); ctx.strokeStyle='#8a7f70'; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(W-75-ow,y-40); ctx.lineTo(W-75,y-40); ctx.stroke(); }
+    ctx.fillStyle='#FF6B35'; ctx.font=PF; ctx.textAlign='right'; ctx.fillText(r.price,W-75,y+8);
+    ctx.textAlign='left'; ctx.fillStyle='#f0e6d6'; ctx.font=NF;
+    r.lines.forEach((ln,k)=>ctx.fillText(ln,80,y+8+k*lineH));
+    if(r.badge) pubCatDrawPill(ctx,80,y+(r.lines.length-1)*lineH+22,r.badge.t,r.badge.bg,r.badge.fg,24);
+    if(i<rows.length-1){ const sy=y+r.rowH-32; ctx.strokeStyle='rgba(255,255,255,.06)'; ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(80,sy); ctx.lineTo(W-80,sy); ctx.stroke(); }
+    y+=r.rowH;
+  }
+  if(moreCount>0){ ctx.textAlign='left'; ctx.fillStyle='#9b9189'; ctx.font='italic 24px system-ui,Arial,sans-serif'; ctx.fillText(`+ ${moreCount} productos más en la tienda`,80,y+4); }
+  let fy=H-footerBlockH+16;
+  pubRoundRect(ctx,60,fy,W-120,76,16); ctx.fillStyle='rgba(231,76,60,.14)'; ctx.fill(); ctx.strokeStyle='rgba(231,76,60,.5)'; ctx.lineWidth=2; ctx.stroke();
+  ctx.textAlign='center'; ctx.fillStyle='#ff7a6a'; ctx.font='bold 30px system-ui,Arial,sans-serif'; ctx.fillText('⏳ Precios de HOY — mañana suben con la tasa',W/2,fy+48);
+  fy+=96;
+  ctx.fillStyle='#9fd8a8'; ctx.font='600 26px system-ui,Arial,sans-serif'; ctx.fillText('✅ Garantía · Pruébalo al recibir · Atención personalizada',W/2,fy+26);
+  fy+=52;
+  const cg=ctx.createLinearGradient(60,0,W-60,0); cg.addColorStop(0,'#FF6B35'); cg.addColorStop(1,'#C9A96E');
+  pubRoundRect(ctx,60,fy,W-120,150,20); ctx.fillStyle=cg; ctx.fill();
+  ctx.fillStyle='#1a1006'; ctx.font='bold 40px system-ui,Arial,sans-serif'; ctx.fillText('📲 Escribe "QUIERO" por WhatsApp',W/2,fy+62);
+  ctx.fillStyle='#3a2408'; ctx.font='600 28px system-ui,Arial,sans-serif'; ctx.fillText('y te lo aparto 24 h',W/2,fy+106);
+  fy+=168;
+  ctx.fillStyle='#c9a96e'; ctx.font='22px system-ui,Arial,sans-serif'; ctx.fillText('tiendamax.org',W/2,fy+20);
+  ctx.fillStyle=gb; ctx.fillRect(60,H-43,W-120,9);
+  return new Promise(res=>cv.toBlob(res,'image/png',.95));
+}
+let _pubCatSel='', _pubCatPvUrl=null;
+function pubCategoriaHTML(){
+  const cs=pubCatCats();
+  if(cs.length && !cs.includes(_pubCatSel)) _pubCatSel=cs[0];
+  return `<div class="section">
+    <h3>🏷️ Compartir categoría <span class="badge">${cs.length}</span></h3>
+    <p style="font-size:12px;color:var(--muted);margin:-4px 0 12px">Genera texto + una imagen con todos los productos de la categoría, lista para WhatsApp, Facebook, Instagram o Revólico.</p>
+    ${cs.length ? `<select class="form-select" id="pub-cat-sel" style="width:100%;margin-bottom:14px" onchange="pubCatOnSelect(this.value)">${cs.map(c=>`<option value="${esc(c)}" ${c===_pubCatSel?'selected':''}>${esc(c)} (${pubCatProds(c).length})</option>`).join('')}</select>` : '<div class="empty" style="padding:20px"><div class="ico">🏷️</div>No hay categorías con productos en stock.</div>'}
+    <div id="pub-cat-preview"></div>
+  </div>`;
+}
+function pubCategoriaInit(){ if(pubCatCats().length) pubCatUpdatePreview(); }
+function pubCatOnSelect(v){ _pubCatSel=v; pubCatUpdatePreview(); }
+async function pubCatUpdatePreview(){
+  const box=$('#pub-cat-preview'); if(!box||!_pubCatSel) return;
+  const prods=pubCatProds(_pubCatSel);
+  const precios=prods.map(p=>Number(p.precioActual||0)).filter(n=>n>0);
+  const min=precios.length?Math.min(...precios):0;
+  box.innerHTML=`<div style="text-align:center;color:var(--muted);font-size:12px;padding:20px">⏳ Generando vista previa…</div>`;
+  let imgHtml='';
+  try{
+    const blob=await pubCatGenImg(_pubCatSel);
+    if(blob){ const url=URL.createObjectURL(blob); if(_pubCatPvUrl) URL.revokeObjectURL(_pubCatPvUrl); _pubCatPvUrl=url;
+      imgHtml=`<div style="border-radius:14px;overflow:hidden;border:1px solid var(--border);margin-bottom:14px"><img src="${url}" style="display:block;width:100%;height:auto" alt="Vista previa"></div>`;
+    }
+  }catch(e){}
+  box.innerHTML = `${imgHtml}
+    <div style="font-size:12px;color:var(--muted);margin-bottom:14px">${prods.length} producto${prods.length!==1?'s':''}${min?' · desde $'+min.toFixed(2):''}</div>
+    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px">
+      <button type="button" class="pub-act wa" onclick="pubCatAct('wa')">💬 WhatsApp</button>
+      <button type="button" class="pub-act fb" onclick="pubCatAct('fb')">📘 Facebook</button>
+      <button type="button" class="pub-act ghost" onclick="pubCatAct('ig')">📸 Instagram</button>
+      <button type="button" class="pub-act ghost" onclick="pubCatAct('rev')">🟠 Revólico</button>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:8px">
+      <button type="button" class="pub-act ghost" onclick="pubCatAct('copy')">🔗 Copiar texto</button>
+      <button type="button" class="pub-act ghost" onclick="pubCatAct('img')">🖼️ Descargar imagen</button>
+    </div>`;
+}
+async function pubCatAct(act){
+  const cat=_pubCatSel; if(!cat) return;
+  const text=pubCatText(cat);
+  if(act==='copy'){ try{ await navigator.clipboard.writeText(text); showToast('📋 Texto copiado'); }catch(e){ showToast('No se pudo copiar'); } return; }
+  if(act==='wa'){ window.open('https://wa.me/?text='+encodeURIComponent(text),'_blank','noopener,noreferrer'); return; }
+  if(act==='fb'){ try{ await navigator.clipboard.writeText(text); }catch(e){} window.open('https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent('https://tiendamax.org'),'_blank','noopener,noreferrer'); showToast('Texto copiado — pégalo en el post de Facebook'); return; }
+  if(act==='rev'){ try{ await navigator.clipboard.writeText(text); }catch(e){} window.open('https://www.revolico.com/','_blank','noopener,noreferrer'); showToast('Texto copiado — pégalo al crear tu anuncio en Revólico'); return; }
+  if(act==='ig'){
+    try{ await navigator.clipboard.writeText(text); }catch(e){}
+    const blob=await pubCatGenImg(cat); if(!blob){ showToast('Sin productos con stock'); return; }
+    const file=new File([blob],'tiendamax-'+pubCatTag(cat)+'.png',{type:'image/png'});
+    if(navigator.canShare&&navigator.canShare({files:[file]})&&navigator.share){
+      try{ await navigator.share({files:[file],title:'TiendaMax — '+cat}); showToast('Texto copiado — pégalo como pie de foto en Instagram'); return; }catch(e){ if(/abort/i.test(e.message||'')) return; }
+    }
+    const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=file.name; a.click();
+    setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+    showToast('📸 Imagen descargada y texto copiado — súbelos a Instagram');
+    return;
+  }
+  if(act==='img'){
+    const blob=await pubCatGenImg(cat); if(!blob){ showToast('Sin productos con stock'); return; }
+    const file=new File([blob],'tiendamax-'+pubCatTag(cat)+'.png',{type:'image/png'});
+    if(navigator.canShare&&navigator.canShare({files:[file]})&&navigator.share){
+      try{ await navigator.share({files:[file],title:'TiendaMax — '+cat,text}); showToast('¡Listo para compartir!'); return; }catch(e){ if(/abort/i.test(e.message||'')) return; }
+    }
+    const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=file.name; a.click();
+    setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+    try{ await navigator.clipboard.writeText(text); }catch(e){}
+    showToast('Imagen descargada · Texto copiado');
+  }
+}
+
 function pubLoadImg(src){ return new Promise(res=>{ const im=new Image(); im.crossOrigin='anonymous'; im.onload=()=>res(im); im.onerror=()=>res(null); im.src=src; }); }
 function pubRoundRect(ctx,x,y,w,h,r){ ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath(); }
 function pubWrapText(ctx,text,x,y,maxWidth,lineHeight,maxLines){
