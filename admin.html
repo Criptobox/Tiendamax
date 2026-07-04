@@ -1262,9 +1262,11 @@ async function renderReviewsReal(box){
   });
   if(!all.length){ box.innerHTML = `<div class="section"><div class="empty"><div class="ico">⭐</div>Sin reseñas todavía.<br><small>Aparecen aquí en cuanto un cliente califique un producto en la tienda.</small></div></div>`; return; }
   all.sort((a,b)=>(b.ts||b.fecha||0)-(a.ts||a.fecha||0));
-  const avg = all.reduce((s,r)=>s+(Number(r.estrellas||r.rating||0)||0),0)/all.length;
-  const roundAvg = Math.round(avg);
-  const dist=[0,0,0,0,0]; all.forEach(r=>{ const s=Number(r.estrellas||r.rating||0)||0; if(s>=1&&s<=5) dist[s-1]++; });
+  // Clamp 0-5: datos vienen de Firebase (cliente); un valor fuera de rango rompería '★'.repeat()
+  const clampStars = v => Math.max(0, Math.min(5, Math.round(Number(v)||0)));
+  const avg = all.reduce((s,r)=>s+clampStars(r.estrellas||r.rating),0)/all.length;
+  const roundAvg = clampStars(avg);
+  const dist=[0,0,0,0,0]; all.forEach(r=>{ const s=clampStars(r.estrellas||r.rating); if(s>=1&&s<=5) dist[s-1]++; });
   let html = `<div class="section rev-hero">
     <div class="big">${avg.toFixed(1)}</div>
     <div class="stars">${'★'.repeat(roundAvg)}${'☆'.repeat(5-roundAvg)}</div>
@@ -1273,9 +1275,9 @@ async function renderReviewsReal(box){
   for(let i=5;i>=1;i--){ const pct = Math.round(dist[i-1]/all.length*100); html += `<div class="rev-bar-row"><span class="rev-bar-label">${i}★</span><div class="rev-bar-track"><div class="rev-bar-fill" style="width:${pct}%"></div></div><span class="rev-bar-pct">${pct}%</span></div>`; }
   html += `</div></div>`;
   html += all.slice(0,30).map(r=>{
-    const rating = Number(r.estrellas||r.rating||0)||0;
+    const rating = clampStars(r.estrellas||r.rating);
     const stars = '★'.repeat(rating)+'☆'.repeat(5-rating);
-    const nombre = r.nombre||r.name||'Anónimo';
+    const nombre = r.autor||r.nombre||r.name||'Anónimo';
     const avatar = nombre.split(' ').map(w=>w[0]||'').join('').slice(0,2).toUpperCase()||'?';
     const fecha = r.ts?new Date(r.ts).toLocaleDateString('es-CU',{day:'2-digit',month:'short'}):'';
     const texto = r.texto||r.text||r.comentario||'';
@@ -1515,7 +1517,7 @@ async function pubCatGenImg(cat){
   ctx.fillStyle=gb; ctx.fillRect(60,H-43,W-120,9);
   return new Promise(res=>cv.toBlob(res,'image/png',.95));
 }
-let _pubCatSel='', _pubCatPvUrl=null;
+let _pubCatSel='', _pubCatPvUrl=null, _pubCatPvTimer=null, _pubCatPvSeq=0;
 function pubCategoriaHTML(){
   const cs=pubCatCats();
   if(cs.length && !cs.includes(_pubCatSel)) _pubCatSel=cs[0];
@@ -1527,9 +1529,11 @@ function pubCategoriaHTML(){
   </div>`;
 }
 function pubCategoriaInit(){ if(pubCatCats().length) pubCatUpdatePreview(); }
-function pubCatOnSelect(v){ _pubCatSel=v; pubCatUpdatePreview(); }
+// Debounce: generar el canvas 1080px es costoso; al cambiar rápido de categoría solo dibuja la última
+function pubCatOnSelect(v){ _pubCatSel=v; clearTimeout(_pubCatPvTimer); _pubCatPvTimer=setTimeout(pubCatUpdatePreview,250); }
 async function pubCatUpdatePreview(){
   const box=$('#pub-cat-preview'); if(!box||!_pubCatSel) return;
+  const seq=++_pubCatPvSeq;
   const prods=pubCatProds(_pubCatSel);
   const precios=prods.map(p=>Number(p.precioActual||0)).filter(n=>n>0);
   const min=precios.length?Math.min(...precios):0;
@@ -1537,10 +1541,12 @@ async function pubCatUpdatePreview(){
   let imgHtml='';
   try{
     const blob=await pubCatGenImg(_pubCatSel);
+    if(seq!==_pubCatPvSeq) return; // llegó una selección más nueva mientras dibujaba
     if(blob){ const url=URL.createObjectURL(blob); if(_pubCatPvUrl) URL.revokeObjectURL(_pubCatPvUrl); _pubCatPvUrl=url;
       imgHtml=`<div style="border-radius:14px;overflow:hidden;border:1px solid var(--border);margin-bottom:14px"><img src="${url}" style="display:block;width:100%;height:auto" alt="Vista previa"></div>`;
     }
-  }catch(e){}
+  }catch(e){ console.warn('[pubCat] preview:',e); }
+  if(seq!==_pubCatPvSeq) return;
   box.innerHTML = `${imgHtml}
     <div style="font-size:12px;color:var(--muted);margin-bottom:14px">${prods.length} producto${prods.length!==1?'s':''}${min?' · desde $'+min.toFixed(2):''}</div>
     <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px">
@@ -1683,6 +1689,7 @@ async function pubBannersPublicar(){
 }
 window.pubSwitch=pubSwitch; window.pubRenderShareList=pubRenderShareList; window.pubShareAct=pubShareAct;
 window.pubBannerLink=pubBannerLink; window.pubBannerRemove=pubBannerRemove; window.pubBannerFile=pubBannerFile; window.pubBannersPublicar=pubBannersPublicar;
+window.pubCatOnSelect=pubCatOnSelect; window.pubCatAct=pubCatAct;
 
 /* ============ Init ============ */
 cargarDatos();

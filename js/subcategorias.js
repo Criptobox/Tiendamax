@@ -248,7 +248,7 @@ async function sincronizarSubcategoriasConGitHub() {
         mostrarNotificacion('⏳ Guardando subcategorías en GitHub...', 'info');
         await subirArchivoAGitHub(user, repo, token, 'subcategorias.json', subcategorias);
         mostrarNotificacion('✅ Subcategorías guardadas en GitHub');
-        console.log('✅ Subcategorías sincronizadas con GitHub automáticamente');
+
     } catch (e) {
         mostrarNotificacion('❌ Error al guardar subcategorías: ' + e.message, 'error');
         console.warn('⚠️ Error al sincronizar subcategorías:', e.message);
@@ -267,11 +267,11 @@ async function _subcatModuloCargarDesdeGitHub() {
             if (data) {
                 subcategorias = data;
                 localStorage.setItem('subcategorias', JSON.stringify(subcategorias));
-                console.log('✅ Subcategorías cargadas desde GitHub (módulo)');
+
             }
         }
     } catch (e) {
-        console.log('ℹ️ Subcategorías no disponibles en GitHub');
+
     }
 }
 // Solo registrar como cargarSubcategoriasDesdeGitHub si script.js no la definió
