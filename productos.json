@@ -2048,5 +2048,30 @@
       "110V"
     ],
     "fechaAgregado": "2026-06-30T03:49:05.629Z"
+  },
+  {
+    "id": 1783179634140,
+    "nombre": "​⚡ Inversor de Corriente Onda Senoidal Pura UNIZUKI 3000W",
+    "descripcion": "​📌 Características Principales:\n​Potencia Máxima: 3000W (Potencia pico).\n​Tecnología de Onda: Senoidal pura (Pure sine wave), óptima para proteger dispositivos sensibles, refrigeradores, computadoras y evitar ruidos molestos en los motores.\n​Marca: UNIZUKI.\n​Compatibilidad de Entrada:  12V",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783179632067.jpg",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783179632067.jpg"
+    ],
+    "precioActual": 130,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 1,
+    "comision": 130,
+    "comisionMoneda": "USD",
+    "categoria": "ENERGIA",
+    "subcategoria": "INVERSORES",
+    "masVendido": false,
+    "usado": true,
+    "garantia": "",
+    "devolucion": false,
+    "specs": [
+      "12V / 3000W"
+    ],
+    "fechaAgregado": "2026-07-04T15:40:34.140Z"
   }
 ]
