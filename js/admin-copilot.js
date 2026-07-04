@@ -342,8 +342,191 @@ function updateBubble(){
   if (crit) { b.classList.remove('tm-copilot-pulse'); void b.offsetWidth; b.classList.add('tm-copilot-pulse'); }
 }
 function tabsHtml(view){
-  const tabs=[['hoy','✅ Hoy'],['agentes','🤖 Agentes'],['marketing','📣 Marketing'],['memoria','🧠 Memoria']];
+  const tabs=[['hoy','✅ Hoy'],['correcciones','🩺 Correcciones'],['agentes','🤖 Agentes'],['marketing','📣 Marketing'],['memoria','🧠 Memoria']];
   return `<div class="tm-copilot-tabs">${tabs.map(t=>`<button type="button" class="tm-copilot-tab ${view===t[0]?'active':''}" data-cop="view" data-view="${t[0]}">${t[1]}</button>`).join('')}</div>`;
+}
+
+/* ══════════ AGENTE IA · CORRECCIONES (antes vista propia del admin) ══════════
+   Detecta problemas del catálogo y los ARREGLA EN UN TOQUE: aplica el cambio,
+   guarda y sincroniza con GitHub automáticamente (sin pasar por "Actualizar
+   tienda"). Niveles: 🚨 urgente · ⚠️ advertencia · 💡 info.                    */
+
+// Typos frecuentes del catálogo (se comparan por palabra, sin acentos, en MAYÚSCULA)
+const IA_TYPOS = {
+  'BLUTOOTH':'Bluetooth','BLUETOTH':'Bluetooth','BLUETOOH':'Bluetooth',
+  'INVETOR':'Inversor','INVERSOR':'Inversor','INVERTER':'Inverter',
+  'SEQURIDAD':'Seguridad','SEGURIDAD':'Seguridad',
+  'BATERIA':'Batería','BATERIAS':'Baterías','CAMARA':'Cámara','CAMARAS':'Cámaras',
+  'HIBRIDO':'Híbrido','HIBRIDA':'Híbrida','ESTACION':'Estación','PORTATIL':'Portátil',
+  'ELECTRICO':'Eléctrico','ELECTRICA':'Eléctrica','AUDIFONOS':'Audífonos',
+  'INALAMBRICO':'Inalámbrico','INALAMBRICA':'Inalámbrica','ALERON':'Alerón',
+  'ENRUTADOR':'Enrutador','REPETIDOR':'Repetidor'
+};
+// Siglas/modelos que se conservan tal cual (no title-case)
+const IA_SIGLAS = new Set(['WIFI','USB','HDMI','LED','RGB','TV','PC','TIG','MPPT','POE','AC','DC','CCTV','GPS','LCD','USD','MN','KIT','PRO','MAX','MINI','PLUS','ULTRA','LITE','XL','II','III','4K','2K','HD','FHD','UHD','5G','4G','3G','2T','4T','SHPD','RX','AX']);
+const IA_SIGLA_FORMA = { 'WIFI':'WiFi' };
+
+function iaNormalizarNombre(raw){
+  const nombre = String(raw||'').trim().replace(/\s+/g,' ');
+  if(!nombre) return nombre;
+  const sinAcentos = s => s.normalize('NFD').replace(/[̀-ͯ]/g,'');
+  const tokens = nombre.split(' ').map(tok=>{
+    const m = tok.match(/^([("¡¿]*)(.*?)([)".,:;!?]*)$/) || [,'',tok,''];
+    const pre=m[1]||'', core=m[2]||'', post=m[3]||'';
+    if(!core) return tok;
+    const KEY = sinAcentos(core).toUpperCase();
+    if(IA_TYPOS[KEY]) return pre+IA_TYPOS[KEY]+post;
+    if(IA_SIGLAS.has(KEY)) return pre+(IA_SIGLA_FORMA[KEY]||KEY)+post;
+    if(/\d/.test(core)) return pre+core.toUpperCase()+post;       // modelos: M100, R14, 5W30, 84V
+    if(core.length<=2) return pre+core.toLowerCase()+post;        // de, la, y…
+    return pre+core.charAt(0).toUpperCase()+core.slice(1).toLowerCase()+post;
+  });
+  if(tokens[0] && /^[a-záéíóúñ]/.test(tokens[0])) tokens[0]=tokens[0].charAt(0).toUpperCase()+tokens[0].slice(1);
+  return tokens.join(' ');
+}
+
+function iaGenerarDescripcion(p){
+  const n=(p.nombre||'Producto').trim(), c=(p.categoria||'').toLowerCase();
+  const low=(n+' '+c).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
+  let uso='Ideal para el uso diario en casa o el negocio';
+  if(/inversor|bateria|solar|mppt|estacion|carga|apag|transferencia/.test(low)) uso='Ideal para mantener tu casa o negocio con corriente durante los apagones';
+  else if(/router|wifi|repetidor|switch|enrutador|red/.test(low)) uso='Ideal para tener internet estable y con buena cobertura en toda la casa';
+  else if(/audifono|parlante|altavoz|bocina|sound|audio/.test(low)) uso='Ideal para disfrutar tu música con buen sonido donde quieras';
+  else if(/camara|seguridad|alarma|cerradura|zosi|v380/.test(low)) uso='Ideal para vigilar y proteger tu casa o negocio desde el celular';
+  else if(/mannol|aceite|antifreeze|llanta|espejo|moto|carro|auto/.test(low)) uso='Ideal para el mantenimiento y cuidado de tu vehículo';
+  else if(/tv|lavadora|split|nevera|exhibidor|batidora|ventilador|calentador/.test(low)) uso='Ideal para equipar tu hogar o negocio con un equipo confiable';
+  const specs=(Array.isArray(p.specs)?p.specs:[]).filter(s=>s&&String(s).trim()).slice(0,3).join(' · ');
+  const gar=p.garantia?('Incluye garantía de '+p.garantia+'.'):'Lo pruebas al recibirlo: pagas cuando compruebes que funciona.';
+  let d=`${n} nuevo y disponible en TiendaMax con entrega en Cuba. ${uso}.${specs?' '+specs+'.':''} ${gar} Atención personalizada por WhatsApp: escríbenos y te lo apartamos 24 horas mientras coordinas la entrega.`;
+  if(d.length<200) d+=' Precios claros en USD con opción de pago en moneda nacional según la tasa del día.';
+  return d;
+}
+
+const IA_CATS_KW = [
+  [/inversor|bateria|solar|mppt|cargador|estacion de carga|transferencia|controlador/, 'ENERGIA'],
+  [/router|wifi|repetidor|switch|enrutador|poe|antena/, 'WIFI'],
+  [/camara|alarma|cerradura|seguridad|cctv|zosi|v380/, 'SEGURIDAD'],
+  [/mannol|aceite|antifreeze|llanta|espejo retrovisor|forro.*asiento/, 'CARROS'],
+  [/moto\b|motorbike|capa para moto/, 'MOTOS'],
+  [/audifono|parlante|altavoz|bocina|sound/, 'AUDIO'],
+  [/tv\b|lavadora|split|nevera|exhibidor|batidora|ventilador de techo|calentador/, 'HOGAR'],
+];
+function iaCategoriaSugerida(p){
+  const low=String(p.nombre||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
+  for(const [re,cat] of IA_CATS_KW){ if(re.test(low)) return cat; }
+  return null;
+}
+
+function iaDismissed(){ try{ return new Set(JSON.parse(localStorage.getItem('tm_ia_descartes')||'[]')); }catch(e){ return new Set(); } }
+function iaDismiss(key){ const s=iaDismissed(); s.add(key); try{ localStorage.setItem('tm_ia_descartes', JSON.stringify([...s].slice(-300))); }catch(e){} }
+
+function iaScan(){
+  const ps = Array.isArray(window.productos)?window.productos:[];
+  const skip = iaDismissed();
+  const issues=[];
+  const push=(o)=>{ o.key=o.type+':'+o.pid; if(!skip.has(o.key)) issues.push(o); };
+  ps.forEach(p=>{
+    const pid=String(p.id), nombre=p.nombre||'(sin nombre)';
+    // 🚨 sin descripción SEO
+    const d=String(p.descripcion||'').trim();
+    if(d.length<40) push({level:'urgente',ico:'🚨',type:'desc',pid,nombre,detalle:d?('solo '+d.length+' caracteres'):'sin descripción',fix:{campo:'descripcion',valor:iaGenerarDescripcion(p)},fixLabel:'Generar descripción'});
+    // 🚨 nombre mal formateado (typos / ALL CAPS / mixto raro)
+    const nNorm=iaNormalizarNombre(nombre);
+    if(nNorm && nNorm!==nombre) push({level:'urgente',ico:'🔤',type:'nombre',pid,nombre,detalle:'→ '+nNorm,fix:{campo:'nombre',valor:nNorm},fixLabel:'Corregir nombre'});
+    // ⚠️ stock NaN / negativo
+    const st=p.stock;
+    if(st===undefined||st===null||isNaN(Number(st))||Number(st)<0) push({level:'adv',ico:'⚠️',type:'stock',pid,nombre,detalle:'stock inválido: '+JSON.stringify(st),fix:{campo:'stock',valor:0},fixLabel:'Poner stock 0'});
+    // ⚠️ categoría sospechosa
+    const sug=iaCategoriaSugerida(p);
+    if(sug && p.categoria && sug!==String(p.categoria).toUpperCase()) push({level:'adv',ico:'🏷️',type:'cat',pid,nombre,detalle:(p.categoria||'—')+' → sugerida: '+sug,fix:{campo:'categoria',valor:sug},fixLabel:'Cambiar a '+sug});
+    // 💡 precio fuera de rango
+    const pr=Number(p.precioActual);
+    if(!(pr>0)||pr>10000) push({level:'info',ico:'💲',type:'precio',pid,nombre,detalle:'precio: '+String(p.precioActual),fix:null});
+    // 💡 sin imagen
+    if(!p.imagen) push({level:'info',ico:'🖼️',type:'img',pid,nombre,detalle:'sin foto principal',fix:null});
+  });
+  return issues;
+}
+
+let iaSyncTimer=null;
+function iaPersistir(msjToast){
+  try{ if(typeof window.guardarProductos==='function') window.guardarProductos(); else localStorage.setItem('productos', JSON.stringify(window.productos)); }catch(e){}
+  // sync automático a GitHub (debounced 2 s por si se aplican varias seguidas)
+  clearTimeout(iaSyncTimer);
+  iaSyncTimer=setTimeout(()=>{
+    if(typeof window.sincronizarConGitHub==='function'){ try{ window.sincronizarConGitHub(); }catch(e){} }
+    else if(typeof window.sincronizarTodoConGitHub==='function'){ try{ window.sincronizarTodoConGitHub(); }catch(e){} }
+  }, 2000);
+  if(msjToast) toast(msjToast+' — guardado y sincronizando ✓');
+  try{ if(typeof window.renderProductos==='function') window.renderProductos(); }catch(e){}
+}
+function iaAplicar(issue){
+  const p=(window.productos||[]).find(x=>String(x.id)===issue.pid);
+  if(!p||!issue.fix) return false;
+  p[issue.fix.campo]=issue.fix.valor;
+  try{ if(typeof window.marcarProductoModificado==='function') window.marcarProductoModificado(p.id); }catch(e){}
+  return true;
+}
+function iaAplicarUrgentes(){
+  const list=iaScan().filter(i=>i.level==='urgente'&&i.fix);
+  let n=0; list.forEach(i=>{ if(iaAplicar(i)) n++; });
+  if(n) iaPersistir('✅ '+n+' urgentes aplicadas'); else toast('Sin urgentes con arreglo automático');
+  state.view='correcciones'; renderSheet();
+}
+function iaNormalizarBulk(){
+  let n=0;
+  (window.productos||[]).forEach(p=>{ const v=iaNormalizarNombre(p.nombre||''); if(v&&v!==p.nombre){ p.nombre=v; try{ if(typeof window.marcarProductoModificado==='function') window.marcarProductoModificado(p.id); }catch(e){} n++; } });
+  if(n) iaPersistir('🔤 '+n+' nombres normalizados'); else toast('Todos los nombres ya están bien');
+  renderSheet();
+}
+async function iaSyncFirebase(){
+  try{
+    const cfg=JSON.parse(localStorage.getItem('firebaseConfig')||'{}');
+    const base=cfg.databaseURL||(cfg.projectId?('https://'+cfg.projectId+'-default-rtdb.firebaseio.com'):null);
+    if(!base){ toast('Configura Firebase primero (⚙️)'); return; }
+    const issues=iaScan();
+    const estado={ ts:Date.now(), fecha:new Date().toISOString(), productos:(window.productos||[]).length,
+      urgentes:issues.filter(i=>i.level==='urgente').length, advertencias:issues.filter(i=>i.level==='adv').length,
+      info:issues.filter(i=>i.level==='info').length,
+      detalle:issues.slice(0,80).map(i=>({t:i.type,pid:i.pid,n:i.nombre.slice(0,60),d:String(i.detalle).slice(0,90)})) };
+    const r=await fetch(base+'/correcciones_ia/estado.json',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(estado)});
+    toast(r.ok?'🔥 Estado subido a Firebase (/correcciones_ia/estado)':'❌ Firebase respondió '+r.status);
+  }catch(e){ toast('❌ Error al subir a Firebase: '+e.message); }
+}
+function iaExportCSV(){
+  const issues=iaScan();
+  const rows=[['nivel','tipo','producto','detalle','arreglo_automatico'],
+    ...issues.map(i=>[i.level,i.type,i.nombre,String(i.detalle),i.fix?('sí → '+i.fix.campo):'no'])];
+  const csv=rows.map(r=>r.map(c=>'"'+String(c).replace(/"/g,'""')+'"').join(',')).join('\n');
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob(['﻿'+csv],{type:'text/csv;charset=utf-8'}));
+  a.download='correcciones-tiendamax-'+new Date().toISOString().slice(0,10)+'.csv';
+  a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),800);
+  toast('📥 CSV descargado ('+issues.length+' hallazgos)');
+}
+function renderCorreccionesIA(){
+  const issues=iaScan();
+  const g={urgente:issues.filter(i=>i.level==='urgente'),adv:issues.filter(i=>i.level==='adv'),info:issues.filter(i=>i.level==='info')};
+  const fila=i=>`<div class="tm-copilot-task u${i.level==='urgente'?4:i.level==='adv'?2:1}" data-key="${esc(i.key)}">
+    <div class="tm-copilot-task-top"><div class="tm-copilot-ico">${i.ico}</div><div class="tm-copilot-task-main"><b>${esc(i.nombre)}</b><small>${esc(String(i.detalle))}</small></div></div>
+    <div class="tm-copilot-task-actions">${i.fix?`<button type="button" class="tm-copilot-btn primary" data-cop="iaApply" data-key="${esc(i.key)}">✅ ${esc(i.fixLabel||'Aplicar')}</button>`:''}<button type="button" class="tm-copilot-btn" data-cop="iaDismiss" data-key="${esc(i.key)}">Descartar</button></div>
+  </div>`;
+  const bloque=(t,arr)=>arr.length?`<div class="tm-copilot-smart"><h4>${t} (${arr.length})</h4></div>${arr.slice(0,25).map(fila).join('')}${arr.length>25?`<div class="tm-copilot-empty">…y ${arr.length-25} más (usa el CSV para verlos todos)</div>`:''}`:'';
+  return `<div class="tm-copilot-summary" style="grid-template-columns:repeat(3,1fr)">
+      <div class="tm-copilot-stat"><small>🚨 Urgentes</small><b>${g.urgente.length}</b></div>
+      <div class="tm-copilot-stat"><small>⚠️ Advertencias</small><b>${g.adv.length}</b></div>
+      <div class="tm-copilot-stat"><small>💡 Info</small><b>${g.info.length}</b></div>
+    </div>
+    <div class="tm-copilot-actions">
+      <button type="button" class="tm-copilot-btn blue" data-cop="iaRescan">🔍 Re-analizar</button>
+      <button type="button" class="tm-copilot-btn primary" data-cop="iaUrgentes">✅ Aplicar urgentes</button>
+      <button type="button" class="tm-copilot-btn gold" data-cop="iaBulkNombres">🔤 Normalizar nombres</button>
+      <button type="button" class="tm-copilot-btn danger" data-cop="iaFirebase">🔥 Sync Firebase</button>
+      <button type="button" class="tm-copilot-btn green" data-cop="iaCSV">📥 Exportar CSV</button>
+    </div>
+    ${issues.length? bloque('🚨 Urgentes',g.urgente)+bloque('⚠️ Advertencias',g.adv)+bloque('💡 Info',g.info)
+      : '<div class="tm-copilot-empty">✅ Catálogo impecable: sin problemas detectados.</div>'}
+    <div class="tm-copilot-empty" style="padding:8px 4px;font-size:10px">Al aplicar, el cambio se guarda y se sincroniza con la tienda automáticamente.</div>`;
 }
 function renderToday(topTasks){
   return `<div class="tm-copilot-smart"><h4>🧠 Estrategia de hoy</h4><ul>${dailyStrategy().map(x=>`<li>${esc(x)}</li>`).join('')}</ul><div class="tm-copilot-task-actions"><button type="button" class="tm-copilot-btn gold" data-cop="saveStrategy">Guardar campaña</button><button type="button" class="tm-copilot-btn blue" data-cop="view" data-view="marketing">Ver marketing</button></div></div>
@@ -775,6 +958,7 @@ window.pubMountPromo = function() {
 // ── FIN PROMO ──────────────────────────────────────────────────────
 
 function renderCopilotView(view, topTasks){
+  if(view==='correcciones') return renderCorreccionesIA();
   if(view==='agentes') return renderAgents();
   if(view==='marketing') return renderMarketing();
   if(view==='memoria') return renderMemory();
@@ -906,6 +1090,13 @@ function bindEvents(){
     if(act==='task') switchTo(el.dataset.tab || 'inicio');
     if(act==='dismiss') { const set=dismissedSet(); set.add(el.dataset.id); saveDismissed(set); state.tasks = state.tasks.filter(t=>t.id!==el.dataset.id); updateBubble(); renderSheet(); }
     if(act==='pushHot') queuePushForProduct(el.dataset.pid);
+    if(act==='iaRescan'){ state.view='correcciones'; renderSheet(); toast('🔍 Catálogo re-analizado'); }
+    if(act==='iaUrgentes') iaAplicarUrgentes();
+    if(act==='iaBulkNombres') iaNormalizarBulk();
+    if(act==='iaFirebase') iaSyncFirebase();
+    if(act==='iaCSV') iaExportCSV();
+    if(act==='iaApply'){ const iss=iaScan().find(x=>x.key===el.dataset.key); if(iss&&iaAplicar(iss)){ iaPersistir('✅ '+iss.fixLabel); } state.view='correcciones'; renderSheet(); }
+    if(act==='iaDismiss'){ iaDismiss(el.dataset.key); state.view='correcciones'; renderSheet(); }
     if(act==='promoPickImg') { const inp = document.getElementById('tmPromoImgInput'); if(inp) inp.click(); }
     if(act==='promoTema') { promoData.tema = el.dataset.tema; state.view = 'promo'; renderSheet(); }
     if(act==='promoDownload') {

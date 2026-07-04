@@ -21,7 +21,12 @@
         items.map(function (it) { return (it.cantidad > 1 ? it.cantidad + 'x ' : '') + it.nombre; }).join(' + ') +
         '. Precio combo: ' + money(precio) + '. ¿Está disponible?';
       var wa = 'https://wa.me/' + WA + '?text=' + encodeURIComponent(msg);
+      // Foto propia del combo (elegida en el admin); si no hay, queda el diseño de texto
+      var foto = (typeof c.imagen === 'string' && /^(data:image\/|https?:\/\/|\/)/.test(c.imagen))
+        ? '<img class="cimg" src="' + esc(c.imagen) + '" alt="" loading="lazy" style="width:100%;height:150px;object-fit:cover;border-radius:12px;margin-bottom:10px" onerror="this.remove()">'
+        : '';
       return '<div class="combo-card">' +
+        foto +
         '<div class="cnm">🎁 ' + esc(c.nombre || 'Combo') + '</div>' +
         '<div class="citems">' + itemsTxt + '</div>' +
         '<div class="cprice-row"><span class="cprice">' + money(precio) + '</span>' +
