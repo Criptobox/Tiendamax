@@ -1,6 +1,6 @@
 {
-  "actualizado": "2026-07-03T12:56:25.665468+00:00",
-  "fecha": "2026-07-03",
+  "actualizado": "2026-07-04T12:07:08.863510+00:00",
+  "fecha": "2026-07-04",
   "fuentes": [
     "revolico",
     "porlalivre",
@@ -50,6 +50,10 @@
         },
         {
           "fecha": "2026-07-03",
+          "mediana": 300.0
+        },
+        {
+          "fecha": "2026-07-04",
           "mediana": 300.0
         }
       ],
@@ -136,6 +140,10 @@
         {
           "fecha": "2026-07-03",
           "mediana": 170.0
+        },
+        {
+          "fecha": "2026-07-04",
+          "mediana": 170.0
         }
       ],
       "muestras": [
@@ -192,7 +200,7 @@
         "mediana": 50.0,
         "n": 11
       },
-      "deltaAyerMediana": 12.5,
+      "deltaAyerMediana": 0.0,
       "estado": "competitivo",
       "sugerencia": {
         "texto": "Precio competitivo respecto al mercado"
@@ -220,6 +228,10 @@
         },
         {
           "fecha": "2026-07-03",
+          "mediana": 50.0
+        },
+        {
+          "fecha": "2026-07-04",
           "mediana": 50.0
         }
       ],
@@ -306,6 +318,10 @@
         {
           "fecha": "2026-07-03",
           "mediana": 25.0
+        },
+        {
+          "fecha": "2026-07-04",
+          "mediana": 25.0
         }
       ],
       "muestras": [
@@ -390,6 +406,10 @@
         },
         {
           "fecha": "2026-07-03",
+          "mediana": 90.0
+        },
+        {
+          "fecha": "2026-07-04",
           "mediana": 90.0
         }
       ],
