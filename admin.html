@@ -185,19 +185,6 @@
   .ai-banner .t { font-size:12px; font-weight:800; color:#c4b5fd; margin-bottom:3px; }
   .ai-banner .m { font-size:11px; color:#b4a5d4; line-height:1.5; }
   .ai-banner .m b { color:#fff; }
-  .correccion-card { background:rgba(231,76,60,0.04); border:1px solid rgba(231,76,60,0.3); border-radius:12px; padding:14px; margin-bottom:10px; }
-  .correccion-card.warn { background:rgba(241,196,15,0.04); border-color:rgba(241,196,15,0.3); }
-  .correccion-card.info { background:rgba(52,152,219,0.04); border-color:rgba(52,152,219,0.3); }
-  .correccion-head { display:flex; align-items:center; gap:10px; margin-bottom:10px; }
-  .correccion-icon { font-size:22px; }
-  .correccion-titulo { font-size:14px; font-weight:800; color:#fff; flex:1; }
-  .correccion-severidad { font-size:10px; font-weight:800; padding:2px 8px; border-radius:8px; text-transform:uppercase; }
-  .correccion-severidad.urgente { background:rgba(231,76,60,0.2); color:var(--red); }
-  .correccion-severidad.advertencia { background:rgba(241,196,15,0.2); color:var(--yellow); }
-  .correccion-severidad.info { background:rgba(52,152,219,0.2); color:var(--blue); }
-  .correccion-lista { font-size:11px; color:var(--muted); padding:8px 10px; background:rgba(0,0,0,0.25); border-radius:6px; line-height:1.7; max-height:160px; overflow:auto; }
-  .correccion-lista b { color:#fff; }
-  .correccion-razon { font-size:12px; color:var(--muted); line-height:1.5; margin:10px 0 0; }
 
   /* Radar / tabla */
   /* Reviews (Clientes › ⭐ Reviews) */
@@ -265,10 +252,12 @@
 
   @media (max-width:760px) {
     .body { grid-template-columns:minmax(0,1fr) !important; }
-    .sidebar { position:fixed; bottom:0; left:0; right:0; z-index:80; flex-direction:row !important; overflow-x:auto !important; padding:8px 12px !important; border-right:none !important; border-top:1px solid var(--border); background:rgba(10,10,18,0.95) !important; backdrop-filter:blur(12px) !important; justify-content:flex-start !important; gap:6px !important; }
+    /* Tabs ARRIBA (sticky bajo el borde superior): abajo chocaban con la barra
+       de gestos del navegador móvil y a veces quedaban tapadas */
+    .sidebar { position:sticky; top:0; z-index:80; flex-direction:row !important; overflow-x:auto !important; padding:8px 12px !important; border-right:none !important; border-bottom:1px solid var(--border); background:rgba(10,10,18,0.95) !important; backdrop-filter:blur(12px) !important; justify-content:flex-start !important; gap:6px !important; -webkit-overflow-scrolling:touch; }
     .side-btn { flex-shrink:0; }
     .side-sep { display:none !important; }
-    .content { padding:14px 12px 80px !important; }
+    .content { padding:14px 12px 24px !important; }
     .kpis { grid-template-columns:repeat(2,1fr) !important; }
     .grid-2, .grid-3 { grid-template-columns:1fr !important; }
     .topbar h1 small { display:none; }
@@ -386,7 +375,7 @@
     <div class="logo">M</div>
     <h1>TiendaMax<small>Panel de administración</small></h1>
     <div class="tb-actions">
-      <button class="icon-btn" title="Suscriptores push" onclick="go('agente')">🔔<span class="dot" id="tb-subs">0</span></button>
+      <button class="icon-btn" title="Copiloto IA — correcciones y suscriptores" onclick="if(window.tmCopilotOpen)tmCopilotOpen()">🔔<span class="dot" id="tb-subs">0</span></button>
       <button class="icon-btn" title="Recargar datos" onclick="cargarDatos(true)">🔄</button>
     </div>
   </div>
@@ -400,7 +389,7 @@
       <button class="side-btn" data-view="categorias" title="Categorías y subcategorías">🏷️</button>
       <button class="side-btn" data-view="combos" title="Combos">🎁</button>
       <button class="side-btn" data-view="publicar" title="Publicar / Compartir a redes">📣</button>
-      <button class="side-btn" data-view="agente" title="Agente IA — calidad y correcciones">🤖<span class="badge" id="badge-corr">0</span></button>
+      <button class="side-btn" type="button" title="Vale / factura para el cliente" onclick="window.open('vale.html','_blank')">🧾</button>
       <div class="side-sep"></div>
       <button class="side-btn" data-view="radar" title="Radar de precios">📡<span class="new-tag">N</span></button>
       <button class="side-btn" data-view="ventas" title="Ventas">💰</button>
@@ -513,6 +502,14 @@
           <div class="section">
             <h3>➕ Nuevo combo</h3>
             <div class="form-group"><label class="form-label">Nombre del combo</label><input class="form-input" id="combo-nombre" placeholder="Ej: Combo Cámaras + Disco"></div>
+            <div class="form-group" style="margin-top:10px"><label class="form-label">Foto del combo (opcional)</label>
+              <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+                <img id="combo-foto-prev" alt="" style="width:54px;height:54px;border-radius:10px;object-fit:cover;border:1px solid var(--border);display:none">
+                <label class="btn btn-ghost" style="display:inline-flex;align-items:center;cursor:pointer">🖼️ Elegir foto<input type="file" accept="image/*" style="display:none" onchange="comboFoto(this)"></label>
+                <button type="button" class="btn btn-ghost" id="combo-foto-quitar" style="display:none" onclick="comboFotoQuitar()">✕ Quitar</button>
+              </div>
+              <small style="font-size:11px;color:var(--muted)">Si no eliges foto, la tienda usa las fotos de los productos del combo.</small>
+            </div>
             <div class="form-group" style="margin-top:10px"><label class="form-label">Buscar producto para agregar</label><input class="form-input" id="combo-buscar" placeholder="🔍 Escribe para buscar…" oninput="comboBuscar()"><div id="combo-resultados" style="margin-top:6px;max-height:180px;overflow:auto"></div></div>
             <div style="margin-top:12px"><label class="form-label">Productos del combo</label><div id="combo-items" style="margin-top:6px"></div></div>
             <div id="combo-calc" style="margin-top:12px"></div>
@@ -534,13 +531,7 @@
         <div id="pub-body"></div>
       </div>
 
-      <!-- AGENTE IA -->
-      <div id="view-agente" class="view">
-        <div class="ph"><div><h2>🤖 Agente IA</h2><p>Calidad del catálogo · correcciones · suscriptores</p></div><div class="ph-actions"><button class="btn btn-ghost" onclick="renderCorrecciones()">🔄 Re-analizar</button></div></div>
-        <div class="kpis" id="agente-kpis"></div>
-        <div class="ai-banner"><div style="font-size:28px">🤖</div><div style="flex:1"><div class="t">Análisis del catálogo</div><div class="m" id="corr-resumen">Cargando…</div></div></div>
-        <div id="corr-lista"></div>
-      </div>
+      <!-- El Agente IA (correcciones del catálogo) vive ahora en el Copiloto (burbuja 🤖) -->
 
       <!-- CONFIGURACIÓN -->
       <div id="view-config" class="view">
@@ -721,6 +712,7 @@ function go(view, btn){
   window.scrollTo(0,0);
 }
 document.querySelectorAll('.side-btn').forEach(b=>{
+  if(!b.dataset.view) return; // botones con acción propia (p.ej. Vale abre vale.html)
   b.addEventListener('click',()=>go(b.dataset.view, b));
 });
 
@@ -734,6 +726,22 @@ async function cargarDatos(recargar){
   // Productos: localStorage real primero, si no productos.json
   PRODUCTOS = lsProductos() || await jget('productos.json') || [];
   if(!Array.isArray(PRODUCTOS)) PRODUCTOS = PRODUCTOS.productos || [];
+  // ANTI-WIPE de descripciones: la tienda guarda en localStorage el productos-lite
+  // (sin campo descripcion). Si el admin sincronizara desde ahí, subiría el catálogo
+  // sin descripciones (ya pasó). Rellenamos desde productos.json completo por id.
+  if(PRODUCTOS.some(p=>!(p.descripcion||'').trim())){
+    const full = await jget('productos.json');
+    const fullArr = Array.isArray(full)?full:(full&&full.productos)||[];
+    const byId = {}; fullArr.forEach(p=>{ byId[String(p.id)]=p; });
+    let n=0;
+    PRODUCTOS.forEach(p=>{
+      if(!(p.descripcion||'').trim()){
+        const f=byId[String(p.id)];
+        if(f && (f.descripcion||'').trim()){ p.descripcion=f.descripcion; n++; }
+      }
+    });
+    if(n) try{ localStorage.setItem('productos', JSON.stringify(PRODUCTOS)); }catch(e){}
+  }
   window.productos = PRODUCTOS; // mismo global bareword que usan tm-*.js y Herramientas
   CATEGORIAS = await jget('categorias.json') || [];
   SUBCATS = await jget('subcategorias.json') || [];
@@ -745,7 +753,7 @@ async function cargarDatos(recargar){
 
 function renderTodo(){
   renderInicio(); renderProductos(); renderCategorias();
-  renderCorrecciones(); renderRadar(); renderVentas();
+  renderRadar(); renderVentas();
   renderAnalytics(); renderClientes(); renderCombos(); renderPublicar();
   fillAgregarCategorias(); fillConfig(); fillOfertaDia();
 }
@@ -865,6 +873,28 @@ function comboCalc(){
   box.innerHTML = `<div style="display:flex;justify-content:space-between;font-size:13px;padding:6px 0;border-top:1px solid var(--border)"><span style="color:var(--gray)">Precio oficial (por separado)</span><b style="color:#fff;text-decoration:line-through">${money(orig)}</b></div>`
     + (precio>0?`<div style="display:flex;justify-content:space-between;font-size:13px;padding:6px 0"><span style="color:var(--gray)">Precio del combo</span><b style="color:var(--o)">${money(precio)}</b></div><div style="display:flex;justify-content:space-between;font-size:15px;padding:8px 0;font-weight:800"><span style="color:var(--gray)">El cliente ahorra</span><b style="color:${ahorro>0?'#2ecc71':'#e74c3c'}">${money(ahorro)}${orig>0?' ('+Math.round(ahorro/orig*100)+'%)':''}</b></div>`:'');
 }
+/* Foto del combo: comprimida a máx 640px JPEG para que combos.json no engorde */
+let COMBO_FOTO='';
+function comboFoto(input){
+  const f=input.files&&input.files[0]; if(!f) return;
+  const img=new Image();
+  img.onload=function(){
+    const MAX=640, r=Math.min(1, MAX/Math.max(img.width,img.height));
+    const c=document.createElement('canvas'); c.width=Math.round(img.width*r); c.height=Math.round(img.height*r);
+    c.getContext('2d').drawImage(img,0,0,c.width,c.height);
+    COMBO_FOTO=c.toDataURL('image/jpeg',0.82);
+    const prev=$('#combo-foto-prev'); if(prev){ prev.src=COMBO_FOTO; prev.style.display='block'; }
+    const q=$('#combo-foto-quitar'); if(q) q.style.display='inline-flex';
+    URL.revokeObjectURL(img.src);
+  };
+  img.src=URL.createObjectURL(f);
+  input.value='';
+}
+function comboFotoQuitar(){
+  COMBO_FOTO='';
+  const prev=$('#combo-foto-prev'); if(prev){ prev.src=''; prev.style.display='none'; }
+  const q=$('#combo-foto-quitar'); if(q) q.style.display='none';
+}
 function comboGuardar(){
   const nombre=($('#combo-nombre').value||'').trim();
   const precio=Number($('#combo-precio').value)||0;
@@ -873,9 +903,11 @@ function comboGuardar(){
   if(precio<=0){ showToast('⚠️ Pon el precio del combo'); return; }
   const orig=COMBO_SEL.reduce((s,x)=>s+x.precio*(x.cantidad||1),0);
   const combos=lsCombos();
-  combos.push({ id:'combo_'+Date.now(), nombre, precio, precioOriginal:orig, items:COMBO_SEL.map(x=>({id:x.id,nombre:x.nombre,precio:x.precio,cantidad:x.cantidad||1})), creado:new Date().toISOString() });
+  const nuevo={ id:'combo_'+Date.now(), nombre, precio, precioOriginal:orig, items:COMBO_SEL.map(x=>({id:x.id,nombre:x.nombre,precio:x.precio,cantidad:x.cantidad||1})), creado:new Date().toISOString() };
+  if(COMBO_FOTO) nuevo.imagen=COMBO_FOTO;
+  combos.push(nuevo);
   saveCombos(combos);
-  COMBO_SEL=[]; $('#combo-nombre').value=''; $('#combo-precio').value=''; comboRenderItems(); comboCalc();
+  COMBO_SEL=[]; $('#combo-nombre').value=''; $('#combo-precio').value=''; comboFotoQuitar(); comboRenderItems(); comboCalc();
   renderCombos();
   showToast('✅ Combo guardado', 'Publicarlo a la tienda es el siguiente paso');
 }
@@ -905,7 +937,7 @@ function renderCombos(){
   box.innerHTML = combos.length ? combos.map(c=>{
     const ahorro=(c.precioOriginal||0)-(c.precio||0);
     return `<div style="background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:12px;padding:13px;margin-bottom:10px">
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><b style="flex:1;color:#fff;font-size:14px">${esc(c.nombre)}</b><button class="btn btn-ghost" style="padding:3px 9px" onclick="comboDelete('${c.id}')">🗑</button></div>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">${c.imagen?`<img src="${esc(c.imagen)}" alt="" style="width:38px;height:38px;border-radius:9px;object-fit:cover;border:1px solid var(--border)">`:''}<b style="flex:1;color:#fff;font-size:14px">${esc(c.nombre)}</b><button class="btn btn-ghost" style="padding:3px 9px" onclick="comboDelete('${c.id}')">🗑</button></div>
       <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:8px"><span style="font-size:18px;font-weight:900;color:var(--o)">${money(c.precio)}</span><span style="font-size:12px;color:var(--gray);text-decoration:line-through">${money(c.precioOriginal)}</span>${ahorro>0?`<span style="font-size:10px;color:#2ecc71;font-weight:800;background:rgba(46,204,113,0.12);padding:2px 7px;border-radius:10px">ahorra ${money(ahorro)}</span>`:''}</div>
       <div style="font-size:11px;color:#cfcfd6">${(c.items||[]).map(it=>((it.cantidad>1?it.cantidad+'× ':'')+esc(it.nombre))).join(' + ')}</div>
     </div>`;
@@ -1109,58 +1141,8 @@ function renderSubcats(){
 }
 
 /* ============ CORRECCIONES IA (análisis real) ============ */
-function renderCorrecciones(){
-  const cards=[]; let urg=0, adv=0, inf=0;
-  // 1. Sin descripción / SEO
-  const sinDesc = PRODUCTOS.filter(p=>!p.descripcion || String(p.descripcion).trim().length<40);
-  if(sinDesc.length){ urg++; cards.push({sev:'urgente',cls:'',ico:'🚨',t:'Productos sin descripción (pierdes SEO)',items:sinDesc,fmt:p=>`<b>${esc(p.nombre)}</b> — ${p.descripcion?('solo '+String(p.descripcion).trim().length+' car'):'sin descripción'}`,razon:'Google no indexa bien productos sin descripción. Súbelas para aparecer en búsquedas.'}); }
-  // 2. Agotados
-  const agot = PRODUCTOS.filter(p=>Number(p.stock)<=0);
-  if(agot.length){ urg++; cards.push({sev:'urgente',cls:'',ico:'📦',t:'Productos agotados (stock 0)',items:agot,fmt:p=>`<b>${esc(p.nombre)}</b> — ${money(p.precioActual)}`,razon:'Cliente que los ve y no puede comprar = venta perdida. Repón o márcalos como "Avísame cuando vuelva".'}); }
-  // 3. Nombres en MAYÚSCULAS inconsistentes
-  const mays = PRODUCTOS.filter(p=>{ const n=p.nombre||''; return /[A-ZÁÉÍÓÚ]{5,}/.test(n) && n===n.toUpperCase(); });
-  if(mays.length){ adv++; cards.push({sev:'advertencia',cls:'warn',ico:'🔠',t:'Nombres TODO EN MAYÚSCULAS',items:mays,fmt:p=>`<b>${esc(p.nombre)}</b>`,razon:'Se ve menos profesional y baja la confianza. Mejor "Nombre Tipo Título".',accion:`<button class="btn btn-warn" style="margin-top:10px" onclick="correccionNormalizarMayus()">🔠 Normalizar los ${mays.length} a "Título"</button>`}); }
-  // 4. Nombres duplicados
-  const byName={}; PRODUCTOS.forEach(p=>{ const k=norm(p.nombre); if(!k)return; (byName[k]=byName[k]||[]).push(p); });
-  const dups=Object.values(byName).filter(a=>a.length>1);
-  if(dups.length){ adv++; cards.push({sev:'advertencia',cls:'warn',ico:'👯',t:'Nombres duplicados',items:dups,fmt:a=>`<b>${esc(a[0].nombre)}</b> × ${a.length}`,razon:'Dos productos con el mismo nombre confunden al cliente. Diferéncialos (marca + modelo).'}); }
-  // 5. Sin imagen
-  const sinImg = PRODUCTOS.filter(p=>!p.imagen);
-  if(sinImg.length){ adv++; cards.push({sev:'advertencia',cls:'warn',ico:'🖼️',t:'Productos sin foto',items:sinImg,fmt:p=>`<b>${esc(p.nombre)}</b>`,razon:'Los productos con foto venden hasta 2× más. Súbeles una imagen.'}); }
-  // 6. Precio vs radar (oportunidad)
-  if(RADAR && RADAR.productos){
-    const opor=[]; RADAR.productos.forEach(r=>{ const med=r.mercado&&r.mercado.mediana; const tuyo=r.tuPrecio; if(med && tuyo && tuyo < med*0.85){ opor.push({nombre:r.nombre, tuyo, med}); } });
-    if(opor.length){ inf++; cards.push({sev:'info',cls:'info',ico:'💡',t:'Oportunidad: puedes subir precio',items:opor,fmt:o=>`<b>${esc(o.nombre)}</b> — tú ${money(o.tuyo)} · mercado ${money(o.med)} → subir a ${money(Math.round(o.med*0.85))}`,razon:'Estás bastante por debajo de la mediana del mercado. Hay margen para subir sin perder ventas.',accion:`<button class="btn btn-primary" style="margin-top:10px" onclick="correccionSubirPrecios()">💲 Subir estos ${opor.length} a ~85% del mercado</button>`}); }
-  }
-  const total=urg+adv+inf;
-  $('#corr-resumen').innerHTML = total ? `Analicé tus <b>${PRODUCTOS.length} productos</b>. Detecté <b>${urg} urgentes</b>, ${adv} advertencias y ${inf} de info. Todo calculado de tus datos reales.` : `¡Todo en orden! Analicé tus <b>${PRODUCTOS.length} productos</b> y no encontré problemas.`;
-  $('#badge-corr').textContent = total;
-  const subs=parseInt(localStorage.getItem('tm_subscriber_count')||'0')||0;
-  const akp=$('#agente-kpis'); if(akp) akp.innerHTML=[['info','Suscriptores',subs],['danger','Urgentes',urg],['warn','Advertencias',adv],['success','OK',PRODUCTOS.length-new Set([...sinDesc,...agot,...mays,...sinImg].map(p=>p.id)).size]].map(([c,l,v])=>`<div class="kpi ${c}"><div class="lbl">${l}</div><div class="val">${v}</div></div>`).join('');
-  $('#corr-lista').innerHTML = cards.map(c=>`<div class="correccion-card ${c.cls}"><div class="correccion-head"><span class="correccion-icon">${c.ico}</span><span class="correccion-titulo">${c.t}</span><span class="correccion-severidad ${c.sev}">${c.sev}</span></div><div class="correccion-lista">${c.items.slice(0,20).map(c.fmt).join('<br>')}${c.items.length>20?`<br><i>…y ${c.items.length-20} más</i>`:''}</div><p class="correccion-razon">${c.razon}</p>${c.accion||''}</div>`).join('') || `<div class="section"><div class="empty"><div class="ico">✅</div><b>Catálogo impecable.</b> No hay correcciones pendientes.</div></div>`;
-}
-function correccionSubirPrecios(){
-  if(typeof productos==='undefined' || !Array.isArray(productos)){ showToast('⚠️ Motor no cargado','Recarga la página'); return; }
-  if(!RADAR || !RADAR.productos){ showToast('Sin datos de radar'); return; }
-  let n=0;
-  RADAR.productos.forEach(r=>{ const med=r.mercado&&r.mercado.mediana, t=r.tuPrecio; if(med&&t&&t<med*0.85){ const nuevo=Math.round(med*0.85); const p=productos.find(x=>norm(x.nombre)===norm(r.nombre)); if(p){ p.precioActual=nuevo; if(typeof marcarProductoModificado==='function') marcarProductoModificado(p.id); n++; } } });
-  if(!n){ showToast('Nada que subir'); return; }
-  if(typeof guardarProductos==='function') guardarProductos();
-  PRODUCTOS = lsProductos() || PRODUCTOS;
-  renderCorrecciones(); renderInicio();
-  showToast('✅ '+n+' precios ajustados','Ve a ⚙️ Configuración → "Actualizar tienda" para publicar');
-}
-function correccionNormalizarMayus(){
-  if(typeof productos==='undefined' || !Array.isArray(productos)){ showToast('⚠️ Motor no cargado','Recarga la página'); return; }
-  const tc = s => s.toLowerCase().replace(/\b[\p{L}]/gu, c=>c.toUpperCase());
-  let n=0;
-  productos.forEach(p=>{ const nm=p.nombre||''; if(/[A-ZÁÉÍÓÚ]{5,}/.test(nm) && nm===nm.toUpperCase()){ p.nombre=tc(nm); if(typeof marcarProductoModificado==='function') marcarProductoModificado(p.id); n++; } });
-  if(!n){ showToast('Nada que normalizar'); return; }
-  if(typeof guardarProductos==='function') guardarProductos();
-  PRODUCTOS = lsProductos() || PRODUCTOS;
-  renderCorrecciones(); renderInicio();
-  showToast('✅ '+n+' nombres normalizados','Ve a ⚙️ Configuración → "Actualizar tienda" para publicar');
-}
+/* El análisis de correcciones (Agente IA) vive ahora en js/admin-copilot.js
+   (burbuja Copiloto → tab 🩺 Correcciones), con aplicación automática + sync. */
 
 /* ============ RADAR (reusa radar.json) ============ */
 function renderRadar(){
@@ -1696,13 +1678,14 @@ cargarDatos();
 
 // El script va en IIFE para no chocar con el motor (que también declara $).
 // Exponemos al window solo lo que usan los onclick/oninput de la interfaz.
-window.go=go; window.cargarDatos=cargarDatos; window.renderProductos=renderProductos; window.renderCorrecciones=renderCorrecciones;
+window.go=go; window.cargarDatos=cargarDatos; window.renderProductos=renderProductos;
 window.apToggleFiltroFav=apToggleFiltroFav; window.apStock=apStock; window.apStockZero=apStockZero; window.apFav=apFav; window.apDel=apDel; window.apEdit=apEdit; window.apEditClose=apEditClose; window.apEditSave=apEditSave;
 window.comboBuscar=comboBuscar; window.comboAdd=comboAdd; window.comboRemove=comboRemove; window.comboCalc=comboCalc;
 window.comboGuardar=comboGuardar; window.comboDelete=comboDelete; window.comboPublicar=comboPublicar; window.comboQty=comboQty;
+window.comboFoto=comboFoto; window.comboFotoQuitar=comboFotoQuitar;
 window.agregarFillSubcats=agregarFillSubcats; window.fileName=fileName;
 window.ventaBuscar=ventaBuscar; window.ventaAdd=ventaAdd; window.ventaCartRemove=ventaCartRemove; window.ventaCartQty=ventaCartQty; window.ventaRegistrar=ventaRegistrar;
-window.correccionNormalizarMayus=correccionNormalizarMayus; window.correccionSubirPrecios=correccionSubirPrecios;
+
 window.agenteGuardarKey=agenteGuardarKey; window.agenteBorrarKey=agenteBorrarKey;
 window.catSwitch=catSwitch; window.catAgregar=catAgregar; window.subAgregar=subAgregar; window.cliSwitch=cliSwitch;
 })();
