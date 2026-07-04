@@ -2073,5 +2073,30 @@
       "12V / 3000W"
     ],
     "fechaAgregado": "2026-07-04T15:40:34.140Z"
+  },
+  {
+    "id": 1783179800783,
+    "nombre": "​⚡ Inversor de Corriente Onda Senoidal Pura TATALIKEN 4000W (24V)",
+    "descripcion": "​📌 Características Destacadas:\n​Potencia Pico: 4000W.\n​Voltaje de Entrada (DC): 24V (Ideal para bancos de baterías en serie o sistemas solares a 24V).\n​Tecnología de Onda: Senoidal pura. Evita ruidos, sobrecalentamientos y garantiza el arranque de motores, refrigeradores, herramientas y equipos médicos o de cómputo sensibles.\n​Diseño Robusto: Carcasa de aluminio anodizado rojo que optimiza la disipación de calor.\n​Protecciones Integradas: Sistema inteligente contra sobrecargas, cortocircuitos, sobrecalentamiento y bajo/alto voltaje para cuidar tanto el inversor como tus baterías.",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783179797781.jpg",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783179797781.jpg"
+    ],
+    "precioActual": 170,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 1,
+    "comision": 20,
+    "comisionMoneda": "USD",
+    "categoria": "ENERGIA",
+    "subcategoria": "INVERSORES",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "specs": [
+      "24V / 4000W"
+    ],
+    "fechaAgregado": "2026-07-04T15:43:20.783Z"
   }
 ]
