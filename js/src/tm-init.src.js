@@ -71,7 +71,7 @@ function verificarOfertasYMostrarBanner() {
             tarjeta.style.transition = 'box-shadow 0.3s';
             tarjeta.style.boxShadow  = '0 0 0 3px #ff6b35, 0 8px 32px rgba(255,107,53,0.5)';
             setTimeout(() => {
-            console.log("[fix] renderHeroGaleria fallback, card exists:", !!document.getElementById("ndHeroCard3d"), "productos:", productos.length); tarjeta.style.boxShadow = ''; }, 2000);
+            tarjeta.style.boxShadow = ''; }, 2000);
         }
         abrirDetalleProducto(idNum);
     };

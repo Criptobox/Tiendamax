@@ -1,71 +1,27 @@
 #!/usr/bin/env python3
 """
-Minifica js/script.src.js → js/script.js usando terser (vía npx).
+Minifica cada js/src/*.src.js → js/src/*.js usando esbuild (vía npx).
 
-Flujo:
-  - Lee la fuente desde js/script.src.js  (legible, en el repo)
-  - Escribe el minificado en  js/script.js  (lo que sirve el HTML)
+Los módulos tm-*.src.js son scripts clásicos (no ES modules): sus funciones
+top-level son globales y se llaman desde atributos HTML (onclick, data-action)
+y entre archivos. esbuild NO renombra identificadores top-level en scripts
+clásicos, así que no hace falta lista de reservados.
 
-Funciones reservadas (no renombradas por el mangler):
-  Cualquier función que se llame desde atributos HTML (onclick, data-action),
-  desde otros archivos JS del proyecto, o que se exporte en window.*.
+IMPORTANTE: se elimina el "use strict" que esbuild inyecta al inicio, porque
+el código original usa semántica no estricta (asignaciones a globals bareword
+como `productos = ...`); en modo estricto eso lanzaría ReferenceError.
 
 Uso:
-  python scripts/minify_js.py
+  python scripts/minify_js.py            # todos los módulos
+  python scripts/minify_js.py tm-ui      # solo uno
 """
 
 import subprocess
 import sys
 from pathlib import Path
 
-
-# ── Archivos ──────────────────────────────────────────────────────────────────
-SRC  = Path('js/script.src.js')   # fuente legible
-DEST = Path('js/script.js')       # minificado (servido por el HTML)
-
-# ── Funciones que el mangler NO debe renombrar ────────────────────────────────
-# Incluye: data-action del HTML, onclick inline, window.* exports,
-# y funciones llamadas por otros JS (banners.js, biometric-auth.js, event-delegation.js).
-RESERVED = [
-    # ── data-action en index.html ──
-    'abrirCarrito', 'abrirLoginAdmin', 'abrirMenuMovil', 'abrirPanelBusqueda',
-    'abrirPanelCompartir', 'aplicarBusquedaHero', 'cerrarCarrito', 'cerrarDetalleModal',
-    'cerrarMenuMovil', 'compartirFacebook', 'compartirNativo', 'compartirTelegram',
-    'compartirTwitter', 'compartirWhatsApp', 'comprarCarrito', 'contactarWhatsApp',
-    'copiarLinkProducto', 'filtrarPorCategoria', 'guardarResena', 'limpiarCarrito',
-    'mostrarFormResena', 'mostrarVistaCategoria', 'mostrarVistaInicio', 'scrollToProductos',
-    'setEstrellas', 'toggleDarkMode', 'toggleZoomImagen', 'volverAlInicio',
-    # ── data-action en admin.html ──
-    'agregarCategoria', 'agregarGrupoFB', 'agregarSubcategoria', 'cerrarAdminPanel',
-    'cerrarEditModal', 'cerrarLoginModal', 'desactivarCountdown', 'desactivarOfertaDia',
-    'guardarCountdown', 'guardarGruposFB', 'guardarNumeroWhatsApp', 'guardarOfertaDia', 'guardarOfertaDia2',
-    'guardarRevolicoConfig', 'mostrarSelectorAsistenteFacebook', 'mostrarSelectorAsistenteRevolico',
-    'sincronizarTodoConGitHub', 'switchTab',
-    # ── onclick inline index.html ──
-    'abrirModalNotificaciones', 'cerrarModalNotificaciones', 'cerrarVistaMeGusta',
-    'cerrarVistaPedidos', 'mostrarVistaMeGusta', 'mostrarVistaPedidos',
-    'moverBanner', 'setCurrency', 'toggleNotificacionesTM',
-    # ── onclick inline admin.html ──
-    'actualizarListaProductos', 'agregarBanner', 'cambiarPasswordAdmin',
-    'enviarPushManualAdmin', 'exportarBannersJSON', 'guardarConfigFirebaseAdmin',
-    'guardarConfiguracionGitHub', 'guardarTagline', 'guardarTasaMNAdmin', 'verificarPassword',
-    # ── onclick inline generado en JS (buildHTML) ──
-    'toggleMeGusta', 'cambiarCantidad', 'quitarDelCarrito', 'agregarAlCarrito',
-    'seleccionarSugerencia', 'renderizarCarrito', 'abrirDetalleProducto',
-    # ── Oferta del día (sección home) ──
-    'abrirOfertaDelDia', 'renderOfertaDelDia',
-    # ── Galería rotativa del hero ──
-    'renderHeroGaleria',
-    # ── llamadas desde banners.js / biometric-auth.js / event-delegation.js ──
-    'mostrarNotificacion', 'abrirAdminPanel', 'loginConBiometria',
-    # ── onclick inline nuevas funciones ──
-    'exportarBackupCompleto',
-    # ── sincronización contraseña ──
-    'sincronizarPasswordAFirebase',
-    # ── exports explícitos en window.* ──
-    'guardarCarrito', 'tmFormatPrecio', 'tmRegistrarTokenFCMSiPermitido', 'tmMonedaActual',
-    'tmGrantAdminAccess',
-]
+SRC_DIR = Path('js/src')
+ESBUILD_VERSION = '0.21.5'   # fija la versión: mismo output en CI y local
 
 
 def fmt(n: int) -> str:
@@ -73,57 +29,49 @@ def fmt(n: int) -> str:
 
 
 def minify(src: Path, dest: Path) -> tuple[int, int]:
-    """Minifica src → dest con terser. Devuelve (original, minificado)."""
-    original_size = src.stat().st_size
-
-    reserved_json = '[' + ','.join(f'"{n}"' for n in RESERVED) + ']'
-
+    tmp = dest.with_suffix('.js.tmp')
     result = subprocess.run(
-        [
-            'npx', '--yes', 'terser',
-            str(src),
-            # ── Compresión ────────────────────────────────────────────────
-            '--compress',
-            'passes=2,'           # dos pasadas → más reducción
-            'drop_console=false,' # no eliminar console.* (hay logs de seguridad)
-            'pure_getters=true,'
-            'unsafe_math=false',  # Cuba: precisión de precios importa
-            # ── Mangling de nombres ───────────────────────────────────────
-            '--mangle',
-            f'reserved={reserved_json}',
-            # ── Salida ────────────────────────────────────────────────────
-            '--output', str(dest),
-        ],
-        capture_output=True,
-        text=True,
-        timeout=120,
+        ['npx', '--yes', f'esbuild@{ESBUILD_VERSION}', str(src),
+         '--minify', '--target=es2017', f'--outfile={tmp}'],
+        capture_output=True, text=True, timeout=180,
     )
-
     if result.returncode != 0:
         print(f'\n  ERROR al minificar {src}:')
         print(result.stderr or result.stdout)
+        tmp.unlink(missing_ok=True)
         sys.exit(1)
 
-    return original_size, dest.stat().st_size
+    code = tmp.read_text(encoding='utf-8')
+    tmp.unlink()
+    # Quitar el "use strict" inyectado (preservar semántica no estricta)
+    if code.startswith('"use strict";'):
+        code = code[len('"use strict";'):]
+    dest.write_text(code, encoding='utf-8')
+    return src.stat().st_size, dest.stat().st_size
 
 
 def main() -> None:
-    print('Minificando JS...\n')
-
-    if not SRC.exists():
-        print(f'  ERROR: {SRC} no encontrado.')
-        print('  Asegúrate de que el archivo fuente sea js/script.src.js')
+    solo = sys.argv[1] if len(sys.argv) > 1 else None
+    fuentes = sorted(SRC_DIR.glob('*.src.js'))
+    if solo:
+        fuentes = [f for f in fuentes if f.name == f'{solo}.src.js']
+    if not fuentes:
+        print(f'  ERROR: no hay fuentes {"para " + solo if solo else ""} en {SRC_DIR}/')
         sys.exit(1)
 
-    original, minified = minify(SRC, DEST)
-    savings     = original - minified
-    savings_pct = (savings / original * 100) if original > 0 else 0
+    print(f'Minificando {len(fuentes)} módulo(s) JS…\n')
+    total_orig = total_min = 0
+    for src in fuentes:
+        dest = SRC_DIR / src.name.replace('.src.js', '.js')
+        original, minified = minify(src, dest)
+        total_orig += original
+        total_min += minified
+        print(f'[OK] {src.name} → {dest.name}: {fmt(original)} → {fmt(minified)}')
 
-    print(f'[OK] {SRC} → {DEST}')
-    print(f'   Original:   {fmt(original)}')
-    print(f'   Minificado: {fmt(minified)}')
-    print(f'   Ahorro:     {savings:,} bytes ({savings_pct:.1f}%)')
+    ahorro = total_orig - total_min
+    pct = (ahorro / total_orig * 100) if total_orig else 0
     print('=' * 60)
+    print(f'Total: {fmt(total_orig)} → {fmt(total_min)}  (ahorro {pct:.1f}%)')
 
 
 if __name__ == '__main__':

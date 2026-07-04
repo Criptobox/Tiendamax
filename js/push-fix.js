@@ -272,7 +272,7 @@
     }
 
     var did = await getDeviceId();
-    console.log("[push-fix v8] Registrado. Carnet:", did);
+
     return true;
   }
 
@@ -288,7 +288,7 @@
     }
     try {
       await escribirTokenRTDB(pending.cfg, pending.token);
-      console.log("[push-fix v8] Pendiente guardado en RTDB.");
+
     } catch (e) {
       console.warn("[push-fix v8] Reintento fallido:", e.message);
     }
