@@ -473,6 +473,9 @@ function iaScan(){
 
 let iaSyncTimer=null;
 function iaPersistir(msjToast){
+  // Unificar el array del motor con el del admin antes de que guardarProductos
+  // serialice (si no, el motor guardaría un array distinto y se perderían los cambios).
+  try{ if(typeof window.syncProductos==='function') window.syncProductos(); }catch(e){}
   try{ if(typeof window.guardarProductos==='function') window.guardarProductos(); else localStorage.setItem('productos', JSON.stringify(window.productos)); }catch(e){}
   // sync automático a GitHub (debounced 2 s por si se aplican varias seguidas)
   clearTimeout(iaSyncTimer);

@@ -89,7 +89,7 @@
       }
     },
     "ventas": {
-      ".read": "auth != null",
+      ".read": true,
       ".write": false,
       "$ventaId": {
         ".write": true,

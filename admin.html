@@ -699,7 +699,7 @@
     if (typeof window.go === 'function') window.go(map[tab] || tab);
   };
 </script>
-<script src="js/admin-copilot.js?v=885ef969"></script>
+<script src="js/admin-copilot.js?v=2f7c4ff7"></script>
 
 <script>
 (function(){
@@ -733,6 +733,15 @@ function lsVentas(){ try{ let v=JSON.parse(localStorage.getItem('registroVentas'
 
 async function jget(url){ try{ const r=await fetch(url,{cache:'no-store'}); if(!r.ok) throw 0; return await r.json(); }catch(e){ return null; } }
 
+// El motor (tm-*.js) usa el bareword global `productos` (un `let` en tm-data),
+// que NO es window.productos. Si no lo unificamos, ajustarStock/guardarProductos/
+// normalizar nombres tocan un array fantasma y nada se refleja ni se guarda.
+// Esta función deja PRODUCTOS === window.productos === productos (motor) = 1 array.
+function syncProductos(){
+  window.productos = PRODUCTOS;
+  try { productos = PRODUCTOS; } catch(e) { /* motor no cargado aún */ }
+}
+
 async function cargarDatos(recargar){
   // Productos: localStorage real primero, si no productos.json
   PRODUCTOS = lsProductos() || await jget('productos.json') || [];
@@ -753,13 +762,34 @@ async function cargarDatos(recargar){
     });
     if(n) try{ localStorage.setItem('productos', JSON.stringify(PRODUCTOS)); }catch(e){}
   }
-  window.productos = PRODUCTOS; // mismo global bareword que usan tm-*.js y Herramientas
+  syncProductos(); // unifica PRODUCTOS con el bareword del motor y window.productos
   CATEGORIAS = await jget('categorias.json') || [];
   SUBCATS = await jget('subcategorias.json') || [];
   RADAR = await jget('radar.json');
   VENTAS = lsVentas();
   renderTodo();
+  cargarVentasFirebase(); // combina con las ventas guardadas en Firebase (otros dispositivos)
   if(recargar) showToast('🔄 Datos recargados', PRODUCTOS.length+' productos · '+VENTAS.length+' ventas');
+}
+
+// Lee /ventas de Firebase y las combina con las locales por id, para que las
+// ventas registradas en un dispositivo se vean en cualquier otro.
+async function cargarVentasFirebase(){
+  try{
+    const cfg = JSON.parse(localStorage.getItem('firebaseConfig')||'{}');
+    const base = cfg.databaseURL || (cfg.projectId ? ('https://'+cfg.projectId+'-default-rtdb.firebaseio.com') : null);
+    if(!base) return;
+    const data = await jget(base+'/ventas.json');
+    if(!data || typeof data!=='object') return;
+    const fb = Object.values(data).filter(v=>v && v.id);
+    const porId = {};
+    lsVentas().forEach(v=>{ porId[String(v.id)] = v; });
+    fb.forEach(v=>{ porId[String(v.id)] = Object.assign({}, porId[String(v.id)], v); });
+    const merged = Object.values(porId).sort((a,b)=>Number(b.id||0)-Number(a.id||0));
+    try{ localStorage.setItem('registroVentas', JSON.stringify(merged.slice(0,500))); }catch(e){}
+    VENTAS = merged;
+    renderVentas(); renderInicio(); renderClientes();
+  }catch(e){}
 }
 
 function renderTodo(){
@@ -829,9 +859,12 @@ function ventaRenderCart(){
 function ventaRegistrar(){
   if(!VENTA_CART.length)return;
   if(typeof registrarVentaPedido!=='function'){ showToast('⚠️ Motor no cargado','Recarga la página'); return; }
+  // CLAVE: unificar el array del motor con PRODUCTOS JUSTO ANTES (síncrono), para
+  // que ajustarStock del motor descuente el MISMO array que muestra el admin.
+  syncProductos();
   registrarVentaPedido(VENTA_CART.map(it=>({productoId:it.id,producto:it.nombre,cantidad:it.cantidad,precio:it.precio,comision:it.comision,comisionMoneda:it.comisionMoneda})));
   VENTA_CART=[]; ventaRenderCart();
-  VENTAS = lsVentas(); renderVentas(); renderInicio(); renderClientes();
+  VENTAS = lsVentas(); renderVentas(); renderProductos(); renderInicio(); renderClientes();
   showToast('✅ Venta registrada','Se guardó y se ajustó el stock');
 }
 
@@ -1022,7 +1055,7 @@ const emojiCat = c => { c=(c||'').toLowerCase(); if(/cel|phone|móvil/.test(c))r
 let _apFiltroFav=false;
 function apToggleFiltroFav(){ _apFiltroFav=!_apFiltroFav; const b=$('#prod-filtro-fav'); if(b){ b.style.background=_apFiltroFav?'rgba(201,169,110,0.25)':''; b.style.color=_apFiltroFav?'var(--gold)':''; b.style.borderColor=_apFiltroFav?'var(--gold)':''; } renderProductos(); }
 function apLlenarFiltroCat(){ const sel=$('#prod-cat-filtro'); if(!sel) return; const cur=sel.value; const cats=[...new Set(PRODUCTOS.map(p=>p.categoria).filter(Boolean))].sort((a,b)=>String(a).localeCompare(String(b))); sel.innerHTML='<option value="">Todas las categorías</option>'+cats.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join(''); if(cats.includes(cur)) sel.value=cur; }
-function apSaveProds(){ try{ localStorage.setItem('productos', JSON.stringify(PRODUCTOS)); }catch(e){} try{ if(Array.isArray(window.productos)){ window.productos.length=0; PRODUCTOS.forEach(p=>window.productos.push(p)); } else { window.productos=PRODUCTOS; } }catch(e){} }
+function apSaveProds(){ syncProductos(); try{ localStorage.setItem('productos', JSON.stringify(PRODUCTOS)); }catch(e){} }
 /* Selección múltiple (checkbox por tarjeta) para acciones masivas */
 let AP_SEL = new Set();
 function apSelBar(){
@@ -1042,7 +1075,6 @@ function apBulkDel(){
   if(!confirm('¿Eliminar '+AP_SEL.size+' producto(s) del catálogo?')) return;
   const antes=PRODUCTOS.length;
   PRODUCTOS = PRODUCTOS.filter(p=>!AP_SEL.has(String(p.id)));
-  window.productos = PRODUCTOS;
   apSaveProds(); apSelClear(); showToast('🗑 '+(antes-PRODUCTOS.length)+' productos eliminados','Sincroniza para publicar el cambio');
 }
 function apCardHTML(p){
@@ -1733,7 +1765,7 @@ cargarDatos();
 
 // El script va en IIFE para no chocar con el motor (que también declara $).
 // Exponemos al window solo lo que usan los onclick/oninput de la interfaz.
-window.go=go; window.cargarDatos=cargarDatos; window.renderProductos=renderProductos;
+window.go=go; window.cargarDatos=cargarDatos; window.renderProductos=renderProductos; window.syncProductos=syncProductos;
 window.apToggleFiltroFav=apToggleFiltroFav; window.apStock=apStock; window.apStockZero=apStockZero; window.apFav=apFav; window.apDel=apDel; window.apEdit=apEdit; window.apEditClose=apEditClose; window.apEditSave=apEditSave;
 window.apSelTgl=apSelTgl; window.apSelClear=apSelClear; window.apBulkZero=apBulkZero; window.apBulkDel=apBulkDel;
 window.comboBuscar=comboBuscar; window.comboAdd=comboAdd; window.comboRemove=comboRemove; window.comboCalc=comboCalc;
