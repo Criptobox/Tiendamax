@@ -696,9 +696,38 @@ function renderAgents(){
   return `${state.agents && state.agents.length ? `<div class="tm-copilot-agents">${state.agents.map(a=>`<div class="tm-copilot-agent ${a.critical?'crit':''}"><b>${a.icon} ${esc(a.name)}</b><small>${esc(a.goal)}<br>${esc(a.hint)}</small><span class="st">${esc(a.status)} · ${a.count}</span></div>`).join('')}</div>` : ''}
   ${state.hot && state.hot.length ? `<div class="tm-copilot-hot">${state.hot.map(x=>`<div class="tm-copilot-hot-card"><b>${iconFor(x.p)} ${esc(x.p.nombre)}</b><small>${x.views} vistas · ${x.wa} WhatsApp · stock ${num(x.p.stock)}</small><span class="tm-copilot-chip">score ${x.score}</span></div>`).join('')}</div>` : '<div class="tm-copilot-empty">Sin productos calientes medibles todavía.</div>'}`;
 }
+// Push inteligente: productos con interés (vistas/WhatsApp) o interesados que
+// no cierran venta → sugiere mandar un push con % de descuento a los suscriptores.
+function pushCandidatos(){
+  const hot = state.hot || [];
+  const out = [];
+  hot.forEach(x=>{
+    const p = x.p; if(num(p.stock)<=0) return;
+    let motivo=null, desc=0;
+    if(x.views>=15 && x.wa===0){ motivo=`${x.views} vistas y 0 pedidos por WhatsApp`; desc=10; }
+    else if(x.views>=25 && x.wa<=1){ motivo=`${x.views} vistas pero solo ${x.wa} WhatsApp`; desc=8; }
+    else if(x.wa>=3){ motivo=`${x.wa} personas preguntaron por WhatsApp`; desc=5; }
+    if(motivo) out.push({p, motivo, desc, views:x.views, wa:x.wa});
+  });
+  return out.slice(0,5);
+}
+function renderPushSmart(){
+  const cands = pushCandidatos();
+  if(!cands.length) return `<div class="tm-copilot-smart"><h4>📣 Push inteligente</h4><small>Sin candidatos claros todavía. Aparecen productos con muchas vistas y pocas ventas cuando haya datos de interés.</small></div>`;
+  return `<div class="tm-copilot-smart"><h4>📣 Push inteligente</h4><small>El agente vio interés sin venta. Manda un aviso con descuento a tus suscriptores en un toque.</small>
+    ${cands.map(c=>`<div class="tm-copilot-mini-card" style="margin-top:9px">
+      <b>${esc(c.p.nombre)}</b>
+      <small>${esc(c.motivo)} · stock ${num(c.p.stock)}</small>
+      <div class="tm-copilot-task-actions" style="margin-top:9px">
+        <button type="button" class="tm-copilot-btn primary" data-cop="smartPush" data-pid="${esc(String(c.p.id))}" data-desc="${c.desc}">📲 Push −${c.desc}%</button>
+        <button type="button" class="tm-copilot-btn" data-cop="smartPush" data-pid="${esc(String(c.p.id))}" data-desc="0">📲 Sin descuento</button>
+      </div>
+    </div>`).join('')}
+  </div>`;
+}
 function renderMarketing(){
   const r=ranking(), bundles=suggestedBundles(), responses=responseTemplates();
-  return `<div class="tm-copilot-mini">
+  return `${renderPushSmart()}<div class="tm-copilot-mini">
     <div class="tm-copilot-mini-card"><b>🏆 Top para impulsar</b>${r.top.slice(0,4).map((x,i)=>`<div class="tm-copilot-rank-row"><span>${i+1}. ${esc(x.p.nombre)}</span><em>${x.score}</em></div>`).join('')||'<small>Sin datos suficientes</small>'}</div>
     <div class="tm-copilot-mini-card"><b>⚠️ Atención</b>${r.attention.slice(0,4).map(x=>`<div class="tm-copilot-rank-row"><span>${esc(x.p.nombre)}</span><em>${esc(x.reasons.join(', '))}</em></div>`).join('')||'<small>Catálogo estable</small>'}</div>
   </div>
@@ -1199,7 +1228,8 @@ function switchTo(tab){
   closeSheet();
   setTimeout(()=>{ try { document.querySelector('.tm-main')?.scrollTo({top:0,behavior:'smooth'}); } catch(e){} },80);
 }
-async function queuePushForProduct(pid){
+async function queuePushForProduct(pid, opts){
+  opts = opts || {};
   const ps = products(); const p = ps.find(x=>String(x.id)===String(pid));
   if(!p){ toast('No encontré el producto.'); return; }
 
@@ -1220,7 +1250,9 @@ async function queuePushForProduct(pid){
   localStorage.setItem('tm_push_sent', JSON.stringify(pushLog));
 
   const reqId = 'req_copilot_' + Date.now();
-  const payload = { proof: (localStorage.getItem('tm_auth_hash_v3')||''), title: '🔥 Producto destacado en TiendaMax', body: String(p.nombre||'Oferta disponible').slice(0,120), url: '/p/producto-' + p.id + '.html', icon: p.imagen || '/iconos/icon-192.png', image: p.imagen || '', ts: Date.now(), source: 'admin_copilot' };
+  const title = opts.title || '🔥 Producto destacado en TiendaMax';
+  const body = opts.body || String(p.nombre||'Oferta disponible').slice(0,120);
+  const payload = { proof: (localStorage.getItem('tm_auth_hash_v3')||''), title: title.slice(0,100), body: body.slice(0,300), url: '/p/producto-' + p.id + '.html', icon: p.imagen || '/iconos/icon-192.png', image: p.imagen || '', ts: Date.now(), source: 'admin_copilot' };
   try {
     const r = await fetch(base + '/admin_push_requests/' + reqId + '.json', {method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
     if(!r.ok) throw new Error('HTTP '+r.status);
@@ -1290,6 +1322,23 @@ function bindEvents(){
     if(act==='task') switchTo(el.dataset.tab || 'inicio');
     if(act==='dismiss') { const set=dismissedSet(); set.add(el.dataset.id); saveDismissed(set); state.tasks = state.tasks.filter(t=>t.id!==el.dataset.id); updateBubble(); renderSheet(); }
     if(act==='pushHot') queuePushForProduct(el.dataset.pid);
+    if(act==='smartPush'){
+      const p=products().find(x=>String(x.id)===String(el.dataset.pid)); if(!p){ toast('No encontré el producto.'); return; }
+      const desc=num(el.dataset.desc);
+      const precio=num(p.precioActual);
+      let title, body;
+      if(desc>0){
+        const nuevo=Math.max(1, Math.round(precio*(1-desc/100)));
+        title='🔥 '+String(p.nombre).slice(0,60)+' con '+desc+'% OFF';
+        body='Solo por hoy: '+String(p.nombre).slice(0,60)+' a $'+nuevo+' (antes $'+Math.round(precio)+'). ¡Escríbenos por WhatsApp!';
+      } else {
+        title='✨ '+String(p.nombre).slice(0,70);
+        body=String(p.nombre).slice(0,60)+' disponible en TiendaMax. Escríbenos por WhatsApp y te lo reservamos.';
+      }
+      if(!confirm('¿Mandar push de "'+p.nombre+'"'+(desc>0?(' con '+desc+'% de descuento'):'')+' a tus suscriptores?')) return;
+      queuePushForProduct(el.dataset.pid, {title, body});
+      remember && remember('smart_push', {productName:p.nombre, desc});
+    }
     if(act==='iaRescan'){ state.view='correcciones'; renderSheet(); toast('🔍 Catálogo re-analizado'); }
     if(act==='iaUrgentes') iaAplicarUrgentes();
     if(act==='iaBulkNombres') iaNormalizarBulk();
