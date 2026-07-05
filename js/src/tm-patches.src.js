@@ -867,7 +867,22 @@ function _procesarDeepLink() {
 window.addEventListener('hashchange', _procesarDeepLink);
 window.addEventListener('popstate', _procesarDeepLink);
 document.addEventListener('DOMContentLoaded', () => {
-    if (_tmGetDeepLinkProductId()) setTimeout(_procesarDeepLink, 100);
+    if (!_tmGetDeepLinkProductId()) return;
+    // No reabrir el producto en una RECARGA hecha por el usuario (ej: activar
+    // "Sitio para PC", que recarga la página): el hash #producto- quedó de tu
+    // propia navegación, no es un enlace nuevo → límpialo y no abras.
+    // Los reloads que hace la app (Service Worker al actualizar) dejan la marca
+    // tm_sw_reloading, así que esos SÍ reabren; un enlace compartido también.
+    try {
+        const nav = performance.getEntriesByType('navigation')[0];
+        const swReload = sessionStorage.getItem('tm_sw_reloading');
+        if (swReload) sessionStorage.removeItem('tm_sw_reloading');
+        if (nav && nav.type === 'reload' && !swReload) {
+            history.replaceState(null, '', location.pathname + location.search);
+            return;
+        }
+    } catch (e) {}
+    setTimeout(_procesarDeepLink, 100);
 });
 
 

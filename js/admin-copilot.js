@@ -1425,6 +1425,9 @@ async function cargarReporteNocturno(){
     const visto = localStorage.getItem('tm_reporte_visto') || '';
     const fresco = (Date.now() - Date.parse(rep.generado)) < 36*60*60*1000; // < 36 h
     if(fresco && rep.generado !== visto){
+      // Marcar como visto AQUÍ (no solo en el render) para que el aviso salga UNA
+      // vez y no se repita en cada refresco de 90 s aunque no abras la pestaña Hoy.
+      localStorage.setItem('tm_reporte_visto', rep.generado);
       if($('#tmCopilotSheet')?.classList.contains('show')) renderSheet();
       const n = (rep.urgentes||0);
       toast('🌙 '+rep.resumen + (n?' Toca 🩺 Correcciones para arreglarlo.':''));

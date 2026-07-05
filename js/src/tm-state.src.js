@@ -344,6 +344,43 @@ function verificarStockOfertaBanner() {
     } catch(e) {}
 }
 
+// Categorías con pocos productos (< 3) van a un desplegable "Ver más", para que
+// la vitrina no se vea vacía con estantes de 1 solo producto. Reutilizado por
+// los dos renderers (instantáneo y con datos frescos).
+const TM_CAT_MIN = 3;
+function _tmCatVerMas(grid, extras) {
+    if (!grid) return;
+    const cont = grid.parentNode; if (!cont) return;
+    const oldBtn = document.getElementById('catVerMasBtn'); if (oldBtn) oldBtn.remove();
+    const oldWrap = document.getElementById('catExtraWrap'); if (oldWrap) oldWrap.remove();
+    if (!extras || !extras.length) return;
+
+    const wrap = document.createElement('div');
+    wrap.id = 'catExtraWrap';
+    wrap.style.cssText = 'display:none;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:12px;max-width:960px;margin:14px auto 0';
+    extras.forEach(e => {
+        const c = document.createElement('div');
+        c.style.cssText = 'background:#171717;border:1px solid rgba(255,255,255,.07);border-radius:16px;padding:16px 12px;text-align:center;cursor:pointer;transition:transform .2s ease,border-color .2s ease';
+        c.onmouseenter = () => { c.style.transform = 'translateY(-3px)'; c.style.borderColor = 'rgba(255,140,0,.35)'; };
+        c.onmouseleave = () => { c.style.transform = ''; c.style.borderColor = 'rgba(255,255,255,.07)'; };
+        c.innerHTML = '<div style="font-size:30px;margin-bottom:8px">' + e.icon + '</div>' +
+            '<div style="font-size:12px;font-weight:800;color:#fff;text-transform:uppercase;letter-spacing:.4px">' + e.name + '</div>' +
+            '<div style="font-size:10.5px;color:' + (e.count === 0 ? '#888' : '#ff8c00') + ';margin-top:4px;font-weight:600">' + (e.count === 0 ? '🕐 Próximamente' : e.count + ' producto' + (e.count !== 1 ? 's' : '')) + '</div>';
+        c.onclick = () => mostrarVistaCategoria(e.cat);
+        wrap.appendChild(c);
+    });
+
+    const btn = document.createElement('button');
+    btn.id = 'catVerMasBtn'; btn.type = 'button';
+    btn.style.cssText = 'display:block;margin:20px auto 0;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.12);color:#fff;font-size:13px;font-weight:700;padding:12px 26px;border-radius:26px;cursor:pointer;transition:background .2s';
+    const setLabel = open => { btn.textContent = open ? '− Ver menos' : '+ Ver más categorías (' + extras.length + ')'; };
+    setLabel(false);
+    btn.onclick = () => { const open = wrap.style.display === 'none'; wrap.style.display = open ? 'grid' : 'none'; setLabel(open); };
+
+    cont.appendChild(btn);
+    cont.appendChild(wrap);
+}
+
 function renderizarCategoriasHome() {
     const grid = document.getElementById('categoriasGrid');
     if (!grid) return;
@@ -371,22 +408,29 @@ function renderizarCategoriasHome() {
     const maxMV = Math.max(...Object.values(mvPorCat), 0);
 
     const _catDisplayNames = { 'WIFI': 'REDES' };
+    const _extras = [];
     categorias.forEach(cat => {
         const count = productos.filter(p => p.categoria === cat).length;
+        const displayCat = _catDisplayNames[cat] || cat;
+        // Pocas unidades (< 3) → al desplegable "Ver más"
+        if (count < TM_CAT_MIN) {
+            _extras.push({ cat, count, name: escapeHtml(displayCat), icon: escapeHtml(obtenerIconoCategoria(cat)) });
+            return;
+        }
         const mv = mvPorCat[cat] || 0;
         const isPopular = mv > 0 && (mv === maxMV || mv >= 2);
         const card = document.createElement('div');
-        card.className = 'categoria-card' + (count === 0 ? ' proximamente' : '') + (isPopular ? ' cat-popular' : '');
-        const displayCat = _catDisplayNames[cat] || cat;
+        card.className = 'categoria-card' + (isPopular ? ' cat-popular' : '');
         card.innerHTML = `
             <span class="cat-popular-badge">+ Popular</span>
             <span class="cat-icon">${escapeHtml(obtenerIconoCategoria(cat))}</span>
             <span class="cat-name">${escapeHtml(displayCat)}</span>
-            <span class="cat-count">${count === 0 ? '🕐 Próximamente' : safeNum(count) + ' producto' + (count !== 1 ? 's' : '')}</span>
+            <span class="cat-count">${safeNum(count) + ' producto' + (count !== 1 ? 's' : '')}</span>
         `;
         card.onclick = () => mostrarVistaCategoria(cat);
         grid.appendChild(card);
     });
+    _tmCatVerMas(grid, _extras);
     // Dispara animaciones CSS DESPUÉS de que el DOM está poblado
     // Si ya tiene tm-rendered (del render instantáneo), no la quitar para evitar parpadeo
     if (!grid.classList.contains('tm-rendered')) {
