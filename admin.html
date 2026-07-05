@@ -769,7 +769,18 @@ document.querySelectorAll('.side-btn').forEach(b=>{
 
 /* ============ Carga de datos reales ============ */
 function lsProductos(){ try{ const p=JSON.parse(localStorage.getItem('productos')||'null'); if(Array.isArray(p)&&p.length) return p; }catch(e){} return null; }
-function lsVentas(){ try{ let v=JSON.parse(localStorage.getItem('registroVentas')||'null'); if(!Array.isArray(v)||!v.length) v=JSON.parse(localStorage.getItem('ventas')||'null'); return Array.isArray(v)?v:[]; }catch(e){ return []; } }
+// Ventas de prueba viejas ("A", "B", "test"…): se filtran para que no salgan más.
+const _VENTA_JUNK = new Set(['a','b','c','test','prueba','producto a','producto b','aa','bb']);
+function _ventaEsPrueba(v){
+  if(!v) return false;
+  const names=[];
+  if(v.producto) names.push(v.producto);
+  if(v.nombre) names.push(v.nombre);
+  (v.productos||v.items||[]).forEach(it=>{ const n=it&&(it.producto||it.nombre||it.nm); if(n) names.push(n); });
+  if(!names.length) return false;
+  return names.every(n=>{ const s=String(n).trim().toLowerCase(); return s.length<=1 || _VENTA_JUNK.has(s); });
+}
+function lsVentas(){ try{ let v=JSON.parse(localStorage.getItem('registroVentas')||'null'); if(!Array.isArray(v)||!v.length) v=JSON.parse(localStorage.getItem('ventas')||'null'); return Array.isArray(v)?v.filter(x=>!_ventaEsPrueba(x)):[]; }catch(e){ return []; } }
 
 async function jget(url){ try{ const r=await fetch(url,{cache:'no-store'}); if(!r.ok) throw 0; return await r.json(); }catch(e){ return null; } }
 
@@ -822,10 +833,12 @@ async function cargarVentasFirebase(){
     const data = await jget(base+'/ventas.json');
     if(!data || typeof data!=='object') return;
     const fb = Object.values(data).filter(v=>v && v.id);
+    // Ventas de prueba viejas en Firebase: bórralas y no las vuelvas a mostrar.
+    fb.filter(_ventaEsPrueba).forEach(v=>{ fetch(base+'/ventas/'+v.id+'.json',{method:'DELETE'}).catch(()=>{}); });
     const porId = {};
     lsVentas().forEach(v=>{ porId[String(v.id)] = v; });
-    fb.forEach(v=>{ porId[String(v.id)] = Object.assign({}, porId[String(v.id)], v); });
-    const merged = Object.values(porId).sort((a,b)=>Number(b.id||0)-Number(a.id||0));
+    fb.filter(v=>!_ventaEsPrueba(v)).forEach(v=>{ porId[String(v.id)] = Object.assign({}, porId[String(v.id)], v); });
+    const merged = Object.values(porId).filter(v=>!_ventaEsPrueba(v)).sort((a,b)=>Number(b.id||0)-Number(a.id||0));
     try{ localStorage.setItem('registroVentas', JSON.stringify(merged.slice(0,500))); }catch(e){}
     VENTAS = merged;
     renderVentas(); renderInicio(); renderClientes();
