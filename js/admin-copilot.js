@@ -349,6 +349,8 @@ async function buildTasks(){
     return {p, score: views + wa*7 + Math.max(0, 4-num(p.stock))*3, views, wa};
   }).filter(x=>x.score>0).sort((a,b)=>b.score-a.score).slice(0,6);
   state.hot = hot;
+  state.factsVistas = facts.vistas; state.factsWhats = facts.whats;
+  trendSnapshot(facts.vistas, facts.whats);
   const topHot = hot.find(x=>num(x.p.stock)>0);
   if (topHot && (topHot.wa>=3 || topHot.views>=25)) addTask(tasks,{kind:'hot',urgency:3,icon:'🔥',pid:topHot.p.id,title:`Producto caliente: ${topHot.p.nombre}`,detail:`${topHot.views} vistas · ${topHot.wa} WhatsApp · stock ${num(topHot.p.stock)}. Publicarlo puede vender rápido.`,action:'Publicar',tab:'publicar-ahora'});
 
@@ -719,6 +721,82 @@ function renderCorreccionesIA(){
       : '<div class="tm-copilot-empty">✅ Catálogo impecable: sin problemas detectados.</div>'}
     <div class="tm-copilot-empty" style="padding:8px 4px;font-size:10px">Al aplicar, el cambio se guarda y se sincroniza con la tienda automáticamente.</div>`;
 }
+/* ══════════ TENDENCIAS: qué se ve más esta semana (reponé antes de agotarte) ══════════
+   Los analytics de la tienda son contadores acumulados (sin fecha). Para saber
+   "esta semana vs la anterior" guardamos una foto diaria de los contadores en el
+   teléfono y comparamos ventanas de 7 días. Necesita ~1 semana de historial;
+   mientras tanto avisa honestamente que está juntando datos. */
+function trendSnaps(){ try{ return JSON.parse(localStorage.getItem('tm_trend_snaps')||'[]'); }catch(e){ return []; } }
+function trendSnapshot(vistas, whats){
+  try{
+    const v = vistas||{}, w = whats||{};
+    const total = Object.values(v).reduce((s,x)=>s+num(x),0) + Object.values(w).reduce((s,x)=>s+num(x),0);
+    if(total<=0) return;                          // sin analytics todavía: no guardar vacío
+    const snaps = trendSnaps();
+    const hoy = new Date().toISOString().slice(0,10);
+    const last = snaps[snaps.length-1];
+    if(last && last.d===hoy){ last.v=v; last.w=w; }   // refrescar la foto de hoy
+    else snaps.push({d:hoy, v, w});
+    localStorage.setItem('tm_trend_snaps', JSON.stringify(snaps.slice(-21)));
+  }catch(e){}
+}
+function _catOf(p){ return (p&&p.categoria) || 'General'; }
+function trendReport(){
+  const nowV = state.factsVistas||{}, nowW = state.factsWhats||{};
+  const nowTotal = Object.values(nowV).reduce((s,x)=>s+num(x),0)+Object.values(nowW).reduce((s,x)=>s+num(x),0);
+  if(nowTotal<=0) return {status:'nodata'};
+  const snaps = trendSnaps();
+  const ahora = Date.now();
+  const pick = (dias)=>{ const objetivo=ahora-dias*864e5; let best=null,bd=Infinity;
+    snaps.forEach(s=>{ const t=Date.parse(s.d); const diff=Math.abs(t-objetivo); if(t<=ahora && diff<bd){ best=s; bd=diff; } }); return best; };
+  const s7 = pick(7);
+  if(!s7 || (ahora-Date.parse(s7.d)) < 3*864e5)
+    return {status:'building', dias: snaps.length?Math.max(1,Math.round((ahora-Date.parse(snaps[0].d))/864e5)):0};
+  const s14 = pick(14);
+  const ps = products();
+  const inter = (V,W,pid)=> num(V[pid]) + num(W[pid])*5;   // WhatsApp pesa más que una vista
+  const catNow={}, catPrev={}, prodNow={};
+  ps.forEach(p=>{
+    const pid=String(p.id), cat=_catOf(p);
+    const week = Math.max(0, inter(nowV,nowW,pid) - inter(s7.v,s7.w,pid));
+    prodNow[pid]=week; catNow[cat]=(catNow[cat]||0)+week;
+    if(s14) catPrev[cat]=(catPrev[cat]||0)+Math.max(0, inter(s7.v,s7.w,pid) - inter(s14.v,s14.w,pid));
+  });
+  const cats = Object.keys(catNow).map(cat=>{
+    const nowN=catNow[cat]||0, prevN=catPrev[cat]||0;
+    const ratio = prevN>0 ? nowN/prevN : (nowN>=8?3:1);
+    return {cat, now:nowN, prev:prevN, ratio};
+  }).filter(c=>c.now>=6 && c.ratio>=1.8).sort((a,b)=>b.ratio-a.ratio).slice(0,3);
+  const cards = cats.map(c=>{
+    const enRiesgo = ps.filter(p=>_catOf(p)===c.cat && p.activo!==false && num(p.stock)>0 && num(p.stock)<=4)
+      .sort((a,b)=>num(a.stock)-num(b.stock)).slice(0,3);
+    const topProd = ps.filter(p=>_catOf(p)===c.cat && num(p.stock)>0)
+      .sort((a,b)=>(prodNow[String(b.id)]||0)-(prodNow[String(a.id)]||0))[0];
+    return {...c, enRiesgo, topProd};
+  });
+  return {status:'ok', cards};
+}
+function renderTendencias(){
+  const r = trendReport();
+  if(r.status==='nodata') return '';
+  if(r.status==='building')
+    return `<div class="tm-copilot-smart" style="border-color:rgba(139,92,246,.4)"><h4>📈 Tendencias</h4><small>Estoy juntando datos de qué se ve más cada semana (necesito ~1 semana de historial; llevo ${r.dias} día${r.dias===1?'':'s'}). Vuelve pronto y te digo qué categoría sube para que repongas a tiempo.</small></div>`;
+  if(!r.cards.length)
+    return `<div class="tm-copilot-smart" style="border-color:rgba(139,92,246,.4)"><h4>📈 Tendencias</h4><small>Nada disparado esta semana: el interés está estable entre categorías.</small></div>`;
+  return `<div class="tm-copilot-smart" style="border-color:rgba(139,92,246,.5)"><h4>📈 Tendencias de la semana</h4>
+    <small>Lo que se está viendo más — reponé antes de que se agote.</small>
+    ${r.cards.map(c=>{
+      const x = c.ratio>=3?'3×':c.ratio>=2?'2×':'+'+Math.round((c.ratio-1)*100)+'%';
+      const pubBtn = c.topProd ? `<button type="button" class="tm-copilot-btn blue" data-cop="postSet" data-pid="${esc(String(c.topProd.id))}">📣 Publicar el top</button>` : '';
+      return `<div class="tm-copilot-mini-card" style="margin-top:9px">
+        <b>${esc(c.cat)} se ve ${x} más esta semana</b>
+        <small>${c.now} interacciones${c.topProd?' · más buscado: '+esc(c.topProd.nombre):''}</small>
+        ${c.enRiesgo.length ? `<div style="margin-top:7px;font-size:12px;color:#f5a623">⚠️ Con poco stock: ${c.enRiesgo.map(p=>esc(p.nombre)+' ('+num(p.stock)+')').join(', ')}</div>` : ''}
+        <div class="tm-copilot-task-actions" style="margin-top:8px">${c.enRiesgo.length?'<button type="button" class="tm-copilot-btn primary" data-cop="task" data-tab="manage-products">📦 Revisar stock</button>':''}${pubBtn}</div>
+      </div>`;
+    }).join('')}
+  </div>`;
+}
 /* ══════════ POST LISTO: "publica esto hoy" (texto + hashtags + 1 toque) ══════════
    El agente elige un producto para publicar hoy (interés real + stock + foto,
    evitando lo que ya publicaste hace poco) y arma la publicación lista.
@@ -771,7 +849,8 @@ function postCandidatos(){
 function renderPostListo(){
   const cands = postCandidatos();
   if(!cands.length) return '';
-  const idx = ((state.postIdx||0)%cands.length + cands.length)%cands.length;
+  let idx = ((state.postIdx||0)%cands.length + cands.length)%cands.length;
+  if(state.postForcePid){ const fi=cands.findIndex(c=>String(c.p.id)===String(state.postForcePid)); if(fi>=0) idx=fi; }
   const c = cands[idx], p = c.p;
   const motivo = c.hot ? 'tiene interés esta semana' : c.dias>30 ? 'hace rato no lo publicas' : 'buen stock y foto lista';
   return `<div class="tm-copilot-smart" style="border-color:rgba(37,211,102,.45)">
@@ -833,7 +912,7 @@ function renderPushSmart(){
 }
 function renderMarketing(){
   const r=ranking(), bundles=suggestedBundles(), responses=responseTemplates();
-  return `${renderPushSmart()}<div class="tm-copilot-mini">
+  return `${renderTendencias()}${renderPushSmart()}<div class="tm-copilot-mini">
     <div class="tm-copilot-mini-card"><b>🏆 Top para impulsar</b>${r.top.slice(0,4).map((x,i)=>`<div class="tm-copilot-rank-row"><span>${i+1}. ${esc(x.p.nombre)}</span><em>${x.score}</em></div>`).join('')||'<small>Sin datos suficientes</small>'}</div>
     <div class="tm-copilot-mini-card"><b>⚠️ Atención</b>${r.attention.slice(0,4).map(x=>`<div class="tm-copilot-rank-row"><span>${esc(x.p.nombre)}</span><em>${esc(x.reasons.join(', '))}</em></div>`).join('')||'<small>Catálogo estable</small>'}</div>
   </div>
@@ -1457,7 +1536,8 @@ function bindEvents(){
       queuePushForProduct(el.dataset.pid, {title, body});
       remember && remember('smart_push', {productName:p.nombre, pid:p.id, desc});
     }
-    if(act==='postOtro'){ state.postIdx=(state.postIdx||0)+1; renderSheet(); }
+    if(act==='postSet'){ state.postForcePid=el.dataset.pid; state.view='hoy'; localStorage.setItem(LS.view,'hoy'); renderSheet(); toast('📣 Te preparé la publicación en ✅ Hoy'); }
+    if(act==='postOtro'){ state.postForcePid=null; state.postIdx=(state.postIdx||0)+1; renderSheet(); }
     if(act==='postCopy'){ const p=products().find(x=>String(x.id)===String(el.dataset.pid)); if(p) copyText(postTexto(p),'Publicación'); }
     if(act==='postEstado'||act==='postWhats'||act==='postFace'){
       const pid=el.dataset.pid;
