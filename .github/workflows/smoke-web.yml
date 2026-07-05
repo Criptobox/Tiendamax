@@ -1,0 +1,31 @@
+name: Smoke web (tienda + admin)
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '*.html'
+      - 'js/**'
+      - 'css/**'
+      - 'sw.js'
+  workflow_dispatch:
+
+concurrency:
+  group: smoke-web
+  cancel-in-progress: true
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Instalar Playwright + Chromium
+        run: |
+          npm i --no-save playwright@1.45.0
+          npx playwright install --with-deps chromium
+      - name: Smoke test
+        run: node tests/smoke-web.mjs

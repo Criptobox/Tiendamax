@@ -1774,7 +1774,7 @@ async function enviarPushManualAdmin() {
         const reqRes = await fetch(`${rtdbUrl}/admin_push_requests/${reqId}.json`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ title, body, url, ts: Date.now() })
+            body: JSON.stringify({ proof: (localStorage.getItem('tm_auth_hash_v3')||''), title, body, url, ts: Date.now() })
         });
         if (!reqRes.ok) {
             if (status) status.textContent = `❌ Error guardando en Firebase: ${reqRes.status}`;

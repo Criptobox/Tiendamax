@@ -660,7 +660,7 @@ function _ndDesintegrarYTransicion(idxSiguiente) {
         if (imgWrap) {
             const fallback = (typeof obtenerIconoCategoria === 'function') ? obtenerIconoCategoria(p.categoria) : '📦';
             if (p.imagen) {
-                imgWrap.innerHTML = '<img src="' + escapeAttr(p.imagen) + '" alt="' + escapeAttr(p.nombre) + '" loading="lazy" style="width:100%;height:100%;object-fit:cover" onerror="this.parentNode.textContent=\'' + fallback + '\'">';
+                imgWrap.innerHTML = '<img src="' + escapeAttr(p.imagen) + '" alt="' + escapeAttr(p.nombre) + '" loading="lazy" style="width:100%;height:100%;object-fit:cover" onerror="if(this.parentNode)this.parentNode.textContent=\'' + fallback + '\'">';
             } else {
                 imgWrap.textContent = fallback;
             }
@@ -752,7 +752,7 @@ function renderHeroGaleria() {
                 // El primer producto del hero es el LCP: cárgalo eager + prioridad alta.
                 // En la rotación (idx>0) va lazy para no competir por ancho de banda.
                 const prio = (idx === 0) ? 'loading="eager" fetchpriority="high"' : 'loading="lazy"';
-                imgWrap.innerHTML = '<img src="' + escapeAttr(p.imagen) + '" alt="' + escapeAttr(p.nombre) + '" ' + prio + ' style="width:100%;height:100%;object-fit:cover" onerror="this.parentNode.textContent=\'' + fallback + '\'">';
+                imgWrap.innerHTML = '<img src="' + escapeAttr(p.imagen) + '" alt="' + escapeAttr(p.nombre) + '" ' + prio + ' style="width:100%;height:100%;object-fit:cover" onerror="if(this.parentNode)this.parentNode.textContent=\'' + fallback + '\'">';
             } else {
                 imgWrap.textContent = fallback;
             }

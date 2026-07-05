@@ -97,7 +97,7 @@
       }
     },
     "lista_espera": {
-      ".read": true,
+      ".read": "auth != null",
       ".write": false,
       "$productoId": {
         "$entradaId": {
@@ -136,8 +136,8 @@
     },
     "admin_push_requests": {
       "$reqId": {
-        ".write": true,
-        ".validate": "newData.hasChildren(['title','body','ts']) && newData.child('title').isString() && newData.child('title').val().length >= 1 && newData.child('title').val().length <= 100 && newData.child('body').isString() && newData.child('body').val().length >= 1 && newData.child('body').val().length <= 300 && newData.child('ts').isNumber()"
+        ".write": "newData.child('proof').val() === root.child('admin_auth/hash').val()",
+        ".validate": "newData.hasChildren(['title','body','ts','proof']) && newData.child('title').isString() && newData.child('title').val().length >= 1 && newData.child('title').val().length <= 100 && newData.child('body').isString() && newData.child('body').val().length >= 1 && newData.child('body').val().length <= 300 && newData.child('ts').isNumber()"
       },
       ".read": false,
       ".write": false
@@ -154,10 +154,18 @@
       "$tokenId": {
         ".write": "!newData.exists() || (root.child('admin_meta/pinHash').exists() && newData.child('proof').val() === root.child('admin_meta/pinHash').val())",
         ".validate": "newData.hasChildren(['token','ts','proof'])",
-        "token": { ".validate": "newData.isString() && newData.val().length >= 4 && newData.val().length < 500" },
-        "ts": { ".validate": "newData.isNumber()" },
-        "proof": { ".validate": "newData.isString() && newData.val().length == 64" },
-        "label": { ".validate": "newData.isString() && newData.val().length < 80" }
+        "token": {
+          ".validate": "newData.isString() && newData.val().length >= 4 && newData.val().length < 500"
+        },
+        "ts": {
+          ".validate": "newData.isNumber()"
+        },
+        "proof": {
+          ".validate": "newData.isString() && newData.val().length == 64"
+        },
+        "label": {
+          ".validate": "newData.isString() && newData.val().length < 80"
+        }
       },
       ".read": false,
       ".write": false
