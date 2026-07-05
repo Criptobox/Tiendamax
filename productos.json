@@ -2096,5 +2096,39 @@
       "24V / 4000W"
     ],
     "fechaAgregado": "2026-07-04T15:43:20.783Z"
+  },
+  {
+    "id": 1783221896639,
+    "nombre": "Changan CS75 PLUS 2024",
+    "descripcion": "Changan CS75 PLUS 2024 – ¡Nueva de Paquete! (Único Dueño)\n​Precio: 33000usd\nKilometraje: Menos de 13,000 km\nUbicación: Habana\n​Descripción:\n¿Buscas un SUV premium, potente y tecnológico sin pagar precios astronómicos? Se vende Changan CS75 PLUS año 2024 en estado inmaculado. Único dueño, con menos de 13,000 km caminados. Prácticamente directo de agencia, con un diseño espectacular y el máximo nivel de confort y seguridad disponible en el mercado.\n​🚀 Rendimiento y Motor:\n​Motor: 1.5L o 2.0L Turbo Blue Core (mucha potencia con excelente consumo).\n​Transmisión: Automática de última generación (con modos de manejo Eco/Normal/Sport).\n​🛠️ Tecnología y Confort de Lujo:\n​Pantalla Dual Flotante: Doble pantalla gigante para el tablero de instrumentos y el sistema de infoentretenimiento.\n​Techo Panorámico: Gran techo corredizo de cristal que cubre casi todo el vehículo.\n​Interiores Premium: Asientos de cuero tipo butaca deportiva, eléctricos y ultra cómodos.\n​Encendido por botón, llave inteligente y climatizador automático bizona.\n​🛡️ Seguridad Inteligente (¡Full Asistencias!):\n​Cámara 360° HD: Visión total del entorno en tiempo real para parquear sin un solo rasguño.\n​Sensores de Proximidad: Delanteros y traseros.\n​Radar de Manejo Avanzado (ADAS): Incluye control de crucero adaptativo, frenado autónomo de emergencia y alerta de colisión frontal.\n​Múltiples bolsas de aire (Airbags), control de estabilidad (ESP), frenos ABS y asistente de arranque/descenso en pendientes.\n​📝 Estado del Vehículo:\n​Pintura, carrocería e interiores 10/10 (Huele a nuevo).\n​Todos sus mantenimientos al día.\n​Papeles listos para traspaso inmediato.\n​💬 ¡Una oportunidad única! No dejes que te la ganen.",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783221876387.jpg",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783221876387.jpg",
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783221878802.jpg",
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783221880745.jpg",
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783221882351.jpg",
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783221883825.jpg",
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783221885568.jpg",
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783221887436.jpg",
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783221888712.jpg",
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783221890323.jpg",
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783221892239.jpg",
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783221893885.jpg",
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783221895127.jpg"
+    ],
+    "precioActual": 33000,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 1,
+    "comision": 1000,
+    "comisionMoneda": "USD",
+    "categoria": "CARROS",
+    "subcategoria": "",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "specs": [],
+    "fechaAgregado": "2026-07-05T03:24:56.640Z"
   }
 ]
