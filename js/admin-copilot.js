@@ -213,7 +213,16 @@ function injectStyles(){
   .tm-copilot-task{background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:11px;margin-bottom:9px;border-left:3px solid #ff6b35}.tm-copilot-task.u3{border-left-color:#e74c3c}.tm-copilot-task.u2{border-left-color:#ff6b35}.tm-copilot-task.u1{border-left-color:#2aabee}.tm-copilot-task-top{display:flex;gap:10px}.tm-copilot-ico{width:34px;height:34px;border-radius:13px;background:rgba(255,107,53,.13);display:flex;align-items:center;justify-content:center;font-size:18px;flex:0 0 auto}.tm-copilot-task-main{flex:1;min-width:0}.tm-copilot-task-main b{display:block;font-size:13px;line-height:1.25}.tm-copilot-task-main small{display:block;color:#aaa;font-size:11px;line-height:1.35;margin-top:4px}.tm-copilot-task-actions{display:flex;gap:7px;margin-top:10px}.tm-copilot-task-actions .tm-copilot-btn{padding:8px 9px;flex:1}.tm-copilot-agents{display:flex;gap:8px;overflow:auto;padding-bottom:4px;margin:8px 0 12px}.tm-copilot-agent{min-width:154px;background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:10px}.tm-copilot-agent.crit{border-color:rgba(231,76,60,.35);background:rgba(231,76,60,.08)}.tm-copilot-agent b{display:block;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.tm-copilot-agent small{display:block;color:#999;font-size:10px;margin-top:4px;line-height:1.25}.tm-copilot-agent .st{display:inline-flex;margin-top:7px;border-radius:99px;padding:3px 7px;font-size:9px;font-weight:900;background:rgba(37,211,102,.13);color:#75f0a1}.tm-copilot-agent.crit .st{background:rgba(231,76,60,.16);color:#ff9187}.tm-copilot-hot{display:flex;gap:9px;overflow:auto;padding-bottom:4px;margin:8px 0 12px}.tm-copilot-hot-card{min-width:172px;background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:10px}.tm-copilot-hot-card b{display:block;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.tm-copilot-hot-card small{display:block;color:#999;font-size:10px;margin-top:4px}.tm-copilot-empty{color:#aaa;text-align:center;padding:18px 8px;font-size:13px}.tm-copilot-chip{display:inline-flex;border-radius:999px;padding:3px 7px;background:rgba(255,107,53,.14);color:#ffae8a;font-size:10px;font-weight:900;margin-top:6px}.tm-copilot-toast{position:fixed;left:50%;bottom:calc(86px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(120%);z-index:100000;width:calc(min(560px,100%) - 28px);background:#1a1a22;border:1px solid rgba(37,211,102,.32);border-radius:17px;padding:12px;color:#effff3;box-shadow:0 16px 50px rgba(0,0,0,.45);transition:.22s ease;font-size:13px}.tm-copilot-toast.show{transform:translateX(-50%) translateY(0)}
   @media (min-width: 760px){.tm-copilot-bubble{bottom:24px;right:24px}.tm-copilot-sheet{right:22px;left:auto;bottom:18px;transform:translateY(110%);border-radius:26px;width:430px;max-height:82vh}.tm-copilot-sheet.show{transform:translateY(0)}.tm-copilot-summary{grid-template-columns:repeat(2,1fr)}}@media (max-width:380px){.tm-copilot-summary{grid-template-columns:repeat(2,1fr)}.tm-copilot-actions{grid-template-columns:1fr}.tm-copilot-task-actions{flex-direction:column}}
   body:not(.admin-mode) .tm-copilot-bubble, body:not(.admin-mode) .tm-copilot-sheet, body:not(.admin-mode) .tm-copilot-toast{display:none!important}.tm-copilot-toast:not(.show){opacity:0!important;pointer-events:none!important}
-  .tm-promo-field{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);border-radius:12px;padding:10px 12px;color:#fff;font-size:13px;width:100%;box-sizing:border-box;font-family:inherit;outline:none}.tm-promo-field:focus{border-color:rgba(255,107,53,.55)}.tm-promo-field option{background:#1a1a2e;color:#fff}`;
+  .tm-promo-field{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);border-radius:12px;padding:10px 12px;color:#fff;font-size:13px;width:100%;box-sizing:border-box;font-family:inherit;outline:none}.tm-promo-field:focus{border-color:rgba(255,107,53,.55)}.tm-promo-field option{background:#1a1a2e;color:#fff}
+  .tm-chat-log{max-height:46vh;overflow:auto;display:flex;flex-direction:column;gap:9px;padding:4px 2px}
+  .tm-chat-u,.tm-chat-b{border-radius:14px;padding:9px 12px;font-size:13px;line-height:1.5;max-width:92%}
+  .tm-chat-u{align-self:flex-end;background:rgba(255,107,53,.16);border:1px solid rgba(255,107,53,.3)}
+  .tm-chat-b{align-self:flex-start;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09)}
+  .tm-chat-u b,.tm-chat-b b{display:block;font-size:10px;opacity:.7;margin-bottom:3px;text-transform:uppercase;letter-spacing:.04em}
+  .tm-chat-input{display:flex;gap:8px;margin-top:10px}
+  .tm-chat-input input{flex:1;min-width:0;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);border-radius:12px;padding:11px 12px;color:#fff;font-size:14px;outline:none}
+  .tm-chat-input input:focus{border-color:rgba(255,107,53,.55)}
+  .tmcp-chip{display:inline-flex;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);color:#d8d8df;border-radius:999px;padding:7px 11px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;margin:2px}`;
   document.head.appendChild(st);
 }
 
@@ -342,9 +351,73 @@ function updateBubble(){
   if (crit) { b.classList.remove('tm-copilot-pulse'); void b.offsetWidth; b.classList.add('tm-copilot-pulse'); }
 }
 function tabsHtml(view){
-  const tabs=[['hoy','✅ Hoy'],['correcciones','🩺 Correcciones'],['agentes','🤖 Agentes'],['marketing','📣 Marketing'],['memoria','🧠 Memoria']];
+  const tabs=[['hoy','✅ Hoy'],['chat','💬 Chat'],['correcciones','🩺 Correcciones'],['agentes','🤖 Agentes'],['marketing','📣 Marketing'],['memoria','🧠 Memoria']];
   return `<div class="tm-copilot-tabs">${tabs.map(t=>`<button type="button" class="tm-copilot-tab ${view===t[0]?'active':''}" data-cop="view" data-view="${t[0]}">${t[1]}</button>`).join('')}</div>`;
 }
+
+/* ══════════ CHAT: pregúntale al agente con tus datos reales ══════════ */
+let CHAT_HIST = [];   // [{rol:'user'|'bot', txt}]
+let CHAT_BUSY = false;
+
+// Resumen COMPACTO del estado real de la tienda para darle contexto a la IA.
+function chatContexto(){
+  const ps = products();
+  let vs = []; try{ vs = JSON.parse(localStorage.getItem('registroVentas')||'[]'); }catch(e){}
+  const tasaMN = (()=>{ try{ return parseInt(localStorage.getItem('tasaMN')||'0'); }catch(e){ return 0; } })();
+  const conStock = ps.filter(p=>num(p.stock)>0);
+  const agotados = ps.filter(p=>num(p.stock)<=0);
+  const bajos = ps.filter(p=>num(p.stock)>0&&num(p.stock)<=3);
+  const cats = {}; ps.forEach(p=>{ const c=p.categoria||'General'; cats[c]=(cats[c]||0)+1; });
+  const totalVendido = vs.reduce((s,v)=>s+num(v.total),0);
+  const ganancia = vs.reduce((s,v)=>s+num(v.ganancia!=null?v.ganancia:v.comision),0);
+  const hace30 = Date.now()-30*864e5;
+  const ventas30 = vs.filter(v=>{ const t=v.id||Date.parse(v.fecha||0); return t>hace30; });
+  const topStock = conStock.slice().sort((a,b)=>num(b.stock)-num(a.stock)).slice(0,10).map(p=>`${p.nombre} ($${num(p.precioActual)}, stock ${num(p.stock)}, ${p.categoria||'—'})`);
+  const topHot = (state.hot||[]).slice(0,6).map(x=>`${x.p.nombre} (${x.views} vistas, ${x.wa} WhatsApp)`);
+  return [
+    'Tienda: TiendaMax (Cuba). Ventas por WhatsApp, entrega coordinada. Moneda USD + MN (tasa '+tasaMN+').',
+    'Catálogo: '+ps.length+' productos, '+conStock.length+' con stock, '+agotados.length+' agotados.',
+    'Categorías: '+Object.entries(cats).map(([c,n])=>c+' '+n).join(', ')+'.',
+    'Stock bajo (≤3): '+(bajos.map(p=>p.nombre).slice(0,12).join(', ')||'ninguno')+'.',
+    'Agotados: '+(agotados.map(p=>p.nombre).slice(0,12).join(', ')||'ninguno')+'.',
+    'Ventas: '+vs.length+' registradas, $'+totalVendido.toFixed(2)+' vendido, $'+ganancia.toFixed(2)+' de comisión. Últimos 30 días: '+ventas30.length+' ventas.',
+    'Productos con más interés (vistas/WhatsApp): '+(topHot.join(' · ')||'sin datos aún')+'.',
+    'Productos disponibles (muestra): '+topStock.join(' · ')+'.'
+  ].join('\n');
+}
+
+function renderChat(){
+  const key=(localStorage.getItem('anthropicApiKey')||'').trim();
+  const sugerencias=['¿Qué publico hoy?','¿Qué está caro o barato?','Arma una oferta de energía','¿Qué debo reponer?','Hazme un texto para WhatsApp del más vendido'];
+  const hist = CHAT_HIST.length ? CHAT_HIST.map(m=>
+    m.rol==='user'
+      ? `<div class="tm-chat-u"><b>Tú</b><div>${esc(m.txt)}</div></div>`
+      : `<div class="tm-chat-b"><b>🤖 Agente</b><div>${esc(m.txt).replace(/\n/g,'<br>')}</div></div>`
+  ).join('') : '<div class="tm-copilot-empty">Pregúntame lo que quieras sobre tu tienda. Respondo con tus datos reales.</div>';
+  return `${key?'':'<div class="tm-copilot-smart" style="border-color:rgba(245,158,11,.4)"><h4>⚠️ Falta tu API key</h4><small>Para que el agente conteste, pega una key en ⚙️ Configuración → API Key de IA (Gemini/OpenRouter/Groq/DeepSeek). Es gratis en Gemini y Groq.</small></div>'}
+    <div class="tm-chat-log" id="tmChatLog">${hist}${CHAT_BUSY?'<div class="tm-chat-b"><b>🤖 Agente</b><div>⏳ pensando…</div></div>':''}</div>
+    <div class="tm-copilot-chips" style="margin:8px 0">${sugerencias.map(s=>`<button type="button" class="tmcp-chip" data-cop="chatSug" data-q="${esc(s)}">${esc(s)}</button>`).join('')}</div>
+    <div class="tm-chat-input"><input id="tmChatInput" placeholder="Escribe tu pregunta…" ${CHAT_BUSY?'disabled':''}><button type="button" class="tm-copilot-btn primary" data-cop="chatSend" ${CHAT_BUSY?'disabled':''}>Enviar</button></div>
+    ${CHAT_HIST.length?'<div style="text-align:center;margin-top:8px"><button type="button" class="tm-copilot-btn" data-cop="chatClear" style="font-size:11px">🗑 Limpiar conversación</button></div>':''}`;
+}
+
+async function chatEnviar(pregunta){
+  pregunta=String(pregunta||'').trim(); if(!pregunta||CHAT_BUSY) return;
+  const key=(localStorage.getItem('anthropicApiKey')||'').trim();
+  if(!key){ toast('Configura tu API key en ⚙️ Configuración'); return; }
+  CHAT_HIST.push({rol:'user',txt:pregunta});
+  CHAT_BUSY=true; renderSheet(); _chatScroll();
+  const contexto=chatContexto();
+  const historial=CHAT_HIST.slice(-6,-1).map(m=>(m.rol==='user'?'Dueño: ':'Agente: ')+m.txt).join('\n');
+  const prompt='Eres el copiloto de negocio de una tienda online cubana que vende por WhatsApp. Respondes al DUEÑO, breve y práctico (máx 6 líneas), en español cubano natural, con acciones concretas y sin inventar datos que no estén abajo. Usa los números reales.\n\n=== DATOS REALES DE LA TIENDA ===\n'+contexto+'\n\n'+(historial?('=== CONVERSACIÓN PREVIA ===\n'+historial+'\n\n'):'')+'=== PREGUNTA DEL DUEÑO ===\n'+pregunta;
+  let resp=null;
+  try{ resp=await iaLlamarModelo(prompt); }catch(e){}
+  CHAT_BUSY=false;
+  CHAT_HIST.push({rol:'bot',txt: (resp&&resp.trim()) ? resp.trim() : '❌ No pude responder. Revisa tu API key en Configuración o intenta de nuevo.'});
+  if(CHAT_HIST.length>40) CHAT_HIST=CHAT_HIST.slice(-40);
+  renderSheet(); _chatScroll();
+}
+function _chatScroll(){ setTimeout(()=>{ const l=$('#tmChatLog'); if(l) l.scrollTop=l.scrollHeight; },50); }
 
 /* ══════════ AGENTE IA · CORRECCIONES (antes vista propia del admin) ══════════
    Detecta problemas del catálogo y los ARREGLA EN UN TOQUE: aplica el cambio,
@@ -1045,6 +1118,7 @@ window.pubMountPromo = function() {
 // ── FIN PROMO ──────────────────────────────────────────────────────
 
 function renderCopilotView(view, topTasks){
+  if(view==='chat') return renderChat();
   if(view==='correcciones') return renderCorreccionesIA();
   if(view==='agentes') return renderAgents();
   if(view==='marketing') return renderMarketing();
@@ -1160,6 +1234,10 @@ function enableAlerts(){
   tmActivarAlertaAdmin();
 }
 function bindEvents(){
+  // Enter en el chat = enviar
+  document.addEventListener('keydown', e=>{
+    if(e.key==='Enter' && e.target && e.target.id==='tmChatInput'){ e.preventDefault(); chatEnviar(e.target.value); }
+  });
   document.addEventListener('click', e=>{
     const pend = e.target.closest && e.target.closest('#tmBtnPendientes');
     if (pend) { e.preventDefault(); e.stopPropagation(); if (e.stopImmediatePropagation) e.stopImmediatePropagation(); openSheet(); return; }
@@ -1185,6 +1263,9 @@ function bindEvents(){
     if(act==='iaApply'){ const iss=iaScan().find(x=>x.key===el.dataset.key); if(iss&&iaAplicar(iss)){ iaPersistir('✅ '+iss.fixLabel); } state.view='correcciones'; renderSheet(); }
     if(act==='iaDismiss'){ iaDismiss(el.dataset.key); state.view='correcciones'; renderSheet(); }
     if(act==='iaUndo') iaDeshacer();
+    if(act==='chatSend'){ const inp=$('#tmChatInput'); if(inp){ chatEnviar(inp.value); } }
+    if(act==='chatSug'){ chatEnviar(el.dataset.q); }
+    if(act==='chatClear'){ CHAT_HIST=[]; renderSheet(); }
     if(act==='iaDescIA') iaDescripcionesConIA();
     if(act==='promoPickImg') { const inp = document.getElementById('tmPromoImgInput'); if(inp) inp.click(); }
     if(act==='promoTema') { promoData.tema = el.dataset.tema; state.view = 'promo'; renderSheet(); }
