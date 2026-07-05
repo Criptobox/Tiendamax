@@ -445,6 +445,29 @@ function iaScan(){
     // 💡 sin imagen
     if(!p.imagen) push({level:'info',ico:'🖼️',type:'img',pid,nombre,detalle:'sin foto principal',fix:null});
   });
+  // 💡 Radar de precios: estás muy por debajo de la mediana del mercado → oportunidad de subir
+  try{
+    const rad = window.__tmRadarCache;
+    if(rad && Array.isArray(rad.productos)){
+      const normN = s2 => String(s2||'').toLowerCase().trim().replace(/\s+/g,' ');
+      rad.productos.forEach(r0=>{
+        const med = r0.mercado && r0.mercado.mediana, tuyo = r0.tuPrecio;
+        if(!(med && tuyo && tuyo < med*0.85)) return;
+        const p = ps.find(x=>normN(x.nombre)===normN(r0.nombre)); if(!p) return;
+        const nuevo = Math.round(med*0.85);
+        const o = {level:'info',ico:'📡',type:'radar',pid:String(p.id),nombre:p.nombre,
+          detalle:'tú $'+Number(tuyo).toFixed(0)+' · mercado $'+Number(med).toFixed(0)+' → subir a $'+nuevo,
+          fix:{campo:'precioActual',valor:nuevo},fixLabel:'Subir a $'+nuevo};
+        o.key=o.type+':'+o.pid; if(!skip.has(o.key)) issues.push(o);
+      });
+    } else if(rad===undefined){
+      window.__tmRadarCache=null; // evitar re-disparos
+      fetch('radar.json?_='+Date.now(),{cache:'no-store'}).then(r=>r.ok?r.json():null).then(j=>{
+        window.__tmRadarCache=j||null;
+        if(j && state.view==='correcciones') renderSheet();
+      }).catch(()=>{ window.__tmRadarCache=null; });
+    }
+  }catch(e){}
   return issues;
 }
 
@@ -460,22 +483,81 @@ function iaPersistir(msjToast){
   if(msjToast) toast(msjToast+' — guardado y sincronizando ✓');
   try{ if(typeof window.renderProductos==='function') window.renderProductos(); }catch(e){}
 }
-function iaAplicar(issue){
+
+/* ── Llamada a IA real (opcional, usa la key de ⚙️ Config → API Key de IA) ──
+   Detecta proveedor por prefijo: AIza=Gemini · sk-or=OpenRouter · gsk_=Groq · sk-=DeepSeek */
+async function iaLlamarModelo(prompt){
+  const key=(localStorage.getItem('anthropicApiKey')||'').trim();
+  if(!key) return null;
+  const t=25000, ctrl=new AbortController(); const tid=setTimeout(()=>ctrl.abort(),t);
+  try{
+    let r,j;
+    if(key.startsWith('AIza')){
+      r=await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key='+key,{method:'POST',headers:{'Content-Type':'application/json'},signal:ctrl.signal,body:JSON.stringify({contents:[{parts:[{text:prompt}]}]})});
+      j=await r.json(); return j.candidates?.[0]?.content?.parts?.[0]?.text||null;
+    }
+    const cfg = key.startsWith('sk-or') ? {url:'https://openrouter.ai/api/v1/chat/completions',model:'openrouter/auto'}
+      : key.startsWith('gsk_') ? {url:'https://api.groq.com/openai/v1/chat/completions',model:'llama-3.3-70b-versatile'}
+      : {url:'https://api.deepseek.com/chat/completions',model:'deepseek-chat'};
+    r=await fetch(cfg.url,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},signal:ctrl.signal,body:JSON.stringify({model:cfg.model,messages:[{role:'user',content:prompt}],max_tokens:400})});
+    j=await r.json(); return j.choices?.[0]?.message?.content||null;
+  }catch(e){ return null; }
+  finally{ clearTimeout(tid); }
+}
+async function iaDescripcionesConIA(){
+  const key=(localStorage.getItem('anthropicApiKey')||'').trim();
+  if(!key){ toast('Configura tu API key en ⚙️ Configuración → API Key de IA'); return; }
+  const pendientes=iaScan().filter(i=>i.level==='urgente'&&i.type==='desc').slice(0,10);
+  if(!pendientes.length){ toast('No hay productos sin descripción'); return; }
+  toast('🤖 Generando '+pendientes.length+' descripciones con IA…');
+  const grupo=[]; let ok=0;
+  for(const iss of pendientes){
+    const p=(window.productos||[]).find(x=>String(x.id)===iss.pid); if(!p) continue;
+    const prompt='Escribe una descripción de venta para una tienda online cubana (entrega en Cuba, pedido por WhatsApp). Producto: "'+(p.nombre||'')+'". Categoría: '+(p.categoria||'General')+'. Precio: $'+Number(p.precioActual||0).toFixed(2)+' USD.'+(p.garantia?' Garantía: '+p.garantia+'.':'')+' Entre 200 y 350 caracteres, tono cercano y confiable, sin emojis, sin markdown, un solo párrafo.';
+    const txt=await iaLlamarModelo(prompt);
+    if(txt && txt.trim().length>=120){
+      grupo.push({pid:iss.pid,campo:'descripcion',antes:p.descripcion});
+      p.descripcion=txt.trim().slice(0,450);
+      try{ if(typeof window.marcarProductoModificado==='function') window.marcarProductoModificado(p.id); }catch(e){}
+      ok++;
+    }
+  }
+  if(ok){ iaUndoPush(grupo, ok+' descripciones IA'); iaPersistir('🤖 '+ok+' descripciones generadas con IA'); }
+  else toast('❌ La IA no respondió — revisa la key o usa el generador local (Aplicar urgentes)');
+  state.view='correcciones'; renderSheet();
+}
+function iaUndoPila(){ try{ const a=JSON.parse(localStorage.getItem('tm_ia_undo')||'[]'); return Array.isArray(a)?a:[]; }catch(e){ return []; } }
+function iaUndoPush(grupo,label){ try{ const a=iaUndoPila(); a.push({grupo,label,ts:Date.now()}); localStorage.setItem('tm_ia_undo',JSON.stringify(a.slice(-20))); }catch(e){} }
+function iaDeshacer(){
+  const a=iaUndoPila(); const ult=a.pop();
+  if(!ult){ toast('Nada que deshacer'); return; }
+  let n=0;
+  ult.grupo.forEach(g=>{ const p=(window.productos||[]).find(x=>String(x.id)===g.pid); if(p){ p[g.campo]=g.antes; try{ if(typeof window.marcarProductoModificado==='function') window.marcarProductoModificado(p.id); }catch(e){} n++; } });
+  try{ localStorage.setItem('tm_ia_undo',JSON.stringify(a)); }catch(e){}
+  if(n) iaPersistir('↩️ Deshecho: '+(ult.label||n+' cambios'));
+  state.view='correcciones'; renderSheet();
+}
+function iaAplicar(issue, _sinUndo){
   const p=(window.productos||[]).find(x=>String(x.id)===issue.pid);
   if(!p||!issue.fix) return false;
+  const antes=p[issue.fix.campo];
   p[issue.fix.campo]=issue.fix.valor;
+  if(!_sinUndo) iaUndoPush([{pid:issue.pid,campo:issue.fix.campo,antes}], issue.fixLabel+': '+String(issue.nombre).slice(0,40));
   try{ if(typeof window.marcarProductoModificado==='function') window.marcarProductoModificado(p.id); }catch(e){}
   return true;
 }
 function iaAplicarUrgentes(){
   const list=iaScan().filter(i=>i.level==='urgente'&&i.fix);
-  let n=0; list.forEach(i=>{ if(iaAplicar(i)) n++; });
+  const grupo=[]; let n=0;
+  list.forEach(i=>{ const p=(window.productos||[]).find(x=>String(x.id)===i.pid); const antes=p?p[i.fix.campo]:undefined; if(iaAplicar(i,true)){ grupo.push({pid:i.pid,campo:i.fix.campo,antes}); n++; } });
+  if(grupo.length) iaUndoPush(grupo, n+' urgentes');
   if(n) iaPersistir('✅ '+n+' urgentes aplicadas'); else toast('Sin urgentes con arreglo automático');
   state.view='correcciones'; renderSheet();
 }
 function iaNormalizarBulk(){
-  let n=0;
-  (window.productos||[]).forEach(p=>{ const v=iaNormalizarNombre(p.nombre||''); if(v&&v!==p.nombre){ p.nombre=v; try{ if(typeof window.marcarProductoModificado==='function') window.marcarProductoModificado(p.id); }catch(e){} n++; } });
+  let n=0; const grupo=[];
+  (window.productos||[]).forEach(p=>{ const v=iaNormalizarNombre(p.nombre||''); if(v&&v!==p.nombre){ grupo.push({pid:String(p.id),campo:'nombre',antes:p.nombre}); p.nombre=v; try{ if(typeof window.marcarProductoModificado==='function') window.marcarProductoModificado(p.id); }catch(e){} n++; } });
+  if(grupo.length) iaUndoPush(grupo, n+' nombres');
   if(n) iaPersistir('🔤 '+n+' nombres normalizados'); else toast('Todos los nombres ya están bien');
   renderSheet();
 }
@@ -523,6 +605,8 @@ function renderCorreccionesIA(){
       <button type="button" class="tm-copilot-btn gold" data-cop="iaBulkNombres">🔤 Normalizar nombres</button>
       <button type="button" class="tm-copilot-btn danger" data-cop="iaFirebase">🔥 Sync Firebase</button>
       <button type="button" class="tm-copilot-btn green" data-cop="iaCSV">📥 Exportar CSV</button>
+      ${iaUndoPila().length?`<button type="button" class="tm-copilot-btn" data-cop="iaUndo">↩️ Deshacer (${iaUndoPila().length})</button>`:''}
+      ${(localStorage.getItem('anthropicApiKey')||'').trim()?`<button type="button" class="tm-copilot-btn blue" data-cop="iaDescIA">🤖 Descripciones con IA</button>`:''}
     </div>
     ${issues.length? bloque('🚨 Urgentes',g.urgente)+bloque('⚠️ Advertencias',g.adv)+bloque('💡 Info',g.info)
       : '<div class="tm-copilot-empty">✅ Catálogo impecable: sin problemas detectados.</div>'}
@@ -1024,7 +1108,7 @@ async function queuePushForProduct(pid){
   localStorage.setItem('tm_push_sent', JSON.stringify(pushLog));
 
   const reqId = 'req_copilot_' + Date.now();
-  const payload = { title: '🔥 Producto destacado en TiendaMax', body: String(p.nombre||'Oferta disponible').slice(0,120), url: '/p/producto-' + p.id + '.html', icon: p.imagen || '/iconos/icon-192.png', image: p.imagen || '', ts: Date.now(), source: 'admin_copilot' };
+  const payload = { proof: (localStorage.getItem('tm_auth_hash_v3')||''), title: '🔥 Producto destacado en TiendaMax', body: String(p.nombre||'Oferta disponible').slice(0,120), url: '/p/producto-' + p.id + '.html', icon: p.imagen || '/iconos/icon-192.png', image: p.imagen || '', ts: Date.now(), source: 'admin_copilot' };
   try {
     const r = await fetch(base + '/admin_push_requests/' + reqId + '.json', {method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
     if(!r.ok) throw new Error('HTTP '+r.status);
@@ -1097,6 +1181,8 @@ function bindEvents(){
     if(act==='iaCSV') iaExportCSV();
     if(act==='iaApply'){ const iss=iaScan().find(x=>x.key===el.dataset.key); if(iss&&iaAplicar(iss)){ iaPersistir('✅ '+iss.fixLabel); } state.view='correcciones'; renderSheet(); }
     if(act==='iaDismiss'){ iaDismiss(el.dataset.key); state.view='correcciones'; renderSheet(); }
+    if(act==='iaUndo') iaDeshacer();
+    if(act==='iaDescIA') iaDescripcionesConIA();
     if(act==='promoPickImg') { const inp = document.getElementById('tmPromoImgInput'); if(inp) inp.click(); }
     if(act==='promoTema') { promoData.tema = el.dataset.tema; state.view = 'promo'; renderSheet(); }
     if(act==='promoDownload') {

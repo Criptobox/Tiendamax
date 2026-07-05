@@ -194,7 +194,9 @@
       body: JSON.stringify({
         token:     token,
         timestamp: Date.now(),
-        userAgent: navigator.userAgent,
+        // Minimización: /tokens es legible (lo iteran dedup/borrado del admin),
+        // así que no subimos el userAgent completo del cliente.
+        userAgent: String(navigator.userAgent || '').slice(0, 40),
         fingerprint: fp,
         deviceId:  deviceId
       })
