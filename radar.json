@@ -1,6 +1,6 @@
 {
-  "actualizado": "2026-07-04T12:07:08.863510+00:00",
-  "fecha": "2026-07-04",
+  "actualizado": "2026-07-05T12:16:31.813802+00:00",
+  "fecha": "2026-07-05",
   "fuentes": [
     "revolico",
     "porlalivre",
@@ -15,7 +15,7 @@
   "productos": [
     {
       "id": 1778104115783,
-      "nombre": "BATERÍA MUST TIPO LIFEPO4",
+      "nombre": "Batería Must Tipo LIFEPO4",
       "tuPrecio": 300.0,
       "mercado": {
         "min": 280.0,
@@ -54,6 +54,10 @@
         },
         {
           "fecha": "2026-07-04",
+          "mediana": 300.0
+        },
+        {
+          "fecha": "2026-07-05",
           "mediana": 300.0
         }
       ],
@@ -104,7 +108,7 @@
     },
     {
       "id": 1777924118004,
-      "nombre": "INVERSOR 12V",
+      "nombre": "Inversor 12V",
       "tuPrecio": 170.0,
       "mercado": {
         "min": 80.0,
@@ -143,6 +147,10 @@
         },
         {
           "fecha": "2026-07-04",
+          "mediana": 170.0
+        },
+        {
+          "fecha": "2026-07-05",
           "mediana": 170.0
         }
       ],
@@ -193,7 +201,7 @@
     },
     {
       "id": 1778102214012,
-      "nombre": "SWITCH DE 8 PUERTOS",
+      "nombre": "Switch de 8 Puertos",
       "tuPrecio": 30.0,
       "mercado": {
         "min": 16.0,
@@ -232,6 +240,10 @@
         },
         {
           "fecha": "2026-07-04",
+          "mediana": 50.0
+        },
+        {
+          "fecha": "2026-07-05",
           "mediana": 50.0
         }
       ],
@@ -282,7 +294,7 @@
     },
     {
       "id": 1778102507659,
-      "nombre": "PESA / BÁSCULA INTELIGENTE DIGITAL.",
+      "nombre": "Pesa / Báscula Inteligente Digital.",
       "tuPrecio": 25.0,
       "mercado": {
         "min": 20.0,
@@ -321,6 +333,10 @@
         },
         {
           "fecha": "2026-07-04",
+          "mediana": 25.0
+        },
+        {
+          "fecha": "2026-07-05",
           "mediana": 25.0
         }
       ],
@@ -371,7 +387,7 @@
     },
     {
       "id": 1778102582909,
-      "nombre": "ANTORCHA PARA SOLDADURA TIG:",
+      "nombre": "Antorcha Para Soldadura TIG:",
       "tuPrecio": 90.0,
       "mercado": {
         "min": 69.0,
@@ -410,6 +426,10 @@
         },
         {
           "fecha": "2026-07-04",
+          "mediana": 90.0
+        },
+        {
+          "fecha": "2026-07-05",
           "mediana": 90.0
         }
       ],
