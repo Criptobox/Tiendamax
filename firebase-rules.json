@@ -73,9 +73,9 @@
             ".validate": "newData.isString() && newData.val().length >= 6 && newData.val().length <= 25"
           }
         },
-        ".read": "auth != null"
+        ".read": true
       },
-      ".read": "auth != null",
+      ".read": true,
       ".write": false
     },
     "resenas": {

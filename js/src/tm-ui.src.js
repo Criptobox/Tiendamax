@@ -64,18 +64,26 @@ function renderizarCategoriasHomeInstant() {
     grid.appendChild(cardTodas);
 
     const maxCount = localCats.length ? Math.max(...localCats.map(cat => localProds.filter(p => p.categoria === cat).length)) : 0;
+    const _dn = { 'WIFI': 'REDES' };
+    const _extrasI = [];
+    const _minI = (typeof TM_CAT_MIN !== 'undefined') ? TM_CAT_MIN : 3;
     localCats.forEach(cat => {
         const count = localProds.filter(p => p.categoria === cat).length;
-        const card = document.createElement('div');
-        card.className = 'categoria-card' + (count === 0 ? ' proximamente' : '');
         const icon = obtenerIconoCategoria(cat);
+        // Pocas unidades (< 3) → desplegable "Ver más"
+        if (count < _minI) {
+            _extrasI.push({ cat, count, name: _dn[cat] || cat, icon });
+            return;
+        }
+        const card = document.createElement('div');
+        card.className = 'categoria-card';
         const badge = (count > 0 && count === maxCount) ? '<span class="cat-badge">🔥 Popular</span>' : '';
-        const cta = count > 0 ? '<span class="cat-cta">→ Explorar</span>' : '';
-        const _dn = { 'WIFI': 'REDES' };
-        card.innerHTML = `${badge}<span class="cat-wm">${icon}</span><span class="cat-icon">${icon}</span><span class="cat-name">${_dn[cat] || cat}</span><span class="cat-count">${count === 0 ? '🕐 Próximamente' : count + ' producto' + (count !== 1 ? 's' : '')}</span>${cta}`;
+        const cta = '<span class="cat-cta">→ Explorar</span>';
+        card.innerHTML = `${badge}<span class="cat-wm">${icon}</span><span class="cat-icon">${icon}</span><span class="cat-name">${_dn[cat] || cat}</span><span class="cat-count">${count + ' producto' + (count !== 1 ? 's' : '')}</span>${cta}`;
         card.onclick = () => mostrarVistaCategoria(cat);
         grid.appendChild(card);
     });
+    if (typeof _tmCatVerMas === 'function') _tmCatVerMas(grid, _extrasI);
     // Dispara animaciones CSS DESPUÉS de que el DOM está poblado
     requestAnimationFrame(() => grid.classList.add('tm-rendered'));
 }
