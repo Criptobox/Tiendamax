@@ -797,6 +797,31 @@ function renderTendencias(){
     }).join('')}
   </div>`;
 }
+/* ══════════ AUTO-PUBLICAR A GRUPOS DE FACEBOOK (semi-automático) ══════════
+   El motor ya existe: previsualizarFacebook(pid) abre un modal con el botón
+   "Abrir en todos mis grupos" (abre las pestañas + copia el texto; tú pegas y
+   publicas). Acá el agente lo PROPONE con el producto de hoy en un toque. */
+function fbGrupos(){ try{ return JSON.parse(localStorage.getItem('gruposFB')||'[]').filter(g=>g&&g.url&&String(g.url).includes('facebook.com')); }catch(e){ return []; } }
+function renderFacebookGrupos(){
+  const gs = fbGrupos();
+  if(!gs.length){
+    return `<div class="tm-copilot-smart" style="border-color:rgba(59,89,152,.45)"><h4>📘 Grupos de Facebook</h4>
+      <small>Guarda tus grupos una vez y el agente publica ahí con un toque: abre todas las pestañas y copia el texto — tú solo pegas y publicas.</small>
+      <div class="tm-copilot-task-actions" style="margin-top:9px"><button type="button" class="tm-copilot-btn primary" data-cop="task" data-tab="publicacion">➕ Configurar grupos</button></div>
+    </div>`;
+  }
+  const cands = postCandidatos();
+  const p = cands.length ? cands[0].p : null;
+  return `<div class="tm-copilot-smart" style="border-color:rgba(59,89,152,.5)"><h4>📘 Publicar en tus grupos de Facebook</h4>
+    <small>Tienes ${gs.length} grupo${gs.length>1?'s':''} guardado${gs.length>1?'s':''}. Publica el producto de hoy en todos con un toque.</small>
+    ${p?`<div class="tm-copilot-mini-card" style="margin-top:9px">
+      <b>${esc(p.nombre)}</b><small>$${num(p.precioActual).toFixed(2)} · stock ${num(p.stock)}</small>
+      <div class="tm-copilot-task-actions" style="margin-top:9px">
+        <button type="button" class="tm-copilot-btn primary" data-cop="postGrupos" data-pid="${esc(String(p.id))}">📢 Publicar en mis ${gs.length} grupo${gs.length>1?'s':''}</button>
+        <button type="button" class="tm-copilot-btn" data-cop="task" data-tab="publicacion">⚙️ Grupos</button>
+      </div></div>`:'<small style="display:block;margin-top:8px">Agrega productos con stock para publicar.</small>'}
+  </div>`;
+}
 /* ══════════ POST LISTO: "publica esto hoy" (texto + hashtags + 1 toque) ══════════
    El agente elige un producto para publicar hoy (interés real + stock + foto,
    evitando lo que ya publicaste hace poco) y arma la publicación lista.
@@ -912,7 +937,7 @@ function renderPushSmart(){
 }
 function renderMarketing(){
   const r=ranking(), bundles=suggestedBundles(), responses=responseTemplates();
-  return `${renderTendencias()}${renderPushSmart()}<div class="tm-copilot-mini">
+  return `${renderTendencias()}${renderFacebookGrupos()}${renderPushSmart()}<div class="tm-copilot-mini">
     <div class="tm-copilot-mini-card"><b>🏆 Top para impulsar</b>${r.top.slice(0,4).map((x,i)=>`<div class="tm-copilot-rank-row"><span>${i+1}. ${esc(x.p.nombre)}</span><em>${x.score}</em></div>`).join('')||'<small>Sin datos suficientes</small>'}</div>
     <div class="tm-copilot-mini-card"><b>⚠️ Atención</b>${r.attention.slice(0,4).map(x=>`<div class="tm-copilot-rank-row"><span>${esc(x.p.nombre)}</span><em>${esc(x.reasons.join(', '))}</em></div>`).join('')||'<small>Catálogo estable</small>'}</div>
   </div>
@@ -1537,6 +1562,15 @@ function bindEvents(){
       remember && remember('smart_push', {productName:p.nombre, pid:p.id, desc});
     }
     if(act==='postSet'){ state.postForcePid=el.dataset.pid; state.view='hoy'; localStorage.setItem(LS.view,'hoy'); renderSheet(); toast('📣 Te preparé la publicación en ✅ Hoy'); }
+    if(act==='postGrupos'){
+      const pid=el.dataset.pid;
+      const p=products().find(x=>String(x.id)===String(pid));
+      postMarcarPublicado(pid);
+      try{ remember('post_ready',{productName:p&&p.nombre, pid}); }catch(_e){}
+      if(typeof window.previsualizarFacebook==='function'){ closeSheet(); window.previsualizarFacebook(pid, null); }
+      else if(typeof window.pubShareAct==='function'){ window.pubShareAct(pid,'fb'); }
+      else if(p){ window.open('https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent('https://tiendamax.org/p/producto-'+pid+'.html')+'&quote='+encodeURIComponent(postTexto(p)),'_blank','noopener'); }
+    }
     if(act==='postOtro'){ state.postForcePid=null; state.postIdx=(state.postIdx||0)+1; renderSheet(); }
     if(act==='postCopy'){ const p=products().find(x=>String(x.id)===String(el.dataset.pid)); if(p) copyText(postTexto(p),'Publicación'); }
     if(act==='postEstado'||act==='postWhats'||act==='postFace'){
