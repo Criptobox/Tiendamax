@@ -689,7 +689,7 @@ function renderCorreccionesIA(){
     <div class="tm-copilot-empty" style="padding:8px 4px;font-size:10px">Al aplicar, el cambio se guarda y se sincroniza con la tienda automáticamente.</div>`;
 }
 function renderToday(topTasks){
-  return `<div class="tm-copilot-smart"><h4>🧠 Estrategia de hoy</h4><ul>${dailyStrategy().map(x=>`<li>${esc(x)}</li>`).join('')}</ul><div class="tm-copilot-task-actions"><button type="button" class="tm-copilot-btn gold" data-cop="saveStrategy">Guardar campaña</button><button type="button" class="tm-copilot-btn blue" data-cop="view" data-view="marketing">Ver marketing</button></div></div>
+  return `${reporteNocturnoHTML()}<div class="tm-copilot-smart"><h4>🧠 Estrategia de hoy</h4><ul>${dailyStrategy().map(x=>`<li>${esc(x)}</li>`).join('')}</ul><div class="tm-copilot-task-actions"><button type="button" class="tm-copilot-btn gold" data-cop="saveStrategy">Guardar campaña</button><button type="button" class="tm-copilot-btn blue" data-cop="view" data-view="marketing">Ver marketing</button></div></div>
   <div class="tm-copilot-list">${topTasks.length ? topTasks.map(t=>taskHtml(t)).join('') : '<div class="tm-copilot-empty">✅ Sin tareas urgentes. Puedes revisar productos o publicar novedades.</div>'}</div>`;
 }
 function renderAgents(){
@@ -1157,7 +1157,42 @@ function taskHtml(t){
 async function refresh(open){
   ensureUI();
   await buildTasks();
+  cargarReporteNocturno(); // no bloquea; si hay reporte nuevo, avisa al terminar
   if(open) openSheet(); else if($('#tmCopilotSheet')?.classList.contains('show')) renderSheet();
+}
+
+// El agente nocturno (GitHub Action) deja agente-reporte.json cada madrugada.
+// Al abrir el admin lo leemos y, si es nuevo desde la última vez que lo viste,
+// mostramos un aviso "anoche revisé tu catálogo".
+let REPORTE_NOCTURNO = null;
+async function cargarReporteNocturno(){
+  try{
+    const r = await fetch('agente-reporte.json?_='+Date.now(), {cache:'no-store'});
+    if(!r.ok) return;
+    const rep = await r.json();
+    if(!rep || !rep.generado) return;
+    REPORTE_NOCTURNO = rep;
+    const visto = localStorage.getItem('tm_reporte_visto') || '';
+    const fresco = (Date.now() - Date.parse(rep.generado)) < 36*60*60*1000; // < 36 h
+    if(fresco && rep.generado !== visto){
+      if($('#tmCopilotSheet')?.classList.contains('show')) renderSheet();
+      const n = (rep.urgentes||0);
+      toast('🌙 '+rep.resumen + (n?' Toca 🩺 Correcciones para arreglarlo.':''));
+    }
+  }catch(e){}
+}
+function reporteNocturnoHTML(){
+  const rep = REPORTE_NOCTURNO; if(!rep || !rep.generado) return '';
+  if((Date.now() - Date.parse(rep.generado)) >= 36*60*60*1000) return ''; // viejo, no mostrar
+  const cuando = (()=>{ try{ return new Date(rep.generado).toLocaleDateString('es-CU',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}); }catch(e){ return ''; } })();
+  localStorage.setItem('tm_reporte_visto', rep.generado);
+  return `<div class="tm-copilot-smart" style="border-color:rgba(139,92,246,.4)">
+    <h4>🌙 Revisión de anoche <span style="font-weight:600;color:#999;font-size:11px">· ${esc(cuando)}</span></h4>
+    <small>${esc(rep.resumen)}</small>
+    <div class="tm-copilot-task-actions" style="margin-top:10px">
+      <button type="button" class="tm-copilot-btn primary" data-cop="view" data-view="correcciones">🩺 Ver y arreglar</button>
+    </div>
+  </div>`;
 }
 function switchTo(tab){
   if (typeof window.switchTab === 'function') window.switchTab(tab);
