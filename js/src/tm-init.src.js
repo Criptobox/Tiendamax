@@ -31,7 +31,15 @@ function verificarOfertasYMostrarBanner() {
 
     let targetId = null;
 
-    if (ofertaDiaId) {
+    // Si el producto de la oferta está agotado, el banner se oculta solo —
+    // antes seguía saliendo hasta que el cliente recargara. OJO: en la tienda
+    // `productos` es un `let` top-level (bareword global), NO window.productos.
+    const _cat = (typeof productos !== 'undefined' && Array.isArray(productos)) ? productos : [];
+    const _prodOferta = ofertaDiaId ? _cat.find(p => String(p.id) === String(ofertaDiaId)) : null;
+    // Catálogo aún no cargado (_cat vacío) → no ocultar todavía (evita parpadeo al arrancar)
+    const _ofertaAgotada = ofertaDiaId && _cat.length > 0 && (!_prodOferta || Number(_prodOferta.stock || 0) <= 0);
+
+    if (ofertaDiaId && !_ofertaAgotada) {
         targetId = ofertaDiaId;
         while (banner.firstChild) banner.removeChild(banner.firstChild);
         const spanFlash = document.createElement('span');
@@ -76,6 +84,37 @@ function verificarOfertasYMostrarBanner() {
         abrirDetalleProducto(idNum);
     };
 }
+
+// Re-evaluar el banner de oferta sin que el cliente tenga que recargar:
+// cada 90 s se relee config.json (1 KB, network-first) por si el admin activó,
+// desactivó o cambió la oferta, y se re-chequea el stock local. También al
+// volver a la pestaña (visibilitychange).
+(function _tmBannerAutoRefresh() {
+    let corriendo = false;
+    async function tick() {
+        if (corriendo || document.visibilityState === 'hidden') return;
+        corriendo = true;
+        try {
+            const r = await fetch('config.json?_=' + Date.now(), { cache: 'no-store' });
+            if (r.ok) {
+                const cfg = await r.json();
+                if (cfg && typeof cfg === 'object') {
+                    if (cfg.ofertaDiaId) {
+                        localStorage.setItem('ofertaDiaId', String(cfg.ofertaDiaId));
+                        if (cfg.ofertaDiaTexto) localStorage.setItem('ofertaDiaTexto', cfg.ofertaDiaTexto);
+                    } else {
+                        localStorage.removeItem('ofertaDiaId');
+                        localStorage.removeItem('ofertaDiaTexto');
+                    }
+                }
+            }
+        } catch (e) {}
+        try { verificarOfertasYMostrarBanner(); } catch (e) {}
+        corriendo = false;
+    }
+    setInterval(tick, 90000);
+    document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') tick(); });
+})();
 
 // ===== INICIALIZACIÓN =====
 

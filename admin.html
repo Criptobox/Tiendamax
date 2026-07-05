@@ -440,6 +440,12 @@
           <div><h2>📦 Productos</h2><p id="prod-count">—</p></div>
           <div class="ph-actions"><input class="btn btn-ghost" id="prod-buscar" placeholder="🔍 Buscar…" style="min-width:150px" oninput="renderProductos()"><select class="btn btn-ghost" id="prod-cat-filtro" style="min-width:150px" onchange="renderProductos()"><option value="">Todas las categorías</option></select><button class="btn btn-ghost" id="prod-filtro-fav" onclick="apToggleFiltroFav()" title="Ver solo destacados">⭐ Favoritos</button><button class="btn btn-primary" onclick="go('agregar')">+ Agregar</button></div>
         </div>
+        <div id="prod-bulkbar" style="display:none;position:sticky;top:64px;z-index:60;background:rgba(20,16,10,0.97);border:1px solid var(--o);border-radius:11px;padding:9px 12px;margin-bottom:10px;display:none;align-items:center;gap:8px;flex-wrap:wrap">
+          <b id="prod-bulk-count" style="color:var(--o);font-size:13px">0 seleccionados</b>
+          <button class="btn btn-ghost" style="padding:5px 11px;font-size:12px" onclick="apBulkZero()">→0 Agotar</button>
+          <button class="btn btn-ghost" style="padding:5px 11px;font-size:12px;color:var(--red)" onclick="apBulkDel()">🗑 Borrar</button>
+          <button class="btn btn-ghost" style="padding:5px 11px;font-size:12px;margin-left:auto" onclick="apSelClear()">✕ Limpiar</button>
+        </div>
         <div class="prod-grid rows" id="prod-grid"></div>
       </div>
 
@@ -1012,6 +1018,56 @@ let _apFiltroFav=false;
 function apToggleFiltroFav(){ _apFiltroFav=!_apFiltroFav; const b=$('#prod-filtro-fav'); if(b){ b.style.background=_apFiltroFav?'rgba(201,169,110,0.25)':''; b.style.color=_apFiltroFav?'var(--gold)':''; b.style.borderColor=_apFiltroFav?'var(--gold)':''; } renderProductos(); }
 function apLlenarFiltroCat(){ const sel=$('#prod-cat-filtro'); if(!sel) return; const cur=sel.value; const cats=[...new Set(PRODUCTOS.map(p=>p.categoria).filter(Boolean))].sort((a,b)=>String(a).localeCompare(String(b))); sel.innerHTML='<option value="">Todas las categorías</option>'+cats.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join(''); if(cats.includes(cur)) sel.value=cur; }
 function apSaveProds(){ try{ localStorage.setItem('productos', JSON.stringify(PRODUCTOS)); }catch(e){} try{ if(Array.isArray(window.productos)){ window.productos.length=0; PRODUCTOS.forEach(p=>window.productos.push(p)); } else { window.productos=PRODUCTOS; } }catch(e){} }
+/* Selección múltiple (checkbox por tarjeta) para acciones masivas */
+let AP_SEL = new Set();
+function apSelBar(){
+  const bar=$('#prod-bulkbar'); if(!bar) return;
+  bar.style.display = AP_SEL.size ? 'flex' : 'none';
+  const c=$('#prod-bulk-count'); if(c) c.textContent = AP_SEL.size+' seleccionado'+(AP_SEL.size!==1?'s':'');
+}
+function apSelTgl(id){ id=String(id); if(AP_SEL.has(id)) AP_SEL.delete(id); else AP_SEL.add(id); apSelBar(); const cb=document.getElementById('apcb-'+id); if(cb) cb.checked=AP_SEL.has(id); }
+function apSelClear(){ AP_SEL.clear(); apSelBar(); renderProductos(); }
+function apBulkZero(){
+  if(!AP_SEL.size) return;
+  let n=0; PRODUCTOS.forEach(p=>{ if(AP_SEL.has(String(p.id))){ p.stock=0; n++; } });
+  apSaveProds(); apSelClear(); showToast('→0 '+n+' productos marcados agotados','Sincroniza para publicar');
+}
+function apBulkDel(){
+  if(!AP_SEL.size) return;
+  if(!confirm('¿Eliminar '+AP_SEL.size+' producto(s) del catálogo?')) return;
+  const antes=PRODUCTOS.length;
+  PRODUCTOS = PRODUCTOS.filter(p=>!AP_SEL.has(String(p.id)));
+  window.productos = PRODUCTOS;
+  apSaveProds(); apSelClear(); showToast('🗑 '+(antes-PRODUCTOS.length)+' productos eliminados','Sincroniza para publicar el cambio');
+}
+function apCardHTML(p){
+  const st=Number(p.stock)||0; const cls=st<=0?'out':(st<=3?'low':'ok');
+  const id=String(p.id);
+  const img = p.imagen ? `<img class="pcard-thumb" src="${esc(p.imagen)}" alt="" loading="lazy" onerror="this.onerror=null;this.src='/iconos/favicon-192.png';this.style.opacity='0.3'">` : `<div class="pcard-thumb" style="display:flex;align-items:center;justify-content:center;font-size:24px">${emojiCat(p.categoria)}</div>`;
+  const off = (Number(p.descuento)>0) ? ` · <span style="color:var(--red)">−${Math.round(p.descuento)}%</span>` : (Number(p.precioOriginal)>Number(p.precioActual) ? ` · <span style="color:var(--red)">−${Math.round((p.precioOriginal-p.precioActual)/p.precioOriginal*100)}%</span>` : '');
+  const comm = Number(p.comision)>0 ? `<div class="pcard-comm">💰 Comisión: ${p.comisionMoneda==='MN'?'':'$'}${Number(p.comision).toFixed(2)} ${p.comisionMoneda||'USD'}</div>` : '';
+  return `<div class="pcard">
+    <div class="pcard-h">
+      <input type="checkbox" id="apcb-${id}" ${AP_SEL.has(id)?'checked':''} onchange="apSelTgl('${id}')" style="width:17px;height:17px;margin:16px 2px 0 0;accent-color:var(--o);flex-shrink:0;cursor:pointer">
+      ${img}
+      <div class="pcard-info">
+        <div class="pcard-nm">${esc(p.nombre||'')}${p.masVendido?' 🔥':''}</div>
+        <div class="pcard-meta">$${Number(p.precioActual||0).toFixed(2)} USD${off}</div>
+        ${comm}
+      </div>
+      <button type="button" class="pico edit" onclick="apEdit('${id}')" title="Editar">✏️</button>
+      <button type="button" class="pico star${p.masVendido?' on':''}" onclick="apFav('${id}')" title="${p.masVendido?'Quitar de Más Vendidos':'Destacar en Más Vendidos'}">⭐</button>
+      <button type="button" class="pico del" onclick="apDel('${id}')" title="Eliminar">🗑️</button>
+    </div>
+    <div class="pcard-stock">
+      <button type="button" class="stbtn minus" onclick="apStock('${id}',-1)">−</button>
+      <button type="button" class="stbtn plus" onclick="apStock('${id}',1)">+</button>
+      <span class="st-label">Stock:</span>
+      <span class="st-val ${cls}">${st<=0?'Agotado':(st+' uds')}</span>
+      ${st>0?`<button type="button" class="stbtn zero" onclick="apStockZero('${id}')" title="Marcar agotado">→0</button>`:''}
+    </div>
+  </div>`;
+}
 function renderProductos(){
   const grid=$('#prod-grid'); if(!grid) return;
   apLlenarFiltroCat();
@@ -1023,33 +1079,25 @@ function renderProductos(){
   if(_apFiltroFav) list = list.filter(p=>p.masVendido);
   list = [...list].sort((a,b)=>(Number(a.stock)||0)-(Number(b.stock)||0));
   $('#prod-count').textContent = list.length + ' de ' + PRODUCTOS.length + ' productos';
-  grid.innerHTML = list.slice(0,300).map(p=>{
-    const st=Number(p.stock)||0; const cls=st<=0?'out':(st<=3?'low':'ok');
-    const id=String(p.id);
-    const img = p.imagen ? `<img class="pcard-thumb" src="${esc(p.imagen)}" alt="" loading="lazy" onerror="this.onerror=null;this.src='/iconos/favicon-192.png';this.style.opacity='0.3'">` : `<div class="pcard-thumb" style="display:flex;align-items:center;justify-content:center;font-size:24px">${emojiCat(p.categoria)}</div>`;
-    const off = (Number(p.descuento)>0) ? ` · <span style="color:var(--red)">−${Math.round(p.descuento)}%</span>` : (Number(p.precioOriginal)>Number(p.precioActual) ? ` · <span style="color:var(--red)">−${Math.round((p.precioOriginal-p.precioActual)/p.precioOriginal*100)}%</span>` : '');
-    const comm = Number(p.comision)>0 ? `<div class="pcard-comm">💰 Comisión: ${p.comisionMoneda==='MN'?'':'$'}${Number(p.comision).toFixed(2)} ${p.comisionMoneda||'USD'}</div>` : '';
-    return `<div class="pcard">
-      <div class="pcard-h">
-        ${img}
-        <div class="pcard-info">
-          <div class="pcard-nm">${esc(p.nombre||'')}${p.masVendido?' 🔥':''}</div>
-          <div class="pcard-meta">$${Number(p.precioActual||0).toFixed(2)} USD${off}</div>
-          ${comm}
-        </div>
-        <button type="button" class="pico edit" onclick="apEdit('${id}')" title="Editar">✏️</button>
-        <button type="button" class="pico star${p.masVendido?' on':''}" onclick="apFav('${id}')" title="${p.masVendido?'Quitar de Más Vendidos':'Destacar en Más Vendidos'}">⭐</button>
-        <button type="button" class="pico del" onclick="apDel('${id}')" title="Eliminar">🗑️</button>
-      </div>
-      <div class="pcard-stock">
-        <button type="button" class="stbtn minus" onclick="apStock('${id}',-1)">−</button>
-        <button type="button" class="stbtn plus" onclick="apStock('${id}',1)">+</button>
-        <span class="st-label">Stock:</span>
-        <span class="st-val ${cls}">${st<=0?'Agotado':(st+' uds')}</span>
-        ${st>0?`<button type="button" class="stbtn zero" onclick="apStockZero('${id}')" title="Marcar agotado">→0</button>`:''}
-      </div>
-    </div>`;
-  }).join('') || `<div class="empty"><div class="ico">🔍</div>Sin resultados.</div>`;
+  apSelBar();
+  if(!list.length){ grid.innerHTML=`<div class="empty"><div class="ico">🔍</div>Sin resultados.</div>`; return; }
+  // Sin búsqueda ni filtro → agrupado por categoría (como el admin viejo);
+  // con filtro/búsqueda → lista plana ordenada por stock.
+  if(!q && !catF && !_apFiltroFav){
+    const grupos={};
+    list.forEach(p=>{ const c=p.categoria||'Sin categoría'; (grupos[c]=grupos[c]||[]).push(p); });
+    grid.innerHTML = Object.keys(grupos).sort().map(cat=>
+      `<div style="display:flex;align-items:center;gap:8px;margin:14px 0 4px;padding-bottom:6px;border-bottom:1px solid var(--border)">
+        <span style="font-size:16px">${emojiCat(cat)}</span>
+        <b style="color:var(--gold);font-size:13px;letter-spacing:.4px">${esc(cat)}</b>
+        <span class="badge">${grupos[cat].length}</span>
+        <button class="btn btn-ghost" style="margin-left:auto;padding:3px 10px;font-size:11px" onclick="const s=$('#prod-cat-filtro'); if(s){s.value='${esc(cat)}'; renderProductos();}">Ver solo →</button>
+      </div>`
+      + grupos[cat].map(apCardHTML).join('')
+    ).join('');
+  } else {
+    grid.innerHTML = list.slice(0,300).map(apCardHTML).join('');
+  }
 }
 function apFind(id){ return PRODUCTOS.find(p=>String(p.id)===String(id)); }
 function apStock(id,d){ const p=apFind(id); if(!p) return; p.stock=Math.max(0,(Number(p.stock)||0)+d); apSaveProds(); renderProductos(); if(typeof renderStock==='function') renderStock(); }
@@ -1680,6 +1728,7 @@ cargarDatos();
 // Exponemos al window solo lo que usan los onclick/oninput de la interfaz.
 window.go=go; window.cargarDatos=cargarDatos; window.renderProductos=renderProductos;
 window.apToggleFiltroFav=apToggleFiltroFav; window.apStock=apStock; window.apStockZero=apStockZero; window.apFav=apFav; window.apDel=apDel; window.apEdit=apEdit; window.apEditClose=apEditClose; window.apEditSave=apEditSave;
+window.apSelTgl=apSelTgl; window.apSelClear=apSelClear; window.apBulkZero=apBulkZero; window.apBulkDel=apBulkDel;
 window.comboBuscar=comboBuscar; window.comboAdd=comboAdd; window.comboRemove=comboRemove; window.comboCalc=comboCalc;
 window.comboGuardar=comboGuardar; window.comboDelete=comboDelete; window.comboPublicar=comboPublicar; window.comboQty=comboQty;
 window.comboFoto=comboFoto; window.comboFotoQuitar=comboFotoQuitar;
