@@ -452,6 +452,16 @@
           <button class="btn btn-ghost" style="padding:5px 11px;font-size:12px;color:var(--red)" onclick="apBulkDel()">🗑 Borrar</button>
           <button class="btn btn-ghost" style="padding:5px 11px;font-size:12px;margin-left:auto" onclick="apSelClear()">✕ Limpiar</button>
         </div>
+        <details id="prod-bulkprecio" style="background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:12px;padding:0 14px;margin-bottom:12px">
+          <summary style="cursor:pointer;padding:12px 0;font-weight:800;color:#fff;font-size:14px;list-style:none">💲 Ajuste masivo de precios <span style="font-size:11px;color:var(--muted);font-weight:600">— sube o baja toda una categoría de golpe</span></summary>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end;padding-bottom:14px">
+            <div class="form-group" style="flex:1;min-width:140px"><label class="form-label">Categoría</label><select class="form-select" id="bp-cat"><option value="">Todas</option></select></div>
+            <div class="form-group" style="width:120px"><label class="form-label">Cambio %</label><input class="form-input" id="bp-pct" type="number" step="1" placeholder="10"></div>
+            <button class="btn btn-ghost" onclick="bulkPrecio(1)">➕ Subir %</button>
+            <button class="btn btn-ghost" onclick="bulkPrecio(-1)">➖ Bajar %</button>
+          </div>
+          <p style="font-size:11px;color:var(--muted);margin:0 0 12px">Redondea al entero. Ej: 10% sube $100 → $110. Luego pulsa "Actualizar tienda" en ⚙️ para publicar.</p>
+        </details>
         <div class="prod-grid rows" id="prod-grid"></div>
       </div>
 
@@ -483,7 +493,20 @@
           <div class="section"><h3>🏆 Productos más vendidos</h3><div id="ventas-top"></div></div>
           <div class="section"><h3>💵 Comisiones ganadas</h3><div id="ventas-comis"></div></div>
         </div>
-        <div class="section"><h3>🧾 Historial de ventas</h3><div id="ventas-lista"></div></div>
+        <div class="section">
+          <h3>🧾 Historial de ventas</h3>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:6px">
+            <input class="form-input" id="ventas-q" placeholder="🔍 Buscar por producto o cliente…" style="flex:1;min-width:150px" oninput="renderVentas()">
+            <select class="form-select" id="ventas-periodo" style="min-width:150px" onchange="renderVentas()">
+              <option value="all">Todo el tiempo</option>
+              <option value="hoy">Hoy</option>
+              <option value="semana">Últimos 7 días</option>
+              <option value="mes">Últimos 30 días</option>
+            </select>
+          </div>
+          <div id="ventas-periodo-tot" style="font-size:12px;color:var(--muted);margin-bottom:8px"></div>
+          <div id="ventas-lista"></div>
+        </div>
       </div>
 
       <!-- COMBOS (creador) -->
@@ -678,7 +701,7 @@
     </div>
     <div class="form-group" style="margin-top:10px"><label class="form-label">Descripción</label><textarea class="form-textarea" id="pedit-desc" style="min-height:90px"></textarea></div>
     <label style="display:flex;align-items:center;gap:8px;margin-top:12px;font-size:13px;color:#fff;cursor:pointer"><input type="checkbox" id="pedit-fav" style="width:16px;height:16px;accent-color:var(--gold)">⭐ Destacar en Más Vendidos</label>
-    <div style="display:flex;gap:8px;margin-top:16px"><button class="btn btn-primary" style="flex:1" onclick="apEditSave()">💾 Guardar</button><button class="btn btn-ghost" onclick="apEditClose()">Cancelar</button></div>
+    <div style="display:flex;gap:8px;margin-top:16px"><button class="btn btn-primary" style="flex:1" onclick="apEditSave()">💾 Guardar</button><button class="btn btn-ghost" onclick="apDuplicar($('#pedit-id').value)">📄 Duplicar</button><button class="btn btn-ghost" onclick="apEditClose()">Cancelar</button></div>
   </div>
 </div>
 
@@ -1100,7 +1123,25 @@ function renderInicio(){
 const emojiCat = c => { c=(c||'').toLowerCase(); if(/cel|phone|móvil/.test(c))return'📱'; if(/audio|auric/.test(c))return'🎧'; if(/comput|laptop|pc/.test(c))return'💻'; if(/energ|solar|bater/.test(c))return'🔋'; if(/red|wifi|router/.test(c))return'📡'; if(/gam/.test(c))return'🎮'; if(/herram|tool/.test(c))return'🔧'; if(/hogar|casa/.test(c))return'🏠'; if(/carro|auto|moto/.test(c))return'🚗'; return'📦'; };
 let _apFiltroFav=false;
 function apToggleFiltroFav(){ _apFiltroFav=!_apFiltroFav; const b=$('#prod-filtro-fav'); if(b){ b.style.background=_apFiltroFav?'rgba(201,169,110,0.25)':''; b.style.color=_apFiltroFav?'var(--gold)':''; b.style.borderColor=_apFiltroFav?'var(--gold)':''; } renderProductos(); }
-function apLlenarFiltroCat(){ const sel=$('#prod-cat-filtro'); if(!sel) return; const cur=sel.value; const cats=[...new Set(PRODUCTOS.map(p=>p.categoria).filter(Boolean))].sort((a,b)=>String(a).localeCompare(String(b))); sel.innerHTML='<option value="">Todas las categorías</option>'+cats.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join(''); if(cats.includes(cur)) sel.value=cur; }
+function apLlenarFiltroCat(){ const sel=$('#prod-cat-filtro'); if(!sel) return; const cur=sel.value; const cats=[...new Set(PRODUCTOS.map(p=>p.categoria).filter(Boolean))].sort((a,b)=>String(a).localeCompare(String(b))); sel.innerHTML='<option value="">Todas las categorías</option>'+cats.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join(''); if(cats.includes(cur)) sel.value=cur;
+  // mismo listado en el ajuste masivo de precios
+  const bp=$('#bp-cat'); if(bp){ const bcur=bp.value; bp.innerHTML='<option value="">Todas</option>'+cats.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join(''); if(cats.includes(bcur)) bp.value=bcur; }
+}
+// Sube/baja el precio de una categoría (o todas) un % — redondea al entero.
+function bulkPrecio(signo){
+  const cat=($('#bp-cat')&&$('#bp-cat').value)||'';
+  const pct=Number($('#bp-pct')&&$('#bp-pct').value);
+  if(!pct||pct<=0){ showToast('⚠️ Escribe un % mayor que 0'); return; }
+  const factor=1+(signo*pct/100);
+  const objetivo=PRODUCTOS.filter(p=>!cat||p.categoria===cat);
+  if(!objetivo.length){ showToast('Sin productos en esa categoría'); return; }
+  if(!confirm((signo>0?'Subir':'Bajar')+' '+pct+'% el precio de '+objetivo.length+' producto(s)'+(cat?(' en '+cat):'')+'?')) return;
+  syncProductos();
+  let n=0;
+  objetivo.forEach(p=>{ const nuevo=Math.max(1, Math.round((Number(p.precioActual)||0)*factor)); if(nuevo!==Number(p.precioActual)){ p.precioActual=nuevo; if(typeof marcarProductoModificado==='function') try{ marcarProductoModificado(p.id); }catch(e){} n++; } });
+  apSaveProds(); renderProductos();
+  showToast('💲 '+n+' precios '+(signo>0?'subidos':'bajados')+' '+pct+'%','Pulsa "Actualizar tienda" en ⚙️ para publicar');
+}
 function apSaveProds(){ syncProductos(); try{ localStorage.setItem('productos', JSON.stringify(PRODUCTOS)); }catch(e){} }
 /* Selección múltiple (checkbox por tarjeta) para acciones masivas */
 let AP_SEL = new Set();
@@ -1191,6 +1232,15 @@ function apFav(id){ const p=apFind(id); if(!p) return; p.masVendido=!p.masVendid
 function apDel(id){ const p=apFind(id); if(!p) return; if(!confirm('¿Eliminar "'+(p.nombre||'')+'"? Esto lo quita del catálogo al sincronizar.')) return; const i=PRODUCTOS.findIndex(x=>String(x.id)===String(id)); if(i>=0) PRODUCTOS.splice(i,1); apSaveProds(); renderProductos(); showToast('🗑️ Eliminado','Sincroniza para publicar el cambio'); }
 function apEdit(id){ const p=apFind(id); if(!p) return; $('#pedit-id').value=id; $('#pedit-nombre').value=p.nombre||''; $('#pedit-precio').value=p.precioActual||''; $('#pedit-original').value=(Number(p.precioOriginal)>0?p.precioOriginal:''); $('#pedit-stock').value=Number(p.stock)||0; $('#pedit-comision').value=(Number(p.comision)>0?p.comision:''); $('#pedit-comision-moneda').value=p.comisionMoneda||'USD'; $('#pedit-desc').value=p.descripcion||''; $('#pedit-fav').checked=!!p.masVendido; const cs=$('#pedit-cat'); if(cs){ const cats=[...new Set(PRODUCTOS.map(x=>x.categoria).filter(Boolean))].sort(); cs.innerHTML=cats.map(c=>`<option value="${esc(c)}" ${c===p.categoria?'selected':''}>${esc(c)}</option>`).join(''); } $('#pedit-modal').classList.add('show'); }
 function apEditClose(){ $('#pedit-modal').classList.remove('show'); }
+// Duplicar: crea una copia del producto (nuevo id, "— Copia") y abre su edición.
+function apDuplicar(id){
+  const p=apFind(id); if(!p){ showToast('No encontré el producto'); return; }
+  const copia=Object.assign({}, JSON.parse(JSON.stringify(p)), { id:Date.now(), nombre:(p.nombre||'Producto')+' — Copia', masVendido:false, fechaAgregado:new Date().toISOString() });
+  syncProductos(); PRODUCTOS.unshift(copia); apSaveProds();
+  renderProductos();
+  apEdit(String(copia.id)); // abrir la copia para ajustar nombre/precio/foto
+  showToast('📄 Producto duplicado','Ajusta el nombre y guarda; luego "Actualizar tienda"');
+}
 function apEditSave(){ const id=$('#pedit-id').value; const p=apFind(id); if(!p) return;
   p.nombre=$('#pedit-nombre').value.trim()||p.nombre;
   p.precioActual=Number($('#pedit-precio').value)||0;
@@ -1371,8 +1421,20 @@ function renderVentas(){
   // comisiones por producto
   const comisArr=Object.entries(comisPorProd).filter(([,c])=>c>0).sort((a,b)=>b[1]-a[1]).slice(0,8);
   $('#ventas-comis').innerHTML = comisArr.length ? comisArr.map(([nm,c])=>`<div style="display:flex;align-items:center;gap:10px;padding:8px 10px;background:rgba(255,255,255,0.03);border-radius:9px;margin-bottom:6px"><div style="flex:1;font-size:13px;color:#fff;font-weight:700">${esc(nm)}</div><span style="font-size:12px;color:var(--gold);font-weight:800">${money(c)}</span></div>`).join('') : `<div class="empty" style="padding:18px"><div class="ico">💵</div>Las comisiones aparecen cuando tus ventas registran la comisión por producto.</div>`;
-  const ult=[...VENTAS].sort((a,b)=>(ventaFecha(b)||0)-(ventaFecha(a)||0)).slice(0,60);
-  $('#ventas-lista').innerHTML = ult.length?`<div class="table-wrap"><table><thead><tr><th>Fecha</th><th>Cliente</th><th>Productos</th><th>Total</th><th></th></tr></thead><tbody>${ult.map(v=>{const d=ventaFecha(v); const items=((v.productos||v.items||[]).map(it=>esc(it.producto||it.nombre||it.nm||'')).filter(Boolean).join(', '))||esc(v.producto||v.nombre||'—'); return `<tr><td>${d?d.toLocaleDateString('es-CU'):'—'}</td><td class="nm">${esc(v.cliente||v.nombre||'—')}</td><td>${items||'—'}</td><td class="nm">${money(ventaTotal(v))}</td><td><button class="btn btn-ghost" style="padding:4px 9px;color:var(--red)" title="Anular venta y devolver stock" onclick="ventaAnular('${esc(String(v.id))}')">🗑</button></td></tr>`;}).join('')}</tbody></table></div>`:`<div class="empty"><div class="ico">🧾</div>Sin ventas registradas en este dispositivo.<br><small>Las ventas se guardan al usar "Registrar venta" en el admin.</small></div>`;
+  // Filtro del historial: texto (producto/cliente) + periodo, con total del periodo
+  const q = norm($('#ventas-q') && $('#ventas-q').value);
+  const per = ($('#ventas-periodo') && $('#ventas-periodo').value) || 'all';
+  const ahora = Date.now();
+  const rango = per==='hoy' ? 864e5 : per==='semana' ? 7*864e5 : per==='mes' ? 30*864e5 : 0;
+  const ventaTxt = v => norm([(v.cliente||v.nombre||''), ((v.productos||v.items||[]).map(it=>it.producto||it.nombre||it.nm||'').join(' ')), (v.producto||'')].join(' '));
+  let filtradas = [...VENTAS];
+  if(rango){ filtradas = filtradas.filter(v=>{ const d=ventaFecha(v); return d && (ahora-d.getTime())<=rango; }); }
+  if(q){ filtradas = filtradas.filter(v=>ventaTxt(v).includes(q)); }
+  filtradas.sort((a,b)=>(ventaFecha(b)||0)-(ventaFecha(a)||0));
+  const totPer = filtradas.reduce((s,v)=>s+ventaTotal(v),0);
+  const totEl=$('#ventas-periodo-tot'); if(totEl) totEl.innerHTML = filtradas.length? `<b style="color:var(--o)">${filtradas.length}</b> venta(s) · <b style="color:var(--green)">${money(totPer)}</b>${per!=='all'||q?' (filtro activo)':''}` : '';
+  const ult=filtradas.slice(0,200);
+  $('#ventas-lista').innerHTML = ult.length?`<div class="table-wrap"><table><thead><tr><th>Fecha</th><th>Cliente</th><th>Productos</th><th>Total</th><th></th></tr></thead><tbody>${ult.map(v=>{const d=ventaFecha(v); const items=((v.productos||v.items||[]).map(it=>esc(it.producto||it.nombre||it.nm||'')).filter(Boolean).join(', '))||esc(v.producto||v.nombre||'—'); return `<tr><td>${d?d.toLocaleDateString('es-CU'):'—'}</td><td class="nm">${esc(v.cliente||v.nombre||'—')}</td><td>${items||'—'}</td><td class="nm">${money(ventaTotal(v))}</td><td><button class="btn btn-ghost" style="padding:4px 9px;color:var(--red)" title="Anular venta y devolver stock" onclick="ventaAnular('${esc(String(v.id))}')">🗑</button></td></tr>`;}).join('')}</tbody></table></div>`:`<div class="empty"><div class="ico">🧾</div>${q||per!=='all'?'Ninguna venta coincide con el filtro.':'Sin ventas registradas en este dispositivo.<br><small>Las ventas se guardan al usar "Registrar venta" en el admin.</small>'}</div>`;
 }
 // Anular una venta: la borra (local + Firebase) y DEVUELVE el stock descontado.
 function ventaAnular(id){
@@ -1891,6 +1953,7 @@ window.agenteGuardarKey=agenteGuardarKey; window.agenteBorrarKey=agenteBorrarKey
 window.catSwitch=catSwitch; window.catAgregar=catAgregar; window.subAgregar=subAgregar; window.cliSwitch=cliSwitch;
 window.guardarFirebaseConfig=guardarFirebaseConfig; window.probarFirebase=probarFirebase; window.ventaAnular=ventaAnular;
 window.catRenombrar=catRenombrar; window.catBorrar=catBorrar; window.subRenombrar=subRenombrar; window.subBorrar=subBorrar;
+window.apDuplicar=apDuplicar; window.bulkPrecio=bulkPrecio; window.renderVentas=renderVentas;
 })();
 </script>
 <!-- Herramientas — portado de admin.html (admin-tools.js), adaptado a la navegación de admin2 (go()/.side-btn/.view) -->
