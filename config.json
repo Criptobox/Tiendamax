@@ -1,5 +1,5 @@
 {
-  "tasaMN": 670.0,
+  "tasaMN": 670,
   "ofertaDiaActualizado": "2026-07-05T05:12:27.968Z",
   "firebaseConfig": {
     "apiKey": "AIzaSyDlmR0_lwZSf7LcoVaz3FvFU3VvBDnCRcM",
@@ -11,8 +11,9 @@
     "appId": "1:238891228701:web:d515133e229c48a5adb0f4",
     "vapidKey": "BAXhJOhwCtSkc1jH09b2q04lVg5Cr4QNK3C9dqUcBIjzEJZJ66vkS7MfNLAhopd-eK3jYkpXFMk4zBzQfs8nbhc"
   },
-  "actualizado": "2026-07-05T18:08:32.671865+00:00",
+  "actualizado": "2026-07-05T18:09:47.403Z",
   "tasaMNAnterior": 666.5,
   "tasaFuente": "elTOQUE API",
-  "tasaActualizada": "2026-07-05"
+  "tasaActualizada": "2026-07-05",
+  "margenMN": 20
 }
