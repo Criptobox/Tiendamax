@@ -142,7 +142,7 @@ window.tmCopilotOnVenta = function(items){
     m.wins = Array.isArray(m.wins) ? m.wins : [];
     m.winCount = m.winCount || {};
     const acts = Array.isArray(m.actions) ? m.actions : [];
-    const promo = new Set(['smart_push','pushHot','offer','promo_download','campaign_draft']);
+    const promo = new Set(['smart_push','pushHot','offer','promo_download','campaign_draft','post_ready']);
     const hace7 = Date.now() - 7*864e5;
     items.forEach(it=>{
       const pid = String(it.productoId || it.id || '');
@@ -162,7 +162,7 @@ window.tmCopilotOnVenta = function(items){
   }catch(e){}
 };
 // Etiqueta legible del tipo de empujón
-function _empLabel(t){ return t==='smart_push'||t==='pushHot' ? 'push' : t==='offer' ? 'oferta' : t==='campaign_draft' ? 'campaña' : t==='promo_download' ? 'promo compartida' : t; }
+function _empLabel(t){ return t==='smart_push'||t==='pushHot' ? 'push' : t==='offer' ? 'oferta' : t==='campaign_draft' ? 'campaña' : t==='promo_download' ? 'promo compartida' : t==='post_ready' ? 'publicación' : t; }
 function pickProductName(pid){
   const p = products().find(x=>String(x.id)===String(pid));
   return p ? p.nombre : '';
@@ -719,8 +719,83 @@ function renderCorreccionesIA(){
       : '<div class="tm-copilot-empty">✅ Catálogo impecable: sin problemas detectados.</div>'}
     <div class="tm-copilot-empty" style="padding:8px 4px;font-size:10px">Al aplicar, el cambio se guarda y se sincroniza con la tienda automáticamente.</div>`;
 }
+/* ══════════ POST LISTO: "publica esto hoy" (texto + hashtags + 1 toque) ══════════
+   El agente elige un producto para publicar hoy (interés real + stock + foto,
+   evitando lo que ya publicaste hace poco) y arma la publicación lista.
+   Compartir reutiliza los generadores reales del admin (pubShareAct): la imagen
+   de Estado 1080×1920, Facebook con tus grupos y WhatsApp. */
+function postLog(){ try{ return JSON.parse(localStorage.getItem('tm_post_log')||'{}'); }catch(e){ return {}; } }
+function postMarcarPublicado(pid){ const l=postLog(); l[String(pid)]=Date.now(); localStorage.setItem('tm_post_log', JSON.stringify(l)); }
+function postHashtags(p){
+  const limpio = s => String(s||'').normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-zA-Z0-9]/g,'');
+  const tags = ['#TiendaMax','#Cuba','#OfertasCuba'];
+  const cat = limpio(p.categoria); if(cat) tags.push('#'+cat);
+  const n = String(p.nombre||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
+  if(/wifi|router|inalamb|repetidor|internet/.test(n)) tags.push('#WiFi','#InternetCuba');
+  if(/solar|inversor|bateria|energ|panel|apagon/.test(n)) tags.push('#EnergiaSolar','#Apagones');
+  if(/camara|segur|cctv|vigilan/.test(n)) tags.push('#Seguridad','#Camaras');
+  if(/cel|telefono|phone|movil/.test(n)) tags.push('#Celulares');
+  if(/audif|auricular|parlant|bocina|speaker|tws/.test(n)) tags.push('#Audio');
+  tags.push('#EnvioCuba');
+  return [...new Set(tags)].slice(0,8).join(' ');
+}
+function postTexto(p){
+  const precio = num(p.precioActual), ic = iconFor(p);
+  const desc = String(p.descripcion||'').trim();
+  return `${ic} ${p.nombre} — ¡Disponible en TiendaMax!\n\n`+
+    `💵 $${precio.toFixed(2)} USD`+ (num(p.stock)>0?`   ·   📦 Quedan ${num(p.stock)}`:'') + `\n`+
+    (desc? `\n${desc.slice(0,170)}\n`:'')+
+    `\n📲 Escríbenos por WhatsApp y te lo reservamos.\n🌐 tiendamax.org\n\n${postHashtags(p)}`;
+}
+function postCandidatos(){
+  const ps = products().filter(p=>num(p.stock)>0 && p.activo!==false);
+  if(!ps.length) return [];
+  const log = postLog();
+  const hotScore = {}; (state.hot||[]).forEach(x=>{ hotScore[String(x.p.id)] = x.score||0; });
+  const ahora = Date.now();
+  return ps.map(p=>{
+    const id = String(p.id);
+    const last = log[id]||0;
+    const dias = last ? (ahora-last)/864e5 : 999;
+    let s = 0;
+    s += (hotScore[id]||0)*2;                 // interés real (vistas/WhatsApp)
+    s += Math.min(num(p.stock),20)*0.4;       // algo de stock para vender
+    if(p.imagen) s += 6;                       // con foto se ve mejor
+    if(String(p.descripcion||'').length>40) s += 2;
+    if(dias<3) s -= 100;                        // recién publicado: evitar repetir
+    else if(dias<7) s -= 25;
+    else if(dias>30) s += 8;                    // hace rato que no sale
+    return {p, s, dias, hot:(hotScore[id]||0)>0};
+  }).sort((a,b)=>b.s-a.s);
+}
+function renderPostListo(){
+  const cands = postCandidatos();
+  if(!cands.length) return '';
+  const idx = ((state.postIdx||0)%cands.length + cands.length)%cands.length;
+  const c = cands[idx], p = c.p;
+  const motivo = c.hot ? 'tiene interés esta semana' : c.dias>30 ? 'hace rato no lo publicas' : 'buen stock y foto lista';
+  return `<div class="tm-copilot-smart" style="border-color:rgba(37,211,102,.45)">
+    <h4>📣 Publica esto hoy</h4>
+    <div class="tm-copilot-mini-card" style="margin-top:8px">
+      <div style="display:flex;gap:10px;align-items:center">
+        ${p.imagen?`<img src="${esc(p.imagen)}" style="width:54px;height:54px;border-radius:10px;object-fit:cover;flex-shrink:0" onerror="this.style.display='none'">`:''}
+        <div style="min-width:0"><b>${esc(p.nombre)}</b><small>$${num(p.precioActual).toFixed(2)} · stock ${num(p.stock)} · ${esc(motivo)}</small></div>
+      </div>
+      <div class="tm-copilot-code" style="margin-top:9px;white-space:pre-wrap">${esc(postTexto(p))}</div>
+      <div class="tm-copilot-task-actions" style="margin-top:9px">
+        <button type="button" class="tm-copilot-btn primary" data-cop="postEstado" data-pid="${esc(String(p.id))}">🖼️ Estado + imagen</button>
+        <button type="button" class="tm-copilot-btn green" data-cop="postFace" data-pid="${esc(String(p.id))}">📘 Facebook</button>
+        <button type="button" class="tm-copilot-btn blue" data-cop="postWhats" data-pid="${esc(String(p.id))}">💬 WhatsApp</button>
+      </div>
+      <div class="tm-copilot-task-actions" style="margin-top:7px">
+        <button type="button" class="tm-copilot-btn" data-cop="postCopy" data-pid="${esc(String(p.id))}">📋 Copiar texto</button>
+        <button type="button" class="tm-copilot-btn" data-cop="postOtro">🔄 Otro producto</button>
+      </div>
+    </div>
+  </div>`;
+}
 function renderToday(topTasks){
-  return `${reporteNocturnoHTML()}<div class="tm-copilot-smart"><h4>🧠 Estrategia de hoy</h4><ul>${dailyStrategy().map(x=>`<li>${esc(x)}</li>`).join('')}</ul><div class="tm-copilot-task-actions"><button type="button" class="tm-copilot-btn gold" data-cop="saveStrategy">Guardar campaña</button><button type="button" class="tm-copilot-btn blue" data-cop="view" data-view="marketing">Ver marketing</button></div></div>
+  return `${reporteNocturnoHTML()}${renderPostListo()}<div class="tm-copilot-smart"><h4>🧠 Estrategia de hoy</h4><ul>${dailyStrategy().map(x=>`<li>${esc(x)}</li>`).join('')}</ul><div class="tm-copilot-task-actions"><button type="button" class="tm-copilot-btn gold" data-cop="saveStrategy">Guardar campaña</button><button type="button" class="tm-copilot-btn blue" data-cop="view" data-view="marketing">Ver marketing</button></div></div>
   <div class="tm-copilot-list">${topTasks.length ? topTasks.map(t=>taskHtml(t)).join('') : '<div class="tm-copilot-empty">✅ Sin tareas urgentes. Puedes revisar productos o publicar novedades.</div>'}</div>`;
 }
 function renderAgents(){
@@ -1381,6 +1456,23 @@ function bindEvents(){
       if(!confirm('¿Mandar push de "'+p.nombre+'"'+(desc>0?(' con '+desc+'% de descuento'):'')+' a tus suscriptores?')) return;
       queuePushForProduct(el.dataset.pid, {title, body});
       remember && remember('smart_push', {productName:p.nombre, pid:p.id, desc});
+    }
+    if(act==='postOtro'){ state.postIdx=(state.postIdx||0)+1; renderSheet(); }
+    if(act==='postCopy'){ const p=products().find(x=>String(x.id)===String(el.dataset.pid)); if(p) copyText(postTexto(p),'Publicación'); }
+    if(act==='postEstado'||act==='postWhats'||act==='postFace'){
+      const pid=el.dataset.pid;
+      const p=products().find(x=>String(x.id)===String(pid));
+      const canal={postEstado:'story',postWhats:'wa',postFace:'fb'}[act];
+      postMarcarPublicado(pid);
+      try{ remember('post_ready',{productName:p&&p.nombre, pid}); }catch(_e){}
+      if(typeof window.pubShareAct==='function'){ window.pubShareAct(pid, canal); }
+      else if(p){
+        if(act==='postFace'){ window.open('https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent('https://tiendamax.org/p/producto-'+pid+'.html')+'&quote='+encodeURIComponent(postTexto(p)),'_blank','noopener'); }
+        else { window.open('https://wa.me/?text='+encodeURIComponent(postTexto(p)),'_blank','noopener'); }
+      }
+      // avanza al siguiente candidato para la próxima vez que abras el panel
+      state.postIdx=(state.postIdx||0)+1;
+      if(state.view==='hoy'){ setTimeout(renderSheet, 400); }
     }
     if(act==='iaRescan'){ state.view='correcciones'; renderSheet(); toast('🔍 Catálogo re-analizado'); }
     if(act==='iaUrgentes') iaAplicarUrgentes();
