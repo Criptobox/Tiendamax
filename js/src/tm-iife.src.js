@@ -390,8 +390,9 @@ async function guardarTasaMNAdmin() {
     };
     } // end typeof filtrarPorCategoria guard
 
-    // ── Pull-to-refresh ──
+    // ── Pull-to-refresh ── (solo en la tienda; en el admin estorba bajo las tabs)
     (function() {
+        if (document.getElementById('adminPanel')) return;
         const THRESHOLD = 80;
         let startY = 0, pulling = false, active = false;
         const ptr = document.createElement('div');

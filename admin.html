@@ -390,6 +390,7 @@
     <!-- Sidebar -->
     <aside class="sidebar">
       <button class="side-btn active" data-view="inicio" title="Inicio">🏠</button>
+      <button class="side-btn" data-view="productos" title="Productos · editar stock, precio, comisión">📦</button>
       <button class="side-btn" data-view="agregar" title="Agregar producto">➕</button>
       <button class="side-btn" data-view="categorias" title="Categorías y subcategorías">🏷️</button>
       <button class="side-btn" data-view="combos" title="Combos">🎁</button>
@@ -568,6 +569,14 @@
           </div>
         </div>
         <div class="section">
+          <h3>🔥 Firebase (ventas, reseñas, notificaciones)</h3>
+          <p style="font-size:12px;color:var(--muted);margin:-4px 0 12px">Pega el <b>firebaseConfig</b> de tu proyecto (Consola Firebase → Configuración del proyecto → Tus apps). Con esto funcionan ventas en la nube, reseñas y push.</p>
+          <div class="form-group"><label class="form-label">firebaseConfig (JSON o el bloque completo)</label><textarea class="form-textarea" id="fb-config-input" rows="7" placeholder='{ "apiKey": "AIza…", "projectId": "tu-proyecto", "databaseURL": "https://tu-proyecto-default-rtdb.firebaseio.com", … }'></textarea></div>
+          <div class="form-group" style="margin-top:10px"><label class="form-label">VAPID key (opcional, para notificaciones push)</label><input class="form-input" id="fb-vapid-input" placeholder="B…"></div>
+          <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap"><button class="btn btn-primary" onclick="guardarFirebaseConfig()">💾 Guardar Firebase</button><button class="btn btn-ghost" onclick="probarFirebase()">🔌 Probar conexión</button></div>
+          <p id="fb-config-status" style="font-size:12px;color:var(--muted);margin-top:8px"></p>
+        </div>
+        <div class="section">
           <h3>🔑 API Key de IA (para el Agente)</h3>
           <div class="form-group"><label class="form-label">API Key (Gemini / OpenRouter / Groq / DeepSeek)</label><input class="form-input" id="ia-key" type="text" placeholder="AIza… / sk-or-… / gsk_… / sk-…"></div>
           <div style="display:flex;gap:8px;margin-top:10px"><button class="btn btn-primary" onclick="agenteGuardarKey()">💾 Guardar key</button><button class="btn btn-ghost" onclick="agenteBorrarKey()">🗑 Borrar</button></div>
@@ -684,7 +693,7 @@
 <script src="js/src/tm-init.js?v=e23255ae"></script>
 <script src="js/src/tm-ui.js?v=ce55d1d0"></script>
 <script src="js/src/tm-toast.js?v=1f125e1c"></script>
-<script src="js/src/tm-iife.js?v=bb4bf912"></script>
+<script src="js/src/tm-iife.js?v=1fd13d7f"></script>
 <script src="js/src/tm-patches.js?v=53e9204d"></script>
 <script src="js/biometric-auth.js?v=343cb27b"></script>
 <script src="js/revolico_integration.js?v=b517b43a"></script>
@@ -822,6 +831,43 @@ function fillConfig(){
   set('adminWhatsappNum', localStorage.getItem('whatsappNumero')||localStorage.getItem('adminWhatsappNum'));
   const iaEl=$('#ia-key'); if(iaEl && !iaEl.value) iaEl.value = localStorage.getItem('anthropicApiKey')||'';
   iaKeyStatus();
+  fillFirebaseConfig();
+}
+function fillFirebaseConfig(){
+  const ta=$('#fb-config-input');
+  if(ta && !ta.value){ const raw=localStorage.getItem('firebaseConfig'); if(raw){ try{ ta.value=JSON.stringify(JSON.parse(raw),null,2); }catch(e){ ta.value=raw; } } }
+  const vk=$('#fb-vapid-input'); if(vk && !vk.value) vk.value=localStorage.getItem('firebaseVapidKey')||'';
+  const st=$('#fb-config-status'); if(st){ try{ const c=JSON.parse(localStorage.getItem('firebaseConfig')||'{}'); st.textContent = c.projectId?('✅ Firebase configurado: '+c.projectId):'Sin Firebase configurado'; }catch(e){ st.textContent='Sin Firebase configurado'; } }
+}
+// Extrae el objeto firebaseConfig de un JSON o de un bloque pegado (const firebaseConfig = {...})
+function _parseFirebaseConfig(txt){
+  txt=String(txt||'').trim(); if(!txt) return null;
+  try{ return JSON.parse(txt); }catch(e){}
+  const m=txt.match(/\{[\s\S]*\}/); if(!m) return null;
+  // convertir claves sin comillas y comillas simples a JSON válido
+  let s=m[0].replace(/([{,]\s*)([A-Za-z0-9_]+)\s*:/g,'$1"$2":').replace(/'/g,'"').replace(/,(\s*[}\]])/g,'$1');
+  try{ return JSON.parse(s); }catch(e){ return null; }
+}
+function guardarFirebaseConfig(){
+  const cfg=_parseFirebaseConfig($('#fb-config-input')&&$('#fb-config-input').value);
+  const st=$('#fb-config-status');
+  if(!cfg || !cfg.projectId){ if(st){ st.style.color='var(--red)'; st.textContent='❌ No pude leer el config. Pega el objeto completo con projectId.'; } return; }
+  if(!cfg.databaseURL) cfg.databaseURL='https://'+cfg.projectId+'-default-rtdb.firebaseio.com';
+  try{ localStorage.setItem('firebaseConfig', JSON.stringify(cfg)); }catch(e){}
+  const vk=($('#fb-vapid-input')&&$('#fb-vapid-input').value||'').trim();
+  if(vk) try{ localStorage.setItem('firebaseVapidKey', vk); }catch(e){}
+  if(st){ st.style.color='var(--green)'; st.textContent='✅ Firebase guardado: '+cfg.projectId; }
+  showToast('✅ Firebase configurado', cfg.projectId);
+  cargarVentasFirebase();
+}
+async function probarFirebase(){
+  const st=$('#fb-config-status'); if(st){ st.style.color='var(--muted)'; st.textContent='⏳ Probando…'; }
+  const base=rtdbBase();
+  if(!base){ if(st){ st.style.color='var(--red)'; st.textContent='❌ Guarda primero el firebaseConfig.'; } return; }
+  try{
+    const r=await fetch(base+'/config/version.json?_='+Date.now(),{cache:'no-store'});
+    if(st){ st.style.color=r.ok?'var(--green)':'var(--red)'; st.textContent=r.ok?'✅ Conexión OK con la base de datos.':'❌ La base respondió '+r.status+'. Revisa la URL/reglas.'; }
+  }catch(e){ if(st){ st.style.color='var(--red)'; st.textContent='❌ No se pudo conectar: '+e.message; } }
 }
 function fillAgregarCategorias(){
   const sel=$('#productCategory'); if(!sel) return;
@@ -1181,13 +1227,14 @@ function renderCategorias(){
   }
   let body;
   if(CAT_VIEW==='cat'){
-    body = cats.map(nm=>`<div style="display:flex;align-items:center;gap:12px;padding:11px 14px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-bottom:6px"><div style="font-size:22px;width:38px;height:38px;background:rgba(255,255,255,0.05);border-radius:8px;display:flex;align-items:center;justify-content:center">${catIcono(nm)}</div><div style="flex:1;font-size:13px;font-weight:700;color:#fff">${esc(nm)}</div><span style="font-size:10px;padding:3px 8px;border-radius:8px;background:rgba(255,107,53,0.12);color:var(--o);font-weight:700">${countFor(nm)} productos</span></div>`).join('') || `<div class="empty"><div class="ico">🏷️</div>Sin categorías.</div>`;
+    body = cats.map(nm=>`<div style="display:flex;align-items:center;gap:10px;padding:11px 14px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-bottom:6px"><div style="font-size:22px;width:38px;height:38px;background:rgba(255,255,255,0.05);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0">${catIcono(nm)}</div><div style="flex:1;min-width:0;font-size:13px;font-weight:700;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(nm)}</div><span style="font-size:10px;padding:3px 8px;border-radius:8px;background:rgba(255,107,53,0.12);color:var(--o);font-weight:700;flex-shrink:0">${countFor(nm)}</span><button class="pico edit" style="width:36px;height:36px;font-size:16px" title="Renombrar" onclick="catRenombrar('${esc(nm).replace(/'/g,"\\'")}')">✏️</button><button class="pico del" style="width:36px;height:36px;font-size:16px" title="Borrar" onclick="catBorrar('${esc(nm).replace(/'/g,"\\'")}')">🗑️</button></div>`).join('') || `<div class="empty"><div class="ico">🏷️</div>Sin categorías.</div>`;
   } else {
     body = cats.map(nm=>{
       let subs = subMap[nm] || subMap[(nm||'').toUpperCase()] || [];
       if(!subs.length){ const k=Object.keys(subMap).find(x=>norm(x)===norm(nm)); if(k) subs=subMap[k]; }
       if(!subs || !subs.length) return '';
-      return `<div style="margin-bottom:14px"><div style="font-size:11px;font-weight:800;color:var(--gold);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">${catIcono(nm)} ${esc(nm)}</div>${subs.map(s=>`<div style="display:flex;align-items:center;gap:12px;padding:9px 14px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-bottom:5px"><div style="flex:1;font-size:13px;color:#fff">${esc(s)}</div><span style="font-size:10px;padding:3px 8px;border-radius:8px;background:rgba(255,107,53,0.12);color:var(--o);font-weight:700">${subCount(nm,s)}</span></div>`).join('')}</div>`;
+      const ce=esc(nm).replace(/'/g,"\\'");
+      return `<div style="margin-bottom:14px"><div style="font-size:11px;font-weight:800;color:var(--gold);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">${catIcono(nm)} ${esc(nm)}</div>${subs.map(s=>{const se=esc(s).replace(/'/g,"\\'");return `<div style="display:flex;align-items:center;gap:10px;padding:9px 14px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-bottom:5px"><div style="flex:1;min-width:0;font-size:13px;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(s)}</div><span style="font-size:10px;padding:3px 8px;border-radius:8px;background:rgba(255,107,53,0.12);color:var(--o);font-weight:700;flex-shrink:0">${subCount(nm,s)}</span><button class="pico edit" style="width:34px;height:34px;font-size:15px" title="Renombrar" onclick="subRenombrar('${ce}','${se}')">✏️</button><button class="pico del" style="width:34px;height:34px;font-size:15px" title="Borrar" onclick="subBorrar('${ce}','${se}')">🗑️</button></div>`;}).join('')}</div>`;
     }).join('') || `<div class="empty"><div class="ico">📁</div>Sin subcategorías asignadas.</div>`;
   }
   $('#cat-list').innerHTML = pills + addForm + body;
@@ -1213,6 +1260,52 @@ function subAgregar(){
   if(typeof marcarTodoModificado==='function'){} // sync sube subcategorias.json desde localStorage
   renderCategorias();
   showToast('✅ Subcategoría agregada','Pulsa Actualizar tienda en ⚙️ para publicar');
+}
+// ── Editar/borrar categorías y subcategorías ──
+// El motor sube categorias.json como {nombres:categorias, iconos:iconosPersonalizados}
+// (barewords). Reasignamos esos globales para que "Actualizar tienda" publique el cambio.
+function _saveCats(names, iconos){
+  try{ categorias = names.slice(); }catch(e){}
+  try{ if(typeof iconosPersonalizados!=='undefined' && iconos){ Object.keys(iconosPersonalizados).forEach(k=>{ if(!(k in iconos)) delete iconosPersonalizados[k]; }); Object.assign(iconosPersonalizados, iconos); } }catch(e){}
+  try{ localStorage.setItem('categorias', JSON.stringify(names)); }catch(e){}
+  CATEGORIAS = { nombres: names.slice(), iconos: Object.assign({}, (CATEGORIAS&&CATEGORIAS.iconos)||{}, iconos||{}) };
+}
+function catRenombrar(nm){
+  const nuevo=(prompt('Nuevo nombre para la categoría:', nm)||'').trim(); if(!nuevo||nuevo===nm) return;
+  const names=catNombres().map(c=>c===nm?nuevo:c);
+  const ic=Object.assign({},(CATEGORIAS&&CATEGORIAS.iconos)||{}); if(ic[nm]){ ic[nuevo]=ic[nm]; delete ic[nm]; }
+  _saveCats(names, ic);
+  syncProductos(); PRODUCTOS.forEach(p=>{ if(norm(p.categoria)===norm(nm)) p.categoria=nuevo; }); apSaveProds();
+  try{ let map=JSON.parse(localStorage.getItem('subcategorias')||'{}'); if(map[nm]){ map[nuevo]=map[nm]; delete map[nm]; localStorage.setItem('subcategorias',JSON.stringify(map)); SUBCATS=map; } }catch(e){}
+  renderCategorias(); renderProductos(); fillAgregarCategorias();
+  showToast('✏️ Categoría renombrada','Pulsa "Actualizar tienda" en ⚙️ para publicar');
+}
+function catBorrar(nm){
+  const n=PRODUCTOS.filter(p=>norm(p.categoria)===norm(nm)).length;
+  if(!confirm('¿Borrar la categoría "'+nm+'"?'+(n?(' Tiene '+n+' producto(s), quedarán sin categoría.'):''))) return;
+  const names=catNombres().filter(c=>c!==nm);
+  const ic=Object.assign({},(CATEGORIAS&&CATEGORIAS.iconos)||{}); delete ic[nm];
+  _saveCats(names, ic);
+  try{ let map=JSON.parse(localStorage.getItem('subcategorias')||'{}'); delete map[nm]; localStorage.setItem('subcategorias',JSON.stringify(map)); SUBCATS=map; }catch(e){}
+  renderCategorias(); fillAgregarCategorias();
+  showToast('🗑️ Categoría borrada','Pulsa "Actualizar tienda" en ⚙️ para publicar');
+}
+function subRenombrar(cat, s){
+  const nuevo=(prompt('Nuevo nombre para la subcategoría:', s)||'').trim(); if(!nuevo||nuevo===s) return;
+  let map; try{ map=JSON.parse(localStorage.getItem('subcategorias')||'{}'); }catch(e){ map={}; }
+  if(map[cat]) map[cat]=map[cat].map(x=>x===s?nuevo:x);
+  localStorage.setItem('subcategorias',JSON.stringify(map)); SUBCATS=map;
+  syncProductos(); PRODUCTOS.forEach(p=>{ if(norm(p.categoria)===norm(cat)&&norm(p.subcategoria)===norm(s)) p.subcategoria=nuevo; }); apSaveProds();
+  renderCategorias();
+  showToast('✏️ Subcategoría renombrada','Pulsa "Actualizar tienda" en ⚙️ para publicar');
+}
+function subBorrar(cat, s){
+  if(!confirm('¿Borrar la subcategoría "'+s+'"?')) return;
+  let map; try{ map=JSON.parse(localStorage.getItem('subcategorias')||'{}'); }catch(e){ map={}; }
+  if(map[cat]) map[cat]=map[cat].filter(x=>x!==s);
+  localStorage.setItem('subcategorias',JSON.stringify(map)); SUBCATS=map;
+  renderCategorias();
+  showToast('🗑️ Subcategoría borrada','Pulsa "Actualizar tienda" en ⚙️ para publicar');
 }
 function renderSubcats(){
   // subcategorias.json = { CATEGORIA: [sub, sub...] }
@@ -1279,7 +1372,27 @@ function renderVentas(){
   const comisArr=Object.entries(comisPorProd).filter(([,c])=>c>0).sort((a,b)=>b[1]-a[1]).slice(0,8);
   $('#ventas-comis').innerHTML = comisArr.length ? comisArr.map(([nm,c])=>`<div style="display:flex;align-items:center;gap:10px;padding:8px 10px;background:rgba(255,255,255,0.03);border-radius:9px;margin-bottom:6px"><div style="flex:1;font-size:13px;color:#fff;font-weight:700">${esc(nm)}</div><span style="font-size:12px;color:var(--gold);font-weight:800">${money(c)}</span></div>`).join('') : `<div class="empty" style="padding:18px"><div class="ico">💵</div>Las comisiones aparecen cuando tus ventas registran la comisión por producto.</div>`;
   const ult=[...VENTAS].sort((a,b)=>(ventaFecha(b)||0)-(ventaFecha(a)||0)).slice(0,60);
-  $('#ventas-lista').innerHTML = ult.length?`<div class="table-wrap"><table><thead><tr><th>Fecha</th><th>Cliente</th><th>Productos</th><th>Total</th></tr></thead><tbody>${ult.map(v=>{const d=ventaFecha(v); const items=((v.productos||v.items||[]).map(it=>esc(it.producto||it.nombre||it.nm||'')).filter(Boolean).join(', '))||esc(v.producto||v.nombre||'—'); return `<tr><td>${d?d.toLocaleDateString('es-CU'):'—'}</td><td class="nm">${esc(v.cliente||v.nombre||'—')}</td><td>${items||'—'}</td><td class="nm">${money(ventaTotal(v))}</td></tr>`;}).join('')}</tbody></table></div>`:`<div class="empty"><div class="ico">🧾</div>Sin ventas registradas en este dispositivo.<br><small>Las ventas se guardan al usar "Registrar venta" en el admin.</small></div>`;
+  $('#ventas-lista').innerHTML = ult.length?`<div class="table-wrap"><table><thead><tr><th>Fecha</th><th>Cliente</th><th>Productos</th><th>Total</th><th></th></tr></thead><tbody>${ult.map(v=>{const d=ventaFecha(v); const items=((v.productos||v.items||[]).map(it=>esc(it.producto||it.nombre||it.nm||'')).filter(Boolean).join(', '))||esc(v.producto||v.nombre||'—'); return `<tr><td>${d?d.toLocaleDateString('es-CU'):'—'}</td><td class="nm">${esc(v.cliente||v.nombre||'—')}</td><td>${items||'—'}</td><td class="nm">${money(ventaTotal(v))}</td><td><button class="btn btn-ghost" style="padding:4px 9px;color:var(--red)" title="Anular venta y devolver stock" onclick="ventaAnular('${esc(String(v.id))}')">🗑</button></td></tr>`;}).join('')}</tbody></table></div>`:`<div class="empty"><div class="ico">🧾</div>Sin ventas registradas en este dispositivo.<br><small>Las ventas se guardan al usar "Registrar venta" en el admin.</small></div>`;
+}
+// Anular una venta: la borra (local + Firebase) y DEVUELVE el stock descontado.
+function ventaAnular(id){
+  const v=VENTAS.find(x=>String(x.id)===String(id));
+  if(!v){ showToast('No encontré esa venta'); return; }
+  if(!confirm('¿Anular esta venta de '+money(ventaTotal(v))+'? Se devolverá el stock al inventario.')) return;
+  // Devolver stock de cada ítem
+  syncProductos();
+  const items=(v.productos||v.items||[]);
+  const lista=items.length?items:[{productoId:v.productoId, cantidad:v.cantidad}];
+  lista.forEach(it=>{ const p=PRODUCTOS.find(x=>String(x.id)===String(it.productoId)); if(p){ p.stock=(Number(p.stock)||0)+(Number(it.cantidad||it.qty)||1); } });
+  apSaveProds();
+  // Quitar de local
+  const rest=VENTAS.filter(x=>String(x.id)!==String(id));
+  try{ localStorage.setItem('registroVentas', JSON.stringify(rest)); }catch(e){}
+  VENTAS=rest;
+  // Quitar de Firebase
+  try{ if(typeof _fbEliminarVenta==='function') _fbEliminarVenta(v.id); else { const base=rtdbBase(); if(base) fetch(base+'/ventas/'+v.id+'.json',{method:'DELETE'}).catch(()=>{}); } }catch(e){}
+  renderVentas(); renderProductos(); renderInicio(); renderClientes();
+  showToast('↩️ Venta anulada','Stock devuelto al inventario');
 }
 
 /* ============ ANALYTICS ============ */
@@ -1776,6 +1889,8 @@ window.ventaBuscar=ventaBuscar; window.ventaAdd=ventaAdd; window.ventaCartRemove
 
 window.agenteGuardarKey=agenteGuardarKey; window.agenteBorrarKey=agenteBorrarKey;
 window.catSwitch=catSwitch; window.catAgregar=catAgregar; window.subAgregar=subAgregar; window.cliSwitch=cliSwitch;
+window.guardarFirebaseConfig=guardarFirebaseConfig; window.probarFirebase=probarFirebase; window.ventaAnular=ventaAnular;
+window.catRenombrar=catRenombrar; window.catBorrar=catBorrar; window.subRenombrar=subRenombrar; window.subBorrar=subBorrar;
 })();
 </script>
 <!-- Herramientas — portado de admin.html (admin-tools.js), adaptado a la navegación de admin2 (go()/.side-btn/.view) -->
