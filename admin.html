@@ -615,6 +615,14 @@
       <!-- ANALYTICS -->
       <div id="view-analytics" class="view">
         <div class="ph"><div><h2>📊 Analytics</h2><p>Métricas reales del catálogo y ventas</p></div></div>
+        <div class="section">
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px">
+            <h3 style="margin:0">📅 Reporte de ganancias</h3>
+            <select class="form-select" id="rep-mes" style="min-width:150px;margin-left:auto" onchange="renderReporteMensual()"></select>
+            <button class="btn btn-ghost" onclick="reporteCopiar()">📋 Copiar</button>
+          </div>
+          <div id="rep-mensual"></div>
+        </div>
         <div class="kpis" id="an-kpis"></div>
         <div class="section"><h3>Ventas por categoría</h3><div id="an-cat"></div></div>
       </div>
@@ -937,7 +945,7 @@ function ventaRegistrar(){
   // lo cuenta como "lo que funcionó" para repetir lo que vende).
   try{ if(typeof window.tmCopilotOnVenta==='function') window.tmCopilotOnVenta(vendidos); }catch(e){}
   VENTA_CART=[]; ventaRenderCart();
-  VENTAS = lsVentas(); renderVentas(); renderProductos(); renderInicio(); renderClientes();
+  VENTAS = lsVentas(); renderVentas(); renderProductos(); renderInicio(); renderClientes(); renderAnalytics();
   showToast('✅ Venta registrada','Se guardó y se ajustó el stock');
 }
 
@@ -1457,12 +1465,56 @@ function ventaAnular(id){
   VENTAS=rest;
   // Quitar de Firebase
   try{ if(typeof _fbEliminarVenta==='function') _fbEliminarVenta(v.id); else { const base=rtdbBase(); if(base) fetch(base+'/ventas/'+v.id+'.json',{method:'DELETE'}).catch(()=>{}); } }catch(e){}
-  renderVentas(); renderProductos(); renderInicio(); renderClientes();
+  renderVentas(); renderProductos(); renderInicio(); renderClientes(); renderAnalytics();
   showToast('↩️ Venta anulada','Stock devuelto al inventario');
 }
 
 /* ============ ANALYTICS ============ */
+// Ganancia (comisión) de una venta, separada por moneda. Devuelve {usd, mn}.
+function ventaGanancia(v){
+  let usd=0, mn=0;
+  let items=(v.productos||v.items||[]);
+  if((!items||!items.length) && (v.producto||v.nombre)) items=[{producto:v.producto||v.nombre, cantidad:v.cantidad, comision:v.comision, comisionMoneda:v.comisionMoneda, ganancia:(v.ganancia!=null?v.ganancia:v.comision), productoId:v.productoId}];
+  items.forEach(it=>{ const q=Number(it.cantidad||it.qty||1)||1; const prod=PRODUCTOS.find(x=>String(x.id)===String(it.productoId))||{};
+    let g=Number(it.ganancia); if(isNaN(g)){ let c=Number(it.comision); if(isNaN(c)) c=Number(prod.comision)||0; g=c*q; } g=g||0;
+    const mon=(it.comisionMoneda||prod.comisionMoneda||'USD'); if(mon==='MN') mn+=g; else usd+=g;
+  });
+  return {usd, mn};
+}
+function repMeses(){
+  const set=new Set();
+  VENTAS.forEach(v=>{ const d=ventaFecha(v); if(d) set.add(d.toISOString().slice(0,7)); });
+  set.add(new Date().toISOString().slice(0,7));
+  return [...set].sort().reverse();
+}
+function repMesLabel(k){ const [y,m]=k.split('-'); const meses=['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic']; return meses[Number(m)-1]+' '+y; }
+function renderReporteMensual(){
+  const sel=$('#rep-mes'); if(!sel) return;
+  const meses=repMeses();
+  if(!sel.options.length || sel.dataset.n!=String(meses.length)){ const cur=sel.value; sel.innerHTML=meses.map(k=>`<option value="${k}">${repMesLabel(k)}</option>`).join(''); sel.dataset.n=String(meses.length); if(meses.includes(cur)) sel.value=cur; }
+  const mes=sel.value||meses[0]||new Date().toISOString().slice(0,7);
+  const delMes=VENTAS.filter(v=>{ const d=ventaFecha(v); return d && d.toISOString().slice(0,7)===mes; });
+  const moneyMN = n => (Number(n)||0).toLocaleString('es-US',{maximumFractionDigits:0})+' MN';
+  let vendido=0, gU=0, gM=0; const porProd={};
+  delMes.forEach(v=>{ vendido+=ventaTotal(v); const g=ventaGanancia(v); gU+=g.usd; gM+=g.mn;
+    (v.productos||v.items||[{producto:v.producto||v.nombre,cantidad:v.cantidad}]).forEach(it=>{ const nm=it.producto||it.nombre||it.nm; if(!nm)return; const q=Number(it.cantidad||it.qty||1)||1; porProd[nm]=(porProd[nm]||0)+q; }); });
+  const nV=delMes.length; const ticket=nV?vendido/nV:0;
+  const top=Object.entries(porProd).sort((a,b)=>b[1]-a[1]).slice(0,5);
+  const box=$('#rep-mensual'); if(!box) return;
+  window.__repMesTexto = `📊 TiendaMax — Reporte de ${repMesLabel(mes)}\n`+
+    `Ventas: ${nV}\nVendido: ${money(vendido)}\nGanancia (comisión): ${money(gU)}${gM?(' + '+moneyMN(gM)):''}\nTicket promedio: ${money(ticket)}\n`+
+    (top.length?('Top vendidos:\n'+top.map((x,i)=>`  ${i+1}. ${x[0]} ×${x[1]}`).join('\n')):'');
+  box.innerHTML = `<div class="kpis" style="margin-bottom:12px">
+      <div class="kpi success"><div class="lbl">Vendido</div><div class="val">${money(vendido)}</div><div class="sub muted">${nV} venta(s)</div></div>
+      <div class="kpi gold"><div class="lbl">Ganancia</div><div class="val">${money(gU)}</div><div class="sub muted">${gM?moneyMN(gM):'comisión USD'}</div></div>
+      <div class="kpi info"><div class="lbl">Ticket prom.</div><div class="val">${money(ticket)}</div></div>
+    </div>
+    ${top.length?`<div style="font-size:12px;color:var(--muted);margin-bottom:6px">🏆 Más vendidos del mes</div>`+top.map((x,i)=>`<div style="display:flex;justify-content:space-between;padding:7px 10px;background:rgba(255,255,255,0.03);border-radius:8px;margin-bottom:5px;font-size:13px"><span style="color:#fff">${i+1}. ${esc(x[0])}</span><span style="color:var(--o);font-weight:700">×${x[1]}</span></div>`).join('')
+      :'<div class="empty" style="padding:18px"><div class="ico">📅</div>Sin ventas registradas en este mes.</div>'}`;
+}
+function reporteCopiar(){ const t=window.__repMesTexto||''; if(!t){ showToast('Nada que copiar'); return; } try{ navigator.clipboard.writeText(t); showToast('📋 Reporte copiado','Pégalo donde quieras'); }catch(e){ showToast('No se pudo copiar'); } }
 function renderAnalytics(){
+  renderReporteMensual();
   const totalVal=PRODUCTOS.reduce((s,p)=>s+(Number(p.precioActual)||0)*(Number(p.stock)||0),0);
   const total=VENTAS.reduce((s,v)=>s+ventaTotal(v),0);
   $('#an-kpis').innerHTML=[['','Productos',PRODUCTOS.length],['gold','Valor inventario',money(totalVal)],['success','Vendido',money(total)],['info','Categorías',new Set(PRODUCTOS.map(p=>p.categoria)).size]].map(([c,l,v])=>`<div class="kpi ${c}"><div class="lbl">${l}</div><div class="val">${v}</div></div>`).join('');
@@ -1958,6 +2010,7 @@ window.catSwitch=catSwitch; window.catAgregar=catAgregar; window.subAgregar=subA
 window.guardarFirebaseConfig=guardarFirebaseConfig; window.probarFirebase=probarFirebase; window.ventaAnular=ventaAnular;
 window.catRenombrar=catRenombrar; window.catBorrar=catBorrar; window.subRenombrar=subRenombrar; window.subBorrar=subBorrar;
 window.apDuplicar=apDuplicar; window.bulkPrecio=bulkPrecio; window.renderVentas=renderVentas;
+window.renderReporteMensual=renderReporteMensual; window.reporteCopiar=reporteCopiar;
 })();
 </script>
 <!-- Herramientas — portado de admin.html (admin-tools.js), adaptado a la navegación de admin2 (go()/.side-btn/.view) -->
