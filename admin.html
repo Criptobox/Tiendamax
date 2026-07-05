@@ -131,30 +131,35 @@
   .prod-stock { font-size:10px; color:var(--green); font-weight:700; }
   .prod-stock.low { color:var(--yellow); }
   .prod-stock.out { color:var(--red); }
-  /* Tarjeta fila de producto con editar/favorito/stock (fiel al admin viejo) */
-  #prod-grid.rows { display:flex; flex-direction:column; gap:8px; }
-  .pcard { background:rgba(255,255,255,0.03); border:1px solid var(--border); border-radius:11px; padding:10px 12px; }
-  .pcard-h { display:flex; gap:10px; align-items:flex-start; }
-  .pcard-thumb { width:50px; height:50px; object-fit:cover; border-radius:8px; flex-shrink:0; background:rgba(255,255,255,0.05); }
+  /* Tarjeta de producto — calcada del admin anterior (foto grande, botones
+     grandes tintados en fila, stock abajo con −/+ cuadrados y uds en color) */
+  #prod-grid.rows { display:flex; flex-direction:column; gap:12px; }
+  .pcard { background:rgba(255,255,255,0.035); border:1px solid var(--border); border-radius:18px; padding:15px 14px; }
+  .pcard-h { display:flex; gap:10px; align-items:center; }
+  .pcard-cb { width:22px; height:22px; accent-color:var(--o); flex-shrink:0; cursor:pointer; border-radius:6px; }
+  .pcard-thumb { width:76px; height:76px; object-fit:cover; border-radius:12px; flex-shrink:0; background:rgba(255,255,255,0.05); }
   .pcard-info { flex:1; min-width:0; }
-  .pcard-nm { font-size:13px; font-weight:700; color:#fff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-bottom:2px; }
-  .pcard-meta { font-size:11px; color:var(--muted); }
-  .pcard-comm { font-size:11px; color:var(--green); margin-top:1px; }
-  .pico { width:34px; height:34px; border-radius:8px; border:1px solid var(--border); background:rgba(255,255,255,0.06); color:#fff; font-size:15px; display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0; padding:0; }
+  .pcard-nm { font-size:15px; font-weight:800; color:#fff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-bottom:3px; letter-spacing:.3px; }
+  .pcard-meta { font-size:14px; white-space:nowrap; color:#b9b9c2; font-weight:600; }
+  .pcard-comm { font-size:13px; margin-top:3px; color:#d9d9e0; }
+  .pcard-comm b { display:block; color:var(--green); font-size:14px; font-weight:800; }
+  .pcard-acts { display:flex; gap:7px; flex-shrink:0; align-self:flex-start; }
+  .pico { width:44px; height:44px; border-radius:13px; border:1px solid var(--border); background:rgba(255,255,255,0.06); color:#fff; font-size:20px; display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0; padding:0; }
   .pico:hover { transform:translateY(-1px); }
-  .pico.edit { background:rgba(52,152,219,0.22); border-color:rgba(52,152,219,0.4); }
-  .pico.del { background:rgba(231,76,60,0.18); border-color:rgba(231,76,60,0.35); }
-  .pico.star { filter:grayscale(1) opacity(0.5); }
-  .pico.star.on { filter:none; background:rgba(201,169,110,0.22); border-color:var(--gold); }
-  .pcard-stock { display:flex; align-items:center; gap:6px; margin-top:9px; }
-  .stbtn { width:30px; height:28px; border-radius:7px; border:1px solid var(--border); background:rgba(255,255,255,0.07); color:#fff; font-size:16px; font-weight:800; line-height:1; cursor:pointer; flex-shrink:0; padding:0; }
-  .stbtn.plus { background:rgba(46,204,113,0.22); border-color:rgba(46,204,113,0.4); }
-  .stbtn.minus { background:rgba(231,76,60,0.16); border-color:rgba(231,76,60,0.3); }
-  .stbtn.zero { width:auto; padding:0 8px; font-size:11px; font-weight:800; color:var(--muted); }
+  .pico.edit { background:rgba(52,100,160,0.35); border-color:rgba(52,152,219,0.35); }
+  .pico.del { background:rgba(120,45,45,0.35); border-color:rgba(231,76,60,0.3); }
+  .pico.star { background:rgba(70,60,35,0.45); border-color:rgba(241,196,15,0.25); filter:grayscale(1) opacity(0.55); }
+  .pico.star.on { filter:none; background:rgba(241,196,15,0.2); border-color:rgba(241,196,15,0.5); }
+  .pcard-stock { display:flex; align-items:center; gap:10px; margin-top:13px; }
+  .stbtn { width:50px; height:42px; border-radius:11px; border:1px solid var(--border); background:rgba(255,255,255,0.07); color:#fff; font-size:20px; font-weight:800; line-height:1; cursor:pointer; flex-shrink:0; padding:0; }
+  .stbtn.minus { background:rgba(100,42,42,0.45); border-color:rgba(231,76,60,0.28); }
+  .stbtn.plus { background:rgba(35,90,55,0.5); border-color:rgba(46,204,113,0.35); }
+  .stbtn.zero { width:46px; height:42px; font-size:14px; font-weight:800; color:#cfcfd6; background:rgba(255,255,255,0.06); }
   .stbtn:hover { filter:brightness(1.25); }
-  .st-label { font-size:12px; color:var(--muted); margin-left:4px; }
-  .st-val { font-size:13px; font-weight:800; margin-left:auto; }
+  .st-label { font-size:15px; color:#b9b9c2; font-weight:600; }
+  .st-val { font-size:19px; font-weight:900; margin-left:auto; letter-spacing:.3px; }
   .st-val.ok { color:var(--green); } .st-val.low { color:var(--yellow); } .st-val.out { color:var(--red); }
+  @media (max-width:400px) { .pcard-thumb { width:64px; height:64px; } .pico { width:40px; height:40px; font-size:18px; } .pcard-cb { width:19px; height:19px; } }
   /* Modal de edición */
   .pmodal { position:fixed; inset:0; z-index:200; background:rgba(0,0,0,0.6); display:none; align-items:center; justify-content:center; padding:16px; }
   .pmodal.show { display:flex; }
@@ -1043,28 +1048,30 @@ function apBulkDel(){
 function apCardHTML(p){
   const st=Number(p.stock)||0; const cls=st<=0?'out':(st<=3?'low':'ok');
   const id=String(p.id);
-  const img = p.imagen ? `<img class="pcard-thumb" src="${esc(p.imagen)}" alt="" loading="lazy" onerror="this.onerror=null;this.src='/iconos/favicon-192.png';this.style.opacity='0.3'">` : `<div class="pcard-thumb" style="display:flex;align-items:center;justify-content:center;font-size:24px">${emojiCat(p.categoria)}</div>`;
-  const off = (Number(p.descuento)>0) ? ` · <span style="color:var(--red)">−${Math.round(p.descuento)}%</span>` : (Number(p.precioOriginal)>Number(p.precioActual) ? ` · <span style="color:var(--red)">−${Math.round((p.precioOriginal-p.precioActual)/p.precioOriginal*100)}%</span>` : '');
-  const comm = Number(p.comision)>0 ? `<div class="pcard-comm">💰 Comisión: ${p.comisionMoneda==='MN'?'':'$'}${Number(p.comision).toFixed(2)} ${p.comisionMoneda||'USD'}</div>` : '';
+  const img = p.imagen ? `<img class="pcard-thumb" src="${esc(p.imagen)}" alt="" loading="lazy" onerror="this.onerror=null;this.src='/iconos/favicon-192.png';this.style.opacity='0.3'">` : `<div class="pcard-thumb" style="display:flex;align-items:center;justify-content:center;font-size:34px">${emojiCat(p.categoria)}</div>`;
+  const off = (Number(p.descuento)>0) ? ` <span style="color:var(--red);font-size:12px">−${Math.round(p.descuento)}%</span>` : (Number(p.precioOriginal)>Number(p.precioActual) ? ` <span style="color:var(--red);font-size:12px">−${Math.round((p.precioOriginal-p.precioActual)/p.precioOriginal*100)}%</span>` : '');
+  const comm = Number(p.comision)>0 ? `<div class="pcard-comm">💰 Comisión:<b>${p.comisionMoneda==='MN'?'':'$'}${Number(p.comision).toFixed(2)} ${p.comisionMoneda||'USD'}</b></div>` : '';
   return `<div class="pcard">
     <div class="pcard-h">
-      <input type="checkbox" id="apcb-${id}" ${AP_SEL.has(id)?'checked':''} onchange="apSelTgl('${id}')" style="width:17px;height:17px;margin:16px 2px 0 0;accent-color:var(--o);flex-shrink:0;cursor:pointer">
+      <input type="checkbox" class="pcard-cb" id="apcb-${id}" ${AP_SEL.has(id)?'checked':''} onchange="apSelTgl('${id}')">
       ${img}
       <div class="pcard-info">
         <div class="pcard-nm">${esc(p.nombre||'')}${p.masVendido?' 🔥':''}</div>
         <div class="pcard-meta">$${Number(p.precioActual||0).toFixed(2)} USD${off}</div>
         ${comm}
       </div>
-      <button type="button" class="pico edit" onclick="apEdit('${id}')" title="Editar">✏️</button>
-      <button type="button" class="pico star${p.masVendido?' on':''}" onclick="apFav('${id}')" title="${p.masVendido?'Quitar de Más Vendidos':'Destacar en Más Vendidos'}">⭐</button>
-      <button type="button" class="pico del" onclick="apDel('${id}')" title="Eliminar">🗑️</button>
+      <div class="pcard-acts">
+        <button type="button" class="pico edit" onclick="apEdit('${id}')" title="Editar">✏️</button>
+        <button type="button" class="pico star${p.masVendido?' on':''}" onclick="apFav('${id}')" title="${p.masVendido?'Quitar de Más Vendidos':'Destacar en Más Vendidos'}">⭐</button>
+        <button type="button" class="pico del" onclick="apDel('${id}')" title="Eliminar">🗑️</button>
+      </div>
     </div>
     <div class="pcard-stock">
       <button type="button" class="stbtn minus" onclick="apStock('${id}',-1)">−</button>
       <button type="button" class="stbtn plus" onclick="apStock('${id}',1)">+</button>
       <span class="st-label">Stock:</span>
       <span class="st-val ${cls}">${st<=0?'Agotado':(st+' uds')}</span>
-      ${st>0?`<button type="button" class="stbtn zero" onclick="apStockZero('${id}')" title="Marcar agotado">→0</button>`:''}
+      <button type="button" class="stbtn zero" onclick="apStockZero('${id}')" title="Marcar agotado" ${st<=0?'disabled style="opacity:.35"':''}>→0</button>
     </div>
   </div>`;
 }
