@@ -731,7 +731,7 @@
     if (typeof window.go === 'function') window.go(map[tab] || tab);
   };
 </script>
-<script src="js/admin-copilot.js?v=f47d93ed"></script>
+<script src="js/admin-copilot.js?v=442e92fc"></script>
 
 <script>
 (function(){
@@ -931,7 +931,11 @@ function ventaRegistrar(){
   // CLAVE: unificar el array del motor con PRODUCTOS JUSTO ANTES (síncrono), para
   // que ajustarStock del motor descuente el MISMO array que muestra el admin.
   syncProductos();
-  registrarVentaPedido(VENTA_CART.map(it=>({productoId:it.id,producto:it.nombre,cantidad:it.cantidad,precio:it.precio,comision:it.comision,comisionMoneda:it.comisionMoneda})));
+  const vendidos = VENTA_CART.map(it=>({productoId:it.id,producto:it.nombre,cantidad:it.cantidad,precio:it.precio,comision:it.comision,comisionMoneda:it.comisionMoneda}));
+  registrarVentaPedido(vendidos);
+  // Aprendizaje: avisar al Copiloto qué se vendió (si tuvo push/oferta reciente,
+  // lo cuenta como "lo que funcionó" para repetir lo que vende).
+  try{ if(typeof window.tmCopilotOnVenta==='function') window.tmCopilotOnVenta(vendidos); }catch(e){}
   VENTA_CART=[]; ventaRenderCart();
   VENTAS = lsVentas(); renderVentas(); renderProductos(); renderInicio(); renderClientes();
   showToast('✅ Venta registrada','Se guardó y se ajustó el stock');

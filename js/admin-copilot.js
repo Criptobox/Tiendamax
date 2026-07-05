@@ -132,6 +132,37 @@ function remember(type, data={}){
   saveMemory(m);
   return m;
 }
+// APRENDIZAJE — el agente aprende de lo que vende.
+// Cuando entra una venta, si ese producto tuvo un empujón reciente (push/oferta),
+// lo cuenta como "lo que funcionó" para priorizar repetir lo que vende.
+window.tmCopilotOnVenta = function(items){
+  try{
+    if(!Array.isArray(items) || !items.length) return;
+    const m = memory();
+    m.wins = Array.isArray(m.wins) ? m.wins : [];
+    m.winCount = m.winCount || {};
+    const acts = Array.isArray(m.actions) ? m.actions : [];
+    const promo = new Set(['smart_push','pushHot','offer','promo_download','campaign_draft']);
+    const hace7 = Date.now() - 7*864e5;
+    items.forEach(it=>{
+      const pid = String(it.productoId || it.id || '');
+      const nombre = it.producto || it.nombre || '';
+      const emp = acts.find(a=> a.ts>hace7 && promo.has(a.type) && (
+        (a.pid && String(a.pid)===pid) || (a.productName && nombre && String(a.productName).toLowerCase()===String(nombre).toLowerCase())
+      ));
+      if(emp){
+        m.wins.unshift({ pid, nombre, tipo: emp.type, desc: emp.desc||0, ts: Date.now() });
+        const k = nombre || pid;
+        m.winCount[k] = (m.winCount[k]||0)+1;
+      }
+    });
+    m.wins = m.wins.slice(0,60);
+    saveMemory(m);
+    if($('#tmCopilotSheet') && $('#tmCopilotSheet').classList.contains('show') && state.view==='memoria') renderSheet();
+  }catch(e){}
+};
+// Etiqueta legible del tipo de empujón
+function _empLabel(t){ return t==='smart_push'||t==='pushHot' ? 'push' : t==='offer' ? 'oferta' : t==='campaign_draft' ? 'campaña' : t==='promo_download' ? 'promo compartida' : t; }
 function pickProductName(pid){
   const p = products().find(x=>String(x.id)===String(pid));
   return p ? p.nombre : '';
@@ -737,8 +768,19 @@ function renderMarketing(){
 function renderMemory(){
   const m=memory(), actions=Array.isArray(m.actions)?m.actions:[], productsCount=m.products||{};
   const top=Object.entries(productsCount).sort((a,b)=>b[1]-a[1])[0];
-  return `<div class="tm-copilot-smart"><h4>🧠 Memoria del agente</h4><ul><li>Estrategias/campañas guardadas: ${num(m.counts&&m.counts.campaign_draft)}</li><li>Producto más impulsado: ${top?esc(top[0])+' ('+top[1]+' veces)':'aún sin datos'}</li><li>Última acción: ${m.last?esc(m.last.type)+' · '+ago(m.last.ts):'sin acciones registradas'}</li></ul></div>
-  <div class="tm-copilot-smart"><h4>Historial reciente</h4>${actions.slice(0,8).map(a=>`<div class="tm-copilot-rank-row"><span>${esc(a.type)} ${a.productName?'· '+esc(a.productName):''}</span><em>${ago(a.ts)}</em></div>`).join('')||'<div class="tm-copilot-empty">El agente aprenderá cuando guardes campañas o marques acciones.</div>'}</div>`;
+  // "Lo que funcionó": productos que VENDIERON tras un empujón (push/oferta)
+  const winCount = m.winCount || {};
+  const ganadores = Object.entries(winCount).sort((a,b)=>b[1]-a[1]).slice(0,6);
+  const wins = Array.isArray(m.wins)?m.wins:[];
+  const aprendido = `<div class="tm-copilot-smart" style="border-color:rgba(37,211,102,.4)"><h4>🏆 Lo que te funcionó</h4>
+    ${ganadores.length
+      ? '<small>Vendieron después de un empujón. Repite lo que ya vende:</small>'+ganadores.map(([nm,n])=>`<div class="tm-copilot-rank-row"><span>${esc(nm)}</span><em>${n} venta(s) tras empujón</em></div>`).join('')
+        + (wins[0]?`<div class="tm-copilot-task-actions" style="margin-top:9px"><button type="button" class="tm-copilot-btn primary" data-cop="smartPush" data-pid="${esc(String(wins[0].pid||''))}" data-desc="${num(wins[0].desc)||8}">📲 Repetir push del top</button></div>`:'')
+      : '<small>Aún sin datos. Cuando mandes un push u oferta y ese producto se venda, lo registro aquí para que repitas lo que funciona.</small>'}
+  </div>`;
+  return `${aprendido}
+  <div class="tm-copilot-smart"><h4>🧠 Memoria del agente</h4><ul><li>Ventas tras empujón: ${wins.length}</li><li>Producto más impulsado: ${top?esc(top[0])+' ('+top[1]+' veces)':'aún sin datos'}</li><li>Última acción: ${m.last?esc(_empLabel(m.last.type))+' · '+ago(m.last.ts):'sin acciones registradas'}</li></ul></div>
+  <div class="tm-copilot-smart"><h4>Historial reciente</h4>${actions.slice(0,8).map(a=>`<div class="tm-copilot-rank-row"><span>${esc(_empLabel(a.type))} ${a.productName?'· '+esc(a.productName):''}</span><em>${ago(a.ts)}</em></div>`).join('')||'<div class="tm-copilot-empty">El agente aprenderá cuando guardes campañas o marques acciones.</div>'}</div>`;
 }
 // ── PROMO ─────────────────────────────────────────────────────────
 function promoParseChips(text) {
@@ -1258,6 +1300,7 @@ async function queuePushForProduct(pid, opts){
     if(!r.ok) throw new Error('HTTP '+r.status);
     const ghUser=localStorage.getItem('githubUser'), ghRepo=localStorage.getItem('githubRepo')||'Tiendamax', ghToken=localStorage.getItem('githubToken');
     if(ghUser && ghToken){ fetch(`https://api.github.com/repos/${ghUser}/${ghRepo}/actions/workflows/flush-push-queue.yml/dispatches`,{method:'POST',headers:{'Authorization':'token '+ghToken,'Content-Type':'application/json'},body:JSON.stringify({ref:'main'})}).catch(()=>{}); }
+    try{ remember('pushHot', {productName:p.nombre, pid:p.id}); }catch(_e){}
     toast('Push agregado a la cola: ' + p.nombre);
   } catch(e) {
     // Si falló, revertir la marca para permitir reintentar
@@ -1337,7 +1380,7 @@ function bindEvents(){
       }
       if(!confirm('¿Mandar push de "'+p.nombre+'"'+(desc>0?(' con '+desc+'% de descuento'):'')+' a tus suscriptores?')) return;
       queuePushForProduct(el.dataset.pid, {title, body});
-      remember && remember('smart_push', {productName:p.nombre, desc});
+      remember && remember('smart_push', {productName:p.nombre, pid:p.id, desc});
     }
     if(act==='iaRescan'){ state.view='correcciones'; renderSheet(); toast('🔍 Catálogo re-analizado'); }
     if(act==='iaUrgentes') iaAplicarUrgentes();
