@@ -1829,3 +1829,29 @@ async function enviarPushManualAdmin() {
 window.tmMonedaActual = () => _monedaActual;
 
 // Expuesto para biometric-auth.js: otorga acceso sin re-prompt de contraseña
+
+// ══════════════════════════════════════════════════════════════
+//  CONTADOR DE VISITAS — 1 por sesión de navegador, solo en la
+//  TIENDA (el admin no cuenta). Usa el increment atómico de RTDB
+//  ({".sv":{"increment":1}}) para no pisar valores concurrentes.
+//  El admin lo muestra en Analytics como "Visitas a la web".
+// ══════════════════════════════════════════════════════════════
+(function tmContarVisita() {
+    if (document.getElementById('adminPanel')) return; // admin: no contar
+    try {
+        if (sessionStorage.getItem('tm_visita_contada')) return;
+        sessionStorage.setItem('tm_visita_contada', '1');
+    } catch (e) { return; }
+    // Esperar unos segundos: no bloquear la carga y evitar contar bots que rebotan al instante
+    setTimeout(async () => {
+        try {
+            const url = (typeof _fbRtdbUrl === 'function') ? _fbRtdbUrl() : null;
+            if (!url) return;
+            await fetch(url + '/analytics/visitas/count.json', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ '.sv': { 'increment': 1 } })
+            });
+        } catch (e) {}
+    }, 4000);
+})();

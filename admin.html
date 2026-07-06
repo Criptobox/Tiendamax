@@ -624,7 +624,7 @@
           <div id="rep-mensual"></div>
         </div>
         <div class="kpis" id="an-kpis"></div>
-        <div class="section"><h3>Ventas por categoría</h3><div id="an-cat"></div></div>
+        <div class="section"><h3>Productos por categoría</h3><div id="an-cat"></div></div>
       </div>
 
       <!-- CLIENTES -->
@@ -725,7 +725,7 @@
 <script src="js/src/tm-ui.js?v=9ee32707"></script>
 <script src="js/src/tm-toast.js?v=1f125e1c"></script>
 <script src="js/src/tm-iife.js?v=1fd13d7f"></script>
-<script src="js/src/tm-patches.js?v=12a9230b"></script>
+<script src="js/src/tm-patches.js?v=6bb8dcac"></script>
 <script src="js/biometric-auth.js?v=343cb27b"></script>
 <script src="js/revolico_integration.js?v=b517b43a"></script>
 <script>
@@ -1228,7 +1228,8 @@ function renderProductos(){
   if(q) list = list.filter(p=>norm(p.nombre).includes(q)||norm(p.categoria).includes(q));
   if(catF) list = list.filter(p=>p.categoria===catF);
   if(_apFiltroFav) list = list.filter(p=>p.masVendido);
-  list = [...list].sort((a,b)=>(Number(a.stock)||0)-(Number(b.stock)||0));
+  // Agotados SIEMPRE al final; con stock, primero los que menos tienen (para reponer)
+  list = [...list].sort((a,b)=>{ const aA=(Number(a.stock)||0)<=0?1:0, bA=(Number(b.stock)||0)<=0?1:0; return aA-bA || (Number(a.stock)||0)-(Number(b.stock)||0); });
   $('#prod-count').textContent = list.length + ' de ' + PRODUCTOS.length + ' productos';
   apSelBar();
   if(!list.length){ grid.innerHTML=`<div class="empty"><div class="ico">🔍</div>Sin resultados.</div>`; return; }
@@ -1302,7 +1303,7 @@ function renderCategorias(){
   }
   let body;
   if(CAT_VIEW==='cat'){
-    body = cats.map(nm=>`<div style="display:flex;align-items:center;gap:10px;padding:11px 14px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-bottom:6px"><div style="font-size:22px;width:38px;height:38px;background:rgba(255,255,255,0.05);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0">${catIcono(nm)}</div><div style="flex:1;min-width:0;font-size:13px;font-weight:700;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(nm)}</div><span style="font-size:10px;padding:3px 8px;border-radius:8px;background:rgba(255,107,53,0.12);color:var(--o);font-weight:700;flex-shrink:0">${countFor(nm)}</span><button class="pico edit" style="width:36px;height:36px;font-size:16px" title="Renombrar" onclick="catRenombrar('${esc(nm).replace(/'/g,"\\'")}')">✏️</button><button class="pico del" style="width:36px;height:36px;font-size:16px" title="Borrar" onclick="catBorrar('${esc(nm).replace(/'/g,"\\'")}')">🗑️</button></div>`).join('') || `<div class="empty"><div class="ico">🏷️</div>Sin categorías.</div>`;
+    body = cats.map(nm=>`<div style="display:flex;align-items:center;gap:10px;padding:11px 14px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-bottom:6px"><div style="font-size:22px;width:38px;height:38px;background:rgba(255,255,255,0.05);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0">${catIcono(nm)}</div><div style="flex:1;min-width:0;font-size:13px;font-weight:700;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(nm)}</div><span style="font-size:10px;padding:3px 8px;border-radius:8px;background:rgba(255,107,53,0.12);color:var(--o);font-weight:700;flex-shrink:0">${countFor(nm)}</span><button class="pico edit" style="width:36px;height:36px;font-size:16px" title="Cambiar emoji" onclick="catEmoji('${esc(nm).replace(/'/g,"\\'")}')">😀</button><button class="pico edit" style="width:36px;height:36px;font-size:16px" title="Renombrar" onclick="catRenombrar('${esc(nm).replace(/'/g,"\\'")}')">✏️</button><button class="pico del" style="width:36px;height:36px;font-size:16px" title="Borrar" onclick="catBorrar('${esc(nm).replace(/'/g,"\\'")}')">🗑️</button></div>`).join('') || `<div class="empty"><div class="ico">🏷️</div>Sin categorías.</div>`;
   } else {
     body = cats.map(nm=>{
       let subs = subMap[nm] || subMap[(nm||'').toUpperCase()] || [];
@@ -1355,6 +1356,18 @@ function catRenombrar(nm){
   renderCategorias(); renderProductos(); fillAgregarCategorias();
   showToast('✏️ Categoría renombrada','Pulsa "Actualizar tienda" en ⚙️ para publicar');
 }
+// Cambiar el emoji/ícono de una categoría (se publica igual que el renombre)
+function catEmoji(nm){
+  const actual = catIcono(nm) || '🏷️';
+  const nuevo = (prompt('Nuevo emoji para "'+nm+'" (pega el emoji):', actual)||'').trim();
+  if(!nuevo || nuevo===actual) return;
+  if(nuevo.length>8){ showToast('⚠️ Eso no parece un emoji'); return; }
+  const ic=Object.assign({},(CATEGORIAS&&CATEGORIAS.iconos)||{}); ic[nm]=nuevo;
+  _saveCats(catNombres(), ic);
+  try{ localStorage.setItem('iconosPersonalizados', JSON.stringify(ic)); }catch(e){}
+  renderCategorias(); renderProductos();
+  showToast('😀 Emoji cambiado','Pulsa "Actualizar tienda" en ⚙️ para publicar');
+}
 function catBorrar(nm){
   const n=PRODUCTOS.filter(p=>norm(p.categoria)===norm(nm)).length;
   if(!confirm('¿Borrar la categoría "'+nm+'"?'+(n?(' Tiene '+n+' producto(s), quedarán sin categoría.'):''))) return;
@@ -1402,11 +1415,14 @@ function renderSubcats(){
 /* ============ RADAR (reusa radar.json) ============ */
 function renderRadar(){
   if(!RADAR || !RADAR.productos || !RADAR.productos.length){ $('#radar-lista').innerHTML=`<div class="section"><div class="empty"><div class="ico">📡</div>Sin datos de radar todavía. Marca productos con ⭐ en el admin y corre la acción del radar.</div></div>`; $('#radar-resumen').textContent=''; return; }
+  // Sin agotados: vigilar el precio de algo que no puedes vender no aporta.
+  const vigilados = RADAR.productos.filter(r=>{ const p=PRODUCTOS.find(x=>String(x.id)===String(r.id)); return !p || (Number(p.stock)||0)>0; });
+  if(!vigilados.length){ $('#radar-lista').innerHTML=`<div class="section"><div class="empty"><div class="ico">📡</div>Todos los productos vigilados están agotados ahora mismo. Vuelven al radar cuando repongas stock.</div></div>`; $('#radar-resumen').textContent=''; $('#radar-sub').textContent='Actualizado: '+(RADAR.fecha||RADAR.actualizado||'—'); return; }
   $('#radar-sub').textContent = 'Actualizado: '+(RADAR.fecha||RADAR.actualizado||'—');
-  const res = (typeof RADAR.resumen==='string') ? RADAR.resumen : ('Vigilando '+RADAR.productos.length+' productos con precios reales de la competencia (fuentes: '+((RADAR.fuentes||[]).join(', ')||'Revolico')+').');
+  const res = (typeof RADAR.resumen==='string') ? RADAR.resumen : ('Vigilando '+vigilados.length+' productos con precios reales de la competencia (fuentes: '+((RADAR.fuentes||[]).join(', ')||'Revolico')+').');
   $('#radar-resumen').innerHTML = esc(res);
   const okUrl = u => /^https?:\/\//i.test(u||'');
-  $('#radar-lista').innerHTML = RADAR.productos.map(r=>{
+  $('#radar-lista').innerHTML = vigilados.map(r=>{
     const med=r.mercado&&r.mercado.mediana, min=r.mercado&&r.mercado.min, n=r.mercado&&r.mercado.n;
     const tuyo=r.tuPrecio;
     let comp='';
@@ -1530,10 +1546,45 @@ function renderAnalytics(){
   renderReporteMensual();
   const totalVal=PRODUCTOS.reduce((s,p)=>s+(Number(p.precioActual)||0)*(Number(p.stock)||0),0);
   const total=VENTAS.reduce((s,v)=>s+ventaTotal(v),0);
-  $('#an-kpis').innerHTML=[['','Productos',PRODUCTOS.length],['gold','Valor inventario',money(totalVal)],['success','Vendido',money(total)],['info','Categorías',new Set(PRODUCTOS.map(p=>p.categoria)).size]].map(([c,l,v])=>`<div class="kpi ${c}"><div class="lbl">${l}</div><div class="val">${v}</div></div>`).join('');
+  $('#an-kpis').innerHTML=[['','Productos',PRODUCTOS.length],['gold','Valor inventario',money(totalVal)],['success','Vendido',money(total)],['info','Visitas a la web','<span id="an-visitas">…</span>']].map(([c,l,v])=>`<div class="kpi ${c}"><div class="lbl">${l}</div><div class="val">${v}</div></div>`).join('');
+  cargarVisitasWeb();
+  // Donut de productos por categoría, con un color por categoría
   const cont={}; PRODUCTOS.forEach(p=>{const c=p.categoria||'—'; cont[c]=(cont[c]||0)+1;});
-  const max=Math.max(1,...Object.values(cont));
-  $('#an-cat').innerHTML=Object.entries(cont).sort((a,b)=>b[1]-a[1]).map(([c,n])=>`<div style="margin-bottom:9px"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span style="color:#fff;font-weight:700">${esc(c)}</span><span style="color:var(--muted)">${n}</span></div><div class="sp-bar"><div style="width:${Math.round(n/max*100)}%;background:var(--o)"></div></div></div>`).join('');
+  const entries=Object.entries(cont).sort((a,b)=>b[1]-a[1]);
+  const totalN=entries.reduce((s,[,n])=>s+n,0)||1;
+  const COLS=['#FF6B35','#F2B33D','#4FA8FF','#2DD4BF','#A78BFA','#F472B6','#FB6A5B','#A3E635','#FF9F45','#5EEAD4','#C084FC','#94A3B8'];
+  const R=45, C=2*Math.PI*R;
+  let off=0;
+  const segs=entries.map(([c,n],i)=>{
+    const len=n/totalN*C;
+    const seg=`<circle cx="60" cy="60" r="${R}" fill="none" stroke="${COLS[i%COLS.length]}" stroke-width="16" stroke-dasharray="${len.toFixed(2)} ${(C-len).toFixed(2)}" stroke-dashoffset="${(-off).toFixed(2)}" transform="rotate(-90 60 60)"/>`;
+    off+=len; return seg;
+  }).join('');
+  const leyenda=entries.map(([c,n],i)=>`<div style="display:flex;align-items:center;gap:8px;font-size:12px;margin-bottom:6px">
+      <span style="width:10px;height:10px;border-radius:3px;background:${COLS[i%COLS.length]};flex-shrink:0"></span>
+      <span style="flex:1;color:#fff;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(c)}</span>
+      <span style="color:var(--muted);font-weight:700">${n}</span>
+      <span style="color:var(--muted);font-size:10.5px;min-width:34px;text-align:right">${Math.round(n/totalN*100)}%</span>
+    </div>`).join('');
+  $('#an-cat').innerHTML=`<div style="display:flex;gap:20px;align-items:center;flex-wrap:wrap">
+      <div style="position:relative;width:150px;height:150px;flex-shrink:0;margin:0 auto">
+        <svg viewBox="0 0 120 120" style="width:100%;height:100%">${segs}</svg>
+        <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none">
+          <b style="font-size:24px;color:#fff">${totalN}</b><span style="font-size:10px;color:var(--muted)">productos</span>
+        </div>
+      </div>
+      <div style="flex:1;min-width:190px">${leyenda}</div>
+    </div>`;
+}
+// Lee el contador de visitas de la tienda (lo incrementa index en cada sesión)
+async function cargarVisitasWeb(){
+  const el=$('#an-visitas'); if(!el) return;
+  const base=rtdbBase(); if(!base){ el.textContent='—'; return; }
+  try{
+    const r=await fetch(base+'/analytics/visitas/count.json?_='+Date.now(),{cache:'no-store'});
+    const n=r.ok?await r.json():null;
+    el.textContent = (typeof n==='number') ? n.toLocaleString('es-US') : '0';
+  }catch(e){ el.textContent='—'; }
 }
 
 /* ============ CLIENTES ============ */
@@ -1619,17 +1670,17 @@ async function renderAvisos(box){
   if(CLI_VIEW!=='avisos') return;
   syncProductos();
   // Formulario para agregar a mano (cliente que pidió el aviso por WhatsApp).
-  // Productos agotados primero: son los que normalmente generan la espera.
-  const prodsOrd = [...PRODUCTOS].sort((a,b)=>((Number(a.stock)||0)>0?1:0)-((Number(b.stock)||0)>0?1:0) || String(a.nombre||'').localeCompare(String(b.nombre||'')));
-  const formHtml = `<div class="section" style="margin-bottom:12px">
+  // Solo productos AGOTADOS: la espera solo tiene sentido si no hay stock.
+  const prodsAgotados = PRODUCTOS.filter(p=>(Number(p.stock)||0)<=0).sort((a,b)=>String(a.nombre||'').localeCompare(String(b.nombre||'')));
+  const formHtml = prodsAgotados.length ? `<div class="section" style="margin-bottom:12px">
       <h3>➕ Agregar cliente a mano</h3>
-      <p style="font-size:12px;color:var(--muted);margin:-4px 0 10px">¿Te escribió por WhatsApp pidiendo que le avises? Regístralo aquí y te saldrá cuando el producto vuelva.</p>
+      <p style="font-size:12px;color:var(--muted);margin:-4px 0 10px">¿Te escribió por WhatsApp pidiendo que le avises? Regístralo aquí y te saldrá cuando el producto vuelva. Solo salen los agotados.</p>
       <div style="display:flex;gap:8px;flex-wrap:wrap">
-        <select class="form-select" id="am-prod" style="flex:2;min-width:180px">${prodsOrd.map(p=>`<option value="${esc(String(p.id))}">${(Number(p.stock)||0)<=0?'🔴 ':''}${esc(p.nombre||('#'+p.id))}</option>`).join('')}</select>
+        <select class="form-select" id="am-prod" style="flex:2;min-width:180px">${prodsAgotados.map(p=>`<option value="${esc(String(p.id))}">${esc(p.nombre||('#'+p.id))}</option>`).join('')}</select>
         <input class="form-input" id="am-tel" type="tel" placeholder="Teléfono (535…)" style="flex:1;min-width:140px">
         <button class="btn btn-primary" onclick="avisoManualAgregar()">Agregar</button>
       </div>
-    </div>`;
+    </div>` : '';
   const pids = data && typeof data==='object' ? Object.keys(data) : [];
   if(!pids.length){ box.innerHTML = formHtml + `<div class="section"><div class="empty"><div class="ico">🔔</div>Nadie en lista de espera todavía.<br><small>Cuando un producto está agotado, el cliente toca "🔔 Avisarme cuando vuelva" en la tienda y aparece aquí. También puedes agregarlo tú arriba.</small></div></div>`; return; }
   const grupos = pids.map(pid=>{
@@ -2123,7 +2174,7 @@ window.ventaBuscar=ventaBuscar; window.ventaAdd=ventaAdd; window.ventaCartRemove
 window.agenteGuardarKey=agenteGuardarKey; window.agenteBorrarKey=agenteBorrarKey;
 window.catSwitch=catSwitch; window.catAgregar=catAgregar; window.subAgregar=subAgregar; window.cliSwitch=cliSwitch;
 window.guardarFirebaseConfig=guardarFirebaseConfig; window.probarFirebase=probarFirebase; window.ventaAnular=ventaAnular;
-window.catRenombrar=catRenombrar; window.catBorrar=catBorrar; window.subRenombrar=subRenombrar; window.subBorrar=subBorrar;
+window.catRenombrar=catRenombrar; window.catBorrar=catBorrar; window.subRenombrar=subRenombrar; window.subBorrar=subBorrar; window.catEmoji=catEmoji;
 window.apDuplicar=apDuplicar; window.bulkPrecio=bulkPrecio; window.renderVentas=renderVentas;
 window.renderReporteMensual=renderReporteMensual; window.reporteCopiar=reporteCopiar;
 window.avisoWhats=avisoWhats; window.avisoLimpiar=avisoLimpiar; window.avisoManualAgregar=avisoManualAgregar;

@@ -26,6 +26,13 @@
           ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 10000000"
         }
       },
+      "visitas": {
+        "count": {
+          ".read": true,
+          ".write": true,
+          ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 100000000"
+        }
+      },
       ".read": true,
       ".write": false
     },
