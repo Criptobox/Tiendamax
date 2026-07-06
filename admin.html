@@ -725,7 +725,7 @@
 <script src="js/src/tm-ui.js?v=9ee32707"></script>
 <script src="js/src/tm-toast.js?v=1f125e1c"></script>
 <script src="js/src/tm-iife.js?v=1fd13d7f"></script>
-<script src="js/src/tm-patches.js?v=6bb8dcac"></script>
+<script src="js/src/tm-patches.js?v=c041bd88"></script>
 <script src="js/biometric-auth.js?v=343cb27b"></script>
 <script src="js/revolico_integration.js?v=b517b43a"></script>
 <script>
@@ -1098,17 +1098,17 @@ function renderInicio(){
   VENTAS.forEach(v=>{ const d=ventaFecha(v); if(d && d.toISOString().slice(0,10)===hoy){ ventasHoy+=ventaTotal(v); nHoy++; } });
   const stockBajo = PRODUCTOS.filter(p=>Number(p.stock)>0 && Number(p.stock)<=5).length;
   const agotados = PRODUCTOS.filter(p=>Number(p.stock)<=0).length;
-  const clientes = new Set(VENTAS.map(v=>norm(v.cliente||v.nombre||'')).filter(Boolean)).size;
   const totalVendido = VENTAS.reduce((s,v)=>s+ventaTotal(v),0);
   const k = [
     ['usd','Ventas hoy USD', money(ventasHoy), nHoy+' ventas hoy','muted'],
     ['success','Vendido total', money(totalVendido), VENTAS.length+' ventas','muted'],
     ['warn','Stock bajo', stockBajo, agotados+' agotados', stockBajo?'down':'muted'],
     ['','Productos', PRODUCTOS.length, PRODUCTOS.filter(p=>p.masVendido).length+' destacados','muted'],
-    ['info','Clientes', clientes, 'de ventas registradas','muted'],
+    ['info','Visitas a la web', '<span id="inicio-visitas">…</span>', 'sesiones de clientes','muted'],
     ['gold','En radar', (PRODUCTOS.filter(p=>p.radar).length), 'vigilados','muted'],
   ];
   $('#inicio-kpis').innerHTML = k.map(([c,l,v,s,sc])=>`<div class="kpi ${c}"><div class="lbl">${l}</div><div class="val">${v}</div><div class="sub ${sc}">${s}</div></div>`).join('');
+  cargarVisitasWeb();
   // Resumen honesto
   let msg = `Tienes <b>${PRODUCTOS.length} productos</b>. `;
   if(agotados) msg += `⚠️ <b>${agotados} agotados</b> y ${stockBajo} con stock bajo. `;
@@ -1576,15 +1576,17 @@ function renderAnalytics(){
       <div style="flex:1;min-width:190px">${leyenda}</div>
     </div>`;
 }
-// Lee el contador de visitas de la tienda (lo incrementa index en cada sesión)
+// Lee el contador de visitas de la tienda (lo incrementa index en cada sesión).
+// Rellena el KPI de Inicio y el de Analytics, el que exista.
 async function cargarVisitasWeb(){
-  const el=$('#an-visitas'); if(!el) return;
-  const base=rtdbBase(); if(!base){ el.textContent='—'; return; }
+  const els=[$('#an-visitas'),$('#inicio-visitas')].filter(Boolean); if(!els.length) return;
+  const base=rtdbBase(); if(!base){ els.forEach(e=>e.textContent='—'); return; }
   try{
     const r=await fetch(base+'/analytics/visitas/count.json?_='+Date.now(),{cache:'no-store'});
     const n=r.ok?await r.json():null;
-    el.textContent = (typeof n==='number') ? n.toLocaleString('es-US') : '0';
-  }catch(e){ el.textContent='—'; }
+    const txt=(typeof n==='number') ? n.toLocaleString('es-US') : '0';
+    els.forEach(e=>e.textContent=txt);
+  }catch(e){ els.forEach(e=>e.textContent='—'); }
 }
 
 /* ============ CLIENTES ============ */
