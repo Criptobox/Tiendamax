@@ -1838,6 +1838,14 @@ window.tmMonedaActual = () => _monedaActual;
 // ══════════════════════════════════════════════════════════════
 (function tmContarVisita() {
     if (document.getElementById('adminPanel')) return; // admin: no contar
+    // Tampoco contar al DUEÑO navegando su propia tienda: la tienda y el admin
+    // comparten localStorage (mismo dominio), así que si este dispositivo tiene
+    // marcas de haber usado el admin, no cuenta como visita de cliente.
+    try {
+        if (localStorage.getItem('tm_auth_hash_v3') ||
+            localStorage.getItem('githubToken') ||
+            localStorage.getItem('tm_es_admin')) return;
+    } catch (e) {}
     try {
         if (sessionStorage.getItem('tm_visita_contada')) return;
         sessionStorage.setItem('tm_visita_contada', '1');
