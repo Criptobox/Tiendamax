@@ -1617,9 +1617,21 @@ async function renderAvisos(box){
   if(!base){ box.innerHTML = `<div class="section"><div class="empty"><div class="ico">🔔</div><b style="color:#fff">Firebase no configurado</b><br>Configura tu proyecto en <b>⚙️ Configuración</b> para ver quién espera reposición.</div></div>`; return; }
   const data = await jget(base+'/avisos_stock.json?_='+Date.now());
   if(CLI_VIEW!=='avisos') return;
-  const pids = data && typeof data==='object' ? Object.keys(data) : [];
-  if(!pids.length){ box.innerHTML = `<div class="section"><div class="empty"><div class="ico">🔔</div>Nadie en lista de espera todavía.<br><small>Cuando un producto está agotado, el cliente toca "🔔 Avisarme cuando vuelva" en la tienda y aparece aquí.</small></div></div>`; return; }
   syncProductos();
+  // Formulario para agregar a mano (cliente que pidió el aviso por WhatsApp).
+  // Productos agotados primero: son los que normalmente generan la espera.
+  const prodsOrd = [...PRODUCTOS].sort((a,b)=>((Number(a.stock)||0)>0?1:0)-((Number(b.stock)||0)>0?1:0) || String(a.nombre||'').localeCompare(String(b.nombre||'')));
+  const formHtml = `<div class="section" style="margin-bottom:12px">
+      <h3>➕ Agregar cliente a mano</h3>
+      <p style="font-size:12px;color:var(--muted);margin:-4px 0 10px">¿Te escribió por WhatsApp pidiendo que le avises? Regístralo aquí y te saldrá cuando el producto vuelva.</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <select class="form-select" id="am-prod" style="flex:2;min-width:180px">${prodsOrd.map(p=>`<option value="${esc(String(p.id))}">${(Number(p.stock)||0)<=0?'🔴 ':''}${esc(p.nombre||('#'+p.id))}</option>`).join('')}</select>
+        <input class="form-input" id="am-tel" type="tel" placeholder="Teléfono (535…)" style="flex:1;min-width:140px">
+        <button class="btn btn-primary" onclick="avisoManualAgregar()">Agregar</button>
+      </div>
+    </div>`;
+  const pids = data && typeof data==='object' ? Object.keys(data) : [];
+  if(!pids.length){ box.innerHTML = formHtml + `<div class="section"><div class="empty"><div class="ico">🔔</div>Nadie en lista de espera todavía.<br><small>Cuando un producto está agotado, el cliente toca "🔔 Avisarme cuando vuelva" en la tienda y aparece aquí. También puedes agregarlo tú arriba.</small></div></div>`; return; }
   const grupos = pids.map(pid=>{
     const entriesObj = data[pid] || {};
     const entries = Object.values(entriesObj).filter(e=>e && typeof e==='object');
@@ -1632,7 +1644,7 @@ async function renderAvisos(box){
 
   const totalPersonas = grupos.reduce((s,g)=>s+g.entries.length,0);
   const volvieron = grupos.filter(g=>g.stock>0);
-  let html = `<div class="section" style="margin-bottom:12px"><div class="kpis">
+  let html = formHtml + `<div class="section" style="margin-bottom:12px"><div class="kpis">
       <div class="kpi info"><div class="lbl">Personas esperando</div><div class="val">${totalPersonas}</div><div class="sub muted">${grupos.length} producto(s)</div></div>
       <div class="kpi success"><div class="lbl">Ya volvieron</div><div class="val">${volvieron.length}</div><div class="sub muted">${volvieron.length?'avísales 👇':'con stock'}</div></div>
     </div></div>`;
@@ -1669,6 +1681,23 @@ function avisoWhats(tel, pid){
   const url = 'https://tiendamax.org/p/producto-'+pid+'.html';
   const msg = `¡Buenas! 🎉 El producto "${nombre}" que esperabas ya volvió a TiendaMax. Escríbeme para reservártelo 👉 ${url}`;
   window.open('https://wa.me/'+encodeURIComponent(tel)+'?text='+encodeURIComponent(msg),'_blank','noopener,noreferrer');
+}
+// Agregar cliente a mano a la lista de espera (pidió el aviso por WhatsApp)
+async function avisoManualAgregar(){
+  const pid = ($('#am-prod')&&$('#am-prod').value)||'';
+  const tel = _avisoTel(($('#am-tel')&&$('#am-tel').value)||'');
+  if(!pid){ showToast('Elige el producto'); return; }
+  if(tel.length<6){ showToast('⚠️ Teléfono inválido','Pon el número con al menos 6 dígitos'); return; }
+  const p = PRODUCTOS.find(x=>String(x.id)===String(pid));
+  const base = rtdbBase(); if(!base){ showToast('⚠️ Configura Firebase primero'); return; }
+  const key = 'manual_'+Date.now();
+  const payload = { token:key, ts:Date.now(), producto:(p&&p.nombre)||'', tel:tel };
+  try{
+    const r = await fetch(base+'/avisos_stock/'+encodeURIComponent(pid)+'/'+key+'.json',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    showToast('✅ Cliente agregado', (p&&p.nombre)||'');
+    setTimeout(()=>renderClientes(), 300);
+  }catch(e){ showToast('❌ No se pudo agregar', e.message||''); }
 }
 // Vaciar la lista de espera de un producto (tras avisar a todos)
 function avisoLimpiar(pid, nombre){
@@ -2097,7 +2126,7 @@ window.guardarFirebaseConfig=guardarFirebaseConfig; window.probarFirebase=probar
 window.catRenombrar=catRenombrar; window.catBorrar=catBorrar; window.subRenombrar=subRenombrar; window.subBorrar=subBorrar;
 window.apDuplicar=apDuplicar; window.bulkPrecio=bulkPrecio; window.renderVentas=renderVentas;
 window.renderReporteMensual=renderReporteMensual; window.reporteCopiar=reporteCopiar;
-window.avisoWhats=avisoWhats; window.avisoLimpiar=avisoLimpiar;
+window.avisoWhats=avisoWhats; window.avisoLimpiar=avisoLimpiar; window.avisoManualAgregar=avisoManualAgregar;
 })();
 </script>
 <!-- Herramientas — portado de admin.html (admin-tools.js), adaptado a la navegación de admin2 (go()/.side-btn/.view) -->
