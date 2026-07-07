@@ -1204,7 +1204,7 @@ function renderInicio(){
     ['warn','Stock bajo', stockBajo, agotados+' agotados', stockBajo?'down':'muted'],
     ['','Productos', PRODUCTOS.length, PRODUCTOS.filter(p=>p.masVendido).length+' destacados','muted'],
     ['info','Visitas a la web', '<span id="inicio-visitas">…</span>', 'sesiones de clientes','muted'],
-    ['gold','En radar', (PRODUCTOS.filter(p=>p.radar).length), 'vigilados','muted'],
+    ['gold','En radar', radarVigilados().length, 'vigilados','muted'],
   ];
   $('#inicio-kpis').innerHTML = k.map(([c,l,v,s,sc])=>`<div class="kpi ${c}"><div class="lbl">${l}</div><div class="val">${v}</div><div class="sub ${sc}">${s}</div></div>`).join('');
   cargarVisitasWeb();
@@ -1541,6 +1541,17 @@ function almRenombrar(id){
   ALMACENES[id]=payload; renderAlmacen();
   showToast('✏️ Almacén actualizado');
 }
+// Productos asignables a un almacén: los que ya son suyos (para poder
+// desmarcarlos) + los que no tienen almacén asignado. Un producto que ya
+// está en OTRO almacén no aparece aquí — solo puede estar en uno a la vez.
+function almProductosDisponibles(almId){
+  return PRODUCTOS.filter(p=>!p.almacenId || p.almacenId===almId);
+}
+function almProductoToggle(almId, prodId, checked){
+  const p=apFind(prodId); if(!p) return;
+  if(checked) p.almacenId=almId; else delete p.almacenId;
+  apSaveProds(); renderAlmacen(); renderProductos();
+}
 function renderAlmacen(){
   const box=$('#alm-list'); if(!box) return;
   const ids=Object.keys(ALMACENES);
@@ -1548,15 +1559,24 @@ function renderAlmacen(){
   if(!ids.length){ box.innerHTML=`<div class="empty"><div class="ico">🏭</div>Sin almacenes todavía. Agrega el primero arriba.</div>`; return; }
   const countFor = id => PRODUCTOS.filter(p=>p.almacenId===id).length;
   box.innerHTML = ids.map(id=>{ const a=ALMACENES[id]||{};
-    return `<div style="display:flex;align-items:center;gap:10px;padding:11px 14px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-bottom:6px">
-      <div style="font-size:22px;width:38px;height:38px;background:rgba(255,255,255,0.05);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0">🏭</div>
-      <div style="flex:1;min-width:0">
-        <div style="font-size:13px;font-weight:700;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(a.nombre||'—')}</div>
-        <div style="font-size:11px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(a.direccion||'')}${a.ubicacion?' · <a href="'+esc(a.ubicacion)+'" target="_blank" rel="noopener" style="color:var(--o)">Ver ubicación</a>':''}</div>
+    const disponibles=almProductosDisponibles(id);
+    const prodListHtml = disponibles.length ? disponibles.map(p=>`<label style="display:flex;align-items:center;gap:8px;padding:6px 4px;font-size:12px;color:#fff;cursor:pointer"><input type="checkbox" ${p.almacenId===id?'checked':''} onchange="almProductoToggle('${id}','${esc(String(p.id))}',this.checked)" style="width:15px;height:15px;accent-color:var(--o);flex-shrink:0"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(p.nombre)}</span></label>`).join('')
+      : '<div style="font-size:12px;color:var(--muted);padding:6px 4px">Todos tus productos ya están asignados a otros almacenes.</div>';
+    return `<div style="padding:11px 14px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-bottom:6px">
+      <div style="display:flex;align-items:center;gap:10px">
+        <div style="font-size:22px;width:38px;height:38px;background:rgba(255,255,255,0.05);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0">🏭</div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:13px;font-weight:700;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(a.nombre||'—')}</div>
+          <div style="font-size:11px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(a.direccion||'')}${a.ubicacion?' · <a href="'+esc(a.ubicacion)+'" target="_blank" rel="noopener" style="color:var(--o)">Ver ubicación</a>':''}</div>
+        </div>
+        <span style="font-size:10px;padding:3px 8px;border-radius:8px;background:rgba(255,107,53,0.12);color:var(--o);font-weight:700;flex-shrink:0">${countFor(id)} prod.</span>
+        <button class="pico edit" style="width:36px;height:36px;font-size:16px" title="Editar" onclick="almRenombrar('${id}')">✏️</button>
+        <button class="pico del" style="width:36px;height:36px;font-size:16px" title="Borrar" onclick="almBorrar('${id}','${esc(a.nombre||'').replace(/'/g,"\\'")}')">🗑️</button>
       </div>
-      <span style="font-size:10px;padding:3px 8px;border-radius:8px;background:rgba(255,107,53,0.12);color:var(--o);font-weight:700;flex-shrink:0">${countFor(id)} prod.</span>
-      <button class="pico edit" style="width:36px;height:36px;font-size:16px" title="Editar" onclick="almRenombrar('${id}')">✏️</button>
-      <button class="pico del" style="width:36px;height:36px;font-size:16px" title="Borrar" onclick="almBorrar('${id}','${esc(a.nombre||'').replace(/'/g,"\\'")}')">🗑️</button>
+      <details style="margin-top:10px">
+        <summary style="cursor:pointer;font-size:12px;font-weight:700;color:var(--o)">📦 Elegir productos de este almacén</summary>
+        <div style="max-height:240px;overflow:auto;margin-top:8px;padding-top:8px;border-top:1px solid var(--border)">${prodListHtml}</div>
+      </details>
     </div>`;
   }).join('');
 }
@@ -1578,10 +1598,15 @@ function renderSubcats(){
    (burbuja Copiloto → tab 🩺 Correcciones), con aplicación automática + sync. */
 
 /* ============ RADAR (reusa radar.json) ============ */
+// Únfamilo entre Inicio y Radar: lo vigilado de verdad es lo que está en
+// radar.json y además tiene stock (agotado no vale la pena vigilarlo).
+function radarVigilados(){
+  if(!RADAR || !RADAR.productos) return [];
+  return RADAR.productos.filter(r=>{ const p=PRODUCTOS.find(x=>String(x.id)===String(r.id)); return !p || (Number(p.stock)||0)>0; });
+}
 function renderRadar(){
   if(!RADAR || !RADAR.productos || !RADAR.productos.length){ $('#radar-lista').innerHTML=`<div class="section"><div class="empty"><div class="ico">📡</div>Sin datos de radar todavía. Marca productos con ⭐ en el admin y corre la acción del radar.</div></div>`; $('#radar-resumen').textContent=''; return; }
-  // Sin agotados: vigilar el precio de algo que no puedes vender no aporta.
-  const vigilados = RADAR.productos.filter(r=>{ const p=PRODUCTOS.find(x=>String(x.id)===String(r.id)); return !p || (Number(p.stock)||0)>0; });
+  const vigilados = radarVigilados();
   if(!vigilados.length){ $('#radar-lista').innerHTML=`<div class="section"><div class="empty"><div class="ico">📡</div>Todos los productos vigilados están agotados ahora mismo. Vuelven al radar cuando repongas stock.</div></div>`; $('#radar-resumen').textContent=''; $('#radar-sub').textContent='Actualizado: '+(RADAR.fecha||RADAR.actualizado||'—'); return; }
   $('#radar-sub').textContent = 'Actualizado: '+(RADAR.fecha||RADAR.actualizado||'—');
   const res = (typeof RADAR.resumen==='string') ? RADAR.resumen : ('Vigilando '+vigilados.length+' productos con precios reales de la competencia (fuentes: '+((RADAR.fuentes||[]).join(', ')||'Revolico')+').');
@@ -2357,7 +2382,7 @@ window.agenteGuardarKey=agenteGuardarKey; window.agenteBorrarKey=agenteBorrarKey
 window.catSwitch=catSwitch; window.catAgregar=catAgregar; window.subAgregar=subAgregar; window.cliSwitch=cliSwitch;
 window.guardarFirebaseConfig=guardarFirebaseConfig; window.probarFirebase=probarFirebase; window.ventaAnular=ventaAnular;
 window.catRenombrar=catRenombrar; window.catBorrar=catBorrar; window.subRenombrar=subRenombrar; window.subBorrar=subBorrar; window.catEmoji=catEmoji;
-window.almAgregar=almAgregar; window.almBorrar=almBorrar; window.almRenombrar=almRenombrar;
+window.almAgregar=almAgregar; window.almBorrar=almBorrar; window.almRenombrar=almRenombrar; window.almProductoToggle=almProductoToggle;
 window.ofertaFinActivar=ofertaFinActivar; window.ofertaFinCancelar=ofertaFinCancelar;
 window.apDuplicar=apDuplicar; window.bulkPrecio=bulkPrecio; window.renderVentas=renderVentas;
 window.renderReporteMensual=renderReporteMensual; window.reporteCopiar=reporteCopiar;
