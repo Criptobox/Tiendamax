@@ -1550,6 +1550,10 @@ function almProductosDisponibles(almId){
 // Recuerda qué desplegables de "elegir productos" quedaron abiertos, para que
 // no se cierren solos al marcar cada checkbox (renderAlmacen redibuja todo).
 let ALM_OPEN = new Set();
+// Recuerda el scroll de cada lista de productos para que no salte al inicio
+// al marcar un checkbox (renderAlmacen redibuja todo el bloque).
+let ALM_SCROLL = {};
+window.ALM_SCROLL = ALM_SCROLL; // el onscroll inline corre en scope global, no ve el bareword del IIFE
 function almToggleOpen(id, isOpen){ if(isOpen) ALM_OPEN.add(id); else ALM_OPEN.delete(id); }
 // Compartir dirección o ubicación de un almacén (nativo si el teléfono lo
 // soporta — abre WhatsApp, etc.; si no, copia al portapapeles).
@@ -1596,10 +1600,12 @@ function renderAlmacen(){
       </div>
       <details style="margin-top:10px" ${ALM_OPEN.has(id)?'open':''} ontoggle="almToggleOpen('${id}', this.open)">
         <summary style="cursor:pointer;font-size:12px;font-weight:700;color:var(--o)">📦 Elegir productos de este almacén</summary>
-        <div style="max-height:240px;overflow:auto;margin-top:8px;padding-top:8px;border-top:1px solid var(--border)">${prodListHtml}</div>
+        <div data-alm-scroll="${id}" onscroll="window.ALM_SCROLL['${id}']=this.scrollTop" style="max-height:240px;overflow:auto;margin-top:8px;padding-top:8px;border-top:1px solid var(--border)">${prodListHtml}</div>
       </details>
     </div>`;
   }).join('');
+  // Restaurar el scroll de cada lista abierta (si no, el redibujo la manda al inicio)
+  ids.forEach(id=>{ const sc=ALM_SCROLL[id]; if(sc){ const div=box.querySelector('[data-alm-scroll="'+id+'"]'); if(div) div.scrollTop=sc; } });
 }
 function renderSubcats(){
   // subcategorias.json = { CATEGORIA: [sub, sub...] }
