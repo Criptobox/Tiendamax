@@ -2129,5 +2129,28 @@
     "devolucion": false,
     "specs": [],
     "fechaAgregado": "2026-07-05T03:24:56.640Z"
+  },
+  {
+    "id": 1783453597496,
+    "nombre": "Router inalámbrico gibabite de doble banda Tp-link Archer A6 AC1200",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783453593801.jpg",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783453593801.jpg",
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783453595849.jpg"
+    ],
+    "precioActual": 110,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 5,
+    "comision": 10,
+    "comisionMoneda": "USD",
+    "categoria": "WIFI",
+    "subcategoria": "ROUTERS",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "specs": [],
+    "fechaAgregado": "2026-07-07T19:46:37.496Z"
   }
 ]
