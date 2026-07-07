@@ -43,6 +43,16 @@
       ".read": true,
       ".write": false
     },
+    "almacenes": {
+      "$almId": {
+        ".read": true,
+        ".write": true,
+        ".validate": "newData.hasChild('nombre')",
+        "nombre": { ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length < 200" },
+        "direccion": { ".validate": "newData.isString() && newData.val().length < 300" },
+        "ubicacion": { ".validate": "newData.isString() && newData.val().length < 500" }
+      }
+    },
     "tokens": {
       "$tokenId": {
         ".read": false,
