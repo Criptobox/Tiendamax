@@ -31,6 +31,13 @@
           ".read": true,
           ".write": true,
           ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 100000000"
+        },
+        "dias": {
+          "$dia": {
+            ".read": true,
+            ".write": true,
+            ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 1000000"
+          }
         }
       },
       ".read": true,

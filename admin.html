@@ -393,6 +393,7 @@
       <button class="side-btn" data-view="productos" title="Productos · editar stock, precio, comisión">📦</button>
       <button class="side-btn" data-view="agregar" title="Agregar producto">➕</button>
       <button class="side-btn" data-view="categorias" title="Categorías y subcategorías">🏷️</button>
+      <button class="side-btn" data-view="almacen" title="Almacenes · dónde está tu stock">🏭</button>
       <button class="side-btn" data-view="combos" title="Combos">🎁</button>
       <button class="side-btn" data-view="publicar" title="Publicar / Compartir a redes">📣</button>
       <button class="side-btn" type="button" title="Vale / factura para el cliente" onclick="window.open('vale.html','_blank')">🧾</button>
@@ -471,6 +472,22 @@
         <div class="section"><h3>Categorías y subcategorías</h3><div id="cat-list"></div></div>
       </div>
 
+      <!-- ALMACENES -->
+      <div id="view-almacen" class="view">
+        <div class="ph"><div><h2>🏭 Almacenes</h2><p id="alm-count">—</p></div></div>
+        <div class="section">
+          <h3>➕ Agregar almacén</h3>
+          <p style="font-size:12px;color:var(--muted);margin:-4px 0 10px">Esto es solo para organizarte tú — no se publica en la tienda ni es visible para clientes.</p>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <input class="form-input" id="alm-nombre" placeholder="Nombre (ej: Almacén Habana)" style="flex:1;min-width:150px">
+            <input class="form-input" id="alm-direccion" placeholder="Dirección" style="flex:2;min-width:180px">
+            <input class="form-input" id="alm-ubicacion" placeholder="Ubicación (ej: link de Maps, opcional)" style="flex:2;min-width:180px">
+            <button class="btn btn-primary" onclick="almAgregar()">Agregar</button>
+          </div>
+        </div>
+        <div class="section"><h3>Tus almacenes</h3><div id="alm-list"></div></div>
+      </div>
+
       <!-- RADAR -->
       <div id="view-radar" class="view">
         <div class="ph"><div><h2>📡 Radar de precios</h2><p id="radar-sub">Precios reales de la competencia</p></div></div>
@@ -531,6 +548,17 @@
           <div class="form-group" style="margin-top:10px"><label class="form-label">Texto</label><input class="form-input" id="countdownTexto" placeholder="¡Oferta especial!"></div>
           <div style="display:flex;gap:8px;margin-top:12px"><button class="btn btn-primary" onclick="guardarCountdown()">⏱️ Activar contador</button><button class="btn btn-ghost" onclick="desactivarCountdown()">Desactivar</button></div>
           <p id="countdownStatus" style="font-size:12px;color:var(--muted);margin-top:8px"></p>
+        </div>
+        <div class="section">
+          <h3>🏷️ Descuento con fecha de fin <span class="badge">el precio vuelve solo</span></h3>
+          <p style="font-size:12px;color:var(--muted);margin:-4px 0 10px">Pones el precio de oferta y hasta cuándo dura. Cuando venza, el sistema restaura el precio original solo — no hace falta que te acuerdes ni que entres al admin.</p>
+          <div class="form-grid" style="display:grid;grid-template-columns:2fr 1fr 1fr;gap:10px">
+            <div class="form-group"><label class="form-label">Producto</label><select class="form-select" id="ofertaFinProducto"><option value="">Selecciona…</option></select></div>
+            <div class="form-group"><label class="form-label">Precio oferta (USD)</label><input class="form-input" id="ofertaFinPrecio" type="number" step="0.01" placeholder="0.00"></div>
+            <div class="form-group"><label class="form-label">Vence</label><input class="form-input" id="ofertaFinVence" type="datetime-local"></div>
+          </div>
+          <div style="display:flex;gap:8px;margin-top:12px"><button class="btn btn-primary" onclick="ofertaFinActivar()">🏷️ Activar</button></div>
+          <div id="ofertaFin-lista" style="margin-top:14px"></div>
         </div>
         <div class="banner-info">Y abajo: arma <b>combos</b> con tus productos, ponle precio y ve el ahorro.</div>
         <div class="grid-2">
@@ -624,6 +652,7 @@
           <div id="rep-mensual"></div>
         </div>
         <div class="kpis" id="an-kpis"></div>
+        <div class="section"><h3>👁 Visitas — Últimos 7 días <span class="badge">registro real</span></h3><div class="bar-chart-wrap"><div class="bar-chart" id="chart-visitas"></div></div></div>
         <div class="section"><h3>Productos por categoría</h3><div id="an-cat"></div></div>
       </div>
 
@@ -707,6 +736,7 @@
       <div class="form-group"><label class="form-label">Comisión</label><input class="form-input" id="pedit-comision" type="number" step="0.01"></div>
       <div class="form-group"><label class="form-label">Moneda comisión</label><select class="form-select" id="pedit-comision-moneda"><option value="USD">USD</option><option value="MN">MN</option></select></div>
     </div>
+    <div class="form-group" style="margin-top:10px"><label class="form-label">🏭 Almacén (solo para ti, no se publica)</label><select class="form-select" id="pedit-almacen"><option value="">Sin asignar</option></select></div>
     <div class="form-group" style="margin-top:10px"><label class="form-label">Descripción</label><textarea class="form-textarea" id="pedit-desc" style="min-height:90px"></textarea></div>
     <label style="display:flex;align-items:center;gap:8px;margin-top:12px;font-size:13px;color:#fff;cursor:pointer"><input type="checkbox" id="pedit-fav" style="width:16px;height:16px;accent-color:var(--gold)">⭐ Destacar en Más Vendidos</label>
     <div style="display:flex;gap:8px;margin-top:16px"><button class="btn btn-primary" style="flex:1" onclick="apEditSave()">💾 Guardar</button><button class="btn btn-ghost" onclick="apDuplicar($('#pedit-id').value)">📄 Duplicar</button><button class="btn btn-ghost" onclick="apEditClose()">Cancelar</button></div>
@@ -725,7 +755,7 @@
 <script src="js/src/tm-ui.js?v=9ee32707"></script>
 <script src="js/src/tm-toast.js?v=1f125e1c"></script>
 <script src="js/src/tm-iife.js?v=1fd13d7f"></script>
-<script src="js/src/tm-patches.js?v=c041bd88"></script>
+<script src="js/src/tm-patches.js?v=df035163"></script>
 <script src="js/biometric-auth.js?v=343cb27b"></script>
 <script src="js/revolico_integration.js?v=b517b43a"></script>
 <script>
@@ -744,7 +774,7 @@
 <script>
 (function(){
 /* ============ Estado ============ */
-let PRODUCTOS = [], CATEGORIAS = [], SUBCATS = [], RADAR = null, VENTAS = [];
+let PRODUCTOS = [], CATEGORIAS = [], SUBCATS = [], RADAR = null, VENTAS = [], ALMACENES = {};
 const $ = s => document.querySelector(s);
 const money = n => '$' + (Number(n)||0).toLocaleString('es-US',{maximumFractionDigits:2});
 const esc = s => String(s==null?'':s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
@@ -814,12 +844,14 @@ async function cargarDatos(recargar){
     if(n) try{ localStorage.setItem('productos', JSON.stringify(PRODUCTOS)); }catch(e){}
   }
   syncProductos(); // unifica PRODUCTOS con el bareword del motor y window.productos
+  _ofertasFinAutoRevertir(); // ofertas con fecha de fin ya vencidas: revertir de una vez
   CATEGORIAS = await jget('categorias.json') || [];
   SUBCATS = await jget('subcategorias.json') || [];
   RADAR = await jget('radar.json');
   VENTAS = lsVentas();
   renderTodo();
   cargarVentasFirebase(); // combina con las ventas guardadas en Firebase (otros dispositivos)
+  cargarAlmacenes();
   if(recargar) showToast('🔄 Datos recargados', PRODUCTOS.length+' productos · '+VENTAS.length+' ventas');
 }
 
@@ -864,6 +896,10 @@ function fillOfertaDia(){
   if(cst){ let cd=null; try{ cd=JSON.parse(localStorage.getItem('activeCountdown')||'null'); }catch(e){}
     if(cd && cd.endTime>Date.now()){ const p=PRODUCTOS.find(x=>String(x.id)===String(cd.productId)); const mins=Math.round((cd.endTime-Date.now())/60000); cst.textContent='✅ Activo: '+(p?p.nombre:cd.productId)+' · quedan ~'+mins+' min'; if(cs && cd.productId) cs.value=cd.productId; }
     else cst.textContent='Sin oferta por tiempo limitado activa.'; }
+  // descuento con fecha de fin
+  const ofs=$('#ofertaFinProducto');
+  if(ofs) ofs.innerHTML='<option value="">Selecciona…</option>'+PRODUCTOS.filter(p=>!p.ofertaFin).map(p=>`<option value="${esc(p.id)}">${esc(p.nombre)} — ${money(p.precioActual)}</option>`).join('');
+  renderOfertasFin();
 }
 function fillConfig(){
   const set=(id,v)=>{ const el=$('#'+id); if(el && !el.value) el.value=v||''; };
@@ -1081,6 +1117,69 @@ function renderCombos(){
     </div>`;
   }).join('') : `<div class="empty" style="padding:24px"><div class="ico">🎁</div>Aún no creaste combos.<br><small>Arma uno a la izquierda.</small></div>`;
 }
+/* ── Descuento con fecha de fin: el precio vuelve solo ──
+   Guarda p.precioOriginal (backup) + p.precioActual (oferta) + p.ofertaFin
+   (ISO UTC). Un GitHub Action (revertir-ofertas.yml) corre cada 30 min y
+   restaura el precio original al vencer, publicando el cambio solo — sin
+   que el dueño tenga que acordarse ni abrir el admin. Al abrir el admin
+   también se revisa localmente (por si alguna venció mientras tanto). */
+function ofertaFinActivar(){
+  const id=$('#ofertaFinProducto')&&$('#ofertaFinProducto').value;
+  const precio=Number($('#ofertaFinPrecio')&&$('#ofertaFinPrecio').value);
+  const vence=$('#ofertaFinVence')&&$('#ofertaFinVence').value;
+  if(!id){ showToast('⚠️ Elige un producto'); return; }
+  if(!(precio>0)){ showToast('⚠️ Pon el precio de oferta'); return; }
+  if(!vence){ showToast('⚠️ Elige cuándo vence'); return; }
+  const finTs=new Date(vence); if(isNaN(finTs.getTime())||finTs.getTime()<=Date.now()){ showToast('⚠️ Esa fecha ya pasó'); return; }
+  const p=apFind(id); if(!p){ showToast('No encontré el producto'); return; }
+  if(precio>=Number(p.precioActual)){ if(!confirm('El precio de oferta ('+money(precio)+') no es menor al actual ('+money(p.precioActual)+'). ¿Seguir de todas formas?')) return; }
+  p.precioOriginal=Number(p.precioActual)||0;
+  p.precioActual=precio;
+  p.ofertaFin=finTs.toISOString();
+  p.descuento=p.precioOriginal>0?Math.round((p.precioOriginal-precio)/p.precioOriginal*100):0;
+  apSaveProds(); renderProductos(); fillOfertaDia();
+  $('#ofertaFinPrecio').value=''; $('#ofertaFinVence').value='';
+  showToast('🏷️ Oferta activada','Vuelve solo el '+finTs.toLocaleString('es-CU')+' · Sincroniza para publicar');
+}
+function ofertaFinCancelar(id){
+  const p=apFind(id); if(!p) return;
+  if(!confirm('¿Terminar ya la oferta de "'+p.nombre+'" y volver al precio original?')) return;
+  if(Number(p.precioOriginal)>0) p.precioActual=p.precioOriginal;
+  delete p.precioOriginal; delete p.ofertaFin; p.descuento=0;
+  apSaveProds(); renderProductos(); fillOfertaDia();
+  showToast('↩️ Oferta terminada','Sincroniza para publicar');
+}
+function renderOfertasFin(){
+  const box=$('#ofertaFin-lista'); if(!box) return;
+  const activas=PRODUCTOS.filter(p=>p.ofertaFin);
+  if(!activas.length){ box.innerHTML='<p style="font-size:12px;color:var(--muted)">Sin ofertas con fecha de fin activas.</p>'; return; }
+  box.innerHTML=activas.map(p=>{
+    const fin=new Date(p.ofertaFin); const restante=fin.getTime()-Date.now();
+    const vencida=restante<=0;
+    const cuando=vencida?'vencida, se revierte en el próximo ciclo (≤30 min)':('vuelve el '+fin.toLocaleString('es-CU',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}));
+    return `<div style="display:flex;align-items:center;gap:10px;padding:9px 12px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-bottom:6px">
+      <div style="flex:1;min-width:0">
+        <div style="font-size:13px;font-weight:700;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(p.nombre)}</div>
+        <div style="font-size:11px;color:${vencida?'var(--red)':'var(--muted)'}">${money(p.precioActual)} → vuelve a ${money(p.precioOriginal)} · ${cuando}</div>
+      </div>
+      <button class="btn btn-ghost" style="padding:5px 11px;font-size:12px" onclick="ofertaFinCancelar('${esc(String(p.id))}')">↩️ Terminar ya</button>
+    </div>`;
+  }).join('');
+}
+// Al abrir el admin: si alguna oferta ya venció, revertirla de una vez (por si
+// el ciclo del GitHub Action todavía no pasó). Se publica al sincronizar.
+function _ofertasFinAutoRevertir(){
+  let n=0;
+  PRODUCTOS.forEach(p=>{
+    if(!p.ofertaFin) return;
+    const fin=new Date(p.ofertaFin);
+    if(isNaN(fin.getTime()) || fin.getTime()>Date.now()) return;
+    if(Number(p.precioOriginal)>0) p.precioActual=p.precioOriginal;
+    delete p.precioOriginal; delete p.ofertaFin; p.descuento=0;
+    n++;
+  });
+  if(n){ apSaveProds(); showToast('🏷️ '+n+' oferta(s) vencida(s) revertidas','Sincroniza para publicar el precio original'); }
+}
 function iaKeyStatus(){ const p=$('#ia-key-status'); if(!p)return; const k=localStorage.getItem('anthropicApiKey')||''; p.textContent = k?('✅ Key guardada ('+k.slice(0,6)+'…)'):'Sin key configurada'; }
 function agenteGuardarKey(){ var i=$('#ia-key'); var k=(i&&i.value||'').trim(); if(k){ localStorage.setItem('anthropicApiKey',k); showToast('✅ API key guardada'); } iaKeyStatus(); }
 function agenteBorrarKey(){ localStorage.removeItem('anthropicApiKey'); localStorage.removeItem('anthropicApiProvider'); const i=$('#ia-key'); if(i)i.value=''; showToast('Key borrada'); iaKeyStatus(); }
@@ -1256,7 +1355,7 @@ function apStock(id,d){ const p=apFind(id); if(!p) return; p.stock=Math.max(0,(N
 function apStockZero(id){ const p=apFind(id); if(!p) return; p.stock=0; apSaveProds(); renderProductos(); if(typeof renderStock==='function') renderStock(); }
 function apFav(id){ const p=apFind(id); if(!p) return; p.masVendido=!p.masVendido; apSaveProds(); renderProductos(); showToast(p.masVendido?'⭐ Destacado en Más Vendidos':'Quitado de Más Vendidos'); }
 function apDel(id){ const p=apFind(id); if(!p) return; if(!confirm('¿Eliminar "'+(p.nombre||'')+'"? Esto lo quita del catálogo al sincronizar.')) return; const i=PRODUCTOS.findIndex(x=>String(x.id)===String(id)); if(i>=0) PRODUCTOS.splice(i,1); apSaveProds(); renderProductos(); showToast('🗑️ Eliminado','Sincroniza para publicar el cambio'); }
-function apEdit(id){ const p=apFind(id); if(!p) return; $('#pedit-id').value=id; $('#pedit-nombre').value=p.nombre||''; $('#pedit-precio').value=p.precioActual||''; $('#pedit-original').value=(Number(p.precioOriginal)>0?p.precioOriginal:''); $('#pedit-stock').value=Number(p.stock)||0; $('#pedit-comision').value=(Number(p.comision)>0?p.comision:''); $('#pedit-comision-moneda').value=p.comisionMoneda||'USD'; $('#pedit-desc').value=p.descripcion||''; $('#pedit-fav').checked=!!p.masVendido; const cs=$('#pedit-cat'); if(cs){ const cats=[...new Set(PRODUCTOS.map(x=>x.categoria).filter(Boolean))].sort(); cs.innerHTML=cats.map(c=>`<option value="${esc(c)}" ${c===p.categoria?'selected':''}>${esc(c)}</option>`).join(''); } $('#pedit-modal').classList.add('show'); }
+function apEdit(id){ const p=apFind(id); if(!p) return; $('#pedit-id').value=id; $('#pedit-nombre').value=p.nombre||''; $('#pedit-precio').value=p.precioActual||''; $('#pedit-original').value=(Number(p.precioOriginal)>0?p.precioOriginal:''); $('#pedit-stock').value=Number(p.stock)||0; $('#pedit-comision').value=(Number(p.comision)>0?p.comision:''); $('#pedit-comision-moneda').value=p.comisionMoneda||'USD'; $('#pedit-desc').value=p.descripcion||''; $('#pedit-fav').checked=!!p.masVendido; const cs=$('#pedit-cat'); if(cs){ const cats=[...new Set(PRODUCTOS.map(x=>x.categoria).filter(Boolean))].sort(); cs.innerHTML=cats.map(c=>`<option value="${esc(c)}" ${c===p.categoria?'selected':''}>${esc(c)}</option>`).join(''); } const as=$('#pedit-almacen'); if(as){ as.innerHTML='<option value="">Sin asignar</option>'+Object.keys(ALMACENES).map(aid=>`<option value="${aid}" ${p.almacenId===aid?'selected':''}>${esc(ALMACENES[aid].nombre||aid)}</option>`).join(''); } $('#pedit-modal').classList.add('show'); }
 function apEditClose(){ $('#pedit-modal').classList.remove('show'); }
 // Duplicar: crea una copia del producto (nuevo id, "— Copia") y abre su edición.
 function apDuplicar(id){
@@ -1277,6 +1376,7 @@ function apEditSave(){ const id=$('#pedit-id').value; const p=apFind(id); if(!p)
   p.comision=Number($('#pedit-comision').value)||0; p.comisionMoneda=$('#pedit-comision-moneda').value||'USD';
   p.descripcion=$('#pedit-desc').value;
   p.masVendido=$('#pedit-fav').checked;
+  const almId=$('#pedit-almacen')&&$('#pedit-almacen').value||''; if(almId) p.almacenId=almId; else delete p.almacenId;
   apSaveProds(); apEditClose(); renderProductos(); showToast('💾 Guardado','Sincroniza para publicarlo en la tienda');
 }
 
@@ -1394,6 +1494,71 @@ function subBorrar(cat, s){
   localStorage.setItem('subcategorias',JSON.stringify(map)); SUBCATS=map;
   renderCategorias();
   showToast('🗑️ Subcategoría borrada','Pulsa "Actualizar tienda" en ⚙️ para publicar');
+}
+/* ── ALMACENES ──
+   Solo para organización interna del dueño: NO se publica en productos.json
+   ni en el repo (dirección física no debe quedar en un archivo público para
+   siempre). Vive únicamente en Firebase, bajo /almacenes. Los productos solo
+   guardan el ID del almacén (p.almacenId) — eso sí viaja en productos.json,
+   pero por sí solo no revela ninguna dirección. */
+async function cargarAlmacenes(){
+  const base=rtdbBase(); if(!base){ ALMACENES={}; renderAlmacen(); return; }
+  try{
+    const data = await jget(base+'/almacenes.json');
+    ALMACENES = (data && typeof data==='object') ? data : {};
+  }catch(e){ ALMACENES={}; }
+  renderAlmacen();
+}
+function almAgregar(){
+  const nombre=($('#alm-nombre')&&$('#alm-nombre').value||'').trim();
+  const direccion=($('#alm-direccion')&&$('#alm-direccion').value||'').trim();
+  const ubicacion=($('#alm-ubicacion')&&$('#alm-ubicacion').value||'').trim();
+  if(!nombre){ showToast('⚠️ Ponle un nombre al almacén'); return; }
+  const base=rtdbBase(); if(!base){ showToast('⚠️ Configura Firebase primero','En ⚙️ Configuración'); return; }
+  const id='alm_'+Date.now();
+  const payload={nombre,direccion,ubicacion};
+  fetch(base+'/almacenes/'+id+'.json',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)})
+    .then(r=>{ if(!r.ok) throw new Error('HTTP '+r.status); ALMACENES[id]=payload; $('#alm-nombre').value=''; $('#alm-direccion').value=''; $('#alm-ubicacion').value=''; renderAlmacen(); showToast('✅ Almacén agregado', nombre); })
+    .catch(e=>showToast('❌ No se pudo agregar', e.message||''));
+}
+function almBorrar(id, nombre){
+  const enUso=PRODUCTOS.filter(p=>p.almacenId===id).length;
+  if(!confirm('¿Borrar el almacén "'+nombre+'"?'+(enUso?(' '+enUso+' producto(s) quedarán sin almacén asignado.'):''))) return;
+  const base=rtdbBase(); if(base){ fetch(base+'/almacenes/'+id+'.json',{method:'DELETE'}).catch(()=>{}); }
+  delete ALMACENES[id];
+  PRODUCTOS.forEach(p=>{ if(p.almacenId===id) delete p.almacenId; });
+  if(enUso) apSaveProds();
+  renderAlmacen(); renderProductos();
+  showToast('🗑️ Almacén borrado');
+}
+function almRenombrar(id){
+  const a=ALMACENES[id]; if(!a) return;
+  const nombre=(prompt('Nombre del almacén:', a.nombre)||'').trim(); if(!nombre) return;
+  const direccion=(prompt('Dirección:', a.direccion||'')||'').trim();
+  const ubicacion=(prompt('Ubicación (link de Maps, opcional):', a.ubicacion||'')||'').trim();
+  const base=rtdbBase(); const payload={nombre,direccion,ubicacion};
+  if(base) fetch(base+'/almacenes/'+id+'.json',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)}).catch(()=>{});
+  ALMACENES[id]=payload; renderAlmacen();
+  showToast('✏️ Almacén actualizado');
+}
+function renderAlmacen(){
+  const box=$('#alm-list'); if(!box) return;
+  const ids=Object.keys(ALMACENES);
+  $('#alm-count').textContent = ids.length + ' almacén(es)';
+  if(!ids.length){ box.innerHTML=`<div class="empty"><div class="ico">🏭</div>Sin almacenes todavía. Agrega el primero arriba.</div>`; return; }
+  const countFor = id => PRODUCTOS.filter(p=>p.almacenId===id).length;
+  box.innerHTML = ids.map(id=>{ const a=ALMACENES[id]||{};
+    return `<div style="display:flex;align-items:center;gap:10px;padding:11px 14px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-bottom:6px">
+      <div style="font-size:22px;width:38px;height:38px;background:rgba(255,255,255,0.05);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0">🏭</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:13px;font-weight:700;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(a.nombre||'—')}</div>
+        <div style="font-size:11px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(a.direccion||'')}${a.ubicacion?' · <a href="'+esc(a.ubicacion)+'" target="_blank" rel="noopener" style="color:var(--o)">Ver ubicación</a>':''}</div>
+      </div>
+      <span style="font-size:10px;padding:3px 8px;border-radius:8px;background:rgba(255,107,53,0.12);color:var(--o);font-weight:700;flex-shrink:0">${countFor(id)} prod.</span>
+      <button class="pico edit" style="width:36px;height:36px;font-size:16px" title="Editar" onclick="almRenombrar('${id}')">✏️</button>
+      <button class="pico del" style="width:36px;height:36px;font-size:16px" title="Borrar" onclick="almBorrar('${id}','${esc(a.nombre||'').replace(/'/g,"\\'")}')">🗑️</button>
+    </div>`;
+  }).join('');
 }
 function renderSubcats(){
   // subcategorias.json = { CATEGORIA: [sub, sub...] }
@@ -1579,14 +1744,29 @@ function renderAnalytics(){
 // Lee el contador de visitas de la tienda (lo incrementa index en cada sesión).
 // Rellena el KPI de Inicio y el de Analytics, el que exista.
 async function cargarVisitasWeb(){
-  const els=[$('#an-visitas'),$('#inicio-visitas')].filter(Boolean); if(!els.length) return;
-  const base=rtdbBase(); if(!base){ els.forEach(e=>e.textContent='—'); return; }
+  const els=[$('#an-visitas'),$('#inicio-visitas')].filter(Boolean);
+  const base=rtdbBase();
+  if(els.length){
+    if(!base){ els.forEach(e=>e.textContent='—'); }
+    else{
+      try{
+        const r=await fetch(base+'/analytics/visitas/count.json?_='+Date.now(),{cache:'no-store'});
+        const n=r.ok?await r.json():null;
+        els.forEach(e=>e.textContent=(typeof n==='number') ? n.toLocaleString('es-US') : '0');
+      }catch(e){ els.forEach(e=>e.textContent='—'); }
+    }
+  }
+  // Gráfico de barras de los últimos 7 días (mismo estilo que ventas)
+  const chart=$('#chart-visitas'); if(!chart) return;
+  if(!base){ chart.innerHTML=''; return; }
+  const dias=[]; for(let i=6;i>=0;i--){ const d=new Date(); d.setDate(d.getDate()-i); dias.push({key:d.toISOString().slice(0,10), lbl:['D','L','M','X','J','V','S'][d.getDay()]}); }
   try{
-    const r=await fetch(base+'/analytics/visitas/count.json?_='+Date.now(),{cache:'no-store'});
-    const n=r.ok?await r.json():null;
-    const txt=(typeof n==='number') ? n.toLocaleString('es-US') : '0';
-    els.forEach(e=>e.textContent=txt);
-  }catch(e){ els.forEach(e=>e.textContent='—'); }
+    const r=await fetch(base+'/analytics/visitas/dias.json?_='+Date.now(),{cache:'no-store'});
+    const data=r.ok?await r.json():null;
+    const slots=data&&typeof data==='object'?data:{};
+    const max=Math.max(1,...dias.map(d=>Number(slots[d.key])||0));
+    chart.innerHTML=dias.map(d=>{ const val=Number(slots[d.key])||0; const h=Math.round(val/max*100); return `<div class="bar" style="height:${Math.max(2,h)}%">${val?`<span class="v">${val}</span>`:''}<span class="lbl">${d.lbl}</span></div>`; }).join('');
+  }catch(e){ chart.innerHTML=''; }
 }
 
 /* ============ CLIENTES ============ */
@@ -2177,6 +2357,8 @@ window.agenteGuardarKey=agenteGuardarKey; window.agenteBorrarKey=agenteBorrarKey
 window.catSwitch=catSwitch; window.catAgregar=catAgregar; window.subAgregar=subAgregar; window.cliSwitch=cliSwitch;
 window.guardarFirebaseConfig=guardarFirebaseConfig; window.probarFirebase=probarFirebase; window.ventaAnular=ventaAnular;
 window.catRenombrar=catRenombrar; window.catBorrar=catBorrar; window.subRenombrar=subRenombrar; window.subBorrar=subBorrar; window.catEmoji=catEmoji;
+window.almAgregar=almAgregar; window.almBorrar=almBorrar; window.almRenombrar=almRenombrar;
+window.ofertaFinActivar=ofertaFinActivar; window.ofertaFinCancelar=ofertaFinCancelar;
 window.apDuplicar=apDuplicar; window.bulkPrecio=bulkPrecio; window.renderVentas=renderVentas;
 window.renderReporteMensual=renderReporteMensual; window.reporteCopiar=reporteCopiar;
 window.avisoWhats=avisoWhats; window.avisoLimpiar=avisoLimpiar; window.avisoManualAgregar=avisoManualAgregar;
