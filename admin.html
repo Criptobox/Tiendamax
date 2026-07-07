@@ -1376,7 +1376,9 @@ function apEditSave(){ const id=$('#pedit-id').value; const p=apFind(id); if(!p)
   p.comision=Number($('#pedit-comision').value)||0; p.comisionMoneda=$('#pedit-comision-moneda').value||'USD';
   p.descripcion=$('#pedit-desc').value;
   p.masVendido=$('#pedit-fav').checked;
+  const almIdAntes=p.almacenId||'';
   const almId=$('#pedit-almacen')&&$('#pedit-almacen').value||''; if(almId) p.almacenId=almId; else delete p.almacenId;
+  if(almId!==almIdAntes) almSyncFirebase(id, almIdAntes, almId);
   apSaveProds(); apEditClose(); renderProductos(); showToast('💾 Guardado','Sincroniza para publicarlo en la tienda');
 }
 
@@ -1503,10 +1505,33 @@ function subBorrar(cat, s){
    pero por sí solo no revela ninguna dirección. */
 async function cargarAlmacenes(){
   const base=rtdbBase(); if(!base){ ALMACENES={}; renderAlmacen(); return; }
+  // OJO: no usar jget() aquí — jget traga cualquier error de red y devuelve
+  // null, indistinguible de "Firebase realmente vacío". Con eso un hipo de
+  // conexión vaciaba ALMACENES y parecía que se habían borrado los almacenes.
+  // Aquí sí distinguimos: si falla la petición, se conserva lo que ya había
+  // en memoria y se avisa con un toast — nunca se borra en silencio.
   try{
-    const data = await jget(base+'/almacenes.json');
+    const r = await fetch(base+'/almacenes.json?_='+Date.now(), {cache:'no-store'});
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    const data = await r.json();
     ALMACENES = (data && typeof data==='object') ? data : {};
-  }catch(e){ ALMACENES={}; }
+    // Reaplicar a los productos la asignación que vino de Firebase (fuente de
+    // verdad compartida) — por si localStorage la perdió o se abre desde otro
+    // dispositivo antes de haber sincronizado con "Actualizar tienda".
+    let huboAsignaciones=false;
+    Object.keys(ALMACENES).forEach(almId=>{
+      const prods = ALMACENES[almId] && ALMACENES[almId].productos;
+      if(!prods || typeof prods!=='object') return;
+      Object.keys(prods).forEach(prodId=>{
+        const p=PRODUCTOS.find(x=>String(x.id)===String(prodId));
+        if(p && p.almacenId!==almId){ p.almacenId=almId; huboAsignaciones=true; }
+      });
+    });
+    if(huboAsignaciones){ apSaveProds(); renderProductos(); }
+  }catch(e){
+    showToast('⚠️ No se pudieron cargar los almacenes (conexión)', e.message||'');
+    // no tocar ALMACENES: se queda con lo último que sí cargó bien
+  }
   renderAlmacen();
 }
 function almAgregar(){
@@ -1568,9 +1593,20 @@ async function almCompartir(id, campo){
   try{ await navigator.clipboard.writeText(texto); showToast('📋 Copiado','Pégalo donde quieras'); }
   catch(e){ showToast('No se pudo compartir'); }
 }
+// Respalda en Firebase qué producto está en qué almacén (bajo el propio nodo
+// del almacén: /almacenes/{almId}/productos/{prodId}=true). Así la asignación
+// sobrevive aunque se borre localStorage o se abra desde otro dispositivo —
+// no depende solo del navegador donde se hizo la asignación.
+function almSyncFirebase(prodId, almIdAntes, almIdNuevo){
+  const base=rtdbBase(); if(!base) return;
+  if(almIdAntes && almIdAntes!==almIdNuevo){ fetch(base+'/almacenes/'+almIdAntes+'/productos/'+encodeURIComponent(prodId)+'.json',{method:'DELETE'}).catch(()=>{}); }
+  if(almIdNuevo){ fetch(base+'/almacenes/'+almIdNuevo+'/productos/'+encodeURIComponent(prodId)+'.json',{method:'PUT',headers:{'Content-Type':'application/json'},body:'true'}).catch(()=>{}); }
+}
 function almProductoToggle(almId, prodId, checked){
   const p=apFind(prodId); if(!p) return;
+  const antes=p.almacenId||'';
   if(checked) p.almacenId=almId; else delete p.almacenId;
+  almSyncFirebase(prodId, antes, checked?almId:'');
   apSaveProds(); renderAlmacen(); renderProductos();
 }
 function renderAlmacen(){
