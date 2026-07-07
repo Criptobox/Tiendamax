@@ -1855,11 +1855,12 @@ window.tmMonedaActual = () => _monedaActual;
         try {
             const url = (typeof _fbRtdbUrl === 'function') ? _fbRtdbUrl() : null;
             if (!url) return;
-            await fetch(url + '/analytics/visitas/count.json', {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ '.sv': { 'increment': 1 } })
-            });
+            const hoy = new Date().toISOString().slice(0, 10);
+            const inc = JSON.stringify({ '.sv': { 'increment': 1 } });
+            await Promise.all([
+                fetch(url + '/analytics/visitas/count.json', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: inc }),
+                fetch(url + '/analytics/visitas/dias/' + hoy + '.json', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: inc })
+            ]);
         } catch (e) {}
     }, 4000);
 })();

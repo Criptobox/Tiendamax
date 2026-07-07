@@ -1,0 +1,54 @@
+name: Revertir ofertas vencidas
+
+# El admin marca una oferta con precio de descuento + fecha/hora de fin
+# ("ofertaFin" en productos.json). Este workflow corre cada 30 min y, si ya
+# pasó esa fecha, restaura el precio original — sin que haya que acordarse.
+
+on:
+  schedule:
+    - cron: '*/30 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: revertir-ofertas
+  cancel-in-progress: false
+
+jobs:
+  revertir:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Revertir ofertas vencidas
+        run: python scripts/revertir_ofertas.py
+
+      - name: Commit y push si hubo cambios
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add productos.json
+          if git diff --cached --quiet; then
+            echo "Sin ofertas vencidas."
+            exit 0
+          fi
+          git commit -m "chore: revertir ofertas vencidas [skip ci]"
+          for i in 1 2 3 4 5; do
+            if git push origin HEAD:main; then
+              echo "✅ precios revertidos y publicados."
+              exit 0
+            fi
+            git fetch origin main
+            git rebase -X ours origin/main || { git checkout --ours -- productos.json; git add productos.json; GIT_EDITOR=true git rebase --continue || git rebase --abort; }
+            sleep $((i * 2))
+          done
+          echo "❌ No se pudo subir el revertido." >&2
+          exit 1
