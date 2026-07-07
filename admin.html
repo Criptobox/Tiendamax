@@ -1547,6 +1547,10 @@ function almRenombrar(id){
 function almProductosDisponibles(almId){
   return PRODUCTOS.filter(p=>!p.almacenId || p.almacenId===almId);
 }
+// Recuerda qué desplegables de "elegir productos" quedaron abiertos, para que
+// no se cierren solos al marcar cada checkbox (renderAlmacen redibuja todo).
+let ALM_OPEN = new Set();
+function almToggleOpen(id, isOpen){ if(isOpen) ALM_OPEN.add(id); else ALM_OPEN.delete(id); }
 function almProductoToggle(almId, prodId, checked){
   const p=apFind(prodId); if(!p) return;
   if(checked) p.almacenId=almId; else delete p.almacenId;
@@ -1573,7 +1577,7 @@ function renderAlmacen(){
         <button class="pico edit" style="width:36px;height:36px;font-size:16px" title="Editar" onclick="almRenombrar('${id}')">✏️</button>
         <button class="pico del" style="width:36px;height:36px;font-size:16px" title="Borrar" onclick="almBorrar('${id}','${esc(a.nombre||'').replace(/'/g,"\\'")}')">🗑️</button>
       </div>
-      <details style="margin-top:10px">
+      <details style="margin-top:10px" ${ALM_OPEN.has(id)?'open':''} ontoggle="almToggleOpen('${id}', this.open)">
         <summary style="cursor:pointer;font-size:12px;font-weight:700;color:var(--o)">📦 Elegir productos de este almacén</summary>
         <div style="max-height:240px;overflow:auto;margin-top:8px;padding-top:8px;border-top:1px solid var(--border)">${prodListHtml}</div>
       </details>
@@ -2382,7 +2386,7 @@ window.agenteGuardarKey=agenteGuardarKey; window.agenteBorrarKey=agenteBorrarKey
 window.catSwitch=catSwitch; window.catAgregar=catAgregar; window.subAgregar=subAgregar; window.cliSwitch=cliSwitch;
 window.guardarFirebaseConfig=guardarFirebaseConfig; window.probarFirebase=probarFirebase; window.ventaAnular=ventaAnular;
 window.catRenombrar=catRenombrar; window.catBorrar=catBorrar; window.subRenombrar=subRenombrar; window.subBorrar=subBorrar; window.catEmoji=catEmoji;
-window.almAgregar=almAgregar; window.almBorrar=almBorrar; window.almRenombrar=almRenombrar; window.almProductoToggle=almProductoToggle;
+window.almAgregar=almAgregar; window.almBorrar=almBorrar; window.almRenombrar=almRenombrar; window.almProductoToggle=almProductoToggle; window.almToggleOpen=almToggleOpen;
 window.ofertaFinActivar=ofertaFinActivar; window.ofertaFinCancelar=ofertaFinCancelar;
 window.apDuplicar=apDuplicar; window.bulkPrecio=bulkPrecio; window.renderVentas=renderVentas;
 window.renderReporteMensual=renderReporteMensual; window.reporteCopiar=reporteCopiar;
