@@ -2204,5 +2204,30 @@
       "12v/ 20A 24V/10A"
     ],
     "fechaAgregado": "2026-07-08T01:29:59.535Z"
+  },
+  {
+    "id": 1783474440848,
+    "nombre": "Cargador inteligente de 12v(35A) y 24v(15A)",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783474437066.jpg",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783474437066.jpg",
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783474439419.jpg"
+    ],
+    "precioActual": 145,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 13,
+    "comision": 5,
+    "comisionMoneda": "USD",
+    "categoria": "ENERGIA",
+    "subcategoria": "CARGADORES",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "specs": [
+      "12V/35A"
+    ],
+    "fechaAgregado": "2026-07-08T01:34:00.851Z"
   }
 ]
