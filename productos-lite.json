@@ -2094,7 +2094,8 @@
       "https://tiendamax.org/imagenes/img_1783221890323.jpg",
       "https://tiendamax.org/imagenes/img_1783221892239.jpg",
       "https://tiendamax.org/imagenes/img_1783221893885.jpg",
-      "https://tiendamax.org/imagenes/img_1783221895127.jpg"
+      "https://tiendamax.org/imagenes/img_1783221895127.jpg",
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783473953506.jpg"
     ],
     "precioActual": 33000,
     "precioOriginal": 0,
@@ -2178,5 +2179,30 @@
     "devolucion": false,
     "specs": [],
     "fechaAgregado": "2026-07-08T01:24:54.756Z"
+  },
+  {
+    "id": 1783474199534,
+    "nombre": "Cargador de 12v(20A) y 24v(10A) configurable",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783474195842.jpg",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783474195842.jpg",
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783474198221.jpg"
+    ],
+    "precioActual": 85,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 11,
+    "comision": 5,
+    "comisionMoneda": "USD",
+    "categoria": "ENERGIA",
+    "subcategoria": "CARGADORES",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "specs": [
+      "12v/ 20A 24V/10A"
+    ],
+    "fechaAgregado": "2026-07-08T01:29:59.535Z"
   }
 ]
