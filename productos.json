@@ -23,7 +23,8 @@
     "seoTitle": "BATERÍA MUST TIPO LIFEPO4 en Cuba | TiendaMax",
     "seoDescription": "Batería tipo LiFePO4 (litio hierro fosfato). Mas segura y con mayor vida útil que las tradicionales. Capacidad de 12.8V y 100Ah (1280Wh), ideal para…",
     "radar": true,
-    "descripcion": "BATERÍA MUST TIPO LIFEPO4 nuevo y disponible en TiendaMax con entrega en Cuba. Ideal para mantener tu casa o negocio con corriente durante los apagones. 12.8V · 100Ah. Lo pruebas al recibirlo: pagas cuando compruebes que funciona. Atención personalizada por WhatsApp: escríbenos y te lo apartamos 24 horas mientras coordinas la entrega."
+    "descripcion": "BATERÍA MUST TIPO LIFEPO4 nuevo y disponible en TiendaMax con entrega en Cuba. Ideal para mantener tu casa o negocio con corriente durante los apagones. 12.8V · 100Ah. Lo pruebas al recibirlo: pagas cuando compruebes que funciona. Atención personalizada por WhatsApp: escríbenos y te lo apartamos 24 horas mientras coordinas la entrega.",
+    "almacenId": "alm_1783425091823"
   },
   {
     "id": 1777923552923,
@@ -581,6 +582,7 @@
     "slug": "mannol-safari-20w-50-7404-5l",
     "seoTitle": "MANNOL SAFARI 20W - 50 7404 5L en Cuba | TiendaMax",
     "seoDescription": "Aceite de motor universal semisintético, con una mezcla de componentes sintéticos y una base mineral de alta pureza, para motores modernos de gasolina y…",
+    "comision": 0,
     "descripcion": "MANNOL SAFARI 20W - 50 7404 5L nuevo y disponible en TiendaMax con entrega en Cuba. Ideal para el mantenimiento y cuidado de tu vehículo. Lo pruebas al recibirlo: pagas cuando compruebes que funciona. Atención personalizada por WhatsApp: escríbenos y te lo apartamos 24 horas mientras coordinas la entrega."
   },
   {
@@ -2196,7 +2198,7 @@
       "https://tiendamax.org/imagenes/img_1783221892239.jpg",
       "https://tiendamax.org/imagenes/img_1783221893885.jpg",
       "https://tiendamax.org/imagenes/img_1783221895127.jpg",
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783473953506.jpg"
+      "https://tiendamax.org/imagenes/img_1783473953506.jpg"
     ],
     "precioActual": 33000,
     "precioOriginal": 0,
@@ -2265,10 +2267,9 @@
   {
     "id": 1783473894756,
     "nombre": "Cargador tactil de bateria inteligente 12v /15A",
-    "descripcion": "Cargador tactil de bateria inteligente 12v /15A\n\n- Entrada: 110v / 220v\n\n- Salida: 12V y 15A\n\nCompatible con Baterías de plomo ácido, agm, gel, Lifepo4\n\nMúltiples funciones:\n\n- Modo de alimentación para arrancar el vehículo o suministrar carga a cualquier equipo de 12v(no solo baterías)\n\nProteccion contra sobrecalentamiento, sobrecarga, cortocircuito y polaridad inversa\n\n- Aumenta la vida util de la batería\n\n- Modo de pulso de reparacion para recuperar baterias sulfatadas.",
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783473890998.jpg",
+    "imagen": "https://tiendamax.org/imagenes/img_1783473890998.jpg",
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783473890998.jpg"
+      "https://tiendamax.org/imagenes/img_1783473890998.jpg"
     ],
     "precioActual": 65,
     "precioOriginal": 0,
@@ -2283,16 +2284,16 @@
     "garantia": "",
     "devolucion": false,
     "specs": [],
-    "fechaAgregado": "2026-07-08T01:24:54.756Z"
+    "fechaAgregado": "2026-07-08T01:24:54.756Z",
+    "descripcion": "Cargador tactil de bateria inteligente 12v /15A\n\n- Entrada: 110v / 220v\n\n- Salida: 12V y 15A\n\nCompatible con Baterías de plomo ácido, agm, gel, Lifepo4\n\nMúltiples funciones:\n\n- Modo de alimentación para arrancar el vehículo o suministrar carga a cualquier equipo de 12v(no solo baterías)\n\nProteccion contra sobrecalentamiento, sobrecarga, cortocircuito y polaridad inversa\n\n- Aumenta la vida util de la batería\n\n- Modo de pulso de reparacion para recuperar baterias sulfatadas."
   },
   {
     "id": 1783474199534,
     "nombre": "Cargador de 12v(20A) y 24v(10A) configurable",
-    "descripcion": "Cargador de 12v(20A) y 24v(10A) configurable\n\n🔌 Corriente de carga: 12V: 5A, 10A y 20A | 24V: 3A, 5A y 10A.\n🔋 Compatible con baterías: Litio, LiFePO4, AGM, GEL, SLA, WET, EFB y plomo-ácido.\n📊 Pantalla LCD con voltaje, corriente, temperatura y porcentaje de carga.\n🔄 Carga inteligente de 7 etapas para una carga eficiente y segura.\n🛠️ Modo REPAIR para ayudar a recuperar baterías con sulfatación o descarga profunda.\n🛡️ Protecciones integradas contra polaridad inversa, sobrecarga, cortocircuito y sobrecalentamiento.\n",
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783474195842.jpg",
+    "imagen": "https://tiendamax.org/imagenes/img_1783474195842.jpg",
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783474195842.jpg",
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783474198221.jpg"
+      "https://tiendamax.org/imagenes/img_1783474195842.jpg",
+      "https://tiendamax.org/imagenes/img_1783474198221.jpg"
     ],
     "precioActual": 85,
     "precioOriginal": 0,
@@ -2309,16 +2310,16 @@
     "specs": [
       "12v/ 20A 24V/10A"
     ],
-    "fechaAgregado": "2026-07-08T01:29:59.535Z"
+    "fechaAgregado": "2026-07-08T01:29:59.535Z",
+    "descripcion": "Cargador de 12v(20A) y 24v(10A) configurable\n\n🔌 Corriente de carga: 12V: 5A, 10A y 20A | 24V: 3A, 5A y 10A.\n🔋 Compatible con baterías: Litio, LiFePO4, AGM, GEL, SLA, WET, EFB y plomo-ácido.\n📊 Pantalla LCD con voltaje, corriente, temperatura y porcentaje de carga.\n🔄 Carga inteligente de 7 etapas para una carga eficiente y segura.\n🛠️ Modo REPAIR para ayudar a recuperar baterías con sulfatación o descarga profunda.\n🛡️ Protecciones integradas contra polaridad inversa, sobrecarga, cortocircuito y sobrecalentamiento.\n"
   },
   {
     "id": 1783474440848,
     "nombre": "Cargador inteligente de 12v(35A) y 24v(15A)",
-    "descripcion": "Cargador inteligente de 12v(35A) y 24v(15A) configurable:\n\n⚡ Voltaje de trabajo: 12V / 24V con detección automática.\n🔌 Corriente de carga: 12V: 10A, 20A y 35A | 24V: 5A, 10A y 18A.\n🔋 Compatible con baterías: Litio, LiFePO4, AGM, GEL, SLA, VRLA, EFB, WET y plomo-ácido.\n📊 Pantalla LCD inteligente con voltaje, corriente, temperatura y estado de carga.\n🔄 Carga inteligente de 7 etapas para una carga rápida, eficiente y segura.\n🛠️ Modo REPAIR para ayudar a recuperar baterías sulfatadas o con descarga profunda.\n🛡️ Protección múltiple contra sobrecarga, sobrecalentamiento, cortocircuito y polaridad inversa.",
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783474437066.jpg",
+    "imagen": "https://tiendamax.org/imagenes/img_1783474437066.jpg",
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783474437066.jpg",
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783474439419.jpg"
+      "https://tiendamax.org/imagenes/img_1783474437066.jpg",
+      "https://tiendamax.org/imagenes/img_1783474439419.jpg"
     ],
     "precioActual": 145,
     "precioOriginal": 0,
@@ -2335,16 +2336,16 @@
     "specs": [
       "12V/35A"
     ],
-    "fechaAgregado": "2026-07-08T01:34:00.851Z"
+    "fechaAgregado": "2026-07-08T01:34:00.851Z",
+    "descripcion": "Cargador inteligente de 12v(35A) y 24v(15A) configurable:\n\n⚡ Voltaje de trabajo: 12V / 24V con detección automática.\n🔌 Corriente de carga: 12V: 10A, 20A y 35A | 24V: 5A, 10A y 18A.\n🔋 Compatible con baterías: Litio, LiFePO4, AGM, GEL, SLA, VRLA, EFB, WET y plomo-ácido.\n📊 Pantalla LCD inteligente con voltaje, corriente, temperatura y estado de carga.\n🔄 Carga inteligente de 7 etapas para una carga rápida, eficiente y segura.\n🛠️ Modo REPAIR para ayudar a recuperar baterías sulfatadas o con descarga profunda.\n🛡️ Protección múltiple contra sobrecarga, sobrecalentamiento, cortocircuito y polaridad inversa."
   },
   {
     "id": 1783474747296,
     "nombre": "RouterBoard MikroTik hEX S RB750Gr3",
-    "descripcion": "RouterBoard MikroTik hEX S RB750Gr3\n\n-CPU: MT7621A, Dual Core de 880Mhz\n-RAM: 256MB\n-Almacenamiento: 16MB\n-Software: RouterOS L4\n-Puertos: 5xRJ45; 1xUSB 2.0; Slot MicroSD\npara \"Dude Server\"\n-Monitor de temperatura PCB\n-Monitor de Voltaje\n-Beeper\n-IP20\n-Versión internacional\n-Incluye transformador para la alimentación",
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783474741055.jpg",
+    "imagen": "https://tiendamax.org/imagenes/img_1783474741055.jpg",
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783474741055.jpg",
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783474745566.jpg"
+      "https://tiendamax.org/imagenes/img_1783474741055.jpg",
+      "https://tiendamax.org/imagenes/img_1783474745566.jpg"
     ],
     "precioActual": 130,
     "precioOriginal": 0,
@@ -2359,6 +2360,31 @@
     "garantia": "",
     "devolucion": false,
     "specs": [],
-    "fechaAgregado": "2026-07-08T01:39:07.296Z"
+    "fechaAgregado": "2026-07-08T01:39:07.296Z",
+    "descripcion": "RouterBoard MikroTik hEX S RB750Gr3\n\n-CPU: MT7621A, Dual Core de 880Mhz\n-RAM: 256MB\n-Almacenamiento: 16MB\n-Software: RouterOS L4\n-Puertos: 5xRJ45; 1xUSB 2.0; Slot MicroSD\npara \"Dude Server\"\n-Monitor de temperatura PCB\n-Monitor de Voltaje\n-Beeper\n-IP20\n-Versión internacional\n-Incluye transformador para la alimentación"
+  },
+  {
+    "id": 1783543451116,
+    "nombre": "Router Tenda TX12 Pro (AX3000 Wi-Fi 6)",
+    "descripcion": "Estándar Wi-Fi: Compatibilidad con estándares 802.11ac/a/n (Wi-Fi 5) para velocidades de transferencia de datos de alta velocidad.\n​Tecnología de Doble Banda: Funcionamiento simultáneo en bandas de 2.4 GHz y 5 GHz para reducir interferencias y mejorar la estabilidad en dispositivos modernos.\n​Antenas: 4 antenas externas de alta ganancia (generalmente de 5dBi o 6dBi) para una cobertura omnidireccional y mejor penetración en obstáculos físicos.\n​Puertos: Generalmente incluye 1 puerto WAN (para la entrada de internet) y 3 puertos LAN (para conexión cableada a PC, consolas o TV), todos con capacidad de negociación rápida.\n​Seguridad: Protocolos de encriptación WPA/WPA2-PSK para mantener la red protegida de accesos no autorizados.\n​Funciones Adicionales:\n​QoS (Quality of Service): Priorización de tráfico para gaming o streaming, lo cual es muy útil para mantener baja latencia en juegos como Free Fire.\n​Red de Invitados: Opción para crear una red separada sin comprometer la seguridad de tu red principal.",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783543448278.jpg",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783543448278.jpg",
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783543450100.jpg"
+    ],
+    "precioActual": 130,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 9,
+    "comision": 10,
+    "comisionMoneda": "USD",
+    "categoria": "WIFI",
+    "subcategoria": "ROUTERS",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "specs": [],
+    "fechaAgregado": "2026-07-08T20:44:11.116Z"
   }
 ]
