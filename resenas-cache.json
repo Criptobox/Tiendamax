@@ -1,0 +1,45 @@
+{
+  "actualizado": "2026-07-07T22:03:48.730410+00:00",
+  "total": 3,
+  "por_producto": {
+    "1777924173211": [
+      {
+        "id": 1780415287758,
+        "ts": 1780415287758,
+        "autor": "Carlos",
+        "texto": "Compré un router y llegó rapidísimo. Todo funcionando perfecto, muy recomendados. Los mejores 👌",
+        "estrellas": 4,
+        "fecha": "2 jun 2026",
+        "productoId": "1777924173211",
+        "productoNombre": "Router WiFi 6",
+        "comprador": false
+      }
+    ],
+    "1777924315386": [
+      {
+        "id": 1781398865983,
+        "ts": 1781398865983,
+        "autor": "Mario",
+        "texto": "Hola, muy buen equipo la verdad, me ha ayudado a mejorar la conexión en casa, se los recomiendo muchísimo\nTrato hacia el cliente 100/10 la verdad me aclararon todas las dudas y muy amables",
+        "estrellas": 5,
+        "fecha": "13 jun 2026",
+        "productoId": "1777924315386",
+        "productoNombre": "REPETIDOR WIFI 5",
+        "comprador": false
+      }
+    ],
+    "1778102507659": [
+      {
+        "id": 1780625012098,
+        "ts": 1780625012098,
+        "autor": "Paula",
+        "texto": "Excelente servicio. El producto llegó en buen estado y funciona perfectamente. La báscula es fácil de usar, tiene una pantalla clara y las mediciones bien precisas. Muy buena relación calidad-precio. La recomiendo",
+        "estrellas": 5,
+        "fecha": "4 jun 2026",
+        "productoId": "1778102507659",
+        "productoNombre": "Pesa/ Báscula inteligente digital.",
+        "comprador": false
+      }
+    ]
+  }
+}

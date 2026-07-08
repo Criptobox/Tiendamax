@@ -779,6 +779,14 @@ async function agregarProductoForm(event) {
         if (_mon1) _mon1.value = 'USD';
         const _tog1 = document.getElementById('tmMonedaToggle1');
         if (_tog1) _tog1.querySelectorAll('.tm-moneda-btn').forEach(b => b.classList.toggle('active', b.dataset.moneda === 'USD'));
+        // Limpiar visualmente la sección de fotos: el form.reset() vacía los <input type="file">
+        // pero deja los labels mostrando el nombre del archivo previo y la clase has-file puesta.
+        if (typeof fileName === 'function') {
+            const _pi = document.getElementById('productImage');
+            const _pe = document.getElementById('productImagesExtra');
+            if (_pi) fileName(_pi, 'productImage-name', 'Elegir foto principal *');
+            if (_pe) fileName(_pe, 'productImagesExtra-name', 'Fotos extra (opcional)');
+        }
         mostrarNotificacion('✅ ¡Producto agregado exitosamente!');
         if (window.TiendaMaxPush) {
             window.TiendaMaxPush.nuevoProducto(producto.nombre, producto.precioActual, producto.id, producto.imagen);

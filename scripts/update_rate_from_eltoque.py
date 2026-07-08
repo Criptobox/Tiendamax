@@ -220,11 +220,67 @@ def load_next_data(html: str) -> dict[str, Any]:
         raise RateUpdateError("No se pudo parsear __NEXT_DATA__") from exc
 
 
-def fetch_eltoque_rate_web() -> tuple[float, str]:
-    response = requests.get(WEB_URL, headers={"User-Agent": USER_AGENT}, timeout=30)
-    response.raise_for_status()
+def fetch_eltoque_rate_web() -> tuple[float, str, str]:
+    """Scraping directo de elTOQUE. Si responde 403 (Cloudflare bloqueando),
+    cae al fallback de Wayback Machine que sí es accesible.
+    Devuelve (rate, updated_at, source_label) para que config.json refleje el origen."""
+    last_exc: Exception | None = None
+    try:
+        response = requests.get(WEB_URL, headers={"User-Agent": USER_AGENT}, timeout=30)
+        if response.status_code == 403:
+            print("⚠️ elTOQUE devolvió 403 (Cloudflare bloqueando). Probando Wayback Machine...", file=sys.stderr)
+            last_exc = requests.HTTPError("403 Forbidden", response=response)
+        else:
+            response.raise_for_status()
+            rate, updated_at = _parse_eltoque_html(response.text, "elTOQUE Web")
+            return rate, updated_at, "elTOQUE Web"
+    except requests.HTTPError as exc:
+        last_exc = exc
+    except Exception as exc:  # noqa: BLE001
+        last_exc = exc
 
-    data = load_next_data(response.text)
+    # Fallback: Wayback Machine (web.archive.org sí puede acceder a elTOQUE)
+    try:
+        rate, updated_at = fetch_eltoque_rate_wayback()
+        return rate, updated_at, "elTOQUE Web (Wayback)"
+    except Exception as wb_exc:  # noqa: BLE001
+        msg = f"elTOQUE directo falló ({last_exc}); Wayback también falló ({wb_exc})"
+        raise RateUpdateError(msg) from last_exc
+
+
+def fetch_eltoque_rate_wayback() -> tuple[float, str]:
+    """Fallback: usa la cache de web.archive.org que sí puede acceder a elTOQUE
+    (elToque bloquea con Cloudflare a IPs directas, pero Wayback guarda snapshots)."""
+    avail_url = "https://archive.org/wayback/available?url=eltoque.com/tasas-de-cambio-cuba"
+    r = requests.get(avail_url, timeout=15, headers={"User-Agent": USER_AGENT})
+    r.raise_for_status()
+    data = r.json()
+    snap = (data.get("archived_snapshots") or {}).get("closest") or {}
+    if not snap.get("available"):
+        raise RateUpdateError("Wayback Machine no tiene snapshot de elTOQUE")
+    snap_url = snap.get("url")
+    snap_ts = snap.get("timestamp", "")
+    print(f"  Wayback: usando snapshot {snap_ts} → {snap_url}", file=sys.stderr)
+
+    r2 = requests.get(snap_url, timeout=30, headers={"User-Agent": USER_AGENT})
+    r2.raise_for_status()
+    rate, updated_at = _parse_eltoque_html(r2.text, "elTOQUE Web (Wayback)")
+
+    # Aviso si el snapshot es muy viejo (>3 días), pero se usa igual como mejor opción disponible
+    if snap_ts and len(snap_ts) >= 8:
+        try:
+            snap_dt = datetime.strptime(snap_ts[:8], "%Y%m%d").replace(tzinfo=timezone.utc)
+            edad = (datetime.now(timezone.utc) - snap_dt).days
+            if edad > 3:
+                print(f"  ⚠️ Snapshot de Wayback tiene {edad} días (puede no ser la tasa de hoy)", file=sys.stderr)
+        except Exception:  # noqa: BLE001
+            pass
+    return rate, updated_at
+
+
+def _parse_eltoque_html(html: str, source_label: str) -> tuple[float, str]:
+    """Extrae la tasa USD del HTML de elTOQUE (común para directo y Wayback)."""
+    data = load_next_data(html)
     trmi = data["props"]["pageProps"]["trmiExchange"]["data"]
     stats = trmi["api"]["statistics"]
     usd = stats.get("USD")
@@ -232,14 +288,14 @@ def fetch_eltoque_rate_web() -> tuple[float, str]:
         raise RateUpdateError("No se encontró la estadística USD en elTOQUE")
 
     raw_rate = usd.get("median")
-    source = "median"
+    field = "median"
     if raw_rate is None:
         raw_rate = usd.get("ema_value")
-        source = "ema_value"
+        field = "ema_value"
     if raw_rate is None:
         raise RateUpdateError("USD no trae median ni ema_value")
 
-    print(f"Fuente de tasa: scraping web {source} = {raw_rate}")
+    print(f"Fuente de tasa: {source_label} ({field}) = {raw_rate}")
 
     rate = _as_float(raw_rate)
     if rate is None or not _reasonable(rate):
@@ -256,8 +312,9 @@ def fetch_eltoque_rate() -> tuple[float, str, str]:
     except Exception as api_exc:  # noqa: BLE001
         print(f"⚠️ API elTOQUE no disponible o no reconocida: {api_exc}", file=sys.stderr)
         print("↪ Usando fallback web público de elTOQUE...", file=sys.stderr)
-        rate, updated_at = fetch_eltoque_rate_web()
-        return rate, updated_at, "elTOQUE Web"
+        # fetch_eltoque_rate_web ya devuelve (rate, updated_at, source_label)
+        # donde source_label puede ser "elTOQUE Web" o "elTOQUE Web (Wayback)"
+        return fetch_eltoque_rate_web()
 
 
 def load_config() -> dict[str, Any]:

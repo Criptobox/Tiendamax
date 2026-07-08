@@ -738,6 +738,16 @@
     </div>
     <div class="form-group" style="margin-top:10px"><label class="form-label">🏭 Almacén (solo para ti, no se publica)</label><select class="form-select" id="pedit-almacen"><option value="">Sin asignar</option></select></div>
     <div class="form-group" style="margin-top:10px"><label class="form-label">Descripción</label><textarea class="form-textarea" id="pedit-desc" style="min-height:90px"></textarea></div>
+    <div class="form-group" style="margin-top:12px">
+      <label class="form-label">📸 Fotos del producto</label>
+      <div id="pedit-fotos-lista" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px"></div>
+      <label class="file-box" for="pedit-fotos-nuevas" style="padding:14px;cursor:pointer">
+        <span class="fb-ico">➕</span>
+        <span class="fb-txt" id="pedit-fotos-nuevas-name">Agregar fotos nuevas (opcional)</span>
+        <input type="file" id="pedit-fotos-nuevas" accept="image/*" multiple onchange="fileName(this,'pedit-fotos-nuevas-name','Agregar fotos nuevas (opcional)')">
+      </label>
+      <div style="font-size:11px;color:var(--muted);margin-top:6px">La primera foto es la principal. Puedes quitar fotos existentes con la ✕ y agregar nuevas.</div>
+    </div>
     <label style="display:flex;align-items:center;gap:8px;margin-top:12px;font-size:13px;color:#fff;cursor:pointer"><input type="checkbox" id="pedit-fav" style="width:16px;height:16px;accent-color:var(--gold)">⭐ Destacar en Más Vendidos</label>
     <div style="display:flex;gap:8px;margin-top:16px"><button class="btn btn-primary" style="flex:1" onclick="apEditSave()">💾 Guardar</button><button class="btn btn-ghost" onclick="apDuplicar($('#pedit-id').value)">📄 Duplicar</button><button class="btn btn-ghost" onclick="apEditClose()">Cancelar</button></div>
   </div>
@@ -745,10 +755,10 @@
 
 <!-- Motor real del admin (mismos scripts que admin.html) — expone verificarPassword,
      agregarProductoForm, sincronizarTodoConGitHub, registrarVenta, etc. -->
-<script src="js/src/tm-config.js?v=6582c978"></script>
+<script src="js/src/tm-config.js?v=a565de40"></script>
 <script src="js/src/tm-data.js?v=4d0db939"></script>
 <script src="js/src/tm-state.js?v=c4ce49c9"></script>
-<script src="js/src/tm-admin.js?v=afe4d9f2"></script>
+<script src="js/src/tm-admin.js?v=51393220"></script>
 <script src="js/src/tm-product.js?v=8c3e67f4"></script>
 <script src="js/src/tm-catalog.js?v=d84705d0"></script>
 <script src="js/src/tm-init.js?v=e23255ae"></script>
@@ -1355,8 +1365,38 @@ function apStock(id,d){ const p=apFind(id); if(!p) return; p.stock=Math.max(0,(N
 function apStockZero(id){ const p=apFind(id); if(!p) return; p.stock=0; apSaveProds(); renderProductos(); if(typeof renderStock==='function') renderStock(); }
 function apFav(id){ const p=apFind(id); if(!p) return; p.masVendido=!p.masVendido; apSaveProds(); renderProductos(); showToast(p.masVendido?'⭐ Destacado en Más Vendidos':'Quitado de Más Vendidos'); }
 function apDel(id){ const p=apFind(id); if(!p) return; if(!confirm('¿Eliminar "'+(p.nombre||'')+'"? Esto lo quita del catálogo al sincronizar.')) return; const i=PRODUCTOS.findIndex(x=>String(x.id)===String(id)); if(i>=0) PRODUCTOS.splice(i,1); apSaveProds(); renderProductos(); showToast('🗑️ Eliminado','Sincroniza para publicar el cambio'); }
-function apEdit(id){ const p=apFind(id); if(!p) return; $('#pedit-id').value=id; $('#pedit-nombre').value=p.nombre||''; $('#pedit-precio').value=p.precioActual||''; $('#pedit-original').value=(Number(p.precioOriginal)>0?p.precioOriginal:''); $('#pedit-stock').value=Number(p.stock)||0; $('#pedit-comision').value=(Number(p.comision)>0?p.comision:''); $('#pedit-comision-moneda').value=p.comisionMoneda||'USD'; $('#pedit-desc').value=p.descripcion||''; $('#pedit-fav').checked=!!p.masVendido; const cs=$('#pedit-cat'); if(cs){ const cats=[...new Set(PRODUCTOS.map(x=>x.categoria).filter(Boolean))].sort(); cs.innerHTML=cats.map(c=>`<option value="${esc(c)}" ${c===p.categoria?'selected':''}>${esc(c)}</option>`).join(''); } const as=$('#pedit-almacen'); if(as){ as.innerHTML='<option value="">Sin asignar</option>'+Object.keys(ALMACENES).map(aid=>`<option value="${aid}" ${p.almacenId===aid?'selected':''}>${esc(ALMACENES[aid].nombre||aid)}</option>`).join(''); } $('#pedit-modal').classList.add('show'); }
+function apEdit(id){ const p=apFind(id); if(!p) return; $('#pedit-id').value=id; $('#pedit-nombre').value=p.nombre||''; $('#pedit-precio').value=p.precioActual||''; $('#pedit-original').value=(Number(p.precioOriginal)>0?p.precioOriginal:''); $('#pedit-stock').value=Number(p.stock)||0; $('#pedit-comision').value=(Number(p.comision)>0?p.comision:''); $('#pedit-comision-moneda').value=p.comisionMoneda||'USD'; $('#pedit-desc').value=p.descripcion||''; $('#pedit-fav').checked=!!p.masVendido; const cs=$('#pedit-cat'); if(cs){ const cats=[...new Set(PRODUCTOS.map(x=>x.categoria).filter(Boolean))].sort(); cs.innerHTML=cats.map(c=>`<option value="${esc(c)}" ${c===p.categoria?'selected':''}>${esc(c)}</option>`).join(''); } const as=$('#pedit-almacen'); if(as){ as.innerHTML='<option value="">Sin asignar</option>'+Object.keys(ALMACENES).map(aid=>`<option value="${aid}" ${p.almacenId===aid?'selected':''}>${esc(ALMACENES[aid].nombre||aid)}</option>`).join(''); }
+  // Cargar fotos actuales al working array y renderizar
+  _peditFotos = Array.isArray(p.imagenes) && p.imagenes.length
+    ? p.imagenes.slice()
+    : (p.imagen ? [p.imagen] : []);
+  _renderPeditFotos();
+  const _pfNuevas=$('#pedit-fotos-nuevas'); if(_pfNuevas) _pfNuevas.value='';
+  const _pfLabel=$('#pedit-fotos-nuevas-name'); if(_pfLabel) _pfLabel.textContent='Agregar fotos nuevas (opcional)';
+  $('#pedit-modal').classList.add('show'); }
 function apEditClose(){ $('#pedit-modal').classList.remove('show'); }
+// Working array de URLs de fotos en edición
+let _peditFotos = [];
+function _renderPeditFotos(){
+  const box=$('#pedit-fotos-lista'); if(!box) return;
+  if(!_peditFotos.length){
+    box.innerHTML='<div style="font-size:12px;color:var(--muted);padding:6px 0">Sin fotos. Agrega nuevas abajo.</div>';
+    return;
+  }
+  box.innerHTML = _peditFotos.map((url,i)=>{
+    const safe = esc(url);
+    return `<div style="position:relative;width:72px;height:72px;border-radius:8px;overflow:hidden;border:1px solid rgba(255,255,255,0.1);background:#000">
+      <img src="${safe}" alt="foto ${i+1}" style="width:100%;height:100%;object-fit:cover" loading="lazy" onerror="this.style.display='none'">
+      ${i===0?'<span style="position:absolute;top:2px;left:2px;background:var(--gold);color:#000;font-size:9px;font-weight:800;padding:1px 5px;border-radius:3px">⭐ PRAL</span>':''}
+      <button type="button" onclick="peditFotoQuitar(${i})" title="Quitar foto" style="position:absolute;top:2px;right:2px;width:20px;height:20px;border-radius:50%;background:rgba(0,0,0,0.75);color:#fff;border:0;font-size:11px;cursor:pointer;line-height:1">✕</button>
+    </div>`;
+  }).join('');
+}
+function peditFotoQuitar(idx){
+  if(idx<0 || idx>=_peditFotos.length) return;
+  _peditFotos.splice(idx,1);
+  _renderPeditFotos();
+}
 // Duplicar: crea una copia del producto (nuevo id, "— Copia") y abre su edición.
 function apDuplicar(id){
   const p=apFind(id); if(!p){ showToast('No encontré el producto'); return; }
@@ -1366,7 +1406,7 @@ function apDuplicar(id){
   apEdit(String(copia.id)); // abrir la copia para ajustar nombre/precio/foto
   showToast('📄 Producto duplicado','Ajusta el nombre y guarda; luego "Actualizar tienda"');
 }
-function apEditSave(){ const id=$('#pedit-id').value; const p=apFind(id); if(!p) return;
+async function apEditSave(){ const id=$('#pedit-id').value; const p=apFind(id); if(!p) return;
   p.nombre=$('#pedit-nombre').value.trim()||p.nombre;
   p.precioActual=Number($('#pedit-precio').value)||0;
   const orig=Number($('#pedit-original').value)||0; p.precioOriginal=orig>0?orig:0;
@@ -1379,6 +1419,26 @@ function apEditSave(){ const id=$('#pedit-id').value; const p=apFind(id); if(!p)
   const almIdAntes=p.almacenId||'';
   const almId=$('#pedit-almacen')&&$('#pedit-almacen').value||''; if(almId) p.almacenId=almId; else delete p.almacenId;
   if(almId!==almIdAntes) almSyncFirebase(id, almIdAntes, almId);
+  // Subir fotos nuevas (si las hay)
+  const inputNuevas=$('#pedit-fotos-nuevas');
+  const hayNuevas = inputNuevas && inputNuevas.files && inputNuevas.files.length;
+  if(hayNuevas){
+    showToast('⏳ Subiendo fotos nuevas...','Paciencia, esto puede tardar unos segundos');
+    try {
+      const nuevas = await subirMultiplesImagenes('pedit-fotos-nuevas');
+      if(nuevas && nuevas.length){
+        nuevas.forEach(u => { if(u && !_peditFotos.includes(u)) _peditFotos.push(u); });
+      }
+    } catch(e){ console.warn('Error subiendo fotos nuevas:', e); showToast('⚠️ No se pudieron subir todas las fotos nuevas','Continúo con las existentes'); }
+  }
+  // Aplicar cambios al producto
+  if(_peditFotos.length){
+    p.imagenes = _peditFotos.slice();
+    p.imagen = _peditFotos[0];
+  } else {
+    p.imagenes = [];
+    delete p.imagen;
+  }
   apSaveProds(); apEditClose(); renderProductos(); showToast('💾 Guardado','Sincroniza para publicarlo en la tienda');
 }
 
@@ -1995,12 +2055,12 @@ async function renderAvisos(box){
   }).join('');
   box.innerHTML = html;
 }
-// Abrir WhatsApp con el mensaje de "ya volvió"
+// Abrir WhatsApp con el mensaje de "ya está disponible"
 function avisoWhats(tel, pid){
   const p = PRODUCTOS.find(x=>String(x.id)===String(pid));
   const nombre = (p && p.nombre) || 'el producto';
   const url = 'https://tiendamax.org/p/producto-'+pid+'.html';
-  const msg = `¡Buenas! 🎉 El producto "${nombre}" que esperabas ya volvió a TiendaMax. Escríbeme para reservártelo 👉 ${url}`;
+  const msg = `¡Hola! 🎉 El producto "${nombre}" que esperabas ya está disponible en TiendaMax. 👉 ${url}`;
   window.open('https://wa.me/'+encodeURIComponent(tel)+'?text='+encodeURIComponent(msg),'_blank','noopener,noreferrer');
 }
 // Agregar cliente a mano a la lista de espera (pidió el aviso por WhatsApp)

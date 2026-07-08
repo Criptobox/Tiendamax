@@ -294,10 +294,14 @@ def analizar(prod, muestras, prev_hist, fecha):
 
 def main():
     productos = load_json(os.path.join(ROOT, "productos.json"), []) or []
-    vigilados = [p for p in productos if p.get("radar")][:MAX_PROD]
+    # Solo se vigilan realmente los productos con stock > 0 (igual que el admin UI:
+    # un producto agotado no vale la pena vigilarlo, ya no está a la venta).
+    vigilados = [p for p in productos if p.get("radar") and float(p.get("stock") or 0) > 0][:MAX_PROD]
+    omitidos = sum(1 for p in productos if p.get("radar") and float(p.get("stock") or 0) <= 0)
     rate = tasa_base()
     fecha = datetime.datetime.now(datetime.timezone.utc).astimezone().strftime("%Y-%m-%d")
-    print(f"Radar: {len(vigilados)} productos vigilados · tasa base {rate}")
+    print(f"Radar: {len(vigilados)} productos vigilados · tasa base {rate}"
+          + (f" · {omitidos} omitido(s) por agotado" if omitidos else ""))
 
     prev = load_json(OUT, {}) or {}
     prev_hist = {str(p.get("id")): p.get("historial", []) for p in prev.get("productos", [])}

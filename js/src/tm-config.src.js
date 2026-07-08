@@ -676,11 +676,15 @@ async function renderizarResenas(productoId) {
 
     let resenas = [];
 
-    // Leer desde Firebase (fuente de verdad)
+    // Leer desde Firebase (fuente de verdad) con timeout corto (4s) para no colgar al cliente
+    // en redes con *.firebaseio.com bloqueado (típico en Cuba).
     try {
         const base = _fbRtdbUrl();
         if (base) {
-            const r = await fetch(base + '/resenas/' + pid + '.json');
+            const ctrl = new AbortController();
+            const tmo = setTimeout(() => ctrl.abort(), 4000);
+            const r = await fetch(base + '/resenas/' + pid + '.json', { signal: ctrl.signal });
+            clearTimeout(tmo);
             if (r.ok) {
                 const data = await r.json();
                 if (data && typeof data === 'object') {
@@ -690,7 +694,22 @@ async function renderizarResenas(productoId) {
         }
     } catch(e) {}
 
-    // Fallback a localStorage si Firebase no responde
+    // Fallback 1: cache estático resenas-cache.json (commiteado cada hora por GitHub Actions)
+    // Este archivo se sirve desde el mismo origen que la web, así que funciona aunque Firebase esté bloqueado.
+    if (resenas.length === 0) {
+        try {
+            const r = await fetch('resenas-cache.json?v=' + (window.__tmResenasCacheVer || ''), { cache: 'no-store' });
+            if (r.ok) {
+                const cache = await r.json();
+                const porProd = cache && cache.por_producto && cache.por_producto[pid];
+                if (Array.isArray(porProd) && porProd.length) {
+                    resenas = porProd.slice().sort((a,b) => (b.id || 0) - (a.id || 0));
+                }
+            }
+        } catch(e) {}
+    }
+
+    // Fallback 2: localStorage (reseñas que el propio usuario envió desde este navegador)
     if (resenas.length === 0) {
         const prodEnMemoria = productos.find(p => p.id === productoId);
         if (prodEnMemoria && Array.isArray(prodEnMemoria.resenas) && prodEnMemoria.resenas.length > 0) {
@@ -807,21 +826,30 @@ async function cargarTestimoniosFirebase() {
     const cta  = document.getElementById('testimoniosCTA');
     if (!grid) return;
 
+    // Intentar Firebase primero (con timeout de 5s). Si *.firebaseio.com está bloqueado
+    // (común en Cuba), caer al cache estático resenas-cache.json que se sirve desde el mismo origen.
+    let allResenas = [];
+    let usedSource = 'firebase';
     try {
         const base = _fbRtdbUrl();
         if (!base) throw new Error('no config');
 
-        // Leer todas las reseñas de todos los productos
-        const r = await fetch(base + '/resenas.json?shallow=true');
+        // shallow=true solo trae las claves (no el contenido), para listar productos con reseñas
+        const ctrl = new AbortController();
+        const tmo = setTimeout(() => ctrl.abort(), 5000);
+        const r = await fetch(base + '/resenas.json?shallow=true', { signal: ctrl.signal });
+        clearTimeout(tmo);
         if (!r.ok) throw new Error('fetch failed ' + r.status);
         const productIds = await r.json();
         if (!productIds || typeof productIds !== 'object') throw new Error('empty');
 
         const pids = Object.keys(productIds).slice(0, 20);
-        const allResenas = [];
         await Promise.all(pids.map(async pid => {
             try {
-                const rp = await fetch(base + '/resenas/' + pid + '.json');
+                const ctrl2 = new AbortController();
+                const tmo2 = setTimeout(() => ctrl2.abort(), 5000);
+                const rp = await fetch(base + '/resenas/' + pid + '.json', { signal: ctrl2.signal });
+                clearTimeout(tmo2);
                 if (!rp.ok) return;
                 const data = await rp.json();
                 if (data && typeof data === 'object') {
@@ -829,44 +857,74 @@ async function cargarTestimoniosFirebase() {
                 }
             } catch(e) {}
         }));
-
-        if (allResenas.length === 0) throw new Error('no resenas');
-
-        // Preferir 4+ estrellas, pero si no hay suficientes, incluir todas
-        let mejores = allResenas
-            .filter(r => r.estrellas >= 4 && r.texto && r.texto.length > 15)
-            .sort((a, b) => b.id - a.id);
-
-        if (mejores.length === 0) {
-            mejores = allResenas
-                .filter(r => r.texto && r.texto.length > 15)
-                .sort((a, b) => b.id - a.id);
-        }
-
-        if (mejores.length === 0) throw new Error('no good resenas');
-
-        _tmAllResenas = mejores;
-        _renderTestimoniosPage(4);
-        if (cta) cta.style.display = 'block';
-
     } catch(e) {
-        // Solo limpiar si hay error de "vacío real" (Firebase configurado pero sin reseñas)
-        // Si es error de conexión/config, dejar los skeletons
-        const esVacio = e.message === 'no resenas' || e.message === 'no good resenas' || e.message === 'empty';
-        if (esVacio) {
-            grid.innerHTML = '';
-            if (cta) {
-                cta.style.display = 'block';
-                cta.innerHTML = '<p style="color:rgba(255,255,255,0.4);font-size:14px;margin-bottom:12px;">Sé el primero en dejar una reseña</p>';
+        // Firebase falló (timeout/bloqueo/error). Intentar cache estático.
+        usedSource = 'cache';
+        try {
+            const r = await fetch('resenas-cache.json?v=' + (window.__tmResenasCacheVer || ''), { cache: 'no-store' });
+            if (r.ok) {
+                const cache = await r.json();
+                const porProd = cache && cache.por_producto || {};
+                Object.keys(porProd).forEach(pid => {
+                    if (Array.isArray(porProd[pid])) {
+                        porProd[pid].forEach(r => allResenas.push(r));
+                    }
+                });
             }
-        }
-        // Si es error de red/config: los skeletons siguen visibles (sin hacer nada)
-        console.warn('cargarTestimoniosFirebase:', e.message);
-        // Diagnóstico visible en admin (solo si la consola no es accesible)
-        if (window._tmAdminMode && e.message !== 'no resenas' && e.message !== 'no good resenas' && e.message !== 'empty') {
-            mostrarNotificacion('⚠️ Reseñas Firebase: ' + e.message, 'info');
-        }
+        } catch(e2) {}
     }
+
+    // Si Firebase no devolvió nada, intentar cache aunque Firebase no haya tirado excepción
+    if (allResenas.length === 0) {
+        try {
+            const r = await fetch('resenas-cache.json?v=' + (window.__tmResenasCacheVer || ''), { cache: 'no-store' });
+            if (r.ok) {
+                const cache = await r.json();
+                const porProd = cache && cache.por_producto || {};
+                Object.keys(porProd).forEach(pid => {
+                    if (Array.isArray(porProd[pid])) {
+                        porProd[pid].forEach(r => allResenas.push(r));
+                    }
+                });
+                if (allResenas.length) usedSource = 'cache-fallback';
+            }
+        } catch(e) {}
+    }
+
+    if (allResenas.length === 0) {
+        // Vacío real: ni Firebase ni cache tienen reseñas
+        grid.innerHTML = '';
+        if (cta) {
+            cta.style.display = 'block';
+            cta.innerHTML = '<p style="color:rgba(255,255,255,0.4);font-size:14px;margin-bottom:12px;">Sé el primero en dejar una reseña</p>';
+        }
+        console.warn('cargarTestimoniosFirebase: sin reseñas ni en Firebase ni en cache');
+        return;
+    }
+
+    // Preferir 4+ estrellas, pero si no hay suficientes, incluir todas
+    let mejores = allResenas
+        .filter(r => r.estrellas >= 4 && r.texto && r.texto.length > 15)
+        .sort((a, b) => (b.id || 0) - (a.id || 0));
+
+    if (mejores.length === 0) {
+        mejores = allResenas
+            .filter(r => r.texto && r.texto.length > 15)
+            .sort((a, b) => (b.id || 0) - (a.id || 0));
+    }
+
+    if (mejores.length === 0) {
+        grid.innerHTML = '';
+        if (cta) {
+            cta.style.display = 'block';
+            cta.innerHTML = '<p style="color:rgba(255,255,255,0.4);font-size:14px;margin-bottom:12px;">Sé el primero en dejar una reseña</p>';
+        }
+        return;
+    }
+
+    _tmAllResenas = mejores;
+    _renderTestimoniosPage(4);
+    if (cta) cta.style.display = 'block';
 }
 
 // ═══════════════════════════════════════════════════════
