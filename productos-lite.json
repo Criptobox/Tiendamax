@@ -729,7 +729,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1778384314795_ext.webp",
     "categoria": "SEGURIDAD",
     "subcategoria": "CÁMARAS",
-    "stock": 0,
+    "stock": 4,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -2114,10 +2114,10 @@
   {
     "id": 1783453597496,
     "nombre": "Router inalámbrico gibabite de doble banda Tp-link Archer A6 AC1200",
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783453593801.jpg",
+    "imagen": "https://tiendamax.org/imagenes/img_1783453593801.jpg",
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783453593801.jpg",
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783453595849.jpg"
+      "https://tiendamax.org/imagenes/img_1783453593801.jpg",
+      "https://tiendamax.org/imagenes/img_1783453595849.jpg"
     ],
     "precioActual": 110,
     "precioOriginal": 0,
@@ -2156,5 +2156,27 @@
     "devolucion": false,
     "specs": [],
     "fechaAgregado": "2026-07-07T19:50:57.635Z"
+  },
+  {
+    "id": 1783473894756,
+    "nombre": "Cargador tactil de bateria inteligente 12v /15A",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783473890998.jpg",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783473890998.jpg"
+    ],
+    "precioActual": 65,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 10,
+    "comision": 5,
+    "comisionMoneda": "USD",
+    "categoria": "ENERGIA",
+    "subcategoria": "CARGADORES",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "specs": [],
+    "fechaAgregado": "2026-07-08T01:24:54.756Z"
   }
 ]
