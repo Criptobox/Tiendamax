@@ -746,7 +746,7 @@
         <span class="fb-txt" id="pedit-fotos-nuevas-name">Agregar fotos nuevas (opcional)</span>
         <input type="file" id="pedit-fotos-nuevas" accept="image/*" multiple onchange="fileName(this,'pedit-fotos-nuevas-name','Agregar fotos nuevas (opcional)')">
       </label>
-      <div style="font-size:11px;color:var(--muted);margin-top:6px">La primera foto es la principal. Puedes quitar fotos existentes con la ✕ y agregar nuevas.</div>
+      <div style="font-size:11px;color:var(--muted);margin-top:6px">📌 La primera foto es la principal. <b>Click en una foto</b> para hacerla principal · <b>Click en ✕</b> para quitarla.</div>
     </div>
     <label style="display:flex;align-items:center;gap:8px;margin-top:12px;font-size:13px;color:#fff;cursor:pointer"><input type="checkbox" id="pedit-fav" style="width:16px;height:16px;accent-color:var(--gold)">⭐ Destacar en Más Vendidos</label>
     <div style="display:flex;gap:8px;margin-top:16px"><button class="btn btn-primary" style="flex:1" onclick="apEditSave()">💾 Guardar</button><button class="btn btn-ghost" onclick="apDuplicar($('#pedit-id').value)">📄 Duplicar</button><button class="btn btn-ghost" onclick="apEditClose()">Cancelar</button></div>
@@ -1383,20 +1383,44 @@ function _renderPeditFotos(){
     box.innerHTML='<div style="font-size:12px;color:var(--muted);padding:6px 0">Sin fotos. Agrega nuevas abajo.</div>';
     return;
   }
+  // Construir thumbnails con data-action (event delegation, más robusto que onclick inline)
   box.innerHTML = _peditFotos.map((url,i)=>{
     const safe = esc(url);
-    return `<div style="position:relative;width:72px;height:72px;border-radius:8px;overflow:hidden;border:1px solid rgba(255,255,255,0.1);background:#000">
-      <img src="${safe}" alt="foto ${i+1}" style="width:100%;height:100%;object-fit:cover" loading="lazy" onerror="this.style.display='none'">
-      ${i===0?'<span style="position:absolute;top:2px;left:2px;background:var(--gold);color:#000;font-size:9px;font-weight:800;padding:1px 5px;border-radius:3px">⭐ PRAL</span>':''}
-      <button type="button" onclick="peditFotoQuitar(${i})" title="Quitar foto" style="position:absolute;top:2px;right:2px;width:20px;height:20px;border-radius:50%;background:rgba(0,0,0,0.75);color:#fff;border:0;font-size:11px;cursor:pointer;line-height:1">✕</button>
+    const esPrincipal = (i===0);
+    return `<div data-pedit-idx="${i}" style="position:relative;width:72px;height:72px;border-radius:8px;overflow:hidden;border:2px solid ${esPrincipal?'var(--gold)':'rgba(255,255,255,0.15)'};background:#000;cursor:pointer" title="${esPrincipal?'Foto principal (click para ver opciones)':'Click para hacer principal'}">
+      <img src="${safe}" alt="foto ${i+1}" style="width:100%;height:100%;object-fit:cover;pointer-events:none" loading="lazy" onerror="this.style.display='none'">
+      ${esPrincipal?'<span style="position:absolute;top:2px;left:2px;background:var(--gold);color:#000;font-size:9px;font-weight:800;padding:1px 5px;border-radius:3px;pointer-events:none">⭐ PRAL</span>':''}
+      <div data-action="quitar" data-idx="${i}" title="Quitar foto" style="position:absolute;top:2px;right:2px;width:22px;height:22px;border-radius:50%;background:rgba(0,0,0,0.8);color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;cursor:pointer;user-select:none;line-height:1">✕</div>
     </div>`;
   }).join('');
 }
-function peditFotoQuitar(idx){
-  if(idx<0 || idx>=_peditFotos.length) return;
-  _peditFotos.splice(idx,1);
-  _renderPeditFotos();
-}
+// Event delegation: un solo listener para todos los thumbnails (más robusto que onclick inline)
+document.addEventListener('click', function(ev){
+  const box = document.getElementById('pedit-fotos-lista');
+  if(!box) return;
+  // ¿Click dentro de un thumbnail?
+  const thumb = ev.target.closest('[data-pedit-idx]');
+  if(!thumb || !box.contains(thumb)) return;
+  const idx = parseInt(thumb.getAttribute('data-pedit-idx'), 10);
+  if(isNaN(idx) || idx<0 || idx>=_peditFotos.length) return;
+
+  // ¿Fue click en la ✕?
+  const quitarBtn = ev.target.closest('[data-action="quitar"]');
+  if(quitarBtn){
+    ev.stopPropagation();
+    ev.preventDefault();
+    _peditFotos.splice(idx, 1);
+    _renderPeditFotos();
+    return;
+  }
+
+  // Click en cualquier otra parte del thumbnail → hacer principal
+  if(idx > 0){
+    const [url] = _peditFotos.splice(idx, 1);
+    _peditFotos.unshift(url);
+    _renderPeditFotos();
+  }
+});
 // Duplicar: crea una copia del producto (nuevo id, "— Copia") y abre su edición.
 function apDuplicar(id){
   const p=apFind(id); if(!p){ showToast('No encontré el producto'); return; }
@@ -2347,7 +2371,7 @@ async function pubCatUpdatePreview(){
     <div style="font-size:12px;color:var(--muted);margin-bottom:14px">${prods.length} producto${prods.length!==1?'s':''}${min?' · desde $'+min.toFixed(2):''}</div>
     <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px">
       <button type="button" class="pub-act wa" onclick="pubCatAct('wa')">💬 WhatsApp</button>
-      <button type="button" class="pub-act fb" onclick="pubCatAct('fb')">📘 Facebook</button>
+      <button type="button" class="pub-act fb" onclick="pubCatAct('fb')">📘 Facebook + 📷</button>
       <button type="button" class="pub-act ghost" onclick="pubCatAct('ig')">📸 Instagram</button>
       <button type="button" class="pub-act ghost" onclick="pubCatAct('rev')">🟠 Revólico</button>
     </div>
@@ -2361,7 +2385,33 @@ async function pubCatAct(act){
   const text=pubCatText(cat);
   if(act==='copy'){ try{ await navigator.clipboard.writeText(text); showToast('📋 Texto copiado'); }catch(e){ showToast('No se pudo copiar'); } return; }
   if(act==='wa'){ window.open('https://wa.me/?text='+encodeURIComponent(text),'_blank','noopener,noreferrer'); return; }
-  if(act==='fb'){ try{ await navigator.clipboard.writeText(text); }catch(e){} window.open('https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent('https://tiendamax.org'),'_blank','noopener,noreferrer'); showToast('Texto copiado — pégalo en el post de Facebook'); return; }
+  if(act==='fb'){
+    // Facebook NO permite subir imágenes vía sharer.php. La única forma de compartir
+    // una imagen a Facebook es usando navigator.share({files:[...]}) que abre la hoja
+    // de compartir nativa del dispositivo (móvil) donde el usuario elige "Facebook".
+    // En desktop sin soporte de share, caemos a: descargar imagen + copiar texto + abrir FB.
+    try{ await navigator.clipboard.writeText(text); }catch(e){}
+    const blob = await pubCatGenImg(cat);
+    if(!blob){ showToast('Sin productos con stock para generar imagen'); return; }
+    const file = new File([blob], 'tiendamax-'+pubCatTag(cat)+'.png', {type:'image/png'});
+    // ¿El dispositivo soporta compartir archivos? (móvil moderno)
+    if(navigator.canShare && navigator.canShare({files:[file]}) && navigator.share){
+      try{
+        await navigator.share({ files:[file], title:'TiendaMax — '+cat, text });
+        showToast('📷 Imagen + texto enviados a Facebook');
+        return;
+      }catch(e){ if(/abort/i.test(e.message||'')) return; }
+    }
+    // Fallback desktop: descargar imagen, abrir Facebook, usuario la adjunta manualmente
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(blob);
+    a.download=file.name;
+    a.click();
+    setTimeout(()=>URL.revokeObjectURL(a.href), 2000);
+    window.open('https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent('https://tiendamax.org'),'_blank','noopener,noreferrer');
+    showToast('📷 Imagen descargada · 📋 Texto copiado · Pega ambos en Facebook','');
+    return;
+  }
   if(act==='rev'){ try{ await navigator.clipboard.writeText(text); }catch(e){} window.open('https://www.revolico.com/','_blank','noopener,noreferrer'); showToast('Texto copiado — pégalo al crear tu anuncio en Revólico'); return; }
   if(act==='ig'){
     try{ await navigator.clipboard.writeText(text); }catch(e){}
