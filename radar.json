@@ -1,123 +1,22 @@
 {
-  "actualizado": "2026-07-07T13:21:43.757862+00:00",
-  "fecha": "2026-07-07",
+  "actualizado": "2026-07-08T12:21:43.432558+00:00",
+  "fecha": "2026-07-08",
   "fuentes": [
     "revolico",
     "porlalivre",
     "lelespc"
   ],
   "resumen": {
-    "vigilados": 5,
+    "vigilados": 4,
     "encimaMercado": 0,
-    "bajadasComp": 0,
+    "bajadasComp": 1,
     "sinDatos": 0
   },
   "productos": [
     {
-      "id": 1778104115783,
-      "nombre": "Batería Must Tipo LIFEPO4",
-      "tuPrecio": 300.0,
-      "mercado": {
-        "min": 280.0,
-        "mediana": 300.0,
-        "n": 6
-      },
-      "deltaAyerMediana": 0.0,
-      "estado": "competitivo",
-      "sugerencia": {
-        "texto": "Precio competitivo respecto al mercado"
-      },
-      "historial": [
-        {
-          "fecha": "2026-06-28",
-          "mediana": 3950.0
-        },
-        {
-          "fecha": "2026-06-29",
-          "mediana": 300.0
-        },
-        {
-          "fecha": "2026-06-30",
-          "mediana": 300.0
-        },
-        {
-          "fecha": "2026-07-01",
-          "mediana": 300.0
-        },
-        {
-          "fecha": "2026-07-02",
-          "mediana": 300.0
-        },
-        {
-          "fecha": "2026-07-03",
-          "mediana": 300.0
-        },
-        {
-          "fecha": "2026-07-04",
-          "mediana": 300.0
-        },
-        {
-          "fecha": "2026-07-05",
-          "mediana": 300.0
-        },
-        {
-          "fecha": "2026-07-06",
-          "mediana": 300.0
-        },
-        {
-          "fecha": "2026-07-07",
-          "mediana": 300.0
-        }
-      ],
-      "muestras": [
-        {
-          "fuente": "revolico",
-          "titulo": "280 USD Batería tipo LiFePO4 Must 12.8V y 100Ah (1280Wh)_290 USD_Ax",
-          "precio": 280.0,
-          "url": "https://www.revolico.com/item/bateria-tipo-lifepo4-must-128v-y-100ah-1280wh_300-usd_ax-55026844",
-          "dias": null
-        },
-        {
-          "fuente": "revolico",
-          "titulo": "290 USD Batería tipo LiFePO4, marca must, 12V x 100 ah Precio: 300 USD Ax",
-          "precio": 290.0,
-          "url": "https://www.revolico.com/item/bateria-tipo-lifepo4-marca-must-12v-x-100-ah-55306696",
-          "dias": null
-        },
-        {
-          "fuente": "revolico",
-          "titulo": "300 USD BATERÍA MUST TIPO LIFEPO4",
-          "precio": 300.0,
-          "url": "https://www.revolico.com/item/bateria-must-tipo-lifepo4-55929974",
-          "dias": null
-        },
-        {
-          "fuente": "revolico",
-          "titulo": "300 USD Batería Must tipo LiFePO4, ideal para sistemas solares e inversores.",
-          "precio": 300.0,
-          "url": "https://www.revolico.com/item/bateria-tipo-lifepo4-ideal-para-sistemas-solares-e-inversores-55120299",
-          "dias": null
-        },
-        {
-          "fuente": "revolico",
-          "titulo": "300 USD Batería Must tipo LiFePO4. 12.8V 100Ah, ideal para sistemas solares.",
-          "precio": 300.0,
-          "url": "https://www.revolico.com/item/bateria-tipo-lifepo4-55068003",
-          "dias": null
-        },
-        {
-          "fuente": "revolico",
-          "titulo": "300 USD Batería LiFePO4 (MUST)",
-          "precio": 300.0,
-          "url": "https://www.revolico.com/item/bateria-lifepo4-ofertas-disponibles-si-compra-mas-de-1-54867247",
-          "dias": null
-        }
-      ]
-    },
-    {
       "id": 1777924118004,
       "nombre": "Inversor 12V",
-      "tuPrecio": 170.0,
+      "tuPrecio": 180.0,
       "mercado": {
         "min": 80.0,
         "mediana": 170.0,
@@ -167,6 +66,10 @@
         },
         {
           "fecha": "2026-07-07",
+          "mediana": 170.0
+        },
+        {
+          "fecha": "2026-07-08",
           "mediana": 170.0
         }
       ],
@@ -221,10 +124,10 @@
       "tuPrecio": 30.0,
       "mercado": {
         "min": 16.0,
-        "mediana": 50.0,
+        "mediana": 40.0,
         "n": 11
       },
-      "deltaAyerMediana": 0.0,
+      "deltaAyerMediana": -10.0,
       "estado": "competitivo",
       "sugerencia": {
         "texto": "Precio competitivo respecto al mercado"
@@ -269,6 +172,10 @@
         {
           "fecha": "2026-07-07",
           "mediana": 50.0
+        },
+        {
+          "fecha": "2026-07-08",
+          "mediana": 40.0
         }
       ],
       "muestras": [
@@ -309,8 +216,8 @@
         },
         {
           "fuente": "revolico",
-          "titulo": "50 USD Switch 5 puertos 2.5 Gbps. Único en Revolico",
-          "precio": 50.0,
+          "titulo": "40 USD Switch 5 puertos 2.5 Gbps. Único en Revolico",
+          "precio": 40.0,
           "url": "https://www.revolico.com/item/switch-5-puertos-25-gbps-unico-en-revolico-56123619",
           "dias": null
         }
@@ -370,6 +277,10 @@
         {
           "fecha": "2026-07-07",
           "mediana": 25.0
+        },
+        {
+          "fecha": "2026-07-08",
+          "mediana": 25.0
         }
       ],
       "muestras": [
@@ -424,7 +335,7 @@
       "mercado": {
         "min": 69.0,
         "mediana": 90.0,
-        "n": 15
+        "n": 14
       },
       "deltaAyerMediana": 0.0,
       "estado": "competitivo",
@@ -470,6 +381,10 @@
         },
         {
           "fecha": "2026-07-07",
+          "mediana": 90.0
+        },
+        {
+          "fecha": "2026-07-08",
           "mediana": 90.0
         }
       ],
