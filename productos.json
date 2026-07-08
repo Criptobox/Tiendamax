@@ -2288,7 +2288,7 @@
   {
     "id": 1783474199534,
     "nombre": "Cargador de 12v(20A) y 24v(10A) configurable",
-    "descripcion": "Cargador de 12v(20A) y 24v(10A) configurable\n\n🔌 Corriente de carga: 12V: 5A, 10A y 20A | 24V: 3A, 5A y 10A.\n🔋 Compatible con baterías: Litio, LiFePO4, AGM, GEL, SLA, WET, EFB y plomo-ácido.\n📊 Pantalla LCD con voltaje, corriente, temperatura y porcentaje de carga.\n🔄 Carga inteligente de 7 etapas para una carga eficiente y segura.\n🛠️ Modo REPAIR para ayudar a recuperar baterías con sulfatación o descarga profunda.\n🛡️ Protecciones integradas contra polaridad inversa, sobrecarga, cortocircuito y sobrecalentamiento.\n\nPrecio: 85 usd\nDisponibles: 29\nComision: 5 usd",
+    "descripcion": "Cargador de 12v(20A) y 24v(10A) configurable\n\n🔌 Corriente de carga: 12V: 5A, 10A y 20A | 24V: 3A, 5A y 10A.\n🔋 Compatible con baterías: Litio, LiFePO4, AGM, GEL, SLA, WET, EFB y plomo-ácido.\n📊 Pantalla LCD con voltaje, corriente, temperatura y porcentaje de carga.\n🔄 Carga inteligente de 7 etapas para una carga eficiente y segura.\n🛠️ Modo REPAIR para ayudar a recuperar baterías con sulfatación o descarga profunda.\n🛡️ Protecciones integradas contra polaridad inversa, sobrecarga, cortocircuito y sobrecalentamiento.\n",
     "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783474195842.jpg",
     "imagenes": [
       "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783474195842.jpg",
@@ -2310,5 +2310,31 @@
       "12v/ 20A 24V/10A"
     ],
     "fechaAgregado": "2026-07-08T01:29:59.535Z"
+  },
+  {
+    "id": 1783474440848,
+    "nombre": "Cargador inteligente de 12v(35A) y 24v(15A)",
+    "descripcion": "Cargador inteligente de 12v(35A) y 24v(15A) configurable:\n\n⚡ Voltaje de trabajo: 12V / 24V con detección automática.\n🔌 Corriente de carga: 12V: 10A, 20A y 35A | 24V: 5A, 10A y 18A.\n🔋 Compatible con baterías: Litio, LiFePO4, AGM, GEL, SLA, VRLA, EFB, WET y plomo-ácido.\n📊 Pantalla LCD inteligente con voltaje, corriente, temperatura y estado de carga.\n🔄 Carga inteligente de 7 etapas para una carga rápida, eficiente y segura.\n🛠️ Modo REPAIR para ayudar a recuperar baterías sulfatadas o con descarga profunda.\n🛡️ Protección múltiple contra sobrecarga, sobrecalentamiento, cortocircuito y polaridad inversa.",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783474437066.jpg",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783474437066.jpg",
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783474439419.jpg"
+    ],
+    "precioActual": 145,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 13,
+    "comision": 5,
+    "comisionMoneda": "USD",
+    "categoria": "ENERGIA",
+    "subcategoria": "CARGADORES",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "specs": [
+      "12V/35A"
+    ],
+    "fechaAgregado": "2026-07-08T01:34:00.851Z"
   }
 ]
