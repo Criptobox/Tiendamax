@@ -44,9 +44,9 @@
       ".write": false
     },
     "almacenes": {
+      ".read": true,
+      ".write": true,
       "$almId": {
-        ".read": true,
-        ".write": true,
         ".validate": "newData.hasChild('nombre')",
         "nombre": { ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length < 200" },
         "direccion": { ".validate": "newData.isString() && newData.val().length < 300" },
