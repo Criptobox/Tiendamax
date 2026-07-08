@@ -2336,5 +2336,29 @@
       "12V/35A"
     ],
     "fechaAgregado": "2026-07-08T01:34:00.851Z"
+  },
+  {
+    "id": 1783474747296,
+    "nombre": "RouterBoard MikroTik hEX S RB750Gr3",
+    "descripcion": "RouterBoard MikroTik hEX S RB750Gr3\n\n-CPU: MT7621A, Dual Core de 880Mhz\n-RAM: 256MB\n-Almacenamiento: 16MB\n-Software: RouterOS L4\n-Puertos: 5xRJ45; 1xUSB 2.0; Slot MicroSD\npara \"Dude Server\"\n-Monitor de temperatura PCB\n-Monitor de Voltaje\n-Beeper\n-IP20\n-Versión internacional\n-Incluye transformador para la alimentación",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783474741055.jpg",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783474741055.jpg",
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783474745566.jpg"
+    ],
+    "precioActual": 130,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 7,
+    "comision": 10,
+    "comisionMoneda": "USD",
+    "categoria": "WIFI",
+    "subcategoria": "ROUTERS",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "specs": [],
+    "fechaAgregado": "2026-07-08T01:39:07.296Z"
   }
 ]
