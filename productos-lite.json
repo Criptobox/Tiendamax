@@ -22,7 +22,8 @@
     ],
     "seoTitle": "BATERÍA MUST TIPO LIFEPO4 en Cuba | TiendaMax",
     "seoDescription": "Batería tipo LiFePO4 (litio hierro fosfato). Mas segura y con mayor vida útil que las tradicionales. Capacidad de 12.8V y 100Ah (1280Wh), ideal para…",
-    "radar": true
+    "radar": true,
+    "almacenId": "alm_1783425091823"
   },
   {
     "id": 1777923552923,
@@ -554,7 +555,8 @@
     "descuento": 17,
     "slug": "mannol-safari-20w-50-7404-5l",
     "seoTitle": "MANNOL SAFARI 20W - 50 7404 5L en Cuba | TiendaMax",
-    "seoDescription": "Aceite de motor universal semisintético, con una mezcla de componentes sintéticos y una base mineral de alta pureza, para motores modernos de gasolina y…"
+    "seoDescription": "Aceite de motor universal semisintético, con una mezcla de componentes sintéticos y una base mineral de alta pureza, para motores modernos de gasolina y…",
+    "comision": 0
   },
   {
     "id": 1778214089400,
@@ -2095,7 +2097,7 @@
       "https://tiendamax.org/imagenes/img_1783221892239.jpg",
       "https://tiendamax.org/imagenes/img_1783221893885.jpg",
       "https://tiendamax.org/imagenes/img_1783221895127.jpg",
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783473953506.jpg"
+      "https://tiendamax.org/imagenes/img_1783473953506.jpg"
     ],
     "precioActual": 33000,
     "precioOriginal": 0,
@@ -2161,9 +2163,9 @@
   {
     "id": 1783473894756,
     "nombre": "Cargador tactil de bateria inteligente 12v /15A",
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783473890998.jpg",
+    "imagen": "https://tiendamax.org/imagenes/img_1783473890998.jpg",
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783473890998.jpg"
+      "https://tiendamax.org/imagenes/img_1783473890998.jpg"
     ],
     "precioActual": 65,
     "precioOriginal": 0,
@@ -2183,10 +2185,10 @@
   {
     "id": 1783474199534,
     "nombre": "Cargador de 12v(20A) y 24v(10A) configurable",
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783474195842.jpg",
+    "imagen": "https://tiendamax.org/imagenes/img_1783474195842.jpg",
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783474195842.jpg",
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783474198221.jpg"
+      "https://tiendamax.org/imagenes/img_1783474195842.jpg",
+      "https://tiendamax.org/imagenes/img_1783474198221.jpg"
     ],
     "precioActual": 85,
     "precioOriginal": 0,
@@ -2208,10 +2210,10 @@
   {
     "id": 1783474440848,
     "nombre": "Cargador inteligente de 12v(35A) y 24v(15A)",
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783474437066.jpg",
+    "imagen": "https://tiendamax.org/imagenes/img_1783474437066.jpg",
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783474437066.jpg",
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783474439419.jpg"
+      "https://tiendamax.org/imagenes/img_1783474437066.jpg",
+      "https://tiendamax.org/imagenes/img_1783474439419.jpg"
     ],
     "precioActual": 145,
     "precioOriginal": 0,
@@ -2233,10 +2235,10 @@
   {
     "id": 1783474747296,
     "nombre": "RouterBoard MikroTik hEX S RB750Gr3",
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783474741055.jpg",
+    "imagen": "https://tiendamax.org/imagenes/img_1783474741055.jpg",
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783474741055.jpg",
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783474745566.jpg"
+      "https://tiendamax.org/imagenes/img_1783474741055.jpg",
+      "https://tiendamax.org/imagenes/img_1783474745566.jpg"
     ],
     "precioActual": 130,
     "precioOriginal": 0,
@@ -2252,5 +2254,28 @@
     "devolucion": false,
     "specs": [],
     "fechaAgregado": "2026-07-08T01:39:07.296Z"
+  },
+  {
+    "id": 1783543451116,
+    "nombre": "Router Tenda TX12 Pro (AX3000 Wi-Fi 6)",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783543448278.jpg",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783543448278.jpg",
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783543450100.jpg"
+    ],
+    "precioActual": 130,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 9,
+    "comision": 10,
+    "comisionMoneda": "USD",
+    "categoria": "WIFI",
+    "subcategoria": "ROUTERS",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "specs": [],
+    "fechaAgregado": "2026-07-08T20:44:11.116Z"
   }
 ]
