@@ -1,10 +1,10 @@
 {
-  "generado": "2026-07-08T10:56:19.347584+00:00",
-  "productos": 108,
-  "urgentes": 6,
+  "generado": "2026-07-09T11:53:12.475906+00:00",
+  "productos": 109,
+  "urgentes": 7,
   "advertencias": 28,
   "info": 11,
-  "resumen": "Anoche revisé tus 108 productos y encontré 6 urgente(s), 28 advertencia(s), 11 de info.",
+  "resumen": "Anoche revisé tus 109 productos y encontré 7 urgente(s), 28 advertencia(s), 11 de info.",
   "detalle": [
     {
       "tipo": "nombre",
@@ -35,6 +35,11 @@
       "tipo": "nombre",
       "nombre": "RouterBoard MikroTik hEX S RB750Gr3",
       "detalle": "→ Routerboard Mikrotik Hex s RB750GR3"
+    },
+    {
+      "tipo": "nombre",
+      "nombre": "Router Tenda TX12 Pro (AX3000 Wi-Fi 6)",
+      "detalle": "→ Router Tenda TX12 PRO (AX3000 Wi-fi 6)"
     },
     {
       "tipo": "agotado",
