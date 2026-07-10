@@ -1737,17 +1737,16 @@ renderizarProductos = function() {
         const _cat = escapeHtml(producto.categoria || '');
         const _hasDescuento = producto.precioOriginal > 0 && producto.precioOriginal > producto.precioActual;
         const _pctDesc = _hasDescuento ? Math.round((1 - producto.precioActual / producto.precioOriginal) * 100) : 0;
-        // Badge en la esquina de la foto: oferta del día > descuento > últimas
+        // Badge en la esquina de la foto: oferta > descuento > últimas > destacado
         const _tag = esOfertaDia
             ? '<span class="pv2-tag oferta">' + _txt + '</span>'
             : (_hasDescuento ? '<span class="pv2-tag">-' + _pctDesc + '%</span>'
-                : (!esAgotado && _stk > 0 && _stk <= 3 ? '<span class="pv2-tag last">⚡ Últimas ' + _stk + '</span>' : ''));
-        // Línea de estado
+                : (!esAgotado && _stk > 0 && _stk <= 3 ? '<span class="pv2-tag last">⚡ Últimas ' + _stk + '</span>'
+                    : (producto.masVendido ? '<span class="pv2-tag hot">🔥 Destacado</span>' : '')));
+        // Línea de estado — siempre 1 línea
         const _estado = esAgotado
             ? '<div class="pv2-status agotado">⛔ <b>Agotado</b></div>'
-            : (producto.masVendido
-                ? '<div class="pv2-status">🔥 Destacado · <b>En stock</b></div>'
-                : '<div class="pv2-status">✓ <b>En stock</b></div>');
+            : '<div class="pv2-status">✓ <b>En stock</b></div>';
         // Botón Pedir / Avísame (ancho completo)
         const _btn = esAgotado
             ? '<button class="btn-pedir-card pv2-aviso" type="button" onclick="event.stopPropagation();abrirDetalleProducto(' + _id + ')">🔔 Avísame cuando llegue</button>'
@@ -1763,12 +1762,14 @@ renderizarProductos = function() {
                 '<h3>' + _nom + '</h3>' +
                 _estado +
                 (typeof renderCountdownHtml === 'function' ? renderCountdownHtml(_id) : '') +
-                '<div class="pv2-price">' +
-                    (_hasDescuento ? '<span class="pv2-old">$' + Number(producto.precioOriginal).toFixed(0) + '</span>' : '') +
-                    '<span class="precio-actual" data-usd="' + safeNum(producto.precioActual) + '">$' + Number(producto.precioActual).toFixed(2) + ' USD</span>' +
-                    '<span class="pv2-tax">Impuestos incluidos</span>' +
+                '<div class="pv2-foot">' +
+                    '<div class="pv2-price">' +
+                        (_hasDescuento ? '<span class="pv2-old">$' + Number(producto.precioOriginal).toFixed(0) + '</span>' : '') +
+                        '<span class="precio-actual" data-usd="' + safeNum(producto.precioActual) + '">$' + Number(producto.precioActual).toFixed(2) + ' USD</span>' +
+                        '<span class="pv2-tax">Impuestos incluidos</span>' +
+                    '</div>' +
+                    _btn +
                 '</div>' +
-                _btn +
                 '<span class="stock-count">' + (esAgotado ? 0 : _stk) + '</span>' +
             '</div>';
         return card;

@@ -9,7 +9,7 @@
    ============================================================ */
 
 .producto-card.pcard-v2{
-  position:relative; display:flex; flex-direction:column;
+  position:relative; display:flex; flex-direction:column; height:100%;
   border-radius:20px; overflow:hidden; cursor:pointer; padding:0 !important;
   background:#17171f !important; border:1px solid rgba(255,255,255,.07) !important;
   box-shadow:0 12px 26px -14px rgba(0,0,0,.7) !important;
@@ -48,6 +48,7 @@
 }
 .producto-card.pcard-v2 .pv2-tag.oferta{ background:linear-gradient(135deg,#ffb020,#ff6b35); color:#241100; max-width:75%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 .producto-card.pcard-v2 .pv2-tag.last{ background:linear-gradient(135deg,#ffb020,#ff6b35); color:#241100; }
+.producto-card.pcard-v2 .pv2-tag.hot{ background:rgba(12,12,16,.72); backdrop-filter:blur(6px); border:1px solid rgba(255,255,255,.18); color:#fff; }
 
 /* --- cuerpo --- */
 .producto-card.pcard-v2 .pv2-body{ padding:0 13px 13px; display:flex; flex-direction:column; gap:6px; flex:1; }
@@ -63,18 +64,25 @@
   text-shadow:none !important;
   display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; min-height:2.4em;
 }
-.producto-card.pcard-v2 .pv2-status{ font-size:12.5px; font-weight:600; color:#9a9aa8; display:flex; align-items:center; gap:5px; flex-wrap:wrap; }
+.producto-card.pcard-v2 .pv2-status{ font-size:12.5px; font-weight:600; color:#9a9aa8; display:flex; align-items:center; gap:5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .producto-card.pcard-v2 .pv2-status b{ color:#4ade80; }
 .producto-card.pcard-v2 .pv2-status.agotado b{ color:#ff6b6b; }
 
-.producto-card.pcard-v2 .pv2-price{ margin-top:2px; display:flex; flex-direction:column; line-height:1.08; }
+/* pie: precio + botón anclados abajo → los Pedir quedan alineados entre tarjetas */
+.producto-card.pcard-v2 .pv2-foot{ margin-top:auto; display:flex; flex-direction:column; }
+.producto-card.pcard-v2 .pv2-price{ margin-top:8px; display:flex; flex-direction:column; line-height:1.08; }
 .producto-card.pcard-v2 .pv2-old{ font-size:12px; color:#6b6b7a; text-decoration:line-through; font-weight:600; }
 /* precio coral en ambos temas — mata el gradiente/-webkit-text-fill del tema base */
 html body .producto-card.pcard-v2 .precio-actual,
-html body:not(.light-mode) .producto-card.pcard-v2 .precio-actual,
+html body:not(.light-mode) .producto-card.pcard-v2 .precio-actual{
+  font-size:25px !important; font-weight:900 !important;
+  color:#ff7a45 !important; -webkit-text-fill-color:#ff7a45 !important;
+  background:none !important; -webkit-background-clip:border-box !important; background-clip:border-box !important;
+  letter-spacing:-.02em !important; font-family:inherit !important; font-variant-numeric:tabular-nums;
+}
 html body.light-mode .producto-card.pcard-v2 .precio-actual{
-  font-size:23px !important; font-weight:850 !important;
-  color:#ff5b52 !important; -webkit-text-fill-color:#ff5b52 !important;
+  font-size:25px !important; font-weight:900 !important;
+  color:#e8501e !important; -webkit-text-fill-color:#e8501e !important;
   background:none !important; -webkit-background-clip:border-box !important; background-clip:border-box !important;
   letter-spacing:-.02em !important; font-family:inherit !important; font-variant-numeric:tabular-nums;
 }
