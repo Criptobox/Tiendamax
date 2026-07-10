@@ -1,178 +1,166 @@
 /* ============================================================
-   TiendaMax — Tarjetas del catálogo estilo "póster"
-   Override contenido: solo aplica a .producto-card.pcard-v2
-   (grid principal #productosGrid). No toca la rail de
-   "Más vendidos" ni las tarjetas relacionadas.
-   Conserva los hooks que otros scripts leen:
-   .precio-actual[data-usd], h3, .stock-count, botón Pedir.
+   TiendaMax — Tarjetas del catálogo + modal (rediseño 2026-07)
+   - Tarjeta clara/oscura: foto en panel con margen, chip de
+     categoría montado, título, estado, precio coral, botón Pedir.
+     Aplica solo a .producto-card.pcard-v2 (grid #productosGrid).
+   - Tema: por defecto oscuro; body.light-mode = claro.
+   - Conserva hooks: .precio-actual[data-usd], h3, .stock-count,
+     botón Pedir, corazón (.btn-megusta), badges.
    ============================================================ */
 
 .producto-card.pcard-v2{
-  position:relative;
-  display:block;
-  aspect-ratio:5/7;
-  border-radius:22px;
-  overflow:hidden;
-  background:#15151d !important;
-  border:1px solid rgba(255,255,255,.08) !important;
-  box-shadow:0 12px 30px -14px rgba(0,0,0,.6) !important;
-  padding:0 !important;
-  isolation:isolate;
-  cursor:pointer;
-  transition:transform .28s cubic-bezier(.34,1.56,.64,1), box-shadow .28s ease;
+  position:relative; display:flex; flex-direction:column;
+  border-radius:20px; overflow:hidden; cursor:pointer; padding:0 !important;
+  background:#17171f !important; border:1px solid rgba(255,255,255,.07) !important;
+  box-shadow:0 12px 26px -14px rgba(0,0,0,.7) !important;
+  transition:transform .25s cubic-bezier(.34,1.56,.64,1), box-shadow .25s ease, border-color .25s !important;
 }
 .producto-card.pcard-v2:hover{
-  transform:translateY(-6px);
-  box-shadow:0 22px 46px -16px rgba(0,0,0,.75) !important;
+  transform:translateY(-5px);
+  box-shadow:0 22px 44px -16px rgba(0,0,0,.8) !important;
+  border-color:rgba(255,107,53,.28) !important;
 }
-/* neutraliza la barra inferior dorada del tema base */
 .producto-card.pcard-v2::after{ display:none !important; }
 
-/* ---- foto de fondo ---- */
+/* --- foto: panel redondeado con margen (se ve completa) --- */
 .producto-card.pcard-v2 .pv2-photo{
-  position:absolute; inset:0; width:100%; height:100%;
-  background:linear-gradient(160deg,#f3f4f6,#c9ccd4 62%,#a7abb6);
-  overflow:hidden;
+  position:relative; margin:10px 10px 0; border-radius:14px; overflow:hidden;
+  aspect-ratio:1/1; background:#23232e; display:block;
 }
 .producto-card.pcard-v2 .pv2-photo img{
-  width:100%; height:100%; object-fit:cover; display:block;
+  position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block;
   transition:transform .5s ease;
 }
-.producto-card.pcard-v2:hover .pv2-photo img{ transform:scale(1.05); }
+.producto-card.pcard-v2:hover .pv2-photo img{ transform:scale(1.04); }
 
-/* velo oscuro de abajo hacia arriba para que el texto se lea */
-.producto-card.pcard-v2 .pv2-veil{
-  position:absolute; inset:0; z-index:1; pointer-events:none;
-  background:linear-gradient(to top,
-    #0c0c11 4%, rgba(12,12,17,.96) 30%, rgba(12,12,17,.62) 52%, rgba(12,12,17,.15) 72%, transparent 84%);
+/* corazón wishlist */
+.producto-card.pcard-v2 .pv2-photo .btn-megusta{
+  position:absolute !important; top:8px; right:8px; margin:0 !important; z-index:3;
+  width:30px; height:30px; border-radius:50% !important;
+  background:rgba(12,12,16,.5) !important; backdrop-filter:blur(5px);
+  border:1px solid rgba(255,255,255,.18) !important;
+  display:grid; place-items:center; font-size:14px; line-height:1; cursor:pointer;
 }
+/* badge esquina foto (descuento / oferta / últimas) */
+.producto-card.pcard-v2 .pv2-tag{
+  position:absolute; top:8px; left:8px; z-index:3; font-size:10px; font-weight:800;
+  padding:4px 10px; border-radius:20px; color:#fff; background:var(--accent,#ff6b35);
+}
+.producto-card.pcard-v2 .pv2-tag.oferta{ background:linear-gradient(135deg,#ffb020,#ff6b35); color:#241100; max-width:75%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.producto-card.pcard-v2 .pv2-tag.last{ background:linear-gradient(135deg,#ffb020,#ff6b35); color:#241100; }
 
-/* ---- badges superiores ---- */
-.producto-card.pcard-v2 .pv2-top{
-  position:absolute; top:12px; left:12px; right:12px; z-index:3;
-  display:flex; justify-content:space-between; gap:8px; pointer-events:none;
-}
-.producto-card.pcard-v2 .pv2-disc{
-  background:var(--coral,#FF6B35); color:#fff; font-weight:800; font-size:12px;
-  padding:5px 10px; border-radius:20px; box-shadow:0 4px 12px rgba(255,107,53,.4);
-}
-.producto-card.pcard-v2 .pv2-hot{
-  background:rgba(12,12,16,.7); backdrop-filter:blur(6px);
-  border:1px solid rgba(255,255,255,.14); color:#fff; font-weight:700; font-size:11px;
-  padding:5px 10px; border-radius:20px; display:inline-flex; align-items:center; gap:5px;
-  margin-left:auto;
-}
-.producto-card.pcard-v2 .pv2-hot i{ color:#c3f24a; font-style:normal; font-size:9px; }
-
-/* ---- cuerpo sobre el velo ---- */
-.producto-card.pcard-v2 .pv2-body{
-  position:absolute; left:16px; right:16px; bottom:15px; z-index:3;
-  display:flex; flex-direction:column; gap:7px;
-}
+/* --- cuerpo --- */
+.producto-card.pcard-v2 .pv2-body{ padding:0 13px 13px; display:flex; flex-direction:column; gap:6px; flex:1; }
 .producto-card.pcard-v2 .pv2-cat{
-  align-self:flex-start; background:var(--coral,#FF6B35); color:#fff; font-weight:800;
-  font-size:10.5px; letter-spacing:.05em; text-transform:uppercase;
-  padding:5px 11px; border-radius:20px; box-shadow:0 4px 14px rgba(255,107,53,.35);
+  align-self:flex-start; margin:-13px 0 2px; position:relative; z-index:3;
+  background:var(--accent,#ff6b35); color:#fff; font-weight:800; font-size:10.5px;
+  letter-spacing:.05em; text-transform:uppercase; padding:6px 13px; border-radius:20px;
+  box-shadow:0 6px 14px rgba(255,107,53,.4);
 }
 .producto-card.pcard-v2 h3{
-  margin:2px 0 0 !important; padding:0 !important;
-  font-size:18px !important; font-weight:800 !important; line-height:1.15 !important;
-  letter-spacing:-.01em !important; color:#fff !important;
-  text-shadow:0 1px 10px rgba(0,0,0,.75), 0 1px 2px rgba(0,0,0,.6);
-  display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;
+  margin:0 !important; padding:0 !important; font-size:15px !important; font-weight:800 !important;
+  line-height:1.2 !important; letter-spacing:-.01em !important; color:#fff !important;
+  text-shadow:none !important;
+  display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; min-height:2.4em;
 }
-.producto-card.pcard-v2 .pv2-status{
-  font-size:12.5px; color:#cfcfd8; font-weight:600;
-  text-shadow:0 1px 6px rgba(0,0,0,.7);
-  display:flex; align-items:center; gap:6px; flex-wrap:wrap;
-}
-.producto-card.pcard-v2 .pv2-status b{ color:#69d98a; }
+.producto-card.pcard-v2 .pv2-status{ font-size:12.5px; font-weight:600; color:#9a9aa8; display:flex; align-items:center; gap:5px; flex-wrap:wrap; }
+.producto-card.pcard-v2 .pv2-status b{ color:#4ade80; }
 .producto-card.pcard-v2 .pv2-status.agotado b{ color:#ff6b6b; }
 
-.producto-card.pcard-v2 .pv2-foot{
-  display:flex; flex-wrap:wrap; align-items:flex-end; justify-content:space-between; gap:8px 10px; margin-top:4px;
-}
-.producto-card.pcard-v2 .pv2-price{ display:flex; flex-direction:column; line-height:1.05; flex:1 1 auto; min-width:0; }
-.producto-card.pcard-v2 .pv2-old{
-  font-size:12.5px; color:#6b6b7a; text-decoration:line-through; font-weight:600;
-}
-/* alta especificidad + mata el gradiente/-webkit-text-fill de los temas base */
+.producto-card.pcard-v2 .pv2-price{ margin-top:2px; display:flex; flex-direction:column; line-height:1.08; }
+.producto-card.pcard-v2 .pv2-old{ font-size:12px; color:#6b6b7a; text-decoration:line-through; font-weight:600; }
+/* precio coral en ambos temas — mata el gradiente/-webkit-text-fill del tema base */
 html body .producto-card.pcard-v2 .precio-actual,
 html body:not(.light-mode) .producto-card.pcard-v2 .precio-actual,
 html body.light-mode .producto-card.pcard-v2 .precio-actual{
-  font-size:24px !important; font-weight:850 !important;
-  color:#c3f24a !important; -webkit-text-fill-color:#c3f24a !important;
+  font-size:23px !important; font-weight:850 !important;
+  color:#ff5b52 !important; -webkit-text-fill-color:#ff5b52 !important;
   background:none !important; -webkit-background-clip:border-box !important; background-clip:border-box !important;
-  letter-spacing:-.02em !important; font-family:inherit !important;
-  font-variant-numeric:tabular-nums;
-  text-shadow:0 1px 8px rgba(0,0,0,.6);
+  letter-spacing:-.02em !important; font-family:inherit !important; font-variant-numeric:tabular-nums;
 }
-/* agotado: precio en tono apagado pero legible */
-html body .producto-card.pcard-v2.card-agotado .precio-actual{
-  color:#9a9aa8 !important; -webkit-text-fill-color:#9a9aa8 !important;
-}
-.producto-card.pcard-v2 .pv2-cur{ font-size:12px; font-weight:800; opacity:.85; margin-left:2px; }
-.producto-card.pcard-v2 .pv2-tax{ font-size:11px; color:#6b6b7a; margin-top:1px; }
+html body .producto-card.pcard-v2.card-agotado .precio-actual{ color:#9a9aa8 !important; -webkit-text-fill-color:#9a9aa8 !important; }
+.producto-card.pcard-v2 .pv2-cur{ font-size:12px; font-weight:800; color:#9a9aa8; margin-left:3px; }
+.producto-card.pcard-v2 .pv2-tax{ font-size:11px; color:#6b6b7a; margin-top:0; }
 
-/* ---- botón Pedir ---- */
+/* botón Pedir / Avísame (ancho completo) */
 .producto-card.pcard-v2 .btn-pedir-card.pv2-pedir{
-  border:none; background:#25d366; color:#04240f; font-weight:800; font-size:13px;
-  padding:11px 15px; border-radius:40px; cursor:pointer;
+  margin-top:10px; border:none; background:#22c55e; color:#fff; font-weight:800; font-size:13.5px;
+  padding:12px; border-radius:40px; cursor:pointer; width:100%;
   display:inline-flex; align-items:center; justify-content:center; gap:7px; white-space:nowrap;
-  flex:1 1 120px; margin:0;
-  box-shadow:0 6px 18px rgba(37,211,102,.35); transition:filter .15s;
+  box-shadow:0 8px 18px rgba(34,197,94,.32); transition:filter .15s;
 }
-.producto-card.pcard-v2 .btn-pedir-card.pv2-pedir:hover{ filter:brightness(1.06); }
-.producto-card.pcard-v2 .btn-pedir-card.pv2-pedir svg{ width:15px; height:15px; fill:#04240f; }
+.producto-card.pcard-v2 .btn-pedir-card.pv2-pedir:hover{ filter:brightness(1.05); }
+.producto-card.pcard-v2 .btn-pedir-card.pv2-pedir svg{ width:15px; height:15px; fill:#fff; }
 .producto-card.pcard-v2 .btn-pedir-card.pv2-aviso{
-  border:1px solid rgba(255,255,255,.18); background:rgba(255,255,255,.06); color:#f4f4f7;
-  font-weight:700; font-size:13px; padding:11px 15px; border-radius:40px; cursor:pointer;
-  display:inline-flex; align-items:center; justify-content:center; white-space:nowrap;
-  flex:1 1 120px; margin:0;
+  margin-top:10px; border:1px solid rgba(255,255,255,.16); background:rgba(255,255,255,.06); color:#f4f4f7;
+  font-weight:700; font-size:13.5px; padding:12px; border-radius:40px; cursor:pointer; width:100%;
+  display:inline-flex; align-items:center; justify-content:center; gap:6px; white-space:nowrap;
 }
-
-/* hook oculto que urgencia-ventas puede leer como respaldo */
+/* hook oculto para urgencia-ventas */
 .producto-card.pcard-v2 .stock-count{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); padding:0; margin:-1px; }
 
+/* ====== MODO CLARO ====== */
+body.light-mode .producto-card.pcard-v2{
+  background:#ffffff !important; border-color:rgba(0,0,0,.06) !important;
+  box-shadow:0 1px 2px rgba(0,0,0,.10), 0 12px 26px -14px rgba(0,0,0,.22) !important;
+}
+body.light-mode .producto-card.pcard-v2:hover{ border-color:rgba(255,107,53,.35) !important; }
+body.light-mode .producto-card.pcard-v2 .pv2-photo{ background:#eef0f3; }
+body.light-mode .producto-card.pcard-v2 .pv2-photo .btn-megusta{
+  background:rgba(255,255,255,.85) !important; border:1px solid rgba(0,0,0,.08) !important;
+}
+body.light-mode .producto-card.pcard-v2 h3{ color:#1a1a1a !important; }
+body.light-mode .producto-card.pcard-v2 .pv2-status{ color:#5a5a63; }
+body.light-mode .producto-card.pcard-v2 .pv2-status b{ color:#1f9d57; }
+body.light-mode .producto-card.pcard-v2 .pv2-cur{ color:#5a5a63; }
+body.light-mode .producto-card.pcard-v2 .pv2-tax{ color:#9a9aa2; }
+body.light-mode .producto-card.pcard-v2 .pv2-old{ color:#9a9aa2; }
+
 /* ============================================================
-   Modal de detalle — selector de cantidad
+   MODAL de detalle
    ============================================================ */
+/* selector de cantidad */
 .detail-qty-row{
   display:flex; align-items:center; justify-content:space-between; gap:12px;
   background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.09);
-  border-radius:16px; padding:11px 15px; margin:6px 0 14px;
+  border-radius:16px; padding:11px 15px; margin:6px 0 12px;
 }
 .detail-qty-label{ font-size:11px; letter-spacing:.06em; text-transform:uppercase; color:#8a8a98; font-weight:800; }
 .detail-qty-label small{ display:block; font-size:12px; text-transform:none; letter-spacing:0; color:#aaa; font-weight:600; margin-top:2px; }
-.detail-qty-label small b{ color:#69d98a; }
-.detail-qty-stepper{
-  display:flex; align-items:center; gap:2px;
-  background:rgba(0,0,0,.25); border:1px solid rgba(255,255,255,.14); border-radius:12px; padding:4px;
-}
-.detail-qty-stepper button{
-  width:38px; height:38px; border:none; background:transparent; color:var(--coral,#FF6B35);
-  font-size:24px; font-weight:700; cursor:pointer; border-radius:9px; display:grid; place-items:center; line-height:1;
-  transition:background .15s;
-}
+.detail-qty-label small b{ color:#4ade80; }
+.detail-qty-stepper{ display:flex; align-items:center; gap:2px; background:rgba(0,0,0,.25); border:1px solid rgba(255,255,255,.14); border-radius:12px; padding:4px; }
+.detail-qty-stepper button{ width:38px; height:38px; border:none; background:transparent; color:var(--accent,#ff6b35); font-size:24px; font-weight:700; cursor:pointer; border-radius:9px; display:grid; place-items:center; line-height:1; transition:background .15s; }
 .detail-qty-stepper button:hover{ background:rgba(255,107,53,.14); }
 .detail-qty-stepper button:disabled{ color:#555; cursor:not-allowed; background:transparent; }
 .detail-qty-stepper span{ min-width:40px; text-align:center; font-size:18px; font-weight:800; color:#fff; font-variant-numeric:tabular-nums; }
-/* En modo claro, texto legible */
+body.light-mode .detail-qty-row{ background:rgba(0,0,0,.03); border-color:rgba(0,0,0,.08); }
 body.light-mode .detail-qty-label small{ color:#666; }
-body.light-mode .detail-qty-stepper span{ color:#1a1a1a; }
 body.light-mode .detail-qty-stepper{ background:rgba(0,0,0,.04); border-color:rgba(0,0,0,.12); }
+body.light-mode .detail-qty-stepper span{ color:#1a1a1a; }
 
-/* corazón "me gusta" (wishlist real) sobre la foto del póster */
-.producto-card.pcard-v2 .pv2-top .btn-megusta{
-  position:static !important; margin:0 !important; pointer-events:auto;
-  width:34px; height:34px; border-radius:50%;
-  background:rgba(12,12,16,.55) !important; backdrop-filter:blur(6px);
-  border:1px solid rgba(255,255,255,.16) !important;
-  display:grid; place-items:center; font-size:16px; line-height:1; cursor:pointer;
+/* línea de acción: corazón + carrito + Pedir */
+.detail-cta-row{ display:flex; gap:10px; align-items:stretch; margin-top:4px; }
+.detail-cta-fav, #detailCartBtn.detail-cta-icon{
+  width:52px; flex:0 0 52px; border-radius:16px; border:1px solid rgba(255,255,255,.14);
+  background:rgba(255,255,255,.05); color:#cfcfd8; font-size:19px; cursor:pointer;
+  display:grid; place-items:center; padding:0; margin:0; transition:filter .15s, background .15s;
 }
-.producto-card.pcard-v2 .pv2-top{ pointer-events:none; }
-.producto-card.pcard-v2 .pv2-oferta{
-  background:linear-gradient(135deg,#ffb020,#ff6b35); color:#241100; font-weight:800;
-  font-size:11px; padding:5px 11px; border-radius:20px; box-shadow:0 4px 12px rgba(255,140,0,.4);
-  max-width:70%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
-}
+#detailCartBtn.detail-cta-icon{ color:var(--accent,#ff6b35); border-color:rgba(255,107,53,.4); background:rgba(255,107,53,.1); }
+#detailCartBtn.detail-cta-icon.en-carrito{ color:#22c55e; border-color:rgba(34,197,94,.5); background:rgba(34,197,94,.12); }
+.detail-cta-fav:hover, #detailCartBtn.detail-cta-icon:hover{ filter:brightness(1.12); }
+.detail-cta-fav.liked{ color:#ff4d6d; border-color:rgba(255,77,109,.45); background:rgba(255,77,109,.12); }
+/* el botón Pedir dentro de la fila ocupa el resto */
+.detail-cta-row #detailBuyBtn.detail-buy-btn{ flex:1; margin:0 !important; width:auto !important; }
+body.light-mode .detail-cta-fav{ background:rgba(0,0,0,.04); border-color:rgba(0,0,0,.12); color:#555; }
+
+/* descripción con chips de specs (2x2) */
+.detail-spec-badges.detail-chips{ display:grid !important; grid-template-columns:1fr 1fr; gap:10px; margin:4px 0 6px; }
+@media(max-width:460px){ .detail-spec-badges.detail-chips{ grid-template-columns:1fr; } }
+.detail-chip{ display:flex; align-items:center; gap:11px; background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.08); border-radius:14px; padding:11px 13px; }
+.detail-chip .ic{ width:34px; height:34px; border-radius:10px; background:rgba(255,107,53,.14); color:var(--accent,#ff6b35); display:grid; place-items:center; font-size:16px; flex-shrink:0; }
+.detail-chip .tx{ min-width:0; }
+.detail-chip .tx small{ display:block; font-size:10px; color:#6b6b7a; text-transform:uppercase; letter-spacing:.05em; font-weight:700; }
+.detail-chip .tx b{ font-size:13.5px; font-weight:700; color:#f4f4f7; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; display:block; }
+body.light-mode .detail-chip{ background:rgba(0,0,0,.03); border-color:rgba(0,0,0,.08); }
+body.light-mode .detail-chip .tx small{ color:#8a8a92; }
+body.light-mode .detail-chip .tx b{ color:#1a1a1a; }
