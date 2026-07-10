@@ -1664,6 +1664,7 @@ let ALM_OPEN = new Set();
 let ALM_SCROLL = {};
 window.ALM_SCROLL = ALM_SCROLL; // el onscroll inline corre en scope global, no ve el bareword del IIFE
 function almToggleOpen(id, isOpen){ if(isOpen) ALM_OPEN.add(id); else ALM_OPEN.delete(id); }
+function almCerrarLista(id){ ALM_OPEN.delete(id); const box=$('#alm-list'); const div=box&&box.querySelector('[data-alm-scroll="'+id+'"]'); const d=div&&div.closest('details'); if(d) d.open=false; }
 // Compartir dirección o ubicación de un almacén (nativo si el teléfono lo
 // soporta — abre WhatsApp, etc.; si no, copia al portapapeles).
 async function almCompartir(id, campo){
@@ -1721,6 +1722,7 @@ function renderAlmacen(){
       <details style="margin-top:10px" ${ALM_OPEN.has(id)?'open':''} ontoggle="almToggleOpen('${id}', this.open)">
         <summary style="cursor:pointer;font-size:12px;font-weight:700;color:var(--o)">📦 Elegir productos de este almacén</summary>
         <div data-alm-scroll="${id}" onscroll="window.ALM_SCROLL['${id}']=this.scrollTop" style="max-height:240px;overflow:auto;margin-top:8px;padding-top:8px;border-top:1px solid var(--border)">${prodListHtml}</div>
+        <button class="btn btn-primary" style="width:100%;margin-top:8px;justify-content:center" onclick="almCerrarLista('${id}')">✅ Listo</button>
       </details>
     </div>`;
   }).join('');
@@ -1756,7 +1758,10 @@ function renderRadar(){
   const vigilados = radarVigilados();
   if(!vigilados.length){ $('#radar-lista').innerHTML=`<div class="section"><div class="empty"><div class="ico">📡</div>Todos los productos vigilados están agotados ahora mismo. Vuelven al radar cuando repongas stock.</div></div>`; $('#radar-resumen').textContent=''; $('#radar-sub').textContent='Actualizado: '+(RADAR.fecha||RADAR.actualizado||'—'); return; }
   $('#radar-sub').textContent = 'Actualizado: '+(RADAR.fecha||RADAR.actualizado||'—');
-  const res = (typeof RADAR.resumen==='string') ? RADAR.resumen : ('Vigilando '+vigilados.length+' productos con precios reales de la competencia (fuentes: '+((RADAR.fuentes||[]).join(', ')||'Revolico')+').');
+  // Siempre recalcular el conteo desde los vigilados reales (con stock). El
+  // RADAR.resumen viene horneado en radar.json con el total sin filtrar (ej: 5)
+  // y desincronizaba con lo que se muestra abajo (ej: 3).
+  const res = 'Vigilando '+vigilados.length+' producto'+(vigilados.length!==1?'s':'')+' con precios reales de la competencia (fuentes: '+((RADAR.fuentes||[]).join(', ')||'Revolico')+').';
   $('#radar-resumen').innerHTML = esc(res);
   const okUrl = u => /^https?:\/\//i.test(u||'');
   $('#radar-lista').innerHTML = vigilados.map(r=>{
@@ -1971,9 +1976,20 @@ async function renderReviewsReal(box){
   box.innerHTML = '<div class="section"><div class="empty"><div class="ico">⭐</div>Cargando reseñas…</div></div>';
   const base = rtdbBase();
   if(!base){ box.innerHTML = `<div class="section"><div class="empty"><div class="ico">⭐</div><b style="color:#fff">Firebase no configurado</b><br>Configura tu proyecto en <b>⚙️ Configuración</b> para ver las reseñas reales de tus clientes.</div></div>`; return; }
-  const data = await jget(base+'/resenas.json?_='+Date.now());
+  // No usar jget: traga errores de red y devuelve null (indistinguible de "sin
+  // reseñas"), así parecía que no cargaban cuando en realidad fallaba la conexión.
+  let data=null;
+  try{
+    const r = await fetch(base+'/resenas.json?_='+Date.now(), {cache:'no-store'});
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    data = await r.json();
+  }catch(e){
+    if(CLI_VIEW!=='reviews') return;
+    box.innerHTML = `<div class="section"><div class="empty"><div class="ico">⚠️</div><b style="color:#fff">No se pudieron cargar las reseñas</b><br><small>Problema de conexión con Firebase (${esc(e.message||'')}). <button class="btn btn-ghost" style="margin-top:8px" onclick="renderClientes()">🔄 Reintentar</button></small></div></div>`;
+    return;
+  }
   if(CLI_VIEW!=='reviews') return;
-  if(!data){ box.innerHTML = `<div class="section"><div class="empty"><div class="ico">⭐</div>Sin reseñas todavía.<br><small>Aparecen aquí en cuanto un cliente califique un producto en la tienda.</small></div></div>`; return; }
+  if(!data || typeof data!=='object' || !Object.keys(data).length){ box.innerHTML = `<div class="section"><div class="empty"><div class="ico">⭐</div>Sin reseñas todavía.<br><small>Aparecen aquí en cuanto un cliente califique un producto en la tienda.</small></div></div>`; return; }
   const all=[];
   Object.keys(data).forEach(pid=>{
     const prodResenas=data[pid]; if(!prodResenas||typeof prodResenas!=='object') return;
@@ -2555,7 +2571,7 @@ window.agenteGuardarKey=agenteGuardarKey; window.agenteBorrarKey=agenteBorrarKey
 window.catSwitch=catSwitch; window.catAgregar=catAgregar; window.subAgregar=subAgregar; window.cliSwitch=cliSwitch;
 window.guardarFirebaseConfig=guardarFirebaseConfig; window.probarFirebase=probarFirebase; window.ventaAnular=ventaAnular;
 window.catRenombrar=catRenombrar; window.catBorrar=catBorrar; window.subRenombrar=subRenombrar; window.subBorrar=subBorrar; window.catEmoji=catEmoji;
-window.almAgregar=almAgregar; window.almBorrar=almBorrar; window.almRenombrar=almRenombrar; window.almProductoToggle=almProductoToggle; window.almToggleOpen=almToggleOpen; window.almCompartir=almCompartir;
+window.almAgregar=almAgregar; window.almBorrar=almBorrar; window.almRenombrar=almRenombrar; window.almProductoToggle=almProductoToggle; window.almToggleOpen=almToggleOpen; window.almCerrarLista=almCerrarLista; window.almCompartir=almCompartir;
 window.ofertaFinActivar=ofertaFinActivar; window.ofertaFinCancelar=ofertaFinCancelar;
 window.apDuplicar=apDuplicar; window.bulkPrecio=bulkPrecio; window.renderVentas=renderVentas;
 window.renderReporteMensual=renderReporteMensual; window.reporteCopiar=reporteCopiar;
