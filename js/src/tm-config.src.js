@@ -231,14 +231,17 @@ function getMeGustaHTML(id) {
         '</button>';
 }
 
-function agregarAlCarrito(id) {
+function agregarAlCarrito(id, cantidad) {
     const p = productos.find(x => x.id === id);
     if (!p || p.stock === 0) return;
+
+    // Cantidad opcional (desde el modal de detalle). Si no viene, suma 1.
+    const cant = Math.max(1, Math.min(safeNum(cantidad) || 1, p.stock));
 
     const existing = carrito.find(x => x.id === id);
     if (existing) {
         if (existing.cantidad < p.stock) {
-            existing.cantidad++;
+            existing.cantidad = Math.min(existing.cantidad + cant, p.stock);
         } else {
             mostrarNotificacion('⚠️ No hay más unidades disponibles', 'error');
             return;
@@ -249,7 +252,7 @@ function agregarAlCarrito(id) {
             nombre:   p.nombre,
             precio:   p.precioActual,
             imagen:   p.imagen,
-            cantidad: 1
+            cantidad: cant
         });
     }
     guardarCarrito();

@@ -132,36 +132,55 @@ function renderizarProductos(isLoadMore = false) {
 
     productosAMostrar.forEach(producto => {
         const card = document.createElement('div');
-        card.className = 'producto-card';
-        card.onclick = () => abrirDetalleProducto(producto.id);
-        const _nombre = escapeHtml(producto.nombre);
-        const _desc   = escapeHtml(producto.descripcion);
-        const _img    = escapeAttr(producto.imagen);
-        const _id     = safeNum(producto.id);
         const _stock  = safeNum(producto.stock);
         const _esAgotado = _stock === 0;
+        card.className = 'producto-card pcard-v2' + (_esAgotado ? ' card-agotado' : '');
+        card.dataset.productId = String(producto.id);
+        card.onclick = () => abrirDetalleProducto(producto.id);
+        const _nombre = escapeHtml(producto.nombre);
+        const _img    = escapeAttr(producto.imagen);
+        const _id     = safeNum(producto.id);
+        const _cat    = escapeHtml(producto.categoria || '');
+        const _tieneDesc = producto.precioOriginal > 0 && producto.precioOriginal > producto.precioActual;
+        const _pctDesc = _tieneDesc ? Math.round((1 - producto.precioActual/producto.precioOriginal) * 100) : 0;
+        const _precioTxt = typeof formatPrecio === 'function'
+            ? formatPrecio(producto.precioActual)
+            : '$' + Number(producto.precioActual||0).toFixed(2) + ' USD';
+        // separa el importe de "USD" para dar acento tipográfico
+        const _precioMatch = String(_precioTxt).match(/^(.*?)(\s*USD)?$/i);
+        const _precioNum = _precioMatch ? _precioMatch[1].trim() : _precioTxt;
+        const _precioCur = /USD/i.test(_precioTxt) ? '<span class="pv2-cur">USD</span>' : '';
+        const _estado = _esAgotado
+            ? '<div class="pv2-status agotado">⛔ <b>Agotado</b> · te aviso cuando llegue</div>'
+            : (producto.masVendido
+                ? '<div class="pv2-status">🔥 Destacado · <b>En stock</b></div>'
+                : '<div class="pv2-status">✓ <b>En stock</b></div>');
+        const _pedirBtn = _esAgotado
+            ? '<button class="btn-pedir-card pv2-aviso" type="button" onclick="event.stopPropagation();abrirDetalleProducto(' + _id + ')">🔔 Avísame</button>'
+            : '<button class="btn-pedir-card pv2-pedir" onclick="event.stopPropagation();tmComprar(event,' + _id + ',this.dataset.nombre)" data-nombre="' + _nombre + '" type="button"><span class="btn-pedir-wa-icon-sm"><svg viewBox="0 0 24 24" width="14" height="14" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg></span> Pedir</button>';
         card.innerHTML = `
-            ${producto.masVendido ? '<div class="badge-vendido">🔥 Más Vendido</div>' : ''}
-            ${(producto.precioOriginal > 0 && producto.precioOriginal > producto.precioActual) ? '<div class="badge-precio-especial">⭐ Precio Especial</div>' : ''}
-            <div class="producto-image">
-                <img src="${_img}" alt="${_nombre}" loading="lazy" onerror="this.src='/iconos/favicon-192.png';this.style.opacity='0.3'">
-                ${(producto.precioOriginal > 0 && producto.precioOriginal > producto.precioActual) ? `<div class="badge">-${Math.round((1 - producto.precioActual/producto.precioOriginal) * 100)}%</div>` : ''}
+            <div class="pv2-photo">
+                <img src="${_img}" alt="${_nombre}" loading="lazy" onerror="this.style.display='none'">
             </div>
-            <h3>${_nombre}</h3>
-            <p class="producto-description">${_desc}</p>
-            <p class="precio">
-                    <span class="precio-actual" data-usd="${safeNum(producto.precioActual)}">${typeof formatPrecio === 'function' ? formatPrecio(producto.precioActual) : '$'+producto.precioActual.toFixed(2)+' USD'}</span>
-                   </p>
-            ${_esAgotado
-                ? '<div class="stock" style="color:#e74c3c;font-weight:700;">❌ Agotado</div>'
-                : `<div class="stock-count"><span>📦 Solo quedan ${_stock} unidades</span></div><div class="stock-bar"><div class="stock-bar-fill" style="width:${Math.min(100,((_stock)/20)*100)}%"></div></div>`}
-            ${typeof renderCountdownHtml === 'function' ? renderCountdownHtml(_id) : ''}
-            ${_esAgotado
-                ? '<button class="btn-pedir-card" disabled style="opacity:0.5;cursor:not-allowed;" type="button">No disponible</button>'
-                : `<button class="btn-pedir-card" onclick="event.stopPropagation();tmComprar(event,${_id},this.dataset.nombre)" data-nombre="${_nombre}" type="button"><span class="btn-pedir-wa-icon-sm"><svg viewBox="0 0 24 24" width="14" height="14" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg></span> Pedir</button>`}
-            <div class="tm-trust-badges" style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;font-size:10px;color:#6B6B7A;align-items:center;">
-                <span style="display:inline-flex;align-items:center;gap:3px;background:rgba(46,204,113,0.10);color:#2ECC71;padding:3px 8px;border-radius:8px;font-weight:600;">🔒 Pago contra entrega</span>
-                <span style="display:inline-flex;align-items:center;gap:3px;background:rgba(232,80,30,0.10);color:#E8501E;padding:3px 8px;border-radius:8px;font-weight:600;">✓ Garantía 7 días</span>
+            <div class="pv2-veil"></div>
+            <div class="pv2-top">
+                ${_tieneDesc ? `<span class="pv2-disc">-${_pctDesc}%</span>` : ''}
+                ${producto.masVendido ? '<span class="pv2-hot"><i>●</i> Más vendido</span>' : ''}
+            </div>
+            <div class="pv2-body">
+                ${_cat ? `<span class="pv2-cat">${_cat}</span>` : ''}
+                <h3>${_nombre}</h3>
+                ${_estado}
+                ${typeof renderCountdownHtml === 'function' ? renderCountdownHtml(_id) : ''}
+                <div class="pv2-foot">
+                    <div class="pv2-price">
+                        ${_tieneDesc ? `<span class="pv2-old">$${Number(producto.precioOriginal).toFixed(0)}</span>` : ''}
+                        <span class="precio-actual" data-usd="${safeNum(producto.precioActual)}">${_precioNum}${_precioCur}</span>
+                        <span class="pv2-tax">Impuestos incluidos</span>
+                    </div>
+                    ${_pedirBtn}
+                </div>
+                <span class="stock-count">${_esAgotado ? 0 : _stock}</span>
             </div>
         `;
         productosGrid.appendChild(card);
@@ -254,6 +273,21 @@ function renderizarGaleriaDetalle(producto) {
 
 // Producto actualmente abierto en el modal
 let _detalleProductoActual = null;
+// Cantidad elegida en el modal de detalle (aplica a carrito y a Pedir por WhatsApp)
+let _detalleCantidad = 1;
+let _detalleMaxStock = 1;
+
+// Actualiza el número mostrado en el stepper del modal, respetando 1..stock
+function detalleQtyDelta(delta) {
+    const nueva = Math.max(1, Math.min(_detalleCantidad + delta, _detalleMaxStock));
+    _detalleCantidad = nueva;
+    const val = document.getElementById('detailQtyValue');
+    if (val) val.textContent = String(nueva);
+    const menos = document.querySelector('#detailQtyRow .detail-qty-stepper button:first-child');
+    const mas   = document.querySelector('#detailQtyRow .detail-qty-stepper button:last-child');
+    if (menos) menos.disabled = nueva <= 1;
+    if (mas)   mas.disabled   = nueva >= _detalleMaxStock;
+}
 
 function abrirDetalleProducto(id) {
     
@@ -364,6 +398,22 @@ if (_detailPrecioMNEl) {
     }
     document.getElementById('detailStockBarFill').style.width =
         `${Math.min(100, Math.max(8, (p.stock / 20) * 100))}%`;
+
+    // Selector de cantidad — reset a 1, tope = stock, oculto si agotado
+    _detalleMaxStock = Math.max(1, _stockN);
+    _detalleCantidad = 1;
+    const _qtyRow = document.getElementById('detailQtyRow');
+    if (_qtyRow) {
+        _qtyRow.style.display = _stockN > 0 ? 'flex' : 'none';
+        const _qtyVal = document.getElementById('detailQtyValue');
+        if (_qtyVal) _qtyVal.textContent = '1';
+        const _qtyStock = document.getElementById('detailQtyStock');
+        if (_qtyStock) _qtyStock.innerHTML = _stockN > 0 ? `📦 Solo quedan <b>${_stockN}</b> ${_stockN === 1 ? 'unidad' : 'unidades'}` : '';
+        const _qtyMenos = _qtyRow.querySelector('.detail-qty-stepper button:first-child');
+        const _qtyMas   = _qtyRow.querySelector('.detail-qty-stepper button:last-child');
+        if (_qtyMenos) _qtyMenos.disabled = true;
+        if (_qtyMas)   _qtyMas.disabled   = _stockN <= 1;
+    }
 
     // Badges extra: garantia, devolución, usado
     const extBadges = document.getElementById('detailExtraBadges');
@@ -553,7 +603,7 @@ if (_detailPrecioMNEl) {
                 cerrarDetalleModal();
                 abrirCarrito();
             } else {
-                agregarAlCarrito(p.id, null, cartRowEl);
+                agregarAlCarrito(p.id, _detalleCantidad, cartRowEl);
                 cartRowEl.textContent = '✓ En el carrito — Ver carrito';
                 cartRowEl.className = 'btn-carrito en-carrito';
             }
@@ -755,8 +805,10 @@ function copiarLinkProducto() {
 
 function contactarProducto(nombre) {
     const p = _detalleProductoActual;
+    // Cantidad elegida en el modal (tope = stock); por defecto 1
+    const cant = p ? Math.max(1, Math.min(safeNum(_detalleCantidad) || 1, safeNum(p.stock) || 1)) : 1;
     const item = p
-        ? { id: p.id, nombre: p.nombre, precio: parseFloat(p.precioActual) || 0, cantidad: 1 }
+        ? { id: p.id, nombre: p.nombre, precio: parseFloat(p.precioActual) || 0, cantidad: cant }
         : { nombre: nombre || 'Producto', precio: 0, cantidad: 1 };
     if (p) tmRegistrarInteresWhatsApp(p, 'detalle');
     // Generar vale/pedido para seguimiento

@@ -21,6 +21,7 @@ ORDEN = [
     "light-mode.css",      # overrides modo claro — DESPUÉS del premium
     "tienda-plus.css",
     "hero-efectos.css",
+    "rediseno-cards.css",  # tarjetas póster + cantidad en modal — al final para ganar la cascada
 ]
 
 def main():

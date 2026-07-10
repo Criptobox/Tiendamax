@@ -1,4 +1,4 @@
-if(typeof agregarAlCarrito=="function"){const o=agregarAlCarrito;agregarAlCarrito=function(t,a,e){o(t),e&&requestAnimationFrame(()=>flyToCart(e))}}function mostrarSkeletons(o,t=6){const a=document.getElementById(o);if(!a)return;const e=Array(t).fill(0).map(()=>`
+if(typeof agregarAlCarrito=="function"){const o=agregarAlCarrito;agregarAlCarrito=function(t,a,e){o(t,a),e&&requestAnimationFrame(()=>flyToCart(e))}}function mostrarSkeletons(o,t=6){const a=document.getElementById(o);if(!a)return;const e=Array(t).fill(0).map(()=>`
         <div class="skeleton-card">
             <div class="skeleton-img"></div>
             <div class="skeleton-line"></div>

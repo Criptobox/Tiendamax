@@ -244,7 +244,7 @@
     <noscript><link rel="stylesheet" href="css/fonts.css?v=67235440"></noscript>
 
     <!-- Preload de los módulos JS principales (modularizado + minificado) -->
-    <link rel="preload" href="js/src/tm-config.js?v=a565de40" as="script">
+    <link rel="preload" href="js/src/tm-config.js?v=10cbd04d" as="script">
     <link rel="preload" href="js/src/tm-data.js?v=4d0db939" as="script">
     <link rel="preload" href="js/src/tm-state.js?v=c4ce49c9" as="script">
 
@@ -253,7 +253,7 @@
 
 
 
-    <link rel="stylesheet" href="css/bundle.css?v=d2896eff">
+    <link rel="stylesheet" href="css/bundle.css?v=8de8addb">
 
 
 
@@ -1235,6 +1235,16 @@
                         <!-- Personas viendo -->
                         <div id="detailPersonasViendo" class="contador-personas" style="display:none;"></div>
 
+                        <!-- Selector de cantidad -->
+                        <div id="detailQtyRow" class="detail-qty-row">
+                            <div class="detail-qty-label">Cantidad<small id="detailQtyStock"></small></div>
+                            <div class="detail-qty-stepper">
+                                <button type="button" onclick="detalleQtyDelta(-1)" aria-label="Quitar una unidad">−</button>
+                                <span id="detailQtyValue">1</span>
+                                <button type="button" onclick="detalleQtyDelta(1)" aria-label="Agregar una unidad">+</button>
+                            </div>
+                        </div>
+
                         <!-- Botón pedir por WhatsApp -->
                         <button type="button" id="detailBuyBtn" class="btn-pedir-whatsapp detail-buy-btn">
                             <span class="btn-pedir-wa-icon">
@@ -1383,17 +1393,17 @@
     <script src="js/seo-dynamico.js?v=ea7e25bb" defer></script>
     <!-- ===== TiendaMax modularizado (reemplaza script.js) ===== -->
     <!-- Orden: config → data → state → admin → product → catalog → init → ui → toast → iife → patches -->
-    <script src="js/src/tm-config.js?v=a565de40" defer></script>
+    <script src="js/src/tm-config.js?v=10cbd04d" defer></script>
     <script src="js/src/tm-data.js?v=4d0db939" defer></script>
     <script src="js/src/tm-state.js?v=c4ce49c9" defer></script>
     <script src="js/src/tm-admin.js?v=51393220" defer></script>
-    <script src="js/src/tm-product.js?v=8c3e67f4" defer></script>
+    <script src="js/src/tm-product.js?v=d8344f47" defer></script>
     <script src="js/src/tm-catalog.js?v=d84705d0" defer></script>
     <script src="js/src/tm-init.js?v=e23255ae" defer></script>
-    <script src="js/src/tm-ui.js?v=9ee32707" defer></script>
+    <script src="js/src/tm-ui.js?v=8283ddbd" defer></script>
     <script src="js/src/tm-toast.js?v=1f125e1c" defer></script>
     <script src="js/src/tm-iife.js?v=1fd13d7f" defer></script>
-    <script src="js/src/tm-patches.js?v=df035163" defer></script>
+    <script src="js/src/tm-patches.js?v=60ed6767" defer></script>
 
     <script src="js/push-fix.js?v=bb27d53c" defer></script>
     <script src="js/subcategorias.js?v=fa21ab00" defer></script>
