@@ -253,7 +253,7 @@
 
 
 
-    <link rel="stylesheet" href="css/bundle.css?v=c1698212">
+    <link rel="stylesheet" href="css/bundle.css?v=ae550e19">
 
 
 
@@ -1245,7 +1245,9 @@
                             </div>
                         </div>
 
-                        <!-- Botón pedir por WhatsApp -->
+                        <!-- Línea de acción: favorito + carrito + Pedir -->
+                        <div class="detail-cta-row" id="detailCtaRow">
+                        <button type="button" id="detailFavBtn" class="detail-cta-fav" onclick="detalleToggleFav(event)" aria-label="Guardar en favoritos">🤍</button>
                         <button type="button" id="detailBuyBtn" class="btn-pedir-whatsapp detail-buy-btn">
                             <span class="btn-pedir-wa-icon">
                                 <svg viewBox="0 0 24 24" width="22" height="22" fill="white" xmlns="http://www.w3.org/2000/svg">
@@ -1254,6 +1256,7 @@
                             </span>
                             <span class="btn-pedir-wa-text">Pedir</span>
                         </button>
+                        </div>
 
                         <!-- Trust badges dinámicos (solo si el producto los tiene) -->
                         <div id="detailTrustBadges" class="detail-trust-badges" style="display:none;"></div>
@@ -1397,10 +1400,10 @@
     <script src="js/src/tm-data.js?v=4d0db939" defer></script>
     <script src="js/src/tm-state.js?v=c4ce49c9" defer></script>
     <script src="js/src/tm-admin.js?v=51393220" defer></script>
-    <script src="js/src/tm-product.js?v=d8344f47" defer></script>
+    <script src="js/src/tm-product.js?v=07359207" defer></script>
     <script src="js/src/tm-catalog.js?v=d84705d0" defer></script>
     <script src="js/src/tm-init.js?v=e23255ae" defer></script>
-    <script src="js/src/tm-ui.js?v=8283ddbd" defer></script>
+    <script src="js/src/tm-ui.js?v=55a4c0f8" defer></script>
     <script src="js/src/tm-toast.js?v=1f125e1c" defer></script>
     <script src="js/src/tm-iife.js?v=1fd13d7f" defer></script>
     <script src="js/src/tm-patches.js?v=60ed6767" defer></script>

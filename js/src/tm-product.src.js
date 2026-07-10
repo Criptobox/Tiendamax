@@ -289,6 +289,22 @@ function detalleQtyDelta(delta) {
     if (mas)   mas.disabled   = nueva >= _detalleMaxStock;
 }
 
+// Corazón de favoritos del modal (reusa la wishlist existente)
+function detalleToggleFav(ev) {
+    if (ev) ev.stopPropagation();
+    const p = _detalleProductoActual;
+    if (!p) return;
+    if (typeof toggleMeGusta === 'function') {
+        toggleMeGusta(p.id, ev);
+    }
+    const favBtn = document.getElementById('detailFavBtn');
+    if (favBtn) {
+        const liked = (typeof wishlist !== 'undefined' && Array.isArray(wishlist)) && wishlist.includes(String(p.id));
+        favBtn.textContent = liked ? '❤️' : '🤍';
+        favBtn.classList.toggle('liked', liked);
+    }
+}
+
 function abrirDetalleProducto(id) {
     
     const p = productos.find(prod => prod.id === id);
@@ -422,13 +438,27 @@ if (_detailPrecioMNEl) {
     if (p.usado) badges += `<span class="detail-badge-tag dtag-usado">♻️ Producto usado</span>`;
     extBadges.innerHTML = badges;
 
-    // Spec badges (editables desde admin: campo 'specs' del producto)
+    // Specs como chips (icono + valor), estilo ficha. Campo 'specs' del producto + garantía.
     const specBadgesEl = document.getElementById('detailSpecBadges');
     if (specBadgesEl) {
         const specs = Array.isArray(p.specs) ? p.specs.filter(s => s && String(s).trim()).slice(0, 6) : [];
-        if (specs.length > 0) {
-            specBadgesEl.innerHTML = specs.map(s => `<span class="detail-spec-badge">${escapeHtml(s)}</span>`).join('');
-            specBadgesEl.style.display = 'flex';
+        const _iconoSpec = (s) => {
+            const t = String(s).toLowerCase();
+            if (/mbps|ghz|\bhz\b|wifi|wi-fi/.test(t)) return '📶';
+            if (/\bw\b|watt|\d+w/.test(t)) return '⚡';
+            if (/\ba\b|amp|\d+a\b/.test(t)) return '🔌';
+            if (/\bv\b|volt|\d+v/.test(t)) return '🔋';
+            if (/ah|mah/.test(t)) return '🔋';
+            return '🔧';
+        };
+        let chips = specs.map(s => `<div class="detail-chip"><span class="ic">${_iconoSpec(s)}</span><span class="tx"><b>${escapeHtml(s)}</b></span></div>`);
+        if (p.garantia && String(p.garantia).trim()) {
+            chips.push(`<div class="detail-chip"><span class="ic">🛡️</span><span class="tx"><small>Garantía</small><b>${escapeHtml(String(p.garantia))}</b></span></div>`);
+        }
+        if (chips.length > 0) {
+            specBadgesEl.className = 'detail-spec-badges detail-chips';
+            specBadgesEl.innerHTML = chips.join('');
+            specBadgesEl.style.display = 'grid';
         } else {
             specBadgesEl.innerHTML = '';
             specBadgesEl.style.display = 'none';
@@ -492,7 +522,9 @@ if (_detailPrecioMNEl) {
             avisarBtn.id = 'detailAvisarBtn';
             avisarBtn.style.cssText = 'width:100%;margin-top:10px;padding:14px;border-radius:12px;border:none;background:linear-gradient(135deg,#E8501E,#ff6b35);color:white;font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:transform .2s;';
             avisarBtn.innerHTML = '🔔 Avisarme cuando vuelva';
-            buyBtn.parentNode.insertBefore(avisarBtn, buyBtn.nextSibling);
+            // Insertar DEBAJO de la fila de acción (no dentro de ella)
+            const _ctaRow = document.getElementById('detailCtaRow') || buyBtn.parentNode;
+            _ctaRow.parentNode.insertBefore(avisarBtn, _ctaRow.nextSibling);
             avisarBtn.onclick = () => suscribirAvisoStock(p.id, p.nombre);
         }
         // Verificar si ya está suscrito
@@ -582,32 +614,48 @@ if (_detailPrecioMNEl) {
         })();
     })();
 
-    // Botón carrito en modal
+    // Botón carrito en el modal — ícono en la fila de acción (junto al corazón y Pedir)
     const detailBuyRow = document.getElementById('detailBuyBtn');
-    if (detailBuyRow) {
-        // Agregar botón carrito junto al de comprar si no existe
+    const ctaRow = document.getElementById('detailCtaRow');
+    if (detailBuyRow && ctaRow) {
         let cartRowEl = document.getElementById('detailCartBtn');
         if (!cartRowEl) {
             cartRowEl = document.createElement('button');
             cartRowEl.id = 'detailCartBtn';
-            cartRowEl.className = 'btn-carrito';
-            cartRowEl.style.cssText = 'width:100%;margin-bottom:10px;padding:12px;font-size:14px;';
-            detailBuyRow.parentNode.insertBefore(cartRowEl, detailBuyRow.nextSibling);
+            cartRowEl.type = 'button';
+            // insertar antes del botón Pedir (después del corazón)
+            ctaRow.insertBefore(cartRowEl, detailBuyRow);
         }
-        const enCarro = carrito.some(x => x.id === p.id);
-        cartRowEl.textContent  = enCarro ? '✓ En el carrito — Ver carrito' : '🛒 Agregar al carrito';
-        cartRowEl.className    = 'btn-carrito' + (enCarro ? ' en-carrito' : '');
-        cartRowEl.style.cssText = 'width:100%;margin-bottom:10px;padding:12px;font-size:14px;';
-        cartRowEl.onclick = () => {
-            if (carrito.some(x => x.id === p.id)) {
-                cerrarDetalleModal();
-                abrirCarrito();
-            } else {
-                agregarAlCarrito(p.id, _detalleCantidad, cartRowEl);
-                cartRowEl.textContent = '✓ En el carrito — Ver carrito';
-                cartRowEl.className = 'btn-carrito en-carrito';
-            }
-        };
+        // Sin stock: no se puede agregar al carrito → ocultar
+        if (p.stock === 0) {
+            cartRowEl.style.display = 'none';
+        } else {
+            cartRowEl.style.display = '';
+            const enCarro = carrito.some(x => x.id === p.id);
+            cartRowEl.className = 'detail-cta-icon' + (enCarro ? ' en-carrito' : '');
+            cartRowEl.textContent = enCarro ? '✓' : '🛒';
+            cartRowEl.title = enCarro ? 'En el carrito — ver carrito' : 'Agregar al carrito';
+            cartRowEl.setAttribute('aria-label', cartRowEl.title);
+            cartRowEl.onclick = () => {
+                if (carrito.some(x => x.id === p.id)) {
+                    cerrarDetalleModal();
+                    abrirCarrito();
+                } else {
+                    agregarAlCarrito(p.id, _detalleCantidad, cartRowEl);
+                    cartRowEl.className = 'detail-cta-icon en-carrito';
+                    cartRowEl.textContent = '✓';
+                    cartRowEl.title = 'En el carrito — ver carrito';
+                }
+            };
+        }
+    }
+
+    // Estado del corazón de favoritos en el modal
+    const favBtn = document.getElementById('detailFavBtn');
+    if (favBtn) {
+        const liked = (typeof wishlist !== 'undefined' && Array.isArray(wishlist)) && wishlist.includes(String(p.id));
+        favBtn.textContent = liked ? '❤️' : '🤍';
+        favBtn.classList.toggle('liked', liked);
     }
 
     // Abrir modal
