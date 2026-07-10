@@ -1613,6 +1613,84 @@ function renderizarListaAgotados() {
     ).join('');
 }
 
+// ── Meta real en las tarjetas: reseñas (resenas-cache.json) + vistas (Firebase) ──
+window._tmRatingMap = window._tmRatingMap || null;   // { id: {avg, count} }
+window._tmViewsMap  = window._tmViewsMap  || null;   // { id: count }
+let _tmMetaCargando = false;
+
+function _tmMetaCard(id) {
+    const sid = String(id);
+    let h = '';
+    const r = window._tmRatingMap && window._tmRatingMap[sid];
+    if (r && r.count > 0) {
+        h += '<span class="pv2-rating">★ ' + r.avg.toFixed(1) + ' <i>(' + r.count + ')</i></span>';
+    }
+    const v = window._tmViewsMap && window._tmViewsMap[sid];
+    if (typeof v === 'number' && v >= 15) {
+        h += '<span class="pv2-views">👁️ ' + v.toLocaleString('es') + '</span>';
+    }
+    return h;
+}
+
+function _tmAplicarMetaCards() {
+    document.querySelectorAll('#productosGrid .pcard-v2[data-product-id]').forEach(function(c) {
+        const m = c.querySelector('.pv2-meta');
+        if (m) m.innerHTML = _tmMetaCard(c.dataset.productId);
+    });
+}
+
+async function _tmCargarMetaCatalogo() {
+    // Si ya están los mapas, solo re-aplicar a las tarjetas actuales
+    if (window._tmRatingMap && window._tmViewsMap) { _tmAplicarMetaCards(); return; }
+    if (_tmMetaCargando) return;
+    _tmMetaCargando = true;
+
+    // Reseñas: cache estático (mismo origen, confiable en Cuba)
+    if (!window._tmRatingMap) {
+        try {
+            const r = await fetch('resenas-cache.json?v=' + (window.__tmResenasCacheVer || Date.now()), { cache: 'no-store' });
+            if (r.ok) {
+                const data = await r.json();
+                const pp = (data && data.por_producto) || {};
+                const map = {};
+                Object.keys(pp).forEach(function(id) {
+                    const arr = Array.isArray(pp[id]) ? pp[id] : [];
+                    if (arr.length) {
+                        const suma = arr.reduce(function(s, x) { return s + (Number(x.estrellas) || 0); }, 0);
+                        map[String(id)] = { avg: suma / arr.length, count: arr.length };
+                    }
+                });
+                window._tmRatingMap = map;
+            } else { window._tmRatingMap = {}; }
+        } catch (e) { window._tmRatingMap = {}; }
+    }
+
+    // Vistas: una sola lectura de todo el nodo analytics/vistas
+    if (!window._tmViewsMap) {
+        try {
+            const cfg = (typeof tmParseObject === 'function') ? tmParseObject(localStorage.getItem('firebaseConfig')) : JSON.parse(localStorage.getItem('firebaseConfig') || '{}');
+            const base = cfg.databaseURL || (cfg.projectId ? 'https://' + cfg.projectId + '-default-rtdb.firebaseio.com' : null);
+            if (base) {
+                const r = await fetch(base + '/analytics/vistas.json');
+                if (r.ok) {
+                    const data = await r.json();
+                    const map = {};
+                    if (data && typeof data === 'object') {
+                        Object.keys(data).forEach(function(id) {
+                            const c = data[id] && data[id].count;
+                            if (typeof c === 'number') map[String(id)] = c;
+                        });
+                    }
+                    window._tmViewsMap = map;
+                } else { window._tmViewsMap = {}; }
+            } else { window._tmViewsMap = {}; }
+        } catch (e) { window._tmViewsMap = {}; }
+    }
+
+    _tmMetaCargando = false;
+    _tmAplicarMetaCards();
+}
+
 // ── Patch renderizarProductos to show agotado/oferta badges ──
 if (typeof renderizarProductos === 'function') {
 const _origRenderProductosFinal = renderizarProductos;
@@ -1735,6 +1813,7 @@ renderizarProductos = function() {
         const _stk = safeNum(producto.stock);
         const _txt = escapeHtml(getOfertaDiaTexto());
         const _cat = escapeHtml(producto.categoria || '');
+        const _tieneGarantia = producto.garantia && String(producto.garantia).trim();
         const _hasDescuento = producto.precioOriginal > 0 && producto.precioOriginal > producto.precioActual;
         const _pctDesc = _hasDescuento ? Math.round((1 - producto.precioActual / producto.precioOriginal) * 100) : 0;
         // Badge en la esquina de la foto: oferta > descuento > últimas > destacado
@@ -1760,14 +1839,16 @@ renderizarProductos = function() {
             '<div class="pv2-body">' +
                 (_cat ? '<span class="pv2-cat">' + _cat + '</span>' : '') +
                 '<h3>' + _nom + '</h3>' +
+                '<div class="pv2-meta">' + (typeof _tmMetaCard === 'function' ? _tmMetaCard(_id) : '') + '</div>' +
                 _estado +
                 (typeof renderCountdownHtml === 'function' ? renderCountdownHtml(_id) : '') +
                 '<div class="pv2-foot">' +
                     '<div class="pv2-price">' +
-                        (_hasDescuento ? '<span class="pv2-old">$' + Number(producto.precioOriginal).toFixed(0) + '</span>' : '') +
+                        (_hasDescuento ? '<div class="pv2-oldrow"><span class="pv2-old">$' + Number(producto.precioOriginal).toFixed(0) + '</span><span class="pv2-off">-' + _pctDesc + '%</span></div>' : '') +
                         '<span class="precio-actual" data-usd="' + safeNum(producto.precioActual) + '">$' + Number(producto.precioActual).toFixed(2) + ' USD</span>' +
                         '<span class="pv2-tax">Impuestos incluidos</span>' +
                     '</div>' +
+                    (esAgotado ? '' : '<div class="pv2-trust">🔒 Pago al recibir' + (_tieneGarantia ? ' · 🛡️ Garantía' : '') + '</div>') +
                     _btn +
                 '</div>' +
                 '<span class="stock-count">' + (esAgotado ? 0 : _stk) + '</span>' +
@@ -1779,6 +1860,8 @@ renderizarProductos = function() {
     const _frag = document.createDocumentFragment();
     productosFiltrados.slice(0, _visibleCount).forEach(p => _frag.appendChild(_tmCrearCard(p)));
     productosGrid.appendChild(_frag);
+    // Cargar reseñas/vistas reales y pintarlas en las tarjetas
+    setTimeout(_tmCargarMetaCatalogo, 0);
 
     // Botón "cargar más" + auto-cargar en scroll (APPEND nuevo lote, no re-render completo)
     if (productosFiltrados.length > _visibleCount) {
