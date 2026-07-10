@@ -14,6 +14,7 @@ on:
       - 'css/light-mode.css'
       - 'css/tienda-plus.css'
       - 'css/hero-efectos.css'
+      - 'css/rediseno-cards.css'
       - 'scripts/build_css.py'
   workflow_dispatch:   # botón "Run workflow" para regenerar/minificar cuando quieras
 

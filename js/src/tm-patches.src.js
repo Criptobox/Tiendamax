@@ -20,8 +20,8 @@
 
 if (typeof agregarAlCarrito === 'function') {
     const _origAgregarAlCarrito = agregarAlCarrito;
-    agregarAlCarrito = function(id, _unused, originEl) {
-        _origAgregarAlCarrito(id);
+    agregarAlCarrito = function(id, cantidad, originEl) {
+        _origAgregarAlCarrito(id, cantidad);
         if (originEl) requestAnimationFrame(() => flyToCart(originEl));
     };
 }
