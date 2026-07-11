@@ -349,15 +349,18 @@ function abrirDetalleProducto(id) {
         subEl.style.display = 'none';
     }
 
+    // Agotado: sin badges de hype (ni descuento ni destacado)
+    const _agotadoModal = safeNum(p.stock) === 0;
+
     // Descuento badge
     const badge = document.getElementById('detailProductBadge');
     const _hasPrecioOrig = p.precioOriginal > 0 && parseFloat(p.precioOriginal) > parseFloat(p.precioActual);
-    badge.style.display = _hasPrecioOrig ? 'inline-block' : 'none';
+    badge.style.display = (_hasPrecioOrig && !_agotadoModal) ? 'inline-block' : 'none';
     if (_hasPrecioOrig) badge.textContent = `-$${(parseFloat(p.precioOriginal) - parseFloat(p.precioActual)).toFixed(0)}`;
 
-    // Más vendido badge
+    // Más vendido badge (solo si hay stock)
     const hotBadge = document.getElementById('detailMasVendidoBadge');
-    hotBadge.style.display = (p.masVendido === true || p.masVendido === 'true') ? 'block' : 'none';
+    hotBadge.style.display = ((p.masVendido === true || p.masVendido === 'true') && !_agotadoModal) ? 'block' : 'none';
 
     // Precio
     const precioOriginal = p.descuento > 0
