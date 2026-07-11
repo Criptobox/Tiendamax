@@ -1,6 +1,6 @@
 {
-  "actualizado": "2026-07-10T13:11:45.581939+00:00",
-  "fecha": "2026-07-10",
+  "actualizado": "2026-07-11T11:52:19.873291+00:00",
+  "fecha": "2026-07-11",
   "fuentes": [
     "revolico",
     "porlalivre",
@@ -9,7 +9,7 @@
   "resumen": {
     "vigilados": 4,
     "encimaMercado": 0,
-    "bajadasComp": 0,
+    "bajadasComp": 1,
     "sinDatos": 0
   },
   "productos": [
@@ -20,7 +20,7 @@
       "mercado": {
         "min": 80.0,
         "mediana": 170.0,
-        "n": 19
+        "n": 21
       },
       "deltaAyerMediana": 0.0,
       "estado": "competitivo",
@@ -79,6 +79,10 @@
         {
           "fecha": "2026-07-10",
           "mediana": 170.0
+        },
+        {
+          "fecha": "2026-07-11",
+          "mediana": 170.0
         }
       ],
       "muestras": [
@@ -132,10 +136,10 @@
       "tuPrecio": 30.0,
       "mercado": {
         "min": 16.0,
-        "mediana": 40.0,
-        "n": 11
+        "mediana": 32.5,
+        "n": 10
       },
-      "deltaAyerMediana": 0.0,
+      "deltaAyerMediana": -7.5,
       "estado": "competitivo",
       "sugerencia": {
         "texto": "Precio competitivo respecto al mercado"
@@ -192,6 +196,10 @@
         {
           "fecha": "2026-07-10",
           "mediana": 40.0
+        },
+        {
+          "fecha": "2026-07-11",
+          "mediana": 32.5
         }
       ],
       "muestras": [
@@ -305,6 +313,10 @@
         {
           "fecha": "2026-07-10",
           "mediana": 25.0
+        },
+        {
+          "fecha": "2026-07-11",
+          "mediana": 25.0
         }
       ],
       "muestras": [
@@ -417,6 +429,10 @@
         },
         {
           "fecha": "2026-07-10",
+          "mediana": 90.0
+        },
+        {
+          "fecha": "2026-07-11",
           "mediana": 90.0
         }
       ],
