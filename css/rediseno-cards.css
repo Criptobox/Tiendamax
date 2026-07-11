@@ -200,3 +200,27 @@ body.light-mode .detail-cta-fav{ background:rgba(0,0,0,.04); border-color:rgba(0
 body.light-mode .detail-chip{ background:rgba(0,0,0,.03); border-color:rgba(0,0,0,.08); }
 body.light-mode .detail-chip .tx small{ color:#8a8a92; }
 body.light-mode .detail-chip .tx b{ color:#1a1a1a; }
+
+/* ============================================================
+   Modal — arreglos de legibilidad en MODO CLARO + imagen
+   ============================================================ */
+/* Imagen del producto: 4 esquinas redondeadas */
+#productDetailModal .detail-image-wrap{ border-radius:16px !important; overflow:hidden !important; }
+#productDetailModal .detail-img{ border-radius:16px; }
+
+/* Breadcrumb de categoría: sin caja gris */
+html body.light-mode #productDetailModal .detail-category{
+  background:transparent !important; color:var(--coral,#ff6b35) !important; padding:0 !important;
+}
+/* Píldoras de compartir: texto y borde legibles sobre blanco */
+html body.light-mode #productDetailModal .detail-share-pill{
+  color:#333 !important; background:rgba(0,0,0,.04) !important; border-color:rgba(0,0,0,.14) !important;
+}
+/* Textos secundarios que quedaban muy claros */
+html body.light-mode #productDetailModal .detail-stock,
+html body.light-mode #productDetailModal #detailProductStock,
+html body.light-mode #productDetailModal .contador-personas,
+html body.light-mode #productDetailModal #detailPersonasViendo{
+  color:#4a4a52 !important;
+}
+html body.light-mode #productDetailModal .detail-subcategory{ color:#777 !important; }
