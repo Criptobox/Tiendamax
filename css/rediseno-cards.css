@@ -224,3 +224,30 @@ html body.light-mode #productDetailModal #detailPersonasViendo{
   color:#4a4a52 !important;
 }
 html body.light-mode #productDetailModal .detail-subcategory{ color:#777 !important; }
+
+/* ============================================================
+   MODO CLARO — refinamientos (cards gris, modal, secciones)
+   ============================================================ */
+/* Tarjetas en gris claro para que la foto blanca del producto resalte */
+html body.light-mode #productosGrid .producto-card.pcard-v2,
+html body.light-mode .producto-card.pcard-v2{ background:#e9ebf0 !important; border:1px solid rgba(0,0,0,.07) !important; }
+html body.light-mode #productosGrid .producto-card.pcard-v2 .pv2-photo,
+html body.light-mode .producto-card.pcard-v2 .pv2-photo{ background:#ffffff !important; }
+
+/* Modal en gris claro (igual que las tarjetas) */
+html body.light-mode .detail-modal-content,
+html body.light-mode .detail-body{ background:#eceef2 !important; }
+
+/* Imagen del modal: quitar las franjas naranjas decorativas de la esquina */
+#productDetailModal .detail-image-wrap::before,
+#productDetailModal .detail-image-wrap::after{ display:none !important; }
+
+/* "¿Cómo comprar?" legible en claro (los estilos inline son para tema oscuro) */
+body.light-mode #como-comprar [style*="border-radius:16px"]{ background:#ffffff !important; border-color:rgba(0,0,0,.1) !important; box-shadow:0 2px 10px rgba(0,0,0,.05); }
+body.light-mode #como-comprar h3{ color:#1a1a1a !important; }
+body.light-mode #como-comprar p{ color:#555 !important; }
+
+/* "+ Ver más categorías": botón y tarjetas visibles en claro */
+body.light-mode #catVerMasBtn{ background:#ffffff !important; border:1px solid rgba(0,0,0,.15) !important; color:#1a1a1a !important; box-shadow:0 2px 8px rgba(0,0,0,.07) !important; }
+body.light-mode #catExtraWrap > div{ background:#ffffff !important; border-color:rgba(0,0,0,.1) !important; }
+body.light-mode #catExtraWrap > div > div:nth-child(2){ color:#1a1a1a !important; }
