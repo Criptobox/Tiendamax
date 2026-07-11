@@ -520,8 +520,8 @@ if (_detailPrecioMNEl) {
         if (!avisarBtn) {
             avisarBtn = document.createElement('button');
             avisarBtn.id = 'detailAvisarBtn';
-            avisarBtn.style.cssText = 'width:100%;margin-top:10px;padding:14px;border-radius:12px;border:none;background:linear-gradient(135deg,#E8501E,#ff6b35);color:white;font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:transform .2s;';
-            avisarBtn.innerHTML = '🔔 Avisarme cuando vuelva';
+            avisarBtn.style.cssText = 'width:100%;margin-top:10px;padding:14px;border-radius:16px;border:none;background:linear-gradient(135deg,#f5a623,#e8701e);color:white;font-size:15px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:filter .2s;';
+            avisarBtn.innerHTML = '🔔 Avísame';
             // Insertar DEBAJO de la fila de acción (no dentro de ella)
             const _ctaRow = document.getElementById('detailCtaRow') || buyBtn.parentNode;
             _ctaRow.parentNode.insertBefore(avisarBtn, _ctaRow.nextSibling);
