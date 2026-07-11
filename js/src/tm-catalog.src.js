@@ -242,6 +242,7 @@ function eliminarCategoria(index) {
 
 function eliminarProducto(id) {
     if (!confirm('¿Estás seguro de eliminar este producto?')) return;
+    marcarProductoEliminado(id);
     productos = productos.filter(p => p.id !== id);
     guardarProductos();
     // Una eliminación requiere sincronizar todos los productos
@@ -500,11 +501,55 @@ function marcarProductoModificado(id) {
 
 function limpiarProductosModificados() {
     localStorage.removeItem('productosModificados');
+    localStorage.removeItem('productosEliminados');
     localStorage.setItem('ultimaSincronizacion', Date.now().toString());
 }
 
 function obtenerProductosModificados() {
     return tmParseArray(localStorage.getItem('productosModificados'));
+}
+
+// Borrados pendientes de publicar (para no "resucitarlos" al fusionar con el repo)
+function marcarProductoEliminado(id) {
+    const el = tmParseArray(localStorage.getItem('productosEliminados'));
+    if (!el.map(String).includes(String(id))) { el.push(id); localStorage.setItem('productosEliminados', JSON.stringify(el)); }
+}
+function obtenerProductosEliminados() {
+    return tmParseArray(localStorage.getItem('productosEliminados'));
+}
+
+// ── Anti-pisado: fusiona el catálogo en memoria con el productos.json del repo ──
+// Los productos que el admin cambió esta sesión (productosModificados) mandan; los
+// que NO tocó toman la versión del repo (así no se pisan fotos/precios cambiados
+// desde otra sesión o dispositivo). Los que existen en el repo y no en memoria se
+// conservan salvo que el admin los haya borrado. Si el repo no responde, devuelve
+// el array en memoria tal cual (sin cambiar el comportamiento anterior).
+async function _tmMergeProductosConRepo(user, repo) {
+    let remoto = null;
+    try {
+        const r = await fetch(`https://raw.githubusercontent.com/${user}/${repo}/main/productos.json?_=${Date.now()}`, { cache: 'no-store' });
+        if (r.ok) { const j = await r.json(); if (Array.isArray(j)) remoto = j; else if (j && Array.isArray(j.productos)) remoto = j.productos; }
+    } catch (e) {}
+    if (!Array.isArray(remoto)) return productos.slice();
+
+    const mods = new Set(obtenerProductosModificados().map(String));
+    const del  = new Set(obtenerProductosEliminados().map(String));
+    const memIds = new Set(productos.map(p => String(p.id)));
+    const remotoById = {};
+    remoto.forEach(p => { if (p && p.id != null) remotoById[String(p.id)] = p; });
+
+    // Empezar por lo que el admin ve; no-modificados toman la versión del repo.
+    const merged = productos.map(p => {
+        const id = String(p.id);
+        if (mods.has(id)) return p;                 // el admin lo cambió esta sesión → su versión
+        return remotoById[id] || p;                 // no lo tocó → versión del repo
+    });
+    // Conservar productos que están en el repo pero no en memoria (agregados en otra
+    // sesión/dispositivo), salvo que el admin los haya eliminado.
+    remoto.forEach(p => {
+        if (p && p.id != null && !memIds.has(String(p.id)) && !del.has(String(p.id))) merged.push(p);
+    });
+    return merged;
 }
 
 // Evita que el sync borre descripciones: el admin carga el catálogo lite (sin
@@ -636,9 +681,12 @@ async function sincronizarTodoConGitHub() {
     // No perder descripciones al subir (el admin trabaja con el catálogo lite).
     await _tmPreservarDescripciones();
 
-    const _productosLite = productos.map(p => { const { descripcion, ...r } = p; return r; });
+    // Anti-pisado: fusionar con el productos.json del repo para no revertir cambios
+    // (p.ej. fotos) hechos desde otra sesión/dispositivo que no están en esta memoria.
+    const _prodsFinal = await _tmMergeProductosConRepo(user, repo);
+    const _productosLite = _prodsFinal.map(p => { const { descripcion, ...r } = p; return r; });
     const archivos = [
-        { path: 'productos.json',              data: productos },
+        { path: 'productos.json',              data: _prodsFinal },
         { path: 'productos-lite.json',         data: _productosLite },
         { path: 'categorias.json',             data: { nombres: categorias, iconos: iconosPersonalizados } },
         { path: 'subcategorias.json',          data: tmParseObject(localStorage.getItem('subcategorias')) },
@@ -713,8 +761,9 @@ async function sincronizarConGitHub() {
     }
     try {
         await _tmPreservarDescripciones();
-        const _lite = productos.map(p => { const { descripcion, ...r } = p; return r; });
-        await subirArchivoAGitHub(user, repo, token, 'productos.json', productos);
+        const _final = await _tmMergeProductosConRepo(user, repo);
+        const _lite = _final.map(p => { const { descripcion, ...r } = p; return r; });
+        await subirArchivoAGitHub(user, repo, token, 'productos.json', _final);
         await subirArchivoAGitHub(user, repo, token, 'productos-lite.json', _lite);
         _tmPublicarVersionFirebase();
     } catch (e) {

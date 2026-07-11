@@ -760,7 +760,7 @@
 <script src="js/src/tm-state.js?v=c4ce49c9"></script>
 <script src="js/src/tm-admin.js?v=51393220"></script>
 <script src="js/src/tm-product.js?v=4643b98f"></script>
-<script src="js/src/tm-catalog.js?v=d84705d0"></script>
+<script src="js/src/tm-catalog.js?v=b4de2564"></script>
 <script src="js/src/tm-init.js?v=e23255ae"></script>
 <script src="js/src/tm-ui.js?v=563aaf21"></script>
 <script src="js/src/tm-toast.js?v=1f125e1c"></script>
@@ -1364,7 +1364,7 @@ function apFind(id){ return PRODUCTOS.find(p=>String(p.id)===String(id)); }
 function apStock(id,d){ const p=apFind(id); if(!p) return; p.stock=Math.max(0,(Number(p.stock)||0)+d); apSaveProds(); renderProductos(); if(typeof renderStock==='function') renderStock(); }
 function apStockZero(id){ const p=apFind(id); if(!p) return; p.stock=0; apSaveProds(); renderProductos(); if(typeof renderStock==='function') renderStock(); }
 function apFav(id){ const p=apFind(id); if(!p) return; p.masVendido=!p.masVendido; apSaveProds(); renderProductos(); showToast(p.masVendido?'⭐ Destacado en Más Vendidos':'Quitado de Más Vendidos'); }
-function apDel(id){ const p=apFind(id); if(!p) return; if(!confirm('¿Eliminar "'+(p.nombre||'')+'"? Esto lo quita del catálogo al sincronizar.')) return; const i=PRODUCTOS.findIndex(x=>String(x.id)===String(id)); if(i>=0) PRODUCTOS.splice(i,1); apSaveProds(); renderProductos(); showToast('🗑️ Eliminado','Sincroniza para publicar el cambio'); }
+function apDel(id){ const p=apFind(id); if(!p) return; if(!confirm('¿Eliminar "'+(p.nombre||'')+'"? Esto lo quita del catálogo al sincronizar.')) return; if(typeof marcarProductoEliminado==='function') try{ marcarProductoEliminado(id); }catch(e){} const i=PRODUCTOS.findIndex(x=>String(x.id)===String(id)); if(i>=0) PRODUCTOS.splice(i,1); apSaveProds(); renderProductos(); showToast('🗑️ Eliminado','Sincroniza para publicar el cambio'); }
 function apEdit(id){ const p=apFind(id); if(!p) return; $('#pedit-id').value=id; $('#pedit-nombre').value=p.nombre||''; $('#pedit-precio').value=p.precioActual||''; $('#pedit-original').value=(Number(p.precioOriginal)>0?p.precioOriginal:''); $('#pedit-stock').value=Number(p.stock)||0; $('#pedit-comision').value=(Number(p.comision)>0?p.comision:''); $('#pedit-comision-moneda').value=p.comisionMoneda||'USD'; $('#pedit-desc').value=p.descripcion||''; $('#pedit-fav').checked=!!p.masVendido; const cs=$('#pedit-cat'); if(cs){ const cats=[...new Set(PRODUCTOS.map(x=>x.categoria).filter(Boolean))].sort(); cs.innerHTML=cats.map(c=>`<option value="${esc(c)}" ${c===p.categoria?'selected':''}>${esc(c)}</option>`).join(''); } const as=$('#pedit-almacen'); if(as){ as.innerHTML='<option value="">Sin asignar</option>'+Object.keys(ALMACENES).map(aid=>`<option value="${aid}" ${p.almacenId===aid?'selected':''}>${esc(ALMACENES[aid].nombre||aid)}</option>`).join(''); }
   // Cargar fotos actuales al working array y renderizar
   _peditFotos = Array.isArray(p.imagenes) && p.imagenes.length
