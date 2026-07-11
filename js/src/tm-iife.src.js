@@ -166,7 +166,11 @@ async function guardarTasaMNAdmin() {
                     : ('$' + Number(producto.precioActual).toFixed(2) + ' USD');
             });
 
-            if (producto.stock > 0 && producto.stock <= 3 && !card.querySelector('.badge-stock-urgente')) {
+            // Las tarjetas nuevas (pcard-v2) ya muestran 'Últimas N' y vistas en su
+            // propio layout; evitar badges duplicados/superpuestos.
+            const _esV2 = card.classList.contains('pcard-v2');
+
+            if (!_esV2 && producto.stock > 0 && producto.stock <= 3 && !card.querySelector('.badge-stock-urgente')) {
                 const badge = document.createElement('div');
                 badge.className = 'badge-stock-urgente';
                 badge.textContent = '⚡ Últimas ' + producto.stock;
@@ -176,7 +180,7 @@ async function guardarTasaMNAdmin() {
             }
 
             const vistas = typeof obtenerVistasProd === 'function' ? (obtenerVistasProd(producto.id) || 0) : 0;
-            if (vistas >= 10 && !card.querySelector('.badge-vistas-pub')) {
+            if (!_esV2 && vistas >= 10 && !card.querySelector('.badge-vistas-pub')) {
                 const vBadge = document.createElement('div');
                 vBadge.className = 'badge-vistas-pub';
                 vBadge.innerHTML = '👁️ ' + (vistas >= 1000 ? (vistas / 1000).toFixed(1) + 'k' : vistas);
