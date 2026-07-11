@@ -251,3 +251,15 @@ body.light-mode #como-comprar p{ color:#555 !important; }
 body.light-mode #catVerMasBtn{ background:#ffffff !important; border:1px solid rgba(0,0,0,.15) !important; color:#1a1a1a !important; box-shadow:0 2px 8px rgba(0,0,0,.07) !important; }
 body.light-mode #catExtraWrap > div{ background:#ffffff !important; border-color:rgba(0,0,0,.1) !important; }
 body.light-mode #catExtraWrap > div > div:nth-child(2){ color:#1a1a1a !important; }
+
+/* Badge "Destacado" del modal: pastilla compacta (no estirada a lo ancho).
+   .badge-vendido fija left y .detail-badge-hot fija right → se estiraba. */
+#productDetailModal #detailMasVendidoBadge.detail-badge-hot{
+  left:auto !important; right:12px !important; width:auto !important;
+  display:inline-flex !important; align-items:center; gap:4px;
+  background:rgba(12,12,16,.72) !important; -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px);
+  border:1px solid rgba(255,255,255,.18) !important; color:#fff !important;
+  border-radius:20px !important; padding:5px 11px !important; font-size:11px !important;
+}
+#productDetailModal #detailMasVendidoBadge[style*="display: none"],
+#productDetailModal #detailMasVendidoBadge[style*="display:none"]{ display:none !important; }
