@@ -2218,7 +2218,7 @@
   },
   {
     "id": 1783453597496,
-    "nombre": "Router inalámbrico gibabite de doble banda Tp-link Archer A6 AC1200",
+    "nombre": "Router Inalámbrico Gibabite de Doble Banda Tp-link Archer A6 AC1200",
     "imagen": "https://tiendamax.org/imagenes/img_1783453593801.jpg",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1783453593801.jpg",
@@ -2366,11 +2366,10 @@
   {
     "id": 1783543451116,
     "nombre": "Router Tenda TX12 Pro (AX3000 Wi-Fi 6)",
-    "descripcion": "Estándar Wi-Fi: Compatibilidad con estándares 802.11ac/a/n (Wi-Fi 5) para velocidades de transferencia de datos de alta velocidad.\n​Tecnología de Doble Banda: Funcionamiento simultáneo en bandas de 2.4 GHz y 5 GHz para reducir interferencias y mejorar la estabilidad en dispositivos modernos.\n​Antenas: 4 antenas externas de alta ganancia (generalmente de 5dBi o 6dBi) para una cobertura omnidireccional y mejor penetración en obstáculos físicos.\n​Puertos: Generalmente incluye 1 puerto WAN (para la entrada de internet) y 3 puertos LAN (para conexión cableada a PC, consolas o TV), todos con capacidad de negociación rápida.\n​Seguridad: Protocolos de encriptación WPA/WPA2-PSK para mantener la red protegida de accesos no autorizados.\n​Funciones Adicionales:\n​QoS (Quality of Service): Priorización de tráfico para gaming o streaming, lo cual es muy útil para mantener baja latencia en juegos como Free Fire.\n​Red de Invitados: Opción para crear una red separada sin comprometer la seguridad de tu red principal.",
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783543448278.jpg",
+    "imagen": "https://tiendamax.org/imagenes/img_1783543448278.jpg",
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783543448278.jpg",
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783543450100.jpg"
+      "https://tiendamax.org/imagenes/img_1783543448278.jpg",
+      "https://tiendamax.org/imagenes/img_1783543450100.jpg"
     ],
     "precioActual": 130,
     "precioOriginal": 0,
@@ -2385,6 +2384,7 @@
     "garantia": "",
     "devolucion": false,
     "specs": [],
-    "fechaAgregado": "2026-07-08T20:44:11.116Z"
+    "fechaAgregado": "2026-07-08T20:44:11.116Z",
+    "descripcion": "Estándar Wi-Fi: Compatibilidad con estándares 802.11ac/a/n (Wi-Fi 5) para velocidades de transferencia de datos de alta velocidad.\n​Tecnología de Doble Banda: Funcionamiento simultáneo en bandas de 2.4 GHz y 5 GHz para reducir interferencias y mejorar la estabilidad en dispositivos modernos.\n​Antenas: 4 antenas externas de alta ganancia (generalmente de 5dBi o 6dBi) para una cobertura omnidireccional y mejor penetración en obstáculos físicos.\n​Puertos: Generalmente incluye 1 puerto WAN (para la entrada de internet) y 3 puertos LAN (para conexión cableada a PC, consolas o TV), todos con capacidad de negociación rápida.\n​Seguridad: Protocolos de encriptación WPA/WPA2-PSK para mantener la red protegida de accesos no autorizados.\n​Funciones Adicionales:\n​QoS (Quality of Service): Priorización de tráfico para gaming o streaming, lo cual es muy útil para mantener baja latencia en juegos como Free Fire.\n​Red de Invitados: Opción para crear una red separada sin comprometer la seguridad de tu red principal."
   }
 ]
