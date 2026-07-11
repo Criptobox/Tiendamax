@@ -1842,7 +1842,6 @@ renderizarProductos = function() {
                     '<div class="pv2-price">' +
                         (_hasDescuento ? '<div class="pv2-oldrow"><span class="pv2-old">$' + Number(producto.precioOriginal).toFixed(0) + '</span><span class="pv2-off">-' + _pctDesc + '%</span></div>' : '') +
                         '<span class="precio-actual" data-usd="' + safeNum(producto.precioActual) + '">$' + Number(producto.precioActual).toFixed(2) + ' USD</span>' +
-                        '<span class="pv2-tax">Impuestos incluidos</span>' +
                     '</div>' +
                     (esAgotado ? '' : '<div class="pv2-trust">🔒 Pago al recibir' + (_tieneGarantia ? ' · 🛡️ Garantía' : '') + '</div>') +
                     _btn +
