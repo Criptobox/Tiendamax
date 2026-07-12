@@ -1,6 +1,6 @@
 {
-  "actualizado": "2026-07-11T11:52:19.873291+00:00",
-  "fecha": "2026-07-11",
+  "actualizado": "2026-07-12T11:59:53.533859+00:00",
+  "fecha": "2026-07-12",
   "fuentes": [
     "revolico",
     "porlalivre",
@@ -8,7 +8,7 @@
   ],
   "resumen": {
     "vigilados": 4,
-    "encimaMercado": 0,
+    "encimaMercado": 1,
     "bajadasComp": 1,
     "sinDatos": 0
   },
@@ -28,10 +28,6 @@
         "texto": "Precio competitivo respecto al mercado"
       },
       "historial": [
-        {
-          "fecha": "2026-06-28",
-          "mediana": 157.5
-        },
         {
           "fecha": "2026-06-29",
           "mediana": 170.0
@@ -83,6 +79,10 @@
         {
           "fecha": "2026-07-11",
           "mediana": 170.0
+        },
+        {
+          "fecha": "2026-07-12",
+          "mediana": 170.0
         }
       ],
       "muestras": [
@@ -102,16 +102,16 @@
         },
         {
           "fuente": "revolico",
-          "titulo": "100 USD Inversor 12v 2000wde 110v",
+          "titulo": "100 USD Inversor 12v 2000w",
           "precio": 100.0,
-          "url": "https://www.revolico.com/item/inversor-12v-2000wde-110v-55923532",
+          "url": "https://www.revolico.com/item/inversor-12v-2000w-56272518",
           "dias": null
         },
         {
           "fuente": "revolico",
-          "titulo": "100 USD Inversor 12v 2000 w",
+          "titulo": "100 USD Inversor 12v 2000wde 110v",
           "precio": 100.0,
-          "url": "https://www.revolico.com/item/inversor-12v-2000-w-55888110",
+          "url": "https://www.revolico.com/item/inversor-12v-2000wde-110v-55923532",
           "dias": null
         },
         {
@@ -135,20 +135,17 @@
       "nombre": "Switch de 8 Puertos",
       "tuPrecio": 30.0,
       "mercado": {
-        "min": 16.0,
-        "mediana": 32.5,
-        "n": 10
+        "min": 9.02,
+        "mediana": 25.0,
+        "n": 11
       },
       "deltaAyerMediana": -7.5,
-      "estado": "competitivo",
+      "estado": "encima",
       "sugerencia": {
-        "texto": "Precio competitivo respecto al mercado"
+        "texto": "Estás por encima del mercado. Podrías bajar hacia ~$25",
+        "precio": 25.0
       },
       "historial": [
-        {
-          "fecha": "2026-06-28",
-          "mediana": 65.0
-        },
         {
           "fecha": "2026-06-29",
           "mediana": 57.5
@@ -200,14 +197,25 @@
         {
           "fecha": "2026-07-11",
           "mediana": 32.5
+        },
+        {
+          "fecha": "2026-07-12",
+          "mediana": 25.0
         }
       ],
       "muestras": [
         {
           "fuente": "revolico",
-          "titulo": "Switch - 16 puertos",
-          "precio": 16.0,
-          "url": "https://www.revolico.com/item/switch-16-puertos-55687736",
+          "titulo": "6,000 CUP Switch 4 puertos a 100mb",
+          "precio": 9.02,
+          "url": "https://www.revolico.com/item/switch-4-puertos-a-100mb-56269101",
+          "dias": null
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "6,000 CUP Switch 4 puertos a 100mb",
+          "precio": 9.02,
+          "url": "https://www.revolico.com/item/switch-4-puertos-a-100mb-56269091",
           "dias": null
         },
         {
@@ -237,13 +245,6 @@
           "precio": 25.0,
           "url": "https://www.revolico.com/item/switch-5-puertos-a-gb-25-55821825",
           "dias": null
-        },
-        {
-          "fuente": "revolico",
-          "titulo": "40 USD Switch 5 puertos 2.5 Gbps. Único en Revolico",
-          "precio": 40.0,
-          "url": "https://www.revolico.com/item/switch-5-puertos-25-gbps-unico-en-revolico-56123619",
-          "dias": null
         }
       ]
     },
@@ -262,10 +263,6 @@
         "texto": "Precio competitivo respecto al mercado"
       },
       "historial": [
-        {
-          "fecha": "2026-06-28",
-          "mediana": 25.0
-        },
         {
           "fecha": "2026-06-29",
           "mediana": 25.0
@@ -316,6 +313,10 @@
         },
         {
           "fecha": "2026-07-11",
+          "mediana": 25.0
+        },
+        {
+          "fecha": "2026-07-12",
           "mediana": 25.0
         }
       ],
@@ -371,7 +372,7 @@
       "mercado": {
         "min": 69.0,
         "mediana": 90.0,
-        "n": 14
+        "n": 15
       },
       "deltaAyerMediana": 0.0,
       "estado": "competitivo",
@@ -379,10 +380,6 @@
         "texto": "Precio competitivo respecto al mercado"
       },
       "historial": [
-        {
-          "fecha": "2026-06-28",
-          "mediana": 90.0
-        },
         {
           "fecha": "2026-06-29",
           "mediana": 90.0
@@ -433,6 +430,10 @@
         },
         {
           "fecha": "2026-07-11",
+          "mediana": 90.0
+        },
+        {
+          "fecha": "2026-07-12",
           "mediana": 90.0
         }
       ],
