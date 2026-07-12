@@ -209,35 +209,16 @@ function obtenerTopProductosPorVistas(n = 5) {
         .filter(x => x.producto);
 }
 
-// Parchar abrirDetalleProducto para registrar vista y mostrarla
+// Parchar abrirDetalleProducto para registrar la vista real.
+// El contador visual vive en #detailPersonasViendo (tm-product.src.js) —
+// acá solo se incrementa el dato real en localStorage/Firebase que ese
+// contador lee; no se pinta un segundo badge (evita el duplicado que
+// aparecía junto a la categoría).
 if (typeof abrirDetalleProducto === 'function') {
 const _origAbrirDetalle = abrirDetalleProducto;
 abrirDetalleProducto = function(id) {
     _origAbrirDetalle(id);
-    // Mostrar contador local mientras carga Firebase
-    const localTotal = registrarVistaProd(id);
-    let vistaEl = document.getElementById('detailVistasBadge');
-    if (!vistaEl) {
-        vistaEl = document.createElement('span');
-        vistaEl.id = 'detailVistasBadge';
-        vistaEl.style.cssText = 'display:inline-flex;align-items:center;gap:4px;font-size:12px;color:#888;margin-left:10px;';
-        const catEl = document.getElementById('detailProductCategory');
-        if (catEl && catEl.parentNode) catEl.parentNode.appendChild(vistaEl);
-    }
-    vistaEl.innerHTML = `👁️ ${localTotal.toLocaleString()} vista${localTotal !== 1 ? 's' : ''}`;
-    // Leer el conteo real desde Firebase y actualizar
-    (async () => {
-        try {
-            const base = _fbRtdbUrl();
-            if (!base) return;
-            const res = await fetch(`${base}/analytics/vistas/${String(id)}/count.json`);
-            if (!res.ok) return;
-            const fbCount = await res.json();
-            if (typeof fbCount !== 'number' || fbCount <= 0) return;
-            const el = document.getElementById('detailVistasBadge');
-            if (el) el.innerHTML = `👁️ ${fbCount.toLocaleString()} vista${fbCount !== 1 ? 's' : ''}`;
-        } catch(e) {}
-    })();
+    registrarVistaProd(id);
 };
 } // end typeof abrirDetalleProducto guard
 
