@@ -52,4 +52,14 @@ jobs:
           fi
           # [skip ci] para no disparar de nuevo el workflow de push notifications
           git commit -m "chore: regenerar artefactos (sitemap, /p/, subcats) [skip ci]"
-          git push
+          for i in 1 2 3 4 5; do
+            if git push; then
+              echo "✅ artefactos publicados."
+              exit 0
+            fi
+            git fetch origin main
+            git rebase -X ours origin/main || { git checkout --ours -- p/ sitemap.xml subcategorias.json comisiones.json productos-lite.json 2>/dev/null; git add p/ sitemap.xml subcategorias.json comisiones.json productos-lite.json 2>/dev/null; GIT_EDITOR=true git rebase --continue || git rebase --abort; }
+            sleep $((i * 2))
+          done
+          echo "❌ No se pudieron publicar los artefactos." >&2
+          exit 1
