@@ -740,6 +740,7 @@
     <div class="form-group" style="margin-top:10px"><label class="form-label">Descripción</label><textarea class="form-textarea" id="pedit-desc" style="min-height:90px"></textarea></div>
     <div class="form-group" style="margin-top:12px">
       <label class="form-label">📸 Fotos del producto</label>
+      <p style="font-size:11px;color:var(--muted);margin:0 0 8px;line-height:1.5">Toca una foto para hacerla <b style="color:var(--gold)">⭐ principal</b> · Toca la <b>✕</b> para quitarla · Usa "Agregar fotos nuevas" para sumar más. La principal es la que se ve en la tienda.</p>
       <div id="pedit-fotos-lista" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px"></div>
       <label class="file-box" for="pedit-fotos-nuevas" style="padding:14px;cursor:pointer">
         <span class="fb-ico">➕</span>
@@ -779,7 +780,7 @@
     if (typeof window.go === 'function') window.go(map[tab] || tab);
   };
 </script>
-<script src="js/admin-copilot.js?v=2f71022e"></script>
+<script src="js/admin-copilot.js?v=2b3e080c"></script>
 
 <script>
 (function(){
@@ -1147,6 +1148,7 @@ function ofertaFinActivar(){
   p.precioActual=precio;
   p.ofertaFin=finTs.toISOString();
   p.descuento=p.precioOriginal>0?Math.round((p.precioOriginal-precio)/p.precioOriginal*100):0;
+  if(typeof marcarProductoModificado==='function') try{ marcarProductoModificado(id); }catch(e){}
   apSaveProds(); renderProductos(); fillOfertaDia();
   $('#ofertaFinPrecio').value=''; $('#ofertaFinVence').value='';
   showToast('🏷️ Oferta activada','Vuelve solo el '+finTs.toLocaleString('es-CU')+' · Sincroniza para publicar');
@@ -1156,6 +1158,7 @@ function ofertaFinCancelar(id){
   if(!confirm('¿Terminar ya la oferta de "'+p.nombre+'" y volver al precio original?')) return;
   if(Number(p.precioOriginal)>0) p.precioActual=p.precioOriginal;
   delete p.precioOriginal; delete p.ofertaFin; p.descuento=0;
+  if(typeof marcarProductoModificado==='function') try{ marcarProductoModificado(id); }catch(e){}
   apSaveProds(); renderProductos(); fillOfertaDia();
   showToast('↩️ Oferta terminada','Sincroniza para publicar');
 }
@@ -1361,9 +1364,9 @@ function renderProductos(){
   }
 }
 function apFind(id){ return PRODUCTOS.find(p=>String(p.id)===String(id)); }
-function apStock(id,d){ const p=apFind(id); if(!p) return; p.stock=Math.max(0,(Number(p.stock)||0)+d); apSaveProds(); renderProductos(); if(typeof renderStock==='function') renderStock(); }
-function apStockZero(id){ const p=apFind(id); if(!p) return; p.stock=0; apSaveProds(); renderProductos(); if(typeof renderStock==='function') renderStock(); }
-function apFav(id){ const p=apFind(id); if(!p) return; p.masVendido=!p.masVendido; apSaveProds(); renderProductos(); showToast(p.masVendido?'⭐ Destacado en Más Vendidos':'Quitado de Más Vendidos'); }
+function apStock(id,d){ const p=apFind(id); if(!p) return; p.stock=Math.max(0,(Number(p.stock)||0)+d); if(typeof marcarProductoModificado==='function') try{ marcarProductoModificado(id); }catch(e){} apSaveProds(); renderProductos(); if(typeof renderStock==='function') renderStock(); }
+function apStockZero(id){ const p=apFind(id); if(!p) return; p.stock=0; if(typeof marcarProductoModificado==='function') try{ marcarProductoModificado(id); }catch(e){} apSaveProds(); renderProductos(); if(typeof renderStock==='function') renderStock(); }
+function apFav(id){ const p=apFind(id); if(!p) return; p.masVendido=!p.masVendido; if(typeof marcarProductoModificado==='function') try{ marcarProductoModificado(id); }catch(e){} apSaveProds(); renderProductos(); showToast(p.masVendido?'⭐ Destacado en Más Vendidos':'Quitado de Más Vendidos'); }
 function apDel(id){ const p=apFind(id); if(!p) return; if(!confirm('¿Eliminar "'+(p.nombre||'')+'"? Esto lo quita del catálogo al sincronizar.')) return; if(typeof marcarProductoEliminado==='function') try{ marcarProductoEliminado(id); }catch(e){} const i=PRODUCTOS.findIndex(x=>String(x.id)===String(id)); if(i>=0) PRODUCTOS.splice(i,1); apSaveProds(); renderProductos(); showToast('🗑️ Eliminado','Sincroniza para publicar el cambio'); }
 function apEdit(id){ const p=apFind(id); if(!p) return; $('#pedit-id').value=id; $('#pedit-nombre').value=p.nombre||''; $('#pedit-precio').value=p.precioActual||''; $('#pedit-original').value=(Number(p.precioOriginal)>0?p.precioOriginal:''); $('#pedit-stock').value=Number(p.stock)||0; $('#pedit-comision').value=(Number(p.comision)>0?p.comision:''); $('#pedit-comision-moneda').value=p.comisionMoneda||'USD'; $('#pedit-desc').value=p.descripcion||''; $('#pedit-fav').checked=!!p.masVendido; const cs=$('#pedit-cat'); if(cs){ const cats=[...new Set(PRODUCTOS.map(x=>x.categoria).filter(Boolean))].sort(); cs.innerHTML=cats.map(c=>`<option value="${esc(c)}" ${c===p.categoria?'selected':''}>${esc(c)}</option>`).join(''); } const as=$('#pedit-almacen'); if(as){ as.innerHTML='<option value="">Sin asignar</option>'+Object.keys(ALMACENES).map(aid=>`<option value="${aid}" ${p.almacenId===aid?'selected':''}>${esc(ALMACENES[aid].nombre||aid)}</option>`).join(''); }
   // Cargar fotos actuales al working array y renderizar
@@ -1463,6 +1466,7 @@ async function apEditSave(){ const id=$('#pedit-id').value; const p=apFind(id); 
     p.imagenes = [];
     delete p.imagen;
   }
+  if(typeof marcarProductoModificado==='function') try{ marcarProductoModificado(id); }catch(e){}
   apSaveProds(); apEditClose(); renderProductos(); showToast('💾 Guardado','Sincroniza para publicarlo en la tienda');
 }
 

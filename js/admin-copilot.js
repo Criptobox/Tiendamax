@@ -1544,7 +1544,16 @@ function bindEvents(){
     if(act==='enableAlerts') enableAlerts();
     if(act==='openInicio') switchTo('inicio');
     if(act==='snooze'){ localStorage.setItem(LS.snooze, String(Date.now()+2*60*60*1000)); closeSheet(); toast('Copiloto oculto por 2 horas'); }
-    if(act==='task') switchTo(el.dataset.tab || 'inicio');
+    if(act==='task'){
+      // 'publicar-ahora' no es una pestaña: dispara la publicación real a la tienda.
+      if(el.dataset.tab==='publicar-ahora'){
+        closeSheet();
+        if(typeof window.sincronizarTodoConGitHub==='function'){ try{ window.sincronizarTodoConGitHub(); }catch(e){ toast('No pude iniciar la publicación.'); } }
+        else { toast('No pude iniciar la publicación.'); }
+      } else {
+        switchTo(el.dataset.tab || 'inicio');
+      }
+    }
     if(act==='dismiss') { const set=dismissedSet(); set.add(el.dataset.id); saveDismissed(set); state.tasks = state.tasks.filter(t=>t.id!==el.dataset.id); updateBubble(); renderSheet(); }
     if(act==='pushHot') queuePushForProduct(el.dataset.pid);
     if(act==='smartPush'){
