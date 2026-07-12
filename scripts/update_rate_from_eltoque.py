@@ -335,11 +335,27 @@ def save_config(config: dict[str, Any]) -> None:
 
 
 def main() -> int:
+    config = load_config()
+    previous = config.get("tasaMN")
+
+    # Obtener la tasa. Si TODAS las fuentes fallan, no rompemos el workflow:
+    # mantenemos la última tasa conocida (la tienda sigue mostrando la anterior)
+    # y salimos en verde. Solo fallamos si nunca hubo una tasa que mantener.
     try:
         rate, updated_at, source_name = fetch_eltoque_rate()
-        config = load_config()
-        previous = config.get("tasaMN")
+    except Exception as exc:  # noqa: BLE001
+        if previous is not None:
+            print(
+                f"⚠️ No se pudo obtener la tasa de elTOQUE ({exc}). "
+                f"Se mantiene la última tasa conocida: {previous}. "
+                f"No se modifica config.json.",
+                file=sys.stderr,
+            )
+            return 0
+        print(f"❌ No se pudo obtener la tasa y no hay tasa previa que mantener: {exc}", file=sys.stderr)
+        return 1
 
+    try:
         nueva = round(rate, 2)
         anterior = float(previous) if previous is not None else None
 

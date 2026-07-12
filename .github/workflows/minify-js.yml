@@ -13,8 +13,10 @@ permissions:
   contents: write
 
 # Una sola minificación a la vez; sin cancelar — si hay cola, espera.
+# Grupo compartido con build-css para que NO corran a la vez (evita la carrera
+# de push al commitear ambos bundles minificados sobre main).
 concurrency:
-  group: minify-js
+  group: repo-autobuild
   cancel-in-progress: false
 
 jobs:
