@@ -125,7 +125,7 @@ body.light-mode .id-pedido{color:#999;}
     function renderPedido(pedido) {
         var estadoIdx = getEstadoIndex(pedido.estado);
         var estadoActual = ESTADOS[estadoIdx];
-        var fechaStr = pedido.actualizado ? new Date(pedido.actualizado).toLocaleString('es-CU') : pedido.fecha;
+        var fechaStr = pedido.actualizado ? new Date(pedido.actualizado).toLocaleString('es-CU') : String(pedido.fecha||'').replace(/[&<>"']/g, function(c) { return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; });
 
         var timelineHtml = ESTADOS.map(function(e, i) {
             var clases = 'timeline-step';
