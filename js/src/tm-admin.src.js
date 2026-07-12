@@ -349,6 +349,7 @@ function abrirAdminPanel() {
     verificarEstadoBackend();
     actualizarCountdownProductSelect();
     cargarNumeroWhatsApp();
+    cargarEnvioTexto();
     poblarSelectOfertaDia();
     // FIX: Cargar analytics cuando se abre el panel admin
     setTimeout(() => {
@@ -702,6 +703,7 @@ function switchTab(tabName) {
     }
     if (tabName === 'configuracion') {
         setTimeout(cargarNumeroWhatsApp, 100);
+        setTimeout(cargarEnvioTexto, 100);
         setTimeout(cargarConfiguracionGitHub, 100);
     }
 }

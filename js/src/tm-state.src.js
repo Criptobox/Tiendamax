@@ -50,6 +50,33 @@ function cargarNumeroWhatsApp() {
     if (input && saved) input.value = saved;
 }
 
+// Texto real de cobertura/costo de envío — lo escribe el admin (⚙️ Configuración → 🚚 Envío).
+// Sin valor guardado, no se inventa "toda Cuba" ni ningún alcance: se muestra un texto
+// genérico honesto que no promete cobertura que no existe.
+function getEnvioTexto() {
+    const saved = (localStorage.getItem('envioTexto') || '').trim();
+    return saved || 'Según zona · costo aparte';
+}
+
+function guardarEnvioTexto() {
+    const input = document.getElementById('adminEnvioTexto');
+    const status = document.getElementById('envioTextoStatus');
+    if (!input) return;
+    const val = input.value.trim();
+    localStorage.setItem('envioTexto', val);
+    if (status) {
+        status.textContent = val ? '✅ Guardado' : '✅ Guardado (se mostrará "Según zona")';
+        status.style.color = '#2ECC71';
+    }
+    mostrarNotificacion('✅ Texto de envío guardado');
+}
+
+function cargarEnvioTexto() {
+    const saved = localStorage.getItem('envioTexto');
+    const input = document.getElementById('adminEnvioTexto');
+    if (input && saved) input.value = saved;
+}
+
 function _gaEvent(name, params) {
     try { if (typeof gtag === 'function') gtag('event', name, params || {}); } catch(e) {}
 }

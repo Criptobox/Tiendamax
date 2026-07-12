@@ -619,6 +619,13 @@
             <button class="btn btn-primary" style="width:100%;margin-top:12px" onclick="guardarTasaMNAdmin()">💾 Guardar tasa</button>
             <p id="tasaMNStatus" style="font-size:12px;color:var(--muted);margin-top:8px"></p>
           </div>
+          <div class="section">
+            <h3>🚚 Envío</h3>
+            <p style="font-size:12px;color:var(--muted);margin:-4px 0 12px">Se muestra en la tarjeta de confianza del detalle de producto. Escribí la cobertura y el costo reales — esto lo ve el cliente antes de pedir.</p>
+            <div class="form-group"><label class="form-label">Texto de cobertura/costo</label><input class="form-input" id="adminEnvioTexto" placeholder="Ej: La Habana y municipios cercanos · costo aparte según zona"></div>
+            <button class="btn btn-primary" style="width:100%;margin-top:12px" onclick="guardarEnvioTexto()">💾 Guardar</button>
+            <p id="envioTextoStatus" style="font-size:12px;color:var(--muted);margin-top:8px"></p>
+          </div>
         </div>
         <div class="section">
           <h3>🔥 Firebase (ventas, reseñas, notificaciones)</h3>
@@ -810,7 +817,7 @@
      agregarProductoForm, sincronizarTodoConGitHub, registrarVenta, etc. -->
 <!-- Bundle único (mismo orden: config→data→state→admin→product→catalog→init→ui→toast→iife→patches),
      generado por scripts/build_js_bundle.py a partir de js/src/*.src.js -->
-<script src="js/tm-bundle.js?v=d1b140e0"></script>
+<script src="js/tm-bundle.js?v=e7bd9a3d"></script>
 <script src="js/biometric-auth.js?v=343cb27b"></script>
 <script src="js/revolico_integration.js?v=b517b43a"></script>
 <script>
