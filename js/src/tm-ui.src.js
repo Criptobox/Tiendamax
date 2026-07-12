@@ -847,35 +847,13 @@ function enviarTicketCliente(ventaId) {
     const venta = ventas.find(v => v.id === ventaId);
     if (!venta) { mostrarNotificacion('⚠️ Venta no encontrada', 'error'); return; }
 
-    const numCorto = String(venta.id).slice(-6);
-    const tasa = (typeof getTasaMN === 'function') ? getTasaMN() : 0;
-    const totalMN = tasa > 0 ? Math.round(venta.total * tasa).toLocaleString('es-CU') : null;
-    const items = _ventaItems(venta);
-
-    const L = [];
-    L.push('✅📦 *TICKET DE COMPRA — TIENDAMAX* 📦✅');
-    L.push('━━━━━━━━━━━━━━━━━━━━━━');
-    L.push('');
-    L.push('📦 *Ticket Nº:* TM-' + numCorto);
-    L.push('📅 *Fecha:* ' + venta.fecha);
-    L.push('');
-    items.forEach(it => {
-        L.push('🔹 *' + (it.producto || '') + '*');
-        L.push('   ▸ Cant: *' + (it.cantidad || 1) + '*  ·  $' + Number(it.precio || 0).toFixed(2) + ' USD c/u');
+    const items = _ventaItems(venta).map(it => ({ nombre: it.producto, precio: it.precio, cantidad: it.cantidad }));
+    const msg = _mensajeOrdenWA(items, {
+        ticket: true,
+        numeroCorto: String(venta.id).slice(-6),
+        fecha: venta.fecha,
+        pedidoId: venta.id
     });
-    L.push('');
-    L.push('━━━━━━━━━━━━━━━━━━━━━━');
-    L.push('💰 *Total:* $' + Number(venta.total).toFixed(2) + ' USD');
-    if (totalMN) L.push('💵 *Total MN:* ' + totalMN + ' MN');
-    L.push('');
-    L.push('🚚 _Tu pedido está confirmado. Coordinaremos la entrega por aquí._');
-    L.push('');
-    L.push('📦 *Seguí tu pedido en tiempo real:*');
-    L.push('🔗 https://tiendamax.org/pedido.html?id=' + venta.id);
-    L.push('');
-    L.push('🙏 _¡Gracias por tu compra!_ ❤️');
-
-    const msg = encodeURIComponent(L.join('\n'));
     window.open('https://wa.me/' + getNumeroWhatsApp() + '?text=' + msg, '_blank', 'noopener,noreferrer');
     mostrarNotificacion('📤 Ticket enviado al cliente');
 }
