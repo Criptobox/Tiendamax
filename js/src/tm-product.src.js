@@ -658,7 +658,7 @@ if (_detailPrecioMNEl) {
         const local = obtenerVistasProd(prodId) || 0;
         if (local > 0) {
             vDiv.style.display = 'flex';
-            vDiv.innerHTML = '<span class="pv-inner">👁️ <strong>' + local.toLocaleString() + '</strong> personas vieron esto</span>';
+            vDiv.innerHTML = '<span class="pv-inner">👁️ <strong>' + local.toLocaleString() + '</strong> personas vieron este producto</span>';
         }
         (async () => {
             try {
@@ -672,7 +672,7 @@ if (_detailPrecioMNEl) {
                 const el = document.getElementById('detailPersonasViendo');
                 if (el) {
                     el.style.display = 'flex';
-                    el.innerHTML = '<span class="pv-inner">👁️ <strong>' + cnt.toLocaleString() + '</strong> personas vieron esto</span>';
+                    el.innerHTML = '<span class="pv-inner">👁️ <strong>' + cnt.toLocaleString() + '</strong> personas vieron este producto</span>';
                 }
             } catch(e) {}
         })();

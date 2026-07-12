@@ -350,3 +350,11 @@ body.light-mode #productDetailModal .detail-price-mn{ color:#777; }
   transition:width .3s ease;
 }
 body.light-mode #productDetailModal .stock-bar{ background:rgba(0,0,0,.06); }
+
+/* Contador "vieron este producto" — línea pequeña con ícono */
+.contador-personas .pv-inner{
+  display:inline-flex; align-items:center; gap:5px;
+  font-size:12px; color:#9a9aa2; font-weight:600;
+}
+.contador-personas .pv-inner strong{ color:#f2f2f5; }
+body.light-mode .contador-personas .pv-inner strong{ color:#1a1a1a; }
