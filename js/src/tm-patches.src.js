@@ -517,30 +517,6 @@ function initScrollAnimations() {
 // ── 6. EXPORTAR VENTAS A CSV ───────────────────────────────────────
 
 function mostrarVistaMeGusta() {
-    // Inyectar estilos para que las cards sean siempre visibles
-    if (!document.getElementById('meGustaStyles')) {
-        const st = document.createElement('style');
-        st.id = 'meGustaStyles';
-        st.textContent = `
-            #meGustaGrid .producto-card {
-                background: var(--card-bg, #fff) !important;
-                border: 1px solid rgba(128,128,128,0.2) !important;
-                border-bottom: 3px solid #e74c3c !important;
-                opacity: 1 !important;
-                visibility: visible !important;
-                display: flex !important;
-                flex-direction: column !important;
-            }
-            body.dark-mode #meGustaGrid .producto-card {
-                background: #1e1e1e !important;
-                color: #fff !important;
-            }
-            body.dark-mode #meGustaGrid .producto-card h3 { color: rgba(255,255,255,0.9) !important; }
-            body.dark-mode #meGustaGrid .producto-card .precio-actual { color: #e74c3c !important; }
-            body.dark-mode #meGustaGrid .producto-card .producto-description { color: rgba(255,255,255,0.6) !important; }
-        `;
-        document.head.appendChild(st);
-    }
     document.getElementById('vistaInicio').style.display    = 'none';
     document.getElementById('vistaCategoria').style.display = 'none';
     const vPed = document.getElementById('vistaPedidos');
@@ -595,43 +571,12 @@ function mostrarVistaMeGusta() {
         if (vacioEl) vacioEl.style.display = 'none';
         grid.style.display = '';
         grid.innerHTML = '';
-        const ofertaId = getOfertaDiaId();
+        // Reutiliza el mismo constructor de tarjeta que la grilla principal
+        // (tm-ui.src.js, expuesto como window._tmCrearCard) para que "Mis Me
+        // Gusta" se vea idéntico a las tarjetas nuevas, sin duplicar markup.
         prods.forEach(producto => {
-            const esAgotado   = producto.stock === 0;
-            const esOfertaDia = String(producto.id) === String(ofertaId);
-            const card = document.createElement('div');
-            card.className = 'producto-card' + (esAgotado ? ' card-agotado' : '');
-            card.onclick = () => abrirDetalleProducto(producto.id);
-            card.style.position = 'relative';
-            // Sanitización defensiva anti-XSS
-            const _id  = safeNum(producto.id);
-            const _nom = escapeHtml(producto.nombre);
-            const _des = escapeHtml(producto.descripcion || '');
-            const _img = escapeAttr(producto.imagen || '');
-            const _stk = safeNum(producto.stock);
-            const _txt = escapeHtml(getOfertaDiaTexto());
-            const stockHTML = esAgotado
-                ? '<div class="stock" style="color:#e74c3c;font-weight:700;">❌ Agotado</div>'
-                : '<div class="stock">📦 Stock: ' + _stk + ' unidades</div>' +
-                  '<button class="btn-pedir-card" data-nombre="' + _nom + '" onclick="event.stopPropagation();tmComprar(event,' + _id + ',this.dataset.nombre)">🛒 Pedir</button>';
-            card.innerHTML =
-                (esOfertaDia ? '<div class="badge-oferta-dia">' + _txt + '</div>' :
-                 esAgotado   ? '<div class="badge-agotado">AGOTADO</div>' :
-                 producto.masVendido ? '<div class="badge-vendido">🔥 Más Vendido</div>' : '') +
-                '<div class="producto-image">' +
-                    getMeGustaHTML(_id) +
-                    '<img src="' + _img + '" alt="' + _nom + '" loading="lazy" onerror="this.src=\'/iconos/favicon-192.png\';this.style.opacity=\'0.3\'">' +
-                    (producto.precioOriginal > 0 && producto.precioOriginal > producto.precioActual ? '<div class="badge">-$' + (producto.precioOriginal - producto.precioActual).toFixed(0) + '</div>' : '') +
-                '</div>' +
-                '<h3>' + _nom + '</h3>' +
-                '<p class="producto-description">' + _des + '</p>' +
-                '<p class="precio">' +
-                (producto.descuento > 0 ? '<span class="precio-tachado">$' + (Number(producto.precioActual) / (1 - producto.descuento / 100)).toFixed(2) + ' USD</span> ' : '') +
-                '<span class="precio-actual" data-usd="' + safeNum(producto.precioActual) + '">$' + Number(producto.precioActual).toFixed(2) + ' USD</span>' +
-                (producto.precioOriginal > 0 && producto.precioOriginal > producto.precioActual ? ' <span class="precio-ahorro">-$' + (parseFloat(producto.precioOriginal) - parseFloat(producto.precioActual)).toFixed(0) + '</span>' : '') +
-            '</p>' +
-                stockHTML;
-            grid.appendChild(card);
+            if (typeof window._tmCrearCard !== 'function') return;
+            grid.appendChild(window._tmCrearCard(producto));
         });
     }
     window.scrollTo({ top: 0, behavior: 'smooth' });

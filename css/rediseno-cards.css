@@ -347,7 +347,7 @@ body.light-mode #productDetailModal .detail-price-mn{ color:#777; }
 /* Caja de aviso de stock bajo + barra de color */
 #productDetailModal .detail-stock.stock-bajo{
   display:inline-block; font-size:13px; font-weight:700;
-  padding:8px 12px; border-radius:10px;
+  padding:8px 14px; border-radius:999px;
   background:rgba(230,126,34,.08); border:1px solid rgba(230,126,34,.25);
 }
 #productDetailModal .stock-bar{
