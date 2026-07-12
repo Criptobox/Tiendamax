@@ -334,3 +334,19 @@ body.light-mode #productDetailModal .detail-price-mn{ color:#777; }
 /* Wrapper del countdown dentro del modal (el contenido interno ya tiene su estilo) */
 #detailCountdown.detail-countdown-wrap{ margin:10px 0 4px; }
 #detailCountdown .producto-countdown{ width:100%; }
+
+/* Caja de aviso de stock bajo + barra de color */
+#productDetailModal .detail-stock.stock-bajo{
+  display:inline-block; font-size:13px; font-weight:700;
+  padding:8px 12px; border-radius:10px;
+  background:rgba(230,126,34,.08); border:1px solid rgba(230,126,34,.25);
+}
+#productDetailModal .stock-bar{
+  height:6px; border-radius:99px; background:rgba(255,255,255,.08); overflow:hidden;
+}
+#productDetailModal .stock-bar-fill{
+  height:100%; border-radius:99px;
+  background:linear-gradient(90deg, #e67e22, #f39c12);
+  transition:width .3s ease;
+}
+body.light-mode #productDetailModal .stock-bar{ background:rgba(0,0,0,.06); }

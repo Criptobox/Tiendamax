@@ -471,6 +471,7 @@ if (_detailPrecioMNEl) {
     } else {
         stockEl.innerHTML = `<span>📦 ${_stockN} unidades disponibles</span>`;
     }
+    stockEl.classList.toggle('stock-bajo', _stockN > 0 && _stockN <= 3);
     document.getElementById('detailStockBarFill').style.width =
         `${Math.min(100, Math.max(8, (p.stock / 20) * 100))}%`;
 
