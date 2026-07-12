@@ -362,6 +362,13 @@ function abrirDetalleProducto(id) {
     const hotBadge = document.getElementById('detailMasVendidoBadge');
     hotBadge.style.display = ((p.masVendido === true || p.masVendido === 'true') && !_agotadoModal) ? 'block' : 'none';
 
+    // Badge "recién llegado" — mismo criterio que las cards (esProductoNuevo, 7 días)
+    const nuevoBadgeEl = document.getElementById('detailNuevoBadge');
+    if (nuevoBadgeEl) {
+        const _esNuevo = (typeof esProductoNuevo === 'function') && esProductoNuevo(p) && !_agotadoModal;
+        nuevoBadgeEl.style.display = _esNuevo ? 'inline-flex' : 'none';
+    }
+
     // Precio
     const precioOriginal = p.descuento > 0
         ? (p.precioActual / (1 - p.descuento / 100))
