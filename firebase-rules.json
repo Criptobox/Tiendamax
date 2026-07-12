@@ -92,6 +92,21 @@
         "stack": { ".validate": "newData.isString() && newData.val().length <= 500" }
       }
     },
+    "auditoria_productos": {
+      ".read": true,
+      ".write": false,
+      "$auditId": {
+        ".write": "!data.exists()",
+        ".validate": "newData.hasChildren(['accion','productoId','nombre','ts']) && newData.child('accion').isString() && newData.child('accion').val().length <= 20 && newData.child('productoId').isString() && newData.child('productoId').val().length <= 40 && newData.child('nombre').isString() && newData.child('nombre').val().length <= 80 && newData.child('ts').isNumber() && newData.child('ts').val() >= now - 300000 && newData.child('ts').val() <= now + 60000",
+        "accion": { ".validate": "newData.isString() && newData.val().length <= 20" },
+        "productoId": { ".validate": "newData.isString() && newData.val().length <= 40" },
+        "nombre": { ".validate": "newData.isString() && newData.val().length <= 80" },
+        "ts": { ".validate": "newData.isNumber()" },
+        "campo": { ".validate": "newData.isString() && newData.val().length <= 20" },
+        "de": { ".validate": "newData.isString() && newData.val().length <= 120" },
+        "a": { ".validate": "newData.isString() && newData.val().length <= 120" }
+      }
+    },
     "avisos_stock": {
       "$productId": {
         "$tokenId": {
