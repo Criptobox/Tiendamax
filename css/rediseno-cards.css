@@ -282,3 +282,20 @@ body.light-mode .detail-badge-nuevo{ background:rgba(255,107,53,.10); }
   padding:5px 11px; border-radius:20px; z-index:4;
   pointer-events:none;
 }
+
+/* Trust badges como tarjetas con ícono (reemplaza las pills en línea) */
+#detailTrustBadges.detail-trust-badges{
+  display:grid; grid-template-columns:repeat(auto-fit, minmax(90px, 1fr));
+  gap:8px; margin-top:14px;
+}
+.detail-trust-card{
+  display:flex; flex-direction:column; align-items:center; text-align:center; gap:4px;
+  background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.09);
+  border-radius:14px; padding:12px 8px;
+}
+.detail-trust-card .dtc-ic{ font-size:20px; }
+.detail-trust-card .dtc-tx b{ display:block; font-size:11.5px; font-weight:800; color:#f2f2f5; }
+.detail-trust-card .dtc-tx small{ display:block; font-size:10px; color:#9a9aa2; margin-top:1px; }
+body.light-mode .detail-trust-card{ background:rgba(0,0,0,.03); border-color:rgba(0,0,0,.08); }
+body.light-mode .detail-trust-card .dtc-tx b{ color:#1a1a1a; }
+body.light-mode .detail-trust-card .dtc-tx small{ color:#8a8a92; }

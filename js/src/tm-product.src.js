@@ -453,10 +453,10 @@ if (_detailPrecioMNEl) {
         if (_qtyMas)   _qtyMas.disabled   = _stockN <= 1;
     }
 
-    // Badges extra: garantia, devolución, usado
+    // Badges extra: usado (devolución se movió a la tarjeta de confianza de arriba,
+    // #detailTrustBadges — mostrarla acá también sería repetir el mismo dato dos veces)
     const extBadges = document.getElementById('detailExtraBadges');
     let badges = '';
-    if (p.devolucion) badges += `<span class="detail-badge-tag dtag-devolucion">↩️ Devolución aceptada</span>`;
     if (p.usado) badges += `<span class="detail-badge-tag dtag-usado">♻️ Producto usado</span>`;
     extBadges.innerHTML = badges;
 
@@ -487,20 +487,24 @@ if (_detailPrecioMNEl) {
         }
     }
 
-    // Trust badges dinámicos (solo si el producto los tiene)
+    // Trust badges dinámicos: tarjetas con ícono (envío y pago siempre reales;
+    // garantía/devolución solo si el producto los tiene de verdad)
     const trustBadgesEl = document.getElementById('detailTrustBadges');
     if (trustBadgesEl) {
-        let trustHtml = '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;padding:12px;background:rgba(0,0,0,0.03);border-radius:10px;border:1px solid rgba(0,0,0,0.06);">';
-        trustHtml += '<span style="display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;padding:5px 10px;border-radius:8px;background:rgba(46,204,113,0.10);color:#2ECC71;">🔒 Pago contra entrega</span>';
+        const cards = [
+            { ic: '🚚', t: 'Envío', s: 'Toda Cuba' },
+            { ic: '🔒', t: 'Pago seguro', s: 'Contra entrega' }
+        ];
         if (p.garantia && String(p.garantia).trim()) {
-            trustHtml += `<span style="display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;padding:5px 10px;border-radius:8px;background:rgba(232,80,30,0.10);color:#E8501E;">🛡️ Garantía ${escapeHtml(p.garantia)}</span>`;
+            cards.push({ ic: '🛡️', t: 'Garantía', s: escapeHtml(String(p.garantia)) });
         }
         if (p.devolucion === true) {
-            trustHtml += '<span style="display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;padding:5px 10px;border-radius:8px;background:rgba(52,152,219,0.10);color:#3498DB;">↩️ Devolución aceptada</span>';
+            cards.push({ ic: '↩️', t: 'Devolución', s: 'Aceptada' });
         }
-        trustHtml += '</div>';
-        trustBadgesEl.innerHTML = trustHtml;
-        trustBadgesEl.style.display = 'block';
+        trustBadgesEl.innerHTML = cards.map(c =>
+            '<div class="detail-trust-card"><span class="dtc-ic">' + c.ic + '</span><div class="dtc-tx"><b>' + c.t + '</b><small>' + c.s + '</small></div></div>'
+        ).join('');
+        trustBadgesEl.style.display = 'grid';
     }
 
     // Descripción
