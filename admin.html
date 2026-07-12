@@ -786,17 +786,9 @@
 
 <!-- Motor real del admin (mismos scripts que admin.html) — expone verificarPassword,
      agregarProductoForm, sincronizarTodoConGitHub, registrarVenta, etc. -->
-<script src="js/src/tm-config.js?v=10cbd04d"></script>
-<script src="js/src/tm-data.js?v=4d0db939"></script>
-<script src="js/src/tm-state.js?v=c4ce49c9"></script>
-<script src="js/src/tm-admin.js?v=51393220"></script>
-<script src="js/src/tm-product.js?v=415c7ebb"></script>
-<script src="js/src/tm-catalog.js?v=9d088a6b"></script>
-<script src="js/src/tm-init.js?v=e23255ae"></script>
-<script src="js/src/tm-ui.js?v=563aaf21"></script>
-<script src="js/src/tm-toast.js?v=1f125e1c"></script>
-<script src="js/src/tm-iife.js?v=82c9804e"></script>
-<script src="js/src/tm-patches.js?v=60ed6767"></script>
+<!-- Bundle único (mismo orden: config→data→state→admin→product→catalog→init→ui→toast→iife→patches),
+     generado por scripts/build_js_bundle.py a partir de js/src/*.src.js -->
+<script src="js/tm-bundle.js?v=098a3abb"></script>
 <script src="js/biometric-auth.js?v=343cb27b"></script>
 <script src="js/revolico_integration.js?v=b517b43a"></script>
 <script>
