@@ -21,8 +21,10 @@ on:
 permissions:
   contents: write
 
+# Grupo compartido con minify-js para que NO corran a la vez (evita la carrera
+# de push al commitear ambos bundles sobre main).
 concurrency:
-  group: build-css
+  group: repo-autobuild
   cancel-in-progress: false
 
 jobs:
