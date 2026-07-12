@@ -429,9 +429,9 @@ if (_detailPrecioMNEl) {
                 const pad = n => String(n).padStart(2, '0');
                 const _tick = () => {
                     const rem = Math.max(0, _cd.endTime - Date.now());
-                    const hEl = document.getElementById('cd_h_' + p.id);
-                    const mEl = document.getElementById('cd_m_' + p.id);
-                    const sEl = document.getElementById('cd_s_' + p.id);
+                    const hEl = _cdWrap.querySelector('#cd_h_' + p.id);
+                    const mEl = _cdWrap.querySelector('#cd_m_' + p.id);
+                    const sEl = _cdWrap.querySelector('#cd_s_' + p.id);
                     if (hEl) hEl.textContent = pad(Math.floor(rem / 3600000));
                     if (mEl) mEl.textContent = pad(Math.floor((rem % 3600000) / 60000));
                     if (sEl) sEl.textContent = pad(Math.floor((rem % 60000) / 1000));
@@ -512,9 +512,7 @@ if (_detailPrecioMNEl) {
             return '🔧';
         };
         let chips = specs.map(s => `<div class="detail-chip"><span class="ic">${_iconoSpec(s)}</span><span class="tx"><b>${escapeHtml(s)}</b></span></div>`);
-        if (p.garantia && String(p.garantia).trim()) {
-            chips.push(`<div class="detail-chip"><span class="ic">🛡️</span><span class="tx"><small>Garantía</small><b>${escapeHtml(String(p.garantia))}</b></span></div>`);
-        }
+        // Garantía se muestra en la tarjeta de confianza de arriba (#detailTrustBadges) — no repetir acá.
         if (chips.length > 0) {
             specBadgesEl.className = 'detail-spec-badges detail-chips';
             specBadgesEl.innerHTML = chips.join('');

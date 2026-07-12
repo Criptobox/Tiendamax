@@ -358,6 +358,7 @@ body.light-mode #productDetailModal .stock-bar{ background:rgba(0,0,0,.06); }
 }
 .contador-personas .pv-inner strong{ color:#f2f2f5; }
 body.light-mode .contador-personas .pv-inner strong{ color:#1a1a1a; }
+body.light-mode .contador-personas .pv-inner{ color:#6b6b7a; }
 
 /* Botón "Pedir por WhatsApp" más grande/protagonista dentro del modal */
 #productDetailModal .detail-cta-row #detailBuyBtn.detail-buy-btn{
