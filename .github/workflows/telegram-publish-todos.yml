@@ -31,5 +31,19 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add bot/telegram_messages.json
-          git diff --cached --quiet || git commit -m "chore: guardar IDs mensajes Telegram"
-          git push || true
+          if git diff --cached --quiet; then
+            echo "Sin cambios de IDs para subir"
+            exit 0
+          fi
+          git commit -m "chore: guardar IDs mensajes Telegram"
+          for i in 1 2 3 4 5; do
+            if git push; then
+              echo "✅ IDs de Telegram guardados."
+              exit 0
+            fi
+            git fetch origin main
+            git rebase -X ours origin/main || { git checkout --ours -- bot/telegram_messages.json; git add bot/telegram_messages.json; GIT_EDITOR=true git rebase --continue || git rebase --abort; }
+            sleep $((i * 2))
+          done
+          echo "❌ No se pudieron guardar los IDs de mensajes de Telegram." >&2
+          exit 1

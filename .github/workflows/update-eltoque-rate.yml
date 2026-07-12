@@ -8,7 +8,12 @@ on:
 
 permissions:
   contents: write
-  actions: write 
+  actions: write
+
+# Evita que un workflow_dispatch manual choque con la corrida por cron (cada 30 min).
+concurrency:
+  group: update-eltoque-rate
+  cancel-in-progress: false
 
 jobs:
   update-rate:
@@ -75,3 +80,16 @@ jobs:
           gh workflow run send-push-notifications.yml \
             --repo ${{ github.repository }} \
             --ref main
+
+      - name: Publicar en GitHub Pages
+        if: steps.commit.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          echo "Disparando el deploy de Pages (los commits del bot no lo disparan solos)…"
+          curl -sS -X POST \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "https://api.github.com/repos/${{ github.repository }}/actions/workflows/pages.yml/dispatches" \
+            -d '{"ref":"main"}'
