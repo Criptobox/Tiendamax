@@ -663,6 +663,10 @@
           <p style="font-size:11.5px;color:var(--muted);margin:0 0 12px">Si algo se rompe para un cliente, sale aquí — sin depender de que te escriban a avisar.</p>
           <div id="an-errores"></div>
         </div>
+        <div class="section"><h3>📋 Auditoría de cambios <span class="badge">registro real</span></h3>
+          <p style="font-size:11.5px;color:var(--muted);margin:0 0 12px">Qué cambió en cada producto al publicar, y cuándo — para cuando algo "vuelve a salir" y no sabes por qué.</p>
+          <div id="an-auditoria"></div>
+        </div>
       </div>
 
       <!-- CLIENTES -->
@@ -788,7 +792,7 @@
      agregarProductoForm, sincronizarTodoConGitHub, registrarVenta, etc. -->
 <!-- Bundle único (mismo orden: config→data→state→admin→product→catalog→init→ui→toast→iife→patches),
      generado por scripts/build_js_bundle.py a partir de js/src/*.src.js -->
-<script src="js/tm-bundle.js?v=098a3abb"></script>
+<script src="js/tm-bundle.js?v=770408fe"></script>
 <script src="js/biometric-auth.js?v=343cb27b"></script>
 <script src="js/revolico_integration.js?v=b517b43a"></script>
 <script>
@@ -1953,6 +1957,7 @@ function renderAnalytics(){
   cargarVisitasWeb();
   cargarInteresProductos();
   cargarErroresJS();
+  cargarAuditoriaCambios();
   // Donut de productos por categoría, con un color por categoría
   const cont={}; PRODUCTOS.forEach(p=>{const c=p.categoria||'—'; cont[c]=(cont[c]||0)+1;});
   const entries=Object.entries(cont).sort((a,b)=>b[1]-a[1]);
@@ -2047,6 +2052,29 @@ async function cargarErroresJS(){
       return `<div style="padding:9px 10px;background:rgba(231,76,60,0.06);border:1px solid rgba(231,76,60,0.25);border-radius:9px;margin-bottom:6px">
         <div style="display:flex;justify-content:space-between;gap:8px;font-size:11px;color:var(--muted)"><span>${esc(e.pagina||'—')}</span><span>${fecha}</span></div>
         <div style="font-size:12.5px;color:#fff;margin-top:3px;word-break:break-word">${esc(e.mensaje||'')}</div>
+      </div>`;
+    }).join('');
+  }catch(e){ box.innerHTML='<div class="empty" style="padding:16px"><div class="ico">⚠️</div><small>No se pudo cargar (revisa conexión).</small></div>'; }
+}
+// Auditoría real de cambios en productos (Firebase /auditoria_productos, registrada
+// por _tmRegistrarAuditoriaCambios en cada "Actualizar tienda").
+async function cargarAuditoriaCambios(){
+  const box=$('#an-auditoria'); if(!box) return;
+  const base=rtdbBase();
+  if(!base){ box.innerHTML='<div class="empty" style="padding:16px"><div class="ico">📋</div><small>Configura Firebase para ver la auditoría real.</small></div>'; return; }
+  box.innerHTML='<div style="font-size:12px;color:var(--muted);padding:6px">Cargando…</div>';
+  try{
+    const r=await fetch(base+'/auditoria_productos.json?_='+Date.now(),{cache:'no-store'});
+    const d=r.ok?await r.json():null;
+    if(!d||typeof d!=='object'||!Object.keys(d).length){ box.innerHTML='<div class="empty" style="padding:16px"><div class="ico">📋</div><small>Sin cambios registrados todavía. Se registran al publicar con "Actualizar tienda".</small></div>'; return; }
+    const ICO={creado:'🆕',editado:'✏️',eliminado:'🗑️'};
+    const items=Object.values(d).filter(Boolean).sort((a,b)=>(b.ts||0)-(a.ts||0)).slice(0,15);
+    box.innerHTML=items.map(e=>{
+      const fecha=e.ts?new Date(e.ts).toLocaleString('es-CU',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}):'—';
+      const detalle = e.accion==='editado' ? `${esc(e.campo||'')}: "${esc(e.de||'')}" → "${esc(e.a||'')}"` : (e.accion==='creado'?'Producto nuevo':'Producto eliminado');
+      return `<div style="padding:9px 10px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:9px;margin-bottom:6px">
+        <div style="display:flex;justify-content:space-between;gap:8px;font-size:11px;color:var(--muted)"><span>${ICO[e.accion]||'•'} ${esc(e.nombre||('#'+e.productoId))}</span><span>${fecha}</span></div>
+        <div style="font-size:12px;color:#fff;margin-top:3px;word-break:break-word">${detalle}</div>
       </div>`;
     }).join('');
   }catch(e){ box.innerHTML='<div class="empty" style="padding:16px"><div class="ico">⚠️</div><small>No se pudo cargar (revisa conexión).</small></div>'; }

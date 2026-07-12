@@ -524,6 +524,10 @@ function obtenerProductosEliminados() {
 // desde otra sesión o dispositivo). Los que existen en el repo y no en memoria se
 // conservan salvo que el admin los haya borrado. Si el repo no responde, devuelve
 // el array en memoria tal cual (sin cambiar el comportamiento anterior).
+// Guarda el último productos.json remoto que se pudo leer, para poder diffearlo
+// contra lo que se publica y armar la auditoría de cambios (ver más abajo).
+let _tmUltimoRemotoParaAuditoria = null;
+
 async function _tmMergeProductosConRepo(user, repo) {
     let remoto = null;
     try {
@@ -531,6 +535,7 @@ async function _tmMergeProductosConRepo(user, repo) {
         if (r.ok) { const j = await r.json(); if (Array.isArray(j)) remoto = j; else if (j && Array.isArray(j.productos)) remoto = j.productos; }
     } catch (e) {}
     if (!Array.isArray(remoto)) return productos.slice();
+    _tmUltimoRemotoParaAuditoria = remoto;
 
     const mods = new Set(obtenerProductosModificados().map(String));
     const del  = new Set(obtenerProductosEliminados().map(String));
@@ -550,6 +555,56 @@ async function _tmMergeProductosConRepo(user, repo) {
         if (p && p.id != null && !memIds.has(String(p.id)) && !del.has(String(p.id))) merged.push(p);
     });
     return merged;
+}
+
+// ── Auditoría de cambios reales de productos (Firebase /auditoria_productos) ──
+// Sin esto, cuando "algo vuelve a salir" (como reportó el admin) no hay forma
+// de ver qué cambió de verdad ni cuándo — solo snapshot()/rollback manual en
+// Herramientas, no automático. Compara el productos.json remoto (antes de
+// publicar, guardado por _tmMergeProductosConRepo) contra lo que se va a subir,
+// y registra un evento por cada producto creado/eliminado/campo editado.
+// Best-effort: si Firebase no está configurado o falla, no bloquea el publish.
+const _TM_AUDITORIA_CAMPOS = ['nombre', 'precioActual', 'precioOriginal', 'stock', 'categoria', 'subcategoria', 'masVendido', 'imagen'];
+const _TM_AUDITORIA_MAX = 20; // tope por sync (evita ráfagas gigantes con CSV masivo)
+
+function _tmRegistrarAuditoriaCambios(prodsFinal) {
+    const remoto = _tmUltimoRemotoParaAuditoria;
+    const base = _fbRtdbUrl();
+    if (!base || !Array.isArray(remoto) || !Array.isArray(prodsFinal)) return;
+    const norm = v => (v === undefined || v === null) ? '' : String(v);
+
+    const oldById = {};
+    remoto.forEach(p => { if (p && p.id != null) oldById[String(p.id)] = p; });
+    const newIds = new Set(prodsFinal.map(p => String(p.id)));
+    const entradas = [];
+
+    prodsFinal.forEach(p => {
+        const id = String(p.id);
+        const old = oldById[id];
+        const nombre = norm(p.nombre).slice(0, 80);
+        if (!old) { entradas.push({ accion: 'creado', productoId: id, nombre }); return; }
+        _TM_AUDITORIA_CAMPOS.forEach(campo => {
+            const de = norm(old[campo]), a = norm(p[campo]);
+            if (de === a) return;
+            entradas.push({ accion: 'editado', productoId: id, nombre, campo, de: de.slice(0, 120), a: a.slice(0, 120) });
+        });
+    });
+    remoto.forEach(p => {
+        if (p && p.id != null && !newIds.has(String(p.id))) {
+            entradas.push({ accion: 'eliminado', productoId: String(p.id), nombre: norm(p.nombre).slice(0, 80) });
+        }
+    });
+    if (!entradas.length) return;
+
+    const ts = Date.now();
+    entradas.slice(0, _TM_AUDITORIA_MAX).forEach((e, i) => {
+        const id2 = `${ts}_${i}_${Math.random().toString(36).slice(2, 6)}`;
+        fetch(`${base}/auditoria_productos/${id2}.json`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(Object.assign({ ts }, e))
+        }).catch(() => {});
+    });
 }
 
 // ── Anti-pisado: igual que _tmMergeProductosConRepo pero para categorías.
@@ -724,6 +779,7 @@ async function sincronizarTodoConGitHub() {
     // Anti-pisado: fusionar con el productos.json del repo para no revertir cambios
     // (p.ej. fotos) hechos desde otra sesión/dispositivo que no están en esta memoria.
     const _prodsFinal = await _tmMergeProductosConRepo(user, repo);
+    try { _tmRegistrarAuditoriaCambios(_prodsFinal); } catch (e) {}
     const _productosLite = _prodsFinal.map(p => { const { descripcion, ...r } = p; return r; });
     // Anti-pisado: mismo criterio que productos, para no borrar categorías/
     // subcategorías agregadas desde otra sesión/dispositivo al publicar.
