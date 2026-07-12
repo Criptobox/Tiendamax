@@ -1601,7 +1601,7 @@ function catRenombrar(nm){
   const names=catNombres().map(c=>c===nm?nuevo:c);
   const ic=Object.assign({},(CATEGORIAS&&CATEGORIAS.iconos)||{}); if(ic[nm]){ ic[nuevo]=ic[nm]; delete ic[nm]; }
   _saveCats(names, ic);
-  syncProductos(); PRODUCTOS.forEach(p=>{ if(norm(p.categoria)===norm(nm)) p.categoria=nuevo; }); apSaveProds();
+  syncProductos(); PRODUCTOS.forEach(p=>{ if(norm(p.categoria)===norm(nm)){ p.categoria=nuevo; if(typeof marcarProductoModificado==='function') try{ marcarProductoModificado(p.id); }catch(e){} } }); apSaveProds();
   try{ let map=JSON.parse(localStorage.getItem('subcategorias')||'{}'); if(map[nm]){ map[nuevo]=map[nm]; delete map[nm]; localStorage.setItem('subcategorias',JSON.stringify(map)); SUBCATS=map; } }catch(e){}
   renderCategorias(); renderProductos(); fillAgregarCategorias();
   showToast('✏️ Categoría renombrada','Pulsa "Actualizar tienda" en ⚙️ para publicar');
@@ -1633,7 +1633,7 @@ function subRenombrar(cat, s){
   let map; try{ map=JSON.parse(localStorage.getItem('subcategorias')||'{}'); }catch(e){ map={}; }
   if(map[cat]) map[cat]=map[cat].map(x=>x===s?nuevo:x);
   localStorage.setItem('subcategorias',JSON.stringify(map)); SUBCATS=map;
-  syncProductos(); PRODUCTOS.forEach(p=>{ if(norm(p.categoria)===norm(cat)&&norm(p.subcategoria)===norm(s)) p.subcategoria=nuevo; }); apSaveProds();
+  syncProductos(); PRODUCTOS.forEach(p=>{ if(norm(p.categoria)===norm(cat)&&norm(p.subcategoria)===norm(s)){ p.subcategoria=nuevo; if(typeof marcarProductoModificado==='function') try{ marcarProductoModificado(p.id); }catch(e){} } }); apSaveProds();
   renderCategorias();
   showToast('✏️ Subcategoría renombrada','Pulsa "Actualizar tienda" en ⚙️ para publicar');
 }
@@ -1672,7 +1672,7 @@ async function cargarAlmacenes(){
       if(!prods || typeof prods!=='object') return;
       Object.keys(prods).forEach(prodId=>{
         const p=PRODUCTOS.find(x=>String(x.id)===String(prodId));
-        if(p && p.almacenId!==almId){ p.almacenId=almId; huboAsignaciones=true; }
+        if(p && p.almacenId!==almId){ p.almacenId=almId; huboAsignaciones=true; if(typeof marcarProductoModificado==='function') try{ marcarProductoModificado(p.id); }catch(e){} }
       });
     });
     if(huboAsignaciones){ apSaveProds(); renderProductos(); }
@@ -1699,7 +1699,7 @@ function almBorrar(id, nombre){
   if(!confirm('¿Borrar el almacén "'+nombre+'"?'+(enUso?(' '+enUso+' producto(s) quedarán sin almacén asignado.'):''))) return;
   const base=rtdbBase(); if(base){ fetch(base+'/almacenes/'+id+'.json',{method:'DELETE'}).catch(()=>{}); }
   delete ALMACENES[id];
-  PRODUCTOS.forEach(p=>{ if(p.almacenId===id) delete p.almacenId; });
+  PRODUCTOS.forEach(p=>{ if(p.almacenId===id){ delete p.almacenId; if(typeof marcarProductoModificado==='function') try{ marcarProductoModificado(p.id); }catch(e){} } });
   if(enUso) apSaveProds();
   renderAlmacen(); renderProductos();
   showToast('🗑️ Almacén borrado');

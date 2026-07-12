@@ -140,6 +140,28 @@
         }
       }
     },
+    "pedidos": {
+      ".read": true,
+      ".write": false,
+      "$pedidoId": {
+        ".write": true,
+        ".validate": "newData.hasChildren(['fecha','items','total','estado','actualizado']) && newData.child('fecha').isString() && newData.child('fecha').val().length <= 60 && newData.child('total').isNumber() && newData.child('total').val() >= 0 && newData.child('estado').isString() && newData.child('estado').val().length <= 20 && newData.child('actualizado').isNumber()",
+        "id": { ".validate": "newData.isNumber() || newData.isString()" },
+        "fecha": { ".validate": "newData.isString() && newData.val().length <= 60" },
+        "estado": { ".validate": "newData.isString() && newData.val().length <= 20" },
+        "total": { ".validate": "newData.isNumber() && newData.val() >= 0" },
+        "actualizado": { ".validate": "newData.isNumber()" },
+        "clienteTs": { ".validate": "newData.isNumber()" },
+        "items": {
+          "$idx": {
+            "id": { ".validate": true },
+            "nombre": { ".validate": "newData.isString() && newData.val().length <= 120" },
+            "cantidad": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 10000" },
+            "precio": { ".validate": "newData.isNumber() && newData.val() >= 0" }
+          }
+        }
+      }
+    },
     "ventas": {
       ".read": true,
       ".write": false,
