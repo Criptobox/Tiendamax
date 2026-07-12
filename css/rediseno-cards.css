@@ -443,3 +443,11 @@ html body .recientes-grid .producto-card.pcard-v2 .precio-actual{
 .recientes-grid .producto-card.pcard-v2 .pv2-photo .btn-megusta{
   width:24px; height:24px; font-size:11px;
 }
+
+/* Precio del modal en modo claro: #detailPriceActual (ID) le ganaba a
+   .detail-price-main/.precio-actual (clase) en especificidad, así que
+   se quedaba con el naranja de modo oscuro sobre fondo claro — bajo
+   contraste, se veía "borroso". */
+html body.light-mode #detailPriceActual{
+  color:#E8501E !important; -webkit-text-fill-color:#E8501E !important;
+}

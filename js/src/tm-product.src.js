@@ -473,7 +473,7 @@ if (_detailPrecioMNEl) {
     }
     stockEl.classList.toggle('stock-bajo', _stockN > 0 && _stockN <= 3);
     document.getElementById('detailStockBarFill').style.width =
-        `${Math.min(100, Math.max(8, (p.stock / 20) * 100))}%`;
+        _stockN === 0 ? '0%' : `${Math.min(100, Math.max(8, (_stockN / 20) * 100))}%`;
 
     // Selector de cantidad — reset a 1, tope = stock, oculto si agotado
     _detalleMaxStock = Math.max(1, _stockN);
