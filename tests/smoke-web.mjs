@@ -69,6 +69,53 @@ const fallo = (msg) => { console.error('❌ ' + msg); fallos++; };
   const graves = errs.filter(e => !/Unexpected token '<'|Failed to fetch|NetworkError|Load failed/.test(e));
   if (graves.length) fallo('admin: errores de página → ' + graves.join(' | '));
   console.log('✓ admin:', JSON.stringify({ ...st, viewsRecorridas: views.length }), '· errores graves:', graves.length);
+
+  // ── Regresión: marcar varios agotados en bloque debe registrar el cambio
+  // para publicar (bug real: apBulkZero no llamaba a marcarProductoModificado
+  // y el agotado revertía al publicar — ver PR #53). ──
+  await page.evaluate(() => window.switchTab && window.switchTab('productos'));
+  await page.waitForTimeout(400);
+  const bulkOk = await page.evaluate(() => {
+    const ps = (window.productos || []).filter(p => p.stock > 0).slice(0, 2);
+    if (ps.length < 2) return { skip: true };
+    localStorage.removeItem('productosModificados');
+    ps.forEach(p => window.apSelTgl(String(p.id)));
+    window.apBulkZero();
+    const mods = JSON.parse(localStorage.getItem('productosModificados') || '[]').map(String);
+    const allMarked = ps.every(p => mods.includes(String(p.id)));
+    const allZero = ps.every(p => { const f = (window.productos || []).find(x => String(x.id) === String(p.id)); return f && f.stock === 0; });
+    return { allMarked, allZero };
+  });
+  if (!bulkOk.skip && (!bulkOk.allMarked || !bulkOk.allZero)) fallo('admin: bulk agotado no marca modificado → ' + JSON.stringify(bulkOk));
+
+  // ── Regresión: el modal de editar producto debe quedar SIEMPRE por encima
+  // del panel del Copiloto IA (bug real: copiloto z-index:99999 > pmodal
+  // z-index:200 lo tapaba entero — ver PR #54). ──
+  const zOk = await page.evaluate(() => {
+    const pmodal = getComputedStyle(document.querySelector('.pmodal') || document.body).zIndex;
+    const copBubble = document.querySelector('.tm-copilot-bubble, .tm-copilot-sheet');
+    const copZ = copBubble ? getComputedStyle(copBubble).zIndex : '0';
+    return { pmodalZ: Number(pmodal) || 0, copZ: Number(copZ) || 0 };
+  });
+  if (zOk.pmodalZ <= zOk.copZ) fallo('admin: .pmodal (' + zOk.pmodalZ + ') no está por encima del copiloto (' + zOk.copZ + ')');
+
+  // ── Regresión: editar nombre/foto de un producto debe guardar Y marcar
+  // el producto como modificado (bug real: apEditSave/apStock/apFav/
+  // almProductoToggle/_ofertasFinAutoRevertir no marcaban — ver PR #51/#53). ──
+  const editOk = await page.evaluate(() => {
+    const p = (window.productos || [])[0];
+    if (!p) return { skip: true };
+    window.apEdit(String(p.id));
+    localStorage.removeItem('productosModificados');
+    const nombreInput = document.getElementById('pedit-nombre');
+    nombreInput.value = 'TEST REGRESION ' + Date.now();
+    nombreInput.dispatchEvent(new Event('input', { bubbles: true }));
+    window.apEditSave();
+    const mods = JSON.parse(localStorage.getItem('productosModificados') || '[]').map(String);
+    return { marked: mods.includes(String(p.id)), modalClosed: !document.getElementById('pedit-modal').classList.contains('show') };
+  });
+  if (!editOk.skip && (!editOk.marked || !editOk.modalClosed)) fallo('admin: guardar edición no marca modificado o no cierra → ' + JSON.stringify(editOk));
+
   await ctx.close();
 }
 

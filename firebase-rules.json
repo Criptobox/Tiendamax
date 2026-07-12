@@ -79,6 +79,19 @@
     },
     ".read": false,
     ".write": false,
+    "errores_js": {
+      ".read": true,
+      ".write": false,
+      "$errId": {
+        ".write": "!data.exists()",
+        ".validate": "newData.hasChildren(['mensaje','pagina','ts']) && newData.child('mensaje').isString() && newData.child('mensaje').val().length > 0 && newData.child('mensaje').val().length <= 300 && newData.child('pagina').isString() && newData.child('pagina').val().length <= 200 && newData.child('ts').isNumber() && newData.child('ts').val() >= now - 300000 && newData.child('ts').val() <= now + 60000",
+        "mensaje": { ".validate": "newData.isString() && newData.val().length <= 300" },
+        "pagina": { ".validate": "newData.isString() && newData.val().length <= 200" },
+        "ts": { ".validate": "newData.isNumber()" },
+        "ua": { ".validate": "newData.isString() && newData.val().length <= 200" },
+        "stack": { ".validate": "newData.isString() && newData.val().length <= 500" }
+      }
+    },
     "avisos_stock": {
       "$productId": {
         "$tokenId": {

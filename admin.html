@@ -7,6 +7,7 @@
 <meta name="robots" content="noindex,nofollow">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: blob: https:; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self' https://*.googleapis.com https://*.firebaseio.com https://*.firebasedatabase.app https://fcm.googleapis.com https://raw.githubusercontent.com https://api.github.com https://openrouter.ai https://api.deepseek.com https://api.groq.com https://api.anthropic.com https://generativelanguage.googleapis.com; frame-src 'self' https://tiendamax-8feb5.firebaseapp.com https://tiendamax-8feb5.web.app; object-src 'none'; base-uri 'self'; frame-ancestors 'self'">
 <title>TiendaMax Admin</title>
+<script src="js/error-report.js?v=c6699a5a"></script>
 <link rel="icon" type="image/png" sizes="32x32" href="/iconos/favicon-32.png"><link rel="icon" type="image/png" sizes="192x192" href="/iconos/favicon-192.png">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;900&display=swap" rel="stylesheet">
 <style>
@@ -658,6 +659,10 @@
           <div class="grid-2" id="an-interes" style="gap:16px"><div id="an-top-vistas"></div><div id="an-top-wa"></div></div>
         </div>
         <div class="section"><h3>Productos por categoría</h3><div id="an-cat"></div></div>
+        <div class="section"><h3>🐛 Errores recientes en la tienda <span class="badge">registro real</span></h3>
+          <p style="font-size:11.5px;color:var(--muted);margin:0 0 12px">Si algo se rompe para un cliente, sale aquí — sin depender de que te escriban a avisar.</p>
+          <div id="an-errores"></div>
+        </div>
       </div>
 
       <!-- CLIENTES -->
@@ -1955,6 +1960,7 @@ function renderAnalytics(){
   $('#an-kpis').innerHTML=[['','Productos',PRODUCTOS.length],['gold','Valor inventario',money(totalVal)],['success','Vendido',money(total)],['info','Visitas a la web','<span id="an-visitas">…</span>']].map(([c,l,v])=>`<div class="kpi ${c}"><div class="lbl">${l}</div><div class="val">${v}</div></div>`).join('');
   cargarVisitasWeb();
   cargarInteresProductos();
+  cargarErroresJS();
   // Donut de productos por categoría, con un color por categoría
   const cont={}; PRODUCTOS.forEach(p=>{const c=p.categoria||'—'; cont[c]=(cont[c]||0)+1;});
   const entries=Object.entries(cont).sort((a,b)=>b[1]-a[1]);
@@ -2032,6 +2038,26 @@ async function cargarInteresProductos(){
   const [vistas,wa]=await Promise.all([fetchMap('/analytics/vistas.json'),fetchMap('/analytics/whatsapp.json')]);
   boxV.innerHTML=H('👁','Más vistos')+_barListInteres(vistas,nombreDe,'#4FA8FF');
   boxW.innerHTML=H('💬','Más pedidos por WhatsApp')+_barListInteres(wa,nombreDe,'#25D366');
+}
+// Errores JS reales capturados en la tienda/admin (js/error-report.js → Firebase /errores_js)
+async function cargarErroresJS(){
+  const box=$('#an-errores'); if(!box) return;
+  const base=rtdbBase();
+  if(!base){ box.innerHTML='<div class="empty" style="padding:16px"><div class="ico">🐛</div><small>Configura Firebase para ver errores reales.</small></div>'; return; }
+  box.innerHTML='<div style="font-size:12px;color:var(--muted);padding:6px">Cargando…</div>';
+  try{
+    const r=await fetch(base+'/errores_js.json?_='+Date.now(),{cache:'no-store'});
+    const d=r.ok?await r.json():null;
+    if(!d||typeof d!=='object'||!Object.keys(d).length){ box.innerHTML='<div class="empty" style="padding:16px"><div class="ico">✅</div><small>Sin errores registrados. Buena señal.</small></div>'; return; }
+    const items=Object.values(d).filter(Boolean).sort((a,b)=>(b.ts||0)-(a.ts||0)).slice(0,10);
+    box.innerHTML=items.map(e=>{
+      const fecha=e.ts?new Date(e.ts).toLocaleString('es-CU',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}):'—';
+      return `<div style="padding:9px 10px;background:rgba(231,76,60,0.06);border:1px solid rgba(231,76,60,0.25);border-radius:9px;margin-bottom:6px">
+        <div style="display:flex;justify-content:space-between;gap:8px;font-size:11px;color:var(--muted)"><span>${esc(e.pagina||'—')}</span><span>${fecha}</span></div>
+        <div style="font-size:12.5px;color:#fff;margin-top:3px;word-break:break-word">${esc(e.mensaje||'')}</div>
+      </div>`;
+    }).join('');
+  }catch(e){ box.innerHTML='<div class="empty" style="padding:16px"><div class="ico">⚠️</div><small>No se pudo cargar (revisa conexión).</small></div>'; }
 }
 
 /* ============ CLIENTES ============ */
