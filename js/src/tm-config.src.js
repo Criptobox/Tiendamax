@@ -766,10 +766,11 @@ async function renderizarResenas(productoId) {
     // Mostrar el promedio arriba del modal (junto al precio)
     if (ratingTop) {
         ratingTop.innerHTML =
-            '<span style="color:#f59e0b;font-size:16px;letter-spacing:1px;">' + '★'.repeat(Math.round(parseFloat(promedio))) + '</span>' +
-            '<span style="font-weight:800;font-size:15px;color:#f2f2f5;">' + promedio + '</span>' +
-            '<span style="font-size:12px;color:#9a9aa2;">(' + resenas.length + ' reseña' + (resenas.length !== 1 ? 's' : '') + ')</span>';
-        ratingTop.style.display = 'inline-flex';
+            '<span class="drt-stars">' + '★'.repeat(Math.round(parseFloat(promedio))) + '☆'.repeat(5 - Math.round(parseFloat(promedio))) + '</span>' +
+            '<span class="drt-num">' + promedio + '</span>' +
+            '<span class="drt-count">· ' + resenas.length + ' reseña' + (resenas.length !== 1 ? 's' : '') + '</span>' +
+            '<button type="button" class="drt-ver-todas" onclick="document.querySelector(\'.detail-resenas-section\').scrollIntoView({behavior:\'smooth\'})">Ver todas</button>';
+        ratingTop.style.display = 'flex';
     }
     // El promedio ya se muestra arriba (#detailRatingTop); abajo va directo a la lista.
     el.innerHTML =
