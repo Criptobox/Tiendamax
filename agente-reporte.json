@@ -1,45 +1,15 @@
 {
-  "generado": "2026-07-11T10:09:48.958695+00:00",
+  "generado": "2026-07-12T10:19:32.185597+00:00",
   "productos": 109,
-  "urgentes": 7,
-  "advertencias": 28,
+  "urgentes": 1,
+  "advertencias": 31,
   "info": 11,
-  "resumen": "Anoche revisé tus 109 productos y encontré 7 urgente(s), 28 advertencia(s), 11 de info.",
+  "resumen": "Anoche revisé tus 109 productos y encontré 1 urgente(s), 31 advertencia(s), 11 de info.",
   "detalle": [
     {
       "tipo": "nombre",
-      "nombre": "Router inalámbrico gibabite de doble banda Tp-link Archer A6 AC1200",
-      "detalle": "→ Router Inalámbrico Gibabite de Doble Banda Tp-link Archer A6 AC1200"
-    },
-    {
-      "tipo": "nombre",
-      "nombre": "Router TP-Link Archer AX21",
-      "detalle": "→ Router Tp-link Archer AX21"
-    },
-    {
-      "tipo": "nombre",
-      "nombre": "Cargador tactil de bateria inteligente 12v /15A",
-      "detalle": "→ Cargador Tactil de Batería Inteligente 12V /15A"
-    },
-    {
-      "tipo": "nombre",
-      "nombre": "Cargador de 12v(20A) y 24v(10A) configurable",
-      "detalle": "→ Cargador de 12V(20A) y 24V(10A) Configurable"
-    },
-    {
-      "tipo": "nombre",
-      "nombre": "Cargador inteligente de 12v(35A) y 24v(15A)",
-      "detalle": "→ Cargador Inteligente de 12V(35A) y 24V(15A)"
-    },
-    {
-      "tipo": "nombre",
-      "nombre": "RouterBoard MikroTik hEX S RB750Gr3",
-      "detalle": "→ Routerboard Mikrotik Hex s RB750GR3"
-    },
-    {
-      "tipo": "nombre",
-      "nombre": "Router Tenda TX12 Pro (AX3000 Wi-Fi 6)",
-      "detalle": "→ Router Tenda TX12 PRO (AX3000 Wi-fi 6)"
+      "nombre": "Router Kuwfi   Transmisión WiFi de 150 Mbps",
+      "detalle": "→ Router Kuwfi Transmisión WiFi de 150 Mbps"
     },
     {
       "tipo": "agotado",
@@ -74,6 +44,11 @@
     {
       "tipo": "agotado",
       "nombre": "Cargador 10 Amperes",
+      "detalle": "agotado (stock 0)"
+    },
+    {
+      "tipo": "agotado",
+      "nombre": "♻️controlador Solar Powmr M100 PRO - MPPT de 100 Amp♻️",
       "detalle": "agotado (stock 0)"
     },
     {
@@ -144,6 +119,16 @@
     {
       "tipo": "agotado",
       "nombre": "Cargadores Inteligentes de 25A",
+      "detalle": "agotado (stock 0)"
+    },
+    {
+      "tipo": "agotado",
+      "nombre": "Controlador Solar de 60 Amp Powmr M60 ULTRA",
+      "detalle": "agotado (stock 0)"
+    },
+    {
+      "tipo": "agotado",
+      "nombre": "Controlador Solar Powmr M100 PRO - MPPT de 80 Amp",
       "detalle": "agotado (stock 0)"
     },
     {
