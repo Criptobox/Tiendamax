@@ -242,8 +242,19 @@ async function subirMultiplesImagenes(inputId) {
 function renderizarGaleriaDetalle(producto) {
     const thumbs = document.getElementById('detailGalleryThumbs');
     const img = document.getElementById('detailProductImage');
+    const counter = document.getElementById('detailPhotoCounter');
     if (!thumbs || !img) return;
     const imagenes = obtenerImagenesProducto(producto);
+
+    if (counter) {
+        if (imagenes.length > 1) {
+            counter.textContent = '1 / ' + imagenes.length;
+            counter.style.display = 'block';
+        } else {
+            counter.style.display = 'none';
+        }
+    }
+
     if (imagenes.length <= 1) {
         thumbs.style.display = 'none';
         thumbs.innerHTML = '';
@@ -251,7 +262,7 @@ function renderizarGaleriaDetalle(producto) {
     }
     thumbs.style.display = 'flex';
     thumbs.innerHTML = imagenes.map((url, i) =>
-        '<button type="button" class="detail-gallery-thumb' + (i === 0 ? ' active' : '') + '" data-img="' + escapeAttr(url) + '" aria-label="Ver imagen ' + (i + 1) + '">' +
+        '<button type="button" class="detail-gallery-thumb' + (i === 0 ? ' active' : '') + '" data-img="' + escapeAttr(url) + '" data-idx="' + i + '" aria-label="Ver imagen ' + (i + 1) + '">' +
             '<img src="' + escapeAttr(url) + '" alt="" loading="lazy" onerror="this.style.display=\'none\'">' +
         '</button>'
     ).join('');
@@ -264,6 +275,7 @@ function renderizarGaleriaDetalle(producto) {
             _resetZoomPan(img);
             thumbs.querySelectorAll('.detail-gallery-thumb').forEach(b => b.classList.remove('active'));
             this.classList.add('active');
+            if (counter) counter.textContent = (parseInt(this.getAttribute('data-idx'), 10) + 1) + ' / ' + imagenes.length;
         });
     });
     _initSwipeGaleria(img);
