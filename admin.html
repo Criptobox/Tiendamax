@@ -789,6 +789,18 @@
     </div>
     <div class="form-group" style="margin-top:10px"><label class="form-label">🏭 Almacén (solo para ti, no se publica)</label><select class="form-select" id="pedit-almacen"><option value="">Sin asignar</option></select></div>
     <div class="form-group" style="margin-top:10px"><label class="form-label">Descripción</label><textarea class="form-textarea" id="pedit-desc" style="min-height:90px"></textarea></div>
+    <div class="form-group" style="margin-top:10px">
+      <label class="form-label" style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+        <span>Specs (separadas por coma, máx 6)</span>
+        <button type="button" id="btnSugerirSpecsEdit" onclick="sugerirSpecsConIA({nombre:'pedit-nombre',categoria:'pedit-cat',descripcion:'pedit-desc',specs:'pedit-specs',btn:'btnSugerirSpecsEdit'})" style="font-size:11px;padding:4px 10px;border-radius:20px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);color:#cfcfd6;cursor:pointer;white-space:nowrap">🤖 Sugerir con IA</button>
+      </label>
+      <input class="form-input" id="pedit-specs" placeholder="1800Mbps, Dual Band, 4 antenas">
+    </div>
+    <div class="form-group" style="margin-top:10px"><label class="form-label">Garantía</label><input class="form-input" id="pedit-garantia" placeholder="Ej: 6 meses · devolución 30 días"></div>
+    <div style="display:flex;gap:18px;margin-top:12px;font-size:13px;color:#cfcfd6">
+      <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="pedit-usado"> Usado / refurbished</label>
+      <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="pedit-devolucion"> Garantía de devolución</label>
+    </div>
     <label style="display:flex;align-items:center;gap:8px;margin-top:12px;font-size:13px;color:#fff;cursor:pointer"><input type="checkbox" id="pedit-fav" style="width:16px;height:16px;accent-color:var(--gold)">⭐ Destacar en Más Vendidos</label>
     <div style="display:flex;gap:8px;margin-top:16px"><button class="btn btn-primary" style="flex:1" onclick="apEditSave()">💾 Guardar</button><button class="btn btn-ghost" onclick="apDuplicar($('#pedit-id').value)">📄 Duplicar</button><button class="btn btn-ghost" onclick="apEditClose()">Cancelar</button></div>
   </div>
@@ -1402,7 +1414,7 @@ function apStock(id,d){ const p=apFind(id); if(!p) return; p.stock=Math.max(0,(N
 function apStockZero(id){ const p=apFind(id); if(!p) return; p.stock=0; if(typeof marcarProductoModificado==='function') try{ marcarProductoModificado(id); }catch(e){} apSaveProds(); renderProductos(); if(typeof renderStock==='function') renderStock(); }
 function apFav(id){ const p=apFind(id); if(!p) return; p.masVendido=!p.masVendido; if(typeof marcarProductoModificado==='function') try{ marcarProductoModificado(id); }catch(e){} apSaveProds(); renderProductos(); showToast(p.masVendido?'⭐ Destacado en Más Vendidos':'Quitado de Más Vendidos'); }
 function apDel(id){ const p=apFind(id); if(!p) return; if(!confirm('¿Eliminar "'+(p.nombre||'')+'"? Esto lo quita del catálogo al sincronizar.')) return; if(typeof marcarProductoEliminado==='function') try{ marcarProductoEliminado(id); }catch(e){} const i=PRODUCTOS.findIndex(x=>String(x.id)===String(id)); if(i>=0) PRODUCTOS.splice(i,1); apSaveProds(); renderProductos(); showToast('🗑️ Eliminado','Sincroniza para publicar el cambio'); }
-function apEdit(id){ const p=apFind(id); if(!p) return; $('#pedit-id').value=id; $('#pedit-nombre').value=p.nombre||''; $('#pedit-precio').value=p.precioActual||''; $('#pedit-original').value=(Number(p.precioOriginal)>0?p.precioOriginal:''); $('#pedit-stock').value=Number(p.stock)||0; $('#pedit-comision').value=(Number(p.comision)>0?p.comision:''); $('#pedit-comision-moneda').value=p.comisionMoneda||'USD'; $('#pedit-desc').value=p.descripcion||''; $('#pedit-fav').checked=!!p.masVendido; const cs=$('#pedit-cat'); if(cs){ const cats=[...new Set(PRODUCTOS.map(x=>x.categoria).filter(Boolean))].sort(); cs.innerHTML=cats.map(c=>`<option value="${esc(c)}" ${c===p.categoria?'selected':''}>${esc(c)}</option>`).join(''); } const as=$('#pedit-almacen'); if(as){ as.innerHTML='<option value="">Sin asignar</option>'+Object.keys(ALMACENES).map(aid=>`<option value="${aid}" ${p.almacenId===aid?'selected':''}>${esc(ALMACENES[aid].nombre||aid)}</option>`).join(''); }
+function apEdit(id){ const p=apFind(id); if(!p) return; $('#pedit-id').value=id; $('#pedit-nombre').value=p.nombre||''; $('#pedit-precio').value=p.precioActual||''; $('#pedit-original').value=(Number(p.precioOriginal)>0?p.precioOriginal:''); $('#pedit-stock').value=Number(p.stock)||0; $('#pedit-comision').value=(Number(p.comision)>0?p.comision:''); $('#pedit-comision-moneda').value=p.comisionMoneda||'USD'; $('#pedit-desc').value=p.descripcion||''; $('#pedit-fav').checked=!!p.masVendido; $('#pedit-specs').value=(Array.isArray(p.specs)?p.specs.join(', '):''); $('#pedit-garantia').value=p.garantia||''; $('#pedit-usado').checked=!!p.usado; $('#pedit-devolucion').checked=!!p.devolucion; const cs=$('#pedit-cat'); if(cs){ const cats=[...new Set(PRODUCTOS.map(x=>x.categoria).filter(Boolean))].sort(); cs.innerHTML=cats.map(c=>`<option value="${esc(c)}" ${c===p.categoria?'selected':''}>${esc(c)}</option>`).join(''); } const as=$('#pedit-almacen'); if(as){ as.innerHTML='<option value="">Sin asignar</option>'+Object.keys(ALMACENES).map(aid=>`<option value="${aid}" ${p.almacenId===aid?'selected':''}>${esc(ALMACENES[aid].nombre||aid)}</option>`).join(''); }
   // Cargar fotos actuales al working array y renderizar
   _peditFotos = Array.isArray(p.imagenes) && p.imagenes.length
     ? p.imagenes.slice()
@@ -1509,6 +1521,10 @@ async function apEditSave(){ const id=$('#pedit-id').value; const p=apFind(id); 
   p.comision=Number($('#pedit-comision').value)||0; p.comisionMoneda=$('#pedit-comision-moneda').value||'USD';
   p.descripcion=$('#pedit-desc').value;
   p.masVendido=$('#pedit-fav').checked;
+  p.specs=(()=>{ const raw=($('#pedit-specs').value||'').trim(); if(!raw) return []; return raw.split(',').map(s=>s.trim()).filter(Boolean).slice(0,6); })();
+  p.garantia=($('#pedit-garantia').value||'').trim();
+  p.usado=$('#pedit-usado').checked;
+  p.devolucion=$('#pedit-devolucion').checked;
   const almIdAntes=p.almacenId||'';
   const almId=$('#pedit-almacen')&&$('#pedit-almacen').value||''; if(almId) p.almacenId=almId; else delete p.almacenId;
   if(almId!==almIdAntes) almSyncFirebase(id, almIdAntes, almId);

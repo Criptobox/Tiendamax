@@ -711,9 +711,18 @@ function switchTab(tabName) {
 // Sugiere specs con IA (usa la misma key/proveedor configurado en ⚙️ Configuración
 // → API Key de IA, vía window.iaLlamarModelo expuesto por admin-copilot.js).
 // Solo rellena el input — el admin revisa y edita antes de publicar, nunca se auto-aplica.
-async function sugerirSpecsConIA() {
-    const btn = document.getElementById('btnSugerirSpecs');
-    const nombre = (document.getElementById('productName').value || '').trim();
+// ids: permite reusar la misma lógica en "Crear producto" (por defecto) y en
+// "Editar producto" (pasando los IDs del form pedit-*).
+async function sugerirSpecsConIA(ids) {
+    ids = ids || {};
+    const nombreId = ids.nombre || 'productName';
+    const categoriaId = ids.categoria || 'productCategory';
+    const descripcionId = ids.descripcion || 'productDescription';
+    const specsId = ids.specs || 'productSpecs';
+    const btnId = ids.btn || 'btnSugerirSpecs';
+
+    const btn = document.getElementById(btnId);
+    const nombre = (document.getElementById(nombreId).value || '').trim();
     if (!nombre) { mostrarNotificacion('Escribe el nombre del producto primero', 'error'); return; }
     if (typeof window.iaLlamarModelo !== 'function') {
         mostrarNotificacion('❌ Copiloto IA no cargó — recarga la página', 'error');
@@ -722,8 +731,8 @@ async function sugerirSpecsConIA() {
     const key = (localStorage.getItem('anthropicApiKey') || '').trim();
     if (!key) { mostrarNotificacion('Configura tu API key en ⚙️ Configuración → API Key de IA', 'error'); return; }
 
-    const categoria = (document.getElementById('productCategory').value || '').trim();
-    const descripcion = (document.getElementById('productDescription').value || '').trim();
+    const categoria = (document.getElementById(categoriaId).value || '').trim();
+    const descripcion = (document.getElementById(descripcionId).value || '').trim();
 
     if (btn) { btn.disabled = true; btn.textContent = '🤖 Generando…'; }
     try {
@@ -757,7 +766,7 @@ async function sugerirSpecsConIA() {
             mostrarNotificacion('❌ No se pudo interpretar la respuesta de la IA — completa las specs a mano', 'error');
             return;
         }
-        const specsInput = document.getElementById('productSpecs');
+        const specsInput = document.getElementById(specsId);
         if (specsInput) specsInput.value = specs.join(', ');
         mostrarNotificacion('✅ Specs sugeridas — revísalas y editá si algo no aplica', 'success');
     } catch (e) {
