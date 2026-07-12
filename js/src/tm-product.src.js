@@ -618,20 +618,14 @@ if (_detailPrecioMNEl) {
     const relSection = document.getElementById('detailRelacionados');
     const relGrid    = document.getElementById('detailRelacionadosGrid');
     if (relacionados.length > 0) {
-        const _tasaRel = typeof getTasaMN === 'function' ? getTasaMN() : 0;
         const upsellNote = p.upsellText ? `<div class="rel-upsell-note" style="grid-column:1/-1;font-size:12px;color:#C9A96E;background:rgba(201,169,110,.08);border:1px solid rgba(201,169,110,.18);border-radius:10px;padding:10px 12px;margin-bottom:4px;">💡 ${escapeHtml(p.upsellText)}</div>` : '';
-        relGrid.innerHTML = upsellNote + relacionados.map(r => {
-            const _mnRel = _tasaRel > 0
-                ? `<span class="rel-card-price-mn">≈ ${Math.round(Number(r.precioActual) * _tasaRel).toLocaleString('es-CU')} MN</span>`
-                : '';
-            return `
-            <div class="rel-card" onclick="abrirDetalleProducto(${safeNum(r.id)})"${r.stock === 0 ? ' style="opacity:0.5"' : ''}>
-                <img src="${escapeAttr(r.imagen)}" alt="${escapeHtml(r.nombre)}" loading="lazy" onerror="this.style.display='none'">
-                <div class="rel-card-name">${escapeHtml(r.nombre)}</div>
-                <div class="rel-card-price">$${Number(r.precioActual).toFixed(2)} USD${_mnRel}</div>
-            </div>
-            `;
-        }).join('');
+        // Reutiliza el mismo constructor de tarjeta que la grilla principal
+        // (tm-ui.src.js, expuesto como window._tmCrearCard) para que estas
+        // tarjetas se vean idénticas a las nuevas, sin duplicar el markup.
+        const cardsHtml = typeof window._tmCrearCard === 'function'
+            ? relacionados.map(r => window._tmCrearCard(r).outerHTML).join('')
+            : '';
+        relGrid.innerHTML = upsellNote + cardsHtml;
         relSection.style.display = 'block';
     } else {
         relSection.style.display = 'none';

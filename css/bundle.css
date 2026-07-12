@@ -2358,3 +2358,12 @@ body.light-mode .contador-personas .pv-inner{ color:#6b6b7a; }
   padding:16px 18px; font-size:16px; border-radius:16px;
 }
 #productDetailModal .detail-cta-row #detailBuyBtn .btn-pedir-wa-text{ font-weight:800; }
+
+/* "También viste" / "También te puede interesar": ahora usan las tarjetas
+   pv2 (misma que la grilla principal, ver window._tmCrearCard), más altas
+   que las tarjetas viejas — 2 columnas para que se vean bien completas. */
+.detail-relacionados-grid,
+.recientes-grid{
+  grid-template-columns:repeat(2,1fr) !important;
+  gap:12px;
+}

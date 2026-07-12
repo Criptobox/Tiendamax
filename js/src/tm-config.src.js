@@ -1061,19 +1061,13 @@ function renderizarRecientes() {
 }
 
 function _renderCardRecientes(p) {
-    const id = safeNum(p.id);
-    const nombre = escapeHtml(p.nombre);
-    const img = escapeAttr(p.imagen || '');
-    const precio = Number(p.precioActual || 0).toFixed(2);
-    const agotado = p.stock === 0;
-    return '<div class="rec-card" onclick="abrirDetalleProducto(' + id + ')">'
-        + (agotado ? '<span class="rec-card-agotado">Agotado</span>' : '')
-        + '<img src="' + img + '" alt="' + nombre + '" loading="lazy" decoding="async" onerror="this.style.display=\'none\'">'
-        + '<div class="rec-card-info">'
-        +     '<div class="rec-card-nombre">' + nombre + '</div>'
-        +     '<div class="rec-card-precio">$' + precio + '</div>'
-        + '</div>'
-        + '</div>';
+    // Reutiliza el mismo constructor de tarjeta que la grilla principal
+    // (tm-ui.src.js, expuesto como window._tmCrearCard) para que estas
+    // tarjetas se vean idénticas a las nuevas, sin duplicar el markup.
+    if (typeof window._tmCrearCard === 'function') {
+        return window._tmCrearCard(p).outerHTML;
+    }
+    return '';
 }
 
 // ═══════════════════════════════════════════════════════
