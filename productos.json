@@ -157,10 +157,10 @@
     "nombre": "Switch de 8 Puertos",
     "precioActual": 30,
     "precioOriginal": 0,
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783836802568.jpg",
+    "imagen": "https://tiendamax.org/imagenes/img_1783836802568.jpg",
     "categoria": "WIFI",
     "subcategoria": "SWITCHES",
-    "stock": 9,
+    "stock": 0,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -171,12 +171,12 @@
     "seoTitle": "SWITCH DE 8 PUERTOS en Cuba | TiendaMax",
     "seoDescription": "Switch de 8 puertos ethernet de 1 gigabite.",
     "radar": true,
-    "descripcion": "SWITCH DE 8 PUERTOS nuevo y disponible en TiendaMax con entrega en Cuba. Ideal para tener internet estable y con buena cobertura en toda la casa. Lo pruebas al recibirlo: pagas cuando compruebes que funciona. Atención personalizada por WhatsApp: escríbenos y te lo apartamos 24 horas mientras coordinas la entrega.",
     "comisionMoneda": "USD",
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783836802568.jpg",
+      "https://tiendamax.org/imagenes/img_1783836802568.jpg",
       "https://tiendamax.org/imagenes/img_1780510811569.webp"
-    ]
+    ],
+    "descripcion": "SWITCH DE 8 PUERTOS nuevo y disponible en TiendaMax con entrega en Cuba. Ideal para tener internet estable y con buena cobertura en toda la casa. Lo pruebas al recibirlo: pagas cuando compruebes que funciona. Atención personalizada por WhatsApp: escríbenos y te lo apartamos 24 horas mientras coordinas la entrega."
   },
   {
     "id": 1778102507659,
@@ -2269,8 +2269,9 @@
   {
     "id": 1783221896639,
     "nombre": "Changan CS75 PLUS 2024",
-    "imagen": "https://tiendamax.org/imagenes/img_1783221876387.jpg",
+    "imagen": "https://tiendamax.org/imagenes/img_1783473953506.jpg",
     "imagenes": [
+      "https://tiendamax.org/imagenes/img_1783473953506.jpg",
       "https://tiendamax.org/imagenes/img_1783221876387.jpg",
       "https://tiendamax.org/imagenes/img_1783221878802.jpg",
       "https://tiendamax.org/imagenes/img_1783221880745.jpg",
@@ -2282,8 +2283,7 @@
       "https://tiendamax.org/imagenes/img_1783221890323.jpg",
       "https://tiendamax.org/imagenes/img_1783221892239.jpg",
       "https://tiendamax.org/imagenes/img_1783221893885.jpg",
-      "https://tiendamax.org/imagenes/img_1783221895127.jpg",
-      "https://tiendamax.org/imagenes/img_1783473953506.jpg"
+      "https://tiendamax.org/imagenes/img_1783221895127.jpg"
     ],
     "precioActual": 33000,
     "precioOriginal": 0,
