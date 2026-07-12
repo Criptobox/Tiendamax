@@ -773,7 +773,7 @@ async function sincronizarConGitHub() {
 
 // ── Señal de versión en Firebase para forzar actualización en todos los clientes ──
 async function _tmPublicarVersionFirebase() {
-    const base = _tmRtdbUrl();
+    const base = _fbRtdbUrl();
     if (!base) return;
     try {
         await fetch(`${base}/config/version.json`, {

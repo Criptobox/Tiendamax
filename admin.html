@@ -787,7 +787,7 @@
 <script src="js/src/tm-state.js?v=c4ce49c9"></script>
 <script src="js/src/tm-admin.js?v=51393220"></script>
 <script src="js/src/tm-product.js?v=415c7ebb"></script>
-<script src="js/src/tm-catalog.js?v=b4de2564"></script>
+<script src="js/src/tm-catalog.js?v=9d088a6b"></script>
 <script src="js/src/tm-init.js?v=e23255ae"></script>
 <script src="js/src/tm-ui.js?v=563aaf21"></script>
 <script src="js/src/tm-toast.js?v=1f125e1c"></script>
@@ -1215,6 +1215,7 @@ function _ofertasFinAutoRevertir(){
     if(isNaN(fin.getTime()) || fin.getTime()>Date.now()) return;
     if(Number(p.precioOriginal)>0) p.precioActual=p.precioOriginal;
     delete p.precioOriginal; delete p.ofertaFin; p.descuento=0;
+    if(typeof marcarProductoModificado==='function') try{ marcarProductoModificado(p.id); }catch(e){}
     n++;
   });
   if(n){ apSaveProds(); showToast('🏷️ '+n+' oferta(s) vencida(s) revertidas','Sincroniza para publicar el precio original'); }
@@ -1317,13 +1318,14 @@ function apSelTgl(id){ id=String(id); if(AP_SEL.has(id)) AP_SEL.delete(id); else
 function apSelClear(){ AP_SEL.clear(); apSelBar(); renderProductos(); }
 function apBulkZero(){
   if(!AP_SEL.size) return;
-  let n=0; PRODUCTOS.forEach(p=>{ if(AP_SEL.has(String(p.id))){ p.stock=0; n++; } });
+  let n=0; PRODUCTOS.forEach(p=>{ if(AP_SEL.has(String(p.id))){ p.stock=0; if(typeof marcarProductoModificado==='function') try{ marcarProductoModificado(p.id); }catch(e){} n++; } });
   apSaveProds(); apSelClear(); showToast('→0 '+n+' productos marcados agotados','Sincroniza para publicar');
 }
 function apBulkDel(){
   if(!AP_SEL.size) return;
   if(!confirm('¿Eliminar '+AP_SEL.size+' producto(s) del catálogo?')) return;
   const antes=PRODUCTOS.length;
+  if(typeof marcarProductoEliminado==='function'){ AP_SEL.forEach(id=>{ try{ marcarProductoEliminado(id); }catch(e){} }); }
   PRODUCTOS = PRODUCTOS.filter(p=>!AP_SEL.has(String(p.id)));
   apSaveProds(); apSelClear(); showToast('🗑 '+(antes-PRODUCTOS.length)+' productos eliminados','Sincroniza para publicar el cambio');
 }
@@ -1754,6 +1756,7 @@ function almProductoToggle(almId, prodId, checked){
   const antes=p.almacenId||'';
   if(checked) p.almacenId=almId; else delete p.almacenId;
   almSyncFirebase(prodId, antes, checked?almId:'');
+  if(typeof marcarProductoModificado==='function') try{ marcarProductoModificado(prodId); }catch(e){}
   apSaveProds(); renderAlmacen(); renderProductos();
 }
 function renderAlmacen(){

@@ -218,7 +218,7 @@
         products.forEach(p => {
             const item = document.createElement('div');
             item.className = 'tm-bot-product';
-            const precioMN = p.precio && window._tmTasaMN ? Math.round(p.precio * window._tmTasaMN()) : null;
+            const precioMN = (p.precio && typeof getTasaMN === 'function' && getTasaMN() > 0) ? Math.round(p.precio * getTasaMN()) : null;
             const agotado = p.stock === 0;
             item.innerHTML = `
                 <img src="${escapeAttrBot(p.imagen) || '/iconos/favicon-192.png'}" alt="" onerror="this.src='/iconos/favicon-192.png'">
