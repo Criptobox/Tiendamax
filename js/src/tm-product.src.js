@@ -317,8 +317,10 @@ function detalleToggleFav(ev) {
     }
 }
 
+let _detalleCountdownInterval = null;
+
 function abrirDetalleProducto(id) {
-    
+
     const p = productos.find(prod => prod.id === id);
     if (!p) {
         console.warn('Producto no encontrado:', id);
@@ -413,6 +415,41 @@ if (_detailPrecioMNEl) {
         _detailPrecioMNEl.style.display = 'none';
     }
 }
+
+    // Countdown: solo si ESTE producto es el de la oferta activa configurada por el admin
+    const _cdWrap = document.getElementById('detailCountdown');
+    if (_detalleCountdownInterval) { clearInterval(_detalleCountdownInterval); _detalleCountdownInterval = null; }
+    if (_cdWrap) {
+        const _cd = (typeof getActiveCountdown === 'function') ? getActiveCountdown() : null;
+        if (_cd && String(_cd.productId) === String(p.id) && typeof renderCountdownHtml === 'function') {
+            const _cdHtml = renderCountdownHtml(p.id);
+            if (_cdHtml) {
+                _cdWrap.innerHTML = _cdHtml;
+                _cdWrap.style.display = 'block';
+                const pad = n => String(n).padStart(2, '0');
+                const _tick = () => {
+                    const rem = Math.max(0, _cd.endTime - Date.now());
+                    const hEl = document.getElementById('cd_h_' + p.id);
+                    const mEl = document.getElementById('cd_m_' + p.id);
+                    const sEl = document.getElementById('cd_s_' + p.id);
+                    if (hEl) hEl.textContent = pad(Math.floor(rem / 3600000));
+                    if (mEl) mEl.textContent = pad(Math.floor((rem % 3600000) / 60000));
+                    if (sEl) sEl.textContent = pad(Math.floor((rem % 60000) / 1000));
+                    if (rem <= 0 && _detalleCountdownInterval) {
+                        clearInterval(_detalleCountdownInterval);
+                        _detalleCountdownInterval = null;
+                        _cdWrap.style.display = 'none';
+                    }
+                };
+                _tick();
+                _detalleCountdownInterval = setInterval(_tick, 1000);
+            } else {
+                _cdWrap.style.display = 'none';
+            }
+        } else {
+            _cdWrap.style.display = 'none';
+        }
+    }
 
     // Ahorro
     const ahorroEl = document.getElementById('detailAhorroBadge');
@@ -699,6 +736,7 @@ if (_detailPrecioMNEl) {
 }
 
 function cerrarDetalleModal() {
+    if (_detalleCountdownInterval) { clearInterval(_detalleCountdownInterval); _detalleCountdownInterval = null; }
     // FIX: cerrar panel de compartir si estaba abierto
     var _pcr = document.getElementById('panelCompartirRedes');
     if (_pcr) _pcr.style.display = 'none';

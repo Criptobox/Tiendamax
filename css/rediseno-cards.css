@@ -330,3 +330,7 @@ body.light-mode .drt-count{ color:#8a8a92; }
 }
 body.light-mode #productDetailModal .detail-price-old{ color:#999; }
 body.light-mode #productDetailModal .detail-price-mn{ color:#777; }
+
+/* Wrapper del countdown dentro del modal (el contenido interno ya tiene su estilo) */
+#detailCountdown.detail-countdown-wrap{ margin:10px 0 4px; }
+#detailCountdown .producto-countdown{ width:100%; }
