@@ -101,7 +101,7 @@
     "nombre": "Enrutador WiFi Wavlink AC1200",
     "precioActual": 80,
     "precioOriginal": 0,
-    "imagen": "https://tiendamax.org/imagenes/img_1777924248270.webp",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783836865144.jpg",
     "categoria": "WIFI",
     "subcategoria": "ROUTERS",
     "stock": 0,
@@ -117,7 +117,12 @@
       "2.4GHz"
     ],
     "seoTitle": "ENRUTADOR WIFI WAVLINK AC1200 en Cuba | TiendaMax",
-    "seoDescription": "Enrutador WiFi WAVLINK AC1200 de doble banda 5 GHz + 2.4 GHz, enrutador inalámbrico para hogar y juegos con puertos Ethernet Gigabit WAN/LAN, 4 antenas de…"
+    "seoDescription": "Enrutador WiFi WAVLINK AC1200 de doble banda 5 GHz + 2.4 GHz, enrutador inalámbrico para hogar y juegos con puertos Ethernet Gigabit WAN/LAN, 4 antenas de…",
+    "comisionMoneda": "USD",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783836865144.jpg",
+      "https://tiendamax.org/imagenes/img_1777924248270.webp"
+    ]
   },
   {
     "id": 1777924315386,
@@ -146,7 +151,7 @@
     "nombre": "Switch de 8 Puertos",
     "precioActual": 30,
     "precioOriginal": 0,
-    "imagen": "https://tiendamax.org/imagenes/img_1780510811569.webp",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783836802568.jpg",
     "categoria": "WIFI",
     "subcategoria": "SWITCHES",
     "stock": 9,
@@ -159,7 +164,12 @@
     "comision": 1.8,
     "seoTitle": "SWITCH DE 8 PUERTOS en Cuba | TiendaMax",
     "seoDescription": "Switch de 8 puertos ethernet de 1 gigabite.",
-    "radar": true
+    "radar": true,
+    "comisionMoneda": "USD",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783836802568.jpg",
+      "https://tiendamax.org/imagenes/img_1780510811569.webp"
+    ]
   },
   {
     "id": 1778102507659,
@@ -357,7 +367,7 @@
     "id": 1778104662477,
     "nombre": "Inversor de Onda Sinusoidal Pura Fuera de la Red",
     "precioActual": 900,
-    "imagen": "https://tiendamax.org/imagenes/img_1778104662477.webp",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783838193521.jpg",
     "categoria": "ENERGIA",
     "subcategoria": "INVERSORES",
     "stock": 1,
@@ -372,13 +382,19 @@
       "240V"
     ],
     "seoTitle": "INVERSOR DE ONDA SINUSOIDAL PURA FUERA DE LA RED | TiendaMax",
-    "seoDescription": "1. Inversor de onda sinusoidal pura fuera de la red. 2.El máximo número de conexiones paralelas es 6. 3.Potencia de salida más alta hasta 500OW. 4.Salida…"
+    "seoDescription": "1. Inversor de onda sinusoidal pura fuera de la red. 2.El máximo número de conexiones paralelas es 6. 3.Potencia de salida más alta hasta 500OW. 4.Salida…",
+    "precioOriginal": 0,
+    "comisionMoneda": "USD",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783838193521.jpg",
+      "https://tiendamax.org/imagenes/img_1778104662477.webp"
+    ]
   },
   {
     "id": 1778104735789,
-    "nombre": "Este Router Kuwfi Ofrece Una Velocidad de Transmisión WiFi de 150 Mbps",
+    "nombre": "Router Kuwfi   Transmisión WiFi de 150 Mbps",
     "precioActual": 130,
-    "imagen": "https://tiendamax.org/imagenes/img_1778104735789.webp",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783837070407.jpg",
     "categoria": "WIFI",
     "subcategoria": "ROUTERS",
     "stock": 37,
@@ -393,7 +409,13 @@
       "150Mbps"
     ],
     "seoTitle": "ESTE ROUTER KUWFI OFRECE UNA VELOCIDAD DE… | TiendaMax",
-    "seoDescription": "Este router KuWFi ofrece una velocidad de transmisión WiFi de 150 Mbps, proporcionando una conexión rápida y estable para todos sus dispositivos…"
+    "seoDescription": "Este router KuWFi ofrece una velocidad de transmisión WiFi de 150 Mbps, proporcionando una conexión rápida y estable para todos sus dispositivos…",
+    "precioOriginal": 0,
+    "comisionMoneda": "USD",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783837070407.jpg",
+      "https://tiendamax.org/imagenes/img_1778104735789.webp"
+    ]
   },
   {
     "id": 1778104850733,
@@ -621,7 +643,7 @@
     "nombre": "Switch de 5 Puertos",
     "precioActual": 20,
     "precioOriginal": 0,
-    "imagen": "https://tiendamax.org/imagenes/img_1780510827238.webp",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783836818228.jpg",
     "categoria": "WIFI",
     "subcategoria": "SWITCHES",
     "stock": 20,
@@ -633,7 +655,12 @@
     "slug": "switch-de-5-puertos",
     "comision": 1.8,
     "seoTitle": "SWITCH DE 5 PUERTOS en Cuba | TiendaMax",
-    "seoDescription": "Switch de 5 puertos ethernet de 1 gigabite."
+    "seoDescription": "Switch de 5 puertos ethernet de 1 gigabite.",
+    "comisionMoneda": "USD",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783836818228.jpg",
+      "https://tiendamax.org/imagenes/img_1780510827238.webp"
+    ]
   },
   {
     "id": 1778336789459,
@@ -752,7 +779,7 @@
     "id": 1778384428890,
     "nombre": "Portacelulares",
     "precioActual": 15,
-    "imagen": "https://tiendamax.org/imagenes/img_1778384428890_ext.webp",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783837457730.jpg",
     "categoria": "CELULARES",
     "subcategoria": "ACCESORIOS",
     "stock": 1,
@@ -764,7 +791,13 @@
     "slug": "portacelulares",
     "comision": 1.8,
     "seoTitle": "PORTACELULARES en Cuba | TiendaMax",
-    "seoDescription": "Portacelulares impermeables para bicicletas con bolsos a cada lado. Confeccion fuerte y duradera, de facil instalacion y resistente a lluvia"
+    "seoDescription": "Portacelulares impermeables para bicicletas con bolsos a cada lado. Confeccion fuerte y duradera, de facil instalacion y resistente a lluvia",
+    "precioOriginal": 0,
+    "comisionMoneda": "USD",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783837457730.jpg",
+      "https://tiendamax.org/imagenes/img_1778384428890_ext.webp"
+    ]
   },
   {
     "id": 1778384507302,
@@ -1174,7 +1207,7 @@
     "id": 1778907260915,
     "nombre": "Calentador Eléctrico",
     "precioActual": 125,
-    "imagen": "https://tiendamax.org/imagenes/img_1778907258376.webp",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783838545299.jpg",
     "categoria": "HOGAR",
     "subcategoria": "ELECTRODOMÉSTICOS",
     "stock": 4,
@@ -1186,7 +1219,13 @@
     "slug": "calentador-electrico-agua-caliente",
     "comision": 5,
     "seoTitle": "CALENTADOR ELÉCTRICO en Cuba | TiendaMax",
-    "seoDescription": "♨️💦 CALENTADOR ELÉCTRICO – Agua caliente al instante 💦♨️ Confort y seguridad para tu hogar con control digital de temperatura y flujo constante. Incluye…"
+    "seoDescription": "♨️💦 CALENTADOR ELÉCTRICO – Agua caliente al instante 💦♨️ Confort y seguridad para tu hogar con control digital de temperatura y flujo constante. Incluye…",
+    "precioOriginal": 0,
+    "comisionMoneda": "USD",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783838545299.jpg",
+      "https://tiendamax.org/imagenes/img_1778907258376.webp"
+    ]
   },
   {
     "id": 1779205929131,
@@ -1397,7 +1436,7 @@
     "nombre": "Audífonos Ergonómicos",
     "precioActual": 15,
     "precioOriginal": 20,
-    "imagen": "https://tiendamax.org/imagenes/img_1780543081597.webp",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783837831859.jpg",
     "categoria": "CELULARES",
     "subcategoria": "AUDIO",
     "stock": 20,
@@ -1409,7 +1448,12 @@
     "slug": "audifonos-ergonomicos",
     "comision": 1.8,
     "seoTitle": "AUDÍFONOS ERGONÓMICOS en Cuba | TiendaMax",
-    "seoDescription": "Audífonos ergonómicos, elegantes, táctiles, con 40 horas de bateria, alta calidad de sonido, cancelacion de ruido de ambiente en llamadas, haciendo la voz…"
+    "seoDescription": "Audífonos ergonómicos, elegantes, táctiles, con 40 horas de bateria, alta calidad de sonido, cancelacion de ruido de ambiente en llamadas, haciendo la voz…",
+    "comisionMoneda": "USD",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783837831859.jpg",
+      "https://tiendamax.org/imagenes/img_1780543081597.webp"
+    ]
   },
   {
     "id": 1780873638627,
@@ -1480,7 +1524,7 @@
     "nombre": "Altavoz Bluetooth Portátil RGB",
     "precioActual": 20,
     "precioOriginal": 0,
-    "imagen": "https://tiendamax.org/imagenes/img_1780887747583.webp",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783837846910.jpg",
     "categoria": "CELULARES",
     "subcategoria": "AUDIO",
     "stock": 20,
@@ -1493,14 +1537,18 @@
     "comision": 1000,
     "comisionMoneda": "MN",
     "seoTitle": "ALTAVOZ BLUETOOTH PORTÁTIL RGB en Cuba | TiendaMax",
-    "seoDescription": "Altavoz Bluetooth Portátil RGB – Características principales Sonido estéreo HD de alta calidad con doble altavoz para un audio potente y equilibrado…"
+    "seoDescription": "Altavoz Bluetooth Portátil RGB – Características principales Sonido estéreo HD de alta calidad con doble altavoz para un audio potente y equilibrado…",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783837846910.jpg",
+      "https://tiendamax.org/imagenes/img_1780887747583.webp"
+    ]
   },
   {
     "id": 1780887971522,
     "nombre": "Beat Boom F10! 🎶🔥",
     "precioActual": 40,
     "precioOriginal": 0,
-    "imagen": "https://tiendamax.org/imagenes/img_1780887971522.webp",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783837255248.jpg",
     "categoria": "CELULARES",
     "subcategoria": "AUDIO",
     "stock": 5,
@@ -1513,7 +1561,11 @@
     "comision": 1000,
     "comisionMoneda": "MN",
     "seoTitle": "BEAT BOOM F10! 🎶🔥 en Cuba | TiendaMax",
-    "seoDescription": "Potencia de 25W: Sonido estéreo potente y de buena calidad. Conexión inalámbrica: Compatible con teléfonos, tablets y PC. Alcance de 30 m: Conexión…"
+    "seoDescription": "Potencia de 25W: Sonido estéreo potente y de buena calidad. Conexión inalámbrica: Compatible con teléfonos, tablets y PC. Alcance de 30 m: Conexión…",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783837255248.jpg",
+      "https://tiendamax.org/imagenes/img_1780887971522.webp"
+    ]
   },
   {
     "id": 1781365019871,
@@ -1540,7 +1592,7 @@
     "nombre": "Ventilador de Techo",
     "precioActual": 35,
     "precioOriginal": 0,
-    "imagen": "https://tiendamax.org/imagenes/img_1781365133963.webp",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783838929527.jpg",
     "categoria": "HOGAR",
     "subcategoria": "ELECTRODOMÉSTICOS",
     "stock": 24,
@@ -1553,14 +1605,18 @@
     "comision": 1000,
     "comisionMoneda": "MN",
     "seoTitle": "VENTILADOR DE TECHO en Cuba | TiendaMax",
-    "seoDescription": "Ventilador de techo: -Tiene medio metro de envergadura, -Tiene 3 velocidades. -Las luces las puedes cambiar de blanco a amarillito calido y regular la…"
+    "seoDescription": "Ventilador de techo: -Tiene medio metro de envergadura, -Tiene 3 velocidades. -Las luces las puedes cambiar de blanco a amarillito calido y regular la…",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783838929527.jpg",
+      "https://tiendamax.org/imagenes/img_1781365133963.webp"
+    ]
   },
   {
     "id": 1781377297283,
     "nombre": "Creatina Monohidratada Luckycare® (5000 mg)",
     "precioActual": 30,
     "precioOriginal": 0,
-    "imagen": "https://tiendamax.org/imagenes/img_1781377297283.webp",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783838354343.jpg",
     "categoria": "GYM",
     "subcategoria": "",
     "stock": 21,
@@ -1573,7 +1629,11 @@
     "comision": 1000,
     "comisionMoneda": "MN",
     "seoTitle": "CREATINA MONOHIDRATADA LUCKYCARE® (5000 MG) | TiendaMax",
-    "seoDescription": "​🌟 Beneficios Clave (Respaldados en el empaque): ​Aumento de Masa Muscular Magra: Estimula el crecimiento muscular limpio y la densidad. ​Mejora del…"
+    "seoDescription": "​🌟 Beneficios Clave (Respaldados en el empaque): ​Aumento de Masa Muscular Magra: Estimula el crecimiento muscular limpio y la densidad. ​Mejora del…",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783838354343.jpg",
+      "https://tiendamax.org/imagenes/img_1781377297283.webp"
+    ]
   },
   {
     "id": 1781711154462,
@@ -1831,8 +1891,9 @@
   {
     "id": 1782439688529,
     "nombre": "Transferencia Automática o Manual",
-    "imagen": "https://tiendamax.org/imagenes/img_1782439684820.jpg",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783838238277.jpg",
     "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783838238277.jpg",
       "https://tiendamax.org/imagenes/img_1782439684820.jpg"
     ],
     "precioActual": 65,
@@ -1883,8 +1944,9 @@
   {
     "id": 1782535836192,
     "nombre": "Smart TV Milexus 43\"",
-    "imagen": "https://tiendamax.org/imagenes/img_1782535834600.jpg",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783838818101.jpg",
     "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783838818101.jpg",
       "https://tiendamax.org/imagenes/img_1782535834600.jpg"
     ],
     "precioActual": 250,
@@ -1907,8 +1969,9 @@
   {
     "id": 1782536078989,
     "nombre": "Lavadora Milexus de Doble Tina (9 kg)",
-    "imagen": "https://tiendamax.org/imagenes/img_1782536075088.jpg",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783838636279.jpg",
     "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783838636279.jpg",
       "https://tiendamax.org/imagenes/img_1782536075088.jpg",
       "https://tiendamax.org/imagenes/img_1782536076725.jpg",
       "https://tiendamax.org/imagenes/img_1782536077803.jpg"
@@ -2030,8 +2093,9 @@
   {
     "id": 1782791345628,
     "nombre": "Interruptor de Transferencia Automática 220V",
-    "imagen": "https://tiendamax.org/imagenes/img_1782791342848.jpg",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783838287182.jpg",
     "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783838287182.jpg",
       "https://tiendamax.org/imagenes/img_1782791342848.jpg"
     ],
     "precioActual": 70,
