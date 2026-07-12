@@ -415,17 +415,22 @@ function renderizarSimilaresCarrito() {
 // ── Helper compartido: construye el mensaje premium para WhatsApp ──
 // Recibe un array de items { id?, nombre, precio, cantidad } y devuelve
 // el mensaje YA encoded listo para meter en `?text=`.
-// Lo usan: comprarCarrito (carrito), tmComprar (botón "Pedir" de cards),
-// y contactarProducto (botón "Pedir" del modal de detalle).
 //
-// Si hay UN solo item con id, el link al final apunta a la página del
-// producto (/p/producto-{id}.html) para que WhatsApp genere la previa
-// con miniatura usando los meta og:image. Si hay varios, link genérico.
-function _mensajeOrdenWA(items, pedidoId) {
-    // Emojis como escape ASCII para evitar corrupción de 4-byte UTF-8 en servidor
+// Dos modos, mismo formato base (evita mantener dos builders separados
+// que podian desincronizarse - ver enviarTicketCliente en tm-ui.src.js):
+//  - Pedido nuevo (por defecto): lo usan comprarCarrito (carrito), tmComprar
+//    (boton "Pedir" de cards) y contactarProducto (boton "Pedir" del modal).
+//    Un solo item con id -> link a la pagina del producto (WhatsApp genera
+//    previa con miniatura via og:image); varios -> link generico a la tienda.
+//  - Ticket de venta ya confirmada (opts.ticket=true): lo usa enviarTicketCliente
+//    (POS del admin). Encabezado distinto, incluye numero de ticket/fecha y el
+//    link de seguimiento en tiempo real a pedido.html.
+function _mensajeOrdenWA(items, opts) {
+    opts = opts || {};
+    // Emojis como escape ASCII para evitar corrupci\u00f3n de 4-byte UTF-8 en servidor
     const E = {
         cart : '\uD83D\uDED2',  // 🛒
-        spark: '\u2728',        // ✨  (BMP — ok directo, pero escapado por consistencia)
+        spark: '\u2728',        // ✨
         dot  : '\uD83D\uDD39',  // 🔹
         money: '\uD83D\uDCB0',  // 💰
         chart: '\uD83D\uDCC8',  // 📈
@@ -435,11 +440,22 @@ function _mensajeOrdenWA(items, pedidoId) {
         heart: '\u2764\uFE0F',  // ❤️
         link : '\uD83D\uDD17',  // 🔗
         pack : '\uD83D\uDCE6',  // 📦
+        check: '\u2705',        // ✅
+        cal  : '\uD83D\uDCC5',  // 📅
     };
+    const SEP = '\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501';
 
     const L = [];
-    L.push(E.cart + E.spark + ' *NUEVA ORDEN \u2014 TIENDAMAX* ' + E.spark + E.cart);
-    L.push('\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501');
+    if (opts.ticket) {
+        L.push(E.check + E.pack + ' *TICKET DE COMPRA \u2014 TIENDAMAX* ' + E.pack + E.check);
+        L.push(SEP);
+        L.push('');
+        L.push(E.pack + ' *Ticket N\u00ba:* TM-' + opts.numeroCorto);
+        L.push(E.cal + ' *Fecha:* ' + opts.fecha);
+    } else {
+        L.push(E.cart + E.spark + ' *NUEVA ORDEN \u2014 TIENDAMAX* ' + E.spark + E.cart);
+        L.push(SEP);
+    }
     L.push('');
 
     items.forEach((it, i) => {
@@ -456,8 +472,16 @@ function _mensajeOrdenWA(items, pedidoId) {
         (s, i) => s + Number(i.precio || 0) * Number(i.cantidad || 1), 0
     );
 
-    L.push('\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501');
-    if (subtotal > 0) {
+    L.push(SEP);
+    if (opts.ticket) {
+        // El ticket es una venta ya cerrada: "Total" a secas, sin línea de tasa aparte.
+        L.push(E.money + ' *Total:* $' + subtotal.toFixed(2) + ' USD');
+        const tasaFinal = (typeof getTasaMN === 'function') ? getTasaMN() : 0;
+        if (tasaFinal > 0) {
+            const totalMN = Math.round(subtotal * tasaFinal).toLocaleString('es-CU');
+            L.push(E.bill + ' *Total MN:* ' + totalMN + ' MN');
+        }
+    } else if (subtotal > 0) {
         L.push(E.money + ' *Subtotal:* $' + subtotal.toFixed(2) + ' USD');
         const tasaFinal = (typeof getTasaMN === 'function') ? getTasaMN() : 0;
         if (tasaFinal > 0) {
@@ -468,16 +492,27 @@ function _mensajeOrdenWA(items, pedidoId) {
     }
 
     L.push('');
-    L.push(E.truck + ' _Env\u00edame los datos para coordinar la entrega, por favor._');
+    L.push(opts.ticket
+        ? E.truck + ' _Tu pedido est\u00e1 confirmado. Coordinaremos la entrega por aqu\u00ed._'
+        : E.truck + ' _Env\u00edame los datos para coordinar la entrega, por favor._');
     L.push('');
+
+    if (opts.ticket && opts.pedidoId) {
+        L.push(E.pack + ' *Segu\u00ed tu pedido en tiempo real:*');
+        L.push(E.link + ' https://tiendamax.org/pedido.html?id=' + opts.pedidoId);
+        L.push('');
+    }
+
     L.push(E.pray + ' _\u00a1Gracias por tu compra!_ ' + E.heart);
 
-    // Un solo producto con id → link al producto (WhatsApp genera miniatura con og:image)
-    // Varios productos → link genérico a la tienda
-    if (items.length === 1 && items[0].id) {
-        L.push(E.link + ' https://tiendamax.org/p/producto-' + items[0].id + '.html');
-    } else {
-        L.push(E.link + ' https://tiendamax.org');
+    if (!opts.ticket) {
+        // Un solo producto con id -> link al producto (WhatsApp genera miniatura con og:image)
+        // Varios productos -> link generico a la tienda
+        if (items.length === 1 && items[0].id) {
+            L.push(E.link + ' https://tiendamax.org/p/producto-' + items[0].id + '.html');
+        } else {
+            L.push(E.link + ' https://tiendamax.org');
+        }
     }
 
     return encodeURIComponent(L.join('\n'));
@@ -490,7 +525,7 @@ function comprarCarrito() {
     if (typeof tmTrackWhatsApp === 'function') carrito.forEach(i => tmTrackWhatsApp(i.id));
     carrito.forEach(i => tmRegistrarInteresWhatsApp(i.id, 'carrito'));
     _gaEvent('purchase', { method: 'whatsapp_cart', items: carrito.length });
-    const msg = _mensajeOrdenWA(carrito, pedidoId);
+    const msg = _mensajeOrdenWA(carrito, { pedidoId });
     window.open('https://wa.me/' + getNumeroWhatsApp() + '?text=' + msg, '_blank', 'noopener,noreferrer');
 }
 

@@ -864,7 +864,7 @@ function contactarProducto(nombre) {
     if (p) tmRegistrarInteresWhatsApp(p, 'detalle');
     // Generar vale/pedido para seguimiento
     const pedidoId = (typeof guardarPedidoCliente === 'function') ? guardarPedidoCliente([item]) : null;
-    const msg = _mensajeOrdenWA([item], pedidoId);
+    const msg = _mensajeOrdenWA([item], { pedidoId });
     window.open(`https://wa.me/${getNumeroWhatsApp()}?text=${msg}`, '_blank', 'noopener,noreferrer');
 }
 

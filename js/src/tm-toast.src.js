@@ -177,7 +177,7 @@ function tmComprar(event, id, nombre) {
     _gaEvent('contact', { method: 'whatsapp_product', item_name: item.nombre, value: item.precio });
     // Generar vale/pedido para seguimiento
     const pedidoId = (typeof guardarPedidoCliente === 'function') ? guardarPedidoCliente([item]) : null;
-    const msg = _mensajeOrdenWA([item], pedidoId);
+    const msg = _mensajeOrdenWA([item], { pedidoId });
     window.open(`https://wa.me/${getNumeroWhatsApp()}?text=${msg}`, '_blank', 'noopener,noreferrer');
 }
 // Patch agregarAlCarrito para fly desde modal
