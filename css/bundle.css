@@ -2245,6 +2245,15 @@ body.light-mode #catVerMasBtn{ background:#ffffff !important; border:1px solid r
 body.light-mode #catExtraWrap > div{ background:#ffffff !important; border-color:rgba(0,0,0,.1) !important; }
 body.light-mode #catExtraWrap > div > div:nth-child(2){ color:#1a1a1a !important; }
 
+/* Badge de descuento del modal: mismo problema que el de "Destacado" abajo —
+   .badge (base) fija right:12px y .detail-badge fija left:12px !important
+   sin limpiar right → con display:block/inline-block se estira a lo ancho
+   completo cuando hay precioOriginal (ver #detailProductBadge en tm-product.src.js). */
+#productDetailModal #detailProductBadge.detail-badge{
+  right:auto !important; width:auto !important;
+  display:inline-flex !important; align-items:center;
+}
+
 /* Badge "Destacado" del modal: pastilla compacta (no estirada a lo ancho).
    .badge-vendido fija left y .detail-badge-hot fija right → se estiraba. */
 #productDetailModal #detailMasVendidoBadge.detail-badge-hot{
