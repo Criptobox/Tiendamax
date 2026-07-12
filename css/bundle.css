@@ -2256,3 +2256,114 @@ body.light-mode #catExtraWrap > div > div:nth-child(2){ color:#1a1a1a !important
 }
 #productDetailModal #detailMasVendidoBadge[style*="display: none"],
 #productDetailModal #detailMasVendidoBadge[style*="display:none"]{ display:none !important; }
+
+/* Badge "recién llegado" — header del modal de detalle */
+.detail-badge-nuevo{
+  display:inline-flex; align-items:center; gap:5px;
+  background:rgba(255,107,53,.14); border:1px solid rgba(255,107,53,.35);
+  color:var(--coral,#FF6B35); font-size:10.5px; font-weight:800;
+  letter-spacing:.04em; text-transform:uppercase;
+  padding:5px 11px; border-radius:20px; margin-bottom:8px;
+}
+body.light-mode .detail-badge-nuevo{ background:rgba(255,107,53,.10); }
+
+/* Contador de fotos "N / M" — esquina inferior izquierda de la imagen */
+.detail-photo-counter{
+  position:absolute; bottom:80px; left:10px;
+  background:rgba(0,0,0,.62); backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px);
+  color:#fff; font-size:11px; font-weight:700;
+  padding:5px 11px; border-radius:20px; z-index:4;
+  pointer-events:none;
+}
+
+/* Trust badges como tarjetas con ícono (reemplaza las pills en línea) */
+#detailTrustBadges.detail-trust-badges{
+  display:grid; grid-template-columns:repeat(auto-fit, minmax(90px, 1fr));
+  gap:8px; margin-top:14px;
+}
+.detail-trust-card{
+  display:flex; flex-direction:column; align-items:center; text-align:center; gap:4px;
+  background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.09);
+  border-radius:14px; padding:12px 8px;
+}
+.detail-trust-card .dtc-ic{ font-size:20px; }
+.detail-trust-card .dtc-tx b{ display:block; font-size:11.5px; font-weight:800; color:#f2f2f5; }
+.detail-trust-card .dtc-tx small{ display:block; font-size:10px; color:#9a9aa2; margin-top:1px; }
+body.light-mode .detail-trust-card{ background:rgba(0,0,0,.03); border-color:rgba(0,0,0,.08); }
+body.light-mode .detail-trust-card .dtc-tx b{ color:#1a1a1a; }
+body.light-mode .detail-trust-card .dtc-tx small{ color:#8a8a92; }
+
+/* Rating con estrellas grandes + link "Ver todas" */
+#detailRatingTop.detail-rating-top{ flex-wrap:wrap; }
+.drt-stars{ color:#f59e0b; font-size:17px; letter-spacing:1px; }
+.drt-num{ font-weight:800; font-size:15px; color:#f2f2f5; }
+.drt-count{ font-size:12px; color:#9a9aa2; }
+.drt-ver-todas{
+  background:none; border:none; color:var(--coral,#FF6B35); font-size:12px; font-weight:700;
+  cursor:pointer; padding:0; margin-left:2px; text-decoration:underline;
+  font-family:inherit;
+}
+body.light-mode .drt-num{ color:#1a1a1a; }
+body.light-mode .drt-count{ color:#8a8a92; }
+
+/* Bloque de precio: precio principal grande, MN debajo (no al lado) */
+#productDetailModal .detail-price-wrap{
+  display:flex; flex-wrap:wrap; align-items:baseline; gap:8px 10px;
+  margin:10px 0 4px;
+}
+#productDetailModal .detail-price-main{
+  font-size:30px; font-weight:900; color:var(--coral,#FF6B35);
+  letter-spacing:-.01em;
+}
+#productDetailModal .detail-price-old{
+  font-size:14px; color:#8a8a92; text-decoration:line-through;
+}
+#productDetailModal .detail-price-mn{
+  flex-basis:100%; font-size:13px; color:#9a9aa2; font-weight:600;
+}
+body.light-mode #productDetailModal .detail-price-old{ color:#999; }
+body.light-mode #productDetailModal .detail-price-mn{ color:#777; }
+
+/* Wrapper del countdown dentro del modal (el contenido interno ya tiene su estilo) */
+#detailCountdown.detail-countdown-wrap{ margin:10px 0 4px; }
+#detailCountdown .producto-countdown{ width:100%; }
+
+/* Caja de aviso de stock bajo + barra de color */
+#productDetailModal .detail-stock.stock-bajo{
+  display:inline-block; font-size:13px; font-weight:700;
+  padding:8px 12px; border-radius:10px;
+  background:rgba(230,126,34,.08); border:1px solid rgba(230,126,34,.25);
+}
+#productDetailModal .stock-bar{
+  height:6px; border-radius:99px; background:rgba(255,255,255,.08); overflow:hidden;
+}
+#productDetailModal .stock-bar-fill{
+  height:100%; border-radius:99px;
+  background:linear-gradient(90deg, #e67e22, #f39c12);
+  transition:width .3s ease;
+}
+body.light-mode #productDetailModal .stock-bar{ background:rgba(0,0,0,.06); }
+
+/* Contador "vieron este producto" — línea pequeña con ícono */
+.contador-personas .pv-inner{
+  display:inline-flex; align-items:center; gap:5px;
+  font-size:12px; color:#9a9aa2; font-weight:600;
+}
+.contador-personas .pv-inner strong{ color:#f2f2f5; }
+body.light-mode .contador-personas .pv-inner strong{ color:#1a1a1a; }
+body.light-mode .contador-personas .pv-inner{ color:#6b6b7a; }
+
+/* Botón "Pedir por WhatsApp" más grande/protagonista dentro del modal */
+#productDetailModal .detail-cta-row #detailBuyBtn.detail-buy-btn{
+  padding:16px 18px; font-size:16px; border-radius:16px;
+}
+#productDetailModal .detail-cta-row #detailBuyBtn .btn-pedir-wa-text{ font-weight:800; }
+
+/* "También viste" / "También te puede interesar": ahora usan las tarjetas
+   pv2 (misma que la grilla principal, ver window._tmCrearCard), más altas
+   que las tarjetas viejas — 2 columnas para que se vean bien completas. */
+.detail-relacionados-grid,
+.recientes-grid{
+  grid-template-columns:repeat(2,1fr) !important;
+  gap:12px;
+}

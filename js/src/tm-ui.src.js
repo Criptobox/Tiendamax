@@ -1828,6 +1828,7 @@ renderizarProductos = function() {
             '</div>';
         return card;
     }
+    window._tmCrearCard = _tmCrearCard;
 
     // Render inicial en lote con DocumentFragment (1 reflow en vez de N appendChild)
     const _frag = document.createDocumentFragment();

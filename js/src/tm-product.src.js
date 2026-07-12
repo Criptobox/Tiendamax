@@ -242,8 +242,19 @@ async function subirMultiplesImagenes(inputId) {
 function renderizarGaleriaDetalle(producto) {
     const thumbs = document.getElementById('detailGalleryThumbs');
     const img = document.getElementById('detailProductImage');
+    const counter = document.getElementById('detailPhotoCounter');
     if (!thumbs || !img) return;
     const imagenes = obtenerImagenesProducto(producto);
+
+    if (counter) {
+        if (imagenes.length > 1) {
+            counter.textContent = '1 / ' + imagenes.length;
+            counter.style.display = 'block';
+        } else {
+            counter.style.display = 'none';
+        }
+    }
+
     if (imagenes.length <= 1) {
         thumbs.style.display = 'none';
         thumbs.innerHTML = '';
@@ -251,7 +262,7 @@ function renderizarGaleriaDetalle(producto) {
     }
     thumbs.style.display = 'flex';
     thumbs.innerHTML = imagenes.map((url, i) =>
-        '<button type="button" class="detail-gallery-thumb' + (i === 0 ? ' active' : '') + '" data-img="' + escapeAttr(url) + '" aria-label="Ver imagen ' + (i + 1) + '">' +
+        '<button type="button" class="detail-gallery-thumb' + (i === 0 ? ' active' : '') + '" data-img="' + escapeAttr(url) + '" data-idx="' + i + '" aria-label="Ver imagen ' + (i + 1) + '">' +
             '<img src="' + escapeAttr(url) + '" alt="" loading="lazy" onerror="this.style.display=\'none\'">' +
         '</button>'
     ).join('');
@@ -264,6 +275,7 @@ function renderizarGaleriaDetalle(producto) {
             _resetZoomPan(img);
             thumbs.querySelectorAll('.detail-gallery-thumb').forEach(b => b.classList.remove('active'));
             this.classList.add('active');
+            if (counter) counter.textContent = (parseInt(this.getAttribute('data-idx'), 10) + 1) + ' / ' + imagenes.length;
         });
     });
     _initSwipeGaleria(img);
@@ -305,8 +317,10 @@ function detalleToggleFav(ev) {
     }
 }
 
+let _detalleCountdownInterval = null;
+
 function abrirDetalleProducto(id) {
-    
+
     const p = productos.find(prod => prod.id === id);
     if (!p) {
         console.warn('Producto no encontrado:', id);
@@ -362,6 +376,13 @@ function abrirDetalleProducto(id) {
     const hotBadge = document.getElementById('detailMasVendidoBadge');
     hotBadge.style.display = ((p.masVendido === true || p.masVendido === 'true') && !_agotadoModal) ? 'block' : 'none';
 
+    // Badge "recién llegado" — mismo criterio que las cards (esProductoNuevo, 7 días)
+    const nuevoBadgeEl = document.getElementById('detailNuevoBadge');
+    if (nuevoBadgeEl) {
+        const _esNuevo = (typeof esProductoNuevo === 'function') && esProductoNuevo(p) && !_agotadoModal;
+        nuevoBadgeEl.style.display = _esNuevo ? 'inline-flex' : 'none';
+    }
+
     // Precio
     const precioOriginal = p.descuento > 0
         ? (p.precioActual / (1 - p.descuento / 100))
@@ -395,6 +416,41 @@ if (_detailPrecioMNEl) {
     }
 }
 
+    // Countdown: solo si ESTE producto es el de la oferta activa configurada por el admin
+    const _cdWrap = document.getElementById('detailCountdown');
+    if (_detalleCountdownInterval) { clearInterval(_detalleCountdownInterval); _detalleCountdownInterval = null; }
+    if (_cdWrap) {
+        const _cd = (typeof getActiveCountdown === 'function') ? getActiveCountdown() : null;
+        if (_cd && String(_cd.productId) === String(p.id) && typeof renderCountdownHtml === 'function') {
+            const _cdHtml = renderCountdownHtml(p.id);
+            if (_cdHtml) {
+                _cdWrap.innerHTML = _cdHtml;
+                _cdWrap.style.display = 'block';
+                const pad = n => String(n).padStart(2, '0');
+                const _tick = () => {
+                    const rem = Math.max(0, _cd.endTime - Date.now());
+                    const hEl = _cdWrap.querySelector('#cd_h_' + p.id);
+                    const mEl = _cdWrap.querySelector('#cd_m_' + p.id);
+                    const sEl = _cdWrap.querySelector('#cd_s_' + p.id);
+                    if (hEl) hEl.textContent = pad(Math.floor(rem / 3600000));
+                    if (mEl) mEl.textContent = pad(Math.floor((rem % 3600000) / 60000));
+                    if (sEl) sEl.textContent = pad(Math.floor((rem % 60000) / 1000));
+                    if (rem <= 0 && _detalleCountdownInterval) {
+                        clearInterval(_detalleCountdownInterval);
+                        _detalleCountdownInterval = null;
+                        _cdWrap.style.display = 'none';
+                    }
+                };
+                _tick();
+                _detalleCountdownInterval = setInterval(_tick, 1000);
+            } else {
+                _cdWrap.style.display = 'none';
+            }
+        } else {
+            _cdWrap.style.display = 'none';
+        }
+    }
+
     // Ahorro
     const ahorroEl = document.getElementById('detailAhorroBadge');
     if (precioOriginal && p.descuento > 0) {
@@ -415,6 +471,7 @@ if (_detailPrecioMNEl) {
     } else {
         stockEl.innerHTML = `<span>📦 ${_stockN} unidades disponibles</span>`;
     }
+    stockEl.classList.toggle('stock-bajo', _stockN > 0 && _stockN <= 3);
     document.getElementById('detailStockBarFill').style.width =
         `${Math.min(100, Math.max(8, (p.stock / 20) * 100))}%`;
 
@@ -434,10 +491,10 @@ if (_detailPrecioMNEl) {
         if (_qtyMas)   _qtyMas.disabled   = _stockN <= 1;
     }
 
-    // Badges extra: garantia, devolución, usado
+    // Badges extra: usado (devolución se movió a la tarjeta de confianza de arriba,
+    // #detailTrustBadges — mostrarla acá también sería repetir el mismo dato dos veces)
     const extBadges = document.getElementById('detailExtraBadges');
     let badges = '';
-    if (p.devolucion) badges += `<span class="detail-badge-tag dtag-devolucion">↩️ Devolución aceptada</span>`;
     if (p.usado) badges += `<span class="detail-badge-tag dtag-usado">♻️ Producto usado</span>`;
     extBadges.innerHTML = badges;
 
@@ -455,9 +512,7 @@ if (_detailPrecioMNEl) {
             return '🔧';
         };
         let chips = specs.map(s => `<div class="detail-chip"><span class="ic">${_iconoSpec(s)}</span><span class="tx"><b>${escapeHtml(s)}</b></span></div>`);
-        if (p.garantia && String(p.garantia).trim()) {
-            chips.push(`<div class="detail-chip"><span class="ic">🛡️</span><span class="tx"><small>Garantía</small><b>${escapeHtml(String(p.garantia))}</b></span></div>`);
-        }
+        // Garantía se muestra en la tarjeta de confianza de arriba (#detailTrustBadges) — no repetir acá.
         if (chips.length > 0) {
             specBadgesEl.className = 'detail-spec-badges detail-chips';
             specBadgesEl.innerHTML = chips.join('');
@@ -468,20 +523,24 @@ if (_detailPrecioMNEl) {
         }
     }
 
-    // Trust badges dinámicos (solo si el producto los tiene)
+    // Trust badges dinámicos: tarjetas con ícono (envío y pago siempre reales;
+    // garantía/devolución solo si el producto los tiene de verdad)
     const trustBadgesEl = document.getElementById('detailTrustBadges');
     if (trustBadgesEl) {
-        let trustHtml = '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;padding:12px;background:rgba(0,0,0,0.03);border-radius:10px;border:1px solid rgba(0,0,0,0.06);">';
-        trustHtml += '<span style="display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;padding:5px 10px;border-radius:8px;background:rgba(46,204,113,0.10);color:#2ECC71;">🔒 Pago contra entrega</span>';
+        const cards = [
+            { ic: '🚚', t: 'Envío', s: 'Toda Cuba' },
+            { ic: '🔒', t: 'Pago seguro', s: 'Contra entrega' }
+        ];
         if (p.garantia && String(p.garantia).trim()) {
-            trustHtml += `<span style="display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;padding:5px 10px;border-radius:8px;background:rgba(232,80,30,0.10);color:#E8501E;">🛡️ Garantía ${escapeHtml(p.garantia)}</span>`;
+            cards.push({ ic: '🛡️', t: 'Garantía', s: escapeHtml(String(p.garantia)) });
         }
         if (p.devolucion === true) {
-            trustHtml += '<span style="display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;padding:5px 10px;border-radius:8px;background:rgba(52,152,219,0.10);color:#3498DB;">↩️ Devolución aceptada</span>';
+            cards.push({ ic: '↩️', t: 'Devolución', s: 'Aceptada' });
         }
-        trustHtml += '</div>';
-        trustBadgesEl.innerHTML = trustHtml;
-        trustBadgesEl.style.display = 'block';
+        trustBadgesEl.innerHTML = cards.map(c =>
+            '<div class="detail-trust-card"><span class="dtc-ic">' + c.ic + '</span><div class="dtc-tx"><b>' + c.t + '</b><small>' + c.s + '</small></div></div>'
+        ).join('');
+        trustBadgesEl.style.display = 'grid';
     }
 
     // Descripción
@@ -559,20 +618,14 @@ if (_detailPrecioMNEl) {
     const relSection = document.getElementById('detailRelacionados');
     const relGrid    = document.getElementById('detailRelacionadosGrid');
     if (relacionados.length > 0) {
-        const _tasaRel = typeof getTasaMN === 'function' ? getTasaMN() : 0;
         const upsellNote = p.upsellText ? `<div class="rel-upsell-note" style="grid-column:1/-1;font-size:12px;color:#C9A96E;background:rgba(201,169,110,.08);border:1px solid rgba(201,169,110,.18);border-radius:10px;padding:10px 12px;margin-bottom:4px;">💡 ${escapeHtml(p.upsellText)}</div>` : '';
-        relGrid.innerHTML = upsellNote + relacionados.map(r => {
-            const _mnRel = _tasaRel > 0
-                ? `<span class="rel-card-price-mn">≈ ${Math.round(Number(r.precioActual) * _tasaRel).toLocaleString('es-CU')} MN</span>`
-                : '';
-            return `
-            <div class="rel-card" onclick="abrirDetalleProducto(${safeNum(r.id)})"${r.stock === 0 ? ' style="opacity:0.5"' : ''}>
-                <img src="${escapeAttr(r.imagen)}" alt="${escapeHtml(r.nombre)}" loading="lazy" onerror="this.style.display='none'">
-                <div class="rel-card-name">${escapeHtml(r.nombre)}</div>
-                <div class="rel-card-price">$${Number(r.precioActual).toFixed(2)} USD${_mnRel}</div>
-            </div>
-            `;
-        }).join('');
+        // Reutiliza el mismo constructor de tarjeta que la grilla principal
+        // (tm-ui.src.js, expuesto como window._tmCrearCard) para que estas
+        // tarjetas se vean idénticas a las nuevas, sin duplicar el markup.
+        const cardsHtml = typeof window._tmCrearCard === 'function'
+            ? relacionados.map(r => window._tmCrearCard(r).outerHTML).join('')
+            : '';
+        relGrid.innerHTML = upsellNote + cardsHtml;
         relSection.style.display = 'block';
     } else {
         relSection.style.display = 'none';
@@ -597,7 +650,7 @@ if (_detailPrecioMNEl) {
         const local = obtenerVistasProd(prodId) || 0;
         if (local > 0) {
             vDiv.style.display = 'flex';
-            vDiv.innerHTML = '<span class="pv-inner">👁️ <strong>' + local.toLocaleString() + '</strong> personas vieron esto</span>';
+            vDiv.innerHTML = '<span class="pv-inner">👁️ <strong>' + local.toLocaleString() + '</strong> personas vieron este producto</span>';
         }
         (async () => {
             try {
@@ -611,7 +664,7 @@ if (_detailPrecioMNEl) {
                 const el = document.getElementById('detailPersonasViendo');
                 if (el) {
                     el.style.display = 'flex';
-                    el.innerHTML = '<span class="pv-inner">👁️ <strong>' + cnt.toLocaleString() + '</strong> personas vieron esto</span>';
+                    el.innerHTML = '<span class="pv-inner">👁️ <strong>' + cnt.toLocaleString() + '</strong> personas vieron este producto</span>';
                 }
             } catch(e) {}
         })();
@@ -676,6 +729,7 @@ if (_detailPrecioMNEl) {
 }
 
 function cerrarDetalleModal() {
+    if (_detalleCountdownInterval) { clearInterval(_detalleCountdownInterval); _detalleCountdownInterval = null; }
     // FIX: cerrar panel de compartir si estaba abierto
     var _pcr = document.getElementById('panelCompartirRedes');
     if (_pcr) _pcr.style.display = 'none';

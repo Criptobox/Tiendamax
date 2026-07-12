@@ -766,10 +766,11 @@ async function renderizarResenas(productoId) {
     // Mostrar el promedio arriba del modal (junto al precio)
     if (ratingTop) {
         ratingTop.innerHTML =
-            '<span style="color:#f59e0b;font-size:16px;letter-spacing:1px;">' + '★'.repeat(Math.round(parseFloat(promedio))) + '</span>' +
-            '<span style="font-weight:800;font-size:15px;color:#f2f2f5;">' + promedio + '</span>' +
-            '<span style="font-size:12px;color:#9a9aa2;">(' + resenas.length + ' reseña' + (resenas.length !== 1 ? 's' : '') + ')</span>';
-        ratingTop.style.display = 'inline-flex';
+            '<span class="drt-stars">' + '★'.repeat(Math.round(parseFloat(promedio))) + '☆'.repeat(5 - Math.round(parseFloat(promedio))) + '</span>' +
+            '<span class="drt-num">' + promedio + '</span>' +
+            '<span class="drt-count">· ' + resenas.length + ' reseña' + (resenas.length !== 1 ? 's' : '') + '</span>' +
+            '<button type="button" class="drt-ver-todas" onclick="document.querySelector(\'.detail-resenas-section\').scrollIntoView({behavior:\'smooth\'})">Ver todas</button>';
+        ratingTop.style.display = 'flex';
     }
     // El promedio ya se muestra arriba (#detailRatingTop); abajo va directo a la lista.
     el.innerHTML =
@@ -1060,19 +1061,13 @@ function renderizarRecientes() {
 }
 
 function _renderCardRecientes(p) {
-    const id = safeNum(p.id);
-    const nombre = escapeHtml(p.nombre);
-    const img = escapeAttr(p.imagen || '');
-    const precio = Number(p.precioActual || 0).toFixed(2);
-    const agotado = p.stock === 0;
-    return '<div class="rec-card" onclick="abrirDetalleProducto(' + id + ')">'
-        + (agotado ? '<span class="rec-card-agotado">Agotado</span>' : '')
-        + '<img src="' + img + '" alt="' + nombre + '" loading="lazy" decoding="async" onerror="this.style.display=\'none\'">'
-        + '<div class="rec-card-info">'
-        +     '<div class="rec-card-nombre">' + nombre + '</div>'
-        +     '<div class="rec-card-precio">$' + precio + '</div>'
-        + '</div>'
-        + '</div>';
+    // Reutiliza el mismo constructor de tarjeta que la grilla principal
+    // (tm-ui.src.js, expuesto como window._tmCrearCard) para que estas
+    // tarjetas se vean idénticas a las nuevas, sin duplicar el markup.
+    if (typeof window._tmCrearCard === 'function') {
+        return window._tmCrearCard(p).outerHTML;
+    }
+    return '';
 }
 
 // ═══════════════════════════════════════════════════════

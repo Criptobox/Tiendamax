@@ -245,14 +245,14 @@
     <noscript><link rel="stylesheet" href="css/fonts.css?v=67235440"></noscript>
 
     <!-- Preload del bundle JS del núcleo (generado por scripts/build_js_bundle.py) -->
-    <link rel="preload" href="js/tm-bundle.js?v=14cea568" as="script">
+    <link rel="preload" href="js/tm-bundle.js?v=f832a225" as="script">
 
     <!-- CSS unido + minificado (generado por scripts/build_css.py vía GitHub Action).
          Para editar estilos, edita los CSS fuente en /css y la Action regenera este bundle. -->
 
 
 
-    <link rel="stylesheet" href="css/bundle.css?v=d84dedf5">
+    <link rel="stylesheet" href="css/bundle.css?v=83d23d34">
 
 
 
@@ -1188,6 +1188,7 @@
     <div id="productDetailModal" class="modal hidden" data-backdrop-close="cerrarDetalleModal">
         <div class="modal-content detail-modal-content">
             <div class="modal-header">
+                <div id="detailNuevoBadge" class="detail-badge-nuevo" style="display:none;">🆕 RECIÉN LLEGADO</div>
                 <h2 id="detailProductName">Detalle del Producto</h2>
                 <button data-action="cerrarDetalleModal" aria-label="Cerrar detalle del producto" type="button" class="close-btn">×</button>
             </div>
@@ -1202,6 +1203,7 @@
                         <div id="detailProductBadge" class="badge detail-badge">-0%</div>
                         <div id="detailMasVendidoBadge" class="badge-vendido detail-badge-hot" style="display:none;">🔥 Destacado</div>
                         <div id="detailGalleryThumbs" class="detail-gallery-thumbs" style="display:none;"></div>
+                        <div id="detailPhotoCounter" class="detail-photo-counter" style="display:none;"></div>
                     </div>
 
                     <div class="detail-info">
@@ -1218,6 +1220,8 @@
                             <span id="detailAhorroBadge" class="detail-ahorro" style="display:none;"></span>
                             <span id="detailPriceMN" class="detail-price-mn" style="display:none;"></span>
                         </div>
+
+                        <div id="detailCountdown" class="detail-countdown-wrap" style="display:none;"></div>
 
                         <!-- Stock -->
                         <div id="detailProductStock" class="detail-stock"></div>
@@ -1396,7 +1400,7 @@
     <!-- ===== TiendaMax modularizado (reemplaza script.js) ===== -->
     <!-- Bundle único (config→data→state→admin→product→catalog→init→ui→toast→iife→patches),
          generado por scripts/build_js_bundle.py a partir de js/src/*.src.js -->
-    <script src="js/tm-bundle.js?v=14cea568" defer></script>
+    <script src="js/tm-bundle.js?v=f832a225" defer></script>
 
     <script src="js/push-fix.js?v=bb27d53c" defer></script>
     <script src="js/subcategorias.js?v=fa21ab00" defer></script>
