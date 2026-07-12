@@ -708,6 +708,65 @@ function switchTab(tabName) {
 
 // ===== PRODUCTOS =====
 
+// Sugiere specs con IA (usa la misma key/proveedor configurado en ⚙️ Configuración
+// → API Key de IA, vía window.iaLlamarModelo expuesto por admin-copilot.js).
+// Solo rellena el input — el admin revisa y edita antes de publicar, nunca se auto-aplica.
+async function sugerirSpecsConIA() {
+    const btn = document.getElementById('btnSugerirSpecs');
+    const nombre = (document.getElementById('productName').value || '').trim();
+    if (!nombre) { mostrarNotificacion('Escribe el nombre del producto primero', 'error'); return; }
+    if (typeof window.iaLlamarModelo !== 'function') {
+        mostrarNotificacion('❌ Copiloto IA no cargó — recarga la página', 'error');
+        return;
+    }
+    const key = (localStorage.getItem('anthropicApiKey') || '').trim();
+    if (!key) { mostrarNotificacion('Configura tu API key en ⚙️ Configuración → API Key de IA', 'error'); return; }
+
+    const categoria = (document.getElementById('productCategory').value || '').trim();
+    const descripcion = (document.getElementById('productDescription').value || '').trim();
+
+    if (btn) { btn.disabled = true; btn.textContent = '🤖 Generando…'; }
+    try {
+        const prompt = 'Producto para una tienda online cubana: "' + nombre + '"' +
+            (categoria ? '. Categoría: ' + categoria : '') +
+            (descripcion ? '. Descripción: ' + descripcion : '') +
+            '. Dame hasta 6 especificaciones técnicas breves y realistas de este producto ' +
+            '(ej: voltaje, potencia, capacidad, dimensiones, material, conectividad — lo que aplique según el tipo de producto). ' +
+            'Responde SOLO con un array JSON de strings cortos, sin explicación, sin markdown. ' +
+            'Ejemplo de formato: ["1800Mbps","Dual Band","4 antenas"]';
+        const raw = await window.iaLlamarModelo(prompt);
+        if (!raw) {
+            mostrarNotificacion('❌ La IA no respondió — revisa tu API key o completa las specs a mano', 'error');
+            return;
+        }
+        let specs = [];
+        const jsonMatch = raw.match(/\[[\s\S]*\]/);
+        if (jsonMatch) {
+            try {
+                const parsed = JSON.parse(jsonMatch[0]);
+                if (Array.isArray(parsed)) specs = parsed.map(s => String(s).trim()).filter(Boolean);
+            } catch (e) { /* sigue al fallback de abajo */ }
+        }
+        if (specs.length === 0) {
+            specs = raw.split(/[\n,]/)
+                .map(s => s.replace(/^\s*[-*]\s+/, '').replace(/^\s*\d+[.)]\s+/, '').replace(/^"+|"+$/g, '').trim())
+                .filter(Boolean);
+        }
+        specs = specs.slice(0, 6);
+        if (specs.length === 0) {
+            mostrarNotificacion('❌ No se pudo interpretar la respuesta de la IA — completa las specs a mano', 'error');
+            return;
+        }
+        const specsInput = document.getElementById('productSpecs');
+        if (specsInput) specsInput.value = specs.join(', ');
+        mostrarNotificacion('✅ Specs sugeridas — revísalas y editá si algo no aplica', 'success');
+    } catch (e) {
+        mostrarNotificacion('❌ Error generando specs: ' + (e.message || e), 'error');
+    } finally {
+        if (btn) { btn.disabled = false; btn.textContent = '🤖 Sugerir con IA'; }
+    }
+}
+
 async function agregarProductoForm(event) {
     event.preventDefault();
     const fileInput = document.getElementById('productImage');

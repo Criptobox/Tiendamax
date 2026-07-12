@@ -613,6 +613,7 @@ async function iaLlamarModelo(prompt){
   }catch(e){ return null; }
   finally{ clearTimeout(tid); }
 }
+window.iaLlamarModelo = iaLlamarModelo;
 async function iaDescripcionesConIA(){
   const key=(localStorage.getItem('anthropicApiKey')||'').trim();
   if(!key){ toast('Configura tu API key en ⚙️ Configuración → API Key de IA'); return; }

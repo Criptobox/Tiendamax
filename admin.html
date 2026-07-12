@@ -689,7 +689,13 @@
                 <div class="form-group"><label class="form-label">Categoría *</label><select class="form-select" id="productCategory" required onchange="agregarFillSubcats()"><option value="">Selecciona…</option></select></div>
                 <div class="form-group"><label class="form-label">Subcategoría</label><select class="form-select" id="productSubcategory"><option value="">—</option></select></div>
               </div>
-              <div class="form-group" style="margin-top:10px"><label class="form-label">Specs (separadas por coma, máx 6)</label><input class="form-input" id="productSpecs" placeholder="1800Mbps, Dual Band, 4 antenas"></div>
+              <div class="form-group" style="margin-top:10px">
+                <label class="form-label" style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+                  <span>Specs (separadas por coma, máx 6)</span>
+                  <button type="button" id="btnSugerirSpecs" onclick="sugerirSpecsConIA()" style="font-size:11px;padding:4px 10px;border-radius:20px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);color:#cfcfd6;cursor:pointer;white-space:nowrap">🤖 Sugerir con IA</button>
+                </label>
+                <input class="form-input" id="productSpecs" placeholder="1800Mbps, Dual Band, 4 antenas">
+              </div>
             </div>
             <div class="section">
               <h3>💰 Precio y stock</h3>
@@ -792,7 +798,7 @@
      agregarProductoForm, sincronizarTodoConGitHub, registrarVenta, etc. -->
 <!-- Bundle único (mismo orden: config→data→state→admin→product→catalog→init→ui→toast→iife→patches),
      generado por scripts/build_js_bundle.py a partir de js/src/*.src.js -->
-<script src="js/tm-bundle.js?v=f832a225"></script>
+<script src="js/tm-bundle.js?v=1f3a6c77"></script>
 <script src="js/biometric-auth.js?v=343cb27b"></script>
 <script src="js/revolico_integration.js?v=b517b43a"></script>
 <script>
@@ -806,7 +812,7 @@
     if (typeof window.go === 'function') window.go(map[tab] || tab);
   };
 </script>
-<script src="js/admin-copilot.js?v=2b3e080c"></script>
+<script src="js/admin-copilot.js?v=cb57573e"></script>
 
 <script>
 (function(){
