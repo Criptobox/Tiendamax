@@ -528,7 +528,7 @@ if (_detailPrecioMNEl) {
     const trustBadgesEl = document.getElementById('detailTrustBadges');
     if (trustBadgesEl) {
         const cards = [
-            { ic: '🚚', t: 'Envío', s: 'Toda Cuba' },
+            { ic: '🚚', t: 'Envío', s: escapeHtml((typeof getEnvioTexto === 'function') ? getEnvioTexto() : 'Según zona') },
             { ic: '🔒', t: 'Pago seguro', s: 'Contra entrega' }
         ];
         if (p.garantia && String(p.garantia).trim()) {
