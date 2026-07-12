@@ -552,6 +552,46 @@ async function _tmMergeProductosConRepo(user, repo) {
     return merged;
 }
 
+// ── Anti-pisado: igual que _tmMergeProductosConRepo pero para categorías.
+// Sin esto, cualquier "Actualizar tienda" (incluso solo por cambiar un precio)
+// sobreescribía categorias.json con la copia en memoria de ESTA sesión, borrando
+// categorías/emojis agregados desde otro dispositivo/sesión que no se recargó.
+// Nunca borra: nombres/iconos del repo que no están en memoria se conservan.
+async function _tmMergeCategoriasConRepo(user, repo) {
+    const local = { nombres: (categorias || []).slice(), iconos: Object.assign({}, iconosPersonalizados || {}) };
+    let remoto = null;
+    try {
+        const r = await fetch(`https://raw.githubusercontent.com/${user}/${repo}/main/categorias.json?_=${Date.now()}`, { cache: 'no-store' });
+        if (r.ok) { const j = await r.json(); if (j && Array.isArray(j.nombres)) remoto = j; }
+    } catch (e) {}
+    if (!remoto) return local;
+
+    const nombres = local.nombres.slice();
+    remoto.nombres.forEach(n => { if (!nombres.includes(n)) nombres.push(n); });
+    const iconos = Object.assign({}, remoto.iconos || {}, local.iconos);
+    return { nombres, iconos };
+}
+
+// ── Anti-pisado: igual que la de categorías, pero para subcategorias.json
+// ({ CATEGORIA: [sub, sub...] }). Fusiona por categoría, unión de subcategorías.
+async function _tmMergeSubcategoriasConRepo(user, repo) {
+    const local = tmParseObject(localStorage.getItem('subcategorias'));
+    let remoto = null;
+    try {
+        const r = await fetch(`https://raw.githubusercontent.com/${user}/${repo}/main/subcategorias.json?_=${Date.now()}`, { cache: 'no-store' });
+        if (r.ok) { const j = await r.json(); if (j && typeof j === 'object' && !Array.isArray(j)) remoto = j; }
+    } catch (e) {}
+    if (!remoto) return local;
+
+    const merged = {};
+    Object.keys(local).forEach(cat => { merged[cat] = (local[cat] || []).slice(); });
+    Object.keys(remoto).forEach(cat => {
+        if (!merged[cat]) { merged[cat] = (remoto[cat] || []).slice(); return; }
+        (remoto[cat] || []).forEach(s => { if (!merged[cat].includes(s)) merged[cat].push(s); });
+    });
+    return merged;
+}
+
 // Evita que el sync borre descripciones: el admin carga el catálogo lite (sin
 // descripcion), así que antes de subir productos.json recupera descripcion/seoTitle/
 // seoDescription del productos.json del repo para los productos que no las tengan en memoria.
@@ -685,11 +725,15 @@ async function sincronizarTodoConGitHub() {
     // (p.ej. fotos) hechos desde otra sesión/dispositivo que no están en esta memoria.
     const _prodsFinal = await _tmMergeProductosConRepo(user, repo);
     const _productosLite = _prodsFinal.map(p => { const { descripcion, ...r } = p; return r; });
+    // Anti-pisado: mismo criterio que productos, para no borrar categorías/
+    // subcategorías agregadas desde otra sesión/dispositivo al publicar.
+    const _catFinal = await _tmMergeCategoriasConRepo(user, repo);
+    const _subcatFinal = await _tmMergeSubcategoriasConRepo(user, repo);
     const archivos = [
         { path: 'productos.json',              data: _prodsFinal },
         { path: 'productos-lite.json',         data: _productosLite },
-        { path: 'categorias.json',             data: { nombres: categorias, iconos: iconosPersonalizados } },
-        { path: 'subcategorias.json',          data: tmParseObject(localStorage.getItem('subcategorias')) },
+        { path: 'categorias.json',             data: _catFinal },
+        { path: 'subcategorias.json',          data: _subcatFinal },
         { path: 'grupos_facebook_config.json', data: { grupos: tmParseArray(localStorage.getItem('gruposFB')), exportado: new Date().toISOString() } },
         { path: 'revolico_config.json',        data: tmParseObject(localStorage.getItem('revolicoConfig')) },
         { path: 'banners.json',                data: tmParseArray(localStorage.getItem('heroBanners')) },
