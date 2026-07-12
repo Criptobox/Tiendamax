@@ -20,6 +20,7 @@ on:
 
 permissions:
   contents: write
+  actions: write   # para disparar el deploy de Pages (los commits del bot no lo hacen solos)
 
 # Grupo compartido con minify-js para que NO corran a la vez (evita la carrera
 # de push al commitear ambos bundles sobre main).
@@ -57,18 +58,33 @@ jobs:
         run: python scripts/bump_versions.py
 
       - name: Commit y push si hubo cambios
+        id: commit
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add css/bundle.css sw.js index.html admin.html
           if git diff --cached --quiet; then
             echo "Sin cambios — nada que subir."
+            echo "changed=false" >> $GITHUB_OUTPUT
             exit 0
           fi
           git commit -m "chore: regenerar y minificar css/bundle.css [skip ci]"
           for i in 1 2 3 4 5; do
-            if git push; then exit 0; fi
+            if git push; then echo "changed=true" >> $GITHUB_OUTPUT; exit 0; fi
             git pull --rebase origin main || git rebase --abort 2>/dev/null
             sleep 2
           done
           exit 1
+
+      - name: Publicar en GitHub Pages
+        if: steps.commit.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          echo "Disparando el deploy de Pages (los commits del bot no lo disparan solos)…"
+          curl -sS -X POST \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "https://api.github.com/repos/${{ github.repository }}/actions/workflows/pages.yml/dispatches" \
+            -d '{"ref":"main"}'

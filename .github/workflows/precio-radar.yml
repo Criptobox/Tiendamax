@@ -10,6 +10,11 @@ permissions:
   contents: write
   actions: write   # para disparar el deploy de Pages (los commits del bot no lo hacen solos)
 
+# Evita que un workflow_dispatch manual choque con la corrida diaria por cron.
+concurrency:
+  group: precio-radar
+  cancel-in-progress: false
+
 jobs:
   radar:
     runs-on: ubuntu-latest
