@@ -134,7 +134,7 @@ function renderizarProductos(isLoadMore = false) {
         const card = document.createElement('div');
         const _stock  = safeNum(producto.stock);
         const _esAgotado = _stock === 0;
-        card.className = 'producto-card pcard-v2' + (_esAgotado ? ' card-agotado' : '');
+        card.className = 'producto-card pcard-v2 tm-anim-card' + (_esAgotado ? ' card-agotado' : '');
         card.dataset.productId = String(producto.id);
         card.onclick = () => abrirDetalleProducto(producto.id);
         const _nombre = escapeHtml(producto.nombre);
@@ -777,6 +777,12 @@ if (_detailPrecioMNEl) {
     if (!modal) return;
     modal.classList.remove('hidden');
     modal.style.removeProperty('display');
+    // Entrada con transform+opacity en vez de aparecer en seco: se fuerza un
+    // reflow para que el navegador pinte el estado inicial (scale .96/opacity 0)
+    // antes de agregar la clase que dispara la transición al estado final.
+    modal.classList.remove('modal-show');
+    void modal.offsetWidth;
+    requestAnimationFrame(() => { modal.classList.add('modal-show'); });
     document.body.style.overflow = 'hidden';
     // Scroll al top para que el usuario vea el producto desde el inicio
     const detailBody = modal.querySelector('.detail-body') || modal.querySelector('.detail-modal-content');
@@ -797,6 +803,7 @@ function cerrarDetalleModal() {
     const modal = document.getElementById('productDetailModal');
     if (!modal) return;
     modal.classList.add('hidden');
+    modal.classList.remove('modal-show');
     modal.style.removeProperty('display');
     document.body.style.overflow = '';
     _detalleProductoActual = null;

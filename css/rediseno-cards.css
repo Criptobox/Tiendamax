@@ -13,7 +13,7 @@
   border-radius:20px; overflow:hidden; cursor:pointer; padding:0 !important;
   background:#17171f !important; border:1px solid rgba(255,255,255,.07) !important;
   box-shadow:0 12px 26px -14px rgba(0,0,0,.7) !important;
-  transition:transform .25s cubic-bezier(.34,1.56,.64,1), box-shadow .25s ease, border-color .25s !important;
+  transition:transform .28s cubic-bezier(0.23,1,0.32,1), box-shadow .28s cubic-bezier(0.23,1,0.32,1), border-color .25s !important;
 }
 .producto-card.pcard-v2:hover{
   transform:translateY(-5px);
@@ -111,9 +111,10 @@ html body .producto-card.pcard-v2.card-agotado .precio-actual{ color:#9a9aa8 !im
   margin-top:10px; border:none; background:#22c55e; color:#fff; font-weight:800; font-size:13.5px;
   padding:12px; border-radius:40px; cursor:pointer; width:100%;
   display:inline-flex; align-items:center; justify-content:center; gap:7px; white-space:nowrap;
-  box-shadow:0 8px 18px rgba(34,197,94,.32); transition:filter .15s;
+  box-shadow:0 8px 18px rgba(34,197,94,.32); transition:filter .15s, transform 160ms cubic-bezier(0.23,1,0.32,1);
 }
 .producto-card.pcard-v2 .btn-pedir-card.pv2-pedir:hover{ filter:brightness(1.05); }
+.producto-card.pcard-v2 .btn-pedir-card.pv2-pedir:active{ transform:scale(.97); }
 .producto-card.pcard-v2 .btn-pedir-card.pv2-pedir svg{ width:15px; height:15px; fill:#fff; }
 /* Avísame: color distinto (ámbar) para diferenciarlo del verde 'Pedir' */
 .producto-card.pcard-v2 .btn-pedir-card.pv2-aviso{
@@ -121,8 +122,10 @@ html body .producto-card.pcard-v2.card-agotado .precio-actual{ color:#9a9aa8 !im
   font-weight:800; font-size:13.5px; padding:12px; border-radius:40px !important; cursor:pointer; width:100%;
   display:inline-flex; align-items:center; justify-content:center; gap:6px; white-space:nowrap;
   box-shadow:0 8px 18px rgba(232,112,30,.32) !important;
+  transition:filter .15s, transform 160ms cubic-bezier(0.23,1,0.32,1);
 }
 .producto-card.pcard-v2 .btn-pedir-card.pv2-aviso:hover{ filter:brightness(1.05); }
+.producto-card.pcard-v2 .btn-pedir-card.pv2-aviso:active{ transform:scale(.97); }
 
 /* Tarjeta agotada: gris/apagada para diferenciarla */
 .producto-card.pcard-v2.card-agotado{ opacity:.9; }
@@ -401,7 +404,9 @@ body.light-mode .contador-personas .pv-inner{ color:#6b6b7a; background:rgba(0,0
 /* Botón "Pedir por WhatsApp" más grande/protagonista dentro del modal */
 #productDetailModal .detail-cta-row #detailBuyBtn.detail-buy-btn{
   padding:16px 18px; font-size:16px; border-radius:16px;
+  transition:transform 160ms cubic-bezier(0.23,1,0.32,1), filter .15s;
 }
+#productDetailModal .detail-cta-row #detailBuyBtn.detail-buy-btn:active{ transform:scale(.97); }
 #productDetailModal .detail-cta-row #detailBuyBtn .btn-pedir-wa-text{ font-weight:800; }
 
 /* "También viste" / "También te puede interesar": usan las tarjetas pv2
@@ -593,8 +598,10 @@ body.light-mode .resena-meta .resena-fecha{ color:#8a8a92; }
   display:inline-flex; align-items:center; justify-content:center; gap:7px;
   background:#22c55e; color:#fff; border:none; border-radius:14px;
   height:46px; padding:0 20px; font-size:14px; font-weight:800; cursor:pointer;
-  box-shadow:0 8px 20px rgba(34,197,94,.35); flex-shrink:0; transition:filter .15s;
+  box-shadow:0 8px 20px rgba(34,197,94,.35); flex-shrink:0;
+  transition:filter .15s, transform 160ms cubic-bezier(0.23,1,0.32,1);
 }
+.dsc-buy-btn:active{ transform:scale(.97); }
 .dsc-buy-btn:hover{ filter:brightness(1.06); }
 body.light-mode .dsc-price-main{ color:#1a1a1a; }
 body.light-mode #productDetailModal .detail-sticky-cta{ background:linear-gradient(180deg, transparent 0%, var(--panel,#fff) 35%); }
@@ -656,3 +663,53 @@ body.light-mode #productDetailModal .detail-meta-line .detail-subcategory{ color
   background:var(--panel) !important; border-bottom:none !important;
 }
 body.light-mode #productDetailModal .modal-header{ background:#eceef2 !important; }
+
+/* ============================================================
+   Pase de motion premium (auditoría improve-animations, 2026-07)
+   Reglas puntuales que ganan la cascada por ir al final del bundle.
+   No se tocan los archivos base (styles.css, premium-theme.css) para
+   no arriesgar romper selectores minificados de una sola línea.
+   ============================================================ */
+
+/* 1) El número del carrito ya no aparece de scale(0): nada en el
+   mundo real aparece de la nada. Se redefine el nombre del keyframe
+   para no chocar con la animación vieja (que sigue definida en
+   styles.css pero deja de usarse acá). */
+@keyframes cartPopPremium{ from{ transform:scale(.9); opacity:0; } to{ transform:scale(1); opacity:1; } }
+.cart-count{ animation:cartPopPremium .18s cubic-bezier(0.23,1,0.32,1) !important; }
+
+/* 2) El botón de WhatsApp flotante ya no pulsa para siempre — pulsa
+   3 veces al cargar la página y se queda quieto (sigue "vivo" con el
+   hover normal, solo deja de insistir todo el rato). */
+.whatsapp-btn{ animation-iteration-count:3 !important; }
+
+/* 3) transition:all → propiedades concretas, en los controles que más
+   se tocan (carrito, compartir, filtros, WhatsApp, admin-nav, moneda).
+   Mismo timing/curva que ya tenían, solo se acota qué anima. */
+.detail-share-btn{ transition:border-color .2s, color .2s !important; }
+.cart-icon-btn{ transition:background-color .2s, border-color .2s !important; }
+.carrito-qty-btn{ transition:border-color .15s, color .15s !important; }
+.carrito-item-del{ transition:background-color .15s, color .15s !important; }
+.carrito-btn-limpiar{ transition:border-color .2s, color .2s !important; }
+.btn-carrito{ transition:background-color .2s, color .2s !important; }
+.detail-resena-add-btn{ transition:background-color .2s, color .2s !important; }
+.whatsapp-btn{ transition:transform .3s cubic-bezier(0.23,1,0.32,1), box-shadow .3s cubic-bezier(0.23,1,0.32,1) !important; }
+.whatsapp-group-btn{ transition:transform .3s cubic-bezier(0.23,1,0.32,1) !important; }
+.nav-admin-btn{ transition:border-color .2s, color .2s !important; }
+.cur-btn{ transition:background-color .2s, color .2s !important; }
+.btn-seguir-viendo{ transition:background-color .2s, border-color .2s, box-shadow .2s !important; }
+.nd-hero-dot{ transition:background-color .3s ease !important; }
+.tmplus-share-cart{ transition:background-color .18s, color .18s !important; }
+.categoria-card{ transition:border-color .25s, transform .25s cubic-bezier(0.23,1,0.32,1), box-shadow .25s !important; }
+
+/* 4) El modal de producto entra con transform+opacity en vez de aparecer en
+   seco (display plano). JS agrega la clase .modal-show un frame después de
+   abrir, para que el navegador pinte antes el estado inicial. */
+#productDetailModal .detail-modal-content{
+  transform:scale(.96); opacity:0;
+  transition:transform .26s cubic-bezier(0.23,1,0.32,1), opacity .22s cubic-bezier(0.23,1,0.32,1);
+}
+#productDetailModal.modal-show .detail-modal-content{ transform:scale(1); opacity:1; }
+@media (prefers-reduced-motion:reduce){
+  #productDetailModal .detail-modal-content{ transition:opacity .15s ease !important; transform:none !important; opacity:1 !important; }
+}
