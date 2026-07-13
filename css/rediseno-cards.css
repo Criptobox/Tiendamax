@@ -258,8 +258,10 @@ body.light-mode #catExtraWrap > div > div:nth-child(2){ color:#1a1a1a !important
    completo cuando hay precioOriginal (ver #detailProductBadge en tm-product.src.js). */
 #productDetailModal #detailProductBadge.detail-badge{
   right:auto !important; width:auto !important;
-  display:inline-flex !important; align-items:center;
 }
+/* display NO se fuerza acá — el JS decide none/inline-block según haya
+   descuento real; forzarlo con !important rompía el ocultamiento y
+   dejaba ver el "-0%" de placeholder del HTML cuando no hay descuento. */
 
 /* Badge "Destacado" del modal: pastilla compacta (no estirada a lo ancho).
    .badge-vendido fija left y .detail-badge-hot fija right → se estiraba. */
