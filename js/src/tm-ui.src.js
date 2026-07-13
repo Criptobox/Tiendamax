@@ -1782,7 +1782,7 @@ renderizarProductos = function() {
         const esAgotado = producto.stock === 0;
         const esOfertaDia = String(producto.id) === String(ofertaId);
         const card = document.createElement('div');
-        card.className = 'producto-card pcard-v2' + (esAgotado ? ' card-agotado' : '');
+        card.className = 'producto-card pcard-v2 tm-anim-card' + (esAgotado ? ' card-agotado' : '');
         card.onclick = () => abrirDetalleProducto(producto.id);
         card.dataset.productId = String(producto.id);
         const _id  = safeNum(producto.id);
@@ -1832,8 +1832,10 @@ renderizarProductos = function() {
 
     // Render inicial en lote con DocumentFragment (1 reflow en vez de N appendChild)
     const _frag = document.createDocumentFragment();
-    productosFiltrados.slice(0, _visibleCount).forEach(p => _frag.appendChild(_tmCrearCard(p)));
+    const _cardsIniciales = productosFiltrados.slice(0, _visibleCount).map(p => _tmCrearCard(p));
+    _cardsIniciales.forEach(c => _frag.appendChild(c));
     productosGrid.appendChild(_frag);
+    if (window._tmAnimObs) _cardsIniciales.forEach(c => window._tmAnimObs.observe(c));
     // Cargar reseñas/vistas reales y pintarlas en las tarjetas
     setTimeout(_tmCargarMetaCatalogo, 0);
 
@@ -1850,8 +1852,10 @@ renderizarProductos = function() {
             const next = productosFiltrados.slice(_loadedCount, _loadedCount + _tmBatchSize);
             if (next.length === 0) { loadMoreBtn.remove(); return; }
             const f = document.createDocumentFragment();
-            next.forEach(p => f.appendChild(_tmCrearCard(p)));
+            const _cardsLote = next.map(p => _tmCrearCard(p));
+            _cardsLote.forEach(c => f.appendChild(c));
             productosGrid.insertBefore(f, loadMoreBtn);
+            if (window._tmAnimObs) _cardsLote.forEach(c => window._tmAnimObs.observe(c));
             _loadedCount += next.length;
             const restantes = productosFiltrados.length - _loadedCount;
             const pEl = loadMoreBtn.querySelector('p');
