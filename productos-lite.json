@@ -392,9 +392,9 @@
   },
   {
     "id": 1778104735789,
-    "nombre": "Router Kuwfi   Transmisión WiFi de 150 Mbps",
+    "nombre": "Router Kuwfi Transmisión WiFi de 150 Mbps",
     "precioActual": 130,
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783837070407.jpg",
+    "imagen": "https://tiendamax.org/imagenes/img_1783837070407.jpg",
     "categoria": "WIFI",
     "subcategoria": "ROUTERS",
     "stock": 37,
@@ -413,7 +413,7 @@
     "precioOriginal": 0,
     "comisionMoneda": "USD",
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783837070407.jpg",
+      "https://tiendamax.org/imagenes/img_1783837070407.jpg",
       "https://tiendamax.org/imagenes/img_1778104735789.webp"
     ]
   },
