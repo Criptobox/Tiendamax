@@ -323,6 +323,25 @@ body.light-mode .detail-badge-nuevo{ background:rgba(255,107,53,.10); }
 #productDetailModal .detail-gallery-thumb{ background:linear-gradient(180deg,#FAFAFA,#F0EDE8) !important; }
 #productDetailModal .detail-gallery-thumb img{ object-fit:contain !important; }
 
+/* Miniaturas más grandes y con más aire (antes 48px casi sin separación,
+   quedaban diminutas). Anillo activo con "outline" en vez de "border":
+   deja un espacio real entre el anillo naranja y la foto, en vez de un
+   borde pegado — así se ve un aro de selección, no un simple contorno. */
+#productDetailModal .detail-gallery-thumbs{ gap:14px !important; }
+#productDetailModal .detail-gallery-thumb{
+  width:76px !important; height:76px !important; min-width:76px !important;
+  border-radius:16px !important; border:none !important; opacity:.6 !important;
+  outline:3px solid transparent !important; outline-offset:3px !important;
+  transition:opacity .18s, outline-color .18s !important;
+}
+#productDetailModal .detail-gallery-thumb.active,
+#productDetailModal .detail-gallery-thumb:hover{
+  opacity:1 !important; outline-color:#ff6a00 !important;
+}
+@media (max-width:380px){
+  #productDetailModal .detail-gallery-thumb{ width:64px !important; height:64px !important; min-width:64px !important; border-radius:14px !important; }
+}
+
 /* Bug real: .detail-grid usaba "1fr" puro. En CSS Grid, "1fr" se comporta
    como minmax(auto,1fr) — si algo adentro de la columna se niega a encoger
    (texto largo, filas flex sin min-width:0), la COLUMNA crece más allá del
@@ -336,11 +355,11 @@ body.light-mode .detail-badge-nuevo{ background:rgba(255,107,53,.10); }
 
 /* Contador de fotos "N / M" — esquina inferior izquierda de la imagen */
 .detail-photo-counter{
-  position:absolute; bottom:10px; left:10px;
+  position:absolute; bottom:14px; left:14px;
   background:rgba(0,0,0,.62); backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px);
-  color:#fff; font-size:11px; font-weight:700;
-  padding:5px 11px; border-radius:20px; z-index:4;
-  pointer-events:none;
+  color:#fff; font-size:13px; font-weight:700;
+  padding:8px 15px; border-radius:20px; z-index:4;
+  pointer-events:none; display:flex; align-items:center; gap:6px;
 }
 
 /* Trust badges como tarjetas con ícono (reemplaza las pills en línea) */
