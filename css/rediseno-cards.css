@@ -318,6 +318,17 @@ body.light-mode .detail-badge-nuevo{ background:rgba(255,107,53,.10); }
   padding:0 !important;
 }
 
+/* Bug real: .detail-grid usaba "1fr" puro. En CSS Grid, "1fr" se comporta
+   como minmax(auto,1fr) — si algo adentro de la columna se niega a encoger
+   (texto largo, filas flex sin min-width:0), la COLUMNA crece más allá del
+   ancho disponible y todo .detail-info se desborda por la derecha del modal
+   (precios largos como "$33,000.00", specs largos, etc. lo disparaban).
+   Con minmax(0,1fr) la columna sí respeta su ancho real. */
+.detail-grid{ grid-template-columns:minmax(0,1fr) minmax(0,1fr) !important; }
+@media (max-width:600px){
+  .detail-grid{ grid-template-columns:minmax(0,1fr) !important; }
+}
+
 /* Contador de fotos "N / M" — esquina inferior izquierda de la imagen */
 .detail-photo-counter{
   position:absolute; bottom:10px; left:10px;
