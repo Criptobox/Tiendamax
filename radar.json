@@ -1,15 +1,15 @@
 {
-  "actualizado": "2026-07-12T11:59:53.533859+00:00",
-  "fecha": "2026-07-12",
+  "actualizado": "2026-07-13T13:23:42.723351+00:00",
+  "fecha": "2026-07-13",
   "fuentes": [
     "revolico",
     "porlalivre",
     "lelespc"
   ],
   "resumen": {
-    "vigilados": 4,
-    "encimaMercado": 1,
-    "bajadasComp": 1,
+    "vigilados": 3,
+    "encimaMercado": 0,
+    "bajadasComp": 0,
     "sinDatos": 0
   },
   "productos": [
@@ -28,10 +28,6 @@
         "texto": "Precio competitivo respecto al mercado"
       },
       "historial": [
-        {
-          "fecha": "2026-06-29",
-          "mediana": 170.0
-        },
         {
           "fecha": "2026-06-30",
           "mediana": 170.0
@@ -83,6 +79,10 @@
         {
           "fecha": "2026-07-12",
           "mediana": 170.0
+        },
+        {
+          "fecha": "2026-07-13",
+          "mediana": 170.0
         }
       ],
       "muestras": [
@@ -98,6 +98,13 @@
           "titulo": "85 USD Inversor 12v a 120v potencia nominal 500w",
           "precio": 85.0,
           "url": "https://www.revolico.com/item/inversor-12v-a-120v-potencia-nominal-500w-56138412",
+          "dias": null
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "100 USD Inversor 6000/4000 watts/ Controlador Solar 100A (12V-48V)/ Cargador 20A/30A Intel",
+          "precio": 100.0,
+          "url": "https://www.revolico.com/item/inversor-4000-watts-controlador-solar-100-a-cargador-20a-luces-led-solares-alarma-solar-con-sensor-control-remoto-55047645?p",
           "dias": null
         },
         {
@@ -120,131 +127,6 @@
           "precio": 120.0,
           "url": "https://www.revolico.com/item/inversor-12v-3000w-55427082",
           "dias": null
-        },
-        {
-          "fuente": "revolico",
-          "titulo": "130 USD Inversor 12V/3000W",
-          "precio": 130.0,
-          "url": "https://www.revolico.com/item/inversor-12v3000w-55560687",
-          "dias": null
-        }
-      ]
-    },
-    {
-      "id": 1778102214012,
-      "nombre": "Switch de 8 Puertos",
-      "tuPrecio": 30.0,
-      "mercado": {
-        "min": 9.02,
-        "mediana": 25.0,
-        "n": 11
-      },
-      "deltaAyerMediana": -7.5,
-      "estado": "encima",
-      "sugerencia": {
-        "texto": "Estás por encima del mercado. Podrías bajar hacia ~$25",
-        "precio": 25.0
-      },
-      "historial": [
-        {
-          "fecha": "2026-06-29",
-          "mediana": 57.5
-        },
-        {
-          "fecha": "2026-06-30",
-          "mediana": 57.5
-        },
-        {
-          "fecha": "2026-07-01",
-          "mediana": 50.0
-        },
-        {
-          "fecha": "2026-07-02",
-          "mediana": 37.5
-        },
-        {
-          "fecha": "2026-07-03",
-          "mediana": 50.0
-        },
-        {
-          "fecha": "2026-07-04",
-          "mediana": 50.0
-        },
-        {
-          "fecha": "2026-07-05",
-          "mediana": 50.0
-        },
-        {
-          "fecha": "2026-07-06",
-          "mediana": 50.0
-        },
-        {
-          "fecha": "2026-07-07",
-          "mediana": 50.0
-        },
-        {
-          "fecha": "2026-07-08",
-          "mediana": 40.0
-        },
-        {
-          "fecha": "2026-07-09",
-          "mediana": 40.0
-        },
-        {
-          "fecha": "2026-07-10",
-          "mediana": 40.0
-        },
-        {
-          "fecha": "2026-07-11",
-          "mediana": 32.5
-        },
-        {
-          "fecha": "2026-07-12",
-          "mediana": 25.0
-        }
-      ],
-      "muestras": [
-        {
-          "fuente": "revolico",
-          "titulo": "6,000 CUP Switch 4 puertos a 100mb",
-          "precio": 9.02,
-          "url": "https://www.revolico.com/item/switch-4-puertos-a-100mb-56269101",
-          "dias": null
-        },
-        {
-          "fuente": "revolico",
-          "titulo": "6,000 CUP Switch 4 puertos a 100mb",
-          "precio": 9.02,
-          "url": "https://www.revolico.com/item/switch-4-puertos-a-100mb-56269091",
-          "dias": null
-        },
-        {
-          "fuente": "revolico",
-          "titulo": "20 USD Switch 5 Puertos - Switch internet -Red",
-          "precio": 20.0,
-          "url": "https://www.revolico.com/item/switch-5-puertos-switch-internet-red-52438989",
-          "dias": null
-        },
-        {
-          "fuente": "revolico",
-          "titulo": "20 USD Switch 5 Puertos 1Gb",
-          "precio": 20.0,
-          "url": "https://www.revolico.com/item/switch-5-puertos-1gb-55867607",
-          "dias": null
-        },
-        {
-          "fuente": "revolico",
-          "titulo": "25 USD Switch 5 puertos",
-          "precio": 25.0,
-          "url": "https://www.revolico.com/item/switch-5-puertos-56144812",
-          "dias": null
-        },
-        {
-          "fuente": "revolico",
-          "titulo": "25 USD Switch 5 puertos a gb $25",
-          "precio": 25.0,
-          "url": "https://www.revolico.com/item/switch-5-puertos-a-gb-25-55821825",
-          "dias": null
         }
       ]
     },
@@ -264,10 +146,6 @@
       },
       "historial": [
         {
-          "fecha": "2026-06-29",
-          "mediana": 25.0
-        },
-        {
           "fecha": "2026-06-30",
           "mediana": 25.0
         },
@@ -317,6 +195,10 @@
         },
         {
           "fecha": "2026-07-12",
+          "mediana": 25.0
+        },
+        {
+          "fecha": "2026-07-13",
           "mediana": 25.0
         }
       ],
@@ -381,10 +263,6 @@
       },
       "historial": [
         {
-          "fecha": "2026-06-29",
-          "mediana": 90.0
-        },
-        {
           "fecha": "2026-06-30",
           "mediana": 90.0
         },
@@ -434,6 +312,10 @@
         },
         {
           "fecha": "2026-07-12",
+          "mediana": 90.0
+        },
+        {
+          "fecha": "2026-07-13",
           "mediana": 90.0
         }
       ],
