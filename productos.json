@@ -409,9 +409,9 @@
   },
   {
     "id": 1778104735789,
-    "nombre": "Router Kuwfi   Transmisión WiFi de 150 Mbps",
+    "nombre": "Router Kuwfi Transmisión WiFi de 150 Mbps",
     "precioActual": 130,
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783837070407.jpg",
+    "imagen": "https://tiendamax.org/imagenes/img_1783837070407.jpg",
     "categoria": "WIFI",
     "subcategoria": "ROUTERS",
     "stock": 37,
@@ -427,13 +427,13 @@
     ],
     "seoTitle": "ESTE ROUTER KUWFI OFRECE UNA VELOCIDAD DE… | TiendaMax",
     "seoDescription": "Este router KuWFi ofrece una velocidad de transmisión WiFi de 150 Mbps, proporcionando una conexión rápida y estable para todos sus dispositivos…",
-    "descripcion": "Este router KuWFi ofrece una velocidad de transmisión WiFi de 150 Mbps, proporcionando una conexión rápida y estable para todos sus dispositivos: ✅Resistente al agua, lo que lo hace ideal para uso en exteriores. ✅Soporte para 64 usuarios. ✅Tiene función de firewall, por lo cual protege su red contra ataques y intrusiones, manteniendo su información segura y privada. ✅Viene con un cable ethernet, cargador más cable para la corriente y manual de instrucciones.",
     "precioOriginal": 0,
     "comisionMoneda": "USD",
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783837070407.jpg",
+      "https://tiendamax.org/imagenes/img_1783837070407.jpg",
       "https://tiendamax.org/imagenes/img_1778104735789.webp"
-    ]
+    ],
+    "descripcion": "Este router KuWFi ofrece una velocidad de transmisión WiFi de 150 Mbps, proporcionando una conexión rápida y estable para todos sus dispositivos: ✅Resistente al agua, lo que lo hace ideal para uso en exteriores. ✅Soporte para 64 usuarios. ✅Tiene función de firewall, por lo cual protege su red contra ataques y intrusiones, manteniendo su información segura y privada. ✅Viene con un cable ethernet, cargador más cable para la corriente y manual de instrucciones."
   },
   {
     "id": 1778104850733,
