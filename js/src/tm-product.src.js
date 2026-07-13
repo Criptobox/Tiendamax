@@ -395,22 +395,26 @@ function abrirDetalleProducto(id) {
 const _detailPrecioEl = document.getElementById('detailPriceActual');
 const _detailPrecioOldEl = document.getElementById('detailPriceOriginal');
 const _detailPrecioMNEl = document.getElementById('detailPriceMN');
-// USD siempre visible en el modal
-if (_detailPrecioEl) _detailPrecioEl.textContent = `$${Number(p.precioActual||0).toFixed(2)} USD`;
+// USD siempre visible en el modal — $ y USD chicos, número grande (acento tipográfico)
+if (_detailPrecioEl) {
+    _detailPrecioEl.innerHTML = `<span class="dp-sym">$</span><span class="dp-num">${Number(p.precioActual||0).toFixed(2)}</span><span class="dp-cur">USD</span>`;
+}
+const _hasPrecioOrigLinea = p.precioOriginal > 0 && parseFloat(p.precioOriginal) > parseFloat(p.precioActual);
 if (_detailPrecioOldEl) {
-    if (p.precioOriginal > 0 && parseFloat(p.precioOriginal) > parseFloat(p.precioActual)) {
-        _detailPrecioOldEl.textContent = `$${parseFloat(p.precioOriginal).toFixed(2)} USD`;
+    if (_hasPrecioOrigLinea) {
+        _detailPrecioOldEl.textContent = `Antes $${parseFloat(p.precioOriginal).toFixed(2)}`;
         _detailPrecioOldEl.style.display = 'inline';
     } else {
         _detailPrecioOldEl.style.display = 'none';
     }
 }
-// Equivalente MN dinámico
+// Equivalente MN dinámico — en la misma línea que "Antes $X" (separador "·" solo si hay ambos)
 if (_detailPrecioMNEl) {
     const _tasaModal = typeof getTasaMN === 'function' ? getTasaMN() : 0;
     if (_tasaModal > 0) {
-        _detailPrecioMNEl.textContent = `≈ ${Math.round(p.precioActual * _tasaModal).toLocaleString('es-CU')} MN`;
-        _detailPrecioMNEl.style.display = 'block';
+        const _mnTxt = `≈ ${Math.round(p.precioActual * _tasaModal).toLocaleString('es-CU')} MN`;
+        _detailPrecioMNEl.textContent = _hasPrecioOrigLinea ? `${_mnTxt} ·` : _mnTxt;
+        _detailPrecioMNEl.style.display = 'inline';
     } else {
         _detailPrecioMNEl.style.display = 'none';
     }
@@ -451,15 +455,10 @@ if (_detailPrecioMNEl) {
         }
     }
 
-    // Ahorro
-    const ahorroEl = document.getElementById('detailAhorroBadge');
-    if (precioOriginal && p.descuento > 0) {
-        const ahorro = (Number(precioOriginal||0) - Number(p.precioActual||0)).toFixed(2);
-        ahorroEl.textContent = `Ahorras $${ahorro}`;
-        ahorroEl.style.display = 'inline';
-    } else {
-        ahorroEl.style.display = 'none';
-    }
+    // #detailAhorroBadge ("Ahorras $X") ya no se puebla: es el mismo dato que
+    // ya muestran el badge de la esquina de la foto ("-$X") y "Antes $X" en la
+    // línea del precio — mostrarlo también acá era repetir el mismo número 3
+    // veces. El elemento queda oculto en el HTML por si se reutiliza.
 
     // Stock
     const stockEl = document.getElementById('detailProductStock');

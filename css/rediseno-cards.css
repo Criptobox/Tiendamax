@@ -324,23 +324,33 @@ body.light-mode .detail-trust-card .dtc-tx small{ color:#8a8a92; }
 body.light-mode .drt-num{ color:#1a1a1a; }
 body.light-mode .drt-count{ color:#8a8a92; }
 
-/* Bloque de precio: precio principal grande, MN debajo (no al lado) */
+/* Bloque de precio: $ y USD chicos, número grande (acento tipográfico,
+   como en la mockup) — MN y "Antes $X" en su propia línea debajo. */
 #productDetailModal .detail-price-wrap{
-  display:flex; flex-wrap:wrap; align-items:baseline; gap:8px 10px;
-  margin:10px 0 4px;
+  display:flex; align-items:baseline; margin:10px 0 2px;
 }
 #productDetailModal .detail-price-main{
-  font-size:30px; font-weight:900; color:var(--coral,#FF6B35);
-  letter-spacing:-.01em;
+  display:inline-flex; align-items:baseline; gap:2px;
+  color:var(--coral,#FF6B35);
+}
+#productDetailModal .detail-price-main .dp-sym{
+  font-size:19px; font-weight:800; letter-spacing:-.01em;
+}
+#productDetailModal .detail-price-main .dp-num{
+  font-size:36px; font-weight:900; letter-spacing:-.02em; font-variant-numeric:tabular-nums;
+}
+#productDetailModal .detail-price-main .dp-cur{
+  font-size:14px; font-weight:700; margin-left:3px; opacity:.75;
+}
+#productDetailModal .detail-price-sub{
+  display:flex; flex-wrap:wrap; align-items:baseline; gap:5px;
+  font-size:13px; color:#9a9aa2; font-weight:600; margin-bottom:4px;
 }
 #productDetailModal .detail-price-old{
-  font-size:14px; color:#8a8a92; text-decoration:line-through;
+  color:#8a8a92; text-decoration:line-through;
 }
-#productDetailModal .detail-price-mn{
-  flex-basis:100%; font-size:13px; color:#9a9aa2; font-weight:600;
-}
+body.light-mode #productDetailModal .detail-price-sub{ color:#777; }
 body.light-mode #productDetailModal .detail-price-old{ color:#999; }
-body.light-mode #productDetailModal .detail-price-mn{ color:#777; }
 
 /* Wrapper del countdown dentro del modal (el contenido interno ya tiene su estilo) */
 #detailCountdown.detail-countdown-wrap{ margin:10px 0 4px; }
