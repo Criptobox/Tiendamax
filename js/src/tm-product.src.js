@@ -317,6 +317,27 @@ function detalleToggleFav(ev) {
     }
 }
 
+// Formatea la descripción real como intro + lista con checks (estilo
+// mockup) — solo separa las oraciones que ya escribió el admin, no
+// agrega ni inventa contenido. Si el texto es muy corto (una sola
+// oración) queda como un párrafo simple, sin lista de un solo bullet.
+function _renderDescripcionChecklist(el, texto) {
+    const raw = String(texto || '').trim();
+    if (!raw) { el.innerHTML = ''; return; }
+    const partes = raw.split(/\.\s+/).map(s => s.trim()).filter(Boolean);
+    if (partes.length <= 1) {
+        el.innerHTML = `<p class="dd-intro">${escapeHtml(raw)}</p>`;
+        return;
+    }
+    const intro = partes[0].replace(/\.$/, '') + '.';
+    const bullets = partes.slice(1)
+        .map(s => s.replace(/\.$/, ''))
+        .filter(Boolean)
+        .map(s => `<li><span class="dd-check">✓</span>${escapeHtml(s)}</li>`)
+        .join('');
+    el.innerHTML = `<p class="dd-intro">${escapeHtml(intro)}</p>` + (bullets ? `<ul class="dd-list">${bullets}</ul>` : '');
+}
+
 let _detalleCountdownInterval = null;
 
 function abrirDetalleProducto(id) {
@@ -497,7 +518,11 @@ if (_detailPrecioMNEl) {
     if (p.usado) badges += `<span class="detail-badge-tag dtag-usado">♻️ Producto usado</span>`;
     extBadges.innerHTML = badges;
 
-    // Specs como chips (icono + valor), estilo ficha. Campo 'specs' del producto + garantía.
+    // Specs como tabla prolija (etiqueta | valor), estilo ficha técnica.
+    // Campo 'specs' del producto — si el admin escribió "Etiqueta: Valor"
+    // (ej. "Voltaje: 12.8V") se arma la fila de 2 columnas; si escribió solo
+    // el valor (ej. "12.8V", formato viejo) se muestra en una fila con
+    // ícono, sin romper specs ya cargadas antes de este cambio.
     const specBadgesEl = document.getElementById('detailSpecBadges');
     if (specBadgesEl) {
         const specs = Array.isArray(p.specs) ? p.specs.filter(s => s && String(s).trim()).slice(0, 6) : [];
@@ -510,12 +535,21 @@ if (_detailPrecioMNEl) {
             if (/ah|mah/.test(t)) return '🔋';
             return '🔧';
         };
-        let chips = specs.map(s => `<div class="detail-chip"><span class="ic">${_iconoSpec(s)}</span><span class="tx"><b>${escapeHtml(s)}</b></span></div>`);
+        const rows = specs.map(s => {
+            const str = String(s).trim();
+            const idx = str.indexOf(':');
+            if (idx > 0 && idx < str.length - 1) {
+                const label = str.slice(0, idx).trim();
+                const value = str.slice(idx + 1).trim();
+                return `<div class="dsr-row"><span class="dsr-label">${escapeHtml(label)}</span><span class="dsr-value">${escapeHtml(value)}</span></div>`;
+            }
+            return `<div class="dsr-row dsr-nolabel"><span class="dsr-value">${_iconoSpec(str)} ${escapeHtml(str)}</span></div>`;
+        });
         // Garantía se muestra en la tarjeta de confianza de arriba (#detailTrustBadges) — no repetir acá.
-        if (chips.length > 0) {
-            specBadgesEl.className = 'detail-spec-badges detail-chips';
-            specBadgesEl.innerHTML = chips.join('');
-            specBadgesEl.style.display = 'grid';
+        if (rows.length > 0) {
+            specBadgesEl.className = 'detail-spec-badges detail-spec-table';
+            specBadgesEl.innerHTML = rows.join('');
+            specBadgesEl.style.display = 'block';
         } else {
             specBadgesEl.innerHTML = '';
             specBadgesEl.style.display = 'none';
@@ -544,11 +578,13 @@ if (_detailPrecioMNEl) {
 
     // Descripción
     // Descripción: usar textContent preserva saltos de línea con CSS white-space
-    // Descripción
+    // Descripción — misma frase real del admin, separada en intro + lista con
+    // checks (estilo mockup) en vez de un párrafo plano. Es solo formato: no
+    // se agrega ni un carácter que el admin no haya escrito.
     // OPT 3G: si la descripción no está (vino de productos-lite.json), fetch on-demand.
     const descEl = document.getElementById('detailProductDescription');
     if (p.descripcion) {
-        descEl.textContent = p.descripcion;
+        _renderDescripcionChecklist(descEl, p.descripcion);
     } else {
         descEl.textContent = 'Cargando descripción…';
         (async () => {
@@ -559,7 +595,7 @@ if (_detailPrecioMNEl) {
                 const fp = full.find(x => String(x.id) === String(p.id));
                 if (fp && fp.descripcion) {
                     p.descripcion = fp.descripcion;
-                    descEl.textContent = fp.descripcion;
+                    _renderDescripcionChecklist(descEl, fp.descripcion);
                     if (fp.seoTitle) p.seoTitle = fp.seoTitle;
                     if (fp.seoDescription) p.seoDescription = fp.seoDescription;
                 } else {
