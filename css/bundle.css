@@ -2437,3 +2437,11 @@ html body.light-mode #detailPriceActual{
   color:#2ecc71; font-weight:900; flex-shrink:0; line-height:1.6;
 }
 body.light-mode #productDetailModal .detail-description-text .dd-intro{ color:#1a1a1a !important; }
+
+/* Categoría + subcategoría en una sola línea (estilo mockup), en vez de
+   2 líneas apiladas con flecha "↳". */
+html body #productDetailModal .detail-category,
+html body #productDetailModal .detail-subcategory{
+  display:inline !important; margin:0 !important; width:auto !important;
+}
+html body #productDetailModal .detail-subcategory{ margin-left:2px !important; }

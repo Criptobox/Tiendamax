@@ -378,8 +378,8 @@ function abrirDetalleProducto(id) {
         obtenerIconoCategoria(p.categoria) + ' ' + p.categoria;
     const subEl = document.getElementById('detailSubcategoria');
     if (p.subcategoria && p.subcategoria !== 'Todas') {
-        subEl.textContent = '↳ ' + p.subcategoria;
-        subEl.style.display = 'block';
+        subEl.textContent = '· ' + p.subcategoria;
+        subEl.style.display = 'inline';
     } else {
         subEl.style.display = 'none';
     }
