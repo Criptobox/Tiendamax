@@ -23,7 +23,7 @@
     "seoTitle": "BATERÍA MUST TIPO LIFEPO4 en Cuba | TiendaMax",
     "seoDescription": "Batería tipo LiFePO4 (litio hierro fosfato). Mas segura y con mayor vida útil que las tradicionales. Capacidad de 12.8V y 100Ah (1280Wh), ideal para…",
     "radar": true,
-    "descripcion": "Batería tipo LiFePO4 (litio hierro fosfato). * Mas segura y con mayor vida útil que las tradicionales. * Capacidad de 12.8V y 100Ah (1280Wh), ideal para sistemas solares, inversores y respaldo eléctrico. * Alta corriente de descarga hasta 100A, permite alimentar equipos de consumo medio-alto. * Corriente máxima de carga de 50A, lo que permite recargas relativamente rápidas. * Larga durabilidad (3000 ciclos) y funcionamiento en temperaturas de 0°C a 45°C.",
+    "descripcion": "Batería MUST tipo LiFePO4 (litio hierro fosfato), modelo LP15-12100, 12.8V y 100Ah (1280Wh). Más segura y con mayor vida útil que las tradicionales de plomo-ácido. Voltaje de carga máx. 14.6V, corriente de carga máx. 50A, descarga máx. 100A. Ideal para sistemas solares e inversores.",
     "almacenId": "alm_1783425091823"
   },
   {
@@ -51,7 +51,7 @@
     ],
     "seoTitle": "CARGADOR INTELIGENTE 30A en Cuba | TiendaMax",
     "seoDescription": "Cargador inteligente de 20 A 12V y 24V. Corriente ajustable de 5A, 10A y hasta 20A. Permite elegir entre carga lenta, media o rápida según la necesidad…",
-    "descripcion": "Cargador inteligente de 20 A 12V y 24V. * Corriente ajustable de 5A, 10A y hasta 20A. * Permite elegir entre carga lenta, media o rápida según la necesidad. * Compatible con baterías de plomo-ácido, calcio, Lifepo4 y baterías AGM, GEL. * Reconoce si la batería es de 12V o 24V sin intervención manual. * Sistema de carga en múltiples etapas. * Optimiza el proceso para proteger y alargar la vida de la batería. * Función de reparación por pulsos."
+    "descripcion": "Cargador inteligente de batería LVYUAN, modelo BC-300 PRO, de 20A. Reconoce automático 12V y 24V, con modo de reparación de un toque para baterías sulfatadas. Corriente ajustable de 5A, 10A y hasta 20A, con carga lenta, media o rápida según lo que necesites. Compatible con baterías de plomo-ácido, AGM, GEL, EFB y LiFePO4."
   },
   {
     "id": 1777924118004,
@@ -78,7 +78,7 @@
     "seoTitle": "INVERSOR 12V en Cuba | TiendaMax",
     "seoDescription": "Ideal para combatir los apagones. Este inversor permitira mantener trabajando electrodomesticos como un refrigerador, ventiladores, televisores y luces de…",
     "radar": true,
-    "descripcion": "Ideal para combatir los apagones. Este inversor permitira mantener trabajando electrodomesticos como un refrigerador, ventiladores, televisores y luces de la casa\npor horas (dependiendo del respaldo de baterias), durante un corte de fluido electrico.\n--Este inversor brinda una salida sinusoidal pura de 110 V (corriente alterna) con 2000 watts continuos y 4000 watts maximos.\n-Se puede alimentar\nde una bateria de *12V*.\n-Posee dos salidas universales que sirven para conectores de corriente plano (el que se usa mayoritariamente en Cuba), europeo o chino\n-Un display digital que muestra los voltajes de entrada (DC) y salida (AC) en tiempo real."
+    "descripcion": "Inversor de corriente TATALIKEN de 4000W, onda senoidal pura, conmutable entre 12V y 24V. Ideal para combatir los apagones: mantiene trabajando refrigerador, ventiladores, televisores y luces de la casa. Incluye cables con pinzas para conectar directo a la batería, tomas de corriente e interruptor de encendido."
   },
   {
     "id": 1777924173211,
@@ -98,7 +98,7 @@
     "comision": 10,
     "seoTitle": "ROUTER WIFI 6 en Cuba | TiendaMax",
     "seoDescription": "Router WiFi 6 para juegos, AX3000, router inalámbrico Gigabit de doble banda para el hogar ✅Cobertura de largo alcance con 5 antenas de alta ganancia de…",
-    "descripcion": "Router WiFi 6 para juegos, AX3000, router inalámbrico Gigabit de doble banda para el hogar ✅Cobertura de largo alcance con 5 antenas de alta ganancia de 6dBi. ✅Router de alta velocidad con 4 puertos Gigabit, compatible con WPA3, VPN. ✅Un sistema de procesamiento potente con un CPU Broadcom Quad-Core de 1.7GHz que mejora las velocidades de Wi-Fi (hasta 2976Mbps) y garantiza una red confiable."
+    "descripcion": "Router WiFi 6 Tenda AX3000, modelo RX12 Pro, doble banda Gigabit para el hogar. ✅Cobertura de largo alcance con antenas de alta ganancia. ✅Ideal para varios dispositivos conectados a la vez sin que se ponga lento. ✅Puertos Ethernet Gigabit WAN/LAN para conexión cableada estable."
   },
   {
     "id": 1777924248270,
@@ -122,7 +122,7 @@
     ],
     "seoTitle": "ENRUTADOR WIFI WAVLINK AC1200 en Cuba | TiendaMax",
     "seoDescription": "Enrutador WiFi WAVLINK AC1200 de doble banda 5 GHz + 2.4 GHz, enrutador inalámbrico para hogar y juegos con puertos Ethernet Gigabit WAN/LAN, 4 antenas de…",
-    "descripcion": "Enrutador WiFi WAVLINK AC1200 de doble banda 5 GHz + 2.4 GHz, enrutador inalámbrico para hogar y juegos con puertos Ethernet Gigabit WAN/LAN, 4 antenas de alta ganancia de 5 dBi, compatible con modo enrutador/AP/WISP",
+    "descripcion": "Enrutador WiFi WAVLINK AC1200 de doble banda 5GHz + 2.4GHz, con 4 antenas de alta ganancia. Diseño redondo compacto, ideal para hogar y oficina. Puertos Ethernet Gigabit WAN/LAN para conexión cableada, y cobertura WiFi amplia para toda la casa.",
     "comisionMoneda": "USD",
     "imagenes": [
       "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783836865144.jpg",
@@ -150,7 +150,7 @@
     ],
     "seoTitle": "REPETIDOR WIFI 5 en Cuba | TiendaMax",
     "seoDescription": "Repetidor wifi 5 de doble banda 2.4G y 5G, de 1200 mbps.",
-    "descripcion": "Repetidor wifi 5 de doble banda 2.4G y 5G, de 1200 mbps."
+    "descripcion": "Repetidor WiFi de doble banda 2.4G y 5G, hasta 1200Mbps, con 6 antenas para mejor alcance de señal. Se conecta directo al tomacorriente (enchufe plano tipo US, compatible con las tomas de Cuba), sin cables. Ideal para llevar el WiFi a esa zona de la casa donde no llega bien."
   },
   {
     "id": 1778102214012,
@@ -176,7 +176,7 @@
       "https://tiendamax.org/imagenes/img_1783836802568.jpg",
       "https://tiendamax.org/imagenes/img_1780510811569.webp"
     ],
-    "descripcion": "Switch de 8 puertos ethernet de 1 gigabite."
+    "descripcion": "Switch de 8 puertos ethernet de 1 gigabit, blanco, compacto para escritorio. Reparte la conexión de internet cableada a varios equipos (PC, TV, cámaras) sin perder velocidad. Plug & play: se conecta y funciona, no necesita configuración."
   },
   {
     "id": 1778102507659,
@@ -196,7 +196,7 @@
     "seoTitle": "PESA / BÁSCULA INTELIGENTE DIGITAL. en Cuba | TiendaMax",
     "seoDescription": "Pesa/ Báscula inteligente digital. Funciona con 2 baterias AAA(no incluidas) Cinta metrica incluida. Se conecta con el teléfono mediante una app que…",
     "radar": true,
-    "descripcion": "Pesa/ Báscula inteligente digital. • Funciona con 2 baterias AAA(no incluidas) •Cinta metrica incluida. • Se conecta con el teléfono mediante una app que brinda datos a cerca del control de su peso corporal. •Diseño elegante con cristal templado de 27cm x 27cm. •Soporta hasta 180kg"
+    "descripcion": "Báscula/pesa digital de alta definición, hasta 180kg (396.83lb) de capacidad, con precisión de 50g. Pantalla LCD grande y clara, superficie de cristal templado de 27x27cm. Funciona con 2 baterías AAA (no incluidas). Cinta métrica incluida de regalo."
   },
   {
     "id": 1778102582909,
@@ -216,7 +216,7 @@
     "seoTitle": "ANTORCHA PARA SOLDADURA TIG: en Cuba | TiendaMax",
     "seoDescription": "Antorcha para soldadura TIG: Utilizada para trabajos de soldadura de alta precisión en metales como acero inoxidable, aluminio y hierro. Ideal para…",
     "radar": true,
-    "descripcion": "Antorcha para soldadura TIG: * Utilizada para trabajos de soldadura de alta precisión en metales como acero inoxidable, aluminio y hierro. * Ideal para talleres, herrería y trabajos profesionales donde se requiere un acabado limpio y detallado. Características principales: * Permite soldaduras finas y de alta calidad. * Incluye boquillas cerámicas de diferentes tamaños. * Cuenta con electrodos y accesorios intercambiables. * Cable flexible y resistente para mejor manejo."
+    "descripcion": "Antorcha para soldadura TIG marca FEMEROL, incluye tapa trasera, cuerpo de collet, tapa cerámica y juego de boquillas (tamaños 4, 5 y 6). Cable flexible y resistente de buen largo para trabajar cómodo. Utilizada para trabajos de soldadura de alta precisión en metales como acero inoxidable y aluminio."
   },
   {
     "id": 1778103783319,
@@ -235,7 +235,7 @@
     "comision": 5,
     "seoTitle": "LAS NUEVAS BATERÍAS ESPAÑOLAS LUBRIM en Cuba | TiendaMax",
     "seoDescription": "🛑Las nuevas Baterias españolas LUBRIM usan Tecnología Ca/Ca que consiste en la utilización de placas de calcio (Ca) en su construcción, lo que mejora su…",
-    "descripcion": "🛑Las nuevas Baterias españolas LUBRIM usan Tecnología Ca/Ca que consiste en la utilización de placas de calcio (Ca) en su construcción, lo que mejora su rendimiento y proporcionan una mayor potencia de arranque y una vida útil más prolongada en comparación con las tecnologías más antiguas, éstas baterias no requieren mantenimiento alguno, proporcionando una tranquilidad absoluta para nosotros y para nuestros clientes. Es llegar y montar!👌🏼 ⭕12v, 60 amperes ...... 70 USD",
+    "descripcion": "Baterías españolas LUBRIM de 12V para carro, tecnología Ca/Ca (placas de calcio) que mejora el rendimiento y da mayor potencia de arranque y vida útil frente a las tecnologías más antiguas. No requieren mantenimiento: es llegar y montar. Consulta las variantes de amperaje disponibles.",
     "precioOriginal": 0,
     "comisionMoneda": "USD",
     "imagenes": [
@@ -260,7 +260,7 @@
     "comision": 1.8,
     "seoTitle": "PISTOLA DE MASAJE RECARGABLE: en Cuba | TiendaMax",
     "seoDescription": "Pistola de masaje Recargable: - Bateria de litio 18650 (3000 miliamperes) - 4 cabezales multifuncionales intercambiables. - Fácil para operar con una…",
-    "descripcion": "Pistola de masaje Recargable: - Bateria de litio 18650 (3000 miliamperes) - 4 cabezales multifuncionales intercambiables. - Fácil para operar con una mano, 1,5lb - Diseño compacto y elegante - 3 horas de durabilidad de la bateria. • Controles de encendido y velocidades por boton tracero."
+    "descripcion": "Pistola de masaje recargable (fascia gun), batería de litio 18650 de 3000mAh, hasta 3 horas de autonomía. Incluye 4 cabezales intercambiables para distintos tipos de masaje. Pantalla táctil con niveles de intensidad y carga por USB Type-C."
   },
   {
     "id": 1778104191957,
@@ -283,7 +283,7 @@
     ],
     "seoTitle": "CARGADOR INTELIGENTE DE 15 AMPERES: en Cuba | TiendaMax",
     "seoDescription": "Cargador inteligente de 15 AMPERES: Carga y repara las baterias de acido plomo, calcio, gel, húmedas, lifepo4, AGM, entre otras. Trabaja con 110 y 220…",
-    "descripcion": "Cargador inteligente de 15 AMPERES: •Carga y repara las baterias de acido plomo, calcio, gel, húmedas, lifepo4, AGM, entre otras. • Trabaja con 110 y 220 volts. •Ideal para cargar baterías de 12v(200A) y 24v(100A) •Las baterias de 12v las carga a 15A y las de 24v a 8A. •Pantalla led iluminada de azúl."
+    "descripcion": "Cargador inteligente de batería de 15A (12V) / 8A (24V), carga por pulsos de 9 etapas con pantalla digital. Carga y repara baterías de ácido-plomo, calcio, gel y húmedas. Incluye cables con pinzas para conectar directo a la batería."
   },
   {
     "id": 1778104287395,
@@ -305,7 +305,7 @@
     ],
     "seoTitle": "EL ENRUTADOR WIFI DE 1.150MBPS en Cuba | TiendaMax",
     "seoDescription": "El enrutador WiFi de 1.150Mbps es un enrutador 4G CPE para exteriores con una antena externa de alta ganancia de 2 piezas para lograr la amplificación de…",
-    "descripcion": "El enrutador WiFi de 1.150Mbps es un enrutador 4G CPE para exteriores con una antena externa de alta ganancia de 2 piezas para lograr la amplificación de la señal 4G LTE: ✅Antenas desmontables ✅Está diseñado con una carcasa a prueba de agua y rayos que ayuda a que la unidad se use bien en exteriores sin banda ancha. ✅Distancia WiFi al aire libre: 10-50M. ✅Admite máximo 10 usuarios. ✅Viene con un cable ethernet, un cargador para la corriente y manual de instrucciones."
+    "descripcion": "Enrutador WiFi 4G CPE para exteriores de 1.150Mbps, marca KuWFi, con 2 antenas externas de alta ganancia. Carcasa a prueba de agua y rayos, ideal para uso al aire libre sin banda ancha fija. Indicadores de energía, WiFi, WAN/LAN y señal. Distancia WiFi al aire libre de 10-50m, admite hasta 10 usuarios. Incluye cable ethernet, cargador y manual de instrucciones."
   },
   {
     "id": 1778104423316,
@@ -328,7 +328,7 @@
     ],
     "seoTitle": "CARGADOR 10 AMPERES en Cuba | TiendaMax",
     "seoDescription": "Cargador/ reparador Inteligente de Batería de 12V y 24V a 10Amperios , auto voltaje (110 y 220). Aplicable para Baterías Plomo-Ácido, calcio, gel, Litio y…",
-    "descripcion": "Cargador/ reparador Inteligente de Batería de 12V y 24V a 10Amperios , auto voltaje (110 y 220). Aplicable para Baterías Plomo-Ácido, calcio, gel, Litio y LiFePO4."
+    "descripcion": "Cargador/reparador inteligente de batería de 10A, para 12V y 24V, auto-voltaje (110V y 220V). Soporta baterías de litio, LiFePO4 y plomo-ácido (AGM, GEL, SLA, inundada, WET, EFB). Carga en 10 etapas con pantalla digital, modos para moto, carro y reparación. Incluye cables con pinzas."
   },
   {
     "id": 1778104512761,
@@ -352,7 +352,7 @@
     "seoDescription": "♻️CONTROLADOR SOLAR POWMR M100 PRO -MPPT DE 100 AMP♻️ Especificaciones Eléctricas Clave: Voltaje Máximo del Sistema (PV): 100V DC. Esto permite conectar…",
     "precioOriginal": 0,
     "comisionMoneda": "USD",
-    "descripcion": "♻️CONTROLADOR SOLAR POWMR M100 PRO -MPPT DE 100 AMP♻️ Especificaciones Eléctricas Clave: * *Voltaje Máximo del Sistema (PV):* 100V DC. Esto permite conectar paneles en serie para reducir la caída de voltaje en cables largos. * Corriente de Carga Máxima: 100 Amperios. * *Voltaje de la Batería:* Compatible con baterías de 12V, 24V y 48V. El sistema detecta y se configura automáticamente."
+    "descripcion": "Controlador de carga solar MPPT PowMr, modelo M100 PRO, de 100A. Entrada solar máxima de 160Vdc, compatible con sistemas de 12V, 24V, 36V y 48V. Pantalla LCD con botones para configurar tipo de batería y ver el estado de carga en tiempo real. El sistema detecta y se configura automáticamente según el voltaje del banco de baterías."
   },
   {
     "id": 1778104599386,
@@ -377,7 +377,7 @@
     ],
     "seoTitle": "INVERSOR SOLAR HIBRIDO INTELIGENTE MPPT DE 3.6KW | TiendaMax",
     "seoDescription": "Inversor solar hibrido inteligente MPPT de 3.6kW, carga baterias de 24v DC hasta 120 A con 110V AC de salida. ✔️Onda sinusoidal pura: Proporciona energía…",
-    "descripcion": "Inversor solar hibrido inteligente MPPT de 3.6kW, carga baterias de 24v DC hasta 120 A con 110V AC de salida. ✔️Onda sinusoidal pura: Proporciona energía estable y segura para equipos electrónicos sensibles. ✔️Voltaje configurable (LCD): Permite ajustar el rango de entrada según el tipo de equipo conectado. ✔️Corriente de carga configurable: Regula la carga de la batería según la aplicación para cuidarla."
+    "descripcion": "Inversor solar híbrido inteligente PowMr, 3.6KW, MPPT de 120A integrado, entrada de 24V DC a salida de 110V AC. Potencia máxima de paneles solares 4200W, voltaje máximo de entrada 500V. Doble salida (on-grid/off-grid), compatible con baterías de plomo-ácido y litio de 24V. Pantalla con indicadores de carga solar y de batería en tiempo real."
   },
   {
     "id": 1778104662477,
@@ -399,7 +399,7 @@
     ],
     "seoTitle": "INVERSOR DE ONDA SINUSOIDAL PURA FUERA DE LA RED | TiendaMax",
     "seoDescription": "1. Inversor de onda sinusoidal pura fuera de la red. 2.El máximo número de conexiones paralelas es 6. 3.Potencia de salida más alta hasta 500OW. 4.Salida…",
-    "descripcion": "1. Inversor de onda sinusoidal pura fuera de la red. 2.El máximo número de conexiones paralelas es 6. 3.Potencia de salida más alta hasta 500OW. 4.Salida de CA 120/208/240 V CA. (solo puede lograr en el sistema paralelo). 5.Admite dispositivos monofásicos/divididos/trifásicos. (Solo en paralelo) 6.Tiempo de conmutación rápida de 10 ms. 7.Compatible con batería de iones de litio y plomo de 48 V, compatible con definición de usuario. 8.Máx.",
+    "descripcion": "Inversor de corriente de onda senoidal pura para trabajar fuera de la red eléctrica (off-grid), salida de 240V. Pantalla frontal circular con indicadores de carga solar, batería y salida en tiempo real. Convierte la energía de tu banco de baterías en corriente alterna estable para el hogar o negocio durante los apagones.",
     "precioOriginal": 0,
     "comisionMoneda": "USD",
     "imagenes": [
@@ -433,7 +433,7 @@
       "https://tiendamax.org/imagenes/img_1783837070407.jpg",
       "https://tiendamax.org/imagenes/img_1778104735789.webp"
     ],
-    "descripcion": "Este router KuWFi ofrece una velocidad de transmisión WiFi de 150 Mbps, proporcionando una conexión rápida y estable para todos sus dispositivos: ✅Resistente al agua, lo que lo hace ideal para uso en exteriores. ✅Soporte para 64 usuarios. ✅Tiene función de firewall, por lo cual protege su red contra ataques y intrusiones, manteniendo su información segura y privada. ✅Viene con un cable ethernet, cargador más cable para la corriente y manual de instrucciones."
+    "descripcion": "Kit extensor/repetidor de WiFi de 150Mbps para exteriores, con antena, mástil de montaje, cables de red y adaptador de corriente incluidos. Ideal para llevar la señal de internet a zonas alejadas del router principal, como el patio o una segunda vivienda."
   },
   {
     "id": 1778104850733,
@@ -456,7 +456,7 @@
     ],
     "seoTitle": "✅️CONTROLADOR DE CARGA SOLAR MPPT - 100A en Cuba | TiendaMax",
     "seoDescription": "✅️Controlador de Carga Solar MPPT - 100A -Alta eficiencia y compatibilidad automática con sistemas de 12/24/36/48V. -Ideal para sistemas solares en casas…",
-    "descripcion": "✅️Controlador de Carga Solar MPPT - 100A -Alta eficiencia y compatibilidad automática con sistemas de 12/24/36/48V. -Ideal para sistemas solares en casas, fincas, o instalaciones industriales. -Tecnología MPPT (Seguimiento del Punto de Máxima Potencia) -Pantalla digital LCD con datos en tiempo real -Conexión fácil para panel solar, batería y carga. -Diseño robusto y con disipador térmico. Colores negro y azul"
+    "descripcion": "Controlador de carga solar MPPT de 100A, automático para sistemas de 12V, 24V, 36V y 48V. Pantalla LCD con indicadores de voltaje de batería y corriente de carga en tiempo real, botones de configuración (reset, menú, encendido/apagado). Medidas 19.5 x 18.3cm, para montar en pared."
   },
   {
     "id": 1778104924836,
@@ -479,7 +479,7 @@
     ],
     "seoTitle": "ESTACION DE CARGA PORTÁTIL en Cuba | TiendaMax",
     "seoDescription": "Estacion de carga portátil BLUETTI AC 180. 🔹 Potencia de salida de 1800W continuos (pico de hasta 2700W). BLUETTI-US 🔹 Capacidad de batería de 1152Wh…",
-    "descripcion": "Estacion de carga portátil BLUETTI AC 180. 🔹 Potencia de salida de 1800W continuos (pico de hasta 2700W). BLUETTI-US 🔹 Capacidad de batería de 1152Wh, ideal para respaldo y uso portátil. BLUETTI-US 🔹 Batería LiFePO₄ (litio hierro fosfato), más segura y duradera. BLUETTI-US 🔹 Más de 3500 ciclos de vida útil hasta el 80% de capacidad. BLUETTI-US 🔹 Carga rápida: hasta 80% en aproximadamente 45 minutos. 🔹 Entrada solar de hasta 500W, compatible con paneles solares."
+    "descripcion": "Estación de carga portátil de 1800W (pico 2700W). Batería recargable con múltiples salidas: tomas AC, puerto DC, USB-A y USB-C, además de entrada para carga con panel solar. Pantalla con indicador de porcentaje de batería, watts de entrada y salida en tiempo real. Ideal para apagones, camping o negocios que necesitan energía portátil."
   },
   {
     "id": 1778104985977,
@@ -501,7 +501,7 @@
     ],
     "seoTitle": "BLUETTI AC 180P en Cuba | TiendaMax",
     "seoDescription": "\"BLUETTI AC 180P\" 🔹 Capacidad de 1,440 Wh, ideal para alimentar múltiples dispositivos durante horas. 🔹 Potencia continua de 1,800 W, suficiente para…",
-    "descripcion": "\"BLUETTI AC 180P\" 🔹 Capacidad de 1,440 Wh, ideal para alimentar múltiples dispositivos durante horas. 🔹 Potencia continua de 1,800 W, suficiente para electrodomésticos y herramientas. 🔹 Modo Power Lifting hasta 2,700 W para equipos de alto consumo. 🔹 Batería LiFePO4 con más de 3,500 ciclos de vida útil. 🔹 Carga ultrarrápida: 0–80% en aproximadamente 45 minutos. 🔹 Múltiples salidas: AC, USB-A, USB-C, 12V y carga inalámbrica."
+    "descripcion": "Estación de energía portátil BLUETTI AC180P, 1800W (1440Wh de capacidad). Incluye 4 tomas de corriente AC, salida DC de 12V, y puertos USB-C y USB-A de carga rápida. Pantalla con indicador de batería, entrada y salida de energía en tiempo real. Se puede cargar con corriente normal o con panel solar (MPPT integrado)."
   },
   {
     "id": 1778212195565,
@@ -519,7 +519,7 @@
     "slug": "mannol-5w30-5l",
     "seoTitle": "MANNOL 5W30 5L en Cuba | TiendaMax",
     "seoDescription": "Ideal para carros modernos Categoría Norma / Especificación Grado de Viscosidad SAE 5W-30 Estándar API SN / CH-4 Estándar ACEA A3 / B4",
-    "descripcion": "Ideal para carros modernos Categoría Norma / Especificación Grado de Viscosidad SAE 5W-30 Estándar API SN / CH-4 Estándar ACEA A3 / B4"
+    "descripcion": "Aceite de motor MANNOL LONGLIFE 504/507, 5W-30, envase de 5 litros. Formulado para motores del grupo Volkswagen/Audi que requieren especificación Longlife. Ayuda a mantener el motor limpio y protegido en intervalos de cambio extendidos."
   },
   {
     "id": 1778212384991,
@@ -537,7 +537,7 @@
     "slug": "mannol-antifreeze-ag13-40-c-advanced-4014-5l",
     "seoTitle": "MANNOL ANTIFREEZE AG13+ ( - 40 °C) ADVANCED 4014. 5L",
     "seoDescription": "Refrigerante listo para usar es una solución híbrida (HOAT- Tecnología de ácido orgánico híbrido) de alta tecnología lista para usar protege el sistema de…",
-    "descripcion": "Refrigerante listo para usar es una solución híbrida (HOAT- Tecnología de ácido orgánico híbrido) de alta tecnología lista para usar protege el sistema de refrigeración del vehículo desde (-40 °С hasta +125°С). Con excelentes características de funcionamiento pensada para todo el año uso en cualquier sistema de refrigeración moderno para el que se recomiende el uso de anticongelante a base de monoetilenglicol. Garantiza una protección fiable de cualquier sistema de refrigeración."
+    "descripcion": "Anticongelante/refrigerante MANNOL AG13+ Advanced (código 4014), color amarillo, listo para usar (no necesita diluir con agua). Protege de -40°C a +125°C. Envase de 5 litros."
   },
   {
     "id": 1778212462723,
@@ -555,7 +555,7 @@
     "slug": "mannol-antifreeze-ag13-40-c-hightec-4013-5l",
     "seoTitle": "MANNOL ANTIFREEZE AG13 ( - 40 °C) HIGHTEC 4013. 5L",
     "seoDescription": "Refrigerante listo para usar es una solución híbrida (HOAT- Tecnología de ácido orgánico híbrido) de alta tecnología lista para usar, protege el sistema…",
-    "descripcion": "Refrigerante listo para usar es una solución híbrida (HOAT- Tecnología de ácido orgánico híbrido) de alta tecnología lista para usar, protege el sistema de refrigeración del vehículo desde (-40 °С hasta +125°С). con excelentes características de funcionamiento pensada para todo el año uso en cualquier sistema de refrigeración moderno para el que se recomiende el uso de anticongelante a base de monoetilenglicol. Garantiza una protección fiable de cualquier sistema de refrigeración."
+    "descripcion": "Anticongelante/refrigerante MANNOL AG13 Hightec (código 4013), color verde, listo para usar (no necesita diluir con agua). Protege de -40°C a +125°C. Envase de 5 litros."
   },
   {
     "id": 1778212537706,
@@ -573,7 +573,7 @@
     "slug": "mannol-antifreeze-ag11-40-c-longterm-4011-5l",
     "seoTitle": "MANNOL ANTIFREEZE AG11 ( - 40 °C) LONGTERM 4011. 5L",
     "seoDescription": "Refrigerante listo para usar a base de inhibidores minerales – IAT (Tecnología de ácidos inorgánicos) protege el sistema de refrigeración del vehículo…",
-    "descripcion": "Refrigerante listo para usar a base de inhibidores minerales – IAT (Tecnología de ácidos inorgánicos) protege el sistema de refrigeración del vehículo desde (-40 °С hasta +125°С). Diseñado para uso durante todo el año en cualquier sistema de refrigeración moderno que contenga componentes de cobre, latón y aluminio para los que se recomienda el uso de un anticongelante a base de etilenglicol. Premezclado 50/50 Color: azul."
+    "descripcion": "Anticongelante/refrigerante MANNOL AG11 Longterm (código 4011), color azul, listo para usar (no necesita diluir con agua). Protege de -40°C a +125°C. Envase de 5 litros."
   },
   {
     "id": 1778213413973,
@@ -592,7 +592,7 @@
     "comision": 10,
     "seoTitle": "FORROS DE ASIENTOS DE LUJO PARA AUTOS en Cuba | TiendaMax",
     "seoDescription": "Forros de asientos de lujo para autos: Alta calidad y acabado exquisito. Color: negro Material de la superficie: Cuero napa de 0,6 mm. Durabilidad: 3…",
-    "descripcion": "Forros de asientos de lujo para autos: •Alta calidad y acabado exquisito. •Color: negro •Material de la superficie: Cuero napa de 0,6 mm. •Durabilidad: 3 veces más duraderas que el PU estándar, con resistencia a temperaturas elevadas de 45 grados. •Comodidad: 20-30% más suave y transpirable, adaptándose al cuerpo. •Relleno: Acolchonado y con apoyo lumbar ergonómico •Tipo: Ajuste universal para 5 asientos, 2 delanteros y 3 traseros."
+    "descripcion": "Forros de asientos de lujo para carro, en piel sintética perforada y transpirable, resistente a rayones. Juego completo: asientos delanteros y traseros, con bolsillos organizadores en el respaldo. Ajustable, sirve para asientos delanteros de 49\" a 59\"."
   },
   {
     "id": 1778213940333,
@@ -611,7 +611,7 @@
     "seoTitle": "MANNOL SAFARI 20W - 50 7404 5L en Cuba | TiendaMax",
     "seoDescription": "Aceite de motor universal semisintético, con una mezcla de componentes sintéticos y una base mineral de alta pureza, para motores modernos de gasolina y…",
     "comision": 0,
-    "descripcion": "Aceite de motor universal semisintético, con una mezcla de componentes sintéticos y una base mineral de alta pureza, para motores modernos de gasolina y diésel altamente acelerados con y sin turbocompresor utilizados en condiciones de funcionamiento difíciles y motores con un kilometraje muy alto utilizado en diversas operaciones. condiciones."
+    "descripcion": "Aceite de motor MANNOL SAFARI 20W-50 (código 7404), API SN/CH-4, con tecnología ESTER. Envase de 5 litros. Recomendado para motores que requieren viscosidad alta, típico de autos más viejos o climas cálidos."
   },
   {
     "id": 1778214089400,
@@ -629,7 +629,7 @@
     "slug": "mannol-special-plus-10w-30-7512-5l",
     "seoTitle": "MANNOL SPECIAL PLUS 10W - 30 7512. 5L en Cuba | TiendaMax",
     "seoDescription": "Aceite de motor universal de sintesis HC, diseñado para cumplir con los requisitos de Volkswagen, Mercedes Benz. Diseñado para motores de gasolina y…",
-    "descripcion": "Aceite de motor universal de sintesis HC, diseñado para cumplir con los requisitos de Volkswagen, Mercedes Benz. Diseñado para motores de gasolina y diésel en una amplia flota de automóviles (automóviles, vehículos utilitarios ligeros, furgonetas y camiones ligeros) de fabricantes europeos, asiáticos. Especificaciones SAE 10W-30 Approval Recomendación API SN ACEA A3/B4 VOLKSWAGEN 505 00 VOLKSWAGEN 501 01 MB 229.1 ISUZU KIA HYUNDAI"
+    "descripcion": "Aceite de motor MANNOL SPECIAL PLUS 10W-30 (código 7512), sintético, API SN, ACEA A3/B4, con tecnología ESTER. Envase de 5 litros."
   },
   {
     "id": 1778214214360,
@@ -647,7 +647,7 @@
     "slug": "mannol-4-takt-motorbike-10w-40-7812-1l",
     "seoTitle": "MANNOL 4 - TAKT MOTORBIKE 10W - 40 7812. 1L | TiendaMax",
     "seoDescription": "Especiación SAE 10W-40 API SL JASO MA/MA2 Approval Recomendación HONDA HUSABERG KAWASAKI SUZUKI YAMAHA",
-    "descripcion": "Especiación SAE 10W-40 API SL JASO MA/MA2 Approval Recomendación HONDA HUSABERG KAWASAKI SUZUKI YAMAHA"
+    "descripcion": "Aceite MANNOL 4-TAKT MOTORBIKE 10W-40 (código 7812) para motos de 4 tiempos, especificación JASO MA/MA2, con tecnología ESTER. Envase de 1 litro."
   },
   {
     "id": 1778336613589,
@@ -666,7 +666,7 @@
     "comision": 1.8,
     "seoTitle": "PISTOLA DE MASAJE PROFESIONAL en Cuba | TiendaMax",
     "seoDescription": "Pistola de masaje PROFESIONAL inalámbrica: Diseño ergonómico con agarre triangular, que facilita el manejo y reduce la fatiga en la muñeca. Incluye…",
-    "descripcion": "Pistola de masaje PROFESIONAL inalámbrica: •Diseño ergonómico con agarre triangular, que facilita el manejo y reduce la fatiga en la muñeca. •Incluye múltiples accesorios intercambiables (bola, horquilla, plano, punta, doble cabezal, etc.) para trabajar distintas zonas del cuerpo. •Sistema de percusión profunda, ideal para aliviar contracturas y acelerar la recuperación muscular."
+    "descripcion": "Pistola de masaje profesional (fascia gun), diseño compacto de agarre triangular, incluye 8 cabezales intercambiables para distintos tipos de masaje. Viene en su caja original con todos los accesorios."
   },
   {
     "id": 1778336689684,
@@ -686,7 +686,7 @@
     "comision": 1.8,
     "seoTitle": "SWITCH DE 5 PUERTOS en Cuba | TiendaMax",
     "seoDescription": "Switch de 5 puertos ethernet de 1 gigabite.",
-    "descripcion": "Switch de 5 puertos ethernet de 1 gigabite.",
+    "descripcion": "Switch de 5 puertos ethernet de 1 gigabit, blanco, compacto para escritorio. Reparte la conexión de internet cableada a varios equipos sin perder velocidad. Plug & play, no necesita configuración.",
     "comisionMoneda": "USD",
     "imagenes": [
       "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783836818228.jpg",
@@ -715,7 +715,7 @@
     ],
     "seoTitle": "AC1200 WIFI ROUTER en Cuba | TiendaMax",
     "seoDescription": "Obtenga conexiones rápidas y relámpago para todos sus dispositivos inalámbricos mediante actualización a la tecnología Wi-Fi de alta velocidad mejorada de…",
-    "descripcion": "Obtenga conexiones rápidas y relámpago para todos sus dispositivos inalámbricos mediante actualización a la tecnología Wi-Fi de alta velocidad mejorada de 1200 Mbps de Tenda (300 mbps a 2,4 GHz + 867 Mbps a 5 GHz) Enlace hasta 20 dispositivos inalámbricos como el asistente de Google, Alexa y varios dispositivos simultaneamente. ✅4 antenas omnidireccionales con tecnología Beamforming y Mu-Mimo, entrega Internet de alta velocidad en toda su hogar."
+    "descripcion": "Router WiFi Tenda AC1200, versión global 100% original, con 4 antenas de alta ganancia. Doble banda: hasta 1200Mbps en 5GHz y 300Mbps en 2.4GHz. Ideal para varios dispositivos conectados a la vez en toda la casa."
   },
   {
     "id": 1778336859697,
@@ -734,7 +734,7 @@
     "comision": 1.8,
     "seoTitle": "TOLDO PARA SOMBRA en Cuba | TiendaMax",
     "seoDescription": "Toldo para sombra tipo malla color beige con argollas para fijar. Medida 3m de largo x 2m de ancho.",
-    "descripcion": "•Toldo para sombra tipo malla color beige con argollas para fijar. •Medida 3m de largo x 2m de ancho."
+    "descripcion": "Toldo/vela de sombra rectangular, color beige, tela transpirable con bloqueo de 90% de los rayos UV. Mide 3m x 6m. Ideal para patio, piscina o terraza — se instala amarrado a postes o paredes."
   },
   {
     "id": 1778383966832,
@@ -753,7 +753,7 @@
     "comision": 10,
     "seoTitle": "SISTEMA DE ALARMA en Cuba | TiendaMax",
     "seoDescription": "Sistema de alarma, posee: 🔸4 sensores de movimiento 🔸8 sensores de contacto 🔸3 llaveros 🔸1 sirena 🔸3 mandos para su control 🔸1 botón de emergencia SOS 🔸1…",
-    "descripcion": "Sistema de alarma, posee: 🔸4 sensores de movimiento 🔸8 sensores de contacto 🔸3 llaveros 🔸1 sirena 🔸3 mandos para su control 🔸1 botón de emergencia SOS 🔸1 panel de control de 2.4 pulgadas ✅Recordatorio de puertas y ventanas sin cerrar, recordatorio de alarma de bajo voltaje. ✅5 juegos de llamadas de alarma preestablecidas. ✅Batería integrada."
+    "descripcion": "Sistema de alarma para el hogar WiFi + GSM, marca PGST, controlado por app (Tuya/Smart Life). Incluye panel táctil con SOS, sensores de puerta/ventana, sensores de movimiento infrarrojo, controles remotos y tarjetas RFID. Se conecta a varios dispositivos según lo que necesites: sensor infrarrojo, sensor magnético de puerta, etc. Te avisa al celular si alguien entra a la casa."
   },
   {
     "id": 1778384078432,
@@ -772,7 +772,7 @@
     "comision": 1.8,
     "seoTitle": "CÁMARAS DE SEGURIDAD (V380 PRO ) en Cuba | TiendaMax",
     "seoDescription": "Cámaras de seguridad (V380 Pro ) Detalles : ✴️Se usa con una aplicación en el teléfono 📲 ✴️Rotación 360° ✴️Visión nocturna ✴️Sensor de seguimiento ✴️Luz…",
-    "descripcion": "Cámaras de seguridad (V380 Pro ) Detalles : ✴️Se usa con una aplicación en el teléfono 📲 ✴️Rotación 360° ✴️Visión nocturna ✴️Sensor de seguimiento ✴️Luz LED por sensor ✴️Alarma ✴️Graba en SD o en el teléfono ✴️Modo Guardián (vigilancia de áreas por tiempo determinado por usted)"
+    "descripcion": "Cámara de seguridad WiFi V380 Pro, forma de bombillo (rosca estándar E27, se instala en cualquier lámpara). Visión nocturna con LEDs infrarrojos, giro motorizado (pan-tilt) para cubrir más ángulo. Se controla desde el celular con la app V380 Pro."
   },
   {
     "id": 1778384158283,
@@ -791,7 +791,7 @@
     "comision": 5,
     "seoTitle": "CERRADURA INTELIGENTE en Cuba | TiendaMax",
     "seoDescription": "Cerradura inteligente con forma de manija Viladepot, huella dactilar,control por aplicación, código de acceso, desbloqueo, teclado electrónico con…",
-    "descripcion": "Cerradura inteligente con forma de manija Viladepot, huella dactilar,control por aplicación, código de acceso, desbloqueo, teclado electrónico con pantalla táctil para interiores."
+    "descripcion": "Cerradura inteligente para puerta, color negro, con manija exterior e interior. Se abre con huella dactilar, tarjeta/llavero RFID, código o desde el celular. Incluye puerto USB de emergencia para desbloquear si se agota la batería, más todo el kit de instalación (tornillos, llave Allen, seguro de emergencia)."
   },
   {
     "id": 1778384314795,
@@ -810,7 +810,7 @@
     "comision": 20,
     "seoTitle": "KIT DE 4 CÁMARAS ZOSI NUEVO EN CAJA en Cuba | TiendaMax",
     "seoDescription": "Kit de 4 cámaras Zosi NUEVO EN CAJA‼️ DVR 8 Canales. 5MP Lite DVR. Soporta cámara analógica, HD-TVI, CVI y AHD. Tecnología de compresión H.265+. Salida de…",
-    "descripcion": "Kit de 4 cámaras Zosi NUEVO EN CAJA‼️ • DVR 8 Canales. • 5MP Lite DVR. • Soporta cámara analógica, HD-TVI, CVI y AHD. • Tecnología de compresión H.265+. • Salida de vídeo: HDMI / VGA / CVBS. • Detección de movimiento avanzada y personalizable. • Grabación continua o configurable a la detección de movimiento. • Reciclado automático de grabación. • Resistente al agua. • Para interior o exterior."
+    "descripcion": "Kit de 4 cámaras de seguridad ZOSI con grabador DVR incluido. Cámaras tipo bala con visión nocturna infrarroja, para exterior. El DVR graba de las 4 cámaras a la vez y permite ver todo desde un solo equipo."
   },
   {
     "id": 1778384428890,
@@ -829,7 +829,7 @@
     "comision": 1.8,
     "seoTitle": "PORTACELULARES en Cuba | TiendaMax",
     "seoDescription": "Portacelulares impermeables para bicicletas con bolsos a cada lado. Confeccion fuerte y duradera, de facil instalacion y resistente a lluvia",
-    "descripcion": "Portacelulares impermeables para bicicletas con bolsos a cada lado. Confeccion fuerte y duradera, de facil instalacion y resistente a lluvia",
+    "descripcion": "Portacelular para bicicleta, marca ThinkRider, se monta en el tubo delantero del cuadro. Ventana táctil transparente para usar el teléfono sin sacarlo, cierre con cremallera, resistente al agua. Con bolsillo de almacenamiento.",
     "precioOriginal": 0,
     "comisionMoneda": "USD",
     "imagenes": [
@@ -857,7 +857,7 @@
     ],
     "seoTitle": "LINTERNA DE CABEZA en Cuba | TiendaMax",
     "seoDescription": "Linterna de cabeza : Largo alcance Luz blanca superbrillante de 30w de potencia. Viene con 3 baterias de litio recargables. Angulo de iluminación…",
-    "descripcion": "Linterna de cabeza : * Largo alcance * Luz blanca superbrillante de 30w de potencia. * Viene con 3 baterias de litio recargables. * Angulo de iluminación ajustable. * Carga con cable tipo c y funcion powerbank. * Cuenta con luz tracera opcional parpadeante para que te vean en la obscuridad. * Autonomia maxima de 5 a 12 horas segun el uso."
+    "descripcion": "Linterna de cabeza (headlamp) de 30W LED, recargable por USB Type-C, incluye 3 baterías 18650. Zoom ajustable, indicador de batería con porcentaje, hasta 12 horas de luz, ajuste de 90°. Ideal para apagones o trabajar de noche."
   },
   {
     "id": 1778384646214,
@@ -880,7 +880,7 @@
     ],
     "seoTitle": "ADAPTADOR POE UBIQUITI en Cuba | TiendaMax",
     "seoDescription": "ADAPTADOR POE UBIQUITI disponible en TiendaMax · Wifi. Compra en Cuba con pago contra entrega.",
-    "descripcion": "ADAPTADOR POE UBIQUITI disponible en TiendaMax · Wifi. Compra en Cuba con pago contra entrega"
+    "descripcion": "Adaptador PoE (Power over Ethernet) pasivo, 24V/0.3A, con 2 puertos ethernet. Permite alimentar por corriente y dar internet al mismo tiempo a equipos compatibles (cámaras, antenas, access points) usando un solo cable de red."
   },
   {
     "id": 1778384769262,
@@ -899,7 +899,7 @@
     "comision": 1.8,
     "seoTitle": "VENTILADOR PARA CARRO en Cuba | TiendaMax",
     "seoDescription": "Ventilador para carro de 3 cabezales, se conecta a la cigarrera del carro.",
-    "descripcion": "Ventilador para carro de 3 cabezales, se conecta a la cigarrera del carro."
+    "descripcion": "Ventilador para carro de 3 cabezales, se conecta a la cigarrera del carro (encendedor). Ideal para refrescar el interior en los días de calor sin depender del aire acondicionado."
   },
   {
     "id": 1778384840618,
@@ -918,7 +918,7 @@
     "comision": 1.8,
     "seoTitle": "PROTEGE TU HOGAR en Cuba | TiendaMax",
     "seoDescription": "Protege tu hogar y mira quién toca tu puerta desde tu celular( si tienes internet en tu casa, puedes ver quien toca a tu puerta desde cualquier parte)…",
-    "descripcion": "*Protege tu hogar y mira quién toca tu puerta desde tu celular( si tienes internet en tu casa, puedes ver quien toca a tu puerta desde cualquier parte) *Recibe alertas en tu teléfono cuando alguien llegue a tu puerta. *Habla con tus visitas aunque no estés en casa. *Fácil de instalar, inalámbrico y con visión nocturna. *Bateria integrada recargable sin necesidad de cableado. *Largo alcance de 50 metros aproximadamente *Vision nocturna y sensor de movimiento intergrado *Color negro."
+    "descripcion": "Timbre inteligente con cámara WiFi para la puerta. Intercomunicación de dos vías (hablas y escuchas desde el celular), captura de imagen, visión nocturna, alerta instantánea al celular cuando alguien toca. Hasta 50 metros de alcance de señal, incluso a través de puertas de metal, madera o paredes de ladrillo. Guarda grabaciones en la nube."
   },
   {
     "id": 1778384976624,
@@ -937,7 +937,7 @@
     "comision": 1.8,
     "seoTitle": "CARGADOR PORTÁTIL SOLAR en Cuba | TiendaMax",
     "seoDescription": "Cargador portátil solar de 30 000mAh, doble puerto USB para todos los teléfonos celulares y dispositivos electrónicos - Duradero. Carga inalámbrica y…",
-    "descripcion": "Cargador portátil solar de 30 000mAh, doble puerto USB para todos los teléfonos celulares y dispositivos electrónicos - Duradero. Carga inalámbrica y cables de carga usb, tipo c, lighting y v8 incluidos."
+    "descripcion": "Cargador portátil (power bank) resistente, con panel solar integrado, carga inalámbrica y linterna LED incorporada. Ideal para apagones o salidas al campo — se recarga con corriente normal o con el sol."
   },
   {
     "id": 1778546645170,
@@ -956,7 +956,7 @@
     "comision": 10,
     "seoTitle": "JUEGO DE LLANTAS R14 en Cuba | TiendaMax",
     "seoDescription": "Juego de llantas R14 centro 4x100 y 4x114.3 Se dan con las válvulas y los clanes",
-    "descripcion": "Juego de llantas R14 centro 4x100 y 4x114.3 Se dan con las válvulas y los clanes"
+    "descripcion": "Juego de llantas/rines R14, diseño deportivo de 5 rayos, acabado negro con detalle rojo. Vienen nuevas en su caja."
   },
   {
     "id": 1778546857180,
@@ -1810,7 +1810,7 @@
     "comision": 10,
     "seoTitle": "JUEGO DE LLANTAS R14 en Cuba | TiendaMax",
     "seoDescription": "Juego de llantas R14 centro 4x100 y 4x114.3 Se dan con las válvulas y los clanes",
-    "descripcion": "Juego de llantas R14 centro 4x100 y 4x114.3 Se dan con las válvulas y los clanes"
+    "descripcion": "Juego de llantas/rines R14, marca Ocenti Racing, diseño deportivo de 5 rayos, acabado negro con pulido cromado. Vienen nuevas en su caja."
   },
   {
     "id": 1778546922840,
