@@ -607,6 +607,27 @@ async function iaLlamarModelo(prompt){
   finally{ clearTimeout(tid); }
 }
 window.iaLlamarModelo = iaLlamarModelo;
+// Prompt compartido: usa SOLO datos reales del producto, nunca inventa specs/materiales/compatibilidades.
+function _iaPromptDescripcion(p){
+  const specsTxt=(Array.isArray(p.specs)?p.specs:[]).filter(Boolean).slice(0,4).join(', ');
+  return 'Escribe una descripción de venta para una tienda online cubana (entrega en Cuba, pedido por WhatsApp). Producto: "'+(p.nombre||'')+'". Categoría: '+(p.categoria||'General')+'.'+(specsTxt?' Especificaciones reales: '+specsTxt+'.':'')+' Precio: $'+Number(p.precioActual||0).toFixed(2)+' USD.'+(p.garantia?' Garantía: '+p.garantia+'.':'')+' Usa SOLO los datos dados arriba, no inventes especificaciones, materiales ni compatibilidades que no te di. Entre 200 y 350 caracteres, tono cercano y confiable, sin emojis, sin markdown, un solo párrafo.';
+}
+// Corre un lote de generación de descripciones sobre una lista de productos ya resuelta.
+// Devuelve {ok, grupo} para que el caller decida cómo avisar/persistir.
+async function _iaGenerarLoteDescripciones(lista){
+  const grupo=[]; let ok=0;
+  for(const p of lista){
+    const txt=await iaLlamarModelo(_iaPromptDescripcion(p));
+    if(txt && txt.trim().length>=120){
+      grupo.push({pid:String(p.id),campo:'descripcion',antes:p.descripcion});
+      p.descripcion=txt.trim().slice(0,450);
+      try{ if(typeof window.marcarProductoModificado==='function') window.marcarProductoModificado(p.id); }catch(e){}
+      ok++;
+    }
+  }
+  return {ok,grupo};
+}
+
 async function iaDescripcionesConIA(){
   const key=(localStorage.getItem('anthropicApiKey')||'').trim();
   if(!key){ toast('Configura tu API key en ⚙️ Configuración → API Key de IA para generar descripciones reales'); return; }
@@ -615,22 +636,44 @@ async function iaDescripcionesConIA(){
   const LOTE=15;
   const pendientes=todos.slice(0,LOTE);
   toast('🤖 Generando '+pendientes.length+' descripciones con IA…');
-  const grupo=[]; let ok=0;
-  for(const iss of pendientes){
-    const p=(window.productos||[]).find(x=>String(x.id)===iss.pid); if(!p) continue;
-    const specsTxt=(Array.isArray(p.specs)?p.specs:[]).filter(Boolean).slice(0,4).join(', ');
-    const prompt='Escribe una descripción de venta para una tienda online cubana (entrega en Cuba, pedido por WhatsApp). Producto: "'+(p.nombre||'')+'". Categoría: '+(p.categoria||'General')+'.'+(specsTxt?' Especificaciones reales: '+specsTxt+'.':'')+' Precio: $'+Number(p.precioActual||0).toFixed(2)+' USD.'+(p.garantia?' Garantía: '+p.garantia+'.':'')+' Usa SOLO los datos dados arriba, no inventes especificaciones, materiales ni compatibilidades que no te di. Entre 200 y 350 caracteres, tono cercano y confiable, sin emojis, sin markdown, un solo párrafo.';
-    const txt=await iaLlamarModelo(prompt);
-    if(txt && txt.trim().length>=120){
-      grupo.push({pid:iss.pid,campo:'descripcion',antes:p.descripcion});
-      p.descripcion=txt.trim().slice(0,450);
-      try{ if(typeof window.marcarProductoModificado==='function') window.marcarProductoModificado(p.id); }catch(e){}
-      ok++;
-    }
-  }
+  const lista=pendientes.map(iss=>(window.productos||[]).find(x=>String(x.id)===iss.pid)).filter(Boolean);
+  const {ok,grupo}=await _iaGenerarLoteDescripciones(lista);
   const restan=todos.length-pendientes.length;
   if(ok){ iaUndoPush(grupo, ok+' descripciones IA'); iaPersistir('🤖 '+ok+' descripciones generadas con IA'+(restan>0?' — quedan '+restan+', toca de nuevo para seguir':'')); }
   else toast('❌ La IA no respondió — revisa tu API key');
+  state.view='correcciones'; renderSheet();
+}
+
+// Regenerar TODAS las descripciones (incluso las que ya tienen texto), en tandas,
+// para mejorar calidad de redacción — no solo llenar las que faltan (eso es iaDescripcionesConIA).
+// Cola persistida en localStorage: cada click procesa el próximo lote y guarda el resto,
+// así el admin puede revisar entre tandas o cerrar el panel y seguir después.
+function _iaRegenQueueGet(){ try{ const a=JSON.parse(localStorage.getItem('tm_ia_regen_queue')||'[]'); return Array.isArray(a)?a:[]; }catch(e){ return []; } }
+function _iaRegenQueueSet(a){ try{ localStorage.setItem('tm_ia_regen_queue', JSON.stringify(a)); }catch(e){} }
+async function iaRegenerarTodasDescripciones(){
+  const key=(localStorage.getItem('anthropicApiKey')||'').trim();
+  if(!key){ toast('Configura tu API key en ⚙️ Configuración → API Key de IA para generar descripciones reales'); return; }
+  let cola=_iaRegenQueueGet();
+  if(!cola.length){
+    const todos=(window.productos||[]).map(p=>String(p.id));
+    if(!todos.length){ toast('No hay productos'); return; }
+    if(!confirm('Esto va a REESCRIBIR con IA la descripción de los '+todos.length+' productos, en tandas de 15. Cada tanda se guarda y se sincroniza sola; podés revisar entre tanda y tanda o deshacer con "↩️ Deshacer". ¿Continuar?')) return;
+    cola=todos; _iaRegenQueueSet(cola);
+  }
+  const LOTE=15;
+  const lote=cola.slice(0,LOTE);
+  toast('🤖 Regenerando '+lote.length+' descripciones con IA…');
+  const lista=lote.map(pid=>(window.productos||[]).find(x=>String(x.id)===pid)).filter(Boolean);
+  const {ok,grupo}=await _iaGenerarLoteDescripciones(lista);
+  const restante=cola.slice(lote.length);
+  _iaRegenQueueSet(restante);
+  if(ok){ iaUndoPush(grupo, ok+' descripciones regeneradas'); iaPersistir('🤖 '+ok+' descripciones regeneradas'+(restante.length>0?' — quedan '+restante.length+', toca de nuevo para seguir':' — ¡listo, las '+lote.length+' de esta tanda terminaron la cola!')); }
+  else toast('❌ La IA no respondió — revisa tu API key');
+  state.view='correcciones'; renderSheet();
+}
+function iaRegenCancelar(){
+  _iaRegenQueueSet([]);
+  toast('Regeneración cancelada — lo ya generado no se revierte, usa "↩️ Deshacer" si hace falta');
   state.view='correcciones'; renderSheet();
 }
 function iaUndoPila(){ try{ const a=JSON.parse(localStorage.getItem('tm_ia_undo')||'[]'); return Array.isArray(a)?a:[]; }catch(e){ return []; } }
@@ -714,6 +757,8 @@ function renderCorreccionesIA(){
       <button type="button" class="tm-copilot-btn green" data-cop="iaCSV">📥 Exportar CSV</button>
       ${iaUndoPila().length?`<button type="button" class="tm-copilot-btn" data-cop="iaUndo">↩️ Deshacer (${iaUndoPila().length})</button>`:''}
       <button type="button" class="tm-copilot-btn blue" data-cop="iaDescIA">🤖 Descripciones con IA</button>
+      <button type="button" class="tm-copilot-btn gold" data-cop="iaRegenTodas">🔁 Regenerar TODAS con IA${_iaRegenQueueGet().length?` (${_iaRegenQueueGet().length} restantes)`:''}</button>
+      ${_iaRegenQueueGet().length?`<button type="button" class="tm-copilot-btn" data-cop="iaRegenCancelar">✖️ Cancelar regeneración</button>`:''}
     </div>
     ${issues.length? bloque('🚨 Urgentes',g.urgente)+bloque('⚠️ Advertencias',g.adv)+bloque('💡 Info',g.info)
       : '<div class="tm-copilot-empty">✅ Catálogo impecable: sin problemas detectados.</div>'}
@@ -1610,6 +1655,8 @@ function bindEvents(){
     if(act==='chatSug'){ chatEnviar(el.dataset.q); }
     if(act==='chatClear'){ CHAT_HIST=[]; renderSheet(); }
     if(act==='iaDescIA') iaDescripcionesConIA();
+    if(act==='iaRegenTodas') iaRegenerarTodasDescripciones();
+    if(act==='iaRegenCancelar') iaRegenCancelar();
     if(act==='promoPickImg') { const inp = document.getElementById('tmPromoImgInput'); if(inp) inp.click(); }
     if(act==='promoTema') { promoData.tema = el.dataset.tema; state.view = 'promo'; renderSheet(); }
     if(act==='promoDownload') {
