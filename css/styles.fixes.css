@@ -227,9 +227,7 @@ html body .categorias-home .categorias-grid .skeleton-card{background:#1e1e2a !i
 html body .logo h1 span,html body .logo h1 em{animation:none !important}
 /* Badge "vendido": igual, degradado estático sin shimmer */
 html body .badge-vendido{animation:none !important}
-/* Botón flotante WhatsApp: box-shadow pulse -> transform scale (compositable) */
-@keyframes pulseWhatsapp{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
-html body .whatsapp-btn{will-change:transform}
+
 /* Badge stock urgente: pulso rojo igual al glow del badge-nuevo */
 @keyframes urgente-glow{0%,100%{transform:scale(1);box-shadow:0 2px 8px rgba(192,57,43,.45)}50%{transform:scale(1.08);box-shadow:0 2px 14px rgba(231,76,60,.75)}}
 html body .badge-stock-urgente,html body.light-mode .badge-stock-urgente{background:linear-gradient(135deg,#e74c3c 0%,#c0392b 100%) !important;color:#fff !important;font-size:11px !important;font-weight:800 !important;padding:5px 10px !important;border-radius:999px !important;backdrop-filter:none !important;-webkit-backdrop-filter:none !important;border:none !important;letter-spacing:.2px !important;text-shadow:none !important;animation:urgente-glow 2s ease-in-out infinite !important;will-change:transform}

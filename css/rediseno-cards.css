@@ -701,12 +701,7 @@ body.light-mode #productDetailModal .modal-header{ background:#eceef2 !important
 @keyframes cartPopPremium{ from{ transform:scale(.9); opacity:0; } to{ transform:scale(1); opacity:1; } }
 .cart-count{ animation:cartPopPremium .18s cubic-bezier(0.23,1,0.32,1) !important; }
 
-/* 2) El botón de WhatsApp flotante ya no pulsa para siempre — pulsa
-   3 veces al cargar la página y se queda quieto (sigue "vivo" con el
-   hover normal, solo deja de insistir todo el rato). */
-.whatsapp-btn{ animation-iteration-count:3 !important; }
-
-/* 3) transition:all → propiedades concretas, en los controles que más
+/* 2) transition:all → propiedades concretas, en los controles que más
    se tocan (carrito, compartir, filtros, WhatsApp, admin-nav, moneda).
    Mismo timing/curva que ya tenían, solo se acota qué anima. */
 .detail-share-btn{ transition:border-color .2s, color .2s !important; }
@@ -716,8 +711,6 @@ body.light-mode #productDetailModal .modal-header{ background:#eceef2 !important
 .carrito-btn-limpiar{ transition:border-color .2s, color .2s !important; }
 .btn-carrito{ transition:background-color .2s, color .2s !important; }
 .detail-resena-add-btn{ transition:background-color .2s, color .2s !important; }
-.whatsapp-btn{ transition:transform .3s cubic-bezier(0.23,1,0.32,1), box-shadow .3s cubic-bezier(0.23,1,0.32,1) !important; }
-.whatsapp-group-btn{ transition:transform .3s cubic-bezier(0.23,1,0.32,1) !important; }
 .nav-admin-btn{ transition:border-color .2s, color .2s !important; }
 .cur-btn{ transition:background-color .2s, color .2s !important; }
 .btn-seguir-viendo{ transition:background-color .2s, border-color .2s, box-shadow .2s !important; }
@@ -725,7 +718,7 @@ body.light-mode #productDetailModal .modal-header{ background:#eceef2 !important
 .tmplus-share-cart{ transition:background-color .18s, color .18s !important; }
 .categoria-card{ transition:border-color .25s, transform .25s cubic-bezier(0.23,1,0.32,1), box-shadow .25s !important; }
 
-/* 4) El modal de producto entra con transform+opacity en vez de aparecer en
+/* 3) El modal de producto entra con transform+opacity en vez de aparecer en
    seco (display plano). JS agrega la clase .modal-show un frame después de
    abrir, para que el navegador pinte antes el estado inicial. */
 #productDetailModal .detail-modal-content{
@@ -736,3 +729,19 @@ body.light-mode #productDetailModal .modal-header{ background:#eceef2 !important
 @media (prefers-reduced-motion:reduce){
   #productDetailModal .detail-modal-content{ transition:opacity .15s ease !important; transform:none !important; opacity:1 !important; }
 }
+
+/* 4) Resto de selectores que usaban var(--transition) (= transition:all)
+   en styles.css base. Mismo timing (.2s/.3s) que ya tenían, acotado a las
+   propiedades que sus :hover/:focus realmente cambian. */
+.nav a{ transition:color .2s !important; }
+.btn{ transition:transform .2s cubic-bezier(0.23,1,0.32,1), box-shadow .2s !important; }
+.beneficio-card{ transition:transform .3s cubic-bezier(0.23,1,0.32,1), box-shadow .3s, background-color .3s, border-color .3s !important; }
+.testimonio-card{ transition:transform .3s cubic-bezier(0.23,1,0.32,1), background-color .3s, border-color .3s !important; }
+.btn-volver{ transition:transform .2s cubic-bezier(0.23,1,0.32,1), background-color .2s, border-color .2s, color .2s !important; }
+.subcategoria-tab{ transition:transform .2s cubic-bezier(0.23,1,0.32,1), border-color .2s, color .2s, background-color .2s !important; }
+.categoria-btn{ transition:transform .2s cubic-bezier(0.23,1,0.32,1), border-color .2s, color .2s !important; }
+.theme-toggle{ transition:transform .2s cubic-bezier(0.23,1,0.32,1), background-color .2s, border-color .2s, box-shadow .2s !important; }
+.close-btn{ transition:transform .25s cubic-bezier(0.23,1,0.32,1), background-color .2s, border-color .2s, color .2s, box-shadow .2s !important; }
+.tab-btn{ transition:color .2s !important; }
+.form-group input,.form-group textarea,.form-group select{ transition:border-color .2s, box-shadow .2s !important; }
+.btn-cta-mejorado{ transition:transform .2s cubic-bezier(0.23,1,0.32,1), box-shadow .2s !important; }
