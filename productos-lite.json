@@ -98,10 +98,10 @@
   },
   {
     "id": 1777924248270,
-    "nombre": "Enrutador WiFi Wavlink AC1200",
+    "nombre": "​🌐 Router Wavlink AC1200 Dual Band",
     "precioActual": 80,
     "precioOriginal": 0,
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783836865144.jpg",
+    "imagen": "https://tiendamax.org/imagenes/img_1783836865144.jpg",
     "categoria": "WIFI",
     "subcategoria": "ROUTERS",
     "stock": 0,
@@ -120,7 +120,7 @@
     "seoDescription": "Enrutador WiFi WAVLINK AC1200 de doble banda 5 GHz + 2.4 GHz, enrutador inalámbrico para hogar y juegos con puertos Ethernet Gigabit WAN/LAN, 4 antenas de…",
     "comisionMoneda": "USD",
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783836865144.jpg",
+      "https://tiendamax.org/imagenes/img_1783836865144.jpg",
       "https://tiendamax.org/imagenes/img_1777924248270.webp"
     ]
   },
@@ -292,7 +292,12 @@
       "1.150Mbps"
     ],
     "seoTitle": "EL ENRUTADOR WIFI DE 1.150MBPS en Cuba | TiendaMax",
-    "seoDescription": "El enrutador WiFi de 1.150Mbps es un enrutador 4G CPE para exteriores con una antena externa de alta ganancia de 2 piezas para lograr la amplificación de…"
+    "seoDescription": "El enrutador WiFi de 1.150Mbps es un enrutador 4G CPE para exteriores con una antena externa de alta ganancia de 2 piezas para lograr la amplificación de…",
+    "precioOriginal": 0,
+    "comisionMoneda": "USD",
+    "imagenes": [
+      "https://tiendamax.org/imagenes/img_1778104287395.webp"
+    ]
   },
   {
     "id": 1778104423316,
@@ -559,7 +564,7 @@
   },
   {
     "id": 1778213413973,
-    "nombre": "Forros de Asientos de Lujo Para Autos",
+    "nombre": "​🛡️ Juego de Fundas para Asientos (Edición Elegance)",
     "precioActual": 150,
     "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783918032855.jpg",
     "categoria": "CARROS",
@@ -576,9 +581,7 @@
     "seoDescription": "Forros de asientos de lujo para autos: Alta calidad y acabado exquisito. Color: negro Material de la superficie: Cuero napa de 0,6 mm. Durabilidad: 3…",
     "precioOriginal": 0,
     "comisionMoneda": "USD",
-    "specs": [
-      "Color negro"
-    ],
+    "specs": [],
     "imagenes": [
       "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783918032855.jpg",
       "https://tiendamax.org/imagenes/img_1778213413973.webp"
@@ -669,10 +672,10 @@
   },
   {
     "id": 1778336689684,
-    "nombre": "Switch de 5 Puertos",
+    "nombre": "​🌐 Switch Gigabit de 5 Puertos",
     "precioActual": 20,
     "precioOriginal": 0,
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783836818228.jpg",
+    "imagen": "https://tiendamax.org/imagenes/img_1783836818228.jpg",
     "categoria": "WIFI",
     "subcategoria": "SWITCHES",
     "stock": 20,
@@ -687,8 +690,11 @@
     "seoDescription": "Switch de 5 puertos ethernet de 1 gigabite.",
     "comisionMoneda": "USD",
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783836818228.jpg",
+      "https://tiendamax.org/imagenes/img_1783836818228.jpg",
       "https://tiendamax.org/imagenes/img_1780510827238.webp"
+    ],
+    "specs": [
+      "1000 Mbps"
     ]
   },
   {
@@ -1345,10 +1351,10 @@
   },
   {
     "id": 1780017975657,
-    "nombre": "Xiaomi Sound Outdoor 30W",
+    "nombre": "​🔊 Xiaomi Sound Outdoor (30W)",
     "precioActual": 75,
     "precioOriginal": 0,
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783836546487.jpg",
+    "imagen": "https://tiendamax.org/imagenes/img_1783836546487.jpg",
     "categoria": "CELULARES",
     "subcategoria": "AUDIO",
     "stock": 3,
@@ -1366,9 +1372,9 @@
     "seoDescription": "(Nuevo en caja) ​¡Potencia y portabilidad en un solo altavoz! Perfecto para exteriores, playa o reuniones. ​⚡ Lo mejor de este altavoz: ​Potencia de 30W…",
     "comisionMoneda": "USD",
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783836546487.jpg",
+      "https://tiendamax.org/imagenes/img_1783836546487.jpg",
       "https://tiendamax.org/imagenes/img_1780017975657.webp",
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783836630474.jpg"
+      "https://tiendamax.org/imagenes/img_1783836630474.jpg"
     ]
   },
   {
