@@ -1,15 +1,65 @@
 {
-  "generado": "2026-07-12T10:19:32.185597+00:00",
-  "productos": 109,
-  "urgentes": 1,
+  "generado": "2026-07-13T11:54:27.515342+00:00",
+  "productos": 108,
+  "urgentes": 11,
   "advertencias": 31,
   "info": 11,
-  "resumen": "Anoche revisé tus 109 productos y encontré 1 urgente(s), 31 advertencia(s), 11 de info.",
+  "resumen": "Anoche revisé tus 108 productos y encontré 11 urgente(s), 31 advertencia(s), 11 de info.",
   "detalle": [
     {
       "tipo": "nombre",
-      "nombre": "Router Kuwfi   Transmisión WiFi de 150 Mbps",
-      "detalle": "→ Router Kuwfi Transmisión WiFi de 150 Mbps"
+      "nombre": "​📶 Repetidor Wi-Fi 5 (Doble Banda - 1200 Mbps)",
+      "detalle": "→ ​📶 Repetidor Wi-fi 5 (Doble Banda - 1200 Mbps)"
+    },
+    {
+      "tipo": "nombre",
+      "nombre": "​🌐 CPE Exterior KuWfi 4G/WiFi",
+      "detalle": "→ ​🌐 Cpe Exterior Kuwfi 4G/WIFI"
+    },
+    {
+      "tipo": "nombre",
+      "nombre": "​🌐 Router KuWFi 4G LTE (Wi-Fi de Alta Velocidad)",
+      "detalle": "→ ​🌐 Router Kuwfi 4G Lte (Wi-fi de Alta Velocidad)"
+    },
+    {
+      "tipo": "nombre",
+      "nombre": "​🛡️ Juego de Fundas para Asientos (Edición Elegance)",
+      "detalle": "→ ​🛡️ Juego de Fundas Para Asientos (Edición Elegance)"
+    },
+    {
+      "tipo": "nombre",
+      "nombre": "​🌐 Adaptador PoE Ubiquiti (24V - 0.3A)",
+      "detalle": "→ ​🌐 Adaptador POE Ubiquiti (24V - 0.3A)"
+    },
+    {
+      "tipo": "nombre",
+      "nombre": "​🌐 Router TP-Link Archer AX1450 (Wi-Fi 6)",
+      "detalle": "→ ​🌐 Router Tp-link Archer AX1450 (Wi-fi 6)"
+    },
+    {
+      "tipo": "nombre",
+      "nombre": "​🌐 Mini Repetidor Wi-Fi (300 Mbps)",
+      "detalle": "→ ​🌐 MINI Repetidor Wi-fi (300 Mbps)"
+    },
+    {
+      "tipo": "nombre",
+      "nombre": "​🌐 Router TP-Link Archer A6 (AC1200)",
+      "detalle": "→ ​🌐 Router Tp-link Archer A6 (AC1200)"
+    },
+    {
+      "tipo": "nombre",
+      "nombre": "​🌐 Router TP-Link Archer AX21 (Wi-Fi 6)",
+      "detalle": "→ ​🌐 Router Tp-link Archer AX21 (Wi-fi 6)"
+    },
+    {
+      "tipo": "nombre",
+      "nombre": "​🌐 MikroTik hEX (RB750Gr3)",
+      "detalle": "→ ​🌐 Mikrotik Hex (RB750GR3)"
+    },
+    {
+      "tipo": "nombre",
+      "nombre": "​🌐 Router Tenda TX12 Pro (Wi-Fi 6)",
+      "detalle": "→ ​🌐 Router Tenda TX12 PRO (Wi-fi 6)"
     },
     {
       "tipo": "agotado",
@@ -23,17 +73,17 @@
     },
     {
       "tipo": "agotado",
-      "nombre": "Router WiFi 6",
+      "nombre": "​🌐 Router Wavlink AC1200 Dual Band",
       "detalle": "agotado (stock 0)"
     },
     {
       "tipo": "agotado",
-      "nombre": "Enrutador WiFi Wavlink AC1200",
+      "nombre": "​📶 Repetidor Wi-Fi 5 (Doble Banda - 1200 Mbps)",
       "detalle": "agotado (stock 0)"
     },
     {
       "tipo": "agotado",
-      "nombre": "Repetidor WiFi 5",
+      "nombre": "​🌐 Switch Gigabit de 8 Puertos",
       "detalle": "agotado (stock 0)"
     },
     {
@@ -73,7 +123,7 @@
     },
     {
       "tipo": "agotado",
-      "nombre": "AC1200 WiFi Router",
+      "nombre": "​🌐 Router Tenda AC1200 (Global Version)",
       "detalle": "agotado (stock 0)"
     },
     {
@@ -93,7 +143,7 @@
     },
     {
       "tipo": "agotado",
-      "nombre": "Adaptador POE Ubiquiti",
+      "nombre": "​🌐 Adaptador PoE Ubiquiti (24V - 0.3A)",
       "detalle": "agotado (stock 0)"
     },
     {
@@ -168,7 +218,7 @@
     },
     {
       "tipo": "stock_bajo",
-      "nombre": "El Enrutador WiFi de 1.150MBPS",
+      "nombre": "​🌐 CPE Exterior KuWfi 4G/WiFi",
       "detalle": "quedan 1"
     },
     {
@@ -193,7 +243,7 @@
     },
     {
       "tipo": "stock_bajo",
-      "nombre": "Xiaomi Sound Outdoor 30W",
+      "nombre": "​🔊 Xiaomi Sound Outdoor (30W)",
       "detalle": "quedan 3"
     },
     {
