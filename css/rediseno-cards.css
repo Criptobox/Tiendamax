@@ -317,6 +317,11 @@ body.light-mode .detail-badge-nuevo{ background:rgba(255,107,53,.10); }
   background:transparent !important; border:none !important; backdrop-filter:none !important; -webkit-backdrop-filter:none !important;
   padding:0 !important;
 }
+/* Miniaturas recortaban la foto (object-fit:cover en una caja 48x48 corta
+   techos de carros, bordes de productos, etc.) — igual que la foto
+   principal, se ve completa sobre fondo claro, sin recortar nada. */
+#productDetailModal .detail-gallery-thumb{ background:linear-gradient(180deg,#FAFAFA,#F0EDE8) !important; }
+#productDetailModal .detail-gallery-thumb img{ object-fit:contain !important; }
 
 /* Bug real: .detail-grid usaba "1fr" puro. En CSS Grid, "1fr" se comporta
    como minmax(auto,1fr) — si algo adentro de la columna se niega a encoger
