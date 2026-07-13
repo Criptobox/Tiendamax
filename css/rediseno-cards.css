@@ -492,7 +492,8 @@ html body.light-mode #detailPriceActual{
 body.light-mode #productDetailModal .detail-description-text .dd-intro{ color:#1a1a1a !important; }
 
 /* Categoría + subcategoría en una sola línea (estilo mockup), en vez de
-   2 líneas apiladas con flecha "↳". */
+   2 líneas apiladas con flecha "↳". Ambas viven dentro de .detail-meta-line,
+   que las centra (ver bloque "layout centrado" más abajo). */
 html body #productDetailModal .detail-category,
 html body #productDetailModal .detail-subcategory{
   display:inline !important; margin:0 !important; width:auto !important;
@@ -597,3 +598,51 @@ body.light-mode .resena-meta .resena-fecha{ color:#8a8a92; }
 .dsc-buy-btn:hover{ filter:brightness(1.06); }
 body.light-mode .dsc-price-main{ color:#1a1a1a; }
 body.light-mode #productDetailModal .detail-sticky-cta{ background:linear-gradient(180deg, transparent 0%, var(--panel,#fff) 35%); }
+
+/* ============================================================
+   Modal premium v2 — layout centrado (mockup)
+   La columna de info pasa a flex column para poder: (a) subir las
+   tarjetas de confianza justo debajo de la imagen (order), y (b)
+   centrar categoría + precio como en la mockup. Sin gap: se mantienen
+   los márgenes que ya tenía cada bloque.
+   ============================================================ */
+#productDetailModal .detail-info{ display:flex; flex-direction:column; }
+
+/* Orden estilo mockup: confianza → rating → categoría → precio → resto.
+   Los elementos sin 'order' quedan en 0 y conservan el orden del DOM. */
+#productDetailModal .detail-info > #detailTrustBadges{ order:-3; margin:0 0 14px !important; }
+#productDetailModal .detail-info > #detailRatingTop{ order:-2; }
+#productDetailModal .detail-info > .detail-meta-line{ order:-1; }
+
+/* Categoría + subcategoría: centradas, mayúsculas, naranja (como mockup) */
+#productDetailModal .detail-meta-line{
+  text-align:center; margin:2px 0 0;
+  font-size:12px; font-weight:800; letter-spacing:.12em; text-transform:uppercase;
+}
+#productDetailModal .detail-meta-line .detail-category{
+  color:var(--coral,#ff8a3d) !important; font-weight:800 !important;
+}
+#productDetailModal .detail-meta-line .detail-subcategory{
+  color:#9a9aa2 !important; font-weight:700 !important;
+}
+body.light-mode #productDetailModal .detail-meta-line .detail-category{ color:#E8501E !important; }
+body.light-mode #productDetailModal .detail-meta-line .detail-subcategory{ color:#8a8a92 !important; }
+
+/* Precio centrado, número grande (mockup) */
+#productDetailModal .detail-price-wrap{ justify-content:center; margin-top:8px; }
+#productDetailModal .detail-price-sub{ justify-content:center; }
+#productDetailModal .detail-price-main .dp-num{ font-size:40px; }
+
+/* Trust badges: ícono dentro de un cuadro redondeado de color (mockup) */
+.detail-trust-card .dtc-ic{
+  width:34px; height:34px; border-radius:10px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:17px; margin-bottom:2px;
+}
+.detail-trust-card:nth-child(1) .dtc-ic{ background:rgba(255,122,41,.15); }
+.detail-trust-card:nth-child(2) .dtc-ic{ background:rgba(74,222,128,.15); }
+.detail-trust-card:nth-child(3) .dtc-ic{ background:rgba(96,165,250,.15); }
+.detail-trust-card:nth-child(4) .dtc-ic{ background:rgba(167,139,250,.15); }
+
+/* Rating (cuando hay reseñas reales): centrado bajo la categoría */
+#productDetailModal #detailRatingTop.detail-rating-top{ justify-content:center; }
