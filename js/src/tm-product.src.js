@@ -641,6 +641,29 @@ if (_detailPrecioMNEl) {
     }
     buyBtn.onclick = () => contactarProducto(p.nombre);
 
+    // CTA fija abajo del modal — mismo precio y mismo estado (stock) que el
+    // botón principal, solo que siempre visible al hacer scroll por la descripción/reseñas.
+    const stickyCta = document.getElementById('detailStickyCta');
+    if (stickyCta) {
+        const stickyPrice = document.getElementById('detailStickyPrice');
+        const stickyPriceSub = document.getElementById('detailStickyPriceSub');
+        const stickyBuyBtn = document.getElementById('detailStickyBuyBtn');
+        const stickyBuyText = document.getElementById('detailStickyBuyText');
+        if (stickyPrice) stickyPrice.textContent = `$${Number(p.precioActual || 0).toFixed(2)}`;
+        if (stickyPriceSub) {
+            const _tasaSticky = typeof getTasaMN === 'function' ? getTasaMN() : 0;
+            stickyPriceSub.textContent = _tasaSticky > 0 ? `≈ ${Math.round(p.precioActual * _tasaSticky).toLocaleString('es-CU')} MN` : '';
+        }
+        if (stickyBuyText) stickyBuyText.textContent = p.stock === 0 ? '🔔 Avísame' : 'Pedir';
+        if (stickyBuyBtn) {
+            stickyBuyBtn.disabled = false;
+            stickyBuyBtn.onclick = p.stock === 0
+                ? () => suscribirAvisoStock(p.id, p.nombre)
+                : () => contactarProducto(p.nombre);
+        }
+        stickyCta.style.display = 'flex';
+    }
+
     // Productos relacionados: primero recomendaciones IA guardadas, luego misma categoría.
     const recIds = Array.isArray(p.recomendados) ? p.recomendados.map(String) : [];
     const recIA = recIds

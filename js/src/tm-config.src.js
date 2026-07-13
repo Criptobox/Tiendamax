@@ -776,21 +776,25 @@ async function renderizarResenas(productoId) {
     el.innerHTML =
         resenas.map(r => {
             const e = Math.max(0, Math.min(5, parseInt(r.estrellas, 10) || 0));
+            const nombre = String(r.autor || '?').trim();
+            const iniciales = nombre.split(/\s+/).filter(Boolean).slice(0, 2).map(w => w[0].toUpperCase()).join('') || '?';
+            const _avatarPalette = ['#ff7a29,#ff4d00', '#60a5fa,#3b82f6', '#a78bfa,#7c3aed', '#4ade80,#16a34a', '#fb7185,#e11d48'];
+            let _hash = 0; for (let i = 0; i < nombre.length; i++) _hash = (_hash * 31 + nombre.charCodeAt(i)) >>> 0;
+            const avatarGrad = _avatarPalette[_hash % _avatarPalette.length];
             return '<div class="resena-item">' +
                 '<div class="resena-top">' +
-                    '<div style="display:flex;align-items:center;gap:6px;">' +
-                        '<span class="resena-autor">' + escapeHtml(r.autor) + '</span>' +
-                        (r.comprador ? '<span style="font-size:10px;background:#1a3a1a;color:#4caf50;border:1px solid #4caf50;border-radius:4px;padding:1px 5px;">✓ Comprador</span>' : '') +
-                    '</div>' +
-                    '<div style="display:flex;align-items:center;gap:6px;">' +
-                        '<span class="resena-estrellas">' + '★'.repeat(e) + '☆'.repeat(5 - e) + '</span>' +
+                    '<span class="resena-avatar" style="background:linear-gradient(135deg,' + avatarGrad + ')">' + escapeHtml(iniciales) + '</span>' +
+                    '<div class="resena-meta">' +
+                        '<span class="resena-autor">' + escapeHtml(nombre) + '</span>' +
                         '<span class="resena-fecha">' + escapeHtml(r.fecha) + '</span>' +
                     '</div>' +
+                    '<span class="resena-estrellas">' + '★'.repeat(e) + '☆'.repeat(5 - e) + '</span>' +
                 '</div>' +
                 '<p class="resena-texto">' + escapeHtml(r.texto) + '</p>' +
                 (r.imagen && /^data:image\//.test(String(r.imagen))
                     ? '<img class="resena-foto" src="' + escapeAttr(r.imagen) + '" alt="Foto de la reseña" loading="lazy">'
                     : '') +
+                (r.comprador ? '<span class="resena-verificada">✓ Compra verificada</span>' : '') +
             '</div>';
         }).join('');
 }

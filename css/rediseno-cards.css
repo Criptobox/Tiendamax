@@ -498,3 +498,102 @@ html body #productDetailModal .detail-subcategory{
   display:inline !important; margin:0 !important; width:auto !important;
 }
 html body #productDetailModal .detail-subcategory{ margin-left:2px !important; }
+
+/* ============================================================
+   Modal de detalle — pase premium v2 (mockup "Modal Premium v2")
+   Solo estilo: cada elemento sigue mostrando datos reales (precio,
+   specs, reseñas, envío/garantía configurados en admin, oferta con
+   p.ofertaFin). No se agregó ningún dato inventado. Deliberadamente
+   NO se implementan del mockup: selector de variantes (el modelo de
+   producto no tiene variantes), caja "Qué recibirás" (no hay campo
+   real para eso) ni el toast de compras/"vieron en 24h" (nombres y
+   cifras ficticias) — ver conversación para el porqué.
+   ============================================================ */
+
+/* Marco del modal: esquinas más redondeadas + línea de acento arriba.
+   OJO: NO tocar overflow acá — .detail-modal-content ya es el contenedor
+   que scrollea (overflow-y:auto en styles.css); overflow:hidden lo rompía
+   por completo (el modal quedaba recortado, sin poder bajar a specs/
+   descripción/reseñas). El radio ya recorta las esquinas sin necesidad
+   de overflow:hidden porque overflow-y:auto también clippea en Y. */
+#productDetailModal .detail-modal-content{
+  border-radius:26px !important; position:relative;
+  box-shadow:0 30px 80px rgba(0,0,0,.5), 0 0 40px rgba(255,122,41,.06) !important;
+}
+#productDetailModal .detail-modal-content::before{
+  content:''; position:absolute; top:0; left:0; right:0; height:2px;
+  background:linear-gradient(90deg, transparent, #ff7a29 20%, #ff4d00 50%, #ff7a29 80%, transparent);
+  z-index:6; pointer-events:none;
+}
+/* Manija tipo hoja móvil, arriba del header */
+.detail-handle{ width:44px; height:4px; background:rgba(255,255,255,.14); border-radius:4px; margin:10px auto 0; }
+body.light-mode .detail-handle{ background:rgba(0,0,0,.14); }
+
+/* Punto pulsante en el badge "Recién llegado" */
+.detail-badge-nuevo{ position:relative; padding-left:20px !important; }
+.detail-badge-nuevo::before{
+  content:''; position:absolute; left:9px; top:50%; transform:translateY(-50%);
+  width:6px; height:6px; background:var(--coral,#ff7a29); border-radius:50%;
+  box-shadow:0 0 8px var(--coral,#ff7a29); animation:tmBadgePulse 2s ease-in-out infinite;
+}
+@keyframes tmBadgePulse{ 0%,100%{opacity:1;} 50%{opacity:.35;} }
+
+/* Galería: proporción y sombra más premium */
+#productDetailModal .detail-image-wrap{
+  box-shadow:0 12px 36px rgba(0,0,0,.4) !important;
+}
+body.light-mode #productDetailModal .detail-image-wrap{ box-shadow:0 8px 24px rgba(0,0,0,.12) !important; }
+
+/* Trust badges: un color de acento distinto por tarjeta (envío/pago/garantía),
+   igual que el mockup — el CONTENIDO sigue siendo 100% real (ver tm-product.src.js) */
+.detail-trust-card:nth-child(1) .dtc-ic{ color:var(--coral,#ff8a3d); }
+.detail-trust-card:nth-child(2) .dtc-ic{ color:#4ade80; }
+.detail-trust-card:nth-child(3) .dtc-ic{ color:#60a5fa; }
+.detail-trust-card:nth-child(4) .dtc-ic{ color:#a78bfa; }
+
+/* Barra de stock: icono de alerta ya lo pone el JS en el texto; acá solo
+   se afina el brillo del relleno para que combine con el marco premium */
+#productDetailModal .stock-bar-fill{
+  box-shadow:0 0 10px rgba(230,126,34,.55);
+}
+
+/* ===== Reseñas: avatar con iniciales + layout tipo tarjeta del mockup ===== */
+.resena-top{ display:flex; align-items:center; gap:10px; margin-bottom:8px; }
+.resena-avatar{
+  width:32px; height:32px; border-radius:50%; flex-shrink:0;
+  display:flex; align-items:center; justify-content:center;
+  color:#fff; font-size:12px; font-weight:800;
+}
+.resena-meta{ flex:1; min-width:0; display:flex; flex-direction:column; gap:1px; }
+.resena-meta .resena-autor{ font-size:13px; font-weight:700; color:#f2f2f5; }
+.resena-meta .resena-fecha{ font-size:11px; color:#9a9aa2; }
+.resena-estrellas{ font-size:12px; color:#fbbf24; white-space:nowrap; }
+.resena-verificada{
+  display:inline-flex; align-items:center; gap:4px; margin-top:8px;
+  color:#4ade80; font-size:10.5px; font-weight:700;
+  background:rgba(74,222,128,.1); border:1px solid rgba(74,222,128,.25);
+  padding:3px 8px; border-radius:20px;
+}
+body.light-mode .resena-meta .resena-autor{ color:#1a1a1a; }
+body.light-mode .resena-meta .resena-fecha{ color:#8a8a92; }
+
+/* ===== CTA fija abajo: precio + Pedir, visible siempre al hacer scroll dentro del modal ===== */
+#productDetailModal .detail-sticky-cta{
+  position:sticky; bottom:0; left:0; right:0;
+  background:linear-gradient(180deg, transparent 0%, var(--panel,#161616) 35%);
+  padding:14px 18px calc(14px + env(safe-area-inset-bottom));
+  display:flex; align-items:center; gap:12px; z-index:5;
+  backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
+}
+.dsc-price{ flex:1; min-width:0; line-height:1.15; }
+.dsc-price-main{ display:block; font-size:19px; font-weight:900; color:#f2f2f5; letter-spacing:-.01em; }
+.dsc-price-sub{ display:block; font-size:11px; color:#9a9aa2; margin-top:1px; }
+.dsc-buy-btn{
+  display:inline-flex; align-items:center; justify-content:center; gap:7px;
+  background:#22c55e; color:#fff; border:none; border-radius:14px;
+  height:46px; padding:0 20px; font-size:14px; font-weight:800; cursor:pointer;
+  box-shadow:0 8px 20px rgba(34,197,94,.35); flex-shrink:0; transition:filter .15s;
+}
+.dsc-buy-btn:hover{ filter:brightness(1.06); }
+body.light-mode .dsc-price-main{ color:#1a1a1a; }
+body.light-mode #productDetailModal .detail-sticky-cta{ background:linear-gradient(180deg, transparent 0%, var(--panel,#fff) 35%); }
