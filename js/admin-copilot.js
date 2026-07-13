@@ -495,23 +495,6 @@ function iaNormalizarNombre(raw){
   return tokens.join(' ');
 }
 
-function iaGenerarDescripcion(p){
-  const n=(p.nombre||'Producto').trim(), c=(p.categoria||'').toLowerCase();
-  const low=(n+' '+c).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
-  let uso='Ideal para el uso diario en casa o el negocio';
-  if(/inversor|bateria|solar|mppt|estacion|carga|apag|transferencia/.test(low)) uso='Ideal para mantener tu casa o negocio con corriente durante los apagones';
-  else if(/router|wifi|repetidor|switch|enrutador|red/.test(low)) uso='Ideal para tener internet estable y con buena cobertura en toda la casa';
-  else if(/audifono|parlante|altavoz|bocina|sound|audio/.test(low)) uso='Ideal para disfrutar tu música con buen sonido donde quieras';
-  else if(/camara|seguridad|alarma|cerradura|zosi|v380/.test(low)) uso='Ideal para vigilar y proteger tu casa o negocio desde el celular';
-  else if(/mannol|aceite|antifreeze|llanta|espejo|moto|carro|auto/.test(low)) uso='Ideal para el mantenimiento y cuidado de tu vehículo';
-  else if(/tv|lavadora|split|nevera|exhibidor|batidora|ventilador|calentador/.test(low)) uso='Ideal para equipar tu hogar o negocio con un equipo confiable';
-  const specs=(Array.isArray(p.specs)?p.specs:[]).filter(s=>s&&String(s).trim()).slice(0,3).join(' · ');
-  const gar=p.garantia?('Incluye garantía de '+p.garantia+'.'):'Lo pruebas al recibirlo: pagas cuando compruebes que funciona.';
-  let d=`${n} nuevo y disponible en TiendaMax con entrega en Cuba. ${uso}.${specs?' '+specs+'.':''} ${gar} Atención personalizada por WhatsApp: escríbenos y te lo apartamos 24 horas mientras coordinas la entrega.`;
-  if(d.length<200) d+=' Precios claros en USD con opción de pago en moneda nacional según la tasa del día.';
-  return d;
-}
-
 const IA_CATS_KW = [
   [/inversor|bateria|solar|mppt|cargador|estacion de carga|transferencia|controlador/, 'ENERGIA'],
   [/router|wifi|repetidor|switch|enrutador|poe|antena/, 'WIFI'],
@@ -539,7 +522,13 @@ function iaScan(){
     const pid=String(p.id), nombre=p.nombre||'(sin nombre)';
     // 🚨 sin descripción SEO
     const d=String(p.descripcion||'').trim();
-    if(d.length<40) push({level:'urgente',ico:'🚨',type:'desc',pid,nombre,detalle:d?('solo '+d.length+' caracteres'):'sin descripción',fix:{campo:'descripcion',valor:iaGenerarDescripcion(p)},fixLabel:'Generar descripción'});
+    // Sin "fix" automático a propósito: la plantilla local que tenía esto antes
+    // (iaGenerarDescripcion, ya eliminada) escribía el mismo texto genérico en todos
+    // los productos — eso fue justo el bug que rellenó ~101 descripciones reales con
+    // "...te lo apartamos 24 horas...". El único camino para arreglar esto en el sheet
+    // es el botón real "🤖 Descripciones con IA" (iaDescripcionesConIA), que sí genera
+    // texto distinto por producto a partir de sus datos reales.
+    if(d.length<40) push({level:'urgente',ico:'🚨',type:'desc',pid,nombre,detalle:(d?('solo '+d.length+' caracteres'):'sin descripción')+' — usa "🤖 Descripciones con IA"',fix:null,fixLabel:null});
     // 🚨 nombre mal formateado (typos / ALL CAPS / mixto raro)
     const nNorm=iaNormalizarNombre(nombre);
     if(nNorm && nNorm!==nombre) push({level:'urgente',ico:'🔤',type:'nombre',pid,nombre,detalle:'→ '+nNorm,fix:{campo:'nombre',valor:nNorm},fixLabel:'Corregir nombre'});
@@ -620,14 +609,17 @@ async function iaLlamarModelo(prompt){
 window.iaLlamarModelo = iaLlamarModelo;
 async function iaDescripcionesConIA(){
   const key=(localStorage.getItem('anthropicApiKey')||'').trim();
-  if(!key){ toast('Configura tu API key en ⚙️ Configuración → API Key de IA'); return; }
-  const pendientes=iaScan().filter(i=>i.level==='urgente'&&i.type==='desc').slice(0,10);
-  if(!pendientes.length){ toast('No hay productos sin descripción'); return; }
+  if(!key){ toast('Configura tu API key en ⚙️ Configuración → API Key de IA para generar descripciones reales'); return; }
+  const todos=iaScan().filter(i=>i.level==='urgente'&&i.type==='desc');
+  if(!todos.length){ toast('No hay productos sin descripción'); return; }
+  const LOTE=15;
+  const pendientes=todos.slice(0,LOTE);
   toast('🤖 Generando '+pendientes.length+' descripciones con IA…');
   const grupo=[]; let ok=0;
   for(const iss of pendientes){
     const p=(window.productos||[]).find(x=>String(x.id)===iss.pid); if(!p) continue;
-    const prompt='Escribe una descripción de venta para una tienda online cubana (entrega en Cuba, pedido por WhatsApp). Producto: "'+(p.nombre||'')+'". Categoría: '+(p.categoria||'General')+'. Precio: $'+Number(p.precioActual||0).toFixed(2)+' USD.'+(p.garantia?' Garantía: '+p.garantia+'.':'')+' Entre 200 y 350 caracteres, tono cercano y confiable, sin emojis, sin markdown, un solo párrafo.';
+    const specsTxt=(Array.isArray(p.specs)?p.specs:[]).filter(Boolean).slice(0,4).join(', ');
+    const prompt='Escribe una descripción de venta para una tienda online cubana (entrega en Cuba, pedido por WhatsApp). Producto: "'+(p.nombre||'')+'". Categoría: '+(p.categoria||'General')+'.'+(specsTxt?' Especificaciones reales: '+specsTxt+'.':'')+' Precio: $'+Number(p.precioActual||0).toFixed(2)+' USD.'+(p.garantia?' Garantía: '+p.garantia+'.':'')+' Usa SOLO los datos dados arriba, no inventes especificaciones, materiales ni compatibilidades que no te di. Entre 200 y 350 caracteres, tono cercano y confiable, sin emojis, sin markdown, un solo párrafo.';
     const txt=await iaLlamarModelo(prompt);
     if(txt && txt.trim().length>=120){
       grupo.push({pid:iss.pid,campo:'descripcion',antes:p.descripcion});
@@ -636,8 +628,9 @@ async function iaDescripcionesConIA(){
       ok++;
     }
   }
-  if(ok){ iaUndoPush(grupo, ok+' descripciones IA'); iaPersistir('🤖 '+ok+' descripciones generadas con IA'); }
-  else toast('❌ La IA no respondió — revisa la key o usa el generador local (Aplicar urgentes)');
+  const restan=todos.length-pendientes.length;
+  if(ok){ iaUndoPush(grupo, ok+' descripciones IA'); iaPersistir('🤖 '+ok+' descripciones generadas con IA'+(restan>0?' — quedan '+restan+', toca de nuevo para seguir':'')); }
+  else toast('❌ La IA no respondió — revisa tu API key');
   state.view='correcciones'; renderSheet();
 }
 function iaUndoPila(){ try{ const a=JSON.parse(localStorage.getItem('tm_ia_undo')||'[]'); return Array.isArray(a)?a:[]; }catch(e){ return []; } }
@@ -720,7 +713,7 @@ function renderCorreccionesIA(){
       <button type="button" class="tm-copilot-btn danger" data-cop="iaFirebase">🔥 Sync Firebase</button>
       <button type="button" class="tm-copilot-btn green" data-cop="iaCSV">📥 Exportar CSV</button>
       ${iaUndoPila().length?`<button type="button" class="tm-copilot-btn" data-cop="iaUndo">↩️ Deshacer (${iaUndoPila().length})</button>`:''}
-      ${(localStorage.getItem('anthropicApiKey')||'').trim()?`<button type="button" class="tm-copilot-btn blue" data-cop="iaDescIA">🤖 Descripciones con IA</button>`:''}
+      <button type="button" class="tm-copilot-btn blue" data-cop="iaDescIA">🤖 Descripciones con IA</button>
     </div>
     ${issues.length? bloque('🚨 Urgentes',g.urgente)+bloque('⚠️ Advertencias',g.adv)+bloque('💡 Info',g.info)
       : '<div class="tm-copilot-empty">✅ Catálogo impecable: sin problemas detectados.</div>'}
