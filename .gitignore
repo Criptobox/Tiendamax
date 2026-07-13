@@ -14,3 +14,14 @@ node_modules/
 *.patch
 *.diff
 preview-*.html
+
+# Herramientas locales del agente (skills instaladas via `npx skills add`,
+# no forman parte del sitio) — cada dev/sesión las instala en su propia copia.
+# Los symlinks en .claude/skills/ apuntan a .agents/, así que también van acá.
+.agents/
+skills-lock.json
+.claude/skills/animation-vocabulary
+.claude/skills/apple-design
+.claude/skills/emil-design-eng
+.claude/skills/improve-animations
+.claude/skills/review-animations
