@@ -646,3 +646,13 @@ body.light-mode #productDetailModal .detail-meta-line .detail-subcategory{ color
 
 /* Rating (cuando hay reseñas reales): centrado bajo la categoría */
 #productDetailModal #detailRatingTop.detail-rating-top{ justify-content:center; }
+
+/* El header traía fondo var(--bg) (#0e0e12) desde premium-theme, más
+   oscuro que el cuerpo var(--panel) (#16161f): el título quedaba dentro
+   de un rectángulo oscuro que se veía como una caja aparte. Igualarlo al
+   fondo del cuerpo + quitar el borde para que el título se funda con el
+   modal, como en el mockup. */
+#productDetailModal .modal-header{
+  background:var(--panel) !important; border-bottom:none !important;
+}
+body.light-mode #productDetailModal .modal-header{ background:#eceef2 !important; }
