@@ -526,6 +526,7 @@ if (_detailPrecioMNEl) {
     const specBadgesEl = document.getElementById('detailSpecBadges');
     if (specBadgesEl) {
         const specs = Array.isArray(p.specs) ? p.specs.filter(s => s && String(s).trim()).slice(0, 6) : [];
+        const _yaTieneEmoji = /^\p{Extended_Pictographic}/u;
         const _iconoSpec = (s) => {
             const t = String(s).toLowerCase();
             if (/mbps|ghz|\bhz\b|wifi|wi-fi/.test(t)) return '📶';
@@ -543,7 +544,8 @@ if (_detailPrecioMNEl) {
                 const value = str.slice(idx + 1).trim();
                 return `<div class="dsr-row"><span class="dsr-label">${escapeHtml(label)}</span><span class="dsr-value">${escapeHtml(value)}</span></div>`;
             }
-            return `<div class="dsr-row dsr-nolabel"><span class="dsr-value">${_iconoSpec(str)} ${escapeHtml(str)}</span></div>`;
+            const _icono = _yaTieneEmoji.test(str) ? '' : _iconoSpec(str) + ' ';
+            return `<div class="dsr-row dsr-nolabel"><span class="dsr-value">${_icono}${escapeHtml(str)}</span></div>`;
         });
         // Garantía se muestra en la tarjeta de confianza de arriba (#detailTrustBadges) — no repetir acá.
         if (rows.length > 0) {
@@ -657,10 +659,13 @@ if (_detailPrecioMNEl) {
         if (stickyBuyText) stickyBuyText.textContent = p.stock === 0 ? '🔔 Avísame' : 'Pedir';
         if (stickyBuyBtn) {
             stickyBuyBtn.disabled = false;
+            stickyBuyBtn.classList.toggle('dsc-buy-btn-agotado', p.stock === 0);
             stickyBuyBtn.onclick = p.stock === 0
                 ? () => suscribirAvisoStock(p.id, p.nombre)
                 : () => contactarProducto(p.nombre);
         }
+        const stickyWaIcon = document.getElementById('detailStickyWaIcon');
+        if (stickyWaIcon) stickyWaIcon.style.display = p.stock === 0 ? 'none' : '';
         stickyCta.style.display = 'flex';
     }
 

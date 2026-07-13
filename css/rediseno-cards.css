@@ -219,8 +219,20 @@ body.light-mode .detail-spec-table .dsr-row.dsr-nolabel .dsr-value{ color:#333; 
    Modal — arreglos de legibilidad en MODO CLARO + imagen
    ============================================================ */
 /* Imagen del producto: 4 esquinas redondeadas */
-#productDetailModal .detail-image-wrap{ border-radius:16px !important; overflow:hidden !important; }
-#productDetailModal .detail-img{ border-radius:16px; }
+#productDetailModal .detail-image-wrap{
+  display:flex !important; flex-direction:column !important; gap:10px !important;
+  overflow:visible !important; aspect-ratio:auto !important; height:auto !important;
+  background:transparent !important; box-shadow:none !important;
+}
+#productDetailModal .detail-img-frame{
+  position:relative; border-radius:16px; overflow:hidden;
+  aspect-ratio:4/3; background:linear-gradient(180deg,#FAFAFA,#F0EDE8);
+  box-shadow:0 12px 36px rgba(0,0,0,.4);
+}
+body.light-mode #productDetailModal .detail-img-frame{ box-shadow:0 8px 24px rgba(0,0,0,.12); }
+#productDetailModal .detail-img-frame::before,
+#productDetailModal .detail-img-frame::after{ display:none !important; }
+#productDetailModal .detail-img{ border-radius:16px; width:100%; height:100%; }
 
 /* Breadcrumb de categoría: sin caja gris */
 html body.light-mode #productDetailModal .detail-category{
@@ -299,9 +311,16 @@ body.light-mode #catExtraWrap > div > div:nth-child(2){ color:#1a1a1a !important
 }
 body.light-mode .detail-badge-nuevo{ background:rgba(255,107,53,.10); }
 
+/* Barra de miniaturas: fuera del marco de la foto, debajo, para no taparla */
+#productDetailModal .detail-gallery-thumbs{
+  position:static !important; left:auto !important; right:auto !important; bottom:auto !important;
+  background:transparent !important; border:none !important; backdrop-filter:none !important; -webkit-backdrop-filter:none !important;
+  padding:0 !important;
+}
+
 /* Contador de fotos "N / M" — esquina inferior izquierda de la imagen */
 .detail-photo-counter{
-  position:absolute; bottom:80px; left:10px;
+  position:absolute; bottom:10px; left:10px;
   background:rgba(0,0,0,.62); backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px);
   color:#fff; font-size:11px; font-weight:700;
   padding:5px 11px; border-radius:20px; z-index:4;
@@ -603,6 +622,10 @@ body.light-mode .resena-meta .resena-fecha{ color:#8a8a92; }
 }
 .dsc-buy-btn:active{ transform:scale(.97); }
 .dsc-buy-btn:hover{ filter:brightness(1.06); }
+.dsc-buy-btn.dsc-buy-btn-agotado{
+  background:linear-gradient(135deg,#f5a623,#e8701e) !important;
+  box-shadow:0 8px 20px rgba(232,112,30,.35) !important;
+}
 body.light-mode .dsc-price-main{ color:#1a1a1a; }
 body.light-mode #productDetailModal .detail-sticky-cta{ background:linear-gradient(180deg, transparent 0%, var(--panel,#fff) 35%); }
 
