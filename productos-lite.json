@@ -486,7 +486,7 @@
     "id": 1778212195565,
     "nombre": "Mannol 5W30 5L",
     "precioActual": 35,
-    "imagen": "https://tiendamax.org/imagenes/img_1778212195565.webp",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783918216261.jpg",
     "categoria": "CARROS",
     "subcategoria": "ACEITES Y LUBRICANTES",
     "stock": 23,
@@ -497,7 +497,14 @@
     "descuento": 0,
     "slug": "mannol-5w30-5l",
     "seoTitle": "MANNOL 5W30 5L en Cuba | TiendaMax",
-    "seoDescription": "Ideal para carros modernos Categoría Norma / Especificación Grado de Viscosidad SAE 5W-30 Estándar API SN / CH-4 Estándar ACEA A3 / B4"
+    "seoDescription": "Ideal para carros modernos Categoría Norma / Especificación Grado de Viscosidad SAE 5W-30 Estándar API SN / CH-4 Estándar ACEA A3 / B4",
+    "precioOriginal": 0,
+    "comision": 0,
+    "comisionMoneda": "USD",
+    "specs": [],
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783918216261.jpg"
+    ]
   },
   {
     "id": 1778212384991,
@@ -554,7 +561,7 @@
     "id": 1778213413973,
     "nombre": "Forros de Asientos de Lujo Para Autos",
     "precioActual": 150,
-    "imagen": "https://tiendamax.org/imagenes/img_1778213413973.webp",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783918032855.jpg",
     "categoria": "CARROS",
     "subcategoria": "ACCESORIOS",
     "stock": 7,
@@ -566,13 +573,22 @@
     "slug": "forros-de-asientos-de-lujo-para-autos",
     "comision": 10,
     "seoTitle": "FORROS DE ASIENTOS DE LUJO PARA AUTOS en Cuba | TiendaMax",
-    "seoDescription": "Forros de asientos de lujo para autos: Alta calidad y acabado exquisito. Color: negro Material de la superficie: Cuero napa de 0,6 mm. Durabilidad: 3…"
+    "seoDescription": "Forros de asientos de lujo para autos: Alta calidad y acabado exquisito. Color: negro Material de la superficie: Cuero napa de 0,6 mm. Durabilidad: 3…",
+    "precioOriginal": 0,
+    "comisionMoneda": "USD",
+    "specs": [
+      "Color negro"
+    ],
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783918032855.jpg",
+      "https://tiendamax.org/imagenes/img_1778213413973.webp"
+    ]
   },
   {
     "id": 1778213940333,
     "nombre": "Mannol Safari 20W - 50 7404 5L",
     "precioActual": 25,
-    "imagen": "https://tiendamax.org/imagenes/img_1778213940333.webp",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783918626441.jpg",
     "categoria": "CARROS",
     "subcategoria": "ACEITES Y LUBRICANTES",
     "stock": 53,
@@ -580,17 +596,23 @@
     "usado": false,
     "garantia": "",
     "devolucion": false,
-    "descuento": 17,
+    "descuento": 0,
     "slug": "mannol-safari-20w-50-7404-5l",
     "seoTitle": "MANNOL SAFARI 20W - 50 7404 5L en Cuba | TiendaMax",
     "seoDescription": "Aceite de motor universal semisintético, con una mezcla de componentes sintéticos y una base mineral de alta pureza, para motores modernos de gasolina y…",
-    "comision": 0
+    "comision": 0,
+    "precioOriginal": 0,
+    "comisionMoneda": "USD",
+    "specs": [],
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783918626441.jpg"
+    ]
   },
   {
     "id": 1778214089400,
     "nombre": "Mannol Special PLUS 10W - 30 7512. 5L",
     "precioActual": 30,
-    "imagen": "https://tiendamax.org/imagenes/img_1778214089400.webp",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783918610323.jpg",
     "categoria": "CARROS",
     "subcategoria": "ACEITES Y LUBRICANTES",
     "stock": 33,
@@ -601,7 +623,14 @@
     "descuento": 0,
     "slug": "mannol-special-plus-10w-30-7512-5l",
     "seoTitle": "MANNOL SPECIAL PLUS 10W - 30 7512. 5L en Cuba | TiendaMax",
-    "seoDescription": "Aceite de motor universal de sintesis HC, diseñado para cumplir con los requisitos de Volkswagen, Mercedes Benz. Diseñado para motores de gasolina y…"
+    "seoDescription": "Aceite de motor universal de sintesis HC, diseñado para cumplir con los requisitos de Volkswagen, Mercedes Benz. Diseñado para motores de gasolina y…",
+    "precioOriginal": 0,
+    "comision": 0,
+    "comisionMoneda": "USD",
+    "specs": [],
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783918610323.jpg"
+    ]
   },
   {
     "id": 1778214214360,
@@ -954,7 +983,7 @@
     "id": 1778547461235,
     "nombre": "Mannol ts - 4 SHPD 15W - 40 7104. 5L",
     "precioActual": 30,
-    "imagen": "https://tiendamax.org/imagenes/img_1778547461235_ext.webp",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783919083218.jpg",
     "categoria": "CARROS",
     "subcategoria": "ACEITES Y LUBRICANTES",
     "stock": 53,
@@ -965,13 +994,20 @@
     "descuento": 0,
     "slug": "mannol-ts-4shpd-15w-40-5l-aceite-diesel",
     "seoTitle": "MANNOL TS - 4 SHPD 15W - 40 7104. 5L en Cuba | TiendaMax",
-    "seoDescription": "Especificación SAE 15W-40 API CI-4 Plus API CI-4/CH-4/SL ACEA E7 ACEA A3/B4 JASO DH-1 GLOBAL DHD-1 Approval Recomendación CATERPILLAR ECF-2 CATERPILLAR…"
+    "seoDescription": "Especificación SAE 15W-40 API CI-4 Plus API CI-4/CH-4/SL ACEA E7 ACEA A3/B4 JASO DH-1 GLOBAL DHD-1 Approval Recomendación CATERPILLAR ECF-2 CATERPILLAR…",
+    "precioOriginal": 0,
+    "comision": 0,
+    "comisionMoneda": "USD",
+    "specs": [],
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783919083218.jpg"
+    ]
   },
   {
     "id": 1778547753925,
     "nombre": "Mannol Defender 10W - 40 7507. 5L",
     "precioActual": 30,
-    "imagen": "https://tiendamax.org/imagenes/img_1778547753925_ext.webp",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783918493021.jpg",
     "categoria": "CARROS",
     "subcategoria": "ACEITES Y LUBRICANTES",
     "stock": 23,
@@ -982,7 +1018,14 @@
     "descuento": 0,
     "slug": "mannol-defender-10w-40-5l",
     "seoTitle": "MANNOL DEFENDER 10W - 40 7507. 5L en Cuba | TiendaMax",
-    "seoDescription": "Aceite de motor universal innovador con éster, de base hidrosintética, para motores de gasolina y diésel, tanto de marcas nuevas como antiguas, y con un…"
+    "seoDescription": "Aceite de motor universal innovador con éster, de base hidrosintética, para motores de gasolina y diésel, tanto de marcas nuevas como antiguas, y con un…",
+    "precioOriginal": 0,
+    "comision": 0,
+    "comisionMoneda": "USD",
+    "specs": [],
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783918493021.jpg"
+    ]
   },
   {
     "id": 1778601740203,
@@ -2196,7 +2239,13 @@
     "usado": false,
     "garantia": "",
     "devolucion": false,
-    "specs": [],
+    "specs": [
+      "Menos de 13.000 km",
+      "Motor turbo Blue Core",
+      "Transmisión automática",
+      "Cámara 360° HD",
+      "Techo panorámico"
+    ],
     "fechaAgregado": "2026-07-05T03:24:56.640Z"
   },
   {
