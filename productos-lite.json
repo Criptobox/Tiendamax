@@ -78,25 +78,6 @@
     "radar": true
   },
   {
-    "id": 1777924173211,
-    "nombre": "Router WiFi 6",
-    "precioActual": 130,
-    "precioOriginal": 0,
-    "imagen": "https://tiendamax.org/imagenes/img_1778712717491.webp",
-    "categoria": "WIFI",
-    "subcategoria": "ROUTERS",
-    "stock": 0,
-    "masVendido": false,
-    "usado": false,
-    "garantia": "",
-    "devolucion": false,
-    "descuento": 0,
-    "slug": "router-wifi-6",
-    "comision": 10,
-    "seoTitle": "ROUTER WIFI 6 en Cuba | TiendaMax",
-    "seoDescription": "Router WiFi 6 para juegos, AX3000, router inalámbrico Gigabit de doble banda para el hogar ✅Cobertura de largo alcance con 5 antenas de alta ganancia de…"
-  },
-  {
     "id": 1777924248270,
     "nombre": "​🌐 Router Wavlink AC1200 Dual Band",
     "precioActual": 80,
@@ -126,7 +107,7 @@
   },
   {
     "id": 1777924315386,
-    "nombre": "Repetidor WiFi 5",
+    "nombre": "​📶 Repetidor Wi-Fi 5 (Doble Banda - 1200 Mbps)",
     "precioActual": 25,
     "precioOriginal": 0,
     "imagen": "https://tiendamax.org/imagenes/img_1777924315386.webp",
@@ -139,16 +120,21 @@
     "devolucion": false,
     "descuento": 0,
     "slug": "repetidor-wifi-5",
-    "comision": 1.8,
+    "comision": 1500,
     "specs": [
-      "1200mbps"
+      "​📶 Wi-Fi 5 (Doble Banda) ​",
+      "🚀 1200 Mbps"
     ],
     "seoTitle": "REPETIDOR WIFI 5 en Cuba | TiendaMax",
-    "seoDescription": "Repetidor wifi 5 de doble banda 2.4G y 5G, de 1200 mbps."
+    "seoDescription": "Repetidor wifi 5 de doble banda 2.4G y 5G, de 1200 mbps.",
+    "comisionMoneda": "MN",
+    "imagenes": [
+      "https://tiendamax.org/imagenes/img_1777924315386.webp"
+    ]
   },
   {
     "id": 1778102214012,
-    "nombre": "Switch de 8 Puertos",
+    "nombre": "​🌐 Switch Gigabit de 8 Puertos",
     "precioActual": 30,
     "precioOriginal": 0,
     "imagen": "https://tiendamax.org/imagenes/img_1783836802568.jpg",
@@ -161,14 +147,18 @@
     "devolucion": false,
     "descuento": 0,
     "slug": "switch-8-puertos-ethernet-1gbps",
-    "comision": 1.8,
+    "comision": 1500,
     "seoTitle": "SWITCH DE 8 PUERTOS en Cuba | TiendaMax",
     "seoDescription": "Switch de 8 puertos ethernet de 1 gigabite.",
     "radar": true,
-    "comisionMoneda": "USD",
+    "comisionMoneda": "MN",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1783836802568.jpg",
       "https://tiendamax.org/imagenes/img_1780510811569.webp"
+    ],
+    "specs": [
+      "​⚡ Gigabit (1000 Mbps) ​",
+      "🔌 8 Puertos RJ45"
     ]
   },
   {
@@ -275,7 +265,7 @@
   },
   {
     "id": 1778104287395,
-    "nombre": "El Enrutador WiFi de 1.150MBPS",
+    "nombre": "​🌐 CPE Exterior KuWfi 4G/WiFi",
     "precioActual": 130,
     "imagen": "https://tiendamax.org/imagenes/img_1778104287395.webp",
     "categoria": "WIFI",
@@ -289,7 +279,8 @@
     "slug": "el-enrutador-wifi-de-1-150mbps",
     "comision": 10,
     "specs": [
-      "1.150Mbps"
+      "​📡 4G LTE",
+      "​📶 WiFi de Largo Alcance"
     ],
     "seoTitle": "EL ENRUTADOR WIFI DE 1.150MBPS en Cuba | TiendaMax",
     "seoDescription": "El enrutador WiFi de 1.150Mbps es un enrutador 4G CPE para exteriores con una antena externa de alta ganancia de 2 piezas para lograr la amplificación de…",
@@ -397,7 +388,7 @@
   },
   {
     "id": 1778104735789,
-    "nombre": "Router Kuwfi Transmisión WiFi de 150 Mbps",
+    "nombre": "​🌐 Router KuWFi 4G LTE (Wi-Fi de Alta Velocidad)",
     "precioActual": 130,
     "imagen": "https://tiendamax.org/imagenes/img_1783837070407.jpg",
     "categoria": "WIFI",
@@ -411,7 +402,9 @@
     "slug": "este-router-kuwfi-ofrece-una-velocidad-de-transmision-wifi-de-150-mbps",
     "comision": 10,
     "specs": [
-      "150Mbps"
+      "​🌐 Internet 4G/LTE ​",
+      "📱 Libre (Multibanda) ​",
+      "🚀 Sin Cables"
     ],
     "seoTitle": "ESTE ROUTER KUWFI OFRECE UNA VELOCIDAD DE… | TiendaMax",
     "seoDescription": "Este router KuWFi ofrece una velocidad de transmisión WiFi de 150 Mbps, proporcionando una conexión rápida y estable para todos sus dispositivos…",
@@ -685,10 +678,10 @@
     "devolucion": false,
     "descuento": 0,
     "slug": "switch-de-5-puertos",
-    "comision": 1.8,
+    "comision": 1500,
     "seoTitle": "SWITCH DE 5 PUERTOS en Cuba | TiendaMax",
     "seoDescription": "Switch de 5 puertos ethernet de 1 gigabite.",
-    "comisionMoneda": "USD",
+    "comisionMoneda": "MN",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1783836818228.jpg",
       "https://tiendamax.org/imagenes/img_1780510827238.webp"
@@ -699,7 +692,7 @@
   },
   {
     "id": 1778336789459,
-    "nombre": "AC1200 WiFi Router",
+    "nombre": "​🌐 Router Tenda AC1200 (Global Version)",
     "precioActual": 80,
     "imagen": "https://tiendamax.org/imagenes/img_1778336789459.webp",
     "categoria": "WIFI",
@@ -713,12 +706,16 @@
     "slug": "router-tenda-ac1200-wifi-dual-band",
     "comision": 10,
     "specs": [
-      "1200Mbps",
-      "300mbps",
-      "2,4GHz"
+      "​📶 Doble Banda (AC1200) ​",
+      "⚡ Gigabit"
     ],
     "seoTitle": "AC1200 WIFI ROUTER en Cuba | TiendaMax",
-    "seoDescription": "Obtenga conexiones rápidas y relámpago para todos sus dispositivos inalámbricos mediante actualización a la tecnología Wi-Fi de alta velocidad mejorada de…"
+    "seoDescription": "Obtenga conexiones rápidas y relámpago para todos sus dispositivos inalámbricos mediante actualización a la tecnología Wi-Fi de alta velocidad mejorada de…",
+    "precioOriginal": 0,
+    "comisionMoneda": "USD",
+    "imagenes": [
+      "https://tiendamax.org/imagenes/img_1778336789459.webp"
+    ]
   },
   {
     "id": 1778336859697,
@@ -857,7 +854,7 @@
   },
   {
     "id": 1778384646214,
-    "nombre": "Adaptador POE Ubiquiti",
+    "nombre": "​🌐 Adaptador PoE Ubiquiti (24V - 0.3A)",
     "precioActual": 20,
     "imagen": "https://tiendamax.org/imagenes/img_1778384646214_ext.webp",
     "categoria": "WIFI",
@@ -869,13 +866,18 @@
     "devolucion": false,
     "descuento": 0,
     "slug": "adaptador-poe-ubiquiti",
-    "comision": 1.8,
+    "comision": 1500,
     "specs": [
-      "24V",
-      "0.3A"
+      "​⚡ Ubiquiti Original",
+      "​🔌 24V / 0.3A"
     ],
     "seoTitle": "ADAPTADOR POE UBIQUITI en Cuba | TiendaMax",
-    "seoDescription": "ADAPTADOR POE UBIQUITI disponible en TiendaMax · Wifi. Compra en Cuba con pago contra entrega."
+    "seoDescription": "ADAPTADOR POE UBIQUITI disponible en TiendaMax · Wifi. Compra en Cuba con pago contra entrega.",
+    "precioOriginal": 0,
+    "comisionMoneda": "MN",
+    "imagenes": [
+      "https://tiendamax.org/imagenes/img_1778384646214_ext.webp"
+    ]
   },
   {
     "id": 1778384769262,
@@ -1838,7 +1840,7 @@
   },
   {
     "id": 1782438922547,
-    "nombre": "Router de Doble Banda Archer AX1450",
+    "nombre": "​🌐 Router TP-Link Archer AX1450 (Wi-Fi 6)",
     "imagen": "https://tiendamax.org/imagenes/img_1782438920638.jpg",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1782438920638.jpg"
@@ -1855,7 +1857,10 @@
     "usado": false,
     "garantia": "",
     "devolucion": false,
-    "specs": [],
+    "specs": [
+      "​🚀 Wi-Fi 6 (AX1450)",
+      "​⚡ Gigabit"
+    ],
     "fechaAgregado": "2026-06-26T01:55:22.547Z",
     "nombreNormalizadoAt": "2026-06-27T12:16:34.731Z",
     "seoTitle": "ROUTER DE DOBLE BANDA ARCHER AX1450 en Cuba | TiendaMax",
@@ -1863,7 +1868,7 @@
   },
   {
     "id": 1782439189958,
-    "nombre": "Repetidor WiFi 5",
+    "nombre": "​🌐 Mini Repetidor Wi-Fi (300 Mbps)",
     "imagen": "https://tiendamax.org/imagenes/img_1782439187376.jpg",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1782439187376.jpg"
@@ -1880,7 +1885,10 @@
     "usado": false,
     "garantia": "",
     "devolucion": false,
-    "specs": [],
+    "specs": [
+      "​📶 Repetidor Wi-Fi",
+      "​🚀 300 Mbps"
+    ],
     "fechaAgregado": "2026-06-26T01:59:49.958Z",
     "seoTitle": "REPETIDOR WIFI 5 en Cuba | TiendaMax",
     "seoDescription": "¡Lleva la mejor señal a cualquier rincón de tu casa con el REPETIDOR WIFI 5! Mejora la cobertura sin complicaciones y disfruta de internet rápido y…"
@@ -2256,7 +2264,7 @@
   },
   {
     "id": 1783453597496,
-    "nombre": "Router Inalámbrico Gibabite de Doble Banda Tp-link Archer A6 AC1200",
+    "nombre": "​🌐 Router TP-Link Archer A6 (AC1200)",
     "imagen": "https://tiendamax.org/imagenes/img_1783453593801.jpg",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1783453593801.jpg",
@@ -2274,12 +2282,15 @@
     "usado": false,
     "garantia": "",
     "devolucion": false,
-    "specs": [],
+    "specs": [
+      "​🚀 Gigabit",
+      "​📶 Doble Banda (AC1200)"
+    ],
     "fechaAgregado": "2026-07-07T19:46:37.496Z"
   },
   {
     "id": 1783453857635,
-    "nombre": "Router Tp-link Archer AX21",
+    "nombre": "​🌐 Router TP-Link Archer AX21 (Wi-Fi 6)",
     "imagen": "data:image/webp;base64,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",
     "imagenes": [
       "data:image/webp;base64,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",
@@ -2297,7 +2308,11 @@
     "usado": false,
     "garantia": "",
     "devolucion": false,
-    "specs": [],
+    "specs": [
+      "​🚀 Wi-Fi 6 (AX1800) ​",
+      "⚡ Gigabit",
+      "​🛡️ WPA3"
+    ],
     "fechaAgregado": "2026-07-07T19:50:57.635Z"
   },
   {
@@ -2374,7 +2389,7 @@
   },
   {
     "id": 1783474747296,
-    "nombre": "Routerboard Mikrotik Hex s RB750GR3",
+    "nombre": "​🌐 MikroTik hEX (RB750Gr3)",
     "imagen": "https://tiendamax.org/imagenes/img_1783474741055.jpg",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1783474741055.jpg",
@@ -2392,12 +2407,15 @@
     "usado": false,
     "garantia": "",
     "devolucion": false,
-    "specs": [],
+    "specs": [
+      "​⚙️ Router Profesional (RouterOS) ​",
+      "⚡ Gigabit"
+    ],
     "fechaAgregado": "2026-07-08T01:39:07.296Z"
   },
   {
     "id": 1783543451116,
-    "nombre": "Router Tenda TX12 PRO (AX3000 Wi-fi 6)",
+    "nombre": "​🌐 Router Tenda TX12 Pro (Wi-Fi 6)",
     "imagen": "https://tiendamax.org/imagenes/img_1783543448278.jpg",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1783543448278.jpg",
@@ -2415,7 +2433,10 @@
     "usado": false,
     "garantia": "",
     "devolucion": false,
-    "specs": [],
+    "specs": [
+      "​🚀 Wi-Fi 6 (AX1500)",
+      "​⚡ Gigabit"
+    ],
     "fechaAgregado": "2026-07-08T20:44:11.116Z"
   }
 ]
