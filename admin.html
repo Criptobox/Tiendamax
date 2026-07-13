@@ -2218,7 +2218,7 @@ async function renderAvisos(box){
   if(!pids.length){ box.innerHTML = formHtml + `<div class="section"><div class="empty"><div class="ico">🔔</div>Nadie en lista de espera todavía.<br><small>Cuando un producto está agotado, el cliente toca "🔔 Avisarme cuando vuelva" en la tienda y aparece aquí. También puedes agregarlo tú arriba.</small></div></div>`; return; }
   const grupos = pids.map(pid=>{
     const entriesObj = data[pid] || {};
-    const entries = Object.values(entriesObj).filter(e=>e && typeof e==='object');
+    const entries = Object.entries(entriesObj).filter(([,e])=>e && typeof e==='object').map(([k,e])=>({...e,_key:k}));
     const prod = PRODUCTOS.find(p=>String(p.id)===String(pid));
     const nombre = (prod && prod.nombre) || (entries[0] && entries[0].producto) || ('Producto '+pid);
     const stock = prod ? Number(prod.stock)||0 : 0;
@@ -2239,13 +2239,21 @@ async function renderAvisos(box){
       : `<span style="font-size:11px;font-weight:800;color:var(--muted);background:rgba(255,255,255,.05);padding:3px 9px;border-radius:20px">Agotado</span>`;
     const filas = g.entries.map(e=>{
       const tel = _avisoTel(e.tel);
+      const key = esc(String(e._key||''));
       const cuando = e.ts ? new Date(Number(e.ts)).toLocaleDateString('es-CU',{day:'2-digit',month:'short'}) : '';
       const quien = tel ? esc(e.tel) : '<span style="color:var(--muted)">sin teléfono</span>';
-      const accion = (enStock && tel)
-        ? `<button class="btn btn-success" style="padding:5px 11px;font-size:12px" onclick="avisoWhats('${esc(tel)}','${esc(String(g.pid))}')">💬 Avisar</button>`
-        : (tel ? `<a class="btn btn-ghost" style="padding:5px 11px;font-size:12px" href="https://wa.me/${esc(tel)}" target="_blank" rel="noopener">💬</a>` : '');
+      if(e.avisado){
+        return `<div style="display:flex;align-items:center;gap:10px;padding:7px 10px;background:rgba(255,255,255,0.03);border-radius:8px;margin-bottom:5px;opacity:.55">
+        <div style="flex:1;font-size:13px;color:#fff;text-decoration:line-through">${quien}<span style="color:var(--muted);font-size:11px;text-decoration:none"> · ${cuando}</span></div>
+        <span style="font-size:11px;font-weight:800;color:#0b0;white-space:nowrap">✓ Avisado</span>
+        <button class="btn btn-ghost" style="padding:5px 9px;font-size:11px" onclick="avisoMarcar('${esc(String(g.pid))}','${key}',false)">↩️</button></div>`;
+      }
+      const accion = tel
+        ? `<button class="btn btn-success" style="padding:5px 11px;font-size:12px" onclick="avisoWhats('${esc(tel)}','${esc(String(g.pid))}','${key}')">💬 Avisar</button>`
+        : '';
+      const marcar = `<button class="btn btn-ghost" style="padding:5px 9px;font-size:11px" title="Marcar como ya avisado" onclick="avisoMarcar('${esc(String(g.pid))}','${key}',true)">✓</button>`;
       return `<div style="display:flex;align-items:center;gap:10px;padding:7px 10px;background:rgba(255,255,255,0.03);border-radius:8px;margin-bottom:5px">
-        <div style="flex:1;font-size:13px;color:#fff">${quien}<span style="color:var(--muted);font-size:11px"> · ${cuando}</span></div>${accion}</div>`;
+        <div style="flex:1;font-size:13px;color:#fff">${quien}<span style="color:var(--muted);font-size:11px"> · ${cuando}</span></div>${accion}${marcar}</div>`;
     }).join('');
     return `<div class="section" style="margin-bottom:10px">
       <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px">
@@ -2258,13 +2266,23 @@ async function renderAvisos(box){
   }).join('');
   box.innerHTML = html;
 }
-// Abrir WhatsApp con el mensaje de "ya está disponible"
-function avisoWhats(tel, pid){
+// Abrir WhatsApp con mensaje predeterminado: "ya disponible" si hay stock,
+// o confirmación honesta de que sigue en lista de espera si aún está agotado.
+function avisoWhats(tel, pid, key){
   const p = PRODUCTOS.find(x=>String(x.id)===String(pid));
   const nombre = (p && p.nombre) || 'el producto';
-  const url = 'https://tiendamax.org/p/producto-'+pid+'.html';
-  const msg = `¡Hola! 🎉 El producto "${nombre}" que esperabas ya está disponible en TiendaMax. 👉 ${url}`;
+  const enStock = p ? (Number(p.stock)||0)>0 : false;
+  const msg = enStock
+    ? `¡Hola! 🎉 El producto "${nombre}" que esperabas ya está disponible en TiendaMax. 👉 https://tiendamax.org/p/producto-${pid}.html`
+    : `¡Hola! 👋 Recibimos tu pedido para avisarte cuando "${nombre}" esté disponible en TiendaMax. En cuanto tengamos stock te escribimos por aquí. ¡Gracias por tu paciencia! 🙏`;
   window.open('https://wa.me/'+encodeURIComponent(tel)+'?text='+encodeURIComponent(msg),'_blank','noopener,noreferrer');
+  if(key) avisoMarcar(pid, key, true);
+}
+// Marcar/desmarcar una entrada individual como "ya avisado" sin borrar la lista entera
+function avisoMarcar(pid, key, val){
+  const base = rtdbBase();
+  if(base){ fetch(base+'/avisos_stock/'+encodeURIComponent(pid)+'/'+encodeURIComponent(key)+'/avisado.json',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(!!val)}).catch(()=>{}); }
+  setTimeout(()=>renderClientes(), 300);
 }
 // Agregar cliente a mano a la lista de espera (pidió el aviso por WhatsApp)
 async function avisoManualAgregar(){
@@ -2738,7 +2756,7 @@ window.almAgregar=almAgregar; window.almBorrar=almBorrar; window.almRenombrar=al
 window.ofertaFinActivar=ofertaFinActivar; window.ofertaFinCancelar=ofertaFinCancelar;
 window.apDuplicar=apDuplicar; window.bulkPrecio=bulkPrecio; window.renderVentas=renderVentas;
 window.renderReporteMensual=renderReporteMensual; window.reporteCopiar=reporteCopiar;
-window.avisoWhats=avisoWhats; window.avisoLimpiar=avisoLimpiar; window.avisoManualAgregar=avisoManualAgregar;
+window.avisoWhats=avisoWhats; window.avisoLimpiar=avisoLimpiar; window.avisoManualAgregar=avisoManualAgregar; window.avisoMarcar=avisoMarcar;
 })();
 </script>
 <!-- Herramientas — portado de admin.html (admin-tools.js), adaptado a la navegación de admin2 (go()/.side-btn/.view) -->
