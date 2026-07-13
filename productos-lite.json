@@ -265,7 +265,7 @@
   },
   {
     "id": 1778104287395,
-    "nombre": "​🌐 CPE Exterior KuWfi 4G/WiFi",
+    "nombre": "​🌐 Cpe Exterior Kuwfi 4G/WIFI",
     "precioActual": 130,
     "imagen": "https://tiendamax.org/imagenes/img_1778104287395.webp",
     "categoria": "WIFI",
@@ -388,7 +388,7 @@
   },
   {
     "id": 1778104735789,
-    "nombre": "​🌐 Router KuWFi 4G LTE (Wi-Fi de Alta Velocidad)",
+    "nombre": "​🌐 Router Kuwfi 4G Lte (Wi-fi de Alta Velocidad)",
     "precioActual": 130,
     "imagen": "https://tiendamax.org/imagenes/img_1783837070407.jpg",
     "categoria": "WIFI",
@@ -557,9 +557,9 @@
   },
   {
     "id": 1778213413973,
-    "nombre": "​🛡️ Juego de Fundas para Asientos (Edición Elegance)",
+    "nombre": "​🛡️ Juego de Fundas Para Asientos (Edición Elegance)",
     "precioActual": 150,
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783918032855.jpg",
+    "imagen": "https://tiendamax.org/imagenes/img_1783918032855.jpg",
     "categoria": "CARROS",
     "subcategoria": "ACCESORIOS",
     "stock": 7,
@@ -576,7 +576,7 @@
     "comisionMoneda": "USD",
     "specs": [],
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783918032855.jpg",
+      "https://tiendamax.org/imagenes/img_1783918032855.jpg",
       "https://tiendamax.org/imagenes/img_1778213413973.webp"
     ]
   },
@@ -854,7 +854,7 @@
   },
   {
     "id": 1778384646214,
-    "nombre": "​🌐 Adaptador PoE Ubiquiti (24V - 0.3A)",
+    "nombre": "​🌐 Adaptador POE Ubiquiti (24V - 0.3A)",
     "precioActual": 20,
     "imagen": "https://tiendamax.org/imagenes/img_1778384646214_ext.webp",
     "categoria": "WIFI",
@@ -1840,7 +1840,7 @@
   },
   {
     "id": 1782438922547,
-    "nombre": "​🌐 Router TP-Link Archer AX1450 (Wi-Fi 6)",
+    "nombre": "​🌐 Router Tp-link Archer AX1450 (Wi-fi 6)",
     "imagen": "https://tiendamax.org/imagenes/img_1782438920638.jpg",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1782438920638.jpg"
@@ -1868,7 +1868,7 @@
   },
   {
     "id": 1782439189958,
-    "nombre": "​🌐 Mini Repetidor Wi-Fi (300 Mbps)",
+    "nombre": "​🌐 MINI Repetidor Wi-fi (300 Mbps)",
     "imagen": "https://tiendamax.org/imagenes/img_1782439187376.jpg",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1782439187376.jpg"
@@ -2264,7 +2264,7 @@
   },
   {
     "id": 1783453597496,
-    "nombre": "​🌐 Router TP-Link Archer A6 (AC1200)",
+    "nombre": "​🌐 Router Tp-link Archer A6 (AC1200)",
     "imagen": "https://tiendamax.org/imagenes/img_1783453593801.jpg",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1783453593801.jpg",
