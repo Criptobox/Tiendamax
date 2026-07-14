@@ -1,45 +1,20 @@
 {
-  "generado": "2026-07-13T11:54:27.515342+00:00",
+  "generado": "2026-07-14T10:38:55.426187+00:00",
   "productos": 108,
-  "urgentes": 11,
+  "urgentes": 6,
   "advertencias": 31,
   "info": 11,
-  "resumen": "Anoche revisé tus 108 productos y encontré 11 urgente(s), 31 advertencia(s), 11 de info.",
+  "resumen": "Anoche revisé tus 108 productos y encontré 6 urgente(s), 31 advertencia(s), 11 de info.",
   "detalle": [
     {
       "tipo": "nombre",
-      "nombre": "​📶 Repetidor Wi-Fi 5 (Doble Banda - 1200 Mbps)",
-      "detalle": "→ ​📶 Repetidor Wi-fi 5 (Doble Banda - 1200 Mbps)"
+      "nombre": "​🔥 Antorcha de Soldadura TIG (Kit Profesional)",
+      "detalle": "→ ​🔥 Antorcha de Soldadura TIG (KIT Profesional)"
     },
     {
       "tipo": "nombre",
-      "nombre": "​🌐 CPE Exterior KuWfi 4G/WiFi",
-      "detalle": "→ ​🌐 Cpe Exterior Kuwfi 4G/WIFI"
-    },
-    {
-      "tipo": "nombre",
-      "nombre": "​🌐 Router KuWFi 4G LTE (Wi-Fi de Alta Velocidad)",
-      "detalle": "→ ​🌐 Router Kuwfi 4G Lte (Wi-fi de Alta Velocidad)"
-    },
-    {
-      "tipo": "nombre",
-      "nombre": "​🛡️ Juego de Fundas para Asientos (Edición Elegance)",
-      "detalle": "→ ​🛡️ Juego de Fundas Para Asientos (Edición Elegance)"
-    },
-    {
-      "tipo": "nombre",
-      "nombre": "​🌐 Adaptador PoE Ubiquiti (24V - 0.3A)",
-      "detalle": "→ ​🌐 Adaptador POE Ubiquiti (24V - 0.3A)"
-    },
-    {
-      "tipo": "nombre",
-      "nombre": "​🌐 Router TP-Link Archer AX1450 (Wi-Fi 6)",
-      "detalle": "→ ​🌐 Router Tp-link Archer AX1450 (Wi-fi 6)"
-    },
-    {
-      "tipo": "nombre",
-      "nombre": "​🌐 Mini Repetidor Wi-Fi (300 Mbps)",
-      "detalle": "→ ​🌐 MINI Repetidor Wi-fi (300 Mbps)"
+      "nombre": "​🚗 Changan CS75 PLUS 2024 (SUV Compacta)",
+      "detalle": "→ ​🚗 Changan CS75 PLUS 2024 (Suv Compacta)"
     },
     {
       "tipo": "nombre",
@@ -78,7 +53,7 @@
     },
     {
       "tipo": "agotado",
-      "nombre": "​📶 Repetidor Wi-Fi 5 (Doble Banda - 1200 Mbps)",
+      "nombre": "​📶 Repetidor Wi-fi 5 (Doble Banda - 1200 Mbps)",
       "detalle": "agotado (stock 0)"
     },
     {
@@ -143,7 +118,7 @@
     },
     {
       "tipo": "agotado",
-      "nombre": "​🌐 Adaptador PoE Ubiquiti (24V - 0.3A)",
+      "nombre": "​🌐 Adaptador POE Ubiquiti (24V - 0.3A)",
       "detalle": "agotado (stock 0)"
     },
     {
@@ -218,7 +193,7 @@
     },
     {
       "tipo": "stock_bajo",
-      "nombre": "​🌐 CPE Exterior KuWfi 4G/WiFi",
+      "nombre": "​🌐 Cpe Exterior Kuwfi 4G/WIFI",
       "detalle": "quedan 1"
     },
     {
@@ -228,7 +203,7 @@
     },
     {
       "tipo": "stock_bajo",
-      "nombre": "Pistola de Masaje Profesional",
+      "nombre": "​⚡ Pistola de Masaje Profesional (Modelo Triangular)",
       "detalle": "quedan 1"
     },
     {
@@ -263,12 +238,12 @@
     },
     {
       "tipo": "stock_bajo",
-      "nombre": "Changan CS75 PLUS 2024",
+      "nombre": "​🚗 Changan CS75 PLUS 2024 (SUV Compacta)",
       "detalle": "quedan 1"
     },
     {
       "tipo": "precio",
-      "nombre": "Changan CS75 PLUS 2024",
+      "nombre": "​🚗 Changan CS75 PLUS 2024 (SUV Compacta)",
       "detalle": "precio: 33000"
     }
   ]
