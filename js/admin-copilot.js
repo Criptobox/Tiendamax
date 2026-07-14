@@ -14,7 +14,7 @@ const LS = {
   view: 'tm_copilot_view'
 };
 const DAY = new Date().toISOString().slice(0,10);
-let state = { tasks: [], hot: [], agents: [], metrics: {}, view: localStorage.getItem(LS.view) || 'hoy', booted: false, loading: false };
+let state = { tasks: [], hot: [], agents: [], metrics: {}, view: localStorage.getItem(LS.view) || 'hoy', booted: false, loading: false, iaPreviewPid: null, iaPreviewData: null, iaPreviewCargando: false };
 let refreshTimer = null;
 const PROMO_BADGE_PRESETS = [
   ['🛡️','Seguro'],['🔒','Pago Seguro'],['🛵','Envío'],['📦','Incluye caja'],
@@ -388,7 +388,7 @@ function updateBubble(){
   if (crit) { b.classList.remove('tm-copilot-pulse'); void b.offsetWidth; b.classList.add('tm-copilot-pulse'); }
 }
 function tabsHtml(view){
-  const tabs=[['hoy','✅ Hoy'],['chat','💬 Chat'],['correcciones','🩺 Correcciones'],['agentes','🤖 Agentes'],['marketing','📣 Marketing'],['memoria','🧠 Memoria']];
+  const tabs=[['hoy','✅ Hoy'],['chat','💬 Chat'],['correcciones','🩺 Correcciones'],['descripciones','📝 Descripciones'],['agentes','🤖 Agentes'],['marketing','📣 Marketing'],['memoria','🧠 Memoria']];
   return `<div class="tm-copilot-tabs">${tabs.map(t=>`<button type="button" class="tm-copilot-tab ${view===t[0]?'active':''}" data-cop="view" data-view="${t[0]}">${t[1]}</button>`).join('')}</div>`;
 }
 
@@ -679,6 +679,102 @@ async function _iaGenerarLoteDescripciones(lista){
     }
   }
   return {ok,grupo};
+}
+
+/* ══════════ ANÁLISIS INDIVIDUAL: un producto a la vez, foto + descripción + specs ══════════
+   A diferencia de _iaGenerarLoteDescripciones (solo descripción, en lote, guarda directo),
+   esto es para revisar un producto puntual, en un solo llamado a la IA que devuelve JSON
+   con descripción Y specs juntas, para previsualizar antes de aplicar. */
+function _iaPromptAnalisis(p, tieneImagen){
+  const specsTxt=(Array.isArray(p.specs)?p.specs:[]).filter(Boolean).slice(0,4).join(', ');
+  const datos='Producto: "'+(p.nombre||'')+'". Categoría: '+(p.categoria||'General')+'.'+(specsTxt?' Specs ya cargadas: '+specsTxt+'.':'')+' Precio: $'+Number(p.precioActual||0).toFixed(2)+' USD.'+(p.garantia?' Garantía: '+p.garantia+'.':'');
+  const foto=tieneImagen?' Mira la foto adjunta: fíjate en marca, modelo y detalles visibles reales (texto del empaque, puertos, diseño) y úsalos si aportan algo verídico.':'';
+  return 'Analiza este producto de una tienda online cubana (entrega en Cuba, pedido por WhatsApp) y devuelve SOLO un JSON, sin markdown ni texto fuera del JSON, con este formato exacto: {"descripcion":"...","specs":["...","..."]}. '
+    +'"descripcion" estilo ficha de producto: primera oración = qué es y su beneficio principal, luego 3 a 5 oraciones cortas de un solo punto de valor real cada una, sin viñetas ni emojis ni markdown, separadas por punto y espacio normal, 220 a 400 caracteres en total. '
+    +'"specs": hasta 6 especificaciones técnicas reales y breves (voltaje, potencia, capacidad, dimensiones, conectividad — lo que aplique), strings cortos. '
+    +datos+foto
+    +' Usa SOLO datos reales dados arriba o realmente visibles en la foto — nunca inventes specs, materiales ni compatibilidades que no puedas verificar.';
+}
+async function iaAnalizarProducto(p){
+  const key=(localStorage.getItem('anthropicApiKey')||'').trim();
+  if(!key) return null;
+  const soportaImagen=key.startsWith('AIza')||key.startsWith('nvapi-');
+  let imagen=null;
+  if(soportaImagen){
+    const url=(Array.isArray(p.imagenes)&&p.imagenes[0])||p.imagen;
+    imagen=await _iaImagenBase64(url);
+  }
+  const raw=await iaLlamarModelo(_iaPromptAnalisis(p, !!imagen), imagen);
+  if(!raw) return null;
+  const m=raw.match(/\{[\s\S]*\}/);
+  if(!m) return null;
+  try{
+    const j=JSON.parse(m[0]);
+    const descripcion=String(j.descripcion||'').trim().slice(0,450);
+    const specs=Array.isArray(j.specs)?j.specs.map(s=>String(s).trim()).filter(Boolean).slice(0,6):[];
+    if(!descripcion && !specs.length) return null;
+    return {descripcion, specs};
+  }catch(e){ return null; }
+}
+async function iaAnalizarUno(pid){
+  try{ if(typeof window.syncProductos==='function') window.syncProductos(); }catch(e){}
+  const p=(window.productos||[]).find(x=>String(x.id)===String(pid));
+  if(!p) return;
+  state.iaPreviewPid=String(pid); state.iaPreviewData=null; state.iaPreviewCargando=true;
+  renderSheet();
+  const res=await iaAnalizarProducto(p);
+  state.iaPreviewCargando=false;
+  if(!res){ toast('❌ La IA no respondió — revisa tu API key'); state.iaPreviewPid=null; renderSheet(); return; }
+  state.iaPreviewData=res;
+  renderSheet();
+}
+function iaAnalizarAplicar(pid){
+  try{ if(typeof window.syncProductos==='function') window.syncProductos(); }catch(e){}
+  const p=(window.productos||[]).find(x=>String(x.id)===String(pid));
+  const d=state.iaPreviewData;
+  if(!p || !d) return;
+  const grupo=[];
+  if(d.descripcion){ grupo.push({pid:String(p.id),campo:'descripcion',antes:p.descripcion}); p.descripcion=d.descripcion; }
+  if(d.specs && d.specs.length){ grupo.push({pid:String(p.id),campo:'specs',antes:p.specs}); p.specs=d.specs; }
+  try{ if(typeof window.marcarProductoModificado==='function') window.marcarProductoModificado(p.id); }catch(e){}
+  if(grupo.length) iaUndoPush(grupo, 'Análisis IA de '+p.nombre);
+  iaPersistir('✅ '+p.nombre+' actualizado con IA');
+  state.iaPreviewPid=null; state.iaPreviewData=null;
+  renderSheet();
+}
+function iaAnalizarDescartar(){
+  state.iaPreviewPid=null; state.iaPreviewData=null;
+  renderSheet();
+}
+function renderDescripciones(){
+  const key=(localStorage.getItem('anthropicApiKey')||'').trim();
+  if(!key) return `<div class="tm-copilot-empty">Configura tu API key en ⚙️ Configuración → API Key de IA para analizar productos.</div>`;
+  try{ if(typeof window.syncProductos==='function') window.syncProductos(); }catch(e){}
+  const ps=products().slice().sort((a,b)=>(a.nombre||'').localeCompare(b.nombre||''));
+  const MAX=40;
+  const fila=p=>{
+    const pid=String(p.id);
+    const esPreview=state.iaPreviewPid===pid;
+    let extra='';
+    if(esPreview && state.iaPreviewCargando){
+      extra=`<div class="tm-copilot-code">🤖 Analizando foto y datos…</div>`;
+    } else if(esPreview && state.iaPreviewData){
+      const d=state.iaPreviewData;
+      extra=`<div class="tm-copilot-code">${esc(d.descripcion||'(sin descripción)')}${d.specs&&d.specs.length?'<br><br><b>Specs:</b> '+esc(d.specs.join(', ')):''}</div>
+        <div class="tm-copilot-task-actions" style="margin-top:8px">
+          <button type="button" class="tm-copilot-btn primary" data-cop="iaAnalizarAplicar" data-pid="${esc(pid)}">✅ Aplicar</button>
+          <button type="button" class="tm-copilot-btn" data-cop="iaAnalizarDescartar">✖️ Descartar</button>
+        </div>`;
+    }
+    return `<div class="tm-copilot-task u1" data-pid="${esc(pid)}">
+      <div class="tm-copilot-task-top"><div class="tm-copilot-ico">📦</div><div class="tm-copilot-task-main"><b>${esc(p.nombre)}</b><small>${esc(p.categoria||'General')} · $${Number(p.precioActual||0).toFixed(2)}</small></div></div>
+      <div class="tm-copilot-task-actions"><button type="button" class="tm-copilot-btn blue" data-cop="iaAnalizarUno" data-pid="${esc(pid)}" ${esPreview&&state.iaPreviewCargando?'disabled':''}>🤖 Analizar con IA</button></div>
+      ${extra}
+    </div>`;
+  };
+  return `<div class="tm-copilot-empty" style="padding:8px 4px;font-size:11px;text-align:left">Analiza un producto a la vez: mira la foto real (si tu key es Gemini o Nvidia) y los datos ya cargados, y te propone descripción + specs para revisar antes de aplicar — no pisa nada solo.</div>
+    ${ps.slice(0,MAX).map(fila).join('')}
+    ${ps.length>MAX?`<div class="tm-copilot-empty">…y ${ps.length-MAX} productos más.</div>`:''}`;
 }
 
 async function iaDescripcionesConIA(){
@@ -1466,6 +1562,7 @@ window.pubMountPromo = function() {
 function renderCopilotView(view, topTasks){
   if(view==='chat') return renderChat();
   if(view==='correcciones') return renderCorreccionesIA();
+  if(view==='descripciones') return renderDescripciones();
   if(view==='agentes') return renderAgents();
   if(view==='marketing') return renderMarketing();
   if(view==='memoria') return renderMemory();
@@ -1708,6 +1805,9 @@ function bindEvents(){
     if(act==='chatSug'){ chatEnviar(el.dataset.q); }
     if(act==='chatClear'){ CHAT_HIST=[]; renderSheet(); }
     if(act==='iaDescIA') iaDescripcionesConIA();
+    if(act==='iaAnalizarUno') iaAnalizarUno(el.dataset.pid);
+    if(act==='iaAnalizarAplicar') iaAnalizarAplicar(el.dataset.pid);
+    if(act==='iaAnalizarDescartar') iaAnalizarDescartar();
     if(act==='iaRegenTodas') iaRegenerarTodasDescripciones();
     if(act==='iaRegenCancelar') iaRegenCancelar();
     if(act==='promoPickImg') { const inp = document.getElementById('tmPromoImgInput'); if(inp) inp.click(); }

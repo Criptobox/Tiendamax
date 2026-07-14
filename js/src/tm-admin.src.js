@@ -778,6 +778,63 @@ async function sugerirSpecsConIA(ids) {
     }
 }
 
+// Analiza la foto principal recién elegida (todavía sin subir a GitHub) +
+// nombre/categoría/precio ya escritos, y llena Descripción y Specs juntos
+// en un solo llamado — mismo estilo "ficha de producto" que el copiloto.
+async function analizarFotoYCompletar() {
+    if (typeof window.iaLlamarModelo !== 'function') {
+        mostrarNotificacion('❌ Copiloto IA no cargó — recarga la página', 'error');
+        return;
+    }
+    const key = (localStorage.getItem('anthropicApiKey') || '').trim();
+    if (!key) { mostrarNotificacion('Configura tu API key en ⚙️ Configuración → API Key de IA', 'error'); return; }
+    const nombre = (document.getElementById('productName').value || '').trim();
+    if (!nombre) { mostrarNotificacion('Escribe el nombre del producto primero', 'error'); return; }
+    const categoria = (document.getElementById('productCategory').value || '').trim();
+    const precio = (document.getElementById('productPriceActual').value || '').trim();
+    const garantia = (document.getElementById('productGarantia').value || '').trim();
+    const fileInput = document.getElementById('productImage');
+    const file = fileInput && fileInput.files ? fileInput.files[0] : null;
+
+    const btn = document.getElementById('btnAnalizarFoto');
+    if (btn) { btn.disabled = true; btn.textContent = '🤖 Analizando…'; }
+    try {
+        let imagen = null;
+        if (file) {
+            imagen = await new Promise((res, rej) => {
+                const rd = new FileReader();
+                rd.onload = () => res({ mime: file.type || 'image/jpeg', data: String(rd.result).split(',')[1] || '' });
+                rd.onerror = rej;
+                rd.readAsDataURL(file);
+            });
+        }
+        const datos = 'Producto: "' + nombre + '".' + (categoria ? ' Categoría: ' + categoria + '.' : '') + (precio ? ' Precio: $' + Number(precio).toFixed(2) + ' USD.' : '') + (garantia ? ' Garantía: ' + garantia + '.' : '');
+        const foto = imagen ? ' Mira la foto adjunta: fíjate en marca, modelo y detalles visibles reales (texto del empaque, puertos, diseño) y úsalos si aportan algo verídico.' : '';
+        const prompt = 'Analiza este producto de una tienda online cubana (entrega en Cuba, pedido por WhatsApp) y devuelve SOLO un JSON, sin markdown ni texto fuera del JSON, con este formato exacto: {"descripcion":"...","specs":["...","..."]}. '
+            + '"descripcion" estilo ficha de producto: primera oración = qué es y su beneficio principal, luego 3 a 5 oraciones cortas de un solo punto de valor real cada una, sin viñetas ni emojis ni markdown, separadas por punto y espacio normal, 220 a 400 caracteres en total. '
+            + '"specs": hasta 6 especificaciones técnicas reales y breves (voltaje, potencia, capacidad, dimensiones, conectividad — lo que aplique), strings cortos. '
+            + datos + foto
+            + ' Usa SOLO datos reales dados arriba o realmente visibles en la foto — nunca inventes specs, materiales ni compatibilidades que no puedas verificar.';
+        const raw = await window.iaLlamarModelo(prompt, imagen);
+        if (!raw) { mostrarNotificacion('❌ La IA no respondió — revisa tu API key', 'error'); return; }
+        const m = raw.match(/\{[\s\S]*\}/);
+        if (!m) { mostrarNotificacion('❌ No se pudo interpretar la respuesta de la IA', 'error'); return; }
+        let j;
+        try { j = JSON.parse(m[0]); } catch (e) { mostrarNotificacion('❌ No se pudo interpretar la respuesta de la IA', 'error'); return; }
+        const descripcion = String(j.descripcion || '').trim();
+        const specs = Array.isArray(j.specs) ? j.specs.map(s => String(s).trim()).filter(Boolean).slice(0, 6) : [];
+        if (descripcion) document.getElementById('productDescription').value = descripcion;
+        if (specs.length) document.getElementById('productSpecs').value = specs.join(', ');
+        if (!descripcion && !specs.length) { mostrarNotificacion('❌ La IA no devolvió datos usables — completa a mano', 'error'); return; }
+        mostrarNotificacion('✅ Descripción y specs completadas — revísalas antes de guardar', 'success');
+    } catch (e) {
+        mostrarNotificacion('❌ Error analizando: ' + (e.message || e), 'error');
+    } finally {
+        if (btn) { btn.disabled = false; btn.textContent = '🤖 Analizar foto y completar'; }
+    }
+}
+window.analizarFotoYCompletar = analizarFotoYCompletar;
+
 async function agregarProductoForm(event) {
     event.preventDefault();
     const fileInput = document.getElementById('productImage');

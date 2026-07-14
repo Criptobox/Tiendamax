@@ -726,6 +726,8 @@
               <label class="file-box" for="productImage"><span class="fb-ico">📷</span><span class="fb-txt" id="productImage-name">Elegir foto principal *</span><input type="file" id="productImage" accept="image/*" required onchange="fileName(this,'productImage-name','Elegir foto principal *')"></label>
               <label class="file-box" for="productImagesExtra"><span class="fb-ico">🖼️</span><span class="fb-txt" id="productImagesExtra-name">Fotos extra (opcional)</span><input type="file" id="productImagesExtra" accept="image/*" multiple onchange="fileName(this,'productImagesExtra-name','Fotos extra (opcional)')"></label>
             </div>
+            <button type="button" id="btnAnalizarFoto" onclick="analizarFotoYCompletar()" class="btn btn-ghost" style="width:100%;margin-top:10px">🤖 Analizar foto y completar</button>
+            <p style="font-size:11px;color:var(--muted);margin-top:6px;text-align:center">Escribe el nombre, elige la foto principal, y esto llena Descripción y Specs mirando la foto real (con Gemini o Nvidia) — revísalas antes de guardar.</p>
             <button type="submit" class="btn btn-primary" style="width:100%;margin-top:14px">💾 Guardar y publicar producto</button>
             <p style="font-size:11px;color:var(--muted);margin-top:8px;text-align:center">Sube la imagen a GitHub y publica el catálogo automáticamente (usa tu token de Configuración).</p>
           </div>
@@ -817,7 +819,7 @@
      agregarProductoForm, sincronizarTodoConGitHub, registrarVenta, etc. -->
 <!-- Bundle único (mismo orden: config→data→state→admin→product→catalog→init→ui→toast→iife→patches),
      generado por scripts/build_js_bundle.py a partir de js/src/*.src.js -->
-<script src="js/tm-bundle.js?v=5c93fdf6"></script>
+<script src="js/tm-bundle.js?v=2dd2f652"></script>
 <script src="js/biometric-auth.js?v=343cb27b"></script>
 <script src="js/revolico_integration.js?v=b517b43a"></script>
 <script>
@@ -831,7 +833,7 @@
     if (typeof window.go === 'function') window.go(map[tab] || tab);
   };
 </script>
-<script src="js/admin-copilot.js?v=50b3915b"></script>
+<script src="js/admin-copilot.js?v=efb80e85"></script>
 
 <script>
 (function(){
