@@ -105,7 +105,7 @@
     "comisionMoneda": "USD",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1783836865144.webp",
-      "https://tiendamax.org/imagenes/img_1777924248270.webp"
+      "https://tiendamax.org/imagenes/img_1777924248270_a08897.webp"
     ],
     "descripcion": "Router de alto rendimiento con tecnología de doble banda, diseñado para proporcionar una conexión Wi-Fi estable, rápida y con gran cobertura en todo el hogar u oficina.\n​Ficha Técnica:\n​Velocidad: 🚀 Doble banda AC1200 (hasta 867 Mbps en 5GHz y 300 Mbps en 2.4GHz).\n​Antenas: 📡 4 antenas externas de alta ganancia para una señal omnidireccional.\n​Conectividad: 🔌 Puertos WAN y LAN de alta velocidad.\n​Tecnología: ⚙️ Soporta estándares IEEE 802.11ac/a/n/g/b.\n​Uso: 🏡 Ideal para streaming en 4K, juegos online y múltiples dispositivos conectados.\n​Botón Turbo: ⚡ Modo \"Turbo\" para mejorar la penetración de la señal a través de paredes.\n​Especificaciones (Specs):\n​Frecuencias: 2.4GHz y 5GHz simultáneas.\n​Seguridad: Encriptación WPA/WPA2-PSK.\n​Puertos: 1 puerto WAN + 4 puertos LAN.\n​Diseño: Estructura circular con indicadores LED frontales.\n​Instalación: Configuración simplificada a través de interfaz web."
   },
@@ -194,7 +194,7 @@
     ],
     "imagenes": [
       "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784007772666.webp",
-      "https://tiendamax.org/imagenes/img_1778102507659_v2.webp"
+      "https://tiendamax.org/imagenes/img_1778102507659_94aef1.webp"
     ]
   },
   {
@@ -231,7 +231,7 @@
     "id": 1778103783319,
     "nombre": "Las Nuevas Baterías Españolas Lubrim",
     "precioActual": 85,
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783836488642.webp",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783836488642_4b0c8d.webp",
     "categoria": "ENERGIA",
     "subcategoria": "BATERÍAS",
     "stock": 10,
@@ -248,7 +248,7 @@
     "precioOriginal": 0,
     "comisionMoneda": "USD",
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783836488642.webp",
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783836488642_4b0c8d.webp",
       "https://tiendamax.org/imagenes/img_1778103783319.webp"
     ]
   },
@@ -308,7 +308,7 @@
     "id": 1778104287395,
     "nombre": "​🌐 Cpe Exterior Kuwfi 4G/WIFI",
     "precioActual": 130,
-    "imagen": "https://tiendamax.org/imagenes/img_1778104287395.webp",
+    "imagen": "https://tiendamax.org/imagenes/img_1778104287395_161f1c.webp",
     "categoria": "WIFI",
     "subcategoria": "ROUTERS",
     "stock": 1,
@@ -328,7 +328,7 @@
     "precioOriginal": 0,
     "comisionMoneda": "USD",
     "imagenes": [
-      "https://tiendamax.org/imagenes/img_1778104287395.webp"
+      "https://tiendamax.org/imagenes/img_1778104287395_161f1c.webp"
     ],
     "descripcion": "Punto de acceso de largo alcance para exteriores, diseñado para extender la conectividad en áreas abiertas, fincas o grandes espacios con total resistencia a la intemperie.\n​Ficha Técnica:\n​Capacidad: 📶 Punto de acceso con tecnología 4G/WiFi de alta ganancia.\n​Diseño: 📏 Formato vertical estilizado y compacto para montaje exterior.\n​Indicadores: 💡 Panel LED intuitivo (Power, WiFi, WAN/LAN, Señal, Ethernet).\n​Instalación: 🏗️ Sistema de montaje integrado para paredes o postes.\n​Uso: 📡 Ideal para llevar internet a zonas rurales o áreas con difícil cobertura.\n​Especificaciones (Specs):\n​Modelo: CPE Exterior KuWfi 4G.\n​Dimensiones: 30 cm (alto) x 8 cm (ancho) x 3 cm (profundidad).\n​Tipo de red: Soporta conexión 4G y distribución WiFi.\n​Conectividad física: Puerto Ethernet para conexión cableada (WAN/LAN).\n​Resistencia: Carcasa diseñada para uso en exteriores (protección ambiental).\n​Indicadores visuales: Panel central con 5 niveles de intensidad de señal."
   },
@@ -1543,7 +1543,7 @@
     "nombre": "Zosl - Cámara de Seguridad CCTV",
     "precioActual": 45,
     "precioOriginal": 0,
-    "imagen": "https://tiendamax.org/imagenes/img_1780344655996_v2.webp",
+    "imagen": "https://tiendamax.org/imagenes/img_1780344655996_bb0312.webp",
     "categoria": "SEGURIDAD",
     "subcategoria": "CÁMARAS",
     "stock": 11,
@@ -1652,7 +1652,7 @@
     "nombre": "Fenvi AC1200",
     "precioActual": 80,
     "precioOriginal": 0,
-    "imagen": "https://tiendamax.org/imagenes/img_1780873818246.webp",
+    "imagen": "https://tiendamax.org/imagenes/img_1780873818246_99b40d.webp",
     "categoria": "WIFI",
     "subcategoria": "ROUTERS",
     "stock": 0,
@@ -1677,7 +1677,7 @@
     "nombre": "Gorro de Buceo",
     "precioActual": 10,
     "precioOriginal": 0,
-    "imagen": "https://tiendamax.org/imagenes/img_1780887557334.webp",
+    "imagen": "https://tiendamax.org/imagenes/img_1780887557334_132c6f.webp",
     "categoria": "UTILES",
     "subcategoria": "DEPORTES",
     "stock": 4,
@@ -1819,7 +1819,7 @@
     "nombre": "Repetidor WiFi de Rango Extendido tp - Link",
     "precioActual": 30,
     "precioOriginal": 0,
-    "imagen": "https://tiendamax.org/imagenes/img_1781711152979.webp",
+    "imagen": "https://tiendamax.org/imagenes/img_1781711152979_1e8154.webp",
     "categoria": "WIFI",
     "subcategoria": "ACCESORIOS",
     "stock": 0,
@@ -1976,9 +1976,9 @@
   {
     "id": 1782438922547,
     "nombre": "​🌐 Router Tp-link Archer AX1450 (Wi-fi 6)",
-    "imagen": "https://tiendamax.org/imagenes/img_1782438920638_v2.webp",
+    "imagen": "https://tiendamax.org/imagenes/img_1782438920638_220090.webp",
     "imagenes": [
-      "https://tiendamax.org/imagenes/img_1782438920638_v2.webp"
+      "https://tiendamax.org/imagenes/img_1782438920638_220090.webp"
     ],
     "precioActual": 80,
     "precioOriginal": 0,
@@ -2005,9 +2005,9 @@
   {
     "id": 1782439189958,
     "nombre": "​🌐 MINI Repetidor Wi-fi (300 Mbps)",
-    "imagen": "https://tiendamax.org/imagenes/img_1782439187376.webp",
+    "imagen": "https://tiendamax.org/imagenes/img_1782439187376_c85bdf.webp",
     "imagenes": [
-      "https://tiendamax.org/imagenes/img_1782439187376.webp"
+      "https://tiendamax.org/imagenes/img_1782439187376_c85bdf.webp"
     ],
     "precioActual": 20,
     "precioOriginal": 0,
@@ -2033,9 +2033,9 @@
   {
     "id": 1782439428159,
     "nombre": "Auriculares Gaming Inalámbrico Nubwo",
-    "imagen": "https://tiendamax.org/imagenes/img_1782439424609.webp",
+    "imagen": "https://tiendamax.org/imagenes/img_1782439424609_06af7e.webp",
     "imagenes": [
-      "https://tiendamax.org/imagenes/img_1782439424609.webp"
+      "https://tiendamax.org/imagenes/img_1782439424609_06af7e.webp"
     ],
     "precioActual": 50,
     "precioOriginal": 0,
@@ -2468,9 +2468,9 @@
   {
     "id": 1783473894756,
     "nombre": "Cargador Tactil de Batería Inteligente 12V /15A",
-    "imagen": "https://tiendamax.org/imagenes/img_1783473890998.webp",
+    "imagen": "https://tiendamax.org/imagenes/img_1783473890998_28ba1e.webp",
     "imagenes": [
-      "https://tiendamax.org/imagenes/img_1783473890998.webp"
+      "https://tiendamax.org/imagenes/img_1783473890998_28ba1e.webp"
     ],
     "precioActual": 65,
     "precioOriginal": 0,
