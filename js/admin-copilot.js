@@ -364,7 +364,7 @@ async function buildTasks(){
   const sinSeo = ps.filter(p=>p.activo!==false && !p.seoTitle && !p.seoDescription);
   if (sinSeo.length>5) addTask(tasks,{kind:'seo',urgency:1,icon:'🔎',title:`${sinSeo.length} productos sin SEO`,detail:'Puedes usar IA masiva para mejorar títulos y descripciones.',action:'IA masiva',tab:'herramientas'});
 
-  if (!localStorage.getItem('anthropicApiKey') && ps.length>5) addTask(tasks,{kind:'ai',urgency:1,icon:'🤖',title:'IA no configurada',detail:'Activa Gemini/OpenRouter/Groq/Nvidia para campañas, SEO y textos mejores.',action:'Configurar',tab:'configuracion'});
+  if (!localStorage.getItem('anthropicApiKey') && ps.length>5) addTask(tasks,{kind:'ai',urgency:1,icon:'🤖',title:'IA no configurada',detail:'Activa Gemini/OpenRouter/Groq para campañas, SEO y textos mejores.',action:'Configurar',tab:'configuracion'});
 
   tasks.sort((a,b)=>b.urgency-a.urgency);
   state.agents = buildAgentsFromTasks(tasks, facts);
@@ -641,23 +641,8 @@ async function iaLlamarModelo(prompt, imagen){
       j=await _iaFetchJSON('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key='+key,{method:'POST',headers:{'Content-Type':'application/json'},signal:ctrl.signal,body:JSON.stringify({contents:[{parts}]})});
       return j ? (j.candidates?.[0]?.content?.parts?.[0]?.text||null) : null;
     }
-    // Nvidia con imagen: GLM-5.2 es solo texto, así que si hay foto se usa
-    // Nemotron 3 Nano Omni (mismo catálogo Nvidia, misma key) en formato
-    // OpenAI vision (content en array con image_url en data URI).
-    if(key.startsWith('nvapi-') && imagen && imagen.data){
-      j=await _iaFetchJSON('https://integrate.api.nvidia.com/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},signal:ctrl.signal,body:JSON.stringify({
-        model:'nvidia/nemotron-3-nano-omni-30b-a3b-reasoning',
-        messages:[{role:'user',content:[
-          {type:'text',text:prompt},
-          {type:'image_url',image_url:{url:'data:'+(imagen.mime||'image/jpeg')+';base64,'+imagen.data}}
-        ]}],
-        max_tokens:500
-      })});
-      return j ? (j.choices?.[0]?.message?.content||null) : null;
-    }
     const cfg = key.startsWith('sk-or') ? {url:'https://openrouter.ai/api/v1/chat/completions',model:'openrouter/auto'}
       : key.startsWith('gsk_') ? {url:'https://api.groq.com/openai/v1/chat/completions',model:'llama-3.3-70b-versatile'}
-      : key.startsWith('nvapi-') ? {url:'https://integrate.api.nvidia.com/v1/chat/completions',model:'z-ai/glm-5-2'}
       : {url:'https://api.deepseek.com/chat/completions',model:'deepseek-chat'};
     j=await _iaFetchJSON(cfg.url,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},signal:ctrl.signal,body:JSON.stringify({model:cfg.model,messages:[{role:'user',content:prompt}],max_tokens:400})});
     return j ? (j.choices?.[0]?.message?.content||null) : null;
@@ -687,7 +672,7 @@ function _iaPromptDescripcion(p, tieneImagen){
 async function _iaGenerarLoteDescripciones(lista){
   const grupo=[]; let ok=0;
   const key=(localStorage.getItem('anthropicApiKey')||'').trim();
-  const soportaImagen=key.startsWith('AIza')||key.startsWith('nvapi-'); // Gemini y Nvidia (Nemotron Omni) ven fotos
+  const soportaImagen=key.startsWith('AIza'); // solo Gemini ve fotos en esta integración
   for(const p of lista){
     let imagen=null;
     if(soportaImagen){
@@ -722,7 +707,7 @@ function _iaPromptAnalisis(p, tieneImagen){
 async function iaAnalizarProducto(p){
   const key=(localStorage.getItem('anthropicApiKey')||'').trim();
   if(!key) return null;
-  const soportaImagen=key.startsWith('AIza')||key.startsWith('nvapi-');
+  const soportaImagen=key.startsWith('AIza'); // solo Gemini ve fotos en esta integración
   let imagen=null;
   if(soportaImagen){
     const url=(Array.isArray(p.imagenes)&&p.imagenes[0])||p.imagen;
@@ -796,7 +781,7 @@ function renderDescripciones(){
       ${extra}
     </div>`;
   };
-  return `<div class="tm-copilot-empty" style="padding:8px 4px;font-size:11px;text-align:left">Analiza un producto a la vez: mira la foto real (si tu key es Gemini o Nvidia) y los datos ya cargados, y te propone descripción + specs para revisar antes de aplicar — no pisa nada solo.</div>
+  return `<div class="tm-copilot-empty" style="padding:8px 4px;font-size:11px;text-align:left">Analiza un producto a la vez: mira la foto real (si tu key es Gemini) y los datos ya cargados, y te propone descripción + specs para revisar antes de aplicar — no pisa nada solo.</div>
     ${ps.slice(0,MAX).map(fila).join('')}
     ${ps.length>MAX?`<div class="tm-copilot-empty">…y ${ps.length-MAX} productos más.</div>`:''}`;
 }
