@@ -834,7 +834,7 @@
   };
 </script>
 <script src="js/vendor/html2canvas.min.js?v=e87e5507" defer></script>
-<script src="js/admin-copilot.js?v=1b053620"></script>
+<script src="js/admin-copilot.js?v=fbd21e12"></script>
 
 <script>
 (function(){
@@ -2668,7 +2668,9 @@ async function pubShareStory(p){
   try{
     if(typeof window.tmCartelHTML==='function' && typeof window.html2canvas==='function' && document.getElementById('tmCopilotStyles')){
       const holder=document.createElement('div');
-      holder.style.cssText='position:fixed;left:-9999px;top:0;pointer-events:none;opacity:0;';
+      // position:absolute (no fixed) + top:0 → queda en y=0 del documento; así
+      // html2canvas no corta el tope aunque la página esté scrolleada.
+      holder.style.cssText='position:absolute;left:-9999px;top:0;pointer-events:none;';
       holder.innerHTML='<div class="tcp-card" id="__tcpShare"></div>';
       document.body.appendChild(holder);
       const node=holder.querySelector('#__tcpShare');
