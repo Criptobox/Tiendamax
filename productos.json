@@ -85,7 +85,7 @@
     "nombre": "​🌐 Router Wavlink AC1200 Dual Band",
     "precioActual": 80,
     "precioOriginal": 0,
-    "imagen": "https://tiendamax.org/imagenes/img_1783836865144.jpg",
+    "imagen": "https://tiendamax.org/imagenes/img_1783836865144.webp",
     "categoria": "WIFI",
     "subcategoria": "ROUTERS",
     "stock": 0,
@@ -104,7 +104,7 @@
     "seoDescription": "Enrutador WiFi WAVLINK AC1200 de doble banda 5 GHz + 2.4 GHz, enrutador inalámbrico para hogar y juegos con puertos Ethernet Gigabit WAN/LAN, 4 antenas de…",
     "comisionMoneda": "USD",
     "imagenes": [
-      "https://tiendamax.org/imagenes/img_1783836865144.jpg",
+      "https://tiendamax.org/imagenes/img_1783836865144.webp",
       "https://tiendamax.org/imagenes/img_1777924248270.webp"
     ],
     "descripcion": "Router de alto rendimiento con tecnología de doble banda, diseñado para proporcionar una conexión Wi-Fi estable, rápida y con gran cobertura en todo el hogar u oficina.\n​Ficha Técnica:\n​Velocidad: 🚀 Doble banda AC1200 (hasta 867 Mbps en 5GHz y 300 Mbps en 2.4GHz).\n​Antenas: 📡 4 antenas externas de alta ganancia para una señal omnidireccional.\n​Conectividad: 🔌 Puertos WAN y LAN de alta velocidad.\n​Tecnología: ⚙️ Soporta estándares IEEE 802.11ac/a/n/g/b.\n​Uso: 🏡 Ideal para streaming en 4K, juegos online y múltiples dispositivos conectados.\n​Botón Turbo: ⚡ Modo \"Turbo\" para mejorar la penetración de la señal a través de paredes.\n​Especificaciones (Specs):\n​Frecuencias: 2.4GHz y 5GHz simultáneas.\n​Seguridad: Encriptación WPA/WPA2-PSK.\n​Puertos: 1 puerto WAN + 4 puertos LAN.\n​Diseño: Estructura circular con indicadores LED frontales.\n​Instalación: Configuración simplificada a través de interfaz web."
@@ -142,7 +142,7 @@
     "nombre": "​🌐 Switch Gigabit de 8 Puertos",
     "precioActual": 30,
     "precioOriginal": 0,
-    "imagen": "https://tiendamax.org/imagenes/img_1783836802568.jpg",
+    "imagen": "https://tiendamax.org/imagenes/img_1783836802568.webp",
     "categoria": "WIFI",
     "subcategoria": "SWITCHES",
     "stock": 0,
@@ -158,7 +158,7 @@
     "radar": true,
     "comisionMoneda": "MN",
     "imagenes": [
-      "https://tiendamax.org/imagenes/img_1783836802568.jpg",
+      "https://tiendamax.org/imagenes/img_1783836802568.webp",
       "https://tiendamax.org/imagenes/img_1780510811569.webp"
     ],
     "descripcion": "Solución eficiente para expandir tu red local. Este switch permite conectar hasta 8 dispositivos cableados simultáneamente, garantizando velocidades de transferencia de datos ultra rápidas sin pérdida de calidad.\n​Ficha Técnica:\n​Capacidad: 🔌 8 puertos RJ45 para una expansión de red inmediata.\n​Velocidad: ⚡ Rendimiento Gigabit (10/100/1000 Mbps) para transferencia de archivos pesados y streaming fluido.\n​Compatibilidad: 🛡️ Soporta sistemas de videovigilancia (CCTV) y redes de alto tráfico.\n​Construcción: 🏗️ Diseño con PCB de doble capa y puertos metálicos para mayor durabilidad y estabilidad.\n​Plug & Play: 🛠️ Sin configuraciones complicadas; conéctalo y empieza a usarlo de inmediato.\n​Especificaciones (Specs):\n​Tipo: Switch Ethernet no gestionado.\n​Puertos: 8 puertos 10/100/1000 Mbps auto-negociables.\n​Uso: Ideal para oficinas en casa, centros de entretenimiento o pequeños sistemas de cámaras.\n​Calidad: Componentes optimizados para operación continua.",
@@ -211,7 +211,7 @@
     "id": 1778103783319,
     "nombre": "Las Nuevas Baterías Españolas Lubrim",
     "precioActual": 85,
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783836488642.jpg",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783836488642.webp",
     "categoria": "ENERGIA",
     "subcategoria": "BATERÍAS",
     "stock": 10,
@@ -228,7 +228,7 @@
     "precioOriginal": 0,
     "comisionMoneda": "USD",
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783836488642.jpg",
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783836488642.webp",
       "https://tiendamax.org/imagenes/img_1778103783319.webp"
     ]
   },
@@ -378,7 +378,7 @@
     "id": 1778104662477,
     "nombre": "Inversor de Onda Sinusoidal Pura Fuera de la Red",
     "precioActual": 900,
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783838193521.jpg",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783838193521.webp",
     "categoria": "ENERGIA",
     "subcategoria": "INVERSORES",
     "stock": 1,
@@ -398,7 +398,7 @@
     "precioOriginal": 0,
     "comisionMoneda": "USD",
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783838193521.jpg",
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783838193521.webp",
       "https://tiendamax.org/imagenes/img_1778104662477.webp"
     ]
   },
@@ -406,7 +406,7 @@
     "id": 1778104735789,
     "nombre": "​🌐 Router Kuwfi 4G Lte (Wi-fi de Alta Velocidad)",
     "precioActual": 130,
-    "imagen": "https://tiendamax.org/imagenes/img_1783837070407.jpg",
+    "imagen": "https://tiendamax.org/imagenes/img_1783837070407.webp",
     "categoria": "WIFI",
     "subcategoria": "ROUTERS",
     "stock": 37,
@@ -427,7 +427,7 @@
     "precioOriginal": 0,
     "comisionMoneda": "USD",
     "imagenes": [
-      "https://tiendamax.org/imagenes/img_1783837070407.jpg",
+      "https://tiendamax.org/imagenes/img_1783837070407.webp",
       "https://tiendamax.org/imagenes/img_1778104735789.webp"
     ],
     "descripcion": "Tu propia red Wi-Fi en cualquier lugar. Este router convierte la señal de datos de tu tarjeta SIM en una potente red inalámbrica, ideal para hogares, oficinas temporales o zonas donde la fibra óptica no es una opción viable.\n​Ficha Técnica:\n​Conectividad Total: 📱 Ranura para tarjeta SIM integrada; simplemente inserta tu SIM y empieza a navegar.\n​Velocidad: 🚀 Soporta redes 4G LTE para una navegación fluida, streaming y conexión de múltiples dispositivos.\n​Versatilidad: 🔗 Diseño compacto y eficiente, ideal tanto para uso fijo en casa como para llevarlo de viaje.\n​Antenas: 📡 Antenas de alta ganancia para asegurar una recepción de señal móvil superior incluso en áreas con cobertura limitada.\n​Seguridad: 🛡️ Encriptación robusta para mantener tu red y tus datos protegidos.\n​Especificaciones (Specs):\n​Tipo: Router Wi-Fi con módem 4G LTE incorporado.\n​Compatibilidad: Funciona con los estándares de red móvil más comunes.\n​Gestión: Interfaz web sencilla para configurar el APN y gestionar el consumo de datos.\n​Puertos: Incluye puertos LAN para conectar dispositivos por cable si lo requieres.\n​Uso Ideal: Zonas sin cobertura de cable, respaldo de internet, trabajo remoto y soluciones de movilidad.\n\n​💡 ¿Por qué es la mejor opción?\n​Sin cables: Solo inserta tu tarjeta SIM y navega al instante.\n​Configuración fácil: Compatible con APN manual para una conexión rápida con la red local.\n​Ideal para cualquier lugar: Perfecto para zonas donde no llega el cable o como conexión de respaldo garantizada.\n​Multi-usuario: Comparte tus datos móviles con toda la familia o tu equipo de trabajo al mismo tiempo."
@@ -504,7 +504,7 @@
     "id": 1778212195565,
     "nombre": "Mannol 5W30 5L",
     "precioActual": 35,
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783918216261.jpg",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783918216261.webp",
     "categoria": "CARROS",
     "subcategoria": "ACEITES Y LUBRICANTES",
     "stock": 23,
@@ -522,7 +522,7 @@
     "comisionMoneda": "USD",
     "specs": [],
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783918216261.jpg"
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783918216261.webp"
     ]
   },
   {
@@ -583,7 +583,7 @@
     "id": 1778213413973,
     "nombre": "​🛡️ Juego de Fundas Para Asientos (Edición Elegance)",
     "precioActual": 150,
-    "imagen": "https://tiendamax.org/imagenes/img_1783918032855.jpg",
+    "imagen": "https://tiendamax.org/imagenes/img_1783918032855.webp",
     "categoria": "CARROS",
     "subcategoria": "ACCESORIOS",
     "stock": 7,
@@ -600,7 +600,7 @@
     "comisionMoneda": "USD",
     "specs": [],
     "imagenes": [
-      "https://tiendamax.org/imagenes/img_1783918032855.jpg",
+      "https://tiendamax.org/imagenes/img_1783918032855.webp",
       "https://tiendamax.org/imagenes/img_1778213413973.webp"
     ],
     "descripcion": "Protección de alta gama y diseño ergonómico para interiores de vehículo impecables.\n​Ficha Técnica:\n​Material: 🧵 Piel sintética (polipiel) de alta resistencia.\n​Diseño: 💎 Patrón acolchado de diamantes con costuras reforzadas.\n​Color: 🖤 Negro monocolor (minimalista).\n​Compatibilidad: 🚗 Ajuste universal (Sedanes, SUVs y Camionetas).\n​Mantenimiento: 💧 Impermeable y fácil de limpiar con paño húmedo.\n​Set: 📦 Incluye fundas completas para asientos delanteros y traseros."
@@ -609,7 +609,7 @@
     "id": 1778213940333,
     "nombre": "Mannol Safari 20W - 50 7404 5L",
     "precioActual": 25,
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783918626441.jpg",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783918626441.webp",
     "categoria": "CARROS",
     "subcategoria": "ACEITES Y LUBRICANTES",
     "stock": 53,
@@ -627,14 +627,14 @@
     "comisionMoneda": "USD",
     "specs": [],
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783918626441.jpg"
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783918626441.webp"
     ]
   },
   {
     "id": 1778214089400,
     "nombre": "Mannol Special PLUS 10W - 30 7512. 5L",
     "precioActual": 30,
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783918610323.jpg",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783918610323.webp",
     "categoria": "CARROS",
     "subcategoria": "ACEITES Y LUBRICANTES",
     "stock": 33,
@@ -652,7 +652,7 @@
     "comisionMoneda": "USD",
     "specs": [],
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783918610323.jpg"
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783918610323.webp"
     ]
   },
   {
@@ -697,7 +697,7 @@
     "nombre": "​🌐 Switch Gigabit de 5 Puertos",
     "precioActual": 20,
     "precioOriginal": 0,
-    "imagen": "https://tiendamax.org/imagenes/img_1783836818228.jpg",
+    "imagen": "https://tiendamax.org/imagenes/img_1783836818228.webp",
     "categoria": "WIFI",
     "subcategoria": "SWITCHES",
     "stock": 20,
@@ -712,7 +712,7 @@
     "seoDescription": "Switch de 5 puertos ethernet de 1 gigabite.",
     "comisionMoneda": "MN",
     "imagenes": [
-      "https://tiendamax.org/imagenes/img_1783836818228.jpg",
+      "https://tiendamax.org/imagenes/img_1783836818228.webp",
       "https://tiendamax.org/imagenes/img_1780510827238.webp"
     ],
     "specs": [
@@ -847,7 +847,7 @@
     "id": 1778384428890,
     "nombre": "Portacelulares",
     "precioActual": 15,
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783837457730.jpg",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783837457730.webp",
     "categoria": "CELULARES",
     "subcategoria": "ACCESORIOS",
     "stock": 1,
@@ -864,7 +864,7 @@
     "precioOriginal": 0,
     "comisionMoneda": "USD",
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783837457730.jpg",
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783837457730.webp",
       "https://tiendamax.org/imagenes/img_1778384428890_ext.webp"
     ]
   },
@@ -1036,7 +1036,7 @@
     "id": 1778547461235,
     "nombre": "Mannol ts - 4 SHPD 15W - 40 7104. 5L",
     "precioActual": 30,
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783919083218.jpg",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783919083218.webp",
     "categoria": "CARROS",
     "subcategoria": "ACEITES Y LUBRICANTES",
     "stock": 53,
@@ -1054,14 +1054,14 @@
     "comisionMoneda": "USD",
     "specs": [],
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783919083218.jpg"
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783919083218.webp"
     ]
   },
   {
     "id": 1778547753925,
     "nombre": "Mannol Defender 10W - 40 7507. 5L",
     "precioActual": 30,
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783918493021.jpg",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783918493021.webp",
     "categoria": "CARROS",
     "subcategoria": "ACEITES Y LUBRICANTES",
     "stock": 23,
@@ -1079,7 +1079,7 @@
     "comisionMoneda": "USD",
     "specs": [],
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783918493021.jpg"
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783918493021.webp"
     ]
   },
   {
@@ -1317,7 +1317,7 @@
     "id": 1778907260915,
     "nombre": "Calentador Eléctrico",
     "precioActual": 125,
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783838545299.jpg",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783838545299.webp",
     "categoria": "HOGAR",
     "subcategoria": "ELECTRODOMÉSTICOS",
     "stock": 4,
@@ -1334,7 +1334,7 @@
     "precioOriginal": 0,
     "comisionMoneda": "USD",
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783838545299.jpg",
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783838545299.webp",
       "https://tiendamax.org/imagenes/img_1778907258376.webp"
     ]
   },
@@ -1419,7 +1419,7 @@
     "nombre": "​🔊 Xiaomi Sound Outdoor (30W)",
     "precioActual": 75,
     "precioOriginal": 0,
-    "imagen": "https://tiendamax.org/imagenes/img_1783836546487.jpg",
+    "imagen": "https://tiendamax.org/imagenes/img_1783836546487.webp",
     "categoria": "CELULARES",
     "subcategoria": "AUDIO",
     "stock": 3,
@@ -1437,9 +1437,9 @@
     "seoDescription": "(Nuevo en caja) ​¡Potencia y portabilidad en un solo altavoz! Perfecto para exteriores, playa o reuniones. ​⚡ Lo mejor de este altavoz: ​Potencia de 30W…",
     "comisionMoneda": "USD",
     "imagenes": [
-      "https://tiendamax.org/imagenes/img_1783836546487.jpg",
+      "https://tiendamax.org/imagenes/img_1783836546487.webp",
       "https://tiendamax.org/imagenes/img_1780017975657.webp",
-      "https://tiendamax.org/imagenes/img_1783836630474.jpg"
+      "https://tiendamax.org/imagenes/img_1783836630474.webp"
     ],
     "descripcion": "Audio de alta fidelidad con una potencia superior de 30W, diseñado para resistir condiciones exteriores exigentes.\n​Ficha Técnica:\n​Potencia: ⚡ 30W de salida (sonido potente y nítido).\n​Conectividad: 📶 Bluetooth 5.4 (conexión más rápida y estable).\n​Resistencia: 🌊 Certificación IP67 (Totalmente resistente al polvo y al agua).\n​Batería: 🔋 2600 mAh (hasta 12h de reproducción al 50% de volumen).\n​Carga: 🔌 USB Tipo-C.\n​Audio: 🎶 Ecualización dinámica y refuerzo de graves.\n​Extras: 🎙️ Micrófono integrado para llamadas y tecnología de emparejamiento estéreo (TWS).\n​Portabilidad: 🪝 Incluye correa de transporte resistente."
   },
@@ -1448,7 +1448,7 @@
     "nombre": "Raqueta Eléctrica Mata Mosquitos",
     "precioActual": 10,
     "precioOriginal": 0,
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783836578975.jpg",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783836578975.webp",
     "categoria": "UTILES",
     "subcategoria": "HOGAR",
     "stock": 5,
@@ -1464,7 +1464,7 @@
     "descripcion": "Raqueta eléctrica mata mosquitos, color verde, con rejilla de descarga y mango con botón de activación. Ideal para eliminar mosquitos y otros insectos voladores de forma rápida.",
     "comisionMoneda": "USD",
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783836578975.jpg",
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783836578975.webp",
       "https://tiendamax.org/imagenes/img_1780079294429.webp"
     ]
   },
@@ -1556,7 +1556,7 @@
     "nombre": "Audífonos Ergonómicos",
     "precioActual": 15,
     "precioOriginal": 20,
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783837831859.jpg",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783837831859.webp",
     "categoria": "CELULARES",
     "subcategoria": "AUDIO",
     "stock": 20,
@@ -1572,7 +1572,7 @@
     "descripcion": "Audífonos inalámbricos ergonómicos tipo in-ear, blancos, con estuche de carga. Diseño ergonómico para uso cómodo y prolongado.",
     "comisionMoneda": "USD",
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783837831859.jpg",
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783837831859.webp",
       "https://tiendamax.org/imagenes/img_1780543081597.webp"
     ]
   },
@@ -1648,7 +1648,7 @@
     "nombre": "Altavoz Bluetooth Portátil RGB",
     "precioActual": 20,
     "precioOriginal": 0,
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783837846910.jpg",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783837846910.webp",
     "categoria": "CELULARES",
     "subcategoria": "AUDIO",
     "stock": 20,
@@ -1664,7 +1664,7 @@
     "seoDescription": "Altavoz Bluetooth Portátil RGB – Características principales Sonido estéreo HD de alta calidad con doble altavoz para un audio potente y equilibrado…",
     "descripcion": "Altavoz Bluetooth portátil resistente para exteriores, con aro de luz RGB en la base, correa de transporte y controles táctiles de volumen/reproducción arriba. Forrado en tela.",
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783837846910.jpg",
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783837846910.webp",
       "https://tiendamax.org/imagenes/img_1780887747583.webp"
     ]
   },
@@ -1719,7 +1719,7 @@
     "nombre": "Ventilador de Techo",
     "precioActual": 35,
     "precioOriginal": 0,
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783838929527.jpg",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783838929527.webp",
     "categoria": "HOGAR",
     "subcategoria": "ELECTRODOMÉSTICOS",
     "stock": 24,
@@ -1735,7 +1735,7 @@
     "seoDescription": "Ventilador de techo: -Tiene medio metro de envergadura, -Tiene 3 velocidades. -Las luces las puedes cambiar de blanco a amarillito calido y regular la…",
     "descripcion": "Mini ventilador de techo, aspas blancas, tamaño compacto. Ideal para espacios pequeños o donde no entra un ventilador de techo grande.",
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783838929527.jpg",
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783838929527.webp",
       "https://tiendamax.org/imagenes/img_1781365133963.webp"
     ]
   },
@@ -1744,7 +1744,7 @@
     "nombre": "Creatina Monohidratada Luckycare® (5000 mg)",
     "precioActual": 30,
     "precioOriginal": 0,
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783838354343.jpg",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783838354343.webp",
     "categoria": "GYM",
     "subcategoria": "",
     "stock": 21,
@@ -1760,7 +1760,7 @@
     "seoDescription": "​🌟 Beneficios Clave (Respaldados en el empaque): ​Aumento de Masa Muscular Magra: Estimula el crecimiento muscular limpio y la densidad. ​Mejora del…",
     "descripcion": "Creatina monohidratada Luckycare, en polvo micronizado, 5000mg por porción. Envase de 500g. Para mejorar el rendimiento en el entrenamiento y la recuperación muscular.",
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783838354343.jpg",
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783838354343.webp",
       "https://tiendamax.org/imagenes/img_1781377297283.webp"
     ]
   },
@@ -1817,7 +1817,7 @@
     "nombre": "Inversor Solar Híbrido Must 1500W (24V a 120V)",
     "precioActual": 350,
     "precioOriginal": 0,
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783836465146.jpg",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783836465146.webp",
     "categoria": "ENERGIA",
     "subcategoria": "INVERSORES",
     "stock": 7,
@@ -1839,7 +1839,7 @@
     "seoDescription": "​⚙️ Especificaciones Técnicas Principales: ​Potencia Nominal: 1500VA / 1500W (Potencia real continua). ​Voltaje del Sistema (Baterías): 24V DC. ​Salida de…",
     "descripcion": "Inversor solar híbrido MUST, de 1500W, entrada 24V a salida 120V. Pantalla LCD con botones de control. Convierte la energía de tu banco de baterías o paneles solares en corriente para el hogar durante los apagones.",
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783836465146.jpg",
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783836465146.webp",
       "data:image/webp;base64,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"
     ]
   },
@@ -1926,9 +1926,9 @@
   {
     "id": 1782438922547,
     "nombre": "​🌐 Router Tp-link Archer AX1450 (Wi-fi 6)",
-    "imagen": "https://tiendamax.org/imagenes/img_1782438920638.jpg",
+    "imagen": "https://tiendamax.org/imagenes/img_1782438920638.webp",
     "imagenes": [
-      "https://tiendamax.org/imagenes/img_1782438920638.jpg"
+      "https://tiendamax.org/imagenes/img_1782438920638.webp"
     ],
     "precioActual": 80,
     "precioOriginal": 0,
@@ -1955,9 +1955,9 @@
   {
     "id": 1782439189958,
     "nombre": "​🌐 MINI Repetidor Wi-fi (300 Mbps)",
-    "imagen": "https://tiendamax.org/imagenes/img_1782439187376.jpg",
+    "imagen": "https://tiendamax.org/imagenes/img_1782439187376.webp",
     "imagenes": [
-      "https://tiendamax.org/imagenes/img_1782439187376.jpg"
+      "https://tiendamax.org/imagenes/img_1782439187376.webp"
     ],
     "precioActual": 20,
     "precioOriginal": 0,
@@ -1983,9 +1983,9 @@
   {
     "id": 1782439428159,
     "nombre": "Auriculares Gaming Inalámbrico Nubwo",
-    "imagen": "https://tiendamax.org/imagenes/img_1782439424609.jpg",
+    "imagen": "https://tiendamax.org/imagenes/img_1782439424609.webp",
     "imagenes": [
-      "https://tiendamax.org/imagenes/img_1782439424609.jpg"
+      "https://tiendamax.org/imagenes/img_1782439424609.webp"
     ],
     "precioActual": 50,
     "precioOriginal": 0,
@@ -2011,9 +2011,9 @@
   {
     "id": 1782439525089,
     "nombre": "Panel Decorativo de Hojas Artificiales",
-    "imagen": "https://tiendamax.org/imagenes/img_1782439522857.jpg",
+    "imagen": "https://tiendamax.org/imagenes/img_1782439522857.webp",
     "imagenes": [
-      "https://tiendamax.org/imagenes/img_1782439522857.jpg"
+      "https://tiendamax.org/imagenes/img_1782439522857.webp"
     ],
     "precioActual": 4,
     "precioOriginal": 0,
@@ -2037,10 +2037,10 @@
   {
     "id": 1782439688529,
     "nombre": "Transferencia Automática o Manual",
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783838238277.jpg",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783838238277.webp",
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783838238277.jpg",
-      "https://tiendamax.org/imagenes/img_1782439684820.jpg"
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783838238277.webp",
+      "https://tiendamax.org/imagenes/img_1782439684820.webp"
     ],
     "precioActual": 65,
     "precioOriginal": 0,
@@ -2067,9 +2067,9 @@
   {
     "id": 1782535594832,
     "nombre": "Batidora Milexus Cristal",
-    "imagen": "https://tiendamax.org/imagenes/img_1782535592928.jpg",
+    "imagen": "https://tiendamax.org/imagenes/img_1782535592928.webp",
     "imagenes": [
-      "https://tiendamax.org/imagenes/img_1782535592928.jpg"
+      "https://tiendamax.org/imagenes/img_1782535592928.webp"
     ],
     "precioActual": 32,
     "precioOriginal": 0,
@@ -2092,10 +2092,10 @@
   {
     "id": 1782535836192,
     "nombre": "Smart TV Milexus 43\"",
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783838818101.jpg",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783838818101.webp",
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783838818101.jpg",
-      "https://tiendamax.org/imagenes/img_1782535834600.jpg"
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783838818101.webp",
+      "https://tiendamax.org/imagenes/img_1782535834600.webp"
     ],
     "precioActual": 250,
     "precioOriginal": 0,
@@ -2118,12 +2118,12 @@
   {
     "id": 1782536078989,
     "nombre": "Lavadora Milexus de Doble Tina (9 kg)",
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783838636279.jpg",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783838636279.webp",
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783838636279.jpg",
-      "https://tiendamax.org/imagenes/img_1782536075088.jpg",
-      "https://tiendamax.org/imagenes/img_1782536076725.jpg",
-      "https://tiendamax.org/imagenes/img_1782536077803.jpg"
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783838636279.webp",
+      "https://tiendamax.org/imagenes/img_1782536075088.webp",
+      "https://tiendamax.org/imagenes/img_1782536076725.webp",
+      "https://tiendamax.org/imagenes/img_1782536077803.webp"
     ],
     "precioActual": 210,
     "precioOriginal": 0,
@@ -2146,9 +2146,9 @@
   {
     "id": 1782536259878,
     "nombre": "Split Milexus 1T",
-    "imagen": "https://tiendamax.org/imagenes/img_1782536258457.jpg",
+    "imagen": "https://tiendamax.org/imagenes/img_1782536258457.webp",
     "imagenes": [
-      "https://tiendamax.org/imagenes/img_1782536258457.jpg"
+      "https://tiendamax.org/imagenes/img_1782536258457.webp"
     ],
     "precioActual": 270,
     "precioOriginal": 0,
@@ -2171,9 +2171,9 @@
   {
     "id": 1782536637390,
     "nombre": "Exhibidor Vertical Milexus 13 Pies",
-    "imagen": "https://tiendamax.org/imagenes/img_1782536635721.jpg",
+    "imagen": "https://tiendamax.org/imagenes/img_1782536635721.webp",
     "imagenes": [
-      "https://tiendamax.org/imagenes/img_1782536635721.jpg"
+      "https://tiendamax.org/imagenes/img_1782536635721.webp"
     ],
     "precioActual": 600,
     "precioOriginal": 0,
@@ -2196,9 +2196,9 @@
   {
     "id": 1782537024284,
     "nombre": "Exhibidor Vertical de Doble Puerta Milexus 20 Pies",
-    "imagen": "https://tiendamax.org/imagenes/img_1782537022799.jpg",
+    "imagen": "https://tiendamax.org/imagenes/img_1782537022799.webp",
     "imagenes": [
-      "https://tiendamax.org/imagenes/img_1782537022799.jpg"
+      "https://tiendamax.org/imagenes/img_1782537022799.webp"
     ],
     "precioActual": 950,
     "precioOriginal": 0,
@@ -2221,10 +2221,10 @@
   {
     "id": 1782537341725,
     "nombre": "Nevera Horizontal Milexus 7 Pies",
-    "imagen": "https://tiendamax.org/imagenes/img_1782537339330.jpg",
+    "imagen": "https://tiendamax.org/imagenes/img_1782537339330.webp",
     "imagenes": [
-      "https://tiendamax.org/imagenes/img_1782537339330.jpg",
-      "https://tiendamax.org/imagenes/img_1782537340765.jpg"
+      "https://tiendamax.org/imagenes/img_1782537339330.webp",
+      "https://tiendamax.org/imagenes/img_1782537340765.webp"
     ],
     "precioActual": 250,
     "precioOriginal": 0,
@@ -2247,10 +2247,10 @@
   {
     "id": 1782791345628,
     "nombre": "Interruptor de Transferencia Automática 220V",
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783838287182.jpg",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783838287182.webp",
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783838287182.jpg",
-      "https://tiendamax.org/imagenes/img_1782791342848.jpg"
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783838287182.webp",
+      "https://tiendamax.org/imagenes/img_1782791342848.webp"
     ],
     "precioActual": 70,
     "precioOriginal": 0,
@@ -2275,9 +2275,9 @@
   {
     "id": 1783179634140,
     "nombre": "​⚡ Inversor de Corriente Onda Senoidal Pura Unizuki 3000W",
-    "imagen": "https://tiendamax.org/imagenes/img_1783179632067.jpg",
+    "imagen": "https://tiendamax.org/imagenes/img_1783179632067.webp",
     "imagenes": [
-      "https://tiendamax.org/imagenes/img_1783179632067.jpg"
+      "https://tiendamax.org/imagenes/img_1783179632067.webp"
     ],
     "precioActual": 130,
     "precioOriginal": 0,
@@ -2300,9 +2300,9 @@
   {
     "id": 1783179800783,
     "nombre": "​⚡ Inversor de Corriente Onda Senoidal Pura Tataliken 4000W (24V)",
-    "imagen": "https://tiendamax.org/imagenes/img_1783179797781.jpg",
+    "imagen": "https://tiendamax.org/imagenes/img_1783179797781.webp",
     "imagenes": [
-      "https://tiendamax.org/imagenes/img_1783179797781.jpg"
+      "https://tiendamax.org/imagenes/img_1783179797781.webp"
     ],
     "precioActual": 170,
     "precioOriginal": 0,
@@ -2325,21 +2325,21 @@
   {
     "id": 1783221896639,
     "nombre": "​🚗 Changan CS75 PLUS 2024 (SUV Compacta)",
-    "imagen": "https://tiendamax.org/imagenes/img_1783473953506.jpg",
+    "imagen": "https://tiendamax.org/imagenes/img_1783473953506.webp",
     "imagenes": [
-      "https://tiendamax.org/imagenes/img_1783473953506.jpg",
-      "https://tiendamax.org/imagenes/img_1783221876387.jpg",
-      "https://tiendamax.org/imagenes/img_1783221878802.jpg",
-      "https://tiendamax.org/imagenes/img_1783221880745.jpg",
-      "https://tiendamax.org/imagenes/img_1783221882351.jpg",
-      "https://tiendamax.org/imagenes/img_1783221883825.jpg",
-      "https://tiendamax.org/imagenes/img_1783221885568.jpg",
-      "https://tiendamax.org/imagenes/img_1783221887436.jpg",
-      "https://tiendamax.org/imagenes/img_1783221888712.jpg",
-      "https://tiendamax.org/imagenes/img_1783221890323.jpg",
-      "https://tiendamax.org/imagenes/img_1783221892239.jpg",
-      "https://tiendamax.org/imagenes/img_1783221893885.jpg",
-      "https://tiendamax.org/imagenes/img_1783221895127.jpg"
+      "https://tiendamax.org/imagenes/img_1783473953506.webp",
+      "https://tiendamax.org/imagenes/img_1783221876387.webp",
+      "https://tiendamax.org/imagenes/img_1783221878802.webp",
+      "https://tiendamax.org/imagenes/img_1783221880745.webp",
+      "https://tiendamax.org/imagenes/img_1783221882351.webp",
+      "https://tiendamax.org/imagenes/img_1783221883825.webp",
+      "https://tiendamax.org/imagenes/img_1783221885568.webp",
+      "https://tiendamax.org/imagenes/img_1783221887436.webp",
+      "https://tiendamax.org/imagenes/img_1783221888712.webp",
+      "https://tiendamax.org/imagenes/img_1783221890323.webp",
+      "https://tiendamax.org/imagenes/img_1783221892239.webp",
+      "https://tiendamax.org/imagenes/img_1783221893885.webp",
+      "https://tiendamax.org/imagenes/img_1783221895127.webp"
     ],
     "precioActual": 33000,
     "precioOriginal": 0,
@@ -2363,10 +2363,10 @@
   {
     "id": 1783453597496,
     "nombre": "​🌐 Router TP-Link Archer A6 (AC1200)",
-    "imagen": "https://tiendamax.org/imagenes/img_1783453593801.jpg",
+    "imagen": "https://tiendamax.org/imagenes/img_1783453593801.webp",
     "imagenes": [
-      "https://tiendamax.org/imagenes/img_1783453593801.jpg",
-      "https://tiendamax.org/imagenes/img_1783453595849.jpg"
+      "https://tiendamax.org/imagenes/img_1783453593801.webp",
+      "https://tiendamax.org/imagenes/img_1783453595849.webp"
     ],
     "precioActual": 110,
     "precioOriginal": 0,
@@ -2418,9 +2418,9 @@
   {
     "id": 1783473894756,
     "nombre": "Cargador Tactil de Batería Inteligente 12V /15A",
-    "imagen": "https://tiendamax.org/imagenes/img_1783473890998.jpg",
+    "imagen": "https://tiendamax.org/imagenes/img_1783473890998.webp",
     "imagenes": [
-      "https://tiendamax.org/imagenes/img_1783473890998.jpg"
+      "https://tiendamax.org/imagenes/img_1783473890998.webp"
     ],
     "precioActual": 65,
     "precioOriginal": 0,
@@ -2441,10 +2441,10 @@
   {
     "id": 1783474199534,
     "nombre": "Cargador de 12V(20A) y 24V(10A) Configurable",
-    "imagen": "https://tiendamax.org/imagenes/img_1783474195842.jpg",
+    "imagen": "https://tiendamax.org/imagenes/img_1783474195842.webp",
     "imagenes": [
-      "https://tiendamax.org/imagenes/img_1783474195842.jpg",
-      "https://tiendamax.org/imagenes/img_1783474198221.jpg"
+      "https://tiendamax.org/imagenes/img_1783474195842.webp",
+      "https://tiendamax.org/imagenes/img_1783474198221.webp"
     ],
     "precioActual": 85,
     "precioOriginal": 0,
@@ -2467,10 +2467,10 @@
   {
     "id": 1783474440848,
     "nombre": "Cargador Inteligente de 12V(35A) y 24V(15A)",
-    "imagen": "https://tiendamax.org/imagenes/img_1783474437066.jpg",
+    "imagen": "https://tiendamax.org/imagenes/img_1783474437066.webp",
     "imagenes": [
-      "https://tiendamax.org/imagenes/img_1783474437066.jpg",
-      "https://tiendamax.org/imagenes/img_1783474439419.jpg"
+      "https://tiendamax.org/imagenes/img_1783474437066.webp",
+      "https://tiendamax.org/imagenes/img_1783474439419.webp"
     ],
     "precioActual": 145,
     "precioOriginal": 0,
@@ -2493,10 +2493,10 @@
   {
     "id": 1783474747296,
     "nombre": "​🌐 MikroTik hEX (RB750Gr3)",
-    "imagen": "https://tiendamax.org/imagenes/img_1783474741055.jpg",
+    "imagen": "https://tiendamax.org/imagenes/img_1783474741055.webp",
     "imagenes": [
-      "https://tiendamax.org/imagenes/img_1783474741055.jpg",
-      "https://tiendamax.org/imagenes/img_1783474745566.jpg"
+      "https://tiendamax.org/imagenes/img_1783474741055.webp",
+      "https://tiendamax.org/imagenes/img_1783474745566.webp"
     ],
     "precioActual": 130,
     "precioOriginal": 0,
@@ -2520,10 +2520,10 @@
   {
     "id": 1783543451116,
     "nombre": "​🌐 Router Tenda TX12 Pro (Wi-Fi 6)",
-    "imagen": "https://tiendamax.org/imagenes/img_1783543448278.jpg",
+    "imagen": "https://tiendamax.org/imagenes/img_1783543448278.webp",
     "imagenes": [
-      "https://tiendamax.org/imagenes/img_1783543448278.jpg",
-      "https://tiendamax.org/imagenes/img_1783543450100.jpg"
+      "https://tiendamax.org/imagenes/img_1783543448278.webp",
+      "https://tiendamax.org/imagenes/img_1783543450100.webp"
     ],
     "precioActual": 130,
     "precioOriginal": 0,
