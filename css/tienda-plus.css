@@ -20,7 +20,7 @@
 .tmplus-aviso-btn.pedido:hover{background:rgba(37,211,102,.10);border-color:rgba(37,211,102,.55);color:#25d366;transform:none;box-shadow:none}
 
 /* ===== Compartir carrito ===== */
-.tmplus-share-cart{width:100%;margin-top:10px;background:transparent;border:1px solid #25D366;color:#25D366;border-radius:12px;padding:12px;font-size:14px;font-weight:700;cursor:pointer;transition:all .18s}
+.tmplus-share-cart{width:100%;margin-top:10px;background:transparent;border:1px solid #25D366;color:#25D366;border-radius:12px;padding:12px;font-size:14px;font-weight:700;cursor:pointer;transition:background-color .18s, color .18s}
 .tmplus-share-cart:hover{background:#25D366;color:#fff}
 
 /* ===== Modo claro ===== */

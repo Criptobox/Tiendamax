@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+    <meta charset="UTF-8">
 <meta name="tiendamax-admin-final-version" content="admin-final-202606111836">
 <script>window.TIENDAMAX_ADMIN_FINAL_VERSION="admin-final-202606111836";</script>
-<script src="js/error-report.js?v=c6699a5a"></script>
-    <meta charset="UTF-8">
+<script src="js/error-report.js?v=c6699a5a" defer></script>
     <script>
     // Aplicar tema guardado lo antes posible para evitar parpadeo
     (function(){
@@ -77,7 +77,6 @@
     <link rel="preconnect" href="https://firebase.googleapis.com" crossorigin>
     <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://www.googletagmanager.com">
-    <link rel="preconnect" href="https://tiendamax.org">
     <link rel="dns-prefetch" href="https://api.github.com">
     <link rel="dns-prefetch" href="https://firebaseinstallations.googleapis.com">
     <link rel="dns-prefetch" href="https://identitytoolkit.googleapis.com">
@@ -119,7 +118,7 @@
     <meta name="twitter:image" content="https://tiendamax.org/og-image.jpg">
     <meta name="twitter:image:alt" content="TiendaMax — Tienda online cubana">
 
-    <title>TiendaMax — Catálogo online con pedido por WhatsApp | tiendamax.org</title>
+    <title>TiendaMax — Catálogo online con pedido por WhatsApp</title>
 
     <!-- Schema.org para Google -->
     <script type="application/ld+json">
@@ -245,14 +244,20 @@
     <noscript><link rel="stylesheet" href="css/fonts.css?v=67235440"></noscript>
 
     <!-- Preload del bundle JS del núcleo (generado por scripts/build_js_bundle.py) -->
-    <link rel="preload" href="js/tm-bundle.js?v=4737fe50" as="script">
+    <link rel="preload" href="js/tm-bundle.js?v=570f3667" as="script">
+
+    <!-- Preload del catálogo: la foto hero (fetchpriority=high) no puede pedirse
+         hasta que este JSON responda y arme el <img>; sin este preload, el
+         descubridor de recursos del navegador no la ve hasta bien entrado el
+         parseo/ejecución de JS, retrasando el LCP. -->
+    <link rel="preload" href="productos-lite.json" as="fetch" crossorigin>
 
     <!-- CSS unido + minificado (generado por scripts/build_css.py vía GitHub Action).
          Para editar estilos, edita los CSS fuente en /css y la Action regenera este bundle. -->
 
 
 
-    <link rel="stylesheet" href="css/bundle.css?v=8f6472b4">
+    <link rel="stylesheet" href="css/bundle.css?v=fc8661bb">
 
 
 
@@ -1265,12 +1270,12 @@
                         <button data-action="mostrarFormResena" aria-label="Dejar una reseña" type="button" class="detail-resena-add-btn" id="btnAgregarResena">+ Agregar reseña</button>
                     </div>
                     <div id="formResena" class="form-resena" style="display:none;">
-                        <div class="estrellas-input" id="estrellasInput">
-                            <span data-action="setEstrellas" data-arg="1" class="estrella-btn">★</span>
-                            <span data-action="setEstrellas" data-arg="2" class="estrella-btn">★</span>
-                            <span data-action="setEstrellas" data-arg="3" class="estrella-btn">★</span>
-                            <span data-action="setEstrellas" data-arg="4" class="estrella-btn">★</span>
-                            <span data-action="setEstrellas" data-arg="5" class="estrella-btn">★</span>
+                        <div class="estrellas-input" id="estrellasInput" role="radiogroup" aria-label="Calificación en estrellas">
+                            <span data-action="setEstrellas" data-arg="1" class="estrella-btn" tabindex="0" role="radio" aria-checked="false" aria-label="1 estrella">★</span>
+                            <span data-action="setEstrellas" data-arg="2" class="estrella-btn" tabindex="0" role="radio" aria-checked="false" aria-label="2 estrellas">★</span>
+                            <span data-action="setEstrellas" data-arg="3" class="estrella-btn" tabindex="0" role="radio" aria-checked="false" aria-label="3 estrellas">★</span>
+                            <span data-action="setEstrellas" data-arg="4" class="estrella-btn" tabindex="0" role="radio" aria-checked="false" aria-label="4 estrellas">★</span>
+                            <span data-action="setEstrellas" data-arg="5" class="estrella-btn" tabindex="0" role="radio" aria-checked="false" aria-label="5 estrellas">★</span>
                         </div>
                         <input type="text" id="resenaAutor" placeholder="Tu nombre" aria-label="Tu nombre" class="resena-input" maxlength="30">
                         <textarea id="resenaTexto" placeholder="Cuenta tu experiencia con este producto..." aria-label="Cuenta tu experiencia con este producto" class="resena-textarea" maxlength="300" rows="3"></textarea>
@@ -1364,7 +1369,7 @@
     <!-- ===== TiendaMax modularizado (reemplaza script.js) ===== -->
     <!-- Bundle único (config→data→state→admin→product→catalog→init→ui→toast→iife→patches),
          generado por scripts/build_js_bundle.py a partir de js/src/*.src.js -->
-    <script src="js/tm-bundle.js?v=4737fe50" defer></script>
+    <script src="js/tm-bundle.js?v=570f3667" defer></script>
 
     <script src="js/push-fix.js?v=bb27d53c" defer></script>
     <script src="js/subcategorias.js?v=fa21ab00" defer></script>
@@ -1484,7 +1489,7 @@
     <script src="js/urgencia-ventas.js?v=ee8ca7d8" defer></script>
     <script src="js/banners.js?v=d7e09394" defer></script>
     <script src="js/combos.js?v=5598b08d" defer></script>
-    <script src="js/hero-efectos.js?v=454a15c2" defer></script>
+    <script src="js/hero-efectos.js?v=bb44e6ed" defer></script>
     <script src="js/web-vitals-snippet.js?v=70babd1c" defer></script>
     <!-- BOT DESACTIVADO: backend /api/chat no disponible en GitHub Pages
     <script src="js/tm-bot.js?v=7645d8c2" defer></script>
