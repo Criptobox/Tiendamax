@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#0a0a12">
 <meta name="robots" content="noindex,nofollow">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: blob: https:; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self' https://*.googleapis.com https://*.firebaseio.com https://*.firebasedatabase.app https://fcm.googleapis.com https://raw.githubusercontent.com https://api.github.com https://openrouter.ai https://api.deepseek.com https://api.groq.com https://api.anthropic.com https://generativelanguage.googleapis.com https://integrate.api.nvidia.com; frame-src 'self' https://tiendamax-8feb5.firebaseapp.com https://tiendamax-8feb5.web.app; object-src 'none'; base-uri 'self'; frame-ancestors 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: blob: https:; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self' https://*.googleapis.com https://*.firebaseio.com https://*.firebasedatabase.app https://fcm.googleapis.com https://raw.githubusercontent.com https://api.github.com https://openrouter.ai https://api.deepseek.com https://api.groq.com https://api.anthropic.com https://generativelanguage.googleapis.com; frame-src 'self' https://tiendamax-8feb5.firebaseapp.com https://tiendamax-8feb5.web.app; object-src 'none'; base-uri 'self'; frame-ancestors 'self'">
 <title>TiendaMax Admin</title>
 <script src="js/error-report.js?v=c6699a5a"></script>
 <link rel="icon" type="image/png" sizes="32x32" href="/iconos/favicon-32.png"><link rel="icon" type="image/png" sizes="192x192" href="/iconos/favicon-192.png">
@@ -637,7 +637,7 @@
         </div>
         <div class="section">
           <h3>🔑 API Key de IA (para el Agente)</h3>
-          <div class="form-group"><label class="form-label">API Key (Gemini / OpenRouter / Groq / Nvidia / DeepSeek)</label><input class="form-input" id="ia-key" type="text" placeholder="AIza… / sk-or-… / gsk_… / nvapi-… / sk-…"></div>
+          <div class="form-group"><label class="form-label">API Key (Gemini / OpenRouter / Groq / DeepSeek)</label><input class="form-input" id="ia-key" type="text" placeholder="AIza… / sk-or-… / gsk_… / sk-…"></div>
           <div style="display:flex;gap:8px;margin-top:10px"><button class="btn btn-primary" onclick="agenteGuardarKey()">💾 Guardar key</button><button class="btn btn-ghost" onclick="agenteBorrarKey()">🗑 Borrar</button></div>
           <p id="ia-key-status" style="font-size:12px;color:var(--muted);margin-top:8px">Sin key configurada</p>
         </div>
@@ -727,7 +727,7 @@
               <label class="file-box" for="productImagesExtra"><span class="fb-ico">🖼️</span><span class="fb-txt" id="productImagesExtra-name">Fotos extra (opcional)</span><input type="file" id="productImagesExtra" accept="image/*" multiple onchange="fileName(this,'productImagesExtra-name','Fotos extra (opcional)')"></label>
             </div>
             <button type="button" id="btnAnalizarFoto" onclick="analizarFotoYCompletar()" class="btn btn-ghost" style="width:100%;margin-top:10px">🤖 Analizar foto y completar</button>
-            <p style="font-size:11px;color:var(--muted);margin-top:6px;text-align:center">Escribe el nombre, elige la foto principal, y esto llena Descripción y Specs mirando la foto real (con Gemini o Nvidia) — revísalas antes de guardar.</p>
+            <p style="font-size:11px;color:var(--muted);margin-top:6px;text-align:center">Escribe el nombre, elige la foto principal, y esto llena Descripción y Specs mirando la foto real (con Gemini) — revísalas antes de guardar.</p>
             <button type="submit" class="btn btn-primary" style="width:100%;margin-top:14px">💾 Guardar y publicar producto</button>
             <p style="font-size:11px;color:var(--muted);margin-top:8px;text-align:center">Sube la imagen a GitHub y publica el catálogo automáticamente (usa tu token de Configuración).</p>
           </div>
@@ -833,7 +833,7 @@
     if (typeof window.go === 'function') window.go(map[tab] || tab);
   };
 </script>
-<script src="js/admin-copilot.js?v=66ffa544"></script>
+<script src="js/admin-copilot.js?v=0075dc67"></script>
 
 <script>
 (function(){
