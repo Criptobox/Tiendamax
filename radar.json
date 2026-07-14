@@ -1,6 +1,6 @@
 {
-  "actualizado": "2026-07-13T13:23:42.723351+00:00",
-  "fecha": "2026-07-13",
+  "actualizado": "2026-07-14T12:12:39.780639+00:00",
+  "fecha": "2026-07-14",
   "fuentes": [
     "revolico",
     "porlalivre",
@@ -9,7 +9,7 @@
   "resumen": {
     "vigilados": 3,
     "encimaMercado": 0,
-    "bajadasComp": 0,
+    "bajadasComp": 1,
     "sinDatos": 0
   },
   "productos": [
@@ -19,19 +19,15 @@
       "tuPrecio": 180.0,
       "mercado": {
         "min": 80.0,
-        "mediana": 170.0,
+        "mediana": 165.0,
         "n": 21
       },
-      "deltaAyerMediana": 0.0,
+      "deltaAyerMediana": -5.0,
       "estado": "competitivo",
       "sugerencia": {
         "texto": "Precio competitivo respecto al mercado"
       },
       "historial": [
-        {
-          "fecha": "2026-06-30",
-          "mediana": 170.0
-        },
         {
           "fecha": "2026-07-01",
           "mediana": 170.0
@@ -83,6 +79,10 @@
         {
           "fecha": "2026-07-13",
           "mediana": 170.0
+        },
+        {
+          "fecha": "2026-07-14",
+          "mediana": 165.0
         }
       ],
       "muestras": [
@@ -132,12 +132,12 @@
     },
     {
       "id": 1778102507659,
-      "nombre": "Pesa / Báscula Inteligente Digital.",
+      "nombre": "​⚖️ Báscula Digital de Alta Definición",
       "tuPrecio": 25.0,
       "mercado": {
-        "min": 20.0,
+        "min": 25.0,
         "mediana": 25.0,
-        "n": 13
+        "n": 1
       },
       "deltaAyerMediana": 0.0,
       "estado": "competitivo",
@@ -145,10 +145,6 @@
         "texto": "Precio competitivo respecto al mercado"
       },
       "historial": [
-        {
-          "fecha": "2026-06-30",
-          "mediana": 25.0
-        },
         {
           "fecha": "2026-07-01",
           "mediana": 25.0
@@ -200,56 +196,25 @@
         {
           "fecha": "2026-07-13",
           "mediana": 25.0
+        },
+        {
+          "fecha": "2026-07-14",
+          "mediana": 25.0
         }
       ],
       "muestras": [
         {
           "fuente": "revolico",
-          "titulo": "20 USD Pesa personal o báscula con sensor de temperatura. Peso máximo 366lb",
-          "precio": 20.0,
-          "url": "https://www.revolico.com/item/pesa-personal-o-bascula-con-sensor-de-temperatura-peso-maximo-366lb-55526051",
-          "dias": null
-        },
-        {
-          "fuente": "revolico",
-          "titulo": "25 USD Pesa/báscula inteligente digital",
+          "titulo": "25 USD Báscula o pesa digital gramera de cocina nueva en su caja",
           "precio": 25.0,
-          "url": "https://www.revolico.com/item/pesabascula-inteligente-digital-55069444",
-          "dias": null
-        },
-        {
-          "fuente": "revolico",
-          "titulo": "25 USD Pesa / Báscula inteligente digital.",
-          "precio": 25.0,
-          "url": "https://www.revolico.com/item/pesa-bascula-inteligente-digital-55017929",
-          "dias": null
-        },
-        {
-          "fuente": "revolico",
-          "titulo": "25 USD Pesa/ Báscula inteligente digital.",
-          "precio": 25.0,
-          "url": "https://www.revolico.com/item/pesa-bascula-inteligente-digital-54806061",
-          "dias": null
-        },
-        {
-          "fuente": "revolico",
-          "titulo": "25 USD Pesa/ Báscula inteligente digital.",
-          "precio": 25.0,
-          "url": "https://www.revolico.com/item/pesa-bascula-inteligente-digital-54755599",
-          "dias": null
-        },
-        {
-          "fuente": "revolico",
-          "titulo": "25 USD Pesa - Bascula inteligente digital",
-          "precio": 25.0,
-          "url": "https://www.revolico.com/item/pesa-bascula-inteligente-digital-51696464",
+          "url": "https://www.revolico.com/item/bascula-o-pesa-digital-gramera-de-cocina-nueva-en-su-caja-40575069",
           "dias": null
         }
       ]
     },
     {
       "id": 1778102582909,
-      "nombre": "Antorcha Para Soldadura TIG:",
+      "nombre": "​🔥 Antorcha de Soldadura TIG (Kit Profesional)",
       "tuPrecio": 90.0,
       "mercado": {
         "min": 69.0,
@@ -263,10 +228,6 @@
       },
       "historial": [
         {
-          "fecha": "2026-06-30",
-          "mediana": 90.0
-        },
-        {
           "fecha": "2026-07-01",
           "mediana": 90.0
         },
@@ -316,6 +277,10 @@
         },
         {
           "fecha": "2026-07-13",
+          "mediana": 90.0
+        },
+        {
+          "fecha": "2026-07-14",
           "mediana": 90.0
         }
       ],
