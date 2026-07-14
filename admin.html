@@ -2490,7 +2490,91 @@ function pubCatDrawPill(ctx,x,y,text,bg,fg,fs){
   pubRoundRect(ctx,x,y,tw+px*2,h,h/2); ctx.fillStyle=bg; ctx.fill();
   ctx.fillStyle=fg; ctx.textAlign='left'; ctx.textBaseline='middle'; ctx.fillText(text,x+px,y+h/2+1); ctx.textBaseline='alphabetic';
 }
+// ── Catálogo por categoría (diseño premium, estilo menú impreso) ──
+function pubCatEnsureCss(){
+  if(document.getElementById('tmCatalogStyles')) return;
+  const st=document.createElement('style'); st.id='tmCatalogStyles';
+  st.textContent=`
+  .tmcat-card{width:560px;background:#1a0f08;border:2px solid #c89244;border-radius:24px;padding:22px;color:#fff;box-shadow:0 0 40px rgba(200,146,68,.15);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;box-sizing:border-box}
+  .tmcat-hd{text-align:center;padding-bottom:16px;border-bottom:1px dashed #5a3a1a;margin-bottom:18px}
+  .tmcat-brand{color:#ff4d1a;font-size:34px;font-weight:900;letter-spacing:1px}
+  .tmcat-tag{font-size:22px;font-weight:800;margin-top:4px}
+  .tmcat-pill{display:inline-block;background:#c89244;color:#1a0f08;font-size:12px;font-weight:800;padding:4px 12px;border-radius:20px;margin-top:10px;letter-spacing:.5px}
+  .tmcat-envio{color:#7ed957;font-size:12px;font-weight:700;margin-top:10px}
+  .tmcat-top{background:linear-gradient(135deg,#2a1810,#1a0f08);border:1px solid #c89244;border-radius:14px;padding:14px;margin-bottom:16px}
+  .tmcat-toplbl{display:inline-block;background:linear-gradient(135deg,#ffd700,#ff8c00);color:#1a0f08;font-size:11px;font-weight:900;padding:3px 11px;border-radius:12px;margin-bottom:8px;letter-spacing:1px}
+  .tmcat-sec{margin-bottom:18px}
+  .tmcat-sect{display:flex;align-items:center;gap:8px;color:#c89244;font-size:14px;font-weight:800;letter-spacing:1.5px;margin-bottom:8px;text-transform:uppercase}
+  .tmcat-row{display:flex;justify-content:space-between;align-items:center;padding:11px 4px;border-bottom:1px solid #2a1a0a;gap:10px}
+  .tmcat-row:last-child{border-bottom:none}
+  .tmcat-l{flex:1;min-width:0}
+  .tmcat-nm{font-size:16px;font-weight:700;color:#fff}
+  .tmcat-sub{font-size:12px;color:#8a7a6a;margin-top:2px}
+  .tmcat-pr{color:#ff6a3d;font-weight:800;font-size:18px;white-space:nowrap}
+  .tmcat-bdg{display:inline-block;background:linear-gradient(135deg,#ffd700,#ff8c00);color:#1a0f08;font-size:10px;font-weight:900;padding:2px 7px;border-radius:10px;margin-left:6px;letter-spacing:.5px;vertical-align:middle}
+  .tmcat-more{color:#c89244;font-size:12px;font-weight:600;padding:6px 4px}
+  .tmcat-urg{background:linear-gradient(90deg,#2a1810,#1a0f08);border:1px solid #ff4d1a;border-radius:12px;padding:11px 14px;text-align:center;color:#ff6a3d;font-size:14px;font-weight:700;margin:18px 0 10px}
+  .tmcat-trust{text-align:center;font-size:12px;color:#8a7a6a;margin:8px 0 14px}.tmcat-trust .g{color:#7ed957}
+  .tmcat-cta{background:linear-gradient(135deg,#ff6a3d,#ff4d1a);border-radius:16px;padding:18px;text-align:center;box-shadow:0 6px 20px rgba(255,77,26,.4)}
+  .tmcat-cta-m{font-size:24px;font-weight:900;color:#fff}
+  .tmcat-cta-s{font-size:12px;color:#ffe0d0;margin-top:4px}
+  .tmcat-ft{text-align:center;margin-top:16px;padding-top:12px;border-top:1px dashed #5a3a1a;color:#c89244;font-size:13px;font-weight:700}`;
+  document.head.appendChild(st);
+}
+function _catClean(s){ return String(s==null?'':s).replace(/​/g,'').trim(); }
+function _catSubtitle(p){
+  const g=_catClean(p.garantia); if(g) return 'Garantía '+g;
+  const d=_catClean(p.descripcion).split(/\.\s|\n|,/)[0].trim();
+  if(d && d.length>=6) return d.length>44 ? d.slice(0,42).replace(/\s+\S*$/,'')+'…' : d;
+  const s=_catClean(p.subcategoria); if(s && s.toLowerCase()!=='todas') return s;
+  return _catClean(p.categoria)||'Disponible';
+}
+function tmCatalogHTML(cat){
+  const prods=pubCatProds(cat).slice(); if(!prods.length) return '';
+  const money=n=>'$'+Math.round(Number(n)||0);
+  let tops=prods.filter(p=>p.masVendido).slice(0,2);
+  if(tops.length<2){ const rest=prods.filter(p=>!tops.includes(p)).slice().sort((a,b)=>Number(b.precioActual||0)-Number(a.precioActual||0)); while(tops.length<2 && rest.length) tops.push(rest.shift()); }
+  const topIds=new Set(tops.map(p=>String(p.id)));
+  const resto=prods.filter(p=>!topIds.has(String(p.id)));
+  const groups={};
+  resto.forEach(p=>{ let k=_catClean(p.subcategoria); if(!k||k.toLowerCase()==='todas') k=_catClean(cat); (groups[k]=groups[k]||[]).push(p); });
+  const em=s=>{ const e=pubCatEmoji(s,cat); return e==='✨'?'':e+' '; };
+  const row=(p,badge)=>`<div class="tmcat-row"><div class="tmcat-l"><div class="tmcat-nm">${em(p.nombre)}${esc(p.nombre)}${badge?' <span class="tmcat-bdg">'+badge+'</span>':''}</div><div class="tmcat-sub">${esc(_catSubtitle(p))}</div></div><div class="tmcat-pr">${money(p.precioActual)}</div></div>`;
+  const topBox=tops.length?`<div class="tmcat-top"><div class="tmcat-toplbl">🏆 TOP VENTAS</div>${tops.map((p,i)=>row(p,i===0?'⭐ MÁS VENDIDO':'')).join('')}</div>`:'';
+  const MAX=12; let shown=0, extra=0, sectionsHtml='';
+  Object.entries(groups).forEach(([name,arr])=>{
+    if(shown>=MAX){ extra+=arr.length; return; }
+    const take=arr.slice(0,MAX-shown); extra+=arr.length-take.length; shown+=take.length;
+    sectionsHtml+=`<div class="tmcat-sec"><div class="tmcat-sect">${em(name)}${esc(String(name).toUpperCase())}</div>${take.map(p=>row(p,'')).join('')}</div>`;
+  });
+  const moreLink=extra>0?`<div class="tmcat-more">+ ${extra} referencia${extra!==1?'s':''} más en tienda →</div>`:'';
+  return `<div class="tmcat-card">
+    <div class="tmcat-hd"><div class="tmcat-brand">TIENDAMAX</div><div class="tmcat-tag">${esc(pubCatGancho(cat))}</div><div class="tmcat-pill">${esc(String(cat).toUpperCase())}</div><div class="tmcat-envio">⚡ ENVÍO HOY EN LA HABANA</div></div>
+    ${topBox}${sectionsHtml}${moreLink}
+    <div class="tmcat-urg">⏰ Precios HOY — con la tasa de mañana suben</div>
+    <div class="tmcat-trust"><span class="g">✅</span> Garantía real · Pruébalo al recibir · Atención personalizada</div>
+    <div class="tmcat-cta"><div class="tmcat-cta-m">📲 QUIERO →</div><div class="tmcat-cta-s">Escríbenos por WhatsApp · Te lo apartamos 24h</div></div>
+    <div class="tmcat-ft">🌐 tiendamax.org</div>
+  </div>`;
+}
 async function pubCatGenImg(cat){
+  const prods=pubCatProds(cat); if(!prods.length) return null;
+  if(typeof window.html2canvas==='function'){
+    try{
+      pubCatEnsureCss();
+      const holder=document.createElement('div');
+      holder.style.cssText='position:absolute;left:-9999px;top:0;pointer-events:none;';
+      holder.innerHTML=tmCatalogHTML(cat);
+      document.body.appendChild(holder);
+      const node=holder.querySelector('.tmcat-card');
+      const canvas=await window.html2canvas(node,{backgroundColor:'#0a0a0a',scale:2,useCORS:true,logging:false,width:node.offsetWidth,height:node.offsetHeight});
+      holder.remove();
+      return await new Promise(res=>canvas.toBlob(res,'image/png',.95));
+    }catch(e){ console.error('[catalogo]',e); }
+  }
+  return _pubCatGenImgLegacy(cat);
+}
+async function _pubCatGenImgLegacy(cat){
   const prods=pubCatProds(cat); if(!prods.length) return null;
   try{ if(_pubCatBag&&!_pubCatBag.complete){ await new Promise(r=>{ _pubCatBag.onload=r; _pubCatBag.onerror=r; setTimeout(r,1500); }); } }catch(e){}
   const W=1080;
