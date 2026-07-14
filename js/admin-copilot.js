@@ -256,9 +256,7 @@ function injectStyles(){
   .tcp-glow{position:absolute;left:50%;top:40%;width:640px;height:640px;transform:translate(-50%,-50%);background:radial-gradient(circle,rgba(255,107,26,.30) 0%,rgba(255,107,26,.08) 32%,transparent 62%)}
   .tcp-spark{position:absolute;width:4px;height:4px;border-radius:50%;background:#ff8c42;box-shadow:0 0 10px #ff8c42}
   .tcp-header{position:relative;z-index:3;display:flex;align-items:center;justify-content:center;gap:12px;padding:30px 20px 0}
-  .tcp-logo{width:52px;height:52px;background:#ff6b1a;border-radius:6px 6px 16px 16px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(255,107,26,.45);position:relative}
-  .tcp-logo::before{content:"";position:absolute;top:-11px;left:50%;transform:translateX(-50%);width:26px;height:17px;border:4px solid #ff6b1a;border-bottom:0;border-radius:13px 13px 0 0}
-  .tcp-logo-m{color:#fff;font-weight:900;font-size:30px;line-height:1}
+  .tcp-logo-img{width:58px;height:58px;border-radius:13px;object-fit:cover;box-shadow:0 4px 14px rgba(255,107,26,.4)}
   .tcp-logo-txt{font-size:36px;font-weight:700;color:#fff;letter-spacing:-.5px}.tcp-logo-txt em{font-style:italic;color:#ff6b1a;font-weight:800}
   .tcp-tag{position:relative;z-index:3;margin:26px auto 0;width:fit-content;max-width:80%;background:rgba(255,107,26,.10);border:1.5px solid #ff6b1a;color:#ff8c42;font-size:16px;font-weight:700;letter-spacing:2px;padding:8px 22px;border-radius:24px;display:flex;align-items:center;gap:10px;white-space:nowrap}
   .tcp-tag::before{content:"⚡";font-size:18px}
@@ -1353,7 +1351,7 @@ function _cartelHTML(d){
   const imgUrl=d.imgUrl||'';
   return `<div class="tcp-bg"></div><div class="tcp-glow"></div>`
     +`<span class="tcp-spark" style="top:20%;right:30%"></span><span class="tcp-spark" style="top:25%;right:15%;width:3px;height:3px"></span><span class="tcp-spark" style="bottom:35%;right:20%;width:5px;height:5px"></span><span class="tcp-spark" style="bottom:30%;left:18%;width:3px;height:3px"></span><span class="tcp-spark" style="top:30%;left:22%"></span>`
-    +`<div class="tcp-header"><div class="tcp-logo"><div class="tcp-logo-m">M</div></div><div class="tcp-logo-txt">Tienda<em>Max</em></div></div>`
+    +`<div class="tcp-header"><img class="tcp-logo-img" src="/iconos/icon-512.png" alt="TiendaMax"><div class="tcp-logo-txt">Tienda<em>Max</em></div></div>`
     +`<div class="tcp-tag">${esc(_cClip(d.tag||'DESTACADO',18))}</div>`
     +`<div class="tcp-title"><div class="tcp-t1" style="font-size:${tf}px">${esc(w1)}</div>${w2?`<div class="tcp-t2" style="font-size:${tf}px">${esc(w2)}</div>`:''}</div>`
     +`<div class="tcp-tagline">${esc(d.tagline||'')}</div>`
@@ -1378,9 +1376,8 @@ async function promoDescargarCartel(btn){
   const original = btn ? btn.textContent : '';
   if (btn) { btn.textContent = '⏳ Generando…'; btn.style.pointerEvents='none'; }
   try {
-    // Espera a que la foto del producto cargue para que no salga en blanco.
-    const im = node.querySelector('img');
-    if (im && !im.complete) await new Promise(r=>{ im.onload=r; im.onerror=r; setTimeout(r,4000); });
+    // Espera a que TODAS las imágenes (logo + foto del producto) carguen.
+    await Promise.all([...node.querySelectorAll('img')].map(im => im.complete ? null : new Promise(r=>{ im.onload=r; im.onerror=r; setTimeout(r,4000); })));
     const canvas = await window.html2canvas(node, { backgroundColor:'#000', scale:2, useCORS:true, allowTaint:false, logging:false, width:node.offsetWidth, height:node.offsetHeight });
     const link = document.createElement('a');
     link.download = 'cartel-tiendamax-' + Date.now() + '.png';

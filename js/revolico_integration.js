@@ -1114,8 +1114,7 @@ function cerrarRevSelector() {
     async function _tmPubCartelCanvas() {
         const node = document.getElementById('tmPubCartel');
         if (node && typeof window.html2canvas === 'function') {
-            const im = node.querySelector('img');
-            if (im && !im.complete) await new Promise(r => { im.onload = r; im.onerror = r; setTimeout(r, 4000); });
+            await Promise.all([...node.querySelectorAll('img')].map(im => im.complete ? null : new Promise(r => { im.onload = r; im.onerror = r; setTimeout(r, 4000); })));
             return await window.html2canvas(node, { backgroundColor: '#000', scale: 2, useCORS: true, logging: false, width: node.offsetWidth, height: node.offsetHeight });
         }
         return document.getElementById('tmPubWACanvas');
