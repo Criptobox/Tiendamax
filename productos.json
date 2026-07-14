@@ -194,7 +194,7 @@
     ],
     "imagenes": [
       "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784007772666.webp",
-      "https://tiendamax.org/imagenes/img_1778102507659.webp"
+      "https://tiendamax.org/imagenes/img_1778102507659_v2.webp"
     ]
   },
   {
@@ -278,7 +278,7 @@
     ],
     "imagenes": [
       "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784007970666.webp",
-      "https://tiendamax.org/imagenes/img_1778103856933.webp"
+      "https://tiendamax.org/imagenes/img_1778103856933_v2.webp"
     ]
   },
   {
@@ -458,7 +458,7 @@
     "comisionMoneda": "USD",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1783837070407.webp",
-      "https://tiendamax.org/imagenes/img_1778104735789.webp"
+      "https://tiendamax.org/imagenes/img_1778104735789_v2.webp"
     ],
     "descripcion": "Tu propia red Wi-Fi en cualquier lugar. Este router convierte la señal de datos de tu tarjeta SIM en una potente red inalámbrica, ideal para hogares, oficinas temporales o zonas donde la fibra óptica no es una opción viable.\n​Ficha Técnica:\n​Conectividad Total: 📱 Ranura para tarjeta SIM integrada; simplemente inserta tu SIM y empieza a navegar.\n​Velocidad: 🚀 Soporta redes 4G LTE para una navegación fluida, streaming y conexión de múltiples dispositivos.\n​Versatilidad: 🔗 Diseño compacto y eficiente, ideal tanto para uso fijo en casa como para llevarlo de viaje.\n​Antenas: 📡 Antenas de alta ganancia para asegurar una recepción de señal móvil superior incluso en áreas con cobertura limitada.\n​Seguridad: 🛡️ Encriptación robusta para mantener tu red y tus datos protegidos.\n​Especificaciones (Specs):\n​Tipo: Router Wi-Fi con módem 4G LTE incorporado.\n​Compatibilidad: Funciona con los estándares de red móvil más comunes.\n​Gestión: Interfaz web sencilla para configurar el APN y gestionar el consumo de datos.\n​Puertos: Incluye puertos LAN para conectar dispositivos por cable si lo requieres.\n​Uso Ideal: Zonas sin cobertura de cable, respaldo de internet, trabajo remoto y soluciones de movilidad.\n\n​💡 ¿Por qué es la mejor opción?\n​Sin cables: Solo inserta tu tarjeta SIM y navega al instante.\n​Configuración fácil: Compatible con APN manual para una conexión rápida con la red local.\n​Ideal para cualquier lugar: Perfecto para zonas donde no llega el cable o como conexión de respaldo garantizada.\n​Multi-usuario: Comparte tus datos móviles con toda la familia o tu equipo de trabajo al mismo tiempo."
   },
@@ -1385,7 +1385,7 @@
     "comisionMoneda": "USD",
     "imagenes": [
       "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783838545299.webp",
-      "https://tiendamax.org/imagenes/img_1778907258376.webp"
+      "https://tiendamax.org/imagenes/img_1778907258376_v2.webp"
     ]
   },
   {
@@ -1543,7 +1543,7 @@
     "nombre": "Zosl - Cámara de Seguridad CCTV",
     "precioActual": 45,
     "precioOriginal": 0,
-    "imagen": "https://tiendamax.org/imagenes/img_1780344655996.webp",
+    "imagen": "https://tiendamax.org/imagenes/img_1780344655996_v2.webp",
     "categoria": "SEGURIDAD",
     "subcategoria": "CÁMARAS",
     "stock": 11,
@@ -1976,9 +1976,9 @@
   {
     "id": 1782438922547,
     "nombre": "​🌐 Router Tp-link Archer AX1450 (Wi-fi 6)",
-    "imagen": "https://tiendamax.org/imagenes/img_1782438920638.webp",
+    "imagen": "https://tiendamax.org/imagenes/img_1782438920638_v2.webp",
     "imagenes": [
-      "https://tiendamax.org/imagenes/img_1782438920638.webp"
+      "https://tiendamax.org/imagenes/img_1782438920638_v2.webp"
     ],
     "precioActual": 80,
     "precioOriginal": 0,
@@ -2386,9 +2386,9 @@
       "https://tiendamax.org/imagenes/img_1783221885568.webp",
       "https://tiendamax.org/imagenes/img_1783221887436.webp",
       "https://tiendamax.org/imagenes/img_1783221888712.webp",
-      "https://tiendamax.org/imagenes/img_1783221890323.webp",
+      "https://tiendamax.org/imagenes/img_1783221890323_v2.webp",
       "https://tiendamax.org/imagenes/img_1783221892239.webp",
-      "https://tiendamax.org/imagenes/img_1783221893885.webp",
+      "https://tiendamax.org/imagenes/img_1783221893885_v2.webp",
       "https://tiendamax.org/imagenes/img_1783221895127.webp"
     ],
     "precioActual": 33000,
