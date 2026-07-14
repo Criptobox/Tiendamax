@@ -617,6 +617,20 @@ async function iaLlamarModelo(prompt, imagen){
       r=await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key='+key,{method:'POST',headers:{'Content-Type':'application/json'},signal:ctrl.signal,body:JSON.stringify({contents:[{parts}]})});
       j=await r.json(); return j.candidates?.[0]?.content?.parts?.[0]?.text||null;
     }
+    // Nvidia con imagen: GLM-5.2 es solo texto, así que si hay foto se usa
+    // Nemotron 3 Nano Omni (mismo catálogo Nvidia, misma key) en formato
+    // OpenAI vision (content en array con image_url en data URI).
+    if(key.startsWith('nvapi-') && imagen && imagen.data){
+      r=await fetch('https://integrate.api.nvidia.com/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},signal:ctrl.signal,body:JSON.stringify({
+        model:'nvidia/nemotron-3-nano-omni-30b-a3b-reasoning',
+        messages:[{role:'user',content:[
+          {type:'text',text:prompt},
+          {type:'image_url',image_url:{url:'data:'+(imagen.mime||'image/jpeg')+';base64,'+imagen.data}}
+        ]}],
+        max_tokens:500
+      })});
+      j=await r.json(); return j.choices?.[0]?.message?.content||null;
+    }
     const cfg = key.startsWith('sk-or') ? {url:'https://openrouter.ai/api/v1/chat/completions',model:'openrouter/auto'}
       : key.startsWith('gsk_') ? {url:'https://api.groq.com/openai/v1/chat/completions',model:'llama-3.3-70b-versatile'}
       : key.startsWith('nvapi-') ? {url:'https://integrate.api.nvidia.com/v1/chat/completions',model:'z-ai/glm-5-2'}
@@ -649,7 +663,7 @@ function _iaPromptDescripcion(p, tieneImagen){
 async function _iaGenerarLoteDescripciones(lista){
   const grupo=[]; let ok=0;
   const key=(localStorage.getItem('anthropicApiKey')||'').trim();
-  const soportaImagen=key.startsWith('AIza'); // solo Gemini ve fotos en esta integración
+  const soportaImagen=key.startsWith('AIza')||key.startsWith('nvapi-'); // Gemini y Nvidia (Nemotron Omni) ven fotos
   for(const p of lista){
     let imagen=null;
     if(soportaImagen){
