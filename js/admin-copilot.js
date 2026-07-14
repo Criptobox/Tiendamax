@@ -281,14 +281,14 @@ function injectStyles(){
   .tcp-trust-ic{width:36px;height:36px;flex-shrink:0;background:rgba(255,107,26,.10);border:1.5px solid #ff6b1a;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px}
   .tcp-trust-t{font-size:11px;font-weight:800;color:#fff;letter-spacing:.5px;line-height:1.1}
   .tcp-trust-d{font-size:9px;color:#999;margin-top:2px;line-height:1.3}
-  .tcp-price{position:absolute;left:40px;right:280px;bottom:210px;z-index:3;background:#1a0a05;border:2px solid #ff6b1a;border-radius:10px;padding:16px 20px;display:flex;align-items:center;justify-content:space-between}
+  .tcp-price{position:absolute;left:40px;right:280px;bottom:212px;z-index:3;background:linear-gradient(135deg,#3a1608,#1a0a05);border:2.5px solid #ff8c42;border-radius:14px;padding:18px 22px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 0 34px rgba(255,107,26,.45),inset 0 0 22px rgba(255,140,66,.10)}
   .tcp-price-m{display:flex;align-items:baseline;gap:6px}
-  .tcp-price-n{font-size:54px;font-weight:900;line-height:1;color:#ff6b1a;letter-spacing:-2px}
-  .tcp-price-c{font-size:20px;font-weight:700;color:#ff6b1a}
+  .tcp-price-n{font-size:66px;font-weight:900;line-height:1;color:#ff8c42;letter-spacing:-2px;text-shadow:0 0 24px rgba(255,107,26,.6)}
+  .tcp-price-c{font-size:22px;font-weight:800;color:#ff8c42}
   .tcp-price-s{text-align:right;font-size:11px;color:#aaa;line-height:1.3}.tcp-price-s strong{color:#fff;display:block;font-size:14px}.tcp-price-s del{color:#888;font-size:13px}
   .tcp-stock{position:absolute;left:40px;right:280px;bottom:166px;z-index:3;display:flex;gap:12px}
   .tcp-pill{flex:1;background:rgba(255,255,255,.05);border:1px solid #333;border-radius:6px;padding:8px 12px;display:flex;align-items:center;gap:8px;font-size:12px;color:#fff;font-weight:600;white-space:nowrap}.tcp-pill span{font-size:14px}
-  .tcp-cta{position:absolute;left:40px;right:40px;bottom:78px;z-index:3;background:linear-gradient(180deg,#ff6b1a 0%,#e85a04 100%);border-radius:10px;padding:16px 22px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 8px 24px rgba(255,107,26,.4)}
+  .tcp-cta{position:absolute;left:40px;right:40px;bottom:78px;z-index:3;background:linear-gradient(135deg,#25d366 0%,#12a150 100%);border-radius:999px;padding:15px 26px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 8px 26px rgba(37,211,102,.45)}
   .tcp-cta-l{display:flex;align-items:center;gap:14px}
   .tcp-wa{width:44px;height:44px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font-size:24px}
   .tcp-cta-t{color:#fff;font-weight:800;font-size:14px;line-height:1.1;letter-spacing:.5px}.tcp-cta-t .s{display:block;font-size:11px;letter-spacing:2px;font-weight:700}.tcp-cta-t .b{display:block;font-size:22px;font-weight:900;letter-spacing:0;margin:2px 0}
