@@ -1072,23 +1072,29 @@ function cerrarRevSelector() {
     function _abrirModalWA(p) {
         const ex = document.getElementById('tmPubWAModal');
         if (ex) ex.remove();
+        // Cartel Pro: mismo diseño premium del generador del copiloto (tmCartelHTML)
+        // + html2canvas. Si por algo no están cargados, cae al canvas viejo.
+        const usarCartel = (typeof window.tmCartelHTML === 'function') && (typeof window.html2canvas === 'function');
         const m = document.createElement('div');
         m.id = 'tmPubWAModal';
         m.className = 'modal';
         m.style.cssText = 'display:flex;align-items:flex-end;';
+        const preview = usarCartel
+          ? `<div class="tcp-preview-wrap" style="margin:0 auto"><div class="tcp-preview-scale"><div class="tcp-card" id="tmPubCartel"></div></div></div>`
+          : `<canvas id="tmPubWACanvas" style="width:100%;border-radius:12px;background:#111;display:block;"></canvas>`;
         m.innerHTML = `
 <div class="modal-content" style="max-width:520px;max-height:92vh;display:flex;flex-direction:column;">
   <div class="modal-header"><h2>🟢 Estado WhatsApp — ${_escH(p.nombre)}</h2>
   <button class="close-btn" onclick="document.getElementById('tmPubWAModal').remove()" type="button">✕</button></div>
   <div style="padding:16px;display:flex;flex-direction:column;gap:12px;overflow-y:auto;">
-    <canvas id="tmPubWACanvas" style="width:100%;border-radius:12px;background:#111;display:block;"></canvas>
+    ${preview}
     <div style="display:flex;gap:8px;">
-      <button type="button" onclick="tmPubCopyCanvas('tmPubWACanvas')"
+      <button type="button" onclick="tmPubEstadoCopiar()"
         style="flex:1;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:10px;color:#ccc;font-size:13px;font-weight:700;cursor:pointer;padding:11px;">📋 Copiar</button>
-      <button type="button" onclick="tmPubDlCanvas('tmPubWACanvas','estado-${p.id}')"
+      <button type="button" onclick="tmPubEstadoDescargar('${p.id}')"
         style="flex:1;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:10px;color:#ccc;font-size:13px;font-weight:700;cursor:pointer;padding:11px;">⬇️ Descargar</button>
     </div>
-    <button type="button" onclick="tmPubCompartirWA('${p.id}')"
+    <button type="button" onclick="tmPubEstadoCompartir('${p.id}')"
       style="width:100%;padding:14px;background:linear-gradient(135deg,#25d366,#128c7e);color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:800;cursor:pointer;">
       🟢 Compartir como Estado →
     </button>
@@ -1097,10 +1103,47 @@ function cerrarRevSelector() {
 </div>`;
         document.body.appendChild(m);
         m.addEventListener('click', e => { if (e.target === m) m.remove(); });
-        // draw story canvas
-        const cv = document.getElementById('tmPubWACanvas');
-        _drawStoryCanvas(cv, p);
+        if (usarCartel) {
+            document.getElementById('tmPubCartel').innerHTML = window.tmCartelHTML(p);
+        } else {
+            _drawStoryCanvas(document.getElementById('tmPubWACanvas'), p);
+        }
     }
+    // Devuelve un <canvas> del cartel: html2canvas del nodo Cartel Pro, o el
+    // canvas viejo como fallback.
+    async function _tmPubCartelCanvas() {
+        const node = document.getElementById('tmPubCartel');
+        if (node && typeof window.html2canvas === 'function') {
+            const im = node.querySelector('img');
+            if (im && !im.complete) await new Promise(r => { im.onload = r; im.onerror = r; setTimeout(r, 4000); });
+            return await window.html2canvas(node, { backgroundColor: '#000', scale: 2, useCORS: true, logging: false, width: node.offsetWidth, height: node.offsetHeight });
+        }
+        return document.getElementById('tmPubWACanvas');
+    }
+    window.tmPubEstadoDescargar = async function (id) {
+        try { const cv = await _tmPubCartelCanvas(); if (!cv) return; const a = document.createElement('a'); a.download = 'estado-' + id + '.png'; a.href = cv.toDataURL('image/png'); a.click(); }
+        catch (e) { mostrarNotificacion('No pude generar el cartel: ' + (e && e.message || e), 'error'); }
+    };
+    window.tmPubEstadoCopiar = async function () {
+        try {
+            const cv = await _tmPubCartelCanvas(); if (!cv) return;
+            cv.toBlob(async blob => { try { await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]); mostrarNotificacion('✅ Imagen copiada', 'success'); } catch (e) { mostrarNotificacion('Descargá la imagen y adjuntala', 'error'); } }, 'image/png', .95);
+        } catch (e) { mostrarNotificacion('No pude generar el cartel', 'error'); }
+    };
+    window.tmPubEstadoCompartir = async function (id) {
+        try {
+            const cv = await _tmPubCartelCanvas(); if (!cv) return;
+            cv.toBlob(async blob => {
+                const file = new File([blob], 'estado-tiendamax.png', { type: 'image/png' });
+                if (navigator.canShare && navigator.canShare({ files: [file] }) && navigator.share) {
+                    try { await navigator.share({ files: [file] }); return; } catch (e) { if (/abort/i.test(e.message || '')) return; }
+                }
+                const a = document.createElement('a'); a.download = 'estado-' + id + '.png'; a.href = cv.toDataURL('image/png'); a.click();
+                mostrarNotificacion('Imagen descargada — súbela como estado', 'info');
+            });
+        } catch (e) { mostrarNotificacion('No pude generar el cartel', 'error'); }
+        document.getElementById('tmPubWAModal')?.remove();
+    };
 
     async function _drawStoryCanvas(canvas, p) {
         const W = 1080, H = 1920;
