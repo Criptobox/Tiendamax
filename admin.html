@@ -2663,6 +2663,31 @@ function pubWrapText(ctx,text,x,y,maxWidth,lineHeight,maxLines){
   return y;
 }
 async function pubShareStory(p){
+  // ── Cartel Pro (diseño premium via html2canvas). Si no está disponible,
+  //    cae al canvas simple de abajo. ──
+  try{
+    if(typeof window.tmCartelHTML==='function' && typeof window.html2canvas==='function' && document.getElementById('tmCopilotStyles')){
+      const holder=document.createElement('div');
+      holder.style.cssText='position:fixed;left:-9999px;top:0;pointer-events:none;opacity:0;';
+      holder.innerHTML='<div class="tcp-card" id="__tcpShare"></div>';
+      document.body.appendChild(holder);
+      const node=holder.querySelector('#__tcpShare');
+      node.innerHTML=window.tmCartelHTML(p);
+      await Promise.all([...node.querySelectorAll('img')].map(im=>im.complete?null:new Promise(r=>{im.onload=r;im.onerror=r;setTimeout(r,4000);})));
+      const canvas=await window.html2canvas(node,{backgroundColor:'#000',scale:2,useCORS:true,logging:false,width:node.offsetWidth,height:node.offsetHeight});
+      holder.remove();
+      const blob0=await new Promise(res=>canvas.toBlob(res,'image/png',.95));
+      const file0=new File([blob0],'tiendamax-estado-'+p.id+'.png',{type:'image/png'});
+      const text0='🔥 '+p.nombre+'\n'+pubUrl(p);
+      if(navigator.canShare&&navigator.canShare({files:[file0]})&&navigator.share){
+        try{ await navigator.share({files:[file0],title:p.nombre,text:text0}); showToast('✅ Elige WhatsApp → Estado para publicar'); return; }catch(e){ if(/abort/i.test(e.message||'')) return; }
+      }
+      const a0=document.createElement('a'); a0.href=URL.createObjectURL(blob0); a0.download=file0.name; a0.click(); setTimeout(()=>URL.revokeObjectURL(a0.href),1000);
+      try{ await navigator.clipboard.writeText(text0); }catch(e){}
+      showToast('🖼️ Cartel descargado','Súbelo a WhatsApp Estado');
+      return;
+    }
+  }catch(e){ console.error('[cartel]',e); document.getElementById('__tcpShare')?.parentNode?.remove(); }
   const W=1080,H=1920,c=document.createElement('canvas'); c.width=W; c.height=H; const ctx=c.getContext('2d');
   const grad=ctx.createLinearGradient(0,0,W,H); grad.addColorStop(0,'#0d0d0d'); grad.addColorStop(.55,'#2b160c'); grad.addColorStop(1,'#ff6b35'); ctx.fillStyle=grad; ctx.fillRect(0,0,W,H);
   ctx.fillStyle='rgba(0,0,0,.30)'; ctx.fillRect(0,0,W,H);
