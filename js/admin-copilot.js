@@ -588,14 +588,33 @@ function iaPersistir(msjToast){
 
 /* ── Llamada a IA real (opcional, usa la key de ⚙️ Config → API Key de IA) ──
    Detecta proveedor por prefijo: AIza=Gemini · sk-or=OpenRouter · gsk_=Groq · sk-=DeepSeek */
-async function iaLlamarModelo(prompt){
+// Descarga una imagen (mismo origen) y la vuelve base64 para mandarla a un
+// modelo con visión (hoy solo Gemini soporta imagen en esta integración).
+async function _iaImagenBase64(url){
+  if(!url) return null;
+  try{
+    const r=await fetch(url);
+    if(!r.ok) return null;
+    const blob=await r.blob();
+    const data=await new Promise((res,rej)=>{
+      const rd=new FileReader();
+      rd.onload=()=>res(String(rd.result).split(',')[1]||'');
+      rd.onerror=rej;
+      rd.readAsDataURL(blob);
+    });
+    return data ? {mime:blob.type||'image/jpeg', data} : null;
+  }catch(e){ return null; }
+}
+async function iaLlamarModelo(prompt, imagen){
   const key=(localStorage.getItem('anthropicApiKey')||'').trim();
   if(!key) return null;
   const t=25000, ctrl=new AbortController(); const tid=setTimeout(()=>ctrl.abort(),t);
   try{
     let r,j;
     if(key.startsWith('AIza')){
-      r=await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key='+key,{method:'POST',headers:{'Content-Type':'application/json'},signal:ctrl.signal,body:JSON.stringify({contents:[{parts:[{text:prompt}]}]})});
+      const parts=[{text:prompt}];
+      if(imagen && imagen.data) parts.unshift({inline_data:{mime_type:imagen.mime||'image/jpeg', data:imagen.data}});
+      r=await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key='+key,{method:'POST',headers:{'Content-Type':'application/json'},signal:ctrl.signal,body:JSON.stringify({contents:[{parts}]})});
       j=await r.json(); return j.candidates?.[0]?.content?.parts?.[0]?.text||null;
     }
     const cfg = key.startsWith('sk-or') ? {url:'https://openrouter.ai/api/v1/chat/completions',model:'openrouter/auto'}
@@ -608,17 +627,36 @@ async function iaLlamarModelo(prompt){
   finally{ clearTimeout(tid); }
 }
 window.iaLlamarModelo = iaLlamarModelo;
-// Prompt compartido: usa SOLO datos reales del producto, nunca inventa specs/materiales/compatibilidades.
-function _iaPromptDescripcion(p){
+// Prompt compartido: usa SOLO datos reales del producto (+ foto si el modelo
+// la soporta), nunca inventa specs/materiales/compatibilidades.
+// Estilo "ficha de producto": primera oración = qué es + beneficio principal,
+// luego 3-5 oraciones cortas de un solo punto de valor cada una — el sitio
+// (_renderDescripcionChecklist) convierte esas oraciones en una lista con ✓
+// automáticamente, por eso van en texto plano separadas por "punto y espacio",
+// sin viñetas ni markdown propios.
+function _iaPromptDescripcion(p, tieneImagen){
   const specsTxt=(Array.isArray(p.specs)?p.specs:[]).filter(Boolean).slice(0,4).join(', ');
-  return 'Escribe una descripción de venta para una tienda online cubana (entrega en Cuba, pedido por WhatsApp). Producto: "'+(p.nombre||'')+'". Categoría: '+(p.categoria||'General')+'.'+(specsTxt?' Especificaciones reales: '+specsTxt+'.':'')+' Precio: $'+Number(p.precioActual||0).toFixed(2)+' USD.'+(p.garantia?' Garantía: '+p.garantia+'.':'')+' Usa SOLO los datos dados arriba, no inventes especificaciones, materiales ni compatibilidades que no te di. Entre 200 y 350 caracteres, tono cercano y confiable, sin emojis, sin markdown, un solo párrafo.';
+  const datos='Producto: "'+(p.nombre||'')+'". Categoría: '+(p.categoria||'General')+'.'+(specsTxt?' Especificaciones reales: '+specsTxt+'.':'')+' Precio: $'+Number(p.precioActual||0).toFixed(2)+' USD.'+(p.garantia?' Garantía: '+p.garantia+'.':'');
+  const foto=tieneImagen?' Mira la foto adjunta: fíjate en marca, modelo y detalles visibles reales (texto del empaque, puertos, diseño) y úsalos si aportan algo verídico.':'';
+  return 'Escribe una descripción de venta para una tienda online cubana (entrega en Cuba, pedido por WhatsApp), estilo ficha de producto: '
+    +'primera oración = qué es y su beneficio principal; luego 3 a 5 oraciones cortas, cada una con UN solo punto de valor real (calidad/marca, una especificación técnica, un uso práctico, garantía si aplica). '
+    +'Cada oración va directo al punto, sin viñetas ni símbolos propios, separadas por punto y espacio normal (el sitio las convierte en lista automáticamente). '
+    +datos+foto
+    +' Usa SOLO datos reales dados arriba o realmente visibles en la foto — nunca inventes specs, materiales ni compatibilidades. Entre 220 y 400 caracteres en total, tono cercano y confiable, sin emojis, sin markdown, texto plano en oraciones.';
 }
 // Corre un lote de generación de descripciones sobre una lista de productos ya resuelta.
 // Devuelve {ok, grupo} para que el caller decida cómo avisar/persistir.
 async function _iaGenerarLoteDescripciones(lista){
   const grupo=[]; let ok=0;
+  const key=(localStorage.getItem('anthropicApiKey')||'').trim();
+  const soportaImagen=key.startsWith('AIza'); // solo Gemini ve fotos en esta integración
   for(const p of lista){
-    const txt=await iaLlamarModelo(_iaPromptDescripcion(p));
+    let imagen=null;
+    if(soportaImagen){
+      const url=(Array.isArray(p.imagenes)&&p.imagenes[0])||p.imagen;
+      imagen=await _iaImagenBase64(url);
+    }
+    const txt=await iaLlamarModelo(_iaPromptDescripcion(p, !!imagen), imagen);
     if(txt && txt.trim().length>=120){
       grupo.push({pid:String(p.id),campo:'descripcion',antes:p.descripcion});
       p.descripcion=txt.trim().slice(0,450);
