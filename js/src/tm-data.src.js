@@ -335,7 +335,14 @@ async function subirImagenAGitHub(fileOrBase64) {
     try {
         const base64data = base64full.includes(',') ? base64full.split(',')[1] : base64full;
         if (!base64data) return base64full; // fallback si el data URL está malformado
-        const filename   = 'img_' + Date.now() + '.jpg';
+        // comprimirImagen() devuelve WebP siempre que el navegador lo soporte
+        // (la inmensa mayoría de los casos) — la extensión del archivo debe
+        // reflejar el formato real, si no queda un .jpg que por dentro es
+        // WebP (rompe los link previews de WhatsApp/Facebook, que validan
+        // el formato real de la imagen, no solo la extensión).
+        const mimeMatch = base64full.match(/^data:image\/(\w+);base64,/);
+        const ext = mimeMatch ? (mimeMatch[1] === 'jpeg' ? 'jpg' : mimeMatch[1]) : 'jpg';
+        const filename   = 'img_' + Date.now() + '.' + ext;
         const path       = 'imagenes/' + filename;
         const apiUrl     = 'https://api.github.com/repos/' + user + '/' + repo + '/contents/' + path;
         const headers    = { 'Authorization': 'token ' + token, 'Content-Type': 'application/json' };

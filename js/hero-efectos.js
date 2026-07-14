@@ -42,17 +42,14 @@
         // y aplicamos el gradient inline para garantizar que funcione
         // aunque alguna regla CSS de bundle lo esté sobreescribiendo.
         if (h1.classList.contains('nd-h1')) {
-            // Forzar gradient en los spans .nd-grad vía inline styles
+            // Forzar gradient en los spans .nd-grad vía inline styles.
+            // El h1 ya quedó visible (opacity:1, sin transform) arriba — no lo
+            // volvemos a ocultar para hacerle fade-in: eso resetea/retrasa el
+            // LCP (el H1 es el candidato de LCP en móvil) y produce un
+            // parpadeo (aparece, desaparece, reaparece).
             h1.querySelectorAll('.nd-grad').forEach(function (sp) {
                 sp.style.cssText = 'background:linear-gradient(135deg,#FF6B35 0%,#FF9F43 50%,#E8501E 100%) !important;-webkit-background-clip:text !important;background-clip:text !important;-webkit-text-fill-color:transparent !important;color:transparent !important';
             });
-            h1.style.opacity = '0';
-            h1.style.transform = 'translateY(12px)';
-            setTimeout(function () {
-                h1.style.transition = 'opacity 0.7s ease-out, transform 0.7s ease-out';
-                h1.style.opacity = '1';
-                h1.style.transform = 'none';
-            }, reduceMotion ? 0 : 200);
             return;
         }
 

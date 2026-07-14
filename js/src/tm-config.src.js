@@ -643,6 +643,7 @@ function setEstrellas(n) {
     _estrellasSeleccionadas = n;
     document.querySelectorAll('.estrella-btn').forEach((btn, i) => {
         btn.classList.toggle('activa', i < n);
+        btn.setAttribute('aria-checked', i < n ? 'true' : 'false');
     });
 }
 

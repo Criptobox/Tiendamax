@@ -101,8 +101,8 @@ html body.light-mode .producto-card.pcard-v2 .precio-actual{
   background:none !important; -webkit-background-clip:border-box !important; background-clip:border-box !important;
   letter-spacing:-.02em !important; font-family:inherit !important; font-variant-numeric:tabular-nums;
 }
-html body .producto-card.pcard-v2.card-agotado .precio-actual{ color:#9a9aa8 !important; -webkit-text-fill-color:#9a9aa8 !important; }
-.producto-card.pcard-v2 .pv2-cur{ font-size:12px; font-weight:800; color:#9a9aa8; margin-left:3px; }
+html body .producto-card.pcard-v2.card-agotado .precio-actual{ color:var(--muted) !important; -webkit-text-fill-color:var(--muted) !important; }
+.producto-card.pcard-v2 .pv2-cur{ font-size:12px; font-weight:800; color:var(--muted); margin-left:3px; }
 .producto-card.pcard-v2 .pv2-tax{ font-size:11px; color:#6b6b7a; margin-top:0; }
 
 /* botón Pedir / Avísame (ancho completo) */
@@ -132,7 +132,7 @@ html body .producto-card.pcard-v2.card-agotado .precio-actual{ color:#9a9aa8 !im
 .producto-card.pcard-v2.card-agotado h3{ color:#b8b8c2 !important; }
 .producto-card.pcard-v2.card-agotado .pv2-cat{ background:#5a5a64; box-shadow:none; }
 body.light-mode .producto-card.pcard-v2.card-agotado{ opacity:.96; }
-body.light-mode .producto-card.pcard-v2.card-agotado h3{ color:#9a9aa2 !important; }
+body.light-mode .producto-card.pcard-v2.card-agotado h3{ color:var(--muted) !important; }
 body.light-mode .producto-card.pcard-v2.card-agotado .pv2-photo img{ filter:grayscale(.7); opacity:.75; }
 /* hook oculto para urgencia-ventas */
 .producto-card.pcard-v2 .stock-count{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); padding:0; margin:-1px; }
@@ -149,8 +149,8 @@ body.light-mode .producto-card.pcard-v2 .pv2-photo .btn-megusta{
 }
 body.light-mode .producto-card.pcard-v2 h3{ color:#1a1a1a !important; }
 body.light-mode .producto-card.pcard-v2 .pv2-cur{ color:#5a5a63; }
-body.light-mode .producto-card.pcard-v2 .pv2-tax{ color:#9a9aa2; }
-body.light-mode .producto-card.pcard-v2 .pv2-old{ color:#9a9aa2; }
+body.light-mode .producto-card.pcard-v2 .pv2-tax{ color:var(--muted); }
+body.light-mode .producto-card.pcard-v2 .pv2-old{ color:var(--muted); }
 
 /* ============================================================
    MODAL de detalle
@@ -203,7 +203,7 @@ body.light-mode .detail-cta-fav{ background:rgba(0,0,0,.04); border-color:rgba(0
   padding:11px 14px; border-bottom:1px solid rgba(255,255,255,.06);
 }
 .detail-spec-table .dsr-row:last-child{ border-bottom:none; }
-.detail-spec-table .dsr-label{ font-size:12.5px; color:#9a9aa2; font-weight:600; }
+.detail-spec-table .dsr-label{ font-size:12.5px; color:var(--muted); font-weight:600; }
 .detail-spec-table .dsr-value{ font-size:13.5px; color:#f4f4f7; font-weight:800; text-align:right; }
 .detail-spec-table .dsr-row.dsr-nolabel .dsr-value{ text-align:left; color:#e8e8ee; font-weight:700; }
 body.light-mode .detail-spec-table{ background:rgba(0,0,0,.025); border-color:rgba(0,0,0,.08); }
@@ -372,7 +372,7 @@ body.light-mode .detail-badge-nuevo{ background:rgba(255,107,53,.10); }
 }
 .detail-trust-card .dtc-ic{ font-size:20px; }
 .detail-trust-card .dtc-tx b{ display:block; font-size:11.5px; font-weight:800; color:#f2f2f5; }
-.detail-trust-card .dtc-tx small{ display:block; font-size:10px; color:#9a9aa2; margin-top:1px; }
+.detail-trust-card .dtc-tx small{ display:block; font-size:10px; color:var(--muted); margin-top:1px; }
 body.light-mode .detail-trust-card{ background:rgba(0,0,0,.03); border-color:rgba(0,0,0,.08); }
 body.light-mode .detail-trust-card .dtc-tx b{ color:#1a1a1a; }
 body.light-mode .detail-trust-card .dtc-tx small{ color:#8a8a92; }
@@ -381,7 +381,7 @@ body.light-mode .detail-trust-card .dtc-tx small{ color:#8a8a92; }
 #detailRatingTop.detail-rating-top{ flex-wrap:wrap; }
 .drt-stars{ color:#f59e0b; font-size:17px; letter-spacing:1px; }
 .drt-num{ font-weight:800; font-size:15px; color:#f2f2f5; }
-.drt-count{ font-size:12px; color:#9a9aa2; }
+.drt-count{ font-size:12px; color:var(--muted); }
 .drt-ver-todas{
   background:none; border:none; color:var(--coral,#FF6B35); font-size:12px; font-weight:700;
   cursor:pointer; padding:0; margin-left:2px; text-decoration:underline;
@@ -410,7 +410,7 @@ body.light-mode .drt-count{ color:#8a8a92; }
 }
 #productDetailModal .detail-price-sub{
   display:flex; flex-wrap:wrap; align-items:baseline; gap:5px;
-  font-size:13px; color:#9a9aa2; font-weight:600; margin-bottom:4px;
+  font-size:13px; color:var(--muted); font-weight:600; margin-bottom:4px;
 }
 #productDetailModal .detail-price-old{
   color:#8a8a92; text-decoration:line-through;
@@ -445,7 +445,7 @@ body.light-mode #productDetailModal .stock-bar{ background:rgba(0,0,0,.06); }
 }
 .contador-personas .pv-inner{
   display:inline-flex; align-items:center; gap:5px;
-  font-size:12px; color:#9a9aa2; font-weight:600;
+  font-size:12px; color:var(--muted); font-weight:600;
   background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.09);
   padding:6px 12px; border-radius:999px;
 }
@@ -624,7 +624,7 @@ body.light-mode #productDetailModal .detail-image-wrap{ box-shadow:0 8px 24px rg
 }
 .resena-meta{ flex:1; min-width:0; display:flex; flex-direction:column; gap:1px; }
 .resena-meta .resena-autor{ font-size:13px; font-weight:700; color:#f2f2f5; }
-.resena-meta .resena-fecha{ font-size:11px; color:#9a9aa2; }
+.resena-meta .resena-fecha{ font-size:11px; color:var(--muted); }
 .resena-estrellas{ font-size:12px; color:#fbbf24; white-space:nowrap; }
 .resena-verificada{
   display:inline-flex; align-items:center; gap:4px; margin-top:8px;
@@ -645,7 +645,7 @@ body.light-mode .resena-meta .resena-fecha{ color:#8a8a92; }
 }
 .dsc-price{ flex:1; min-width:0; line-height:1.15; }
 .dsc-price-main{ display:block; font-size:19px; font-weight:900; color:#f2f2f5; letter-spacing:-.01em; }
-.dsc-price-sub{ display:block; font-size:11px; color:#9a9aa2; margin-top:1px; }
+.dsc-price-sub{ display:block; font-size:11px; color:var(--muted); margin-top:1px; }
 .dsc-buy-btn{
   display:inline-flex; align-items:center; justify-content:center; gap:7px;
   background:#22c55e; color:#fff; border:none; border-radius:14px;
@@ -686,7 +686,7 @@ body.light-mode #productDetailModal .detail-sticky-cta{ background:linear-gradie
   color:var(--coral,#ff8a3d) !important; font-weight:800 !important;
 }
 #productDetailModal .detail-meta-line .detail-subcategory{
-  color:#9a9aa2 !important; font-weight:700 !important;
+  color:var(--muted) !important; font-weight:700 !important;
 }
 body.light-mode #productDetailModal .detail-meta-line .detail-category{ color:#E8501E !important; }
 body.light-mode #productDetailModal .detail-meta-line .detail-subcategory{ color:#8a8a92 !important; }

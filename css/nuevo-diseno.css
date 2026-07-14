@@ -53,7 +53,7 @@ html body .nd-hero-search .hsb-search .hsb-pill{width:100% !important;max-width:
 #ndHeroImg img{display:block}
 /* Puntos indicadores de la galería */
 .nd-hero-dots{position:absolute;bottom:-22px;left:0;right:0;display:flex;justify-content:center;gap:6px;z-index:11}
-.nd-hero-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.28);transition:all .3s ease}
+.nd-hero-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.28);transition:background-color .3s ease}
 .nd-hero-dot.active{width:18px;border-radius:100px;background:linear-gradient(90deg,#FF6B35,#FF9F43)}
 body.light-mode .nd-hero-dot{background:rgba(0,0,0,.18)}
 body.light-mode .nd-hero-dot.active{background:linear-gradient(90deg,#FF6B35,#FF9F43)}
@@ -745,7 +745,7 @@ html body .nd-hero-search .hsb-input{
   background:transparent !important;
   color:rgba(255,255,255,.85) !important;
 }
-html body .nd-hero-search .hsb-input::placeholder{color:rgba(255,255,255,.35) !important}
+html body .nd-hero-search .hsb-input::placeholder{color:rgba(255,255,255,.48) !important}
 html body.light-mode .nd-hero-search .hsb-pill{
   background:rgba(255,255,255,.72) !important;
   border:1px solid rgba(0,0,0,.07) !important;
