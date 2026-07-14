@@ -245,14 +245,14 @@
     <noscript><link rel="stylesheet" href="css/fonts.css?v=67235440"></noscript>
 
     <!-- Preload del bundle JS del núcleo (generado por scripts/build_js_bundle.py) -->
-    <link rel="preload" href="js/tm-bundle.js?v=4df4f48b" as="script">
+    <link rel="preload" href="js/tm-bundle.js?v=4737fe50" as="script">
 
     <!-- CSS unido + minificado (generado por scripts/build_css.py vía GitHub Action).
          Para editar estilos, edita los CSS fuente en /css y la Action regenera este bundle. -->
 
 
 
-    <link rel="stylesheet" href="css/bundle.css?v=217099df">
+    <link rel="stylesheet" href="css/bundle.css?v=8f6472b4">
 
 
 
@@ -1144,7 +1144,8 @@
                     <div class="detail-image-wrap">
                         <div class="detail-img-frame">
                             <img id="detailProductImage" src="data:," alt="Imagen del producto" class="detail-img"
-                                 data-action="toggleZoomImagen" data-pass-element="true">
+                                 data-action="toggleZoomImagen" data-pass-element="true"
+                                 tabindex="0" role="button" aria-label="Ampliar imagen del producto">
                             <div class="detail-zoom-hint">🔍 Toca para ampliar</div>
                             <div id="detailProductBadge" class="badge detail-badge" style="display:none;"></div>
                             <div id="detailMasVendidoBadge" class="badge-vendido detail-badge-hot" style="display:none;">🔥 Destacado</div>
@@ -1363,7 +1364,7 @@
     <!-- ===== TiendaMax modularizado (reemplaza script.js) ===== -->
     <!-- Bundle único (config→data→state→admin→product→catalog→init→ui→toast→iife→patches),
          generado por scripts/build_js_bundle.py a partir de js/src/*.src.js -->
-    <script src="js/tm-bundle.js?v=4df4f48b" defer></script>
+    <script src="js/tm-bundle.js?v=4737fe50" defer></script>
 
     <script src="js/push-fix.js?v=bb27d53c" defer></script>
     <script src="js/subcategorias.js?v=fa21ab00" defer></script>

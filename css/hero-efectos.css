@@ -28,6 +28,5 @@
 
 /* Respeta usuarios que prefieren menos movimiento */
 @media (prefers-reduced-motion: reduce) {
-    #tmxHeroLines { display: none; }
     .tmx-type-cursor { animation: none; opacity: 0; }
 }
