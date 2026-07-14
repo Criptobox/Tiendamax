@@ -364,7 +364,7 @@ async function buildTasks(){
   const sinSeo = ps.filter(p=>p.activo!==false && !p.seoTitle && !p.seoDescription);
   if (sinSeo.length>5) addTask(tasks,{kind:'seo',urgency:1,icon:'🔎',title:`${sinSeo.length} productos sin SEO`,detail:'Puedes usar IA masiva para mejorar títulos y descripciones.',action:'IA masiva',tab:'herramientas'});
 
-  if (!localStorage.getItem('anthropicApiKey') && ps.length>5) addTask(tasks,{kind:'ai',urgency:1,icon:'🤖',title:'IA no configurada',detail:'Activa Gemini/OpenRouter/Groq para campañas, SEO y textos mejores.',action:'Configurar',tab:'configuracion'});
+  if (!localStorage.getItem('anthropicApiKey') && ps.length>5) addTask(tasks,{kind:'ai',urgency:1,icon:'🤖',title:'IA no configurada',detail:'Activa Gemini/OpenRouter/Groq/Nvidia para campañas, SEO y textos mejores.',action:'Configurar',tab:'configuracion'});
 
   tasks.sort((a,b)=>b.urgency-a.urgency);
   state.agents = buildAgentsFromTasks(tasks, facts);
@@ -600,6 +600,7 @@ async function iaLlamarModelo(prompt){
     }
     const cfg = key.startsWith('sk-or') ? {url:'https://openrouter.ai/api/v1/chat/completions',model:'openrouter/auto'}
       : key.startsWith('gsk_') ? {url:'https://api.groq.com/openai/v1/chat/completions',model:'llama-3.3-70b-versatile'}
+      : key.startsWith('nvapi-') ? {url:'https://integrate.api.nvidia.com/v1/chat/completions',model:'z-ai/glm-5-2'}
       : {url:'https://api.deepseek.com/chat/completions',model:'deepseek-chat'};
     r=await fetch(cfg.url,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},signal:ctrl.signal,body:JSON.stringify({model:cfg.model,messages:[{role:'user',content:prompt}],max_tokens:400})});
     j=await r.json(); return j.choices?.[0]?.message?.content||null;
