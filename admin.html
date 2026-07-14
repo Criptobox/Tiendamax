@@ -637,7 +637,7 @@
         </div>
         <div class="section">
           <h3>🔑 API Key de IA (para el Agente)</h3>
-          <div class="form-group"><label class="form-label">API Key (Gemini / OpenRouter / Groq / DeepSeek)</label><input class="form-input" id="ia-key" type="text" placeholder="AIza… / sk-or-… / gsk_… / sk-…"></div>
+          <div class="form-group"><label class="form-label">API Key (Gemini / OpenRouter / Groq / Nvidia / DeepSeek)</label><input class="form-input" id="ia-key" type="text" placeholder="AIza… / sk-or-… / gsk_… / nvapi-… / sk-…"></div>
           <div style="display:flex;gap:8px;margin-top:10px"><button class="btn btn-primary" onclick="agenteGuardarKey()">💾 Guardar key</button><button class="btn btn-ghost" onclick="agenteBorrarKey()">🗑 Borrar</button></div>
           <p id="ia-key-status" style="font-size:12px;color:var(--muted);margin-top:8px">Sin key configurada</p>
         </div>
@@ -831,7 +831,7 @@
     if (typeof window.go === 'function') window.go(map[tab] || tab);
   };
 </script>
-<script src="js/admin-copilot.js?v=75d88fd6"></script>
+<script src="js/admin-copilot.js?v=c2a27e1b"></script>
 
 <script>
 (function(){
