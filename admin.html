@@ -833,7 +833,7 @@
     if (typeof window.go === 'function') window.go(map[tab] || tab);
   };
 </script>
-<script src="js/admin-copilot.js?v=0075dc67"></script>
+<script src="js/admin-copilot.js?v=dcc5776d"></script>
 
 <script>
 (function(){
@@ -842,6 +842,12 @@ let PRODUCTOS = [], CATEGORIAS = [], SUBCATS = [], RADAR = null, VENTAS = [], AL
 const $ = s => document.querySelector(s);
 const money = n => '$' + (Number(n)||0).toLocaleString('es-US',{maximumFractionDigits:2});
 const esc = s => String(s==null?'':s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+// Para meter texto dentro de onclick="fn('...')": esc() solo protege el HTML,
+// pero el navegador decodifica entidades (&#39; -> ') ANTES de compilar el
+// onclick como JS, así que un '&#39;' vuelve a ser ' justo donde rompería el
+// string JS. Aquí escapamos primero \ y ' para JS, y solo & < > " para HTML
+// (la ' ya quedó convertida en \' y no debe volver a tocarse).
+const escJsAttr = s => String(s==null?'':s).replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
 const norm = s => (s||'').toString().toLowerCase().trim().replace(/\s+/g,' ');
 
 function showToast(t,b){ $('#toast-t').textContent=t; $('#toast-b').textContent=b||''; const el=$('#toast'); el.classList.add('show'); setTimeout(()=>el.classList.remove('show'),2600); }
@@ -1030,7 +1036,7 @@ function ventaBuscar(){
   const q=norm($('#venta-buscar')&&$('#venta-buscar').value); const box=$('#venta-resultados'); if(!box)return;
   if(!q){box.innerHTML='';return;}
   const res=PRODUCTOS.filter(p=>norm(p.nombre).includes(q)).slice(0,8);
-  box.innerHTML=res.map(p=>`<div style="display:flex;align-items:center;gap:8px;padding:7px 9px;background:rgba(255,255,255,0.03);border-radius:8px;margin-bottom:4px"><div style="flex:1;font-size:12px;color:#fff">${esc(p.nombre)} <b style="color:var(--o)">${money(p.precioActual)}</b> <span style="color:var(--gray)">· stock ${Number(p.stock)||0}</span></div><button class="btn btn-ghost" style="padding:4px 10px;font-size:12px" onclick="ventaAdd('${p.id}')">+ Agregar</button></div>`).join('')||`<div style="font-size:11px;color:var(--gray);padding:6px">Sin resultados</div>`;
+  box.innerHTML=res.map(p=>`<div style="display:flex;align-items:center;gap:8px;padding:7px 9px;background:rgba(255,255,255,0.03);border-radius:8px;margin-bottom:4px"><div style="flex:1;font-size:12px;color:#fff">${esc(p.nombre)} <b style="color:var(--o)">${money(p.precioActual)}</b> <span style="color:var(--gray)">· stock ${Number(p.stock)||0}</span></div><button class="btn btn-ghost" style="padding:4px 10px;font-size:12px" onclick="ventaAdd('${esc(String(p.id))}')">+ Agregar</button></div>`).join('')||`<div style="font-size:11px;color:var(--gray);padding:6px">Sin resultados</div>`;
 }
 function ventaAdd(id){
   const p=PRODUCTOS.find(x=>String(x.id)===String(id)); if(!p)return;
@@ -1041,7 +1047,7 @@ function ventaCartRemove(id){ VENTA_CART=VENTA_CART.filter(x=>String(x.id)!==Str
 function ventaCartQty(id,d){ const it=VENTA_CART.find(x=>String(x.id)===String(id)); if(it){it.cantidad=Math.max(1,it.cantidad+d);} ventaRenderCart(); }
 function ventaRenderCart(){
   const box=$('#venta-cart'), tEl=$('#venta-total'), btn=$('#venta-registrar-btn'); if(!box)return;
-  box.innerHTML=VENTA_CART.map(it=>`<div style="display:flex;align-items:center;gap:8px;padding:8px 10px;background:rgba(255,107,53,0.08);border:1px solid rgba(255,107,53,0.3);border-radius:8px;margin-bottom:5px"><div style="flex:1;font-size:12px;color:#fff">${esc(it.nombre)}<br><span style="color:var(--gray)">${money(it.precio)} c/u</span></div><button class="btn btn-ghost" style="padding:2px 9px" onclick="ventaCartQty('${it.id}',-1)">−</button><span style="min-width:22px;text-align:center;color:#fff;font-weight:700">${it.cantidad}</span><button class="btn btn-ghost" style="padding:2px 9px" onclick="ventaCartQty('${it.id}',1)">+</button><button class="btn btn-ghost" style="padding:2px 8px" onclick="ventaCartRemove('${it.id}')">✕</button></div>`).join('');
+  box.innerHTML=VENTA_CART.map(it=>`<div style="display:flex;align-items:center;gap:8px;padding:8px 10px;background:rgba(255,107,53,0.08);border:1px solid rgba(255,107,53,0.3);border-radius:8px;margin-bottom:5px"><div style="flex:1;font-size:12px;color:#fff">${esc(it.nombre)}<br><span style="color:var(--gray)">${money(it.precio)} c/u</span></div><button class="btn btn-ghost" style="padding:2px 9px" onclick="ventaCartQty('${esc(String(it.id))}',-1)">−</button><span style="min-width:22px;text-align:center;color:#fff;font-weight:700">${it.cantidad}</span><button class="btn btn-ghost" style="padding:2px 9px" onclick="ventaCartQty('${esc(String(it.id))}',1)">+</button><button class="btn btn-ghost" style="padding:2px 8px" onclick="ventaCartRemove('${esc(String(it.id))}')">✕</button></div>`).join('');
   const total=VENTA_CART.reduce((s,it)=>s+it.precio*it.cantidad,0);
   if(tEl) tEl.innerHTML=VENTA_CART.length?`<div style="display:flex;justify-content:space-between;font-size:15px;font-weight:800;padding:8px 2px"><span style="color:var(--gray)">Total</span><span style="color:var(--o)">${money(total)}</span></div>`:'';
   if(btn) btn.style.display=VENTA_CART.length?'block':'none';
@@ -1085,8 +1091,8 @@ function comboBuscar(){
     return `<div style="display:flex;align-items:center;gap:8px;padding:7px 9px;background:rgba(255,255,255,0.03);border-radius:8px;margin-bottom:4px">
       <div style="flex:1;font-size:12px;color:#fff">${esc(p.nombre)} <b style="color:var(--o)">${money(p.precioActual)}</b></div>
       ${en
-        ? `<button class="btn btn-ghost" style="padding:4px 10px;font-size:12px;opacity:.7" onclick="comboAdd('${p.id}')">✓ Agregado (+1)</button>`
-        : `<button class="btn btn-ghost" style="padding:4px 10px;font-size:12px" onclick="comboAdd('${p.id}')">+ Agregar</button>`}
+        ? `<button class="btn btn-ghost" style="padding:4px 10px;font-size:12px;opacity:.7" onclick="comboAdd('${esc(String(p.id))}')">✓ Agregado (+1)</button>`
+        : `<button class="btn btn-ghost" style="padding:4px 10px;font-size:12px" onclick="comboAdd('${esc(String(p.id))}')">+ Agregar</button>`}
     </div>`;
   }).join('') || `<div style="font-size:11px;color:var(--gray);padding:6px">Sin resultados</div>`;
 }
@@ -1100,7 +1106,7 @@ function comboRemove(id){ COMBO_SEL=COMBO_SEL.filter(x=>String(x.id)!==String(id
 function comboQty(id,d){ const it=COMBO_SEL.find(x=>String(x.id)===String(id)); if(it){ it.cantidad=Math.max(1,(it.cantidad||1)+d); } comboRenderItems(); comboCalc(); }
 function comboRenderItems(){
   const box=$('#combo-items'); if(!box) return;
-  box.innerHTML = COMBO_SEL.length ? COMBO_SEL.map(it=>`<div style="display:flex;align-items:center;gap:8px;padding:8px 10px;background:rgba(255,107,53,0.08);border:1px solid rgba(255,107,53,0.3);border-radius:8px;margin-bottom:5px"><div style="flex:1;font-size:12px;color:#fff">${esc(it.nombre)}<br><span style="color:var(--gray)">${money(it.precio)} c/u</span></div><button class="btn btn-ghost" style="padding:2px 9px" onclick="comboQty('${it.id}',-1)">−</button><span style="min-width:22px;text-align:center;color:#fff;font-weight:700">${it.cantidad||1}</span><button class="btn btn-ghost" style="padding:2px 9px" onclick="comboQty('${it.id}',1)">+</button><button class="btn btn-ghost" style="padding:2px 8px" onclick="comboRemove('${it.id}')">✕</button></div>`).join('') : `<div style="font-size:11px;color:var(--gray);padding:8px">Aún no agregaste productos.</div>`;
+  box.innerHTML = COMBO_SEL.length ? COMBO_SEL.map(it=>`<div style="display:flex;align-items:center;gap:8px;padding:8px 10px;background:rgba(255,107,53,0.08);border:1px solid rgba(255,107,53,0.3);border-radius:8px;margin-bottom:5px"><div style="flex:1;font-size:12px;color:#fff">${esc(it.nombre)}<br><span style="color:var(--gray)">${money(it.precio)} c/u</span></div><button class="btn btn-ghost" style="padding:2px 9px" onclick="comboQty('${esc(String(it.id))}',-1)">−</button><span style="min-width:22px;text-align:center;color:#fff;font-weight:700">${it.cantidad||1}</span><button class="btn btn-ghost" style="padding:2px 9px" onclick="comboQty('${esc(String(it.id))}',1)">+</button><button class="btn btn-ghost" style="padding:2px 8px" onclick="comboRemove('${esc(String(it.id))}')">✕</button></div>`).join('') : `<div style="font-size:11px;color:var(--gray);padding:8px">Aún no agregaste productos.</div>`;
 }
 function comboCalc(){
   const orig=COMBO_SEL.reduce((s,x)=>s+x.precio*(x.cantidad||1),0);
@@ -1584,14 +1590,14 @@ function renderCategorias(){
   }
   let body;
   if(CAT_VIEW==='cat'){
-    body = cats.map(nm=>`<div style="display:flex;align-items:center;gap:10px;padding:11px 14px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-bottom:6px"><div style="font-size:22px;width:38px;height:38px;background:rgba(255,255,255,0.05);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0">${catIcono(nm)}</div><div style="flex:1;min-width:0;font-size:13px;font-weight:700;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(nm)}</div><span style="font-size:10px;padding:3px 8px;border-radius:8px;background:rgba(255,107,53,0.12);color:var(--o);font-weight:700;flex-shrink:0">${countFor(nm)}</span><button class="pico edit" style="width:36px;height:36px;font-size:16px" title="Cambiar emoji" onclick="catEmoji('${esc(nm).replace(/'/g,"\\'")}')">😀</button><button class="pico edit" style="width:36px;height:36px;font-size:16px" title="Renombrar" onclick="catRenombrar('${esc(nm).replace(/'/g,"\\'")}')">✏️</button><button class="pico del" style="width:36px;height:36px;font-size:16px" title="Borrar" onclick="catBorrar('${esc(nm).replace(/'/g,"\\'")}')">🗑️</button></div>`).join('') || `<div class="empty"><div class="ico">🏷️</div>Sin categorías.</div>`;
+    body = cats.map(nm=>`<div style="display:flex;align-items:center;gap:10px;padding:11px 14px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-bottom:6px"><div style="font-size:22px;width:38px;height:38px;background:rgba(255,255,255,0.05);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0">${catIcono(nm)}</div><div style="flex:1;min-width:0;font-size:13px;font-weight:700;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(nm)}</div><span style="font-size:10px;padding:3px 8px;border-radius:8px;background:rgba(255,107,53,0.12);color:var(--o);font-weight:700;flex-shrink:0">${countFor(nm)}</span><button class="pico edit" style="width:36px;height:36px;font-size:16px" title="Cambiar emoji" onclick="catEmoji('${escJsAttr(nm)}')">😀</button><button class="pico edit" style="width:36px;height:36px;font-size:16px" title="Renombrar" onclick="catRenombrar('${escJsAttr(nm)}')">✏️</button><button class="pico del" style="width:36px;height:36px;font-size:16px" title="Borrar" onclick="catBorrar('${escJsAttr(nm)}')">🗑️</button></div>`).join('') || `<div class="empty"><div class="ico">🏷️</div>Sin categorías.</div>`;
   } else {
     body = cats.map(nm=>{
       let subs = subMap[nm] || subMap[(nm||'').toUpperCase()] || [];
       if(!subs.length){ const k=Object.keys(subMap).find(x=>norm(x)===norm(nm)); if(k) subs=subMap[k]; }
       if(!subs || !subs.length) return '';
-      const ce=esc(nm).replace(/'/g,"\\'");
-      return `<div style="margin-bottom:14px"><div style="font-size:11px;font-weight:800;color:var(--gold);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">${catIcono(nm)} ${esc(nm)}</div>${subs.map(s=>{const se=esc(s).replace(/'/g,"\\'");return `<div style="display:flex;align-items:center;gap:10px;padding:9px 14px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-bottom:5px"><div style="flex:1;min-width:0;font-size:13px;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(s)}</div><span style="font-size:10px;padding:3px 8px;border-radius:8px;background:rgba(255,107,53,0.12);color:var(--o);font-weight:700;flex-shrink:0">${subCount(nm,s)}</span><button class="pico edit" style="width:34px;height:34px;font-size:15px" title="Renombrar" onclick="subRenombrar('${ce}','${se}')">✏️</button><button class="pico del" style="width:34px;height:34px;font-size:15px" title="Borrar" onclick="subBorrar('${ce}','${se}')">🗑️</button></div>`;}).join('')}</div>`;
+      const ce=escJsAttr(nm);
+      return `<div style="margin-bottom:14px"><div style="font-size:11px;font-weight:800;color:var(--gold);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">${catIcono(nm)} ${esc(nm)}</div>${subs.map(s=>{const se=escJsAttr(s);return `<div style="display:flex;align-items:center;gap:10px;padding:9px 14px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-bottom:5px"><div style="flex:1;min-width:0;font-size:13px;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(s)}</div><span style="font-size:10px;padding:3px 8px;border-radius:8px;background:rgba(255,107,53,0.12);color:var(--o);font-weight:700;flex-shrink:0">${subCount(nm,s)}</span><button class="pico edit" style="width:34px;height:34px;font-size:15px" title="Renombrar" onclick="subRenombrar('${ce}','${se}')">✏️</button><button class="pico del" style="width:34px;height:34px;font-size:15px" title="Borrar" onclick="subBorrar('${ce}','${se}')">🗑️</button></div>`;}).join('')}</div>`;
     }).join('') || `<div class="empty"><div class="ico">📁</div>Sin subcategorías asignadas.</div>`;
   }
   $('#cat-list').innerHTML = pills + addForm + body;

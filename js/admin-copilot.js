@@ -24,7 +24,6 @@ const PROMO_BADGE_PRESETS = [
 let promoData = { imgEl: null, nombre: '', subfila: '', eslogan: '', precio: '', precioAnterior: '', moneda: 'USD', detalle: '', stock: '', url: 'tiendamax.org', tema: 'oscuro', badges: [{emoji:'🛡️',label:'Seguro'},{emoji:'🛵',label:'Envío'},{emoji:'✅',label:'Garantía'}], _logoEl: null, _drawTimer: null, _productoId: '' };
 
 const $ = (s,r=document)=>r.querySelector(s);
-const $$ = (s,r=document)=>Array.from(r.querySelectorAll(s));
 const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 const num = v => { const n = Number(v); return Number.isFinite(n) ? n : 0; };
 const now = () => Date.now();
@@ -163,10 +162,6 @@ window.tmCopilotOnVenta = function(items){
 };
 // Etiqueta legible del tipo de empujón
 function _empLabel(t){ return t==='smart_push'||t==='pushHot' ? 'push' : t==='offer' ? 'oferta' : t==='campaign_draft' ? 'campaña' : t==='promo_download' ? 'promo compartida' : t==='post_ready' ? 'publicación' : t; }
-function pickProductName(pid){
-  const p = products().find(x=>String(x.id)===String(pid));
-  return p ? p.nombre : '';
-}
 function money(v){ return '$' + Number(v||0).toFixed(2); }
 function ranking(){
   const ps = products();
@@ -514,6 +509,7 @@ function iaDismissed(){ try{ return new Set(JSON.parse(localStorage.getItem('tm_
 function iaDismiss(key){ const s=iaDismissed(); s.add(key); try{ localStorage.setItem('tm_ia_descartes', JSON.stringify([...s].slice(-300))); }catch(e){} }
 
 function iaScan(){
+  try{ if(typeof window.syncProductos==='function') window.syncProductos(); }catch(e){}
   const ps = Array.isArray(window.productos)?window.productos:[];
   const skip = iaDismissed();
   const issues=[];
@@ -809,6 +805,7 @@ async function iaDescripcionesConIA(){
 function _iaRegenQueueGet(){ try{ const a=JSON.parse(localStorage.getItem('tm_ia_regen_queue')||'[]'); return Array.isArray(a)?a:[]; }catch(e){ return []; } }
 function _iaRegenQueueSet(a){ try{ localStorage.setItem('tm_ia_regen_queue', JSON.stringify(a)); }catch(e){} }
 async function iaRegenerarTodasDescripciones(){
+  try{ if(typeof window.syncProductos==='function') window.syncProductos(); }catch(e){}
   const key=(localStorage.getItem('anthropicApiKey')||'').trim();
   if(!key){ toast('Configura tu API key en ⚙️ Configuración → API Key de IA para generar descripciones reales'); return; }
   let cola=_iaRegenQueueGet();
@@ -837,6 +834,7 @@ function iaRegenCancelar(){
 function iaUndoPila(){ try{ const a=JSON.parse(localStorage.getItem('tm_ia_undo')||'[]'); return Array.isArray(a)?a:[]; }catch(e){ return []; } }
 function iaUndoPush(grupo,label){ try{ const a=iaUndoPila(); a.push({grupo,label,ts:Date.now()}); localStorage.setItem('tm_ia_undo',JSON.stringify(a.slice(-20))); }catch(e){} }
 function iaDeshacer(){
+  try{ if(typeof window.syncProductos==='function') window.syncProductos(); }catch(e){}
   const a=iaUndoPila(); const ult=a.pop();
   if(!ult){ toast('Nada que deshacer'); return; }
   let n=0;
@@ -846,6 +844,7 @@ function iaDeshacer(){
   state.view='correcciones'; renderSheet();
 }
 function iaAplicar(issue, _sinUndo){
+  try{ if(typeof window.syncProductos==='function') window.syncProductos(); }catch(e){}
   const p=(window.productos||[]).find(x=>String(x.id)===issue.pid);
   if(!p||!issue.fix) return false;
   const antes=p[issue.fix.campo];
@@ -863,6 +862,7 @@ function iaAplicarUrgentes(){
   state.view='correcciones'; renderSheet();
 }
 function iaNormalizarBulk(){
+  try{ if(typeof window.syncProductos==='function') window.syncProductos(); }catch(e){}
   let n=0; const grupo=[];
   (window.productos||[]).forEach(p=>{ const v=iaNormalizarNombre(p.nombre||''); if(v&&v!==p.nombre){ grupo.push({pid:String(p.id),campo:'nombre',antes:p.nombre}); p.nombre=v; try{ if(typeof window.marcarProductoModificado==='function') window.marcarProductoModificado(p.id); }catch(e){} n++; } });
   if(grupo.length) iaUndoPush(grupo, n+' nombres');

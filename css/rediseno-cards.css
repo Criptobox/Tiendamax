@@ -78,10 +78,6 @@ body.light-mode .producto-card.pcard-v2 .pv2-views{ color:#7a7a82; }
 .producto-card.pcard-v2 .pv2-trust{ margin-top:6px; font-size:10.5px; font-weight:600; color:#7bd88f; display:flex; align-items:center; gap:5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 body.light-mode .producto-card.pcard-v2 .pv2-trust{ color:#1f9d57; }
 
-.producto-card.pcard-v2 .pv2-status{ font-size:12.5px; font-weight:600; color:#9a9aa8; display:flex; align-items:center; gap:5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.producto-card.pcard-v2 .pv2-status b{ color:#4ade80; }
-.producto-card.pcard-v2 .pv2-status.agotado b{ color:#ff6b6b; }
-
 /* pie: precio + botón anclados abajo → los Pedir quedan alineados entre tarjetas */
 .producto-card.pcard-v2 .pv2-foot{ margin-top:auto; display:flex; flex-direction:column; }
 .producto-card.pcard-v2 .pv2-price{ margin-top:8px; display:flex; flex-direction:column; line-height:1.08; }
@@ -149,8 +145,6 @@ body.light-mode .producto-card.pcard-v2 .pv2-photo .btn-megusta{
   background:rgba(255,255,255,.85) !important; border:1px solid rgba(0,0,0,.08) !important;
 }
 body.light-mode .producto-card.pcard-v2 h3{ color:#1a1a1a !important; }
-body.light-mode .producto-card.pcard-v2 .pv2-status{ color:#5a5a63; }
-body.light-mode .producto-card.pcard-v2 .pv2-status b{ color:#1f9d57; }
 body.light-mode .producto-card.pcard-v2 .pv2-cur{ color:#5a5a63; }
 body.light-mode .producto-card.pcard-v2 .pv2-tax{ color:#9a9aa2; }
 body.light-mode .producto-card.pcard-v2 .pv2-old{ color:#9a9aa2; }
