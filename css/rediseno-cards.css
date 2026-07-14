@@ -20,6 +20,9 @@
   box-shadow:0 22px 44px -16px rgba(0,0,0,.8) !important;
   border-color:rgba(255,107,53,.28) !important;
 }
+.producto-card.pcard-v2:focus-visible{
+  outline:3px solid var(--accent,#ff6b35) !important; outline-offset:2px;
+}
 .producto-card.pcard-v2::after{ display:none !important; }
 
 /* --- foto real, al ras arriba y a los lados, esquinas de abajo redondeadas --- */
@@ -227,6 +230,7 @@ body.light-mode #productDetailModal .detail-img-frame{ box-shadow:0 8px 24px rgb
 #productDetailModal .detail-img-frame::before,
 #productDetailModal .detail-img-frame::after{ display:none !important; }
 #productDetailModal .detail-img{ border-radius:16px; width:100%; height:100%; }
+#productDetailModal .detail-img:focus-visible{ outline:3px solid var(--accent,#ff6b35); outline-offset:2px; }
 
 /* Breadcrumb de categoría: sin caja gris */
 html body.light-mode #productDetailModal .detail-category{
@@ -733,14 +737,11 @@ body.light-mode #productDetailModal .modal-header{ background:#eceef2 !important
 /* 2) transition:all → propiedades concretas, en los controles que más
    se tocan (carrito, compartir, filtros, WhatsApp, admin-nav, moneda).
    Mismo timing/curva que ya tenían, solo se acota qué anima. */
-.detail-share-btn{ transition:border-color .2s, color .2s !important; }
 .cart-icon-btn{ transition:background-color .2s, border-color .2s !important; }
 .carrito-qty-btn{ transition:border-color .15s, color .15s !important; }
 .carrito-item-del{ transition:background-color .15s, color .15s !important; }
 .carrito-btn-limpiar{ transition:border-color .2s, color .2s !important; }
-.btn-carrito{ transition:background-color .2s, color .2s !important; }
 .detail-resena-add-btn{ transition:background-color .2s, color .2s !important; }
-.nav-admin-btn{ transition:border-color .2s, color .2s !important; }
 .cur-btn{ transition:background-color .2s, color .2s !important; }
 .btn-seguir-viendo{ transition:background-color .2s, border-color .2s, box-shadow .2s !important; }
 .nd-hero-dot{ transition:background-color .3s ease !important; }

@@ -1784,6 +1784,12 @@ renderizarProductos = function() {
         const card = document.createElement('div');
         card.className = 'producto-card pcard-v2 tm-anim-card' + (esAgotado ? ' card-agotado' : '');
         card.onclick = () => abrirDetalleProducto(producto.id);
+        card.tabIndex = 0;
+        card.setAttribute('role', 'button');
+        card.setAttribute('aria-label', 'Ver detalle de ' + (producto.nombre || 'producto') + (esAgotado ? ', agotado' : ''));
+        card.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); abrirDetalleProducto(producto.id); }
+        });
         card.dataset.productId = String(producto.id);
         const _id  = safeNum(producto.id);
         const _nom = escapeHtml(producto.nombre);

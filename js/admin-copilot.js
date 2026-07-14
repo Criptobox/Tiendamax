@@ -79,7 +79,11 @@ function iconFor(p){
 }
 function dismissedSet(){ try { return new Set(JSON.parse(localStorage.getItem(LS.dismissed)||'[]')); } catch(e) { return new Set(); } }
 function saveDismissed(set){ localStorage.setItem(LS.dismissed, JSON.stringify(Array.from(set).slice(-200))); }
-function taskId(t){ return [t.kind,t.pid||'',t.title].join('|'); }
+// Sin el título: varias tareas incluyen una cantidad dinámica en el título
+// ("5 productos sin SEO"), y si el título formara parte del id, un cambio
+// en la cantidad generaría un id nuevo — la tarea "descartada" reaparecería
+// aunque siga siendo, en esencia, la misma alerta.
+function taskId(t){ return [t.kind,t.pid||''].join('|'); }
 function addTask(list,t){
   const dis = dismissedSet();
   const id = taskId(t);
@@ -1579,6 +1583,13 @@ function renderCopilotView(view, topTasks){
 }
 function renderSheet(){
   const body = $('#tmCopilotBody'); if(!body) return;
+  // El chat se puede re-renderizar por el refreshTimer (cada 90s) mientras
+  // el dueño está escribiendo una pregunta sin enviar; sin esto, innerHTML
+  // borra lo que llevaba tecleado.
+  const _chatInput = body.querySelector('#tmChatInput');
+  const _chatDraft = _chatInput ? _chatInput.value : '';
+  const _chatFoco = document.activeElement === _chatInput;
+  const _chatSel = _chatFoco ? [_chatInput.selectionStart, _chatInput.selectionEnd] : null;
   const m = state.metrics || {};
   const topTasks = state.tasks || [];
   const view = state.view || 'hoy';
@@ -1599,6 +1610,13 @@ function renderSheet(){
     ${tabsHtml(view)}
     ${renderCopilotView(view, topTasks)}`;
   // promo canvas is mounted in admin publicacion tab via window.pubMountPromo
+  if(_chatDraft){
+    const newInput = body.querySelector('#tmChatInput');
+    if(newInput){
+      newInput.value = _chatDraft;
+      if(_chatFoco){ newInput.focus(); newInput.setSelectionRange(_chatSel[0], _chatSel[1]); }
+    }
+  }
 }
 function taskHtml(t){
   return `<div class="tm-copilot-task u${t.urgency}" data-id="${esc(t.id)}">
@@ -1820,7 +1838,7 @@ function bindEvents(){
     if(act==='iaRegenTodas') iaRegenerarTodasDescripciones();
     if(act==='iaRegenCancelar') iaRegenCancelar();
     if(act==='promoPickImg') { const inp = document.getElementById('tmPromoImgInput'); if(inp) inp.click(); }
-    if(act==='promoTema') { promoData.tema = el.dataset.tema; state.view = 'promo'; renderSheet(); }
+    if(act==='promoTema') { promoData.tema = el.dataset.tema; state.view = 'promo'; renderSheet(); promoScheduleDraw(); }
     if(act==='promoDownload') {
       const canvas = document.getElementById('tmPromoCanvas'); if(!canvas) return;
       const link = document.createElement('a');

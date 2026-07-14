@@ -819,7 +819,7 @@
      agregarProductoForm, sincronizarTodoConGitHub, registrarVenta, etc. -->
 <!-- Bundle único (mismo orden: config→data→state→admin→product→catalog→init→ui→toast→iife→patches),
      generado por scripts/build_js_bundle.py a partir de js/src/*.src.js -->
-<script src="js/tm-bundle.js?v=4df4f48b"></script>
+<script src="js/tm-bundle.js?v=4737fe50"></script>
 <script src="js/biometric-auth.js?v=343cb27b"></script>
 <script src="js/revolico_integration.js?v=b517b43a"></script>
 <script>
@@ -1340,6 +1340,14 @@ function bulkPrecio(signo){
   showToast('💲 '+n+' precios '+(signo>0?'subidos':'bajados')+' '+pct+'%','Pulsa "Actualizar tienda" en ⚙️ para publicar');
 }
 function apSaveProds(){ syncProductos(); try{ localStorage.setItem('productos', JSON.stringify(PRODUCTOS)); }catch(e){} }
+// El módulo de Herramientas (dupNow/rollback/importCsv, más abajo) vive en su
+// propio <script>/IIFE y no tiene acceso a PRODUCTOS. Si escribiera solo en
+// window.productos/localStorage, el próximo syncProductos() (que corre en
+// cualquier acción del panel principal) pisa ese cambio de vuelta con el
+// PRODUCTOS viejo — el duplicado/rollback/importación desaparece sin aviso.
+// Este helper actualiza PRODUCTOS (la fuente real) y deja todo sincronizado.
+function apReplaceProductos(nuevos){ PRODUCTOS = Array.isArray(nuevos) ? nuevos : []; apSaveProds(); if(typeof renderProductos==='function') try{ renderProductos(); }catch(e){} }
+window.apReplaceProductos = apReplaceProductos;
 /* Selección múltiple (checkbox por tarjeta) para acciones masivas */
 let AP_SEL = new Set();
 function apSelBar(){
@@ -2788,6 +2796,15 @@ function csvCell(v){v=String(v??''); return /[",\n]/.test(v)?'"'+v.replace(/"/g,
 // apBulkZero/apEdit — ver auditoría de hoy): el anti-pisado solo respeta los ids que
 // están en productosModificados.
 function marcarMod(id){ if(typeof marcarProductoModificado==='function') try{ marcarProductoModificado(id); }catch(e){} }
+// Escribe el array de productos a través de apReplaceProductos (actualiza
+// PRODUCTOS, la fuente real del panel principal) en vez de tocar
+// window.productos/localStorage por separado — si no existe (script del
+// panel principal no cargó), cae al modo anterior para no romper la función.
+function guardarProds(ps){
+  if(typeof window.apReplaceProductos==='function'){ window.apReplaceProductos(ps); return; }
+  localStorage.setItem('productos', JSON.stringify(ps));
+  window.productos = ps;
+}
 function parseCSV(text){const rows=[];let row=[],cur='',q=false;for(let i=0;i<text.length;i++){let c=text[i],n=text[i+1];if(c==='"'){if(q&&n==='"'){cur+='"';i++}else q=!q}else if(c===','&&!q){row.push(cur);cur=''}else if((c==='\n'||c==='\r')&&!q){if(c==='\r'&&n==='\n')i++;row.push(cur); if(row.some(x=>x!=='')) rows.push(row); row=[];cur=''}else cur+=c}row.push(cur); if(row.some(x=>x!=='')) rows.push(row);return rows}
 /* Igual que ensureTab() de admin.html, pero engancha en .sidebar/.side-btn/main.content/.view + go(), no en .admin-tabs-desktop/.tab-btn/switchTab */
 function ensureTab(){
@@ -2843,11 +2860,11 @@ function actions(act,el){let d=data(), ps=prods();
  if(act==='copyOut'){navigator.clipboard?.writeText($('#tmToolOut')?.textContent||'');toast('Copiado','success');return}
  if(act==='aiGen'){let p=ps.find(x=>String(x.id)===$('#tmAiProd').value)||ps[0];let tono=$('#tmAiTone').value;$('#tmToolOut').textContent=`${p.nombre}\n\n${p.descripcion||'Producto disponible en TiendaMax.'}\n\n💵 Precio: $${Number(p.precioActual||0).toFixed(2)} USD\n📦 Stock: ${p.stock||0}\n🏷️ Categoría: ${p.categoria||'General'}\n\nTexto ${tono}:\n🔥 ${p.nombre} disponible ahora en TiendaMax. Calidad, entrega coordinada y atención por WhatsApp. Escríbenos para reservar.`;return}
  if(act==='compressRun'){let f=$('#tmCompressFile').files[0]; if(!f)return toast('Selecciona imagen','error'); compressFile(f,Number($('#tmCompressW').value)||1200,Number($('#tmCompressQ').value)||.82);return}
- if(act==='dupNow'){let p=ps.find(x=>String(x.id)===$('#tmDupProd').value); if(!p)return; snapshot('antes de duplicar'); let np={...p,id:Date.now(),nombre:(p.nombre||'Producto')+' — Copia',fechaAgregado:new Date().toISOString()}; ps.push(np); localStorage.setItem('productos',JSON.stringify(ps)); window.productos=ps; marcarMod(np.id); toast('Producto duplicado'); refreshAdmin2(); duplicate(); return}
+ if(act==='dupNow'){let p=ps.find(x=>String(x.id)===$('#tmDupProd').value); if(!p)return; snapshot('antes de duplicar'); let np={...p,id:Date.now(),nombre:(p.nombre||'Producto')+' — Copia',fechaAgregado:new Date().toISOString()}; ps.push(np); guardarProds(ps); marcarMod(np.id); toast('Producto duplicado'); refreshAdmin2(); duplicate(); return}
  if(act==='snapshot'){snapshot();toast('Snapshot creado');history();return}
- if(act==='rollback'){let s=safeJson(SNAP,[])[Number(el.dataset.i)]; if(!s)return; localStorage.setItem('productos',JSON.stringify(s.productos)); window.productos=s.productos; s.productos.forEach(p=>marcarMod(p.id)); toast('Rollback aplicado','warning'); refreshAdmin2(); history(); return}
+ if(act==='rollback'){let s=safeJson(SNAP,[])[Number(el.dataset.i)]; if(!s)return; guardarProds(s.productos); s.productos.forEach(p=>marcarMod(p.id)); toast('Rollback aplicado','warning'); refreshAdmin2(); history(); return}
  if(act==='exportCsv'){const rows=[['id','nombre','descripcion','precioActual','precioOriginal','stock','categoria','subcategoria','comision','imagen'],...ps.map(p=>[p.id,p.nombre,p.descripcion,p.precioActual,p.precioOriginal,p.stock,p.categoria,p.subcategoria,p.comision,p.imagen])]; dl('productos_tiendamax.csv',rows.map(r=>r.map(csvCell).join(',')).join('\n'),'text/csv');return}
- if(act==='importCsv'){let f=$('#tmCsvFile').files[0]; if(!f)return toast('Selecciona CSV','error'); f.text().then(t=>{let rows=parseCSV(t),h=rows.shift().map(x=>x.trim());snapshot('antes de importar CSV');const ids=[];rows.forEach(r=>{let o={id:Date.now()+Math.floor(Math.random()*9999)};h.forEach((k,i)=>o[k]=r[i]);o.precioActual=Number(o.precioActual||0);o.stock=Number(o.stock||0);ps.push(o);ids.push(o.id)});localStorage.setItem('productos',JSON.stringify(ps));window.productos=ps;ids.forEach(marcarMod);toast('CSV importado');refreshAdmin2();});return}
+ if(act==='importCsv'){let f=$('#tmCsvFile').files[0]; if(!f)return toast('Selecciona CSV','error'); f.text().then(t=>{let rows=parseCSV(t),h=rows.shift().map(x=>x.trim());snapshot('antes de importar CSV');const ids=[];rows.forEach(r=>{let o={id:Date.now()+Math.floor(Math.random()*9999)};h.forEach((k,i)=>o[k]=r[i]);o.precioActual=Number(o.precioActual||0);o.stock=Number(o.stock||0);ps.push(o);ids.push(o.id)});guardarProds(ps);ids.forEach(marcarMod);toast('CSV importado');refreshAdmin2();});return}
  if(act==='schAdd'){let p=ps.find(x=>String(x.id)===$('#tmSchProd').value);d.scheduled.unshift({id:Date.now(),pid:p.id,name:p.nombre,when:$('#tmSchDate').value});setData(d);schedule();return}
  if(act==='cupAdd'){d.coupons.unshift({code:$('#tmCupCode').value,type:$('#tmCupType').value,value:$('#tmCupVal').value,exp:$('#tmCupExp').value});setData(d);coupons();return}
  if(act==='locSet'){let pid=$('#tmLocProd').value;d.stock[pid]=d.stock[pid]||{};d.stock[pid][$('#tmLocName').value||'General']=Number($('#tmLocStock').value)||0;setData(d);locations();return}
