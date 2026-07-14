@@ -229,7 +229,11 @@ body.light-mode .detail-spec-table .dsr-row.dsr-nolabel .dsr-value{ color:#333; 
 body.light-mode #productDetailModal .detail-img-frame{ box-shadow:0 8px 24px rgba(0,0,0,.12); }
 #productDetailModal .detail-img-frame::before,
 #productDetailModal .detail-img-frame::after{ display:none !important; }
-#productDetailModal .detail-img{ border-radius:16px; width:100%; height:100%; }
+/* Casi todas las fotos de producto son cuadradas (480x480) — con
+   object-fit:cover (heredado de styles.css) dentro de este marco 4:3,
+   siempre se recortaba arriba/abajo (antenas, base). object-fit:contain
+   muestra la foto completa, igual que ya se hizo con las miniaturas. */
+#productDetailModal .detail-img{ border-radius:16px; width:100%; height:100%; object-fit:contain; }
 #productDetailModal .detail-img:focus-visible{ outline:3px solid var(--accent,#ff6b35); outline-offset:2px; }
 
 /* Breadcrumb de categoría: sin caja gris */
