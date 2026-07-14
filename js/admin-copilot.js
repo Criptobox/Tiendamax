@@ -1242,6 +1242,14 @@ function _cFeatures(desc, specs){
   if(!out.length && Array.isArray(specs)){
     specs.slice(0,4).forEach(s=>{ const raw=String(s).replace(/​/g,'').trim(); const em=(raw.match(/[\p{Extended_Pictographic}️‍]+/u)||['🔹'])[0]; const txt=_cStrip(raw); const c=txt.indexOf(':'); out.push(c>0?{icon:em,title:txt.slice(0,c).toUpperCase(),desc:txt.slice(c+1).trim()}:{icon:em,title:_cClip(txt,22).toUpperCase(),desc:''}); });
   }
+  // Fallback: si no hay ficha técnica ni specs, saca hasta 4 features de las
+  // frases de la descripción (así el cartel nunca queda con la columna vacía).
+  if(!out.length){
+    const icons=['⚡','✅','🔋','📦','🔌','🛡️'];
+    const clean = String(desc==null?'':desc).replace(/​/g,'').replace(/ficha t[eé]cnica[\s\S]*/i,'').trim();
+    const frases = clean.split(/[.,;:]\s+/).map(s=>_cStrip(s).trim()).filter(s=>s.length>=10 && s.length<=44);
+    frases.slice(0,4).forEach((f,i)=>{ out.push({icon:icons[i%icons.length], title:_cClip(f,30).toUpperCase(), desc:''}); });
+  }
   return out;
 }
 // Mapea un producto del catálogo a los campos del Cartel Pro.
