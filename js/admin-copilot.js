@@ -605,23 +605,47 @@ async function _iaImagenBase64(url){
     return data ? {mime:blob.type||'image/jpeg', data} : null;
   }catch(e){ return null; }
 }
+// Último error real de iaLlamarModelo (no solo "no respondió") — para poder
+// diagnosticar sin adivinar: key inválida, CORS del navegador, modelo caído, etc.
+let _iaUltimoError = '';
+window.iaUltimoError = () => _iaUltimoError;
+async function _iaFetchJSON(url, opts){
+  let r;
+  try{ r = await fetch(url, opts); }
+  catch(e){
+    // fetch rechaza sin respuesta cuando el navegador bloquea por CORS o no
+    // hay red — se ve exactamente igual desde acá, por eso el mensaje cubre ambos.
+    _iaUltimoError = 'Red/CORS: '+(e && e.message || e)+' — el navegador bloqueó la llamada a '+url+' (o no hay conexión). Revisa si el proveedor permite llamadas desde el navegador.';
+    console.error('[IA]', _iaUltimoError);
+    return null;
+  }
+  let j = null;
+  try{ j = await r.json(); }catch(e){ /* respuesta no-JSON, sigue abajo con r.ok */ }
+  if(!r.ok){
+    _iaUltimoError = 'HTTP '+r.status+' de '+url+': '+(j ? JSON.stringify(j).slice(0,300) : '(sin cuerpo)');
+    console.error('[IA]', _iaUltimoError);
+    return null;
+  }
+  return j;
+}
 async function iaLlamarModelo(prompt, imagen){
   const key=(localStorage.getItem('anthropicApiKey')||'').trim();
   if(!key) return null;
+  _iaUltimoError='';
   const t=25000, ctrl=new AbortController(); const tid=setTimeout(()=>ctrl.abort(),t);
   try{
-    let r,j;
+    let j;
     if(key.startsWith('AIza')){
       const parts=[{text:prompt}];
       if(imagen && imagen.data) parts.unshift({inline_data:{mime_type:imagen.mime||'image/jpeg', data:imagen.data}});
-      r=await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key='+key,{method:'POST',headers:{'Content-Type':'application/json'},signal:ctrl.signal,body:JSON.stringify({contents:[{parts}]})});
-      j=await r.json(); return j.candidates?.[0]?.content?.parts?.[0]?.text||null;
+      j=await _iaFetchJSON('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key='+key,{method:'POST',headers:{'Content-Type':'application/json'},signal:ctrl.signal,body:JSON.stringify({contents:[{parts}]})});
+      return j ? (j.candidates?.[0]?.content?.parts?.[0]?.text||null) : null;
     }
     // Nvidia con imagen: GLM-5.2 es solo texto, así que si hay foto se usa
     // Nemotron 3 Nano Omni (mismo catálogo Nvidia, misma key) en formato
     // OpenAI vision (content en array con image_url en data URI).
     if(key.startsWith('nvapi-') && imagen && imagen.data){
-      r=await fetch('https://integrate.api.nvidia.com/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},signal:ctrl.signal,body:JSON.stringify({
+      j=await _iaFetchJSON('https://integrate.api.nvidia.com/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},signal:ctrl.signal,body:JSON.stringify({
         model:'nvidia/nemotron-3-nano-omni-30b-a3b-reasoning',
         messages:[{role:'user',content:[
           {type:'text',text:prompt},
@@ -629,15 +653,15 @@ async function iaLlamarModelo(prompt, imagen){
         ]}],
         max_tokens:500
       })});
-      j=await r.json(); return j.choices?.[0]?.message?.content||null;
+      return j ? (j.choices?.[0]?.message?.content||null) : null;
     }
     const cfg = key.startsWith('sk-or') ? {url:'https://openrouter.ai/api/v1/chat/completions',model:'openrouter/auto'}
       : key.startsWith('gsk_') ? {url:'https://api.groq.com/openai/v1/chat/completions',model:'llama-3.3-70b-versatile'}
       : key.startsWith('nvapi-') ? {url:'https://integrate.api.nvidia.com/v1/chat/completions',model:'z-ai/glm-5-2'}
       : {url:'https://api.deepseek.com/chat/completions',model:'deepseek-chat'};
-    r=await fetch(cfg.url,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},signal:ctrl.signal,body:JSON.stringify({model:cfg.model,messages:[{role:'user',content:prompt}],max_tokens:400})});
-    j=await r.json(); return j.choices?.[0]?.message?.content||null;
-  }catch(e){ return null; }
+    j=await _iaFetchJSON(cfg.url,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},signal:ctrl.signal,body:JSON.stringify({model:cfg.model,messages:[{role:'user',content:prompt}],max_tokens:400})});
+    return j ? (j.choices?.[0]?.message?.content||null) : null;
+  }catch(e){ _iaUltimoError='Excepción: '+(e && e.message || e); console.error('[IA]', _iaUltimoError); return null; }
   finally{ clearTimeout(tid); }
 }
 window.iaLlamarModelo = iaLlamarModelo;
@@ -724,7 +748,7 @@ async function iaAnalizarUno(pid){
   renderSheet();
   const res=await iaAnalizarProducto(p);
   state.iaPreviewCargando=false;
-  if(!res){ toast('❌ La IA no respondió — revisa tu API key'); state.iaPreviewPid=null; renderSheet(); return; }
+  if(!res){ toast('❌ La IA no respondió'+(window.iaUltimoError()?': '+window.iaUltimoError():' — revisa tu API key')); state.iaPreviewPid=null; renderSheet(); return; }
   state.iaPreviewData=res;
   renderSheet();
 }
@@ -789,7 +813,7 @@ async function iaDescripcionesConIA(){
   const {ok,grupo}=await _iaGenerarLoteDescripciones(lista);
   const restan=todos.length-pendientes.length;
   if(ok){ iaUndoPush(grupo, ok+' descripciones IA'); iaPersistir('🤖 '+ok+' descripciones generadas con IA'+(restan>0?' — quedan '+restan+', toca de nuevo para seguir':'')); }
-  else toast('❌ La IA no respondió — revisa tu API key');
+  else toast('❌ La IA no respondió'+(window.iaUltimoError()?': '+window.iaUltimoError():' — revisa tu API key'));
   state.view='correcciones'; renderSheet();
 }
 
@@ -817,7 +841,7 @@ async function iaRegenerarTodasDescripciones(){
   const restante=cola.slice(lote.length);
   _iaRegenQueueSet(restante);
   if(ok){ iaUndoPush(grupo, ok+' descripciones regeneradas'); iaPersistir('🤖 '+ok+' descripciones regeneradas'+(restante.length>0?' — quedan '+restante.length+', toca de nuevo para seguir':' — ¡listo, las '+lote.length+' de esta tanda terminaron la cola!')); }
-  else toast('❌ La IA no respondió — revisa tu API key');
+  else toast('❌ La IA no respondió'+(window.iaUltimoError()?': '+window.iaUltimoError():' — revisa tu API key'));
   state.view='correcciones'; renderSheet();
 }
 function iaRegenCancelar(){

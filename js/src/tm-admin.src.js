@@ -747,7 +747,8 @@ async function sugerirSpecsConIA(ids) {
             'Ejemplo de formato: ["1800Mbps","Dual Band","4 antenas"]';
         const raw = await window.iaLlamarModelo(prompt);
         if (!raw) {
-            mostrarNotificacion('❌ La IA no respondió — revisa tu API key o completa las specs a mano', 'error');
+            const detalle = typeof window.iaUltimoError === 'function' ? window.iaUltimoError() : '';
+            mostrarNotificacion('❌ La IA no respondió' + (detalle ? ': ' + detalle : ' — revisa tu API key o completa las specs a mano'), 'error');
             return;
         }
         let specs = [];
@@ -816,7 +817,11 @@ async function analizarFotoYCompletar() {
             + datos + foto
             + ' Usa SOLO datos reales dados arriba o realmente visibles en la foto — nunca inventes specs, materiales ni compatibilidades que no puedas verificar.';
         const raw = await window.iaLlamarModelo(prompt, imagen);
-        if (!raw) { mostrarNotificacion('❌ La IA no respondió — revisa tu API key', 'error'); return; }
+        if (!raw) {
+            const detalle = typeof window.iaUltimoError === 'function' ? window.iaUltimoError() : '';
+            mostrarNotificacion('❌ La IA no respondió' + (detalle ? ': ' + detalle : ' — revisa tu API key'), 'error');
+            return;
+        }
         const m = raw.match(/\{[\s\S]*\}/);
         if (!m) { mostrarNotificacion('❌ No se pudo interpretar la respuesta de la IA', 'error'); return; }
         let j;
