@@ -21,7 +21,7 @@ const PROMO_BADGE_PRESETS = [
   ['✅','Garantía'],['✅','Garantía 12m'],['💯','Original'],['⚡','Entrega rápida'],
   ['🎁','Oferta'],['🆕','Nuevo'],['♻️','Usado'],['📞','Soporte'],['🏆','Calidad'],['','Ninguno'],
 ];
-let promoData = { imgEl: null, nombre: '', subfila: '', eslogan: '', precio: '', precioAnterior: '', moneda: 'USD', detalle: '', stock: '', url: 'tiendamax.org', tema: 'oscuro', badges: [{emoji:'🛡️',label:'Seguro'},{emoji:'🛵',label:'Envío'},{emoji:'✅',label:'Garantía'}], _logoEl: null, _drawTimer: null, _productoId: '' };
+let promoData = { imgUrl: '', nombre: '', categoria: '', descripcion: '', title1: '', title2: '', tag: '', tagline: '', precio: '', precioAnterior: '', moneda: 'USD', stock: '', masVendido: false, _drawTimer: null, _productoId: '' };
 
 const $ = (s,r=document)=>r.querySelector(s);
 const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
@@ -248,6 +248,55 @@ function injectStyles(){
      al fondo del contenido para que nunca quede contenido debajo. */
   body.admin-mode .content{ padding-bottom:calc(150px + env(safe-area-inset-bottom)) !important; }
   .tm-promo-field{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);border-radius:12px;padding:10px 12px;color:#fff;font-size:13px;width:100%;box-sizing:border-box;font-family:inherit;outline:none}.tm-promo-field:focus{border-color:rgba(255,107,53,.55)}.tm-promo-field option{background:#1a1a2e;color:#fff}
+  /* ── Cartel Pro (WhatsApp Estado) — preview escalado + tarjeta 760px ── */
+  .tcp-preview-wrap{width:290px;height:435px;margin:0 auto;overflow:hidden;border-radius:10px;background:#000;box-shadow:0 8px 30px rgba(0,0,0,.5)}
+  .tcp-preview-scale{width:760px;transform:scale(.3816);transform-origin:top left}
+  .tcp-card{width:760px;height:1140px;position:relative;overflow:hidden;background:#000;color:#fff;border:2px solid #ff6b1a;border-radius:10px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
+  .tcp-bg{position:absolute;inset:0;background:linear-gradient(180deg,#0d0d12 0%,#1c0b04 45%,#260e06 72%,#0d0d12 100%)}
+  .tcp-glow{position:absolute;left:50%;top:40%;width:640px;height:640px;transform:translate(-50%,-50%);background:radial-gradient(circle,rgba(255,107,26,.30) 0%,rgba(255,107,26,.08) 32%,transparent 62%)}
+  .tcp-spark{position:absolute;width:4px;height:4px;border-radius:50%;background:#ff8c42;box-shadow:0 0 10px #ff8c42}
+  .tcp-header{position:relative;z-index:3;display:flex;align-items:center;justify-content:center;gap:12px;padding:30px 20px 0}
+  .tcp-logo{width:52px;height:52px;background:#ff6b1a;border-radius:6px 6px 16px 16px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(255,107,26,.45);position:relative}
+  .tcp-logo::before{content:"";position:absolute;top:-11px;left:50%;transform:translateX(-50%);width:26px;height:17px;border:4px solid #ff6b1a;border-bottom:0;border-radius:13px 13px 0 0}
+  .tcp-logo-m{color:#fff;font-weight:900;font-size:30px;line-height:1}
+  .tcp-logo-txt{font-size:36px;font-weight:700;color:#fff;letter-spacing:-.5px}.tcp-logo-txt em{font-style:italic;color:#ff6b1a;font-weight:800}
+  .tcp-tag{position:relative;z-index:3;margin:26px auto 0;width:fit-content;max-width:80%;background:rgba(255,107,26,.10);border:1.5px solid #ff6b1a;color:#ff8c42;font-size:16px;font-weight:700;letter-spacing:2px;padding:8px 22px;border-radius:24px;display:flex;align-items:center;gap:10px;white-space:nowrap}
+  .tcp-tag::before{content:"⚡";font-size:18px}
+  .tcp-title{position:relative;z-index:3;margin:22px 0 0 40px;max-width:62%}
+  .tcp-t1{font-weight:900;line-height:.9;letter-spacing:-3px;color:#ededed;word-break:break-word}
+  .tcp-t2{font-weight:900;line-height:.9;color:#ff6b1a;letter-spacing:-3px;text-shadow:0 0 40px rgba(255,107,26,.5);word-break:break-word}
+  .tcp-tagline{position:relative;z-index:3;margin:16px 0 0 40px;max-width:300px;font-size:17px;color:#ccc;line-height:1.32}
+  .tcp-hex{position:absolute;right:34px;top:132px;z-index:4;width:126px;height:146px;background:linear-gradient(180deg,#ff6b1a 0%,#8b3a0a 100%);clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 0 30px rgba(255,107,26,.5)}
+  .tcp-hex::before{content:"";position:absolute;inset:4px;background:#0d0906;clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%)}
+  .tcp-hex-b{font-size:22px;margin-bottom:2px;position:relative;z-index:1}
+  .tcp-hex-n{font-size:34px;font-weight:900;color:#fff;line-height:1;position:relative;z-index:1}
+  .tcp-hex-l{font-size:9px;font-weight:700;color:#ff8c42;letter-spacing:1.5px;margin-top:4px;position:relative;z-index:1;text-align:center;line-height:1.2}
+  .tcp-img{position:absolute;right:26px;top:322px;z-index:3;width:390px;height:390px;display:flex;align-items:center;justify-content:center}
+  .tcp-img img{max-width:100%;max-height:100%;object-fit:contain;border-radius:22px;filter:drop-shadow(0 20px 40px rgba(0,0,0,.6));background:#fff}
+  .tcp-feats{position:absolute;left:40px;top:470px;z-index:3;display:flex;flex-direction:column;gap:16px;width:210px}
+  .tcp-feat{display:flex;align-items:flex-start;gap:12px}
+  .tcp-feat-ic{width:42px;height:42px;flex-shrink:0;background:rgba(255,107,26,.10);border:1.5px solid #ff6b1a;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px}
+  .tcp-feat-t{font-size:12px;font-weight:800;color:#fff;letter-spacing:.5px;line-height:1.12}
+  .tcp-feat-d{font-size:10px;color:#999;margin-top:2px;line-height:1.3}
+  .tcp-trusts{position:absolute;right:40px;top:735px;z-index:3;display:flex;flex-direction:column;gap:16px;width:200px}
+  .tcp-trust{display:flex;align-items:flex-start;gap:10px}
+  .tcp-trust-ic{width:36px;height:36px;flex-shrink:0;background:rgba(255,107,26,.10);border:1.5px solid #ff6b1a;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px}
+  .tcp-trust-t{font-size:11px;font-weight:800;color:#fff;letter-spacing:.5px;line-height:1.1}
+  .tcp-trust-d{font-size:9px;color:#999;margin-top:2px;line-height:1.3}
+  .tcp-price{position:absolute;left:40px;right:280px;bottom:210px;z-index:3;background:#1a0a05;border:2px solid #ff6b1a;border-radius:10px;padding:16px 20px;display:flex;align-items:center;justify-content:space-between}
+  .tcp-price-m{display:flex;align-items:baseline;gap:6px}
+  .tcp-price-n{font-size:54px;font-weight:900;line-height:1;color:#ff6b1a;letter-spacing:-2px}
+  .tcp-price-c{font-size:20px;font-weight:700;color:#ff6b1a}
+  .tcp-price-s{text-align:right;font-size:11px;color:#aaa;line-height:1.3}.tcp-price-s strong{color:#fff;display:block;font-size:14px}.tcp-price-s del{color:#888;font-size:13px}
+  .tcp-stock{position:absolute;left:40px;right:280px;bottom:166px;z-index:3;display:flex;gap:12px}
+  .tcp-pill{flex:1;background:rgba(255,255,255,.05);border:1px solid #333;border-radius:6px;padding:8px 12px;display:flex;align-items:center;gap:8px;font-size:12px;color:#fff;font-weight:600;white-space:nowrap}.tcp-pill span{font-size:14px}
+  .tcp-cta{position:absolute;left:40px;right:40px;bottom:78px;z-index:3;background:linear-gradient(180deg,#ff6b1a 0%,#e85a04 100%);border-radius:10px;padding:16px 22px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 8px 24px rgba(255,107,26,.4)}
+  .tcp-cta-l{display:flex;align-items:center;gap:14px}
+  .tcp-wa{width:44px;height:44px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font-size:24px}
+  .tcp-cta-t{color:#fff;font-weight:800;font-size:14px;line-height:1.1;letter-spacing:.5px}.tcp-cta-t .s{display:block;font-size:11px;letter-spacing:2px;font-weight:700}.tcp-cta-t .b{display:block;font-size:22px;font-weight:900;letter-spacing:0;margin:2px 0}
+  .tcp-arrow{color:#fff;font-size:28px;font-weight:900}
+  .tcp-footer{position:absolute;bottom:30px;left:0;right:0;z-index:3;text-align:center}
+  .tcp-dom{font-size:16px;font-weight:700;color:#ff6b1a}.tcp-hint{font-size:12px;color:#888;margin-top:4px}
   .tm-chat-log{max-height:46vh;overflow:auto;display:flex;flex-direction:column;gap:9px;padding:4px 2px}
   .tm-chat-u,.tm-chat-b{border-radius:14px;padding:9px 12px;font-size:13px;line-height:1.5;max-width:92%}
   .tm-chat-u{align-self:flex-end;background:rgba(255,107,53,.16);border:1px solid rgba(255,107,53,.3)}
@@ -1170,31 +1219,55 @@ function renderMemory(){
 function promoParseChips(text) {
   return text.split(/[|\n]/).map(s => s.trim()).filter(Boolean).slice(0, 9);
 }
+// ── Helpers del Cartel Pro (mapeo producto → cartel) ──
+function _cStrip(s){ return String(s==null?'':s).replace(/^[\s​]*(?:[\p{Extended_Pictographic}☀-➿️‍]+\s*)+/u,'').trim(); }
+function _cClip(s,n){ s=String(s==null?'':s).trim(); return s.length<=n ? s : s.slice(0,n).replace(/\s+\S*$/,'')+'…'; }
+function _cSplitTitle(name){
+  name = _cStrip(name).toUpperCase().replace(/\([^)]*\)/g,'').trim();
+  const stop = ['DE','LA','EL','LOS','LAS','Y','CON','PARA','DEL','UN','UNA','A'];
+  const w = name.split(/\s+/).filter(x=>x.length>1 && !stop.includes(x));
+  return [w[0]||'PRODUCTO', w[1]||''];
+}
+function _cTitleFont(a,b){ const m=Math.max((a||'').length,(b||'').length); return m>10?50:m>8?62:m>6?72:82; }
+function _cFirstSentence(desc){ return _cClip(String(desc==null?'':desc).replace(/​/g,'').split(/\.\s|\n/)[0].trim(),68); }
+function _cFeatures(desc, specs){
+  const out=[]; const lines=String(desc==null?'':desc).split('\n').map(l=>l.replace(/​/g,'').trim()).filter(Boolean);
+  let inF=false;
+  for(const l of lines){
+    if(/ficha t[eé]cnica/i.test(l)){ inF=true; continue; }
+    if(/especificaciones|\bspecs\b/i.test(l)){ if(inF) break; }
+    if(!inF) continue;
+    const m=l.match(/^([^:]{2,40}):\s*(.+)$/);
+    if(m){ const em=(m[2].match(/^[\p{Extended_Pictographic}️‍]+/u)||[''])[0]||'🔹'; out.push({icon:em, title:_cStrip(m[1]).toUpperCase(), desc:_cStrip(m[2])}); }
+    if(out.length>=4) break;
+  }
+  if(!out.length && Array.isArray(specs)){
+    specs.slice(0,4).forEach(s=>{ const raw=String(s).replace(/​/g,'').trim(); const em=(raw.match(/[\p{Extended_Pictographic}️‍]+/u)||['🔹'])[0]; const txt=_cStrip(raw); const c=txt.indexOf(':'); out.push(c>0?{icon:em,title:txt.slice(0,c).toUpperCase(),desc:txt.slice(c+1).trim()}:{icon:em,title:_cClip(txt,22).toUpperCase(),desc:''}); });
+  }
+  return out;
+}
+// Mapea un producto del catálogo a los campos del Cartel Pro.
+function _cartelDataFromProduct(p){
+  const [w1,w2] = _cSplitTitle(p.nombre);
+  const disc = parseFloat(p.precioOriginal) > 0 && parseFloat(p.precioOriginal) > parseFloat(p.precioActual);
+  return {
+    _productoId: String(p.id||''), nombre: p.nombre||'', categoria: p.categoria||'', descripcion: p.descripcion||'', _specs: p.specs,
+    title1: w1, title2: w2, tag: (p.categoria||'DESTACADO').toUpperCase(), tagline: _cFirstSentence(p.descripcion),
+    precio: String(p.precioActual||''), precioAnterior: disc ? String(p.precioOriginal) : '', moneda: 'USD',
+    stock: String(p.stock||''), masVendido: !!p.masVendido,
+    imgUrl: (Array.isArray(p.imagenes)&&p.imagenes[0]) || p.imagen || ''
+  };
+}
+// Expuesto para que el modal "🟢 Estado WhatsApp" (revolico_integration.js)
+// use el MISMO diseño de cartel que el generador del copiloto.
+window.tmCartelHTML = function(p){ try{ return _cartelHTML(_cartelDataFromProduct(p)); }catch(e){ console.error('[cartel]',e); return ''; } };
 function promoSetProduct(id) {
   const p = products().find(x => String(x.id) === String(id));
   if (!p) return;
-  promoData._productoId = String(id);
-  promoData.nombre = (p.nombre || '').toUpperCase();
-  promoData.subfila = p.garantia ? 'Garantía ' + p.garantia : (p.categoria || '');
-  promoData.eslogan = '';
-  promoData.precio = String(p.precioActual || '');
-  promoData.precioAnterior = (parseFloat(p.precioOriginal) > 0 && parseFloat(p.precioOriginal) > parseFloat(p.precioActual)) ? String(p.precioOriginal) : '';
-  promoData.moneda = 'USD';
-  promoData.stock = String(p.stock || '');
-  promoData.url = 'tiendamax.org/p/producto-' + p.id + '.html';
-  promoData.detalle = (p.descripcion || '');
-  const map = {
-    tmPromoNombre:'nombre', tmPromoSubfila:'subfila', tmPromoEslogan:'eslogan',
-    tmPromoPrecio:'precio', tmPromoPrecioAnt:'precioAnterior',
-    tmPromoDetalle:'detalle', tmPromoUrl:'url', tmPromoStock:'stock'
-  };
+  Object.assign(promoData, _cartelDataFromProduct(p));
+  const map = { tmPromoTitle1:'title1', tmPromoTitle2:'title2', tmPromoTag:'tag', tmPromoTagline:'tagline', tmPromoPrecio:'precio', tmPromoPrecioAnt:'precioAnterior', tmPromoStock:'stock' };
   Object.entries(map).forEach(([elId, key]) => { const el = document.getElementById(elId); if(el) el.value = promoData[key]||''; });
-  if (p.imagen) {
-    const img = new Image(); img.crossOrigin = 'anonymous';
-    img.onload = () => { promoData.imgEl = img; promoScheduleDraw(); };
-    img.onerror = () => promoScheduleDraw();
-    img.src = p.imagen;
-  } else { promoScheduleDraw(); }
+  promoScheduleDraw();
 }
 function promoWrapText(ctx, text, maxW) {
   const words = text.split(/\s+/).filter(Boolean);
@@ -1266,214 +1339,68 @@ function promoDrawChips(ctx, chips, startX, startY, maxW, accent, isDark) {
   ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic';
   return y + chipH;
 }
+function _cartelHTML(d){
+  const w1=d.title1||'PRODUCTO', w2=d.title2||'';
+  const tf=_cTitleFont(w1,w2);
+  const feats=_cFeatures(d.descripcion, d._specs);
+  const hasDisc=parseFloat(d.precioAnterior)>0 && parseFloat(d.precioAnterior)>parseFloat(d.precio);
+  const pct=hasDisc?Math.round((1-parseFloat(d.precio)/parseFloat(d.precioAnterior))*100):0;
+  const st=Number(d.stock||0), moneda=d.moneda||'USD';
+  const trust=[['🚚','ENVÍO RÁPIDO','A todo el país'],['🛡️','COMPRA SEGURA','Protegemos tu compra'],['🏅','GARANTÍA','Calidad que te respalda']];
+  const featHtml=feats.map(f=>`<div class="tcp-feat"><div class="tcp-feat-ic">${f.icon}</div><div><div class="tcp-feat-t">${esc(_cClip(f.title,22))}</div><div class="tcp-feat-d">${esc(_cClip(f.desc,42))}</div></div></div>`).join('');
+  const trustHtml=trust.map(t=>`<div class="tcp-trust"><div class="tcp-trust-ic">${t[0]}</div><div><div class="tcp-trust-t">${t[1]}</div><div class="tcp-trust-d">${t[2]}</div></div></div>`).join('');
+  const pills=[`<div class="tcp-pill"><span>📦</span> Stock: ${st}</div>`, (st>0&&st<=3)?`<div class="tcp-pill"><span>🔥</span> ÚLTIMOS</div>`:`<div class="tcp-pill"><span>✅</span> DISPONIBLE</div>`].join('');
+  const imgUrl=d.imgUrl||'';
+  return `<div class="tcp-bg"></div><div class="tcp-glow"></div>`
+    +`<span class="tcp-spark" style="top:20%;right:30%"></span><span class="tcp-spark" style="top:25%;right:15%;width:3px;height:3px"></span><span class="tcp-spark" style="bottom:35%;right:20%;width:5px;height:5px"></span><span class="tcp-spark" style="bottom:30%;left:18%;width:3px;height:3px"></span><span class="tcp-spark" style="top:30%;left:22%"></span>`
+    +`<div class="tcp-header"><div class="tcp-logo"><div class="tcp-logo-m">M</div></div><div class="tcp-logo-txt">Tienda<em>Max</em></div></div>`
+    +`<div class="tcp-tag">${esc(_cClip(d.tag||'DESTACADO',18))}</div>`
+    +`<div class="tcp-title"><div class="tcp-t1" style="font-size:${tf}px">${esc(w1)}</div>${w2?`<div class="tcp-t2" style="font-size:${tf}px">${esc(w2)}</div>`:''}</div>`
+    +`<div class="tcp-tagline">${esc(d.tagline||'')}</div>`
+    +(hasDisc?`<div class="tcp-hex"><div class="tcp-hex-b">⚡</div><div class="tcp-hex-n">-${pct}%</div><div class="tcp-hex-l">OFERTA</div></div>`:'')
+    +`<div class="tcp-img">${imgUrl?`<img src="${esc(imgUrl)}" crossorigin="anonymous">`:'<div style="color:#555;font-size:14px">📷</div>'}</div>`
+    +(featHtml?`<div class="tcp-feats">${featHtml}</div>`:'')
+    +`<div class="tcp-trusts">${trustHtml}</div>`
+    +`<div class="tcp-price"><div class="tcp-price-m"><div class="tcp-price-n">$${esc(String(Math.round(parseFloat(d.precio)||0)))}</div><div class="tcp-price-c">${esc(moneda)}</div></div><div class="tcp-price-s">${hasDisc?`<del>$${esc(String(Math.round(parseFloat(d.precioAnterior))))}</del><strong>AHORRA</strong>`:`<strong>CONTRA</strong><span>entrega</span>`}</div></div>`
+    +`<div class="tcp-stock">${pills}</div>`
+    +`<div class="tcp-cta"><div class="tcp-cta-l"><div class="tcp-wa">💬</div><div class="tcp-cta-t"><span class="s">PÍDELO DIRECTO POR</span><span class="b">WHATSAPP</span><span class="s">EN TIENDAMAX</span></div></div><div class="tcp-arrow">›</div></div>`
+    +`<div class="tcp-footer"><div class="tcp-dom">🌐 tiendamax.org</div><div class="tcp-hint">Toca "Pedir" en la tienda para reservar</div></div>`;
+}
 async function drawPromo() {
-  const canvas = document.getElementById('tmPromoCanvas'); if (!canvas) return;
-  const ctx = canvas.getContext('2d');
-  const W = 1080, H = 1920;
-  canvas.width = W; canvas.height = H;
-  const d = promoData, tema = d.tema || 'oscuro';
-  const isDark = tema !== 'claro';
-  const textColor = isDark ? '#ffffff' : '#1a1008';
-  const accent = '#f45e1f';
-
-  // ── Background ──
-  if (tema === 'oscuro') {
-    const gr = ctx.createLinearGradient(0, 0, 0, H);
-    gr.addColorStop(0, '#0d0d12'); gr.addColorStop(0.4, '#1c0b04'); gr.addColorStop(0.7, '#260e06'); gr.addColorStop(1, '#0d0d12');
-    ctx.fillStyle = gr; ctx.fillRect(0, 0, W, H);
-    const glow = ctx.createRadialGradient(W*0.55, H*0.55, 0, W*0.55, H*0.55, W*0.8);
-    glow.addColorStop(0, 'rgba(244,94,31,.18)'); glow.addColorStop(1, 'rgba(244,94,31,0)');
-    ctx.fillStyle = glow; ctx.fillRect(0, 0, W, H);
-  } else if (tema === 'naranja') {
-    const gr = ctx.createLinearGradient(0, 0, 0, H);
-    gr.addColorStop(0, '#8c2200'); gr.addColorStop(0.5, '#c94400'); gr.addColorStop(1, '#8c2200');
-    ctx.fillStyle = gr; ctx.fillRect(0, 0, W, H);
-    const grain = ctx.createRadialGradient(W*0.3, H*0.3, 0, W*0.3, H*0.3, W);
-    grain.addColorStop(0, 'rgba(255,180,80,.12)'); grain.addColorStop(1, 'rgba(0,0,0,0)');
-    ctx.fillStyle = grain; ctx.fillRect(0, 0, W, H);
-  } else {
-    const gr = ctx.createLinearGradient(0, 0, 0, H);
-    gr.addColorStop(0, '#f7f3ee'); gr.addColorStop(1, '#ede5d8');
-    ctx.fillStyle = gr; ctx.fillRect(0, 0, W, H);
-    const grain2 = ctx.createRadialGradient(W*0.5, H*0.4, 0, W*0.5, H*0.4, W*0.8);
-    grain2.addColorStop(0, 'rgba(244,94,31,.07)'); grain2.addColorStop(1, 'transparent');
-    ctx.fillStyle = grain2; ctx.fillRect(0, 0, W, H);
+  const node = document.getElementById('tmCartelPro');
+  if (!node) return;
+  node.innerHTML = _cartelHTML(promoData);
+}
+async function promoDescargarCartel(btn){
+  const node = document.getElementById('tmCartelPro');
+  if (!node) { toast('Abre el generador de cartel primero'); return; }
+  if (typeof window.html2canvas !== 'function') { toast('No cargó html2canvas — recarga la página'); return; }
+  const original = btn ? btn.textContent : '';
+  if (btn) { btn.textContent = '⏳ Generando…'; btn.style.pointerEvents='none'; }
+  try {
+    // Espera a que la foto del producto cargue para que no salga en blanco.
+    const im = node.querySelector('img');
+    if (im && !im.complete) await new Promise(r=>{ im.onload=r; im.onerror=r; setTimeout(r,4000); });
+    const canvas = await window.html2canvas(node, { backgroundColor:'#000', scale:2, useCORS:true, allowTaint:false, logging:false, width:node.offsetWidth, height:node.offsetHeight });
+    const link = document.createElement('a');
+    link.download = 'cartel-tiendamax-' + Date.now() + '.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+    try{ remember('promo_download', { productName: promoData.nombre }); }catch(_e){}
+    toast('Cartel descargado — súbelo a tu Estado de WhatsApp');
+  } catch(e) {
+    console.error('[cartel]', e);
+    toast('No pude generar el cartel: ' + (e && e.message || e));
+  } finally {
+    if (btn) { btn.textContent = original; btn.style.pointerEvents=''; }
   }
-
-  // ── Bag watermark (faint background) ──
-  promoDrawBagBg(ctx, W, H, accent, isDark ? '#ffffff' : '#1a1008');
-
-  // ── Logo top-center ──
-  const logo = await promoLoadLogo();
-  const logoSz = 100, logoY = 62;
-  const logoX = (W - logoSz) / 2;
-  if (logo) {
-    ctx.save();
-    promoRoundRect(ctx, logoX, logoY, logoSz, logoSz, 22);
-    ctx.clip(); ctx.drawImage(logo, logoX, logoY, logoSz, logoSz);
-    ctx.restore();
-  } else {
-    promoRoundRect(ctx, logoX, logoY, logoSz, logoSz, 22);
-    ctx.fillStyle = accent; ctx.fill();
-    ctx.fillStyle = '#fff'; ctx.font = 'bold 64px sans-serif';
-    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-    ctx.fillText('M', W/2, logoY + logoSz/2); ctx.textBaseline = 'alphabetic';
-  }
-
-  // ── Top separator ──
-  ctx.strokeStyle = accent; ctx.lineWidth = 5;
-  ctx.beginPath(); ctx.moveTo(80, logoY + logoSz + 28); ctx.lineTo(W - 80, logoY + logoSz + 28); ctx.stroke();
-
-  // ── Title block ──
-  const titleX = 80, titleMaxW = W - 160;
-  let titleY = logoY + logoSz + 72;
-
-  const nombre = (d.nombre || 'PRODUCTO DESTACADO').toUpperCase();
-  const fsN = nombre.length > 32 ? 56 : nombre.length > 20 ? 64 : 72;
-  ctx.font = `800 ${fsN}px 'Arial Black', Arial, sans-serif`;
-  ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic'; ctx.fillStyle = accent;
-  promoWrapText(ctx, nombre, titleMaxW).slice(0, 2).forEach(line => { ctx.fillText(line, titleX, titleY); titleY += fsN * 1.18; });
-
-  if (d.subfila) {
-    titleY += 4;
-    ctx.font = '500 44px Arial, sans-serif';
-    ctx.fillStyle = isDark ? 'rgba(255,255,255,0.55)' : 'rgba(0,0,0,0.45)';
-    ctx.fillText(d.subfila, titleX, titleY); titleY += 58;
-  }
-
-  const eslogan = (d.eslogan || '').toUpperCase();
-  if (eslogan) {
-    titleY += 6;
-    const fsE = eslogan.length > 40 ? 62 : eslogan.length > 26 ? 72 : 82;
-    ctx.font = `900 ${fsE}px 'Arial Black', Arial, sans-serif`;
-    ctx.fillStyle = textColor;
-    promoWrapText(ctx, eslogan, titleMaxW).slice(0, 3).forEach(line => { ctx.fillText(line, titleX, titleY); titleY += fsE * 1.14; });
-  }
-
-  titleY = Math.min(titleY, 620);
-
-  // ── Product photo (narrower to reveal bag watermark on sides) ──
-  const phPad = 100, phX = phPad, phW = W - phPad * 2;
-  const phY = titleY + 28;
-  const phH = Math.max(260, Math.min(Math.round(phW * 0.68), 560, 1130 - phY));
-
-  if (d.imgEl) {
-    ctx.save();
-    ctx.shadowColor = 'rgba(0,0,0,0.6)'; ctx.shadowBlur = 60; ctx.shadowOffsetY = 24;
-    promoRoundRect(ctx, phX, phY, phW, phH, 40); ctx.clip();
-    const sc = Math.max(phW / d.imgEl.naturalWidth, phH / d.imgEl.naturalHeight);
-    const iw = d.imgEl.naturalWidth * sc, ih = d.imgEl.naturalHeight * sc;
-    ctx.drawImage(d.imgEl, phX + (phW - iw) / 2, phY + (phH - ih) / 2, iw, ih);
-    ctx.restore();
-  } else {
-    ctx.save();
-    promoRoundRect(ctx, phX, phY, phW, phH, 40);
-    ctx.fillStyle = isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.06)'; ctx.fill();
-    ctx.fillStyle = isDark ? 'rgba(255,255,255,0.22)' : 'rgba(0,0,0,0.2)';
-    ctx.font = '80px sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-    ctx.fillText('📷', W / 2, phY + phH / 2 - 30);
-    ctx.font = '500 40px Arial, sans-serif'; ctx.textBaseline = 'alphabetic';
-    ctx.fillText('Elige un producto o sube la foto', W / 2, phY + phH / 2 + 50);
-    ctx.restore();
-  }
-
-  let curY = phY + phH + 40;
-
-  // ── Spec chips ──
-  const chips = promoParseChips(d.detalle || '');
-  if (chips.length) curY = promoDrawChips(ctx, chips, phX, curY, phW, accent, isDark) + 36;
-
-  // ── Price ──
-  if (d.precio) {
-    const moneda = d.moneda || 'USD';
-    const precioStr = moneda + ' $' + d.precio;
-    const pFs = precioStr.length > 10 ? 80 : precioStr.length > 7 ? 92 : 108;
-    ctx.font = `900 ${pFs}px 'Arial Black', Arial, sans-serif`;
-    ctx.fillStyle = accent; ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic';
-    const pBaseY = curY + pFs;
-    ctx.fillText(precioStr, W / 2, pBaseY);
-    if (d.precioAnterior) {
-      const antStr = moneda + ' $' + d.precioAnterior;
-      const antFs = 54;
-      ctx.font = `500 ${antFs}px Arial, sans-serif`;
-      ctx.fillStyle = 'rgba(200,200,200,0.65)';
-      const antW2 = ctx.measureText(antStr).width;
-      const antBaseY = pBaseY + antFs + 18;
-      ctx.fillText(antStr, W / 2, antBaseY);
-      ctx.strokeStyle = 'rgba(200,200,200,0.65)'; ctx.lineWidth = 3;
-      ctx.beginPath();
-      ctx.moveTo(W / 2 - antW2 / 2, antBaseY - antFs * 0.36);
-      ctx.lineTo(W / 2 + antW2 / 2, antBaseY - antFs * 0.36);
-      ctx.stroke();
-      curY = antBaseY + 36;
-    } else {
-      curY = pBaseY + 36;
-    }
-  }
-
-  // ── URL (ensure it stays above the badge strip) ──
-  curY = Math.min(curY, H - 360);
-  const url = d.url || 'tiendamax.org';
-  ctx.fillStyle = accent;
-  ctx.font = `700 ${url.length > 28 ? 44 : url.length > 20 ? 52 : 58}px Arial, sans-serif`;
-  ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic';
-  ctx.fillText(url, W / 2, curY + 62);
-  curY += 84;
-
-  // ── Bottom separator ──
-  const sepY = Math.max(curY + 16, H - 248);
-  ctx.strokeStyle = accent; ctx.lineWidth = 5;
-  ctx.beginPath(); ctx.moveTo(80, sepY); ctx.lineTo(W - 80, sepY); ctx.stroke();
-
-  // ── Badge footer (3 configurable slots) ──
-  const badgeY = sepY + 48;
-  const colW = (W - 160) / 3;
-  const colMids = [80 + colW / 2, W / 2, W - 80 - colW / 2];
-  const badges = (d.badges && d.badges.length === 3) ? d.badges
-    : [{emoji:'🛡️',label:'Seguro'},{emoji:'🛵',label:'Envío'},{emoji:'✅',label:'Garantía'}];
-  ctx.textAlign = 'center';
-  badges.forEach((badge, i) => {
-    if (!badge || (!badge.emoji && !badge.label)) return;
-    if (badge.emoji) {
-      ctx.font = '74px sans-serif'; ctx.textBaseline = 'middle';
-      ctx.fillText(badge.emoji, colMids[i], badgeY + 42);
-    }
-    if (badge.label) {
-      ctx.font = `600 ${badge.label.length > 12 ? 32 : 38}px Arial, sans-serif`;
-      ctx.fillStyle = isDark ? 'rgba(255,255,255,0.88)' : 'rgba(0,0,0,0.75)';
-      ctx.textBaseline = 'alphabetic';
-      ctx.fillText(badge.label, colMids[i], badgeY + 106);
-    }
-  });
-
-  ctx.strokeStyle = accent; ctx.lineWidth = 4;
-  ctx.beginPath(); ctx.moveTo(80, H - 44); ctx.lineTo(W - 80, H - 44); ctx.stroke();
 }
 function promoScheduleDraw() { clearTimeout(promoData._drawTimer); promoData._drawTimer = setTimeout(drawPromo, 100); }
 function addPromoListeners() {
-  const fields = {
-    tmPromoNombre:'nombre', tmPromoSubfila:'subfila', tmPromoEslogan:'eslogan',
-    tmPromoPrecio:'precio', tmPromoPrecioAnt:'precioAnterior', tmPromoMoneda:'moneda',
-    tmPromoDetalle:'detalle', tmPromoUrl:'url', tmPromoStock:'stock'
-  };
+  const fields = { tmPromoTitle1:'title1', tmPromoTitle2:'title2', tmPromoTag:'tag', tmPromoTagline:'tagline', tmPromoPrecio:'precio', tmPromoPrecioAnt:'precioAnterior', tmPromoStock:'stock', tmPromoMoneda:'moneda' };
   Object.entries(fields).forEach(([id, key]) => {
     const el = document.getElementById(id);
     if (el) el.addEventListener('input', () => { promoData[key] = el.value; promoScheduleDraw(); });
-  });
-  // Badge selectors
-  [0, 1, 2].forEach(i => {
-    const selEl = document.getElementById('tmPromoBadgeSel' + i);
-    const lblEl = document.getElementById('tmPromoBadgeLbl' + i);
-    if (selEl) selEl.addEventListener('change', () => {
-      const [emoji, ...rest] = selEl.value.split('|');
-      promoData.badges[i] = { emoji, label: rest.join('|') };
-      if (lblEl) lblEl.value = rest.join('|');
-      promoScheduleDraw();
-    });
-    if (lblEl) lblEl.addEventListener('input', () => {
-      promoData.badges[i] = { emoji: promoData.badges[i]?.emoji || '', label: lblEl.value };
-      promoScheduleDraw();
-    });
   });
   const sel = document.getElementById('tmPromoProductoSel');
   if (sel) sel.addEventListener('change', () => { if (sel.value) promoSetProduct(sel.value); });
@@ -1482,14 +1409,9 @@ function addPromoListeners() {
     const file = imgInp.files && imgInp.files[0]; if (!file) return;
     const reader = new FileReader();
     reader.onload = ev => {
-      const img = new Image();
-      img.onload = () => {
-        promoData.imgEl = img; drawPromo();
-        const btn = document.querySelector('[data-cop="promoPickImg"]');
-        if (btn) btn.textContent = '✅ Foto cargada — Cambiar imagen';
-        if (btn) btn.className = btn.className.replace('blue','green');
-      };
-      img.src = ev.target.result;
+      promoData.imgUrl = ev.target.result; drawPromo();
+      const btn = document.querySelector('[data-cop="promoPickImg"]');
+      if (btn) { btn.textContent = '✅ Foto cargada — Cambiar imagen'; btn.className = btn.className.replace('blue','green'); }
     };
     reader.readAsDataURL(file);
   });
@@ -1501,72 +1423,48 @@ function renderPromoImagen() {
     ? prods.map(p => `<option value="${esc(String(p.id))}"${d._productoId===String(p.id)?' selected':''}>${esc(p.nombre||'#'+p.id)}</option>`).join('')
     : '<option value="">— Sin productos —</option>';
   return `<div>
-    <div style="display:flex;justify-content:center;margin-bottom:12px;background:#111;border-radius:16px;overflow:hidden;min-height:200px">
-      <canvas id="tmPromoCanvas" style="width:200px;height:355px;display:block;flex-shrink:0" width="1080" height="1920"></canvas>
-    </div>
-    <div style="display:flex;flex-direction:column;gap:10px">
+    <div class="tcp-preview-wrap"><div class="tcp-preview-scale"><div class="tcp-card" id="tmCartelPro"></div></div></div>
+    <div style="display:flex;flex-direction:column;gap:10px;margin-top:12px">
       <div><div style="font-size:11px;color:#888;margin-bottom:4px">Producto del catálogo</div>
         <select class="tm-promo-field" id="tmPromoProductoSel" style="width:100%">
           <option value="">— Elegir producto —</option>
           ${prodOpts}
         </select></div>
       <input type="file" id="tmPromoImgInput" accept="image/*" style="display:none">
-      <button type="button" class="tm-copilot-btn ${d.imgEl?'green':'blue'}" data-cop="promoPickImg" style="width:100%">${d.imgEl ? '✅ Foto cargada — Cambiar imagen' : '📷 Cambiar foto del producto'}</button>
+      <button type="button" class="tm-copilot-btn ${d.imgUrl?'green':'blue'}" data-cop="promoPickImg" style="width:100%">${d.imgUrl ? '✅ Foto cargada — Cambiar imagen' : '📷 Cambiar foto del producto'}</button>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-        <div><div style="font-size:11px;color:#888;margin-bottom:4px">Nombre <span style="color:#f45e1f">●</span></div>
-          <input class="tm-promo-field" id="tmPromoNombre" type="text" placeholder="INVERSOR SOLAR 2KW" value="${esc(d.nombre)}"></div>
-        <div><div style="font-size:11px;color:#888;margin-bottom:4px">Subfila (garantía / categoría)</div>
-          <input class="tm-promo-field" id="tmPromoSubfila" type="text" placeholder="Garantía 12 meses" value="${esc(d.subfila||'')}"></div>
+        <div><div style="font-size:11px;color:#888;margin-bottom:4px">Título línea 1</div>
+          <input class="tm-promo-field" id="tmPromoTitle1" type="text" placeholder="ROUTER" value="${esc(d.title1)}"></div>
+        <div><div style="font-size:11px;color:#888;margin-bottom:4px">Título línea 2 (naranja)</div>
+          <input class="tm-promo-field" id="tmPromoTitle2" type="text" placeholder="TP-LINK" value="${esc(d.title2)}"></div>
       </div>
-      <div><div style="font-size:11px;color:#888;margin-bottom:4px">Eslogan (línea blanca, opcional)</div>
-        <input class="tm-promo-field" id="tmPromoEslogan" type="text" placeholder="POTENCIA PURA Y CONFIABILIDAD SIN IGUAL" value="${esc(d.eslogan)}"></div>
-      <div style="display:grid;grid-template-columns:1fr 80px 1fr;gap:8px">
-        <div><div style="font-size:11px;color:#888;margin-bottom:4px">Precio actual</div>
-          <input class="tm-promo-field" id="tmPromoPrecio" type="text" placeholder="300" value="${esc(d.precio)}"></div>
+      <div><div style="font-size:11px;color:#888;margin-bottom:4px">Etiqueta (pill superior)</div>
+        <input class="tm-promo-field" id="tmPromoTag" type="text" placeholder="WIFI" value="${esc(d.tag)}"></div>
+      <div><div style="font-size:11px;color:#888;margin-bottom:4px">Frase (bajo el título)</div>
+        <input class="tm-promo-field" id="tmPromoTagline" type="text" placeholder="Descripción corta y atractiva" value="${esc(d.tagline)}"></div>
+      <div style="display:grid;grid-template-columns:1fr 80px 1fr 1fr;gap:8px">
+        <div><div style="font-size:11px;color:#888;margin-bottom:4px">Precio</div>
+          <input class="tm-promo-field" id="tmPromoPrecio" type="text" placeholder="80" value="${esc(d.precio)}"></div>
         <div><div style="font-size:11px;color:#888;margin-bottom:4px">Moneda</div>
           <select class="tm-promo-field" id="tmPromoMoneda">
             <option${d.moneda==='USD'?' selected':''}>USD</option>
             <option${d.moneda==='CUP'?' selected':''}>CUP</option>
             <option${d.moneda==='MLC'?' selected':''}>MLC</option>
           </select></div>
-        <div><div style="font-size:11px;color:#888;margin-bottom:4px">Precio anterior</div>
-          <input class="tm-promo-field" id="tmPromoPrecioAnt" type="text" placeholder="350" value="${esc(d.precioAnterior||'')}"></div>
+        <div><div style="font-size:11px;color:#888;margin-bottom:4px">Precio antes</div>
+          <input class="tm-promo-field" id="tmPromoPrecioAnt" type="text" placeholder="opcional" value="${esc(d.precioAnterior||'')}"></div>
+        <div><div style="font-size:11px;color:#888;margin-bottom:4px">Stock</div>
+          <input class="tm-promo-field" id="tmPromoStock" type="text" placeholder="6" value="${esc(d.stock||'')}"></div>
       </div>
-      <div><div style="font-size:11px;color:#888;margin-bottom:4px">Especificaciones (separa con | o salto de línea)</div>
-        <textarea class="tm-promo-field" id="tmPromoDetalle" rows="3" placeholder="ONDA SENOIDAL PURA&#10;CARGA 2000W&#10;24V/48V" style="resize:vertical;line-height:1.4">${esc(d.detalle)}</textarea></div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-        <div><div style="font-size:11px;color:#888;margin-bottom:4px">Stock disponible</div>
-          <input class="tm-promo-field" id="tmPromoStock" type="text" placeholder="5" value="${esc(d.stock||'')}"></div>
-        <div><div style="font-size:11px;color:#888;margin-bottom:4px">URL del producto</div>
-          <input class="tm-promo-field" id="tmPromoUrl" type="text" placeholder="tiendamax.org/p/producto-1.html" value="${esc(d.url||'tiendamax.org')}"></div>
-      </div>
-      <div>
-        <div style="font-size:11px;color:#888;margin-bottom:6px">Badges del pie — ícono + texto</div>
-        ${[0,1,2].map(i => {
-          const b = (d.badges && d.badges[i]) || {emoji:'',label:''};
-          const matchVal = PROMO_BADGE_PRESETS.find(([e,l]) => e===b.emoji && l===b.label);
-          const selVal = matchVal ? matchVal[0]+'|'+matchVal[1] : (b.emoji+'|'+b.label);
-          return `<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:6px">
-            <select class="tm-promo-field" id="tmPromoBadgeSel${i}">
-              ${PROMO_BADGE_PRESETS.map(([e,l]) => `<option value="${esc(e+'|'+l)}"${(e+'|'+l)===selVal?' selected':''}>${e} ${l}</option>`).join('')}
-            </select>
-            <input class="tm-promo-field" id="tmPromoBadgeLbl${i}" type="text" placeholder="Etiqueta" value="${esc(b.label||'')}">
-          </div>`;
-        }).join('')}
-      </div>
-      <div><div style="font-size:11px;color:#888;margin-bottom:6px">Tema</div>
-        <div style="display:flex;gap:6px">
-          ${[['oscuro','#141422','#fff'],['naranja','#c94400','#fff'],['claro','#ede5d8','#333']].map(([t,bg,fg])=>`<button type="button" class="tm-copilot-btn" data-cop="promoTema" data-tema="${t}" style="background:${bg};color:${fg};flex:1;border:2px solid ${d.tema===t?'rgba(255,255,255,.7)':'rgba(255,255,255,.1)'}">${t.charAt(0).toUpperCase()+t.slice(1)}</button>`).join('')}
-        </div>
-      </div>
-      <button type="button" class="tm-copilot-btn primary" data-cop="promoDownload" style="padding:14px;margin-top:4px">⬇️ Descargar imagen (1080×1920)</button>
+      <p style="font-size:11px;color:#888;margin:2px 0 0">Las features, garantías y el CTA se arman solos con los datos del producto. Elige un producto y listo.</p>
+      <button type="button" class="tm-copilot-btn primary" data-cop="promoDownload" style="padding:14px;margin-top:4px">⬇️ Descargar cartel (para WhatsApp Estado)</button>
     </div>
   </div>`;
 }
-// Monta el generador de Promo dentro del panel admin de Publicación (sub-tab Promo)
+
 window.pubMountPromo = function() {
   const root = document.getElementById('tmPromoAdminRoot');
-  if (!root || root.querySelector('#tmPromoCanvas')) return;
+  if (!root || root.querySelector('#tmCartelPro')) return;
   root.innerHTML = renderPromoImagen();
   setTimeout(() => { addPromoListeners(); drawPromo(); }, 80);
 };
@@ -1838,16 +1736,7 @@ function bindEvents(){
     if(act==='iaRegenTodas') iaRegenerarTodasDescripciones();
     if(act==='iaRegenCancelar') iaRegenCancelar();
     if(act==='promoPickImg') { const inp = document.getElementById('tmPromoImgInput'); if(inp) inp.click(); }
-    if(act==='promoTema') { promoData.tema = el.dataset.tema; state.view = 'promo'; renderSheet(); promoScheduleDraw(); }
-    if(act==='promoDownload') {
-      const canvas = document.getElementById('tmPromoCanvas'); if(!canvas) return;
-      const link = document.createElement('a');
-      link.download = 'promo-tiendamax-' + Date.now() + '.jpg';
-      link.href = canvas.toDataURL('image/jpeg', 0.94);
-      link.click();
-      remember('promo_download', { productName: promoData.nombre });
-      toast('Imagen descargada — lista para WhatsApp Estado');
-    }
+    if(act==='promoDownload') { promoDescargarCartel(el); }
   });
 }
 function isAdminVisible(){ const p=$('#adminPanel'); return !!(p && !p.classList.contains('hidden')); }
