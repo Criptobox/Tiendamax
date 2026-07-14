@@ -169,9 +169,9 @@
   },
   {
     "id": 1778102507659,
-    "nombre": "Pesa / Báscula Inteligente Digital.",
+    "nombre": "​⚖️ Báscula Digital de Alta Definición",
     "precioActual": 25,
-    "imagen": "https://tiendamax.org/imagenes/img_1778102507659.webp",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784007772666.webp",
     "categoria": "UTILES",
     "subcategoria": "HOGAR",
     "stock": 8,
@@ -181,17 +181,27 @@
     "devolucion": false,
     "descuento": 0,
     "slug": "pesa-bascula-inteligente-digital",
-    "comision": 1.8,
+    "comision": 1500,
     "seoTitle": "PESA / BÁSCULA INTELIGENTE DIGITAL. en Cuba | TiendaMax",
     "seoDescription": "Pesa/ Báscula inteligente digital. Funciona con 2 baterias AAA(no incluidas) Cinta metrica incluida. Se conecta con el teléfono mediante una app que…",
     "radar": true,
-    "descripcion": "Báscula/pesa digital de alta definición, hasta 180kg (396.83lb) de capacidad, con precisión de 50g. Pantalla LCD grande y clara, superficie de cristal templado de 27x27cm. Funciona con 2 baterías AAA (no incluidas). Cinta métrica incluida de regalo."
+    "descripcion": "Báscula de diseño elegante y compacto, perfecta para el uso diario en el hogar. Ofrece una lectura clara y precisa de tu peso con una plataforma resistente y fácil de limpiar.\n​Ficha Técnica:\n​Capacidad Máxima: ⚖️ Soporta hasta 396.83 lb (180 kg).\n​Precisión: 🎯 División (d) de 50g para un seguimiento exacto de tu peso.\n​Visualización: 📱 Pantalla digital HD de alta visibilidad para lecturas rápidas.\n​Dimensiones: 📏 Tamaño optimizado de 27x27 cm (10.63x10.63 pulgadas).\n​Diseño: ✨ Estética moderna en color negro con acabado de alta calidad.\n​Especificaciones (Specs):\n​Tipo: Báscula corporal digital.\n​Material: Plataforma de vidrio templado de alta resistencia.\n​Uso: Monitoreo de peso personal y control de salud.\n​Unidades: Medición soportada en libras (lb) y kilogramos (kg).",
+    "precioOriginal": 0,
+    "comisionMoneda": "MN",
+    "specs": [
+      "​⚖️ Alta Precisión",
+      "​📱 Display Digital HD"
+    ],
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784007772666.webp",
+      "https://tiendamax.org/imagenes/img_1778102507659.webp"
+    ]
   },
   {
     "id": 1778102582909,
-    "nombre": "Antorcha Para Soldadura TIG:",
+    "nombre": "​🔥 Antorcha de Soldadura TIG (Kit Profesional)",
     "precioActual": 90,
-    "imagen": "https://tiendamax.org/imagenes/img_1778102582909.webp",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784007359011.webp",
     "categoria": "UTILES",
     "subcategoria": "HERRAMIENTAS",
     "stock": 10,
@@ -205,7 +215,17 @@
     "seoTitle": "ANTORCHA PARA SOLDADURA TIG: en Cuba | TiendaMax",
     "seoDescription": "Antorcha para soldadura TIG: Utilizada para trabajos de soldadura de alta precisión en metales como acero inoxidable, aluminio y hierro. Ideal para…",
     "radar": true,
-    "descripcion": "Antorcha para soldadura TIG marca FEMEROL, incluye tapa trasera, cuerpo de collet, tapa cerámica y juego de boquillas (tamaños 4, 5 y 6). Cable flexible y resistente de buen largo para trabajar cómodo. Utilizada para trabajos de soldadura de alta precisión en metales como acero inoxidable y aluminio."
+    "descripcion": "Antorcha de alta calidad diseñada para soldadura TIG, ideal para trabajar metales con gran exactitud. Este kit incluye todos los consumibles necesarios para comenzar a trabajar de inmediato en diversos proyectos de soldadura.\n​Ficha Técnica:\n​Versatilidad: 🎯 Equipada con componentes intercambiables (boquillas, electrodos) para adaptarse a diferentes grosores y tipos de soldadura.\n​Diseño: 🛠️ Mango ergonómico y manguera flexible de alta resistencia que facilitan el manejo durante trabajos largos.\n​Kit Completo: 📦 Incluye antorcha, copas cerámicas (tamaños 4, 5, 6), collets, cuerpo de collet y tapa trasera (back cap).\n​Calidad: ✨ Construida con materiales resistentes al calor para garantizar una larga vida útil y una conducción estable del gas y la corriente.\n​Especificaciones (Specs):\n​Tipo: Antorcha TIG manual.\n​Accesorios: Kit de consumibles incluido (copas, collets, electrodos).\n​Uso: Soldadura de precisión en acero inoxidable, aluminio y otros metales.\n​Conexión: Cableado reforzado para alimentación de gas y energía.",
+    "precioOriginal": 0,
+    "comisionMoneda": "USD",
+    "specs": [
+      "​🎯 Precisión Profesional",
+      "​🛠️ Kit Completo TIG"
+    ],
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784007359011.webp",
+      "https://tiendamax.org/imagenes/img_1778102582909.webp"
+    ]
   },
   {
     "id": 1778103783319,
@@ -234,9 +254,9 @@
   },
   {
     "id": 1778103856933,
-    "nombre": "Pistola de Masaje Recargable:",
+    "nombre": "​⚡ Pistola de Masaje Muscular (Fascia Gun)",
     "precioActual": 25,
-    "imagen": "https://tiendamax.org/imagenes/img_1778103856933.webp",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784007970666.webp",
     "categoria": "UTILES",
     "subcategoria": "SALUD Y BIENESTAR",
     "stock": 5,
@@ -246,10 +266,20 @@
     "devolucion": false,
     "descuento": 0,
     "slug": "pistola-de-masaje-recargable",
-    "comision": 1.8,
+    "comision": 1500,
     "seoTitle": "PISTOLA DE MASAJE RECARGABLE: en Cuba | TiendaMax",
     "seoDescription": "Pistola de masaje Recargable: - Bateria de litio 18650 (3000 miliamperes) - 4 cabezales multifuncionales intercambiables. - Fácil para operar con una…",
-    "descripcion": "Pistola de masaje recargable (fascia gun), batería de litio 18650 de 3000mAh, hasta 3 horas de autonomía. Incluye 4 cabezales intercambiables para distintos tipos de masaje. Pantalla táctil con niveles de intensidad y carga por USB Type-C."
+    "descripcion": "Dispositivo de percusión de alta potencia diseñado para liberar la tensión muscular, mejorar la circulación y acelerar la recuperación después del entrenamiento o tras largas jornadas de trabajo.\n​Ficha Técnica:\n​Versatilidad: 💆‍♂️ Incluye 4 cabezales intercambiables para masajear diferentes grupos musculares (espalda, cuello, piernas, brazos).\n​Autonomía: 🔋 Hasta 3 horas de uso continuo por carga.\n​Carga Moderna: 🔌 Puerto de carga USB Type-C, compatible con la mayoría de cargadores de dispositivos móviles actuales.\n​Control Intuitivo: ⚙️ Panel de control táctil con indicadores LED para ajustar la intensidad del masaje.\n​Diseño: ✨ Ergonómico, ligero y fácil de transportar para llevarlo al gimnasio o usarlo en casa.\n​Especificaciones (Specs):\n​Tipo: Masajeador de percusión.\n​Carga: USB Type-C.\n​Accesorios: 4 cabezales de masaje (redondo, horquilla, punta, plano).\n​Uso: Recuperación post-entrenamiento, alivio de dolores musculares, mejora de la flexibilidad y relajación diaria.",
+    "precioOriginal": 0,
+    "comisionMoneda": "MN",
+    "specs": [
+      "​💆‍♂️ Alivio Profundo",
+      "​🔋 Carga Rápida Type-C"
+    ],
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784007970666.webp",
+      "https://tiendamax.org/imagenes/img_1778103856933.webp"
+    ]
   },
   {
     "id": 1778104191957,
@@ -675,9 +705,9 @@
   },
   {
     "id": 1778336613589,
-    "nombre": "Pistola de Masaje Profesional",
+    "nombre": "​⚡ Pistola de Masaje Profesional (Modelo Triangular)",
     "precioActual": 35,
-    "imagen": "https://tiendamax.org/imagenes/img_1778336613589.webp",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784008477390.webp",
     "categoria": "UTILES",
     "subcategoria": "SALUD Y BIENESTAR",
     "stock": 1,
@@ -687,10 +717,20 @@
     "devolucion": false,
     "descuento": 0,
     "slug": "pistola-de-masaje-profesional",
-    "comision": 1.8,
+    "comision": 1500,
     "seoTitle": "PISTOLA DE MASAJE PROFESIONAL en Cuba | TiendaMax",
     "seoDescription": "Pistola de masaje PROFESIONAL inalámbrica: Diseño ergonómico con agarre triangular, que facilita el manejo y reduce la fatiga en la muñeca. Incluye…",
-    "descripcion": "Pistola de masaje profesional (fascia gun), diseño compacto de agarre triangular, incluye 8 cabezales intercambiables para distintos tipos de masaje. Viene en su caja original con todos los accesorios."
+    "descripcion": "Pistola de masaje de percusión con diseño ergonómico avanzado. Ideal para atletas y personas que buscan una recuperación muscular completa, gracias a su gran variedad de cabezales que permiten personalizar el tratamiento para cada zona del cuerpo.\n​Ficha Técnica:\n​Versatilidad Total: 💆‍♂️ Incluye un set completo de 9 cabezales intercambiables para adaptarse a cualquier grupo muscular.\n​Diseño Ergonómico: 📐 Empuñadura triangular única que facilita un agarre firme y cómodo, permitiendo alcanzar zonas de difícil acceso con menos esfuerzo.\n​Potencia de Percusión: ⚡ Diseñada para llegar a las capas más profundas del tejido muscular para un alivio efectivo.\n​Uso Profesional: ✨ Apta tanto para uso personal en casa como para rutinas de recuperación en gimnasios.\n​Especificaciones (Specs):\n​Tipo: Masajeador de percusión de alto rendimiento.\n​Accesorios: 8 cabezales distintos incluidos.\n​Uso: Recuperación post-entrenamiento, relajación miofascial y tratamiento de tensiones musculares.",
+    "precioOriginal": 0,
+    "comisionMoneda": "MN",
+    "specs": [
+      "​💆‍♂️ Alivio Profundo de Tejidos",
+      "​🛠️ 8 Cabezales de Masaje"
+    ],
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784008477390.webp",
+      "https://tiendamax.org/imagenes/img_1778336613589.webp"
+    ]
   },
   {
     "id": 1778336689684,
@@ -1177,9 +1217,9 @@
   },
   {
     "id": 1778820912552,
-    "nombre": "Casa de Campaña Ligera",
+    "nombre": "​⛺ Tienda de Campaña Instantánea (Automática)",
     "precioActual": 100,
-    "imagen": "https://tiendamax.org/imagenes/img_1778820912552_ext.webp",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784008196606.webp",
     "categoria": "UTILES",
     "subcategoria": "DEPORTES",
     "stock": 4,
@@ -1192,7 +1232,17 @@
     "comision": 5,
     "seoTitle": "CASA DE CAMPAÑA LIGERA en Cuba | TiendaMax",
     "seoDescription": "Casa de campaña ligera Portatil, impermeable con mosquiteros en las 2 puertas y las 2 ventanas. Capacidad para 3 o 4 personas. Mide 2 metros de ancho, 2…",
-    "descripcion": "Casa de campaña (tienda) ligera, armado en 3 segundos tipo paraguas (sin tener que armar varillas a mano). Ventilación superior y ventanas laterales, tela impermeable. Mide 200x200x130cm. Incluye estacas, mazo y bolso de transporte."
+    "descripcion": "Tienda de campaña de despliegue rápido, ideal para aventuras al aire libre, días de playa o camping. Gracias a su mecanismo tipo \"paraguas\", podrás tener tu refugio listo en un instante, sin complicaciones ni necesidad de herramientas.\n​Ficha Técnica:\n​Instalación: ⏱️ Sistema de apertura instantánea (3 segundos), tan fácil como abrir un paraguas.\n​Ventilación: 🌬️ Configuración de ventilación elegante con múltiples ventanas para mantener el interior fresco en verano.\n​Protección: 🌧️ Fabricada con tela resistente a la lluvia, garantizando un refugio seco y seguro.\n​Diseño: ✨ Espaciosa y funcional, con dimensiones ideales para un descanso cómodo.\n​Especificaciones (Specs):\n​Tipo: Tienda de campaña pop-up automática.\n​Dimensiones: 200 cm x 200 cm x 130 cm.\n​Uso: Camping, playa, picnic o actividades al aire libre.\n​Incluye: Estacas de fijación, cuerdas de sujeción y bolsa de transporte.",
+    "precioOriginal": 0,
+    "comisionMoneda": "USD",
+    "specs": [
+      "​⏱️ Montaje en 3 Segundos",
+      "​🌧️ Tela Impermeable"
+    ],
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784008196606.webp",
+      "https://tiendamax.org/imagenes/img_1778820912552_ext.webp"
+    ]
   },
   {
     "id": 1778820983383,
