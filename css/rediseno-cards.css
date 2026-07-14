@@ -219,20 +219,24 @@ body.light-mode .detail-spec-table .dsr-row.dsr-nolabel .dsr-value{ color:#333; 
 #productDetailModal .detail-image-wrap{
   display:flex !important; flex-direction:column !important; gap:10px !important;
   overflow:visible !important; aspect-ratio:auto !important; height:auto !important;
+  max-height:none !important; /* styles.css cap de 280px aplastaba el marco cuadrado */
   background:transparent !important; box-shadow:none !important;
 }
+/* Marco CUADRADO: las fotos del catálogo son cuadradas (480x480). Un marco
+   4:3 dejaba barras a los lados (con contain) o recortaba arriba/abajo (con
+   cover). Cuadrado + contain = la foto llena el marco exacto, sin recorte y
+   sin barras de fondo que "se noten". El fondo blanco solo se vería en las
+   pocas fotos NO cuadradas, y como esas casi siempre traen fondo blanco,
+   se mezcla en vez de chocar. */
 #productDetailModal .detail-img-frame{
   position:relative; border-radius:16px; overflow:hidden;
-  aspect-ratio:4/3; background:linear-gradient(180deg,#FAFAFA,#F0EDE8);
+  aspect-ratio:1/1; width:100% !important; height:auto !important; flex:0 0 auto !important;
+  background:#fff;
   box-shadow:0 12px 36px rgba(0,0,0,.4);
 }
 body.light-mode #productDetailModal .detail-img-frame{ box-shadow:0 8px 24px rgba(0,0,0,.12); }
 #productDetailModal .detail-img-frame::before,
 #productDetailModal .detail-img-frame::after{ display:none !important; }
-/* Casi todas las fotos de producto son cuadradas (480x480) — con
-   object-fit:cover (heredado de styles.css) dentro de este marco 4:3,
-   siempre se recortaba arriba/abajo (antenas, base). object-fit:contain
-   muestra la foto completa, igual que ya se hizo con las miniaturas. */
 #productDetailModal .detail-img{ border-radius:16px; width:100%; height:100%; object-fit:contain; }
 #productDetailModal .detail-img:focus-visible{ outline:3px solid var(--accent,#ff6b35); outline-offset:2px; }
 
@@ -319,10 +323,11 @@ body.light-mode .detail-badge-nuevo{ background:rgba(255,107,53,.10); }
   background:transparent !important; border:none !important; backdrop-filter:none !important; -webkit-backdrop-filter:none !important;
   padding:0 !important;
 }
-/* Miniaturas recortaban la foto (object-fit:cover en una caja 48x48 corta
-   techos de carros, bordes de productos, etc.) — igual que la foto
-   principal, se ve completa sobre fondo claro, sin recortar nada. */
-#productDetailModal .detail-gallery-thumb{ background:linear-gradient(180deg,#FAFAFA,#F0EDE8) !important; }
+/* Miniaturas: mismo criterio que la foto principal — cuadradas, contain,
+   fondo blanco (no gradiente crema) para que combinen con la foto y no
+   se recorte nada. La base premium-theme.css fuerza object-fit:cover, se
+   revierte con !important. */
+#productDetailModal .detail-gallery-thumb{ background:#fff !important; }
 #productDetailModal .detail-gallery-thumb img{ object-fit:contain !important; }
 
 /* Miniaturas más grandes y con más aire (antes 48px casi sin separación,
