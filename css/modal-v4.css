@@ -290,30 +290,6 @@
   font-size: 12px; font-weight: 500;
 }
 
-/* ---- Trust badges 3-col (estáticos) ---- */
-#productDetailModal .detail-trust-badges3 {
-  display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
-  margin: 16px 0 0;
-}
-#productDetailModal .detail-trust-badges3 .tb {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 12px;
-  padding: 10px 8px;
-  text-align: center;
-}
-#productDetailModal .detail-trust-badges3 .tb .ic {
-  width: 28px; height: 28px; margin: 0 auto 4px;
-  border-radius: 8px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 15px;
-}
-#productDetailModal .detail-trust-badges3 .tb.ship .ic { background: rgba(255, 122, 41, 0.15); }
-#productDetailModal .detail-trust-badges3 .tb.pago .ic { background: rgba(74, 222, 128, 0.15); }
-#productDetailModal .detail-trust-badges3 .tb.veri .ic { background: rgba(96, 165, 250, 0.15); }
-#productDetailModal .detail-trust-badges3 .tb .ttl { font-size: 10.5px; font-weight: 700; color: #fff; line-height: 1.2; }
-#productDetailModal .detail-trust-badges3 .tb .sub { font-size: 9.5px; color: #888; line-height: 1.2; }
-
 /* ---- CTA row (fav + Pedir verde shine) ---- */
 #productDetailModal .detail-cta-fav {
   width: 48px; height: 48px;
@@ -483,6 +459,176 @@
 }
 #tmv4Lightbox .lb-thumb.active { border-color: #ff7a29; opacity: 1; }
 #tmv4Lightbox .lb-thumb img { width: 100%; height: 100%; object-fit: cover; }
+
+/* ==========================================================================
+   Fidelidad v4 — secciones internas que el JS puebla con datos reales
+   ========================================================================== */
+
+/* ---- Descripción: intro + checklist con checks verdes (v4 .features) ---- */
+#productDetailModal .detail-description-text .dd-intro {
+  color: #b5b5b5; font-size: 13.5px; line-height: 1.65;
+}
+#productDetailModal .detail-description-text .dd-intro:first-line { color: #fff; }
+#productDetailModal .detail-description-text .dd-list {
+  list-style: none; margin: 14px 0 0; padding: 0;
+  display: flex; flex-direction: column; gap: 8px;
+}
+#productDetailModal .detail-description-text .dd-list li {
+  display: flex; align-items: flex-start; gap: 10px;
+  color: #ccc; font-size: 13px; line-height: 1.5;
+}
+#productDetailModal .detail-description-text .dd-check {
+  width: 18px; height: 18px; flex-shrink: 0; margin-top: 1px;
+  border-radius: 50%;
+  background: rgba(37, 211, 102, 0.15);
+  color: #4ade80;
+  font-size: 11px; font-weight: 700;
+  display: inline-flex; align-items: center; justify-content: center;
+}
+
+/* ---- Tabla de specs (v4) ---- */
+#productDetailModal .detail-spec-table {
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 14px;
+  overflow: hidden;
+  padding: 0 !important;
+  background: rgba(255, 255, 255, 0.02);
+}
+#productDetailModal .detail-spec-table .dsr-row {
+  display: flex; justify-content: space-between; align-items: center;
+  gap: 12px;
+  padding: 11px 14px;
+  font-size: 12.5px;
+}
+#productDetailModal .detail-spec-table .dsr-row + .dsr-row {
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+#productDetailModal .detail-spec-table .dsr-label { color: #999; }
+#productDetailModal .detail-spec-table .dsr-value {
+  color: #fff; font-weight: 600; text-align: right;
+}
+#productDetailModal .detail-spec-table .dsr-nolabel .dsr-value { color: #ddd; font-weight: 500; }
+
+/* ---- Trust cards dinámicas (envío/pago/garantía) — 3-col vertical v4 ---- */
+#productDetailModal #detailTrustBadges {
+  display: grid !important;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+#productDetailModal .detail-trust-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+  padding: 10px 8px;
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  text-align: center;
+}
+#productDetailModal .detail-trust-card .dtc-ic {
+  width: 28px; height: 28px;
+  border-radius: 8px;
+  background: rgba(255, 122, 41, 0.14);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px;
+}
+#productDetailModal .detail-trust-card .dtc-tx { display: flex; flex-direction: column; line-height: 1.2; }
+#productDetailModal .detail-trust-card .dtc-tx b { font-size: 10.5px; color: #fff; font-weight: 700; }
+#productDetailModal .detail-trust-card .dtc-tx small { font-size: 9.5px; color: #888; }
+
+/* ---- Selector de cantidad ---- */
+#productDetailModal .detail-qty-row {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 14px;
+  padding: 10px 14px;
+}
+#productDetailModal .detail-qty-label { font-size: 12.5px; color: #ccc; font-weight: 600; display: flex; flex-direction: column; }
+#productDetailModal .detail-qty-label small { color: #888; font-weight: 500; font-size: 11px; }
+#productDetailModal .detail-qty-stepper {
+  display: flex; align-items: center; gap: 4px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 12px;
+  padding: 4px;
+}
+#productDetailModal .detail-qty-stepper button {
+  width: 34px; height: 34px;
+  border: none; border-radius: 9px;
+  background: rgba(255, 122, 41, 0.14);
+  color: #ff8a3d;
+  font-size: 18px; font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+#productDetailModal .detail-qty-stepper button:disabled { opacity: 0.35; cursor: default; }
+#productDetailModal .detail-qty-stepper button:not(:disabled):hover { background: rgba(255, 122, 41, 0.25); }
+#productDetailModal .detail-qty-stepper span {
+  min-width: 30px; text-align: center;
+  font-weight: 800; color: #fff;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---- Views / personas viendo ---- */
+#productDetailModal .contador-personas {
+  text-align: center; color: #777; font-size: 12px;
+  padding: 4px 0;
+}
+
+/* ---- Reseñas (v4: avatar degradado, verificada verde) ---- */
+#productDetailModal .resena-item {
+  padding: 12px 14px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+  margin-bottom: 8px;
+}
+#productDetailModal .resena-top { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+#productDetailModal .resena-avatar {
+  width: 32px; height: 32px; flex-shrink: 0;
+  border-radius: 50%;
+  color: #fff; font-size: 12px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+}
+#productDetailModal .resena-meta { flex: 1; display: flex; flex-direction: column; }
+#productDetailModal .resena-autor { font-size: 13px; font-weight: 600; color: #fff; }
+#productDetailModal .resena-fecha { font-size: 11px; color: #888; }
+#productDetailModal .resena-estrellas { color: #fbbf24; font-size: 12px; letter-spacing: 1px; }
+#productDetailModal .resena-texto { color: #b5b5b5; font-size: 12.5px; line-height: 1.5; }
+#productDetailModal .resena-foto { max-width: 120px; border-radius: 10px; margin-top: 8px; }
+#productDetailModal .resena-verificada {
+  display: inline-flex; align-items: center; gap: 4px;
+  color: #4ade80; font-size: 10px; font-weight: 600;
+  background: rgba(74, 222, 128, 0.1);
+  padding: 2px 6px; border-radius: 4px; margin-top: 6px;
+}
+#productDetailModal .resenas-vacio { color: #888; font-size: 13px; text-align: center; padding: 12px; }
+#productDetailModal .detail-resena-add-btn {
+  background: rgba(255, 122, 41, 0.12);
+  border: 1px solid rgba(255, 122, 41, 0.3);
+  color: #ff8a3d;
+  font-size: 12px; font-weight: 600;
+  padding: 7px 12px; border-radius: 999px;
+  cursor: pointer; transition: all 0.2s;
+}
+#productDetailModal .detail-resena-add-btn:hover { background: rgba(255, 122, 41, 0.2); }
+
+/* ---- Secundarios (compartir / copiar) ---- */
+#productDetailModal .detail-share-pills .detail-share-pill {
+  background: transparent !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  color: #ccc !important;
+  transition: all 0.2s;
+}
+#productDetailModal .detail-share-pills .detail-share-pill:hover {
+  background: rgba(255, 255, 255, 0.04) !important;
+  color: #fff !important;
+}
+
+/* ---- Sticky CTA texto precio serif ---- */
+#productDetailModal .detail-sticky-cta .dsc-price-sub { color: #888; font-size: 11px; }
+
+/* ---- Relacionados / vistos: títulos ---- */
+#productDetailModal .detail-relacionados h3 { font-size: 15px; font-weight: 700; color: #fff; }
 
 @media (prefers-reduced-motion: reduce) {
   #productDetailModal .detail-badge-nuevo::before,

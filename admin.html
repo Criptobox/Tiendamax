@@ -834,7 +834,7 @@
   };
 </script>
 <script src="js/vendor/html2canvas.min.js?v=e87e5507" defer></script>
-<script src="js/admin-copilot.js?v=fbd21e12"></script>
+<script src="js/admin-copilot.js?v=da0de448"></script>
 
 <script>
 (function(){
@@ -2736,67 +2736,39 @@ async function pubCatAct(act){
   }
 }
 
-function pubLoadImg(src){ return new Promise(res=>{ const im=new Image(); im.crossOrigin='anonymous'; im.onload=()=>res(im); im.onerror=()=>res(null); im.src=src; }); }
 function pubRoundRect(ctx,x,y,w,h,r){ ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath(); }
-function pubWrapText(ctx,text,x,y,maxWidth,lineHeight,maxLines){
-  const words=String(text||'').split(/\s+/); let line='', lines=0;
-  for(let n=0;n<words.length;n++){ const test=line+words[n]+' ';
-    if(ctx.measureText(test).width>maxWidth && n>0){ ctx.fillText(line.trim(),x,y); line=words[n]+' '; y+=lineHeight; lines++; if(lines>=maxLines) return y; }
-    else line=test; }
-  if(line&&lines<maxLines){ ctx.fillText(line.trim(),x,y); y+=lineHeight; }
-  return y;
-}
 async function pubShareStory(p){
-  // ── Cartel Pro (diseño premium via html2canvas). Si no está disponible,
-  //    cae al canvas simple de abajo. ──
-  try{
-    if(typeof window.tmCartelHTML==='function' && typeof window.html2canvas==='function' && document.getElementById('tmCopilotStyles')){
-      const holder=document.createElement('div');
-      // position:absolute (no fixed) + top:0 → queda en y=0 del documento; así
-      // html2canvas no corta el tope aunque la página esté scrolleada.
-      holder.style.cssText='position:absolute;left:-9999px;top:0;pointer-events:none;';
-      holder.innerHTML='<div class="tcp-card" id="__tcpShare"></div>';
-      document.body.appendChild(holder);
-      const node=holder.querySelector('#__tcpShare');
-      node.innerHTML=window.tmCartelHTML(p);
-      await Promise.all([...node.querySelectorAll('img')].map(im=>im.complete?null:new Promise(r=>{im.onload=r;im.onerror=r;setTimeout(r,4000);})));
-      const canvas=await window.html2canvas(node,{backgroundColor:'#000',scale:2,useCORS:true,logging:false,width:node.offsetWidth,height:node.offsetHeight});
-      holder.remove();
-      const blob0=await new Promise(res=>canvas.toBlob(res,'image/png',.95));
-      const file0=new File([blob0],'tiendamax-estado-'+p.id+'.png',{type:'image/png'});
-      const text0='🔥 '+p.nombre+'\n'+pubUrl(p);
-      if(navigator.canShare&&navigator.canShare({files:[file0]})&&navigator.share){
-        try{ await navigator.share({files:[file0],title:p.nombre,text:text0}); showToast('✅ Elige WhatsApp → Estado para publicar'); return; }catch(e){ if(/abort/i.test(e.message||'')) return; }
-      }
-      const a0=document.createElement('a'); a0.href=URL.createObjectURL(blob0); a0.download=file0.name; a0.click(); setTimeout(()=>URL.revokeObjectURL(a0.href),1000);
-      try{ await navigator.clipboard.writeText(text0); }catch(e){}
-      showToast('🖼️ Cartel descargado','Súbelo a WhatsApp Estado');
-      return;
-    }
-  }catch(e){ console.error('[cartel]',e); document.getElementById('__tcpShare')?.parentNode?.remove(); }
-  const W=1080,H=1920,c=document.createElement('canvas'); c.width=W; c.height=H; const ctx=c.getContext('2d');
-  const grad=ctx.createLinearGradient(0,0,W,H); grad.addColorStop(0,'#0d0d0d'); grad.addColorStop(.55,'#2b160c'); grad.addColorStop(1,'#ff6b35'); ctx.fillStyle=grad; ctx.fillRect(0,0,W,H);
-  ctx.fillStyle='rgba(0,0,0,.30)'; ctx.fillRect(0,0,W,H);
-  ctx.strokeStyle='rgba(201,169,110,.75)'; ctx.lineWidth=8; pubRoundRect(ctx,44,44,W-88,H-88,42); ctx.stroke();
-  const im=await pubLoadImg(p.imagen||'');
-  if(im){ const boxX=120,boxY=170,boxW=840,boxH=650; ctx.save(); pubRoundRect(ctx,boxX,boxY,boxW,boxH,36); ctx.clip();
-    const r=Math.max(boxW/im.width,boxH/im.height), iw=im.width*r, ih=im.height*r; ctx.drawImage(im,boxX+(boxW-iw)/2,boxY+(boxH-ih)/2,iw,ih); ctx.restore();
-  } else { ctx.fillStyle='rgba(255,255,255,.08)'; pubRoundRect(ctx,120,170,840,650,36); ctx.fill(); ctx.font='160px serif'; ctx.fillStyle='#ff6b35'; ctx.fillText('M',470,550); }
-  ctx.textAlign='center'; ctx.fillStyle='#fff'; ctx.font='bold 66px system-ui,Arial'; let y=920; y=pubWrapText(ctx,p.nombre,W/2,y,860,78,3);
-  ctx.fillStyle='#ff6b35'; ctx.font='bold 82px system-ui,Arial'; ctx.fillText('$'+Number(p.precioActual||0).toFixed(2)+' USD',W/2,y+28); y+=130;
-  ctx.fillStyle='#f0e0c5'; ctx.font='bold 42px system-ui,Arial'; ctx.fillText('📦 Stock: '+Number(p.stock||0)+'   🏷️ '+(p.categoria||'TiendaMax'),W/2,y); y+=95;
-  ctx.fillStyle='#fff'; ctx.font='42px system-ui,Arial'; y=pubWrapText(ctx,'Pídelo directo por WhatsApp en TiendaMax',W/2,y,840,54,2);
-  ctx.fillStyle='#c9a96e'; ctx.font='bold 48px system-ui,Arial'; ctx.fillText('tiendamax.org',W/2,H-245);
-  ctx.fillStyle='rgba(255,255,255,.92)'; ctx.font='32px system-ui,Arial'; ctx.fillText('Toca "Pedir" en la tienda para reservar',W/2,H-185);
-  const blob=await new Promise(res=>c.toBlob(res,'image/png',.95));
-  const file=new File([blob],'tiendamax-estado-'+p.id+'.png',{type:'image/png'});
-  const text='🔥 '+p.nombre+'\n'+pubUrl(p);
-  if(navigator.canShare&&navigator.canShare({files:[file]})&&navigator.share){
-    try{ await navigator.share({files:[file],title:p.nombre,text}); showToast('✅ Elige WhatsApp → Estado para publicar'); return; }catch(e){ if(/abort/i.test(e.message||'')) return; }
+  // ── Cartel Pro (diseño premium via html2canvas). tmCartelHTML inyecta su
+  //    propio CSS (.tcp-*) al llamarse, así funciona aunque no se haya abierto
+  //    el Copiloto. html2canvas viene local (js/vendor). No hay cartel viejo. ──
+  if(typeof window.tmCartelHTML!=='function' || typeof window.html2canvas!=='function'){
+    showToast('⚠️ Recarga la página','No se pudo cargar el generador de carteles'); return;
   }
-  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=file.name; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),1000);
-  try{ await navigator.clipboard.writeText(text); }catch(e){}
-  showToast('🖼️ Imagen de estado descargada','Súbela a WhatsApp Estado');
+  const holder=document.createElement('div');
+  // position:absolute (no fixed) + top:0 → queda en y=0 del documento; así
+  // html2canvas no corta el tope aunque la página esté scrolleada.
+  holder.style.cssText='position:absolute;left:-9999px;top:0;pointer-events:none;';
+  holder.innerHTML='<div class="tcp-card" id="__tcpShare"></div>';
+  document.body.appendChild(holder);
+  try{
+    const node=holder.querySelector('#__tcpShare');
+    node.innerHTML=window.tmCartelHTML(p);
+    if(!node.innerHTML.trim()){ throw new Error('cartel vacío'); }
+    await Promise.all([...node.querySelectorAll('img')].map(im=>im.complete?null:new Promise(r=>{im.onload=r;im.onerror=r;setTimeout(r,4000);})));
+    const canvas=await window.html2canvas(node,{backgroundColor:'#000',scale:2,useCORS:true,logging:false,width:node.offsetWidth,height:node.offsetHeight});
+    const blob0=await new Promise(res=>canvas.toBlob(res,'image/png',.95));
+    const file0=new File([blob0],'tiendamax-estado-'+p.id+'.png',{type:'image/png'});
+    const text0='🔥 '+p.nombre+'\n'+pubUrl(p);
+    if(navigator.canShare&&navigator.canShare({files:[file0]})&&navigator.share){
+      try{ await navigator.share({files:[file0],title:p.nombre,text:text0}); showToast('✅ Elige WhatsApp → Estado para publicar'); return; }catch(e){ if(/abort/i.test(e.message||'')) return; }
+    }
+    const a0=document.createElement('a'); a0.href=URL.createObjectURL(blob0); a0.download=file0.name; a0.click(); setTimeout(()=>URL.revokeObjectURL(a0.href),1000);
+    try{ await navigator.clipboard.writeText(text0); }catch(e){}
+    showToast('🖼️ Cartel descargado','Súbelo a WhatsApp Estado');
+  }catch(e){
+    console.error('[cartel]',e);
+    showToast('❌ No se pudo generar el cartel','Intenta de nuevo');
+  }finally{ holder.remove(); }
 }
 async function pubShareAct(id,act){
   const p=PRODUCTOS.find(x=>String(x.id)===String(id)); if(!p) return;

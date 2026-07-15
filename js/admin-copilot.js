@@ -1266,7 +1266,7 @@ function _cartelDataFromProduct(p){
 }
 // Expuesto para que el modal "🟢 Estado WhatsApp" (revolico_integration.js)
 // use el MISMO diseño de cartel que el generador del copiloto.
-window.tmCartelHTML = function(p){ try{ return _cartelHTML(_cartelDataFromProduct(p)); }catch(e){ console.error('[cartel]',e); return ''; } };
+window.tmCartelHTML = function(p){ try{ injectStyles(); return _cartelHTML(_cartelDataFromProduct(p)); }catch(e){ console.error('[cartel]',e); return ''; } };
 function promoSetProduct(id) {
   const p = products().find(x => String(x.id) === String(id));
   if (!p) return;
