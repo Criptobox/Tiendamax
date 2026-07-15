@@ -1,41 +1,11 @@
 {
-  "generado": "2026-07-14T10:38:55.426187+00:00",
+  "generado": "2026-07-15T10:43:14.015589+00:00",
   "productos": 108,
-  "urgentes": 6,
+  "urgentes": 0,
   "advertencias": 31,
   "info": 11,
-  "resumen": "Anoche revisé tus 108 productos y encontré 6 urgente(s), 31 advertencia(s), 11 de info.",
+  "resumen": "Anoche revisé tus 108 productos y encontré 31 advertencia(s), 11 de info.",
   "detalle": [
-    {
-      "tipo": "nombre",
-      "nombre": "​🔥 Antorcha de Soldadura TIG (Kit Profesional)",
-      "detalle": "→ ​🔥 Antorcha de Soldadura TIG (KIT Profesional)"
-    },
-    {
-      "tipo": "nombre",
-      "nombre": "​🚗 Changan CS75 PLUS 2024 (SUV Compacta)",
-      "detalle": "→ ​🚗 Changan CS75 PLUS 2024 (Suv Compacta)"
-    },
-    {
-      "tipo": "nombre",
-      "nombre": "​🌐 Router TP-Link Archer A6 (AC1200)",
-      "detalle": "→ ​🌐 Router Tp-link Archer A6 (AC1200)"
-    },
-    {
-      "tipo": "nombre",
-      "nombre": "​🌐 Router TP-Link Archer AX21 (Wi-Fi 6)",
-      "detalle": "→ ​🌐 Router Tp-link Archer AX21 (Wi-fi 6)"
-    },
-    {
-      "tipo": "nombre",
-      "nombre": "​🌐 MikroTik hEX (RB750Gr3)",
-      "detalle": "→ ​🌐 Mikrotik Hex (RB750GR3)"
-    },
-    {
-      "tipo": "nombre",
-      "nombre": "​🌐 Router Tenda TX12 Pro (Wi-Fi 6)",
-      "detalle": "→ ​🌐 Router Tenda TX12 PRO (Wi-fi 6)"
-    },
     {
       "tipo": "agotado",
       "nombre": "Batería Must Tipo LIFEPO4",
@@ -198,7 +168,7 @@
     },
     {
       "tipo": "stock_bajo",
-      "nombre": "Inversor de Onda Sinusoidal Pura Fuera de la Red",
+      "nombre": "⚡ Inversor Solar Híbrido Powmr 5000W",
       "detalle": "quedan 1"
     },
     {
@@ -233,17 +203,17 @@
     },
     {
       "tipo": "stock_bajo",
-      "nombre": "​⚡ Inversor de Corriente Onda Senoidal Pura Tataliken 4000W (24V)",
+      "nombre": "​⚡inversor de Corriente Tataliken 4000W (24V)",
       "detalle": "quedan 1"
     },
     {
       "tipo": "stock_bajo",
-      "nombre": "​🚗 Changan CS75 PLUS 2024 (SUV Compacta)",
+      "nombre": "​🚗 Changan CS75 PLUS 2024 (Suv Compacta)",
       "detalle": "quedan 1"
     },
     {
       "tipo": "precio",
-      "nombre": "​🚗 Changan CS75 PLUS 2024 (SUV Compacta)",
+      "nombre": "​🚗 Changan CS75 PLUS 2024 (Suv Compacta)",
       "detalle": "precio: 33000"
     }
   ]
