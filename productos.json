@@ -2598,5 +2598,33 @@
     ],
     "fechaAgregado": "2026-07-08T20:44:11.116Z",
     "descripcion": "Router de nueva generación con tecnología Wi-Fi 6, ideal para usuarios que buscan una conexión rápida, estable y con mayor capacidad para gestionar múltiples dispositivos domésticos con la máxima eficiencia.\n​Ficha Técnica:\n​Tecnología: 🚀 Wi-Fi 6 (802.11ax) de doble banda para mayor velocidad y menos interferencias.\n​Velocidad: ⚡ Rendimiento de hasta 1500 Mbps (300 Mbps en 2.4GHz + 1201 Mbps en 5GHz).\n​Puertos: 🔌 Puertos Gigabit (WAN y LAN) para aprovechar al máximo las conexiones de fibra óptica.\n​Antenas: 📡 4 antenas de 5dBi con tecnología Beamforming para una cobertura de señal más amplia y estable.\n​Eficiencia: ⚙️ Soporte para MU-MIMO y OFDMA, permitiendo conectar más dispositivos simultáneamente sin pérdida de rendimiento.\n​Especificaciones (Specs):\n​Estándar: Wi-Fi 6 (AX1500).\n​Seguridad: Protocolo WPA3 para una protección de red mucho más avanzada.\n​Gestión: Configuración sencilla a través de la App Tenda WiFi.\n​Funciones: Soporte para control parental y red de invitados.\n​Uso: Ideal para teletrabajo, streaming en 4K y gaming sin latencia en entornos con muchos dispositivos."
+  },
+  {
+    "id": 1784148895326,
+    "nombre": "​📡 Punto de Acceso UniFi Ubiquiti",
+    "descripcion": "Punto de acceso profesional diseñado para brindar una conexión inalámbrica robusta y de alta velocidad. Con su diseño minimalista y discreto, se integra perfectamente en cualquier techo o pared, ofreciendo una gestión centralizada y eficiente de la red.\n​Ficha Técnica:\n​Gestión Centralizada: 🖥️ Permite configurar y monitorear múltiples puntos de acceso desde una única interfaz intuitiva (controlador UniFi).\n​Diseño Discreto: ✨ Estética elegante y moderna, ideal para entornos donde la estética es importante.\n​Rendimiento: 🚀 Diseñado para manejar una alta densidad de dispositivos conectados simultáneamente sin degradar la velocidad.\n​Escalabilidad: 🔗 Fácil de expandir: puedes agregar más unidades a tu red a medida que tus necesidades de cobertura crezcan.\n​Especificaciones (Specs):\n​Marca: Ubiquiti Networks (Línea UniFi).\n​Tipo: Punto de acceso (Access Point) inalámbrico.\n​Uso: Redes Wi-Fi profesionales, oficinas, locales comerciales y hogares inteligentes.\n​Alimentación: Compatible con PoE (Power over Ethernet) para una instalación limpia con un solo cable.",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784148891480.webp",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784148891480.webp",
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784148893079.webp",
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784148894298.webp"
+    ],
+    "precioActual": 130,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 5,
+    "comision": 10,
+    "comisionMoneda": "USD",
+    "categoria": "WIFI",
+    "subcategoria": "ROUTERS",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "specs": [
+      "​🌐 Tecnología UniFi ​",
+      "🚀 Wi-Fi de Alta Velocidad"
+    ],
+    "fechaAgregado": "2026-07-15T20:54:55.327Z"
   }
 ]
