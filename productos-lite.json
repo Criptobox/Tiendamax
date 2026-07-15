@@ -2490,5 +2490,32 @@
       "​⚡ Gigabit"
     ],
     "fechaAgregado": "2026-07-08T20:44:11.116Z"
+  },
+  {
+    "id": 1784148895326,
+    "nombre": "​📡 Punto de Acceso UniFi Ubiquiti",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784148891480.webp",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784148891480.webp",
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784148893079.webp",
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784148894298.webp"
+    ],
+    "precioActual": 130,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 5,
+    "comision": 10,
+    "comisionMoneda": "USD",
+    "categoria": "WIFI",
+    "subcategoria": "ROUTERS",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "specs": [
+      "​🌐 Tecnología UniFi ​",
+      "🚀 Wi-Fi de Alta Velocidad"
+    ],
+    "fechaAgregado": "2026-07-15T20:54:55.327Z"
   }
 ]
