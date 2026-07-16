@@ -2766,6 +2766,15 @@ body.light-mode #productDetailModal .modal-header{ background:#eceef2 !important
   margin: 10px auto 4px;
 }
 
+/* ---- Una sola columna, ancho tipo teléfono (como el mockup v4) ---- */
+#productDetailModal .detail-modal-content {
+  max-width: 440px;
+  margin-left: auto; margin-right: auto;
+}
+#productDetailModal .detail-grid { display: block; }
+#productDetailModal .detail-image-wrap { width: 100%; margin-bottom: 4px; }
+#productDetailModal .detail-info { width: 100%; }
+
 /* ---- Header: pill "recién llegado" + título serif ---- */
 #productDetailModal .modal-header {
   padding: 10px 22px 14px;
