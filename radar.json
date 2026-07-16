@@ -1,6 +1,6 @@
 {
-  "actualizado": "2026-07-15T12:14:54.044460+00:00",
-  "fecha": "2026-07-15",
+  "actualizado": "2026-07-16T12:20:53.522008+00:00",
+  "fecha": "2026-07-16",
   "fuentes": [
     "revolico",
     "porlalivre",
@@ -9,7 +9,7 @@
   "resumen": {
     "vigilados": 3,
     "encimaMercado": 1,
-    "bajadasComp": 1,
+    "bajadasComp": 0,
     "sinDatos": 0
   },
   "productos": [
@@ -22,17 +22,13 @@
         "mediana": 159.0,
         "n": 21
       },
-      "deltaAyerMediana": -6.0,
+      "deltaAyerMediana": 0.0,
       "estado": "encima",
       "sugerencia": {
         "texto": "Estás por encima del mercado. Podrías bajar hacia ~$159",
         "precio": 159.0
       },
       "historial": [
-        {
-          "fecha": "2026-07-02",
-          "mediana": 170.0
-        },
         {
           "fecha": "2026-07-03",
           "mediana": 170.0
@@ -83,6 +79,10 @@
         },
         {
           "fecha": "2026-07-15",
+          "mediana": 159.0
+        },
+        {
+          "fecha": "2026-07-16",
           "mediana": 159.0
         }
       ],
@@ -147,10 +147,6 @@
       },
       "historial": [
         {
-          "fecha": "2026-07-02",
-          "mediana": 25.0
-        },
-        {
           "fecha": "2026-07-03",
           "mediana": 25.0
         },
@@ -200,6 +196,10 @@
         },
         {
           "fecha": "2026-07-15",
+          "mediana": 25.0
+        },
+        {
+          "fecha": "2026-07-16",
           "mediana": 25.0
         }
       ],
@@ -229,10 +229,6 @@
       },
       "historial": [
         {
-          "fecha": "2026-07-02",
-          "mediana": 90.0
-        },
-        {
           "fecha": "2026-07-03",
           "mediana": 90.0
         },
@@ -282,6 +278,10 @@
         },
         {
           "fecha": "2026-07-15",
+          "mediana": 90.0
+        },
+        {
+          "fecha": "2026-07-16",
           "mediana": 90.0
         }
       ],
