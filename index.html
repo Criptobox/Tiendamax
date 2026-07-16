@@ -257,7 +257,7 @@
 
 
 
-    <link rel="stylesheet" href="css/bundle.css?v=a3f0ca44">
+    <link rel="stylesheet" href="css/bundle.css?v=23afe021">
 
 
 
@@ -1153,7 +1153,10 @@
             </div>
             <div class="detail-body">
 
-                <!-- Imagen + Info principal -->
+                <!-- Calificación bajo el título (estilo v4) -->
+                <div id="detailRatingTop" class="detail-rating-top" style="display:none;"></div>
+
+                <!-- Imagen + Info (una sola columna) -->
                 <div class="detail-grid">
                     <div class="detail-image-wrap">
                         <div class="detail-img-frame">
@@ -1169,14 +1172,13 @@
                     </div>
 
                     <div class="detail-info">
+                        <!-- Trust badges (envío/pago/garantía) — 3-col, justo bajo la foto como v4 -->
+                        <div id="detailTrustBadges" class="detail-trust-badges" style="display:none;"></div>
+
                         <div class="detail-meta-line">
                             <p id="detailProductCategory" class="detail-category"></p>
                             <p id="detailSubcategoria" class="detail-subcategory" style="display:none;"></p>
                         </div>
-
-
-                        <!-- Calificación promedio (se rellena desde renderizarResenas; oculto si no hay reseñas) -->
-                        <div id="detailRatingTop" class="detail-rating-top" style="display:none;align-items:center;gap:7px;margin:4px 0 12px;"></div>
 
                         <!-- Precio -->
                         <div class="detail-price-wrap">
@@ -1198,9 +1200,6 @@
 
                         <!-- Badges extra: garantia, devolucion, usado -->
                         <div id="detailExtraBadges" class="detail-extra-badges"></div>
-
-                        <!-- Spec badges (editables desde admin: campo 'specs' del producto) -->
-                        <div id="detailSpecBadges" class="detail-spec-badges" style="display:none;"></div>
 
                         <!-- Personas viendo -->
                         <div id="detailPersonasViendo" class="contador-personas" style="display:none;"></div>
@@ -1232,9 +1231,6 @@
                             <span class="btn-pedir-wa-text">Pedir</span>
                         </button>
                         </div>
-
-                        <!-- Trust badges dinámicos (solo si el producto los tiene) -->
-                        <div id="detailTrustBadges" class="detail-trust-badges" style="display:none;"></div>
 
                         <!-- Compartir simplificado: 2 píldoras -->
                         <div class="detail-share-pills" style="display:flex;gap:8px;margin-top:14px;">
@@ -1277,6 +1273,9 @@
                     <h3>📋 Descripción</h3>
                     <div id="detailProductDescription" class="detail-description-text"></div>
                 </div>
+
+                <!-- Ficha técnica (tabla de specs) — abajo, como el mockup v4 -->
+                <div id="detailSpecBadges" class="detail-spec-badges" style="display:none;"></div>
 
                 <!-- Reseñas -->
                 <div class="detail-resenas-section">
