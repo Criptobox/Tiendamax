@@ -61,7 +61,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1777924118004.webp",
     "categoria": "ENERGIA",
     "subcategoria": "INVERSORES",
-    "stock": 5,
+    "stock": 0,
     "masVendido": true,
     "usado": false,
     "garantia": "",
@@ -2602,17 +2602,16 @@
   {
     "id": 1784148895326,
     "nombre": "​📡 Punto de Acceso Unifi Ubiquiti",
-    "descripcion": "Punto de acceso profesional diseñado para brindar una conexión inalámbrica robusta y de alta velocidad. Con su diseño minimalista y discreto, se integra perfectamente en cualquier techo o pared, ofreciendo una gestión centralizada y eficiente de la red.\n​Ficha Técnica:\n​Gestión Centralizada: 🖥️ Permite configurar y monitorear múltiples puntos de acceso desde una única interfaz intuitiva (controlador UniFi).\n​Diseño Discreto: ✨ Estética elegante y moderna, ideal para entornos donde la estética es importante.\n​Rendimiento: 🚀 Diseñado para manejar una alta densidad de dispositivos conectados simultáneamente sin degradar la velocidad.\n​Escalabilidad: 🔗 Fácil de expandir: puedes agregar más unidades a tu red a medida que tus necesidades de cobertura crezcan.\n​Especificaciones (Specs):\n​Marca: Ubiquiti Networks (Línea UniFi).\n​Tipo: Punto de acceso (Access Point) inalámbrico.\n​Uso: Redes Wi-Fi profesionales, oficinas, locales comerciales y hogares inteligentes.\n​Alimentación: Compatible con PoE (Power over Ethernet) para una instalación limpia con un solo cable.",
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784148891480.webp",
+    "imagen": "https://tiendamax.org/imagenes/img_1784148891480.webp",
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784148891480.webp",
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784148893079.webp",
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784148894298.webp"
+      "https://tiendamax.org/imagenes/img_1784148891480.webp",
+      "https://tiendamax.org/imagenes/img_1784148893079.webp",
+      "https://tiendamax.org/imagenes/img_1784148894298.webp"
     ],
     "precioActual": 130,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 5,
+    "stock": 0,
     "comision": 10,
     "comisionMoneda": "USD",
     "categoria": "WIFI",
@@ -2625,6 +2624,7 @@
       "​🌐 Tecnología UniFi ​",
       "🚀 Wi-Fi de Alta Velocidad"
     ],
-    "fechaAgregado": "2026-07-15T20:54:55.327Z"
+    "fechaAgregado": "2026-07-15T20:54:55.327Z",
+    "descripcion": "Punto de acceso profesional diseñado para brindar una conexión inalámbrica robusta y de alta velocidad. Con su diseño minimalista y discreto, se integra perfectamente en cualquier techo o pared, ofreciendo una gestión centralizada y eficiente de la red.\n​Ficha Técnica:\n​Gestión Centralizada: 🖥️ Permite configurar y monitorear múltiples puntos de acceso desde una única interfaz intuitiva (controlador UniFi).\n​Diseño Discreto: ✨ Estética elegante y moderna, ideal para entornos donde la estética es importante.\n​Rendimiento: 🚀 Diseñado para manejar una alta densidad de dispositivos conectados simultáneamente sin degradar la velocidad.\n​Escalabilidad: 🔗 Fácil de expandir: puedes agregar más unidades a tu red a medida que tus necesidades de cobertura crezcan.\n​Especificaciones (Specs):\n​Marca: Ubiquiti Networks (Línea UniFi).\n​Tipo: Punto de acceso (Access Point) inalámbrico.\n​Uso: Redes Wi-Fi profesionales, oficinas, locales comerciales y hogares inteligentes.\n​Alimentación: Compatible con PoE (Power over Ethernet) para una instalación limpia con un solo cable."
   }
 ]
