@@ -59,7 +59,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1777924118004.webp",
     "categoria": "ENERGIA",
     "subcategoria": "INVERSORES",
-    "stock": 5,
+    "stock": 0,
     "masVendido": true,
     "usado": false,
     "garantia": "",
@@ -2494,16 +2494,16 @@
   {
     "id": 1784148895326,
     "nombre": "​📡 Punto de Acceso Unifi Ubiquiti",
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784148891480.webp",
+    "imagen": "https://tiendamax.org/imagenes/img_1784148891480.webp",
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784148891480.webp",
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784148893079.webp",
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784148894298.webp"
+      "https://tiendamax.org/imagenes/img_1784148891480.webp",
+      "https://tiendamax.org/imagenes/img_1784148893079.webp",
+      "https://tiendamax.org/imagenes/img_1784148894298.webp"
     ],
     "precioActual": 130,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 5,
+    "stock": 0,
     "comision": 10,
     "comisionMoneda": "USD",
     "categoria": "WIFI",
