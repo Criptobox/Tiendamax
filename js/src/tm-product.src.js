@@ -391,7 +391,10 @@ function abrirDetalleProducto(id) {
     const badge = document.getElementById('detailProductBadge');
     const _hasPrecioOrig = p.precioOriginal > 0 && parseFloat(p.precioOriginal) > parseFloat(p.precioActual);
     badge.style.display = (_hasPrecioOrig && !_agotadoModal) ? 'inline-block' : 'none';
-    if (_hasPrecioOrig) badge.textContent = `-$${(parseFloat(p.precioOriginal) - parseFloat(p.precioActual)).toFixed(0)}`;
+    if (_hasPrecioOrig) {
+        const _pctOff = Math.round((parseFloat(p.precioOriginal) - parseFloat(p.precioActual)) / parseFloat(p.precioOriginal) * 100);
+        badge.textContent = `-${_pctOff}% HOY`;
+    }
 
     // Más vendido badge (solo si hay stock)
     const hotBadge = document.getElementById('detailMasVendidoBadge');
@@ -560,6 +563,10 @@ if (_detailPrecioMNEl) {
         }
         if (p.devolucion === true) {
             cards.push({ ic: '↩️', t: 'Devolución', s: 'Aceptada' });
+        }
+        // Siempre 3 tarjetas como el mockup: si faltan, agrega confianza de tienda.
+        if (cards.length < 3) {
+            cards.push({ ic: '⭐', t: '+2 años', s: 'Vendiendo' });
         }
         trustBadgesEl.innerHTML = cards.map(c =>
             '<div class="detail-trust-card"><span class="dtc-ic">' + c.ic + '</span><div class="dtc-tx"><b>' + c.t + '</b><small>' + c.s + '</small></div></div>'
