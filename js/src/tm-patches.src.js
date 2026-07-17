@@ -1179,6 +1179,10 @@ async function cargarTasaDesdeGitHub() {
             if (cfg.margenMN !== undefined && cfg.margenMN !== null && cfg.margenMN !== '' && !isNaN(parseFloat(cfg.margenMN))) {
                 localStorage.setItem('margenMN', String(parseFloat(cfg.margenMN)));
             }
+            // Fecha de la última actualización de la tasa (para el guard anti-fantasma
+            // del aviso de tasa en tm-iife: solo avisa si el cambio es de hoy).
+            const _fTasa = cfg.tasaActualizada || cfg.actualizado || '';
+            if (_fTasa) localStorage.setItem('tasaMN_fecha', String(_fTasa).slice(0, 10));
             // Cargar tasa MN
             if (cfg.tasaMN && parseFloat(cfg.tasaMN) > 0) {
                 localStorage.setItem('tasaMN', String(cfg.tasaMN));

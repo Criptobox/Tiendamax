@@ -34,15 +34,23 @@ if (!_tmInitTasaSiLista()) {
         const prevTasa = parseFloat(localStorage.getItem('tasaMN') || '0');
         await cargarTasaDesdeGitHub();
         const newTasa = parseFloat(localStorage.getItem('tasaMN') || '0');
-        if (newTasa > 0 && prevTasa > 0 && Math.abs(newTasa - prevTasa) >= 1) {
-            const subio = newTasa > prevTasa;
-            const diff = Math.round(Math.abs(newTasa - prevTasa));
-            if (typeof mostrarNotificacion === 'function') {
-                mostrarNotificacion(
-                    `💱 Tasa actualizada: 1 USD = ${newTasa} MN (${subio ? '▲' : '▼'} ${diff})`,
-                    subio ? 'warning' : 'info'
-                );
-            }
+        if (!(newTasa > 0 && prevTasa > 0 && Math.abs(newTasa - prevTasa) >= 1)) return;
+        // Anti-fantasma: solo avisar si la tasa se actualizó HOY de verdad. Así una
+        // lectura vieja del CDN (raw.githubusercontent cachea ~5 min) o un valor
+        // rezagado en localStorage no dispara un "sube/baja" falso.
+        const fecha = localStorage.getItem('tasaMN_fecha') || '';
+        const hoy = new Date().toISOString().slice(0, 10);
+        if (fecha && fecha.slice(0, 10) !== hoy) return;
+        // Anti-duplicado: no repetir el aviso para un valor ya notificado.
+        if (String(newTasa) === localStorage.getItem('tasaMN_lastNotif')) return;
+        localStorage.setItem('tasaMN_lastNotif', String(newTasa));
+        const subio = newTasa > prevTasa;
+        const diff = Math.round(Math.abs(newTasa - prevTasa));
+        if (typeof mostrarNotificacion === 'function') {
+            mostrarNotificacion(
+                `💱 Tasa actualizada: 1 USD = ${newTasa} MN (${subio ? '▲' : '▼'} ${diff})`,
+                subio ? 'warning' : 'info'
+            );
         }
     }
     setInterval(_checkTasa, 20 * 60 * 1000);
