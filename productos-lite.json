@@ -1902,7 +1902,7 @@
     "precioActual": 80,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 6,
+    "stock": 0,
     "comision": 10,
     "comisionMoneda": "USD",
     "categoria": "WIFI",
@@ -1930,7 +1930,7 @@
     "precioActual": 20,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 7,
+    "stock": 0,
     "comision": 1500,
     "comisionMoneda": "MN",
     "categoria": "WIFI",
@@ -2517,5 +2517,30 @@
       "🚀 Wi-Fi de Alta Velocidad"
     ],
     "fechaAgregado": "2026-07-15T20:54:55.327Z"
+  },
+  {
+    "id": 1784301408243,
+    "nombre": "​🌐 Router Inalámbrico Wavlink",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784301406100.webp",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784301406100.webp"
+    ],
+    "precioActual": 70,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 3,
+    "comision": 10,
+    "comisionMoneda": "USD",
+    "categoria": "WIFI",
+    "subcategoria": "ROUTERS",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "specs": [
+      "​🌐 Conectividad Estable ​",
+      "📡 4 Antenas de Alta Ganancia"
+    ],
+    "fechaAgregado": "2026-07-17T15:16:48.243Z"
   }
 ]
