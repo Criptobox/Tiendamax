@@ -1,136 +1,18 @@
 {
-  "actualizado": "2026-07-16T12:20:53.522008+00:00",
-  "fecha": "2026-07-16",
+  "actualizado": "2026-07-17T12:09:21.234874+00:00",
+  "fecha": "2026-07-17",
   "fuentes": [
     "revolico",
     "porlalivre",
     "lelespc"
   ],
   "resumen": {
-    "vigilados": 3,
-    "encimaMercado": 1,
+    "vigilados": 2,
+    "encimaMercado": 0,
     "bajadasComp": 0,
     "sinDatos": 0
   },
   "productos": [
-    {
-      "id": 1777924118004,
-      "nombre": "⚡ Inversor de Corriente Tataliken 4000W",
-      "tuPrecio": 180.0,
-      "mercado": {
-        "min": 85.0,
-        "mediana": 159.0,
-        "n": 21
-      },
-      "deltaAyerMediana": 0.0,
-      "estado": "encima",
-      "sugerencia": {
-        "texto": "Estás por encima del mercado. Podrías bajar hacia ~$159",
-        "precio": 159.0
-      },
-      "historial": [
-        {
-          "fecha": "2026-07-03",
-          "mediana": 170.0
-        },
-        {
-          "fecha": "2026-07-04",
-          "mediana": 170.0
-        },
-        {
-          "fecha": "2026-07-05",
-          "mediana": 170.0
-        },
-        {
-          "fecha": "2026-07-06",
-          "mediana": 170.0
-        },
-        {
-          "fecha": "2026-07-07",
-          "mediana": 170.0
-        },
-        {
-          "fecha": "2026-07-08",
-          "mediana": 170.0
-        },
-        {
-          "fecha": "2026-07-09",
-          "mediana": 170.0
-        },
-        {
-          "fecha": "2026-07-10",
-          "mediana": 170.0
-        },
-        {
-          "fecha": "2026-07-11",
-          "mediana": 170.0
-        },
-        {
-          "fecha": "2026-07-12",
-          "mediana": 170.0
-        },
-        {
-          "fecha": "2026-07-13",
-          "mediana": 170.0
-        },
-        {
-          "fecha": "2026-07-14",
-          "mediana": 165.0
-        },
-        {
-          "fecha": "2026-07-15",
-          "mediana": 159.0
-        },
-        {
-          "fecha": "2026-07-16",
-          "mediana": 159.0
-        }
-      ],
-      "muestras": [
-        {
-          "fuente": "revolico",
-          "titulo": "85 USD Inversores de corriente $85-$400",
-          "precio": 85.0,
-          "url": "https://www.revolico.com/item/dell-inspiron-15-3530-core-i5-13th-generacion-nueva-480usd-54020731",
-          "dias": null
-        },
-        {
-          "fuente": "revolico",
-          "titulo": "126 USD Inversor Convertidor Tataliken F-2000A 800W / 2000W (Pico) DC 12V a 110V AC.",
-          "precio": 126.0,
-          "url": "https://www.revolico.com/item/inversor-convertidor-tataliken-f-2000a-800w-2000w-pico-dc-12v-a-110v-ac-53074785",
-          "dias": null
-        },
-        {
-          "fuente": "revolico",
-          "titulo": "130 USD Inversor Convertidor Tataliken F-2000A 800W / 2000W (Pico) DC 12V a 110V AC. 🔌 Pot",
-          "precio": 130.0,
-          "url": "https://www.revolico.com/item/inversor-convertidor-tataliken-f-2000a-800w-2000w-pico-dc-12v-a-110v-ac-potencia-potencia-continua-800w-sopo-56034692",
-          "dias": null
-        },
-        {
-          "fuente": "revolico",
-          "titulo": "130 USD Inversores de corriente 12V a 110V 500W a 6000W + cargadores LiFePO4 y controlador",
-          "precio": 130.0,
-          "url": "https://www.revolico.com/item/inversores-500w-800w-1500w-3000w-4000w-12v-a-110v-lvyuan-tataliken-unizuki-54427528",
-          "dias": null
-        },
-        {
-          "fuente": "revolico",
-          "titulo": "135 USD REBAJASSS 📌 INVERSORES DE CORRIENTE 12V/24V/48V con MENSAJERÍA y GARANTÍA ⚡ BUENOS",
-          "precio": 135.0,
-          "url": "https://www.revolico.com/item/inversores-de-corriente-con-mensajeria-y-garantia-buenos-precios-55728034",
-          "dias": null
-        },
-        {
-          "fuente": "revolico",
-          "titulo": "140 USD Inversor Convertidor Tataliken F-2000A 800W / 2000W (Pico) DC 12V a 110V AC.",
-          "precio": 140.0,
-          "url": "https://www.revolico.com/item/inversor-convertidor-tataliken-f-2000a-800w-2000w-pico-dc-12v-a-110v-ac-55968111",
-          "dias": null
-        }
-      ]
-    },
     {
       "id": 1778102507659,
       "nombre": "​⚖️ Báscula Digital de Alta Definición",
@@ -147,10 +29,6 @@
       },
       "historial": [
         {
-          "fecha": "2026-07-03",
-          "mediana": 25.0
-        },
-        {
           "fecha": "2026-07-04",
           "mediana": 25.0
         },
@@ -200,6 +78,10 @@
         },
         {
           "fecha": "2026-07-16",
+          "mediana": 25.0
+        },
+        {
+          "fecha": "2026-07-17",
           "mediana": 25.0
         }
       ],
@@ -229,10 +111,6 @@
       },
       "historial": [
         {
-          "fecha": "2026-07-03",
-          "mediana": 90.0
-        },
-        {
           "fecha": "2026-07-04",
           "mediana": 90.0
         },
@@ -282,6 +160,10 @@
         },
         {
           "fecha": "2026-07-16",
+          "mediana": 90.0
+        },
+        {
+          "fecha": "2026-07-17",
           "mediana": 90.0
         }
       ],
