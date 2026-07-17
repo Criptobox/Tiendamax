@@ -1987,7 +1987,7 @@
     "precioActual": 80,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 6,
+    "stock": 0,
     "comision": 10,
     "comisionMoneda": "USD",
     "categoria": "WIFI",
@@ -2016,7 +2016,7 @@
     "precioActual": 20,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 7,
+    "stock": 0,
     "comision": 1500,
     "comisionMoneda": "MN",
     "categoria": "WIFI",
@@ -2626,5 +2626,31 @@
     ],
     "fechaAgregado": "2026-07-15T20:54:55.327Z",
     "descripcion": "Punto de acceso profesional diseñado para brindar una conexión inalámbrica robusta y de alta velocidad. Con su diseño minimalista y discreto, se integra perfectamente en cualquier techo o pared, ofreciendo una gestión centralizada y eficiente de la red.\n​Ficha Técnica:\n​Gestión Centralizada: 🖥️ Permite configurar y monitorear múltiples puntos de acceso desde una única interfaz intuitiva (controlador UniFi).\n​Diseño Discreto: ✨ Estética elegante y moderna, ideal para entornos donde la estética es importante.\n​Rendimiento: 🚀 Diseñado para manejar una alta densidad de dispositivos conectados simultáneamente sin degradar la velocidad.\n​Escalabilidad: 🔗 Fácil de expandir: puedes agregar más unidades a tu red a medida que tus necesidades de cobertura crezcan.\n​Especificaciones (Specs):\n​Marca: Ubiquiti Networks (Línea UniFi).\n​Tipo: Punto de acceso (Access Point) inalámbrico.\n​Uso: Redes Wi-Fi profesionales, oficinas, locales comerciales y hogares inteligentes.\n​Alimentación: Compatible con PoE (Power over Ethernet) para una instalación limpia con un solo cable."
+  },
+  {
+    "id": 1784301408243,
+    "nombre": "​🌐 Router Inalámbrico Wavlink",
+    "descripcion": "Router inalámbrico de diseño compacto y minimalista, ideal para mejorar la cobertura Wi-Fi en el hogar o pequeñas oficinas. Su estética moderna y sus cuatro antenas externas garantizan una señal eficiente y un entorno de red organizado.\n​Ficha Técnica:\n​Cobertura: 📡 Cuatro antenas externas de alta ganancia que aseguran una distribución amplia y estable de la señal en todo el espacio.\n​Diseño: ✨ Estética compacta en color negro, que se integra discretamente en cualquier entorno de trabajo o descanso.\n​Rendimiento: 🌐 Optimizado para una navegación fluida, soportando múltiples dispositivos conectados simultáneamente.\n​Configuración: 🛠️ Interfaz diseñada para una puesta en marcha rápida y sencilla.\n​Especificaciones (Specs):\n​Marca: Wavlink.\n​Modelo: [Pendiente]\n​Antenas: 4 antenas externas fijas.\n​Tipo: Router inalámbrico.\n​Uso: Hogares, habitaciones y oficinas pequeñas.",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784301406100.webp",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784301406100.webp"
+    ],
+    "precioActual": 70,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 3,
+    "comision": 10,
+    "comisionMoneda": "USD",
+    "categoria": "WIFI",
+    "subcategoria": "ROUTERS",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "specs": [
+      "​🌐 Conectividad Estable ​",
+      "📡 4 Antenas de Alta Ganancia"
+    ],
+    "fechaAgregado": "2026-07-17T15:16:48.243Z"
   }
 ]
