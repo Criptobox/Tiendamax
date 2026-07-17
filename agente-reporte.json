@@ -1,10 +1,10 @@
 {
-  "generado": "2026-07-16T10:50:39.565236+00:00",
+  "generado": "2026-07-17T10:39:40.783154+00:00",
   "productos": 109,
   "urgentes": 0,
-  "advertencias": 31,
+  "advertencias": 33,
   "info": 11,
-  "resumen": "Anoche revisé tus 109 productos y encontré 31 advertencia(s), 11 de info.",
+  "resumen": "Anoche revisé tus 109 productos y encontré 33 advertencia(s), 11 de info.",
   "detalle": [
     {
       "tipo": "agotado",
@@ -14,6 +14,11 @@
     {
       "tipo": "agotado",
       "nombre": "Cargador Inteligente 30A",
+      "detalle": "agotado (stock 0)"
+    },
+    {
+      "tipo": "agotado",
+      "nombre": "⚡ Inversor de Corriente Tataliken 4000W",
       "detalle": "agotado (stock 0)"
     },
     {
@@ -159,6 +164,11 @@
     {
       "tipo": "agotado",
       "nombre": "​⚡ Inversor de Corriente Onda Senoidal Pura Unizuki 3000W",
+      "detalle": "agotado (stock 0)"
+    },
+    {
+      "tipo": "agotado",
+      "nombre": "​📡 Punto de Acceso Unifi Ubiquiti",
       "detalle": "agotado (stock 0)"
     },
     {
