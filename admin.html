@@ -353,7 +353,7 @@
       <button type="button" class="btn btn-ghost" id="tm2TabBio" style="flex:1;justify-content:center" onclick="tm2LoginTab('bio')">👆 Huella</button>
     </div>
     <form id="tm2LoginPass" onsubmit="verificarPassword(event)">
-      <label class="form-label" style="text-align:left;display:block;margin-bottom:6px">Contraseña de administrador</label>
+      <label class="form-label" for="adminPassword" style="text-align:left;display:block;margin-bottom:6px">Contraseña de administrador</label>
       <input class="form-input" id="adminPassword" type="password" autocomplete="current-password" autofocus>
       <button type="submit" id="btnLoginSubmit" class="btn btn-primary" style="width:100%;margin-top:14px;justify-content:center">🔓 Acceder al panel</button>
     </form>
@@ -457,8 +457,8 @@
         <details id="prod-bulkprecio" style="background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:12px;padding:0 14px;margin-bottom:12px">
           <summary style="cursor:pointer;padding:12px 0;font-weight:800;color:#fff;font-size:14px;list-style:none">💲 Ajuste masivo de precios <span style="font-size:11px;color:var(--muted);font-weight:600">— sube o baja toda una categoría de golpe</span></summary>
           <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end;padding-bottom:14px">
-            <div class="form-group" style="flex:1;min-width:140px"><label class="form-label">Categoría</label><select class="form-select" id="bp-cat"><option value="">Todas</option></select></div>
-            <div class="form-group" style="width:120px"><label class="form-label">Cambio %</label><input class="form-input" id="bp-pct" type="number" step="1" placeholder="10"></div>
+            <div class="form-group" style="flex:1;min-width:140px"><label class="form-label" for="bp-cat">Categoría</label><select class="form-select" id="bp-cat"><option value="">Todas</option></select></div>
+            <div class="form-group" style="width:120px"><label class="form-label" for="bp-pct">Cambio %</label><input class="form-input" id="bp-pct" type="number" step="1" placeholder="10"></div>
             <button class="btn btn-ghost" onclick="bulkPrecio(1)">➕ Subir %</button>
             <button class="btn btn-ghost" onclick="bulkPrecio(-1)">➖ Bajar %</button>
           </div>
@@ -501,7 +501,7 @@
         <div class="ph"><div><h2>💰 Ventas</h2><p id="ventas-sub">Registro real</p></div></div>
         <div class="section">
           <h3>⚡ Registrar venta</h3>
-          <div class="form-group"><label class="form-label">Buscar producto</label><input class="form-input" id="venta-buscar" placeholder="🔍 Escribe para buscar…" oninput="ventaBuscar()"><div id="venta-resultados" style="margin-top:6px;max-height:170px;overflow:auto"></div></div>
+          <div class="form-group"><label class="form-label" for="venta-buscar">Buscar producto</label><input class="form-input" id="venta-buscar" placeholder="🔍 Escribe para buscar…" oninput="ventaBuscar()"><div id="venta-resultados" style="margin-top:6px;max-height:170px;overflow:auto"></div></div>
           <div id="venta-cart" style="margin-top:12px"></div>
           <div id="venta-total" style="margin-top:8px"></div>
           <button class="btn btn-primary" id="venta-registrar-btn" style="width:100%;margin-top:12px;display:none" onclick="ventaRegistrar()">✅ Registrar venta</button>
@@ -533,8 +533,8 @@
         <div class="section">
           <h3>🔥 Oferta del día</h3>
           <div class="form-grid" style="display:grid;grid-template-columns:2fr 1fr;gap:10px">
-            <div class="form-group"><label class="form-label">Producto</label><select class="form-select" id="ofertaDiaSelect2"><option value="">Selecciona…</option></select></div>
-            <div class="form-group"><label class="form-label">Texto</label><input class="form-input" id="ofertaDiaTexto2" placeholder="🔥 OFERTA DEL DÍA"></div>
+            <div class="form-group"><label class="form-label" for="ofertaDiaSelect2">Producto</label><select class="form-select" id="ofertaDiaSelect2"><option value="">Selecciona…</option></select></div>
+            <div class="form-group"><label class="form-label" for="ofertaDiaTexto2">Texto</label><input class="form-input" id="ofertaDiaTexto2" placeholder="🔥 OFERTA DEL DÍA"></div>
           </div>
           <div style="display:flex;gap:8px;margin-top:12px"><button class="btn btn-primary" onclick="guardarOfertaDia()">🔥 Activar oferta del día</button><button class="btn btn-ghost" onclick="desactivarOfertaDia()">Desactivar</button></div>
           <p id="ofertaDiaStatus" style="font-size:12px;color:var(--muted);margin-top:8px"></p>
@@ -542,11 +542,11 @@
         <div class="section">
           <h3>⏱️ Oferta por tiempo limitado (con contador)</h3>
           <div class="form-grid" style="display:grid;grid-template-columns:2fr 1fr 1fr;gap:10px">
-            <div class="form-group"><label class="form-label">Producto</label><select class="form-select" id="countdownProductSelect"><option value="">Selecciona…</option></select></div>
-            <div class="form-group"><label class="form-label">Horas</label><input class="form-input" id="countdownHoras" type="number" min="0" placeholder="0"></div>
-            <div class="form-group"><label class="form-label">Minutos</label><input class="form-input" id="countdownMinutos" type="number" min="0" placeholder="0"></div>
+            <div class="form-group"><label class="form-label" for="countdownProductSelect">Producto</label><select class="form-select" id="countdownProductSelect"><option value="">Selecciona…</option></select></div>
+            <div class="form-group"><label class="form-label" for="countdownHoras">Horas</label><input class="form-input" id="countdownHoras" type="number" min="0" placeholder="0"></div>
+            <div class="form-group"><label class="form-label" for="countdownMinutos">Minutos</label><input class="form-input" id="countdownMinutos" type="number" min="0" placeholder="0"></div>
           </div>
-          <div class="form-group" style="margin-top:10px"><label class="form-label">Texto</label><input class="form-input" id="countdownTexto" placeholder="¡Oferta especial!"></div>
+          <div class="form-group" style="margin-top:10px"><label class="form-label" for="countdownTexto">Texto</label><input class="form-input" id="countdownTexto" placeholder="¡Oferta especial!"></div>
           <div style="display:flex;gap:8px;margin-top:12px"><button class="btn btn-primary" onclick="guardarCountdown()">⏱️ Activar contador</button><button class="btn btn-ghost" onclick="desactivarCountdown()">Desactivar</button></div>
           <p id="countdownStatus" style="font-size:12px;color:var(--muted);margin-top:8px"></p>
         </div>
@@ -554,9 +554,9 @@
           <h3>🏷️ Descuento con fecha de fin <span class="badge">el precio vuelve solo</span></h3>
           <p style="font-size:12px;color:var(--muted);margin:-4px 0 10px">Pones el precio de oferta y hasta cuándo dura. Cuando venza, el sistema restaura el precio original solo — no hace falta que te acuerdes ni que entres al admin.</p>
           <div class="form-grid" style="display:grid;grid-template-columns:2fr 1fr 1fr;gap:10px">
-            <div class="form-group"><label class="form-label">Producto</label><select class="form-select" id="ofertaFinProducto"><option value="">Selecciona…</option></select></div>
-            <div class="form-group"><label class="form-label">Precio oferta (USD)</label><input class="form-input" id="ofertaFinPrecio" type="number" step="0.01" placeholder="0.00"></div>
-            <div class="form-group"><label class="form-label">Vence</label><input class="form-input" id="ofertaFinVence" type="datetime-local"></div>
+            <div class="form-group"><label class="form-label" for="ofertaFinProducto">Producto</label><select class="form-select" id="ofertaFinProducto"><option value="">Selecciona…</option></select></div>
+            <div class="form-group"><label class="form-label" for="ofertaFinPrecio">Precio oferta (USD)</label><input class="form-input" id="ofertaFinPrecio" type="number" step="0.01" placeholder="0.00"></div>
+            <div class="form-group"><label class="form-label" for="ofertaFinVence">Vence</label><input class="form-input" id="ofertaFinVence" type="datetime-local"></div>
           </div>
           <div style="display:flex;gap:8px;margin-top:12px"><button class="btn btn-primary" onclick="ofertaFinActivar()">🏷️ Activar</button></div>
           <div id="ofertaFin-lista" style="margin-top:14px"></div>
@@ -565,7 +565,7 @@
         <div class="grid-2">
           <div class="section">
             <h3>➕ Nuevo combo</h3>
-            <div class="form-group"><label class="form-label">Nombre del combo</label><input class="form-input" id="combo-nombre" placeholder="Ej: Combo Cámaras + Disco"></div>
+            <div class="form-group"><label class="form-label" for="combo-nombre">Nombre del combo</label><input class="form-input" id="combo-nombre" placeholder="Ej: Combo Cámaras + Disco"></div>
             <div class="form-group" style="margin-top:10px"><label class="form-label">Foto del combo (opcional)</label>
               <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
                 <img id="combo-foto-prev" alt="" style="width:54px;height:54px;border-radius:10px;object-fit:cover;border:1px solid var(--border);display:none">
@@ -574,10 +574,10 @@
               </div>
               <small style="font-size:11px;color:var(--muted)">Si no eliges foto, la tienda usa las fotos de los productos del combo.</small>
             </div>
-            <div class="form-group" style="margin-top:10px"><label class="form-label">Buscar producto para agregar</label><input class="form-input" id="combo-buscar" placeholder="🔍 Escribe para buscar…" oninput="comboBuscar()"><div id="combo-resultados" style="margin-top:6px;max-height:180px;overflow:auto"></div></div>
-            <div style="margin-top:12px"><label class="form-label">Productos del combo</label><div id="combo-items" style="margin-top:6px"></div></div>
+            <div class="form-group" style="margin-top:10px"><label class="form-label" for="combo-buscar">Buscar producto para agregar</label><input class="form-input" id="combo-buscar" placeholder="🔍 Escribe para buscar…" oninput="comboBuscar()"><div id="combo-resultados" style="margin-top:6px;max-height:180px;overflow:auto"></div></div>
+            <div style="margin-top:12px"><span class="form-label" id="combo-items-label">Productos del combo</span><div id="combo-items" style="margin-top:6px" aria-labelledby="combo-items-label"></div></div>
             <div id="combo-calc" style="margin-top:12px"></div>
-            <div class="form-group" style="margin-top:10px"><label class="form-label">Precio del combo (USD)</label><input class="form-input" id="combo-precio" type="number" placeholder="0.00" oninput="comboCalc()"></div>
+            <div class="form-group" style="margin-top:10px"><label class="form-label" for="combo-precio">Precio del combo (USD)</label><input class="form-input" id="combo-precio" type="number" placeholder="0.00" oninput="comboCalc()"></div>
             <button class="btn btn-primary" style="margin-top:12px;width:100%" onclick="comboGuardar()">💾 Guardar combo</button>
           </div>
           <div class="section">
@@ -604,25 +604,25 @@
           <div class="section">
             <h3>🔗 GitHub</h3>
             <form id="githubConfigForm" onsubmit="guardarConfiguracionGitHub(event)">
-              <div class="form-group"><label class="form-label">Usuario</label><input class="form-input" id="githubUser" placeholder="usuario"></div>
-              <div class="form-group" style="margin-top:10px"><label class="form-label">Repositorio</label><input class="form-input" id="githubRepo" placeholder="Tiendamax"></div>
-              <div class="form-group" style="margin-top:10px"><label class="form-label">Token</label><input class="form-input" id="githubToken" type="password" placeholder="ghp_…"></div>
+              <div class="form-group"><label class="form-label" for="githubUser">Usuario</label><input class="form-input" id="githubUser" placeholder="usuario"></div>
+              <div class="form-group" style="margin-top:10px"><label class="form-label" for="githubRepo">Repositorio</label><input class="form-input" id="githubRepo" placeholder="Tiendamax"></div>
+              <div class="form-group" style="margin-top:10px"><label class="form-label" for="githubToken">Token</label><input class="form-input" id="githubToken" type="password" placeholder="ghp_…"></div>
               <button type="submit" class="btn btn-primary" style="width:100%;margin-top:12px">💾 Guardar GitHub</button>
             </form>
             <button class="btn btn-success" style="width:100%;margin-top:10px;justify-content:center" onclick="sincronizarTodoConGitHub()">🔄 Actualizar tienda ahora</button>
           </div>
           <div class="section">
             <h3>💱 Tasa MN</h3>
-            <div class="form-group"><label class="form-label">Tasa MN (base elTOQUE)</label><input class="form-input" id="adminTasaMN" type="number"></div>
-            <div class="form-group" style="margin-top:10px"><label class="form-label">Margen MN sobre la tasa (0 = sin margen)</label><input class="form-input" id="adminMargenMN" type="number" min="0" step="1" placeholder="10"></div>
-            <div class="form-group" style="margin-top:10px"><label class="form-label">2do WhatsApp (opcional)</label><input class="form-input" id="adminWhatsappNum" type="tel" placeholder="535…"></div>
+            <div class="form-group"><label class="form-label" for="adminTasaMN">Tasa MN (base elTOQUE)</label><input class="form-input" id="adminTasaMN" type="number"></div>
+            <div class="form-group" style="margin-top:10px"><label class="form-label" for="adminMargenMN">Margen MN sobre la tasa (0 = sin margen)</label><input class="form-input" id="adminMargenMN" type="number" min="0" step="1" placeholder="10"></div>
+            <div class="form-group" style="margin-top:10px"><label class="form-label" for="adminWhatsappNum">2do WhatsApp (opcional)</label><input class="form-input" id="adminWhatsappNum" type="tel" placeholder="535…"></div>
             <button class="btn btn-primary" style="width:100%;margin-top:12px" onclick="guardarTasaMNAdmin()">💾 Guardar tasa</button>
             <p id="tasaMNStatus" style="font-size:12px;color:var(--muted);margin-top:8px"></p>
           </div>
           <div class="section">
             <h3>🚚 Envío</h3>
             <p style="font-size:12px;color:var(--muted);margin:-4px 0 12px">Se muestra en la tarjeta de confianza del detalle de producto. Escribí la cobertura y el costo reales — esto lo ve el cliente antes de pedir.</p>
-            <div class="form-group"><label class="form-label">Texto de cobertura/costo</label><input class="form-input" id="adminEnvioTexto" placeholder="Ej: La Habana y municipios cercanos · costo aparte según zona"></div>
+            <div class="form-group"><label class="form-label" for="adminEnvioTexto">Texto de cobertura/costo</label><input class="form-input" id="adminEnvioTexto" placeholder="Ej: La Habana y municipios cercanos · costo aparte según zona"></div>
             <button class="btn btn-primary" style="width:100%;margin-top:12px" onclick="guardarEnvioTexto()">💾 Guardar</button>
             <p id="envioTextoStatus" style="font-size:12px;color:var(--muted);margin-top:8px"></p>
           </div>
@@ -630,14 +630,14 @@
         <div class="section">
           <h3>🔥 Firebase (ventas, reseñas, notificaciones)</h3>
           <p style="font-size:12px;color:var(--muted);margin:-4px 0 12px">Pega el <b>firebaseConfig</b> de tu proyecto (Consola Firebase → Configuración del proyecto → Tus apps). Con esto funcionan ventas en la nube, reseñas y push.</p>
-          <div class="form-group"><label class="form-label">firebaseConfig (JSON o el bloque completo)</label><textarea class="form-textarea" id="fb-config-input" rows="7" placeholder='{ "apiKey": "AIza…", "projectId": "tu-proyecto", "databaseURL": "https://tu-proyecto-default-rtdb.firebaseio.com", … }'></textarea></div>
-          <div class="form-group" style="margin-top:10px"><label class="form-label">VAPID key (opcional, para notificaciones push)</label><input class="form-input" id="fb-vapid-input" placeholder="B…"></div>
+          <div class="form-group"><label class="form-label" for="fb-config-input">firebaseConfig (JSON o el bloque completo)</label><textarea class="form-textarea" id="fb-config-input" rows="7" placeholder='{ "apiKey": "AIza…", "projectId": "tu-proyecto", "databaseURL": "https://tu-proyecto-default-rtdb.firebaseio.com", … }'></textarea></div>
+          <div class="form-group" style="margin-top:10px"><label class="form-label" for="fb-vapid-input">VAPID key (opcional, para notificaciones push)</label><input class="form-input" id="fb-vapid-input" placeholder="B…"></div>
           <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap"><button class="btn btn-primary" onclick="guardarFirebaseConfig()">💾 Guardar Firebase</button><button class="btn btn-ghost" onclick="probarFirebase()">🔌 Probar conexión</button></div>
           <p id="fb-config-status" style="font-size:12px;color:var(--muted);margin-top:8px"></p>
         </div>
         <div class="section">
           <h3>🔑 API Key de IA (para el Agente)</h3>
-          <div class="form-group"><label class="form-label">API Key (Gemini / OpenRouter / Groq / DeepSeek)</label><input class="form-input" id="ia-key" type="text" placeholder="AIza… / sk-or-… / gsk_… / sk-…"></div>
+          <div class="form-group"><label class="form-label" for="ia-key">API Key (Gemini / OpenRouter / Groq / DeepSeek)</label><input class="form-input" id="ia-key" type="text" placeholder="AIza… / sk-or-… / gsk_… / sk-…"></div>
           <div style="display:flex;gap:8px;margin-top:10px"><button class="btn btn-primary" onclick="agenteGuardarKey()">💾 Guardar key</button><button class="btn btn-ghost" onclick="agenteBorrarKey()">🗑 Borrar</button></div>
           <p id="ia-key-status" style="font-size:12px;color:var(--muted);margin-top:8px">Sin key configurada</p>
         </div>
@@ -690,14 +690,14 @@
           <div class="grid-2">
             <div class="section">
               <h3>📝 Información</h3>
-              <div class="form-group"><label class="form-label">Nombre del producto *</label><input class="form-input" id="productName" required placeholder="Ej: Router WiFi 6 AX1800"></div>
-              <div class="form-group" style="margin-top:10px"><label class="form-label">Descripción</label><textarea class="form-textarea" id="productDescription" placeholder="Características, materiales, para qué sirve…"></textarea></div>
+              <div class="form-group"><label class="form-label" for="productName">Nombre del producto *</label><input class="form-input" id="productName" required placeholder="Ej: Router WiFi 6 AX1800"></div>
+              <div class="form-group" style="margin-top:10px"><label class="form-label" for="productDescription">Descripción</label><textarea class="form-textarea" id="productDescription" placeholder="Características, materiales, para qué sirve…"></textarea></div>
               <div class="form-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px">
-                <div class="form-group"><label class="form-label">Categoría *</label><select class="form-select" id="productCategory" required onchange="agregarFillSubcats()"><option value="">Selecciona…</option></select></div>
-                <div class="form-group"><label class="form-label">Subcategoría</label><select class="form-select" id="productSubcategory"><option value="">—</option></select></div>
+                <div class="form-group"><label class="form-label" for="productCategory">Categoría *</label><select class="form-select" id="productCategory" required onchange="agregarFillSubcats()"><option value="">Selecciona…</option></select></div>
+                <div class="form-group"><label class="form-label" for="productSubcategory">Subcategoría</label><select class="form-select" id="productSubcategory"><option value="">—</option></select></div>
               </div>
               <div class="form-group" style="margin-top:10px">
-                <label class="form-label" style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+                <label class="form-label" for="productSpecs" style="display:flex;align-items:center;justify-content:space-between;gap:8px">
                   <span>Specs (separadas por coma, máx 6)</span>
                   <button type="button" id="btnSugerirSpecs" onclick="sugerirSpecsConIA()" style="font-size:11px;padding:4px 10px;border-radius:20px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);color:#cfcfd6;cursor:pointer;white-space:nowrap">🤖 Sugerir con IA</button>
                 </label>
@@ -707,13 +707,13 @@
             <div class="section">
               <h3>💰 Precio y stock</h3>
               <div class="form-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-                <div class="form-group"><label class="form-label">Precio actual (USD) *</label><input class="form-input" id="productPriceActual" type="number" step="0.01" required placeholder="0.00"></div>
-                <div class="form-group"><label class="form-label">Precio original (tachado)</label><input class="form-input" id="productPrecioOriginal" type="number" step="0.01" placeholder="0.00"></div>
-                <div class="form-group"><label class="form-label">Stock *</label><input class="form-input" id="productStock" type="number" required placeholder="0"></div>
-                <div class="form-group"><label class="form-label">Tu comisión</label><div style="display:flex;gap:8px"><input class="form-input" id="productComision" type="number" step="0.01" placeholder="0.00" style="flex:1"><select class="form-select" id="productComisionMoneda" style="width:90px;flex:none"><option value="USD">USD</option><option value="MN">MN</option></select></div></div>
-                <div class="form-group"><label class="form-label">Destacar</label><select class="form-select" id="productMasVendido"><option value="false">No</option><option value="true">Sí, en "Más vendidos"</option></select></div>
+                <div class="form-group"><label class="form-label" for="productPriceActual">Precio actual (USD) *</label><input class="form-input" id="productPriceActual" type="number" step="0.01" required placeholder="0.00"></div>
+                <div class="form-group"><label class="form-label" for="productPrecioOriginal">Precio original (tachado)</label><input class="form-input" id="productPrecioOriginal" type="number" step="0.01" placeholder="0.00"></div>
+                <div class="form-group"><label class="form-label" for="productStock">Stock *</label><input class="form-input" id="productStock" type="number" required placeholder="0"></div>
+                <div class="form-group"><label class="form-label" for="productComision">Tu comisión</label><div style="display:flex;gap:8px"><input class="form-input" id="productComision" type="number" step="0.01" placeholder="0.00" style="flex:1"><select class="form-select" id="productComisionMoneda" style="width:90px;flex:none"><option value="USD">USD</option><option value="MN">MN</option></select></div></div>
+                <div class="form-group"><label class="form-label" for="productMasVendido">Destacar</label><select class="form-select" id="productMasVendido"><option value="false">No</option><option value="true">Sí, en "Más vendidos"</option></select></div>
               </div>
-              <div class="form-group" style="margin-top:10px"><label class="form-label">Garantía</label><input class="form-input" id="productGarantia" placeholder="Ej: 6 meses · devolución 30 días"></div>
+              <div class="form-group" style="margin-top:10px"><label class="form-label" for="productGarantia">Garantía</label><input class="form-input" id="productGarantia" placeholder="Ej: 6 meses · devolución 30 días"></div>
               <div style="display:flex;gap:18px;margin-top:12px;font-size:13px;color:#cfcfd6">
                 <label style="display:flex;align-items:center;gap:6px"><input type="checkbox" id="productUsado"> Usado / refurbished</label>
                 <label style="display:flex;align-items:center;gap:6px"><input type="checkbox" id="productDevolucion"> Garantía de devolución</label>
@@ -744,7 +744,7 @@
   </div>
 </div>
 
-<div class="toast" id="toast"><div class="t" id="toast-t"></div><div class="b" id="toast-b"></div></div>
+<div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true"><div class="t" id="toast-t"></div><div class="b" id="toast-b"></div></div>
 
 <style>
 /* Vista previa en vivo del producto al editar */
@@ -773,7 +773,7 @@
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px"><h3 style="margin:0">✏️ Editar producto</h3><button class="pico" onclick="apEditClose()">✕</button></div>
     <div id="pedit-preview" class="ppv-wrap"></div>
     <input type="hidden" id="pedit-id">
-    <div class="form-group"><label class="form-label">Nombre</label><input class="form-input" id="pedit-nombre"></div>
+    <div class="form-group"><label class="form-label" for="pedit-nombre">Nombre</label><input class="form-input" id="pedit-nombre"></div>
     <div class="form-group" style="margin-top:12px;background:rgba(255,107,53,.05);border:1px solid rgba(255,107,53,.18);border-radius:12px;padding:12px">
       <label class="form-label">📸 Fotos del producto</label>
       <p style="font-size:11px;color:var(--muted);margin:0 0 8px;line-height:1.5">Toca una foto para hacerla <b style="color:var(--gold)">⭐ principal</b> · Toca la <b>✕</b> para quitarla · Usa "Agregar fotos nuevas" para sumar más. La principal es la que se ve en la tienda.</p>
@@ -785,27 +785,27 @@
       </label>
     </div>
     <div class="grid-2" style="margin-top:10px">
-      <div class="form-group"><label class="form-label">Precio actual (USD)</label><input class="form-input" id="pedit-precio" type="number" step="0.01"></div>
-      <div class="form-group"><label class="form-label">Precio original (opcional)</label><input class="form-input" id="pedit-original" type="number" step="0.01"></div>
+      <div class="form-group"><label class="form-label" for="pedit-precio">Precio actual (USD)</label><input class="form-input" id="pedit-precio" type="number" step="0.01"></div>
+      <div class="form-group"><label class="form-label" for="pedit-original">Precio original (opcional)</label><input class="form-input" id="pedit-original" type="number" step="0.01"></div>
     </div>
     <div class="grid-2" style="margin-top:10px">
-      <div class="form-group"><label class="form-label">Stock</label><input class="form-input" id="pedit-stock" type="number" min="0"></div>
-      <div class="form-group"><label class="form-label">Categoría</label><select class="form-select" id="pedit-cat"></select></div>
+      <div class="form-group"><label class="form-label" for="pedit-stock">Stock</label><input class="form-input" id="pedit-stock" type="number" min="0"></div>
+      <div class="form-group"><label class="form-label" for="pedit-cat">Categoría</label><select class="form-select" id="pedit-cat"></select></div>
     </div>
     <div class="grid-2" style="margin-top:10px">
-      <div class="form-group"><label class="form-label">Comisión</label><input class="form-input" id="pedit-comision" type="number" step="0.01"></div>
-      <div class="form-group"><label class="form-label">Moneda comisión</label><select class="form-select" id="pedit-comision-moneda"><option value="USD">USD</option><option value="MN">MN</option></select></div>
+      <div class="form-group"><label class="form-label" for="pedit-comision">Comisión</label><input class="form-input" id="pedit-comision" type="number" step="0.01"></div>
+      <div class="form-group"><label class="form-label" for="pedit-comision-moneda">Moneda comisión</label><select class="form-select" id="pedit-comision-moneda"><option value="USD">USD</option><option value="MN">MN</option></select></div>
     </div>
-    <div class="form-group" style="margin-top:10px"><label class="form-label">🏭 Almacén (solo para ti, no se publica)</label><select class="form-select" id="pedit-almacen"><option value="">Sin asignar</option></select></div>
-    <div class="form-group" style="margin-top:10px"><label class="form-label">Descripción</label><textarea class="form-textarea" id="pedit-desc" style="min-height:90px"></textarea></div>
+    <div class="form-group" style="margin-top:10px"><label class="form-label" for="pedit-almacen">🏭 Almacén (solo para ti, no se publica)</label><select class="form-select" id="pedit-almacen"><option value="">Sin asignar</option></select></div>
+    <div class="form-group" style="margin-top:10px"><label class="form-label" for="pedit-desc">Descripción</label><textarea class="form-textarea" id="pedit-desc" style="min-height:90px"></textarea></div>
     <div class="form-group" style="margin-top:10px">
-      <label class="form-label" style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+      <label class="form-label" for="pedit-specs" style="display:flex;align-items:center;justify-content:space-between;gap:8px">
         <span>Specs (separadas por coma, máx 6)</span>
         <button type="button" id="btnSugerirSpecsEdit" onclick="sugerirSpecsConIA({nombre:'pedit-nombre',categoria:'pedit-cat',descripcion:'pedit-desc',specs:'pedit-specs',btn:'btnSugerirSpecsEdit'})" style="font-size:11px;padding:4px 10px;border-radius:20px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);color:#cfcfd6;cursor:pointer;white-space:nowrap">🤖 Sugerir con IA</button>
       </label>
       <input class="form-input" id="pedit-specs" placeholder="1800Mbps, Dual Band, 4 antenas">
     </div>
-    <div class="form-group" style="margin-top:10px"><label class="form-label">Garantía</label><input class="form-input" id="pedit-garantia" placeholder="Ej: 6 meses · devolución 30 días"></div>
+    <div class="form-group" style="margin-top:10px"><label class="form-label" for="pedit-garantia">Garantía</label><input class="form-input" id="pedit-garantia" placeholder="Ej: 6 meses · devolución 30 días"></div>
     <div style="display:flex;gap:18px;margin-top:12px;font-size:13px;color:#cfcfd6">
       <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="pedit-usado"> Usado / refurbished</label>
       <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="pedit-devolucion"> Garantía de devolución</label>
@@ -819,7 +819,7 @@
      agregarProductoForm, sincronizarTodoConGitHub, registrarVenta, etc. -->
 <!-- Bundle único (mismo orden: config→data→state→admin→product→catalog→init→ui→toast→iife→patches),
      generado por scripts/build_js_bundle.py a partir de js/src/*.src.js -->
-<script src="js/tm-bundle.js?v=19eca6a5"></script>
+<script src="js/tm-bundle.js?v=2a712de4"></script>
 <script src="js/biometric-auth.js?v=343cb27b"></script>
 <script src="js/revolico_integration.js?v=43a94a39"></script>
 <script>
@@ -1536,10 +1536,13 @@ function apDuplicar(id){
   showToast('📄 Producto duplicado','Ajusta el nombre y guarda; luego "Actualizar tienda"');
 }
 async function apEditSave(){ const id=$('#pedit-id').value; const p=apFind(id); if(!p) return;
+  const nuevoPrecio=Number($('#pedit-precio').value);
+  if(!(nuevoPrecio>0)){ showToast('❌ El precio debe ser mayor a 0'); return; }
   p.nombre=$('#pedit-nombre').value.trim()||p.nombre;
-  p.precioActual=Number($('#pedit-precio').value)||0;
+  p.precioActual=nuevoPrecio;
   const orig=Number($('#pedit-original').value)||0; p.precioOriginal=orig>0?orig:0;
-  p.descuento = (orig>p.precioActual) ? Math.round((orig-p.precioActual)/orig*100) : 0;
+  // orig>0 evita división por cero (precio "antes" vacío = sin descuento)
+  p.descuento = (orig>0 && orig>p.precioActual) ? Math.round((orig-p.precioActual)/orig*100) : 0;
   p.stock=Math.max(0,Number($('#pedit-stock').value)||0);
   p.categoria=$('#pedit-cat').value||p.categoria;
   p.comision=Number($('#pedit-comision').value)||0; p.comisionMoneda=$('#pedit-comision-moneda').value||'USD';
@@ -2918,24 +2921,24 @@ function bind(sec){sec.addEventListener('click',e=>{const c=e.target.closest('[d
 function panel(title,sub,body){const p=$('#tmToolPanel'); if(!p)return; p.className='tm-panel active'; p.innerHTML=`<div class="tm-panel-head"><div><h4>${title}</h4><p>${sub}</p></div><button type="button" class="tm-panel-close" data-act="closePanel">✕ Cerrar</button></div>${body}`; p.scrollIntoView({behavior:'smooth',block:'start'});}
 function productOptions(){return prods().map(p=>`<option value="${p.id}">${esc(p.nombre||p.name)} — $${Number(p.precioActual||p.price||0).toFixed(2)}</option>`).join('')}
 function openTool(id){({ai,compress,duplicate,history,csv,dups,schedule,coupons,locations,ab,totp,roles,competitors,margin,posts,heatmap,crm,shipping}[id]||ai)()}
-function ai(){panel('🤖 Generador de descripciones IA','Funciona localmente con plantillas. Si luego conectas API, se puede cambiar por Claude/GPT.',`<div class="tm-form-grid"><div class="tm-field"><label>Producto</label><select id="tmAiProd">${productOptions()}</select></div><div class="tm-field"><label>Tono</label><select id="tmAiTone"><option>Premium vendedor</option><option>Corto WhatsApp</option><option>Técnico</option><option>Facebook grupos</option></select></div></div><div class="tm-actions"><button type="button" class="tm-btn primary" data-act="aiGen">Generar textos</button><button type="button" class="tm-btn" data-act="copyOut">Copiar resultado</button></div><div id="tmToolOut" class="tm-code" style="margin-top:12px">Selecciona un producto y genera.</div>`)}
-function compress(){panel('🖼️ Compresión on-upload','Activa compresión visual y genera versión WebP/base64 antes de subir.',`<div class="tm-field"><label>Probar compresión</label><input type="file" id="tmCompressFile" accept="image/*"></div><div class="tm-form-grid"><div class="tm-field"><label>Ancho máximo</label><input id="tmCompressW" type="number" value="1200"></div><div class="tm-field"><label>Calidad WebP</label><input id="tmCompressQ" type="number" step="0.05" value="0.82"></div></div><div class="tm-actions"><button type="button" class="tm-btn primary" data-act="compressRun">Comprimir imagen</button></div><div id="tmToolOut2" class="tm-code" style="margin-top:12px">La compresión real puede conectarse al input productImage.</div>`)}
-function duplicate(){panel('📑 Duplicar producto','Crea una copia con nuevo ID y “Copia” en el nombre.',`<div class="tm-field"><label>Producto a duplicar</label><select id="tmDupProd">${productOptions()}</select></div><div class="tm-actions"><button type="button" class="tm-btn primary" data-act="dupNow">Duplicar ahora</button></div><div class="tm-note">Luego puedes editarlo desde Productos.</div>`)}
+function ai(){panel('🤖 Generador de descripciones IA','Funciona localmente con plantillas. Si luego conectas API, se puede cambiar por Claude/GPT.',`<div class="tm-form-grid"><div class="tm-field"><label for="tmAiProd">Producto</label><select id="tmAiProd">${productOptions()}</select></div><div class="tm-field"><label for="tmAiTone">Tono</label><select id="tmAiTone"><option>Premium vendedor</option><option>Corto WhatsApp</option><option>Técnico</option><option>Facebook grupos</option></select></div></div><div class="tm-actions"><button type="button" class="tm-btn primary" data-act="aiGen">Generar textos</button><button type="button" class="tm-btn" data-act="copyOut">Copiar resultado</button></div><div id="tmToolOut" class="tm-code" style="margin-top:12px">Selecciona un producto y genera.</div>`)}
+function compress(){panel('🖼️ Compresión on-upload','Activa compresión visual y genera versión WebP/base64 antes de subir.',`<div class="tm-field"><label for="tmCompressFile">Probar compresión</label><input type="file" id="tmCompressFile" accept="image/*"></div><div class="tm-form-grid"><div class="tm-field"><label for="tmCompressW">Ancho máximo</label><input id="tmCompressW" type="number" value="1200"></div><div class="tm-field"><label for="tmCompressQ">Calidad WebP</label><input id="tmCompressQ" type="number" step="0.05" value="0.82"></div></div><div class="tm-actions"><button type="button" class="tm-btn primary" data-act="compressRun">Comprimir imagen</button></div><div id="tmToolOut2" class="tm-code" style="margin-top:12px">La compresión real puede conectarse al input productImage.</div>`)}
+function duplicate(){panel('📑 Duplicar producto','Crea una copia con nuevo ID y “Copia” en el nombre.',`<div class="tm-field"><label for="tmDupProd">Producto a duplicar</label><select id="tmDupProd">${productOptions()}</select></div><div class="tm-actions"><button type="button" class="tm-btn primary" data-act="dupNow">Duplicar ahora</button></div><div class="tm-note">Luego puedes editarlo desde Productos.</div>`)}
 function history(){const snaps=safeJson(SNAP,[]); panel('↶ Historial de cambios','Se crean snapshots automáticos cuando se guardan productos.',`<div class="tm-actions"><button type="button" class="tm-btn primary" data-act="snapshot">Crear snapshot ahora</button></div><div class="tm-list">${snaps.slice(0,20).map((s,i)=>`<div class="tm-row"><div class="tm-row-main"><b>${new Date(s.ts).toLocaleString()}</b><small>${s.count} productos · ${esc(s.note||'snapshot')}</small></div><button type="button" class="tm-btn tm-mini" data-act="rollback" data-i="${i}">Rollback</button></div>`).join('')||'<div class="tm-note">Sin snapshots todavía.</div>'}</div>`)}
 function csv(){panel('📄 Importar / Exportar CSV','Exporta productos reales o importa CSV con columnas nombre,descripcion,precioActual,stock,categoria.',`<div class="tm-csv-drop"><input type="file" id="tmCsvFile" accept=".csv,text/csv"><br>Selecciona CSV para importar</div><div class="tm-actions"><button type="button" class="tm-btn gold" data-act="exportCsv">Exportar productos.csv</button><button type="button" class="tm-btn primary" data-act="importCsv">Importar CSV</button></div><div id="tmToolOut" class="tm-code" style="margin-top:12px">Listo.</div>`)}
 function dups(){const ps=prods();let rows=[];for(let i=0;i<ps.length;i++)for(let j=i+1;j<ps.length;j++){let a=ps[i],b=ps[j],n1=(a.nombre||'').toLowerCase(),n2=(b.nombre||'').toLowerCase();if(n1&&n2&&(n1===n2||n1.includes(n2)||n2.includes(n1))){rows.push([a,b])}} panel('🔍 Detector de duplicados','Coincidencias por nombre similar.',`<div class="tm-list">${rows.slice(0,30).map(([a,b])=>`<div class="tm-row"><div class="tm-row-main"><b>${esc(a.nombre)}</b><small>Posible duplicado: ${esc(b.nombre)}</small></div></div>`).join('')||'<div class="tm-note tm-ok">No se detectaron duplicados obvios.</div>'}</div>`)}
-function schedule(){const d=data();panel('📅 Programar publicación','Cola local de publicaciones. No publica sola en Facebook/Revolico; prepara recordatorio y texto.',`<div class="tm-form-grid"><div class="tm-field"><label>Producto</label><select id="tmSchProd">${productOptions()}</select></div><div class="tm-field"><label>Fecha/hora</label><input id="tmSchDate" type="datetime-local"></div></div><div class="tm-actions"><button type="button" class="tm-btn primary" data-act="schAdd">Programar</button></div><div class="tm-list">${d.scheduled.map((x,i)=>`<div class="tm-row"><div class="tm-row-main"><b>${esc(x.name)}</b><small>${new Date(x.when).toLocaleString()}</small></div><button type="button" class="tm-btn tm-mini" data-act="schDel" data-i="${i}">Eliminar</button></div>`).join('')||'<div class="tm-note">Sin publicaciones programadas.</div>'}</div>`)}
-function coupons(){const d=data();panel('🏷️ Cupones / descuentos','Crea códigos para campañas. Luego se pueden integrar al carrito público.',`<div class="tm-form-grid"><div class="tm-field"><label>Código</label><input id="tmCupCode" placeholder="FLASH10"></div><div class="tm-field"><label>Tipo</label><select id="tmCupType"><option value="percent">%</option><option value="fixed">Fijo USD</option></select></div><div class="tm-field"><label>Valor</label><input id="tmCupVal" type="number" value="10"></div><div class="tm-field"><label>Expira</label><input id="tmCupExp" type="date"></div></div><div class="tm-actions"><button type="button" class="tm-btn primary" data-act="cupAdd">Agregar cupón</button></div><div class="tm-list">${d.coupons.map((c,i)=>`<div class="tm-row"><div class="tm-row-main"><b>${esc(c.code)} — ${c.value}${c.type==='percent'?'%':' USD'}</b><small>Expira: ${esc(c.exp||'sin fecha')}</small></div><button type="button" class="tm-btn tm-mini" data-act="cupDel" data-i="${i}">Eliminar</button></div>`).join('')||'<div class="tm-note">Sin cupones.</div>'}</div>`)}
-function locations(){const d=data();panel('📍 Multi-ubicación','Stock por depósito sin cambiar el stock total hasta que decidas sincronizar.',`<div class="tm-form-grid"><div class="tm-field"><label>Producto</label><select id="tmLocProd">${productOptions()}</select></div><div class="tm-field"><label>Ubicación</label><input id="tmLocName" placeholder="Habana"></div><div class="tm-field"><label>Stock</label><input id="tmLocStock" type="number" value="0"></div></div><div class="tm-actions"><button type="button" class="tm-btn primary" data-act="locSet">Guardar stock ubicación</button></div><div class="tm-list">${Object.entries(d.stock||{}).map(([pid,locs])=>`<div class="tm-row"><div class="tm-row-main"><b>${esc((prods().find(p=>String(p.id)===String(pid))||{}).nombre||pid)}</b><small>${Object.entries(locs).map(([l,n])=>esc(l)+': '+n).join(' · ')}</small></div></div>`).join('')||'<div class="tm-note">Sin stock por ubicación.</div>'}</div>`)}
-function ab(){const d=data();panel('〽️ A/B testing de precios','Define dos precios y registra manualmente vistas/ventas.',`<div class="tm-form-grid"><div class="tm-field"><label>Producto</label><select id="tmAbProd">${productOptions()}</select></div><div class="tm-field"><label>Precio A</label><input id="tmAbA" type="number"></div><div class="tm-field"><label>Precio B</label><input id="tmAbB" type="number"></div></div><div class="tm-actions"><button type="button" class="tm-btn primary" data-act="abAdd">Crear test</button></div><div class="tm-list">${d.ab.map((x,i)=>`<div class="tm-row"><div class="tm-row-main"><b>${esc(x.name)}</b><small>A $${x.a} vs B $${x.b} · ganador sugerido: ${Number(x.b)>Number(x.a)?'medir conversión':'A'}</small></div><button type="button" class="tm-btn tm-mini" data-act="abDel" data-i="${i}">Eliminar</button></div>`).join('')||'<div class="tm-note">Sin tests.</div>'}</div>`)}
-function totp(){const d=data();panel('🔐 2FA / TOTP','Segundo factor opcional. El secreto se guarda local; para máxima seguridad debe validarse también en backend.',`<div class="tm-form-grid"><div class="tm-field"><label>Estado</label><input disabled value="${d.totp.enabled?'Activado':'Desactivado'}"></div><div class="tm-field"><label>Secreto</label><input id="tmTotpSecret" value="${esc(d.totp.secret||randomSecret())}"></div></div><div class="tm-actions"><button type="button" class="tm-btn primary" data-act="totpEnable">Activar/guardar 2FA</button><button type="button" class="tm-btn" data-act="totpDisable">Desactivar</button></div><div class="tm-note">Puedes pegar el secreto en Google Authenticator/Authy. Integración de bloqueo real disponible en un siguiente paso.</div>`)}
-function roles(){const d=data();panel('👥 Roles de usuario','Define roles. La aplicación de permisos se puede conectar por sección.',`<div class="tm-form-grid"><div class="tm-field"><label>Rol</label><input id="tmRoleName" placeholder="viewer"></div><div class="tm-field"><label>Permisos</label><input id="tmRolePerms" placeholder="productos:leer, ventas:leer"></div></div><div class="tm-actions"><button type="button" class="tm-btn primary" data-act="roleAdd">Agregar rol</button></div><div class="tm-list">${d.roles.map((r,i)=>`<div class="tm-row"><div class="tm-row-main"><b>${esc(r.name)}</b><small>${esc(r.perms)}</small></div><button type="button" class="tm-btn tm-mini" data-act="roleDel" data-i="${i}">Eliminar</button></div>`).join('')}</div>`)}
-function competitors(){const d=data();panel('🌐 Comparador competencia','Registra manualmente URLs/precios de Revolico/Marketplace para comparar.',`<div class="tm-form-grid"><div class="tm-field"><label>Producto</label><select id="tmCompProd">${productOptions()}</select></div><div class="tm-field"><label>Precio competencia</label><input id="tmCompPrice" type="number"></div><div class="tm-field" style="grid-column:1/-1"><label>URL</label><input id="tmCompUrl" placeholder="https://..."></div></div><div class="tm-actions"><button type="button" class="tm-btn primary" data-act="compAdd">Agregar comparación</button></div><div class="tm-list">${d.competitors.map((x,i)=>`<div class="tm-row"><div class="tm-row-main"><b>${esc(x.name)} — competencia $${x.price}</b><small>${esc(x.url)}</small></div><button type="button" class="tm-btn tm-mini" data-act="compDel" data-i="${i}">Eliminar</button></div>`).join('')||'<div class="tm-note">Sin comparaciones.</div>'}</div>`)}
-function margin(){panel('💵 Calculadora de margen','Calcula ganancia real por unidad.',`<div class="tm-form-grid"><div class="tm-field"><label>Precio venta</label><input id="tmMPrice" type="number" value="100"></div><div class="tm-field"><label>Coste</label><input id="tmMCost" type="number" value="70"></div><div class="tm-field"><label>Envío</label><input id="tmMShip" type="number" value="5"></div><div class="tm-field"><label>Comisión</label><input id="tmMCom" type="number" value="0"></div></div><div class="tm-actions"><button type="button" class="tm-btn primary" data-act="marginCalc">Calcular</button></div><div id="tmToolOut" class="tm-code" style="margin-top:12px">Resultado…</div>`)}
-function posts(){panel('📣 Posts para redes','Genera texto listo para Facebook, Instagram, WhatsApp y grupos.',`<div class="tm-form-grid"><div class="tm-field"><label>Producto</label><select id="tmPostProd">${productOptions()}</select></div><div class="tm-field"><label>Formato</label><select id="tmPostType"><option>Facebook grupo</option><option>Instagram caption</option><option>Story 9:16</option><option>WhatsApp</option></select></div></div><div class="tm-actions"><button type="button" class="tm-btn primary" data-act="postGen">Generar post</button><button type="button" class="tm-btn" data-act="copyOut">Copiar</button></div><div id="tmToolOut" class="tm-code" style="margin-top:12px">Resultado…</div>`)}
+function schedule(){const d=data();panel('📅 Programar publicación','Cola local de publicaciones. No publica sola en Facebook/Revolico; prepara recordatorio y texto.',`<div class="tm-form-grid"><div class="tm-field"><label for="tmSchProd">Producto</label><select id="tmSchProd">${productOptions()}</select></div><div class="tm-field"><label for="tmSchDate">Fecha/hora</label><input id="tmSchDate" type="datetime-local"></div></div><div class="tm-actions"><button type="button" class="tm-btn primary" data-act="schAdd">Programar</button></div><div class="tm-list">${d.scheduled.map((x,i)=>`<div class="tm-row"><div class="tm-row-main"><b>${esc(x.name)}</b><small>${new Date(x.when).toLocaleString()}</small></div><button type="button" class="tm-btn tm-mini" data-act="schDel" data-i="${i}">Eliminar</button></div>`).join('')||'<div class="tm-note">Sin publicaciones programadas.</div>'}</div>`)}
+function coupons(){const d=data();panel('🏷️ Cupones / descuentos','Crea códigos para campañas. Luego se pueden integrar al carrito público.',`<div class="tm-form-grid"><div class="tm-field"><label for="tmCupCode">Código</label><input id="tmCupCode" placeholder="FLASH10"></div><div class="tm-field"><label for="tmCupType">Tipo</label><select id="tmCupType"><option value="percent">%</option><option value="fixed">Fijo USD</option></select></div><div class="tm-field"><label for="tmCupVal">Valor</label><input id="tmCupVal" type="number" value="10"></div><div class="tm-field"><label for="tmCupExp">Expira</label><input id="tmCupExp" type="date"></div></div><div class="tm-actions"><button type="button" class="tm-btn primary" data-act="cupAdd">Agregar cupón</button></div><div class="tm-list">${d.coupons.map((c,i)=>`<div class="tm-row"><div class="tm-row-main"><b>${esc(c.code)} — ${c.value}${c.type==='percent'?'%':' USD'}</b><small>Expira: ${esc(c.exp||'sin fecha')}</small></div><button type="button" class="tm-btn tm-mini" data-act="cupDel" data-i="${i}">Eliminar</button></div>`).join('')||'<div class="tm-note">Sin cupones.</div>'}</div>`)}
+function locations(){const d=data();panel('📍 Multi-ubicación','Stock por depósito sin cambiar el stock total hasta que decidas sincronizar.',`<div class="tm-form-grid"><div class="tm-field"><label for="tmLocProd">Producto</label><select id="tmLocProd">${productOptions()}</select></div><div class="tm-field"><label for="tmLocName">Ubicación</label><input id="tmLocName" placeholder="Habana"></div><div class="tm-field"><label for="tmLocStock">Stock</label><input id="tmLocStock" type="number" value="0"></div></div><div class="tm-actions"><button type="button" class="tm-btn primary" data-act="locSet">Guardar stock ubicación</button></div><div class="tm-list">${Object.entries(d.stock||{}).map(([pid,locs])=>`<div class="tm-row"><div class="tm-row-main"><b>${esc((prods().find(p=>String(p.id)===String(pid))||{}).nombre||pid)}</b><small>${Object.entries(locs).map(([l,n])=>esc(l)+': '+n).join(' · ')}</small></div></div>`).join('')||'<div class="tm-note">Sin stock por ubicación.</div>'}</div>`)}
+function ab(){const d=data();panel('〽️ A/B testing de precios','Define dos precios y registra manualmente vistas/ventas.',`<div class="tm-form-grid"><div class="tm-field"><label for="tmAbProd">Producto</label><select id="tmAbProd">${productOptions()}</select></div><div class="tm-field"><label for="tmAbA">Precio A</label><input id="tmAbA" type="number"></div><div class="tm-field"><label for="tmAbB">Precio B</label><input id="tmAbB" type="number"></div></div><div class="tm-actions"><button type="button" class="tm-btn primary" data-act="abAdd">Crear test</button></div><div class="tm-list">${d.ab.map((x,i)=>`<div class="tm-row"><div class="tm-row-main"><b>${esc(x.name)}</b><small>A $${x.a} vs B $${x.b} · ganador sugerido: ${Number(x.b)>Number(x.a)?'medir conversión':'A'}</small></div><button type="button" class="tm-btn tm-mini" data-act="abDel" data-i="${i}">Eliminar</button></div>`).join('')||'<div class="tm-note">Sin tests.</div>'}</div>`)}
+function totp(){const d=data();panel('🔐 2FA / TOTP','Segundo factor opcional. El secreto se guarda local; para máxima seguridad debe validarse también en backend.',`<div class="tm-form-grid"><div class="tm-field"><label>Estado</label><input disabled value="${d.totp.enabled?'Activado':'Desactivado'}"></div><div class="tm-field"><label for="tmTotpSecret">Secreto</label><input id="tmTotpSecret" value="${esc(d.totp.secret||randomSecret())}"></div></div><div class="tm-actions"><button type="button" class="tm-btn primary" data-act="totpEnable">Activar/guardar 2FA</button><button type="button" class="tm-btn" data-act="totpDisable">Desactivar</button></div><div class="tm-note">Puedes pegar el secreto en Google Authenticator/Authy. Integración de bloqueo real disponible en un siguiente paso.</div>`)}
+function roles(){const d=data();panel('👥 Roles de usuario','Define roles. La aplicación de permisos se puede conectar por sección.',`<div class="tm-form-grid"><div class="tm-field"><label for="tmRoleName">Rol</label><input id="tmRoleName" placeholder="viewer"></div><div class="tm-field"><label for="tmRolePerms">Permisos</label><input id="tmRolePerms" placeholder="productos:leer, ventas:leer"></div></div><div class="tm-actions"><button type="button" class="tm-btn primary" data-act="roleAdd">Agregar rol</button></div><div class="tm-list">${d.roles.map((r,i)=>`<div class="tm-row"><div class="tm-row-main"><b>${esc(r.name)}</b><small>${esc(r.perms)}</small></div><button type="button" class="tm-btn tm-mini" data-act="roleDel" data-i="${i}">Eliminar</button></div>`).join('')}</div>`)}
+function competitors(){const d=data();panel('🌐 Comparador competencia','Registra manualmente URLs/precios de Revolico/Marketplace para comparar.',`<div class="tm-form-grid"><div class="tm-field"><label for="tmCompProd">Producto</label><select id="tmCompProd">${productOptions()}</select></div><div class="tm-field"><label for="tmCompPrice">Precio competencia</label><input id="tmCompPrice" type="number"></div><div class="tm-field" style="grid-column:1/-1"><label for="tmCompUrl">URL</label><input id="tmCompUrl" placeholder="https://..."></div></div><div class="tm-actions"><button type="button" class="tm-btn primary" data-act="compAdd">Agregar comparación</button></div><div class="tm-list">${d.competitors.map((x,i)=>`<div class="tm-row"><div class="tm-row-main"><b>${esc(x.name)} — competencia $${x.price}</b><small>${esc(x.url)}</small></div><button type="button" class="tm-btn tm-mini" data-act="compDel" data-i="${i}">Eliminar</button></div>`).join('')||'<div class="tm-note">Sin comparaciones.</div>'}</div>`)}
+function margin(){panel('💵 Calculadora de margen','Calcula ganancia real por unidad.',`<div class="tm-form-grid"><div class="tm-field"><label for="tmMPrice">Precio venta</label><input id="tmMPrice" type="number" value="100"></div><div class="tm-field"><label for="tmMCost">Coste</label><input id="tmMCost" type="number" value="70"></div><div class="tm-field"><label for="tmMShip">Envío</label><input id="tmMShip" type="number" value="5"></div><div class="tm-field"><label for="tmMCom">Comisión</label><input id="tmMCom" type="number" value="0"></div></div><div class="tm-actions"><button type="button" class="tm-btn primary" data-act="marginCalc">Calcular</button></div><div id="tmToolOut" class="tm-code" style="margin-top:12px">Resultado…</div>`)}
+function posts(){panel('📣 Posts para redes','Genera texto listo para Facebook, Instagram, WhatsApp y grupos.',`<div class="tm-form-grid"><div class="tm-field"><label for="tmPostProd">Producto</label><select id="tmPostProd">${productOptions()}</select></div><div class="tm-field"><label for="tmPostType">Formato</label><select id="tmPostType"><option>Facebook grupo</option><option>Instagram caption</option><option>Story 9:16</option><option>WhatsApp</option></select></div></div><div class="tm-actions"><button type="button" class="tm-btn primary" data-act="postGen">Generar post</button><button type="button" class="tm-btn" data-act="copyOut">Copiar</button></div><div id="tmToolOut" class="tm-code" style="margin-top:12px">Resultado…</div>`)}
 function heatmap(){const ps=prods().slice(0,20);panel('◎ Heatmap de clics','Vista estimada usando productos y analytics disponibles.',`<div class="tm-list">${ps.map((p,i)=>{const v=Math.round((20-i)*7+Math.random()*20);return `<div class="tm-row"><div class="tm-row-main"><b>${esc(p.nombre)}</b><small>${esc(p.categoria)} · intensidad ${v}%</small><div style="height:8px;background:rgba(255,255,255,.08);border-radius:99px;margin-top:6px"><div style="height:8px;width:${Math.min(100,v)}%;background:linear-gradient(90deg,#C9A96E,#FF6B35);border-radius:99px"></div></div></div></div>`}).join('')}</div>`)}
-function crm(){const d=data();panel('🧑‍💼 CRM de clientes (manual)','Los agregás vos a mano — no se llena solo con tus ventas ni pedidos reales.',`<div class="tm-form-grid"><div class="tm-field"><label>Nombre</label><input id="tmCrmName"></div><div class="tm-field"><label>WhatsApp</label><input id="tmCrmPhone"></div><div class="tm-field"><label>Total comprado USD</label><input id="tmCrmLtv" type="number" value="0"></div></div><div class="tm-actions"><button type="button" class="tm-btn primary" data-act="crmAdd">Agregar cliente</button></div><div class="tm-list">${d.clients.map((c,i)=>`<div class="tm-row"><div class="tm-row-main"><b>${esc(c.name)} · ${esc(c.phone)}</b><small>LTV $${c.ltv}</small></div><button type="button" class="tm-btn tm-mini" data-act="crmDel" data-i="${i}">Eliminar</button></div>`).join('')||'<div class="tm-note">Sin clientes.</div>'}</div>`)}
-function shipping(){const d=data();panel('🚚 Tracking envíos (manual)','Lo actualizás vos a mano — no lee el estado real de tus pedidos.',`<div class="tm-form-grid"><div class="tm-field"><label>Pedido/cliente</label><input id="tmShipName"></div><div class="tm-field"><label>Estado</label><select id="tmShipStatus"><option>Preparando</option><option>En camino</option><option>Entregado</option><option>Incidencia</option></select></div><div class="tm-field" style="grid-column:1/-1"><label>Nota</label><input id="tmShipNote"></div></div><div class="tm-actions"><button type="button" class="tm-btn primary" data-act="shipAdd">Agregar tracking</button></div><div class="tm-list">${d.shipments.map((s,i)=>`<div class="tm-row"><div class="tm-row-main"><b>${esc(s.name)} — ${esc(s.status)}</b><small>${esc(s.note||'')}</small></div><button type="button" class="tm-btn tm-mini" data-act="shipDel" data-i="${i}">Eliminar</button></div>`).join('')||'<div class="tm-note">Sin envíos.</div>'}</div>`)}
+function crm(){const d=data();panel('🧑‍💼 CRM de clientes (manual)','Los agregás vos a mano — no se llena solo con tus ventas ni pedidos reales.',`<div class="tm-form-grid"><div class="tm-field"><label for="tmCrmName">Nombre</label><input id="tmCrmName"></div><div class="tm-field"><label for="tmCrmPhone">WhatsApp</label><input id="tmCrmPhone"></div><div class="tm-field"><label for="tmCrmLtv">Total comprado USD</label><input id="tmCrmLtv" type="number" value="0"></div></div><div class="tm-actions"><button type="button" class="tm-btn primary" data-act="crmAdd">Agregar cliente</button></div><div class="tm-list">${d.clients.map((c,i)=>`<div class="tm-row"><div class="tm-row-main"><b>${esc(c.name)} · ${esc(c.phone)}</b><small>LTV $${c.ltv}</small></div><button type="button" class="tm-btn tm-mini" data-act="crmDel" data-i="${i}">Eliminar</button></div>`).join('')||'<div class="tm-note">Sin clientes.</div>'}</div>`)}
+function shipping(){const d=data();panel('🚚 Tracking envíos (manual)','Lo actualizás vos a mano — no lee el estado real de tus pedidos.',`<div class="tm-form-grid"><div class="tm-field"><label for="tmShipName">Pedido/cliente</label><input id="tmShipName"></div><div class="tm-field"><label for="tmShipStatus">Estado</label><select id="tmShipStatus"><option>Preparando</option><option>En camino</option><option>Entregado</option><option>Incidencia</option></select></div><div class="tm-field" style="grid-column:1/-1"><label for="tmShipNote">Nota</label><input id="tmShipNote"></div></div><div class="tm-actions"><button type="button" class="tm-btn primary" data-act="shipAdd">Agregar tracking</button></div><div class="tm-list">${d.shipments.map((s,i)=>`<div class="tm-row"><div class="tm-row-main"><b>${esc(s.name)} — ${esc(s.status)}</b><small>${esc(s.note||'')}</small></div><button type="button" class="tm-btn tm-mini" data-act="shipDel" data-i="${i}">Eliminar</button></div>`).join('')||'<div class="tm-note">Sin envíos.</div>'}</div>`)}
 function randomSecret(){return Array.from(crypto.getRandomValues(new Uint8Array(10))).map(x=>'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567'[x%32]).join('')}
 function snapshot(note='manual'){const snaps=safeJson(SNAP,[]);snaps.unshift({ts:Date.now(),note,count:prods().length,productos:prods()});saveJson(SNAP,snaps.slice(0,30));}
 function refreshAdmin2(){ if(typeof window.cargarDatos==='function') window.cargarDatos(true); }

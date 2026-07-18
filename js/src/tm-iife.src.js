@@ -832,11 +832,20 @@ async function guardarTasaMNAdmin() {
 
     // Cerrar modal con ESC
     document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') {
-            const overlay = document.getElementById('notifModalOverlay');
-            if (overlay && overlay.classList.contains('activo')) {
-                cerrarModalNotificaciones();
-            }
+        if (e.key !== 'Escape') return;
+        const overlay = document.getElementById('notifModalOverlay');
+        if (overlay && overlay.classList.contains('activo')) {
+            cerrarModalNotificaciones();
+            return;
+        }
+        const detalle = document.getElementById('productDetailModal');
+        if (detalle && !detalle.classList.contains('hidden') && typeof cerrarDetalleModal === 'function') {
+            cerrarDetalleModal();
+            return;
+        }
+        const carrito = document.getElementById('carritoDrawer');
+        if (carrito && !carrito.classList.contains('hidden') && typeof cerrarCarrito === 'function') {
+            cerrarCarrito();
         }
     });
 

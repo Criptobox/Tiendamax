@@ -42,6 +42,11 @@
         if (!toastEl) {
             toastEl = document.createElement('div');
             toastEl.className = 'tm-toast';
+            // role=status + aria-live=polite: los lectores de pantalla anuncian el
+            // mensaje sin interrumpir lo que el usuario esté haciendo.
+            toastEl.setAttribute('role', 'status');
+            toastEl.setAttribute('aria-live', 'polite');
+            toastEl.setAttribute('aria-atomic', 'true');
             document.body.appendChild(toastEl);
         }
         return toastEl;
