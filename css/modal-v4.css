@@ -143,9 +143,10 @@ html body.light-mode #productDetailModal .detail-rating-top b { color: #1A1A1A !
   border-radius: 8px;
   box-shadow: 0 6px 20px rgba(255, 77, 0, 0.4);
 }
+#productDetailModal #detailMasVendidoBadge.detail-badge-hot,
 #productDetailModal .detail-badge-hot {
   position: absolute;
-  top: 12px; right: 12px;
+  top: 50px !important; left: 12px !important; right: auto !important; /* lado izquierdo, debajo del badge de descuento — la esquina derecha es del close-btn-floating */
   background: rgba(0,0,0,0.55);
   backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
   color: #ffb380;

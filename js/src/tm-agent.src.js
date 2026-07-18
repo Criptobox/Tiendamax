@@ -2398,9 +2398,17 @@
     if (!bubble) return;
     var vistaInicio = document.getElementById('vistaInicio');
     var isHome = vistaInicio && vistaInicio.style.display !== 'none';
+    // Con un modal/drawer abierto (detalle de producto, carrito) la burbuja
+    // (z-index 9999, fija abajo-derecha) tapa el botón "Pedir"/"Avísame"
+    // sticky de esos paneles. Se oculta mientras estén abiertos.
+    var detalle = _el('productDetailModal');
+    var carrito = _el('carritoDrawer');
+    var hayOverlayAbierto =
+      (detalle && !detalle.classList.contains('hidden')) ||
+      (carrito && !carrito.classList.contains('hidden'));
     // Si el panel está abierto, no ocultar la burbuja (se oculta por open())
     if (_panelOpen) return;
-    if (isHome) {
+    if (isHome && !hayOverlayAbierto) {
       bubble.style.display = '';
       bubble.classList.remove('hidden');
     } else {

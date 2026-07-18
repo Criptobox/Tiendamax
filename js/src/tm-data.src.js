@@ -497,7 +497,10 @@ function seleccionarSugerencia(id) {
 function resaltarTexto(texto, query) {
     try {
         const re = new RegExp('(' + query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi');
-        return texto.replace(re, '<mark style="background:rgba(201,169,110,0.25);color:inherit;border-radius:3px;padding:0 2px;">$1</mark>');
+        // Sin padding horizontal: con queries cortas ("a") casi cada letra del
+        // nombre queda envuelta en su propio <mark>, y el padding las separaba
+        // visualmente ("B a terí a" en vez de "Batería").
+        return texto.replace(re, '<mark style="background:rgba(201,169,110,0.35);color:inherit;border-radius:3px;">$1</mark>');
     } catch(e) { return texto; }
 }
 
