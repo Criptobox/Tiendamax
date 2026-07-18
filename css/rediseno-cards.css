@@ -8,6 +8,16 @@
      botón Pedir, corazón (.btn-megusta), badges.
    ============================================================ */
 
+/* Escala de z-index para el cluster header/banners/panel de búsqueda
+   (todo lo que se peleó por encima del header sticky esta sesión).
+   El header (.header, premium-theme.css) usa 1090 !important — ese
+   archivo está minificado en una sola línea, no se toca a mano acá,
+   pero es la referencia que --z-above-header debe superar. */
+:root {
+  --z-above-header: 1100;      /* banners/paneles que deben ganarle al header (1090) */
+  --z-above-header-panel: 1101; /* dentro de esos, lo que debe ganarle al panel mismo (pill de búsqueda) */
+}
+
 .producto-card.pcard-v2{
   position:relative; display:flex; flex-direction:column; height:100%;
   border-radius:16px; overflow:visible; cursor:pointer; padding:0 !important;
@@ -1363,7 +1373,7 @@ html body .testimonios-grid{
 #pwa-install-banner{
   position:fixed;
   top:0;left:0;right:0;
-  z-index:1100;
+  z-index:var(--z-above-header);
   display:none !important;
   align-items:center;
   justify-content:center;
@@ -1781,24 +1791,24 @@ html body .nd-hero-search .hsb-search {
   overflow: visible !important;
 }
 
-/* Fix PC search: .hero overflow:hidden + contain:layout clips the absolute-positioned panel.
+/* Fix PC search: .hero overflow:hidden clips the absolute-positioned panel.
    Allow overflow when search panel is open; keep hidden otherwise for layout.
    Uses both :has() (modern browsers) and .search-panel-open class (JS fallback).
    SOLO desktop/tablet (>768px): en mobile el panel es position:fixed pantalla
    completa, no depende del overflow del hero — dejarlo overflow:hidden ahí
    evita que se cuelen fuera de la pantalla los orbes decorativos del hero y
-   los slides del carrusel, que generaban scroll horizontal al abrir el buscador. */
+   los slides del carrusel, que generaban scroll horizontal al abrir el buscador.
+   (contain:none va aparte, sin media query — ver el bloque de abajo — porque
+   a diferencia del overflow, sí hace falta en TODOS los anchos.) */
 @media (min-width: 769px) {
   html body .hero.nd-hero:has(.hsb-panel.visible),
   html body .hero.nd-hero.search-panel-open {
     overflow: visible !important;
-    contain: none !important;
   }
   /* Fallback for browsers without :has() — always allow overflow on hero */
   @supports not (selector(:has(*))) {
     html body .hero.nd-hero {
       overflow: visible !important;
-      contain: none !important;
     }
   }
 }
@@ -1810,7 +1820,7 @@ html body .nd-hero-search .hsb-search {
    relativo a la caja del hero (no al viewport) y aparecían corridos hacia
    arriba, mostrando un bloque negro (el propio panel, mal ubicado) sobre
    el resto del hero. A diferencia del overflow (que solo hace falta en
-   desktop), esto hay que quitarlo en TODOS los anchos mientras el
+   desktop, arriba), esto hay que quitarlo en TODOS los anchos mientras el
    buscador esté abierto. */
 html body .hero.nd-hero:has(.hsb-panel.visible),
 html body .hero.nd-hero.search-panel-open {
@@ -1837,7 +1847,7 @@ html body .hsb-panel {
   -webkit-overflow-scrolling: touch !important;
   overscroll-behavior: contain !important;
   touch-action: pan-y !important;
-  z-index: 1100 !important; /* el header sticky usa 1090 !important — si no, el panel queda tapado detrás */
+  z-index: var(--z-above-header) !important; /* el header sticky usa 1090 !important — si no, el panel queda tapado detrás */
 }
 
 /* Show panel when .visible class is added (DESKTOP) */
@@ -1922,7 +1932,7 @@ html body .hsb-suggestions {
     max-height: 100vh !important;
     max-height: 100dvh !important;           /* dynamic viewport height for mobile browsers */
     border-radius: 0 !important;
-    z-index: 1100 !important;
+    z-index: var(--z-above-header) !important;
     overflow-y: auto !important;
     -webkit-overflow-scrolling: touch !important;
     overscroll-behavior: contain !important;
@@ -1945,7 +1955,7 @@ html body .hsb-suggestions {
      subir todo .nd-wrap no la superpone con nada.) */
   html body .hero.nd-hero:has(.hsb-panel.visible) .nd-wrap,
   html body .hero.nd-hero.search-panel-open .nd-wrap {
-    z-index: 1101 !important;
+    z-index: var(--z-above-header-panel) !important;
   }
 
   /* Sticky search pill at top of fullscreen panel */
@@ -1956,7 +1966,7 @@ html body .hsb-suggestions {
     right: 12px !important;
     width: calc(100% - 24px) !important;
     max-width: 100% !important;
-    z-index: 1101 !important;
+    z-index: var(--z-above-header-panel) !important;
     border-radius: 999px !important;
     box-shadow: 0 4px 20px rgba(0,0,0,.25) !important;
   }
