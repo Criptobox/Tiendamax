@@ -147,12 +147,16 @@ html body.light-mode #productDetailModal .detail-rating-top b { color: #1A1A1A !
 #productDetailModal .detail-badge-hot {
   position: absolute;
   top: 50px !important; left: 12px !important; right: auto !important; /* lado izquierdo, debajo del badge de descuento — la esquina derecha es del close-btn-floating */
-  background: rgba(0,0,0,0.55);
+  /* !important en todo: rediseno-cards.css tiene el mismo selector con
+     !important en background/border/color/padding/border-radius, y sin
+     esto ganaba esa regla vieja (pastilla oscura/blanca) en vez de esta
+     (pastilla coral) — el rediseño visual nunca se veía. */
+  background: rgba(0,0,0,0.55) !important;
   backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
-  color: #ffb380;
-  border: 1px solid rgba(255,107,53,0.35);
+  color: #ffb380 !important;
+  border: 1px solid rgba(255,107,53,0.35) !important;
   font-size: 11px; font-weight: 800;
-  padding: 5px 10px; border-radius: 999px;
+  padding: 5px 10px !important; border-radius: 999px !important;
 }
 #productDetailModal .detail-photo-counter {
   position: absolute;
