@@ -775,11 +775,31 @@ body.light-mode #productDetailModal .modal-header{ background:#e9ebf0 !important
    Mismo timing/curva que ya tenían, solo se acota qué anima. */
 .cart-icon-btn{ transition:background-color .2s, border-color .2s !important; }
 
+/* Carrito con productos: mismo tratamiento que corazón/notificaciones —
+   el ícono coge el color de marca en vez de quedarse gris siempre. */
+.cart-icon-btn.tiene-items {
+    color: var(--coral, #FF6B35) !important;
+    border-color: rgba(255,107,53,.4) !important;
+}
+html body.light-mode .cart-icon-btn.tiene-items {
+    border-color: rgba(232,80,30,.35) !important;
+}
+
 /* ── Notification bell button — styles consolidated with other header buttons above ── */
 .notif-dot {
     position: absolute; top: 6px; right: 6px; width: 8px; height: 8px;
     background: #E8501E; border-radius: 50%; display: none;
 }
+/* Estado del botón según detectarEstadoNotif() (tm-iife.src.js) */
+.notif-icon-btn.activo { color: #ffa84a !important; }
+.notif-icon-btn.desactivado { color: inherit; }
+.notif-icon-btn.bloqueado { color: #e74c3c !important; }
+.notif-icon-btn.activo .notif-dot {
+    background: #25d366;
+    box-shadow: 0 0 6px rgba(37,211,102,.6);
+}
+.notif-icon-btn.bloqueado .notif-dot { background: #e74c3c; }
+html body.light-mode .notif-icon-btn.activo { color: #E8501E !important; }
 
 /* ── Consistent header button sizing (40px) + same visual style ── */
 html body .cart-icon-btn,

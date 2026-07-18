@@ -92,6 +92,8 @@ function guardarCarrito() {
 function actualizarContadorCarrito() {
     const total = carrito.reduce((s, i) => s + i.cantidad, 0);
     const el = document.getElementById('cartCount');
+    const btn = document.querySelector('.cart-icon-btn');
+    if (btn) btn.classList.toggle('tiene-items', total > 0);
     if (!el) return;
     if (total === 0) {
         el.style.display = 'none';
