@@ -24,6 +24,15 @@ def _clean(t):
     return re.sub(r'[ \t]+', ' ', t).strip()
 
 
+def _atomic_write(path, text):
+    """Escribe text en path de forma atómica (temp file + os.replace) para no
+    dejar el JSON truncado si el proceso se corta a mitad de escritura."""
+    tmp = path + '.tmp'
+    with open(tmp, 'w', encoding='utf-8') as f:
+        f.write(text)
+    os.replace(tmp, path)
+
+
 def descripcion_de(pid):
     f = os.path.join(ROOT, 'p', f'producto-{pid}.html')
     if not os.path.exists(f):
@@ -69,11 +78,11 @@ def main():
             print(f"  ⚠ sin descripción en /p/: {p.get('nombre','?')[:42]}")
 
     out = json.dumps(data, ensure_ascii=False, indent=2) + '\n'
-    open(pj, 'w', encoding='utf-8').write(out)
+    _atomic_write(pj, out)
     # lite = full SIN descripcion (igual que el admin)
     lite = [{k: v for k, v in p.items() if k != 'descripcion'} for p in data]
-    open(os.path.join(ROOT, 'productos-lite.json'), 'w', encoding='utf-8').write(
-        json.dumps(lite, ensure_ascii=False, indent=2) + '\n')
+    _atomic_write(os.path.join(ROOT, 'productos-lite.json'),
+                  json.dumps(lite, ensure_ascii=False, indent=2) + '\n')
 
     con = sum(1 for p in data if (p.get('descripcion') or '').strip())
     print(f"\nListo: +{cambiados} descripciones · {con}/{len(data)} con descripción · "

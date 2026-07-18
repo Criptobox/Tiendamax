@@ -39,6 +39,15 @@ def recortar(t, n):
     return (cut or t[:n]).rstrip() + '…'
 
 
+def _atomic_write(path, text):
+    """Escribe text en path de forma atómica (temp file + os.replace) para no
+    dejar el JSON truncado si el proceso se corta a mitad de escritura."""
+    tmp = path + '.tmp'
+    with open(tmp, 'w', encoding='utf-8') as f:
+        f.write(text)
+    os.replace(tmp, path)
+
+
 def seo_title(p):
     nombre = (p.get('nombre') or '').strip()
     if not nombre:
@@ -84,11 +93,11 @@ def main():
         return
 
     out = json.dumps(data, ensure_ascii=False, indent=2) + '\n'
-    open(pj, 'w', encoding='utf-8').write(out)
+    _atomic_write(pj, out)
     # lite = completo SIN descripcion (igual que el admin)
     lite = [{k: v for k, v in p.items() if k != 'descripcion'} for p in data]
-    open(os.path.join(ROOT, 'productos-lite.json'), 'w', encoding='utf-8').write(
-        json.dumps(lite, ensure_ascii=False, indent=2) + '\n')
+    _atomic_write(os.path.join(ROOT, 'productos-lite.json'),
+                  json.dumps(lite, ensure_ascii=False, indent=2) + '\n')
 
     ct = sum(1 for p in data if (p.get('seoTitle') or '').strip())
     cd = sum(1 for p in data if (p.get('seoDescription') or '').strip())

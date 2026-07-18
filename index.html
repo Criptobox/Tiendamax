@@ -48,9 +48,7 @@
                     https://www.google-analytics.com
                     https://analytics.google.com
                     https://stats.g.doubleclick.net
-                    https://*.workers.dev
-                    https://push.services.mozilla.com
-                    https://updates.push.services.mozilla.com;
+                    https://*.workers.dev;
         frame-ancestors 'none';
         form-action 'self' https://wa.me https://api.whatsapp.com;
         base-uri    'self';
@@ -103,22 +101,22 @@
     <!-- Open Graph (Facebook, WhatsApp) -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://tiendamax.org/">
-    <meta property="og:title" content="TiendaMax — Tu tienda online en Cuba">
-    <meta property="og:description" content="Encuentra los mejores productos al mejor precio. Envíos a toda Cuba.">
+    <meta property="og:title" content="TiendaMax — Catálogo online con pedido por WhatsApp">
+    <meta property="og:description" content="Revisa productos disponibles con fotos, precios y stock actualizado. Energía, WiFi, carros, motos, seguridad, celulares y más. Pide directo por WhatsApp.">
     <meta property="og:image" content="https://tiendamax.org/og-image.jpg">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta property="og:image:type" content="image/jpeg">
-    <meta name="twitter:image:alt" content="TiendaMax — Tu tienda online en Cuba">
+    <meta name="twitter:image:alt" content="TiendaMax — Tienda online en Cuba">
     <meta property="og:locale" content="es_CU">
     <meta property="og:site_name" content="TiendaMax">
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="TiendaMax — Tu tienda online en Cuba">
-    <meta name="twitter:description" content="Encuentra los mejores productos al mejor precio. Envíos a toda Cuba.">
+    <meta name="twitter:title" content="TiendaMax — Catálogo online con pedido por WhatsApp">
+    <meta name="twitter:description" content="Productos disponibles, precios actualizados y pedido directo por WhatsApp en TiendaMax.">
     <meta name="twitter:image" content="https://tiendamax.org/og-image.jpg">
-    <meta name="twitter:image:alt" content="TiendaMax — Tu tienda online en Cuba">
+    <meta name="twitter:image:alt" content="TiendaMax — Tienda online cubana">
 
     <title>TiendaMax — Catálogo online con pedido por WhatsApp</title>
 
@@ -246,7 +244,7 @@
     <noscript><link rel="stylesheet" href="css/fonts.css?v=67235440"></noscript>
 
     <!-- Preload del bundle JS del núcleo (generado por scripts/build_js_bundle.py) -->
-    <link rel="preload" href="js/tm-bundle.js?v=e5b2c40f" as="script">
+    <link rel="preload" href="js/tm-bundle.js?v=59e02767" as="script">
 
     <!-- Preload del catálogo: la foto hero (fetchpriority=high) no puede pedirse
          hasta que este JSON responda y arme el <img>; sin este preload, el
@@ -259,11 +257,42 @@
 
 
 
-    <link rel="stylesheet" href="css/bundle.css?v=fc1faf72">
+    <link rel="stylesheet" href="css/bundle.css?v=23afe021">
 
 
 
-    <!-- Styles moved to bundle.css -->
+    <!-- Estilos para "Vistos Recientemente" -->
+    <style>
+    .recientes-section {
+        padding: 40px 0;
+        background: rgba(255, 255, 255, 0.02);
+    }
+    .recientes-section .section-header {
+        text-align: center;
+        margin-bottom: 24px;
+    }
+    .recientes-section .section-header h2 {
+        font-size: 22px;
+        color: #fff;
+        margin-bottom: 6px;
+        font-weight: 700;
+    }
+    .recientes-section .section-header p {
+        color: rgba(255, 255, 255, 0.55);
+        font-size: 13px;
+    }
+    .recientes-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        gap: 14px;
+    }
+    @media (max-width: 600px) {
+        .recientes-grid {
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+    }
+    </style>
     <!-- Google Analytics 4 -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-KG43FHTCDF"></script>
     <script>
@@ -279,15 +308,7 @@
 
     <!-- Banner de Urgencia -->
     <div id="urgenciaBanner" class="urgencia-banner" style="display:none;">
-        🔥 ¡OFERTAS RELÁMPAGO! <span class="flash-deal">Ver oferta →</span>
-    </div>
-
-    <!-- Banner PWA Instalar -->
-    <div id="pwa-install-banner">
-        <span class="pwa-banner-icon">📲</span>
-        <span class="pwa-banner-text">Instala TiendaMax en tu dispositivo</span>
-        <button type="button" id="pwa-install-btn" class="pwa-install-btn">Instalar</button>
-        <button type="button" id="pwa-install-dismiss" class="pwa-dismiss-btn" aria-label="Cerrar">&times;</button>
+        🔥 ¡OFERTAS RELÁMPAGO DISPONIBLES! <span class="flash-deal">APROVECHA AHORA</span>
     </div>
 
     <!-- Script inline: muestra el banner de oferta sin esperar a script.js -->
@@ -406,44 +427,42 @@
 
     <!-- Header -->
     <!-- Menú móvil overlay -->
-    <div class="mobile-menu-overlay" id="mobileMenuOverlay" role="dialog" aria-modal="true" aria-label="Menú de navegación">
-        <div class="mobile-menu-logo"><img src="/iconos/icon-192.png" alt="TiendaMax" style="width:30px;height:30px;border-radius:8px;vertical-align:middle;"> Tienda<em>Max</em></div>
+    <div class="mobile-menu-overlay" id="mobileMenuOverlay">
+        <div class="mobile-menu-logo"><img src="/iconos/icon-192.png" alt="" style="width:30px;height:30px;border-radius:8px;vertical-align:middle;"> Tienda<em>Max</em></div>
         <button data-action="cerrarMenuMovil" aria-label="Cerrar menú" type="button" class="mobile-menu-close">×</button>
-        <a href="#" data-action="volverAlInicio,cerrarMenuMovil">🏠 Inicio</a>
-        <a href="#categorias-home" data-action="volverAlInicio,cerrarMenuMovil">📂 Categorías</a>
-        <a data-action="cerrarMenuMovil" href="#beneficios">✨ Beneficios</a>
-        <a data-action="cerrarMenuMovil" href="#testimonios">💬 Testimonios</a>
-        <a data-action="cerrarMenuMovil" href="#contacto">📞 Contacto</a>
+        <a href="#" data-action="volverAlInicio,cerrarMenuMovil">Inicio</a>
+        <a href="#categorias-home" data-action="volverAlInicio,cerrarMenuMovil">Categorías</a>
+        <a data-action="cerrarMenuMovil" href="#beneficios">Beneficios</a>
+        <a data-action="cerrarMenuMovil" href="#testimonios">Testimonios</a>
+        <a data-action="cerrarMenuMovil" href="#contacto">Contacto</a>
         <button type="button" class="nav-mobile-link" onclick="cerrarMenuMovil();mostrarVistaMeGusta()">❤️ Mis Me Gusta</button>
         <button type="button" class="nav-mobile-link" onclick="cerrarMenuMovil();mostrarVistaPedidos()">📋 Mis Pedidos</button>
-        <button data-action="toggleDarkMode,cerrarMenuMovil" type="button" class="mobile-theme-btn theme-toggle">☀️ Tema: Claro</button>
         <div class="mobile-menu-actions">
-            <a href="https://t.me/TiendaMaxWeb" class="mobile-action-grupo" target="_blank" rel="noopener">Telegram</a>
-            <a href="https://wa.me/5354320170?text=Hola,%20necesito%20ayuda%20con%20un%20producto" class="mobile-action-ayuda" target="_blank" rel="noopener">WhatsApp</a>
+            <a href="https://t.me/TiendaMaxWeb" class="mobile-action-grupo" target="_blank" rel="noopener">Canal Telegram</a>
+            <a href="https://wa.me/5354320170?text=Hola,%20necesito%20ayuda%20con%20un%20producto" class="mobile-action-ayuda" target="_blank" rel="noopener">🎧 Ayuda</a>
         </div>
     </div>
 
     <header class="header">
         <div class="container header-content">
-            <div class="logo"><div data-action="volverAlInicio" class="logo-premium" role="button" tabindex="0" aria-label="Ir a página principal"><img src="/iconos/icon-192.png" id="logoSecretBadge" alt="TiendaMax" style="width:30px;height:30px;border-radius:8px;vertical-align:middle;">Tienda<em>Max</em></div></div>
+            <div class="logo"><div data-action="volverAlInicio" class="logo-premium" role="button" tabindex="0" aria-label="Ir a página principal"><img src="/iconos/icon-192.png" id="logoSecretBadge" alt="" style="width:30px;height:30px;border-radius:8px;vertical-align:middle;">Tienda<em>Max</em></div></div>
             <!-- Carrito + Corazón + Hamburguesa -->
             <div class="header-right">
                 <button data-action="abrirCarrito" type="button" class="cart-icon-btn" aria-label="Carrito" title="Ver carrito">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="24" height="24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="22" height="22"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
                     <span class="cart-count" id="cartCount" style="display:none;">0</span>
                 </button>
                 <button onclick="mostrarVistaMeGusta()" type="button" class="heart-icon-btn" id="heartHeaderBtn" aria-label="Mis Me Gusta" title="Mis Me Gusta">
-                    <svg id="heartHeaderIcon" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                    <svg id="heartHeaderIcon" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
                     <span class="heart-count" id="heartCount" style="display:none;">0</span>
                 </button>
                 <button onclick="abrirModalNotificaciones()" type="button" class="notif-icon-btn" id="notifHeaderBtn" aria-label="Notificaciones" title="Notificaciones">
-                    <svg id="notifHeaderIcon" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <svg id="notifHeaderIcon" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
                         <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
                     </svg>
                     <span class="notif-dot" id="notifHeaderDot"></span>
                 </button>
-                <button data-action="toggleDarkMode" aria-label="Cambiar tema" type="button" class="header-theme-btn theme-toggle" title="Cambiar tema">☀️</button>
                 <button data-action="abrirMenuMovil" type="button" class="hamburger-btn" id="hamburgerBtn" aria-label="Abrir menú">
                     <span></span><span></span><span></span>
                 </button>
@@ -457,12 +476,100 @@
             </nav>
         </div>
 
-    <!-- Todos los estilos de header, botones y currency-bar están en css/rediseno-cards.css -->
+    <!-- La barra de moneda (USD/MN) se movió a la fila del buscador para integrarla al diseño -->
+
+    <style>
+    /* ════════════════════════════════════════════════════════════
+       BOTÓN TEMA EN HEADER — compacto, mismo tamaño que carrito/notif
+       ════════════════════════════════════════════════════════════ */
+    .header-theme-btn{width:40px!important;height:40px!important;min-width:40px!important;border-radius:50%!important;background:transparent!important;border:1.5px solid rgba(255,255,255,.15)!important;font-size:18px!important;box-shadow:none!important;color:#fff!important;cursor:pointer;display:flex!important;align-items:center;justify-content:center;transition:background .2s,border-color .2s,transform .15s;padding:0!important;line-height:1;flex-shrink:0;}
+    .header-theme-btn:hover{background:rgba(255,255,255,.08)!important;border-color:var(--gold,#c9a96e)!important;transform:scale(1.05);}
+    .header-theme-btn:active{transform:scale(.95);}
+    /* En modo claro, el header tiene fondo claro → botón oscuro */
+    body.light-mode .header-theme-btn{color:#1a1a1a!important;border-color:rgba(0,0,0,.12)!important;background:transparent!important;}
+    body.light-mode .header-theme-btn:hover{background:rgba(0,0,0,.06)!important;border-color:var(--gold,#c9a96e)!important;}
+    /* MOBILE: ocultar botón tema del header (no cabe sin tapar el logo) — el tema va en el menú hamburguesa */
+    @media (max-width: 768px){.header-theme-btn{display:none!important;}}
+    /* Accesibilidad: focus-visible para navegación con teclado */
+    button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid #E8501E;outline-offset:2px;}
+    /* Unificar CTAs del hero: mismo border-radius, padding, font-size */
+    .nd-btn-wa{border-radius:100px!important;padding:16px 32px!important;font-size:15px!important;gap:8px!important;}
+    /* Botón tema flotante: estilo naranja */
+    .control-buttons .theme-toggle{width:40px!important;height:40px!important;font-size:18px!important;background:linear-gradient(135deg,#E8501E 0%,#ff6b35 100%)!important;border:none!important;box-shadow:0 4px 14px rgba(232,80,30,.45)!important;color:#fff!important;display:flex!important;align-items:center;justify-content:center;border-radius:50%!important;cursor:pointer!important;transition:transform .25s ease,box-shadow .25s ease!important;padding:0!important;}
+    .control-buttons .theme-toggle:hover{transform:scale(1.08) translateY(-2px)!important;box-shadow:0 6px 18px rgba(232,80,30,.6)!important;background:linear-gradient(135deg,#E8501E 0%,#ff6b35 100%)!important;}
+    /* Botón tema en menú móvil */
+    .mobile-theme-btn{display:flex!important;align-items:center;justify-content:flex-start;gap:8px;font-size:14px!important;width:100%;text-align:left;background:transparent;border:none;color:inherit;padding:12px 16px;cursor:pointer;border-radius:10px;transition:background .2s;}
+    .mobile-theme-btn:hover{background:rgba(232,80,30,.08);}
+
+    /* ════════════════════════════════════════════════════════════
+       SELECTOR USD/MN — segmented control glass integrado en el hero
+       ════════════════════════════════════════════════════════════ */
+    html body .currency-bar {
+        position: static !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 3px !important;
+        flex: 0 0 auto !important;
+        width: auto !important;
+        min-width: 0 !important;
+        max-width: none !important;
+        margin: 0 !important;
+        padding: 4px !important;
+        border-radius: 999px !important;
+        z-index: auto !important;
+        background: linear-gradient(145deg,rgba(255,160,50,.22),rgba(255,107,53,.14)) !important;
+        backdrop-filter: blur(20px) saturate(180%) !important;
+        -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+        border: 1.5px solid rgba(255,160,50,.45) !important;
+        border-top-color: rgba(255,185,80,.55) !important;
+        box-shadow: 0 0 20px rgba(255,107,53,.22), 0 6px 24px rgba(0,0,0,.40), 0 1px 3px rgba(0,0,0,.2) !important;
+    }
+    body.light-mode .currency-bar {
+        background: #fff !important;
+        border: 2px solid rgba(255,107,53,.35) !important;
+        border-top-color: rgba(255,107,53,.35) !important;
+        box-shadow: 0 4px 18px rgba(255,107,53,.15), 0 2px 6px rgba(0,0,0,.08) !important;
+        backdrop-filter: none !important; -webkit-backdrop-filter: none !important;
+    }
+    .currency-bar .tasa-info-prefix,
+    .currency-bar .tasa-info { display: none !important; }
+    html body .currency-bar .currency-toggle {
+        background: transparent !important; border: none !important;
+        border-radius: 999px !important; padding: 0 !important;
+        display: flex !important; gap: 3px !important; min-width: 0 !important;
+    }
+    html body .currency-bar .cur-btn {
+        border-radius: 999px !important; padding: 14px 16px !important; min-height: 44px !important;
+        min-width: 0 !important; font-size: 14px !important; font-weight: 900 !important;
+        letter-spacing: .4px !important; color: rgba(255,255,255,.92) !important;
+        text-shadow: 0 0 1px rgba(255,255,255,.4) !important;
+        transition: all .2s !important; border: none !important;
+        background: transparent !important; cursor: pointer !important; white-space: nowrap !important;
+    }
+    html body .currency-bar .cur-btn:hover { color: #fff !important; background: rgba(255,255,255,.12) !important; }
+    body.light-mode .currency-bar .cur-btn { color: rgba(0,0,0,.78) !important; text-shadow: none !important; font-weight: 900 !important; }
+    body.light-mode .currency-bar .cur-btn:hover { color: #FF6B35 !important; background: rgba(255,107,53,.08) !important; }
+    html body .currency-bar .cur-btn.active {
+        background: linear-gradient(135deg,#FF6B35,#E8501E) !important;
+        color: #fff !important; box-shadow: 0 2px 12px rgba(255,107,53,.55) !important;
+        text-shadow: 0 1px 3px rgba(0,0,0,.25) !important;
+    }
+    html body.light-mode .currency-bar .cur-btn.active { color: #fff !important; }
+    html body .currency-bar .cur-btn.active:hover,
+    html body .currency-bar .cur-btn.active:focus,
+    html body .currency-bar .cur-btn.active:active { background: linear-gradient(135deg,#FF6B35,#E8501E) !important; color: #fff !important; }
+    body.light-mode .currency-bar .cur-btn.active:hover,
+    body.light-mode .currency-bar .cur-btn.active:focus,
+    body.light-mode .currency-bar .cur-btn.active:active { background: linear-gradient(135deg,#FF6B35,#E8501E) !important; color: #fff !important; box-shadow: 0 2px 12px rgba(255,107,53,.55) !important; }
+    @media (max-width: 768px) {
+        html body .currency-bar .cur-btn { padding: 14px 12px !important; font-size: 11px !important; min-height: 44px !important; }
+    }
+    </style>
 </header>
 
     <!-- ===== VISTA INICIO ===== -->
-    <main>
-    <div id="vistaInicio">
+    <main id="vistaInicio">
 
         <!-- Hero rediseñado — propuesta de valor con 3D card stack -->
         <section class="hero nd-hero">
@@ -475,16 +582,13 @@
                         <!-- Buscador + selector de moneda, integrados en el hero -->
                         <div class="nd-hero-search">
                             <div class="hsb-search">
-                                <div data-action="abrirPanelBusqueda" class="hsb-pill" id="heroSearchBar" role="combobox" aria-expanded="false" aria-controls="heroSearchPanel" aria-haspopup="listbox">
+                                <div data-action="abrirPanelBusqueda" class="hsb-pill" id="heroSearchBar">
                                     <svg class="hsb-icon" viewBox="0 0 24 24" fill="none" stroke="#f5a623" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="20" height="20">
                                         <circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="22" y2="22"/>
                                     </svg>
-                                    <input type="text" id="heroSearchInput" class="hsb-input" placeholder="Buscar productos..." aria-label="Buscar productos en TiendaMax" role="searchbox" aria-autocomplete="list" aria-controls="heroSearchSuggestions" oninput="buscarDesdeHero(this.value)" onkeydown="if(event.key==='Enter') aplicarBusquedaHero()" onfocus="abrirPanelBusqueda()" autocomplete="off" data-stop-propagation="true">
-                                    <button type="button" id="hsbBackBtn" class="hsb-back-btn" onclick="event.stopPropagation();cerrarPanelBusqueda();" aria-label="Cerrar búsqueda">
-                                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
-                                    </button>
+                                    <input type="text" id="heroSearchInput" class="hsb-input" placeholder="Buscar productos..." aria-label="Buscar productos en TiendaMax" oninput="buscarDesdeHero(this.value)" onkeydown="if(event.key==='Enter') aplicarBusquedaHero()" onfocus="abrirPanelBusqueda()" autocomplete="off" data-stop-propagation="true">
                                 </div>
-                                <div class="hsb-panel" id="heroSearchPanel" role="listbox" aria-label="Sugerencias de búsqueda">
+                                <div class="hsb-panel" id="heroSearchPanel">
                                     <div id="hsb-ai-label" style="display:none;font-size:11px;color:#9b59b6;font-weight:600;margin-bottom:8px;letter-spacing:0.3px;">🤖 Búsqueda inteligente activa</div>
                                     <div id="heroSearchSuggestions" class="hsb-suggestions"></div>
                                     <!-- Filtros rápidos de búsqueda -->
@@ -561,7 +665,7 @@
                                     <div class="nd-story-overlay" id="ndHeroBody">
                                         <span class="nd-wa-cat" id="ndHeroCat">Celulares</span>
                                         <div class="nd-story-name" id="ndHeroTitle">Smartphone Android 5G</div>
-                                        <div class="nd-story-rate" id="ndHeroRate">🔥 Top Ventas</div>
+                                        <div class="nd-story-rate" id="ndHeroRate">🔥 Destacado · Top ventas</div>
                                         <div class="nd-story-bottom">
                                             <div class="nd-story-price">
                                                 <span id="ndHeroPrice">$180</span>
@@ -574,7 +678,7 @@
                                 <div class="nd-hero-dots" id="ndHeroDots" aria-hidden="true"></div>
                             </div>
                             <div class="nd-fbadge nd-fb1"><span class="nd-bi">🛵</span><div><strong>Mensajería</strong><span class="nd-bs">A domicilio</span></div></div>
-                            <div class="nd-fbadge nd-fb2"><span class="nd-bi">🤝</span><div><strong>Atención directa</strong><span class="nd-bs">Habla con el dueño</span></div></div>
+                            <div class="nd-fbadge nd-fb2"><span class="nd-bi">🤝</span><div><strong>Atención directa</strong><span class="nd-bs">Te responde el dueño</span></div></div>
                             <div class="nd-fbadge nd-fb3"><span class="nd-bi">✅</span><div><strong>Pagas al recibir</strong><span class="nd-bs">Sin adelantar dinero</span></div></div>
                         </div>
                     </div>
@@ -805,11 +909,11 @@
             <div class="container">
                 <h2>Únete a nuestro<br>canal de Telegram.</h2>
                 <p>Recibe productos nuevos, ofertas del día y la tasa del cambio directo en tu Telegram.</p>
-                <a href="https://t.me/TiendaMaxWeb" target="_blank" rel="noopener noreferrer" class="btn btn-large" style="background:#2AABEE!important;color:#fff!important;display:inline-flex;align-items:center;gap:10px;text-decoration:none"><svg width="24" height="24" viewBox="0 0 24 24" fill="white" style="flex-shrink:0"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12l-6.871 4.326-2.962-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.833.941z"/></svg>Unirse al Canal Telegram</a>
+                <a href="https://t.me/TiendaMaxWeb" target="_blank" rel="noopener noreferrer" class="btn btn-large" style="background:#2AABEE!important;color:#fff!important;display:inline-flex;align-items:center;gap:10px;text-decoration:none"><svg width="22" height="22" viewBox="0 0 24 24" fill="white" style="flex-shrink:0"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12l-6.871 4.326-2.962-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.833.941z"/></svg>Unirse al Canal Telegram</a>
             </div>
         </section>
 
-    </div><!-- cierra vistaInicio -->
+    </main>
     <!-- FIN VISTA INICIO -->
 
     <!-- ===== VISTA CATEGORÍA (se muestra al seleccionar una categoría) ===== -->
@@ -885,8 +989,6 @@
     </div>
     <!-- FIN VISTA MIS PEDIDOS -->
 
-    </main>
-
 
     <!-- Banners móviles (solo visible en móvil, mismo estilo que los laterales de escritorio) -->
 
@@ -932,9 +1034,9 @@
                 <h3>Tienda<em>Max</em></h3>
                 <p>Tecnología premium · Mensajería · Garantía</p>
                 <div class="footer-social" style="display:flex;gap:8px;margin-top:10px;justify-content:center;">
-                    <a href="https://wa.me/5354320170" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" style="width:44px;height:44px;border-radius:50%;background:rgba(37,211,102,.15);color:#25D366;display:flex;align-items:center;justify-content:center;font-size:16px;text-decoration:none;">💬</a>
-                    <a href="https://t.me/TiendaMaxWeb" target="_blank" rel="noopener noreferrer" aria-label="Telegram" style="width:44px;height:44px;border-radius:50%;background:rgba(0,136,204,.15);color:#0088cc;display:flex;align-items:center;justify-content:center;font-size:16px;text-decoration:none;">✈️</a>
-                    <a href="https://www.facebook.com/profile.php?id=100095406885506" target="_blank" rel="noopener noreferrer" aria-label="Facebook" style="width:44px;height:44px;border-radius:50%;background:rgba(66,103,178,.15);color:#4267B2;display:flex;align-items:center;justify-content:center;font-size:16px;text-decoration:none;">📘</a>
+                    <a href="https://wa.me/5354320170" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" style="width:34px;height:34px;border-radius:50%;background:rgba(37,211,102,.15);color:#25D366;display:flex;align-items:center;justify-content:center;font-size:16px;text-decoration:none;">💬</a>
+                    <a href="https://t.me/TiendaMaxWeb" target="_blank" rel="noopener noreferrer" aria-label="Telegram" style="width:34px;height:34px;border-radius:50%;background:rgba(0,136,204,.15);color:#0088cc;display:flex;align-items:center;justify-content:center;font-size:16px;text-decoration:none;">✈️</a>
+                    <a href="https://www.facebook.com/profile.php?id=100095406885506" target="_blank" rel="noopener noreferrer" aria-label="Facebook" style="width:34px;height:34px;border-radius:50%;background:rgba(66,103,178,.15);color:#4267B2;display:flex;align-items:center;justify-content:center;font-size:16px;text-decoration:none;">📘</a>
                 </div>
             </div>
             <div class="footer-mobile-links">
@@ -950,7 +1052,7 @@
         </div>
     </footer>
 
-    <!-- Los botones Telegram/Ayuda solo están en el menú hamburguesa (mobile-menu-actions) -->
+    <!-- Botones flotantes removidos: reemplazados por banners laterales en sección categorías -->
 
     <!-- ===== MODAL POLÍTICAS LEGALES ===== -->
     <div id="legalModalOverlay" class="legal-modal-overlay" style="display:none" onclick="if(event.target===this)closeLegalModal()">
@@ -979,16 +1081,19 @@
             overlay.style.display = 'none';
             overlay.removeEventListener('transitionend', h);
         });
-        setTimeout(function(){ overlay.style.display = 'none'; }, 400);
         document.body.style.overflow = '';
     }
     </script>
 
-    <!-- Botones de control eliminados: bell (push-notif legacy) y theme-toggle flotante movidos al header/menú móvil -->
+    <!-- Botones de control -->
+    <div class="control-buttons">
+        <button data-action="toggleDarkMode" aria-label="Activar modo claro" type="button" class="theme-toggle" title="Activar modo claro">☀️</button>
+<!-- Admin toggle movido al navbar -->
+    </div>
 
 
     <!-- ===== CARRITO ===== -->
-    <div id="carritoDrawer" class="carrito-overlay hidden" role="dialog" aria-modal="true" aria-label="Carrito de compras" data-backdrop-close="cerrarCarrito">
+    <div id="carritoDrawer" class="carrito-overlay hidden" data-backdrop-close="cerrarCarrito">
         <div class="carrito-drawer">
             <div class="carrito-header">
                 <h3>🛒 Tu Carrito</h3>
@@ -1029,7 +1134,7 @@
     </div>
 
     <!-- ===== MODAL DETALLE DE PRODUCTO ===== -->
-    <div id="productDetailModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="detailProductName" data-backdrop-close="cerrarDetalleModal">
+    <div id="productDetailModal" class="modal hidden" data-backdrop-close="cerrarDetalleModal">
         <div class="modal-content detail-modal-content">
             <!-- Skeleton de carga (se oculta al poblar el modal) -->
             <div class="detail-skeleton" id="detailSkeleton" aria-hidden="true">
@@ -1041,42 +1146,39 @@
                 <div class="sk sk-line w60"></div>
             </div>
             <div class="detail-handle"></div>
-            <!-- IMAGEN PRIMERO: foto del producto a sangrado, esquinas redondeadas arriba
-                 y abajo, como las cards del catálogo. El botón cerrar flota arriba a la derecha. -->
-            <div class="detail-image-wrap">
-                <div class="detail-img-frame">
-                    <img id="detailProductImage" src="data:," alt="Imagen del producto" class="detail-img"
-                         loading="eager" fetchpriority="high"
-                         data-action="toggleZoomImagen" data-pass-element="true"
-                         tabindex="0" role="button" aria-label="Ampliar imagen del producto"
-                         onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleZoomImagen(this)}">
-                    <div class="detail-zoom-hint">🔍 Toca para ampliar</div>
-                    <div id="detailProductBadge" class="badge detail-badge" style="display:none;"></div>
-                    <div id="detailMasVendidoBadge" class="badge-vendido detail-badge-hot" style="display:none;">🔥 Top Ventas</div>
-                    <div id="detailPhotoCounter" class="detail-photo-counter" style="display:none;" aria-live="polite"></div>
-                </div>
-                <div id="detailGalleryThumbs" class="detail-gallery-thumbs" style="display:none;" role="list" aria-label="Galería de imágenes del producto"></div>
-            </div>
-            <!-- Botón cerrar flotante (separado del header para que quede arriba a la derecha sobre la foto) -->
-            <button data-action="cerrarDetalleModal" aria-label="Cerrar detalle del producto" type="button" class="close-btn close-btn-floating">×</button>
-            <!-- NOMBRE + BADGE + RATING (después de la galería) -->
             <div class="modal-header">
-                <div class="detail-header-copy">
-                    <div id="detailNuevoBadge" class="detail-badge-nuevo" style="display:none;">Recién llegado</div>
-                    <h2 id="detailProductName">Detalle del Producto</h2>
-                    <div id="detailRatingTop" class="detail-rating-top" style="display:none;align-items:center;gap:7px;" aria-live="polite"></div>
-                </div>
+                <div id="detailNuevoBadge" class="detail-badge-nuevo" style="display:none;">Recién llegado</div>
+                <h2 id="detailProductName">Detalle del Producto</h2>
+                <button data-action="cerrarDetalleModal" aria-label="Cerrar detalle del producto" type="button" class="close-btn">×</button>
             </div>
             <div class="detail-body">
 
-                <!-- Info principal -->
+                <!-- Calificación bajo el título (estilo v4) -->
+                <div id="detailRatingTop" class="detail-rating-top" style="display:none;"></div>
+
+                <!-- Imagen + Info (una sola columna) -->
                 <div class="detail-grid">
+                    <div class="detail-image-wrap">
+                        <div class="detail-img-frame">
+                            <img id="detailProductImage" src="data:," alt="Imagen del producto" class="detail-img"
+                                 data-action="toggleZoomImagen" data-pass-element="true"
+                                 tabindex="0" role="button" aria-label="Ampliar imagen del producto">
+                            <div class="detail-zoom-hint">🔍 Toca para ampliar</div>
+                            <div id="detailProductBadge" class="badge detail-badge" style="display:none;"></div>
+                            <div id="detailMasVendidoBadge" class="badge-vendido detail-badge-hot" style="display:none;">🔥 Destacado</div>
+                            <div id="detailPhotoCounter" class="detail-photo-counter" style="display:none;"></div>
+                        </div>
+                        <div id="detailGalleryThumbs" class="detail-gallery-thumbs" style="display:none;"></div>
+                    </div>
+
                     <div class="detail-info">
+                        <!-- Trust badges (envío/pago/garantía) — 3-col, justo bajo la foto como v4 -->
+                        <div id="detailTrustBadges" class="detail-trust-badges" style="display:none;"></div>
+
                         <div class="detail-meta-line">
                             <p id="detailProductCategory" class="detail-category"></p>
                             <p id="detailSubcategoria" class="detail-subcategory" style="display:none;"></p>
                         </div>
-
 
                         <!-- Precio -->
                         <div class="detail-price-wrap">
@@ -1099,9 +1201,6 @@
                         <!-- Badges extra: garantia, devolucion, usado -->
                         <div id="detailExtraBadges" class="detail-extra-badges"></div>
 
-                        <!-- Spec badges (editables desde admin: campo 'specs' del producto) -->
-                        <div id="detailSpecBadges" class="detail-spec-badges" style="display:none;" role="list" aria-label="Especificaciones del producto"></div>
-
                         <!-- Personas viendo -->
                         <div id="detailPersonasViendo" class="contador-personas" style="display:none;"></div>
 
@@ -1115,21 +1214,23 @@
                             </div>
                         </div>
 
+                        <!-- Trust strip verde -->
+                        <div class="detail-trust-strip">
+                            <span>✅</span> Prueba el producto antes de pagar · Garantía de devolución
+                        </div>
+
                         <!-- Línea de acción: favorito + carrito + Pedir -->
-                        <div class="detail-cta-row" id="detailCtaRow" aria-label="Acciones del producto">
-                        <button type="button" id="detailFavBtn" class="detail-cta-fav" onclick="detalleToggleFav(event)" aria-label="Guardar en favoritos" aria-pressed="false"><svg class="detail-heart-icon" viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></button>
+                        <div class="detail-cta-row" id="detailCtaRow">
+                        <button type="button" id="detailFavBtn" class="detail-cta-fav" onclick="detalleToggleFav(event)" aria-label="Guardar en favoritos">🤍</button>
                         <button type="button" id="detailBuyBtn" class="btn-pedir-whatsapp detail-buy-btn">
                             <span class="btn-pedir-wa-icon">
-                                <svg viewBox="0 0 24 24" width="24" height="24" fill="white" xmlns="http://www.w3.org/2000/svg">
+                                <svg viewBox="0 0 24 24" width="22" height="22" fill="white" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
                                 </svg>
                             </span>
                             <span class="btn-pedir-wa-text">Pedir</span>
                         </button>
                         </div>
-
-                        <!-- Trust badges dinámicos (solo si el producto los tiene) -->
-                        <div id="detailTrustBadges" class="detail-trust-badges" style="display:none;" role="list" aria-label="Información de confianza"></div>
 
                         <!-- Compartir simplificado: 2 píldoras -->
                         <div class="detail-share-pills" style="display:flex;gap:8px;margin-top:14px;">
@@ -1173,6 +1274,9 @@
                     <div id="detailProductDescription" class="detail-description-text"></div>
                 </div>
 
+                <!-- Ficha técnica (tabla de specs) — abajo, como el mockup v4 -->
+                <div id="detailSpecBadges" class="detail-spec-badges" style="display:none;"></div>
+
                 <!-- Reseñas -->
                 <div class="detail-resenas-section">
                     <div class="detail-resenas-header">
@@ -1180,17 +1284,12 @@
                         <button data-action="mostrarFormResena" aria-label="Dejar una reseña" type="button" class="detail-resena-add-btn" id="btnAgregarResena">+ Agregar reseña</button>
                     </div>
                     <div id="formResena" class="form-resena" style="display:none;">
-                        <div class="resena-rating-input">
-                            <span class="rating-label">Tu calificación:</span>
-                            <div class="rating-stars-input" id="ratingStarsInput" role="radiogroup" aria-label="Calificación en estrellas">
-                                <span class="star-btn" data-value="1" tabindex="0" role="radio" aria-checked="false" aria-label="1 estrella">★</span>
-                                <span class="star-btn" data-value="2" tabindex="0" role="radio" aria-checked="false" aria-label="2 estrellas">★</span>
-                                <span class="star-btn" data-value="3" tabindex="0" role="radio" aria-checked="false" aria-label="3 estrellas">★</span>
-                                <span class="star-btn" data-value="4" tabindex="0" role="radio" aria-checked="false" aria-label="4 estrellas">★</span>
-                                <span class="star-btn" data-value="5" tabindex="0" role="radio" aria-checked="false" aria-label="5 estrellas">★</span>
-                            </div>
-                            <span class="rating-text" id="ratingText">Selecciona</span>
-                            <input type="hidden" id="ratingValue" name="rating" value="0">
+                        <div class="estrellas-input" id="estrellasInput" role="radiogroup" aria-label="Calificación en estrellas">
+                            <span data-action="setEstrellas" data-arg="1" class="estrella-btn" tabindex="0" role="radio" aria-checked="false" aria-label="1 estrella">★</span>
+                            <span data-action="setEstrellas" data-arg="2" class="estrella-btn" tabindex="0" role="radio" aria-checked="false" aria-label="2 estrellas">★</span>
+                            <span data-action="setEstrellas" data-arg="3" class="estrella-btn" tabindex="0" role="radio" aria-checked="false" aria-label="3 estrellas">★</span>
+                            <span data-action="setEstrellas" data-arg="4" class="estrella-btn" tabindex="0" role="radio" aria-checked="false" aria-label="4 estrellas">★</span>
+                            <span data-action="setEstrellas" data-arg="5" class="estrella-btn" tabindex="0" role="radio" aria-checked="false" aria-label="5 estrellas">★</span>
                         </div>
                         <input type="text" id="resenaAutor" placeholder="Tu nombre" aria-label="Tu nombre" class="resena-input" maxlength="30">
                         <textarea id="resenaTexto" placeholder="Cuenta tu experiencia con este producto..." aria-label="Cuenta tu experiencia con este producto" class="resena-textarea" maxlength="300" rows="3"></textarea>
@@ -1237,7 +1336,7 @@
     </div>
 
     <!-- ===== LIGHTBOX pantalla completa (zoom real v4) ===== -->
-    <div id="tmv4Lightbox" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Visor de imagen">
+    <div id="tmv4Lightbox" aria-hidden="true" role="dialog" aria-label="Imagen ampliada">
         <button class="lb-close" id="tmv4LbClose" type="button" aria-label="Cerrar imagen">×</button>
         <div class="lb-wrap" id="tmv4LbWrap"><img id="tmv4LbImg" src="data:," alt=""></div>
         <div class="lb-thumbs" id="tmv4LbThumbs"></div>
@@ -1456,14 +1555,15 @@
     </script>
     <!-- analytics: carga en reposo (no bloquea el primer pintado) — lo inyecta el cargador #tm-lazy-js -->
     <script type="lazyload" src="js/analytics.js?v=9d585bc5"></script>
-    <script src="js/seo-dynamico.js?v=ec469d55" defer></script>
+    <script src="js/seo-dynamico.js?v=ea7e25bb" defer></script>
     <!-- ===== TiendaMax modularizado (reemplaza script.js) ===== -->
     <!-- Bundle único (config→data→state→admin→product→catalog→init→ui→toast→iife→patches),
          generado por scripts/build_js_bundle.py a partir de js/src/*.src.js -->
-    <script src="js/tm-bundle.js?v=e5b2c40f" defer></script>
+    <script src="js/tm-bundle.js?v=59e02767" defer></script>
 
     <script src="js/push-fix.js?v=bb27d53c" defer></script>
     <script src="js/subcategorias.js?v=fa21ab00" defer></script>
+    <script src="js/share-patch.js?v=d01164a1" defer></script>
     <script src="js/event-delegation.js?v=bf5a6e3e" defer></script>
     <script src="js/tienda-plus.js?v=8048b9fe" defer></script>
     <script src="js/cart-share.js?v=fc0a392b" defer></script>
@@ -1472,15 +1572,11 @@
         document.getElementById('mobileMenuOverlay').classList.add('open');
         document.getElementById('hamburgerBtn').classList.add('open');
         document.body.style.overflow = 'hidden';
-        document.body.classList.add("menu-open");
-        // Push history so back button closes menu instead of exiting page
-        history.pushState({ menuOpen: true }, '');
     }
     function cerrarMenuMovil() {
         document.getElementById('mobileMenuOverlay').classList.remove('open');
         document.getElementById('hamburgerBtn').classList.remove('open');
         document.body.style.overflow = '';
-        document.body.classList.remove("menu-open");
     }
     document.addEventListener('DOMContentLoaded', function() {
         var overlay = document.getElementById('mobileMenuOverlay');
@@ -1494,7 +1590,7 @@
     // Service Worker con auto-actualización y reload cuando hay versión nueva
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-            navigator.serviceWorker.register('/sw.js', { updateViaCache: 'none' }).then(reg => {
+            navigator.serviceWorker.register('/sw.js?v=force-202606201600', { updateViaCache: 'none' }).then(reg => {
                 // Si hay un SW esperando, decirle que tome el control YA
                 if (reg.waiting) reg.waiting.postMessage('SKIP_WAITING');
 
@@ -1582,7 +1678,7 @@
 <!-- ===== BANNER SLIDER + TAGLINE (movido a archivo externo para reuso en admin) ===== -->
     <script src="js/urgencia-ventas.js?v=ee8ca7d8" defer></script>
     <script src="js/banners.js?v=d7e09394" defer></script>
-    <script src="js/combos.js?v=5598b08d" defer></script>
+    <script src="js/combos.js?v=5799f710" defer></script>
     <script src="js/hero-efectos.js?v=bb44e6ed" defer></script>
     <script src="js/web-vitals-snippet.js?v=70babd1c" defer></script>
     <!-- BOT DESACTIVADO: backend /api/chat no disponible en GitHub Pages
@@ -1602,7 +1698,7 @@
 <!-- ═══════════════════════════════════════════════════════════
      MODAL DE NOTIFICACIONES (controla ON/OFF FCM)
      ═══════════════════════════════════════════════════════════ -->
-<div id="notifModalOverlay" class="notif-modal-overlay" role="dialog" aria-modal="true" aria-label="Notificaciones" onclick="if(event.target===this)cerrarModalNotificaciones()">
+<div id="notifModalOverlay" class="notif-modal-overlay" onclick="if(event.target===this)cerrarModalNotificaciones()">
     <div class="notif-modal">
         <button class="notif-modal-close" onclick="cerrarModalNotificaciones()" aria-label="Cerrar">&times;</button>
         <div class="notif-modal-header">
@@ -1617,7 +1713,7 @@
             <div class="notif-estado-subtexto" id="notifEstadoSubtexto">Verificando estado…</div>
         </div>
 
-        <button id="notifBotonAccion" type="button" class="notif-modal-boton" onclick="toggleNotificacionesTM()">
+        <button id="notifBotonAccion" class="notif-modal-boton" onclick="toggleNotificacionesTM()">
             Cargando…
         </button>
 
@@ -1639,6 +1735,67 @@
 </div>
 
 <style>
+/* ═════ Botón notif del header ═════ */
+.notif-icon-btn {
+    width: 46px;
+    height: 46px;
+    background: rgba(255,255,255,.05);
+    border: 1px solid rgba(255,255,255,.1);
+    border-radius: 12px;
+    color: #fff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    transition: all .2s;
+    padding: 0;
+}
+.notif-icon-btn:hover {
+    background: rgba(255,106,0,.15);
+    border-color: rgba(255,106,0,.3);
+}
+.notif-icon-btn.activo {
+    color: #ffa84a;
+}
+.notif-icon-btn.desactivado {
+    color: #888;
+}
+.notif-icon-btn.bloqueado {
+    color: #e74c3c;
+}
+.notif-dot {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: #555;
+    border: 1.5px solid #0e0e12;
+    transition: background .2s;
+}
+.notif-icon-btn.activo .notif-dot {
+    background: #25d366;
+    box-shadow: 0 0 6px rgba(37,211,102,.6);
+}
+.notif-icon-btn.bloqueado .notif-dot {
+    background: #e74c3c;
+}
+
+/* En modo claro */
+html body.light-mode .notif-icon-btn {
+    background: rgba(0,0,0,.04) !important;
+    border-color: rgba(0,0,0,.08) !important;
+    color: #1a1a1a !important;
+}
+html body.light-mode .notif-icon-btn.activo {
+    color: #E8501E !important;
+}
+html body.light-mode .notif-dot {
+    border-color: #FAF8F5 !important;
+}
+
 /* ═════ Overlay del modal ═════ */
 .notif-modal-overlay {
     display: none;
@@ -1845,59 +2002,5 @@ html body.light-mode .notif-modal-footer { color: #888 !important; }
 })();
 </script>
 
-<!-- Styles moved to bundle.css -->
-
-<script>
-/* Añadir tabindex="0" a cards interactivas para accesibilidad de teclado */
-document.addEventListener('DOMContentLoaded',function(){
-  document.querySelectorAll('.categoria-card,.testimonio-card').forEach(function(el){
-    if(!el.hasAttribute('tabindex')) el.setAttribute('tabindex','0');
-  });
-  /* Observar cambios en el DOM para cards generadas dinámicamente */
-  var obs=new MutationObserver(function(mutations){
-    mutations.forEach(function(m){
-      m.addedNodes.forEach(function(node){
-        if(node.nodeType===1){
-          if(node.classList&&(node.classList.contains('categoria-card')||node.classList.contains('testimonio-card'))){
-            if(!node.hasAttribute('tabindex')) node.setAttribute('tabindex','0');
-          }
-          node.querySelectorAll&&node.querySelectorAll('.categoria-card,.testimonio-card').forEach(function(el){
-            if(!el.hasAttribute('tabindex')) el.setAttribute('tabindex','0');
-          });
-        }
-      });
-    });
-  });
-  obs.observe(document.body,{childList:true,subtree:true});
-});
-</script>
-
-<!-- TM Agent Chat Widget -->
-<div class="tm-agent-bubble" id="tmAgentBubble" onclick="TmAgent.toggle()">
-  <span class="bubble-icon">🤖</span>
-  <span class="badge" id="tmAgentBadge" style="display:none">1</span>
-</div>
-
-<div class="tm-agent-panel" id="tmAgentPanel">
-  <div class="tm-agent-header">
-    <div class="agent-avatar">🤖</div>
-    <div class="agent-info">
-      <strong>Asistente TiendaMax</strong>
-      <span class="agent-status">En línea</span>
-    </div>
-    <button class="close-btn" onclick="TmAgent.close()">✕</button>
-  </div>
-  <div class="tm-agent-messages" id="tmAgentMessages">
-    <!-- Messages rendered here -->
-  </div>
-  <div class="tm-quick-replies" id="tmQuickReplies">
-    <!-- Quick reply buttons rendered here -->
-  </div>
-  <div class="tm-agent-input">
-    <input type="text" id="tmAgentInput" placeholder="Escribe tu pregunta..." 
-           onkeydown="if(event.key==='Enter')TmAgent.send()">
-    <button onclick="TmAgent.send()">➤</button>
-  </div>
-</div>
 </body>
 </html>

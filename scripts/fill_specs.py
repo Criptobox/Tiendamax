@@ -20,6 +20,15 @@ META_RE = re.compile(r'<meta\s+name="description"\s+content="([^"]*)"', re.I)
 LD_RE = re.compile(r'"description"\s*:\s*"((?:[^"\\]|\\.)*)"')
 
 
+def _atomic_write(path, text):
+    """Escribe text en path de forma atómica (temp file + os.replace) para no
+    dejar el JSON truncado si el proceso se corta a mitad de escritura."""
+    tmp = path + '.tmp'
+    with open(tmp, 'w', encoding='utf-8') as f:
+        f.write(text)
+    os.replace(tmp, path)
+
+
 def descripcion_de(pid):
     """Lee la descripción del producto desde su página /p/ (meta o JSON-LD)."""
     f = os.path.join(ROOT, 'p', f'producto-{pid}.html')
@@ -66,11 +75,11 @@ def main():
         print('Nada que rellenar.')
         return
     out = json.dumps(data, ensure_ascii=False, indent=2)
-    open(pj, 'w', encoding='utf-8').write(out + '\n')
+    _atomic_write(pj, out + '\n')
     # productos-lite.json es idéntico en este repo
     lite = os.path.join(ROOT, 'productos-lite.json')
     if os.path.exists(lite):
-        open(lite, 'w', encoding='utf-8').write(out + '\n')
+        _atomic_write(lite, out + '\n')
     print(f"\nListo: {cambiados} productos con specs rellenadas.")
 
 

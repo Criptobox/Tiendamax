@@ -5,16 +5,12 @@ on:
     branches:
       - main
     paths:
-      - 'css/styles.css'
-      - 'css/animations.css'
-      - 'css/styles.banner.fix.css'
-      - 'css/nuevo-diseno.css'
-      - 'css/styles.fixes.css'
-      - 'css/premium-theme.css'
-      - 'css/light-mode.css'
-      - 'css/tienda-plus.css'
-      - 'css/hero-efectos.css'
-      - 'css/rediseno-cards.css'
+      # Glob en vez de lista manual: un CSS fuente nuevo (agregado al ORDEN de
+      # build_css.py) dispara el rebuild automáticamente sin tener que acordarse
+      # de añadirlo aquí también. bundle.css queda excluido (lo genera este mismo
+      # workflow; incluirlo causaría un loop de commits).
+      - 'css/*.css'
+      - '!css/bundle.css'
       - 'scripts/build_css.py'
   workflow_dispatch:   # botón "Run workflow" para regenerar/minificar cuando quieras
 

@@ -189,50 +189,19 @@ async function cambiarPasswordAdmin(ci, ni, coi) {
     try { localStorage.setItem(AUTH_SALT_KEY, ns); } catch(e) {}
     try { localStorage.setItem(AUTH_HASH_KEY, nh); } catch(e) {}
 
-    // Subir a GitHub — obtener SHA actual antes del PUT para no fallar en updates
-    if (ghUser && ghRepo) {
-        const ghToken = localStorage.getItem('githubToken');
-        if (!ghToken) {
-            mostrarNotificacion('✅ Contraseña cambiada. Para que persista en todos los dispositivos, configura el Token de GitHub en Configuración.', 'warning');
-        } else {
-            try {
-                const authData = { hash: nh, salt: ns, iterations: AUTH_ITERATIONS };
-                const jsonStr = JSON.stringify(authData);
-                const content = btoa(Array.from(new TextEncoder().encode(jsonStr), b => String.fromCharCode(b)).join(''));
-                // Obtener SHA del archivo actual (necesario si ya existe)
-                let fileSha = null;
-                try {
-                    const getRes = await fetch(`https://api.github.com/repos/${ghUser}/${ghRepo}/contents/.admin-auth.json`, {
-                        headers: { 'Authorization': `token ${ghToken}` }
-                    });
-                    if (getRes.ok) {
-                        const getJson = await getRes.json();
-                        fileSha = getJson.sha || null;
-                    }
-                } catch(e2) {}
-                const putBody = { message: 'Actualizar contraseña admin', content };
-                if (fileSha) putBody.sha = fileSha;
-                const ghRes = await fetch(`https://api.github.com/repos/${ghUser}/${ghRepo}/contents/.admin-auth.json`, {
-                    method: 'PUT',
-                    headers: { 'Authorization': `token ${ghToken}`, 'Content-Type': 'application/json' },
-                    body: JSON.stringify(putBody)
-                });
-                if (!ghRes.ok) {
-                    const err = await ghRes.json().catch(() => ({}));
-                    throw new Error(err.message || `HTTP ${ghRes.status}`);
-                }
-            } catch(e) {
-                mostrarNotificacion(`⚠️ No se pudo subir a GitHub: ${e.message}`, 'error');
-            }
-        }
-    }
+    // NO se sube a GitHub: .admin-auth.json sería público (readable sin auth vía
+    // raw.githubusercontent por cualquiera), y ese hash serviría para forjar
+    // proof= en admin_push_requests. El multi-dispositivo se cubre abajo con
+    // Firebase (regla admin_auth con .read restringido a auth != null).
     mostrarNotificacion('✅ Contraseña cambiada con éxito', 'success');
     document.getElementById('ci').value = '';
     document.getElementById('ni').value = '';
     document.getElementById('coi').value = '';
-    // Sincronizar automáticamente con Firebase y GitHub tras cambiar contraseña
+    // Sincronizar automáticamente con Firebase tras cambiar contraseña.
+    // NO se sube a GitHub (.admin-auth.json sería público, readable sin auth por
+    // cualquiera vía raw.githubusercontent — Firebase ya cubre el multi-dispositivo
+    // de forma protegida (regla Firebase admin_auth con .read restringido).
     setTimeout(sincronizarPasswordAFirebase, 300);
-    setTimeout(sincronizarPasswordAGitHub, 600);
 }
 
 // Sincroniza el hash LOCAL → Firebase RTDB (accesible desde cualquier dispositivo)
@@ -267,46 +236,6 @@ async function sincronizarPasswordAFirebase() {
         mostrarNotificacion('✅ Contraseña sincronizada con Firebase. Puedes acceder desde cualquier dispositivo.', 'success');
     } catch(e) {
         mostrarNotificacion(`❌ Error al sincronizar con Firebase: ${e.message}`, 'error');
-    }
-}
-
-// Sincroniza el hash LOCAL → GitHub (recuperación si se borran datos del navegador)
-async function sincronizarPasswordAGitHub() {
-    const ghUser = localStorage.getItem('githubUser');
-    const ghRepo = localStorage.getItem('githubRepo');
-    const ghToken = localStorage.getItem('githubToken');
-    if (!ghToken) {
-        mostrarNotificacion('❌ Configura el Token de GitHub en Configuración → GitHub / Firebase para proteger tu contraseña', 'error');
-        return;
-    }
-    const localHash = localStorage.getItem(AUTH_HASH_KEY);
-    const localSalt = localStorage.getItem(AUTH_SALT_KEY);
-    if (!localHash || !localSalt) {
-        mostrarNotificacion('❌ No hay contraseña guardada en este dispositivo', 'error');
-        return;
-    }
-    try {
-        const authData = { hash: localHash, salt: localSalt, iterations: AUTH_ITERATIONS };
-        const jsonStr = JSON.stringify(authData, null, 2);
-        const content = btoa(Array.from(new TextEncoder().encode(jsonStr), b => String.fromCharCode(b)).join(''));
-        let fileSha = null;
-        try {
-            const getRes = await fetch(`https://api.github.com/repos/${ghUser}/${ghRepo}/contents/.admin-auth.json`, {
-                headers: { 'Authorization': `token ${ghToken}` }
-            });
-            if (getRes.ok) fileSha = (await getRes.json()).sha || null;
-        } catch(e2) {}
-        const putBody = { message: 'Sincronizar contraseña admin', content };
-        if (fileSha) putBody.sha = fileSha;
-        const res = await fetch(`https://api.github.com/repos/${ghUser}/${ghRepo}/contents/.admin-auth.json`, {
-            method: 'PUT',
-            headers: { 'Authorization': `token ${ghToken}`, 'Content-Type': 'application/json' },
-            body: JSON.stringify(putBody)
-        });
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        mostrarNotificacion('✅ Contraseña sincronizada con GitHub. Puedes borrar datos del navegador de forma segura.', 'success');
-    } catch(e) {
-        mostrarNotificacion(`❌ Error al sincronizar con GitHub: ${e.message}`, 'error');
     }
 }
 
