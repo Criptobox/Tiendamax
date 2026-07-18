@@ -168,7 +168,7 @@ window.addEventListener('popstate', function(e) {
     
     // Close cart drawer if open
     const cartDrawer = document.getElementById('carritoDrawer');
-    if (cartDrawer && !cartDrawer.classList.contains('hidden')) {
+    if (tmOverlayAbierto('carritoDrawer')) {
         cartDrawer.classList.add('hidden');
         document.body.style.overflow = '';
         document.body.classList.remove('cart-open');
@@ -177,7 +177,7 @@ window.addEventListener('popstate', function(e) {
     
     // Close mobile menu if open
     const mobileMenu = document.getElementById('mobileMenuOverlay');
-    if (mobileMenu && mobileMenu.classList.contains('open')) {
+    if (tmOverlayAbierto('mobileMenuOverlay', 'open')) {
         window._menuMovilHistoryPushed = false;
         mobileMenu.classList.remove('open');
         const hamburgerBtn = document.getElementById('hamburgerBtn');
@@ -189,7 +189,7 @@ window.addEventListener('popstate', function(e) {
     
     // Close product detail modal if open
     const detailModal = document.getElementById('productDetailModal');
-    if (detailModal && !detailModal.classList.contains('hidden')) {
+    if (tmOverlayAbierto('productDetailModal')) {
         if (typeof cerrarDetalleModal === 'function') {
             cerrarDetalleModal();
         } else {

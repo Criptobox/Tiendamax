@@ -62,6 +62,20 @@ function escapeHtml(s) {
         .replace(/'/g, '&#39;');
 }
 function escapeAttr(s) { return escapeHtml(s); }
+
+// Chequeo compartido de "¿este overlay está abierto?" — cada overlay usa su
+// propia convención de clase: detalle de producto y carrito son abierto =
+// SIN .hidden (default de esta función); menú móvil es abierto = CON .open;
+// el modal de notificaciones es abierto = CON .activo. Pasa el segundo
+// argumento solo cuando la convención no es la de .hidden. Antes este mismo
+// par null-check + classList.contains vivía copiado en tm-iife.src.js (ESC),
+// tm-data.src.js (popstate) y tm-agent.src.js (burbuja del chat).
+function tmOverlayAbierto(id, claseSiAbierto) {
+    const el = document.getElementById(id);
+    if (!el) return false;
+    return claseSiAbierto ? el.classList.contains(claseSiAbierto) : !el.classList.contains('hidden');
+}
+
 function safeNum(n, def = 0) {
     const v = Number(n);
     return isFinite(v) ? v : def;

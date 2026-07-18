@@ -2403,13 +2403,12 @@
     // "Pedir"/"Avísame" sticky de esos paneles, o los links del menú móvil
     // (que comparte el mismo z-index:9999 — la burbuja gana por ir después
     // en el DOM). Se oculta mientras estén abiertos.
-    var detalle = _el('productDetailModal');
-    var carrito = _el('carritoDrawer');
-    var menuMovil = _el('mobileMenuOverlay');
     var hayOverlayAbierto =
-      (detalle && !detalle.classList.contains('hidden')) ||
-      (carrito && !carrito.classList.contains('hidden')) ||
-      (menuMovil && menuMovil.classList.contains('open'));
+      (typeof tmOverlayAbierto === 'function') && (
+        tmOverlayAbierto('productDetailModal') ||
+        tmOverlayAbierto('carritoDrawer') ||
+        tmOverlayAbierto('mobileMenuOverlay', 'open')
+      );
     // Si el panel está abierto, no ocultar la burbuja (se oculta por open())
     if (_panelOpen) return;
     if (isHome && !hayOverlayAbierto) {

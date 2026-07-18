@@ -843,8 +843,7 @@ async function guardarTasaMNAdmin() {
     // Cerrar modal con ESC
     document.addEventListener('keydown', function(e) {
         if (e.key !== 'Escape') return;
-        const overlay = document.getElementById('notifModalOverlay');
-        if (overlay && overlay.classList.contains('activo')) {
+        if (typeof tmOverlayAbierto === 'function' && tmOverlayAbierto('notifModalOverlay', 'activo')) {
             cerrarModalNotificaciones();
             return;
         }
@@ -854,13 +853,11 @@ async function guardarTasaMNAdmin() {
         // era un ESC que cerraba dos cosas de una.
         const lightbox = document.getElementById('tmv4Lightbox');
         if (lightbox && lightbox.classList.contains('show')) return;
-        const detalle = document.getElementById('productDetailModal');
-        if (detalle && !detalle.classList.contains('hidden') && typeof cerrarDetalleModal === 'function') {
+        if (typeof tmOverlayAbierto === 'function' && tmOverlayAbierto('productDetailModal') && typeof cerrarDetalleModal === 'function') {
             cerrarDetalleModal();
             return;
         }
-        const carrito = document.getElementById('carritoDrawer');
-        if (carrito && !carrito.classList.contains('hidden') && typeof cerrarCarrito === 'function') {
+        if (typeof tmOverlayAbierto === 'function' && tmOverlayAbierto('carritoDrawer') && typeof cerrarCarrito === 'function') {
             cerrarCarrito();
         }
     });
