@@ -2422,24 +2422,40 @@
   /** Mensaje de bienvenida automático al entrar a la página (solo la primera vez) */
   function _showAutoWelcome() {
     try {
-      var alreadyShown = sessionStorage.getItem('tm_auto_welcomed');
-      if (alreadyShown) return;
-      sessionStorage.setItem('tm_auto_welcomed', '1');
+      if (sessionStorage.getItem('tm_auto_welcomed')) return;
     } catch (e) { return; }
-    // Mostrar después de un breve delay para no interrumpir la carga
+    // Mostrar después de un breve delay para no interrumpir la carga.
+    // OJO: la bandera "ya se mostró" se marca DENTRO del setTimeout, justo
+    // antes de mostrar la tarjeta — no antes de programarlo. El service
+    // worker recarga la página ~1s después de activar una versión nueva
+    // (ver sw.js / SW_UPDATED), lo que mataba este setTimeout a mitad de
+    // camino; si la bandera ya se hubiera marcado al programar el timer
+    // (como antes), la recarga dejaba la bienvenida marcada como "vista"
+    // sin haberse mostrado nunca.
     setTimeout(function () {
+      var card = _el('tmWelcomeCard');
       var bubble = _el('tmAgentBubble');
-      if (!bubble) return;
+      if (!card || !bubble) return;
       // Asegurar que estamos en inicio
       var vistaInicio = document.getElementById('vistaInicio');
       if (!vistaInicio || vistaInicio.style.display === 'none') return;
+      try { sessionStorage.setItem('tm_auto_welcomed', '1'); } catch (e) {}
       // Mostrar badge con "1"
       _unreadCount = 1;
       _updateBadge(1);
-      // Mostrar toast de bienvenida
-      if (typeof mostrarNotificacion === 'function') {
-        mostrarNotificacion('¡Bienvenido a TiendaMax! 🎉 Toca el botón naranja si necesitas ayuda', 'info');
-      }
+      card.classList.add('show');
+      var hideTimer = setTimeout(function () { card.classList.remove('show'); }, 9000);
+      var closeBtn = _el('tmWelcomeClose');
+      if (closeBtn) closeBtn.onclick = function (e) {
+        e.stopPropagation();
+        clearTimeout(hideTimer);
+        card.classList.remove('show');
+      };
+      card.onclick = function () {
+        clearTimeout(hideTimer);
+        card.classList.remove('show');
+        open();
+      };
     }, 2500);
   }
 

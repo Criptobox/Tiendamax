@@ -917,11 +917,16 @@ function actualizarCountdownProductSelect() {
         if (!banner) return;
         if (isDismissed()) return;
         banner.classList.add('pwa-show');
+        // El header usa position:fixed con un top calculado a partir de
+        // --tm-pwa-h (ver actualizarOffsetsUI) para no quedar tapado por
+        // este banner — hay que remedirlo cada vez que aparece/desaparece.
+        if (typeof actualizarOffsetsUI === 'function') actualizarOffsetsUI();
     }
 
     function hideBanner() {
         if (!banner) return;
         banner.classList.remove('pwa-show');
+        if (typeof actualizarOffsetsUI === 'function') actualizarOffsetsUI();
     }
 
     function init() {

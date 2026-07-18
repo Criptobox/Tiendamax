@@ -246,7 +246,7 @@
     <noscript><link rel="stylesheet" href="css/fonts.css?v=67235440"></noscript>
 
     <!-- Preload del bundle JS del núcleo (generado por scripts/build_js_bundle.py) -->
-    <link rel="preload" href="js/tm-bundle.js?v=2e30601d" as="script">
+    <link rel="preload" href="js/tm-bundle.js?v=3d33cc59" as="script">
 
     <!-- Preload del catálogo: la foto hero (fetchpriority=high) no puede pedirse
          hasta que este JSON responda y arme el <img>; sin este preload, el
@@ -259,7 +259,7 @@
 
 
 
-    <link rel="stylesheet" href="css/bundle.css?v=95899239">
+    <link rel="stylesheet" href="css/bundle.css?v=87436642">
 
 
 
@@ -284,10 +284,15 @@
 
     <!-- Banner PWA Instalar -->
     <div id="pwa-install-banner">
-        <span class="pwa-banner-icon">📲</span>
-        <span class="pwa-banner-text">Instala TiendaMax en tu dispositivo</span>
-        <button type="button" id="pwa-install-btn" class="pwa-install-btn">Instalar</button>
-        <button type="button" id="pwa-install-dismiss" class="pwa-dismiss-btn" aria-label="Cerrar">&times;</button>
+        <div class="pwa-banner-card">
+            <img class="pwa-banner-icon" src="/iconos/icon-192.png" alt="" width="40" height="40">
+            <div class="pwa-banner-copy">
+                <strong class="pwa-banner-title">Instala TiendaMax</strong>
+                <span class="pwa-banner-text">Acceso directo, más rápido, sin navegador</span>
+            </div>
+            <button type="button" id="pwa-install-btn" class="pwa-install-btn">Instalar</button>
+            <button type="button" id="pwa-install-dismiss" class="pwa-dismiss-btn" aria-label="Cerrar">&times;</button>
+        </div>
     </div>
 
     <!-- Script inline: muestra el banner de oferta sin esperar a script.js -->
@@ -1460,7 +1465,7 @@
     <!-- ===== TiendaMax modularizado (reemplaza script.js) ===== -->
     <!-- Bundle único (config→data→state→admin→product→catalog→init→ui→toast→iife→patches),
          generado por scripts/build_js_bundle.py a partir de js/src/*.src.js -->
-    <script src="js/tm-bundle.js?v=2e30601d" defer></script>
+    <script src="js/tm-bundle.js?v=3d33cc59" defer></script>
 
     <script src="js/push-fix.js?v=bb27d53c" defer></script>
     <script src="js/subcategorias.js?v=fa21ab00" defer></script>
@@ -1892,6 +1897,16 @@ document.addEventListener('DOMContentLoaded',function(){
 </script>
 
 <!-- TM Agent Chat Widget -->
+<!-- Bienvenida premium: burbuja de mensaje flotante sobre el ícono del bot,
+     no un toast genérico — para que se sienta parte del widget. -->
+<div class="tm-welcome-card" id="tmWelcomeCard" role="status" aria-live="polite">
+  <button type="button" class="tm-welcome-close" id="tmWelcomeClose" aria-label="Cerrar bienvenida">&times;</button>
+  <span class="tm-welcome-avatar">🤖</span>
+  <div class="tm-welcome-body">
+    <strong>¡Bienvenido a TiendaMax!</strong>
+    <span>¿Buscas algo? Toca aquí y te ayudo a encontrarlo.</span>
+  </div>
+</div>
 <div class="tm-agent-bubble" id="tmAgentBubble" onclick="TmAgent.toggle()">
   <span class="bubble-icon">🤖</span>
   <span class="badge" id="tmAgentBadge" style="display:none">1</span>
