@@ -59,7 +59,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1777924118004.webp",
     "categoria": "ENERGIA",
     "subcategoria": "INVERSORES",
-    "stock": 0,
+    "stock": 5,
     "masVendido": true,
     "usado": false,
     "garantia": "",
@@ -116,7 +116,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1777924315386.webp",
     "categoria": "WIFI",
     "subcategoria": "ACCESORIOS",
-    "stock": 6,
+    "stock": 0,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -1902,7 +1902,7 @@
     "precioActual": 80,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 0,
+    "stock": 6,
     "comision": 10,
     "comisionMoneda": "USD",
     "categoria": "WIFI",
@@ -1930,7 +1930,7 @@
     "precioActual": 20,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 0,
+    "stock": 7,
     "comision": 1500,
     "comisionMoneda": "MN",
     "categoria": "WIFI",
@@ -2490,57 +2490,5 @@
       "​⚡ Gigabit"
     ],
     "fechaAgregado": "2026-07-08T20:44:11.116Z"
-  },
-  {
-    "id": 1784148895326,
-    "nombre": "​📡 Punto de Acceso Unifi Ubiquiti",
-    "imagen": "https://tiendamax.org/imagenes/img_1784148891480.webp",
-    "imagenes": [
-      "https://tiendamax.org/imagenes/img_1784148891480.webp",
-      "https://tiendamax.org/imagenes/img_1784148893079.webp",
-      "https://tiendamax.org/imagenes/img_1784148894298.webp"
-    ],
-    "precioActual": 130,
-    "precioOriginal": 0,
-    "descuento": 0,
-    "stock": 0,
-    "comision": 10,
-    "comisionMoneda": "USD",
-    "categoria": "WIFI",
-    "subcategoria": "ROUTERS",
-    "masVendido": false,
-    "usado": false,
-    "garantia": "",
-    "devolucion": false,
-    "specs": [
-      "​🌐 Tecnología UniFi ​",
-      "🚀 Wi-Fi de Alta Velocidad"
-    ],
-    "fechaAgregado": "2026-07-15T20:54:55.327Z"
-  },
-  {
-    "id": 1784301408243,
-    "nombre": "​🌐 Router Inalámbrico Wavlink",
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784301406100.webp",
-    "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784301406100.webp"
-    ],
-    "precioActual": 70,
-    "precioOriginal": 0,
-    "descuento": 0,
-    "stock": 3,
-    "comision": 10,
-    "comisionMoneda": "USD",
-    "categoria": "WIFI",
-    "subcategoria": "ROUTERS",
-    "masVendido": false,
-    "usado": false,
-    "garantia": "",
-    "devolucion": false,
-    "specs": [
-      "​🌐 Conectividad Estable ​",
-      "📡 4 Antenas de Alta Ganancia"
-    ],
-    "fechaAgregado": "2026-07-17T15:16:48.243Z"
   }
 ]

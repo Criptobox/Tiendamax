@@ -1,18 +1,135 @@
 {
-  "actualizado": "2026-07-17T12:09:21.234874+00:00",
-  "fecha": "2026-07-17",
+  "actualizado": "2026-07-14T12:12:39.780639+00:00",
+  "fecha": "2026-07-14",
   "fuentes": [
     "revolico",
     "porlalivre",
     "lelespc"
   ],
   "resumen": {
-    "vigilados": 2,
+    "vigilados": 3,
     "encimaMercado": 0,
-    "bajadasComp": 0,
+    "bajadasComp": 1,
     "sinDatos": 0
   },
   "productos": [
+    {
+      "id": 1777924118004,
+      "nombre": "Inversor 12V",
+      "tuPrecio": 180.0,
+      "mercado": {
+        "min": 80.0,
+        "mediana": 165.0,
+        "n": 21
+      },
+      "deltaAyerMediana": -5.0,
+      "estado": "competitivo",
+      "sugerencia": {
+        "texto": "Precio competitivo respecto al mercado"
+      },
+      "historial": [
+        {
+          "fecha": "2026-07-01",
+          "mediana": 170.0
+        },
+        {
+          "fecha": "2026-07-02",
+          "mediana": 170.0
+        },
+        {
+          "fecha": "2026-07-03",
+          "mediana": 170.0
+        },
+        {
+          "fecha": "2026-07-04",
+          "mediana": 170.0
+        },
+        {
+          "fecha": "2026-07-05",
+          "mediana": 170.0
+        },
+        {
+          "fecha": "2026-07-06",
+          "mediana": 170.0
+        },
+        {
+          "fecha": "2026-07-07",
+          "mediana": 170.0
+        },
+        {
+          "fecha": "2026-07-08",
+          "mediana": 170.0
+        },
+        {
+          "fecha": "2026-07-09",
+          "mediana": 170.0
+        },
+        {
+          "fecha": "2026-07-10",
+          "mediana": 170.0
+        },
+        {
+          "fecha": "2026-07-11",
+          "mediana": 170.0
+        },
+        {
+          "fecha": "2026-07-12",
+          "mediana": 170.0
+        },
+        {
+          "fecha": "2026-07-13",
+          "mediana": 170.0
+        },
+        {
+          "fecha": "2026-07-14",
+          "mediana": 165.0
+        }
+      ],
+      "muestras": [
+        {
+          "fuente": "revolico",
+          "titulo": "80 USD Convertidor ,inversor 12v a 110v,1000w,nuevo.",
+          "precio": 80.0,
+          "url": "https://www.revolico.com/item/convertidor-inversor-12v-a-110v1000wnuevo-55703437",
+          "dias": null
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "85 USD Inversor 12v a 120v potencia nominal 500w",
+          "precio": 85.0,
+          "url": "https://www.revolico.com/item/inversor-12v-a-120v-potencia-nominal-500w-56138412",
+          "dias": null
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "100 USD Inversor 6000/4000 watts/ Controlador Solar 100A (12V-48V)/ Cargador 20A/30A Intel",
+          "precio": 100.0,
+          "url": "https://www.revolico.com/item/inversor-4000-watts-controlador-solar-100-a-cargador-20a-luces-led-solares-alarma-solar-con-sensor-control-remoto-55047645?p",
+          "dias": null
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "100 USD Inversor 12v 2000w",
+          "precio": 100.0,
+          "url": "https://www.revolico.com/item/inversor-12v-2000w-56272518",
+          "dias": null
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "100 USD Inversor 12v 2000wde 110v",
+          "precio": 100.0,
+          "url": "https://www.revolico.com/item/inversor-12v-2000wde-110v-55923532",
+          "dias": null
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "120 USD Inversor 12v-3000w",
+          "precio": 120.0,
+          "url": "https://www.revolico.com/item/inversor-12v-3000w-55427082",
+          "dias": null
+        }
+      ]
+    },
     {
       "id": 1778102507659,
       "nombre": "​⚖️ Báscula Digital de Alta Definición",
@@ -29,6 +146,18 @@
       },
       "historial": [
         {
+          "fecha": "2026-07-01",
+          "mediana": 25.0
+        },
+        {
+          "fecha": "2026-07-02",
+          "mediana": 25.0
+        },
+        {
+          "fecha": "2026-07-03",
+          "mediana": 25.0
+        },
+        {
           "fecha": "2026-07-04",
           "mediana": 25.0
         },
@@ -70,18 +199,6 @@
         },
         {
           "fecha": "2026-07-14",
-          "mediana": 25.0
-        },
-        {
-          "fecha": "2026-07-15",
-          "mediana": 25.0
-        },
-        {
-          "fecha": "2026-07-16",
-          "mediana": 25.0
-        },
-        {
-          "fecha": "2026-07-17",
           "mediana": 25.0
         }
       ],
@@ -97,7 +214,7 @@
     },
     {
       "id": 1778102582909,
-      "nombre": "​🔥 Antorcha de Soldadura TIG (KIT Profesional)",
+      "nombre": "​🔥 Antorcha de Soldadura TIG (Kit Profesional)",
       "tuPrecio": 90.0,
       "mercado": {
         "min": 69.0,
@@ -110,6 +227,18 @@
         "texto": "Precio competitivo respecto al mercado"
       },
       "historial": [
+        {
+          "fecha": "2026-07-01",
+          "mediana": 90.0
+        },
+        {
+          "fecha": "2026-07-02",
+          "mediana": 90.0
+        },
+        {
+          "fecha": "2026-07-03",
+          "mediana": 90.0
+        },
         {
           "fecha": "2026-07-04",
           "mediana": 90.0
@@ -152,18 +281,6 @@
         },
         {
           "fecha": "2026-07-14",
-          "mediana": 90.0
-        },
-        {
-          "fecha": "2026-07-15",
-          "mediana": 90.0
-        },
-        {
-          "fecha": "2026-07-16",
-          "mediana": 90.0
-        },
-        {
-          "fecha": "2026-07-17",
           "mediana": 90.0
         }
       ],

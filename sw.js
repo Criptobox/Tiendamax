@@ -5,7 +5,8 @@
 // El CACHE_NAME lo bumpea CI (minify-js.yml / build-css.yml) en cada build.
 // ═══════════════════════════════════════════════════════
 
-const CACHE_NAME = 'tiendamax-202607180501';
+// Cambiar esta versión fuerza la descarga de index/CSS/JS nuevos en instalaciones PWA.
+const CACHE_NAME = 'tiendamax-202607180407';
 // Solo recursos de la TIENDA que se piden SIN ?v=. Los del admin se cargan
 // bajo demanda. Los .js/.css referenciados con ?v=hash NO se precachean:
 // el cache-first matchea por URL exacta (query incluida), así que un precache
@@ -20,7 +21,10 @@ const STATIC_ASSETS = [
   '/iconos/icon-512.png',
   '/productos-lite.json',
   '/categorias.json',
-  '/config.json'
+  '/config.json',
+  '/css/fonts.css',
+  '/fonts/dmsans-normal-latin.woff2',
+  '/fonts/dmsans-italic-latin.woff2'
 ];
 
 self.addEventListener('install', e => {
@@ -143,60 +147,62 @@ self.addEventListener('fetch', e => {
                 }
                 return res;
             });
-        }).catch(() => caches.match('/offline.html'))
+        })
     );
 });
 
 // Manejo de Notificaciones Push
-self.addEventListener('push', e => {
-    let datos = {
-        titulo: '📢 TiendaMax',
-        cuerpo: 'Tienes una nueva notificación',
-        url: '/',
-        icono: '/iconos/icon-192.png'
-    };
+self.addEventListener('push', function(e) {
+    let data = {};
+    try { if (e.data) data = e.data.json(); } catch(err) { data = {}; }
 
-    if (e.data) {
-        try {
-            const jsonPayload = e.data.json();
-            // Manejo de estructura FCM estándar
-            if (jsonPayload.data) {
-                datos.url = jsonPayload.data.url || datos.url;
-                datos.titulo = jsonPayload.data.title || jsonPayload.data.titulo || datos.titulo;
-                datos.cuerpo = jsonPayload.data.body || jsonPayload.data.cuerpo || datos.cuerpo;
-                if (jsonPayload.data.image) datos.icono = jsonPayload.data.image;
-            }
-        } catch (err) {
-            datos.cuerpo = e.data.text();
-        }
+    // Support both flat format {title, body, url, image} and FCM nested format {data: {title, body, url, image}}
+    let title, body, url, image;
+    if (data.data) {
+        // FCM nested format
+        title = data.data.title || data.data.titulo || '🔥 TiendaMax — Nueva oferta';
+        body  = data.data.body  || data.data.cuerpo || '¡Hay una nueva oferta disponible!';
+        url   = data.data.url   || '/';
+        image = data.data.image || '';
+    } else {
+        // Flat format (direct push from server)
+        title = data.title  || data.titulo  || '🔥 TiendaMax — Nueva oferta';
+        body  = data.body   || data.cuerpo  || '¡Hay una nueva oferta disponible!';
+        url   = data.url    || '/';
+        image = data.image  || '';
     }
 
-    e.waitUntil(
-        self.registration.showNotification(datos.titulo, {
-            body: datos.cuerpo,
-            icon: '/iconos/icon-192.png',
-            image: datos.icono !== '/iconos/icon-192.png' ? datos.icono : undefined,
-            badge: '/iconos/icon-192.png',
-            data: { url: datos.url },
-            vibrate: [200, 100, 200],
-            actions: [
-                { action: 'ver', title: '👀 Ver ahora' },
-                { action: 'cerrar', title: 'Cerrar' }
-            ]
-        })
-    );
+    const options = {
+        body: body,
+        icon: '/iconos/icon-192.png',
+        badge: '/iconos/icon-192.png',
+        image: image || undefined,
+        vibrate: [100, 50, 100],
+        data: { url: url },
+        actions: [
+            { action: 'open', title: 'Ver oferta' },
+            { action: 'dismiss', title: 'Cerrar' }
+        ]
+    };
+    e.waitUntil(self.registration.showNotification(title, options));
 });
 
-self.addEventListener('notificationclick', e => {
+self.addEventListener('notificationclick', function(e) {
     e.notification.close();
-    if (e.action === 'cerrar') return;
-    const urlDestino = (e.notification.data && e.notification.data.url) || '/';
+    if (e.action === 'dismiss' || e.action === 'cerrar') return;
+    const url = (e.notification.data && e.notification.data.url) ? e.notification.data.url : '/';
     e.waitUntil(
-        clients.matchAll({ type: 'window' }).then(windowClients => {
-            for (let client of windowClients) {
-                if (client.url === urlDestino && 'focus' in client) return client.focus();
+        (async () => {
+            const clientsList = await clients.matchAll({ type: 'window', includeUncontrolled: true });
+            // Navigate existing window to the URL, or open new one
+            if (clientsList.length > 0) {
+                const client = clientsList[0];
+                if (client.url !== url) {
+                    try { await client.navigate(url); } catch(e) {}
+                }
+                return client.focus();
             }
-            if (clients.openWindow) return clients.openWindow(urlDestino);
-        })
+            return clients.openWindow(url);
+        })()
     );
 });
