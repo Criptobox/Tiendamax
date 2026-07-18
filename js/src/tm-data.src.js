@@ -104,7 +104,7 @@ function abrirPanelBusqueda() {
     // If already visible, don't re-open
     if (panel.classList.contains('visible')) return;
     panel.classList.add('visible');
-    if (bar) bar.classList.add('open');
+    if (bar) { bar.classList.add('open'); bar.setAttribute('aria-expanded', 'true'); }
     // Allow hero to overflow so the absolute-positioned search panel is visible on PC
     const hero = document.querySelector('.hero.nd-hero');
     if (hero) hero.classList.add('search-panel-open');
@@ -127,7 +127,7 @@ function cerrarPanelBusqueda() {
     const bar   = document.getElementById('heroSearchBar');
     const wasOpen = panel && panel.classList.contains('visible');
     if (panel) panel.classList.remove('visible');
-    if (bar)   bar.classList.remove('open');
+    if (bar)   { bar.classList.remove('open'); bar.setAttribute('aria-expanded', 'false'); }
     // Remove overflow override from hero
     const hero = document.querySelector('.hero.nd-hero');
     if (hero) hero.classList.remove('search-panel-open');
@@ -157,7 +157,7 @@ window.addEventListener('popstate', function(e) {
         _searchPanelHistoryPushed = false;
         panel.classList.remove('visible');
         const bar = document.getElementById('heroSearchBar');
-        if (bar) bar.classList.remove('open');
+        if (bar) { bar.classList.remove('open'); bar.setAttribute('aria-expanded', 'false'); }
         const hero = document.querySelector('.hero.nd-hero');
         if (hero) hero.classList.remove('search-panel-open');
         document.body.classList.remove('search-open');
@@ -178,6 +178,7 @@ window.addEventListener('popstate', function(e) {
     // Close mobile menu if open
     const mobileMenu = document.getElementById('mobileMenuOverlay');
     if (mobileMenu && mobileMenu.classList.contains('open')) {
+        window._menuMovilHistoryPushed = false;
         mobileMenu.classList.remove('open');
         const hamburgerBtn = document.getElementById('hamburgerBtn');
         if (hamburgerBtn) hamburgerBtn.classList.remove('open');

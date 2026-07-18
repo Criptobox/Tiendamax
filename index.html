@@ -246,7 +246,7 @@
     <noscript><link rel="stylesheet" href="css/fonts.css?v=67235440"></noscript>
 
     <!-- Preload del bundle JS del núcleo (generado por scripts/build_js_bundle.py) -->
-    <link rel="preload" href="js/tm-bundle.js?v=54d93b47" as="script">
+    <link rel="preload" href="js/tm-bundle.js?v=1ffe9475" as="script">
 
     <!-- Preload del catálogo: la foto hero (fetchpriority=high) no puede pedirse
          hasta que este JSON responda y arme el <img>; sin este preload, el
@@ -259,7 +259,7 @@
 
 
 
-    <link rel="stylesheet" href="css/bundle.css?v=f6721438">
+    <link rel="stylesheet" href="css/bundle.css?v=fe9d4e8b">
 
 
 
@@ -1460,7 +1460,7 @@
     <!-- ===== TiendaMax modularizado (reemplaza script.js) ===== -->
     <!-- Bundle único (config→data→state→admin→product→catalog→init→ui→toast→iife→patches),
          generado por scripts/build_js_bundle.py a partir de js/src/*.src.js -->
-    <script src="js/tm-bundle.js?v=54d93b47" defer></script>
+    <script src="js/tm-bundle.js?v=1ffe9475" defer></script>
 
     <script src="js/push-fix.js?v=bb27d53c" defer></script>
     <script src="js/subcategorias.js?v=fa21ab00" defer></script>
@@ -1468,19 +1468,38 @@
     <script src="js/tienda-plus.js?v=80f6b503" defer></script>
     <script src="js/cart-share.js?v=fc0a392b" defer></script>
     <script>
+    // Mismo patrón que _searchPanelHistoryPushed (js/src/tm-data.src.js):
+    // si se cierra el menú tocando la X o un link (no con el botón atrás),
+    // hay que devolver el history.pushState de abrirMenuMovil() — si no,
+    // queda una entrada de historial "fantasma" y el usuario tiene que
+    // tocar atrás dos veces para salir de la página.
+    // window.* (no var local): el handler de popstate en tm-data.src.js
+    // también la resetea a false cuando el menú se cierra con el botón
+    // atrás, para que la próxima abrirMenuMovil() vuelva a empujar su
+    // propia entrada de historial.
+    window._menuMovilHistoryPushed = false;
     function abrirMenuMovil() {
         document.getElementById('mobileMenuOverlay').classList.add('open');
         document.getElementById('hamburgerBtn').classList.add('open');
         document.body.style.overflow = 'hidden';
         document.body.classList.add("menu-open");
         // Push history so back button closes menu instead of exiting page
-        history.pushState({ menuOpen: true }, '');
+        if (!window._menuMovilHistoryPushed) {
+            window._menuMovilHistoryPushed = true;
+            history.pushState({ menuOpen: true }, '');
+        }
     }
     function cerrarMenuMovil() {
         document.getElementById('mobileMenuOverlay').classList.remove('open');
         document.getElementById('hamburgerBtn').classList.remove('open');
         document.body.style.overflow = '';
         document.body.classList.remove("menu-open");
+        if (window._menuMovilHistoryPushed) {
+            window._menuMovilHistoryPushed = false;
+            if (history.state && history.state.menuOpen) {
+                history.back();
+            }
+        }
     }
     document.addEventListener('DOMContentLoaded', function() {
         var overlay = document.getElementById('mobileMenuOverlay');
