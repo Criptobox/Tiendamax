@@ -3,9 +3,14 @@ name: 🗑 Limpiar ventas de prueba
 on:
   workflow_dispatch:
 
+concurrency:
+  group: limpiar-ventas-prueba
+  cancel-in-progress: false
+
 jobs:
   limpiar:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
 
@@ -14,8 +19,7 @@ jobs:
           python-version: '3.12'
 
       - name: Instalar firebase-admin
-        run: pip install firebase-admin
-
+        run: pip install -r scripts/requirements.txt
       - name: Borrar ventas con productos de prueba (A, B, etc.)
         env:
           FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
