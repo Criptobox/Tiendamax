@@ -626,7 +626,7 @@ function validarProducto(producto) {
     if (producto.precioOriginal && producto.precioOriginal > 0 && producto.precioOriginal > producto.precioActual) {
         const descuentoCalculado = Math.round(((producto.precioOriginal - producto.precioActual) / producto.precioOriginal) * 100);
         producto.descuento = descuentoCalculado;
-    } else if (!producto.descuento) {
+    } else {
         producto.descuento = 0;
     }
     

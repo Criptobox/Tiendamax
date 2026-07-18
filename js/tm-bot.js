@@ -33,16 +33,24 @@
         const urls = _botEndpoints();
         let lastErr;
         for (const url of urls) {
+            // Sin timeout, un endpoint colgado (sin responder, sin error de red)
+            // bloqueaba el await indefinidamente y nunca probaba los siguientes
+            // fallbacks — el chat se quedaba en "pensando…" para siempre.
+            const ctrl = new AbortController();
+            const tid = setTimeout(() => ctrl.abort(), 10000);
             try {
                 const res = await fetch(url, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload),
+                    signal: ctrl.signal,
                 });
                 if (res.ok) return await res.json();
                 lastErr = new Error('HTTP ' + res.status);
             } catch (e) {
                 lastErr = e;
+            } finally {
+                clearTimeout(tid);
             }
         }
         throw lastErr || new Error('No se pudo conectar');

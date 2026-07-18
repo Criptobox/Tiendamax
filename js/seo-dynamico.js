@@ -6,15 +6,15 @@
 const _tmOGDefault = {
     title: 'TiendaMax — Tu tienda online en Cuba',
     description: 'Encuentra los mejores productos al mejor precio. Envíos a toda Cuba.',
-    url: 'https://tiendamax.cu',
-    image: 'https://tiendamax.cu/img/og-image.jpg'
+    url: 'https://tiendamax.org',
+    image: 'https://tiendamax.org/img/og-image.jpg'
 };
 
 // Actualizar canonical URL y meta tags cuando se abre un producto
 function actualizarSEOPorProducto(producto) {
     if (!producto) return;
     
-    const baseUrl = 'https://tiendamax.cu';
+    const baseUrl = 'https://tiendamax.org';
     const productoUrl = `${baseUrl}/#producto-${producto.id}`;
     
     // Actualizar canonical

@@ -162,7 +162,10 @@
     // Limpiar entradas anteriores del mismo dispositivo
     var _alreadyStored = false;
     try {
-      var allRes = await fetch(dbURL + "/tokens.json?_=" + Date.now(), { cache: "no-store" });
+      var _listCtrl = new AbortController();
+      var _listTid = setTimeout(function () { _listCtrl.abort(); }, 6000);
+      var allRes = await fetch(dbURL + "/tokens.json?_=" + Date.now(), { cache: "no-store", signal: _listCtrl.signal });
+      clearTimeout(_listTid);
       if (allRes.ok) {
         var allData = await allRes.json();
         if (allData && typeof allData === "object") {
@@ -188,9 +191,12 @@
 
     if (_alreadyStored) return true; // ya registrado, no escribir de nuevo
 
+    var _putCtrl = new AbortController();
+    var _putTid = setTimeout(function () { _putCtrl.abort(); }, 6000);
     var resp = await fetch(dbURL + "/tokens/" + deviceId + ".json", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
+      signal: _putCtrl.signal,
       body: JSON.stringify({
         token:     token,
         timestamp: Date.now(),
@@ -201,6 +207,7 @@
         deviceId:  deviceId
       })
     });
+    clearTimeout(_putTid);
 
     if (!resp.ok) {
       var t = ""; try { t = await resp.text(); } catch (e) {}

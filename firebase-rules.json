@@ -45,12 +45,14 @@
     },
     "almacenes": {
       ".read": true,
-      ".write": true,
+      ".write": false,
       "$almId": {
+        ".write": "!newData.exists() || !root.child('admin_auth/hash').exists() || newData.child('_proof').val() === root.child('admin_auth/hash').val()",
         ".validate": "newData.hasChildren(['nombre'])",
         "nombre": { ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length < 200" },
         "direccion": { ".validate": "newData.isString() && newData.val().length < 300" },
-        "ubicacion": { ".validate": "newData.isString() && newData.val().length < 500" }
+        "ubicacion": { ".validate": "newData.isString() && newData.val().length < 500" },
+        "_proof": { ".validate": "newData.isString() && newData.val().length == 64" }
       }
     },
     "tokens": {
@@ -144,7 +146,7 @@
       ".read": true,
       ".write": false,
       "$pedidoId": {
-        ".write": true,
+        ".write": "!newData.exists() || !data.exists()",
         ".validate": "newData.hasChildren(['fecha','items','total','estado','actualizado']) && newData.child('fecha').isString() && newData.child('fecha').val().length <= 60 && newData.child('total').isNumber() && newData.child('total').val() >= 0 && newData.child('estado').isString() && newData.child('estado').val().length <= 20 && newData.child('actualizado').isNumber()",
         "id": { ".validate": "newData.isNumber() || newData.isString()" },
         "fecha": { ".validate": "newData.isString() && newData.val().length <= 60" },
@@ -166,7 +168,7 @@
       ".read": true,
       ".write": false,
       "$ventaId": {
-        ".write": true,
+        ".write": "!newData.exists() || !data.exists()",
         ".validate": "newData.hasChildren(['producto', 'precio', 'cantidad', 'total', 'fecha']) && newData.child('producto').isString() && newData.child('producto').val().length > 0 && newData.child('producto').val().length <= 200 && newData.child('precio').isNumber() && newData.child('precio').val() >= 0 && newData.child('cantidad').isNumber() && newData.child('cantidad').val() >= 0 && newData.child('total').isNumber() && newData.child('total').val() >= 0"
       }
     },

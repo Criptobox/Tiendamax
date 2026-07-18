@@ -829,6 +829,38 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.removeItem(KEY_TIMER);
     }
 
+    async function _enviarNotifAhora() {
+        // Verificar que aún hay carrito y no se envió ya
+        const carritoActual = tmParse(localStorage.getItem('carrito_v2'), '{"items":[]}').items || [];
+        if (carritoActual.length === 0) return;
+        if (localStorage.getItem(KEY_SENT)) return;
+
+        const total = carritoActual.reduce((s, i) => s + i.precio * i.cantidad, 0);
+        const nombres = carritoActual.slice(0, 2).map(i => i.nombre.substring(0, 20)).join(', ');
+        const cuerpo  = carritoActual.length === 1
+            ? '¡Tienes ' + carritoActual[0].nombre.substring(0, 30) + ' esperándote! ($' + total.toFixed(0) + ' USD)'
+            : '¡Tienes ' + carritoActual.length + ' productos en tu carrito! ' + nombres + '... ($' + total.toFixed(0) + ' USD)';
+
+        try {
+            const reg = await navigator.serviceWorker.ready;
+            await reg.showNotification('🛒 ¿Olvidaste algo?', {
+                body: cuerpo,
+                icon: '/iconos/icon-192.png',
+                badge: '/iconos/icon-192.png',
+                data: { url: '/?carrito=1' },
+                vibrate: [200, 100, 200],
+                tag: 'carrito-abandonado',
+                renotify: false,
+                actions: [
+                    { action: 'ver', title: '🛒 Ver carrito' },
+                    { action: 'cerrar', title: 'Más tarde' }
+                ]
+            });
+            localStorage.setItem(KEY_SENT, '1');
+        } catch(err) {
+        }
+    }
+
     function programarNotificacion() {
         cancelarTimer();
         // Solo si hay carrito con productos
@@ -840,37 +872,7 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.setItem(KEY_TIMER, disparoEn);
         localStorage.removeItem(KEY_SENT);
 
-        _timer = setTimeout(async () => {
-            // Verificar que aún hay carrito y no se envió ya
-            const carritoActual = tmParse(localStorage.getItem('carrito_v2'), '{"items":[]}').items || [];
-            if (carritoActual.length === 0) return;
-            if (localStorage.getItem(KEY_SENT)) return;
-
-            const total = carritoActual.reduce((s, i) => s + i.precio * i.cantidad, 0);
-            const nombres = carritoActual.slice(0, 2).map(i => i.nombre.substring(0, 20)).join(', ');
-            const cuerpo  = carritoActual.length === 1
-                ? '¡Tienes ' + carritoActual[0].nombre.substring(0, 30) + ' esperándote! ($' + total.toFixed(0) + ' USD)'
-                : '¡Tienes ' + carritoActual.length + ' productos en tu carrito! ' + nombres + '... ($' + total.toFixed(0) + ' USD)';
-
-            try {
-                const reg = await navigator.serviceWorker.ready;
-                await reg.showNotification('🛒 ¿Olvidaste algo?', {
-                    body: cuerpo,
-                    icon: '/iconos/icon-192.png',
-                    badge: '/iconos/icon-192.png',
-                    data: { url: '/?carrito=1' },
-                    vibrate: [200, 100, 200],
-                    tag: 'carrito-abandonado',
-                    renotify: false,
-                    actions: [
-                        { action: 'ver', title: '🛒 Ver carrito' },
-                        { action: 'cerrar', title: 'Más tarde' }
-                    ]
-                });
-                localStorage.setItem(KEY_SENT, '1');
-            } catch(err) {
-            }
-        }, DELAY_MS);
+        _timer = setTimeout(_enviarNotifAhora, DELAY_MS);
     }
 
     // Reprogramar cada vez que cambie el carrito
@@ -884,8 +886,10 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('load', () => {
         const disparoGuardado = parseInt(localStorage.getItem(KEY_TIMER) || '0');
         if (disparoGuardado && Date.now() < disparoGuardado && carrito && carrito.length > 0) {
+            // Disparar en el tiempo que YA faltaba, no reiniciar el conteo completo
+            // (si no, un usuario que vuelve a la 1h recibía la notif a las 3h).
             const restante = disparoGuardado - Date.now();
-            _timer = setTimeout(() => programarNotificacion(), restante);
+            _timer = setTimeout(_enviarNotifAhora, restante);
         } else {
             programarNotificacion();
         }
@@ -1176,6 +1180,12 @@ async function guardarTasaEnGitHub(tasaBase) {
         ).then(r => r.ok ? r.json() : {}).catch(() => ({}));
         existing.tasaMN      = tasaBase;
         existing.margenMN    = getMargenMN();
+        // Sin esto, el número de WhatsApp que el admin cambia solo quedaba en su
+        // propio localStorage: ningún cliente real lo recibía, para siempre,
+        // sin ningún error visible — todos los pedidos seguían yendo al número
+        // hardcodeado de fallback.
+        const _wa = localStorage.getItem('whatsappNumero');
+        if (_wa) existing.whatsappNumero = _wa;
         existing.actualizado = new Date().toISOString();
         await subirArchivoAGitHub(user, repo, token, 'config.json', existing);
         return true;
@@ -1208,6 +1218,14 @@ async function cargarTasaDesdeGitHub() {
                 localStorage.setItem('tasaMN', String(cfg.tasaMN));
                 if (_monedaActual === 'MN') actualizarPreciosMostrados();
                 if (typeof actualizarBurbujaTasa === 'function') actualizarBurbujaTasa();
+            }
+            // Cargar número de WhatsApp publicado por el admin (ver guardarTasaEnGitHub)
+            if (cfg.whatsappNumero) {
+                const _waNum = String(cfg.whatsappNumero).replace(/\D/g, '');
+                if (_waNum && _waNum.length >= 6) {
+                    localStorage.setItem('whatsappNumero', _waNum);
+                    localStorage.setItem('whatsappNumber', _waNum);
+                }
             }
             // Cargar oferta del día
             if (cfg.ofertaDiaId) {

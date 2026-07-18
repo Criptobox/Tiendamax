@@ -32,11 +32,15 @@
         if (!base) return false;
         try {
             var entradaId = Date.now() + '_' + Math.random().toString(36).slice(2, 7);
+            var ctrl = new AbortController();
+            var tid = setTimeout(function () { ctrl.abort(); }, 6000);
             var res = await fetch(base + '/lista_espera/' + String(productoId) + '/' + entradaId + '.json', {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ tel: tel, nombre: nombre || '', productoId: String(productoId), producto: productoNombre || '', ts: Date.now() })
+                body: JSON.stringify({ tel: tel, nombre: nombre || '', productoId: String(productoId), producto: productoNombre || '', ts: Date.now() }),
+                signal: ctrl.signal
             });
+            clearTimeout(tid);
             return res.ok;
         } catch (e) { return false; }
     }

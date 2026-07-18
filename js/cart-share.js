@@ -6,7 +6,7 @@
         var encoded = params.get('carrito');
         if (!encoded) return;
         try {
-            var items = JSON.parse(atob(encoded));
+            var items = JSON.parse(decodeURIComponent(escape(atob(encoded))));
             if (!Array.isArray(items) || items.length === 0) return;
             var valid = items.every(function (i) {
                 return i && typeof i.id !== 'undefined' && typeof i.cantidad === 'number' && i.cantidad > 0;
@@ -39,8 +39,10 @@
                 if (typeof mostrarNotificacion === 'function') mostrarNotificacion('⚠️ El carrito está vacío', 'error');
                 return;
             }
-            // Encode only items (sin timestamps ni metadata)
-            var encoded = btoa(JSON.stringify(items));
+            // Encode only items (sin timestamps ni metadata). unescape/encodeURIComponent
+            // evita que btoa() rompa con nombres de producto fuera de Latin-1 (emoji,
+            // comillas tipográficas, guión largo — todos plausibles en texto de admin).
+            var encoded = btoa(unescape(encodeURIComponent(JSON.stringify(items))));
             var url = location.origin + location.pathname + '?carrito=' + encoded;
             var texto = '🛍️ Mira lo que quiero comprar en TiendaMax (' + items.length +
                         ' producto' + (items.length > 1 ? 's' : '') + '):\n' + url;

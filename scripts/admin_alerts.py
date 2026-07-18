@@ -263,7 +263,13 @@ def main() -> int:
     else:
         print("Sin alertas nuevas.")
 
-    meta_ref.set(meta)
+    # update() con solo las claves que este script es dueño, no set() del nodo
+    # completo: web_health_agent.py corre con el mismo cron (*/30 * * * *) en un
+    # workflow separado y escribe admin_meta/web_health — un set() global podía
+    # pisar silenciosamente ese hijo si las dos corridas se solapaban.
+    own_keys = {"known_token_ids", "known_interesados_ts",
+                "known_lista_espera_ts", "copilot_last_digest"}
+    meta_ref.update({k: v for k, v in meta.items() if k in own_keys})
     return 0
 
 

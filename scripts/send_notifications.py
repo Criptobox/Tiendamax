@@ -129,7 +129,11 @@ def cargar_cola(database) -> dict:
     return data
 
 def guardar_cola(database, cola: dict):
-    database.reference("notification_queue").set(cola)
+    # transaction() en vez de set(): send-push-notifications.yml y
+    # flush-push-queue.yml tocan este mismo nodo con concurrency.group
+    # distintos (no se serializan entre sí), así que un set() plano podía
+    # perder silenciosamente el trabajo de la otra corrida.
+    database.reference("notification_queue").transaction(lambda current: cola)
 
 # ============================================================
 # DETECCIÓN DE CAMBIOS
@@ -341,6 +345,7 @@ def procesar_admin_requests(messaging_api, database, cola):
         link  = str(req.get("url",   "/")).strip() or "/"
         imagen = req.get("imagen") or None
         if not title or not body:
+            ref.child(req_id).delete()
             continue
         # Clave de dedup: id del producto extraído de la URL (única por producto).
         # No usamos la URL cruda porque '/' y '.' son ilegales como claves en RTDB.
@@ -350,11 +355,15 @@ def procesar_admin_requests(messaging_api, database, cola):
         if isinstance(ultimo, (int, float)) and (ahora - ultimo) < ADMIN_PUSH_COOLDOWN_S:
             horas = int((ADMIN_PUSH_COOLDOWN_S - (ahora - ultimo)) / 3600) + 1
             print(f"⏭️ Saltando (dedup, faltan ~{horas} h): '{title}'")
+            ref.child(req_id).delete()
             continue
         print(f"📨 Solicitud admin: '{title}'")
         enviar_push_fcm(messaging_api, database, tokens, [], title, body, link, imagen, tag="admin-push")
         ultimo_push[dedup_key] = ahora
-    ref.delete()  # limpiar todas las solicitudes procesadas (firebase_admin: delete, no set(None))
+        # Borrar solo esta solicitud ya procesada, no todo el nodo — si el admin
+        # agregó una solicitud nueva mientras este loop corría (llamadas HTTP a
+        # FCM tardan segundos), un ref.delete() global la borraba sin enviarla.
+        ref.child(req_id).delete()
 
 # ============================================================
 # MAIN

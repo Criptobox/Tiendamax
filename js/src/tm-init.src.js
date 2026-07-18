@@ -299,6 +299,7 @@ function guardarCountdown() {
     renderizarProductos();
     iniciarCountdownsActivos();
     if (typeof renderOfertaTiempoLimitado === 'function') renderOfertaTiempoLimitado();
+    if (typeof renderOfertaDelDia === 'function') renderOfertaDelDia();
 
     mostrarNotificacion(`⏱️ Countdown activado para "${nombre}"`);
 }
@@ -313,6 +314,7 @@ function desactivarCountdown() {
     if (flashSec) flashSec.style.display = 'none';
     renderizarMasVendidos();
     renderizarProductos();
+    if (typeof renderOfertaDelDia === 'function') renderOfertaDelDia();
     const status = document.getElementById('countdownStatus');
     if (status) status.innerHTML = 'Countdown desactivado.';
     mostrarNotificacion('🗑️ Countdown desactivado');

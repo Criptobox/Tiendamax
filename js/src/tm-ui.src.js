@@ -286,7 +286,7 @@ function actualizarListaProductos() {
     }
 
     let filtrados = productos.filter(p => {
-        const matchBusq = !busqueda || p.nombre.toLowerCase().includes(busqueda) || (p.descripcion||'').toLowerCase().includes(busqueda);
+        const matchBusq = !busqueda || (p.nombre||'').toLowerCase().includes(busqueda) || (p.descripcion||'').toLowerCase().includes(busqueda);
         const matchCat  = !filtroCat || p.categoria === filtroCat;
         const matchFav  = !_filtroFavoritos || p.masVendido;
         return matchBusq && matchCat && matchFav;

@@ -73,23 +73,34 @@ function _tmCanTrack(tipo, id) {
 }
 
 // ── Registrar un evento (fire-and-forget) ───────────────
+// Read-modify-write sin transacción real: bajo tráfico concurrente en el
+// mismo producto, la regla de Firebase (".validate": newData == data + 1)
+// rechaza el segundo PUT si otro cliente incrementó primero. Reintentamos
+// unas pocas veces con el valor fresco en vez de perder el incremento en
+// silencio (antes no se chequeaba r.ok del PUT).
 async function tmTrackEventoV2(tipo, id) {
     await _tmEnsureFirebaseConfig();
     const base = _tmRtdbUrl();
     if (!base || !id) return;
     if (!_tmCanTrack(tipo, id)) return;
-    try {
-        const url = `${base}/analytics/${tipo}/${String(id)}/count.json`;
-        const r = await fetch(url);
-        const v = r.ok ? (await r.json()) : null;
-        const actual = (typeof v === 'number') ? v : 0;
-        await fetch(url, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(actual + 1)
-        });
-    } catch(e) {
-        console.warn(`⚠️ Analytics (${tipo}/${id}):`, e);
+    const url = `${base}/analytics/${tipo}/${String(id)}/count.json`;
+    for (let intento = 0; intento < 3; intento++) {
+        try {
+            const r = await fetch(url);
+            const v = r.ok ? (await r.json()) : null;
+            const actual = (typeof v === 'number') ? v : 0;
+            const put = await fetch(url, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(actual + 1)
+            });
+            if (put.ok) return;
+            // Rechazado por la regla (otro cliente incrementó primero): reintentar
+            // con el valor fresco en vez de perder este incremento en silencio.
+        } catch(e) {
+            console.warn(`⚠️ Analytics (${tipo}/${id}):`, e);
+            return;
+        }
     }
 }
 
@@ -705,6 +716,12 @@ function _statCard(icon, label, value, color) {
 // ── Limpiar tokens muertos de Firebase ──────────────────
 // Usa dry_run=true: FCM valida los tokens sin enviar nada.
 // Borra los que devuelven NotRegistered o InvalidRegistration.
+// NOTA: antes había una rama que validaba tokens contra la Legacy FCM HTTP
+// API (fcm.googleapis.com/fcm/send con "Authorization: key=..."). Google
+// retiró ese endpoint por completo en junio de 2024 — esa rama solo fallaba
+// con un error de HTTP siempre que hubiera una Server Key configurada, en
+// vez de usar la limpieza por antigüedad (que sí funciona). Se quitó del
+// todo y se dejó solo el criterio por antigüedad como único mecanismo.
 async function tmLimpiarTokensInvalidos() {
     await _tmEnsureFirebaseConfig();
     const btnId  = 'tm-btn-limpiar';
@@ -718,157 +735,30 @@ async function tmLimpiarTokensInvalidos() {
             info.innerHTML = `<span style="color:${col}">${msg}</span>`;
         }
     };
-    const setInfo = (msg, col) => {
-        if (typeof window.mostrarNotificacion === 'function') window.mostrarNotificacion(msg, 'info');
-        if (info) info.innerHTML = `<span style="color:${col||'#888'}">${msg}</span>`;
-    };
-
-    const serverKey = localStorage.getItem('fcmServerKey');
-    if (!serverKey) {
-        // Sin Server Key: eliminar tokens con más de 45 días de antigüedad
-        const base = _tmRtdbUrl();
-        if (!base) { notify('⚠️ Firebase no configurado.', 'warning'); return; }
-        if (btn) { btn.disabled = true; btn.textContent = '⏳ Limpiando…'; }
-        try {
-            const res = await _tmFetch(`${base}/tokens.json`);
-            if (!res.ok) throw new Error('No se pudo leer la base de datos');
-            const tokensData = await res.json();
-            if (!tokensData) { notify('✅ No hay tokens que limpiar.', 'success'); return; }
-            const DIAS_45 = 45 * 24 * 60 * 60 * 1000;
-            const cutoff = Date.now() - DIAS_45;
-            const viejos = Object.keys(tokensData).filter(k => {
-                const t = tokensData[k];
-                return t && t.timestamp && t.timestamp < cutoff;
-            });
-            if (viejos.length === 0) {
-                notify('✅ No hay tokens viejos (>45 días). Todo limpio.', 'success');
-            } else {
-                await Promise.allSettled(viejos.map(k => fetch(`${base}/tokens/${k}.json`, { method: 'DELETE' })));
-                notify(`✅ ${viejos.length} token${viejos.length>1?'s':''} eliminado${viejos.length>1?'s':''} (>45 días).`, 'success');
-                setTimeout(() => renderizarAnalyticsFirebase(), 1200);
-            }
-        } catch(e) {
-            notify('❌ Error: ' + e.message, 'error');
-        } finally {
-            if (btn) { btn.disabled = false; btn.textContent = '🧹 Limpiar tokens inválidos'; }
-        }
-        return;
-    }
 
     const base = _tmRtdbUrl();
-    if (!base) { setInfo('⚠️ Firebase no configurado.', '#e74c3c'); return; }
-
-    if (btn) { btn.disabled = true; btn.textContent = '⏳ Validando tokens...'; }
-    setInfo('⏳ Leyendo tokens de Firebase...', '#888');
-
+    if (!base) { notify('⚠️ Firebase no configurado.', 'warning'); return; }
+    if (btn) { btn.disabled = true; btn.textContent = '⏳ Limpiando…'; }
     try {
-        // 1. Leer todos los tokens
         const res = await _tmFetch(`${base}/tokens.json`);
-        if (!res.ok) { setInfo('❌ No se pudo leer la base de datos.', '#e74c3c'); return; }
+        if (!res.ok) throw new Error('No se pudo leer la base de datos');
         const tokensData = await res.json();
-
-        if (!tokensData || Object.keys(tokensData).length === 0) {
-            setInfo('✅ No hay tokens en la base de datos.', '#25d366');
-            if (btn) { btn.disabled = false; btn.textContent = '🧹 Limpiar tokens inválidos'; }
-            return;
+        if (!tokensData) { notify('✅ No hay tokens que limpiar.', 'success'); return; }
+        const DIAS_45 = 45 * 24 * 60 * 60 * 1000;
+        const cutoff = Date.now() - DIAS_45;
+        const viejos = Object.keys(tokensData).filter(k => {
+            const t = tokensData[k];
+            return t && t.timestamp && t.timestamp < cutoff;
+        });
+        if (viejos.length === 0) {
+            notify('✅ No hay tokens viejos (>45 días). Todo limpio.', 'success');
+        } else {
+            await Promise.allSettled(viejos.map(k => fetch(`${base}/tokens/${k}.json`, { method: 'DELETE' })));
+            notify(`✅ ${viejos.length} token${viejos.length>1?'s':''} eliminado${viejos.length>1?'s':''} (>45 días).`, 'success');
+            setTimeout(() => renderizarAnalyticsFirebase(), 1200);
         }
-
-        // Mantener claves y tokens alineados. Antes se filtraban solo los tokens,
-        // pero no las claves, y el limpiador podía intentar borrar la entrada incorrecta
-        // o aparentar que “no hacía nada” si había registros incompletos.
-        const entries = Object.entries(tokensData).filter(([k, v]) => v && v.token);
-        const keys    = entries.map(([k]) => k);
-        const tokens  = entries.map(([, v]) => v.token);
-
-        if (tokens.length === 0) {
-            setInfo('✅ Sin tokens válidos que revisar.', '#25d366');
-            if (btn) { btn.disabled = false; btn.textContent = '🧹 Limpiar tokens inválidos'; }
-            return;
-        }
-
-        setInfo(`⏳ Validando ${tokens.length} tokens con FCM (dry_run)...`, '#888');
-
-        // 2. dry_run → FCM valida sin enviar ninguna notificación
-        // FCM acepta hasta 1000 tokens por llamada; batching si hace falta
-        const BATCH = 1000;
-        let totalBorrados = 0;
-        let totalValidos  = 0;
-
-        for (let i = 0; i < tokens.length; i += BATCH) {
-            const batchTokens = tokens.slice(i, i + BATCH);
-            const batchKeys   = keys.slice(i, i + BATCH);
-
-            const fcmRes = await fetch('https://fcm.googleapis.com/fcm/send', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `key=${serverKey}`
-                },
-                body: JSON.stringify({
-                    registration_ids: batchTokens,
-                    dry_run: true,           // ← no se entrega nada
-                    data: { ping: '1' }
-                })
-            });
-
-            if (!fcmRes.ok) {
-                setInfo(`❌ FCM respondió ${fcmRes.status}. Revisa la Clave de Servidor.`, '#e74c3c');
-                if (btn) { btn.disabled = false; btn.textContent = '🧹 Limpiar tokens inválidos'; }
-                return;
-            }
-
-            const fcmData = await fcmRes.json();
-
-            // 3. Borrar los tokens marcados como inválidos
-            if (fcmData.results) {
-                const deletes = [];
-                fcmData.results.forEach((r, idx) => {
-                    if (r.error === 'NotRegistered' || r.error === 'InvalidRegistration') {
-                        totalBorrados++;
-                        deletes.push(
-                            fetch(`${base}/tokens/${batchKeys[idx]}.json`, { method: 'DELETE' })
-                                .catch(() => null)
-                        );
-                    } else {
-                        totalValidos++;
-                        // Si FCM devuelve un token de reemplazo, actualizarlo
-                        if (r.registration_id) {
-                            const newToken = r.registration_id;
-                            const oldData = tokensData[batchKeys[idx]] || {};
-                            const keyToUse = oldData.fingerprint || batchKeys[idx];
-                            fetch(`${base}/tokens/${keyToUse}.json`, {
-                                method: 'PUT',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({
-                                    token: newToken,
-                                    timestamp: Date.now(),
-                                    userAgent: oldData.userAgent || '',
-                                    fingerprint: oldData.fingerprint || keyToUse
-                                })
-                            }).catch(() => null);
-                            if (keyToUse !== batchKeys[idx]) {
-                                fetch(`${base}/tokens/${batchKeys[idx]}.json`, { method: 'DELETE' }).catch(() => null);
-                            }
-                        }
-                    }
-                });
-                await Promise.allSettled(deletes);
-            }
-        }
-
-        // 4. Resultado
-        const color = totalBorrados > 0 ? '#25d366' : '#888';
-        const msg   = totalBorrados > 0
-            ? `✅ Limpieza completada — <strong>${totalBorrados}</strong> token${totalBorrados !== 1 ? 's' : ''} muerto${totalBorrados !== 1 ? 's' : ''} eliminado${totalBorrados !== 1 ? 's' : ''}, <strong>${totalValidos}</strong> válido${totalValidos !== 1 ? 's' : ''} conservado${totalValidos !== 1 ? 's' : ''}.`
-            : `✅ Todo limpio — los ${totalValidos} tokens son válidos.`;
-        setInfo(msg, color);
-
-        // 5. Recargar el panel con datos frescos
-        setTimeout(() => renderizarAnalyticsFirebase(), 1200);
-
     } catch(e) {
-        console.error('[tmLimpiar]', e);
-        setInfo(`❌ Error: ${e.message}`, '#e74c3c');
+        notify('❌ Error: ' + e.message, 'error');
     } finally {
         if (btn) { btn.disabled = false; btn.textContent = '🧹 Limpiar tokens inválidos'; }
     }

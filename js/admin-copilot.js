@@ -65,7 +65,9 @@ async function fbBase(){
 }
 async function getJson(path){
   const base = await fbBase(); if (!base) return null;
-  try { const r = await fetch(base + path + (path.includes('?') ? '&' : '?') + '_=' + Date.now(), {cache:'no-store'}); return r.ok ? await r.json() : null; } catch(e) { return null; }
+  const ctrl = new AbortController();
+  const tid = setTimeout(() => ctrl.abort(), 6000);
+  try { const r = await fetch(base + path + (path.includes('?') ? '&' : '?') + '_=' + Date.now(), {cache:'no-store', signal: ctrl.signal}); return r.ok ? await r.json() : null; } catch(e) { return null; } finally { clearTimeout(tid); }
 }
 function ago(ts){
   const d = Date.now() - num(ts), m = Math.floor(d/60000), h = Math.floor(d/3600000);

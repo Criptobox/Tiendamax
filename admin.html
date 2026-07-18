@@ -7,7 +7,7 @@
 <meta name="robots" content="noindex,nofollow">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: blob: https:; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self' https://*.googleapis.com https://*.firebaseio.com https://*.firebasedatabase.app https://fcm.googleapis.com https://raw.githubusercontent.com https://api.github.com https://openrouter.ai https://api.deepseek.com https://api.groq.com https://api.anthropic.com https://generativelanguage.googleapis.com; frame-src 'self' https://tiendamax-8feb5.firebaseapp.com https://tiendamax-8feb5.web.app; object-src 'none'; base-uri 'self'; frame-ancestors 'self'">
 <title>TiendaMax Admin</title>
-<script src="js/error-report.js?v=c6699a5a"></script>
+<script src="js/error-report.js?v=619650f2"></script>
 <link rel="icon" type="image/png" sizes="32x32" href="/iconos/favicon-32.png"><link rel="icon" type="image/png" sizes="192x192" href="/iconos/favicon-192.png">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;900&display=swap" rel="stylesheet">
 <style>
@@ -381,8 +381,8 @@
     <div class="logo">M</div>
     <h1>TiendaMax<small>Panel de administración</small></h1>
     <div class="tb-actions">
-      <button class="icon-btn" title="Copiloto IA — correcciones y suscriptores" onclick="if(window.tmCopilotOpen)tmCopilotOpen()">🔔<span class="dot" id="tb-subs">0</span></button>
-      <button class="icon-btn" title="Recargar datos" onclick="cargarDatos(true)">🔄</button>
+      <button class="icon-btn" title="Copiloto IA — correcciones y suscriptores" aria-label="Copiloto IA" onclick="if(window.tmCopilotOpen)tmCopilotOpen()">🔔<span class="dot" id="tb-subs">0</span></button>
+      <button class="icon-btn" title="Recargar datos" aria-label="Recargar datos" onclick="cargarDatos(true)">🔄</button>
     </div>
   </div>
 
@@ -390,20 +390,20 @@
 
     <!-- Sidebar -->
     <aside class="sidebar">
-      <button class="side-btn active" data-view="inicio" title="Inicio">🏠</button>
-      <button class="side-btn" data-view="productos" title="Productos · editar stock, precio, comisión">📦</button>
-      <button class="side-btn" data-view="agregar" title="Agregar producto">➕</button>
-      <button class="side-btn" data-view="categorias" title="Categorías y subcategorías">🏷️</button>
-      <button class="side-btn" data-view="almacen" title="Almacenes · dónde está tu stock">🏭</button>
-      <button class="side-btn" data-view="combos" title="Combos">🎁</button>
-      <button class="side-btn" data-view="publicar" title="Publicar / Compartir a redes">📣</button>
-      <button class="side-btn" type="button" title="Vale / factura para el cliente" onclick="window.open('vale.html','_blank')">🧾</button>
+      <button class="side-btn active" data-view="inicio" title="Inicio" aria-label="Inicio">🏠</button>
+      <button class="side-btn" data-view="productos" title="Productos · editar stock, precio, comisión" aria-label="Productos">📦</button>
+      <button class="side-btn" data-view="agregar" title="Agregar producto" aria-label="Agregar producto">➕</button>
+      <button class="side-btn" data-view="categorias" title="Categorías y subcategorías" aria-label="Categorías">🏷️</button>
+      <button class="side-btn" data-view="almacen" title="Almacenes · dónde está tu stock" aria-label="Almacenes">🏭</button>
+      <button class="side-btn" data-view="combos" title="Combos" aria-label="Combos">🎁</button>
+      <button class="side-btn" data-view="publicar" title="Publicar / Compartir a redes" aria-label="Publicar">📣</button>
+      <button class="side-btn" type="button" title="Vale / factura para el cliente" aria-label="Vale o factura" onclick="window.open('vale.html','_blank')">🧾</button>
       <div class="side-sep"></div>
-      <button class="side-btn" data-view="radar" title="Radar de precios">📡<span class="new-tag">N</span></button>
-      <button class="side-btn" data-view="ventas" title="Ventas">💰</button>
-      <button class="side-btn" data-view="analytics" title="Analytics">📊</button>
-      <button class="side-btn" data-view="clientes" title="Clientes · Reviews · Carritos · WhatsApp">👥</button>
-      <button class="side-btn" data-view="config" title="Configuración">⚙️</button>
+      <button class="side-btn" data-view="radar" title="Radar de precios" aria-label="Radar de precios">📡<span class="new-tag">N</span></button>
+      <button class="side-btn" data-view="ventas" title="Ventas" aria-label="Ventas">💰</button>
+      <button class="side-btn" data-view="analytics" title="Analytics" aria-label="Analytics">📊</button>
+      <button class="side-btn" data-view="clientes" title="Clientes · Reviews · Carritos · WhatsApp" aria-label="Clientes">👥</button>
+      <button class="side-btn" data-view="config" title="Configuración" aria-label="Configuración">⚙️</button>
     </aside>
 
     <!-- Content -->
@@ -615,7 +615,7 @@
             <h3>💱 Tasa MN</h3>
             <div class="form-group"><label class="form-label" for="adminTasaMN">Tasa MN (base elTOQUE)</label><input class="form-input" id="adminTasaMN" type="number"></div>
             <div class="form-group" style="margin-top:10px"><label class="form-label" for="adminMargenMN">Margen MN sobre la tasa (0 = sin margen)</label><input class="form-input" id="adminMargenMN" type="number" min="0" step="1" placeholder="10"></div>
-            <div class="form-group" style="margin-top:10px"><label class="form-label" for="adminWhatsappNum">2do WhatsApp (opcional)</label><input class="form-input" id="adminWhatsappNum" type="tel" placeholder="535…"></div>
+            <div class="form-group" style="margin-top:10px"><label class="form-label" for="adminWhatsappNum">Número de WhatsApp de la tienda (el que usan TODOS los botones "Pedir")</label><input class="form-input" id="adminWhatsappNum" type="tel" placeholder="535…"></div>
             <button class="btn btn-primary" style="width:100%;margin-top:12px" onclick="guardarTasaMNAdmin()">💾 Guardar tasa</button>
             <p id="tasaMNStatus" style="font-size:12px;color:var(--muted);margin-top:8px"></p>
           </div>
@@ -819,8 +819,8 @@
      agregarProductoForm, sincronizarTodoConGitHub, registrarVenta, etc. -->
 <!-- Bundle único (mismo orden: config→data→state→admin→product→catalog→init→ui→toast→iife→patches),
      generado por scripts/build_js_bundle.py a partir de js/src/*.src.js -->
-<script src="js/tm-bundle.js?v=3d33cc59"></script>
-<script src="js/biometric-auth.js?v=343cb27b"></script>
+<script src="js/tm-bundle.js?v=94028cdc"></script>
+<script src="js/biometric-auth.js?v=876f6495"></script>
 <script src="js/revolico_integration.js?v=43a94a39"></script>
 <script>
   // Puente para código heredado (Copiloto IA) que navega con switchTab('nombre-viejo')
@@ -834,7 +834,7 @@
   };
 </script>
 <script src="js/vendor/html2canvas.min.js?v=e87e5507" defer></script>
-<script src="js/admin-copilot.js?v=b7f53224"></script>
+<script src="js/admin-copilot.js?v=ab421735"></script>
 
 <script>
 (function(){
@@ -1738,7 +1738,7 @@ function almAgregar(){
   if(!nombre){ showToast('⚠️ Ponle un nombre al almacén'); return; }
   const base=rtdbBase(); if(!base){ showToast('⚠️ Configura Firebase primero','En ⚙️ Configuración'); return; }
   const id='alm_'+Date.now();
-  const payload={nombre,direccion,ubicacion};
+  const payload={nombre,direccion,ubicacion,_proof:localStorage.getItem('tm_auth_hash_v3')||''};
   fetch(base+'/almacenes/'+id+'.json',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)})
     .then(r=>{ if(!r.ok) throw new Error('HTTP '+r.status); ALMACENES[id]=payload; $('#alm-nombre').value=''; $('#alm-direccion').value=''; $('#alm-ubicacion').value=''; renderAlmacen(); showToast('✅ Almacén agregado', nombre); })
     .catch(e=>showToast('❌ No se pudo agregar', e.message||''));
@@ -1758,7 +1758,7 @@ function almRenombrar(id){
   const nombre=(prompt('Nombre del almacén:', a.nombre)||'').trim(); if(!nombre) return;
   const direccion=(prompt('Dirección:', a.direccion||'')||'').trim();
   const ubicacion=(prompt('Ubicación (link de Maps, opcional):', a.ubicacion||'')||'').trim();
-  const base=rtdbBase(); const payload={nombre,direccion,ubicacion};
+  const base=rtdbBase(); const payload={nombre,direccion,ubicacion,_proof:localStorage.getItem('tm_auth_hash_v3')||''};
   if(base) fetch(base+'/almacenes/'+id+'.json',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)}).catch(()=>{});
   ALMACENES[id]=payload; renderAlmacen();
   showToast('✏️ Almacén actualizado');

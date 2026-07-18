@@ -409,9 +409,13 @@
         // Product type filter match (high bonus for exact type match)
         if (PRODUCT_TYPE_FILTERS[stemmed] && PRODUCT_TYPE_FILTERS[stemmed](p)) score += 12;
         if (PRODUCT_TYPE_FILTERS[w] && PRODUCT_TYPE_FILTERS[w](p)) score += 12;
-        // Category penalty: if query keyword has unrelated categories, heavily penalize
+        // Category penalty: if query keyword has unrelated categories, heavily penalize.
+        // Pero si PRODUCT_TYPE_FILTERS ya confirmó que el producto ES ese tipo exacto
+        // (ej. un cargador en MOTOS que sí es el cargador buscado), no penalizar —
+        // si no, productos correctos en categorías "raras" quedaban sub-rankeados.
         var keyForUnrelated = stemmed || w;
-        if (UNRELATED_CATEGORY_MAP[keyForUnrelated] &&
+        var yaConfirmadoPorTipo = (PRODUCT_TYPE_FILTERS[keyForUnrelated] && PRODUCT_TYPE_FILTERS[keyForUnrelated](p));
+        if (!yaConfirmadoPorTipo && UNRELATED_CATEGORY_MAP[keyForUnrelated] &&
             UNRELATED_CATEGORY_MAP[keyForUnrelated].indexOf(rawCat) !== -1) {
           score -= 20;  // Strong penalty for wrong-category products
         }
@@ -1456,6 +1460,10 @@
     }
 
     // ── Respuestas rápidas (sin búsqueda de productos, evaluadas lazy) ──
+    // Solo si no hay ya una respuesta de un flujo activo (ej. calculadora):
+    // si no, un intent rápido pisaba la respuesta pero _calcState seguía activo,
+    // dejando la conversación colgada en un estado que ya no correspondía.
+    if (!response) {
     var _fastKey = null;
     switch (intent) {
       case INTENT.GREETING:  _fastKey = 'GREETING'; break;
@@ -1471,6 +1479,7 @@
     }
     if (_fastKey) {
       response = _getFastResponse(_fastKey);
+    }
     }
 
     // ── Intenciones que requieren procesamiento ──
@@ -1974,7 +1983,7 @@
           query: query,
           intent: intent,
           lastResponse: (response.text || '').substring(0, 200),
-          count: { '.sv': 'increment' }, // Server-side increment si es soportado
+          count: { '.sv': { 'increment': 1 } }, // Server-side increment (sintaxis correcta de Firebase)
           lastUpdated: Date.now()
         })
       }).catch(function () { /* silencioso */ });
