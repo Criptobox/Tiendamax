@@ -2,14 +2,14 @@
    modal-v4.css — Rediseño premium del modal de detalle de producto (v4).
    Va ÚLTIMO en la cascada (ver scripts/build_css.py) para ganar el estilo.
    Reutiliza el HTML y los IDs existentes del modal (data-binding intacto).
-   Paleta: naranja #ff7a29/#ff4d00, verde WhatsApp #25d366/#128c7e,
+   Paleta: naranja var(--coral)/#ff4d00, verde WhatsApp #25d366/#128c7e,
    éxito #4ade80, rating #fbbf24. Serif Playfair (título + precio).
    ========================================================================== */
 
 /* ---- Tarjeta ---- */
 #productDetailModal .detail-modal-content {
-  background: linear-gradient(180deg, #161616 0%, #0e0e0e 100%);
-  border: 1px solid rgba(255, 122, 41, 0.18);
+  background: #17171f;
+  border: 1px solid rgba(255, 255, 255, 0.07);
   border-radius: 28px;
   box-shadow:
     0 0 0 1px rgba(255, 255, 255, 0.03) inset,
@@ -23,25 +23,17 @@
   position: absolute;
   top: 0; left: 0; right: 0;
   height: 1px;
-  background: linear-gradient(90deg, transparent, #ff7a29 20%, #ff4d00 50%, #ff7a29 80%, transparent);
+  /* Hairline dorado premium: más sutil y elegante que el naranja brillante */
+  background: linear-gradient(90deg, transparent 0%, rgba(201,169,110,0.4) 20%, rgba(232,200,138,0.7) 50%, rgba(201,169,110,0.4) 80%, transparent 100%);
   z-index: 5;
   pointer-events: none;
 }
 #productDetailModal .detail-handle {
-  width: 44px; height: 4px;
-  background: rgba(255, 255, 255, 0.12);
-  border-radius: 4px;
-  margin: 10px auto 4px;
+  /* Oculto: con la nueva estructura (imagen primero) la barrita de arrastre
+     creaba un gap innecesario entre el borde superior del modal y la foto.
+     En móvil el modal se abre desde abajo y el gesto de arrastre nativo basta. */
+  display: none !important;
 }
-
-/* ---- Una sola columna, ancho tipo teléfono (como el mockup v4) ---- */
-#productDetailModal .detail-modal-content {
-  max-width: 440px;
-  margin-left: auto; margin-right: auto;
-}
-#productDetailModal .detail-grid { display: block; }
-#productDetailModal .detail-image-wrap { width: 100%; margin-bottom: 4px; }
-#productDetailModal .detail-info { width: 100%; }
 
 /* ---- Header: pill "recién llegado" + título serif ---- */
 #productDetailModal .modal-header {
@@ -55,7 +47,7 @@
   gap: 6px;
   background: rgba(255, 122, 41, 0.12);
   border: 1px solid rgba(255, 122, 41, 0.3);
-  color: #ff8a3d;
+  color: var(--coral);
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 1.2px;
@@ -68,9 +60,9 @@
 #productDetailModal .detail-badge-nuevo::before {
   content: '';
   width: 6px; height: 6px;
-  background: #ff7a29;
+  background: var(--coral);
   border-radius: 50%;
-  box-shadow: 0 0 8px #ff7a29;
+  box-shadow: 0 0 8px var(--coral);
   animation: tmv4Pulse 2s ease-in-out infinite;
 }
 @keyframes tmv4Pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
@@ -97,7 +89,7 @@
 #productDetailModal .close-btn:hover {
   background: rgba(255, 80, 30, 0.1);
   border-color: rgba(255, 80, 30, 0.4);
-  color: #ff7a29;
+  color: var(--coral);
 }
 
 /* ---- Rating row ---- */
@@ -107,7 +99,12 @@
   color: #aaa;
 }
 #productDetailModal .detail-rating-top .num,
+#productDetailModal .detail-rating-top .drt-num,
 #productDetailModal .detail-rating-top b { color: #fff; font-weight: 700; }
+/* Modo claro: número de reseñas legible (oscuro sobre fondo claro) */
+html body.light-mode #productDetailModal .detail-rating-top .num,
+html body.light-mode #productDetailModal .detail-rating-top .drt-num,
+html body.light-mode #productDetailModal .detail-rating-top b { color: #1A1A1A !important; font-weight: 700 !important; }
 
 /* ---- Galería ---- */
 #productDetailModal .detail-img-frame {
@@ -139,7 +136,7 @@
 #productDetailModal .detail-badge {  /* descuento -$X → top-left naranja */
   position: absolute;
   top: 12px; left: 12px;
-  background: linear-gradient(135deg, #ff4d00, #ff7a29);
+  background: linear-gradient(135deg, #ff4d00, var(--coral));
   color: #fff;
   font-size: 11px; font-weight: 800; letter-spacing: 0.5px;
   padding: 6px 12px;
@@ -152,7 +149,7 @@
   background: rgba(0,0,0,0.55);
   backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
   color: #ffb380;
-  border: 1px solid rgba(255,122,41,0.35);
+  border: 1px solid rgba(255,107,53,0.35);
   font-size: 11px; font-weight: 800;
   padding: 5px 10px; border-radius: 999px;
 }
@@ -174,26 +171,27 @@
 #productDetailModal .detail-gallery-thumbs::-webkit-scrollbar { display: none; }
 #productDetailModal .detail-gallery-thumb {
   width: 56px; height: 56px;
-  border-radius: 10px;
+  border-radius: 12px;
   border: 2px solid transparent;
   background: #1a1a1a;
   flex-shrink: 0;
-  overflow: hidden;
+  overflow: visible;
   cursor: pointer;
   opacity: 0.55;
-  padding: 0;
+  padding: 2px;
+  box-sizing: border-box;
   transition: all 0.2s;
 }
 #productDetailModal .detail-gallery-thumb.active {
-  border-color: #ff7a29;
+  border-color: var(--coral);
   opacity: 1;
-  box-shadow: 0 0 0 2px rgba(255, 122, 41, 0.2);
+  box-shadow: 0 0 0 2px rgba(255, 122, 41, 0.25);
 }
-#productDetailModal .detail-gallery-thumb img { width: 100%; height: 100%; object-fit: cover; }
+#productDetailModal .detail-gallery-thumb img { width: 100%; height: 100%; object-fit: cover; border-radius: 8px; }
 
 /* ---- Categoría ---- */
 #productDetailModal .detail-category {
-  color: #ff8a3d;
+  color: var(--coral);
   font-size: 12px; font-weight: 700;
   letter-spacing: 1.5px;
   text-transform: uppercase;
@@ -208,7 +206,7 @@
   gap: 6px;
 }
 #productDetailModal .detail-price-main .dp-sym {
-  font-size: 22px; font-weight: 600; color: #ff8a3d;
+  font-size: 22px; font-weight: 600; color: var(--coral);
 }
 #productDetailModal .detail-price-main .dp-num {
   font-family: 'Playfair Display', Georgia, serif;
@@ -259,7 +257,7 @@
 }
 #productDetailModal .stock-bar-fill {
   height: 100%;
-  background: linear-gradient(90deg, #ff4d00, #ff7a29);
+  background: linear-gradient(90deg, #ff4d00, var(--coral));
   border-radius: 999px;
   box-shadow: 0 0 12px rgba(255, 122, 41, 0.6);
   position: relative;
@@ -279,12 +277,21 @@
 #productDetailModal .detail-spec-badges { display: flex; gap: 8px; flex-wrap: wrap; }
 #productDetailModal .detail-spec-badges > * {
   display: inline-flex; align-items: center; gap: 6px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  color: #ddd;
-  font-size: 12px; font-weight: 500;
-  padding: 7px 11px;
-  border-radius: 8px;
+  background: linear-gradient(135deg, rgba(255,107,53,.14), rgba(255,77,0,.08));
+  border: 1.5px solid rgba(255,107,53,.55);
+  color: #ffd1b3;
+  font-size: 13.5px; font-weight: 700;
+  padding: 10px 14px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(255,107,53,.15);
+}
+/* Modo claro: specs con alto contraste */
+html body.light-mode #productDetailModal .detail-spec-badges > * {
+  background: linear-gradient(135deg, rgba(255,107,53,.18), rgba(232,80,30,.10)) !important;
+  border-color: rgba(232,80,30,.65) !important;
+  color: #B23A0E !important;
+  font-weight: 800 !important;
+  box-shadow: 0 2px 8px rgba(232,80,30,.18) !important;
 }
 
 /* ---- Trust strip verde (estático, se agrega en el HTML) ---- */
@@ -352,11 +359,13 @@
 #productDetailModal .detail-sticky-cta {
   background: linear-gradient(180deg, transparent 0%, #0e0e0e 30%);
   backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  border-radius: 18px 18px 0 0;
 }
 #productDetailModal .detail-sticky-cta .dsc-price-main {
   font-family: 'Playfair Display', Georgia, serif;
   font-weight: 800;
   color: #fff;
+  letter-spacing: -0.02em;
 }
 #productDetailModal .detail-sticky-cta .dsc-buy-btn {
   background: linear-gradient(135deg, #25d366 0%, #128c7e 100%);
@@ -466,181 +475,852 @@
   flex-shrink: 0;
   transition: all 0.2s;
 }
-#tmv4Lightbox .lb-thumb.active { border-color: #ff7a29; opacity: 1; }
+#tmv4Lightbox .lb-thumb.active { border-color: var(--coral); opacity: 1; }
 #tmv4Lightbox .lb-thumb img { width: 100%; height: 100%; object-fit: cover; }
 
-/* ==========================================================================
-   Fidelidad v4 — secciones internas que el JS puebla con datos reales
-   ========================================================================== */
-
-/* ---- Descripción: intro + checklist con checks verdes (v4 .features) ---- */
-#productDetailModal .detail-description-text .dd-intro {
-  color: #b5b5b5; font-size: 13.5px; line-height: 1.65;
-}
-#productDetailModal .detail-description-text .dd-intro:first-line { color: #fff; }
-#productDetailModal .detail-description-text .dd-list {
-  list-style: none; margin: 14px 0 0; padding: 0;
-  display: flex; flex-direction: column; gap: 8px;
-}
-#productDetailModal .detail-description-text .dd-list li {
-  display: flex; align-items: flex-start; gap: 10px;
-  color: #ccc; font-size: 13px; line-height: 1.5;
-}
-#productDetailModal .detail-description-text .dd-check {
-  width: 18px; height: 18px; flex-shrink: 0; margin-top: 1px;
-  border-radius: 50%;
-  background: rgba(37, 211, 102, 0.15);
-  color: #4ade80;
-  font-size: 11px; font-weight: 700;
-  display: inline-flex; align-items: center; justify-content: center;
+/* ======================================================================
+   TiendaMax — Modal Premium v4 · estilos consolidados
+   Esta sección es la única fuente final del layout del modal. Los datos
+   siguen viniendo de los IDs existentes; no se inventan variantes ni
+   contenido del producto.
+   ====================================================================== */
+#productDetailModal {
+  --tm-modal-bg-dark: linear-gradient(180deg, #161616 0%, #0e0e0e 100%);
+  --tm-modal-surface-dark: rgba(255,255,255,.04);
+  --tm-modal-border-dark: rgba(255,255,255,.09);
+  --tm-modal-text-dark: #f5f5f5;
+  --tm-modal-muted-dark: #aaa;
+  --tm-modal-accent-dark: var(--coral);
+  --tm-modal-bg-light: #e9ebf0;
+  --tm-modal-surface-light: rgba(255,255,255,.28);
+  --tm-modal-border-light: rgba(31,36,48,.12);
+  --tm-modal-text-light: #1b1d22;
+  --tm-modal-muted-light: #5d626d;
+  --tm-modal-accent-light: #c96f3a;
 }
 
-/* ---- Tabla de specs (v4) ---- */
-#productDetailModal .detail-spec-table {
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 14px;
-  overflow: hidden;
-  padding: 0 !important;
-  background: rgba(255, 255, 255, 0.02);
+/* Marco y composición vertical del mockup */
+#productDetailModal .detail-modal-content {
+  width: min(420px, calc(100vw - 24px)) !important;
+  max-width: 420px !important;
+  max-height: 94vh !important;
+  border-radius: 28px !important;
+  background: var(--tm-modal-bg-dark) !important;
+  color: var(--tm-modal-text-dark) !important;
+  border: 1px solid rgba(255,107,53,.18) !important;
+  box-shadow: 0 0 0 1px rgba(255,255,255,.03) inset,
+              0 30px 80px rgba(0,0,0,.6),
+              0 0 60px rgba(255,107,53,.08) !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
 }
-#productDetailModal .detail-spec-table .dsr-row {
-  display: flex; justify-content: space-between; align-items: center;
+#productDetailModal .detail-body {
+  display: block;
+  padding: 0 18px 20px !important;
+  background: transparent !important;
+}
+#productDetailModal .detail-grid {
+  display: block !important;
+  margin: 0 !important;
+}
+#productDetailModal .detail-image-wrap,
+#productDetailModal .detail-info {
+  width: 100%;
+  min-width: 0;
+}
+
+/* Header: badge, título y rating antes de la galería */
+#productDetailModal .modal-header {
+  display: flex !important;
+  align-items: flex-start !important;
   gap: 12px;
-  padding: 11px 14px;
-  font-size: 12.5px;
+  padding: 10px 22px 14px !important;
+  background: transparent !important;
+  border-bottom: 0 !important;
+  color: var(--tm-modal-text-dark) !important;
 }
-#productDetailModal .detail-spec-table .dsr-row + .dsr-row {
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
+#productDetailModal .detail-header-copy {
+  flex: 1 1 auto;
+  min-width: 0;
 }
-#productDetailModal .detail-spec-table .dsr-label { color: #999; }
-#productDetailModal .detail-spec-table .dsr-value {
-  color: #fff; font-weight: 600; text-align: right;
+#productDetailModal #detailProductName {
+  display: block;
+  margin: 0;
+  color: #fff !important;
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -.3px;
+  overflow-wrap: anywhere;
 }
-#productDetailModal .detail-spec-table .dsr-nolabel .dsr-value { color: #ddd; font-weight: 500; }
+#productDetailModal .detail-badge-nuevo {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 10px;
+  padding: 5px 10px 5px 20px;
+  border: 1px solid rgba(255,107,53,.3);
+  border-radius: 999px;
+  background: rgba(255,107,53,.12);
+  color: var(--coral);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.1px;
+  text-transform: uppercase;
+  position: relative;
+}
+#productDetailModal .detail-badge-nuevo::before {
+  content: '';
+  position: absolute;
+  left: 9px;
+  top: 50%;
+  width: 6px;
+  height: 6px;
+  transform: translateY(-50%);
+  border-radius: 50%;
+  background: var(--coral);
+  box-shadow: 0 0 8px var(--coral);
+  animation: tmv4Pulse 2s ease-in-out infinite;
+}
+#productDetailModal .modal-header > .close-btn {
+  width: 32px;
+  height: 32px;
+  flex: 0 0 32px;
+  margin-top: 4px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,.08);
+  background: rgba(255,255,255,.05);
+  color: #999;
+  font-size: 20px;
+  line-height: 1;
+}
+#productDetailModal #detailRatingTop.detail-rating-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 7px;
+  min-height: 16px;
+  margin: 10px 0 0 !important;
+  padding: 0;
+  color: #aaa;
+  font-size: 12px;
+}
+#productDetailModal #detailRatingTop[style*="display:none"],
+#productDetailModal #detailRatingTop[style*="display: none"] {
+  display: none !important;
+}
+#productDetailModal #detailRatingTop .drt-stars { color: #fbbf24; font-size: 13px; letter-spacing: 1px; }
+#productDetailModal #detailRatingTop .drt-num { color: #fff; font-weight: 800; }
+#productDetailModal #detailRatingTop .drt-count { color: #aaa; }
+#productDetailModal #detailRatingTop .drt-ver-todas {
+  margin-left: auto;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--coral);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
 
-/* ---- Trust cards dinámicas (envío/pago/garantía) — 3-col vertical v4 ---- */
-#productDetailModal #detailTrustBadges {
-  display: grid !important;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
+/* Galería: un solo marco, miniaturas separadas y sin tarjetas anidadas */
+#productDetailModal .detail-image-wrap {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
+  gap: 14px !important;
+  margin: 0 0 18px !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  overflow: visible !important;
 }
-#productDetailModal .detail-trust-card {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+#productDetailModal .detail-img-frame {
+  position: relative !important;
+  width: 100% !important;
+  height: auto !important;
+  flex: 0 0 auto !important;
+  aspect-ratio: 4 / 3 !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+  border-radius: 18px !important;
+  background: #000 !important;
+  box-shadow: 0 12px 40px rgba(0,0,0,.5) !important;
+}
+#productDetailModal .detail-img-frame .detail-img {
+  position: absolute !important;
+  inset: 0 !important;
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  filter: brightness(.96) contrast(1.04);
+}
+#productDetailModal #detailGalleryThumbs,
+#productDetailModal .detail-gallery-thumbs {
+  position: static !important;
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  gap: 10px;
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+  height: auto;
+  margin: 0;
+  padding: 4px 0 4px;
+  background: transparent !important;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+#productDetailModal #detailGalleryThumbs[style*="display:none"],
+#productDetailModal #detailGalleryThumbs[style*="display: none"] {
+  display: none !important;
+}
+#productDetailModal #detailGalleryThumbs::-webkit-scrollbar,
+#productDetailModal .detail-gallery-thumbs::-webkit-scrollbar { display: none; }
+#productDetailModal .detail-gallery-thumb {
+  position: relative;
+  display: block;
+  flex: 0 0 56px;
+  width: 56px;
+  min-width: 56px;
+  height: 56px;
+  margin: 0;
+  padding: 2px;
+  overflow: visible;
+  border: 2px solid transparent;
   border-radius: 12px;
-  padding: 10px 8px;
-  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  outline: none;
+  background: #1a1a1a;
+  opacity: .55;
+  cursor: pointer;
+  box-sizing: border-box;
+  transition: border-color .2s, opacity .2s, box-shadow .2s;
+}
+#productDetailModal .detail-gallery-thumb.active,
+#productDetailModal .detail-gallery-thumb:hover {
+  border-color: var(--coral);
+  opacity: 1;
+  box-shadow: 0 0 0 2px rgba(255,107,53,.25);
+}
+#productDetailModal .detail-gallery-thumb img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 8px;
+}
+#productDetailModal .detail-gallery-thumb:focus-visible,
+#productDetailModal .detail-img:focus-visible {
+  outline: 2px solid var(--coral);
+  outline-offset: 2px;
+}
+
+/* Orden del contenido */
+#productDetailModal .detail-info { display: flex; flex-direction: column; }
+#productDetailModal .detail-info > #detailTrustBadges { order: -3; }
+#productDetailModal .detail-info > .detail-meta-line { order: -2; }
+#productDetailModal .detail-info > .detail-price-wrap { order: -1; }
+#productDetailModal .detail-info > #detailCountdown { order: 0; }
+#productDetailModal .detail-info > #detailProductStock { order: 1; }
+#productDetailModal .detail-info > #detailProductStock + .stock-bar { order: 2; }
+#productDetailModal .detail-info > #detailExtraBadges { order: 3; }
+#productDetailModal .detail-info > #detailSpecBadges { order: 4; }
+#productDetailModal .detail-info > #detailQtyRow { order: 5; }
+#productDetailModal .detail-info > #detailCtaRow { order: 6; }
+#productDetailModal .detail-info > .detail-share-pills { order: 7; }
+#productDetailModal .detail-info > #panelCompartirRedes { order: 8; }
+#productDetailModal .detail-info > #detailPersonasViendo { order: 9; }
+
+/* Categoría y precio */
+#productDetailModal .detail-meta-line {
+  margin: 2px 0 0;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+#productDetailModal .detail-category { color: var(--coral) !important; font-weight: 800 !important; }
+#productDetailModal .detail-subcategory { color: #8f8f8f !important; font-weight: 700 !important; }
+#productDetailModal .detail-category,
+#productDetailModal .detail-subcategory { display: inline !important; margin: 0 !important; }
+#productDetailModal .detail-subcategory { margin-left: 2px !important; }
+#productDetailModal .detail-price-wrap { display: flex; justify-content: center; align-items: baseline; margin: 8px 0 2px; }
+#productDetailModal .detail-price-main { display: inline-flex; align-items: baseline; gap: 4px; color: #fff; }
+#productDetailModal .detail-price-main .dp-sym { color: var(--coral); font-size: 24px; font-weight: 800; font-family: 'Playfair Display', Georgia, serif; }
+#productDetailModal .detail-price-main .dp-num { color: #fff; font-family: 'Playfair Display', Georgia, serif; font-size: 44px; font-weight: 800; line-height: 1; letter-spacing: -0.03em; }
+#productDetailModal .detail-price-main .dp-cur { color: #888; font-size: 16px; font-weight: 500; letter-spacing: 0.02em; text-transform: uppercase; }
+#productDetailModal .detail-price-sub { display: flex; justify-content: center; gap: 5px; margin: 6px 0 4px; color: #888; font-size: 13px; }
+#productDetailModal .detail-price-old { color: #666; text-decoration: line-through; }
+
+/* Trust cards compactas: solo textos cortos y altura estable */
+#productDetailModal #detailTrustBadges {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+  align-items: stretch;
+  gap: 8px;
+  margin: 0 0 14px;
+}
+#productDetailModal #detailTrustBadges[style*="display:none"],
+#productDetailModal #detailTrustBadges[style*="display: none"] { display: none !important; }
+#productDetailModal .detail-trust-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  min-height: 92px;
+  padding: 12px 8px;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 12px;
+  background: rgba(255,255,255,.03);
   text-align: center;
 }
 #productDetailModal .detail-trust-card .dtc-ic {
-  width: 28px; height: 28px;
-  border-radius: 8px;
-  background: rgba(255, 122, 41, 0.14);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  margin-bottom: 5px;
+  border-radius: 10px;
+  background: rgba(255,107,53,.14);
+  color: #ff9a59;
 }
-#productDetailModal .detail-trust-card .dtc-tx { display: flex; flex-direction: column; line-height: 1.2; }
-#productDetailModal .detail-trust-card .dtc-tx b { font-size: 10.5px; color: #fff; font-weight: 700; }
-#productDetailModal .detail-trust-card .dtc-tx small { font-size: 9.5px; color: #888; }
+#productDetailModal .detail-trust-card:nth-child(2) .dtc-ic { background: rgba(74,222,128,.14); color: #4ade80; }
+#productDetailModal .detail-trust-card:nth-child(3) .dtc-ic { background: rgba(96,165,250,.14); color: #60a5fa; }
+#productDetailModal .detail-trust-card:nth-child(4) .dtc-ic { background: rgba(167,139,250,.14); color: #a78bfa; }
+#productDetailModal .detail-trust-card .dtc-ic svg { display: block; width: 18px; height: 18px; }
+#productDetailModal .detail-trust-card .dtc-tx { width: 100%; min-width: 0; line-height: 1.2; }
+#productDetailModal .detail-trust-card .dtc-tx b,
+#productDetailModal .detail-trust-card .dtc-tx small { display: block; max-width: 100%; overflow: hidden; text-overflow: ellipsis; }
+#productDetailModal .detail-trust-card .dtc-tx b { color: #fff; font-size: 11px; font-weight: 800; white-space: nowrap; }
+#productDetailModal .detail-trust-card .dtc-tx small { color: #999; font-size: 10px; font-weight: 500; white-space: nowrap; }
 
-/* ---- Selector de cantidad ---- */
-#productDetailModal .detail-qty-row {
-  display: flex; align-items: center; justify-content: space-between;
-  gap: 12px;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.07);
-  border-radius: 14px;
-  padding: 10px 14px;
-}
-#productDetailModal .detail-qty-label { font-size: 12.5px; color: #ccc; font-weight: 600; display: flex; flex-direction: column; }
-#productDetailModal .detail-qty-label small { color: #888; font-weight: 500; font-size: 11px; }
-#productDetailModal .detail-qty-stepper {
-  display: flex; align-items: center; gap: 4px;
-  background: rgba(0, 0, 0, 0.3);
+/* Countdown y stock */
+#productDetailModal #detailCountdown .producto-countdown {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  margin: 0;
+  padding: 10px 12px;
+  border: 1px solid rgba(255,107,53,.3);
   border-radius: 12px;
-  padding: 4px;
+  background: linear-gradient(135deg, rgba(255,77,0,.14), rgba(255,107,53,.06));
 }
-#productDetailModal .detail-qty-stepper button {
-  width: 34px; height: 34px;
-  border: none; border-radius: 9px;
-  background: rgba(255, 122, 41, 0.14);
-  color: #ff8a3d;
-  font-size: 18px; font-weight: 700;
-  cursor: pointer;
-  transition: all 0.15s;
-}
-#productDetailModal .detail-qty-stepper button:disabled { opacity: 0.35; cursor: default; }
-#productDetailModal .detail-qty-stepper button:not(:disabled):hover { background: rgba(255, 122, 41, 0.25); }
-#productDetailModal .detail-qty-stepper span {
-  min-width: 30px; text-align: center;
-  font-weight: 800; color: #fff;
-  font-variant-numeric: tabular-nums;
-}
+#productDetailModal #detailCountdown .countdown-label { flex: 1; min-width: 0; overflow: hidden; color: #ffb380; font-size: 12px; font-weight: 600; text-overflow: ellipsis; white-space: nowrap; }
+#productDetailModal #detailCountdown .countdown-time { display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
+#productDetailModal #detailCountdown .countdown-block { min-width: 30px; padding: 4px 6px; border: 1px solid rgba(255,107,53,.3); border-radius: 6px; background: rgba(0,0,0,.4); color: #fff; font-size: 13px; font-weight: 800; text-align: center; }
+#productDetailModal #detailCountdown .countdown-sep { color: var(--coral); font-weight: 800; }
+#productDetailModal .detail-stock { color: #ffb380; font-size: 13px; font-weight: 600; }
+#productDetailModal .stock-bar { height: 6px; margin: 6px 0 16px; overflow: hidden; border-radius: 999px; background: rgba(255,255,255,.08); }
+#productDetailModal .stock-bar-fill { height: 100%; border-radius: 999px; background: linear-gradient(90deg,#ff4d00,var(--coral)); box-shadow: 0 0 10px rgba(255,107,53,.55); }
 
-/* ---- Views / personas viendo ---- */
-#productDetailModal .contador-personas {
-  text-align: center; color: #777; font-size: 12px;
-  padding: 4px 0;
-}
-
-/* ---- Reseñas (v4: avatar degradado, verificada verde) ---- */
-#productDetailModal .resena-item {
-  padding: 12px 14px;
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 12px;
-  margin-bottom: 8px;
-}
-#productDetailModal .resena-top { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
-#productDetailModal .resena-avatar {
-  width: 32px; height: 32px; flex-shrink: 0;
-  border-radius: 50%;
-  color: #fff; font-size: 12px; font-weight: 700;
-  display: flex; align-items: center; justify-content: center;
-}
-#productDetailModal .resena-meta { flex: 1; display: flex; flex-direction: column; }
-#productDetailModal .resena-autor { font-size: 13px; font-weight: 600; color: #fff; }
-#productDetailModal .resena-fecha { font-size: 11px; color: #888; }
-#productDetailModal .resena-estrellas { color: #fbbf24; font-size: 12px; letter-spacing: 1px; }
-#productDetailModal .resena-texto { color: #b5b5b5; font-size: 12.5px; line-height: 1.5; }
-#productDetailModal .resena-foto { max-width: 120px; border-radius: 10px; margin-top: 8px; }
-#productDetailModal .resena-verificada {
-  display: inline-flex; align-items: center; gap: 4px;
-  color: #4ade80; font-size: 10px; font-weight: 600;
-  background: rgba(74, 222, 128, 0.1);
-  padding: 2px 6px; border-radius: 4px; margin-top: 6px;
-}
-#productDetailModal .resenas-vacio { color: #888; font-size: 13px; text-align: center; padding: 12px; }
-#productDetailModal .detail-resena-add-btn {
-  background: rgba(255, 122, 41, 0.12);
-  border: 1px solid rgba(255, 122, 41, 0.3);
-  color: #ff8a3d;
-  font-size: 12px; font-weight: 600;
-  padding: 7px 12px; border-radius: 999px;
-  cursor: pointer; transition: all 0.2s;
-}
-#productDetailModal .detail-resena-add-btn:hover { background: rgba(255, 122, 41, 0.2); }
-
-/* ---- Secundarios (compartir / copiar) ---- */
-#productDetailModal .detail-share-pills .detail-share-pill {
+/* Specs: un único formato chip, sin rectángulo envolvente */
+#productDetailModal #detailSpecBadges.detail-spec-table {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  align-items: stretch !important;
+  gap: 8px !important;
+  width: 100% !important;
+  margin: 6px 0 8px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  outline: 0 !important;
+  border-radius: 0 !important;
   background: transparent !important;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
-  color: #ccc !important;
-  transition: all 0.2s;
+  box-shadow: none !important;
+  overflow: visible !important;
 }
-#productDetailModal .detail-share-pills .detail-share-pill:hover {
-  background: rgba(255, 255, 255, 0.04) !important;
-  color: #fff !important;
+#productDetailModal #detailSpecBadges[style*="display:none"],
+#productDetailModal #detailSpecBadges[style*="display: none"],
+#productDetailModal #detailSpecBadges:empty { display: none !important; }
+#productDetailModal #detailSpecBadges .dsr-row {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  flex: 0 1 auto !important;
+  width: auto !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  gap: 6px !important;
+  padding: 10px 14px !important;
+  border: 1.5px solid rgba(255,107,53,.55) !important;
+  border-radius: 10px !important;
+  background: linear-gradient(135deg, rgba(255,107,53,.14), rgba(255,77,0,.08)) !important;
+  color: #ffd1b3 !important;
+  font-size: 13.5px !important;
+  font-weight: 700 !important;
+  line-height: 1.3 !important;
+  white-space: normal !important;
+  overflow-wrap: anywhere !important;
+  box-shadow: 0 2px 8px rgba(255,107,53,.15) !important;
 }
+#productDetailModal #detailSpecBadges .dsr-row + .dsr-row { border-top: 1px solid rgba(255,107,53,.24) !important; }
+#productDetailModal #detailSpecBadges .dsr-label,
+#productDetailModal #detailSpecBadges .dsr-value,
+#productDetailModal #detailSpecBadges .dsr-nolabel .dsr-value { display: inline !important; width: auto !important; color: #ffd1b3 !important; font-size: 13.5px !important; font-weight: 700 !important; text-align: left !important; }
 
-/* ---- Sticky CTA texto precio serif ---- */
-#productDetailModal .detail-sticky-cta .dsc-price-sub { color: #888; font-size: 11px; }
+/* Stepper compacto */
+#productDetailModal #detailQtyRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 8px 0 10px;
+  padding: 10px 0;
+  border: 1px solid rgba(255,255,255,.08);
+  border-left: 0;
+  border-right: 0;
+  border-radius: 0;
+  background: transparent;
+}
+#productDetailModal .detail-qty-label { color: #ddd; font-size: 11px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; }
+#productDetailModal .detail-qty-label small { display: block; margin-top: 2px; color: #888; font-size: 12px; font-weight: 600; letter-spacing: 0; text-transform: none; }
+#productDetailModal .detail-qty-stepper { display: flex; align-items: center; gap: 2px; padding: 3px; border: 1px solid rgba(255,255,255,.14); border-radius: 10px; background: rgba(0,0,0,.25); }
+#productDetailModal .detail-qty-stepper button { width: 32px; height: 32px; border: 0; border-radius: 8px; background: transparent; color: var(--coral); font-size: 20px; cursor: pointer; }
+#productDetailModal .detail-qty-stepper span { min-width: 28px; color: #fff; font-size: 16px; font-weight: 800; text-align: center; }
 
-/* ---- Relacionados / vistos: títulos ---- */
-#productDetailModal .detail-relacionados h3 { font-size: 15px; font-weight: 700; color: #fff; }
+/* Botones de acción: corazón y carrito siempre iguales */
+#productDetailModal #detailCtaRow { display: flex !important; align-items: center !important; gap: 10px !important; }
+#productDetailModal #detailFavBtn.detail-cta-fav,
+#productDetailModal #detailCartBtn.detail-cta-icon {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex: 0 0 48px !important;
+  width: 48px !important;
+  height: 48px !important;
+  min-width: 48px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 1px solid rgba(255,255,255,.12) !important;
+  border-radius: 14px !important;
+  background: rgba(255,255,255,.05) !important;
+  color: #dedee5 !important;
+  font-size: 0 !important;
+  line-height: 1 !important;
+  cursor: pointer;
+}
+#productDetailModal #detailFavBtn:hover,
+#productDetailModal #detailCartBtn:hover { border-color: rgba(255,107,53,.4) !important; background: rgba(255,107,53,.12) !important; color: #ffb380 !important; }
+#productDetailModal #detailFavBtn.liked { border-color: rgba(255,77,109,.42) !important; background: rgba(255,77,109,.12) !important; color: #ff5b68 !important; }
+#productDetailModal #detailFavBtn .detail-heart-icon,
+#productDetailModal #detailCartBtn .detail-cart-icon { display: block !important; width: 21px !important; height: 21px !important; pointer-events: none; }
+#productDetailModal #detailCartBtn { color: #ff9a59 !important; }
+#productDetailModal #detailCartBtn.en-carrito { color: #22c55e !important; background: rgba(34,197,94,.12) !important; border-color: rgba(34,197,94,.45) !important; }
 
+/* Descripción */
+#productDetailModal .detail-description-section h3,
+#productDetailModal .detail-resenas-section h3 { color: #fff; font-size: 15px; font-weight: 700; }
+#productDetailModal .detail-description-text { color: #b5b5b5; font-size: 13.5px; line-height: 1.65; }
+#productDetailModal .detail-description-text .dd-intro { margin: 0 0 8px; color: #f5f5f5; font-weight: 700; }
+#productDetailModal .detail-description-text .dd-list { display: flex; flex-direction: column; gap: 8px; margin: 14px 0 0; padding: 0; list-style: none; }
+#productDetailModal .detail-description-text .dd-list li { display: flex; align-items: flex-start; gap: 10px; color: #ccc; font-size: 13px; line-height: 1.5; }
+#productDetailModal .detail-description-text .dd-check { display: inline-flex; align-items: center; justify-content: center; width: 18px; height: 18px; flex: 0 0 18px; margin-top: 1px; border-radius: 50%; background: rgba(37,211,102,.15); color: #4ade80; font-size: 11px; font-weight: 700; }
+
+/* Reseñas */
+#productDetailModal .detail-resenas-header { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 14px; }
+#productDetailModal .detail-resena-add-btn { padding: 7px 12px; border: 1px solid rgba(255,107,53,.3); border-radius: 999px; background: rgba(255,107,53,.12); color: var(--coral); font-size: 12px; font-weight: 600; cursor: pointer; }
+#productDetailModal .resena-item { margin-bottom: 8px; padding: 12px 14px; border: 1px solid rgba(255,255,255,.06); border-radius: 12px; background: rgba(255,255,255,.02); }
+#productDetailModal .resena-top { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+#productDetailModal .resena-avatar { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; flex: 0 0 32px; border-radius: 50%; color: #fff; font-size: 12px; font-weight: 800; }
+#productDetailModal .resena-meta { display: flex; min-width: 0; flex: 1; flex-direction: column; gap: 1px; }
+#productDetailModal .resena-autor { color: #fff; font-size: 13px; font-weight: 700; }
+#productDetailModal .resena-fecha { color: #888; font-size: 11px; }
+#productDetailModal .resena-estrellas { color: #fbbf24; font-size: 12px; white-space: nowrap; }
+#productDetailModal .resena-texto { color: #b5b5b5; font-size: 12.5px; line-height: 1.5; }
+#productDetailModal .resena-verificada { display: inline-flex; align-items: center; gap: 4px; margin-top: 6px; padding: 2px 6px; border-radius: 4px; background: rgba(74,222,128,.1); color: #4ade80; font-size: 10px; font-weight: 600; }
+
+/* Estado de vistas */
+#productDetailModal #detailPersonasViendo { padding: 4px 0; text-align: center; color: #777; font-size: 12px; }
+#productDetailModal #detailPersonasViendo .pv-inner { display: inline-flex; align-items: center; gap: 5px; padding: 6px 12px; border: 1px solid rgba(255,255,255,.09); border-radius: 999px; background: rgba(255,255,255,.06); color: #aaa; font-size: 12px; font-weight: 600; }
+#productDetailModal #detailPersonasViendo .pv-inner strong { color: #f2f2f5; }
+
+/* Accesibilidad y focus */
+#productDetailModal button:focus-visible,
+#productDetailModal .detail-gallery-thumb:focus-visible,
+#productDetailModal .detail-img:focus-visible {
+  outline: 2px solid var(--coral);
+  outline-offset: 2px;
+}
+#productDetailModal .detail-trust-card svg,
+#productDetailModal .detail-heart-icon,
+#productDetailModal .detail-cart-icon { pointer-events: none; }
+
+/* Tema claro: misma estructura, contraste alto y sin tarjetas blancas anidadas */
+html body.light-mode #productDetailModal .detail-modal-content { background: var(--tm-modal-bg-light) !important; color: var(--tm-modal-text-light) !important; border-color: rgba(201,169,110,.32) !important; box-shadow: 0 0 0 1px rgba(255,255,255,.7) inset, 0 26px 70px rgba(31,36,48,.22), 0 0 42px rgba(201,169,110,.1) !important; }
+html body.light-mode #productDetailModal .modal-header,
+html body.light-mode #productDetailModal .detail-body { background: transparent !important; color: var(--tm-modal-text-light) !important; }
+html body.light-mode #productDetailModal #detailProductName,
+html body.light-mode #productDetailModal .detail-description-section h3,
+html body.light-mode #productDetailModal .detail-resenas-section h3,
+html body.light-mode #productDetailModal .detail-price-main .dp-num,
+html body.light-mode #productDetailModal .detail-price-main .dp-cur,
+html body.light-mode #productDetailModal .detail-trust-card .dtc-tx b,
+html body.light-mode #productDetailModal .detail-spec-table .dsr-value,
+html body.light-mode #productDetailModal .resena-autor { color: var(--tm-modal-text-light) !important; }
+html body.light-mode #productDetailModal .detail-description-text,
+html body.light-mode #productDetailModal .detail-description-text .dd-list li,
+html body.light-mode #productDetailModal .detail-price-sub,
+html body.light-mode #productDetailModal .detail-price-old,
+html body.light-mode #productDetailModal .detail-trust-card .dtc-tx small,
+html body.light-mode #productDetailModal .detail-spec-table .dsr-label,
+html body.light-mode #productDetailModal .resena-fecha,
+html body.light-mode #productDetailModal .resena-texto,
+html body.light-mode #productDetailModal #detailPersonasViendo .pv-inner { color: var(--tm-modal-muted-light) !important; }
+/* Modo claro: píldora "personas viendo" con fondo y borde visibles */
+html body.light-mode #productDetailModal #detailPersonasViendo .pv-inner {
+  background: rgba(0,0,0,.05) !important;
+  border: 1px solid rgba(0,0,0,.10) !important;
+}
+html body.light-mode #productDetailModal #detailPersonasViendo .pv-inner strong { color: #1A1A1A !important; }
+html body.light-mode #productDetailModal .detail-description-text .dd-intro,
+html body.light-mode #productDetailModal .detail-description-text .dd-intro:first-line { color: #24272d !important; }
+html body.light-mode #productDetailModal .detail-category { color: var(--tm-modal-accent-light) !important; }
+html body.light-mode #productDetailModal .detail-subcategory { color: #747985 !important; }
+html body.light-mode #productDetailModal .detail-stock { color: #a75d13 !important; }
+html body.light-mode #productDetailModal .detail-img-frame { background: #fff !important; box-shadow: 0 12px 30px rgba(31,36,48,.14) !important; }
+html body.light-mode #productDetailModal .detail-gallery-thumb { background: #fff; }
+html body.light-mode #productDetailModal .detail-trust-card,
+html body.light-mode #productDetailModal #detailQtyRow { background: transparent !important; border-color: rgba(31,36,48,.12) !important; }
+html body.light-mode #productDetailModal #detailSpecBadges.detail-spec-table .dsr-row { border-color: rgba(232,80,30,.65) !important; background: linear-gradient(135deg, rgba(255,107,53,.18), rgba(232,80,30,.10)) !important; box-shadow: 0 2px 8px rgba(232,80,30,.18) !important; }
+html body.light-mode #productDetailModal #detailSpecBadges.detail-spec-table .dsr-label,
+html body.light-mode #productDetailModal #detailSpecBadges.detail-spec-table .dsr-value,
+html body.light-mode #productDetailModal #detailSpecBadges.detail-spec-table .dsr-nolabel .dsr-value { color: #B23A0E !important; font-weight: 800 !important; }
+html body.light-mode #productDetailModal #detailQtyRow .detail-qty-stepper { background: rgba(255,255,255,.8); border-color: rgba(31,36,48,.12); }
+html body.light-mode #productDetailModal #detailQtyRow .detail-qty-stepper span { color: #25282e; }
+html body.light-mode #productDetailModal #detailFavBtn.detail-cta-fav,
+html body.light-mode #productDetailModal #detailCartBtn.detail-cta-icon { border-color: rgba(31,36,48,.16) !important; background: rgba(255,255,255,.58) !important; color: #4b5059 !important; box-shadow: 0 2px 7px rgba(31,36,48,.06) !important; }
+html body.light-mode #productDetailModal #detailCartBtn.detail-cta-icon { color: #c96f3a !important; }
+html body.light-mode #productDetailModal #detailFavBtn.detail-cta-fav.liked { color: #d94357 !important; background: rgba(255,77,109,.12) !important; }
+html body.light-mode #productDetailModal .detail-resena-add-btn { background: linear-gradient(135deg,var(--coral),#e96b2e) !important; border-color: #e96b2e !important; color: #fff !important; }
+html body.light-mode #productDetailModal #detailCountdown .countdown-label { color: #a75d13 !important; }
+html body.light-mode #productDetailModal #detailCountdown .countdown-block { background: rgba(255,255,255,.82); border-color: rgba(230,125,63,.35); color: #272a30; }
+
+@media (max-width: 600px) {
+  #productDetailModal .detail-modal-content { width: calc(100vw - 24px) !important; max-height: 94vh !important; border-radius: 28px !important; }
+}
+@media (max-width: 380px) {
+  #productDetailModal .detail-gallery-thumb { flex-basis: 52px; width: 52px; min-width: 52px; height: 52px; }
+}
 @media (prefers-reduced-motion: reduce) {
   #productDetailModal .detail-badge-nuevo::before,
   #productDetailModal .stock-bar-fill::after,
   #productDetailModal .detail-skeleton .sk { animation: none; }
+}
+
+/* Último nivel de cascada para WebView Android: la fila de miniaturas
+   nunca hereda una caja blanca del tema claro ni se pega a confianza. */
+html body.light-mode #productDetailModal #detailGalleryThumbs,
+html body.light-mode #productDetailModal .detail-gallery-thumbs,
+html body.light-mode #productDetailModal .detail-image-wrap {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+html body.light-mode #productDetailModal .detail-image-wrap {
+  margin-bottom: 18px !important;
+}
+
+/* Contraste de estados secundarios en modo claro */
+html body.light-mode #productDetailModal #detailPersonasViendo .pv-inner strong {
+  color: #30343b !important;
+}
+html body.light-mode #productDetailModal #detailQtyRow .detail-qty-label {
+  color: #343840 !important;
+}
+html body.light-mode #productDetailModal #detailQtyRow .detail-qty-label small {
+  color: #6d727c !important;
+}
+html body.light-mode #productDetailModal #detailQtyRow .detail-qty-stepper {
+  background: rgba(255,255,255,.82) !important;
+  border-color: rgba(31,36,48,.14) !important;
+}
+html body.light-mode #productDetailModal #detailQtyRow .detail-qty-stepper span {
+  color: #25282e !important;
+}
+
+/* ============================================================
+   Pulido visual modal v4 (2026-07)
+   - Modo claro: contenedor, handle, close-btn, trust cards
+     y header con sombra/borde definidos.
+   - Modo oscuro: precio principal con mejor contraste.
+   - Ambos: hover/active de botones de cantidad y Pedir.
+   ============================================================ */
+html body.light-mode #productDetailModal .detail-modal-content{
+  background:#e9ebf0 !important;
+  border:1px solid rgba(0,0,0,.07) !important;
+  box-shadow:0 4px 14px rgba(0,0,0,.05),0 30px 80px rgba(0,0,0,.18) !important;
+}
+html body.light-mode #productDetailModal .detail-modal-content::before{
+  background:linear-gradient(90deg,transparent 0%,rgba(184,148,30,0.45) 20%,rgba(212,175,55,0.75) 50%,rgba(184,148,30,0.45) 80%,transparent 100%) !important;
+}
+html body.light-mode #productDetailModal .detail-handle{ background:rgba(0,0,0,.10) !important; }
+html body.light-mode #productDetailModal .close-btn{
+  background:rgba(0,0,0,.04) !important;
+  border:1px solid rgba(0,0,0,.08) !important;
+  color:#5A5A66 !important;
+}
+html body.light-mode #productDetailModal .close-btn:hover{
+  background:rgba(232,80,30,.10) !important;
+  border-color:rgba(232,80,30,.35) !important;
+  color:#E8501E !important;
+}
+html body.light-mode #productDetailModal #detailProductName{ color:#1A1A1A !important; }
+html body.light-mode #productDetailModal .detail-rating-top{ color:#5A5A66 !important; }
+html body.light-mode #productDetailModal .detail-trust-card{
+  background:#FFFFFF !important;
+  border:1px solid rgba(0,0,0,.06) !important;
+}
+html body.light-mode #productDetailModal .detail-trust-card .dtc-label{ color:#4A4A4A !important; }
+html body.light-mode #productDetailModal .detail-trust-card .dtc-value{ color:#1A1A1A !important; }
+
+/* Modo oscuro: precio principal con coral más brillante para mejor contraste */
+html body:not(.light-mode) #productDetailModal .detail-price-main{ color:#FF8A3D !important; }
+
+/* Modo claro: precio del sticky CTA (footer fijo) en oscuro, no blanco */
+html body.light-mode #productDetailModal .detail-sticky-cta .dsc-price-main{ color:#1A1A1A !important; }
+html body.light-mode #productDetailModal .detail-sticky-cta .dsc-price-sub{ color:#6B6B7A !important; }
+
+/* Botones de cantidad: feedback táctil en ambos temas */
+#productDetailModal .detail-qty-btn,
+#productDetailModal .dsc-qty-btn,
+.carrito-qty-btn{
+  transition:background-color .15s,border-color .15s,color .15s,transform .12s !important;
+}
+#productDetailModal .detail-qty-btn:hover,
+#productDetailModal .dsc-qty-btn:hover,
+.carrito-qty-btn:hover{ transform:scale(1.05); }
+#productDetailModal .detail-qty-btn:active,
+#productDetailModal .dsc-qty-btn:active,
+.carrito-qty-btn:active{ transform:scale(.95); }
+html body.light-mode .carrito-qty-btn{
+  background:#FFFFFF !important;
+  border:1px solid rgba(0,0,0,.12) !important;
+  color:#1A1A1A !important;
+}
+html body.light-mode .carrito-qty-btn:hover{
+  background:#F4F1EC !important;
+  border-color:rgba(232,80,30,.35) !important;
+  color:#E8501E !important;
+}
+
+/* Botones Pedir/WhatsApp: hover/active consistentes */
+.btn-pedir-card,.btn-pedir-whatsapp,.dsc-buy-btn{
+  transition:filter .15s,transform .14s cubic-bezier(0.23,1,0.32,1),box-shadow .15s !important;
+}
+.btn-pedir-card:hover,.btn-pedir-whatsapp:hover,.dsc-buy-btn:hover{
+  filter:brightness(1.06); transform:translateY(-1px);
+}
+.btn-pedir-card:active,.btn-pedir-whatsapp:active,.dsc-buy-btn:active{ transform:scale(.98); }
+
+/* ============================================================
+   REESTRUCTURA MODAL (2026-07): foto primero, como las cards
+   Orden visual: foto (redondeada) → galería → nombre → resto.
+   El botón cerrar flota arriba a la derecha sobre la foto.
+   ============================================================ */
+
+/* La imagen ahora es hija directa de .detail-modal-content (no dentro de .detail-grid).
+   La hacemos full-width con esquinas redondeadas arriba y abajo, como las cards. */
+#productDetailModal .detail-modal-content > .detail-image-wrap {
+  margin: 0 !important;
+  padding: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  overflow: visible !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 14px !important;
+}
+#productDetailModal .detail-modal-content > .detail-image-wrap .detail-img-frame {
+  width: 100% !important;
+  border-radius: 0 0 20px 20px !important;
+  /* Solo esquinas de abajo redondeadas: la imagen nace del borde superior del modal */
+  border-top-left-radius: 0 !important;
+  border-top-right-radius: 0 !important;
+  margin: 0 !important;
+  box-shadow: none !important;
+}
+/* En móvil: esquinas de arriba también redondeadas para que no toque el borde superior del modal */
+@media (max-width: 600px) {
+  #productDetailModal .detail-modal-content > .detail-image-wrap .detail-img-frame {
+    border-top-left-radius: 0 !important;
+    border-top-right-radius: 0 !important;
+    border-bottom-left-radius: 20px !important;
+    border-bottom-right-radius: 20px !important;
+  }
+}
+
+/* Galería: padding lateral para que no toque los bordes del modal */
+#productDetailModal .detail-modal-content > .detail-image-wrap .detail-gallery-thumbs {
+  padding: 0 22px 4px !important;
+  margin: 0 !important;
+}
+
+/* Botón cerrar flotante: arriba a la derecha, sobre la foto */
+#productDetailModal .close-btn-floating {
+  position: absolute !important;
+  top: 14px !important;
+  right: 14px !important;
+  z-index: 20 !important;
+  width: 38px !important;
+  height: 38px !important;
+  border-radius: 50% !important;
+  background: rgba(0, 0, 0, 0.55) !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
+  color: #fff !important;
+  font-size: 22px !important;
+  line-height: 1 !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: all 0.2s !important;
+  flex-shrink: 0;
+}
+#productDetailModal .close-btn-floating:hover {
+  background: rgba(255, 80, 30, 0.85) !important;
+  border-color: rgba(255, 122, 41, 0.5) !important;
+  transform: scale(1.05) !important;
+}
+/* Modo claro: botón cerrar con fondo oscuro translúcido (sobre foto clara) */
+html body.light-mode #productDetailModal .close-btn-floating {
+  background: rgba(0, 0, 0, 0.45) !important;
+  border-color: rgba(255, 255, 255, 0.25) !important;
+  color: #fff !important;
+}
+html body.light-mode #productDetailModal .close-btn-floating:hover {
+  background: rgba(232, 80, 30, 0.85) !important;
+}
+
+/* El .modal-header ya no tiene close-btn: ahora solo contiene badge + nombre + rating.
+   Le damos padding lateral y superior para separar de la galería. */
+#productDetailModal .detail-modal-content > .modal-header {
+  padding: 18px 22px 10px !important;
+  display: block !important;
+}
+#productDetailModal .detail-modal-content > .modal-header .detail-header-copy {
+  width: 100%;
+}
+#productDetailModal .detail-modal-content > .modal-header h2 {
+  padding-right: 44px; /* espacio para el botón cerrar flotante */
+}
+
+/* .detail-body ahora solo contiene .detail-info: padding lateral consistente */
+#productDetailModal .detail-modal-content > .detail-body {
+  padding: 0 22px 22px !important;
+}
+#productDetailModal .detail-modal-content > .detail-body .detail-grid {
+  display: block !important;
+  margin: 0 !important;
+}
+
+/* ============================================================
+   PULIDO PREMIUM SUTIL (no rediseño, solo refinamiento)
+   - Negro ligeramente más cálido en oscuro
+   - Hairline dorada sutil en bordes de cards del modal
+   - Sombras en capas más suaves
+   ============================================================ */
+
+/* Modal: negro cálido (no puro) + hairline dorada superior ya existe */
+html body:not(.light-mode) #productDetailModal .detail-modal-content {
+  background: #14110D !important; /* negro cálido en vez de #0e0e0e */
+}
+
+/* Trust cards: hairline dorada sutil en hover */
+#productDetailModal .detail-trust-card {
+  transition: border-color .25s, box-shadow .25s !important;
+}
+#productDetailModal .detail-trust-card:hover {
+  border-color: rgba(201, 169, 110, 0.30) !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Precio principal: serif editorial ya existe (Playfair), reforzamos letter-spacing */
+#productDetailModal .detail-price-main .dp-num {
+  letter-spacing: -0.03em !important;
+}
+
+/* Badges de specs: transición suave al hover */
+#productDetailModal #detailSpecBadges .dsr-row,
+#productDetailModal .detail-spec-badges > * {
+  transition: transform .2s, box-shadow .2s !important;
+}
+#productDetailModal #detailSpecBadges .dsr-row:hover,
+#productDetailModal .detail-spec-badges > *:hover {
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 14px rgba(255, 122, 41, 0.22) !important;
+}
+
+/* Sticky CTA: sombra más suave hacia arriba */
+#productDetailModal .detail-sticky-cta {
+  box-shadow: 0 -12px 32px rgba(0, 0, 0, 0.25) !important;
+}
+
+
+/* Prefers-reduced-motion: desactivar shine y animaciones del modal */
+@media(prefers-reduced-motion:reduce){
+  #productDetailModal .detail-modal-content .detail-shine,
+  #productDetailModal .detail-modal-content::after,
+  .detail-modal-content .shine-overlay{
+    animation:none !important;
+    transition:none !important;
+  }
+  #productDetailModal .detail-modal-content{
+    transition:none !important;
+  }
+}
+
+/* Fallback: fondo opaco si no hay backdrop-filter */
+@supports not (backdrop-filter:blur(1px)){
+  #productDetailModal .detail-modal-content{
+    background:rgba(23,23,31,.98) !important;
+  }
+}
+
+/* Estado :disabled en botones del modal */
+#productDetailModal .detail-buy-btn:disabled,
+#productDetailModal .btn-primary:disabled{
+  opacity:.55;cursor:not-allowed;transform:none !important;box-shadow:none !important;
+}
+
+/* ============================================================
+   FIX: Modal no pegado al top en móvil.
+   styles.fixes.css fuerza align-items:flex-end + padding:0
+   en @media(max-width:768px), dejando el modal sin margen
+   superior. Añadimos padding-top y ajustamos width/max-height
+   con la máxima especificidad para ganar la cascada.
+   ============================================================ */
+@media (max-width:768px){
+  html body #productDetailModal{
+    padding-top:10px !important;
+  }
+  html body #productDetailModal .detail-modal-content{
+    width:calc(100vw - 16px) !important;
+    max-width:calc(100vw - 16px) !important;
+    max-height:calc(100vh - 16px) !important;
+    border-radius:22px 22px 0 0 !important;
+  }
+  #productDetailModal .detail-image-wrap {
+    max-height: none !important;
+  }
+}
+@media (max-width:480px){
+  html body #productDetailModal{
+    padding-top:8px !important;
+  }
+  html body #productDetailModal .detail-modal-content{
+    width:calc(100vw - 12px) !important;
+    max-width:calc(100vw - 12px) !important;
+    max-height:calc(100vh - 12px) !important;
+    border-radius:20px 20px 0 0 !important;
+  }
 }
