@@ -1803,6 +1803,25 @@ html body .nd-hero-search .hsb-search {
   }
 }
 
+/* contain:layout en .hero.nd-hero (ver nuevo-diseno.css) crea containing
+   block para TODO descendiente position:fixed, sin importar el ancho de
+   pantalla — no es solo cosa de overflow. En mobile el panel/pill son
+   fixed pantalla completa; con contain:layout puesto, "fixed" pasa a ser
+   relativo a la caja del hero (no al viewport) y aparecían corridos hacia
+   arriba, mostrando un bloque negro (el propio panel, mal ubicado) sobre
+   el resto del hero. A diferencia del overflow (que solo hace falta en
+   desktop), esto hay que quitarlo en TODOS los anchos mientras el
+   buscador esté abierto. */
+html body .hero.nd-hero:has(.hsb-panel.visible),
+html body .hero.nd-hero.search-panel-open {
+  contain: none !important;
+}
+@supports not (selector(:has(*))) {
+  html body .hero.nd-hero {
+    contain: none !important;
+  }
+}
+
 /* ── Desktop panel: proper sizing, scrolling, and containment ── */
 html body .hsb-panel {
   display: none !important;
@@ -1914,11 +1933,16 @@ html body .hsb-suggestions {
   }
 
   /* .nd-wrap (nuevo-diseno.css) tiene position:relative + z-index:1 propio,
-     así que crea su propio contexto de apilamiento: el z-index:1101 del pill
-     de abajo solo compite DENTRO de .nd-wrap, y .nd-wrap (z-index:1) pierde
-     contra el header sticky (z-index:1090) — el pill quedaba tapado por el
-     header aunque su propio z-index fuera mayor. Se sube el contexto entero
-     mientras el buscador está abierto. */
+     así que crea su propio contexto de apilamiento: el z-index:1101 del
+     pill NO puede "escapar" ese contexto — un hijo solo compite en rango
+     con sus hermanos dentro de .nd-wrap; .nd-wrap en sí (z-index:1) sigue
+     perdiendo contra el header (z-index:1090) al nivel de arriba, así que
+     el pill (y el header interceptaba sus clics) quedaba tapado sin
+     importar qué z-index le pusiera por dentro.
+     (El bloque negro que tapaba TODO el hero era otro bug — contain:layout
+     desubicando el position:fixed, arreglado más arriba — no lo causaba
+     esto: la tarjeta 3D del hero no ocupa la franja del header, así que
+     subir todo .nd-wrap no la superpone con nada.) */
   html body .hero.nd-hero:has(.hsb-panel.visible) .nd-wrap,
   html body .hero.nd-hero.search-panel-open .nd-wrap {
     z-index: 1101 !important;
