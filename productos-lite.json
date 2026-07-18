@@ -2494,16 +2494,16 @@
   {
     "id": 1784403677390,
     "nombre": "​🌐 NanoStation AC loco",
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784403674704.webp",
+    "imagen": "https://tiendamax.org/imagenes/img_1784403674704.webp",
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784403674704.webp",
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784403675794.webp",
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784403676611.webp"
+      "https://tiendamax.org/imagenes/img_1784403674704.webp",
+      "https://tiendamax.org/imagenes/img_1784403675794.webp",
+      "https://tiendamax.org/imagenes/img_1784403676611.webp"
     ],
     "precioActual": 120,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 4,
+    "stock": 0,
     "comision": 8,
     "comisionMoneda": "USD",
     "categoria": "WIFI",
