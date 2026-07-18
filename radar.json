@@ -1,6 +1,6 @@
 {
-  "actualizado": "2026-07-14T12:12:39.780639+00:00",
-  "fecha": "2026-07-14",
+  "actualizado": "2026-07-18T11:52:48.317991+00:00",
+  "fecha": "2026-07-18",
   "fuentes": [
     "revolico",
     "porlalivre",
@@ -8,30 +8,27 @@
   ],
   "resumen": {
     "vigilados": 3,
-    "encimaMercado": 0,
+    "encimaMercado": 1,
     "bajadasComp": 1,
     "sinDatos": 0
   },
   "productos": [
     {
       "id": 1777924118004,
-      "nombre": "Inversor 12V",
+      "nombre": "⚡ Inversor de Corriente Tataliken 4000W",
       "tuPrecio": 180.0,
       "mercado": {
-        "min": 80.0,
-        "mediana": 165.0,
+        "min": 85.0,
+        "mediana": 159.0,
         "n": 21
       },
-      "deltaAyerMediana": -5.0,
-      "estado": "competitivo",
+      "deltaAyerMediana": -6.0,
+      "estado": "encima",
       "sugerencia": {
-        "texto": "Precio competitivo respecto al mercado"
+        "texto": "Estás por encima del mercado. Podrías bajar hacia ~$159",
+        "precio": 159.0
       },
       "historial": [
-        {
-          "fecha": "2026-07-01",
-          "mediana": 170.0
-        },
         {
           "fecha": "2026-07-02",
           "mediana": 170.0
@@ -83,49 +80,53 @@
         {
           "fecha": "2026-07-14",
           "mediana": 165.0
+        },
+        {
+          "fecha": "2026-07-18",
+          "mediana": 159.0
         }
       ],
       "muestras": [
         {
           "fuente": "revolico",
-          "titulo": "80 USD Convertidor ,inversor 12v a 110v,1000w,nuevo.",
-          "precio": 80.0,
-          "url": "https://www.revolico.com/item/convertidor-inversor-12v-a-110v1000wnuevo-55703437",
-          "dias": null
-        },
-        {
-          "fuente": "revolico",
-          "titulo": "85 USD Inversor 12v a 120v potencia nominal 500w",
+          "titulo": "85 USD Inversores de corriente $85-$400",
           "precio": 85.0,
-          "url": "https://www.revolico.com/item/inversor-12v-a-120v-potencia-nominal-500w-56138412",
+          "url": "https://www.revolico.com/item/dell-inspiron-15-3530-core-i5-13th-generacion-nueva-480usd-54020731",
           "dias": null
         },
         {
           "fuente": "revolico",
-          "titulo": "100 USD Inversor 6000/4000 watts/ Controlador Solar 100A (12V-48V)/ Cargador 20A/30A Intel",
-          "precio": 100.0,
-          "url": "https://www.revolico.com/item/inversor-4000-watts-controlador-solar-100-a-cargador-20a-luces-led-solares-alarma-solar-con-sensor-control-remoto-55047645?p",
+          "titulo": "126 USD Inversor Convertidor Tataliken F-2000A 800W / 2000W (Pico) DC 12V a 110V AC.",
+          "precio": 126.0,
+          "url": "https://www.revolico.com/item/inversor-convertidor-tataliken-f-2000a-800w-2000w-pico-dc-12v-a-110v-ac-53074785",
           "dias": null
         },
         {
           "fuente": "revolico",
-          "titulo": "100 USD Inversor 12v 2000w",
-          "precio": 100.0,
-          "url": "https://www.revolico.com/item/inversor-12v-2000w-56272518",
+          "titulo": "130 USD Inversor Convertidor Tataliken F-2000A 800W / 2000W (Pico) DC 12V a 110V AC. 🔌 Pot",
+          "precio": 130.0,
+          "url": "https://www.revolico.com/item/inversor-convertidor-tataliken-f-2000a-800w-2000w-pico-dc-12v-a-110v-ac-potencia-potencia-continua-800w-sopo-56034692",
           "dias": null
         },
         {
           "fuente": "revolico",
-          "titulo": "100 USD Inversor 12v 2000wde 110v",
-          "precio": 100.0,
-          "url": "https://www.revolico.com/item/inversor-12v-2000wde-110v-55923532",
+          "titulo": "130 USD Inversores de corriente 12V a 110V 500W a 6000W + cargadores LiFePO4 y controlador",
+          "precio": 130.0,
+          "url": "https://www.revolico.com/item/inversores-500w-800w-1500w-3000w-4000w-12v-a-110v-lvyuan-tataliken-unizuki-54427528",
           "dias": null
         },
         {
           "fuente": "revolico",
-          "titulo": "120 USD Inversor 12v-3000w",
-          "precio": 120.0,
-          "url": "https://www.revolico.com/item/inversor-12v-3000w-55427082",
+          "titulo": "135 USD REBAJASSS 📌 INVERSORES DE CORRIENTE 12V/24V/48V con MENSAJERÍA y GARANTÍA ⚡ BUENOS",
+          "precio": 135.0,
+          "url": "https://www.revolico.com/item/inversores-de-corriente-con-mensajeria-y-garantia-buenos-precios-55728034",
+          "dias": null
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "140 USD Inversor Convertidor Tataliken F-2000A 800W / 2000W (Pico) DC 12V a 110V AC.",
+          "precio": 140.0,
+          "url": "https://www.revolico.com/item/inversor-convertidor-tataliken-f-2000a-800w-2000w-pico-dc-12v-a-110v-ac-55968111",
           "dias": null
         }
       ]
@@ -146,10 +147,6 @@
       },
       "historial": [
         {
-          "fecha": "2026-07-01",
-          "mediana": 25.0
-        },
-        {
           "fecha": "2026-07-02",
           "mediana": 25.0
         },
@@ -199,6 +196,10 @@
         },
         {
           "fecha": "2026-07-14",
+          "mediana": 25.0
+        },
+        {
+          "fecha": "2026-07-18",
           "mediana": 25.0
         }
       ],
@@ -214,7 +215,7 @@
     },
     {
       "id": 1778102582909,
-      "nombre": "​🔥 Antorcha de Soldadura TIG (Kit Profesional)",
+      "nombre": "​🔥 Antorcha de Soldadura TIG (KIT Profesional)",
       "tuPrecio": 90.0,
       "mercado": {
         "min": 69.0,
@@ -227,10 +228,6 @@
         "texto": "Precio competitivo respecto al mercado"
       },
       "historial": [
-        {
-          "fecha": "2026-07-01",
-          "mediana": 90.0
-        },
         {
           "fecha": "2026-07-02",
           "mediana": 90.0
@@ -281,6 +278,10 @@
         },
         {
           "fecha": "2026-07-14",
+          "mediana": 90.0
+        },
+        {
+          "fecha": "2026-07-18",
           "mediana": 90.0
         }
       ],
