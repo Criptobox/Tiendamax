@@ -779,6 +779,9 @@ function renderHeroGaleria() {
 
     // Tocar la tarjeta abre el detalle del producto actual
     card.onclick = () => { const p = _ndHeroProds[_ndHeroIdx]; if (p && typeof abrirDetalleProducto === 'function') abrirDetalleProducto(p.id); };
+    // role="button" no activa con teclado por sí solo (a diferencia de <button>)
+    // — Enter/Espacio deben disparar la misma acción que el click.
+    card.onkeydown = (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); card.click(); } };
     // Botón "Pedir" → WhatsApp con el producto actual
     const btn = document.getElementById('ndHeroBtn');
     if (btn) btn.onclick = (e) => {

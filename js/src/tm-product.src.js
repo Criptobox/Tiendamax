@@ -844,9 +844,7 @@ if (_detailPrecioMNEl) {
     // La tarjeta completa es el contenedor que hace scroll en el diseño v4.
     const detailScroll = modal.querySelector('.detail-modal-content') || modal.querySelector('.detail-body');
     if (detailScroll) detailScroll.scrollTop = 0;
-    
-    
-    
+    if (typeof tmAbrirFocusTrap === 'function') tmAbrirFocusTrap(modal);
 }
 
 function cerrarDetalleModal() {
@@ -863,6 +861,7 @@ function cerrarDetalleModal() {
     modal.classList.remove('modal-show');
     modal.style.removeProperty('display');
     document.body.style.overflow = '';
+    if (typeof tmCerrarFocusTrap === 'function') tmCerrarFocusTrap(modal);
     _detalleProductoActual = null;
     if (typeof actualizarVisibilidadBannerOferta === 'function') {
         actualizarVisibilidadBannerOferta(typeof tmVistaInicioActiva === 'function' ? tmVistaInicioActiva() : true);

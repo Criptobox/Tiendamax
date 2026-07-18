@@ -289,20 +289,71 @@ function limpiarCarrito() {
     actualizarBotonesCarrito();
 }
 
+// ── Accesibilidad: trampa de foco reutilizable para modales ──
+// Guarda qué tenía el foco antes de abrir, mueve el foco DENTRO del modal,
+// atrapa Tab/Shift+Tab mientras está abierto (no se puede tabular al fondo
+// oculto), y devuelve el foco al elemento que abrió el modal al cerrarlo.
+// No soporta modales anidados (no hace falta hoy: carrito y detalle de
+// producto nunca se abren uno desde dentro del otro).
+let _tmFocusTrapReturnEl = null;
+let _tmFocusTrapKeydownHandler = null;
+const _TM_FOCUSABLES_SEL = 'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
+function tmAbrirFocusTrap(modalEl) {
+    if (!modalEl) return;
+    _tmFocusTrapReturnEl = document.activeElement;
+    const focusables = () => Array.from(modalEl.querySelectorAll(_TM_FOCUSABLES_SEL))
+        .filter(el => el.offsetParent !== null);
+    if (!modalEl.hasAttribute('tabindex')) modalEl.setAttribute('tabindex', '-1');
+    const first = focusables()[0] || modalEl;
+    // requestAnimationFrame: al abrir, el modal puede seguir con display:none
+    // un instante (transición de clases) — esperar al siguiente frame evita
+    // intentar enfocar un elemento todavía no visible.
+    requestAnimationFrame(() => { try { first.focus({ preventScroll: true }); } catch (e) {} });
+
+    _tmFocusTrapKeydownHandler = function (e) {
+        if (e.key !== 'Tab') return;
+        const els = focusables();
+        if (!els.length) { e.preventDefault(); return; }
+        const firstEl = els[0], lastEl = els[els.length - 1];
+        if (e.shiftKey && document.activeElement === firstEl) {
+            e.preventDefault(); lastEl.focus();
+        } else if (!e.shiftKey && document.activeElement === lastEl) {
+            e.preventDefault(); firstEl.focus();
+        }
+    };
+    modalEl.addEventListener('keydown', _tmFocusTrapKeydownHandler);
+}
+
+function tmCerrarFocusTrap(modalEl) {
+    if (modalEl && _tmFocusTrapKeydownHandler) {
+        modalEl.removeEventListener('keydown', _tmFocusTrapKeydownHandler);
+    }
+    _tmFocusTrapKeydownHandler = null;
+    const ret = _tmFocusTrapReturnEl;
+    _tmFocusTrapReturnEl = null;
+    if (ret && typeof ret.focus === 'function' && document.contains(ret)) {
+        try { ret.focus({ preventScroll: true }); } catch (e) {}
+    }
+}
+
 function abrirCarrito() {
     renderizarCarrito();
     const drawer = document.getElementById('carritoDrawer');
     drawer.classList.remove('hidden');
     document.body.style.overflow = 'hidden';
     document.body.classList.add("cart-open");
+    tmAbrirFocusTrap(drawer);
     // Push history so back button closes cart instead of exiting page
     history.pushState({ cartOpen: true }, '');
 }
 
 function cerrarCarrito() {
-    document.getElementById('carritoDrawer').classList.add('hidden');
+    const drawer = document.getElementById('carritoDrawer');
+    drawer.classList.add('hidden');
     document.body.style.overflow = '';
     document.body.classList.remove("cart-open");
+    tmCerrarFocusTrap(drawer);
 }
 
 function renderizarCarrito() {
