@@ -145,7 +145,7 @@ html body.light-mode #productDetailModal .detail-rating-top b { color: #1A1A1A !
 }
 #productDetailModal .detail-badge-hot {
   position: absolute;
-  top: 12px; right: 12px;
+  top: 58px; right: 12px; /* debajo del close-btn-floating, que ocupa la esquina sup. derecha */
   background: rgba(0,0,0,0.55);
   backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
   color: #ffb380;

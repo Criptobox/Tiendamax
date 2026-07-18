@@ -257,7 +257,7 @@
 
 
 
-    <link rel="stylesheet" href="css/bundle.css?v=7dd2d90f">
+    <link rel="stylesheet" href="css/bundle.css?v=811b0574">
 
 
 
@@ -1146,31 +1146,32 @@
                 <div class="sk sk-line w60"></div>
             </div>
             <div class="detail-handle"></div>
+            <button data-action="cerrarDetalleModal" aria-label="Cerrar detalle del producto" type="button" class="close-btn-floating">×</button>
+
+            <!-- Foto primero (estilo v4): imagen fuera de .detail-grid, hija directa del modal -->
+            <div class="detail-image-wrap">
+                <div class="detail-img-frame">
+                    <img id="detailProductImage" src="data:," alt="Imagen del producto" class="detail-img"
+                         data-action="toggleZoomImagen" data-pass-element="true"
+                         tabindex="0" role="button" aria-label="Ampliar imagen del producto">
+                    <div class="detail-zoom-hint">🔍 Toca para ampliar</div>
+                    <div id="detailProductBadge" class="badge detail-badge" style="display:none;"></div>
+                    <div id="detailMasVendidoBadge" class="badge-vendido detail-badge-hot" style="display:none;">🔥 Destacado</div>
+                    <div id="detailPhotoCounter" class="detail-photo-counter" style="display:none;"></div>
+                </div>
+                <div id="detailGalleryThumbs" class="detail-gallery-thumbs" style="display:none;"></div>
+            </div>
+
             <div class="modal-header">
                 <div id="detailNuevoBadge" class="detail-badge-nuevo" style="display:none;">Recién llegado</div>
                 <h2 id="detailProductName">Detalle del Producto</h2>
-                <button data-action="cerrarDetalleModal" aria-label="Cerrar detalle del producto" type="button" class="close-btn">×</button>
             </div>
             <div class="detail-body">
 
                 <!-- Calificación bajo el título (estilo v4) -->
                 <div id="detailRatingTop" class="detail-rating-top" style="display:none;"></div>
 
-                <!-- Imagen + Info (una sola columna) -->
                 <div class="detail-grid">
-                    <div class="detail-image-wrap">
-                        <div class="detail-img-frame">
-                            <img id="detailProductImage" src="data:," alt="Imagen del producto" class="detail-img"
-                                 data-action="toggleZoomImagen" data-pass-element="true"
-                                 tabindex="0" role="button" aria-label="Ampliar imagen del producto">
-                            <div class="detail-zoom-hint">🔍 Toca para ampliar</div>
-                            <div id="detailProductBadge" class="badge detail-badge" style="display:none;"></div>
-                            <div id="detailMasVendidoBadge" class="badge-vendido detail-badge-hot" style="display:none;">🔥 Destacado</div>
-                            <div id="detailPhotoCounter" class="detail-photo-counter" style="display:none;"></div>
-                        </div>
-                        <div id="detailGalleryThumbs" class="detail-gallery-thumbs" style="display:none;"></div>
-                    </div>
-
                     <div class="detail-info">
                         <!-- Trust badges (envío/pago/garantía) — 3-col, justo bajo la foto como v4 -->
                         <div id="detailTrustBadges" class="detail-trust-badges" style="display:none;"></div>
