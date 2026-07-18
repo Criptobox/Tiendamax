@@ -848,6 +848,12 @@ async function guardarTasaMNAdmin() {
             cerrarModalNotificaciones();
             return;
         }
+        // El lightbox de zoom (index.html) tiene su propio listener de ESC
+        // que solo cierra la foto ampliada. Si está abierto, no seguir de
+        // largo hasta aquí y cerrar también el modal de detalle detrás —
+        // era un ESC que cerraba dos cosas de una.
+        const lightbox = document.getElementById('tmv4Lightbox');
+        if (lightbox && lightbox.classList.contains('show')) return;
         const detalle = document.getElementById('productDetailModal');
         if (detalle && !detalle.classList.contains('hidden') && typeof cerrarDetalleModal === 'function') {
             cerrarDetalleModal();
