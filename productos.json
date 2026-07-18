@@ -2626,5 +2626,34 @@
     ],
     "fechaAgregado": "2026-07-18T19:41:17.390Z",
     "descripcion": "Pack de 5 radios NanoStation AC loco, ideales para establecer conexiones inalámbricas de larga distancia (punto a punto o punto a multipunto). Su diseño ultracompacto y la tecnología airMAX AC garantizan un enlace exterior rápido, estable y altamente eficiente.\n​Ficha Técnica:\n​○ Rendimiento: 🚀 Alcanza velocidades de transmisión de más de 450 Mbps, perfecto para redes exigentes y de alta capacidad.\n​○ Tecnología: 📡 Opera en la banda libre de 5 GHz utilizando el protocolo airMAX AC, lo que reduce la interferencia y maximiza la calidad de la señal.\n​○ Diseño: ✨ Formato muy compacto y minimalista en color blanco, optimizado para resistir instalaciones en exteriores sin llamar la atención.\n​○ Gestión: 🛠️ Sistema UNMS Ready integrado, que permite una configuración, monitoreo y administración de red rápida y centralizada.\n​Especificaciones (Specs):\n​Marca: Ubiquiti.\n​Modelo: NanoStation AC loco.\n​Frecuencia: 5 GHz.\n​Velocidad máxima: 450+ Mbps."
+  },
+  {
+    "id": 1784404666988,
+    "nombre": "​🌐 MikroTik SXTsq Lite5",
+    "descripcion": "Dispositivo inalámbrico para exteriores de diseño ultracompacto y resistente, ideal para enlaces punto a punto o como unidad CPE. Su estructura ligera y eficiente permite una instalación sencilla en cualquier entorno, garantizando una señal estable y de alto rendimiento.\n​Ficha Técnica:\n​○ Cobertura: 📡 Diseñado para enlaces de largo alcance en la banda de 5 GHz, ofreciendo una conexión inalámbrica robusta y de gran estabilidad.\n​○ Diseño: ✨ Formato cuadrado minimalista y compacto en color blanco, optimizado para una instalación discreta y duradera en exteriores.\n​○ Rendimiento: 🌐 Equipo optimizado para entornos de red inalámbrica, capaz de manejar comunicaciones rápidas y eficientes en condiciones exigentes.\n​○ Configuración: 🛠️ Interfaz intuitiva y versátil propia de MikroTik, permitiendo una puesta en marcha rápida y una gestión precisa de la red.\n​Especificaciones (Specs):\n​Marca: MikroTik.\n​Modelo: SXTsq Lite5.\n​Frecuencia: 5 GHz.\n​Uso: Enlaces punto a punto y CPE en exteriores.\n​Tipo: Dispositivo inalámbrico.",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784404663965.webp",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784404663965.webp",
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784404665140.webp",
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784404666146.webp"
+    ],
+    "precioActual": 150,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 4,
+    "comision": 10,
+    "comisionMoneda": "USD",
+    "categoria": "WIFI",
+    "subcategoria": "ROUTERS",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "specs": [
+      "​🌐 Conectividad de Largo Alcance ​",
+      "📡 Diseño Compacto y Eficiente ​",
+      "🛠️ Solución para Exterior"
+    ],
+    "fechaAgregado": "2026-07-18T19:57:46.989Z"
   }
 ]
