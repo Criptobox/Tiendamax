@@ -2545,5 +2545,31 @@
       "🛠️ Solución para Exterior"
     ],
     "fechaAgregado": "2026-07-18T19:57:46.989Z"
+  },
+  {
+    "id": 1784405087402,
+    "nombre": "​🌐 Cámara de Seguridad Wi-Fi PTZ",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784405086297.webp",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784405086297.webp"
+    ],
+    "precioActual": 25,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 10,
+    "comision": 1500,
+    "comisionMoneda": "MN",
+    "categoria": "SEGURIDAD",
+    "subcategoria": "CÁMARAS",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "specs": [
+      "​🛡️ Seguridad Inteligente 24/7 ​",
+      "📡 Conectividad Inalámbrica Dual ​",
+      "🔄 Rotación Panorámica 360°"
+    ],
+    "fechaAgregado": "2026-07-18T20:04:47.403Z"
   }
 ]
