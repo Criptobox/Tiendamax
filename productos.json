@@ -232,9 +232,9 @@
   },
   {
     "id": 1778103783319,
-    "nombre": "Las Nuevas Baterías Españolas Lubrim",
+    "nombre": "​🚗 Batería Automotriz LUBRIM (75A)",
     "precioActual": 85,
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783836488642_4b0c8d.webp",
+    "imagen": "https://tiendamax.org/imagenes/img_1783836488642_4b0c8d.webp",
     "categoria": "ENERGIA",
     "subcategoria": "BATERÍAS",
     "stock": 10,
@@ -247,12 +247,17 @@
     "comision": 5,
     "seoTitle": "LAS NUEVAS BATERÍAS ESPAÑOLAS LUBRIM en Cuba | TiendaMax",
     "seoDescription": "🛑Las nuevas Baterias españolas LUBRIM usan Tecnología Ca/Ca que consiste en la utilización de placas de calcio (Ca) en su construcción, lo que mejora su…",
-    "descripcion": "Baterías españolas LUBRIM de 12V para carro, tecnología Ca/Ca (placas de calcio) que mejora el rendimiento y da mayor potencia de arranque y vida útil frente a las tecnologías más antiguas. No requieren mantenimiento: es llegar y montar. Consulta las variantes de amperaje disponibles.",
     "precioOriginal": 0,
     "comisionMoneda": "USD",
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783836488642_4b0c8d.webp",
+      "https://tiendamax.org/imagenes/img_1783836488642_4b0c8d.webp",
       "https://tiendamax.org/imagenes/img_1778103783319.webp"
+    ],
+    "descripcion": "Batería de alto rendimiento diseñada específicamente para el sector automotriz, ofreciendo una fuente de energía constante y segura para el encendido y funcionamiento de diversos sistemas eléctricos. Su construcción robusta garantiza una larga vida útil y una respuesta eficiente en condiciones de uso diario.\n​Ficha Técnica:\n​Tecnología: 🔋 Desarrollada con tecnología de calcio-calcio (Ca/Ca) que optimiza el rendimiento y minimiza el mantenimiento requerido.\n​Arranque: ⚡ Proporciona una potencia de arranque superior, ideal para asegurar el encendido del motor de manera rápida y sin interrupciones.\n​Construcción: 🛡️ Diseño ergonómico y sellado, pensado para resistir vibraciones y proporcionar una mayor seguridad durante su operación.\n​Compatibilidad: 🚗 Versátil y adaptable, diseñada para ajustarse a las necesidades eléctricas de una amplia gama de vehículos modernos.\n​Especificaciones (Specs):\n​Marca: LUBRIM.\n​Voltaje nominal: 12V.\n​Aplicación: Automotriz.\n​Tecnología: Calcio-Calcio (Ca/Ca).",
+    "specs": [
+      "​🔋 Energía Automotriz Confiable",
+      "​⚡ Potencia de Arranque Estable ​",
+      "🛡️ Tecnología Duradera y Resistente"
     ]
   },
   {
@@ -1868,10 +1873,10 @@
   },
   {
     "id": 1781899206341,
-    "nombre": "Inversor Solar Híbrido Must 1500W (24V a 120V)",
+    "nombre": "📟 Inversor Solar MUST PV15-1524 LV",
     "precioActual": 350,
     "precioOriginal": 0,
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783836465146.webp",
+    "imagen": "https://tiendamax.org/imagenes/img_1783836465146.webp",
     "categoria": "ENERGIA",
     "subcategoria": "INVERSORES",
     "stock": 7,
@@ -1885,17 +1890,17 @@
     "comisionMoneda": "USD",
     "nombreNormalizadoAt": "2026-06-27T12:16:34.731Z",
     "specs": [
-      "1500W",
-      "24V",
-      "120V"
+      "​☀️ Eficiencia Energética Solar ​",
+      "🔋 Respaldo Energético Compacto ​",
+      "⚙️ Gestión Profesional de Energía"
     ],
     "seoTitle": "INVERSOR SOLAR HÍBRIDO MUST 1500W (24V A 120V) | TiendaMax",
     "seoDescription": "​⚙️ Especificaciones Técnicas Principales: ​Potencia Nominal: 1500VA / 1500W (Potencia real continua). ​Voltaje del Sistema (Baterías): 24V DC. ​Salida de…",
-    "descripcion": "Inversor solar híbrido MUST, de 1500W, entrada 24V a salida 120V. Pantalla LCD con botones de control. Convierte la energía de tu banco de baterías o paneles solares en corriente para el hogar durante los apagones.",
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783836465146.webp",
+      "https://tiendamax.org/imagenes/img_1783836465146.webp",
       "data:image/webp;base64,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"
-    ]
+    ],
+    "descripcion": "Inversor solar versátil diseñado para optimizar el uso de energía fotovoltaica en sistemas residenciales. Este equipo combina de manera eficiente la carga solar y el respaldo de red, ofreciendo una solución confiable y compacta para mantener tus dispositivos siempre alimentados.\n​Ficha Técnica:\n​Tecnología: 🔄 Sistema integral que permite la conversión de energía solar y la carga de baterías, garantizando una administración eficiente de la corriente continua.\n​Seguridad: 🛡️ Operación diseñada bajo estrictas normas de seguridad, incluyendo protección contra sobrecargas y un rango de temperatura operativa entre 0°C y 45°C.\n​Monitoreo: 📟 Incluye sistema de seguimiento del punto de máxima potencia (MPPT) para asegurar un rendimiento óptimo de los paneles solares bajo diversas condiciones climáticas.\n​Diseño: 🛠️ Construcción robusta y de fácil instalación, ideal para configuraciones que requieren un aprovechamiento preciso del voltaje solar (VOC máx. 105VDC).\n​Especificaciones (Specs):\n​Marca: MUST.\n​Modelo: PV15-1524 LV.\n​Potencia nominal: 1500VA / 1500W.\n​Voltaje del sistema: 24VDC.\n​Rango MPPT: 30-75VDC.\n​Máx. voltaje solar (VOC): 105VDC."
   },
   {
     "id": 1778546731028,
@@ -2300,10 +2305,10 @@
   },
   {
     "id": 1782791345628,
-    "nombre": "Interruptor de Transferencia Automática 220V",
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783838287182.webp",
+    "nombre": "​⚙️ Interruptor de Transferencia Automática GEYA (220V)",
+    "imagen": "https://tiendamax.org/imagenes/img_1783838287182.webp",
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783838287182.webp",
+      "https://tiendamax.org/imagenes/img_1783838287182.webp",
       "https://tiendamax.org/imagenes/img_1782791342848.webp"
     ],
     "precioActual": 70,
@@ -2319,12 +2324,12 @@
     "garantia": "",
     "devolucion": false,
     "specs": [
-      "63A",
-      "220V",
-      "110V"
+      "​⚡ Transferencia Automática Dual",
+      "​🔄 Gestión Inteligente de Energía",
+      "​🛡️ Protección y Seguridad Eléctrica"
     ],
     "fechaAgregado": "2026-06-30T03:49:05.629Z",
-    "descripcion": "Interruptor de transferencia automática GEYA, modelo W2K-100, para 220V, monta en riel DIN. Conmuta automático entre dos fuentes de energía (por ejemplo, paneles solares/generador y la red eléctrica) — cuando falla una, pasa a la otra en segundos. Corriente nominal 45A, 230V AC, también tiene modo manual."
+    "descripcion": "Dispositivo de transferencia automática diseñado para gestionar de manera eficiente dos fuentes de energía, ideal para sistemas híbridos con paneles solares y red eléctrica. Su diseño compacto y robusto permite alternar entre fuentes de alimentación de forma segura, garantizando un suministro constante para el hogar o la oficina.\n​Ficha Técnica:\n​Funcionamiento: 🔄 Permite la conmutación entre una fuente de energía solar (PV) y la red eléctrica (City Power), optimizando el uso de recursos y asegurando el respaldo energético.\n​Modos de uso: 🛠️ Incluye un selector físico para operación manual o automática, adaptándose a las necesidades específicas de cada instalación eléctrica.\n​Seguridad: 🛡️ Construido con materiales resistentes, diseñado para soportar tensiones de impacto y cumplir con estándares internacionales de aislamiento y protección.\n​Instalación: ✨ Diseño modular pensado para integrarse fácilmente en cuadros eléctricos, facilitando la conexión de cables y la gestión de circuitos.\n​Especificaciones (Specs):\n​Marca: GEYA.\n​Modelo: W2R-100.\n​Corriente nominal: 100A.\n​Voltaje nominal: 220V AC.\n​Frecuencia: 50-60Hz.\n​Tipo: Interruptor de transferencia automática (ATS)."
   },
   {
     "id": 1783179634140,
@@ -2472,7 +2477,7 @@
   },
   {
     "id": 1783473894756,
-    "nombre": "Cargador Tactil de Batería Inteligente 12V /15A",
+    "nombre": "​🔌 Cargador Inteligente COREBOX 12V 15A",
     "imagen": "https://tiendamax.org/imagenes/img_1783473890998_28ba1e.webp",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1783473890998_28ba1e.webp"
@@ -2489,13 +2494,17 @@
     "usado": false,
     "garantia": "",
     "devolucion": false,
-    "specs": [],
+    "specs": [
+      "​⚡ Carga Inteligente de Alta Potencia",
+      "​🔋 Versatilidad para Múltiples Baterías ​",
+      "🛡️ Mantenimiento Seguro y Eficiente"
+    ],
     "fechaAgregado": "2026-07-08T01:24:54.756Z",
-    "descripcion": "Cargador de batería inteligente con pantalla táctil, 12V/15A, marca CoreBox. Pantalla a color que muestra el nivel de carga y modo seleccionado. Compatible con baterías AGM, GEL, EFB y LiFePO4. Incluye cables con pinzas."
+    "descripcion": "Cargador inteligente de última generación diseñado para ofrecer una carga rápida y segura a diversos tipos de baterías. Equipado con una pantalla digital de alta visibilidad, permite monitorear el proceso de carga en tiempo real, garantizando que tus baterías reciban el tratamiento adecuado para prolongar su vida útil.\n​Ficha Técnica:\n​Tecnología: ⚡ Integra un sistema de carga inteligente que detecta automáticamente el estado de la batería, optimizando el flujo de corriente para un rendimiento superior.\n​Compatibilidad: 🔋 Soporta una amplia gama de tecnologías de baterías, incluyendo AGM, GEL, EFB y LiFePO4, ofreciendo flexibilidad para diferentes aplicaciones.\n​Monitoreo: 📟 Pantalla LED integrada que muestra el porcentaje de carga y los parámetros eléctricos, permitiendo un control total y seguro durante todo el proceso.\n​Diseño: 🛠️ Carcasa robusta con disipación de calor eficiente, ideal para uso prolongado sin riesgos de sobrecalentamiento.\n​Especificaciones (Specs):\n​Marca: COREBOX.\n​Voltaje de salida: 12V.\n​Corriente de carga: 15A.\n​Tecnologías compatibles: AGM, GEL, EFB, LiFePO4."
   },
   {
     "id": 1783474199534,
-    "nombre": "Cargador de 12V(20A) y 24V(10A) Configurable",
+    "nombre": "​🔌 Cargador Inteligente NTRC 20A",
     "imagen": "https://tiendamax.org/imagenes/img_1783474195842.webp",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1783474195842.webp",
@@ -2514,14 +2523,16 @@
     "garantia": "",
     "devolucion": false,
     "specs": [
-      "12v/ 20A 24V/10A"
+      "​⚡ Carga Inteligente de Alta Precisión",
+      "​🔋 Compatibilidad Multivoltaje y Multitecnología ​",
+      "🛡️ Función de Reparación y Mantenimiento"
     ],
     "fechaAgregado": "2026-07-08T01:29:59.535Z",
-    "descripcion": "Cargador inteligente de batería HTAC, modelo P20, configurable entre 12V (20A) y 24V (10A). Pantalla LCD con temperatura, voltaje y modo (invierno/verano/reparación/flotante). Compatible con baterías de litio, AGM/plomo y LiFePO4, con modo de reparación."
+    "descripcion": "Cargador inteligente avanzado diseñado para ofrecer un mantenimiento óptimo y una carga segura para una amplia variedad de baterías. Su capacidad para manejar diferentes voltajes y tecnologías, junto con su función de reparación, lo convierte en una herramienta esencial para prolongar la vida útil de tus equipos eléctricos.\n​Ficha Técnica:\n​Tecnología: ⚡ Sistema inteligente que detecta y ajusta automáticamente la carga para tipos de baterías como Litio, AGM/Plomo y LiFePO4.\n​Versatilidad: 🔋 Soporta configuraciones de 12V y 24V, proporcionando una salida de corriente ajustable para adaptarse a los requerimientos específicos de cada batería.\n​Reparación: 🔧 Incluye una función especial de reparación (Repair) diseñada para ayudar a recuperar baterías que presentan dificultades, optimizando su rendimiento.\n​Monitoreo: 📟 Pantalla digital intuitiva que muestra en tiempo real el nivel de carga, voltaje y modo de operación seleccionado, facilitando su uso.\n​Especificaciones (Specs):\n​Marca: NTRC.\n​Modelo: P20.\n​Salida 12V: 20A.\n​Salida 24V: 10A.\n​Tecnologías compatibles: Litio, AGM/Plomo, LiFePO4."
   },
   {
     "id": 1783474440848,
-    "nombre": "Cargador Inteligente de 12V(35A) y 24V(15A)",
+    "nombre": "​🔌 Cargador Inteligente NTRC 35A",
     "imagen": "https://tiendamax.org/imagenes/img_1783474437066.webp",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1783474437066.webp",
@@ -2540,10 +2551,12 @@
     "garantia": "",
     "devolucion": false,
     "specs": [
-      "12V/35A"
+      "​⚡ Carga Inteligente de Alta Potencia",
+      "​🔋 Compatibilidad Multivoltaje y Multitecnología ​",
+      "🛡️ Función de Reparación y Mantenimiento Avanzado"
     ],
     "fechaAgregado": "2026-07-08T01:34:00.851Z",
-    "descripcion": "Cargador inteligente de batería, modelo P35, configurable entre 12V (35A) y 24V (15A). Pantalla LCD con nivel de carga y modo seleccionado. Compatible con litio, AGM/plomo y LiFePO4, con modo de reparación."
+    "descripcion": "Cargador inteligente de alta capacidad diseñado para ofrecer una carga eficiente y un mantenimiento seguro a una amplia variedad de baterías. Su versatilidad permite gestionar sistemas de 12V y 24V, integrando funciones especiales de reparación para ayudar a recuperar y prolongar la vida útil de tus baterías.\n​Ficha Técnica:\n​Tecnología: ⚡ Sistema inteligente avanzado que ajusta automáticamente los parámetros de carga para tecnologías como Litio, AGM/Plomo y LiFePO4.\n​Versatilidad: 🔋 Admite configuraciones duales de voltaje, proporcionando una solución robusta para diferentes necesidades de energía en el hogar o taller.\n​Reparación: 🔧 Incluye modo de reparación específico para tratar baterías que requieren restauración, optimizando su capacidad de almacenamiento.\n​Monitoreo: 📟 Pantalla LCD clara que permite visualizar en tiempo real el voltaje, corriente y modo de operación seleccionado, asegurando un proceso de carga transparente.\n​Especificaciones (Specs):\n​Marca: NTRC.\n​Modelo: P35.\n​Salida 12V: 35A.\n​Salida 24V: 18A.\n​Tecnologías compatibles: Litio, AGM/Plomo, LiFePO4."
   },
   {
     "id": 1783474747296,
