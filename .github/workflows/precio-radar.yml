@@ -18,6 +18,7 @@ concurrency:
 jobs:
   radar:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -29,9 +30,7 @@ jobs:
 
       - name: Instalar dependencias
         run: |
-          python -m pip install --upgrade pip
-          pip install requests beautifulsoup4 firebase-admin
-
+          python -m pip install -r scripts/requirements.txt
       - name: Ejecutar radar de precios
         env:
           FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}

@@ -29,8 +29,15 @@ if (!_tmInitTasaSiLista()) {
 
 // Refrescar tasa cada 20 min y al volver a la pestaña
 (function() {
-    let _lastTasa = parseFloat(localStorage.getItem('tasaMN') || '0');
+    let _checkingTasa = false;
     async function _checkTasa() {
+        // Guard de reentrada: el setInterval de 20 min y el listener de
+        // visibilitychange pueden dispararse casi al mismo tiempo (usuario
+        // cambia de pestaña justo cuando vence el intervalo) — sin esto,
+        // ambos leerían el mismo prevTasa y podrían duplicar el aviso.
+        if (_checkingTasa) return;
+        _checkingTasa = true;
+        try {
         const prevTasa = parseFloat(localStorage.getItem('tasaMN') || '0');
         await cargarTasaDesdeGitHub();
         const newTasa = parseFloat(localStorage.getItem('tasaMN') || '0');
@@ -43,6 +50,9 @@ if (!_tmInitTasaSiLista()) {
                     subio ? 'warning' : 'info'
                 );
             }
+        }
+        } finally {
+            _checkingTasa = false;
         }
     }
     setInterval(_checkTasa, 20 * 60 * 1000);

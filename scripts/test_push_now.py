@@ -5,10 +5,19 @@ TEST manual: envía push INMEDIATAMENTE sin importar horario.
 
 Si la cola tiene rebajas/nuevos/tasa → los envía.
 Si la cola está vacía → envía un push genérico de prueba.
+
+IMPORTANTE: por defecto NO envía a los suscriptores reales de producción.
+  - Si defines la variable de entorno TEST_TOKEN (el token FCM de TU
+    teléfono/navegador de prueba), el push se envía solo a ese token.
+  - Si quieres de verdad enviar a todos los suscriptores reales, pasa el
+    flag --real explícitamente: python scripts/test_push_now.py --real
+Esto evita que alguien corriendo el script "para probar rápido" termine
+spameando a todos los clientes con una notificación de prueba.
 """
 
 from __future__ import annotations
 
+import argparse
 import json
 import os
 import sys
@@ -69,6 +78,14 @@ def construir_aviso_nuevos(nuevos: list):
 
 
 def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--real", action="store_true",
+        help="Envía a TODOS los suscriptores reales de producción (sin esto, "
+             "solo envía a TEST_TOKEN si está definido, o aborta).",
+    )
+    args = parser.parse_args()
+
     print(f"🧪 TEST PUSH MANUAL — {datetime.now().isoformat()}")
     print("=" * 60)
 
@@ -78,15 +95,33 @@ def main() -> int:
         print("❌ Firebase no inicializa. Revisa FIREBASE_SERVICE_ACCOUNT.")
         return 1
 
-    # Cargar tokens de suscriptores
-    tokens, ref_tokens = cargar_tokens(db_api)
-    print(f"📱 Suscriptores: {len(tokens)}")
+    test_token = os.environ.get("TEST_TOKEN", "").strip()
+    if args.real:
+        tokens, ref_tokens = cargar_tokens(db_api)
+        print(f"⚠️  Modo --real: enviando a TODOS los suscriptores ({len(tokens)}).")
+    elif test_token:
+        tokens = [test_token]
+        print("📱 Enviando solo a TEST_TOKEN (no a suscriptores reales).")
+    else:
+        print(
+            "❌ Por seguridad, este script NO envía a producción por defecto.\n"
+            "   Define TEST_TOKEN=<tu token FCM> para probar en tu propio "
+            "dispositivo,\n"
+            "   o pasa --real si de verdad quieres notificar a todos los "
+            "suscriptores."
+        )
+        return 1
+
     if not tokens:
         print("❌ Sin suscriptores. Activa notificaciones en el sitio primero.")
         return 1
 
-    # Cargar cola desde Firebase
-    cola = cargar_cola(db_api)
+    # Cargar cola desde Firebase. En modo sin --real NO se drena la cola
+    # real (rebajas_pendientes/nuevos_pendientes/tasa_pendiente): esa cola
+    # también la consume send_notifications.py en producción, y vaciarla
+    # aquí haría que un cliente real nunca vea ese aviso. Solo se envía el
+    # push de prueba genérico a tu propio TEST_TOKEN.
+    cola = cargar_cola(db_api) if args.real else {}
     enviados = []
 
     # ── Rebajas ────────────────────────────────────────────────
@@ -142,8 +177,10 @@ def main() -> int:
             print(f"   ❌ Error enviando prueba: {e}")
             return 1
 
-    # Guardar cola actualizada en Firebase
-    guardar_cola(db_api, cola)
+    # Guardar cola actualizada en Firebase — solo en modo --real (en modo
+    # de prueba la cola ni se cargó, para no arriesgarse a machacarla).
+    if args.real:
+        guardar_cola(db_api, cola)
     print(f"\n✅ Test completado. Enviados: {', '.join(enviados)}")
     return 0
 

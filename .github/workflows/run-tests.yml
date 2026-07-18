@@ -10,15 +10,20 @@ on:
       - 'scripts/**'
       - 'tests/**'
 
+concurrency:
+  group: run-tests
+  cancel-in-progress: false
+
 jobs:
   test:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
       - name: Install dependencies
-        run: pip install requests beautifulsoup4
+        run: pip install -r scripts/requirements.txt
       - name: Run tests
         run: python -m unittest discover -s tests -v

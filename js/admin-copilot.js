@@ -166,7 +166,7 @@ window.tmCopilotOnVenta = function(items){
 };
 // Etiqueta legible del tipo de empujón
 function _empLabel(t){ return t==='smart_push'||t==='pushHot' ? 'push' : t==='offer' ? 'oferta' : t==='campaign_draft' ? 'campaña' : t==='promo_download' ? 'promo compartida' : t==='post_ready' ? 'publicación' : t; }
-function money(v){ return '$' + Number(v||0).toFixed(2); }
+function money(v){ return '$' + Number(v||0).toLocaleString('es-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
 function ranking(){
   const ps = products();
   const hot = (state.hot || []).map(x=>({p:x.p, score:x.score, views:x.views, wa:x.wa}));

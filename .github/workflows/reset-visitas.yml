@@ -7,9 +7,14 @@ on:
 
 permissions: {}
 
+concurrency:
+  group: reset-visitas
+  cancel-in-progress: false
+
 jobs:
   reset:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - name: Poner el contador en 0
         run: |

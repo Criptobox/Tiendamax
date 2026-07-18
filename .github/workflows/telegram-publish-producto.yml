@@ -16,6 +16,7 @@ concurrency:
 jobs:
   publicar:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
         with:
@@ -26,8 +27,7 @@ jobs:
           python-version: '3.12'
 
       - name: Instalar dependencias
-        run: pip install requests pillow
-
+        run: pip install -r scripts/requirements.txt
       - name: Publicar en Telegram y gestionar mensajes
         run: python bot/publish_producto.py
         env:

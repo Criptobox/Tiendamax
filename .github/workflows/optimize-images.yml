@@ -17,6 +17,7 @@ concurrency:
 jobs:
   optimize:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
 
@@ -25,8 +26,7 @@ jobs:
           python-version: '3.11'
 
       - name: Install Pillow
-        run: pip install Pillow
-
+        run: pip install -r scripts/requirements.txt
       - name: Optimize JPEGs and generate thumbnails WebP
         run: python scripts/optimize_images.py
 

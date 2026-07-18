@@ -433,14 +433,14 @@ function renderizarSimilaresCarrito() {
     });
     const recIA = [...new Set(recIdsCarrito)]
         .map(id => productos.find(p => String(p.id) === id))
-        .filter(p => p && !idsEnCarrito.has(p.id) && p.precioActual > 0 && p.agotado !== true);
+        .filter(p => p && !idsEnCarrito.has(p.id) && p.precioActual > 0 && Number(p.stock) > 0);
     const fallbackSim = productos
         .filter(p =>
             !idsEnCarrito.has(p.id) &&
             !recIdsCarrito.includes(String(p.id)) &&
             categoriasCarrito.includes(p.categoria || '') &&
             p.precioActual > 0 &&
-            p.agotado !== true
+            Number(p.stock) > 0
         )
         .sort(() => Math.random() - 0.5);
     const similares = [...recIA, ...fallbackSim].slice(0, 3);

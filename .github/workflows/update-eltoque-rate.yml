@@ -18,6 +18,7 @@ concurrency:
 jobs:
   update-rate:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -29,9 +30,7 @@ jobs:
 
       - name: Instalar dependencias
         run: |
-          python -m pip install --upgrade pip
-          pip install requests beautifulsoup4
-
+          python -m pip install -r scripts/requirements.txt
       - name: Actualizar tasa base desde elTOQUE
         env:
           ELTOQUE_API_KEY: ${{ secrets.ELTOQUE_API_KEY }}

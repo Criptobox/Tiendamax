@@ -482,6 +482,17 @@ async function _tmPreservarDescripciones() {
     } catch (e) { console.warn('[preservarDescripciones]', e); }
 }
 
+// ── Lock anti-carrera: evita que el auto-sync silencioso (tras ajustar
+// stock) y una sincronización manual completa lean el repo en instantes
+// distintos y una pise el merge de la otra. _tmMergeProductosConRepo lee el
+// repo de nuevo cada vez, así que basta con que nunca corran a la vez.
+let _tmSyncEnCurso = false;
+async function _tmEsperarSyncLibre() {
+    while (_tmSyncEnCurso) {
+        await new Promise(r => setTimeout(r, 300));
+    }
+}
+
 async function sincronizarTodoConGitHub() {
     const user  = localStorage.getItem('githubUser');
     const repo  = localStorage.getItem('githubRepo');
@@ -491,6 +502,9 @@ async function sincronizarTodoConGitHub() {
         switchTab('configuracion');
         return;
     }
+    await _tmEsperarSyncLibre();
+    _tmSyncEnCurso = true;
+    try {
 
     const btn = document.querySelector('[data-action="sincronizarTodoConGitHub"]');
     if (btn) { btn.disabled = true; btn.textContent = '⏳ Sincronizando...'; }
@@ -662,6 +676,9 @@ async function sincronizarTodoConGitHub() {
         mostrarNotificacion(`❌ Error al subir: ${causa}`, 'error');
         console.error('Errores de sincronización:', errors);
     }
+    } finally {
+        _tmSyncEnCurso = false;
+    }
 }
 
 async function sincronizarConGitHub() {
@@ -672,6 +689,10 @@ async function sincronizarConGitHub() {
 
         return;
     }
+    // Auto-sync silencioso: si ya hay una sync en curso, se omite esta vuelta
+    // (el próximo ajuste de stock la disparará de nuevo con el estado ya al día).
+    if (_tmSyncEnCurso) return;
+    _tmSyncEnCurso = true;
     try {
         await _tmPreservarDescripciones();
         const _final = await _tmMergeProductosConRepo(user, repo);
@@ -681,6 +702,8 @@ async function sincronizarConGitHub() {
         _tmPublicarVersionFirebase();
     } catch (e) {
         console.warn('⚠️ Error al sincronizar automáticamente:', e.message);
+    } finally {
+        _tmSyncEnCurso = false;
     }
 }
 

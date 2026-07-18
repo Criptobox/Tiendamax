@@ -3,7 +3,7 @@
 (function () {
   'use strict';
   function _wa() { return localStorage.getItem('whatsappNumero') || '5354320170'; }
-  function money(n) { return '$' + (Number(n) || 0).toLocaleString('es-US', { maximumFractionDigits: 2 }); }
+  function money(n) { return '$' + (Number(n) || 0).toLocaleString('es-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (m) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]; }); }
 
   var _combos = [];

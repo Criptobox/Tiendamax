@@ -18,6 +18,7 @@ quedan listas para una siguiente fase donde las tarjetas usen thumbs WebP.
 from __future__ import annotations
 
 import argparse
+import shutil
 from pathlib import Path
 from PIL import Image, ImageOps
 
@@ -105,11 +106,14 @@ def main() -> int:
                 if args.backup:
                     bak = src.with_suffix(src.suffix + ".bak")
                     if not bak.exists():
-                        src.replace(bak)
-                    else:
-                        src.unlink()
-                else:
-                    src.unlink()
+                        # Copia (no mueve): src queda intacto hasta el replace
+                        # de abajo, así nunca hay una ventana sin backup Y sin
+                        # original a la vez si el proceso se corta a mitad.
+                        shutil.copy2(src, bak)
+                # tmp.replace(src) es atómico (os.replace/rename): src nunca
+                # deja de existir entre medio, a diferencia de unlink()+replace()
+                # (que sí tenía una ventana real de pérdida si el proceso moría
+                # justo ahí — SIGKILL, OOM, corte del runner de CI).
                 tmp.replace(src)
             else:
                 tmp.unlink(missing_ok=True)

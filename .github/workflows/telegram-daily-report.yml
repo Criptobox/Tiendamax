@@ -5,9 +5,14 @@ on:
     - cron: '30 20 * * *'  # Target 9 PM Cuba (UTC-4) — compensa ~4.5h delay de GitHub Actions
   workflow_dispatch:
 
+concurrency:
+  group: telegram-daily-report
+  cancel-in-progress: false
+
 jobs:
   report:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
 
@@ -16,8 +21,7 @@ jobs:
           python-version: '3.12'
 
       - name: Instalar dependencias
-        run: pip install firebase-admin requests
-
+        run: pip install -r scripts/requirements.txt
       - name: Enviar reporte
         run: python bot/daily_report.py
         env:

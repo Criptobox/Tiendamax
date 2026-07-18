@@ -342,7 +342,7 @@ function verificarStockOfertaBanner() {
         if (!id) return;
         const prod = productos.find(p => String(p.id) === String(id));
         if (!prod) return;
-        const agotado = prod.stock === 0 || prod.agotado === true || Number(prod.stock) <= 0;
+        const agotado = Number(prod.stock) <= 0;
         const banner = document.getElementById('urgenciaBanner');
         if (!banner) return;
         if (agotado) {
