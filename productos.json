@@ -2598,5 +2598,33 @@
     ],
     "fechaAgregado": "2026-07-08T20:44:11.116Z",
     "descripcion": "Router de nueva generación con tecnología Wi-Fi 6, ideal para usuarios que buscan una conexión rápida, estable y con mayor capacidad para gestionar múltiples dispositivos domésticos con la máxima eficiencia.\n​Ficha Técnica:\n​Tecnología: 🚀 Wi-Fi 6 (802.11ax) de doble banda para mayor velocidad y menos interferencias.\n​Velocidad: ⚡ Rendimiento de hasta 1500 Mbps (300 Mbps en 2.4GHz + 1201 Mbps en 5GHz).\n​Puertos: 🔌 Puertos Gigabit (WAN y LAN) para aprovechar al máximo las conexiones de fibra óptica.\n​Antenas: 📡 4 antenas de 5dBi con tecnología Beamforming para una cobertura de señal más amplia y estable.\n​Eficiencia: ⚙️ Soporte para MU-MIMO y OFDMA, permitiendo conectar más dispositivos simultáneamente sin pérdida de rendimiento.\n​Especificaciones (Specs):\n​Estándar: Wi-Fi 6 (AX1500).\n​Seguridad: Protocolo WPA3 para una protección de red mucho más avanzada.\n​Gestión: Configuración sencilla a través de la App Tenda WiFi.\n​Funciones: Soporte para control parental y red de invitados.\n​Uso: Ideal para teletrabajo, streaming en 4K y gaming sin latencia en entornos con muchos dispositivos."
+  },
+  {
+    "id": 1784403677390,
+    "nombre": "​🌐 NanoStation AC loco",
+    "descripcion": "Pack de 5 radios NanoStation AC loco, ideales para establecer conexiones inalámbricas de larga distancia (punto a punto o punto a multipunto). Su diseño ultracompacto y la tecnología airMAX AC garantizan un enlace exterior rápido, estable y altamente eficiente.\n​Ficha Técnica:\n​○ Rendimiento: 🚀 Alcanza velocidades de transmisión de más de 450 Mbps, perfecto para redes exigentes y de alta capacidad.\n​○ Tecnología: 📡 Opera en la banda libre de 5 GHz utilizando el protocolo airMAX AC, lo que reduce la interferencia y maximiza la calidad de la señal.\n​○ Diseño: ✨ Formato muy compacto y minimalista en color blanco, optimizado para resistir instalaciones en exteriores sin llamar la atención.\n​○ Gestión: 🛠️ Sistema UNMS Ready integrado, que permite una configuración, monitoreo y administración de red rápida y centralizada.\n​Especificaciones (Specs):\n​Marca: Ubiquiti.\n​Modelo: NanoStation AC loco.\n​Frecuencia: 5 GHz.\n​Velocidad máxima: 450+ Mbps.",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784403674704.webp",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784403674704.webp",
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784403675794.webp",
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784403676611.webp"
+    ],
+    "precioActual": 120,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 4,
+    "comision": 8,
+    "comisionMoneda": "USD",
+    "categoria": "WIFI",
+    "subcategoria": "ROUTERS",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "specs": [
+      "​🌐 Enlaces de Alto Rendimiento ​",
+      "🚀 Velocidad de 450+ Mbps"
+    ],
+    "fechaAgregado": "2026-07-18T19:41:17.390Z"
   }
 ]
