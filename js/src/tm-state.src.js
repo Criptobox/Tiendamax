@@ -14,8 +14,15 @@ function actualizarOffsetsUI() {
         const header = document.querySelector('.header');
         const headerContent = document.querySelector('.header-content');
         const currencyBar = document.getElementById('currencyBar');
+        const pwaBanner = document.getElementById('pwa-install-banner');
         const urgVisible = urg && getComputedStyle(urg).display !== 'none';
         const urgH = urgVisible ? Math.ceil(urg.getBoundingClientRect().height) : 0;
+        // El banner de instalar PWA es fixed:top:0 y flota por encima de todo
+        // (z-index más alto que el header) — cuando está visible hay que
+        // empujar el header hacia abajo su altura real, si no lo tapa.
+        const pwaVisible = pwaBanner && pwaBanner.classList.contains('pwa-show');
+        const pwaH = pwaVisible ? Math.ceil(pwaBanner.getBoundingClientRect().height) : 0;
+        root.style.setProperty('--tm-pwa-h', pwaH + 'px');
         // --tm-header-h debe representar solo la fila superior del header.
         // Antes se medía .header completo, que incluye la barra de moneda; eso
         // duplicaba el offset y podía provocar saltos/solapes al hacer scroll.
