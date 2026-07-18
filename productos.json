@@ -61,7 +61,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1777924118004.webp",
     "categoria": "ENERGIA",
     "subcategoria": "INVERSORES",
-    "stock": 5,
+    "stock": 0,
     "masVendido": true,
     "usado": false,
     "garantia": "",
@@ -2091,15 +2091,15 @@
   {
     "id": 1782439688529,
     "nombre": "Transferencia Automática o Manual",
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783838238277.webp",
+    "imagen": "https://tiendamax.org/imagenes/img_1783838238277.webp",
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783838238277.webp",
+      "https://tiendamax.org/imagenes/img_1783838238277.webp",
       "https://tiendamax.org/imagenes/img_1782439684820.webp"
     ],
     "precioActual": 65,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 14,
+    "stock": 0,
     "comision": 5,
     "comisionMoneda": "USD",
     "categoria": "ENERGIA",
