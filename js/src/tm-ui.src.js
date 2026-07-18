@@ -584,20 +584,11 @@ async function tmDiagnosticarFirebase() {
 
     if (hayBloqueados && hint) {
         hint.style.display = 'block';
+        // NOTA: nunca pegar un ruleset simplificado con ".write": true a mano —
+        // eso abre TODO (incluida admin_auth) sin validación. Usar siempre el
+        // archivo real del repo, que ya trae límites de tamaño/tipo por campo.
         hint.innerHTML = `<b style="color:#FF6B35">🔧 Reglas de Firebase RTDB bloqueando lecturas</b><br><br>
-Ve a <b>console.firebase.google.com</b> → tu proyecto → <b>Realtime Database → Rules</b> y pega esto:<br><br>
-<pre style="background:rgba(0,0,0,.4);border-radius:6px;padding:8px;overflow-x:auto;color:#C9A96E;font-size:10px">{
-  "rules": {
-    "resenas": { ".read": true, ".write": true },
-    "interesados": { ".read": true, ".write": true },
-    "configuracion": { ".read": true, ".write": false },
-    "version": { ".read": true, ".write": false },
-    "admin_auth": { ".read": true, ".write": true },
-    "ventas": { ".read": true, ".write": true },
-    ".read": false,
-    ".write": false
-  }
-}</pre>
+Ve a <b>console.firebase.google.com</b> → tu proyecto → <b>Realtime Database → Rules</b> y pega el contenido completo de <b>firebase-rules.json</b> (en la raíz del repo). No pegues un ruleset simplificado a mano: ese archivo ya trae validación por campo (longitudes, tipos, límites) — un ruleset "de prueba" con <code>".write": true</code> deja la base de datos completamente abierta, incluida la contraseña del admin.<br><br>
 Después haz clic en <b>Publicar</b> y recarga el admin.`;
     }
 }

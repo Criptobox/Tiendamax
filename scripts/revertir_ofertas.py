@@ -18,6 +18,16 @@ BASE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SRC = os.path.join(BASE, "productos.json")
 
 
+def _atomic_write_json(path, data):
+    """Escribe JSON de forma atómica (temp file + os.replace) para que un
+    corte a mitad de escritura (timeout de CI, OOM) nunca deje productos.json
+    truncado/corrupto."""
+    tmp = path + ".tmp"
+    with open(tmp, "w", encoding="utf-8") as f:
+        json.dump(data, f, ensure_ascii=False, indent=2)
+    os.replace(tmp, path)
+
+
 def main():
     with open(SRC, encoding="utf-8") as f:
         data = json.load(f)
@@ -47,8 +57,7 @@ def main():
         print("Sin ofertas vencidas.")
         return
 
-    with open(SRC, "w", encoding="utf-8") as f:
-        json.dump(data, f, ensure_ascii=False, indent=2)
+    _atomic_write_json(SRC, data)
     print(f"Ofertas revertidas ({len(revertidos)}): " + ", ".join(str(x) for x in revertidos))
 
 
