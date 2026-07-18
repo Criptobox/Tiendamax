@@ -2655,5 +2655,32 @@
       "🛠️ Solución para Exterior"
     ],
     "fechaAgregado": "2026-07-18T19:57:46.989Z"
+  },
+  {
+    "id": 1784405087402,
+    "nombre": "​🌐 Cámara de Seguridad Wi-Fi PTZ",
+    "descripcion": "Cámara de vigilancia inteligente con diseño moderno y compacto, ideal para monitorear hogares o pequeños negocios. Gracias a su conectividad inalámbrica y capacidad de giro motorizado, permite un control total del entorno desde tu dispositivo móvil, ofreciendo tranquilidad tanto de día como de noche.\n​Ficha Técnica:\n​○ Monitoreo: 🔄 Equipada con movimiento PTZ (Pan, Tilt, Zoom) para una cobertura completa, eliminando puntos ciegos en cualquier habitación o área exterior.\n​○ Visión: 🌙 Tecnología de visión nocturna optimizada con iluminación integrada, garantizando imágenes claras y detalladas incluso en condiciones de baja luminosidad.\n​○ Conectividad: 📡 Antenas duales de alta recepción que aseguran una señal Wi-Fi estable para la transmisión de video en tiempo real sin interrupciones.\n​○ Instalación: 🛠️ Diseño versátil y fácil de instalar, permitiendo su montaje en paredes o techos para una vigilancia discreta y efectiva.\n​Especificaciones (Specs):\n​Tipo: Cámara IP PTZ inalámbrica.\n​Conectividad: Wi-Fi.\n​Uso: Interiores y exteriores protegidos (Hogares/Oficinas).\n​Características principales: Rotación 360°, visión nocturna, monitoreo móvil.",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784405086297.webp",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784405086297.webp"
+    ],
+    "precioActual": 25,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 10,
+    "comision": 1500,
+    "comisionMoneda": "MN",
+    "categoria": "SEGURIDAD",
+    "subcategoria": "CÁMARAS",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "specs": [
+      "​🛡️ Seguridad Inteligente 24/7 ​",
+      "📡 Conectividad Inalámbrica Dual ​",
+      "🔄 Rotación Panorámica 360°"
+    ],
+    "fechaAgregado": "2026-07-18T20:04:47.403Z"
   }
 ]
