@@ -91,21 +91,138 @@ let _heroOrden         = '';
 let _heroSearchTimer   = null;
 let _aiSearchTimer     = null;
 
+// Scroll position saved when search opens (for reference; no longer used for body position:fixed)
+let _searchOpenScrollY = 0;
+
+// Flag to track if search panel pushed a history state
+let _searchPanelHistoryPushed = false;
+
 function abrirPanelBusqueda() {
     const panel = document.getElementById('heroSearchPanel');
     const bar   = document.getElementById('heroSearchBar');
     if (!panel) return;
+    // If already visible, don't re-open
+    if (panel.classList.contains('visible')) return;
     panel.classList.add('visible');
     if (bar) bar.classList.add('open');
+    // Allow hero to overflow so the absolute-positioned search panel is visible on PC
+    const hero = document.querySelector('.hero.nd-hero');
+    if (hero) hero.classList.add('search-panel-open');
+    // Save scroll position for restoring later
+    _searchOpenScrollY = window.scrollY;
+    // Lock body scroll — on mobile the panel is position:fixed fullscreen,
+    // so we only need overflow:hidden (NOT position:fixed on body which causes
+    // jump-to-top bugs on many mobile browsers)
+    document.body.classList.add('search-open');
+    // Push history state so the back button closes the panel instead of exiting
+    if (!_searchPanelHistoryPushed) {
+        _searchPanelHistoryPushed = true;
+        history.pushState({ searchPanel: true }, '');
+    }
     setTimeout(() => document.getElementById('heroSearchInput')?.focus(), 50);
 }
 
 function cerrarPanelBusqueda() {
     const panel = document.getElementById('heroSearchPanel');
     const bar   = document.getElementById('heroSearchBar');
+    const wasOpen = panel && panel.classList.contains('visible');
     if (panel) panel.classList.remove('visible');
     if (bar)   bar.classList.remove('open');
+    // Remove overflow override from hero
+    const hero = document.querySelector('.hero.nd-hero');
+    if (hero) hero.classList.remove('search-panel-open');
+    // Restore body scroll
+    document.body.classList.remove('search-open');
+    document.body.style.top = '';
+    _searchOpenScrollY = 0;
+    // If closing from a history entry we pushed, go back
+    if (wasOpen && _searchPanelHistoryPushed) {
+        _searchPanelHistoryPushed = false;
+        // Only go back if we're still on our pushed state
+        if (history.state && history.state.searchPanel) {
+            history.back();
+        }
+    }
 }
+
+// Handle browser back button / popstate: close overlays instead of exiting page
+// NOTE: This is the ONLY popstate handler. tm-iife.src.js has a redundant one
+// that was removed to avoid double-firing and history state conflicts.
+window.addEventListener('popstate', function(e) {
+    let closed = false;
+    
+    // Close search panel if open
+    const panel = document.getElementById('heroSearchPanel');
+    if (panel && panel.classList.contains('visible')) {
+        _searchPanelHistoryPushed = false;
+        panel.classList.remove('visible');
+        const bar = document.getElementById('heroSearchBar');
+        if (bar) bar.classList.remove('open');
+        const hero = document.querySelector('.hero.nd-hero');
+        if (hero) hero.classList.remove('search-panel-open');
+        document.body.classList.remove('search-open');
+        document.body.style.top = '';
+        _searchOpenScrollY = 0;
+        closed = true;
+    }
+    
+    // Close cart drawer if open
+    const cartDrawer = document.getElementById('carritoDrawer');
+    if (cartDrawer && !cartDrawer.classList.contains('hidden')) {
+        cartDrawer.classList.add('hidden');
+        document.body.style.overflow = '';
+        document.body.classList.remove('cart-open');
+        closed = true;
+    }
+    
+    // Close mobile menu if open
+    const mobileMenu = document.getElementById('mobileMenuOverlay');
+    if (mobileMenu && mobileMenu.classList.contains('open')) {
+        mobileMenu.classList.remove('open');
+        const hamburgerBtn = document.getElementById('hamburgerBtn');
+        if (hamburgerBtn) hamburgerBtn.classList.remove('open');
+        document.body.classList.remove('menu-open');
+        document.body.style.overflow = '';
+        closed = true;
+    }
+    
+    // Close product detail modal if open
+    const detailModal = document.getElementById('productDetailModal');
+    if (detailModal && !detailModal.classList.contains('hidden')) {
+        if (typeof cerrarDetalleModal === 'function') {
+            cerrarDetalleModal();
+        } else {
+            detailModal.classList.add('hidden');
+            detailModal.classList.remove('modal-show');
+            document.body.style.overflow = '';
+        }
+        closed = true;
+    }
+    
+    // Close agent chat panel if open
+    const agentPanel = document.getElementById('tmAgentPanel');
+    if (agentPanel && agentPanel.classList.contains('open')) {
+        agentPanel.classList.remove('open');
+        const agentBubble = document.getElementById('tmAgentBubble');
+        if (agentBubble) agentBubble.classList.remove('hidden');
+        closed = true;
+    }
+    
+    // If we closed something, replace the current history state so the next
+    // back press navigates away instead of getting stuck in a loop.
+    // Do NOT pushState (which would create an infinite back trap).
+    if (closed) {
+        history.replaceState({ initial: true }, '');
+    }
+});
+
+// Push an initial history state on page load so the first back press
+// doesn't exit the page (gives the popstate handler a chance to work)
+(function() {
+    if (history.state === null || history.state === undefined) {
+        history.replaceState({ initial: true }, '');
+    }
+})();
 
 // Stubs de compatibilidad
 function inicializarSliderPrecios() {}
@@ -114,13 +231,23 @@ function actualizarSliderPrecio() {}
 // Búsqueda local rápida
 function busquedaLocal(q) {
     if (!q) return productos.slice(0, 6);
-    const norm = s => (s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
-    const ql = norm(q);
+    const normFn = s => (s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+    const ql = normFn(q);
+    // Also try stemmed form for plurals
+    let qlStem = ql;
+    if (ql.endsWith('es') && ql.length - 2 >= 3) qlStem = ql.slice(0, -2);
+    else if (ql.endsWith('s') && ql.length - 1 >= 4) qlStem = ql.slice(0, -1);
     return productos.filter(p =>
-        norm(p.nombre).includes(ql) ||
-        norm(p.descripcion).includes(ql) ||
-        norm(p.categoria).includes(ql) ||
-        norm(p.subcategoria).includes(ql)
+        normFn(p.nombre).includes(ql) ||
+        normFn(p.descripcion).includes(ql) ||
+        normFn(p.categoria).includes(ql) ||
+        normFn(p.subcategoria).includes(ql) ||
+        (qlStem !== ql && (
+            normFn(p.nombre).includes(qlStem) ||
+            normFn(p.descripcion).includes(qlStem) ||
+            normFn(p.categoria).includes(qlStem) ||
+            normFn(p.subcategoria).includes(qlStem)
+        ))
     ).slice(0, 6);
 }
 
@@ -134,35 +261,94 @@ async function busquedaConIA(q) {
         .replace(/[̀-ͯ]/g, '')
         .replace(/[^a-z0-9\s]/g, ' ');
 
+    // Spanish stemming: strips plural suffixes for better matching
+    const stemES = (word) => {
+        if (!word || word.length < 5) return word;
+        if (word.endsWith('es') && word.length - 2 >= 3) return word.slice(0, -2);
+        if (word.endsWith('s') && word.length - 1 >= 4) return word.slice(0, -1);
+        return word;
+    };
+
     const alias = {
         wifi: ['router', 'internet', 'red', 'repetidor'],
         internet: ['wifi', 'router', 'red'],
         bateria: ['bateria', 'power bank', 'energia', 'corriente'],
         energia: ['inversor', 'bateria', 'corriente', 'solar'],
         corriente: ['energia', 'inversor', 'bateria'],
+        inversor: ['inversor', 'energia', 'corriente', 'solar', 'bateria', 'hibrido'],
         telefono: ['celular', 'movil', 'smartphone'],
         celular: ['telefono', 'movil', 'smartphone'],
         laptop: ['computadora', 'pc'],
         computadora: ['laptop', 'pc'],
-        camara: ['foto', 'fotografia'],
-        tv: ['televisor', 'monitor']
+        camara: ['foto', 'fotografia', 'seguridad'],
+        tv: ['televisor', 'monitor'],
+        router: ['wifi', 'internet', 'red', 'repetidor'],
+        repetidor: ['wifi', 'router', 'internet', 'red', 'extensor'],
+        solar: ['panel', 'fotovoltaico', 'energia', 'inversor', 'controlador'],
+        cargador: ['cargador', 'carga', 'usb', 'rapido'],
+        switch: ['switch', 'red', 'ethernet', 'poE'],
+        controlador: ['solar', 'mppt', 'controlador', 'carga'],
+        seguridad: ['camara', 'alarma', 'sensor', 'vigilancia'],
+        transferencia: ['transferencia', 'interruptor', 'switch'],
+        motos: ['moto', 'motocicleta', 'scooter', 'motor'],
+        carro: ['auto', 'vehiculo', 'repuesto', 'neumatico'],
+        audio: ['parlante', 'altavoz', 'bocina', 'speaker', 'bluetooth'],
+        memoria: ['usb', 'pendrive', 'microsd', 'tarjeta'],
+        cable: ['cable', 'hdmi', 'usb', 'cargador', 'conector'],
+        lampara: ['led', 'luz', 'iluminacion', 'foco']
     };
 
     const tokensBase = normalizar(q).split(/\s+/).filter(Boolean);
     const tokens = new Set(tokensBase);
-    tokensBase.forEach(t => (alias[t] || []).forEach(a => tokens.add(a)));
+    // Add both original and stemmed forms to alias lookup
+    tokensBase.forEach(t => {
+        const stemmed = stemES(t);
+        (alias[t] || []).forEach(a => tokens.add(a));
+        if (stemmed !== t) {
+            tokens.add(stemmed);  // Add stemmed form (e.g. "inversor" from "inversores")
+            (alias[stemmed] || []).forEach(a => tokens.add(a));  // Add aliases for stemmed form
+        }
+    });
 
     const resultados = productos
         .map(p => {
             const texto = normalizar([p.nombre, p.descripcion, p.categoria, p.subcategoria].join(' '));
+            const pNombre = normalizar(p.nombre);
+            const pCat = normalizar(p.categoria);
+            const pSubcat = normalizar(p.subcategoria);
             let score = 0;
+            // Distinguish between primary tokens (original query + stemmed) and alias tokens
+            const primaryTokens = new Set(tokensBase);
+            const stemmedQ = stemES(normalizar(q));
+            if (stemmedQ !== normalizar(q)) primaryTokens.add(stemmedQ);
             tokens.forEach(t => {
                 if (!t) return;
-                if (texto.includes(t)) score += 2;
-                if (normalizar(p.nombre).includes(t)) score += 4;
-                if (normalizar(p.categoria).includes(t) || normalizar(p.subcategoria).includes(t)) score += 2;
+                const isPrimary = primaryTokens.has(t);
+                // Primary tokens get much higher weight than alias tokens
+                if (texto.includes(t)) score += isPrimary ? 4 : 1;
+                if (pNombre.includes(t)) score += isPrimary ? 10 : 2;
+                if (pCat.includes(t) || pSubcat.includes(t)) score += isPrimary ? 6 : 1;
             });
-            if (normalizar(p.nombre).includes(normalizar(q))) score += 8;
+            // Bonus: exact full query match in name (highest signal)
+            if (pNombre.includes(normalizar(q))) score += 12;
+            // Bonus: stemmed full query match in name
+            if (stemmedQ !== normalizar(q) && pNombre.includes(stemmedQ)) score += 10;
+            // Penalty: if the product's category is completely unrelated to the query
+            // Uses the UNRELATED_CATEGORY_MAP from tm-agent for stronger penalty
+            const qKey = stemmedQ || normalizar(q);
+            const unrelatedMap = {
+                'inversor':  ['MOTOS', 'CARROS', 'ROPA', 'CALZADO', 'HOGAR', 'ALIMENTO', 'UTILES'],
+                'bateria':   ['MOTOS', 'CARROS', 'ROPA', 'CALZADO', 'HOGAR', 'ALIMENTO'],
+                'router':    ['MOTOS', 'CARROS', 'ROPA', 'CALZADO', 'HOGAR', 'ALIMENTO'],
+                'celular':   ['MOTOS', 'CARROS', 'ENERGIA', 'REDES'],
+                'solar':     ['MOTOS', 'CARROS', 'ROPA', 'CALZADO', 'ALIMENTO', 'CELULARES'],
+                'cargador':  ['MOTOS', 'CARROS', 'ROPA', 'CALZADO', 'HOGAR', 'ALIMENTO'],
+                'audio':     ['MOTOS', 'CARROS', 'ROPA', 'CALZADO', 'ALIMENTO'],
+                'seguridad': ['MOTOS', 'CARROS', 'ROPA', 'CALZADO', 'ALIMENTO']
+            };
+            if (unrelatedMap[qKey] && unrelatedMap[qKey].some(uc => (p.categoria || '').toUpperCase() === uc)) {
+                score -= 30;  // Strong penalty for wrong-category products
+            }
             if (score === 0) return null;
             return { producto: p, score };
         })
@@ -189,7 +375,7 @@ function renderSugerencias(resultados, q) {
         }
         const items = fallback.map(p =>
             '<div class="hsb-sug-item" onclick="seleccionarSugerencia(' + safeNum(p.id) + ')">' +
-            '<img class="hsb-sug-img" src="' + escapeAttr(p.imagen) + '" loading="lazy" onerror="this.style.display=\'none\'">' +
+            '<img class="hsb-sug-img" src="' + escapeAttr(p.imagen) + '" loading="lazy" decoding="async" onerror="this.style.display=\'none\'">' +
             '<span class="hsb-sug-name">' + escapeHtml(p.nombre) + '</span>' +
             '<span class="hsb-sug-price">$' + Number(p.precioActual).toFixed(2) + '</span>' +
             '</div>'
@@ -205,7 +391,7 @@ function renderSugerencias(resultados, q) {
         const nombre = q ? resaltarTexto(escapeHtml(p.nombre), q) : escapeHtml(p.nombre);
         const agotadoBadge = p.stock === 0 ? '<span style="color:#e74c3c;font-size:10px;font-weight:700;margin-left:4px;">AGOTADO</span>' : '';
         return '<div class="hsb-sug-item" onclick="seleccionarSugerencia(' + safeNum(p.id) + ')">' +
-            '<img class="hsb-sug-img" src="' + escapeAttr(p.imagen) + '" loading="lazy" onerror="this.style.display=\'none\'">' +
+            '<img class="hsb-sug-img" src="' + escapeAttr(p.imagen) + '" loading="lazy" decoding="async" onerror="this.style.display=\'none\'">' +
             '<span class="hsb-sug-name">' + nombre + agotadoBadge + '</span>' +
             '<span class="hsb-sug-price">$' + Number(p.precioActual).toFixed(2) + '</span>' +
             '</div>';
@@ -315,10 +501,38 @@ function resaltarTexto(texto, query) {
     } catch(e) { return texto; }
 }
 
-// Cerrar panel al tocar fuera
+// Cerrar panel al tocar fuera (or press Escape)
+// Fix: also check .hsb-pill and #pwa-install-banner so clicks inside
+// the search UI don't accidentally close the panel (PC search was broken).
 document.addEventListener('click', (e) => {
-    if (!e.target.closest('.hsb-wrap')) cerrarPanelBusqueda();
+    if (e.target.closest('.hsb-search') || e.target.closest('.hsb-pill') || e.target.closest('.nd-hero-search')) return;
+    cerrarPanelBusqueda();
 });
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') cerrarPanelBusqueda();
+});
+
+// ── Touch scroll containment inside the search panel ──
+// Prevents scroll chaining: when user scrolls inside the panel
+// and reaches the boundary, the page behind should NOT scroll.
+(function _initSearchPanelTouchGuard() {
+    const panel = document.getElementById('heroSearchPanel');
+    if (!panel) return;
+
+    panel.addEventListener('touchmove', (e) => {
+        // If the panel itself can scroll, just stop propagation to body
+        // (overscroll-behavior:contain handles modern browsers; this is a fallback)
+        e.stopPropagation();
+    }, { passive: true });
+
+    // Also guard the suggestions container (nested scrollable area)
+    const suggestions = document.getElementById('heroSearchSuggestions');
+    if (suggestions) {
+        suggestions.addEventListener('touchmove', (e) => {
+            e.stopPropagation();
+        }, { passive: true });
+    }
+})();
 
 // ═══════════════════════════════════════════════════════
 //  SUBIDA DE IMÁGENES A GITHUB (archivos .jpg reales)

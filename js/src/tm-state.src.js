@@ -162,25 +162,7 @@ if (document.readyState === 'loading') {
     _initTema();
 }
 
-function mostrarNotificacion(mensaje, tipo = 'success') {
-    const notif = document.createElement('div');
-    notif.className = `notificacion notif-${tipo}`;
-    notif.textContent = mensaje;
-    notif.style.cssText = `
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        background: ${tipo === 'error' ? '#e74c3c' : tipo === 'info' ? '#3498db' : '#27ae60'};
-        color: white;
-        padding: 15px 20px;
-        border-radius: 8px;
-        z-index: 10000;
-        animation: slideIn 0.3s ease;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    `;
-    document.body.appendChild(notif);
-    setTimeout(() => notif.remove(), tipo === 'error' ? 8000 : 4000);
-}
+// mostrarNotificacion defined in tm-toast.js
 
 function _tmToastProducto(p) {
     document.querySelectorAll('.tm-toast-prod').forEach(t => t.remove());
@@ -478,6 +460,8 @@ function renderizarMasVendidos() {
     const masVendidos = productos.filter(p => (p.masVendido === true || p.masVendido === 'true') && p.stock > 0);
     const productosAMostrar = masVendidos.length > 0 ? masVendidos : [...productos].filter(p => p.precioActual > 0 && p.stock > 0).sort((a, b) => b.stock - a.stock).slice(0, 6);
 
+    // Fade out skeletons before rendering real cards
+    if (typeof _tmRemoverSkeletons === 'function') _tmRemoverSkeletons('masVendidosGrid');
     grid.innerHTML = '';
 
     if (productosAMostrar.length === 0) {
@@ -491,7 +475,7 @@ function renderizarMasVendidos() {
     // Vendidos" se vea idéntico a las tarjetas nuevas, sin duplicar markup.
     productosAMostrar.forEach(producto => {
         if (typeof window._tmCrearCard !== 'function') return;
-        const card = window._tmCrearCard(producto);
+        const card = window._tmCrearCard(producto, { lazy: true });
         card.classList.add('tm-anim-card');
         grid.appendChild(card);
         if (window._tmAnimObs) window._tmAnimObs.observe(card);

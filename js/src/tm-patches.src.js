@@ -576,7 +576,7 @@ function mostrarVistaMeGusta() {
         // Gusta" se vea idéntico a las tarjetas nuevas, sin duplicar markup.
         prods.forEach(producto => {
             if (typeof window._tmCrearCard !== 'function') return;
-            grid.appendChild(window._tmCrearCard(producto));
+            grid.appendChild(window._tmCrearCard(producto, { lazy: true }));
         });
     }
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -952,11 +952,35 @@ document.addEventListener('DOMContentLoaded', () => {
         const b = document.createElement('div');
         b.id = 'tm-push-banner-wrap';
         b.style.cssText = 'position:fixed;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom,0px) + 20px);z-index:2000;width:min(92vw,380px);max-width:380px';
-        b.innerHTML = `<div id="tm-push-banner" style="background:#1a1a1a;border:1.5px solid #C9A96E;border-radius:14px;padding:14px 18px;display:flex;align-items:center;gap:12px;box-shadow:0 8px 32px rgba(0,0,0,0.5);font-family:sans-serif;animation:slideUpBanner .35s ease"><span style="font-size:26px;flex-shrink:0">🔔</span><div style="flex:1;min-width:0"><div style="font-weight:700;font-size:14px;color:#C9A96E;margin-bottom:2px">${escapeHtml(titulo)}</div><div style="font-size:12px;color:#aaa;line-height:1.3">${escapeHtml(cuerpo)}</div></div><div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0"><button id="tm-push-si" style="background:#C9A96E;color:#000;border:none;border-radius:8px;padding:7px 12px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap">${escapeHtml(btnTexto)}</button><button id="tm-push-no" style="background:none;border:none;color:#666;font-size:11px;cursor:pointer;text-align:center">Ahora no</button></div></div>`;
+        // El banner solo lleva estilos estructurales inline (layout, tipografía,
+        // animación). Los colores se aplican via CSS inyectado una sola vez,
+        // con reglas distintas para body.light-mode y body:not(.light-mode),
+        // para que respete el tema activo en vez de hardcoded oscuro.
+        b.innerHTML = `<div id="tm-push-banner" style="border-radius:14px;padding:14px 18px;display:flex;align-items:center;gap:12px;font-family:sans-serif;animation:slideUpBanner .35s ease"><span style="font-size:26px;flex-shrink:0">🔔</span><div style="flex:1;min-width:0"><div style="font-weight:700;font-size:14px;margin-bottom:2px">${escapeHtml(titulo)}</div><div style="font-size:12px;line-height:1.3">${escapeHtml(cuerpo)}</div></div><div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0"><button id="tm-push-si" style="border:none;border-radius:8px;padding:7px 12px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap">${escapeHtml(btnTexto)}</button><button id="tm-push-no" style="background:none;border:none;font-size:11px;cursor:pointer;text-align:center">Ahora no</button></div></div>`;
         if (!document.getElementById('slideUpBannerStyle')) {
             const s = document.createElement('style');
             s.id = 'slideUpBannerStyle';
-            s.textContent = '@keyframes slideUpBanner{from{opacity:0;transform:translateX(-50%) translateY(20px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}';
+            s.textContent = `
+@keyframes slideUpBanner{from{opacity:0;transform:translateX(-50%) translateY(20px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+/* Modo oscuro: fondo carbón + borde dorado premium */
+body:not(.light-mode) #tm-push-banner{background:#1f1f26 !important;border:1.5px solid #E8C88A !important;box-shadow:0 12px 36px rgba(0,0,0,.55),0 0 0 1px rgba(232,200,138,.08) inset !important}
+body:not(.light-mode) #tm-push-banner > div:first-child{color:#F5D08A !important}
+body:not(.light-mode) #tm-push-banner > div:nth-child(2){color:#C9C9D2 !important}
+body:not(.light-mode) #tm-push-si{background:linear-gradient(135deg,#E8C88A,#C9A96E) !important;color:#1A1A1A !important;box-shadow:0 6px 16px rgba(201,169,110,.35) !important}
+body:not(.light-mode) #tm-push-si:hover{filter:brightness(1.08);transform:translateY(-1px)}
+body:not(.light-mode) #tm-push-no{color:#9B9BA5 !important}
+body:not(.light-mode) #tm-push-no:hover{color:#FFFFFF !important}
+/* Modo claro: fondo blanco + acento coral */
+body.light-mode #tm-push-banner{background:#FFFFFF !important;border:1.5px solid #E8501E !important;box-shadow:0 10px 32px rgba(232,80,30,.18),0 2px 8px rgba(0,0,0,.06) !important}
+body.light-mode #tm-push-banner > div:first-child{color:#E8501E !important}
+body.light-mode #tm-push-banner > div:nth-child(2){color:#4A4A4A !important}
+body.light-mode #tm-push-si{background:linear-gradient(135deg,#FF6B35,#E8501E) !important;color:#FFFFFF !important;box-shadow:0 4px 12px rgba(232,80,30,.25) !important}
+body.light-mode #tm-push-si:hover{filter:brightness(1.06);transform:translateY(-1px)}
+body.light-mode #tm-push-no{color:#6B6B7A !important}
+body.light-mode #tm-push-no:hover{color:#1A1A1A !important}
+/* Móvil: banner más compacto */
+@media (max-width:768px){#tm-push-banner{padding:12px 14px !important;gap:10px !important}#tm-push-banner > div:first-child{font-size:13px !important}#tm-push-banner > div:nth-child(2){font-size:11px !important;line-height:1.3 !important}#tm-push-si{padding:6px 10px !important;font-size:11px !important}#tm-push-no{font-size:10px !important}}
+`;
             document.head.appendChild(s);
         }
         document.body.appendChild(b);
@@ -1179,10 +1203,6 @@ async function cargarTasaDesdeGitHub() {
             if (cfg.margenMN !== undefined && cfg.margenMN !== null && cfg.margenMN !== '' && !isNaN(parseFloat(cfg.margenMN))) {
                 localStorage.setItem('margenMN', String(parseFloat(cfg.margenMN)));
             }
-            // Fecha de la última actualización de la tasa (para el guard anti-fantasma
-            // del aviso de tasa en tm-iife: solo avisa si el cambio es de hoy).
-            const _fTasa = cfg.tasaActualizada || cfg.actualizado || '';
-            if (_fTasa) localStorage.setItem('tasaMN_fecha', String(_fTasa).slice(0, 10));
             // Cargar tasa MN
             if (cfg.tasaMN && parseFloat(cfg.tasaMN) > 0) {
                 localStorage.setItem('tasaMN', String(cfg.tasaMN));

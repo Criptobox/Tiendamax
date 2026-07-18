@@ -5,6 +5,27 @@
    Este archivo es código fuente. Se minifica via build_css/minify_js.
    ============================================================ */
 
+/* Trunca un texto para que entre en ~2 líneas a 15px en una card.
+   Responsive: en móvil (cards ~160px) caben ~28 chars por línea = 56 total;
+   en desktop (cards ~260px) caben ~40 chars por línea = 80 total.
+   Es un fallback robusto al CSS line-clamp (que falla en algunos WebViews
+   Android y deja asomar una 3ra línea con pedacitos).
+   El nombre completo se ve al abrir el modal de detalle. */
+function _tmTruncar2Lineas(texto, maxChars) {
+    if (!texto) return '';
+    var t = String(texto).trim();
+    // Límite responsive según ancho de viewport
+    var vw = window.innerWidth || 390;
+    var max = maxChars || (vw < 480 ? 26 : (vw < 768 ? 30 : 44));
+    if (t.length <= max) return t;
+    // Cortar en el último espacio antes del límite para no partir palabras
+    var corte = t.lastIndexOf(' ', max);
+    if (corte < max * 0.6) corte = max; // si no hay espacio cerca, cortar exacto
+    return t.substring(0, corte).trim() + '…';
+}
+
+
+
 // ===== COMPRESIÓN DE IMÁGENES =====
 // Comprime una imagen (File o base64) a máximo ~40KB manteniendo buena calidad visual
 function comprimirImagen(source, maxKB = 25, maxWidth = 480, maxHeight = 480) {
@@ -110,6 +131,8 @@ function renderizarProductos(isLoadMore = false) {
     else if (_heroOrden === 'precio_desc') productosFiltrados.sort((a,b) => safeNum(b.precioActual) - safeNum(a.precioActual));
     else if (_heroOrden === 'az')     productosFiltrados.sort((a,b) => (a.nombre||'').localeCompare(b.nombre||''));
 
+    // Fade out skeletons before rendering real cards
+    if (typeof _tmRemoverSkeletons === 'function') _tmRemoverSkeletons('productosGrid');
     productosGrid.innerHTML = '';
 
     if (productosFiltrados.length === 0) {
@@ -130,14 +153,14 @@ function renderizarProductos(isLoadMore = false) {
 
     const productosAMostrar = productosFiltrados.slice(0, productosVisibleCount);
 
-    productosAMostrar.forEach(producto => {
+    productosAMostrar.forEach((producto, idx) => {
         const card = document.createElement('div');
         const _stock  = safeNum(producto.stock);
         const _esAgotado = _stock === 0;
         card.className = 'producto-card pcard-v2 tm-anim-card' + (_esAgotado ? ' card-agotado' : '');
         card.dataset.productId = String(producto.id);
         card.onclick = () => abrirDetalleProducto(producto.id);
-        const _nombre = escapeHtml(producto.nombre);
+        const _nombre = escapeHtml(_tmTruncar2Lineas(producto.nombre));
         const _img    = escapeAttr(producto.imagen);
         const _id     = safeNum(producto.id);
         const _cat    = escapeHtml(producto.categoria || '');
@@ -160,7 +183,7 @@ function renderizarProductos(isLoadMore = false) {
             : '<button class="btn-pedir-card pv2-pedir" onclick="event.stopPropagation();tmComprar(event,' + _id + ',this.dataset.nombre)" data-nombre="' + _nombre + '" type="button"><span class="btn-pedir-wa-icon-sm"><svg viewBox="0 0 24 24" width="14" height="14" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg></span> Pedir</button>';
         card.innerHTML = `
             <div class="pv2-photo">
-                <img src="${_img}" alt="${_nombre}" loading="lazy" onerror="this.style.display='none'">
+                <img src="${_img}" alt="${_nombre}" loading="${idx < 6 ? 'eager' : 'lazy'}" decoding="async"${idx < 6 ? ' fetchpriority="high"' : ''} onerror="this.style.display='none'">
             </div>
             <div class="pv2-veil"></div>
             <div class="pv2-top">
@@ -169,7 +192,7 @@ function renderizarProductos(isLoadMore = false) {
             </div>
             <div class="pv2-body">
                 ${_cat ? `<span class="pv2-cat">${_cat}</span>` : ''}
-                <h3>${_nombre}</h3>
+                <h3 class="pv2-title" style="display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2;height:36px;max-height:36px;min-height:36px;overflow:hidden;line-height:18px;white-space:normal;">${_nombre}</h3>
                 ${_estado}
                 ${typeof renderCountdownHtml === 'function' ? renderCountdownHtml(_id) : ''}
                 <div class="pv2-foot">
@@ -263,7 +286,7 @@ function renderizarGaleriaDetalle(producto) {
     thumbs.style.display = 'flex';
     thumbs.innerHTML = imagenes.map((url, i) =>
         '<button type="button" class="detail-gallery-thumb' + (i === 0 ? ' active' : '') + '" data-img="' + escapeAttr(url) + '" data-idx="' + i + '" aria-label="Ver imagen ' + (i + 1) + '">' +
-            '<img src="' + escapeAttr(url) + '" alt="" loading="lazy" onerror="this.style.display=\'none\'">' +
+            '<img src="' + escapeAttr(url) + '" alt="" loading="lazy" decoding="async" onerror="this.style.display=\'none\'">' +
         '</button>'
     ).join('');
     thumbs.querySelectorAll('.detail-gallery-thumb').forEach(btn => {
@@ -302,6 +325,25 @@ function detalleQtyDelta(delta) {
 }
 
 // Corazón de favoritos del modal (reusa la wishlist existente)
+function _tmDetalleHeartSvg(liked) {
+    return '<svg class="detail-heart-icon" viewBox="0 0 24 24" width="21" height="21" fill="' + (liked ? 'currentColor' : 'none') + '" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>';
+}
+function _tmSyncDetalleFav(btn, liked) {
+    if (!btn) return;
+    btn.innerHTML = _tmDetalleHeartSvg(liked);
+    btn.classList.toggle('liked', liked);
+    btn.setAttribute('aria-pressed', liked ? 'true' : 'false');
+}
+function _tmDetalleCartSvg(enCarro) {
+    return enCarro
+        ? '<svg class="detail-cart-icon" viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>'
+        : '<svg class="detail-cart-icon" viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="20" r="1"/><circle cx="19" cy="20" r="1"/><path d="M3 4h2l2.4 11.2a2 2 0 0 0 2 1.6h8.8a2 2 0 0 0 1.9-1.4L22 8H6"/></svg>';
+}
+function _tmSyncDetalleCart(btn, enCarro) {
+    if (!btn) return;
+    btn.innerHTML = _tmDetalleCartSvg(enCarro);
+    btn.classList.toggle('en-carrito', enCarro);
+}
 function detalleToggleFav(ev) {
     if (ev) ev.stopPropagation();
     const p = _detalleProductoActual;
@@ -312,8 +354,7 @@ function detalleToggleFav(ev) {
     const favBtn = document.getElementById('detailFavBtn');
     if (favBtn) {
         const liked = (typeof wishlist !== 'undefined' && Array.isArray(wishlist)) && wishlist.includes(String(p.id));
-        favBtn.textContent = liked ? '❤️' : '🤍';
-        favBtn.classList.toggle('liked', liked);
+        _tmSyncDetalleFav(favBtn, liked);
     }
 }
 
@@ -392,8 +433,12 @@ function abrirDetalleProducto(id) {
     const _hasPrecioOrig = p.precioOriginal > 0 && parseFloat(p.precioOriginal) > parseFloat(p.precioActual);
     badge.style.display = (_hasPrecioOrig && !_agotadoModal) ? 'inline-block' : 'none';
     if (_hasPrecioOrig) {
-        const _pctOff = Math.round((parseFloat(p.precioOriginal) - parseFloat(p.precioActual)) / parseFloat(p.precioOriginal) * 100);
-        badge.textContent = `-${_pctOff}% HOY`;
+        // El mockup comunica el descuento en porcentaje; se calcula desde
+        // los precios reales cuando el producto no trae p.descuento.
+        const _pctDescuento = safeNum(p.descuento) > 0
+            ? Math.round(safeNum(p.descuento))
+            : Math.round((1 - parseFloat(p.precioActual) / parseFloat(p.precioOriginal)) * 100);
+        badge.textContent = `-${Math.max(0, _pctDescuento)}%`;
     }
 
     // Más vendido badge (solo si hay stock)
@@ -551,22 +596,33 @@ if (_detailPrecioMNEl) {
     }
 
     // Trust badges dinámicos: tarjetas con ícono (envío y pago siempre reales;
-    // garantía/devolución solo si el producto los tiene de verdad)
+    // garantía/devolución solo si el producto los tiene de verdad).
+    // La garantía se resume a su duración para que una descripción larga no
+    // deforme la tarjeta ni empuje las demás fuera del modal.
+    function _tmGarantiaCorta(valor) {
+        const raw = String(valor || '').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+        const match = raw.match(/\b(\d+(?:[.,]\d+)?)\s*(d[ií]as?|semanas?|mes(?:es)?|a[nñ]os?)\b/i);
+        return match ? `${match[1]} ${match[2].toLowerCase()}` : '';
+    }
+    function _tmTrustIconSvg(kind) {
+        const attrs = 'viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"';
+        if (kind === 'shipping') return '<svg ' + attrs + '><rect x="1.5" y="4" width="13" height="12" rx="1.5"/><path d="M14.5 8h4l4 4v4h-8z"/><circle cx="6" cy="18" r="2"/><circle cx="18" cy="18" r="2"/></svg>';
+        if (kind === 'warranty') return '<svg ' + attrs + '><path d="M12 3l7 3v5c0 4.5-3 7.6-7 9-4-1.4-7-4.5-7-9V6z"/><path d="m8.5 12 2.2 2.2 4.8-5"/></svg>';
+        if (kind === 'return') return '<svg ' + attrs + '><path d="M9 7H4l3-3"/><path d="M4 7a8 8 0 0 1 14 5"/><path d="M15 17h5l-3 3"/><path d="M20 17a8 8 0 0 1-14-5"/></svg>';
+        return '<svg ' + attrs + '><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M7 10V7a5 5 0 0 1 10 0v3"/></svg>';
+    }
     const trustBadgesEl = document.getElementById('detailTrustBadges');
     if (trustBadgesEl) {
         const cards = [
-            { ic: '🚚', t: 'Envío', s: escapeHtml((typeof getEnvioTexto === 'function') ? getEnvioTexto() : 'Según zona') },
-            { ic: '🔒', t: 'Pago seguro', s: 'Contra entrega' }
+            { ic: _tmTrustIconSvg('shipping'), t: 'Envío', s: escapeHtml((typeof getEnvioTexto === 'function') ? getEnvioTexto() : 'Según zona') },
+            { ic: _tmTrustIconSvg('payment'), t: 'Pago seguro', s: 'Contra entrega' }
         ];
-        if (p.garantia && String(p.garantia).trim()) {
-            cards.push({ ic: '🛡️', t: 'Garantía', s: escapeHtml(String(p.garantia)) });
+        const _garantiaCorta = _tmGarantiaCorta(p.garantia);
+        if (_garantiaCorta) {
+            cards.push({ ic: _tmTrustIconSvg('warranty'), t: 'Garantía', s: escapeHtml(_garantiaCorta) });
         }
         if (p.devolucion === true) {
-            cards.push({ ic: '↩️', t: 'Devolución', s: 'Aceptada' });
-        }
-        // Siempre 3 tarjetas como el mockup: si faltan, agrega confianza de tienda.
-        if (cards.length < 3) {
-            cards.push({ ic: '⭐', t: '+2 años', s: 'Vendiendo' });
+            cards.push({ ic: _tmTrustIconSvg('return'), t: 'Devolución', s: 'Aceptada' });
         }
         trustBadgesEl.innerHTML = cards.map(c =>
             '<div class="detail-trust-card"><span class="dtc-ic">' + c.ic + '</span><div class="dtc-tx"><b>' + c.t + '</b><small>' + c.s + '</small></div></div>'
@@ -682,7 +738,7 @@ if (_detailPrecioMNEl) {
         // (tm-ui.src.js, expuesto como window._tmCrearCard) para que estas
         // tarjetas se vean idénticas a las nuevas, sin duplicar el markup.
         const cardsHtml = typeof window._tmCrearCard === 'function'
-            ? relacionados.map(r => window._tmCrearCard(r).outerHTML).join('')
+            ? relacionados.map(r => window._tmCrearCard(r, { lazy: true }).outerHTML).join('')
             : '';
         relGrid.innerHTML = upsellNote + cardsHtml;
         relSection.style.display = 'block';
@@ -748,7 +804,7 @@ if (_detailPrecioMNEl) {
             cartRowEl.style.display = '';
             const enCarro = carrito.some(x => x.id === p.id);
             cartRowEl.className = 'detail-cta-icon' + (enCarro ? ' en-carrito' : '');
-            cartRowEl.textContent = enCarro ? '✓' : '🛒';
+            _tmSyncDetalleCart(cartRowEl, enCarro);
             cartRowEl.title = enCarro ? 'En el carrito — ver carrito' : 'Agregar al carrito';
             cartRowEl.setAttribute('aria-label', cartRowEl.title);
             cartRowEl.onclick = () => {
@@ -758,7 +814,7 @@ if (_detailPrecioMNEl) {
                 } else {
                     agregarAlCarrito(p.id, _detalleCantidad, cartRowEl);
                     cartRowEl.className = 'detail-cta-icon en-carrito';
-                    cartRowEl.textContent = '✓';
+                    _tmSyncDetalleCart(cartRowEl, true);
                     cartRowEl.title = 'En el carrito — ver carrito';
                 }
             };
@@ -769,8 +825,7 @@ if (_detailPrecioMNEl) {
     const favBtn = document.getElementById('detailFavBtn');
     if (favBtn) {
         const liked = (typeof wishlist !== 'undefined' && Array.isArray(wishlist)) && wishlist.includes(String(p.id));
-        favBtn.textContent = liked ? '❤️' : '🤍';
-        favBtn.classList.toggle('liked', liked);
+        _tmSyncDetalleFav(favBtn, liked);
     }
 
     // Abrir modal
@@ -786,8 +841,9 @@ if (_detailPrecioMNEl) {
     requestAnimationFrame(() => { modal.classList.add('modal-show'); });
     document.body.style.overflow = 'hidden';
     // Scroll al top para que el usuario vea el producto desde el inicio
-    const detailBody = modal.querySelector('.detail-body') || modal.querySelector('.detail-modal-content');
-    if (detailBody) detailBody.scrollTop = 0;
+    // La tarjeta completa es el contenedor que hace scroll en el diseño v4.
+    const detailScroll = modal.querySelector('.detail-modal-content') || modal.querySelector('.detail-body');
+    if (detailScroll) detailScroll.scrollTop = 0;
     
     
     
@@ -1099,4 +1155,20 @@ function _verificarSuscripcionAviso(productId) {
 }
 
 // actualizarListaProductos está definida más abajo (versión mejorada con filtros por categoría)
+
+// Re-renderizar cards al rotar móvil o redimensionar ventana (para que el
+// truncado responsive se recalcule con el nuevo ancho de card).
+var _tmResizeTimer = null;
+window.addEventListener('resize', function() {
+    if (_tmResizeTimer) clearTimeout(_tmResizeTimer);
+    _tmResizeTimer = setTimeout(function() {
+        if (typeof renderizarProductos === 'function' && !document.getElementById('productDetailModal').classList.contains('modal-show')) {
+            // Solo re-renderizar si estamos en vista de categoría y no en modal
+            var grid = document.getElementById('productosGrid');
+            if (grid && grid.offsetParent !== null && grid.children.length > 0) {
+                renderizarProductos(true);
+            }
+        }
+    }, 250);
+});
 

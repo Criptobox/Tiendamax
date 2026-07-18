@@ -34,23 +34,15 @@ if (!_tmInitTasaSiLista()) {
         const prevTasa = parseFloat(localStorage.getItem('tasaMN') || '0');
         await cargarTasaDesdeGitHub();
         const newTasa = parseFloat(localStorage.getItem('tasaMN') || '0');
-        if (!(newTasa > 0 && prevTasa > 0 && Math.abs(newTasa - prevTasa) >= 1)) return;
-        // Anti-fantasma: solo avisar si la tasa se actualizó HOY de verdad. Así una
-        // lectura vieja del CDN (raw.githubusercontent cachea ~5 min) o un valor
-        // rezagado en localStorage no dispara un "sube/baja" falso.
-        const fecha = localStorage.getItem('tasaMN_fecha') || '';
-        const hoy = new Date().toISOString().slice(0, 10);
-        if (fecha && fecha.slice(0, 10) !== hoy) return;
-        // Anti-duplicado: no repetir el aviso para un valor ya notificado.
-        if (String(newTasa) === localStorage.getItem('tasaMN_lastNotif')) return;
-        localStorage.setItem('tasaMN_lastNotif', String(newTasa));
-        const subio = newTasa > prevTasa;
-        const diff = Math.round(Math.abs(newTasa - prevTasa));
-        if (typeof mostrarNotificacion === 'function') {
-            mostrarNotificacion(
-                `💱 Tasa actualizada: 1 USD = ${newTasa} MN (${subio ? '▲' : '▼'} ${diff})`,
-                subio ? 'warning' : 'info'
-            );
+        if (newTasa > 0 && prevTasa > 0 && Math.abs(newTasa - prevTasa) >= 1) {
+            const subio = newTasa > prevTasa;
+            const diff = Math.round(Math.abs(newTasa - prevTasa));
+            if (typeof mostrarNotificacion === 'function') {
+                mostrarNotificacion(
+                    `💱 Tasa actualizada: 1 USD = ${newTasa} MN (${subio ? '▲' : '▼'} ${diff})`,
+                    subio ? 'warning' : 'info'
+                );
+            }
         }
     }
     setInterval(_checkTasa, 20 * 60 * 1000);
@@ -514,21 +506,9 @@ async function guardarTasaMNAdmin() {
     } catch(e) {}
 })();
 
-
-// === popstate: cerrar modal de producto al pulsar "Atrás" del navegador/móvil ===
-window.addEventListener('popstate', function() {
-    const modal = document.getElementById('productDetailModal');
-    if (modal && !modal.classList.contains('hidden')) {
-        // FIX: el nombre correcto es cerrarDetalleModal, no cerrarDetalleProducto
-        if (typeof cerrarDetalleModal === 'function') {
-            cerrarDetalleModal();
-        } else {
-            modal.classList.add('hidden');
-            document.body.style.overflow = '';
-            if (typeof _detalleProductoActual !== 'undefined') _detalleProductoActual = null;
-        }
-    }
-});
+// === popstate: REMOVED — the comprehensive popstate handler in tm-data.src.js
+// handles ALL overlays (search, cart, menu, product detail, agent panel).
+// This duplicate handler was causing double-firing and history state conflicts.
 
 // ═══════════════════════════════════════════════════════════
 //  🔔 PANEL DE CONTROL DE NOTIFICACIONES (modal con ON/OFF)
@@ -951,128 +931,10 @@ if (false) (function tmBotonSubirArriba() {
 })();
 
 // ═══════════════════════════════════════════════════════
-//  📲 BANNER DE INSTALACIÓN PWA PERSONALIZADO
-//  Reemplaza el cartel naranja por defecto del navegador
-//  por uno premium que combina con el de notificaciones.
+//  📲 BANNER DE INSTALACIÓN PWA — REMOVED (duplicate)
+//  The PWA install system is now handled exclusively by
+//  tm-init.js which uses #pwa-install-banner from the HTML.
 // ═══════════════════════════════════════════════════════
-(function () {
-    'use strict';
-    var deferredPrompt = null;
-    var DISMISS_KEY = 'pwaInstallDismissed';
-    var DISMISS_DIAS = 2;
-
-    function yaInstalada() {
-        return window.matchMedia('(display-mode: standalone)').matches ||
-               window.navigator.standalone === true;
-    }
-
-    function descartadaRecientemente() {
-        try {
-            var t = parseInt(localStorage.getItem(DISMISS_KEY) || '0', 10);
-            return t && (Date.now() - t) < DISMISS_DIAS * 24 * 60 * 60 * 1000;
-        } catch (e) { return false; }
-    }
-
-    function esc(s) {
-        return (typeof escapeHtml === 'function')
-            ? escapeHtml(s)
-            : String(s).replace(/[&<>"]/g, function (c) {
-                return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
-              });
-    }
-
-    function mostrarBannerInstalar() {
-        if (document.getElementById('tm-install-banner-wrap')) return;
-        if (yaInstalada() || descartadaRecientemente()) return;
-
-        // Asegurar animación (reutiliza la del banner de notificaciones)
-        if (!document.getElementById('slideUpBannerStyle')) {
-            var s = document.createElement('style');
-            s.id = 'slideUpBannerStyle';
-            s.textContent = '@keyframes slideUpBanner{from{opacity:0;transform:translateX(-50%) translateY(20px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}';
-            document.head.appendChild(s);
-        }
-
-        var wrap = document.createElement('div');
-        wrap.id = 'tm-install-banner-wrap';
-        wrap.style.cssText = 'position:fixed;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom,0px) + 20px);z-index:2000;width:min(92vw,380px);max-width:380px';
-        wrap.innerHTML =
-            '<div style="background:#1a1a1a;border:1.5px solid rgba(255,107,53,.5);border-radius:14px;padding:14px 18px;display:flex;align-items:center;gap:12px;box-shadow:0 8px 32px rgba(0,0,0,0.5);font-family:sans-serif;animation:slideUpBanner .35s ease">' +
-                '<span style="font-size:26px;flex-shrink:0">📲</span>' +
-                '<div style="flex:1;min-width:0">' +
-                    '<div style="font-weight:700;font-size:14px;color:#FF6B35;margin-bottom:2px">' + esc('Instala TiendaMax') + '</div>' +
-                    '<div style="font-size:12px;color:#aaa;line-height:1.3">' + esc('Acceso directo desde tu pantalla de inicio, más rápido y sin ocupar espacio.') + '</div>' +
-                '</div>' +
-                '<div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0">' +
-                    '<button id="tm-install-si" style="background:#FF6B35;color:#fff;border:none;border-radius:8px;padding:7px 12px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap">Instalar</button>' +
-                    '<button id="tm-install-no" style="background:none;border:none;color:#666;font-size:11px;cursor:pointer;text-align:center">Ahora no</button>' +
-                '</div>' +
-            '</div>';
-        document.body.appendChild(wrap);
-
-        document.getElementById('tm-install-si').onclick = async function () {
-            wrap.remove();
-            if (!deferredPrompt) return;
-            deferredPrompt.prompt();
-            try { await deferredPrompt.userChoice; } catch (e) {}
-            deferredPrompt = null;
-        };
-        document.getElementById('tm-install-no').onclick = function () {
-            wrap.remove();
-            try { localStorage.setItem(DISMISS_KEY, String(Date.now())); } catch (e) {}
-        };
-    }
-
-    // Exponer para que el banner de notificaciones lo active en secuencia
-    window._tmMostrarInstall = mostrarBannerInstalar;
-
-    // Capturar el evento y bloquear el cartel naranja por defecto del navegador
-    window.addEventListener('beforeinstallprompt', function (e) {
-        e.preventDefault();
-        deferredPrompt = e;
-        // Mostrar/actualizar botón en el menú de navegación
-        _mostrarBtnInstalarMenu();
-        // Si notificaciones ya están resueltas (no habrá banner push), mostrar install después de 20s
-        if (!('Notification' in window) || Notification.permission !== 'default') {
-            setTimeout(mostrarBannerInstalar, 20000);
-        }
-    });
-
-    // Botón de instalación en el menú móvil
-    function _mostrarBtnInstalarMenu() {
-        if (yaInstalada()) return;
-        if (document.getElementById('tm-install-menu-btn')) return;
-        var menu = document.getElementById('mobileMenuOverlay');
-        if (!menu) return;
-        var btn = document.createElement('button');
-        btn.id = 'tm-install-menu-btn';
-        btn.type = 'button';
-        btn.className = 'nav-mobile-link';
-        btn.style.cssText = 'color:#C9A96E;font-weight:700;';
-        btn.textContent = '📲 Instalar app';
-        btn.onclick = function () {
-            document.getElementById('mobileMenuOverlay').classList.remove('open');
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                deferredPrompt.userChoice.then(function () { deferredPrompt = null; }).catch(function () {});
-            } else {
-                mostrarBannerInstalar();
-            }
-        };
-        // Insertar antes de mobile-menu-actions
-        var actions = menu.querySelector('.mobile-menu-actions');
-        if (actions) menu.insertBefore(btn, actions);
-        else menu.appendChild(btn);
-    }
-
-    // Si se instala, limpiar
-    window.addEventListener('appinstalled', function () {
-        var w = document.getElementById('tm-install-banner-wrap');
-        if (w) w.remove();
-        deferredPrompt = null;
-        try { localStorage.removeItem(DISMISS_KEY); } catch (e) {}
-    });
-})();
 
 // ── Gallery preview para Agregar producto ───────────────────────
 (function () {

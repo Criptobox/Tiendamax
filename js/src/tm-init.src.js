@@ -134,6 +134,18 @@ function _tmInyectarSkeletons() {
     if (mv && !mv.querySelector('.producto-card')) mv.innerHTML = Array(2).fill(sk).join('');
 }
 
+/** Smooth fade-out of skeleton cards before real products render */
+function _tmRemoverSkeletons(gridId) {
+    const grid = document.getElementById(gridId);
+    if (!grid) return;
+    const skels = grid.querySelectorAll('.tm-sk-card');
+    if (skels.length === 0) return;
+    skels.forEach(s => s.classList.add('tm-fade-out'));
+    setTimeout(() => {
+        skels.forEach(s => { if (s.parentNode) s.remove(); });
+    }, 320);
+}
+
 function inicializarTienda() {
     _tmInyectarSkeletons();
     // Restaurar badges inmediatamente al cargar
@@ -875,4 +887,115 @@ function actualizarCountdownProductSelect() {
         if (producto) status.innerHTML = `✅ Countdown activo para: <strong>${escapeHtml(producto.nombre)}</strong>`;
     }
 }
+
+// ===== PWA INSTALL PROMPT — Banner personalizado de instalación =====
+(function initPWAInstallPrompt() {
+    var deferredPrompt = null;
+    var banner = null;
+    var installBtn = null;
+    var dismissBtn = null;
+    var STORAGE_KEY = 'tm_pwa_dismiss';
+    var SHOW_DELAY = 3000; // 3 segundos tras carga
+    var DISMISS_DAYS = 7;
+
+    function isDismissed() {
+        try {
+            var ts = localStorage.getItem(STORAGE_KEY);
+            if (!ts) return false;
+            return (Date.now() - parseInt(ts, 10)) < DISMISS_DAYS * 24 * 60 * 60 * 1000;
+        } catch(e) { return false; }
+    }
+
+    function markDismissed() {
+        try { localStorage.setItem(STORAGE_KEY, String(Date.now())); } catch(e) {}
+    }
+
+    function showBanner() {
+        if (!banner) return;
+        if (isDismissed()) return;
+        banner.classList.add('pwa-show');
+    }
+
+    function hideBanner() {
+        if (!banner) return;
+        banner.classList.remove('pwa-show');
+    }
+
+    function init() {
+        banner = document.getElementById('pwa-install-banner');
+        if (!banner) return;
+        installBtn = document.getElementById('pwa-install-btn');
+        dismissBtn = document.getElementById('pwa-install-dismiss');
+
+        if (installBtn) {
+            installBtn.addEventListener('click', function() {
+                if (!deferredPrompt) return;
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then(function(choiceResult) {
+                    if (choiceResult.outcome === 'accepted') {
+                        if (typeof mostrarNotificacion === 'function') {
+                            mostrarNotificacion('¡TiendaMax instalada!', 'success');
+                        }
+                    }
+                    deferredPrompt = null;
+                    hideBanner();
+                }).catch(function() {
+                    deferredPrompt = null;
+                    hideBanner();
+                });
+            });
+        }
+
+        if (dismissBtn) {
+            dismissBtn.addEventListener('click', function() {
+                markDismissed();
+                hideBanner();
+            });
+        }
+    }
+
+    // Escuchar beforeinstallprompt
+    window.addEventListener('beforeinstallprompt', function(e) {
+        e.preventDefault();
+        deferredPrompt = e;
+        // Mostrar banner tras delay (no ser agresivo)
+        setTimeout(showBanner, SHOW_DELAY);
+    });
+
+    // Tras instalación exitosa, ocultar banner
+    window.addEventListener('appinstalled', function() {
+        deferredPrompt = null;
+        hideBanner();
+        if (typeof mostrarNotificacion === 'function') {
+            mostrarNotificacion('¡TiendaMax instalada!', 'success');
+        }
+    });
+
+    // Mostrar banner también cuando hay SW update disponible
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.addEventListener('message', function(event) {
+            if (event.data && (event.data.type === 'SW_UPDATED' || event.data.type === 'SW_UPDATE_AVAILABLE')) {
+                // Si la app ya está instalada, mostramos aviso de actualización
+                // Solo si no estamos ya mostrando el prompt de instalación
+                if (!deferredPrompt && !isDismissed()) {
+                    if (typeof mostrarNotificacion === 'function') {
+                        mostrarNotificacion('Nueva versión disponible. Recarga para actualizar.', 'info');
+                    }
+                }
+            }
+        });
+    }
+
+    // Inicializar cuando el DOM esté listo
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
+})();
+
+// ===== PUSH NOTIFICATION MANAGER — REMOVED (legacy) =====
+// This legacy push system used /api/push/subscribe and /api/push/unsubscribe
+// endpoints which don't exist on GitHub Pages. It also conflicts with the
+// Firebase FCM system in tm-iife.js. Removed to prevent errors and conflicts.
 

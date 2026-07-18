@@ -9,6 +9,7 @@
 // ===== VARIABLES GLOBALES INICIALIZADAS TEMPRANO (evitar TDZ) =====
 var countdownIntervals = {};
 let _monedaActual = localStorage.getItem('monedaActual') || 'USD';
+function tmMonedaActual(){ return _monedaActual; }
 
 // ===== HELPER: JSON.parse SEGURO (anti-crash si localStorage se corrompe) =====
 // Uso: tmParse(localStorage.getItem('productos'), [])
@@ -293,11 +294,15 @@ function abrirCarrito() {
     const drawer = document.getElementById('carritoDrawer');
     drawer.classList.remove('hidden');
     document.body.style.overflow = 'hidden';
+    document.body.classList.add("cart-open");
+    // Push history so back button closes cart instead of exiting page
+    history.pushState({ cartOpen: true }, '');
 }
 
 function cerrarCarrito() {
     document.getElementById('carritoDrawer').classList.add('hidden');
     document.body.style.overflow = '';
+    document.body.classList.remove("cart-open");
 }
 
 function renderizarCarrito() {
@@ -392,24 +397,13 @@ function renderizarSimilaresCarrito() {
     if (similares.length === 0) { secEl.style.display = 'none'; return; }
 
     secEl.style.display = 'block';
-    gridEl.innerHTML = similares.map(p => {
-        const img    = escapeAttr((p.imagenes && p.imagenes[0]) ? p.imagenes[0] : (p.imagen || ''));
-        const nombre = escapeHtml(p.nombre);
-        const idSafe = safeNum(p.id);
-        const stock  = parseInt(p.stock, 10);
-        const urgencia = (!isNaN(stock) && stock > 0 && stock <= 3)
-            ? '<div class="cs-urgencia">🔥 ¡Solo quedan ' + stock + '!</div>'
-            : '';
-        return '<div class="cs-card" style="cursor:pointer" onclick="if(typeof cerrarCarrito===\'function\')cerrarCarrito();abrirDetalleProducto(' + idSafe + ')">' +
-            '<img class="cs-card-img" src="' + img + '" alt="' + nombre + '" loading="lazy" onerror="this.style.display=\'none\'">' +
-            '<div class="cs-card-body">' +
-                '<div class="cs-card-nombre">' + nombre + '</div>' +
-                '<div class="cs-card-precio">$' + Number(p.precioActual).toFixed(2) + ' USD</div>' +
-                urgencia +
-            '</div>' +
-            '<button class="cs-card-btn" onclick="event.stopPropagation();agregarAlCarrito(' + idSafe + ');renderizarCarrito();">🛒 Agregar</button>' +
-        '</div>';
-    }).join('');
+    // Reutiliza el mismo constructor de tarjeta que la grilla principal
+    // para que las cards se vean idénticas a las del catálogo (fondo gris claro, mismo diseño).
+    if (typeof window._tmCrearCard === 'function') {
+        gridEl.innerHTML = similares.map(p => window._tmCrearCard(p, { lazy: true }).outerHTML).join('');
+    } else {
+        gridEl.innerHTML = '';
+    }
 }
 
 // ── Helper compartido: construye el mensaje premium para WhatsApp ──
@@ -594,6 +588,19 @@ let _estrellasSeleccionadas = 0;
 let _productoResena = null;
 let _resenaFotoData = null;
 
+// Rating labels in Spanish
+const _ratingLabels = ['', 'Malo', 'Regular', 'Bueno', 'Muy bueno', 'Excelente'];
+
+function _updateRatingText(n) {
+    const txt = document.getElementById('ratingText');
+    if (txt) txt.textContent = n > 0 ? _ratingLabels[n] : 'Selecciona';
+}
+
+function _updateRatingHiddenInput(n) {
+    const inp = document.getElementById('ratingValue');
+    if (inp) inp.value = n;
+}
+
 function mostrarFormResena() {
     const form = document.getElementById('formResena');
     const btn  = document.getElementById('btnAgregarResena');
@@ -603,6 +610,8 @@ function mostrarFormResena() {
     if (btn) btn.textContent = visible ? '+ Agregar reseña' : '✕ Cancelar';
     _estrellasSeleccionadas = 0;
     setEstrellas(0);
+    _updateRatingText(0);
+    _updateRatingHiddenInput(0);
     const autorEl = document.getElementById('resenaAutor');
     const textoEl = document.getElementById('resenaTexto');
     if (autorEl) autorEl.value = '';
@@ -641,18 +650,135 @@ function quitarFotoResena() {
 
 function setEstrellas(n) {
     _estrellasSeleccionadas = n;
+    // Legacy estrella-btn support
     document.querySelectorAll('.estrella-btn').forEach((btn, i) => {
         btn.classList.toggle('activa', i < n);
         btn.setAttribute('aria-checked', i < n ? 'true' : 'false');
     });
+    // New star-btn interactive rating
+    document.querySelectorAll('.star-btn').forEach((btn, i) => {
+        const idx = parseInt(btn.getAttribute('data-value'), 10) - 1;
+        btn.classList.toggle('active', idx < n);
+        btn.setAttribute('aria-checked', idx < n ? 'true' : 'false');
+    });
+    _updateRatingText(n);
+    _updateRatingHiddenInput(n);
 }
+
+// ── Interactive Star Rating: event delegation for hover, click, touch ──
+function _initRatingStarsInput() {
+    const container = document.getElementById('ratingStarsInput');
+    if (!container || container._ratingInit) return;
+    container._ratingInit = true;
+
+    const stars = () => container.querySelectorAll('.star-btn');
+
+    // Helper: get star value from element
+    function starValue(el) {
+        return parseInt(el.getAttribute('data-value'), 10) || 0;
+    }
+
+    // Click / tap → select rating with pop animation
+    container.addEventListener('click', function (e) {
+        const star = e.target.closest('.star-btn');
+        if (!star) return;
+        const val = starValue(star);
+        setEstrellas(val);
+        // Pop animation on clicked star and all active stars
+        stars().forEach(function (s) {
+            const sv = starValue(s);
+            if (sv <= val) {
+                s.classList.remove('pop');
+                // Force reflow to restart animation
+                void s.offsetWidth;
+                s.classList.add('pop');
+                s.addEventListener('animationend', function handler() {
+                    s.classList.remove('pop');
+                    s.removeEventListener('animationend', handler);
+                });
+            }
+        });
+    });
+
+    // Hover → preview stars up to hovered one
+    container.addEventListener('mouseover', function (e) {
+        const star = e.target.closest('.star-btn');
+        if (!star) return;
+        const val = starValue(star);
+        stars().forEach(function (s) {
+            const sv = starValue(s);
+            s.classList.toggle('hover', sv <= val);
+        });
+    });
+
+    // Mouse leave → remove hover, restore active based on current value
+    container.addEventListener('mouseleave', function () {
+        stars().forEach(function (s) {
+            s.classList.remove('hover');
+        });
+        // Restore active state from _estrellasSeleccionadas
+        stars().forEach(function (s) {
+            const sv = starValue(s);
+            s.classList.toggle('active', sv <= _estrellasSeleccionadas);
+        });
+    });
+
+    // Touch support: prevent double-firing and handle touch on mobile
+    container.addEventListener('touchend', function (e) {
+        const star = e.target.closest('.star-btn');
+        if (!star) return;
+        e.preventDefault(); // prevent ghost click
+        const val = starValue(star);
+        setEstrellas(val);
+        // Pop animation
+        stars().forEach(function (s) {
+            const sv = starValue(s);
+            if (sv <= val) {
+                s.classList.remove('pop');
+                void s.offsetWidth;
+                s.classList.add('pop');
+                s.addEventListener('animationend', function handler() {
+                    s.classList.remove('pop');
+                    s.removeEventListener('animationend', handler);
+                });
+            }
+        });
+    });
+
+    // Keyboard: Enter / Space on star-btn
+    container.addEventListener('keydown', function (e) {
+        if (e.key !== 'Enter' && e.key !== ' ') return;
+        const star = e.target.closest('.star-btn');
+        if (!star) return;
+        e.preventDefault();
+        const val = starValue(star);
+        setEstrellas(val);
+        // Pop animation
+        star.classList.remove('pop');
+        void star.offsetWidth;
+        star.classList.add('pop');
+        star.addEventListener('animationend', function handler() {
+            star.classList.remove('pop');
+            star.removeEventListener('animationend', handler);
+        });
+    });
+}
+
+// Initialize on DOMContentLoaded and also when the form becomes visible
+document.addEventListener('DOMContentLoaded', _initRatingStarsInput);
+// Also init when form is shown (in case DOM wasn't ready)
+const _origMostrarFormResena = mostrarFormResena;
+mostrarFormResena = function () {
+    _origMostrarFormResena();
+    _initRatingStarsInput();
+};
 
 function guardarResena() {
     if (!_detalleProductoActual) return;
     const autor = (document.getElementById('resenaAutor')?.value || '').trim();
     const texto = (document.getElementById('resenaTexto')?.value || '').trim();
     if (!autor) { mostrarNotificacion('⚠️ Escribe tu nombre', 'error'); return; }
-    if (_estrellasSeleccionadas === 0) { mostrarNotificacion('⚠️ Selecciona una valoración', 'error'); return; }
+    if (_estrellasSeleccionadas === 0) { mostrarNotificacion('⚠️ Selecciona una calificación', 'error'); return; }
     if (!texto) { mostrarNotificacion('⚠️ Escribe tu reseña', 'error'); return; }
     if (texto.length < 10) { mostrarNotificacion('⚠️ La reseña es muy corta', 'error'); return; }
 
@@ -807,15 +933,27 @@ function _renderTestimoniosPage(show) {
     const grid = document.getElementById('testimoniosGrid');
     const cta  = document.getElementById('testimoniosCTA');
     if (!grid || !_tmAllResenas.length) return;
-    const stars = n => '⭐'.repeat(Math.min(5, Math.max(1, n)));
-    grid.innerHTML = _tmAllResenas.slice(0, show).map(r =>
-        '<div class="testimonio-card">' +
-            '<div class="stars">' + stars(r.estrellas) + '</div>' +
-            '<p>"' + escapeHtml(r.texto.substring(0, 180)) + '"</p>' +
-            '<p class="autor">— ' + escapeHtml(r.autor) +
-            (r.productoNombre ? ' <span style="font-size:10px;opacity:0.5;font-weight:400;">· ' + escapeHtml(r.productoNombre.substring(0, 30)) + '</span>' : '') +
-            '</p></div>'
-    ).join('');
+    const starChars = n => '★'.repeat(Math.min(5, Math.max(1, n))) + '☆'.repeat(5 - Math.min(5, Math.max(1, n)));
+    grid.innerHTML = _tmAllResenas.slice(0, show).map(r => {
+        const nombre = String(r.autor || '?').trim();
+        const iniciales = nombre.split(/\s+/).filter(Boolean).slice(0, 2).map(s => s[0].toUpperCase()).join('') || '?';
+        const paletas = ['#ff7a29,#ff4d00','#60a5fa,#3b82f6','#a78bfa,#7c3aed','#4ade80,#16a34a','#fb7185,#e11d48'];
+        let hash = 0;
+        for (let i = 0; i < nombre.length; i++) hash = hash * 31 + nombre.charCodeAt(i) >>> 0;
+        const estrellas = Math.max(0, Math.min(5, parseInt(r.estrellas, 10) || 0));
+        return '<div class="testimonio-card">' +
+            '<div class="resena-top">' +
+                '<span class="resena-avatar" style="background:linear-gradient(135deg,' + paletas[hash % paletas.length] + ')">' + escapeHtml(iniciales) + '</span>' +
+                '<div class="resena-meta">' +
+                    '<span class="resena-autor">' + escapeHtml(nombre) + '</span>' +
+                    '<span class="resena-fecha">' + escapeHtml(r.fecha || '') + '</span>' +
+                '</div>' +
+                '<span class="resena-estrellas">' + starChars(estrellas) + '</span>' +
+            '</div>' +
+            '<p class="resena-texto">' + escapeHtml(r.texto.substring(0, 250)) + '</p>' +
+            (r.productoNombre ? '<span class="resena-verificada" style="background:rgba(255,107,53,.08);border-color:rgba(255,107,53,.25);color:var(--coral,#FF6B35);">' + escapeHtml(r.productoNombre.substring(0, 30)) + '</span>' : '') +
+        '</div>';
+    }).join('');
     const remaining = _tmAllResenas.length - show;
     let btn = document.getElementById('nd-resenas-mas');
     if (remaining > 0) {
@@ -825,7 +963,7 @@ function _renderTestimoniosPage(show) {
             btn.style.cssText = 'text-align:center;margin-top:16px;';
             grid.insertAdjacentElement('afterend', btn);
         }
-        btn.innerHTML = '<button onclick="_renderTestimoniosPage(' + (show + 4) + ')">Ver ' + remaining + ' reseña' + (remaining === 1 ? '' : 's') + ' más ↓</button>';
+        btn.innerHTML = '<button onclick="_renderTestimoniosPage(' + (show + 6) + ')">Ver ' + remaining + ' reseña' + (remaining === 1 ? '' : 's') + ' más ↓</button>';
     } else {
         if (btn) btn.remove();
         // Mostrar CTA "deja tu reseña" cuando ya no hay más
@@ -1070,7 +1208,7 @@ function _renderCardRecientes(p) {
     // (tm-ui.src.js, expuesto como window._tmCrearCard) para que estas
     // tarjetas se vean idénticas a las nuevas, sin duplicar el markup.
     if (typeof window._tmCrearCard === 'function') {
-        return window._tmCrearCard(p).outerHTML;
+        return window._tmCrearCard(p, { lazy: true }).outerHTML;
     }
     return '';
 }
