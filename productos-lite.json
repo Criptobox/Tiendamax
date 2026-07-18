@@ -2517,5 +2517,33 @@
       "🚀 Velocidad de 450+ Mbps"
     ],
     "fechaAgregado": "2026-07-18T19:41:17.390Z"
+  },
+  {
+    "id": 1784404666988,
+    "nombre": "​🌐 MikroTik SXTsq Lite5",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784404663965.webp",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784404663965.webp",
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784404665140.webp",
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784404666146.webp"
+    ],
+    "precioActual": 150,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 4,
+    "comision": 10,
+    "comisionMoneda": "USD",
+    "categoria": "WIFI",
+    "subcategoria": "ROUTERS",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "specs": [
+      "​🌐 Conectividad de Largo Alcance ​",
+      "📡 Diseño Compacto y Eficiente ​",
+      "🛠️ Solución para Exterior"
+    ],
+    "fechaAgregado": "2026-07-18T19:57:46.989Z"
   }
 ]
