@@ -2602,17 +2602,16 @@
   {
     "id": 1784403677390,
     "nombre": "​🌐 NanoStation AC loco",
-    "descripcion": "Pack de 5 radios NanoStation AC loco, ideales para establecer conexiones inalámbricas de larga distancia (punto a punto o punto a multipunto). Su diseño ultracompacto y la tecnología airMAX AC garantizan un enlace exterior rápido, estable y altamente eficiente.\n​Ficha Técnica:\n​○ Rendimiento: 🚀 Alcanza velocidades de transmisión de más de 450 Mbps, perfecto para redes exigentes y de alta capacidad.\n​○ Tecnología: 📡 Opera en la banda libre de 5 GHz utilizando el protocolo airMAX AC, lo que reduce la interferencia y maximiza la calidad de la señal.\n​○ Diseño: ✨ Formato muy compacto y minimalista en color blanco, optimizado para resistir instalaciones en exteriores sin llamar la atención.\n​○ Gestión: 🛠️ Sistema UNMS Ready integrado, que permite una configuración, monitoreo y administración de red rápida y centralizada.\n​Especificaciones (Specs):\n​Marca: Ubiquiti.\n​Modelo: NanoStation AC loco.\n​Frecuencia: 5 GHz.\n​Velocidad máxima: 450+ Mbps.",
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784403674704.webp",
+    "imagen": "https://tiendamax.org/imagenes/img_1784403674704.webp",
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784403674704.webp",
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784403675794.webp",
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784403676611.webp"
+      "https://tiendamax.org/imagenes/img_1784403674704.webp",
+      "https://tiendamax.org/imagenes/img_1784403675794.webp",
+      "https://tiendamax.org/imagenes/img_1784403676611.webp"
     ],
     "precioActual": 120,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 4,
+    "stock": 0,
     "comision": 8,
     "comisionMoneda": "USD",
     "categoria": "WIFI",
@@ -2625,6 +2624,7 @@
       "​🌐 Enlaces de Alto Rendimiento ​",
       "🚀 Velocidad de 450+ Mbps"
     ],
-    "fechaAgregado": "2026-07-18T19:41:17.390Z"
+    "fechaAgregado": "2026-07-18T19:41:17.390Z",
+    "descripcion": "Pack de 5 radios NanoStation AC loco, ideales para establecer conexiones inalámbricas de larga distancia (punto a punto o punto a multipunto). Su diseño ultracompacto y la tecnología airMAX AC garantizan un enlace exterior rápido, estable y altamente eficiente.\n​Ficha Técnica:\n​○ Rendimiento: 🚀 Alcanza velocidades de transmisión de más de 450 Mbps, perfecto para redes exigentes y de alta capacidad.\n​○ Tecnología: 📡 Opera en la banda libre de 5 GHz utilizando el protocolo airMAX AC, lo que reduce la interferencia y maximiza la calidad de la señal.\n​○ Diseño: ✨ Formato muy compacto y minimalista en color blanco, optimizado para resistir instalaciones en exteriores sin llamar la atención.\n​○ Gestión: 🛠️ Sistema UNMS Ready integrado, que permite una configuración, monitoreo y administración de red rápida y centralizada.\n​Especificaciones (Specs):\n​Marca: Ubiquiti.\n​Modelo: NanoStation AC loco.\n​Frecuencia: 5 GHz.\n​Velocidad máxima: 450+ Mbps."
   }
 ]
