@@ -1783,17 +1783,23 @@ html body .nd-hero-search .hsb-search {
 
 /* Fix PC search: .hero overflow:hidden + contain:layout clips the absolute-positioned panel.
    Allow overflow when search panel is open; keep hidden otherwise for layout.
-   Uses both :has() (modern browsers) and .search-panel-open class (JS fallback). */
-html body .hero.nd-hero:has(.hsb-panel.visible),
-html body .hero.nd-hero.search-panel-open {
-  overflow: visible !important;
-  contain: none !important;
-}
-/* Fallback for browsers without :has() — always allow overflow on hero */
-@supports not (selector(:has(*))) {
-  html body .hero.nd-hero {
+   Uses both :has() (modern browsers) and .search-panel-open class (JS fallback).
+   SOLO desktop/tablet (>768px): en mobile el panel es position:fixed pantalla
+   completa, no depende del overflow del hero — dejarlo overflow:hidden ahí
+   evita que se cuelen fuera de la pantalla los orbes decorativos del hero y
+   los slides del carrusel, que generaban scroll horizontal al abrir el buscador. */
+@media (min-width: 769px) {
+  html body .hero.nd-hero:has(.hsb-panel.visible),
+  html body .hero.nd-hero.search-panel-open {
     overflow: visible !important;
     contain: none !important;
+  }
+  /* Fallback for browsers without :has() — always allow overflow on hero */
+  @supports not (selector(:has(*))) {
+    html body .hero.nd-hero {
+      overflow: visible !important;
+      contain: none !important;
+    }
   }
 }
 
@@ -1905,6 +1911,17 @@ html body .hsb-suggestions {
     padding-top: calc(72px + env(safe-area-inset-top, 0px)) !important;
     padding-bottom: env(safe-area-inset-bottom, 24px) !important;
     animation: hsbSlideUp .25s var(--ease-out, cubic-bezier(0.16,1,0.3,1));
+  }
+
+  /* .nd-wrap (nuevo-diseno.css) tiene position:relative + z-index:1 propio,
+     así que crea su propio contexto de apilamiento: el z-index:1101 del pill
+     de abajo solo compite DENTRO de .nd-wrap, y .nd-wrap (z-index:1) pierde
+     contra el header sticky (z-index:1090) — el pill quedaba tapado por el
+     header aunque su propio z-index fuera mayor. Se sube el contexto entero
+     mientras el buscador está abierto. */
+  html body .hero.nd-hero:has(.hsb-panel.visible) .nd-wrap,
+  html body .hero.nd-hero.search-panel-open .nd-wrap {
+    z-index: 1101 !important;
   }
 
   /* Sticky search pill at top of fullscreen panel */
