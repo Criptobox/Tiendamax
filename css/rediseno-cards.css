@@ -1792,7 +1792,7 @@ html body .hsb-panel {
   -webkit-overflow-scrolling: touch !important;
   overscroll-behavior: contain !important;
   touch-action: pan-y !important;
-  z-index: 300 !important;
+  z-index: 1100 !important; /* el header sticky usa 1090 !important — si no, el panel queda tapado detrás */
 }
 
 /* Show panel when .visible class is added (DESKTOP) */
