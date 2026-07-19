@@ -2552,7 +2552,12 @@ html body .producto-card.pcard-v2.card-agotado .precio-actual{ color:var(--muted
 .producto-card.pcard-v2.card-agotado h3{ color:#b8b8c2 !important; }
 .producto-card.pcard-v2.card-agotado .pv2-cat{ background:#5a5a64; box-shadow:none; }
 body.light-mode .producto-card.pcard-v2.card-agotado{ opacity:.96; }
-body.light-mode .producto-card.pcard-v2.card-agotado h3{ color:var(--muted) !important; }
+/* var(--muted) (#6B6B7A) da ~4.4:1 sobre el fondo claro de la tarjeta (#e9ebf0),
+   por debajo del mínimo AA (4.5:1) para texto normal — con la tarjeta ya atenuada
+   (opacity) y la foto en escala de grises, el texto quedaba casi ilegible.
+   #4A4A57 da ~7.3:1, se sigue viendo "apagado" pero legible. */
+body.light-mode .producto-card.pcard-v2.card-agotado h3{ color:#4A4A57 !important; }
+body.light-mode .producto-card.pcard-v2.card-agotado .precio-actual{ color:#4A4A57 !important; -webkit-text-fill-color:#4A4A57 !important; }
 body.light-mode .producto-card.pcard-v2.card-agotado .pv2-photo img{ filter:grayscale(.7); opacity:.75; }
 /* hook oculto para urgencia-ventas */
 .producto-card.pcard-v2 .stock-count{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); padding:0; margin:-1px; }
@@ -2569,8 +2574,8 @@ body.light-mode .producto-card.pcard-v2 .pv2-photo .btn-megusta{
 }
 body.light-mode .producto-card.pcard-v2 h3{ color:#1a1a1a !important; }
 body.light-mode .producto-card.pcard-v2 .pv2-cur{ color:#5a5a63; }
-body.light-mode .producto-card.pcard-v2 .pv2-tax{ color:var(--muted); }
-body.light-mode .producto-card.pcard-v2 .pv2-old{ color:var(--muted); }
+body.light-mode .producto-card.pcard-v2 .pv2-tax{ color:#4A4A57; }
+body.light-mode .producto-card.pcard-v2 .pv2-old{ color:#4A4A57; }
 
 /* ============================================================
    MODAL de detalle
