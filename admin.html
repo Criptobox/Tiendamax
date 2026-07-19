@@ -2029,7 +2029,18 @@ function _qrCard(data, titulo){
   return `${_qrImg(data,260)}
     <div style="font-size:13px;color:#fff;font-weight:700;text-align:center">${t}</div>
     <div style="font-size:11px;color:var(--muted);word-break:break-all;text-align:center">${d}</div>
-    <button class="btn btn-ghost" onclick="qrImprimir(this.dataset.d,this.dataset.t)" data-d="${d}" data-t="${t}">🖨️ Imprimir</button>`;
+    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:7px;width:100%;max-width:280px;margin-top:4px">
+      <button class="pub-act wa" data-d="${d}" data-t="${t}" onclick="qrShare('wa',this.dataset.d,this.dataset.t)">💬 WhatsApp</button>
+      <button class="pub-act fb" data-d="${d}" onclick="qrShare('fb',this.dataset.d)">📘 Facebook</button>
+      <button class="pub-act ghost" data-d="${d}" onclick="qrShare('copy',this.dataset.d)">🔗 Copiar enlace</button>
+      <button class="pub-act ghost" data-d="${d}" data-t="${t}" onclick="qrImprimir(this.dataset.d,this.dataset.t)">🖨️ Imprimir</button>
+    </div>`;
+}
+function qrShare(red, data, titulo){
+  const u=encodeURIComponent(data);
+  if(red==='wa'){ const txt=encodeURIComponent((titulo?titulo+'\n':'')+data); window.open('https://wa.me/?text='+txt,'_blank','noopener,noreferrer'); return; }
+  if(red==='fb'){ window.open('https://www.facebook.com/sharer/sharer.php?u='+u,'_blank','noopener,noreferrer'); return; }
+  if(red==='copy'){ try{ navigator.clipboard.writeText(data); showToast('🔗 Enlace copiado','Pégalo donde quieras'); }catch(e){ showToast('No se pudo copiar'); } return; }
 }
 function renderQR(){
   const box=$('#qr-tienda-box'); if(box) box.innerHTML=_qrCard(SITE_URL,'TiendaMax · tiendamax.org');
@@ -3191,7 +3202,7 @@ function pubCatText(cat){
   const sep='━'.repeat(16);
   const header=`🏪 TIENDAMAX — ${String(cat).toUpperCase()}\n${pubCatGancho(cat)}\n${sep}\n\n`;
   const lines=prods.map(p=>{
-    let l=`${pubCatEmoji(p.nombre,cat)} ${p.nombre} — $${Number(p.precioActual||0).toFixed(2)} USD`;
+    const _pre=_catEmojiPre(p.nombre,cat); let l=`${_pre?_pre+' ':''}${_catClean(p.nombre)} — $${Number(p.precioActual||0).toFixed(2)} USD`;
     const st=Number(p.stock||0);
     if(p.masVendido)l+=' ⭐'; else if(st>0&&st<=2)l+=st===1?' 🔥 ¡Queda 1!':` 🔥 ¡Últimas ${st}!`;
     if(Number(p.precioOriginal||0)>Number(p.precioActual||0))l+=` (antes $${Number(p.precioOriginal).toFixed(2)})`;
@@ -3259,6 +3270,12 @@ function pubCatEnsureCss(){
   document.head.appendChild(st);
 }
 function _catClean(s){ return String(s==null?'':s).replace(/​/g,'').trim(); }
+// ¿el nombre ya empieza con un emoji? Muchos productos traen el emoji en el
+// propio nombre ("🔌 Cargador…"); si además le anteponemos el emoji de la
+// categoría, sale duplicado ("🔌 🔌 Cargador"). Con esto lo evitamos.
+function _empiezaConEmoji(s){ try{ return /^\s*\p{Extended_Pictographic}/u.test(_catClean(s)); }catch(e){ return /^\s*[←-⯿☀-➿️\u{1F000}-\u{1FAFF}]/u.test(_catClean(s)); } }
+// Emoji de categoría a anteponer, o '' si el nombre ya trae emoji propio.
+function _catEmojiPre(nombre,cat){ return _empiezaConEmoji(nombre)?'':pubCatEmoji(nombre,cat); }
 function _catSubtitle(p){
   const g=_catClean(p.garantia); if(g) return 'Garantía '+g;
   const d=_catClean(p.descripcion).split(/\.\s|\n|,/)[0].trim();
@@ -3276,7 +3293,9 @@ function tmCatalogHTML(cat){
   const groups={};
   resto.forEach(p=>{ let k=_catClean(p.subcategoria); if(!k||k.toLowerCase()==='todas') k=_catClean(cat); (groups[k]=groups[k]||[]).push(p); });
   const em=s=>{ const e=pubCatEmoji(s,cat); return e==='✨'?'':e+' '; };
-  const row=(p,badge)=>`<div class="tmcat-row"><div class="tmcat-l"><div class="tmcat-nm">${em(p.nombre)}${esc(p.nombre)}${badge?' <span class="tmcat-bdg">'+badge+'</span>':''}</div><div class="tmcat-sub">${esc(_catSubtitle(p))}</div></div><div class="tmcat-pr">${money(p.precioActual)}</div></div>`;
+  // No anteponer emoji de categoría si el nombre ya empieza con uno (evita duplicados).
+  const emP=p=>_empiezaConEmoji(p.nombre)?'':em(p.nombre);
+  const row=(p,badge)=>`<div class="tmcat-row"><div class="tmcat-l"><div class="tmcat-nm">${emP(p)}${esc(_catClean(p.nombre))}${badge?' <span class="tmcat-bdg">'+badge+'</span>':''}</div><div class="tmcat-sub">${esc(_catSubtitle(p))}</div></div><div class="tmcat-pr">${money(p.precioActual)}</div></div>`;
   const topBox=tops.length?`<div class="tmcat-top"><div class="tmcat-toplbl">🏆 TOP VENTAS</div>${tops.map((p,i)=>row(p,i===0?'⭐ MÁS VENDIDO':'')).join('')}</div>`:'';
   const MAX=12; let shown=0, extra=0, sectionsHtml='';
   Object.entries(groups).forEach(([name,arr])=>{
@@ -3326,7 +3345,7 @@ async function _pubCatGenImgLegacy(cat){
     ctx.font=PF; const priceW=ctx.measureText(price).width;
     ctx.font=NF;
     const maxNameW=(W-75)-priceW-30-80;
-    const lines=pubCatWrapName(ctx,pubCatEmoji(p.nombre,cat)+' '+String(p.nombre||''),maxNameW,2);
+    const _pre=_catEmojiPre(p.nombre,cat); const lines=pubCatWrapName(ctx,(_pre?_pre+' ':'')+_catClean(p.nombre),maxNameW,2);
     const badge=pubCatBadge(p);
     const orig=Number(p.precioOriginal||0)>Number(p.precioActual||0)?Number(p.precioOriginal):0;
     rows.push({lines,price,badge,orig,rowH:lines.length*lineH+(badge?badgeH:0)+rowPad});
@@ -3578,7 +3597,7 @@ cargarDatos();
 // Exponemos al window solo lo que usan los onclick/oninput de la interfaz.
 window.go=go; window.cargarDatos=cargarDatos; window.renderProductos=renderProductos; window.syncProductos=syncProductos;
 window.renderReposicion=renderReposicion; window.repoCopiar=repoCopiar; window.repoWhatsApp=repoWhatsApp;
-window.renderQR=renderQR; window.qrRenderProducto=qrRenderProducto; window.qrImprimir=qrImprimir;
+window.renderQR=renderQR; window.qrRenderProducto=qrRenderProducto; window.qrImprimir=qrImprimir; window.qrShare=qrShare;
 window.apToggleFiltroFav=apToggleFiltroFav; window.apStock=apStock; window.apStockZero=apStockZero; window.apFav=apFav; window.apDel=apDel; window.apEdit=apEdit; window.apEditClose=apEditClose; window.apEditSave=apEditSave; window._peditPreview=_peditPreview;
 window.apSelTgl=apSelTgl; window.apSelClear=apSelClear; window.apBulkZero=apBulkZero; window.apBulkDel=apBulkDel;
 window.comboBuscar=comboBuscar; window.comboAdd=comboAdd; window.comboRemove=comboRemove; window.comboCalc=comboCalc;
