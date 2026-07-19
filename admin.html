@@ -1006,7 +1006,9 @@
       <button class="side-btn" data-view="publicar" title="Publicar / Compartir a redes">📣</button>
       <button class="side-btn" type="button" title="Vale / factura para el cliente" onclick="window.open('vale.html','_blank')">🧾</button>
       <div class="side-sep"></div>
-      <button class="side-btn" data-view="radar" title="Radar de precios">📡<span class="new-tag">N</span></button>
+      <button class="side-btn" data-view="reposicion" title="Reposición · qué volver a comprar">📥<span class="new-tag">N</span></button>
+      <button class="side-btn" data-view="qr" title="Código QR para imprimir">🔳<span class="new-tag">N</span></button>
+      <button class="side-btn" data-view="radar" title="Radar de precios">📡</button>
       <button class="side-btn" data-view="ventas" title="Ventas">💰</button>
       <button class="side-btn" data-view="analytics" title="Analytics">📊</button>
       <button class="side-btn" data-view="clientes" title="Clientes · Reviews · Carritos · WhatsApp">👥</button>
@@ -1101,6 +1103,44 @@
         <div class="ph"><div><h2>📡 Radar de precios</h2><p id="radar-sub">Precios reales de la competencia</p></div></div>
         <div class="banner-info" id="radar-resumen"></div>
         <div id="radar-lista"></div>
+      </div>
+
+      <!-- REPOSICIÓN -->
+      <div id="view-reposicion" class="view">
+        <div class="ph">
+          <div><h2>📥 Reposición</h2><p id="repo-sub">Qué volver a comprar, ordenado por lo que más se vende</p></div>
+          <div class="ph-actions">
+            <button class="btn btn-ghost" onclick="repoCopiar()">📋 Copiar lista</button>
+            <button class="btn btn-success" onclick="repoWhatsApp()">💬 Al proveedor</button>
+          </div>
+        </div>
+        <div class="banner-info" id="repo-resumen"></div>
+        <div class="section" style="margin-bottom:12px">
+          <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+            <label class="form-label" style="margin:0" for="repo-umbral">Avisar cuando el stock esté en o por debajo de</label>
+            <input class="form-input" id="repo-umbral" type="number" min="0" step="1" value="5" style="width:80px" onchange="renderReposicion()">
+            <span style="font-size:12px;color:var(--muted)">unidades</span>
+          </div>
+        </div>
+        <div id="repo-lista"></div>
+      </div>
+
+      <!-- CÓDIGO QR -->
+      <div id="view-qr" class="view">
+        <div class="ph"><div><h2>🔳 Código QR</h2><p>Imprime y pega — que te encuentren sin escribir la dirección</p></div></div>
+        <div class="grid-2">
+          <div class="section" style="text-align:center">
+            <h3>🏪 Toda la tienda</h3>
+            <div id="qr-tienda-box" style="display:flex;flex-direction:column;align-items:center;gap:10px"></div>
+          </div>
+          <div class="section">
+            <h3>📦 Un producto</h3>
+            <div class="form-group"><label class="form-label" for="qr-prod-sel">Elige el producto</label>
+              <select class="form-select" id="qr-prod-sel" onchange="qrRenderProducto()"><option value="">Selecciona…</option></select>
+            </div>
+            <div id="qr-prod-box" style="display:flex;flex-direction:column;align-items:center;gap:10px;margin-top:10px"></div>
+          </div>
+        </div>
       </div>
 
       <!-- VENTAS -->
@@ -1557,7 +1597,7 @@ async function cargarVentasFirebase(){
 
 function renderTodo(){
   renderInicio(); renderProductos(); renderCategorias();
-  renderRadar(); renderVentas();
+  renderRadar(); renderVentas(); renderReposicion(); renderQR();
   renderAnalytics(); renderClientes(); renderCombos(); renderPublicar();
   fillAgregarCategorias(); fillConfig(); fillOfertaDia();
 }
@@ -1922,6 +1962,93 @@ function renderInicio(){
   // Badge alertas topbar
   const _subs = parseInt(localStorage.getItem('tm_subscriber_count')||'0')||0;
   const _sb=$('#tb-subs'); if(_sb) _sb.textContent = _subs;
+}
+
+/* ============ REPOSICIÓN — qué volver a comprar ============ */
+const SITE_URL = 'https://tiendamax.org';
+function _repoUmbral(){ const el=$('#repo-umbral'); const v=el?parseInt(el.value,10):5; return isNaN(v)?5:Math.max(0,v); }
+// Unidades vendidas por producto: combina el histórico de vendidos.json
+// (window._tmVendidos, que carga el bundle) con las ventas registradas (VENTAS).
+function _unidadesVendidas(){
+  const byId={}, byName={};
+  const V = (window._tmVendidos && typeof window._tmVendidos==='object') ? window._tmVendidos : {};
+  Object.keys(V).forEach(id=>{ const n=Number(V[id])||0; if(n>0) byId[String(id)]=(byId[String(id)]||0)+n; });
+  VENTAS.forEach(v=>{
+    let items = v.productos||v.items;
+    if((!items||!items.length) && (v.producto||v.nombre)) items=[{producto:v.producto||v.nombre, cantidad:v.cantidad, productoId:v.productoId}];
+    (items||[]).forEach(it=>{
+      const q=Number(it.cantidad||it.qty||1)||1;
+      if(it.productoId!=null) byId[String(it.productoId)]=(byId[String(it.productoId)]||0)+q;
+      const nm=it.nombre||it.nm||it.producto; if(nm) byName[norm(nm)]=(byName[norm(nm)]||0)+q;
+    });
+  });
+  return {byId, byName};
+}
+function _prodVendidas(p, u){ let n=u.byId[String(p.id)]||0; const bn=u.byName[norm(p.nombre)]; if(bn&&bn>n) n=bn; return n; }
+let _repoCache=[];
+function renderReposicion(){
+  const box=$('#repo-lista'); if(!box) return;
+  const umbral=_repoUmbral();
+  const u=_unidadesVendidas();
+  const cand = PRODUCTOS
+    .filter(p=>p.activo!==false)
+    .map(p=>({p, stock:Number(p.stock)||0, vendidas:_prodVendidas(p,u)}))
+    .filter(x=>x.stock<=umbral)
+    .sort((a,b)=> (b.vendidas-a.vendidas) || (a.stock-b.stock) || String(a.p.nombre).localeCompare(String(b.p.nombre)));
+  _repoCache=cand;
+  const agot = cand.filter(x=>x.stock<=0).length;
+  const res=$('#repo-resumen');
+  if(res) res.innerHTML = cand.length
+    ? `<b>${cand.length}</b> producto(s) para reponer — <b style="color:var(--red)">${agot} agotado(s)</b> y ${cand.length-agot} con stock bajo. Ordenados por los que <b>más se venden</b>.`
+    : `✅ Todo con stock por encima de ${umbral}. Nada urgente que reponer.`;
+  if(!cand.length){ box.innerHTML=`<div class="empty"><div class="ico">📥</div>Nada que reponer ahora mismo.</div>`; return; }
+  box.innerHTML = cand.map(x=>{
+    const p=x.p, out=x.stock<=0;
+    const img=(Array.isArray(p.imagenes)&&p.imagenes[0])||p.imagen||'';
+    const badge = out?'<span class="sp-status urg">Agotado</span>':`<span class="sp-status warn">Quedan ${x.stock}</span>`;
+    const vel = x.vendidas>0?`🔥 ${x.vendidas} vendidas`:'sin ventas registradas';
+    return `<div class="stock-card ${out?'urg':'warn'}"><div class="sp-head">
+        <div class="sp-thumb">${img?`<img src="${esc(img)}" alt="">`:emojiCat(p.categoria)}</div>
+        <div style="min-width:0"><div class="sp-name">${esc(p.nombre)}</div><div class="sp-meta">${esc(p.categoria||'')} · ${vel}</div></div>
+        ${badge}
+      </div></div>`;
+  }).join('');
+}
+function _repoTexto(){
+  if(!_repoCache.length) return '';
+  const lines=_repoCache.map(x=>{ const out=x.stock<=0; return `• ${x.p.nombre}${out?' (AGOTADO)':' (quedan '+x.stock+')'}${x.vendidas?' — '+x.vendidas+' vendidas':''}`; });
+  return `🛒 Lista de reposición — TiendaMax\n(${_repoCache.length} productos, los que más se venden primero)\n\n`+lines.join('\n');
+}
+function repoCopiar(){ const t=_repoTexto(); if(!t){ showToast('Nada que copiar'); return; } try{ navigator.clipboard.writeText(t); showToast('📋 Lista copiada','Pégasela a tu proveedor'); }catch(e){ showToast('No se pudo copiar'); } }
+function repoWhatsApp(){ const t=_repoTexto(); if(!t){ showToast('Nada que enviar'); return; } window.open('https://wa.me/?text='+encodeURIComponent(t),'_blank','noopener,noreferrer'); }
+
+/* ============ CÓDIGO QR (imagen QR de una URL pública; img-src https: lo permite) ============ */
+function _qrImg(data, size){ const s=size||260; const url='https://api.qrserver.com/v1/create-qr-code/?size='+s+'x'+s+'&margin=8&data='+encodeURIComponent(data); return `<img src="${esc(url)}" width="${s}" height="${s}" alt="Código QR" style="background:#fff;border-radius:14px;padding:8px">`; }
+function _qrCard(data, titulo){
+  const d=esc(data), t=esc(titulo);
+  return `${_qrImg(data,260)}
+    <div style="font-size:13px;color:#fff;font-weight:700;text-align:center">${t}</div>
+    <div style="font-size:11px;color:var(--muted);word-break:break-all;text-align:center">${d}</div>
+    <button class="btn btn-ghost" onclick="qrImprimir(this.dataset.d,this.dataset.t)" data-d="${d}" data-t="${t}">🖨️ Imprimir</button>`;
+}
+function renderQR(){
+  const box=$('#qr-tienda-box'); if(box) box.innerHTML=_qrCard(SITE_URL,'TiendaMax · tiendamax.org');
+  const sel=$('#qr-prod-sel'); if(sel){ const cur=sel.value; sel.innerHTML='<option value="">Selecciona…</option>'+PRODUCTOS.filter(p=>p.activo!==false).map(p=>`<option value="${esc(p.id)}">${esc(p.nombre)}</option>`).join(''); if(cur) sel.value=cur; }
+}
+function qrRenderProducto(){
+  const sel=$('#qr-prod-sel'), box=$('#qr-prod-box'); if(!sel||!box) return;
+  const p=PRODUCTOS.find(x=>String(x.id)===String(sel.value));
+  if(!p){ box.innerHTML=''; return; }
+  box.innerHTML=_qrCard(SITE_URL+'/p/producto-'+p.id+'.html', p.nombre);
+}
+function qrImprimir(data, titulo){
+  const w=window.open('','_blank','width=420,height=580'); if(!w) return;
+  const img='https://api.qrserver.com/v1/create-qr-code/?size=600x600&margin=12&data='+encodeURIComponent(data);
+  w.document.write('<!DOCTYPE html><meta charset=utf-8><title>QR TiendaMax</title><body style="margin:0;font-family:system-ui,sans-serif;text-align:center;padding:26px">'
+    +'<img src="'+img+'" style="width:320px;height:320px" onload="window.print()">'
+    +'<h2 style="margin:16px 0 4px">'+esc(titulo)+'</h2>'
+    +'<div style="color:#555;font-size:13px;word-break:break-all">'+esc(data)+'</div></body>');
+  w.document.close();
 }
 
 /* ============ PRODUCTOS ============ */
@@ -3450,6 +3577,8 @@ cargarDatos();
 // El script va en IIFE para no chocar con el motor (que también declara $).
 // Exponemos al window solo lo que usan los onclick/oninput de la interfaz.
 window.go=go; window.cargarDatos=cargarDatos; window.renderProductos=renderProductos; window.syncProductos=syncProductos;
+window.renderReposicion=renderReposicion; window.repoCopiar=repoCopiar; window.repoWhatsApp=repoWhatsApp;
+window.renderQR=renderQR; window.qrRenderProducto=qrRenderProducto; window.qrImprimir=qrImprimir;
 window.apToggleFiltroFav=apToggleFiltroFav; window.apStock=apStock; window.apStockZero=apStockZero; window.apFav=apFav; window.apDel=apDel; window.apEdit=apEdit; window.apEditClose=apEditClose; window.apEditSave=apEditSave; window._peditPreview=_peditPreview;
 window.apSelTgl=apSelTgl; window.apSelClear=apSelClear; window.apBulkZero=apBulkZero; window.apBulkDel=apBulkDel;
 window.comboBuscar=comboBuscar; window.comboAdd=comboAdd; window.comboRemove=comboRemove; window.comboCalc=comboCalc;
