@@ -152,7 +152,9 @@
     }
 
     // ── Pago ──
-    if (/pago|paga|efectivo|transferencia|usd|mn|moneda|como pago|formas de pago|aceptan/.test(n) && !/producto|router|inversor|bateria|celular/.test(n)) {
+    // Guard con _mentionsProduct: "tengo 50 usd para un cargador" es una
+    // búsqueda con presupuesto, no una pregunta sobre formas de pago.
+    if (/pago|paga|efectivo|transferencia|usd|mn|moneda|como pago|formas de pago|aceptan/.test(n) && !_mentionsProduct(n)) {
       return INTENT.PAYMENT;
     }
 
@@ -223,6 +225,78 @@
     }
 
     return INTENT.UNKNOWN;
+  }
+
+  /**
+   * Extrae un presupuesto del mensaje: "hasta 100", "menos de 50",
+   * "tengo 200 usd", "entre 50 y 100", "de 20 a 40".
+   * Ignora números con unidad técnica (12v, 3000w, 100ah...) para no
+   * confundir "cargador de 12 a 24v" con un rango de precio.
+   * Devuelve { min?, max?, cleaned } o null. cleaned = mensaje sin la
+   * frase de presupuesto (para que no ensucie la búsqueda).
+   */
+  function _parseBudget(n) {
+    var NOUNIT = '(?!\\s*(?:w|v|ah|a|hz|mah|btu|gb|tb|mbps|gbps|k)\\b)';
+    var m, out = null, cleaned = n;
+    if ((m = n.match(new RegExp('(?:entre|de)\\s+(\\d+)' + NOUNIT + '\\s+(?:y|a)\\s+(\\d+)' + NOUNIT + '(?:\\s*(?:usd|dolares|pesos))?')))) {
+      out = { min: parseInt(m[1], 10), max: parseInt(m[2], 10) };
+    } else if ((m = n.match(new RegExp('(?:hasta|menos de|maximo|no mas de|por menos de|debajo de|tengo)\\s*\\$?\\s*(\\d+)' + NOUNIT)))) {
+      out = { max: parseInt(m[1], 10) };
+    } else if ((m = n.match(new RegExp('(?:mas de|minimo|desde|a partir de)\\s*\\$?\\s*(\\d+)' + NOUNIT)))) {
+      out = { min: parseInt(m[1], 10) };
+    }
+    if (!out) return null;
+    cleaned = n.replace(m[0], ' ').replace(/\s+/g, ' ').trim();
+    out.cleaned = cleaned;
+    return out;
+  }
+
+  /**
+   * Complementos que venden juntos: dado un producto, qué tipos ofrecerle
+   * de acompañamiento ("¿Y la batería para ese inversor?").
+   */
+  var COMPLEMENTS = {
+    'inversor':  ['bateria', 'solar', 'controlador'],
+    'bateria':   ['inversor', 'cargador'],
+    'solar':     ['controlador', 'bateria'],
+    'controlador': ['solar', 'bateria'],
+    'router':    ['repetidor', 'switch'],
+    'repetidor': ['router'],
+    'switch':    ['router', 'cable'],
+    'seguridad': ['memoria', 'cable'],
+    'celular':   ['audio', 'cargador', 'memoria']
+  };
+
+  /**
+   * Devuelve hasta `max` productos en stock que complementan a `p`
+   * (otro tipo, mismo ecosistema). Para el "combina bien con…" del cierre.
+   */
+  function _getComplements(p, max) {
+    max = max || 2;
+    var type = null;
+    for (var t in PRODUCT_TYPE_FILTERS) {
+      if (PRODUCT_TYPE_FILTERS.hasOwnProperty(t) && PRODUCT_TYPE_FILTERS[t](p)) { type = t; break; }
+    }
+    if (!type || !COMPLEMENTS[type]) return [];
+    var ps = _getProducts();
+    var found = [];
+    var seen = { };
+    seen[String(p.id)] = true;
+    COMPLEMENTS[type].forEach(function (compType) {
+      if (found.length >= max) return;
+      var filter = PRODUCT_TYPE_FILTERS[compType];
+      if (!filter) return;
+      var candidates = ps.filter(function (x) {
+        return x.stock > 0 && !seen[String(x.id)] && filter(x);
+      }).sort(function (a, b) {
+        var ma = (a.masVendido === true || a.masVendido === 'true') ? 1 : 0;
+        var mb = (b.masVendido === true || b.masVendido === 'true') ? 1 : 0;
+        if (ma !== mb) return mb - ma;
+        return (a.precioActual || 0) - (b.precioActual || 0);
+      });
+      if (candidates[0]) { found.push(candidates[0]); seen[String(candidates[0].id)] = true; }
+    });
+    return found;
   }
 
   /**
@@ -460,14 +534,14 @@
         score += 15;
       }
 
-      // Bonus por stock disponible
-      if (p.stock > 0) score += 3;
-
-      // Bonus por más vendido
-      if (p.masVendido === true || p.masVendido === 'true') score += 2;
-
-      // Bonus por descuento
-      if (p.descuento > 0) score += 1;
+      // Bonos de stock/vendido/descuento SOLO si ya hay match textual —
+      // sin esta condición, cualquier producto con stock+descuento pasaba
+      // el filtro score>0 y se colaba al final de TODAS las búsquedas.
+      if (score > 0) {
+        if (p.stock > 0) score += 3;
+        if (p.masVendido === true || p.masVendido === 'true') score += 2;
+        if (p.descuento > 0) score += 1;
+      }
 
       return { product: p, score: score };
     })
@@ -1323,11 +1397,27 @@
    * Esto evita que _waLink() / _getRate() fallen si localStorage
    * aún no está disponible al momento del parseo.
    */
+  /**
+   * Gancho de ventas para el saludo: cuántas ofertas reales hay hoy.
+   * Un saludo con dato concreto vende más que uno genérico.
+   */
+  function _welcomeHook() {
+    try {
+      var conDescuento = _getProducts().filter(function (p) {
+        return p.stock > 0 && p.descuento > 0;
+      });
+      if (conDescuento.length === 0) return '';
+      var top = conDescuento.reduce(function (a, b) { return (b.descuento || 0) > (a.descuento || 0) ? b : a; });
+      return '\n\n🔥 Hoy hay ' + conDescuento.length + ' producto' + (conDescuento.length > 1 ? 's' : '') +
+             ' en oferta (hasta -' + top.descuento + '%).';
+    } catch (e) { return ''; }
+  }
+
   function _getFastResponse(intentKey) {
     switch (intentKey) {
       case 'GREETING':
         return {
-          text: '¡Hola! 👋 Soy Max, tu asistente de TiendaMax. ¿En qué te puedo ayudar?\n\nPuedo buscar productos, comparar precios, calcular consumo eléctrico o decirte cómo comprar.',
+          text: '¡Hola! 👋 Soy Max, tu asistente de TiendaMax. ¿En qué te puedo ayudar?\n\nPuedo buscar productos, comparar precios, calcular consumo eléctrico o decirte cómo comprar.' + _welcomeHook(),
           quickReplies: ['🔥 Ofertas', '📦 Categorías', '⚡ Calcular consumo', '💬 WhatsApp']
         };
       case 'FAREWELL':
@@ -1480,12 +1570,19 @@
       var elegido = _lastResults[idx];
       if (elegido) {
         _lastDetailProduct = elegido;
+        var combosOrd = _getComplements(elegido);
+        var ordText = formatProductCard(elegido);
+        if (combosOrd.length > 0) {
+          ordText += '\n\n💡 Combina bien con:';
+          combosOrd.forEach(function (c) { ordText += '\n• ' + _shortName(c.nombre) + ' — ' + _fmtPrice(c.precioActual); });
+        }
+        ordText += '\n\n¿Qué quieres hacer?';
         return {
-          text: formatProductCard(elegido) + '\n\n¿Qué quieres hacer?',
-          products: [elegido],
+          text: ordText,
+          products: [elegido].concat(combosOrd),
           whatsappProduct: elegido.stock > 0 ? elegido.id : null,
           quickReplies: elegido.stock > 0
-            ? ['Ver similar', '💬 Comprar por WhatsApp']
+            ? ['💬 Comprar por WhatsApp', 'Ver similar']
             : ['Ver similar', '💬 WhatsApp']
         };
       }
@@ -1537,6 +1634,114 @@
         return r;
       }
       return null;
+    }
+
+    // ── Superlativos sobre la lista mostrada ──
+    // "el más barato" / "el más potente" / "el mejor"
+    // Solo sobre lo que el cliente VIO (no la cola completa de resultados,
+    // que puede traer coincidencias débiles de otra categoría).
+    if (_lastResults.length > 0) {
+      var shown = _lastResults.slice(0, _lastShownCount || 5);
+      var pool = shown.filter(function (p) { return p.stock > 0; });
+      if (pool.length === 0) pool = shown;
+      var pick = null, pickLabel = '';
+      if (/^(el |la )?mas barat[oa]$/.test(n) || /^cual es (el |la )?mas barat[oa]/.test(n)) {
+        pick = pool.reduce(function (a, b) { return (b.precioActual || 0) < (a.precioActual || 0) ? b : a; });
+        pickLabel = '💵 El más económico:';
+      } else if (/^(el |la )?mas potente$/.test(n) || /^cual es (el |la )?mas potente/.test(n)) {
+        pick = pool.reduce(function (a, b) {
+          return (parseSpec(b.specs).watts || 0) > (parseSpec(a.specs).watts || 0) ? b : a;
+        });
+        pickLabel = '⚡ El más potente:';
+      } else if (/^(el |la )?mejor$/.test(n) || /^cual (es el |es la |me recomiendas)?mejor/.test(n)) {
+        pick = pool.filter(function (p) { return p.masVendido === true || p.masVendido === 'true'; })[0] || pool[0];
+        pickLabel = '🏆 Mi recomendado:';
+      }
+      if (pick) {
+        _lastDetailProduct = pick;
+        return {
+          text: pickLabel + '\n\n' + formatProductCard(pick) + '\n\n¿Te lo aparto? 😊',
+          products: [pick],
+          whatsappProduct: pick.stock > 0 ? pick.id : null,
+          quickReplies: ['💬 Comprar por WhatsApp', 'Ver similar', 'Es muy caro']
+        };
+      }
+    }
+
+    // ── Objeción de precio: "es muy caro" ──
+    if (/(muy|esta|es|que) car[oa]\b|carisim[oa]|no me alcanza|mucho dinero/.test(n)) {
+      var ref = _lastDetailProduct || (_lastResults.length ? _lastResults[0] : null);
+      if (ref) {
+        // Alternativas más baratas del mismo tipo/categoría, en stock
+        var refType = null;
+        for (var rt in PRODUCT_TYPE_FILTERS) {
+          if (PRODUCT_TYPE_FILTERS.hasOwnProperty(rt) && PRODUCT_TYPE_FILTERS[rt](ref)) { refType = rt; break; }
+        }
+        var cheaper = _getProducts().filter(function (p) {
+          if (p.stock <= 0 || String(p.id) === String(ref.id)) return false;
+          if ((p.precioActual || 0) >= (ref.precioActual || 0)) return false;
+          if (refType) return PRODUCT_TYPE_FILTERS[refType](p);
+          return (p.categoria || '') === (ref.categoria || '');
+        }).sort(function (a, b) { return (b.precioActual || 0) - (a.precioActual || 0); }).slice(0, 3);
+
+        if (cheaper.length > 0) {
+          var objLines = ['Te entiendo 👍 Mira estas opciones más económicas:', ''];
+          cheaper.forEach(function (p, i) { objLines.push(formatProductShort(p, i)); });
+          objLines.push('');
+          objLines.push('💡 Recuerda: puedes pagar en MN a la tasa del día, y el pago es contra entrega.');
+          _lastResults = cheaper;
+          _lastShownCount = cheaper.length;
+          return {
+            text: objLines.join('\n'),
+            products: cheaper,
+            quickReplies: cheaper.slice(0, 2).map(function (p) { return _shortName(p.nombre); }).concat(['💬 WhatsApp'])
+          };
+        }
+        return {
+          text: 'Es la mejor opción que tengo ahora en esa línea 🙏 Pero recuerda:\n\n' +
+                '💵 Pagas contra entrega (nada por adelantado)\n' +
+                '🇨🇺 Puedes pagar en MN a la tasa del día\n' +
+                '💬 Escríbenos por WhatsApp y vemos cómo ayudarte con el precio.',
+          whatsappProduct: ref.stock > 0 ? ref.id : null,
+          quickReplies: ['💬 WhatsApp', 'Ver ofertas', '📦 Categorías']
+        };
+      }
+      return null;
+    }
+
+    // ── "¿Es nuevo o de uso?" / garantía del producto en contexto ──
+    if (_lastDetailProduct && /es nuevo|de uso|es usado|nuevo o de uso/.test(n)) {
+      var esUsado = _lastDetailProduct.usado === true || _lastDetailProduct.usado === 'true';
+      return {
+        text: (esUsado
+          ? '📦 ' + _shortName(_lastDetailProduct.nombre) + ' es DE USO, revisado y funcionando.'
+          : '✨ ' + _shortName(_lastDetailProduct.nombre) + ' es NUEVO.') +
+          (_lastDetailProduct.garantia ? '\n🛡️ Garantía: ' + _lastDetailProduct.garantia : '\n🛡️ Tiene garantía.') +
+          '\n\n¿Te lo aparto?',
+        whatsappProduct: _lastDetailProduct.stock > 0 ? _lastDetailProduct.id : null,
+        quickReplies: ['💬 Comprar por WhatsApp', 'Ver similar']
+      };
+    }
+    if (_lastDetailProduct && /garantia/.test(n) && n.length < 45) {
+      return {
+        text: '🛡️ ' + _shortName(_lastDetailProduct.nombre) + ': ' +
+              (_lastDetailProduct.garantia ? 'garantía de ' + _lastDetailProduct.garantia : 'tiene garantía incluida') +
+              '.\nSi algo falla, contáctanos por WhatsApp y lo resolvemos. 👍',
+        whatsappProduct: _lastDetailProduct.stock > 0 ? _lastDetailProduct.id : null,
+        quickReplies: ['💬 Comprar por WhatsApp', 'Ver similar']
+      };
+    }
+
+    // ── Carrito desde el chat ──
+    if (/^(🛒 )?(ver|abrir) (el )?carrito$/.test(n) || n === 'carrito') {
+      return {
+        text: 'Abriendo tu carrito 🛒',
+        action: 'openCart',
+        quickReplies: ['Seguir comprando', '🔥 Ofertas']
+      };
+    }
+    if (/^seguir comprando$/.test(n)) {
+      return _handleOffers('ofertas');
     }
 
     return null;
@@ -1653,10 +1858,27 @@
         // Intentar búsqueda como último recurso
         response = _handleSearch(message);
         if (!response.products || response.products.length === 0) {
-          response = {
-            text: 'No entendí bien tu consulta. ¿Puedo ayudarte con algo de esto?',
-            quickReplies: ['Buscar producto', '🔥 Ofertas', '📦 Categorías', '💬 WhatsApp']
-          };
+          // En vez de un "no entendí" seco, mostrar lo más buscado —
+          // un vendedor nunca deja al cliente sin nada que mirar.
+          var populares = _getProducts().filter(function (p) {
+            return p.stock > 0 && (p.masVendido === true || p.masVendido === 'true');
+          }).slice(0, 3);
+          if (populares.length > 0) {
+            _lastResults = populares;
+            _lastShownCount = populares.length;
+            response = {
+              text: 'No estoy seguro de haberte entendido 🤔 pero mira lo más buscado de la tienda:\n\n' +
+                    populares.map(function (p, i) { return formatProductShort(p, i); }).join('\n') +
+                    '\n\n¿O me dices con otras palabras qué buscas?',
+              products: populares,
+              quickReplies: ['🔥 Ofertas', '📦 Categorías', '⚡ Calcular consumo', '💬 WhatsApp']
+            };
+          } else {
+            response = {
+              text: 'No entendí bien tu consulta. ¿Puedo ayudarte con algo de esto?',
+              quickReplies: ['Buscar producto', '🔥 Ofertas', '📦 Categorías', '💬 WhatsApp']
+            };
+          }
         }
         break;
     }
@@ -1767,10 +1989,42 @@
   }
 
   function _handleSearch(message) {
-    // Extraer término de búsqueda del mensaje
-    var query = _extractSearchQuery(message);
+    // Presupuesto: "inversor hasta 200", "tengo 100 usd para un router"
+    var budget = _parseBudget(norm(message));
+    // Extraer término de búsqueda (sin la frase de presupuesto)
+    var query = _extractSearchQuery(budget ? budget.cleaned : message);
     // Pedir de más para poder responder "Ver más" después sin re-buscar
     var fullResults = searchProducts(query, { maxResults: 15 });
+
+    if (budget) {
+      var inBudget = fullResults.filter(function (p) {
+        var pr = p.precioActual || 0;
+        if (budget.max !== undefined && pr > budget.max) return false;
+        if (budget.min !== undefined && pr < budget.min) return false;
+        return true;
+      });
+      if (inBudget.length > 0) {
+        fullResults = inBudget;
+      } else if (budget.max !== undefined && fullResults.length > 0) {
+        // Nada dentro del presupuesto: ofrecer lo más cercano por arriba,
+        // avisando — mejor que un "no encontré" seco.
+        var closest = fullResults.slice().sort(function (a, b) {
+          return (a.precioActual || 0) - (b.precioActual || 0);
+        }).slice(0, 3);
+        _lastResults = closest;
+        _lastShownCount = closest.length;
+        _lastQuery = query;
+        return {
+          text: '😕 No tengo "' + query + '" por debajo de $' + budget.max + ' ahora mismo.\n' +
+                'Lo más cercano que tengo:\n\n' +
+                closest.map(function (p, i) { return formatProductShort(p, i); }).join('\n') +
+                '\n\n💡 Recuerda que pagas contra entrega, y en MN si prefieres.',
+          products: closest,
+          quickReplies: closest.slice(0, 2).map(function (p) { return _shortName(p.nombre); }).concat(['🔥 Ofertas', '💬 WhatsApp'])
+        };
+      }
+    }
+
     var results = fullResults.slice(0, 5);
 
     if (results.length === 0) {
@@ -1803,8 +2057,22 @@
     if (results.length === 1) {
       _lastDetailProduct = results[0];
       lines.push(formatProductCard(results[0]));
+      var combos1 = _getComplements(results[0]);
+      if (combos1.length > 0) {
+        lines.push('');
+        lines.push('💡 Combina bien con:');
+        combos1.forEach(function (c) { lines.push('• ' + _shortName(c.nombre) + ' — ' + _fmtPrice(c.precioActual)); });
+      }
       lines.push('');
       lines.push('¿Qué quieres hacer?');
+      return {
+        text: lines.join('\n'),
+        products: [results[0]].concat(combos1),
+        whatsappProduct: results[0].stock > 0 ? results[0].id : null,
+        quickReplies: results[0].stock > 0
+          ? ['💬 Comprar por WhatsApp', 'Ver similar', 'Comparar']
+          : ['Ver similar', '💬 WhatsApp']
+      };
     } else {
       lines.push('🔍 Encontré ' + results.length + ' resultados para "' + query + '":');
       lines.push('');
@@ -1959,10 +2227,10 @@
       }
     }
 
-    // Detectar presupuesto
-    var budgetMatch = n.match(/hasta\s*(\d+)|barato.*(\d+)|presupuesto\s*(\d+)|menos\s*de\s*(\d+)/);
-    if (budgetMatch) {
-      context.budget = parseInt(budgetMatch[1] || budgetMatch[2] || budgetMatch[3] || budgetMatch[4], 10);
+    // Detectar presupuesto (mismo parser que la búsqueda)
+    var budgetInfo = _parseBudget(n);
+    if (budgetInfo && budgetInfo.max !== undefined) {
+      context.budget = budgetInfo.max;
     }
 
     // Detectar necesidad
@@ -2001,14 +2269,22 @@
       lines.push('');
     }
 
+    // Cross-sell: qué combina con este producto
+    var combos = _getComplements(p);
+    if (combos.length > 0) {
+      lines.push('💡 Combina bien con:');
+      combos.forEach(function (c) { lines.push('• ' + _shortName(c.nombre) + ' — ' + _fmtPrice(c.precioActual)); });
+      lines.push('');
+    }
+
     lines.push('¿Qué quieres hacer?');
 
     return {
       text: lines.join('\n'),
-      products: [p],
+      products: [p].concat(combos),
       whatsappProduct: p.stock > 0 ? p.id : null,
       quickReplies: p.stock > 0
-        ? ['Comparar', 'Ver similar', '💬 Comprar por WhatsApp']
+        ? ['💬 Comprar por WhatsApp', 'Ver similar', 'Comparar']
         : ['Ver similar', '💬 WhatsApp']
     };
   }
@@ -2685,6 +2961,16 @@
       _renderQuickReplies(response.quickReplies);
     }
 
+    // ── Acciones sobre la tienda (ej. abrir el carrito real) ──
+    if (response.action === 'openCart') {
+      setTimeout(function () {
+        close();
+        if (typeof window.abrirCarrito === 'function') {
+          try { window.abrirCarrito(); } catch (e) { /* silencioso */ }
+        }
+      }, 600);
+    }
+
     _scrollToBottom();
   }
 
@@ -2747,6 +3033,11 @@
     // WhatsApp link for this product
     var waLink = handoffToWhatsApp(p);
 
+    // Botón "Agregar" solo si hay stock y el carrito global existe
+    var addBtn = (p.stock > 0 && typeof window.agregarAlCarrito === 'function')
+      ? '<button onclick="TmAgent._addToCart(' + p.id + ')" style="flex:1;padding:5px 8px;border-radius:8px;border:none;background:rgba(255,107,53,0.9);color:#fff;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit">🛒 Agregar</button>'
+      : '';
+
     card.innerHTML =
       '<img src="' + _escapeAttr(imgSrc) + '" alt="' + _escapeAttr(name) + '" loading="lazy">' +
       '<div class="product-info">' +
@@ -2755,11 +3046,23 @@
         '<div class="product-stock ' + stockClass + '">' + stockText + '</div>' +
         '<div style="display:flex;gap:6px;margin-top:6px">' +
           '<button onclick="TmAgent._viewProduct(' + p.id + ')" style="flex:1;padding:5px 8px;border-radius:8px;border:1px solid rgba(255,107,53,0.3);background:rgba(255,107,53,0.08);color:#FF6B35;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit">Ver detalle</button>' +
+          addBtn +
           '<a href="' + _escapeAttr(waLink) + '" target="_blank" rel="noopener" style="flex:1;display:inline-flex;align-items:center;justify-content:center;gap:4px;padding:5px 8px;border-radius:8px;border:none;background:#25D366;color:#fff;font-size:11px;font-weight:600;cursor:pointer;text-decoration:none;font-family:inherit;box-shadow:0 2px 8px rgba(37,211,102,0.25)">WhatsApp</a>' +
         '</div>' +
       '</div>';
 
     return card;
+  }
+
+  /** Agregar al carrito desde una tarjeta del chat, sin salir de la conversación */
+  function _addToCart(id) {
+    if (typeof window.agregarAlCarrito !== 'function') return;
+    try { window.agregarAlCarrito(id); } catch (e) { return; }
+    var p = getProductById(id);
+    _renderBotMsg({
+      text: '✅ ' + (p ? _shortName(p.nombre) : 'Producto') + ' agregado al carrito.\n¿Seguimos?',
+      quickReplies: ['🛒 Ver carrito', 'Seguir comprando', '💬 WhatsApp']
+    });
   }
 
   /** Render comparison table in chat */
@@ -3148,7 +3451,13 @@
      * Open product detail modal (internal, called from product card button).
      * @param {number|string} id - Product ID
      */
-    _viewProduct: _viewProduct
+    _viewProduct: _viewProduct,
+
+    /**
+     * Add product to the store cart from a chat card (internal).
+     * @param {number|string} id - Product ID
+     */
+    _addToCart: _addToCart
   };
 
 })();
