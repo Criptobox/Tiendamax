@@ -969,7 +969,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Mensaje según el estado del permiso
         const estaDenegado = Notification.permission === 'denied';
-        const titulo  = estaDenegado ? '🔔 Notificaciones bloqueadas' : '🔔 ¿Quieres avisos de ofertas?';
+        const titulo  = estaDenegado ? 'Notificaciones bloqueadas' : '¿Quieres avisos de ofertas?';
         const cuerpo  = estaDenegado
             ? 'Para reactivarlas: tres puntos del navegador → Ajustes → Notificaciones → Permitir'
             : 'Te avisamos cuando bajen los precios o lleguen productos nuevos. Sin spam.';
@@ -982,30 +982,35 @@ document.addEventListener('DOMContentLoaded', () => {
         // animación). Los colores se aplican via CSS inyectado una sola vez,
         // con reglas distintas para body.light-mode y body:not(.light-mode),
         // para que respete el tema activo en vez de hardcoded oscuro.
-        b.innerHTML = `<div id="tm-push-banner" style="border-radius:14px;padding:14px 18px;display:flex;align-items:center;gap:12px;font-family:sans-serif;animation:slideUpBanner .35s ease"><span style="font-size:26px;flex-shrink:0">🔔</span><div style="flex:1;min-width:0"><div style="font-weight:700;font-size:14px;margin-bottom:2px">${escapeHtml(titulo)}</div><div style="font-size:12px;line-height:1.3">${escapeHtml(cuerpo)}</div></div><div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0"><button id="tm-push-si" style="border:none;border-radius:8px;padding:7px 12px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap">${escapeHtml(btnTexto)}</button><button id="tm-push-no" style="background:none;border:none;font-size:11px;cursor:pointer;text-align:center">Ahora no</button></div></div>`;
+        b.innerHTML = `<div id="tm-push-banner" style="border-radius:16px;padding:14px 16px;display:flex;align-items:center;gap:13px;font-family:sans-serif;animation:slideUpBanner .35s cubic-bezier(.22,1,.36,1)"><span class="tmpb-bell" style="flex-shrink:0">🔔</span><div style="flex:1;min-width:0"><div class="tmpb-title" style="font-weight:800;font-size:14px;margin-bottom:2px">${escapeHtml(titulo)}</div><div class="tmpb-body" style="font-size:12px;line-height:1.35">${escapeHtml(cuerpo)}</div></div><div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0"><button id="tm-push-si" style="border:none;border-radius:10px;padding:8px 13px;font-size:12px;font-weight:800;cursor:pointer;white-space:nowrap">${escapeHtml(btnTexto)}</button><button id="tm-push-no" style="background:none;border:none;font-size:11px;cursor:pointer;text-align:center">Ahora no</button></div></div>`;
         if (!document.getElementById('slideUpBannerStyle')) {
             const s = document.createElement('style');
             s.id = 'slideUpBannerStyle';
             s.textContent = `
 @keyframes slideUpBanner{from{opacity:0;transform:translateX(-50%) translateY(20px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
-/* Modo oscuro: fondo carbón + borde dorado premium */
-body:not(.light-mode) #tm-push-banner{background:#1f1f26 !important;border:1.5px solid #E8C88A !important;box-shadow:0 12px 36px rgba(0,0,0,.55),0 0 0 1px rgba(232,200,138,.08) inset !important}
-body:not(.light-mode) #tm-push-banner > div:first-child{color:#F5D08A !important}
-body:not(.light-mode) #tm-push-banner > div:nth-child(2){color:#C9C9D2 !important}
-body:not(.light-mode) #tm-push-si{background:linear-gradient(135deg,#E8C88A,#C9A96E) !important;color:#1A1A1A !important;box-shadow:0 6px 16px rgba(201,169,110,.35) !important}
+@keyframes tmpbRing{0%,70%,100%{transform:rotate(0)}75%{transform:rotate(14deg)}80%{transform:rotate(-12deg)}85%{transform:rotate(8deg)}90%{transform:rotate(-5deg)}95%{transform:rotate(0)}}
+.tmpb-bell{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:23px;transform-origin:50% 15%;animation:tmpbRing 3s ease-in-out infinite}
+@media (prefers-reduced-motion:reduce){.tmpb-bell{animation:none}}
+/* Modo oscuro: fondo cálido + borde dorado, campana con glow */
+body:not(.light-mode) #tm-push-banner{background:radial-gradient(300px 120px at 12% -20%,rgba(232,200,138,.14),transparent 60%),linear-gradient(160deg,#241d16,#191620) !important;border:1.5px solid rgba(232,200,138,.45) !important;box-shadow:0 16px 42px rgba(0,0,0,.6),0 0 0 1px rgba(232,200,138,.06) inset !important}
+body:not(.light-mode) .tmpb-bell{background:radial-gradient(circle at 50% 35%,rgba(232,200,138,.4),rgba(201,169,110,.12) 70%);border:1px solid rgba(232,200,138,.5);box-shadow:0 0 18px -2px rgba(232,200,138,.5)}
+body:not(.light-mode) .tmpb-title{color:#F5D08A !important}
+body:not(.light-mode) .tmpb-body{color:#C9C9D2 !important}
+body:not(.light-mode) #tm-push-si{background:linear-gradient(135deg,#F0D69A,#C9A96E) !important;color:#1A1A1A !important;box-shadow:0 8px 20px -6px rgba(201,169,110,.55) !important}
 body:not(.light-mode) #tm-push-si:hover{filter:brightness(1.08);transform:translateY(-1px)}
 body:not(.light-mode) #tm-push-no{color:#9B9BA5 !important}
 body:not(.light-mode) #tm-push-no:hover{color:#FFFFFF !important}
 /* Modo claro: fondo blanco + acento coral */
-body.light-mode #tm-push-banner{background:#FFFFFF !important;border:1.5px solid #E8501E !important;box-shadow:0 10px 32px rgba(232,80,30,.18),0 2px 8px rgba(0,0,0,.06) !important}
-body.light-mode #tm-push-banner > div:first-child{color:#E8501E !important}
-body.light-mode #tm-push-banner > div:nth-child(2){color:#4A4A4A !important}
-body.light-mode #tm-push-si{background:linear-gradient(135deg,#FF6B35,#E8501E) !important;color:#FFFFFF !important;box-shadow:0 4px 12px rgba(232,80,30,.25) !important}
+body.light-mode #tm-push-banner{background:radial-gradient(300px 120px at 12% -20%,rgba(255,107,53,.1),transparent 60%),#FFFFFF !important;border:1.5px solid rgba(232,80,30,.5) !important;box-shadow:0 12px 34px rgba(232,80,30,.16),0 2px 8px rgba(0,0,0,.06) !important}
+body.light-mode .tmpb-bell{background:radial-gradient(circle at 50% 35%,rgba(255,107,53,.22),rgba(255,61,0,.06) 70%);border:1px solid rgba(255,107,53,.4);box-shadow:0 0 16px -3px rgba(255,107,53,.4)}
+body.light-mode .tmpb-title{color:#E8501E !important}
+body.light-mode .tmpb-body{color:#4A4A4A !important}
+body.light-mode #tm-push-si{background:linear-gradient(135deg,#FF6B35,#E8501E) !important;color:#FFFFFF !important;box-shadow:0 6px 16px -4px rgba(232,80,30,.35) !important}
 body.light-mode #tm-push-si:hover{filter:brightness(1.06);transform:translateY(-1px)}
 body.light-mode #tm-push-no{color:#6B6B7A !important}
 body.light-mode #tm-push-no:hover{color:#1A1A1A !important}
 /* Móvil: banner más compacto */
-@media (max-width:768px){#tm-push-banner{padding:12px 14px !important;gap:10px !important}#tm-push-banner > div:first-child{font-size:13px !important}#tm-push-banner > div:nth-child(2){font-size:11px !important;line-height:1.3 !important}#tm-push-si{padding:6px 10px !important;font-size:11px !important}#tm-push-no{font-size:10px !important}}
+@media (max-width:768px){#tm-push-banner{padding:12px 13px !important;gap:11px !important}.tmpb-bell{width:40px;height:40px;font-size:21px}.tmpb-title{font-size:13px !important}.tmpb-body{font-size:11px !important;line-height:1.3 !important}#tm-push-si{padding:7px 11px !important;font-size:11px !important}#tm-push-no{font-size:10px !important}}
 `;
             document.head.appendChild(s);
         }
