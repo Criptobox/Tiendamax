@@ -287,7 +287,9 @@
       var filter = PRODUCT_TYPE_FILTERS[compType];
       if (!filter) return;
       var candidates = ps.filter(function (x) {
-        return x.stock > 0 && !seen[String(x.id)] && filter(x);
+        // Mismo ecosistema pero DISTINTO tipo: sugerir "otro inversor" como
+        // complemento de un inversor no es cross-sell, es competencia.
+        return x.stock > 0 && !seen[String(x.id)] && filter(x) && !PRODUCT_TYPE_FILTERS[type](x);
       }).sort(function (a, b) {
         var ma = (a.masVendido === true || a.masVendido === 'true') ? 1 : 0;
         var mb = (b.masVendido === true || b.masVendido === 'true') ? 1 : 0;
@@ -297,6 +299,48 @@
       if (candidates[0]) { found.push(candidates[0]); seen[String(candidates[0].id)] = true; }
     });
     return found;
+  }
+
+  /** Etiquetas legibles (plural) por tipo de producto, para los botones del chooser */
+  var TYPE_LABELS = {
+    'inversor': 'inversores', 'bateria': 'baterías', 'router': 'routers',
+    'repetidor': 'repetidores', 'cargador': 'cargadores', 'celular': 'celulares',
+    'solar': 'paneles solares', 'seguridad': 'cámaras de seguridad',
+    'audio': 'equipos de audio', 'switch': 'switches', 'controlador': 'controladores',
+    'lampara': 'lámparas', 'memoria': 'memorias', 'cable': 'cables',
+    'moto': 'accesorios de moto', 'carro': 'accesorios de carro',
+    'transferencia': 'transferencias'
+  };
+
+  /**
+   * Chooser de comparación: cuando el cliente dice "comparar" sin decir qué,
+   * ofrecer los tipos del catálogo que tienen ≥2 productos EN STOCK, con
+   * botones "Comparar X" que disparan la comparación real (antes los botones
+   * decían "Ver routers", que hacía una búsqueda — el cliente elegía y la
+   * comparación nunca llegaba).
+   */
+  function _compareTypeChooser() {
+    var ps = _getProducts();
+    var counts = [];
+    for (var t in PRODUCT_TYPE_FILTERS) {
+      if (!PRODUCT_TYPE_FILTERS.hasOwnProperty(t)) continue;
+      var c = ps.filter(function (p) { return p.stock > 0 && PRODUCT_TYPE_FILTERS[t](p); }).length;
+      if (c >= 2) counts.push({ type: t, count: c });
+    }
+    counts.sort(function (a, b) { return b.count - a.count; });
+    var top = counts.slice(0, 4);
+    if (top.length === 0) {
+      return {
+        text: '¿Qué productos quieres comparar? Dime dos nombres, por ejemplo:\n"comparar el Powmr y el Must"',
+        quickReplies: ['🔥 Ofertas', '📦 Categorías']
+      };
+    }
+    return {
+      text: '📊 ¡Claro! ¿Qué quieres comparar? Elige una opción o dime dos productos:',
+      quickReplies: top.map(function (x) {
+        return 'Comparar ' + (TYPE_LABELS[x.type] || x.type);
+      })
+    };
   }
 
   /**
@@ -566,14 +610,12 @@
       results = _fallbackSearch(query);
     }
 
-    // Filtrar por stock si se requiere
+    // Filtrar por stock si se requiere. Estricto: no ofrecer agotados como
+    // "opciones" — un vendedor no muestra lo que no puede vender. Si TODO
+    // está agotado se devuelven igual (el caller avisa y ofrece "Avísame").
     if (onlyInStock) {
       var inStock = results.filter(function (p) { return p.stock > 0; });
-      // Si hay resultados con stock, priorizar pero no eliminar los sin stock
-      if (inStock.length > 0) {
-        var outOfStock = results.filter(function (p) { return p.stock <= 0; });
-        results = inStock.concat(outOfStock.slice(0, 2));
-      }
+      if (inStock.length > 0) results = inStock;
     }
 
     return results.slice(0, maxResults);
@@ -1550,13 +1592,14 @@
       return _handleOffers('ofertas');
     }
 
-    // "Comparar" pelado — comparar lo que se acaba de mostrar
+    // "Comparar" pelado — comparar lo que se acaba de mostrar; si no hay
+    // contexto suficiente, dar a escoger tipos comparables (chooser real).
     if (/^comparar$/.test(n)) {
       var comparables = _lastResults.slice(0, _lastShownCount || 5).filter(function (p) { return p.stock > 0; });
       if (comparables.length >= 2) {
         return compareProducts(comparables.slice(0, 4));
       }
-      return null; // sin contexto → flujo normal de _handleCompare
+      return _compareTypeChooser();
     }
 
     // "la primera" / "el 2" / "quiero el tercero" — referencia ordinal a la
@@ -2123,12 +2166,17 @@
       }
     }
 
-    // Buscar productos mencionados — improved with stemming
+    // Buscar productos mencionados — improved with stemming.
+    // Las palabras que son TIPOS de producto ("cargadores", "routers") no
+    // cuentan como mención de un producto concreto: van por el path de
+    // detectedType (que filtra por stock). Sin esto, "comparar cargadores"
+    // trataba cada cargador agotado como "mencionado explícitamente".
     ps.forEach(function (p) {
       var pName = norm(p.nombre);
       var matchCount = 0;
       words.forEach(function (w) {
         if (w.length < 3) return;
+        if (PRODUCT_TYPE_FILTERS[w] || PRODUCT_TYPE_FILTERS[_stemES(w)]) return;
         // Direct match: product name contains the word
         if (pName.includes(w)) { matchCount++; return; }
         // Stemmed match: product name contains stemmed word
@@ -2151,14 +2199,11 @@
     var catMention = _extractCategoryFromMsg(message);
     if (mentioned.length < 2) {
       if (detectedType && PRODUCT_TYPE_FILTERS[detectedType]) {
-        // Filter products by the detected type
-        var typeProds = ps.filter(PRODUCT_TYPE_FILTERS[detectedType]);
-        // Sort: in stock first, then by relevance
-        typeProds.sort(function(a, b) {
-          var sa = a.stock > 0 ? 1 : 0, sb = b.stock > 0 ? 1 : 0;
-          if (sa !== sb) return sb - sa;
-          return (a.precioActual || 0) - (b.precioActual || 0);
-        });
+        // Filter products by the detected type — solo EN STOCK: el relleno
+        // automático de la comparación no debe ofrecer agotados.
+        var typeProds = ps.filter(PRODUCT_TYPE_FILTERS[detectedType])
+          .filter(function (p) { return p.stock > 0; })
+          .sort(function (a, b) { return (a.precioActual || 0) - (b.precioActual || 0); });
         var existingIds = new Set(mentioned.map(function (p) { return p.id; }));
         typeProds.forEach(function (p) {
           if (!existingIds.has(p.id) && mentioned.length < 4) {
@@ -2184,25 +2229,9 @@
       return compareProducts(mentioned.slice(0, 4));
     }
 
-    // No encontré suficientes productos para comparar
-    var catProds2 = catMention ? getProductsByCategory(catMention, { maxResults: 3, onlyInStock: true }) : [];
-    // If type was detected, filter those too
-    if (detectedType && PRODUCT_TYPE_FILTERS[detectedType]) {
-      catProds2 = ps.filter(PRODUCT_TYPE_FILTERS[detectedType]).filter(function(p) { return p.stock > 0; }).slice(0, 3);
-    }
-
-    var text = '¿Qué productos quieres comparar?';
-    if (catProds2.length >= 2) {
-      text += ' Por ejemplo, en ' + (detectedType || catMention) + ':';
-    }
-
-    return {
-      text: text,
-      products: catProds2,
-      quickReplies: catProds2.length >= 2
-        ? ['Comparar ' + (detectedType || catMention)]
-        : ['Ver routers', 'Ver inversores', 'Ver baterías']
-    };
+    // No encontré suficientes productos para comparar → dar a escoger de
+    // verdad (botones que disparan comparaciones reales, no búsquedas).
+    return _compareTypeChooser();
   }
 
   function _handleRecommend(message) {
@@ -3033,10 +3062,14 @@
     // WhatsApp link for this product
     var waLink = handoffToWhatsApp(p);
 
-    // Botón "Agregar" solo si hay stock y el carrito global existe
-    var addBtn = (p.stock > 0 && typeof window.agregarAlCarrito === 'function')
-      ? '<button onclick="TmAgent._addToCart(' + p.id + ')" style="flex:1;padding:5px 8px;border-radius:8px;border:none;background:rgba(255,107,53,0.9);color:#fff;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit">🛒 Agregar</button>'
-      : '';
+    // Botón central: "Agregar" si hay stock; "🔔 Avísame" si está agotado
+    // (abre el detalle, donde vive la suscripción de aviso de stock real).
+    var addBtn = '';
+    if (p.stock > 0 && typeof window.agregarAlCarrito === 'function') {
+      addBtn = '<button onclick="TmAgent._addToCart(' + p.id + ')" style="flex:1;padding:5px 8px;border-radius:8px;border:none;background:rgba(255,107,53,0.9);color:#fff;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit">🛒 Agregar</button>';
+    } else if (p.stock <= 0) {
+      addBtn = '<button onclick="TmAgent._viewProduct(' + p.id + ')" style="flex:1;padding:5px 8px;border-radius:8px;border:none;background:linear-gradient(135deg,#f5a623,#e8701e);color:#fff;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit">🔔 Avísame</button>';
+    }
 
     card.innerHTML =
       '<img src="' + _escapeAttr(imgSrc) + '" alt="' + _escapeAttr(name) + '" loading="lazy">' +
