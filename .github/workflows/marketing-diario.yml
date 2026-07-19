@@ -1,0 +1,30 @@
+name: Agente de marketing diario (Telegram)
+
+on:
+  schedule:
+    # 8:07 AM Cuba (12:07 UTC en horario de verano; en invierno llega 7:07 AM)
+    - cron: '7 12 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: marketing-diario
+  cancel-in-progress: false
+
+jobs:
+  enviar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.11' }
+      - name: Instalar dependencias
+        run: python -m pip install -r scripts/requirements.txt
+      - name: Enviar pack de marketing del día
+        run: python scripts/marketing_diario.py
+        env:
+          BOT_TOKEN:     ${{ secrets.BOT_TOKEN }}
+          ADMIN_CHAT_ID: ${{ secrets.ADMIN_CHAT_ID }}
