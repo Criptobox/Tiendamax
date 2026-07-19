@@ -318,8 +318,15 @@ function previsualizarFacebook(productoId, grupoUrl) {
 
     document.getElementById('btnAbrirFb')?.addEventListener('click', async function() {
         await _copiar(document.getElementById('fbPostTA').value);
-        mostrarNotificacion('✅ Texto copiado — pégalo en Facebook', 'success');
-        window.open(fbUrl, '_blank', 'noopener,noreferrer');
+        let w = null;
+        try { w = window.open(fbUrl, '_blank', 'noopener,noreferrer'); } catch(e) {}
+        if (w) {
+            mostrarNotificacion('✅ Texto copiado — pégalo en Facebook', 'success');
+        } else {
+            // Ventana bloqueada (típico en PWA/modo app): el texto ya quedó copiado.
+            mostrarNotificacion('⚠️ El navegador bloqueó la ventana. Texto copiado — abre Facebook manualmente y pega, o permite ventanas emergentes para este sitio.', 'warning');
+            return; // no cerrar el modal, para que pueda reintentar
+        }
         cerrarFbPreview();
     });
 }
