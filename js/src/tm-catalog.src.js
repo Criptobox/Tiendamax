@@ -691,6 +691,20 @@ async function sincronizarTodoConGitHub() {
             if (f) f.style.display = 'none';
         }, 4000);
         limpiarProductosModificados();
+        // Blindaje: dejar la memoria y el localStorage EXACTAMENTE iguales a lo que
+        // quedó publicado (_prodsFinal). Así, tras limpiar productosModificados, ni un
+        // reload ni el catálogo lite pueden "perder" un producto recién agregado ni
+        // resucitar uno agotado — la copia local ya es la publicada.
+        try {
+            if (Array.isArray(_prodsFinal)) {
+                if (typeof window.apReplaceProductos === 'function') {
+                    window.apReplaceProductos(_prodsFinal.slice());
+                } else {
+                    productos.length = 0; _prodsFinal.forEach(p => productos.push(p));
+                    localStorage.setItem('productos', JSON.stringify(_prodsFinal));
+                }
+            }
+        } catch (e) {}
         _tmPublicarVersionFirebase();
         const info = hayDelta ? `${idsModificados.length} producto(s) actualizado(s)` : `${ok} archivos`;
         mostrarNotificacion(`✅ Tienda actualizada (${info}). Visible en ~30 segundos.`);
