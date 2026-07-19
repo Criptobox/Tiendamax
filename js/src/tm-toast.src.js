@@ -59,7 +59,11 @@
         // Ícono
         const icon = tipo === 'error' ? '✕' : tipo === 'info' ? 'i' : '✓';
         t.className = 'tm-toast' + (tipo === 'error' ? ' error' : '');
-        t.innerHTML = `<span class="tm-toast-icon">${icon}</span><span>${mensaje}</span>`;
+        // Varios call sites interpolan p.nombre (texto libre editable por el
+        // admin) sin escapar antes de llegar acá — se escapa siempre para
+        // que el toast nunca sea un vector de XSS, sin importar quién llame.
+        const safeMsg = typeof escapeHtml === 'function' ? escapeHtml(String(mensaje)) : String(mensaje);
+        t.innerHTML = `<span class="tm-toast-icon">${icon}</span><span>${safeMsg}</span>`;
 
         // Forzar reflow para reiniciar animación
         t.classList.remove('show', 'hide');

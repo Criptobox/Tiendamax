@@ -103,13 +103,13 @@ if(typeof agregarAlCarrito=="function"){const o=agregarAlCarrito;agregarAlCarrit
 \xA1M\xEDralo todo en `+window.location.origin+"!",window.open("https://wa.me/?text="+encodeURIComponent(n),"_blank")}function cerrarVistaMeGusta(){const o=document.getElementById("vistaMeGusta");o&&(o.style.display="none"),mostrarVistaInicio()}function guardarPedidoCliente(o){const t=tmParseArray(localStorage.getItem("pedidos_cliente_v1")),n=o.reduce((a,s)=>a+s.precio*s.cantidad,0),e=Date.now(),i=new Date().toLocaleDateString("es-ES",{day:"numeric",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit"});return t.unshift({id:e,fecha:i,items:o.map(a=>({id:a.id,nombre:a.nombre,cantidad:a.cantidad,precio:a.precio})),total:n,estado:"pendiente"}),localStorage.setItem("pedidos_cliente_v1",JSON.stringify(t.slice(0,50))),(async()=>{try{const a=typeof _fbRtdbUrl=="function"?_fbRtdbUrl():null;if(!a)return;await fetch(a+"/pedidos/"+e+".json",{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({id:e,fecha:i,items:o.map(s=>({id:s.id,nombre:s.nombre,cantidad:s.cantidad,precio:s.precio})),total:n,estado:"pendiente",clienteTs:Date.now(),actualizado:Date.now()})})}catch(a){}})(),e}function mostrarVistaPedidos(){document.getElementById("vistaInicio").style.display="none",document.getElementById("vistaCategoria").style.display="none";const o=document.getElementById("vistaMeGusta");o&&(o.style.display="none");const t=document.getElementById("vistaPedidos");if(!t)return;t.style.display="block",actualizarVisibilidadBannerOferta(!1);const n=tmParseArray(localStorage.getItem("pedidos_cliente_v1")),e=document.getElementById("pedidosStats"),i=document.getElementById("pedidosLista"),a=document.getElementById("pedidosVacio");e&&(e.textContent=n.length+" pedido"+(n.length!==1?"s":"")),n.length===0?(i&&(i.innerHTML=""),a&&(a.style.display="block")):(a&&(a.style.display="none"),i&&(i.innerHTML=n.map(s=>`
           <div class="pedido-card">
             <div class="pedido-card-header">
-              <span class="pedido-fecha">\u{1F4C5} ${s.fecha}</span>
+              <span class="pedido-fecha">\u{1F4C5} ${escapeHtml(s.fecha)}</span>
               <span class="pedido-total">$${s.total.toFixed(2)} USD</span>
             </div>
             <div class="pedido-items">
               ${s.items.map(d=>`
                 <div class="pedido-item">
-                  <span class="pedido-item-nombre">${d.nombre}</span>
+                  <span class="pedido-item-nombre">${escapeHtml(d.nombre)}</span>
                   <span class="pedido-item-qty">\xD7${d.cantidad}</span>
                   <span class="pedido-item-precio">$${(d.precio*d.cantidad).toFixed(2)}</span>
                 </div>

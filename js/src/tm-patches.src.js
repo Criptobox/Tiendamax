@@ -672,13 +672,13 @@ function mostrarVistaPedidos() {
         if (listaEl) listaEl.innerHTML = pedidos.map(p => `
           <div class="pedido-card">
             <div class="pedido-card-header">
-              <span class="pedido-fecha">📅 ${p.fecha}</span>
+              <span class="pedido-fecha">📅 ${escapeHtml(p.fecha)}</span>
               <span class="pedido-total">$${p.total.toFixed(2)} USD</span>
             </div>
             <div class="pedido-items">
               ${p.items.map(i => `
                 <div class="pedido-item">
-                  <span class="pedido-item-nombre">${i.nombre}</span>
+                  <span class="pedido-item-nombre">${escapeHtml(i.nombre)}</span>
                   <span class="pedido-item-qty">×${i.cantidad}</span>
                   <span class="pedido-item-precio">$${(i.precio * i.cantidad).toFixed(2)}</span>
                 </div>
