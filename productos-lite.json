@@ -224,7 +224,7 @@
   },
   {
     "id": 1778103783319,
-    "nombre": "​🚗 Batería Automotriz LUBRIM (75A)",
+    "nombre": "​🚗 Batería Automotriz Lubrim (75A)",
     "precioActual": 85,
     "imagen": "https://tiendamax.org/imagenes/img_1783836488642_4b0c8d.webp",
     "categoria": "ENERGIA",
@@ -1793,7 +1793,7 @@
   },
   {
     "id": 1781899206341,
-    "nombre": "📟 Inversor Solar MUST PV15-1524 LV",
+    "nombre": "📟 Inversor Solar Must PV15-1524 lv",
     "precioActual": 350,
     "precioOriginal": 0,
     "imagen": "https://tiendamax.org/imagenes/img_1783836465146.webp",
@@ -2208,7 +2208,7 @@
   },
   {
     "id": 1782791345628,
-    "nombre": "​⚙️ Interruptor de Transferencia Automática GEYA (220V)",
+    "nombre": "​⚙️ Interruptor de Transferencia Automática Geya (220V)",
     "imagen": "https://tiendamax.org/imagenes/img_1783838287182.webp",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1783838287182.webp",
@@ -2374,7 +2374,7 @@
   },
   {
     "id": 1783473894756,
-    "nombre": "​🔌 Cargador Inteligente COREBOX 12V 15A",
+    "nombre": "​🔌 Cargador Inteligente Corebox 12V 15A",
     "imagen": "https://tiendamax.org/imagenes/img_1783473890998_28ba1e.webp",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1783473890998_28ba1e.webp"
@@ -2400,7 +2400,7 @@
   },
   {
     "id": 1783474199534,
-    "nombre": "​🔌 Cargador Inteligente NTRC 20A",
+    "nombre": "​🔌 Cargador Inteligente Ntrc 20A",
     "imagen": "https://tiendamax.org/imagenes/img_1783474195842.webp",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1783474195842.webp",
@@ -2427,7 +2427,7 @@
   },
   {
     "id": 1783474440848,
-    "nombre": "​🔌 Cargador Inteligente NTRC 35A",
+    "nombre": "​🔌 Cargador Inteligente Ntrc 35A",
     "imagen": "https://tiendamax.org/imagenes/img_1783474437066.webp",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1783474437066.webp",
@@ -2506,7 +2506,7 @@
   },
   {
     "id": 1784403677390,
-    "nombre": "​🌐 NanoStation AC loco",
+    "nombre": "​🌐 Nanostation AC Loco",
     "imagen": "https://tiendamax.org/imagenes/img_1784403674704.webp",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1784403674704.webp",
@@ -2533,12 +2533,12 @@
   },
   {
     "id": 1784404666988,
-    "nombre": "​🌐 MikroTik SXTsq Lite5",
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784404663965.webp",
+    "nombre": "​🌐 Mikrotik Sxtsq LITE5",
+    "imagen": "https://tiendamax.org/imagenes/img_1784404663965.webp",
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784404663965.webp",
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784404665140.webp",
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784404666146.webp"
+      "https://tiendamax.org/imagenes/img_1784404663965.webp",
+      "https://tiendamax.org/imagenes/img_1784404665140.webp",
+      "https://tiendamax.org/imagenes/img_1784404666146.webp"
     ],
     "precioActual": 150,
     "precioOriginal": 0,
@@ -2561,10 +2561,10 @@
   },
   {
     "id": 1784405087402,
-    "nombre": "​🌐 Cámara de Seguridad Wi-Fi PTZ",
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784405086297.webp",
+    "nombre": "​🌐 Cámara de Seguridad Wi-fi Ptz",
+    "imagen": "https://tiendamax.org/imagenes/img_1784405086297.webp",
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784405086297.webp"
+      "https://tiendamax.org/imagenes/img_1784405086297.webp"
     ],
     "precioActual": 25,
     "precioOriginal": 0,
