@@ -352,12 +352,41 @@ function obtenerCategoriasEliminadas() {
 // contra lo que se publica y armar la auditoría de cambios (ver más abajo).
 let _tmUltimoRemotoParaAuditoria = null;
 
+// Lee un JSON del repo por la Contents API (autenticada), que NO tiene el lag de
+// CDN de raw.githubusercontent.com. Ese lag era la causa raíz de que un producto
+// recién marcado agotado "resucitara": tras publicar y limpiar productosModificados,
+// el siguiente "Actualizar tienda" leía por raw una copia VIEJA del repo (aún con
+// stock), y como el producto ya no estaba en modificados, el merge lo reponía con esa
+// versión vieja y lo republicaba disponible. La Contents API devuelve el commit más
+// reciente al instante. Si falla (o el archivo no trae content inline), cae a raw.
+async function _tmLeerJsonRepoFresco(user, repo, token, path) {
+    if (token) {
+        try {
+            const r = await fetch(`https://api.github.com/repos/${user}/${repo}/contents/${path}?ref=main&_=${Date.now()}`, {
+                headers: { 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github.v3+json' },
+                cache: 'no-store'
+            });
+            if (r.ok) {
+                const j = await r.json();
+                if (j && j.encoding === 'base64' && j.content) {
+                    const bin = atob(j.content.replace(/\s/g, ''));
+                    const bytes = Uint8Array.from(bin, c => c.charCodeAt(0));
+                    return JSON.parse(new TextDecoder('utf-8').decode(bytes));
+                }
+            }
+        } catch (e) {}
+    }
+    try {
+        const r = await fetch(`https://raw.githubusercontent.com/${user}/${repo}/main/${path}?_=${Date.now()}`, { cache: 'no-store' });
+        if (r.ok) return await r.json();
+    } catch (e) {}
+    return null;
+}
+
 async function _tmMergeProductosConRepo(user, repo) {
     let remoto = null;
-    try {
-        const r = await fetch(`https://raw.githubusercontent.com/${user}/${repo}/main/productos.json?_=${Date.now()}`, { cache: 'no-store' });
-        if (r.ok) { const j = await r.json(); if (Array.isArray(j)) remoto = j; else if (j && Array.isArray(j.productos)) remoto = j.productos; }
-    } catch (e) {}
+    const _j = await _tmLeerJsonRepoFresco(user, repo, localStorage.getItem('githubToken'), 'productos.json');
+    if (Array.isArray(_j)) remoto = _j; else if (_j && Array.isArray(_j.productos)) remoto = _j.productos;
     if (!Array.isArray(remoto)) return productos.slice();
     _tmUltimoRemotoParaAuditoria = remoto;
 
@@ -439,10 +468,8 @@ function _tmRegistrarAuditoriaCambios(prodsFinal) {
 async function _tmMergeCategoriasConRepo(user, repo) {
     const local = { nombres: (categorias || []).slice(), iconos: Object.assign({}, iconosPersonalizados || {}) };
     let remoto = null;
-    try {
-        const r = await fetch(`https://raw.githubusercontent.com/${user}/${repo}/main/categorias.json?_=${Date.now()}`, { cache: 'no-store' });
-        if (r.ok) { const j = await r.json(); if (j && Array.isArray(j.nombres)) remoto = j; }
-    } catch (e) {}
+    const _j = await _tmLeerJsonRepoFresco(user, repo, localStorage.getItem('githubToken'), 'categorias.json');
+    if (_j && Array.isArray(_j.nombres)) remoto = _j;
     if (!remoto) return local;
 
     const eliminadas = new Set(tmParseArray(localStorage.getItem('categoriasEliminadas')));
@@ -457,10 +484,8 @@ async function _tmMergeCategoriasConRepo(user, repo) {
 async function _tmMergeSubcategoriasConRepo(user, repo) {
     const local = tmParseObject(localStorage.getItem('subcategorias'));
     let remoto = null;
-    try {
-        const r = await fetch(`https://raw.githubusercontent.com/${user}/${repo}/main/subcategorias.json?_=${Date.now()}`, { cache: 'no-store' });
-        if (r.ok) { const j = await r.json(); if (j && typeof j === 'object' && !Array.isArray(j)) remoto = j; }
-    } catch (e) {}
+    const _j = await _tmLeerJsonRepoFresco(user, repo, localStorage.getItem('githubToken'), 'subcategorias.json');
+    if (_j && typeof _j === 'object' && !Array.isArray(_j)) remoto = _j;
     if (!remoto) return local;
 
     const merged = {};
@@ -593,8 +618,8 @@ async function sincronizarTodoConGitHub() {
     // Telegram y la tienda volvían al margen por defecto (10).
     let _configBase = {};
     try {
-        const _r = await fetch(`https://raw.githubusercontent.com/${user}/${repo}/main/config.json?_=${Date.now()}`);
-        if (_r.ok) _configBase = await _r.json();
+        const _cfg = await _tmLeerJsonRepoFresco(user, repo, token, 'config.json');
+        if (_cfg && typeof _cfg === 'object' && !Array.isArray(_cfg)) _configBase = _cfg;
     } catch (e) {}
     const _configSync = Object.assign({}, _configBase, {
         tasaMN:              parseFloat(localStorage.getItem('tasaMN') || '0') || _configBase.tasaMN || undefined,
