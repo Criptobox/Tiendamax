@@ -2,9 +2,11 @@
 """
 Regenera artefactos derivados de productos.json:
   1) /p/producto-<id>.html  (páginas estáticas para previews ricas en WhatsApp/Facebook)
-  2) sitemap.xml            (con todas las URLs actuales)
-  3) subcategorias.json     (fusiona el manual con las subcategorías reales en productos)
-  4) comisiones.json        (elimina IDs huérfanos)
+  2) /c/<slug>.html         (páginas estáticas por categoría, indexables por Google —
+                             hoy las categorías solo existen como #hash en la SPA)
+  3) sitemap.xml            (con todas las URLs actuales, incluidas las de /c/)
+  4) subcategorias.json     (fusiona el manual con las subcategorías reales en productos)
+  5) comisiones.json        (elimina IDs huérfanos)
 
 Idempotente: se puede ejecutar siempre y solo escribe si hay cambios reales.
 """
@@ -27,9 +29,98 @@ COMM = ROOT / "comisiones.json"
 SUBS = ROOT / "subcategorias.json"
 CATS = ROOT / "categorias.json"
 P_DIR = ROOT / "p"
+C_DIR = ROOT / "c"
 SITEMAP = ROOT / "sitemap.xml"
 
 SITE = "https://tiendamax.org"
+
+# ── Página de categoría: lista real de productos para que Google indexe
+# búsquedas como "router wifi cuba" — hoy esas categorías solo existen como
+# #hash en la SPA, invisibles para crawlers. ──────────────────────────────
+CATEGORY_PAGE_TEMPLATE = """<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{title}</title>
+<meta name="description" content="{desc}">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="{page_url}">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="{title}">
+<meta property="og:description" content="{desc}">
+<meta property="og:url" content="{page_url}">
+<meta property="og:site_name" content="TiendaMax">
+<meta property="og:locale" content="es_CU">
+
+<script type="application/ld+json">
+{{
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": {json_title},
+  "description": {json_desc},
+  "url": "{page_url}",
+  "mainEntity": {{
+    "@type": "ItemList",
+    "itemListElement": [{items_jsonld}]
+  }}
+}}
+</script>
+
+<style>
+  *{{margin:0;padding:0;box-sizing:border-box}}
+  body{{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#0C0806;color:#fff;min-height:100vh}}
+  a{{color:inherit;text-decoration:none}}
+  .tm-hdr{{display:flex;align-items:center;padding:14px 20px;background:#0D0806;border-bottom:1px solid rgba(201,169,110,.15)}}
+  .tm-logo{{font-size:20px;font-weight:800;letter-spacing:-.5px}}
+  .tm-logo .t{{color:#C9A96E}}.tm-logo .m{{color:#FF6B35}}
+  .tm-back{{margin-left:auto;font-size:13px;color:#C9A96E;border:1px solid rgba(201,169,110,.3);padding:6px 14px;border-radius:20px;white-space:nowrap}}
+  .tm-wrap{{max-width:1100px;margin:0 auto;padding:28px 16px 60px}}
+  h1{{font-size:clamp(22px,4vw,30px);font-weight:800;margin-bottom:8px}}
+  .tm-sub{{color:#a09080;font-size:14px;margin-bottom:24px}}
+  .tm-cta{{display:inline-flex;align-items:center;gap:8px;padding:12px 22px;border-radius:12px;font-size:14px;font-weight:700;background:linear-gradient(135deg,#FF6B35,#E8501E);color:#fff;margin-bottom:28px}}
+  .tm-grid{{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px}}
+  .tm-card{{background:#181310;border:1px solid rgba(255,255,255,.06);border-radius:14px;overflow:hidden;display:flex;flex-direction:column}}
+  .tm-card img{{width:100%;aspect-ratio:1/1;object-fit:cover;background:#1a1410}}
+  .tm-card-body{{padding:10px 12px 12px;display:flex;flex-direction:column;gap:4px;flex:1}}
+  .tm-card-name{{font-size:12.5px;font-weight:600;line-height:1.3;min-height:32px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}}
+  .tm-card-price{{font-size:15px;font-weight:800;color:#FF6B35;margin-top:auto}}
+  .tm-card-out{{font-size:10.5px;color:#888}}
+  .tm-nav-cats{{margin-top:40px;padding-top:24px;border-top:1px solid rgba(255,255,255,.08)}}
+  .tm-nav-cats h2{{font-size:13px;color:#888;font-weight:600;margin-bottom:10px;text-transform:uppercase;letter-spacing:.05em}}
+  .tm-nav-cats a{{display:inline-block;font-size:12.5px;color:#C9A96E;border:1px solid rgba(201,169,110,.25);padding:5px 12px;border-radius:20px;margin:0 6px 6px 0}}
+  .tm-ftr{{text-align:center;padding:24px 16px;color:#555;font-size:12px;border-top:1px solid rgba(255,255,255,.06)}}
+  .tm-ftr a{{color:#C9A96E}}
+</style>
+</head>
+<body>
+
+<header class="tm-hdr">
+  <a href="https://tiendamax.org" class="tm-logo"><span class="t">TIENDA</span><span class="m">MAX</span></a>
+  <a href="https://tiendamax.org" class="tm-back">← Ver catálogo</a>
+</header>
+
+<div class="tm-wrap">
+  <h1>{icon} {html_name}</h1>
+  <p class="tm-sub">{sub}</p>
+  <a href="{app_url}" class="tm-cta">🛍️ Ver todo {html_name} en la tienda</a>
+  <div class="tm-grid">
+    {cards_html}
+  </div>
+  <nav class="tm-nav-cats">
+    <h2>Otras categorías</h2>
+    {other_cats_html}
+  </nav>
+</div>
+
+<footer class="tm-ftr">
+  <a href="https://tiendamax.org">tiendamax.org</a> &middot; Todos los derechos reservados
+</footer>
+
+</body>
+</html>
+"""
 
 PAGE_TEMPLATE = """<!DOCTYPE html>
 <html lang="es">
@@ -326,9 +417,144 @@ def regenerate_pages(products: list[dict], wa_num: str = "5354320170") -> tuple[
     return written, removed
 
 
-def regenerate_sitemap(products: list[dict]) -> bool:
+def slugify(name: str) -> str:
+    """'PC Y LAPTOPS' -> 'pc-y-laptops'. Sin librerías externas: solo
+    normaliza acentos comunes en español y colapsa separadores."""
+    s = (name or "").strip().lower()
+    tildes = str.maketrans("áéíóúñü", "aeiounu")
+    s = s.translate(tildes)
+    s = re.sub(r"[^a-z0-9]+", "-", s).strip("-")
+    return s or "otros"
+
+
+def category_icons() -> dict:
+    cats = read_json(CATS, {})
+    return cats.get("iconos", {}) if isinstance(cats, dict) else {}
+
+
+# Nombres tal como aparecen en productos.json (mayúsculas, sin tildes) no son
+# lindos para un <title>/<h1> público — mapeo manual de los conocidos hoy.
+# Una categoría nueva que no esté acá cae al fallback .title() (aceptable,
+# solo pierde el acento).
+_CATEGORY_DISPLAY = {
+    "WIFI": "WiFi", "ENERGIA": "Energía", "CELULARES": "Celulares",
+    "UTILES": "Útiles", "CARROS": "Carros", "ROPA": "Ropa",
+    "SEGURIDAD": "Seguridad", "HOGAR": "Hogar", "JUEGOS": "Juegos",
+    "MOTOS": "Motos", "PC Y LAPTOPS": "PC y Laptops", "GYM": "Gym",
+}
+
+
+def category_display_name(cat: str) -> str:
+    return _CATEGORY_DISPLAY.get(cat, cat.title() if cat.isupper() else cat)
+
+
+def regenerate_category_pages(products: list[dict]) -> tuple[int, list[str]]:
+    """Crea/actualiza /c/<slug>.html por categoría: hoy las categorías solo
+    existen como #hash en la SPA (invisibles para Google) — estas páginas dan
+    contenido real e indexable para búsquedas como 'router wifi cuba'."""
+    C_DIR.mkdir(exist_ok=True)
+    icons = category_icons()
+
+    by_cat: dict[str, list[dict]] = {}
+    for p in products:
+        cat = (p.get("categoria") or "").strip()
+        if not cat:
+            continue
+        by_cat.setdefault(cat, []).append(p)
+
+    if not by_cat:
+        return 0, []
+
+    # Orden estable: más productos primero (coincide con relevancia real)
+    cat_names = sorted(by_cat.keys(), key=lambda c: -len(by_cat[c]))
+    slugs = {c: slugify(c) for c in cat_names}
+
+    written = 0
+    valid_files = set()
+
+    for cat in cat_names:
+        prods = sorted(by_cat[cat], key=lambda p: (int(p.get("stock") or 0) <= 0, -(float(p.get("precioActual") or 0) > 0)))
+        en_stock = sum(1 for p in prods if int(p.get("stock") or 0) > 0)
+        icon = icons.get(cat, "🛍️")
+        html_name = escape(category_display_name(cat))
+        slug = slugs[cat]
+        page_url = f"{SITE}/c/{slug}.html"
+        app_url = f"{SITE}/?categoria={urllib.parse.quote(cat)}"
+
+        title = escape(f"{category_display_name(cat)} en Cuba — Envío a domicilio | TiendaMax")
+        desc = escape(
+            f"{en_stock} producto{'s' if en_stock != 1 else ''} de {cat.lower()} disponibles en TiendaMax. "
+            f"Envío a toda Cuba, pago contra entrega en USD o MN."
+        )
+
+        cards = []
+        items_jsonld = []
+        for i, p in enumerate(prods):
+            pid = p.get("id")
+            if not pid:
+                continue
+            name = (p.get("nombre") or "").strip()
+            price = f"{float(p.get('precioActual') or 0):.2f}"
+            img = escape(p.get("imagen") or f"{SITE}/og-image.jpg", quote=True)
+            stock = int(p.get("stock") or 0)
+            prod_url = f"{SITE}/p/producto-{pid}.html"
+            out_html = '<div class="tm-card-out">Agotado</div>' if stock <= 0 else ""
+            cards.append(
+                f'<a class="tm-card" href="{prod_url}">'
+                f'<img src="{img}" alt="{escape(name)}" loading="lazy">'
+                f'<div class="tm-card-body">'
+                f'<div class="tm-card-name">{escape(name)}</div>'
+                f'<div class="tm-card-price">${price} USD</div>'
+                f'{out_html}'
+                f'</div></a>'
+            )
+            items_jsonld.append(json.dumps({
+                "@type": "ListItem", "position": i + 1,
+                "url": prod_url,
+                "name": name,
+            }, ensure_ascii=False))
+
+        other_cats = [c for c in cat_names if c != cat][:11]
+        other_cats_html = " ".join(
+            f'<a href="{SITE}/c/{slugs[c]}.html">{icons.get(c, "🛍️")} {escape(category_display_name(c))}</a>'
+            for c in other_cats
+        )
+
+        html = CATEGORY_PAGE_TEMPLATE.format(
+            title=title,
+            desc=desc,
+            page_url=page_url,
+            json_title=json.dumps(f"{cat} — TiendaMax"),
+            json_desc=json.dumps(desc),
+            items_jsonld=",\n    ".join(items_jsonld),
+            icon=icon,
+            html_name=html_name,
+            sub=desc,
+            app_url=app_url,
+            cards_html="\n    ".join(cards),
+            other_cats_html=other_cats_html,
+        )
+
+        fp = C_DIR / f"{slug}.html"
+        valid_files.add(fp.name)
+        if write_text(fp, html):
+            written += 1
+
+    removed = []
+    for fname in os.listdir(C_DIR):
+        if fname.endswith(".html") and fname not in valid_files:
+            (C_DIR / fname).unlink(missing_ok=True)
+            removed.append(fname)
+            print(f"🗑️  Borrado huérfano: c/{fname}")
+
+    return written, removed
+
+
+def regenerate_sitemap(products: list[dict], category_slugs: list[str] | None = None) -> bool:
     today = date.today().isoformat()
     urls = [(f"{SITE}/", "daily", "1.0")]
+    for slug in (category_slugs or []):
+        urls.append((f"{SITE}/c/{slug}.html", "weekly", "0.9"))
     for p in products:
         pid = p.get("id")
         if pid:
@@ -404,7 +630,11 @@ def main() -> int:
     n_written, removed = regenerate_pages(products, wa_num)
     print(f"   Páginas /p/ actualizadas: {n_written}, borradas: {len(removed)}")
 
-    if regenerate_sitemap(products):
+    n_cat_written, cat_removed = regenerate_category_pages(products)
+    print(f"   Páginas /c/ actualizadas: {n_cat_written}, borradas: {len(cat_removed)}")
+    category_slugs = sorted({slugify((p.get("categoria") or "").strip()) for p in products if p.get("categoria")})
+
+    if regenerate_sitemap(products, category_slugs):
         print("   sitemap.xml actualizado")
 
     manual_subs = read_json(SUBS, {})

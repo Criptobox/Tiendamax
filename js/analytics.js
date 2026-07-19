@@ -57,8 +57,14 @@ function _tmRtdbUrl() {
 _tmEnsureFirebaseConfig().catch(() => null);
 
 // ── Rate limiting para prevenir abuso ──────────────────
+// El cooldown vivía SOLO en memoria: recargar la página (F5, o simplemente
+// entrar y salir del detalle varias veces) reiniciaba _tmAnalyticsSessions
+// y cada recarga contaba como una vista nueva — un mismo visitante podía
+// inflar el contador a mano entrando 100 veces seguidas al mismo producto.
+// Ahora el timestamp también se guarda en sessionStorage, así sobrevive
+// recargas dentro de la misma pestaña/sesión (se limpia solo al cerrarla).
 const _tmAnalyticsSessions = {};
-const _tmAnalyticsCooldown = 5000;
+const _tmAnalyticsCooldown = 30 * 60 * 1000; // 30 min: una "vista" real por sesión, no por click
 const _tmAnalyticsMaxPerSession = 200;
 let _tmAnalyticsCount = 0;
 
@@ -66,8 +72,13 @@ function _tmCanTrack(tipo, id) {
     const key = `${tipo}_${id}`;
     const now = Date.now();
     if (_tmAnalyticsCount >= _tmAnalyticsMaxPerSession) return false;
-    if (_tmAnalyticsSessions[key] && (now - _tmAnalyticsSessions[key]) < _tmAnalyticsCooldown) return false;
+    let last = _tmAnalyticsSessions[key];
+    if (last === undefined) {
+        try { last = parseInt(sessionStorage.getItem('tm_an_' + key) || '0', 10) || 0; } catch(e) { last = 0; }
+    }
+    if (last && (now - last) < _tmAnalyticsCooldown) return false;
     _tmAnalyticsSessions[key] = now;
+    try { sessionStorage.setItem('tm_an_' + key, String(now)); } catch(e) {}
     _tmAnalyticsCount++;
     return true;
 }

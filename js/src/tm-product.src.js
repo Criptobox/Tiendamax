@@ -188,7 +188,9 @@ function renderizarProductos(isLoadMore = false) {
             <div class="pv2-veil"></div>
             <div class="pv2-top">
                 ${_tieneDesc ? `<span class="pv2-disc">-${_pctDesc}%</span>` : ''}
-                ${producto.masVendido ? '<span class="pv2-hot"><i>●</i> Más vendido</span>' : ''}
+                ${_tmVendidosCount(_id) >= 3
+                    ? `<span class="pv2-hot"><i>●</i> 🔥 ${_tmVendidosCount(_id)} vendidos</span>`
+                    : (producto.masVendido ? '<span class="pv2-hot"><i>●</i> Más vendido</span>' : '')}
             </div>
             <div class="pv2-body">
                 ${_cat ? `<span class="pv2-cat">${_cat}</span>` : ''}

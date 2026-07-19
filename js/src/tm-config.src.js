@@ -43,6 +43,35 @@ function tmParseObject(jsonStr) {
     var v = tmParse(jsonStr, {});
     return (v && typeof v === 'object' && !Array.isArray(v)) ? v : {};
 }
+
+// ===== VENDIDOS REALES (badge "🔥 N vendidos") =====
+// vendidos.json lo agrega scripts/build_vendidos.py desde /ventas de Firebase
+// cada 3h (ver build-vendidos.yml). A diferencia de "masVendido" (flag manual
+// que activa el admin con ⭐), esto es la cantidad real vendida por producto.
+// Fetch fire-and-forget: las tarjetas ya se re-renderizan varias veces
+// durante la carga, así que no hace falta bloquear nada por esto.
+window._tmVendidos = {};
+function _tmVendidosCount(id) {
+    var v = window._tmVendidos[String(id)];
+    return typeof v === 'number' ? v : 0;
+}
+(function () {
+    fetch('vendidos.json?_=' + Math.floor(Date.now() / 3600000), { cache: 'no-store' })
+        .then(function (r) { return r.ok ? r.json() : null; })
+        .then(function (data) {
+            if (data && data.por_producto && typeof data.por_producto === 'object' &&
+                Object.keys(data.por_producto).length > 0) {
+                window._tmVendidos = data.por_producto;
+                // Las tarjetas ya se pintaron ANTES de que este fetch resolviera
+                // (es fire-and-forget para no bloquear el primer render) — sin
+                // este re-render el badge de "N vendidos" nunca llegaba a
+                // aparecer aunque los datos ya estuvieran cargados.
+                if (typeof renderizarProductos === 'function') renderizarProductos();
+                if (typeof renderizarMasVendidos === 'function') renderizarMasVendidos();
+            }
+        })
+        .catch(function () { /* silencioso: el badge simplemente no aparece */ });
+})();
 window.tmParseObject = tmParseObject;
 
 // ===== CONSTANTES DE CONFIGURACIÓN =====
@@ -163,6 +192,45 @@ function toggleMeGusta(id, e) {
     if (agregando && e) {
         flyToHeart(e);
     }
+
+    // Avisar cuando este producto baje de precio (solo si ya tiene push
+    // habilitado — no se le pide permiso acá para no interrumpir el ❤️ con
+    // un diálogo). Silencioso: si no hay token o falla, el ❤️ igual funciona.
+    // Al quitar el ❤️ se da de baja, para no avisar de precio a quien ya
+    // no le interesa el producto.
+    const fcmTokenActual = localStorage.getItem('fcmToken');
+    if (fcmTokenActual) {
+        if (agregando) _tmSuscribirAvisoPrecio(id, fcmTokenActual);
+        else _tmDesuscribirAvisoPrecio(id, fcmTokenActual);
+    }
+}
+
+async function _tmSuscribirAvisoPrecio(productId, fcmToken) {
+    try {
+        const fbCfgRaw = localStorage.getItem('firebaseConfig');
+        if (!fbCfgRaw) return;
+        const fbCfg = JSON.parse(fbCfgRaw);
+        const rtdbUrl = fbCfg.databaseURL || ('https://' + fbCfg.projectId + '-default-rtdb.firebaseio.com');
+        const ctrl = new AbortController();
+        const tid = setTimeout(() => ctrl.abort(), 6000);
+        await fetch(rtdbUrl + '/wishlist_avisos/' + productId + '/' + encodeURIComponent(fcmToken) + '.json', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ token: fcmToken, ts: Date.now() }),
+            signal: ctrl.signal
+        });
+        clearTimeout(tid);
+    } catch (e) { /* silencioso: el ❤️ ya se guardó local, esto es solo el aviso extra */ }
+}
+
+function _tmDesuscribirAvisoPrecio(productId, fcmToken) {
+    try {
+        const fbCfgRaw = localStorage.getItem('firebaseConfig');
+        if (!fbCfgRaw) return;
+        const fbCfg = JSON.parse(fbCfgRaw);
+        const rtdbUrl = fbCfg.databaseURL || ('https://' + fbCfg.projectId + '-default-rtdb.firebaseio.com');
+        fetch(rtdbUrl + '/wishlist_avisos/' + productId + '/' + encodeURIComponent(fcmToken) + '.json', { method: 'DELETE' }).catch(() => {});
+    } catch (e) { /* silencioso */ }
 }
 
 function actualizarBadgeCorazon() {

@@ -790,9 +790,31 @@ function _procesarDeepLink() {
     }
 }
 
+// ══════════════════════════════════════════════════════════════
+//  DEEP LINK de categoría — Abrir categoría directo desde /c/<slug>.html
+//  Ejemplo: tiendamax.org/?categoria=ENERGIA
+// ══════════════════════════════════════════════════════════════
+function _procesarDeepLinkCategoria() {
+    let cat = '';
+    try {
+        const u = new URL(window.location.href);
+        cat = (u.searchParams.get('categoria') || '').trim();
+    } catch(e) {}
+    if (!cat) return;
+    if (typeof categorias !== 'undefined' && Array.isArray(categorias) && categorias.length > 0) {
+        const match = categorias.find(c => c.toLowerCase() === cat.toLowerCase());
+        if (match && typeof mostrarVistaCategoria === 'function') mostrarVistaCategoria(match);
+    } else if (typeof mostrarVistaCategoria === 'function') {
+        // Categorías aún no cargadas: igual navegar, mostrarVistaCategoria
+        // resuelve el nombre tal cual venga (coincide con productos.categoria).
+        mostrarVistaCategoria(cat);
+    }
+}
+
 window.addEventListener('hashchange', _procesarDeepLink);
 window.addEventListener('popstate', _procesarDeepLink);
 document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(_procesarDeepLinkCategoria, 150);
     if (!_tmGetDeepLinkProductId()) return;
     // No reabrir el producto en una RECARGA hecha por el usuario (ej: activar
     // "Sitio para PC", que recarga la página): el hash #producto- quedó de tu

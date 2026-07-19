@@ -311,6 +311,35 @@ def procesar_restock(messaging_api, database, restock_items):
             pass
         print(f"🔔 Restock notificado a {len(tokens)} interesados en {item.get('nombre')}")
 
+def procesar_avisos_precio(messaging_api, database, rebajas_items):
+    """
+    Para cada producto que bajó de precio, notifica SOLO a los tokens que lo
+    tienen en ❤️ Me Gusta con push habilitado (wishlist_avisos/{productId}),
+    además del aviso genérico de "rebajas" que ya reciben todos los
+    suscriptores. A diferencia de procesar_restock, NO borra la suscripción:
+    quien tiene el producto en favoritos puede seguir interesado en más
+    bajadas de precio futuras del mismo producto.
+    """
+    for item in rebajas_items:
+        pid = item["id"]
+        ref = database.reference(f"wishlist_avisos/{pid}")
+        interesados = ref.get()
+        if not interesados:
+            continue
+        tokens = [v["token"] for v in interesados.values()
+                  if isinstance(v, dict) and "token" in v]
+        if not tokens:
+            continue
+
+        title = "🏷️ ¡Bajó de precio!"
+        antes = item.get("antes")
+        ahora = item.get("ahora")
+        body = f"{item.get('nombre', 'Un producto de tu lista')} bajó de ${antes} a ${ahora}. ¡Corre antes que se agote!"
+        link = f"/p/producto-{pid}.html"
+        enviar_push_fcm(messaging_api, database, tokens, [], title, body, link,
+                        item.get("imagen"), tag=f"wishlist-rebaja-{pid}")
+        print(f"🏷️ Rebaja de {item.get('nombre')} notificada a {len(tokens)} que lo tienen en favoritos")
+
 # ============================================================
 # SOLICITUDES MANUALES DEL ADMIN
 # ============================================================
@@ -423,6 +452,14 @@ def main():
                 procesar_restock(msg_api, db_api, cambios["restock"])
             except Exception as e:
                 print(f"⚠️ Error procesando restock: {e}")
+
+        # Rebajas: aviso dirigido e inmediato a quienes tienen el producto
+        # en ❤️ Me Gusta, además del aviso genérico por cola (más abajo).
+        if cambios["rebajas"]:
+            try:
+                procesar_avisos_precio(msg_api, db_api, cambios["rebajas"])
+            except Exception as e:
+                print(f"⚠️ Error procesando avisos de precio (wishlist): {e}")
 
     # Lógica de envío
     avisos = []
