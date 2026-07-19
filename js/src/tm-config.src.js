@@ -128,7 +128,7 @@ function _tmCartBump() {
 // ══════════════════════════════════════════════════════════════
 //  ME GUSTA / WISHLIST
 // ══════════════════════════════════════════════════════════════
-let wishlist = tmParse(localStorage.getItem('wishlist_v1'), []).map(String);
+let wishlist = tmParseArray(localStorage.getItem('wishlist_v1')).map(String);
 
 function guardarWishlist() {
     localStorage.setItem('wishlist_v1', JSON.stringify(wishlist));
@@ -253,7 +253,7 @@ function agregarAlCarrito(id, cantidad) {
     if (!p || p.stock === 0) return;
 
     // Cantidad opcional (desde el modal de detalle). Si no viene, suma 1.
-    const cant = Math.max(1, Math.min(safeNum(cantidad) || 1, p.stock));
+    const cant = Math.max(1, Math.min(safeNum(cantidad) || 1, safeNum(p.stock, 1)));
 
     const existing = carrito.find(x => x.id === id);
     if (existing) {
@@ -290,7 +290,7 @@ function cambiarCantidad(id, delta) {
     const item = carrito.find(x => x.id === id);
     if (!item) return;
     const p = productos.find(x => x.id === id);
-    const maxStock = p ? p.stock : 99;
+    const maxStock = p ? safeNum(p.stock, 99) : 99;
     const nueva = Math.min(maxStock, item.cantidad + delta);
     if (nueva <= 0) { quitarDelCarrito(id); return; }
     item.cantidad = nueva;
@@ -395,10 +395,11 @@ function renderizarCarrito() {
     footerEl.style.display = 'block';
 
     const total = carrito.reduce((s, i) => s + i.precio * i.cantidad, 0);
-    if (totalEl) totalEl.textContent = '$' + total.toFixed(2) + ' USD';
+    const fmt = (usd) => typeof formatPrecio === 'function' ? formatPrecio(usd) : ('$' + usd.toFixed(2) + ' USD');
+    if (totalEl) totalEl.textContent = fmt(total);
 
     itemsEl.innerHTML = carrito.map(item => {
-        const subtotal = (item.precio * item.cantidad).toFixed(2);
+        const subtotal = item.precio * item.cantidad;
         const nombre   = escapeHtml(item.nombre);
         const imagen   = escapeAttr(item.imagen);
         const idSafe   = safeNum(item.id);
@@ -406,12 +407,12 @@ function renderizarCarrito() {
             '<img class="carrito-item-img" loading="lazy" decoding="async" src="' + imagen + '" alt="' + nombre + '" onerror="this.style.display=\'none\'">'  +
             '<div class="carrito-item-info">' +
                 '<div class="carrito-item-name">' + nombre + '</div>' +
-                '<div class="carrito-item-price">$' + subtotal + ' USD</div>' +
+                '<div class="carrito-item-price">' + fmt(subtotal) + '</div>' +
                 '<div class="carrito-item-controls">' +
                     '<button class="carrito-qty-btn" onclick="cambiarCantidad(' + idSafe + ',-1)">−</button>' +
                     '<span class="carrito-qty-num">' + safeNum(item.cantidad, 1) + '</span>' +
                     '<button class="carrito-qty-btn" onclick="cambiarCantidad(' + idSafe + ',1)">+</button>' +
-                    '<span style="font-size:11px;color:#aaa;margin-left:4px;">$' + item.precio.toFixed(2) + ' c/u</span>' +
+                    '<span style="font-size:11px;color:#aaa;margin-left:4px;">' + fmt(item.precio) + ' c/u</span>' +
                 '</div>' +
             '</div>' +
             '<button class="carrito-item-del" onclick="quitarDelCarrito(' + idSafe + ')" title="Eliminar">✕</button>' +
@@ -872,11 +873,15 @@ function guardarResena() {
         try {
             const base = _fbRtdbUrl();
             if (base) {
+                const _ctrl = new AbortController();
+                const _tid = setTimeout(() => _ctrl.abort(), 6000);
                 const r = await fetch(base + '/resenas/' + pid + '/' + ts + '.json', {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(nuevaResena)
+                    body: JSON.stringify(nuevaResena),
+                    signal: _ctrl.signal
                 });
+                clearTimeout(_tid);
                 if (r.ok) {
                     mostrarNotificacion('✅ ¡Reseña publicada! Visible para todos');
                     // Recargar reseñas desde Firebase

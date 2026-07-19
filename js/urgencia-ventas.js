@@ -92,8 +92,10 @@ window.addEventListener('load',()=>{
       return r;
     };
   }
-  // Cancelar cuando el usuario completa el pedido vía WhatsApp
-  ['comprarCarrito','tmComprar','contactarProducto','_mensajeOrdenWA'].forEach(fn=>{
+  // Cancelar cuando el usuario completa el pedido vía WhatsApp. NO incluye
+  // _mensajeOrdenWA: esa función también se usa solo para "compartir carrito"
+  // (tienda-plus.js) sin comprar, lo que cancelaba el recordatorio sin motivo.
+  ['comprarCarrito','tmComprar','contactarProducto'].forEach(fn=>{
     const orig=window[fn];
     if(typeof orig==='function'){
       window[fn]=function(){ _cancelarAbandon(); return orig.apply(this,arguments); };

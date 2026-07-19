@@ -7,7 +7,7 @@
 <meta name="robots" content="noindex,nofollow">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: blob: https:; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self' https://*.googleapis.com https://*.firebaseio.com https://*.firebasedatabase.app https://fcm.googleapis.com https://raw.githubusercontent.com https://api.github.com https://openrouter.ai https://api.deepseek.com https://api.groq.com https://api.anthropic.com https://generativelanguage.googleapis.com; frame-src 'self' https://tiendamax-8feb5.firebaseapp.com https://tiendamax-8feb5.web.app; object-src 'none'; base-uri 'self'; frame-ancestors 'self'">
 <title>TiendaMax Admin</title>
-<script src="js/error-report.js?v=c6699a5a"></script>
+<script src="js/error-report.js?v=619650f2"></script>
 <link rel="icon" type="image/png" sizes="32x32" href="/iconos/favicon-32.png"><link rel="icon" type="image/png" sizes="192x192" href="/iconos/favicon-192.png">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;900&display=swap" rel="stylesheet">
 <style>
@@ -381,8 +381,8 @@
     <div class="logo">M</div>
     <h1>TiendaMax<small>Panel de administración</small></h1>
     <div class="tb-actions">
-      <button class="icon-btn" title="Copiloto IA — correcciones y suscriptores" onclick="if(window.tmCopilotOpen)tmCopilotOpen()">🔔<span class="dot" id="tb-subs">0</span></button>
-      <button class="icon-btn" title="Recargar datos" onclick="cargarDatos(true)">🔄</button>
+      <button class="icon-btn" title="Copiloto IA — correcciones y suscriptores" aria-label="Copiloto IA" onclick="if(window.tmCopilotOpen)tmCopilotOpen()">🔔<span class="dot" id="tb-subs">0</span></button>
+      <button class="icon-btn" title="Recargar datos" aria-label="Recargar datos" onclick="cargarDatos(true)">🔄</button>
     </div>
   </div>
 
@@ -390,20 +390,20 @@
 
     <!-- Sidebar -->
     <aside class="sidebar">
-      <button class="side-btn active" data-view="inicio" title="Inicio">🏠</button>
-      <button class="side-btn" data-view="productos" title="Productos · editar stock, precio, comisión">📦</button>
-      <button class="side-btn" data-view="agregar" title="Agregar producto">➕</button>
-      <button class="side-btn" data-view="categorias" title="Categorías y subcategorías">🏷️</button>
-      <button class="side-btn" data-view="almacen" title="Almacenes · dónde está tu stock">🏭</button>
-      <button class="side-btn" data-view="combos" title="Combos">🎁</button>
-      <button class="side-btn" data-view="publicar" title="Publicar / Compartir a redes">📣</button>
-      <button class="side-btn" type="button" title="Vale / factura para el cliente" onclick="window.open('vale.html','_blank')">🧾</button>
+      <button class="side-btn active" data-view="inicio" title="Inicio" aria-label="Inicio">🏠</button>
+      <button class="side-btn" data-view="productos" title="Productos · editar stock, precio, comisión" aria-label="Productos">📦</button>
+      <button class="side-btn" data-view="agregar" title="Agregar producto" aria-label="Agregar producto">➕</button>
+      <button class="side-btn" data-view="categorias" title="Categorías y subcategorías" aria-label="Categorías">🏷️</button>
+      <button class="side-btn" data-view="almacen" title="Almacenes · dónde está tu stock" aria-label="Almacenes">🏭</button>
+      <button class="side-btn" data-view="combos" title="Combos" aria-label="Combos">🎁</button>
+      <button class="side-btn" data-view="publicar" title="Publicar / Compartir a redes" aria-label="Publicar">📣</button>
+      <button class="side-btn" type="button" title="Vale / factura para el cliente" aria-label="Vale o factura" onclick="window.open('vale.html','_blank')">🧾</button>
       <div class="side-sep"></div>
-      <button class="side-btn" data-view="radar" title="Radar de precios">📡<span class="new-tag">N</span></button>
-      <button class="side-btn" data-view="ventas" title="Ventas">💰</button>
-      <button class="side-btn" data-view="analytics" title="Analytics">📊</button>
-      <button class="side-btn" data-view="clientes" title="Clientes · Reviews · Carritos · WhatsApp">👥</button>
-      <button class="side-btn" data-view="config" title="Configuración">⚙️</button>
+      <button class="side-btn" data-view="radar" title="Radar de precios" aria-label="Radar de precios">📡<span class="new-tag">N</span></button>
+      <button class="side-btn" data-view="ventas" title="Ventas" aria-label="Ventas">💰</button>
+      <button class="side-btn" data-view="analytics" title="Analytics" aria-label="Analytics">📊</button>
+      <button class="side-btn" data-view="clientes" title="Clientes · Reviews · Carritos · WhatsApp" aria-label="Clientes">👥</button>
+      <button class="side-btn" data-view="config" title="Configuración" aria-label="Configuración">⚙️</button>
     </aside>
 
     <!-- Content -->
@@ -615,7 +615,7 @@
             <h3>💱 Tasa MN</h3>
             <div class="form-group"><label class="form-label" for="adminTasaMN">Tasa MN (base elTOQUE)</label><input class="form-input" id="adminTasaMN" type="number"></div>
             <div class="form-group" style="margin-top:10px"><label class="form-label" for="adminMargenMN">Margen MN sobre la tasa (0 = sin margen)</label><input class="form-input" id="adminMargenMN" type="number" min="0" step="1" placeholder="10"></div>
-            <div class="form-group" style="margin-top:10px"><label class="form-label" for="adminWhatsappNum">2do WhatsApp (opcional)</label><input class="form-input" id="adminWhatsappNum" type="tel" placeholder="535…"></div>
+            <div class="form-group" style="margin-top:10px"><label class="form-label" for="adminWhatsappNum">Número de WhatsApp de la tienda (el que usan TODOS los botones "Pedir")</label><input class="form-input" id="adminWhatsappNum" type="tel" placeholder="535…"></div>
             <button class="btn btn-primary" style="width:100%;margin-top:12px" onclick="guardarTasaMNAdmin()">💾 Guardar tasa</button>
             <p id="tasaMNStatus" style="font-size:12px;color:var(--muted);margin-top:8px"></p>
           </div>
@@ -819,8 +819,8 @@
      agregarProductoForm, sincronizarTodoConGitHub, registrarVenta, etc. -->
 <!-- Bundle único (mismo orden: config→data→state→admin→product→catalog→init→ui→toast→iife→patches),
      generado por scripts/build_js_bundle.py a partir de js/src/*.src.js -->
-<script src="js/tm-bundle.js?v=3d33cc59"></script>
-<script src="js/biometric-auth.js?v=343cb27b"></script>
+<script src="js/tm-bundle.js?v=567854fd"></script>
+<script src="js/biometric-auth.js?v=876f6495"></script>
 <script src="js/revolico_integration.js?v=43a94a39"></script>
 <script>
   // Puente para código heredado (Copiloto IA) que navega con switchTab('nombre-viejo')
@@ -834,7 +834,7 @@
   };
 </script>
 <script src="js/vendor/html2canvas.min.js?v=e87e5507" defer></script>
-<script src="js/admin-copilot.js?v=b7f53224"></script>
+<script src="js/admin-copilot.js?v=ab421735"></script>
 
 <script>
 (function(){
@@ -1738,7 +1738,7 @@ function almAgregar(){
   if(!nombre){ showToast('⚠️ Ponle un nombre al almacén'); return; }
   const base=rtdbBase(); if(!base){ showToast('⚠️ Configura Firebase primero','En ⚙️ Configuración'); return; }
   const id='alm_'+Date.now();
-  const payload={nombre,direccion,ubicacion};
+  const payload={nombre,direccion,ubicacion,_proof:localStorage.getItem('tm_auth_hash_v3')||''};
   fetch(base+'/almacenes/'+id+'.json',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)})
     .then(r=>{ if(!r.ok) throw new Error('HTTP '+r.status); ALMACENES[id]=payload; $('#alm-nombre').value=''; $('#alm-direccion').value=''; $('#alm-ubicacion').value=''; renderAlmacen(); showToast('✅ Almacén agregado', nombre); })
     .catch(e=>showToast('❌ No se pudo agregar', e.message||''));
@@ -1758,7 +1758,7 @@ function almRenombrar(id){
   const nombre=(prompt('Nombre del almacén:', a.nombre)||'').trim(); if(!nombre) return;
   const direccion=(prompt('Dirección:', a.direccion||'')||'').trim();
   const ubicacion=(prompt('Ubicación (link de Maps, opcional):', a.ubicacion||'')||'').trim();
-  const base=rtdbBase(); const payload={nombre,direccion,ubicacion};
+  const base=rtdbBase(); const payload={nombre,direccion,ubicacion,_proof:localStorage.getItem('tm_auth_hash_v3')||''};
   if(base) fetch(base+'/almacenes/'+id+'.json',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)}).catch(()=>{});
   ALMACENES[id]=payload; renderAlmacen();
   showToast('✏️ Almacén actualizado');
@@ -2910,7 +2910,7 @@ function html(){return `<div class="ph"><div><h2>🛠️ Herramientas</h2><p>Fun
 ${tier('TIER 1 — EMPIEZA ESTA SEMANA','ROI alto','')}
 <div class="tm-tools-grid">${card('ai','🤖','Generador de descripciones IA','Genera descripciones, títulos SEO y textos WhatsApp/Facebook.')}${card('compress','🖼️','Compresión on-upload','Comprime imágenes en navegador antes de subir.')}${card('duplicate','📑','Duplicar producto','Crea variantes sin re-tipiar todo el formulario.')}${card('history','↶','Historial de cambios','Snapshots, diff básico y rollback de productos.')}${card('csv','📄','Importar / Exportar CSV','Backup masivo, edición en Excel y migración.')}${card('dups','🔍','Detector de duplicados','Busca coincidencias por nombre, precio y categoría.')}</div>
 ${tier('TIER 2 — ESTE MES','Más valor','gold')}
-<div class="tm-tools-grid">${card('schedule','📅','Programar publicación','Cola local con fecha/hora y recordatorios.')}${card('coupons','🏷️','Cupones / descuentos','Códigos con %, fijo, fecha de expiración.')}${card('locations','📍','Multi-ubicación','Stock por depósito: Habana, Santiago, etc.')}${card('ab','〽️','A/B testing de precios','Variantes A/B y registro manual de resultados.')}${card('totp','🔐','2FA / TOTP','Segundo factor opcional con códigos temporales.')}${card('roles','👥','Roles de usuario','Admin/editor/viewer y permisos granulares.')}</div>
+<div class="tm-tools-grid">${card('schedule','📅','Programar publicación','Cola local con fecha/hora y recordatorios.')}${card('coupons','🏷️','Cupones / descuentos','Códigos con %, fijo, fecha de expiración.')}${card('locations','📍','Multi-ubicación','Stock por depósito: Habana, Santiago, etc.')}${card('ab','〽️','A/B testing de precios','Variantes A/B y registro manual de resultados.')}${card('totp','🔐','2FA / TOTP (no aplicado aún)','Guarda un secreto TOTP — el login real todavía NO lo valida.')}${card('roles','👥','Roles de usuario (no aplicado aún)','Define roles/permisos — el login real todavía NO los aplica.')}</div>
 ${tier('TIER 3 — DIFERENCIADORES','Escala','purple')}
 <div class="tm-tools-grid">${card('competitors','🌐','Comparador competencia','Registra precios de Revolico/ML para comparar.')}${card('margin','💵','Calculadora de margen','Coste + envío + comisión = ganancia real.')}${card('posts','📣','Posts para redes','Caption FB/IG, story 9:16 y grupos.')}${card('heatmap','◎','Heatmap de clics','Mapa por productos/categorías usando analytics disponibles.')}${card('crm','🧑‍💼','CRM de clientes (manual)','Libreta de clientes que escribís vos — no lee tus ventas reales.')}${card('shipping','🚚','Tracking envíos (manual)','Notas de estado que escribís vos — no lee tus pedidos reales.')}</div>
 <div id="tmToolPanel" class="tm-panel"></div>`}
@@ -2931,8 +2931,8 @@ function schedule(){const d=data();panel('📅 Programar publicación','Cola loc
 function coupons(){const d=data();panel('🏷️ Cupones / descuentos','Crea códigos para campañas. Luego se pueden integrar al carrito público.',`<div class="tm-form-grid"><div class="tm-field"><label for="tmCupCode">Código</label><input id="tmCupCode" placeholder="FLASH10"></div><div class="tm-field"><label for="tmCupType">Tipo</label><select id="tmCupType"><option value="percent">%</option><option value="fixed">Fijo USD</option></select></div><div class="tm-field"><label for="tmCupVal">Valor</label><input id="tmCupVal" type="number" value="10"></div><div class="tm-field"><label for="tmCupExp">Expira</label><input id="tmCupExp" type="date"></div></div><div class="tm-actions"><button type="button" class="tm-btn primary" data-act="cupAdd">Agregar cupón</button></div><div class="tm-list">${d.coupons.map((c,i)=>`<div class="tm-row"><div class="tm-row-main"><b>${esc(c.code)} — ${c.value}${c.type==='percent'?'%':' USD'}</b><small>Expira: ${esc(c.exp||'sin fecha')}</small></div><button type="button" class="tm-btn tm-mini" data-act="cupDel" data-i="${i}">Eliminar</button></div>`).join('')||'<div class="tm-note">Sin cupones.</div>'}</div>`)}
 function locations(){const d=data();panel('📍 Multi-ubicación','Stock por depósito sin cambiar el stock total hasta que decidas sincronizar.',`<div class="tm-form-grid"><div class="tm-field"><label for="tmLocProd">Producto</label><select id="tmLocProd">${productOptions()}</select></div><div class="tm-field"><label for="tmLocName">Ubicación</label><input id="tmLocName" placeholder="Habana"></div><div class="tm-field"><label for="tmLocStock">Stock</label><input id="tmLocStock" type="number" value="0"></div></div><div class="tm-actions"><button type="button" class="tm-btn primary" data-act="locSet">Guardar stock ubicación</button></div><div class="tm-list">${Object.entries(d.stock||{}).map(([pid,locs])=>`<div class="tm-row"><div class="tm-row-main"><b>${esc((prods().find(p=>String(p.id)===String(pid))||{}).nombre||pid)}</b><small>${Object.entries(locs).map(([l,n])=>esc(l)+': '+n).join(' · ')}</small></div></div>`).join('')||'<div class="tm-note">Sin stock por ubicación.</div>'}</div>`)}
 function ab(){const d=data();panel('〽️ A/B testing de precios','Define dos precios y registra manualmente vistas/ventas.',`<div class="tm-form-grid"><div class="tm-field"><label for="tmAbProd">Producto</label><select id="tmAbProd">${productOptions()}</select></div><div class="tm-field"><label for="tmAbA">Precio A</label><input id="tmAbA" type="number"></div><div class="tm-field"><label for="tmAbB">Precio B</label><input id="tmAbB" type="number"></div></div><div class="tm-actions"><button type="button" class="tm-btn primary" data-act="abAdd">Crear test</button></div><div class="tm-list">${d.ab.map((x,i)=>`<div class="tm-row"><div class="tm-row-main"><b>${esc(x.name)}</b><small>A $${x.a} vs B $${x.b} · ganador sugerido: ${Number(x.b)>Number(x.a)?'medir conversión':'A'}</small></div><button type="button" class="tm-btn tm-mini" data-act="abDel" data-i="${i}">Eliminar</button></div>`).join('')||'<div class="tm-note">Sin tests.</div>'}</div>`)}
-function totp(){const d=data();panel('🔐 2FA / TOTP','Segundo factor opcional. El secreto se guarda local; para máxima seguridad debe validarse también en backend.',`<div class="tm-form-grid"><div class="tm-field"><label>Estado</label><input disabled value="${d.totp.enabled?'Activado':'Desactivado'}"></div><div class="tm-field"><label for="tmTotpSecret">Secreto</label><input id="tmTotpSecret" value="${esc(d.totp.secret||randomSecret())}"></div></div><div class="tm-actions"><button type="button" class="tm-btn primary" data-act="totpEnable">Activar/guardar 2FA</button><button type="button" class="tm-btn" data-act="totpDisable">Desactivar</button></div><div class="tm-note">Puedes pegar el secreto en Google Authenticator/Authy. Integración de bloqueo real disponible en un siguiente paso.</div>`)}
-function roles(){const d=data();panel('👥 Roles de usuario','Define roles. La aplicación de permisos se puede conectar por sección.',`<div class="tm-form-grid"><div class="tm-field"><label for="tmRoleName">Rol</label><input id="tmRoleName" placeholder="viewer"></div><div class="tm-field"><label for="tmRolePerms">Permisos</label><input id="tmRolePerms" placeholder="productos:leer, ventas:leer"></div></div><div class="tm-actions"><button type="button" class="tm-btn primary" data-act="roleAdd">Agregar rol</button></div><div class="tm-list">${d.roles.map((r,i)=>`<div class="tm-row"><div class="tm-row-main"><b>${esc(r.name)}</b><small>${esc(r.perms)}</small></div><button type="button" class="tm-btn tm-mini" data-act="roleDel" data-i="${i}">Eliminar</button></div>`).join('')}</div>`)}
+function totp(){const d=data();panel('🔐 2FA / TOTP (no aplicado aún)','⚠️ Esto solo guarda el secreto localmente. El login real (verificarPassword) todavía NO lo valida — activar esto acá NO agrega ninguna protección extra hoy.',`<div class="tm-form-grid"><div class="tm-field"><label>Estado</label><input disabled value="${d.totp.enabled?'Activado':'Desactivado'}"></div><div class="tm-field"><label for="tmTotpSecret">Secreto</label><input id="tmTotpSecret" value="${esc(d.totp.secret||randomSecret())}"></div></div><div class="tm-actions"><button type="button" class="tm-btn primary" data-act="totpEnable">Guardar secreto</button><button type="button" class="tm-btn" data-act="totpDisable">Desactivar</button></div><div class="tm-note">Puedes pegar el secreto en Google Authenticator/Authy para probarlo, pero el login del panel no lo pide todavía. Integración de bloqueo real disponible en un siguiente paso.</div>`)}
+function roles(){const d=data();panel('👥 Roles de usuario (no aplicado aún)','⚠️ Esto solo guarda la lista de roles/permisos. El login real todavía NO los aplica — cualquiera que entre con la contraseña de admin tiene acceso total, sin importar los roles definidos acá.',`<div class="tm-form-grid"><div class="tm-field"><label for="tmRoleName">Rol</label><input id="tmRoleName" placeholder="viewer"></div><div class="tm-field"><label for="tmRolePerms">Permisos</label><input id="tmRolePerms" placeholder="productos:leer, ventas:leer"></div></div><div class="tm-actions"><button type="button" class="tm-btn primary" data-act="roleAdd">Agregar rol</button></div><div class="tm-list">${d.roles.map((r,i)=>`<div class="tm-row"><div class="tm-row-main"><b>${esc(r.name)}</b><small>${esc(r.perms)}</small></div><button type="button" class="tm-btn tm-mini" data-act="roleDel" data-i="${i}">Eliminar</button></div>`).join('')}</div>`)}
 function competitors(){const d=data();panel('🌐 Comparador competencia','Registra manualmente URLs/precios de Revolico/Marketplace para comparar.',`<div class="tm-form-grid"><div class="tm-field"><label for="tmCompProd">Producto</label><select id="tmCompProd">${productOptions()}</select></div><div class="tm-field"><label for="tmCompPrice">Precio competencia</label><input id="tmCompPrice" type="number"></div><div class="tm-field" style="grid-column:1/-1"><label for="tmCompUrl">URL</label><input id="tmCompUrl" placeholder="https://..."></div></div><div class="tm-actions"><button type="button" class="tm-btn primary" data-act="compAdd">Agregar comparación</button></div><div class="tm-list">${d.competitors.map((x,i)=>`<div class="tm-row"><div class="tm-row-main"><b>${esc(x.name)} — competencia $${x.price}</b><small>${esc(x.url)}</small></div><button type="button" class="tm-btn tm-mini" data-act="compDel" data-i="${i}">Eliminar</button></div>`).join('')||'<div class="tm-note">Sin comparaciones.</div>'}</div>`)}
 function margin(){panel('💵 Calculadora de margen','Calcula ganancia real por unidad.',`<div class="tm-form-grid"><div class="tm-field"><label for="tmMPrice">Precio venta</label><input id="tmMPrice" type="number" value="100"></div><div class="tm-field"><label for="tmMCost">Coste</label><input id="tmMCost" type="number" value="70"></div><div class="tm-field"><label for="tmMShip">Envío</label><input id="tmMShip" type="number" value="5"></div><div class="tm-field"><label for="tmMCom">Comisión</label><input id="tmMCom" type="number" value="0"></div></div><div class="tm-actions"><button type="button" class="tm-btn primary" data-act="marginCalc">Calcular</button></div><div id="tmToolOut" class="tm-code" style="margin-top:12px">Resultado…</div>`)}
 function posts(){panel('📣 Posts para redes','Genera texto listo para Facebook, Instagram, WhatsApp y grupos.',`<div class="tm-form-grid"><div class="tm-field"><label for="tmPostProd">Producto</label><select id="tmPostProd">${productOptions()}</select></div><div class="tm-field"><label for="tmPostType">Formato</label><select id="tmPostType"><option>Facebook grupo</option><option>Instagram caption</option><option>Story 9:16</option><option>WhatsApp</option></select></div></div><div class="tm-actions"><button type="button" class="tm-btn primary" data-act="postGen">Generar post</button><button type="button" class="tm-btn" data-act="copyOut">Copiar</button></div><div id="tmToolOut" class="tm-code" style="margin-top:12px">Resultado…</div>`)}

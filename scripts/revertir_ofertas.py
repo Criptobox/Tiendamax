@@ -46,8 +46,19 @@ def main():
         if fin_dt > ahora:
             continue
         original = p.get("precioOriginal")
-        if original and float(original) > 0:
-            p["precioActual"] = original
+        try:
+            original_val = float(original) if original else 0
+        except (TypeError, ValueError):
+            original_val = 0
+        if original_val <= 0:
+            # Sin precioOriginal válido no hay a qué revertir el precio — se
+            # deja precioActual como está, pero SÍ se limpian descuento/ofertaFin
+            # (si no, el producto queda con el badge "-X%" pegado para siempre).
+            # A diferencia de antes, esto ahora queda registrado explícitamente
+            # en vez de pasar como una reversión normal sin ningún rastro.
+            print(f"⚠️ Oferta vencida sin precioOriginal válido (precio NO revertido, solo se limpian flags): {p.get('nombre') or p.get('id')}")
+        else:
+            p["precioActual"] = original_val
         p.pop("precioOriginal", None)
         p.pop("ofertaFin", None)
         p["descuento"] = 0

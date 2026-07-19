@@ -111,7 +111,7 @@
       });
       if (assertion) {
         if (typeof window.tmGrantAdminAccess === 'function') {
-          window.tmGrantAdminAccess();
+          window.tmGrantAdminAccess({ ok: true, via: 'biometric', assertionId: assertion.id });
         } else {
           var modal = document.getElementById('loginModal');
           if (modal) { modal.classList.add('hidden'); modal.style.display = 'none'; }

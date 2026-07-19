@@ -226,7 +226,8 @@ function eliminarCategoria(index) {
             delete iconosPersonalizados[nombre];
             localStorage.setItem('iconosPersonalizados', JSON.stringify(iconosPersonalizados));
         }
-        
+
+        marcarCategoriaEliminada(nombre);
         categorias.splice(index, 1);
         guardarCategorias();
         actualizarSelectCategorias();
@@ -329,6 +330,16 @@ function marcarProductoEliminado(id) {
 }
 function obtenerProductosEliminados() {
     return tmParseArray(localStorage.getItem('productosEliminados'));
+}
+
+// Igual que marcarProductoEliminado, pero para categorías: sin esto, una
+// categoría borrada podía resucitar al fusionar con categorias.json del repo.
+function marcarCategoriaEliminada(nombre) {
+    const el = tmParseArray(localStorage.getItem('categoriasEliminadas'));
+    if (!el.includes(nombre)) { el.push(nombre); localStorage.setItem('categoriasEliminadas', JSON.stringify(el)); }
+}
+function obtenerCategoriasEliminadas() {
+    return tmParseArray(localStorage.getItem('categoriasEliminadas'));
 }
 
 // ── Anti-pisado: fusiona el catálogo en memoria con el productos.json del repo ──
@@ -434,8 +445,9 @@ async function _tmMergeCategoriasConRepo(user, repo) {
     } catch (e) {}
     if (!remoto) return local;
 
+    const eliminadas = new Set(tmParseArray(localStorage.getItem('categoriasEliminadas')));
     const nombres = local.nombres.slice();
-    remoto.nombres.forEach(n => { if (!nombres.includes(n)) nombres.push(n); });
+    remoto.nombres.forEach(n => { if (!nombres.includes(n) && !eliminadas.has(n)) nombres.push(n); });
     const iconos = Object.assign({}, remoto.iconos || {}, local.iconos);
     return { nombres, iconos };
 }

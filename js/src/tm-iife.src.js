@@ -5,7 +5,11 @@
    Extraído de tm-extras.src.js (L1926-2998, 1073 líneas)
    ============================================================ */
 
-window.tmGrantAdminAccess = function () {
+// Requiere una verificación explícita — sin esto, cualquiera podía abrir la
+// consola del navegador y llamar tmGrantAdminAccess() para saltarse password
+// y biometría por completo.
+window.tmGrantAdminAccess = function (verificacion) {
+    if (!verificacion || verificacion.ok !== true) return;
     usuarioAutenticado = true;
     cerrarLoginModal();
     abrirAdminPanel();
@@ -334,9 +338,27 @@ async function guardarTasaMNAdmin() {
         const detailPrice = document.getElementById('detailPriceActual');
         if (detailPrice && _detalleProductoActual) {
             detailPrice.setAttribute('data-usd', String(_detalleProductoActual.precioActual));
-            detailPrice.textContent = typeof formatPrecio === 'function'
-                ? formatPrecio(_detalleProductoActual.precioActual)
-                : ('$' + Number(_detalleProductoActual.precioActual).toFixed(2) + ' USD');
+            // No pisar con textContent plano: destruía los spans tipográficos
+            // (.dp-sym/.dp-num/.dp-cur) que arma tm-product.src.js. Solo actualizamos
+            // el número; el símbolo/moneda los mantiene el markup existente.
+            const numEl = detailPrice.querySelector('.dp-num');
+            if (numEl) {
+                numEl.textContent = Number(_detalleProductoActual.precioActual).toFixed(2);
+            } else {
+                detailPrice.textContent = typeof formatPrecio === 'function'
+                    ? formatPrecio(_detalleProductoActual.precioActual)
+                    : ('$' + Number(_detalleProductoActual.precioActual).toFixed(2) + ' USD');
+            }
+        }
+        const mnEl = document.getElementById('detailPriceMN');
+        if (mnEl && _detalleProductoActual) {
+            const tasa = typeof getTasaMN === 'function' ? getTasaMN() : 0;
+            if (tasa > 0) {
+                mnEl.textContent = '≈ ' + Math.round(_detalleProductoActual.precioActual * tasa).toLocaleString('es-CU') + ' MN';
+                mnEl.style.display = 'block';
+            } else {
+                mnEl.style.display = 'none';
+            }
         }
     };
 

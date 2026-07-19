@@ -27,6 +27,9 @@ async function verificarPassword(event) {
         mostrarNotificacion(`🔒 Demasiados intentos. Espera ${mins} min.`, 'error');
         return;
     }
+    // El bloqueo anterior ya expiró: empezar un conteo nuevo (si no, un solo
+    // intento fallido más re-dispara el bloqueo indefinidamente).
+    if (rl.until && Date.now() >= rl.until) { rl.count = 0; rl.until = 0; }
 
     const passwordInput = document.getElementById('adminPassword').value.trim();
 
@@ -793,6 +796,23 @@ async function agregarProductoForm(event) {
     if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = '⏳ Guardando…'; }
 
     try {
+        // Validar todo lo que no depende de la imagen ANTES de subirla a GitHub,
+        // para no dejar imágenes huérfanas si el resto del form es inválido.
+        const _preview = {
+            nombre: (document.getElementById('productName').value || '').trim(),
+            descripcion: (document.getElementById('productDescription').value || '').trim(),
+            imagen: 'placeholder',
+            precioActual: parseFloat(document.getElementById('productPriceActual').value) || 0,
+            stock: parseInt(document.getElementById('productStock').value, 10),
+            categoria: document.getElementById('productCategory').value
+        };
+        const erroresPrevios = validarProducto(_preview).filter(e => e !== 'La imagen es requerida');
+        if (erroresPrevios.length > 0) {
+            mostrarNotificacion('❌ ' + erroresPrevios[0], 'error');
+            if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = '💾 Guardar y publicar producto'; }
+            return;
+        }
+
         mostrarNotificacion('⏳ Subiendo imagen principal...', 'info');
         const imagenPrincipal = await subirImagenAGitHub(file);
         const extras = await subirMultiplesImagenes('productImagesExtra');

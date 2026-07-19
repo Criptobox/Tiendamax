@@ -2,11 +2,7 @@
 html body .categorias-home{padding-top:36px !important}
 html body .categorias-home .section-subtitle{margin-bottom:20px !important}
 html body .categorias-home .section-title{font-size:26px !important}
-html body .categorias-grid{display:flex !important;flex-wrap:wrap !important;justify-content:center !important;overflow-x:hidden !important;max-width:900px !important;margin:0 auto !important;gap:12px !important;padding-bottom:0 !important}
 html body .logo-premium img,html body .mobile-menu-logo img{width:30px !important;height:30px !important;min-width:30px !important;min-height:30px !important;max-width:30px !important;max-height:30px !important;border-radius:8px !important;flex-shrink:0 !important;object-fit:cover !important;-webkit-flex-shrink:0 !important}
-html body .categorias-grid .categoria-card{flex:0 0 calc(25% - 10px) !important;max-width:calc(25% - 10px) !important;min-width:0 !important;width:auto !important}
-@media (max-width:600px){html body .categorias-grid .categoria-card{flex:0 0 calc(33.333% - 8px) !important;max-width:calc(33.333% - 8px) !important}}
-@media (max-width:380px){html body .categorias-grid .categoria-card{flex:0 0 calc(50% - 7px) !important;max-width:calc(50% - 7px) !important}}
 html body .categoria-card{border-top:2px solid #C9A96E !important}
 html body .categoria-card .cat-name{font-size:13px !important;font-weight:800 !important;letter-spacing:.3px !important}
 html body .categoria-card .cat-count{font-size:11px !important;font-weight:600 !important}

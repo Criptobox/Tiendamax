@@ -28,11 +28,14 @@
             ua: (navigator.userAgent || '').slice(0, 200)
         };
         if (stack) payload.stack = String(stack).slice(0, 500);
+        var ctrl = new AbortController();
+        var tid = setTimeout(function () { ctrl.abort(); }, 6000);
         fetch(base + '/errores_js/' + id + '.json', {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-        }).catch(function () {});
+            body: JSON.stringify(payload),
+            signal: ctrl.signal
+        }).catch(function () {}).finally(function () { clearTimeout(tid); });
     }
 
     window.addEventListener('error', function (e) {

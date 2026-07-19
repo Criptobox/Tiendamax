@@ -1029,7 +1029,14 @@ function copiarLinkProducto() {
     });
 }
 
+let _tmContactandoProducto = false;
 function contactarProducto(nombre) {
+    // Protección contra doble-clic/doble-tap (común en checkout móvil): sin
+    // esto, un segundo toque generaba un segundo pedido y una segunda pestaña
+    // de WhatsApp antes de que el usuario notara que el primero ya abrió.
+    if (_tmContactandoProducto) return;
+    _tmContactandoProducto = true;
+    setTimeout(() => { _tmContactandoProducto = false; }, 1500);
     const p = _detalleProductoActual;
     // Cantidad elegida en el modal (tope = stock); por defecto 1
     const cant = p ? Math.max(1, Math.min(safeNum(_detalleCantidad) || 1, safeNum(p.stock) || 1)) : 1;
