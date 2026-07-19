@@ -140,7 +140,9 @@
     }
 
     // ── WhatsApp ──
-    if (/whatsapp|wasap|numero de contacto|como los contacto|telefono|contacto/.test(n)) {
+    // OJO: nada de "telefono"/"contacto" a secas — "busco un telefono" es una
+    // búsqueda de producto, no una petición del número de la tienda.
+    if (/whatsapp|wasap|numero de (contacto|telefono|la tienda)|como (los )?contacto|como contactar|contactarlos/.test(n)) {
       return INTENT.WHATSAPP;
     }
 
@@ -175,7 +177,13 @@
     }
 
     // ── Ofertas ──
-    if (/oferta|descuento|rebaja|promocion|barato|mas barato|precio especial|esta escapao|en oferta|hay ofertas|que ofertas/.test(n)) {
+    // Señales fuertes (oferta/descuento/rebaja) ganan siempre; las débiles
+    // ("barato") solo si NO se menciona un producto — "quiero un celular
+    // barato" es una búsqueda de celulares, no un pedido de ofertas genéricas.
+    if (/oferta|descuento|rebaja|promocion|precio especial|esta escapao/.test(n)) {
+      return INTENT.OFFERS;
+    }
+    if (/barato|economico/.test(n) && !_mentionsProduct(n)) {
       return INTENT.OFFERS;
     }
 
@@ -210,11 +218,27 @@
     }
 
     // ── Búsqueda (fallback si contiene términos de producto) ──
-    if (/busco|necesito|quiero|tiene|tienen|hay|venden|mostrar|ver|mostrame|dame|buscar|encuentra/.test(n) && n.length > 3) {
+    if (/busco|necesito|quiero|quisiera|tiene|tienen|hay|venden|mostrar|ver|mostrame|dame|buscar|encuentra|comprar|compra|pedir/.test(n) && n.length > 3) {
       return INTENT.SEARCH;
     }
 
     return INTENT.UNKNOWN;
+  }
+
+  /**
+   * ¿El mensaje menciona un tipo de producto o categoría del catálogo?
+   * Usado para desambiguar intents genéricos ("barato", "ofertas") de
+   * búsquedas reales ("celular barato").
+   */
+  function _mentionsProduct(n) {
+    var words = n.split(/\s+/);
+    for (var i = 0; i < words.length; i++) {
+      var w = words[i];
+      if (w.length < 3) continue;
+      var st = _stemES(w);
+      if (PRODUCT_TYPE_FILTERS[w] || PRODUCT_TYPE_FILTERS[st]) return true;
+    }
+    return _extractCategoryFromMsg(n) !== null;
   }
 
 
@@ -334,8 +358,10 @@
    * 2. tmFuzzyMatch() (tolerancia a typos)
    * 3. Búsqueda directa por campos
    */
-  // Cache for async IA results (busquedaConIA returns a Promise)
-  var _iaCachedResults = null;
+  // Cache for async IA results (busquedaConIA returns a Promise).
+  // Se guarda CON la query que lo generó: sin eso, los resultados async de
+  // una búsqueda anterior ("router") contaminaban la siguiente ("bateria").
+  var _iaCachedResults = null; // { query, results }
 
   function searchProducts(query, options) {
     options = options || {};
@@ -359,15 +385,16 @@
         if (Array.isArray(_iaRaw)) {
           iaResults = _iaRaw;
         } else if (_iaRaw && typeof _iaRaw.then === 'function') {
-          // It's a Promise — resolve it and cache for next call
+          // It's a Promise — resolve it and cache (junto con SU query) for next call
           _iaRaw.then(function(results) {
             if (Array.isArray(results) && results.length > 0) {
-              _iaCachedResults = results;
+              _iaCachedResults = { query: nq, results: results };
             }
           }).catch(function() { /* silent */ });
-          // Use cached IA results from a previous call if available
-          if (Array.isArray(_iaCachedResults) && _iaCachedResults.length > 0) {
-            iaResults = _iaCachedResults;
+          // Use cached IA results ONLY if they were produced by this same query
+          if (_iaCachedResults && _iaCachedResults.query === nq &&
+              Array.isArray(_iaCachedResults.results) && _iaCachedResults.results.length > 0) {
+            iaResults = _iaCachedResults.results;
           }
         }
       } catch (e) {
@@ -558,13 +585,11 @@
   function formatProductCard(p, options) {
     options = options || {};
     var precio = _fmtPrice(p.precioActual);
-    var tasa = _getRate();
-    var precioMN = tasa > 0 ? Math.round(p.precioActual * tasa).toLocaleString('es-CU') : null;
 
     var lines = [];
-    lines.push('# ' + (p.nombre || 'Producto'));
+    lines.push('🛒 ' + (p.nombre || 'Producto'));
     lines.push('');
-    lines.push('💵 ' + precio + (precioMN ? ' | 🇨🇺 $' + precioMN + ' MN' : ''));
+    lines.push('💵 ' + precio + _mnSuffix(p.precioActual));
 
     if (p.descuento > 0) {
       lines.push('🔥 ' + p.descuento + '% OFF' + (p.precioOriginal > 0 ? ' (antes $' + p.precioOriginal.toFixed(2) + ')' : ''));
@@ -604,12 +629,10 @@
     var emoji = index !== undefined ? (index + 1) + '️⃣ ' : '• ';
     var stockIcon = p.stock <= 0 ? ' ❌' : p.stock <= 3 ? ' ⚠️' : '';
     var price = _fmtPrice(p.precioActual);
-    var tasa = _getRate();
-    var priceMN = tasa > 0 ? ' | $' + Math.round(p.precioActual * tasa).toLocaleString('es-CU') + ' MN' : '';
     var vendido = (p.masVendido === true || p.masVendido === 'true') ? ' 🔥' : '';
     var desc = p.descuento > 0 ? ' -' + p.descuento + '%' : '';
 
-    return emoji + (p.nombre || 'Producto') + ' — ' + price + desc + priceMN + stockIcon + vendido;
+    return emoji + (p.nombre || 'Producto') + ' — ' + price + desc + _mnSuffix(p.precioActual) + stockIcon + vendido;
   }
 
 
@@ -647,90 +670,23 @@
       return { product: p, spec: parseSpec(p.specs) };
     });
 
-    // Construir tabla de comparación
+    // El texto es un resumen corto: la tabla detallada la renderiza la UI del
+    // chat como HTML (response.comparison). La versión anterior metía una
+    // tabla ASCII alineada con espacios dentro del texto — en la burbuja del
+    // chat (fuente proporcional, panel angosto) se veía rota y duplicaba la
+    // tabla HTML de abajo.
     var lines = [];
-    lines.push('📊 COMPARACIÓN DE PRODUCTOS');
+    lines.push('📊 Comparando ' + prods.length + ' productos:');
     lines.push('');
-
-    // Header: nombres cortos
-    var names = prods.map(function (p) {
-      return _shortName(p.nombre);
-    });
-    lines.push('               ' + names.map(function (n) { return _padRight(n, 18); }).join(''));
-    lines.push('─'.repeat(18 + names.length * 18));
-
-    // Precio
-    var prices = prods.map(function (p) {
-      return '$' + (p.precioActual || 0).toFixed(2);
-    });
-    var minPriceIdx = prices.indexOf(_arrMin(prices, function (a, b) { return parseFloat(a.replace('$', '')) - parseFloat(b.replace('$', '')); }));
-    lines.push('💵 Precio      ' + prices.map(function (pr, i) { return _padRight(pr + (i === minPriceIdx ? ' ⭐' : ''), 18); }).join(''));
-
-    // Stock
-    var stocks = prods.map(function (p) { return p.stock > 0 ? String(p.stock) + ' uds' : 'Agotado'; });
-    lines.push('📦 Stock       ' + stocks.map(function (s) { return _padRight(s, 18); }).join(''));
-
-    // Specs dinámicos: detectar qué campos tienen en común
-    var specFields = [
-      { key: 'watts', label: '⚡ Potencia', unit: 'W', higher: true },
-      { key: 'volts', label: '🔌 Voltaje', unit: 'V', higher: false },
-      { key: 'ampHours', label: '🔋 Capacidad', unit: 'Ah', higher: true },
-      { key: 'amps', label: '⚡ Corriente', unit: 'A', higher: true },
-      { key: 'speedMbps', label: '🚀 Velocidad', unit: 'Mbps', higher: true },
-      { key: 'wifiVersion', label: '📡 WiFi', unit: '', higher: true },
-      { key: 'gigabit', label: '🔌 Gigabit', unit: '', higher: true, bool: true },
-      { key: 'mppt', label: '☀️ MPPT', unit: '', higher: true, bool: true },
-      { key: 'solar', label: '☀️ Solar', unit: '', higher: true, bool: true },
-      { key: 'ports', label: '🔌 Puertos', unit: '', higher: true },
-      { key: 'antennas', label: '📡 Antenas', unit: '', higher: true },
-    ];
-
-    specFields.forEach(function (field) {
-      var values = parsed.map(function (x) { return x.spec[field.key]; });
-      var anyValue = values.some(function (v) { return v !== undefined && v !== null; });
-      if (!anyValue) return;
-
-      var displayVals = values.map(function (v, i) {
-        if (v === undefined || v === null) return '—';
-        if (field.bool) return v ? 'Sí' : 'No';
-        if (Array.isArray(v)) return v.join('/') + field.unit;
-        return String(v) + field.unit;
-      });
-
-      // Determinar ganador (solo entre valores presentes y numéricos)
-      var winnerIdx = -1;
-      if (!field.bool) {
-        var numVals = values.map(function (v) {
-          if (v === undefined || v === null) return null;
-          return Array.isArray(v) ? v[0] : v;
-        });
-        var validIndices = numVals.map(function (v, i) { return v !== null ? i : -1; }).filter(function (i) { return i >= 0; });
-        if (validIndices.length >= 2) {
-          winnerIdx = validIndices.reduce(function (best, i) {
-            if (best === -1) return i;
-            var isBetter = field.higher ? numVals[i] > numVals[best] : numVals[i] < numVals[best];
-            return isBetter ? i : best;
-          }, -1);
-        }
-      } else {
-        // Para bool, marcar los que son true
-        var trueIndices = values.map(function (v, i) { return v ? i : -1; }).filter(function (i) { return i >= 0; });
-        var falseIndices = values.map(function (v, i) { return v === false ? i : -1; }).filter(function (i) { return i >= 0; });
-        if (trueIndices.length > 0 && falseIndices.length > 0) {
-          winnerIdx = trueIndices[0]; // el primero que tiene true
-        }
-      }
-
-      lines.push(field.label + _padRight('', 14 - field.label.length) +
-        displayVals.map(function (v, i) { return _padRight(v + (i === winnerIdx ? ' ⭐' : ''), 18); }).join(''));
+    prods.forEach(function (p, i) {
+      lines.push(formatProductShort(p, i));
     });
 
-    // Descuento
-    var discounts = prods.map(function (p) { return p.descuento > 0 ? '-' + p.descuento + '%' : '—'; });
-    var anyDiscount = discounts.some(function (d) { return d !== '—'; });
-    if (anyDiscount) {
-      lines.push('🏷️ Descuento   ' + discounts.map(function (d) { return _padRight(d, 18); }).join(''));
-    }
+    // Mejor precio (índice del más barato)
+    var minPriceIdx = 0;
+    prods.forEach(function (p, i) {
+      if ((p.precioActual || 0) < (prods[minPriceIdx].precioActual || 0)) minPriceIdx = i;
+    });
 
     lines.push('');
     lines.push('🏆 RECOMENDACIÓN:');
@@ -833,6 +789,8 @@
    * Estado del flujo de cálculo (multiturno).
    */
   var _calcState = null; // null = no activo, { step, devices }
+  var _lastCalc = null;  // { devices, hours } — para "necesito más horas de respaldo"
+  var _lastPackLink = null; // link WA del último pack recomendado
 
   /**
    * Inicia o continúa el flujo de cálculo de consumo.
@@ -840,8 +798,14 @@
   function handleCalculate(msg) {
     var n = norm(msg);
 
-    // Si no hay estado activo, iniciar flujo
+    // Si no hay estado activo, iniciar flujo. Pero si el mensaje inicial YA
+    // trae dispositivos ("qué inversor necesito para tv y nevera"), calcular
+    // directo sin obligar al usuario a repetirlos.
     if (!_calcState) {
+      var directDevices = _parseDevices(msg);
+      if (Object.keys(directDevices).length > 0) {
+        return _calcResult(directDevices, n, 4);
+      }
       _calcState = { step: 'awaiting_devices', devices: {} };
       return {
         text: '¡Te ayudo a calcular! ⚡ ¿Qué dispositivos quieres conectar?\n\n' +
@@ -854,8 +818,9 @@
       };
     }
 
-    // Si el usuario quiere cancelar
-    if (/cancelar|salir|no|nada|otra cosa/.test(n)) {
+    // Si el usuario quiere cancelar. Anclado al INICIO del mensaje: antes,
+    // /no/ sin anclar hacía que "telefono" (contiene "no") cancelara el flujo.
+    if (/^\s*(cancelar|salir|olvidalo|dejalo|no|nada|otra cosa|ya no)\b/.test(n)) {
       _calcState = null;
       return {
         text: 'OK, si necesitas calcular después, aquí estoy. 👍',
@@ -872,6 +837,16 @@
       };
     }
 
+    return _calcResult(devices, n, 4);
+  }
+
+  /**
+   * Núcleo del cálculo de consumo: dado el mapa de dispositivos, arma la
+   * respuesta con inversor/batería/pack reales del inventario.
+   * Separado de handleCalculate para poder recalcular (ej. con más horas
+   * de respaldo) sin re-parsear el mensaje.
+   */
+  function _calcResult(devices, n, backupHoursParam) {
     // Calcular consumo total
     var totalWatts = 0;
     var detailLines = [];
@@ -944,7 +919,7 @@
     });
 
     // ── Ordenar baterías por mejor ajuste ──
-    var backupHours = 4;
+    var backupHours = backupHoursParam || 4;
     var batteryVoltage = 12;
     var requiredAh = Math.ceil((totalWatts * backupHours) / batteryVoltage);
 
@@ -1089,8 +1064,16 @@
       lines.push('💬 ¿Te interesa alguno? Te paso por WhatsApp');
     }
 
-    // Resetear estado
+    // Resetear estado del flujo, pero recordar el cálculo para follow-ups
+    // ("necesito más horas de respaldo" recalcula con estos mismos equipos).
     _calcState = null;
+    _lastCalc = { devices: devices, hours: backupHours };
+    _lastPackLink = null;
+    if (packProducts.length >= 2) {
+      var _packMsg = 'Hola, me interesa el pack completo para ' + safetyWatts + 'W: ' +
+        packProducts.map(function (p) { return p.nombre; }).join(', ');
+      _lastPackLink = 'https://wa.me/' + _getWhatsAppNumber() + '?text=' + encodeURIComponent(_packMsg);
+    }
 
     // Construir respuesta con productos reales como tarjetas
     // Evitar duplicados en recommendedProducts
@@ -1132,6 +1115,18 @@
     var devices = {};
     var n = norm(msg);
 
+    // Presets: los quickReplies del propio bot deben funcionar siempre
+    if (/todo lo basico|lo basico|todo basico|lo esencial/.test(n)) {
+      return { 'telefono': 2, 'lampara': 3, 'ventilador': 1, 'tv': 1, 'nevera': 1 };
+    }
+
+    // Números en palabras → dígitos ("dos lamparas" → "2 lamparas")
+    var numWords = { 'un': 1, 'una': 1, 'uno': 1, 'dos': 2, 'tres': 3, 'cuatro': 4,
+                     'cinco': 5, 'seis': 6, 'siete': 7, 'ocho': 8, 'nueve': 9, 'diez': 10 };
+    n = n.replace(/\b(un|una|uno|dos|tres|cuatro|cinco|seis|siete|ocho|nueve|diez)\b/g, function (m) {
+      return String(numWords[m]);
+    });
+
     // Mapeo de sinónimos
     var syns = {
       'celular': 'telefono', 'movil': 'telefono', 'smartphone': 'telefono',
@@ -1148,11 +1143,15 @@
       'tele': 'tv', 'television': 'tv', 'televisor': 'tv'
     };
 
-    // Lista de todos los nombres de dispositivos conocidos (ordenados por longitud
-    // descendente para que "nevera pequena" tenga prioridad sobre "nevera")
-    var knownDevices = Object.keys(DISPOSITIVOS_COMUNES).sort(function (a, b) {
-      return b.length - a.length;
-    });
+    // Lista de nombres a escanear: dispositivos conocidos + sinónimos (antes
+    // los sinónimos solo funcionaban con cantidad explícita — "solo luces y
+    // telefono" perdía las luces porque "luces" no es clave del diccionario).
+    // Ordenados por longitud descendente para que "nevera pequena" tenga
+    // prioridad sobre "nevera" y "telefono" sobre "tele".
+    var knownDevices = Object.keys(DISPOSITIVOS_COMUNES)
+      .concat(Object.keys(syns))
+      .filter(function (v, i, arr) { return arr.indexOf(v) === i; })
+      .sort(function (a, b) { return b.length - a.length; });
 
     // Paso 1: Buscar patrones "Nx dispositivo" (con cantidad explícita)
     var qtyPattern = /(\d+)\s*(cargador de telefono|telefono|celular|movil|lampara|led|foco|bombillo|luz|luces|ventilador|tv|televisor|tele|nevera|refrigerador|frigider|microondas|olla|plancha|lavadora|computadora|pc|laptop|router|radio|cocina|aire|ac|split|monitor|impresora|cargador|altavoz|speaker|telefono cargador|nevera pequena|nevera grande|aire acondicionado 12000btu|aire acondicionado|olla arrocera|tv 32|tv 50|router wifi|cocina electrica)/g;
@@ -1294,9 +1293,7 @@
       var urgency = p.stock <= 3 ? ' ⚠️ ¡Quedan pocos!' : '';
       var discount = p.descuento > 0 ? ' 🔥 -' + p.descuento + '%' : '';
       var hot = (p.masVendido === true || p.masVendido === 'true') ? ' 🔥' : '';
-      var tasa = _getRate();
-      var priceMN = tasa > 0 ? ' | $' + Math.round(p.precioActual * tasa).toLocaleString('es-CU') + ' MN' : '';
-      lines.push((i + 1) + '️⃣ ' + p.nombre + ' — ' + _fmtPrice(p.precioActual) + priceMN + discount + urgency + hot);
+      lines.push((i + 1) + '️⃣ ' + p.nombre + ' — ' + _fmtPrice(p.precioActual) + _mnSuffix(p.precioActual) + discount + urgency + hot);
       if (Array.isArray(p.specs) && p.specs.length > 0) {
         var cleanSpecs = p.specs.map(function (s) { return String(s).replace(/^[⠀-代言]\s*/, '').trim(); }).filter(Boolean);
         lines.push('   📋 ' + cleanSpecs.join(' · '));
@@ -1369,8 +1366,9 @@
                 '💵 Efectivo (USD o MN)\n' +
                 '📱 Transferencia bancaria\n' +
                 '💱 Tasa del día: 1 USD = ' + _getRate() + ' MN\n\n' +
-                'Coordinamos el pago por WhatsApp cuando haces tu pedido.',
-          quickReplies: ['💬 WhatsApp', 'Ver productos', 'Cambiar moneda']
+                'Coordinamos el pago por WhatsApp cuando haces tu pedido.\n' +
+                '💡 Puedes cambiar la moneda con el botón USD/MN arriba de la tienda.',
+          quickReplies: ['💬 WhatsApp', '🔥 Ofertas']
         };
       case 'HOURS':
         return {
@@ -1420,6 +1418,130 @@
   var _conversationHistory = [];
   var MAX_HISTORY = 20;
 
+  // ── Memoria de contexto de la conversación ──
+  // Los quickReplies que el propio bot ofrece ("Comparar", "Ver más",
+  // "Ver similar") necesitan saber de qué se estaba hablando; sin esto,
+  // tocarlos disparaba búsquedas literales de "comparar"/"ver mas" que
+  // devolvían productos aleatorios o errores.
+  var _lastResults = [];      // resultados completos de la última búsqueda/ofertas
+  var _lastShownCount = 0;    // cuántos de esos ya se mostraron
+  var _lastQuery = '';        // término de la última búsqueda
+  var _lastDetailProduct = null; // último producto mostrado en detalle
+
+  /**
+   * Meta-comandos: respuestas a los botones que el propio bot ofrece.
+   * Se evalúan ANTES de detectIntent porque son literales conocidos,
+   * no lenguaje natural. Devuelve null si el mensaje no es un meta-comando.
+   */
+  function _handleMetaCommand(n) {
+    // "Buscar producto" / "Buscar otro" — pedir el término, no buscarlo literal
+    if (/^(buscar (producto|otro|algo)|🔍 buscar producto)$/.test(n) || n === 'buscar') {
+      return {
+        text: '🔍 Dime qué producto buscas.\nPor ejemplo: "router wifi", "inversor 3000w", "audífonos"...',
+        quickReplies: ['🔥 Ofertas', '📦 Categorías']
+      };
+    }
+
+    // "Ver más" — continuar la lista anterior en vez de buscar "ver mas"
+    if (/^ver mas( productos| resultados)?$/.test(n)) {
+      if (_lastResults.length > _lastShownCount) {
+        var next = _lastResults.slice(_lastShownCount, _lastShownCount + 5);
+        _lastShownCount += next.length;
+        var moreLines = ['🔍 Más resultados' + (_lastQuery ? ' para "' + _lastQuery + '"' : '') + ':', ''];
+        next.forEach(function (p, i) { moreLines.push(formatProductShort(p, i)); });
+        var hayMas = _lastResults.length > _lastShownCount;
+        return {
+          text: moreLines.join('\n'),
+          products: next,
+          quickReplies: next.slice(0, 2).map(function (p) { return _shortName(p.nombre); })
+            .concat(hayMas ? ['Ver más'] : []).concat(['💬 WhatsApp'])
+        };
+      }
+      return _handleOffers('ofertas');
+    }
+
+    // "Comparar" pelado — comparar lo que se acaba de mostrar
+    if (/^comparar$/.test(n)) {
+      var comparables = _lastResults.slice(0, _lastShownCount || 5).filter(function (p) { return p.stock > 0; });
+      if (comparables.length >= 2) {
+        return compareProducts(comparables.slice(0, 4));
+      }
+      return null; // sin contexto → flujo normal de _handleCompare
+    }
+
+    // "la primera" / "el 2" / "quiero el tercero" — referencia ordinal a la
+    // lista recién mostrada (antes buscaba "primera" como si fuera un producto)
+    var ordMatch = n.match(/^(?:quiero |me interesa |dame )?(?:el |la )?(1|2|3|4|5|primero|primera|segundo|segunda|tercero|tercera|cuarto|cuarta|quinto|quinta)$/);
+    if (ordMatch && _lastResults.length > 0) {
+      var ordMap = { 'primero': 1, 'primera': 1, 'segundo': 2, 'segunda': 2,
+                     'tercero': 3, 'tercera': 3, 'cuarto': 4, 'cuarta': 4,
+                     'quinto': 5, 'quinta': 5 };
+      var idx = (ordMap[ordMatch[1]] || parseInt(ordMatch[1], 10)) - 1;
+      var elegido = _lastResults[idx];
+      if (elegido) {
+        _lastDetailProduct = elegido;
+        return {
+          text: formatProductCard(elegido) + '\n\n¿Qué quieres hacer?',
+          products: [elegido],
+          whatsappProduct: elegido.stock > 0 ? elegido.id : null,
+          quickReplies: elegido.stock > 0
+            ? ['Ver similar', '💬 Comprar por WhatsApp']
+            : ['Ver similar', '💬 WhatsApp']
+        };
+      }
+    }
+
+    // "Ver similar" — misma categoría que el último producto visto
+    if (/^ver similar(es)?$/.test(n)) {
+      if (_lastDetailProduct) {
+        var sim = getProductsByCategory(_lastDetailProduct.categoria || '', { maxResults: 6, onlyInStock: true })
+          .filter(function (p) { return String(p.id) !== String(_lastDetailProduct.id); })
+          .slice(0, 4);
+        if (sim.length > 0) {
+          return {
+            text: '🔎 Similares a ' + _shortName(_lastDetailProduct.nombre) + ':',
+            products: sim,
+            quickReplies: sim.slice(0, 2).map(function (p) { return _shortName(p.nombre); }).concat(['Comparar', '💬 WhatsApp'])
+          };
+        }
+      }
+      return null;
+    }
+
+    // "Abrir WhatsApp" / "Comprar por WhatsApp" — dar el botón directo
+    if (/^(💬 )?(abrir whatsapp|comprar por whatsapp)$/.test(n) || /^abrir whatsapp$/.test(n)) {
+      return {
+        text: 'Perfecto 👇 Toca el botón para escribirnos:',
+        whatsappProduct: _lastDetailProduct || null,
+        quickReplies: ['Ver productos', '🔥 Ofertas']
+      };
+    }
+
+    // "Comprar pack por WhatsApp" — link del último pack calculado
+    if (/^comprar pack( por whatsapp)?$/.test(n)) {
+      if (_lastPackLink) {
+        return {
+          text: '🔋 Tu pack te espera 👇\n' + _lastPackLink,
+          quickReplies: ['Ver inversores disponibles', 'Ver baterías']
+        };
+      }
+      return null;
+    }
+
+    // "Necesito más horas de respaldo" — recalcular con el doble de horas
+    if (/mas horas de respaldo|necesito mas horas|mas respaldo/.test(n)) {
+      if (_lastCalc && _lastCalc.devices) {
+        var newHours = Math.min((_lastCalc.hours || 4) * 2, 24);
+        var r = _calcResult(_lastCalc.devices, n, newHours);
+        r.text = '🔋 Recalculado para ~' + newHours + 'h de respaldo:\n\n' + r.text;
+        return r;
+      }
+      return null;
+    }
+
+    return null;
+  }
+
   /**
    * Punto de entrada principal del agente.
    * Recibe un mensaje del usuario y devuelve una respuesta estructurada.
@@ -1446,14 +1568,24 @@
     var intent = detectIntent(message);
     var response;
 
+    // ── Meta-comandos (botones que el propio bot ofrece) ──
+    if (!_calcState) {
+      response = _handleMetaCommand(norm(message));
+    }
+
     // ── Flujo conversacional activo (ej: calculadora esperando dispositivos) ──
     // Si hay un flujo activo, SIEMPRE procesar con ese handler, sin importar
-    // la intención detectada. Solo salir si el usuario dice "cancelar" o "salir".
-    if (_calcState) {
+    // la intención detectada. Al cancelar, responder la despedida del flujo
+    // directamente — antes "caía al flujo normal" y terminaba buscando
+    // "cancelar" como si fuera un producto.
+    if (!response && _calcState) {
       var nCheck = norm(message);
-      if (/cancelar|salir|no gracias|nada que ver|otra cosa|ya no/.test(nCheck)) {
+      if (/^\s*(cancelar|salir|no gracias|nada|otra cosa|ya no|olvidalo|dejalo)\b/.test(nCheck)) {
         _calcState = null;
-        // Caer al flujo normal
+        response = {
+          text: 'OK, si necesitas calcular después, aquí estoy. 👍\n¿Te ayudo con otra cosa?',
+          quickReplies: ['Buscar producto', '🔥 Ofertas', '📦 Categorías']
+        };
       } else {
         response = handleCalculate(message);
       }
@@ -1583,6 +1715,8 @@
 
   function _handleOffers(message) {
     var ps = _getProducts();
+    // "ofertas en celulares" → filtrar por la categoría mencionada
+    var cat = _extractCategoryFromMsg(message || '');
     // Productos con descuento o más vendidos
     var offers = ps.filter(function (p) {
       return p.stock > 0 && (p.descuento > 0 || (p.masVendido === true || p.masVendido === 'true'));
@@ -1594,6 +1728,11 @@
       return (b.precioActual || 0) - (a.precioActual || 0);
     });
 
+    if (cat) {
+      var enCat = offers.filter(function (p) { return (p.categoria || '').toUpperCase() === cat; });
+      if (enCat.length > 0) offers = enCat;
+    }
+
     if (offers.length === 0) {
       // Fallback: mostrar los más vendidos con stock
       offers = ps.filter(function (p) { return p.stock > 0; })
@@ -1601,8 +1740,13 @@
         .slice(0, 5);
     }
 
+    // Recordar contexto para "Ver más" / "Comparar"
+    _lastResults = offers;
+    _lastShownCount = Math.min(offers.length, 5);
+    _lastQuery = cat ? 'ofertas en ' + cat : 'ofertas';
+
     var lines = [];
-    lines.push('🔥 Ofertas y más vendidos:');
+    lines.push(cat ? '🔥 Ofertas en ' + cat + ':' : '🔥 Ofertas y más vendidos:');
     lines.push('');
 
     offers.slice(0, 5).forEach(function (p, i) {
@@ -1625,7 +1769,9 @@
   function _handleSearch(message) {
     // Extraer término de búsqueda del mensaje
     var query = _extractSearchQuery(message);
-    var results = searchProducts(query, { maxResults: 5 });
+    // Pedir de más para poder responder "Ver más" después sin re-buscar
+    var fullResults = searchProducts(query, { maxResults: 15 });
+    var results = fullResults.slice(0, 5);
 
     if (results.length === 0) {
       // Intentar búsqueda más amplia sin filtro de stock
@@ -1648,8 +1794,14 @@
       };
     }
 
+    // Recordar contexto para "Ver más" / "Comparar"
+    _lastResults = fullResults;
+    _lastShownCount = results.length;
+    _lastQuery = query;
+
     var lines = [];
     if (results.length === 1) {
+      _lastDetailProduct = results[0];
       lines.push(formatProductCard(results[0]));
       lines.push('');
       lines.push('¿Qué quieres hacer?');
@@ -1836,6 +1988,7 @@
     }
 
     var p = results[0];
+    _lastDetailProduct = p;
     var lines = [];
     lines.push(formatProductCard(p));
     lines.push('');
@@ -1870,6 +2023,11 @@
         quickReplies: ['Buscar producto', '📦 Categorías']
       };
     }
+
+    // Recordar contexto para "la primera" / "Comparar"
+    _lastResults = results;
+    _lastShownCount = results.length;
+    _lastQuery = query;
 
     var lines = [];
     results.forEach(function (p, i) {
@@ -2076,6 +2234,18 @@
   }
 
   /**
+   * Sufijo " | $X MN" para un precio — SOLO si _fmtPrice devolvió USD.
+   * Cuando el cliente ya cambió la moneda a MN, formatPrecio devuelve MN
+   * y añadir el sufijo duplicaba el precio ("$52,000 MN | $52,000 MN").
+   */
+  function _mnSuffix(usd) {
+    if (_fmtPrice(usd).indexOf('MN') !== -1) return '';
+    var tasa = _getRate();
+    if (!(tasa > 0)) return '';
+    return ' | $' + Math.round(usd * tasa).toLocaleString('es-CU') + ' MN';
+  }
+
+  /**
    * Obtiene la tasa MN usando la función global si está disponible.
    */
   function _getRate() {
@@ -2141,8 +2311,10 @@
       'el', 'la', 'los', 'las', 'de', 'del', 'en', 'para', 'con',
       'me', 'puedes', 'ayudar', 'alguien', 'sabe', 'donde', 'estan',
       'cuanto', 'cuesta', 'vale', 'precio', 'stock', 'disponible',
-      'disponibilidad', 'si', 'no', 'o', 'y', 'pero', 'mas', 'menos',
-      'comparar', 'compara', 'diferencia', 'versus', 'mejor'
+      'disponibles', 'disponibilidad', 'si', 'no', 'o', 'y', 'pero', 'mas', 'menos',
+      'comparar', 'compara', 'diferencia', 'versus', 'mejor',
+      'comprar', 'compra', 'pedir', 'quisiera', 'muestrame', 'ensename',
+      'algun', 'alguna', 'barato', 'barata', 'economico', 'economica'
     ];
     var words = n.split(/\s+/).filter(function (w) {
       return w.length > 1 && stopWords.indexOf(w) === -1;
@@ -2202,27 +2374,6 @@
    */
   function _capitalize(str) {
     return String(str || '').charAt(0).toUpperCase() + String(str || '').slice(1);
-  }
-
-  /**
-   * Pad right para alinear tablas.
-   */
-  function _padRight(str, len) {
-    str = String(str || '');
-    if (str.length >= len) return str.substring(0, len);
-    return str + ' '.repeat(len - str.length);
-  }
-
-  /**
-   * Encontrar el mínimo en un array con comparador.
-   */
-  function _arrMin(arr, cmp) {
-    if (arr.length === 0) return undefined;
-    var min = arr[0];
-    for (var i = 1; i < arr.length; i++) {
-      if (cmp(arr[i], min) < 0) min = arr[i];
-    }
-    return min;
   }
 
 
@@ -2487,7 +2638,12 @@
     if (response.text) {
       var msgDiv = document.createElement('div');
       msgDiv.className = 'tm-msg bot';
-      msgDiv.innerHTML = _escapeHtml(response.text).replace(/\n/g, '<br>');
+      // Escapar primero (anti-XSS) y linkificar después: los links que el
+      // propio bot emite (wa.me) eran texto plano imposible de tocar.
+      var safeHtml = _escapeHtml(response.text)
+        .replace(/(https:\/\/[^\s<&]+)/g, '<a href="$1" target="_blank" rel="noopener" style="color:#25D366;text-decoration:underline;word-break:break-all">$1</a>')
+        .replace(/\n/g, '<br>');
+      msgDiv.innerHTML = safeHtml;
       container.appendChild(msgDiv);
     }
 
@@ -2563,12 +2719,12 @@
       );
     }
 
-    // Price with currency
+    // Price with currency (sufijo MN solo si el precio principal está en USD)
     var price = _fmtPrice(p.precioActual);
-    var tasa = _getRate();
-    var priceMN = tasa > 0
-      ? ' <small style="color:rgba(255,255,255,0.5);font-weight:400;font-size:11px">| $' +
-        Math.round(p.precioActual * tasa).toLocaleString('es-CU') + ' MN</small>'
+    var mnPlain = _mnSuffix(p.precioActual);
+    var priceMN = mnPlain
+      ? ' <small style="color:rgba(255,255,255,0.5);font-weight:400;font-size:11px">' +
+        _escapeHtml(mnPlain.replace(/^ \| /, '| ')) + '</small>'
       : '';
 
     // Stock status (green/yellow/red dot)
@@ -2845,6 +3001,11 @@
 
   /** Open product detail modal (called from product card "Ver detalle" button) */
   function _viewProduct(id) {
+    // La función real del bundle es abrirDetalleProducto — "abrirModalProducto"
+    // no existe en ningún lado y el botón "Ver detalle" nunca abría el modal.
+    if (typeof abrirDetalleProducto === 'function') {
+      try { close(); abrirDetalleProducto(id); return; } catch (e) { /* fallback */ }
+    }
     if (typeof abrirModalProducto === 'function') {
       try { abrirModalProducto(id); return; } catch (e) { /* fallback */ }
     }
@@ -2945,6 +3106,13 @@
     reset: function () {
       _conversationHistory = [];
       _calcState = null;
+      _lastCalc = null;
+      _lastPackLink = null;
+      _lastResults = [];
+      _lastShownCount = 0;
+      _lastQuery = '';
+      _lastDetailProduct = null;
+      _iaCachedResults = null;
       try { sessionStorage.removeItem('tm_agent_history'); } catch (e) { /* */ }
     },
 
