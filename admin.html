@@ -652,6 +652,105 @@
   .tm-csv-drop{border:1px dashed rgba(201,169,110,.45);border-radius:12px;padding:14px;text-align:center;color:var(--muted);background:rgba(201,169,110,.06)}
   @media (max-width:600px){ .tm-tools-grid{grid-template-columns:repeat(2,minmax(0,1fr))} .tm-form-grid{grid-template-columns:1fr} .tm-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))} .tm-actions .tm-btn:only-child{grid-column:1/-1} }
   @media (max-width:380px){ .tm-tools-grid{grid-template-columns:1fr} .tm-actions{grid-template-columns:1fr} }
+
+  /* ═══════════════════════════════════════════════════════════════════
+     PREMIUM UI — realce visual del panel (solo estética, sin tocar lógica)
+     Reglas al final del stylesheet → ganan por orden a las definiciones
+     planas de arriba. Todo CSS puro; respeta prefers-reduced-motion.
+     ═══════════════════════════════════════════════════════════════════ */
+
+  /* Fondo del panel con aura cálida sutil detrás del contenido */
+  body::before {
+    content:''; position:fixed; inset:0; z-index:0; pointer-events:none;
+    background:
+      radial-gradient(760px 420px at 12% -8%, rgba(255,107,53,0.07), transparent 60%),
+      radial-gradient(680px 500px at 100% 0%, rgba(201,169,110,0.06), transparent 55%);
+  }
+  .layout { position:relative; z-index:1; }
+
+  /* — Hero de inventario: glow, borde vivo y línea dorada animada — */
+  .hero-inv {
+    background:
+      radial-gradient(420px 200px at 82% -30%, rgba(201,169,110,0.16), transparent 65%),
+      linear-gradient(155deg, #201a13, var(--card2) 55%, var(--card));
+    box-shadow:0 18px 40px -22px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.04);
+  }
+  .hero-inv::before {
+    background:linear-gradient(90deg,transparent,var(--gold),transparent);
+    background-size:200% 100%; animation:tmShimmer 5.5s linear infinite;
+  }
+  @keyframes tmShimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+  .hero-inv .hi-val { text-shadow:0 2px 20px rgba(201,169,110,0.28); }
+
+  /* — KPI cards: cristal, barra-acento con glow, hover con elevación — */
+  .kpi {
+    background:linear-gradient(158deg, rgba(255,255,255,0.045), rgba(255,255,255,0.012));
+    backdrop-filter:blur(6px);
+    box-shadow:0 10px 26px -18px rgba(0,0,0,0.75), inset 0 1px 0 rgba(255,255,255,0.045);
+    transition:transform .22s cubic-bezier(.22,1,.36,1), box-shadow .22s, border-color .22s;
+    animation:tmCardIn .5s cubic-bezier(.22,1,.36,1) backwards;
+  }
+  .kpi::before { width:3px; border-radius:3px; box-shadow:0 0 14px 1px currentColor; }
+  .kpi::before { color:var(--o); }
+  .kpi.success::before{color:var(--green)} .kpi.danger::before{color:var(--red)}
+  .kpi.warn::before{color:var(--yellow)} .kpi.info::before{color:var(--purple)}
+  .kpi.gold::before{color:var(--gold)} .kpi.usd::before{color:var(--blue)}
+  .kpi:hover { transform:translateY(-3px); border-color:rgba(255,255,255,0.14);
+    box-shadow:0 20px 40px -20px rgba(0,0,0,0.85), inset 0 1px 0 rgba(255,255,255,0.06); }
+  .kpi .val { text-shadow:0 2px 14px rgba(0,0,0,0.4); }
+  .kpis .kpi:nth-child(1){animation-delay:.02s} .kpis .kpi:nth-child(2){animation-delay:.07s}
+  .kpis .kpi:nth-child(3){animation-delay:.12s} .kpis .kpi:nth-child(4){animation-delay:.17s}
+  .kpis .kpi:nth-child(5){animation-delay:.22s} .kpis .kpi:nth-child(6){animation-delay:.27s}
+  .kpis .kpi:nth-child(7){animation-delay:.32s} .kpis .kpi:nth-child(8){animation-delay:.37s}
+  @keyframes tmCardIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+
+  /* — Secciones: leve gradiente + sombra suave + hover cálido — */
+  .section {
+    background:linear-gradient(168deg, rgba(255,255,255,0.028), rgba(255,255,255,0.008));
+    box-shadow:0 12px 30px -22px rgba(0,0,0,0.7);
+    transition:border-color .2s, box-shadow .2s;
+  }
+  .section:hover { border-color:rgba(255,255,255,0.11); }
+
+  /* — Gráfico de barras: barras con brillo superior + crecida al entrar — */
+  .bar-chart .bar {
+    background:linear-gradient(180deg,#ff8656,var(--o) 45%,var(--oo));
+    border-radius:6px 6px 2px 2px;
+    box-shadow:0 -1px 10px -1px rgba(255,107,53,0.45), inset 0 1px 0 rgba(255,255,255,0.25);
+    transform-origin:bottom;
+    animation:tmBarRise .7s cubic-bezier(.22,1,.36,1) backwards;
+  }
+  .bar-chart .bar:hover { filter:brightness(1.25) saturate(1.1); box-shadow:0 -1px 16px 1px rgba(255,107,53,0.6), inset 0 1px 0 rgba(255,255,255,0.3); }
+  .bar-chart .bar:nth-child(1){animation-delay:.04s} .bar-chart .bar:nth-child(2){animation-delay:.10s}
+  .bar-chart .bar:nth-child(3){animation-delay:.16s} .bar-chart .bar:nth-child(4){animation-delay:.22s}
+  .bar-chart .bar:nth-child(5){animation-delay:.28s} .bar-chart .bar:nth-child(6){animation-delay:.34s}
+  .bar-chart .bar:nth-child(7){animation-delay:.40s} .bar-chart .bar:nth-child(8){animation-delay:.46s}
+  @keyframes tmBarRise { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+
+  /* — Botones: glow en primario y dorado — */
+  .btn-primary { box-shadow:0 6px 18px -8px rgba(255,107,53,0.6); }
+  .btn-primary:hover { box-shadow:0 10px 24px -8px rgba(255,107,53,0.75); }
+  .btn-gold:hover { box-shadow:0 10px 24px -10px rgba(201,169,110,0.7); }
+
+  /* — Tarjeta de producto (lista): hover con elevación y glow cálido — */
+  .pcard { transition:transform .2s cubic-bezier(.22,1,.36,1), border-color .2s, box-shadow .2s; }
+  .pcard:hover { transform:translateY(-2px); border-color:rgba(255,107,53,0.28);
+    box-shadow:0 16px 34px -22px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,107,53,0.06); }
+  .prod-card:hover { box-shadow:0 16px 34px -22px rgba(0,0,0,0.8); }
+
+  /* — Sidebar activo con glow pulsante suave — */
+  .side-btn.active { box-shadow:0 4px 14px rgba(255,107,53,0.45); animation:tmSideGlow 3.2s ease-in-out infinite; }
+  @keyframes tmSideGlow {
+    0%,100% { box-shadow:0 4px 14px rgba(255,107,53,0.35); }
+    50%     { box-shadow:0 4px 22px rgba(255,107,53,0.6); }
+  }
+
+  /* — Reviews: número grande con glow dorado — */
+  .rev-hero .big { text-shadow:0 2px 22px rgba(201,169,110,0.35); }
+
+  @media (prefers-reduced-motion:reduce) {
+    .hero-inv::before, .kpi, .bar-chart .bar, .side-btn.active { animation:none !important; }
+  }
 </style>
 </head>
 <body>
