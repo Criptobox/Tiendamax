@@ -232,7 +232,7 @@
   },
   {
     "id": 1778103783319,
-    "nombre": "​🚗 Batería Automotriz LUBRIM (75A)",
+    "nombre": "​🚗 Batería Automotriz Lubrim (75A)",
     "precioActual": 85,
     "imagen": "https://tiendamax.org/imagenes/img_1783836488642_4b0c8d.webp",
     "categoria": "ENERGIA",
@@ -253,12 +253,12 @@
       "https://tiendamax.org/imagenes/img_1783836488642_4b0c8d.webp",
       "https://tiendamax.org/imagenes/img_1778103783319.webp"
     ],
-    "descripcion": "Batería de alto rendimiento diseñada específicamente para el sector automotriz, ofreciendo una fuente de energía constante y segura para el encendido y funcionamiento de diversos sistemas eléctricos. Su construcción robusta garantiza una larga vida útil y una respuesta eficiente en condiciones de uso diario.\n​Ficha Técnica:\n​Tecnología: 🔋 Desarrollada con tecnología de calcio-calcio (Ca/Ca) que optimiza el rendimiento y minimiza el mantenimiento requerido.\n​Arranque: ⚡ Proporciona una potencia de arranque superior, ideal para asegurar el encendido del motor de manera rápida y sin interrupciones.\n​Construcción: 🛡️ Diseño ergonómico y sellado, pensado para resistir vibraciones y proporcionar una mayor seguridad durante su operación.\n​Compatibilidad: 🚗 Versátil y adaptable, diseñada para ajustarse a las necesidades eléctricas de una amplia gama de vehículos modernos.\n​Especificaciones (Specs):\n​Marca: LUBRIM.\n​Voltaje nominal: 12V.\n​Aplicación: Automotriz.\n​Tecnología: Calcio-Calcio (Ca/Ca).",
     "specs": [
       "​🔋 Energía Automotriz Confiable",
       "​⚡ Potencia de Arranque Estable ​",
       "🛡️ Tecnología Duradera y Resistente"
-    ]
+    ],
+    "descripcion": "Batería de alto rendimiento diseñada específicamente para el sector automotriz, ofreciendo una fuente de energía constante y segura para el encendido y funcionamiento de diversos sistemas eléctricos. Su construcción robusta garantiza una larga vida útil y una respuesta eficiente en condiciones de uso diario.\n​Ficha Técnica:\n​Tecnología: 🔋 Desarrollada con tecnología de calcio-calcio (Ca/Ca) que optimiza el rendimiento y minimiza el mantenimiento requerido.\n​Arranque: ⚡ Proporciona una potencia de arranque superior, ideal para asegurar el encendido del motor de manera rápida y sin interrupciones.\n​Construcción: 🛡️ Diseño ergonómico y sellado, pensado para resistir vibraciones y proporcionar una mayor seguridad durante su operación.\n​Compatibilidad: 🚗 Versátil y adaptable, diseñada para ajustarse a las necesidades eléctricas de una amplia gama de vehículos modernos.\n​Especificaciones (Specs):\n​Marca: LUBRIM.\n​Voltaje nominal: 12V.\n​Aplicación: Automotriz.\n​Tecnología: Calcio-Calcio (Ca/Ca)."
   },
   {
     "id": 1778103856933,
@@ -1873,7 +1873,7 @@
   },
   {
     "id": 1781899206341,
-    "nombre": "📟 Inversor Solar MUST PV15-1524 LV",
+    "nombre": "📟 Inversor Solar Must PV15-1524 lv",
     "precioActual": 350,
     "precioOriginal": 0,
     "imagen": "https://tiendamax.org/imagenes/img_1783836465146.webp",
@@ -2305,7 +2305,7 @@
   },
   {
     "id": 1782791345628,
-    "nombre": "​⚙️ Interruptor de Transferencia Automática GEYA (220V)",
+    "nombre": "​⚙️ Interruptor de Transferencia Automática Geya (220V)",
     "imagen": "https://tiendamax.org/imagenes/img_1783838287182.webp",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1783838287182.webp",
@@ -2477,7 +2477,7 @@
   },
   {
     "id": 1783473894756,
-    "nombre": "​🔌 Cargador Inteligente COREBOX 12V 15A",
+    "nombre": "​🔌 Cargador Inteligente Corebox 12V 15A",
     "imagen": "https://tiendamax.org/imagenes/img_1783473890998_28ba1e.webp",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1783473890998_28ba1e.webp"
@@ -2504,7 +2504,7 @@
   },
   {
     "id": 1783474199534,
-    "nombre": "​🔌 Cargador Inteligente NTRC 20A",
+    "nombre": "​🔌 Cargador Inteligente Ntrc 20A",
     "imagen": "https://tiendamax.org/imagenes/img_1783474195842.webp",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1783474195842.webp",
@@ -2532,7 +2532,7 @@
   },
   {
     "id": 1783474440848,
-    "nombre": "​🔌 Cargador Inteligente NTRC 35A",
+    "nombre": "​🔌 Cargador Inteligente Ntrc 35A",
     "imagen": "https://tiendamax.org/imagenes/img_1783474437066.webp",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1783474437066.webp",
@@ -2614,7 +2614,7 @@
   },
   {
     "id": 1784403677390,
-    "nombre": "​🌐 NanoStation AC loco",
+    "nombre": "​🌐 Nanostation AC Loco",
     "imagen": "https://tiendamax.org/imagenes/img_1784403674704.webp",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1784403674704.webp",
@@ -2642,13 +2642,12 @@
   },
   {
     "id": 1784404666988,
-    "nombre": "​🌐 MikroTik SXTsq Lite5",
-    "descripcion": "Dispositivo inalámbrico para exteriores de diseño ultracompacto y resistente, ideal para enlaces punto a punto o como unidad CPE. Su estructura ligera y eficiente permite una instalación sencilla en cualquier entorno, garantizando una señal estable y de alto rendimiento.\n​Ficha Técnica:\n​○ Cobertura: 📡 Diseñado para enlaces de largo alcance en la banda de 5 GHz, ofreciendo una conexión inalámbrica robusta y de gran estabilidad.\n​○ Diseño: ✨ Formato cuadrado minimalista y compacto en color blanco, optimizado para una instalación discreta y duradera en exteriores.\n​○ Rendimiento: 🌐 Equipo optimizado para entornos de red inalámbrica, capaz de manejar comunicaciones rápidas y eficientes en condiciones exigentes.\n​○ Configuración: 🛠️ Interfaz intuitiva y versátil propia de MikroTik, permitiendo una puesta en marcha rápida y una gestión precisa de la red.\n​Especificaciones (Specs):\n​Marca: MikroTik.\n​Modelo: SXTsq Lite5.\n​Frecuencia: 5 GHz.\n​Uso: Enlaces punto a punto y CPE en exteriores.\n​Tipo: Dispositivo inalámbrico.",
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784404663965.webp",
+    "nombre": "​🌐 Mikrotik Sxtsq LITE5",
+    "imagen": "https://tiendamax.org/imagenes/img_1784404663965.webp",
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784404663965.webp",
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784404665140.webp",
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784404666146.webp"
+      "https://tiendamax.org/imagenes/img_1784404663965.webp",
+      "https://tiendamax.org/imagenes/img_1784404665140.webp",
+      "https://tiendamax.org/imagenes/img_1784404666146.webp"
     ],
     "precioActual": 150,
     "precioOriginal": 0,
@@ -2667,15 +2666,15 @@
       "📡 Diseño Compacto y Eficiente ​",
       "🛠️ Solución para Exterior"
     ],
-    "fechaAgregado": "2026-07-18T19:57:46.989Z"
+    "fechaAgregado": "2026-07-18T19:57:46.989Z",
+    "descripcion": "Dispositivo inalámbrico para exteriores de diseño ultracompacto y resistente, ideal para enlaces punto a punto o como unidad CPE. Su estructura ligera y eficiente permite una instalación sencilla en cualquier entorno, garantizando una señal estable y de alto rendimiento.\n​Ficha Técnica:\n​○ Cobertura: 📡 Diseñado para enlaces de largo alcance en la banda de 5 GHz, ofreciendo una conexión inalámbrica robusta y de gran estabilidad.\n​○ Diseño: ✨ Formato cuadrado minimalista y compacto en color blanco, optimizado para una instalación discreta y duradera en exteriores.\n​○ Rendimiento: 🌐 Equipo optimizado para entornos de red inalámbrica, capaz de manejar comunicaciones rápidas y eficientes en condiciones exigentes.\n​○ Configuración: 🛠️ Interfaz intuitiva y versátil propia de MikroTik, permitiendo una puesta en marcha rápida y una gestión precisa de la red.\n​Especificaciones (Specs):\n​Marca: MikroTik.\n​Modelo: SXTsq Lite5.\n​Frecuencia: 5 GHz.\n​Uso: Enlaces punto a punto y CPE en exteriores.\n​Tipo: Dispositivo inalámbrico."
   },
   {
     "id": 1784405087402,
-    "nombre": "​🌐 Cámara de Seguridad Wi-Fi PTZ",
-    "descripcion": "Cámara de vigilancia inteligente con diseño moderno y compacto, ideal para monitorear hogares o pequeños negocios. Gracias a su conectividad inalámbrica y capacidad de giro motorizado, permite un control total del entorno desde tu dispositivo móvil, ofreciendo tranquilidad tanto de día como de noche.\n​Ficha Técnica:\n​○ Monitoreo: 🔄 Equipada con movimiento PTZ (Pan, Tilt, Zoom) para una cobertura completa, eliminando puntos ciegos en cualquier habitación o área exterior.\n​○ Visión: 🌙 Tecnología de visión nocturna optimizada con iluminación integrada, garantizando imágenes claras y detalladas incluso en condiciones de baja luminosidad.\n​○ Conectividad: 📡 Antenas duales de alta recepción que aseguran una señal Wi-Fi estable para la transmisión de video en tiempo real sin interrupciones.\n​○ Instalación: 🛠️ Diseño versátil y fácil de instalar, permitiendo su montaje en paredes o techos para una vigilancia discreta y efectiva.\n​Especificaciones (Specs):\n​Tipo: Cámara IP PTZ inalámbrica.\n​Conectividad: Wi-Fi.\n​Uso: Interiores y exteriores protegidos (Hogares/Oficinas).\n​Características principales: Rotación 360°, visión nocturna, monitoreo móvil.",
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784405086297.webp",
+    "nombre": "​🌐 Cámara de Seguridad Wi-fi Ptz",
+    "imagen": "https://tiendamax.org/imagenes/img_1784405086297.webp",
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784405086297.webp"
+      "https://tiendamax.org/imagenes/img_1784405086297.webp"
     ],
     "precioActual": 25,
     "precioOriginal": 0,
@@ -2694,6 +2693,7 @@
       "📡 Conectividad Inalámbrica Dual ​",
       "🔄 Rotación Panorámica 360°"
     ],
-    "fechaAgregado": "2026-07-18T20:04:47.403Z"
+    "fechaAgregado": "2026-07-18T20:04:47.403Z",
+    "descripcion": "Cámara de vigilancia inteligente con diseño moderno y compacto, ideal para monitorear hogares o pequeños negocios. Gracias a su conectividad inalámbrica y capacidad de giro motorizado, permite un control total del entorno desde tu dispositivo móvil, ofreciendo tranquilidad tanto de día como de noche.\n​Ficha Técnica:\n​○ Monitoreo: 🔄 Equipada con movimiento PTZ (Pan, Tilt, Zoom) para una cobertura completa, eliminando puntos ciegos en cualquier habitación o área exterior.\n​○ Visión: 🌙 Tecnología de visión nocturna optimizada con iluminación integrada, garantizando imágenes claras y detalladas incluso en condiciones de baja luminosidad.\n​○ Conectividad: 📡 Antenas duales de alta recepción que aseguran una señal Wi-Fi estable para la transmisión de video en tiempo real sin interrupciones.\n​○ Instalación: 🛠️ Diseño versátil y fácil de instalar, permitiendo su montaje en paredes o techos para una vigilancia discreta y efectiva.\n​Especificaciones (Specs):\n​Tipo: Cámara IP PTZ inalámbrica.\n​Conectividad: Wi-Fi.\n​Uso: Interiores y exteriores protegidos (Hogares/Oficinas).\n​Características principales: Rotación 360°, visión nocturna, monitoreo móvil."
   }
 ]
