@@ -132,6 +132,23 @@
       ".read": true,
       ".write": false
     },
+    "wishlist_avisos": {
+      "$productId": {
+        "$tokenId": {
+          ".write": true,
+          ".validate": "newData.hasChildren(['token','ts'])",
+          "token": {
+            ".validate": "newData.isString() && newData.val().length >= 4 && newData.val().length < 500"
+          },
+          "ts": {
+            ".validate": "newData.isNumber()"
+          }
+        },
+        ".read": true
+      },
+      ".read": true,
+      ".write": false
+    },
     "resenas": {
       ".read": true,
       ".write": false,

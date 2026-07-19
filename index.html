@@ -246,7 +246,7 @@
     <noscript><link rel="stylesheet" href="css/fonts.css?v=67235440"></noscript>
 
     <!-- Preload del bundle JS del núcleo (generado por scripts/build_js_bundle.py) -->
-    <link rel="preload" href="js/tm-bundle.js?v=9a0fb5af" as="script">
+    <link rel="preload" href="js/tm-bundle.js?v=76cfa67c" as="script">
 
     <!-- Preload del catálogo: la foto hero (fetchpriority=high) no puede pedirse
          hasta que este JSON responda y arme el <img>; sin este preload, el
@@ -259,7 +259,7 @@
 
 
 
-    <link rel="stylesheet" href="css/bundle.css?v=6930b818">
+    <link rel="stylesheet" href="css/bundle.css?v=a64dc8cc">
 
 
 
@@ -948,6 +948,18 @@
                 <a href="https://wa.me/5354320170" target="_blank" rel="noopener noreferrer">WhatsApp</a>
                 <a href="https://www.facebook.com/profile.php?id=100095406885506" target="_blank" rel="noopener noreferrer">Facebook</a>
             </div>
+            <!-- Enlaces reales (no #hash) a las páginas de categoría — ayuda a que
+                 Google las indexe y sirven de navegación de respaldo sin JS. -->
+            <nav aria-label="Categorías" style="text-align:center;padding:14px 0;border-top:1px solid rgba(255,255,255,.06);margin-top:8px;">
+                <a href="/c/wifi.html" style="color:rgba(255,255,255,.45);font-size:12px;margin:0 8px;display:inline-block;">WiFi</a>
+                <a href="/c/energia.html" style="color:rgba(255,255,255,.45);font-size:12px;margin:0 8px;display:inline-block;">Energía</a>
+                <a href="/c/celulares.html" style="color:rgba(255,255,255,.45);font-size:12px;margin:0 8px;display:inline-block;">Celulares</a>
+                <a href="/c/carros.html" style="color:rgba(255,255,255,.45);font-size:12px;margin:0 8px;display:inline-block;">Carros</a>
+                <a href="/c/motos.html" style="color:rgba(255,255,255,.45);font-size:12px;margin:0 8px;display:inline-block;">Motos</a>
+                <a href="/c/seguridad.html" style="color:rgba(255,255,255,.45);font-size:12px;margin:0 8px;display:inline-block;">Seguridad</a>
+                <a href="/c/hogar.html" style="color:rgba(255,255,255,.45);font-size:12px;margin:0 8px;display:inline-block;">Hogar</a>
+                <a href="/c/utiles.html" style="color:rgba(255,255,255,.45);font-size:12px;margin:0 8px;display:inline-block;">Útiles</a>
+            </nav>
             <div class="footer-bottom">
                 <p>© 2026 TiendaMax · Todos los derechos reservados</p>
                 <p style="color:rgba(255,255,255,0.15);font-size:11px;">tiendamax.org · Pago contra entrega · Hecho en Cuba 🇨🇺</p>
@@ -1460,12 +1472,12 @@
     })();
     </script>
     <!-- analytics: carga en reposo (no bloquea el primer pintado) — lo inyecta el cargador #tm-lazy-js -->
-    <script type="lazyload" src="js/analytics.js?v=14d50a81"></script>
+    <script type="lazyload" src="js/analytics.js?v=6fbef4f0"></script>
     <script src="js/seo-dynamico.js?v=b028959a" defer></script>
     <!-- ===== TiendaMax modularizado (reemplaza script.js) ===== -->
     <!-- Bundle único (config→data→state→admin→product→catalog→init→ui→toast→iife→patches),
          generado por scripts/build_js_bundle.py a partir de js/src/*.src.js -->
-    <script src="js/tm-bundle.js?v=9a0fb5af" defer></script>
+    <script src="js/tm-bundle.js?v=76cfa67c" defer></script>
 
     <script src="js/push-fix.js?v=7278889b" defer></script>
     <script src="js/subcategorias.js?v=fa21ab00" defer></script>

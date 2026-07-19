@@ -1794,12 +1794,14 @@ renderizarProductos = function() {
         const _hasDescuento = producto.precioOriginal > 0 && producto.precioOriginal > producto.precioActual;
         const _pctDesc = _hasDescuento ? Math.round((1 - producto.precioActual / producto.precioOriginal) * 100) : 0;
         // Badge en la esquina de la foto. Agotado: solo 'AGOTADO' (sin hype).
+        const _vendidos = (typeof _tmVendidosCount === 'function') ? _tmVendidosCount(_id) : 0;
         const _tag = esAgotado
             ? '<span class="pv2-tag out">AGOTADO</span>'
             : (esOfertaDia ? '<span class="pv2-tag oferta">' + _txt + '</span>'
                 : (_hasDescuento ? '<span class="pv2-tag">-' + _pctDesc + '%</span>'
                     : (_stk > 0 && _stk <= 3 ? '<span class="pv2-tag last">⚡ Últimas ' + _stk + '</span>'
-                        : (producto.masVendido ? '<span class="pv2-tag hot">🔥 Destacado</span>' : ''))));
+                        : (_vendidos >= 3 ? '<span class="pv2-tag hot">🔥 ' + _vendidos + ' vendidos</span>'
+                            : (producto.masVendido ? '<span class="pv2-tag hot">🔥 Destacado</span>' : '')))));
         // Botón Pedir / Avísame (ancho completo). Agotado: texto corto + color distinto.
         const _btn = esAgotado
             ? '<button class="btn-pedir-card pv2-aviso" type="button" onclick="event.stopPropagation();abrirDetalleProducto(' + _id + ')">🔔 Avísame</button>'
