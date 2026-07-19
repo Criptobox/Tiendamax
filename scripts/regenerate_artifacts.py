@@ -552,7 +552,7 @@ def regenerate_category_pages(products: list[dict]) -> tuple[int, list[str]]:
 
 def regenerate_sitemap(products: list[dict], category_slugs: list[str] | None = None) -> bool:
     today = date.today().isoformat()
-    urls = [(f"{SITE}/", "daily", "1.0")]
+    urls = [(f"{SITE}/", "daily", "1.0"), (f"{SITE}/faq.html", "weekly", "0.6")]
     for slug in (category_slugs or []):
         urls.append((f"{SITE}/c/{slug}.html", "weekly", "0.9"))
     for p in products:

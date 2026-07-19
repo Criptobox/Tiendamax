@@ -132,6 +132,33 @@
       ".read": true,
       ".write": false
     },
+    "agente": {
+      ".read": false,
+      ".write": false,
+      "faq": {
+        "$faqKey": {
+          ".write": true,
+          ".validate": "newData.hasChildren(['query','intent','count','lastUpdated'])",
+          "query": { ".validate": "newData.isString() && newData.val().length <= 300" },
+          "intent": { ".validate": "newData.isString() && newData.val().length <= 40" },
+          "lastResponse": { ".validate": "newData.isString() && newData.val().length <= 300" },
+          "count": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 1000000" },
+          "lastUpdated": { ".validate": "newData.isNumber()" }
+        },
+        ".read": true,
+        ".write": false
+      },
+      "interacciones": {
+        "$ts": {
+          ".write": "!data.exists()",
+          ".validate": "newData.hasChildren(['query','intent','ts']) && newData.child('query').isString() && newData.child('query').val().length <= 300 && newData.child('intent').isString() && newData.child('intent').val().length <= 40 && newData.child('ts').isNumber()",
+          "fecha": { ".validate": "newData.isString() && newData.val().length <= 40" },
+          "productsShown": { ".validate": true }
+        },
+        ".read": true,
+        ".write": false
+      }
+    },
     "wishlist_avisos": {
       "$productId": {
         "$tokenId": {

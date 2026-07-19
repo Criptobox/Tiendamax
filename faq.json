@@ -1,0 +1,35 @@
+{
+  "actualizado": "2026-07-19T13:55:50.803930+00:00",
+  "preguntas": [
+    {
+      "pregunta": "¿Cómo compro en TiendaMax?",
+      "respuesta": "Navega el catálogo, toca el botón 'Pedir' en cualquier producto y se abre WhatsApp con tu pedido listo. Coordinas pago contra entrega y envío.",
+      "fuente": "fija",
+      "count": 0
+    },
+    {
+      "pregunta": "¿Hacen entregas a domicilio?",
+      "respuesta": "Sí, contamos con mensajería. El costo y el tiempo de entrega se coordinan por WhatsApp según tu ubicación.",
+      "fuente": "fija",
+      "count": 0
+    },
+    {
+      "pregunta": "¿Qué métodos de pago aceptan?",
+      "respuesta": "Aceptamos pago contra entrega en USD o MN (pesos cubanos) según la tasa del día.",
+      "fuente": "fija",
+      "count": 0
+    },
+    {
+      "pregunta": "¿Los productos tienen garantía?",
+      "respuesta": "Sí, todos los productos tienen garantía. Si algo no funciona, escríbenos por WhatsApp y lo resolvemos.",
+      "fuente": "fija",
+      "count": 0
+    },
+    {
+      "pregunta": "¿Cuál es la tasa de cambio USD a MN?",
+      "respuesta": "La tasa se actualiza diariamente. Visita tiendamax.org para ver la tasa actual y convertir precios instantáneamente.",
+      "fuente": "fija",
+      "count": 0
+    }
+  ]
+}
