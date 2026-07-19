@@ -1,10 +1,10 @@
 {
-  "generado": "2026-07-18T10:11:51.420115+00:00",
-  "productos": 108,
+  "generado": "2026-07-19T10:20:06.737269+00:00",
+  "productos": 111,
   "urgentes": 0,
-  "advertencias": 31,
+  "advertencias": 34,
   "info": 11,
-  "resumen": "Anoche revisé tus 108 productos y encontré 31 advertencia(s), 11 de info.",
+  "resumen": "Anoche revisé tus 111 productos y encontré 34 advertencia(s), 11 de info.",
   "detalle": [
     {
       "tipo": "agotado",
@@ -14,6 +14,11 @@
     {
       "tipo": "agotado",
       "nombre": "Cargador Inteligente 30A",
+      "detalle": "agotado (stock 0)"
+    },
+    {
+      "tipo": "agotado",
+      "nombre": "⚡ Inversor de Corriente Tataliken 4000W",
       "detalle": "agotado (stock 0)"
     },
     {
@@ -158,7 +163,17 @@
     },
     {
       "tipo": "agotado",
+      "nombre": "Transferencia Automática o Manual",
+      "detalle": "agotado (stock 0)"
+    },
+    {
+      "tipo": "agotado",
       "nombre": "​⚡ Inversor de Corriente Onda Senoidal Pura Unizuki 3000W",
+      "detalle": "agotado (stock 0)"
+    },
+    {
+      "tipo": "agotado",
+      "nombre": "​🌐 Nanostation AC Loco",
       "detalle": "agotado (stock 0)"
     },
     {
