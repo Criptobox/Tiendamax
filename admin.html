@@ -682,21 +682,43 @@
   @keyframes tmShimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
   .hero-inv .hi-val { text-shadow:0 2px 20px rgba(201,169,110,0.28); }
 
-  /* — KPI cards: cristal, barra-acento con glow, hover con elevación — */
+  /* — Tarjetas elevadas: superficie más clara, borde definido, esquinas
+       redondas y sombra real → dejan de verse "planas sobre el fondo" — */
+  .kpi, .stock-card, .rev-card, .pcard, .prod-card, .pub-share-card,
+  .ppv-card, .banner-info, .ai-banner {
+    border:1px solid rgba(255,255,255,0.1) !important;
+    border-radius:16px !important;
+  }
+  .section { border:1px solid rgba(255,255,255,0.1); border-radius:18px; }
+  .hero-inv { border-radius:20px; border:1px solid rgba(255,255,255,0.1); }
+
+  /* — KPI cards: cristal con aura de color, barra-acento gruesa, elevación — */
   .kpi {
-    background:linear-gradient(158deg, rgba(255,255,255,0.045), rgba(255,255,255,0.012));
+    background:linear-gradient(158deg, rgba(255,255,255,0.06), rgba(255,255,255,0.015)) !important;
     backdrop-filter:blur(6px);
-    box-shadow:0 10px 26px -18px rgba(0,0,0,0.75), inset 0 1px 0 rgba(255,255,255,0.045);
+    box-shadow:0 14px 30px -16px rgba(0,0,0,0.85), inset 0 1px 0 rgba(255,255,255,0.06);
     transition:transform .22s cubic-bezier(.22,1,.36,1), box-shadow .22s, border-color .22s;
     animation:tmCardIn .5s cubic-bezier(.22,1,.36,1) backwards;
   }
-  .kpi::before { width:3px; border-radius:3px; box-shadow:0 0 14px 1px currentColor; }
+  .kpi::before { width:4px; border-radius:0 4px 4px 0; box-shadow:0 0 16px 1px currentColor; }
   .kpi::before { color:var(--o); }
   .kpi.success::before{color:var(--green)} .kpi.danger::before{color:var(--red)}
   .kpi.warn::before{color:var(--yellow)} .kpi.info::before{color:var(--purple)}
   .kpi.gold::before{color:var(--gold)} .kpi.usd::before{color:var(--blue)}
-  .kpi:hover { transform:translateY(-3px); border-color:rgba(255,255,255,0.14);
-    box-shadow:0 20px 40px -20px rgba(0,0,0,0.85), inset 0 1px 0 rgba(255,255,255,0.06); }
+  /* aura de color muy sutil según el tipo, en la esquina de la tarjeta */
+  .kpi::after {
+    content:''; position:absolute; top:0; right:0; width:90px; height:90px;
+    background:radial-gradient(circle at 100% 0, var(--o), transparent 70%);
+    opacity:0.1; pointer-events:none;
+  }
+  .kpi.success::after{background:radial-gradient(circle at 100% 0,var(--green),transparent 70%)}
+  .kpi.danger::after{background:radial-gradient(circle at 100% 0,var(--red),transparent 70%)}
+  .kpi.warn::after{background:radial-gradient(circle at 100% 0,var(--yellow),transparent 70%)}
+  .kpi.info::after{background:radial-gradient(circle at 100% 0,var(--purple),transparent 70%)}
+  .kpi.gold::after{background:radial-gradient(circle at 100% 0,var(--gold),transparent 70%)}
+  .kpi.usd::after{background:radial-gradient(circle at 100% 0,var(--blue),transparent 70%)}
+  .kpi:hover { transform:translateY(-4px); border-color:rgba(255,255,255,0.18) !important;
+    box-shadow:0 24px 44px -18px rgba(0,0,0,0.9), inset 0 1px 0 rgba(255,255,255,0.08); }
   .kpi .val { text-shadow:0 2px 14px rgba(0,0,0,0.4); }
   .kpis .kpi:nth-child(1){animation-delay:.02s} .kpis .kpi:nth-child(2){animation-delay:.07s}
   .kpis .kpi:nth-child(3){animation-delay:.12s} .kpis .kpi:nth-child(4){animation-delay:.17s}
@@ -704,26 +726,26 @@
   .kpis .kpi:nth-child(7){animation-delay:.32s} .kpis .kpi:nth-child(8){animation-delay:.37s}
   @keyframes tmCardIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
 
-  /* — Secciones: gradiente, sombra, línea dorada superior y header con acento — */
+  /* — Secciones: superficie elevada, sombra marcada, línea + header con acento — */
   .section {
     position:relative;
-    background:linear-gradient(168deg, rgba(255,255,255,0.032), rgba(255,255,255,0.008));
-    box-shadow:0 12px 30px -22px rgba(0,0,0,0.7);
+    background:linear-gradient(168deg, rgba(255,255,255,0.045), rgba(255,255,255,0.012));
+    box-shadow:0 16px 36px -20px rgba(0,0,0,0.8);
     transition:border-color .2s, box-shadow .2s, transform .2s;
   }
   .section::before {
-    content:''; position:absolute; top:0; left:18px; right:18px; height:1px;
-    background:linear-gradient(90deg,transparent,rgba(201,169,110,0.45),transparent);
+    content:''; position:absolute; top:0; left:20px; right:20px; height:1px;
+    background:linear-gradient(90deg,transparent,rgba(201,169,110,0.55),transparent);
   }
-  .section:hover { border-color:rgba(255,255,255,0.11); box-shadow:0 18px 40px -24px rgba(0,0,0,0.85); }
-  /* acento vertical dorado antes del título de cada sección
+  .section:hover { border-color:rgba(255,255,255,0.14); box-shadow:0 22px 46px -22px rgba(0,0,0,0.9); }
+  /* acento vertical dorado grueso antes del título de cada sección
      (absoluto para no entrar en el flex del h3, que usa space-between) */
-  .section h3 { position:relative; padding-left:12px; }
+  .section h3 { position:relative; padding-left:14px; }
   .section h3::before {
     content:''; position:absolute; left:0; top:50%; transform:translateY(-50%);
-    width:3px; height:14px; border-radius:3px;
+    width:4px; height:16px; border-radius:3px;
     background:linear-gradient(180deg,var(--gold),var(--o));
-    box-shadow:0 0 10px rgba(201,169,110,0.5);
+    box-shadow:0 0 12px rgba(201,169,110,0.6);
   }
 
   /* — Gráfico de barras: líneas guía, barras doradas glossy y crecida real — */
