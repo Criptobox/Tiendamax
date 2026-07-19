@@ -120,7 +120,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1777924315386.webp",
     "categoria": "WIFI",
     "subcategoria": "ACCESORIOS",
-    "stock": 0,
+    "stock": 5,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -1707,10 +1707,10 @@
     "nombre": "Altavoz Bluetooth Portátil RGB",
     "precioActual": 20,
     "precioOriginal": 0,
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783837846910.webp",
+    "imagen": "https://tiendamax.org/imagenes/img_1783837846910.webp",
     "categoria": "CELULARES",
     "subcategoria": "AUDIO",
-    "stock": 20,
+    "stock": 0,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -1721,21 +1721,21 @@
     "comisionMoneda": "MN",
     "seoTitle": "ALTAVOZ BLUETOOTH PORTÁTIL RGB en Cuba | TiendaMax",
     "seoDescription": "Altavoz Bluetooth Portátil RGB – Características principales Sonido estéreo HD de alta calidad con doble altavoz para un audio potente y equilibrado…",
-    "descripcion": "Altavoz Bluetooth portátil resistente para exteriores, con aro de luz RGB en la base, correa de transporte y controles táctiles de volumen/reproducción arriba. Forrado en tela.",
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783837846910.webp",
+      "https://tiendamax.org/imagenes/img_1783837846910.webp",
       "https://tiendamax.org/imagenes/img_1780887747583.webp"
-    ]
+    ],
+    "descripcion": "Altavoz Bluetooth portátil resistente para exteriores, con aro de luz RGB en la base, correa de transporte y controles táctiles de volumen/reproducción arriba. Forrado en tela."
   },
   {
     "id": 1780887971522,
     "nombre": "Beat Boom F10! 🎶🔥",
     "precioActual": 40,
     "precioOriginal": 0,
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783837255248.jpg",
+    "imagen": "https://tiendamax.org/imagenes/img_1783837255248.jpg",
     "categoria": "CELULARES",
     "subcategoria": "AUDIO",
-    "stock": 5,
+    "stock": 0,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -1746,11 +1746,11 @@
     "comisionMoneda": "MN",
     "seoTitle": "BEAT BOOM F10! 🎶🔥 en Cuba | TiendaMax",
     "seoDescription": "Potencia de 25W: Sonido estéreo potente y de buena calidad. Conexión inalámbrica: Compatible con teléfonos, tablets y PC. Alcance de 30 m: Conexión…",
-    "descripcion": "Bocina Bluetooth portátil MSY Audio Beat Boom F10, forma alargada con luces RGB que recorren los laterales al ritmo de la música. Controles en la parte superior.",
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783837255248.jpg",
+      "https://tiendamax.org/imagenes/img_1783837255248.jpg",
       "https://tiendamax.org/imagenes/img_1780887971522.webp"
-    ]
+    ],
+    "descripcion": "Bocina Bluetooth portátil MSY Audio Beat Boom F10, forma alargada con luces RGB que recorren los laterales al ritmo de la música. Controles en la parte superior."
   },
   {
     "id": 1781365019871,
@@ -1992,7 +1992,7 @@
     "precioActual": 80,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 6,
+    "stock": 0,
     "comision": 10,
     "comisionMoneda": "USD",
     "categoria": "WIFI",
@@ -2021,7 +2021,7 @@
     "precioActual": 20,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 7,
+    "stock": 0,
     "comision": 1500,
     "comisionMoneda": "MN",
     "categoria": "WIFI",
