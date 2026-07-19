@@ -1468,7 +1468,7 @@
      generado por scripts/build_js_bundle.py a partir de js/src/*.src.js -->
 <script src="js/tm-bundle.js?v=76cfa67c"></script>
 <script src="js/biometric-auth.js?v=876f6495"></script>
-<script src="js/revolico_integration.js?v=43a94a39"></script>
+<script src="js/revolico_integration.js?v=f7f648a0"></script>
 <script>
   // Puente para código heredado (Copiloto IA) que navega con switchTab('nombre-viejo')
   // en vez del go('vista') de admin2.
@@ -1481,7 +1481,7 @@
   };
 </script>
 <script src="js/vendor/html2canvas.min.js?v=e87e5507" defer></script>
-<script src="js/admin-copilot.js?v=ab421735"></script>
+<script src="js/admin-copilot.js?v=b97c3c6d"></script>
 
 <script>
 (function(){
@@ -3452,7 +3452,7 @@ async function pubCatAct(act){
     if(navigator.canShare && navigator.canShare({files:[file]}) && navigator.share){
       try{
         await navigator.share({ files:[file], title:'TiendaMax — '+cat, text });
-        showToast('📷 Imagen + texto enviados a Facebook');
+        showToast('📷 Imagen lista','📋 Texto + hashtags copiados — mantén pulsado y pégalos en Facebook');
         return;
       }catch(e){ if(/abort/i.test(e.message||'')) return; }
     }
@@ -3511,6 +3511,7 @@ async function pubShareStory(p){
     node.innerHTML=window.tmCartelHTML(p);
     if(!node.innerHTML.trim()){ throw new Error('cartel vacío'); }
     await Promise.all([...node.querySelectorAll('img')].map(im=>im.complete?null:new Promise(r=>{im.onload=r;im.onerror=r;setTimeout(r,4000);})));
+    if(window.tmKnockoutCartel) await window.tmKnockoutCartel(node);   // recorta el fondo blanco de la foto
     const canvas=await window.html2canvas(node,{backgroundColor:'#000',scale:2,useCORS:true,logging:false,width:node.offsetWidth,height:node.offsetHeight});
     const blob0=await new Promise(res=>canvas.toBlob(res,'image/png',.95));
     const file0=new File([blob0],'tiendamax-estado-'+p.id+'.png',{type:'image/png'});
