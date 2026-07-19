@@ -704,28 +704,61 @@
   .kpis .kpi:nth-child(7){animation-delay:.32s} .kpis .kpi:nth-child(8){animation-delay:.37s}
   @keyframes tmCardIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
 
-  /* — Secciones: leve gradiente + sombra suave + hover cálido — */
+  /* — Secciones: gradiente, sombra, línea dorada superior y header con acento — */
   .section {
-    background:linear-gradient(168deg, rgba(255,255,255,0.028), rgba(255,255,255,0.008));
+    position:relative;
+    background:linear-gradient(168deg, rgba(255,255,255,0.032), rgba(255,255,255,0.008));
     box-shadow:0 12px 30px -22px rgba(0,0,0,0.7);
-    transition:border-color .2s, box-shadow .2s;
+    transition:border-color .2s, box-shadow .2s, transform .2s;
   }
-  .section:hover { border-color:rgba(255,255,255,0.11); }
+  .section::before {
+    content:''; position:absolute; top:0; left:18px; right:18px; height:1px;
+    background:linear-gradient(90deg,transparent,rgba(201,169,110,0.45),transparent);
+  }
+  .section:hover { border-color:rgba(255,255,255,0.11); box-shadow:0 18px 40px -24px rgba(0,0,0,0.85); }
+  /* acento vertical dorado antes del título de cada sección
+     (absoluto para no entrar en el flex del h3, que usa space-between) */
+  .section h3 { position:relative; padding-left:12px; }
+  .section h3::before {
+    content:''; position:absolute; left:0; top:50%; transform:translateY(-50%);
+    width:3px; height:14px; border-radius:3px;
+    background:linear-gradient(180deg,var(--gold),var(--o));
+    box-shadow:0 0 10px rgba(201,169,110,0.5);
+  }
 
-  /* — Gráfico de barras: barras con brillo superior + crecida al entrar — */
-  .bar-chart .bar {
-    background:linear-gradient(180deg,#ff8656,var(--o) 45%,var(--oo));
-    border-radius:6px 6px 2px 2px;
-    box-shadow:0 -1px 10px -1px rgba(255,107,53,0.45), inset 0 1px 0 rgba(255,255,255,0.25);
-    transform-origin:bottom;
-    animation:tmBarRise .7s cubic-bezier(.22,1,.36,1) backwards;
+  /* — Gráfico de barras: líneas guía, barras doradas glossy y crecida real — */
+  .bar-chart {
+    background-image:repeating-linear-gradient(to top, rgba(255,255,255,0.05) 0 1px, transparent 1px 25%);
+    background-position:0 0; border-radius:4px;
   }
-  .bar-chart .bar:hover { filter:brightness(1.25) saturate(1.1); box-shadow:0 -1px 16px 1px rgba(255,107,53,0.6), inset 0 1px 0 rgba(255,255,255,0.3); }
-  .bar-chart .bar:nth-child(1){animation-delay:.04s} .bar-chart .bar:nth-child(2){animation-delay:.10s}
-  .bar-chart .bar:nth-child(3){animation-delay:.16s} .bar-chart .bar:nth-child(4){animation-delay:.22s}
-  .bar-chart .bar:nth-child(5){animation-delay:.28s} .bar-chart .bar:nth-child(6){animation-delay:.34s}
-  .bar-chart .bar:nth-child(7){animation-delay:.40s} .bar-chart .bar:nth-child(8){animation-delay:.46s}
-  @keyframes tmBarRise { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+  .bar-chart .bar {
+    background:linear-gradient(180deg,#FFC061 0%,#FF8A3D 40%,var(--o) 70%,var(--oo));
+    border-radius:8px 8px 3px 3px;
+    box-shadow:0 0 16px -2px rgba(255,140,60,0.55), inset 0 2px 0 rgba(255,255,255,0.35), inset 0 -6px 12px -6px rgba(0,0,0,0.35);
+    animation:tmBarGrow .85s cubic-bezier(.22,1,.36,1) backwards;
+  }
+  .bar-chart .bar::after {
+    content:''; position:absolute; top:0; left:0; right:0; height:42%;
+    border-radius:8px 8px 0 0;
+    background:linear-gradient(180deg, rgba(255,255,255,0.28), transparent);
+    pointer-events:none;
+  }
+  .bar-chart .bar:hover { filter:brightness(1.12) saturate(1.15); box-shadow:0 0 24px 1px rgba(255,140,60,0.75), inset 0 2px 0 rgba(255,255,255,0.45); }
+  .bar-chart .bar .v {
+    top:-22px; background:rgba(255,107,53,0.14); border:1px solid rgba(255,107,53,0.3);
+    color:#ffd9c4; border-radius:20px; padding:2px 0; font-weight:800;
+    box-shadow:0 2px 8px -3px rgba(0,0,0,0.6);
+  }
+  .bar-chart .bar:nth-child(1){animation-delay:.05s} .bar-chart .bar:nth-child(2){animation-delay:.13s}
+  .bar-chart .bar:nth-child(3){animation-delay:.21s} .bar-chart .bar:nth-child(4){animation-delay:.29s}
+  .bar-chart .bar:nth-child(5){animation-delay:.37s} .bar-chart .bar:nth-child(6){animation-delay:.45s}
+  .bar-chart .bar:nth-child(7){animation-delay:.53s} .bar-chart .bar:nth-child(8){animation-delay:.61s}
+  @keyframes tmBarGrow { from{clip-path:inset(100% 0 0 0)} to{clip-path:inset(0 0 0 0)} }
+
+  /* — Tablas: header dorado, zebra sutil y hover cálido — */
+  th { background:linear-gradient(180deg, rgba(201,169,110,0.1), rgba(255,255,255,0.02)); color:var(--gold); }
+  tr:nth-child(even) td { background:rgba(255,255,255,0.015); }
+  tr:hover td { background:rgba(255,107,53,0.055) !important; }
 
   /* — Botones: glow en primario y dorado — */
   .btn-primary { box-shadow:0 6px 18px -8px rgba(255,107,53,0.6); }
