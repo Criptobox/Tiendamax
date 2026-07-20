@@ -1468,7 +1468,7 @@
      generado por scripts/build_js_bundle.py a partir de js/src/*.src.js -->
 <script src="js/tm-bundle.js?v=d0592093"></script>
 <script src="js/biometric-auth.js?v=876f6495"></script>
-<script src="js/revolico_integration.js?v=9d2b1084"></script>
+<script src="js/revolico_integration.js?v=0d6493eb"></script>
 <script>
   // Puente para código heredado (Copiloto IA) que navega con switchTab('nombre-viejo')
   // en vez del go('vista') de admin2.
@@ -1481,7 +1481,7 @@
   };
 </script>
 <script src="js/vendor/html2canvas.min.js?v=e87e5507" defer></script>
-<script src="js/admin-copilot.js?v=0944297a"></script>
+<script src="js/admin-copilot.js?v=cb230c8e"></script>
 
 <script>
 (function(){
@@ -3115,15 +3115,24 @@ function pubShareFiltered(){
 // (admin-copilot.js) directamente, así que elegir acá aplica en TODOS lados
 // sin plumbing extra. La vista previa es el DOM real (misma función que genera
 // el cartel de verdad), no una maqueta aparte — lo que ves es lo que sale.
-function pubCartelVariante(){ return localStorage.getItem('tmCartelVariante')==='pro2' ? 'pro2' : 'clasico'; }
+function pubCartelVariante(){
+  const v=localStorage.getItem('tmCartelVariante');
+  return (v==='pro2'||v==='horizontal') ? v : 'clasico';
+}
 function pubSetCartelVariante(v){
-  localStorage.setItem('tmCartelVariante', v==='pro2'?'pro2':'clasico');
-  const bc=$('#pub-cartel-clasico'), bp=$('#pub-cartel-pro2');
-  if(bc) bc.className='btn '+(v==='clasico'?'btn-primary':'btn-ghost');
-  if(bp) bp.className='btn '+(v==='pro2'?'btn-primary':'btn-ghost');
-  const cw=$('#pub-cartel-colores'); if(cw) cw.style.display = v==='pro2' ? 'flex' : 'none';
+  const vv=(v==='pro2'||v==='horizontal')?v:'clasico';
+  localStorage.setItem('tmCartelVariante', vv);
+  const bc=$('#pub-cartel-clasico'), bp=$('#pub-cartel-pro2'), bh=$('#pub-cartel-horizontal');
+  if(bc) bc.className='btn '+(vv==='clasico'?'btn-primary':'btn-ghost');
+  if(bp) bp.className='btn '+(vv==='pro2'?'btn-primary':'btn-ghost');
+  if(bh) bh.className='btn '+(vv==='horizontal'?'btn-primary':'btn-ghost');
+  // El tamaño de la tarjeta cambia con la plantilla (760x1140 vertical vs
+  // 1200x675 horizontal), así que hay que regenerar el wrapper completo,
+  // no solo rellenar el contenido.
+  const outer=$('#pub-cartel-preview-outer');
+  if(outer && typeof window.tmCartelCardHTML==='function') outer.innerHTML=window.tmCartelCardHTML('pub-cartel-preview', true);
   pubRenderCartelPreview();
-  showToast(v==='pro2' ? '✨ Plantilla Pro v2 activada' : '🏷️ Plantilla Clásica activada', 'Se usa en Estado, Facebook y Revólico');
+  showToast(vv==='pro2' ? '✨ Plantilla Pro v2 activada' : vv==='horizontal' ? '🖥️ Plantilla Horizontal activada' : '🏷️ Plantilla Clásica activada', 'Se usa en Estado, Facebook y Revólico');
 }
 function pubCartelColoresHTML(){
   const cur=localStorage.getItem('tmCartelColor')||'#FF6B1A';
@@ -3153,9 +3162,11 @@ function pubCompartirHTML(){
     <div style="display:flex;gap:8px;margin-bottom:12px">
       <button type="button" class="btn ${variante==='clasico'?'btn-primary':'btn-ghost'}" id="pub-cartel-clasico" style="flex:1" onclick="pubSetCartelVariante('clasico')">🏷️ Clásico</button>
       <button type="button" class="btn ${variante==='pro2'?'btn-primary':'btn-ghost'}" id="pub-cartel-pro2" style="flex:1" onclick="pubSetCartelVariante('pro2')">✨ Pro v2</button>
+      <button type="button" class="btn ${variante==='horizontal'?'btn-primary':'btn-ghost'}" id="pub-cartel-horizontal" style="flex:1" onclick="pubSetCartelVariante('horizontal')">🖥️ Horizontal</button>
     </div>
-    <div id="pub-cartel-colores" style="display:${variante==='pro2'?'flex':'none'};gap:8px;flex-wrap:wrap;margin-bottom:14px">${pubCartelColoresHTML()}</div>
-    <div class="tcp-preview-wrap" style="margin:0 auto"><div class="tcp-preview-scale"><div class="tcp-card" id="pub-cartel-preview"></div></div></div>
+    <p style="font-size:11px;color:var(--muted);margin:-4px 0 10px">🎨 Color de la marca — aplica a las 3 plantillas:</p>
+    <div id="pub-cartel-colores" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px">${pubCartelColoresHTML()}</div>
+    <div id="pub-cartel-preview-outer">${(typeof window.tmCartelCardHTML==='function') ? window.tmCartelCardHTML('pub-cartel-preview', true) : '<div class="tcp-preview-wrap" style="margin:0 auto"><div class="tcp-preview-scale"><div class="tcp-card" id="pub-cartel-preview"></div></div></div>'}</div>
   </div>
   <div class="section">
     <h3>📘 Mis grupos de Facebook <span class="badge" id="pub-fb-groups-count">0</span></h3>
@@ -3563,7 +3574,7 @@ async function pubShareStory(p){
   // position:absolute (no fixed) + top:0 → queda en y=0 del documento; así
   // html2canvas no corta el tope aunque la página esté scrolleada.
   holder.style.cssText='position:absolute;left:-9999px;top:0;pointer-events:none;';
-  holder.innerHTML='<div class="tcp-card" id="__tcpShare"></div>';
+  holder.innerHTML=(typeof window.tmCartelCardHTML==='function') ? window.tmCartelCardHTML('__tcpShare', false) : '<div class="tcp-card" id="__tcpShare"></div>';
   document.body.appendChild(holder);
   try{
     const node=holder.querySelector('#__tcpShare');
