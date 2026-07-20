@@ -2614,5 +2614,31 @@
       "🛡️ Red Doméstica Segura y de Gran Rendimiento"
     ],
     "fechaAgregado": "2026-07-20T17:41:05.086Z"
+  },
+  {
+    "id": 1784569498967,
+    "nombre": "​🔌 Controlador de Carga Solar MPPT 100A AUTO",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784569497721.webp",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784569497721.webp"
+    ],
+    "precioActual": 8,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 6,
+    "comision": 5,
+    "comisionMoneda": "USD",
+    "categoria": "ENERGIA",
+    "subcategoria": "CONTROLADORES SOLARES",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "specs": [
+      "​☀️ Optimización Solar de Máxima Eficiencia ​",
+      "⚡ Control Inteligente de Carga Multivoltaje ​",
+      "🛡️ Gestión Segura y Automatizada de Energía"
+    ],
+    "fechaAgregado": "2026-07-20T17:44:58.967Z"
   }
 ]
