@@ -1087,7 +1087,7 @@ function cerrarRevSelector() {
         m.className = 'modal';
         m.style.cssText = 'display:flex;align-items:flex-end;';
         const preview = usarCartel
-          ? `<div class="tcp-preview-wrap" style="margin:0 auto"><div class="tcp-preview-scale"><div class="tcp-card" id="tmPubCartel"></div></div></div>`
+          ? window.tmCartelCardHTML('tmPubCartel', true)
           : `<canvas id="tmPubWACanvas" style="width:100%;border-radius:12px;background:#111;display:block;"></canvas>`;
         m.innerHTML = `
 <div class="modal-content" style="max-width:520px;max-height:92vh;display:flex;flex-direction:column;">

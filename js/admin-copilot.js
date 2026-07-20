@@ -253,40 +253,41 @@ function injectStyles(){
   /* ── Cartel Pro (WhatsApp Estado) — preview escalado + tarjeta 760px ── */
   .tcp-preview-wrap{width:290px;height:435px;margin:0 auto;overflow:hidden;border-radius:10px;background:#000;box-shadow:0 8px 30px rgba(0,0,0,.5)}
   .tcp-preview-scale{width:760px;transform:scale(.3816);transform-origin:top left}
-  .tcp-card{width:760px;height:1140px;position:relative;overflow:hidden;background:#000;color:#fff;border:2px solid #ff6b1a;border-radius:10px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
+  .tcp-card{width:760px;height:1140px;position:relative;overflow:hidden;background:#000;color:#fff;border:2px solid rgba(255,255,255,.10);border-radius:10px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
+  .tcp-root{--tc-a:#FF6B1A;--tc-a-rgb:255,107,26}
   .tcp-bg{position:absolute;inset:0;background:linear-gradient(180deg,#0d0d12 0%,#1c0b04 45%,#260e06 72%,#0d0d12 100%)}
-  .tcp-glow{position:absolute;left:50%;top:40%;width:640px;height:640px;transform:translate(-50%,-50%);background:radial-gradient(circle,rgba(255,107,26,.30) 0%,rgba(255,107,26,.08) 32%,transparent 62%)}
-  .tcp-spark{position:absolute;width:4px;height:4px;border-radius:50%;background:#ff8c42;box-shadow:0 0 10px #ff8c42}
+  .tcp-glow{position:absolute;left:50%;top:40%;width:640px;height:640px;transform:translate(-50%,-50%);background:radial-gradient(circle,rgba(var(--tc-a-rgb),.30) 0%,rgba(var(--tc-a-rgb),.08) 32%,transparent 62%)}
+  .tcp-spark{position:absolute;width:4px;height:4px;border-radius:50%;background:var(--tc-a);box-shadow:0 0 10px var(--tc-a)}
   .tcp-header{position:relative;z-index:3;display:flex;align-items:center;justify-content:center;gap:12px;padding:30px 20px 0}
-  .tcp-logo-img{width:58px;height:58px;border-radius:13px;object-fit:cover;box-shadow:0 4px 14px rgba(255,107,26,.4)}
-  .tcp-logo-txt{font-size:36px;font-weight:700;color:#fff;letter-spacing:-.5px}.tcp-logo-txt em{font-style:italic;color:#ff6b1a;font-weight:800}
-  .tcp-tag{position:relative;z-index:3;margin:26px auto 0;width:fit-content;max-width:80%;background:rgba(255,107,26,.10);border:1.5px solid #ff6b1a;color:#ff8c42;font-size:16px;font-weight:700;letter-spacing:2px;padding:8px 22px;border-radius:24px;display:flex;align-items:center;gap:10px;white-space:nowrap}
+  .tcp-logo-img{width:58px;height:58px;border-radius:13px;object-fit:cover;box-shadow:0 4px 14px rgba(var(--tc-a-rgb),.4)}
+  .tcp-logo-txt{font-size:36px;font-weight:700;color:#fff;letter-spacing:-.5px}.tcp-logo-txt em{font-style:italic;color:var(--tc-a);font-weight:800}
+  .tcp-tag{position:relative;z-index:3;margin:26px auto 0;width:fit-content;max-width:80%;background:rgba(var(--tc-a-rgb),.10);border:1.5px solid var(--tc-a);color:var(--tc-a);font-size:16px;font-weight:700;letter-spacing:2px;padding:8px 22px;border-radius:24px;display:flex;align-items:center;gap:10px;white-space:nowrap}
   .tcp-tag::before{content:"⚡";font-size:18px}
   .tcp-title{position:relative;z-index:3;margin:22px 0 0 40px;max-width:62%}
   .tcp-t1{font-weight:900;line-height:.9;letter-spacing:-3px;color:#ededed;word-break:break-word}
-  .tcp-t2{font-weight:900;line-height:.9;color:#ff6b1a;letter-spacing:-3px;text-shadow:0 0 40px rgba(255,107,26,.5);word-break:break-word}
+  .tcp-t2{font-weight:900;line-height:.9;color:var(--tc-a);letter-spacing:-3px;text-shadow:0 0 40px rgba(var(--tc-a-rgb),.5);word-break:break-word}
   .tcp-tagline{position:relative;z-index:3;margin:16px 0 0 40px;max-width:300px;font-size:17px;color:#ccc;line-height:1.32}
-  .tcp-hex{position:absolute;right:34px;top:132px;z-index:4;width:126px;height:146px;background:linear-gradient(180deg,#ff6b1a 0%,#8b3a0a 100%);clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 0 30px rgba(255,107,26,.5)}
+  .tcp-hex{position:absolute;right:34px;top:132px;z-index:4;width:126px;height:146px;background:linear-gradient(180deg,var(--tc-a) 0%,rgba(var(--tc-a-rgb),.55) 100%);clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 0 30px rgba(var(--tc-a-rgb),.5)}
   .tcp-hex::before{content:"";position:absolute;inset:4px;background:#0d0906;clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%)}
   .tcp-hex-b{font-size:22px;margin-bottom:2px;position:relative;z-index:1}
   .tcp-hex-n{font-size:34px;font-weight:900;color:#fff;line-height:1;position:relative;z-index:1}
-  .tcp-hex-l{font-size:9px;font-weight:700;color:#ff8c42;letter-spacing:1.5px;margin-top:4px;position:relative;z-index:1;text-align:center;line-height:1.2}
+  .tcp-hex-l{font-size:9px;font-weight:700;color:var(--tc-a);letter-spacing:1.5px;margin-top:4px;position:relative;z-index:1;text-align:center;line-height:1.2}
   .tcp-img{position:absolute;right:26px;top:322px;z-index:3;width:390px;height:390px;display:flex;align-items:center;justify-content:center}
   .tcp-img img{max-width:100%;max-height:100%;object-fit:contain;border-radius:22px;filter:drop-shadow(0 20px 40px rgba(0,0,0,.6));background:#fff}
   .tcp-feats{position:absolute;left:40px;top:470px;z-index:3;display:flex;flex-direction:column;gap:16px;width:210px}
   .tcp-feat{display:flex;align-items:flex-start;gap:12px}
-  .tcp-feat-ic{width:42px;height:42px;flex-shrink:0;background:rgba(255,107,26,.10);border:1.5px solid #ff6b1a;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px}
+  .tcp-feat-ic{width:42px;height:42px;flex-shrink:0;background:rgba(var(--tc-a-rgb),.10);border:1.5px solid var(--tc-a);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px}
   .tcp-feat-t{font-size:12px;font-weight:800;color:#fff;letter-spacing:.5px;line-height:1.12}
   .tcp-feat-d{font-size:10px;color:#999;margin-top:2px;line-height:1.3}
   .tcp-trusts{position:absolute;right:40px;top:735px;z-index:3;display:flex;flex-direction:column;gap:16px;width:200px}
   .tcp-trust{display:flex;align-items:flex-start;gap:10px}
-  .tcp-trust-ic{width:36px;height:36px;flex-shrink:0;background:rgba(255,107,26,.10);border:1.5px solid #ff6b1a;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px}
+  .tcp-trust-ic{width:36px;height:36px;flex-shrink:0;background:rgba(var(--tc-a-rgb),.10);border:1.5px solid var(--tc-a);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px}
   .tcp-trust-t{font-size:11px;font-weight:800;color:#fff;letter-spacing:.5px;line-height:1.1}
   .tcp-trust-d{font-size:9px;color:#999;margin-top:2px;line-height:1.3}
-  .tcp-price{position:absolute;left:40px;right:280px;bottom:212px;z-index:3;background:linear-gradient(135deg,#3a1608,#1a0a05);border:2.5px solid #ff8c42;border-radius:14px;padding:18px 22px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 0 34px rgba(255,107,26,.45),inset 0 0 22px rgba(255,140,66,.10)}
+  .tcp-price{position:absolute;left:40px;right:280px;bottom:212px;z-index:3;background:linear-gradient(135deg,#3a1608,#1a0a05);border:2.5px solid var(--tc-a);border-radius:14px;padding:18px 22px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 0 34px rgba(var(--tc-a-rgb),.45),inset 0 0 22px rgba(var(--tc-a-rgb),.10)}
   .tcp-price-m{display:flex;align-items:baseline;gap:6px}
-  .tcp-price-n{font-size:66px;font-weight:900;line-height:1;color:#ff8c42;letter-spacing:-2px;text-shadow:0 0 24px rgba(255,107,26,.6)}
-  .tcp-price-c{font-size:22px;font-weight:800;color:#ff8c42}
+  .tcp-price-n{font-size:66px;font-weight:900;line-height:1;color:var(--tc-a);letter-spacing:-2px;text-shadow:0 0 24px rgba(var(--tc-a-rgb),.6)}
+  .tcp-price-c{font-size:22px;font-weight:800;color:var(--tc-a)}
   .tcp-price-s{text-align:right;font-size:11px;color:#aaa;line-height:1.3}.tcp-price-s strong{color:#fff;display:block;font-size:14px}.tcp-price-s del{color:#888;font-size:13px}
   .tcp-stock{position:absolute;left:40px;right:280px;bottom:166px;z-index:3;display:flex;gap:12px}
   .tcp-pill{flex:1;background:rgba(255,255,255,.05);border:1px solid #333;border-radius:6px;padding:8px 12px;display:flex;align-items:center;gap:8px;font-size:12px;color:#fff;font-weight:600;white-space:nowrap}.tcp-pill span{font-size:14px}
@@ -296,48 +297,48 @@ function injectStyles(){
   .tcp-cta-t{color:#fff;font-weight:800;font-size:14px;line-height:1.1;letter-spacing:.5px}.tcp-cta-t .s{display:block;font-size:11px;letter-spacing:2px;font-weight:700}.tcp-cta-t .b{display:block;font-size:22px;font-weight:900;letter-spacing:0;margin:2px 0}
   .tcp-arrow{color:#fff;font-size:28px;font-weight:900}
   .tcp-footer{position:absolute;bottom:30px;left:0;right:0;z-index:3;text-align:center}
-  .tcp-dom{font-size:16px;font-weight:700;color:#ff6b1a}.tcp-hint{font-size:12px;color:#888;margin-top:4px}
+  .tcp-dom{font-size:16px;font-weight:700;color:var(--tc-a)}.tcp-hint{font-size:12px;color:#888;margin-top:4px}
   /* ── Cartel Pro v2 — logo oficial + iconos reales + grid de features ──
      Todo lo que antes era el naranja de marca fijo ahora sale de dos
-     variables CSS (--tcp2-a = color sólido, --tcp2-a-rgb = sus componentes
+     variables CSS (--tc-a = color sólido, --tc-a-rgb = sus componentes
      r,g,b para las transparencias) que _cartelHTML2() fija inline en
      .tcp2-root según el color que el admin eligió — así una sola tarjeta
      sirve para los 11 colores del selector sin duplicar CSS. Las variables
      se resuelven a color final ANTES de que html2canvas lea los estilos
      (getComputedStyle ya las entrega resueltas), así que el PNG exportado
      sale con el color correcto igual que la vista previa. */
-  .tcp2-root{--tcp2-a:#FF6B1A;--tcp2-a-rgb:255,107,26}
+  .tcp2-root{--tc-a:#FF6B1A;--tc-a-rgb:255,107,26}
   .tcp2-bg{position:absolute;inset:0;background:linear-gradient(155deg,#0a0a0a 0%,#111111 55%,#0d0d0d 100%)}
-  .tcp2-glow{position:absolute;inset:0;background:radial-gradient(ellipse at 30% 14%,rgba(var(--tcp2-a-rgb),.16) 0%,transparent 52%),radial-gradient(ellipse at 75% 78%,rgba(var(--tcp2-a-rgb),.10) 0%,transparent 50%)}
+  .tcp2-glow{position:absolute;inset:0;background:radial-gradient(ellipse at 30% 14%,rgba(var(--tc-a-rgb),.16) 0%,transparent 52%),radial-gradient(ellipse at 75% 78%,rgba(var(--tc-a-rgb),.10) 0%,transparent 50%)}
   .tcp2-header{position:relative;z-index:3;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:30px 34px 0}
   .tcp2-brand{display:flex;align-items:center;gap:13px}
-  .tcp2-logo{width:52px;height:52px;flex-shrink:0;border-radius:14px;overflow:hidden;box-shadow:0 6px 18px rgba(var(--tcp2-a-rgb),.35)}
+  .tcp2-logo{width:52px;height:52px;flex-shrink:0;border-radius:14px;overflow:hidden;box-shadow:0 6px 18px rgba(var(--tc-a-rgb),.35)}
   .tcp2-logo img{width:100%;height:100%;object-fit:cover;display:block}
-  .tcp2-word{font-size:23px;font-weight:800;color:#fff;line-height:1;letter-spacing:-.3px}.tcp2-word em{font-style:normal;color:var(--tcp2-a)}
+  .tcp2-word{font-size:23px;font-weight:800;color:#fff;line-height:1;letter-spacing:-.3px}.tcp2-word em{font-style:normal;color:var(--tc-a)}
   .tcp2-sub{font-size:10px;color:#777;text-transform:uppercase;letter-spacing:.14em;margin-top:4px}
-  .tcp2-tag{display:flex;align-items:center;gap:6px;background:rgba(var(--tcp2-a-rgb),.14);border:1px solid rgba(var(--tcp2-a-rgb),.45);color:var(--tcp2-a);font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding:8px 15px;border-radius:999px;white-space:nowrap}
+  .tcp2-tag{display:flex;align-items:center;gap:6px;background:rgba(var(--tc-a-rgb),.14);border:1px solid rgba(var(--tc-a-rgb),.45);color:var(--tc-a);font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding:8px 15px;border-radius:999px;white-space:nowrap}
   .tcp2-title{position:relative;z-index:3;margin:22px 34px 0}
   .tcp2-title h1{font-size:42px;font-weight:900;line-height:1.02;letter-spacing:-1.5px;color:#fff;word-break:break-word}
-  .tcp2-title h1 em{font-style:normal;color:var(--tcp2-a)}
+  .tcp2-title h1 em{font-style:normal;color:var(--tc-a)}
   .tcp2-tagline{font-size:14px;color:#999;margin-top:8px;line-height:1.4}
   .tcp2-feats{position:relative;z-index:3;display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:20px 34px 0}
   .tcp2-feat{display:flex;align-items:flex-start;gap:11px;padding:13px;border-radius:15px;border:1px solid rgba(255,255,255,.07);background:rgba(255,255,255,.025)}
-  .tcp2-feat-ic{flex-shrink:0;width:36px;height:36px;border-radius:10px;background:rgba(var(--tcp2-a-rgb),.14);color:var(--tcp2-a);display:flex;align-items:center;justify-content:center}
+  .tcp2-feat-ic{flex-shrink:0;width:36px;height:36px;border-radius:10px;background:rgba(var(--tc-a-rgb),.14);color:var(--tc-a);display:flex;align-items:center;justify-content:center}
   .tcp2-feat-ic svg{width:20px;height:20px}
   .tcp2-feat-t{font-size:11px;font-weight:800;color:#fff;letter-spacing:.03em;line-height:1.2;text-transform:uppercase}
   .tcp2-feat-d{font-size:10px;color:#8a8a8a;margin-top:3px;line-height:1.3}
-  .tcp2-imgwrap{position:relative;z-index:3;margin:18px 34px 0;height:290px;border:2px dashed rgba(var(--tcp2-a-rgb),.35);border-radius:24px;display:flex;align-items:center;justify-content:center;overflow:hidden}
-  .tcp2-imgwrap::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at center,rgba(var(--tcp2-a-rgb),.22) 0%,transparent 68%);filter:blur(6px)}
+  .tcp2-imgwrap{position:relative;z-index:3;margin:18px 34px 0;height:290px;border:2px dashed rgba(var(--tc-a-rgb),.35);border-radius:24px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+  .tcp2-imgwrap::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at center,rgba(var(--tc-a-rgb),.22) 0%,transparent 68%);filter:blur(6px)}
   .tcp2-imgwrap img{position:relative;max-width:82%;max-height:86%;object-fit:contain;border-radius:20px;filter:drop-shadow(0 22px 34px rgba(0,0,0,.55))}
-  .tcp2-badge{position:absolute;top:16px;right:16px;z-index:4;background:linear-gradient(135deg,var(--tcp2-a),rgba(var(--tcp2-a-rgb),.75));color:#fff;font-size:15px;font-weight:900;padding:9px 15px;border-radius:13px;box-shadow:0 8px 20px rgba(var(--tcp2-a-rgb),.55);text-align:center;line-height:1.05}
+  .tcp2-badge{position:absolute;top:16px;right:16px;z-index:4;background:linear-gradient(135deg,var(--tc-a),rgba(var(--tc-a-rgb),.75));color:#fff;font-size:15px;font-weight:900;padding:9px 15px;border-radius:13px;box-shadow:0 8px 20px rgba(var(--tc-a-rgb),.55);text-align:center;line-height:1.05}
   .tcp2-badge small{display:block;font-size:8px;font-weight:800;letter-spacing:.1em;opacity:.85;margin-top:1px}
-  .tcp2-price{position:relative;z-index:3;margin:18px 34px 0;background:linear-gradient(135deg,rgba(var(--tcp2-a-rgb),.16),rgba(0,0,0,.3));border:1.5px solid rgba(var(--tcp2-a-rgb),.4);border-radius:18px;padding:18px 22px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px}
+  .tcp2-price{position:relative;z-index:3;margin:18px 34px 0;background:linear-gradient(135deg,rgba(var(--tc-a-rgb),.16),rgba(0,0,0,.3));border:1.5px solid rgba(var(--tc-a-rgb),.4);border-radius:18px;padding:18px 22px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px}
   .tcp2-price-row{display:flex;align-items:baseline;justify-content:center;flex-wrap:wrap;gap:9px}
-  .tcp2-price-n{font-size:52px;font-weight:900;color:var(--tcp2-a);letter-spacing:-1.5px;line-height:1}
-  .tcp2-price-c{font-size:17px;font-weight:800;color:var(--tcp2-a);margin-left:-3px}
+  .tcp2-price-n{font-size:52px;font-weight:900;color:var(--tc-a);letter-spacing:-1.5px;line-height:1}
+  .tcp2-price-c{font-size:17px;font-weight:800;color:var(--tc-a);margin-left:-3px}
   .tcp2-price-old{font-size:15px;color:#777;text-decoration:line-through}
   .tcp2-price-off{font-size:11px;font-weight:800;color:#f87171;background:rgba(248,113,113,.14);border:1px solid rgba(248,113,113,.4);padding:3px 9px;border-radius:999px}
-  .tcp2-price-cat{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--tcp2-a);background:rgba(var(--tcp2-a-rgb),.14);border:1px solid rgba(var(--tcp2-a-rgb),.45);padding:6px 16px;border-radius:999px}
+  .tcp2-price-cat{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--tc-a);background:rgba(var(--tc-a-rgb),.14);border:1px solid rgba(var(--tc-a-rgb),.45);padding:6px 16px;border-radius:999px}
   .tcp2-cta{position:relative;z-index:3;margin:16px 34px 0;background:linear-gradient(135deg,#25d366,#12a150);border-radius:999px;padding:17px 20px;display:flex;align-items:center;justify-content:center;gap:16px;box-shadow:0 8px 24px rgba(37,211,102,.4)}
   .tcp2-cta-wa{width:44px;height:44px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0}
   .tcp2-cta-wa svg{width:23px;height:23px}
@@ -345,14 +346,67 @@ function injectStyles(){
   .tcp2-cta-arrow{color:#fff;font-size:22px;font-weight:900;flex-shrink:0}
   .tcp2-trust{position:relative;z-index:3;display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:16px 34px 0}
   .tcp2-trust-i{text-align:center;padding:12px 5px;border-radius:14px;background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.06)}
-  .tcp2-trust-i svg{width:20px;height:20px;color:var(--tcp2-a);margin-bottom:6px}
+  .tcp2-trust-i svg{width:20px;height:20px;color:var(--tc-a);margin-bottom:6px}
   .tcp2-trust-i b{display:block;font-size:9px;font-weight:800;color:#eee;letter-spacing:.02em;text-transform:uppercase;line-height:1.2}
   .tcp2-trust-i span{display:block;font-size:8px;color:#777;margin-top:2px}
   .tcp2-footer{position:relative;z-index:3;display:flex;align-items:center;justify-content:center;gap:14px;margin:18px 34px 0;padding-bottom:20px}
   .tcp2-footer-qr{width:64px;height:64px;flex-shrink:0;border-radius:10px;overflow:hidden;background:#fff;padding:5px}
   .tcp2-footer-qr img{width:100%;height:100%;object-fit:contain;display:block}
   .tcp2-footer-txt{text-align:left}
-  .tcp2-footer-txt .d{font-size:14px;font-weight:800;color:#ff6b1a}.tcp2-footer-txt .h{font-size:10.5px;color:#777;margin-top:3px}
+  .tcp2-footer-txt .d{font-size:14px;font-weight:800;color:var(--tc-a)}.tcp2-footer-txt .h{font-size:10.5px;color:#777;margin-top:3px}
+  /* ── Cartel Pro Horizontal (tcp3) — mismo picker de color (--tc-a/--tc-a-rgb),
+     formato landscape 1200×675 para Facebook/banners en vez de WhatsApp Estado.
+     Columna izquierda con la info, columna derecha con la foto y un solo
+     badge principal flotando — mismo criterio "un badge, dato real" del Pro v2. ── */
+  .tcp3-root{--tc-a:#FF6B1A;--tc-a-rgb:255,107,26;position:relative;width:100%;height:100%;display:flex;background:linear-gradient(135deg,#0a0a0f 0%,#12080a 55%,#0a0a0f 100%);overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
+  .tcp3-glow{position:absolute;inset:0;background:radial-gradient(ellipse at 68% 50%,rgba(var(--tc-a-rgb),.16) 0%,transparent 55%)}
+  .tcp3-left{position:relative;z-index:3;flex:1;min-width:0;padding:24px 28px;display:flex;flex-direction:column;color:#fff}
+  .tcp3-header{display:flex;align-items:center;justify-content:space-between;gap:10px}
+  .tcp3-brand{display:flex;align-items:center;gap:11px;min-width:0}
+  .tcp3-logo{width:44px;height:44px;flex-shrink:0;border-radius:12px;overflow:hidden;box-shadow:0 6px 16px rgba(var(--tc-a-rgb),.35)}
+  .tcp3-logo img{width:100%;height:100%;object-fit:cover;display:block}
+  .tcp3-word{font-size:18px;font-weight:800;color:#fff;line-height:1}
+  .tcp3-word em{font-style:normal;color:var(--tc-a)}
+  .tcp3-sub{font-size:8.5px;color:#777;text-transform:uppercase;letter-spacing:.12em;margin-top:2px}
+  .tcp3-tag{display:flex;align-items:center;gap:5px;background:rgba(var(--tc-a-rgb),.14);border:1px solid rgba(var(--tc-a-rgb),.45);color:var(--tc-a);font-size:9.5px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;padding:6px 12px;border-radius:999px;white-space:nowrap;flex-shrink:0}
+  .tcp3-title{margin-top:14px}
+  .tcp3-title h1{font-size:36px;font-weight:900;line-height:1.0;letter-spacing:-1.2px;color:#fff;word-break:break-word}
+  .tcp3-title h1 em{font-style:normal;color:var(--tc-a)}
+  .tcp3-tagline{font-size:12px;color:#999;margin-top:5px;line-height:1.4}
+  .tcp3-feats{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:13px}
+  .tcp3-feat{display:flex;align-items:flex-start;gap:8px;padding:9px;border-radius:11px;border:1px solid rgba(255,255,255,.07);background:rgba(255,255,255,.025)}
+  .tcp3-feat-ic{flex-shrink:0;width:28px;height:28px;border-radius:8px;background:rgba(var(--tc-a-rgb),.14);color:var(--tc-a);display:flex;align-items:center;justify-content:center}
+  .tcp3-feat-ic svg{width:15px;height:15px}
+  .tcp3-feat-t{font-size:9px;font-weight:800;color:#fff;letter-spacing:.02em;line-height:1.2;text-transform:uppercase}
+  .tcp3-feat-d{font-size:8px;color:#8a8a8a;margin-top:2px;line-height:1.25}
+  .tcp3-price{margin-top:13px;background:linear-gradient(135deg,rgba(var(--tc-a-rgb),.16),rgba(0,0,0,.3));border:1.5px solid rgba(var(--tc-a-rgb),.4);border-radius:13px;padding:11px 15px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+  .tcp3-price-row{display:flex;align-items:baseline;gap:7px;flex-wrap:wrap}
+  .tcp3-price-n{font-size:29px;font-weight:900;color:var(--tc-a);letter-spacing:-1px;line-height:1}
+  .tcp3-price-c{font-size:12px;font-weight:800;color:var(--tc-a)}
+  .tcp3-price-old{font-size:11px;color:#777;text-decoration:line-through}
+  .tcp3-price-off{font-size:9px;font-weight:800;color:#f87171;background:rgba(248,113,113,.14);border:1px solid rgba(248,113,113,.4);padding:2px 7px;border-radius:999px}
+  .tcp3-price-cat{font-size:8.5px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--tc-a);background:rgba(var(--tc-a-rgb),.14);border:1px solid rgba(var(--tc-a-rgb),.45);padding:5px 11px;border-radius:999px;white-space:nowrap;flex-shrink:0}
+  .tcp3-cta{margin-top:11px;background:linear-gradient(135deg,#25d366,#12a150);border-radius:999px;padding:11px 16px;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 6px 16px rgba(37,211,102,.4)}
+  .tcp3-cta-wa{width:29px;height:29px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .tcp3-cta-wa svg{width:15px;height:15px}
+  .tcp3-cta-t{color:#fff;font-weight:800;font-size:12px;line-height:1.15}
+  .tcp3-cta-t small{display:block;font-size:8px;font-weight:700;letter-spacing:.05em;opacity:.9}
+  .tcp3-cta-arrow{color:#fff;font-size:15px;font-weight:900}
+  .tcp3-trust{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:11px}
+  .tcp3-trust-i{text-align:center;padding:7px 3px;border-radius:9px;background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.06)}
+  .tcp3-trust-i svg{width:13px;height:13px;color:var(--tc-a);margin-bottom:3px}
+  .tcp3-trust-i b{display:block;font-size:6.5px;font-weight:800;color:#eee;letter-spacing:.01em;text-transform:uppercase;line-height:1.1}
+  .tcp3-trust-i span{display:block;font-size:6px;color:#777;margin-top:1px}
+  .tcp3-footer{margin-top:16px;display:flex;align-items:center;gap:8px}
+  .tcp3-footer-qr{width:32px;height:32px;flex-shrink:0;border-radius:7px;overflow:hidden;background:#fff;padding:3px}
+  .tcp3-footer-qr img{width:100%;height:100%;object-fit:contain;display:block}
+  .tcp3-footer-txt .d{font-size:10px;font-weight:800;color:var(--tc-a)}
+  .tcp3-footer-txt .h{font-size:7.5px;color:#777;margin-top:1px}
+  .tcp3-right{position:relative;z-index:3;width:44%;flex-shrink:0;display:flex;align-items:center;justify-content:center;padding:26px}
+  .tcp3-right::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at center,rgba(var(--tc-a-rgb),.18) 0%,transparent 65%)}
+  .tcp3-right img{position:relative;max-width:88%;max-height:82%;object-fit:contain;filter:drop-shadow(0 26px 40px rgba(0,0,0,.6));border-radius:18px}
+  .tcp3-badge{position:absolute;z-index:4;top:22px;right:22px;background:linear-gradient(135deg,var(--tc-a),rgba(var(--tc-a-rgb),.75));color:#fff;font-size:12px;font-weight:900;padding:8px 13px;border-radius:11px;box-shadow:0 8px 16px rgba(var(--tc-a-rgb),.55);text-align:center;line-height:1.05}
+  .tcp3-badge small{display:block;font-size:7px;font-weight:800;letter-spacing:.07em;opacity:.85;margin-top:1px}
   .tm-chat-log{max-height:46vh;overflow:auto;display:flex;flex-direction:column;gap:9px;padding:4px 2px}
   .tm-chat-u,.tm-chat-b{border-radius:14px;padding:9px 12px;font-size:13px;line-height:1.5;max-width:92%}
   .tm-chat-u{align-self:flex-end;background:rgba(255,107,53,.16);border:1px solid rgba(255,107,53,.3)}
@@ -1402,7 +1456,7 @@ function _cartelHTML2(d){
     : d.masVendido ? `<div class="tcp2-badge">🔥<small>MÁS VENDIDO</small></div>` : '';
   const categoria = esc(_cClip(d.categoria||d.tag||'',20));
   const qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&margin=6&data='+encodeURIComponent(d.url||'https://tiendamax.org');
-  return `<div class="tcp2-root" style="--tcp2-a:${color};--tcp2-a-rgb:${colorRgb}">`
+  return `<div class="tcp2-root" style="--tc-a:${color};--tc-a-rgb:${colorRgb}">`
     +`<div class="tcp2-bg"></div><div class="tcp2-glow"></div>`
     +`<div class="tcp2-header"><div class="tcp2-brand"><div class="tcp2-logo"><img src="/iconos/icon-192.png" alt="TiendaMax"></div><div><div class="tcp2-word">Tienda<em>Max</em></div><div class="tcp2-sub">Tienda online en Cuba</div></div></div><div class="tcp2-tag">${esc(_cClip(d.tag||'DESTACADO',16))}</div></div>`
     +`<div class="tcp2-title"><h1>${esc(w1)}${w2?` <em>${esc(w2)}</em>`:''}</h1>${d.tagline?`<div class="tcp2-tagline">${esc(d.tagline)}</div>`:''}</div>`
@@ -1414,11 +1468,65 @@ function _cartelHTML2(d){
     +`<div class="tcp2-footer"><div class="tcp2-footer-qr"><img src="${esc(qrUrl)}" crossorigin="anonymous" alt="QR"></div><div class="tcp2-footer-txt"><div class="d">🌐 tiendamax.org</div><div class="h">Escanea el código para ver la tienda</div></div></div>`
     +`</div>`;
 }
+// Plantilla Pro Horizontal (tcp3): formato landscape 1200×675 pensado para
+// Facebook/banners en vez de WhatsApp Estados — columna de info a la
+// izquierda, foto grande con un solo badge principal a la derecha. Reusa
+// el mismo picker de color (_cartelColor) y el mismo set de iconos SVG que
+// el Pro v2, así las 3 plantillas quedan consistentes entre sí.
+function _cartelHTML3(d){
+  const w1=d.title1||'PRODUCTO', w2=d.title2||'';
+  const feats=_cFeatures(d.descripcion, d._specs).slice(0,4);
+  const hasDisc=parseFloat(d.precioAnterior)>0 && parseFloat(d.precioAnterior)>parseFloat(d.precio);
+  const pct=hasDisc?Math.round((1-parseFloat(d.precio)/parseFloat(d.precioAnterior))*100):0;
+  const moneda=d.moneda||'USD';
+  const imgUrl=d.imgUrl||'';
+  const color=_cartelColor(), colorRgb=_hexToRgbCsv(color);
+  const featHtml=feats.map(f=>`<div class="tcp3-feat"><div class="tcp3-feat-ic">${_cIconSvg2(f.title)}</div><div class="min-w-0"><div class="tcp3-feat-t">${esc(_cClip(f.title,20))}</div>${f.desc?`<div class="tcp3-feat-d">${esc(_cClip(f.desc,32))}</div>`:''}</div></div>`).join('');
+  const badgeHtml = hasDisc ? `<div class="tcp3-badge">-${pct}%<small>DESCUENTO</small></div>`
+    : d.masVendido ? `<div class="tcp3-badge">🔥<small>MÁS VENDIDO</small></div>` : '';
+  const categoria = esc(_cClip(d.categoria||d.tag||'',18));
+  const qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=140x140&margin=6&data='+encodeURIComponent(d.url||'https://tiendamax.org');
+  return `<div class="tcp3-root" style="--tc-a:${color};--tc-a-rgb:${colorRgb}">`
+    +`<div class="tcp3-glow"></div>`
+    +`<div class="tcp3-left">`
+      +`<div class="tcp3-header"><div class="tcp3-brand"><div class="tcp3-logo"><img src="/iconos/icon-192.png" alt="TiendaMax"></div><div><div class="tcp3-word">Tienda<em>Max</em></div><div class="tcp3-sub">Tienda online en Cuba</div></div></div><div class="tcp3-tag">${esc(_cClip(d.tag||'DESTACADO',16))}</div></div>`
+      +`<div class="tcp3-title"><h1>${esc(w1)}${w2?` <em>${esc(w2)}</em>`:''}</h1></div>`
+      +(d.tagline?`<div class="tcp3-tagline">${esc(d.tagline)}</div>`:'')
+      +(featHtml?`<div class="tcp3-feats">${featHtml}</div>`:'')
+      +`<div class="tcp3-price"><div class="tcp3-price-row"><span class="tcp3-price-n">$${esc(String(Math.round(parseFloat(d.precio)||0)))}</span><span class="tcp3-price-c">${esc(moneda)}</span>${hasDisc?`<span class="tcp3-price-old">$${esc(String(Math.round(parseFloat(d.precioAnterior))))}</span><span class="tcp3-price-off">-${pct}%</span>`:''}</div>${categoria?`<div class="tcp3-price-cat">${categoria}</div>`:''}</div>`
+      +`<div class="tcp3-cta"><div class="tcp3-cta-wa"><svg viewBox="0 0 24 24" fill="#25d366"><path d="M12 2C6.5 2 2 6.5 2 12c0 1.8.5 3.5 1.3 5L2 22l5.2-1.3c1.4.8 3.1 1.3 4.8 1.3 5.5 0 10-4.5 10-10S17.5 2 12 2z"/></svg></div><div class="tcp3-cta-t"><small>PÍDELO POR</small>WhatsApp</div><div class="tcp3-cta-arrow">›</div></div>`
+      +`<div class="tcp3-trust"><div class="tcp3-trust-i">${_cIconSvg2('CAJA')}<b>Envío</b><span>a todo el país</span></div><div class="tcp3-trust-i">${_cIconSvg2('GARANTIA')}<b>Compra</b><span>segura</span></div><div class="tcp3-trust-i">${_cIconSvg2('CALIDAD')}<b>Garantía</b><span>real</span></div><div class="tcp3-trust-i">${_cIconSvg2('SOPORTE')}<b>Soporte</b><span>24/7</span></div></div>`
+      +`<div class="tcp3-footer"><div class="tcp3-footer-qr"><img src="${esc(qrUrl)}" crossorigin="anonymous" alt="QR"></div><div class="tcp3-footer-txt"><div class="d">🌐 tiendamax.org</div><div class="h">Escanea para ver la tienda</div></div></div>`
+    +`</div>`
+    +`<div class="tcp3-right">${imgUrl?`<img src="${esc(imgUrl)}" crossorigin="anonymous">`:''}${badgeHtml}</div>`
+    +`</div>`;
+}
 // Preferencia de plantilla del cartel, compartida por TODOS los puntos que lo
 // generan (Copiloto, botón "Estado" de admin.html, modal de Facebook/grupos)
 // — se elige una vez en el panel de Marketing y aplica en todos lados.
-function _cartelVariante(){ return localStorage.getItem('tmCartelVariante')==='pro2' ? 'pro2' : 'clasico'; }
-function _cartelHTMLPorVariante(datos){ return _cartelVariante()==='pro2' ? _cartelHTML2(datos) : _cartelHTML(datos); }
+function _cartelVariante(){
+  const v=localStorage.getItem('tmCartelVariante');
+  return (v==='pro2'||v==='horizontal') ? v : 'clasico';
+}
+function _cartelHTMLPorVariante(datos){
+  const v=_cartelVariante();
+  return v==='pro2' ? _cartelHTML2(datos) : v==='horizontal' ? _cartelHTML3(datos) : _cartelHTML(datos);
+}
+// Tamaño fijo de la tarjeta según la plantilla activa: Clásico y Pro v2 son
+// verticales (760×1140, para WhatsApp Estados), Pro Horizontal es landscape
+// (1200×675, para Facebook/banners). El contenedor .tcp-card es boilerplate
+// externo (4 puntos de llamada distintos: admin.html, Copiloto, revolico_
+// integration.js), así que se expone este helper para que todos generen el
+// mismo tamaño sin duplicar la lógica en cada sitio.
+function tmCartelCardSize(){ return _cartelVariante()==='horizontal' ? {w:1200,h:675} : {w:760,h:1140}; }
+window.tmCartelCardSize = tmCartelCardSize;
+window.tmCartelCardHTML = function(id, scaled){
+  const {w,h}=tmCartelCardSize();
+  const cardStyle=`width:${w}px;height:${h}px`;
+  if(!scaled) return `<div class="tcp-card" id="${esc(id)}" style="${cardStyle}"></div>`;
+  const boxW=290, scale=boxW/w, boxH=Math.round(h*scale);
+  return `<div class="tcp-preview-wrap" style="width:${boxW}px;height:${boxH}px;margin:0 auto"><div class="tcp-preview-scale" style="width:${w}px;transform:scale(${scale})"><div class="tcp-card" id="${esc(id)}" style="${cardStyle}"></div></div></div>`;
+};
 // Expuesto para que el modal "🟢 Estado WhatsApp" (revolico_integration.js)
 // use el MISMO diseño de cartel que el generador del copiloto (según la
 // plantilla elegida).
@@ -1518,7 +1626,9 @@ function _cartelHTML(d){
   const trustHtml=trust.map(t=>`<div class="tcp-trust"><div class="tcp-trust-ic">${t[0]}</div><div><div class="tcp-trust-t">${t[1]}</div><div class="tcp-trust-d">${t[2]}</div></div></div>`).join('');
   const pills=[`<div class="tcp-pill"><span>📦</span> Stock: ${st}</div>`, (st>0&&st<=3)?`<div class="tcp-pill"><span>🔥</span> ÚLTIMOS</div>`:`<div class="tcp-pill"><span>✅</span> DISPONIBLE</div>`].join('');
   const imgUrl=d.imgUrl||'';
-  return `<div class="tcp-bg"></div><div class="tcp-glow"></div>`
+  const color=_cartelColor(), colorRgb=_hexToRgbCsv(color);
+  return `<div class="tcp-root" style="--tc-a:${color};--tc-a-rgb:${colorRgb}">`
+    +`<div class="tcp-bg"></div><div class="tcp-glow"></div>`
     +`<span class="tcp-spark" style="top:20%;right:30%"></span><span class="tcp-spark" style="top:25%;right:15%;width:3px;height:3px"></span><span class="tcp-spark" style="bottom:35%;right:20%;width:5px;height:5px"></span><span class="tcp-spark" style="bottom:30%;left:18%;width:3px;height:3px"></span><span class="tcp-spark" style="top:30%;left:22%"></span>`
     +`<div class="tcp-header"><img class="tcp-logo-img" src="/iconos/icon-512.png" alt="TiendaMax"><div class="tcp-logo-txt">Tienda<em>Max</em></div></div>`
     +`<div class="tcp-tag">${esc(_cClip(d.tag||'DESTACADO',18))}</div>`
@@ -1531,7 +1641,8 @@ function _cartelHTML(d){
     +`<div class="tcp-price"><div class="tcp-price-m"><div class="tcp-price-n">$${esc(String(Math.round(parseFloat(d.precio)||0)))}</div><div class="tcp-price-c">${esc(moneda)}</div></div><div class="tcp-price-s">${hasDisc?`<del>$${esc(String(Math.round(parseFloat(d.precioAnterior))))}</del><strong>AHORRA</strong>`:`<strong>CONTRA</strong><span>entrega</span>`}</div></div>`
     +`<div class="tcp-stock">${pills}</div>`
     +`<div class="tcp-cta"><div class="tcp-cta-l"><div class="tcp-wa">💬</div><div class="tcp-cta-t"><span class="s">PÍDELO DIRECTO POR</span><span class="b">WHATSAPP</span><span class="s">EN TIENDAMAX</span></div></div><div class="tcp-arrow">›</div></div>`
-    +`<div class="tcp-footer"><div class="tcp-dom">🌐 tiendamax.org</div><div class="tcp-hint">Toca "Pedir" en la tienda para reservar</div></div>`;
+    +`<div class="tcp-footer"><div class="tcp-dom">🌐 tiendamax.org</div><div class="tcp-hint">Toca "Pedir" en la tienda para reservar</div></div>`
+    +`</div>`;
 }
 async function drawPromo() {
   const node = document.getElementById('tmCartelPro');
@@ -1593,8 +1704,9 @@ function renderPromoImagen() {
     <div style="display:flex;gap:8px;margin-bottom:10px">
       <button type="button" class="tm-copilot-btn ${variante==='clasico'?'primary':''}" data-cop="cartelVariante" data-variante="clasico" style="flex:1">🏷️ Clásico</button>
       <button type="button" class="tm-copilot-btn ${variante==='pro2'?'primary':''}" data-cop="cartelVariante" data-variante="pro2" style="flex:1">✨ Pro v2</button>
+      <button type="button" class="tm-copilot-btn ${variante==='horizontal'?'primary':''}" data-cop="cartelVariante" data-variante="horizontal" style="flex:1">🖥️ Horizontal</button>
     </div>
-    <div class="tcp-preview-wrap"><div class="tcp-preview-scale"><div class="tcp-card" id="tmCartelPro"></div></div></div>
+    ${window.tmCartelCardHTML('tmCartelPro', true)}
     <div style="display:flex;flex-direction:column;gap:10px;margin-top:12px">
       <div><div style="font-size:11px;color:#888;margin-bottom:4px">Producto del catálogo</div>
         <select class="tm-promo-field" id="tmPromoProductoSel" style="width:100%">
@@ -1912,10 +2024,11 @@ function bindEvents(){
     if(act==='promoPickImg') { const inp = document.getElementById('tmPromoImgInput'); if(inp) inp.click(); }
     if(act==='promoDownload') { promoDescargarCartel(el); }
     if(act==='cartelVariante'){
-      const v = el.dataset.variante==='pro2' ? 'pro2' : 'clasico';
+      const dv = el.dataset.variante;
+      const v = (dv==='pro2'||dv==='horizontal') ? dv : 'clasico';
       localStorage.setItem('tmCartelVariante', v);
       state.view='marketing'; renderSheet(); drawPromo();
-      toast(v==='pro2' ? '✨ Plantilla Pro v2 activada' : '🏷️ Plantilla Clásica activada');
+      toast(v==='pro2' ? '✨ Plantilla Pro v2 activada' : v==='horizontal' ? '🖥️ Plantilla Horizontal activada' : '🏷️ Plantilla Clásica activada');
     }
   });
 }
