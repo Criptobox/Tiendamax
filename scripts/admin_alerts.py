@@ -115,6 +115,34 @@ def count_map(node) -> dict[str, int]:
     return out
 
 
+def _subscriber_identity(t: dict) -> str | None:
+    """Identidad estable de un suscriptor push, para no confundir "el mismo
+    dispositivo con carnet nuevo" con un alta/baja real.
+
+    js/push-fix.js guarda cada token bajo la clave 'deviceId' (localStorage +
+    IndexedDB + cookie de 1 año) — pero si las 3 capas de almacenamiento del
+    navegador del suscriptor no persisten (modo privado, extensiones que
+    limpian el sitio, iOS con storage muy agresivo), esa clave cambia en
+    cada visita. El dedup de escribirTokenRTDB() entonces borra la entrada
+    vieja (mismo 'token' FCM) y crea una con la clave nueva — que hace ver
+    como "1 nuevo + 1 cancelado, mismo total" en cada corrida, aunque sea el
+    mismo suscriptor de siempre.
+
+    'fingerprint' (huella de user-agent + pantalla + idioma + huso horario)
+    sí sobrevive ese borrado porque se recalcula del hardware/navegador, no
+    se guarda — por eso se prioriza acá para decidir altas/bajas reales.
+    deviceId/token quedan de respaldo cuando no hay fingerprint (tokens
+    viejos, de antes de que existiera ese campo).
+    """
+    if not isinstance(t, dict) or not t.get("token"):
+        return None
+    if t.get("fingerprint"):
+        return "fp:" + str(t["fingerprint"])
+    if t.get("deviceId"):
+        return "did:" + str(t["deviceId"])
+    return "tk:" + str(t["token"])
+
+
 def build_copilot_digest(db, meta: dict, products: list[dict]) -> str | None:
     now_dt = datetime.now(TZ)
     last_iso = meta.get("copilot_last_digest")
@@ -202,7 +230,10 @@ def main() -> int:
     # 1) Suscriptores push nuevos / perdidos
     try:
         tokens = db.reference("tokens").get() or {}
-        current_ids: set[str] = set(tokens.keys()) if isinstance(tokens, dict) else set()
+        current_ids: set[str] = (
+            {_subscriber_identity(t) for t in tokens.values() if _subscriber_identity(t)}
+            if isinstance(tokens, dict) else set()
+        )
         known_ids: set[str] = set(meta.get("known_token_ids") or [])
         first_run = not known_ids and "known_token_ids" not in meta
         if first_run:
