@@ -2172,6 +2172,42 @@ function apSubgroupHTML(prods){
     + subs[s].map(apCardHTML).join('')
   ).join('');
 }
+const _apAgotado = p => (Number(p.stock)||0)<=0;
+// Un producto por nombre (alfabético) — para el orden dentro de cada bloque.
+function _apOrdName(a,b){ return String(a.nombre||'').localeCompare(String(b.nombre||'')); }
+// Bloque de una categoría (encabezado dorado + subgrupos por subcategoría).
+function apCatBloqueHTML(cat, prods){
+  return `<div style="display:flex;align-items:center;gap:8px;margin:14px 0 4px;padding-bottom:6px;border-bottom:1px solid var(--border)">
+      <span style="font-size:16px">${emojiCat(cat)}</span>
+      <b style="color:var(--gold);font-size:13px;letter-spacing:.4px">${esc(cat)}</b>
+      <span class="badge">${prods.length}</span>
+      <button class="btn btn-ghost" style="margin-left:auto;padding:3px 10px;font-size:11px" onclick="const s=$('#prod-cat-filtro'); if(s){s.value='${esc(cat)}'; renderProductos();}">Ver solo →</button>
+    </div>` + apSubgroupHTML(prods);
+}
+// Toda una lista de en-stock, agrupada por categoría.
+function apGrupoPorCatHTML(prods){
+  const grupos={};
+  prods.forEach(p=>{ const c=p.categoria||'Sin categoría'; (grupos[c]=grupos[c]||[]).push(p); });
+  return Object.keys(grupos).sort().map(cat=>apCatBloqueHTML(cat, grupos[cat])).join('');
+}
+// Sección "⛔ Agotados" al final de todo: TODOS los agotados juntos en un solo
+// bloque (no repartidos al final de cada categoría), ordenados por categoría →
+// subcategoría → nombre. Al reponer stock, el producto sale de aquí y vuelve
+// a su lugar arriba (el render corre de nuevo en cada cambio de stock).
+function apAgotadosSectionHTML(agotados){
+  if(!agotados.length) return '';
+  const orden=[...agotados].sort((a,b)=>
+    String(a.categoria||'').localeCompare(String(b.categoria||''))
+    || String(a.subcategoria||'').localeCompare(String(b.subcategoria||''))
+    || _apOrdName(a,b));
+  return `<div style="display:flex;align-items:center;gap:8px;margin:26px 0 4px;padding-bottom:6px;border-bottom:1px solid var(--red)">
+      <span style="font-size:16px">⛔</span>
+      <b style="color:var(--red);font-size:13px;letter-spacing:.4px">AGOTADOS</b>
+      <span class="badge" style="background:rgba(239,68,68,.18);color:var(--red)">${orden.length}</span>
+    </div>
+    <div style="font-size:11px;color:var(--muted);margin:2px 2px 8px">Al reponer stock vuelven arriba a su categoría automáticamente.</div>`
+    + orden.map(apCardHTML).join('');
+}
 function renderProductos(){
   const grid=$('#prod-grid'); if(!grid) return;
   apLlenarFiltroCat();
@@ -2181,38 +2217,22 @@ function renderProductos(){
   if(q) list = list.filter(p=>norm(p.nombre).includes(q)||norm(p.categoria).includes(q));
   if(catF) list = list.filter(p=>p.categoria===catF);
   if(_apFiltroFav) list = list.filter(p=>p.masVendido);
-  // Agotados SIEMPRE al final; el resto en orden alfabético fijo — para
-  // reponer ya está el tab "Reposición" (ordenado por lo que más se vende).
-  // Antes se ordenaba también por cantidad de stock, así que cada +1/-1
-  // cambiaba la posición de la tarjeta en el momento y "mareaba" al admin.
-  list = [...list].sort((a,b)=>{
-    const aA=(Number(a.stock)||0)<=0?1:0, bA=(Number(b.stock)||0)<=0?1:0;
-    if(aA!==bA) return aA-bA;
-    return String(a.nombre||'').localeCompare(String(b.nombre||''));
-  });
   $('#prod-count').textContent = list.length + ' de ' + PRODUCTOS.length + ' productos';
   apSelBar();
   if(!list.length){ grid.innerHTML=`<div class="empty"><div class="ico">🔍</div>Sin resultados.</div>`; return; }
-  // Sin búsqueda ni filtro → agrupado por categoría (como el admin viejo);
-  // con filtro/búsqueda → lista plana ordenada por stock.
+  // En-stock arriba (agrupado por categoría/subcategoría, alfabético) y TODOS
+  // los agotados juntos en una sola sección al final — no repartidos.
+  const conStock=list.filter(p=>!_apAgotado(p)).sort(_apOrdName);
+  const agotados=list.filter(_apAgotado);
   if(!q && !catF && !_apFiltroFav){
-    const grupos={};
-    list.forEach(p=>{ const c=p.categoria||'Sin categoría'; (grupos[c]=grupos[c]||[]).push(p); });
-    grid.innerHTML = Object.keys(grupos).sort().map(cat=>{
-      const prods=grupos[cat];
-      return `<div style="display:flex;align-items:center;gap:8px;margin:14px 0 4px;padding-bottom:6px;border-bottom:1px solid var(--border)">
-        <span style="font-size:16px">${emojiCat(cat)}</span>
-        <b style="color:var(--gold);font-size:13px;letter-spacing:.4px">${esc(cat)}</b>
-        <span class="badge">${prods.length}</span>
-        <button class="btn btn-ghost" style="margin-left:auto;padding:3px 10px;font-size:11px" onclick="const s=$('#prod-cat-filtro'); if(s){s.value='${esc(cat)}'; renderProductos();}">Ver solo →</button>
-      </div>` + apSubgroupHTML(prods);
-    }).join('');
+    grid.innerHTML = apGrupoPorCatHTML(conStock) + apAgotadosSectionHTML(agotados);
   } else if(catF && !q && !_apFiltroFav){
-    // Una sola categoría filtrada ("Ver solo →") → igual subagrupar por
-    // subcategoría, si no vuelven a salir cargadores/inversores mezclados.
-    grid.innerHTML = apSubgroupHTML(list.slice(0,300));
+    // Una sola categoría filtrada ("Ver solo →"): en-stock subagrupado por
+    // subcategoría arriba, agotados de esa categoría juntos al final.
+    grid.innerHTML = apSubgroupHTML(conStock.slice(0,300)) + apAgotadosSectionHTML(agotados.slice(0,300));
   } else {
-    grid.innerHTML = list.slice(0,300).map(apCardHTML).join('');
+    // Búsqueda o filtro de favoritos → lista plana; agotados igual al final.
+    grid.innerHTML = [...conStock, ...agotados].slice(0,300).map(apCardHTML).join('');
   }
 }
 function apFind(id){ return PRODUCTOS.find(p=>String(p.id)===String(id)); }
