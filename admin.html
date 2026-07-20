@@ -1481,7 +1481,7 @@
   };
 </script>
 <script src="js/vendor/html2canvas.min.js?v=e87e5507" defer></script>
-<script src="js/admin-copilot.js?v=0180d606"></script>
+<script src="js/admin-copilot.js?v=64a6646c"></script>
 
 <script>
 (function(){
@@ -3096,7 +3096,7 @@ function renderPublicar(){
   if(P){ const pill=(v,l)=>`<button class="btn ${PUB_VIEW===v?'btn-primary':'btn-ghost'}" onclick="pubSwitch('${v}')">${l}</button>`;
     P.innerHTML=pill('compartir','📲 Compartir')+pill('categoria','🏷️ Por categoría')+pill('banners','🖼️ Banners')+pill('oferta','🔥 Oferta del día'); }
   const body=$('#pub-body'); if(!body) return;
-  if(PUB_VIEW==='compartir'){ body.innerHTML=pubCompartirHTML(); pubRenderShareList(); }
+  if(PUB_VIEW==='compartir'){ body.innerHTML=pubCompartirHTML(); pubRenderShareList(); pubRenderCartelPreview(); }
   else if(PUB_VIEW==='categoria'){ body.innerHTML=pubCategoriaHTML(); pubCategoriaInit(); }
   else if(PUB_VIEW==='banners'){ body.innerHTML='<div class="section"><div class="empty"><div class="ico">🖼️</div>Cargando banners…</div></div>'; pubRenderBanners(); }
   else { body.innerHTML=`<div class="section"><div class="empty"><div class="ico">🔥</div><b style="color:#fff">Oferta del día y contador por tiempo</b><br>Se manejan en el tab <b>🎁 Combos y ofertas</b> (eliges producto, texto y tiempo).<br><br><button class="btn btn-primary" onclick="go('combos')">Ir a Combos y ofertas →</button></div></div>`; }
@@ -3110,8 +3110,39 @@ function pubShareFiltered(){
   const cat=($('#pub-share-cat')&&$('#pub-share-cat').value)||'';
   return PRODUCTOS.filter(p=>Number(p.stock||0)>0).filter(p=>(!cat||(p.categoria||'General')===cat)&&(!q||String(p.nombre||'').toLowerCase().includes(q)||String(p.categoria||'').toLowerCase().includes(q))).slice(0,120);
 }
+// Plantilla del cartel que generan "🖼️ Estado" / "📘 Facebook" (per-producto,
+// abajo) y el modal de grupos — se guarda en localStorage y la lee tmCartelHTML()
+// (admin-copilot.js) directamente, así que elegir acá aplica en TODOS lados
+// sin plumbing extra. La vista previa es el DOM real (misma función que genera
+// el cartel de verdad), no una maqueta aparte — lo que ves es lo que sale.
+function pubCartelVariante(){ return localStorage.getItem('tmCartelVariante')==='pro2' ? 'pro2' : 'clasico'; }
+function pubSetCartelVariante(v){
+  localStorage.setItem('tmCartelVariante', v==='pro2'?'pro2':'clasico');
+  const bc=$('#pub-cartel-clasico'), bp=$('#pub-cartel-pro2');
+  if(bc) bc.className='btn '+(v==='clasico'?'btn-primary':'btn-ghost');
+  if(bp) bp.className='btn '+(v==='pro2'?'btn-primary':'btn-ghost');
+  pubRenderCartelPreview();
+  showToast(v==='pro2' ? '✨ Plantilla Pro v2 activada' : '🏷️ Plantilla Clásica activada', 'Se usa en Estado, Facebook y Revólico');
+}
+function pubRenderCartelPreview(){
+  const box=$('#pub-cartel-preview'); if(!box) return;
+  if(typeof window.tmCartelHTML!=='function'){ box.innerHTML=''; return; }
+  const demo = PRODUCTOS.find(p=>Number(p.stock||0)>0 && ((Array.isArray(p.imagenes)&&p.imagenes[0])||p.imagen)) || PRODUCTOS[0];
+  if(!demo){ box.innerHTML=''; return; }
+  box.innerHTML = window.tmCartelHTML(demo);
+}
 function pubCompartirHTML(){
+  const variante = pubCartelVariante();
   return `<div class="section">
+    <h3>🎨 Diseño del cartel</h3>
+    <p style="font-size:12px;color:var(--muted);margin:-4px 0 12px">Elige cómo se ven las imágenes de <b>🖼️ Estado</b>, <b>📘 Facebook</b> y grupos — aplica a todos los productos.</p>
+    <div style="display:flex;gap:8px;margin-bottom:12px">
+      <button type="button" class="btn ${variante==='clasico'?'btn-primary':'btn-ghost'}" id="pub-cartel-clasico" style="flex:1" onclick="pubSetCartelVariante('clasico')">🏷️ Clásico</button>
+      <button type="button" class="btn ${variante==='pro2'?'btn-primary':'btn-ghost'}" id="pub-cartel-pro2" style="flex:1" onclick="pubSetCartelVariante('pro2')">✨ Pro v2</button>
+    </div>
+    <div class="tcp-preview-wrap" style="margin:0 auto"><div class="tcp-preview-scale"><div class="tcp-card" id="pub-cartel-preview"></div></div></div>
+  </div>
+  <div class="section">
     <h3>📘 Mis grupos de Facebook <span class="badge" id="pub-fb-groups-count">0</span></h3>
     <p style="font-size:12px;color:var(--muted);margin:-4px 0 12px">Guarda tus grupos una vez — luego "Facebook" en cada producto ya sabe dónde publicar.</p>
     <div id="listaGruposFB" style="display:flex;flex-direction:column;gap:10px"></div>
@@ -3600,6 +3631,7 @@ async function pubBannersPublicar(){
   }catch(e){ showToast('❌ Error', e&&e.message||''); }
 }
 window.pubSwitch=pubSwitch; window.pubRenderShareList=pubRenderShareList; window.pubShareAct=pubShareAct;
+window.pubSetCartelVariante=pubSetCartelVariante; window.pubRenderCartelPreview=pubRenderCartelPreview;
 window.pubBannerLink=pubBannerLink; window.pubBannerRemove=pubBannerRemove; window.pubBannerFile=pubBannerFile; window.pubBannersPublicar=pubBannersPublicar;
 window.pubCatOnSelect=pubCatOnSelect; window.pubCatAct=pubCatAct;
 
