@@ -860,10 +860,10 @@
     "id": 1778384428890,
     "nombre": "Portacelulares",
     "precioActual": 15,
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783837457730.webp",
+    "imagen": "https://tiendamax.org/imagenes/img_1783837457730.webp",
     "categoria": "CELULARES",
     "subcategoria": "ACCESORIOS",
-    "stock": 1,
+    "stock": 0,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -876,7 +876,7 @@
     "precioOriginal": 0,
     "comisionMoneda": "USD",
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783837457730.webp",
+      "https://tiendamax.org/imagenes/img_1783837457730.webp",
       "https://tiendamax.org/imagenes/img_1778384428890_ext.webp"
     ]
   },
@@ -1543,26 +1543,31 @@
   },
   {
     "id": 1780543090267,
-    "nombre": "Audífonos Ergonómicos",
-    "precioActual": 15,
+    "nombre": "​🎶 Audífonos Inalámbricos TWS",
+    "precioActual": 10,
     "precioOriginal": 20,
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783837831859.webp",
+    "imagen": "https://tiendamax.org/imagenes/img_1783837831859.webp",
     "categoria": "CELULARES",
     "subcategoria": "AUDIO",
-    "stock": 20,
+    "stock": 11,
     "masVendido": false,
     "usado": false,
     "garantia": "",
     "devolucion": false,
-    "descuento": 25,
+    "descuento": 50,
     "slug": "audifonos-ergonomicos",
-    "comision": 1.8,
+    "comision": 1500,
     "seoTitle": "AUDÍFONOS ERGONÓMICOS en Cuba | TiendaMax",
     "seoDescription": "Audífonos ergonómicos, elegantes, táctiles, con 40 horas de bateria, alta calidad de sonido, cancelacion de ruido de ambiente en llamadas, haciendo la voz…",
-    "comisionMoneda": "USD",
+    "comisionMoneda": "MN",
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783837831859.webp",
+      "https://tiendamax.org/imagenes/img_1783837831859.webp",
       "https://tiendamax.org/imagenes/img_1780543081597.webp"
+    ],
+    "specs": [
+      "​🎧 Sonido Inalámbrico de Alta Fidelidad",
+      "​🎵 Comodidad Ergonómica y Ajuste Perfecto ​",
+      "🛡️ Autonomía Duradera para el Día a Día"
     ]
   },
   {
@@ -1958,10 +1963,11 @@
   },
   {
     "id": 1782439428159,
-    "nombre": "Auriculares Gaming Inalámbrico Nubwo",
+    "nombre": "​🎮 Audífonos Diademas Gaming Inalámbricos NUBWO",
     "imagen": "https://tiendamax.org/imagenes/img_1782439424609_06af7e.webp",
     "imagenes": [
-      "https://tiendamax.org/imagenes/img_1782439424609_06af7e.webp"
+      "https://tiendamax.org/imagenes/img_1782439424609_06af7e.webp",
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784569823396.webp"
     ],
     "precioActual": 50,
     "precioOriginal": 0,
@@ -1976,7 +1982,9 @@
     "garantia": "",
     "devolucion": false,
     "specs": [
-      "2.4GHz"
+      "​🎧 Sonido Envolvente para Gaming de Alta Precisión ​",
+      "🎙️ Comunicación Clara sin Interrupciones ​",
+      "🛡️ Comodidad Ergonómica para Largas Sesiones"
     ],
     "fechaAgregado": "2026-06-26T02:03:48.159Z",
     "nombreNormalizadoAt": "2026-06-27T12:16:34.731Z",
@@ -2640,5 +2648,31 @@
       "🛡️ Gestión Segura y Automatizada de Energía"
     ],
     "fechaAgregado": "2026-07-20T17:44:58.967Z"
+  },
+  {
+    "id": 1784570100968,
+    "nombre": "​🔥 Soldadora Inverter MMA-300",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784570099220.webp",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784570099220.webp"
+    ],
+    "precioActual": 100,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 2,
+    "comision": 5,
+    "comisionMoneda": "USD",
+    "categoria": "UTILES",
+    "subcategoria": "HERRAMIENTAS",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "specs": [
+      "​⚡ Soldadura Inverter de Alta Potencia",
+      "​🛠️ Rendimiento Profesional y Preciso",
+      "​🛡️ Kit Completo Listo para Trabajar"
+    ],
+    "fechaAgregado": "2026-07-20T17:55:00.968Z"
   }
 ]
