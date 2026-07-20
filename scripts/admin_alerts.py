@@ -143,6 +143,69 @@ def _subscriber_identity(t: dict) -> str | None:
     return "tk:" + str(t["token"])
 
 
+def _diff_suscriptores(known_ids: set[str], current_ids: set[str],
+                       first_run: bool) -> list[str]:
+    """Decide qué alertar comparando el set conocido con el actual. Reglas,
+    pensadas para NO spamear con altas/bajas falsas (el bug reportado):
+
+    - Primera corrida: no se avisa nada, solo se aprende el estado actual.
+    - Conjuntos disjuntos (nada en común) con ambos no vacíos: NO es churn
+      real, es que cambió CÓMO se calcula la identidad (una migración de
+      formato como la que introdujo el fix anterior) o un reseteo masivo.
+      Se re-sincroniza en silencio en vez de gritar "N entraron + N salieron".
+    - Si solo hubo altas → una alerta de altas. Solo bajas → una de bajas.
+    - Si hubo altas Y bajas a la vez (raro con identidad estable): se reporta
+      SOLO el neto, nunca "N nuevos + N cancelaron" con el mismo número —
+      eso es justo la contradicción sin sentido que veía el admin. Si el
+      neto es 0 (entró y salió la misma cantidad), no se avisa nada.
+    """
+    if first_run:
+        return []
+    nuevos = current_ids - known_ids
+    perdidos = known_ids - current_ids
+    overlap = current_ids & known_ids
+    total = len(current_ids)
+
+    # Migración de formato de identidad / reseteo masivo → resync silencioso.
+    if known_ids and current_ids and not overlap:
+        return []
+
+    if nuevos and not perdidos:
+        return [f"🔔 {len(nuevos)} nuevo(s) suscriptor(es) push. Total: {total}"]
+    if perdidos and not nuevos:
+        return [f"📉 {len(perdidos)} suscriptor(es) cancelaron push. Total: {total}"]
+    if nuevos and perdidos:
+        net = len(current_ids) - len(known_ids)
+        if net > 0:
+            return [f"🔔 {net} nuevo(s) suscriptor(es) push. Total: {total}"]
+        if net < 0:
+            return [f"📉 {-net} suscriptor(es) cancelaron push. Total: {total}"]
+        # Neto 0: entró y salió la misma cantidad → no avisar (no es spam útil).
+    return []
+
+
+def _alertas_suscriptores(db, meta: dict) -> list[str]:
+    """Lee /tokens, calcula identidades estables y devuelve las alertas.
+    Actualiza meta['known_token_ids'] con el estado actual para la próxima
+    corrida. Aislado de main() para poder testear _diff_suscriptores() puro."""
+    try:
+        tokens = db.reference("tokens").get() or {}
+    except Exception as e:
+        print(f"⚠️ Error leyendo tokens: {e}", file=sys.stderr)
+        return []
+    current_ids: set[str] = (
+        {_subscriber_identity(t) for t in tokens.values() if _subscriber_identity(t)}
+        if isinstance(tokens, dict) else set()
+    )
+    known_ids: set[str] = set(meta.get("known_token_ids") or [])
+    first_run = not known_ids and "known_token_ids" not in meta
+    if first_run:
+        print(f"Primera ejecución tokens: {len(current_ids)} registrados como conocidos.")
+    msgs = _diff_suscriptores(known_ids, current_ids, first_run)
+    meta["known_token_ids"] = list(current_ids)
+    return msgs
+
+
 def build_copilot_digest(db, meta: dict, products: list[dict]) -> str | None:
     now_dt = datetime.now(TZ)
     last_iso = meta.get("copilot_last_digest")
@@ -228,26 +291,8 @@ def main() -> int:
     alertas: list[str] = []
 
     # 1) Suscriptores push nuevos / perdidos
-    try:
-        tokens = db.reference("tokens").get() or {}
-        current_ids: set[str] = (
-            {_subscriber_identity(t) for t in tokens.values() if _subscriber_identity(t)}
-            if isinstance(tokens, dict) else set()
-        )
-        known_ids: set[str] = set(meta.get("known_token_ids") or [])
-        first_run = not known_ids and "known_token_ids" not in meta
-        if first_run:
-            print(f"Primera ejecución tokens: {len(current_ids)} registrados como conocidos.")
-        else:
-            nuevos = current_ids - known_ids
-            perdidos = known_ids - current_ids
-            if nuevos:
-                alertas.append(f"🔔 {len(nuevos)} nuevo(s) suscriptor(es) push. Total: {len(current_ids)}")
-            if perdidos:
-                alertas.append(f"📉 {len(perdidos)} suscriptor(es) cancelaron push. Total: {len(current_ids)}")
-        meta["known_token_ids"] = list(current_ids)
-    except Exception as e:
-        print(f"⚠️ Error leyendo tokens: {e}", file=sys.stderr)
+    for msg in _alertas_suscriptores(db, meta):
+        alertas.append(msg)
 
     # 2) Interesados nuevos
     try:
