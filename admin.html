@@ -1481,7 +1481,7 @@
   };
 </script>
 <script src="js/vendor/html2canvas.min.js?v=e87e5507" defer></script>
-<script src="js/admin-copilot.js?v=64a6646c"></script>
+<script src="js/admin-copilot.js?v=d81b3259"></script>
 
 <script>
 (function(){
@@ -3121,8 +3121,22 @@ function pubSetCartelVariante(v){
   const bc=$('#pub-cartel-clasico'), bp=$('#pub-cartel-pro2');
   if(bc) bc.className='btn '+(v==='clasico'?'btn-primary':'btn-ghost');
   if(bp) bp.className='btn '+(v==='pro2'?'btn-primary':'btn-ghost');
+  const cw=$('#pub-cartel-colores'); if(cw) cw.style.display = v==='pro2' ? 'flex' : 'none';
   pubRenderCartelPreview();
   showToast(v==='pro2' ? '✨ Plantilla Pro v2 activada' : '🏷️ Plantilla Clásica activada', 'Se usa en Estado, Facebook y Revólico');
+}
+function pubCartelColoresHTML(){
+  const cur=localStorage.getItem('tmCartelColor')||'#FF6B1A';
+  const colores = (typeof window.TM_CARTEL_COLORES!=='undefined') ? window.TM_CARTEL_COLORES : [
+    ['#FF6B1A','Naranja'],['#EF4444','Rojo'],['#F59E0B','Ámbar'],['#EAB308','Dorado'],['#EC4899','Rosa'],
+    ['#3B82F6','Azul'],['#06B6D4','Cian'],['#6366F1','Índigo'],['#A855F7','Púrpura'],['#14B8A6','Verde azulado'],['#22C55E','Verde']
+  ];
+  return colores.map(([hex,nombre])=>`<button type="button" title="${esc(nombre)}" onclick="pubSetCartelColor('${hex}')" style="width:34px;height:34px;border-radius:10px;background:${hex};border:2.5px solid ${cur.toUpperCase()===hex?'#fff':'transparent'};box-shadow:0 0 0 1px rgba(255,255,255,.15)${cur.toUpperCase()===hex?',0 0 0 3px '+hex+'55':''};cursor:pointer;flex-shrink:0"></button>`).join('');
+}
+function pubSetCartelColor(hex){
+  localStorage.setItem('tmCartelColor', hex);
+  const cw=$('#pub-cartel-colores'); if(cw) cw.innerHTML=pubCartelColoresHTML();
+  pubRenderCartelPreview();
 }
 function pubRenderCartelPreview(){
   const box=$('#pub-cartel-preview'); if(!box) return;
@@ -3140,6 +3154,7 @@ function pubCompartirHTML(){
       <button type="button" class="btn ${variante==='clasico'?'btn-primary':'btn-ghost'}" id="pub-cartel-clasico" style="flex:1" onclick="pubSetCartelVariante('clasico')">🏷️ Clásico</button>
       <button type="button" class="btn ${variante==='pro2'?'btn-primary':'btn-ghost'}" id="pub-cartel-pro2" style="flex:1" onclick="pubSetCartelVariante('pro2')">✨ Pro v2</button>
     </div>
+    <div id="pub-cartel-colores" style="display:${variante==='pro2'?'flex':'none'};gap:8px;flex-wrap:wrap;margin-bottom:14px">${pubCartelColoresHTML()}</div>
     <div class="tcp-preview-wrap" style="margin:0 auto"><div class="tcp-preview-scale"><div class="tcp-card" id="pub-cartel-preview"></div></div></div>
   </div>
   <div class="section">
@@ -3632,6 +3647,7 @@ async function pubBannersPublicar(){
 }
 window.pubSwitch=pubSwitch; window.pubRenderShareList=pubRenderShareList; window.pubShareAct=pubShareAct;
 window.pubSetCartelVariante=pubSetCartelVariante; window.pubRenderCartelPreview=pubRenderCartelPreview;
+window.pubSetCartelColor=pubSetCartelColor; window.pubCartelColoresHTML=pubCartelColoresHTML;
 window.pubBannerLink=pubBannerLink; window.pubBannerRemove=pubBannerRemove; window.pubBannerFile=pubBannerFile; window.pubBannersPublicar=pubBannersPublicar;
 window.pubCatOnSelect=pubCatOnSelect; window.pubCatAct=pubCatAct;
 
