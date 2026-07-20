@@ -311,8 +311,8 @@ function injectStyles(){
   .tcp2-glow{position:absolute;inset:0;background:radial-gradient(ellipse at 30% 14%,rgba(var(--tcp2-a-rgb),.16) 0%,transparent 52%),radial-gradient(ellipse at 75% 78%,rgba(var(--tcp2-a-rgb),.10) 0%,transparent 50%)}
   .tcp2-header{position:relative;z-index:3;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:30px 34px 0}
   .tcp2-brand{display:flex;align-items:center;gap:13px}
-  .tcp2-logo{width:56px;height:56px;border-radius:50%;background:radial-gradient(circle at 32% 28%,rgba(var(--tcp2-a-rgb),.45),rgba(var(--tcp2-a-rgb),.10) 72%);border:1px solid rgba(var(--tcp2-a-rgb),.45);display:flex;align-items:center;justify-content:center;padding:10px;box-shadow:0 6px 18px rgba(var(--tcp2-a-rgb),.3)}
-  .tcp2-logo img{width:100%;height:100%;object-fit:contain}
+  .tcp2-logo{width:52px;height:52px;flex-shrink:0;border-radius:14px;overflow:hidden;box-shadow:0 6px 18px rgba(var(--tcp2-a-rgb),.35)}
+  .tcp2-logo img{width:100%;height:100%;object-fit:cover;display:block}
   .tcp2-word{font-size:23px;font-weight:800;color:#fff;line-height:1;letter-spacing:-.3px}.tcp2-word em{font-style:normal;color:var(--tcp2-a)}
   .tcp2-sub{font-size:10px;color:#777;text-transform:uppercase;letter-spacing:.14em;margin-top:4px}
   .tcp2-tag{display:flex;align-items:center;gap:6px;background:rgba(var(--tcp2-a-rgb),.14);border:1px solid rgba(var(--tcp2-a-rgb),.45);color:var(--tcp2-a);font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding:8px 15px;border-radius:999px;white-space:nowrap}
@@ -1333,21 +1333,23 @@ const _TM_ICON2_PATHS = {
   gota:      'M12 3s6 6.5 6 11a6 6 0 11-12 0c0-4.5 6-11 6-11z',
   reloj:     'M12 21a9 9 0 100-18 9 9 0 000 18z M12 7v5l3.5 2',
   estrella:  'M12 2l2.9 6.6 7.1.6-5.4 4.7 1.7 7-6.3-3.8L5.7 21l1.7-7L2 9.2l7.1-.6z',
+  chip:      'M9 2v3M15 2v3M9 19v3M15 19v3M2 9h3M2 15h3M19 9h3M19 15h3M7 7h10v10H7z M10 10h4v4h-4z',
 };
 function _cIcon2Key(title){
   const t = String(title||'').toUpperCase();
   if(/WIFI|RED|SEÑAL|COBERTURA|ALCANCE|ANTENA/.test(t)) return 'wifi';
   if(/ENV[IÍ]O|PAQUETE|CAJA|ENTREGA/.test(t)) return 'caja';
   if(/VELOCID|RAPID|MBPS|GHZ/.test(t)) return 'velocidad';
-  if(/BATER|ENERG|CARGA|AUTONOM|MAH|SOLAR/.test(t)) return 'bateria';
-  if(/GARANT|PROTECCI|SEGUR|RESISTENT|IMPERMEABLE/.test(t)) return 'escudo';
-  if(/DISPOSITIVO|COMPATIBLE|MULTIPLE|CONECTA/.test(t)) return 'dispositivos';
+  if(/ARRANQUE|POTENCIA|CCA|AMPER|BATER|ENERG|CARGA|AUTONOM|MAH|SOLAR/.test(t)) return 'bateria';
+  if(/CONSTRUCCI[OÓ]N|DISE[ÑN]O|ERGON[OÓ]MIC|SELLADO|ESTRUCTURA|GARANT|PROTECCI|SEGUR|RESISTENT|IMPERMEABLE/.test(t)) return 'escudo';
+  if(/DISPOSITIVO|COMPATIB|MULTIPLE|CONECTA/.test(t)) return 'dispositivos';
   if(/SONIDO|AUDIO|BLUETOOTH|MUSICA/.test(t)) return 'sonido';
   if(/AGUA|LLUVIA|IMPERMEA|SUMERG/.test(t)) return 'gota';
   if(/DURA|TIEMPO|HORAS|RELOJ/.test(t)) return 'reloj';
   if(/BLOQUE|CANDADO|LLAVE|ACCESO/.test(t)) return 'candado';
   if(/CALIDAD|PREMIUM|DESTACADO|TOP/.test(t)) return 'estrella';
   if(/SOPORTE|AYUDA|ATENCI[OÓ]N|24\/7/.test(t)) return 'reloj';
+  if(/TECNOLOG[IÍ]A|INNOVACI[OÓ]N|AVANZAD/.test(t)) return 'chip';
   return 'rayo';
 }
 function _cIconSvg2(title){
@@ -1356,7 +1358,8 @@ function _cIconSvg2(title){
   const d = _TM_ICON2_PATHS[_cIcon2Key(title)] || _TM_ICON2_PATHS.rayo;
   return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="${d}"/></svg>`;
 }
-// Plantilla Pro v2: logo oficial (iconos/bag.png, no una insignia genérica de
+// Plantilla Pro v2: logo oficial (iconos/icon-192.png — el mismo tile con
+// fondo naranja que usa el header real del sitio, no una insignia genérica de
 // texto), iconos de línea reales en vez de emoji, y grid de features 2x2 —
 // inspirada en un mockup que trajo el admin, adaptada al formato vertical
 // (760×1140, mismo tamaño que el clásico) para WhatsApp Estados.
@@ -1389,7 +1392,7 @@ function _cartelHTML2(d){
   const featHtml=feats.map(f=>`<div class="tcp2-feat"><div class="tcp2-feat-ic">${_cIconSvg2(f.title)}</div><div class="min-w-0"><div class="tcp2-feat-t">${esc(_cClip(f.title,22))}</div>${f.desc?`<div class="tcp2-feat-d">${esc(_cClip(f.desc,40))}</div>`:''}</div></div>`).join('');
   return `<div class="tcp2-root" style="--tcp2-a:${color};--tcp2-a-rgb:${colorRgb}">`
     +`<div class="tcp2-bg"></div><div class="tcp2-glow"></div>`
-    +`<div class="tcp2-header"><div class="tcp2-brand"><div class="tcp2-logo"><img src="/iconos/bag.png" alt="TiendaMax"></div><div><div class="tcp2-word">Tienda<em>Max</em></div><div class="tcp2-sub">Tienda online en Cuba</div></div></div><div class="tcp2-tag">${esc(_cClip(d.tag||'DESTACADO',16))}</div></div>`
+    +`<div class="tcp2-header"><div class="tcp2-brand"><div class="tcp2-logo"><img src="/iconos/icon-192.png" alt="TiendaMax"></div><div><div class="tcp2-word">Tienda<em>Max</em></div><div class="tcp2-sub">Tienda online en Cuba</div></div></div><div class="tcp2-tag">${esc(_cClip(d.tag||'DESTACADO',16))}</div></div>`
     +`<div class="tcp2-title"><h1>${esc(w1)}${w2?` <em>${esc(w2)}</em>`:''}</h1>${d.tagline?`<div class="tcp2-tagline">${esc(d.tagline)}</div>`:''}</div>`
     +`<div class="tcp2-imgwrap">${imgUrl?`<img src="${esc(imgUrl)}" crossorigin="anonymous">`:''}${hasDisc?`<div class="tcp2-badge">-${pct}%<small>DESCUENTO</small></div>`:''}</div>`
     +(featHtml?`<div class="tcp2-feats">${featHtml}</div>`:'')
