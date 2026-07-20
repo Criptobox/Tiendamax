@@ -1,0 +1,63 @@
+name: 🎯 Radar de demanda (busco/compro)
+
+on:
+  schedule:
+    # 2×/día: ~9 AM y ~6 PM hora Cuba (13:00 y 22:00 UTC en horario de verano).
+    - cron: '0 13 * * *'
+    - cron: '0 22 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+# Estado propio; no choca con otros radares.
+concurrency:
+  group: demanda-radar
+  cancel-in-progress: false
+
+jobs:
+  demanda:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.11' }
+      - name: Instalar dependencias
+        run: python -m pip install -r scripts/requirements.txt
+      - name: Buscar clientes que buscan/compran
+        run: python scripts/demanda_radar.py
+        env:
+          BOT_TOKEN:     ${{ secrets.BOT_TOKEN }}
+          ADMIN_CHAT_ID: ${{ secrets.ADMIN_CHAT_ID }}
+      - name: Commit del estado (links ya avisados)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add demanda_radar.json
+          if git diff --cached --quiet; then
+            echo "Sin cambios en demanda_radar.json."
+            exit 0
+          fi
+          # [skip ci] — es solo estado anti-spam, no un asset del sitio: no
+          # debe disparar build/deploy de Pages.
+          git commit -m "chore: actualizar radar de demanda [skip ci]"
+          for i in 1 2 3 4 5; do
+            if git push origin HEAD:main; then
+              echo "✅ demanda_radar.json subido."
+              exit 0
+            fi
+            echo "Push rechazado (rama detrás); reintegrando sobre origin/main…"
+            git fetch origin main
+            # Archivo generado: ante conflicto, conserva SIEMPRE nuestra versión.
+            if ! git rebase -X theirs origin/main; then
+              git checkout --theirs -- demanda_radar.json 2>/dev/null || true
+              git add demanda_radar.json
+              GIT_EDITOR=true git rebase --continue || git rebase --abort
+            fi
+            sleep $((i * 2))
+          done
+          echo "❌ No se pudo subir demanda_radar.json tras varios intentos." >&2
+          exit 1
