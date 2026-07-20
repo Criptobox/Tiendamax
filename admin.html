@@ -2168,8 +2168,15 @@ function renderProductos(){
   if(q) list = list.filter(p=>norm(p.nombre).includes(q)||norm(p.categoria).includes(q));
   if(catF) list = list.filter(p=>p.categoria===catF);
   if(_apFiltroFav) list = list.filter(p=>p.masVendido);
-  // Agotados SIEMPRE al final; con stock, primero los que menos tienen (para reponer)
-  list = [...list].sort((a,b)=>{ const aA=(Number(a.stock)||0)<=0?1:0, bA=(Number(b.stock)||0)<=0?1:0; return aA-bA || (Number(a.stock)||0)-(Number(b.stock)||0); });
+  // Agotados SIEMPRE al final; el resto en orden alfabético fijo — para
+  // reponer ya está el tab "Reposición" (ordenado por lo que más se vende).
+  // Antes se ordenaba también por cantidad de stock, así que cada +1/-1
+  // cambiaba la posición de la tarjeta en el momento y "mareaba" al admin.
+  list = [...list].sort((a,b)=>{
+    const aA=(Number(a.stock)||0)<=0?1:0, bA=(Number(b.stock)||0)<=0?1:0;
+    if(aA!==bA) return aA-bA;
+    return String(a.nombre||'').localeCompare(String(b.nombre||''));
+  });
   $('#prod-count').textContent = list.length + ' de ' + PRODUCTOS.length + ' productos';
   apSelBar();
   if(!list.length){ grid.innerHTML=`<div class="empty"><div class="ico">🔍</div>Sin resultados.</div>`; return; }
