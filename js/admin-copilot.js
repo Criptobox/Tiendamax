@@ -272,7 +272,7 @@ function injectStyles(){
   .tcp-hex-n{font-size:34px;font-weight:900;color:#fff;line-height:1;position:relative;z-index:1}
   .tcp-hex-l{font-size:9px;font-weight:700;color:#ff8c42;letter-spacing:1.5px;margin-top:4px;position:relative;z-index:1;text-align:center;line-height:1.2}
   .tcp-img{position:absolute;right:26px;top:322px;z-index:3;width:390px;height:390px;display:flex;align-items:center;justify-content:center}
-  .tcp-img img{max-width:100%;max-height:100%;object-fit:contain;filter:drop-shadow(0 24px 34px rgba(0,0,0,.72)) drop-shadow(0 0 26px rgba(255,107,26,.22));background:transparent}
+  .tcp-img img{max-width:100%;max-height:100%;object-fit:contain;border-radius:22px;filter:drop-shadow(0 20px 40px rgba(0,0,0,.6));background:#fff}
   .tcp-feats{position:absolute;left:40px;top:470px;z-index:3;display:flex;flex-direction:column;gap:16px;width:210px}
   .tcp-feat{display:flex;align-items:flex-start;gap:12px}
   .tcp-feat-ic{width:42px;height:42px;flex-shrink:0;background:rgba(255,107,26,.10);border:1.5px solid #ff6b1a;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px}
@@ -436,7 +436,7 @@ function updateBubble(){
   if (crit) { b.classList.remove('tm-copilot-pulse'); void b.offsetWidth; b.classList.add('tm-copilot-pulse'); }
 }
 function tabsHtml(view){
-  const tabs=[['hoy','✅ Hoy'],['chat','💬 Chat'],['correcciones','🩺 Correcciones'],['descripciones','📝 Descripciones'],['agentes','🤖 Agentes'],['marketing','📣 Marketing'],['memoria','🧠 Memoria']];
+  const tabs=[['hoy','✅ Hoy'],['marketing','📣 Marketing'],['chat','💬 Chat'],['correcciones','🩺 Correcciones'],['descripciones','📝 Descripciones'],['agentes','🤖 Agentes'],['memoria','🧠 Memoria']];
   return `<div class="tm-copilot-tabs">${tabs.map(t=>`<button type="button" class="tm-copilot-tab ${view===t[0]?'active':''}" data-cop="view" data-view="${t[0]}">${t[1]}</button>`).join('')}</div>`;
 }
 
@@ -1270,45 +1270,10 @@ function _cartelDataFromProduct(p){
 // use el MISMO diseño de cartel que el generador del copiloto.
 window.tmCartelHTML = function(p){ try{ injectStyles(); return _cartelHTML(_cartelDataFromProduct(p)); }catch(e){ console.error('[cartel]',e); return ''; } };
 
-// Recorta el fondo blanco de una foto (estudio) → PNG transparente, para que
-// el producto quede "flotando" integrado en el cartel oscuro. Si la imagen es
-// cross-origin sin CORS (canvas contaminado) devuelve la URL original intacta.
-function _tmKnockoutWhiteURL(url){
-  return new Promise(function(resolve){
-    var img=new Image(); img.crossOrigin='anonymous';
-    img.onload=function(){
-      try{
-        var w=img.naturalWidth||img.width, h=img.naturalHeight||img.height;
-        if(!w||!h){ resolve(url); return; }
-        var c=document.createElement('canvas'); c.width=w; c.height=h;
-        var cx=c.getContext('2d'); cx.drawImage(img,0,0);
-        var im=cx.getImageData(0,0,w,h), a=im.data;
-        for(var i=0;i<a.length;i+=4){
-          var r=a[i],g=a[i+1],b=a[i+2];
-          if(r>240&&g>240&&b>240){ a[i+3]=0; }               // blanco puro → transparente
-          else if(r>216&&g>216&&b>216){                        // borde casi-blanco → semitransparente
-            var m=Math.min(r,g,b), al=Math.round((240-m)*255/24);
-            if(al<a[i+3]) a[i+3]=al;
-          }
-        }
-        cx.putImageData(im,0,0);
-        resolve(c.toDataURL('image/png'));
-      }catch(e){ resolve(url); }   // canvas tainted → sin recorte
-    };
-    img.onerror=function(){ resolve(url); };
-    img.src=url;
-  });
-}
-// Sustituye la foto del producto del cartel por su versión recortada. Llamar
-// tras poner el innerHTML del cartel y ANTES de html2canvas.
-window.tmKnockoutCartel = async function(node){
-  try{
-    var im=node && node.querySelector('.tcp-img img'); if(!im) return;
-    var src=im.getAttribute('src')||im.src; if(!src) return;
-    var out=await _tmKnockoutWhiteURL(src);
-    if(out && out!==src){ await new Promise(function(r){ im.onload=r; im.onerror=r; im.src=out; setTimeout(r,4000); }); }
-  }catch(e){}
-};
+// Nota: hubo un recorte automático de fondo blanco (knockout) aquí, pero en
+// productos blancos (switches, routers) se comía partes del producto y dejaba
+// bordes sucios — el admin lo descartó. La foto va normal, con bordes
+// redondeados y fondo blanco (ver .tcp-img img).
 function promoSetProduct(id) {
   const p = products().find(x => String(x.id) === String(id));
   if (!p) return;
@@ -1428,7 +1393,6 @@ async function promoDescargarCartel(btn){
   try {
     // Espera a que TODAS las imágenes (logo + foto del producto) carguen.
     await Promise.all([...node.querySelectorAll('img')].map(im => im.complete ? null : new Promise(r=>{ im.onload=r; im.onerror=r; setTimeout(r,4000); })));
-    if(window.tmKnockoutCartel) await window.tmKnockoutCartel(node);   // recorta el fondo blanco de la foto
     const canvas = await window.html2canvas(node, { backgroundColor:'#000', scale:2, useCORS:true, allowTaint:false, logging:false, width:node.offsetWidth, height:node.offsetHeight });
     const link = document.createElement('a');
     link.download = 'cartel-tiendamax-' + Date.now() + '.png';
@@ -1757,6 +1721,9 @@ function bindEvents(){
       const canal={postEstado:'story',postWhats:'wa',postFace:'fb'}[act];
       postMarcarPublicado(pid);
       try{ remember('post_ready',{productName:p&&p.nombre, pid}); }catch(_e){}
+      // Cerrar el panel ANTES: el modal de Facebook (z-index 9999) quedaba
+      // DEBAJO de este sheet (z-index 99999) — parecía que el botón no hacía nada.
+      closeSheet();
       if(typeof window.pubShareAct==='function'){ window.pubShareAct(pid, canal); }
       else if(p){
         if(act==='postFace'){ window.open('https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent('https://tiendamax.org/p/producto-'+pid+'.html')+'&quote='+encodeURIComponent(postTexto(p)),'_blank','noopener'); }
