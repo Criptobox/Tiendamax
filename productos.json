@@ -2726,5 +2726,32 @@
       "🛡️ Red Doméstica Segura y de Gran Rendimiento"
     ],
     "fechaAgregado": "2026-07-20T17:41:05.086Z"
+  },
+  {
+    "id": 1784569498967,
+    "nombre": "​🔌 Controlador de Carga Solar MPPT 100A AUTO",
+    "descripcion": "Controlador de carga solar MPPT de alto rendimiento diseñado para maximizar la recolección de energía de tus paneles solares. Su sistema de reconocimiento automático se adapta a múltiples configuraciones de voltaje, protegiendo y alargando la vida útil de tu banco de baterías con una gestión eficiente y segura.\n​Ficha Técnica:\n​Tecnología: ☀️ Tecnología MPPT avanzada que incrementa significativamente la eficiencia de conversión y aprovechamiento de la energía solar disponible.\n​Compatibilidad: ⚡ Detección automática de voltaje, soportando sistemas de 12V, 24V, 36V y 48V para una gran versatilidad en instalaciones.\n​Monitoreo: 📟 Pantalla LCD integrada que muestra en tiempo real el estado de la batería, el voltaje de los paneles y la salida de carga.\n​Protección: 🛡️ Funciones de seguridad integradas para prevenir sobrecargas, cortocircuitos y descargas inversas, protegiendo todo el sistema.\n​Especificaciones (Specs):\n​Tipo: Controlador de carga solar MPPT.\n​Corriente nominal: 100A.\n​Voltaje del sistema: 12V / 24V / 36V / 48V (Automático).",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784569497721.webp",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784569497721.webp"
+    ],
+    "precioActual": 8,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 6,
+    "comision": 5,
+    "comisionMoneda": "USD",
+    "categoria": "ENERGIA",
+    "subcategoria": "CONTROLADORES SOLARES",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "specs": [
+      "​☀️ Optimización Solar de Máxima Eficiencia ​",
+      "⚡ Control Inteligente de Carga Multivoltaje ​",
+      "🛡️ Gestión Segura y Automatizada de Energía"
+    ],
+    "fechaAgregado": "2026-07-20T17:44:58.967Z"
   }
 ]
