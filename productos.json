@@ -370,7 +370,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1778104512761.webp",
     "categoria": "ENERGIA",
     "subcategoria": "CONTROLADORES SOLARES",
-    "stock": 0,
+    "stock": 7,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -1405,7 +1405,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1779205927276.webp",
     "categoria": "ENERGIA",
     "subcategoria": "CARGADORES",
-    "stock": 0,
+    "stock": 5,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -1430,7 +1430,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1779208523952.webp",
     "categoria": "ENERGIA",
     "subcategoria": "CONTROLADORES SOLARES",
-    "stock": 0,
+    "stock": 6,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -1831,17 +1831,21 @@
     "imagen": "https://tiendamax.org/imagenes/img_1781711152979_1e8154.webp",
     "categoria": "WIFI",
     "subcategoria": "ACCESORIOS",
-    "stock": 0,
+    "stock": 7,
     "masVendido": false,
     "usado": false,
     "garantia": "",
     "devolucion": false,
     "descuento": 0,
     "slug": "repetidor-wifi-de-rango-extendido-tp-link",
-    "comision": 1000,
+    "comision": 1500,
     "comisionMoneda": "MN",
     "seoTitle": "REPETIDOR WIFI DE RANGO EXTENDIDO TP - LINK | TiendaMax",
     "seoDescription": "✅ Amplía la cobertura de tu red WiFi en el hogar u oficina con este repetidor TP-Link. Mantén una conexión estable y de alta velocidad en todas las áreas.",
+    "specs": [],
+    "imagenes": [
+      "https://tiendamax.org/imagenes/img_1781711152979_1e8154.webp"
+    ],
     "descripcion": "Repetidor WiFi de rango extendido, se conecta directo al tomacorriente, con 2 antenas. Amplifica la señal del router a zonas donde llega débil."
   },
   {
@@ -2621,11 +2625,11 @@
       "https://tiendamax.org/imagenes/img_1784403675794.webp",
       "https://tiendamax.org/imagenes/img_1784403676611.webp"
     ],
-    "precioActual": 120,
+    "precioActual": 140,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 0,
-    "comision": 8,
+    "stock": 10,
+    "comision": 10,
     "comisionMoneda": "USD",
     "categoria": "WIFI",
     "subcategoria": "ROUTERS",
@@ -2695,5 +2699,32 @@
     ],
     "fechaAgregado": "2026-07-18T20:04:47.403Z",
     "descripcion": "Cámara de vigilancia inteligente con diseño moderno y compacto, ideal para monitorear hogares o pequeños negocios. Gracias a su conectividad inalámbrica y capacidad de giro motorizado, permite un control total del entorno desde tu dispositivo móvil, ofreciendo tranquilidad tanto de día como de noche.\n​Ficha Técnica:\n​○ Monitoreo: 🔄 Equipada con movimiento PTZ (Pan, Tilt, Zoom) para una cobertura completa, eliminando puntos ciegos en cualquier habitación o área exterior.\n​○ Visión: 🌙 Tecnología de visión nocturna optimizada con iluminación integrada, garantizando imágenes claras y detalladas incluso en condiciones de baja luminosidad.\n​○ Conectividad: 📡 Antenas duales de alta recepción que aseguran una señal Wi-Fi estable para la transmisión de video en tiempo real sin interrupciones.\n​○ Instalación: 🛠️ Diseño versátil y fácil de instalar, permitiendo su montaje en paredes o techos para una vigilancia discreta y efectiva.\n​Especificaciones (Specs):\n​Tipo: Cámara IP PTZ inalámbrica.\n​Conectividad: Wi-Fi.\n​Uso: Interiores y exteriores protegidos (Hogares/Oficinas).\n​Características principales: Rotación 360°, visión nocturna, monitoreo móvil."
+  },
+  {
+    "id": 1784569265085,
+    "nombre": "​📡 Router Inalámbrico WAVLINK AC1200 Dual Band",
+    "descripcion": "Router inalámbrico de alto rendimiento equipado con tecnología de doble banda simultánea, diseñado para ofrecer una conexión rápida, estable y de gran alcance en todo tu hogar u oficina. Sus múltiples antenas externas optimizan la distribución de la señal, garantizando una transmisión fluida para streaming, juegos y navegación en múltiples dispositivos.\n​Ficha Técnica:\n​Tecnología: 🌐 Soporta doble banda simultánea para separar el tráfico y reducir la interferencia, asegurando un rendimiento óptimo en la red.\n​Cobertura: 📶 Dispone de cuatro antenas externas de alta ganancia que amplían el área de cobertura y eliminan las zonas sin señal.\n​Rendimiento: ⚡ Velocidad AC1200 para descargas rápidas, reproducción de contenido en alta definición y transferencia de datos sin demoras.\n​Seguridad: 🔒 Protocolos de encriptación avanzados para proteger tu red contra accesos no autorizados y mantener tus datos seguros.\n​Especificaciones (Specs):\n​Marca: WAVLINK.\n​Modelo: AC1200.\n​Tipo: Router inalámbrico Dual Band.\n​Antenas: 4 antenas externas.",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784569263882.webp",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784569263882.webp"
+    ],
+    "precioActual": 70,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 8,
+    "comision": 10,
+    "comisionMoneda": "USD",
+    "categoria": "WIFI",
+    "subcategoria": "ROUTERS",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "specs": [
+      "​🌐 Conectividad Dual Band de Alta Velocidad",
+      "​📶 Cobertura Amplia y Estable sin Interrupciones ​",
+      "🛡️ Red Doméstica Segura y de Gran Rendimiento"
+    ],
+    "fechaAgregado": "2026-07-20T17:41:05.086Z"
   }
 ]
