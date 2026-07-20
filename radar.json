@@ -1,18 +1,83 @@
 {
-  "actualizado": "2026-07-19T11:57:53.266178+00:00",
-  "fecha": "2026-07-19",
+  "actualizado": "2026-07-20T13:06:07.814010+00:00",
+  "fecha": "2026-07-20",
   "fuentes": [
     "revolico",
     "porlalivre",
     "lelespc"
   ],
   "resumen": {
-    "vigilados": 2,
+    "vigilados": 3,
     "encimaMercado": 0,
     "bajadasComp": 0,
     "sinDatos": 0
   },
   "productos": [
+    {
+      "id": 1778102214012,
+      "nombre": "​🌐 Switch Gigabit de 8 Puertos",
+      "tuPrecio": 30.0,
+      "mercado": {
+        "min": 20.0,
+        "mediana": 42.5,
+        "n": 14
+      },
+      "deltaAyerMediana": null,
+      "estado": "competitivo",
+      "sugerencia": {
+        "texto": "Precio competitivo respecto al mercado"
+      },
+      "historial": [
+        {
+          "fecha": "2026-07-20",
+          "mediana": 42.5
+        }
+      ],
+      "muestras": [
+        {
+          "fuente": "revolico",
+          "titulo": "20 USD Tp-Link litewave ls105g -Switch gigabit de 5 puertos",
+          "precio": 20.0,
+          "url": "https://www.revolico.com/item/tp-link-litewave-ls105g-switch-gigabit-de-5-puertos-56347203",
+          "dias": null
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "20 USD Switch Gigabit Ethernet de 5 Puertos. Interesados al 53998989 o 54981957",
+          "precio": 20.0,
+          "url": "https://www.revolico.com/item/switch-gigabit-ethernet-de-5-puertos-interesados-al-53998989-o-54981957-56272322",
+          "dias": null
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "25 USD Switch Ethernet Gigabit de 8 puertos TP-Link Litewave",
+          "precio": 25.0,
+          "url": "https://www.revolico.com/item/switch-ethernet-gigabit-de-8-puertos-tp-link-litewave-56355222",
+          "dias": null
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "29.99 USD Tenda Switch Gigabit 8 Puertos 🌟 8 puertos Ethernet de alta velocidad 🌟 Silencio",
+          "precio": 29.99,
+          "url": "https://www.revolico.com/item/tp-link-switch-gigabit-8-puertos-8-puertos-ethernet-de-alta-velocidad-silencioso-63142460-55821991-55082181",
+          "dias": null
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "39.99 USD Tp-Link Switch Gigabit 8 puertos",
+          "precio": 39.99,
+          "url": "https://www.revolico.com/item/tp-link-switch-gigabit-8-puertos-56263944",
+          "dias": null
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "39.99 USD TP-Link Switch Gigabit 8 Puertos",
+          "precio": 39.99,
+          "url": "https://www.revolico.com/item/tp-link-switch-gigabit-8-puertos-55768231",
+          "dias": null
+        }
+      ]
+    },
     {
       "id": 1778102507659,
       "nombre": "​⚖️ Báscula Digital de Alta Definición",
@@ -28,10 +93,6 @@
         "texto": "Precio competitivo respecto al mercado"
       },
       "historial": [
-        {
-          "fecha": "2026-07-03",
-          "mediana": 25.0
-        },
         {
           "fecha": "2026-07-04",
           "mediana": 25.0
@@ -82,6 +143,10 @@
         },
         {
           "fecha": "2026-07-19",
+          "mediana": 25.0
+        },
+        {
+          "fecha": "2026-07-20",
           "mediana": 25.0
         }
       ],
@@ -102,7 +167,7 @@
       "mercado": {
         "min": 69.0,
         "mediana": 90.0,
-        "n": 15
+        "n": 14
       },
       "deltaAyerMediana": 0.0,
       "estado": "competitivo",
@@ -110,10 +175,6 @@
         "texto": "Precio competitivo respecto al mercado"
       },
       "historial": [
-        {
-          "fecha": "2026-07-03",
-          "mediana": 90.0
-        },
         {
           "fecha": "2026-07-04",
           "mediana": 90.0
@@ -164,6 +225,10 @@
         },
         {
           "fecha": "2026-07-19",
+          "mediana": 90.0
+        },
+        {
+          "fecha": "2026-07-20",
           "mediana": 90.0
         }
       ],
@@ -198,16 +263,16 @@
         },
         {
           "fuente": "revolico",
-          "titulo": "70 USD Antorcha para soldadura",
-          "precio": 70.0,
-          "url": "https://www.revolico.com/item/antorcha-para-soldadura-55559580",
+          "titulo": "90 USD Antorcha para Soldadura TIG – Alta Precisión. Interesados al 53998989 o 54981957",
+          "precio": 90.0,
+          "url": "https://www.revolico.com/item/antorcha-para-soldadura-tig-alta-precision-interesados-al-53998989-o-54981957-56272365",
           "dias": null
         },
         {
           "fuente": "revolico",
-          "titulo": "70 USD Antorcha para soldadura",
-          "precio": 70.0,
-          "url": "https://www.revolico.com/item/antorcha-para-soldadura-55369968",
+          "titulo": "90 USD Antorcha para soldadura TIG",
+          "precio": 90.0,
+          "url": "https://www.revolico.com/item/antorcha-para-soldadura-tig-56062753",
           "dias": null
         }
       ]
