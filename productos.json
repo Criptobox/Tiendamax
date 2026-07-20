@@ -896,10 +896,10 @@
     "id": 1778384428890,
     "nombre": "Portacelulares",
     "precioActual": 15,
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783837457730.webp",
+    "imagen": "https://tiendamax.org/imagenes/img_1783837457730.webp",
     "categoria": "CELULARES",
     "subcategoria": "ACCESORIOS",
-    "stock": 1,
+    "stock": 0,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -909,13 +909,13 @@
     "comision": 1.8,
     "seoTitle": "PORTACELULARES en Cuba | TiendaMax",
     "seoDescription": "Portacelulares impermeables para bicicletas con bolsos a cada lado. Confeccion fuerte y duradera, de facil instalacion y resistente a lluvia",
-    "descripcion": "Portacelular para bicicleta, marca ThinkRider, se monta en el tubo delantero del cuadro. Ventana táctil transparente para usar el teléfono sin sacarlo, cierre con cremallera, resistente al agua. Con bolsillo de almacenamiento.",
     "precioOriginal": 0,
     "comisionMoneda": "USD",
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783837457730.webp",
+      "https://tiendamax.org/imagenes/img_1783837457730.webp",
       "https://tiendamax.org/imagenes/img_1778384428890_ext.webp"
-    ]
+    ],
+    "descripcion": "Portacelular para bicicleta, marca ThinkRider, se monta en el tubo delantero del cuadro. Ventana táctil transparente para usar el teléfono sin sacarlo, cierre con cremallera, resistente al agua. Con bolsillo de almacenamiento."
   },
   {
     "id": 1778384507302,
@@ -1612,27 +1612,32 @@
   },
   {
     "id": 1780543090267,
-    "nombre": "Audífonos Ergonómicos",
-    "precioActual": 15,
+    "nombre": "​🎶 Audífonos Inalámbricos TWS",
+    "precioActual": 10,
     "precioOriginal": 20,
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783837831859.webp",
+    "imagen": "https://tiendamax.org/imagenes/img_1783837831859.webp",
     "categoria": "CELULARES",
     "subcategoria": "AUDIO",
-    "stock": 20,
+    "stock": 11,
     "masVendido": false,
     "usado": false,
     "garantia": "",
     "devolucion": false,
-    "descuento": 25,
+    "descuento": 50,
     "slug": "audifonos-ergonomicos",
-    "comision": 1.8,
+    "comision": 1500,
     "seoTitle": "AUDÍFONOS ERGONÓMICOS en Cuba | TiendaMax",
     "seoDescription": "Audífonos ergonómicos, elegantes, táctiles, con 40 horas de bateria, alta calidad de sonido, cancelacion de ruido de ambiente en llamadas, haciendo la voz…",
-    "descripcion": "Audífonos inalámbricos ergonómicos tipo in-ear, blancos, con estuche de carga. Diseño ergonómico para uso cómodo y prolongado.",
-    "comisionMoneda": "USD",
+    "comisionMoneda": "MN",
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783837831859.webp",
+      "https://tiendamax.org/imagenes/img_1783837831859.webp",
       "https://tiendamax.org/imagenes/img_1780543081597.webp"
+    ],
+    "descripcion": "Audífonos inalámbricos intrauriculares de diseño ergonómico, diseñados para ofrecer una experiencia auditiva envolvente y sin ataduras. Su estuche de carga compacto y portátil garantiza que disfrutes de tu música, llamadas y contenido favorito durante todo el día con total comodidad y libertad de movimiento.\n​Ficha Técnica:\n​Tecnología: 🎧 Conectividad inalámbrica estable de baja latencia, ideal para una transmisión de audio clara y sin interrupciones.\n​Diseño: 🎵 Estructura ligera con almohadillas suaves que aseguran un ajuste cómodo y seguro, minimizando la fatiga durante uso prolongado.\n​Estuche: 🔋 Estuche de carga compacto con indicador LED, diseñado para proteger los auriculares y recargarlos de manera rápida mientras te desplazas.\n​Control: 🎛️ Funciones táctiles intuitivas para gestionar la reproducción de música, cambiar de pista y contestar llamadas con un simple toque.\n​Especificaciones (Specs):\n​Tipo: Audífonos inalámbricos TWS (True Wireless).\n​Formato: Intrauriculares (In-ear).\n​Color: Blanco.\n​Incluye: Estuche de carga portátil.",
+    "specs": [
+      "​🎧 Sonido Inalámbrico de Alta Fidelidad",
+      "​🎵 Comodidad Ergonómica y Ajuste Perfecto ​",
+      "🛡️ Autonomía Duradera para el Día a Día"
     ]
   },
   {
@@ -2045,10 +2050,11 @@
   },
   {
     "id": 1782439428159,
-    "nombre": "Auriculares Gaming Inalámbrico Nubwo",
+    "nombre": "​🎮 Audífonos Diademas Gaming Inalámbricos NUBWO",
     "imagen": "https://tiendamax.org/imagenes/img_1782439424609_06af7e.webp",
     "imagenes": [
-      "https://tiendamax.org/imagenes/img_1782439424609_06af7e.webp"
+      "https://tiendamax.org/imagenes/img_1782439424609_06af7e.webp",
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784569823396.webp"
     ],
     "precioActual": 50,
     "precioOriginal": 0,
@@ -2063,13 +2069,15 @@
     "garantia": "",
     "devolucion": false,
     "specs": [
-      "2.4GHz"
+      "​🎧 Sonido Envolvente para Gaming de Alta Precisión ​",
+      "🎙️ Comunicación Clara sin Interrupciones ​",
+      "🛡️ Comodidad Ergonómica para Largas Sesiones"
     ],
     "fechaAgregado": "2026-06-26T02:03:48.159Z",
     "nombreNormalizadoAt": "2026-06-27T12:16:34.731Z",
     "seoTitle": "AURICULARES GAMING INALÁMBRICO NUBWO en Cuba | TiendaMax",
     "seoDescription": "AURICULARES GAMING 3 MODOS Conectividad: 2.4 GHz (USB), Bluetooth y 3.5 mm Compatibilidad: PC, PS4, PS5, móviles y tablets Batería: hasta 100 horas Audio…",
-    "descripcion": "Auriculares gaming inalámbricos Nubwo, con micrófono abatible, almohadillas acolchadas y luces. Conexión por dongle USB 2.4GHz, sin necesidad de Bluetooth."
+    "descripcion": "Audífonos de diadema inalámbricos diseñados específicamente para gamers que buscan un rendimiento de audio superior y libertad total de movimiento. Cuentan con un micrófono flexible integrado y un adaptador USB para una conexión estable, brindando máxima comodidad durante largas horas de juego.\n​Ficha Técnica:\n​Tecnología: 🎧 Conexión inalámbrica de baja latencia mediante transmisor USB, ideal para una respuesta de audio rápida y precisa en partidas competitivas.\n​Audio: 🎵 Controladores de alta definición que ofrecen un sonido envolvente, permitiendo identificar con claridad cada detalle y efecto dentro del juego.\n​Comodidad: 🛋️ Almohadillas suaves y diadema ajustable con diseño ergonómico que reducen la presión y garantizan confort prolongado.\n​Comunicación: 🎙️ Micrófono de pértiga ajustable que captura la voz con nitidez, facilitando la coordinación táctica con tu equipo.\n​Especificaciones (Specs):\n​Marca: NUBWO.\n​Tipo: Diadema gaming inalámbrica.\n​Conectividad: Inalámbrica por USB.\n​Uso: Videojuegos y entretenimiento multimedia."
   },
   {
     "id": 1782439525089,
@@ -2753,5 +2761,32 @@
       "🛡️ Gestión Segura y Automatizada de Energía"
     ],
     "fechaAgregado": "2026-07-20T17:44:58.967Z"
+  },
+  {
+    "id": 1784570100968,
+    "nombre": "​🔥 Soldadora Inverter MMA-300",
+    "descripcion": "Máquina de soldar tipo inverter de alto rendimiento, diseñada para ofrecer una fusión limpia, estable y profesional en trabajos de herrería y construcción. Su diseño compacto y portátil, acompañado de un completo kit de accesorios, la convierte en la herramienta ideal tanto para talleres como para proyectos particulares.\n​Ficha Técnica:\n​Tecnología: ⚡ Tecnología inverter avanzada que asegura una corriente de salida estable, minimizando la salpicadura y optimizando el consumo eléctrico.\n​Control: 🎛️ Perilla frontal de ajuste de corriente junto con una pantalla digital clara para un control preciso de los amperios según el electrodo.\n​Portabilidad: 🧰 Estructura ligera con asa superior reforzada, diseñada para facilitar su transporte y uso en diferentes áreas de trabajo.\n​Accesorios: 🛡️ Incluye kit completo con cables, pinza de masa, portaelectrodos, careta protectora, cepillo y electrodos para comenzar de inmediato.\n​Especificaciones (Specs):\n​Modelo: MMA-300.\n​Tipo: Soldadora inverter MMA.\n​Pantalla: Digital LED para visualización de corriente.\n​Aplicación: Soldadura por arco manual.",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784570099220.webp",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784570099220.webp"
+    ],
+    "precioActual": 100,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 2,
+    "comision": 5,
+    "comisionMoneda": "USD",
+    "categoria": "UTILES",
+    "subcategoria": "HERRAMIENTAS",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "specs": [
+      "​⚡ Soldadura Inverter de Alta Potencia",
+      "​🛠️ Rendimiento Profesional y Preciso",
+      "​🛡️ Kit Completo Listo para Trabajar"
+    ],
+    "fechaAgregado": "2026-07-20T17:55:00.968Z"
   }
 ]
