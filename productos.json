@@ -818,9 +818,9 @@
   },
   {
     "id": 1778383966832,
-    "nombre": "Sistema de Alarma",
+    "nombre": "​🔒 Kit de Sistema de Alarma de Seguridad Inalámbrico con Panel Táctil, Sensores y Llaveros RFID",
     "precioActual": 170,
-    "imagen": "https://tiendamax.org/imagenes/img_1778383966832_ext.webp",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784572922212.webp",
     "categoria": "SEGURIDAD",
     "subcategoria": "ALARMAS",
     "stock": 5,
@@ -833,7 +833,18 @@
     "comision": 10,
     "seoTitle": "SISTEMA DE ALARMA en Cuba | TiendaMax",
     "seoDescription": "Sistema de alarma, posee: 🔸4 sensores de movimiento 🔸8 sensores de contacto 🔸3 llaveros 🔸1 sirena 🔸3 mandos para su control 🔸1 botón de emergencia SOS 🔸1…",
-    "descripcion": "Sistema de alarma para el hogar WiFi + GSM, marca PGST, controlado por app (Tuya/Smart Life). Incluye panel táctil con SOS, sensores de puerta/ventana, sensores de movimiento infrarrojo, controles remotos y tarjetas RFID. Se conecta a varios dispositivos según lo que necesites: sensor infrarrojo, sensor magnético de puerta, etc. Te avisa al celular si alguien entra a la casa."
+    "descripcion": "Sistema de alarma de seguridad inteligente y completo para la protección integral de hogares u oficinas. Incluye una central de control con pantalla táctil, teclado numérico y lector RFID, acompañada de múltiples sensores de movimiento, contactos magnéticos para puertas/ventanas, controles remotos y una sirena de alto rendimiento.\n​Ficha Técnica:\n​Panel Central: 🖥️ Unidad principal con pantalla digital, botones táctiles retroiluminados, función SOS dedicada y lector RFID integrado para armado y desarmado rápido.\n​Sensores de Movimiento: 🚶 Detectores infrarrojos de presencia para cubrir amplios espacios interiores y detectar movimientos sospechosos.\n​Sensores de Apertura: 🚪 Múltiples contactos magnéticos inalámbricos para puertas y ventanas, ideales para asegurar los puntos de acceso principales.\n​Control y Accesorios: 🔑 Incluye controles remotos portátiles, llaveros de proximidad RFID y una sirena de alerta independiente para disuasión acústica.\n​Especificaciones (Specs):\n​Tipo: Sistema de alarma antirrobo inalámbrico inteligente.\n​Componentes: Panel táctil central, sensores de movimiento, sensores de puertas/ventanas, mandos a distancia, llaveros RFID y sirena.\n​Uso: Seguridad y automatización residencial o comercial.",
+    "precioOriginal": 0,
+    "comisionMoneda": "USD",
+    "specs": [
+      "​🚨 Sistema de Alarma Inteligente Inalámbrico para el Hogar",
+      "​🛡️ Seguridad Perimetral y Control de Acceso Completo ​",
+      "🌐 Monitoreo Centralizado con Panel Táctil y RFID"
+    ],
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784572922212.webp",
+      "https://tiendamax.org/imagenes/img_1778383966832_ext.webp"
+    ]
   },
   {
     "id": 1778384078432,
@@ -856,9 +867,9 @@
   },
   {
     "id": 1778384158283,
-    "nombre": "Cerradura Inteligente",
+    "nombre": "​🔒 Cerradura de Puerta Inteligente Biométrica con Lector de Huellas y Teclado Numérico",
     "precioActual": 60,
-    "imagen": "https://tiendamax.org/imagenes/img_1778384158283_ext.webp",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784572438933.webp",
     "categoria": "SEGURIDAD",
     "subcategoria": "CERRADURAS",
     "stock": 4,
@@ -871,11 +882,22 @@
     "comision": 5,
     "seoTitle": "CERRADURA INTELIGENTE en Cuba | TiendaMax",
     "seoDescription": "Cerradura inteligente con forma de manija Viladepot, huella dactilar,control por aplicación, código de acceso, desbloqueo, teclado electrónico con…",
-    "descripcion": "Cerradura inteligente para puerta, color negro, con manija exterior e interior. Se abre con huella dactilar, tarjeta/llavero RFID, código o desde el celular. Incluye puerto USB de emergencia para desbloquear si se agota la batería, más todo el kit de instalación (tornillos, llave Allen, seguro de emergencia)."
+    "descripcion": "Cerradura de puerta inteligente y moderna diseñada para brindar máxima seguridad y comodidad en el acceso a hogares u oficinas. Integra múltiples métodos de desbloqueo, incluyendo un sensor biométrico de huellas dactilares de alta precisión, teclado táctil numérico y control total mediante aplicación móvil para la administración de accesos.\n​Ficha Técnica:\n​Biometría: 👆 Lector de huellas dactilares integrado en la manilla para un reconocimiento rápido, seguro y sin necesidad de llaves físicas.\n​Panel Numérico: 🔢 Teclado táctil iluminado con números del 0 al 9 y símbolos de acceso para introducir códigos de seguridad o contraseñas temporales.\n​Control Inteligente: 📱 Conectividad con aplicación móvil para gestionar permisos, crear códigos temporales, ver registros de apertura y controlar el bloqueo a distancia.\n​Diseño: 🛡️ Estructura ergonómica y minimalista con acabado negro mate, ideal para puertas de habitaciones, oficinas o entradas principales.\n​Especificaciones (Specs):\n​Tipo: Cerradura de puerta inteligente / Biométrica.\n​Métodos de acceso: Huella dactilar, código numérico y aplicación móvil.\n​Uso: Control de acceso residencial y comercial.",
+    "precioOriginal": 0,
+    "comisionMoneda": "USD",
+    "specs": [
+      "​🔑 Cerradura Inteligente Biométrica con Acceso por App",
+      "​🛡️ Seguridad Moderna y Control de Acceso Avanzado",
+      "​📱 Gestión de Usuarios y Apertura Remota desde el Móvil"
+    ],
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784572438933.webp",
+      "https://tiendamax.org/imagenes/img_1778384158283_ext.webp"
+    ]
   },
   {
     "id": 1778384314795,
-    "nombre": "KIT de 4 Cámaras Zosi Nuevo en Caja",
+    "nombre": "​🔒 Kit de Cámaras de Seguridad ZOSI con DVR 8 Canales",
     "precioActual": 230,
     "imagen": "https://tiendamax.org/imagenes/img_1778384314795_ext.webp",
     "categoria": "SEGURIDAD",
@@ -890,7 +912,17 @@
     "comision": 20,
     "seoTitle": "KIT DE 4 CÁMARAS ZOSI NUEVO EN CAJA en Cuba | TiendaMax",
     "seoDescription": "Kit de 4 cámaras Zosi NUEVO EN CAJA‼️ DVR 8 Canales. 5MP Lite DVR. Soporta cámara analógica, HD-TVI, CVI y AHD. Tecnología de compresión H.265+. Salida de…",
-    "descripcion": "Kit de 4 cámaras de seguridad ZOSI con grabador DVR incluido. Cámaras tipo bala con visión nocturna infrarroja, para exterior. El DVR graba de las 4 cámaras a la vez y permite ver todo desde un solo equipo."
+    "descripcion": "Sistema completo de videovigilancia ZOSI completamente nuevo en caja, diseñado para ofrecer protección integral en hogares y negocios. Cuenta con un potente DVR de 8 canales compatible con múltiples tecnologías de vídeo y compresión avanzada, listo para garantizar vigilancia continua tanto en espacios interiores como exteriores.\n​Ficha Técnica:\n​Rendimiento: 📹 DVR 5MP Lite de 8 canales con soporte para cámaras analógicas, HD-TVI, CVI y AHD.\n​Almacenamiento y Compresión: 💾 Tecnología de compresión H.265+ con reciclado automático de grabación, grabación continua o configurable por detección de movimiento avanzada (sin disco duro incluido).\n​Conectividad de Vídeo: 🖥️ Múltiples opciones de salida mediante puertos HDMI, VGA y CVBS.\n​Visualización: 🌐 Permite monitoreo local directo conectando un monitor por HDMI o VGA sin requerir red, o visualización remota mediante la app ZOSI Smart (iOS/Android) y el cliente AVSS PC conectando Internet al DVR.\n​Protección: 🛡️ Cámaras con diseño resistente al agua, ideales para instalaciones en interior o exterior.\n​Especificaciones (Specs):\n​Estado: Nuevo en caja (incluye todos los accesorios, sin disco duro).\n​Canales: DVR de 8 canales.\n​Compatibilidad: Analógica, HD-TVI, CVI y AHD.\n​Uso: Videovigilancia residencial y comercial.",
+    "precioOriginal": 0,
+    "comisionMoneda": "USD",
+    "specs": [
+      "​📹 Sistema de Videovigilancia de Alta Definición",
+      "​🛡️ Monitoreo de Seguridad Integral 24/7 ​",
+      "🌐 Confiabilidad y Cobertura Amplia"
+    ],
+    "imagenes": [
+      "https://tiendamax.org/imagenes/img_1778384314795_ext.webp"
+    ]
   },
   {
     "id": 1778384428890,
@@ -988,9 +1020,9 @@
   },
   {
     "id": 1778384840618,
-    "nombre": "Protege tu Hogar",
+    "nombre": "​🔒 Timbre de Puerta Inteligente con Cámara HD e Intercomunicador WiFi",
     "precioActual": 30,
-    "imagen": "https://tiendamax.org/imagenes/img_1778384840618_ext.webp",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784572695580.webp",
     "categoria": "SEGURIDAD",
     "subcategoria": "ALARMAS",
     "stock": 16,
@@ -1000,10 +1032,21 @@
     "devolucion": false,
     "descuento": 0,
     "slug": "protege-tu-hogar-videoportero-wifi",
-    "comision": 1.8,
+    "comision": 1500,
     "seoTitle": "PROTEGE TU HOGAR en Cuba | TiendaMax",
     "seoDescription": "Protege tu hogar y mira quién toca tu puerta desde tu celular( si tienes internet en tu casa, puedes ver quien toca a tu puerta desde cualquier parte)…",
-    "descripcion": "Timbre inteligente con cámara WiFi para la puerta. Intercomunicación de dos vías (hablas y escuchas desde el celular), captura de imagen, visión nocturna, alerta instantánea al celular cuando alguien toca. Hasta 50 metros de alcance de señal, incluso a través de puertas de metal, madera o paredes de ladrillo. Guarda grabaciones en la nube."
+    "descripcion": "Timbre de puerta inteligente con cámara de alta definición y sistema de intercomunicador inalámbrico, diseñado para mejorar la seguridad de la entrada principal. Permite ver, escuchar y hablar con los visitantes en tiempo real desde el teléfono móvil, e incluye un altavoz chime para interiores y funciones avanzadas de cambio de voz.\n​Ficha Técnica:\n​Funciones Principales: 📹 Intercomunicador bidireccional, captura de imágenes, visión nocturna, alertas instantáneas y almacenamiento en la nube.\n​Conectividad y Alcance: 🌐 Transmisión inalámbrica de fuerte penetración capaz de atravesar puertas y paredes (hasta 50 metros de alcance efectivo sin pérdida de señal).\n​Audio y Seguridad: 🗣️ Audio bidireccional con función de cambio de voz (incluye modulador de voz, por ejemplo, de voz femenina a voz de hombre/tío) para mayor privacidad y seguridad al responder.\n​Accesorios: 🔔 Incluye la unidad principal del timbre con cámara y un altavoz chime receptor para colocar en el interior del hogar u oficina.\n​Especificaciones (Specs):\n​Tipo: Timbre de puerta inteligente / Videoportero WiFi.\n​Uso: Control de acceso y seguridad residencial para puertas principales.",
+    "precioOriginal": 0,
+    "comisionMoneda": "MN",
+    "specs": [
+      "​🔔 Timbre Inteligente con Videovigilancia y WiFi ​",
+      "🛡️ Comunicación Bidireccional y Control Remoto",
+      "​🌐 Conexión Inalámbrica de Gran Alcance con Alarma Chime"
+    ],
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784572695580.webp",
+      "https://tiendamax.org/imagenes/img_1778384840618_ext.webp"
+    ]
   },
   {
     "id": 1778384976624,
@@ -1207,9 +1250,9 @@
   },
   {
     "id": 1778717147247,
-    "nombre": "Short de Nylon",
+    "nombre": "​👖 Shorts Deportivos Casuales de Secado Rápido",
     "precioActual": 5,
-    "imagen": "https://tiendamax.org/imagenes/img_1778717147247_ext.webp",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784571184792.webp",
     "categoria": "ROPA",
     "subcategoria": "HOMBRE",
     "stock": 4,
@@ -1222,7 +1265,16 @@
     "comision": 5,
     "seoTitle": "SHORT DE NYLON en Cuba | TiendaMax",
     "seoDescription": "Short ideal para el verano Talla M Colores : negro , blanco ,gris y verde",
-    "descripcion": "Short de nylon deportivo, cintura elástica con cordón, bolsillo lateral con cierre y franja reflectiva en la pierna. Disponible en varios colores (verde olivo, gris oscuro, azul marino, gris claro)."
+    "descripcion": "Short de nylon deportivo, cintura elástica con cordón, bolsillo lateral con cierre y franja reflectiva en la pierna. Disponible en varios colores (verde olivo, gris oscuro, azul marino, gris claro).",
+    "precioOriginal": 0,
+    "comisionMoneda": "USD",
+    "specs": [],
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784571184792.webp",
+      "https://tiendamax.org/imagenes/img_1778717147247_ext.webp",
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784571186172.webp",
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784571187204.webp"
+    ]
   },
   {
     "id": 1778820912552,
@@ -1504,7 +1556,7 @@
   },
   {
     "id": 1780079294429,
-    "nombre": "Raqueta Eléctrica Mata Mosquitos",
+    "nombre": "​🦟 Raqueta Matamoscas Eléctrica Recargable",
     "precioActual": 10,
     "precioOriginal": 0,
     "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783836578975.webp",
@@ -1520,11 +1572,16 @@
     "comision": 2,
     "seoTitle": "RAQUETA ELÉCTRICA MATA MOSQUITOS en Cuba | TiendaMax",
     "seoDescription": "​¡Diles adiós a los molestos mosquitos y moscas de forma rápida y efectiva! El accesorio infaltable para mantener tu casa tranquila. ​🔋 Lo mejor de esta…",
-    "descripcion": "Raqueta eléctrica mata mosquitos, color verde, con rejilla de descarga y mango con botón de activación. Ideal para eliminar mosquitos y otros insectos voladores de forma rápida.",
+    "descripcion": "Raqueta eléctrica diseñada para eliminar insectos voladores de forma limpia, rápida y segura en el hogar. Su diseño tipo raqueta con mango ergonómico permite cazar mosquitos y moscas al instante mediante una descarga de alta eficiencia en su red central.\n​Ficha Técnica:\n​Tecnología: ⚡ Red eléctrica de alta tensión diseñada para neutralizar insectos al contacto de manera instantánea.\n​Seguridad: 🛡️ Sistema de triple malla protectora que previene descargas accidentales en las capas exteriores al tocar la rejilla.\n​Diseño: 🏸 Estructura ligera con marco circular amplio y mango texturizado para un agarre cómodo y un mejor alcance.\n​Alimentación: 🔋 Batería recargable integrada que garantiza una autonomía práctica sin necesidad de reemplazar pilas constantemente.\n​Especificaciones (Specs):\n​Tipo: Raqueta matamoscas eléctrica.\n​Color: Verde y negro.\n​Uso: Doméstico y control de plagas voladoras.",
     "comisionMoneda": "USD",
     "imagenes": [
       "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783836578975.webp",
       "https://tiendamax.org/imagenes/img_1780079294429.webp"
+    ],
+    "specs": [
+      "​⚡ Eliminación Rápida y Efectiva de Insectos ​",
+      "🛡️ Malla Protectora de Seguridad Multicapa",
+      "​🔋 Recargable y Fácil de Usar"
     ]
   },
   {
@@ -1549,7 +1606,7 @@
   },
   {
     "id": 1780344659047,
-    "nombre": "Zosl - Cámara de Seguridad CCTV",
+    "nombre": "​🔒 Cámara de Seguridad Bullet ZOSI",
     "precioActual": 45,
     "precioOriginal": 0,
     "imagen": "https://tiendamax.org/imagenes/img_1780344655996_bb0312.webp",
@@ -1562,10 +1619,19 @@
     "devolucion": false,
     "descuento": 0,
     "slug": "zosl-camara-de-sequridad-cctv",
-    "comision": 2.5,
+    "comision": 1500,
     "seoTitle": "ZOSL - CÁMARA DE SEQURIDAD CCTV en Cuba | TiendaMax",
     "seoDescription": "ZOSl-camara de sequridad CCTV impermeable para exteriores e interiores, Kit de sistema DVR 108OP 2MP.TVI.AHD.CVBS.IR CUT. Visión nocturna",
-    "descripcion": "Cámara de seguridad CCTV tipo bala, marca ZOSI, con visión nocturna infrarroja (LEDs alrededor del lente). Para exterior, se conecta por cable a un DVR o grabador compatible."
+    "descripcion": "Cámara de vigilancia tipo bullet de la marca ZOSI, diseñada para ofrecer imágenes nítidas y protección continua tanto en interiores como en exteriores. Su estructura robusta y resistente a la intemperie incorpora LEDs infrarrojos para garantizar un rendimiento óptimo de vigilancia incluso en total oscuridad.\n​Ficha Técnica:\n​Tecnología: 📹 Captura de video de alta definición con lentes de precisión para obtener detalles claros y precisos.\n​Visión Nocturna: 🌙 Sistema de iluminación infrarroja integrado que asegura una visibilidad excelente durante la noche o en condiciones de baja iluminación.\n​Diseño: 🛡️ Carcasa tipo bullet resistente al agua y a la intemperie, perfecta para instalaciones exteriores expuestas a diversos ambientes.\n​Conectividad: 🔌 Cableado integrado con conectores estándar para una fácil conexión a sistemas de grabación DVR compatibles.\n​Especificaciones (Specs):\n​Marca: ZOSI.\n​Tipo: Cámara de seguridad bullet.\n​Uso: Videovigilancia residencial y comercial (interior/exterior).",
+    "comisionMoneda": "USD",
+    "specs": [
+      "​📹 Cámara de Seguridad de Alta Definición ​",
+      "🛡️ Monitoreo Confiable para Interiores y Exteriores",
+      "​🌙 Visión Nocturna Infrarroja Avanzada"
+    ],
+    "imagenes": [
+      "https://tiendamax.org/imagenes/img_1780344655996_bb0312.webp"
+    ]
   },
   {
     "id": 1780510681519,
@@ -1595,7 +1661,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1780542905916.webp",
     "categoria": "SEGURIDAD",
     "subcategoria": "CÁMARAS",
-    "stock": 3,
+    "stock": 0,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -1604,11 +1670,18 @@
     "slug": "sistema-de-seguridad-zosi-para-el-hogar-8-canales",
     "comision": 20,
     "specs": [
-      "1TB"
+      "​📹 Sistema de Videovigilancia de 8 Canales con Alta Definición ​",
+      "🛡️ Monitoreo Completo y Almacenamiento Integrado ​",
+      "🌐 Seguridad Confiable 24/7 para el Hogar"
     ],
     "seoTitle": "SISTEMA DE SEGURIDAD ZOSI PARA EL HOGAR - 8 CANALES",
     "seoDescription": "Sistema de Seguridad ZOSI para el Hogar – 8 Canales, 2MP HD, DVR Lite 5MP, 1TB, Grabación 24/7 Este kit incluye: - 8 canales compatibles con cámaras ZOSI…",
-    "descripcion": "Sistema de seguridad ZOSI para el hogar, kit de 8 canales: 8 cámaras (bala para exterior y domo para interior) con visión nocturna infrarroja, más grabador DVR con disco duro de 1TB ya incluido. Listo para instalar y grabar sin comprar nada más."
+    "descripcion": "Sistema completo de videovigilancia diseñado para ofrecer máxima protección en el hogar o negocio. Incluye un DVR de 8 canales con capacidad de 5MP y un conjunto de 8 cámaras de alta definición, garantizando un monitoreo detallado, grabación continua y almacenamiento seguro gracias a su disco duro de 1TB integrado.\n​Ficha Técnica:\n​Canales y Compatibilidad: 📹 DVR de 8 canales compatible perfectamente con cámaras ZOSI para una integración óptima del sistema.\n​Resolución: 📺 Resolución HD de 2MP (1080p) en las cámaras para obtener imágenes nítidas y detalladas.\n​Rendimiento del Grabador: ⚡ DVR Lite con capacidad de 5MP que permite una gestión de grabación superior.\n​Almacenamiento: 💾 Incluye disco duro de 1TB para almacenar horas de grabación continua sin interrupciones.\n​Modos de Operación: 🛡️ Grabación 24/7 combinada con tecnología de detección de movimiento para mayor seguridad y eficiencia.\n​Alimentación: 🔌 Alimentación por USB que facilita la instalación y puesta en marcha del equipo.\n​Especificaciones (Specs):\n​Marca: ZOSI.\n​Tipo: Sistema de seguridad con DVR y cámaras de vigilancia.\n​Capacidad del DVR: 8 canales / 5MP Lite.\n​Almacenamiento: 1TB de disco duro incluido.",
+    "comisionMoneda": "USD",
+    "imagenes": [
+      "https://tiendamax.org/imagenes/img_1780542905916.webp",
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784571893643.webp"
+    ]
   },
   {
     "id": 1780543090267,
@@ -1688,7 +1761,7 @@
   },
   {
     "id": 1780887557334,
-    "nombre": "Gorro de Buceo",
+    "nombre": "​🏊‍♂️ Gorro de Buceo / Capucha de Neopreno GIANSO 3mm",
     "precioActual": 10,
     "precioOriginal": 0,
     "imagen": "https://tiendamax.org/imagenes/img_1780887557334_132c6f.webp",
@@ -1701,11 +1774,19 @@
     "devolucion": false,
     "descuento": 0,
     "slug": "gorro-de-buceo",
-    "comision": 1000,
+    "comision": 1500,
     "comisionMoneda": "MN",
     "seoTitle": "GORRO DE BUCEO en Cuba | TiendaMax",
     "seoDescription": "Gorro de buseo de neopreno de 3mm. Diferentes tallas.",
-    "descripcion": "Gorro de buceo de neopreno de 3mm. Diferentes tallas disponibles."
+    "descripcion": "Capucha de buceo de alta calidad diseñada para ofrecer una excelente protección térmica y comodidad en inmersiones y deportes acuáticos. Su diseño ergonómico cubre la cabeza, orejas y cuello, reduciendo la pérdida de calor y brindando una gran flexibilidad bajo el agua.\n​Ficha Técnica:\n​Tecnología: 🌊 Fabricado en neopreno de alta densidad que proporciona un aislamiento térmico superior en aguas frías o templadas.\n​Diseño: 🤿 Estructura de cobertura total que se ajusta perfectamente al contorno del rostro, cuello y hombros para minimizar la filtración de agua.\n​Comodidad: 🧩 Material flexible y suave al tacto que permite una total libertad de movimiento sin causar presión excesiva.\n​Durabilidad: 🛡️ Costuras reforzadas diseñadas para soportar el uso frecuente en ambientes marinos exigentes.\n​Especificaciones (Specs):\n​Marca: GIANSO.\n​Espesor: 3 mm.\n​Tipo: Gorro / Capucha de buceo.\n​Uso: Buceo, esnórquel y deportes acuáticos.",
+    "specs": [
+      "​🌊 Protección Térmica Avanzada para Buceo ​",
+      "🤿 Diseño Ergonómico de Cobertura Total",
+      "​🛡️ Neopreno Resistente y Flexible"
+    ],
+    "imagenes": [
+      "https://tiendamax.org/imagenes/img_1780887557334_132c6f.webp"
+    ]
   },
   {
     "id": 1780887747583,
@@ -1759,24 +1840,33 @@
   },
   {
     "id": 1781365019871,
-    "nombre": "Probador / Tester Digital de Baterías",
+    "nombre": "​🚗 Probador Digital de Baterías Automotrices",
     "precioActual": 25,
     "precioOriginal": 0,
     "imagen": "https://tiendamax.org/imagenes/img_1781365018400.webp",
     "categoria": "UTILES",
     "subcategoria": "HERRAMIENTAS",
-    "stock": 18,
+    "stock": 9,
     "masVendido": false,
     "usado": false,
     "garantia": "",
     "devolucion": false,
     "descuento": 0,
     "slug": "probador-tester-digital-de-baterias",
-    "comision": 1000,
+    "comision": 1500,
     "comisionMoneda": "MN",
     "seoTitle": "PROBADOR / TESTER DIGITAL DE BATERÍAS en Cuba | TiendaMax",
     "seoDescription": "Probador/ tester digital de baterías: Diseñado para diagnosticar el estado y rendimiento de baterías automotrices. Permite realizar pruebas de batería…",
-    "descripcion": "Probador/tester digital de baterías, pantalla TFT a color de 2.4 pulgadas. Prueba batería, arranque y carga del alternador. Base de datos de tipos de batería (estándar, AGM, GEL, etc.), muestra voltaje, CCA/CA/DIN y estado de salud. Incluye pinzas y cable USB."
+    "descripcion": "Dispositivo de diagnóstico automotriz diseñado para evaluar con exactitud el estado de salud, la carga y el rendimiento del sistema de arranque de baterías de vehículos. Su pantalla a color y teclado de navegación integrado permiten realizar pruebas completas de forma rápida y segura.\n​Ficha Técnica:\n​Tecnología: 🔋 Análisis avanzado del estado de la batería, ofreciendo lecturas precisas sobre su capacidad real y vida útil restante.\n​Pantalla: 📱 Pantalla LCD a color de alta visibilidad con menú gráfico interactivo para una fácil selección de pruebas.\n​Funciones: ⚡ Modos múltiples que incluyen prueba estándar, prueba rápida, prueba de arranque y prueba de carga del alternador.\n​Conectividad: 🔌 Cables reforzados con pinzas de cobre de alta resistencia para una sujeción segura y una transmisión de corriente estable.\n​Especificaciones (Specs):\n​Tipo: Probador digital de baterías.\n​Uso: Automotriz y sistemas de 12V.\n​Interfaz: Teclado direccional con botones de función dedicados (ESC, F1, V, OK).",
+    "specs": [
+      "​🔋 Diagnóstico Preciso del Sistema Eléctrico ​",
+      "⚡ Pruebas Rápidas de Carga y Arranque ​",
+      "🛡️ Interfaz Intuitiva con Pantalla a Color"
+    ],
+    "imagenes": [
+      "https://tiendamax.org/imagenes/img_1781365018400.webp",
+      "data:image/webp;base64,UklGRiRDAABXRUJQVlA4WAoAAAAgAAAA3wEA3wEASUNDUMgBAAAAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADZWUDggNkEAABAGAZ0BKuAB4AE+YSySRyQiJCEl0nqggAwJY27U3BnpHfhAPtbwAc9vyVjO1IJEptv5P9l7sTL/mP71+5ftDWD/G/2n9kf3jkDbN8sLzb9o/4P+C/Lb56/6P1HfpX/se4N+o//L/yXrjep79zvUL/Uf8T/6P9v7w/+d/ZH3af37/Yfrx/jvkA/qP+p//PYUfuv7Av82/vX/i9d39yPhK/r3/Q/dD2of/r7AH//9rf+Af/Dqx/O/1+9MPkL+s/uvkf5ivbPtv/e/nfwd9oup38y+9/7T/A/uf8fv6//reJPyX/2vUC/JP57/pv7p+QnFLbV/uv+Z6hHsx9X/4P93/eX3yvv/+V6HfZP/o+4B/Pf7H/tv73+8Hx94Ev4b/p/sr8Av8z/sP+1/yn5XfJb/1f6b/Xfuj7j/0j/Rf+r/X/AV/MP7V/1/8b+VPzc//P23/uJ/9Pc2/YH/5lgF3CHBsLW+p8CrK5Z78jUrSPDlmbopCHBsR1TdsR1TdsR1TQZ8LBjt0jxCVlVvHhW0RAc9SEODYjqm7USB/LNthQNAU33fn3g4NiOqbtiOqbtiOqboZIvyJAuzVqRmJ8khM4PMqITjKRz1IQ4NiOqbtiOqbtiL9WTf8PHJJhoMxHdOtedV14RAc9SEODYjqm7YjpEEQLvFzgeWsh3jWfbRwplM0kWW9z/329LDQ1pXm8VvRz1IQ4NiOqbthBannu+elMt9lVPnCLWraT42eXXmOtMsisML4HFeMTnSoyN9Z5OjGRYS5YIfryTqF32t8zw1KVjrCuBslW+3DAART1iOepCHBsR1TQMAs7RceP61OK0jSTz3q6SdQzMIJithDzossqjL/jFc/f6GVTFe7dRRVI56kIcGxHRcs8vVKXXWEcZD1aeuaFuXJKOJmiaF6LLggOAPEwfAiBU1sTW26pu2I6pu2IuXlQ7+dm/WafcGjsBcef/6XOGgocD5e6jC57DPcUMIrakHjjihR5HPUhDghvj652cShNdwdrwroGdlRKRnlrY6EffsCRzlL8hgyOqBoMfL6Inw7KtBWPHHbtqXojyOepCHBsResbVNqzgSOqQr2aEfeds5mHMhPS/blQgIiy7MCUDpaaQJvC7bP9QU6pwZH4HVPKFGnshAIbI4NiOqbtiOqaKNLk8sPf4JfXIr7claByCIn8dlrEKfwzFBQbwkEFJvU6OsNRW/RBWWmB7M/p4/pCPI56kIcGqTOo4XRlzfE9N+j4OvxdESkXz3xdF18nPMKSsWCJiDJAI+kIT/8Ab2+WGxIqkc9SEODYjoF3T4PdzVz+WRJorR03PFn2Q+g/Ag7XRcXhTyF+QYeef+Nh32UOpLR6/v/VpxvXrff6daj4bWkiiaTaXnTa/VN2xHVN2xGLvwTnOH7y6OvgtGfAJ7Gn0wtLtEYc+ZoKfwtuWJ9BydO0uSEXTacDLkW2OlbvBz1IQ4NiOp6fPA0RNZdLiwHZok2bVXI3IjV9t3mEAiQJ3mJaK6XjMa+XsWJhXRSNdCnsP8dvcCcqKIpQqDdX7ZcIcGxHVN2xF213uNzl57/q/M9/SNjrQh/4r2iGVETCj3FNshvg0xpIBAP/2n/om242NOfDCHBsR1Tdp/7v4DIMmHZTSBFauJsVGCV8an3KImGvFW8C19yCCvCbtL68snaipHAmEGGxppdJI3UjnqQhwMaYtFj9lChF/YsaKCbktUj2fooxguwR/WqbO75BqtBrAWVvMNna7AOnjSjgz1bTmiibZj4+3SGr5QtLOaStqDC/ouoMj6OTR8BECZMQ4NiOqaD3yzSw4QL42UOjepLLLrGm5BdJW9ldxNVmWqxLPJvZ/1R1cKQXHiHgyiJxS6/+0A/xcfKRMk/DD3Nnythx3ChR5HPPlnNPvZI3soBpl0lQayRnz4eWYGhdJZRWgrMHN3mq5fyO69kks3EvVz0OaXBFR2LMyAuoUyjhbC5osOgcEeRz1IC5dxTSDgswUqsY4m9I5OAMl+Su5/9Yprdv89yZDYp7igBlP6TZVsh2VaYiCDi54s/rvibrVjLUsqd0bsPkVmrOzDZHl2A23JB+eXxQo8jnoTk5GCQwtr9OC4hJ5pv7OI09qjwGaiivXBGXHw630mylSULJa/vRC94xV+p2xPfWIN/G7xqi3a8D4Y3X8vS9yozqdn4klgLTsExzVD6oxpd8cor1LtKyNJNjOe6kc8+5FHuP8XmXz36xIjYRpQLy4PUQuw9rveg0Q4rGdU6OzdDrmSTf8Gz4AHXo2SR0lHPbVMWLiQzws7QG6Z2Ty12rDiKRjlgCj5RDa+ViFC6nfZicO2GNvHKNjZjLREO/IKeB1+KEhOSH+tFFoNwlBTPtzHDLjqs6qn0M/+MH7HqBcRhLVq3leyiWnpk//QeUIXjDX5ludOnb+pLUHZtH3ThWPoRG/6xRjdUmwiy5QH70rEYHo/GZNQi6plqS1Fjsc1qokJAb2RbdOepphz5DMFs3MdVIAtQw6725+xEYZO8yFrqy181kVJuySzB/1xf91b51tTVW+a6byv/r7ePhr1rtPxQicFJYxhzxpWv6NcKZthqbJlDefQEoLUqFT/fpAARM/AecMgHZdD64ypXWEd4QIBhfJyN2S8yDnmEFhnFlx2uVImfhgBHcnkjm8YKjm8IcGwql1AqNuFkJTmiOjV9PkL7CIfum4ZEESTMhwhJFeFDlylMFK6af5HVR8N2eGw+0e//YyBqxKx/sb7m+/84pDF1TdCg2kYjAtTT3wD2Kz4370iHV+KCOwV783dI5prLkGVyYCel3L87+/gJgPqqSRkZq/AAP7/noAgYR+L4WMuvYDCHpUtJag6pmJ0u0fUkjJCNtV5ZK9lQw8OE/J1S3as0N+a5xZ+fLl3hRc52QjwR43JfaSEufNxzHGf/fdZvvP158SPlx7nxRPWA4T6/IXLzD239/Sfu3vJGsFpUqXZFVm6kD31xtxLbWg2pjdMq7tE7dYn3hN3aPfqpWxI1jOrC64oDZ3y21Zwq2E4gAB3oQBNxDAZgJIyRKwK9WfG005MM2asY5GhTalV8Zum+E62GYDsUr2V3zKJbq1TiaDyJhA4r0SUY/2XEMYlbbLgjoAAAQ9IBM1YJCsBXKIuCb7NeEPqhfxreLTb+Z7/zPkMWTCGI9qqZo2bVLreki/igJhR8IiPvIZ+89AGxW8wfU/vg7WWIZZb92feUWmJgV+c6YfB/FYfH9tWyLAW5+LKGxXH8OKhxrma5sqL/6db2tnscx8AC9ES442YPWz/Mwl8kgyVe74kFf0q8bW2dtKYEyEZVjxR+jV/F3iaw+syhE1FssCTH9dAJiRw9j+J2LH1NGeHYFFyAHB99+9UnH7Y7EGaDmq3ZfeLG58qppI9Gonou6vW4zXvr1b/wdlmbC3zy9Rootzh8u9fSb6OrgO8Ryh1SBWFOvpzYQfeZGiakIK2uQ74GOPQeIwRaSZKs3XRI8z0DNORHAmlwtjVrdrKtjpsvM4MtXcLUJ957mYCjgC0f7TEkBHjwABgPAGvxurI0mfcBZiEfrlR56zF6bVYEcQjvVYZGU5xxvUJ2FSxrnns6wenkUVlRcFRdGRlKaoCDCe+oQof/EGMyVqixJgEGoBDa07+Lsd/rg/sWFPE1B3q/l2/Y/fyh2MqxdwaT9n49vFzE+1bxjrJigaSa22dW05tWBPzqr/XTmtY7lvS4R19FMrZcJ5Eh3yUSWUOX1m0/cicf0pJWvYRKvwk/YMrBtDCuzrFyv1vPl+h+P6rbKf4pphQ/imIAAANw0Xzpr+zsTUYXio7NkIrNBq01P0odZumhQUiFCUOvHNpkVcvgfLZ9yuYRQCRWqJGZyzWxPmwPhh8HvDwP9UJKUvqgYEx8nkan6kXan1LqW7cC2NWmO7ApuYrNz/SvBZ3arQgNHuiuIi9IgOoHMAc0o3L2z3WPWTfGhZvtULL3MT/JTwXKbFud84MaNymuqS5eDtX+gdcq2jZjOPwzfKOz784Nqmq0bpBUTkACMZOKoFRzrxK0iYFoivf/qtkDI8blpYkTqQ/h4kXQsUh5hlp7U3KN6ttMXfuhyaKuJ4M2hSV7gUWPtdILjPFPynuk6X2gSNvEYG1f77Qp/VoDkrN4dRFydzaO0lt1DmTFBu/cflhFHMcmkmy2QOcnC2Wr1mUA74NTjSe1GtNt2nYiezz70dZ/8E6ODvbS7aheoAzBgwAqjO7XjlQAp6I1PE1JevP4sR+7AXavo02wYq2mav0HMepDQrNoWyft0ViSN52DoWRlQa6oCN3d9wexXuGPxflPfJZ0eexg+YD73XjdKfOth5BQERM4JsRaM5Iapx6rZIOtg4f00wewbfL64P8e1Y1WYf3p5Gh7ikM733jdDiA807Kj0BjX+7cXuC6DD+0vjaDngq9YD/cNL4d0R8p0QKsMECLZvGF/hSjKKd6O5hDJcLL27que/lUolWGb+z9FjyKj7G4wo4bVX4H/WGwD4CO5bFEAdEo4o2PXn+WPK/lns5F2nhm7XUY17i0YK+/U+9jn9jgiJJulE/aQkiWIb8cstHm/znOZZcrqOJDd4MxIOmB+71B1svoAMuPO1/GZEaJ6hjm1I+W/8kaA5yp9pyvxkVf9SbgdMy2m+bPMKb21VgRxE/9ZptfQNoXTsn8jbpFLPgBYkaBqJnqyXvdcREY2wSpt804jHE8oFNtWHr+gwRUL8AclXUvgQeymVTJ64yjCV2+WJS2uu+6z4wBgxKRspOt3Kh3oiNQYKmLYPjIpD6wZ662VRdv1JS7Ww/JdNys+uZjqCMzHhye7G0y6uXQB/niAwGYrHoURHmvVNwefDvqXGFJRI8+Yxkf0HjqeIIBLbBg6jdzNdsmrf6JNB2yic5RSDYfwPPdAfyyZPEl0kOzB/5U7Ky3DO0AdCNczOk0YHEpBV9tDY9t9HLiZ7Sf605aBA6zEYrqbE9sa83acsNWvm/6xQ+8jxxEV/y4JUsONUzBf0+25R1l4bLOQWqczobOaAVw/4qQfWoaFTroQjMxkiEIOBk8Mmpk9JXeza7I6cZcL+HimjvIQ+d9k8mbz1POlz+gsWVU6h6dkHBLd+zM2kPfI/hgbgjdNBSoQFLnx85uQrsP+CIvl/Wgmy/9V7oqk0Rh7mGf+MI5Hwxjskt/XkgEJMGP00FM9E4WoTJHqCmTgjRfUwZuvWjbYFAZZIX3noq7N6aVV6IjE614l/bkSnFsD5IR7uAzM/CQVdePXcN+j2uHMNPuoqcYyF5bwkV/SnI1NCOiIZbSA/HRSzLdgrN34MHeDykbnhHdS3VxpFNZNNRhBbC3a7SQAFzjfLEzDifZSiuBSuYiVGmI128SmHtfSl+m1URARj7m1VzO+uEa6ynDRyKqPTOb9CH9qrxk23xoG9/PJLCIv5kHlQaeB3vmdM/j2sQGEJuqP7i59fRsl4SIjSVsPDOR9RHu9F5i/rnTXXznEMNvP63Gnbqc/c8m5n9fjN3LvnjLn3DmTMR3fWwnqyzoJkC5QPWh0dpxikXo+/SoXL9l0YNEh2hBERIQwQGJIhj9ss6wbKQUe4bk6BDPo+GBaHxMMxkJQX5oWDEACB4lImbMD01Hsw5DuSx2uhSMOYtXzWS2OGmRzc+4M7xAbF7Kpmjt16xYzZoL/AsRQbjwCRbnzrBpZAhWYXfF43wFhzxdLIi3lur2ytDbPU959PofhORgxBxwtlHXDeMz4zqinKXauDrVipihmUPyoLzEqws21PzD5b7T/nTXYdwpZWvOUJ5vIM4Nsq80iEsVIPH5c3Ca/kAB2OQGG0i02V1ZqRgTgfT5+1StlnwEmHaFFIpNxXL0YnTa9BusNHv8ckFyBty0CRqLIeMmMNvC0uXBQdGeaoHvwkIh1AqPoA9bcjJhWDGtO25HIZGLJhXR02xae0GRMUZ8TnLxgBXpl2/vTYYjEwaaXFi4iFZK+5M607o17HRSHVlekR8Iy3XUPlWRVbYIAAnZbgqgJEGjAvW7eNGudkJ3Q5nKKsvdRpHJwbU3vntUbxXVh2vydWL0g1i+JQb3hKZG2Xu6rZvc3zI1pT+Z8sFdezNftRO5jMc2UM7DxTpeIndCY98MyQoM0VPZGgfwgDOpiE7+vAnoKIIU5NF/hPQEEbVP1D+ngn8Cz3J2BkQDUQQm6kDCf3sQnxEpaDwVcorx8gM4wfie4qs6gmgUEIGmA5ntJeatKLio2l2ZIrN57CUAksDROX85OxrvW7tN+wBQGqdDqZmKfDuxhyPt4Z/ozY4S/i4Tqqkn+pGgHFPaU5beTJyBX0Hql2t+4vRwY8iTENYbJXL3DseOQq/1EIAFyCjsDKOCfO5qRbyiCh2XUR+JWvg0SEPKLMlW5wQvJZ45m1KPzc8FPtLzN+4GE0hVQVlDMGfU8Fg8lxVWrHP9emnQ1bHSiwhENXcaZdOzfzkuXHEexWN27rauAvfPlWKLV8F+/iVbIbyqqRu4Dfp1FXOnVeR7hCSXNt8BZQfiVO6YHiXtRTRQ7gC3NmMMV5seeenzE4NSwBpJ13J3wXD05oVynUMqZpwCL6U6JYjCoF6uJfBYeX124ZyqyDIwJo0PyrT0LCTFi+rHkXcrqVhj2GGMT8/ucj2aXJHqGJm5Ni3SKPZnzr1+CrEVEzZVXulf4O7VZm/Ka7mItNsDTj+Fglk2XWdpm047mG34sH3Zv9rc8k8cVf1wmqpoyVYoxdIU4GIckkiOQp3ZfOSmMe6sn07ignQqldjGnrcxiOdGHVS3IXZC1QFV+4RqXnJ7VFcjq2dX8EZIu/kmDpPklAhJvNXMsx7nY4HbwHz//h23wbe573yJKecMyUm8x+26wt3rVTW9DAVyYu3K3h8z/xwbb/tPIapM8yMIMqQLfTlTFX7eiqNT3mLkBJ/Fu3/Y/jEUxOgoMqMSX683cRbQ8G4L52anVMJMDhcAun93jzUdM0cye+zUB4kOZs7n0LSTJcr5wiQyQqeiRLIqX+0k6UzCXWfRss2OPOzFcKfDi4QdH0PyQPEuPSepIRpltqXNz8fYXQ7jpLQJBfjwo8wGbnqdPYjBNFhF6RKkX9lt1Y4CDir++0FVVNlvy3ovs3ZGaqIQS1SGwpW69J4HreDE3JwAc6T03TH4tn7iGjWgbPiWtz0uQRNTgFdd2gXSvQYB5lXKW/HeZmEChAOi1aF9Hkhb0vRzTU3Wk3DRTGEn2HB6HJ1uP7wAEMNMhBvmN7YSk4l4d2U4JUrCy1kgY3J81UBsIVzKj4JShhfrFOmZ+A4Y2jO/4ck6lOq7HijqPs7IItGm2Vet+fqnaDTAZnXjbIs2aQhjHJ7lX+wnm63MC8P8L0flNZs+BFh3AmZt3Le4okCnCYmnrMD6p5aFhk0DBdQrW7i2sayfPN+2XFD/LzaojDc77KsqnumY20gR1hn4bPWQucsFNAfwqvpMMJ92nbIXceOYu/9D4ru/GVxpL3psRAOHMm/T4Kb4Y1Hg6rHIbE6AzdvnJOrilfSYMi3Ht2cD3aOUmN4DWCMU5finFysIsH88BZnyGgzHdWDPtdqoU254Wfluz65pyl0xf8u2uQ/5hfwaf6Y2+mT9ovTtjG01de+c/8C+6qvH107SfXdT+dmsZfmXz/SlbcQ2CzpDHrXZVQjmNO5xNcNxNzqsZvcPgMWHpEYwTOzlLcFmWNfmRD7tIRqnHv6lZBEDHWl4LauK7pheB4xE4otZnLahyqgylHTSjj1SsGNySmAe/gCvkUMVuRGGBDRfiyl+vDKiJjFAiVvP4QTQEBoQc1LZbGUTxUfZW7WA4LL8YAUZ3QcnKzLGxUAsDYqCpm2HUktf9ZWKSuQDGZ3KLGBSOiV3BtdnS2PMZyPyijZKsjtSv3a7S0yzOHcxVVldwEB8j3F4t3mCGEGjWUWT0ESzp4SbtiHYsFfUaq9zAA7MnU/WJwZ2geMyZJC3aAyJjj2W6UcKuhg82HLiN3H6aXk/E9eZEl6FVNjvaNNpZbdgJVInH/IKpnhjOvad2MzrHetYOWhzYAeZCp3sJ/CygYaCgnFyd+7RbqhQVNeo1Th50Gck0oH7lLLKJpJ+JvkVuIb/TILN7BeL5rIPMHMDtceuTStV22OuPDcw3AT2vDpmDZq3d6AGRAp5F6IeUIUN0BbE8vt/osR1exChCeAONpfohsVID98MQIsWp8xPuKcjdWiSSUWsjXhUiccUrP0CSItEsuwE3iyhvyhuTKzipZ5mO9xuWAWHb2nu8U5WOx6ij4tVvztuP2I1rVyUOC5G7qtxk5rYygZr5z8WqKl4KV0V+oqIQEZiejPRpq/yz1fy6VjdHc1ZCb5J91+048ix32XYqny58evKZRfmkz6w655LXyyx+Y/8mVP7/Fego+CYPlahE9Jcf6Dd47kIUXHDjVeFqAx5Qs82Ht2yP4AALZKTZ6clLLh8LhEC6CxWR4BForLzelOSezBLzO7qzqzXfRQZGT0VGfPJPL7JZoeH+UTZXk/RHHv4QP8O5HgrrbLzZEFRHaVy6rsuGVAKf8gDFakwwKO6DF3y4+VASZUYRZUjzzQWu2u4pCl9JaqAY8aXXnOSrAMcvZDrwKqjsb9a+hfDNPUgRfqrhjvXeluYMAs0ZCEY8kRV7BLmRwhY8lVV8k+u9Zy7+SU2TX+qhVZN86NGr6DHXeXNjlujjITWZwYkdUc0rYdkXsuN9A5J407JLZPmyvciaDfVtK/9wDPx2Byl8JEXlfZdmM/x58/IQC7YQJ4E18tcPde6ALUPU9UKSwSX6szyHtdozLNg7xu6J2LPjmJ5mioYbN3oPUskl9lqtGvFqWvhWZia/62vGOLPOv6XlIvI85nKaN3Z5EO9L5nWr4pkF2CUig7Ee3AQDMhRSkrLfvLNUS4q3B4bLXCzjrO/CGaGlLrrq2exyVf2n6sdrmu7u6Au9dko1h7Bjl7P6a8GglEE5FTlbsPYnRJNtjnPhLS4vvV4L2fp7k6Col6vT0wnW72sZaH/Qs4ZDe5Ce9CKHsCtXQJ2AXFvctpSVvOjTifZ22OGbFJ+XKGaEAUhTk4Xtv49tgj9OJmVB07S9OPv2EtudSlI7wtTRMgSSoansw3oRUkjQwHs4Kch+lzeMaPXE+6Z7CtDOEgMhfU/3C5yl3UN3HbytTnjzK6CvWgBgq1hJoNYM0CrL+kctfyND77RkZHQi9H0vnEtPYAOerSq+fr5dK4pYDf20PV5kcOLC4u9sfdZUEsVbu4WqXu1CCkylHl9MeJ6QzjhvjEckeBtK/8YJc831hH+ZNOawla4whJZm+GaOZTxeZ+5dKlsfrEmjXVuxiaUESNqm+fecD9M5PAxKnn8SD0GwuP4DuZq/yjRQdMmRa1zBm7hd8kYCeEApa3x9PT/IfKtDNqt7IEam4prUDzXvMj3QCrPdGK9688q5lmW6PqtZP2aWf4fRdwviDiDmIEEqH7ZSWZ6sroYasFAJ75zs+6iNCQnFSvVfcAuCEI5EPuDw+8t/BcgRqb2S8MB6IU8GddCoZjwBWyiJ2ngn58BHuOII4hAQxzeL/dX4oOpXwLXDgN8UNFSDBIPo5rxHdqWsw3W0hkRiYtUs1Wm7BgIvZYgd2JDcv9fMQd9k3pbRBZS4jMOiRHcSJMt6WjnOJhRDQp8sIHyvj/9AAMPzMWhIo8Esp+odZwdA0AhN43qXvAd/0VOPST8/rDEvDLhVrUBvYvuF9TYThKXbQ+noFoPyUCkM+H1ACSVHo2PFek4fmHYTxOv+UFCu65z/Puj8sUr6o07Nc/FxgesMz/6vcmCkaW88/At48rFlo/kxiBZvWLWy9ToWWvwkcehwdHWnL50lj+7UlbgKUVinAp7YW341pnZ++2GBPT2A0elnV0t12ve+OeNzrE/MSpNwvzgeMMX53VPxxS7/I//Y9jQH5Nk8DUzBUMkbZ4gPzKfrallEwHcty2/BSaxDfjK06OFWDTrt+m91sDGfKXUnRWxefsLJTMTNTNjerq/lpeZNICtroOhYDy/iWcq0T4tCpXQdvrr6dWcfDWPTxd4cmJvj0GpRahXWEWVcILQiVU5YDjg9QBEUPHDcwVqkM9cPnWye4PfUjM7ztN76E7GRopKUReXKxMxuEhXZosW3VScTffaNOFnS12SZb8RJzyKJO9p4xETEyEtg7uOLn4/YJl/QlzQbgSrfrT/X+X9U/YJrQlf4x5r37+xSaFjGSN3J+RSLNWxAevoJID/XylGjKUHJ77B2FxANEhaKwwhDVitenbx20tw7Ay6wTyDSSxGgdxRYyAlRQY47Wgq3MoDmktKdXDQfCRIwrTF7On0X/Blnd/4FXCM5xszsguFMAQc77OIH/cwfjuj5hCY5Mk5HTsVbvfCVZG1KDKmte7qTbETsBMy2BmLUbriOP8PYOb9Yk/MUK7/Jj1HTOwexQdc/nAmeuFOPYVtlRtTctUj0jOFs0DxrZ9rjdJGqu/mq/qRbKQ7+DO6e9jyURGLHdPgUBZ8W4sYWpxK5ATIdrMsibUQa1YVluyhtke/L1L95dD+qM+KlC5YNYE7evvin7uHQGTQcfQWvVvgKF4UEnUitWHP6J7/ZREGL48CejMm6RM9waQUg+Y3n0elm6bDX9JWx50mkmeHqSKjlJ140lnbTFrV6GsWKFPmWFRznsk+dHQaRPSLaKMsR4UI/+St+PCE/kPqG6tLbJHM0CAhl7Qgk7H1W/E0gruBEbmi659sUnaFJ+irHGy1nsf/BiZ0AAfiY8SEhvm8txRIQyuwqrOe2UzLqdG7JvDeSBDsc6mW3ez1MLDyWNBtEiUAN95VsmoroIqfHF0y6G+9hZ+HP8JBW4264/eVBRXUTXFaLxQJhlH1WzTRkNg3Hnsja4OCw4pXERgTDps4pLI2WwGbClYDqXY2mdrQAnxxkkBxNl5mmWPi4v88EKyd4CBx7t8j2d0whZ56WuT9fRn3TH/FczTMru7FC31lpoww8eNix9bJIy7mUS+SN+VtFdv/yG7tCz6pUyLmzWMGa5myaSvHKSO8/GvsIl/2v7W/IT1R+7qkHkApwA8VFl93irDsqlCpWVvdu3y1N1e1xfQBeTd4JzhFkc+n/yobmjk2mUrDMkJ1U1tOtjpktmxars5HWQLCAL196XbqsytXx28VRTZu2iippAPc7DfaYUfRbFRumm6JyOwxhhFhIzSJvUD9NoWbJMkPd7WmdQRjZKV5kNzjSeWlPqvuvli9uOJAPVcrLA//Rug7Vgh9TtNTIwaHwSzL92OVSJrwUDvPlZ3Ji5qJJEQKsS5ZmbvERuq4PU4K0+sqFGwunGYlQGFdBWDJWqZ7v+ua7VnTkGeBpc/aXy9z3gXbfYVg4L/n9Bv7mauuI0zyylKpn4mGvKIJUIj0azZ8h7Uud08Vek8Jg74nkkR+t1g9Pkh50bOhRNdJUIOGNvfJvJi7xL0DE7Y9QgFXUElerybFrG1CtZtpCFQLxIUCkaJRAnKnm5t41zIbWY2RMJgcQoaIdtIKSSRkn3r3FTzLSTf8h9V2OCxKLAY8mLAvTCynHIZiJYER2t6d9693+sX66VktESmdceyB4vS7kl+vkUJ1J0qtnRmtdn3CDesjMiTaln58vo6//vL1+wQonRiI12PD+qMBF0FjwKGORYoOJ8qqCNUi2x5MxO6TP2YoZXVLbj9YHFnHXAUgt85C6FEb5MnYCA4Jzcw0B6KnJ5dKPJG1xbfvXPOigMH3WTrAFtNnrF8BynS70nL1wTNMsXA+ZbR443pCi6YQur7TOaveN2M+GNT4d1MZ7KxrAhsXFYWAOqx1Yr5V0M/HlE9Xr5TihbY2514IZEf6FJU2p+MC9AovN3S15oaylW6F3EPWrO9QqVN9sa8lS55QAFu3Lew9mfoFyYUV2+UQ4IGWNn76DEeOV+LqhDv7iLUifEgx/jCFMuVN44LolvAuZyAuQztHRoQ1kFvQv0ZCmpGA/maNrpLaZTQfgV72ALpUSXYXdOEnXPmky6eTUO+B9/RTBiSmdhn/BT7Jc+nC2nkdeGVaskoUNB7WXnZyBOX37/c9Asz0gCH55KCawVUj3Lk+VoemJiededgSzjKnmKymozVYFZcy1TK8m2S8SHXedzFgsa0K+yd/4G+F69mgHNbbC/PE3eKgihxxT3HBysdl5WUpSVs+Qh+Y/8DESPa40H1uMftL3YBS8DTr96qvIRS8PRgqLAwK86ZBnMRYvLbwya3mIqjPSXR+FIHgvkLJVdMHwEPgij3nYxRCHQY6lOsSC1LtgZBygFNVzMKwVzSMZc0NDlJOHBZsgOvoMX4/vCzlr/57iStEcH0n+5Gq08gYNaMJezg0P8GAvJfp/oM7v7Tmn8MgRuBH9Jbt76J62eF+yqQhz2tI/iMTHNESRoPF/PPs4HV3WCpdr+f+cwda9AZCJ9r6zF6VzWUXmCIbGs006qGFc3HGSlsoMwb3Wlf8abN8cXdfTmtLEJwtZU39RdoAPEpqyQkJPxVovKPLL6KJJ/FqPs+x2n5GmvEcQQSRNkPSiZ93s1lZjW6n8IZouxkRrNAo3ygKRx1eC+O2hFcA9kZd+WNnCfYDKrgTMmdmzX4u911EgJXRAwI01SAxK2TuoB7f2AskO4ETc7WGMkg00FpmK/D1s4b5m8dHyizC3jq8/5fnemc1AO3Qro5+Urevfg8NT4dMar2Fc86cpBphLtuh8NDk7bdsW8px34jltxfCdD6z+ShiN0dt94cz2Nt+RB1ocel9WaS3zwVW8r35QmyaiqWY8yHIfJ2/IMbLOjQaHMf66F5lM/a9cqDLMATH7anxyHlQngf/93Snip7Q6+8JeQy5x44tubQgYgkNnS+ClTiU+7uoFkvLwW5P9dfchVsIik5r41AGSh5ChyAFH215h+or2y4+cKTDy1yZse0/dpsRYG6qT+hbxfCGElHNhxccamELkCtAaLVjjw3I6JPOQ7YashYYCRKS5HkoH5HWNzNNAMAC4QrAPYyqV2F/RNl063SeqgR0v16nm4d0wvLXZA4bm3+esrV6BKdpVh8nnKvncZLjAwvRZuywSg7z5B4GsGEXjpHGXBqu34SY2zIbXT8ilgk2hrrRmWgrnxNOk7Q7MNEpKbmoxIxlGmh5TLW8Og4gOs3HJ5lQWCoKyRZMEynA04nZScgnP5J5u3GtdCErVd2GKjSFc9DMI25/NwqJZr8Mjedvr+FlTcglP+7QFy1Ppqh/r5i2EExC093uhfr0tjsVGPnmwA2u3GUoU+ZOa7qS1bzq9Rfb59D8BHw8yHybzJgC2iyYiT9dvcDud/VoBIuIemw6o/ZL2NFAxY/Zv8zrlBx1tRhnBAA9hBdVDwfxiYGW4dhOuzmdepDvGjYLyhxSpuOAMPQrbCS/OO+PhfExRVoaI3H/NEDPWbulbt980gZnPvQAmPDNsEcBaEcM4RBZulAARCA3NMYaOKRlGrpoPlQ8tyQmOkd8ecfVJxy1gTFo05RRKrJKMRnDNYocgW1d4ITII22hZ1jJPN/ATaYSpFkWO+go/mGrh81+t1IP+ejNAsbhwk6GjmLbohGAjc6BmDT+tbwanE2HiYWUHcxVvSOS3LSfS5SV3iPDpNmnxG81p3V2Jzaz6Rkw//IaVrxKD22eQJV/pcmis2HrBhKtWje9sKdr1E4/msQ+AdR22JvFBKJAFXGvGV1PnRTPkRr/LuoewjjB+unF4njDSjJtfDB1FVTh0AiUiQlIwr9Vd3XA6Cy5RY2lTd6Znir4jd2PPnum13J/5TBvsMNPlIsItalBOlbuEMouzl6g6Kc5zxpcdOfZ6lWipRP+O3KkRG4QV1RaMA8YL82IZun2ItIADCFcY7jbsK40PmsE23xxOPGNVeXii8TfeGpjjZMCpmx++2loj9WBHpgi6vrkeaGvZPw36pbT6nczxbvxpgv28RAPpc44OxMo/SlAQnVTCe3lwg8f7AQQzKeRKy5jtepQYDq9PJb5/WeFN3r465YB08h5+qmTRNOYH1ETfyl5JTjI1tNHEHbcPi7eWN1EK6IZuHB+wUKc3dc5PvBhYHJFsKJClw186uR8i/DsFZHD2SG71COmBS9+FaOjRiXFmLEeqyPR6n0Z47jqVAKDrI+3vB2dFnYnfwEe6zDrXHS4BtEq+9hLIPbOa0TUGpI6nzVvoAGVBJim+FvNdZoT+pW0ovxLJ8e9sAdbIx98+C6h1RXv0s8GzrR9S2Z1C1nT1QFXEuHS2dY1Kk0pvlxbStEaPVBrsrp32Itx86olZmYwpiR4E9QDukUgw1XklG83vY752jYg3WdYxc0b6MaHj25ZsBczPGcP0tlnvwVVjssTCSDgcFY1gfq9hc4O1PkpiT/Kk/9zzjIv7fy3AeIzUASuDO8mqr2/KRtTqBww+nkKE1W4uBDLZVFw86AUQGpN+l4c32UW05LsDKk0M+wPmPT20gmRGiNMDhW6OWW9azSpZEmsWkYfBZylrFeUm3pPvoco4ILfeQTs//ts5hdbfjnai7cosy0RaCvf1j6khFv8QDDe4fOQjbN4j4e8BQklu7N+c+vOSC8Wpy+Duhm3WzPNqX9wg0lZUFCW6fQsSKqt2oYFKu3au+zobhN5nyMtsmTXpqak9Op7RijLh3NvJVgIRUpc4JU7Hb/rHi1P9L49vp7oQDFFpAio2BvC70wgYeNvHdO4YC+PQ4A0/isK9wH/TvHR9lj4XG48jqdPdn5hj3zbDTXC+lmhoFu5oWbgX5BudafPzsTDCBefHefSyMG7utvTazQHcHnR/iMPHSW9jj1RrqbOHt1LG5oHuxTVwoMpVMOvypt8IVFoXat71IK3ffRFJTANogGg7q066YIe3mdZZp2V7TWssQRPFaHriA85FaYT8hFs/Klds9fk/dsq94YTT8JCrqYluuwHUPj+wlpQWPwbh7Qaf7iXa5XP5a8gyGS3DEPbqABayPjwPkrAk2KgSBav3+iz3e9cg3r7oH2CdMgzf5J1Nk2y4arwTSYRP9x+7qEyY6piZ8H051GuYd9HMxL4kE2GQm+7fHyZB7c4XpBMYIt9e4Fe8q/E90y2qvAXDJX2cbe9K10HosQWX3CDbunkU+UIcKw7XNArI7mzd9Lgsy5fZu/CaCo5hZhuwWHPIN5I8n9svInqRQhazp6nATuVUhANq7gjolOQjXto3MTg01eac1NQ8ixl/qkg5Bl2E0ospFLySFQjKsY+I3soo62Rkz3Al465EJq89rZdXGB8J4RwZeeX0No4AIbgJmPL3j9ALlmLQo7oVVk6IpiyGv4Nn2z3sy6CviDMUfnUE7qs4BabOtrQGBg0o28tjRkvM/AuqAi7q3v3yWviWFQbB+HZ4+73Ae8wdfanJumKAcpgntrMd4PEAb7I7xL5ajeAcb76GKbHQyY4E69/mjJIuqPwuQYh4/QVqn4p51NaJhcvpFOcp24i27sO4yabIQJ8yCTfZQdKTDWdcfoK4RkvVEy4GSDwA4GTYrmJB88qDmn7OZNW/cYcMUrspLsjvWO7bqrrjEIdW4PGzESUFG7a7J56NijCNM2+3ZnohZKqPFt/tfx1c9frp1YhUELTEhfOKqbvs8oA6ZD44vDBRIWpKpRCCbppFPZownvyFGUe1lCNafEUIzBMkCo/VCcjz17ZzZT8q0b/GC3pExFA+QXok7sw6DBSs779p3LWOwQEk+c2J1Tcebnz2Zo9QnnuGD1QznnNNzWuzhY0UmjHG2A92WJ1W5BPgLDO8Sw3/Nqq+VWRPs2U3czR3aqwhgzEhSCX9dt9r+7kEz8bkQQH53Mg6RwhrM9sJ0xyd2AUDH4oUhmH2Aeg1j39gwtHY9Awq890mKzYqfAxVHHH2aTbfx0pb+/aRDatK2477JRQcLUpXADcVi5aT0P9o7GME8Pv+2qz4K4kKAuhSyPFE1kPyL8OvCftrNb55CtrtLJYTe54yetJBY3Y0hHikt9U1DFH+4jMSvwdbP5ze31fzlr9S9y3qjHpXzZrNi2amepv59O90jfjYauKxDcRmyz7OonB1K1Kp2YX6g1dGUzq2EKsfO/4E4Kl7BqRBKm0aE0XhVt2ngF5/UE6gzJMena4t0j2ttuz7Xv/ODSk+ymaticzaKR2vFiqBKK0vWauflBd+vOwMGDtMTC8UzuBAXEh+p8qCI8DV+Ws/gnCuehnoF1AJpIFLdoQom/QAKC6vXlurIjJTt8P1BSf+bFdILFQOY4lEdLdZD94agqY5RgFk3/ZROjrOl07I1G7BHutS00HIciQG0B/2CYry8feY9P2lDqfdI3OL5Z8+WT91//WVYs0ZFBXZ7tpbvEecR23rcYcqkCakWU79eHzQlcAGly6C0ZgLLetsAj7s3yGQDVWo3fEMpF5Z9h2rJqgHoWHCwgOkmET+xVyiuN1/F0V8HZ8oxWWVqysZOBQnMDHOwPLmhTy1nNigjNMr1CxYcjslSaGSher2N1AUJrhSsVx+kqJgb9Sx8NrIiFU+wDOim0IgbHPXgqvLGg+EjN8GH5qU2tNbSpe8mZZLhrSKIK4glFTl/tJ/usHoFmtAvrr6X2L8PLxxRRIXI5AN0wx7VO6FQCsY7ywkieQFHF7LzS2k+cx6/n+LVO5jj7XD+A3iJLWS24wtC73ZBp6cWHRGioterOsjviDEOaoGQwoslFqGgAfSA20ypdCPAvIRxWblcfpbz0PyBWOXgHRlYr3xLEPryNZ8TcQK2ZcuznQokRY1iGHAJGnm6+rRJJ1d/iwZ9Lwq6JOJSGpHuQ7AeR9WcHPO1yP/CdYeT/7PkEGS0qWJsy3/+Gqx/PyxKbYNUI0sngnP6COdrqrTHaUScU2sktOT6730LPX6+Ilo9fsfrJ7wsRVCGfSx0Pf+qRZi9gKoztr6c5P5NMsiR2AgB0ogLKHACKnNf8XyfyZeMO3yrdjGdOUrRbwfrjTQSibcotvrilz+51DXmoQAETji9MCqzKFlqXVHHPHIgjnLlr29/wdMvp3fCNdAPILpoH0i5saAY/SIW3dbVBB7YWtTgBAKTr6qE2sqYktcVBeZevnF29fIDbn9lx9KbpsuIGKJDIwbueWmLq8YqLUNBNnMAbbI3zIuLFK68V5zvdyklXwGCNWZpLB0QUe17EMsSnevKH7QCIIB5aGadta/hOF+fyTpYvbw2s51/4AzYmj8YdCsM4hDOPcYDpFm6R0365SwlyXuAk04oyg9qu3nYlIoEJVci+tVf2pNh8CUoAzYj6FFJvWOZCXoguA4yPUl4Ejygc9qK7vXt5OmQYKx6D5fmzaPjZyu1R+E8sVEBpQDSIgiEHB5nkwxHqMaKJ0zEPOCf3tFdJhsNPqDzrDnhJ1qaXq6gVDt73zt5UCvRhHQMMWa4n9eG7bMiQy+PQ6L1sowSZ/ZoGnLo6FDH03LARlQ1ewpe3bGeVDrrpr9FVOYd1pRxSqrC6vmytNK5KEIiqFfMs7OONQB6Kp+vjSjnUkaeWl4gwNfRB4XELuClXarZ1+5gjm/XOH4HmTR/bGUqlngD6jJKSAKGls7yVtgR86kesz+iqRlesv8bvj1t3nXRXh9siTTN0rYqjQYobfhqCIWntc2H8POTnsWJvERDkZ70PdHNnKco1IYFmOEltOC6wx+WEI9NrU5TQLY/5oD2H5VV89KojIYl1HPTdcqt9/CzC4RR3KLgBPL6hERMksGbT/N04MP7WHTJLK1Bc5VDqCaFPkeHixfkeEY70R2IUQ82Js1RfYY0HOCmKdONFeI88CcVMVQlQNd3CqRbkiQkGOYHucowEueU/h1uUOVrHJmNmHLJ5XJmZgSXM3c2ozRP6ju2bxD47Q8TIIxDQWd48pT2QKaK8UGeLmPUVmdUC+MVl+JY3mK1IWqYgs7f/3SWk3MLr97KrH2bVCT71Mq/SBI2/uoX7R1es/1Hwb83gvzolIMcrfLtkGU/lMPQg+X7Ktt5U2+JDFxmcG6mh1J2SYojaR2IfNgeceWNvLF89ZVC+VW/w47zB1qnvbKLeuBqW7qpJyC23oA+Oflb66GHH+rdLWVTa5/NC7xLKc38/x1FCj7kwO2Uu0YZHgaszd1aBDiJtE7/Fv0UMVWonGceEHBL2nnzYqBCh50Z/bj7xj2QqK1Auzc4GdO/gAD7KF4T2wcGRlE7cEWiuLPGUpIpl4djWwc53gE8e1yFHgQgoNJGqy4Ryys4P44/I9LDJ82tmIxT+OfZNc8Hfq91iExtCUWJGUWk4UOFobsUIiWFk6UDMZPl1qtc2rA9d5EtGAeu8cW3d0TUe/SaVZK7gAeDtkeqUEx87fQ4OEhnUJ1XlvPxU3eapcS829ZRugHsVu1gntBkHFvUCTiIYHLGin8G9XpPxBWLfBTSkT+QqjnHI2L+SkOZRPhJVsMnwrBHPoBTqk6tl8QaSsyR9nNB9PBm1GkiGu/2kVJEgKE3mYCJuCBOHx9JytGSdxoj5hSEvp38TRMt2cBJpG5iDApCWQoCUihLV3BeM6i0NFrJJR5sRFNubJnapG8/BYKtdzaK0bRNtdhpPOGV1EIMAx3aBrwmPVNqM71Wx+a6Jh9od/6aKqS/mf1lvz5V/ynpj6Sto3RbmUpH763iW+hEwOh12VdP9ArntXFZBnihDXeK170iUZ/xlfuiWsbeoSrqmFRUAzpesZxDJmgPT03PuHeW2yi0ywMF6DXhOGneh5/osPViOMwaDg8P8iD0++EUxkr1185+8moC1u+dusNXLsGLgrc9HPgw9ndnPTD0uD4MbSOkYQSQUYHE+6n66/MrQZfgi53WBTqm5G2bNaKBtfMeps49ZLrUgBc3hNZAdQaQQ51cp3lUmEuKzogCud1qgvr+jTRGFPULXPae/xKuKtADyWven8SjytznLjlhpbYCsJJvVf/u3HvgvVg/4rPtmNGjHBM4EVK1PGeZEQKz0F79JwOYbJpKLcKXNqlcHI8mKGxzpLxQfBcfixERFVkhF0mjkmmxTyM5QPn8SpXhmjdTqH/Qd6f4NCBM3A/dtDNiM+RzaP8dGUGI0b/breE5Djt76WJvodgmml7bHQrkfX7BnaFVTpzoQsT2kGW61NvyFesXC4q1ijpMWus0XiwLyU0nQlu1iFt76phdO+ZxLddmQVnclQc6t9gmb6X6xE3DEgFuSB6JzoNeiJBj2OuX4r7vCUz2DsBaDyGcJ02iPJL6EWpcvbW6FftE/uhoBQTDgMrw0+3H36Ee0vgHnDh4+fRsM4s9J5cxJFBn4wx5G+TJh31EmGekC3u4KLcOgQAC00UDcUB/rOfmlxnqPytGeD+hfCHrCAsULDWJHJNLcGVI6tmjaTtxtxnomNFzEuVbbuZC7FI55SAZj6x86wi8BL/oA+Wk/njw7IG4t74H99TqTAlruca+/Cm5vaPnvWjwREe6lCTjE8lwPg28z0SVGksztFdy8XWQ082sSeNApXh/G7WRtXvEdRz/KnoYgG7lEuiRmVHWRz+peA6QIM4LS0Piw/HqcYqBbBHdCi06XfAQ11OdCMNk11z4Ffnuq7/4c6VaZ0A+/IvGkCG07b4OdrlxVTVkcsVrjexVfMFiDHe4bgHG/Y95RcjPRhGQKrqP8GmwxBKRIx38yLDUQs1ojwdNiZVw8zEaP3QGsgCCsWNgsOdOZCdFOIeBMP8tbJ0Wx9dFl0Vfey5fJQm+ZIVwyE/gx1kLyL8iVh4SePKroSbw/c31cCmWxAokvadULco0e5StcJ3KNgRcGB/Qwqkt4lgpc63hGqwyp5BVT4MtJOlk+eFHUPt9memLfwrydalOf8qEVpqd7cJginIcuAjabbNj/t6nSONnk/5Edb6icyWFSvp7aJ2MJKLQvO9PgFTVj26gCKdGpHrDdoFcXMIuetewtDcSum+cITdv0riMpV76pM8HVvxrVgLx484Av0FEJjgSdhKZ9TD8CEOmxWkCK2R3weZx1kNTISV4fbnfFU3xdr2XpvrLyQ7KaYPNnA0Q+SC2+sByV2oi+jM+Jpu4QHODuvpAWdxuMxAwA75PTAXc0sDGf9JK4ucr39rcaPyKCnvjYCk2igm/Y8c+485zHgA3GmJTm3EtugkeYOupLGIDwpOnAJnunxis6X9ApxLkRy+z1jcRs3rMmoL/9rWKHjSqap91uVYzoJeMX/ts22Akjsj99TlakdCCICKRZo1irIkWKd2imxEcaxZeIPThI/mJKArbPUSNHjGq+kEgLhyrPTEBhXjNHWZ01YXyT1JHTriOLtW0zaF8HbWNnri6nncbueH423AkbXC7af4bQrZ7HFs3WDsAGkcCbLWnFl1P30LcCn/nJrZPKrnEWLFJfyI3xRtgTfnXWD4xoDSJXCAGse0gu7HwgAzztIgvrNmhcaevwhF80p/nj0f+aD5CmtFU5+TxBgsySX+6LiA+XmwlYao0+cfirqMGDWT39fQp26bAEmxr+VnU0EzoNTX+W4Wn24Ww3bqJJDFWWD/Js7wUsKKQBqiwtBKTZulLpYHV9N7//iiuj25kM+u3qfRwR56EqEpueP9vOzqgYakDghqEYQzu3f/53i26qFLBPKVpKxHhS8aYRMYeDLJ9friPQg4oh97RyjYSR+7+rlKgaV8vZPPsZYrtQIwy2upbHQ0jgvj9xgPMrbQDy6uGSPnQLA73fwe4XoBQSFa+bSbRUVBCbwDLnONP7XtlzymWPkvZAok6wH72GQTMLPr8RFkum/hiWVHGgrv4QXdbJ34oo4uM+Fcd6soDd1JZZJSM2rgGA5Ip8rRrCscvjWvkv+vCxvCdMm9Lg8ichy5B/UyTdRSPGUyGZ+YiOBBU6Rd2knn3pMO2ZX09NnHioAkmMGBvq5R4FqAIc7YihrWw8aR9wlT1Ecl8ckXCsA9IyNoAIjEsEVoR05BfLpE3+kI5gLuGvumxWw9NcIH3/QNltt6JZvVkXl5HNOY5RQZco4xL9LRXwoCAkex3H7AmRv/Kck0NuHK4VAuAx3n4/sP9O4KdwFFiGCgLVPllhsdOGRmCTpWwTJP26vH+ka01NmkKdzYf0mEfr40oqI4PGiJw+PCugLFM1tpTcuA+vKhyywvaA09HyJzRTbB18XNJVor7GJ0cNyLjEvkFgrTl+upBALtB1MD3NclpGasiP91b9AgVLaHSeuR3+USPlwWsLU6ly9xHeIVZ3sW0Q5cLiWaqJHWfg5ejJ3dpjWphwkLUJPOoMHy2P1HXfa8XR6yAo9VwY8vLo+5O98kxbHHAi7GpITjtOGDnnem82RZ79LV3peSsSkSnhjYGsdjj/DbAuTmlhxXLjl07U/Che8TH+FHzlFVdyJ/lkUMXjN3BlVgxdA32Qj2YpwSHmUOjGoSCeD3jb+SfQ8TJqjPfHGPJaGlC4zT6Re6fjNQXHeUNDNm/elZZPTuzlFy+1QplhhnQxHOISweIXt7Ck7v7821flA6ViAHbERzMkCYOeZDA+xEADWzWlANP9nblxFLfxwGANL+j8IRV24KJ779FI4jjxLWk33A+bekQpNg6YsnhzP6tEvXPbtAmKvPCm8MzsgO862lOcSavkL0Nvjt0Y1hn+zugP0zp2fR1gmKlX4YKHFsiB+VVgsLA+PQK8MSaBjTlLwNoShXrsBiCal9IaMijjgCL6mpxIKcg+a+1A87Ku/pvCYTV2DHkQ2BOODMIUJ+kcYtRwTu/8zV1m3Yc8EskM3VlmfvxGvOg4SR5w9yi+k2kCQ3dTBktTn06uub5IXkKcZY5gjUl2d9bTUkrSnlKGi/RFzuBHjPBm7z8H1Sx13vjoqN8v7h80YEDaf0DuthtnarhuKVIq3qyUXTSWKZOkfzPxMDY32oQEJgp15cuc2SIxO76wakJli0cSh4yKVq+VeOCbeL+z+TvawJDwKYBr1oc9fk7lI36AYsihCWuwwyC70oyxeAJdgsQY2XvFSAiVYsvtT8ZEG2AN5/dTFNeVCO/kwdMO5AQnn1onez6hdnfJaaZUxtULt1f7Sf/nW0urcTSq4WNSWhVqm6jpBHCbNlFeXNx0HndMtAQ+5QXJ39kXK8PJajzieBdXH3SQvCVkwyRruwuG217fSH0peYIksVPyYC+oxl2GWhH2t6uRx+B+Hpp2GOK44h/tohHrIyhKVDISHzfUhh9UfgZ9FMYqQ8tZ5Wx76V6HKq/Mh7NNYlm6781kHbsoYGaPuoovTNbYMJtAw6eggaU3axIrwIl5j2o2xTtmXheEIS1OOUjnfSjZ8qiPm8vzPeHubcxeo1mWBtdDPbjyN5VedAyW209zhIpAsYniuhC1LWTzhFDRWj7MMWafdylt5w/u7LV5IrCcQK55X2/H4TK+t7sdIHibBPOQaFsf/sX6Omgm+MUO5jrreFtbqV+grHi4duAAAAAAA"
+    ]
   },
   {
     "id": 1781365135486,
@@ -2089,7 +2179,7 @@
     "precioActual": 4,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 70,
+    "stock": 0,
     "comision": 1,
     "comisionMoneda": "USD",
     "categoria": "HOGAR",
@@ -2683,7 +2773,7 @@
   },
   {
     "id": 1784405087402,
-    "nombre": "​🌐 Cámara de Seguridad Wi-fi Ptz",
+    "nombre": "​🔒 Cámara de Seguridad PTZ WiFi Exterior con Doble Antena",
     "imagen": "https://tiendamax.org/imagenes/img_1784405086297.webp",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1784405086297.webp"
@@ -2701,12 +2791,12 @@
     "garantia": "",
     "devolucion": false,
     "specs": [
-      "​🛡️ Seguridad Inteligente 24/7 ​",
-      "📡 Conectividad Inalámbrica Dual ​",
-      "🔄 Rotación Panorámica 360°"
+      "​📹 Cámara IP Domo PTZ Inalámbrica ​",
+      "🛡️ Seguridad Inteligente con Cobertura de Doble Antena ​",
+      "🌐 Monitoreo Remoto y Visión Nocturna Avanzada"
     ],
     "fechaAgregado": "2026-07-18T20:04:47.403Z",
-    "descripcion": "Cámara de vigilancia inteligente con diseño moderno y compacto, ideal para monitorear hogares o pequeños negocios. Gracias a su conectividad inalámbrica y capacidad de giro motorizado, permite un control total del entorno desde tu dispositivo móvil, ofreciendo tranquilidad tanto de día como de noche.\n​Ficha Técnica:\n​○ Monitoreo: 🔄 Equipada con movimiento PTZ (Pan, Tilt, Zoom) para una cobertura completa, eliminando puntos ciegos en cualquier habitación o área exterior.\n​○ Visión: 🌙 Tecnología de visión nocturna optimizada con iluminación integrada, garantizando imágenes claras y detalladas incluso en condiciones de baja luminosidad.\n​○ Conectividad: 📡 Antenas duales de alta recepción que aseguran una señal Wi-Fi estable para la transmisión de video en tiempo real sin interrupciones.\n​○ Instalación: 🛠️ Diseño versátil y fácil de instalar, permitiendo su montaje en paredes o techos para una vigilancia discreta y efectiva.\n​Especificaciones (Specs):\n​Tipo: Cámara IP PTZ inalámbrica.\n​Conectividad: Wi-Fi.\n​Uso: Interiores y exteriores protegidos (Hogares/Oficinas).\n​Características principales: Rotación 360°, visión nocturna, monitoreo móvil."
+    "descripcion": "Cámara de vigilancia inteligente con diseño moderno y compacto, ideal para monitorear hogares o pequeños negocios. Gracias a su conectividad inalámbrica y capacidad de giro motorizado, permite un control total del entorno desde tu dispositivo móvil, ofreciendo tranquilidad tanto de día como de noche.\n​Ficha Técnica:\n​Monitoreo: 🔄 Equipada con movimiento PTZ (Pan, Tilt, Zoom) para una cobertura completa, eliminando puntos ciegos en cualquier habitación o área exterior.\n​ Visión: 🌙 Tecnología de visión nocturna optimizada con iluminación integrada, garantizando imágenes claras y detalladas incluso en condiciones de baja luminosidad.\nConectividad: 📡 Antenas duales de alta recepción que aseguran una señal Wi-Fi estable para la transmisión de video en tiempo real sin interrupciones.\nInstalación: 🛠️ Diseño versátil y fácil de instalar, permitiendo su montaje en paredes o techos para una vigilancia discreta y efectiva.\n​Especificaciones (Specs):\n​Tipo: Cámara IP PTZ inalámbrica.\n​Conectividad: Wi-Fi.\n​Uso: Interiores y exteriores protegidos (Hogares/Oficinas).\n​Características principales: Rotación 360°, visión nocturna, monitoreo móvil."
   },
   {
     "id": 1784569265085,
@@ -2788,5 +2878,32 @@
       "​🛡️ Kit Completo Listo para Trabajar"
     ],
     "fechaAgregado": "2026-07-20T17:55:00.968Z"
+  },
+  {
+    "id": 1784571782777,
+    "nombre": "​🔒 Sistema de Seguridad ZOSI de 8 Canales con DVR 5MP y Disco Duro de 1TB",
+    "descripcion": "Sistema completo de videovigilancia diseñado para ofrecer máxima protección en el hogar o negocio. Incluye un DVR de 8 canales con capacidad de 5MP y un conjunto de 8 cámaras de alta definición, garantizando un monitoreo detallado, grabación continua y almacenamiento seguro gracias a su disco duro de 1TB integrado.\n​Ficha Técnica:\n​Canales y Compatibilidad: 📹 DVR de 8 canales compatible perfectamente con cámaras ZOSI para una integración óptima del sistema.\n​Resolución: 📺 Resolución HD de 2MP (1080p) en las cámaras para obtener imágenes nítidas y detalladas.\n​Rendimiento del Grabador: ⚡ DVR Lite con capacidad de 5MP que permite una gestión de grabación superior.\n​Almacenamiento: 💾 Incluye disco duro de 1TB para almacenar horas de grabación continua sin interrupciones.\n​Modos de Operación: 🛡️ Grabación 24/7 combinada con tecnología de detección de movimiento para mayor seguridad y eficiencia.\n​Alimentación: 🔌 Alimentación por USB que facilita la instalación y puesta en marcha del equipo.\n​Especificaciones (Specs):\n​Marca: ZOSI.\n​Tipo: Sistema de seguridad con DVR y cámaras de vigilancia.\n​Capacidad del DVR: 8 canales / 5MP Lite.\n​Almacenamiento: 1TB de disco duro incluido.",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784571781169.webp",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784571781169.webp"
+    ],
+    "precioActual": 420,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 3,
+    "comision": 20,
+    "comisionMoneda": "USD",
+    "categoria": "SEGURIDAD",
+    "subcategoria": "CÁMARAS",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "specs": [
+      "​📹 Sistema de Videovigilancia de 8 Canales con Alta Definición",
+      "​🛡️ Monitoreo Completo y Almacenamiento Integrado ​",
+      "🌐 Seguridad Confiable 24/7 para el Hogar"
+    ],
+    "fechaAgregado": "2026-07-20T18:23:02.778Z"
   }
 ]
