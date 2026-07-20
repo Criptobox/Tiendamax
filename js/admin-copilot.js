@@ -297,6 +297,48 @@ function injectStyles(){
   .tcp-arrow{color:#fff;font-size:28px;font-weight:900}
   .tcp-footer{position:absolute;bottom:30px;left:0;right:0;z-index:3;text-align:center}
   .tcp-dom{font-size:16px;font-weight:700;color:#ff6b1a}.tcp-hint{font-size:12px;color:#888;margin-top:4px}
+  /* ── Cartel Pro v2 — logo oficial + iconos reales + grid de features ── */
+  .tcp2-bg{position:absolute;inset:0;background:linear-gradient(155deg,#0a0a0a 0%,#111111 55%,#0d0d0d 100%)}
+  .tcp2-glow{position:absolute;inset:0;background:radial-gradient(ellipse at 30% 14%,rgba(255,107,26,.13) 0%,transparent 52%),radial-gradient(ellipse at 75% 78%,rgba(255,107,26,.08) 0%,transparent 50%)}
+  .tcp2-header{position:relative;z-index:3;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:28px 34px 0}
+  .tcp2-brand{display:flex;align-items:center;gap:12px}
+  .tcp2-logo{width:52px;height:52px;border-radius:15px;background:radial-gradient(circle at 32% 28%,rgba(255,140,66,.35),rgba(255,107,26,.08) 72%);border:1px solid rgba(255,140,66,.4);display:flex;align-items:center;justify-content:center;padding:9px;box-shadow:0 6px 18px rgba(255,107,26,.25)}
+  .tcp2-logo img{width:100%;height:100%;object-fit:contain}
+  .tcp2-word{font-size:22px;font-weight:800;color:#fff;line-height:1;letter-spacing:-.3px}.tcp2-word em{font-style:normal;color:#ff6b1a}
+  .tcp2-sub{font-size:10px;color:#777;text-transform:uppercase;letter-spacing:.14em;margin-top:3px}
+  .tcp2-tag{display:flex;align-items:center;gap:6px;background:rgba(255,107,26,.12);border:1px solid rgba(255,140,66,.4);color:#ff8c42;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding:7px 13px;border-radius:999px;white-space:nowrap}
+  .tcp2-title{position:relative;z-index:3;margin:26px 34px 0}
+  .tcp2-title h1{font-size:44px;font-weight:900;line-height:1.02;letter-spacing:-1.5px;color:#fff;word-break:break-word}
+  .tcp2-title h1 em{font-style:normal;color:#ff6b1a}
+  .tcp2-tagline{font-size:15px;color:#999;margin-top:8px;line-height:1.4}
+  .tcp2-imgwrap{position:relative;z-index:3;margin:22px 34px 0;height:300px;display:flex;align-items:center;justify-content:center}
+  .tcp2-imgwrap::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at center,rgba(255,107,26,.22) 0%,transparent 68%);filter:blur(6px)}
+  .tcp2-imgwrap img{position:relative;max-width:78%;max-height:100%;object-fit:contain;border-radius:20px;filter:drop-shadow(0 22px 34px rgba(0,0,0,.55))}
+  .tcp2-badge{position:absolute;top:20px;right:34px;z-index:4;background:linear-gradient(135deg,#ff6b1a,#e85e0a);color:#fff;font-size:15px;font-weight:900;padding:9px 15px;border-radius:12px;box-shadow:0 8px 20px rgba(255,107,26,.5);text-align:center;line-height:1.05}
+  .tcp2-badge small{display:block;font-size:8px;font-weight:800;letter-spacing:.1em;opacity:.85;margin-top:1px}
+  .tcp2-feats{position:relative;z-index:3;display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:24px 34px 0}
+  .tcp2-feat{display:flex;align-items:flex-start;gap:10px;padding:12px;border-radius:14px;border:1px solid rgba(255,255,255,.06);background:rgba(255,255,255,.02)}
+  .tcp2-feat-ic{flex-shrink:0;width:36px;height:36px;border-radius:10px;background:rgba(255,107,26,.12);color:#ff8c42;display:flex;align-items:center;justify-content:center}
+  .tcp2-feat-ic svg{width:20px;height:20px}
+  .tcp2-feat-t{font-size:11px;font-weight:800;color:#fff;letter-spacing:.03em;line-height:1.15;text-transform:uppercase}
+  .tcp2-feat-d{font-size:10px;color:#888;margin-top:2px;line-height:1.28}
+  .tcp2-price{position:relative;z-index:3;margin:24px 34px 0;background:linear-gradient(135deg,#241009,#160b06);border:1.5px solid rgba(255,140,66,.35);border-radius:16px;padding:16px 20px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+  .tcp2-price-n{font-size:40px;font-weight:900;color:#ff8c42;letter-spacing:-1px;line-height:1}
+  .tcp2-price-c{font-size:16px;font-weight:800;color:#ff8c42;margin-left:4px}
+  .tcp2-price-old{font-size:13px;color:#777;text-decoration:line-through;margin-top:3px}
+  .tcp2-meta{text-align:right;font-size:11px;color:#999;line-height:1.6}.tcp2-meta b{color:#ddd}
+  .tcp2-trust{position:relative;z-index:3;display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:20px 34px 0}
+  .tcp2-trust-i{text-align:center;padding:12px 6px;border-radius:12px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.05)}
+  .tcp2-trust-i svg{width:22px;height:22px;color:#ff8c42;margin-bottom:6px}
+  .tcp2-trust-i b{display:block;font-size:9.5px;font-weight:800;color:#eee;letter-spacing:.03em;text-transform:uppercase;line-height:1.2}
+  .tcp2-trust-i span{display:block;font-size:8.5px;color:#777;margin-top:2px}
+  .tcp2-cta{position:relative;z-index:3;margin:16px 34px 0;background:linear-gradient(135deg,#25d366,#12a150);border-radius:999px;padding:15px 24px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 8px 24px rgba(37,211,102,.4)}
+  .tcp2-cta-l{display:flex;align-items:center;gap:12px}
+  .tcp2-cta-wa{width:38px;height:38px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .tcp2-cta-wa svg{width:20px;height:20px}
+  .tcp2-cta-t{color:#fff;font-weight:800;font-size:13px;line-height:1.15}.tcp2-cta-t small{display:block;font-size:10px;font-weight:700;letter-spacing:.06em;opacity:.9}
+  .tcp2-footer{position:relative;z-index:3;text-align:center;margin-top:18px;padding-bottom:24px}
+  .tcp2-footer .d{font-size:14px;font-weight:800;color:#ff6b1a}.tcp2-footer .h{font-size:11px;color:#777;margin-top:3px}
   .tm-chat-log{max-height:46vh;overflow:auto;display:flex;flex-direction:column;gap:9px;padding:4px 2px}
   .tm-chat-u,.tm-chat-b{border-radius:14px;padding:9px 12px;font-size:13px;line-height:1.5;max-width:92%}
   .tm-chat-u{align-self:flex-end;background:rgba(255,107,53,.16);border:1px solid rgba(255,107,53,.3)}
@@ -1266,9 +1308,75 @@ function _cartelDataFromProduct(p){
     imgUrl: (Array.isArray(p.imagenes)&&p.imagenes[0]) || p.imagen || ''
   };
 }
+// Set chico de iconos de línea (trazo, no relleno) originales para la
+// plantilla Pro v2 — reemplaza los emoji por algo que se vea "de verdad
+// diseñado". Se elige por palabras clave del título de cada feature.
+const _TM_ICON2_PATHS = {
+  wifi:      'M2 8.5a15 15 0 0120 0M5 12a10 10 0 0114 0M8.5 15.5a5 5 0 017 0M12 19h.01',
+  rayo:      'M13 2 4 14h7l-1 8 9-12h-7z',
+  bateria:   'M2 8h14a2 2 0 012 2v4a2 2 0 01-2 2H2zM19 10h1.5a1.5 1.5 0 010 3H19M5 10v4',
+  escudo:    'M12 2 4 5v6c0 5 3.5 8.5 8 10 4.5-1.5 8-5 8-10V5z m-3.2 9 2 2 4-4.5',
+  velocidad: 'M4 15a8 8 0 1116 0M12 15l3.5-4.5M12 15a1.5 1.5 0 100 0',
+  caja:      'M3 8l9-4 9 4-9 4-9-4z M3 8v9l9 4 9-4V8 M12 12v9',
+  dispositivos: 'M4 5h11a1 1 0 011 1v7h2a1 1 0 011 1v3a1 1 0 01-1 1H4a1 1 0 01-1-1V6a1 1 0 011-1z M8 20h4',
+  candado:   'M6 11V8a6 6 0 1112 0v3 M4 11h16v9H4z M12 15v2',
+  sonido:    'M4 9v6h4l5 4V5L8 9H4z M16.5 8a5 5 0 010 8 M19 5.5a9 9 0 010 13',
+  gota:      'M12 3s6 6.5 6 11a6 6 0 11-12 0c0-4.5 6-11 6-11z',
+  reloj:     'M12 21a9 9 0 100-18 9 9 0 000 18z M12 7v5l3.5 2',
+  estrella:  'M12 2l2.9 6.6 7.1.6-5.4 4.7 1.7 7-6.3-3.8L5.7 21l1.7-7L2 9.2l7.1-.6z',
+};
+function _cIcon2Key(title){
+  const t = String(title||'').toUpperCase();
+  if(/WIFI|RED|SEÑAL|COBERTURA|ALCANCE|ANTENA/.test(t)) return 'wifi';
+  if(/ENV[IÍ]O|PAQUETE|CAJA|ENTREGA/.test(t)) return 'caja';
+  if(/VELOCID|RAPID|MBPS|GHZ/.test(t)) return 'velocidad';
+  if(/BATER|ENERG|CARGA|AUTONOM|MAH|SOLAR/.test(t)) return 'bateria';
+  if(/GARANT|PROTECCI|SEGUR|RESISTENT|IMPERMEABLE/.test(t)) return 'escudo';
+  if(/DISPOSITIVO|COMPATIBLE|MULTIPLE|CONECTA/.test(t)) return 'dispositivos';
+  if(/SONIDO|AUDIO|BLUETOOTH|MUSICA/.test(t)) return 'sonido';
+  if(/AGUA|LLUVIA|IMPERMEA|SUMERG/.test(t)) return 'gota';
+  if(/DURA|TIEMPO|HORAS|RELOJ/.test(t)) return 'reloj';
+  if(/BLOQUE|CANDADO|LLAVE|ACCESO/.test(t)) return 'candado';
+  if(/CALIDAD|PREMIUM|DESTACADO|TOP/.test(t)) return 'estrella';
+  return 'rayo';
+}
+function _cIconSvg2(title){
+  // Un único <path> con varios subtrazos "M…" es válido en SVG (cada M abre un
+  // subtrazo nuevo dentro del mismo d) — no hace falta partirlo en <path> separados.
+  const d = _TM_ICON2_PATHS[_cIcon2Key(title)] || _TM_ICON2_PATHS.rayo;
+  return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="${d}"/></svg>`;
+}
+// Plantilla Pro v2: logo oficial (iconos/bag.png, no una insignia genérica de
+// texto), iconos de línea reales en vez de emoji, y grid de features 2x2 —
+// inspirada en un mockup que trajo el admin, adaptada al formato vertical
+// (760×1140, mismo tamaño que el clásico) para WhatsApp Estados.
+function _cartelHTML2(d){
+  const w1=d.title1||'PRODUCTO', w2=d.title2||'';
+  const feats=_cFeatures(d.descripcion, d._specs).slice(0,4);
+  const hasDisc=parseFloat(d.precioAnterior)>0 && parseFloat(d.precioAnterior)>parseFloat(d.precio);
+  const pct=hasDisc?Math.round((1-parseFloat(d.precio)/parseFloat(d.precioAnterior))*100):0;
+  const st=Number(d.stock||0), moneda=d.moneda||'USD';
+  const imgUrl=d.imgUrl||'';
+  const featHtml=feats.map(f=>`<div class="tcp2-feat"><div class="tcp2-feat-ic">${_cIconSvg2(f.title)}</div><div class="min-w-0"><div class="tcp2-feat-t">${esc(_cClip(f.title,22))}</div>${f.desc?`<div class="tcp2-feat-d">${esc(_cClip(f.desc,40))}</div>`:''}</div></div>`).join('');
+  return `<div class="tcp2-bg"></div><div class="tcp2-glow"></div>`
+    +`<div class="tcp2-header"><div class="tcp2-brand"><div class="tcp2-logo"><img src="/iconos/bag.png" alt="TiendaMax"></div><div><div class="tcp2-word">Tienda<em>Max</em></div><div class="tcp2-sub">Tienda online en Cuba</div></div></div><div class="tcp2-tag">${esc(_cClip(d.tag||'DESTACADO',16))}</div></div>`
+    +`<div class="tcp2-title"><h1>${esc(w1)}${w2?` <em>${esc(w2)}</em>`:''}</h1>${d.tagline?`<div class="tcp2-tagline">${esc(d.tagline)}</div>`:''}</div>`
+    +`<div class="tcp2-imgwrap">${imgUrl?`<img src="${esc(imgUrl)}" crossorigin="anonymous">`:''}${hasDisc?`<div class="tcp2-badge">-${pct}%<small>DESCUENTO</small></div>`:''}</div>`
+    +(featHtml?`<div class="tcp2-feats">${featHtml}</div>`:'')
+    +`<div class="tcp2-price"><div><div><span class="tcp2-price-n">$${esc(String(Math.round(parseFloat(d.precio)||0)))}</span><span class="tcp2-price-c">${esc(moneda)}</span></div>${hasDisc?`<div class="tcp2-price-old">$${esc(String(Math.round(parseFloat(d.precioAnterior))))}</div>`:''}</div><div class="tcp2-meta">Stock: <b>${st}</b><br>${esc(_cClip(d.categoria||d.tag||'','16'))?`Categoría: <b>${esc(_cClip(d.categoria||d.tag||'',16))}</b>`:''}</div></div>`
+    +`<div class="tcp2-trust"><div class="tcp2-trust-i">${_cIconSvg2('CAJA')}<b>Envío</b><span>a todo el país</span></div><div class="tcp2-trust-i">${_cIconSvg2('GARANTIA')}<b>Compra segura</b><span>protegida</span></div><div class="tcp2-trust-i">${_cIconSvg2('CALIDAD')}<b>Garantía</b><span>real</span></div></div>`
+    +`<div class="tcp2-cta"><div class="tcp2-cta-l"><div class="tcp2-cta-wa"><svg viewBox="0 0 24 24" fill="#25d366"><path d="M12 2C6.5 2 2 6.5 2 12c0 1.8.5 3.5 1.3 5L2 22l5.2-1.3c1.4.8 3.1 1.3 4.8 1.3 5.5 0 10-4.5 10-10S17.5 2 12 2z"/></svg></div><div class="tcp2-cta-t"><small>PÍDELO POR</small>WhatsApp</div></div><div style="color:#fff;font-size:22px;font-weight:900">›</div></div>`
+    +`<div class="tcp2-footer"><div class="d">🌐 tiendamax.org</div><div class="h">Toca "Pedir" en la tienda para reservar</div></div>`;
+}
+// Preferencia de plantilla del cartel, compartida por TODOS los puntos que lo
+// generan (Copiloto, botón "Estado" de admin.html, modal de Facebook/grupos)
+// — se elige una vez en el panel de Marketing y aplica en todos lados.
+function _cartelVariante(){ return localStorage.getItem('tmCartelVariante')==='pro2' ? 'pro2' : 'clasico'; }
+function _cartelHTMLPorVariante(datos){ return _cartelVariante()==='pro2' ? _cartelHTML2(datos) : _cartelHTML(datos); }
 // Expuesto para que el modal "🟢 Estado WhatsApp" (revolico_integration.js)
-// use el MISMO diseño de cartel que el generador del copiloto.
-window.tmCartelHTML = function(p){ try{ injectStyles(); return _cartelHTML(_cartelDataFromProduct(p)); }catch(e){ console.error('[cartel]',e); return ''; } };
+// use el MISMO diseño de cartel que el generador del copiloto (según la
+// plantilla elegida).
+window.tmCartelHTML = function(p){ try{ injectStyles(); return _cartelHTMLPorVariante(_cartelDataFromProduct(p)); }catch(e){ console.error('[cartel]',e); return ''; } };
 
 // Nota: hubo un recorte automático de fondo blanco (knockout) aquí, pero en
 // productos blancos (switches, routers) se comía partes del producto y dejaba
@@ -1382,7 +1490,7 @@ function _cartelHTML(d){
 async function drawPromo() {
   const node = document.getElementById('tmCartelPro');
   if (!node) return;
-  node.innerHTML = _cartelHTML(promoData);
+  node.innerHTML = _cartelHTMLPorVariante(promoData);
 }
 async function promoDescargarCartel(btn){
   const node = document.getElementById('tmCartelPro');
@@ -1434,7 +1542,12 @@ function renderPromoImagen() {
   const prodOpts = prods.length
     ? prods.map(p => `<option value="${esc(String(p.id))}"${d._productoId===String(p.id)?' selected':''}>${esc(p.nombre||'#'+p.id)}</option>`).join('')
     : '<option value="">— Sin productos —</option>';
+  const variante = _cartelVariante();
   return `<div>
+    <div style="display:flex;gap:8px;margin-bottom:10px">
+      <button type="button" class="tm-copilot-btn ${variante==='clasico'?'primary':''}" data-cop="cartelVariante" data-variante="clasico" style="flex:1">🏷️ Clásico</button>
+      <button type="button" class="tm-copilot-btn ${variante==='pro2'?'primary':''}" data-cop="cartelVariante" data-variante="pro2" style="flex:1">✨ Pro v2</button>
+    </div>
     <div class="tcp-preview-wrap"><div class="tcp-preview-scale"><div class="tcp-card" id="tmCartelPro"></div></div></div>
     <div style="display:flex;flex-direction:column;gap:10px;margin-top:12px">
       <div><div style="font-size:11px;color:#888;margin-bottom:4px">Producto del catálogo</div>
@@ -1752,6 +1865,12 @@ function bindEvents(){
     if(act==='iaRegenCancelar') iaRegenCancelar();
     if(act==='promoPickImg') { const inp = document.getElementById('tmPromoImgInput'); if(inp) inp.click(); }
     if(act==='promoDownload') { promoDescargarCartel(el); }
+    if(act==='cartelVariante'){
+      const v = el.dataset.variante==='pro2' ? 'pro2' : 'clasico';
+      localStorage.setItem('tmCartelVariante', v);
+      state.view='marketing'; renderSheet(); drawPromo();
+      toast(v==='pro2' ? '✨ Plantilla Pro v2 activada' : '🏷️ Plantilla Clásica activada');
+    }
   });
 }
 function isAdminVisible(){ const p=$('#adminPanel'); return !!(p && !p.classList.contains('hidden')); }
