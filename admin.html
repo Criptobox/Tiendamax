@@ -2159,6 +2159,19 @@ function apCardHTML(p){
     </div>
   </div>`;
 }
+// Subagrupa una lista de productos por subcategoría (Cargadores, Inversores,
+// Routers...) para que no salgan regados dentro de la misma categoría — solo
+// muestra los sub-encabezados si hay más de una subcategoría en el grupo.
+function apSubgroupHTML(prods){
+  const subs={};
+  prods.forEach(p=>{ const s=(p.subcategoria||'').trim()||'Otros'; (subs[s]=subs[s]||[]).push(p); });
+  const subKeys=Object.keys(subs).sort((a,b)=> a==='Otros'?1 : b==='Otros'?-1 : a.localeCompare(b));
+  const multi=subKeys.length>1;
+  return subKeys.map(s=>
+    (multi?`<div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.3px;text-transform:uppercase;margin:10px 2px 4px">${esc(s)} <span style="opacity:.6">· ${subs[s].length}</span></div>`:'')
+    + subs[s].map(apCardHTML).join('')
+  ).join('');
+}
 function renderProductos(){
   const grid=$('#prod-grid'); if(!grid) return;
   apLlenarFiltroCat();
@@ -2185,15 +2198,19 @@ function renderProductos(){
   if(!q && !catF && !_apFiltroFav){
     const grupos={};
     list.forEach(p=>{ const c=p.categoria||'Sin categoría'; (grupos[c]=grupos[c]||[]).push(p); });
-    grid.innerHTML = Object.keys(grupos).sort().map(cat=>
-      `<div style="display:flex;align-items:center;gap:8px;margin:14px 0 4px;padding-bottom:6px;border-bottom:1px solid var(--border)">
+    grid.innerHTML = Object.keys(grupos).sort().map(cat=>{
+      const prods=grupos[cat];
+      return `<div style="display:flex;align-items:center;gap:8px;margin:14px 0 4px;padding-bottom:6px;border-bottom:1px solid var(--border)">
         <span style="font-size:16px">${emojiCat(cat)}</span>
         <b style="color:var(--gold);font-size:13px;letter-spacing:.4px">${esc(cat)}</b>
-        <span class="badge">${grupos[cat].length}</span>
+        <span class="badge">${prods.length}</span>
         <button class="btn btn-ghost" style="margin-left:auto;padding:3px 10px;font-size:11px" onclick="const s=$('#prod-cat-filtro'); if(s){s.value='${esc(cat)}'; renderProductos();}">Ver solo →</button>
-      </div>`
-      + grupos[cat].map(apCardHTML).join('')
-    ).join('');
+      </div>` + apSubgroupHTML(prods);
+    }).join('');
+  } else if(catF && !q && !_apFiltroFav){
+    // Una sola categoría filtrada ("Ver solo →") → igual subagrupar por
+    // subcategoría, si no vuelven a salir cargadores/inversores mezclados.
+    grid.innerHTML = apSubgroupHTML(list.slice(0,300));
   } else {
     grid.innerHTML = list.slice(0,300).map(apCardHTML).join('');
   }
