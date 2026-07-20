@@ -297,46 +297,55 @@ function injectStyles(){
   .tcp-arrow{color:#fff;font-size:28px;font-weight:900}
   .tcp-footer{position:absolute;bottom:30px;left:0;right:0;z-index:3;text-align:center}
   .tcp-dom{font-size:16px;font-weight:700;color:#ff6b1a}.tcp-hint{font-size:12px;color:#888;margin-top:4px}
-  /* ── Cartel Pro v2 — logo oficial + iconos reales + grid de features ── */
+  /* ── Cartel Pro v2 — logo oficial + iconos reales + grid de features ──
+     Todo lo que antes era el naranja de marca fijo ahora sale de dos
+     variables CSS (--tcp2-a = color sólido, --tcp2-a-rgb = sus componentes
+     r,g,b para las transparencias) que _cartelHTML2() fija inline en
+     .tcp2-root según el color que el admin eligió — así una sola tarjeta
+     sirve para los 11 colores del selector sin duplicar CSS. Las variables
+     se resuelven a color final ANTES de que html2canvas lea los estilos
+     (getComputedStyle ya las entrega resueltas), así que el PNG exportado
+     sale con el color correcto igual que la vista previa. */
+  .tcp2-root{--tcp2-a:#FF6B1A;--tcp2-a-rgb:255,107,26}
   .tcp2-bg{position:absolute;inset:0;background:linear-gradient(155deg,#0a0a0a 0%,#111111 55%,#0d0d0d 100%)}
-  .tcp2-glow{position:absolute;inset:0;background:radial-gradient(ellipse at 30% 14%,rgba(255,107,26,.13) 0%,transparent 52%),radial-gradient(ellipse at 75% 78%,rgba(255,107,26,.08) 0%,transparent 50%)}
-  .tcp2-header{position:relative;z-index:3;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:28px 34px 0}
-  .tcp2-brand{display:flex;align-items:center;gap:12px}
-  .tcp2-logo{width:52px;height:52px;border-radius:15px;background:radial-gradient(circle at 32% 28%,rgba(255,140,66,.35),rgba(255,107,26,.08) 72%);border:1px solid rgba(255,140,66,.4);display:flex;align-items:center;justify-content:center;padding:9px;box-shadow:0 6px 18px rgba(255,107,26,.25)}
+  .tcp2-glow{position:absolute;inset:0;background:radial-gradient(ellipse at 30% 14%,rgba(var(--tcp2-a-rgb),.16) 0%,transparent 52%),radial-gradient(ellipse at 75% 78%,rgba(var(--tcp2-a-rgb),.10) 0%,transparent 50%)}
+  .tcp2-header{position:relative;z-index:3;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:30px 34px 0}
+  .tcp2-brand{display:flex;align-items:center;gap:13px}
+  .tcp2-logo{width:56px;height:56px;border-radius:50%;background:radial-gradient(circle at 32% 28%,rgba(var(--tcp2-a-rgb),.45),rgba(var(--tcp2-a-rgb),.10) 72%);border:1px solid rgba(var(--tcp2-a-rgb),.45);display:flex;align-items:center;justify-content:center;padding:10px;box-shadow:0 6px 18px rgba(var(--tcp2-a-rgb),.3)}
   .tcp2-logo img{width:100%;height:100%;object-fit:contain}
-  .tcp2-word{font-size:22px;font-weight:800;color:#fff;line-height:1;letter-spacing:-.3px}.tcp2-word em{font-style:normal;color:#ff6b1a}
-  .tcp2-sub{font-size:10px;color:#777;text-transform:uppercase;letter-spacing:.14em;margin-top:3px}
-  .tcp2-tag{display:flex;align-items:center;gap:6px;background:rgba(255,107,26,.12);border:1px solid rgba(255,140,66,.4);color:#ff8c42;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding:7px 13px;border-radius:999px;white-space:nowrap}
-  .tcp2-title{position:relative;z-index:3;margin:26px 34px 0}
-  .tcp2-title h1{font-size:44px;font-weight:900;line-height:1.02;letter-spacing:-1.5px;color:#fff;word-break:break-word}
-  .tcp2-title h1 em{font-style:normal;color:#ff6b1a}
-  .tcp2-tagline{font-size:15px;color:#999;margin-top:8px;line-height:1.4}
-  .tcp2-imgwrap{position:relative;z-index:3;margin:22px 34px 0;height:300px;display:flex;align-items:center;justify-content:center}
-  .tcp2-imgwrap::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at center,rgba(255,107,26,.22) 0%,transparent 68%);filter:blur(6px)}
-  .tcp2-imgwrap img{position:relative;max-width:78%;max-height:100%;object-fit:contain;border-radius:20px;filter:drop-shadow(0 22px 34px rgba(0,0,0,.55))}
-  .tcp2-badge{position:absolute;top:20px;right:34px;z-index:4;background:linear-gradient(135deg,#ff6b1a,#e85e0a);color:#fff;font-size:15px;font-weight:900;padding:9px 15px;border-radius:12px;box-shadow:0 8px 20px rgba(255,107,26,.5);text-align:center;line-height:1.05}
+  .tcp2-word{font-size:23px;font-weight:800;color:#fff;line-height:1;letter-spacing:-.3px}.tcp2-word em{font-style:normal;color:var(--tcp2-a)}
+  .tcp2-sub{font-size:10px;color:#777;text-transform:uppercase;letter-spacing:.14em;margin-top:4px}
+  .tcp2-tag{display:flex;align-items:center;gap:6px;background:rgba(var(--tcp2-a-rgb),.14);border:1px solid rgba(var(--tcp2-a-rgb),.45);color:var(--tcp2-a);font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding:8px 15px;border-radius:999px;white-space:nowrap}
+  .tcp2-title{position:relative;z-index:3;margin:28px 34px 0}
+  .tcp2-title h1{font-size:46px;font-weight:900;line-height:1.02;letter-spacing:-1.5px;color:#fff;word-break:break-word}
+  .tcp2-title h1 em{font-style:normal;color:var(--tcp2-a)}
+  .tcp2-tagline{font-size:15px;color:#999;margin-top:9px;line-height:1.45}
+  .tcp2-imgwrap{position:relative;z-index:3;margin:24px 34px 0;height:360px;border:2px dashed rgba(var(--tcp2-a-rgb),.35);border-radius:26px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+  .tcp2-imgwrap::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at center,rgba(var(--tcp2-a-rgb),.22) 0%,transparent 68%);filter:blur(6px)}
+  .tcp2-imgwrap img{position:relative;max-width:82%;max-height:88%;object-fit:contain;border-radius:20px;filter:drop-shadow(0 22px 34px rgba(0,0,0,.55))}
+  .tcp2-badge{position:absolute;top:18px;right:18px;z-index:4;background:linear-gradient(135deg,var(--tcp2-a),rgba(var(--tcp2-a-rgb),.75));color:#fff;font-size:16px;font-weight:900;padding:10px 16px;border-radius:13px;box-shadow:0 8px 20px rgba(var(--tcp2-a-rgb),.55);text-align:center;line-height:1.05}
   .tcp2-badge small{display:block;font-size:8px;font-weight:800;letter-spacing:.1em;opacity:.85;margin-top:1px}
-  .tcp2-feats{position:relative;z-index:3;display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:24px 34px 0}
-  .tcp2-feat{display:flex;align-items:flex-start;gap:10px;padding:12px;border-radius:14px;border:1px solid rgba(255,255,255,.06);background:rgba(255,255,255,.02)}
-  .tcp2-feat-ic{flex-shrink:0;width:36px;height:36px;border-radius:10px;background:rgba(255,107,26,.12);color:#ff8c42;display:flex;align-items:center;justify-content:center}
-  .tcp2-feat-ic svg{width:20px;height:20px}
-  .tcp2-feat-t{font-size:11px;font-weight:800;color:#fff;letter-spacing:.03em;line-height:1.15;text-transform:uppercase}
-  .tcp2-feat-d{font-size:10px;color:#888;margin-top:2px;line-height:1.28}
-  .tcp2-price{position:relative;z-index:3;margin:24px 34px 0;background:linear-gradient(135deg,#241009,#160b06);border:1.5px solid rgba(255,140,66,.35);border-radius:16px;padding:16px 20px;display:flex;align-items:center;justify-content:space-between;gap:10px}
-  .tcp2-price-n{font-size:40px;font-weight:900;color:#ff8c42;letter-spacing:-1px;line-height:1}
-  .tcp2-price-c{font-size:16px;font-weight:800;color:#ff8c42;margin-left:4px}
-  .tcp2-price-old{font-size:13px;color:#777;text-decoration:line-through;margin-top:3px}
-  .tcp2-meta{text-align:right;font-size:11px;color:#999;line-height:1.6}.tcp2-meta b{color:#ddd}
-  .tcp2-trust{position:relative;z-index:3;display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:20px 34px 0}
-  .tcp2-trust-i{text-align:center;padding:12px 6px;border-radius:12px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.05)}
-  .tcp2-trust-i svg{width:22px;height:22px;color:#ff8c42;margin-bottom:6px}
-  .tcp2-trust-i b{display:block;font-size:9.5px;font-weight:800;color:#eee;letter-spacing:.03em;text-transform:uppercase;line-height:1.2}
-  .tcp2-trust-i span{display:block;font-size:8.5px;color:#777;margin-top:2px}
-  .tcp2-cta{position:relative;z-index:3;margin:16px 34px 0;background:linear-gradient(135deg,#25d366,#12a150);border-radius:999px;padding:15px 24px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 8px 24px rgba(37,211,102,.4)}
-  .tcp2-cta-l{display:flex;align-items:center;gap:12px}
-  .tcp2-cta-wa{width:38px;height:38px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-  .tcp2-cta-wa svg{width:20px;height:20px}
-  .tcp2-cta-t{color:#fff;font-weight:800;font-size:13px;line-height:1.15}.tcp2-cta-t small{display:block;font-size:10px;font-weight:700;letter-spacing:.06em;opacity:.9}
+  .tcp2-feats{position:relative;z-index:3;display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:26px 34px 0}
+  .tcp2-feat{display:flex;align-items:flex-start;gap:12px;padding:16px;border-radius:16px;border:1px solid rgba(255,255,255,.07);background:rgba(255,255,255,.025)}
+  .tcp2-feat-ic{flex-shrink:0;width:40px;height:40px;border-radius:11px;background:rgba(var(--tcp2-a-rgb),.14);color:var(--tcp2-a);display:flex;align-items:center;justify-content:center}
+  .tcp2-feat-ic svg{width:22px;height:22px}
+  .tcp2-feat-t{font-size:11.5px;font-weight:800;color:#fff;letter-spacing:.03em;line-height:1.2;text-transform:uppercase}
+  .tcp2-feat-d{font-size:10.5px;color:#8a8a8a;margin-top:3px;line-height:1.35}
+  .tcp2-price{position:relative;z-index:3;margin:26px 34px 0;background:linear-gradient(135deg,rgba(var(--tcp2-a-rgb),.16),rgba(0,0,0,.3));border:1.5px solid rgba(var(--tcp2-a-rgb),.4);border-radius:18px;padding:18px 22px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+  .tcp2-price-n{font-size:42px;font-weight:900;color:var(--tcp2-a);letter-spacing:-1px;line-height:1}
+  .tcp2-price-c{font-size:16px;font-weight:800;color:var(--tcp2-a);margin-left:4px}
+  .tcp2-price-old{font-size:13px;color:#777;text-decoration:line-through;margin-top:4px}
+  .tcp2-meta{text-align:right;font-size:11.5px;color:#999;line-height:1.65}.tcp2-meta b{color:#ddd}
+  .tcp2-trust{position:relative;z-index:3;display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:22px 34px 0}
+  .tcp2-trust-i{text-align:center;padding:14px 5px;border-radius:14px;background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.06)}
+  .tcp2-trust-i svg{width:22px;height:22px;color:var(--tcp2-a);margin-bottom:7px}
+  .tcp2-trust-i b{display:block;font-size:9px;font-weight:800;color:#eee;letter-spacing:.02em;text-transform:uppercase;line-height:1.2}
+  .tcp2-trust-i span{display:block;font-size:8px;color:#777;margin-top:2px}
+  .tcp2-cta{position:relative;z-index:3;margin:20px 34px 0;background:linear-gradient(135deg,#25d366,#12a150);border-radius:999px;padding:16px 26px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 8px 24px rgba(37,211,102,.4)}
+  .tcp2-cta-l{display:flex;align-items:center;gap:13px}
+  .tcp2-cta-wa{width:40px;height:40px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .tcp2-cta-wa svg{width:21px;height:21px}
+  .tcp2-cta-t{color:#fff;font-weight:800;font-size:13.5px;line-height:1.15}.tcp2-cta-t small{display:block;font-size:10px;font-weight:700;letter-spacing:.06em;opacity:.9}
   .tcp2-footer{position:relative;z-index:3;text-align:center;margin-top:18px;padding-bottom:24px}
   .tcp2-footer .d{font-size:14px;font-weight:800;color:#ff6b1a}.tcp2-footer .h{font-size:11px;color:#777;margin-top:3px}
   .tm-chat-log{max-height:46vh;overflow:auto;display:flex;flex-direction:column;gap:9px;padding:4px 2px}
@@ -1338,6 +1347,7 @@ function _cIcon2Key(title){
   if(/DURA|TIEMPO|HORAS|RELOJ/.test(t)) return 'reloj';
   if(/BLOQUE|CANDADO|LLAVE|ACCESO/.test(t)) return 'candado';
   if(/CALIDAD|PREMIUM|DESTACADO|TOP/.test(t)) return 'estrella';
+  if(/SOPORTE|AYUDA|ATENCI[OÓ]N|24\/7/.test(t)) return 'reloj';
   return 'rayo';
 }
 function _cIconSvg2(title){
@@ -1350,6 +1360,24 @@ function _cIconSvg2(title){
 // texto), iconos de línea reales en vez de emoji, y grid de features 2x2 —
 // inspirada en un mockup que trajo el admin, adaptada al formato vertical
 // (760×1140, mismo tamaño que el clásico) para WhatsApp Estados.
+// 11 colores para el selector del Pro v2 — se retiñe TODA la tarjeta (logo,
+// tag, título, iconos, precio, badge de descuento) via CSS vars, el CTA de
+// WhatsApp se queda siempre verde (es el color de marca de WhatsApp, no del
+// cartel). Nombres para el título del swatch al pasar el mouse/tocar.
+const TM_CARTEL_COLORES = [
+  ['#FF6B1A','Naranja'], ['#EF4444','Rojo'], ['#F59E0B','Ámbar'], ['#EAB308','Dorado'],
+  ['#EC4899','Rosa'], ['#3B82F6','Azul'], ['#06B6D4','Cian'], ['#6366F1','Índigo'],
+  ['#A855F7','Púrpura'], ['#14B8A6','Verde azulado'], ['#22C55E','Verde'],
+];
+window.TM_CARTEL_COLORES = TM_CARTEL_COLORES;
+function _cartelColor(){
+  const v = localStorage.getItem('tmCartelColor');
+  return (v && /^#[0-9a-fA-F]{6}$/.test(v)) ? v : TM_CARTEL_COLORES[0][0];
+}
+function _hexToRgbCsv(hex){
+  const n = parseInt(hex.slice(1), 16);
+  return [(n>>16)&255, (n>>8)&255, n&255].join(',');
+}
 function _cartelHTML2(d){
   const w1=d.title1||'PRODUCTO', w2=d.title2||'';
   const feats=_cFeatures(d.descripcion, d._specs).slice(0,4);
@@ -1357,16 +1385,19 @@ function _cartelHTML2(d){
   const pct=hasDisc?Math.round((1-parseFloat(d.precio)/parseFloat(d.precioAnterior))*100):0;
   const st=Number(d.stock||0), moneda=d.moneda||'USD';
   const imgUrl=d.imgUrl||'';
+  const color=_cartelColor(), colorRgb=_hexToRgbCsv(color);
   const featHtml=feats.map(f=>`<div class="tcp2-feat"><div class="tcp2-feat-ic">${_cIconSvg2(f.title)}</div><div class="min-w-0"><div class="tcp2-feat-t">${esc(_cClip(f.title,22))}</div>${f.desc?`<div class="tcp2-feat-d">${esc(_cClip(f.desc,40))}</div>`:''}</div></div>`).join('');
-  return `<div class="tcp2-bg"></div><div class="tcp2-glow"></div>`
+  return `<div class="tcp2-root" style="--tcp2-a:${color};--tcp2-a-rgb:${colorRgb}">`
+    +`<div class="tcp2-bg"></div><div class="tcp2-glow"></div>`
     +`<div class="tcp2-header"><div class="tcp2-brand"><div class="tcp2-logo"><img src="/iconos/bag.png" alt="TiendaMax"></div><div><div class="tcp2-word">Tienda<em>Max</em></div><div class="tcp2-sub">Tienda online en Cuba</div></div></div><div class="tcp2-tag">${esc(_cClip(d.tag||'DESTACADO',16))}</div></div>`
     +`<div class="tcp2-title"><h1>${esc(w1)}${w2?` <em>${esc(w2)}</em>`:''}</h1>${d.tagline?`<div class="tcp2-tagline">${esc(d.tagline)}</div>`:''}</div>`
     +`<div class="tcp2-imgwrap">${imgUrl?`<img src="${esc(imgUrl)}" crossorigin="anonymous">`:''}${hasDisc?`<div class="tcp2-badge">-${pct}%<small>DESCUENTO</small></div>`:''}</div>`
     +(featHtml?`<div class="tcp2-feats">${featHtml}</div>`:'')
     +`<div class="tcp2-price"><div><div><span class="tcp2-price-n">$${esc(String(Math.round(parseFloat(d.precio)||0)))}</span><span class="tcp2-price-c">${esc(moneda)}</span></div>${hasDisc?`<div class="tcp2-price-old">$${esc(String(Math.round(parseFloat(d.precioAnterior))))}</div>`:''}</div><div class="tcp2-meta">Stock: <b>${st}</b><br>${esc(_cClip(d.categoria||d.tag||'','16'))?`Categoría: <b>${esc(_cClip(d.categoria||d.tag||'',16))}</b>`:''}</div></div>`
-    +`<div class="tcp2-trust"><div class="tcp2-trust-i">${_cIconSvg2('CAJA')}<b>Envío</b><span>a todo el país</span></div><div class="tcp2-trust-i">${_cIconSvg2('GARANTIA')}<b>Compra segura</b><span>protegida</span></div><div class="tcp2-trust-i">${_cIconSvg2('CALIDAD')}<b>Garantía</b><span>real</span></div></div>`
+    +`<div class="tcp2-trust"><div class="tcp2-trust-i">${_cIconSvg2('CAJA')}<b>Envío</b><span>a todo el país</span></div><div class="tcp2-trust-i">${_cIconSvg2('GARANTIA')}<b>Compra</b><span>segura</span></div><div class="tcp2-trust-i">${_cIconSvg2('CALIDAD')}<b>Garantía</b><span>real</span></div><div class="tcp2-trust-i">${_cIconSvg2('SOPORTE')}<b>Soporte</b><span>24/7</span></div></div>`
     +`<div class="tcp2-cta"><div class="tcp2-cta-l"><div class="tcp2-cta-wa"><svg viewBox="0 0 24 24" fill="#25d366"><path d="M12 2C6.5 2 2 6.5 2 12c0 1.8.5 3.5 1.3 5L2 22l5.2-1.3c1.4.8 3.1 1.3 4.8 1.3 5.5 0 10-4.5 10-10S17.5 2 12 2z"/></svg></div><div class="tcp2-cta-t"><small>PÍDELO POR</small>WhatsApp</div></div><div style="color:#fff;font-size:22px;font-weight:900">›</div></div>`
-    +`<div class="tcp2-footer"><div class="d">🌐 tiendamax.org</div><div class="h">Toca "Pedir" en la tienda para reservar</div></div>`;
+    +`<div class="tcp2-footer"><div class="d">🌐 tiendamax.org</div><div class="h">Toca "Pedir" en la tienda para reservar</div></div>`
+    +`</div>`;
 }
 // Preferencia de plantilla del cartel, compartida por TODOS los puntos que lo
 // generan (Copiloto, botón "Estado" de admin.html, modal de Facebook/grupos)
