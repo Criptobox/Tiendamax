@@ -300,3 +300,11 @@ html body.light-mode .categorias-home .categorias-grid .categoria-card.proximame
   html body.light-mode .categorias-home .categorias-grid .categoria-card:nth-child(11){background:#eaedf0 !important}
   html body.light-mode .categorias-home .categorias-grid .categoria-card:nth-child(12){background:#fef7e0 !important}
 }
+/* Nombre de producto agotado invisible en modo claro: styles.fixes.css trae
+   `html body #productosGrid .card-agotado h3{color:rgba(255,255,255,.42)}`
+   con un ID en el selector (especificidad 1,1,3), que le gana a cualquier
+   override de modo claro basado solo en clases — el texto quedaba blanco al
+   42% sobre fondo claro, casi invisible. Esta regla usa el mismo ID más una
+   clase extra (especificidad 1,2,2) para ganarle de forma robusta sin
+   depender del orden de carga entre archivos. */
+html body.light-mode #productosGrid .card-agotado h3{color:#4A4A57 !important}
