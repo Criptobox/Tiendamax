@@ -998,12 +998,12 @@
     <!-- Sidebar -->
     <aside class="sidebar">
       <button class="side-btn active" data-view="inicio" title="Inicio">🏠</button>
+      <button class="side-btn" data-view="publicar" title="Publicar / Compartir a redes">📣</button>
       <button class="side-btn" data-view="productos" title="Productos · editar stock, precio, comisión">📦</button>
       <button class="side-btn" data-view="agregar" title="Agregar producto">➕</button>
       <button class="side-btn" data-view="categorias" title="Categorías y subcategorías">🏷️</button>
       <button class="side-btn" data-view="almacen" title="Almacenes · dónde está tu stock">🏭</button>
       <button class="side-btn" data-view="combos" title="Combos">🎁</button>
-      <button class="side-btn" data-view="publicar" title="Publicar / Compartir a redes">📣</button>
       <button class="side-btn" type="button" title="Vale / factura para el cliente" onclick="window.open('vale.html','_blank')">🧾</button>
       <div class="side-sep"></div>
       <button class="side-btn" data-view="reposicion" title="Reposición · qué volver a comprar">📥<span class="new-tag">N</span></button>
@@ -1468,7 +1468,7 @@
      generado por scripts/build_js_bundle.py a partir de js/src/*.src.js -->
 <script src="js/tm-bundle.js?v=d0592093"></script>
 <script src="js/biometric-auth.js?v=876f6495"></script>
-<script src="js/revolico_integration.js?v=f7f648a0"></script>
+<script src="js/revolico_integration.js?v=b8a54366"></script>
 <script>
   // Puente para código heredado (Copiloto IA) que navega con switchTab('nombre-viejo')
   // en vez del go('vista') de admin2.
@@ -2036,10 +2036,23 @@ function _qrCard(data, titulo){
       <button class="pub-act ghost" data-d="${d}" data-t="${t}" onclick="qrImprimir(this.dataset.d,this.dataset.t)">🖨️ Imprimir</button>
     </div>`;
 }
+// window.open con detección de bloqueo: si el navegador (o el modo PWA) bloquea
+// la ventana emergente, copia el enlace y avisa en vez de fallar en silencio —
+// causa típica de "el botón de Facebook no hace nada" en el teléfono.
+function tmAbrir(url, textoCopia){
+  let w=null;
+  try{ w=window.open(url,'_blank','noopener,noreferrer'); }catch(e){}
+  if(!w){
+    try{ navigator.clipboard.writeText(textoCopia||url); }catch(e){}
+    showToast('⚠️ Ventana bloqueada por el navegador','Enlace copiado — pégalo en el navegador, o permite ventanas emergentes para este sitio');
+    return false;
+  }
+  return true;
+}
 function qrShare(red, data, titulo){
   const u=encodeURIComponent(data);
-  if(red==='wa'){ const txt=encodeURIComponent((titulo?titulo+'\n':'')+data); window.open('https://wa.me/?text='+txt,'_blank','noopener,noreferrer'); return; }
-  if(red==='fb'){ window.open('https://www.facebook.com/sharer/sharer.php?u='+u,'_blank','noopener,noreferrer'); return; }
+  if(red==='wa'){ const txt=(titulo?titulo+'\n':'')+data; tmAbrir('https://wa.me/?text='+encodeURIComponent(txt), txt); return; }
+  if(red==='fb'){ tmAbrir('https://www.facebook.com/sharer/sharer.php?u='+u, data); return; }
   if(red==='copy'){ try{ navigator.clipboard.writeText(data); showToast('🔗 Enlace copiado','Pégalo donde quieras'); }catch(e){ showToast('No se pudo copiar'); } return; }
 }
 function renderQR(){
