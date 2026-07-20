@@ -1,10 +1,10 @@
 {
-  "generado": "2026-07-19T10:20:06.737269+00:00",
+  "generado": "2026-07-20T11:37:54.332397+00:00",
   "productos": 111,
   "urgentes": 0,
-  "advertencias": 34,
-  "info": 11,
-  "resumen": "Anoche revisé tus 111 productos y encontré 34 advertencia(s), 11 de info.",
+  "advertencias": 37,
+  "info": 10,
+  "resumen": "Anoche revisé tus 111 productos y encontré 37 advertencia(s), 10 de info.",
   "detalle": [
     {
       "tipo": "agotado",
@@ -24,16 +24,6 @@
     {
       "tipo": "agotado",
       "nombre": "​🌐 Router Wavlink AC1200 Dual Band",
-      "detalle": "agotado (stock 0)"
-    },
-    {
-      "tipo": "agotado",
-      "nombre": "​📶 Repetidor Wi-fi 5 (Doble Banda - 1200 Mbps)",
-      "detalle": "agotado (stock 0)"
-    },
-    {
-      "tipo": "agotado",
-      "nombre": "​🌐 Switch Gigabit de 8 Puertos",
       "detalle": "agotado (stock 0)"
     },
     {
@@ -118,6 +108,11 @@
     },
     {
       "tipo": "agotado",
+      "nombre": "Cargador de Batería de Litio Bien 72V 5A (Salida 84V) | Conector us Pin",
+      "detalle": "agotado (stock 0)"
+    },
+    {
+      "tipo": "agotado",
       "nombre": "Cargadores Inteligentes de 25A",
       "detalle": "agotado (stock 0)"
     },
@@ -148,6 +143,16 @@
     },
     {
       "tipo": "agotado",
+      "nombre": "Altavoz Bluetooth Portátil RGB",
+      "detalle": "agotado (stock 0)"
+    },
+    {
+      "tipo": "agotado",
+      "nombre": "Beat Boom F10! 🎶🔥",
+      "detalle": "agotado (stock 0)"
+    },
+    {
+      "tipo": "agotado",
       "nombre": "Repetidor WiFi de Rango Extendido tp - Link",
       "detalle": "agotado (stock 0)"
     },
@@ -159,6 +164,16 @@
     {
       "tipo": "agotado",
       "nombre": "Cargador Inteligente 30A",
+      "detalle": "agotado (stock 0)"
+    },
+    {
+      "tipo": "agotado",
+      "nombre": "​🌐 Router Tp-link Archer AX1450 (Wi-fi 6)",
+      "detalle": "agotado (stock 0)"
+    },
+    {
+      "tipo": "agotado",
+      "nombre": "​🌐 MINI Repetidor Wi-fi (300 Mbps)",
       "detalle": "agotado (stock 0)"
     },
     {
@@ -195,11 +210,6 @@
       "tipo": "stock_bajo",
       "nombre": "Portacelulares",
       "detalle": "quedan 1"
-    },
-    {
-      "tipo": "stock_bajo",
-      "nombre": "Cargador de Batería de Litio Bien 72V 5A (Salida 84V) | Conector us Pin",
-      "detalle": "quedan 3"
     },
     {
       "tipo": "stock_bajo",
