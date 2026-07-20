@@ -2588,5 +2588,31 @@
       "🔄 Rotación Panorámica 360°"
     ],
     "fechaAgregado": "2026-07-18T20:04:47.403Z"
+  },
+  {
+    "id": 1784569265085,
+    "nombre": "​📡 Router Inalámbrico WAVLINK AC1200 Dual Band",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784569263882.webp",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784569263882.webp"
+    ],
+    "precioActual": 70,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 8,
+    "comision": 10,
+    "comisionMoneda": "USD",
+    "categoria": "WIFI",
+    "subcategoria": "ROUTERS",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "specs": [
+      "​🌐 Conectividad Dual Band de Alta Velocidad",
+      "​📶 Cobertura Amplia y Estable sin Interrupciones ​",
+      "🛡️ Red Doméstica Segura y de Gran Rendimiento"
+    ],
+    "fechaAgregado": "2026-07-20T17:41:05.086Z"
   }
 ]
