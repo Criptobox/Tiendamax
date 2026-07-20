@@ -1140,6 +1140,13 @@
             </div>
             <div id="qr-prod-box" style="display:flex;flex-direction:column;align-items:center;gap:10px;margin-top:10px"></div>
           </div>
+          <div class="section">
+            <h3>📁 Una categoría</h3>
+            <div class="form-group"><label class="form-label" for="qr-cat-sel">Elige la categoría</label>
+              <select class="form-select" id="qr-cat-sel" onchange="qrRenderCategoria()"><option value="">Selecciona…</option></select>
+            </div>
+            <div id="qr-cat-box" style="display:flex;flex-direction:column;align-items:center;gap:10px;margin-top:10px"></div>
+          </div>
         </div>
       </div>
 
@@ -2023,7 +2030,20 @@ function repoCopiar(){ const t=_repoTexto(); if(!t){ showToast('Nada que copiar'
 function repoWhatsApp(){ const t=_repoTexto(); if(!t){ showToast('Nada que enviar'); return; } window.open('https://wa.me/?text='+encodeURIComponent(t),'_blank','noopener,noreferrer'); }
 
 /* ============ CÓDIGO QR (imagen QR de una URL pública; img-src https: lo permite) ============ */
-function _qrImg(data, size){ const s=size||260; const url='https://api.qrserver.com/v1/create-qr-code/?size='+s+'x'+s+'&margin=8&data='+encodeURIComponent(data); return `<img src="${esc(url)}" width="${s}" height="${s}" alt="Código QR" style="background:#fff;border-radius:14px;padding:8px">`; }
+// api.qrserver.com no genera el logo DENTRO del QR (no es un parámetro que
+// soporte su API gratis) — se superpone el logo oficial encima con CSS, y se
+// sube la corrección de errores a "H" (~30% de tolerancia) para que el
+// recorte del centro no afecte que el QR siga siendo escaneable.
+function _qrImg(data, size){
+  const s=size||260, logo=Math.round(s*0.22);
+  const url='https://api.qrserver.com/v1/create-qr-code/?size='+s+'x'+s+'&margin=8&ecc=H&data='+encodeURIComponent(data);
+  return `<div style="position:relative;display:inline-flex;width:${s}px;height:${s}px;background:#fff;border-radius:14px;padding:8px;box-sizing:content-box">
+    <img src="${esc(url)}" width="${s}" height="${s}" alt="Código QR" style="display:block;width:100%;height:100%">
+    <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:${logo}px;height:${logo}px;border-radius:9px;overflow:hidden;border:3px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.3)">
+      <img src="/iconos/icon-192.png" alt="" style="width:100%;height:100%;object-fit:cover;display:block">
+    </div>
+  </div>`;
+}
 function _qrCard(data, titulo){
   const d=esc(data), t=esc(titulo);
   return `${_qrImg(data,260)}
@@ -2055,9 +2075,19 @@ function qrShare(red, data, titulo){
   if(red==='fb'){ tmAbrir('https://www.facebook.com/sharer/sharer.php?u='+u, data); return; }
   if(red==='copy'){ try{ navigator.clipboard.writeText(data); showToast('🔗 Enlace copiado','Pégalo donde quieras'); }catch(e){ showToast('No se pudo copiar'); } return; }
 }
+// Mismo slugify que scripts/regenerate_artifacts.py (Python) para que el QR
+// de categoría apunte a la misma URL /c/<slug>.html que ya generan las
+// páginas SEO — no reinventar el criterio en dos lenguajes distintos.
+function _catSlug(nombre){
+  const tildes={'á':'a','é':'e','í':'i','ó':'o','ú':'u','ñ':'n','ü':'u'};
+  let s=String(nombre||'').trim().toLowerCase().replace(/[áéíóúñü]/g,c=>tildes[c]||c);
+  s=s.replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
+  return s||'otros';
+}
 function renderQR(){
   const box=$('#qr-tienda-box'); if(box) box.innerHTML=_qrCard(SITE_URL,'TiendaMax · tiendamax.org');
   const sel=$('#qr-prod-sel'); if(sel){ const cur=sel.value; sel.innerHTML='<option value="">Selecciona…</option>'+PRODUCTOS.filter(p=>p.activo!==false).map(p=>`<option value="${esc(p.id)}">${esc(p.nombre)}</option>`).join(''); if(cur) sel.value=cur; }
+  const csel=$('#qr-cat-sel'); if(csel){ const cur=csel.value; const cats=[...new Set(PRODUCTOS.map(p=>p.categoria).filter(Boolean))].sort(); csel.innerHTML='<option value="">Selecciona…</option>'+cats.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join(''); if(cats.includes(cur)) csel.value=cur; }
 }
 function qrRenderProducto(){
   const sel=$('#qr-prod-sel'), box=$('#qr-prod-box'); if(!sel||!box) return;
@@ -2065,11 +2095,21 @@ function qrRenderProducto(){
   if(!p){ box.innerHTML=''; return; }
   box.innerHTML=_qrCard(SITE_URL+'/p/producto-'+p.id+'.html', p.nombre);
 }
+function qrRenderCategoria(){
+  const sel=$('#qr-cat-sel'), box=$('#qr-cat-box'); if(!sel||!box) return;
+  const cat=sel.value;
+  if(!cat){ box.innerHTML=''; return; }
+  box.innerHTML=_qrCard(SITE_URL+'/c/'+_catSlug(cat)+'.html', cat);
+}
 function qrImprimir(data, titulo){
   const w=window.open('','_blank','width=420,height=580'); if(!w) return;
-  const img='https://api.qrserver.com/v1/create-qr-code/?size=600x600&margin=12&data='+encodeURIComponent(data);
+  const img='https://api.qrserver.com/v1/create-qr-code/?size=600x600&margin=12&ecc=H&data='+encodeURIComponent(data);
+  const logo=location.origin+'/iconos/icon-192.png';
   w.document.write('<!DOCTYPE html><meta charset=utf-8><title>QR TiendaMax</title><body style="margin:0;font-family:system-ui,sans-serif;text-align:center;padding:26px">'
-    +'<img src="'+img+'" style="width:320px;height:320px" onload="window.print()">'
+    +'<div style="position:relative;display:inline-block">'
+    +'<img src="'+img+'" style="width:320px;height:320px" onload="setTimeout(function(){window.print()},150)">'
+    +'<div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:70px;height:70px;border-radius:11px;overflow:hidden;border:4px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.3)"><img src="'+logo+'" style="width:100%;height:100%;object-fit:cover;display:block"></div>'
+    +'</div>'
     +'<h2 style="margin:16px 0 4px">'+esc(titulo)+'</h2>'
     +'<div style="color:#555;font-size:13px;word-break:break-all">'+esc(data)+'</div></body>');
   w.document.close();
@@ -3713,7 +3753,7 @@ cargarDatos();
 // Exponemos al window solo lo que usan los onclick/oninput de la interfaz.
 window.go=go; window.cargarDatos=cargarDatos; window.renderProductos=renderProductos; window.syncProductos=syncProductos;
 window.renderReposicion=renderReposicion; window.repoCopiar=repoCopiar; window.repoWhatsApp=repoWhatsApp;
-window.renderQR=renderQR; window.qrRenderProducto=qrRenderProducto; window.qrImprimir=qrImprimir; window.qrShare=qrShare;
+window.renderQR=renderQR; window.qrRenderProducto=qrRenderProducto; window.qrRenderCategoria=qrRenderCategoria; window.qrImprimir=qrImprimir; window.qrShare=qrShare;
 window.apToggleFiltroFav=apToggleFiltroFav; window.apStock=apStock; window.apStockZero=apStockZero; window.apFav=apFav; window.apDel=apDel; window.apEdit=apEdit; window.apEditClose=apEditClose; window.apEditSave=apEditSave; window._peditPreview=_peditPreview;
 window.apSelTgl=apSelTgl; window.apSelClear=apSelClear; window.apBulkZero=apBulkZero; window.apBulkDel=apBulkDel;
 window.comboBuscar=comboBuscar; window.comboAdd=comboAdd; window.comboRemove=comboRemove; window.comboCalc=comboCalc;
