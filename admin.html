@@ -1476,6 +1476,14 @@
 <script src="js/tm-bundle.js?v=d0592093"></script>
 <script src="js/biometric-auth.js?v=876f6495"></script>
 <script src="js/revolico_integration.js?v=0d6493eb"></script>
+<!-- analytics.js: NO se cargaba acá antes — el conteo real de suscriptores
+     (tmLeerAnalytics/renderizarAnalyticsFirebase, llamado desde abrirAdminPanel)
+     dependía por completo de este archivo pero nunca corría en admin.html
+     (typeof check en el llamado hacía que fuera un no-op silencioso), así que
+     el badge del topbar y la tarjeta de "suscriptores esperan noticias" solo
+     mostraban lo último cacheado en localStorage por una visita anterior a
+     index.html en el MISMO navegador — nunca el número real y actualizado. -->
+<script src="js/analytics.js?v=6fbef4f0"></script>
 <script>
   // Puente para código heredado (Copiloto IA) que navega con switchTab('nombre-viejo')
   // en vez del go('vista') de admin2.
@@ -1966,9 +1974,30 @@ function renderInicio(){
   // Actividad = últimas ventas
   const ult=[...VENTAS].sort((a,b)=>(ventaFecha(b)||0)-(ventaFecha(a)||0)).slice(0,5);
   $('#inicio-actividad').innerHTML = ult.length ? ult.map(v=>{ const d=ventaFecha(v); return `<div style="display:flex;align-items:flex-start;gap:10px;padding:9px 10px;background:rgba(255,255,255,0.03);border-radius:9px;margin-bottom:6px;font-size:12px"><span style="font-size:18px">💰</span><div style="flex:1"><b style="color:#fff">${money(ventaTotal(v))}</b> ${esc(v.cliente||v.nombre||'')}<span style="color:var(--dim);font-size:10px;float:right">${d?d.toLocaleDateString('es-CU'):''}</span></div></div>`; }).join('') : `<div class="empty" style="padding:18px"><div class="ico">🧾</div>Aún no hay ventas registradas.</div>`;
-  // Badge alertas topbar
+  // Badge alertas topbar: pinta primero lo cacheado (para que no quede en
+  // blanco) y de inmediato pide el número real a Firebase para corregirlo.
   const _subs = parseInt(localStorage.getItem('tm_subscriber_count')||'0')||0;
   const _sb=$('#tb-subs'); if(_sb) _sb.textContent = _subs;
+  _tmRefrescarSubsBadge();
+}
+// localStorage.tm_subscriber_count solo se actualiza cuando ESTE navegador
+// se suscribe/desuscribe de push (ver js/analytics.js) — el admin casi nunca
+// lo hace desde su propio dispositivo, así que el badge se quedaba pegado en
+// el número de la última vez que eso pasó, sin importar cuántos clientes
+// reales se sumaran o se dieran de baja. Acá se pide fresco de Firebase
+// (fuente real: dispositivos únicos en /tokens) cada vez que se abre Inicio.
+async function _tmRefrescarSubsBadge(){
+  try{
+    if(typeof _fbEnsureConfig==='function') await _fbEnsureConfig();
+    const base = (typeof _fbRtdbUrl==='function') ? _fbRtdbUrl() : null;
+    if(!base) return;
+    const r = await fetch(base+'/tokens.json?_='+Date.now(), {cache:'no-store'});
+    if(!r.ok) return;
+    const data = await r.json();
+    const n = (typeof tmContarSuscriptoresUnicos==='function') ? tmContarSuscriptoresUnicos(data||{}) : Object.keys(data||{}).length;
+    try{ localStorage.setItem('tm_subscriber_count', String(n)); }catch(e){}
+    const sb=$('#tb-subs'); if(sb) sb.textContent = String(n);
+  }catch(e){}
 }
 
 /* ============ REPOSICIÓN — qué volver a comprar ============ */
