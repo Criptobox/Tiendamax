@@ -73,5 +73,65 @@ class SubscriberIdentityTest(unittest.TestCase):
         self.assertEqual(len(perdidos), 1)
 
 
+class DiffSuscriptoresTest(unittest.TestCase):
+    def test_primera_corrida_no_avisa(self):
+        self.assertEqual(aa._diff_suscriptores(set(), {"a", "b"}, first_run=True), [])
+
+    def test_sin_cambios_no_avisa(self):
+        self.assertEqual(aa._diff_suscriptores({"a", "b"}, {"a", "b"}, False), [])
+
+    def test_una_alta_avisa_solo_alta(self):
+        msgs = aa._diff_suscriptores({"a", "b"}, {"a", "b", "c"}, False)
+        self.assertEqual(len(msgs), 1)
+        self.assertIn("1 nuevo(s)", msgs[0])
+        self.assertIn("Total: 3", msgs[0])
+
+    def test_una_baja_avisa_solo_baja(self):
+        msgs = aa._diff_suscriptores({"a", "b", "c"}, {"a", "b"}, False)
+        self.assertEqual(len(msgs), 1)
+        self.assertIn("1 suscriptor(es) cancelaron", msgs[0])
+        self.assertIn("Total: 2", msgs[0])
+
+    def test_conjuntos_disjuntos_es_migracion_no_avisa(self):
+        """El caso EXACTO del bug: 6 viejos (formato viejo) desaparecen y 6
+        nuevos (formato nuevo) aparecen, mismo total. Sin overlap = migración
+        de identidad, NO churn real → cero alertas."""
+        viejos = {f"did_{i}" for i in range(6)}       # formato viejo (raw)
+        nuevos = {f"fp:huella{i}" for i in range(6)}  # formato nuevo
+        self.assertEqual(aa._diff_suscriptores(viejos, nuevos, False), [])
+
+    def test_nunca_reporta_altas_y_bajas_iguales_a_la_vez(self):
+        """Con overlap parcial pero mismo tamaño (1 entró, 1 salió del mismo
+        set), neto 0 → no se avisa 'N nuevos + N cancelaron'."""
+        known = {"a", "b", "c"}
+        current = {"a", "b", "d"}  # c salió, d entró, neto 0
+        self.assertEqual(aa._diff_suscriptores(known, current, False), [])
+
+    def test_altas_y_bajas_reporta_solo_neto_positivo(self):
+        known = {"a", "b"}
+        current = {"a", "c", "d"}  # b salió, c y d entraron → neto +1
+        msgs = aa._diff_suscriptores(known, current, False)
+        self.assertEqual(len(msgs), 1)
+        self.assertIn("1 nuevo(s)", msgs[0])
+
+    def test_altas_y_bajas_reporta_solo_neto_negativo(self):
+        known = {"a", "b", "c"}
+        current = {"a", "d"}  # b y c salieron, d entró → neto -1
+        msgs = aa._diff_suscriptores(known, current, False)
+        self.assertEqual(len(msgs), 1)
+        self.assertIn("cancelaron", msgs[0])
+
+    def test_de_cero_a_algunos_es_alta_normal(self):
+        # known vacío pero NO first_run (ya había corrido con 0 conocidos)
+        msgs = aa._diff_suscriptores(set(), {"a", "b"}, False)
+        self.assertEqual(len(msgs), 1)
+        self.assertIn("2 nuevo(s)", msgs[0])
+
+    def test_a_cero_es_baja_normal(self):
+        msgs = aa._diff_suscriptores({"a", "b"}, set(), False)
+        self.assertEqual(len(msgs), 1)
+        self.assertIn("2 suscriptor(es) cancelaron", msgs[0])
+
+
 if __name__ == "__main__":
     unittest.main()
