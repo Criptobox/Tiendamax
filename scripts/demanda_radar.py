@@ -44,6 +44,15 @@ MAX_DIAS = 10         # solo anuncios recientes (si se conoce la fecha)
 SEEN_DIAS = 30        # cuánto recordar un link ya avisado antes de olvidarlo
 MAX_AVISOS = 15       # tope de coincidencias por mensaje de Telegram
 
+# Categorías a vigilar. Vacío = todas. Se puede sobreescribir con la variable
+# de entorno DEMANDA_CATEGORIAS (coma-separada), sin tocar código. El admin
+# pidió empezar solo con WiFi y Energía — menos peticiones por corrida (clave
+# para el plan gratis de Cloudflare, tope 50 subpeticiones) y foco donde más
+# se mueve. Se comparan normalizadas (mayúsculas, sin acentos).
+def _categorias_vigiladas() -> set[str]:
+    raw = os.environ.get("DEMANDA_CATEGORIAS", "WIFI,ENERGIA")
+    return {_norm(c).upper() for c in raw.split(",") if c.strip()}
+
 # Palabras que delatan a un COMPRADOR (no un vendedor). Se buscan en el título
 # ya normalizado (minúsculas, sin acentos).
 _BUYER_RE = re.compile(
@@ -112,8 +121,15 @@ SCRAPERS = [_scrape_revolico_busq, _scrape_porlalivre_busq]
 
 
 def _productos_en_stock(productos: list[dict]) -> list[dict]:
-    return [p for p in productos
-            if p.get("activo") is not False and float(p.get("stock") or 0) > 0]
+    cats = _categorias_vigiladas()
+    out = []
+    for p in productos:
+        if p.get("activo") is False or float(p.get("stock") or 0) <= 0:
+            continue
+        if cats and _norm(p.get("categoria") or "").upper() not in cats:
+            continue
+        out.append(p)
+    return out
 
 
 def construir_consultas(productos: list[dict]) -> list[tuple[str, dict, list[str]]]:

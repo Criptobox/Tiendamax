@@ -39,6 +39,9 @@ jobs:
         env:
           BOT_TOKEN:     ${{ secrets.BOT_TOKEN }}
           ADMIN_CHAT_ID: ${{ secrets.ADMIN_CHAT_ID }}
+          # Categorías a vigilar (coma-separadas). Vacío = todas. Empezamos
+          # solo con WiFi y Energía; para agregar otra, edita esta línea.
+          DEMANDA_CATEGORIAS: 'WIFI,ENERGIA'
       - name: Commit del estado (links ya avisados)
         env:
           GH_TOKEN: ${{ github.token }}

@@ -154,6 +154,49 @@ class ArmarMensajeTest(unittest.TestCase):
         self.assertIn(f"y {5} más", msg)                # resumen del sobrante
 
 
+class CategoriaFilterTest(unittest.TestCase):
+    """El admin pidió empezar solo con WiFi y Energía. El filtro se controla
+    con DEMANDA_CATEGORIAS (default WIFI,ENERGIA)."""
+
+    def setUp(self):
+        self._orig = os.environ.get("DEMANDA_CATEGORIAS")
+
+    def tearDown(self):
+        if self._orig is None:
+            os.environ.pop("DEMANDA_CATEGORIAS", None)
+        else:
+            os.environ["DEMANDA_CATEGORIAS"] = self._orig
+
+    def _prods(self):
+        return [
+            {"id": 1, "nombre": "Router WiFi AC1200", "stock": 5, "categoria": "WIFI"},
+            {"id": 2, "nombre": "Inversor Solar 5000w", "stock": 3, "categoria": "ENERGIA"},
+            {"id": 3, "nombre": "Camara Seguridad 360", "stock": 2, "categoria": "SEGURIDAD"},
+            {"id": 4, "nombre": "Audifonos Bluetooth", "stock": 4, "categoria": "CELULARES"},
+        ]
+
+    def test_default_wifi_y_energia(self):
+        os.environ.pop("DEMANDA_CATEGORIAS", None)
+        cats = {p["categoria"] for p in dr._productos_en_stock(self._prods())}
+        self.assertEqual(cats, {"WIFI", "ENERGIA"})
+
+    def test_override_por_env(self):
+        os.environ["DEMANDA_CATEGORIAS"] = "SEGURIDAD"
+        cats = {p["categoria"] for p in dr._productos_en_stock(self._prods())}
+        self.assertEqual(cats, {"SEGURIDAD"})
+
+    def test_vacio_es_todas(self):
+        os.environ["DEMANDA_CATEGORIAS"] = ""
+        cats = {p["categoria"] for p in dr._productos_en_stock(self._prods())}
+        self.assertEqual(cats, {"WIFI", "ENERGIA", "SEGURIDAD", "CELULARES"})
+
+    def test_ignora_acentos_y_mayusculas(self):
+        os.environ["DEMANDA_CATEGORIAS"] = "energía"  # minúscula + acento
+        prods = [{"id": 1, "nombre": "Inversor", "stock": 1, "categoria": "ENERGIA"}]
+        cats = {p["categoria"] for p in dr._productos_en_stock(prods)}
+        self.assertEqual(cats, {"ENERGIA"})
+
+
 class MainEstadoTest(unittest.TestCase):
     """Corre cada 15 min: el estado solo debe reescribirse cuando hay un aviso
     nuevo real, para no generar un commit de puro timestamp en cada corrida."""
@@ -167,6 +210,10 @@ class MainEstadoTest(unittest.TestCase):
         self._orig_tel = dr.enviar_telegram
         dr.OUT = self.tmp
         dr.PAUSA = 0
+        # Sin filtro de categoría para este test (probamos el flujo del estado,
+        # no el filtro); así el producto sin 'categoria' no queda descartado.
+        self._orig_cat = os.environ.get("DEMANDA_CATEGORIAS")
+        os.environ["DEMANDA_CATEGORIAS"] = ""
         self.productos = [{"id": 1, "nombre": "Router Tenda AC1200 Doble Banda", "stock": 5}]
         dr.load_json = lambda path, default=None: (
             self.productos if str(path).endswith("productos.json")
@@ -178,6 +225,10 @@ class MainEstadoTest(unittest.TestCase):
         os.environ.pop("ADMIN_CHAT_ID", None)
 
     def tearDown(self):
+        if self._orig_cat is None:
+            os.environ.pop("DEMANDA_CATEGORIAS", None)
+        else:
+            os.environ["DEMANDA_CATEGORIAS"] = self._orig_cat
         dr.OUT = self._orig_out
         dr.SCRAPERS = self._orig_scr
         dr.load_json = self._orig_load
