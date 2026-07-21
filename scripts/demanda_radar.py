@@ -67,7 +67,11 @@ def es_busqueda(titulo: str) -> bool:
     return bool(_BUYER_RE.search(_norm(titulo)))
 
 
-# ── Scrapers de "búsquedas" (sin exigir precio: el comprador no pone precio) ──
+# ── Scrapers: devuelven TODO lo parseado (título+url+días), SIN filtrar por
+# comprador. El filtro "es comprador" vive en buscar_demanda (un solo lugar).
+# Así el conteo crudo de items sirve para saber si los selectores parsean bien
+# el HTML real (0 crudos = selector roto; >0 crudos = el selector anda, aunque
+# no haya compradores).
 def _scrape_revolico_busq(query: str) -> list[dict]:
     from bs4 import BeautifulSoup
     r = _get("https://www.revolico.com/search", {"q": query})
@@ -77,7 +81,7 @@ def _scrape_revolico_busq(query: str) -> list[dict]:
     out, vistos = [], set()
     for a in soup.select("a[href*='/item/'], li a"):
         titulo = a.get_text(" ", strip=True)
-        if not titulo or len(titulo) < 6 or not es_busqueda(titulo):
+        if not titulo or len(titulo) < 6:
             continue
         href = a.get("href", "")
         url = href if href.startswith("http") else ("https://www.revolico.com" + href)
@@ -87,14 +91,14 @@ def _scrape_revolico_busq(query: str) -> list[dict]:
         cont = a.find_parent()
         dias = _edad_dias(cont.get_text(" ", strip=True)) if cont else None
         out.append({"fuente": "revolico", "titulo": titulo[:110], "url": url, "dias": dias})
-        if len(out) >= 20:
+        if len(out) >= 40:
             break
     return out
 
 
 def _scrape_porlalivre_busq(query: str) -> list[dict]:
     from bs4 import BeautifulSoup
-    r = _get("https://www.porlalivre.com/anuncios", {"buscar": query})
+    r = _get("https://porlalivre.com/anuncios", {"buscar": query})
     if r.status_code != 200:
         return []
     soup = BeautifulSoup(r.text, "html.parser")
@@ -104,15 +108,15 @@ def _scrape_porlalivre_busq(query: str) -> list[dict]:
         if not a:
             continue
         titulo = a.get_text(" ", strip=True) or card.get_text(" ", strip=True)
-        if not titulo or len(titulo) < 6 or not es_busqueda(titulo):
+        if not titulo or len(titulo) < 6:
             continue
-        url = a["href"] if a["href"].startswith("http") else ("https://www.porlalivre.com" + a["href"])
+        url = a["href"] if a["href"].startswith("http") else ("https://porlalivre.com" + a["href"])
         if url in vistos:
             continue
         vistos.add(url)
         out.append({"fuente": "porlalivre", "titulo": titulo[:110], "url": url,
                     "dias": _edad_dias(card.get_text(" ", strip=True))})
-        if len(out) >= 20:
+        if len(out) >= 40:
             break
     return out
 
@@ -150,21 +154,32 @@ def construir_consultas(productos: list[dict]) -> list[tuple[str, dict, list[str
 
 
 def buscar_demanda(consultas) -> list[dict]:
-    """Devuelve coincidencias {producto, stock, fuente, titulo, url, dias}."""
+    """Devuelve coincidencias {producto, stock, fuente, titulo, url, dias}.
+
+    Lleva contadores por fuente (crudos parseados · compradores · coincidencias)
+    y los imprime al final. Sirven de diagnóstico: si una fuente da 0 crudos en
+    toda la corrida, su selector de HTML está roto (o el sitio no responde), no
+    es que "no haya compradores". Distinguir eso a ojo era imposible antes."""
     matches: list[dict] = []
+    # {fuente: [crudos, compradores, coincidencias]}
+    stats: dict[str, list[int]] = {}
     for q, prod, kw in consultas:
         for scraper in SCRAPERS:
             try:
                 for it in scraper(q):
+                    st = stats.setdefault(it["fuente"], [0, 0, 0])
+                    st[0] += 1  # crudo parseado
                     # Doble filtro (los scrapers ya filtran, pero garantizarlo
                     # acá deja el criterio de "es comprador" en un solo lugar):
                     if not es_busqueda(it["titulo"]):
                         continue
+                    st[1] += 1  # comprador
                     if not coincide(kw, it["titulo"]):
                         continue
                     d = it.get("dias")
                     if d is not None and d > MAX_DIAS:
                         continue
+                    st[2] += 1  # coincidencia con tu catálogo
                     matches.append({
                         "producto": prod.get("nombre"),
                         "productoId": prod.get("id"),
@@ -176,6 +191,13 @@ def buscar_demanda(consultas) -> list[dict]:
             except Exception as e:
                 print(f"  ⚠ {scraper.__name__} falló para «{q}»: {e}")
             time.sleep(PAUSA)
+    for fuente in sorted(stats):
+        crudos, compradores, coincidencias = stats[fuente]
+        print(f"  · {fuente}: {crudos} crudos · {compradores} compradores · "
+              f"{coincidencias} coincidencias")
+        if crudos == 0:
+            print(f"    ⚠ {fuente}: 0 crudos en toda la corrida — "
+                  f"selector roto o sitio caído, NO 'sin compradores'.")
     return matches
 
 
