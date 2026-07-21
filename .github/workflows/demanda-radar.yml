@@ -2,15 +2,24 @@ name: 🎯 Radar de demanda (busco/compro)
 
 on:
   schedule:
-    # 2×/día: ~9 AM y ~6 PM hora Cuba (13:00 y 22:00 UTC en horario de verano).
-    - cron: '0 13 * * *'
-    - cron: '0 22 * * *'
+    # Cada 15 min en horario activo de Cuba (~7 AM a medianoche) — los
+    # clasificados se responden al momento, un intervalo largo llega tarde.
+    # Cuba (verano, UTC-4): 7 AM = 11:00 UTC, medianoche = 04:00 UTC del día
+    # siguiente. OJO: el cron de GitHub Actions NO es puntual — en horas pico
+    # se retrasa 5–20 min y a veces salta corridas. "Cada 15 min" es el
+    # objetivo, no una garantía; tiempo real de verdad necesitaría un
+    # servidor propio siempre encendido, que este sitio estático no tiene.
+    - cron: '*/15 11-23 * * *'
+    - cron: '*/15 0-3 * * *'
   workflow_dispatch:
 
 permissions:
   contents: write
 
-# Estado propio; no choca con otros radares.
+# cancel-in-progress:false a propósito: una corrida NO debe morir a mitad
+# de camino (entre mandar el Telegram y guardar el estado anti-spam), o
+# re-avisaría lo mismo. Las corridas duran ~90s, muy por debajo de 15 min,
+# así que no se acumulan.
 concurrency:
   group: demanda-radar
   cancel-in-progress: false
