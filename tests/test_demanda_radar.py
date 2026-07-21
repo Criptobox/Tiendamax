@@ -7,7 +7,9 @@ poda por antigüedad, armado de consultas y del mensaje). La parte de scraping
 y Telegram no se toca.
 """
 import datetime
+import os
 import sys
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -150,6 +152,65 @@ class ArmarMensajeTest(unittest.TestCase):
         msg = dr.armar_mensaje(muchos)
         self.assertIn(f"({len(muchos)})", msg)          # total en el encabezado
         self.assertIn(f"y {5} más", msg)                # resumen del sobrante
+
+
+class MainEstadoTest(unittest.TestCase):
+    """Corre cada 15 min: el estado solo debe reescribirse cuando hay un aviso
+    nuevo real, para no generar un commit de puro timestamp en cada corrida."""
+
+    def setUp(self):
+        self.tmp = tempfile.mktemp(suffix=".json")
+        self._orig_out = dr.OUT
+        self._orig_scr = dr.SCRAPERS
+        self._orig_load = dr.load_json
+        self._orig_pausa = dr.PAUSA
+        self._orig_tel = dr.enviar_telegram
+        dr.OUT = self.tmp
+        dr.PAUSA = 0
+        self.productos = [{"id": 1, "nombre": "Router Tenda AC1200 Doble Banda", "stock": 5}]
+        dr.load_json = lambda path, default=None: (
+            self.productos if str(path).endswith("productos.json")
+            else self._orig_load(path, default)
+        )
+        self.sent = []
+        dr.enviar_telegram = lambda t: self.sent.append(t)
+        os.environ.pop("BOT_TOKEN", None)
+        os.environ.pop("ADMIN_CHAT_ID", None)
+
+    def tearDown(self):
+        dr.OUT = self._orig_out
+        dr.SCRAPERS = self._orig_scr
+        dr.load_json = self._orig_load
+        dr.PAUSA = self._orig_pausa
+        dr.enviar_telegram = self._orig_tel
+        if os.path.exists(self.tmp):
+            os.remove(self.tmp)
+
+    def test_avisa_una_vez_y_no_reescribe_sin_novedad(self):
+        dr.SCRAPERS = [lambda q: [
+            {"fuente": "revolico", "titulo": "compro router tenda ac1200 doble banda",
+             "url": "https://revolico.com/item/AAA", "dias": 1}
+        ]]
+        # Corrida 1: hay algo nuevo → avisa y escribe el estado.
+        dr.main()
+        self.assertEqual(len(self.sent), 1)
+        self.assertTrue(os.path.exists(self.tmp))
+        mtime1 = os.path.getmtime(self.tmp)
+
+        # Corrida 2: mismo resultado, nada nuevo → NO avisa ni reescribe.
+        self.sent.clear()
+        import time
+        time.sleep(0.02)
+        dr.main()
+        self.assertEqual(len(self.sent), 0)
+        self.assertEqual(os.path.getmtime(self.tmp), mtime1)  # archivo intacto
+
+    def test_sin_stock_no_crea_estado(self):
+        self.productos = [{"id": 1, "nombre": "X", "stock": 0}]
+        dr.SCRAPERS = [lambda q: []]
+        dr.main()
+        # sin productos que vigilar: no toca el archivo (no existía → sigue sin existir)
+        self.assertFalse(os.path.exists(self.tmp))
 
 
 if __name__ == "__main__":

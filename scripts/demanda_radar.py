@@ -242,27 +242,32 @@ def main() -> int:
 
     if not consultas:
         print("Sin productos en stock que vigilar. Nada que buscar.")
-        _guardar_estado(vistos)  # deja el estado (podado) escrito igual
         return 0
 
     matches = buscar_demanda(consultas)
     nuevos = filtrar_nuevos(matches, vistos)
     print(f"Coincidencias: {len(matches)} · nuevas (sin avisar antes): {len(nuevos)}")
 
-    if nuevos:
-        try:
-            enviar_telegram(armar_mensaje(nuevos))
-            print(f"✅ Aviso enviado con {len(nuevos)} búsqueda(s).")
-        except KeyError:
-            print("ℹ️ BOT_TOKEN/ADMIN_CHAT_ID no configurados; no se envió Telegram.")
-        except Exception as e:
-            print(f"❌ Error Telegram: {e}", file=sys.stderr)
-        # Marca como vistos aunque el envío falle a medias, para no reintentar
-        # el mismo lote una y otra vez (mejor perder un aviso que spamear).
-        for m in nuevos:
-            vistos[m["url"]] = hoy.isoformat()
-    else:
-        print("Nada nuevo que avisar.")
+    if not nuevos:
+        # Corre cada 15 min: si no hay nada nuevo, NO se reescribe el estado —
+        # así el workflow no genera un commit de puro timestamp en cada corrida.
+        # El estado (y la poda) solo se persisten cuando de verdad hay un aviso
+        # nuevo. Que una entrada vieja tarde unos días extra en borrarse es
+        # inofensivo.
+        print("Nada nuevo que avisar (no se toca el estado).")
+        return 0
+
+    try:
+        enviar_telegram(armar_mensaje(nuevos))
+        print(f"✅ Aviso enviado con {len(nuevos)} búsqueda(s).")
+    except KeyError:
+        print("ℹ️ BOT_TOKEN/ADMIN_CHAT_ID no configurados; no se envió Telegram.")
+    except Exception as e:
+        print(f"❌ Error Telegram: {e}", file=sys.stderr)
+    # Marca como vistos aunque el envío falle a medias, para no reintentar el
+    # mismo lote una y otra vez (mejor perder un aviso que spamear).
+    for m in nuevos:
+        vistos[m["url"]] = hoy.isoformat()
 
     _guardar_estado(vistos)
     return 0
