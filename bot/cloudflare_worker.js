@@ -1127,6 +1127,53 @@ async function handleCallback(q, env) {
   }
 }
 
+// ── Disparo puntual de la tasa elTOQUE ────────────────────────────────────────
+// El cron de GitHub Actions NO es puntual: en horas pico se retrasa 5-20 min y a
+// veces salta corridas, así que el aviso de cambio de tasa llegaba tarde. El cron
+// de Cloudflare sí dispara al segundo. Por eso el DISPARO se mueve aquí.
+//
+// El fetch real de la tasa NO se mueve a Cloudflare a propósito:
+//   - elTOQUE responde 403 a las IPs de Cloudflare (bloqueo Cloudflare-vs-Cloudflare;
+//     ver comentario en scripts/update_rate_from_eltoque.py), así que un Worker no
+//     podría leer la tasa de forma fiable.
+//   - La lógica que toca precios al cliente (config.json + push FCM + deploy) ya
+//     está probada en GitHub Actions; reescribirla en JS solo agrega riesgo.
+// Aquí únicamente se dispara el workflow ya existente; él hace el fetch (API/web/
+// Wayback) y solo notifica si la tasa cambió de verdad.
+const RATE_WORKFLOW      = 'update-eltoque-rate.yml';
+// Cron del reporte semanal (debe coincidir con wrangler.toml). Cualquier otro
+// cron que dispare el Worker se interpreta como "revisar tasa elTOQUE".
+const WEEKLY_REPORT_CRON = '0 13 * * 1';
+
+async function dispatchRateWorkflow(env) {
+  if (!env.GITHUB_TOKEN) { console.error('dispatchRateWorkflow: GITHUB_TOKEN ausente'); return; }
+  try {
+    const res = await fetch(
+      `https://api.github.com/repos/Criptobox/Tiendamax/actions/workflows/${RATE_WORKFLOW}/dispatches`,
+      {
+        method: 'POST',
+        headers: {
+          'Authorization':        'Bearer ' + env.GITHUB_TOKEN,
+          'Accept':               'application/vnd.github+json',
+          'User-Agent':           'TiendaMax-Bot',
+          'X-GitHub-Api-Version': '2022-11-28',
+          'Content-Type':         'application/json',
+        },
+        body: JSON.stringify({ ref: 'main' }),
+      }
+    );
+    if (!res.ok) {
+      // 403 típico = el PAT no tiene el scope "workflow" (actions:write). El de
+      // stock solo necesita contents:write; para disparar workflows hay que
+      // añadir ese permiso al token en los Secrets del Worker.
+      const body = await res.text().catch(() => '');
+      console.error('dispatchRateWorkflow error ' + res.status + ': ' + body.slice(0, 200));
+    }
+  } catch (e) {
+    console.error('dispatchRateWorkflow excepción: ' + String(e).slice(0, 200));
+  }
+}
+
 // ── Worker entry point ────────────────────────────────────────────────────────
 
 export default {
@@ -1143,8 +1190,14 @@ export default {
     return new Response('Method not allowed', { status: 405 });
   },
 
-  // Reporte semanal automático — lunes 9 AM Cuba (13:00 UTC)
+  // Dos tipos de cron (ver wrangler.toml):
+  //   - '0 13 * * 1'  → reporte semanal (lunes 9 AM Cuba / 13:00 UTC)
+  //   - cualquier otro → disparo puntual de la tasa elTOQUE (ventana activa Cuba)
   async scheduled(event, env, ctx) {
-    ctx.waitUntil(sendWeeklyReport(env));
+    if (event.cron === WEEKLY_REPORT_CRON) {
+      ctx.waitUntil(sendWeeklyReport(env));
+    } else {
+      ctx.waitUntil(dispatchRateWorkflow(env));
+    }
   },
 };

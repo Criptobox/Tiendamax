@@ -2,8 +2,14 @@ name: Actualizar tasa desde elTOQUE
 
 on:
   schedule:
-    # Cada 30 min de 8AM a 5PM hora Cuba (UTC-4) = 12:00 a 21:00 UTC
-    - cron: '*/30 12-21 * * *'
+    # El disparo PUNTUAL cada 30 min lo hace ahora el Worker de Cloudflare
+    # (bot/cloudflare_worker.js) vía workflow_dispatch — su cron no se retrasa
+    # como el de GitHub Actions (5-20 min de jitter), que hacía llegar tarde el
+    # aviso de cambio de tasa. Esto de aquí es solo RED DE SEGURIDAD: si el
+    # Worker falla o queda mal configurado, estas pocas corridas al día evitan
+    # que los precios al cliente se congelen. 13:00/17:00/21:00 UTC = 9 AM/1 PM/
+    # 5 PM Cuba.
+    - cron: '0 13,17,21 * * *'
   workflow_dispatch:
 
 permissions:
