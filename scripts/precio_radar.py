@@ -165,7 +165,7 @@ def scrape_revolico(query, rate):
 
 def scrape_porlalivre(query, rate):
     from bs4 import BeautifulSoup
-    r = _get("https://www.porlalivre.com/anuncios", {"buscar": query})
+    r = _get("https://porlalivre.com/anuncios", {"buscar": query})
     if r.status_code != 200:
         return []
     soup = BeautifulSoup(r.text, "html.parser")
@@ -181,7 +181,7 @@ def scrape_porlalivre(query, rate):
         if not usd:
             continue
         a = card.find("a", href=True)
-        url = a["href"] if a and a["href"].startswith("http") else ("https://www.porlalivre.com" + (a["href"] if a else ""))
+        url = a["href"] if a and a["href"].startswith("http") else ("https://porlalivre.com" + (a["href"] if a else ""))
         out.append({"fuente": "porlalivre", "titulo": txt[:90], "precio": usd, "url": url, "dias": _edad_dias(txt)})
         if len(out) >= 25:
             break
