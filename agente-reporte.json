@@ -1,11 +1,71 @@
 {
-  "generado": "2026-07-20T11:37:54.332397+00:00",
-  "productos": 111,
-  "urgentes": 0,
-  "advertencias": 37,
+  "generado": "2026-07-21T10:59:07.606741+00:00",
+  "productos": 115,
+  "urgentes": 12,
+  "advertencias": 35,
   "info": 10,
-  "resumen": "Anoche revisé tus 111 productos y encontré 37 advertencia(s), 10 de info.",
+  "resumen": "Anoche revisé tus 115 productos y encontré 12 urgente(s), 35 advertencia(s), 10 de info.",
   "detalle": [
+    {
+      "tipo": "nombre",
+      "nombre": "​🔒 Kit de Sistema de Alarma de Seguridad Inalámbrico con Panel Táctil, Sensores y Llaveros RFID",
+      "detalle": "→ ​🔒 KIT de Sistema de Alarma de Seguridad Inalámbrico Con Panel Táctil, Sensores y Llaveros Rfid"
+    },
+    {
+      "tipo": "nombre",
+      "nombre": "​🔒 Cerradura de Puerta Inteligente Biométrica con Lector de Huellas y Teclado Numérico",
+      "detalle": "→ ​🔒 Cerradura de Puerta Inteligente Biométrica Con Lector de Huellas y Teclado Numérico"
+    },
+    {
+      "tipo": "nombre",
+      "nombre": "​🔒 Kit de Cámaras de Seguridad ZOSI con DVR 8 Canales",
+      "detalle": "→ ​🔒 KIT de Cámaras de Seguridad Zosi Con Dvr 8 Canales"
+    },
+    {
+      "tipo": "nombre",
+      "nombre": "​🔒 Timbre de Puerta Inteligente con Cámara HD e Intercomunicador WiFi",
+      "detalle": "→ ​🔒 Timbre de Puerta Inteligente Con Cámara HD e Intercomunicador WiFi"
+    },
+    {
+      "tipo": "nombre",
+      "nombre": "​🔒 Cámara de Seguridad Bullet ZOSI",
+      "detalle": "→ ​🔒 Cámara de Seguridad Bullet Zosi"
+    },
+    {
+      "tipo": "nombre",
+      "nombre": "​🎶 Audífonos Inalámbricos TWS",
+      "detalle": "→ ​🎶 Audífonos Inalámbricos Tws"
+    },
+    {
+      "tipo": "nombre",
+      "nombre": "​🏊‍♂️ Gorro de Buceo / Capucha de Neopreno GIANSO 3mm",
+      "detalle": "→ ​🏊‍♂️ Gorro de Buceo / Capucha de Neopreno Gianso 3MM"
+    },
+    {
+      "tipo": "nombre",
+      "nombre": "​🎮 Audífonos Diademas Gaming Inalámbricos NUBWO",
+      "detalle": "→ ​🎮 Audífonos Diademas Gaming Inalámbricos Nubwo"
+    },
+    {
+      "tipo": "nombre",
+      "nombre": "​🔒 Cámara de Seguridad PTZ WiFi Exterior con Doble Antena",
+      "detalle": "→ ​🔒 Cámara de Seguridad Ptz WiFi Exterior Con Doble Antena"
+    },
+    {
+      "tipo": "nombre",
+      "nombre": "​📡 Router Inalámbrico WAVLINK AC1200 Dual Band",
+      "detalle": "→ ​📡 Router Inalámbrico Wavlink AC1200 Dual Band"
+    },
+    {
+      "tipo": "nombre",
+      "nombre": "​🔌 Controlador de Carga Solar MPPT 100A AUTO",
+      "detalle": "→ ​🔌 Controlador de Carga Solar MPPT 100A Auto"
+    },
+    {
+      "tipo": "nombre",
+      "nombre": "​🔒 Sistema de Seguridad ZOSI de 8 Canales con DVR 5MP y Disco Duro de 1TB",
+      "detalle": "→ ​🔒 Sistema de Seguridad Zosi de 8 Canales Con Dvr 5MP y Disco Duro de 1TB"
+    },
     {
       "tipo": "agotado",
       "nombre": "Batería Must Tipo LIFEPO4",
@@ -34,11 +94,6 @@
     {
       "tipo": "agotado",
       "nombre": "Cargador 10 Amperes",
-      "detalle": "agotado (stock 0)"
-    },
-    {
-      "tipo": "agotado",
-      "nombre": "♻️controlador Solar Powmr M100 PRO - MPPT de 100 Amp♻️",
       "detalle": "agotado (stock 0)"
     },
     {
@@ -78,6 +133,11 @@
     },
     {
       "tipo": "agotado",
+      "nombre": "Portacelulares",
+      "detalle": "agotado (stock 0)"
+    },
+    {
+      "tipo": "agotado",
       "nombre": "Linterna de Cabeza",
       "detalle": "agotado (stock 0)"
     },
@@ -113,22 +173,17 @@
     },
     {
       "tipo": "agotado",
-      "nombre": "Cargadores Inteligentes de 25A",
-      "detalle": "agotado (stock 0)"
-    },
-    {
-      "tipo": "agotado",
-      "nombre": "Controlador Solar de 60 Amp Powmr M60 ULTRA",
-      "detalle": "agotado (stock 0)"
-    },
-    {
-      "tipo": "agotado",
       "nombre": "Controlador Solar Powmr M100 PRO - MPPT de 80 Amp",
       "detalle": "agotado (stock 0)"
     },
     {
       "tipo": "agotado",
       "nombre": "Router Tenda RX2 PRO - WiFi 6 Dual - Band Gigabit",
+      "detalle": "agotado (stock 0)"
+    },
+    {
+      "tipo": "agotado",
+      "nombre": "Sistema de Seguridad Zosi Para el Hogar - 8 Canales",
       "detalle": "agotado (stock 0)"
     },
     {
@@ -153,11 +208,6 @@
     },
     {
       "tipo": "agotado",
-      "nombre": "Repetidor WiFi de Rango Extendido tp - Link",
-      "detalle": "agotado (stock 0)"
-    },
-    {
-      "tipo": "agotado",
       "nombre": "Router WiFi Inalámbrico d - Link Avanzado de Doble Banda",
       "detalle": "agotado (stock 0)"
     },
@@ -178,17 +228,17 @@
     },
     {
       "tipo": "agotado",
+      "nombre": "Panel Decorativo de Hojas Artificiales",
+      "detalle": "agotado (stock 0)"
+    },
+    {
+      "tipo": "agotado",
       "nombre": "Transferencia Automática o Manual",
       "detalle": "agotado (stock 0)"
     },
     {
       "tipo": "agotado",
       "nombre": "​⚡ Inversor de Corriente Onda Senoidal Pura Unizuki 3000W",
-      "detalle": "agotado (stock 0)"
-    },
-    {
-      "tipo": "agotado",
-      "nombre": "​🌐 Nanostation AC Loco",
       "detalle": "agotado (stock 0)"
     },
     {
@@ -208,11 +258,6 @@
     },
     {
       "tipo": "stock_bajo",
-      "nombre": "Portacelulares",
-      "detalle": "quedan 1"
-    },
-    {
-      "tipo": "stock_bajo",
       "nombre": "​🔊 Xiaomi Sound Outdoor (30W)",
       "detalle": "quedan 3"
     },
@@ -220,11 +265,6 @@
       "tipo": "stock_bajo",
       "nombre": "PC Gaming Setup Premium",
       "detalle": "quedan 1"
-    },
-    {
-      "tipo": "stock_bajo",
-      "nombre": "Sistema de Seguridad Zosi Para el Hogar - 8 Canales",
-      "detalle": "quedan 3"
     },
     {
       "tipo": "stock_bajo",
@@ -240,6 +280,16 @@
       "tipo": "precio",
       "nombre": "​🚗 Changan CS75 PLUS 2024 (Suv Compacta)",
       "detalle": "precio: 33000"
+    },
+    {
+      "tipo": "stock_bajo",
+      "nombre": "​🔥 Soldadora Inverter MMA-300",
+      "detalle": "quedan 2"
+    },
+    {
+      "tipo": "stock_bajo",
+      "nombre": "​🔒 Sistema de Seguridad ZOSI de 8 Canales con DVR 5MP y Disco Duro de 1TB",
+      "detalle": "quedan 3"
     }
   ]
 }
