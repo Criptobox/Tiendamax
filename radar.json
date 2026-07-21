@@ -1,6 +1,6 @@
 {
-  "actualizado": "2026-07-20T13:06:07.814010+00:00",
-  "fecha": "2026-07-20",
+  "actualizado": "2026-07-21T12:24:00.122696+00:00",
+  "fecha": "2026-07-21",
   "fuentes": [
     "revolico",
     "porlalivre",
@@ -22,7 +22,7 @@
         "mediana": 42.5,
         "n": 14
       },
-      "deltaAyerMediana": null,
+      "deltaAyerMediana": 0.0,
       "estado": "competitivo",
       "sugerencia": {
         "texto": "Precio competitivo respecto al mercado"
@@ -30,6 +30,10 @@
       "historial": [
         {
           "fecha": "2026-07-20",
+          "mediana": 42.5
+        },
+        {
+          "fecha": "2026-07-21",
           "mediana": 42.5
         }
       ],
@@ -94,10 +98,6 @@
       },
       "historial": [
         {
-          "fecha": "2026-07-04",
-          "mediana": 25.0
-        },
-        {
           "fecha": "2026-07-05",
           "mediana": 25.0
         },
@@ -147,6 +147,10 @@
         },
         {
           "fecha": "2026-07-20",
+          "mediana": 25.0
+        },
+        {
+          "fecha": "2026-07-21",
           "mediana": 25.0
         }
       ],
@@ -165,9 +169,9 @@
       "nombre": "​🔥 Antorcha de Soldadura TIG (KIT Profesional)",
       "tuPrecio": 90.0,
       "mercado": {
-        "min": 69.0,
+        "min": 70.0,
         "mediana": 90.0,
-        "n": 14
+        "n": 13
       },
       "deltaAyerMediana": 0.0,
       "estado": "competitivo",
@@ -175,10 +179,6 @@
         "texto": "Precio competitivo respecto al mercado"
       },
       "historial": [
-        {
-          "fecha": "2026-07-04",
-          "mediana": 90.0
-        },
         {
           "fecha": "2026-07-05",
           "mediana": 90.0
@@ -230,16 +230,13 @@
         {
           "fecha": "2026-07-20",
           "mediana": 90.0
+        },
+        {
+          "fecha": "2026-07-21",
+          "mediana": 90.0
         }
       ],
       "muestras": [
-        {
-          "fuente": "revolico",
-          "titulo": "69 USD Antorcha para soldadura TIG - LOS MEJORES PREGIOS CONMIGO 💥",
-          "precio": 69.0,
-          "url": "https://www.revolico.com/item/antorcha-para-soldadura-tig-los-mejores-pregios-conmigo-55512441",
-          "dias": null
-        },
         {
           "fuente": "revolico",
           "titulo": "70 USD Antorcha para soldadura TIG:  * Utilizada para trabajos de soldadura de alta precis",
@@ -259,6 +256,13 @@
           "titulo": "70 USD Antorcha para soldar TIG - soldadura - soldar - pistola de soldar - pistola para so",
           "precio": 70.0,
           "url": "https://www.revolico.com/item/antorcha-para-soldar-tig-soldadura-soldar-pistola-de-soldar-pistola-para-soldar-55384481",
+          "dias": null
+        },
+        {
+          "fuente": "revolico",
+          "titulo": "90 USD Antorcha para soldadura TIG",
+          "precio": 90.0,
+          "url": "https://www.revolico.com/item/antorcha-para-soldadura-tig-56394337",
           "dias": null
         },
         {
