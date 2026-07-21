@@ -7,4 +7,10 @@ kv_namespaces = [
 ]
 
 [triggers]
-crons = ["0 13 * * 1"]
+# Cloudflare dispara estos crons con puntualidad (a diferencia del cron de GitHub
+# Actions, que se retrasa 5-20 min). El handler `scheduled` en cloudflare_worker.js
+# distingue por el string del cron.
+crons = [
+  "0 13 * * 1",        # Reporte semanal — lunes 9 AM Cuba (13:00 UTC)
+  "*/30 12-21 * * *",  # Tasa elTOQUE — cada 30 min, 8 AM-5 PM Cuba (12:00-21:00 UTC)
+]
