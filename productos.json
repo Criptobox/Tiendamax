@@ -1531,7 +1531,7 @@
     "precioActual": 75,
     "precioOriginal": 0,
     "imagen": "https://tiendamax.org/imagenes/img_1783836546487.webp",
-    "categoria": "CELULARES",
+    "categoria": "AUDIO",
     "subcategoria": "AUDIO",
     "stock": 3,
     "masVendido": false,
@@ -1689,7 +1689,7 @@
     "precioActual": 10,
     "precioOriginal": 20,
     "imagen": "https://tiendamax.org/imagenes/img_1783837831859.webp",
-    "categoria": "CELULARES",
+    "categoria": "AUDIO",
     "subcategoria": "AUDIO",
     "stock": 11,
     "masVendido": false,
@@ -2880,11 +2880,10 @@
   },
   {
     "id": 1784732614444,
-    "nombre": "🛜 Router Wi-Fi 6 AX1800 ASUS RT-AX1800S",
-    "descripcion": "Router inalámbrico con tecnología Wi-Fi 6 de alta eficiencia, diseñado para proporcionar conexiones estables, menor latencia y gran velocidad en entornos con alta demanda de dispositivos conectados. Incorpora cuatro antenas externas y puertos Gigabit para un rendimiento de red óptimo.\n​Ficha Técnica:\n​Tecnología Inalámbrica: 🌐 Wi-Fi 6 (802.11ax) de doble banda con velocidades combinadas de hasta 1800 Mbps para una navegación fluida.\n​Cobertura y Antenas: 📶 Cuatro antenas externas orientables diseñadas para expandir la cobertura de señal en todo el espacio.\n​Capacidad de Conexión: ⚡ Tecnologías OFDMA y MU-MIMO para gestionar múltiples dispositivos conectados de forma simultánea sin pérdida de velocidad.\n​Conectividad Física: 🔌 Puertos Gigabit Ethernet para conexiones por cable de alta velocidad con máxima estabilidad.\n​Especificaciones (Specs):\n​Marca: ASUS.\n​Modelo: RT-AX1800S.\n​Tipo: Router Wi-Fi 6 AX1800 de doble banda.\n​Uso: Enrutamiento y distribución de red de alta velocidad para el hogar u oficina.",
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784732612977.webp",
+    "nombre": "🛜 Router Wi-fi 6 AX1800 Asus RT-AX1800S",
+    "imagen": "https://tiendamax.org/imagenes/img_1784732612977.webp",
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784732612977.webp"
+      "https://tiendamax.org/imagenes/img_1784732612977.webp"
     ],
     "precioActual": 150,
     "precioOriginal": 0,
@@ -2903,7 +2902,8 @@
       "​📶 Doble Banda 5 GHz / 2.4 GHz",
       "​🔌 Puertos Gigabit"
     ],
-    "fechaAgregado": "2026-07-22T15:03:34.445Z"
+    "fechaAgregado": "2026-07-22T15:03:34.445Z",
+    "descripcion": "Router inalámbrico con tecnología Wi-Fi 6 de alta eficiencia, diseñado para proporcionar conexiones estables, menor latencia y gran velocidad en entornos con alta demanda de dispositivos conectados. Incorpora cuatro antenas externas y puertos Gigabit para un rendimiento de red óptimo.\n​Ficha Técnica:\n​Tecnología Inalámbrica: 🌐 Wi-Fi 6 (802.11ax) de doble banda con velocidades combinadas de hasta 1800 Mbps para una navegación fluida.\n​Cobertura y Antenas: 📶 Cuatro antenas externas orientables diseñadas para expandir la cobertura de señal en todo el espacio.\n​Capacidad de Conexión: ⚡ Tecnologías OFDMA y MU-MIMO para gestionar múltiples dispositivos conectados de forma simultánea sin pérdida de velocidad.\n​Conectividad Física: 🔌 Puertos Gigabit Ethernet para conexiones por cable de alta velocidad con máxima estabilidad.\n​Especificaciones (Specs):\n​Marca: ASUS.\n​Modelo: RT-AX1800S.\n​Tipo: Router Wi-Fi 6 AX1800 de doble banda.\n​Uso: Enrutamiento y distribución de red de alta velocidad para el hogar u oficina."
   },
   {
     "id": 1784732715417,
