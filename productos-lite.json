@@ -2763,5 +2763,31 @@
       "🌐 Seguridad Confiable 24/7 para el Hogar"
     ],
     "fechaAgregado": "2026-07-20T18:23:02.778Z"
+  },
+  {
+    "id": 1784732614444,
+    "nombre": "🛜 Router Wi-Fi 6 AX1800 ASUS RT-AX1800S",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784732612977.webp",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784732612977.webp"
+    ],
+    "precioActual": 150,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 10,
+    "comision": 10,
+    "comisionMoneda": "USD",
+    "categoria": "WIFI",
+    "subcategoria": "ROUTERS",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "specs": [
+      "​⚡ AX1800 Wi-Fi 6",
+      "​📶 Doble Banda 5 GHz / 2.4 GHz",
+      "​🔌 Puertos Gigabit"
+    ],
+    "fechaAgregado": "2026-07-22T15:03:34.445Z"
   }
 ]
