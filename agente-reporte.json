@@ -1,10 +1,10 @@
 {
-  "generado": "2026-07-21T10:59:07.606741+00:00",
+  "generado": "2026-07-22T11:00:08.015542+00:00",
   "productos": 115,
   "urgentes": 12,
-  "advertencias": 35,
-  "info": 10,
-  "resumen": "Anoche revisé tus 115 productos y encontré 12 urgente(s), 35 advertencia(s), 10 de info.",
+  "advertencias": 39,
+  "info": 9,
+  "resumen": "Anoche revisé tus 115 productos y encontré 12 urgente(s), 39 advertencia(s), 9 de info.",
   "detalle": [
     {
       "tipo": "nombre",
@@ -103,6 +103,11 @@
     },
     {
       "tipo": "agotado",
+      "nombre": "⚡ Inversor Solar Híbrido Powmr 5000W",
+      "detalle": "agotado (stock 0)"
+    },
+    {
+      "tipo": "agotado",
       "nombre": "✅️controlador de Carga Solar MPPT - 100A",
       "detalle": "agotado (stock 0)"
     },
@@ -169,6 +174,11 @@
     {
       "tipo": "agotado",
       "nombre": "Cargador de Batería de Litio Bien 72V 5A (Salida 84V) | Conector us Pin",
+      "detalle": "agotado (stock 0)"
+    },
+    {
+      "tipo": "agotado",
+      "nombre": "Cargadores Inteligentes de 25A",
       "detalle": "agotado (stock 0)"
     },
     {
@@ -242,13 +252,18 @@
       "detalle": "agotado (stock 0)"
     },
     {
-      "tipo": "stock_bajo",
-      "nombre": "​🌐 Cpe Exterior Kuwfi 4G/WIFI",
-      "detalle": "quedan 1"
+      "tipo": "agotado",
+      "nombre": "​🌐 Router Tp-link Archer AX21 (Wi-fi 6)",
+      "detalle": "agotado (stock 0)"
+    },
+    {
+      "tipo": "agotado",
+      "nombre": "​🌐 Mikrotik Sxtsq LITE5",
+      "detalle": "agotado (stock 0)"
     },
     {
       "tipo": "stock_bajo",
-      "nombre": "⚡ Inversor Solar Híbrido Powmr 5000W",
+      "nombre": "​🌐 Cpe Exterior Kuwfi 4G/WIFI",
       "detalle": "quedan 1"
     },
     {
