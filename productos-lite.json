@@ -786,9 +786,9 @@
   },
   {
     "id": 1778383966832,
-    "nombre": "​🔒 Kit de Sistema de Alarma de Seguridad Inalámbrico con Panel Táctil, Sensores y Llaveros RFID",
+    "nombre": "​🔒 KIT de Sistema de Alarma de Seguridad Inalámbrico Con Panel Táctil, Sensores y Llaveros Rfid",
     "precioActual": 170,
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784572922212.webp",
+    "imagen": "https://tiendamax.org/imagenes/img_1784572922212.webp",
     "categoria": "SEGURIDAD",
     "subcategoria": "ALARMAS",
     "stock": 5,
@@ -809,7 +809,7 @@
       "🌐 Monitoreo Centralizado con Panel Táctil y RFID"
     ],
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784572922212.webp",
+      "https://tiendamax.org/imagenes/img_1784572922212.webp",
       "https://tiendamax.org/imagenes/img_1778383966832_ext.webp"
     ]
   },
@@ -833,9 +833,9 @@
   },
   {
     "id": 1778384158283,
-    "nombre": "​🔒 Cerradura de Puerta Inteligente Biométrica con Lector de Huellas y Teclado Numérico",
+    "nombre": "​🔒 Cerradura de Puerta Inteligente Biométrica Con Lector de Huellas y Teclado Numérico",
     "precioActual": 60,
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784572438933.webp",
+    "imagen": "https://tiendamax.org/imagenes/img_1784572438933.webp",
     "categoria": "SEGURIDAD",
     "subcategoria": "CERRADURAS",
     "stock": 4,
@@ -856,13 +856,13 @@
       "​📱 Gestión de Usuarios y Apertura Remota desde el Móvil"
     ],
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784572438933.webp",
+      "https://tiendamax.org/imagenes/img_1784572438933.webp",
       "https://tiendamax.org/imagenes/img_1778384158283_ext.webp"
     ]
   },
   {
     "id": 1778384314795,
-    "nombre": "​🔒 Kit de Cámaras de Seguridad ZOSI con DVR 8 Canales",
+    "nombre": "​🔒 KIT de Cámaras de Seguridad Zosi Con Dvr 8 Canales",
     "precioActual": 230,
     "imagen": "https://tiendamax.org/imagenes/img_1778384314795_ext.webp",
     "categoria": "SEGURIDAD",
@@ -980,9 +980,9 @@
   },
   {
     "id": 1778384840618,
-    "nombre": "​🔒 Timbre de Puerta Inteligente con Cámara HD e Intercomunicador WiFi",
+    "nombre": "​🔒 Timbre de Puerta Inteligente Con Cámara HD e Intercomunicador WiFi",
     "precioActual": 30,
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784572695580.webp",
+    "imagen": "https://tiendamax.org/imagenes/img_1784572695580.webp",
     "categoria": "SEGURIDAD",
     "subcategoria": "ALARMAS",
     "stock": 16,
@@ -1003,7 +1003,7 @@
       "​🌐 Conexión Inalámbrica de Gran Alcance con Alarma Chime"
     ],
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784572695580.webp",
+      "https://tiendamax.org/imagenes/img_1784572695580.webp",
       "https://tiendamax.org/imagenes/img_1778384840618_ext.webp"
     ]
   },
@@ -1540,7 +1540,7 @@
   },
   {
     "id": 1780344659047,
-    "nombre": "​🔒 Cámara de Seguridad Bullet ZOSI",
+    "nombre": "​🔒 Cámara de Seguridad Bullet Zosi",
     "precioActual": 45,
     "precioOriginal": 0,
     "imagen": "https://tiendamax.org/imagenes/img_1780344655996_bb0312.webp",
@@ -1616,7 +1616,7 @@
   },
   {
     "id": 1780543090267,
-    "nombre": "​🎶 Audífonos Inalámbricos TWS",
+    "nombre": "​🎶 Audífonos Inalámbricos Tws",
     "precioActual": 10,
     "precioOriginal": 20,
     "imagen": "https://tiendamax.org/imagenes/img_1783837831859.webp",
@@ -1689,7 +1689,7 @@
   },
   {
     "id": 1780887557334,
-    "nombre": "​🏊‍♂️ Gorro de Buceo / Capucha de Neopreno GIANSO 3mm",
+    "nombre": "​🏊‍♂️ Gorro de Buceo / Capucha de Neopreno Gianso 3MM",
     "precioActual": 10,
     "precioOriginal": 0,
     "imagen": "https://tiendamax.org/imagenes/img_1780887557334_132c6f.webp",
@@ -2053,11 +2053,11 @@
   },
   {
     "id": 1782439428159,
-    "nombre": "​🎮 Audífonos Diademas Gaming Inalámbricos NUBWO",
+    "nombre": "​🎮 Audífonos Diademas Gaming Inalámbricos Nubwo",
     "imagen": "https://tiendamax.org/imagenes/img_1782439424609_06af7e.webp",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1782439424609_06af7e.webp",
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784569823396.webp"
+      "https://tiendamax.org/imagenes/img_1784569823396.webp"
     ],
     "precioActual": 50,
     "precioOriginal": 0,
@@ -2663,7 +2663,7 @@
   },
   {
     "id": 1784405087402,
-    "nombre": "​🔒 Cámara de Seguridad PTZ WiFi Exterior con Doble Antena",
+    "nombre": "​🔒 Cámara de Seguridad Ptz WiFi Exterior Con Doble Antena",
     "imagen": "https://tiendamax.org/imagenes/img_1784405086297.webp",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1784405086297.webp"
@@ -2689,10 +2689,10 @@
   },
   {
     "id": 1784569265085,
-    "nombre": "​📡 Router Inalámbrico WAVLINK AC1200 Dual Band",
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784569263882.webp",
+    "nombre": "​📡 Router Inalámbrico Wavlink AC1200 Dual Band",
+    "imagen": "https://tiendamax.org/imagenes/img_1784569263882.webp",
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784569263882.webp"
+      "https://tiendamax.org/imagenes/img_1784569263882.webp"
     ],
     "precioActual": 70,
     "precioOriginal": 0,
@@ -2715,10 +2715,10 @@
   },
   {
     "id": 1784569498967,
-    "nombre": "​🔌 Controlador de Carga Solar MPPT 100A AUTO",
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784569497721.webp",
+    "nombre": "​🔌 Controlador de Carga Solar MPPT 100A Auto",
+    "imagen": "https://tiendamax.org/imagenes/img_1784569497721.webp",
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784569497721.webp"
+      "https://tiendamax.org/imagenes/img_1784569497721.webp"
     ],
     "precioActual": 8,
     "precioOriginal": 0,
@@ -2767,10 +2767,10 @@
   },
   {
     "id": 1784571782777,
-    "nombre": "​🔒 Sistema de Seguridad ZOSI de 8 Canales con DVR 5MP y Disco Duro de 1TB",
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784571781169.webp",
+    "nombre": "​🔒 Sistema de Seguridad Zosi de 8 Canales Con Dvr 5MP y Disco Duro de 1TB",
+    "imagen": "https://tiendamax.org/imagenes/img_1784571781169.webp",
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784571781169.webp"
+      "https://tiendamax.org/imagenes/img_1784571781169.webp"
     ],
     "precioActual": 420,
     "precioOriginal": 0,
