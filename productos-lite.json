@@ -940,7 +940,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1778384646214_ext.webp",
     "categoria": "WIFI",
     "subcategoria": "ACCESORIOS",
-    "stock": 0,
+    "stock": 13,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -2006,7 +2006,7 @@
     "precioActual": 80,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 0,
+    "stock": 1,
     "comision": 10,
     "comisionMoneda": "USD",
     "categoria": "WIFI",
@@ -2023,33 +2023,6 @@
     "nombreNormalizadoAt": "2026-06-27T12:16:34.731Z",
     "seoTitle": "ROUTER DE DOBLE BANDA ARCHER AX1450 en Cuba | TiendaMax",
     "seoDescription": "El router de doble banda Archer AX1450 está equipado con: - Tecnología inalámbrica Wi-Fi 6 para velocidades más rápidas. - Mayor capacidad y reducción de…"
-  },
-  {
-    "id": 1782439189958,
-    "nombre": "​🌐 MINI Repetidor Wi-fi (300 Mbps)",
-    "imagen": "https://tiendamax.org/imagenes/img_1782439187376_c85bdf.webp",
-    "imagenes": [
-      "https://tiendamax.org/imagenes/img_1782439187376_c85bdf.webp"
-    ],
-    "precioActual": 20,
-    "precioOriginal": 0,
-    "descuento": 0,
-    "stock": 0,
-    "comision": 1500,
-    "comisionMoneda": "MN",
-    "categoria": "WIFI",
-    "subcategoria": "ACCESORIOS",
-    "masVendido": false,
-    "usado": false,
-    "garantia": "",
-    "devolucion": false,
-    "specs": [
-      "​📶 Repetidor Wi-Fi",
-      "​🚀 300 Mbps"
-    ],
-    "fechaAgregado": "2026-06-26T01:59:49.958Z",
-    "seoTitle": "REPETIDOR WIFI 5 en Cuba | TiendaMax",
-    "seoDescription": "¡Lleva la mejor señal a cualquier rincón de tu casa con el REPETIDOR WIFI 5! Mejora la cobertura sin complicaciones y disfruta de internet rápido y…"
   },
   {
     "id": 1782439428159,
