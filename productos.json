@@ -978,7 +978,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1778384646214_ext.webp",
     "categoria": "WIFI",
     "subcategoria": "ACCESORIOS",
-    "stock": 0,
+    "stock": 13,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -2091,7 +2091,7 @@
     "precioActual": 80,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 0,
+    "stock": 1,
     "comision": 10,
     "comisionMoneda": "USD",
     "categoria": "WIFI",
@@ -2109,34 +2109,6 @@
     "seoTitle": "ROUTER DE DOBLE BANDA ARCHER AX1450 en Cuba | TiendaMax",
     "seoDescription": "El router de doble banda Archer AX1450 está equipado con: - Tecnología inalámbrica Wi-Fi 6 para velocidades más rápidas. - Mayor capacidad y reducción de…",
     "descripcion": "Router de alta eficiencia con tecnología Wi-Fi 6, ideal para modernizar tu conexión, aumentar la estabilidad en entornos con muchos dispositivos y reducir la latencia al mínimo.\n​Ficha Técnica:\n​Velocidad: 🚀 Velocidad combinada de hasta 1450 Mbps (1201 Mbps en 5GHz + 300 Mbps en 2.4GHz).\n​Puertos: 🔌 Puertos WAN y LAN Gigabit para aprovechar al máximo tu conexión a internet por cable.\n​Tecnología: ⚙️ Wi-Fi 6 (802.11ax) con OFDMA y MU-MIMO para gestionar mejor el tráfico de múltiples dispositivos.\n​Cobertura: 📡 4 antenas de alto rendimiento con Beamforming para una señal más fuerte y estable.\n​Uso: 🏡 Ideal para gaming, streaming de video de alta calidad y hogares inteligentes conectados.\n​Especificaciones (Specs):\n​Estándar: Wi-Fi 6 (802.11ax).\n​Seguridad: Encriptación WPA3 para una protección robusta de tu red.\n​Modos de operación: Router, Punto de Acceso (AP).\n​Gestión: Configuración sencilla mediante la app TP-Link Tether.\n​Ventaja clave: Mayor capacidad de dispositivos simultáneos comparado con la generación anterior (AC)."
-  },
-  {
-    "id": 1782439189958,
-    "nombre": "​🌐 MINI Repetidor Wi-fi (300 Mbps)",
-    "imagen": "https://tiendamax.org/imagenes/img_1782439187376_c85bdf.webp",
-    "imagenes": [
-      "https://tiendamax.org/imagenes/img_1782439187376_c85bdf.webp"
-    ],
-    "precioActual": 20,
-    "precioOriginal": 0,
-    "descuento": 0,
-    "stock": 0,
-    "comision": 1500,
-    "comisionMoneda": "MN",
-    "categoria": "WIFI",
-    "subcategoria": "ACCESORIOS",
-    "masVendido": false,
-    "usado": false,
-    "garantia": "",
-    "devolucion": false,
-    "specs": [
-      "​📶 Repetidor Wi-Fi",
-      "​🚀 300 Mbps"
-    ],
-    "fechaAgregado": "2026-06-26T01:59:49.958Z",
-    "seoTitle": "REPETIDOR WIFI 5 en Cuba | TiendaMax",
-    "seoDescription": "¡Lleva la mejor señal a cualquier rincón de tu casa con el REPETIDOR WIFI 5! Mejora la cobertura sin complicaciones y disfruta de internet rápido y…",
-    "descripcion": "Solución económica y práctica para ampliar el alcance de tu red inalámbrica, llevando la señal a habitaciones o áreas donde el router principal no llega con potencia suficiente.\n​Ficha Técnica:\n​Velocidad: 🚀 Transferencia inalámbrica de hasta 300 Mbps.\n​Compatibilidad: ⚙️ Soporta estándares b/g/n para mayor versatilidad.\n​Configuración: 🛠️ Instalación rápida mediante botón WPS o interfaz web sencilla.\n​Diseño: 🔌 Formato compacto \"Plug & Play\" que se conecta directamente al tomacorriente.\n​Conectividad: 🔗 Incluye puerto Ethernet integrado para conectar dispositivos por cable si es necesario.\n​Especificaciones (Specs):\n​Tipo: Extensor de rango / Repetidor inalámbrico.\n​Frecuencia: Banda estándar de 2.4GHz.\n​Seguridad: Soporta cifrado para proteger la red extendida.\n​Versatilidad: Diseño adaptable a diferentes tipos de enchufes (US/EU/UK/AU).\n​Uso: Ideal para hogares pequeños o medianos que necesitan mejorar la cobertura de navegación básica (browsing, redes sociales, streaming ligero)."
   },
   {
     "id": 1782439428159,
