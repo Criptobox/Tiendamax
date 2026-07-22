@@ -2877,5 +2877,32 @@
     ],
     "fechaAgregado": "2026-07-20T18:23:02.778Z",
     "descripcion": "Sistema completo de videovigilancia diseñado para ofrecer máxima protección en el hogar o negocio. Incluye un DVR de 8 canales con capacidad de 5MP y un conjunto de 8 cámaras de alta definición, garantizando un monitoreo detallado, grabación continua y almacenamiento seguro gracias a su disco duro de 1TB integrado.\n​Ficha Técnica:\n​Canales y Compatibilidad: 📹 DVR de 8 canales compatible perfectamente con cámaras ZOSI para una integración óptima del sistema.\n​Resolución: 📺 Resolución HD de 2MP (1080p) en las cámaras para obtener imágenes nítidas y detalladas.\n​Rendimiento del Grabador: ⚡ DVR Lite con capacidad de 5MP que permite una gestión de grabación superior.\n​Almacenamiento: 💾 Incluye disco duro de 1TB para almacenar horas de grabación continua sin interrupciones.\n​Modos de Operación: 🛡️ Grabación 24/7 combinada con tecnología de detección de movimiento para mayor seguridad y eficiencia.\n​Alimentación: 🔌 Alimentación por USB que facilita la instalación y puesta en marcha del equipo.\n​Especificaciones (Specs):\n​Marca: ZOSI.\n​Tipo: Sistema de seguridad con DVR y cámaras de vigilancia.\n​Capacidad del DVR: 8 canales / 5MP Lite.\n​Almacenamiento: 1TB de disco duro incluido."
+  },
+  {
+    "id": 1784732614444,
+    "nombre": "🛜 Router Wi-Fi 6 AX1800 ASUS RT-AX1800S",
+    "descripcion": "Router inalámbrico con tecnología Wi-Fi 6 de alta eficiencia, diseñado para proporcionar conexiones estables, menor latencia y gran velocidad en entornos con alta demanda de dispositivos conectados. Incorpora cuatro antenas externas y puertos Gigabit para un rendimiento de red óptimo.\n​Ficha Técnica:\n​Tecnología Inalámbrica: 🌐 Wi-Fi 6 (802.11ax) de doble banda con velocidades combinadas de hasta 1800 Mbps para una navegación fluida.\n​Cobertura y Antenas: 📶 Cuatro antenas externas orientables diseñadas para expandir la cobertura de señal en todo el espacio.\n​Capacidad de Conexión: ⚡ Tecnologías OFDMA y MU-MIMO para gestionar múltiples dispositivos conectados de forma simultánea sin pérdida de velocidad.\n​Conectividad Física: 🔌 Puertos Gigabit Ethernet para conexiones por cable de alta velocidad con máxima estabilidad.\n​Especificaciones (Specs):\n​Marca: ASUS.\n​Modelo: RT-AX1800S.\n​Tipo: Router Wi-Fi 6 AX1800 de doble banda.\n​Uso: Enrutamiento y distribución de red de alta velocidad para el hogar u oficina.",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784732612977.webp",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784732612977.webp"
+    ],
+    "precioActual": 150,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 10,
+    "comision": 10,
+    "comisionMoneda": "USD",
+    "categoria": "WIFI",
+    "subcategoria": "ROUTERS",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "specs": [
+      "​⚡ AX1800 Wi-Fi 6",
+      "​📶 Doble Banda 5 GHz / 2.4 GHz",
+      "​🔌 Puertos Gigabit"
+    ],
+    "fechaAgregado": "2026-07-22T15:03:34.445Z"
   }
 ]
