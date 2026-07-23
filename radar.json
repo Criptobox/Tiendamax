@@ -1,6 +1,6 @@
 {
-  "actualizado": "2026-07-22T12:25:16.023321+00:00",
-  "fecha": "2026-07-22",
+  "actualizado": "2026-07-23T12:24:04.389286+00:00",
+  "fecha": "2026-07-23",
   "fuentes": [
     "revolico",
     "porlalivre",
@@ -9,7 +9,7 @@
   "resumen": {
     "vigilados": 3,
     "encimaMercado": 0,
-    "bajadasComp": 0,
+    "bajadasComp": 1,
     "sinDatos": 0
   },
   "productos": [
@@ -19,10 +19,10 @@
       "tuPrecio": 30.0,
       "mercado": {
         "min": 20.0,
-        "mediana": 42.5,
-        "n": 14
+        "mediana": 39.99,
+        "n": 15
       },
-      "deltaAyerMediana": 0.0,
+      "deltaAyerMediana": -2.51,
       "estado": "competitivo",
       "sugerencia": {
         "texto": "Precio competitivo respecto al mercado"
@@ -39,6 +39,10 @@
         {
           "fecha": "2026-07-22",
           "mediana": 42.5
+        },
+        {
+          "fecha": "2026-07-23",
+          "mediana": 39.99
         }
       ],
       "muestras": [
@@ -72,16 +76,16 @@
         },
         {
           "fuente": "revolico",
-          "titulo": "39.99 USD Tp-Link Switch Gigabit 8 puertos",
-          "precio": 39.99,
-          "url": "https://www.revolico.com/item/tp-link-switch-gigabit-8-puertos-56263944",
+          "titulo": "30 USD Switch Gigabit de 8 Puertos Ethernet [30]",
+          "precio": 30.0,
+          "url": "https://www.revolico.com/item/switch-gigabit-de-8-puertos-ethernet-30-56424711",
           "dias": null
         },
         {
           "fuente": "revolico",
-          "titulo": "39.99 USD TP-Link Switch Gigabit 8 Puertos",
-          "precio": 39.99,
-          "url": "https://www.revolico.com/item/tp-link-switch-gigabit-8-puertos-55768231",
+          "titulo": "30 USD 🌐SWITCH ETHERNET 8 PUERTOS GIGABIT 🌐E01 30 usd",
+          "precio": 30.0,
+          "url": "https://www.revolico.com/item/switch-ethernet-8-puertos-gigabit-e01-30-usd-56427387",
           "dias": null
         }
       ]
@@ -102,10 +106,6 @@
       },
       "historial": [
         {
-          "fecha": "2026-07-06",
-          "mediana": 25.0
-        },
-        {
           "fecha": "2026-07-07",
           "mediana": 25.0
         },
@@ -155,6 +155,10 @@
         },
         {
           "fecha": "2026-07-22",
+          "mediana": 25.0
+        },
+        {
+          "fecha": "2026-07-23",
           "mediana": 25.0
         }
       ],
@@ -175,7 +179,7 @@
       "mercado": {
         "min": 70.0,
         "mediana": 90.0,
-        "n": 13
+        "n": 14
       },
       "deltaAyerMediana": 0.0,
       "estado": "competitivo",
@@ -183,10 +187,6 @@
         "texto": "Precio competitivo respecto al mercado"
       },
       "historial": [
-        {
-          "fecha": "2026-07-06",
-          "mediana": 90.0
-        },
         {
           "fecha": "2026-07-07",
           "mediana": 90.0
@@ -237,6 +237,10 @@
         },
         {
           "fecha": "2026-07-22",
+          "mediana": 90.0
+        },
+        {
+          "fecha": "2026-07-23",
           "mediana": 90.0
         }
       ],
@@ -264,23 +268,23 @@
         },
         {
           "fuente": "revolico",
-          "titulo": "90 USD Antorcha para soldadura TIG",
+          "titulo": "90 USD antorcha para soldadura TIG.  emilivariedad 💯",
           "precio": 90.0,
-          "url": "https://www.revolico.com/item/antorcha-para-soldadura-tig-56394337",
+          "url": "https://www.revolico.com/item/antorcha-para-soldadura-tig-emilivariedad-56429281",
           "dias": null
         },
         {
           "fuente": "revolico",
-          "titulo": "90 USD Antorcha para Soldadura TIG – Alta Precisión. Interesados al 53998989 o 54981957",
+          "titulo": "90 USD Antorcha para soldadura TIG:",
           "precio": 90.0,
-          "url": "https://www.revolico.com/item/antorcha-para-soldadura-tig-alta-precision-interesados-al-53998989-o-54981957-56272365",
+          "url": "https://www.revolico.com/item/antorcha-para-soldadura-tig-56427417",
           "dias": null
         },
         {
           "fuente": "revolico",
           "titulo": "90 USD Antorcha para soldadura TIG",
           "precio": 90.0,
-          "url": "https://www.revolico.com/item/antorcha-para-soldadura-tig-56062753",
+          "url": "https://www.revolico.com/item/antorcha-para-soldadura-tig-56425444",
           "dias": null
         }
       ]
