@@ -2958,5 +2958,32 @@
       "📟 Pantalla LCD y Puertos USB"
     ],
     "fechaAgregado": "2026-07-23T16:20:16.101Z"
+  },
+  {
+    "id": 1784825579392,
+    "nombre": "​🔒 Cámara de Seguridad Solar Doble Lente QW8-WIFI",
+    "descripcion": "Cámara de vigilancia exterior con sistema de doble lente que permite cubrir dos campos de visión diferentes al mismo tiempo. Funciona de manera completamente inalámbrica mediante conectividad Wi-Fi y se alimenta con energía solar a través de su panel integrado, evitando instalaciones eléctricas complejas.\n​Ficha Técnica:\n​Óptica y Visualización: 📹 Dos lentes independientes integrados en el mismo cuerpo para monitorear dos áreas distintas de forma simultánea desde el celular.\n​Alimentación y Batería: ☀️ Panel solar de alta eficiencia para la recarga autónoma del sistema, garantizando funcionamiento continuo en exteriores.\n​Movimiento y Cobertura: 🔄 Control de giro motorizado (PTZ) para ajustar el ángulo de visión de la cámara de manera remota y reducir puntos ciegos.\n​Conectividad Inalámbrica: 🌐 Conexión a red Wi-Fi para visualización en tiempo real, control de funciones y recepción de alertas de movimiento.\n​Especificaciones (Specs):\n​Modelo: QW8-WIFI.\n​Tipo: Cámara de seguridad solar PTZ de doble lente.\n​Uso: Vigilancia exterior residencial o comercial.",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784825577280.webp",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784825577280.webp"
+    ],
+    "precioActual": 100,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 7,
+    "comision": 10,
+    "comisionMoneda": "USD",
+    "categoria": "SEGURIDAD",
+    "subcategoria": "CÁMARAS",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "specs": [
+      "​📹 Doble Lente Simultáneo",
+      "​☀️ Energía Solar / Panel Incluido ​",
+      "🌐 Conexión Wi-Fi PTZ"
+    ],
+    "fechaAgregado": "2026-07-23T16:52:59.395Z"
   }
 ]
