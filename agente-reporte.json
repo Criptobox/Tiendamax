@@ -1,71 +1,11 @@
 {
-  "generado": "2026-07-22T11:00:08.015542+00:00",
-  "productos": 115,
-  "urgentes": 12,
-  "advertencias": 39,
-  "info": 9,
-  "resumen": "Anoche revisé tus 115 productos y encontré 12 urgente(s), 39 advertencia(s), 9 de info.",
+  "generado": "2026-07-23T11:02:11.305477+00:00",
+  "productos": 116,
+  "urgentes": 0,
+  "advertencias": 36,
+  "info": 11,
+  "resumen": "Anoche revisé tus 116 productos y encontré 36 advertencia(s), 11 de info.",
   "detalle": [
-    {
-      "tipo": "nombre",
-      "nombre": "​🔒 Kit de Sistema de Alarma de Seguridad Inalámbrico con Panel Táctil, Sensores y Llaveros RFID",
-      "detalle": "→ ​🔒 KIT de Sistema de Alarma de Seguridad Inalámbrico Con Panel Táctil, Sensores y Llaveros Rfid"
-    },
-    {
-      "tipo": "nombre",
-      "nombre": "​🔒 Cerradura de Puerta Inteligente Biométrica con Lector de Huellas y Teclado Numérico",
-      "detalle": "→ ​🔒 Cerradura de Puerta Inteligente Biométrica Con Lector de Huellas y Teclado Numérico"
-    },
-    {
-      "tipo": "nombre",
-      "nombre": "​🔒 Kit de Cámaras de Seguridad ZOSI con DVR 8 Canales",
-      "detalle": "→ ​🔒 KIT de Cámaras de Seguridad Zosi Con Dvr 8 Canales"
-    },
-    {
-      "tipo": "nombre",
-      "nombre": "​🔒 Timbre de Puerta Inteligente con Cámara HD e Intercomunicador WiFi",
-      "detalle": "→ ​🔒 Timbre de Puerta Inteligente Con Cámara HD e Intercomunicador WiFi"
-    },
-    {
-      "tipo": "nombre",
-      "nombre": "​🔒 Cámara de Seguridad Bullet ZOSI",
-      "detalle": "→ ​🔒 Cámara de Seguridad Bullet Zosi"
-    },
-    {
-      "tipo": "nombre",
-      "nombre": "​🎶 Audífonos Inalámbricos TWS",
-      "detalle": "→ ​🎶 Audífonos Inalámbricos Tws"
-    },
-    {
-      "tipo": "nombre",
-      "nombre": "​🏊‍♂️ Gorro de Buceo / Capucha de Neopreno GIANSO 3mm",
-      "detalle": "→ ​🏊‍♂️ Gorro de Buceo / Capucha de Neopreno Gianso 3MM"
-    },
-    {
-      "tipo": "nombre",
-      "nombre": "​🎮 Audífonos Diademas Gaming Inalámbricos NUBWO",
-      "detalle": "→ ​🎮 Audífonos Diademas Gaming Inalámbricos Nubwo"
-    },
-    {
-      "tipo": "nombre",
-      "nombre": "​🔒 Cámara de Seguridad PTZ WiFi Exterior con Doble Antena",
-      "detalle": "→ ​🔒 Cámara de Seguridad Ptz WiFi Exterior Con Doble Antena"
-    },
-    {
-      "tipo": "nombre",
-      "nombre": "​📡 Router Inalámbrico WAVLINK AC1200 Dual Band",
-      "detalle": "→ ​📡 Router Inalámbrico Wavlink AC1200 Dual Band"
-    },
-    {
-      "tipo": "nombre",
-      "nombre": "​🔌 Controlador de Carga Solar MPPT 100A AUTO",
-      "detalle": "→ ​🔌 Controlador de Carga Solar MPPT 100A Auto"
-    },
-    {
-      "tipo": "nombre",
-      "nombre": "​🔒 Sistema de Seguridad ZOSI de 8 Canales con DVR 5MP y Disco Duro de 1TB",
-      "detalle": "→ ​🔒 Sistema de Seguridad Zosi de 8 Canales Con Dvr 5MP y Disco Duro de 1TB"
-    },
     {
       "tipo": "agotado",
       "nombre": "Batería Must Tipo LIFEPO4",
@@ -148,11 +88,6 @@
     },
     {
       "tipo": "agotado",
-      "nombre": "​🌐 Adaptador POE Ubiquiti (24V - 0.3A)",
-      "detalle": "agotado (stock 0)"
-    },
-    {
-      "tipo": "agotado",
       "nombre": "Cargador Portátil Solar",
       "detalle": "agotado (stock 0)"
     },
@@ -228,16 +163,6 @@
     },
     {
       "tipo": "agotado",
-      "nombre": "​🌐 Router Tp-link Archer AX1450 (Wi-fi 6)",
-      "detalle": "agotado (stock 0)"
-    },
-    {
-      "tipo": "agotado",
-      "nombre": "​🌐 MINI Repetidor Wi-fi (300 Mbps)",
-      "detalle": "agotado (stock 0)"
-    },
-    {
-      "tipo": "agotado",
       "nombre": "Panel Decorativo de Hojas Artificiales",
       "detalle": "agotado (stock 0)"
     },
@@ -283,6 +208,16 @@
     },
     {
       "tipo": "stock_bajo",
+      "nombre": "📟 Inversor Solar Must PV15-1524 lv",
+      "detalle": "quedan 1"
+    },
+    {
+      "tipo": "stock_bajo",
+      "nombre": "​🌐 Router Tp-link Archer AX1450 (Wi-fi 6)",
+      "detalle": "quedan 1"
+    },
+    {
+      "tipo": "stock_bajo",
       "nombre": "​⚡inversor de Corriente Tataliken 4000W (24V)",
       "detalle": "quedan 1"
     },
@@ -303,7 +238,7 @@
     },
     {
       "tipo": "stock_bajo",
-      "nombre": "​🔒 Sistema de Seguridad ZOSI de 8 Canales con DVR 5MP y Disco Duro de 1TB",
+      "nombre": "​🔒 Sistema de Seguridad Zosi de 8 Canales Con Dvr 5MP y Disco Duro de 1TB",
       "detalle": "quedan 3"
     }
   ]
