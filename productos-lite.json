@@ -2688,10 +2688,10 @@
   },
   {
     "id": 1784569498967,
-    "nombre": "​🔌 Controlador de Carga Solar MPPT 100A Auto",
-    "imagen": "https://tiendamax.org/imagenes/img_1784569497721.webp",
+    "nombre": "​☀️ Controlador de Carga Solar MPPT 100A",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784825170677.webp",
     "imagenes": [
-      "https://tiendamax.org/imagenes/img_1784569497721.webp"
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784825170677.webp"
     ],
     "precioActual": 80,
     "precioOriginal": 0,
@@ -2706,9 +2706,9 @@
     "garantia": "",
     "devolucion": false,
     "specs": [
-      "​☀️ Optimización Solar de Máxima Eficiencia ​",
-      "⚡ Control Inteligente de Carga Multivoltaje ​",
-      "🛡️ Gestión Segura y Automatizada de Energía"
+      "​⚡ 100A MPPT Alta Potencia ​",
+      "🔋 12V / 24V / 36V / 48V Auto",
+      "​📟 Pantalla LCD y Puertos USB"
     ],
     "fechaAgregado": "2026-07-20T17:44:58.967Z"
   },
