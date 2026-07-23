@@ -1898,7 +1898,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1783836465146.webp",
     "categoria": "ENERGIA",
     "subcategoria": "INVERSORES",
-    "stock": 1,
+    "stock": 0,
     "masVendido": true,
     "usado": false,
     "garantia": "​🔄 Garantía de Compra: Para tu total tranquilidad, ofrezco 15 días de garantía para que puedas instalarlo y verificar su correcto funcionamiento. (La garantía cubre defectos de fábrica del equipo, no aplica por mala instalación o errores en el cableado).",
@@ -2591,7 +2591,7 @@
     "precioActual": 140,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 10,
+    "stock": 4,
     "comision": 10,
     "comisionMoneda": "USD",
     "categoria": "WIFI",
@@ -2693,7 +2693,7 @@
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1784569497721.webp"
     ],
-    "precioActual": 8,
+    "precioActual": 80,
     "precioOriginal": 0,
     "descuento": 0,
     "stock": 6,
@@ -2815,5 +2815,31 @@
       "​🔌 Puertos Gigabit / USB"
     ],
     "fechaAgregado": "2026-07-22T15:05:15.417Z"
+  },
+  {
+    "id": 1784823616101,
+    "nombre": "☀️ Controlador de Carga Solar MPPT 150A",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784823614881.webp",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784823614881.webp"
+    ],
+    "precioActual": 90,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 6,
+    "comision": 5,
+    "comisionMoneda": "USD",
+    "categoria": "ENERGIA",
+    "subcategoria": "CONTROLADORES SOLARES",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "specs": [
+      "​⚡ 150A MPPT Alta Potencia",
+      "​🔋 12V / 24V / 36V / 48V Auto ​",
+      "📟 Pantalla LCD y Puertos USB"
+    ],
+    "fechaAgregado": "2026-07-23T16:20:16.101Z"
   }
 ]
