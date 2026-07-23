@@ -1978,7 +1978,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1783836465146.webp",
     "categoria": "ENERGIA",
     "subcategoria": "INVERSORES",
-    "stock": 1,
+    "stock": 0,
     "masVendido": true,
     "usado": false,
     "garantia": "​🔄 Garantía de Compra: Para tu total tranquilidad, ofrezco 15 días de garantía para que puedas instalarlo y verificar su correcto funcionamiento. (La garantía cubre defectos de fábrica del equipo, no aplica por mala instalación o errores en el cableado).",
@@ -2698,7 +2698,7 @@
     "precioActual": 140,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 10,
+    "stock": 4,
     "comision": 10,
     "comisionMoneda": "USD",
     "categoria": "WIFI",
@@ -2804,7 +2804,7 @@
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1784569497721.webp"
     ],
-    "precioActual": 8,
+    "precioActual": 80,
     "precioOriginal": 0,
     "descuento": 0,
     "stock": 6,
@@ -2931,5 +2931,32 @@
     ],
     "fechaAgregado": "2026-07-22T15:05:15.417Z",
     "descripcion": "Router inalámbrico de última generación con tecnología Wi-Fi 6, diseñado para ofrecer conexiones de alta velocidad, menor latencia y mayor capacidad en hogares u oficinas con múltiples dispositivos conectados simultáneamente. Cuenta con cuatro antenas externas de alta ganancia y puertos Gigabit para aprovechar al máximo el rendimiento de tu proveedor de internet.\n​Ficha Técnica:\n​Tecnología Inalámbrica: 🌐 Wi-Fi 6 (802.11ax) de doble banda que alcanza velocidades combinadas de hasta 3000 Mbps (2402 Mbps en 5 GHz y 574 Mbps en 2.4 GHz).\n​Cobertura y Antenas: 📶 Cuatro antenas externas de alta ganancia equipadas con tecnología Beamforming para concentrar la señal hacia los dispositivos y eliminar zonas muertas.\n​Capacidad de Conexión: ⚡ Tecnologías OFDMA y MU-MIMO integradas para cuatriplicar la capacidad de transmisión y conectar decenas de equipos sin pérdida de rendimiento.\n​Puertos y Conectividad Física: 🔌 Puertos Ethernet Gigabit completos (1 puerto WAN y 4 puertos LAN) para conexiones por cable ultrarrápidas, además de un puerto USB integrado para compartir archivos en red.\n​Especificaciones (Specs):\n​Marca: TP-Link.\n​Modelo: Archer AX55.\n​Tipo: Router Wi-Fi 6 AX3000 de doble banda.\n​Uso: Conectividad y enrutamiento de red de alta velocidad para hogar u oficina."
+  },
+  {
+    "id": 1784823616101,
+    "nombre": "☀️ Controlador de Carga Solar MPPT 150A",
+    "descripcion": "Controlador de carga solar avanzado con tecnología MPPT, diseñado para optimizar al máximo la captación de energía de los paneles solares. Cuenta con reconocimiento automático de voltaje, múltiples modos de funcionamiento y una pantalla LCD integrada para el monitoreo completo de la instalación fotovoltaica.\n​Ficha Técnica:\n​Tecnología de Carga: ⚡ Sistema MPPT avanzado con una eficiencia de seguimiento de hasta el 99,5% para un rendimiento energético superior.\n​Compatibilidad de Baterías: 🔋 Soporta sistemas de 12V, 24V, 36V y 48V con detección automática, compatible con baterías SEAL, GEL y Flooded.\n​Monitoreo y Control: 📟 Pantalla LCD retroiluminada para visualizar parámetros en tiempo real como voltaje, corriente y temperatura, además de 7 modos de operación configurables.\n​Conectividad y Puertos: 🔌 Incluye terminales robustos para paneles, baterías y carga, junto con 2 puertos USB de 5V integrados.\n​Especificaciones (Specs):\n​Tipo: Controlador de carga solar MPPT.\n​Corriente Máxima de Carga: 150A.\n​Voltaje del Sistema: 12V / 24V / 36V / 48V (Auto).\n​Uso: Sistemas solares residenciales y de alta demanda energética.",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784823614881.webp",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784823614881.webp"
+    ],
+    "precioActual": 90,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 6,
+    "comision": 5,
+    "comisionMoneda": "USD",
+    "categoria": "ENERGIA",
+    "subcategoria": "CONTROLADORES SOLARES",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "specs": [
+      "​⚡ 150A MPPT Alta Potencia",
+      "​🔋 12V / 24V / 36V / 48V Auto ​",
+      "📟 Pantalla LCD y Puertos USB"
+    ],
+    "fechaAgregado": "2026-07-23T16:20:16.101Z"
   }
 ]
