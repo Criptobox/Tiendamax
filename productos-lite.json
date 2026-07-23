@@ -2841,5 +2841,31 @@
       "📟 Pantalla LCD y Puertos USB"
     ],
     "fechaAgregado": "2026-07-23T16:20:16.101Z"
+  },
+  {
+    "id": 1784825579392,
+    "nombre": "​🔒 Cámara de Seguridad Solar Doble Lente QW8-WIFI",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784825577280.webp",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784825577280.webp"
+    ],
+    "precioActual": 100,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 7,
+    "comision": 10,
+    "comisionMoneda": "USD",
+    "categoria": "SEGURIDAD",
+    "subcategoria": "CÁMARAS",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "specs": [
+      "​📹 Doble Lente Simultáneo",
+      "​☀️ Energía Solar / Panel Incluido ​",
+      "🌐 Conexión Wi-Fi PTZ"
+    ],
+    "fechaAgregado": "2026-07-23T16:52:59.395Z"
   }
 ]
