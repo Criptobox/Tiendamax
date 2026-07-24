@@ -246,7 +246,7 @@
     <noscript><link rel="stylesheet" href="css/fonts.css?v=67235440"></noscript>
 
     <!-- Preload del bundle JS del núcleo (generado por scripts/build_js_bundle.py) -->
-    <link rel="preload" href="js/tm-bundle.js?v=0778c3ba" as="script">
+    <link rel="preload" href="js/tm-bundle.js?v=0dc589af" as="script">
 
     <!-- Preload del catálogo: la foto hero (fetchpriority=high) no puede pedirse
          hasta que este JSON responda y arme el <img>; sin este preload, el
@@ -1478,7 +1478,14 @@
     <!-- ===== TiendaMax modularizado (reemplaza script.js) ===== -->
     <!-- Bundle único (config→data→state→admin→product→catalog→init→ui→toast→iife→patches),
          generado por scripts/build_js_bundle.py a partir de js/src/*.src.js -->
-    <script src="js/tm-bundle.js?v=0778c3ba" defer></script>
+    <script src="js/tm-bundle.js?v=0dc589af" defer></script>
+
+    <!-- Agente de chat: separado del bundle (62 KB min) porque no hace falta
+         para el primer render del catálogo. Carga con su propio <script defer>
+         para no engordar el parseo del hilo principal en la carga inicial.
+         Sigue siendo defer y va DESPUÉS del bundle, así conserva el orden de
+         dependencias (usa globals del bundle: productos, agregarAlCarrito…). -->
+    <script src="js/tm-agent.js?v=7bd39134" defer></script>
 
     <script src="js/push-fix.js?v=7278889b" defer></script>
     <script src="js/subcategorias.js?v=fa21ab00" defer></script>
