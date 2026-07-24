@@ -3624,6 +3624,7 @@ async function pubCatUpdatePreview(){
         <button type="button" class="pub-act estado pub-cat-lote-btn" onclick="pubCatCartelesLote('','share')">📤 Compartir todas</button>
         <button type="button" class="pub-act ghost pub-cat-lote-btn" onclick="pubCatCartelesLote('','download')">⬇️ Descargar todas</button>
       </div>
+      <div id="pub-cat-lote-bar" style="display:none;height:8px;border-radius:6px;background:rgba(255,255,255,.08);overflow:hidden;margin-top:10px"><div id="pub-cat-lote-fill" style="height:100%;width:0%;background:linear-gradient(90deg,#FF6B1A,#e8501e);transition:width .25s;border-radius:6px"></div></div>
       <div id="pub-cat-lote-info" style="font-size:12px;color:var(--muted);text-align:center;margin-top:8px;min-height:16px"></div>
     </div>`;
 }
@@ -3735,7 +3736,14 @@ async function pubCatGenCarteles(cat, onProgress){
   }
   return files;
 }
-function _pubLoteProgress(txt){ const el=$('#pub-cat-lote-info'); if(el) el.textContent=txt||''; }
+function _pubLoteProgress(txt, cur, total){
+  const el=$('#pub-cat-lote-info'); if(el) el.textContent=txt||'';
+  const bar=$('#pub-cat-lote-bar'), fill=$('#pub-cat-lote-fill');
+  if(bar && fill){
+    if(cur!=null && total>0){ bar.style.display='block'; fill.style.width=Math.round(cur/total*100)+'%'; }
+    else { bar.style.display='none'; fill.style.width='0%'; }
+  }
+}
 async function _pubDownloadFiles(files){
   for(let i=0;i<files.length;i++){
     const url=URL.createObjectURL(files[i]);
@@ -3749,9 +3757,10 @@ async function pubCatCartelesLote(cat, modo){ // modo: 'share' | 'download'
   const total=pubCatProds(cat).length;
   if(!total){ showToast('Sin productos con stock en esta categoría'); return; }
   const btns=document.querySelectorAll('.pub-cat-lote-btn'); btns.forEach(b=>b.disabled=true);
-  _pubLoteProgress('⏳ Generando imágenes…');
+  const nGen=Math.min(total, PUB_CAT_LOTE_MAX);
+  _pubLoteProgress('⏳ Generando imágenes… 0/'+nGen, 0, nGen);
   try{
-    const files=await pubCatGenCarteles(cat, (i,n)=>_pubLoteProgress('⏳ Generando '+i+'/'+n+'…'));
+    const files=await pubCatGenCarteles(cat, (i,n)=>_pubLoteProgress('⏳ Generando '+i+'/'+n+'…', i, n));
     if(!files.length){ _pubLoteProgress(''); showToast('❌ No se pudieron generar las imágenes'); return; }
     const extra = total>files.length ? ' (de '+total+', tope '+PUB_CAT_LOTE_MAX+')' : '';
     if(modo==='share'){
