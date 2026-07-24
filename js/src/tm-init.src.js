@@ -712,9 +712,20 @@ function renderHeroGaleria() {
     const card = document.getElementById('ndHeroCard3d');
     if (!card || typeof productos === 'undefined' || !Array.isArray(productos)) return;
 
-    // Productos: más vendidos con stock; si no hay, los primeros con stock
-    const masVendidos = productos.filter(p => (p.masVendido === true || p.masVendido === 'true') && p.stock > 0);
-    const lista = (masVendidos.length > 0 ? masVendidos : productos.filter(p => p.stock > 0)).slice(0, 6);
+    // Productos del héroe: primero los destacados (masVendido) con stock. Si
+    // quedan menos de 2 —p. ej. se agotaron los destacados— el carrusel no
+    // podría rotar (necesita ≥2), así que se rellena con otros productos en
+    // stock hasta 6 para que SIEMPRE gire. Los destacados quedan al frente.
+    const conStock = productos.filter(p => p.stock > 0);
+    const lista = conStock.filter(p => (p.masVendido === true || p.masVendido === 'true')).slice(0, 6);
+    if (lista.length < 2) {
+        const yaIds = new Set(lista.map(p => String(p.id)));
+        for (const p of conStock) {
+            if (yaIds.has(String(p.id))) continue;
+            lista.push(p);
+            if (lista.length >= 6) break;
+        }
+    }
     _ndHeroProds = lista;
 
     // Sin productos → deja el contenido estático y un fallback en el botón
