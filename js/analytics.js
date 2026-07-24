@@ -83,6 +83,17 @@ function _tmCanTrack(tipo, id) {
     return true;
 }
 
+// ── ¿Es el propio admin navegando el sitio? ─────────────
+// githubToken solo se guarda al configurar el panel admin (pegar el PAT en
+// Configuración) — ningún cliente lo tiene nunca. index.html y admin.html
+// comparten dominio/localStorage, así que si el admin entra a la tienda
+// pública desde el mismo navegador donde ya configuró el panel (típico:
+// su teléfono), esta marca ya está puesta. Se usa para no inflar vistas ni
+// clicks de WhatsApp con sus propias entradas de prueba.
+function _tmEsAdmin() {
+    try { return !!localStorage.getItem('githubToken'); } catch(e) { return false; }
+}
+
 // ── Registrar un evento (fire-and-forget) ───────────────
 // Read-modify-write sin transacción real: bajo tráfico concurrente en el
 // mismo producto, la regla de Firebase (".validate": newData == data + 1)
@@ -90,6 +101,7 @@ function _tmCanTrack(tipo, id) {
 // unas pocas veces con el valor fresco en vez de perder el incremento en
 // silencio (antes no se chequeaba r.ok del PUT).
 async function tmTrackEventoV2(tipo, id) {
+    if (_tmEsAdmin()) return;
     await _tmEnsureFirebaseConfig();
     const base = _tmRtdbUrl();
     if (!base || !id) return;
