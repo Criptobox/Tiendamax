@@ -33,12 +33,26 @@ jobs:
       - name: Generate WebP versions alongside originals
         run: |
           python3 - <<'PYEOF'
+          import json
           from pathlib import Path
           from PIL import Image
 
+          ROOT = Path('.')
           img_dir = Path('imagenes')
           exts = {'.jpg', '.jpeg', '.png'}
           count = 0
+          deleted = 0
+
+          # Texto donde puede vivir una referencia a la imagen original. Si el
+          # nombre del .jpg/.png aparece en alguno de estos archivos, NO se
+          # borra — se deja para que se corrija la referencia a mano (como
+          # el caso de img_1783837255248.jpg, producto Beat Boom F10).
+          referencias = ''
+          for nombre in ('productos.json', 'productos-lite.json', 'index.html', 'admin.html'):
+              p = ROOT / nombre
+              if p.exists():
+                  referencias += p.read_text(encoding='utf-8')
+
           for src in sorted(
               p for p in img_dir.iterdir()
               if p.suffix.lower() in exts and not p.name.startswith('.')
@@ -56,7 +70,16 @@ jobs:
                   orig = src.stat().st_size
                   print(f'+ {webp.name}: {size//1024}KB (vs {orig//1024}KB JPEG)')
                   count += 1
+
+              # El .webp ya existe (recién generado o de antes) — el original
+              # solo sirve de peso muerto salvo que algo lo referencie todavía.
+              if webp.exists() and src.name not in referencias:
+                  src.unlink()
+                  deleted += 1
+                  print(f'- {src.name}: borrado (sin referencias, ya existe {webp.name})')
+
           print(f'WebP generados/actualizados: {count}')
+          print(f'Originales huérfanos borrados: {deleted}')
           PYEOF
 
       - name: Commit changes

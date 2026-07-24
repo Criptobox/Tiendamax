@@ -8,7 +8,7 @@
 
 /* ── MESH BACKGROUND ── */
 .nd-mesh{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
-.nd-orb{position:absolute;border-radius:50%;filter:blur(100px)}
+.nd-orb{position:absolute;border-radius:50%;}
 .nd-o1{width:700px;height:700px;background:radial-gradient(circle,rgba(255,107,53,0.28),transparent 70%);top:-250px;left:-150px;animation:nd-od1 22s ease-in-out infinite}
 .nd-o2{width:500px;height:500px;background:radial-gradient(circle,rgba(255,159,67,0.20),transparent 70%);top:100px;right:-150px;animation:nd-od2 26s ease-in-out infinite}
 .nd-o3{width:450px;height:450px;background:radial-gradient(circle,rgba(167,139,250,0.15),transparent 70%);bottom:25%;left:35%;animation:nd-od3 19s ease-in-out infinite}
@@ -77,10 +77,10 @@ body.light-mode .nd-hero-dot.active{background:linear-gradient(90deg,#FF6B35,var
 .nd-cl{position:absolute;border-radius:24px}
 .nd-cl3{inset:0;transform:translate(28px,28px);background:linear-gradient(135deg,rgba(255,107,53,0.35),rgba(255,159,67,0.25));border:1px solid rgba(255,107,53,0.2)}
 .nd-cl2{inset:0;transform:translate(14px,14px);background:linear-gradient(135deg,rgba(255,107,53,0.55),rgba(232,80,30,0.45));border:1px solid rgba(255,107,53,0.3)}
-.nd-cl1{inset:0;overflow:hidden;background:linear-gradient(145deg,rgba(255,255,255,0.10),rgba(255,255,255,0.04));backdrop-filter:blur(24px) saturate(160%);-webkit-backdrop-filter:blur(24px) saturate(160%);border:1px solid rgba(255,255,255,0.14);border-top-color:rgba(255,255,255,0.22);box-shadow:0 20px 60px rgba(0,0,0,.5),0 4px 12px rgba(0,0,0,.3)}
+.nd-cl1{inset:0;overflow:hidden;background:linear-gradient(145deg,rgba(255,255,255,0.10),rgba(255,255,255,0.04));border:1px solid rgba(255,255,255,0.14);border-top-color:rgba(255,255,255,0.22);box-shadow:0 20px 60px rgba(0,0,0,.5),0 4px 12px rgba(0,0,0,.3);background:rgba(10,10,14,0.85)}
 body.light-mode .nd-cl3{background:linear-gradient(135deg,#FFD4C2,var(--coral));opacity:0.45;border:none}
 body.light-mode .nd-cl2{background:linear-gradient(135deg,var(--coral),#FF6B35);opacity:0.6;border:none}
-body.light-mode .nd-cl1{background:#fff;backdrop-filter:none;-webkit-backdrop-filter:none;border:none;box-shadow:0 20px 60px rgba(0,0,0,.15),0 4px 12px rgba(0,0,0,.08)}
+body.light-mode .nd-cl1{background:#fff;border:none;box-shadow:0 20px 60px rgba(0,0,0,.15),0 4px 12px rgba(0,0,0,.08);background:rgba(10,10,14,0.85)}
 .nd-card-img{width:100%;height:220px;display:flex;align-items:center;justify-content:center;font-size:90px;position:relative;overflow:hidden}.nd-card-img img{width:100%;height:100%;object-fit:cover;object-position:center}
 .nd-card-img::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 30% 30%,rgba(255,107,53,.12),transparent 60%)}
 .nd-rtext{font-size:12px;opacity:.65}
@@ -89,8 +89,8 @@ body.light-mode .nd-cl1{background:#fff;backdrop-filter:none;-webkit-backdrop-fi
 .nd-usd{font-size:12px;opacity:.6;margin-left:2px}
 .nd-btn-pedir{background:linear-gradient(135deg,#25D366,#128C7E);color:#fff !important;border:none;border-radius:100px;padding:10px 16px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;transition:transform var(--duration-standard) var(--ease-standard)}
 .nd-btn-pedir:hover{transform:scale(1.05)}
-.nd-fbadge{position:absolute;border-radius:14px;padding:9px 14px;display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600;white-space:nowrap;z-index:10;background:linear-gradient(145deg,rgba(255,255,255,0.10),rgba(255,255,255,0.04));backdrop-filter:blur(20px) saturate(140%);-webkit-backdrop-filter:blur(20px) saturate(140%);border:1px solid rgba(255,255,255,0.14);border-top-color:rgba(255,255,255,0.22);box-shadow:0 8px 24px rgba(0,0,0,.3),0 2px 6px rgba(0,0,0,.2)}
-body.light-mode .nd-fbadge{background:#fff;backdrop-filter:none;-webkit-backdrop-filter:none;border:none;box-shadow:0 8px 28px rgba(0,0,0,.12),0 2px 8px rgba(0,0,0,.06)}
+.nd-fbadge{position:absolute;border-radius:14px;padding:9px 14px;display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600;white-space:nowrap;z-index:10;background:linear-gradient(145deg,rgba(255,255,255,0.10),rgba(255,255,255,0.04));border:1px solid rgba(255,255,255,0.14);border-top-color:rgba(255,255,255,0.22);box-shadow:0 8px 24px rgba(0,0,0,.3),0 2px 6px rgba(0,0,0,.2);background:rgba(10,10,14,0.85)}
+body.light-mode .nd-fbadge{background:#fff;border:none;box-shadow:0 8px 28px rgba(0,0,0,.12),0 2px 8px rgba(0,0,0,.06);background:rgba(10,10,14,0.85)}
 .nd-bi{font-size:18px}
 .nd-bs{font-size:10px;font-weight:400;display:block;opacity:.7}
 .nd-fb1{top:-18px;left:-90px;animation:nd-fl1 4s ease-in-out infinite}
@@ -313,14 +313,13 @@ html body .categorias-home .categorias-grid .categoria-card:nth-child(3) .cat-ic
   font-size:56px !important;
   display:flex !important;align-items:center !important;justify-content:center !important;
   background:linear-gradient(145deg,rgba(70,50,20,.78),rgba(40,28,12,.85)) !important;
-  backdrop-filter:blur(14px) saturate(150%) !important;
-  -webkit-backdrop-filter:blur(14px) saturate(150%) !important;
+  
+  
   border:1px solid rgba(255,255,255,.16) !important;
   border-top-color:rgba(255,255,255,.26) !important;
   border-radius:26px !important;
   box-shadow:0 16px 38px rgba(0,0,0,.5),0 0 30px rgba(255,180,40,.18) !important;
-  opacity:1 !important;
-}
+  opacity:1 !important;background:rgba(10,10,14,0.85)}
 
 /* ── Tile 4 «Celulares»: el ícono asoma por el borde superior ── */
 html body .categorias-home .categorias-grid .categoria-card:nth-child(4){overflow:visible !important;z-index:2 !important}
@@ -427,11 +426,10 @@ body.light-mode .categorias-home .categorias-grid .skeleton-card{
 body:not(.light-mode) .mas-vendidos .producto-card,
 body:not(.light-mode) #productosGrid .producto-card{
   background:linear-gradient(145deg,rgba(255,255,255,.08),rgba(255,255,255,.03)) !important;
-  backdrop-filter:blur(24px) saturate(160%);-webkit-backdrop-filter:blur(24px) saturate(160%);
+  
   border:1px solid rgba(255,255,255,.10) !important;border-top-color:rgba(255,255,255,.20) !important;
   border-bottom-color:rgba(0,0,0,.2) !important;
-  box-shadow:0 4px 8px rgba(0,0,0,.4),0 16px 32px rgba(0,0,0,.5),0 40px 80px rgba(0,0,0,.35) !important;
-}
+  box-shadow:0 4px 8px rgba(0,0,0,.4),0 16px 32px rgba(0,0,0,.5),0 40px 80px rgba(0,0,0,.35) !important;background:rgba(10,10,14,0.85)}
 body:not(.light-mode) .mas-vendidos .producto-card:hover,
 body:not(.light-mode) #productosGrid .producto-card:hover{
   border-color:rgba(255,107,53,.35) !important;transform:translateY(-10px) scale(1.01) !important;
@@ -515,13 +513,13 @@ body.light-mode .producto-card .btn-pedir-card:hover{transform:translateY(-2px) 
 .nd-dtitle{font-size:clamp(26px,3vw,38px);font-weight:900;color:#fff;line-height:1.1;letter-spacing:-1.5px;margin-bottom:14px}
 .nd-dsub{font-size:16px;color:rgba(255,255,255,.88);margin-bottom:28px;line-height:1.5}
 .nd-dtimer{display:flex;gap:14px;margin-bottom:30px}
-.nd-tblk{background:rgba(0,0,0,.2);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.2);border-radius:16px;width:74px;padding:14px 0;text-align:center}
+.nd-tblk{background:rgba(0,0,0,.2);border:1px solid rgba(255,255,255,.2);border-radius:16px;width:74px;padding:14px 0;text-align:center}
 .nd-tnum{font-size:30px;font-weight:900;color:#fff;line-height:1;display:block}
 .nd-tlbl{font-size:11px;color:rgba(255,255,255,.78);text-transform:uppercase;letter-spacing:.5px;margin-top:4px;display:block}
 .nd-btn-deal{display:inline-flex;align-items:center;gap:8px;background:#fff;color:#E8501E !important;border:none;border-radius:100px;padding:15px 32px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;box-shadow:0 8px 32px rgba(0,0,0,.2);transition:transform var(--duration-standard) var(--ease-standard)}
 .nd-btn-deal:hover{transform:translateY(-2px)}
 .nd-deal-vis{position:relative;display:flex;justify-content:center;z-index:1}
-.nd-dpc{background:rgba(0,0,0,.2);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.25);border-radius:24px;padding:24px;width:280px;text-align:center}
+.nd-dpc{background:rgba(0,0,0,.2);border:1px solid rgba(255,255,255,.25);border-radius:24px;padding:24px;width:280px;text-align:center}
 .nd-dpc-img{width:100%;height:150px;border-radius:16px;object-fit:cover;margin-bottom:14px;background:rgba(255,255,255,.08)}
 .nd-dpe{font-size:84px;display:block;margin-bottom:12px}
 .nd-dpn{font-size:16px;font-weight:700;color:#fff;line-height:1.3}
@@ -536,10 +534,9 @@ body.light-mode .producto-card .btn-pedir-card:hover{transform:translateY(-2px) 
    ================================================================ */
 body:not(.light-mode) .beneficio-card{
   background:linear-gradient(145deg,rgba(255,255,255,.07),rgba(255,255,255,.03)) !important;
-  backdrop-filter:blur(24px) saturate(160%);-webkit-backdrop-filter:blur(24px) saturate(160%);
+  
   border:1px solid rgba(255,255,255,.09) !important;border-top-color:rgba(255,255,255,.20) !important;
-  box-shadow:0 4px 8px rgba(0,0,0,.3),0 16px 32px rgba(0,0,0,.4) !important;
-}
+  box-shadow:0 4px 8px rgba(0,0,0,.3),0 16px 32px rgba(0,0,0,.4) !important;background:rgba(10,10,14,0.85)}
 body:not(.light-mode) .beneficio-card:hover{border-color:rgba(255,107,53,.3) !important;transform:translateY(-6px) !important}
 body:not(.light-mode) .beneficio-card .icon{
   width:48px !important;height:48px !important;border-radius:14px !important;background:rgba(255,107,53,.15) !important;
@@ -611,10 +608,9 @@ body.light-mode #tm-cta-link{color:#FF6B35}
 /* Oscuro */
 body:not(.light-mode) .testimonio-card{
   background:linear-gradient(145deg,rgba(255,255,255,.07),rgba(255,255,255,.03)) !important;
-  backdrop-filter:blur(24px) saturate(160%);-webkit-backdrop-filter:blur(24px) saturate(160%);
+  
   border:1px solid rgba(255,255,255,.09) !important;border-top-color:rgba(255,255,255,.20) !important;
-  box-shadow:0 4px 8px rgba(0,0,0,.3),0 16px 32px rgba(0,0,0,.4) !important;
-}
+  box-shadow:0 4px 8px rgba(0,0,0,.3),0 16px 32px rgba(0,0,0,.4) !important;background:rgba(10,10,14,0.85)}
 body:not(.light-mode) .testimonio-card:hover{border-color:rgba(255,107,53,.3) !important;transform:translateY(-6px) !important}
 body:not(.light-mode) .testimonio-card .stars{color:var(--coral) !important}
 body:not(.light-mode) .testimonio-card p{color:rgba(245,237,232,.7) !important;font-style:italic !important}
@@ -626,10 +622,9 @@ body:not(.light-mode) .testimonio-card .autor{color:var(--coral) !important}
    ================================================================ */
 body:not(.light-mode) .cta-final .container{
   background:linear-gradient(145deg,rgba(37,211,102,.10),rgba(18,140,126,.06));
-  backdrop-filter:blur(24px) saturate(160%);-webkit-backdrop-filter:blur(24px) saturate(160%);
+  
   border:1px solid rgba(37,211,102,.2);border-radius:32px;padding-top:60px;padding-bottom:60px;
-  position:relative;overflow:hidden;
-}
+  position:relative;overflow:hidden;background:rgba(10,10,14,0.85)}
 body:not(.light-mode) .cta-final .container::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 0%,rgba(37,211,102,.1),transparent 60%);pointer-events:none}
 body:not(.light-mode) .cta-final h2{color:#F5EDE8 !important}
 body:not(.light-mode) .cta-final p{color:rgba(245,237,232,.65) !important}
@@ -720,16 +715,16 @@ html body.light-mode .cta-final .btn-large:hover{background:linear-gradient(135d
 /* ── Header glassmorphism — fluye sin corte hacia el hero ── */
 body:not(.light-mode) .header{
   background:rgba(12,8,6,.72) !important;
-  backdrop-filter:blur(20px) saturate(160%) !important;
-  -webkit-backdrop-filter:blur(20px) saturate(160%) !important;
+  
+  
   /* Gradiente fade en vez de línea dura → conecta visualmente con el hero */
   border-bottom:none !important;
   box-shadow:0 1px 0 rgba(255,255,255,.05), 0 4px 24px rgba(0,0,0,.18) !important;
 }
 html body.light-mode .header{
   background:rgba(255,255,255,.82) !important;
-  backdrop-filter:blur(20px) saturate(160%) !important;
-  -webkit-backdrop-filter:blur(20px) saturate(160%) !important;
+  
+  
   border-bottom:1px solid rgba(0,0,0,.07) !important;
   box-shadow:0 1px 0 rgba(0,0,0,.06), 0 4px 20px rgba(0,0,0,.06) !important;
 }
@@ -737,12 +732,11 @@ html body.light-mode .header{
 /* ── Buscador hero — glass consistente con el resto del diseño ── */
 html body .nd-hero-search .hsb-pill{
   background:linear-gradient(145deg,rgba(255,255,255,.09),rgba(255,255,255,.03)) !important;
-  backdrop-filter:blur(20px) saturate(160%) !important;
-  -webkit-backdrop-filter:blur(20px) saturate(160%) !important;
+  
+  
   border:1px solid rgba(255,255,255,.11) !important;
   border-top-color:rgba(255,255,255,.20) !important;
-  box-shadow:0 4px 18px rgba(0,0,0,.22), 0 1px 3px rgba(0,0,0,.15) !important;
-}
+  box-shadow:0 4px 18px rgba(0,0,0,.22), 0 1px 3px rgba(0,0,0,.15) !important;background:rgba(10,10,14,0.85)}
 html body .nd-hero-search .hsb-pill:focus-within{
   border-color:rgba(255,107,53,.45) !important;
   box-shadow:0 4px 22px rgba(255,107,53,.18), 0 1px 3px rgba(0,0,0,.15) !important;
@@ -803,18 +797,15 @@ body:not(.light-mode) .footer-premium .footer-bottom{border-top-color:rgba(255,2
    ================================================================ */
 @media(max-width:768px){
   .nd-o3,.nd-o4{display:none}
-  .nd-orb{filter:blur(70px)}
+  .nd-orb{}
   /* Blur de tarjetas reducido (8px en vez de 24px) — mucho más liviano */
   body:not(.light-mode) .mas-vendidos .producto-card,
   body:not(.light-mode) #productosGrid .producto-card,
   body:not(.light-mode) .beneficio-card,
   body:not(.light-mode) .testimonio-card,
-  body:not(.light-mode) .header{
-    backdrop-filter:blur(8px) saturate(140%) !important;
-    -webkit-backdrop-filter:blur(8px) saturate(140%) !important;
-  }
+  body:not(.light-mode) .header{background:rgba(10,10,14,0.85)}
   /* Tarjetas glass del hero también más livianas */
-  .nd-cl1,.nd-fbadge{backdrop-filter:blur(10px) saturate(140%);-webkit-backdrop-filter:blur(10px) saturate(140%)}
+  .nd-cl1,.nd-fbadge{background:rgba(10,10,14,0.85)}
 }
 
 /* Respeta usuarios con movimiento reducido */
@@ -1025,12 +1016,11 @@ body.light-mode #tituloCategoriaActual{
 }
 body:not(.light-mode) .tmplus-bar{
   background:linear-gradient(135deg,rgba(255,107,53,.10),rgba(255,160,50,.06)) !important;
-  backdrop-filter:blur(16px) saturate(150%) !important;
-  -webkit-backdrop-filter:blur(16px) saturate(150%) !important;
+  
+  
   border:1px solid rgba(255,107,53,.28) !important;
   border-left:3px solid #FF6B35 !important;
-  box-shadow:0 4px 20px rgba(255,107,53,.12) !important;
-}
+  box-shadow:0 4px 20px rgba(255,107,53,.12) !important;background:rgba(10,10,14,0.85)}
 body.light-mode .tmplus-bar{
   background:#fff !important;
   border:1px solid rgba(255,107,53,.22) !important;
@@ -1127,7 +1117,7 @@ body.light-mode #productosGrid .producto-card .precio-actual{
 /* will-change en elementos con transiciones activas */
 body:not(.light-mode) #productosGrid .producto-card,
 body:not(.light-mode) .mas-vendidos .producto-card{
-  will-change:transform;
+  
   contain:layout style;
 }
 .nd-card3d{will-change:transform}
@@ -1144,7 +1134,7 @@ body:not(.light-mode) .mas-vendidos .producto-card{
 }
 .btn-megusta{position:absolute !important;top:8px !important;right:8px !important;left:auto !important;}
 /* Favorito en modo claro: fondo blanco en vez de negro */
-body.light-mode .btn-megusta{background:rgba(255,255,255,0.88) !important;border:1px solid rgba(0,0,0,0.08) !important;color:rgba(0,0,0,0.45) !important;box-shadow:0 2px 8px rgba(0,0,0,0.12) !important;backdrop-filter:blur(8px) !important;-webkit-backdrop-filter:blur(8px) !important}
+body.light-mode .btn-megusta{background:rgba(255,255,255,0.88) !important;border:1px solid rgba(0,0,0,0.08) !important;color:rgba(0,0,0,0.45) !important;box-shadow:0 2px 8px rgba(0,0,0,0.12) !important;}
 body.light-mode .btn-megusta.liked{background:rgba(231,76,60,0.1) !important;color:#e74c3c !important;border-color:rgba(231,76,60,0.2) !important}
 .btn-megusta::after{
   content:'';position:absolute;
@@ -1159,10 +1149,9 @@ body.light-mode .btn-megusta.liked{background:rgba(231,76,60,0.1) !important;col
 @media(max-width:480px){
   body:not(.light-mode) .mas-vendidos .producto-card,
   body:not(.light-mode) #productosGrid .producto-card{
-    backdrop-filter:none !important;
-    -webkit-backdrop-filter:none !important;
-    background:linear-gradient(145deg,rgba(255,255,255,.11),rgba(255,255,255,.05)) !important;
-  }
+    
+    
+    background:linear-gradient(145deg,rgba(255,255,255,.11),rgba(255,255,255,.05)) !important;background:rgba(10,10,14,0.85)}
 }
 
 /* Contención del hero para evitar repaints por orbes */
@@ -1259,7 +1248,7 @@ body.light-mode .hsb-fi-sel{border-color:rgba(0,0,0,.15);background:#fff;color:#
 body.light-mode .cs-urgencia{color:#C94A1C;}
 
 /* ── Modal políticas legales ── */
-.legal-modal-overlay{position:fixed;inset:0;z-index:9000;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);
+.legal-modal-overlay{position:fixed;inset:0;z-index:9000;background:rgba(0,0,0,.6);
   display:flex;align-items:flex-end;justify-content:center;
   opacity:0;transition:opacity .25s ease;}
 .legal-modal-overlay.legal-modal-open{opacity:1;}
@@ -1376,3 +1365,22 @@ html body:not(.light-mode) .hsb-panel{
 .skeleton-card.tm-fade{opacity:1;transform:none;transition:opacity .3s var(--ease-standard),transform .3s var(--ease-standard)}
 .skeleton-card.tm-fade.hiding{opacity:0;transform:translateY(-8px)}
 .skeleton-card.tm-fade.tm-visible{opacity:1;transform:none}
+
+
+/* === FIX RENDIMIENTO: pausar animaciones decorativas fuera de hover === */
+.nd-orb{animation-play-state:paused}
+.hero:hover .nd-orb,.nd-hero:hover .nd-orb,.nd-hero:focus-within .nd-orb{animation-play-state:running}
+.nd-fbadge{animation-play-state:paused}
+.nd-hero:hover .nd-fbadge,.nd-hero:focus-within .nd-fbadge{animation-play-state:running}
+
+/* === FIX RENDIMIENTO: prefers-reduced-motion desactiva todas las decorativas === */
+@media (prefers-reduced-motion: reduce){
+  .nd-orb,.nd-fbadge,.flash-deal,.urgencia-banner,
+  .badge,.skeleton,.tm-float,.tm-shimmer,
+  [class*="anim"],[class*="pulse"],[class*="shimmer"],[class*="float"],
+  .nd-o1,.nd-o2,.nd-o3,.nd-o4,.nd-fb1,.nd-fb2,.nd-fb3{
+    animation:none !important;
+    transition:none !important;
+  }
+  .nd-orb{display:none}
+}

@@ -286,7 +286,7 @@
     ],
     "imagenes": [
       "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784007970666.webp",
-      "https://tiendamax.org/imagenes/img_1778103856933_v2.webp"
+      "https://tiendamax.org/imagenes/img_1778103856933.webp"
     ]
   },
   {
@@ -467,7 +467,7 @@
     "comisionMoneda": "USD",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1783837070407.webp",
-      "https://tiendamax.org/imagenes/img_1778104735789_v2.webp"
+      "https://tiendamax.org/imagenes/img_1778104735789.webp"
     ],
     "descripcion": "Tu propia red Wi-Fi en cualquier lugar. Este router convierte la señal de datos de tu tarjeta SIM en una potente red inalámbrica, ideal para hogares, oficinas temporales o zonas donde la fibra óptica no es una opción viable.\n​Ficha Técnica:\n​Conectividad Total: 📱 Ranura para tarjeta SIM integrada; simplemente inserta tu SIM y empieza a navegar.\n​Velocidad: 🚀 Soporta redes 4G LTE para una navegación fluida, streaming y conexión de múltiples dispositivos.\n​Versatilidad: 🔗 Diseño compacto y eficiente, ideal tanto para uso fijo en casa como para llevarlo de viaje.\n​Antenas: 📡 Antenas de alta ganancia para asegurar una recepción de señal móvil superior incluso en áreas con cobertura limitada.\n​Seguridad: 🛡️ Encriptación robusta para mantener tu red y tus datos protegidos.\n​Especificaciones (Specs):\n​Tipo: Router Wi-Fi con módem 4G LTE incorporado.\n​Compatibilidad: Funciona con los estándares de red móvil más comunes.\n​Gestión: Interfaz web sencilla para configurar el APN y gestionar el consumo de datos.\n​Puertos: Incluye puertos LAN para conectar dispositivos por cable si lo requieres.\n​Uso Ideal: Zonas sin cobertura de cable, respaldo de internet, trabajo remoto y soluciones de movilidad.\n\n​💡 ¿Por qué es la mejor opción?\n​Sin cables: Solo inserta tu tarjeta SIM y navega al instante.\n​Configuración fácil: Compatible con APN manual para una conexión rápida con la red local.\n​Ideal para cualquier lugar: Perfecto para zonas donde no llega el cable o como conexión de respaldo garantizada.\n​Multi-usuario: Comparte tus datos móviles con toda la familia o tu equipo de trabajo al mismo tiempo."
   },
@@ -1446,7 +1446,7 @@
     "comisionMoneda": "USD",
     "imagenes": [
       "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1783838545299.webp",
-      "https://tiendamax.org/imagenes/img_1778907258376_v2.webp"
+      "https://tiendamax.org/imagenes/img_1778907258376.webp"
     ]
   },
   {
@@ -1818,7 +1818,7 @@
     "nombre": "Beat Boom F10! 🎶🔥",
     "precioActual": 40,
     "precioOriginal": 0,
-    "imagen": "https://tiendamax.org/imagenes/img_1783837255248.jpg",
+    "imagen": "https://tiendamax.org/imagenes/img_1783837255248.webp",
     "categoria": "CELULARES",
     "subcategoria": "AUDIO",
     "stock": 0,
@@ -1833,7 +1833,7 @@
     "seoTitle": "BEAT BOOM F10! 🎶🔥 en Cuba | TiendaMax",
     "seoDescription": "Potencia de 25W: Sonido estéreo potente y de buena calidad. Conexión inalámbrica: Compatible con teléfonos, tablets y PC. Alcance de 30 m: Conexión…",
     "imagenes": [
-      "https://tiendamax.org/imagenes/img_1783837255248.jpg",
+      "https://tiendamax.org/imagenes/img_1783837255248.webp",
       "https://tiendamax.org/imagenes/img_1780887971522.webp"
     ],
     "descripcion": "Bocina Bluetooth portátil MSY Audio Beat Boom F10, forma alargada con luces RGB que recorren los laterales al ritmo de la música. Controles en la parte superior."
@@ -2470,9 +2470,9 @@
       "https://tiendamax.org/imagenes/img_1783221885568.webp",
       "https://tiendamax.org/imagenes/img_1783221887436.webp",
       "https://tiendamax.org/imagenes/img_1783221888712.webp",
-      "https://tiendamax.org/imagenes/img_1783221890323_v2.webp",
+      "https://tiendamax.org/imagenes/img_1783221890323.webp",
       "https://tiendamax.org/imagenes/img_1783221892239.webp",
-      "https://tiendamax.org/imagenes/img_1783221893885_v2.webp",
+      "https://tiendamax.org/imagenes/img_1783221893885.webp",
       "https://tiendamax.org/imagenes/img_1783221895127.webp"
     ],
     "precioActual": 33000,
