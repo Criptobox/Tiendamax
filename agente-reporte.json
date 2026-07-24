@@ -1,10 +1,10 @@
 {
-  "generado": "2026-07-23T11:02:11.305477+00:00",
-  "productos": 116,
+  "generado": "2026-07-24T10:55:41.740042+00:00",
+  "productos": 118,
   "urgentes": 0,
-  "advertencias": 36,
-  "info": 11,
-  "resumen": "Anoche revisé tus 116 productos y encontré 36 advertencia(s), 11 de info.",
+  "advertencias": 37,
+  "info": 10,
+  "resumen": "Anoche revisé tus 118 productos y encontré 37 advertencia(s), 10 de info.",
   "detalle": [
     {
       "tipo": "agotado",
@@ -158,6 +158,11 @@
     },
     {
       "tipo": "agotado",
+      "nombre": "📟 Inversor Solar Must PV15-1524 lv",
+      "detalle": "agotado (stock 0)"
+    },
+    {
+      "tipo": "agotado",
       "nombre": "Cargador Inteligente 30A",
       "detalle": "agotado (stock 0)"
     },
@@ -204,11 +209,6 @@
     {
       "tipo": "stock_bajo",
       "nombre": "PC Gaming Setup Premium",
-      "detalle": "quedan 1"
-    },
-    {
-      "tipo": "stock_bajo",
-      "nombre": "📟 Inversor Solar Must PV15-1524 lv",
       "detalle": "quedan 1"
     },
     {
