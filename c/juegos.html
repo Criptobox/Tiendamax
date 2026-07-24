@@ -54,6 +54,19 @@
   .tm-ftr{text-align:center;padding:24px 16px;color:#555;font-size:12px;border-top:1px solid rgba(255,255,255,.06)}
   .tm-ftr a{color:#C9A96E}
 </style>
+
+<!-- ═══ Google Analytics ═══
+     Estas páginas son el destino de los enlaces que se comparten en Facebook,
+     Revólico, Estado de WhatsApp, etc. Sin gtag aquí, los ?utm_source= de esos
+     enlaces no medían nada y no había forma de saber qué canal trae compradores.
+     Mismo ID que index.html; carga async, no bloquea el render. -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-KG43FHTCDF"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-KG43FHTCDF');
+</script>
 </head>
 <body>
 
@@ -71,7 +84,7 @@
   </div>
   <nav class="tm-nav-cats">
     <h2>Otras categorías</h2>
-    <a href="https://tiendamax.org/c/energia.html">⚡ Energía</a> <a href="https://tiendamax.org/c/wifi.html">🛍️ WiFi</a> <a href="https://tiendamax.org/c/carros.html">🛍️ Carros</a> <a href="https://tiendamax.org/c/utiles.html">🛠️ Útiles</a> <a href="https://tiendamax.org/c/hogar.html">🏠 Hogar</a> <a href="https://tiendamax.org/c/seguridad.html">🔒 Seguridad</a> <a href="https://tiendamax.org/c/motos.html">🛵 Motos</a> <a href="https://tiendamax.org/c/celulares.html">🛍️ Celulares</a> <a href="https://tiendamax.org/c/ropa.html">👗 Ropa</a> <a href="https://tiendamax.org/c/pc-y-laptops.html">💻 PC y Laptops</a> <a href="https://tiendamax.org/c/gym.html">🏋️ Gym</a>
+    <a href="https://tiendamax.org/c/energia.html">⚡ Energía</a> <a href="https://tiendamax.org/c/wifi.html">🛍️ WiFi</a> <a href="https://tiendamax.org/c/carros.html">🛍️ Carros</a> <a href="https://tiendamax.org/c/utiles.html">🛠️ Útiles</a> <a href="https://tiendamax.org/c/seguridad.html">🔒 Seguridad</a> <a href="https://tiendamax.org/c/hogar.html">🏠 Hogar</a> <a href="https://tiendamax.org/c/motos.html">🛵 Motos</a> <a href="https://tiendamax.org/c/celulares.html">🛍️ Celulares</a> <a href="https://tiendamax.org/c/audio.html">🛍️ Audio</a> <a href="https://tiendamax.org/c/ropa.html">👗 Ropa</a> <a href="https://tiendamax.org/c/pc-y-laptops.html">💻 PC y Laptops</a>
   </nav>
 </div>
 

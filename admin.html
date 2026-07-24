@@ -3215,13 +3215,63 @@ function renderPublicar(){
   else { body.innerHTML=`<div class="section"><div class="empty"><div class="ico">🔥</div><b style="color:#fff">Oferta del día y contador por tiempo</b><br>Se manejan en el tab <b>🎁 Combos y ofertas</b> (eliges producto, texto y tiempo).<br><br><button class="btn btn-primary" onclick="go('combos')">Ir a Combos y ofertas →</button></div></div>`; }
 }
 // Compartir por producto (fiel al admin viejo: filtro por categoría + tarjeta 1080x1920)
-function pubUrl(p){ return 'https://tiendamax.org/p/producto-'+p.id+'.html'; }
-function pubTxt(p){ return `🔥 ${p.nombre}\n\n${p.descripcion?String(p.descripcion).slice(0,160)+'\n\n':''}💵 $${Number(p.precioActual||0).toFixed(2)} USD\n📦 Stock: ${Number(p.stock||0)}\n🏷️ ${p.categoria||'TiendaMax'}\n\nPídelo directo por WhatsApp en TiendaMax:\n${pubUrl(p)}`; }
+/* ── Canal de publicación → utm_source ───────────────────────────────────
+   Los enlaces que se publican en Facebook, Revólico, Estado, etc. llevan
+   ?utm_source=<canal>. GA4 (ya cargado en /p/ y /c/) lo registra solo, así
+   se ve qué red trae de verdad las visitas en vez de publicar a ciegas. */
+const PUB_UTM = { story:'whatsapp-estado', wa:'whatsapp', fb:'facebook', ig:'instagram', rev:'revolico', copy:'copiado', lote:'lote-categoria' };
+function pubUrl(p, src){
+  const base='https://tiendamax.org/p/producto-'+p.id+'.html';
+  const s=PUB_UTM[src];
+  return s ? base+'?utm_source='+s+'&utm_medium=social&utm_campaign=producto' : base;
+}
+function pubWaNum(){ return String(localStorage.getItem('whatsappNumero')||localStorage.getItem('adminWhatsappNum')||'5354320170').replace(/\D/g,''); }
+/* Enlace de pedido en 1 toque: abre WhatsApp con el mensaje ya escrito.
+   Antes el post solo llevaba a la página y el cliente tenía que entrar,
+   buscar el botón y redactar — cada paso perdía gente. El mensaje incluye el
+   enlace con utm, así al llegar el pedido se ve de qué red vino. */
+function pubWaLink(p, src){
+  const msg='Hola, quiero: '+(p.nombre||'este producto')+' — $'+Number(p.precioActual||0).toFixed(2)+' USD\n'+pubUrl(p, src);
+  return 'https://wa.me/'+pubWaNum()+'?text='+encodeURIComponent(msg);
+}
+function pubTxt(p, src){ return `🔥 ${p.nombre}\n\n${p.descripcion?String(p.descripcion).slice(0,160)+'\n\n':''}💵 $${Number(p.precioActual||0).toFixed(2)} USD\n📦 Stock: ${Number(p.stock||0)}\n🏷️ ${p.categoria||'TiendaMax'}\n\n📲 Pídelo en 1 toque por WhatsApp:\n${pubWaLink(p, src)}\n\n👀 Ver fotos y detalles:\n${pubUrl(p, src)}`; }
+/* ── Historial de publicaciones ──────────────────────────────────────────
+   Guarda cuándo se publicó cada producto por última vez. Con ~80 productos en
+   stock es fácil repetir siempre los mismos y dejar otros sin publicar nunca;
+   el badge en la lista y el filtro "sin publicar" ordenan ese trabajo. */
+function pubHist(){ try{ return JSON.parse(localStorage.getItem('tmPubHist')||'{}')||{}; }catch(e){ return {}; } }
+function pubMarcarPublicado(id){
+  try{ const h=pubHist(); h[String(id)]=Date.now(); localStorage.setItem('tmPubHist', JSON.stringify(h)); }catch(e){}
+}
+function pubHaceTxt(ts){
+  if(!ts) return null;
+  const d=Date.now()-ts;
+  if(d<3600000) return 'hace '+Math.max(1,Math.floor(d/60000))+' min';
+  if(d<86400000) return 'hace '+Math.floor(d/3600000)+' h';
+  const dias=Math.floor(d/86400000);
+  if(dias<7) return 'hace '+dias+' d';
+  if(dias<30) return 'hace '+Math.floor(dias/7)+' sem';
+  return 'hace '+Math.floor(dias/30)+' mes'+(Math.floor(dias/30)>1?'es':'');
+}
+function pubBadgePublicado(id){
+  const ts=pubHist()[String(id)];
+  if(!ts) return '<span style="background:rgba(245,166,35,.16);color:#f5a623;border:1px solid rgba(245,166,35,.35);font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;white-space:nowrap">✨ sin publicar</span>';
+  return '<span style="background:rgba(255,255,255,.06);color:var(--muted);font-size:10px;padding:2px 8px;border-radius:20px;white-space:nowrap">📤 '+pubHaceTxt(ts)+'</span>';
+}
 function pubShareCats(){ return [...new Set(PRODUCTOS.map(p=>p.categoria||'General').filter(Boolean))].sort(); }
+let PUB_SOLO_SIN_PUBLICAR=false;
+function pubToggleSinPublicar(){ PUB_SOLO_SIN_PUBLICAR=!PUB_SOLO_SIN_PUBLICAR; const b=$('#pub-filtro-sinpub'); if(b) b.className='btn '+(PUB_SOLO_SIN_PUBLICAR?'btn-primary':'btn-ghost'); pubRenderShareList(); }
 function pubShareFiltered(){
   const q=String(($('#pub-share-q')&&$('#pub-share-q').value)||'').toLowerCase().trim();
   const cat=($('#pub-share-cat')&&$('#pub-share-cat').value)||'';
-  return PRODUCTOS.filter(p=>Number(p.stock||0)>0).filter(p=>(!cat||(p.categoria||'General')===cat)&&(!q||String(p.nombre||'').toLowerCase().includes(q)||String(p.categoria||'').toLowerCase().includes(q))).slice(0,120);
+  const h=pubHist();
+  return PRODUCTOS.filter(p=>Number(p.stock||0)>0)
+    .filter(p=>(!cat||(p.categoria||'General')===cat)&&(!q||String(p.nombre||'').toLowerCase().includes(q)||String(p.categoria||'').toLowerCase().includes(q)))
+    .filter(p=>!PUB_SOLO_SIN_PUBLICAR || !h[String(p.id)])
+    // Los nunca publicados primero, después los más antiguos: lo que falta por
+    // mover queda arriba sin tener que buscarlo.
+    .sort((a,b)=>(h[String(a.id)]||0)-(h[String(b.id)]||0))
+    .slice(0,120);
 }
 // Plantilla del cartel que generan "🖼️ Estado" / "📘 Facebook" (per-producto,
 // abajo) y el modal de grupos — se guarda en localStorage y la lee tmCartelHTML()
@@ -3294,6 +3344,7 @@ function pubCompartirHTML(){
       <input class="form-input" id="pub-share-q" placeholder="🔍 Buscar producto…" style="flex:1;min-width:160px" oninput="pubRenderShareList()">
       <select class="form-select" id="pub-share-cat" style="min-width:170px" onchange="pubRenderShareList()"><option value="">Todas las categorías</option>${pubShareCats().map(c=>`<option>${esc(c)}</option>`).join('')}</select>
     </div>
+    <button type="button" id="pub-filtro-sinpub" class="btn ${PUB_SOLO_SIN_PUBLICAR?'btn-primary':'btn-ghost'}" style="width:100%;justify-content:center;margin-bottom:6px" onclick="pubToggleSinPublicar()">✨ Solo los que nunca he publicado</button>
     <div class="banner-info">Tip: usa <b>🖼️ Estado</b> para generar una imagen vertical lista para WhatsApp Estado.</div>
     <div id="pub-share-list" style="display:flex;flex-direction:column;gap:10px;margin-top:12px"></div>
   </div>`;
@@ -3305,7 +3356,7 @@ function pubRenderShareList(){
   box.innerHTML = arr.length ? arr.map(p=>`<div class="pub-share-card">
       <div class="pub-share-top">
         <img class="pub-share-thumb" src="${esc(p.imagen||'')}" onerror="this.style.visibility='hidden'">
-        <div class="pub-share-info"><b>${esc(p.nombre||'Producto')}</b><small>${esc(p.categoria||'General')} · $${Number(p.precioActual||0).toFixed(2)} · stock ${Number(p.stock||0)}</small></div>
+        <div class="pub-share-info"><b>${esc(p.nombre||'Producto')}</b><small>${esc(p.categoria||'General')} · $${Number(p.precioActual||0).toFixed(2)} · stock ${Number(p.stock||0)}</small><div style="margin-top:4px">${pubBadgePublicado(p.id)}</div></div>
       </div>
       <div class="pub-share-actions">
         <button type="button" class="pub-act estado" onclick="pubShareAct('${esc(p.id)}','story')">🖼️ Estado</button>
@@ -3354,16 +3405,28 @@ function pubCatEmoji(nombre,cat){
   if(/electr/.test(c))return'⚡';
   return'✨';
 }
+/* Ganchos por categoría, con variantes que rotan por día.
+   Antes era una frase fija por categoría: quien sigue la página veía siempre
+   el mismo titular y dejaba de mirar. Ahora rota (mismo gancho durante todo el
+   día — así una tanda de publicaciones sale coherente — y cambia al siguiente). */
+const PUB_GANCHOS = [
+  [/energ|solar|inversor|bater|apag/, ['⚡ NO TE QUEDES A OSCURAS','🔋 ENERGÍA QUE NO TE FALLA','⚡ ADIÓS A LOS APAGONES','🔌 TU RESPALDO CUANDO SE VA LA LUZ']],
+  [/wifi|router|internet|red/,        ['📡 INTERNET SIN CORTES','📶 SEÑAL EN TODA LA CASA','📡 NAVEGA SIN PELEAR CON EL WIFI','🌐 CONÉCTATE COMO SE DEBE']],
+  [/audio|sonido|parlante|bocina/,    ['🔊 SUENA COMO QUIERES','🎶 PON LA CASA A SONAR','🔊 EL SONIDO QUE TE FALTABA']],
+  [/celular|telefono|movil|phone/,    ['📱 ESTRENA YA TU EQUIPO','📱 EL CAMBIO QUE VENÍAS PENSANDO','📲 TU PRÓXIMO TELÉFONO ESTÁ AQUÍ']],
+  [/hogar|casa|cocina|electrodom/,    ['🏠 TU CASA, MEJOR','🏠 LO QUE LE FALTA A TU CASA','🍳 LA CASA SE DISFRUTA MÁS ASÍ']],
+  [/carro|auto|moto|vehic/,           ['🚗 LISTO PARA LA CALLE','🛠️ TU MÁQUINA COMO NUEVA','🚗 NO TE QUEDES EN EL CAMINO']],
+  [/segurid|camara|alarma/,           ['🔒 TU CASA VIGILADA SIEMPRE','👀 ENTÉRATE DE TODO, ESTÉS DONDE ESTÉS','🔒 TRANQUILIDAD PARA LOS TUYOS']],
+  [/gym|deporte|fitness/,             ['💪 EMPIEZA HOY, NO EL LUNES','🏋️ TU GIMNASIO EN CASA']],
+  [/belleza|salud|cuidado/,           ['✨ LO QUE TE MERECES','✨ CUÍDATE COMO SE DEBE']],
+];
+const PUB_GANCHOS_DEF = ['🔥 APROVECHA ANTES QUE SE ACABE','🔥 LO BUENO SE ACABA RÁPIDO','⭐ ESTO ESTÁ VOLANDO','🔥 QUEDAN POCOS'];
 function pubCatGancho(cat){
   const c=String(cat||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
-  if(/energ|solar|inversor|bater|apag/.test(c))return'⚡ NO TE QUEDES A OSCURAS';
-  if(/wifi|router|internet|red/.test(c))return'📡 INTERNET SIN CORTES';
-  if(/audio|sonido|parlante|bocina/.test(c))return'🔊 SUENA COMO QUIERES';
-  if(/celular|telefono|movil|phone/.test(c))return'📱 ESTRENA YA TU EQUIPO';
-  if(/hogar|casa|cocina|electrodom/.test(c))return'🏠 TU CASA, MEJOR';
-  if(/carro|auto|moto|vehic/.test(c))return'🚗 LISTO PARA LA CALLE';
-  if(/belleza|salud|cuidado/.test(c))return'✨ LO QUE TE MERECES';
-  return'🔥 APROVECHA ANTES QUE SE ACABE';
+  const par=PUB_GANCHOS.find(([re])=>re.test(c));
+  const lista=par?par[1]:PUB_GANCHOS_DEF;
+  const dia=Math.floor(Date.now()/86400000); // día actual: mismo gancho toda la jornada
+  return lista[dia % lista.length];
 }
 function pubCatBadge(p){
   const stock=Number(p.stock||0);
@@ -3728,7 +3791,7 @@ async function pubCatGenCarteles(cat, onProgress){
     for(let i=0;i<prods.length;i++){
       if(onProgress) onProgress(i+1, prods.length);
       const blob=await pubGenCartelBlob(prods[i]);
-      if(blob) files.push(new File([blob],'tiendamax-'+pubCatTag(cat)+'-'+prods[i].id+'.png',{type:'image/png'}));
+      if(blob){ files.push(new File([blob],'tiendamax-'+pubCatTag(cat)+'-'+prods[i].id+'.png',{type:'image/png'})); pubMarcarPublicado(prods[i].id); }
     }
   } finally {
     // Restaurar el color manual que tenía el usuario
@@ -3809,7 +3872,7 @@ async function pubShareStory(p){
     const canvas=await window.html2canvas(node,{backgroundColor:'#000',scale:2,useCORS:true,logging:false,width:node.offsetWidth,height:node.offsetHeight});
     const blob0=await new Promise(res=>canvas.toBlob(res,'image/png',.95));
     const file0=new File([blob0],'tiendamax-estado-'+p.id+'.png',{type:'image/png'});
-    const text0='🔥 '+p.nombre+'\n'+pubUrl(p);
+    const text0='🔥 '+p.nombre+'\n📲 Pídelo aquí: '+pubWaLink(p,'story');
     if(navigator.canShare&&navigator.canShare({files:[file0]})&&navigator.share){
       try{ await navigator.share({files:[file0],title:p.nombre,text:text0}); showToast('✅ Elige WhatsApp → Estado para publicar'); return; }catch(e){ if(/abort/i.test(e.message||'')) return; }
     }
@@ -3823,18 +3886,21 @@ async function pubShareStory(p){
 }
 async function pubShareAct(id,act){
   const p=PRODUCTOS.find(x=>String(x.id)===String(id)); if(!p) return;
+  // Queda registrado como publicado (badge "hace X" + orden de la lista).
+  pubMarcarPublicado(p.id);
+  setTimeout(()=>{ try{ pubRenderShareList(); }catch(e){} }, 600);
   if(act==='story'){ showToast('⏳ Generando imagen…'); await pubShareStory(p); return; }
-  if(act==='wa'){ window.open('https://wa.me/?text='+encodeURIComponent(pubTxt(p)),'_blank','noopener,noreferrer'); return; }
+  if(act==='wa'){ window.open('https://wa.me/?text='+encodeURIComponent(pubTxt(p,'wa')),'_blank','noopener,noreferrer'); return; }
   if(act==='fb'){
     if(typeof previsualizarFacebook==='function'){ previsualizarFacebook(p.id, null); return; }
-    window.open('https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(pubUrl(p))+'&quote='+encodeURIComponent(pubTxt(p)),'_blank','noopener,noreferrer'); return;
+    window.open('https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(pubUrl(p,'fb'))+'&quote='+encodeURIComponent(pubTxt(p,'fb')),'_blank','noopener,noreferrer'); return;
   }
   if(act==='rev'){
     if(typeof previsualizarRevolico==='function'){ previsualizarRevolico(p.id); return; }
-    try{ await navigator.clipboard.writeText(pubTxt(p)); }catch(e){}
+    try{ await navigator.clipboard.writeText(pubTxt(p,'rev')); }catch(e){}
     showToast('🔗 Texto copiado'); window.open('https://www.revolico.com/anuncios/nuevo/','_blank','noopener,noreferrer'); return;
   }
-  if(act==='copy'){ try{ await navigator.clipboard.writeText(pubTxt(p)); showToast('🔗 Texto y enlace copiados'); }catch(e){ showToast('No se pudo copiar'); } }
+  if(act==='copy'){ try{ await navigator.clipboard.writeText(pubTxt(p,'copy')); showToast('🔗 Texto y enlace copiados'); }catch(e){ showToast('No se pudo copiar'); } }
 }
 async function pubRenderBanners(){
   if(PUB_BANNERS===null){ PUB_BANNERS = await jget('banners.json') || []; if(!Array.isArray(PUB_BANNERS)) PUB_BANNERS=[]; }
