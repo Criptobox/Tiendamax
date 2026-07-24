@@ -126,7 +126,7 @@ html body.light-mode #productDetailModal .detail-rating-top b { color: #1A1A1A !
   position: absolute;
   bottom: 12px; right: 12px;
   background: rgba(0, 0, 0, 0.7);
-  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+   
   border: 1px solid rgba(255, 255, 255, 0.1);
   color: #fff;
   font-size: 11px; font-weight: 500;
@@ -152,7 +152,7 @@ html body.light-mode #productDetailModal .detail-rating-top b { color: #1A1A1A !
      esto ganaba esa regla vieja (pastilla oscura/blanca) en vez de esta
      (pastilla coral) — el rediseño visual nunca se veía. */
   background: rgba(0,0,0,0.55) !important;
-  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+   
   color: #ffb380 !important;
   border: 1px solid rgba(255,107,53,0.35) !important;
   font-size: 11px; font-weight: 800;
@@ -162,7 +162,7 @@ html body.light-mode #productDetailModal .detail-rating-top b { color: #1A1A1A !
   position: absolute;
   bottom: 12px; left: 12px;
   background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+   
   color: #fff;
   font-size: 11px; font-weight: 600;
   padding: 5px 10px;
@@ -363,9 +363,8 @@ html body.light-mode #productDetailModal .detail-spec-badges > * {
 /* ---- Sticky CTA ---- */
 #productDetailModal .detail-sticky-cta {
   background: linear-gradient(180deg, transparent 0%, #0e0e0e 30%);
-  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-  border-radius: 18px 18px 0 0;
-}
+   
+  border-radius: 18px 18px 0 0;background:rgba(10,10,14,0.85)}
 #productDetailModal .detail-sticky-cta .dsc-price-main {
   font-family: 'Playfair Display', Georgia, serif;
   font-weight: 800;
@@ -446,7 +445,7 @@ html body.light-mode #productDetailModal .detail-spec-badges > * {
   width: 40px; height: 40px;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+   
   border: 1px solid rgba(255, 255, 255, 0.15);
   color: #fff; font-size: 22px; line-height: 1;
   display: flex; align-items: center; justify-content: center;

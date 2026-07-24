@@ -252,14 +252,14 @@
          hasta que este JSON responda y arme el <img>; sin este preload, el
          descubridor de recursos del navegador no la ve hasta bien entrado el
          parseo/ejecución de JS, retrasando el LCP. -->
-    <link rel="preload" href="productos-lite.json" as="fetch" crossorigin>
+    <link rel="preload" href="productos-lite.json" as="fetch" fetchpriority="high" crossorigin>
 
     <!-- CSS unido + minificado (generado por scripts/build_css.py vía GitHub Action).
          Para editar estilos, edita los CSS fuente en /css y la Action regenera este bundle. -->
 
 
 
-    <link rel="stylesheet" href="css/bundle.css?v=45107700">
+    <link rel="stylesheet" href="css/bundle.css?v=f62a7be9">
 
 
 
