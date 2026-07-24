@@ -1496,7 +1496,7 @@
   };
 </script>
 <script src="js/vendor/html2canvas.min.js?v=e87e5507" defer></script>
-<script src="js/admin-copilot.js?v=cb230c8e"></script>
+<script src="js/admin-copilot.js?v=16c0edc4"></script>
 
 <script>
 (function(){
@@ -3615,6 +3615,16 @@ async function pubCatUpdatePreview(){
     <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:8px">
       <button type="button" class="pub-act ghost" onclick="pubCatAct('copy')">🔗 Copiar texto</button>
       <button type="button" class="pub-act ghost" onclick="pubCatAct('img')">🖼️ Descargar imagen</button>
+    </div>
+    <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border)">
+      <div style="font-size:13px;font-weight:700;color:#fff;margin-bottom:4px">🖼️ Carteles individuales de la categoría</div>
+      <p style="font-size:12px;color:var(--muted);margin:0 0 10px">Un cartel promo por producto (${prods.length}${prods.length>PUB_CAT_LOTE_MAX?', tope '+PUB_CAT_LOTE_MAX:''}) — compártelos todos de un tirón o descárgalos.</p>
+      <button type="button" id="pub-cat-autocolor" class="btn ${pubAutoColorCat()?'btn-primary':'btn-ghost'}" style="width:100%;margin-bottom:8px;justify-content:center" onclick="pubSetAutoColorCat(!pubAutoColorCat())">${pubAutoColorCat()?'🎨 Color por categoría: ON':'🎨 Color por categoría: OFF'}</button>
+      <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px">
+        <button type="button" class="pub-act estado pub-cat-lote-btn" onclick="pubCatCartelesLote('','share')">📤 Compartir todas</button>
+        <button type="button" class="pub-act ghost pub-cat-lote-btn" onclick="pubCatCartelesLote('','download')">⬇️ Descargar todas</button>
+      </div>
+      <div id="pub-cat-lote-info" style="font-size:12px;color:var(--muted);text-align:center;margin-top:8px;min-height:16px"></div>
     </div>`;
 }
 async function pubCatAct(act){
@@ -3676,6 +3686,91 @@ async function pubCatAct(act){
 }
 
 function pubRoundRect(ctx,x,y,w,h,r){ ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath(); }
+
+/* ── Carteles promo POR LOTE de una categoría ─────────────────────────────
+   Reusa el MISMO generador de cartel por producto que "🖼️ Estado"
+   (tmCartelHTML + html2canvas). Genera un PNG por producto de la categoría y
+   deja compartir todos de un tirón (hoja nativa) o descargarlos. Si el toggle
+   "color por categoría" está activo, pinta cada cartel con el color de la
+   tabla (tmColorCategoria) — restaurando el color manual al terminar. */
+const PUB_CAT_LOTE_MAX = 12; // tope: html2canvas es costoso y la hoja de compartir se satura
+function pubAutoColorCat(){ return localStorage.getItem('tmCartelAutoColorCat') !== '0'; } // default ON
+function pubSetAutoColorCat(on){
+  localStorage.setItem('tmCartelAutoColorCat', on ? '1' : '0');
+  const b=$('#pub-cat-autocolor'); if(b){ b.className='btn '+(on?'btn-primary':'btn-ghost'); b.textContent=(on?'🎨 Color por categoría: ON':'🎨 Color por categoría: OFF'); }
+}
+async function pubGenCartelBlob(p){
+  if(typeof window.tmCartelHTML!=='function' || typeof window.html2canvas!=='function') return null;
+  const holder=document.createElement('div');
+  holder.style.cssText='position:absolute;left:-9999px;top:0;pointer-events:none;';
+  holder.innerHTML=(typeof window.tmCartelCardHTML==='function') ? window.tmCartelCardHTML('__tcpBatch', false) : '<div class="tcp-card" id="__tcpBatch"></div>';
+  document.body.appendChild(holder);
+  try{
+    const node=holder.querySelector('#__tcpBatch');
+    node.innerHTML=window.tmCartelHTML(p);
+    if(!node.innerHTML.trim()) throw new Error('cartel vacío');
+    await Promise.all([...node.querySelectorAll('img')].map(im=>im.complete?null:new Promise(r=>{im.onload=r;im.onerror=r;setTimeout(r,4000);})));
+    const canvas=await window.html2canvas(node,{backgroundColor:'#000',scale:2,useCORS:true,logging:false,width:node.offsetWidth,height:node.offsetHeight});
+    return await new Promise(res=>canvas.toBlob(res,'image/png',.95));
+  }catch(e){ console.error('[cartel-lote]',e); return null; }
+  finally{ holder.remove(); }
+}
+// Genera los carteles de todos los productos (con stock) de la categoría.
+async function pubCatGenCarteles(cat, onProgress){
+  const prods=pubCatProds(cat).slice(0, PUB_CAT_LOTE_MAX);
+  const auto=pubAutoColorCat();
+  const catColor=(typeof window.tmColorCategoria==='function') ? window.tmColorCategoria(cat) : null;
+  const prevColor=localStorage.getItem('tmCartelColor');
+  if(auto && catColor) localStorage.setItem('tmCartelColor', catColor);
+  const files=[];
+  try{
+    for(let i=0;i<prods.length;i++){
+      if(onProgress) onProgress(i+1, prods.length);
+      const blob=await pubGenCartelBlob(prods[i]);
+      if(blob) files.push(new File([blob],'tiendamax-'+pubCatTag(cat)+'-'+prods[i].id+'.png',{type:'image/png'}));
+    }
+  } finally {
+    // Restaurar el color manual que tenía el usuario
+    if(auto && catColor){ if(prevColor!=null) localStorage.setItem('tmCartelColor', prevColor); else localStorage.removeItem('tmCartelColor'); }
+  }
+  return files;
+}
+function _pubLoteProgress(txt){ const el=$('#pub-cat-lote-info'); if(el) el.textContent=txt||''; }
+async function _pubDownloadFiles(files){
+  for(let i=0;i<files.length;i++){
+    const url=URL.createObjectURL(files[i]);
+    const a=document.createElement('a'); a.href=url; a.download=files[i].name; document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url), 4000);
+    await new Promise(r=>setTimeout(r, 400)); // separar descargas: algunos navegadores bloquean ráfagas
+  }
+}
+async function pubCatCartelesLote(cat, modo){ // modo: 'share' | 'download'
+  cat=cat||_pubCatSel; if(!cat){ showToast('Elige una categoría'); return; }
+  const total=pubCatProds(cat).length;
+  if(!total){ showToast('Sin productos con stock en esta categoría'); return; }
+  const btns=document.querySelectorAll('.pub-cat-lote-btn'); btns.forEach(b=>b.disabled=true);
+  _pubLoteProgress('⏳ Generando imágenes…');
+  try{
+    const files=await pubCatGenCarteles(cat, (i,n)=>_pubLoteProgress('⏳ Generando '+i+'/'+n+'…'));
+    if(!files.length){ _pubLoteProgress(''); showToast('❌ No se pudieron generar las imágenes'); return; }
+    const extra = total>files.length ? ' (de '+total+', tope '+PUB_CAT_LOTE_MAX+')' : '';
+    if(modo==='share'){
+      if(navigator.canShare && navigator.canShare({files}) && navigator.share){
+        try{ await navigator.share({files, title:'TiendaMax — '+cat}); _pubLoteProgress('✅ '+files.length+' imágenes compartidas'+extra); return; }
+        catch(e){ if(/abort/i.test(e.message||'')){ _pubLoteProgress(''); return; } }
+      }
+      // Sin soporte de compartir varios archivos → descargar como respaldo
+      showToast('Tu dispositivo no comparte varias imágenes a la vez — descargando…');
+      await _pubDownloadFiles(files);
+      _pubLoteProgress('⬇️ '+files.length+' imágenes descargadas'+extra);
+      return;
+    }
+    // modo download
+    await _pubDownloadFiles(files);
+    _pubLoteProgress('⬇️ '+files.length+' imágenes descargadas'+extra);
+    showToast('⬇️ '+files.length+' imágenes descargadas');
+  } finally { btns.forEach(b=>b.disabled=false); }
+}
 async function pubShareStory(p){
   // ── Cartel Pro (diseño premium via html2canvas). tmCartelHTML inyecta su
   //    propio CSS (.tcp-*) al llamarse, así funciona aunque no se haya abierto

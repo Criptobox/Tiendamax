@@ -1433,6 +1433,22 @@ const TM_CARTEL_COLORES = [
   ['#A855F7','Púrpura'], ['#14B8A6','Verde azulado'], ['#22C55E','Verde'],
 ];
 window.TM_CARTEL_COLORES = TM_CARTEL_COLORES;
+
+// Color sugerido por categoría para los carteles promo (tabla del admin).
+// Claves normalizadas: MAYÚSCULAS y sin acentos, para matchear "Energía",
+// "ENERGIA", "energía", etc. tmColorCategoria() devuelve el HEX o null.
+const TM_CAT_COLORES = {
+  'WIFI':'#3B82F6', 'ENERGIA':'#FBBF24', 'CELULARES':'#A855F7', 'SEGURIDAD':'#EF4444',
+  'CARROS':'#334155', 'MOTOS':'#FF6B1A', 'HOGAR':'#14B8A6', 'UTILES':'#06B6D4',
+  'GYM':'#22C55E', 'JUEGOS':'#CA8A04', 'PC Y LAPTOPS':'#8B5CF6', 'ROPA':'#64748B',
+};
+window.TM_CAT_COLORES = TM_CAT_COLORES;
+function tmColorCategoria(cat){
+  const k = String(cat || '').toUpperCase().normalize('NFD').replace(/[̀-ͯ]/g, '').trim();
+  return TM_CAT_COLORES[k] || null;
+}
+window.tmColorCategoria = tmColorCategoria;
+
 function _cartelColor(){
   const v = localStorage.getItem('tmCartelColor');
   return (v && /^#[0-9a-fA-F]{6}$/.test(v)) ? v : TM_CARTEL_COLORES[0][0];
