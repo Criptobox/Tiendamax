@@ -2389,7 +2389,6 @@
   // ═══════════════════════════════════════════════════════════════
 
   var _learnedFAQs = {};
-  var _popularProducts = [];
 
   /**
    * Aprende de la interacción. No bloquea la respuesta.
@@ -2472,17 +2471,9 @@
         })
         .catch(function () { /* silencioso */ });
 
-      // Cargar productos populares
-      fetch(fbConfig.databaseURL + '/agente/popular.json?orderBy="views"&limitToLast=10')
-        .then(function (r) { return r.json(); })
-        .then(function (data) {
-          if (data && typeof data === 'object') {
-            _popularProducts = Object.values(data).sort(function (a, b) {
-              return (b.views || 0) - (a.views || 0);
-            });
-          }
-        })
-        .catch(function () { /* silencioso */ });
+      // Nota: antes aquí se leía /agente/popular, pero NADA lo escribe nunca
+      // (nodo siempre vacío) y sin regla de lectura devolvía 401 en cada carga.
+      // Se quitó el fetch muerto: _popularProducts jamás se consumía.
 
     } catch (e) { /* silencioso */ }
   }

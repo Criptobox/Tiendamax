@@ -146,7 +146,8 @@
           "lastUpdated": { ".validate": "newData.isNumber()" }
         },
         ".read": true,
-        ".write": false
+        ".write": false,
+        ".indexOn": ["count"]
       },
       "interacciones": {
         "$ts": {
