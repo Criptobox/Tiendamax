@@ -47,16 +47,22 @@ class BuildCssCompletenessTest(unittest.TestCase):
 
 
 class BuildJsBundleCompletenessTest(unittest.TestCase):
+    # Módulos que se minifican en js/src/ pero NO van en el bundle a propósito:
+    # se sirven como <script> aparte (STANDALONE en build_js_bundle.py). No
+    # deben estar en ORDEN, pero sí deben estar declarados como standalone —
+    # así un módulo nuevo que se olvide en ambos lados sigue saltando el test.
+    EXCEPCIONES = set(build_js_bundle.STANDALONE)
+
     def test_todos_los_js_modulo_estan_en_orden(self):
         src_dir = ROOT / "js" / "src"
         # Módulos = *.js en js/src/ que NO son el fuente legible (*.src.js)
         en_disco = {p.name for p in src_dir.glob("*.js") if not p.name.endswith(".src.js")}
-        en_orden = set(build_js_bundle.ORDEN)
+        en_orden = set(build_js_bundle.ORDEN) | self.EXCEPCIONES
         faltantes = en_disco - en_orden
         self.assertEqual(
             faltantes, set(),
-            f"Estos módulos existen en js/src/ pero no están en ORDEN de "
-            f"build_js_bundle.py (nunca llegarán a tm-bundle.js): {sorted(faltantes)}"
+            f"Estos módulos existen en js/src/ pero no están en ORDEN ni en "
+            f"STANDALONE de build_js_bundle.py (nunca llegarán al sitio): {sorted(faltantes)}"
         )
 
     def test_orden_no_referencia_archivos_inexistentes(self):

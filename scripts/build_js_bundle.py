@@ -16,7 +16,8 @@ import re
 from datetime import datetime
 
 SRC_DIR = os.path.join(os.path.dirname(__file__), "..", "js", "src")
-OUT = os.path.join(os.path.dirname(__file__), "..", "js", "tm-bundle.js")
+JS_DIR = os.path.join(os.path.dirname(__file__), "..", "js")
+OUT = os.path.join(JS_DIR, "tm-bundle.js")
 SW_PATH = os.path.join(os.path.dirname(__file__), "..", "sw.js")
 
 # Orden EXACTO en que se cargaban en el <head> de index.html/admin.html.
@@ -32,8 +33,17 @@ ORDEN = [
     "tm-toast.js",
     "tm-iife.js",
     "tm-patches.js",
-    "tm-agent.js",
 ]
+
+# Módulos que se minifican como el resto (js/src/) pero NO van en el bundle:
+# se sirven como <script> aparte para bajar el peso del bundle crítico. El
+# agente de chat (62 KB min) no hace falta para el primer render del catálogo
+# —es un widget que el cliente abre a demanda— así que se separa a js/<nombre>
+# y se carga con su propio <script defer> después del bundle. Sacarlo de aquí
+# recorta ~62 KB de parseo del hilo principal en la carga inicial.
+STANDALONE = {
+    "tm-agent.js": os.path.join(JS_DIR, "tm-agent.js"),
+}
 
 
 def main():
@@ -59,6 +69,24 @@ def main():
         f.write(bundle)
     print(f"✅ tm-bundle.js generado: {round(len(bundle.encode()) / 1024)} KB "
           f"({len(ORDEN)} módulos)")
+    copiar_standalone()
+
+
+def copiar_standalone():
+    """Copia los módulos STANDALONE (minificados en js/src/) a js/<nombre> para
+    servirlos como <script> aparte del bundle. Falla si falta la fuente: mejor
+    romper el build que dejar el widget desplegado con una versión vieja."""
+    for nombre, destino in STANDALONE.items():
+        origen = os.path.join(SRC_DIR, nombre)
+        if not os.path.exists(origen):
+            print(f"❌ Falta el módulo standalone {nombre}. No lo copio.")
+            raise SystemExit(1)
+        with open(origen, encoding="utf-8") as f:
+            code = f.read()
+        with open(destino, "w", encoding="utf-8") as f:
+            f.write(code)
+        print(f"✅ standalone copiado: js/src/{nombre} → js/{nombre} "
+              f"({round(len(code.encode()) / 1024)} KB)")
 
 
 def bump_sw_cache():
