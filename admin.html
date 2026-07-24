@@ -3618,7 +3618,7 @@ async function pubCatUpdatePreview(){
     </div>
     <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border)">
       <div style="font-size:13px;font-weight:700;color:#fff;margin-bottom:4px">🖼️ Carteles individuales de la categoría</div>
-      <p style="font-size:12px;color:var(--muted);margin:0 0 10px">Un cartel promo por producto (${prods.length}${prods.length>PUB_CAT_LOTE_MAX?', tope '+PUB_CAT_LOTE_MAX:''}) — compártelos todos de un tirón o descárgalos.</p>
+      <p style="font-size:12px;color:var(--muted);margin:0 0 10px">Un cartel promo por producto (${prods.length}${prods.length>PUB_CAT_LOTE_MAX?', tope '+PUB_CAT_LOTE_MAX:''}) — compártelos todos de un tirón o descárgalos. El <b>texto + hashtags</b> de la categoría se copia solo al portapapeles.</p>
       <button type="button" id="pub-cat-autocolor" class="btn ${pubAutoColorCat()?'btn-primary':'btn-ghost'}" style="width:100%;margin-bottom:8px;justify-content:center" onclick="pubSetAutoColorCat(!pubAutoColorCat())">${pubAutoColorCat()?'🎨 Color por categoría: ON':'🎨 Color por categoría: OFF'}</button>
       <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px">
         <button type="button" class="pub-act estado pub-cat-lote-btn" onclick="pubCatCartelesLote('','share')">📤 Compartir todas</button>
@@ -3756,6 +3756,14 @@ async function pubCatCartelesLote(cat, modo){ // modo: 'share' | 'download'
   cat=cat||_pubCatSel; if(!cat){ showToast('Elige una categoría'); return; }
   const total=pubCatProds(cat).length;
   if(!total){ showToast('Sin productos con stock en esta categoría'); return; }
+  // Texto + hashtags de la categoría, copiado al portapapeles YA (dentro del
+  // gesto del click, antes de los await de generación) para que quede listo
+  // para pegar donde se suban las imágenes. Muchos destinos ignoran el `text`
+  // de navigator.share cuando van archivos, así que el clipboard es lo fiable.
+  const texto=(typeof pubCatText==='function') ? pubCatText(cat) : '';
+  let copiado=false;
+  if(texto){ try{ await navigator.clipboard.writeText(texto); copiado=true; }catch(e){} }
+  const hashSufijo = copiado ? ' · 📋 texto + hashtags copiados' : '';
   const btns=document.querySelectorAll('.pub-cat-lote-btn'); btns.forEach(b=>b.disabled=true);
   const nGen=Math.min(total, PUB_CAT_LOTE_MAX);
   _pubLoteProgress('⏳ Generando imágenes… 0/'+nGen, 0, nGen);
@@ -3765,19 +3773,19 @@ async function pubCatCartelesLote(cat, modo){ // modo: 'share' | 'download'
     const extra = total>files.length ? ' (de '+total+', tope '+PUB_CAT_LOTE_MAX+')' : '';
     if(modo==='share'){
       if(navigator.canShare && navigator.canShare({files}) && navigator.share){
-        try{ await navigator.share({files, title:'TiendaMax — '+cat}); _pubLoteProgress('✅ '+files.length+' imágenes compartidas'+extra); return; }
+        try{ await navigator.share({files, title:'TiendaMax — '+cat, text:texto}); _pubLoteProgress('✅ '+files.length+' imágenes compartidas'+extra+hashSufijo); return; }
         catch(e){ if(/abort/i.test(e.message||'')){ _pubLoteProgress(''); return; } }
       }
       // Sin soporte de compartir varios archivos → descargar como respaldo
       showToast('Tu dispositivo no comparte varias imágenes a la vez — descargando…');
       await _pubDownloadFiles(files);
-      _pubLoteProgress('⬇️ '+files.length+' imágenes descargadas'+extra);
+      _pubLoteProgress('⬇️ '+files.length+' imágenes descargadas'+extra+hashSufijo);
       return;
     }
     // modo download
     await _pubDownloadFiles(files);
-    _pubLoteProgress('⬇️ '+files.length+' imágenes descargadas'+extra);
-    showToast('⬇️ '+files.length+' imágenes descargadas');
+    _pubLoteProgress('⬇️ '+files.length+' imágenes descargadas'+extra+hashSufijo);
+    showToast('⬇️ '+files.length+' imágenes descargadas', copiado?'📋 Texto + hashtags copiados — pégalos al subir':'');
   } finally { btns.forEach(b=>b.disabled=false); }
 }
 async function pubShareStory(p){
