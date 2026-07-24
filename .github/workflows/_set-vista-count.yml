@@ -1,0 +1,29 @@
+name: (temporal) corregir contador de vistas
+
+on:
+  workflow_dispatch:
+    inputs:
+      producto_id:
+        description: 'ID del producto'
+        required: true
+      nuevo_count:
+        description: 'Nuevo valor del contador de vistas'
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.11' }
+      - run: python -m pip install firebase-admin==6.5.0
+      - run: python scripts/_set_vista_count.py
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          PRODUCTO_ID: ${{ inputs.producto_id }}
+          NUEVO_COUNT: ${{ inputs.nuevo_count }}
