@@ -1,6 +1,6 @@
 {
-  "actualizado": "2026-07-23T12:24:04.389286+00:00",
-  "fecha": "2026-07-23",
+  "actualizado": "2026-07-24T12:18:40.936542+00:00",
+  "fecha": "2026-07-24",
   "fuentes": [
     "revolico",
     "porlalivre",
@@ -9,7 +9,7 @@
   "resumen": {
     "vigilados": 3,
     "encimaMercado": 0,
-    "bajadasComp": 1,
+    "bajadasComp": 0,
     "sinDatos": 0
   },
   "productos": [
@@ -22,7 +22,7 @@
         "mediana": 39.99,
         "n": 15
       },
-      "deltaAyerMediana": -2.51,
+      "deltaAyerMediana": 0.0,
       "estado": "competitivo",
       "sugerencia": {
         "texto": "Precio competitivo respecto al mercado"
@@ -42,6 +42,10 @@
         },
         {
           "fecha": "2026-07-23",
+          "mediana": 39.99
+        },
+        {
+          "fecha": "2026-07-24",
           "mediana": 39.99
         }
       ],
@@ -83,7 +87,7 @@
         },
         {
           "fuente": "revolico",
-          "titulo": "30 USD 🌐SWITCH ETHERNET 8 PUERTOS GIGABIT 🌐E01 30 usd",
+          "titulo": "30 USD 🌐SWITCH ETHERNET 8 PUERTOS GIGABIT 🌐 AX | E01 | 30 usd",
           "precio": 30.0,
           "url": "https://www.revolico.com/item/switch-ethernet-8-puertos-gigabit-e01-30-usd-56427387",
           "dias": null
@@ -106,10 +110,6 @@
       },
       "historial": [
         {
-          "fecha": "2026-07-07",
-          "mediana": 25.0
-        },
-        {
           "fecha": "2026-07-08",
           "mediana": 25.0
         },
@@ -159,6 +159,10 @@
         },
         {
           "fecha": "2026-07-23",
+          "mediana": 25.0
+        },
+        {
+          "fecha": "2026-07-24",
           "mediana": 25.0
         }
       ],
@@ -179,7 +183,7 @@
       "mercado": {
         "min": 70.0,
         "mediana": 90.0,
-        "n": 14
+        "n": 15
       },
       "deltaAyerMediana": 0.0,
       "estado": "competitivo",
@@ -187,10 +191,6 @@
         "texto": "Precio competitivo respecto al mercado"
       },
       "historial": [
-        {
-          "fecha": "2026-07-07",
-          "mediana": 90.0
-        },
         {
           "fecha": "2026-07-08",
           "mediana": 90.0
@@ -241,6 +241,10 @@
         },
         {
           "fecha": "2026-07-23",
+          "mediana": 90.0
+        },
+        {
+          "fecha": "2026-07-24",
           "mediana": 90.0
         }
       ],
@@ -268,6 +272,13 @@
         },
         {
           "fuente": "revolico",
+          "titulo": "90 USD 🔥 ANTORCHA TIG PROFESIONAL – PRECISIÓN DE ALTA GAMA 🔥 AX | E01 | $90 USD",
+          "precio": 90.0,
+          "url": "https://www.revolico.com/item/antorcha-tig-profesional-precision-de-alta-gama-e01-90-usd-56444885",
+          "dias": null
+        },
+        {
+          "fuente": "revolico",
           "titulo": "90 USD antorcha para soldadura TIG.  emilivariedad 💯",
           "precio": 90.0,
           "url": "https://www.revolico.com/item/antorcha-para-soldadura-tig-emilivariedad-56429281",
@@ -278,13 +289,6 @@
           "titulo": "90 USD Antorcha para soldadura TIG:",
           "precio": 90.0,
           "url": "https://www.revolico.com/item/antorcha-para-soldadura-tig-56427417",
-          "dias": null
-        },
-        {
-          "fuente": "revolico",
-          "titulo": "90 USD Antorcha para soldadura TIG",
-          "precio": 90.0,
-          "url": "https://www.revolico.com/item/antorcha-para-soldadura-tig-56425444",
           "dias": null
         }
       ]
