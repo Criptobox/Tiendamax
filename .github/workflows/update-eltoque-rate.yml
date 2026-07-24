@@ -2,7 +2,7 @@ name: Actualizar tasa desde elTOQUE
 
 on:
   schedule:
-    # El disparo PUNTUAL cada 30 min lo hace ahora el Worker de Cloudflare
+    # El disparo PUNTUAL cada 5 min lo hace ahora el Worker de Cloudflare
     # (bot/cloudflare_worker.js) vía workflow_dispatch — su cron no se retrasa
     # como el de GitHub Actions (5-20 min de jitter), que hacía llegar tarde el
     # aviso de cambio de tasa. Esto de aquí es solo RED DE SEGURIDAD: si el
@@ -16,7 +16,7 @@ permissions:
   contents: write
   actions: write
 
-# Evita que un workflow_dispatch manual choque con la corrida por cron (cada 30 min).
+# Evita que un workflow_dispatch manual choque con la corrida por cron (cada 5 min).
 concurrency:
   group: update-eltoque-rate
   cancel-in-progress: false

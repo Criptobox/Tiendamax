@@ -12,5 +12,5 @@ kv_namespaces = [
 # distingue por el string del cron.
 crons = [
   "0 13 * * 1",        # Reporte semanal — lunes 9 AM Cuba (13:00 UTC)
-  "*/30 12-21 * * *",  # Tasa elTOQUE — cada 30 min, 8 AM-5 PM Cuba (12:00-21:00 UTC)
+  "*/5 12-21 * * *",   # Tasa elTOQUE — cada 5 min, 8 AM-5 PM Cuba (12:00-21:00 UTC)
 ]
