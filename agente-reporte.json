@@ -1,19 +1,14 @@
 {
-  "generado": "2026-07-24T10:55:41.740042+00:00",
-  "productos": 118,
+  "generado": "2026-07-25T10:21:28.722359+00:00",
+  "productos": 116,
   "urgentes": 0,
-  "advertencias": 37,
-  "info": 10,
-  "resumen": "Anoche revisé tus 118 productos y encontré 37 advertencia(s), 10 de info.",
+  "advertencias": 38,
+  "info": 9,
+  "resumen": "Anoche revisé tus 116 productos y encontré 38 advertencia(s), 9 de info.",
   "detalle": [
     {
       "tipo": "agotado",
       "nombre": "Batería Must Tipo LIFEPO4",
-      "detalle": "agotado (stock 0)"
-    },
-    {
-      "tipo": "agotado",
-      "nombre": "Cargador Inteligente 30A",
       "detalle": "agotado (stock 0)"
     },
     {
@@ -24,6 +19,16 @@
     {
       "tipo": "agotado",
       "nombre": "​🌐 Router Wavlink AC1200 Dual Band",
+      "detalle": "agotado (stock 0)"
+    },
+    {
+      "tipo": "agotado",
+      "nombre": "​📶 Repetidor Wi-fi 5 (Doble Banda - 1200 Mbps)",
+      "detalle": "agotado (stock 0)"
+    },
+    {
+      "tipo": "agotado",
+      "nombre": "​⚖️ Báscula Digital de Alta Definición",
       "detalle": "agotado (stock 0)"
     },
     {
@@ -118,6 +123,11 @@
     },
     {
       "tipo": "agotado",
+      "nombre": "Controlador Solar de 60 Amp Powmr M60 ULTRA",
+      "detalle": "agotado (stock 0)"
+    },
+    {
+      "tipo": "agotado",
       "nombre": "Controlador Solar Powmr M100 PRO - MPPT de 80 Amp",
       "detalle": "agotado (stock 0)"
     },
@@ -163,17 +173,12 @@
     },
     {
       "tipo": "agotado",
-      "nombre": "Cargador Inteligente 30A",
+      "nombre": "​🌐 Router Tp-link Archer AX1450 (Wi-fi 6)",
       "detalle": "agotado (stock 0)"
     },
     {
       "tipo": "agotado",
       "nombre": "Panel Decorativo de Hojas Artificiales",
-      "detalle": "agotado (stock 0)"
-    },
-    {
-      "tipo": "agotado",
-      "nombre": "Transferencia Automática o Manual",
       "detalle": "agotado (stock 0)"
     },
     {
@@ -209,11 +214,6 @@
     {
       "tipo": "stock_bajo",
       "nombre": "PC Gaming Setup Premium",
-      "detalle": "quedan 1"
-    },
-    {
-      "tipo": "stock_bajo",
-      "nombre": "​🌐 Router Tp-link Archer AX1450 (Wi-fi 6)",
       "detalle": "quedan 1"
     },
     {
