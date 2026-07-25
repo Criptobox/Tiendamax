@@ -1522,8 +1522,8 @@
   {
     "id": 1780017975657,
     "nombre": "​🔊 Xiaomi Sound Outdoor (30W)",
-    "precioActual": 75,
-    "precioOriginal": 0,
+    "precioActual": 65,
+    "precioOriginal": 75,
     "imagen": "https://tiendamax.org/imagenes/img_1783836546487.webp",
     "categoria": "AUDIO",
     "subcategoria": "AUDIO",
@@ -1532,7 +1532,7 @@
     "usado": false,
     "garantia": "",
     "devolucion": false,
-    "descuento": 0,
+    "descuento": 13,
     "slug": "xiaomi-sound-outdoor-30w",
     "comision": 5,
     "specs": [
