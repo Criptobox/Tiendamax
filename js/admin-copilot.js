@@ -1336,10 +1336,39 @@ function _cSplitTitle(name){
   name = _cStrip(name).toUpperCase().replace(/\([^)]*\)/g,'').trim();
   const stop = ['DE','LA','EL','LOS','LAS','Y','CON','PARA','DEL','UN','UNA','A'];
   const w = name.split(/\s+/).filter(x=>x.length>1 && !stop.includes(x));
-  return [w[0]||'PRODUCTO', w[1]||''];
+  // La 2da palabra no puede ser la primera que aparezca sin más: nombres como
+  // "Router Wi-fi 6 AX1800 Asus RT-AX1800S" y "Router Wi-fi 6 AX3000 Tp-link
+  // Archer AX55" son productos distintos (marca y modelo distintos) pero
+  // ambos arrancan "ROUTER WI-FI" — el cartel de los dos salía idéntico.
+  // Se salta términos de marketing/spec genéricos y números sueltos para
+  // llegar a la palabra que sí identifica el producto (marca o modelo).
+  const filler = ['WIFI','WI-FI','INALAMBRICO','INALÁMBRICO','DOBLE','BANDA','DUAL','BAND',
+    'GIGABIT','ALTA','VELOCIDAD','RANGO','EXTENDIDO','AVANZADO','RENDIMIENTO','NUEVA',
+    'GENERACION','GENERACIÓN','EXTERIOR','GLOBAL','VERSION','VERSIÓN'];
+  const resto = w.slice(1);
+  const identificador = resto.find(x=>!filler.includes(x) && !/^\d+$/.test(x));
+  return [w[0]||'PRODUCTO', identificador || resto[0] || ''];
 }
 function _cTitleFont(a,b){ const m=Math.max((a||'').length,(b||'').length); return m>10?50:m>8?62:m>6?72:82; }
-function _cFirstSentence(desc){ return _cClip(String(desc==null?'':desc).replace(/​/g,'').split(/\.\s|\n/)[0].trim(),68); }
+function _cFirstSentence(desc){
+  const raw = String(desc==null?'':desc).replace(/​/g,'').split(/\.\s|\n/)[0].trim();
+  // Prioriza cortar en la primera coma: deja una frase corta y completa
+  // ("Router de alto rendimiento con tecnología de doble banda") en vez de
+  // partir a ciegas a los N caracteres, que casi siempre caía a mitad de
+  // cláusula ("...banda, diseñado…") y se veía cortado a medio texto.
+  const limite = 95, minimo = 20;
+  const ultimoCorteAntes = (re) => {
+    let corte = -1, m;
+    while ((m = re.exec(raw))) { if (m.index > limite) break; corte = m.index; }
+    return corte;
+  };
+  // 1) preferir la última coma dentro del límite; 2) si no hay, la última
+  // conjunción "y"/"o" (evita terminar en una palabra colgando tipo "...y…").
+  let corte = ultimoCorteAntes(/,/g);
+  if (corte < minimo) corte = ultimoCorteAntes(/\s(?:y|o)\s/g);
+  if (corte >= minimo) return raw.slice(0, corte).trim();
+  return _cClip(raw, 78);
+}
 function _cFeatures(desc, specs){
   const out=[]; const lines=String(desc==null?'':desc).split('\n').map(l=>l.replace(/​/g,'').trim()).filter(Boolean);
   let inF=false;
