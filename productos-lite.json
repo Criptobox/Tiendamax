@@ -17,11 +17,11 @@
     "comision": 10,
     "comisionMoneda": "USD",
     "specs": [
-      "Química: LiFePO4 (Fosfato de Hierro y Litio)",
-      "Voltaje Nominal: 12.8V DC | Capacidad: 100Ah (1280Wh)",
-      "Voltaje de Carga: 14.6V | Carga Máx: 50A | Descarga Máx: 100A",
-      "Vida Útil: >4000 ciclos al 80% DOD",
-      "Modelo Exacto: MUST LP15-12100"
+      "LiFePO4 (Fosfato de Hierro y Litio)",
+      "12.8V DC | Capacidad: 100Ah (1280Wh)",
+      "14.6V | Carga Máx: 50A | Descarga Máx: 100A",
+      ">4000 ciclos al 80% DOD",
+      "MUST LP15-12100"
     ],
     "seoTitle": "BATERÍA MUST TIPO LIFEPO4 en Cuba | TiendaMax",
     "seoDescription": "Batería tipo LiFePO4 (litio hierro fosfato). Mas segura y con mayor vida útil que las tradicionales. Capacidad de 12.8V y 100Ah (1280Wh), ideal para…",
@@ -46,11 +46,11 @@
     "comision": 5,
     "comisionMoneda": "USD",
     "specs": [
-      "Voltaje Automático: 12V / 24V DC",
-      "Corriente Seleccionable: 5A / 10A / 20A / 30A",
-      "Baterías Soportadas: Plomo-Ácido, AGM, GEL, EFB y LiFePO4",
-      "Función: Desulfatación / Reparación por pulsos de alta frecuencia",
-      "Protección: Inversión de polaridad, sobrecarga y sobrecalentamiento"
+      "12V / 24V DC",
+      "5A / 10A / 20A / 30A",
+      "Plomo-Ácido, AGM, GEL, EFB y LiFePO4",
+      "Desulfatación / Reparación por pulsos de alta frecuencia",
+      "Inversión de polaridad, sobrecarga y sobrecalentamiento"
     ],
     "seoTitle": "CARGADOR INTELIGENTE 30A en Cuba | TiendaMax",
     "seoDescription": "Cargador inteligente de 20 A 12V y 24V. Corriente ajustable de 5A, 10A y hasta 20A. Permite elegir entre carga lenta, media o rápida según la necesidad…"
@@ -76,11 +76,11 @@
       "https://tiendamax.org/imagenes/img_1777924118004.webp"
     ],
     "specs": [
-      "Potencia Nominal: 2000W Continua | Potencia Pico: 4000W",
-      "Entrada: 12V DC (10.5V - 15V DC)",
-      "Salida: 110V AC ± 10% (60Hz)",
-      "Forma de Onda: Onda Sinusoidal Modificada",
-      "Salidas: 2 Tomas AC Estándar + Bornes de Alta Corriente"
+      "2000W Continua | Potencia Pico: 4000W",
+      "12V DC (10.5V - 15V DC)",
+      "110V AC ± 10% (60Hz)",
+      "Onda Sinusoidal Modificada",
+      "2 Tomas AC Estándar + Bornes de Alta Corriente"
     ],
     "recomendados": [],
     "seoTitle": "INVERSOR 12V en Cuba | TiendaMax",
@@ -104,12 +104,12 @@
     "slug": "enrutador-wifi-wavlink-ac1200",
     "comision": 10,
     "specs": [
-      "Estándar Wi-Fi: IEEE 802.11ac/a/n/g/b (Wi-Fi 5)",
-      "Velocidad Combinada: 1200 Mbps (867 Mbps en 5GHz + 300 Mbps en 2.4GHz)",
-      "Antenas: 4 Antenas Externas Omnidireccionales de 5dBi",
-      "Puertos: 1 WAN Fast Ethernet + 4 LAN Fast Ethernet",
-      "Seguridad: Cifrado WPA-PSK / WPA2-PSK",
-      "Función Especial: Botón físico 'Modo Turbo' para mayor alcance en paredes"
+      "IEEE 802.11ac/a/n/g/b (Wi-Fi 5)",
+      "1200 Mbps (867 Mbps en 5GHz + 300 Mbps en 2.4GHz)",
+      "4 Antenas Externas Omnidireccionales de 5dBi",
+      "1 WAN Fast Ethernet + 4 LAN Fast Ethernet",
+      "Cifrado WPA-PSK / WPA2-PSK",
+      "Botón físico 'Modo Turbo' para mayor alcance en paredes"
     ],
     "seoTitle": "ENRUTADOR WIFI WAVLINK AC1200 en Cuba | TiendaMax",
     "seoDescription": "Enrutador WiFi WAVLINK AC1200 de doble banda 5 GHz + 2.4 GHz, enrutador inalámbrico para hogar y juegos con puertos Ethernet Gigabit WAN/LAN, 4 antenas de…",
@@ -136,11 +136,11 @@
     "slug": "repetidor-wifi-5",
     "comision": 1500,
     "specs": [
-      "Estándar Wi-Fi: IEEE 802.11ac/a/n/g/b (Wi-Fi 5)",
-      "Velocidad Máxima: 1200 Mbps (867 Mbps en 5 GHz + 300 Mbps en 2.4 GHz)",
-      "Antenas: 4 Antenas Externas orientables de alta potencia",
-      "Diseño: Conexión directa a tomacorriente (US Plug)",
-      "Modos de Operación: Repetidor de Rango / Punto de Acceso (AP) / Router"
+      "IEEE 802.11ac/a/n/g/b (Wi-Fi 5)",
+      "1200 Mbps (867 Mbps en 5 GHz + 300 Mbps en 2.4 GHz)",
+      "4 Antenas Externas orientables de alta potencia",
+      "Conexión directa a tomacorriente (US Plug)",
+      "Repetidor de Rango / Punto de Acceso (AP) / Router"
     ],
     "seoTitle": "REPETIDOR WIFI 5 en Cuba | TiendaMax",
     "seoDescription": "Repetidor wifi 5 de doble banda 2.4G y 5G, de 1200 mbps.",
@@ -174,11 +174,11 @@
       "https://tiendamax.org/imagenes/img_1780510811569.webp"
     ],
     "specs": [
-      "Puertos: 8 Puertos RJ45 10/100/1000 Mbps Auto-Negociables",
-      "Capacidad de Conmutación: 16 Gbps",
-      "Construcción: PCB Doble Capa + Puertos con blindaje metálico de 8 pines",
-      "Operación: Plug & Play no gestionado (Sin configuración necesaria)",
-      "Uso Recomendado: Oficinas, Smart TVs, Consolas y Cámaras CCTV IP"
+      "8 Puertos RJ45 10/100/1000 Mbps Auto-Negociables",
+      "16 Gbps",
+      "PCB Doble Capa + Puertos con blindaje metálico de 8 pines",
+      "Plug & Play no gestionado (Sin configuración necesaria)",
+      "Oficinas, Smart TVs, Consolas y Cámaras CCTV IP"
     ]
   },
   {
@@ -202,11 +202,11 @@
     "precioOriginal": 0,
     "comisionMoneda": "MN",
     "specs": [
-      "Capacidad Máxima: 180 kg (396 lbs) | División/Precisión: 50 g",
-      "Material: Plataforma de Vidrio Templado de alta resistencia (6mm)",
-      "Pantalla: LCD HD Digital retroiluminada de alta visibilidad",
-      "Dimensiones: 27 cm x 27 cm",
-      "Alimentación: 2 Baterías AAA"
+      "180 kg (396 lbs) | División/Precisión: 50 g",
+      "Plataforma de Vidrio Templado de alta resistencia (6mm)",
+      "LCD HD Digital retroiluminada de alta visibilidad",
+      "27 cm x 27 cm",
+      "2 Baterías AAA"
     ],
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1784007772666.webp",
@@ -266,10 +266,10 @@
       "https://tiendamax.org/imagenes/img_1778103783319.webp"
     ],
     "specs": [
-      "Voltaje Nominal: 12V DC | Capacidad: 75Ah",
-      "Tecnología: Calcio-Calcio (Ca/Ca) Libre de Mantenimiento",
-      "Aplicación: Encendido Automotriz (Sedanes, SUVs)",
-      "Construcción: Diseño sellado reforzado contra vibraciones"
+      "12V DC | Capacidad: 75Ah",
+      "Calcio-Calcio (Ca/Ca) Libre de Mantenimiento",
+      "Encendido Automotriz (Sedanes, SUVs)",
+      "Diseño sellado reforzado contra vibraciones"
     ]
   },
   {
@@ -292,11 +292,11 @@
     "precioOriginal": 0,
     "comisionMoneda": "MN",
     "specs": [
-      "Batería: Litio 18650 de 3000 mAh (Autonomía hasta 3 horas)",
-      "Puerto de Carga: USB Tipo-C",
-      "Accesorios: 4 Cabezales (Esférico, U-Horquilla, Cónico, Plano)",
-      "Ajustes: Panel táctil con indicadores LED de velocidad",
-      "Uso: Terapia miofascial y recuperación muscular post-entreno"
+      "Litio 18650 de 3000 mAh (Autonomía hasta 3 horas)",
+      "USB Tipo-C",
+      "4 Cabezales (Esférico, U-Horquilla, Cónico, Plano)",
+      "Panel táctil con indicadores LED de velocidad",
+      "Terapia miofascial y recuperación muscular post-entreno"
     ],
     "imagenes": [
       "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784007970666.webp",
@@ -320,11 +320,11 @@
     "slug": "cargador-inteligente-15a",
     "comision": 5,
     "specs": [
-      "Salida de Corriente: 15A en 12V DC / 8A en 24V DC",
-      "Entrada de Alimentación: Auto-Voltaje 110V - 220V AC",
-      "Ciclo de Carga: Proceso automático en 9 etapas por pulsos",
-      "Pantalla: Display digital LED de voltaje, corriente y temperatura",
-      "Compatibilidad: Plomo-Ácido, Gel, Calcio, AGM y WET"
+      "15A en 12V DC / 8A en 24V DC",
+      "Auto-Voltaje 110V - 220V AC",
+      "Proceso automático en 9 etapas por pulsos",
+      "Display digital LED de voltaje, corriente y temperatura",
+      "Plomo-Ácido, Gel, Calcio, AGM y WET"
     ],
     "seoTitle": "CARGADOR INTELIGENTE DE 15 AMPERES: en Cuba | TiendaMax",
     "seoDescription": "Cargador inteligente de 15 AMPERES: Carga y repara las baterias de acido plomo, calcio, gel, húmedas, lifepo4, AGM, entre otras. Trabaja con 110 y 220…"
@@ -345,11 +345,11 @@
     "slug": "el-enrutador-wifi-de-1-150mbps",
     "comision": 10,
     "specs": [
-      "Conectividad Móvil: Módem 4G LTE Integrado con Ranura SIM",
-      "Antenas: 2 Antenas Externas de Alta Ganancia desmontables",
-      "Protección: Carcasa sellada para exterior resistente a la intemperie",
-      "Puertos: 1 Puerto RJ45 Ethernet WAN/LAN (Soporta PoE Pasivo)",
-      "Panel de Indicadores: LEDs de encendido, señal LTE, Wi-Fi y LAN"
+      "Módem 4G LTE Integrado con Ranura SIM",
+      "2 Antenas Externas de Alta Ganancia desmontables",
+      "Carcasa sellada para exterior resistente a la intemperie",
+      "1 Puerto RJ45 Ethernet WAN/LAN (Soporta PoE Pasivo)",
+      "LEDs de encendido, señal LTE, Wi-Fi y LAN"
     ],
     "seoTitle": "EL ENRUTADOR WIFI DE 1.150MBPS en Cuba | TiendaMax",
     "seoDescription": "El enrutador WiFi de 1.150Mbps es un enrutador 4G CPE para exteriores con una antena externa de alta ganancia de 2 piezas para lograr la amplificación de…",
@@ -375,11 +375,11 @@
     "slug": "cargador-10-amperes",
     "comision": 5,
     "specs": [
-      "Salida Máxima: 10A en 12V DC / 5A en 24V DC",
-      "Entrada: 110V - 240V AC (50/60Hz)",
-      "Carga Inteligente: Algoritmo de 10 etapas controlado por MCU",
-      "Compatibilidad: LiFePO4, Litio, AGM, GEL, SLA, WET y EFB",
-      "Modos de Operación: Moto, Carro, LiFePO4 y Reparación (Pulse Repair)"
+      "10A en 12V DC / 5A en 24V DC",
+      "110V - 240V AC (50/60Hz)",
+      "Algoritmo de 10 etapas controlado por MCU",
+      "LiFePO4, Litio, AGM, GEL, SLA, WET y EFB",
+      "Moto, Carro, LiFePO4 y Reparación (Pulse Repair)"
     ],
     "seoTitle": "CARGADOR 10 AMPERES en Cuba | TiendaMax",
     "seoDescription": "Cargador/ reparador Inteligente de Batería de 12V y 24V a 10Amperios , auto voltaje (110 y 220). Aplicable para Baterías Plomo-Ácido, calcio, gel, Litio y…"
@@ -400,11 +400,11 @@
     "slug": "controlador-solar-powmr-m100-pro-mppt-de-100-amp",
     "comision": 10,
     "specs": [
-      "Corriente Máx. de Carga: 100A MPPT",
-      "Voltaje del Banco: 12V / 24V / 36V / 48V (Auto Detección)",
-      "Voltaje Máx. Entrada PV (Voc): 160V DC",
-      "Potencia Máx. Paneles: 1200W (12V) / 2400W (24V) / 4800W (48V)",
-      "Eficiencia de Seguimiento MPPT: 99%"
+      "100A MPPT",
+      "12V / 24V / 36V / 48V (Auto Detección)",
+      "160V DC",
+      "1200W (12V) / 2400W (24V) / 4800W (48V)",
+      "99%"
     ],
     "seoTitle": "♻️CONTROLADOR SOLAR POWMR M100 PRO - MPPT DE 100 AMP♻️",
     "seoDescription": "♻️CONTROLADOR SOLAR POWMR M100 PRO -MPPT DE 100 AMP♻️ Especificaciones Eléctricas Clave: Voltaje Máximo del Sistema (PV): 100V DC. Esto permite conectar…",
@@ -427,12 +427,12 @@
     "slug": "inversor-solar-hibrido-mppt-3-6kw",
     "comision": 25,
     "specs": [
-      "Potencia Nominal: 3600W Continua | Onda Senoidal Pura",
-      "Voltaje de Baterías: 24V DC | Cargador MPPT: 120A integrado",
-      "Salida AC: 110V / 120V AC (60Hz)",
-      "Voltaje Máx. Campo Solar (Voc): 500V DC",
-      "Potencia Máx. Entrada PV: 4200W",
-      "Soporte de Batería: Litio (LiFePO4) y Plomo-Ácido"
+      "3600W Continua | Onda Senoidal Pura",
+      "24V DC | Cargador MPPT: 120A integrado",
+      "110V / 120V AC (60Hz)",
+      "500V DC",
+      "4200W",
+      "Litio (LiFePO4) y Plomo-Ácido"
     ],
     "seoTitle": "INVERSOR SOLAR HIBRIDO INTELIGENTE MPPT DE 3.6KW | TiendaMax",
     "seoDescription": "Inversor solar hibrido inteligente MPPT de 3.6kW, carga baterias de 24v DC hasta 120 A con 110V AC de salida. ✔️Onda sinusoidal pura: Proporciona energía…"
@@ -453,11 +453,11 @@
     "slug": "inversor-de-onda-sinusoidal-pura-fuera-de-la-red",
     "comision": 35,
     "specs": [
-      "Potencia Nominal: 5000W Continua | Onda Senoidal Pura",
-      "Voltaje de Batería: 48V DC",
-      "Capacidad Paralelable: Hasta 6 unidades en paralelo",
-      "Gestión: Pantalla LCD táctil para monitoreo en tiempo real",
-      "Modos de Carga: Prioridad Solar, Red o Mixta"
+      "5000W Continua | Onda Senoidal Pura",
+      "48V DC",
+      "Hasta 6 unidades en paralelo",
+      "Pantalla LCD táctil para monitoreo en tiempo real",
+      "Prioridad Solar, Red o Mixta"
     ],
     "seoTitle": "INVERSOR DE ONDA SINUSOIDAL PURA FUERA DE LA RED | TiendaMax",
     "seoDescription": "1. Inversor de onda sinusoidal pura fuera de la red. 2.El máximo número de conexiones paralelas es 6. 3.Potencia de salida más alta hasta 500OW. 4.Salida…",
@@ -484,11 +484,11 @@
     "slug": "este-router-kuwfi-ofrece-una-velocidad-de-transmision-wifi-de-150-mbps",
     "comision": 10,
     "specs": [
-      "Conectividad Móvil: Ranura SIM integrada (Liberado para redes 4G LTE)",
-      "Velocidad Wi-Fi: 150 Mbps en banda 2.4 GHz",
-      "Antenas: 4 Antenas Externas de Alta Ganancia (2 para LTE + 2 para Wi-Fi)",
-      "Puertos: 1 Puerto RJ45 WAN/LAN Fast Ethernet",
-      "Configuración: Gestión web para APN manual y control de tráfico"
+      "Ranura SIM integrada (Liberado para redes 4G LTE)",
+      "150 Mbps en banda 2.4 GHz",
+      "4 Antenas Externas de Alta Ganancia (2 para LTE + 2 para Wi-Fi)",
+      "1 Puerto RJ45 WAN/LAN Fast Ethernet",
+      "Gestión web para APN manual y control de tráfico"
     ],
     "seoTitle": "ESTE ROUTER KUWFI OFRECE UNA VELOCIDAD DE… | TiendaMax",
     "seoDescription": "Este router KuWFi ofrece una velocidad de transmisión WiFi de 150 Mbps, proporcionando una conexión rápida y estable para todos sus dispositivos…",
@@ -515,11 +515,11 @@
     "slug": "controlador-carga-solar-mppt-100a",
     "comision": 5,
     "specs": [
-      "Corriente de Carga: 100A MPPT",
-      "Voltaje Automático: 12V / 24V / 36V / 48V DC",
-      "Pantalla: LCD con monitoreo de voltaje y corriente en tiempo real",
-      "Formato: Montaje en pared (Medidas: 19.5 x 18.3 cm)",
-      "Protección: Sobrecarga, cortocircuito y polaridad invertida"
+      "100A MPPT",
+      "12V / 24V / 36V / 48V DC",
+      "LCD con monitoreo de voltaje y corriente en tiempo real",
+      "Montaje en pared (Medidas: 19.5 x 18.3 cm)",
+      "Sobrecarga, cortocircuito y polaridad invertida"
     ],
     "seoTitle": "✅️CONTROLADOR DE CARGA SOLAR MPPT - 100A en Cuba | TiendaMax",
     "seoDescription": "✅️Controlador de Carga Solar MPPT - 100A -Alta eficiencia y compatibilidad automática con sistemas de 12/24/36/48V. -Ideal para sistemas solares en casas…"
@@ -540,11 +540,11 @@
     "slug": "estacion-de-carga-portatil",
     "comision": 20,
     "specs": [
-      "Capacidad de Batería: 1152Wh (Química LiFePO4)",
-      "Potencia Continua AC: 1800W (Pico de levantamiento Power Lifting: 2700W)",
-      "Puertos de Salida: 4 Tomas AC 110V + 1 USB-C 100W + 4 USB-A + 1 DC 12V/10A",
-      "Carga Solar (MPPT): Entrada máx. 500W (12V-60V DC, 10A)",
-      "Carga AC de Pared: 0 a 80% en solo 45 minutos (Turbo Charging 1440W)"
+      "1152Wh (Química LiFePO4)",
+      "1800W (Pico de levantamiento Power Lifting: 2700W)",
+      "4 Tomas AC 110V + 1 USB-C 100W + 4 USB-A + 1 DC 12V/10A",
+      "Entrada máx. 500W (12V-60V DC, 10A)",
+      "0 a 80% en solo 45 minutos (Turbo Charging 1440W)"
     ],
     "seoTitle": "ESTACION DE CARGA PORTÁTIL en Cuba | TiendaMax",
     "seoDescription": "Estacion de carga portátil BLUETTI AC 180. 🔹 Potencia de salida de 1800W continuos (pico de hasta 2700W). BLUETTI-US 🔹 Capacidad de batería de 1152Wh…"
@@ -565,11 +565,11 @@
     "slug": "bluetti-ac-180p",
     "comision": 20,
     "specs": [
-      "Capacidad Extendida: 1440Wh (Química LiFePO4 de alta durabilidad)",
-      "Potencia Continua: 1800W (Pico de 2700W)",
-      "Salidas: 4 Tomas AC 110V + USB-C PD 100W + USB-A Carga Rápida + DC 12V",
-      "Control: Monitoreo vía App Bluetooth desde el smartphone",
-      "Carga Solar Integrada: Controlador MPPT hasta 500W de entrada"
+      "1440Wh (Química LiFePO4 de alta durabilidad)",
+      "1800W (Pico de 2700W)",
+      "4 Tomas AC 110V + USB-C PD 100W + USB-A Carga Rápida + DC 12V",
+      "Monitoreo vía App Bluetooth desde el smartphone",
+      "Controlador MPPT hasta 500W de entrada"
     ],
     "seoTitle": "BLUETTI AC 180P en Cuba | TiendaMax",
     "seoDescription": "\"BLUETTI AC 180P\" 🔹 Capacidad de 1,440 Wh, ideal para alimentar múltiples dispositivos durante horas. 🔹 Potencia continua de 1,800 W, suficiente para…"
@@ -791,11 +791,11 @@
       "https://tiendamax.org/imagenes/img_1780510827238.webp"
     ],
     "specs": [
-      "Modelo: 900312-1005G (Teyl Intelligent Tech)",
-      "Puertos: 5 Puertos RJ45 Gigabit (10/100/1000 Mbps)",
-      "Capacidad de Conmutación: 10 Gbps",
-      "Construcción: PCB Doble Capa con puertos metálicos reforzados de 8 pines",
-      "Instalación: Plug & Play no gestionado"
+      "900312-1005G (Teyl Intelligent Tech)",
+      "5 Puertos RJ45 Gigabit (10/100/1000 Mbps)",
+      "10 Gbps",
+      "PCB Doble Capa con puertos metálicos reforzados de 8 pines",
+      "Plug & Play no gestionado"
     ]
   },
   {
@@ -814,11 +814,11 @@
     "slug": "router-tenda-ac1200-wifi-dual-band",
     "comision": 10,
     "specs": [
-      "Estándar Wi-Fi: IEEE 802.11ac/a/n/g/b (Wi-Fi 5) Doble Banda",
-      "Velocidad Combinada: 1167 Mbps (867 Mbps en 5GHz + 300 Mbps en 2.4GHz)",
-      "Puertos de Red: 1 WAN Gigabit + 3 LAN Gigabit (10/100/1000 Mbps)",
-      "Antenas: 4 Antenas Externas de 5dBi de Alta Ganancia",
-      "Tecnología: MU-MIMO + Beamforming para cobertura focalizada"
+      "IEEE 802.11ac/a/n/g/b (Wi-Fi 5) Doble Banda",
+      "1167 Mbps (867 Mbps en 5GHz + 300 Mbps en 2.4GHz)",
+      "1 WAN Gigabit + 3 LAN Gigabit (10/100/1000 Mbps)",
+      "4 Antenas Externas de 5dBi de Alta Ganancia",
+      "MU-MIMO + Beamforming para cobertura focalizada"
     ],
     "seoTitle": "AC1200 WIFI ROUTER en Cuba | TiendaMax",
     "seoDescription": "Obtenga conexiones rápidas y relámpago para todos sus dispositivos inalámbricos mediante actualización a la tecnología Wi-Fi de alta velocidad mejorada de…",
@@ -866,11 +866,11 @@
     "precioOriginal": 0,
     "comisionMoneda": "USD",
     "specs": [
-      "Panel Central: Pantalla Digital Táctil con botón SOS y lector RFID integrado",
-      "Sensores Incluidos: 4 Detectores Infrarrojos PIR + 8 Contactos Magnéticos de Puerta/Ventana",
-      "Accesorios de Control: 3 Mandos a Distancia + 3 Llaveros RFID de Proximidad",
-      "Alerta Acústica: Sirena de alta potencia sonora independiente",
-      "Conectividad: Inalámbrica por Radiofrecuencia (Instalación rápida sin cableado)"
+      "Pantalla Digital Táctil con botón SOS y lector RFID integrado",
+      "4 Detectores Infrarrojos PIR + 8 Contactos Magnéticos de Puerta/Ventana",
+      "3 Mandos a Distancia + 3 Llaveros RFID de Proximidad",
+      "Sirena de alta potencia sonora independiente",
+      "Inalámbrica por Radiofrecuencia (Instalación rápida sin cableado)"
     ],
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1784572922212.webp",
@@ -895,11 +895,11 @@
     "seoTitle": "CÁMARAS DE SEGURIDAD (V380 PRO ) en Cuba | TiendaMax",
     "seoDescription": "Cámaras de seguridad (V380 Pro ) Detalles : ✴️Se usa con una aplicación en el teléfono 📲 ✴️Rotación 360° ✴️Visión nocturna ✴️Sensor de seguimiento ✴️Luz…",
     "specs": [
-      "Instalación: Rosca Estándar E27 (Directo a sócalo de lámpara 110V/220V)",
-      "Resolución: Full HD 1080p | Movimiento: PTZ Giro 360° Horizontal / 90° Vertical",
-      "Visión Nocturna: Dual (LEDs Infrarrojos + Luz Blanca LED para visión a color)",
-      "Audio: Bidireccional (Micrófono y altavoz integrados para hablar y escuchar)",
-      "Conectividad: Wi-Fi 2.4 GHz | Gestión mediante App V380 PRO"
+      "Rosca Estándar E27 (Directo a sócalo de lámpara 110V/220V)",
+      "Full HD 1080p | Movimiento: PTZ Giro 360° Horizontal / 90° Vertical",
+      "Dual (LEDs Infrarrojos + Luz Blanca LED para visión a color)",
+      "Bidireccional (Micrófono y altavoz integrados para hablar y escuchar)",
+      "Wi-Fi 2.4 GHz | Gestión mediante App V380 PRO"
     ]
   },
   {
@@ -922,11 +922,11 @@
     "precioOriginal": 0,
     "comisionMoneda": "USD",
     "specs": [
-      "Métodos de Apertura: Huella Dactilar (Lector semiconductor en manija), Código PIN y App Móvil",
-      "Panel Numérico: Teclado táctil capacitivo retroiluminado",
-      "Alimentación: 4 Baterías AAA (Incluye puerto Micro-USB/Type-C para energía de emergencia)",
-      "Material: Aleación de aluminio reforzado con acabado negro mate",
-      "Compatibilidad: Puertas de madera o metal de 35mm a 55mm de grosor"
+      "Huella Dactilar (Lector semiconductor en manija), Código PIN y App Móvil",
+      "Teclado táctil capacitivo retroiluminado",
+      "4 Baterías AAA (Incluye puerto Micro-USB/Type-C para energía de emergencia)",
+      "Aleación de aluminio reforzado con acabado negro mate",
+      "Puertas de madera o metal de 35mm a 55mm de grosor"
     ],
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1784572438933.webp",
@@ -953,11 +953,11 @@
     "precioOriginal": 0,
     "comisionMoneda": "USD",
     "specs": [
-      "DVR: 8 Canales 5MP Lite (Soporta cámaras TVI, AHD, CVI y Analógicas)",
-      "Compresión de Video: H.265+ para ahorro de espacio en disco duro",
-      "Cámaras Incluidas: 4 Cámaras metálicas tipo Bullet impermeables (IP66)",
-      "Salidas de Video: HDMI y VGA Full HD",
-      "Monitoreo Remoto: App ZOSI Smart para iOS/Android y software AVSS para PC"
+      "8 Canales 5MP Lite (Soporta cámaras TVI, AHD, CVI y Analógicas)",
+      "H.265+ para ahorro de espacio en disco duro",
+      "4 Cámaras metálicas tipo Bullet impermeables (IP66)",
+      "HDMI y VGA Full HD",
+      "App ZOSI Smart para iOS/Android y software AVSS para PC"
     ],
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1778384314795_ext.webp"
@@ -1024,11 +1024,11 @@
     "slug": "adaptador-poe-ubiquiti",
     "comision": 1500,
     "specs": [
-      "Marca/Fabricante: Ubiquiti Networks (Original)",
-      "Voltaje de Salida: 24V DC @ 0.3A (7.5W)",
-      "Puertos: 1 Puerto LAN RJ45 + 1 Puerto PoE RJ45 (10/100 Mbps)",
-      "Protección: Protección integrada contra sobretensiones y descargas electrostáticas (ESD)",
-      "Compatibilidad: Equipos Ubiquiti airMAX, NanoStation, Loco, Bullet y UniFi PoE 24V"
+      "Ubiquiti Networks (Original)",
+      "24V DC @ 0.3A (7.5W)",
+      "1 Puerto LAN RJ45 + 1 Puerto PoE RJ45 (10/100 Mbps)",
+      "Protección integrada contra sobretensiones y descargas electrostáticas (ESD)",
+      "Equipos Ubiquiti airMAX, NanoStation, Loco, Bullet y UniFi PoE 24V"
     ],
     "seoTitle": "ADAPTADOR POE UBIQUITI en Cuba | TiendaMax",
     "seoDescription": "ADAPTADOR POE UBIQUITI disponible en TiendaMax · Wifi. Compra en Cuba con pago contra entrega.",
@@ -1076,11 +1076,11 @@
     "precioOriginal": 0,
     "comisionMoneda": "MN",
     "specs": [
-      "Conectividad: Wi-Fi Inalámbrico de largo alcance (hasta 50m sin obstáculo)",
-      "Audio: Intercomunicador bidireccional con función de modulador/cambio de voz",
-      "Visión Nocturna: Infrarrojos HD de activación automática",
-      "Accesorios: Unidad exterior con cámara + Altavoz Receptor (Chime) para interior",
-      "Seguridad: Captura de foto al presionar y notificación instantánea a la App móvil"
+      "Wi-Fi Inalámbrico de largo alcance (hasta 50m sin obstáculo)",
+      "Intercomunicador bidireccional con función de modulador/cambio de voz",
+      "Infrarrojos HD de activación automática",
+      "Unidad exterior con cámara + Altavoz Receptor (Chime) para interior",
+      "Captura de foto al presionar y notificación instantánea a la App móvil"
     ],
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1784572695580.webp",
@@ -1159,11 +1159,11 @@
     "seoTitle": "GAMESIR X5 LITE en Cuba | TiendaMax",
     "seoDescription": "🎮 GameSir X5 Lite – Mando de Juego para Móvil ✔️ Compatible con teléfonos iOS y Android ✔️ Palancas de efecto Hall para mayor precisión y durabilidad…",
     "specs": [
-      "Conexión Física: Puerto USB Type-C directo (Cero latencia / Anti-delay)",
-      "Joysticks: Sensores electromagnéticos de Efecto Hall (Anti-drift)",
-      "Compatibilidad: Android e iPhone 15/16 con puerto Type-C",
-      "Diseño: Estructura telescópica adaptable a la mayoría de smartphones",
-      "Accesorios: Incluye botones/tapas extra intercambiables para las palancas"
+      "Puerto USB Type-C directo (Cero latencia / Anti-delay)",
+      "Sensores electromagnéticos de Efecto Hall (Anti-drift)",
+      "Android e iPhone 15/16 con puerto Type-C",
+      "Estructura telescópica adaptable a la mayoría de smartphones",
+      "Incluye botones/tapas extra intercambiables para las palancas"
     ]
   },
   {
@@ -1284,11 +1284,11 @@
     "seoTitle": "KIT DE 4 CÁMARAS ZOSI ( CON SU DISCO DURO ) | TiendaMax",
     "seoDescription": "Kit de 4 cámaras Zosi NUEVO EN CAJA‼️ DVR 8 Canales. 5MP Lite DVR. Soporta cámara analógica, HD-TVI, CVI y AHD. Tecnología de compresión H.265+. Salida de…",
     "specs": [
-      "DVR: 8 Canales 5MP Lite con Disco Duro de 1TB WD/Seagate preinstalado",
-      "Cámaras Incluidas: 4 Cámaras Bullet 1080p metálicas para exterior (IP66)",
-      "Visión Nocturna: Infrarrojos con alcance de hasta 20 metros",
-      "Modos de Grabación: Continua 24/7 o por Detección de Movimiento",
-      "Compresión: H.265+ de alta eficiencia"
+      "8 Canales 5MP Lite con Disco Duro de 1TB WD/Seagate preinstalado",
+      "4 Cámaras Bullet 1080p metálicas para exterior (IP66)",
+      "Infrarrojos con alcance de hasta 20 metros",
+      "Continua 24/7 o por Detección de Movimiento",
+      "H.265+ de alta eficiencia"
     ]
   },
   {
@@ -1501,11 +1501,11 @@
     "comision": 5,
     "comisionMoneda": "USD",
     "specs": [
-      "Corriente de Carga: Ajustable hasta 25A",
-      "Voltaje de Operación: Optimizado para Bancos de 24V DC",
-      "Compatibilidad: Plomo-Ácido, GEL, AGM, EFB y LiFePO4",
-      "Modo Reparación: Restauración por pulsos de alta frecuencia",
-      "Seguridad: Corte automático por carga completa"
+      "Ajustable hasta 25A",
+      "Optimizado para Bancos de 24V DC",
+      "Plomo-Ácido, GEL, AGM, EFB y LiFePO4",
+      "Restauración por pulsos de alta frecuencia",
+      "Corte automático por carga completa"
     ],
     "seoTitle": "CARGADORES INTELIGENTES DE 25A en Cuba | TiendaMax",
     "seoDescription": "Cargadores inteligentes de 25A autovolt a12V y 24v Amperaje ajustable para carga lenta, media o rápida segun su preferencia. Compatible con baterías de…"
@@ -1527,11 +1527,11 @@
     "slug": "controlador-solar-60a-mppt-ultra",
     "comision": 10,
     "specs": [
-      "Corriente de Carga Máxima: 60A MPPT",
-      "Voltaje del Banco: 12V / 24V / 36V / 48V DC Auto",
-      "Pantalla: LCD con luz de fondo y botones de navegación",
-      "Disipación: Radiador de aluminio integrado para refrigeración pasiva",
-      "Compatibilidad: Baterías de Litio, GEL, AGM y Inundadas"
+      "60A MPPT",
+      "12V / 24V / 36V / 48V DC Auto",
+      "LCD con luz de fondo y botones de navegación",
+      "Radiador de aluminio integrado para refrigeración pasiva",
+      "Baterías de Litio, GEL, AGM y Inundadas"
     ],
     "seoTitle": "CONTROLADOR SOLAR DE 60 AMP POWMR M60 ULTRA | TiendaMax",
     "seoDescription": "♻️CONTROLADOR SOLAR DE 60 AMP POWMR M60 ULTRA♻️ 🔴PARA BATERIAS DE 12V,24V,36V,48V🔴 ♻️Características Principales y Técnicas♻️ 1. ♻️Tecnología MPPT…",
@@ -1554,11 +1554,11 @@
     "slug": "controlador-solar-powmr-m100-pro-mppt-de-80-amp",
     "comision": 10,
     "specs": [
-      "Corriente Máx. de Carga: 80A MPPT",
-      "Voltaje del Sistema: 12V / 24V / 36V / 48V DC",
-      "Voltaje Máx. Entrada PV (Voc): 160V DC",
-      "Protección: Múltiple contra sobretemperatura, polaridad e inverso",
-      "Pantalla: LCD multifuncional con métricas en tiempo real"
+      "80A MPPT",
+      "12V / 24V / 36V / 48V DC",
+      "160V DC",
+      "Múltiple contra sobretemperatura, polaridad e inverso",
+      "LCD multifuncional con métricas en tiempo real"
     ],
     "seoTitle": "CONTROLADOR SOLAR POWMR M100 PRO - MPPT DE 80 AMP",
     "seoDescription": "♻️CONTROLADOR SOLAR POWMR M100 PRO -MPPT DE 80 AMP♻️ Especificaciones Eléctricas Clave: Voltaje Máximo del Sistema (PV): 100V DC. Esto permite conectar…",
@@ -1581,11 +1581,11 @@
     "slug": "xiaomi-sound-outdoor-30w",
     "comision": 5,
     "specs": [
-      "Potencia de Salida: 30W RMS (Configuración Woofer + Tweeter + Radiadores pasivos)",
-      "Conectividad: Bluetooth 5.4 con alcance de hasta 25 metros",
-      "Protección de Estanqueidad: Certificación IP67 (Resistente al agua y polvo)",
-      "Batería: 2600 mAh (Hasta 12 horas de reproducción continua al 50% volumen)",
-      "Tecnología TWS: Permite emparejar 2 unidades en estéreo o conectar hasta 100 altavoces"
+      "30W RMS (Configuración Woofer + Tweeter + Radiadores pasivos)",
+      "Bluetooth 5.4 con alcance de hasta 25 metros",
+      "Certificación IP67 (Resistente al agua y polvo)",
+      "2600 mAh (Hasta 12 horas de reproducción continua al 50% volumen)",
+      "Permite emparejar 2 unidades en estéreo o conectar hasta 100 altavoces"
     ],
     "seoTitle": "XIAOMI SOUND OUTDOOR 30W en Cuba | TiendaMax",
     "seoDescription": "(Nuevo en caja) ​¡Potencia y portabilidad en un solo altavoz! Perfecto para exteriores, playa o reuniones. ​⚡ Lo mejor de este altavoz: ​Potencia de 30W…",
@@ -1644,11 +1644,11 @@
     "seoTitle": "PC GAMING SETUP PREMIUM en Cuba | TiendaMax",
     "seoDescription": "PC Gaming Setup Premium (Estilo Acuario / White) ​Se vende potente PC Gamer con estética full blanca, refrigeración líquida y excelente rendimiento para…",
     "specs": [
-      "Tarjeta Gráfica: NVIDIA GeForce RTX 2070 Super",
-      "Motherboard: Gigabyte AORUS Gaming",
-      "Refrigeración: Sistema de Refrigeración Líquida AIO para el procesador",
-      "Gabinete: Chasis blanco Estilo Acuario con doble panel de cristal templado",
-      "Estética: Iluminación ARGB personalizable en ventiladores y bomba líquida"
+      "NVIDIA GeForce RTX 2070 Super",
+      "Gigabyte AORUS Gaming",
+      "Sistema de Refrigeración Líquida AIO para el procesador",
+      "Chasis blanco Estilo Acuario con doble panel de cristal templado",
+      "Iluminación ARGB personalizable en ventiladores y bomba líquida"
     ]
   },
   {
@@ -1671,11 +1671,11 @@
     "seoDescription": "ZOSl-camara de sequridad CCTV impermeable para exteriores e interiores, Kit de sistema DVR 108OP 2MP.TVI.AHD.CVBS.IR CUT. Visión nocturna",
     "comisionMoneda": "USD",
     "specs": [
-      "Resolución: Full HD 1080p (2 Megapíxeles)",
-      "Compatibilidad: Sistema 4 en 1 (TVI, AHD, CVI, CVBS analógico)",
-      "Visión Nocturna: LEDs Infrarrojos con filtro IR-CUT automático",
-      "Protección: Carcasa metálica impermeable para intemperie (IP66)",
-      "Conexión: BNC estándar + Conector DC 12V"
+      "Full HD 1080p (2 Megapíxeles)",
+      "Sistema 4 en 1 (TVI, AHD, CVI, CVBS analógico)",
+      "LEDs Infrarrojos con filtro IR-CUT automático",
+      "Carcasa metálica impermeable para intemperie (IP66)",
+      "BNC estándar + Conector DC 12V"
     ],
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1780344655996_bb0312.webp"
@@ -1700,11 +1700,11 @@
     "seoTitle": "ROUTER TENDA RX2 PRO - WIFI 6 DUAL - BAND GIGABIT",
     "seoDescription": "​Tecnología Wi-Fi 6 de Última Generación: Mayor velocidad de transmisión, más capacidad de dispositivos conectados y una latencia extremadamente baja…",
     "specs": [
-      "Estándar Wi-Fi: Wi-Fi 6 (802.11ax) Doble Banda",
-      "Velocidad Combinada: 1501 Mbps (1201 Mbps en 5 GHz + 300 Mbps en 2.4 GHz)",
-      "Antenas: 5 Antenas Externas de 6dBi de Ultra Cobertura",
-      "Puertos: 1 WAN Gigabit + 3 LAN Gigabit",
-      "Tecnologías: OFDMA, MU-MIMO, Beamforming y Cifrado WPA3"
+      "Wi-Fi 6 (802.11ax) Doble Banda",
+      "1501 Mbps (1201 Mbps en 5 GHz + 300 Mbps en 2.4 GHz)",
+      "5 Antenas Externas de 6dBi de Ultra Cobertura",
+      "1 WAN Gigabit + 3 LAN Gigabit",
+      "OFDMA, MU-MIMO, Beamforming y Cifrado WPA3"
     ]
   },
   {
@@ -1724,11 +1724,11 @@
     "slug": "sistema-de-seguridad-zosi-para-el-hogar-8-canales",
     "comision": 20,
     "specs": [
-      "DVR: 8 Canales 5MP Lite con Disco Duro de 1TB grado vigilancia incluido",
-      "Cámaras: 8 Cámaras Bullet Full HD 1080p resistentes al agua",
-      "Visión Nocturna: Infrarroja automática de hasta 20m",
-      "Conexiones: Salida HDMI y VGA para monitor local + Puerto Ethernet para App",
-      "Accesorios: Incluye fuentes de poder, distribuidores y cables BNC siameses"
+      "8 Canales 5MP Lite con Disco Duro de 1TB grado vigilancia incluido",
+      "8 Cámaras Bullet Full HD 1080p resistentes al agua",
+      "Infrarroja automática de hasta 20m",
+      "Salida HDMI y VGA para monitor local + Puerto Ethernet para App",
+      "Incluye fuentes de poder, distribuidores y cables BNC siameses"
     ],
     "seoTitle": "SISTEMA DE SEGURIDAD ZOSI PARA EL HOGAR - 8 CANALES",
     "seoDescription": "Sistema de Seguridad ZOSI para el Hogar – 8 Canales, 2MP HD, DVR Lite 5MP, 1TB, Grabación 24/7 Este kit incluye: - 8 canales compatibles con cámaras ZOSI…",
@@ -1762,11 +1762,11 @@
       "https://tiendamax.org/imagenes/img_1780543081597.webp"
     ],
     "specs": [
-      "Conectividad: Bluetooth 5.3 True Wireless Stereo de baja latencia",
-      "Diseño: Intrauriculares (In-ear) ergonómicos de ajuste seguro",
-      "Batería: Hasta 5 horas por carga + 35 horas adicionales con estuche",
-      "Llamadas: Cancelación de ruido ambiental ENC para micrófono",
-      "Control: Sensores táctiles inteligentes para música y llamadas"
+      "Bluetooth 5.3 True Wireless Stereo de baja latencia",
+      "Intrauriculares (In-ear) ergonómicos de ajuste seguro",
+      "Hasta 5 horas por carga + 35 horas adicionales con estuche",
+      "Cancelación de ruido ambiental ENC para micrófono",
+      "Sensores táctiles inteligentes para música y llamadas"
     ]
   },
   {
@@ -1789,11 +1789,11 @@
     "seoTitle": "ROUTER FENVI AX3000 WIFI 6 en Cuba | TiendaMax",
     "seoDescription": "✨ ROUTER FENVI AX3000 Wi-Fi 6 El router FENVI AX3000 Wi-Fi 6 Mesh es un dispositivo de doble banda. Soporta 574 mbps por la 2.4 GHz y 2402 mbps por la 5.8…",
     "specs": [
-      "Estándar Wi-Fi: Wi-Fi 6 (802.11ax) Doble Banda Mesh",
-      "Velocidad Agregada: 2976 Mbps (2402 Mbps en 5.8 GHz + 574 Mbps en 2.4 GHz)",
-      "Antenas: 4 Antenas Externas Orientables de alta sensibilidad",
-      "Tecnología: Soporte de Redes Mesh, MU-MIMO y OFDMA",
-      "Puertos: Puertos Gigabit Ethernet (10/100/1000 Mbps)"
+      "Wi-Fi 6 (802.11ax) Doble Banda Mesh",
+      "2976 Mbps (2402 Mbps en 5.8 GHz + 574 Mbps en 2.4 GHz)",
+      "4 Antenas Externas Orientables de alta sensibilidad",
+      "Soporte de Redes Mesh, MU-MIMO y OFDMA",
+      "Puertos Gigabit Ethernet (10/100/1000 Mbps)"
     ]
   },
   {
@@ -1814,11 +1814,12 @@
     "comision": 10,
     "comisionMoneda": "USD",
     "specs": [
-      "Estándar Wi-Fi: IEEE 802.11ac/a/b/g/n (Wi-Fi 5)",
-      "Velocidades: 867 Mbps en 5.8 GHz + 300 Mbps en 2.4 GHz",
-      "Antenas: 4 Antenas Externas Omnidireccionales",
-      "Puertos: 1 WAN Fast Ethernet + 3 LAN Fast Ethernet",
-      "Seguridad: Encriptación WPA-PSK / WPA2-PSK"
+      "IEEE 802.11ac/a/b/g/n (Wi-Fi 5)",
+      "867 Mbps 5.8 GHz",
+      "300 Mbps 2.4 GHz",
+      "4 Antenas Externas Omnidireccionales",
+      "1 WAN Fast Ethernet + 3 LAN Fast Ethernet",
+      "Encriptación WPA-PSK / WPA2-PSK"
     ],
     "seoTitle": "FENVI AC1200 en Cuba | TiendaMax",
     "seoDescription": "✨ Producto TiendaMax FENVI AC1200 enrutador wifi inteligente de señal fuerte especificaciones: ✅Diseño de 4 antenas externa, señal fuerte. ✅La luz…"
@@ -1875,10 +1876,10 @@
       "https://tiendamax.org/imagenes/img_1780887747583.webp"
     ],
     "specs": [
-      "Configuración de Audio: Doble altavoz estéreo HD con radiador de graves",
-      "Iluminación: Aro de luz LED RGB en la base con múltiples modos rritmicos",
-      "Conectividad: Bluetooth + Entrada Auxiliar 3.5mm + Ranura MicroSD + USB",
-      "Diseño: Estructura recubierta de tela resistente con correa de transporte"
+      "Doble altavoz estéreo HD con radiador de graves",
+      "Aro de luz LED RGB en la base con múltiples modos rritmicos",
+      "Bluetooth + Entrada Auxiliar 3.5mm + Ranura MicroSD + USB",
+      "Estructura recubierta de tela resistente con correa de transporte"
     ]
   },
   {
@@ -1905,11 +1906,11 @@
       "https://tiendamax.org/imagenes/img_1780887971522.webp"
     ],
     "specs": [
-      "Potencia de Salida: 25W RMS Sonido Estéreo",
-      "Alcance Inalámbrico: Conexión Bluetooth de hasta 30 metros sin interferencias",
-      "Iluminación: Tiras de luces RGB dinámicas a los laterales",
-      "Entradas: Puerto USB + Lector TF Card + Entrada auxiliar 3.5mm",
-      "Panel: Botones superiores de goma para control directo"
+      "25W RMS Sonido Estéreo",
+      "Conexión Bluetooth de hasta 30 metros sin interferencias",
+      "Tiras de luces RGB dinámicas a los laterales",
+      "Puerto USB + Lector TF Card + Entrada auxiliar 3.5mm",
+      "Botones superiores de goma para control directo"
     ]
   },
   {
@@ -2009,11 +2010,11 @@
     "seoTitle": "REPETIDOR WIFI DE RANGO EXTENDIDO TP - LINK | TiendaMax",
     "seoDescription": "✅ Amplía la cobertura de tu red WiFi en el hogar u oficina con este repetidor TP-Link. Mantén una conexión estable y de alta velocidad en todas las áreas.",
     "specs": [
-      "Estándar Inalámbrico: IEEE 802.11n/g/b en 2.4 GHz",
-      "Velocidad Máxima: 300 Mbps",
-      "Antenas: 2 Antenas Internas / Externas de alta eficiencia",
-      "Montaje: Conexión directa a la pared (Wall-Plug)",
-      "Puerto Extra: 1 Puerto Ethernet RJ45 10/100 Mbps para conectar dispositivos cableados"
+      "IEEE 802.11n/g/b en 2.4 GHz",
+      "300 Mbps",
+      "2 Antenas Internas / Externas de alta eficiencia",
+      "Conexión directa a la pared (Wall-Plug)",
+      "1 Puerto Ethernet RJ45 10/100 Mbps para conectar dispositivos cableados"
     ],
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1781711152979_1e8154.webp"
@@ -2037,11 +2038,11 @@
     "comision": 10,
     "comisionMoneda": "USD",
     "specs": [
-      "Estándar Wi-Fi: IEEE 802.11ac Doble Banda",
-      "Velocidad Combinada: 1200 Mbps (900 Mbps en 5 GHz + 300 Mbps en 2.4 GHz)",
-      "Antenas: 4 Antenas Externas de Alta Ganancia",
-      "Puertos: 1 WAN Fast Ethernet + 4 LAN Fast Ethernet",
-      "Seguridad: WPA/WPA2, Firewall NAT Integrado y Control Parental"
+      "IEEE 802.11ac Doble Banda",
+      "1200 Mbps (900 Mbps en 5 GHz + 300 Mbps en 2.4 GHz)",
+      "4 Antenas Externas de Alta Ganancia",
+      "1 WAN Fast Ethernet + 4 LAN Fast Ethernet",
+      "WPA/WPA2, Firewall NAT Integrado y Control Parental"
     ],
     "seoTitle": "ROUTER WIFI INALÁMBRICO D - LINK AVANZADO DE DOBLE BANDA",
     "seoDescription": "Router WiFi D-Link de doble banda con velocidad agregada de hasta 1200 Mbps, distribuidos en 300 Mbps en 2.4 GHz y 900 Mbps en 5 GHz. Incorpora tecnología…"
@@ -2065,11 +2066,11 @@
     "comisionMoneda": "USD",
     "nombreNormalizadoAt": "2026-06-27T12:16:34.731Z",
     "specs": [
-      "Potencia Nominal: 1500W (1500VA) | Onda Senoidal Pura",
-      "Voltaje de Banco de Baterías: 24V DC",
-      "Salida AC: 110V / 120V AC (60Hz)",
-      "Rango de Voltaje MPPT: 30V - 75V DC | Voltaje Solar Máx. (Voc): 105V DC",
-      "Modelo Exacto: MUST PV15-1524 LV"
+      "1500W (1500VA) | Onda Senoidal Pura",
+      "24V DC",
+      "110V / 120V AC (60Hz)",
+      "30V - 75V DC | Voltaje Solar Máx. (Voc): 105V DC",
+      "MUST PV15-1524 LV"
     ],
     "seoTitle": "INVERSOR SOLAR HÍBRIDO MUST 1500W (24V A 120V) | TiendaMax",
     "seoDescription": "​⚙️ Especificaciones Técnicas Principales: ​Potencia Nominal: 1500VA / 1500W (Potencia real continua). ​Voltaje del Sistema (Baterías): 24V DC. ​Salida de…",
@@ -2151,11 +2152,11 @@
     "garantia": "",
     "devolucion": false,
     "specs": [
-      "Estándar: Wi-Fi 6 (802.11ax) Doble Banda",
-      "Velocidades: 1201 Mbps en 5 GHz + 300 Mbps en 2.4 GHz",
-      "Puertos de Red: 1 WAN Gigabit + 4 LAN Gigabit (10/100/1000 Mbps)",
-      "Tecnologías: OFDMA, MU-MIMO y Beamforming",
-      "Seguridad: Protocolo WPA3 + Control Parental mediante App Tether"
+      "Wi-Fi 6 (802.11ax) Doble Banda",
+      "1201 Mbps en 5 GHz + 300 Mbps en 2.4 GHz",
+      "1 WAN Gigabit + 4 LAN Gigabit (10/100/1000 Mbps)",
+      "OFDMA, MU-MIMO y Beamforming",
+      "Protocolo WPA3 + Control Parental mediante App Tether"
     ],
     "fechaAgregado": "2026-06-26T01:55:22.547Z",
     "nombreNormalizadoAt": "2026-06-27T12:16:34.731Z",
@@ -2183,11 +2184,11 @@
     "garantia": "",
     "devolucion": false,
     "specs": [
-      "Conectividad 3 en 1: Inalámbrico 2.4GHz USB (Dongle) + Bluetooth + Cable 3.5mm",
-      "Autonomía de Batería: Hasta 100 horas de reproducción continua",
-      "Drivers: Controladores de 50mm de alta definición para audio posicional",
-      "Micrófono: Micrófono omnidireccional flexible con cancelación de ruido",
-      "Compatibilidad: PC, PS4, PS5, Nintendo Switch, Móviles y Tablets"
+      "Inalámbrico 2.4GHz USB (Dongle) + Bluetooth + Cable 3.5mm",
+      "Hasta 100 horas de reproducción continua",
+      "Controladores de 50mm de alta definición para audio posicional",
+      "Micrófono omnidireccional flexible con cancelación de ruido",
+      "PC, PS4, PS5, Nintendo Switch, Móviles y Tablets"
     ],
     "fechaAgregado": "2026-06-26T02:03:48.159Z",
     "nombreNormalizadoAt": "2026-06-27T12:16:34.731Z",
@@ -2240,12 +2241,12 @@
     "garantia": "",
     "devolucion": false,
     "specs": [
-      "Modelo: SMOQ3-100/2P (2 Polos)",
-      "Voltaje Nominal: 110V AC (50/60Hz)",
-      "Corriente Nominal Máxima: 100A",
-      "Montaje: Riel DIN Estándar de cuadro eléctrico",
-      "Operación: Selección por interruptor (Modo Automático ATS / Modo Manual)",
-      "Uso: Conmutación rápida entre Red Pública y Planta/Inversor"
+      "SMOQ3-100/2P (2 Polos)",
+      "110V AC (50/60Hz)",
+      "100A",
+      "Riel DIN Estándar de cuadro eléctrico",
+      "Selección por interruptor (Modo Automático ATS / Modo Manual)",
+      "Conmutación rápida entre Red Pública y Planta/Inversor"
     ],
     "fechaAgregado": "2026-06-26T02:08:08.529Z",
     "nombreNormalizadoAt": "2026-06-27T12:16:34.731Z",
@@ -2446,11 +2447,11 @@
     "garantia": "",
     "devolucion": false,
     "specs": [
-      "Modelo Exacto: GEYA W2R-100",
-      "Voltaje Nominal: 220V AC (50Hz / 60Hz)",
-      "Corriente Nominal: 100A",
-      "Tiempo de Conmutación: <50ms (Inapreciable para la mayoría de equipos)",
-      "Montaje: Riel DIN modular"
+      "GEYA W2R-100",
+      "220V AC (50Hz / 60Hz)",
+      "100A",
+      "<50ms (Inapreciable para la mayoría de equipos)",
+      "Riel DIN modular"
     ],
     "fechaAgregado": "2026-06-30T03:49:05.629Z",
     "seoTitle": "Interruptor de Transferencia Automática Geya (220V)",
@@ -2476,11 +2477,11 @@
     "garantia": "",
     "devolucion": false,
     "specs": [
-      "Onda de Salida: Onda Senoidal Pura (Pure Sine Wave)",
-      "Potencia Nominal: 1500W Continua | Potencia Pico: 3000W",
-      "Entrada: 12V DC | Salida: 110V/120V AC (60Hz)",
-      "Protección: Tensión alta/baja, sobrecarga, temperatura y cortocircuito",
-      "Accesorios: Incluye cables de conexión con bornes"
+      "Onda Senoidal Pura (Pure Sine Wave)",
+      "1500W Continua | Potencia Pico: 3000W",
+      "12V DC | Salida: 110V/120V AC (60Hz)",
+      "Tensión alta/baja, sobrecarga, temperatura y cortocircuito",
+      "Incluye cables de conexión con bornes"
     ],
     "fechaAgregado": "2026-07-04T15:40:34.140Z",
     "seoTitle": "Inversor de Corriente Onda Senoidal Pura Unizuki 3000W",
@@ -2506,11 +2507,11 @@
     "garantia": "",
     "devolucion": false,
     "specs": [
-      "Potencia Nominal: 2000W Continua | Potencia Pico: 4000W",
-      "Voltaje de Entrada: 24V DC (21V - 30V DC)",
-      "Voltaje de Salida: 110V AC ± 10% (60Hz)",
-      "Onda: Senoidal Modificada",
-      "Aplicación: Sistemas con bancos de baterías en serie de 24V"
+      "2000W Continua | Potencia Pico: 4000W",
+      "24V DC (21V - 30V DC)",
+      "110V AC ± 10% (60Hz)",
+      "Senoidal Modificada",
+      "Sistemas con bancos de baterías en serie de 24V"
     ],
     "fechaAgregado": "2026-07-04T15:43:20.783Z",
     "seoTitle": "inversor de Corriente Tataliken 4000W (24V) | TiendaMax",
@@ -2576,11 +2577,11 @@
     "garantia": "",
     "devolucion": false,
     "specs": [
-      "Estándar Wi-Fi: IEEE 802.11ac/a/n/g/b (Wi-Fi 5) Doble Banda",
-      "Velocidades: 867 Mbps en 5 GHz + 300 Mbps en 2.4 GHz",
-      "Puertos: 1 WAN Gigabit + 4 LAN Gigabit (10/100/1000 Mbps)",
-      "Antenas: 4 Antenas Externas + 1 Antena Interna",
-      "Modos de Operación: Router Wi-Fi o Punto de Acceso (AP Mode)"
+      "IEEE 802.11ac/a/n/g/b (Wi-Fi 5) Doble Banda",
+      "867 Mbps en 5 GHz + 300 Mbps en 2.4 GHz",
+      "1 WAN Gigabit + 4 LAN Gigabit (10/100/1000 Mbps)",
+      "4 Antenas Externas + 1 Antena Interna",
+      "Router Wi-Fi o Punto de Acceso (AP Mode)"
     ],
     "fechaAgregado": "2026-07-07T19:46:37.496Z",
     "seoTitle": "Router Tp-link Archer A6 (AC1200) en Cuba | TiendaMax",
@@ -2607,11 +2608,11 @@
     "garantia": "",
     "devolucion": false,
     "specs": [
-      "Estándar Wi-Fi: Wi-Fi 6 (802.11ax) Doble Banda",
-      "Velocidades: 1201 Mbps en 5 GHz + 574 Mbps en 2.4 GHz",
-      "Procesador: CPU Quad-Core a 1.5 GHz para alto procesamiento",
-      "Puertos: 1 WAN Gigabit + 4 LAN Gigabit",
-      "Seguridad: WPA3 Integrado + Target Wake Time (TWT) para ahorro de batería"
+      "Wi-Fi 6 (802.11ax) Doble Banda",
+      "1201 Mbps en 5 GHz + 574 Mbps en 2.4 GHz",
+      "CPU Quad-Core a 1.5 GHz para alto procesamiento",
+      "1 WAN Gigabit + 4 LAN Gigabit",
+      "WPA3 Integrado + Target Wake Time (TWT) para ahorro de batería"
     ],
     "fechaAgregado": "2026-07-07T19:50:57.635Z",
     "seoTitle": "Router Tp-link Archer AX21 (Wi-fi 6) en Cuba | TiendaMax",
@@ -2637,10 +2638,10 @@
     "garantia": "",
     "devolucion": false,
     "specs": [
-      "Voltaje de Salida: 12V DC | Corriente Máx: 15A",
-      "Compatibilidad de Baterías: AGM, GEL, EFB y LiFePO4",
-      "Pantalla: Display LED con datos de porcentaje, voltaje y corriente",
-      "Carcasa: Diseño compacto reforzado con disipación pasiva"
+      "12V DC | Corriente Máx: 15A",
+      "AGM, GEL, EFB y LiFePO4",
+      "Display LED con datos de porcentaje, voltaje y corriente",
+      "Diseño compacto reforzado con disipación pasiva"
     ],
     "fechaAgregado": "2026-07-08T01:24:54.756Z",
     "seoTitle": "Cargador Inteligente Corebox 12V 15A en Cuba | TiendaMax",
@@ -2667,10 +2668,10 @@
     "garantia": "",
     "devolucion": false,
     "specs": [
-      "Salida Ajustable: 12V DC (20A) / 24V DC (10A)",
-      "Modelos Soportados: Litio, LiFePO4, AGM, Plomo-Ácido",
-      "Función Especial: Modo de reparación (Repair) por pulsos",
-      "Pantalla: LCD Digital con selector táctil de modo"
+      "12V DC (20A) / 24V DC (10A)",
+      "Litio, LiFePO4, AGM, Plomo-Ácido",
+      "Modo de reparación (Repair) por pulsos",
+      "LCD Digital con selector táctil de modo"
     ],
     "fechaAgregado": "2026-07-08T01:29:59.535Z",
     "seoTitle": "Cargador Inteligente Ntrc 20A en Cuba | TiendaMax",
@@ -2697,10 +2698,10 @@
     "garantia": "",
     "devolucion": false,
     "specs": [
-      "Potencia de Carga: 12V DC a 35A / 24V DC a 18A",
-      "Soporte Químico: Litio, LiFePO4, AGM, GEL, Plomo",
-      "Modo Reparación: Sistema de pulso avanzado para baterías descargadas",
-      "Pantalla: Display LCD para supervisión de parámetros en tiempo real"
+      "12V DC a 35A / 24V DC a 18A",
+      "Litio, LiFePO4, AGM, GEL, Plomo",
+      "Sistema de pulso avanzado para baterías descargadas",
+      "Display LCD para supervisión de parámetros en tiempo real"
     ],
     "fechaAgregado": "2026-07-08T01:34:00.851Z",
     "seoTitle": "Cargador Inteligente Ntrc 35A en Cuba | TiendaMax",
@@ -2727,11 +2728,11 @@
     "garantia": "",
     "devolucion": false,
     "specs": [
-      "Procesador: Dual-Core 880 MHz (4 hilos, arquitectura MMIPS)",
-      "Memoria: 256 MB RAM | Sistema Operativo: RouterOS Licencia Nivel 4",
-      "Puertos: 5 Puertos RJ45 Gigabit Ethernet (10/100/1000 Mbps)",
-      "Expansión: Ranura MicroSD + Puerto USB 2.0 (Soporta módems 4G/LTE)",
-      "Funciones Avanzadas: Balanceo de Cargas (PBR), Firewall, VPN, Aceleración IPsec por hardware"
+      "Dual-Core 880 MHz (4 hilos, arquitectura MMIPS)",
+      "256 MB RAM | Sistema Operativo: RouterOS Licencia Nivel 4",
+      "5 Puertos RJ45 Gigabit Ethernet (10/100/1000 Mbps)",
+      "Ranura MicroSD + Puerto USB 2.0 (Soporta módems 4G/LTE)",
+      "Balanceo de Cargas (PBR), Firewall, VPN, Aceleración IPsec por hardware"
     ],
     "fechaAgregado": "2026-07-08T01:39:07.296Z",
     "seoTitle": "Mikrotik Hex (RB750GR3) en Cuba | TiendaMax",
@@ -2758,11 +2759,11 @@
     "garantia": "",
     "devolucion": false,
     "specs": [
-      "Estándar Wi-Fi: Wi-Fi 6 (802.11ax) Doble Banda",
-      "Velocidad: 1500 Mbps (1201 Mbps en 5 GHz + 300 Mbps en 2.4 GHz)",
-      "Antenas: 4 Antenas Externas de 6dBi de Alta Ganancia",
-      "Puertos: 1 WAN Gigabit + 3 LAN Gigabit",
-      "Tecnologías: OFDMA, MU-MIMO, Beamforming y Cifrado WPA3"
+      "Wi-Fi 6 (802.11ax) Doble Banda",
+      "1500 Mbps (1201 Mbps en 5 GHz + 300 Mbps en 2.4 GHz)",
+      "4 Antenas Externas de 6dBi de Alta Ganancia",
+      "1 WAN Gigabit + 3 LAN Gigabit",
+      "OFDMA, MU-MIMO, Beamforming y Cifrado WPA3"
     ],
     "fechaAgregado": "2026-07-08T20:44:11.116Z",
     "seoTitle": "Router Tenda TX12 PRO (Wi-fi 6) en Cuba | TiendaMax",
@@ -2790,11 +2791,11 @@
     "garantia": "",
     "devolucion": false,
     "specs": [
-      "Frecuencia de Operación: 5 GHz (Protocolo Propietario airMAX AC)",
-      "Rendimiento de Datos: >450 Mbps de velocidad real de transferencia",
-      "Ganancia de Antena: 13 dBi integrada",
-      "Puerto Físico: 1 Puerto RJ45 Gigabit Ethernet",
-      "Alimentación: PoE Pasivo de 24V (0.3A)"
+      "5 GHz (Protocolo Propietario airMAX AC)",
+      ">450 Mbps de velocidad real de transferencia",
+      "13 dBi integrada",
+      "1 Puerto RJ45 Gigabit Ethernet",
+      "PoE Pasivo de 24V (0.3A)"
     ],
     "fechaAgregado": "2026-07-18T19:41:17.390Z",
     "seoTitle": "Nanostation AC Loco en Cuba | TiendaMax",
@@ -2822,11 +2823,11 @@
     "garantia": "",
     "devolucion": false,
     "specs": [
-      "Frecuencia de Operación: 5 GHz (802.11a/n)",
-      "Ganancia de Antena: 16 dBi integrada (Ángulo de apertura 23°)",
-      "Procesador: AR9344 600 MHz | RAM: 64 MB | RouterOS Licencia Nivel 3",
-      "Puerto Físico: 1 Puerto 10/100 Mbps Fast Ethernet",
-      "Uso: Enlaces Punto a Punto / Cliente CPE de exterior (IP54)"
+      "5 GHz (802.11a/n)",
+      "16 dBi integrada (Ángulo de apertura 23°)",
+      "AR9344 600 MHz | RAM: 64 MB | RouterOS Licencia Nivel 3",
+      "1 Puerto 10/100 Mbps Fast Ethernet",
+      "Enlaces Punto a Punto / Cliente CPE de exterior (IP54)"
     ],
     "fechaAgregado": "2026-07-18T19:57:46.989Z",
     "seoTitle": "Mikrotik Sxtsq LITE5 en Cuba | TiendaMax",
@@ -2852,11 +2853,11 @@
     "garantia": "",
     "devolucion": false,
     "specs": [
-      "Movimiento Motorizado: PTZ Giro 355° Horizontal / 90° Vertical",
-      "Conectividad: Wi-Fi 2.4GHz con Doble Antena externa para mejor recepción",
-      "Visión Nocturna: Infrarroja + Reflectores LED para visión a color de noche",
-      "Resistencia: Carcasa plástica ABS reforzada para intemperie (IP66)",
-      "Audio: Micrófono y altavoz integrados para audio bidireccional"
+      "PTZ Giro 355° Horizontal / 90° Vertical",
+      "Wi-Fi 2.4GHz con Doble Antena externa para mejor recepción",
+      "Infrarroja + Reflectores LED para visión a color de noche",
+      "Carcasa plástica ABS reforzada para intemperie (IP66)",
+      "Micrófono y altavoz integrados para audio bidireccional"
     ],
     "fechaAgregado": "2026-07-18T20:04:47.403Z",
     "seoTitle": "Cámara de Seguridad Ptz WiFi Exterior Con Doble Antena",
@@ -2882,11 +2883,11 @@
     "garantia": "",
     "devolucion": false,
     "specs": [
-      "Estándar Wi-Fi: IEEE 802.11ac/a/b/g/n Doble Banda",
-      "Velocidad: 1200 Mbps (867 Mbps en 5 GHz + 300 Mbps en 2.4 GHz)",
-      "Antenas: 4 Antenas Externas de Alta Ganancia",
-      "Puertos: 1 WAN Fast Ethernet + 4 LAN Fast Ethernet",
-      "Cifrado: WPA-PSK / WPA2-PSK"
+      "IEEE 802.11ac/a/b/g/n Doble Banda",
+      "1200 Mbps (867 Mbps en 5 GHz + 300 Mbps en 2.4 GHz)",
+      "4 Antenas Externas de Alta Ganancia",
+      "1 WAN Fast Ethernet + 4 LAN Fast Ethernet",
+      "WPA-PSK / WPA2-PSK"
     ],
     "fechaAgregado": "2026-07-20T17:41:05.086Z",
     "seoTitle": "Router Inalámbrico Wavlink AC1200 Dual Band | TiendaMax",
@@ -2912,11 +2913,11 @@
     "garantia": "",
     "devolucion": false,
     "specs": [
-      "Tecnología: MPPT (Seguimiento del Punto de Máxima Potencia)",
-      "Corriente Máx: 100A",
-      "Voltaje de Banco: 12V / 24V / 36V / 48V (Reconocimiento Automático)",
-      "Puertos Adicionales: 2 Salidas USB 5V / 2.1A",
-      "Pantalla: LCD retroiluminada para control de carga"
+      "MPPT (Seguimiento del Punto de Máxima Potencia)",
+      "100A",
+      "12V / 24V / 36V / 48V (Reconocimiento Automático)",
+      "2 Salidas USB 5V / 2.1A",
+      "LCD retroiluminada para control de carga"
     ],
     "fechaAgregado": "2026-07-20T17:44:58.967Z",
     "seoTitle": "Controlador de Carga Solar MPPT 100A en Cuba | TiendaMax",
@@ -2942,10 +2943,10 @@
     "garantia": "",
     "devolucion": false,
     "specs": [
-      "Proceso de Soldadura: Arco Manual (MMA) / Inverter",
-      "Rango de Corriente: 20A - 300A (Ajustable con perilla)",
-      "Pantalla: Display Digital LED de regulación de amperaje",
-      "Accesorios Incluidos: Cables, Pinza de masa, Portaelectrodos, Careta protectora y Cepillo"
+      "Arco Manual (MMA) / Inverter",
+      "20A - 300A (Ajustable con perilla)",
+      "Display Digital LED de regulación de amperaje",
+      "Cables, Pinza de masa, Portaelectrodos, Careta protectora y Cepillo"
     ],
     "fechaAgregado": "2026-07-20T17:55:00.968Z",
     "seoTitle": "Soldadora Inverter MMA-300 en Cuba | TiendaMax",
@@ -2971,11 +2972,11 @@
     "garantia": "",
     "devolucion": false,
     "specs": [
-      "DVR: 8 Canales 5MP Lite con Disco Duro industrial de 1TB preinstalado",
-      "Cámaras: 8 Cámaras Bullet Full HD de alta definición para exterior",
-      "Gestión: Visualización remota en tiempo real mediante la App ZOSI Smart",
-      "Compresión: H.265+ para máxima eficiencia de espacio en disco",
-      "Accesorios: Incluye cables BNC siameses de 18m por cámara y transformadores"
+      "8 Canales 5MP Lite con Disco Duro industrial de 1TB preinstalado",
+      "8 Cámaras Bullet Full HD de alta definición para exterior",
+      "Visualización remota en tiempo real mediante la App ZOSI Smart",
+      "H.265+ para máxima eficiencia de espacio en disco",
+      "Incluye cables BNC siameses de 18m por cámara y transformadores"
     ],
     "fechaAgregado": "2026-07-20T18:23:02.778Z",
     "seoTitle": "Sistema de Seguridad Zosi de 8 Canales Con… | TiendaMax",
@@ -3001,11 +3002,11 @@
     "garantia": "",
     "devolucion": false,
     "specs": [
-      "Estándar Wi-Fi: Wi-Fi 6 (802.11ax) Doble Banda",
-      "Velocidades: 1201 Mbps en 5 GHz + 574 Mbps en 2.4 GHz (AX1800)",
-      "Puertos: 1 WAN Gigabit + 4 LAN Gigabit",
-      "Tecnologías: MU-MIMO, OFDMA, AiProtection y BSS Coloring",
-      "Soporte Mesh: Compatible con tecnología ASUS AiMesh"
+      "Wi-Fi 6 (802.11ax) Doble Banda",
+      "1201 Mbps en 5 GHz + 574 Mbps en 2.4 GHz (AX1800)",
+      "1 WAN Gigabit + 4 LAN Gigabit",
+      "MU-MIMO, OFDMA, AiProtection y BSS Coloring",
+      "Compatible con tecnología ASUS AiMesh"
     ],
     "fechaAgregado": "2026-07-22T15:03:34.445Z",
     "seoTitle": "Router Wi-fi 6 AX1800 Asus RT-AX1800S en Cuba | TiendaMax",
@@ -3031,12 +3032,12 @@
     "garantia": "",
     "devolucion": false,
     "specs": [
-      "Estándar Wi-Fi: Wi-Fi 6 (802.11ax) Doble Banda",
-      "Velocidades: 2402 Mbps en 5 GHz + 574 Mbps en 2.4 GHz (AX3000)",
-      "Puertos de Red: 1 WAN Gigabit + 4 LAN Gigabit",
-      "Puerto USB: 1 Puerto USB 3.0 para compartir archivos en red",
-      "Procesador: CPU Qualcomm Dual-Core",
-      "Seguridad: Cifrado WPA3 + TP-Link HomeShield"
+      "Wi-Fi 6 (802.11ax) Doble Banda",
+      "2402 Mbps en 5 GHz + 574 Mbps en 2.4 GHz (AX3000)",
+      "1 WAN Gigabit + 4 LAN Gigabit",
+      "1 Puerto USB 3.0 para compartir archivos en red",
+      "CPU Qualcomm Dual-Core",
+      "Cifrado WPA3 + TP-Link HomeShield"
     ],
     "fechaAgregado": "2026-07-22T15:05:15.417Z",
     "seoTitle": "Router Wi-fi 6 AX3000 Tp-link Archer AX55 | TiendaMax",
@@ -3062,11 +3063,11 @@
     "garantia": "",
     "devolucion": false,
     "specs": [
-      "Tecnología: MPPT con eficiencia de seguimiento de hasta 99.5%",
-      "Corriente Máx. de Carga: 150A",
-      "Voltaje de Sistema: 12V / 24V / 36V / 48V (Reconocimiento Automático)",
-      "Programación: 7 modos de operación configurables en pantalla",
-      "Conectividad: 2 Puertos USB 5V integrados"
+      "MPPT con eficiencia de seguimiento de hasta 99.5%",
+      "150A",
+      "12V / 24V / 36V / 48V (Reconocimiento Automático)",
+      "7 modos de operación configurables en pantalla",
+      "2 Puertos USB 5V integrados"
     ],
     "fechaAgregado": "2026-07-23T16:20:16.101Z",
     "seoTitle": "Controlador de Carga Solar MPPT 150A en Cuba | TiendaMax",
@@ -3092,11 +3093,11 @@
     "garantia": "",
     "devolucion": false,
     "specs": [
-      "Óptica Dual: 1 Lente Fijo Gran Angular + 1 Lente PTZ con Giro Motorizado",
-      "Alimentación: Batería Interna Recargable + Panel Solar Monocristalino Incluido",
-      "Conectividad: Wi-Fi Inalámbrico de 2.4 GHz",
-      "Detección: Sensor térmico PIR de presencia humana para evitar falsas alarmas",
-      "Audio y Luz: Intercomunicador bidireccional y reflectores LED disuasorios"
+      "1 Lente Fijo Gran Angular + 1 Lente PTZ con Giro Motorizado",
+      "Batería Interna Recargable + Panel Solar Monocristalino Incluido",
+      "Wi-Fi Inalámbrico de 2.4 GHz",
+      "Sensor térmico PIR de presencia humana para evitar falsas alarmas",
+      "Intercomunicador bidireccional y reflectores LED disuasorios"
     ],
     "fechaAgregado": "2026-07-23T16:52:59.395Z",
     "seoTitle": "Cámara de Seguridad Solar Doble Lente QW8-WIFI",
