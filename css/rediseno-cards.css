@@ -199,7 +199,7 @@ body.light-mode .detail-qty-stepper span{ color:#1a1a1a; }
 /* línea de acción: corazón + carrito + Pedir */
 .detail-cta-row{ display:flex; gap:10px; align-items:stretch; margin-top:4px; }
 .detail-cta-fav, #detailCartBtn.detail-cta-icon{
-  width:52px; flex:0 0 52px; border-radius:16px; border:1px solid rgba(255,255,255,.14);
+  width:52px; flex:0 0 52px; border-radius:50%; border:1px solid rgba(255,255,255,.14);
   background:rgba(255,255,255,.05); color:#cfcfd8; font-size:19px; cursor:pointer;
   display:grid; place-items:center; padding:0; margin:0; transition:filter .15s, background .15s;
 }
@@ -493,7 +493,7 @@ body.light-mode .contador-personas .pv-inner{ color:#6b6b7a; background:rgba(0,0
 
 /* Botón "Pedir por WhatsApp" más grande/protagonista dentro del modal */
 #productDetailModal .detail-cta-row #detailBuyBtn.detail-buy-btn{
-  padding:16px 18px; font-size:16px; border-radius:16px;
+  padding:16px 18px; font-size:16px; border-radius:999px;
   transition:transform 160ms var(--ease-out), filter .15s;
 }
 #productDetailModal .detail-cta-row #detailBuyBtn.detail-buy-btn:active{ transform:scale(.97); }
