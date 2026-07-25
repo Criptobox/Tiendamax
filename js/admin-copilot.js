@@ -21,7 +21,7 @@ const PROMO_BADGE_PRESETS = [
   ['✅','Garantía'],['✅','Garantía 12m'],['💯','Original'],['⚡','Entrega rápida'],
   ['🎁','Oferta'],['🆕','Nuevo'],['♻️','Usado'],['📞','Soporte'],['🏆','Calidad'],['','Ninguno'],
 ];
-let promoData = { imgUrl: '', nombre: '', categoria: '', descripcion: '', title1: '', title2: '', tag: '', tagline: '', precio: '', precioAnterior: '', moneda: 'USD', stock: '', masVendido: false, _drawTimer: null, _productoId: '' };
+let promoData = { imgUrl: '', nombre: '', categoria: '', descripcion: '', title1: '', title2: '', tag: '', precio: '', precioAnterior: '', moneda: 'USD', stock: '', masVendido: false, _drawTimer: null, _productoId: '' };
 
 const $ = (s,r=document)=>r.querySelector(s);
 const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
@@ -266,7 +266,6 @@ function injectStyles(){
   .tcp-title{position:relative;z-index:3;margin:22px 0 0 40px;max-width:62%}
   .tcp-t1{font-weight:900;line-height:.9;letter-spacing:-3px;color:#ededed;word-break:break-word}
   .tcp-t2{font-weight:900;line-height:.9;color:var(--tc-a);letter-spacing:-3px;text-shadow:0 0 40px rgba(var(--tc-a-rgb),.5);word-break:break-word}
-  .tcp-tagline{position:relative;z-index:3;margin:16px 0 0 40px;max-width:300px;font-size:17px;color:#ccc;line-height:1.32}
   .tcp-hex{position:absolute;right:34px;top:132px;z-index:4;width:126px;height:146px;background:linear-gradient(180deg,var(--tc-a) 0%,rgba(var(--tc-a-rgb),.55) 100%);clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 0 30px rgba(var(--tc-a-rgb),.5)}
   .tcp-hex::before{content:"";position:absolute;inset:4px;background:#0d0906;clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%)}
   .tcp-hex-b{font-size:22px;margin-bottom:2px;position:relative;z-index:1}
@@ -320,7 +319,6 @@ function injectStyles(){
   .tcp2-title{position:relative;z-index:3;margin:22px 34px 0}
   .tcp2-title h1{font-size:42px;font-weight:900;line-height:1.02;letter-spacing:-1.5px;color:#fff;word-break:break-word}
   .tcp2-title h1 em{font-style:normal;color:var(--tc-a)}
-  .tcp2-tagline{font-size:14px;color:#999;margin-top:8px;line-height:1.4}
   .tcp2-feats{position:relative;z-index:3;display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:20px 34px 0}
   .tcp2-feat{display:flex;align-items:flex-start;gap:11px;padding:13px;border-radius:15px;border:1px solid rgba(255,255,255,.07);background:rgba(255,255,255,.025)}
   .tcp2-feat-ic{flex-shrink:0;width:36px;height:36px;border-radius:10px;background:rgba(var(--tc-a-rgb),.14);color:var(--tc-a);display:flex;align-items:center;justify-content:center}
@@ -373,7 +371,6 @@ function injectStyles(){
   .tcp3-title{margin-top:14px}
   .tcp3-title h1{font-size:36px;font-weight:900;line-height:1.0;letter-spacing:-1.2px;color:#fff;word-break:break-word}
   .tcp3-title h1 em{font-style:normal;color:var(--tc-a)}
-  .tcp3-tagline{font-size:12px;color:#999;margin-top:5px;line-height:1.4}
   .tcp3-feats{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:13px}
   .tcp3-feat{display:flex;align-items:flex-start;gap:8px;padding:9px;border-radius:11px;border:1px solid rgba(255,255,255,.07);background:rgba(255,255,255,.025)}
   .tcp3-feat-ic{flex-shrink:0;width:28px;height:28px;border-radius:8px;background:rgba(var(--tc-a-rgb),.14);color:var(--tc-a);display:flex;align-items:center;justify-content:center}
@@ -1451,7 +1448,49 @@ function _cEtiquetaFrase(frase, usadas){
   const w = frase.split(/\s+/).filter(x=>x.length>2).slice(0,2).join(' ').toUpperCase();
   return w || 'CARACTERÍSTICA';
 }
-function _cFeatures(desc, specs){
+// Deja el dato y tira el relleno. Las fichas del catálogo están escritas
+// como "DATO + para/que + para qué sirve": el dato va delante y detrás va
+// una justificación de marketing que en una tarjeta de dos líneas solo
+// sirve para que el dato acabe cortado.
+//
+//   "Rendimiento Gigabit (10/100/1000 Mbps) para transferencia de archivos
+//    pesados y streaming fluido."          ->  "Rendimiento Gigabit (10/100/1000 Mbps)"
+//   "5000W de potencia nominal para soportar electrodomésticos de alto
+//    consumo."                             ->  "5000W de potencia nominal"
+//
+// No se inventa nada: es el mismo texto del producto, cortado antes de la
+// parte que no aporta dato. El corte solo se aplica si delante queda algo
+// con sustancia, para no dejar "Ranura" de "Ranura para tarjeta microSD".
+const _C_MIN_ANTES_DE_CORTAR = 14;
+const _C_RELLENO = /(?:,?\s+(?:ideal|pensad[oa]s?|perfect[oa]s?|diseñad[oa]s?|optimizad[oa]s?)\s+para|,?\s+(?:lo que|con el fin de|de modo que|de manera que)|\s+(?:para|que|permitiendo|garantizando|asegurando|brindando|logrando|ofreciendo))\s/gi;
+function _cResumirDetalle(txt, max){
+  const limpio = String(txt == null ? '' : txt).trim().replace(/[\s,;:.]+$/, '');
+  // Lo que ya cabe se deja tal cual: el texto del catálogo es de quien lo
+  // escribió, y recortarlo "por si acaso" quitaría datos buenos como
+  // "Incluye puerto USB para módems 4G/LTE".
+  if(!max || limpio.length <= max) return limpio;
+
+  // 1) Cortar antes de la justificación de marketing. Se busca el primer
+  //    conector que deje delante algo con sustancia — el primero a secas
+  //    dejaría "Ranura" de "Ranura para tarjeta microSD que permite…".
+  _C_RELLENO.lastIndex = 0;
+  let m;
+  while((m = _C_RELLENO.exec(limpio))){
+    if(m.index >= _C_MIN_ANTES_DE_CORTAR){
+      const corto = limpio.slice(0, m.index).replace(/[\s,;:.]+$/, '');
+      if(corto.length <= max) return corto;
+      break;   // sigue siendo largo: lo resuelve el paso 2
+    }
+  }
+  // 2) Sin conector aprovechable: cortar en la última coma que quepa, que
+  //    deja una frase entera en vez de un recorte a media palabra.
+  const coma = limpio.lastIndexOf(',', max);
+  if(coma >= _C_MIN_ANTES_DE_CORTAR) return limpio.slice(0, coma).trim();
+  return limpio;   // que lo recorte la plantilla, con sus puntos suspensivos
+}
+// `max` = cuánto texto admite el detalle en la plantilla que va a pintar.
+// Se resume solo lo que no cabe; el resto se deja como lo escribió el admin.
+function _cFeatures(desc, specs, max){
   const out=[]; const lines=String(desc==null?'':desc).split('\n').map(l=>l.replace(/​/g,'').trim()).filter(Boolean);
   let inF=false;
   for(const l of lines){
@@ -1459,11 +1498,11 @@ function _cFeatures(desc, specs){
     if(/especificaciones|\bspecs\b/i.test(l)){ if(inF) break; }
     if(!inF) continue;
     const m=l.match(/^([^:]{2,40}):\s*(.+)$/);
-    if(m){ const em=(m[2].match(/^[\p{Extended_Pictographic}️‍]+/u)||[''])[0]||'🔹'; out.push({icon:em, title:_cEtiquetaCorta(_cStrip(m[1]).toUpperCase()), desc:_cStrip(m[2])}); }
+    if(m){ const em=(m[2].match(/^[\p{Extended_Pictographic}️‍]+/u)||[''])[0]||'🔹'; out.push({icon:em, title:_cEtiquetaCorta(_cStrip(m[1]).toUpperCase()), desc:_cResumirDetalle(_cStrip(m[2]), max)}); }
     if(out.length>=4) break;
   }
   if(!out.length && Array.isArray(specs)){
-    specs.slice(0,4).forEach(s=>{ const raw=String(s).replace(/​/g,'').trim(); const em=(raw.match(/[\p{Extended_Pictographic}️‍]+/u)||['🔹'])[0]; const txt=_cStrip(raw); const c=txt.indexOf(':'); out.push(c>0?{icon:em,title:_cEtiquetaCorta(txt.slice(0,c).toUpperCase()),desc:txt.slice(c+1).trim()}:{icon:em,title:_cEtiquetaCorta(txt.toUpperCase()),desc:''}); });
+    specs.slice(0,4).forEach(s=>{ const raw=String(s).replace(/​/g,'').trim(); const em=(raw.match(/[\p{Extended_Pictographic}️‍]+/u)||['🔹'])[0]; const txt=_cStrip(raw); const c=txt.indexOf(':'); out.push(c>0?{icon:em,title:_cEtiquetaCorta(txt.slice(0,c).toUpperCase()),desc:_cResumirDetalle(txt.slice(c+1), max)}:{icon:em,title:_cEtiquetaCorta(txt.toUpperCase()),desc:''}); });
   }
   // Fallback: si no hay ficha técnica ni specs, saca hasta 4 features de las
   // frases de la descripción (así el cartel nunca queda con la columna vacía).
@@ -1484,7 +1523,7 @@ function _cFeatures(desc, specs){
     const frases = nuevas.length>=2 ? nuevas : todas;
     const usadas = new Set();
     frases.slice(0,4).forEach((f,i)=>{
-      out.push({icon:icons[i%icons.length], title:_cEtiquetaCorta(_cEtiquetaFrase(f, usadas)), desc:f.charAt(0).toUpperCase()+f.slice(1)});
+      out.push({icon:icons[i%icons.length], title:_cEtiquetaCorta(_cEtiquetaFrase(f, usadas)), desc:_cResumirDetalle(f.charAt(0).toUpperCase()+f.slice(1), max)});
     });
   }
   return out;
@@ -1495,7 +1534,7 @@ function _cartelDataFromProduct(p){
   const disc = parseFloat(p.precioOriginal) > 0 && parseFloat(p.precioOriginal) > parseFloat(p.precioActual);
   return {
     _productoId: String(p.id||''), nombre: p.nombre||'', categoria: p.categoria||'', descripcion: p.descripcion||'', _specs: p.specs,
-    title1: w1, title2: w2, tag: (p.categoria||'DESTACADO').toUpperCase(), tagline: _cFirstSentence(p.descripcion),
+    title1: w1, title2: w2, tag: (p.categoria||'DESTACADO').toUpperCase(),
     precio: String(p.precioActual||''), precioAnterior: disc ? String(p.precioOriginal) : '', moneda: 'USD',
     stock: String(p.stock||''), masVendido: !!p.masVendido,
     imgUrl: (Array.isArray(p.imagenes)&&p.imagenes[0]) || p.imagen || '',
@@ -1607,7 +1646,7 @@ function _hexToRgbCsv(hex){
 const _C_DESC_MAX_PRO2 = 92;
 function _cartelHTML2(d){
   const w1=d.title1||'PRODUCTO', w2=d.title2||'';
-  const feats=_cFeatures(d.descripcion, d._specs).slice(0,4);
+  const feats=_cFeatures(d.descripcion, d._specs, _C_DESC_MAX_PRO2).slice(0,4);
   const hasDisc=parseFloat(d.precioAnterior)>0 && parseFloat(d.precioAnterior)>parseFloat(d.precio);
   const pct=hasDisc?Math.round((1-parseFloat(d.precio)/parseFloat(d.precioAnterior))*100):0;
   const moneda=d.moneda||'USD';
@@ -1623,7 +1662,7 @@ function _cartelHTML2(d){
   return `<div class="tcp2-root" style="--tc-a:${color};--tc-a-rgb:${colorRgb}">`
     +`<div class="tcp2-bg"></div><div class="tcp2-glow"></div>`
     +`<div class="tcp2-header"><div class="tcp2-brand"><div class="tcp2-logo"><img src="/iconos/icon-192.png" alt="TiendaMax"></div><div><div class="tcp2-word">Tienda<em>Max</em></div><div class="tcp2-sub">Tienda online en Cuba</div></div></div><div class="tcp2-tag">${esc(_cClip(d.tag||'DESTACADO',16))}</div></div>`
-    +`<div class="tcp2-title"><h1 style="font-size:${_cTitleFontFit(w1,w2,42,26)}px">${esc(w1)}${w2?` <em>${esc(w2)}</em>`:''}</h1>${d.tagline?`<div class="tcp2-tagline">${esc(d.tagline)}</div>`:''}</div>`
+    +`<div class="tcp2-title"><h1 style="font-size:${_cTitleFontFit(w1,w2,42,26)}px">${esc(w1)}${w2?` <em>${esc(w2)}</em>`:''}</h1></div>`
     +(featHtml?`<div class="tcp2-feats">${featHtml}</div>`:'')
     +`<div class="tcp2-imgwrap">${imgUrl?`<img src="${esc(imgUrl)}" crossorigin="anonymous">`:''}${badgeHtml}</div>`
     +`<div class="tcp2-price"><div class="tcp2-price-row"><span class="tcp2-price-n">$${esc(String(Math.round(parseFloat(d.precio)||0)))}</span><span class="tcp2-price-c">${esc(moneda)}</span>${hasDisc?`<span class="tcp2-price-old">$${esc(String(Math.round(parseFloat(d.precioAnterior))))}</span><span class="tcp2-price-off">-${pct}%</span>`:''}</div>${categoria?`<div class="tcp2-price-cat">${categoria}</div>`:''}</div>`
@@ -1639,7 +1678,7 @@ function _cartelHTML2(d){
 // el Pro v2, así las 3 plantillas quedan consistentes entre sí.
 function _cartelHTML3(d){
   const w1=d.title1||'PRODUCTO', w2=d.title2||'';
-  const feats=_cFeatures(d.descripcion, d._specs).slice(0,4);
+  const feats=_cFeatures(d.descripcion, d._specs, 62).slice(0,4);
   const hasDisc=parseFloat(d.precioAnterior)>0 && parseFloat(d.precioAnterior)>parseFloat(d.precio);
   const pct=hasDisc?Math.round((1-parseFloat(d.precio)/parseFloat(d.precioAnterior))*100):0;
   const moneda=d.moneda||'USD';
@@ -1655,8 +1694,7 @@ function _cartelHTML3(d){
     +`<div class="tcp3-left">`
       +`<div class="tcp3-header"><div class="tcp3-brand"><div class="tcp3-logo"><img src="/iconos/icon-192.png" alt="TiendaMax"></div><div><div class="tcp3-word">Tienda<em>Max</em></div><div class="tcp3-sub">Tienda online en Cuba</div></div></div><div class="tcp3-tag">${esc(_cClip(d.tag||'DESTACADO',16))}</div></div>`
       +`<div class="tcp3-title"><h1 style="font-size:${_cTitleFontFit(w1,w2,36,27)}px">${esc(w1)}${w2?` <em>${esc(w2)}</em>`:''}</h1></div>`
-      +(d.tagline?`<div class="tcp3-tagline">${esc(d.tagline)}</div>`:'')
-      +(featHtml?`<div class="tcp3-feats">${featHtml}</div>`:'')
+            +(featHtml?`<div class="tcp3-feats">${featHtml}</div>`:'')
       +`<div class="tcp3-price"><div class="tcp3-price-row"><span class="tcp3-price-n">$${esc(String(Math.round(parseFloat(d.precio)||0)))}</span><span class="tcp3-price-c">${esc(moneda)}</span>${hasDisc?`<span class="tcp3-price-old">$${esc(String(Math.round(parseFloat(d.precioAnterior))))}</span><span class="tcp3-price-off">-${pct}%</span>`:''}</div>${categoria?`<div class="tcp3-price-cat">${categoria}</div>`:''}</div>`
       +`<div class="tcp3-cta"><div class="tcp3-cta-wa"><svg viewBox="0 0 24 24" fill="#25d366"><path d="M12 2C6.5 2 2 6.5 2 12c0 1.8.5 3.5 1.3 5L2 22l5.2-1.3c1.4.8 3.1 1.3 4.8 1.3 5.5 0 10-4.5 10-10S17.5 2 12 2z"/></svg></div><div class="tcp3-cta-t"><small>PÍDELO POR</small>WhatsApp</div><div class="tcp3-cta-arrow">›</div></div>`
       +`<div class="tcp3-trust"><div class="tcp3-trust-i">${_cIconSvg2('CAJA')}<b>Envío</b><span>a todo el país</span></div><div class="tcp3-trust-i">${_cIconSvg2('GARANTIA')}<b>Compra</b><span>segura</span></div><div class="tcp3-trust-i">${_cIconSvg2('CALIDAD')}<b>Garantía</b><span>real</span></div><div class="tcp3-trust-i">${_cIconSvg2('SOPORTE')}<b>Soporte</b><span>24/7</span></div></div>`
@@ -1704,7 +1742,7 @@ function promoSetProduct(id) {
   const p = products().find(x => String(x.id) === String(id));
   if (!p) return;
   Object.assign(promoData, _cartelDataFromProduct(p));
-  const map = { tmPromoTitle1:'title1', tmPromoTitle2:'title2', tmPromoTag:'tag', tmPromoTagline:'tagline', tmPromoPrecio:'precio', tmPromoPrecioAnt:'precioAnterior', tmPromoStock:'stock' };
+  const map = { tmPromoTitle1:'title1', tmPromoTitle2:'title2', tmPromoTag:'tag', tmPromoPrecio:'precio', tmPromoPrecioAnt:'precioAnterior', tmPromoStock:'stock' };
   Object.entries(map).forEach(([elId, key]) => { const el = document.getElementById(elId); if(el) el.value = promoData[key]||''; });
   promoScheduleDraw();
 }
@@ -1781,7 +1819,7 @@ function promoDrawChips(ctx, chips, startX, startY, maxW, accent, isDark) {
 function _cartelHTML(d){
   const w1=d.title1||'PRODUCTO', w2=d.title2||'';
   const tf=_cTitleFont(w1,w2);
-  const feats=_cFeatures(d.descripcion, d._specs);
+  const feats=_cFeatures(d.descripcion, d._specs, 62);
   const hasDisc=parseFloat(d.precioAnterior)>0 && parseFloat(d.precioAnterior)>parseFloat(d.precio);
   const pct=hasDisc?Math.round((1-parseFloat(d.precio)/parseFloat(d.precioAnterior))*100):0;
   const st=Number(d.stock||0), moneda=d.moneda||'USD';
@@ -1797,8 +1835,7 @@ function _cartelHTML(d){
     +`<div class="tcp-header"><img class="tcp-logo-img" src="/iconos/icon-512.png" alt="TiendaMax"><div class="tcp-logo-txt">Tienda<em>Max</em></div></div>`
     +`<div class="tcp-tag">${esc(_cClip(d.tag||'DESTACADO',18))}</div>`
     +`<div class="tcp-title"><div class="tcp-t1" style="font-size:${tf}px">${esc(w1)}</div>${w2?`<div class="tcp-t2" style="font-size:${tf}px">${esc(w2)}</div>`:''}</div>`
-    +`<div class="tcp-tagline">${esc(d.tagline||'')}</div>`
-    +(hasDisc?`<div class="tcp-hex"><div class="tcp-hex-b">⚡</div><div class="tcp-hex-n">-${pct}%</div><div class="tcp-hex-l">OFERTA</div></div>`:'')
+        +(hasDisc?`<div class="tcp-hex"><div class="tcp-hex-b">⚡</div><div class="tcp-hex-n">-${pct}%</div><div class="tcp-hex-l">OFERTA</div></div>`:'')
     +`<div class="tcp-img">${imgUrl?`<img src="${esc(imgUrl)}" crossorigin="anonymous">`:'<div style="color:#555;font-size:14px">📷</div>'}</div>`
     +(featHtml?`<div class="tcp-feats">${featHtml}</div>`:'')
     +`<div class="tcp-trusts">${trustHtml}</div>`
@@ -1838,7 +1875,7 @@ async function promoDescargarCartel(btn){
 }
 function promoScheduleDraw() { clearTimeout(promoData._drawTimer); promoData._drawTimer = setTimeout(drawPromo, 100); }
 function addPromoListeners() {
-  const fields = { tmPromoTitle1:'title1', tmPromoTitle2:'title2', tmPromoTag:'tag', tmPromoTagline:'tagline', tmPromoPrecio:'precio', tmPromoPrecioAnt:'precioAnterior', tmPromoStock:'stock', tmPromoMoneda:'moneda' };
+  const fields = { tmPromoTitle1:'title1', tmPromoTitle2:'title2', tmPromoTag:'tag', tmPromoPrecio:'precio', tmPromoPrecioAnt:'precioAnterior', tmPromoStock:'stock', tmPromoMoneda:'moneda' };
   Object.entries(fields).forEach(([id, key]) => {
     const el = document.getElementById(id);
     if (el) el.addEventListener('input', () => { promoData[key] = el.value; promoScheduleDraw(); });
@@ -1887,8 +1924,6 @@ function renderPromoImagen() {
       </div>
       <div><div style="font-size:11px;color:#888;margin-bottom:4px">Etiqueta (pill superior)</div>
         <input class="tm-promo-field" id="tmPromoTag" type="text" placeholder="WIFI" value="${esc(d.tag)}"></div>
-      <div><div style="font-size:11px;color:#888;margin-bottom:4px">Frase (bajo el título)</div>
-        <input class="tm-promo-field" id="tmPromoTagline" type="text" placeholder="Descripción corta y atractiva" value="${esc(d.tagline)}"></div>
       <div style="display:grid;grid-template-columns:1fr 80px 1fr 1fr;gap:8px">
         <div><div style="font-size:11px;color:#888;margin-bottom:4px">Precio</div>
           <input class="tm-promo-field" id="tmPromoPrecio" type="text" placeholder="80" value="${esc(d.precio)}"></div>
