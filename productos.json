@@ -174,10 +174,10 @@
     "id": 1778102507659,
     "nombre": "​⚖️ Báscula Digital de Alta Definición",
     "precioActual": 25,
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784007772666.webp",
+    "imagen": "https://tiendamax.org/imagenes/img_1784007772666.webp",
     "categoria": "UTILES",
     "subcategoria": "HOGAR",
-    "stock": 8,
+    "stock": 0,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -188,7 +188,6 @@
     "seoTitle": "PESA / BÁSCULA INTELIGENTE DIGITAL. en Cuba | TiendaMax",
     "seoDescription": "Pesa/ Báscula inteligente digital. Funciona con 2 baterias AAA(no incluidas) Cinta metrica incluida. Se conecta con el teléfono mediante una app que…",
     "radar": true,
-    "descripcion": "Báscula de diseño elegante y compacto, perfecta para el uso diario en el hogar. Ofrece una lectura clara y precisa de tu peso con una plataforma resistente y fácil de limpiar.\n​Ficha Técnica:\n​Capacidad Máxima: ⚖️ Soporta hasta 396.83 lb (180 kg).\n​Precisión: 🎯 División (d) de 50g para un seguimiento exacto de tu peso.\n​Visualización: 📱 Pantalla digital HD de alta visibilidad para lecturas rápidas.\n​Dimensiones: 📏 Tamaño optimizado de 27x27 cm (10.63x10.63 pulgadas).\n​Diseño: ✨ Estética moderna en color negro con acabado de alta calidad.\n​Especificaciones (Specs):\n​Tipo: Báscula corporal digital.\n​Material: Plataforma de vidrio templado de alta resistencia.\n​Uso: Monitoreo de peso personal y control de salud.\n​Unidades: Medición soportada en libras (lb) y kilogramos (kg).",
     "precioOriginal": 0,
     "comisionMoneda": "MN",
     "specs": [
@@ -196,9 +195,10 @@
       "​📱 Display Digital HD"
     ],
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784007772666.webp",
+      "https://tiendamax.org/imagenes/img_1784007772666.webp",
       "https://tiendamax.org/imagenes/img_1778102507659_94aef1.webp"
-    ]
+    ],
+    "descripcion": "Báscula de diseño elegante y compacto, perfecta para el uso diario en el hogar. Ofrece una lectura clara y precisa de tu peso con una plataforma resistente y fácil de limpiar.\n​Ficha Técnica:\n​Capacidad Máxima: ⚖️ Soporta hasta 396.83 lb (180 kg).\n​Precisión: 🎯 División (d) de 50g para un seguimiento exacto de tu peso.\n​Visualización: 📱 Pantalla digital HD de alta visibilidad para lecturas rápidas.\n​Dimensiones: 📏 Tamaño optimizado de 27x27 cm (10.63x10.63 pulgadas).\n​Diseño: ✨ Estética moderna en color negro con acabado de alta calidad.\n​Especificaciones (Specs):\n​Tipo: Báscula corporal digital.\n​Material: Plataforma de vidrio templado de alta resistencia.\n​Uso: Monitoreo de peso personal y control de salud.\n​Unidades: Medición soportada en libras (lb) y kilogramos (kg)."
   },
   {
     "id": 1778102582909,
@@ -2058,30 +2058,6 @@
     "descripcion": "Aceite MANNOL 4-TAKT MOTORBIKE 10W-40 (código 7812) para motos de 4 tiempos, especificación JASO MA/MA2, con tecnología ESTER. Envase de 1 litro."
   },
   {
-    "id": 1781111210796,
-    "nombre": "Cargador Inteligente 30A",
-    "precioActual": 100,
-    "precioOriginal": 0,
-    "imagen": "https://tiendamax.org/imagenes/img_1781111210796.webp",
-    "categoria": "ENERGIA",
-    "subcategoria": "CARGADORES",
-    "stock": 0,
-    "masVendido": false,
-    "usado": false,
-    "garantia": "",
-    "devolucion": false,
-    "descuento": 0,
-    "slug": "cargador-inteligente-30a",
-    "comision": 5,
-    "comisionMoneda": "USD",
-    "specs": [
-      "30A"
-    ],
-    "seoTitle": "CARGADOR INTELIGENTE 30A en Cuba | TiendaMax",
-    "seoDescription": "Cargadores inteligentes de 30A todos autovolt a12V y 24V. Amperaje ajustable para carga lenta, media o rápida segun su preferencia. Compatible con…",
-    "descripcion": "Cargador inteligente de batería LVYUAN, de 30A. Reconoce automático 12V y 24V, con modo de reparación de un toque para baterías sulfatadas. Carga lenta, media o rápida según lo que necesites, con pantalla digital. Compatible con baterías de plomo-ácido, AGM, GEL, EFB y LiFePO4."
-  },
-  {
     "id": 1782438922547,
     "nombre": "​🌐 Router Tp-link Archer AX1450 (Wi-fi 6)",
     "imagen": "https://tiendamax.org/imagenes/img_1782438920638_220090.webp",
@@ -2091,7 +2067,7 @@
     "precioActual": 80,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 1,
+    "stock": 0,
     "comision": 10,
     "comisionMoneda": "USD",
     "categoria": "WIFI",
