@@ -25,7 +25,8 @@ ORDEN = [
     "tienda-plus.css",
     "hero-efectos.css",
     "rediseno-cards.css",  # tarjetas póster + cantidad en modal — al final para ganar la cascada
-    "modal-v4.css",        # rediseño premium v4 del modal de detalle — el ÚLTIMO, gana todo
+    "modal-v4.css",        # rediseño premium v4 del modal de detalle
+    "botones-unificados.css",  # forma de TODOS los botones (token único) — va el último a propósito
 ]
 
 def main():

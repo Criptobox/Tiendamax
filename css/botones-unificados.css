@@ -1,0 +1,218 @@
+/* ==========================================================================
+   botones-unificados.css — CAPA DE COMPONENTE: forma de los botones.
+   Va el ÚLTIMO de todos en scripts/build_css.py (después incluso de
+   modal-v4.css) porque su trabajo es justamente ganar la cascada.
+
+   POR QUÉ EXISTE
+   El catálogo tenía 126 reglas de `border-radius` sobre botones repartidas
+   en 7 hojas (styles, nuevo-diseno, styles.fixes, premium-theme, light-mode,
+   rediseno-cards, modal-v4), muchas con `!important`, pisándose entre sí.
+   Resultado: el mismo tipo de botón salía píldora en un sitio y cuadrado
+   con las esquinas redondeadas en otro, y cada arreglo puntual duraba hasta
+   que otra hoja volvía a ganar. Esto lo centraliza en tres tokens.
+
+   LA REGLA — rectangular con esquinas redondeadas en TODO, con el radio
+   escalado al tamaño del botón:
+
+     · BOTÓN (acción, chip, filtro, toggle) -> 14px
+     · SOLO ÍCONO (caja 1:1)                -> 30% del propio lado
+
+   El 14px no es un número al azar: las tarjetas de producto que envuelven a
+   estos botones tienen 16-18px, así que un botón interior de ~14px se lee
+   como PARTE de la tarjeta. Con píldora completa se veía como una pegatina
+   pegada encima, y en los botones de 350px de ancho la curva salía estirada.
+
+   Los botones de solo ícono usan PORCENTAJE, no píxeles, a propósito: van
+   desde 22px (el mini de WhatsApp) hasta 48px (❤️/🛒 del modal). Un valor
+   fijo de 14px dejaría al de 22px casi redondo y al de 48px casi recto; con
+   30% los dos quedan con la misma proporción de curva y se ven de la misma
+   familia, que es justo lo que se busca.
+
+   PARA CAMBIAR LA FORMA DE TODA LA TIENDA se tocan estos tokens, no las 126
+   reglas. Píldora en todo = --tm-radius-btn: var(--tm-radius-full).
+
+   AL AGREGAR UN BOTÓN NUEVO: se mete su clase en la lista del rol que le
+   toque. No hace falta escribir border-radius en la hoja donde se defina.
+   ========================================================================== */
+
+:root {
+  /* — Capa 1, primitivos: valores crudos — */
+  --tm-radius-full: 999px;    /* píldora — hoy sin uso; queda por si se vuelve */
+  --tm-radius-circle: 50%;    /* círculo — idem                                */
+  --tm-radius-md: 14px;
+  --tm-radius-sm: 10px;
+  --tm-radius-prop: 30%;      /* proporcional al lado del propio elemento      */
+
+  /* — Capa 2, semánticos: qué forma tiene cada rol de botón — */
+  --tm-radius-btn: var(--tm-radius-md);           /* acción, chip, filtro, toggle */
+  --tm-radius-chip: var(--tm-radius-btn);         /* alias: los chips van igual   */
+  --tm-radius-btn-icon: var(--tm-radius-prop);    /* solo ícono, caja 1:1         */
+  /* Un elemento metido DENTRO de otro que ya tiene radio necesita uno menor,
+     o la curva interior se ve apretada contra la exterior: radio interior =
+     radio exterior − separación. Es el caso del toggle USD/MN. */
+  --tm-radius-btn-inner: var(--tm-radius-sm);
+}
+
+/* --------------------------------------------------------------------------
+   1) BOTONES DE ACCIÓN (anchos / CTA) -> 14px
+   Se listan con `html body` delante para superar la especificidad de las
+   hojas anteriores; los que la hoja original define con un id llevan aquí
+   ese mismo id, porque un id gana a cualquier cantidad de clases.
+   -------------------------------------------------------------------------- */
+html body .btn,
+html body .btn-small,
+html body .btn-large,
+html body .btn-primary,
+html body .btn-secondary,
+html body .btn-publicar-grande,
+html body .btn-cta-mejorado,
+html body .btn-delete-category,
+html body .btn-small-icon,
+html body .btn-revolico-action,
+html body .btn-pedir-card,
+html body .btn-pedir-whatsapp,
+html body .btn-compartir-wa,
+html body .btn-compartir-carrito,
+html body .carrito-btn-limpiar,
+html body .cs-card-btn,
+html body .cta-buttons-equal .btn,
+html body .detail-share-pill,
+html body .dsc-buy-btn,
+html body .hsb-apply-btn,
+html body .mbb-btn,
+html body .banner-lateral-btn,
+html body .mv-ver-todos-btn,
+html body .nd-btn-primary,
+html body .nd-btn-wa,
+html body .nd-btn-pedir,
+html body .nd-btn-deal,
+html body .pedido-btn-repetir,
+html body .pwa-install-btn,
+html body .pwa-dismiss-btn,
+html body .red-social-btn,
+html body .tm-sk-btn,
+html body .tm-wa-btn,
+html body .tmplus-aviso-btn,
+html body .tmplus-share-cart,
+html body .tm-agent-input button,
+html body .producto-card .btn,
+html body .producto-card .btn-pedir-card,
+html body .cta-final .btn-large,
+html body .cta-final .btn,
+html body #productDetailModal .detail-buy-btn,
+html body #productDetailModal .detail-share-pill,
+html body #productDetailModal .detail-sticky-cta .dsc-buy-btn,
+html body #nd-resenas-mas button,
+html body #catVerMasBtn,
+html body #tm-cta-link {
+  border-radius: var(--tm-radius-btn) !important;
+}
+
+/* --------------------------------------------------------------------------
+   2) CHIPS (cortos, inline: filtros, toggles, tags de acción) -> 14px
+   -------------------------------------------------------------------------- */
+html body .btn-volver,
+html body .btn-seguir-viendo,
+html body .categoria-btn,
+html body .subcategoria-tab,
+html body .detail-resena-add-btn,
+html body .hsb-pill,
+html body .hsb-precio-pill,
+html body .hsb-buscar-pill,
+html body .currency-bar,
+html body #productDetailModal .detail-resena-add-btn {
+  border-radius: var(--tm-radius-chip) !important;
+}
+
+/* Toggle USD/MN: van dentro de .currency-bar, así que llevan el radio interior. */
+html body .currency-bar .currency-toggle,
+html body .currency-bar .cur-btn {
+  border-radius: var(--tm-radius-btn-inner) !important;
+}
+
+/* Selector de cantidad (− 1 +): la caja va como botón y los dos de dentro
+   como íconos, así que cada uno cae en su regla natural. */
+html body .detail-qty-stepper,
+html body #productDetailModal .detail-qty-stepper {
+  border-radius: var(--tm-radius-chip) !important;
+}
+
+/* --------------------------------------------------------------------------
+   3) BOTONES SOLO ÍCONO (caja cuadrada 1:1) -> 30% del propio lado
+   -------------------------------------------------------------------------- */
+html body .theme-toggle,
+html body .admin-toggle,
+html body .header-theme-btn,
+html body .cart-icon-btn,
+html body .heart-icon-btn,
+html body .notif-icon-btn,
+html body .hamburger-btn,
+html body .header-right .cart-icon-btn,
+html body .header-right .heart-icon-btn,
+html body .header-right .notif-icon-btn,
+html body .header-right .header-theme-btn,
+html body .header-right .hamburger-btn,
+html body .close-btn,
+html body .mobile-menu-close,
+html body .carrito-qty-btn,
+html body .btn-megusta,
+html body .btn-pedir-wa-icon,
+html body .btn-pedir-wa-icon-sm,
+html body .detail-cta-fav,
+html body .detail-cta-icon,
+html body .detail-qty-stepper button,
+html body .hsb-back-btn,
+html body .tm-welcome-close,
+html body #productDetailModal .close-btn,
+html body #productDetailModal .close-btn-floating,
+html body #productDetailModal .modal-header > .close-btn,
+html body #productDetailModal #detailFavBtn.detail-cta-fav,
+html body #productDetailModal #detailCartBtn.detail-cta-icon,
+html body #productDetailModal .detail-qty-stepper button,
+html body .hero-banner-prev,
+html body .hero-banner-next,
+html body .producto-card.pcard-v2 .pv2-photo .btn-megusta,
+html body #tmv4Lightbox .lb-close {
+  border-radius: var(--tm-radius-btn-icon) !important;
+}
+
+/* Modo claro: mismas formas. Las hojas de light-mode redefinen el radio de
+   varios botones, así que se vuelve a fijar aquí — la forma no depende del
+   tema, solo los colores. */
+html body.light-mode .theme-toggle,
+html body.light-mode .header-theme-btn,
+html body.light-mode .cart-icon-btn,
+html body.light-mode .heart-icon-btn,
+html body.light-mode .notif-icon-btn,
+html body.light-mode .hamburger-btn,
+html body.light-mode .mobile-menu-close,
+html body.light-mode .btn-megusta,
+html body.light-mode .detail-cta-fav,
+html body.light-mode .detail-cta-icon {
+  border-radius: var(--tm-radius-btn-icon) !important;
+}
+html body.light-mode .btn,
+html body.light-mode .btn-primary,
+html body.light-mode .btn-secondary,
+html body.light-mode .btn-large,
+html body.light-mode .btn-pedir-card,
+html body.light-mode .btn-pedir-whatsapp,
+html body.light-mode .producto-card .btn-pedir-card {
+  border-radius: var(--tm-radius-btn) !important;
+}
+html body.light-mode .categoria-btn,
+html body.light-mode .subcategoria-tab {
+  border-radius: var(--tm-radius-chip) !important;
+}
+
+/* --------------------------------------------------------------------------
+   4) LO QUE ESTE ARCHIVO NO TOCA — a propósito
+   · Menú hamburguesa desplegable (.mobile-theme-btn, .mobile-action-grupo,
+     .mobile-action-wagrupo, .mobile-action-ayuda): son tarjetas de menú, no
+     botones de acción, y se decidió expresamente que fueran así.
+   · Enlaces de navegación del menú (.mobile-menu-overlay a): son links.
+   · Cajas que contienen botones, no botones: .detail-sticky-cta,
+     .cta-final .container, .detail-qty-row.
+   · Piezas internas de un control: .hamburger-btn span (las rayitas),
+     .tmplus-toggle-thumb (el pulgar del switch).
+   -------------------------------------------------------------------------- */
