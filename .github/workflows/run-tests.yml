@@ -5,10 +5,16 @@ on:
     paths:
       - 'scripts/**'
       - 'tests/**'
+      # test_cartel_titulos.py verifica la lógica del cartel promo, que vive
+      # en js/admin-copilot.js y se valida contra productos.json.
+      - 'js/admin-copilot.js'
+      - 'productos.json'
   pull_request:
     paths:
       - 'scripts/**'
       - 'tests/**'
+      - 'js/admin-copilot.js'
+      - 'productos.json'
 
 concurrency:
   group: run-tests

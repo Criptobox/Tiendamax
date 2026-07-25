@@ -1516,7 +1516,7 @@
   };
 </script>
 <script src="js/vendor/html2canvas.min.js?v=e87e5507" defer></script>
-<script src="js/admin-copilot.js?v=151518ef"></script>
+<script src="js/admin-copilot.js?v=08cbdd38"></script>
 
 <script>
 (function(){
@@ -3909,8 +3909,11 @@ function pubSetAutoColorCat(on){
   localStorage.setItem('tmCartelAutoColorCat', on ? '1' : '0');
   const b=$('#pub-cat-autocolor'); if(b){ b.className='btn '+(on?'btn-primary':'btn-ghost'); b.textContent=(on?'🎨 Color por categoría: ON':'🎨 Color por categoría: OFF'); }
 }
+// Último motivo de fallo real (no solo "null" en silencio) — para poder
+// mostrarle al admin POR QUÉ no salió el lote, en vez de un genérico.
+let _pubLoteLastError = '';
 async function pubGenCartelBlob(p){
-  if(typeof window.tmCartelHTML!=='function' || typeof window.html2canvas!=='function') return null;
+  if(typeof window.tmCartelHTML!=='function' || typeof window.html2canvas!=='function'){ _pubLoteLastError='No cargó el generador de carteles (recarga la página)'; return null; }
   const holder=document.createElement('div');
   holder.style.cssText='position:absolute;left:-9999px;top:0;pointer-events:none;';
   holder.innerHTML=(typeof window.tmCartelCardHTML==='function') ? window.tmCartelCardHTML('__tcpBatch', false) : '<div class="tcp-card" id="__tcpBatch"></div>';
@@ -3921,8 +3924,10 @@ async function pubGenCartelBlob(p){
     if(!node.innerHTML.trim()) throw new Error('cartel vacío');
     await Promise.all([...node.querySelectorAll('img')].map(im=>im.complete?null:new Promise(r=>{im.onload=r;im.onerror=r;setTimeout(r,4000);})));
     const canvas=await window.html2canvas(node,{backgroundColor:'#000',scale:2,useCORS:true,logging:false,width:node.offsetWidth,height:node.offsetHeight});
-    return await new Promise(res=>canvas.toBlob(res,'image/png',.95));
-  }catch(e){ console.error('[cartel-lote]',e); return null; }
+    const blob=await new Promise(res=>canvas.toBlob(res,'image/png',.95));
+    if(!blob) throw new Error('canvas vacío (posible foto sin permiso CORS)');
+    return blob;
+  }catch(e){ console.error('[cartel-lote]',p.id,p.nombre,e); _pubLoteLastError=(p.nombre||('#'+p.id))+': '+(e.message||e); return null; }
   finally{ holder.remove(); }
 }
 // Genera los carteles de todos los productos (con stock) de la categoría.
@@ -3965,20 +3970,37 @@ async function pubCatCartelesLote(cat, modo){ // modo: 'share' | 'download'
   cat=cat||_pubCatSel; if(!cat){ showToast('Elige una categoría'); return; }
   const total=pubCatProds(cat).length;
   if(!total){ showToast('Sin productos con stock en esta categoría'); return; }
-  // Texto + hashtags de la categoría, copiado al portapapeles YA (dentro del
-  // gesto del click, antes de los await de generación) para que quede listo
-  // para pegar donde se suban las imágenes. Muchos destinos ignoran el `text`
-  // de navigator.share cuando van archivos, así que el clipboard es lo fiable.
-  const texto=(typeof pubCatText==='function') ? pubCatText(cat) : '';
-  let copiado=false;
-  if(texto){ try{ await navigator.clipboard.writeText(texto); copiado=true; }catch(e){} }
-  const hashSufijo = copiado ? ' · 📋 texto + hashtags copiados' : '';
+  if(typeof window.tmCartelHTML!=='function' || typeof window.html2canvas!=='function'){
+    showToast('⚠️ Recarga la página','No se pudo cargar el generador de carteles'); return;
+  }
+  // Barra y botones deshabilitados YA, antes de cualquier await — así se ve
+  // que el click sí hizo algo aunque lo de abajo tarde o falle.
   const btns=document.querySelectorAll('.pub-cat-lote-btn'); btns.forEach(b=>b.disabled=true);
   const nGen=Math.min(total, PUB_CAT_LOTE_MAX);
   _pubLoteProgress('⏳ Generando imágenes… 0/'+nGen, 0, nGen);
+  // Texto + hashtags de la categoría, copiado al portapapeles (para pegarlo
+  // donde se suban las imágenes). Con timeout: en algunos navegadores/
+  // webviews el permiso de portapapeles se queda esperando sin resolver NI
+  // rechazar nunca — eso trababa todo el lote antes de generar nada.
+  const texto=(typeof pubCatText==='function') ? pubCatText(cat) : '';
+  let copiado=false;
+  if(texto){
+    try{
+      await Promise.race([
+        navigator.clipboard.writeText(texto).then(()=>{ copiado=true; }),
+        new Promise(r=>setTimeout(r,1500))
+      ]);
+    }catch(e){}
+  }
+  const hashSufijo = copiado ? ' · 📋 texto + hashtags copiados' : '';
   try{
+    _pubLoteLastError='';
     const files=await pubCatGenCarteles(cat, (i,n)=>_pubLoteProgress('⏳ Generando '+i+'/'+n+'…', i, n));
-    if(!files.length){ _pubLoteProgress(''); showToast('❌ No se pudieron generar las imágenes'); return; }
+    if(!files.length){
+      _pubLoteProgress('❌ '+(_pubLoteLastError||'No se pudo generar ninguna imagen'));
+      showToast('❌ No se pudieron generar las imágenes', _pubLoteLastError||'Intenta de nuevo');
+      return;
+    }
     const extra = total>files.length ? ' (de '+total+', tope '+PUB_CAT_LOTE_MAX+')' : '';
     if(modo==='share'){
       if(navigator.canShare && navigator.canShare({files}) && navigator.share){
