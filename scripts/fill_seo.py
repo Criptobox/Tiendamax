@@ -23,11 +23,20 @@ DESC_MAX = 155
 # limpia viñetas (* y • usadas como marcadores de lista) y espacios/saltos
 BULLET_RE = re.compile(r'\s*[*•]+\s*')
 WS_RE = re.compile(r'\s+')
+# emoji/zero-width inicial del nombre (mismo criterio que _cStrip en
+# js/admin-copilot.js): no pinta nada en un <title>/<meta> de texto plano.
+EMOJI_INICIAL_RE = re.compile(
+    r'^[\s​﻿]*(?:[\U0001F300-\U0001FAFF☀-➿️‍]+\s*)+'
+)
 
 
 def limpiar(t):
     t = BULLET_RE.sub(' ', t or '')
     return WS_RE.sub(' ', t).strip()
+
+
+def sin_emoji_inicial(t):
+    return EMOJI_INICIAL_RE.sub('', t or '').strip()
 
 
 def recortar(t, n):
@@ -49,7 +58,7 @@ def _atomic_write(path, text):
 
 
 def seo_title(p):
-    nombre = (p.get('nombre') or '').strip()
+    nombre = sin_emoji_inicial(p.get('nombre') or '')
     if not nombre:
         return 'TiendaMax'
     for cand in (f"{nombre} en Cuba | TiendaMax", f"{nombre} | TiendaMax", nombre):
@@ -65,7 +74,7 @@ def seo_desc(p):
     if len(desc) >= 40:
         return recortar(desc, DESC_MAX)
     # descripción muy corta o ausente: texto neutro y veraz
-    nombre = (p.get('nombre') or 'Producto').strip()
+    nombre = sin_emoji_inicial(p.get('nombre') or '') or 'Producto'
     cat = (p.get('categoria') or '').strip()
     base = f"{nombre} disponible en TiendaMax"
     if cat:
