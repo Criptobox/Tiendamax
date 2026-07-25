@@ -1516,7 +1516,7 @@
   };
 </script>
 <script src="js/vendor/html2canvas.min.js?v=e87e5507" defer></script>
-<script src="js/admin-copilot.js?v=08cbdd38"></script>
+<script src="js/admin-copilot.js?v=44a44115"></script>
 
 <script>
 (function(){
@@ -3933,20 +3933,16 @@ async function pubGenCartelBlob(p){
 // Genera los carteles de todos los productos (con stock) de la categoría.
 async function pubCatGenCarteles(cat, onProgress){
   const prods=pubCatProds(cat).slice(0, PUB_CAT_LOTE_MAX);
-  const auto=pubAutoColorCat();
-  const catColor=(typeof window.tmColorCategoria==='function') ? window.tmColorCategoria(cat) : null;
-  const prevColor=localStorage.getItem('tmCartelColor');
-  if(auto && catColor) localStorage.setItem('tmCartelColor', catColor);
+  // El color por categoría lo resuelve el propio generador de carteles
+  // (_cartelColorPara en js/admin-copilot.js) a partir de la categoría del
+  // producto. Antes se hacía aquí pisando localStorage y restaurándolo al
+  // final, lo que solo pintaba bien los carteles de este lote y dejaba el
+  // resto (cartel individual, Copiloto, Facebook) con el color manual.
   const files=[];
-  try{
-    for(let i=0;i<prods.length;i++){
-      if(onProgress) onProgress(i+1, prods.length);
-      const blob=await pubGenCartelBlob(prods[i]);
-      if(blob){ files.push(new File([blob],'tiendamax-'+pubCatTag(cat)+'-'+prods[i].id+'.png',{type:'image/png'})); pubMarcarPublicado(prods[i].id); }
-    }
-  } finally {
-    // Restaurar el color manual que tenía el usuario
-    if(auto && catColor){ if(prevColor!=null) localStorage.setItem('tmCartelColor', prevColor); else localStorage.removeItem('tmCartelColor'); }
+  for(let i=0;i<prods.length;i++){
+    if(onProgress) onProgress(i+1, prods.length);
+    const blob=await pubGenCartelBlob(prods[i]);
+    if(blob){ files.push(new File([blob],'tiendamax-'+pubCatTag(cat)+'-'+prods[i].id+'.png',{type:'image/png'})); pubMarcarPublicado(prods[i].id); }
   }
   return files;
 }

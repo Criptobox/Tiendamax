@@ -325,6 +325,7 @@ function injectStyles(){
   .tcp2-feat{display:flex;align-items:flex-start;gap:11px;padding:13px;border-radius:15px;border:1px solid rgba(255,255,255,.07);background:rgba(255,255,255,.025)}
   .tcp2-feat-ic{flex-shrink:0;width:36px;height:36px;border-radius:10px;background:rgba(var(--tc-a-rgb),.14);color:var(--tc-a);display:flex;align-items:center;justify-content:center}
   .tcp2-feat-ic svg{width:20px;height:20px}
+  .tcp2-feat .min-w-0,.tcp3-feat .min-w-0{min-width:0;flex:1}
   .tcp2-feat-t{font-size:11px;font-weight:800;color:#fff;letter-spacing:.03em;line-height:1.2;text-transform:uppercase}
   .tcp2-feat-d{font-size:10px;color:#8a8a8a;margin-top:3px;line-height:1.3}
   .tcp2-imgwrap{position:relative;z-index:3;margin:18px 34px 0;height:290px;border:2px dashed rgba(var(--tc-a-rgb),.35);border-radius:24px;display:flex;align-items:center;justify-content:center;overflow:hidden}
@@ -1565,6 +1566,10 @@ const TM_CAT_COLORES = {
   'WIFI':'#3B82F6', 'ENERGIA':'#FBBF24', 'CELULARES':'#A855F7', 'SEGURIDAD':'#EF4444',
   'CARROS':'#334155', 'MOTOS':'#FF6B1A', 'HOGAR':'#14B8A6', 'UTILES':'#06B6D4',
   'GYM':'#22C55E', 'JUEGOS':'#CA8A04', 'PC Y LAPTOPS':'#8B5CF6', 'ROPA':'#64748B',
+  // AUDIO no venía en la tabla original y es una categoría real del catálogo:
+  // sin color aquí, sus carteles se quedaban con el color manual de turno y
+  // parecía que "el color por categoría no funciona".
+  'AUDIO':'#EC4899',
 };
 window.TM_CAT_COLORES = TM_CAT_COLORES;
 function tmColorCategoria(cat){
@@ -1577,10 +1582,29 @@ function _cartelColor(){
   const v = localStorage.getItem('tmCartelColor');
   return (v && /^#[0-9a-fA-F]{6}$/.test(v)) ? v : TM_CARTEL_COLORES[0][0];
 }
+// Color de UN cartel concreto. El color por categoría se decide aquí, en el
+// único sitio por el que pasan las tres plantillas, para que valga en todos
+// los carteles del producto. Antes solo lo aplicaba el lote de la pestaña
+// Categoría (cambiando localStorage y restaurándolo), así que el cartel
+// individual, el del Copiloto y el de Facebook salían siempre con el color
+// manual — de ahí que pareciera que la opción no hacía nada.
+function _cartelColorPara(d){
+  if(localStorage.getItem('tmCartelAutoColorCat') !== '0'){
+    const c = tmColorCategoria(d && (d.categoria || d.tag));
+    if(c) return c;
+  }
+  return _cartelColor();
+}
 function _hexToRgbCsv(hex){
   const n = parseInt(hex.slice(1), 16);
   return [(n>>16)&255, (n>>8)&255, n&255].join(',');
 }
+// Recorte del texto de detalle de cada característica. Medido renderizando
+// los 118 productos en el navegador: la columna de texto da ~264px, y en
+// esta tarjeta caben DOS líneas (una tercera se sale — 1157px de 1140). A
+// 92 caracteres ningún producto desborda; a 100 ya se sale uno. Si cambias
+// el CSS de .tcp2-feat, vuelve a medir antes de subirlo.
+const _C_DESC_MAX_PRO2 = 92;
 function _cartelHTML2(d){
   const w1=d.title1||'PRODUCTO', w2=d.title2||'';
   const feats=_cFeatures(d.descripcion, d._specs).slice(0,4);
@@ -1588,8 +1612,8 @@ function _cartelHTML2(d){
   const pct=hasDisc?Math.round((1-parseFloat(d.precio)/parseFloat(d.precioAnterior))*100):0;
   const moneda=d.moneda||'USD';
   const imgUrl=d.imgUrl||'';
-  const color=_cartelColor(), colorRgb=_hexToRgbCsv(color);
-  const featHtml=feats.map(f=>`<div class="tcp2-feat"><div class="tcp2-feat-ic">${_cIconSvg2(f.title)}</div><div class="min-w-0"><div class="tcp2-feat-t">${esc(_cClip(f.title,22))}</div>${f.desc?`<div class="tcp2-feat-d">${esc(_cClip(f.desc,40))}</div>`:''}</div></div>`).join('');
+  const color=_cartelColorPara(d), colorRgb=_hexToRgbCsv(color);
+  const featHtml=feats.map(f=>`<div class="tcp2-feat"><div class="tcp2-feat-ic">${_cIconSvg2(f.title)}</div><div class="min-w-0"><div class="tcp2-feat-t">${esc(_cClip(f.title,22))}</div>${f.desc?`<div class="tcp2-feat-d">${esc(_cClip(f.desc,_C_DESC_MAX_PRO2))}</div>`:''}</div></div>`).join('');
   // Un solo badge principal en la foto: descuento real si hay, si no y es
   // más vendido eso — nunca los dos juntos, y nunca inventado si no aplica.
   const badgeHtml = hasDisc ? `<div class="tcp2-badge">-${pct}%<small>DESCUENTO</small></div>`
@@ -1620,8 +1644,8 @@ function _cartelHTML3(d){
   const pct=hasDisc?Math.round((1-parseFloat(d.precio)/parseFloat(d.precioAnterior))*100):0;
   const moneda=d.moneda||'USD';
   const imgUrl=d.imgUrl||'';
-  const color=_cartelColor(), colorRgb=_hexToRgbCsv(color);
-  const featHtml=feats.map(f=>`<div class="tcp3-feat"><div class="tcp3-feat-ic">${_cIconSvg2(f.title)}</div><div class="min-w-0"><div class="tcp3-feat-t">${esc(_cClip(f.title,20))}</div>${f.desc?`<div class="tcp3-feat-d">${esc(_cClip(f.desc,32))}</div>`:''}</div></div>`).join('');
+  const color=_cartelColorPara(d), colorRgb=_hexToRgbCsv(color);
+  const featHtml=feats.map(f=>`<div class="tcp3-feat"><div class="tcp3-feat-ic">${_cIconSvg2(f.title)}</div><div class="min-w-0"><div class="tcp3-feat-t">${esc(_cClip(f.title,20))}</div>${f.desc?`<div class="tcp3-feat-d">${esc(_cClip(f.desc,62))}</div>`:''}</div></div>`).join('');
   const badgeHtml = hasDisc ? `<div class="tcp3-badge">-${pct}%<small>DESCUENTO</small></div>`
     : d.masVendido ? `<div class="tcp3-badge">🔥<small>MÁS VENDIDO</small></div>` : '';
   const categoria = esc(_cClip(d.categoria||d.tag||'',18));
@@ -1762,11 +1786,11 @@ function _cartelHTML(d){
   const pct=hasDisc?Math.round((1-parseFloat(d.precio)/parseFloat(d.precioAnterior))*100):0;
   const st=Number(d.stock||0), moneda=d.moneda||'USD';
   const trust=[['🚚','ENVÍO RÁPIDO','A todo el país'],['🛡️','COMPRA SEGURA','Protegemos tu compra'],['🏅','GARANTÍA','Calidad que te respalda']];
-  const featHtml=feats.map(f=>`<div class="tcp-feat"><div class="tcp-feat-ic">${f.icon}</div><div><div class="tcp-feat-t">${esc(_cClip(f.title,22))}</div><div class="tcp-feat-d">${esc(_cClip(f.desc,42))}</div></div></div>`).join('');
+  const featHtml=feats.map(f=>`<div class="tcp-feat"><div class="tcp-feat-ic">${f.icon}</div><div><div class="tcp-feat-t">${esc(_cClip(f.title,22))}</div><div class="tcp-feat-d">${esc(_cClip(f.desc,62))}</div></div></div>`).join('');
   const trustHtml=trust.map(t=>`<div class="tcp-trust"><div class="tcp-trust-ic">${t[0]}</div><div><div class="tcp-trust-t">${t[1]}</div><div class="tcp-trust-d">${t[2]}</div></div></div>`).join('');
   const pills=[`<div class="tcp-pill"><span>📦</span> Stock: ${st}</div>`, (st>0&&st<=3)?`<div class="tcp-pill"><span>🔥</span> ÚLTIMOS</div>`:`<div class="tcp-pill"><span>✅</span> DISPONIBLE</div>`].join('');
   const imgUrl=d.imgUrl||'';
-  const color=_cartelColor(), colorRgb=_hexToRgbCsv(color);
+  const color=_cartelColorPara(d), colorRgb=_hexToRgbCsv(color);
   return `<div class="tcp-root" style="--tc-a:${color};--tc-a-rgb:${colorRgb}">`
     +`<div class="tcp-bg"></div><div class="tcp-glow"></div>`
     +`<span class="tcp-spark" style="top:20%;right:30%"></span><span class="tcp-spark" style="top:25%;right:15%;width:3px;height:3px"></span><span class="tcp-spark" style="bottom:35%;right:20%;width:5px;height:5px"></span><span class="tcp-spark" style="bottom:30%;left:18%;width:3px;height:3px"></span><span class="tcp-spark" style="top:30%;left:22%"></span>`
