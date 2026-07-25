@@ -9,7 +9,8 @@ listo para reenviar en 2 toques:
    forma determinista por fecha (día N muestra unos, día N+1 los
    siguientes; todo el catálogo cicla sin repetir seguido y sin necesidad
    de guardar estado). Cada producto va como foto + texto de venta listo
-   (precio USD y MN, escasez si aplica, link a su página /p/ y hashtags)
+   (precio en USD, escasez si aplica, enlace de pedido wa.me en 1 toque
+   y hashtags)
    para reenviar directo a WhatsApp Estados o grupos de Facebook.
 
 2. CHECKLIST REVOLICO — lista de qué anuncios renovar hoy (productos en
@@ -30,6 +31,7 @@ from __future__ import annotations
 import json
 import os
 import sys
+import urllib.parse
 from datetime import datetime
 from pathlib import Path
 from zoneinfo import ZoneInfo
@@ -39,6 +41,9 @@ import requests
 ROOT = Path(__file__).resolve().parents[1]
 TZ = ZoneInfo("America/Havana")
 SITE = "https://tiendamax.org"
+# Número de WhatsApp del negocio (mismo default que regenerate_artifacts.py).
+# Configurable por entorno sin tocar código.
+WA_NUM = os.environ.get("WHATSAPP_NUM", "5354320170")
 PACK_SIZE = 3
 MAX_LISTA_REVOLICO = 15
 
@@ -124,20 +129,31 @@ def armar_caption(p: dict, tasa: int) -> str:
     cat = limpiar(p.get("categoria"))
 
     lineas = [f"🔥 {nombre}", ""]
-    precio_txt = f"💵 ${precio:.2f} USD"
-    if tasa > 0:
-        precio_txt += f"  ·  ${round(precio * tasa):,} MN".replace(",", " ")
-    lineas.append(precio_txt)
+    # Solo USD a propósito: el pack se reenvía a Facebook/Revólico, donde el post
+    # queda meses publicado. La tasa cambia cada semana, así que un precio en MN
+    # envejece mal y genera reclamos ("ahí dice otro precio"). El MN se dice en
+    # el chat, con la tasa del día.
+    lineas.append(f"💵 ${precio:.2f} USD")
     if precio_orig > precio > 0:
         pct = round((1 - precio / precio_orig) * 100)
         lineas.append(f"🏷️ Antes ${precio_orig:.2f} — ¡{pct}% de rebaja!")
     if 0 < stock <= 3:
         lineas.append(f"⚡ ¡Últimas {stock} unidades!")
+    # El enlace de pedido abre WhatsApp con el mensaje ya escrito: el cliente
+    # toca una vez y ya está escribiendo. Antes este bloque decía "Pídelo por
+    # WhatsApp" pero el enlace llevaba a la web, así que el cliente caía en una
+    # página y tenía que buscar el botón y redactar (se perdían pedidos ahí).
+    # El ?utm_source deja ver en Analytics qué red trajo la visita.
+    page = f"{SITE}/p/producto-{p.get('id')}.html?utm_source=pack-diario&utm_medium=social&utm_campaign=producto"
+    msg = urllib.parse.quote(f"Hola, quiero: {nombre} — ${precio:.2f} USD\n{page}")
     lineas += [
         "✅ Garantía · Pago contra entrega · Envíos",
         "",
-        "📲 Pídelo directo por WhatsApp:",
-        f"🌐 {SITE}/p/producto-{p.get('id')}.html",
+        "📲 Pídelo en 1 toque por WhatsApp:",
+        f"https://wa.me/{WA_NUM}?text={msg}",
+        "",
+        "👀 Ver fotos y detalles:",
+        f"🌐 {page}",
         "",
     ]
     tags = ["#TiendaMax", "#Cuba", "#OfertasCuba"]

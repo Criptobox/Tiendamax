@@ -70,16 +70,28 @@ class CaptionTest(unittest.TestCase):
         cap = md.armar_caption(p, tasa=400)
         self.assertIn("Producto 1", cap)
         self.assertIn("$11.00 USD", cap)
-        self.assertIn("MN", cap)
         self.assertIn("rebaja", cap)          # precioOriginal > precioActual
         self.assertIn("Últimas 2", cap)       # escasez
         self.assertIn(f"/p/producto-{p['id']}.html", cap)
         self.assertIn("#TiendaMax", cap)
         self.assertIn("#Energia", cap)
 
-    def test_caption_sin_tasa_no_pone_mn(self):
-        cap = md.armar_caption(_prod(1), tasa=0)
-        self.assertNotIn("MN", cap)
+    def test_caption_nunca_pone_precio_en_mn(self):
+        """El pack se reenvía a Facebook/Revólico, donde el post queda meses
+        publicado. La tasa cambia cada semana, así que un precio en CUP envejece
+        mal y genera reclamos. Solo USD, aunque haya tasa configurada."""
+        self.assertNotIn("MN", md.armar_caption(_prod(1), tasa=400))
+        self.assertNotIn("MN", md.armar_caption(_prod(1), tasa=0))
+
+    def test_caption_lleva_pedido_en_un_toque(self):
+        """El bloque de pedido debe ser un enlace wa.me con el mensaje ya
+        escrito. Antes decía 'Pídelo por WhatsApp' pero enlazaba a la página
+        web, así que el cliente caía en una web y tenía que redactar él."""
+        p = _prod(1)
+        cap = md.armar_caption(p, tasa=0)
+        self.assertIn("https://wa.me/", cap)
+        self.assertIn("Hola%2C%20quiero", cap)   # mensaje prellenado (urlencoded)
+        self.assertIn("utm_source=pack-diario", cap)  # se puede medir el canal
 
     def test_caption_limpia_zero_width(self):
         p = _prod(1, nombre="​🔌 Cargador X")
