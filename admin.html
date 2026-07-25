@@ -1320,6 +1320,26 @@
           <div class="grid-2" id="an-interes" style="gap:16px"><div id="an-top-vistas"></div><div id="an-top-wa"></div></div>
         </div>
         <div class="section"><h3>Productos por categoría</h3><div id="an-cat"></div></div>
+        <div class="section"><h3>📈 Conversión <span class="badge">registro real</span></h3>
+          <p style="font-size:11.5px;color:var(--muted);margin:0 0 12px">De cada visita, cuántas terminan en un pedido por WhatsApp.</p>
+          <div id="an-funnel"></div>
+        </div>
+        <div class="section"><h3>🎯 Oportunidades <span class="badge">registro real</span></h3>
+          <p style="font-size:11.5px;color:var(--muted);margin:0 0 12px">Productos que se miran mucho pero no generan pedidos — revisa precio, foto o descripción.</p>
+          <div id="an-oportunidades"></div>
+        </div>
+        <div class="section"><h3>⚠️ Reponer pronto <span class="badge">registro real</span></h3>
+          <p style="font-size:11.5px;color:var(--muted);margin:0 0 12px">Stock bajo (≤3), ordenado por cuánto interés real tienen.</p>
+          <div id="an-reponer"></div>
+        </div>
+        <div class="section"><h3>🔍 Búsquedas</h3>
+          <p style="font-size:11.5px;color:var(--muted);margin:0 0 12px">Qué escriben tus clientes en el buscador — pistas de qué falta en el catálogo.</p>
+          <div id="an-busquedas"></div>
+        </div>
+        <div class="section"><h3>🔔 Suscriptores push <span class="badge" id="an-subs-badge">…</span></h3>
+          <p style="font-size:11.5px;color:var(--muted);margin:0 0 12px">Quién está registrado para notificaciones — y herramientas para mantener la lista limpia.</p>
+          <div id="an-subs"></div>
+        </div>
         <div class="section"><h3>🐛 Errores recientes en la tienda <span class="badge">registro real</span></h3>
           <p style="font-size:11.5px;color:var(--muted);margin:0 0 12px">Si algo se rompe para un cliente, sale aquí — sin depender de que te escriban a avisar.</p>
           <div id="an-errores"></div>
@@ -2878,6 +2898,7 @@ function renderAnalytics(){
   cargarInteresProductos();
   cargarErroresJS();
   cargarAuditoriaCambios();
+  cargarAnalyticsAvanzado();
   // Donut de productos por categoría, con un color por categoría
   const cont={}; PRODUCTOS.forEach(p=>{const c=p.categoria||'—'; cont[c]=(cont[c]||0)+1;});
   const entries=Object.entries(cont).sort((a,b)=>b[1]-a[1]);
@@ -2999,6 +3020,131 @@ async function cargarAuditoriaCambios(){
     }).join('');
   }catch(e){ box.innerHTML='<div class="empty" style="padding:16px"><div class="ico">⚠️</div><small>No se pudo cargar (revisa conexión).</small></div>'; }
 }
+
+// Conversión/embudo, oportunidades, reponer pronto, búsquedas y suscriptores.
+// Reusa tmLeerAnalytics() (de js/analytics.js, cargado igual en admin.html) para
+// no repetir el fetch de vistas/whatsapp/tokens que ya hace cargarInteresProductos.
+async function cargarAnalyticsAvanzado(){
+  const boxes={funnel:$('#an-funnel'),op:$('#an-oportunidades'),rep:$('#an-reponer'),bus:$('#an-busquedas'),subs:$('#an-subs')};
+  Object.values(boxes).forEach(b=>{ if(b) b.innerHTML='<div style="font-size:12px;color:var(--muted);padding:6px">Cargando…</div>'; });
+  const base=rtdbBase();
+  if(!base || typeof tmLeerAnalytics!=='function'){
+    Object.values(boxes).forEach(b=>{ if(b) b.innerHTML='<div class="empty" style="padding:16px"><div class="ico">📊</div><small>Configura Firebase para ver esto.</small></div>'; });
+    return;
+  }
+  const {vistas,whatsapp,suscriptores,tokensData}=await tmLeerAnalytics();
+
+  if(boxes.funnel){
+    const totalV=Object.values(vistas).reduce((s,n)=>s+n,0);
+    const totalW=Object.values(whatsapp).reduce((s,n)=>s+n,0);
+    if(!totalV){ boxes.funnel.innerHTML='<div class="empty" style="padding:16px"><div class="ico">📈</div><small>Sin visitas registradas aún.</small></div>'; }
+    else{
+      const conv=(totalW/totalV*100).toFixed(1);
+      const col=conv>=10?'#25d366':conv>=5?'#c9a96e':'#e74c3c';
+      const pct=Math.round(totalW/totalV*100);
+      boxes.funnel.innerHTML=`<div style="display:flex;align-items:center;gap:0">
+        <div style="text-align:center;min-width:64px"><div style="font-size:18px;font-weight:800;color:#c9a96e">${totalV}</div><div style="font-size:10px;color:var(--muted)">👁 Vistas</div></div>
+        <div style="flex:1;margin:0 14px"><div style="height:6px;background:rgba(255,255,255,.08);border-radius:3px;overflow:hidden"><div style="height:100%;width:${pct}%;background:${col};border-radius:3px"></div></div>
+          <div style="text-align:center;margin-top:4px;font-size:10.5px;color:var(--muted)">${totalV-totalW} no convirtieron</div></div>
+        <div style="text-align:center;min-width:48px"><div style="font-size:16px;font-weight:800;color:${col}">${conv}%</div><div style="font-size:10px;color:var(--muted)">conv.</div></div>
+        <div style="width:1px;height:34px;background:var(--border);margin:0 12px;flex-shrink:0"></div>
+        <div style="text-align:center;min-width:52px"><div style="font-size:18px;font-weight:800;color:#25d366">${totalW}</div><div style="font-size:10px;color:var(--muted)">💬 WA</div></div>
+      </div>`;
+    }
+  }
+
+  if(boxes.op){
+    const op=Object.entries(vistas).filter(([id,v])=>v>=3 && !whatsapp[id]).sort((a,b)=>b[1]-a[1]).slice(0,6)
+      .map(([id,v])=>{ const p=PRODUCTOS.find(x=>String(x.id)===String(id)); return {v,nombre:p?p.nombre:('#'+id)}; });
+    boxes.op.innerHTML = op.length ? op.map(o=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-top:1px solid var(--border)">
+        <span style="font-size:12px;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:210px">${esc(o.nombre)}</span>
+        <span style="font-size:11px;color:#e67e22;background:rgba(230,126,34,.15);padding:2px 8px;border-radius:10px">${o.v} vistas · 0 pedidos</span>
+      </div>`).join('') : '<div class="empty" style="padding:16px"><div class="ico">✅</div><small>Sin oportunidades pendientes por ahora.</small></div>';
+  }
+
+  if(boxes.rep){
+    const bajos=PRODUCTOS.filter(p=>p.activo!==false && Number(p.stock)>0 && Number(p.stock)<=3)
+      .map(p=>({p,v:vistas[String(p.id)]||0,w:whatsapp[String(p.id)]||0}))
+      .sort((a,b)=>b.v-a.v);
+    boxes.rep.innerHTML = bajos.length ? bajos.map(({p,v,w})=>{
+      const col=Number(p.stock)===1?'#e74c3c':'#f39c12';
+      return `<div style="display:flex;align-items:center;gap:10px;padding:7px 0;border-top:1px solid var(--border)">
+        <div style="width:32px;height:32px;border-radius:6px;overflow:hidden;flex-shrink:0;background:#111">
+          <img src="${esc(p.imagen||'')}" style="width:100%;height:100%;object-fit:cover" onerror="this.style.display='none'" loading="lazy">
+        </div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:12px;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(p.nombre||'')}</div>
+          <div style="font-size:10.5px;color:var(--muted)">👁 ${v}v · 💬 ${w}wa · ${money(Number(p.precioActual)||0)}</div>
+        </div>
+        <div style="font-size:20px;font-weight:800;color:${col};flex-shrink:0">${p.stock}</div>
+      </div>`;
+    }).join('') : '<div class="empty" style="padding:16px"><div class="ico">✅</div><small>Sin productos con stock bajo.</small></div>';
+  }
+
+  if(boxes.bus){
+    let busquedas=await jget(base+'/analytics/busquedas.json?_='+Date.now())||{};
+    try{
+      const ls=JSON.parse(localStorage.getItem('tm_busquedas_v1')||'{}');
+      Object.entries(ls).forEach(([term,cnt])=>{ busquedas[term]=Math.max(busquedas[term]||0,cnt); });
+    }catch(e){}
+    const top=Object.entries(busquedas).sort((a,b)=>b[1]-a[1]).slice(0,8);
+    if(!top.length){ boxes.bus.innerHTML='<div class="empty" style="padding:16px"><div class="ico">🔍</div><small>Sin búsquedas registradas aún.</small></div>'; }
+    else{
+      const max=top[0][1];
+      boxes.bus.innerHTML=top.map(([term,cnt])=>`<div style="margin-bottom:9px">
+        <div style="display:flex;justify-content:space-between;gap:8px;font-size:11.5px;margin-bottom:3px"><span style="color:#fff;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(term)}</span><b style="color:#c9a96e;flex-shrink:0">${cnt}</b></div>
+        <div style="height:8px;border-radius:6px;background:rgba(255,255,255,.06);overflow:hidden"><div style="height:100%;width:${Math.round(cnt/max*100)}%;background:linear-gradient(90deg,#C9A96E,#e8c88a);border-radius:6px"></div></div>
+      </div>`).join('');
+    }
+  }
+
+  if(boxes.subs) _anRenderSubs(suscriptores,tokensData);
+}
+
+// Panel de suscriptores dentro de Analytics: reusa las funciones de mantenimiento
+// de js/analytics.js (tmLimpiarDuplicados/tmLimpiarTokensInvalidos/tmBorrarTodosSuscriptores/
+// tmBorrarSuscriptor) que ya existían pero no tenían ningún botón que las disparara.
+function _anRenderSubs(suscriptores,tokensData){
+  const box=$('#an-subs'); if(!box) return;
+  const badge=$('#an-subs-badge'); if(badge) badge.textContent=String(suscriptores||0);
+  const deviceCount={};
+  Object.values(tokensData||{}).forEach(t=>{
+    if(!t||!t.token) return;
+    const {tipo,icon}=_tmParseDevice(t.userAgent||'');
+    deviceCount[tipo]={count:(deviceCount[tipo]?.count||0)+1,icon};
+  });
+  const deviceArr=Object.entries(deviceCount).sort((a,b)=>b[1].count-a[1].count);
+  const seen=new Set();
+  const recientes=Object.entries(tokensData||{})
+    .filter(([,t])=>t&&t.token)
+    .sort(([,a],[,b])=>(b.timestamp||0)-(a.timestamp||0))
+    .filter(([,t])=>{ const dk=t.fingerprint?'fp:'+t.fingerprint:'tk:'+t.token; if(seen.has(dk)) return false; seen.add(dk); return true; })
+    .slice(0,20)
+    .map(([k,t])=>({...t,_fbKey:k}));
+  const botones=`<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px">
+    <button id="tm-btn-dedup" class="btn btn-ghost" onclick="anSubsDedup()">🔁 Limpiar duplicados</button>
+    <button id="tm-btn-limpiar" class="btn btn-ghost" onclick="anSubsLimpiarTokens()">🧹 Tokens inválidos</button>
+    <button id="tm-btn-borrar-todos" class="btn btn-ghost" style="color:#e74c3c" onclick="anSubsBorrarTodos()">🗑 Borrar todos</button>
+  </div>
+  <div id="tm-limpiar-info" style="font-size:12px;margin-bottom:10px;min-height:16px"></div>`;
+  if(!suscriptores){ box.innerHTML=botones+'<div class="empty" style="padding:16px"><div class="ico">🔔</div><small>Nadie suscrito todavía.</small></div>'; return; }
+  const chips=deviceArr.map(([tipo,{count,icon}])=>`<div style="background:rgba(79,195,247,.1);border:1px solid rgba(79,195,247,.25);border-radius:20px;padding:4px 12px;font-size:12px;color:#4fc3f7">${icon} ${esc(tipo)} <b>${count}</b></div>`).join('');
+  const lista=recientes.map(t=>{
+    const {tipo,icon}=_tmParseDevice(t.userAgent||'');
+    const fecha=t.timestamp?new Date(t.timestamp).toLocaleDateString('es-CU',{day:'2-digit',month:'short'}):'';
+    const fbKey=esc(t._fbKey||''), fp=esc(t.fingerprint||''), tok=esc(t.token||'');
+    return `<div style="display:flex;align-items:center;gap:10px;padding:7px 0;border-top:1px solid var(--border)">
+      <div style="width:30px;height:30px;border-radius:50%;background:rgba(79,195,247,.1);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0">${icon}</div>
+      <div style="flex:1;min-width:0"><div style="font-size:12px;color:#fff;font-weight:600">${esc(tipo)}</div><div style="font-size:10.5px;color:var(--muted)">${fecha}</div></div>
+      <button class="btn btn-ghost" style="padding:3px 8px;font-size:11px;color:#e74c3c" onclick="anSubsBorrarUno('${fbKey}','${fp}','${tok}')">🗑</button>
+    </div>`;
+  }).join('');
+  box.innerHTML=botones+`<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">${chips}</div>`+lista;
+}
+async function anSubsDedup(){ await tmLimpiarDuplicados(); const d=await tmLeerAnalytics(); _anRenderSubs(d.suscriptores,d.tokensData); }
+async function anSubsLimpiarTokens(){ await tmLimpiarTokensInvalidos(); const d=await tmLeerAnalytics(); _anRenderSubs(d.suscriptores,d.tokensData); }
+async function anSubsBorrarTodos(){ await tmBorrarTodosSuscriptores(); const d=await tmLeerAnalytics(); _anRenderSubs(d.suscriptores,d.tokensData); }
+async function anSubsBorrarUno(fbKey,fp,tok){ await tmBorrarSuscriptor(fbKey,fp,tok); const d=await tmLeerAnalytics(); _anRenderSubs(d.suscriptores,d.tokensData); }
 
 /* ============ CLIENTES ============ */
 let CLI_VIEW='clientes';
