@@ -4146,6 +4146,13 @@ window.ofertaFinActivar=ofertaFinActivar; window.ofertaFinCancelar=ofertaFinCanc
 window.apDuplicar=apDuplicar; window.bulkPrecio=bulkPrecio; window.renderVentas=renderVentas;
 window.renderReporteMensual=renderReporteMensual; window.reporteCopiar=reporteCopiar;
 window.avisoWhats=avisoWhats; window.avisoLimpiar=avisoLimpiar; window.avisoManualAgregar=avisoManualAgregar; window.avisoMarcar=avisoMarcar;
+// Todo este bloque va dentro de un IIFE, así que una función que no se
+// exporte acá NO existe para los onclick="" del HTML: el botón queda mudo,
+// sin error visible. Estas faltaban y por eso no hacían nada.
+window.renderClientes=renderClientes;
+window.pubCatCartelesLote=pubCatCartelesLote; window.pubAutoColorCat=pubAutoColorCat; window.pubSetAutoColorCat=pubSetAutoColorCat;
+window.pubToggleSinPublicar=pubToggleSinPublicar;
+window.anSubsDedup=anSubsDedup; window.anSubsLimpiarTokens=anSubsLimpiarTokens; window.anSubsBorrarTodos=anSubsBorrarTodos; window.anSubsBorrarUno=anSubsBorrarUno;
 })();
 </script>
 <!-- Herramientas — portado de admin.html (admin-tools.js), adaptado a la navegación de admin2 (go()/.side-btn/.view) -->
