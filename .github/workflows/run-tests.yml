@@ -9,12 +9,16 @@ on:
       # en js/admin-copilot.js y se valida contra productos.json.
       - 'js/admin-copilot.js'
       - 'productos.json'
+      # test_admin_handlers.py comprueba que ningún botón de admin.html quede
+      # mudo por faltarle el export a window.
+      - 'admin.html'
   pull_request:
     paths:
       - 'scripts/**'
       - 'tests/**'
       - 'js/admin-copilot.js'
       - 'productos.json'
+      - 'admin.html'
 
 concurrency:
   group: run-tests
