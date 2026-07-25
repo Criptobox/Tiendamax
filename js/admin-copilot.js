@@ -1332,24 +1332,57 @@ function promoParseChips(text) {
 // ── Helpers del Cartel Pro (mapeo producto → cartel) ──
 function _cStrip(s){ return String(s==null?'':s).replace(/^[\s​]*(?:[\p{Extended_Pictographic}☀-➿️‍]+\s*)+/u,'').trim(); }
 function _cClip(s,n){ s=String(s==null?'':s).trim(); return s.length<=n ? s : s.slice(0,n).replace(/\s+\S*$/,'')+'…'; }
-function _cSplitTitle(name){
-  name = _cStrip(name).toUpperCase().replace(/\([^)]*\)/g,'').trim();
-  const stop = ['DE','LA','EL','LOS','LAS','Y','CON','PARA','DEL','UN','UNA','A'];
-  const w = name.split(/\s+/).filter(x=>x.length>1 && !stop.includes(x));
-  // La 2da palabra no puede ser la primera que aparezca sin más: nombres como
-  // "Router Wi-fi 6 AX1800 Asus RT-AX1800S" y "Router Wi-fi 6 AX3000 Tp-link
-  // Archer AX55" son productos distintos (marca y modelo distintos) pero
-  // ambos arrancan "ROUTER WI-FI" — el cartel de los dos salía idéntico.
-  // Se salta términos de marketing/spec genéricos y números sueltos para
-  // llegar a la palabra que sí identifica el producto (marca o modelo).
-  const filler = ['WIFI','WI-FI','INALAMBRICO','INALÁMBRICO','DOBLE','BANDA','DUAL','BAND',
-    'GIGABIT','ALTA','VELOCIDAD','RANGO','EXTENDIDO','AVANZADO','RENDIMIENTO','NUEVA',
-    'GENERACION','GENERACIÓN','EXTERIOR','GLOBAL','VERSION','VERSIÓN'];
-  const resto = w.slice(1);
-  const identificador = resto.find(x=>!filler.includes(x) && !/^\d+$/.test(x));
-  return [w[0]||'PRODUCTO', identificador || resto[0] || ''];
+// Nombre del producto listo para el título del cartel: sin zero-width ni
+// emoji inicial, sin paréntesis, y con los guiones sueltos que trae el
+// catálogo pegados a la marca ("tp - Link" -> "TP-LINK", "d - Link" ->
+// "D-LINK"). Ese espacio alrededor del guion venía de la importación y
+// partía la marca en palabras sueltas.
+function _cNombreCartel(name){
+  let s = _cStrip(name).replace(/\([^)]*\)/g, ' ');
+  // El guion suelto se pega cuando lo de delante es una sigla corta ("tp -
+  // Link") o trae un número ("4 - Takt", "10W - 40"): ahí es un término
+  // partido. Cuando ambos lados son palabras normales ("PRO - WiFi", "Dual
+  // - Band") el guion solo separaba, así que se cambia por un espacio —
+  // nunca se deja suelto, o acaba colgando al final de una línea.
+  s = s.replace(/(\S+)\s+-\s+(?=\S)/g, (m, izq) =>
+    (izq.length <= 2 || /\d/.test(izq)) ? izq + '-' : izq + ' ');
+  return s.replace(/\s+/g, ' ').trim().toUpperCase();
 }
-function _cTitleFont(a,b){ const m=Math.max((a||'').length,(b||'').length); return m>10?50:m>8?62:m>6?72:82; }
+// Palabras que no deben quedar colgando al final de la 1ra línea del título.
+const _C_STOP_FIN = ['DE','DEL','LA','EL','LOS','LAS','Y','O','CON','PARA','EN','A','AL','UN','UNA'];
+// Parte el nombre COMPLETO en dos líneas lo más parejas posible (la 1ra en
+// blanco, la 2da en el color de acento). Antes esto devolvía solo DOS
+// PALABRAS del nombre, así que el cartel mentía sobre lo que vendía:
+// "Switch Gigabit de 8 Puertos" salía como "SWITCH PUERTOS" (sin el 8, que
+// es justo lo que lo diferencia del de 5) y "Repetidor WiFi de Rango
+// Extendido tp - Link" salía como "REPETIDOR TP".
+function _cSplitTitle(name){
+  const limpio = _cNombreCartel(name);
+  const w = limpio.split(' ').filter(Boolean);
+  if(!w.length) return ['PRODUCTO',''];
+  if(w.length===1) return [w[0],''];
+  let corte = 1, mejorDif = Infinity;
+  for(let i=1;i<w.length;i++){
+    const a = w.slice(0,i).join(' ').length;
+    let dif = Math.abs(a - (limpio.length - a - 1));
+    // Penaliza cortar justo después de "de/la/con/…": deja la preposición
+    // colgando al final de la línea y se lee mal.
+    if(_C_STOP_FIN.includes(w[i-1])) dif += 8;
+    if(dif < mejorDif){ mejorDif = dif; corte = i; }
+  }
+  return [w.slice(0,corte).join(' '), w.slice(corte).join(' ')];
+}
+// Achica la fuente del título cuando el nombre completo no cabe a tamaño
+// base, para que entre entero en vez de desbordar o partirse en 4 líneas.
+// maxChars = cuántos caracteres caben en una línea al tamaño base.
+function _cTitleFontFit(a, b, base, maxChars, min){
+  const m = Math.max((a||'').length, (b||'').length) || 1;
+  return m <= maxChars ? base : Math.max(min||20, Math.round(base * maxChars / m));
+}
+// La plantilla clásica tiene la columna de título más estrecha (62% del
+// ancho, para no chocar con la foto ni el hexágono de descuento), así que
+// necesita bajar más que las otras dos con los nombres largos.
+function _cTitleFont(a,b){ return _cTitleFontFit(a,b,82,9,15); }
 function _cFirstSentence(desc){
   const raw = String(desc==null?'':desc).replace(/​/g,'').split(/\.\s|\n/)[0].trim();
   // Prioriza cortar en la primera coma: deja una frase corta y completa
@@ -1369,6 +1402,54 @@ function _cFirstSentence(desc){
   if (corte >= minimo) return raw.slice(0, corte).trim();
   return _cClip(raw, 78);
 }
+// Etiqueta corta para una frase de la descripción, sacada de sus propias
+// palabras clave (no inventa: si no reconoce ninguna, usa las 2 primeras
+// palabras reales de la frase). Se lleva un registro de las ya usadas para
+// que 4 frases parecidas no acaben con la misma etiqueta repetida.
+const _C_ETIQUETAS = [
+  [/antena/i,                                        'ANTENAS'],
+  [/puertos?|rj45|ethernet|\blan\b|\bwan\b/i,        'PUERTOS'],
+  [/mbps|gbps|velocidad|r[áa]pid/i,                  'VELOCIDAD'],
+  [/tomacorriente|enchuf|instala|plug|conecta directo/i, 'INSTALACIÓN'],
+  [/cobertura|alcance|rango|zonas|se[ñn]al/i,        'COBERTURA'],
+  [/wi-?fi|doble banda|802\.11|inal[áa]mbric|bluetooth/i, 'CONECTIVIDAD'],
+  [/bater|mah|amperi|voltaj|watt|potencia|carga/i,   'POTENCIA'],
+  [/segur|encript|protec|wpa/i,                      'SEGURIDAD'],
+  [/compatib|soporta|funciona con/i,                 'COMPATIBILIDAD'],
+  [/pantalla|display|lcd/i,                          'PANTALLA'],
+  [/c[áa]mara|lente|visi[óo]n|resoluci[óo]n/i,       'CÁMARA'],
+  [/material|acero|alumini|pl[áa]stic|fibra/i,       'MATERIALES'],
+  [/capacidad|litro|\bkg\b|dimension|tama[ñn]o|medida/i, 'CAPACIDAD'],
+  [/garant|devoluc/i,                                'GARANTÍA'],
+  [/control|\bapp\b|remoto|configur/i,               'CONTROL'],
+  [/dise[ñn]|compact|port[áa]til|ligero/i,           'DISEÑO'],
+];
+// Acorta una etiqueta de ficha técnica que no cabe en la tarjeta. Las
+// tarjetas recortan a 20-22 caracteres, así que etiquetas del catálogo como
+// "PUERTOS Y CONECTIVIDAD FÍSICA" salían como "PUERTOS Y…". Se corta por el
+// conector para quedarse con la parte que nombra la característica
+// ("PUERTOS", "RENDIMIENTO"), que se lee entera y sin puntos suspensivos.
+const _C_ETIQUETA_MAX = 20;
+function _cEtiquetaCorta(t, max){
+  t = String(t==null?'':t).trim();
+  max = max || _C_ETIQUETA_MAX;
+  if(t.length <= max) return t;
+  const corte = t.search(/\s+(Y|E|O|DE|DEL|CON|PARA|EN)\s+/i);
+  if(corte > 0 && corte <= max) return t.slice(0, corte).trim();
+  let acc = '';
+  for(const w of t.split(/\s+/)){
+    if((acc ? acc.length+1 : 0) + w.length > max) break;
+    acc = acc ? acc+' '+w : w;
+  }
+  return acc || t.slice(0, max);
+}
+function _cEtiquetaFrase(frase, usadas){
+  for(const [re, lab] of _C_ETIQUETAS){
+    if(re.test(frase) && !usadas.has(lab)){ usadas.add(lab); return lab; }
+  }
+  const w = frase.split(/\s+/).filter(x=>x.length>2).slice(0,2).join(' ').toUpperCase();
+  return w || 'CARACTERÍSTICA';
+}
 function _cFeatures(desc, specs){
   const out=[]; const lines=String(desc==null?'':desc).split('\n').map(l=>l.replace(/​/g,'').trim()).filter(Boolean);
   let inF=false;
@@ -1377,19 +1458,33 @@ function _cFeatures(desc, specs){
     if(/especificaciones|\bspecs\b/i.test(l)){ if(inF) break; }
     if(!inF) continue;
     const m=l.match(/^([^:]{2,40}):\s*(.+)$/);
-    if(m){ const em=(m[2].match(/^[\p{Extended_Pictographic}️‍]+/u)||[''])[0]||'🔹'; out.push({icon:em, title:_cStrip(m[1]).toUpperCase(), desc:_cStrip(m[2])}); }
+    if(m){ const em=(m[2].match(/^[\p{Extended_Pictographic}️‍]+/u)||[''])[0]||'🔹'; out.push({icon:em, title:_cEtiquetaCorta(_cStrip(m[1]).toUpperCase()), desc:_cStrip(m[2])}); }
     if(out.length>=4) break;
   }
   if(!out.length && Array.isArray(specs)){
-    specs.slice(0,4).forEach(s=>{ const raw=String(s).replace(/​/g,'').trim(); const em=(raw.match(/[\p{Extended_Pictographic}️‍]+/u)||['🔹'])[0]; const txt=_cStrip(raw); const c=txt.indexOf(':'); out.push(c>0?{icon:em,title:txt.slice(0,c).toUpperCase(),desc:txt.slice(c+1).trim()}:{icon:em,title:_cClip(txt,22).toUpperCase(),desc:''}); });
+    specs.slice(0,4).forEach(s=>{ const raw=String(s).replace(/​/g,'').trim(); const em=(raw.match(/[\p{Extended_Pictographic}️‍]+/u)||['🔹'])[0]; const txt=_cStrip(raw); const c=txt.indexOf(':'); out.push(c>0?{icon:em,title:_cEtiquetaCorta(txt.slice(0,c).toUpperCase()),desc:txt.slice(c+1).trim()}:{icon:em,title:_cEtiquetaCorta(txt.toUpperCase()),desc:''}); });
   }
   // Fallback: si no hay ficha técnica ni specs, saca hasta 4 features de las
   // frases de la descripción (así el cartel nunca queda con la columna vacía).
+  // La frase va en el DETALLE, no en el título: antes se metía la frase
+  // entera como título y la tarjeta la cortaba a la mitad ("REPETIDOR WIFI
+  // DE…", "SE CONECTA DIRECTO AL…"). El título ahora es una etiqueta corta
+  // sacada del propio texto, que es lo que hace legible la tarjeta.
   if(!out.length){
     const icons=['⚡','✅','🔋','📦','🔌','🛡️'];
     const clean = String(desc==null?'':desc).replace(/​/g,'').replace(/ficha t[eé]cnica[\s\S]*/i,'').trim();
-    const frases = clean.split(/[.,;:]\s+/).map(s=>_cStrip(s).trim()).filter(s=>s.length>=10 && s.length<=44);
-    frases.slice(0,4).forEach((f,i)=>{ out.push({icon:icons[i%icons.length], title:_cClip(f,30).toUpperCase(), desc:''}); });
+    const todas = clean.split(/[.,;:]\s+/).map(s=>_cStrip(s).trim()).filter(s=>s.length>=10);
+    // El subtítulo del cartel sale de esta misma descripción, así que las
+    // primeras frases suelen repetirse ahí palabra por palabra. Se saltan
+    // para no decir dos veces lo mismo — salvo que al hacerlo queden menos
+    // de 2 tarjetas, que se ve más vacío que repetido.
+    const tag = _cFirstSentence(desc).toLowerCase();
+    const nuevas = todas.filter(s=>!tag.includes(s.toLowerCase()));
+    const frases = nuevas.length>=2 ? nuevas : todas;
+    const usadas = new Set();
+    frases.slice(0,4).forEach((f,i)=>{
+      out.push({icon:icons[i%icons.length], title:_cEtiquetaCorta(_cEtiquetaFrase(f, usadas)), desc:f.charAt(0).toUpperCase()+f.slice(1)});
+    });
   }
   return out;
 }
@@ -1504,7 +1599,7 @@ function _cartelHTML2(d){
   return `<div class="tcp2-root" style="--tc-a:${color};--tc-a-rgb:${colorRgb}">`
     +`<div class="tcp2-bg"></div><div class="tcp2-glow"></div>`
     +`<div class="tcp2-header"><div class="tcp2-brand"><div class="tcp2-logo"><img src="/iconos/icon-192.png" alt="TiendaMax"></div><div><div class="tcp2-word">Tienda<em>Max</em></div><div class="tcp2-sub">Tienda online en Cuba</div></div></div><div class="tcp2-tag">${esc(_cClip(d.tag||'DESTACADO',16))}</div></div>`
-    +`<div class="tcp2-title"><h1>${esc(w1)}${w2?` <em>${esc(w2)}</em>`:''}</h1>${d.tagline?`<div class="tcp2-tagline">${esc(d.tagline)}</div>`:''}</div>`
+    +`<div class="tcp2-title"><h1 style="font-size:${_cTitleFontFit(w1,w2,42,26)}px">${esc(w1)}${w2?` <em>${esc(w2)}</em>`:''}</h1>${d.tagline?`<div class="tcp2-tagline">${esc(d.tagline)}</div>`:''}</div>`
     +(featHtml?`<div class="tcp2-feats">${featHtml}</div>`:'')
     +`<div class="tcp2-imgwrap">${imgUrl?`<img src="${esc(imgUrl)}" crossorigin="anonymous">`:''}${badgeHtml}</div>`
     +`<div class="tcp2-price"><div class="tcp2-price-row"><span class="tcp2-price-n">$${esc(String(Math.round(parseFloat(d.precio)||0)))}</span><span class="tcp2-price-c">${esc(moneda)}</span>${hasDisc?`<span class="tcp2-price-old">$${esc(String(Math.round(parseFloat(d.precioAnterior))))}</span><span class="tcp2-price-off">-${pct}%</span>`:''}</div>${categoria?`<div class="tcp2-price-cat">${categoria}</div>`:''}</div>`
@@ -1535,7 +1630,7 @@ function _cartelHTML3(d){
     +`<div class="tcp3-glow"></div>`
     +`<div class="tcp3-left">`
       +`<div class="tcp3-header"><div class="tcp3-brand"><div class="tcp3-logo"><img src="/iconos/icon-192.png" alt="TiendaMax"></div><div><div class="tcp3-word">Tienda<em>Max</em></div><div class="tcp3-sub">Tienda online en Cuba</div></div></div><div class="tcp3-tag">${esc(_cClip(d.tag||'DESTACADO',16))}</div></div>`
-      +`<div class="tcp3-title"><h1>${esc(w1)}${w2?` <em>${esc(w2)}</em>`:''}</h1></div>`
+      +`<div class="tcp3-title"><h1 style="font-size:${_cTitleFontFit(w1,w2,36,27)}px">${esc(w1)}${w2?` <em>${esc(w2)}</em>`:''}</h1></div>`
       +(d.tagline?`<div class="tcp3-tagline">${esc(d.tagline)}</div>`:'')
       +(featHtml?`<div class="tcp3-feats">${featHtml}</div>`:'')
       +`<div class="tcp3-price"><div class="tcp3-price-row"><span class="tcp3-price-n">$${esc(String(Math.round(parseFloat(d.precio)||0)))}</span><span class="tcp3-price-c">${esc(moneda)}</span>${hasDisc?`<span class="tcp3-price-old">$${esc(String(Math.round(parseFloat(d.precioAnterior))))}</span><span class="tcp3-price-off">-${pct}%</span>`:''}</div>${categoria?`<div class="tcp3-price-cat">${categoria}</div>`:''}</div>`
