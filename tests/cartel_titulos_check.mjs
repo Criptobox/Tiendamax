@@ -60,8 +60,11 @@ const api = new Function(`
   ${extraer(/const _C_ETIQUETA_MAX = \d+;/, '_C_ETIQUETA_MAX')}
   ${extraer(/function _cEtiquetaCorta[\s\S]*?\n}/, '_cEtiquetaCorta')}
   ${extraer(/function _cEtiquetaFrase[\s\S]*?\n}/, '_cEtiquetaFrase')}
+  ${extraer(/const _C_MIN_ANTES_DE_CORTAR = \d+;/, '_C_MIN_ANTES_DE_CORTAR')}
+  ${extraer(/const _C_RELLENO = [\s\S]*?;\n/, '_C_RELLENO')}
+  ${extraer(/function _cResumirDetalle[\s\S]*?\n}/, '_cResumirDetalle')}
   ${extraer(/function _cFeatures[\s\S]*?\n  return out;\n}/, '_cFeatures')}
-  return { _cNombreCartel, _cSplitTitle, _cTitleFont, _cTitleFontFit, _cFeatures, _C_STOP_FIN };
+  return { _cNombreCartel, _cSplitTitle, _cTitleFont, _cTitleFontFit, _cFeatures, _cResumirDetalle, _C_STOP_FIN };
 `)();
 
 const fallos = [];
@@ -116,9 +119,11 @@ for (const p of PRODUCTOS) {
 // ── 3. Las tarjetas de características no salen cortadas a la mitad ───────
 // El título de la tarjeta es una etiqueta corta; el texto largo va en el
 // detalle, que es donde hay ancho para leerlo.
+// Lo que admite el detalle en la plantilla Pro v2 (_C_DESC_MAX_PRO2).
+const DESC_MAX_PRO2 = 92;
 const MAX_TITULO_FEATURE = 20;   // la plantilla horizontal recorta en 20 (_cClip(f.title,20))
 for (const p of PRODUCTOS) {
-  const feats = api._cFeatures(p.descripcion, p.specs).slice(0, 4);
+  const feats = api._cFeatures(p.descripcion, p.specs, DESC_MAX_PRO2).slice(0, 4);
   check(feats.length > 0, `El producto ${p.id} ("${p.nombre}") no genera ninguna característica`);
   for (const f of feats) {
     check(!/…$/.test(f.title),
@@ -126,6 +131,34 @@ for (const p of PRODUCTOS) {
     check(f.title.length <= MAX_TITULO_FEATURE,
       `Característica de ${p.id} con título de ${f.title.length} caracteres (la tarjeta corta en ${MAX_TITULO_FEATURE}): "${f.title}"`);
   }
+}
+
+// ── 4. El resumen del detalle no inventa: solo recorta ───────────────────
+// Un cartel con una cifra inventada genera reclamos, así que se comprueba
+// que todo lo que se muestra sea un prefijo literal del texto del catálogo.
+for (const p of PRODUCTOS) {
+  for (const f of api._cFeatures(p.descripcion, p.specs, DESC_MAX_PRO2).slice(0, 4)) {
+    if (!f.desc) continue;
+    const original = String(p.descripcion || '').replace(/​/g, '');
+    const specs = Array.isArray(p.specs) ? p.specs.join(' ').replace(/​/g, '') : '';
+    check(original.includes(f.desc) || specs.includes(f.desc) || original.toLowerCase().includes(f.desc.toLowerCase()),
+      `El detalle de ${p.id} no aparece tal cual en el producto (¿texto inventado?): "${f.desc}"`);
+  }
+}
+
+// La mayoría tiene que caber entero: si el resumen deja de funcionar, esto
+// se dispara antes de que se llene de "…" otra vez.
+{
+  let total = 0, cortados = 0;
+  for (const p of PRODUCTOS) {
+    for (const f of api._cFeatures(p.descripcion, p.specs, DESC_MAX_PRO2).slice(0, 4)) {
+      if (!f.desc) continue;
+      total++;
+      if (f.desc.length > DESC_MAX_PRO2) cortados++;
+    }
+  }
+  check(cortados <= total * 0.1,
+    `Demasiados detalles no caben en la tarjeta: ${cortados}/${total} (el resumen deja pasar más del 10%)`);
 }
 
 if (fallos.length) {
