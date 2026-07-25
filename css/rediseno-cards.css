@@ -3161,61 +3161,75 @@ html body .mobile-theme-btn:hover {
     border-color: rgba(255,107,53,0.25) !important;
 }
 
-/* ── Sección de acciones (Telegram + Ayuda) ── */
+/* ── Sección de acciones (Telegram + Grupo WhatsApp + Ayuda) ──
+   Misma "card" que el botón Tema: Claro/Oscuro de arriba (fondo de
+   cristal, borde sutil, radio 14px) — no la píldora de color sólido que
+   había antes, para que las tres cosas se vean como parte del mismo menú
+   en vez de un componente aparte. "a." delante de cada clase: la regla
+   genérica (html body .mobile-menu-overlay a) tiene un selector de tipo
+   (a) más que ésta y le gana en especificidad aunque venga después. */
 html body .mobile-menu-actions {
     display: flex !important;
-    flex-direction: row !important;
+    flex-direction: column !important;
     gap: 8px !important;
-    margin: 16px 20px 24px !important;
+    margin: 8px 20px 24px !important;
     padding: 0 !important;
 }
-html body .mobile-action-grupo,
-html body .mobile-action-ayuda {
-    flex: 1 !important;
-    display: inline-flex !important;
+html body a.mobile-action-grupo,
+html body a.mobile-action-wagrupo,
+html body a.mobile-action-ayuda {
+    display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    gap: 8px !important;
-    padding: 12px 20px !important;
-    border-radius: 999px !important;
-    font-size: 13px !important;
+    gap: 10px !important;
+    width: 100% !important;
+    font-size: 14px !important;
     font-weight: 700 !important;
-    letter-spacing: 0.3px !important;
-    border: none !important;
-    border-bottom: none !important;
+    line-height: normal !important;
+    padding: 11px 16px !important;
+    text-align: center !important;
+    background: rgba(255,255,255,0.04) !important;
+    border: 1px solid rgba(255,255,255,0.10) !important;
+    border-radius: 14px !important;
+    color: #f2f2f5 !important;
     text-decoration: none !important;
-    transition: transform .15s, box-shadow .2s, filter .2s !important;
+    transition: background .2s, border-color .2s !important;
     white-space: nowrap !important;
+    box-sizing: border-box !important;
 }
-html body .mobile-action-grupo:hover,
-html body .mobile-action-ayuda:hover {
-    transform: translateY(-2px) !important;
-    filter: brightness(1.1) !important;
+html body a.mobile-action-grupo:hover {
+    background: rgba(42,171,238,0.10) !important;
+    border-color: rgba(42,171,238,0.30) !important;
 }
-html body .mobile-action-grupo:active,
-html body .mobile-action-ayuda:active {
-    transform: translateY(0) !important;
-    filter: brightness(0.95) !important;
+html body a.mobile-action-wagrupo:hover,
+html body a.mobile-action-ayuda:hover {
+    background: rgba(37,211,102,0.10) !important;
+    border-color: rgba(37,211,102,0.30) !important;
 }
-/* Telegram — azul Telegram (#2AABEE) */
-html body .mobile-action-grupo {
-    background: linear-gradient(135deg, #2AABEE, #229ED9) !important;
-    color: white !important;
-    box-shadow: 0 4px 14px rgba(42,171,238,0.30) !important;
+/* Ícono suelto, sin placa/fondo — igual que el ☀️ del botón Tema, en vez
+   de emoji sueltos que cada teléfono renderiza distinto (el 👥 salía como
+   una mancha borrosa en Android). */
+html body a.mobile-action-grupo::before,
+html body a.mobile-action-wagrupo::before,
+html body a.mobile-action-ayuda::before {
+    content: '' !important;
+    display: inline-block !important;
+    width: 18px !important;
+    height: 18px !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+    background-size: contain !important;
+    flex-shrink: 0 !important;
 }
-html body .mobile-action-grupo::before {
-    content: '✈️' !important;
-    font-size: 15px !important;
+/* La card ya trae fondo/color neutro (igual que Tema: Claro/Oscuro); acá
+   solo se pinta el ícono de cada marca dentro de su placa blanca. */
+html body a.mobile-action-grupo::before {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%232AABEE'%3E%3Cpath d='M2.01 21L23 12 2.01 3 2 10l15 2-15 2z'/%3E%3C/svg%3E") !important;
 }
-/* Ayuda — naranja TiendaMax */
-html body .mobile-action-ayuda {
-    background: linear-gradient(135deg, #25D366, #128C7E) !important;
-    color: white !important;
-    box-shadow: 0 4px 14px rgba(37,211,102,0.30) !important;
-}
-html body .mobile-action-ayuda::before {
-    content: '💬' !important;
-    font-size: 15px !important;
+html body a.mobile-action-wagrupo::before,
+html body a.mobile-action-ayuda::before {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2325D366'%3E%3Cpath d='M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.39 1.26 4.81L2 22l5.41-1.42a9.87 9.87 0 0 0 4.63 1.18h.01c5.46 0 9.91-4.45 9.91-9.91C21.96 6.45 17.5 2 12.04 2zm5.87 14.19c-.25.7-1.25 1.28-1.99 1.44-.53.11-1.22.2-3.55-.76-2.98-1.24-4.9-4.27-5.05-4.47-.15-.2-1.21-1.61-1.21-3.07 0-1.46.77-2.18 1.04-2.48.27-.3.6-.37.8-.37.2 0 .4 0 .58.01.19.01.44-.07.68.52.25.6.86 2.07.93 2.22.07.15.12.33.02.53-.1.2-.15.33-.3.5-.15.18-.31.4-.45.54-.15.15-.3.31-.13.61.17.3.76 1.25 1.63 2.02 1.12 1 2.06 1.31 2.36 1.46.3.15.48.13.65-.08.18-.2.75-.87.95-1.17.2-.3.4-.25.68-.15.28.1 1.77.83 2.07.98.3.15.5.23.58.35.07.13.07.75-.18 1.45z'/%3E%3C/svg%3E") !important;
+    background-size: 52% !important;
 }
 
 /* ── Light mode overrides para el menú hamburguesa ── */
@@ -3258,29 +3272,22 @@ html body.light-mode .mobile-theme-btn:hover {
     background: rgba(232,80,30,0.06) !important;
     border-color: rgba(232,80,30,0.20) !important;
 }
-/* ── Light mode: preservar gradientes de pills (evitar que light-mode.css los aplane) ── */
-html body.light-mode .mobile-menu-overlay .mobile-action-grupo {
-    background: linear-gradient(135deg, #2AABEE, #229ED9) !important;
-    color: #fff !important;
-    border-radius: 999px !important;
-    border: none !important;
-    box-shadow: 0 4px 14px rgba(42,171,238,0.25) !important;
-}
+/* ── Light mode: misma card neutra que Tema: Claro/Oscuro ── */
+html body.light-mode .mobile-menu-overlay .mobile-action-grupo,
+html body.light-mode .mobile-menu-overlay .mobile-action-wagrupo,
 html body.light-mode .mobile-menu-overlay .mobile-action-ayuda {
-    background: linear-gradient(135deg, #25D366, #128C7E) !important;
-    color: #fff !important;
-    border-radius: 999px !important;
-    border: none !important;
-    box-shadow: 0 4px 14px rgba(37,211,102,0.25) !important;
+    background: rgba(0,0,0,0.03) !important;
+    border-color: rgba(0,0,0,0.10) !important;
+    color: #1A1A1A !important;
 }
-/* Suprimir ::before en light-mode (ya están los emojis por CSS) */
-html body.light-mode .mobile-menu-overlay .mobile-action-grupo::before,
-html body.light-mode .mobile-menu-overlay .mobile-action-ayuda::before {
-    content: '✈️' !important;
-    display: inline !important;
+html body.light-mode .mobile-menu-overlay .mobile-action-grupo:hover {
+    background: rgba(42,171,238,0.08) !important;
+    border-color: rgba(42,171,238,0.25) !important;
 }
-html body.light-mode .mobile-menu-overlay .mobile-action-ayuda::before {
-    content: '💬' !important;
+html body.light-mode .mobile-menu-overlay .mobile-action-wagrupo:hover,
+html body.light-mode .mobile-menu-overlay .mobile-action-ayuda:hover {
+    background: rgba(37,211,102,0.08) !important;
+    border-color: rgba(37,211,102,0.25) !important;
 }
 
 /* ── Los botones Telegram/Ayuda solo están en el menú hamburguesa (mobile-menu-actions) ── */
