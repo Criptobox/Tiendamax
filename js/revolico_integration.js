@@ -13,10 +13,20 @@ function _getTasa() {
     return (typeof getTasaMN === 'function') ? getTasaMN() : 0;
 }
 
-function _precioMN(usd) {
-    const tasa = _getTasa();
-    if (!tasa || !usd) return '';
-    return ' / ' + Math.round(usd * tasa).toLocaleString('es-CU') + ' MN';
+// _precioMN se quitó: estaba definida pero nunca se usaba, y el precio en CUP
+// no debe ir en publicaciones (el post queda meses y la tasa cambia cada semana).
+
+// Enlace del producto con utm, para ver en Analytics qué red trae las visitas.
+function _urlProducto(producto, src) {
+    return `https://tiendamax.org/p/producto-${producto.id}.html?utm_source=${src}&utm_medium=social&utm_campaign=producto`;
+}
+// Enlace de pedido en 1 toque: abre WhatsApp con el mensaje ya redactado. Un
+// wa.me pelado abre un chat vacío y el cliente tiene que escribir él — ahí se
+// pierden pedidos.
+function _waPedido(producto, src) {
+    const num = localStorage.getItem('whatsappNumero') || '5354320170';
+    const msg = `Hola, quiero: ${producto.nombre} — $${producto.precioActual} USD\n${_urlProducto(producto, src)}`;
+    return `https://wa.me/${String(num).replace(/\D/g, '')}?text=${encodeURIComponent(msg)}`;
 }
 
 function _hashtagsCategoria(categoria) {
@@ -205,7 +215,10 @@ function _textoFacebook(producto) {
 
     if (producto.precioOriginal > 0 && producto.precioOriginal > precio) {
         const ahorro = (producto.precioOriginal - precio).toFixed(0);
-        t += `~~$${producto.precioOriginal} USD~~   👉  💰 $${precio} USD\n`;
+        // OJO: Facebook NO renderiza markdown. Antes se usaba ~~tachado~~ y en el
+        // post salían las virgulillas literales ("~~$85 USD~~"), que se ve a
+        // descuido. En texto plano se lee mejor "Antes / AHORA".
+        t += `💰 Antes $${producto.precioOriginal} USD  👉  AHORA $${precio} USD\n`;
         t += `🎉 Ahorras $${ahorro} USD\n`;
     } else {
         t += `💰 Precio: $${precio} USD\n`;
@@ -213,10 +226,13 @@ function _textoFacebook(producto) {
 
     if (producto.garantia)   t += `🛡️ Garantía: ${producto.garantia}\n`;
     if (producto.devolucion) t += `✅ Devolución segura garantizada\n`;
+    // Escasez real (solo si de verdad queda poco): es lo que más mueve a escribir.
+    const _st = Number(producto.stock || 0);
+    if (_st > 0 && _st <= 3) t += _st === 1 ? '⚡ ¡Queda 1 disponible!\n' : `⚡ ¡Últimas ${_st} unidades!\n`;
 
     t += '\n━━━━━━━━━━━━━━━━━━━━━\n';
-    t += `📲 Pedir ahora → wa.me/${whatsapp}\n`;
-    t += `🔗 ${url}\n\n`;
+    t += `📲 Pídelo en 1 toque (ya te abre el chat):\n${_waPedido(producto, 'facebook')}\n`;
+    t += `🔗 Fotos y detalles: ${_urlProducto(producto, 'facebook')}\n\n`;
     t += hashtags;
 
     return t;
@@ -535,9 +551,6 @@ const _REVOLICO_CATS = {
 const _REVOLICO_DEFAULT = { label: 'Electrónica', url: 'https://www.revolico.com/anuncios/nuevo/?c=9' };
 
 function _textoRevolico(producto) {
-    const url   = `https://tiendamax.org/p/producto-${producto.id}.html`;
-    const tags  = _hashtagsCategoria(producto.categoria);
-
     // Título: solo nombre, sin precio (Revolico tiene campo de precio separado)
     let titulo = producto.nombre;
     if (titulo.length > 70) titulo = titulo.substring(0, 67) + '...';
@@ -554,7 +567,12 @@ function _textoRevolico(producto) {
         desc += `\nDisponibilidad: ${producto.stock} unidad${producto.stock !== 1 ? 'es' : ''}\n`;
     }
 
-    desc += `\nMás info: ${url}\n\n${tags}`;
+    // Revólico no es red social: los hashtags no hacen nada ahí (no hay búsqueda
+    // por hashtag) y solo ensucian el anuncio. Se dejan fuera a propósito.
+    // El anuncio sí lleva el enlace de pedido en 1 toque: antes solo ponía la
+    // página, y quien mira clasificados quiere escribir ya, no navegar.
+    desc += `\nPedir por WhatsApp (te abre el chat): ${_waPedido(producto, 'revolico')}\n`;
+    desc += `Fotos y detalles: ${_urlProducto(producto, 'revolico')}`;
     return { titulo, descripcion: desc.trim() };
 }
 
