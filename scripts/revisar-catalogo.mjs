@@ -56,10 +56,15 @@ for (const p of PRODUCTOS) {
   const todo = `${nombre} ${publicado}`;
 
   // 1. Código de modelo (AX3000 / AC1200) contra la velocidad que se publica.
+  // "10/100/1000 Mbps" es la notación de un puerto Ethernet (WAN/LAN), no
+  // una banda Wi-Fi — sin excluirla, un router con esa frase en las specs
+  // (casi todos) sumaba un falso "1000 Mbps" de más y disparaba un aviso
+  // que no era real.
   const modelo = nombre.match(/\b(?:AX|AC)\s?(\d{3,4})\b/i);
   if (modelo) {
     const declarado = Number(modelo[1]);
-    const mbps = [...publicado.matchAll(/(\d{3,5})\s*Mbps/gi)].map(m => Number(m[1]));
+    const sinPuertoEthernet = publicado.replace(/\b(?:10\/100\/1000|10\/100)\s*Mbps\b/gi, '');
+    const mbps = [...sinPuertoEthernet.matchAll(/(\d{3,5})\s*Mbps/gi)].map(m => Number(m[1]));
     // AC1200 = 867 + 300 = 1167: el número del modelo es la suma de las
     // bandas redondeada hacia arriba por el fabricante. Se acepta que
     // cuadre una banda suelta O la suma, con el margen de ese redondeo.
