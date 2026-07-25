@@ -1336,7 +1336,18 @@ function _cSplitTitle(name){
   name = _cStrip(name).toUpperCase().replace(/\([^)]*\)/g,'').trim();
   const stop = ['DE','LA','EL','LOS','LAS','Y','CON','PARA','DEL','UN','UNA','A'];
   const w = name.split(/\s+/).filter(x=>x.length>1 && !stop.includes(x));
-  return [w[0]||'PRODUCTO', w[1]||''];
+  // La 2da palabra no puede ser la primera que aparezca sin más: nombres como
+  // "Router Wi-fi 6 AX1800 Asus RT-AX1800S" y "Router Wi-fi 6 AX3000 Tp-link
+  // Archer AX55" son productos distintos (marca y modelo distintos) pero
+  // ambos arrancan "ROUTER WI-FI" — el cartel de los dos salía idéntico.
+  // Se salta términos de marketing/spec genéricos y números sueltos para
+  // llegar a la palabra que sí identifica el producto (marca o modelo).
+  const filler = ['WIFI','WI-FI','INALAMBRICO','INALÁMBRICO','DOBLE','BANDA','DUAL','BAND',
+    'GIGABIT','ALTA','VELOCIDAD','RANGO','EXTENDIDO','AVANZADO','RENDIMIENTO','NUEVA',
+    'GENERACION','GENERACIÓN','EXTERIOR','GLOBAL','VERSION','VERSIÓN'];
+  const resto = w.slice(1);
+  const identificador = resto.find(x=>!filler.includes(x) && !/^\d+$/.test(x));
+  return [w[0]||'PRODUCTO', identificador || resto[0] || ''];
 }
 function _cTitleFont(a,b){ const m=Math.max((a||'').length,(b||'').length); return m>10?50:m>8?62:m>6?72:82; }
 function _cFirstSentence(desc){ return _cClip(String(desc==null?'':desc).replace(/​/g,'').split(/\.\s|\n/)[0].trim(),68); }
