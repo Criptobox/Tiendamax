@@ -350,7 +350,7 @@ html body.light-mode #productDetailModal .detail-spec-badges > * {
 
 /* ---- Share pills ---- */
 #productDetailModal .detail-share-pill {
-  border-radius: 14px !important;
+  border-radius: 999px !important;
 }
 
 /* ---- Descripción ---- */
