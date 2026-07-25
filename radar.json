@@ -1,13 +1,13 @@
 {
-  "actualizado": "2026-07-24T12:18:40.936542+00:00",
-  "fecha": "2026-07-24",
+  "actualizado": "2026-07-25T12:02:25.545199+00:00",
+  "fecha": "2026-07-25",
   "fuentes": [
     "revolico",
     "porlalivre",
     "lelespc"
   ],
   "resumen": {
-    "vigilados": 3,
+    "vigilados": 2,
     "encimaMercado": 0,
     "bajadasComp": 0,
     "sinDatos": 0
@@ -46,6 +46,10 @@
         },
         {
           "fecha": "2026-07-24",
+          "mediana": 39.99
+        },
+        {
+          "fecha": "2026-07-25",
           "mediana": 39.99
         }
       ],
@@ -95,95 +99,13 @@
       ]
     },
     {
-      "id": 1778102507659,
-      "nombre": "​⚖️ Báscula Digital de Alta Definición",
-      "tuPrecio": 25.0,
-      "mercado": {
-        "min": 25.0,
-        "mediana": 25.0,
-        "n": 1
-      },
-      "deltaAyerMediana": 0.0,
-      "estado": "competitivo",
-      "sugerencia": {
-        "texto": "Precio competitivo respecto al mercado"
-      },
-      "historial": [
-        {
-          "fecha": "2026-07-08",
-          "mediana": 25.0
-        },
-        {
-          "fecha": "2026-07-09",
-          "mediana": 25.0
-        },
-        {
-          "fecha": "2026-07-10",
-          "mediana": 25.0
-        },
-        {
-          "fecha": "2026-07-11",
-          "mediana": 25.0
-        },
-        {
-          "fecha": "2026-07-12",
-          "mediana": 25.0
-        },
-        {
-          "fecha": "2026-07-13",
-          "mediana": 25.0
-        },
-        {
-          "fecha": "2026-07-14",
-          "mediana": 25.0
-        },
-        {
-          "fecha": "2026-07-18",
-          "mediana": 25.0
-        },
-        {
-          "fecha": "2026-07-19",
-          "mediana": 25.0
-        },
-        {
-          "fecha": "2026-07-20",
-          "mediana": 25.0
-        },
-        {
-          "fecha": "2026-07-21",
-          "mediana": 25.0
-        },
-        {
-          "fecha": "2026-07-22",
-          "mediana": 25.0
-        },
-        {
-          "fecha": "2026-07-23",
-          "mediana": 25.0
-        },
-        {
-          "fecha": "2026-07-24",
-          "mediana": 25.0
-        }
-      ],
-      "muestras": [
-        {
-          "fuente": "revolico",
-          "titulo": "25 USD Báscula o pesa digital gramera de cocina nueva en su caja",
-          "precio": 25.0,
-          "url": "https://www.revolico.com/item/bascula-o-pesa-digital-gramera-de-cocina-nueva-en-su-caja-40575069",
-          "dias": null
-        }
-      ]
-    },
-    {
       "id": 1778102582909,
       "nombre": "​🔥 Antorcha de Soldadura TIG (KIT Profesional)",
       "tuPrecio": 90.0,
       "mercado": {
         "min": 70.0,
         "mediana": 90.0,
-        "n": 15
+        "n": 14
       },
       "deltaAyerMediana": 0.0,
       "estado": "competitivo",
@@ -191,10 +113,6 @@
         "texto": "Precio competitivo respecto al mercado"
       },
       "historial": [
-        {
-          "fecha": "2026-07-08",
-          "mediana": 90.0
-        },
         {
           "fecha": "2026-07-09",
           "mediana": 90.0
@@ -245,6 +163,10 @@
         },
         {
           "fecha": "2026-07-24",
+          "mediana": 90.0
+        },
+        {
+          "fecha": "2026-07-25",
           "mediana": 90.0
         }
       ],
