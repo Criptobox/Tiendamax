@@ -20,15 +20,15 @@
 
 .producto-card.pcard-v2{
   position:relative; display:flex; flex-direction:column; height:100%;
-  border-radius:16px; overflow:visible; cursor:pointer; padding:0 !important;
-  background:#17171f !important; border:1px solid rgba(255,255,255,.07) !important;border-top-color:rgba(255,255,255,.20) !important;
-  box-shadow:0 12px 26px -14px rgba(0,0,0,.7) !important;
+  border-radius:20px; overflow:visible; cursor:pointer; padding:0 !important;
+  background:linear-gradient(160deg,rgba(255,255,255,.09) 0%,rgba(255,255,255,.02) 45%,rgba(0,0,0,0) 100%),#17171f !important; border:1px solid rgba(255,255,255,.09) !important;border-top-color:rgba(255,255,255,.30) !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 14px 30px -14px rgba(0,0,0,.75) !important;
   transition:transform var(--duration-standard) var(--ease-out), box-shadow var(--duration-standard) var(--ease-out), border-color var(--duration-standard) var(--ease-standard) !important;
 }
 .producto-card.pcard-v2:hover{
-  transform:translateY(-5px);
-  box-shadow:0 22px 44px -16px rgba(0,0,0,.85),0 0 0 1px rgba(255,107,53,.10) !important;
-  border-color:rgba(255,107,53,.30) !important;
+  transform:translateY(-8px) scale(1.01);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 30px 60px -16px rgba(0,0,0,.9),0 0 0 1px rgba(255,107,53,.25),0 0 50px -6px rgba(255,107,53,.35) !important;
+  border-color:rgba(255,107,53,.4) !important;
 }
 .producto-card.pcard-v2:focus-visible{
   outline:3px solid var(--coral) !important; outline-offset:2px;
@@ -37,8 +37,12 @@
 
 /* --- foto real, al ras arriba y a los lados, esquinas de abajo redondeadas --- */
 .producto-card.pcard-v2 .pv2-photo{
-  position:relative; margin:0; border:none; border-radius:0 0 16px 16px; overflow:hidden;
-  aspect-ratio:1/1; background:#ffffff; display:block;
+  position:relative; margin:0; border:none; border-radius:0 0 20px 20px; overflow:hidden;
+  aspect-ratio:1/1; display:block;
+  background:
+    radial-gradient(circle at 28% 25%, rgba(255,138,71,.14), transparent 55%),
+    radial-gradient(circle at 82% 82%, rgba(242,182,50,.12), transparent 55%),
+    linear-gradient(160deg, #F7F1E6 0%, #ECE2CE 100%);
 }
 .producto-card.pcard-v2 .pv2-photo img{
   position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block;
@@ -50,8 +54,10 @@
 .producto-card.pcard-v2 .pv2-photo .btn-megusta{
   position:absolute !important; top:8px; right:8px; margin:0 !important; z-index:3;
   width:30px; height:30px; border-radius:50% !important;
-  background:rgba(12,12,16,.5) !important; 
-  border:1px solid rgba(255,255,255,.18) !important;
+  background:rgba(12,12,16,.45) !important; 
+  border:1px solid rgba(255,255,255,.22) !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.15),0 4px 14px rgba(0,0,0,.35) !important;
+  backdrop-filter:blur(6px) !important;-webkit-backdrop-filter:blur(6px) !important;
   display:grid; place-items:center; font-size:14px; line-height:1; cursor:pointer;
 }
 /* badge esquina foto (descuento / oferta / últimas) */
@@ -68,9 +74,9 @@
 .producto-card.pcard-v2 .pv2-body{ padding:0 12px 12px; display:flex; flex-direction:column; gap:6px; flex:1; min-width:0; }
 .producto-card.pcard-v2 .pv2-cat{
   align-self:flex-start; margin:-13px 0 2px; position:relative; z-index:3;
-  background:var(--accent,#ff6b35); color:#fff; font-weight:800; font-size:10.5px;
+  background:linear-gradient(135deg,#ff8a47 0%,var(--accent,#ff6b35) 55%,#e8501e 100%); color:#fff; font-weight:800; font-size:10.5px;
   letter-spacing:.05em; text-transform:uppercase; padding:6px 13px; border-radius:20px;
-  box-shadow:0 6px 14px rgba(255,107,53,.4);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 6px 14px rgba(255,107,53,.4);
 }
 .producto-card.pcard-v2 h3{
   margin:0 !important; padding:0 !important; font-size:15px !important; font-weight:800 !important;
@@ -88,7 +94,7 @@ body.light-mode .producto-card.pcard-v2 .pv2-rating i{ color:#7a7a82; }
 body.light-mode .producto-card.pcard-v2 .pv2-views{ color:#7a7a82; }
 
 /* línea de confianza (pago al recibir) */
-.producto-card.pcard-v2 .pv2-trust{ margin-top:6px; font-size:10.5px; font-weight:600; color:#7bd88f; display:flex; align-items:center; gap:5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.producto-card.pcard-v2 .pv2-trust{ margin-top:6px; font-size:10.5px; font-weight:600; color:#7bd88f; display:flex; align-items:center; gap:5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; width:fit-content; background:rgba(37,211,102,.10); border:1px solid rgba(37,211,102,.20); padding:4px 9px; border-radius:20px; }
 body.light-mode .producto-card.pcard-v2 .pv2-trust{ color:#1f9d57; }
 
 /* pie: precio + botón anclados abajo → los Pedir quedan alineados entre tarjetas */
@@ -124,12 +130,12 @@ html body .producto-card.pcard-v2.card-agotado .precio-actual{ color:var(--muted
 
 /* botón Pedir / Avísame (ancho completo) */
 .producto-card.pcard-v2 .btn-pedir-card.pv2-pedir{
-  margin-top:10px; border:none; background:#22c55e; color:#fff; font-weight:800; font-size:13.5px;
+  margin-top:10px; border:none; background:linear-gradient(135deg,#25D366,#128C7E); color:#fff; font-weight:800; font-size:13.5px;
   padding:12px; border-radius:40px; cursor:pointer; width:100%;
   display:inline-flex; align-items:center; justify-content:center; gap:7px; white-space:nowrap;
-  box-shadow:0 8px 18px rgba(34,197,94,.32); transition:filter .15s, transform 160ms var(--ease-out);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.25),0 8px 18px rgba(34,197,94,.32); transition:filter .15s, transform 160ms var(--ease-out);
 }
-.producto-card.pcard-v2 .btn-pedir-card.pv2-pedir:hover{ filter:brightness(1.05); }
+.producto-card.pcard-v2 .btn-pedir-card.pv2-pedir:hover{ filter:brightness(1.08); transform:translateY(-2px); box-shadow:inset 0 1px 0 rgba(255,255,255,.3),0 12px 26px rgba(34,197,94,.42); }
 .producto-card.pcard-v2 .btn-pedir-card.pv2-pedir:active{ transform:scale(.97); }
 .producto-card.pcard-v2 .btn-pedir-card.pv2-pedir svg{ width:15px; height:15px; fill:#fff; }
 /* Avísame: color distinto (ámbar) para diferenciarlo del verde 'Pedir' */
@@ -1099,7 +1105,7 @@ html body.light-mode .producto-card.pcard-v2 .pv2-tag.out{
 
 /* ── Dark mode: gradient backgrounds per tile ── */
 html body .categorias-home .categorias-grid .categoria-card:nth-child(n){
-  background:var(--cat-bg, #e9ebf0) !important;
+  background:linear-gradient(125deg,rgba(255,255,255,.16) 0%,rgba(255,255,255,.04) 30%,transparent 55%),var(--cat-bg, #e9ebf0) !important;
 }
 html body .categorias-home .categorias-grid .categoria-card:nth-child(1){--cat-bg:linear-gradient(145deg,#1a3a28 0%,#0d2018 100%) !important}
 html body .categorias-home .categorias-grid .categoria-card:nth-child(2){--cat-bg:linear-gradient(145deg,#1a2648 0%,#0d1530 100%) !important}
@@ -1116,7 +1122,7 @@ html body .categorias-home .categorias-grid .categoria-card:nth-child(12){--cat-
 
 /* ── Light mode: pastel backgrounds per tile ── */
 html body.light-mode .categorias-home .categorias-grid .categoria-card:nth-child(n){
-  background:var(--cat-bg, #e9ebf0) !important;
+  background:linear-gradient(125deg,rgba(255,255,255,.35) 0%,rgba(255,255,255,.08) 30%,transparent 55%),var(--cat-bg, #e9ebf0) !important;
 }
 html body.light-mode .categorias-home .categorias-grid .categoria-card:nth-child(1){--cat-bg:#e8f5ec !important}
 html body.light-mode .categorias-home .categorias-grid .categoria-card:nth-child(2){--cat-bg:#e3eaf5 !important}
