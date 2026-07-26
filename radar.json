@@ -1,6 +1,6 @@
 {
-  "actualizado": "2026-07-25T12:02:25.545199+00:00",
-  "fecha": "2026-07-25",
+  "actualizado": "2026-07-26T12:02:55.655851+00:00",
+  "fecha": "2026-07-26",
   "fuentes": [
     "revolico",
     "porlalivre",
@@ -50,6 +50,10 @@
         },
         {
           "fecha": "2026-07-25",
+          "mediana": 39.99
+        },
+        {
+          "fecha": "2026-07-26",
           "mediana": 39.99
         }
       ],
@@ -114,10 +118,6 @@
       },
       "historial": [
         {
-          "fecha": "2026-07-09",
-          "mediana": 90.0
-        },
-        {
           "fecha": "2026-07-10",
           "mediana": 90.0
         },
@@ -168,6 +168,10 @@
         {
           "fecha": "2026-07-25",
           "mediana": 90.0
+        },
+        {
+          "fecha": "2026-07-26",
+          "mediana": 90.0
         }
       ],
       "muestras": [
@@ -201,16 +205,16 @@
         },
         {
           "fuente": "revolico",
-          "titulo": "90 USD antorcha para soldadura TIG.  emilivariedad 💯",
+          "titulo": "90 USD Antorcha para Soldadura TIG",
           "precio": 90.0,
-          "url": "https://www.revolico.com/item/antorcha-para-soldadura-tig-emilivariedad-56429281",
+          "url": "https://www.revolico.com/item/antorcha-para-soldadura-tig-56475261",
           "dias": null
         },
         {
           "fuente": "revolico",
-          "titulo": "90 USD Antorcha para soldadura TIG:",
+          "titulo": "90 USD antorcha para soldadura TIG.  emilivariedad 💯",
           "precio": 90.0,
-          "url": "https://www.revolico.com/item/antorcha-para-soldadura-tig-56427417",
+          "url": "https://www.revolico.com/item/antorcha-para-soldadura-tig-emilivariedad-56429281",
           "dias": null
         }
       ]
