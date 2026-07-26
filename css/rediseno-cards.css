@@ -21,7 +21,7 @@
 .producto-card.pcard-v2{
   position:relative; display:flex; flex-direction:column; height:100%;
   border-radius:20px; overflow:visible; cursor:pointer; padding:0 !important;
-  background:linear-gradient(160deg,rgba(255,255,255,.09) 0%,rgba(255,255,255,.02) 45%,rgba(0,0,0,0) 100%),#17171f !important; border:1px solid rgba(255,255,255,.09) !important;border-top-color:rgba(255,255,255,.30) !important;
+  background:linear-gradient(160deg,rgba(255,255,255,.09) 0%,rgba(255,255,255,.02) 45%,rgba(255,255,255,.01) 100%),rgba(26,19,32,.66) !important; backdrop-filter:blur(22px) saturate(160%) !important;-webkit-backdrop-filter:blur(22px) saturate(160%) !important; border:1px solid rgba(255,255,255,.09) !important;border-top-color:rgba(255,255,255,.30) !important;
   box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 14px 30px -14px rgba(0,0,0,.75) !important;
   transition:transform var(--duration-standard) var(--ease-out), box-shadow var(--duration-standard) var(--ease-out), border-color var(--duration-standard) var(--ease-standard) !important;
 }
@@ -1105,20 +1105,21 @@ html body.light-mode .producto-card.pcard-v2 .pv2-tag.out{
 
 /* ── Dark mode: gradient backgrounds per tile ── */
 html body .categorias-home .categorias-grid .categoria-card:nth-child(n){
-  background:linear-gradient(125deg,rgba(255,255,255,.16) 0%,rgba(255,255,255,.04) 30%,transparent 55%),var(--cat-bg, #e9ebf0) !important;
+  background:var(--cat-bg, rgba(22,22,31,.75)) !important;
+  border-color:var(--cat-border, rgba(255,106,31,.18)) !important;
 }
-html body .categorias-home .categorias-grid .categoria-card:nth-child(1){--cat-bg:linear-gradient(145deg,#1a3a28 0%,#0d2018 100%) !important}
-html body .categorias-home .categorias-grid .categoria-card:nth-child(2){--cat-bg:linear-gradient(145deg,#1a2648 0%,#0d1530 100%) !important}
-html body .categorias-home .categorias-grid .categoria-card:nth-child(3){--cat-bg:linear-gradient(145deg,#b85e0c 0%,#8a4208 100%) !important}
-html body .categorias-home .categorias-grid .categoria-card:nth-child(4){--cat-bg:linear-gradient(145deg,#2d1854 0%,#1a0e38 100%) !important}
-html body .categorias-home .categorias-grid .categoria-card:nth-child(5){--cat-bg:linear-gradient(145deg,#23262e 0%,#15171d 100%) !important}
-html body .categorias-home .categorias-grid .categoria-card:nth-child(6){--cat-bg:linear-gradient(145deg,#3d2010 0%,#281508 100%) !important}
-html body .categorias-home .categorias-grid .categoria-card:nth-child(7){--cat-bg:linear-gradient(145deg,#2d1b4e 0%,#1c1034 100%) !important}
-html body .categorias-home .categorias-grid .categoria-card:nth-child(8){--cat-bg:linear-gradient(145deg,#3d1a24 0%,#28101a 100%) !important}
-html body .categorias-home .categorias-grid .categoria-card:nth-child(9){--cat-bg:linear-gradient(145deg,#3a2230 0%,#261520 100%) !important}
-html body .categorias-home .categorias-grid .categoria-card:nth-child(10){--cat-bg:linear-gradient(145deg,#15301f 0%,#0c2014 100%) !important}
-html body .categorias-home .categorias-grid .categoria-card:nth-child(11){--cat-bg:linear-gradient(145deg,#26262c 0%,#18181d 100%) !important}
-html body .categorias-home .categorias-grid .categoria-card:nth-child(12){--cat-bg:linear-gradient(145deg,#2b251a 0%,#1c1810 100%) !important}
+html body .categorias-home .categorias-grid .categoria-card:nth-child(1){--cat-bg:linear-gradient(155deg,rgba(255,106,31,.14) 0%,rgba(255,106,31,.04) 50%,rgba(255,255,255,.02) 100%) !important;--cat-border:rgba(255,106,31,.18) !important}
+html body .categorias-home .categorias-grid .categoria-card:nth-child(2){--cat-bg:linear-gradient(155deg,rgba(242,182,50,.14) 0%,rgba(242,182,50,.04) 50%,rgba(255,255,255,.02) 100%) !important;--cat-border:rgba(242,182,50,.22) !important}
+html body .categorias-home .categorias-grid .categoria-card:nth-child(3){--cat-bg:linear-gradient(155deg,rgba(111,168,255,.12) 0%,rgba(111,168,255,.03) 50%,rgba(255,255,255,.02) 100%) !important;--cat-border:rgba(111,168,255,.20) !important}
+html body .categorias-home .categorias-grid .categoria-card:nth-child(4){--cat-bg:linear-gradient(155deg,rgba(184,146,255,.12) 0%,rgba(184,146,255,.03) 50%,rgba(255,255,255,.02) 100%) !important;--cat-border:rgba(184,146,255,.20) !important}
+html body .categorias-home .categorias-grid .categoria-card:nth-child(5){--cat-bg:linear-gradient(155deg,rgba(255,106,31,.14) 0%,rgba(255,106,31,.04) 50%,rgba(255,255,255,.02) 100%) !important;--cat-border:rgba(255,106,31,.18) !important}
+html body .categorias-home .categorias-grid .categoria-card:nth-child(6){--cat-bg:linear-gradient(155deg,rgba(242,182,50,.14) 0%,rgba(242,182,50,.04) 50%,rgba(255,255,255,.02) 100%) !important;--cat-border:rgba(242,182,50,.22) !important}
+html body .categorias-home .categorias-grid .categoria-card:nth-child(7){--cat-bg:linear-gradient(155deg,rgba(111,168,255,.12) 0%,rgba(111,168,255,.03) 50%,rgba(255,255,255,.02) 100%) !important;--cat-border:rgba(111,168,255,.20) !important}
+html body .categorias-home .categorias-grid .categoria-card:nth-child(8){--cat-bg:linear-gradient(155deg,rgba(184,146,255,.12) 0%,rgba(184,146,255,.03) 50%,rgba(255,255,255,.02) 100%) !important;--cat-border:rgba(184,146,255,.20) !important}
+html body .categorias-home .categorias-grid .categoria-card:nth-child(9){--cat-bg:linear-gradient(155deg,rgba(255,106,31,.14) 0%,rgba(255,106,31,.04) 50%,rgba(255,255,255,.02) 100%) !important;--cat-border:rgba(255,106,31,.18) !important}
+html body .categorias-home .categorias-grid .categoria-card:nth-child(10){--cat-bg:linear-gradient(155deg,rgba(242,182,50,.14) 0%,rgba(242,182,50,.04) 50%,rgba(255,255,255,.02) 100%) !important;--cat-border:rgba(242,182,50,.22) !important}
+html body .categorias-home .categorias-grid .categoria-card:nth-child(11){--cat-bg:linear-gradient(155deg,rgba(111,168,255,.12) 0%,rgba(111,168,255,.03) 50%,rgba(255,255,255,.02) 100%) !important;--cat-border:rgba(111,168,255,.20) !important}
+html body .categorias-home .categorias-grid .categoria-card:nth-child(12){--cat-bg:linear-gradient(155deg,rgba(184,146,255,.12) 0%,rgba(184,146,255,.03) 50%,rgba(255,255,255,.02) 100%) !important;--cat-border:rgba(184,146,255,.20) !important}
 
 /* ── Light mode: pastel backgrounds per tile ── */
 html body.light-mode .categorias-home .categorias-grid .categoria-card:nth-child(n){

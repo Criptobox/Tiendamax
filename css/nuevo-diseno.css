@@ -43,10 +43,10 @@ html body.light-mode .hero.nd-hero{
 .nd-eyebrow{display:inline-flex;align-items:center;gap:8px;background:rgba(255,107,53,0.12);border:1px solid rgba(255,107,53,0.25);border-radius:100px;padding:6px 16px;font-size:13px;font-weight:600;color:#FF6B35;margin-bottom:24px}
 .nd-edot{width:6px;height:6px;border-radius:50%;background:#FF6B35;animation:nd-dot 2s ease-in-out infinite;flex-shrink:0}
 @keyframes nd-dot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
-.nd-h1{font-size:clamp(36px,4.5vw,58px) !important;font-weight:900 !important;line-height:1.08 !important;letter-spacing:-2px !important;margin-bottom:20px !important;text-align:left !important}
+.nd-h1{font-family:var(--font-display) !important;font-size:clamp(40px,5.4vw,68px) !important;font-weight:800 !important;line-height:1.03 !important;letter-spacing:-.035em !important;margin-bottom:20px !important;text-align:left !important}
 .nd-grad{background-image:linear-gradient(135deg,var(--coral) 0%,var(--coral-deep) 100%) !important;-webkit-background-clip:text !important;-webkit-text-fill-color:transparent !important;background-clip:text !important;color:transparent !important}
 /* especificidad (0,2,1) para ganar a h1 span:not(.logo-badge) (0,1,2) de bundle.css */
-h1.nd-h1 span.nd-grad{background-image:linear-gradient(135deg,var(--coral) 0%,var(--coral-deep) 100%) !important;-webkit-background-clip:text !important;-webkit-text-fill-color:transparent !important;background-clip:text !important;color:transparent !important}
+h1.nd-h1 span.nd-grad{font-style:italic !important;background-image:linear-gradient(135deg,#FFB585 0%,var(--coral) 50%,var(--coral-deep) 100%) !important;-webkit-background-clip:text !important;-webkit-text-fill-color:transparent !important;background-clip:text !important;color:transparent !important}
 .nd-sub{font-size:16px;line-height:1.6;margin-bottom:20px;max-width:440px;opacity:0.85;color:#C9C9D2}
 html body.light-mode .nd-sub{opacity:1;color:#5A5A66}
 /* Buscador + moneda integrados dentro del hero-left */
