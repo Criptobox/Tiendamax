@@ -37,7 +37,7 @@
 
 :root {
   /* — Capa 1, primitivos: valores crudos — */
-  --tm-radius-full: 999px;    /* píldora — hoy sin uso; queda por si se vuelve */
+  --tm-radius-full: 999px;    /* píldora — la usan los controles del hero (ver 3.bis) */
   --tm-radius-circle: 50%;    /* círculo — idem                                */
   --tm-radius-md: 14px;
   --tm-radius-sm: 10px;
@@ -203,6 +203,35 @@ html body.light-mode .producto-card .btn-pedir-card {
 html body.light-mode .categoria-btn,
 html body.light-mode .subcategoria-tab {
   border-radius: var(--tm-radius-chip) !important;
+}
+
+/* --------------------------------------------------------------------------
+   3.bis) EXCEPCIÓN: EL HERO VA EN PÍLDORA
+   El rediseño "Oficial Plus" (css/oficial-plus.css) usa píldora completa en
+   los controles del hero. Ahí sí funciona y no contradice el motivo del
+   14px: el problema de la píldora eran los botones anchos DENTRO de las
+   tarjetas de producto (se leían como pegatina pegada encima). En el hero
+   no hay tarjeta que los contenga — flotan sobre el fondo, centrados y con
+   ancho propio — y la píldora es justo lo que los hace verse como controles
+   sueltos y no como parte de un bloque.
+
+   Sigue siendo esta hoja la que manda la forma: la excepción se declara
+   aquí, con el token, no repartida por las hojas de diseño.
+   -------------------------------------------------------------------------- */
+html body .hero .nd-hero-btns .nd-btn-primary,
+html body .hero .nd-hero-btns .nd-btn-wa,
+html body .hero .nd-hero-search .hsb-pill,
+html body .hero .nd-hero-search .hsb-apply-btn,
+html body .hero .nd-hero-search .hsb-buscar-pill,
+html body .hero .nd-hero-search .currency-bar,
+html body .hero .nd-hero-search .currency-bar .currency-toggle,
+html body .hero .nd-hero-search .currency-bar .cur-btn,
+html body.light-mode .hero .nd-hero-btns .nd-btn-primary,
+html body.light-mode .hero .nd-hero-btns .nd-btn-wa,
+html body.light-mode .hero .nd-hero-search .hsb-pill,
+html body.light-mode .hero .nd-hero-search .currency-bar,
+html body.light-mode .hero .nd-hero-search .currency-bar .cur-btn {
+  border-radius: var(--tm-radius-full) !important;
 }
 
 /* --------------------------------------------------------------------------

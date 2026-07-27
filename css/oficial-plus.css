@@ -178,6 +178,23 @@ html body .nd-hero-search .hsb-pill:focus-within{
 html body .nd-hero-search .hsb-input{
   font-family:var(--font-sans-glass) !important;font-size:15px !important;padding:14px 0 !important;
 }
+/* Botón "Buscar →" dentro de la píldora, a la derecha (como el preview) */
+html body .nd-hero-search .hsb-buscar-pill{
+  display:inline-flex !important;align-items:center !important;gap:4px !important;
+  padding:8px 14px !important;flex-shrink:0 !important;
+  background:var(--coral) !important;color:#fff !important;border:0 !important;
+  font-family:var(--font-sans-glass) !important;
+  font-weight:600 !important;font-size:13px !important;white-space:nowrap !important;
+  box-shadow:0 6px 16px rgba(255,106,31,.4) !important;
+  transition:transform .15s var(--op-ease) !important;cursor:pointer !important;
+}
+html body .nd-hero-search .hsb-buscar-pill:hover{transform:scale(1.04) !important}
+/* Con el panel de sugerencias abierto manda la flecha de volver, no el botón
+   (mismo patrón que usa rediseno-cards.css para mostrar .hsb-back-btn) */
+html body .hsb-search:has(.hsb-panel.visible) .hsb-buscar-pill{display:none !important}
+@media (max-width:480px){
+  html body .nd-hero-search .hsb-buscar-pill{padding:8px 11px !important;font-size:12px !important}
+}
 /* Barra de moneda → toggle compacto centrado */
 html body .nd-hero-search .currency-bar{
   position:static !important;width:fit-content !important;min-width:0 !important;
