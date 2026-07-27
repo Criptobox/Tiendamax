@@ -825,15 +825,17 @@ html body .header-theme-btn {
     width: 40px !important;
     height: 40px !important;
     border-radius: 12px !important;
-    background: rgba(255,255,255,.06) !important;
-    border: 1px solid rgba(255,255,255,.15) !important;
+    background: var(--glass) !important;
+    border: 1px solid var(--glass-border) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
     color: inherit !important;
     display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
     flex-shrink: 0 !important;
     position: relative !important;
-    transition: background .2s, border-color .2s !important;
+    transition: background .2s, border-color .2s, transform .2s var(--ease-out) !important;
 }
 /* Hover state for all header buttons (dark mode) */
 html body:not(.light-mode) .cart-icon-btn:hover,
@@ -841,8 +843,9 @@ html body:not(.light-mode) .heart-icon-btn:hover,
 html body:not(.light-mode) .notif-icon-btn:hover,
 html body:not(.light-mode) .hamburger-btn:hover,
 html body:not(.light-mode) .header-theme-btn:hover {
-    background: rgba(255,107,53,0.12) !important;
-    border-color: rgba(255,107,53,0.30) !important;
+    background: var(--glass-2) !important;
+    border-color: var(--glass-border-strong) !important;
+    transform: translateY(-1px) !important;
 }
 /* Light mode: all header buttons have consistent look */
 html body.light-mode .cart-icon-btn,
@@ -877,7 +880,7 @@ html body .nd-header {
 /* Adjust sticky top to account for the top margin */
 html body header.header,
 html body .header {
-    top: 8px !important;
+    top: calc(var(--tm-safe-top,0px) + var(--tm-topbar-h,0px) + var(--tm-urgencia-h,0px) + 8px) !important;
 }
 
 /* ── Mobile header: single-row layout, logo left + buttons right ── */
@@ -1144,14 +1147,13 @@ html body.light-mode .categorias-home .categorias-grid .categoria-card:nth-child
 
 /* ── Tarjeta contenedora — coincide con modal .resena-item ── */
 html body .testimonio-card{
-  background:rgba(255,255,255,.02) !important;
-  border:1px solid rgba(255,255,255,.06) !important;
+  background:linear-gradient(160deg,rgba(255,255,255,.05) 0%,rgba(255,255,255,.01) 100%) !important;
+  backdrop-filter:blur(20px) saturate(150%) !important;-webkit-backdrop-filter:blur(20px) saturate(150%) !important;
+  border:1px solid var(--glass-border) !important;
   border-top-color:rgba(255,255,255,.06) !important;
-  border-radius:12px !important;
-  padding:12px 14px !important;
+  border-radius:16px !important;
+  padding:16px 18px !important;
   text-align:left !important;
-  
-  
   box-shadow:none !important;
   display:block !important;
   gap:0 !important;
@@ -1638,7 +1640,7 @@ html body .hsb-sug-empty{
    está oculto, así que esto no mueve nada el resto del tiempo. */
 html body header.header,
 html body .header {
-  top: calc(8px + var(--tm-pwa-h,0px)) !important;
+  top: calc(var(--tm-safe-top,0px) + var(--tm-topbar-h,0px) + var(--tm-urgencia-h,0px) + 8px + var(--tm-pwa-h,0px)) !important;
 }
 
 /* ============================================================

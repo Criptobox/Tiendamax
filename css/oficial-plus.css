@@ -1,0 +1,749 @@
+/* ================================================================
+   TiendaMax — OFICIAL PLUS
+   Rediseño calcado del preview "tiendamax index (último).html".
+   Carga AL FINAL del ORDEN de build_css.py: gana la cascada sobre
+   nuevo-diseno.css / rediseno-cards.css / premium-theme.css, que
+   usan !important de forma masiva. Por eso aquí también se usa
+   !important y selectores `html body` — no es estilo, es necesidad.
+
+   Alcance: topbar, header, hero, categorías, beneficios, pasos,
+   reseñas, CTA canales y footer. NO toca la grilla de productos
+   (destacados/ofertas/combos) ni el banner patrocinado, que se
+   conservan tal cual del sitio oficial.
+
+   OJO CON LA FORMA DE LOS BOTONES: esta hoja va ANTES de
+   botones-unificados.css a propósito (hay un test que lo verifica,
+   tests/test_botones_unificados.py). El preview usa botones píldora
+   (999px), pero el proyecto decidió — y documentó en esa hoja — que
+   todos los botones son rectángulos de 14px, porque la píldora se
+   veía como pegatina en los botones anchos. Se respeta esa decisión:
+   aquí NO se toca border-radius de botones. Para pasar toda la tienda
+   a píldora se cambia el token --tm-radius-btn, no esta hoja.
+   ================================================================ */
+
+:root{
+  --op-r:14px;
+  --op-r-lg:22px;
+  --op-r-xl:28px;
+  --op-ease:cubic-bezier(.2,.7,.2,1);
+  --op-ink:#FAF3E3;
+  --op-ink-2:#E5D9C2;
+  --op-muted:#9B8E7B;
+  --op-serif:'Playfair Display',Georgia,serif;
+}
+html body.light-mode{
+  --op-ink:#1A120B;
+  --op-ink-2:#3A2E22;
+  --op-muted:#7A6A57;
+  --glass:rgba(0,0,0,.03);
+  --glass-2:rgba(0,0,0,.05);
+  --glass-border:rgba(0,0,0,.09);
+  --glass-border-strong:rgba(0,0,0,.14);
+}
+
+/* ── Eyebrow de sección: línea + texto + punto ── */
+html body .section-eyebrow{
+  display:inline-flex !important;align-items:center !important;gap:14px !important;
+  color:var(--gold) !important;text-transform:uppercase !important;
+  font-family:var(--font-sans-glass) !important;
+  font-size:11.5px !important;font-weight:700 !important;letter-spacing:.22em !important;
+  background:none !important;padding:0 !important;border:0 !important;
+}
+html body .section-eyebrow::before{
+  content:"" !important;width:32px;height:1px;flex-shrink:0;
+  background:linear-gradient(90deg,transparent,var(--gold));
+}
+html body .section-eyebrow::after{
+  content:"" !important;width:6px;height:6px;border-radius:50%;flex-shrink:0;
+  background:var(--gold);box-shadow:0 0 12px var(--gold);
+}
+
+/* ── Títulos de sección: serif grande con acento itálico ── */
+html body .categorias-home .section-title,
+html body #beneficios h2,
+html body #testimonios h2,
+html body .tm-steps-title,
+html body .cta-final h2{
+  font-family:var(--op-serif) !important;
+  font-size:clamp(32px,4vw,52px) !important;
+  font-weight:800 !important;
+  line-height:1.05 !important;
+  letter-spacing:-.025em !important;
+  color:var(--op-ink) !important;
+  margin:14px 0 14px !important;
+  text-wrap:balance;
+}
+html body .categorias-home .section-title em,
+html body #beneficios h2 em,
+html body #testimonios h2 em,
+html body .tm-steps-title em,
+html body .cta-final h2 em{
+  font-style:italic !important;color:var(--coral-2) !important;font-weight:700 !important;
+  -webkit-text-fill-color:var(--coral-2) !important;background:none !important;
+}
+html body .categorias-home .section-title::after{display:none !important}
+html body .categorias-home .section-subtitle,
+html body #beneficios .section-subtitle,
+html body #testimonios .section-subtitle{
+  color:var(--op-ink-2) !important;font-size:17px !important;
+  font-family:var(--font-sans-glass) !important;margin:0 !important;
+}
+
+/* ================================================================
+   HERO — centrado, con anillos, chip, titular serif subrayado
+   ================================================================ */
+html body .hero.nd-hero{padding:80px 0 40px !important}
+html body .op-hero-inner{
+  text-align:center;max-width:880px;margin:0 auto;position:relative;
+}
+html body .op-hero-rings{
+  position:absolute;top:44%;left:50%;transform:translate(-50%,-50%);
+  width:680px;height:680px;max-width:110vw;max-height:110vw;
+  pointer-events:none;z-index:0;opacity:.6;
+}
+html body .op-hero-rings::before,
+html body .op-hero-rings::after{
+  content:"";position:absolute;inset:0;border-radius:50%;
+  border:1px solid rgba(255,106,31,.18);
+}
+html body .op-hero-rings::before{transform:scale(.7);border-color:rgba(242,182,50,.14)}
+html body .op-hero-rings::after{transform:scale(.4);border-color:rgba(255,106,31,.22)}
+
+html body .op-chip{
+  display:inline-flex;align-items:center;gap:8px;position:relative;
+  background:rgba(255,106,31,.10);color:var(--coral-2);
+  padding:8px 16px;border-radius:999px;
+  font-family:var(--font-sans-glass);
+  font-size:12.5px;font-weight:600;letter-spacing:.04em;
+  border:1px solid rgba(255,106,31,.28);
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.08);
+}
+html body .op-chip .op-pulse{
+  width:8px;height:8px;border-radius:50%;background:#25D366;flex-shrink:0;
+  box-shadow:0 0 0 0 rgba(37,211,102,.5);animation:opPulse 2s infinite;
+}
+@keyframes opPulse{
+  0%{box-shadow:0 0 0 0 rgba(37,211,102,.5)}
+  70%{box-shadow:0 0 0 8px rgba(37,211,102,0)}
+  100%{box-shadow:0 0 0 0 rgba(37,211,102,0)}
+}
+
+html body h1.op-h1{
+  font-family:var(--op-serif) !important;
+  font-size:clamp(40px,6vw,76px) !important;
+  font-weight:800 !important;
+  margin:24px 0 18px !important;
+  color:var(--op-ink) !important;
+  letter-spacing:-.035em !important;line-height:1 !important;
+  text-align:center !important;position:relative;
+}
+html body h1.op-h1 .op-accent{
+  background:linear-gradient(135deg,#FFB585 0%,#FF6A1F 50%,#D24E0F 100%) !important;
+  -webkit-background-clip:text !important;background-clip:text !important;
+  -webkit-text-fill-color:transparent !important;color:transparent !important;
+  font-style:italic !important;font-weight:800 !important;display:inline-block;
+}
+html body h1.op-h1 .op-underline{position:relative;display:inline-block}
+html body h1.op-h1 .op-underline::after{
+  content:"";position:absolute;left:0;right:0;bottom:-6px;height:8px;
+  background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 8' preserveAspectRatio='none'><path d='M0 4 Q 50 0 100 4 T 200 4' stroke='%23F2B632' stroke-width='2' fill='none' stroke-linecap='round'/></svg>") no-repeat center / 100% 100%;
+  opacity:.7;
+}
+html body .op-lead{
+  color:var(--op-ink-2) !important;font-size:18px !important;
+  font-family:var(--font-sans-glass) !important;
+  max-width:620px;margin:0 auto 32px !important;position:relative;
+}
+
+/* Buscador del hero → píldora de vidrio centrada */
+html body .nd-hero-search{
+  flex-direction:column !important;align-items:center !important;
+  gap:20px !important;max-width:600px !important;margin:0 auto 32px !important;
+  position:relative;
+}
+html body .nd-hero-search .hsb-search{width:100% !important;flex:none !important}
+html body .nd-hero-search .hsb-pill{
+  background:linear-gradient(145deg,rgba(255,255,255,.08),rgba(255,255,255,.02)) !important;
+  border:1px solid var(--glass-border-strong) !important;
+  border-radius:999px !important;
+  backdrop-filter:blur(20px) !important;-webkit-backdrop-filter:blur(20px) !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.1),0 18px 50px rgba(0,0,0,.4) !important;
+  padding:6px 6px 6px 20px !important;
+}
+html body .nd-hero-search .hsb-pill:focus-within{
+  border-color:rgba(255,106,31,.4) !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 0 0 4px rgba(255,106,31,.12),0 18px 50px rgba(0,0,0,.4) !important;
+}
+html body .nd-hero-search .hsb-input{
+  font-family:var(--font-sans-glass) !important;font-size:15px !important;padding:14px 0 !important;
+}
+/* Barra de moneda → toggle compacto centrado */
+html body .nd-hero-search .currency-bar{
+  position:static !important;width:fit-content !important;min-width:0 !important;
+  margin:0 auto !important;padding:4px !important;
+  background:rgba(0,0,0,.3) !important;
+  border:1px solid var(--glass-border) !important;
+  border-radius:999px !important;box-shadow:none !important;
+  min-height:0 !important;gap:0 !important;
+}
+html body .nd-hero-search .currency-bar .tasa-info-prefix{display:none !important}
+html body .nd-hero-search .currency-bar .currency-toggle{border:0 !important;padding:0 !important;background:none !important}
+html body .nd-hero-search .currency-bar .cur-btn{
+  padding:9px 22px !important;
+  font-family:var(--font-sans-glass) !important;
+  font-weight:600 !important;font-size:13.5px !important;min-width:0 !important;
+  color:var(--op-ink-2) !important;background:none !important;
+}
+html body .nd-hero-search .currency-bar .cur-btn.active{
+  background:linear-gradient(135deg,#FF6A1F,#D24E0F) !important;color:#fff !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.25),0 6px 16px rgba(255,106,31,.4) !important;
+}
+
+/* CTAs del hero */
+html body .nd-hero-btns{
+  justify-content:center !important;gap:14px !important;position:relative;
+}
+html body .nd-hero-btns .nd-btn-primary,
+html body .nd-hero-btns .nd-btn-wa{
+  padding:15px 28px !important;
+  font-family:var(--font-sans-glass) !important;
+  font-weight:600 !important;font-size:14px !important;letter-spacing:.01em !important;
+}
+html body .nd-hero-btns .nd-btn-primary{
+  background:linear-gradient(135deg,#FF8A47 0%,#FF6A1F 50%,#D24E0F 100%) !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.25),inset 0 -1px 0 rgba(0,0,0,.15),0 12px 30px rgba(255,106,31,.4) !important;
+}
+html body .nd-hero-btns .nd-btn-primary:hover{
+  transform:translateY(-2px) !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.3),0 18px 40px rgba(255,106,31,.5) !important;
+}
+html body .nd-hero-btns .nd-btn-wa{
+  background:linear-gradient(135deg,#2DE56F 0%,#25D366 50%,#1FAD53 100%) !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.25),inset 0 -1px 0 rgba(0,0,0,.15),0 12px 30px rgba(37,211,102,.4) !important;
+}
+html body .nd-hero-btns .nd-btn-wa:hover{
+  transform:translateY(-2px) !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.3),0 18px 40px rgba(37,211,102,.5) !important;
+}
+
+/* Stats del hero: tarjetas de vidrio, cifra serif + unidad coral */
+html body .nd-hero-stats{
+  grid-template-columns:repeat(4,1fr) !important;
+  gap:16px !important;max-width:880px !important;
+  margin:64px auto 0 !important;
+}
+html body .nd-stat{
+  position:relative;padding:24px 20px !important;text-align:center !important;
+  background:linear-gradient(160deg,rgba(255,255,255,.06) 0%,rgba(255,255,255,.01) 100%) !important;
+  backdrop-filter:blur(20px) saturate(150%) !important;-webkit-backdrop-filter:blur(20px) saturate(150%) !important;
+  border:1px solid var(--glass-border) !important;
+  border-radius:var(--op-r-lg) !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 14px 40px rgba(0,0,0,.3) !important;
+  overflow:hidden;gap:0 !important;
+}
+html body .nd-stat:hover{transform:translateY(-3px);border-color:rgba(255,106,31,.3) !important}
+html body .nd-stat::before{
+  content:"";position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(255,106,31,.5),transparent);
+}
+html body .nd-stat strong{
+  display:block;font-family:var(--op-serif) !important;
+  font-size:34px !important;font-weight:800 !important;color:var(--op-ink) !important;
+  line-height:1 !important;margin-bottom:4px !important;
+}
+html body .nd-stat strong i{color:var(--coral) !important;font-size:18px;margin-left:2px;font-style:normal}
+html body .nd-stat span{
+  color:var(--op-muted) !important;font-size:12px !important;
+  font-family:var(--font-sans-glass) !important;
+  letter-spacing:.06em !important;text-transform:uppercase !important;font-weight:500 !important;
+}
+@media (max-width:768px){
+  html body .nd-hero-stats{grid-template-columns:repeat(2,1fr) !important;max-width:none !important;margin-top:40px !important}
+  html body .hero.nd-hero{padding:40px 0 24px !important}
+  html body .op-hero-rings{display:none}
+  html body .op-chip{font-size:11.5px;padding:7px 14px}
+  /* En pantallas chicas el chip se partía en 3 líneas: se recorta la coletilla */
+  html body .op-chip-extra{display:none}
+  html body .op-lead{font-size:16px !important}
+}
+
+/* ================================================================
+   CATEGORÍAS — tarjetas de vidrio con ícono en cuadrado redondeado
+   Se anula la grilla "bento" anterior (spans por nth-child).
+   ================================================================ */
+html body .categorias-home .categorias-grid{
+  display:grid !important;
+  grid-template-columns:repeat(4,1fr) !important;
+  grid-auto-rows:auto !important;
+  gap:18px !important;
+}
+html body .categorias-home .categorias-grid .categoria-card,
+html body .categorias-home .categorias-grid .categoria-card:nth-child(n){
+  grid-column:auto !important;grid-row:auto !important;
+  position:relative !important;
+  border-radius:var(--op-r-xl) !important;
+  padding:28px 24px !important;min-height:200px !important;
+  display:flex !important;flex-direction:column !important;justify-content:space-between !important;
+  align-items:flex-start !important;text-align:left !important;
+  overflow:hidden !important;cursor:pointer !important;
+  background:linear-gradient(155deg,rgba(255,106,31,.14) 0%,rgba(255,106,31,.04) 50%,rgba(255,255,255,.02) 100%) !important;
+  border:1px solid rgba(255,106,31,.18) !important;
+  backdrop-filter:blur(20px) !important;-webkit-backdrop-filter:blur(20px) !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.1),0 14px 40px rgba(0,0,0,.3) !important;
+  transition:all .35s var(--op-ease) !important;
+}
+html body .categorias-home .categorias-grid .categoria-card:hover{
+  transform:translateY(-6px) scale(1.01) !important;
+  border-color:rgba(255,106,31,.4) !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.15),0 24px 60px rgba(0,0,0,.5),0 0 0 1px rgba(255,106,31,.2) !important;
+}
+html body .categorias-home .categorias-grid .categoria-card::before{
+  content:"" !important;position:absolute !important;
+  top:-50% !important;left:-50% !important;width:200% !important;height:200% !important;
+  background:radial-gradient(circle at 50% 50%,rgba(255,106,31,.25),transparent 50%) !important;
+  opacity:0 !important;transition:opacity .4s var(--op-ease) !important;pointer-events:none !important;
+  border-radius:0 !important;
+}
+html body .categorias-home .categorias-grid .categoria-card:hover::before{opacity:1 !important}
+/* Flecha circular que aparece al pasar el mouse (arriba a la derecha) */
+html body .categorias-home .categorias-grid .categoria-card::after{
+  content:"→" !important;display:grid !important;place-items:center !important;
+  position:absolute !important;top:24px !important;right:24px !important;left:auto !important;bottom:auto !important;
+  width:32px !important;height:32px !important;border-radius:50% !important;
+  background:rgba(255,255,255,.06) !important;border:1px solid rgba(255,255,255,.1) !important;
+  color:var(--op-ink) !important;font-size:14px !important;line-height:1 !important;
+  opacity:0 !important;transform:translate(-4px,4px) !important;
+  transition:all .3s var(--op-ease) !important;pointer-events:none !important;
+}
+html body .categorias-home .categorias-grid .categoria-card:hover::after{opacity:1 !important;transform:translate(0,0) !important}
+/* La tarjeta con badge "Popular" baja la flecha para no encimarse */
+html body .categorias-home .categorias-grid .categoria-card.cat-popular::after{top:58px !important}
+
+/* Variantes de color rotando (coral / dorado / azul / violeta) */
+html body .categorias-home .categorias-grid .categoria-card:nth-child(4n+2){
+  background:linear-gradient(155deg,rgba(242,182,50,.14) 0%,rgba(242,182,50,.04) 50%,rgba(255,255,255,.02) 100%) !important;
+  border-color:rgba(242,182,50,.22) !important;
+}
+html body .categorias-home .categorias-grid .categoria-card:nth-child(4n+2):hover{border-color:rgba(242,182,50,.45) !important}
+html body .categorias-home .categorias-grid .categoria-card:nth-child(4n+2)::before{background:radial-gradient(circle at 50% 50%,rgba(242,182,50,.25),transparent 50%) !important}
+html body .categorias-home .categorias-grid .categoria-card:nth-child(4n+3){
+  background:linear-gradient(155deg,rgba(111,168,255,.12) 0%,rgba(111,168,255,.03) 50%,rgba(255,255,255,.02) 100%) !important;
+  border-color:rgba(111,168,255,.20) !important;
+}
+html body .categorias-home .categorias-grid .categoria-card:nth-child(4n+3):hover{border-color:rgba(111,168,255,.45) !important}
+html body .categorias-home .categorias-grid .categoria-card:nth-child(4n+3)::before{background:radial-gradient(circle at 50% 50%,rgba(111,168,255,.25),transparent 50%) !important}
+html body .categorias-home .categorias-grid .categoria-card:nth-child(4n+4){
+  background:linear-gradient(155deg,rgba(184,146,255,.12) 0%,rgba(184,146,255,.03) 50%,rgba(255,255,255,.02) 100%) !important;
+  border-color:rgba(184,146,255,.20) !important;
+}
+html body .categorias-home .categorias-grid .categoria-card:nth-child(4n+4):hover{border-color:rgba(184,146,255,.45) !important}
+html body .categorias-home .categorias-grid .categoria-card:nth-child(4n+4)::before{background:radial-gradient(circle at 50% 50%,rgba(184,146,255,.25),transparent 50%) !important}
+
+/* Ícono en cuadrado de vidrio (arriba), no watermark gigante */
+html body .categorias-home .categorias-grid .categoria-card .cat-icon,
+html body .categorias-home .categorias-grid .categoria-card:nth-child(n) .cat-icon{
+  position:static !important;
+  width:54px !important;height:54px !important;
+  border-radius:15px !important;
+  background:rgba(255,255,255,.06) !important;
+  border:1px solid rgba(255,255,255,.12) !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.1) !important;
+  display:grid !important;place-items:center !important;
+  font-size:26px !important;line-height:1 !important;
+  margin:0 0 auto !important;opacity:1 !important;
+  backdrop-filter:blur(8px) !important;-webkit-backdrop-filter:blur(8px) !important;
+  transform:none !important;transition:transform .3s var(--op-ease) !important;
+  filter:none !important;top:auto !important;right:auto !important;left:auto !important;bottom:auto !important;
+}
+html body .categorias-home .categorias-grid .categoria-card:hover .cat-icon{transform:scale(1.08) !important}
+/* Watermark y CTA del renderer "instant": fuera (el mockup no los tiene) */
+html body .categorias-home .categorias-grid .categoria-card .cat-wm,
+html body .categorias-home .categorias-grid .categoria-card .cat-cta{display:none !important}
+
+html body .categorias-home .categorias-grid .categoria-card .cat-name{
+  font-family:var(--op-serif) !important;font-size:24px !important;
+  color:var(--op-ink) !important;font-weight:700 !important;
+  margin:18px 0 4px !important;letter-spacing:-.01em !important;
+  text-transform:none !important;position:static !important;
+}
+html body .categorias-home .categorias-grid .categoria-card .cat-count{
+  color:var(--op-ink-2) !important;font-size:13.5px !important;
+  font-family:var(--font-sans-glass) !important;
+  display:flex !important;align-items:center !important;gap:6px !important;
+  position:static !important;font-weight:400 !important;
+}
+html body .categorias-home .categorias-grid .categoria-card .cat-count::before{
+  content:"" !important;width:4px;height:4px;border-radius:50%;flex-shrink:0;
+  background:var(--coral);box-shadow:0 0 6px var(--coral);
+}
+html body .categorias-home .categorias-grid .categoria-card:nth-child(4n+2) .cat-count::before{background:var(--gold);box-shadow:0 0 6px var(--gold)}
+html body .categorias-home .categorias-grid .categoria-card:nth-child(4n+3) .cat-count::before{background:var(--azure);box-shadow:0 0 6px var(--azure)}
+html body .categorias-home .categorias-grid .categoria-card:nth-child(4n+4) .cat-count::before{background:var(--violet);box-shadow:0 0 6px var(--violet)}
+
+/* Tamaño de nombre/contador uniforme: anula las reglas por nth-child del
+   diseño "bento" anterior (que daban 25px a la 1ª y 12.5px de la 8ª en
+   adelante). Se repite el nth-child para igualar especificidad. */
+html body .categorias-home .categorias-grid .categoria-card:nth-child(n) .cat-name{
+  font-size:24px !important;
+  /* Los nombres vienen en MAYÚSCULAS desde los datos; el preview los usa en
+     capitalización normal, así que se baja y se sube la inicial. */
+  text-transform:lowercase !important;
+}
+html body .categorias-home .categorias-grid .categoria-card:nth-child(n) .cat-name::first-letter{
+  text-transform:uppercase !important;
+}
+html body .categorias-home .categorias-grid .categoria-card:nth-child(n) .cat-count{font-size:13.5px !important}
+
+/* Badge "Popular" dorado, arriba a la derecha */
+html body .categorias-home .categorias-grid .categoria-card.cat-popular .cat-popular-badge,
+html body .categorias-home .categorias-grid .categoria-card .cat-popular-badge,
+html body .categorias-home .categorias-grid .categoria-card .cat-badge{
+  width:auto !important;max-width:none !important;
+  gap:0 !important;
+  position:absolute !important;top:16px !important;right:16px !important;left:auto !important;
+  background:linear-gradient(135deg,var(--gold) 0%,var(--gold-light) 100%) !important;
+  color:#1A120B !important;font-size:10px !important;font-weight:800 !important;
+  font-family:var(--font-sans-glass) !important;
+  letter-spacing:.1em !important;padding:5px 9px !important;border-radius:6px !important;
+  text-transform:uppercase !important;border:0 !important;
+  box-shadow:0 4px 12px rgba(242,182,50,.4) !important;
+}
+@media (max-width:1024px){html body .categorias-home .categorias-grid{grid-template-columns:repeat(3,1fr) !important}}
+@media (max-width:768px){
+  html body .categorias-home .categorias-grid{grid-template-columns:repeat(2,1fr) !important;gap:14px !important}
+  html body .categorias-home .categorias-grid .categoria-card,
+  html body .categorias-home .categorias-grid .categoria-card:nth-child(n){min-height:170px !important;padding:22px 18px !important}
+  html body .categorias-home .categorias-grid .categoria-card .cat-name{font-size:20px !important}
+}
+
+/* ================================================================
+   BENEFICIOS
+   ================================================================ */
+html body .beneficios-grid{
+  display:grid !important;grid-template-columns:repeat(3,1fr) !important;gap:20px !important;
+}
+html body .beneficio-card{
+  position:relative !important;
+  background:linear-gradient(160deg,rgba(255,255,255,.05) 0%,rgba(255,255,255,.01) 100%) !important;
+  backdrop-filter:blur(20px) saturate(150%) !important;-webkit-backdrop-filter:blur(20px) saturate(150%) !important;
+  border:1px solid var(--glass-border) !important;
+  border-radius:var(--op-r-xl) !important;
+  padding:36px 28px !important;text-align:center !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 14px 40px rgba(0,0,0,.3) !important;
+  overflow:hidden !important;transition:all .3s var(--op-ease) !important;
+}
+html body .beneficio-card:hover{transform:translateY(-4px) !important;border-color:rgba(255,106,31,.3) !important}
+html body .beneficio-card::before{
+  content:"" !important;position:absolute !important;top:0 !important;left:0 !important;right:0 !important;
+  height:1px !important;width:auto !important;
+  background:linear-gradient(90deg,transparent,var(--coral),transparent) !important;opacity:.5 !important;
+}
+html body .beneficio-card .icon{
+  width:68px !important;height:68px !important;border-radius:18px !important;margin:0 auto 20px !important;
+  background:linear-gradient(135deg,rgba(255,106,31,.2),rgba(255,106,31,.05)) !important;
+  border:1px solid rgba(255,106,31,.3) !important;color:var(--coral-2) !important;
+  display:grid !important;place-items:center !important;font-size:30px !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.1),0 10px 30px rgba(255,106,31,.2) !important;
+}
+html body .beneficio-card h3{
+  font-family:var(--op-serif) !important;font-size:22px !important;
+  margin:0 0 10px !important;color:var(--op-ink) !important;
+  font-weight:700 !important;letter-spacing:-.01em !important;
+}
+html body .beneficio-card p{
+  color:var(--op-ink-2) !important;font-size:14.5px !important;margin:0 !important;
+  line-height:1.6 !important;font-family:var(--font-sans-glass) !important;
+}
+@media (max-width:768px){html body .beneficios-grid{grid-template-columns:1fr !important}}
+
+/* ================================================================
+   PASOS (cómo comprar)
+   ================================================================ */
+html body .tm-steps{
+  display:grid !important;grid-template-columns:repeat(3,1fr) !important;
+  gap:20px !important;position:relative !important;
+}
+html body .tm-steps::before{
+  content:"";position:absolute;top:54px;left:16.66%;right:16.66%;height:1px;
+  background:repeating-linear-gradient(90deg,var(--coral) 0 6px,transparent 6px 12px);
+  opacity:.4;z-index:0;
+}
+html body .tm-step{
+  position:relative;z-index:1;
+  background:linear-gradient(160deg,rgba(255,255,255,.05) 0%,rgba(255,255,255,.01) 100%) !important;
+  backdrop-filter:blur(20px) saturate(150%) !important;-webkit-backdrop-filter:blur(20px) saturate(150%) !important;
+  border:1px solid var(--glass-border) !important;
+  border-radius:var(--op-r-xl) !important;
+  padding:30px 26px !important;text-align:center !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 14px 40px rgba(0,0,0,.3) !important;
+}
+html body .tm-step-num{
+  width:60px !important;height:60px !important;border-radius:50% !important;margin:0 auto 18px !important;
+  background:linear-gradient(135deg,#FF8A47 0%,#FF6A1F 50%,#D24E0F 100%) !important;
+  color:#fff !important;display:grid !important;place-items:center !important;
+  font-family:var(--op-serif) !important;font-size:26px !important;font-weight:800 !important;font-style:italic !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.3),0 10px 28px rgba(255,106,31,.5) !important;
+  position:relative !important;
+}
+html body .tm-step-num::after{
+  content:"";position:absolute;inset:-6px;border-radius:50%;
+  border:1px dashed rgba(255,106,31,.3);animation:opSpin 20s linear infinite;
+}
+html body .tm-step-num.green{
+  background:linear-gradient(135deg,#2DE56F 0%,#25D366 50%,#1FAD53 100%) !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.3),0 10px 28px rgba(37,211,102,.5) !important;
+}
+html body .tm-step-num.green::after{border-color:rgba(37,211,102,.35)}
+@keyframes opSpin{to{transform:rotate(360deg)}}
+html body .tm-step h3{
+  font-family:var(--op-serif) !important;font-size:22px !important;
+  margin:0 0 8px !important;color:var(--op-ink) !important;font-weight:700 !important;
+}
+html body .tm-step p{
+  color:var(--op-ink-2) !important;font-size:14.5px !important;margin:0 !important;
+  font-family:var(--font-sans-glass) !important;
+}
+html body .tm-step-hl{color:#3DD675 !important;font-weight:600 !important}
+html body .tm-steps-foot{color:var(--op-muted) !important;font-family:var(--font-sans-glass) !important}
+@media (max-width:768px){
+  html body .tm-steps{grid-template-columns:1fr !important;gap:14px !important}
+  html body .tm-steps::before{display:none}
+}
+
+/* ================================================================
+   RESEÑAS
+   ================================================================ */
+html body .testimonios-grid{
+  display:grid !important;grid-template-columns:repeat(3,1fr) !important;gap:20px !important;
+}
+html body .testimonio-card{
+  position:relative !important;
+  background:linear-gradient(160deg,rgba(255,255,255,.05) 0%,rgba(255,255,255,.01) 100%) !important;
+  backdrop-filter:blur(20px) saturate(150%) !important;-webkit-backdrop-filter:blur(20px) saturate(150%) !important;
+  border:1px solid var(--glass-border) !important;
+  border-radius:var(--op-r-lg) !important;
+  padding:26px !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 14px 40px rgba(0,0,0,.3) !important;
+  transition:all .3s var(--op-ease) !important;
+}
+html body .testimonio-card:hover{transform:translateY(-3px) !important;border-color:rgba(242,182,50,.25) !important}
+html body .testimonio-card::before{
+  content:"\201C" !important;position:absolute !important;top:6px !important;right:18px !important;
+  font-family:var(--op-serif) !important;font-size:80px !important;line-height:1 !important;
+  color:rgba(242,182,50,.15) !important;font-weight:700 !important;
+  background:none !important;width:auto !important;height:auto !important;
+}
+html body .testimonio-card .resena-top{
+  display:flex !important;align-items:center !important;gap:12px !important;
+  margin-bottom:10px !important;position:relative !important;flex-wrap:wrap !important;
+}
+/* Estrellas en su propia línea, debajo del nombre (como el preview) */
+html body .testimonio-card .resena-estrellas{
+  flex:0 0 100% !important;order:3 !important;margin-top:4px !important;
+}
+html body .testimonio-card .resena-meta{flex:1 1 auto !important;min-width:0 !important}
+html body .testimonio-card .resena-avatar{
+  width:48px !important;height:48px !important;flex:0 0 48px !important;border-radius:50% !important;
+  display:grid !important;place-items:center !important;
+  font-family:var(--font-sans-glass) !important;
+  font-weight:700 !important;font-size:17px !important;color:#fff !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.3),0 4px 12px rgba(0,0,0,.3) !important;
+  border:2px solid rgba(255,255,255,.1) !important;
+}
+html body .testimonio-card .resena-autor{
+  display:block !important;color:var(--op-ink) !important;
+  font-family:var(--font-sans-glass) !important;
+  font-size:15px !important;font-weight:600 !important;
+}
+html body .testimonio-card .resena-fecha{
+  color:var(--op-muted) !important;font-size:12px !important;
+  font-family:var(--font-sans-glass) !important;
+}
+html body .testimonio-card .resena-estrellas,
+html body .testimonio-card .stars{
+  color:var(--gold) !important;font-size:16px !important;letter-spacing:2px !important;
+  filter:drop-shadow(0 0 6px rgba(242,182,50,.4)) !important;
+}
+html body .testimonio-card .resena-texto,
+html body .testimonio-card p:not(.autor){
+  color:var(--op-ink-2) !important;font-size:14.5px !important;line-height:1.65 !important;
+  margin:0 0 16px !important;position:relative !important;
+  font-family:var(--font-sans-glass) !important;
+}
+html body .testimonio-card .resena-verificada{
+  display:inline-flex !important;align-items:center !important;gap:6px !important;
+  background:rgba(255,106,31,.10) !important;color:var(--coral-2) !important;
+  font-family:var(--font-sans-glass) !important;
+  font-size:12px !important;font-weight:600 !important;
+  padding:6px 12px !important;border-radius:8px !important;
+  border:1px solid rgba(255,106,31,.2) !important;margin-top:0 !important;
+}
+@media (max-width:768px){html body .testimonios-grid{grid-template-columns:1fr !important}}
+
+/* ================================================================
+   CTA CANALES — tarjeta de vidrio grande
+   ================================================================ */
+html body .cta-final{background:none !important;border:0 !important}
+html body .cta-final .container{
+  position:relative;
+  background:
+    radial-gradient(ellipse at 50% 0%,rgba(255,106,31,.20),transparent 60%),
+    linear-gradient(160deg,rgba(255,255,255,.07) 0%,rgba(255,255,255,.02) 100%);
+  backdrop-filter:blur(28px) saturate(160%);-webkit-backdrop-filter:blur(28px) saturate(160%);
+  border:1px solid var(--glass-border-strong);
+  border-radius:var(--op-r-xl);
+  padding:60px 48px !important;text-align:center;
+  max-width:880px;margin:0 auto;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 30px 80px rgba(0,0,0,.5);
+  overflow:hidden;
+}
+html body .cta-final .container::before{
+  content:"";position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,var(--gold),var(--coral),transparent);
+}
+html body .cta-final p{
+  color:var(--op-ink-2) !important;margin:0 0 32px !important;
+  font-size:17px !important;position:relative;
+  font-family:var(--font-sans-glass) !important;
+}
+html body .tm-channels-btns{
+  flex-direction:row !important;gap:14px !important;flex-wrap:wrap !important;
+  justify-content:center !important;max-width:none !important;position:relative;
+}
+html body .tm-channels-btns .btn{width:auto !important;flex:0 1 auto !important}
+/* Telegram en coral (como el mockup), WhatsApp en verde */
+html body .cta-final .btn-large.tm-btn-tg{
+  background:linear-gradient(135deg,#FF8A47 0%,#FF6A1F 50%,#D24E0F 100%) !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.25),0 12px 30px rgba(255,106,31,.4) !important;
+}
+html body .cta-final .btn-large.tm-btn-tg:hover{
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.3),0 18px 40px rgba(255,106,31,.5) !important;
+}
+@media (max-width:768px){
+  html body .cta-final .container{padding:40px 22px !important}
+  html body .tm-channels-btns{flex-direction:column !important}
+  html body .tm-channels-btns .btn{width:100% !important}
+}
+
+/* ================================================================
+   FOOTER — centrado, marca serif, sociales en cuadrados de vidrio
+   ================================================================ */
+html body .footer-premium{
+  border-top:1px solid var(--glass-border) !important;
+  padding:64px 0 32px !important;margin-top:80px !important;
+  background:linear-gradient(180deg,transparent,rgba(0,0,0,.3)) !important;
+  backdrop-filter:blur(8px) !important;-webkit-backdrop-filter:blur(8px) !important;
+}
+html body .footer-premium .footer-premium-grid{display:none !important}
+html body .footer-premium .footer-mobile-brand{
+  display:block !important;text-align:center !important;margin-bottom:32px !important;
+}
+html body .footer-premium .footer-mobile-brand h3{
+  font-family:var(--op-serif) !important;font-size:32px !important;font-weight:800 !important;
+  letter-spacing:-.02em !important;margin:0 0 8px !important;color:var(--op-ink) !important;
+}
+html body .footer-premium .footer-mobile-brand h3 em{
+  background:linear-gradient(135deg,#FFB585,#FF6A1F) !important;
+  -webkit-background-clip:text !important;background-clip:text !important;
+  -webkit-text-fill-color:transparent !important;font-style:italic !important;
+}
+html body .footer-premium .footer-mobile-brand p{
+  color:var(--op-ink-2) !important;font-size:15px !important;margin:0 0 24px !important;
+  letter-spacing:.02em !important;font-family:var(--font-sans-glass) !important;
+}
+html body .footer-premium .footer-social{
+  display:flex !important;justify-content:center !important;gap:12px !important;margin:0 0 32px !important;
+}
+html body .footer-premium .footer-social a{
+  width:44px !important;height:44px !important;border-radius:14px !important;
+  background:var(--glass) !important;border:1px solid var(--glass-border) !important;
+  display:grid !important;place-items:center !important;color:var(--op-ink-2) !important;
+  backdrop-filter:blur(12px) !important;-webkit-backdrop-filter:blur(12px) !important;
+  transition:all .25s var(--op-ease) !important;font-size:18px !important;
+}
+html body .footer-premium .footer-social a:hover{
+  background:linear-gradient(135deg,#FF6A1F,#D24E0F) !important;color:#fff !important;
+  border-color:transparent !important;transform:translateY(-3px) !important;
+  box-shadow:0 10px 24px rgba(255,106,31,.4) !important;
+}
+html body .footer-premium .footer-mobile-links{
+  display:flex !important;justify-content:center !important;flex-wrap:wrap !important;
+  gap:8px 18px !important;margin:0 auto 24px !important;max-width:800px !important;
+}
+html body .footer-premium .footer-mobile-links a,
+html body .footer-premium nav[aria-label="Categorías"] a{
+  color:var(--op-ink-2) !important;font-size:14px !important;
+  padding:6px 12px !important;border-radius:8px !important;
+  font-family:var(--font-sans-glass) !important;
+  transition:all .2s var(--op-ease) !important;text-decoration:none !important;
+}
+html body .footer-premium .footer-mobile-links a:hover,
+html body .footer-premium nav[aria-label="Categorías"] a:hover{
+  background:var(--glass) !important;color:var(--coral-2) !important;
+}
+html body .footer-premium nav[aria-label="Categorías"]{
+  border-top:0 !important;padding:0 0 24px !important;margin:0 !important;
+  display:flex !important;justify-content:center !important;flex-wrap:wrap !important;gap:8px 18px !important;
+  max-width:800px;margin:0 auto !important;
+}
+html body .footer-premium .footer-bottom{
+  text-align:center !important;border-top:1px solid var(--glass-border) !important;
+  padding-top:24px !important;
+  display:flex !important;flex-direction:column !important;
+  align-items:center !important;gap:4px !important;
+}
+html body .footer-premium .footer-bottom p{
+  color:var(--op-muted) !important;font-size:13px !important;margin:0 !important;
+  letter-spacing:.02em !important;font-family:var(--font-sans-glass) !important;
+}
+
+/* ── Modo claro: fondos sólidos donde el vidrio no contrasta ── */
+html body.light-mode .nd-stat,
+html body.light-mode .beneficio-card,
+html body.light-mode .tm-step,
+html body.light-mode .testimonio-card{
+  background:rgba(255,255,255,.75) !important;
+  border-color:rgba(0,0,0,.08) !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.6),0 10px 30px rgba(0,0,0,.06) !important;
+}
+html body.light-mode .categorias-home .categorias-grid .categoria-card,
+html body.light-mode .categorias-home .categorias-grid .categoria-card:nth-child(n){
+  background:linear-gradient(155deg,rgba(255,106,31,.10) 0%,rgba(255,255,255,.85) 60%) !important;
+  border-color:rgba(255,106,31,.16) !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.8),0 10px 30px rgba(0,0,0,.06) !important;
+}
+html body.light-mode .categorias-home .categorias-grid .categoria-card:nth-child(4n+2){
+  background:linear-gradient(155deg,rgba(242,182,50,.14) 0%,rgba(255,255,255,.85) 60%) !important;
+  border-color:rgba(242,182,50,.22) !important;
+}
+html body.light-mode .categorias-home .categorias-grid .categoria-card:nth-child(4n+3){
+  background:linear-gradient(155deg,rgba(111,168,255,.14) 0%,rgba(255,255,255,.85) 60%) !important;
+  border-color:rgba(111,168,255,.22) !important;
+}
+html body.light-mode .categorias-home .categorias-grid .categoria-card:nth-child(4n+4){
+  background:linear-gradient(155deg,rgba(184,146,255,.14) 0%,rgba(255,255,255,.85) 60%) !important;
+  border-color:rgba(184,146,255,.22) !important;
+}
+html body.light-mode .categorias-home .categorias-grid .categoria-card .cat-icon{
+  background:rgba(255,255,255,.9) !important;border-color:rgba(0,0,0,.06) !important;
+}
+html body.light-mode .cta-final .container{
+  background:
+    radial-gradient(ellipse at 50% 0%,rgba(255,106,31,.12),transparent 60%),
+    rgba(255,255,255,.8);
+  border-color:rgba(0,0,0,.08);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.8),0 20px 60px rgba(0,0,0,.08);
+}
+html body.light-mode .footer-premium{
+  background:linear-gradient(180deg,transparent,rgba(0,0,0,.04)) !important;
+  border-top-color:rgba(0,0,0,.08) !important;
+}
+html body.light-mode .footer-premium .footer-social a{
+  background:rgba(0,0,0,.03) !important;border-color:rgba(0,0,0,.08) !important;
+}
+
+@media (prefers-reduced-motion:reduce){
+  html body .op-chip .op-pulse,
+  html body .tm-step-num::after{animation:none !important}
+}

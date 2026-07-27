@@ -51,3 +51,31 @@
   --ease-spring:cubic-bezier(.34,1.56,.64,1);
   --stagger-step:60ms;
 }
+
+/* ================================================================
+   Paleta "Oficial Plus" — reemplaza los tokens de color de styles.css
+   a nivel de sitio completo (gana por orden de carga: este archivo se
+   concatena después de styles.css en scripts/build_css.py). Pedido
+   explícito: adoptar los hex exactos del mockup, no solo en el hero.
+   ================================================================ */
+:root{
+  --coral:#FF6A1F;
+  --coral-deep:#D24E0F;
+  --coral-2:#FF8A47;
+  --gold:#F2B632;
+  --gold-light:#FFD56B;
+  --azure:#6FA8FF;
+  --violet:#B892FF;
+
+  /* ── Glass (header, hero, categorías, testimonios, footer) ── */
+  --glass:rgba(255,255,255,.04);
+  --glass-2:rgba(255,255,255,.07);
+  --glass-3:rgba(255,255,255,.10);
+  --glass-border:rgba(255,255,255,.08);
+  --glass-border-strong:rgba(255,255,255,.14);
+
+  /* ── Tipografía "glass" (solo secciones rediseñadas — ver CLAUDE.md /
+     conversación: el resto del sitio sigue en --font-body DM Sans) ── */
+  --font-sans-glass:'Inter',system-ui,-apple-system,sans-serif;
+  --font-mono-glass:'JetBrains Mono',ui-monospace,monospace;
+}

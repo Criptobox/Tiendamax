@@ -242,11 +242,13 @@
     <!-- Fuentes locales (evita requests externos a Google Fonts) -->
     <!-- Preload de la fuente del cuerpo (Latin): empieza a bajar sin esperar a parsear fonts.css -->
     <link rel="preload" href="fonts/dmsans-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="preload" href="css/fonts.css?v=67235440" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="css/fonts.css?v=67235440"></noscript>
+    <!-- Inter (--font-sans-glass) se usa en el header/hero rediseñados, visibles sin scroll -->
+    <link rel="preload" href="fonts/inter-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="css/fonts.css?v=8b616cbe" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="css/fonts.css?v=8b616cbe"></noscript>
 
     <!-- Preload del bundle JS del núcleo (generado por scripts/build_js_bundle.py) -->
-    <link rel="preload" href="js/tm-bundle.js?v=295e1b22" as="script">
+    <link rel="preload" href="js/tm-bundle.js?v=a91c74dc" as="script">
 
     <!-- Preload del catálogo: la foto hero (fetchpriority=high) no puede pedirse
          hasta que este JSON responda y arme el <img>; sin este preload, el
@@ -276,6 +278,28 @@
 <body class="tm-no-oferta-banner">
 <div class="nd-mesh" aria-hidden="true"><div class="nd-orb nd-o1"></div><div class="nd-orb nd-o2"></div><div class="nd-orb nd-o3"></div><div class="nd-orb nd-o4"></div></div>
 <a class="skip-link" href="#vistaInicio">Saltar al contenido</a>
+
+    <!-- Barra superior: confianza + tasa real + horario (estilo "Oficial Plus") -->
+    <div class="tm-topbar" id="tmTopbar">
+        <div class="tm-topbar-inner">
+            <span class="tm-topbar-pill"><span class="tm-topbar-dot"></span>En línea · Te atendemos en menos de 5 min</span>
+            <span class="tm-topbar-right">
+                <span class="tm-topbar-pill"><span class="tm-topbar-dot gold"></span>Tasa: 1 USD = <span id="tmTopbarTasaVal">…</span> MN</span>
+                <span class="tm-topbar-pill">L–S · 9:00–20:00 (UTC-5)</span>
+            </span>
+        </div>
+    </div>
+    <script>
+    (function(){
+        try {
+            var base = parseFloat(localStorage.getItem('tasaMN') || '0');
+            var _m = parseFloat(localStorage.getItem('margenMN')); if (isNaN(_m)) _m = 10;
+            var tasa = base > 0 ? base + _m : 0;
+            var el = document.getElementById('tmTopbarTasaVal');
+            if (tasa > 0 && el) el.textContent = tasa;
+        } catch(e) {}
+    })();
+    </script>
 
     <!-- Banner de Urgencia -->
     <div id="urgenciaBanner" class="urgencia-banner" style="display:none;">
@@ -470,14 +494,15 @@
     <main>
     <div id="vistaInicio">
 
-        <!-- Hero rediseñado — propuesta de valor con 3D card stack -->
+        <!-- Hero "Oficial Plus" — centrado, anillos de fondo, titular serif -->
         <section class="hero nd-hero">
             <div class="nd-wrap">
-                <div class="nd-hero-grid">
+                <div class="op-hero-rings" aria-hidden="true"></div>
+                <div class="op-hero-inner">
                     <div class="nd-hero-left">
-                        <div class="nd-eyebrow"><span class="nd-edot"></span>Catálogo actualizado · Pedido por WhatsApp</div>
-                        <h1 class="nd-h1">Todo lo que <br>necesitas, <span class="nd-grad">a un mensaje</span> <br><span class="nd-grad">de distancia</span></h1>
-                        <p class="nd-sub">Celulares, energía, red, motos y más. Precios increíbles, envío rápido y atención personalizada.</p>
+                        <span class="op-chip"><span class="op-pulse"></span><span class="op-chip-txt">Catálogo actualizado · <span id="opChipCount">116</span>&nbsp;productos<span class="op-chip-extra"> · Pedido por WhatsApp</span></span></span>
+                        <h1 class="op-h1">Todo lo que necesitas,<br><span class="op-underline">a un</span> <span class="op-accent">mensaje</span> <span class="op-underline">de distancia</span></h1>
+                        <p class="op-lead">Celulares, energía, red, motos y más. Precios increíbles, atención personalizada y pago al recibir.</p>
                         <!-- Buscador + selector de moneda, integrados en el hero -->
                         <div class="nd-hero-search">
                             <div class="hsb-search">
@@ -561,41 +586,9 @@
                             <div class="nd-stat"><strong>Directa</strong><span>Por WhatsApp</span></div>
                         </div>
                     </div>
-                    <div class="nd-hero-right">
-                        <div class="nd-stack-wrap">
-                            <!-- Tarjeta 3D = galería rotativa de productos reales (la puebla renderHeroGaleria()) -->
-                            <div class="nd-card3d" id="ndHeroCard3d" role="button" tabindex="0" aria-label="Producto destacado">
-                                <div class="nd-cl nd-cl3"></div>
-                                <div class="nd-cl nd-cl2"></div>
-                                <div class="nd-cl nd-cl1">
-                                    <!-- Imagen full-cover estilo story WA -->
-                                    <div class="nd-card-img nd-card-story" id="ndHeroImg">📱</div>
-                                    <!-- Overlay con datos superpuestos -->
-                                    <div class="nd-story-overlay" id="ndHeroBody">
-                                        <span class="nd-wa-cat" id="ndHeroCat">Celulares</span>
-                                        <div class="nd-story-name" id="ndHeroTitle">Smartphone Android 5G</div>
-                                        <div class="nd-story-rate" id="ndHeroRate">🔥 Top Ventas</div>
-                                        <div class="nd-story-bottom">
-                                            <div class="nd-story-price">
-                                                <span id="ndHeroPrice">$180</span>
-                                                <span class="nd-story-cur" id="ndHeroUsd">USD</span>
-                                            </div>
-                                            <button type="button" class="nd-btn-pedir" id="ndHeroBtn">💬 Pedir</button>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="nd-hero-dots" id="ndHeroDots" aria-hidden="true"></div>
-                            </div>
-                            <div class="nd-fbadge nd-fb1"><span class="nd-bi">🛵</span><div><strong>Mensajería</strong><span class="nd-bs">A domicilio</span></div></div>
-                            <div class="nd-fbadge nd-fb2"><span class="nd-bi">🤝</span><div><strong>Atención directa</strong><span class="nd-bs">Habla con el dueño</span></div></div>
-                            <div class="nd-fbadge nd-fb3"><span class="nd-bi">✅</span><div><strong>Pagas al recibir</strong><span class="nd-bs">Sin adelantar dinero</span></div></div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </section>
-
-        <div class="hero-divider"></div>
 
         <!-- Sección Categorías -->
         <section id="categorias-home" class="categorias-home">
@@ -718,28 +711,28 @@
 
         <!-- Beneficios -->
         <!-- Cómo comprar: 3 pasos visibles para generar confianza -->
-        <section id="como-comprar" style="padding:42px 0 8px;">
+        <section id="como-comprar" class="tm-steps-section">
             <div class="container">
                 <p class="section-eyebrow">Comprar es fácil y seguro</p>
-                <h2 style="text-align:center;">¿Cómo comprar en TiendaMax?</h2>
-                <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-top:26px;">
-                    <div style="background:rgba(255,255,255,.03);border:1px solid rgba(201,169,110,.18);border-radius:16px;padding:22px 18px;text-align:center;">
-                        <div style="width:48px;height:48px;margin:0 auto 12px;border-radius:50%;background:linear-gradient(135deg,#FF6B35,#C9A96E);display:grid;place-items:center;font-size:22px;font-weight:800;color:#1a1006;">1</div>
-                        <h3 style="font-size:16px;margin:0 0 6px;color:#f2ece3;">Elige y pide 🛒</h3>
-                        <p style="font-size:13px;color:#9b9189;line-height:1.5;margin:0;">Toca <strong style="color:#25D366;">Pedir</strong> en el producto. Se abre WhatsApp con tu pedido listo.</p>
+                <h2 class="tm-steps-title">¿Cómo comprar en <em>TiendaMax</em>?</h2>
+                <div class="tm-steps">
+                    <div class="tm-step">
+                        <div class="tm-step-num">1</div>
+                        <h3>Elige y pide 🛒</h3>
+                        <p>Toca <strong class="tm-step-hl">Pedir</strong> en el producto. Se abre WhatsApp con tu pedido listo.</p>
                     </div>
-                    <div style="background:rgba(255,255,255,.03);border:1px solid rgba(201,169,110,.18);border-radius:16px;padding:22px 18px;text-align:center;">
-                        <div style="width:48px;height:48px;margin:0 auto 12px;border-radius:50%;background:linear-gradient(135deg,#FF6B35,#C9A96E);display:grid;place-items:center;font-size:22px;font-weight:800;color:#1a1006;">2</div>
-                        <h3 style="font-size:16px;margin:0 0 6px;color:#f2ece3;">Coordinamos 🛵</h3>
-                        <p style="font-size:13px;color:#9b9189;line-height:1.5;margin:0;">Confirmamos disponibilidad, el precio del día y la entrega a domicilio.</p>
+                    <div class="tm-step">
+                        <div class="tm-step-num">2</div>
+                        <h3>Coordinamos 🛵</h3>
+                        <p>Confirmamos disponibilidad, el precio del día y la entrega a domicilio.</p>
                     </div>
-                    <div style="background:rgba(37,211,102,.06);border:1px solid rgba(37,211,102,.3);border-radius:16px;padding:22px 18px;text-align:center;">
-                        <div style="width:48px;height:48px;margin:0 auto 12px;border-radius:50%;background:#25D366;display:grid;place-items:center;font-size:22px;font-weight:800;color:#063;">3</div>
-                        <h3 style="font-size:16px;margin:0 0 6px;color:#f2ece3;">Pagas al recibir ✅</h3>
-                        <p style="font-size:13px;color:#9b9189;line-height:1.5;margin:0;"><strong style="color:#25D366;">Sin adelantar dinero.</strong> Pagas en USD o MN cuando el producto llega a tus manos.</p>
+                    <div class="tm-step">
+                        <div class="tm-step-num green">3</div>
+                        <h3>Pagas al recibir ✅</h3>
+                        <p><strong class="tm-step-hl">Sin adelantar dinero.</strong> Pagas en USD o MN cuando el producto llega a tus manos.</p>
                     </div>
                 </div>
-                <p style="text-align:center;font-size:13px;color:#C9A96E;margin-top:18px;">🛡️ Con garantía · Atención personalizada por WhatsApp</p>
+                <p class="tm-steps-foot">🛡️ Con garantía · Atención personalizada por WhatsApp</p>
             </div>
         </section>
 
@@ -816,11 +809,11 @@
         <!-- CTA Final -->
         <section class="cta-final" id="contacto">
             <div class="container">
-                <h2>Únete a nuestros<br>canales.</h2>
+                <h2 class="tm-channels-title">Únete a <em>nuestros canales.</em></h2>
                 <p>Recibe productos nuevos, ofertas del día y atención directa en la app de tu preferencia.</p>
-                <div style="display:flex;flex-direction:column;gap:16px;align-items:center;max-width:420px;margin:0 auto">
-                <a href="https://t.me/TiendaMaxWeb" target="_blank" rel="noopener noreferrer" class="btn btn-large" style="background:linear-gradient(135deg,#2AABEE,#229ED9)!important;color:#fff!important;display:flex;align-items:center;justify-content:center;gap:10px;text-decoration:none;width:100%;white-space:nowrap;padding:16px 24px"><span style="width:26px;height:26px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg width="14" height="14" viewBox="0 0 24 24" fill="#2AABEE"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg></span>Unirse al Canal Telegram</a>
-                <a href="https://chat.whatsapp.com/BnTdAU0Q3p25BOMTYuEpBN" target="_blank" rel="noopener noreferrer" class="btn btn-large" style="background:linear-gradient(135deg,#25D366,#128C7E)!important;color:#fff!important;display:flex;align-items:center;justify-content:center;gap:10px;text-decoration:none;width:100%;white-space:nowrap;padding:16px 24px"><span style="width:26px;height:26px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg width="14" height="14" viewBox="0 0 24 24" fill="#25D366"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.39 1.26 4.81L2 22l5.41-1.42a9.87 9.87 0 0 0 4.63 1.18h.01c5.46 0 9.91-4.45 9.91-9.91C21.96 6.45 17.5 2 12.04 2zm5.87 14.19c-.25.7-1.25 1.28-1.99 1.44-.53.11-1.22.2-3.55-.76-2.98-1.24-4.9-4.27-5.05-4.47-.15-.2-1.21-1.61-1.21-3.07 0-1.46.77-2.18 1.04-2.48.27-.3.6-.37.8-.37.2 0 .4 0 .58.01.19.01.44-.07.68.52.25.6.86 2.07.93 2.22.07.15.12.33.02.53-.1.2-.15.33-.3.5-.15.18-.31.4-.45.54-.15.15-.3.31-.13.61.17.3.76 1.25 1.63 2.02 1.12 1 2.06 1.31 2.36 1.46.3.15.48.13.65-.08.18-.2.75-.87.95-1.17.2-.3.4-.25.68-.15.28.1 1.77.83 2.07.98.3.15.5.23.58.35.07.13.07.75-.18 1.45z"/></svg></span>Unirse al Grupo de WhatsApp</a>
+                <div class="tm-channels-btns">
+                <a href="https://t.me/TiendaMaxWeb" target="_blank" rel="noopener noreferrer" class="btn btn-large tm-btn-tg"><span class="tm-channel-ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="#2AABEE"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg></span>Unirse al Canal Telegram</a>
+                <a href="https://chat.whatsapp.com/BnTdAU0Q3p25BOMTYuEpBN" target="_blank" rel="noopener noreferrer" class="btn btn-large tm-btn-wa"><span class="tm-channel-ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="#25D366"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.39 1.26 4.81L2 22l5.41-1.42a9.87 9.87 0 0 0 4.63 1.18h.01c5.46 0 9.91-4.45 9.91-9.91C21.96 6.45 17.5 2 12.04 2zm5.87 14.19c-.25.7-1.25 1.28-1.99 1.44-.53.11-1.22.2-3.55-.76-2.98-1.24-4.9-4.27-5.05-4.47-.15-.2-1.21-1.61-1.21-3.07 0-1.46.77-2.18 1.04-2.48.27-.3.6-.37.8-.37.2 0 .4 0 .58.01.19.01.44-.07.68.52.25.6.86 2.07.93 2.22.07.15.12.33.02.53-.1.2-.15.33-.3.5-.15.18-.31.4-.45.54-.15.15-.3.31-.13.61.17.3.76 1.25 1.63 2.02 1.12 1 2.06 1.31 2.36 1.46.3.15.48.13.65-.08.18-.2.75-.87.95-1.17.2-.3.4-.25.68-.15.28.1 1.77.83 2.07.98.3.15.5.23.58.35.07.13.07.75-.18 1.45z"/></svg></span>Unirse al Grupo de WhatsApp</a>
                 </div>
             </div>
         </section>
@@ -1508,7 +1501,7 @@
     <!-- ===== TiendaMax modularizado (reemplaza script.js) ===== -->
     <!-- Bundle único (config→data→state→admin→product→catalog→init→ui→toast→iife→patches),
          generado por scripts/build_js_bundle.py a partir de js/src/*.src.js -->
-    <script src="js/tm-bundle.js?v=295e1b22" defer></script>
+    <script src="js/tm-bundle.js?v=a91c74dc" defer></script>
 
     <!-- Agente de chat: separado del bundle (62 KB min) porque no hace falta
          para el primer render del catálogo. Carga con su propio <script defer>
