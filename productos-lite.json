@@ -2504,7 +2504,7 @@
     "precioActual": 85,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 11,
+    "stock": 0,
     "comision": 5,
     "comisionMoneda": "USD",
     "categoria": "ENERGIA",
@@ -2533,7 +2533,7 @@
     "precioActual": 145,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 13,
+    "stock": 0,
     "comision": 5,
     "comisionMoneda": "USD",
     "categoria": "ENERGIA",
@@ -2753,14 +2753,14 @@
   {
     "id": 1784570100968,
     "nombre": "​🔥 Soldadora Inverter MMA-300",
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784570099220.webp",
+    "imagen": "https://tiendamax.org/imagenes/img_1784570099220.webp",
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784570099220.webp"
+      "https://tiendamax.org/imagenes/img_1784570099220.webp"
     ],
     "precioActual": 100,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 2,
+    "stock": 0,
     "comision": 5,
     "comisionMoneda": "USD",
     "categoria": "UTILES",
