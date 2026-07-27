@@ -397,11 +397,36 @@ function _tmCatVerMas(grid, extras) {
     cont.appendChild(wrap);
 }
 
+// Calificación real del hero (fila de confianza): promedio de TODAS las reseñas
+// del catálogo (resenas-cache.json), no un número inventado. Se carga una sola vez.
+let _tmRatingHeroCargado = false;
+async function _tmCargarRatingHero() {
+    if (_tmRatingHeroCargado) return;
+    _tmRatingHeroCargado = true;
+    const el = document.getElementById('ndStatRating');
+    if (!el) return;
+    try {
+        const res = await fetch('resenas-cache.json?v=' + Date.now(), { cache: 'no-store' });
+        if (!res.ok) return;
+        const data = await res.json();
+        const porProducto = (data && data.por_producto) || {};
+        let suma = 0, total = 0;
+        Object.values(porProducto).forEach(arr => {
+            if (Array.isArray(arr)) arr.forEach(r => { suma += Number(r.estrellas) || 0; total++; });
+        });
+        if (total > 0) el.innerHTML = (suma / total).toFixed(1) + '<i>★</i>';
+    } catch (e) { /* deja el valor por defecto del HTML */ }
+}
+
 function renderizarCategoriasHome() {
     const grid = document.getElementById('categoriasGrid');
     if (!grid) return;
 
     grid.innerHTML = '';
+
+    const heroStatProductos = document.getElementById('ndStatProductos');
+    if (heroStatProductos) heroStatProductos.textContent = productos.length + '+';
+    _tmCargarRatingHero();
 
     const cardTodas = document.createElement('div');
     cardTodas.className = 'categoria-card';
