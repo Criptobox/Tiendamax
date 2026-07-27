@@ -60,6 +60,7 @@ html body .section-eyebrow::after{
 
 /* ── Títulos de sección: serif grande con acento itálico ── */
 html body .categorias-home .section-title,
+html body #mas-vendidos .section-title,
 html body #beneficios h2,
 html body #testimonios h2,
 html body .tm-steps-title,
@@ -74,6 +75,7 @@ html body .cta-final h2{
   text-wrap:balance;
 }
 html body .categorias-home .section-title em,
+html body #mas-vendidos .section-title em,
 html body #beneficios h2 em,
 html body #testimonios h2 em,
 html body .tm-steps-title em,
@@ -83,10 +85,47 @@ html body .cta-final h2 em{
 }
 html body .categorias-home .section-title::after{display:none !important}
 html body .categorias-home .section-subtitle,
+html body #mas-vendidos .section-subtitle,
 html body #beneficios .section-subtitle,
 html body #testimonios .section-subtitle{
   color:var(--op-ink-2) !important;font-size:17px !important;
   font-family:var(--font-sans-glass) !important;margin:0 !important;
+}
+
+/* ── MÁS VENDIDOS — fila de destacados reales bajo el hero ── */
+html body #mas-vendidos.mas-vendidos{
+  background:none !important;border-top:0 !important;border-bottom:0 !important;
+  padding:56px 0 16px !important;
+}
+html body #mas-vendidos .section-eyebrow,
+html body #mas-vendidos .section-title,
+html body #mas-vendidos .section-subtitle{text-align:center !important}
+html body #mas-vendidos .container{text-align:center}
+/* La grilla del catálogo es `repeat(auto-fill,minmax(280px,1fr))`: las pistas
+   son 1fr, así que con 2 destacados las tarjetas se quedaban pegadas a la
+   izquierda y justify-content no hace nada. Aquí se pasa a flex para que la
+   fila quede centrada con pocos y siga llenándose al marcar más destacados. */
+html body #mas-vendidos #masVendidosGrid{
+  margin-top:36px !important;text-align:left !important;
+  display:flex !important;flex-wrap:wrap !important;
+  justify-content:center !important;gap:28px !important;
+  grid-template-columns:none !important;
+}
+html body #mas-vendidos #masVendidosGrid > .producto-card{
+  flex:0 1 300px !important;max-width:340px !important;
+}
+@media (max-width:768px){
+  html body #mas-vendidos #masVendidosGrid{gap:14px !important}
+  html body #mas-vendidos #masVendidosGrid > .producto-card{
+    flex:0 1 calc(50% - 7px) !important;max-width:none !important;
+  }
+}
+html body #mas-vendidos .mv-vacio{
+  color:var(--op-muted) !important;font-family:var(--font-sans-glass) !important;
+  font-size:15px !important;margin-top:24px !important;
+}
+@media (max-width:768px){
+  html body #mas-vendidos.mas-vendidos{padding:36px 0 8px !important}
 }
 
 /* ================================================================

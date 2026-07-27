@@ -591,6 +591,20 @@
             </div>
         </section>
 
+        <!-- Más vendidos — vitrina de destacados reales. La puebla
+             renderizarMasVendidos() (tm-state.src.js) con el MISMO constructor
+             de tarjeta que la grilla principal (window._tmCrearCard), así que
+             cada tarjeta trae foto, precio, favoritos, "Pedir" y abre el modal. -->
+        <section id="mas-vendidos" class="mas-vendidos">
+            <div class="container">
+                <p class="section-eyebrow">Los que más se llevan</p>
+                <h2 class="section-title">Productos <em>Destacados</em></h2>
+                <p class="section-subtitle">Lo más pedido por nuestros clientes. Toca cualquiera para verlo completo.</p>
+                <div class="productos-grid" id="masVendidosGrid"></div>
+                <p id="masVendidosVacio" class="mv-vacio" style="display:none;">Pronto publicaremos nuestros destacados.</p>
+            </div>
+        </section>
+
         <!-- Sección Categorías -->
         <section id="categorias-home" class="categorias-home">
             <div class="categorias-home-inner">
