@@ -537,7 +537,7 @@ body:not(.light-mode) .beneficio-card{
   
   border:1px solid rgba(255,255,255,.09) !important;border-top-color:rgba(255,255,255,.20) !important;
   box-shadow:0 4px 8px rgba(0,0,0,.3),0 16px 32px rgba(0,0,0,.4) !important;background:rgba(10,10,14,0.85)}
-body:not(.light-mode) .beneficio-card:hover{border-color:rgba(255,107,53,.3) !important;transform:translateY(-6px) !important}
+body:not(.light-mode) .beneficio-card:hover{border-color:rgba(255,107,53,.3) !important;transform:translateY(-6px) !important;box-shadow:var(--shadow-xl) !important}
 body:not(.light-mode) .beneficio-card .icon{
   width:48px !important;height:48px !important;border-radius:14px !important;background:rgba(255,107,53,.15) !important;
   display:flex !important;align-items:center !important;justify-content:center !important;font-size:24px !important;margin:0 auto 18px !important;
@@ -961,7 +961,7 @@ body.light-mode .beneficio-card{
 body.light-mode .beneficio-card:hover{
   border-color:rgba(255,107,53,.25) !important;
   transform:translateY(-6px) !important;
-  box-shadow:0 8px 24px rgba(0,0,0,.10) !important
+  box-shadow:var(--shadow-lg) !important
 }
 body.light-mode .beneficio-card .icon{background:rgba(255,107,53,.10) !important}
 body.light-mode .beneficio-card h3{color:#1a1008 !important}

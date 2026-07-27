@@ -1438,11 +1438,12 @@
 
 
     <script>
-    /* ── Fade-in secciones: TiendaMax Premium ── */
+    /* ── Fade-in secciones: TiendaMax Premium ──
+       Variantes de movimiento (fade-up / zoom / slide L-R) según sección,
+       para que el reveal se sienta variado en vez de repetitivo. */
     (function() {
-        var selectors = [
+        var fadeUpSelectors = [
             '.beneficio-card',
-            '.testimonio-card',
             '.categorias-home .section-eyebrow',
             '.categorias-home .section-title',
             '.categorias-home .section-subtitle',
@@ -1453,10 +1454,14 @@
             '.hero-content h1',
             '.hero-content .description'
         ];
-        var elements = document.querySelectorAll(selectors.join(','));
+        var fadeUpElements = document.querySelectorAll(fadeUpSelectors.join(','));
+        var zoomElements = document.querySelectorAll('.beneficio-card .icon');
+        var testimonioElements = document.querySelectorAll('.testimonio-card');
 
         if (!('IntersectionObserver' in window)) {
-            elements.forEach(function(el) { el.classList.add('tm-visible'); });
+            fadeUpElements.forEach(function(el) { el.classList.add('tm-visible'); });
+            zoomElements.forEach(function(el) { el.classList.add('tm-visible'); });
+            testimonioElements.forEach(function(el) { el.classList.add('tm-visible'); });
             return;
         }
 
@@ -1469,10 +1474,22 @@
             });
         }, { threshold: 0.1, rootMargin: '0px 0px -30px 0px' });
 
-        elements.forEach(function(el) {
+        fadeUpElements.forEach(function(el) {
             el.classList.add('tm-fade');
             var siblings = el.parentNode ? el.parentNode.querySelectorAll('.tm-fade') : [];
             var idx = Array.prototype.indexOf.call(siblings, el);
+            el.style.setProperty('--tm-delay', Math.min(idx, 7) * 0.09 + 's');
+            observer.observe(el);
+        });
+
+        zoomElements.forEach(function(el, idx) {
+            el.classList.add('tm-fade-zoom');
+            el.style.setProperty('--tm-delay', Math.min(idx, 7) * 0.06 + 's');
+            observer.observe(el);
+        });
+
+        testimonioElements.forEach(function(el, idx) {
+            el.classList.add(idx % 2 === 0 ? 'tm-fade-left' : 'tm-fade-right');
             el.style.setProperty('--tm-delay', Math.min(idx, 7) * 0.09 + 's');
             observer.observe(el);
         });

@@ -17,6 +17,7 @@ SW_PATH = os.path.join(os.path.dirname(__file__), "..", "sw.js")
 ORDEN = [
     "styles.css",
     "animations.css",
+    "design-scales.css",   # escalas de tipografía/espaciado/sombras/movimiento — solo tokens, temprano en la cascada
     "styles.banner.fix.css",
     "nuevo-diseno.css",    # diseño principal v2 — antes de fixes para que puedan sobreescribirlo
     "styles.fixes.css",

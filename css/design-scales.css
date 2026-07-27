@@ -1,0 +1,53 @@
+/* ================================================================
+   TiendaMax — Design Scales
+   Escalas de diseño reutilizables: espaciado, tipografía (peso,
+   interlineado, tracking), sombras/radios y movimiento. Extienden
+   (no duplican) los tokens ya definidos en css/styles.css
+   (--font-size-*, --radius-*, --shadow-*, --duration-*, --ease-*).
+   Úsalas en vez de valores sueltos para que hovers, transiciones y
+   espaciados nuevos queden consistentes con el resto del sitio.
+   ================================================================ */
+
+:root{
+  /* ── Espaciado ── */
+  --space-3xs:2px;
+  --space-2xs:4px;
+  --space-xs:8px;
+  --space-sm:12px;
+  --space-md:16px;
+  --space-lg:24px;
+  --space-xl:32px;
+  --space-2xl:48px;
+  --space-3xl:64px;
+
+  /* ── Peso, interlineado y tracking tipográfico ── */
+  --fw-regular:400;
+  --fw-medium:500;
+  --fw-semibold:600;
+  --fw-bold:700;
+  --fw-extrabold:800;
+  --fw-black:900;
+
+  --leading-tight:1.1;
+  --leading-snug:1.25;
+  --leading-normal:1.5;
+  --leading-relaxed:1.75;
+
+  --tracking-tight:-0.03em;
+  --tracking-normal:0em;
+  --tracking-wide:0.02em;
+  --tracking-wider:0.08em;
+  --tracking-widest:0.14em;
+
+  /* ── Sombras y radios (extensión de las de styles.css) ── */
+  --radius-xs:4px;
+  --shadow-xl:0 16px 32px rgba(0,0,0,.16),0 32px 64px rgba(0,0,0,.28);
+  --shadow-inner:inset 0 1px 3px rgba(0,0,0,.12);
+
+  /* ── Movimiento (extensión de --duration-*/--ease-*) ── */
+  --duration-slow:450ms;
+  --ease-in:cubic-bezier(.4,0,1,1);
+  --ease-in-out:cubic-bezier(.4,0,.2,1);
+  --ease-spring:cubic-bezier(.34,1.56,.64,1);
+  --stagger-step:60ms;
+}
