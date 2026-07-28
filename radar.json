@@ -1,6 +1,6 @@
 {
-  "actualizado": "2026-07-27T13:39:26.128276+00:00",
-  "fecha": "2026-07-27",
+  "actualizado": "2026-07-28T12:54:03.156444+00:00",
+  "fecha": "2026-07-28",
   "fuentes": [
     "revolico",
     "porlalivre",
@@ -59,6 +59,10 @@
         {
           "fecha": "2026-07-27",
           "mediana": 39.99
+        },
+        {
+          "fecha": "2026-07-28",
+          "mediana": 39.99
         }
       ],
       "muestras": [
@@ -113,7 +117,7 @@
       "mercado": {
         "min": 70.0,
         "mediana": 90.0,
-        "n": 14
+        "n": 15
       },
       "deltaAyerMediana": 0.0,
       "estado": "competitivo",
@@ -121,10 +125,6 @@
         "texto": "Precio competitivo respecto al mercado"
       },
       "historial": [
-        {
-          "fecha": "2026-07-11",
-          "mediana": 90.0
-        },
         {
           "fecha": "2026-07-12",
           "mediana": 90.0
@@ -176,6 +176,10 @@
         {
           "fecha": "2026-07-27",
           "mediana": 90.0
+        },
+        {
+          "fecha": "2026-07-28",
+          "mediana": 90.0
         }
       ],
       "muestras": [
@@ -209,9 +213,9 @@
         },
         {
           "fuente": "revolico",
-          "titulo": "90 USD Antorcha para Soldadura TIG",
+          "titulo": "90 USD Antorcha para soldadura TIG",
           "precio": 90.0,
-          "url": "https://www.revolico.com/item/antorcha-para-soldadura-tig-56475261",
+          "url": "https://www.revolico.com/item/antorcha-para-soldadura-tig-56512139",
           "dias": null
         },
         {
