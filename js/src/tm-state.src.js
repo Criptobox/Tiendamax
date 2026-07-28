@@ -379,8 +379,10 @@ function _tmCatVerMas(grid, extras) {
     // diseño nuevo (vidrio, variantes de color e íconos SVG) sin duplicar CSS.
     const wrap = document.createElement('div');
     wrap.id = 'catExtraWrap';
-    wrap.className = 'categorias-grid';
-    wrap.style.display = 'none';
+    // 'oculto' es una clase con display:none !important — el display:grid
+    // !important de .categorias-grid (styles.css) le gana a un style inline
+    // sin !important, así que esconderlo por inline no funciona.
+    wrap.className = 'categorias-grid cat-extra-oculto';
     extras.forEach(e => {
         const c = document.createElement('div');
         c.className = 'categoria-card';
@@ -404,7 +406,11 @@ function _tmCatVerMas(grid, extras) {
     btn.className = 'cat-vermas-btn';
     const setLabel = open => { btn.textContent = open ? '− Ver menos' : '+ Ver más categorías (' + extras.length + ')'; };
     setLabel(false);
-    btn.onclick = () => { const open = wrap.style.display === 'none'; wrap.style.display = open ? 'grid' : 'none'; setLabel(open); };
+    btn.onclick = () => {
+        const abrir = wrap.classList.contains('cat-extra-oculto');
+        wrap.classList.toggle('cat-extra-oculto', !abrir);
+        setLabel(abrir);
+    };
 
     cont.appendChild(btn);
     cont.appendChild(wrap);
