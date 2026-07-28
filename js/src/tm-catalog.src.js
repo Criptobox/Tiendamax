@@ -122,6 +122,19 @@ function actualizarBotonesCategorias() {
         btn.onclick = () => filtrarPorCategoria(cat);
         container.appendChild(btn);
     });
+
+    // La fila de categorías se desplaza en horizontal y la activa suele caer
+    // fuera de la pantalla —o cortada por el borde, como pasaba con ENERGIA—.
+    // Se centra para que siempre se vea entera dónde estás parado.
+    const activa = container.querySelector('.categoria-btn.active');
+    if (activa && typeof activa.scrollIntoView === 'function') {
+        try {
+            activa.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
+        } catch (e) {
+            // Navegadores viejos: sin opciones, y sin arrastrar la página vertical
+            container.scrollLeft = activa.offsetLeft - (container.clientWidth - activa.offsetWidth) / 2;
+        }
+    }
 }
 
 function filtrarPorCategoria(cat) {

@@ -48,24 +48,41 @@ html body.light-mode{
    plano #0e0e12 de premium-theme.css y las orbes animadas nd-mesh.
    ================================================================ */
 html body{
+  /* Un solo lienzo continuo. Antes había cinco orbes y una rampa vertical
+     colocadas en PORCENTAJES: con un documento de ~8000 px, las orbes de
+     abajo (violeta y azul) caían justo donde empieza el pie y pintaban una
+     banda fría con un corte visible; la rampa `30%/60%` movía el tono según
+     el largo de la página, que no es el mismo en la portada que en una
+     categoría. Ahora solo queda el resplandor cálido de arriba, medido en
+     unidades de viewport y anclado a él, así que el tono no depende de
+     cuánto mida la página ni de dónde esté el scroll. De paso son cuatro
+     capas menos que pintar en cada frame. */
   background:
-    radial-gradient(900px 700px at 12% 6%, rgba(255,106,31,.22), transparent 60%),
-    radial-gradient(800px 600px at 92% 14%, rgba(242,182,50,.14), transparent 60%),
-    radial-gradient(700px 500px at 50% 60%, rgba(255,106,31,.10), transparent 60%),
-    radial-gradient(700px 600px at 0% 100%, rgba(184,146,255,.10), transparent 60%),
-    radial-gradient(700px 600px at 100% 90%, rgba(111,168,255,.08), transparent 60%),
-    linear-gradient(180deg,#08060A 0%,#120D17 30%,#0A070C 60%,#08060A 100%) #08060A !important;
-  background-attachment:fixed !important;
+    radial-gradient(70vw 50vh at 12% 0%, rgba(255,106,31,.20), transparent 62%),
+    radial-gradient(60vw 42vh at 92% 6%, rgba(242,182,50,.12), transparent 62%),
+    #08060A !important;
+  /* `scroll`, no `fixed`: anclado al documento el resplandor se queda en
+     la cabecera y el resto de la página es color plano —imposible que
+     aparezca una banda— y además no hay repintado del fondo en cada
+     scroll, que en Android barato se nota. */
+  background-attachment:scroll !important;
+  background-repeat:no-repeat, no-repeat, repeat !important;
 }
 html body.light-mode{
+  /* Misma idea que en oscuro. En claro era peor: `attachment:scroll` fijaba
+     las orbes al documento, así que la violeta (8% 88%) caía exactamente
+     bajo la tarjeta de canales y teñía de gris frío toda la zona del pie
+     sobre un fondo crema. De ahí el corte de fondo. */
   background:
-    radial-gradient(900px 700px at 12% 6%, rgba(255,106,31,.18), transparent 60%),
-    radial-gradient(800px 600px at 92% 14%, rgba(242,182,50,.12), transparent 60%),
-    radial-gradient(700px 500px at 50% 60%, rgba(255,106,31,.08), transparent 60%),
-    radial-gradient(800px 600px at 8% 88%, rgba(184,146,255,.10), transparent 60%),
-    radial-gradient(800px 600px at 95% 92%, rgba(111,168,255,.08), transparent 60%),
-    linear-gradient(180deg,#FAF7F2 0%,#F0E8DA 30%,#FAF7F2 100%) #FAF7F2 !important;
+    radial-gradient(70vw 50vh at 12% 0%, rgba(255,106,31,.16), transparent 62%),
+    radial-gradient(60vw 42vh at 92% 6%, rgba(242,182,50,.10), transparent 62%),
+    #FAF7F2 !important;
+  /* `scroll`, no `fixed`: anclado al documento el resplandor se queda en
+     la cabecera y el resto de la página es color plano —imposible que
+     aparezca una banda— y además no hay repintado del fondo en cada
+     scroll, que en Android barato se nota. */
   background-attachment:scroll !important;
+  background-repeat:no-repeat, no-repeat, repeat !important;
 }
 /* Las orbes flotantes del diseño anterior se retiran (el preview usa
    resplandores estáticos); su contenedor fijo pasa a ser la cuadrícula
@@ -2172,4 +2189,29 @@ html body.light-mode .categorias-home #catExtraWrap .categoria-card.cat-color .c
   border:1px solid rgba(var(--cat-rgb),.20) !important;
   color:var(--cat-color) !important;
   box-shadow:0 4px 12px -8px rgba(var(--cat-rgb),.7) !important;
+}
+
+/* Barra de "Ordenar / Solo disponibles" en modo claro: iba con un lavado de
+   negro al 2%, que sobre el crema de la página se lee gris frío y recorta
+   una caja. Se pasa a blanco cálido con filete suave, como las demás
+   tarjetas de la página. */
+html body.light-mode #tmPlusBar.tmplus-bar,
+html body.light-mode .tmplus-bar{
+  background:#FFFFFF !important;
+  border:1px solid rgba(58,46,34,.10) !important;
+  border-left:1px solid rgba(58,46,34,.10) !important;
+  box-shadow:0 6px 18px -14px rgba(58,46,34,.45) !important;
+}
+
+/* La vista de categoría pintaba su propio fondo plano (#0E0E12 en oscuro,
+   #FAF8F5 en claro) sobre el del body, que no es el mismo tono: al acabar
+   la sección se veía el corte, justo encima del pie. Igual que .detail-body
+   en la ficha, comparte la superficie de la página en vez de traer la suya.
+   Se repiten las cadenas de premium-theme.css y light-mode.css para empatar
+   especificidad y ganar por orden de carga. */
+html body .productos-categoria,
+html body:not(.light-mode) .productos-categoria,
+html body.light-mode .productos-categoria,
+html body.light-mode .mas-vendidos{
+  background:transparent !important;
 }

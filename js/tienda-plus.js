@@ -116,7 +116,9 @@
         document.querySelectorAll('.tmplus-aviso-btn').forEach(function(btn) {
             var pedido = arr.indexOf(btn.getAttribute('data-aviso-id')) !== -1;
             btn.classList.toggle('pedido', pedido);
-            btn.textContent = pedido ? '🔔 Te avisaremos' : '🔔 Avísame cuando vuelva';
+            // innerHTML, no textContent: textContent borraba el SVG del ícono
+            // y devolvía el emoji de color en cuanto se repintaba el botón.
+            btn.innerHTML = tmIcoUI('🔔') + (pedido ? ' Te avisaremos' : ' Avísame cuando vuelva');
         });
     }
 
@@ -197,6 +199,13 @@
             if (!id || card.querySelector('.tmplus-aviso-btn')) return;
             var nombreEl = card.querySelector('.producto-nombre, h3, .card-title, b');
             var nombre = nombreEl ? nombreEl.textContent.trim().slice(0,60) : 'este producto';
+            // La tarjeta ya trae su propio botón "Avísame" (.pv2-aviso), que
+            // solo abre la ficha. Tener los dos se veía como un error: dos
+            // botones iguales, uno encima del otro. Se quita el de la ficha
+            // —la tarjeta entera ya es clicable para eso— y se deja este, que
+            // es el que apunta la lista de espera.
+            var propio = card.querySelector('.pv2-aviso');
+            if (propio) propio.remove();
             var wrap = document.createElement('div');
             wrap.className = 'tmplus-aviso-wrap';
             wrap.innerHTML = botonAvisoHTML(id);

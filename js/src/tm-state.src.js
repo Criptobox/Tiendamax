@@ -312,7 +312,9 @@ function renderizarSubcategoriaTabs() {
     // Tab "Todas" para esta categoría
     const tabTodas = document.createElement('button');
     tabTodas.className = `subcategoria-tab ${subcategoriaSeleccionada === 'Todas' ? 'active' : ''}`;
-    tabTodas.innerHTML = `<span class="tab-icon">🔎</span><span class="tab-label">Todos</span>`;
+    // Era la única pestaña con emoji de color: desentonaba al lado de las
+    // demás, que van solo con texto. Se deja el texto a secas.
+    tabTodas.innerHTML = `<span class="tab-label">Todos</span>`;
     tabTodas.onclick = () => seleccionarSubcategoria('Todas');
     tabsContainer.appendChild(tabTodas);
 
