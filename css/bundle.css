@@ -8090,7 +8090,21 @@ html body .testimonio-card{
   box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 14px 40px rgba(0,0,0,.3) !important;
   transition:all .3s var(--op-ease) !important;
 }
-html body .testimonio-card:hover{transform:translateY(-3px) !important;border-color:rgba(242,182,50,.25) !important}
+/* Los :not(...) igualan la especificidad de rediseno-cards.css, que anulaba el
+   movimiento y dejaba estas tarjetas fijas mientras las demás sí reaccionaban */
+html body .testimonio-card:hover,
+html body:not(.light-mode) .testimonio-card:hover,
+html body.light-mode .testimonio-card:hover{
+  transform:translateY(-4px) !important;
+  border-color:rgba(255,106,31,.3) !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.1),0 18px 44px rgba(0,0,0,.35) !important;
+}
+html body.light-mode .testimonio-card:hover{
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.8),0 16px 38px rgba(0,0,0,.10) !important;
+}
+html body .testimonio-card{
+  transition:transform .3s var(--op-ease),border-color .3s var(--op-ease),box-shadow .3s var(--op-ease) !important;
+}
 html body .testimonio-card::before{
   content:"\201C" !important;position:absolute !important;top:6px !important;right:18px !important;
   font-family:var(--op-serif) !important;font-size:80px !important;line-height:1 !important;
@@ -8172,8 +8186,12 @@ html body .cta-final .container::before{
   background:linear-gradient(90deg,transparent,var(--gold),var(--coral),transparent);
 }
 html body .cta-final p{
-  color:var(--op-ink-2) !important;margin:0 0 32px !important;
-  font-size:17px !important;position:relative;
+  color:var(--op-ink-2) !important;
+  /* 'auto' a los lados: otra hoja le pone max-width:500px y con margen 0 la
+     frase quedaba pegada a la izquierda en vez de centrada bajo el título */
+  margin:0 auto 32px !important;
+  max-width:760px !important;
+  font-size:17px !important;position:relative;text-align:center !important;
   font-family:var(--font-sans-glass) !important;
 }
 html body .tm-channels-btns{

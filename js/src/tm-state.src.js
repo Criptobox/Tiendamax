@@ -383,6 +383,10 @@ function _tmCatVerMas(grid, extras) {
     // !important de .categorias-grid (styles.css) le gana a un style inline
     // sin !important, así que esconderlo por inline no funciona.
     wrap.className = 'categorias-grid cat-extra-oculto';
+    // Además de la clase, el display en línea CON !important: así ocultarse no
+    // depende de que el CSS esté fresco (si el navegador guardó un bundle.css
+    // viejo sin .cat-extra-oculto, las extras salían siempre visibles).
+    wrap.style.setProperty('display', 'none', 'important');
     extras.forEach(e => {
         const c = document.createElement('div');
         c.className = 'categoria-card';
@@ -409,6 +413,8 @@ function _tmCatVerMas(grid, extras) {
     btn.onclick = () => {
         const abrir = wrap.classList.contains('cat-extra-oculto');
         wrap.classList.toggle('cat-extra-oculto', !abrir);
+        if (abrir) wrap.style.setProperty('display', 'grid', 'important');
+        else       wrap.style.setProperty('display', 'none', 'important');
         setLabel(abrir);
     };
 
