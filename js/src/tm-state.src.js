@@ -434,11 +434,15 @@ function renderizarCategoriasHome() {
     if (heroChipCount) heroChipCount.textContent = productos.length;
     _tmCargarRatingHero();
 
+    // Ícono de línea (SVG) como el preview; emoji solo de respaldo o si el
+    // admin guardó un ícono personalizado para la categoría.
+    const _svgCat = (cat) => (typeof obtenerIconoCategoriaSVG === 'function' && obtenerIconoCategoriaSVG(cat)) || null;
+
     const cardTodas = document.createElement('div');
     cardTodas.className = 'categoria-card';
     const totalProductos = productos.length;
     cardTodas.innerHTML = `
-        <span class="cat-icon">🛍️</span>
+        <span class="cat-icon">${_svgCat('todos') || '🛍️'}</span>
         <span class="cat-name">Todos</span>
         <span class="cat-count">${safeNum(totalProductos)} producto${totalProductos !== 1 ? 's' : ''}</span>
     `;
@@ -470,7 +474,7 @@ function renderizarCategoriasHome() {
         card.className = 'categoria-card' + (isPopular ? ' cat-popular' : '');
         card.innerHTML = `
             <span class="cat-popular-badge">+ Popular</span>
-            <span class="cat-icon">${escapeHtml(obtenerIconoCategoria(cat))}</span>
+            <span class="cat-icon">${_svgCat(cat) || escapeHtml(obtenerIconoCategoria(cat))}</span>
             <span class="cat-name">${escapeHtml(displayCat)}</span>
             <span class="cat-count">${safeNum(count) + ' producto' + (count !== 1 ? 's' : '')}</span>
         `;

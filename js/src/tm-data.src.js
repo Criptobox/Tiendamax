@@ -79,6 +79,42 @@ function obtenerIconoCategoria(nombre) {
     return '🛍️';
 }
 
+// Versión SVG de los íconos de categoría (rediseño "Oficial Plus"): íconos
+// de línea con trazo fino, como el preview, en vez de emoji. Devuelve null
+// solo si no hay dibujo para el nombre (el renderer cae al emoji de
+// obtenerIconoCategoria). OJO: gana sobre iconosPersonalizados a propósito —
+// categorias.json publica un set de emojis por defecto que llega a TODOS los
+// visitantes vía ese mismo mecanismo, y son exactamente el diseño viejo que
+// este rediseño sustituye. Los paths son constantes propias — nunca entrada
+// de usuario — así que es seguro inyectarlos con innerHTML sin escapar.
+const _SVG_CAT_ABRE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">';
+const ICONOS_SVG_MAPA = [
+    [['moto'], '<circle cx="6" cy="17" r="2"/><circle cx="18" cy="17" r="2"/><path d="M8 17h5l3-5h2l-2-4H5l3 5"/>'],
+    [['auto', 'carro', 'vehiculo', 'repuesto', 'llanta'], '<path d="M5 17h14M5 17a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h1l2-3h8l2 3h1a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/>'],
+    [['wifi', 'internet', 'red', 'router'], '<path d="M5 12.55a11 11 0 0 1 14 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/>'],
+    [['energia', 'bateria', 'luz', 'corriente', 'inversor'], '<polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>'],
+    [['celular', 'telefono', 'movil', 'iphone', 'android'], '<rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/>'],
+    [['utiles', 'herramienta', 'reparacion', 'ferreteria'], '<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>'],
+    [['seguridad', 'camara', 'alarma', 'candado'], '<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>'],
+    [['hogar', 'casa', 'mueble', 'cocina'], '<path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>'],
+    [['ropa', 'vestir', 'moda', 'calzado', 'zapatos', 'lencer'], '<path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z"/>'],
+    [['audio', 'sonido', 'musica', 'bocina', 'parlante'], '<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>'],
+    [['juego', 'juguete', 'consola'], '<line x1="6" y1="11" x2="10" y2="11"/><line x1="8" y1="9" x2="8" y2="13"/><line x1="15" y1="12" x2="15.01" y2="12"/><line x1="18" y1="10" x2="18.01" y2="10"/><path d="M17.32 5H6.68a4 4 0 0 0-3.978 3.59c-.006.052-.01.101-.017.152C2.604 9.416 2 14.456 2 16a3 3 0 0 0 3 3c1 0 1.5-.5 2-1l1.414-1.414A2 2 0 0 1 9.828 16h4.344a2 2 0 0 1 1.414.586L17 18c.5.5 1 1 2 1a3 3 0 0 0 3-3c0-1.545-.604-6.584-.685-7.258A4 4 0 0 0 17.32 5z"/>'],
+    [['pc', 'laptop', 'computadora', 'electronica', 'tecnologia'], '<rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>'],
+    [['gym', 'deporte', 'ejercicio', 'fitness'], '<path d="m6.5 6.5 11 11"/><path d="m21 21-1-1"/><path d="m3 3 1 1"/><path d="m18 22 4-4"/><path d="m2 6 4-4"/><path d="m3 10 7-7"/><path d="m14 21 7-7"/>'],
+    [['todos', 'todas', 'general'], '<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/>'],
+];
+
+function obtenerIconoCategoriaSVG(nombre) {
+    if (!nombre) return null;
+    // Sin acentos: "ÚTILES" y "UTILES" deben caer en la misma clave
+    const n = nombre.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    for (const [claves, paths] of ICONOS_SVG_MAPA) {
+        if (claves.some(c => n.includes(c))) return _SVG_CAT_ABRE + paths + '</svg>';
+    }
+    return null;
+}
+
 
 // ═══════════════════════════════════════════════════════
 //  BÚSQUEDA HERO — con IA (Claude API)

@@ -57,9 +57,12 @@ function renderizarCategoriasHomeInstant() {
     if (!grid) return;
     
     grid.innerHTML = '';
+    // Mismo ícono SVG de línea que el renderer con datos frescos, para que el
+    // pintado instantáneo no parpadee de emoji → SVG al llegar la red.
+    const _svgCatI = (cat) => (typeof obtenerIconoCategoriaSVG === 'function' && obtenerIconoCategoriaSVG(cat)) || null;
     const cardTodas = document.createElement('div');
     cardTodas.className = 'categoria-card';
-    cardTodas.innerHTML = `<span class="cat-wm">🛍️</span><span class="cat-icon">🛍️</span><span class="cat-name">Todos</span><span class="cat-count">${localProds.length} producto${localProds.length !== 1 ? 's' : ''}</span><span class="cat-cta">→ Explorar</span>`;
+    cardTodas.innerHTML = `<span class="cat-wm">🛍️</span><span class="cat-icon">${_svgCatI('todos') || '🛍️'}</span><span class="cat-name">Todos</span><span class="cat-count">${localProds.length} producto${localProds.length !== 1 ? 's' : ''}</span><span class="cat-cta">→ Explorar</span>`;
     cardTodas.onclick = () => mostrarVistaCategoria('Todas');
     grid.appendChild(cardTodas);
 
@@ -79,7 +82,7 @@ function renderizarCategoriasHomeInstant() {
         card.className = 'categoria-card';
         const badge = (count > 0 && count === maxCount) ? '<span class="cat-badge">🔥 Popular</span>' : '';
         const cta = '<span class="cat-cta">→ Explorar</span>';
-        card.innerHTML = `${badge}<span class="cat-wm">${icon}</span><span class="cat-icon">${icon}</span><span class="cat-name">${_dn[cat] || cat}</span><span class="cat-count">${count + ' producto' + (count !== 1 ? 's' : '')}</span>${cta}`;
+        card.innerHTML = `${badge}<span class="cat-wm">${icon}</span><span class="cat-icon">${_svgCatI(cat) || icon}</span><span class="cat-name">${_dn[cat] || cat}</span><span class="cat-count">${count + ' producto' + (count !== 1 ? 's' : '')}</span>${cta}`;
         card.onclick = () => mostrarVistaCategoria(cat);
         grid.appendChild(card);
     });

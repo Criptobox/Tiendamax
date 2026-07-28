@@ -575,6 +575,21 @@ html body .categorias-home .categorias-grid .categoria-card:nth-child(n) .cat-ic
   filter:none !important;top:auto !important;right:auto !important;left:auto !important;bottom:auto !important;
 }
 html body .categorias-home .categorias-grid .categoria-card:hover .cat-icon{transform:scale(1.08) !important}
+/* Ícono SVG de línea dentro del cuadrado (26px, como .cat .ico svg del
+   preview) con el color de la variante de la tarjeta. */
+html body .categorias-home .categorias-grid .categoria-card .cat-icon svg{
+  width:26px !important;height:26px !important;display:block !important;
+  filter:drop-shadow(0 2px 4px rgba(0,0,0,.3));
+}
+html body .categorias-home .categorias-grid .categoria-card:nth-child(4n+1) .cat-icon{color:#fff !important}
+html body .categorias-home .categorias-grid .categoria-card:nth-child(4n+2) .cat-icon{color:var(--gold-light) !important}
+html body .categorias-home .categorias-grid .categoria-card:nth-child(4n+3) .cat-icon{color:var(--azure) !important}
+html body .categorias-home .categorias-grid .categoria-card:nth-child(4n+4) .cat-icon{color:var(--violet) !important}
+html body.light-mode .categorias-home .categorias-grid .categoria-card:nth-child(4n+1) .cat-icon{color:var(--coral) !important}
+html body.light-mode .categorias-home .categorias-grid .categoria-card:nth-child(4n+2) .cat-icon{color:#D89A1F !important}
+html body.light-mode .categorias-home .categorias-grid .categoria-card:nth-child(4n+3) .cat-icon{color:#4A7FE6 !important}
+html body.light-mode .categorias-home .categorias-grid .categoria-card:nth-child(4n+4) .cat-icon{color:#8B5CF6 !important}
+html body.light-mode .categorias-home .categorias-grid .categoria-card .cat-icon svg{filter:drop-shadow(0 2px 4px rgba(0,0,0,.12))}
 /* Watermark y CTA del renderer "instant": fuera (el mockup no los tiene) */
 html body .categorias-home .categorias-grid .categoria-card .cat-wm,
 html body .categorias-home .categorias-grid .categoria-card .cat-cta{display:none !important}
