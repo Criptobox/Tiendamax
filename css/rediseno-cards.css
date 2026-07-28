@@ -1753,12 +1753,6 @@ html body.light-mode .producto-card.pcard-v2 .precio-actual{
     width:calc(100vw - 12px) !important; max-height:calc(100vh - 12px) !important;
   }
 }
-
-/* ═════ Push notification bell — DELETED (legacy, no handler) ═════ */
-.push-notif-btn{display:none!important}
-.push-notif-btn:hover{display:none!important}
-.push-notif-btn.subscribed{display:none!important}
-.push-notif-btn.subscribed:hover{display:none!important}
 body.light-mode .push-notif-btn{display:none!important}
 body.light-mode .push-notif-btn.subscribed{display:none!important}
 

@@ -299,18 +299,6 @@ html body.light-mode #productDetailModal .detail-spec-badges > * {
   box-shadow: 0 2px 8px rgba(232,80,30,.18) !important;
 }
 
-/* ---- Trust strip verde (estático, se agrega en el HTML) ---- */
-#productDetailModal .detail-trust-strip {
-  margin: 16px 0 0;
-  padding: 10px 14px;
-  background: rgba(37, 211, 102, 0.06);
-  border: 1px solid rgba(37, 211, 102, 0.18);
-  border-radius: 10px;
-  display: flex; align-items: center; gap: 8px;
-  color: #4ade80;
-  font-size: 12px; font-weight: 500;
-}
-
 /* ---- CTA row (fav + Pedir verde shine) ---- */
 #productDetailModal .detail-cta-fav {
   width: 48px; height: 48px;

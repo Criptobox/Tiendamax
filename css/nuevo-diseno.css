@@ -102,15 +102,11 @@ html body.light-mode .hero.nd-hero{
     radial-gradient(ellipse 50% 60% at 85% 30%, rgba(184,148,30,0.08), transparent 60%),
     radial-gradient(ellipse 40% 50% at 10% 70%, rgba(232,80,30,0.04), transparent 55%) !important;
 }
-.nd-hero-grid{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center}
-.nd-eyebrow{display:inline-flex;align-items:center;gap:8px;background:rgba(255,107,53,0.12);border:1px solid rgba(255,107,53,0.25);border-radius:100px;padding:6px 16px;font-size:13px;font-weight:600;color:#FF6B35;margin-bottom:24px}
-.nd-edot{width:6px;height:6px;border-radius:50%;background:#FF6B35;animation:nd-dot 2s ease-in-out infinite;flex-shrink:0}
 @keyframes nd-dot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
 .nd-h1{font-size:clamp(36px,4.5vw,58px) !important;font-weight:900 !important;line-height:1.08 !important;letter-spacing:-2px !important;margin-bottom:20px !important;text-align:left !important}
 .nd-grad{background-image:linear-gradient(135deg,var(--coral) 0%,var(--coral-deep) 100%) !important;-webkit-background-clip:text !important;-webkit-text-fill-color:transparent !important;background-clip:text !important;color:transparent !important;font-style:italic !important}
 /* especificidad (0,2,1) para ganar a h1 span:not(.logo-badge) (0,1,2) de bundle.css */
 h1.nd-h1 span.nd-grad{background-image:linear-gradient(135deg,var(--coral) 0%,var(--coral-deep) 100%) !important;-webkit-background-clip:text !important;-webkit-text-fill-color:transparent !important;background-clip:text !important;color:transparent !important;font-style:italic !important}
-.nd-sub{font-size:16px;line-height:1.6;margin-bottom:20px;max-width:440px;opacity:0.85;color:#C9C9D2}
 html body.light-mode .nd-sub{opacity:1;color:#5A5A66}
 /* Buscador + moneda integrados dentro del hero-left */
 .nd-hero-search{display:flex;align-items:stretch;gap:8px;width:100%;max-width:500px;margin:0 0 28px}
@@ -129,48 +125,21 @@ html body .nd-hero-search .hsb-search .hsb-pill{width:100% !important;max-width:
 .nd-btn-primary:hover{transform:translateY(-3px) scale(1.02);box-shadow:0 14px 40px rgba(255,107,53,.55);background-position:right center}
 .nd-btn-wa{background:linear-gradient(135deg,#25D366,#128C7E)!important;color:#fff!important;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:6px;padding:12px 22px;border-radius:50px;box-shadow:0 4px 16px rgba(37,211,102,0.35);transition:transform var(--duration-standard) var(--ease-standard),box-shadow var(--duration-standard) var(--ease-standard);opacity:1;border:0}.nd-btn-wa:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(37,211,102,0.5)}
 .nd-btn-wa:hover{opacity:1}
-
-/* 3D card stack */
-.nd-hero-right{display:flex;justify-content:center;align-items:center}
-.nd-stack-wrap{position:relative}
-/* Galería rotativa: transición suave al cambiar de producto */
-.nd-card3d{cursor:pointer}
 #ndHeroBody,#ndHeroImg{transition:opacity .26s ease}
 #ndHeroImg img{display:block}
-/* Puntos indicadores de la galería */
-.nd-hero-dots{position:absolute;bottom:-22px;left:0;right:0;display:flex;justify-content:center;gap:6px;z-index:11}
 .nd-hero-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.28);transition:background-color .3s ease}
 .nd-hero-dot.active{width:18px;border-radius:100px;background:linear-gradient(90deg,#FF6B35,var(--coral))}
 body.light-mode .nd-hero-dot{background:rgba(0,0,0,.18)}
 body.light-mode .nd-hero-dot.active{background:linear-gradient(90deg,#FF6B35,var(--coral))}
-.nd-card3d{position:relative;width:340px;height:440px;transform:perspective(1200px) rotateY(-10deg) rotateX(6deg);transform-style:preserve-3d;transition:transform .35s var(--ease-out)}
-.nd-card3d:hover{transform:perspective(1200px) rotateY(-5deg) rotateX(3deg) translateY(-10px)}
 .nd-cl{position:absolute;border-radius:24px}
-.nd-cl3{inset:0;transform:translate(28px,28px);background:linear-gradient(135deg,rgba(255,107,53,0.35),rgba(255,159,67,0.25));border:1px solid rgba(255,107,53,0.2)}
-.nd-cl2{inset:0;transform:translate(14px,14px);background:linear-gradient(135deg,rgba(255,107,53,0.55),rgba(232,80,30,0.45));border:1px solid rgba(255,107,53,0.3)}
-.nd-cl1{inset:0;overflow:hidden;background:linear-gradient(145deg,rgba(255,255,255,0.10),rgba(255,255,255,0.04));border:1px solid rgba(255,255,255,0.14);border-top-color:rgba(255,255,255,0.22);box-shadow:0 20px 60px rgba(0,0,0,.5),0 4px 12px rgba(0,0,0,.3);background:rgba(10,10,14,0.85)}
 body.light-mode .nd-cl3{background:linear-gradient(135deg,#FFD4C2,var(--coral));opacity:0.45;border:none}
 body.light-mode .nd-cl2{background:linear-gradient(135deg,var(--coral),#FF6B35);opacity:0.6;border:none}
 body.light-mode .nd-cl1{background:#fff;border:none;box-shadow:0 20px 60px rgba(0,0,0,.15),0 4px 12px rgba(0,0,0,.08);background:rgba(10,10,14,0.85)}
-.nd-card-img{width:100%;height:220px;display:flex;align-items:center;justify-content:center;font-size:90px;position:relative;overflow:hidden}.nd-card-img img{width:100%;height:100%;object-fit:cover;object-position:center}
-.nd-card-img::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 30% 30%,rgba(255,107,53,.12),transparent 60%)}
-.nd-rtext{font-size:12px;opacity:.65}
-.nd-cpr{display:flex;align-items:center;justify-content:space-between}
-.nd-price{font-size:24px;font-weight:800}
-.nd-usd{font-size:12px;opacity:.6;margin-left:2px}
-.nd-btn-pedir{background:linear-gradient(135deg,#25D366,#128C7E);color:#fff !important;border:none;border-radius:100px;padding:10px 16px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;transition:transform var(--duration-standard) var(--ease-standard)}
-.nd-btn-pedir:hover{transform:scale(1.05)}
-.nd-fbadge{position:absolute;border-radius:14px;padding:9px 14px;display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600;white-space:nowrap;z-index:10;background:linear-gradient(145deg,rgba(255,255,255,0.10),rgba(255,255,255,0.04));border:1px solid rgba(255,255,255,0.14);border-top-color:rgba(255,255,255,0.22);box-shadow:0 8px 24px rgba(0,0,0,.3),0 2px 6px rgba(0,0,0,.2);background:rgba(10,10,14,0.85)}
 body.light-mode .nd-fbadge{background:#fff;border:none;box-shadow:0 8px 28px rgba(0,0,0,.12),0 2px 8px rgba(0,0,0,.06);background:rgba(10,10,14,0.85)}
 body.light-mode .nd-stat{background:#fff;border-color:rgba(0,0,0,.08);box-shadow:0 4px 14px rgba(0,0,0,.05)}
 body.light-mode .nd-stat:hover{box-shadow:var(--shadow-md);border-color:rgba(232,80,30,.25)}
 body.light-mode .nd-stat strong{color:#1A1A1A}
 body.light-mode .nd-stat span{color:#6B6B7A}
-.nd-bi{font-size:18px}
-.nd-bs{font-size:10px;font-weight:400;display:block;opacity:.7}
-.nd-fb1{top:-18px;left:-90px;animation:nd-fl1 4s ease-in-out infinite}
-.nd-fb2{bottom:60px;right:-100px;animation:nd-fl2 5s ease-in-out infinite}
-.nd-fb3{top:-18px;right:-100px;animation:nd-fl3 4.5s ease-in-out infinite}
 @keyframes nd-fl1{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
 @keyframes nd-fl2{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
 @keyframes nd-fl3{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
@@ -200,21 +169,7 @@ body:not(.light-mode) .section-subtitle,
 body:not(.light-mode) .categorias-home .section-subtitle,
 body:not(.light-mode) .mas-vendidos .section-header p{color:rgba(245,237,232,.55) !important}
 body:not(.light-mode) .section-eyebrow{color:var(--coral) !important}
-
-/* ================================================================
-   TRUST BAR (tras el hero) — calcado de .tbar del mock
-   ================================================================ */
-.nd-tbar{border-top:1px solid rgba(255,255,255,0.10);border-bottom:1px solid rgba(255,255,255,0.10);padding:22px 0;position:relative;z-index:1}
 body.light-mode .nd-tbar{border-top-color:rgba(0,0,0,0.08);border-bottom-color:rgba(0,0,0,0.08)}
-.nd-titems{display:flex;align-items:center;justify-content:center;gap:48px;flex-wrap:wrap}
-.nd-titem{display:flex;align-items:center;gap:10px}
-.nd-tico{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
-.nd-tc{background:rgba(255,107,53,.15)}
-.nd-tv{background:rgba(167,139,250,.15)}
-.nd-tm{background:rgba(52,211,153,.15)}
-.nd-to{background:rgba(255,159,67,.15)}
-.nd-tt strong{display:block;font-size:14px;font-weight:700;color:#F5EDE8}
-.nd-tt span{font-size:12px;color:rgba(245,237,232,.55)}
 body.light-mode .nd-tt strong{color:#1A1A1A}
 body.light-mode .nd-tt span{color:#777}
 
@@ -727,18 +682,8 @@ html body.light-mode .cta-final .btn-large.tm-btn-wa:hover{background:linear-gra
     height: 100% !important;
 }
 @media(max-width:900px){
-  .nd-hero-grid{grid-template-columns:1fr;gap:48px}
-  .nd-hero-right{order:-1}
-  .nd-card3d{width:280px;height:360px}
-  .nd-stack-wrap{display:flex;flex-wrap:wrap;justify-content:center;align-items:stretch;gap:12px 8px}
-  .nd-fb1,.nd-fb2,.nd-fb3{position:static !important;animation:none !important;font-size:11px !important;padding:8px 14px !important;gap:6px !important;min-height:56px !important;align-items:center !important}
-
-  .nd-bi{font-size:15px !important}
   .nd-h1{text-align:center !important}
-  .nd-sub{text-align:center}
-  .nd-eyebrow{margin-left:auto;margin-right:auto}
   .nd-hero-btns{justify-content:center}
-  .nd-titems{gap:20px 28px}
   .nd-hero-search{max-width:none;margin:0 auto 28px}
   .nd-hero-stats{max-width:360px;margin-left:auto;margin-right:auto}
 }
@@ -755,7 +700,6 @@ html body.light-mode .cta-final .btn-large.tm-btn-wa:hover{background:linear-gra
 }
 @media(max-width:600px){
   .nd-hero{padding:24px 0 36px !important}
-  .nd-card3d{width:250px;height:320px}
   .nd-hero-btns{flex-direction:column;align-items:stretch}
   .nd-btn-primary{justify-content:center}
   .nd-btn-wa{justify-content:center}
@@ -885,115 +829,11 @@ body:not(.light-mode) .footer-premium .footer-bottom{border-top-color:rgba(255,2
   body:not(.light-mode) .beneficio-card,
   body:not(.light-mode) .testimonio-card,
   body:not(.light-mode) .header{background:rgba(10,10,14,0.85)}
-  /* Tarjetas glass del hero también más livianas */
-  .nd-cl1,.nd-fbadge{background:rgba(10,10,14,0.85)}
 }
 
 /* Respeta usuarios con movimiento reducido */
 @media(prefers-reduced-motion:reduce){
   .nd-orb,.nd-edot,.nd-fb1,.nd-fb2,.nd-fb3{animation:none !important}
-}
-
-/* ================================================================
-   HERO CARD — Interior estilo story WhatsApp (mantiene el stack 3D)
-   nd-card3d + nd-cl1/2/3 intactos → solo cambia el interior
-   ================================================================ */
-
-/* Imagen full-cover dentro de nd-cl1 */
-.nd-card-story {
-  position: absolute !important;
-  inset: 0 !important;
-  height: 100% !important;
-  font-size: 80px;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  background: linear-gradient(145deg,#1a100a,#0d0806) !important;
-  overflow: hidden;
-}
-.nd-card-story img {
-  width: 100% !important;
-  height: 100% !important;
-  object-fit: cover !important;
-  object-position: center top !important;
-  display: block;
-}
-
-/* Overlay degradado + datos encima de la imagen */
-.nd-story-overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    to bottom,
-    transparent 40%,
-    rgba(0,0,0,.55) 65%,
-    rgba(0,0,0,.93) 100%
-  );
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  padding: 0 18px 22px;
-  gap: 3px;
-  z-index: 3;
-}
-
-/* Pill categoría */
-.nd-wa-cat {
-  display: inline-block;
-  background: rgba(255,107,53,.9);
-  color: #fff;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: .4px;
-  text-transform: uppercase;
-  border-radius: 100px;
-  padding: 3px 10px;
-  width: fit-content;
-  margin-bottom: 5px;
-}
-
-/* Nombre */
-.nd-story-name {
-  font-size: 17px;
-  font-weight: 800;
-  color: #fff;
-  line-height: 1.2;
-  text-shadow: 0 2px 8px rgba(0,0,0,.7);
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-/* Valoración */
-.nd-story-rate {
-  font-size: 12px;
-  color: rgba(255,255,255,.8);
-  margin-bottom: 10px;
-}
-
-/* Fila precio + botón */
-.nd-story-bottom {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-}
-
-/* Precio */
-.nd-story-price {
-  font-size: 28px;
-  font-weight: 900;
-  color: #FF3355;
-  line-height: 1;
-  text-shadow: 0 2px 12px rgba(255,51,85,.45);
-}
-.nd-story-cur {
-  font-size: 13px;
-  font-weight: 700;
-  color: #FFB84D;
-  text-shadow: 0 0 8px rgba(255,184,77,.4);
-  margin-left: 2px;
 }
 
 /* Modo claro */
@@ -1201,7 +1041,6 @@ body:not(.light-mode) .mas-vendidos .producto-card{
   
   contain:layout style;
 }
-.nd-card3d{will-change:transform}
 .nd-orb{will-change:transform,opacity}
 
 /* Touch targets mínimo 44px */
@@ -1252,7 +1091,6 @@ body.light-mode .btn-megusta.liked{background:rgba(231,76,60,0.1) !important;col
     animation:none !important;
     transition:none !important;
   }
-  .nd-card3d{transform:perspective(1200px) rotateY(-10deg) rotateX(6deg) !important}
 }
 
 /* ── Botón Canal Telegram (reemplaza verde WhatsApp) ── */
@@ -1341,9 +1179,6 @@ body.light-mode .hsb-fi-sel{border-color:rgba(0,0,0,.15);background:#fff;color:#
 .hsb-fi-sel:focus{outline:none;border-color:#FF6B35;}
 .hsb-fi-check{display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer;user-select:none;}
 .hsb-fi-check input[type=checkbox]{accent-color:#FF6B35;width:15px;height:15px;cursor:pointer;}
-
-/* ── Urgencia en tarjetas de similares del carrito ── */
-.cs-urgencia{font-size:11px;font-weight:700;color:#FF6B35;margin-top:4px;letter-spacing:.2px;}
 body.light-mode .cs-urgencia{color:#C94A1C;}
 
 /* ── Modal políticas legales ── */
@@ -1424,16 +1259,12 @@ html body:not(.light-mode) .hsb-panel{
   body:not(.light-mode) .header{
     background:rgba(12,8,6,.92) !important;
   }
-  .nd-cl1,.nd-fbadge{
-    background:rgba(22,22,31,.92) !important;
-  }
 }
 
 
 /* Estados :disabled para botones */
 .nd-btn-primary:disabled{opacity:.55;cursor:not-allowed;transform:none !important;box-shadow:none !important}
 .nd-btn-wa:disabled{opacity:.55;cursor:not-allowed;transform:none !important;box-shadow:none !important}
-.nd-btn-pedir:disabled{opacity:.55;cursor:not-allowed;transform:none !important}
 .nd-btn-deal:disabled{opacity:.55;cursor:not-allowed;transform:none !important}
 .btn-pedir-card:disabled{opacity:.55;cursor:not-allowed;transform:none !important;box-shadow:none !important}
 
@@ -1453,10 +1284,6 @@ html body:not(.light-mode) .hsb-panel{
     animation:none !important;
     transition:none !important;
   }
-  .nd-card3d{
-    transform:perspective(1200px) rotateY(-10deg) rotateX(6deg) !important;
-    transition:none !important;
-  }
 }
 
 
@@ -1469,7 +1296,6 @@ html body:not(.light-mode) .hsb-panel{
 /* === FIX RENDIMIENTO: pausar animaciones decorativas fuera de hover === */
 .nd-orb{animation-play-state:paused}
 .hero:hover .nd-orb,.nd-hero:hover .nd-orb,.nd-hero:focus-within .nd-orb{animation-play-state:running}
-.nd-fbadge{animation-play-state:paused}
 .nd-hero:hover .nd-fbadge,.nd-hero:focus-within .nd-fbadge{animation-play-state:running}
 
 /* === FIX RENDIMIENTO: prefers-reduced-motion desactiva todas las decorativas === */
