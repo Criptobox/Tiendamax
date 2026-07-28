@@ -310,6 +310,32 @@ function renderizarGaleriaDetalle(producto) {
         });
     });
     _initSwipeGaleria(img);
+    _montarFlechasGaleria(img, thumbs);
+}
+
+// Flechas sobre la foto para pasar de imagen. El deslizamiento con el dedo ya
+// existía (_initSwipeGaleria), pero en escritorio no había forma visible de
+// saber que hay más de una foto ni de avanzar sin apuntar a las miniaturas.
+function _montarFlechasGaleria(img, thumbs) {
+    const marco = img && img.parentElement;
+    if (!marco) return;
+    marco.querySelectorAll('.dgal-nav').forEach(e => e.remove());
+    const lista = () => Array.from(thumbs.querySelectorAll('.detail-gallery-thumb'));
+    if (lista().length < 2) return;
+    const mover = (paso) => {
+        const t = lista();
+        const i = t.findIndex(b => b.classList.contains('active'));
+        t[((i < 0 ? 0 : i) + paso + t.length) % t.length].click();
+    };
+    [['prev', '‹', -1], ['next', '›', 1]].forEach(([clase, glifo, paso]) => {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'dgal-nav dgal-' + clase;
+        b.setAttribute('aria-label', paso < 0 ? 'Imagen anterior' : 'Imagen siguiente');
+        b.textContent = glifo;
+        b.addEventListener('click', (e) => { e.stopPropagation(); mover(paso); });
+        marco.appendChild(b);
+    });
 }
 
 // ===== DETALLE DE PRODUCTO =====
@@ -636,13 +662,13 @@ if (_detailPrecioMNEl) {
             '<div class="detail-trust-card"><span class="dtc-ic">' + c.ic + '</span><div class="dtc-tx"><b>' + c.t + '</b><small>' + c.s + '</small></div></div>'
         ).join('');
         trustBadgesEl.style.display = 'grid';
-        // En escritorio la ficha va en dos columnas y la de la foto queda con
+        // Desde tablet la ficha va en dos columnas y la de la foto queda con
         // hueco muerto bajo las miniaturas (peor aún si el producto trae una
         // sola imagen). Estas tarjetas lo rellenan. No se puede mover por CSS
         // porque el elemento está anidado dentro de .detail-body, no es hijo
         // directo de la rejilla; de ahí el traslado del nodo.
         try {
-            const _esEscritorio = window.matchMedia && window.matchMedia('(min-width:1024px)').matches;
+            const _esEscritorio = window.matchMedia && window.matchMedia('(min-width:768px)').matches;
             const _foto = document.querySelector('#productDetailModal .detail-image-wrap');
             const _pills = document.querySelector('#productDetailModal .detail-share-pills');
             if (_esEscritorio && _foto) {

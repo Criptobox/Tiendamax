@@ -211,6 +211,28 @@
         aplicarOrdenYFiltro();
     }
 
+    // El catálogo se pinta por tandas: la primera la trae renderizarProductos
+    // (que sí llama aquí), pero las siguientes las añade _appendBatch sin pasar
+    // por esta función. Como los agotados van al final del orden, TODOS caían en
+    // esas tandas y se quedaban sin botón "Avísame". Este observador cubre
+    // cualquier tarjeta que aparezca después, venga de donde venga.
+    function observarNuevasTarjetas() {
+        var grid = $('productosGrid');
+        if (!grid || grid._tmPlusObs) return;
+        var pendiente = null;
+        var obs = new MutationObserver(function (muts) {
+            for (var i = 0; i < muts.length; i++) {
+                if (muts[i].addedNodes && muts[i].addedNodes.length) {
+                    clearTimeout(pendiente);
+                    pendiente = setTimeout(postProcesarCards, 60);
+                    return;
+                }
+            }
+        });
+        obs.observe(grid, { childList: true });
+        grid._tmPlusObs = obs;
+    }
+
     // ════════════════════════════════════════════════════════════════
     //  3) COMPARTIR CARRITO POR WHATSAPP
     // ════════════════════════════════════════════════════════════════
@@ -293,6 +315,7 @@
 
     function init() {
         construirBarra();
+        observarNuevasTarjetas();
         inicializarA11yTarjetas();
         if (!engancharRender()) {
             var tries=0, iv=setInterval(function(){

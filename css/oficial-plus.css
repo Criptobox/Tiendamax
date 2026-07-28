@@ -1545,8 +1545,8 @@ html body.light-mode .footer-premium{
   border-top:0 !important;background:transparent !important;
 }
 
-/* Tarjetas de confianza trasladadas bajo las miniaturas en escritorio */
-@media (min-width:1024px){
+/* Tarjetas de confianza trasladadas bajo las miniaturas (tablet y escritorio) */
+@media (min-width:768px){
   html body #productDetailModal .detail-trust-badges.dtb-en-foto{
     display:grid !important;grid-template-columns:1fr 1fr !important;
     gap:12px !important;margin:16px 0 0 !important;padding:0 !important;
@@ -1587,4 +1587,101 @@ html body.light-mode .subcategoria-tab:hover{
 html body.light-mode .categoria-btn.active,
 html body.light-mode .subcategoria-tab.active{
   box-shadow:inset 0 1px 0 rgba(255,255,255,.3),0 4px 14px rgba(255,106,31,.28) !important;
+}
+
+/* ── Pestañas: que la píldora se lea igual en todas ──
+   Todas miden 999px de radio, pero con el borde tan tenue la curva no se
+   distinguía en las anchas y parecían rectángulos. Más contraste de borde y un
+   ancho mínimo para que el conjunto se lea parejo. */
+html body .categoria-btn,
+html body:not(.light-mode) .categoria-btn{
+  border-color:rgba(255,255,255,.20) !important;
+  min-width:88px !important;justify-content:center !important;text-align:center !important;
+}
+html body.light-mode .categoria-btn{
+  border-color:rgba(26,18,11,.18) !important;min-width:88px !important;
+}
+html body .categoria-btn.active,
+html body:not(.light-mode) .categoria-btn.active,
+html body.light-mode .categoria-btn.active{border-color:transparent !important}
+
+/* ── Flechas de la galería de la ficha ── */
+html body .detail-img-frame{position:relative !important}
+html body .dgal-nav{
+  position:absolute;top:50%;transform:translateY(-50%);z-index:4;
+  width:38px;height:38px;border-radius:50%;cursor:pointer;
+  display:grid;place-items:center;line-height:1;
+  font-size:26px;font-family:var(--font-sans-glass);
+  background:rgba(16,11,9,.62);color:#fff;border:1px solid rgba(255,255,255,.18);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  transition:all .2s var(--op-ease);padding:0 0 3px;
+}
+html body .dgal-nav:hover{
+  background:linear-gradient(135deg,#FF6A1F,#D24E0F);border-color:transparent;
+  box-shadow:0 8px 20px rgba(255,106,31,.4);
+}
+html body .dgal-prev{left:10px}
+html body .dgal-next{right:10px}
+html body.light-mode .dgal-nav{
+  background:rgba(255,255,255,.82);color:var(--op-ink);border-color:rgba(0,0,0,.12);
+}
+@media (max-width:600px){
+  html body .dgal-nav{width:34px;height:34px;font-size:23px}
+}
+
+/* ── Ficha en tablet (768–1023px): dos columnas también ──
+   Se quedaba en la hoja estrecha de móvil desperdiciando la mitad del ancho. */
+@media (min-width:768px) and (max-width:1023px){
+  html body #productDetailModal .detail-modal-content,
+  html body .detail-modal-content{
+    width:min(94vw,940px) !important;max-width:940px !important;
+    display:grid !important;
+    grid-template-columns:minmax(0,44fr) minmax(0,56fr) !important;
+    grid-template-rows:auto auto 1fr !important;
+    grid-template-areas:"foto encabezado" "foto cuerpo" "foto cuerpo" !important;
+    align-items:start !important;column-gap:24px !important;padding:0 0 14px !important;
+  }
+  html body #productDetailModal .detail-modal-content .detail-image-wrap{
+    grid-area:foto !important;position:sticky !important;top:0 !important;align-self:start !important;
+  }
+  html body #productDetailModal .detail-modal-content .modal-header{grid-area:encabezado !important;padding-right:20px !important}
+  html body #productDetailModal .detail-modal-content .detail-body{
+    grid-area:cuerpo !important;padding-right:20px !important;padding-bottom:20px !important;
+  }
+  html body #productDetailModal .detail-modal-content .detail-handle{display:none !important}
+  html body #productDetailModal .detail-modal-content .detail-skeleton{grid-area:1/1/4/3 !important}
+  html body #productDetailModal .detail-modal-content .close-btn-floating{
+    position:absolute !important;top:12px !important;right:12px !important;z-index:5 !important;
+  }
+  html body #productDetailModal .detail-modal-content .detail-sticky-cta{display:none !important}
+  html body .detail-relacionados-grid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr)) !important}
+}
+
+/* El menú de escritorio aparecía desde 769px pero no cabe hasta ~900px: entre
+   medias empujaba la página 74px a la derecha y aparecía scroll horizontal.
+   Como la hamburguesa está siempre disponible, se oculta hasta que cabe. */
+@media (max-width:899px){
+  html body .header .nav{display:none !important}
+}
+
+/* Foco de teclado visible en los controles del rediseño: varios quedaban con
+   outline:none heredado y no se veía dónde estabas al navegar con Tab. */
+html body .categoria-btn:focus-visible,
+html body .subcategoria-tab:focus-visible,
+html body .cat-vermas-btn:focus-visible,
+html body .btn-volver:focus-visible,
+html body .tmplus-select:focus-visible,
+html body .mv-nav:focus-visible,
+html body .dgal-nav:focus-visible,
+html body .mv-dots button:focus-visible,
+html body .footer-premium .footer-social a:focus-visible,
+html body .detail-qty-stepper button:focus-visible{
+  outline:2px solid var(--coral) !important;
+  outline-offset:2px !important;
+  box-shadow:0 0 0 4px rgba(255,106,31,.20) !important;
+}
+html body.light-mode .categoria-btn:focus-visible,
+html body.light-mode .subcategoria-tab:focus-visible,
+html body.light-mode .tmplus-select:focus-visible{
+  outline-color:#D24E0F !important;
 }
