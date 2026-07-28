@@ -87,9 +87,31 @@ html body.light-mode .nd-mesh{
 }
 ::selection{background:var(--coral);color:#fff}
 
+/* ── Sin costuras: las secciones dejan pasar el fondo atmosférico del body
+   (los fondos sólidos y border-top de premium-theme/styles/light-mode
+   dibujaban líneas horizontales dividiendo las secciones) ── */
+html body .categorias-home,
+html body .tm-steps-section,
+html body .beneficios,
+html body .testimonios,
+html body .recientes-section{background:none !important;border:0 !important;box-shadow:none !important}
+html body.light-mode .categorias-home,
+html body.light-mode .tm-steps-section,
+html body.light-mode .beneficios,
+html body.light-mode .testimonios,
+html body.light-mode .recientes-section{background:none !important;border:0 !important}
+/* La comilla gigante decorativa del diseño viejo (styles.css) tampoco va */
+html body .testimonios::before,
+html body.light-mode .testimonios::before{display:none !important;content:none !important}
+/* Ni el resplandor dorado del diseño viejo en mas-vendidos: se recorta en el
+   borde de la sección y dibuja una línea horizontal a mitad de página */
+html body #mas-vendidos::before,
+html body .mas-vendidos::before{display:none !important;content:none !important}
+
 /* ── Eyebrow de sección: línea + texto + punto ── */
 html body .section-eyebrow{
-  display:inline-flex !important;align-items:center !important;gap:14px !important;
+  display:flex !important;align-items:center !important;gap:14px !important;
+  width:max-content !important;margin-left:auto !important;margin-right:auto !important;
   color:var(--gold) !important;text-transform:uppercase !important;
   font-family:var(--font-sans-glass) !important;
   font-size:11.5px !important;font-weight:700 !important;letter-spacing:.22em !important;
@@ -119,6 +141,9 @@ html body .cta-final h2{
   color:var(--op-ink) !important;
   margin:14px 0 14px !important;
   text-wrap:balance;
+  /* Bloque propio y centrado: sin esto el título se monta en la misma
+     línea que el eyebrow en categorías/cómo-comprar */
+  display:block !important;text-align:center !important;
 }
 html body .categorias-home .section-title em,
 html body #mas-vendidos .section-title em,
@@ -129,13 +154,20 @@ html body .cta-final h2 em{
   font-style:italic !important;color:var(--coral-2) !important;font-weight:700 !important;
   -webkit-text-fill-color:var(--coral-2) !important;background:none !important;
 }
-html body .categorias-home .section-title::after{display:none !important}
+/* El subrayado coral legado de .section-title::after no va en ninguna
+   sección del rediseño (al pasar los títulos a block se estiraba a lo ancho) */
+html body .categorias-home .section-title::after,
+html body #mas-vendidos .section-title::after,
+html body #testimonios h2::after,
+html body #beneficios h2::after,
+html body .tm-steps-title::after{display:none !important;content:none !important}
 html body .categorias-home .section-subtitle,
 html body #mas-vendidos .section-subtitle,
 html body #beneficios .section-subtitle,
 html body #testimonios .section-subtitle{
   color:var(--op-ink-2) !important;font-size:17px !important;
   font-family:var(--font-sans-glass) !important;margin:0 !important;
+  display:block !important;text-align:center !important;
 }
 
 /* ── MÁS VENDIDOS — fila de destacados reales bajo el hero ── */
@@ -344,6 +376,9 @@ html body h1.op-h1 .op-accent{
   -webkit-background-clip:text !important;background-clip:text !important;
   -webkit-text-fill-color:transparent !important;color:transparent !important;
   font-style:italic !important;font-weight:800 !important;display:inline-block;
+  /* La itálica serif sobresale de la caja y background-clip:text solo pinta
+     dentro de ella → sin este padding la última letra sale cortada */
+  padding:.04em .14em .08em .03em;margin:-.04em -.05em -.08em 0;
 }
 html body h1.op-h1 .op-underline{position:relative;display:inline-block}
 html body h1.op-h1 .op-underline::after{
@@ -687,6 +722,13 @@ html body .beneficio-card h3{
 html body .beneficio-card p{
   color:var(--op-ink-2) !important;font-size:14.5px !important;margin:0 !important;
   line-height:1.6 !important;font-family:var(--font-sans-glass) !important;
+}
+/* Encabezado centrado + íconos de línea (SVG), como el preview */
+html body #beneficios .container{text-align:center !important}
+html body #beneficios .beneficios-grid{margin-top:36px !important}
+html body .beneficio-card .icon svg{
+  width:30px !important;height:30px !important;display:block !important;
+  filter:drop-shadow(0 0 10px rgba(255,106,31,.35));
 }
 @media (max-width:768px){html body .beneficios-grid{grid-template-columns:1fr !important}}
 

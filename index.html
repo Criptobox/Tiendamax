@@ -248,7 +248,7 @@
     <noscript><link rel="stylesheet" href="css/fonts.css?v=8b616cbe"></noscript>
 
     <!-- Preload del bundle JS del núcleo (generado por scripts/build_js_bundle.py) -->
-    <link rel="preload" href="js/tm-bundle.js?v=7e493955" as="script">
+    <link rel="preload" href="js/tm-bundle.js?v=9ed56642" as="script">
 
     <!-- Preload del catálogo: la foto hero (fetchpriority=high) no puede pedirse
          hasta que este JSON responda y arme el <img>; sin este preload, el
@@ -261,7 +261,7 @@
 
 
 
-    <link rel="stylesheet" href="css/bundle.css?v=776adde5">
+    <link rel="stylesheet" href="css/bundle.css?v=55ca1711">
 
 
 
@@ -763,17 +763,38 @@
         <section id="beneficios" class="beneficios">
             <div class="container">
                 <p class="section-eyebrow">Por qué nosotros</p>
-                <h2>¿Por Qué Elegir Nuestros Productos?</h2>
+                <h2>¿Por Qué Elegir <em>Nuestros Productos?</em></h2>
+                <p class="section-subtitle">Calidad, precio y atención. Tres pilares que nos hacen diferentes.</p>
                 <div class="beneficios-grid">
-                    <div class="beneficio-card"><div class="icon">🏆</div><h3>Calidad Garantizada</h3><p>Productos seleccionados cuidadosamente para tu satisfacción</p></div>
-                    <div class="beneficio-card"><div class="icon">💰</div><h3>Mejores Precios</h3><p>Competencia directa con ofertas exclusivas para ti</p></div>
-                    <div class="beneficio-card"><div class="icon">🛵</div><h3>Mensajería</h3><p>Coordinamos la entrega a domicilio por WhatsApp</p></div>
-                    <div class="beneficio-card"><div class="icon">🛡️</div><h3>Pago al Recibir</h3><p>Pagas cuando el producto llega a tus manos. Sin adelantar dinero.</p></div>
-                    <div class="beneficio-card"><div class="icon">📞</div><h3>Atención Directa</h3><p>Te respondemos rápido por WhatsApp (Lun a Sáb, 9am–8pm)</p></div>
-                    <div class="beneficio-card"><div class="icon">⭐</div><h3>Reseñas Reales</h3><p>Opiniones verificadas de clientes que ya compraron</p></div>
+                    <div class="beneficio-card">
+                        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg></div>
+                        <h3>Calidad Garantizada</h3>
+                        <p>Productos seleccionados cuidadosamente para tu satisfacción. Garantía real y devolución si algo no está bien.</p>
+                    </div>
+                    <div class="beneficio-card">
+                        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
+                        <h3>Mejores Precios</h3>
+                        <p>Tasa actualizada<span id="benefTasaVal"></span> y ofertas exclusivas. Precio del día, sin sorpresas.</p>
+                    </div>
+                    <div class="beneficio-card">
+                        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.62l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/></svg></div>
+                        <h3>Mensajería</h3>
+                        <p>Coordinamos la entrega a domicilio por WhatsApp. Pagas al recibir, sin adelantar dinero.</p>
+                    </div>
                 </div>
             </div>
         </section>
+        <script>
+        (function(){
+            try {
+                var base = parseFloat(localStorage.getItem('tasaMN') || '0');
+                var _m = parseFloat(localStorage.getItem('margenMN')); if (isNaN(_m)) _m = 10;
+                var tasa = base > 0 ? base + _m : 0;
+                var el = document.getElementById('benefTasaVal');
+                if (tasa > 0 && el) el.textContent = ' (' + tasa + ' MN por USD)';
+            } catch(e) {}
+        })();
+        </script>
 
         <!-- Testimonios -->
         <section id="testimonios" class="testimonios">
@@ -1525,7 +1546,7 @@
     <!-- ===== TiendaMax modularizado (reemplaza script.js) ===== -->
     <!-- Bundle único (config→data→state→admin→product→catalog→init→ui→toast→iife→patches),
          generado por scripts/build_js_bundle.py a partir de js/src/*.src.js -->
-    <script src="js/tm-bundle.js?v=7e493955" defer></script>
+    <script src="js/tm-bundle.js?v=9ed56642" defer></script>
 
     <!-- Agente de chat: separado del bundle (62 KB min) porque no hace falta
          para el primer render del catálogo. Carga con su propio <script defer>
