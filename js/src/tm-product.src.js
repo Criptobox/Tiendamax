@@ -130,6 +130,12 @@ function renderizarProductos(isLoadMore = false) {
     if (_heroOrden === 'precio_asc')  productosFiltrados.sort((a,b) => safeNum(a.precioActual) - safeNum(b.precioActual));
     else if (_heroOrden === 'precio_desc') productosFiltrados.sort((a,b) => safeNum(b.precioActual) - safeNum(a.precioActual));
     else if (_heroOrden === 'az')     productosFiltrados.sort((a,b) => (a.nombre||'').localeCompare(b.nombre||''));
+    // Los ids son marcas de tiempo, así que el mayor es el más reciente
+    else if (_heroOrden === 'nuevos') productosFiltrados.sort((a,b) => safeNum(b.id) - safeNum(a.id));
+    else if (_heroOrden === 'vendidos') {
+        const _mv = p => (p.masVendido === true || p.masVendido === 'true') ? 1 : 0;
+        productosFiltrados.sort((a,b) => _mv(b) - _mv(a));
+    }
 
     // Fade out skeletons before rendering real cards
     if (typeof _tmRemoverSkeletons === 'function') _tmRemoverSkeletons('productosGrid');

@@ -148,12 +148,25 @@
                 ' Solo disponibles' +
             '</label>';
         grid.parentNode.insertBefore(bar, grid);
+        // El orden y el filtro se aplican a los DATOS (variables que lee
+        // renderizarProductos antes de paginar), no al DOM ya pintado. El
+        // catálogo se muestra por lotes, así que reordenar los nodos visibles
+        // solo ordenaba la primera tanda y el resto entraba después sin orden.
+        var MAPA_ORDEN = {
+            'relevancia': '',
+            'precio-asc': 'precio_asc',
+            'precio-desc': 'precio_desc',
+            'nuevos': 'nuevos',
+            'vendidos': 'vendidos'
+        };
         $('tmOrden').addEventListener('change', function() {
             ordenActual = this.value;
+            try { _heroOrden = MAPA_ORDEN[this.value] || ''; } catch (e) {}
             if (typeof renderizarProductos === 'function') renderizarProductos();
         });
         $('tmSoloStock').addEventListener('change', function() {
             soloEnStock = this.checked;
+            try { _heroSoloConStock = this.checked; } catch (e) {}
             if (typeof renderizarProductos === 'function') renderizarProductos();
         });
     }
@@ -166,12 +179,9 @@
         cards.forEach(function(card) {
             card.style.display = (soloEnStock && card.classList.contains('card-agotado')) ? 'none' : '';
         });
-        var visibles = cards.filter(function(c){ return c.style.display !== 'none'; });
-        function precioDeCard(c) { var el=c.querySelector('.precio-actual'); var v=el?parseFloat(el.getAttribute('data-usd')):NaN; return isFinite(v)?v:0; }
-        if (ordenActual==='precio-asc') visibles.sort(function(a,b){ return precioDeCard(a)-precioDeCard(b); });
-        else if (ordenActual==='precio-desc') visibles.sort(function(a,b){ return precioDeCard(b)-precioDeCard(a); });
-        else if (ordenActual==='vendidos') visibles.sort(function(a,b){ return (!!b.querySelector('.badge-vendido'))-(!!a.querySelector('.badge-vendido')); });
-        if (ordenActual!=='relevancia'&&ordenActual!=='nuevos') visibles.forEach(function(card){ grid.appendChild(card); });
+        // El orden ya viene resuelto desde renderizarProductos (sobre el catálogo
+        // completo, antes de paginar). Aquí solo queda el filtro de disponibles,
+        // por si el render aún no lo aplicó.
     }
 
     // ════════════════════════════════════════════════════════════════
