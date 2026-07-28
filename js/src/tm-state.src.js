@@ -375,24 +375,33 @@ function _tmCatVerMas(grid, extras) {
     const oldWrap = document.getElementById('catExtraWrap'); if (oldWrap) oldWrap.remove();
     if (!extras || !extras.length) return;
 
+    // Mismas tarjetas .categoria-card que la grilla principal: heredan el
+    // diseño nuevo (vidrio, variantes de color e íconos SVG) sin duplicar CSS.
     const wrap = document.createElement('div');
     wrap.id = 'catExtraWrap';
-    wrap.style.cssText = 'display:none;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:12px;max-width:960px;margin:14px auto 0';
+    wrap.className = 'categorias-grid';
+    wrap.style.display = 'none';
     extras.forEach(e => {
         const c = document.createElement('div');
-        c.style.cssText = 'background:#171717;border:1px solid rgba(255,255,255,.07);border-radius:16px;padding:16px 12px;text-align:center;cursor:pointer;transition:transform .2s ease,border-color .2s ease';
-        c.onmouseenter = () => { c.style.transform = 'translateY(-3px)'; c.style.borderColor = 'rgba(255,140,0,.35)'; };
-        c.onmouseleave = () => { c.style.transform = ''; c.style.borderColor = 'rgba(255,255,255,.07)'; };
-        c.innerHTML = '<div style="font-size:30px;margin-bottom:8px">' + e.icon + '</div>' +
-            '<div style="font-size:12px;font-weight:800;color:#fff;text-transform:uppercase;letter-spacing:.4px">' + e.name + '</div>' +
-            '<div style="font-size:10.5px;color:' + (e.count === 0 ? '#888' : '#ff8c00') + ';margin-top:4px;font-weight:600">' + (e.count === 0 ? '🕐 Próximamente' : e.count + ' producto' + (e.count !== 1 ? 's' : '')) + '</div>';
+        c.className = 'categoria-card';
+        const icon = document.createElement('span');
+        icon.className = 'cat-icon';
+        const svg = (typeof obtenerIconoCategoriaSVG === 'function') ? obtenerIconoCategoriaSVG(e.cat) : null;
+        if (svg) icon.innerHTML = svg; else icon.textContent = e.icon;
+        const nm = document.createElement('span');
+        nm.className = 'cat-name';
+        nm.textContent = e.name;
+        const ct = document.createElement('span');
+        ct.className = 'cat-count';
+        ct.textContent = e.count === 0 ? 'Próximamente' : e.count + ' producto' + (e.count !== 1 ? 's' : '');
+        c.append(icon, nm, ct);
         c.onclick = () => mostrarVistaCategoria(e.cat);
         wrap.appendChild(c);
     });
 
     const btn = document.createElement('button');
     btn.id = 'catVerMasBtn'; btn.type = 'button';
-    btn.style.cssText = 'display:block;margin:20px auto 0;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.12);color:#fff;font-size:13px;font-weight:700;padding:12px 26px;border-radius:26px;cursor:pointer;transition:background .2s';
+    btn.className = 'cat-vermas-btn';
     const setLabel = open => { btn.textContent = open ? '− Ver menos' : '+ Ver más categorías (' + extras.length + ')'; };
     setLabel(false);
     btn.onclick = () => { const open = wrap.style.display === 'none'; wrap.style.display = open ? 'grid' : 'none'; setLabel(open); };
@@ -465,7 +474,8 @@ function renderizarCategoriasHome() {
         const displayCat = _catDisplayNames[cat] || cat;
         // Pocas unidades (< 3) → al desplegable "Ver más"
         if (count < TM_CAT_MIN) {
-            _extras.push({ cat, count, name: escapeHtml(displayCat), icon: escapeHtml(obtenerIconoCategoria(cat)) });
+            // Sin escapeHtml: _tmCatVerMas inserta con textContent, no innerHTML
+            _extras.push({ cat, count, name: displayCat, icon: obtenerIconoCategoria(cat) });
             return;
         }
         const mv = mvPorCat[cat] || 0;

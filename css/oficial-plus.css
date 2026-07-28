@@ -905,10 +905,12 @@ html body .cta-final .btn-large.tm-btn-tg:hover{
    FOOTER — centrado, marca serif, sociales en cuadrados de vidrio
    ================================================================ */
 html body .footer-premium{
-  border-top:1px solid var(--glass-border) !important;
+  border-top:0 !important;
   padding:64px 0 32px !important;margin-top:80px !important;
   background:linear-gradient(180deg,transparent,rgba(0,0,0,.3)) !important;
-  backdrop-filter:blur(8px) !important;-webkit-backdrop-filter:blur(8px) !important;
+  /* sin backdrop-filter: el borde del área de blur dibuja una línea
+     horizontal justo donde empieza el footer */
+  backdrop-filter:none !important;-webkit-backdrop-filter:none !important;
 }
 html body .footer-premium .footer-premium-grid{display:none !important}
 html body .footer-premium .footer-mobile-brand{
@@ -1017,6 +1019,140 @@ html body.light-mode .footer-premium{
 html body.light-mode .footer-premium .footer-social a{
   background:rgba(0,0,0,.03) !important;border-color:rgba(0,0,0,.08) !important;
 }
+/* Marca del footer legible en ambos modos: gana también a las reglas con
+   body:not(.light-mode) de nuevo-diseno y al footer{color:#fff} de light-mode */
+html body:not(.light-mode) .footer-premium .footer-mobile-brand h3,
+html body.light-mode .footer-premium .footer-mobile-brand h3{
+  color:var(--op-ink) !important;-webkit-text-fill-color:var(--op-ink) !important;
+}
+html body:not(.light-mode) .footer-premium .footer-mobile-brand h3 em,
+html body.light-mode .footer-premium .footer-mobile-brand h3 em{
+  background:linear-gradient(135deg,#FFB585,#FF6A1F) !important;
+  -webkit-background-clip:text !important;background-clip:text !important;
+  -webkit-text-fill-color:transparent !important;font-style:italic !important;
+}
+html body.light-mode .footer-premium{color:var(--op-ink-2) !important}
+
+/* ================================================================
+   MENÚ MÓVIL (drawer) — mismo lenguaje glass del rediseño
+   ================================================================ */
+html body .mobile-menu-overlay{
+  background:rgba(10,7,5,.9) !important;
+  backdrop-filter:blur(30px) saturate(140%) !important;
+  -webkit-backdrop-filter:blur(30px) saturate(140%) !important;
+  padding:26px 22px 40px !important;gap:2px !important;
+}
+html body .mobile-menu-overlay > a,
+html body .mobile-menu-overlay button.nav-mobile-link{
+  display:block !important;width:100% !important;max-width:480px !important;margin:0 auto !important;
+  font-family:var(--font-sans-glass) !important;text-align:left !important;
+  color:var(--op-ink) !important;font-size:16px !important;font-weight:600 !important;
+  padding:15px 18px !important;background:none !important;
+  border:0 !important;border-bottom:1px solid var(--glass-border) !important;
+  border-radius:0 !important;cursor:pointer;text-decoration:none !important;
+  transition:color .2s var(--op-ease),background .2s var(--op-ease) !important;
+}
+html body .mobile-menu-overlay > a:hover,
+html body .mobile-menu-overlay button.nav-mobile-link:hover{
+  color:var(--coral-2) !important;background:var(--glass) !important;
+}
+html body .mobile-menu-overlay .mobile-menu-logo{
+  font-family:var(--op-serif) !important;font-size:24px !important;font-weight:800 !important;
+  color:var(--op-ink) !important;margin:0 auto 18px !important;
+  max-width:480px !important;width:100% !important;
+  display:flex !important;align-items:center !important;gap:10px !important;
+  background:none !important;-webkit-text-fill-color:var(--op-ink) !important;
+}
+html body .mobile-menu-overlay .mobile-menu-logo em{
+  color:var(--coral-2) !important;font-style:italic !important;
+  -webkit-text-fill-color:var(--coral-2) !important;background:none !important;
+}
+html body .mobile-menu-overlay .mobile-menu-close{
+  position:absolute !important;top:22px !important;right:22px !important;
+  width:44px !important;height:44px !important;border-radius:50% !important;
+  background:var(--glass) !important;border:1px solid var(--glass-border-strong) !important;
+  color:var(--op-ink) !important;font-size:20px !important;line-height:1 !important;
+  display:grid !important;place-items:center !important;cursor:pointer;
+  backdrop-filter:blur(10px) !important;-webkit-backdrop-filter:blur(10px) !important;
+  box-shadow:none !important;
+}
+html body .mobile-menu-overlay .mobile-theme-btn{
+  display:block !important;width:100% !important;max-width:480px !important;
+  margin:20px auto 0 !important;padding:13px 22px !important;
+  background:var(--glass) !important;border:1px solid var(--glass-border-strong) !important;
+  border-radius:999px !important;color:var(--op-ink) !important;
+  font-family:var(--font-sans-glass) !important;font-size:14.5px !important;font-weight:700 !important;
+  text-align:center !important;box-shadow:none !important;cursor:pointer;
+  backdrop-filter:blur(10px) !important;-webkit-backdrop-filter:blur(10px) !important;
+}
+html body .mobile-menu-overlay .mobile-menu-actions{
+  display:flex !important;flex-direction:column !important;gap:10px !important;
+  width:100% !important;max-width:480px !important;margin:14px auto 0 !important;
+  border:0 !important;background:none !important;padding:0 !important;
+}
+html body .mobile-menu-overlay .mobile-menu-actions a{
+  display:block !important;text-align:center !important;padding:13px 22px !important;
+  border-radius:999px !important;font-family:var(--font-sans-glass) !important;
+  font-size:14.5px !important;font-weight:700 !important;text-decoration:none !important;
+  border:1px solid transparent !important;box-shadow:none !important;
+}
+html body .mobile-menu-overlay .mobile-action-grupo{
+  background:rgba(0,136,204,.14) !important;color:#5AB6E8 !important;border-color:rgba(0,136,204,.35) !important;
+}
+html body .mobile-menu-overlay .mobile-action-wagrupo,
+html body .mobile-menu-overlay .mobile-action-ayuda{
+  background:rgba(37,211,102,.12) !important;color:#4ADE80 !important;border-color:rgba(37,211,102,.3) !important;
+}
+/* Modo claro: hay que repetir con body.light-mode para ganarle a las reglas
+   de light-mode.css que pintan cajitas grises en cada fila */
+html body.light-mode .mobile-menu-overlay{background:rgba(250,246,238,.94) !important}
+html body.light-mode .mobile-menu-overlay > a,
+html body.light-mode .mobile-menu-overlay button.nav-mobile-link{
+  background:none !important;border:0 !important;
+  border-bottom:1px solid rgba(0,0,0,.08) !important;border-radius:0 !important;
+  color:var(--op-ink) !important;box-shadow:none !important;
+}
+html body.light-mode .mobile-menu-overlay > a:hover,
+html body.light-mode .mobile-menu-overlay button.nav-mobile-link:hover{
+  color:var(--coral) !important;background:rgba(0,0,0,.03) !important;
+}
+html body.light-mode .mobile-menu-overlay .mobile-theme-btn{
+  background:rgba(0,0,0,.04) !important;border:1px solid rgba(0,0,0,.12) !important;
+  color:var(--op-ink) !important;box-shadow:none !important;height:auto !important;
+  border-radius:999px !important;
+}
+html body.light-mode .mobile-menu-overlay .mobile-menu-close{
+  background:rgba(0,0,0,.04) !important;border-color:rgba(0,0,0,.12) !important;
+  color:var(--op-ink) !important;
+}
+html body.light-mode .mobile-menu-overlay .mobile-menu-actions a{box-shadow:none !important}
+html body.light-mode .mobile-menu-overlay .mobile-action-grupo{
+  background:rgba(0,136,204,.10) !important;color:#0077B5 !important;
+  border:1px solid rgba(0,136,204,.3) !important;
+}
+html body.light-mode .mobile-menu-overlay .mobile-action-wagrupo,
+html body.light-mode .mobile-menu-overlay .mobile-action-ayuda{
+  background:rgba(37,211,102,.10) !important;color:#12813F !important;
+  border:1px solid rgba(37,211,102,.3) !important;
+}
+/* La forma del botón de tema también en oscuro (legado lo hace óvalo 46px) */
+html body .mobile-menu-overlay .mobile-theme-btn{height:auto !important}
+
+/* ── Botón y grilla de "Ver más categorías": mismo lenguaje que el resto ── */
+html body .cat-vermas-btn{
+  display:block;margin:26px auto 0;
+  background:var(--glass) !important;border:1px solid var(--glass-border-strong) !important;
+  color:var(--op-ink) !important;font-family:var(--font-sans-glass) !important;
+  font-size:13.5px !important;font-weight:700 !important;
+  padding:12px 26px !important;border-radius:999px !important;cursor:pointer;
+  backdrop-filter:blur(12px) !important;-webkit-backdrop-filter:blur(12px) !important;
+  transition:all .25s var(--op-ease) !important;
+}
+html body .cat-vermas-btn:hover{
+  border-color:rgba(255,106,31,.45) !important;color:var(--coral-2) !important;
+  transform:translateY(-1px);
+}
+html body .categorias-home #catExtraWrap{margin-top:18px !important}
 
 @media (prefers-reduced-motion:reduce){
   html body .op-chip .op-pulse,
