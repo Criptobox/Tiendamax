@@ -248,7 +248,7 @@
     <noscript><link rel="stylesheet" href="css/fonts.css?v=8b616cbe"></noscript>
 
     <!-- Preload del bundle JS del núcleo (generado por scripts/build_js_bundle.py) -->
-    <link rel="preload" href="js/tm-bundle.js?v=a91c74dc" as="script">
+    <link rel="preload" href="js/tm-bundle.js?v=5609740d" as="script">
 
     <!-- Preload del catálogo: la foto hero (fetchpriority=high) no puede pedirse
          hasta que este JSON responda y arme el <img>; sin este preload, el
@@ -600,7 +600,16 @@
                 <p class="section-eyebrow">Los que más se llevan</p>
                 <h2 class="section-title">Productos <em>Destacados</em></h2>
                 <p class="section-subtitle">Lo más pedido por nuestros clientes. Toca cualquiera para verlo completo.</p>
-                <div class="productos-grid" id="masVendidosGrid"></div>
+                <div class="mv-slider-wrap" id="mvSliderWrap">
+                    <button type="button" class="mv-nav mv-prev" id="mvPrev" aria-label="Destacado anterior">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+                    </button>
+                    <div class="productos-grid" id="masVendidosGrid"></div>
+                    <button type="button" class="mv-nav mv-next" id="mvNext" aria-label="Siguiente destacado">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+                    </button>
+                </div>
+                <div class="mv-dots" id="mvDots" role="tablist" aria-label="Navegación de destacados"></div>
                 <p id="masVendidosVacio" class="mv-vacio" style="display:none;">Pronto publicaremos nuestros destacados.</p>
             </div>
         </section>
@@ -1516,7 +1525,7 @@
     <!-- ===== TiendaMax modularizado (reemplaza script.js) ===== -->
     <!-- Bundle único (config→data→state→admin→product→catalog→init→ui→toast→iife→patches),
          generado por scripts/build_js_bundle.py a partir de js/src/*.src.js -->
-    <script src="js/tm-bundle.js?v=a91c74dc" defer></script>
+    <script src="js/tm-bundle.js?v=5609740d" defer></script>
 
     <!-- Agente de chat: separado del bundle (62 KB min) porque no hace falta
          para el primer render del catálogo. Carga con su propio <script defer>

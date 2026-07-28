@@ -487,6 +487,114 @@ function renderizarCategoriasHome() {
 
 // ===== RENDERIZAR MÁS VENDIDOS =====
 
+// ── Carrusel de "Productos Destacados" ──────────────────────────
+// Deslizamiento horizontal con flechas, puntos y avance automático.
+// renderizarMasVendidos() lo llama cada vez que repinta la fila (los datos
+// se refrescan desde GitHub/Firebase), así que lo primero es limpiar el
+// estado anterior: si no, se acumulan intervalos y listeners duplicados.
+let _mvSliderEstado = null;
+function _tmInitDestacadosSlider() {
+    const grid = document.getElementById('masVendidosGrid');
+    const wrap = document.getElementById('mvSliderWrap');
+    if (!grid || !wrap) return;
+
+    // Limpieza del render anterior
+    if (_mvSliderEstado) {
+        clearInterval(_mvSliderEstado.timer);
+        _mvSliderEstado.limpiar();
+        _mvSliderEstado = null;
+    }
+
+    const cards = Array.from(grid.children);
+    const prev = document.getElementById('mvPrev');
+    const next = document.getElementById('mvNext');
+    const dotsWrap = document.getElementById('mvDots');
+
+    if (dotsWrap) dotsWrap.innerHTML = '';
+    if (cards.length < 2) { wrap.classList.add('mv-sin-controles'); return; }
+
+    // Los controles solo tienen sentido si la fila realmente desborda. Con 2
+    // destacados en escritorio entran de sobra y unas flechas que no mueven
+    // nada confunden; en móvil las mismas 2 sí desbordan y ahí sí van.
+    const hayDesborde = () => grid.scrollWidth > grid.clientWidth + 4;
+    const aplicarControles = () => wrap.classList.toggle('mv-sin-controles', !hayDesborde());
+    aplicarControles();
+    window.addEventListener('resize', aplicarControles);
+
+    let pagina = 0;
+    const dots = cards.map((_, i) => {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.setAttribute('aria-label', 'Ver destacado ' + (i + 1));
+        if (i === 0) b.classList.add('active');
+        b.addEventListener('click', () => { pausar(); irA(i); reanudar(); });
+        dotsWrap.appendChild(b);
+        return b;
+    });
+
+    function marcar(i) {
+        pagina = ((i % cards.length) + cards.length) % cards.length;
+        dots.forEach((d, n) => d.classList.toggle('active', n === pagina));
+    }
+    function irA(i) {
+        marcar(i);
+        const card = cards[pagina];
+        if (!card) return;
+        // scrollTo relativo: centra la tarjeta sin depender de anchos fijos
+        const r = card.getBoundingClientRect();
+        const g = grid.getBoundingClientRect();
+        grid.scrollTo({ left: grid.scrollLeft + (r.left - g.left) - 8, behavior: 'smooth' });
+    }
+
+    let timer = null;
+    const reducido = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    function reanudar() {
+        if (reducido) return;      // sin auto-avance si el usuario pidió menos movimiento
+        if (!hayDesborde()) return; // nada que rotar: no gastar un intervalo de fondo
+        clearInterval(timer);
+        timer = setInterval(() => irA(pagina + 1), 5000);
+        if (_mvSliderEstado) _mvSliderEstado.timer = timer;
+    }
+    function pausar() { clearInterval(timer); }
+
+    const onPrev = () => { pausar(); irA(pagina - 1); reanudar(); };
+    const onNext = () => { pausar(); irA(pagina + 1); reanudar(); };
+    if (prev) prev.addEventListener('click', onPrev);
+    if (next) next.addEventListener('click', onNext);
+    grid.addEventListener('mouseenter', pausar);
+    grid.addEventListener('mouseleave', reanudar);
+
+    // Al deslizar con el dedo/trackpad, sincronizar el punto activo
+    let scrollTimer = null;
+    const onScroll = () => {
+        clearTimeout(scrollTimer);
+        scrollTimer = setTimeout(() => {
+            const g = grid.getBoundingClientRect();
+            let cerca = 0, min = Infinity;
+            cards.forEach((c, i) => {
+                const d = Math.abs(c.getBoundingClientRect().left - g.left);
+                if (d < min) { min = d; cerca = i; }
+            });
+            marcar(cerca);
+        }, 120);
+    };
+    grid.addEventListener('scroll', onScroll, { passive: true });
+
+    _mvSliderEstado = {
+        timer,
+        limpiar() {
+            if (prev) prev.removeEventListener('click', onPrev);
+            if (next) next.removeEventListener('click', onNext);
+            grid.removeEventListener('mouseenter', pausar);
+            grid.removeEventListener('mouseleave', reanudar);
+            grid.removeEventListener('scroll', onScroll);
+            window.removeEventListener('resize', aplicarControles);
+            clearTimeout(scrollTimer);
+        }
+    };
+    reanudar();
+}
+
 function renderizarMasVendidos() {
     // Siempre actualizar el hero galería, independiente de si el grid existe
     if (typeof renderHeroGaleria === 'function') renderHeroGaleria();
@@ -514,10 +622,15 @@ function renderizarMasVendidos() {
     productosAMostrar.forEach(producto => {
         if (typeof window._tmCrearCard !== 'function') return;
         const card = window._tmCrearCard(producto, { lazy: true });
-        card.classList.add('tm-anim-card');
+        // .mv-card = tratamiento visual propio de destacados (ver oficial-plus.css).
+        // No lleva .tm-anim-card: el reveal por scroll deja las tarjetas en
+        // opacity:0 hasta que entran en viewport, y dentro de un carrusel
+        // horizontal las que están fuera de vista nunca "entran", así que se
+        // quedaban invisibles al deslizar.
+        card.classList.add('mv-card');
         grid.appendChild(card);
-        if (window._tmAnimObs) window._tmAnimObs.observe(card);
     });
+    _tmInitDestacadosSlider();
 
     // Poblar la sección "Oferta del día" (se oculta sola si no hay ofertaDiaId)
     if (typeof renderOfertaDelDia === 'function') renderOfertaDelDia();

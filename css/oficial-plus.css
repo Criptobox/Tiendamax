@@ -101,23 +101,100 @@ html body #mas-vendidos .section-eyebrow,
 html body #mas-vendidos .section-title,
 html body #mas-vendidos .section-subtitle{text-align:center !important}
 html body #mas-vendidos .container{text-align:center}
-/* La grilla del catálogo es `repeat(auto-fill,minmax(280px,1fr))`: las pistas
-   son 1fr, así que con 2 destacados las tarjetas se quedaban pegadas a la
-   izquierda y justify-content no hace nada. Aquí se pasa a flex para que la
-   fila quede centrada con pocos y siga llenándose al marcar más destacados. */
+/* ── Carrusel: fila que se desliza de lado a lado ──
+   La grilla del catálogo es `repeat(auto-fill,minmax(280px,1fr))`. Aquí se
+   pasa a flex en una sola línea con scroll-snap, para que los destacados
+   giren en carrusel en vez de apilarse en filas como el resto del catálogo. */
+html body #mas-vendidos .mv-slider-wrap{
+  position:relative;margin-top:36px;
+  display:flex;align-items:center;gap:8px;
+}
 html body #mas-vendidos #masVendidosGrid{
-  margin-top:36px !important;text-align:left !important;
-  display:flex !important;flex-wrap:wrap !important;
-  justify-content:center !important;gap:28px !important;
+  text-align:left !important;
+  display:flex !important;flex-wrap:nowrap !important;
   grid-template-columns:none !important;
+  gap:22px !important;margin:0 !important;
+  overflow-x:auto !important;overflow-y:visible !important;
+  scroll-snap-type:x mandatory;scroll-padding:4px;
+  padding:6px 4px 18px !important;flex:1 1 auto;min-width:0;
+  scrollbar-width:none;-ms-overflow-style:none;
+  scroll-behavior:smooth;
 }
+html body #mas-vendidos #masVendidosGrid::-webkit-scrollbar{display:none}
 html body #mas-vendidos #masVendidosGrid > .producto-card{
-  flex:0 1 300px !important;max-width:340px !important;
+  flex:0 0 300px !important;max-width:300px !important;
+  scroll-snap-align:start;
 }
+/* Con pocas tarjetas se centran; con muchas arrancan desde la izquierda */
+html body #mas-vendidos .mv-slider-wrap.mv-sin-controles #masVendidosGrid,
+html body #mas-vendidos #masVendidosGrid{justify-content:safe center !important}
+
+/* Flechas circulares a los lados */
+html body #mas-vendidos .mv-nav{
+  flex:0 0 auto;width:44px;height:44px;border-radius:50%;
+  background:var(--glass);border:1px solid var(--glass-border);
+  color:var(--op-ink-2);display:grid;place-items:center;cursor:pointer;
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  transition:all .2s var(--op-ease);
+}
+html body #mas-vendidos .mv-nav:hover{
+  background:linear-gradient(135deg,#FF6A1F,#D24E0F);color:#fff;
+  border-color:transparent;transform:translateY(-2px);
+  box-shadow:0 10px 24px rgba(255,106,31,.4);
+}
+html body #mas-vendidos .mv-slider-wrap.mv-sin-controles .mv-nav{display:none}
+
+/* Puntos: el activo se estira en píldora */
+html body #mas-vendidos .mv-dots{
+  display:flex;justify-content:center;gap:8px;margin-top:6px;
+}
+html body #mas-vendidos .mv-slider-wrap.mv-sin-controles + .mv-dots{display:none}
+html body #mas-vendidos .mv-dots button{
+  width:8px;height:8px;border-radius:50%;padding:0;border:0;cursor:pointer;
+  background:rgba(255,255,255,.15);transition:all .3s var(--op-ease);
+}
+html body .light-mode #mas-vendidos .mv-dots button{background:rgba(0,0,0,.15)}
+html body #mas-vendidos .mv-dots button.active{
+  width:28px;border-radius:5px;
+  background:linear-gradient(90deg,var(--coral),var(--gold));
+  box-shadow:0 0 12px rgba(255,106,31,.5);
+}
+
+/* ── Tratamiento propio de DESTACADO: se diferencia de la grilla normal y
+   de "Vistos recientemente" con borde coral, halo y realce al pasar. ── */
+html body #mas-vendidos .producto-card.mv-card{
+  border:1px solid rgba(255,106,31,.28) !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.10),
+             0 14px 40px rgba(0,0,0,.4),
+             0 0 40px rgba(255,106,31,.10) !important;
+  opacity:1 !important;transform:none !important;
+  transition:transform .35s var(--op-ease),box-shadow .35s var(--op-ease),border-color .25s var(--op-ease) !important;
+}
+html body #mas-vendidos .producto-card.mv-card:hover{
+  transform:translateY(-8px) !important;
+  border-color:rgba(255,106,31,.5) !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.14),
+             0 28px 60px rgba(0,0,0,.55),
+             0 0 60px rgba(255,106,31,.22) !important;
+}
+/* Filo dorado superior: el sello de "esto es un destacado" */
+html body #mas-vendidos .producto-card.mv-card::after{
+  content:"";position:absolute;top:0;left:0;right:0;height:2px;z-index:4;
+  background:linear-gradient(90deg,transparent,var(--gold),var(--coral),transparent);
+  border-radius:2px;pointer-events:none;
+}
+html body.light-mode #mas-vendidos .producto-card.mv-card{
+  border-color:rgba(255,106,31,.22) !important;
+  box-shadow:0 10px 30px rgba(0,0,0,.07),0 0 30px rgba(255,106,31,.06) !important;
+}
+
 @media (max-width:768px){
-  html body #mas-vendidos #masVendidosGrid{gap:14px !important}
+  html body #mas-vendidos .mv-nav{display:none}
+  html body #mas-vendidos #masVendidosGrid{
+    gap:14px !important;padding:6px 16px 16px !important;margin:0 -16px !important;
+  }
   html body #mas-vendidos #masVendidosGrid > .producto-card{
-    flex:0 1 calc(50% - 7px) !important;max-width:none !important;
+    flex:0 0 78% !important;max-width:320px !important;scroll-snap-align:center;
   }
 }
 html body #mas-vendidos .mv-vacio{
