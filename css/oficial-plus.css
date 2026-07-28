@@ -916,22 +916,30 @@ html body .testimonio-card .resena-verificada{
    CTA CANALES — tarjeta de vidrio grande
    ================================================================ */
 html body .cta-final{background:none !important;border:0 !important}
-html body .cta-final .container{
-  position:relative;
+/* Los :not(...) igualan la especificidad de nuevo-diseno.css, que si no deja la
+   tarjeta en negro plano con borde y resplandor VERDES — de ahí que se viera
+   apagada y sin el vidrio cálido del preview. */
+html body .cta-final .container,
+html body:not(.light-mode) .cta-final .container{
+  position:relative !important;
   background:
-    radial-gradient(ellipse at 50% 0%,rgba(255,106,31,.20),transparent 60%),
-    linear-gradient(160deg,rgba(255,255,255,.07) 0%,rgba(255,255,255,.02) 100%);
-  backdrop-filter:blur(28px) saturate(160%);-webkit-backdrop-filter:blur(28px) saturate(160%);
-  border:1px solid var(--glass-border-strong);
-  border-radius:var(--op-r-xl);
-  padding:60px 48px !important;text-align:center;
-  max-width:880px;margin:0 auto;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 30px 80px rgba(0,0,0,.5);
-  overflow:hidden;
+    radial-gradient(ellipse 70% 60% at 50% 0%,rgba(255,106,31,.28),transparent 62%),
+    linear-gradient(160deg,rgba(255,255,255,.085) 0%,rgba(255,255,255,.025) 100%) !important;
+  backdrop-filter:blur(28px) saturate(160%) !important;-webkit-backdrop-filter:blur(28px) saturate(160%) !important;
+  border:1px solid rgba(255,255,255,.14) !important;
+  border-radius:var(--op-r-xl) !important;
+  padding:60px 48px !important;text-align:center !important;
+  max-width:880px !important;margin:0 auto !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 30px 80px rgba(0,0,0,.5) !important;
+  overflow:hidden !important;
 }
-html body .cta-final .container::before{
-  content:"";position:absolute;top:0;left:0;right:0;height:1px;
-  background:linear-gradient(90deg,transparent,var(--gold),var(--coral),transparent);
+/* Filo dorado→coral arriba; nuevo-diseno lo pintaba de verde */
+html body .cta-final .container::before,
+html body:not(.light-mode) .cta-final .container::before{
+  content:"" !important;position:absolute !important;top:0 !important;left:0 !important;right:0 !important;
+  height:1px !important;width:auto !important;bottom:auto !important;
+  background:linear-gradient(90deg,transparent,var(--gold),var(--coral),transparent) !important;
+  opacity:1 !important;
 }
 html body .cta-final p{
   color:var(--op-ink-2) !important;
@@ -1067,10 +1075,10 @@ html body.light-mode .categorias-home .categorias-grid .categoria-card .cat-icon
 }
 html body.light-mode .cta-final .container{
   background:
-    radial-gradient(ellipse at 50% 0%,rgba(255,106,31,.12),transparent 60%),
-    rgba(255,255,255,.8);
-  border-color:rgba(0,0,0,.08);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.8),0 20px 60px rgba(0,0,0,.08);
+    radial-gradient(ellipse 70% 60% at 50% 0%,rgba(255,106,31,.16),transparent 62%),
+    rgba(255,255,255,.82) !important;
+  border:1px solid rgba(0,0,0,.08) !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.8),0 20px 60px rgba(0,0,0,.08) !important;
 }
 html body.light-mode .footer-premium{
   background:linear-gradient(180deg,transparent,rgba(0,0,0,.04)) !important;
