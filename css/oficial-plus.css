@@ -1544,3 +1544,11 @@ html body:not(.light-mode) .footer-premium,
 html body.light-mode .footer-premium{
   border-top:0 !important;background:transparent !important;
 }
+
+/* Tarjetas de confianza trasladadas bajo las miniaturas en escritorio */
+@media (min-width:1024px){
+  html body #productDetailModal .detail-trust-badges.dtb-en-foto{
+    display:grid !important;grid-template-columns:1fr 1fr !important;
+    gap:12px !important;margin:16px 0 0 !important;padding:0 !important;
+  }
+}

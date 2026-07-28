@@ -630,6 +630,24 @@ if (_detailPrecioMNEl) {
             '<div class="detail-trust-card"><span class="dtc-ic">' + c.ic + '</span><div class="dtc-tx"><b>' + c.t + '</b><small>' + c.s + '</small></div></div>'
         ).join('');
         trustBadgesEl.style.display = 'grid';
+        // En escritorio la ficha va en dos columnas y la de la foto queda con
+        // hueco muerto bajo las miniaturas (peor aún si el producto trae una
+        // sola imagen). Estas tarjetas lo rellenan. No se puede mover por CSS
+        // porque el elemento está anidado dentro de .detail-body, no es hijo
+        // directo de la rejilla; de ahí el traslado del nodo.
+        try {
+            const _esEscritorio = window.matchMedia && window.matchMedia('(min-width:1024px)').matches;
+            const _foto = document.querySelector('#productDetailModal .detail-image-wrap');
+            const _pills = document.querySelector('#productDetailModal .detail-share-pills');
+            if (_esEscritorio && _foto) {
+                _foto.appendChild(trustBadgesEl);
+                trustBadgesEl.classList.add('dtb-en-foto');
+            } else if (_pills && _pills.parentNode) {
+                // Volver a su sitio original (por si se abrió antes en escritorio)
+                _pills.parentNode.insertBefore(trustBadgesEl, _pills);
+                trustBadgesEl.classList.remove('dtb-en-foto');
+            }
+        } catch (e) { /* si algo falla, se queda donde estaba */ }
     }
 
     // Descripción
