@@ -1,10 +1,10 @@
 {
-  "generado": "2026-07-27T12:13:26.705448+00:00",
+  "generado": "2026-07-28T11:10:14.931078+00:00",
   "productos": 116,
   "urgentes": 0,
-  "advertencias": 38,
-  "info": 9,
-  "resumen": "Anoche revisé tus 116 productos y encontré 38 advertencia(s), 9 de info.",
+  "advertencias": 41,
+  "info": 8,
+  "resumen": "Anoche revisé tus 116 productos y encontré 41 advertencia(s), 8 de info.",
   "detalle": [
     {
       "tipo": "agotado",
@@ -193,7 +193,22 @@
     },
     {
       "tipo": "agotado",
+      "nombre": "​🔌 Cargador Inteligente Ntrc 20A",
+      "detalle": "agotado (stock 0)"
+    },
+    {
+      "tipo": "agotado",
+      "nombre": "​🔌 Cargador Inteligente Ntrc 35A",
+      "detalle": "agotado (stock 0)"
+    },
+    {
+      "tipo": "agotado",
       "nombre": "​🌐 Mikrotik Sxtsq LITE5",
+      "detalle": "agotado (stock 0)"
+    },
+    {
+      "tipo": "agotado",
+      "nombre": "​🔥 Soldadora Inverter MMA-300",
       "detalle": "agotado (stock 0)"
     },
     {
@@ -230,11 +245,6 @@
       "tipo": "precio",
       "nombre": "​🚗 Changan CS75 PLUS 2024 (Suv Compacta)",
       "detalle": "precio: 33000"
-    },
-    {
-      "tipo": "stock_bajo",
-      "nombre": "​🔥 Soldadora Inverter MMA-300",
-      "detalle": "quedan 2"
     },
     {
       "tipo": "stock_bajo",
