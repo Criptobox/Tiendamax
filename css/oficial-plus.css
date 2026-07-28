@@ -1810,3 +1810,27 @@ html body .tm-steps-foot .tm-ico-ui{ color:var(--gold, #F2B632); }
 /* Paso 3 ("Pagas al recibir") lleva número verde: que el ícono lo acompañe.
    Si el navegador no soporta :has(), el ícono queda coral — sin ruptura. */
 html body .tm-step:has(.tm-step-num.green) h3 .tm-ico-ui{ color:#2ecc71; }
+
+/* Iconos que heredaban un color de texto apagado y quedaban casi invisibles
+   (stock y la línea de CANTIDAD): van en coral como los de las specs, que es
+   lo que tienen justo al lado. El texto conserva su color. */
+html body #detailProductStock svg.tm-ico-ui,
+html body #detailQtyStock svg.tm-ico-ui{
+  color:var(--coral, #FF6A1F);opacity:1;
+}
+html body.light-mode #detailProductStock svg.tm-ico-ui,
+html body.light-mode #detailQtyStock svg.tm-ico-ui{
+  color:var(--coral-deep, #D24E0F);
+}
+
+/* Modo claro: el coral #FF6A1F sobre fondo claro se queda en 2,9:1 — por
+   debajo del mínimo de 3:1 que piden los iconos. Se usa el coral oscuro,
+   y un dorado más profundo en el pie de "cómo comprar". */
+html body.light-mode #tituloCategoriaActual > svg,
+html body.light-mode .tm-empty-icon > svg,
+html body.light-mode .tm-step h3 .tm-ico-ui,
+html body.light-mode #tm-cta-link .tm-ico-ui{
+  color:var(--coral-deep, #D24E0F);
+}
+html body.light-mode .tm-steps-foot .tm-ico-ui{ color:#9A6D10; }
+html body.light-mode .tm-step:has(.tm-step-num.green) h3 .tm-ico-ui{ color:#12864A; }
