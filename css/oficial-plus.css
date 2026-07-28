@@ -1232,7 +1232,6 @@ html body .categorias-home #catExtraWrap.cat-extra-oculto{display:none !importan
    ================================================================ */
 html body .detail-modal-content,
 html body:not(.light-mode) .detail-modal-content,
-html body:not(.light-mode) .detail-body,
 html body:not(.light-mode) #productDetailModal .modal-content{
   background:
     radial-gradient(ellipse 90% 40% at 50% 0%,rgba(255,106,31,.10),transparent 60%),
@@ -1241,13 +1240,26 @@ html body:not(.light-mode) #productDetailModal .modal-content{
   border:1px solid rgba(255,106,31,.16) !important;
 }
 html body.light-mode .detail-modal-content,
-html body.light-mode .detail-body,
 html body.light-mode #productDetailModal .modal-content{
   background:
     radial-gradient(ellipse 90% 40% at 50% 0%,rgba(255,106,31,.09),transparent 60%),
     #FFFCF8 !important;
   color:var(--op-ink) !important;
   border:1px solid rgba(255,106,31,.14) !important;
+}
+/* .detail-body va SIN fondo ni borde propios: comparte la superficie del
+   modal. Antes iba en el mismo grupo de arriba y heredaba el borde coral y
+   el degradado, así que dibujaba un rectángulo dentro del modal (la raya
+   vertical entre la foto y la información, y el marco alrededor del texto).
+   Sigue necesitando ganarle a rediseno-cards.css/light-mode.css, que lo
+   pintan de gris plano — de ahí los !important. */
+html body .detail-body,
+html body:not(.light-mode) .detail-body,
+html body.light-mode .detail-body,
+html body.light-mode #productDetailModal .detail-body{
+  background:transparent !important;
+  border:0 !important;
+  color:var(--op-ink) !important;
 }
 /* Nombre del producto en serif, como los títulos de sección */
 html body .detail-modal-content .modal-header h2,
@@ -1834,3 +1846,240 @@ html body.light-mode #tm-cta-link .tm-ico-ui{
 }
 html body.light-mode .tm-steps-foot .tm-ico-ui{ color:#9A6D10; }
 html body.light-mode .tm-step:has(.tm-step-num.green) h3 .tm-ico-ui{ color:#12864A; }
+
+/* ═══════════════════════════════════════════════════════════════
+   FICHA — PULIDO: separadores, sombras y botones
+   ═══════════════════════════════════════════════════════════════ */
+
+/* --- 1. Separadores de sección ---------------------------------
+   styles.css los pinta con `border-top:1px solid #f0ebe4` y solo los
+   corrige bajo `body.dark-mode`, una clase que este sitio NO usa (el
+   oscuro es el tema por defecto y el claro es `.light-mode`). Resultado:
+   tres líneas casi blancas cruzando el modal en oscuro. Se sustituyen por
+   una línea que se desvanece hacia los bordes, del color del tema. */
+html body .detail-description-section,
+html body .detail-resenas-section,
+html body .detail-relacionados,
+html body #detailRelacionados{
+  border-top:0 !important;
+  position:relative;
+}
+html body .detail-description-section::before,
+html body .detail-resenas-section::before,
+html body #detailRelacionados::before{
+  content:'';position:absolute;left:0;right:0;top:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.10) 18%,rgba(255,255,255,.10) 82%,transparent);
+  pointer-events:none;
+}
+html body.light-mode .detail-description-section::before,
+html body.light-mode .detail-resenas-section::before,
+html body.light-mode #detailRelacionados::before{
+  background:linear-gradient(90deg,transparent,rgba(0,0,0,.09) 18%,rgba(0,0,0,.09) 82%,transparent);
+}
+
+/* Cantidad: llevaba línea arriba Y abajo, dos rayas para separar una fila.
+   Se queda solo la de arriba, con el mismo desvanecido. */
+html body #productDetailModal #detailQtyRow,
+html body #detailQtyRow{
+  border-top:0 !important;border-bottom:0 !important;
+  position:relative;
+}
+html body #detailQtyRow::before{
+  content:'';position:absolute;left:0;right:0;top:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.10) 12%,rgba(255,255,255,.10) 88%,transparent);
+}
+html body.light-mode #detailQtyRow::before{
+  background:linear-gradient(90deg,transparent,rgba(0,0,0,.09) 12%,rgba(0,0,0,.09) 88%,transparent);
+}
+
+/* --- 2. La foto se queda a la vista al bajar --------------------
+   En escritorio la columna de la foto medía ~620px dentro de un modal de
+   ~850px y el resto quedaba en blanco mientras la derecha seguía
+   scrolleando. Ahora acompaña el scroll y ese hueco desaparece. */
+@media (min-width:768px){
+  html body #productDetailModal .detail-image-wrap{
+    position:sticky !important;top:0 !important;
+    align-self:start !important;
+    padding-bottom:18px;
+  }
+}
+
+/* --- 3. Botones: una sola familia ------------------------------
+   Antes convivían radios de 12, 14, 18 y 50px y tres lenguajes de sombra
+   (glow verde fuerte, glow dorado, sombra neutra). Se unifican al radio
+   de botón del sistema y a sombras cortas, con luz interior arriba. */
+html body #productDetailModal .detail-buy-btn,
+html body #productDetailModal #detailBuyBtn,
+html body #productDetailModal .detail-sticky-cta .dsc-buy-btn{
+  border-radius:var(--tm-radius-btn,14px) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.22),
+    0 10px 26px -16px rgba(37,211,102,.85) !important;
+}
+html body #productDetailModal .detail-buy-btn:hover,
+html body #productDetailModal #detailBuyBtn:hover{
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.28),
+    0 14px 30px -14px rgba(37,211,102,.9) !important;
+}
+
+/* Píldoras de compartir: mismo radio y mismo borde que el resto */
+html body #productDetailModal .detail-share-pill{
+  border-radius:var(--tm-radius-btn,14px) !important;
+  background:rgba(255,255,255,.045) !important;
+  border:1px solid rgba(255,255,255,.10) !important;
+  box-shadow:none !important;
+  transition:background .18s ease,border-color .18s ease,transform .18s ease;
+}
+html body #productDetailModal .detail-share-pill:hover{
+  background:rgba(255,106,31,.10) !important;
+  border-color:rgba(255,106,31,.32) !important;
+  transform:translateY(-1px);
+}
+html body.light-mode #productDetailModal .detail-share-pill{
+  background:rgba(0,0,0,.035) !important;
+  border-color:rgba(0,0,0,.10) !important;
+}
+html body.light-mode #productDetailModal .detail-share-pill:hover{
+  background:rgba(210,78,15,.08) !important;
+  border-color:rgba(210,78,15,.30) !important;
+}
+
+/* Favorito / carrito y el paso de cantidad: misma piel que las píldoras */
+html body #productDetailModal .detail-cta-fav,
+html body #productDetailModal .detail-cta-cart,
+html body #productDetailModal .detail-qty-stepper{
+  border-radius:var(--tm-radius-btn,14px) !important;
+  background:rgba(255,255,255,.045) !important;
+  border:1px solid rgba(255,255,255,.10) !important;
+  box-shadow:none !important;
+}
+html body.light-mode #productDetailModal .detail-cta-fav,
+html body.light-mode #productDetailModal .detail-cta-cart,
+html body.light-mode #productDetailModal .detail-qty-stepper{
+  background:rgba(0,0,0,.035) !important;
+  border-color:rgba(0,0,0,.10) !important;
+}
+
+/* Tarjetas de confianza: radio del sistema y borde coral en vez del dorado
+   suelto que traían, para que no compitan con el resto de la ficha. */
+html body #productDetailModal .detail-trust-card{
+  border-radius:var(--tm-radius-btn,14px) !important;
+  border:1px solid rgba(255,255,255,.09) !important;
+  background:rgba(255,255,255,.035) !important;
+  box-shadow:0 6px 18px -12px rgba(0,0,0,.8) !important;
+}
+html body.light-mode #productDetailModal .detail-trust-card{
+  border-color:rgba(0,0,0,.08) !important;
+  background:#fff !important;
+  box-shadow:0 6px 16px -12px rgba(0,0,0,.35) !important;
+}
+
+/* Cerrar: el glow dorado no pertenece a esta paleta y en claro el botón
+   quedaba gris sobre gris. Círculo sobrio, con contraste en ambos temas. */
+html body #productDetailModal .close-btn-floating{
+  background:rgba(20,14,12,.62) !important;
+  border:1px solid rgba(255,255,255,.16) !important;
+  color:#fff !important;
+  box-shadow:0 6px 18px -8px rgba(0,0,0,.75) !important;
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  transition:background .18s ease,border-color .18s ease,transform .18s ease;
+}
+html body #productDetailModal .close-btn-floating:hover{
+  background:rgba(255,106,31,.85) !important;
+  border-color:rgba(255,106,31,.9) !important;
+  transform:rotate(90deg);
+}
+html body.light-mode #productDetailModal .close-btn-floating{
+  background:rgba(255,255,255,.9) !important;
+  border-color:rgba(0,0,0,.12) !important;
+  color:#1A1A1A !important;
+  box-shadow:0 6px 18px -10px rgba(0,0,0,.4) !important;
+}
+html body.light-mode #productDetailModal .close-btn-floating:hover{
+  background:var(--coral-deep,#D24E0F) !important;
+  border-color:var(--coral-deep,#D24E0F) !important;
+  color:#fff !important;
+}
+
+/* --- 4. Barra fija de compra (móvil) ---------------------------
+   Era translúcida sin desenfoque, así que los chips de specs se leían por
+   debajo. Se opaca con blur y el cuerpo reserva su altura para que el
+   último bloque no quede tapado. */
+html body #productDetailModal .detail-sticky-cta{
+  background:#0D0A0C !important;
+  border-top:1px solid rgba(255,255,255,.07) !important;
+  box-shadow:0 -14px 34px -18px rgba(0,0,0,.9) !important;
+}
+html body.light-mode #productDetailModal .detail-sticky-cta{
+  background:#FFFCF8 !important;
+  border-top:1px solid rgba(0,0,0,.07) !important;
+  box-shadow:0 -14px 30px -20px rgba(0,0,0,.35) !important;
+}
+@media (max-width:1023px){
+  /* La barra se pega a `bottom:0` del scroller, o sea al borde interior de
+     su padding: con los 16px de padding-bottom del modal quedaba un hueco
+     por el que se veía pasar el texto. Se anula ese padding y la altura de
+     la barra la reserva el cuerpo. La cadena repite .detail-modal-content
+     para ganarle a la regla de padding que ya existe más arriba. */
+  html body #productDetailModal .detail-modal-content{ padding-bottom:0 !important; }
+  html body #productDetailModal .detail-modal-content .detail-body{ padding-bottom:112px !important; }
+  html body #productDetailModal .detail-sticky-cta{
+    border-radius:0 0 26px 26px !important;
+  }
+}
+
+/* Hover de las tarjetas de confianza: modal-v4.css lo deja en dorado, que
+   es la única nota dorada que queda en la ficha. Se pasa a coral, igual
+   que el resto de los hovers del modal. */
+html body #productDetailModal .detail-trust-card:hover{
+  border-color:rgba(255,106,31,.34) !important;
+  box-shadow:0 10px 24px -14px rgba(255,106,31,.55) !important;
+}
+html body.light-mode #productDetailModal .detail-trust-card:hover{
+  border-color:rgba(210,78,15,.32) !important;
+  box-shadow:0 10px 22px -14px rgba(210,78,15,.4) !important;
+}
+
+/* Las esquinas de arriba de la foto se dejan en pico a propósito
+   (modal-v4.css: "la imagen nace del borde superior del modal"); el radio
+   del modal ya las recorta. No se toca. */
+
+/* --- 6. Optimización: lo que seguía animándose sin verse -------
+   El esqueleto de carga solo se ocultaba con `opacity:0`, así que sus 6
+   degradados seguían animándose para siempre —repintando una capa del
+   tamaño del modal en cada frame— mientras la ficha estuviera abierta.
+   Se saca del árbol de pintado y se paran las animaciones. */
+html body #productDetailModal .detail-skeleton.hide{
+  visibility:hidden !important;
+  content-visibility:hidden;
+}
+html body #productDetailModal .detail-skeleton.hide .sk{
+  animation:none !important;
+}
+
+/* La línea del borde superior era coral→dorado→coral en bucle infinito de
+   4s: la única nota dorada que quedaba en la ficha, con radio de 20px
+   contra los 28px del modal (de ahí el escalón en las esquinas) y un
+   repintado permanente. Se queda como acento fijo, coral, desvanecido en
+   los extremos y con el radio del modal. */
+html body #productDetailModal .detail-modal-content::before{
+  height:2px !important;
+  background:linear-gradient(90deg,
+    transparent 0%,
+    rgba(255,106,31,.55) 22%,
+    rgba(255,138,71,.9) 50%,
+    rgba(255,106,31,.55) 78%,
+    transparent 100%) !important;
+  background-size:auto !important;
+  animation:none !important;
+  border-radius:28px 28px 0 0 !important;
+}
+html body.light-mode #productDetailModal .detail-modal-content::before{
+  background:linear-gradient(90deg,
+    transparent 0%,
+    rgba(210,78,15,.45) 22%,
+    rgba(255,106,31,.8) 50%,
+    rgba(210,78,15,.45) 78%,
+    transparent 100%) !important;
+}
