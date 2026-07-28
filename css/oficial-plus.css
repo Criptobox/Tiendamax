@@ -1685,3 +1685,26 @@ html body.light-mode .subcategoria-tab:focus-visible,
 html body.light-mode .tmplus-select:focus-visible{
   outline-color:#D24E0F !important;
 }
+
+/* ── Pestañas en modo claro: misma píldora que en oscuro ──
+   botones-unificados les daba --tm-radius-chip (14px) solo en claro, así que
+   el mismo control salía píldora de noche y rectángulo de día. */
+html body.light-mode .categoria-btn,
+html body.light-mode .subcategoria-tab,
+html body.light-mode .btn-volver,
+html body:not(.light-mode) .categoria-btn,
+html body:not(.light-mode) .subcategoria-tab,
+html body:not(.light-mode) .btn-volver{
+  border-radius:999px !important;
+}
+
+/* ── La última tarjeta de categoría dejaba de ocupar una columna ──
+   Una regla del diseño anterior la estiraba a lo ancho en móvil (grid-column:
+   span 2). En la parrilla de "Ver más" quedaba una tarjeta gigante suelta. */
+@media (max-width:600px){
+  html body .categorias-home .categorias-grid .categoria-card:last-child,
+  html body .categorias-home #catExtraWrap .categoria-card:last-child,
+  html body .categorias-home .categorias-grid .categoria-card:nth-child(n):last-child{
+    grid-column:auto !important;grid-area:auto !important;
+  }
+}

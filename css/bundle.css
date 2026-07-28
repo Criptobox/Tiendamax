@@ -8730,6 +8730,29 @@ html body.light-mode .tmplus-select:focus-visible{
   outline-color:#D24E0F !important;
 }
 
+/* ── Pestañas en modo claro: misma píldora que en oscuro ──
+   botones-unificados les daba --tm-radius-chip (14px) solo en claro, así que
+   el mismo control salía píldora de noche y rectángulo de día. */
+html body.light-mode .categoria-btn,
+html body.light-mode .subcategoria-tab,
+html body.light-mode .btn-volver,
+html body:not(.light-mode) .categoria-btn,
+html body:not(.light-mode) .subcategoria-tab,
+html body:not(.light-mode) .btn-volver{
+  border-radius:999px !important;
+}
+
+/* ── La última tarjeta de categoría dejaba de ocupar una columna ──
+   Una regla del diseño anterior la estiraba a lo ancho en móvil (grid-column:
+   span 2). En la parrilla de "Ver más" quedaba una tarjeta gigante suelta. */
+@media (max-width:600px){
+  html body .categorias-home .categorias-grid .categoria-card:last-child,
+  html body .categorias-home #catExtraWrap .categoria-card:last-child,
+  html body .categorias-home .categorias-grid .categoria-card:nth-child(n):last-child{
+    grid-column:auto !important;grid-area:auto !important;
+  }
+}
+
 /* ===== botones-unificados.css ===== */
 /* ==========================================================================
    botones-unificados.css — CAPA DE COMPONENTE: forma de los botones.
@@ -8844,10 +8867,7 @@ html body #tm-cta-link {
 /* --------------------------------------------------------------------------
    2) CHIPS (cortos, inline: filtros, toggles, tags de acción) -> 14px
    -------------------------------------------------------------------------- */
-html body .btn-volver,
 html body .btn-seguir-viendo,
-html body .categoria-btn,
-html body .subcategoria-tab,
 html body .detail-resena-add-btn,
 html body .hsb-pill,
 html body .hsb-precio-pill,
@@ -8855,6 +8875,20 @@ html body .hsb-buscar-pill,
 html body .currency-bar,
 html body #productDetailModal .detail-resena-add-btn {
   border-radius: var(--tm-radius-chip) !important;
+}
+
+/* Excepción: la barra de categorías va en píldora completa.
+   Son una fila de pastillas de navegación, no chips sueltos dentro de una
+   tarjeta, y el rediseño las trata así. Estaban aquí arriba, lo que las dejaba
+   en píldora de noche (donde ganaba el rediseño) y en rectángulo de día — el
+   mismo control con dos formas según el tema. */
+html body .categoria-btn,
+html body .subcategoria-tab,
+html body .btn-volver,
+html body.light-mode .categoria-btn,
+html body.light-mode .subcategoria-tab,
+html body.light-mode .btn-volver {
+  border-radius: var(--tm-radius-full) !important;
 }
 
 /* Toggle USD/MN: van dentro de .currency-bar, así que llevan el radio interior. */
@@ -8933,9 +8967,12 @@ html body.light-mode .btn-pedir-whatsapp,
 html body.light-mode .producto-card .btn-pedir-card {
   border-radius: var(--tm-radius-btn) !important;
 }
+/* La barra de categorías queda fuera: va en píldora en los dos temas
+   (ver la excepción del bloque 2). Aquí se repetía solo para claro y era lo
+   que dejaba el mismo control redondo de noche y cuadrado de día. */
 html body.light-mode .categoria-btn,
 html body.light-mode .subcategoria-tab {
-  border-radius: var(--tm-radius-chip) !important;
+  border-radius: var(--tm-radius-full) !important;
 }
 
 /* --------------------------------------------------------------------------
