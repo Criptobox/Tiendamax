@@ -8482,6 +8482,245 @@ html body .categorias-home #catExtraWrap.cat-extra-oculto{display:none !importan
   html body .tm-step-num::after{animation:none !important}
 }
 
+/* ================================================================
+   FICHA DE PRODUCTO — el rediseño llega al punto de compra
+   Los :not(.light-mode)/.light-mode igualan la especificidad de
+   nuevo-diseno.css y light-mode.css, que si no dejan este modal con
+   el gris plano del diseño anterior.
+   ================================================================ */
+html body .detail-modal-content,
+html body:not(.light-mode) .detail-modal-content,
+html body:not(.light-mode) .detail-body,
+html body:not(.light-mode) #productDetailModal .modal-content{
+  background:
+    radial-gradient(ellipse 90% 40% at 50% 0%,rgba(255,106,31,.10),transparent 60%),
+    linear-gradient(170deg,#171015 0%,#0D0A0C 60%) !important;
+  color:var(--op-ink) !important;
+  border:1px solid rgba(255,106,31,.16) !important;
+}
+html body.light-mode .detail-modal-content,
+html body.light-mode .detail-body,
+html body.light-mode #productDetailModal .modal-content{
+  background:
+    radial-gradient(ellipse 90% 40% at 50% 0%,rgba(255,106,31,.09),transparent 60%),
+    #FFFCF8 !important;
+  color:var(--op-ink) !important;
+  border:1px solid rgba(255,106,31,.14) !important;
+}
+/* Nombre del producto en serif, como los títulos de sección */
+html body .detail-modal-content .modal-header h2,
+html body:not(.light-mode) .detail-modal-content .modal-header h2,
+html body.light-mode .detail-modal-content .modal-header h2,
+html body #detailProductName{
+  font-family:var(--op-serif) !important;
+  font-size:clamp(22px,2.4vw,30px) !important;font-weight:800 !important;
+  letter-spacing:-.02em !important;line-height:1.15 !important;
+  color:var(--op-ink) !important;
+}
+/* Categoría como eyebrow dorado */
+html body .detail-category,
+html body:not(.light-mode) .detail-category,
+html body.light-mode .detail-category{
+  color:var(--gold) !important;text-transform:uppercase !important;
+  font-family:var(--font-sans-glass) !important;
+  font-size:11px !important;font-weight:700 !important;letter-spacing:.2em !important;
+  background:none !important;padding:0 !important;
+}
+html body .detail-subcategory{
+  color:var(--op-muted) !important;font-family:var(--font-sans-glass) !important;
+  font-size:11.5px !important;letter-spacing:.12em !important;text-transform:uppercase !important;
+}
+/* Precio: serif grande con degradado coral, como el hero */
+html body .detail-price-main,
+html body:not(.light-mode) .detail-price-main,
+html body.light-mode .detail-price-main{
+  font-family:var(--op-serif) !important;
+  font-size:clamp(30px,3.6vw,42px) !important;font-weight:800 !important;
+  letter-spacing:-.02em !important;
+  background:linear-gradient(135deg,#FFB585 0%,#FF6A1F 55%,#D24E0F 100%) !important;
+  -webkit-background-clip:text !important;background-clip:text !important;
+  -webkit-text-fill-color:transparent !important;color:transparent !important;
+  padding:.02em .1em .06em 0 !important;
+}
+html body.light-mode .detail-price-main{
+  background:linear-gradient(135deg,#FF6A1F 0%,#D24E0F 100%) !important;
+  -webkit-background-clip:text !important;background-clip:text !important;
+  -webkit-text-fill-color:transparent !important;
+}
+html body .detail-price-mn{
+  color:var(--op-ink-2) !important;font-family:var(--font-mono-glass) !important;
+  font-size:13.5px !important;
+}
+html body .detail-price-old{color:var(--op-muted) !important;font-family:var(--font-sans-glass) !important}
+html body .detail-ahorro{
+  background:linear-gradient(135deg,var(--gold),var(--gold-light)) !important;
+  color:#1A120B !important;font-family:var(--font-sans-glass) !important;
+  font-weight:800 !important;font-size:11.5px !important;letter-spacing:.06em !important;
+  border-radius:999px !important;padding:4px 11px !important;border:0 !important;
+}
+/* Píldoras de confianza y specs, en vidrio */
+html body .detail-trust-badges > *,
+html body .detail-spec-badges > *,
+html body .detail-extra-badges > *{
+  background:var(--glass) !important;border:1px solid var(--glass-border) !important;
+  border-radius:12px !important;color:var(--op-ink-2) !important;
+  font-family:var(--font-sans-glass) !important;font-size:12.5px !important;
+  backdrop-filter:blur(10px) !important;-webkit-backdrop-filter:blur(10px) !important;
+}
+html body.light-mode .detail-trust-badges > *,
+html body.light-mode .detail-spec-badges > *,
+html body.light-mode .detail-extra-badges > *{
+  background:rgba(0,0,0,.03) !important;border-color:rgba(0,0,0,.08) !important;
+}
+/* Títulos de las secciones internas en serif */
+html body .detail-description-section h3,
+html body .detail-resenas-section h3,
+html body .detail-relacionados h3,
+html body:not(.light-mode) .detail-description-section h3,
+html body:not(.light-mode) .detail-resenas-section h3,
+html body.light-mode .detail-description-section h3,
+html body.light-mode .detail-resenas-section h3{
+  font-family:var(--op-serif) !important;font-size:19px !important;
+  font-weight:700 !important;color:var(--op-ink) !important;letter-spacing:-.01em !important;
+}
+html body .detail-description-text,
+html body:not(.light-mode) .detail-description-text,
+html body.light-mode .detail-description-text{
+  color:var(--op-ink-2) !important;font-family:var(--font-sans-glass) !important;
+  font-size:14.5px !important;line-height:1.7 !important;
+}
+/* Selector de cantidad en vidrio */
+html body .detail-qty-stepper{
+  background:var(--glass) !important;border:1px solid var(--glass-border-strong) !important;
+  border-radius:999px !important;backdrop-filter:blur(10px) !important;
+}
+html body .detail-qty-label{
+  color:var(--op-muted) !important;font-family:var(--font-sans-glass) !important;
+  font-size:12.5px !important;text-transform:uppercase !important;letter-spacing:.12em !important;
+}
+/* Cerrar: mismo círculo de vidrio del resto del rediseño */
+html body .detail-modal-content .close-btn-floating{
+  background:rgba(15,10,8,.6) !important;border:1px solid var(--glass-border-strong) !important;
+  color:#fff !important;border-radius:50% !important;
+  backdrop-filter:blur(12px) !important;-webkit-backdrop-filter:blur(12px) !important;
+}
+html body.light-mode .detail-modal-content .close-btn-floating{
+  background:rgba(255,255,255,.85) !important;color:var(--op-ink) !important;
+  border-color:rgba(0,0,0,.1) !important;
+}
+/* Reseñas dentro de la ficha, con la misma piel que los testimonios */
+html body .detail-resenas-section .resena-item,
+html body:not(.light-mode) .detail-resenas-section .resena-item,
+html body.light-mode .detail-resenas-section .resena-item{
+  background:linear-gradient(160deg,rgba(255,255,255,.05) 0%,rgba(255,255,255,.01) 100%) !important;
+  border:1px solid var(--glass-border) !important;border-radius:var(--op-r) !important;
+}
+html body.light-mode .detail-resenas-section .resena-item{
+  background:rgba(255,255,255,.75) !important;border-color:rgba(0,0,0,.08) !important;
+}
+
+/* ================================================================
+   VISTA DE CATEGORÍA — pestañas, título y orden al mismo idioma
+   ================================================================ */
+html body .categoria-header h2,
+html body #tituloCategoriaActual,
+html body:not(.light-mode) .categoria-header h2,
+html body.light-mode .categoria-header h2{
+  font-family:var(--op-serif) !important;
+  font-size:clamp(26px,3vw,38px) !important;font-weight:800 !important;
+  letter-spacing:-.025em !important;color:var(--op-ink) !important;
+}
+html body .categoria-stats{
+  color:var(--op-muted) !important;font-family:var(--font-sans-glass) !important;font-size:13.5px !important;
+}
+/* Pestañas de categoría y subcategoría: píldoras de vidrio */
+html body .categoria-btn,
+html body .subcategoria-tab,
+html body:not(.light-mode) .categoria-btn,
+html body:not(.light-mode) .subcategoria-tab{
+  background:var(--glass) !important;border:1px solid var(--glass-border) !important;
+  color:var(--op-ink-2) !important;border-radius:999px !important;
+  font-family:var(--font-sans-glass) !important;font-size:13px !important;font-weight:600 !important;
+  letter-spacing:.04em !important;padding:9px 18px !important;
+  backdrop-filter:blur(10px) !important;-webkit-backdrop-filter:blur(10px) !important;
+  transition:all .25s var(--op-ease) !important;
+}
+html body.light-mode .categoria-btn,
+html body.light-mode .subcategoria-tab{
+  background:rgba(0,0,0,.03) !important;border-color:rgba(0,0,0,.08) !important;
+  color:var(--op-ink-2) !important;border-radius:999px !important;
+}
+html body .categoria-btn:hover,
+html body .subcategoria-tab:hover{
+  border-color:rgba(255,106,31,.4) !important;color:var(--coral-2) !important;
+  transform:translateY(-1px) !important;
+}
+html body .categoria-btn.active,
+html body .subcategoria-tab.active,
+html body:not(.light-mode) .categoria-btn.active,
+html body:not(.light-mode) .subcategoria-tab.active,
+html body.light-mode .categoria-btn.active,
+html body.light-mode .subcategoria-tab.active{
+  background:linear-gradient(135deg,#FF8A47 0%,#FF6A1F 50%,#D24E0F 100%) !important;
+  color:#fff !important;border-color:transparent !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.25),0 8px 22px rgba(255,106,31,.35) !important;
+}
+html body .subcategoria-tabs{border-bottom:0 !important;gap:8px !important}
+/* "← Volver" y el selector de orden, en vidrio */
+html body .btn-volver,
+html body:not(.light-mode) .btn-volver,
+html body.light-mode .btn-volver{
+  background:var(--glass) !important;border:1px solid var(--glass-border-strong) !important;
+  color:var(--op-ink) !important;border-radius:999px !important;
+  font-family:var(--font-sans-glass) !important;font-size:13px !important;font-weight:700 !important;
+  backdrop-filter:blur(10px) !important;-webkit-backdrop-filter:blur(10px) !important;
+  transition:all .25s var(--op-ease) !important;
+}
+html body.light-mode .btn-volver{background:rgba(0,0,0,.03) !important;border-color:rgba(0,0,0,.1) !important}
+html body .btn-volver:hover{border-color:rgba(255,106,31,.45) !important;color:var(--coral-2) !important}
+html body .tmplus-orden{
+  background:var(--glass) !important;border:1px solid var(--glass-border) !important;
+  border-radius:var(--op-r) !important;
+  backdrop-filter:blur(12px) !important;-webkit-backdrop-filter:blur(12px) !important;
+}
+html body.light-mode .tmplus-orden{background:rgba(0,0,0,.02) !important;border-color:rgba(0,0,0,.07) !important}
+html body .tmplus-select,
+html body:not(.light-mode) .tmplus-select,
+html body.light-mode .tmplus-select{
+  background:var(--glass-2) !important;border:1px solid var(--glass-border-strong) !important;
+  color:var(--op-ink) !important;border-radius:999px !important;
+  font-family:var(--font-sans-glass) !important;font-size:13px !important;font-weight:600 !important;
+  padding:9px 16px !important;
+}
+html body.light-mode .tmplus-select{background:#fff !important;border-color:rgba(0,0,0,.12) !important}
+html body .tmplus-select:focus{
+  outline:none !important;border-color:rgba(255,106,31,.5) !important;
+  box-shadow:0 0 0 3px rgba(255,106,31,.14) !important;
+}
+/* La barra de filtros: sin el filete naranja grueso del diseño anterior */
+html body #tmPlusBar.tmplus-bar,
+html body .tmplus-bar{
+  border:1px solid var(--glass-border) !important;
+  border-left:1px solid var(--glass-border) !important;
+  background:var(--glass) !important;border-radius:var(--op-r-lg) !important;
+  backdrop-filter:blur(12px) !important;-webkit-backdrop-filter:blur(12px) !important;
+}
+html body.light-mode #tmPlusBar.tmplus-bar,
+html body.light-mode .tmplus-bar{
+  background:rgba(0,0,0,.02) !important;
+  border:1px solid rgba(0,0,0,.07) !important;border-left:1px solid rgba(0,0,0,.07) !important;
+}
+html body .tmplus-bar label,
+html body .tmplus-orden label{
+  color:var(--op-muted) !important;font-family:var(--font-sans-glass) !important;
+  font-size:12.5px !important;font-weight:600 !important;
+  text-transform:uppercase !important;letter-spacing:.1em !important;
+}
+/* Aire al final de la ficha: la barra fija de compra (74px) tapaba el
+   último bloque de contenido */
+html body .detail-modal-content{padding-bottom:16px !important}
+html body .detail-body{padding-bottom:88px !important}
+
 /* ===== botones-unificados.css ===== */
 /* ==========================================================================
    botones-unificados.css — CAPA DE COMPONENTE: forma de los botones.
