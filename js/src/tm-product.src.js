@@ -166,7 +166,14 @@ function renderizarProductos(isLoadMore = false) {
         card.className = 'producto-card pcard-v2 tm-anim-card' + (_esAgotado ? ' card-agotado' : '');
         card.dataset.productId = String(producto.id);
         card.onclick = () => abrirDetalleProducto(producto.id);
-        const _nombre = escapeHtml(_tmTruncar2Lineas(producto.nombre));
+        const _nombreCorto = _tmTruncar2Lineas(producto.nombre);
+        // `_nombre` sigue siendo texto plano escapado: alimenta alt="" y
+        // data-nombre (el mensaje de WhatsApp), donde el emoji sí se conserva.
+        const _nombre = escapeHtml(_nombreCorto);
+        // El título visible cambia el emoji por su ícono de línea (mismo
+        // trazo que las categorías). En la parrilla va SIN acento naranja:
+        // ahí el color lo lleva el precio.
+        const _nombreHTML = (typeof tmNombreHTML === 'function') ? tmNombreHTML(_nombreCorto) : _nombre;
         const _img    = escapeAttr(producto.imagen);
         const _id     = safeNum(producto.id);
         const _cat    = escapeHtml(producto.categoria || '');
@@ -200,7 +207,7 @@ function renderizarProductos(isLoadMore = false) {
             </div>
             <div class="pv2-body">
                 ${_cat ? `<span class="pv2-cat">${_cat}</span>` : ''}
-                <h3 class="pv2-title" style="display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2;height:36px;max-height:36px;min-height:36px;overflow:hidden;line-height:18px;white-space:normal;">${_nombre}</h3>
+                <h3 class="pv2-title" style="height:36px;max-height:36px;min-height:36px;overflow:hidden;line-height:18px;white-space:normal;">${_nombreHTML}</h3>
                 ${_estado}
                 ${typeof renderCountdownHtml === 'function' ? renderCountdownHtml(_id) : ''}
                 <div class="pv2-foot">
@@ -438,7 +445,12 @@ function abrirDetalleProducto(id) {
     }
 
     // Nombre
-    document.getElementById('detailProductName').textContent = p.nombre;
+    // Título de la ficha: ícono de línea en lugar del emoji + acento naranja
+    // en las dos últimas palabras (aquí sí, el título es el ancla visual del
+    // modal). tmNombreHTML escapa el texto; los paths del SVG son constantes.
+    const _dpn = document.getElementById('detailProductName');
+    if (typeof tmNombreHTML === 'function') _dpn.innerHTML = tmNombreHTML(p.nombre, { acento: true });
+    else _dpn.textContent = p.nombre;
 
     // Imagen + galería (reset zoom)
     const img = document.getElementById('detailProductImage');
@@ -609,14 +621,23 @@ if (_detailPrecioMNEl) {
     if (specBadgesEl) {
         const specs = Array.isArray(p.specs) ? p.specs.filter(s => s && String(s).trim()).slice(0, 6) : [];
         const rows = specs.map(s => {
-            const str = String(s).trim();
+            // El emoji inicial ("⚡ Potencia: 4000W") se cambia por su ícono
+            // de línea, igual que en los nombres y las categorías; el resto
+            // se parsea como antes.
+            const _part = (typeof tmPartirEmoji === 'function')
+                ? tmPartirEmoji(s)
+                : { emoji: '', texto: String(s).trim() };
+            const ico = (_part.emoji && typeof tmIconoSVG === 'function')
+                ? tmIconoSVG(_part.emoji, 'tm-ico-spec')
+                : '';
+            const str = _part.texto;
             const idx = str.indexOf(':');
             if (idx > 0 && idx < str.length - 1) {
                 const label = str.slice(0, idx).trim();
                 const value = str.slice(idx + 1).trim();
-                return `<div class="dsr-row"><span class="dsr-label">${escapeHtml(label)}</span><span class="dsr-value">${escapeHtml(value)}</span></div>`;
+                return `<div class="dsr-row"><span class="dsr-label">${ico}<span>${escapeHtml(label)}</span></span><span class="dsr-value">${escapeHtml(value)}</span></div>`;
             }
-            return `<div class="dsr-row dsr-nolabel"><span class="dsr-value">${escapeHtml(str)}</span></div>`;
+            return `<div class="dsr-row dsr-nolabel"><span class="dsr-value">${ico}<span>${escapeHtml(str)}</span></span></div>`;
         });
         // Garantía se muestra en la tarjeta de confianza de arriba (#detailTrustBadges) — no repetir acá.
         if (rows.length > 0) {

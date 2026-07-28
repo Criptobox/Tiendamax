@@ -1761,7 +1761,12 @@ renderizarProductos = function() {
         });
         card.dataset.productId = String(producto.id);
         const _id  = safeNum(producto.id);
-        const _nom = escapeHtml(_tmTruncar2Lineas(producto.nombre));
+        const _nomCorto = _tmTruncar2Lineas(producto.nombre);
+        // `_nom` sigue siendo texto plano escapado (alt="" y data-nombre, que
+        // alimenta el mensaje de WhatsApp: ahí el emoji sí se conserva).
+        const _nom = escapeHtml(_nomCorto);
+        // El título visible cambia el emoji por su ícono de línea (tm-iconos).
+        const _nomHTML = (typeof tmNombreHTML === 'function') ? tmNombreHTML(_nomCorto) : _nom;
         const _img = escapeAttr(producto.imagen);
         const _stk = safeNum(producto.stock);
         const _txt = escapeHtml(getOfertaDiaTexto());
@@ -1793,7 +1798,7 @@ renderizarProductos = function() {
             '</div>' +
             '<div class="pv2-body">' +
                 (_cat ? '<span class="pv2-cat">' + _cat + '</span>' : '') +
-                '<h3 class="pv2-title" style="display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2;height:36px;max-height:36px;min-height:36px;overflow:hidden;line-height:18px;white-space:normal;">' + _nom + '</h3>' +
+                '<h3 class="pv2-title" style="height:36px;max-height:36px;min-height:36px;overflow:hidden;line-height:18px;white-space:normal;">' + _nomHTML + '</h3>' +
                 '<div class="pv2-meta">' + (typeof _tmMetaCard === 'function' ? _tmMetaCard(_id) : '') + '</div>' +
                 (typeof renderCountdownHtml === 'function' ? renderCountdownHtml(_id) : '') +
                 '<div class="pv2-foot">' +

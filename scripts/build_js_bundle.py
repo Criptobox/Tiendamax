@@ -22,6 +22,10 @@ SW_PATH = os.path.join(os.path.dirname(__file__), "..", "sw.js")
 
 # Orden EXACTO en que se cargaban en el <head> de index.html/admin.html.
 ORDEN = [
+    # tm-iconos va primero: declara `const TM_ICONOS`, que tm-data consulta
+    # desde obtenerIconoCategoriaSVG. Con `const` hay zona muerta temporal,
+    # así que el módulo que lo declara tiene que ejecutarse antes.
+    "tm-iconos.js",
     "tm-config.js",
     "tm-data.js",
     "tm-state.js",

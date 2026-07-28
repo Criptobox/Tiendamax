@@ -120,18 +120,33 @@ const _SVG_CAT_GENERICO = '<path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6
 function obtenerIconoCategoriaSVG(nombre) {
     // Sin acentos: "ÚTILES" y "UTILES" deben caer en la misma clave
     const n = (nombre || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-    // 1) Por nombre (prioridad: el nombre describe mejor la categoría)
+    // 1) El emoji que el admin eligió A MANO manda: si puso 🔋 sale una
+    //    batería, no el rayo del grupo "energía". Se resuelve contra
+    //    TM_ICONOS (tm-iconos.src.js), el mismo mapa que usan los nombres de
+    //    producto y las specs — por eso una categoría nueva sale con el mismo
+    //    diseño que las viejas en vez de estrenar un estilo distinto.
+    const elegido = (iconosPersonalizados && iconosPersonalizados[nombre]) || '';
+    if (elegido && typeof tmIconoSVG === 'function') {
+        const svgElegido = tmIconoSVG(elegido, 'cat-ico', true);   // estricto: '' si no lo conoce
+        if (svgElegido) return svgElegido;
+    }
+    // 2) Por nombre (grupos curados: "wifi", "hogar", "gym"…)
     for (const [claves, paths] of ICONOS_SVG_MAPA) {
         if (claves.some(c => n.includes(c))) return _SVG_CAT_ABRE + paths + '</svg>';
     }
-    // 2) Por el emoji efectivo (el que eligió el admin o el automático)
+    // 3) Por el emoji efectivo (el automático de ICONOS_MAPA): primero fiel
+    //    contra TM_ICONOS, después contra los grupos legacy.
     const emoji = (typeof obtenerIconoCategoria === 'function' && obtenerIconoCategoria(nombre)) || '';
     if (emoji) {
+        if (typeof tmIconoSVG === 'function') {
+            const svgEmoji = tmIconoSVG(emoji, 'cat-ico', true);
+            if (svgEmoji) return svgEmoji;
+        }
         for (const [claves, paths] of ICONOS_SVG_MAPA) {
             if (claves.some(c => emoji.includes(c))) return _SVG_CAT_ABRE + paths + '</svg>';
         }
     }
-    // 3) Genérico — mismo diseño para cualquier categoría que invente el admin
+    // 4) Genérico — mismo diseño para cualquier categoría que invente el admin
     return _SVG_CAT_ABRE + _SVG_CAT_GENERICO + '</svg>';
 }
 

@@ -8753,6 +8753,74 @@ html body:not(.light-mode) .btn-volver{
   }
 }
 
+/* ═══════════════════════════════════════════════════════════════
+   ÍCONOS DE LÍNEA EN TEXTO (tm-iconos.src.js)
+   Los emojis que el admin escribe en el nombre de un producto o en una
+   spec se sustituyen por su ícono de línea (mismo trazo 1.8 y viewBox
+   24×24 que los de categoría). El emoji de color queda solo donde suma:
+   las descripciones y los mensajes de WhatsApp.
+   ═══════════════════════════════════════════════════════════════ */
+html body .tm-ico{
+  display:inline-block;vertical-align:-.14em;
+  width:1em;height:1em;flex:0 0 auto;
+  stroke:currentColor;fill:none;
+}
+
+/* --- Nombre en la parrilla: ícono discreto, sin acento naranja ---
+   El clamp de 2 líneas venía aplicado sobre el <h3> (-webkit-box). Con el
+   ícono dentro, ese -webkit-box vertical trataba SVG y texto como dos
+   "líneas" y el título crecía a 3 renglones. Ahora el h3 es una fila flex
+   (ícono | texto) y el clamp baja al span del texto. Los selectores repiten
+   la cadena de nuevo-diseno.css + `.pv2-title` para ganarle en especificidad
+   a su `display:-webkit-box !important`. */
+html body #productosGrid .producto-card.pcard-v2 h3.pv2-title,
+html body #masVendidosGrid .producto-card.pcard-v2 h3.pv2-title,
+html body #recientesGrid .producto-card.pcard-v2 h3.pv2-title,
+html body #meGustaGrid .producto-card.pcard-v2 h3.pv2-title,
+html body .detail-relacionados-grid .producto-card.pcard-v2 h3.pv2-title,
+html body .recientes-grid .producto-card.pcard-v2 h3.pv2-title,
+html body .producto-card.pcard-v2 h3.pv2-title{
+  display:flex !important;gap:6px !important;align-items:flex-start !important;
+  height:auto !important;min-height:36px !important;max-height:2.6em !important;
+  overflow:hidden !important;
+}
+html body .pv2-title .tm-ico-nombre{
+  width:15px;height:15px;flex:0 0 15px;margin-top:.18em;
+  color:var(--coral, #FF6A1F);opacity:.9;
+}
+html body .pv2-title .tm-nom-txt{
+  display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2;
+  overflow:hidden;min-width:0;max-height:2.6em;
+}
+
+/* --- Nombre en la ficha: ícono grande + acento en las últimas palabras --- */
+html body #detailProductName{
+  display:flex !important;gap:9px !important;align-items:flex-start !important;
+}
+html body #detailProductName .tm-ico-nombre{
+  width:.85em;height:.85em;flex:0 0 .85em;margin-top:.22em;
+  color:var(--coral, #FF6A1F);
+}
+html body #detailProductName .tm-nom-txt{min-width:0}
+html body #detailProductName .tm-nom-acento,
+html body:not(.light-mode) #detailProductName .tm-nom-acento,
+html body.light-mode #detailProductName .tm-nom-acento{
+  font-style:italic;font-weight:800;
+  color:var(--coral, #FF6A1F) !important;
+}
+
+/* --- Specs: ícono al frente de la etiqueta --- */
+html body #detailSpecBadges .tm-ico-spec{
+  width:15px;height:15px;flex:0 0 15px;
+  vertical-align:-.16em;margin-right:5px;
+  color:var(--coral, #FF6A1F);opacity:.95;
+}
+html body.light-mode #detailSpecBadges .tm-ico-spec{ color:var(--coral-deep, #D24E0F); }
+
+/* Modo claro: el ícono del nombre necesita más contraste sobre blanco */
+html body.light-mode .pv2-title .tm-ico-nombre,
+html body.light-mode #detailProductName .tm-ico-nombre{ color:var(--coral-deep, #D24E0F); }
+
 /* ===== botones-unificados.css ===== */
 /* ==========================================================================
    botones-unificados.css — CAPA DE COMPONENTE: forma de los botones.
