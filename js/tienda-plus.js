@@ -109,7 +109,7 @@
     function botonAvisoHTML(id) {
         var pedido = avisosGuardados().indexOf(String(id)) !== -1;
         return '<button class="tmplus-aviso-btn' + (pedido ? ' pedido' : '') + '" data-aviso-id="' + id + '" type="button">' +
-               (pedido ? '🔔 Te avisaremos' : '🔔 Avísame cuando vuelva') + '</button>';
+               (pedido ? tmIcoUI('🔔') + ' Te avisaremos' : tmIcoUI('🔔') + ' Avísame cuando vuelva') + '</button>';
     }
     function actualizarBotonesAvisoDOM() {
         var arr = avisosGuardados();

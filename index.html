@@ -250,7 +250,7 @@
     <noscript><link rel="stylesheet" href="css/fonts.css?v=8b616cbe"></noscript>
 
     <!-- Preload del bundle JS del núcleo (generado por scripts/build_js_bundle.py) -->
-    <link rel="preload" href="js/tm-bundle.js?v=93552398" as="script">
+    <link rel="preload" href="js/tm-bundle.js?v=d4536381" as="script">
 
     <!-- Preload del catálogo: la foto hero (fetchpriority=high) no puede pedirse
          hasta que este JSON responda y arme el <img>; sin este preload, el
@@ -263,7 +263,7 @@
 
 
 
-    <link rel="stylesheet" href="css/bundle.css?v=9fdf486b">
+    <link rel="stylesheet" href="css/bundle.css?v=2583e66f">
 
 
 
@@ -548,7 +548,7 @@
                             <div class="currency-bar" id="currencyBar">
                                 <span class="tasa-info-prefix">💱</span>
                                 <div class="currency-toggle">
-                                    <button type="button" class="cur-btn active" id="curUSD" onclick="setCurrency('USD')">💵 USD</button>
+                                    <button type="button" class="cur-btn active" id="curUSD" onclick="setCurrency('USD')"><svg class="tm-ico tm-ico-ui" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x='2' y='6' width='20' height='12' rx='2'/><circle cx='12' cy='12' r='3'/><path d='M5 9v0'/><path d='M19 15v0'/></svg> USD</button>
                                     <button type="button" class="cur-btn" id="curMN" onclick="setCurrency('MN')">-- MN</button>
                                 </div>
                                 <span class="tasa-info" id="tasaLabel" style="display:none !important;"></span>
@@ -744,21 +744,21 @@
                 <div class="tm-steps">
                     <div class="tm-step">
                         <div class="tm-step-num">1</div>
-                        <h3>Elige y pide 🛒</h3>
+                        <h3>Elige y pide <svg class="tm-ico tm-ico-ui" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx='9' cy='20' r='1.5'/><circle cx='17' cy='20' r='1.5'/><path d='M2 3h3l2.5 12h11L21 7H6'/></svg></h3>
                         <p>Toca <strong class="tm-step-hl">Pedir</strong> en el producto. Se abre WhatsApp con tu pedido listo.</p>
                     </div>
                     <div class="tm-step">
                         <div class="tm-step-num">2</div>
-                        <h3>Coordinamos 🛵</h3>
+                        <h3>Coordinamos <svg class="tm-ico tm-ico-ui" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx='5.5' cy='17' r='3'/><circle cx='18.5' cy='17' r='3'/><path d='M5.5 17h10l2-9h3'/><path d='M9 8h5'/><path d='M15.5 17 13 11H8'/></svg></h3>
                         <p>Confirmamos disponibilidad, el precio del día y la entrega a domicilio.</p>
                     </div>
                     <div class="tm-step">
                         <div class="tm-step-num green">3</div>
-                        <h3>Pagas al recibir ✅</h3>
+                        <h3>Pagas al recibir <svg class="tm-ico tm-ico-ui" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx='12' cy='12' r='9'/><path d='m8.2 12.3 2.5 2.5 5.1-5.4'/></svg></h3>
                         <p><strong class="tm-step-hl">Sin adelantar dinero.</strong> Pagas en USD o MN cuando el producto llega a tus manos.</p>
                     </div>
                 </div>
-                <p class="tm-steps-foot">🛡️ Con garantía · Atención personalizada por WhatsApp</p>
+                <p class="tm-steps-foot"><svg class="tm-ico tm-ico-ui" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d='M12 3l7.5 3v5.5c0 4.6-3.2 7.9-7.5 9.5-4.3-1.6-7.5-4.9-7.5-9.5V6z'/></svg> Con garantía · Atención personalizada por WhatsApp</p>
             </div>
         </section>
 
@@ -841,7 +841,7 @@
                 <!-- Tagline editable -->
                 <div id="heroTaglineBadge" style="position:absolute;bottom:20px;left:50%;transform:translateX(-50%);background:rgba(10,10,10,0.75);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);color:white;padding:11px 20px;border-radius:50px;font-size:13px;font-weight:700;border:1px solid rgba(255,255,255,0.12);box-shadow:0 4px 20px rgba(0,0,0,0.4);white-space:nowrap;letter-spacing:0.2px;display:flex;align-items:center;gap:8px;">
                     <span class="hero-tagline-wrapper" style="display:flex;align-items:center;gap:6px;">
-                        <span style="animation:taglinePulse 1.5s ease-in-out infinite;display:inline-block;">&#x1F447;</span>
+                        <span style="animation:taglinePulse 1.5s ease-in-out infinite;display:inline-flex;"><svg class="tm-ico tm-ico-ui" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d='M12 3v12'/><path d='m7 12 5 5 5-5'/></svg></span>
                         <span id="heroTaglineText">Toca la imagen · Entra al grupo</span>
                         <span class="tagline-wa-icon" aria-hidden="true">
                             <svg viewBox="0 0 24 24" width="13" height="13" fill="white" xmlns="http://www.w3.org/2000/svg">
@@ -1063,12 +1063,12 @@
     <div id="carritoDrawer" class="carrito-overlay hidden" role="dialog" aria-modal="true" aria-label="Carrito de compras" data-backdrop-close="cerrarCarrito">
         <div class="carrito-drawer">
             <div class="carrito-header">
-                <h3>🛒 Tu Carrito</h3>
+                <h3><svg class="tm-ico tm-ico-ui" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx='9' cy='20' r='1.5'/><circle cx='17' cy='20' r='1.5'/><path d='M2 3h3l2.5 12h11L21 7H6'/></svg> Tu Carrito</h3>
                 <button data-action="cerrarCarrito" aria-label="Cerrar carrito" type="button" class="close-btn">×</button>
             </div>
             <div class="carrito-body" id="carritoBody">
                 <div class="carrito-vacio" id="carritoVacio">
-                    <div class="tm-empty-icon">🛒</div>
+                    <div class="tm-empty-icon"><svg class="tm-ico tm-ico-ui" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx='9' cy='20' r='1.5'/><circle cx='17' cy='20' r='1.5'/><path d='M2 3h3l2.5 12h11L21 7H6'/></svg></div>
                     <div class="tm-empty-dots">
                         <div class="tm-empty-dot"></div>
                         <div class="tm-empty-dot"></div>
@@ -1078,11 +1078,11 @@
                     </div>
                     <p style="font-size:17px;font-weight:800;margin-bottom:6px;">Tu carrito está vacío</p>
                     <p style="font-size:13px;color:#888;line-height:1.5;max-width:200px;margin:0 auto 16px;">Explora los productos y agrega lo que te gusta 🙌</p>
-                    <button data-action="cerrarCarrito" aria-label="Cerrar carrito" type="button" class="btn btn-primary">🛍️ Ver productos</button>
+                    <button data-action="cerrarCarrito" aria-label="Cerrar carrito" type="button" class="btn btn-primary"><svg class="tm-ico tm-ico-ui" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d='M4 8h16l-1.5 13h-13z'/><path d='M8 8V6a4 4 0 0 1 8 0v2'/><path d='M8 12v0'/><path d='M16 12v0'/></svg> Ver productos</button>
                 </div>
                 <div id="carritoItems"></div>
                 <div id="carritoSimilares" class="carrito-similares" style="display:none;">
-                    <p class="carrito-similares-titulo">✨ También te puede interesar</p>
+                    <p class="carrito-similares-titulo"><svg class="tm-ico tm-ico-ui" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d='m10 3 1.8 4.2L16 9l-4.2 1.8L10 15l-1.8-4.2L4 9l4.2-1.8z'/><path d='m18 13 .9 2.1L21 16l-2.1.9L18 19l-.9-2.1L15 16l2.1-.9z'/></svg> También te puede interesar</p>
                     <div id="carritoSimilaresGrid" class="carrito-similares-grid"></div>
                 </div>
             </div>
@@ -1122,7 +1122,7 @@
                          data-action="toggleZoomImagen" data-pass-element="true"
                          tabindex="0" role="button" aria-label="Ampliar imagen del producto"
                          onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleZoomImagen(this)}">
-                    <div class="detail-zoom-hint">🔍 Toca para ampliar</div>
+                    <div class="detail-zoom-hint"><svg class="tm-ico tm-ico-ui" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx='10.5' cy='10.5' r='7'/><path d='m20.5 20.5-5-5'/></svg> Toca para ampliar</div>
                     <div id="detailProductBadge" class="badge detail-badge" style="display:none;"></div>
                     <div id="detailMasVendidoBadge" class="badge-vendido detail-badge-hot" style="display:none;">🔥 Top Ventas</div>
                     <div id="detailPhotoCounter" class="detail-photo-counter" style="display:none;" aria-live="polite"></div>
@@ -1205,8 +1205,8 @@
 
                         <!-- Compartir simplificado: 2 píldoras -->
                         <div class="detail-share-pills" style="display:flex;gap:8px;margin-top:14px;">
-                            <button data-action="abrirPanelCompartir" aria-label="Compartir por redes" type="button" class="detail-share-pill" style="flex:1;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:#f2f2f5;padding:10px 14px;border-radius:50px;cursor:pointer;font-family:inherit;font-size:12px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:6px;">📤 Compartir por redes</button>
-                            <button data-action="copiarLinkProducto" aria-label="Copiar enlace del producto" type="button" class="detail-share-pill" style="flex:1;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:#f2f2f5;padding:10px 14px;border-radius:50px;cursor:pointer;font-family:inherit;font-size:12px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:6px;">🔗 Copiar enlace</button>
+                            <button data-action="abrirPanelCompartir" aria-label="Compartir por redes" type="button" class="detail-share-pill" style="flex:1;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:#f2f2f5;padding:10px 14px;border-radius:50px;cursor:pointer;font-family:inherit;font-size:12px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:6px;"><svg class="tm-ico tm-ico-ui" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d='M3 15v4a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-4'/><path d='M12 3v13'/><path d='m7 8 5-5 5 5'/></svg> Compartir por redes</button>
+                            <button data-action="copiarLinkProducto" aria-label="Copiar enlace del producto" type="button" class="detail-share-pill" style="flex:1;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:#f2f2f5;padding:10px 14px;border-radius:50px;cursor:pointer;font-family:inherit;font-size:12px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:6px;"><svg class="tm-ico tm-ico-ui" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d='M10 13a5 5 0 0 0 7 0l2-2a5 5 0 0 0-7-7l-1 1'/><path d='M14 11a5 5 0 0 0-7 0l-2 2a5 5 0 0 0 7 7l1-1'/></svg> Copiar enlace</button>
                         </div>
                         <!-- Panel de redes sociales (se abre al clic en "Compartir por redes") -->
                         <div id="panelCompartirRedes" class="panel-compartir-redes" style="display:none;">
@@ -1241,14 +1241,14 @@
 
                 <!-- Descripción -->
                 <div class="detail-description-section">
-                    <h3>📋 Descripción</h3>
+                    <h3><svg class="tm-ico tm-ico-ui" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x='5' y='4' width='14' height='17' rx='2'/><path d='M9 4V3h6v1'/><path d='M9 10h6'/><path d='M9 14h6'/></svg> Descripción</h3>
                     <div id="detailProductDescription" class="detail-description-text"></div>
                 </div>
 
                 <!-- Reseñas -->
                 <div class="detail-resenas-section">
                     <div class="detail-resenas-header">
-                        <h3>⭐ Reseñas</h3>
+                        <h3><svg class="tm-ico tm-ico-ui" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d='m12 3 2.8 5.7 6.2.9-4.5 4.4 1 6.2L12 17.3 6.5 20.2l1-6.2L3 9.6l6.2-.9z'/></svg> Reseñas</h3>
                         <button data-action="mostrarFormResena" aria-label="Dejar una reseña" type="button" class="detail-resena-add-btn" id="btnAgregarResena">+ Agregar reseña</button>
                     </div>
                     <div id="formResena" class="form-resena" style="display:none;">
@@ -1282,7 +1282,7 @@
 
                 <!-- Productos relacionados -->
                 <div id="detailRelacionados" class="detail-relacionados" style="display:none;">
-                    <h3>✨ También te puede interesar</h3>
+                    <h3><svg class="tm-ico tm-ico-ui" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d='m10 3 1.8 4.2L16 9l-4.2 1.8L10 15l-1.8-4.2L4 9l4.2-1.8z'/><path d='m18 13 .9 2.1L21 16l-2.1.9L18 19l-.9-2.1L15 16l2.1-.9z'/></svg> También te puede interesar</h3>
                     <div id="detailRelacionadosGrid" class="detail-relacionados-grid"></div>
                 </div>
 
@@ -1549,7 +1549,7 @@
     <!-- ===== TiendaMax modularizado (reemplaza script.js) ===== -->
     <!-- Bundle único (config→data→state→admin→product→catalog→init→ui→toast→iife→patches),
          generado por scripts/build_js_bundle.py a partir de js/src/*.src.js -->
-    <script src="js/tm-bundle.js?v=93552398" defer></script>
+    <script src="js/tm-bundle.js?v=d4536381" defer></script>
 
     <!-- Agente de chat: separado del bundle (62 KB min) porque no hace falta
          para el primer render del catálogo. Carga con su propio <script defer>
@@ -1561,7 +1561,7 @@
     <script src="js/push-fix.js?v=7278889b" defer></script>
     <script src="js/subcategorias.js?v=fa21ab00" defer></script>
     <script src="js/event-delegation.js?v=bf5a6e3e" defer></script>
-    <script src="js/tienda-plus.js?v=7b504a26" defer></script>
+    <script src="js/tienda-plus.js?v=93de7228" defer></script>
     <script src="js/cart-share.js?v=797b6d55" defer></script>
     <script>
     // Mismo patrón que _searchPanelHistoryPushed (js/src/tm-data.src.js):

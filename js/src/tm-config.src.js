@@ -1110,7 +1110,7 @@ function _renderTestimoniosPage(show) {
         if (cta) {
             cta.style.display = 'block';
             if (!cta.querySelector('#tm-cta-link')) {
-                cta.innerHTML = '<button id="tm-cta-link" onclick="document.querySelector(\'.productos-grid,.producto-card\')?.scrollIntoView({behavior:\'smooth\'})">✍️ Deja tu reseña en cualquier producto →</button>';
+                cta.innerHTML = '<button id="tm-cta-link" onclick="document.querySelector(\'.productos-grid,.producto-card\')?.scrollIntoView({behavior:\'smooth\'})">' + tmIcoUI('✍') + ' Deja tu reseña en cualquier producto →</button>';
             }
         }
     }

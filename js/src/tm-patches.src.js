@@ -973,7 +973,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const cuerpo  = estaDenegado
             ? 'Para reactivarlas: tres puntos del navegador → Ajustes → Notificaciones → Permitir'
             : 'Te avisamos cuando bajen los precios o lleguen productos nuevos. Sin spam.';
-        const btnTexto = estaDenegado ? 'Cómo activarlas' : '🔔 Avísame';
+        // El texto se inserta escapado; el ícono se concatena aparte como SVG.
+        const btnTexto = estaDenegado ? 'Cómo activarlas' : 'Avísame';
+        const btnIco   = estaDenegado ? '' : (typeof tmIcoUI === 'function' ? tmIcoUI('🔔') + ' ' : '');
+        const bellIco  = (typeof tmIcoUI === 'function') ? tmIcoUI('🔔') : '🔔';
 
         const b = document.createElement('div');
         b.id = 'tm-push-banner-wrap';
@@ -982,7 +985,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // animación). Los colores se aplican via CSS inyectado una sola vez,
         // con reglas distintas para body.light-mode y body:not(.light-mode),
         // para que respete el tema activo en vez de hardcoded oscuro.
-        b.innerHTML = `<div id="tm-push-banner" style="border-radius:16px;padding:14px 16px;display:flex;align-items:center;gap:13px;font-family:sans-serif;animation:slideUpBanner .35s cubic-bezier(.22,1,.36,1)"><span class="tmpb-bell" style="flex-shrink:0">🔔</span><div style="flex:1;min-width:0"><div class="tmpb-title" style="font-weight:800;font-size:14px;margin-bottom:2px">${escapeHtml(titulo)}</div><div class="tmpb-body" style="font-size:12px;line-height:1.35">${escapeHtml(cuerpo)}</div></div><div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0"><button id="tm-push-si" style="border:none;border-radius:10px;padding:8px 13px;font-size:12px;font-weight:800;cursor:pointer;white-space:nowrap">${escapeHtml(btnTexto)}</button><button id="tm-push-no" style="background:none;border:none;font-size:11px;cursor:pointer;text-align:center">Ahora no</button></div></div>`;
+        b.innerHTML = `<div id="tm-push-banner" style="border-radius:16px;padding:14px 16px;display:flex;align-items:center;gap:13px;font-family:sans-serif;animation:slideUpBanner .35s cubic-bezier(.22,1,.36,1)"><span class="tmpb-bell" style="flex-shrink:0">${bellIco}</span><div style="flex:1;min-width:0"><div class="tmpb-title" style="font-weight:800;font-size:14px;margin-bottom:2px">${escapeHtml(titulo)}</div><div class="tmpb-body" style="font-size:12px;line-height:1.35">${escapeHtml(cuerpo)}</div></div><div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0"><button id="tm-push-si" style="border:none;border-radius:10px;padding:8px 13px;font-size:12px;font-weight:800;cursor:pointer;white-space:nowrap">${btnIco}${escapeHtml(btnTexto)}</button><button id="tm-push-no" style="background:none;border:none;font-size:11px;cursor:pointer;text-align:center">Ahora no</button></div></div>`;
         if (!document.getElementById('slideUpBannerStyle')) {
             const s = document.createElement('style');
             s.id = 'slideUpBannerStyle';

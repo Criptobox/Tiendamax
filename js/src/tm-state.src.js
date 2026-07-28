@@ -273,9 +273,12 @@ function mostrarVistaCategoria(categoria) {
     document.getElementById('vistaCategoria').style.display = 'block';
     actualizarVisibilidadBannerOferta(false);
 
-    const icono = obtenerIconoCategoria(categoria);
-    const titulo = categoria === 'Todas' ? '🛍️ Todos los Productos' : `${icono} ${categoria}`;
-    document.getElementById('tituloCategoriaActual').textContent = titulo;
+    // Mismo ícono de línea que la tarjeta de categoría (SVG de constantes
+    // propias; el nombre de la categoría sí se escapa).
+    const titulo = categoria === 'Todas'
+        ? obtenerIconoCategoriaSVG('Todas') + ' Todos los Productos'
+        : obtenerIconoCategoriaSVG(categoria) + ' ' + escapeHtml(categoria);
+    document.getElementById('tituloCategoriaActual').innerHTML = titulo;
 
     actualizarBotonesCategorias();
     renderizarSubcategoriaTabs();

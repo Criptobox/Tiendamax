@@ -1776,3 +1776,37 @@ html body.light-mode #detailSpecBadges .tm-ico-spec{ color:var(--coral-deep, #D2
 /* Modo claro: el ícono del nombre necesita más contraste sobre blanco */
 html body.light-mode .pv2-title .tm-ico-nombre,
 html body.light-mode #detailProductName .tm-ico-nombre{ color:var(--coral-deep, #D24E0F); }
+
+/* --- Interfaz fija: mismos iconos de línea que el catálogo ---
+   Etiquetas, badges y botones (Descripción, Compartir, Pago al recibir,
+   Seguir viendo, Tu Carrito…) dejan el emoji de color y usan el trazo.
+   Se quedan con emoji, a propósito, el avatar del bot 🤖, el sol/luna del
+   tema, las ★ de las reseñas y las descripciones de producto. */
+html body .tm-ico-ui{
+  width:1em;height:1em;vertical-align:-.14em;
+  flex:0 0 auto;opacity:.95;
+}
+/* Título de la vista de categoría y eyebrow de la ficha: el SVG viene de
+   obtenerIconoCategoriaSVG, que no lleva clase de tamaño propia. */
+html body #tituloCategoriaActual > svg{
+  width:.82em;height:.82em;vertical-align:-.02em;margin-right:.12em;
+  stroke:currentColor;fill:none;color:var(--coral, #FF6A1F);
+}
+html body #detailProductCategory > svg{
+  width:1.15em;height:1.15em;vertical-align:-.24em;margin-right:.2em;
+  stroke:currentColor;fill:none;
+}
+/* Carrito vacío: el icono era un emoji grande, ahora es trazo */
+html body .tm-empty-icon > svg{
+  width:1em;height:1em;stroke:currentColor;fill:none;
+  color:var(--coral, #FF6A1F);opacity:.55;
+}
+/* En los pasos de "cómo comprar" el icono cierra la frase: un poco más
+   grande y en coral para que se lea como remate, no como viñeta. */
+html body .tm-step h3 .tm-ico-ui{
+  width:1.05em;height:1.05em;color:var(--coral, #FF6A1F);margin-left:.1em;
+}
+html body .tm-steps-foot .tm-ico-ui{ color:var(--gold, #F2B632); }
+/* Paso 3 ("Pagas al recibir") lleva número verde: que el ícono lo acompañe.
+   Si el navegador no soporta :has(), el ícono queda coral — sin ruptura. */
+html body .tm-step:has(.tm-step-num.green) h3 .tm-ico-ui{ color:#2ecc71; }
