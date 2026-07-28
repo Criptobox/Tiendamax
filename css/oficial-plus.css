@@ -41,6 +41,52 @@ html body.light-mode{
   --glass-border-strong:rgba(0,0,0,.14);
 }
 
+/* ================================================================
+   FONDO DEL SITIO — calcado del preview: base #08060A con cinco
+   resplandores (coral, dorado, coral centro, violeta, azul) más un
+   degradado vertical, todo fijo al hacer scroll. Sustituye el fondo
+   plano #0e0e12 de premium-theme.css y las orbes animadas nd-mesh.
+   ================================================================ */
+html body{
+  background:
+    radial-gradient(900px 700px at 12% 6%, rgba(255,106,31,.22), transparent 60%),
+    radial-gradient(800px 600px at 92% 14%, rgba(242,182,50,.14), transparent 60%),
+    radial-gradient(700px 500px at 50% 60%, rgba(255,106,31,.10), transparent 60%),
+    radial-gradient(700px 600px at 0% 100%, rgba(184,146,255,.10), transparent 60%),
+    radial-gradient(700px 600px at 100% 90%, rgba(111,168,255,.08), transparent 60%),
+    linear-gradient(180deg,#08060A 0%,#120D17 30%,#0A070C 60%,#08060A 100%) #08060A !important;
+  background-attachment:fixed !important;
+}
+html body.light-mode{
+  background:
+    radial-gradient(900px 700px at 12% 6%, rgba(255,106,31,.18), transparent 60%),
+    radial-gradient(800px 600px at 92% 14%, rgba(242,182,50,.12), transparent 60%),
+    radial-gradient(700px 500px at 50% 60%, rgba(255,106,31,.08), transparent 60%),
+    radial-gradient(800px 600px at 8% 88%, rgba(184,146,255,.10), transparent 60%),
+    radial-gradient(800px 600px at 95% 92%, rgba(111,168,255,.08), transparent 60%),
+    linear-gradient(180deg,#FAF7F2 0%,#F0E8DA 30%,#FAF7F2 100%) #FAF7F2 !important;
+  background-attachment:scroll !important;
+}
+/* Las orbes flotantes del diseño anterior se retiran (el preview usa
+   resplandores estáticos); su contenedor fijo pasa a ser la cuadrícula
+   sutil que el preview pinta con body::before. */
+html body .nd-mesh .nd-orb{display:none !important}
+html body .nd-mesh{
+  opacity:.5;
+  background-image:
+    linear-gradient(rgba(255,255,255,.022) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.022) 1px, transparent 1px);
+  background-size:56px 56px;
+  -webkit-mask-image:radial-gradient(ellipse 80% 60% at 50% 30%, #000 30%, transparent 80%);
+  mask-image:radial-gradient(ellipse 80% 60% at 50% 30%, #000 30%, transparent 80%);
+}
+html body.light-mode .nd-mesh{
+  background-image:
+    linear-gradient(rgba(26,18,11,.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(26,18,11,.03) 1px, transparent 1px);
+}
+::selection{background:var(--coral);color:#fff}
+
 /* ── Eyebrow de sección: línea + texto + punto ── */
 html body .section-eyebrow{
   display:inline-flex !important;align-items:center !important;gap:14px !important;
@@ -158,6 +204,45 @@ html body #mas-vendidos .mv-dots button.active{
   width:28px;border-radius:5px;
   background:linear-gradient(90deg,var(--coral),var(--gold));
   box-shadow:0 0 12px rgba(255,106,31,.5);
+}
+
+/* ── Botón "Pedir" de las tarjetas: acabado del preview ──
+   Degradado verde en tres paradas con brillo interior arriba y sombra
+   verde, más un barrido de luz que cruza el botón al pasar el mouse
+   (.pcard .pedir del preview). La FORMA (14px) la sigue poniendo
+   botones-unificados.css — aquí solo color y efectos. */
+html body .btn-pedir-card,
+html body .producto-card .btn-pedir-whatsapp{
+  background:linear-gradient(135deg,#2DE56F 0%,#25D366 50%,#1FAD53 100%) !important;
+  color:#fff !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.3),inset 0 -1px 0 rgba(0,0,0,.15),0 10px 24px rgba(37,211,102,.4) !important;
+  position:relative !important;overflow:hidden !important;
+  transition:transform .2s var(--op-ease),box-shadow .2s var(--op-ease) !important;
+}
+html body .btn-pedir-card::after,
+html body .producto-card .btn-pedir-whatsapp::after{
+  content:"" !important;position:absolute !important;inset:0 !important;
+  background:linear-gradient(120deg,transparent 30%,rgba(255,255,255,.2) 50%,transparent 70%) !important;
+  transform:translateX(-110%);transition:transform .5s var(--op-ease);
+  pointer-events:none !important;border-radius:inherit !important;
+  width:auto !important;height:auto !important;top:0 !important;left:0 !important;
+}
+html body .btn-pedir-card:hover,
+html body .producto-card .btn-pedir-whatsapp:hover{
+  transform:translateY(-1px) !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 14px 30px rgba(37,211,102,.55) !important;
+}
+html body .btn-pedir-card:hover::after,
+html body .producto-card .btn-pedir-whatsapp:hover::after{transform:translateX(110%)}
+/* "Avísame" (agotado) se queda aparte: no debe parecer el CTA de compra */
+html body .btn-pedir-card.pv2-aviso{
+  background:rgba(255,106,31,.14) !important;color:var(--coral-2) !important;
+  border:1px solid rgba(255,106,31,.3) !important;
+  box-shadow:none !important;
+}
+html body .btn-pedir-card.pv2-aviso::after{display:none !important}
+@media (prefers-reduced-motion:reduce){
+  html body .btn-pedir-card::after{display:none !important}
 }
 
 /* ── Tratamiento propio de DESTACADO: se diferencia de la grilla normal y
