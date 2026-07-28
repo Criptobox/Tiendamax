@@ -393,6 +393,10 @@ function _tmCatVerMas(grid, extras) {
     extras.forEach(e => {
         const c = document.createElement('div');
         c.className = 'categoria-card';
+        // Sin esto las tarjetas del desplegable salían blancas: el color
+        // venía de :nth-child dentro de .categorias-grid y esta es OTRA
+        // grilla, así que la cuenta empezaba de cero.
+        if (typeof tmPintarCategoria === 'function') tmPintarCategoria(c, e.cat);
         const icon = document.createElement('span');
         icon.className = 'cat-icon';
         const svg = (typeof obtenerIconoCategoriaSVG === 'function') ? obtenerIconoCategoriaSVG(e.cat) : null;
@@ -464,6 +468,7 @@ function renderizarCategoriasHome() {
 
     const cardTodas = document.createElement('div');
     cardTodas.className = 'categoria-card';
+    if (typeof tmPintarCategoria === 'function') tmPintarCategoria(cardTodas, 'todos');
     const totalProductos = productos.length;
     cardTodas.innerHTML = `
         <span class="cat-icon">${_svgCat('todos') || '🛍️'}</span>
@@ -497,6 +502,9 @@ function renderizarCategoriasHome() {
         const isPopular = mv > 0 && (mv === maxMV || mv >= 2);
         const card = document.createElement('div');
         card.className = 'categoria-card' + (isPopular ? ' cat-popular' : '');
+        // Color de la categoría (tm-iconos): va con el nombre, no con la
+        // posición, así la misma categoría mantiene su tono al reordenarse.
+        if (typeof tmPintarCategoria === 'function') tmPintarCategoria(card, cat);
         card.innerHTML = `
             <span class="cat-popular-badge">+ Popular</span>
             <span class="cat-icon">${_svgCat(cat) || escapeHtml(obtenerIconoCategoria(cat))}</span>

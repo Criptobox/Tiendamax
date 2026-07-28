@@ -403,3 +403,79 @@ function tmTextoConIcono(texto) {
 function tmIcoUI(emoji) {
     return tmIconoSVG(emoji, 'tm-ico-ui');
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   COLOR POR CATEGORÍA
+   Antes el color de cada tarjeta salía de su POSICIÓN en la grilla
+   (:nth-child(4n+1..4)), así que la misma categoría cambiaba de color al
+   moverse y las tarjetas del desplegable "Ver más" —que viven en otra
+   grilla— se quedaban sin color. Ahora el color va con el NOMBRE: es
+   estable, sobrevive al orden y sirve igual en las dos grillas.
+
+   Paleta elegida por el admin. Las claves van normalizadas (minúsculas,
+   sin acentos) porque el nombre real puede venir en mayúsculas.
+   ═══════════════════════════════════════════════════════════════ */
+const TM_CAT_COLORES = {
+    'wifi':         '#3B82F6',   // azul
+    'energia':      '#F59E0B',   // ámbar
+    'celulares':    '#A855F7',   // púrpura
+    'seguridad':    '#EF4444',   // rojo
+    'carros':       '#6366F1',   // índigo
+    'motos':        '#FF6B1A',   // naranja
+    'hogar':        '#14B8A6',   // verde azulado
+    'utiles':       '#06B6D4',   // cian
+    'gym':          '#22C55E',   // verde
+    'juegos':       '#EAB308',   // dorado
+    'pc y laptops': '#EC4899',   // rosa
+    'ropa':         '#D946EF'    // magenta — el admin no tenía preferencia
+};
+
+// Respaldo para categorías nuevas: mismo tono siempre para el mismo
+// nombre (hash estable), así no cambia de color entre visitas ni entre
+// dispositivos. Se evitan los tonos ya asignados arriba.
+const TM_CAT_PALETA = ['#3B82F6','#F59E0B','#A855F7','#EF4444','#6366F1',
+                       '#FF6B1A','#14B8A6','#06B6D4','#22C55E','#EAB308',
+                       '#EC4899','#D946EF','#84CC16','#0EA5E9','#F43F5E'];
+
+function tmNormalizarCat(nombre) {
+    return String(nombre || '').toLowerCase().normalize('NFD')
+        .replace(/[̀-ͯ]/g, '').replace(/\s+/g, ' ').trim();
+}
+
+function tmColorCategoria(nombre) {
+    const n = tmNormalizarCat(nombre);
+    if (!n) return TM_CAT_PALETA[0];
+    if (TM_CAT_COLORES[n]) return TM_CAT_COLORES[n];
+    // Coincidencia parcial: "PC Y LAPTOPS 2024" sigue siendo rosa. Se pide
+    // 3 caracteres para que un nombre de una o dos letras no matchee medio mapa.
+    if (n.length >= 3) {
+        for (const clave in TM_CAT_COLORES) {
+            if (n.includes(clave) || clave.includes(n)) return TM_CAT_COLORES[clave];
+        }
+    }
+    // Categoría nueva: primero los tonos que nadie usa todavía, para que no
+    // salga del mismo color que una categoría existente.
+    const usados = Object.keys(TM_CAT_COLORES).map(k => TM_CAT_COLORES[k]);
+    const libres = TM_CAT_PALETA.filter(c => usados.indexOf(c) === -1);
+    const pool = libres.length ? libres : TM_CAT_PALETA;
+    let h = 0;
+    for (let i = 0; i < n.length; i++) h = (h * 31 + n.charCodeAt(i)) >>> 0;
+    return pool[h % pool.length];
+}
+
+// '#3B82F6' → '59,130,246'. El CSS usa rgba(var(--cat-rgb),.12) en vez de
+// color-mix() para que funcione también en WebViews viejas de Android.
+function tmHexARGB(hex) {
+    const h = String(hex || '').replace('#', '');
+    const n = parseInt(h.length === 3 ? h.split('').map(c => c + c).join('') : h, 16);
+    return [(n >> 16) & 255, (n >> 8) & 255, n & 255].join(',');
+}
+
+// Pinta la tarjeta: los tres renderers de categorías llaman a esto.
+function tmPintarCategoria(el, nombre) {
+    if (!el) return;
+    const hex = tmColorCategoria(nombre);
+    el.style.setProperty('--cat-color', hex);
+    el.style.setProperty('--cat-rgb', tmHexARGB(hex));
+    el.classList.add('cat-color');
+}

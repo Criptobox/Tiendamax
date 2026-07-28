@@ -62,6 +62,7 @@ function renderizarCategoriasHomeInstant() {
     const _svgCatI = (cat) => (typeof obtenerIconoCategoriaSVG === 'function' && obtenerIconoCategoriaSVG(cat)) || null;
     const cardTodas = document.createElement('div');
     cardTodas.className = 'categoria-card';
+    if (typeof tmPintarCategoria === 'function') tmPintarCategoria(cardTodas, 'todos');
     cardTodas.innerHTML = `<span class="cat-wm">🛍️</span><span class="cat-icon">${_svgCatI('todos') || '🛍️'}</span><span class="cat-name">Todos</span><span class="cat-count">${localProds.length} producto${localProds.length !== 1 ? 's' : ''}</span><span class="cat-cta">→ Explorar</span>`;
     cardTodas.onclick = () => mostrarVistaCategoria('Todas');
     grid.appendChild(cardTodas);
@@ -80,6 +81,9 @@ function renderizarCategoriasHomeInstant() {
         }
         const card = document.createElement('div');
         card.className = 'categoria-card';
+        // Mismo color que el renderer con datos frescos: si no, el pintado
+        // instantáneo (caché) parpadearía de un tono a otro al llegar la red.
+        if (typeof tmPintarCategoria === 'function') tmPintarCategoria(card, cat);
         const badge = (count > 0 && count === maxCount) ? '<span class="cat-badge">🔥 Popular</span>' : '';
         const cta = '<span class="cat-cta">→ Explorar</span>';
         card.innerHTML = `${badge}<span class="cat-wm">${icon}</span><span class="cat-icon">${_svgCatI(cat) || icon}</span><span class="cat-name">${_dn[cat] || cat}</span><span class="cat-count">${count + ' producto' + (count !== 1 ? 's' : '')}</span>${cta}`;

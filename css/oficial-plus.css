@@ -2083,3 +2083,93 @@ html body.light-mode #productDetailModal .detail-modal-content::before{
     rgba(210,78,15,.45) 78%,
     transparent 100%) !important;
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   COLOR POR CATEGORÍA (variables --cat-color / --cat-rgb)
+   Las pinta tmPintarCategoria() (tm-iconos.src.js) según el NOMBRE de la
+   categoría, no su posición. Estas reglas sustituyen a las variantes por
+   :nth-child de más arriba y a las de light-mode.css, y aplican igual en
+   la grilla principal y en la del desplegable "Ver más" — que antes se
+   quedaba blanca porque la cuenta de :nth-child empezaba de cero en ella.
+   Se usa rgba(var(--cat-rgb),·) en vez de color-mix() para no depender de
+   un navegador reciente.
+   ═══════════════════════════════════════════════════════════════ */
+html body .categorias-home .categorias-grid .categoria-card.cat-color,
+html body .categorias-home .categorias-grid .categoria-card.cat-color:nth-child(n){
+  background:linear-gradient(155deg,
+    rgba(var(--cat-rgb),.16) 0%,
+    rgba(var(--cat-rgb),.05) 52%,
+    rgba(255,255,255,.02) 100%) !important;
+  border:1px solid rgba(var(--cat-rgb),.24) !important;
+}
+html body .categorias-home .categorias-grid .categoria-card.cat-color:hover{
+  border-color:rgba(var(--cat-rgb),.55) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.15),
+    0 24px 60px rgba(0,0,0,.5),
+    0 0 0 1px rgba(var(--cat-rgb),.28) !important;
+}
+html body .categorias-home .categorias-grid .categoria-card.cat-color::before{
+  background:radial-gradient(circle at 50% 50%,rgba(var(--cat-rgb),.3),transparent 50%) !important;
+}
+/* Ícono: cuadrado teñido del color y trazo del color */
+html body .categorias-home .categorias-grid .categoria-card.cat-color .cat-icon,
+html body .categorias-home .categorias-grid .categoria-card.cat-color:nth-child(n) .cat-icon{
+  background:rgba(var(--cat-rgb),.14) !important;
+  border:1px solid rgba(var(--cat-rgb),.22) !important;
+  color:var(--cat-color) !important;
+}
+/* El punto delante de "N productos" toma el color de la categoría */
+html body .categorias-home .categorias-grid .categoria-card.cat-color .cat-count::before{
+  background:var(--cat-color) !important;
+}
+/* Flecha de hover con un toque del color */
+html body .categorias-home .categorias-grid .categoria-card.cat-color:hover::after{
+  background:rgba(var(--cat-rgb),.16) !important;
+  border-color:rgba(var(--cat-rgb),.34) !important;
+}
+
+/* --- Modo claro ---
+   light-mode.css pinta fondos planos por :nth-child (y no cubre las
+   tarjetas del desplegable, de ahí las blancas). Aquí el tinte sale del
+   mismo color, suave sobre blanco. */
+html body.light-mode .categorias-home .categorias-grid .categoria-card.cat-color,
+html body.light-mode .categorias-home .categorias-grid .categoria-card.cat-color:nth-child(n){
+  background:linear-gradient(155deg,
+    rgba(var(--cat-rgb),.13) 0%,
+    rgba(var(--cat-rgb),.05) 55%,
+    #ffffff 100%) !important;
+  border:1px solid rgba(var(--cat-rgb),.20) !important;
+  box-shadow:0 10px 26px -18px rgba(var(--cat-rgb),.55) !important;
+}
+html body.light-mode .categorias-home .categorias-grid .categoria-card.cat-color:hover{
+  border-color:rgba(var(--cat-rgb),.42) !important;
+  box-shadow:0 20px 40px -20px rgba(var(--cat-rgb),.65) !important;
+}
+html body.light-mode .categorias-home .categorias-grid .categoria-card.cat-color .cat-icon,
+html body.light-mode .categorias-home .categorias-grid .categoria-card.cat-color:nth-child(n) .cat-icon{
+  background:#fff !important;
+  border:1px solid rgba(var(--cat-rgb),.20) !important;
+  color:var(--cat-color) !important;
+  box-shadow:0 4px 12px -8px rgba(var(--cat-rgb),.7) !important;
+}
+/* rediseno-cards.css tiene `body.light-mode #catExtraWrap > div{background:#fff}`
+   —escrito para el markup viejo del desplegable— y su id le gana a los
+   selectores de clase de arriba: por eso en modo claro las tarjetas de
+   "Ver más" salían blancas mientras las de la grilla principal sí tenían
+   tono. Se repite el id para empatar y ganar por orden de carga. */
+html body.light-mode .categorias-home #catExtraWrap .categoria-card.cat-color,
+html body.light-mode .categorias-home #catExtraWrap > .categoria-card.cat-color{
+  background:linear-gradient(155deg,
+    rgba(var(--cat-rgb),.13) 0%,
+    rgba(var(--cat-rgb),.05) 55%,
+    #ffffff 100%) !important;
+  border:1px solid rgba(var(--cat-rgb),.20) !important;
+  box-shadow:0 10px 26px -18px rgba(var(--cat-rgb),.55) !important;
+}
+html body.light-mode .categorias-home #catExtraWrap .categoria-card.cat-color .cat-icon{
+  background:#fff !important;
+  border:1px solid rgba(var(--cat-rgb),.20) !important;
+  color:var(--cat-color) !important;
+  box-shadow:0 4px 12px -8px rgba(var(--cat-rgb),.7) !important;
+}
