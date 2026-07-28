@@ -767,8 +767,10 @@ async function cargarDatosDesdeGitHub() {
         // comisiones consolidadas en productos.json — no se usa archivo separado
         // grupos FB y revolico config se cargan en background (setTimeout arriba)
 
-        // Ventas migradas a Firebase — sync en background tras cargar productos
-        setTimeout(_fbSincronizarVentasAlIniciar, 2000);
+        // Las ventas NO se sincronizan aquí: esto es el sitio público y no tiene
+        // ninguna vista de ventas (#ventasContenido solo existe en el panel, y
+        // admin.html trae su propio sync). Bajarlas para cada visitante solo
+        // gastaba datos y publicaba el historial de ventas con sus márgenes.
 
         // Countdown desde Firebase — sincroniza a todos los dispositivos de clientes
         setTimeout(async () => {

@@ -600,6 +600,20 @@ function _tmInitDestacadosSlider() {
     };
     grid.addEventListener('scroll', onScroll, { passive: true });
 
+    // Solo rota mientras se ve. Sin esto seguía desplazando cada 5s con el
+    // usuario leyendo el footer: trabajo de layout y batería a cambio de nada,
+    // que se nota justo en los teléfonos modestos a los que apunta el sitio.
+    let visObs = null;
+    if ('IntersectionObserver' in window) {
+        visObs = new IntersectionObserver(entradas => {
+            if (entradas[0].isIntersecting) reanudar(); else pausar();
+        }, { threshold: 0.15 });
+        visObs.observe(wrap);
+    }
+    // Tampoco rota con la pestaña en segundo plano
+    const onVisibilidad = () => { if (document.hidden) pausar(); else reanudar(); };
+    document.addEventListener('visibilitychange', onVisibilidad);
+
     _mvSliderEstado = {
         timer,
         limpiar() {
@@ -609,10 +623,14 @@ function _tmInitDestacadosSlider() {
             grid.removeEventListener('mouseleave', reanudar);
             grid.removeEventListener('scroll', onScroll);
             window.removeEventListener('resize', aplicarControles);
+            document.removeEventListener('visibilitychange', onVisibilidad);
+            if (visObs) visObs.disconnect();
             clearTimeout(scrollTimer);
         }
     };
-    reanudar();
+    // Sin arranque directo: lo enciende el observer cuando la fila entra en
+    // pantalla (y si no hay observer, se arranca aquí).
+    if (!visObs) reanudar();
 }
 
 function renderizarMasVendidos() {

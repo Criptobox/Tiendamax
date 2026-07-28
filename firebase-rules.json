@@ -188,7 +188,8 @@
       }
     },
     "pedidos": {
-      ".read": true,
+      "_comentario_read": "Cerrado: nadie lo lee. El sitio solo ESCRIBE pedidos aqui (tm-ui/tm-patches) y 'Mis Pedidos' del cliente se sirve desde localStorage (pedidos_cliente_v1); admin.html no lo consulta. Abierto exponia nombre, telefono y direccion de todos los clientes a cualquiera.",
+      ".read": false,
       ".write": false,
       "$pedidoId": {
         ".write": "!newData.exists() || !data.exists()",

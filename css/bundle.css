@@ -8128,7 +8128,13 @@ html body .testimonio-card .stars{
   color:var(--gold) !important;font-size:16px !important;letter-spacing:2px !important;
   filter:drop-shadow(0 0 6px rgba(242,182,50,.4)) !important;
 }
+/* Los :not(...) igualan la especificidad de rediseno-cards.css, que si no
+   impone un gris frío (#b5b5b5) fuera de la paleta cálida del rediseño */
 html body .testimonio-card .resena-texto,
+html body:not(.light-mode) .testimonio-card .resena-texto,
+html body:not(.light-mode) .testimonio-card p:not(.autor),
+html body.light-mode .testimonio-card .resena-texto,
+html body.light-mode .testimonio-card p:not(.autor),
 html body .testimonio-card p:not(.autor){
   color:var(--op-ink-2) !important;font-size:14.5px !important;line-height:1.65 !important;
   margin:0 0 16px !important;position:relative !important;

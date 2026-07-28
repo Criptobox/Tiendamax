@@ -26,6 +26,9 @@
     html.tm-pre-light, html.tm-pre-light body { background: #FAF8F5 !important; }
     </style>
     <!-- ===== Cabeceras de seguridad ===== -->
+    <!-- Sin frame-ancestors: los navegadores lo ignoran cuando la política llega
+         por <meta> (solo vale como cabecera HTTP, que GitHub Pages no permite),
+         así que solo dejaba un error rojo en la consola sin proteger nada. -->
     <meta http-equiv="Content-Security-Policy" content="
         default-src 'self';
         script-src  'self' 'unsafe-inline' https://www.gstatic.com https://www.googletagmanager.com;
@@ -51,7 +54,6 @@
                     https://*.workers.dev
                     https://push.services.mozilla.com
                     https://updates.push.services.mozilla.com;
-        frame-ancestors 'none';
         form-action 'self' https://wa.me https://api.whatsapp.com;
         base-uri    'self';
         object-src  'none';
@@ -248,7 +250,7 @@
     <noscript><link rel="stylesheet" href="css/fonts.css?v=8b616cbe"></noscript>
 
     <!-- Preload del bundle JS del núcleo (generado por scripts/build_js_bundle.py) -->
-    <link rel="preload" href="js/tm-bundle.js?v=c83bf45e" as="script">
+    <link rel="preload" href="js/tm-bundle.js?v=b5cc32ee" as="script">
 
     <!-- Preload del catálogo: la foto hero (fetchpriority=high) no puede pedirse
          hasta que este JSON responda y arme el <img>; sin este preload, el
@@ -261,7 +263,7 @@
 
 
 
-    <link rel="stylesheet" href="css/bundle.css?v=c1fa8692">
+    <link rel="stylesheet" href="css/bundle.css?v=aababbbb">
 
 
 
@@ -1547,7 +1549,7 @@
     <!-- ===== TiendaMax modularizado (reemplaza script.js) ===== -->
     <!-- Bundle único (config→data→state→admin→product→catalog→init→ui→toast→iife→patches),
          generado por scripts/build_js_bundle.py a partir de js/src/*.src.js -->
-    <script src="js/tm-bundle.js?v=c83bf45e" defer></script>
+    <script src="js/tm-bundle.js?v=b5cc32ee" defer></script>
 
     <!-- Agente de chat: separado del bundle (62 KB min) porque no hace falta
          para el primer render del catálogo. Carga con su propio <script defer>
@@ -1582,9 +1584,16 @@
             window._menuMovilHistoryPushed = true;
             history.pushState({ menuOpen: true }, '');
         }
+        // El drawer se anuncia como aria-modal: el foco debe entrar en él, como
+        // ya hace el carrito. Se recuerda quién lo abrió para devolverlo al cerrar.
+        window._menuMovilFocoPrevio = document.activeElement;
+        var _cerrarBtn = document.querySelector('#mobileMenuOverlay .mobile-menu-close');
+        if (_cerrarBtn) setTimeout(function(){ _cerrarBtn.focus(); }, 60);
     }
     function cerrarMenuMovil() {
-        document.getElementById('mobileMenuOverlay').classList.remove('open');
+        var overlay = document.getElementById('mobileMenuOverlay');
+        var estabaAbierto = overlay && overlay.classList.contains('open');
+        overlay.classList.remove('open');
         document.getElementById('hamburgerBtn').classList.remove('open');
         document.body.style.overflow = '';
         document.body.classList.remove("menu-open");
@@ -1594,12 +1603,32 @@
                 history.back();
             }
         }
+        // Devolver el foco a quien abrió el menú; si el menú se abrió por código
+        // el foco previo era <body>, que no es enfocable: ahí va la hamburguesa.
+        if (estabaAbierto) {
+            var previo = window._menuMovilFocoPrevio;
+            window._menuMovilFocoPrevio = null;
+            if (!previo || previo === document.body || !previo.isConnected) {
+                previo = document.getElementById('hamburgerBtn');
+            }
+            if (previo && typeof previo.focus === 'function') previo.focus();
+        }
     }
     document.addEventListener('DOMContentLoaded', function() {
         var overlay = document.getElementById('mobileMenuOverlay');
         if(overlay) overlay.addEventListener('click', function(e){
             if(e.target === this) cerrarMenuMovil();
         });
+    });
+    // Escape cierra el menú, igual que el carrito. Se registra aparte del
+    // DOMContentLoaded para que funcione aunque el drawer se abra antes.
+    document.addEventListener('keydown', function(e){
+        if (e.key !== 'Escape' && e.keyCode !== 27) return;
+        var ov = document.getElementById('mobileMenuOverlay');
+        if (ov && ov.classList.contains('open')) {
+            e.stopPropagation();
+            cerrarMenuMovil();
+        }
     });
     </script>
 

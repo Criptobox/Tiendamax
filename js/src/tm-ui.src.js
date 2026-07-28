@@ -646,37 +646,12 @@ function _fbBorrarTodasVentas() {
     })().catch(() => {}); // OPT 3G: silencioso
 }
 
-// Migra ventas guardadas accidentalmente en la raíz de Firebase (0,1,2,3...) a /ventas/{id}
-async function _fbMigrarVentasRaiz(url) {
-    const ventasMigradas = [];
-    const _elimSet = new Set(tmParseArray(localStorage.getItem('_tmVentasElim')));
-    // OPT 3G: health check primero — si Firebase no responde, NO hacer los 20 fetches
-    // (evita 20 errores ERR_CONNECTION_CLOSED en la consola del usuario en 3G)
-    try {
-        const probe = await fetch(`${url}/0.json`, { cache: 'no-store' });
-        if (!probe.ok && probe.status !== 200) return ventasMigradas;
-    } catch(e) {
-        // Firebase inalcanzable — abortar silenciosamente
-        return ventasMigradas;
-    }
-    for (let k = 0; k < 20; k++) {
-        try {
-            const r = await fetch(`${url}/${k}.json`);
-            if (!r.ok) continue;
-            const v = await r.json();
-            if (!v || typeof v !== 'object' || !v.id || !v.producto) continue;
-            await fetch(`${url}/${k}.json`, { method: 'DELETE' }).catch(() => {});
-            if (_elimSet.has(v.id)) continue;
-            const putRes = await fetch(`${url}/ventas/${v.id}.json`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(v)
-            });
-            if (putRes.ok) ventasMigradas.push(v);
-        } catch(e) {}
-    }
-    return ventasMigradas;
-}
+// Nota: aquí vivía _fbMigrarVentasRaiz, que movía ventas guardadas por error en
+// la raíz de Firebase (0,1,2…) a /ventas/{id}. Se eliminó porque ya no podía
+// funcionar: la raíz tiene ".read": false en firebase-rules.json, así que su
+// sondeo a /0.json devolvía 401 y la migración cortaba ahí siempre. Lo único
+// que quedaba era una petición fallida y un error rojo en la consola de cada
+// visitante.
 
 // Carga ventas desde Firebase y hace merge con localStorage (en background al iniciar)
 // OPT 3G: silencioso — si Firebase no responde (común en 3G cubano), no spamear la consola.
@@ -688,7 +663,6 @@ async function _fbSincronizarVentasAlIniciar() {
     const url = _fbRtdbUrl();
     if (!url) { _fbSyncVentasEnCurso = false; return; }
     try {
-        const migradas = await _fbMigrarVentasRaiz(url);
         const res = await fetch(`${url}/ventas.json`);
         if (!res.ok) { _fbSyncVentasEnCurso = false; return; }
         const data = await res.json();
@@ -697,10 +671,9 @@ async function _fbSincronizarVentasAlIniciar() {
             const n = String(v.producto || '').trim().toLowerCase();
             return n.length <= 1 || ['a','b','test','prueba','producto a','producto b','aa','bb'].includes(n);
         };
-        const ventasFB = data && typeof data === 'object'
+        const todasFB = data && typeof data === 'object'
             ? Object.values(data).filter(v => v && !_elimSet.has(v.id) && !_esPrueba(v))
             : [];
-        const todasFB = [...ventasFB, ...migradas.filter(m => !ventasFB.find(v => v.id === m.id) && !_esPrueba(m))];
         const ventasLocales = tmParseArray(localStorage.getItem('registroVentas'));
         const idsFB = new Set(todasFB.map(v => v.id));
         const soloLocales = ventasLocales.filter(v => !idsFB.has(v.id) && !_esPrueba(v));
