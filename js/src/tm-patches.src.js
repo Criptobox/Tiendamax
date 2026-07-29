@@ -472,8 +472,12 @@ function actualizarBadgeStockBajo() {
 if (typeof guardarProductos === 'function') {
     const _origGuardarProd = guardarProductos;
     guardarProductos = function() {
-        _origGuardarProd();
+        // Devolver lo que devuelva el original: ahora informa si la copia
+        // local se pudo guardar (false cuando la cuota está llena), y quien
+        // llama lo necesita para avisar bien.
+        const ok = _origGuardarProd.apply(this, arguments);
         setTimeout(actualizarBadgeStockBajo, 50);
+        return ok;
     };
 }
 

@@ -855,19 +855,7 @@ async function agregarProductoForm(event) {
         guardarProductos();
         marcarProductoModificado(producto.id);
         sincronizarConGitHub();
-        document.getElementById('productForm').reset();
-        const _mon1 = document.getElementById('productComisionMoneda');
-        if (_mon1) _mon1.value = 'USD';
-        const _tog1 = document.getElementById('tmMonedaToggle1');
-        if (_tog1) _tog1.querySelectorAll('.tm-moneda-btn').forEach(b => b.classList.toggle('active', b.dataset.moneda === 'USD'));
-        // Limpiar visualmente la sección de fotos: el form.reset() vacía los <input type="file">
-        // pero deja los labels mostrando el nombre del archivo previo y la clase has-file puesta.
-        if (typeof fileName === 'function') {
-            const _pi = document.getElementById('productImage');
-            const _pe = document.getElementById('productImagesExtra');
-            if (_pi) fileName(_pi, 'productImage-name', 'Elegir foto principal *');
-            if (_pe) fileName(_pe, 'productImagesExtra-name', 'Fotos extra (opcional)');
-        }
+        limpiarFormularioProducto();
         mostrarNotificacion('✅ ¡Producto agregado exitosamente!');
         if (window.TiendaMaxPush) {
             window.TiendaMaxPush.nuevoProducto(producto.nombre, producto.precioActual, producto.id, producto.imagen);
@@ -885,7 +873,152 @@ async function agregarProductoForm(event) {
     }
 }
 
-function guardarProductos() {
-    localStorage.setItem('productos', JSON.stringify(productos));
+// Deja el formulario de "Agregar producto" como recién abierto. Se usa al
+// guardar bien y también desde el botón "Limpiar": si el guardado falla a
+// medias (por ejemplo por la cuota del navegador), antes no había forma de
+// vaciarlo salvo recargar la página.
+function limpiarFormularioProducto(avisar) {
+    const form = document.getElementById('productForm');
+    if (form) form.reset();
+    const _mon = document.getElementById('productComisionMoneda');
+    if (_mon) _mon.value = 'USD';
+    const _tog = document.getElementById('tmMonedaToggle1');
+    if (_tog) _tog.querySelectorAll('.tm-moneda-btn').forEach(b => b.classList.toggle('active', b.dataset.moneda === 'USD'));
+    // form.reset() vacía los <input type="file"> pero deja el label con el
+    // nombre del archivo anterior y la clase has-file puesta.
+    if (typeof fileName === 'function') {
+        const _pi = document.getElementById('productImage');
+        const _pe = document.getElementById('productImagesExtra');
+        if (_pi) fileName(_pi, 'productImage-name', 'Elegir foto principal *');
+        if (_pe) fileName(_pe, 'productImagesExtra-name', 'Fotos extra (opcional)');
+    }
+    // La subcategoría se repuebla según la categoría; el reset del form deja
+    // el <select> con las opciones de la categoría anterior.
+    if (typeof agregarFillSubcats === 'function') {
+        try { agregarFillSubcats(); } catch (e) {}
+    }
+    const btn = document.querySelector('#productForm button[type="submit"]');
+    if (btn) { btn.disabled = false; btn.textContent = '💾 Guardar y publicar producto'; }
+    // showToast vive dentro del IIFE de admin.html y no está en window; el
+    // aviso se da con mostrarNotificacion, que sí es global (lo comprueba
+    // tests/test_admin_handlers.py).
+    if (avisar && typeof mostrarNotificacion === 'function') {
+        mostrarNotificacion('🧹 Formulario vacío, listo para el siguiente producto');
+    }
 }
 
+// Claves de localStorage que son CACHÉ o historial: se pueden tirar sin
+// perder nada real. El catálogo de verdad vive en productos.json (GitHub) y
+// los datos dinámicos en Firebase; localStorage aquí solo acelera el arranque.
+const _TM_CACHE_DESECHABLE = [
+    'tm_post_log', 'tmPubHist', 'tm_trend_snaps', 'tm_ia_undo',
+    'tm_ia_regen_queue', 'tm_ia_descartes', 'tm_reporte_visto',
+    'tm_push_sent', 'resenas_cache', 'tm_analytics_cache'
+];
+
+function _tmEspacioUsado() {
+    let n = 0;
+    try {
+        for (let i = 0; i < localStorage.length; i++) {
+            const k = localStorage.key(i);
+            n += k.length + (localStorage.getItem(k) || '').length;
+        }
+    } catch (e) {}
+    return n;
+}
+
+// Devuelve las claves más pesadas, para poder decirle al admin QUÉ ocupa
+// espacio en vez de dejarlo con un error de cuota sin contexto.
+function tmDiagnosticoAlmacenamiento() {
+    const filas = [];
+    try {
+        for (let i = 0; i < localStorage.length; i++) {
+            const k = localStorage.key(i);
+            filas.push({ clave: k, kb: Math.round((localStorage.getItem(k) || '').length / 1024 * 10) / 10 });
+        }
+    } catch (e) {}
+    filas.sort((a, b) => b.kb - a.kb);
+    return { totalKB: Math.round(_tmEspacioUsado() / 1024), top: filas.slice(0, 12) };
+}
+
+// Guarda el catálogo en localStorage tolerando que la cuota esté llena.
+// IMPORTANTE: esto es solo la caché local. Si falla, el producto igual se
+// publica en GitHub, que es la fuente real — por eso NO se relanza el error:
+// antes cortaba el guardado a medias y el producto quedaba en memoria, sin
+// publicar y con el formulario lleno, mientras el mensaje culpaba a las fotos.
+function guardarProductos() {
+    const datos = JSON.stringify(productos);
+    try {
+        localStorage.setItem('productos', datos);
+        return true;
+    } catch (e) {
+        // Segundo intento: liberar cachés e historiales y reintentar.
+        let liberado = 0;
+        _TM_CACHE_DESECHABLE.forEach(k => {
+            try {
+                const v = localStorage.getItem(k);
+                if (v) { liberado += v.length; localStorage.removeItem(k); }
+            } catch (e2) {}
+        });
+        try {
+            localStorage.setItem('productos', datos);
+            if (liberado > 0 && typeof mostrarNotificacion === 'function') {
+                mostrarNotificacion('🧹 Se liberó espacio borrando historiales viejos (' +
+                    Math.round(liberado / 1024) + ' KB). Nada importante se perdió.', 'info');
+            }
+            return true;
+        } catch (e3) {
+            const diag = tmDiagnosticoAlmacenamiento();
+            const masGrande = diag.top[0] ? (diag.top[0].clave + ' ' + diag.top[0].kb + ' KB') : '';
+            console.warn('[guardarProductos] cuota llena', diag);
+            if (typeof mostrarNotificacion === 'function') {
+                mostrarNotificacion('⚠️ El navegador no tiene espacio para la copia local (' +
+                    diag.totalKB + ' KB usados' + (masGrande ? ', lo mayor: ' + masGrande : '') +
+                    '). El producto SÍ se publica en GitHub; solo se pierde la copia rápida de este navegador.', 'error');
+            }
+            return false;
+        }
+    }
+}
+
+
+// ── Panel "Espacio del navegador" (Configuración) ────────────────────
+// El error "Setting the value of 'productos' exceeded the quota" no decía
+// QUÉ estaba ocupando el espacio ni cómo arreglarlo. Esto lo muestra y da
+// un botón para vaciar lo desechable.
+function tmMostrarEspacio() {
+    const cont = document.getElementById('tm-espacio-info');
+    if (!cont) return;
+    const d = tmDiagnosticoAlmacenamiento();
+    // El límite típico es ~5 MB por sitio; sirve de referencia, no es exacto.
+    const pct = Math.min(100, Math.round(d.totalKB / 5120 * 100));
+    const color = pct >= 85 ? '#e74c3c' : (pct >= 60 ? '#f5a623' : '#1DA854');
+    const filas = d.top.map(f => {
+        const desechable = _TM_CACHE_DESECHABLE.indexOf(f.clave) !== -1;
+        return '<div style="display:flex;justify-content:space-between;gap:12px;padding:4px 0;border-bottom:1px solid rgba(128,128,128,.15)">' +
+            '<span>' + escapeHtml(f.clave) + (desechable ? ' <span style="opacity:.6">· historial</span>' : '') + '</span>' +
+            '<b style="white-space:nowrap">' + f.kb + ' KB</b></div>';
+    }).join('');
+    cont.innerHTML =
+        '<div style="margin-bottom:10px"><b style="color:' + color + '">' + d.totalKB + ' KB</b> usados de ~5120 KB (' + pct + '%)</div>' +
+        '<div style="height:8px;border-radius:99px;background:rgba(128,128,128,.2);overflow:hidden;margin-bottom:12px">' +
+        '<div style="height:100%;width:' + pct + '%;background:' + color + '"></div></div>' + filas;
+}
+
+function tmLiberarEspacio() {
+    let liberado = 0;
+    _TM_CACHE_DESECHABLE.forEach(k => {
+        try {
+            const v = localStorage.getItem(k);
+            if (v) { liberado += v.length + k.length; localStorage.removeItem(k); }
+        } catch (e) {}
+    });
+    tmMostrarEspacio();
+    const kb = Math.round(liberado / 1024);
+    if (typeof mostrarNotificacion === 'function') {
+        mostrarNotificacion(kb > 0
+            ? '🧹 Liberados ' + kb + ' KB de historiales. El catálogo y la configuración siguen intactos.'
+            : 'ℹ️ No había historiales que borrar. Si sigue lleno, lo que ocupa es el catálogo: revisa la lista de arriba.',
+            kb > 0 ? 'success' : 'info');
+    }
+}

@@ -1290,6 +1290,15 @@
           <p id="fb-config-status" style="font-size:12px;color:var(--muted);margin-top:8px"></p>
         </div>
         <div class="section">
+          <h3>💾 Espacio del navegador</h3>
+          <p style="font-size:12px;color:var(--muted);margin:-4px 0 12px">El navegador guarda una copia local del catálogo para abrir rápido. Cuando se llena aparece <i>"exceeded the quota"</i> al guardar. Aquí ves qué ocupa y puedes vaciar lo que es historial (no se pierde nada: el catálogo real está en GitHub).</p>
+          <div id="tm-espacio-info" style="font-size:12.5px;color:var(--muted)">Cargando…</div>
+          <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">
+            <button class="btn btn-ghost" onclick="tmMostrarEspacio()">🔄 Revisar</button>
+            <button class="btn btn-primary" onclick="tmLiberarEspacio()">🧹 Liberar espacio</button>
+          </div>
+        </div>
+        <div class="section">
           <h3>🔑 API Key de IA (para el Agente)</h3>
           <div class="form-group"><label class="form-label" for="ia-key">API Key (Gemini / OpenRouter / Groq / DeepSeek)</label><input class="form-input" id="ia-key" type="text" placeholder="AIza… / sk-or-… / gsk_… / sk-…"></div>
           <div style="display:flex;gap:8px;margin-top:10px"><button class="btn btn-primary" onclick="agenteGuardarKey()">💾 Guardar key</button><button class="btn btn-ghost" onclick="agenteBorrarKey()">🗑 Borrar</button></div>
@@ -1403,6 +1412,7 @@
             <button type="button" id="btnAnalizarFoto" onclick="analizarFotoYCompletar()" class="btn btn-ghost" style="width:100%;margin-top:10px">🤖 Analizar foto y completar</button>
             <p style="font-size:11px;color:var(--muted);margin-top:6px;text-align:center">Escribe el nombre, elige la foto principal, y esto llena Descripción y Specs mirando la foto real (con Gemini) — revísalas antes de guardar.</p>
             <button type="submit" class="btn btn-primary" style="width:100%;margin-top:14px">💾 Guardar y publicar producto</button>
+            <button type="button" class="btn btn-ghost" style="width:100%;margin-top:8px" onclick="limpiarFormularioProducto(true)">🧹 Limpiar formulario</button>
             <p style="font-size:11px;color:var(--muted);margin-top:8px;text-align:center">Sube la imagen a GitHub y publica el catálogo automáticamente (usa tu token de Configuración).</p>
           </div>
         </form>
@@ -1493,7 +1503,7 @@
      agregarProductoForm, sincronizarTodoConGitHub, registrarVenta, etc. -->
 <!-- Bundle único (mismo orden: config→data→state→admin→product→catalog→init→ui→toast→iife→patches),
      generado por scripts/build_js_bundle.py a partir de js/src/*.src.js -->
-<script src="js/tm-bundle.js?v=3aa5f641"></script>
+<script src="js/tm-bundle.js?v=b1d3f68c"></script>
 <script src="js/biometric-auth.js?v=876f6495"></script>
 <script src="js/revolico_integration.js?v=fc18f61b"></script>
 <!-- analytics.js: NO se cargaba acá antes — el conteo real de suscriptores
@@ -1544,6 +1554,9 @@ function go(view, btn){
   const b = btn || document.querySelector('.side-btn[data-view="'+view+'"]');
   if(b) b.classList.add('active');
   window.scrollTo(0,0);
+  // El panel de espacio se mide al entrar, no al cargar la página: así el
+  // dato es el de ahora y no cuesta nada en el arranque.
+  if(view==='config' && typeof tmMostrarEspacio==='function'){ try{ tmMostrarEspacio(); }catch(e){} }
 }
 document.querySelectorAll('.side-btn').forEach(b=>{
   if(!b.dataset.view) return; // botones con acción propia (p.ej. Vale abre vale.html)
@@ -2521,7 +2534,7 @@ function subAgregar(){
   if(!map[cat]) map[cat]=[];
   if(map[cat].some(s=>norm(s)===norm(name))){ showToast('Ya existe esa subcategoría'); return; }
   map[cat].push(name);
-  localStorage.setItem('subcategorias', JSON.stringify(map));
+  try{ localStorage.setItem('subcategorias', JSON.stringify(map)); }catch(e){ console.warn('[subcategorias] cuota llena', e); }
   SUBCATS=map;
   if(typeof marcarTodoModificado==='function'){} // sync sube subcategorias.json desde localStorage
   renderCategorias();
@@ -4159,7 +4172,7 @@ const KEY='tm_admin_tools_v1';
 const SNAP='tm_product_snapshots_v1';
 const $=(s,r=document)=>r.querySelector(s); const $$=(s,r=document)=>Array.from(r.querySelectorAll(s));
 const safeJson=(k,f)=>{try{return JSON.parse(localStorage.getItem(k)||'')}catch(e){return f}};
-const saveJson=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
+const saveJson=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v));return true}catch(e){console.warn('[saveJson] no se pudo guardar',k,e);if(typeof window.mostrarNotificacion==='function')window.mostrarNotificacion('⚠️ Sin espacio en el navegador para guardar "'+k+'". Usa Configuración → Liberar espacio.','error');return false}};
 const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 const data=()=>safeJson(KEY,{coupons:[],locations:['Habana','Santiago'],stock:{},ab:[],clients:[],shipments:[],scheduled:[],competitors:[],roles:[{name:'admin',perms:'todo'},{name:'editor',perms:'productos,ventas'}],totp:{enabled:false},changes:[]});
 const setData=d=>saveJson(KEY,d);
@@ -4178,7 +4191,11 @@ function marcarMod(id){ if(typeof marcarProductoModificado==='function') try{ ma
 // panel principal no cargó), cae al modo anterior para no romper la función.
 function guardarProds(ps){
   if(typeof window.apReplaceProductos==='function'){ window.apReplaceProductos(ps); return; }
-  localStorage.setItem('productos', JSON.stringify(ps));
+  // Igual que guardarProductos(): la cuota llena no debe cortar el flujo,
+  // porque la fuente real es productos.json en GitHub, no esta copia.
+  try{ localStorage.setItem('productos', JSON.stringify(ps)); }
+  catch(e){ console.warn('[guardarProds] cuota llena', e);
+    if(typeof window.mostrarNotificacion==='function') window.mostrarNotificacion('⚠️ No cabe la copia local del catálogo en este navegador. Los cambios sí se publican.','error'); }
   window.productos = ps;
 }
 function parseCSV(text){const rows=[];let row=[],cur='',q=false;for(let i=0;i<text.length;i++){let c=text[i],n=text[i+1];if(c==='"'){if(q&&n==='"'){cur+='"';i++}else q=!q}else if(c===','&&!q){row.push(cur);cur=''}else if((c==='\n'||c==='\r')&&!q){if(c==='\r'&&n==='\n')i++;row.push(cur); if(row.some(x=>x!=='')) rows.push(row); row=[];cur=''}else cur+=c}row.push(cur); if(row.some(x=>x!=='')) rows.push(row);return rows}

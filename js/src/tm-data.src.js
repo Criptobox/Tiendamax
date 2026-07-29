@@ -619,11 +619,18 @@ async function subirImagenAGitHub(fileOrBase64) {
 
     const base64full = await comprimirImagen(fileOrBase64);
 
-    if (!user || !repo || !token) return base64full; // fallback sin config
+    // Sin configuración de GitHub no hay a dónde subir. Antes se devolvía la
+    // imagen entera en base64 y acababa DENTRO de productos.json y del
+    // localStorage: unas pocas fotos así llenan la cuota de 5 MB y el guardado
+    // empieza a fallar con "exceeded the quota". Mejor avisar que dejar el
+    // catálogo con imágenes incrustadas.
+    if (!user || !repo || !token) {
+        throw new Error('Falta la configuración de GitHub (usuario, repo y token). Ve a Configuración y complétala: sin eso las fotos no se pueden subir.');
+    }
 
     try {
         const base64data = base64full.includes(',') ? base64full.split(',')[1] : base64full;
-        if (!base64data) return base64full; // fallback si el data URL está malformado
+        if (!base64data) throw new Error('La imagen no se pudo leer. Prueba con otra foto.');
         // comprimirImagen() devuelve WebP siempre que el navegador lo soporte
         // (la inmensa mayoría de los casos) — la extensión del archivo debe
         // reflejar el formato real, si no queda un .jpg que por dentro es
@@ -640,8 +647,19 @@ async function subirImagenAGitHub(fileOrBase64) {
             body: JSON.stringify({ message: 'Imagen: ' + filename, content: base64data })
         });
         if (res.ok) return 'https://raw.githubusercontent.com/' + user + '/' + repo + '/main/' + path;
-    } catch(e) { /* fallback */ }
-    return base64full;
+        // Fallar en silencio aquí era lo que metía base64 en el catálogo. El
+        // motivo real (token vencido, sin permisos, límite de la API) se
+        // explica para poder arreglarlo en vez de adivinar.
+        let motivo = 'HTTP ' + res.status;
+        if (res.status === 401) motivo = 'el token de GitHub no es válido o venció';
+        else if (res.status === 403) motivo = 'GitHub rechazó la subida (permisos del token o límite de peticiones)';
+        else if (res.status === 404) motivo = 'no se encontró el repositorio ' + user + '/' + repo;
+        else if (res.status === 422) motivo = 'GitHub rechazó el archivo (puede que ya exista)';
+        throw new Error('No se pudo subir la foto: ' + motivo + '.');
+    } catch(e) {
+        if (e instanceof TypeError) throw new Error('No se pudo subir la foto: sin conexión con GitHub. Revisa internet e inténtalo de nuevo.');
+        throw e;
+    }
 }
 
 // ═══════════════════════════════════════════════════════
