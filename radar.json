@@ -1,6 +1,6 @@
 {
-  "actualizado": "2026-07-28T12:54:03.156444+00:00",
-  "fecha": "2026-07-28",
+  "actualizado": "2026-07-29T13:00:26.241688+00:00",
+  "fecha": "2026-07-29",
   "fuentes": [
     "revolico",
     "porlalivre",
@@ -15,12 +15,12 @@
   "productos": [
     {
       "id": 1778102214012,
-      "nombre": "​🌐 Switch Gigabit de 8 Puertos",
+      "nombre": "🌐 Switch Gigabit de 8 Puertos",
       "tuPrecio": 30.0,
       "mercado": {
         "min": 20.0,
         "mediana": 39.99,
-        "n": 15
+        "n": 16
       },
       "deltaAyerMediana": 0.0,
       "estado": "competitivo",
@@ -62,6 +62,10 @@
         },
         {
           "fecha": "2026-07-28",
+          "mediana": 39.99
+        },
+        {
+          "fecha": "2026-07-29",
           "mediana": 39.99
         }
       ],
@@ -112,7 +116,7 @@
     },
     {
       "id": 1778102582909,
-      "nombre": "​🔥 Antorcha de Soldadura TIG (KIT Profesional)",
+      "nombre": "🔥 Antorcha de Soldadura TIG (KIT Profesional)",
       "tuPrecio": 90.0,
       "mercado": {
         "min": 70.0,
@@ -125,10 +129,6 @@
         "texto": "Precio competitivo respecto al mercado"
       },
       "historial": [
-        {
-          "fecha": "2026-07-12",
-          "mediana": 90.0
-        },
         {
           "fecha": "2026-07-13",
           "mediana": 90.0
@@ -179,6 +179,10 @@
         },
         {
           "fecha": "2026-07-28",
+          "mediana": 90.0
+        },
+        {
+          "fecha": "2026-07-29",
           "mediana": 90.0
         }
       ],
