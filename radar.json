@@ -1,6 +1,6 @@
 {
-  "actualizado": "2026-07-29T13:00:26.241688+00:00",
-  "fecha": "2026-07-29",
+  "actualizado": "2026-07-30T12:28:48.537926+00:00",
+  "fecha": "2026-07-30",
   "fuentes": [
     "revolico",
     "porlalivre",
@@ -9,7 +9,7 @@
   "resumen": {
     "vigilados": 2,
     "encimaMercado": 0,
-    "bajadasComp": 0,
+    "bajadasComp": 1,
     "sinDatos": 0
   },
   "productos": [
@@ -19,10 +19,10 @@
       "tuPrecio": 30.0,
       "mercado": {
         "min": 20.0,
-        "mediana": 39.99,
+        "mediana": 35.0,
         "n": 16
       },
-      "deltaAyerMediana": 0.0,
+      "deltaAyerMediana": -4.99,
       "estado": "competitivo",
       "sugerencia": {
         "texto": "Precio competitivo respecto al mercado"
@@ -67,6 +67,10 @@
         {
           "fecha": "2026-07-29",
           "mediana": 39.99
+        },
+        {
+          "fecha": "2026-07-30",
+          "mediana": 35.0
         }
       ],
       "muestras": [
@@ -93,6 +97,13 @@
         },
         {
           "fuente": "revolico",
+          "titulo": "29 USD 🔌 Switch Ethernet 8 Puertos Gigabit (1 Gbps) - 29 USD (Recogida en almacén) ¡LOS ME",
+          "precio": 29.0,
+          "url": "https://www.revolico.com/item/switch-ethernet-8-puertos-gigabit-1-gbps-29-usd-recogida-en-almacen-los-mejores-precios-conmigo-56546186",
+          "dias": null
+        },
+        {
+          "fuente": "revolico",
           "titulo": "29.99 USD Tenda Switch Gigabit 8 Puertos 🌟 8 puertos Ethernet de alta velocidad 🌟 Silencio",
           "precio": 29.99,
           "url": "https://www.revolico.com/item/tp-link-switch-gigabit-8-puertos-8-puertos-ethernet-de-alta-velocidad-silencioso-63142460-55821991-55082181",
@@ -103,13 +114,6 @@
           "titulo": "30 USD Switch Gigabit de 8 Puertos Ethernet [30]",
           "precio": 30.0,
           "url": "https://www.revolico.com/item/switch-gigabit-de-8-puertos-ethernet-30-56424711",
-          "dias": null
-        },
-        {
-          "fuente": "revolico",
-          "titulo": "30 USD 🌐SWITCH ETHERNET 8 PUERTOS GIGABIT 🌐 AX | E01 | 30 usd",
-          "precio": 30.0,
-          "url": "https://www.revolico.com/item/switch-ethernet-8-puertos-gigabit-e01-30-usd-56427387",
           "dias": null
         }
       ]
@@ -129,10 +133,6 @@
         "texto": "Precio competitivo respecto al mercado"
       },
       "historial": [
-        {
-          "fecha": "2026-07-13",
-          "mediana": 90.0
-        },
         {
           "fecha": "2026-07-14",
           "mediana": 90.0
@@ -183,6 +183,10 @@
         },
         {
           "fecha": "2026-07-29",
+          "mediana": 90.0
+        },
+        {
+          "fecha": "2026-07-30",
           "mediana": 90.0
         }
       ],
