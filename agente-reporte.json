@@ -1,10 +1,10 @@
 {
-  "generado": "2026-07-29T11:16:02.464596+00:00",
+  "generado": "2026-07-30T10:59:37.275912+00:00",
   "productos": 118,
   "urgentes": 6,
-  "advertencias": 37,
+  "advertencias": 39,
   "info": 9,
-  "resumen": "Anoche revisé tus 118 productos y encontré 6 urgente(s), 37 advertencia(s), 9 de info.",
+  "resumen": "Anoche revisé tus 118 productos y encontré 6 urgente(s), 39 advertencia(s), 9 de info.",
   "detalle": [
     {
       "tipo": "nombre",
@@ -98,6 +98,11 @@
     },
     {
       "tipo": "agotado",
+      "nombre": "🌐 Switch Gigabit de 5 Puertos",
+      "detalle": "agotado (stock 0)"
+    },
+    {
+      "tipo": "agotado",
       "nombre": "Toldo Para Sombra",
       "detalle": "agotado (stock 0)"
     },
@@ -114,6 +119,11 @@
     {
       "tipo": "agotado",
       "nombre": "Linterna de Cabeza",
+      "detalle": "agotado (stock 0)"
+    },
+    {
+      "tipo": "agotado",
+      "nombre": "🌐 Adaptador POE Ubiquiti (24V - 0.3A)",
       "detalle": "agotado (stock 0)"
     },
     {
