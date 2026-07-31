@@ -1766,7 +1766,11 @@ html body .detail-relacionados-grid .producto-card.pcard-v2 h3.pv2-title,
 html body .recientes-grid .producto-card.pcard-v2 h3.pv2-title,
 html body .producto-card.pcard-v2 h3.pv2-title{
   display:flex !important;gap:6px !important;align-items:flex-start !important;
-  height:auto !important;min-height:36px !important;max-height:2.6em !important;
+  /* Alto FIJO, no `auto` + max-height:2.6em: con el ícono dentro, las tarjetas
+     con SVG en el título medían 39px y las de solo texto 36px, y esos 3px se
+     arrastraban hasta el alto de la tarjeta (523 vs 520). Como el markup fija
+     line-height:18px, dos renglones son exactamente 36px en cualquier ancho. */
+  height:36px !important;min-height:36px !important;max-height:36px !important;
   overflow:hidden !important;
 }
 html body .pv2-title .tm-ico-nombre{
@@ -1775,7 +1779,7 @@ html body .pv2-title .tm-ico-nombre{
 }
 html body .pv2-title .tm-nom-txt{
   display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2;
-  overflow:hidden;min-width:0;max-height:2.6em;
+  overflow:hidden;min-width:0;max-height:36px;
 }
 
 /* --- Nombre en la ficha: ícono grande + acento en las últimas palabras --- */
@@ -2276,4 +2280,17 @@ html body.light-mode .producto-card.pcard-v2:hover{
   box-shadow:
     0 2px 4px rgba(90,64,40,.09),
     0 16px 30px -18px rgba(210,78,15,.38) !important;
+}
+
+/* ==========================================================================
+   Alturas iguales: la fila del precio anterior
+   ==========================================================================
+   Solo las tarjetas con descuento dibujaban <div class="pv2-oldrow">, así que
+   su .pv2-price medía 30px contra 16px de las demás y la tarjeta salía ~15px
+   más alta (medido: 365 vs 350 a 420px de ancho; 520 vs 506 a 1280px). Ahora
+   la fila se dibuja siempre y, sin descuento, se oculta con visibility para
+   que siga ocupando su alto. */
+html body .producto-card.pcard-v2 .pv2-oldrow-ghost{
+  visibility:hidden !important;
+  pointer-events:none !important;
 }

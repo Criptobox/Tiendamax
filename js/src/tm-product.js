@@ -14,7 +14,7 @@ function _tmTruncar2Lineas(e,t){if(!e)return"";var n=String(e).trim(),r=window.i
                 ${typeof renderCountdownHtml=="function"?renderCountdownHtml(b):""}
                 <div class="pv2-foot">
                     <div class="pv2-price">
-                        ${_?`<span class="pv2-old">$${Number(o.precioOriginal).toFixed(0)}</span>`:""}
+                        ${_?`<span class="pv2-old">$${Number(o.precioOriginal).toFixed(0)}</span>`:'<span class="pv2-old pv2-oldrow-ghost" aria-hidden="true">&nbsp;</span>'}
                         <span class="precio-actual" data-usd="${safeNum(o.precioActual)}">${p}${h}</span>
                         <span class="pv2-tax">Impuestos incluidos</span>
                     </div>

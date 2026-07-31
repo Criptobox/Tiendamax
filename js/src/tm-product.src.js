@@ -212,7 +212,9 @@ function renderizarProductos(isLoadMore = false) {
                 ${typeof renderCountdownHtml === 'function' ? renderCountdownHtml(_id) : ''}
                 <div class="pv2-foot">
                     <div class="pv2-price">
-                        ${_tieneDesc ? `<span class="pv2-old">$${Number(producto.precioOriginal).toFixed(0)}</span>` : ''}
+                        ${_tieneDesc
+                            ? `<span class="pv2-old">$${Number(producto.precioOriginal).toFixed(0)}</span>`
+                            : `<span class="pv2-old pv2-oldrow-ghost" aria-hidden="true">&nbsp;</span>`}
                         <span class="precio-actual" data-usd="${safeNum(producto.precioActual)}">${_precioNum}${_precioCur}</span>
                         <span class="pv2-tax">Impuestos incluidos</span>
                     </div>

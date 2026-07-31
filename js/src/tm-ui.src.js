@@ -1811,7 +1811,13 @@ renderizarProductos = function() {
                         // repetirlo aquí hacía que "-13%" apareciera dos veces en la
                         // misma tarjeta. Se queda solo el precio anterior tachado, que
                         // es el dato que la insignia no da.
-                        (_hasDescuento ? '<div class="pv2-oldrow"><span class="pv2-old">$' + Number(producto.precioOriginal).toFixed(0) + '</span></div>' : '') +
+                        // La fila del precio anterior se dibuja SIEMPRE: cuando no hay
+                        // descuento va vacía y oculta (visibility, no display) para que
+                        // reserve su alto. Si no, la tarjeta con descuento salía ~15px
+                        // más alta que sus vecinas y rompía la rejilla.
+                        (_hasDescuento
+                            ? '<div class="pv2-oldrow"><span class="pv2-old">$' + Number(producto.precioOriginal).toFixed(0) + '</span></div>'
+                            : '<div class="pv2-oldrow pv2-oldrow-ghost" aria-hidden="true"><span class="pv2-old">&nbsp;</span></div>') +
                         '<span class="precio-actual" data-usd="' + safeNum(producto.precioActual) + '">$' + Number(producto.precioActual).toFixed(2) + ' USD</span>' +
                     '</div>' +
                     (esAgotado ? '' : '<div class="pv2-trust">' + tmIcoUI('🔒') + ' Pago al recibir' + (_tieneGarantia ? ' · ' + tmIcoUI('🛡') + ' Garantía' : '') + '</div>') +
