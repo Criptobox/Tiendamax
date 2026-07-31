@@ -8,6 +8,10 @@ on:
       - 'js/**'
       - 'css/**'
       - 'sw.js'
+      # Sin esto, cambiar el propio smoke no lo vuelve a ejecutar: el arreglo
+      # del diálogo de "marcar agotados" se subió y el test siguió en rojo
+      # hasta lanzarlo a mano.
+      - 'tests/smoke-web.mjs'
   workflow_dispatch:
 
 concurrency:
