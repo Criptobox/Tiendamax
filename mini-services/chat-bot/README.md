@@ -1,5 +1,19 @@
 # Bot "Max" — chat de TiendaMax
 
+> ⚠️ **Este Worker ya no se usa.** El bot responde ahora **en el navegador**,
+> sin backend: `js/src/tm-bot.src.js` (burbuja) + `js/src/tm-bot-cerebro.src.js`
+> (todo el razonamiento, contra el catálogo real). El `<meta name="tm-bot-api">`
+> que se menciona más abajo **ya no existe en `index.html`**.
+>
+> Motivo del cambio: la URL del Worker nunca se llegó a poner, así que cada
+> mensaje caía en `/api/chat`, que GitHub Pages no puede servir, y el bot
+> contestaba siempre "tuve un problema de conexión". Terminó comentado en
+> `index.html`. Sin backend no hay URL que configurar, ni API key que se
+> venza, ni servicio que se caiga.
+>
+> El código se conserva por si algún día se quiere volver a un backend con
+> LLM para preguntas abiertas. Las instrucciones de abajo son de esa versión.
+
 El chat tiene dos partes:
 
 - **Frontend** (`js/tm-bot.js`): la burbuja y el panel. Ya está en producción.

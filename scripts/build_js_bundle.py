@@ -47,6 +47,13 @@ ORDEN = [
 # recorta ~62 KB de parseo del hilo principal en la carga inicial.
 STANDALONE = {
     "tm-agent.js": os.path.join(JS_DIR, "tm-agent.js"),
+    # Bot "Max": la cáscara (burbuja + panel) va como <script defer> en
+    # index.html, y el cerebro NI SIQUIERA eso — la cáscara lo inyecta la
+    # primera vez que alguien abre el chat. Son ~90 KB de base de
+    # conocimiento que no tiene sentido bajarle a quien solo mira el
+    # catálogo desde un móvil en 3G.
+    "tm-bot.js": os.path.join(JS_DIR, "tm-bot.js"),
+    "tm-bot-cerebro.js": os.path.join(JS_DIR, "tm-bot-cerebro.js"),
 }
 
 

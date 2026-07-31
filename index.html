@@ -62,8 +62,11 @@
     <meta http-equiv="X-Content-Type-Options"     content="nosniff">
     <meta name="referrer"                          content="strict-origin-when-cross-origin">
     <meta http-equiv="Permissions-Policy"          content="camera=(), microphone=(), geolocation=(), payment=()">
-    <!-- Bot "Max": pega aquí la URL del Cloudflare Worker tras desplegarlo (ver mini-services/chat-bot/README.md) -->
-    <meta name="tm-bot-api" content="">
+    <!-- Bot "Max": el cerebro no se carga con la página. js/tm-bot.js lo
+         inyecta la primera vez que el cliente abre el chat. La URL va aquí
+         (y no dentro del JS) para que bump_versions.py le ponga el hash del
+         archivo y el navegador no sirva un cerebro viejo desde caché. -->
+    <meta name="tm-bot-cerebro" content="js/tm-bot-cerebro.js?v=1087afb5">
     <!-- Favicons completos para todos los navegadores y plataformas -->
     <link rel="icon" type="image/png" sizes="16x16"  href="/iconos/favicon-16.png?v=76f52545">
     <link rel="icon" type="image/png" sizes="32x32"  href="/iconos/favicon-32.png?v=3c94fc99">
@@ -1727,9 +1730,10 @@
     <script src="js/combos.js?v=43aa68c2" defer></script>
     <script src="js/hero-efectos.js?v=bb44e6ed" defer></script>
     <script src="js/web-vitals-snippet.js?v=70babd1c" defer></script>
-    <!-- BOT DESACTIVADO: backend /api/chat no disponible en GitHub Pages
-    <script src="js/tm-bot.js?v=ba40d675" defer></script>
-    -->
+    <!-- Bot "Max". Reactivado: ya no depende de ningún backend — responde
+         en el navegador contra el catálogo real (js/tm-bot-cerebro.js, que
+         esta cáscara descarga sola al abrir el chat). -->
+    <script src="js/tm-bot.js?v=b8b6f331" defer></script>
 
 <script>
 // ── WhatsApp dinámico — lee el número guardado en admin ──
