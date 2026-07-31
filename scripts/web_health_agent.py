@@ -95,21 +95,26 @@ def req(path_or_url: str, method: str = "GET") -> tuple[requests.Response | None
         return None, time.perf_counter() - t0, str(e)
 
 
+# El cuerpo se devuelve COMPLETO a propósito. Antes se recortaba a 200 000
+# caracteres, y como productos.json pasó de ese tamaño (261 KB el 31/07), el
+# JSON llegaba cortado a la mitad de una cadena y json.loads fallaba con
+# "Unterminated string starting at: char 186685". Es decir: el agente
+# reportaba el catálogo como roto cada media hora cuando el catálogo estaba
+# perfecto — el que lo rompía era este recorte. Quien necesite un extracto
+# corto (para logs o mensajes) que recorte en el punto de uso.
 def check_http(path: str, label: str, must_contain: str | None = None) -> tuple[Result, str]:
     r, dt, err = req(path)
     ms = int(dt * 1000)
     if r is None:
         return Result("fail", label, f"sin respuesta: {err}", ms), ""
-    if r.status_code >= 500:
-        return Result("fail", label, f"HTTP {r.status_code}", ms), r.text[:200000]
     if r.status_code >= 400:
-        return Result("fail", label, f"HTTP {r.status_code}", ms), r.text[:200000]
+        return Result("fail", label, f"HTTP {r.status_code}", ms), r.text
     text = r.text
     if must_contain and must_contain not in text:
-        return Result("warn", label, f"no contiene: {must_contain}", ms), text[:200000]
+        return Result("warn", label, f"no contiene: {must_contain}", ms), text
     if dt > WARN_SLOW_SECONDS:
-        return Result("warn", label, f"lento: {dt:.1f}s", ms), text[:200000]
-    return Result("ok", label, f"HTTP {r.status_code}", ms), text[:200000]
+        return Result("warn", label, f"lento: {dt:.1f}s", ms), text
+    return Result("ok", label, f"HTTP {r.status_code}", ms), text
 
 
 def safe_json(text: str) -> Any:
@@ -177,7 +182,11 @@ def main() -> int:
             else:
                 prod_res = Result("ok", "Productos JSON", f"{len(live_products)} productos OK", prod_res.ms)
     except Exception as e:
-        prod_res = Result("fail", "Productos JSON", f"JSON inválido: {e}", prod_res.ms)
+        # Incluir el tamaño recibido: si el JSON viene cortado, la diferencia
+        # entre lo que mide el archivo y lo que llegó lo delata de inmediato,
+        # en vez de mandar a buscar un error inexistente dentro del catálogo.
+        prod_res = Result("fail", "Productos JSON",
+                          f"JSON inválido ({len(prod_txt)} chars recibidos): {e}", prod_res.ms)
     results.append(prod_res)
 
     # Si el live no cargó, usa local para páginas esperadas
