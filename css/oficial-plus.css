@@ -2215,3 +2215,35 @@ html body.light-mode .productos-categoria,
 html body.light-mode .mas-vendidos{
   background:transparent !important;
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   DESTACADOS: las tarjetas 4+ estaban ocultas por CSS
+   styles.fixes.css trae `#masVendidosGrid .producto-card:nth-child(n+4)
+   {display:none}` con su pareja `.mv-expandido` para volver a mostrarlas.
+   Eso era del diseño viejo, cuando la sección era una parrilla con botón de
+   "ver más"; ahora es un carrusel y NADIE pone ya esa clase, así que de 6
+   destacados solo se veían 3 —y encima el carrusel pintaba 6 puntos, tres
+   de ellos a páginas vacías—. Se anula el recorte.
+   ═══════════════════════════════════════════════════════════════ */
+html body #masVendidosGrid .producto-card:nth-child(n+4),
+html body #mas-vendidos #masVendidosGrid .producto-card:nth-child(n+4){
+  display:flex !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   MODO CLARO: el cuerpo de las tarjetas era gris azulado
+   light-mode.css las pinta de #e9ebf0 para que la foto blanca del producto
+   resalte —buena razón—, pero es un gris FRÍO sobre una página crema
+   cálida: dos tarjetas juntas se leen como una caja de otro color pegada
+   encima del fondo. Se mantiene el contraste con la foto usando un tono de
+   la misma familia cálida: misma luminosidad (0.835 vs 0.830) y el mismo
+   contraste de texto (4.4:1), pero ya no desentona.
+   ═══════════════════════════════════════════════════════════════ */
+html body.light-mode .producto-card,
+html body.light-mode .producto-card.pcard-v2,
+html body.light-mode #meGustaGrid .producto-card,
+html body.light-mode #vistaMeGusta .producto-card,
+html body.light-mode #vistaPedidos .producto-card,
+html body.light-mode .carrito-similares .producto-card.pcard-v2{
+  background:#F0EBE4 !important;
+}
