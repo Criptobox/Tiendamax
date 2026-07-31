@@ -1503,7 +1503,7 @@
      agregarProductoForm, sincronizarTodoConGitHub, registrarVenta, etc. -->
 <!-- Bundle único (mismo orden: config→data→state→admin→product→catalog→init→ui→toast→iife→patches),
      generado por scripts/build_js_bundle.py a partir de js/src/*.src.js -->
-<script src="js/tm-bundle.js?v=b1d3f68c"></script>
+<script src="js/tm-bundle.js?v=7112586a"></script>
 <script src="js/biometric-auth.js?v=876f6495"></script>
 <script src="js/revolico_integration.js?v=fc18f61b"></script>
 <!-- analytics.js: NO se cargaba acá antes — el conteo real de suscriptores
@@ -4246,7 +4246,21 @@ function heatmap(){const ps=prods().slice(0,20);panel('◎ Heatmap de clics','Vi
 function crm(){const d=data();panel('🧑‍💼 CRM de clientes (manual)','Los agregás vos a mano — no se llena solo con tus ventas ni pedidos reales.',`<div class="tm-form-grid"><div class="tm-field"><label for="tmCrmName">Nombre</label><input id="tmCrmName"></div><div class="tm-field"><label for="tmCrmPhone">WhatsApp</label><input id="tmCrmPhone"></div><div class="tm-field"><label for="tmCrmLtv">Total comprado USD</label><input id="tmCrmLtv" type="number" value="0"></div></div><div class="tm-actions"><button type="button" class="tm-btn primary" data-act="crmAdd">Agregar cliente</button></div><div class="tm-list">${d.clients.map((c,i)=>`<div class="tm-row"><div class="tm-row-main"><b>${esc(c.name)} · ${esc(c.phone)}</b><small>LTV $${c.ltv}</small></div><button type="button" class="tm-btn tm-mini" data-act="crmDel" data-i="${i}">Eliminar</button></div>`).join('')||'<div class="tm-note">Sin clientes.</div>'}</div>`)}
 function shipping(){const d=data();panel('🚚 Tracking envíos (manual)','Lo actualizás vos a mano — no lee el estado real de tus pedidos.',`<div class="tm-form-grid"><div class="tm-field"><label for="tmShipName">Pedido/cliente</label><input id="tmShipName"></div><div class="tm-field"><label for="tmShipStatus">Estado</label><select id="tmShipStatus"><option>Preparando</option><option>En camino</option><option>Entregado</option><option>Incidencia</option></select></div><div class="tm-field" style="grid-column:1/-1"><label for="tmShipNote">Nota</label><input id="tmShipNote"></div></div><div class="tm-actions"><button type="button" class="tm-btn primary" data-act="shipAdd">Agregar tracking</button></div><div class="tm-list">${d.shipments.map((s,i)=>`<div class="tm-row"><div class="tm-row-main"><b>${esc(s.name)} — ${esc(s.status)}</b><small>${esc(s.note||'')}</small></div><button type="button" class="tm-btn tm-mini" data-act="shipDel" data-i="${i}">Eliminar</button></div>`).join('')||'<div class="tm-note">Sin envíos.</div>'}</div>`)}
 function randomSecret(){return Array.from(crypto.getRandomValues(new Uint8Array(10))).map(x=>'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567'[x%32]).join('')}
-function snapshot(note='manual'){const snaps=safeJson(SNAP,[]);snaps.unshift({ts:Date.now(),note,count:prods().length,productos:prods()});saveJson(SNAP,snaps.slice(0,30));}
+/* Guardaba 30 copias ENTERAS del catálogo, y patchSnapshots() dispara una
+   antes de cada guardado. Con 174 KB de catálogo son 5,1 MB: la cuota
+   completa del navegador (~5 MB) se agotaba sola en unos 29 guardados, y a
+   partir de ahí todo fallaba con "exceeded the quota". Ahora el tope es por
+   TAMAÑO, no por cantidad: se recortan las copias más viejas hasta caber en
+   1 MB, con un máximo de 8 en cualquier caso. */
+const SNAP_MAX_BYTES = 1024 * 1024;
+const SNAP_MAX_COUNT = 8;
+function snapshot(note='manual'){
+  const snaps = safeJson(SNAP, []);
+  snaps.unshift({ts:Date.now(), note, count:prods().length, productos:prods()});
+  let lista = snaps.slice(0, SNAP_MAX_COUNT);
+  while(lista.length > 1 && JSON.stringify(lista).length > SNAP_MAX_BYTES) lista.pop();
+  return saveJson(SNAP, lista);
+}
 function refreshAdmin2(){ if(typeof window.cargarDatos==='function') window.cargarDatos(true); }
 function actions(act,el){let d=data(), ps=prods();
  if(act==='closePanel'){$('#tmToolPanel').className='tm-panel';return}

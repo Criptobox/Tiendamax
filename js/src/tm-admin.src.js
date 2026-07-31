@@ -911,6 +911,9 @@ function limpiarFormularioProducto(avisar) {
 // perder nada real. El catálogo de verdad vive en productos.json (GitHub) y
 // los datos dinámicos en Firebase; localStorage aquí solo acelera el arranque.
 const _TM_CACHE_DESECHABLE = [
+    // El primero es el que más pesa con diferencia: son copias enteras del
+    // catálogo para el rollback de Herramientas.
+    'tm_product_snapshots_v1',
     'tm_post_log', 'tmPubHist', 'tm_trend_snaps', 'tm_ia_undo',
     'tm_ia_regen_queue', 'tm_ia_descartes', 'tm_reporte_visto',
     'tm_push_sent', 'resenas_cache', 'tm_analytics_cache'
