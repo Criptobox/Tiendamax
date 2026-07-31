@@ -1908,7 +1908,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1781711422926.webp",
     "categoria": "WIFI",
     "subcategoria": "ROUTERS",
-    "stock": 10,
+    "stock": 0,
     "masVendido": false,
     "usado": true,
     "garantia": "",
@@ -2628,7 +2628,7 @@
     "precioActual": 140,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 6,
+    "stock": 0,
     "comision": 10,
     "comisionMoneda": "USD",
     "categoria": "WIFI",
@@ -2931,14 +2931,14 @@
   {
     "id": 1785285424837,
     "nombre": "​🌐 Antena CPE MikroTik SXTsq 5 ax",
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1785285422394.webp",
+    "imagen": "https://tiendamax.org/imagenes/img_1785285422394.webp",
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1785285422394.webp"
+      "https://tiendamax.org/imagenes/img_1785285422394.webp"
     ],
     "precioActual": 160,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 5,
+    "stock": 1,
     "comision": 10,
     "comisionMoneda": "USD",
     "categoria": "WIFI",
