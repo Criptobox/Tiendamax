@@ -75,6 +75,10 @@ const fallo = (msg) => { console.error('❌ ' + msg); fallos++; };
   // y el agotado revertía al publicar — ver PR #53). ──
   await page.evaluate(() => window.switchTab && window.switchTab('productos'));
   await page.waitForTimeout(400);
+  // apBulkZero() ahora pide confirmación antes de dejar productos agotados de
+  // cara al público. Playwright cancela los diálogos si nadie los atiende, así
+  // que aquí se acepta explícitamente: es lo que haría el admin al pulsar.
+  page.once('dialog', d => d.accept());
   const bulkOk = await page.evaluate(() => {
     const ps = (window.productos || []).filter(p => p.stock > 0).slice(0, 2);
     if (ps.length < 2) return { skip: true };
