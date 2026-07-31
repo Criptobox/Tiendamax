@@ -818,11 +818,17 @@ async function agregarProductoForm(event) {
         const extras = await subirMultiplesImagenes('productImagesExtra');
         const imagenes = _tmDedupImagenes([imagenPrincipal, ...extras]);
 
+        // Los caracteres de ancho cero (U+200B y compañía) entran al pegar texto
+        // desde WhatsApp o desde una web y son invisibles: rompen las búsquedas,
+        // el orden alfabético y los slugs sin que se note. Se quitan aquí, al
+        // crear el producto, para no tener que limpiar el catálogo cada vez.
+        const _sinInvisibles = t => String(t == null ? '' : t).replace(/[\u200b\u200c\u200d\u2060\ufeff\u180e]/g, '').trim();
+
         const masVendidoVal = document.getElementById('productMasVendido');
         const producto = {
             id: Date.now(),
-            nombre: document.getElementById('productName').value.trim(),
-            descripcion: document.getElementById('productDescription').value.trim(),
+            nombre: _sinInvisibles(document.getElementById('productName').value),
+            descripcion: _sinInvisibles(document.getElementById('productDescription').value),
             imagen: imagenPrincipal,
             imagenes: imagenes,
             precioActual: parseFloat(document.getElementById('productPriceActual').value) || 0,
@@ -835,12 +841,12 @@ async function agregarProductoForm(event) {
             subcategoria: (document.getElementById('productSubcategory') && document.getElementById('productSubcategory').value) ? document.getElementById('productSubcategory').value : '',
             masVendido: masVendidoVal ? masVendidoVal.value === 'true' : false,
             usado: document.getElementById('productUsado').checked,
-            garantia: document.getElementById('productGarantia').value.trim(),
+            garantia: _sinInvisibles(document.getElementById('productGarantia').value),
             devolucion: document.getElementById('productDevolucion') ? document.getElementById('productDevolucion').checked : false,
             specs: (() => {
                 const raw = (document.getElementById('productSpecs')?.value || '').trim();
                 if (!raw) return [];
-                return raw.split(',').map(s => s.trim()).filter(Boolean).slice(0, 6);
+                return raw.split(',').map(s => _sinInvisibles(s)).filter(Boolean).slice(0, 6);
             })(),
             fechaAgregado: new Date().toISOString()
         };
