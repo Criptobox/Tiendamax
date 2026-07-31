@@ -628,6 +628,15 @@ async function subirImagenAGitHub(fileOrBase64) {
         throw new Error('Falta la configuración de GitHub (usuario, repo y token). Ve a Configuración y complétala: sin eso las fotos no se pueden subir.');
     }
 
+    // comprimirImagen() resuelve con el archivo ORIGINAL si el navegador no
+    // pudo decodificarlo (HEIC, archivo corrupto). Sin esta comprobación,
+    // base64full sería un File y el .includes() de abajo lanzaría TypeError,
+    // que se reportaría como "sin conexión" — un mensaje falso que manda a
+    // revisar internet cuando el problema es la foto.
+    if (typeof base64full !== 'string' || base64full.indexOf('data:') !== 0) {
+        throw new Error('Esa foto no se pudo leer (¿formato HEIC del iPhone o archivo dañado?). Prueba con otra o guárdala como JPG.');
+    }
+
     try {
         const base64data = base64full.includes(',') ? base64full.split(',')[1] : base64full;
         if (!base64data) throw new Error('La imagen no se pudo leer. Prueba con otra foto.');
@@ -657,6 +666,8 @@ async function subirImagenAGitHub(fileOrBase64) {
         else if (res.status === 422) motivo = 'GitHub rechazó el archivo (puede que ya exista)';
         throw new Error('No se pudo subir la foto: ' + motivo + '.');
     } catch(e) {
+        // fetch() solo lanza TypeError cuando la petición no llegó a salir
+        // (sin red, DNS, CORS). Cualquier otro error ya trae su mensaje.
         if (e instanceof TypeError) throw new Error('No se pudo subir la foto: sin conexión con GitHub. Revisa internet e inténtalo de nuevo.');
         throw e;
     }
