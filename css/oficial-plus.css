@@ -2247,3 +2247,33 @@ html body.light-mode #vistaPedidos .producto-card,
 html body.light-mode .carrito-similares .producto-card.pcard-v2{
   background:#F0EBE4 !important;
 }
+
+/* La zona de la foto iba en blanco puro (#fff) mientras el cuerpo de la
+   tarjeta es cálido: en las fotos con fondo blanco —la mayoría— se veía un
+   recuadro blanco pegado dentro de la tarjeta, con un corte duro donde
+   termina. Se pasa a un blanco cálido: la foto sigue destacando (sigue
+   siendo la zona más clara de la tarjeta) pero ya no hay salto de color. */
+html body.light-mode .producto-card.pcard-v2 .pv2-photo,
+html body.light-mode #masVendidosGrid .producto-card.pcard-v2 .pv2-photo{
+  background:#FDFAF6 !important;
+}
+
+/* Las sombras de las tarjetas eran negro neutro —rgba(0,0,0,.10) y .22—.
+   Sobre una página crema cálida, un gris neutro se lee FRÍO, y con dos
+   tarjetas juntas las sombras se solapan y pintan una banda gris entre
+   ellas: eso es lo que se veía como "una caja de otro color" detrás del
+   carrusel. Medido: entre tarjetas daba (238,229,224) contra (250,247,242)
+   de la página. Se tiñen de marrón cálido y se suavizan. */
+html body.light-mode .producto-card,
+html body.light-mode .producto-card.pcard-v2,
+html body.light-mode #masVendidosGrid .producto-card.pcard-v2{
+  box-shadow:
+    0 1px 2px rgba(90,64,40,.07),
+    0 10px 22px -16px rgba(90,64,40,.30) !important;
+}
+html body.light-mode .producto-card:hover,
+html body.light-mode .producto-card.pcard-v2:hover{
+  box-shadow:
+    0 2px 4px rgba(90,64,40,.09),
+    0 16px 30px -18px rgba(210,78,15,.38) !important;
+}
