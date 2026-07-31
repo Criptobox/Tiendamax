@@ -51,7 +51,12 @@ const fallo = (msg) => { console.error('❌ ' + msg); fallos++; };
   const page = await ctx.newPage();
   const errs = [];
   page.on('pageerror', e => errs.push(e.message));
-  page.on('dialog', d => d.dismiss());
+  // Un solo manejador para TODOS los diálogos: por defecto los cancela, y el
+  // bloque que necesite aceptar uno concreto pone aceptarDialogo = true. Con
+  // dos manejadores a la vez el segundo reventaba con "Cannot accept dialog
+  // which is already handled".
+  let aceptarDialogo = false;
+  page.on('dialog', d => (aceptarDialogo ? d.accept() : d.dismiss()));
   await page.goto('http://localhost:8977/admin.html', { waitUntil: 'load', timeout: 30000 });
   await page.waitForTimeout(3000);
   await page.evaluate(() => { usuarioAutenticado = true; cerrarLoginModal(); abrirAdminPanel(); });
@@ -75,10 +80,9 @@ const fallo = (msg) => { console.error('❌ ' + msg); fallos++; };
   // y el agotado revertía al publicar — ver PR #53). ──
   await page.evaluate(() => window.switchTab && window.switchTab('productos'));
   await page.waitForTimeout(400);
-  // apBulkZero() ahora pide confirmación antes de dejar productos agotados de
-  // cara al público. Playwright cancela los diálogos si nadie los atiende, así
-  // que aquí se acepta explícitamente: es lo que haría el admin al pulsar.
-  page.once('dialog', d => d.accept());
+  // apBulkZero() pide confirmación antes de dejar productos agotados de cara
+  // al público; aquí se acepta, que es lo que hace el admin al pulsar.
+  aceptarDialogo = true;
   const bulkOk = await page.evaluate(() => {
     const ps = (window.productos || []).filter(p => p.stock > 0).slice(0, 2);
     if (ps.length < 2) return { skip: true };
@@ -90,6 +94,7 @@ const fallo = (msg) => { console.error('❌ ' + msg); fallos++; };
     const allZero = ps.every(p => { const f = (window.productos || []).find(x => String(x.id) === String(p.id)); return f && f.stock === 0; });
     return { allMarked, allZero };
   });
+  aceptarDialogo = false;
   if (!bulkOk.skip && (!bulkOk.allMarked || !bulkOk.allZero)) fallo('admin: bulk agotado no marca modificado → ' + JSON.stringify(bulkOk));
 
   // ── Regresión: el modal de editar producto debe quedar SIEMPRE por encima
