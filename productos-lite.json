@@ -277,7 +277,7 @@
   },
   {
     "id": 1778104287395,
-    "nombre": "🌐 Cpe Exterior Kuwfi 4G/WIFI",
+    "nombre": "📡 Cpe Exterior Kuwfi 4G/WIFI",
     "precioActual": 130,
     "imagen": "https://tiendamax.org/imagenes/img_1778104287395_161f1c.webp",
     "categoria": "WIFI",
@@ -401,7 +401,7 @@
   },
   {
     "id": 1778104735789,
-    "nombre": "🌐 Router Kuwfi 4G Lte (Wi-fi de Alta Velocidad)",
+    "nombre": "📡 Router Kuwfi 4G Lte (Wi-fi de Alta Velocidad)",
     "precioActual": 130,
     "imagen": "https://tiendamax.org/imagenes/img_1783837070407.webp",
     "categoria": "WIFI",
@@ -415,8 +415,8 @@
     "slug": "este-router-kuwfi-ofrece-una-velocidad-de-transmision-wifi-de-150-mbps",
     "comision": 10,
     "specs": [
-      "🌐 Internet 4G/LTE ",
-      "📱 Libre (Multibanda) ",
+      "🌐 Internet 4G/LTE",
+      "📱 Libre (Multibanda)",
       "🚀 Sin Cables"
     ],
     "seoTitle": "ESTE ROUTER KUWFI OFRECE UNA VELOCIDAD DE… | TiendaMax",
@@ -694,7 +694,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1783836818228.webp",
     "categoria": "WIFI",
     "subcategoria": "SWITCHES",
-    "stock": 20,
+    "stock": 0,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -715,12 +715,12 @@
   },
   {
     "id": 1778336789459,
-    "nombre": "🌐 Router Tenda AC1200 (Global Version)",
+    "nombre": "🛜 Router Wi-Fi AC1200 Tenda AC6(Global Version)",
     "precioActual": 80,
-    "imagen": "https://tiendamax.org/imagenes/img_1778336789459.webp",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1785284959302.webp",
     "categoria": "WIFI",
     "subcategoria": "ROUTERS",
-    "stock": 0,
+    "stock": 5,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -729,14 +729,16 @@
     "slug": "router-tenda-ac1200-wifi-dual-band",
     "comision": 10,
     "specs": [
-      "📶 Doble Banda (AC1200) ",
-      "⚡ Gigabit"
+      "​⚡ AC1200 Doble Banda ​",
+      "📶 4 Antenas Externas ​",
+      "🌐 Soporte MU-MIMO y Modo AP"
     ],
     "seoTitle": "AC1200 WIFI ROUTER en Cuba | TiendaMax",
     "seoDescription": "Obtenga conexiones rápidas y relámpago para todos sus dispositivos inalámbricos mediante actualización a la tecnología Wi-Fi de alta velocidad mejorada de…",
     "precioOriginal": 0,
     "comisionMoneda": "USD",
     "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1785284959302.webp",
       "https://tiendamax.org/imagenes/img_1778336789459.webp"
     ]
   },
@@ -921,7 +923,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1778384646214_ext.webp",
     "categoria": "WIFI",
     "subcategoria": "ACCESORIOS",
-    "stock": 13,
+    "stock": 0,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -1436,13 +1438,13 @@
   },
   {
     "id": 1779562612951,
-    "nombre": "Controlador Solar Powmr M100 PRO - MPPT de 80 Amp",
+    "nombre": "​⚡ Controlador de Carga Solar MPPT 80A PowMr",
     "precioActual": 220,
     "precioOriginal": 0,
-    "imagen": "https://tiendamax.org/imagenes/img_1779562612951.webp",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1785284197964.webp",
     "categoria": "ENERGIA",
     "subcategoria": "CONTROLADORES SOLARES",
-    "stock": 0,
+    "stock": 6,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -1451,11 +1453,16 @@
     "slug": "controlador-solar-powmr-m100-pro-mppt-de-80-amp",
     "comision": 10,
     "specs": [
-      "100V"
+      "​⚡ 80A MPPT ​",
+      "🔋 12V / 24V / 36V / 48V Auto",
+      "​📟 Pantalla LCD y Botones de Control"
     ],
     "seoTitle": "CONTROLADOR SOLAR POWMR M100 PRO - MPPT DE 80 AMP",
     "seoDescription": "♻️CONTROLADOR SOLAR POWMR M100 PRO -MPPT DE 80 AMP♻️ Especificaciones Eléctricas Clave: Voltaje Máximo del Sistema (PV): 100V DC. Esto permite conectar…",
-    "comisionMoneda": "USD"
+    "comisionMoneda": "USD",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1785284197964.webp"
+    ]
   },
   {
     "id": 1780017975657,
@@ -1871,7 +1878,7 @@
   },
   {
     "id": 1781711154462,
-    "nombre": "Repetidor WiFi de Rango Extendido tp - Link",
+    "nombre": "​📶 Repetidor Wi-Fi Extensor de Cobertura TP-Link AC1200 (RE305 / RE330)",
     "precioActual": 30,
     "precioOriginal": 0,
     "imagen": "https://tiendamax.org/imagenes/img_1781711152979_1e8154.webp",
@@ -1895,7 +1902,7 @@
   },
   {
     "id": 1781711424820,
-    "nombre": "Router WiFi Inalámbrico d - Link Avanzado de Doble Banda",
+    "nombre": "​🛜 Router Wi-Fi AC1200 TP-Link Archer C54",
     "precioActual": 60,
     "precioOriginal": 0,
     "imagen": "https://tiendamax.org/imagenes/img_1781711422926.webp",
@@ -1911,13 +1918,15 @@
     "comision": 10,
     "comisionMoneda": "USD",
     "specs": [
-      "1200Mbps",
-      "300Mbps",
-      "2.4GHz",
-      "900Mbps"
+      "​⚡ AC1200 Doble Banda",
+      "​📶 4 Antenas Externas ​",
+      "🌐 Puertos Fast Ethernet"
     ],
     "seoTitle": "ROUTER WIFI INALÁMBRICO D - LINK AVANZADO DE DOBLE BANDA",
-    "seoDescription": "Router WiFi D-Link de doble banda con velocidad agregada de hasta 1200 Mbps, distribuidos en 300 Mbps en 2.4 GHz y 900 Mbps en 5 GHz. Incorpora tecnología…"
+    "seoDescription": "Router WiFi D-Link de doble banda con velocidad agregada de hasta 1200 Mbps, distribuidos en 300 Mbps en 2.4 GHz y 900 Mbps en 5 GHz. Incorpora tecnología…",
+    "imagenes": [
+      "https://tiendamax.org/imagenes/img_1781711422926.webp"
+    ]
   },
   {
     "id": 1781899206341,
@@ -2004,7 +2013,7 @@
   },
   {
     "id": 1782438922547,
-    "nombre": "🌐 Router Tp-link Archer AX1450 (Wi-fi 6)",
+    "nombre": "🛜 Router Tp-link Archer AX1450 (Wi-fi 6)",
     "imagen": "https://tiendamax.org/imagenes/img_1782438920638_220090.webp",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1782438920638_220090.webp"
@@ -2012,7 +2021,7 @@
     "precioActual": 80,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 0,
+    "stock": 7,
     "comision": 10,
     "comisionMoneda": "USD",
     "categoria": "WIFI",
@@ -2410,7 +2419,7 @@
   },
   {
     "id": 1783453597496,
-    "nombre": "🌐 Router Tp-link Archer A6 (AC1200)",
+    "nombre": "🛜 Router Tp-link Archer A6 (AC1200)",
     "imagen": "https://tiendamax.org/imagenes/img_1783453593801.webp",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1783453593801.webp",
@@ -2581,7 +2590,7 @@
   },
   {
     "id": 1783543451116,
-    "nombre": "🌐 Router Tenda TX12 PRO (Wi-fi 6)",
+    "nombre": "🛜 Router Tenda TX12 PRO (Wi-fi 6)",
     "imagen": "https://tiendamax.org/imagenes/img_1783543448278.webp",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1783543448278.webp",
@@ -2619,7 +2628,7 @@
     "precioActual": 140,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 4,
+    "stock": 0,
     "comision": 10,
     "comisionMoneda": "USD",
     "categoria": "WIFI",
@@ -2629,7 +2638,8 @@
     "garantia": "",
     "devolucion": false,
     "specs": [
-      "🌐 Enlaces de Alto Rendimiento ",
+      "😥 Sin POE",
+      "🌐 Enlaces de Alto Rendimiento",
       "🚀 Velocidad de 450+ Mbps"
     ],
     "fechaAgregado": "2026-07-18T19:41:17.390Z",
@@ -2696,7 +2706,7 @@
   },
   {
     "id": 1784569265085,
-    "nombre": "📡 Router Inalámbrico Wavlink AC1200 Dual Band",
+    "nombre": "🛜 Router Inalámbrico Wavlink AC1200 Dual Band",
     "imagen": "https://tiendamax.org/imagenes/img_1784569263882.webp",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1784569263882.webp"
@@ -2715,7 +2725,7 @@
     "devolucion": false,
     "specs": [
       "🌐 Conectividad Dual Band de Alta Velocidad",
-      "📶 Cobertura Amplia y Estable sin Interrupciones ",
+      "📶 Cobertura Amplia y Estable sin Interrupciones",
       "🛡️ Red Doméstica Segura y de Gran Rendimiento"
     ],
     "fechaAgregado": "2026-07-20T17:41:05.086Z",
@@ -2917,5 +2927,57 @@
     "fechaAgregado": "2026-07-23T16:52:59.395Z",
     "seoTitle": "Cámara de Seguridad Solar Doble Lente QW8-WIFI",
     "seoDescription": "Cámara de vigilancia exterior con sistema de doble lente que permite cubrir dos campos de visión diferentes al mismo tiempo. Funciona de manera…"
+  },
+  {
+    "id": 1785285424837,
+    "nombre": "​🌐 Antena CPE MikroTik SXTsq 5 ax",
+    "imagen": "https://tiendamax.org/imagenes/img_1785285422394.webp",
+    "imagenes": [
+      "https://tiendamax.org/imagenes/img_1785285422394.webp"
+    ],
+    "precioActual": 160,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 1,
+    "comision": 10,
+    "comisionMoneda": "USD",
+    "categoria": "WIFI",
+    "subcategoria": "ROUTERS",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "specs": [
+      "​⚡ Wi-Fi 6 (802.11ax) Alta Velocidad ​",
+      "📶 Antena Direccional de 16 dBi",
+      "​🌐 Licencia RouterOS Level 4"
+    ],
+    "fechaAgregado": "2026-07-29T00:37:04.838Z"
+  },
+  {
+    "id": 1785286289086,
+    "nombre": "​🌐 Antena CPE Ubiquiti NanoStation M5 Internacional",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1785286287536.webp",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1785286287536.webp"
+    ],
+    "precioActual": 230,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 3,
+    "comision": 10,
+    "comisionMoneda": "USD",
+    "categoria": "WIFI",
+    "subcategoria": "ROUTERS",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "specs": [
+      "​⚡ 5 GHz airMAX Alta Eficiencia ​",
+      "📶 Antena Direccional Integrada ​",
+      "🔌 Puertos Ethernet con PoE Pasivo"
+    ],
+    "fechaAgregado": "2026-07-29T00:51:29.086Z"
   }
 ]

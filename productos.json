@@ -287,7 +287,7 @@
   },
   {
     "id": 1778104287395,
-    "nombre": "🌐 Cpe Exterior Kuwfi 4G/WIFI",
+    "nombre": "📡 Cpe Exterior Kuwfi 4G/WIFI",
     "precioActual": 130,
     "imagen": "https://tiendamax.org/imagenes/img_1778104287395_161f1c.webp",
     "categoria": "WIFI",
@@ -416,7 +416,7 @@
   },
   {
     "id": 1778104735789,
-    "nombre": "🌐 Router Kuwfi 4G Lte (Wi-fi de Alta Velocidad)",
+    "nombre": "📡 Router Kuwfi 4G Lte (Wi-fi de Alta Velocidad)",
     "precioActual": 130,
     "imagen": "https://tiendamax.org/imagenes/img_1783837070407.webp",
     "categoria": "WIFI",
@@ -430,8 +430,8 @@
     "slug": "este-router-kuwfi-ofrece-una-velocidad-de-transmision-wifi-de-150-mbps",
     "comision": 10,
     "specs": [
-      "🌐 Internet 4G/LTE ",
-      "📱 Libre (Multibanda) ",
+      "🌐 Internet 4G/LTE",
+      "📱 Libre (Multibanda)",
       "🚀 Sin Cables"
     ],
     "seoTitle": "ESTE ROUTER KUWFI OFRECE UNA VELOCIDAD DE… | TiendaMax",
@@ -722,7 +722,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1783836818228.webp",
     "categoria": "WIFI",
     "subcategoria": "SWITCHES",
-    "stock": 20,
+    "stock": 0,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -744,12 +744,12 @@
   },
   {
     "id": 1778336789459,
-    "nombre": "🌐 Router Tenda AC1200 (Global Version)",
+    "nombre": "🛜 Router Wi-Fi AC1200 Tenda AC6(Global Version)",
     "precioActual": 80,
-    "imagen": "https://tiendamax.org/imagenes/img_1778336789459.webp",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1785284959302.webp",
     "categoria": "WIFI",
     "subcategoria": "ROUTERS",
-    "stock": 0,
+    "stock": 5,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -758,17 +758,19 @@
     "slug": "router-tenda-ac1200-wifi-dual-band",
     "comision": 10,
     "specs": [
-      "📶 Doble Banda (AC1200) ",
-      "⚡ Gigabit"
+      "​⚡ AC1200 Doble Banda ​",
+      "📶 4 Antenas Externas ​",
+      "🌐 Soporte MU-MIMO y Modo AP"
     ],
     "seoTitle": "AC1200 WIFI ROUTER en Cuba | TiendaMax",
     "seoDescription": "Obtenga conexiones rápidas y relámpago para todos sus dispositivos inalámbricos mediante actualización a la tecnología Wi-Fi de alta velocidad mejorada de…",
-    "descripcion": "Router inalámbrico de alto rendimiento, diseñado para ofrecer una conexión estable y rápida en todo tu hogar, ideal para familias que requieren gran ancho de banda para sus dispositivos.\nFicha Técnica:\nVelocidad: 🚀 Conexión de doble banda (AC1200) que combina 2.4GHz y 5GHz para una experiencia sin interrupciones.\nCobertura: 📡 4 antenas externas de alta ganancia que aseguran una señal fuerte en todas las habitaciones.\nRendimiento: ⚡ Puertos Gigabit que permiten aprovechar al máximo las velocidades de internet de alta capacidad.\nEstabilidad: ⚙️ Tecnología diseñada para gestionar múltiples dispositivos conectados simultáneamente (MU-MIMO).\nInstalación: 🛠️ Interfaz intuitiva \"Global Version\" para una configuración rápida y sin errores.\nEspecificaciones (Specs):\nTipo: Router inalámbrico de doble banda.\nEstándar: Wi-Fi 5 (802.11ac).\nPuertos: Puertos Gigabit (WAN/LAN) para máxima velocidad cableada.\nSeguridad: Protocolos WPA2/WPA3 para máxima protección.\nUso: Streaming HD, gaming online, trabajo remoto y navegación fluida para varios usuarios.",
     "precioOriginal": 0,
     "comisionMoneda": "USD",
     "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1785284959302.webp",
       "https://tiendamax.org/imagenes/img_1778336789459.webp"
-    ]
+    ],
+    "descripcion": "Router inalámbrico de doble banda para el hogar que ofrece velocidades de hasta 1.2 Gbps, distribuidas en 867 Mbps en la banda de 5 GHz y 300 Mbps en la de 2.4 GHz. Cuenta con cuatro antenas externas y tecnología Beamforming para ampliar la cobertura, además de soporte para modo punto de acceso y administración mediante aplicación móvil.\n​Ficha Técnica:\n​Rendimiento Inalámbrico: ⚡ Velocidades de hasta 1.2 Gbps combinadas (867 Mbps en 5 GHz y 300 Mbps en 2.4 GHz) para transmisión de contenido y tareas diarias.\n​Cobertura: 📶 Cuatro antenas externas con tecnología Beamforming para direccionar la señal hacia los dispositivos.\n​Modos de Operación y Funciones: 🌐 Soporta modo Punto de Acceso (AP) para transformar conexiones por cable en red inalámbrica.\n​Administración: 📱 Configuración y control de red, estado y controles parentales a través de la aplicación Tenda Wi-Fi.\n​Especificaciones (Specs):\n​Marca: Tenda.\n​Modelo: AC6.\n​Tipo: Router Wi-Fi AC1200 Doble Banda."
   },
   {
     "id": 1778336859697,
@@ -958,7 +960,7 @@
     "imagen": "https://tiendamax.org/imagenes/img_1778384646214_ext.webp",
     "categoria": "WIFI",
     "subcategoria": "ACCESORIOS",
-    "stock": 13,
+    "stock": 0,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -1497,13 +1499,13 @@
   },
   {
     "id": 1779562612951,
-    "nombre": "Controlador Solar Powmr M100 PRO - MPPT de 80 Amp",
+    "nombre": "​⚡ Controlador de Carga Solar MPPT 80A PowMr",
     "precioActual": 220,
     "precioOriginal": 0,
-    "imagen": "https://tiendamax.org/imagenes/img_1779562612951.webp",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1785284197964.webp",
     "categoria": "ENERGIA",
     "subcategoria": "CONTROLADORES SOLARES",
-    "stock": 0,
+    "stock": 6,
     "masVendido": false,
     "usado": false,
     "garantia": "",
@@ -1512,12 +1514,17 @@
     "slug": "controlador-solar-powmr-m100-pro-mppt-de-80-amp",
     "comision": 10,
     "specs": [
-      "100V"
+      "​⚡ 80A MPPT ​",
+      "🔋 12V / 24V / 36V / 48V Auto",
+      "​📟 Pantalla LCD y Botones de Control"
     ],
     "seoTitle": "CONTROLADOR SOLAR POWMR M100 PRO - MPPT DE 80 AMP",
     "seoDescription": "♻️CONTROLADOR SOLAR POWMR M100 PRO -MPPT DE 80 AMP♻️ Especificaciones Eléctricas Clave: Voltaje Máximo del Sistema (PV): 100V DC. Esto permite conectar…",
     "comisionMoneda": "USD",
-    "descripcion": "Controlador de carga solar MPPT PowMr, modelo M100 PRO, de 80A. Entrada solar máxima de 160Vdc, hasta 12 unidades de corriente de carga, compatible con 12V/24V/36V/48V. Pantalla LCD con indicadores de paneles solares y batería en tiempo real."
+    "descripcion": "Controlador de carga solar fotovoltaica con tecnología MPPT de alta eficiencia, diseñado para gestionar la energía proveniente de los paneles hacia las baterías. Cuenta con detección automática del voltaje del banco de baterías y una pantalla LCD integrada para supervisar los parámetros del sistema en tiempo real.\n​Ficha Técnica:\n​Tecnología de Carga: ⚡ Sistema MPPT para maximizar la eficiencia en la conversión y aprovechamiento de la energía solar.\n​Compatibilidad del Sistema: 🔋 Detección automática para bancos de baterías de 12V, 24V, 36V y 48V.\n​Interfaz y Monitoreo: 📟 Pantalla LCD central con indicadores gráficos de panel y batería, acompañada de botones de navegación (PV/SET, BAT/▲, BAT/▼) para configuración.\n​Estructura: 🔌 Diseño compacto en carcasa robusta con disipación lateral y bornes de conexión protegidos en la sección inferior.\n​Especificaciones (Specs):\n​Marca: PowMr.\n​Tipo: Controlador de carga solar MPPT.\n​Corriente Máxima de Carga: 80A.\n​Voltaje del Sistema: 12V / 24V / 36V / 48V (Auto).\n​Uso: Sistemas fotovoltaicos residenciales y autónomos.",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1785284197964.webp"
+    ]
   },
   {
     "id": 1780017975657,
@@ -1948,7 +1955,7 @@
   },
   {
     "id": 1781711154462,
-    "nombre": "Repetidor WiFi de Rango Extendido tp - Link",
+    "nombre": "​📶 Repetidor Wi-Fi Extensor de Cobertura TP-Link AC1200 (RE305 / RE330)",
     "precioActual": 30,
     "precioOriginal": 0,
     "imagen": "https://tiendamax.org/imagenes/img_1781711152979_1e8154.webp",
@@ -1969,11 +1976,11 @@
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1781711152979_1e8154.webp"
     ],
-    "descripcion": "Repetidor WiFi de rango extendido, se conecta directo al tomacorriente, con 2 antenas. Amplifica la señal del router a zonas donde llega débil."
+    "descripcion": "Extensor de rango inalambrico de doble banda diseñado para eliminar las zonas sin señal y ampliar la cobertura existente del router en el hogar. Se conecta directamente a la pared y cuenta con indicadores luminosos para encontrar la ubicación óptima de instalación, ofreciendo conexiones estables para múltiples dispositivos.\n​Ficha Técnica:\n​Tecnología Inalámbrica: ⚡ Doble banda simultánea con velocidades combinadas para mejorar la transmisión de datos y la cobertura en áreas difíciles de alcanzar.\n​Cobertura y Antenas: 📶 Dos antenas externas ajustables orientadas para optimizar la recepción y la difusión de la señal Wi-Fi en espacios residenciales.\n​Conectividad Física: 🔌 Puerto Ethernet en la parte inferior para conectar dispositivos por cable o para funcionar en modo punto de acceso.\n​Especificaciones (Specs):\n​Marca: TP-Link.\n​Tipo: Extensor de rango / Repetidor Wi-Fi.\n​Diseño: Montaje directo a pared con rejillas de ventilación laterales."
   },
   {
     "id": 1781711424820,
-    "nombre": "Router WiFi Inalámbrico d - Link Avanzado de Doble Banda",
+    "nombre": "​🛜 Router Wi-Fi AC1200 TP-Link Archer C54",
     "precioActual": 60,
     "precioOriginal": 0,
     "imagen": "https://tiendamax.org/imagenes/img_1781711422926.webp",
@@ -1989,14 +1996,16 @@
     "comision": 10,
     "comisionMoneda": "USD",
     "specs": [
-      "1200Mbps",
-      "300Mbps",
-      "2.4GHz",
-      "900Mbps"
+      "​⚡ AC1200 Doble Banda",
+      "​📶 4 Antenas Externas ​",
+      "🌐 Puertos Fast Ethernet"
     ],
     "seoTitle": "ROUTER WIFI INALÁMBRICO D - LINK AVANZADO DE DOBLE BANDA",
     "seoDescription": "Router WiFi D-Link de doble banda con velocidad agregada de hasta 1200 Mbps, distribuidos en 300 Mbps en 2.4 GHz y 900 Mbps en 5 GHz. Incorpora tecnología…",
-    "descripcion": "Router WiFi inalámbrico de doble banda, 4 antenas: hasta 1200Mbps y 900Mbps en 5GHz, hasta 300Mbps en 2.4GHz. Puertos ethernet e indicadores LED de estado. Ideal para varios dispositivos conectados a la vez."
+    "imagenes": [
+      "https://tiendamax.org/imagenes/img_1781711422926.webp"
+    ],
+    "descripcion": "Router inalambrico de doble banda compacto diseñado para ofrecer conexiones estables en el hogar. Permite transmitir contenido en streaming y navegar de manera simultánea gracias a su tecnología que separa el tráfico de red en las bandas de 2.4 GHz y 5 GHz para un rendimiento más eficiente.\n​Ficha Técnica:\n​Tecnología Inalámbrica: ⚡ Conectividad Wi-Fi de doble banda simultánea con velocidades combinadas de hasta 1200 Mbps (hasta 867 Mbps en 5 GHz y 300 Mbps en 2.4 GHz).\n​Cobertura y Antenas: 📶 Cuatro antenas externas fijas distribuidas para ampliar la recepción y cobertura de la señal inalámbrica en espacios domésticos.\n​Conectividad Física: 🔌 Puertos Ethernet en la parte posterior para conexiones por cable estables en ordenadores, consolas u otros equipos de red.\n​Especificaciones (Specs):\n​Marca: TP-Link.\n​Modelo: Archer C54.\n​Tipo: Router Wi-Fi AC1200 Doble Banda."
   },
   {
     "id": 1781899206341,
@@ -2087,7 +2096,7 @@
   },
   {
     "id": 1782438922547,
-    "nombre": "🌐 Router Tp-link Archer AX1450 (Wi-fi 6)",
+    "nombre": "🛜 Router Tp-link Archer AX1450 (Wi-fi 6)",
     "imagen": "https://tiendamax.org/imagenes/img_1782438920638_220090.webp",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1782438920638_220090.webp"
@@ -2095,7 +2104,7 @@
     "precioActual": 80,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 0,
+    "stock": 7,
     "comision": 10,
     "comisionMoneda": "USD",
     "categoria": "WIFI",
@@ -2508,7 +2517,7 @@
   },
   {
     "id": 1783453597496,
-    "nombre": "🌐 Router Tp-link Archer A6 (AC1200)",
+    "nombre": "🛜 Router Tp-link Archer A6 (AC1200)",
     "imagen": "https://tiendamax.org/imagenes/img_1783453593801.webp",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1783453593801.webp",
@@ -2531,9 +2540,9 @@
       "📶 Doble Banda (AC1200)"
     ],
     "fechaAgregado": "2026-07-07T19:46:37.496Z",
-    "descripcion": "Router de alto rendimiento diseñado para ofrecer una conexión Wi-Fi estable y rápida, capaz de manejar múltiples dispositivos sin perder velocidad gracias a su capacidad Gigabit.\nFicha Técnica:\nVelocidad: 🚀 Velocidades combinadas de hasta 1200 Mbps (300 Mbps en 2.4GHz + 867 Mbps en 5GHz).\nPuertos: 🔌 1 puerto WAN Gigabit + 4 puertos LAN Gigabit (garantiza máxima velocidad por cable).\nAntenas: 📡 4 antenas fijas de alto rendimiento para una cobertura óptima en toda la casa.\nTecnología: ⚙️ Soporte para MU-MIMO (transmite a varios dispositivos simultáneamente).\nUso: 🏡 Ideal para gaming, streaming 4K y entornos con alta demanda de ancho de banda.\nEspecificaciones (Specs):\nEstándares: IEEE 802.11ac/n/a 5GHz, IEEE 802.11n/b/g 2.4GHz.\nSeguridad: Encriptación WPA3 (último estándar de seguridad) y WPA2.\nGestión: Compatible con la app TP-Link Tether para una configuración rápida.\nModos: Router Wi-Fi o Punto de Acceso (AP Mode).\nDimensiones: 230 x 144 x 35 mm.",
     "seoTitle": "Router Tp-link Archer A6 (AC1200) en Cuba | TiendaMax",
-    "seoDescription": "Router de alto rendimiento diseñado para ofrecer una conexión Wi-Fi estable y rápida, capaz de manejar múltiples dispositivos sin perder velocidad gracias…"
+    "seoDescription": "Router de alto rendimiento diseñado para ofrecer una conexión Wi-Fi estable y rápida, capaz de manejar múltiples dispositivos sin perder velocidad gracias…",
+    "descripcion": "Router de alto rendimiento diseñado para ofrecer una conexión Wi-Fi estable y rápida, capaz de manejar múltiples dispositivos sin perder velocidad gracias a su capacidad Gigabit.\nFicha Técnica:\nVelocidad: 🚀 Velocidades combinadas de hasta 1200 Mbps (300 Mbps en 2.4GHz + 867 Mbps en 5GHz).\nPuertos: 🔌 1 puerto WAN Gigabit + 4 puertos LAN Gigabit (garantiza máxima velocidad por cable).\nAntenas: 📡 4 antenas fijas de alto rendimiento para una cobertura óptima en toda la casa.\nTecnología: ⚙️ Soporte para MU-MIMO (transmite a varios dispositivos simultáneamente).\nUso: 🏡 Ideal para gaming, streaming 4K y entornos con alta demanda de ancho de banda.\nEspecificaciones (Specs):\nEstándares: IEEE 802.11ac/n/a 5GHz, IEEE 802.11n/b/g 2.4GHz.\nSeguridad: Encriptación WPA3 (último estándar de seguridad) y WPA2.\nGestión: Compatible con la app TP-Link Tether para una configuración rápida.\nModos: Router Wi-Fi o Punto de Acceso (AP Mode).\nDimensiones: 230 x 144 x 35 mm."
   },
   {
     "id": 1783453857635,
@@ -2685,7 +2694,7 @@
   },
   {
     "id": 1783543451116,
-    "nombre": "🌐 Router Tenda TX12 PRO (Wi-fi 6)",
+    "nombre": "🛜 Router Tenda TX12 PRO (Wi-fi 6)",
     "imagen": "https://tiendamax.org/imagenes/img_1783543448278.webp",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1783543448278.webp",
@@ -2708,9 +2717,9 @@
       "⚡ Gigabit"
     ],
     "fechaAgregado": "2026-07-08T20:44:11.116Z",
-    "descripcion": "Router de nueva generación con tecnología Wi-Fi 6, ideal para usuarios que buscan una conexión rápida, estable y con mayor capacidad para gestionar múltiples dispositivos domésticos con la máxima eficiencia.\nFicha Técnica:\nTecnología: 🚀 Wi-Fi 6 (802.11ax) de doble banda para mayor velocidad y menos interferencias.\nVelocidad: ⚡ Rendimiento de hasta 1500 Mbps (300 Mbps en 2.4GHz + 1201 Mbps en 5GHz).\nPuertos: 🔌 Puertos Gigabit (WAN y LAN) para aprovechar al máximo las conexiones de fibra óptica.\nAntenas: 📡 4 antenas de 5dBi con tecnología Beamforming para una cobertura de señal más amplia y estable.\nEficiencia: ⚙️ Soporte para MU-MIMO y OFDMA, permitiendo conectar más dispositivos simultáneamente sin pérdida de rendimiento.\nEspecificaciones (Specs):\nEstándar: Wi-Fi 6 (AX1500).\nSeguridad: Protocolo WPA3 para una protección de red mucho más avanzada.\nGestión: Configuración sencilla a través de la App Tenda WiFi.\nFunciones: Soporte para control parental y red de invitados.\nUso: Ideal para teletrabajo, streaming en 4K y gaming sin latencia en entornos con muchos dispositivos.",
     "seoTitle": "Router Tenda TX12 PRO (Wi-fi 6) en Cuba | TiendaMax",
-    "seoDescription": "Router de nueva generación con tecnología Wi-Fi 6, ideal para usuarios que buscan una conexión rápida, estable y con mayor capacidad para gestionar…"
+    "seoDescription": "Router de nueva generación con tecnología Wi-Fi 6, ideal para usuarios que buscan una conexión rápida, estable y con mayor capacidad para gestionar…",
+    "descripcion": "Router de nueva generación con tecnología Wi-Fi 6, ideal para usuarios que buscan una conexión rápida, estable y con mayor capacidad para gestionar múltiples dispositivos domésticos con la máxima eficiencia.\nFicha Técnica:\nTecnología: 🚀 Wi-Fi 6 (802.11ax) de doble banda para mayor velocidad y menos interferencias.\nVelocidad: ⚡ Rendimiento de hasta 1500 Mbps (300 Mbps en 2.4GHz + 1201 Mbps en 5GHz).\nPuertos: 🔌 Puertos Gigabit (WAN y LAN) para aprovechar al máximo las conexiones de fibra óptica.\nAntenas: 📡 4 antenas de 5dBi con tecnología Beamforming para una cobertura de señal más amplia y estable.\nEficiencia: ⚙️ Soporte para MU-MIMO y OFDMA, permitiendo conectar más dispositivos simultáneamente sin pérdida de rendimiento.\nEspecificaciones (Specs):\nEstándar: Wi-Fi 6 (AX1500).\nSeguridad: Protocolo WPA3 para una protección de red mucho más avanzada.\nGestión: Configuración sencilla a través de la App Tenda WiFi.\nFunciones: Soporte para control parental y red de invitados.\nUso: Ideal para teletrabajo, streaming en 4K y gaming sin latencia en entornos con muchos dispositivos."
   },
   {
     "id": 1784403677390,
@@ -2724,7 +2733,7 @@
     "precioActual": 140,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 4,
+    "stock": 0,
     "comision": 10,
     "comisionMoneda": "USD",
     "categoria": "WIFI",
@@ -2734,13 +2743,14 @@
     "garantia": "",
     "devolucion": false,
     "specs": [
-      "🌐 Enlaces de Alto Rendimiento ",
+      "😥 Sin POE",
+      "🌐 Enlaces de Alto Rendimiento",
       "🚀 Velocidad de 450+ Mbps"
     ],
     "fechaAgregado": "2026-07-18T19:41:17.390Z",
-    "descripcion": "Pack de 5 radios NanoStation AC loco, ideales para establecer conexiones inalámbricas de larga distancia (punto a punto o punto a multipunto). Su diseño ultracompacto y la tecnología airMAX AC garantizan un enlace exterior rápido, estable y altamente eficiente.\nFicha Técnica:\n○ Rendimiento: 🚀 Alcanza velocidades de transmisión de más de 450 Mbps, perfecto para redes exigentes y de alta capacidad.\n○ Tecnología: 📡 Opera en la banda libre de 5 GHz utilizando el protocolo airMAX AC, lo que reduce la interferencia y maximiza la calidad de la señal.\n○ Diseño: ✨ Formato muy compacto y minimalista en color blanco, optimizado para resistir instalaciones en exteriores sin llamar la atención.\n○ Gestión: 🛠️ Sistema UNMS Ready integrado, que permite una configuración, monitoreo y administración de red rápida y centralizada.\nEspecificaciones (Specs):\nMarca: Ubiquiti.\nModelo: NanoStation AC loco.\nFrecuencia: 5 GHz.\nVelocidad máxima: 450+ Mbps.",
     "seoTitle": "Nanostation AC Loco en Cuba | TiendaMax",
-    "seoDescription": "Pack de 5 radios NanoStation AC loco, ideales para establecer conexiones inalámbricas de larga distancia (punto a punto o punto a multipunto). Su diseño…"
+    "seoDescription": "Pack de 5 radios NanoStation AC loco, ideales para establecer conexiones inalámbricas de larga distancia (punto a punto o punto a multipunto). Su diseño…",
+    "descripcion": "Pack de 5 radios NanoStation AC loco, ideales para establecer conexiones inalámbricas de larga distancia (punto a punto o punto a multipunto). Su diseño ultracompacto y la tecnología airMAX AC garantizan un enlace exterior rápido, estable y altamente eficiente.\nFicha Técnica:\n Rendimiento: 🚀 Alcanza velocidades de transmisión de más de 450 Mbps, perfecto para redes exigentes y de alta capacidad.\n Tecnología: 📡 Opera en la banda libre de 5 GHz utilizando el protocolo airMAX AC, lo que reduce la interferencia y maximiza la calidad de la señal.\n Diseño: ✨ Formato muy compacto y minimalista en color blanco, optimizado para resistir instalaciones en exteriores sin llamar la atención.\nGestión: 🛠️ Sistema UNMS Ready integrado, que permite una configuración, monitoreo y administración de red rápida y centralizada.\nEspecificaciones (Specs):\nMarca: Ubiquiti.\nModelo: NanoStation AC loco.\nFrecuencia: 5 GHz.\nVelocidad máxima: 450+ Mbps."
   },
   {
     "id": 1784404666988,
@@ -2804,7 +2814,7 @@
   },
   {
     "id": 1784569265085,
-    "nombre": "📡 Router Inalámbrico Wavlink AC1200 Dual Band",
+    "nombre": "🛜 Router Inalámbrico Wavlink AC1200 Dual Band",
     "imagen": "https://tiendamax.org/imagenes/img_1784569263882.webp",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1784569263882.webp"
@@ -2823,13 +2833,13 @@
     "devolucion": false,
     "specs": [
       "🌐 Conectividad Dual Band de Alta Velocidad",
-      "📶 Cobertura Amplia y Estable sin Interrupciones ",
+      "📶 Cobertura Amplia y Estable sin Interrupciones",
       "🛡️ Red Doméstica Segura y de Gran Rendimiento"
     ],
     "fechaAgregado": "2026-07-20T17:41:05.086Z",
-    "descripcion": "Router inalámbrico de alto rendimiento equipado con tecnología de doble banda simultánea, diseñado para ofrecer una conexión rápida, estable y de gran alcance en todo tu hogar u oficina. Sus múltiples antenas externas optimizan la distribución de la señal, garantizando una transmisión fluida para streaming, juegos y navegación en múltiples dispositivos.\nFicha Técnica:\nTecnología: 🌐 Soporta doble banda simultánea para separar el tráfico y reducir la interferencia, asegurando un rendimiento óptimo en la red.\nCobertura: 📶 Dispone de cuatro antenas externas de alta ganancia que amplían el área de cobertura y eliminan las zonas sin señal.\nRendimiento: ⚡ Velocidad AC1200 para descargas rápidas, reproducción de contenido en alta definición y transferencia de datos sin demoras.\nSeguridad: 🔒 Protocolos de encriptación avanzados para proteger tu red contra accesos no autorizados y mantener tus datos seguros.\nEspecificaciones (Specs):\nMarca: WAVLINK.\nModelo: AC1200.\nTipo: Router inalámbrico Dual Band.\nAntenas: 4 antenas externas.",
     "seoTitle": "Router Inalámbrico Wavlink AC1200 Dual Band | TiendaMax",
-    "seoDescription": "Router inalámbrico de alto rendimiento equipado con tecnología de doble banda simultánea, diseñado para ofrecer una conexión rápida, estable y de gran…"
+    "seoDescription": "Router inalámbrico de alto rendimiento equipado con tecnología de doble banda simultánea, diseñado para ofrecer una conexión rápida, estable y de gran…",
+    "descripcion": "Router inalámbrico de alto rendimiento equipado con tecnología de doble banda simultánea, diseñado para ofrecer una conexión rápida, estable y de gran alcance en todo tu hogar u oficina. Sus múltiples antenas externas optimizan la distribución de la señal, garantizando una transmisión fluida para streaming, juegos y navegación en múltiples dispositivos.\nFicha Técnica:\nTecnología: 🌐 Soporta doble banda simultánea para separar el tráfico y reducir la interferencia, asegurando un rendimiento óptimo en la red.\nCobertura: 📶 Dispone de cuatro antenas externas de alta ganancia que amplían el área de cobertura y eliminan las zonas sin señal.\nRendimiento: ⚡ Velocidad AC1200 para descargas rápidas, reproducción de contenido en alta definición y transferencia de datos sin demoras.\nSeguridad: 🔒 Protocolos de encriptación avanzados para proteger tu red contra accesos no autorizados y mantener tus datos seguros.\nEspecificaciones (Specs):\nMarca: WAVLINK.\nModelo: AC1200.\nTipo: Router inalámbrico Dual Band.\nAntenas: 4 antenas externas."
   },
   {
     "id": 1784569498967,
@@ -3033,5 +3043,59 @@
     "fechaAgregado": "2026-07-23T16:52:59.395Z",
     "seoTitle": "Cámara de Seguridad Solar Doble Lente QW8-WIFI",
     "seoDescription": "Cámara de vigilancia exterior con sistema de doble lente que permite cubrir dos campos de visión diferentes al mismo tiempo. Funciona de manera…"
+  },
+  {
+    "id": 1785285424837,
+    "nombre": "​🌐 Antena CPE MikroTik SXTsq 5 ax",
+    "imagen": "https://tiendamax.org/imagenes/img_1785285422394.webp",
+    "imagenes": [
+      "https://tiendamax.org/imagenes/img_1785285422394.webp"
+    ],
+    "precioActual": 160,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 1,
+    "comision": 10,
+    "comisionMoneda": "USD",
+    "categoria": "WIFI",
+    "subcategoria": "ROUTERS",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "specs": [
+      "​⚡ Wi-Fi 6 (802.11ax) Alta Velocidad ​",
+      "📶 Antena Direccional de 16 dBi",
+      "​🌐 Licencia RouterOS Level 4"
+    ],
+    "fechaAgregado": "2026-07-29T00:37:04.838Z",
+    "descripcion": "Dispositivo CPE inalambrico para exteriores de alto rendimiento con tecnología Wi-Fi 6, diseñado para enlaces punto a punto o como estación cliente (CPE). Integra una antena direccional de alta ganancia en un diseño compacto y resistente a la intemperie, operando bajo el sistema RouterOS con licencia Level 4 para configuraciones avanzadas de red.\n​Ficha Técnica:\n​Tecnología Inalámbrica: ⚡ Conectividad Wi-Fi 6 (802.11ax) para mayor velocidad de transferencia, eficiencia y menor latencia en enlaces de larga distancia.\n​Ganancia y Cobertura: 📶 Antena direccional integrada de 16 dBi optimizada para concentrar el haz de señal y lograr conexiones estables punto a punto (PtP).\n​Sistema y Licencia: 🌐 Viene equipado con RouterOS con licencia Level 4, permitiendo su uso como estación base para sectores o en enlaces punto a multipunto (PtMP).\n​Diseño Físico: 🔌 Carcasa compacta para exteriores con protección contra condiciones ambientales adversas y opciones sencillas de montaje en mástil.\n​Especificaciones (Specs):\n​Marca: MikroTik.\n​Modelo: SXTsq 5 ax.\n​Tipo: CPE Inalámbrico para exteriores.\n​Ganancia de Antena: 16 dBi.\n​Licencia RouterOS: Level 4."
+  },
+  {
+    "id": 1785286289086,
+    "nombre": "​🌐 Antena CPE Ubiquiti NanoStation M5 Internacional",
+    "descripcion": "Dispositivo CPE inalámbrico para exteriores de alto rendimiento que opera en la banda de 5 GHz, diseñado para enlaces punto a punto (PtP) o como estación cliente en redes airMAX. Cuenta con un diseño compacto que integra antena direccional y polarización dual, ofreciendo gran estabilidad en transmisiones de largo alcance.\n​Ficha Técnica:\n​Tecnología Inalámbrica: ⚡ Operación en la frecuencia de 5 GHz con protocolo airMAX para maximizar el rendimiento y reducir la latencia en exteriores.\n​Ganancia y Cobertura: 📶 Antena direccional integrada de doble polarización optimizada para enlaces de larga distancia con alta inmunidad al ruido.\n​Conectividad Física: 🔌 Puertos Ethernet con soporte para alimentación PoE pasiva, facilitando la instalación en mástiles o fachadas exteriores.\n​Especificaciones (Specs):\n​Marca: Ubiquiti.\n​Modelo: NanoStation M5.\n​Tipo: CPE Inalámbrico para exteriores (Versión Internacional).",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1785286287536.webp",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1785286287536.webp"
+    ],
+    "precioActual": 230,
+    "precioOriginal": 0,
+    "descuento": 0,
+    "stock": 3,
+    "comision": 10,
+    "comisionMoneda": "USD",
+    "categoria": "WIFI",
+    "subcategoria": "ROUTERS",
+    "masVendido": false,
+    "usado": false,
+    "garantia": "",
+    "devolucion": false,
+    "specs": [
+      "​⚡ 5 GHz airMAX Alta Eficiencia ​",
+      "📶 Antena Direccional Integrada ​",
+      "🔌 Puertos Ethernet con PoE Pasivo"
+    ],
+    "fechaAgregado": "2026-07-29T00:51:29.086Z"
   }
 ]

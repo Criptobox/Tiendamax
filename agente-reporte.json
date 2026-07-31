@@ -1,11 +1,41 @@
 {
-  "generado": "2026-07-28T11:10:14.931078+00:00",
-  "productos": 116,
-  "urgentes": 0,
-  "advertencias": 41,
-  "info": 8,
-  "resumen": "Anoche revisé tus 116 productos y encontré 41 advertencia(s), 8 de info.",
+  "generado": "2026-07-31T11:22:56.413916+00:00",
+  "productos": 118,
+  "urgentes": 6,
+  "advertencias": 39,
+  "info": 9,
+  "resumen": "Anoche revisé tus 118 productos y encontré 6 urgente(s), 39 advertencia(s), 9 de info.",
   "detalle": [
+    {
+      "tipo": "nombre",
+      "nombre": "🛜 Router Wi-Fi AC1200 Tenda AC6(Global Version)",
+      "detalle": "→ 🛜 Router Wi-fi AC1200 Tenda AC6(GLOBAL Version)"
+    },
+    {
+      "tipo": "nombre",
+      "nombre": "​⚡ Controlador de Carga Solar MPPT 80A PowMr",
+      "detalle": "→ ​⚡ Controlador de Carga Solar MPPT 80A Powmr"
+    },
+    {
+      "tipo": "nombre",
+      "nombre": "​📶 Repetidor Wi-Fi Extensor de Cobertura TP-Link AC1200 (RE305 / RE330)",
+      "detalle": "→ ​📶 Repetidor Wi-fi Extensor de Cobertura Tp-link AC1200 (RE305 / RE330)"
+    },
+    {
+      "tipo": "nombre",
+      "nombre": "​🛜 Router Wi-Fi AC1200 TP-Link Archer C54",
+      "detalle": "→ ​🛜 Router Wi-fi AC1200 Tp-link Archer C54"
+    },
+    {
+      "tipo": "nombre",
+      "nombre": "​🌐 Antena CPE MikroTik SXTsq 5 ax",
+      "detalle": "→ ​🌐 Antena Cpe Mikrotik Sxtsq 5 ax"
+    },
+    {
+      "tipo": "nombre",
+      "nombre": "​🌐 Antena CPE Ubiquiti NanoStation M5 Internacional",
+      "detalle": "→ ​🌐 Antena Cpe Ubiquiti Nanostation M5 Internacional"
+    },
     {
       "tipo": "agotado",
       "nombre": "Batería Must Tipo LIFEPO4",
@@ -18,17 +48,17 @@
     },
     {
       "tipo": "agotado",
-      "nombre": "​🌐 Router Wavlink AC1200 Dual Band",
+      "nombre": "🌐 Router Wavlink AC1200 Dual Band",
       "detalle": "agotado (stock 0)"
     },
     {
       "tipo": "agotado",
-      "nombre": "​📶 Repetidor Wi-fi 5 (Doble Banda - 1200 Mbps)",
+      "nombre": "📶 Repetidor Wi-fi 5 (Doble Banda - 1200 Mbps)",
       "detalle": "agotado (stock 0)"
     },
     {
       "tipo": "agotado",
-      "nombre": "​⚖️ Báscula Digital de Alta Definición",
+      "nombre": "⚖️ Báscula Digital de Alta Definición",
       "detalle": "agotado (stock 0)"
     },
     {
@@ -68,7 +98,7 @@
     },
     {
       "tipo": "agotado",
-      "nombre": "​🌐 Router Tenda AC1200 (Global Version)",
+      "nombre": "🌐 Switch Gigabit de 5 Puertos",
       "detalle": "agotado (stock 0)"
     },
     {
@@ -89,6 +119,11 @@
     {
       "tipo": "agotado",
       "nombre": "Linterna de Cabeza",
+      "detalle": "agotado (stock 0)"
+    },
+    {
+      "tipo": "agotado",
+      "nombre": "🌐 Adaptador POE Ubiquiti (24V - 0.3A)",
       "detalle": "agotado (stock 0)"
     },
     {
@@ -128,11 +163,6 @@
     },
     {
       "tipo": "agotado",
-      "nombre": "Controlador Solar Powmr M100 PRO - MPPT de 80 Amp",
-      "detalle": "agotado (stock 0)"
-    },
-    {
-      "tipo": "agotado",
       "nombre": "Router Tenda RX2 PRO - WiFi 6 Dual - Band Gigabit",
       "detalle": "agotado (stock 0)"
     },
@@ -163,17 +193,7 @@
     },
     {
       "tipo": "agotado",
-      "nombre": "Router WiFi Inalámbrico d - Link Avanzado de Doble Banda",
-      "detalle": "agotado (stock 0)"
-    },
-    {
-      "tipo": "agotado",
       "nombre": "📟 Inversor Solar Must PV15-1524 lv",
-      "detalle": "agotado (stock 0)"
-    },
-    {
-      "tipo": "agotado",
-      "nombre": "​🌐 Router Tp-link Archer AX1450 (Wi-fi 6)",
       "detalle": "agotado (stock 0)"
     },
     {
@@ -183,47 +203,47 @@
     },
     {
       "tipo": "agotado",
-      "nombre": "​⚡ Inversor de Corriente Onda Senoidal Pura Unizuki 3000W",
+      "nombre": "⚡ Inversor de Corriente Onda Senoidal Pura Unizuki 3000W",
       "detalle": "agotado (stock 0)"
     },
     {
       "tipo": "agotado",
-      "nombre": "​🌐 Router Tp-link Archer AX21 (Wi-fi 6)",
+      "nombre": "🌐 Router Tp-link Archer AX21 (Wi-fi 6)",
       "detalle": "agotado (stock 0)"
     },
     {
       "tipo": "agotado",
-      "nombre": "​🔌 Cargador Inteligente Ntrc 20A",
+      "nombre": "🔌 Cargador Inteligente Ntrc 20A",
       "detalle": "agotado (stock 0)"
     },
     {
       "tipo": "agotado",
-      "nombre": "​🔌 Cargador Inteligente Ntrc 35A",
+      "nombre": "🔌 Cargador Inteligente Ntrc 35A",
       "detalle": "agotado (stock 0)"
     },
     {
       "tipo": "agotado",
-      "nombre": "​🌐 Mikrotik Sxtsq LITE5",
+      "nombre": "🌐 Mikrotik Sxtsq LITE5",
       "detalle": "agotado (stock 0)"
     },
     {
       "tipo": "agotado",
-      "nombre": "​🔥 Soldadora Inverter MMA-300",
+      "nombre": "🔥 Soldadora Inverter MMA-300",
       "detalle": "agotado (stock 0)"
     },
     {
       "tipo": "stock_bajo",
-      "nombre": "​🌐 Cpe Exterior Kuwfi 4G/WIFI",
+      "nombre": "📡 Cpe Exterior Kuwfi 4G/WIFI",
       "detalle": "quedan 1"
     },
     {
       "tipo": "stock_bajo",
-      "nombre": "​⚡ Pistola de Masaje Profesional (Modelo Triangular)",
+      "nombre": "⚡ Pistola de Masaje Profesional (Modelo Triangular)",
       "detalle": "quedan 1"
     },
     {
       "tipo": "stock_bajo",
-      "nombre": "​🔊 Xiaomi Sound Outdoor (30W)",
+      "nombre": "🔊 Xiaomi Sound Outdoor (30W)",
       "detalle": "quedan 3"
     },
     {
@@ -233,22 +253,27 @@
     },
     {
       "tipo": "stock_bajo",
-      "nombre": "​⚡inversor de Corriente Tataliken 4000W (24V)",
+      "nombre": "⚡inversor de Corriente Tataliken 4000W (24V)",
       "detalle": "quedan 1"
     },
     {
       "tipo": "stock_bajo",
-      "nombre": "​🚗 Changan CS75 PLUS 2024 (Suv Compacta)",
+      "nombre": "🚗 Changan CS75 PLUS 2024 (Suv Compacta)",
       "detalle": "quedan 1"
     },
     {
       "tipo": "precio",
-      "nombre": "​🚗 Changan CS75 PLUS 2024 (Suv Compacta)",
+      "nombre": "🚗 Changan CS75 PLUS 2024 (Suv Compacta)",
       "detalle": "precio: 33000"
     },
     {
       "tipo": "stock_bajo",
-      "nombre": "​🔒 Sistema de Seguridad Zosi de 8 Canales Con Dvr 5MP y Disco Duro de 1TB",
+      "nombre": "🔒 Sistema de Seguridad Zosi de 8 Canales Con Dvr 5MP y Disco Duro de 1TB",
+      "detalle": "quedan 3"
+    },
+    {
+      "tipo": "stock_bajo",
+      "nombre": "​🌐 Antena CPE Ubiquiti NanoStation M5 Internacional",
       "detalle": "quedan 3"
     }
   ]
