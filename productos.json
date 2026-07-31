@@ -2971,7 +2971,7 @@
     "precioActual": 150,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 10,
+    "stock": 0,
     "comision": 10,
     "comisionMoneda": "USD",
     "categoria": "WIFI",
@@ -2986,9 +2986,9 @@
       "🔌 Puertos Gigabit / USB"
     ],
     "fechaAgregado": "2026-07-22T15:05:15.417Z",
-    "descripcion": "Router inalámbrico de última generación con tecnología Wi-Fi 6, diseñado para ofrecer conexiones de alta velocidad, menor latencia y mayor capacidad en hogares u oficinas con múltiples dispositivos conectados simultáneamente. Cuenta con cuatro antenas externas de alta ganancia y puertos Gigabit para aprovechar al máximo el rendimiento de tu proveedor de internet.\nFicha Técnica:\nTecnología Inalámbrica: 🌐 Wi-Fi 6 (802.11ax) de doble banda que alcanza velocidades combinadas de hasta 3000 Mbps (2402 Mbps en 5 GHz y 574 Mbps en 2.4 GHz).\nCobertura y Antenas: 📶 Cuatro antenas externas de alta ganancia equipadas con tecnología Beamforming para concentrar la señal hacia los dispositivos y eliminar zonas muertas.\nCapacidad de Conexión: ⚡ Tecnologías OFDMA y MU-MIMO integradas para cuatriplicar la capacidad de transmisión y conectar decenas de equipos sin pérdida de rendimiento.\nPuertos y Conectividad Física: 🔌 Puertos Ethernet Gigabit completos (1 puerto WAN y 4 puertos LAN) para conexiones por cable ultrarrápidas, además de un puerto USB integrado para compartir archivos en red.\nEspecificaciones (Specs):\nMarca: TP-Link.\nModelo: Archer AX55.\nTipo: Router Wi-Fi 6 AX3000 de doble banda.\nUso: Conectividad y enrutamiento de red de alta velocidad para hogar u oficina.",
     "seoTitle": "Router Wi-fi 6 AX3000 Tp-link Archer AX55 | TiendaMax",
-    "seoDescription": "Router inalámbrico de última generación con tecnología Wi-Fi 6, diseñado para ofrecer conexiones de alta velocidad, menor latencia y mayor capacidad en…"
+    "seoDescription": "Router inalámbrico de última generación con tecnología Wi-Fi 6, diseñado para ofrecer conexiones de alta velocidad, menor latencia y mayor capacidad en…",
+    "descripcion": "Router inalámbrico de última generación con tecnología Wi-Fi 6, diseñado para ofrecer conexiones de alta velocidad, menor latencia y mayor capacidad en hogares u oficinas con múltiples dispositivos conectados simultáneamente. Cuenta con cuatro antenas externas de alta ganancia y puertos Gigabit para aprovechar al máximo el rendimiento de tu proveedor de internet.\nFicha Técnica:\nTecnología Inalámbrica: 🌐 Wi-Fi 6 (802.11ax) de doble banda que alcanza velocidades combinadas de hasta 3000 Mbps (2402 Mbps en 5 GHz y 574 Mbps en 2.4 GHz).\nCobertura y Antenas: 📶 Cuatro antenas externas de alta ganancia equipadas con tecnología Beamforming para concentrar la señal hacia los dispositivos y eliminar zonas muertas.\nCapacidad de Conexión: ⚡ Tecnologías OFDMA y MU-MIMO integradas para cuatriplicar la capacidad de transmisión y conectar decenas de equipos sin pérdida de rendimiento.\nPuertos y Conectividad Física: 🔌 Puertos Ethernet Gigabit completos (1 puerto WAN y 4 puertos LAN) para conexiones por cable ultrarrápidas, además de un puerto USB integrado para compartir archivos en red.\nEspecificaciones (Specs):\nMarca: TP-Link.\nModelo: Archer AX55.\nTipo: Router Wi-Fi 6 AX3000 de doble banda.\nUso: Conectividad y enrutamiento de red de alta velocidad para hogar u oficina."
   },
   {
     "id": 1784823616101,
@@ -3058,7 +3058,7 @@
     "precioActual": 160,
     "precioOriginal": 0,
     "descuento": 0,
-    "stock": 1,
+    "stock": 0,
     "comision": 10,
     "comisionMoneda": "USD",
     "categoria": "WIFI",
