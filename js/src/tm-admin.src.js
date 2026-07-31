@@ -902,6 +902,8 @@ function limpiarFormularioProducto(avisar) {
     // showToast vive dentro del IIFE de admin.html y no está en window; el
     // aviso se da con mostrarNotificacion, que sí es global (lo comprueba
     // tests/test_admin_handlers.py).
+    if (typeof borrarBorradorProducto === 'function') borrarBorradorProducto();
+    if (typeof tmActualizarPendientes === 'function') tmActualizarPendientes();
     if (avisar && typeof mostrarNotificacion === 'function') {
         mostrarNotificacion('🧹 Formulario vacío, listo para el siguiente producto');
     }
@@ -951,6 +953,10 @@ function tmDiagnosticoAlmacenamiento() {
 // publicar y con el formulario lleno, mientras el mensaje culpaba a las fotos.
 function guardarProductos() {
     const datos = JSON.stringify(productos);
+    setTimeout(() => {
+        if (typeof tmActualizarPendientes === 'function') tmActualizarPendientes();
+        if (typeof tmAvisarEspacio === 'function') tmAvisarEspacio();
+    }, 0);
     try {
         localStorage.setItem('productos', datos);
         return true;
@@ -1023,5 +1029,177 @@ function tmLiberarEspacio() {
             ? '🧹 Liberados ' + kb + ' KB de historiales. El catálogo y la configuración siguen intactos.'
             : 'ℹ️ No había historiales que borrar. Si sigue lleno, lo que ocupa es el catálogo: revisa la lista de arriba.',
             kb > 0 ? 'success' : 'info');
+    }
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  BORRADOR DEL FORMULARIO "AGREGAR PRODUCTO"
+//  Si el guardado falla, se cierra la pestaña o se va la corriente, todo lo
+//  escrito se perdía. Se guarda mientras escribes y al volver se ofrece
+//  recuperarlo. Las fotos NO se guardan (el navegador no deja conservar un
+//  <input type=file>, y meterlas en base64 es justo lo que llenaba la cuota).
+// ═══════════════════════════════════════════════════════════════
+const TM_BORRADOR_KEY = 'tm_borrador_producto_v1';
+const _TM_BORRADOR_CAMPOS = [
+    'productName', 'productDescription', 'productPriceActual', 'productPrecioOriginal',
+    'productStock', 'productComision', 'productComisionMoneda', 'productCategory',
+    'productSubcategory', 'productGarantia', 'productSpecs', 'productMasVendido'
+];
+let _tmBorradorTimer = null;
+
+function _tmLeerCampos() {
+    const d = {};
+    _TM_BORRADOR_CAMPOS.forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        d[id] = (el.type === 'checkbox') ? el.checked : el.value;
+    });
+    const usado = document.getElementById('productUsado');
+    if (usado) d.productUsado = usado.checked;
+    const dev = document.getElementById('productDevolucion');
+    if (dev) d.productDevolucion = dev.checked;
+    return d;
+}
+
+function _tmHayAlgoEscrito(d) {
+    return !!((d.productName || '').trim() || (d.productDescription || '').trim() ||
+              (d.productSpecs || '').trim() || (d.productGarantia || '').trim());
+}
+
+function guardarBorradorProducto() {
+    const d = _tmLeerCampos();
+    if (!_tmHayAlgoEscrito(d)) { borrarBorradorProducto(); return; }
+    d._ts = Date.now();
+    try { localStorage.setItem(TM_BORRADOR_KEY, JSON.stringify(d)); }
+    catch (e) { /* sin espacio: el borrador es lo primero que se sacrifica */ }
+}
+
+function borrarBorradorProducto() {
+    try { localStorage.removeItem(TM_BORRADOR_KEY); } catch (e) {}
+    const aviso = document.getElementById('tmBorradorAviso');
+    if (aviso) aviso.remove();
+}
+
+function restaurarBorradorProducto() {
+    const d = tmParse(localStorage.getItem(TM_BORRADOR_KEY), null);
+    if (!d) return;
+    Object.keys(d).forEach(id => {
+        if (id === '_ts') return;
+        const el = document.getElementById(id);
+        if (!el) return;
+        if (el.type === 'checkbox') el.checked = !!d[id]; else el.value = d[id];
+    });
+    if (typeof agregarFillSubcats === 'function') {
+        try { agregarFillSubcats(); const sub = document.getElementById('productSubcategory');
+              if (sub && d.productSubcategory) sub.value = d.productSubcategory; } catch (e) {}
+    }
+    borrarBorradorProducto();
+    if (typeof mostrarNotificacion === 'function') {
+        mostrarNotificacion('📄 Borrador recuperado. Vuelve a elegir las fotos: el navegador no las puede guardar.');
+    }
+}
+
+// Aviso discreto arriba del formulario cuando hay algo guardado de antes.
+function _tmMostrarAvisoBorrador() {
+    const form = document.getElementById('productForm');
+    if (!form || document.getElementById('tmBorradorAviso')) return;
+    const d = tmParse(localStorage.getItem(TM_BORRADOR_KEY), null);
+    if (!d || !_tmHayAlgoEscrito(d)) return;
+    const cuando = d._ts ? new Date(d._ts).toLocaleString() : '';
+    const nombre = (d.productName || '').trim().slice(0, 40) || 'un producto sin nombre';
+    const box = document.createElement('div');
+    box.id = 'tmBorradorAviso';
+    box.style.cssText = 'margin:0 0 14px;padding:12px 14px;border:1px solid rgba(255,106,31,.35);background:rgba(255,106,31,.08);border-radius:12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:13px';
+    box.innerHTML = '<span style="flex:1;min-width:180px">📄 Tienes un borrador sin guardar: <b>' +
+        escapeHtml(nombre) + '</b>' + (cuando ? ' <span style="opacity:.7">(' + escapeHtml(cuando) + ')</span>' : '') + '</span>';
+    const bSi = document.createElement('button');
+    bSi.type = 'button'; bSi.className = 'btn btn-primary'; bSi.style.cssText = 'padding:7px 14px;font-size:12.5px';
+    bSi.textContent = 'Recuperar';
+    bSi.onclick = restaurarBorradorProducto;
+    const bNo = document.createElement('button');
+    bNo.type = 'button'; bNo.className = 'btn btn-ghost'; bNo.style.cssText = 'padding:7px 14px;font-size:12.5px';
+    bNo.textContent = 'Descartar';
+    bNo.onclick = borrarBorradorProducto;
+    box.append(bSi, bNo);
+    form.parentNode.insertBefore(box, form);
+}
+
+function initBorradorProducto() {
+    const form = document.getElementById('productForm');
+    if (!form || form._tmBorrador) return;
+    form._tmBorrador = true;
+    form.addEventListener('input', () => {
+        clearTimeout(_tmBorradorTimer);
+        _tmBorradorTimer = setTimeout(guardarBorradorProducto, 700);
+    });
+    form.addEventListener('change', () => {
+        clearTimeout(_tmBorradorTimer);
+        _tmBorradorTimer = setTimeout(guardarBorradorProducto, 300);
+    });
+    _tmMostrarAvisoBorrador();
+}
+
+// ── Probar el token de GitHub sin esperar a que falle una subida ──────
+async function tmProbarToken() {
+    const est = document.getElementById('tmTokenStatus');
+    const pon = (txt, color) => { if (est) { est.textContent = txt; est.style.color = color || ''; } };
+    const user  = (document.getElementById('githubUser')  || {}).value || localStorage.getItem('githubUser');
+    const repo  = (document.getElementById('githubRepo')  || {}).value || localStorage.getItem('githubRepo');
+    const token = (document.getElementById('githubToken') || {}).value || localStorage.getItem('githubToken');
+    if (!user || !repo || !token) { pon('⚠️ Completa usuario, repositorio y token.', '#f5a623'); return; }
+    pon('⏳ Probando…');
+    try {
+        const res = await fetch('https://api.github.com/repos/' + user + '/' + repo, {
+            headers: { 'Authorization': 'token ' + token }
+        });
+        if (res.ok) {
+            const j = await res.json();
+            const puedeEscribir = j.permissions && j.permissions.push;
+            if (puedeEscribir) pon('✅ Token válido y con permiso de escritura en ' + user + '/' + repo + '.', '#1DA854');
+            else pon('⚠️ El token entra al repo pero NO puede escribir. Necesita permiso de escritura en "Contents".', '#f5a623');
+        } else if (res.status === 401) {
+            pon('❌ Token inválido o vencido. Genera uno nuevo en GitHub.', '#e74c3c');
+        } else if (res.status === 404) {
+            pon('❌ No se encontró ' + user + '/' + repo + '. Revisa el usuario y el nombre del repo (o el token no ve ese repo).', '#e74c3c');
+        } else {
+            pon('❌ GitHub respondió HTTP ' + res.status + '.', '#e74c3c');
+        }
+    } catch (e) {
+        pon('❌ Sin conexión con GitHub. Revisa internet.', '#e74c3c');
+    }
+}
+
+// ── Indicador de cambios sin publicar ────────────────────────────────
+// productosModificados ya existía por dentro, pero nada avisaba de que
+// había ediciones sin subir; es fácil cambiar precios y olvidarse.
+function tmActualizarPendientes() {
+    const n = (typeof obtenerProductosModificados === 'function')
+        ? (obtenerProductosModificados() || []).length : 0;
+    let chip = document.getElementById('tmPendientesChip');
+    if (n === 0) { if (chip) chip.remove(); return; }
+    if (!chip) {
+        chip = document.createElement('button');
+        chip.id = 'tmPendientesChip';
+        chip.type = 'button';
+        chip.style.cssText = 'position:fixed;right:16px;bottom:calc(env(safe-area-inset-bottom,0px) + 16px);z-index:9998;' +
+            'padding:10px 15px;border-radius:999px;border:1px solid rgba(255,106,31,.5);background:rgba(255,106,31,.95);' +
+            'color:#fff;font:inherit;font-size:12.5px;font-weight:800;cursor:pointer;box-shadow:0 10px 26px -12px rgba(0,0,0,.7)';
+        chip.onclick = () => { if (typeof sincronizarTodoConGitHub === 'function') sincronizarTodoConGitHub(); };
+        document.body.appendChild(chip);
+    }
+    chip.textContent = '⬆️ ' + n + ' cambio' + (n !== 1 ? 's' : '') + ' sin publicar';
+    chip.title = 'Pulsa para actualizar la tienda';
+}
+
+// ── Aviso de espacio antes de que reviente ───────────────────────────
+function tmAvisarEspacio() {
+    const d = tmDiagnosticoAlmacenamiento();
+    const pct = Math.round(d.totalKB / 5120 * 100);
+    if (pct < 80) return;
+    if (sessionStorage.getItem('tm_aviso_espacio')) return;   // una vez por sesión
+    try { sessionStorage.setItem('tm_aviso_espacio', '1'); } catch (e) {}
+    if (typeof mostrarNotificacion === 'function') {
+        mostrarNotificacion('⚠️ El navegador va al ' + pct + '% de su espacio (' + d.totalKB +
+            ' KB). Ve a Configuración → Espacio del navegador y pulsa "Liberar espacio" antes de que empiece a fallar el guardado.', 'error');
     }
 }

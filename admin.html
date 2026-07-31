@@ -1263,6 +1263,8 @@
               <div class="form-group" style="margin-top:10px"><label class="form-label" for="githubToken">Token</label><input class="form-input" id="githubToken" type="password" placeholder="ghp_…"></div>
               <button type="submit" class="btn btn-primary" style="width:100%;margin-top:12px">💾 Guardar GitHub</button>
             </form>
+            <button class="btn btn-ghost" style="width:100%;margin-top:10px" onclick="tmProbarToken()">🔌 Probar token</button>
+            <p id="tmTokenStatus" style="font-size:12px;color:var(--muted);margin-top:8px"></p>
             <button class="btn btn-success" style="width:100%;margin-top:10px;justify-content:center" onclick="sincronizarTodoConGitHub()">🔄 Actualizar tienda ahora</button>
           </div>
           <div class="section">
@@ -1393,7 +1395,7 @@
                 <div class="form-group"><label class="form-label" for="productPriceActual">Precio actual (USD) *</label><input class="form-input" id="productPriceActual" type="number" step="0.01" required placeholder="0.00"></div>
                 <div class="form-group"><label class="form-label" for="productPrecioOriginal">Precio original (tachado)</label><input class="form-input" id="productPrecioOriginal" type="number" step="0.01" placeholder="0.00"></div>
                 <div class="form-group"><label class="form-label" for="productStock">Stock *</label><input class="form-input" id="productStock" type="number" required placeholder="0"></div>
-                <div class="form-group"><label class="form-label" for="productComision">Tu comisión</label><div style="display:flex;gap:8px"><input class="form-input" id="productComision" type="number" step="0.01" placeholder="0.00" style="flex:1"><select class="form-select" id="productComisionMoneda" style="width:90px;flex:none"><option value="USD">USD</option><option value="MN">MN</option></select></div></div>
+                <div class="form-group"><label class="form-label" for="productComision">Tu comisión</label><div style="display:flex;gap:8px"><input class="form-input" id="productComision" type="number" step="0.01" placeholder="0.00" style="flex:1"><select class="form-select" id="productComisionMoneda" aria-label="Moneda de la comisión" style="width:90px;flex:none"><option value="USD">USD</option><option value="MN">MN</option></select></div></div>
                 <div class="form-group"><label class="form-label" for="productMasVendido">Destacar</label><select class="form-select" id="productMasVendido"><option value="false">No</option><option value="true">Sí, en "Más vendidos"</option></select></div>
               </div>
               <div class="form-group" style="margin-top:10px"><label class="form-label" for="productGarantia">Garantía</label><input class="form-input" id="productGarantia" placeholder="Ej: 6 meses · devolución 30 días"></div>
@@ -1503,7 +1505,7 @@
      agregarProductoForm, sincronizarTodoConGitHub, registrarVenta, etc. -->
 <!-- Bundle único (mismo orden: config→data→state→admin→product→catalog→init→ui→toast→iife→patches),
      generado por scripts/build_js_bundle.py a partir de js/src/*.src.js -->
-<script src="js/tm-bundle.js?v=7960778e"></script>
+<script src="js/tm-bundle.js?v=5ec53d64"></script>
 <script src="js/biometric-auth.js?v=876f6495"></script>
 <script src="js/revolico_integration.js?v=fc18f61b"></script>
 <!-- analytics.js: NO se cargaba acá antes — el conteo real de suscriptores
@@ -1543,6 +1545,18 @@ const esc = s => String(s==null?'':s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&
 const escJsAttr = s => String(s==null?'':s).replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
 const norm = s => (s||'').toString().toLowerCase().trim().replace(/\s+/g,' ');
 
+/* Escribe en localStorage avisando si no cupo. Los `try{…}catch(e){}` mudos
+   de estas claves hacían que un guardado fallara sin que nadie se enterara:
+   es el mismo patrón que dejó el catálogo con imágenes en base64. */
+function tmGuardarLS(clave, valor){
+  try{ localStorage.setItem(clave, typeof valor==='string'?valor:JSON.stringify(valor)); return true; }
+  catch(e){
+    console.warn('[tmGuardarLS] no se pudo guardar', clave, e);
+    if(typeof window.mostrarNotificacion==='function')
+      window.mostrarNotificacion('⚠️ No se pudo guardar "'+clave+'": al navegador no le queda espacio. Configuración → Espacio del navegador → Liberar espacio.','error');
+    return false;
+  }
+}
 function showToast(t,b){ $('#toast-t').textContent=t; $('#toast-b').textContent=b||''; const el=$('#toast'); el.classList.add('show'); setTimeout(()=>el.classList.remove('show'),2600); }
 
 /* ============ Navegación ============ */
@@ -1557,6 +1571,8 @@ function go(view, btn){
   // El panel de espacio se mide al entrar, no al cargar la página: así el
   // dato es el de ahora y no cuesta nada en el arranque.
   if(view==='config' && typeof tmMostrarEspacio==='function'){ try{ tmMostrarEspacio(); }catch(e){} }
+  if(view==='agregar' && typeof initBorradorProducto==='function'){ try{ initBorradorProducto(); }catch(e){} }
+  if(typeof tmActualizarPendientes==='function'){ try{ tmActualizarPendientes(); }catch(e){} }
 }
 document.querySelectorAll('.side-btn').forEach(b=>{
   if(!b.dataset.view) return; // botones con acción propia (p.ej. Vale abre vale.html)
@@ -1607,7 +1623,7 @@ async function cargarDatos(recargar){
         if(f && (f.descripcion||'').trim()){ p.descripcion=f.descripcion; n++; }
       }
     });
-    if(n) try{ localStorage.setItem('productos', JSON.stringify(PRODUCTOS)); }catch(e){}
+    if(n) tmGuardarLS('productos', PRODUCTOS);
   }
   syncProductos(); // unifica PRODUCTOS con el bareword del motor y window.productos
   _ofertasFinAutoRevertir(); // ofertas con fecha de fin ya vencidas: revertir de una vez
@@ -1637,7 +1653,7 @@ async function cargarVentasFirebase(){
     lsVentas().forEach(v=>{ porId[String(v.id)] = v; });
     fb.filter(v=>!_ventaEsPrueba(v)).forEach(v=>{ porId[String(v.id)] = Object.assign({}, porId[String(v.id)], v); });
     const merged = Object.values(porId).filter(v=>!_ventaEsPrueba(v)).sort((a,b)=>Number(b.id||0)-Number(a.id||0));
-    try{ localStorage.setItem('registroVentas', JSON.stringify(merged.slice(0,500))); }catch(e){}
+    tmGuardarLS('registroVentas', merged.slice(0,500));
     VENTAS = merged;
     renderVentas(); renderInicio(); renderClientes();
   }catch(e){}
@@ -1699,7 +1715,7 @@ function guardarFirebaseConfig(){
   const st=$('#fb-config-status');
   if(!cfg || !cfg.projectId){ if(st){ st.style.color='var(--red)'; st.textContent='❌ No pude leer el config. Pega el objeto completo con projectId.'; } return; }
   if(!cfg.databaseURL) cfg.databaseURL='https://'+cfg.projectId+'-default-rtdb.firebaseio.com';
-  try{ localStorage.setItem('firebaseConfig', JSON.stringify(cfg)); }catch(e){}
+  tmGuardarLS('firebaseConfig', cfg);
   const vk=($('#fb-vapid-input')&&$('#fb-vapid-input').value||'').trim();
   if(vk) try{ localStorage.setItem('firebaseVapidKey', vk); }catch(e){}
   if(st){ st.style.color='var(--green)'; st.textContent='✅ Firebase guardado: '+cfg.projectId; }
@@ -1776,7 +1792,7 @@ function agregarFillSubcats(){
 /* ============ COMBOS (creador) ============ */
 let COMBO_SEL = [];
 function lsCombos(){ try{ const c=JSON.parse(localStorage.getItem('combos')||'[]'); return Array.isArray(c)?c:[]; }catch(e){ return []; } }
-function saveCombos(arr){ try{ localStorage.setItem('combos', JSON.stringify(arr)); }catch(e){} }
+function saveCombos(arr){ tmGuardarLS('combos', arr); }
 function comboBuscar(){
   const q=norm($('#combo-buscar') && $('#combo-buscar').value);
   const box=$('#combo-resultados'); if(!box) return;
@@ -2200,7 +2216,7 @@ function bulkPrecio(signo){
   apSaveProds(); renderProductos();
   showToast('💲 '+n+' precios '+(signo>0?'subidos':'bajados')+' '+pct+'%','Pulsa "Actualizar tienda" en ⚙️ para publicar');
 }
-function apSaveProds(){ syncProductos(); try{ localStorage.setItem('productos', JSON.stringify(PRODUCTOS)); }catch(e){} }
+function apSaveProds(){ syncProductos(); tmGuardarLS('productos', PRODUCTOS); }
 // El módulo de Herramientas (dupNow/rollback/importCsv, más abajo) vive en su
 // propio <script>/IIFE y no tiene acceso a PRODUCTOS. Si escribiera solo en
 // window.productos/localStorage, el próximo syncProductos() (que corre en
@@ -2220,6 +2236,9 @@ function apSelTgl(id){ id=String(id); if(AP_SEL.has(id)) AP_SEL.delete(id); else
 function apSelClear(){ AP_SEL.clear(); apSelBar(); renderProductos(); }
 function apBulkZero(){
   if(!AP_SEL.size) return;
+  // Deja los productos AGOTADOS de cara al público con un clic; su hermano
+  // apBulkDel sí preguntaba y este no, siendo más fácil de disparar sin querer.
+  if(!confirm('¿Marcar como AGOTADOS '+AP_SEL.size+' producto(s)?\n\nDejarán de poder comprarse en la tienda hasta que les pongas stock otra vez.')) return;
   let n=0; PRODUCTOS.forEach(p=>{ if(AP_SEL.has(String(p.id))){ p.stock=0; if(typeof marcarProductoModificado==='function') try{ marcarProductoModificado(p.id); }catch(e){} n++; } });
   apSaveProds(); apSelClear(); showToast('→0 '+n+' productos marcados agotados','Sincroniza para publicar');
 }
@@ -2546,7 +2565,7 @@ function subAgregar(){
 function _saveCats(names, iconos){
   try{ categorias = names.slice(); }catch(e){}
   try{ if(typeof iconosPersonalizados!=='undefined' && iconos){ Object.keys(iconosPersonalizados).forEach(k=>{ if(!(k in iconos)) delete iconosPersonalizados[k]; }); Object.assign(iconosPersonalizados, iconos); } }catch(e){}
-  try{ localStorage.setItem('categorias', JSON.stringify(names)); }catch(e){}
+  tmGuardarLS('categorias', names);
   CATEGORIAS = { nombres: names.slice(), iconos: Object.assign({}, (CATEGORIAS&&CATEGORIAS.iconos)||{}, iconos||{}) };
 }
 function catRenombrar(nm){
@@ -2567,7 +2586,7 @@ function catEmoji(nm){
   if(nuevo.length>8){ showToast('⚠️ Eso no parece un emoji'); return; }
   const ic=Object.assign({},(CATEGORIAS&&CATEGORIAS.iconos)||{}); ic[nm]=nuevo;
   _saveCats(catNombres(), ic);
-  try{ localStorage.setItem('iconosPersonalizados', JSON.stringify(ic)); }catch(e){}
+  tmGuardarLS('iconosPersonalizados', ic);
   renderCategorias(); renderProductos();
   showToast('😀 Emoji cambiado','Pulsa "Actualizar tienda" en ⚙️ para publicar');
 }
@@ -2850,7 +2869,7 @@ function ventaAnular(id){
   apSaveProds();
   // Quitar de local
   const rest=VENTAS.filter(x=>String(x.id)!==String(id));
-  try{ localStorage.setItem('registroVentas', JSON.stringify(rest)); }catch(e){}
+  tmGuardarLS('registroVentas', rest);
   VENTAS=rest;
   // Quitar de Firebase
   try{ if(typeof _fbEliminarVenta==='function') _fbEliminarVenta(v.id); else { const base=rtdbBase(); if(base) fetch(base+'/ventas/'+v.id+'.json',{method:'DELETE'}).catch(()=>{}); } }catch(e){}

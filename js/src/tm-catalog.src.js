@@ -543,6 +543,56 @@ async function _tmEsperarSyncLibre() {
     }
 }
 
+// Archivos que no lograron subir en el último intento. Permiten reintentar
+// solo esos en vez de repetir la publicación entera, que además vuelve a
+// releer y fusionar todo el catálogo contra el repo.
+let _tmSyncPendientes = [];
+
+function _tmMostrarBotonReintento(paths) {
+    const card = document.querySelector('#tmSyncFloat .tm-sync-float-card');
+    if (!card || !paths.length) return;
+    let btnR = document.getElementById('tmSyncRetry');
+    if (!btnR) {
+        btnR = document.createElement('button');
+        btnR.id = 'tmSyncRetry';
+        btnR.type = 'button';
+        btnR.style.cssText = 'margin-top:10px;width:100%;padding:9px 12px;border-radius:10px;border:1px solid rgba(255,106,31,.5);background:rgba(255,106,31,.15);color:#fff;font:inherit;font-size:12.5px;font-weight:700;cursor:pointer;pointer-events:auto';
+        card.appendChild(btnR);
+    }
+    btnR.textContent = '🔁 Reintentar ' + paths.length + ' archivo(s)';
+    btnR.onclick = reintentarSyncPendientes;
+    const f = document.getElementById('tmSyncFloat');
+    if (f) { f.style.display = 'block'; f.style.pointerEvents = 'auto'; }
+}
+
+// Reintenta SOLO los archivos que fallaron, con los mismos datos ya fusionados.
+async function reintentarSyncPendientes() {
+    if (!_tmSyncPendientes.length) return;
+    const user  = localStorage.getItem('githubUser');
+    const repo  = localStorage.getItem('githubRepo');
+    const token = localStorage.getItem('githubToken');
+    if (!user || !repo || !token) { mostrarNotificacion('❌ Falta la configuración de GitHub', 'error'); return; }
+    const btnR = document.getElementById('tmSyncRetry');
+    if (btnR) { btnR.disabled = true; btnR.textContent = '⏳ Reintentando…'; }
+    const quedan = [];
+    for (const item of _tmSyncPendientes) {
+        try { await subirArchivoAGitHub(user, repo, token, item.path, item.data); }
+        catch (e) { quedan.push(item); }
+    }
+    _tmSyncPendientes = quedan;
+    if (quedan.length === 0) {
+        if (btnR) btnR.remove();
+        const f = document.getElementById('tmSyncFloat');
+        if (f) f.style.display = 'none';
+        limpiarProductosModificados();
+        if (typeof tmActualizarPendientes === 'function') tmActualizarPendientes();
+        mostrarNotificacion('✅ Completado: ya subió todo lo que faltaba.');
+    } else {
+        if (btnR) { btnR.disabled = false; btnR.textContent = '🔁 Reintentar ' + quedan.length + ' archivo(s)'; }
+        mostrarNotificacion('❌ Siguen fallando ' + quedan.length + ' archivo(s). Revisa el token y la conexión.', 'error');
+    }
+}
+
 async function sincronizarTodoConGitHub() {
     const user  = localStorage.getItem('githubUser');
     const repo  = localStorage.getItem('githubRepo');
@@ -682,6 +732,8 @@ async function sincronizarTodoConGitHub() {
         : archivos;
 
     let ok = 0, errors = [];
+    const fallidos = [];   // los archivos concretos que no subieron, para reintentar solo esos
+    const subidos  = [];
     const total = archivosFiltrados.length;
     // Subir secuencialmente para evitar conflictos de SHA en GitHub
     for (let i = 0; i < archivosFiltrados.length; i++) {
@@ -690,11 +742,14 @@ async function sincronizarTodoConGitHub() {
         if (btn) btn.textContent = `⏳ ${i + 1}/${total} archivos...`;
         try {
             await subirArchivoAGitHub(user, repo, token, path, data);
-            ok++;
+            ok++; subidos.push(path);
         } catch (e) {
             errors.push(`${path}: ${e.message}`);
+            fallidos.push({ path, data });
         }
     }
+    // Guardar lo que falló para poder reintentar SOLO eso desde el botón.
+    _tmSyncPendientes = fallidos;
     if (errors.length === 0) {
         actualizarBarra(total, total, '✅ ¡Todo subido correctamente!');
         if (btn) { btn.disabled = false; btn.textContent = '🔄 ACTUALIZAR TIENDA AHORA'; }
@@ -704,6 +759,7 @@ async function sincronizarTodoConGitHub() {
             if (f) f.style.display = 'none';
         }, 4000);
         limpiarProductosModificados();
+        if (typeof tmActualizarPendientes === 'function') tmActualizarPendientes();
         // Blindaje: dejar la memoria y el localStorage EXACTAMENTE iguales a lo que
         // quedó publicado (_prodsFinal). Así, tras limpiar productosModificados, ni un
         // reload ni el catálogo lite pueden "perder" un producto recién agregado ni
@@ -739,6 +795,16 @@ async function sincronizarTodoConGitHub() {
         }, 12000);
         mostrarNotificacion(`❌ Error al subir: ${causa}`, 'error');
         console.error('Errores de sincronización:', errors);
+        // Aviso explícito de estado inconsistente: la tienda pública lee
+        // productos-lite.json. Si uno de los dos catálogos subió y el otro no,
+        // los visitantes ven una versión y el admin otra, y hasta ahora eso no
+        // se decía en ninguna parte.
+        const _catalogos = ['productos.json', 'productos-lite.json'];
+        const _mitad = _catalogos.filter(p => subidos.includes(p)).length === 1;
+        if (_mitad) {
+            mostrarNotificacion('⚠️ Quedó a medias: uno de los dos catálogos subió y el otro no, así que la tienda puede mostrar datos viejos. Pulsa "Reintentar" para completarlo.', 'error');
+        }
+        _tmMostrarBotonReintento(fallidos.map(f => f.path));
     }
     } finally {
         _tmSyncEnCurso = false;
