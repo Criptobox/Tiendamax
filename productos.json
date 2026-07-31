@@ -340,7 +340,7 @@
     "id": 1778104512761,
     "nombre": "♻️controlador Solar Powmr M100 PRO - MPPT de 100 Amp♻️",
     "precioActual": 260,
-    "imagen": "https://tiendamax.org/imagenes/img_1778104512761.webp",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1785515547102.webp",
     "categoria": "ENERGIA",
     "subcategoria": "CONTROLADORES SOLARES",
     "stock": 7,
@@ -358,7 +358,11 @@
     "seoDescription": "♻️CONTROLADOR SOLAR POWMR M100 PRO -MPPT DE 100 AMP♻️ Especificaciones Eléctricas Clave: Voltaje Máximo del Sistema (PV): 100V DC. Esto permite conectar…",
     "precioOriginal": 0,
     "comisionMoneda": "USD",
-    "descripcion": "Controlador de carga solar MPPT PowMr, modelo M100 PRO, de 100A. Entrada solar máxima de 160Vdc, compatible con sistemas de 12V, 24V, 36V y 48V. Pantalla LCD con botones para configurar tipo de batería y ver el estado de carga en tiempo real. El sistema detecta y se configura automáticamente según el voltaje del banco de baterías."
+    "descripcion": "Controlador de carga solar MPPT PowMr, modelo M100 PRO, de 100A. Entrada solar máxima de 160Vdc, compatible con sistemas de 12V, 24V, 36V y 48V. Pantalla LCD con botones para configurar tipo de batería y ver el estado de carga en tiempo real. El sistema detecta y se configura automáticamente según el voltaje del banco de baterías.",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1785515547102.webp",
+      "https://tiendamax.org/imagenes/img_1778104512761.webp"
+    ]
   },
   {
     "id": 1778104599386,
@@ -1535,7 +1539,7 @@
     "categoria": "AUDIO",
     "subcategoria": "AUDIO",
     "stock": 3,
-    "masVendido": false,
+    "masVendido": true,
     "usado": false,
     "garantia": "",
     "devolucion": false,
@@ -2139,7 +2143,7 @@
     "comisionMoneda": "USD",
     "categoria": "AUDIO",
     "subcategoria": "AUDIO",
-    "masVendido": false,
+    "masVendido": true,
     "usado": false,
     "garantia": "",
     "devolucion": false,
@@ -2462,7 +2466,7 @@
     "comisionMoneda": "USD",
     "categoria": "ENERGIA",
     "subcategoria": "INVERSORES",
-    "masVendido": false,
+    "masVendido": true,
     "usado": false,
     "garantia": "",
     "devolucion": false,
@@ -2471,9 +2475,9 @@
       "🔋 Conversión 24V DC a AC"
     ],
     "fechaAgregado": "2026-07-04T15:43:20.783Z",
-    "descripcion": "Inversor de alto rendimiento diseñado para sistemas de energía de 24V. Ideal para quienes cuentan con un banco de baterías configurado en serie, ofreciendo una conversión eficiente, estable y potente para todos los electrodomésticos esenciales del hogar.\nFicha Técnica:\nCapacidad: ⚡ Potencia nominal de 4000W para cubrir las necesidades energéticas de equipos exigentes.\nSistema de 24V: 🔋 Optimizado para configuraciones de baterías de 24V, permitiendo una gestión más eficiente de la corriente en comparación con sistemas de 12V.\nSeguridad: 🛡️ Incluye cables robustos para garantizar una transferencia segura de energía desde el banco de baterías.\nVersatilidad: 🔌 Tomas de corriente integradas para una conexión rápida y directa.\nEspecificaciones (Specs):\nMarca: Tataliken.\nVoltaje de entrada: 24V DC (Indispensable verificar que el banco de baterías sea de este voltaje).\nSalida: 4000W (Alta capacidad).\nUso: Respaldo energético avanzado para el hogar, sistemas solares de 24V y aplicaciones fuera de la red.",
     "seoTitle": "inversor de Corriente Tataliken 4000W (24V) | TiendaMax",
-    "seoDescription": "Inversor de alto rendimiento diseñado para sistemas de energía de 24V. Ideal para quienes cuentan con un banco de baterías configurado en serie…"
+    "seoDescription": "Inversor de alto rendimiento diseñado para sistemas de energía de 24V. Ideal para quienes cuentan con un banco de baterías configurado en serie…",
+    "descripcion": "Inversor de alto rendimiento diseñado para sistemas de energía de 24V. Ideal para quienes cuentan con un banco de baterías configurado en serie, ofreciendo una conversión eficiente, estable y potente para todos los electrodomésticos esenciales del hogar.\nFicha Técnica:\nCapacidad: ⚡ Potencia nominal de 4000W para cubrir las necesidades energéticas de equipos exigentes.\nSistema de 24V: 🔋 Optimizado para configuraciones de baterías de 24V, permitiendo una gestión más eficiente de la corriente en comparación con sistemas de 12V.\nSeguridad: 🛡️ Incluye cables robustos para garantizar una transferencia segura de energía desde el banco de baterías.\nVersatilidad: 🔌 Tomas de corriente integradas para una conexión rápida y directa.\nEspecificaciones (Specs):\nMarca: Tataliken.\nVoltaje de entrada: 24V DC (Indispensable verificar que el banco de baterías sea de este voltaje).\nSalida: 4000W (Alta capacidad).\nUso: Respaldo energético avanzado para el hogar, sistemas solares de 24V y aplicaciones fuera de la red."
   },
   {
     "id": 1783221896639,
@@ -2502,7 +2506,7 @@
     "comisionMoneda": "USD",
     "categoria": "CARROS",
     "subcategoria": "",
-    "masVendido": false,
+    "masVendido": true,
     "usado": false,
     "garantia": "",
     "devolucion": false,
@@ -2511,9 +2515,9 @@
       "💎 Lujo Tecnológico"
     ],
     "fechaAgregado": "2026-07-05T03:24:56.640Z",
-    "descripcion": "Changan CS75 PLUS 2024 – ¡Nueva de Paquete! (Único Dueño)\nPrecio: 33000usd\nKilometraje: Menos de 13,000 km\nUbicación: Habana\nDescripción:\n¿Buscas un SUV premium, potente y tecnológico sin pagar precios astronómicos? Se vende Changan CS75 PLUS año 2024 en estado inmaculado. Único dueño, con menos de 13,000 km caminados. Prácticamente directo de agencia, con un diseño espectacular y el máximo nivel de confort y seguridad disponible en el mercado.\n🚀 Rendimiento y Motor:\nMotor: 1.5L o 2.0L Turbo Blue Core (mucha potencia con excelente consumo).\nTransmisión: Automática de última generación (con modos de manejo Eco/Normal/Sport).\n🛠️ Tecnología y Confort de Lujo:\nPantalla Dual Flotante: Doble pantalla gigante para el tablero de instrumentos y el sistema de infoentretenimiento.\nTecho Panorámico: Gran techo corredizo de cristal que cubre casi todo el vehículo.\nInteriores Premium: Asientos de cuero tipo butaca deportiva, eléctricos y ultra cómodos.\nEncendido por botón, llave inteligente y climatizador automático bizona.\n🛡️ Seguridad Inteligente (¡Full Asistencias!):\nCámara 360° HD: Visión total del entorno en tiempo real para parquear sin un solo rasguño.\nSensores de Proximidad: Delanteros y traseros.\nRadar de Manejo Avanzado (ADAS): Incluye control de crucero adaptativo, frenado autónomo de emergencia y alerta de colisión frontal.\nMúltiples bolsas de aire (Airbags), control de estabilidad (ESP), frenos ABS y asistente de arranque/descenso en pendientes.\n📝 Estado del Vehículo:\nPintura, carrocería e interiores 10/10 (Huele a nuevo).\nTodos sus mantenimientos al día.\nPapeles listos para traspaso inmediato.\n💬 ¡Una oportunidad única! No dejes que te la ganen.",
     "seoTitle": "Changan CS75 PLUS 2024 (Suv Compacta) en Cuba | TiendaMax",
-    "seoDescription": "Changan CS75 PLUS 2024 – ¡Nueva de Paquete! (Único Dueño) Precio: 33000usd Kilometraje: Menos de 13,000 km Ubicación: Habana Descripción: ¿Buscas un SUV…"
+    "seoDescription": "Changan CS75 PLUS 2024 – ¡Nueva de Paquete! (Único Dueño) Precio: 33000usd Kilometraje: Menos de 13,000 km Ubicación: Habana Descripción: ¿Buscas un SUV…",
+    "descripcion": "Changan CS75 PLUS 2024 – ¡Nueva de Paquete! (Único Dueño)\nPrecio: 33000usd\nKilometraje: Menos de 13,000 km\nUbicación: Habana\nDescripción:\n¿Buscas un SUV premium, potente y tecnológico sin pagar precios astronómicos? Se vende Changan CS75 PLUS año 2024 en estado inmaculado. Único dueño, con menos de 13,000 km caminados. Prácticamente directo de agencia, con un diseño espectacular y el máximo nivel de confort y seguridad disponible en el mercado.\n🚀 Rendimiento y Motor:\nMotor: 1.5L o 2.0L Turbo Blue Core (mucha potencia con excelente consumo).\nTransmisión: Automática de última generación (con modos de manejo Eco/Normal/Sport).\n🛠️ Tecnología y Confort de Lujo:\nPantalla Dual Flotante: Doble pantalla gigante para el tablero de instrumentos y el sistema de infoentretenimiento.\nTecho Panorámico: Gran techo corredizo de cristal que cubre casi todo el vehículo.\nInteriores Premium: Asientos de cuero tipo butaca deportiva, eléctricos y ultra cómodos.\nEncendido por botón, llave inteligente y climatizador automático bizona.\n🛡️ Seguridad Inteligente (¡Full Asistencias!):\nCámara 360° HD: Visión total del entorno en tiempo real para parquear sin un solo rasguño.\nSensores de Proximidad: Delanteros y traseros.\nRadar de Manejo Avanzado (ADAS): Incluye control de crucero adaptativo, frenado autónomo de emergencia y alerta de colisión frontal.\nMúltiples bolsas de aire (Airbags), control de estabilidad (ESP), frenos ABS y asistente de arranque/descenso en pendientes.\n📝 Estado del Vehículo:\nPintura, carrocería e interiores 10/10 (Huele a nuevo).\nTodos sus mantenimientos al día.\nPapeles listos para traspaso inmediato.\n💬 ¡Una oportunidad única! No dejes que te la ganen."
   },
   {
     "id": 1783453597496,
