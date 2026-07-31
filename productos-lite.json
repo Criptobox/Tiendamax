@@ -328,7 +328,7 @@
     "id": 1778104512761,
     "nombre": "♻️controlador Solar Powmr M100 PRO - MPPT de 100 Amp♻️",
     "precioActual": 260,
-    "imagen": "https://tiendamax.org/imagenes/img_1778104512761.webp",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1785515547102.webp",
     "categoria": "ENERGIA",
     "subcategoria": "CONTROLADORES SOLARES",
     "stock": 7,
@@ -345,7 +345,11 @@
     "seoTitle": "♻️CONTROLADOR SOLAR POWMR M100 PRO - MPPT DE 100 AMP♻️",
     "seoDescription": "♻️CONTROLADOR SOLAR POWMR M100 PRO -MPPT DE 100 AMP♻️ Especificaciones Eléctricas Clave: Voltaje Máximo del Sistema (PV): 100V DC. Esto permite conectar…",
     "precioOriginal": 0,
-    "comisionMoneda": "USD"
+    "comisionMoneda": "USD",
+    "imagenes": [
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1785515547102.webp",
+      "https://tiendamax.org/imagenes/img_1778104512761.webp"
+    ]
   },
   {
     "id": 1778104599386,
@@ -1473,7 +1477,7 @@
     "categoria": "AUDIO",
     "subcategoria": "AUDIO",
     "stock": 3,
-    "masVendido": false,
+    "masVendido": true,
     "usado": false,
     "garantia": "",
     "devolucion": false,
@@ -2055,7 +2059,7 @@
     "comisionMoneda": "USD",
     "categoria": "AUDIO",
     "subcategoria": "AUDIO",
-    "masVendido": false,
+    "masVendido": true,
     "usado": false,
     "garantia": "",
     "devolucion": false,
@@ -2366,7 +2370,7 @@
     "comisionMoneda": "USD",
     "categoria": "ENERGIA",
     "subcategoria": "INVERSORES",
-    "masVendido": false,
+    "masVendido": true,
     "usado": false,
     "garantia": "",
     "devolucion": false,
@@ -2405,7 +2409,7 @@
     "comisionMoneda": "USD",
     "categoria": "CARROS",
     "subcategoria": "",
-    "masVendido": false,
+    "masVendido": true,
     "usado": false,
     "garantia": "",
     "devolucion": false,
