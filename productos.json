@@ -340,7 +340,7 @@
     "id": 1778104512761,
     "nombre": "♻️controlador Solar Powmr M100 PRO - MPPT de 100 Amp♻️",
     "precioActual": 260,
-    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1785515547102.webp",
+    "imagen": "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1785284197964.webp",
     "categoria": "ENERGIA",
     "subcategoria": "CONTROLADORES SOLARES",
     "stock": 7,
@@ -360,7 +360,7 @@
     "comisionMoneda": "USD",
     "descripcion": "Controlador de carga solar MPPT PowMr, modelo M100 PRO, de 100A. Entrada solar máxima de 160Vdc, compatible con sistemas de 12V, 24V, 36V y 48V. Pantalla LCD con botones para configurar tipo de batería y ver el estado de carga en tiempo real. El sistema detecta y se configura automáticamente según el voltaje del banco de baterías.",
     "imagenes": [
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1785515547102.webp",
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1785284197964.webp",
       "https://tiendamax.org/imagenes/img_1778104512761.webp"
     ]
   },
@@ -1390,7 +1390,7 @@
     "id": 1778906905279,
     "nombre": "Espejos Retrovisores Deportivos Alerón Tipo Stealth | Acabado Fibra de Carbón Premium",
     "precioActual": 25,
-    "imagen": "https://tiendamax.org/imagenes/img_1778906902845.webp",
+    "imagen": "https://tiendamax.org/imagenes/img_1778906731600.webp",
     "categoria": "MOTOS",
     "subcategoria": "ACCESORIOS",
     "stock": 6,
@@ -1699,7 +1699,7 @@
     "comisionMoneda": "USD",
     "imagenes": [
       "https://tiendamax.org/imagenes/img_1780542905916.webp",
-      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784571893643.webp"
+      "https://raw.githubusercontent.com/Criptobox/Tiendamax/main/imagenes/img_1784571781169.webp"
     ]
   },
   {

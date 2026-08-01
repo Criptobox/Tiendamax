@@ -63,7 +63,12 @@ async function verificarPassword(event) {
         }
     }
 
-    // 2. Firebase RTDB (cloud-synced — disponible en cualquier dispositivo sin token GitHub)
+    // 2. Firebase RTDB. Hoy admin_auth tiene .read false, así que esto devuelve
+    // 401 y se cae al paso 3: el hash sigue subiéndose porque otras reglas
+    // (almacenes, admin_push_requests) lo comparan contra su proof, pero el
+    // login entre dispositivos por esta vía necesita Firebase Auth de verdad.
+    // No se abre a lectura pública a propósito: con el salt visible, cualquiera
+    // podría probar contraseñas contra esas mismas reglas hasta acertar.
     let fbHash = null, fbSalt = null;
     try {
         const fbCfg = await _fbEnsureConfig();
@@ -195,20 +200,26 @@ async function cambiarPasswordAdmin(ci, ni, coi) {
     // NO se sube a GitHub: .admin-auth.json sería público (readable sin auth vía
     // raw.githubusercontent por cualquiera), y ese hash serviría para forjar
     // proof= en admin_push_requests. El multi-dispositivo se cubre abajo con
-    // Firebase (regla admin_auth con .read restringido a auth != null).
+    // Firebase (regla admin_auth: hash con .read false, salt legible).
     mostrarNotificacion('✅ Contraseña cambiada con éxito', 'success');
     document.getElementById('ci').value = '';
     document.getElementById('ni').value = '';
     document.getElementById('coi').value = '';
     // Sincronizar automáticamente con Firebase tras cambiar contraseña.
-    // NO se sube a GitHub (.admin-auth.json sería público, readable sin auth por
-    // cualquiera vía raw.githubusercontent — Firebase ya cubre el multi-dispositivo
-    // de forma protegida (regla Firebase admin_auth con .read restringido).
-    setTimeout(sincronizarPasswordAFirebase, 300);
+    // Se pasa `ch` (el hash ANTERIOR, el que acabamos de verificar contra la
+    // contraseña actual) como proof: la regla exige proof == hash guardado, y
+    // arriba ya machacamos AUTH_HASH_KEY con el nuevo, así que si no lo
+    // pasáramos aquí se perdería y la sincronización quedaría rechazada.
+    setTimeout(() => sincronizarPasswordAFirebase(ch), 300);
 }
 
-// Sincroniza el hash LOCAL → Firebase RTDB (accesible desde cualquier dispositivo)
-async function sincronizarPasswordAFirebase() {
+// Sincroniza el hash LOCAL → Firebase RTDB.
+// `proofHash` es el hash que ya está guardado en Firebase; la regla exige
+// proof == hash actual para dejar sobrescribir. Al cambiar la contraseña lo
+// manda cambiarPasswordAdmin (el hash viejo); si se llama a mano desde el botón
+// "Sincronizar contraseña" se usa el hash local, que es el correcto cuando el
+// dispositivo ya estaba en sync (resincronizar lo mismo es idempotente).
+async function sincronizarPasswordAFirebase(proofHash) {
     const localHash = localStorage.getItem(AUTH_HASH_KEY);
     const localSalt = localStorage.getItem(AUTH_SALT_KEY);
     if (!localHash || !localSalt) {
@@ -222,12 +233,10 @@ async function sincronizarPasswordAFirebase() {
     }
     const rtdbUrl = fbCfg.databaseURL || ('https://' + fbCfg.projectId + '-default-rtdb.firebaseio.com');
     try {
-        // Leer hash actual para incluirlo como proof (regla Firebase requiere proof == hash existente)
-        let currentHash = null;
-        try {
-            const r = await fetch(rtdbUrl + '/admin_auth.json?_=' + Date.now());
-            if (r.ok) { const d = await r.json(); if (d && d.hash) currentHash = d.hash; }
-        } catch(_) {}
+        // El hash guardado NO se puede leer (admin_auth/hash tiene .read false),
+        // así que el proof tiene que venir de quien ya lo conoce: el que nos
+        // llamó, o este mismo dispositivo si ya estaba sincronizado.
+        const currentHash = proofHash || localHash;
         const body = { hash: localHash, salt: localSalt, iterations: AUTH_ITERATIONS };
         if (currentHash) body.proof = currentHash;
         const res = await fetch(rtdbUrl + '/admin_auth.json', {
@@ -235,8 +244,15 @@ async function sincronizarPasswordAFirebase() {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(body)
         });
+        if (res.status === 401 || res.status === 403) {
+            // Único motivo posible: el proof no coincide con el hash guardado,
+            // o sea que este dispositivo tiene una contraseña vieja porque la
+            // cambiaste en otro. Decirlo, en vez de soltar un "HTTP 401" seco.
+            mostrarNotificacion('❌ Firebase tiene otra contraseña más nueva. Entra con la contraseña actual en este dispositivo y vuelve a sincronizar.', 'error');
+            return;
+        }
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        mostrarNotificacion('✅ Contraseña sincronizada con Firebase. Puedes acceder desde cualquier dispositivo.', 'success');
+        mostrarNotificacion('✅ Contraseña sincronizada con Firebase.', 'success');
     } catch(e) {
         mostrarNotificacion(`❌ Error al sincronizar con Firebase: ${e.message}`, 'error');
     }

@@ -843,14 +843,20 @@ async function sincronizarConGitHub() {
 }
 
 // ── Señal de versión en Firebase para forzar actualización en todos los clientes ──
+// Se escribe el nodo config entero, no solo version: la regla exige un _proof
+// igual al hash del admin, y en un PUT a /config/version.json no cabría (es un
+// número suelto). _proof queda fuera de lectura; version sigue siendo público,
+// que es lo que leen index.html y admin.html.
 async function _tmPublicarVersionFirebase() {
     const base = _fbRtdbUrl();
     if (!base) return;
+    const proof = localStorage.getItem(AUTH_HASH_KEY);
+    if (!proof) return;
     try {
-        await fetch(`${base}/config/version.json`, {
+        await fetch(`${base}/config.json`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(Date.now())
+            body: JSON.stringify({ version: Date.now(), _proof: proof })
         });
     } catch(e) {}
 }

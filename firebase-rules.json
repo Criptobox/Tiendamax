@@ -218,7 +218,7 @@
       }
     },
     "lista_espera": {
-      ".read": "auth != null",
+      ".read": false,
       ".write": false,
       "$productoId": {
         "$entradaId": {
@@ -249,10 +249,14 @@
       }
     },
     "config": {
+      ".read": false,
+      ".write": "newData.child('_proof').val() === root.child('admin_auth/hash').val()",
       "version": {
         ".read": true,
-        ".write": "auth != null",
-        ".validate": "newData.isNumber()"
+        ".validate": "newData.isNumber() && newData.val() >= now - 300000 && newData.val() <= now + 60000"
+      },
+      "_proof": {
+        ".validate": "newData.isString() && newData.val().length == 64"
       }
     },
     "admin_push_requests": {
@@ -303,7 +307,7 @@
       ".write": false
     },
     "admin_auth": {
-      ".read": "auth != null",
+      ".read": false,
       ".write": "!data.exists() || newData.child('proof').val() == data.child('hash').val()",
       ".validate": "newData.hasChildren(['hash','salt','iterations']) && newData.child('hash').isString() && newData.child('hash').val().length == 64 && newData.child('salt').isString() && newData.child('salt').val().length >= 20 && newData.child('iterations').isNumber() && newData.child('iterations').val() >= 100000"
     }
