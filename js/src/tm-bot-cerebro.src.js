@@ -1263,6 +1263,11 @@
     if(/^\/(whatsapp|contacto)/i.test(m)) return 'whatsapp';
     if(/^\/(deseos|favoritos|wishlist|lista)/i.test(m)) return 'wishlist';
 
+    // ─── CARRITO ───
+    // Va antes que deseos porque "quiero pedir todo" es ambiguo y aquí el
+    // cliente ya dijo la palabra carrito: eso desempata.
+    if(/\bcarrito\b/i.test(m) || /^\/(carrito|cesta)/i.test(m)) return 'carrito';
+
     // ─── LISTA DE DESEOS (intención natural) ───
     if(/\b(lista de deseos|mis favoritos|mi lista|ver mi lista|wishlist|deseos|favoritos|guardar en favoritos|añadir a favoritos|añadir a deseos|añade a mi lista|agrega a favoritos|quita de deseos|sacar de favoritos|vaciar lista|vaciar deseos)\b/i.test(m)) return 'wishlist';
 
@@ -2245,15 +2250,21 @@
       // listarlos y preguntar cuál quiere ver
       const disponibles = mentions.filter(x => x.stock > 0);
       const lista = disponibles.length > 0 ? disponibles : mentions;
-      let body = `📦 Encontré <em>${mentions.length} productos</em> que coinciden. Dime cuál te interesa:\n\n`;
-      lista.slice(0,4).forEach((prod, i) => {
+      // El contador iba sobre `mentions` pero la lista pintada es `lista`
+      // (solo los disponibles): decía "3 productos" y enseñaba 2.
+      const muestra = lista.slice(0,4);
+      let body = `📦 Encontré <em>${lista.length} producto${lista.length>1?'s':''}</em> que coinciden. Dime cuál te interesa:\n\n`;
+      muestra.forEach((prod, i) => {
         body += `<strong>${i+1}.</strong> ${escapeHtml(prod.nombre)} — ${fmtUSD(prod.precio)} · <em>${stockText(prod)}</em>\n`;
       });
+      if(lista.length > muestra.length) body += `\n<em>…y ${lista.length - muestra.length} más. Afina el nombre y te los saco todos.</em>\n`;
       body += `\nToca cualquiera para ver la ficha completa, o dime el nombre específico.`;
       return {
         response: body,
-        products: lista.slice(0,4),
-        quickReplies: lista.slice(0,2).map(x => '📦 ' + x.nombre.slice(0,25))
+        products: muestra,
+        // Con el prefijo "Ver ficha" el chip cae en el caso que abre la ficha;
+        // sin él acababa en una búsqueda difusa por texto.
+        quickReplies: muestra.slice(0,3).map(x => '📦 Ver ficha ' + (x.nombre.length > 28 ? x.nombre.slice(0,28) + '…' : x.nombre))
       };
     }
     if(!p){
@@ -2320,6 +2331,10 @@
     }
 
     if(agotado){
+      // Las opiniones también van aquí: hoy los tres productos reseñados
+      // están agotados, y esa prueba social es justo lo que convence de
+      // esperar a que vuelva en vez de irse.
+      body += bloqueResenas(p);
       body += `\n⚠️ <em>Este producto está agotado ahora mismo.</em> Pero tengo alternativas similares disponibles:`;
       const alt = findAlternativas(p, 3);
       return {
@@ -2329,8 +2344,9 @@
       };
     }
 
+    body += bloqueResenas(p);
     body += `\n¿Quieres que <em>te lo compare con otro similar</em>, te calcule la <em>autonomía</em>, o veas <em>alternativas</em>?`;
-    const qrs = ['🛒 Pedir por WhatsApp','👁️ Ver en la tienda','🆚 Comparar con otro','📦 Ver alternativas',
+    const qrs = ['🛒 Pedir por WhatsApp','🛍️ Añadir al carrito','👁️ Ver en la tienda','🆚 Comparar con otro','📦 Ver alternativas',
                  (isInWishlist(p.id) ? '💔 Quitar de deseos' : '❤️ Añadir a deseos')];
     if(subcat === 'BATERÍAS') qrs.splice(1, 0, '⏱️ Calcular autonomía');
     if(subcat === 'INVERSORES') qrs.splice(1, 0, '⏱️ Autonomía con nevera');
@@ -2979,6 +2995,51 @@
   // ════════════════════════════════════════════════════════════
   //  LISTA DE DESEOS (favoritos persistente)
   // ════════════════════════════════════════════════════════════
+  // El carrito es el de la tienda, así que aquí solo se lee y se resume: si
+  // el cliente lo vacía desde el icono del header, el bot lo ve al instante.
+  R.carrito = (text) => {
+    const m = text.toLowerCase();
+    const c = resumenCarrito();
+
+    if(/vaciar|limpiar|borrar/i.test(m)){
+      return {
+        response: `Para vaciarlo, ábrelo con el icono 🛒 de arriba y quita lo que no quieras — así no te borro nada por error.`,
+        quickReplies: ['🧾 Ver mi carrito','📦 Ver más productos']
+      };
+    }
+
+    if(!c){
+      return {
+        response: `🛒 Tu carrito está vacío ahora mismo.\n\nDime qué necesitas y te lo voy armando: puedes añadir productos desde aquí mismo y luego pedirlos todos juntos en un solo mensaje de WhatsApp.`,
+        quickReplies: ['📦 Ver categorías','🔥 Lo más vendido','💰 Ofertas']
+      };
+    }
+
+    if(/pedir|comprar|cerrar|finalizar|encargar/i.test(m)){
+      if(typeof comprarCarrito === 'function'){
+        setTimeout(() => { try { comprarCarrito(); } catch(e){} }, 300);
+        return {
+          response: `💳 Te abro WhatsApp con los <strong>${c.unidades}</strong> artículos del carrito (<strong>${fmtUSD(c.total)}</strong>). El mensaje ya va escrito, solo dale enviar.`,
+          quickReplies: ['📦 Ver categorías']
+        };
+      }
+    }
+
+    let body = `🛒 <strong>Esto llevas en el carrito</strong>\n`;
+    c.items.forEach(i => {
+      const cant = Number(i.cantidad) || 1;
+      const sub = (Number(i.precio) || 0) * cant;
+      body += `• ${cant}× ${escapeHtml(i.nombre || 'Producto')} — ${fmtUSD(sub)}\n`;
+    });
+    body += `\n<strong>Total: ${fmtUSD(c.total)}</strong> (${c.unidades} artículo${c.unidades>1?'s':''})`;
+    body += `\n<em>El envío se coordina aparte según tu zona.</em>`;
+    body += `\n\n¿Lo pido ya por WhatsApp o sigues mirando?`;
+    return {
+      response: body,
+      quickReplies: ['💳 Pedir todo el carrito','📦 Ver categorías','🚚 Ver envíos']
+    };
+  };
+
   R.wishlist = (text) => {
     const m = text.toLowerCase();
     // Vaciar lista
@@ -3245,6 +3306,86 @@
     renderQuickReplies(['🔄 Elegir otro primero','📦 Ver categorías']);
   }
 
+
+  /* ══════════════════════════════════════════════════════════
+     PRUEBA SOCIAL, LEADS Y CARRITO
+     ══════════════════════════════════════════════════════════
+     Tres cosas que el sitio ya tenía y el chat no usaba:
+     · resenas-cache.json — opiniones reales de clientes. Enseñar que otro
+       ya lo compró y quedó contento vende más que cualquier adjetivo.
+     · el nodo /interesados de Firebase — el admin ya lo lee y lo muestra
+       como "N interesados sin atender". Cada cliente que pide algo por el
+       chat es un lead; antes se perdía.
+     · el carrito real de la tienda — el chat solo sabía pedir de UNO en
+       uno, así que el cliente que quería tres cosas tenía que escribir
+       tres veces por WhatsApp. */
+
+  let _resenas = null;   // {productoId: [{autor, texto, estrellas, fecha}]}
+
+  function _cargarResenas(){
+    if (_resenas !== null) return Promise.resolve(_resenas);
+    _resenas = {};
+    return fetch('resenas-cache.json', { cache: 'force-cache' })
+      .then(r => r.ok ? r.json() : null)
+      .then(j => { if (j && j.por_producto) _resenas = j.por_producto; return _resenas; })
+      .catch(() => _resenas);
+  }
+
+  function resenasDe(id){
+    const arr = _resenas && _resenas[String(id)];
+    return Array.isArray(arr) ? arr : [];
+  }
+
+  function _estrellas(n){
+    n = Math.max(0, Math.min(5, Math.round(Number(n) || 0)));
+    return '★'.repeat(n) + '☆'.repeat(5 - n);
+  }
+
+  // Bloque de opiniones para la ficha. Devuelve '' si no hay ninguna: mejor
+  // no decir nada que enseñar un "0 reseñas" que resta confianza.
+  function bloqueResenas(p){
+    const rs = resenasDe(p.id);
+    if(!rs.length) return '';
+    const media = rs.reduce((a,r) => a + (Number(r.estrellas)||0), 0) / rs.length;
+    let t = `\n💬 <strong>Lo que dicen quienes lo compraron</strong> (${rs.length} opinión${rs.length>1?'es':''}, ${media.toFixed(1)} ${_estrellas(media)})\n`;
+    rs.slice(0,2).forEach(r => {
+      const txt = String(r.texto||'').trim();
+      t += `• <em>${escapeHtml(r.autor||'Cliente')}</em> ${_estrellas(r.estrellas)}: "${escapeHtml(txt.length>140 ? txt.slice(0,140)+'…' : txt)}"\n`;
+    });
+    return t;
+  }
+
+  // Lead al admin. La regla de Firebase exige ts dentro de ±5 min, así que
+  // se manda el reloj del cliente tal cual y se deja fallar en silencio si
+  // va desfasado: no vale la pena romperle el chat por esto.
+  function registrarInteres(p, origen){
+    try {
+      if (typeof tmRegistrarInteresWhatsApp === 'function'){ tmRegistrarInteresWhatsApp(p.id, origen || 'bot'); return; }
+      const base = (typeof _fbRtdbUrl === 'function') ? _fbRtdbUrl() : null;
+      if (!base) return;
+      const ts = Date.now();
+      fetch(base + '/interesados/' + p.id + '/' + ts + '.json', {
+        method: 'PUT', headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({ ts, producto: String(p.nombre).slice(0,200), productoId: String(p.id), origen: origen || 'bot' })
+      }).catch(() => {});
+    } catch(e){}
+  }
+
+  // ── Carrito: se usa el DE LA TIENDA, no uno propio ──
+  // Si el bot llevara su propia lista, el cliente añadiría tres cosas por el
+  // chat y el icono del carrito seguiría en cero.
+  function carritoDelSitio(){
+    try { if (typeof carrito !== 'undefined' && Array.isArray(carrito)) return carrito; } catch(e){}
+    return null;
+  }
+  function resumenCarrito(){
+    const c = carritoDelSitio();
+    if(!c || !c.length) return null;
+    const total = c.reduce((s,i) => s + (Number(i.precio)||0) * (Number(i.cantidad)||1), 0);
+    const unidades = c.reduce((s,i) => s + (Number(i.cantidad)||1), 0);
+    return { items: c, total, unidades };
+  }
+
   function addProducts(products){
     if(!products || products.length === 0) return;
     const wrap = document.createElement('div');
@@ -3393,6 +3534,43 @@
       const p = _context.lastProduct;
       if(p){ abrirFichaEnTienda(p.id); return; }
     }
+    // Carrito de la tienda (el mismo del icono del header, no uno del bot).
+    if(/a[ñn]adir al carrito|agregar al carrito/.test(r)){
+      const p = _context.lastProduct;
+      if(p){
+        if(agregarAlCarritoTienda(p.id)){
+          const c = resumenCarrito();
+          let t = `🛍️ Añadí <strong>${escapeHtml(p.nombre)}</strong> al carrito.`;
+          if(c) t += ` Ya llevas <strong>${c.unidades}</strong> artículo${c.unidades>1?'s':''} por <strong>${fmtUSD(c.total)}</strong>.`;
+          t += `\nPuedes seguir mirando y pedirlo todo junto de una vez.`;
+          addMessageTyped(t, 'bot');
+          renderQuickReplies(['🧾 Ver mi carrito','💳 Pedir todo el carrito','📦 Ver más productos']);
+        } else {
+          addMessageTyped(`No pude añadirlo desde aquí. Ábrelo en la tienda y usa el botón de carrito.`, 'bot');
+          renderQuickReplies(['👁️ Ver en la tienda','🛒 Pedir por WhatsApp']);
+        }
+        return;
+      }
+      addMessageTyped(`Primero enséñame cuál. Escribe algo como <em>"háblame del router Tenda"</em> y te doy el botón para añadirlo.`, 'bot');
+      renderQuickReplies(['📦 Ver productos']);
+      return;
+    }
+    if(/ver mi carrito|qu[eé] llevo en el carrito/.test(r)){ sendMessage('qué llevo en el carrito'); return; }
+    if(/pedir todo el carrito|comprar el carrito/.test(r)){
+      const c = resumenCarrito();
+      if(!c){
+        addMessageTyped(`Tu carrito está vacío. Dime qué buscas y te lo voy armando.`, 'bot');
+        renderQuickReplies(['📦 Ver categorías','🔥 Lo más vendido']);
+        return;
+      }
+      if(typeof comprarCarrito === 'function'){
+        addMessageTyped(`💳 Te abro WhatsApp con los <strong>${c.unidades}</strong> artículos del carrito (${fmtUSD(c.total)}). Solo tienes que darle enviar.`, 'bot');
+        try { comprarCarrito(); } catch(e){}
+      } else {
+        pedirProductoPorWhatsApp(c.items[0]);
+      }
+      return;
+    }
     if(/quitar de deseos/.test(r)){
       const p = _context.lastProduct;
       if(p){
@@ -3523,7 +3701,9 @@
     if(/autonom.*nevera/.test(r)){ sendMessage('cuánto dura una batería de 100Ah con mi nevera'); return; }
     if(/ver ficha/.test(r)){
       const name = reply.replace(/^📦\s*Ver ficha\s*/i,'').replace(/…$/,'').trim();
-      const p = findProduct(name, {includeAgotados:true}) || (_lastCompare.find(x => x.nombre.startsWith(name)));
+      const p = findProduct(name, {includeAgotados:true})
+             || _lastCompare.find(x => x.nombre.startsWith(name))
+             || _lastProductsShown.find(x => x.nombre.startsWith(name));
       if(p){
         const r2 = buildDetalle(p);
         if(r2.response) addMessageTyped(r2.response, 'bot');
@@ -3950,10 +4130,14 @@
     const msg = `¡Hola TiendaMax! Quiero pedir: ${p.nombre} — ${fmtUSD(p.precio)} USD${mn ? ' (' + mn + ')' : ''}`;
     window.open('https://wa.me/' + WHATSAPP + '?text=' + encodeURIComponent(msg), '_blank', 'noopener,noreferrer');
     if(typeof tmTrackWhatsApp === 'function'){ try { tmTrackWhatsApp(p.id); } catch(e){} }
+    // Queda como lead en el admin ("N interesados sin atender"), igual que
+    // si hubiera pulsado Pedir en el catálogo.
+    registrarInteres(p, 'bot');
   }
 
   _sincronizar();
   _cargarDescripciones();
+  _cargarResenas();
 
   window._tmBot = {
     open: openPanel, close: closePanel, reset: resetChat, send: sendMessage,

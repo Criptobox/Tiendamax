@@ -168,5 +168,60 @@ class BotSaltosDeLineaTest(unittest.TestCase):
         self.assertIn(".tm-bot-body > *{flex-shrink:0;}", cascara)
 
 
+class BotCarritoCompartidoTest(unittest.TestCase):
+    """El bot no lleva carrito propio: usa el de la tienda. Si se le pusiera
+    uno aparte, el cliente añadiría tres cosas por el chat y el icono 🛒 del
+    header seguiría marcando cero."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.cerebro = CEREBRO.read_text(encoding="utf-8")
+
+    def test_lee_el_carrito_de_la_tienda_por_bareword(self):
+        # `carrito` es un `let` de tm-config: window.carrito es undefined.
+        self.assertIn("typeof carrito !== 'undefined'", self.cerebro)
+        self.assertNotIn("window.carrito", self.cerebro)
+
+    def test_no_guarda_un_carrito_propio(self):
+        self.assertNotIn("tm_bot_carrito", self.cerebro)
+
+    def test_delega_en_las_funciones_de_la_tienda(self):
+        self.assertIn("typeof agregarAlCarrito === 'function'", self.cerebro)
+        self.assertIn("typeof comprarCarrito === 'function'", self.cerebro)
+
+    def test_la_ficha_ofrece_anadir_al_carrito(self):
+        self.assertIn("🛍️ Añadir al carrito", self.cerebro)
+
+
+class BotPruebaSocialTest(unittest.TestCase):
+    """Las opiniones de resenas-cache.json son el activo más persuasivo del
+    sitio y el bot no las usaba."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.cerebro = CEREBRO.read_text(encoding="utf-8")
+
+    def test_carga_las_resenas(self):
+        self.assertIn("resenas-cache.json", self.cerebro)
+
+    def test_las_pinta_tambien_en_los_agotados(self):
+        # Los tres productos reseñados están agotados hoy: si el bloque solo
+        # saliera en la rama con stock, no se vería ni una sola opinión.
+        self.assertEqual(
+            2, self.cerebro.count("body += bloqueResenas(p);"),
+            "bloqueResenas debe aparecer en la rama con stock y en la de agotado",
+        )
+
+
+class BotRegistraInteresTest(unittest.TestCase):
+    """Cada 'Pedir por WhatsApp' desde el chat tiene que llegar al panel de
+    interesados del admin, igual que los del catálogo."""
+
+    def test_avisa_al_admin(self):
+        cerebro = CEREBRO.read_text(encoding="utf-8")
+        self.assertIn("registrarInteres(p, 'bot')", cerebro)
+        self.assertIn("tmRegistrarInteresWhatsApp", cerebro)
+
+
 if __name__ == "__main__":
     unittest.main()
