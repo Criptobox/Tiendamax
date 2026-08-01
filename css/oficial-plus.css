@@ -2243,33 +2243,14 @@ html body #mas-vendidos #masVendidosGrid .producto-card:nth-child(n+4){
   display:flex !important;
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   MODO CLARO: el cuerpo de las tarjetas era gris azulado
-   light-mode.css las pinta de #e9ebf0 para que la foto blanca del producto
-   resalte —buena razón—, pero es un gris FRÍO sobre una página crema
-   cálida: dos tarjetas juntas se leen como una caja de otro color pegada
-   encima del fondo. Se mantiene el contraste con la foto usando un tono de
-   la misma familia cálida: misma luminosidad (0.835 vs 0.830) y el mismo
-   contraste de texto (4.4:1), pero ya no desentona.
-   ═══════════════════════════════════════════════════════════════ */
-html body.light-mode .producto-card,
-html body.light-mode .producto-card.pcard-v2,
-html body.light-mode #meGustaGrid .producto-card,
-html body.light-mode #vistaMeGusta .producto-card,
-html body.light-mode #vistaPedidos .producto-card,
-html body.light-mode .carrito-similares .producto-card.pcard-v2{
-  background:#F0EBE4 !important;
-}
+/* El cuerpo de las tarjetas se dejó en el gris original (#e9ebf0, que ponen
+   light-mode.css y rediseno-cards.css). Se probó a teñirlo de crema cálido
+   para que no desentonara con la página, pero el resultado fue peor: con
+   (240,235,228) sobre un fondo de (250,247,242) las tarjetas dejaban de
+   distinguirse del fondo. El gris las separa, que es su trabajo. Lo que sí
+   había que arreglar —las sombras negras neutras que pintaban una banda gris
+   entre tarjetas— está resuelto más abajo, tiñéndolas de marrón cálido. */
 
-/* La zona de la foto iba en blanco puro (#fff) mientras el cuerpo de la
-   tarjeta es cálido: en las fotos con fondo blanco —la mayoría— se veía un
-   recuadro blanco pegado dentro de la tarjeta, con un corte duro donde
-   termina. Se pasa a un blanco cálido: la foto sigue destacando (sigue
-   siendo la zona más clara de la tarjeta) pero ya no hay salto de color. */
-html body.light-mode .producto-card.pcard-v2 .pv2-photo,
-html body.light-mode #masVendidosGrid .producto-card.pcard-v2 .pv2-photo{
-  background:#FDFAF6 !important;
-}
 
 /* Las sombras de las tarjetas eran negro neutro —rgba(0,0,0,.10) y .22—.
    Sobre una página crema cálida, un gris neutro se lee FRÍO, y con dos
@@ -2373,5 +2354,40 @@ html body .hero.nd-hero::before,
 html body .hero.nd-hero::after,
 html body.light-mode .hero.nd-hero::before,
 html body.light-mode .hero.nd-hero::after{
+  background:none !important;
+}
+
+/* ==========================================================================
+   RESPLANDORES DE SECCIÓN — la costura de fondo que quedaba
+   ==========================================================================
+   Varias secciones traen un pseudo-elemento con un resplandor radial naranja
+   para "dar calidez". El problema es que están anclados DENTRO de la sección
+   y se salen de ella: .categorias-home::after es un círculo de 520px con
+   top:-120px, o sea que asoma 120px por encima del borde. El resplandor
+   empieza de golpe justo donde terminan los Productos Destacados.
+
+   Medido en el centro de la pantalla (x=210), que es donde se nota y donde no
+   miré la primera vez —solo comprobé el margen izquierdo, y ahí no se ve—:
+   dentro de destacados el fondo es (250,247,242) uniforme; al cruzar a
+   categorías pasa a (250,236,221). Esa es la raya de la foto.
+
+   Se anulan los de SECCIÓN. Los ::before de .categoria-card NO se tocan: esos
+   son el color propio de cada tarjeta y sí deben verse. */
+html body .categorias-home::before,
+html body .categorias-home::after,
+html body .categorias-home-inner::before,
+html body .categorias-home-inner::after,
+html body .mas-vendidos::before,
+html body .mas-vendidos::after,
+html body #mas-vendidos::before,
+html body #mas-vendidos::after,
+html body .tm-steps-section::before,
+html body .tm-steps-section::after,
+html body #beneficios::before,
+html body #beneficios::after,
+html body #testimonios::before,
+html body #testimonios::after,
+html body .cta-final::before,
+html body .cta-final::after{
   background:none !important;
 }
