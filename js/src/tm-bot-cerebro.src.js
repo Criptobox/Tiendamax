@@ -922,6 +922,7 @@
     lastProduct: null,       // último producto del que habló
     lastIntent: null,
     lastCategory: null,
+    categoriaPedida: null,   // la categoría que detectIntent acaba de reconocer
     presupuesto: null,       // si mencionó un presupuesto
     conversationStep: 0,
   };
@@ -1265,6 +1266,12 @@
     // ─── LISTA DE DESEOS (intención natural) ───
     if(/\b(lista de deseos|mis favoritos|mi lista|ver mi lista|wishlist|deseos|favoritos|guardar en favoritos|añadir a favoritos|añadir a deseos|añade a mi lista|agrega a favoritos|quita de deseos|sacar de favoritos|vaciar lista|vaciar deseos)\b/i.test(m)) return 'wishlist';
 
+    // ¿Está pidiendo una categoría concreta? Va antes que todo lo demás
+    // porque "wifi" a secas también puntúa en cámaras y timbres wifi, y la
+    // búsqueda difusa devolvía una mezcla sin sentido.
+    const _catPedida = _detectarCategoriaPedida(m);
+    if(_catPedida){ _context.categoriaPedida = _catPedida; return 'categoria'; }
+
     if(/\b(hola|buenas|saludos|hey|que bol[aá]|asere|compay|dime|buenos d[ií]as|buenas tardes|buenas noches|qu[eé] tal|que tal|buen d[ií]a|buen dia|hola max|holi)\b/i.test(m)) return 'saludo';
     if(/\b(chao|adios|nos vemos|hasta luego|bye|hasta ma[ñn]ana|cu[ií]date)\b/.test(m)) return 'despedida';
     if(/\b(gracias|thx|mil gracias|muchas gracias|te agradezco)\b/.test(m)) return 'gracias';
@@ -1607,6 +1614,130 @@
       products: [...ofertas, ...descuento].slice(0,4),
       quickReplies: ['💬 WhatsApp','📦 Ver categorías']
     };
+  };
+
+  // ════════════════════════════════════════════════════════════
+  //  UNA CATEGORÍA CONCRETA
+  // ════════════════════════════════════════════════════════════
+  // Preguntar por una categoría acababa en la búsqueda difusa por texto:
+  // "wifi" puntuaba alto en cualquier cámara wifi o timbre wifi, así que
+  // pedir WIFI devolvía 1 router y 3 cámaras de seguridad — 4 productos de
+  // los 25 que hay. Ahora se filtra por p.categoria y punto.
+
+  // El home rotula WIFI como "REDES"; el cliente puede escribir cualquiera.
+  const ALIAS_CAT = {
+    'redes':'WIFI', 'red':'WIFI', 'internet':'WIFI', 'wi fi':'WIFI', 'wifi':'WIFI',
+    'energia':'ENERGIA', 'solar':'ENERGIA', 'corriente':'ENERGIA',
+    'seguridad':'SEGURIDAD', 'vigilancia':'SEGURIDAD',
+    'carros':'CARROS', 'carro':'CARROS', 'autos':'CARROS', 'auto':'CARROS',
+    'motos':'MOTOS', 'moto':'MOTOS',
+    'hogar':'HOGAR', 'casa':'HOGAR',
+    'celulares':'CELULARES', 'celular':'CELULARES', 'telefonos':'CELULARES',
+    'audio':'AUDIO', 'sonido':'AUDIO', 'musica':'AUDIO',
+    'juegos':'JUEGOS', 'gaming':'JUEGOS',
+    'ropa':'ROPA', 'utiles':'UTILES', 'herramientas':'UTILES',
+    'gym':'GYM', 'gimnasio':'GYM',
+    'pc':'PC Y LAPTOPS', 'laptops':'PC Y LAPTOPS', 'computadoras':'PC Y LAPTOPS',
+  };
+
+  // Palabras de relleno que rodean al nombre: si al quitarlas solo queda la
+  // categoría, el cliente está pidiendo ESA categoría. Con esto "categorías
+  // wifi", "wifi" o "muéstrame la sección de audio" entran, pero "necesito
+  // una cámara wifi para el patio" NO — ahí quedan palabras sueltas y sigue
+  // siendo una búsqueda normal.
+  const _RELLENO_CAT = /\b(ver|veo|mostrar|muestrame|muestra|ensename|quiero|dame|deseo|necesito|busco|buscar|hay|tienes|tienen|que|todos|todas|todo|toda|los|las|el|la|un|una|de|del|en|por|para|productos|producto|articulos|categoria|categorias|seccion|secciones|catalogo|lista|listado|mas|otros|opciones|disponibles?)\b/g;
+
+  function _detectarCategoriaPedida(text){
+    let t = cleanForMatch(text).replace(_RELLENO_CAT, ' ').replace(/\s+/g, ' ').trim();
+    if(!t || t.length > 24) return null;
+    // Coincidencia exacta con el nombre real de una categoría del catálogo
+    for(const c of CATEGORIAS){
+      if(cleanForMatch(c.nombre) === t) return c.nombre;
+    }
+    if(ALIAS_CAT[t]){
+      // Solo si esa categoría existe de verdad en el catálogo de ahora
+      const real = CATEGORIAS.find(c => c.nombre === ALIAS_CAT[t]);
+      if(real) return real.nombre;
+    }
+    return null;
+  }
+
+  // Igual que con las categorías, pero un nivel más fino. La búsqueda difusa
+  // puntúa la descripción, así que "una batería para el apagón" devolvía un
+  // cargador, una alarma, fundas de auto y una raqueta matamoscas — todos
+  // mencionan "batería" en su texto. Si el cliente nombra un TIPO que existe
+  // como subcategoría, se filtra por ella y se acabó la adivinanza.
+  // Se deriva del catálogo: una subcategoría nueva funciona sin tocar código.
+  function _detectarSubcategoria(text){
+    const t = ' ' + cleanForMatch(text) + ' ';
+    const subs = [...new Set(PRODUCTOS.map(p => p.subcategoria).filter(Boolean))];
+    let mejor = null, mejorLen = 0;
+    subs.forEach(sub => {
+      const base = cleanForMatch(sub);
+      const variantes = new Set([base, base.replace(/es$/, ''), base.replace(/s$/, '')]);
+      // Primera palabra: "CONTROLADORES SOLARES" → "controlador(es)"
+      const prim = base.split(' ')[0];
+      if(prim.length >= 5){ variantes.add(prim); variantes.add(prim.replace(/es$/, '')); variantes.add(prim.replace(/s$/, '')); }
+      variantes.forEach(v => {
+        if(v.length >= 4 && t.indexOf(' ' + v) !== -1 && v.length > mejorLen){ mejor = sub; mejorLen = v.length; }
+      });
+    });
+    return mejor;
+  }
+
+  const TM_MAX_TARJETAS_CAT = 8;   // el prototipo enseñaba 4 y sabía a poco
+
+  R.categoria = (text) => {
+    const cat = _context.categoriaPedida || _detectarCategoriaPedida(text);
+    _context.categoriaPedida = null;
+    if(!cat) return R.categorias();
+    _context.lastCategory = cat;
+
+    const info = CATEGORIAS.find(c => c.nombre === cat) || {icono:'📦', desc:''};
+    const todos = PRODUCTOS.filter(p => p.categoria === cat);
+    const disp = todos.filter(p => p.stock > 0).sort((a,b) => a.precio - b.precio);
+    const agotados = todos.length - disp.length;
+
+    if(disp.length === 0){
+      return {
+        response: `${info.icono} <strong>${cat}</strong>\n\nAhora mismo no tengo nada <em>disponible</em> en esta categoría${agotados ? ` (${agotados} agotado${agotados>1?'s':''})` : ''}. Escríbeme por WhatsApp y te aviso en cuanto entre mercancía, o mira otra categoría.`,
+        quickReplies: ['💬 WhatsApp','📦 Ver categorías']
+      };
+    }
+
+    // Agrupar por subcategoría: en WIFI hay routers, switches y accesorios
+    // mezclados, y verlos separados orienta mucho más que una lista plana.
+    const porSub = {};
+    disp.forEach(p => { const s = p.subcategoria || 'OTROS'; (porSub[s] = porSub[s] || []).push(p); });
+    const subs = Object.keys(porSub).sort((a,b) => porSub[b].length - porSub[a].length);
+
+    let body = `${info.icono} <strong>${cat}</strong>${info.desc ? ` — ${info.desc}` : ''}\n\n`;
+    body += `Tengo <em>${disp.length} producto${disp.length>1?'s':''} disponible${disp.length>1?'s':''}</em>`;
+    if(agotados) body += ` (y ${agotados} agotado${agotados>1?'s':''})`;
+    body += `, desde ${fmtUSD(disp[0].precio)} hasta ${fmtUSD(disp[disp.length-1].precio)}.\n\n`;
+
+    if(subs.length > 1){
+      body += `<strong>Por tipo:</strong>\n`;
+      subs.forEach(s => { body += `• ${s} — <em>${porSub[s].length}</em>\n`; });
+      body += `\n`;
+    }
+
+    const listados = disp.slice(0, 10);
+    body += `<strong>Disponibles ahora</strong> (de más barato a más caro):\n`;
+    listados.forEach((p, i) => {
+      body += `<strong>${i+1}.</strong> ${escapeHtml(p.nombre)} — ${fmtUSD(p.precio)} · <em>${stockText(p)}</em>\n`;
+    });
+    if(disp.length > listados.length){
+      body += `\n…y ${disp.length - listados.length} más. Dime qué tipo buscas (${subs.slice(0,2).join(', ')}…) o tu presupuesto y afino.\n`;
+    }
+    body += `\nToca cualquier tarjeta para ver la ficha completa.`;
+
+    const qrs = [`🛍️ Ver los ${disp.length} en la tienda`];
+    if(disp.length >= 2) qrs.push('🆚 Comparar dos de estos');
+    subs.slice(0, 2).forEach(s => { if(subs.length > 1) qrs.push('📂 ' + s); });
+    qrs.push('📦 Otras categorías');
+
+    return { response: body, products: disp.slice(0, TM_MAX_TARJETAS_CAT), quickReplies: qrs };
   };
 
   R.categorias = () => {
@@ -2576,6 +2707,11 @@
     const t = text.toLowerCase();
     let categoria = null;
     if(/(vigilar|vigilancia|c[aá]mara.*seguridad|casa.*segura|negocio.*segur|robo|ladrones|intrusos|proteger.*casa|cuidar.*casa|esp[ií]a)/.test(t)) categoria = 'SEGURIDAD';
+    // El TIPO de producto manda sobre la tecnología que lo acompaña: "cámara
+    // wifi" es una cámara, no un router. Antes /wifi/ se evaluaba antes que
+    // /cámara/ y "necesito una cámara wifi para el patio" devolvía switches.
+    else if(/(c[aá]mara|camaras|cameras|alarma|cerradura|timbre)/.test(t)) categoria = 'SEGURIDAD';
+    else if(/(bater[ií]a|inversor|controlador|panel solar|cargador)/.test(t)) categoria = 'ENERGIA';
     else if(/(internet|wifi|se[ñn]al.*wifi|red wifi|conect.*internet|navegar|ver.*netflix|streaming|descargar)/.test(t)) categoria = 'WIFI';
     else if(/(apag[oó]n|luz.*casa|sin luz|sin corriente|cargar.*celular.*apag[oó]n|energ[ií]a.*casa|respaldo|planta el[eé]ctrica)/.test(t)) categoria = 'ENERGIA';
     else if(/(cocinar|comida|nevera|lavadora|olla|arroz|plancha|licuadora|electrodom|tostadora|microondas)/.test(t)) categoria = 'HOGAR';
@@ -2652,6 +2788,30 @@
   };
 
   R.busqueda = (text) => {
+    // Si nombra un tipo que existe en el catálogo, eso manda sobre la
+    // puntuación difusa por descripción.
+    const sub = _detectarSubcategoria(text);
+    if(sub){
+      let lista = PRODUCTOS.filter(p => p.subcategoria === sub && p.stock > 0);
+      if(_context.presupuesto) lista = lista.filter(p => p.precio <= _context.presupuesto);
+      lista.sort((a,b) => a.precio - b.precio);
+      if(lista.length){
+        let body = `📂 <strong>${escapeHtml(sub)}</strong> — tengo <em>${lista.length} disponible${lista.length>1?'s':''}</em>`;
+        if(_context.presupuesto) body += ` dentro de tu presupuesto de ${fmtUSD(_context.presupuesto)}`;
+        body += `, de más barato a más caro:\n\n`;
+        lista.slice(0, 10).forEach((p, i) => {
+          body += `<strong>${i+1}.</strong> ${escapeHtml(p.nombre)} — ${fmtUSD(p.precio)} · <em>${stockText(p)}</em>\n`;
+        });
+        body += `\nToca cualquiera para ver la ficha completa.`;
+        return {
+          response: body,
+          products: lista.slice(0, TM_MAX_TARJETAS_CAT),
+          quickReplies: lista.length >= 2
+            ? ['🆚 Comparar dos de estos','📦 Otras categorías','💬 WhatsApp']
+            : ['📦 Otras categorías','💬 WhatsApp']
+        };
+      }
+    }
     const mentions = detectProductMentions(text);
     if(mentions.length === 1){
       return buildDetalle(mentions[0], text);
@@ -3189,6 +3349,34 @@
       addMessageTyped(`📦 Productos con stock ahora mismo:`, 'bot');
       addProducts(disp);
       return;
+    }
+    // "🛍️ Ver los 12 en la tienda" → abrir la vista real del catálogo
+    if(/ver los \d+ en la tienda/.test(r)){
+      const cat = _context.lastCategory;
+      if(cat && typeof mostrarVistaCategoria === 'function'){
+        try { mostrarVistaCategoria(cat); closePanel(); return; } catch(e){}
+      }
+    }
+    // Chips de subcategoría ("📂 ROUTERS") dentro de la categoría actual
+    if(/^📂/.test(reply)){
+      const sub = reply.replace(/^📂\s*/, '').trim();
+      const cat = _context.lastCategory;
+      const lista = PRODUCTOS.filter(p => p.stock > 0 &&
+        (p.subcategoria || 'OTROS').toUpperCase() === sub.toUpperCase() &&
+        (!cat || p.categoria === cat)).sort((a,b) => a.precio - b.precio);
+      if(lista.length){
+        addMessageTyped(`📂 <strong>${escapeHtml(sub)}</strong> — <em>${lista.length} disponible${lista.length>1?'s':''}</em>, de más barato a más caro:`, 'bot');
+        addProducts(lista.slice(0, TM_MAX_TARJETAS_CAT));
+        renderQuickReplies(lista.length >= 2 ? ['🆚 Comparar dos de estos','📦 Otras categorías','💬 WhatsApp'] : ['📦 Otras categorías','💬 WhatsApp']);
+        return;
+      }
+    }
+    // Chip de categoría del menú ("📶 WIFI"): antes no coincidía con ningún
+    // caso —no contiene "categor"— y caía en el sendMessage del final, que
+    // acababa en búsqueda difusa por texto.
+    {
+      const cat = _detectarCategoriaPedida(reply);
+      if(cat){ sendMessage(reply); return; }
     }
     if(/categor/i.test(r) || /ver productos/.test(r)){ sendMessage('qué categorías tienen'); return; }
     if(/ofertas?/.test(r)){ sendMessage('qué ofertas tienen'); return; }

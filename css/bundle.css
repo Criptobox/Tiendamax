@@ -8910,6 +8910,64 @@ html body .producto-card.pcard-v2 .pv2-oldrow-ghost{
   pointer-events:none !important;
 }
 
+/* ==========================================================================
+   HEADER — vidrio de verdad, no solo transparencia
+   ==========================================================================
+   El header quedó con background translúcido (rgba .82 en claro, .72 en
+   oscuro) pero SIN backdrop-filter: era una lámina transparente, no vidrio.
+   Todo lo que scrolleaba por debajo se leía a través — medido en móvil:
+   "Explora por Categoría", "Selecciona una categoría para descubrir todos
+   sus productos" y las tarjetas de categoría con sus colores rosa/verde,
+   apareciendo como una banda de otro color entre la topbar y el contenido.
+   La topbar sí tenía blur(20px) desde el principio; el header no.
+
+   Se le da el mismo tratamiento que a la topbar. La saturación compensa el
+   lavado de color que produce el desenfoque. */
+html body .header,
+html body.light-mode .header,
+html body:not(.light-mode) .header{
+  backdrop-filter:blur(18px) saturate(150%) !important;
+  -webkit-backdrop-filter:blur(18px) saturate(150%) !important;
+}
+/* Cuerpo casi opaco. El blur DIFUMINA pero no borra: medido, con .82 e
+   incluso con .90 los titulares grandes del hero seguían leyéndose a través
+   ("Explora por Categoría"). Se sacrifica el efecto vidrio marcado a cambio
+   de que el header no parezca una banda de otro color. Queda un 3-4% de
+   transparencia, suficiente para que el blur aporte matiz al hacer scroll.
+   En claro se usa crema cálido, no blanco, para no repetir el error de la
+   tarjeta del CTA (neutro frío sobre página cálida). */
+html body.light-mode .header{ background:rgba(255,252,248,.97) !important; }
+html body:not(.light-mode) .header{ background:rgba(12,8,6,.96) !important; }
+
+/* Sin soporte de backdrop-filter (Firefox viejo, WebView antiguos de
+   Android — habituales en Cuba) el desenfoque no existe, así que el único
+   remedio es opacar del todo. */
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+  html body.light-mode .header{ background:#FFFCF8 !important; }
+  html body:not(.light-mode) .header{ background:#0C0806 !important; }
+  html body.light-mode .tm-topbar{ background:#FDFAF6 !important; }
+  html body:not(.light-mode) .tm-topbar{ background:#08060A !important; }
+}
+
+/* La topbar tenía blur pero solo .65/.55 de fondo: los titulares grandes en
+   naranja del hero se colaban igual al pasar por debajo. Mismo criterio que
+   el header. */
+html body.light-mode .tm-topbar{ background:rgba(255,252,248,.97) !important; }
+html body:not(.light-mode) .tm-topbar{ background:rgba(8,6,10,.96) !important; }
+
+/* El header flota como isla: top:43px, margin 8px y esquinas de 18px. Entre
+   el borde inferior de la topbar (35px) y el borde superior del header
+   (43px) queda una franja de 8px por la que el contenido seguía pasando a la
+   vista — ahí se leía "Selecciona una categoría para descubrir…" aunque el
+   header ya tuviera blur. Se extiende el vidrio de la topbar para cubrirla.
+   Va a 8px exactos para no comerse el filo redondeado del header. */
+html body .tm-topbar::after{
+  content:"";position:absolute;left:0;right:0;top:100%;height:8px;
+  background:inherit;
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  pointer-events:none;
+}
+
 /* ===== botones-unificados.css ===== */
 /* ==========================================================================
    botones-unificados.css — CAPA DE COMPONENTE: forma de los botones.
