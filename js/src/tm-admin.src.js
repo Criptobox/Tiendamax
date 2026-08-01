@@ -194,8 +194,26 @@ async function cambiarPasswordAdmin(ci, ni, coi) {
 
     const ns = _generarSal();
     const nh = await hashPassword(ni, ns);
-    try { localStorage.setItem(AUTH_SALT_KEY, ns); } catch(e) {}
-    try { localStorage.setItem(AUTH_HASH_KEY, nh); } catch(e) {}
+    // Las dos van juntas o no va ninguna. Con un catch mudo cada una, si
+    // entraba la sal y fallaba el hash (o al revés) el dispositivo quedaba con
+    // una pareja incoherente y NINGUNA contraseña volvía a validar — y encima
+    // se anunciaba "cambiada con éxito".
+    const _hPrev = localStorage.getItem(AUTH_HASH_KEY);
+    const _sPrev = localStorage.getItem(AUTH_SALT_KEY);
+    try {
+        localStorage.setItem(AUTH_SALT_KEY, ns);
+        localStorage.setItem(AUTH_HASH_KEY, nh);
+        if (localStorage.getItem(AUTH_SALT_KEY) !== ns || localStorage.getItem(AUTH_HASH_KEY) !== nh) {
+            throw new Error('no se guardó completo');
+        }
+    } catch(e) {
+        try {
+            if (_hPrev === null) localStorage.removeItem(AUTH_HASH_KEY); else localStorage.setItem(AUTH_HASH_KEY, _hPrev);
+            if (_sPrev === null) localStorage.removeItem(AUTH_SALT_KEY); else localStorage.setItem(AUTH_SALT_KEY, _sPrev);
+        } catch(_) {}
+        mostrarNotificacion('❌ No se pudo guardar la contraseña nueva en este navegador (¿sin espacio?). Sigue valiendo la anterior.', 'error');
+        return;
+    }
 
     // NO se sube a GitHub: .admin-auth.json sería público (readable sin auth vía
     // raw.githubusercontent por cualquiera), y ese hash serviría para forjar
@@ -233,12 +251,18 @@ async function sincronizarPasswordAFirebase(proofHash) {
     }
     const rtdbUrl = fbCfg.databaseURL || ('https://' + fbCfg.projectId + '-default-rtdb.firebaseio.com');
     try {
-        // El hash guardado NO se puede leer (admin_auth/hash tiene .read false),
-        // así que el proof tiene que venir de quien ya lo conoce: el que nos
-        // llamó, o este mismo dispositivo si ya estaba sincronizado.
-        const currentHash = proofHash || localHash;
-        const body = { hash: localHash, salt: localSalt, iterations: AUTH_ITERATIONS };
-        if (currentHash) body.proof = currentHash;
+        // El proof tiene que ser el hash ANTERIOR, y nunca el que se está
+        // guardando. Antes, si no llegaba proof, se usaba el hash local: un
+        // resync dejaba proof === hash en la base; a partir de ahí cualquiera
+        // podía escribir /admin_auth/hash sin conocer nada, porque en una
+        // escritura parcial `newData` en el padre es el MERGE con el proof ya
+        // guardado y la regla se satisfacía sola. La regla exige ahora que
+        // difieran, así que mandar el local no serviría de nada.
+        if (!proofHash || proofHash === localHash) {
+            mostrarNotificacion('❌ No se puede sincronizar sin la contraseña anterior. Cambia la contraseña y se sincronizará sola.', 'error');
+            return;
+        }
+        const body = { hash: localHash, salt: localSalt, iterations: AUTH_ITERATIONS, proof: proofHash };
         const res = await fetch(rtdbUrl + '/admin_auth.json', {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },

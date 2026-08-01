@@ -1326,13 +1326,12 @@
         </div>
         <div class="section">
           <h3>🔒 Contraseña del admin</h3>
-          <p style="font-size:12px;color:var(--muted);margin:-4px 0 12px">El cambio vale en este dispositivo al instante. Pulsa también “Sincronizar” para que el resto de tus dispositivos acepten la nueva.</p>
+          <p style="font-size:12px;color:var(--muted);margin:-4px 0 12px">El cambio vale en este dispositivo al instante y se sincroniza solo con Firebase, que es lo que mantiene válidas las reglas de escritura de almacenes y notificaciones.</p>
           <div class="form-group"><label class="form-label" for="ci">Contraseña actual</label><input class="form-input" id="ci" type="password" autocomplete="current-password" placeholder="••••••••"></div>
           <div class="form-group"><label class="form-label" for="ni">Nueva contraseña</label><input class="form-input" id="ni" type="password" autocomplete="new-password" placeholder="mínimo 4 caracteres"></div>
           <div class="form-group"><label class="form-label" for="coi">Repite la nueva</label><input class="form-input" id="coi" type="password" autocomplete="new-password" placeholder="otra vez, para no equivocarte"></div>
           <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
             <button class="btn btn-primary" id="btnCambiarPass" onclick="tmCambiarPassword()">🔒 Cambiar contraseña</button>
-            <button class="btn btn-ghost" id="btnSyncPass" onclick="tmSyncPassword()">☁️ Sincronizar con Firebase</button>
           </div>
           <p style="font-size:12px;color:var(--muted);margin-top:10px">⚠️ Tu contraseña solo se guarda en este navegador. La copia de Firebase no se puede leer (a propósito: si se pudiera, cualquiera podría probar contraseñas contra ella), así que si borras los datos del navegador y no la recuerdas, pierdes el acceso al admin. Apúntala en un sitio seguro.</p>
         </div>
@@ -1539,7 +1538,7 @@
       <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="pedit-devolucion"> Garantía de devolución</label>
     </div>
     <label style="display:flex;align-items:center;gap:8px;margin-top:12px;font-size:13px;color:#fff;cursor:pointer"><input type="checkbox" id="pedit-fav" style="width:16px;height:16px;accent-color:var(--gold)">⭐ Destacar en Más Vendidos</label>
-    <div style="display:flex;gap:8px;margin-top:16px"><button class="btn btn-primary" style="flex:1" onclick="apEditSave()">💾 Guardar</button><button class="btn btn-ghost" onclick="apDuplicar($('#pedit-id').value)">📄 Duplicar</button><button class="btn btn-ghost" onclick="apEditClose()">Cancelar</button></div>
+    <div style="display:flex;gap:8px;margin-top:16px"><button class="btn btn-primary" style="flex:1" onclick="apEditSave()">💾 Guardar</button><button class="btn btn-ghost" onclick="apDuplicar(document.getElementById('pedit-id').value)">📄 Duplicar</button><button class="btn btn-ghost" onclick="apEditClose()">Cancelar</button></div>
   </div>
 </div>
 
@@ -1547,7 +1546,7 @@
      agregarProductoForm, sincronizarTodoConGitHub, registrarVenta, etc. -->
 <!-- Bundle único (mismo orden: config→data→state→admin→product→catalog→init→ui→toast→iife→patches),
      generado por scripts/build_js_bundle.py a partir de js/src/*.src.js -->
-<script src="js/tm-bundle.js?v=94bbe43d"></script>
+<script src="js/tm-bundle.js?v=bc48b461"></script>
 <script src="js/biometric-auth.js?v=876f6495"></script>
 <script src="js/revolico_integration.js?v=fc18f61b"></script>
 <!-- analytics.js: NO se cargaba acá antes — el conteo real de suscriptores
@@ -1795,13 +1794,6 @@ async function tmCambiarPassword(){
     try{ $('#recCodigo').value=''; }catch(e){}
   }
 }
-async function tmSyncPassword(){
-  const b=$('#btnSyncPass');
-  const t=b?b.textContent:'';
-  if(b){ b.disabled=true; b.textContent='⏳ Sincronizando…'; }
-  try{ await sincronizarPasswordAFirebase(); }
-  finally{ if(b){ b.disabled=false; b.textContent=t; } }
-}
 
 // ── Código de recuperación ──
 // La contraseña solo vive en localStorage y la copia de Firebase no se puede
@@ -1841,10 +1833,16 @@ function _tmAplicarCodigoRec(codigo){
   // Se valida la forma antes de tocar nada: un código a medio copiar podría
   // dejar guardado un hash inservible y entonces sí no entraría ni con la
   // contraseña buena.
-  if(!d || typeof d.h!=='string' || d.h.length!==64 || typeof d.s!=='string' || d.s.length<20){
+  // Hex de verdad y con tope por arriba: comprobar solo la longitud dejaba
+  // pasar 64 caracteres cualesquiera, y una sal sin límite (megabytes) podía
+  // reventar la cuota justo entre las dos escrituras de abajo.
+  if(!d || typeof d.h!=='string' || !/^[0-9a-f]{64}$/i.test(d.h)
+        || typeof d.s!=='string' || !/^[0-9a-f]{20,128}$/i.test(d.s)){
     return {ok:false, msg:'❌ El código está incompleto o corrupto. Cópialo entero, sin cortarlo.'};
   }
-  if(d.i && Number(d.i)!==AUTH_ITERATIONS){
+  // Antes era `if(d.i && …)`: un código sin ese campo se saltaba el control
+  // de versión en silencio, que es justo el caso que el mensaje llama fatal.
+  if(Number(d.i)!==AUTH_ITERATIONS){
     return {ok:false, msg:'❌ Ese código es de una versión anterior del admin y ya no sirve para verificar la contraseña.'};
   }
   // Si este dispositivo ya tenia otra contrasena, restaurar la pisa: quien
@@ -1858,11 +1856,29 @@ function _tmAplicarCodigoRec(codigo){
       return {ok:false, msg:'Cancelado. No se ha cambiado nada.'};
     }
   }
+  // Las dos escrituras van juntas o no van. Si entrara el hash y fallara la
+  // sal (cuota llena, que en este proyecto no es hipotético), quedaría hash
+  // nuevo con sal vieja y NINGUNA contraseña volvería a validar jamás: ni la
+  // nueva ni la anterior. Por eso se deshace lo escrito antes de rendirse.
+  const hPrev = localStorage.getItem(AUTH_HASH_KEY);
+  const sPrev = localStorage.getItem(AUTH_SALT_KEY);
+  const _restaurar = () => {
+    try{
+      if(hPrev===null) localStorage.removeItem(AUTH_HASH_KEY); else localStorage.setItem(AUTH_HASH_KEY, hPrev);
+      if(sPrev===null) localStorage.removeItem(AUTH_SALT_KEY); else localStorage.setItem(AUTH_SALT_KEY, sPrev);
+    }catch(e){}
+  };
   try{
     localStorage.setItem(AUTH_HASH_KEY, d.h);
     localStorage.setItem(AUTH_SALT_KEY, d.s);
+    if(localStorage.getItem(AUTH_HASH_KEY)!==d.h || localStorage.getItem(AUTH_SALT_KEY)!==d.s){
+      throw new Error('no se guardó completo');
+    }
     localStorage.removeItem('admin_rl');
-  }catch(e){ return {ok:false, msg:'❌ No se pudo guardar en este navegador'}; }
+  }catch(e){
+    _restaurar();
+    return {ok:false, msg:'❌ No se pudo guardar en este navegador (¿sin espacio?). No se ha cambiado nada; libera espacio e inténtalo otra vez.'};
+  }
   const fecha = d.t ? ' (código del ' + new Date(d.t).toLocaleDateString() + ')' : '';
   return {ok:true, msg:'✅ Acceso restaurado' + fecha + '. Escribe arriba la contraseña que usabas en esa fecha.'};
 }
@@ -2460,7 +2476,7 @@ function apCatBloqueHTML(cat, prods){
       <span style="font-size:16px">${emojiCat(cat)}</span>
       <b style="color:var(--gold);font-size:13px;letter-spacing:.4px">${esc(cat)}</b>
       <span class="badge">${prods.length}</span>
-      <button class="btn btn-ghost" style="margin-left:auto;padding:3px 10px;font-size:11px" onclick="const s=$('#prod-cat-filtro'); if(s){s.value='${esc(cat)}'; renderProductos();}">Ver solo →</button>
+      <button class="btn btn-ghost" style="margin-left:auto;padding:3px 10px;font-size:11px" onclick="const s=document.getElementById('prod-cat-filtro'); if(s){s.value='${esc(cat)}'; renderProductos();}">Ver solo →</button>
     </div>` + apSubgroupHTML(prods);
 }
 // Toda una lista de en-stock, agrupada por categoría.
@@ -2851,11 +2867,25 @@ function almAgregar(){
   if(!nombre){ showToast('⚠️ Ponle un nombre al almacén'); return; }
   const base=rtdbBase(); if(!base){ showToast('⚠️ Configura Firebase primero','En ⚙️ Configuración'); return; }
   const id='alm_'+Date.now();
-  const payload={nombre,direccion,ubicacion};
+  const payload=_almPayload(nombre,direccion,ubicacion);
   fetch(base+'/almacenes/'+id+'.json',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)})
-    .then(r=>{ if(!r.ok) throw new Error('HTTP '+r.status); ALMACENES[id]=payload; $('#alm-nombre').value=''; $('#alm-direccion').value=''; $('#alm-ubicacion').value=''; renderAlmacen(); showToast('✅ Almacén agregado', nombre); })
+    .then(r=>{ if(!r.ok) throw new Error('HTTP '+r.status); ALMACENES[id]={nombre,direccion,ubicacion}; $('#alm-nombre').value=''; $('#alm-direccion').value=''; $('#alm-ubicacion').value=''; renderAlmacen(); showToast('✅ Almacén agregado', nombre); })
     .catch(e=>showToast('❌ No se pudo agregar', e.message||''));
 }
+// La regla de almacenes exige _proof == admin_auth/hash en cuanto ese hash
+// existe en Firebase. Antes no se mandaba y funcionaba de milagro: el nodo
+// estaba vacío y la regla lo perdonaba. Al habilitar el cambio de contraseña
+// el hash pasa a existir, y sin esto crear o renombrar almacenes empezaría a
+// devolver 403 — y dos de las tres llamadas se lo tragan en silencio.
+function _almPayload(nombre,direccion,ubicacion){
+  const p={nombre,direccion,ubicacion};
+  let h=null; try{ h=localStorage.getItem('tm_auth_hash_v3'); }catch(e){}
+  // Solo si existe: el .validate exige 64 caracteres, así que mandar "" haría
+  // fallar escrituras que hoy pasan porque admin_auth todavía está vacío.
+  if(h && h.length===64) p._proof=h;
+  return p;
+}
+
 function almBorrar(id, nombre){
   const enUso=PRODUCTOS.filter(p=>p.almacenId===id).length;
   if(!confirm('¿Borrar el almacén "'+nombre+'"?'+(enUso?(' '+enUso+' producto(s) quedarán sin almacén asignado.'):''))) return;
@@ -2871,9 +2901,9 @@ function almRenombrar(id){
   const nombre=(prompt('Nombre del almacén:', a.nombre)||'').trim(); if(!nombre) return;
   const direccion=(prompt('Dirección:', a.direccion||'')||'').trim();
   const ubicacion=(prompt('Ubicación (link de Maps, opcional):', a.ubicacion||'')||'').trim();
-  const base=rtdbBase(); const payload={nombre,direccion,ubicacion};
+  const base=rtdbBase(); const payload=_almPayload(nombre,direccion,ubicacion);
   if(base) fetch(base+'/almacenes/'+id+'.json',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)}).catch(()=>{});
-  ALMACENES[id]=payload; renderAlmacen();
+  ALMACENES[id]={nombre,direccion,ubicacion}; renderAlmacen();
   showToast('✏️ Almacén actualizado');
 }
 // Productos asignables a un almacén: los que ya son suyos (para poder
@@ -4358,7 +4388,7 @@ window.ventaBuscar=ventaBuscar; window.ventaAdd=ventaAdd; window.ventaCartRemove
 window.agenteGuardarKey=agenteGuardarKey; window.agenteBorrarKey=agenteBorrarKey;
 window.catSwitch=catSwitch; window.catAgregar=catAgregar; window.subAgregar=subAgregar; window.cliSwitch=cliSwitch;
 window.guardarFirebaseConfig=guardarFirebaseConfig; window.probarFirebase=probarFirebase; window.ventaAnular=ventaAnular;
-window.tmCambiarPassword=tmCambiarPassword; window.tmSyncPassword=tmSyncPassword;
+window.tmCambiarPassword=tmCambiarPassword;
 window.tmVerCodigoRecuperacion=tmVerCodigoRecuperacion; window.tmCopiarCodigoRecuperacion=tmCopiarCodigoRecuperacion; window.tmRestaurarCodigoRecuperacion=tmRestaurarCodigoRecuperacion; window.tmRestaurarDesdeLogin=tmRestaurarDesdeLogin;
 window.catRenombrar=catRenombrar; window.catBorrar=catBorrar; window.subRenombrar=subRenombrar; window.subBorrar=subBorrar; window.catEmoji=catEmoji;
 window.almAgregar=almAgregar; window.almBorrar=almBorrar; window.almRenombrar=almRenombrar; window.almProductoToggle=almProductoToggle; window.almToggleOpen=almToggleOpen; window.almCerrarLista=almCerrarLista; window.almCompartir=almCompartir;

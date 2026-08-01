@@ -78,6 +78,7 @@ class EstadoDelRepoTest(unittest.TestCase):
         fuentes = [RAIZ / n for n in ("productos.json", "productos-lite.json",
                                       "combos.json", "banners.json", "index.html")]
         fuentes += list((RAIZ / "p").glob("*.html"))
+        fuentes += list((RAIZ / "c").glob("*.html"))
         rotas = set()
         for f in fuentes:
             if not f.is_file():

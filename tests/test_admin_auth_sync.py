@@ -74,30 +74,47 @@ class SenalDeVersionTest(unittest.TestCase):
         cls.config = cls.reglas["rules"]["config"]
         cls.catalog = (RAIZ / "js" / "src" / "tm-catalog.src.js").read_text(encoding="utf-8")
 
-    def test_la_escritura_es_posible_y_va_con_proof(self):
-        escritura = self.config[".write"]
-        self.assertNotIn("auth != null", escritura)
-        self.assertIn("root.child('admin_auth/hash')", escritura)
+    def test_no_usa_el_patron_proof(self):
+        # Guardar el proof dentro de /config no protegia nada: en una escritura
+        # parcial a un hijo, newData en el padre es el MERGE de lo existente con
+        # lo que llega, asi que el proof ya guardado satisfacia la regla por si
+        # solo y cualquiera podia reescribir o borrar version sin conocerlo.
+        crudo = json.dumps(self.config)
+        self.assertNotIn("_proof", crudo)
+        self.assertNotIn("auth != null", crudo)
 
     def test_version_sigue_siendo_publica(self):
         # index.html y admin.html la leen sin credencial ninguna.
         self.assertIs(True, self.config["version"][".read"])
 
-    def test_el_proof_no_queda_expuesto(self):
-        # Las reglas de RTDB cascadean solo para conceder: si el proof colgara
-        # de un nodo con .read true, sería legible y cualquiera podría forjar
-        # escrituras en almacenes y admin_push_requests con él.
-        self.assertIs(False, self.config[".read"])
-        self.assertNotIn(".read", self.config["_proof"])
+    def test_la_version_solo_puede_subir(self):
+        # Sin esto cualquiera la baja y deja el cache-bust inservible.
+        escritura = self.config["version"][".write"]
+        self.assertIn("newData.val() > data.val()", escritura)
 
-    def test_el_cliente_manda_el_proof(self):
-        self.assertIn("_proof: proof", self.catalog)
-        self.assertIn("localStorage.getItem(AUTH_HASH_KEY)", self.catalog)
+    def test_no_se_puede_borrar_la_version(self):
+        # Un DELETE no lleva payload, asi que hay que exigir que newData exista;
+        # borrarla mataria la senal de actualizacion para siempre.
+        self.assertIn("newData.exists()", self.config["version"][".write"])
+        self.assertIs(False, self.config[".write"])
 
-    def test_escribe_el_nodo_config_no_solo_version(self):
-        # Un PUT a /config/version.json lleva un número suelto, sin sitio para
-        # el proof; hay que escribir el objeto entero.
-        self.assertIn("`${base}/config.json`", self.catalog)
+    def test_no_se_pueden_colar_hijos_nuevos(self):
+        self.assertIs(False, self.config["$otro"][".validate"])
+
+    def test_la_ventana_de_reloj_es_simetrica(self):
+        # Era now-300000 .. now+60000: un movil 61 s adelantado (normal) hacia
+        # fallar el .validate y la publicacion se perdia en silencio.
+        v = self.config["version"][".validate"]
+        self.assertIn("now - 300000", v)
+        self.assertIn("now + 300000", v)
+
+    def test_el_cliente_avisa_si_no_pudo_publicar(self):
+        # fetch no lanza en 4xx: sin mirar res.ok, el admin veia "actualizado"
+        # y ningun cliente se enteraba nunca.
+        i = self.catalog.index("async function _tmPublicarVersionFirebase")
+        cuerpo = self.catalog[i:i + 1400]
+        self.assertIn("res.ok", cuerpo)
+        self.assertIn("config/version.json", cuerpo)
 
 
 class FormularioDeContrasenaTest(unittest.TestCase):
@@ -117,16 +134,20 @@ class FormularioDeContrasenaTest(unittest.TestCase):
         for campo in ("ci", "ni", "coi"):
             self.assertIn(f'id="{campo}"', self.admin)
 
-    def test_estan_los_dos_botones(self):
+    def test_esta_el_boton_de_cambiar(self):
         self.assertIn('onclick="tmCambiarPassword()"', self.admin)
-        self.assertIn('onclick="tmSyncPassword()"', self.admin)
+
+    def test_no_hay_boton_de_sincronizar_suelto(self):
+        # Solo podia mandar proof = hash local, y eso deja proof == hash en la
+        # base: a partir de ahi cualquiera escribe /admin_auth/hash sin conocer
+        # nada, porque el merge de la escritura parcial satisface la regla.
+        self.assertNotIn("tmSyncPassword", self.admin)
 
     def test_los_wrappers_llegan_al_onclick(self):
         # Todo ese <script> vive dentro de un IIFE: una función declarada ahí
         # no es global y el onclick del HTML no la encuentra. Hay que
         # exponerla a mano, como se hace con probarFirebase y compañía.
         self.assertIn("window.tmCambiarPassword=tmCambiarPassword", self.admin)
-        self.assertIn("window.tmSyncPassword=tmSyncPassword", self.admin)
 
     def test_avisa_de_que_no_hay_recuperacion(self):
         # La copia de Firebase no se puede leer, así que borrar los datos del
@@ -152,13 +173,39 @@ class CodigoRecuperacionTest(unittest.TestCase):
             self.assertIn(f'onclick="{fn}()"', self.admin)
             self.assertIn(f"window.{fn}={fn}", self.admin)
 
-    def test_valida_antes_de_escribir(self):
-        # Un código pegado a medias no puede dejar guardado un hash inservible:
-        # eso bloquearía el admin incluso con la contraseña correcta.
-        i_valida = self.admin.index("El código está incompleto o corrupto")
-        i_escribe = self.admin.index("localStorage.setItem(AUTH_HASH_KEY, d.h)")
-        self.assertLess(i_valida, i_escribe)
-        self.assertIn("d.h.length!==64", self.admin)
+    def test_valida_la_forma_de_verdad(self):
+        # Comprobar solo la longitud dejaba pasar 64 caracteres cualesquiera,
+        # y una sal sin tope por arriba (megabytes) podía reventar la cuota
+        # justo entre las dos escrituras.
+        self.assertIn("/^[0-9a-f]{64}$/i.test(d.h)", self.admin)
+        self.assertIn("/^[0-9a-f]{20,128}$/i.test(d.s)", self.admin)
+
+    def test_el_control_de_version_no_se_salta(self):
+        # Era `if(d.i && ...)`: un código sin ese campo se lo saltaba en
+        # silencio, que es justo el caso que el mensaje llama fatal.
+        self.assertIn("Number(d.i)!==AUTH_ITERATIONS", self.admin)
+        self.assertNotIn("if(d.i && Number(d.i)", self.admin)
+
+    def test_las_dos_escrituras_van_juntas_o_ninguna(self):
+        # Si entrara el hash y fallara la sal, quedaría hash nuevo con sal
+        # vieja y NINGUNA contraseña volvería a validar: ni la nueva ni la
+        # anterior. Hace falta deshacer lo escrito antes de rendirse.
+        i = self.admin.index("function _tmAplicarCodigoRec")
+        cuerpo = self.admin[i:self.admin.index("function tmRestaurarCodigoRecuperacion")]
+        self.assertIn("const hPrev", cuerpo)
+        self.assertIn("const sPrev", cuerpo)
+        self.assertIn("_restaurar()", cuerpo)
+        # y se relee para confirmar que entraron las dos
+        self.assertIn("localStorage.getItem(AUTH_HASH_KEY)!==d.h", cuerpo)
+
+    def test_el_cambio_de_password_tambien_revierte(self):
+        src = TM_ADMIN.read_text(encoding="utf-8")
+        i = src.index("async function cambiarPasswordAdmin")
+        cuerpo = src[i:i + 4000]
+        self.assertIn("_hPrev", cuerpo)
+        self.assertIn("_sPrev", cuerpo)
+        # El "éxito" no puede anunciarse si la escritura no entró entera.
+        self.assertIn("Sigue valiendo la anterior", cuerpo)
 
     def test_rechaza_codigos_de_otra_version(self):
         # Si cambiara AUTH_ITERATIONS, un código viejo restauraría un hash que
@@ -168,8 +215,13 @@ class CodigoRecuperacionTest(unittest.TestCase):
     def test_no_se_sube_a_ningun_sitio(self):
         # Todo el sentido de esta vía es que el hash NO se publique: si se
         # subiera, valdría lo mismo que abrir admin_auth a lectura pública.
-        bloque = self.admin[self.admin.index("const REC_PREFIJO"):
-                            self.admin.index("async function tmCambiarPassword")]
+        ini = self.admin.index("const REC_PREFIJO")
+        fin = self.admin.index("function tmRestaurarDesdeLogin")
+        # La rebanada iba al revés (inicio > fin) y salía vacía: el assertNotIn
+        # pasaba siempre, incluso con un fetch exfiltrando el hash dentro.
+        self.assertGreater(fin, ini, "la rebanada no puede quedar vacía")
+        bloque = self.admin[ini:fin]
+        self.assertIn("REC_PREFIJO + btoa", bloque, "no se está mirando el bloque correcto")
         for prohibido in ("fetch(", "subirArchivoAGitHub", "firebaseio"):
             self.assertNotIn(prohibido, bloque)
 
@@ -241,7 +293,9 @@ class ClienteSincronizacionTest(unittest.TestCase):
         # Era el fallo: con .read cerrado ese fetch devuelve 401, se quedaba
         # sin proof y el PUT se rechazaba.
         self.assertNotIn("if (d && d.hash) currentHash = d.hash", self.src)
-        self.assertIn("const currentHash = proofHash || localHash", self.src)
+        # Y tampoco puede caer en el hash local: eso guardaba proof == hash.
+        self.assertNotIn("proofHash || localHash", self.src)
+        self.assertIn("!proofHash || proofHash === localHash", self.src)
 
     def test_cambiar_password_pasa_el_hash_viejo(self):
         # cambiarPasswordAdmin machaca AUTH_HASH_KEY con el hash nuevo antes de

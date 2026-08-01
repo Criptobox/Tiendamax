@@ -79,5 +79,36 @@ class SintaxisInlineTest(unittest.TestCase):
                          "\n".join(fallos))
 
 
+class HandlersEnAtributosTest(unittest.TestCase):
+    """Los `onclick=` se evalúan en ámbito global, no dentro del IIFE.
+
+    `admin.html` define `const $ = s => document.querySelector(s)` DENTRO del
+    IIFE que envuelve su script, así que un `onclick="foo($('#x').value)"`
+    lanza ReferenceError y el botón no hace nada — sin error visible para
+    quien lo pulsa. Había dos botones así ("Duplicar" en la ficha y "Ver solo"
+    en cada categoría), muertos en silencio.
+
+    Esto solo cubre el helper `$`, que es el caso real que se dio; no
+    comprueba que todos los demás identificadores resuelvan.
+    """
+
+    ATRIBUTO = re.compile(r'\son[a-z]+\s*=\s*"([^"]*)"', re.I)
+
+    def test_ningun_handler_usa_el_helper_local(self):
+        fallos = []
+        for pagina in PAGINAS:
+            f = RAIZ / pagina
+            if not f.is_file():
+                continue
+            html = _sin_comentarios(f.read_text(encoding="utf-8"))
+            for m in self.ATRIBUTO.finditer(html):
+                if re.search(r"(^|[^\w.$])\$\s*\(", m.group(1)):
+                    linea = html[:m.start()].count("\n") + 1
+                    fallos.append(f"{pagina}:{linea} → {m.group(1)[:70]}")
+        self.assertEqual([], fallos,
+                         "handlers que usan `$`, que no existe en global:\n" +
+                         "\n".join(fallos))
+
+
 if __name__ == "__main__":
     unittest.main()

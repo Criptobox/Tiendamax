@@ -843,21 +843,26 @@ async function sincronizarConGitHub() {
 }
 
 // ── Señal de versión en Firebase para forzar actualización en todos los clientes ──
-// Se escribe el nodo config entero, no solo version: la regla exige un _proof
-// igual al hash del admin, y en un PUT a /config/version.json no cabría (es un
-// número suelto). _proof queda fuera de lectura; version sigue siendo público,
-// que es lo que leen index.html y admin.html.
+// Sin proof a propósito: guardarlo dentro de /config no protegía nada. En una
+// escritura parcial a un hijo, `newData` en el padre es el MERGE de lo que ya
+// hay con lo que llega, así que el proof guardado satisfacía la regla por sí
+// solo y cualquiera podía escribir o borrar version sin conocerlo. La regla
+// ahora solo exige que el número suba y sea una fecha reciente.
 async function _tmPublicarVersionFirebase() {
     const base = _fbRtdbUrl();
     if (!base) return;
-    const proof = localStorage.getItem(AUTH_HASH_KEY);
-    if (!proof) return;
     try {
-        await fetch(`${base}/config.json`, {
+        const res = await fetch(`${base}/config/version.json`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ version: Date.now(), _proof: proof })
+            body: JSON.stringify(Date.now())
         });
+        // Antes esto se tragaba cualquier error: fetch no lanza en 4xx, así que
+        // el admin veía "tienda actualizada" mientras los clientes no se
+        // enteraban de nada. Ahora al menos queda dicho.
+        if (!res.ok && typeof mostrarNotificacion === 'function') {
+            mostrarNotificacion('⚠️ La tienda se publicó, pero no se pudo avisar a los clientes de que hay versión nueva (' + res.status + '). Verán los cambios cuando les caduque la caché.', 'error');
+        }
     } catch(e) {}
 }
 

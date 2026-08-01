@@ -36,7 +36,10 @@ FUENTES_FIJAS = [
     "categorias.json", "index.html", "admin.html", "404.html", "sw.js",
     "manifest.json", "resenas-cache.json",
 ]
-GLOBS = ["p/*.html", "js/*.js", "js/src/*.src.js", "css/*.css"]
+# c/ son las landings de categoría: también referencian imágenes, y se
+# publican. Faltaban aquí, y por eso el dedupe reescribió un nombre en todas
+# partes menos ahí y dejó la imagen rota en c/motos.html.
+GLOBS = ["p/*.html", "c/*.html", "js/*.js", "js/src/*.src.js", "css/*.css"]
 
 PATRON = re.compile(r"[\w.\-]+\.(?:webp|jpg|jpeg|png)", re.I)
 
