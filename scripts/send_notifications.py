@@ -128,12 +128,62 @@ def cargar_cola(database) -> dict:
     data.setdefault("ultimo_lote_fecha", "")
     return data
 
+def _fusionar_cola(current, cola: dict) -> dict:
+    """Combina lo que ESTA corrida quiere guardar con lo que haya en el nodo
+    ahora mismo (`current`), que puede ser obra de otra corrida simultánea.
+
+    Se llama desde dentro de transaction(), así que puede ejecutarse varias
+    veces: tiene que ser pura y no depender de nada de fuera.
+    """
+    if not isinstance(current, dict):
+        return cola
+
+    fusion = dict(cola)
+
+    # Pendientes: lo que la otra corrida haya encolado DESPUÉS de nuestra
+    # lectura no puede perderse. Se conserva lo que sigue en `current` y no
+    # está en nuestra versión (nosotros ya lo enviamos y lo vaciamos).
+    for clave in ("nuevos_pendientes", "rebajas_pendientes"):
+        nuestros = _fb_to_list(cola.get(clave))
+        suyos = _fb_to_list(current.get(clave))
+        vistos = {json.dumps(x, sort_keys=True, default=str) for x in nuestros}
+        extra = [x for x in suyos
+                 if json.dumps(x, sort_keys=True, default=str) not in vistos]
+        fusion[clave] = nuestros + extra
+
+    # Anti-spam: gana SIEMPRE el timestamp más alto. Si la otra corrida ya
+    # envió algo, su marca es la que vale — quedarnos con la nuestra (más
+    # vieja) reabriría la ventana y mandaría el push por segunda vez.
+    mio = cola.get("ultimo_push") or {}
+    suyo = current.get("ultimo_push") or {}
+    if isinstance(suyo, dict):
+        combinado = dict(mio)
+        for k, v in suyo.items():
+            try:
+                if float(v) > float(combinado.get(k, 0)):
+                    combinado[k] = v
+            except (TypeError, ValueError):
+                combinado.setdefault(k, v)
+        fusion["ultimo_push"] = combinado
+
+    # El lote diario sale una vez al día: si la otra corrida ya lo marcó,
+    # esa fecha manda para que no se repita.
+    if current.get("ultimo_lote_fecha") and not cola.get("ultimo_lote_fecha"):
+        fusion["ultimo_lote_fecha"] = current["ultimo_lote_fecha"]
+
+    return fusion
+
+
 def guardar_cola(database, cola: dict):
-    # transaction() en vez de set(): send-push-notifications.yml y
-    # flush-push-queue.yml tocan este mismo nodo con concurrency.group
-    # distintos (no se serializan entre sí), así que un set() plano podía
-    # perder silenciosamente el trabajo de la otra corrida.
-    database.reference("notification_queue").transaction(lambda current: cola)
+    # transaction() de verdad: el valor nuevo se calcula A PARTIR de `current`.
+    # Antes era `lambda current: cola` — ignoraba `current` por completo, o sea
+    # un set() con pasos de más, y no protegía de nada. Hace falta porque
+    # admin-recordatorio.yml y flush-push-queue.yml disparan en el mismo minuto
+    # ('0 16 * * *'), corren ESTE script y están en concurrency.group distintos,
+    # así que GitHub Actions no los serializa entre sí.
+    database.reference("notification_queue").transaction(
+        lambda current: _fusionar_cola(current, cola)
+    )
 
 # ============================================================
 # DETECCIÓN DE CAMBIOS

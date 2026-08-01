@@ -1505,7 +1505,7 @@
      agregarProductoForm, sincronizarTodoConGitHub, registrarVenta, etc. -->
 <!-- Bundle único (mismo orden: config→data→state→admin→product→catalog→init→ui→toast→iife→patches),
      generado por scripts/build_js_bundle.py a partir de js/src/*.src.js -->
-<script src="js/tm-bundle.js?v=6c033bc8"></script>
+<script src="js/tm-bundle.js?v=97e7cbc1"></script>
 <script src="js/biometric-auth.js?v=876f6495"></script>
 <script src="js/revolico_integration.js?v=fc18f61b"></script>
 <!-- analytics.js: NO se cargaba acá antes — el conteo real de suscriptores
@@ -2360,12 +2360,22 @@ function apFind(id){ return PRODUCTOS.find(p=>String(p.id)===String(id)); }
 function apStock(id,d){ const p=apFind(id); if(!p) return; p.stock=Math.max(0,(Number(p.stock)||0)+d); if(typeof marcarProductoModificado==='function') try{ marcarProductoModificado(id); }catch(e){} apSaveProds(); renderProductos(); if(typeof renderStock==='function') renderStock(); }
 function apStockZero(id){ const p=apFind(id); if(!p) return; p.stock=0; if(typeof marcarProductoModificado==='function') try{ marcarProductoModificado(id); }catch(e){} apSaveProds(); renderProductos(); if(typeof renderStock==='function') renderStock(); }
 function apFav(id){ const p=apFind(id); if(!p) return; p.masVendido=!p.masVendido; if(typeof marcarProductoModificado==='function') try{ marcarProductoModificado(id); }catch(e){} apSaveProds(); renderProductos(); showToast(p.masVendido?'⭐ Destacado en Más Vendidos':'Quitado de Más Vendidos'); }
-function apDel(id){ const p=apFind(id); if(!p) return; if(!confirm('¿Eliminar "'+(p.nombre||'')+'"? Esto lo quita del catálogo al sincronizar.')) return; if(typeof marcarProductoEliminado==='function') try{ marcarProductoEliminado(id); }catch(e){} const i=PRODUCTOS.findIndex(x=>String(x.id)===String(id)); if(i>=0) PRODUCTOS.splice(i,1); apSaveProds(); renderProductos(); showToast('🗑️ Eliminado','Sincroniza para publicar el cambio'); }
+function apDel(id){ const p=apFind(id); if(!p) return; if(!confirm('¿Eliminar "'+(p.nombre||'')+'"? Esto lo quita del catálogo al sincronizar.')) return; if(typeof marcarProductoEliminado==='function') try{ marcarProductoEliminado(id); }catch(e){}
+  // Las fotos del producto borrado quedarían en imagenes/ para siempre. Se
+  // listan ANTES de sacarlo del array, porque imagenEnUso() lo consulta.
+  const _fotos=[...new Set([].concat(Array.isArray(p.imagenes)?p.imagenes:[], p.imagen||[], p.imagenSecundaria||[]).filter(Boolean))];
+  const i=PRODUCTOS.findIndex(x=>String(x.id)===String(id)); if(i>=0) PRODUCTOS.splice(i,1); apSaveProds(); renderProductos(); showToast('🗑️ Eliminado','Sincroniza para publicar el cambio');
+  const _huerf=_fotos.filter(u=> typeof imagenEnUso!=='function' || !imagenEnUso(u, id));
+  if(_huerf.length && typeof borrarImagenDeGitHub==='function'){
+    (async()=>{ let n=0; for(const u of _huerf){ try{ if(await borrarImagenDeGitHub(u)) n++; }catch(e){} }
+      if(n) showToast('🧹 '+n+' foto'+(n>1?'s':'')+' del producto borrada'+(n>1?'s':'')+' del repo'); })();
+  } }
 function apEdit(id){ const p=apFind(id); if(!p) return; $('#pedit-id').value=id; $('#pedit-nombre').value=p.nombre||''; $('#pedit-precio').value=p.precioActual||''; $('#pedit-original').value=(Number(p.precioOriginal)>0?p.precioOriginal:''); $('#pedit-stock').value=Number(p.stock)||0; $('#pedit-comision').value=(Number(p.comision)>0?p.comision:''); $('#pedit-comision-moneda').value=p.comisionMoneda||'USD'; $('#pedit-desc').value=p.descripcion||''; $('#pedit-fav').checked=!!p.masVendido; $('#pedit-specs').value=(Array.isArray(p.specs)?p.specs.join(', '):''); $('#pedit-garantia').value=p.garantia||''; $('#pedit-usado').checked=!!p.usado; $('#pedit-devolucion').checked=!!p.devolucion; const cs=$('#pedit-cat'); if(cs){ const cats=[...new Set(PRODUCTOS.map(x=>x.categoria).filter(Boolean))].sort(); cs.innerHTML=cats.map(c=>`<option value="${esc(c)}" ${c===p.categoria?'selected':''}>${esc(c)}</option>`).join(''); } const as=$('#pedit-almacen'); if(as){ as.innerHTML='<option value="">Sin asignar</option>'+Object.keys(ALMACENES).map(aid=>`<option value="${aid}" ${p.almacenId===aid?'selected':''}>${esc(ALMACENES[aid].nombre||aid)}</option>`).join(''); }
   // Cargar fotos actuales al working array y renderizar
   _peditFotos = Array.isArray(p.imagenes) && p.imagenes.length
     ? p.imagenes.slice()
     : (p.imagen ? [p.imagen] : []);
+  _peditFotosQuitadas = [];
   _renderPeditFotos();
   const _pfNuevas=$('#pedit-fotos-nuevas'); if(_pfNuevas) _pfNuevas.value='';
   const _pfLabel=$('#pedit-fotos-nuevas-name'); if(_pfLabel) _pfLabel.textContent='Agregar fotos nuevas (opcional)';
@@ -2374,6 +2384,9 @@ function apEdit(id){ const p=apFind(id); if(!p) return; $('#pedit-id').value=id;
 function apEditClose(){ $('#pedit-modal').classList.remove('show'); }
 // Working array de URLs de fotos en edición
 let _peditFotos = [];
+// Fotos quitadas con la ✕ durante ESTA edición. Se borran del repo al guardar
+// (no antes): si cierras sin guardar no se pierde nada.
+let _peditFotosQuitadas = [];
 // Vista previa en vivo: refleja la tarjeta como se verá en la tienda mientras editas
 function _peditPreview(){
   const box=$('#pedit-preview'); if(!box) return;
@@ -2435,7 +2448,10 @@ document.addEventListener('click', function(ev){
   if(quitarBtn){
     ev.stopPropagation();
     ev.preventDefault();
-    _peditFotos.splice(idx, 1);
+    // Se apunta para borrarla del repo AL GUARDAR, no ahora: si cierras la
+    // edición sin guardar, la foto sigue ahí y no se ha perdido nada.
+    const [quitada] = _peditFotos.splice(idx, 1);
+    if(quitada && !_peditFotosQuitadas.includes(quitada)) _peditFotosQuitadas.push(quitada);
     _renderPeditFotos();
     _peditPreview();
     return;
@@ -2500,6 +2516,22 @@ async function apEditSave(){ const id=$('#pedit-id').value; const p=apFind(id); 
   }
   if(typeof marcarProductoModificado==='function') try{ marcarProductoModificado(id); }catch(e){}
   apSaveProds(); apEditClose(); renderProductos(); showToast('💾 Guardado','Sincroniza para publicarlo en la tienda');
+
+  // Limpieza de las fotos quitadas. Va DESPUÉS de guardar y sin await: si
+  // GitHub tarda o el token venció, el producto ya quedó guardado igual.
+  // Solo se borran las que no use ningún otro producto ni combo — dos
+  // productos pueden compartir foto y borrarla dejaría al otro roto.
+  const _aBorrar = _peditFotosQuitadas.filter(u =>
+    u && !_peditFotos.includes(u) &&
+    (typeof imagenEnUso !== 'function' || !imagenEnUso(u, id)));
+  _peditFotosQuitadas = [];
+  if(_aBorrar.length && typeof borrarImagenDeGitHub === 'function'){
+    (async () => {
+      let n = 0;
+      for(const u of _aBorrar){ try { if(await borrarImagenDeGitHub(u)) n++; } catch(e){} }
+      if(n) showToast('🧹 ' + n + ' foto' + (n>1?'s':'') + ' sin uso borrada' + (n>1?'s':'') + ' del repo');
+    })();
+  }
 }
 
 /* ============ CATEGORIAS / SUBCATS ============ */

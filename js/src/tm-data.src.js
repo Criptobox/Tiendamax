@@ -700,6 +700,85 @@ async function subirImagenAGitHub(fileOrBase64) {
     }
 }
 
+// ── Borrar una imagen del repo ────────────────────────────────
+// Sin esto cada foto reemplazada se queda en imagenes/ para siempre. Con
+// varias fotos por producto eso crece rápido, y ni el sitio ni GitHub Pages
+// las vuelven a mirar: son peso muerto en cada clon del repo.
+//
+// Devuelve true si borró (o si ya no estaba), false si no pudo. Nunca lanza:
+// el guardado del producto es lo importante y no debe fallar porque la
+// limpieza no saliera.
+function _rutaImagenDesdeUrl(url) {
+    if (typeof url !== 'string') return null;
+    // Solo se tocan ficheros de imagenes/ de ESTE repo. Un data: URI, una
+    // imagen de otro dominio o cualquier otra ruta se ignoran a propósito.
+    // Acepta absoluta (".../imagenes/x.webp") y relativa ("imagenes/x.webp").
+    // Hoy el catálogo guarda solo absolutas, pero una relativa se colaría sin
+    // borrar y volvería a dejar huérfanos en silencio.
+    const m = url.match(/(?:^|\/)imagenes\/([\w.\-]+\.(?:webp|jpg|jpeg|png))(?:[?#]|$)/i);
+    if (!m) return null;
+    if (m[1].indexOf('..') !== -1) return null;
+    return 'imagenes/' + m[1];
+}
+
+async function borrarImagenDeGitHub(url) {
+    const user  = localStorage.getItem('githubUser');
+    const repo  = localStorage.getItem('githubRepo');
+    const token = localStorage.getItem('githubToken');
+    if (!user || !repo || !token) return false;
+
+    const path = _rutaImagenDesdeUrl(url);
+    if (!path) return false;
+
+    // La miniatura la genera optimize_images.py con el mismo nombre; si se
+    // borra el original y se deja el thumb, queda otro huérfano equivalente.
+    const rutas = [path, path.replace('imagenes/', 'imagenes/thumbs/')];
+    let algunaBorrada = false;
+
+    for (const ruta of rutas) {
+        try {
+            const base = 'https://api.github.com/repos/' + user + '/' + repo + '/contents/' + ruta;
+            const headers = { 'Authorization': 'token ' + token };
+            // La Contents API exige el sha del fichero para borrarlo.
+            const info = await fetch(base, { headers, cache: 'no-store' });
+            if (info.status === 404) continue;          // ya no está: nada que hacer
+            if (!info.ok) continue;
+            const sha = (await info.json()).sha;
+            if (!sha) continue;
+            const del = await fetch(base, {
+                method: 'DELETE',
+                headers: Object.assign({ 'Content-Type': 'application/json' }, headers),
+                body: JSON.stringify({ message: 'Borrar imagen sin uso: ' + ruta, sha })
+            });
+            if (del.ok) algunaBorrada = true;
+        } catch (e) {
+            // Sin red o token vencido: se deja para la limpieza de
+            // scripts/limpiar_imagenes.py, que hace lo mismo en lote.
+        }
+    }
+    return algunaBorrada;
+}
+
+// ¿Queda algún producto (o combo) usando esta imagen? Se comprueba antes de
+// borrar: dos productos pueden compartir foto y borrarla dejaría al otro roto.
+function imagenEnUso(url, ignorarProductoId) {
+    if (!url) return false;
+    const iguales = (v) => typeof v === 'string' && v === url;
+    const lista = (typeof productos !== 'undefined' && Array.isArray(productos)) ? productos : [];
+    for (const p of lista) {
+        if (ignorarProductoId != null && String(p.id) === String(ignorarProductoId)) continue;
+        if (iguales(p.imagen) || iguales(p.imagenSecundaria)) return true;
+        if (Array.isArray(p.imagenes) && p.imagenes.some(iguales)) return true;
+    }
+    try {
+        const combos = tmParseArray(localStorage.getItem('combos'));
+        for (const c of combos) {
+            if (iguales(c.imagen) || iguales(c.foto)) return true;
+        }
+    } catch (e) {}
+    return false;
+}
+
 // ═══════════════════════════════════════════════════════
 //  ANALYTICS
 // ═══════════════════════════════════════════════════════

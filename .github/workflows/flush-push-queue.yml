@@ -17,7 +17,12 @@ permissions:
   contents: read
 
 concurrency:
-  group: flush-push-queue
+  # Grupo COMPARTIDO por los tres workflows que ejecutan send_notifications.py
+  # (admin-recordatorio, flush-push-queue, send-push-notifications). Antes cada
+  # uno tenia el suyo, y GitHub Actions solo serializa DENTRO de un grupo: a las
+  # 16:00 UTC coinciden dos crons al minuto exacto, arrancaban a la vez, los dos
+  # leian la misma cola y los dos enviaban -> push duplicado a los clientes.
+  group: push-notifications
   cancel-in-progress: false
 
 jobs:
