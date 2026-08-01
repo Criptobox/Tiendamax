@@ -544,8 +544,365 @@ function updateBubble(){
   if (crit) { b.classList.remove('tm-copilot-pulse'); void b.offsetWidth; b.classList.add('tm-copilot-pulse'); }
 }
 function tabsHtml(view){
-  const tabs=[['hoy','✅ Hoy'],['marketing','📣 Marketing'],['chat','💬 Chat'],['correcciones','🩺 Correcciones'],['descripciones','📝 Descripciones'],['agentes','🤖 Agentes'],['memoria','🧠 Memoria']];
+  const tabs=[['hoy','✅ Hoy'],['asesor','📊 Asesor'],['chat','💬 Chat'],['marketing','📣 Marketing'],['correcciones','🩺 Correcciones'],['descripciones','📝 Descripciones'],['agentes','🤖 Agentes'],['memoria','🧠 Memoria']];
   return `<div class="tm-copilot-tabs">${tabs.map(t=>`<button type="button" class="tm-copilot-tab ${view===t[0]?'active':''}" data-cop="view" data-view="${t[0]}">${t[1]}</button>`).join('')}</div>`;
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   ASESOR DE NEGOCIO: los números que miraría un asesor de verdad
+   ══════════════════════════════════════════════════════════════════════
+   El copiloto ya avisaba de lo OPERATIVO (agotados, interesados, SEO).
+   Lo que no miraba era el DINERO: cuánto se gana con cada producto, cuánto
+   capital está parado, qué rota y qué lleva meses sin moverse, y en qué
+   punto del embudo se pierde al cliente. Todo esto se calcula aquí con los
+   datos que ya existen — ventas de localStorage, comisiones de
+   productos.json y analytics de Firebase — sin depender de ninguna IA.
+   ══════════════════════════════════════════════════════════════════════ */
+
+const ASESOR_MUERTO_DIAS = 45;   // sin vender = capital dormido
+
+function _tasaMN(){ const t = num(localStorage.getItem('tasaMN')); const m = num(localStorage.getItem('margenMN')); return t > 0 ? t + (m || 0) : 0; }
+
+// La comisión puede estar en USD o en MN. Para comparar productos hay que
+// llevarlo todo a la misma moneda, o un producto con comisión en MN parece
+// 700 veces más rentable que uno en USD.
+function _comisionUSD(p){
+  const c = num(p.comision);
+  if (!c) return 0;
+  if (String(p.comisionMoneda || 'USD').toUpperCase() === 'MN'){
+    const t = _tasaMN();
+    return t > 0 ? c / t : 0;
+  }
+  return c;
+}
+
+function _ventasCrudas(){
+  try { const v = JSON.parse(localStorage.getItem('registroVentas') || '[]'); return Array.isArray(v) ? v : []; }
+  catch(e){ return []; }
+}
+
+// Una venta puede traer varios productos en `items`. Se aplana a líneas para
+// poder contar por producto: sin esto, un pedido de 3 cosas contaba como una
+// sola venta del primero.
+function _lineasDeVenta(){
+  const out = [];
+  _ventasCrudas().forEach(v => {
+    const ts = num(v.id) || Date.parse(v.fecha || '') || 0;
+    const items = Array.isArray(v.items) && v.items.length ? v.items : [v];
+    items.forEach(it => {
+      if (!it) return;
+      // La ganancia guardada está en la moneda de la comisión del producto.
+      // Sumarla tal cual mezclaba pesos con dólares: una comisión de 1.500 MN
+      // entraba como 1.500 USD y el total de ganancia salía mayor que el de
+      // ventas (medido: $3.055 ganados sobre $750 vendidos).
+      const monedaCom = String(it.comisionMoneda || 'USD').toUpperCase();
+      let gan = num(it.ganancia != null ? it.ganancia : it.comision);
+      if (monedaCom === 'MN'){ const t = _tasaMN(); gan = t > 0 ? gan / t : 0; }
+      out.push({
+        ts,
+        pid: String(it.productoId != null ? it.productoId : ''),
+        nombre: it.producto || '',
+        cantidad: num(it.cantidad) || 1,
+        total: num(it.total != null ? it.total : it.precio),
+        ganancia: gan,
+      });
+    });
+  });
+  return out;
+}
+
+function asesorMetricas(){
+  const ps = products();
+  const lineas = _lineasDeVenta();
+  const ahora = Date.now();
+  const vistas = state.factsVistas || {};
+  const whats = state.factsWhats || {};
+
+  // ── Por producto: lo vendido, lo ganado y cuándo fue la última vez ──
+  const porId = {};
+  lineas.forEach(l => {
+    if (!l.pid) return;
+    const r = porId[l.pid] || (porId[l.pid] = { unidades:0, ingreso:0, ganancia:0, ultima:0, veces:0 });
+    r.unidades += l.cantidad; r.ingreso += l.total; r.ganancia += l.ganancia;
+    r.veces++; if (l.ts > r.ultima) r.ultima = l.ts;
+  });
+
+  const filas = ps.map(p => {
+    const id = String(p.id);
+    const v = porId[id] || { unidades:0, ingreso:0, ganancia:0, ultima:0, veces:0 };
+    const precio = num(p.precioActual);
+    const stock = num(p.stock);
+    const marg = _comisionUSD(p);
+    return {
+      p, id, precio, stock,
+      margen: marg,
+      margenPct: precio > 0 ? (marg / precio) * 100 : 0,
+      inmovilizado: precio * stock,
+      vendidas: v.unidades,
+      ingreso: v.ingreso,
+      ganancia: v.ganancia,
+      ultimaVenta: v.ultima,
+      diasSinVender: v.ultima ? Math.floor((ahora - v.ultima) / 864e5) : null,
+      vistas: num(vistas[id]),
+      whats: num(whats[id]),
+      sinComision: !num(p.comision),
+    };
+  });
+
+  const conStock = filas.filter(f => f.stock > 0);
+  const capitalTotal = conStock.reduce((s,f) => s + f.inmovilizado, 0);
+
+  // Capital dormido: hay stock, cuesta dinero, y no se ha vendido nunca o
+  // hace mucho. Es la cifra que más duele y la que nadie mira.
+  const muertos = conStock.filter(f =>
+    f.vendidas === 0 || (f.diasSinVender != null && f.diasSinVender >= ASESOR_MUERTO_DIAS)
+  ).sort((a,b) => b.inmovilizado - a.inmovilizado);
+  const capitalMuerto = muertos.reduce((s,f) => s + f.inmovilizado, 0);
+
+  // Lo que sí rota
+  const rotando = filas.filter(f => f.vendidas > 0)
+    .sort((a,b) => b.ganancia - a.ganancia);
+
+  // Se va a acabar: vende bien y queda poco
+  const reponer = conStock.filter(f => f.vendidas > 0 && f.stock <= 3)
+    .sort((a,b) => b.vendidas - a.vendidas);
+
+  // Embudo: de mirar a escribir por WhatsApp
+  const totVistas = filas.reduce((s,f) => s + f.vistas, 0);
+  const totWhats = filas.reduce((s,f) => s + f.whats, 0);
+  const totVentas = lineas.length;
+
+  // Mucha gente lo mira y nadie escribe: o el precio espanta o la ficha no
+  // convence. Es el punto donde se pierde dinero ya ganado en tráfico.
+  const noConvierten = conStock.filter(f => f.vistas >= 15 && f.whats === 0)
+    .sort((a,b) => b.vistas - a.vistas);
+
+  const sinComision = conStock.filter(f => f.sinComision)
+    .sort((a,b) => b.inmovilizado - a.inmovilizado);
+
+  // Comisiones imposibles: ganar más del 60% del precio revendiendo no pasa,
+  // y ganar MÁS que el precio es directamente un error de captura. Medido en
+  // el catálogo real: una cámara de $45 con comisión 1500 marcada en USD en
+  // vez de MN daba un margen del 3.333% y ella sola disparaba la media de
+  // todo el catálogo de 7% a 62%.
+  const comisionRara = conStock.filter(f => f.margen > 0 && f.precio > 0 && f.margen > f.precio * 0.6)
+    .sort((a,b) => b.margenPct - a.margenPct);
+
+  const ganancia30 = lineas.filter(l => l.ts > ahora - 30*864e5).reduce((s,l) => s + l.ganancia, 0);
+  const ganancia30ant = lineas.filter(l => l.ts > ahora - 60*864e5 && l.ts <= ahora - 30*864e5).reduce((s,l) => s + l.ganancia, 0);
+
+  return {
+    filas, conStock, capitalTotal, capitalMuerto, muertos, rotando, reponer,
+    noConvierten, sinComision, comisionRara,
+    totVistas, totWhats, totVentas,
+    convWhats: totVistas > 0 ? (totWhats / totVistas) * 100 : 0,
+    convVenta: totWhats > 0 ? (totVentas / totWhats) * 100 : 0,
+    ingresoTotal: lineas.reduce((s,l) => s + l.total, 0),
+    gananciaTotal: lineas.reduce((s,l) => s + l.ganancia, 0),
+    ganancia30, ganancia30ant,
+    // MEDIANA, no media: un solo producto con la comisión mal puesta movía la
+    // media de 7% a 62% y volvía inútil el dato. La mediana lo aguanta.
+    margenTipico: (() => {
+      const v = conStock.filter(f => f.margen > 0).map(f => f.margenPct).sort((a,b) => a-b);
+      if (!v.length) return 0;
+      const m = Math.floor(v.length/2);
+      return v.length % 2 ? v[m] : (v[m-1] + v[m]) / 2;
+    })(),
+    ticketMedio: totVentas ? lineas.reduce((s,l) => s + l.total, 0) / totVentas : 0,
+  };
+}
+
+/* ── Voz del cliente: lo que la gente busca y pregunta ──
+   Dos fuentes que ya se llenan solas y que nadie estaba leyendo:
+   analytics/busquedas (lo que escriben en el buscador) y agente/faq (lo que
+   le preguntan al bot Max). Una búsqueda repetida sin producto que la
+   responda es demanda pidiendo a gritos que la surtan. */
+let ASESOR_VOZ = { busquedas: [], preguntas: [], cargado: false };
+
+async function asesorCargarVoz(){
+  const [bus, faq] = await Promise.all([ getJson('/analytics/busquedas.json'), getJson('/agente/faq.json') ]);
+  const ps = products();
+  const norm = s => String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+  const hayProducto = q => {
+    const t = norm(q).split(/\s+/).filter(w => w.length > 3);
+    if (!t.length) return true;
+    return ps.some(p => { const n = norm(p.nombre) + ' ' + norm(p.categoria); return t.every(w => n.includes(w)); });
+  };
+  ASESOR_VOZ.busquedas = bus && typeof bus === 'object'
+    ? Object.entries(bus).map(([q,c]) => ({ q: decodeURIComponent(q), n: num(c) }))
+        .filter(x => x.n > 0).sort((a,b) => b.n - a.n)
+        .map(x => ({ ...x, tienes: hayProducto(x.q) })).slice(0, 40)
+    : [];
+  ASESOR_VOZ.preguntas = faq && typeof faq === 'object'
+    ? Object.values(faq).filter(x => x && x.query)
+        .map(x => ({ q: String(x.query), n: num(x.count), intent: String(x.intent||'') }))
+        .sort((a,b) => b.n - a.n).slice(0, 25)
+    : [];
+  ASESOR_VOZ.cargado = true;
+  return ASESOR_VOZ;
+}
+
+/* ── Diagnóstico: lo que un asesor te diría nada más sentarse ──
+   Cada hallazgo lleva el número que lo respalda y qué hacer. Sin IA: son
+   cuentas, no opiniones, así que funcionan aunque no haya API key. */
+function asesorDiagnostico(){
+  const m = asesorMetricas();
+  const d = [];
+  const pct = (a,b) => b > 0 ? Math.round(a/b*100) : 0;
+
+  if (m.capitalMuerto > 0 && m.capitalTotal > 0){
+    const p = pct(m.capitalMuerto, m.capitalTotal);
+    d.push({
+      grave: p >= 40 ? 3 : p >= 20 ? 2 : 1,
+      icon: '🧊',
+      titulo: `${money(m.capitalMuerto)} parados en mercancía que no rota`,
+      detalle: `Es el ${p}% de tu inventario (${money(m.capitalTotal)}). ${m.muertos.length} producto${m.muertos.length!==1?'s':''} sin venderse ${m.muertos.some(f=>f.vendidas===0)?'nunca o ':''}en más de ${ASESOR_MUERTO_DIAS} días. Los 3 que más pesan: ` +
+               m.muertos.slice(0,3).map(f=>`${f.p.nombre} (${money(f.inmovilizado)})`).join(', ') + '.',
+      accion: 'Rebájalos, combínalos con algo que sí sale, o deja de reponerlos.',
+    });
+  }
+
+  if (m.reponer.length){
+    d.push({
+      grave: 3, icon: '📦',
+      titulo: `${m.reponer.length} producto${m.reponer.length!==1?'s':''} que SÍ vende${m.reponer.length!==1?'n':''} y se ${m.reponer.length!==1?'están':'está'} acabando`,
+      detalle: m.reponer.slice(0,4).map(f=>`${f.p.nombre} — quedan ${f.stock}, vendiste ${f.vendidas}`).join(' · '),
+      accion: 'Repón esto antes que nada: es lo único con demanda comprobada.',
+    });
+  }
+
+  if (m.noConvierten.length){
+    const f = m.noConvierten[0];
+    d.push({
+      grave: 2, icon: '👀',
+      titulo: `${m.noConvierten.length} producto${m.noConvierten.length!==1?'s':''} que miran mucho y nadie escribe`,
+      detalle: `El peor: ${f.p.nombre}, ${f.vistas} vistas y 0 clics a WhatsApp. Tráfico que ya pagaste y se pierde en la ficha.`,
+      accion: 'Revisa precio, foto y descripción. O ponle una oferta y mira si se mueve.',
+    });
+  }
+
+  if (m.sinComision.length){
+    const total = m.sinComision.reduce((s,f)=>s+f.inmovilizado,0);
+    d.push({
+      grave: 2, icon: '❓',
+      titulo: `${m.sinComision.length} producto${m.sinComision.length!==1?'s':''} sin ganancia definida`,
+      detalle: `${money(total)} en stock del que no sabes cuánto te deja. Sin ese dato no se puede decidir qué conviene empujar.`,
+      accion: 'Ponle la comisión a cada uno en su ficha.',
+    });
+  }
+
+  if (m.comisionRara.length){
+    const f = m.comisionRara[0];
+    d.push({
+      grave: 3, icon: '🚨',
+      titulo: `${m.comisionRara.length} ${m.comisionRara.length!==1?'comisiones mal puestas':'comisión mal puesta'}`,
+      detalle: `${f.p.nombre} se vende a ${money(f.precio)} pero tiene una comisión de ${money(f.margen)} (${f.margenPct.toFixed(0)}% de margen). Casi seguro está en USD cuando debería estar en MN, o le sobra un cero.`,
+      accion: 'Corrígelo en la ficha: mientras esté así, todas las cuentas de ganancia salen mal.',
+    });
+  }
+
+  if (m.totVistas >= 50){
+    const conv = m.convWhats;
+    d.push({
+      grave: conv < 2 ? 2 : 1, icon: '🔻',
+      titulo: `De cada 100 que miran, ${conv.toFixed(1)} escriben por WhatsApp`,
+      detalle: `${m.totVistas} vistas → ${m.totWhats} clics a WhatsApp → ${m.totVentas} ventas registradas.`,
+      accion: conv < 2 ? 'La fuga está en la ficha del producto, no en el tráfico.' : 'Vas bien; para crecer hace falta más tráfico, no más conversión.',
+    });
+  }
+
+  if (m.ganancia30 || m.ganancia30ant){
+    const dif = m.ganancia30 - m.ganancia30ant;
+    const sube = dif >= 0;
+    d.push({
+      grave: sube ? 0 : 2, icon: sube ? '📈' : '📉',
+      titulo: `Ganancia últimos 30 días: ${money(m.ganancia30)}`,
+      detalle: `Los 30 anteriores fueron ${money(m.ganancia30ant)} — ${sube?'subiste':'bajaste'} ${money(Math.abs(dif))}.`,
+      accion: sube ? 'Repite lo que hiciste este mes.' : 'Mira qué dejaste de publicar respecto al mes pasado.',
+    });
+  }
+
+  const busSin = (ASESOR_VOZ.busquedas || []).filter(b => !b.tienes && b.n >= 2).slice(0,5);
+  if (busSin.length){
+    d.push({
+      grave: 2, icon: '🔍',
+      titulo: `Te buscan ${busSin.length} cosa${busSin.length!==1?'s':''} que no tienes`,
+      detalle: busSin.map(b=>`"${b.q}" (${b.n} veces)`).join(' · '),
+      accion: 'Demanda gratis: alguien ya la quiere y se fue con las manos vacías.',
+    });
+  }
+
+  return { metricas: m, hallazgos: d.sort((a,b)=>b.grave-a.grave) };
+}
+
+/* ── Contexto para la IA: los mismos números, en texto ──
+   Antes se le mandaba un resumen pobre (cuántos productos, cuánto vendido) y
+   por eso contestaba generalidades. Ahora recibe márgenes, capital dormido,
+   rotación, embudo y la voz del cliente: puede razonar sobre el negocio. */
+function asesorContexto(){
+  const m = asesorMetricas();
+  const L = [];
+  const top = arr => arr.slice(0,6);
+  L.push(`DINERO: inventario ${money(m.capitalTotal)} a precio de venta, de los cuales ${money(m.capitalMuerto)} en ${m.muertos.length} productos sin rotación (>${ASESOR_MUERTO_DIAS} días o nunca vendidos).`);
+  L.push(`Ganancia acumulada ${money(m.gananciaTotal)} sobre ${money(m.ingresoTotal)} vendidos. Últimos 30 días ${money(m.ganancia30)} (30 previos ${money(m.ganancia30ant)}). Ticket medio ${money(m.ticketMedio)}. Margen típico (mediana) ${m.margenTipico.toFixed(1)}%.`);
+  L.push(`EMBUDO: ${m.totVistas} vistas → ${m.totWhats} clics WhatsApp (${m.convWhats.toFixed(1)}%) → ${m.totVentas} ventas.`);
+  if (m.rotando.length) L.push('LO QUE MÁS GANANCIA DEJA: ' + top(m.rotando).map(f=>`${f.p.nombre} (${f.vendidas} u, ${money(f.ganancia)} ganados, margen ${f.margenPct.toFixed(0)}%, stock ${f.stock})`).join(' · ') + '.');
+  if (m.muertos.length) L.push('CAPITAL DORMIDO: ' + top(m.muertos).map(f=>`${f.p.nombre} (${money(f.inmovilizado)}, ${f.vendidas===0?'nunca vendido':f.diasSinVender+' días sin vender'}, stock ${f.stock})`).join(' · ') + '.');
+  if (m.reponer.length) L.push('HAY QUE REPONER (vende y queda poco): ' + top(m.reponer).map(f=>`${f.p.nombre} (stock ${f.stock}, vendidas ${f.vendidas})`).join(' · ') + '.');
+  if (m.noConvierten.length) L.push('MIRAN Y NO ESCRIBEN: ' + top(m.noConvierten).map(f=>`${f.p.nombre} (${f.vistas} vistas, 0 WhatsApp, ${money(f.precio)})`).join(' · ') + '.');
+  if (m.sinComision.length) L.push('SIN COMISIÓN DEFINIDA (no sabe cuánto gana): ' + top(m.sinComision).map(f=>f.p.nombre).join(', ') + '.');
+  const bus = (ASESOR_VOZ.busquedas||[]).slice(0,10);
+  if (bus.length) L.push('LO QUE BUSCAN LOS CLIENTES: ' + bus.map(b=>`"${b.q}" ×${b.n}${b.tienes?'':' (NO LO TIENES)'}`).join(' · ') + '.');
+  const preg = (ASESOR_VOZ.preguntas||[]).slice(0,8);
+  if (preg.length) L.push('LO QUE LE PREGUNTAN AL BOT: ' + preg.map(p=>`"${p.q}" ×${p.n}`).join(' · ') + '.');
+  return L.join('\n');
+}
+
+/* ── La vista: el diagnóstico del negocio, sin IA de por medio ── */
+function renderAsesor(){
+  const { metricas: m, hallazgos } = asesorDiagnostico();
+  const pct = (a,b) => b > 0 ? Math.round(a/b*100) : 0;
+  const color = g => g >= 3 ? '#e74c3c' : g === 2 ? '#f59e0b' : g === 1 ? '#3b82f6' : '#25d366';
+
+  if (!m.filas.length) return '<div class="tm-copilot-empty">Todavía no hay catálogo cargado.</div>';
+
+  const sinVentas = m.totVentas === 0;
+
+  const kpis = `
+    <div class="tm-copilot-summary" style="grid-template-columns:repeat(4,1fr)">
+      <div class="tm-copilot-stat"><small>Inventario</small><b>${money(m.capitalTotal)}</b></div>
+      <div class="tm-copilot-stat"><small>Parado</small><b style="color:${m.capitalMuerto>0?'#e74c3c':'#25d366'}">${pct(m.capitalMuerto,m.capitalTotal)}%</b></div>
+      <div class="tm-copilot-stat"><small>Ganancia 30d</small><b>${money(m.ganancia30)}</b></div>
+      <div class="tm-copilot-stat"><small>Margen típico</small><b>${m.margenTipico.toFixed(0)}%</b></div>
+    </div>`;
+
+  const diag = hallazgos.length ? hallazgos.map(h => `
+    <div class="tm-copilot-smart" style="border-left:3px solid ${color(h.grave)}">
+      <h4>${h.icon} ${esc(h.titulo)}</h4>
+      <small>${esc(h.detalle)}</small>
+      <small style="display:block;margin-top:6px;opacity:.85"><b>→ ${esc(h.accion)}</b></small>
+    </div>`).join('') : '<div class="tm-copilot-empty">Sin hallazgos: o todo está en orden, o falta historial de ventas para analizar.</div>';
+
+  const tabla = arr => arr.length ? `<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:11.5px">
+      <tr style="opacity:.6;text-align:left"><th style="padding:4px 6px">Producto</th><th>Stock</th><th>Vendidas</th><th>Ganancia</th><th>Margen</th></tr>
+      ${arr.slice(0,8).map(f=>`<tr style="border-top:1px solid rgba(128,128,128,.15)">
+        <td style="padding:4px 6px">${esc(f.p.nombre.slice(0,34))}</td><td>${f.stock}</td><td>${f.vendidas}</td>
+        <td>${money(f.ganancia)}</td><td>${f.margen>0?f.margenPct.toFixed(0)+'%':'—'}</td></tr>`).join('')}
+    </table></div>` : '<div class="tm-copilot-empty">Sin datos todavía.</div>';
+
+  return `
+    ${kpis}
+    ${sinVentas ? '<div class="tm-copilot-smart" style="border-color:rgba(245,158,11,.4)"><h4>⚠️ Aún no hay ventas registradas</h4><small>El análisis de rotación y ganancia necesita que registres las ventas en el admin. Mientras tanto solo puedo mirar inventario, vistas y lo que buscan los clientes.</small></div>' : ''}
+    ${diag}
+    <div class="tm-copilot-smart"><h4>💰 Lo que más ganancia te deja</h4>${tabla(m.rotando)}</div>
+    <div class="tm-copilot-smart"><h4>🧊 Capital dormido</h4>${tabla(m.muertos)}</div>
+    <div class="tm-copilot-chips" style="margin-top:10px">
+      <button type="button" class="tmcp-chip" data-cop="asesorVoz">🔄 Traer lo que buscan los clientes</button>
+      <button type="button" class="tmcp-chip" data-cop="chatSug" data-q="¿Qué hago con el capital que tengo parado?">💬 Preguntar al chat</button>
+    </div>
+    ${(ASESOR_VOZ.busquedas||[]).length ? `<div class="tm-copilot-smart"><h4>🔍 Lo que buscan tus clientes</h4><small>${ASESOR_VOZ.busquedas.slice(0,15).map(b=>`${esc(b.q)} <b>×${b.n}</b>${b.tienes?'':' <span style="color:#e74c3c">(no lo tienes)</span>'}`).join(' · ')}</small></div>` : ''}
+    ${(ASESOR_VOZ.preguntas||[]).length ? `<div class="tm-copilot-smart"><h4>❓ Lo que le preguntan al bot</h4><small>${ASESOR_VOZ.preguntas.slice(0,12).map(p=>`${esc(p.q)} <b>×${p.n}</b>`).join(' · ')}</small></div>` : ''}
+  `;
 }
 
 /* ══════════ CHAT: pregúntale al agente con tus datos reales ══════════ */
@@ -575,7 +932,14 @@ function chatContexto(){
     'Agotados: '+(agotados.map(p=>p.nombre).slice(0,12).join(', ')||'ninguno')+'.',
     'Ventas: '+vs.length+' registradas, $'+totalVendido.toFixed(2)+' vendido, $'+ganancia.toFixed(2)+' de comisión. Últimos 30 días: '+ventas30.length+' ventas.',
     'Productos con más interés (vistas/WhatsApp): '+(topHot.join(' · ')||'sin datos aún')+'.',
-    'Productos disponibles (muestra): '+topStock.join(' · ')+'.'
+    'Productos disponibles (muestra): '+topStock.join(' · ')+'.',
+    '',
+    // Sin esto el agente solo veía cuántos productos hay y cuánto se vendió
+    // en total, así que contestaba generalidades. Con los márgenes, el
+    // capital dormido, la rotación, el embudo y lo que buscan los clientes,
+    // puede razonar sobre el negocio de verdad.
+    '=== ANÁLISIS DE NEGOCIO ===',
+    asesorContexto()
   ].join('\n');
 }
 
@@ -1953,6 +2317,15 @@ window.pubMountPromo = function() {
 // ── FIN PROMO ──────────────────────────────────────────────────────
 
 function renderCopilotView(view, topTasks){
+  if(view==='asesor'){
+    // Primera vez que se abre: traer búsquedas y preguntas en segundo plano y
+    // repintar cuando lleguen. Si esperara a un botón, nadie las vería.
+    if(!ASESOR_VOZ.cargado){
+      ASESOR_VOZ.cargado = true;
+      asesorCargarVoz().then(()=>{ if(state.view==='asesor') renderSheet(); }).catch(()=>{});
+    }
+    return renderAsesor();
+  }
   if(view==='chat') return renderChat();
   if(view==='correcciones') return renderCorreccionesIA();
   if(view==='descripciones') return renderDescripciones();
@@ -2212,7 +2585,12 @@ function bindEvents(){
     if(act==='iaDismiss'){ iaDismiss(el.dataset.key); state.view='correcciones'; renderSheet(); }
     if(act==='iaUndo') iaDeshacer();
     if(act==='chatSend'){ const inp=$('#tmChatInput'); if(inp){ chatEnviar(inp.value); } }
-    if(act==='chatSug'){ chatEnviar(el.dataset.q); }
+    if(act==='chatSug'){ state.view='chat'; chatEnviar(el.dataset.q); }
+    if(act==='asesorVoz'){
+      toast('Consultando búsquedas y preguntas…');
+      asesorCargarVoz().then(()=>{ state.view='asesor'; renderSheet(); toast('✅ Listo'); })
+                       .catch(()=>toast('No pude leer los datos de Firebase'));
+    }
     if(act==='chatClear'){ CHAT_HIST=[]; renderSheet(); }
     if(act==='iaDescIA') iaDescripcionesConIA();
     if(act==='iaAnalizarUno') iaAnalizarUno(el.dataset.pid);
@@ -2263,4 +2641,14 @@ if(document.readyState === 'loading') document.addEventListener('DOMContentLoade
 setTimeout(hookOpenAdmin, 1200);
 window.tmCopilotRefresh = refresh;
 window.tmCopilotOpen = openSheet;
+// El asesor se expone a propósito: sirve para consultarlo desde la consola
+// del navegador (tmAsesor.diagnostico()) sin abrir el panel, y para poder
+// probar los cálculos con datos reales. Todo lo demás sigue dentro del IIFE.
+window.tmAsesor = {
+  metricas: asesorMetricas,
+  diagnostico: asesorDiagnostico,
+  contexto: asesorContexto,
+  cargarVoz: asesorCargarVoz,
+  get voz(){ return ASESOR_VOZ; },
+};
 })();
