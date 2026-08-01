@@ -264,7 +264,7 @@
     <!-- CSS unido + minificado (generado por scripts/build_css.py vía GitHub Action).
          Para editar estilos, edita los CSS fuente en /css y la Action regenera este bundle. -->
 
-    <link rel="stylesheet" href="css/bundle.css?v=9af04413">
+    <link rel="stylesheet" href="css/bundle.css?v=79c0b334">
 
     <!-- Styles moved to bundle.css -->
     <!-- Google Analytics 4 -->
@@ -279,28 +279,6 @@
 <body class="tm-no-oferta-banner">
 <div class="nd-mesh" aria-hidden="true"><div class="nd-orb nd-o1"></div><div class="nd-orb nd-o2"></div><div class="nd-orb nd-o3"></div><div class="nd-orb nd-o4"></div></div>
 <a class="skip-link" href="#vistaInicio">Saltar al contenido</a>
-
-    <!-- Barra superior: confianza + tasa real + horario (estilo "Oficial Plus") -->
-    <div class="tm-topbar" id="tmTopbar">
-        <div class="tm-topbar-inner">
-            <span class="tm-topbar-pill"><span class="tm-topbar-dot"></span>En línea · Te atendemos en menos de 5 min</span>
-            <span class="tm-topbar-right">
-                <span class="tm-topbar-pill"><span class="tm-topbar-dot gold"></span>Tasa: 1 USD = <span id="tmTopbarTasaVal">…</span> MN</span>
-                <span class="tm-topbar-pill">L–S · 9:00–20:00 (UTC-5)</span>
-            </span>
-        </div>
-    </div>
-    <script>
-    (function(){
-        try {
-            var base = parseFloat(localStorage.getItem('tasaMN') || '0');
-            var _m = parseFloat(localStorage.getItem('margenMN')); if (isNaN(_m)) _m = 10;
-            var tasa = base > 0 ? base + _m : 0;
-            var el = document.getElementById('tmTopbarTasaVal');
-            if (tasa > 0 && el) el.textContent = tasa;
-        } catch(e) {}
-    })();
-    </script>
 
     <!-- Banner de Urgencia -->
     <div id="urgenciaBanner" class="urgencia-banner" style="display:none;">

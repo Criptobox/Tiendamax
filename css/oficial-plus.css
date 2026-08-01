@@ -2339,28 +2339,8 @@ html body:not(.light-mode) .header{ background:rgba(12,8,6,.96) !important; }
 @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
   html body.light-mode .header{ background:#FFFCF8 !important; }
   html body:not(.light-mode) .header{ background:#0C0806 !important; }
-  html body.light-mode .tm-topbar{ background:#FDFAF6 !important; }
-  html body:not(.light-mode) .tm-topbar{ background:#08060A !important; }
 }
 
-/* La topbar tenía blur pero solo .65/.55 de fondo: los titulares grandes en
-   naranja del hero se colaban igual al pasar por debajo. Mismo criterio que
-   el header. */
-html body.light-mode .tm-topbar{ background:rgba(255,252,248,.97) !important; }
-html body:not(.light-mode) .tm-topbar{ background:rgba(8,6,10,.96) !important; }
-
-/* El header flota como isla: top:43px, margin 8px y esquinas de 18px. Entre
-   el borde inferior de la topbar (35px) y el borde superior del header
-   (43px) queda una franja de 8px por la que el contenido seguía pasando a la
-   vista — ahí se leía "Selecciona una categoría para descubrir…" aunque el
-   header ya tuviera blur. Se extiende el vidrio de la topbar para cubrirla.
-   Va a 8px exactos para no comerse el filo redondeado del header. */
-html body .tm-topbar::after{
-  content:"";position:absolute;left:0;right:0;top:100%;height:8px;
-  background:inherit;
-  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
-  pointer-events:none;
-}
 
 /* ==========================================================================
    FONDO DE LA PÁGINA — una sola capa, sin costuras

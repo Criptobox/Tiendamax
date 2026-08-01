@@ -119,33 +119,6 @@
    Prefijo de clases nuevas: nd-
    ======================================================== */
 
-/* ── TOPBAR (confianza + tasa + horario) ── */
-.tm-topbar{
-  position:fixed;top:var(--tm-safe-top,0px);left:0;right:0;z-index:1110;
-  border-bottom:1px solid var(--glass-border);
-  background:rgba(8,6,10,.55);
-  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
-  font-family:var(--font-sans-glass);font-size:12.5px;color:rgba(255,255,255,.55);
-}
-body.light-mode .tm-topbar{background:rgba(255,255,255,.65);border-bottom-color:rgba(0,0,0,.08);color:#6B6155}
-.tm-topbar-inner{
-  max-width:1320px;margin:0 auto;padding:0 24px;
-  display:flex;align-items:center;justify-content:space-between;
-  height:34px;gap:20px;overflow:hidden;
-}
-.tm-topbar-pill{display:inline-flex;align-items:center;gap:7px;white-space:nowrap}
-.tm-topbar-right{display:flex;align-items:center;gap:18px}
-.tm-topbar-dot{width:6px;height:6px;border-radius:50%;background:#25D366;box-shadow:0 0 8px rgba(37,211,102,.6);animation:tmTopbarPulse 2s infinite;flex-shrink:0}
-.tm-topbar-dot.gold{background:var(--gold);box-shadow:0 0 8px var(--gold);animation:none}
-#tmTopbarTasaVal{font-family:var(--font-mono-glass);font-variant-numeric:tabular-nums}
-@keyframes tmTopbarPulse{
-  0%{box-shadow:0 0 0 0 rgba(37,211,102,.5)}
-  70%{box-shadow:0 0 0 8px rgba(37,211,102,0)}
-  100%{box-shadow:0 0 0 0 rgba(37,211,102,0)}
-}
-@media (max-width:768px){.tm-topbar-right{display:none}}
-@media (prefers-reduced-motion:reduce){.tm-topbar-dot{animation:none !important}}
-
 /* ── CÓMO COMPRAR (pasos) ── */
 .tm-steps-section{padding:64px 0}
 .tm-steps-title{text-align:center;font-family:var(--font-display);font-size:clamp(28px,4vw,44px);letter-spacing:-0.02em;margin:10px 0 8px}
@@ -545,7 +518,6 @@ html body .categorias-home .categorias-grid .categoria-card:nth-child(12){
 html body .categorias-home .categorias-grid .categoria-card:nth-child(12)::before{
   background:radial-gradient(circle,rgba(251,191,36,.4),transparent 65%) !important}
 
-
 /* Light mode categorias: texto oscuro sobre fondos claros */
 body.light-mode .categorias-home .categorias-grid .categoria-card .cat-name{color:#1A1A1A !important;text-shadow:none !important}
 body.light-mode .categorias-home .categorias-grid .categoria-card .cat-count{color:#555 !important;text-shadow:none !important}
@@ -641,7 +613,6 @@ body.light-mode .producto-card .btn-pedir-card{
 }
 .producto-card .btn-pedir-card:hover,
 body.light-mode .producto-card .btn-pedir-card:hover{transform:translateY(-2px) !important;box-shadow:0 8px 24px rgba(37,211,102,.4) !important}
-
 
 /* ================================================================
    OFERTA DEL DÍA — sección naranja con timer (calcado de .deal)
@@ -929,7 +900,6 @@ body:not(.light-mode) .footer-premium .footer-gold-line{
 }
 body:not(.light-mode) .footer-premium .footer-bottom{border-top-color:rgba(255,255,255,.07) !important}
 
-
 /* ================================================================
    RENDIMIENTO EN MÓVIL — menos blur y menos orbes (gama baja)
    ================================================================ */
@@ -976,7 +946,6 @@ body.light-mode .mas-vendidos{background:#F8F4F1}
 }
 
 /* ── Light mode — productos: dead code removed (overridden by light-mode.css with html body.light-mode specificity) ── */
-
 
 /* ── Beneficios — ícono naranja (ambos modos) ── */
 .beneficio-card .icon{
@@ -1356,7 +1325,6 @@ html body:not(.light-mode) .hsb-panel{
   box-shadow:0 16px 36px rgba(0,0,0,.55),0 0 0 1px rgba(255,122,41,.05) inset !important;
 }
 
-
 /* Fallback: background solido antes de backdrop-filter para navegadores sin soporte */
 @supports not (backdrop-filter:blur(1px)){
   body:not(.light-mode) .mas-vendidos .producto-card,
@@ -1374,13 +1342,11 @@ html body:not(.light-mode) .hsb-panel{
   }
 }
 
-
 /* Estados :disabled para botones */
 .nd-btn-primary:disabled{opacity:.55;cursor:not-allowed;transform:none !important;box-shadow:none !important}
 .nd-btn-wa:disabled{opacity:.55;cursor:not-allowed;transform:none !important;box-shadow:none !important}
 .nd-btn-deal:disabled{opacity:.55;cursor:not-allowed;transform:none !important}
 .btn-pedir-card:disabled{opacity:.55;cursor:not-allowed;transform:none !important;box-shadow:none !important}
-
 
 /* Focus-visible accesible en cards interactivas */
 .producto-card:focus-visible,
@@ -1390,7 +1356,6 @@ html body:not(.light-mode) .hsb-panel{
   outline-offset:2px !important;
 }
 
-
 /* Extender prefers-reduced-motion a animaciones de badges y transiciones hover */
 @media(prefers-reduced-motion:reduce){
   .nd-fbadge,.nd-hero-dot,.nd-cl1,.nd-cl2,.nd-cl3{
@@ -1399,12 +1364,10 @@ html body:not(.light-mode) .hsb-panel{
   }
 }
 
-
 /* Transicion skeleton -> contenido real */
 .skeleton-card.tm-fade{opacity:1;transform:none;transition:opacity .3s var(--ease-standard),transform .3s var(--ease-standard)}
 .skeleton-card.tm-fade.hiding{opacity:0;transform:translateY(-8px)}
 .skeleton-card.tm-fade.tm-visible{opacity:1;transform:none}
-
 
 /* === FIX RENDIMIENTO: pausar animaciones decorativas fuera de hover === */
 .nd-orb{animation-play-state:paused}
@@ -8945,28 +8908,8 @@ html body:not(.light-mode) .header{ background:rgba(12,8,6,.96) !important; }
 @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
   html body.light-mode .header{ background:#FFFCF8 !important; }
   html body:not(.light-mode) .header{ background:#0C0806 !important; }
-  html body.light-mode .tm-topbar{ background:#FDFAF6 !important; }
-  html body:not(.light-mode) .tm-topbar{ background:#08060A !important; }
 }
 
-/* La topbar tenía blur pero solo .65/.55 de fondo: los titulares grandes en
-   naranja del hero se colaban igual al pasar por debajo. Mismo criterio que
-   el header. */
-html body.light-mode .tm-topbar{ background:rgba(255,252,248,.97) !important; }
-html body:not(.light-mode) .tm-topbar{ background:rgba(8,6,10,.96) !important; }
-
-/* El header flota como isla: top:43px, margin 8px y esquinas de 18px. Entre
-   el borde inferior de la topbar (35px) y el borde superior del header
-   (43px) queda una franja de 8px por la que el contenido seguía pasando a la
-   vista — ahí se leía "Selecciona una categoría para descubrir…" aunque el
-   header ya tuviera blur. Se extiende el vidrio de la topbar para cubrirla.
-   Va a 8px exactos para no comerse el filo redondeado del header. */
-html body .tm-topbar::after{
-  content:"";position:absolute;left:0;right:0;top:100%;height:8px;
-  background:inherit;
-  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
-  pointer-events:none;
-}
 
 /* ==========================================================================
    FONDO DE LA PÁGINA — una sola capa, sin costuras
