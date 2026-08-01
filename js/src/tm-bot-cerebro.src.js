@@ -2393,8 +2393,25 @@
       };
     }
 
+    // Respetar el ORDEN EN QUE EL CLIENTE LOS NOMBRÓ. detectProductMentions
+    // devuelve por puntuación, así que "compara A vs B" podía pintar B en la
+    // primera columna y A en la segunda: uno pide una cosa y ve otra.
     let p1 = mentions[0];
     let p2 = mentions[1];
+    (function(){
+      const t = cleanForMatch(text);
+      const pos = pr => {
+        const n = cleanForMatch(pr.nombre);
+        let i = t.indexOf(n);
+        if(i !== -1) return i;
+        // El nombre completo puede no estar literal: se usa su palabra más
+        // distintiva (la más larga) como ancla.
+        const w = n.split(' ').filter(x => x.length > 3).sort((a,b) => b.length - a.length)[0];
+        return w ? t.indexOf(w) : -1;
+      };
+      const i1 = pos(p1), i2 = pos(p2);
+      if(i1 !== -1 && i2 !== -1 && i2 < i1){ const tmp = p1; p1 = p2; p2 = tmp; }
+    })();
 
     // Verificación estricta: deben ser del mismo tipo
     const coherencia = sonComparables(p1, p2);
@@ -2434,6 +2451,87 @@
 
     return buildComparacion(p1, p2);
   };
+
+  /* ── Características REALES, no "Spec 1 vs Spec 1" ──
+     La tabla comparaba specs[0] contra specs[0] por POSICIÓN. Como cada
+     ficha lista lo suyo en el orden que le dio la gana, se acababan
+     enfrentando cosas que no tienen nada que ver: "Libre (Multibanda)"
+     contra "WiFi de Largo Alcance" bajo el rótulo "Spec 2", como si fueran
+     la misma característica medida en dos productos.
+
+     Ahora se extraen atributos con significado (potencia en W, capacidad en
+     Ah, estándar Wi-Fi, resolución, tipo de onda, MPPT vs PWM, química de
+     la batería…) del nombre + las specs + la descripción, y se emparejan
+     por atributo. Solo se compara lo que ambos declaran; lo que solo tiene
+     uno se muestra igual, pero sin fingir que el otro "pierde".
+
+     Los patrones se validaron contra el catálogo real antes de entrar. */
+  const COMP_ATRIBUTOS = [
+    { id:'wifi_std', label:'Wi-Fi',
+      re:/\bwi-?fi\s*(\d)\b|\b802\.11\s*(ax|ac|n)\b|\b(ax|ac)\s*\d{3,4}\b/i,
+      val:m=>{ const g=(m[1]||m[2]||m[3]||'').toLowerCase();
+        if(g==='6'||g==='ax') return {n:6, t:'Wi-Fi 6 (ax)'};
+        if(g==='5'||g==='ac') return {n:5, t:'Wi-Fi 5 (ac)'};
+        if(g==='4'||g==='n')  return {n:4, t:'Wi-Fi 4 (n)'};
+        return null; }, mas:true },
+    { id:'wifi_vel', label:'Velocidad Wi-Fi', re:/\b(?:ac|ax)\s*(\d{3,4})\b/i,
+      val:m=>({n:+m[1], t:m[1]+' Mbps'}), mas:true },
+    { id:'potencia', label:'Potencia', re:/(\d+(?:[.,]\d+)?)\s*(k)?\s*w(?:atts?|\b)/i,
+      val:m=>{ const n=parseFloat(m[1].replace(',','.'))*(m[2]?1000:1);
+        return n>0 && n<=100000 ? {n, t: n>=1000 ? (n/1000).toString().replace(/\.0$/,'')+' kW' : n+' W'} : null; }, mas:true },
+    { id:'capacidad', label:'Capacidad', re:/(\d+(?:[.,]\d+)?)\s*a\s*h\b/i,
+      val:m=>({n:parseFloat(m[1].replace(',','.')), t:m[1]+' Ah'}), mas:true },
+    { id:'mah', label:'Batería', re:/(\d{3,6})\s*m\s*ah\b/i, val:m=>({n:+m[1], t:(+m[1]).toLocaleString('es-ES')+' mAh'}), mas:true },
+    { id:'voltaje', label:'Voltaje', re:/(\d+(?:[.,]\d+)?)\s*v(?:olt|\b)/i,
+      val:m=>{ const n=parseFloat(m[1].replace(',','.')); return n>0&&n<=1000?{n, t:m[1]+'V'}:null; }, mas:null },
+    { id:'amperaje', label:'Amperaje', re:/(\d+(?:[.,]\d+)?)\s*a(?:mp|mperes?|\b)(?!h)/i,
+      val:m=>{ const n=parseFloat(m[1].replace(',','.')); return n>0&&n<=500?{n, t:m[1]+'A'}:null; }, mas:true },
+    { id:'resolucion', label:'Resolución', re:/\b(4k|2k|1440p|1080p|720p|ultra\s*hd|full\s*hd)\b/i,
+      val:m=>{ const s=m[1].toLowerCase().replace(/\s+/g,' ');
+        const tab={'4k':2160,'ultra hd':2160,'2k':1440,'1440p':1440,'1080p':1080,'full hd':1080,'720p':720};
+        return {n:tab[s]||0, t:m[1].toUpperCase()}; }, mas:true },
+    { id:'megapixel', label:'Megapíxeles', re:/(\d+(?:[.,]\d+)?)\s*mp\b/i,
+      val:m=>({n:parseFloat(m[1].replace(',','.')), t:m[1]+' MP'}), mas:true },
+    { id:'puertos', label:'Puertos', re:/\b(gigabit|10\/100\/1000|fast\s*ethernet|10\/100)\b/i,
+      val:m=>{ const g=/gigabit|1000/i.test(m[1]); return {n:g?1000:100, t:g?'Gigabit (1000 Mbps)':'Fast Ethernet (100 Mbps)'}; }, mas:true },
+    { id:'bandas', label:'Bandas', re:/\b(doble\s*banda|dual\s*band|tri\s*banda|2\.4\s*ghz|5\s*ghz)\b/i,
+      val:m=>{ const s=m[1].toLowerCase(); if(/tri/.test(s)) return {n:3,t:'Triple banda'};
+        if(/doble|dual/.test(s)) return {n:2,t:'Doble banda (2.4 + 5 GHz)'};
+        return /5/.test(s)?{n:2,t:'5 GHz'}:{n:1,t:'2.4 GHz'}; }, mas:true },
+    { id:'onda', label:'Tipo de onda', re:/\b(onda[s]?\s*pura|senoidal\s*pura|pure\s*sine|onda\s*modificada|onda\s*cuadrada)\b/i,
+      val:m=>/pura|pure|senoidal/i.test(m[1])?{n:2,t:'Onda pura (senoidal)'}:{n:1,t:'Onda modificada'}, mas:true },
+    { id:'controlador', label:'Controlador', re:/\b(mppt|pwm)\b/i,
+      val:m=>/mppt/i.test(m[1])?{n:2,t:'MPPT (más eficiente)'}:{n:1,t:'PWM'}, mas:true },
+    { id:'quimica', label:'Química', re:/\b(lifepo4|litio\s*hierro|li-?ion|litio|plomo[\s-]*[aá]cido|agm|gel)\b/i,
+      val:m=>{ const s=m[1].toLowerCase();
+        if(/lifepo4|hierro/.test(s)) return {n:3,t:'LiFePO4 (más vida útil)'};
+        if(/litio|ion/.test(s)) return {n:2,t:'Litio'};
+        return {n:1,t:'Plomo-ácido'}; }, mas:true },
+    { id:'nocturna', label:'Visión nocturna', re:/\b(visi[oó]n\s*nocturna|infrarroj|night\s*vision)\b/i,
+      val:()=>({n:1,t:'Sí'}), mas:true },
+    { id:'almacen', label:'Almacenamiento', re:/(\d+)\s*(gb|tb)\b/i,
+      val:m=>({n:+m[1]*(/tb/i.test(m[2])?1024:1), t:m[1]+m[2].toUpperCase()}), mas:true },
+    { id:'movil', label:'Red móvil', re:/\b(5g|4g\s*lte|4g|lte|3g)\b/i,
+      val:m=>{ const s=m[1].toLowerCase(); return {n:/5g/.test(s)?5:/4g|lte/.test(s)?4:3, t:m[1].toUpperCase()}; }, mas:true },
+    { id:'antenas', label:'Antenas', re:/(\d+)\s*antenas?\b/i, val:m=>({n:+m[1], t:m[1]+' antenas'}), mas:true },
+    { id:'mimo', label:'MU-MIMO', re:/\b(mu-?\s?mimo)\b/i, val:()=>({n:1,t:'Sí'}), mas:true },
+    { id:'poe', label:'PoE', re:/\b(poe|power\s*over\s*ethernet)\b/i, val:()=>({n:1,t:'Sí'}), mas:true },
+    { id:'pantalla', label:'Pantalla', re:/\b(pantalla\s*lcd|lcd|display)\b/i, val:()=>({n:1,t:'Sí'}), mas:true },
+    { id:'alcance', label:'Alcance', re:/(\d+)\s*(?:m|metros)\s*(?:de\s*)?(?:alcance|cobertura|distancia)/i,
+      val:m=>({n:+m[1], t:m[1]+' m'}), mas:true },
+  ];
+
+  function extraerAtributos(p){
+    const texto = [p.nombre, (p.specs||[]).join(' · '), p.descripcion||''].join(' · ');
+    const out = {};
+    COMP_ATRIBUTOS.forEach(a=>{
+      const m = texto.match(a.re);
+      if(!m) return;
+      const v = a.val(m);
+      if(v) out[a.id] = { ...v, label:a.label, mas:a.mas };
+    });
+    return out;
+  }
 
   function buildComparacion(p1, p2){
     const rows = [];
@@ -2485,14 +2583,27 @@
     // ─── FILA 6: Tipo ───
     if(p1.subcategoria || p2.subcategoria) rows.push({label:'Tipo', v1:p1.subcategoria||'—', v2:p2.subcategoria||'—'});
 
-    // ─── FILA 7: Specs técnicas (alineadas por índice) ───
-    const maxSpecs = Math.max(p1.specs?.length||0, p2.specs?.length||0);
-    if(maxSpecs > 0){
-      for(let i=0; i<maxSpecs; i++){
-        const s1 = p1.specs?.[i] || '—';
-        const s2 = p2.specs?.[i] || '—';
-        rows.push({label:'Spec '+(i+1), v1:s1, v2:s2});
-      }
+    // ─── FILA 7: características emparejadas por significado ───
+    const a1 = extraerAtributos(p1), a2 = extraerAtributos(p2);
+    const claves = COMP_ATRIBUTOS.map(a => a.id).filter(id => a1[id] || a2[id]);
+    claves.forEach(id => {
+      const x = a1[id], y = a2[id];
+      const etiqueta = (x || y).label;
+      let ganador;
+      if(x && y && x.mas === true && x.n !== y.n) ganador = x.n > y.n ? 1 : 2;
+      else if(x && !y) ganador = 1;          // solo uno lo declara
+      else if(y && !x) ganador = 2;
+      else ganador = 0;
+      rows.push({ label: etiqueta, v1: x ? x.t : '—', v2: y ? y.t : '—', winner: ganador });
+    });
+
+    // Lo que no encajó en ningún atributo se enseña tal cual, en su propia
+    // fila para cada producto: es información útil, pero enfrentarla entre
+    // sí sería inventar una comparación que no existe.
+    const sueltas = p => (p.specs||[]).filter(sp => !COMP_ATRIBUTOS.some(a => a.re.test(String(sp))));
+    const s1s = sueltas(p1), s2s = sueltas(p2);
+    if(s1s.length || s2s.length){
+      rows.push({ label:'Otras', v1: s1s.join(' · ') || '—', v2: s2s.join(' · ') || '—', winner: 0 });
     }
 
     // ─── FILA 8: Garantía ───
@@ -2510,19 +2621,12 @@
       });
     }
 
-    // ─── FILA 10: Valoración ─── (relación specs/precio)
-    const specsCount1 = p1.specs?.length || 0;
-    const specsCount2 = p2.specs?.length || 0;
-    const valoracion1 = specsCount1 > 0 ? (specsCount1 / p1.precio) : 0;
-    const valoracion2 = specsCount2 > 0 ? (specsCount2 / p2.precio) : 0;
-    const ganadorValoracion = valoracion1 > valoracion2 ? 1 : (valoracion2 > valoracion1 ? 2 : 0);
-    rows.push({
-      label:'Relación specs/$',
-      v1: specsCount1 > 0 ? `${specsCount1} specs / ${fmtUSD(p1.precio)} = ${(valoracion1*100).toFixed(2)}` : 'N/A',
-      v2: specsCount2 > 0 ? `${specsCount2} specs / ${fmtUSD(p2.precio)} = ${(valoracion2*100).toFixed(2)}` : 'N/A',
-      winner: ganadorValoracion,
-      higherBetter: true
-    });
+    // Antes había aquí una fila "Relación specs/$" que dividía el NÚMERO de
+    // viñetas de la ficha entre el precio y coronaba un ganador. Contar
+    // cuántas frases escribió el admin no mide nada del producto: tres
+    // viñetas escuetas ganaban a dos detalladas. Se quita.
+    // Para comparar de verdad se usan las características extraídas arriba.
+    const car1 = Object.keys(a1).length, car2 = Object.keys(a2).length;
 
     // ─── VEREDICTO INTELIGENTE ───
     let verdict = '';
@@ -2548,12 +2652,15 @@
       } else if(p2.precio < p1.precio){
         puntos2.push(`más accesible por ${fmtUSD(diff)} (${diffPct}% menos)`);
       }
-      // Specs
-      if(specsCount1 > specsCount2){
-        puntos1.push(`ficha técnica más completa (${specsCount1} vs ${specsCount2} specs)`);
-      } else if(specsCount2 > specsCount1){
-        puntos2.push(`ficha técnica más completa (${specsCount2} vs ${specsCount1} specs)`);
-      }
+      // Características medibles en las que uno gana al otro (potencia,
+      // capacidad, resolución…), no cuántas viñetas tiene la ficha.
+      const gana1 = [], gana2 = [];
+      COMP_ATRIBUTOS.forEach(a => {
+        const x = a1[a.id], y = a2[a.id];
+        if(x && y && a.mas === true && x.n !== y.n){ (x.n > y.n ? gana1 : gana2).push(a.label.toLowerCase() + ' (' + (x.n > y.n ? x.t : y.t) + ')'); }
+      });
+      if(gana1.length) puntos1.push('mejor en ' + gana1.slice(0,3).join(', '));
+      if(gana2.length) puntos2.push('mejor en ' + gana2.slice(0,3).join(', '));
       // Oferta
       if(enOferta1 && (!enOferta2 || (enOferta2 && (p1.precioOriginal - p1.precio) > (p2.precioOriginal - p2.precio)))){
         const off1 = Math.round((1 - p1.precio/p1.precioOriginal)*100);
@@ -2602,10 +2709,10 @@
         } else if(p2.precio < p1.precio){
           recomendaciones.push(`Si tu prioridad es <strong>ahorrar</strong>: ${escapeHtml(nombreCorto2)}`);
         }
-        if(specsCount1 > specsCount2){
-          recomendaciones.push(`Si tu prioridad es <strong>potencia/specs</strong>: ${escapeHtml(nombreCorto1)}`);
-        } else if(specsCount2 > specsCount1){
-          recomendaciones.push(`Si tu prioridad es <strong>potencia/specs</strong>: ${escapeHtml(nombreCorto2)}`);
+        if(gana1.length > gana2.length){
+          recomendaciones.push(`Si tu prioridad son las <strong>prestaciones</strong>: ${escapeHtml(nombreCorto1)}`);
+        } else if(gana2.length > gana1.length){
+          recomendaciones.push(`Si tu prioridad son las <strong>prestaciones</strong>: ${escapeHtml(nombreCorto2)}`);
         }
         if(recomendaciones.length > 0){
           verdict += `🎯 <strong>Mi recomendación:</strong>\n${recomendaciones.join('\n')}\n\n`;
