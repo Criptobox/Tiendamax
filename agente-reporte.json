@@ -1,10 +1,10 @@
 {
-  "generado": "2026-07-31T11:22:56.413916+00:00",
+  "generado": "2026-08-01T10:27:39.955193+00:00",
   "productos": 118,
   "urgentes": 6,
-  "advertencias": 39,
+  "advertencias": 44,
   "info": 9,
-  "resumen": "Anoche revisé tus 118 productos y encontré 6 urgente(s), 39 advertencia(s), 9 de info.",
+  "resumen": "Anoche revisé tus 118 productos y encontré 6 urgente(s), 44 advertencia(s), 9 de info.",
   "detalle": [
     {
       "tipo": "nombre",
@@ -13,28 +13,28 @@
     },
     {
       "tipo": "nombre",
-      "nombre": "​⚡ Controlador de Carga Solar MPPT 80A PowMr",
-      "detalle": "→ ​⚡ Controlador de Carga Solar MPPT 80A Powmr"
+      "nombre": "⚡ Controlador de Carga Solar MPPT 80A PowMr",
+      "detalle": "→ ⚡ Controlador de Carga Solar MPPT 80A Powmr"
     },
     {
       "tipo": "nombre",
-      "nombre": "​📶 Repetidor Wi-Fi Extensor de Cobertura TP-Link AC1200 (RE305 / RE330)",
-      "detalle": "→ ​📶 Repetidor Wi-fi Extensor de Cobertura Tp-link AC1200 (RE305 / RE330)"
+      "nombre": "📶 Repetidor Wi-Fi Extensor de Cobertura TP-Link AC1200 (RE305 / RE330)",
+      "detalle": "→ 📶 Repetidor Wi-fi Extensor de Cobertura Tp-link AC1200 (RE305 / RE330)"
     },
     {
       "tipo": "nombre",
-      "nombre": "​🛜 Router Wi-Fi AC1200 TP-Link Archer C54",
-      "detalle": "→ ​🛜 Router Wi-fi AC1200 Tp-link Archer C54"
+      "nombre": "🛜 Router Wi-Fi AC1200 TP-Link Archer C54",
+      "detalle": "→ 🛜 Router Wi-fi AC1200 Tp-link Archer C54"
     },
     {
       "tipo": "nombre",
-      "nombre": "​🌐 Antena CPE MikroTik SXTsq 5 ax",
-      "detalle": "→ ​🌐 Antena Cpe Mikrotik Sxtsq 5 ax"
+      "nombre": "🌐 Antena CPE MikroTik SXTsq 5 ax",
+      "detalle": "→ 🌐 Antena Cpe Mikrotik Sxtsq 5 ax"
     },
     {
       "tipo": "nombre",
-      "nombre": "​🌐 Antena CPE Ubiquiti NanoStation M5 Internacional",
-      "detalle": "→ ​🌐 Antena Cpe Ubiquiti Nanostation M5 Internacional"
+      "nombre": "🌐 Antena CPE Ubiquiti NanoStation M5 Internacional",
+      "detalle": "→ 🌐 Antena Cpe Ubiquiti Nanostation M5 Internacional"
     },
     {
       "tipo": "agotado",
@@ -148,6 +148,11 @@
     },
     {
       "tipo": "agotado",
+      "nombre": "Cargador Inteligente de Alta Potencia 84V 10A",
+      "detalle": "agotado (stock 0)"
+    },
+    {
+      "tipo": "agotado",
       "nombre": "Cargador de Batería de Litio Bien 72V 5A (Salida 84V) | Conector us Pin",
       "detalle": "agotado (stock 0)"
     },
@@ -193,6 +198,11 @@
     },
     {
       "tipo": "agotado",
+      "nombre": "🛜 Router Wi-Fi AC1200 TP-Link Archer C54",
+      "detalle": "agotado (stock 0)"
+    },
+    {
+      "tipo": "agotado",
       "nombre": "📟 Inversor Solar Must PV15-1524 lv",
       "detalle": "agotado (stock 0)"
     },
@@ -223,12 +233,27 @@
     },
     {
       "tipo": "agotado",
+      "nombre": "🌐 Nanostation AC Loco",
+      "detalle": "agotado (stock 0)"
+    },
+    {
+      "tipo": "agotado",
       "nombre": "🌐 Mikrotik Sxtsq LITE5",
       "detalle": "agotado (stock 0)"
     },
     {
       "tipo": "agotado",
       "nombre": "🔥 Soldadora Inverter MMA-300",
+      "detalle": "agotado (stock 0)"
+    },
+    {
+      "tipo": "agotado",
+      "nombre": "🛜 Router Wi-fi 6 AX3000 Tp-link Archer AX55",
+      "detalle": "agotado (stock 0)"
+    },
+    {
+      "tipo": "agotado",
+      "nombre": "🌐 Antena CPE MikroTik SXTsq 5 ax",
       "detalle": "agotado (stock 0)"
     },
     {
@@ -273,7 +298,7 @@
     },
     {
       "tipo": "stock_bajo",
-      "nombre": "​🌐 Antena CPE Ubiquiti NanoStation M5 Internacional",
+      "nombre": "🌐 Antena CPE Ubiquiti NanoStation M5 Internacional",
       "detalle": "quedan 3"
     }
   ]
