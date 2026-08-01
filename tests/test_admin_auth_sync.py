@@ -197,6 +197,29 @@ class CodigoRecuperacionTest(unittest.TestCase):
             i = self.admin.index(f"function {llamante}(")
             self.assertIn("_tmAplicarCodigoRec(", self.admin[i:i + 600])
 
+    def test_el_codigo_lleva_su_fecha(self):
+        # Un código restaura la contraseña que había CUANDO se generó, no la
+        # actual. Sin la fecha, restaurar uno viejo parece que "no funciona"
+        # cuando lo que ha hecho es devolverte la contraseña de antes.
+        self.assertIn("t:Date.now()", self.admin)
+        self.assertIn("new Date(d.t).toLocaleDateString()", self.admin)
+
+    def test_avisa_antes_de_pisar_otra_contrasena(self):
+        # Pegar un código viejo en un dispositivo que funciona lo dejaría sin
+        # poder entrar con la contraseña de hoy.
+        i_confirm = self.admin.index("¿Seguir?")
+        i_escribe = self.admin.index("localStorage.setItem(AUTH_HASH_KEY, d.h)")
+        self.assertLess(i_confirm, i_escribe, "hay que preguntar ANTES de escribir")
+        self.assertIn("actual && actual !== d.h", self.admin)
+
+    def test_al_cambiar_la_contrasena_avisa_de_regenerar(self):
+        # Es justo el momento en que el código guardado queda obsoleto.
+        self.assertIn('id="recAviso"', self.admin)
+        i = self.admin.index("async function tmCambiarPassword(")
+        cuerpo = self.admin[i:i + 1200]
+        self.assertIn("localStorage.getItem(AUTH_HASH_KEY) !== antes", cuerpo)
+        self.assertIn("recAviso", cuerpo)
+
     def test_no_promete_un_correo_que_no_existe(self):
         # El enlace "¿Olvidaste?" decía que se enviaría un enlace al correo
         # registrado. No hay servidor, ni cuentas, ni correo: engañaba justo

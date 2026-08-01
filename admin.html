@@ -1339,6 +1339,7 @@
         <div class="section">
           <h3>🆘 Código de recuperación</h3>
           <p style="font-size:12px;color:var(--muted);margin:-4px 0 12px">Guárdalo una vez (gestor de contraseñas, una nota, una captura). Si cambias de móvil o borras los datos del navegador, lo pegas aquí y este dispositivo vuelve a reconocer tu contraseña. <strong>Seguirás necesitando la contraseña para entrar</strong> — el código solo devuelve lo que el navegador había olvidado.</p>
+          <p id="recAviso" style="display:none;font-size:12.5px;line-height:1.5;margin:0 0 12px;padding:10px 12px;border-radius:10px;background:rgba(242,182,50,.12);border:1px solid rgba(242,182,50,.35);color:var(--text)"></p>
           <div class="form-group"><label class="form-label" for="recCodigo">Código</label><textarea class="form-input" id="recCodigo" rows="3" spellcheck="false" placeholder="Pulsa “Ver mi código” para generarlo, o pega aquí el que guardaste" style="resize:vertical;font-family:ui-monospace,monospace;font-size:11px"></textarea></div>
           <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
             <button class="btn btn-primary" onclick="tmVerCodigoRecuperacion()">🆘 Ver mi código</button>
@@ -1781,9 +1782,18 @@ async function tmCambiarPassword(){
   const b=$('#btnCambiarPass'), ci=$('#ci'), ni=$('#ni'), coi=$('#coi');
   if(!ci||!ni||!coi) return;
   const t=b?b.textContent:'';
+  const antes=localStorage.getItem(AUTH_HASH_KEY);
   if(b){ b.disabled=true; b.textContent='⏳ Cambiando…'; }
   try{ await cambiarPasswordAdmin(ci.value.trim(), ni.value, coi.value); }
   finally{ if(b){ b.disabled=false; b.textContent=t; } }
+  // Si de verdad cambio, el codigo guardado quedo obsoleto: restaurarlo mas
+  // adelante devolveria la contrasena vieja. Es el momento de regenerarlo, y
+  // el aviso se queda fijo en pantalla porque un toast se lo lleva el tiempo.
+  if(localStorage.getItem(AUTH_HASH_KEY) !== antes){
+    const av=$('#recAviso');
+    if(av){ av.style.display='block'; av.textContent='⚠️ Acabas de cambiar la contraseña: el código que tuvieras guardado ya no sirve (restauraría la anterior). Pulsa “Ver mi código” y guarda el nuevo.'; }
+    try{ $('#recCodigo').value=''; }catch(e){}
+  }
 }
 async function tmSyncPassword(){
   const b=$('#btnSyncPass');
@@ -1805,7 +1815,10 @@ function tmVerCodigoRecuperacion(){
   const hash=localStorage.getItem(AUTH_HASH_KEY), salt=localStorage.getItem(AUTH_SALT_KEY);
   if(!hash||!salt){ mostrarNotificacion('❌ Este dispositivo no tiene contraseña guardada, así que no hay nada que respaldar','error'); return; }
   const ta=$('#recCodigo'); if(!ta) return;
-  ta.value = REC_PREFIJO + btoa(JSON.stringify({ h:hash, s:salt, i:AUTH_ITERATIONS }));
+  // Va la fecha dentro: un código restaura la contraseña que habia CUANDO se
+  // genero, no la actual. Sin poder decir de cuando es, restaurar uno viejo
+  // parece que "no funciona" cuando en realidad te devolvio la de antes.
+  ta.value = REC_PREFIJO + btoa(JSON.stringify({ h:hash, s:salt, i:AUTH_ITERATIONS, t:Date.now() }));
   ta.select();
   mostrarNotificacion('🆘 Código generado. Guárdalo ahora, en un sitio seguro.','success');
 }
@@ -1834,12 +1847,24 @@ function _tmAplicarCodigoRec(codigo){
   if(d.i && Number(d.i)!==AUTH_ITERATIONS){
     return {ok:false, msg:'❌ Ese código es de una versión anterior del admin y ya no sirve para verificar la contraseña.'};
   }
+  // Si este dispositivo ya tenia otra contrasena, restaurar la pisa: quien
+  // pegue aqui un codigo viejo por error se quedaria sin poder entrar con la
+  // que usa hoy, sin entender por que. Se avisa antes de tocar nada.
+  const actual = localStorage.getItem(AUTH_HASH_KEY);
+  if(actual && actual !== d.h){
+    const cuando = d.t ? new Date(d.t).toLocaleDateString() : 'una fecha anterior';
+    if(!confirm('Ese código es de ' + cuando + ' y no coincide con la contraseña de este dispositivo.\n\n'
+              + 'Si continúas, volverás a la contraseña que tenías entonces y la actual dejará de servir.\n\n¿Seguir?')){
+      return {ok:false, msg:'Cancelado. No se ha cambiado nada.'};
+    }
+  }
   try{
     localStorage.setItem(AUTH_HASH_KEY, d.h);
     localStorage.setItem(AUTH_SALT_KEY, d.s);
     localStorage.removeItem('admin_rl');
   }catch(e){ return {ok:false, msg:'❌ No se pudo guardar en este navegador'}; }
-  return {ok:true, msg:'✅ Acceso restaurado. Escribe arriba tu contraseña de siempre y entra.'};
+  const fecha = d.t ? ' (código del ' + new Date(d.t).toLocaleDateString() + ')' : '';
+  return {ok:true, msg:'✅ Acceso restaurado' + fecha + '. Escribe arriba la contraseña que usabas en esa fecha.'};
 }
 
 function tmRestaurarCodigoRecuperacion(){
