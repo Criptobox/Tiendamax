@@ -8968,6 +8968,40 @@ html body .tm-topbar::after{
   pointer-events:none;
 }
 
+/* ==========================================================================
+   FONDO DE LA PÁGINA — una sola capa, sin costuras
+   ==========================================================================
+   El hero pintaba sus propios radial-gradients (nuevo-diseno.css:95 y :100).
+   El segundo, `ellipse 40% 50% at 10% 70%`, tiene un radio vertical de ~478px
+   centrado en el 70% del hero: se extiende MÁS ALLÁ de su borde inferior, así
+   que cuando el elemento termina el color se corta en seco.
+
+   Medido en el navegador, reproducible a cualquier scroll: en y=1041 —el
+   borde exacto donde acaba el hero y empiezan los Productos Destacados— el
+   fondo salta de (249,242,236) a (250,247,242). Eso es la raya horizontal
+   que se ve encima de los destacados.
+
+   El fondo cálido lo pinta ya el <body> con sus dos radiales, que son una
+   capa continua de 8000px sin bordes intermedios. Quitando los del hero
+   queda un solo fondo para toda la página: ninguna sección puede cortarlo. */
+html body .hero.nd-hero,
+html body.light-mode .hero.nd-hero,
+html body:not(.light-mode) .hero.nd-hero{
+  background:none !important;
+}
+/* Y sobre todo sus dos pseudo-elementos, que eran la causa real. El ::after
+   es un `radial-gradient(circle, rgba(255,107,53,.06), transparent 70%)` de
+   400px de alto colocado en top:655px dentro de un hero de 956px: se sale
+   176px por abajo. Como el hero lleva `contain:layout`, ese sobrante se
+   RECORTA en el borde en vez de desvanecerse, y ahí queda la raya. El
+   ::before hace lo mismo por arriba (top:-200px). */
+html body .hero.nd-hero::before,
+html body .hero.nd-hero::after,
+html body.light-mode .hero.nd-hero::before,
+html body.light-mode .hero.nd-hero::after{
+  background:none !important;
+}
+
 /* ===== botones-unificados.css ===== */
 /* ==========================================================================
    botones-unificados.css — CAPA DE COMPONENTE: forma de los botones.
