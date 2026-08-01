@@ -297,15 +297,15 @@ window.addEventListener('popstate', function(e) {
         closed = true;
     }
     
-    // Close agent chat panel if open
-    const agentPanel = document.getElementById('tmAgentPanel');
-    if (agentPanel && agentPanel.classList.contains('open')) {
-        agentPanel.classList.remove('open');
-        const agentBubble = document.getElementById('tmAgentBubble');
-        if (agentBubble) agentBubble.classList.remove('hidden');
+    // Cerrar el chat del bot "Max" si está abierto, para que el botón
+    // "atrás" del móvil cierre el chat en vez de sacar al cliente del sitio.
+    // (Antes esto cerraba el panel del asistente viejo, ya retirado.)
+    const botPanel = document.getElementById('tmBotPanel');
+    if (botPanel && botPanel.classList.contains('open')) {
+        botPanel.classList.remove('open');
         closed = true;
     }
-    
+
     // If we closed something, replace the current history state so the next
     // back press navigates away instead of getting stuck in a loop.
     // Do NOT pushState (which would create an infinite back trap).
@@ -432,7 +432,8 @@ async function busquedaConIA(q) {
             // Bonus: stemmed full query match in name
             if (stemmedQ !== normalizar(q) && pNombre.includes(stemmedQ)) score += 10;
             // Penalty: if the product's category is completely unrelated to the query
-            // Uses the UNRELATED_CATEGORY_MAP from tm-agent for stronger penalty
+            // Tabla propia: el asistente viejo tenía una equivalente, pero esta
+            // no dependía de él y sobrevive a su retirada.
             const qKey = stemmedQ || normalizar(q);
             const unrelatedMap = {
                 'inversor':  ['MOTOS', 'CARROS', 'ROPA', 'CALZADO', 'HOGAR', 'ALIMENTO', 'UTILES'],

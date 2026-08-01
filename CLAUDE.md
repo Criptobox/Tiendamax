@@ -40,16 +40,20 @@ Only a handful of scripts have unit tests today: `test_revertir_ofertas.py`, `te
 
 ### The JS module system (js/src/)
 
-`js/src/*.src.js` are **not ES modules** — they're classic scripts sharing one global `window` scope, so a function defined in one file is a bareword global callable from any other, including from `onclick="..."` attributes in the HTML. There are 12 modules, and **concatenation order is load order and matters** when two modules define the same function name (last one in the list wins):
+`js/src/*.src.js` are **not ES modules** — they're classic scripts sharing one global scope, so a function defined in one file is a bareword global callable from any other, including from `onclick="..."` attributes in the HTML. **Careful: top-level `let`/`const` do NOT become `window` properties** — `productos`, `categorias` and `wishlist` are `let`, so `window.productos` is `undefined` and reading it that way silently yields nothing. Reference them by bareword (guarded with `typeof`) instead.
+
+There are 12 modules in the bundle, and **concatenation order is load order and matters** when two modules define the same function name (last one in the list wins):
 
 ```
-tm-config → tm-data → tm-state → tm-admin → tm-product → tm-catalog →
-tm-init → tm-ui → tm-toast → tm-iife → tm-patches → tm-agent
+tm-iconos → tm-config → tm-data → tm-state → tm-admin → tm-product →
+tm-catalog → tm-init → tm-ui → tm-toast → tm-iife → tm-patches
 ```
 
-(exact order lives in `scripts/build_js_bundle.py`'s `ORDEN`). `tm-patches.src.js` and `tm-agent.src.js` load last specifically so they can override/monkey-patch functions defined earlier — check there first if a function's behavior doesn't match what its "definition" in an earlier module suggests.
+(exact order lives in `scripts/build_js_bundle.py`'s `ORDEN`). `tm-patches.src.js` loads last specifically so it can override/monkey-patch functions defined earlier — check there first if a function's behavior doesn't match what its "definition" in an earlier module suggests.
 
-`js/*.js` at the repo root (`combos.js`, `cart-share.js`, `event-delegation.js`, `tienda-plus.js`, `tm-bot.js`, `revolico_integration.js`, `admin-copilot.js`, `analytics.js`, `banners.js`, `biometric-auth.js`, `error-report.js`, `hero-efectos.js`, `push-fix.js`, `seo-dynamico.js`, `share-patch.js`, `subcategorias.js`, `urgencia-ventas.js`, `web-vitals-snippet.js`) are standalone — **not** part of the `js/src` bundle pipeline. They're loaded as individual `<script>` tags in `index.html`/`admin.html`, always *after* `tm-bundle.js`, so it's normal (not a bug) for them to call bundle globals they don't define themselves. Some of these deliberately override bundle functions post-load (`push-fix.js` replaces the bundle's FCM registration logic entirely — this is intentional, not dead code, even though it leaves the bundle's version unreachable).
+Two more modules live in `js/src/` but are deliberately **out** of the bundle (`STANDALONE` in `build_js_bundle.py`): `tm-bot.src.js` (the chat bubble/panel) and `tm-bot-cerebro.src.js` (the assistant's whole brain, ~130 KB minified). The shell injects the brain only when a customer actually opens the chat, via the URL in `<meta name="tm-bot-cerebro">` — which lives in the HTML so `bump_versions.py` keeps its cache-busting hash in sync. The bot answers entirely in the browser: there is no chat backend. `mini-services/chat-bot/` is the retired Cloudflare Worker it used to call, kept only for reference.
+
+`js/*.js` at the repo root (`combos.js`, `cart-share.js`, `event-delegation.js`, `tienda-plus.js`, `revolico_integration.js`, `admin-copilot.js`, `analytics.js`, `banners.js`, `biometric-auth.js`, `error-report.js`, `hero-efectos.js`, `push-fix.js`, `seo-dynamico.js`, `share-patch.js`, `subcategorias.js`, `urgencia-ventas.js`, `web-vitals-snippet.js`) are standalone — **not** part of the `js/src` bundle pipeline. They're loaded as individual `<script>` tags in `index.html`/`admin.html`, always *after* `tm-bundle.js`, so it's normal (not a bug) for them to call bundle globals they don't define themselves. Some of these deliberately override bundle functions post-load (`push-fix.js` replaces the bundle's FCM registration logic entirely — this is intentional, not dead code, even though it leaves the bundle's version unreachable).
 
 ### The CSS cascade (css/)
 

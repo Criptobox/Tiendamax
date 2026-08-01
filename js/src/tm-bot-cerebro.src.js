@@ -249,6 +249,50 @@
     } catch(e){}
   }
 
+  // ── Aprendizaje de preguntas → alimenta faq.html ──────────
+  // scripts/build_faq.py regenera faq.html cada 6 h (workflow build-faq.yml)
+  // mezclando 5 preguntas fijas con las que MÁS REPITEN los clientes, que lee
+  // de /agente/faq en Firebase. Ese nodo lo llenaba el asistente anterior
+  // (TmAgent); al retirarlo la página se habría quedado congelada en las 5
+  // fijas para siempre, sin que nada fallara de forma visible. Lo hace Max.
+  //
+  // Contrato exigido por firebase-rules.json en /agente/faq/$faqKey:
+  // query, intent, count y lastUpdated OBLIGATORIOS (lastResponse opcional),
+  // con longitudes topadas. Si falta uno, la regla rechaza el PATCH entero.
+  // Se conserva la misma forma de clave que usaba TmAgent para no partir en
+  // dos el histórico ya acumulado.
+  function _registrarPreguntaFAQ(texto, intent, respuestaHTML){
+    try {
+      const t = String(texto || '').trim();
+      if (t.length < 5 || t.length > 300) return;
+      if (t.charAt(0) === '/') return;              // comandos, no preguntas
+      const base = (typeof _fbRtdbUrl === 'function') ? _fbRtdbUrl() : null;
+      if (!base) return;
+      // Firebase prohíbe . # $ / [ ] en las claves
+      const clave = cleanForMatch(t).replace(/\s+/g, '_').substring(0, 50).replace(/[.#$/[\]]/g, '_');
+      if (!clave) return;
+      // Cortar a 300 puede partir un emoji por la mitad (son 2 unidades UTF-16)
+      // y dejar un � en faq.html, que es una página pública indexada.
+      const recortar = (txt, max) => {
+        let r = String(txt).substring(0, max);
+        if (r.length && /[\uD800-\uDBFF]/.test(r.charAt(r.length - 1))) r = r.slice(0, -1);
+        return r;
+      };
+      const limpio = String(respuestaHTML || '').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+      fetch(base + '/agente/faq/' + encodeURIComponent(clave) + '.json', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          query: recortar(t, 300),
+          intent: recortar(String(intent || 'desconocido'), 40),
+          lastResponse: recortar(limpio, 300),
+          count: { '.sv': { increment: 1 } },       // incremento del lado del servidor
+          lastUpdated: Date.now()
+        })
+      }).catch(function(){});
+    } catch(e){}
+  }
+
   // ════════════════════════════════════════════════════════════
   //  BASE DE CONOCIMIENTO EXPERTA (ampliada v3)
   // ════════════════════════════════════════════════════════════
@@ -3187,6 +3231,9 @@
     removeTyping();
     try {
       const data = responder(text);
+      // Fire-and-forget: si Firebase no está configurado o el PATCH falla, el
+      // chat sigue igual. responder() acaba de dejar la intención en _context.
+      _registrarPreguntaFAQ(text, _context.lastIntent, data.response);
       if(data.response) addMessageTyped(data.response, 'bot');
       if(data.compare) addCompareTable(data.compare);
       else if(data.products) addProducts(data.products);

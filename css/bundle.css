@@ -4489,334 +4489,18 @@ html body .hsb-suggestions {
 
 /* ===== Body scroll lock classes ===== */
 body.cart-open { overflow: hidden !important; }
-body.menu-open { overflow: hidden !important; }
-
-/* ============================================
-   TM AGENT - Chat Widget
-   ============================================ */
-
-/* ── Tarjeta de bienvenida: burbuja de mensaje sobre el ícono del bot,
-   no un toast genérico — para que la primera impresión del asistente
-   se sienta cuidada, no una notificación más. ── */
-@keyframes tmWelcomeIn {
-  from { opacity: 0; transform: translateY(14px) scale(.94); }
-  to   { opacity: 1; transform: translateY(0) scale(1); }
-}
-.tm-welcome-card {
-  position: fixed;
-  right: 24px;
-  bottom: 100px; /* justo arriba de la burbuja (28px + 60px + margen) */
-  z-index: 9998; /* un pelo debajo de la burbuja (9999) para que la tape al cerrarse */
-  width: min(272px, calc(100vw - 48px));
-  display: none;
-  align-items: flex-start;
-  gap: 12px;
-  padding: 16px 34px 16px 16px;
-  border-radius: 20px;
-  background: linear-gradient(165deg, rgba(28,28,38,.97) 0%, rgba(18,18,26,.97) 100%);
-  border: 1px solid rgba(255,255,255,.09);
-  box-shadow: 0 16px 40px rgba(0,0,0,.45), 0 0 0 1px rgba(255,107,53,.12), 0 0 32px rgba(255,107,53,.14);
-  cursor: pointer;
-  animation: tmWelcomeIn .45s var(--ease-out, cubic-bezier(.16,1,.3,1)) both;
-}
-.tm-welcome-card.show { display: flex; }
-/* Colita apuntando a la burbuja, abajo a la derecha de la tarjeta */
-.tm-welcome-card::after {
-  content: '';
-  position: absolute;
-  right: 22px;
-  bottom: -7px;
-  width: 14px;
-  height: 14px;
-  background: rgb(20,20,28);
-  border-right: 1px solid rgba(255,255,255,.09);
-  border-bottom: 1px solid rgba(255,255,255,.09);
-  transform: rotate(45deg);
-  border-radius: 0 0 3px 0;
-}
-.tm-welcome-avatar {
-  flex-shrink: 0;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 18px;
-  background: linear-gradient(135deg, #FF6B35 0%, #E8501E 100%);
-  box-shadow: 0 4px 12px rgba(255,107,53,.4);
-}
-.tm-welcome-body {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  min-width: 0;
-}
-.tm-welcome-body strong {
-  color: #fff;
-  font-size: 14px;
-  font-weight: 800;
-  letter-spacing: -.1px;
-}
-.tm-welcome-body span {
-  color: rgba(255,255,255,.68);
-  font-size: 12.5px;
-  line-height: 1.4;
-}
-.tm-welcome-close {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  background: rgba(255,255,255,.06);
-  border: none;
-  color: rgba(255,255,255,.5);
-  font-size: 15px;
-  line-height: 1;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background .2s, color .2s;
-}
-.tm-welcome-close:hover { background: rgba(255,255,255,.12); color: #fff; }
-
-body.light-mode .tm-welcome-card {
-  background: linear-gradient(165deg, #FFFFFF 0%, #FFF8F4 100%);
-  border-color: rgba(0,0,0,.08);
-  box-shadow: 0 16px 40px rgba(0,0,0,.14), 0 0 0 1px rgba(232,80,30,.10), 0 0 28px rgba(232,80,30,.10);
-}
-body.light-mode .tm-welcome-card::after {
-  background: #fff;
-  border-right-color: rgba(0,0,0,.08);
-  border-bottom-color: rgba(0,0,0,.08);
-}
-body.light-mode .tm-welcome-body strong { color: #1a1a1a; }
-body.light-mode .tm-welcome-body span { color: #6B6B7A; }
-body.light-mode .tm-welcome-close { background: rgba(0,0,0,.05); color: #999; }
-body.light-mode .tm-welcome-close:hover { background: rgba(0,0,0,.1); color: #1a1a1a; }
-
-@media (max-width: 480px) {
-  .tm-welcome-card { right: 16px; bottom: 92px; }
-}
-
+body.menu-open { overflow: hidden !important; }/* Colita apuntando a la burbuja, abajo a la derecha de la tarjeta */
 /* ── Floating bubble ── */
-.tm-agent-bubble {
-  position: fixed;
-  bottom: 28px;
-  right: 28px;
-  width: 60px;
-  height: 60px;
-  border-radius: 20px;
-  background: linear-gradient(135deg, #FF6B35 0%, #E8501E 100%);
-  color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  z-index: 9999;
-  box-shadow: 0 6px 24px rgba(255, 107, 53, 0.45), 0 2px 8px rgba(0, 0, 0, 0.25);
-  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
-              box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-  animation: tmBubblePulse 2.8s ease-in-out infinite;
-  -webkit-tap-highlight-color: transparent;
-  user-select: none;
-}
-.tm-agent-bubble:hover {
-  transform: scale(1.1);
-  box-shadow: 0 8px 32px rgba(255, 107, 53, 0.6), 0 4px 12px rgba(0, 0, 0, 0.3);
-}
-.tm-agent-bubble:active {
-  transform: scale(0.95);
-}
-.tm-agent-bubble .bubble-icon {
-  font-size: 28px;
-  line-height: 1;
-  filter: drop-shadow(0 1px 2px rgba(0,0,0,0.2));
-}
-.tm-agent-bubble .badge {
-  position: absolute;
-  top: -4px;
-  right: -4px;
-  min-width: 20px;
-  height: 20px;
-  border-radius: 10px;
-  background: #E8501E;
-  color: #fff;
-  font-size: 11px;
-  font-weight: 700;
-  font-family: 'DM Sans', system-ui, sans-serif;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0 5px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-  border: 2px solid #0f0f1a;
-}
+
 
 @keyframes tmBubblePulse {
   0%, 100% { box-shadow: 0 6px 24px rgba(255, 107, 53, 0.45), 0 2px 8px rgba(0, 0, 0, 0.25); }
   50% { box-shadow: 0 6px 24px rgba(255, 107, 53, 0.45), 0 2px 8px rgba(0, 0, 0, 0.25), 0 0 0 10px rgba(255, 107, 53, 0.12); }
-}
-
-/* ── Chat panel ── */
-.tm-agent-panel {
-  position: fixed;
-  bottom: 100px;
-  right: 28px;
-  width: 380px;
-  max-height: calc(100vh - 140px);
-  height: 600px;
-  border-radius: 16px;
-  background: #0f0f1a;
-  border: 1px solid rgba(255, 255, 255, 0.07);
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.04);
-  display: flex;
-  flex-direction: column;
-  z-index: 10000;
-  opacity: 0;
-  visibility: hidden;
-  transform: translateY(20px) scale(0.96);
-  transform-origin: bottom right;
-  transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1),
-              transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
-              visibility 0.3s;
-  font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
-  overflow: hidden;
-}
-.tm-agent-panel.open {
-  opacity: 1;
-  visibility: visible;
-  transform: translateY(0) scale(1);
-}
-
+}/* ── Chat panel ── */
 /* Light-mode panel */
-html body.light-mode .tm-agent-panel {
-  background: #f5f5f7;
-  border-color: rgba(0, 0, 0, 0.08);
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(0, 0, 0, 0.05);
-}
-
 /* ── Panel header ── */
-.tm-agent-header {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 16px 18px;
-  background: linear-gradient(135deg, #1a1a2e 0%, #16162a 100%);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-  flex-shrink: 0;
-}
-html body.light-mode .tm-agent-header {
-  background: linear-gradient(135deg, #FF6B35 0%, #E8501E 100%);
-  border-bottom-color: rgba(0, 0, 0, 0.06);
-}
-.tm-agent-header .agent-avatar {
-  width: 40px;
-  height: 40px;
-  border-radius: 12px;
-  background: rgba(255, 107, 53, 0.15);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 22px;
-  flex-shrink: 0;
-}
-html body.light-mode .tm-agent-header .agent-avatar {
-  background: rgba(255, 255, 255, 0.25);
-}
-.tm-agent-header .agent-info {
-  flex: 1;
-  min-width: 0;
-}
-.tm-agent-header .agent-info strong {
-  display: block;
-  color: #fff;
-  font-size: 14px;
-  font-weight: 700;
-  line-height: 1.2;
-}
-html body.light-mode .tm-agent-header .agent-info strong {
-  color: #fff;
-}
-.tm-agent-header .agent-info .agent-status {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  font-size: 12px;
-  color: rgba(255, 255, 255, 0.55);
-  margin-top: 2px;
-}
-html body.light-mode .tm-agent-header .agent-info .agent-status {
-  color: rgba(255, 255, 255, 0.8);
-}
-.tm-agent-header .agent-info .agent-status::before {
-  content: '';
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: #25D366;
-  box-shadow: 0 0 6px rgba(37, 211, 102, 0.5);
-}
-.tm-agent-header .close-btn {
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
-  border: none;
-  background: rgba(255, 255, 255, 0.08);
-  color: rgba(255, 255, 255, 0.6);
-  font-size: 14px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background 0.2s, color 0.2s;
-  flex-shrink: 0;
-}
-.tm-agent-header .close-btn:hover {
-  background: rgba(255, 255, 255, 0.15);
-  color: #fff;
-}
-html body.light-mode .tm-agent-header .close-btn {
-  background: rgba(255, 255, 255, 0.2);
-  color: rgba(255, 255, 255, 0.85);
-}
-html body.light-mode .tm-agent-header .close-btn:hover {
-  background: rgba(255, 255, 255, 0.35);
-  color: #fff;
-}
-
 /* ── Messages area ── */
-.tm-agent-messages {
-  flex: 1;
-  overflow-y: auto;
-  padding: 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  overscroll-behavior: contain;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
-}
-.tm-agent-messages::-webkit-scrollbar {
-  width: 5px;
-}
-.tm-agent-messages::-webkit-scrollbar-track {
-  background: transparent;
-}
-.tm-agent-messages::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 3px;
-}
-html body.light-mode .tm-agent-messages {
-  scrollbar-color: rgba(0, 0, 0, 0.1) transparent;
-}
-html body.light-mode .tm-agent-messages::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.12);
-}
+
 
 /* ── Message bubbles ── */
 .tm-msg {
@@ -5129,75 +4813,8 @@ html body.light-mode .tm-quick-reply:hover {
   height: 18px;
   fill: currentColor;
   flex-shrink: 0;
-}
+}/* ── Input area ── */
 
-/* ── Input area ── */
-.tm-agent-input {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 12px 14px;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
-  background: #0f0f1a;
-  flex-shrink: 0;
-}
-html body.light-mode .tm-agent-input {
-  border-top-color: rgba(0, 0, 0, 0.08);
-  background: #f5f5f7;
-}
-.tm-agent-input input {
-  flex: 1;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 12px;
-  padding: 10px 14px;
-  background: #1a1a2e;
-  color: #f2f2f5;
-  font-size: 13.5px;
-  font-family: inherit;
-  outline: none;
-  transition: border-color 0.2s, box-shadow 0.2s;
-}
-.tm-agent-input input::placeholder {
-  color: rgba(255, 255, 255, 0.3);
-}
-.tm-agent-input input:focus {
-  border-color: rgba(255, 107, 53, 0.5);
-  box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
-}
-html body.light-mode .tm-agent-input input {
-  border-color: rgba(0, 0, 0, 0.1);
-  background: #fff;
-  color: #1a1a2e;
-}
-html body.light-mode .tm-agent-input input::placeholder {
-  color: rgba(0, 0, 0, 0.3);
-}
-html body.light-mode .tm-agent-input input:focus {
-  border-color: rgba(255, 107, 53, 0.5);
-  box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.08);
-}
-.tm-agent-input button {
-  width: 40px;
-  height: 40px;
-  border-radius: 12px;
-  border: none;
-  background: linear-gradient(135deg, #FF6B35 0%, #E8501E 100%);
-  color: #fff;
-  font-size: 16px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: opacity 0.2s, transform 0.2s;
-  flex-shrink: 0;
-}
-.tm-agent-input button:hover {
-  opacity: 0.9;
-  transform: scale(1.05);
-}
-.tm-agent-input button:active {
-  transform: scale(0.95);
-}
 
 /* ── Typing indicator ── */
 .tm-typing {
@@ -5235,55 +4852,10 @@ html body.light-mode .tm-typing span {
 @keyframes tmTypingBounce {
   0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
   30% { transform: translateY(-6px); opacity: 1; }
-}
-
-/* ── Mobile responsive ── */
-@media (max-width: 768px) {
-  .tm-agent-panel {
-    bottom: 0;
-    right: 0;
-    left: 0;
-    width: 100%;
-    max-height: 100vh;
-    height: 100vh;
-    border-radius: 16px 16px 0 0;
-    transform: translateY(100%);
-    transform-origin: bottom center;
-  }
-  .tm-agent-panel.open {
-    transform: translateY(0);
-  }
-  .tm-agent-bubble {
-    width: 54px;
-    height: 54px;
-    bottom: 20px;
-    right: 20px;
-    border-radius: 18px;
-  }
-  .tm-agent-bubble .bubble-icon {
-    font-size: 24px;
-  }
-  .tm-agent-bubble .badge {
-    min-width: 18px;
-    height: 18px;
-    font-size: 10px;
-  }
-}
-
+}/* ── Mobile responsive ── */
 /* ── Bubble hidden when panel is open ── */
-.tm-agent-bubble.hidden {
-  opacity: 0;
-  pointer-events: none;
-  transform: scale(0.6);
-  transition: opacity 0.2s, transform 0.2s;
-}
-
 /* ── Scroll-to-bottom anchor ── */
-.tm-agent-messages .tm-scroll-anchor {
-  float: left;
-  clear: both;
-  height: 1px;
-}
+
 
 /* ═══════════════════════════════════════════════════════════════
    CONSOLIDATED HEADER BUTTON STYLES (supplementary)
@@ -5700,20 +5272,10 @@ html body.light-mode .mobile-menu-overlay .mobile-action-wagrupo:hover,
 html body.light-mode .mobile-menu-overlay .mobile-action-ayuda:hover {
     background: rgba(37,211,102,0.08) !important;
     border-color: rgba(37,211,102,0.25) !important;
-}
-
-/* ── Los botones Telegram/Ayuda solo están en el menú hamburguesa (mobile-menu-actions) ── */
+}/* ── Los botones Telegram/Ayuda solo están en el menú hamburguesa (mobile-menu-actions) ── */
 /* La barra flotante tm-bottom-bar fue eliminada — las pills solo en el side menu */
-
 /* Agent bubble: posición normal (sin barra inferior) */
-.tm-agent-bubble {
-    bottom: 24px !important;
-}
-@media (max-width: 768px) {
-    .tm-agent-bubble {
-        bottom: 20px !important;
-    }
-}
+
 
 /* ===== modal-v4.css ===== */
 /* ==========================================================================
@@ -9445,7 +9007,6 @@ html body .tm-sk-btn,
 html body .tm-wa-btn,
 html body .tmplus-aviso-btn,
 html body .tmplus-share-cart,
-html body .tm-agent-input button,
 html body .producto-card .btn,
 html body .producto-card .btn-pedir-card,
 html body .cta-final .btn-large,

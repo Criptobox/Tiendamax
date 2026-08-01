@@ -98,7 +98,7 @@ function escapeAttr(s) { return escapeHtml(s); }
 // el modal de notificaciones es abierto = CON .activo. Pasa el segundo
 // argumento solo cuando la convención no es la de .hidden. Antes este mismo
 // par null-check + classList.contains vivía copiado en tm-iife.src.js (ESC),
-// tm-data.src.js (popstate) y tm-agent.src.js (burbuja del chat).
+// tm-data.src.js (popstate) y tm-bot.src.js (burbuja del chat).
 function tmOverlayAbierto(id, claseSiAbierto) {
     const el = document.getElementById(id);
     if (!el) return false;

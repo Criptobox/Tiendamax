@@ -40,13 +40,11 @@ ORDEN = [
 ]
 
 # Módulos que se minifican como el resto (js/src/) pero NO van en el bundle:
-# se sirven como <script> aparte para bajar el peso del bundle crítico. El
-# agente de chat (62 KB min) no hace falta para el primer render del catálogo
-# —es un widget que el cliente abre a demanda— así que se separa a js/<nombre>
-# y se carga con su propio <script defer> después del bundle. Sacarlo de aquí
-# recorta ~62 KB de parseo del hilo principal en la carga inicial.
+# se sirven como <script> aparte para bajar el peso del bundle crítico. Un
+# widget que el cliente abre a demanda no hace falta para el primer render del
+# catálogo, así que se separa a js/<nombre> y se carga con su propio
+# <script defer> después del bundle.
 STANDALONE = {
-    "tm-agent.js": os.path.join(JS_DIR, "tm-agent.js"),
     # Bot "Max": la cáscara (burbuja + panel) va como <script defer> en
     # index.html, y el cerebro NI SIQUIERA eso — la cáscara lo inyecta la
     # primera vez que alguien abre el chat. Son ~90 KB de base de
